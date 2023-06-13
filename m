@@ -1,190 +1,136 @@
-Return-Path: <bpf+bounces-2542-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2543-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10FD72EBA9
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 21:10:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E65C72EBFA
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 21:30:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BD66281291
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 19:10:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 813BE1C20910
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 19:30:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043033B8D4;
-	Tue, 13 Jun 2023 19:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DDDD3D396;
+	Tue, 13 Jun 2023 19:30:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343E317FE6;
-	Tue, 13 Jun 2023 19:10:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8934BC433F0;
-	Tue, 13 Jun 2023 19:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686683420;
-	bh=UkhMhQbNuGkNSp/rihKTB28p0jSTTH6gXRZQq9o/us4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=aNWDjnJHCZGE77R3ugB0iIMJJYmCSY2yGv93mQ/kJfhyftTc8iZzZoIY0YO0g7g/h
-	 0V3XhR4BTGvbnww16Y0VKIgPw32mhEBekbspBkJ+JDv5sFo/qNwuIy9PSO8v5c5qjV
-	 TcY9u2Go8U63LTyawUE4v9Fhx81kYF4zPHbZ6dUHEIkuRa9ppF7HW53L3tMTbTmuYO
-	 M6fO1xjkxqkVPfso6jt7Ff2F5IGqF2BcEbGaI3w2bGGkIYk7GVzMiPMbTIb/uN3uzg
-	 ludSn2yc5z+FP4NMPF8Z6Zm3xeX/S6HGHJdoJB/L7yzhV9URaDj8ZhKSHLo+F9bT+H
-	 RiRjlaAxWKfuw==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 94B8FBBEAE1; Tue, 13 Jun 2023 21:10:17 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To: Stanislav Fomichev <sdf@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
- jolsa@kernel.org, willemb@google.com, dsahern@kernel.org,
- magnus.karlsson@intel.com, bjorn@kernel.org, maciej.fijalkowski@intel.com,
- netdev@vger.kernel.org
-Subject: Re: [RFC bpf-next 0/7] bpf: netdev TX metadata
-In-Reply-To: <CAKH8qBt5tQ69Zs9kYGc7j-_3Yx9D6+pmS4KCN5G0s9UkX545Mg@mail.gmail.com>
-References: <20230612172307.3923165-1-sdf@google.com>
- <87cz20xunt.fsf@toke.dk> <ZIiaHXr9M0LGQ0Ht@google.com>
- <877cs7xovi.fsf@toke.dk>
- <CAKH8qBt5tQ69Zs9kYGc7j-_3Yx9D6+pmS4KCN5G0s9UkX545Mg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Tue, 13 Jun 2023 21:10:17 +0200
-Message-ID: <87v8frw546.fsf@toke.dk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9FD017FE6;
+	Tue, 13 Jun 2023 19:30:37 +0000 (UTC)
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C8F19F;
+	Tue, 13 Jun 2023 12:30:32 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-78a03acc52aso559338241.3;
+        Tue, 13 Jun 2023 12:30:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686684631; x=1689276631;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fqoXuAD76sA/z06oNkvyQVKnlwn98lfYWJQruP8R3vs=;
+        b=HeOYCeB3N4cLjVzNTcVuJ2DoHwzJkAzY1bcl0t2nYV65yU8fCeoDW0MBtJXN0FDngH
+         iPcJLtngbJ6Htn6I/Z9wXe6OLOOFWI5/HH7wgeYfdE40ex1ylmmNxRMdH/JkrjxFygDf
+         bK/WyNUQqdCqdF0q12HtToLb4uAj+lY3CiARvyrYIPuSDpJHHsiRH8tFsBjTgKKj4940
+         FWZNkqXbzeSXQKpkzBbYOHyH939BvCXkC2LJCEazArswka0FCSq8Zk+UgHdMHupMVId5
+         HWXLOpQDVoM7QgQgVkk/40GtdcXeeiaRH5mUQNk9SpoVgLIbbTyh72Rv/YwQ5JB6EXiR
+         cgRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686684631; x=1689276631;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fqoXuAD76sA/z06oNkvyQVKnlwn98lfYWJQruP8R3vs=;
+        b=glv5Cc4qNipbXjTP4jy9JYpN7qLttpEUaBt4T9glRNb22XjoAffNSmh7G76UQi06dI
+         kOEGCN5CJj0gm/L9SfvDLyoMkuOVyzv8JTzyTmxB8xda2IIuP4h5DU7x4T7giXCsZmBE
+         FVjqZuV4AKU/Bi0zB38msprsqIO5T0HKTKl94xLSfbol0vfqzsTkLLg58NTMHR/sZbvd
+         18ORuWcarectIbEbWe4eaN0DMZoNs5QZl+bYfE7wMVl3XqYIpq9BrDGOP4zGabFrL4u6
+         29sj+J0a7JmtRew6RFsLZ8BAjGtBOnJ94DQ+V2fCx2bjoPcCDBFc90NorpwXE0JMxi4l
+         yqog==
+X-Gm-Message-State: AC+VfDzAASoTacX9IENFM/yeIX2Hw08km5sesuBepmKkCDE/XwuM3dg+
+	AA2TAGBLvOFXLvqYe4S16BUx+McSZ+nVi3QWbIM=
+X-Google-Smtp-Source: ACHHUZ6NWHNb9pkP3XWHyC+31NH655Moq+4ZvXobRglhk0xC0Rvr9GdYcJ93KOnfLYznj8hnty48oMgr49sXdXFv68Q=
+X-Received: by 2002:a67:ff91:0:b0:43b:3ad8:6886 with SMTP id
+ v17-20020a67ff91000000b0043b3ad86886mr6311584vsq.16.1686684631661; Tue, 13
+ Jun 2023 12:30:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20230612172307.3923165-1-sdf@google.com> <20230612172307.3923165-4-sdf@google.com>
+ <CAF=yD-LtxC8BeCyTWpqwziKto5DVjeg7maMjCkOZcWoihFHKzw@mail.gmail.com> <CAKH8qBvrTbY_jV-1qg2r9C3yXE3Rk4uN8B+fRm=XaZF5OAU-BA@mail.gmail.com>
+In-Reply-To: <CAKH8qBvrTbY_jV-1qg2r9C3yXE3Rk4uN8B+fRm=XaZF5OAU-BA@mail.gmail.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Tue, 13 Jun 2023 21:29:55 +0200
+Message-ID: <CAF=yD-LA3VuLkj9YqbLH+SczOe+HzaUii_OdLdB6Ue=fm30eew@mail.gmail.com>
+Subject: Re: [RFC bpf-next 3/7] bpf: implement devtx hook points
+To: Stanislav Fomichev <sdf@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
+	jolsa@kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Stanislav Fomichev <sdf@google.com> writes:
-
-> On Tue, Jun 13, 2023 at 10:18=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen=
- <toke@kernel.org> wrote:
->>
->> Stanislav Fomichev <sdf@google.com> writes:
->>
->> > On 06/12, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> >> Some immediate thoughts after glancing through this:
->> >>
->> >> > --- Use cases ---
->> >> >
->> >> > The goal of this series is to add two new standard-ish places
->> >> > in the transmit path:
->> >> >
->> >> > 1. Right before the packet is transmitted (with access to TX
->> >> >    descriptors)
->> >> > 2. Right after the packet is actually transmitted and we've receive=
-d the
->> >> >    completion (again, with access to TX completion descriptors)
->> >> >
->> >> > Accessing TX descriptors unlocks the following use-cases:
->> >> >
->> >> > - Setting device hints at TX: XDP/AF_XDP might use these new hooks =
-to
->> >> > use device offloads. The existing case implements TX timestamp.
->> >> > - Observability: global per-netdev hooks can be used for tracing
->> >> > the packets and exploring completion descriptors for all sorts of
->> >> > device errors.
->> >> >
->> >> > Accessing TX descriptors also means that the hooks have to be called
->> >> > from the drivers.
->> >> >
->> >> > The hooks are a light-weight alternative to XDP at egress and curre=
-ntly
->> >> > don't provide any packet modification abilities. However, eventuall=
-y,
->> >> > can expose new kfuncs to operate on the packet (or, rather, the act=
-ual
->> >> > descriptors; for performance sake).
->> >>
->> >> dynptr?
->> >
->> > Haven't considered, let me explore, but not sure what it buys us
->> > here?
->>
->> API consistency, certainly. Possibly also performance, if using the
->> slice thing that gets you a direct pointer to the pkt data? Not sure
->> about that, though, haven't done extensive benchmarking of dynptr yet...
+On Tue, Jun 13, 2023 at 9:00=E2=80=AFPM Stanislav Fomichev <sdf@google.com>=
+ wrote:
 >
-> Same. Let's keep it on the table, I'll try to explore. I was just
-> thinking that having less abstraction here might be better
-> performance-wise.
-
-Sure, let's evaluate this once we have performance numbers.
-
->> >> > --- UAPI ---
->> >> >
->> >> > The hooks are implemented in a HID-BPF style. Meaning they don't
->> >> > expose any UAPI and are implemented as tracing programs that call
->> >> > a bunch of kfuncs. The attach/detach operation happen via BPF sysca=
-ll
->> >> > programs. The series expands device-bound infrastructure to tracing
->> >> > programs.
->> >>
->> >> Not a fan of the "attach from BPF syscall program" thing. These are p=
-art
->> >> of the XDP data path API, and I think we should expose them as proper
->> >> bpf_link attachments from userspace with introspection etc. But I gue=
-ss
->> >> the bpf_mprog thing will give us that?
->> >
->> > bpf_mprog will just make those attach kfuncs return the link fd. The
->> > syscall program will still stay :-(
->>
->> Why does the attachment have to be done this way, exactly? Couldn't we
->> just use the regular bpf_link attachment from userspace? AFAICT it's not
->> really piggy-backing on the function override thing anyway when the
->> attachment is per-dev? Or am I misunderstanding how all this works?
+> On Tue, Jun 13, 2023 at 7:55=E2=80=AFAM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> >
+> > On Mon, Jun 12, 2023 at 7:24=E2=80=AFPM Stanislav Fomichev <sdf@google.=
+com> wrote:
+> > >
+> > > devtx is a lightweight set of hooks before and after packet transmiss=
+ion.
+> > > The hook is supposed to work for both skb and xdp paths by exposing
+> > > a light-weight packet wrapper via devtx_frame (header portion + frags=
+).
+> > >
+> > > devtx is implemented as a tracing program which has access to the
+> > > XDP-metadata-like kfuncs. The initial set of kfuncs is implemented
+> > > in the next patch, but the idea is similar to XDP metadata:
+> > > the kfuncs have netdev-specific implementation, but common
+> > > interface. Upon loading, the kfuncs are resolved to direct
+> > > calls against per-netdev implementation. This can be achieved
+> > > by marking devtx-tracing programs as dev-bound (largely
+> > > reusing xdp-dev-bound program infrastructure).
+> > >
+> > > Attachment and detachment is implemented via syscall BPF program
+> > > by calling bpf_devtx_sb_attach (attach to tx-submission)
+> > > or bpf_devtx_cp_attach (attach to tx completion). Right now,
+> > > the attachment does not return a link and doesn't support
+> > > multiple programs. I plan to switch to Daniel's bpf_mprog infra
+> > > once it's available.
+> > >
+> > > Cc: netdev@vger.kernel.org
+> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> >
+> >
+> > > @@ -2238,6 +2238,8 @@ struct net_device {
+> > >         unsigned int            real_num_rx_queues;
+> > >
+> > >         struct bpf_prog __rcu   *xdp_prog;
+> > > +       struct bpf_prog __rcu   *devtx_sb;
+> > > +       struct bpf_prog __rcu   *devtx_cp;
+> >
+> > nit/subjective: non-obvious two letter acronyms are nr. How about tx
+> > and txc (or txcomp)
 >
-> It's UAPI vs non-UAPI. I'm assuming kfunc makes it non-UAPI and gives
-> us an opportunity to fix things.
-> We can do it via a regular syscall path if there is a consensus.
-
-Yeah, the API exposed to the BPF program is kfunc-based in any case. If
-we were to at some point conclude that this whole thing was not useful
-at all and deprecate it, it doesn't seem to me that it makes much
-difference whether that means "you can no longer create a link
-attachment of this type via BPF_LINK_CREATE" or "you can no longer
-create a link attachment of this type via BPF_PROG_RUN of a syscall type
-program" doesn't really seem like a significant detail to me...
-
->> >> > --- skb vs xdp ---
->> >> >
->> >> > The hooks operate on a new light-weight devtx_frame which contains:
->> >> > - data
->> >> > - len
->> >> > - sinfo
->> >> >
->> >> > This should allow us to have a unified (from BPF POW) place at TX
->> >> > and not be super-taxing (we need to copy 2 pointers + len to the st=
-ack
->> >> > for each invocation).
->> >>
->> >> Not sure what I think about this one. At the very least I think we
->> >> should expose xdp->data_meta as well. I'm not sure what the use case =
-for
->> >> accessing skbs is? If that *is* indeed useful, probably there will al=
-so
->> >> end up being a use case for accessing the full skb?
->> >
->> > skb_shared_info has meta_len, buf afaik, xdp doesn't use it. Maybe I
->> > a good opportunity to unify? Or probably won't work because if
->> > xdf_frame doesn't have frags, it won't have sinfo?
->>
->> No, it won't. But why do we need this unification between the skb and
->> xdp paths in the first place? Doesn't the skb path already have support
->> for these things? Seems like we could just stick to making this xdp-only
->> and keeping xdp_frame as the ctx argument?
+> devtx and devtxc? I was using devtxs vs devtxc initially, but that
+> seems confusing. I can probably spell them out here:
+> devtx_submit
+> devtx_complete
 >
-> For skb path, I'm assuming we can read sinfo->meta_len; it feels nice
-> to make it work for both cases?
-> We can always export metadata len via some kfunc, sure.
+> Should probably be better?
 
-I wasn't referring to the metadata field specifically when talking about
-the skb path. I'm wondering why we need these hooks to work for the skb
-path at all? :)
-
--Toke
+That's more clear, thanks.
 
