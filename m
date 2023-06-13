@@ -1,156 +1,150 @@
-Return-Path: <bpf+bounces-2491-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2492-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A1B372DC78
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 10:30:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 540EA72DF1B
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 12:19:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C10F1C20C1D
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 08:30:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F3AE28152C
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 10:19:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108EB8BF9;
-	Tue, 13 Jun 2023 08:30:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3593C0AC;
+	Tue, 13 Jun 2023 10:15:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA47A8BED
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 08:29:59 +0000 (UTC)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA57184
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 01:29:57 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3f7e7fc9fe6so52712805e9.3
-        for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 01:29:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1132D26D
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 10:15:03 +0000 (UTC)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2AC188
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 03:15:00 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-30e3caa6aa7so5265564f8f.1
+        for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 03:14:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1686644996; x=1689236996;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fJz3+17+rI7c/r9Lxv1o3gM9l7EUudwPFAZ2efkW9cM=;
-        b=QtW2Ic+jqj4l0V4rUR3g5XwyEe5HAeSBmgBIeCA9Ahj+oPxHvnoLzvMLrdI0W/PdQN
-         NwQTFeVR+CSpq0rd/5K1de/PZ+FysmEXscm5FEMlKUUjbd/CnE23w70QNKdB8nNMRWqF
-         7iBzg3F8LKamO3rVyJlQGU6+gjTRiNf7mAbKa7hVqJpcoAjV9CnS/btZlLBqmlU0SC1U
-         JRHK6RES+ADnMIcHld/rOi8iUGX/+pibfDpN6UTLVEBnJ10WZdrdqHJoK9IrrrDMST3g
-         4ooqSpiMqi75GZgOy5Aiu+MSKIXLQR0kgWeu/BLkYMdsbW+eB7Qmvp93LHMahbMfDgaK
-         Dheg==
+        d=isovalent.com; s=google; t=1686651298; x=1689243298;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=E2rY2E6D+8oZww/s6pZwAJAnOm0HX7caGb8hYSApwkk=;
+        b=N2eh1qFFzWhwKedcB6rJTdohEMIovo8r4HL1dbMAK7fCafO8iorJVG7M/yIW0+4wKn
+         0iXMYd/OYFcWPYfnfRVxLTpMjKMUvMwWqaiG7ccSgIIgRdQzEXThxKvnq8VIUIOWg6MG
+         ObadDouxom16RacsAMbDim3lGMidBi/l++OdNp7KyEqq7+uUC6rqJDfBJmynCbQYycBj
+         72GiSWho1X55JR8MKrKy1X+eB76x7cp5m0AodJm4fJgqXAOOBCMKEIe/pVvuBZl75/78
+         PqRPPMo/1MIb3nRxQNP0SrCLfKQho3DjhGvNQlCMHBh0SzqotRHMpMKa3kEYopk+5ow5
+         7gQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686644996; x=1689236996;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fJz3+17+rI7c/r9Lxv1o3gM9l7EUudwPFAZ2efkW9cM=;
-        b=dLG+0X8fBx+A0wrwTSf919hYf1VG821QAXU6HieUKDYnbbO6hzQFMyjcKOwWVVVPx5
-         fQ7xmAd8YZXb9i3dnntVQLfSbCpfcuROtaU3mFRbUBt/3O8JP2JngBvXhpm6/sONTrh2
-         NpWWPmBhi/ZgRVOLWZvDG9ouXnk5vmtGnfCRKIS/d1y+y56ILa9yBkLZmRct8KkmePTi
-         Ho1xiIhlAknrSU8jewKE9dnMzDZI7WAwjDyShdoYp7rKiVzUx0Kqc+rTNcTPzx9HV0UP
-         T/u5CES/uGfB5UcQQYZP5LA138GDBcMF+eFQ9l86v1YrkW2FWiUHX1IJ3Ms32xZkK/Uy
-         kXfA==
-X-Gm-Message-State: AC+VfDwW7560zzt5+xCzFsK3ZrQIAy/Tw0eVXL4iEIbBtmIH62JfJvq/
-	yJOMDV4GZA0x8JJgwsxvCVVhZQ==
-X-Google-Smtp-Source: ACHHUZ6VKL3vVviuMXqByKDjVuBWHuEoYjd4AUXr52K2TFKp398Trwaduu/AdesUxduSSatDHxYwsQ==
-X-Received: by 2002:a7b:cb8f:0:b0:3f7:26f8:4cd0 with SMTP id m15-20020a7bcb8f000000b003f726f84cd0mr8651529wmi.16.1686644996018;
-        Tue, 13 Jun 2023 01:29:56 -0700 (PDT)
-Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id n26-20020a1c721a000000b003f78fd2cf5esm13645608wmc.40.2023.06.13.01.29.55
+        d=1e100.net; s=20221208; t=1686651298; x=1689243298;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E2rY2E6D+8oZww/s6pZwAJAnOm0HX7caGb8hYSApwkk=;
+        b=QmsVv0uUGT0b5og/uPN6JvMh3BvSHG8M2hp4FrH1Mxz8MhCivFcQ6T2HM7lnTf3QH+
+         HDk3oCdRXX/rfkSbo6OvBGWPoocdBS+yjmESzH76t/CxsiVeuS3bJRzNqt2F2nHjsiCW
+         1EBK+Z8P2k1jMTJIwgr4pCej+y4Fb33kmWMdsVpGPrZtks8b8h1SmV3mPsZaVrcHwtGO
+         Y70e7ksUgiDTvJnzccqGlKs9tatFX9aHojEe4YZ8weXgwUE578gaT+wnZ6Z+vr3re89Y
+         WkbOSdcUEsqJsyvZpgxQshhVs7z5Mzgi6E1vpcqxk3AM2Wnr5EvT8CbzMaVBLPOkbUMP
+         9cxw==
+X-Gm-Message-State: AC+VfDzGP7PlgSmAvo/WwdXb8waT4VGgC/SoSJfj4NfAqTt0K6YcLbuA
+	pGLEGFotPaU88uaFrAATGTnTiA==
+X-Google-Smtp-Source: ACHHUZ65N13abVrzLfeul76h7ocBpY5DJ46OtoJAPzwn6WdPIiMQgBL1EoYrygCdkLhCxe52FmASyg==
+X-Received: by 2002:a05:6000:1951:b0:30e:5428:c322 with SMTP id e17-20020a056000195100b0030e5428c322mr6153431wry.44.1686651298384;
+        Tue, 13 Jun 2023 03:14:58 -0700 (PDT)
+Received: from [192.168.133.193] ([5.148.46.226])
+        by smtp.gmail.com with ESMTPSA id k15-20020a5d6e8f000000b0030e6096afb6sm15075020wrz.12.2023.06.13.03.14.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jun 2023 01:29:55 -0700 (PDT)
-Date: Tue, 13 Jun 2023 08:30:23 +0000
-From: Anton Protopopov <aspsk@isovalent.com>
-To: Yujie Liu <yujie.liu@intel.com>
-Cc: kernel test robot <lkp@intel.com>, bpf@vger.kernel.org,
-	oe-kbuild-all@lists.linux.dev, Joe Stringer <joe@isovalent.com>,
-	John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: add new map ops ->map_pressure
-Message-ID: <ZIgpH43cHO9ZEz73@zh-lab-node-5>
-References: <20230531110511.64612-2-aspsk@isovalent.com>
- <202306010837.mGhA199K-lkp@intel.com>
- <ZHhNqDi7+k5VzofY@zh-lab-node-5>
- <ZIgngQXrlaCtAYgl@yujie-X299>
+        Tue, 13 Jun 2023 03:14:57 -0700 (PDT)
+From: Lorenz Bauer <lmb@isovalent.com>
+Subject: [PATCH bpf-next v2 0/6] Add SO_REUSEPORT support for TC
+ bpf_sk_assign
+Date: Tue, 13 Jun 2023 11:14:55 +0100
+Message-Id: <20230613-so-reuseport-v2-0-b7c69a342613@isovalent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZIgngQXrlaCtAYgl@yujie-X299>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJ9BiGQC/02NQQrCMBBFr1Jm7UCbYEWvIi6S+Gtnk4SZKoXSu
+ 5u6cvl4//E3MqjA6NZtpPiISckN3KmjNIf8AsuzMbne+X4cPFthxdtQiy6Mq0tnNw4XD1BLYjB
+ w1JDTfET/20NXxSTr7+1OsU6csS702Pcvt0gtuYcAAAA=
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+ Joe Stringer <joe@wand.net.nz>, Mykola Lysenko <mykolal@fb.com>, 
+ Shuah Khan <shuah@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: Hemanth Malla <hemanthmalla@gmail.com>, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, Lorenz Bauer <lmb@isovalent.com>, 
+ Joe Stringer <joe@cilium.io>
+X-Mailer: b4 0.12.2
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 13, 2023 at 04:23:29PM +0800, Yujie Liu wrote:
-> Hi Anton,
-> 
-> Sorry for the late reply.
-> 
-> On Thu, Jun 01, 2023 at 07:50:00AM +0000, Anton Protopopov wrote:
-> > On Thu, Jun 01, 2023 at 08:44:24AM +0800, kernel test robot wrote:
-> > > Hi Anton,
-> > > 
-> > > kernel test robot noticed the following build errors:
-> > > 
-> > > [...]
-> > > 
-> > > If you fix the issue, kindly add following tag where applicable
-> > > | Reported-by: kernel test robot <lkp@intel.com>
-> > > | Closes: https://lore.kernel.org/oe-kbuild-all/202306010837.mGhA199K-lkp@intel.com/
-> > 
-> > How does this apply to patches? If I send a v2, should I include these tags
-> > there?
-> 
-> If a v2 is sent, these tags should not be included.
-> 
-> > If this patch gets rejected, is there need to do anything to close the
-> > robot's ticket?
-> 
-> No need to close this ticket.
-> 
-> Thanks for raising above concerns. We have updated the wording in our
-> reports as below to avoid misinterpretation:
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: ...
-> | Closes: ...
+We want to replace iptables TPROXY with a BPF program at TC ingress.
+To make this work in all cases we need to assign a SO_REUSEPORT socket
+to an skb, which is currently prohibited. This series adds support for
+such sockets to bpf_sk_assing. See patch 5 for details.
 
-Great, thanks for the explanations!
+I did some refactoring to cut down on the amount of duplicate code. The
+key to this is to use INDIRECT_CALL in the reuseport helpers. To show
+that this approach is not just beneficial to TC sk_assign I removed
+duplicate code for bpf_sk_lookup as well.
 
-> --
-> Best Regards,
-> Yujie
-> 
-> > > All errors (new ones prefixed by >>):
-> > > 
-> > >    kernel/bpf/hashtab.c: In function 'htab_map_pressure':
-> > > >> kernel/bpf/hashtab.c:189:24: error: implicit declaration of function '__percpu_counter_sum'; did you mean 'percpu_counter_sum'? [-Werror=implicit-function-declaration]
-> > >      189 |                 return __percpu_counter_sum(&htab->pcount);
-> > >          |                        ^~~~~~~~~~~~~~~~~~~~
-> > >          |                        percpu_counter_sum
-> > >    cc1: some warnings being treated as errors
-> > > 
-> > > 
-> > > vim +189 kernel/bpf/hashtab.c
-> > > 
-> > >    183	
-> > >    184	static u32 htab_map_pressure(const struct bpf_map *map)
-> > >    185	{
-> > >    186		struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
-> > >    187	
-> > >    188		if (htab->use_percpu_counter)
-> > >  > 189			return __percpu_counter_sum(&htab->pcount);
-> > >    190		return atomic_read(&htab->count);
-> > >    191	}
-> > >    192	
-> > 
-> > (This bug happens for !SMP case.)
-> > 
-> > > -- 
-> > > 0-DAY CI Kernel Test Service
-> > > https://github.com/intel/lkp-tests/wiki
-> > 
+Changes from v1:
+- Correct commit abbrev length (Kuniyuki)
+- Reduce duplication (Kuniyuki)
+- Add checks on sk_state (Martin)
+- Split exporting inet[6]_lookup_reuseport into separate patch (Eric)
+
+Joint work with Daniel Borkmann.
+
+Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
+---
+Daniel Borkmann (1):
+      selftests/bpf: Test that SO_REUSEPORT can be used with sk_assign helper
+
+Lorenz Bauer (5):
+      net: export inet_lookup_reuseport and inet6_lookup_reuseport
+      net: document inet[6]_lookup_reuseport sk_state requirements
+      net: remove duplicate reuseport_lookup functions
+      net: remove duplicate sk_lookup helpers
+      bpf, net: Support SO_REUSEPORT sockets with bpf_sk_assign
+
+ include/net/inet6_hashtables.h                     |  84 ++++++++-
+ include/net/inet_hashtables.h                      |  77 +++++++-
+ include/net/sock.h                                 |   7 +-
+ include/uapi/linux/bpf.h                           |   3 -
+ net/core/filter.c                                  |   2 -
+ net/ipv4/inet_hashtables.c                         |  69 +++++---
+ net/ipv4/udp.c                                     |  73 +++-----
+ net/ipv6/inet6_hashtables.c                        |  71 +++++---
+ net/ipv6/udp.c                                     |  85 +++------
+ tools/include/uapi/linux/bpf.h                     |   3 -
+ tools/testing/selftests/bpf/network_helpers.c      |   3 +
+ .../selftests/bpf/prog_tests/assign_reuse.c        | 197 +++++++++++++++++++++
+ .../selftests/bpf/progs/test_assign_reuse.c        | 142 +++++++++++++++
+ 13 files changed, 637 insertions(+), 179 deletions(-)
+---
+base-commit: 25085b4e9251c77758964a8e8651338972353642
+change-id: 20230613-so-reuseport-e92c526173ee
+
+Best regards,
+-- 
+Lorenz Bauer <lmb@isovalent.com>
+
 
