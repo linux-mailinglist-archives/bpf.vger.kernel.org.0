@@ -1,236 +1,236 @@
-Return-Path: <bpf+bounces-2530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DADA72EA9F
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 20:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8944B72EB1D
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 20:39:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8127280FB2
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 18:15:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43C4C28124B
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 18:39:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FD8C3D38D;
-	Tue, 13 Jun 2023 18:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58E11ED27;
+	Tue, 13 Jun 2023 18:39:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101F238CA4;
-	Tue, 13 Jun 2023 18:15:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28DEAC433F0;
-	Tue, 13 Jun 2023 18:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686680106;
-	bh=vP9sQ/XFTk8yMRjHXZi3SkX7StaiGtOnKUv8pPvNJ4c=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=JZOiMUtmw+VhtyEhw5tIAKUAtayp/jNc2/qrDK+poirp2jvVf702aeihpLojUfbWr
-	 RsiLltxvWn0LVf1iavqJ7q7LEnVzqzab06bnw6PPT5BSCwM9EbnnnvD0u4eMt7N8AT
-	 tCKfDp3pRlPGL4jjmgcMjUOSM0iF8sDjZjFPJmj4BQT6yyzNd83TOAaclzDJnodoWT
-	 Izzd74NZTf9A5J1jtuAo9zQY6i541U/SsjO3FjrtEunEbyskkiB1MWjf0QBkpJP+YB
-	 gFGYFQRWs4N15azgBwuBVtXwJCZUsviRI0TIWCeNaty0sXRklby139HvmknbgHlUfY
-	 VGCsoI4A87UEg==
-Date: Tue, 13 Jun 2023 11:15:05 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: dhowells@redhat.com
-Cc: syzbot <syzbot+d8486855ef44506fd675@syzkaller.appspotmail.com>,
- bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
- edumazet@google.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] KASAN: stack-out-of-bounds Read in
- skb_splice_from_iter
-Message-ID: <20230613111505.249ccb18@kernel.org>
-In-Reply-To: <000000000000ae4cbf05fdeb8349@google.com>
-References: <000000000000ae4cbf05fdeb8349@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8087E136A
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 18:39:16 +0000 (UTC)
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EC81BF3
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 11:39:14 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-54f87d5f1abso1515311a12.0
+        for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 11:39:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1686681554; x=1689273554;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QT+fQzSbsB3hqlxQq4ezOUZ9kAZ8c91ieAT3ZrWtoFA=;
+        b=fGJFBgzP7m78qyQUQLVEwT1ooky9W43a0imOgCl47ZWm1NoRo5i18nC+6tisau2W6W
+         b7dsM70tAYWw9NnIl3Q0XlFdISCnBWnW2UCvRXGVb0wdfOMuYcBFU9uj29S9KDXyRLTA
+         LCI+oogJ76epuvoPj196jnEnDyjvXrZhAm2aJ+ebjYQ2xnRO8SXpOA0+eAXJN/93M5KI
+         nJdMTmjT3KjutvOU1QsY4LHnsXhK+jjwHg2WMFeA5MNoGpINuzIJ8Xn1acUbHx0aysbz
+         Wo5pcLkKCLOiwwUeLhTULT7OatG22R3bQwgsSEevY5EM4FJ7G6nl3I7K07qAj1mlzyMa
+         SElg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686681554; x=1689273554;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QT+fQzSbsB3hqlxQq4ezOUZ9kAZ8c91ieAT3ZrWtoFA=;
+        b=kY52JPVj6oQFOmphkJnHb9CjthNA6CxyCmAZQbgxx5Q5uMrJb0e/oa7d2Pb/deWDOo
+         IoDJl/V1PlonrJaowEN0PhKuREc6hpSgtSnNajfyRLgh0wDLgVPAYBp9J8jNnv3TxpSm
+         TQzgN6OlTsz+kuiWX0KP+n8tIMx/bYTDVM0UouCXKb7Vt9qHTlnUv0MMQpIoDUZqdIZt
+         KVUiuSUagRBeT20WnH8seu48Tt4Igf63TEndY4lEEg40eJZsEwFcln57ULjcapp2gk/m
+         y5b2Eh6usNyx2LX5c2vptvO2kepye1qQ92VhF2yF+kAHaVAWKDIaHwI6O0UwoL9dFYbI
+         s8Tw==
+X-Gm-Message-State: AC+VfDwRSHrLYcRZ33qzrbG5AiD2E2GXRs3mTBTEypBhCYAu/81Cl7Ts
+	FL5icQxo+lgSwwBJ5Oo6ga9GZVHDvTrnDHiiqUslnQ==
+X-Google-Smtp-Source: ACHHUZ6UzjLxyWPiRJjnbgASTJNqy2M+mr/+5MHLW4EvJchmkA3n8OlyNncmExxmrOJE9ZRcG6sHIhK+zROeBbHCGWI=
+X-Received: by 2002:a17:90a:1909:b0:253:37a9:178 with SMTP id
+ 9-20020a17090a190900b0025337a90178mr10681963pjg.45.1686681553846; Tue, 13 Jun
+ 2023 11:39:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20230612172307.3923165-1-sdf@google.com> <87cz20xunt.fsf@toke.dk>
+ <ZIiaHXr9M0LGQ0Ht@google.com> <877cs7xovi.fsf@toke.dk>
+In-Reply-To: <877cs7xovi.fsf@toke.dk>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Tue, 13 Jun 2023 11:39:02 -0700
+Message-ID: <CAKH8qBt5tQ69Zs9kYGc7j-_3Yx9D6+pmS4KCN5G0s9UkX545Mg@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/7] bpf: netdev TX metadata
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
+	jolsa@kernel.org, willemb@google.com, dsahern@kernel.org, 
+	magnus.karlsson@intel.com, bjorn@kernel.org, maciej.fijalkowski@intel.com, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hi David, are you fighting all these fires reported by syzbot?
-I see another one just rolled in from yesterdays KCM changes.
+On Tue, Jun 13, 2023 at 10:18=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <=
+toke@kernel.org> wrote:
+>
+> Stanislav Fomichev <sdf@google.com> writes:
+>
+> > On 06/12, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >> Some immediate thoughts after glancing through this:
+> >>
+> >> > --- Use cases ---
+> >> >
+> >> > The goal of this series is to add two new standard-ish places
+> >> > in the transmit path:
+> >> >
+> >> > 1. Right before the packet is transmitted (with access to TX
+> >> >    descriptors)
+> >> > 2. Right after the packet is actually transmitted and we've received=
+ the
+> >> >    completion (again, with access to TX completion descriptors)
+> >> >
+> >> > Accessing TX descriptors unlocks the following use-cases:
+> >> >
+> >> > - Setting device hints at TX: XDP/AF_XDP might use these new hooks t=
+o
+> >> > use device offloads. The existing case implements TX timestamp.
+> >> > - Observability: global per-netdev hooks can be used for tracing
+> >> > the packets and exploring completion descriptors for all sorts of
+> >> > device errors.
+> >> >
+> >> > Accessing TX descriptors also means that the hooks have to be called
+> >> > from the drivers.
+> >> >
+> >> > The hooks are a light-weight alternative to XDP at egress and curren=
+tly
+> >> > don't provide any packet modification abilities. However, eventually=
+,
+> >> > can expose new kfuncs to operate on the packet (or, rather, the actu=
+al
+> >> > descriptors; for performance sake).
+> >>
+> >> dynptr?
+> >
+> > Haven't considered, let me explore, but not sure what it buys us
+> > here?
+>
+> API consistency, certainly. Possibly also performance, if using the
+> slice thing that gets you a direct pointer to the pkt data? Not sure
+> about that, though, haven't done extensive benchmarking of dynptr yet...
 
-On Mon, 12 Jun 2023 02:40:51 -0700 syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    e7c5433c5aaa tools: ynl: Remove duplicated include in hand..
-> git tree:       net-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=109d3d1d280000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=526f919910d4a671
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d8486855ef44506fd675
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f22943280000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e1363b280000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/13c08af1fd21/disk-e7c5433c.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/35820511752b/vmlinux-e7c5433c.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/6a8cbec0d40f/bzImage-e7c5433c.xz
-> 
-> The issue was bisected to:
-> 
-> commit 2dc334f1a63a8839b88483a3e73c0f27c9c1791c
-> Author: David Howells <dhowells@redhat.com>
-> Date:   Wed Jun 7 18:19:09 2023 +0000
-> 
->     splice, net: Use sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=149e0c8b280000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=169e0c8b280000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=129e0c8b280000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d8486855ef44506fd675@syzkaller.appspotmail.com
-> Fixes: 2dc334f1a63a ("splice, net: Use sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()")
-> 
-> ==================================================================
-> BUG: KASAN: stack-out-of-bounds in skb_splice_from_iter+0xcd6/0xd70 net/core/skbuff.c:6933
-> Read of size 8 at addr ffffc900039bf8f8 by task syz-executor193/5001
-> 
-> CPU: 1 PID: 5001 Comm: syz-executor193 Not tainted 6.4.0-rc5-syzkaller-00915-ge7c5433c5aaa #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
->  print_address_description.constprop.0+0x2c/0x3c0 mm/kasan/report.c:351
->  print_report mm/kasan/report.c:462 [inline]
->  kasan_report+0x11c/0x130 mm/kasan/report.c:572
->  skb_splice_from_iter+0xcd6/0xd70 net/core/skbuff.c:6933
->  __ip_append_data+0x1439/0x3c20 net/ipv4/ip_output.c:1210
->  ip_append_data net/ipv4/ip_output.c:1350 [inline]
->  ip_append_data+0x115/0x1a0 net/ipv4/ip_output.c:1329
->  raw_sendmsg+0xb50/0x30a0 net/ipv4/raw.c:641
->  inet_sendmsg+0x9d/0xe0 net/ipv4/af_inet.c:829
->  sock_sendmsg_nosec net/socket.c:724 [inline]
->  sock_sendmsg+0xde/0x190 net/socket.c:747
->  splice_to_socket+0x954/0xe30 fs/splice.c:917
->  do_splice_from fs/splice.c:969 [inline]
->  do_splice+0xb8c/0x1e50 fs/splice.c:1309
->  __do_splice+0x14e/0x270 fs/splice.c:1387
->  __do_sys_splice fs/splice.c:1598 [inline]
->  __se_sys_splice fs/splice.c:1580 [inline]
->  __x64_sys_splice+0x19c/0x250 fs/splice.c:1580
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7fba0bf36d29
-> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffe0d4bac38 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fba0bf36d29
-> RDX: 0000000000000005 RSI: 0000000000000000 RDI: 0000000000000003
-> RBP: 00007fba0befaed0 R08: 000000000004ffdd R09: 000000000000000d
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00007fba0befaf60
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
->  </TASK>
-> 
-> The buggy address belongs to stack of task syz-executor193/5001
->  and is located at offset 408 in frame:
->  raw_sendmsg+0x0/0x30a0 include/net/sock.h:2733
-> 
-> This frame has 8 objects:
->  [48, 52) 'hdrincl'
->  [64, 68) 'err'
->  [80, 88) 'rt'
->  [112, 152) 'ipc'
->  [192, 240) 'state'
->  [272, 336) 'fl4'
->  [368, 392) 'rfv'
->  [432, 504) 'opt_copy'
-> 
-> The buggy address belongs to the virtual mapping at
->  [ffffc900039b8000, ffffc900039c1000) created by:
->  kernel_clone+0xeb/0x890 kernel/fork.c:2915
-> 
-> The buggy address belongs to the physical page:
-> page:ffffea0001d6c880 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x75b22
-> flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-> page_type: 0xffffffff()
-> raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
-> raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x2dc2(GFP_KERNEL|__GFP_HIGHMEM|__GFP_NOWARN|__GFP_ZERO), pid 4968, tgid 4968 (dhcpcd-run-hook), ts 47435778840, free_ts 47434086594
->  set_page_owner include/linux/page_owner.h:31 [inline]
->  post_alloc_hook+0x2db/0x350 mm/page_alloc.c:1731
->  prep_new_page mm/page_alloc.c:1738 [inline]
->  get_page_from_freelist+0xf41/0x2c00 mm/page_alloc.c:3502
->  __alloc_pages+0x1cb/0x4a0 mm/page_alloc.c:4768
->  alloc_pages+0x1aa/0x270 mm/mempolicy.c:2279
->  vm_area_alloc_pages mm/vmalloc.c:3009 [inline]
->  __vmalloc_area_node mm/vmalloc.c:3085 [inline]
->  __vmalloc_node_range+0xb1c/0x14a0 mm/vmalloc.c:3257
->  alloc_thread_stack_node kernel/fork.c:313 [inline]
->  dup_task_struct kernel/fork.c:1116 [inline]
->  copy_process+0x13bb/0x75c0 kernel/fork.c:2333
->  kernel_clone+0xeb/0x890 kernel/fork.c:2915
->  __do_sys_clone+0xba/0x100 kernel/fork.c:3058
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> page last free stack trace:
->  reset_page_owner include/linux/page_owner.h:24 [inline]
->  free_pages_prepare mm/page_alloc.c:1302 [inline]
->  free_unref_page_prepare+0x62e/0xcb0 mm/page_alloc.c:2564
->  free_unref_page_list+0xe3/0xa70 mm/page_alloc.c:2705
->  release_pages+0xcd8/0x1380 mm/swap.c:1042
->  tlb_batch_pages_flush+0xa8/0x1a0 mm/mmu_gather.c:97
->  tlb_flush_mmu_free mm/mmu_gather.c:292 [inline]
->  tlb_flush_mmu mm/mmu_gather.c:299 [inline]
->  tlb_finish_mmu+0x14b/0x7e0 mm/mmu_gather.c:391
->  exit_mmap+0x2b2/0x930 mm/mmap.c:3123
->  __mmput+0x128/0x4c0 kernel/fork.c:1351
->  mmput+0x60/0x70 kernel/fork.c:1373
->  exit_mm kernel/exit.c:567 [inline]
->  do_exit+0x9b0/0x29b0 kernel/exit.c:861
->  do_group_exit+0xd4/0x2a0 kernel/exit.c:1024
->  __do_sys_exit_group kernel/exit.c:1035 [inline]
->  __se_sys_exit_group kernel/exit.c:1033 [inline]
->  __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1033
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
-> Memory state around the buggy address:
->  ffffc900039bf780: f1 f1 04 f2 00 00 00 f2 f2 f2 00 00 00 00 00 f2
->  ffffc900039bf800: f2 f2 f2 f2 00 00 00 00 00 00 f2 f2 f2 f2 00 00
-> >ffffc900039bf880: 00 00 00 00 00 00 f2 f2 f2 f2 00 00 00 f2 f2 f2  
->                                                                 ^
->  ffffc900039bf900: f2 f2 00 00 00 00 00 00 00 00 00 f3 f3 f3 f3 f3
->  ffffc900039bf980: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> ==================================================================
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to change bug's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the bug is a duplicate of another bug, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+Same. Let's keep it on the table, I'll try to explore. I was just
+thinking that having less abstraction here might be better
+performance-wise.
 
+> >> > --- UAPI ---
+> >> >
+> >> > The hooks are implemented in a HID-BPF style. Meaning they don't
+> >> > expose any UAPI and are implemented as tracing programs that call
+> >> > a bunch of kfuncs. The attach/detach operation happen via BPF syscal=
+l
+> >> > programs. The series expands device-bound infrastructure to tracing
+> >> > programs.
+> >>
+> >> Not a fan of the "attach from BPF syscall program" thing. These are pa=
+rt
+> >> of the XDP data path API, and I think we should expose them as proper
+> >> bpf_link attachments from userspace with introspection etc. But I gues=
+s
+> >> the bpf_mprog thing will give us that?
+> >
+> > bpf_mprog will just make those attach kfuncs return the link fd. The
+> > syscall program will still stay :-(
+>
+> Why does the attachment have to be done this way, exactly? Couldn't we
+> just use the regular bpf_link attachment from userspace? AFAICT it's not
+> really piggy-backing on the function override thing anyway when the
+> attachment is per-dev? Or am I misunderstanding how all this works?
+
+It's UAPI vs non-UAPI. I'm assuming kfunc makes it non-UAPI and gives
+us an opportunity to fix things.
+We can do it via a regular syscall path if there is a consensus.
+
+> >> > --- skb vs xdp ---
+> >> >
+> >> > The hooks operate on a new light-weight devtx_frame which contains:
+> >> > - data
+> >> > - len
+> >> > - sinfo
+> >> >
+> >> > This should allow us to have a unified (from BPF POW) place at TX
+> >> > and not be super-taxing (we need to copy 2 pointers + len to the sta=
+ck
+> >> > for each invocation).
+> >>
+> >> Not sure what I think about this one. At the very least I think we
+> >> should expose xdp->data_meta as well. I'm not sure what the use case f=
+or
+> >> accessing skbs is? If that *is* indeed useful, probably there will als=
+o
+> >> end up being a use case for accessing the full skb?
+> >
+> > skb_shared_info has meta_len, buf afaik, xdp doesn't use it. Maybe I
+> > a good opportunity to unify? Or probably won't work because if
+> > xdf_frame doesn't have frags, it won't have sinfo?
+>
+> No, it won't. But why do we need this unification between the skb and
+> xdp paths in the first place? Doesn't the skb path already have support
+> for these things? Seems like we could just stick to making this xdp-only
+> and keeping xdp_frame as the ctx argument?
+
+For skb path, I'm assuming we can read sinfo->meta_len; it feels nice
+to make it work for both cases?
+We can always export metadata len via some kfunc, sure.
+
+> >> > --- Multiprog attachment ---
+> >> >
+> >> > Currently, attach/detach don't expose links and don't support multip=
+le
+> >> > programs. I'm planning to use Daniel's bpf_mprog once it lands.
+> >> >
+> >> > --- TODO ---
+> >> >
+> >> > Things that I'm planning to do for the non-RFC series:
+> >> > - have some real device support to verify xdp_hw_metadata works
+> >>
+> >> Would be good to see some performance numbers as well :)
+> >
+> > +1 :-)
+> >
+> >> > - freplace
+> >> > - Documentation/networking/xdp-rx-metadata.rst - like documentation
+> >> >
+> >> > --- CC ---
+> >> >
+> >> > CC'ing people only on the cover letter. Hopefully can find the rest =
+via
+> >> > lore.
+> >>
+> >> Well, I found it there, even though I was apparently left off the Cc
+> >> list :(
+> >>
+> >> -Toke
+> >
+> > Sure, I'll CC you explicitly next time! But I know you diligently follo=
+w bpf
+> > list, so decided to explicitly cc mostly netdev folks that might miss
+> > it otherwise.
+>
+> Haha, fair point! And no big deal, I did obviously see it. I was just
+> feeling a bit left out, that's all ;)
+>
+> -Toke
 
