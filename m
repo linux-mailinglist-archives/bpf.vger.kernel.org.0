@@ -1,116 +1,125 @@
-Return-Path: <bpf+bounces-2480-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2481-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F71372DA08
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 08:42:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42EBE72DA9C
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 09:18:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC35628110C
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 06:42:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 289FE1C20C3A
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 07:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9446F23C6;
-	Tue, 13 Jun 2023 06:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22FC53C3E;
+	Tue, 13 Jun 2023 07:18:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697A81844
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 06:42:23 +0000 (UTC)
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259AEE6B;
-	Mon, 12 Jun 2023 23:42:20 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vl1.3ud_1686638534;
-Received: from 30.240.112.107(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vl1.3ud_1686638534)
-          by smtp.aliyun-inc.com;
-          Tue, 13 Jun 2023 14:42:15 +0800
-Message-ID: <ca66ecce-b8eb-ad22-2b25-bad8552ea5a4@linux.alibaba.com>
-Date: Tue, 13 Jun 2023 14:42:13 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44E31844
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 07:18:11 +0000 (UTC)
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA236C0;
+	Tue, 13 Jun 2023 00:18:10 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6563ccf5151so5650681b3a.0;
+        Tue, 13 Jun 2023 00:18:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686640690; x=1689232690;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JzYgRwPg8JdhQnyUV5Bio3PSnpDcesnn2dhxw0518hU=;
+        b=X59i1meXqceIJ6FIRQ3ILbDdePHsBE0Meei/edDAk/NCfHqwxa3i+vhce+X5R53Qe6
+         faxALy+SAuvgLVyR2B/f1MPTXvqLqrzYlmyESImKpHwISf47/PaFuY7/ziWrJ56nTAbq
+         waDeXiZfHQOTysI/NruMGJeWgqXqZ3l8xe6nFPjeR7UJWFebGIv9m50id8rFHsl9X/KK
+         EM9sKNqTKuVJQTEYwBt3h10xQeAd9N12o1x3V/alTNzEhOe5T0508qjrL4s6UTODnUq3
+         nAdQq1L8xw61zaFTlue7RoVUQtjOyCcCLOEaOr+fyGKXbq6RHhv7E6eMs6WX2XgF2LUY
+         NxCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686640690; x=1689232690;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JzYgRwPg8JdhQnyUV5Bio3PSnpDcesnn2dhxw0518hU=;
+        b=hxcOfDGQk0ln+UmhG2+O1N1soE7LdvOGkEKI441fmC63g9uOgnmNUXQaa49wmJenKR
+         Xhc37eyu0NbhF9pJSPGMidnxPfMIiGk36ICsw22yjgKV8rstUfYAt1zcOZnYjwoGWxGk
+         5JxNnQi0G8nY1tuQWo3dZ1XtMJW9amTvu6KGkONNFXPU5RQhn6HL2VPeS2CApyryrLNa
+         5jUwPYuUdQY1kZOd4lbA0cj68t7R7+WYLl5P/fBMErrgqQfmnt6N4EEBaqZBWwDTKIYW
+         t0XP0DHkGN3ScE99J0VgASkNY/LRkEi1R29t4EBIk2O9/1ughPOIgXxPdqTUF4QgdEor
+         Sc4g==
+X-Gm-Message-State: AC+VfDydNMCpee34bhFch7pmCYW8htWO8tzzxKeeT1HNvNM+ud32U2FU
+	5wg/Jxgsh4W2RjaspynsQ+Y=
+X-Google-Smtp-Source: ACHHUZ7eA5qSLxLN6ZD3No7BDlDBzevOn6H5x6Cieo6LR6pJPR5ME/H54n78yei+hUpBtccIq6GRjg==
+X-Received: by 2002:a05:6a00:24d3:b0:64d:4a94:1a60 with SMTP id d19-20020a056a0024d300b0064d4a941a60mr18423345pfv.18.1686640690156;
+        Tue, 13 Jun 2023 00:18:10 -0700 (PDT)
+Received: from sumitra.com ([117.199.173.64])
+        by smtp.gmail.com with ESMTPSA id x16-20020aa79190000000b0064f76992905sm7944423pfa.202.2023.06.13.00.18.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Jun 2023 00:18:09 -0700 (PDT)
+Date: Tue, 13 Jun 2023 00:17:56 -0700
+From: Sumitra Sharma <sumitraartsy@gmail.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Ira Weiny <ira.weiny@intel.com>, Fabio <fmdefrancesco@gmail.com>,
+	Deepak R Varma <drv@mailo.com>
+Subject: [PATCH v2] lib/test_bpf: Call page_address() on page acquired with
+ GFP_KERNEL flag
+Message-ID: <20230613071756.GA359746@sumitra.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.11.1
-Subject: Re: [PATCH 2/2] perf/ring_buffer: Fix high-order allocations for AUX
- space with correct MAX_ORDER limit
-Content-Language: en-US
-To: Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>
-Cc: alexander.shishkin@linux.intel.com, peterz@infradead.org,
- kirill@shutemov.name, mingo@redhat.com, acme@kernel.org,
- mark.rutland@arm.com, jolsa@kernel.org, namhyung@kernel.org,
- irogers@google.com, adrian.hunter@intel.com,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20230612052452.53425-1-xueshuai@linux.alibaba.com>
- <20230612052452.53425-3-xueshuai@linux.alibaba.com>
- <751cb217-4be0-ddfc-780b-87517a8e337a@arm.com>
- <20230612090937.GD217089@leoy-huanghe.lan>
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20230612090937.GD217089@leoy-huanghe.lan>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+generate_test_data() acquires a page with alloc_page(GFP_KERNEL). Pages
+allocated with GFP_KERNEL cannot come from Highmem. This is why
+there is no need to call kmap() on them.
 
+Therefore, use a plain page_address() on that page.
 
-On 2023/6/12 17:09, Leo Yan wrote:
-> On Mon, Jun 12, 2023 at 09:45:38AM +0100, James Clark wrote:
-> 
-> [...]
-> 
->>> @@ -609,8 +609,8 @@ static struct page *rb_alloc_aux_page(int node, int order)
->>>  {
->>>  	struct page *page;
->>>  
->>> -	if (order > MAX_ORDER)
->>> -		order = MAX_ORDER;
->>> +	if (order >= MAX_ORDER)
->>> +		order = MAX_ORDER - 1;
->>>  
->>>  	do {
->>>  		page = alloc_pages_node(node, PERF_AUX_GFP, order);
->>
->>
->> It seems like this was only just recently changed with this as the
->> commit message (23baf83):
->>
->>    mm, treewide: redefine MAX_ORDER sanely
->>
->>   MAX_ORDER currently defined as number of orders page allocator
->>   supports: user can ask buddy allocator for page order between 0 and
->>   MAX_ORDER-1.
->>
->>   This definition is counter-intuitive and lead to number of bugs all
->>   over the kernel.
->>
->>   Change the definition of MAX_ORDER to be inclusive: the range of
->>   orders user can ask from buddy allocator is 0..MAX_ORDER now.
->>
->> It might be worth referring to this in the commit message or adding a
->> fixes: reference. Or maybe this new change isn't quite right?
-> 
-> Good point.  If so, we don't need this patch anymore.
-> 
-> Thanks for reminding, James.
-> 
-> Leo
+Suggested-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Signed-off-by: Sumitra Sharma <sumitraartsy@gmail.com>
+---
 
-Hi, Leo and James,
+Changes in v2: 
+	- Remove the kmap() call and call page_address() instead.
+	- Change the commit subject and message.
 
-I tested on the Linus master tree, the mentioned commit 23baf83 ("mm, treewide: redefine MAX_ORDER sanely")
-has fix this oops.
+ lib/test_bpf.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-I will drop out this patch, thank you :)
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index ade9ac672adb..70fcd0bcf14b 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -14388,11 +14388,10 @@ static void *generate_test_data(struct bpf_test *test, int sub)
+ 		if (!page)
+ 			goto err_kfree_skb;
+ 
+-		ptr = kmap(page);
++		ptr = page_address(page);
+ 		if (!ptr)
+ 			goto err_free_page;
+ 		memcpy(ptr, test->frag_data, MAX_DATA);
+-		kunmap(page);
+ 		skb_add_rx_frag(skb, 0, page, 0, MAX_DATA, MAX_DATA);
+ 	}
+ 
+-- 
+2.25.1
 
-Cheers,
-Shuai
 
