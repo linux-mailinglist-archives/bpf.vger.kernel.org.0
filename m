@@ -1,169 +1,236 @@
-Return-Path: <bpf+bounces-2531-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC2A272EAE6
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 20:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DADA72EA9F
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 20:15:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7650F280F5A
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 18:26:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8127280FB2
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 18:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C4A3D38E;
-	Tue, 13 Jun 2023 18:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FD8C3D38D;
+	Tue, 13 Jun 2023 18:15:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FFD338CA4
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 18:25:55 +0000 (UTC)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A78170C
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 11:25:52 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-97668583210so852789566b.1
-        for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 11:25:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1686680751; x=1689272751;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ndSkO2qkti4L/SsRIO9nUQau8kKaAI3Sxaq+0HhunWc=;
-        b=ntRa6AW6ValrHAqkuzvskPZkjppT1UiqWn5XgLaJRL+M66yi9z5SuBsJJtsg8gSyVk
-         ZTIikpoielPrbB8yOOTgCPTe0h3G8snlfV3i1tciBEYR0ULVrQlaH6ZlloWRNz123Gp2
-         8aS+0U465JGkaRt7VZb5swDwBi6W5as5+c8JY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686680751; x=1689272751;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ndSkO2qkti4L/SsRIO9nUQau8kKaAI3Sxaq+0HhunWc=;
-        b=RZPoe1YbzX7UZnzh6pyhvu89yFJe1isBodd+DY0IW5rbIhHxr1hU5l/yDy0Xs44XPl
-         HYeTCTliSvQWfOLfkPdGKpkuESrhgaiPizfhbO5MZe5ZzQa1t3Z8UvQcf1Xt+9hsHHkg
-         7MgoNGVcrAWbLO97xm0ufgfPTMPZ65MP2+RiR6Op8H5t7bYSToSOqL8ybWkQlri4oG8X
-         OhWObjS/DyH2U4PtWUHywXiBznOXuU82VQ4aBE+oFNErQ1spZf9XC9nRqeWz/Om+8Z9k
-         E1vRqvJe2VA7KTuY3y91ijZyogZ8Y80tRzVNtLIpwOZnztFQt6aRFgR63PKnbPASo84l
-         9dnQ==
-X-Gm-Message-State: AC+VfDyBkwwVIW9fuZbvdZEX6m8VCxIeOyWSD7jhyitdUgxNVFLGRR2I
-	9JbiFXRp6OQmfMnBelcsFpHssw==
-X-Google-Smtp-Source: ACHHUZ6L7PTRLKSYbWQ/tjcT0d/XBC+vGVXO4zTlysaNeyin+mwYf/zWWNDpzlfMXEPA3fN2f50m6A==
-X-Received: by 2002:a17:906:da87:b0:974:1c91:a752 with SMTP id xh7-20020a170906da8700b009741c91a752mr12713028ejb.5.1686680751027;
-        Tue, 13 Jun 2023 11:25:51 -0700 (PDT)
-Received: from cloudflare.com (79.184.146.33.ipv4.supernova.orange.pl. [79.184.146.33])
-        by smtp.gmail.com with ESMTPSA id p20-20020a170906b21400b009767c4235absm6869904ejz.219.2023.06.13.11.25.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jun 2023 11:25:50 -0700 (PDT)
-References: <20230613084315.62021-1-luojianhong@cdjrlc.com>
- <6228af14241b831be4bae6ebcd63799e@208suo.com>
- <53510828-ee5b-1d91-0f85-b79da4422741@meta.com>
-User-agent: mu4e 1.6.10; emacs 28.2
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Yonghong Song <yhs@meta.com>
-Cc: baomingtong001@208suo.com, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
- Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/bpf: Remove unneeded variable "ret"
-Date: Tue, 13 Jun 2023 20:13:00 +0200
-In-reply-to: <53510828-ee5b-1d91-0f85-b79da4422741@meta.com>
-Message-ID: <87pm5z9q36.fsf@cloudflare.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101F238CA4;
+	Tue, 13 Jun 2023 18:15:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28DEAC433F0;
+	Tue, 13 Jun 2023 18:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686680106;
+	bh=vP9sQ/XFTk8yMRjHXZi3SkX7StaiGtOnKUv8pPvNJ4c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=JZOiMUtmw+VhtyEhw5tIAKUAtayp/jNc2/qrDK+poirp2jvVf702aeihpLojUfbWr
+	 RsiLltxvWn0LVf1iavqJ7q7LEnVzqzab06bnw6PPT5BSCwM9EbnnnvD0u4eMt7N8AT
+	 tCKfDp3pRlPGL4jjmgcMjUOSM0iF8sDjZjFPJmj4BQT6yyzNd83TOAaclzDJnodoWT
+	 Izzd74NZTf9A5J1jtuAo9zQY6i541U/SsjO3FjrtEunEbyskkiB1MWjf0QBkpJP+YB
+	 gFGYFQRWs4N15azgBwuBVtXwJCZUsviRI0TIWCeNaty0sXRklby139HvmknbgHlUfY
+	 VGCsoI4A87UEg==
+Date: Tue, 13 Jun 2023 11:15:05 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: dhowells@redhat.com
+Cc: syzbot <syzbot+d8486855ef44506fd675@syzkaller.appspotmail.com>,
+ bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+ edumazet@google.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KASAN: stack-out-of-bounds Read in
+ skb_splice_from_iter
+Message-ID: <20230613111505.249ccb18@kernel.org>
+In-Reply-To: <000000000000ae4cbf05fdeb8349@google.com>
+References: <000000000000ae4cbf05fdeb8349@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jun 13, 2023 at 06:42 AM -07, Yonghong Song wrote:
-> On 6/13/23 1:50 AM, baomingtong001@208suo.com wrote:
->> Fix the following coccicheck warning:
->> tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c:28:14-17: Unneeded
->> variable: "ret".
->> Return "1".
->> Signed-off-by: Mingtong Bao <baomingtong001@208suo.com>
->> ---
->>  =C2=A0tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c | 3 +--
->>  =C2=A01 file changed, 1 insertion(+), 2 deletions(-)
->> diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c
->> b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c
->> index 4a9f63bea66c..7f0146682577 100644
->> --- a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c
->> +++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c
->> @@ -25,10 +25,9 @@ static __noinline
->>  =C2=A0int subprog_tail(struct __sk_buff *skb)
->>  =C2=A0{
->>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Don't propagate the constant to the ca=
-ller */
->> - =C2=A0=C2=A0=C2=A0volatile int ret =3D 1;
->>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bpf_tail_call_static(skb, &jmp_table, 0);
->> - =C2=A0=C2=A0=C2=A0return ret;
->> + =C2=A0=C2=A0=C2=A0return 1;
->
-> Please pay attention to the comment:
->    /* Don't propagate the constant to the caller */
-> which clearly says 'constant' is not preferred.
->
-> The patch introduced this change is:
->     5e0b0a4c52d30   selftests/bpf: Test tail call counting with bpf2bpf a=
-nd data
->    on stack
->
-> The test intentionally want to:
->   'Specifically when the size      of data allocated on BPF stack is not a
->  multiple on 8.'
->
-> Note that with volatile and without volatile, the generated
-> code will be different and it will result in different
-> verification path.
->
-> cc Jakub for further clarification.
+Hi David, are you fighting all these fires reported by syzbot?
+I see another one just rolled in from yesterdays KCM changes.
 
-Yonghong is right. We can't replace it like that.
+On Mon, 12 Jun 2023 02:40:51 -0700 syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    e7c5433c5aaa tools: ynl: Remove duplicated include in hand..
+> git tree:       net-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=109d3d1d280000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=526f919910d4a671
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d8486855ef44506fd675
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f22943280000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e1363b280000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/13c08af1fd21/disk-e7c5433c.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/35820511752b/vmlinux-e7c5433c.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/6a8cbec0d40f/bzImage-e7c5433c.xz
+> 
+> The issue was bisected to:
+> 
+> commit 2dc334f1a63a8839b88483a3e73c0f27c9c1791c
+> Author: David Howells <dhowells@redhat.com>
+> Date:   Wed Jun 7 18:19:09 2023 +0000
+> 
+>     splice, net: Use sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=149e0c8b280000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=169e0c8b280000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=129e0c8b280000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+d8486855ef44506fd675@syzkaller.appspotmail.com
+> Fixes: 2dc334f1a63a ("splice, net: Use sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()")
+> 
+> ==================================================================
+> BUG: KASAN: stack-out-of-bounds in skb_splice_from_iter+0xcd6/0xd70 net/core/skbuff.c:6933
+> Read of size 8 at addr ffffc900039bf8f8 by task syz-executor193/5001
+> 
+> CPU: 1 PID: 5001 Comm: syz-executor193 Not tainted 6.4.0-rc5-syzkaller-00915-ge7c5433c5aaa #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+>  print_address_description.constprop.0+0x2c/0x3c0 mm/kasan/report.c:351
+>  print_report mm/kasan/report.c:462 [inline]
+>  kasan_report+0x11c/0x130 mm/kasan/report.c:572
+>  skb_splice_from_iter+0xcd6/0xd70 net/core/skbuff.c:6933
+>  __ip_append_data+0x1439/0x3c20 net/ipv4/ip_output.c:1210
+>  ip_append_data net/ipv4/ip_output.c:1350 [inline]
+>  ip_append_data+0x115/0x1a0 net/ipv4/ip_output.c:1329
+>  raw_sendmsg+0xb50/0x30a0 net/ipv4/raw.c:641
+>  inet_sendmsg+0x9d/0xe0 net/ipv4/af_inet.c:829
+>  sock_sendmsg_nosec net/socket.c:724 [inline]
+>  sock_sendmsg+0xde/0x190 net/socket.c:747
+>  splice_to_socket+0x954/0xe30 fs/splice.c:917
+>  do_splice_from fs/splice.c:969 [inline]
+>  do_splice+0xb8c/0x1e50 fs/splice.c:1309
+>  __do_splice+0x14e/0x270 fs/splice.c:1387
+>  __do_sys_splice fs/splice.c:1598 [inline]
+>  __se_sys_splice fs/splice.c:1580 [inline]
+>  __x64_sys_splice+0x19c/0x250 fs/splice.c:1580
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7fba0bf36d29
+> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffe0d4bac38 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
+> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fba0bf36d29
+> RDX: 0000000000000005 RSI: 0000000000000000 RDI: 0000000000000003
+> RBP: 00007fba0befaed0 R08: 000000000004ffdd R09: 000000000000000d
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00007fba0befaf60
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+>  </TASK>
+> 
+> The buggy address belongs to stack of task syz-executor193/5001
+>  and is located at offset 408 in frame:
+>  raw_sendmsg+0x0/0x30a0 include/net/sock.h:2733
+> 
+> This frame has 8 objects:
+>  [48, 52) 'hdrincl'
+>  [64, 68) 'err'
+>  [80, 88) 'rt'
+>  [112, 152) 'ipc'
+>  [192, 240) 'state'
+>  [272, 336) 'fl4'
+>  [368, 392) 'rfv'
+>  [432, 504) 'opt_copy'
+> 
+> The buggy address belongs to the virtual mapping at
+>  [ffffc900039b8000, ffffc900039c1000) created by:
+>  kernel_clone+0xeb/0x890 kernel/fork.c:2915
+> 
+> The buggy address belongs to the physical page:
+> page:ffffea0001d6c880 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x75b22
+> flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+> page_type: 0xffffffff()
+> raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
+> raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> page_owner tracks the page as allocated
+> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x2dc2(GFP_KERNEL|__GFP_HIGHMEM|__GFP_NOWARN|__GFP_ZERO), pid 4968, tgid 4968 (dhcpcd-run-hook), ts 47435778840, free_ts 47434086594
+>  set_page_owner include/linux/page_owner.h:31 [inline]
+>  post_alloc_hook+0x2db/0x350 mm/page_alloc.c:1731
+>  prep_new_page mm/page_alloc.c:1738 [inline]
+>  get_page_from_freelist+0xf41/0x2c00 mm/page_alloc.c:3502
+>  __alloc_pages+0x1cb/0x4a0 mm/page_alloc.c:4768
+>  alloc_pages+0x1aa/0x270 mm/mempolicy.c:2279
+>  vm_area_alloc_pages mm/vmalloc.c:3009 [inline]
+>  __vmalloc_area_node mm/vmalloc.c:3085 [inline]
+>  __vmalloc_node_range+0xb1c/0x14a0 mm/vmalloc.c:3257
+>  alloc_thread_stack_node kernel/fork.c:313 [inline]
+>  dup_task_struct kernel/fork.c:1116 [inline]
+>  copy_process+0x13bb/0x75c0 kernel/fork.c:2333
+>  kernel_clone+0xeb/0x890 kernel/fork.c:2915
+>  __do_sys_clone+0xba/0x100 kernel/fork.c:3058
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> page last free stack trace:
+>  reset_page_owner include/linux/page_owner.h:24 [inline]
+>  free_pages_prepare mm/page_alloc.c:1302 [inline]
+>  free_unref_page_prepare+0x62e/0xcb0 mm/page_alloc.c:2564
+>  free_unref_page_list+0xe3/0xa70 mm/page_alloc.c:2705
+>  release_pages+0xcd8/0x1380 mm/swap.c:1042
+>  tlb_batch_pages_flush+0xa8/0x1a0 mm/mmu_gather.c:97
+>  tlb_flush_mmu_free mm/mmu_gather.c:292 [inline]
+>  tlb_flush_mmu mm/mmu_gather.c:299 [inline]
+>  tlb_finish_mmu+0x14b/0x7e0 mm/mmu_gather.c:391
+>  exit_mmap+0x2b2/0x930 mm/mmap.c:3123
+>  __mmput+0x128/0x4c0 kernel/fork.c:1351
+>  mmput+0x60/0x70 kernel/fork.c:1373
+>  exit_mm kernel/exit.c:567 [inline]
+>  do_exit+0x9b0/0x29b0 kernel/exit.c:861
+>  do_group_exit+0xd4/0x2a0 kernel/exit.c:1024
+>  __do_sys_exit_group kernel/exit.c:1035 [inline]
+>  __se_sys_exit_group kernel/exit.c:1033 [inline]
+>  __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1033
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> Memory state around the buggy address:
+>  ffffc900039bf780: f1 f1 04 f2 00 00 00 f2 f2 f2 00 00 00 00 00 f2
+>  ffffc900039bf800: f2 f2 f2 f2 00 00 00 00 00 00 f2 f2 f2 f2 00 00
+> >ffffc900039bf880: 00 00 00 00 00 00 f2 f2 f2 f2 00 00 00 f2 f2 f2  
+>                                                                 ^
+>  ffffc900039bf900: f2 f2 00 00 00 00 00 00 00 00 00 f3 f3 f3 f3 f3
+>  ffffc900039bf980: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> ==================================================================
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to change bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
 
-Compiler is smart and pull up the constant into subprog_tail() caller.
-
-And it doesn't have the slightest idea that bpf_tail_call_static() is
-actually tail call (destroy frame + jump) and control doesn't return to
-subprog_tail().
-
-(You can read more about BPF tail calls in [1] and [2] if they are not
-familiar.)
-
-IOW, we need an r0 store to happen after a call to BPF tail call helper
-(call 12) to remain in subprog_tail body for the regression test to
-work:
-
-$ llvm-objdump -d --no-show-raw-insn tailcall_bpf2bpf6.bpf.o
-
-tailcall_bpf2bpf6.bpf.o:        file format elf64-bpf
-
-Disassembly of section .text:
-
-0000000000000000 <subprog_tail>:
-       0:       r6 =3D r1
-       1:       w1 =3D 1
-       2:       *(u32 *)(r10 - 4) =3D r1
-       3:       r7 =3D 0 ll
-       5:       r1 =3D r6
-       6:       r2 =3D r7
-       7:       r3 =3D 0
-       8:       call 12
-       9:       r0 =3D *(u32 *)(r10 - 4) <-- this must stay
-      10:       exit
-
-You could take a shot at replacing it with inline asm, if you want.
-
-[1] https://docs.cilium.io/en/stable/bpf/architecture/#bpf-to-bpf-calls
-[2] https://blog.cloudflare.com/assembly-within-bpf-tail-calls-on-x86-and-a=
-rm/
 
