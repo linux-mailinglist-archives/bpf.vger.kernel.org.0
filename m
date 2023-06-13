@@ -1,91 +1,133 @@
-Return-Path: <bpf+bounces-2534-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2535-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4566272EB35
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 20:45:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8AFE72EB51
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 20:56:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 727971C20442
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 18:45:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F4F81C204F5
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 18:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C408D1ED43;
-	Tue, 13 Jun 2023 18:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9318E1F177;
+	Tue, 13 Jun 2023 18:56:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BAB1136A
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 18:45:37 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFC51BDA
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 11:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1686681935;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61109136A
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 18:56:27 +0000 (UTC)
+Received: from out-58.mta1.migadu.com (out-58.mta1.migadu.com [IPv6:2001:41d0:203:375::3a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E3110F8
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 11:56:25 -0700 (PDT)
+Date: Tue, 13 Jun 2023 14:56:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1686682581;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=SIDR2dqRwvLDufVgXSXj8KatzblZX0gs/2FHCG5UpAY=;
-	b=h0ku6a2aIZa4cQbhSCtohVB9tPYhTSMnmKpX+Uh11jfbbDdRql5cXZTdBYVtbJ5562u3oZ
-	1m6MY2SeVLArzZ9nq5b1i5fyaxpU0BAqGydOB1pMmkrvNP4AXtv/NKhqmARfLOvbkK7k3n
-	La3gVkI4aN+eCu3oI+RTSiplnH4OOmY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-553-xTvb-8OnNO2OYEr7YExcXQ-1; Tue, 13 Jun 2023 14:45:32 -0400
-X-MC-Unique: xTvb-8OnNO2OYEr7YExcXQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D9C97101A53B;
-	Tue, 13 Jun 2023 18:45:23 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.67])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id AF880492C1B;
-	Tue, 13 Jun 2023 18:45:22 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20230613111505.249ccb18@kernel.org>
-References: <20230613111505.249ccb18@kernel.org> <000000000000ae4cbf05fdeb8349@google.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: dhowells@redhat.com,
-    syzbot <syzbot+d8486855ef44506fd675@syzkaller.appspotmail.com>,
-    bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
-    edumazet@google.com, linux-kernel@vger.kernel.org,
-    netdev@vger.kernel.org, pabeni@redhat.com,
-    syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] KASAN: stack-out-of-bounds Read in skb_splice_from_iter
+	bh=cI/+VKexODe7tgazUH0uBbszHN+Sh5VjQJKMcYicSKU=;
+	b=UteSpuaAfbQ2NCJDHT0DaE6LH+0KCxqxliA1u1CiHpYLEp/BHx0yHT4z2wyOm1k0K155IH
+	1TdtqXMsJtk9bqAzUZ31aQXTksL2s2n1Q4RGfHebraQUDr3MhWO8yy+4wsaox2mGxQ3YRe
+	XgmITo5ci4OCni1zywcC85bIuHv1vdI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Song Liu <song@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev, netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 00/13] mm: jit/text allocator
+Message-ID: <ZIi7zmey0w61EG25@moria.home.lan>
+References: <20230601101257.530867-1-rppt@kernel.org>
+ <ZHjDU/mxE+cugpLj@FVFF77S0Q05N.cambridge.arm.com>
+ <ZHjgIH3aX9dCvVZc@moria.home.lan>
+ <ZHm3zUUbwqlsZBBF@FVFF77S0Q05N>
+ <20230605092040.GB3460@kernel.org>
+ <ZH20XkD74prrdN4u@FVFF77S0Q05N>
+ <CAPhsuW7ntn_HpVWdGK_hYVd3zsPEFToBNfmtt0m6K8SwfxJ66Q@mail.gmail.com>
+ <20230608184116.GJ52412@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <920481.1686681922.1@warthog.procyon.org.uk>
-Date: Tue, 13 Jun 2023 19:45:22 +0100
-Message-ID: <920483.1686681922@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230608184116.GJ52412@kernel.org>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Jakub Kicinski <kuba@kernel.org> wrote:
+On Thu, Jun 08, 2023 at 09:41:16PM +0300, Mike Rapoport wrote:
+> On Tue, Jun 06, 2023 at 11:21:59AM -0700, Song Liu wrote:
+> > On Mon, Jun 5, 2023 at 3:09 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > 
+> > [...]
+> > 
+> > > > > > Can you give more detail on what parameters you need? If the only extra
+> > > > > > parameter is just "does this allocation need to live close to kernel
+> > > > > > text", that's not that big of a deal.
+> > > > >
+> > > > > My thinking was that we at least need the start + end for each caller. That
+> > > > > might be it, tbh.
+> > > >
+> > > > Do you mean that modules will have something like
+> > > >
+> > > >       jit_text_alloc(size, MODULES_START, MODULES_END);
+> > > >
+> > > > and kprobes will have
+> > > >
+> > > >       jit_text_alloc(size, KPROBES_START, KPROBES_END);
+> > > > ?
+> > >
+> > > Yes.
+> > 
+> > How about we start with two APIs:
+> >      jit_text_alloc(size);
+> >      jit_text_alloc_range(size, start, end);
+> > 
+> > AFAICT, arm64 is the only arch that requires the latter API. And TBH, I am
+> > not quite convinced it is needed.
+>  
+> Right now arm64 and riscv override bpf and kprobes allocations to use the
+> entire vmalloc address space, but having the ability to allocate generated
+> code outside of modules area may be useful for other architectures.
+> 
+> Still the start + end for the callers feels backwards to me because the
+> callers do not define the ranges, but rather the architectures, so we still
+> need a way for architectures to define how they want allocate memory for
+> the generated code.
 
-> Hi David, are you fighting all these fires reported by syzbot?
-> I see another one just rolled in from yesterdays KCM changes.
-
-I'm trying to pin down a bug in the old DIO code whilst attending the AFS
-Workshop.  I'll get to the sendpage reports in a bit.  I think a bunch of them
-are probably the same issue in AF_ALG hashing.  They do at least have
-reproducers.
-
-David
-
+So, the start + end just comes from the need to keep relative pointers
+under a certain size. I think this could be just a flag, I see no reason
+to expose actual addresses here.
 
