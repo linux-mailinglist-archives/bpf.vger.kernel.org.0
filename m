@@ -1,179 +1,249 @@
-Return-Path: <bpf+bounces-2501-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2502-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E1C872E30E
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 14:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FE3972E43C
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 15:36:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC55A280F28
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 12:32:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C31C281226
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 13:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81A2C522B;
-	Tue, 13 Jun 2023 12:32:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49ABE34CC2;
+	Tue, 13 Jun 2023 13:36:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512B815A5
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 12:32:28 +0000 (UTC)
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE0410F9;
-	Tue, 13 Jun 2023 05:32:24 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vl2I24-_1686659534;
-Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vl2I24-_1686659534)
-          by smtp.aliyun-inc.com;
-          Tue, 13 Jun 2023 20:32:18 +0800
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-To: alexander.shishkin@linux.intel.com,
-	peterz@infradead.org,
-	james.clark@arm.com,
-	leo.yan@linaro.org
-Cc: mingo@redhat.com,
-	baolin.wang@linux.alibaba.com,
-	acme@kernel.org,
-	mark.rutland@arm.com,
-	jolsa@kernel.org,
-	namhyung@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [Patch v2] perf/core: Bail out early if the request AUX area is out of bound
-Date: Tue, 13 Jun 2023 20:32:11 +0800
-Message-Id: <20230613123211.58393-1-xueshuai@linux.alibaba.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788D3522B
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 13:36:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 276A3C433F0;
+	Tue, 13 Jun 2023 13:36:08 +0000 (UTC)
+Date: Tue, 13 Jun 2023 09:36:06 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Yonghong Song <yhs@meta.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, Andrii Nakryiko <andrii@kernel.org>,
+ lkml <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jackie
+ Liu <liu.yun@linux.dev>
+Subject: Re: [PATCHv2] ftrace: Show all functions with addresses in
+ available_filter_functions_addrs
+Message-ID: <20230613093606.069a70da@gandalf.local.home>
+In-Reply-To: <4c87727b-0b3f-ffc1-d55b-90e75dcae52b@meta.com>
+References: <20230611130029.1202298-1-jolsa@kernel.org>
+	<53a11f31-256d-e7bc-eca5-597571076dc5@meta.com>
+	<20230611225407.3e9b8ad2@gandalf.local.home>
+	<20230611225754.01350a50@gandalf.local.home>
+	<d5ffd64c-65b7-e28c-b8ee-0d2ff9dcd78b@meta.com>
+	<20230612110222.50c254f3@gandalf.local.home>
+	<ZId/UL/iujOdgel+@krava>
+	<4c87727b-0b3f-ffc1-d55b-90e75dcae52b@meta.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-When perf-record with a large AUX area, e.g 4GB, it fails with:
+On Mon, 12 Jun 2023 22:04:28 -0700
+Yonghong Song <yhs@meta.com> wrote:
 
-    #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
-    failed to mmap with 12 (Cannot allocate memory)
+> Thanks for explanation! It would be great if we can put more details in
+> this email into the commit message!
 
-and it reveals a WARNING with __alloc_pages():
+I agree.
 
-[   66.595604] ------------[ cut here ]------------
-[   66.600206] WARNING: CPU: 44 PID: 17573 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
-[   66.608375] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) aes_ce_blk(E) vfat(E) fat(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
-[   66.657719] CPU: 44 PID: 17573 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #58
-[   66.666749] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
-[   66.674650] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-[   66.681597] pc : __alloc_pages+0x1ec/0x248
-[   66.685680] lr : __kmalloc_large_node+0xc0/0x1f8
-[   66.690285] sp : ffff800020523980
-[   66.693585] pmr_save: 000000e0
-[   66.696624] x29: ffff800020523980 x28: ffff000832975800 x27: 0000000000000000
-[   66.703746] x26: 0000000000100000 x25: 0000000000100000 x24: ffff8000083615d0
-[   66.710866] x23: 0000000000040dc0 x22: ffff000823d6d140 x21: 000000000000000b
-[   66.717987] x20: 000000000000000b x19: 0000000000000000 x18: 0000000000000030
-[   66.725108] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff000823d6d6d0
-[   66.732229] x14: 0000000000000000 x13: 343373656761705f x12: 726e202c30206574
-[   66.739350] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff8000083af570
-[   66.746471] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 000000000005fff4
-[   66.753592] x5 : 0000000000000000 x4 : ffff000823d6d8d8 x3 : 0000000000000000
-[   66.760713] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000040dc0
-[   66.767834] Call trace:
-[   66.770267]  __alloc_pages+0x1ec/0x248
-[   66.774003]  __kmalloc_large_node+0xc0/0x1f8
-[   66.778259]  __kmalloc_node+0x134/0x1e8
-[   66.782081]  rb_alloc_aux+0xe0/0x298
-[   66.785643]  perf_mmap+0x440/0x660
-[   66.789031]  mmap_region+0x308/0x8a8
-[   66.792593]  do_mmap+0x3c0/0x528
-[   66.795807]  vm_mmap_pgoff+0xf4/0x1b8
-[   66.799456]  ksys_mmap_pgoff+0x18c/0x218
-[   66.803365]  __arm64_sys_mmap+0x38/0x58
-[   66.807187]  invoke_syscall+0x50/0x128
-[   66.810922]  el0_svc_common.constprop.0+0x58/0x188
-[   66.815698]  do_el0_svc+0x34/0x50
-[   66.818999]  el0_svc+0x34/0x108
-[   66.822127]  el0t_64_sync_handler+0xb8/0xc0
-[   66.826296]  el0t_64_sync+0x1a4/0x1a8
-[   66.829946] ---[ end trace 0000000000000000 ]---
+This is the patch I just pulled into my queue:
 
-'rb->aux_pages' allocated by kcalloc() is a pointer array which is used to
-maintains AUX trace pages. The allocated page for this array is physically
-contiguous (and virtually contiguous) with an order of 0..MAX_ORDER. If the
-size of pointer array crosses the limitation set by MAX_ORDER, it reveals a
-WARNING.
+From: Jiri Olsa <jolsa@kernel.org>
+Date: Sun, 11 Jun 2023 15:00:29 +0200
+Subject: [PATCH] ftrace: Show all functions with addresses in
+ available_filter_functions_addrs
 
-So bail out early with -EINVAL if the request AUX area is out of bound,
-e.g.:
+Adding new available_filter_functions_addrs file that shows all available
+functions (same as available_filter_functions) together with addresses,
+like:
 
-    #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
-    failed to mmap with 22 (Invalid argument)
+  # cat available_filter_functions_addrs | head
+  ffffffff81000770 __traceiter_initcall_level
+  ffffffff810007c0 __traceiter_initcall_start
+  ffffffff81000810 __traceiter_initcall_finish
+  ffffffff81000860 trace_initcall_finish_cb
+  ...
 
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+Note displayed address is the patch-site address and can differ from
+/proc/kallsyms address.
+
+It's useful to have address avilable for traceable symbols, so we don't
+need to allways cross check kallsyms with available_filter_functions
+(or the other way around) and have all the data in single file.
+
+For backwards compatibility reasons we can't change the existing
+available_filter_functions file output, but we need to add new file.
+
+The problem is that we need to do 2 passes:
+
+ - through available_filter_functions and find out if the function is traceable
+ - through /proc/kallsyms to get the address for traceable function
+
+Having available_filter_functions symbols together with addresses allow
+us to skip the kallsyms step and we are ok with the address in
+available_filter_functions_addr not being the function entry, because
+kprobe_multi uses fprobe and that handles both entry and patch-site
+address properly.
+
+We have 2 interfaces how to create kprobe_multi link:
+
+  a) passing symbols to kernel
+
+     1) user gathers symbols and need to ensure that they are
+        trace-able -> pass through available_filter_functions file
+
+     2) kernel takes those symbols and translates them to addresses
+        through kallsyms api
+
+     3) addresses are passed to fprobe/ftrace through:
+
+         register_fprobe_ips
+         -> ftrace_set_filter_ips
+
+  b) passing addresses to kernel
+
+     1) user gathers symbols and needs to ensure that they are
+        trace-able -> pass through available_filter_functions file
+
+     2) user takes those symbols and translates them to addresses
+       through /proc/kallsyms
+
+     3) addresses are passed to the kernel and kernel calls:
+
+         register_fprobe_ips
+         -> ftrace_set_filter_ips
+
+The new available_filter_functions_addrs file helps us with option b),
+because we can make 'b 1' and 'b 2' in one step - while filtering traceable
+functions, we get the address directly.
+
+Link: https://lore.kernel.org/linux-trace-kernel/20230611130029.1202298-1-jolsa@kernel.org
+
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jackie Liu <liu.yun@linux.dev>
+Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-changes since v1:
-- drop out patch2 because it has been fixed on upstream (Thanks James for reminding)
-- move sanity check into rb_alloc_aux (per Leo)
-- add overflow check (per James)
----
- kernel/events/ring_buffer.c              | 13 +++++++++++++
- tools/perf/Documentation/perf-record.txt |  3 ++-
- 2 files changed, 15 insertions(+), 1 deletion(-)
+ Documentation/trace/ftrace.rst |  6 ++++++
+ include/linux/ftrace.h         |  1 +
+ kernel/trace/ftrace.c          | 37 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 44 insertions(+)
 
-diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
-index a0433f37b024..e514aaba9d42 100644
---- a/kernel/events/ring_buffer.c
-+++ b/kernel/events/ring_buffer.c
-@@ -673,6 +673,7 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
- 	bool overwrite = !(flags & RING_BUFFER_WRITABLE);
- 	int node = (event->cpu == -1) ? -1 : cpu_to_node(event->cpu);
- 	int ret = -ENOMEM, max_order;
-+	size_t bytes;
+diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+index df2d3e57a83f..b7308ab10c0e 100644
+--- a/Documentation/trace/ftrace.rst
++++ b/Documentation/trace/ftrace.rst
+@@ -324,6 +324,12 @@ of ftrace. Here is a list of some of the key files:
+ 	"set_graph_function", or "set_graph_notrace".
+ 	(See the section "dynamic ftrace" below for more details.)
  
- 	if (!has_aux(event))
- 		return -EOPNOTSUPP;
-@@ -699,6 +700,18 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
- 		watermark = 0;
- 	}
++  available_filter_functions_addrs:
++
++	Similar to available_filter_functions, but with address displayed
++	for each function. The displayed address is the patch-site address
++	and can differ from /proc/kallsyms address.
++
+   dyn_ftrace_total_info:
  
-+	/*
-+	 * 'rb->aux_pages' allocated by kcalloc() is a pointer array which is
-+	 * used to maintains AUX trace pages. The allocated page for this array
-+	 * is physically contiguous (and virtually contiguous) with an order of
-+	 * 0..MAX_ORDER. If the size of pointer array crosses the limitation set
-+	 * by MAX_ORDER, it reveals a WARNING.
-+	 *
-+	 * So bail out early if the request AUX area is out of bound.
-+	 */
-+	if (check_mul_overflow(nr_pages, sizeof(void *), &bytes) ||
-+	    get_order(bytes) > MAX_ORDER)
-+		return -EINVAL;
- 	rb->aux_pages = kcalloc_node(nr_pages, sizeof(void *), GFP_KERNEL,
- 				     node);
- 	if (!rb->aux_pages)
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index 680396c56bd1..5d8d3ad084ed 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -290,7 +290,8 @@ OPTIONS
- 	specification with appended unit character - B/K/M/G. The
- 	size is rounded up to have nearest pages power of two value.
- 	Also, by adding a comma, the number of mmap pages for AUX
--	area tracing can be specified.
-+	area tracing can be specified. With MAX_ORDER set as 10 on
-+	arm64 platform , the maximum AUX area is limited to 2GiB.
+ 	This file is for debugging purposes. The number of functions that
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 49f279f4c3a1..8e59bd954153 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -633,6 +633,7 @@ enum {
+ 	FTRACE_ITER_MOD		= (1 << 5),
+ 	FTRACE_ITER_ENABLED	= (1 << 6),
+ 	FTRACE_ITER_TOUCHED	= (1 << 7),
++	FTRACE_ITER_ADDRS	= (1 << 8),
+ };
  
- -g::
- 	Enables call-graph (stack chain/backtrace) recording for both
+ void arch_ftrace_update_code(int command);
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 764668467155..b24c573934af 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -3861,6 +3861,9 @@ static int t_show(struct seq_file *m, void *v)
+ 	if (!rec)
+ 		return 0;
+ 
++	if (iter->flags & FTRACE_ITER_ADDRS)
++		seq_printf(m, "%lx ", rec->ip);
++
+ 	if (print_rec(m, rec->ip)) {
+ 		/* This should only happen when a rec is disabled */
+ 		WARN_ON_ONCE(!(rec->flags & FTRACE_FL_DISABLED));
+@@ -3996,6 +3999,30 @@ ftrace_touched_open(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
++static int
++ftrace_avail_addrs_open(struct inode *inode, struct file *file)
++{
++	struct ftrace_iterator *iter;
++	int ret;
++
++	ret = security_locked_down(LOCKDOWN_TRACEFS);
++	if (ret)
++		return ret;
++
++	if (unlikely(ftrace_disabled))
++		return -ENODEV;
++
++	iter = __seq_open_private(file, &show_ftrace_seq_ops, sizeof(*iter));
++	if (!iter)
++		return -ENOMEM;
++
++	iter->pg = ftrace_pages_start;
++	iter->flags = FTRACE_ITER_ADDRS;
++	iter->ops = &global_ops;
++
++	return 0;
++}
++
+ /**
+  * ftrace_regex_open - initialize function tracer filter files
+  * @ops: The ftrace_ops that hold the hash filters
+@@ -5916,6 +5943,13 @@ static const struct file_operations ftrace_touched_fops = {
+ 	.release = seq_release_private,
+ };
+ 
++static const struct file_operations ftrace_avail_addrs_fops = {
++	.open = ftrace_avail_addrs_open,
++	.read = seq_read,
++	.llseek = seq_lseek,
++	.release = seq_release_private,
++};
++
+ static const struct file_operations ftrace_filter_fops = {
+ 	.open = ftrace_filter_open,
+ 	.read = seq_read,
+@@ -6377,6 +6411,9 @@ static __init int ftrace_init_dyn_tracefs(struct dentry *d_tracer)
+ 	trace_create_file("available_filter_functions", TRACE_MODE_READ,
+ 			d_tracer, NULL, &ftrace_avail_fops);
+ 
++	trace_create_file("available_filter_functions_addrs", TRACE_MODE_READ,
++			d_tracer, NULL, &ftrace_avail_addrs_fops);
++
+ 	trace_create_file("enabled_functions", TRACE_MODE_READ,
+ 			d_tracer, NULL, &ftrace_enabled_fops);
+ 
 -- 
-2.20.1.12.g72788fdb
+2.39.2
 
 
