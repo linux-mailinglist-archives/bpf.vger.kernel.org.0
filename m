@@ -1,155 +1,100 @@
-Return-Path: <bpf+bounces-2555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D29B372EF7A
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 00:33:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00D5972EF87
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 00:36:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07E521C20AD1
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 22:33:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A468F281013
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 22:36:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A13E22E46;
-	Tue, 13 Jun 2023 22:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D701A3446C;
+	Tue, 13 Jun 2023 22:35:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD0AA1361;
-	Tue, 13 Jun 2023 22:32:59 +0000 (UTC)
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5722119B1;
-	Tue, 13 Jun 2023 15:32:57 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b3451b3ea9so423961fa.1;
-        Tue, 13 Jun 2023 15:32:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686695575; x=1689287575;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LTvP+VJDU2WSwdurVBK2FZWZY7/TsrOMSB/9rSkASww=;
-        b=lAVD+4IOANW7YZpjdeZ35JcQQUcjAUcijpUzbymPZGwuTi3GUKFactcddjsUk2ibb8
-         HkbWaiyvhqNliseRGMYZM2MfC7e1ij3q2Rv7ipuZGEntSV5SR9njmdtN9Xh7lUheqyOJ
-         UoJ4vpKKusBVLq3g/n7dpINBR8+8KciSK03aqX778bmXViIbp+kVb0JljY8YZs6kTrxu
-         Sf2MwjJyG718sAFwh4q/+ln+BRL8t5ybgvU+sckdqzIUGYjXjYulWUJcu7+1KTT894Oz
-         ZGCc3rNoWcvykqP6qo8EkVdijOhsKsNR0r5SJPcJCXoLMSt+rBgOq973QJEjDLrh9iVw
-         SWHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686695575; x=1689287575;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LTvP+VJDU2WSwdurVBK2FZWZY7/TsrOMSB/9rSkASww=;
-        b=PvwIYy0wnpsUbk/Fi/QfW/6mHCMYyyKc9u+AQLbMUit0P50hPB1eeCshf7g30gSWPr
-         ubFR84d1oUCjOvE4sWEN5xx7MXbRvQSj9DZfSTBuV92oer/yiqaeUoLDXoONm0RSnQr9
-         dvOJlgC5x3zPI9CK++0aOqocUBa3k/B5FfPIuYWdTD97Jkg4WZWyw9RPBdw9ZJGr7dOC
-         Cfj4RaJLgLDXQ0dA4hurk3oDxURa8QMazLHlqEi6CWbBbiD3HgQwFTCKup/0i4qK9tLP
-         tGKEbGm4EKPaOM7di8CtypKzs/X0sJsFg2oGWGtW6gR8oyWZdTI71dvtICXuQbhKTFv3
-         Fknw==
-X-Gm-Message-State: AC+VfDzrC0uvC0G7WoBK3RrS1zzJcicWg3bF00fzVjnKfkNRGqnXVSq9
-	8qGQUUc2bme4pRmiVnjnw4Ke+lyUgNaM/8VFf6c=
-X-Google-Smtp-Source: ACHHUZ47Y1Id9o7bTblsU/TUo8rtP6HbZl4qVpVHh+4XaGAXhg/Hx9WM7/72AWABM8slEWuv5DgKmZIO16bxmFTESIU=
-X-Received: by 2002:a2e:9ccf:0:b0:2b1:bacc:b3de with SMTP id
- g15-20020a2e9ccf000000b002b1baccb3demr5579002ljj.4.1686695575147; Tue, 13 Jun
- 2023 15:32:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08E613ADF
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 22:35:53 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16F81BE
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 15:35:52 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 35DJZRjj032387
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 15:35:51 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by m0089730.ppops.net (PPS) with ESMTPS id 3r6q9e5521-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 15:35:51 -0700
+Received: from twshared24695.38.frc1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Tue, 13 Jun 2023 15:35:49 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id A4F4C32D46378; Tue, 13 Jun 2023 15:35:34 -0700 (PDT)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf-next 0/4] Clean up BPF permissions checks
+Date: Tue, 13 Jun 2023 15:35:29 -0700
+Message-ID: <20230613223533.3689589-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: TfD8NsXUS5XSir3OBQUdHpMe5_y8Rgum
+X-Proofpoint-ORIG-GUID: TfD8NsXUS5XSir3OBQUdHpMe5_y8Rgum
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230612172307.3923165-1-sdf@google.com> <87cz20xunt.fsf@toke.dk>
- <ZIiaHXr9M0LGQ0Ht@google.com> <877cs7xovi.fsf@toke.dk> <CAKH8qBt5tQ69Zs9kYGc7j-_3Yx9D6+pmS4KCN5G0s9UkX545Mg@mail.gmail.com>
- <87v8frw546.fsf@toke.dk> <CAKH8qBtsvsWvO3Avsqb2PbvZgh5GDMxe2fok-jS4DrJM=x2Row@mail.gmail.com>
-In-Reply-To: <CAKH8qBtsvsWvO3Avsqb2PbvZgh5GDMxe2fok-jS4DrJM=x2Row@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 13 Jun 2023 15:32:43 -0700
-Message-ID: <CAADnVQKFmXAQDYVZxjvH8qbxk+3M2COGbfmtd=w8Nxvf9=DaeA@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/7] bpf: netdev TX metadata
-To: Stanislav Fomichev <sdf@google.com>
-Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Willem de Bruijn <willemb@google.com>, David Ahern <dsahern@kernel.org>, 
-	"Karlsson, Magnus" <magnus.karlsson@intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-13_22,2023-06-12_02,2023-05-22_02
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 13, 2023 at 2:17=E2=80=AFPM Stanislav Fomichev <sdf@google.com>=
- wrote:
->
-> > >> >> > --- UAPI ---
-> > >> >> >
-> > >> >> > The hooks are implemented in a HID-BPF style. Meaning they don'=
-t
-> > >> >> > expose any UAPI and are implemented as tracing programs that ca=
-ll
-> > >> >> > a bunch of kfuncs. The attach/detach operation happen via BPF s=
-yscall
-> > >> >> > programs. The series expands device-bound infrastructure to tra=
-cing
-> > >> >> > programs.
-> > >> >>
-> > >> >> Not a fan of the "attach from BPF syscall program" thing. These a=
-re part
-> > >> >> of the XDP data path API, and I think we should expose them as pr=
-oper
-> > >> >> bpf_link attachments from userspace with introspection etc. But I=
- guess
-> > >> >> the bpf_mprog thing will give us that?
-> > >> >
-> > >> > bpf_mprog will just make those attach kfuncs return the link fd. T=
-he
-> > >> > syscall program will still stay :-(
-> > >>
-> > >> Why does the attachment have to be done this way, exactly? Couldn't =
-we
-> > >> just use the regular bpf_link attachment from userspace? AFAICT it's=
- not
-> > >> really piggy-backing on the function override thing anyway when the
-> > >> attachment is per-dev? Or am I misunderstanding how all this works?
-> > >
-> > > It's UAPI vs non-UAPI. I'm assuming kfunc makes it non-UAPI and gives
-> > > us an opportunity to fix things.
-> > > We can do it via a regular syscall path if there is a consensus.
-> >
-> > Yeah, the API exposed to the BPF program is kfunc-based in any case. If
-> > we were to at some point conclude that this whole thing was not useful
-> > at all and deprecate it, it doesn't seem to me that it makes much
-> > difference whether that means "you can no longer create a link
-> > attachment of this type via BPF_LINK_CREATE" or "you can no longer
-> > create a link attachment of this type via BPF_PROG_RUN of a syscall typ=
-e
-> > program" doesn't really seem like a significant detail to me...
->
-> In this case, why do you prefer it to go via regular syscall? Seems
-> like we can avoid a bunch of boileplate syscall work with a kfunc that
-> does the attachment?
-> We might as well abstract it at, say, libbpf layer which would
-> generate/load this small bpf program to call a kfunc.
+This patch set contains a few refactorings to BPF map and BPF program creat=
+ion
+permissions checks, which were originally part of BPF token patch set ([0]),
+but are logically completely independent and useful in their own right.
 
-I'm not sure we're on the same page here.
-imo using syscall bpf prog that calls kfunc to do a per-device attach
-is an overkill here.
-It's an experimental feature, but you're already worried about
-multiple netdevs?
+  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=3D755113&=
+state=3D*
 
-Can you add an empty nop function and attach to it tracing style
-with fentry ?
-It won't be per-netdev, but do you have to do per-device demux
-by the kernel? Can your tracing bpf prog do that instead?
-It's just an ifindex compare.
-This way than non-uapi bits will be even smaller and no need
-to change struct netdevice.
+Andrii Nakryiko (4):
+  bpf: move unprivileged checks into map_create() and bpf_prog_load()
+  bpf: inline map creation logic in map_create() function
+  bpf: centralize permissions checks for all BPF map types
+  bpf: keep BPF_PROG_LOAD permission checks clear of validations
+
+ kernel/bpf/bloom_filter.c                     |   3 -
+ kernel/bpf/bpf_local_storage.c                |   3 -
+ kernel/bpf/bpf_struct_ops.c                   |   3 -
+ kernel/bpf/cpumap.c                           |   4 -
+ kernel/bpf/devmap.c                           |   3 -
+ kernel/bpf/hashtab.c                          |   6 -
+ kernel/bpf/lpm_trie.c                         |   3 -
+ kernel/bpf/queue_stack_maps.c                 |   4 -
+ kernel/bpf/reuseport_array.c                  |   3 -
+ kernel/bpf/stackmap.c                         |   3 -
+ kernel/bpf/syscall.c                          | 155 +++++++++++-------
+ net/core/sock_map.c                           |   4 -
+ net/xdp/xskmap.c                              |   4 -
+ .../bpf/prog_tests/unpriv_bpf_disabled.c      |   6 +-
+ 14 files changed, 102 insertions(+), 102 deletions(-)
+
+--=20
+2.34.1
+
 
