@@ -1,182 +1,140 @@
-Return-Path: <bpf+bounces-2551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2552-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E70AB72EED2
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 00:03:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69FA572EEFD
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 00:16:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11F671C20982
-	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 22:03:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 915251C209E4
+	for <lists+bpf@lfdr.de>; Tue, 13 Jun 2023 22:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB813ED97;
-	Tue, 13 Jun 2023 22:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B95A3EDA4;
+	Tue, 13 Jun 2023 22:16:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECDA136A
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 22:03:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43D67C43395
-	for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 22:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70744136A;
+	Tue, 13 Jun 2023 22:16:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E27C1C433C0;
+	Tue, 13 Jun 2023 22:16:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686693826;
-	bh=QhWHe6RjDHIXgDuuEnw6oOyTQ7y16ZcGlZ/AzW5jN4Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=H7OEDjwsZ6m1p7O9TC8B1bETumJfQOZ4UIh9H/NHmNp1rNK++CxZGpqjFiM5MPgU1
-	 Tx0nEM7d2yv5ZcoJafeEGaLIS4NmB2vHvK4va5PG4iBVmOWlLk4SZJyB4iOdwlOG+Z
-	 SiQybZbAxE+ugGbs9V25mCU3B8tK3v5xQj3/w5AZkYYO6LhbrBxlOUfs+9KpqABqJR
-	 gFvvlycM5xA2DKnd0lrWULby84bfLIs16uX49dy9M2Dgqacf0bO+t8w8UJ+RyfMiHO
-	 O1PFAKx3e4XCW76OuAI6zS35KwHl6rWPnOKGAxanQQ5xw04qxxym/00pJgmZXM1Qg9
-	 dBCW40ef8CJvg==
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2b1fe3a1a73so164831fa.1
-        for <bpf@vger.kernel.org>; Tue, 13 Jun 2023 15:03:46 -0700 (PDT)
-X-Gm-Message-State: AC+VfDxuenbcq8xSvR2gsIwRvjz0R2SHTMi2tLClCscIasI/pbA/wiKZ
-	ta8EBiWokTWfB14cgY+8YqgxKrlWeOxHit1BkwoP6g==
-X-Google-Smtp-Source: ACHHUZ512dqndaesD9Kur4QSc/scUm++8YR40xO8nAG3BnKAFDwIlvd0TCyOpPdDAaa+suZfFzMoI0teWg507xRKues=
-X-Received: by 2002:a2e:b0fc:0:b0:2ac:78d5:fd60 with SMTP id
- h28-20020a2eb0fc000000b002ac78d5fd60mr5934064ljl.9.1686693824200; Tue, 13 Jun
- 2023 15:03:44 -0700 (PDT)
+	s=k20201202; t=1686694582;
+	bh=+WIGytSpx4hFIJZtH+suKZCZHkq5JBHItki5+7BFPsc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=KvuDR5kbBMLh2VXVzw7NO5wtSshJHEiPMI72MOW96V4/U71ZPwOvtZcgx4igXxMM9
+	 em+vyycTpMJAdlxzRDVkQnWhkW0lpSv1w5OfUlveeKzndjtlhfIAlz6KkyJhYm9vAL
+	 YeOSX6iUcPzAZQxfDfXnUCMYGVKsXS4ueWqr5sAFUnmWDNkxen775E7afX9ThgAUDG
+	 /zY+Rb3OkZn0TBkz1JEvYtOijN22lxlf2MhOYND5RFEYMsncR0Ru0UtWG3QgShOTYr
+	 rTOglNLVYb9iCLUk1lIGArlo4nilYPoAaYiuRtfBAW2VjixrTzTJsPA6zdb5t+Q6uZ
+	 QAuDp1N4POaTw==
+Message-ID: <032f8239-bb82-e20e-e42b-e7a54754298b@kernel.org>
+Date: Tue, 13 Jun 2023 17:16:18 -0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230120000818.1324170-1-kpsingh@kernel.org> <20230120000818.1324170-4-kpsingh@kernel.org>
- <202301192004.777AEFFE@keescook> <CACYkzJ75nYnunhcAaE-20p9YHLzVynUEAA+uK1tmGeOWA83MjA@mail.gmail.com>
- <db1fed31-0283-5401-cf55-d18a98ca33ae@schaufler-ca.com> <CAPhsuW4C8NU15mjetX8Ucp3R66xEgOGS6udiaauUtPg06Si93Q@mail.gmail.com>
- <8b5f62f3-a2c4-9ba3-d1e4-af557047f44b@schaufler-ca.com> <CACYkzJ7=xPB-mzAq-GBszm2Q3NapVNbcrqBdSS0FZsTeTbL9QA@mail.gmail.com>
- <63e14c10.170a0220.beb2a.bc4c@mx.google.com> <CACYkzJ4LX6Acxs0s-d2+hC0Zfx2CTL7_JpeWD9pGz4b9_0J29g@mail.gmail.com>
- <CAHC9VhTQ_x=MccVU9gtndy3tW-SOdXpQoOa1RTd0jr4_iO1xZQ@mail.gmail.com>
-In-Reply-To: <CAHC9VhTQ_x=MccVU9gtndy3tW-SOdXpQoOa1RTd0jr4_iO1xZQ@mail.gmail.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Wed, 14 Jun 2023 00:03:33 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ7JhP1=nEqufCj=-VmC-ZMnAtSU9n+0Dm+2BLX1u0JFQQ@mail.gmail.com>
-Message-ID: <CACYkzJ7JhP1=nEqufCj=-VmC-ZMnAtSU9n+0Dm+2BLX1u0JFQQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND bpf-next 3/4] security: Replace indirect LSM hook
- calls with static calls
-To: Paul Moore <paul@paul-moore.com>
-Cc: Kees Cook <keescook@chromium.org>, Casey Schaufler <casey@schaufler-ca.com>, 
-	Song Liu <song@kernel.org>, linux-security-module@vger.kernel.org, 
-	bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	jackmanb@google.com, renauld@google.com, revest@chromium.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 01/13] nios2: define virtual address space for modules
+Content-Language: en-US
+To: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "David S. Miller" <davem@davemloft.net>, Heiko Carstens <hca@linux.ibm.com>,
+ Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ Luis Chamberlain <mcgrof@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Russell King <linux@armlinux.org.uk>,
+ Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+ bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mips@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ loongarch@lists.linux.dev, netdev@vger.kernel.org,
+ sparclinux@vger.kernel.org, x86@kernel.org
+References: <20230601101257.530867-1-rppt@kernel.org>
+ <20230601101257.530867-2-rppt@kernel.org>
+From: Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <20230601101257.530867-2-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jun 13, 2023 at 11:43=E2=80=AFPM Paul Moore <paul@paul-moore.com> w=
-rote:
->
-> On Wed, Jun 7, 2023 at 10:48=E2=80=AFPM KP Singh <kpsingh@kernel.org> wro=
-te:
-> > On Mon, Feb 6, 2023 at 7:51=E2=80=AFPM Kees Cook <keescook@chromium.org=
-> wrote:
-> > > On Mon, Feb 06, 2023 at 07:41:04PM +0100, KP Singh wrote:
-> > > > On Mon, Feb 6, 2023 at 7:29 PM Casey Schaufler <casey@schaufler-ca.=
-com> wrote:
-> > > > >
-> > > > > On 2/6/2023 9:48 AM, Song Liu wrote:
-> > > > > > On Mon, Feb 6, 2023 at 8:29 AM Casey Schaufler <casey@schaufler=
--ca.com> wrote:
-> > > > > >> On 2/6/2023 5:04 AM, KP Singh wrote:
-> > > > > >>> On Fri, Jan 20, 2023 at 5:36 AM Kees Cook <keescook@chromium.=
-org> wrote:
-> > > > > >>>> On Fri, Jan 20, 2023 at 01:08:17AM +0100, KP Singh wrote:
-> > > > > >>>>> The indirect calls are not really needed as one knows the a=
-ddresses of
-> > > > > >>> [...]
-> > > > > >>>
-> > > > > >>>>> +/*
-> > > > > >>>>> + * Define static calls and static keys for each LSM hook.
-> > > > > >>>>> + */
-> > > > > >>>>> +
-> > > > > >>>>> +#define DEFINE_LSM_STATIC_CALL(NUM, NAME, RET, ...)       =
-           \
-> > > > > >>>>> +     DEFINE_STATIC_CALL_NULL(LSM_STATIC_CALL(NAME, NUM),  =
-           \
-> > > > > >>>>> +                             *((RET(*)(__VA_ARGS__))NULL))=
-;          \
-> > > > > >>>>> +     DEFINE_STATIC_KEY_FALSE(SECURITY_HOOK_ENABLED_KEY(NAM=
-E, NUM));
-> > > > > >>>> Hm, another place where we would benefit from having separat=
-ed logic for
-> > > > > >>>> "is it built?" and "is it enabled by default?" and we could =
-use
-> > > > > >>>> DEFINE_STATIC_KEY_MAYBE(). But, since we don't, I think we n=
-eed to use
-> > > > > >>>> DEFINE_STATIC_KEY_TRUE() here or else won't all the calls be
-> > > > > >>>> out-of-line? (i.e. the default compiled state will be NOPs?)=
- If we're
-> > > > > >>>> trying to optimize for having LSMs, I think we should defaul=
-t to inline
-> > > > > >>>> calls. (The machine code in the commit log seems to indicate=
- that they
-> > > > > >>>> are out of line -- it uses jumps.)
-> > > > > >>>>
-> > > > > >>> I should have added it in the commit description, actually we=
- are
-> > > > > >>> optimizing for "hot paths are less likely to have LSM hooks e=
-nabled"
-> > > > > >>> (eg. socket_sendmsg).
-> > > > > >> How did you come to that conclusion? Where is there a correlat=
-ion between
-> > > > > >> "hot path" and "less likely to be enabled"?
-> > > > > > I could echo KP's reasoning here. AFAICT, the correlation is th=
-at LSMs on
-> > > > > > hot path will give more performance overhead. In our use cases =
-(Meta),
-> > > > > > we are very careful with "small" performance hits. 0.25% is sig=
-nificant
-> > > > > > overhead; 1% overhead will not fly without very good reasons (D=
-o we
-> > > > > > have to do this? Are there any other alternatives?). If it is p=
-ossible to
-> > > > > > achieve similar security on a different hook, we will not enabl=
-e the hook on
-> > > > > > the hot path. For example, we may not enable socket_sendmsg, bu=
-t try
-> > > > > > to disallow opening such sockets instead.
-> > > > >
-> > > > > I'm not asking about BPF. I'm asking about the impact on other LS=
-Ms.
-> > > > > If you're talking strictly about BPF you need to say that. I'm al=
-l for
-> > > > > performance improvement. But as I've said before, it should be fo=
-r all
-> > > > > the security modules, not just BPF.
-> > > >
-> > > > It's a trade off that will work differently for different LSMs and
-> > > > distros (based on the LSM they chose) and this the config option. I
-> > > > even suggested this be behind CONFIG_EXPERT (which is basically say=
-s
-> > > > this:
-> > > >
-> > > >  "This option allows certain base kernel options and settings
-> > > >  to be disabled or tweaked. This is for specialized
-> > > >  environments which can tolerate a "non-standard" kernel.
-> > > >  Only use this if you really know what you are doing."
-> > >
-> > > Using the DEFINE_STATIC_KEY_MAYBE() and static_branch_maybe() macros
-> > > tied to a new CONFIG seems like it can give us a reasonable knob for
-> > > in-line vs out-of-line calls.
-> >
-> > Coming back to this after a while as I finally got time to work on
-> > this. (work/personal downtime).
-> >
-> > I am changing it to DEFINE_STATIC_KEY_TRUE in this patch and
-> > DEFINE_STATIC_KEY_MAYBE in a subsequent one and guarded by a config
-> > called CONFIG_SECURITY_HOOK_LIKELY. I am letting it default to yes,
-> > but distros can change it depending on their choice of LSM and
-> > performance characteristics.
->
-> I'm still more curious about the correctness/isolation aspect that I
-> mused about back in Jan/Feb on your original posting.
 
-Thanks, I put some clarifications there. I will post a v2 soon (TM).
-Although beware I have upcoming downtime due to a surgery next week.
 
->
-> --
-> paul-moore.com
+On 6/1/23 05:12, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> nios2 uses kmalloc() to implement module_alloc() because CALL26/PCREL26
+> cannot reach all of vmalloc address space.
+> 
+> Define module space as 32MiB below the kernel base and switch nios2 to
+> use vmalloc for module allocations.
+> 
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> ---
+>   arch/nios2/include/asm/pgtable.h |  5 ++++-
+>   arch/nios2/kernel/module.c       | 19 ++++---------------
+>   2 files changed, 8 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pgtable.h
+> index 0f5c2564e9f5..0073b289c6a4 100644
+> --- a/arch/nios2/include/asm/pgtable.h
+> +++ b/arch/nios2/include/asm/pgtable.h
+> @@ -25,7 +25,10 @@
+>   #include <asm-generic/pgtable-nopmd.h>
+>   
+>   #define VMALLOC_START		CONFIG_NIOS2_KERNEL_MMU_REGION_BASE
+> -#define VMALLOC_END		(CONFIG_NIOS2_KERNEL_REGION_BASE - 1)
+> +#define VMALLOC_END		(CONFIG_NIOS2_KERNEL_REGION_BASE - SZ_32M - 1)
+> +
+> +#define MODULES_VADDR		(CONFIG_NIOS2_KERNEL_REGION_BASE - SZ_32M)
+> +#define MODULES_END		(CONFIG_NIOS2_KERNEL_REGION_BASE - 1)
+>   
+>   struct mm_struct;
+>   
+> diff --git a/arch/nios2/kernel/module.c b/arch/nios2/kernel/module.c
+> index 76e0a42d6e36..9c97b7513853 100644
+> --- a/arch/nios2/kernel/module.c
+> +++ b/arch/nios2/kernel/module.c
+> @@ -21,23 +21,12 @@
+>   
+>   #include <asm/cacheflush.h>
+>   
+> -/*
+> - * Modules should NOT be allocated with kmalloc for (obvious) reasons.
+> - * But we do it for now to avoid relocation issues. CALL26/PCREL26 cannot reach
+> - * from 0x80000000 (vmalloc area) to 0xc00000000 (kernel) (kmalloc returns
+> - * addresses in 0xc0000000)
+> - */
+>   void *module_alloc(unsigned long size)
+>   {
+> -	if (size == 0)
+> -		return NULL;
+> -	return kmalloc(size, GFP_KERNEL);
+> -}
+> -
+> -/* Free memory returned from module_alloc */
+> -void module_memfree(void *module_region)
+> -{
+> -	kfree(module_region);
+> +	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+> +				    GFP_KERNEL, PAGE_KERNEL_EXEC,
+> +				    VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
+> +				    __builtin_return_address(0));
+>   }
+>   
+>   int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
+
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
 
