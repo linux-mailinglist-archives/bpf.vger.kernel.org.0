@@ -1,214 +1,127 @@
-Return-Path: <bpf+bounces-2582-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2583-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C384272F7F4
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 10:34:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A655372F88B
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 11:01:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C226B1C20CC1
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 08:34:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61FB8281397
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 09:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D8D15BD;
-	Wed, 14 Jun 2023 08:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50FC653A5;
+	Wed, 14 Jun 2023 09:01:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460BB369
-	for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 08:34:36 +0000 (UTC)
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D24199C;
-	Wed, 14 Jun 2023 01:34:34 -0700 (PDT)
-Date: Wed, 14 Jun 2023 10:34:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1686731671;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z9JEhE0hBbRNxo8+2E1TzVaia14Yakp3vq1MLnG86lA=;
-	b=foJ+Wbj0WC+nPGHftYz9yJRHPEhztvj3Sdeps8Ljt6YHB540Vw1kBFhIjuPsL1sSWMhMQ6
-	Y/TeO5Y+Jy5j/hlU4EQO9kEk2/rIhZz7ejsw452xfqxf6/W2hAUmRAPUZ7ulKOrof/kN6P
-	0/PuQgNjujNzEXgSVXHgk5sqOSD/u/Y84YOMQo/6Fm/rq8KP0IyOdfHPTCTl7eXV5JnDfI
-	bOCM80aWeNLjR9PplBGYenpUjKmU6qADFVlaP2eb2eobHijFLAoI+l9HQp2uXH9btudZqp
-	kH0DE4lVCVJy9p9IivOh+vVfcIPe5vRzM8zQDmiQT+M1brAT6Caw28nFZVxTQQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1686731671;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z9JEhE0hBbRNxo8+2E1TzVaia14Yakp3vq1MLnG86lA=;
-	b=pkD7kUXK6OwOM9xLCsZ6ECtfUNx+zHRoZ4mXbogQRlYhTlZK/TZcLLbqnF3eGEGr7NjCQ9
-	AHK4EAsrWRQY7+BA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: [PATCH v4] bpf: Remove in_atomic() from bpf_link_put().
-Message-ID: <20230614083430.oENawF8f@linutronix.de>
-References: <20230509132433.2FSY_6t7@linutronix.de>
- <CAEf4BzZcPKsRJDQfdVk9D1Nt6kgT4STpEUrsQ=UD3BDZnNp8eQ@mail.gmail.com>
- <CAADnVQLzZyZ+cPqBFfrqa8wtQ8ZhWvTSN6oD9z4Y2gtrfs8Vdg@mail.gmail.com>
- <CAEf4BzY-MRYnzGiZmW7AVJYgYdHW1_jOphbipRrHRTtdfq3_wQ@mail.gmail.com>
- <20230525141813.TFZLWM4M@linutronix.de>
- <CAEf4Bzaipoo6X_2Fh5WTV-m0yjP0pvhqi7-FPFtGOrSzNpdGJQ@mail.gmail.com>
- <20230526112356.fOlWmeOF@linutronix.de>
- <CAEf4Bzawgrn2DhR9uvXwFFiLR9g+j4RYC6cr3n+eRD_RoKBAJA@mail.gmail.com>
- <20230605163733.LD-UCcso@linutronix.de>
- <CAEf4BzZ=VZcLZmtRefLtRyRb7uLTb6e=RVw82rxjLNqE=8kT-w@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C0917E3;
+	Wed, 14 Jun 2023 09:01:10 +0000 (UTC)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6B51BDB;
+	Wed, 14 Jun 2023 02:01:08 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4f6255ad8aeso8230267e87.2;
+        Wed, 14 Jun 2023 02:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686733267; x=1689325267;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fi7jYiyIuxrBpP64V4qKjFbM9+nUEfmzh6+nGoNO0Ms=;
+        b=BToOLcfQM9i29CjpqtpOTXIlr9sz2LOsrGxPCM9xQ5aP9eIazRLilcBkQKBh//qknJ
+         qQrC3QQYVzPcb1lVAfvv2BaAzpNFxB3caOpvfvmx4Sp2zcS7+AxCeL7a8iyxxLvrGu3C
+         5ref+cbf2XIvQFHEDydQFpPy/l8TLWNiXIR4d/jwva8/6IbraeJfWxJG0668VK7UqjP1
+         BCoVva9JsURVZH8aNdmW2I216iS5718HVmuffPCzXrowEBIZZj6Q5DmCUJaaCHSJmfxv
+         GNFFe1Bzs9a6MlGvLiEL6z099J6lp12klOmEtWRQlI1wtN4ljrIVBAUP80ozIQXYRa5v
+         MINA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686733267; x=1689325267;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fi7jYiyIuxrBpP64V4qKjFbM9+nUEfmzh6+nGoNO0Ms=;
+        b=kQCduT21JeDEx6prvSgzir6LtNYaAeCNNHubvDphc5bjKAKCgWgVElYwxAmXddr8xJ
+         aRU/UuI5dlnF/1zONphtI6ZXUSGlT39aTI+y1k4IFrd3edpptl/cgB0cora8bZtKarVd
+         mJXWZV9V5FQMIvq5zPTy5zKX8XpWsK4HQNKz/QzluzNUP/x1QqADe8KEJCXSeSMloQn4
+         uoo2UmUAm/F8e2nOI6Yp7uK3yOaFBEegnczqgU/LWkJ9FbRn8R7G4vIVUcMV/y/EqMBN
+         L6usotVBAOx5Uxb9o6XaN+W69LEq6/sUZM52CNDgBcbYi6sLfqqBIhnUmHzll1omKaQi
+         XffA==
+X-Gm-Message-State: AC+VfDxXJkh2vWLCQV8gdzRDci6fcmNqUele9fT/JW0jQv9tR3hyObKr
+	pOjoKAsAZKrIoYJQLz5Ir5saYn0Lfbi6A/st
+X-Google-Smtp-Source: ACHHUZ6GZE/uirClxrxvCsgzLgdqzCFRJV1+T7XpnYZ4KsUWBCBpnDn8eH0Q8EBJwvuY9IxtFjv35g==
+X-Received: by 2002:a19:6407:0:b0:4ec:9ef9:e3d with SMTP id y7-20020a196407000000b004ec9ef90e3dmr6738274lfb.26.1686733266430;
+        Wed, 14 Jun 2023 02:01:06 -0700 (PDT)
+Received: from localhost (tor-project-exit5.dotsrc.org. [185.129.61.5])
+        by smtp.gmail.com with ESMTPSA id x12-20020a19f60c000000b004efe8991806sm2034457lfe.6.2023.06.14.02.01.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jun 2023 02:01:06 -0700 (PDT)
+From: Maxim Mikityanskiy <maxtram95@gmail.com>
+To: netdev@vger.kernel.org,
+	Saeed Mahameed <saeedm@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Gal Pressman <gal@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	bpf@vger.kernel.org,
+	Maxim Mikityanskiy <maxtram95@gmail.com>
+Subject: [PATCH net-next v4 0/2] xdp_rxq_info_reg fixes for mlx5e
+Date: Wed, 14 Jun 2023 12:00:04 +0300
+Message-ID: <20230614090006.594909-1-maxtram95@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAEf4BzZ=VZcLZmtRefLtRyRb7uLTb6e=RVw82rxjLNqE=8kT-w@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+	version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-bpf_free_inode() is invoked as a RCU callback. Usually RCU callbacks are
-invoked within softirq context. By setting rcutree.use_softirq=3D0 boot
-option the RCU callbacks will be invoked in a per-CPU kthread with
-bottom halves disabled which implies a RCU read section.
+Resending the patches, as I'm afraid they were lost eventually:
 
-On PREEMPT_RT the context remains fully preemptible. The RCU read
-section however does not allow schedule() invocation. The latter happens
-in mutex_lock() performed by bpf_trampoline_unlink_prog() originated
-=66rom bpf_link_put().
+https://lore.kernel.org/all/ZDFPCxBz0u6ClXnQ@mail.gmail.com/
 
-It was pointed out that the bpf_link_put() invocation should not be
-delayed if originated from close(). It was also pointed out that other
-invocations from within a syscall should also avoid the workqueue.
-Everyone else should use workqueue by default to remain safe in the
-future (while auditing the code, every caller was preemptible except for
-the RCU case).
+Marked for net-next, as I'm not sure what the consensus was, but they
+can be applied cleanly to net as well.
 
-Let bpf_link_put() use the worker unconditionally. Add
-bpf_link_put_direct() which will directly free the resources and is used
-by close() and from within __sys_bpf().
+--
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
-v3=E2=80=A6v4:
-  - Revert back to bpf_link_put_direct() to the direct free and let
-    bpf_link_put() use the worker. Let close() and all invocations from
-    within the syscall use bpf_link_put_direct() which are all instances
-    within syscall.c here.
+Two small fixes that add parameters to xdp_rxq_info_reg missed in older
+commits.
 
-v2=E2=80=A6v3:
-  - Drop bpf_link_put_direct(). Let bpf_link_put() do the direct free
-    and add bpf_link_put_from_atomic() to do the delayed free via the
-    worker.
+v2 changes:
 
-v1=E2=80=A6v2:
-   - Add bpf_link_put_direct() to be used from bpf_link_release() as
-     suggested.
+Let en/params.c decide the right size for xdp_frag_size, rather than
+make en_main.c aware of the implementation details.
 
- kernel/bpf/syscall.c | 29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
+v3 changes:
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 14f39c1e573ee..8f09aef5949d4 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2777,28 +2777,31 @@ static void bpf_link_put_deferred(struct work_struc=
-t *work)
- 	bpf_link_free(link);
- }
-=20
--/* bpf_link_put can be called from atomic context, but ensures that resour=
-ces
-- * are freed from process context
-+/* bpf_link_put might be called from atomic context. It needs to be called
-+ * from sleepable context in order to acquire sleeping locks during the pr=
-ocess.
-  */
- void bpf_link_put(struct bpf_link *link)
- {
- 	if (!atomic64_dec_and_test(&link->refcnt))
- 		return;
-=20
--	if (in_atomic()) {
--		INIT_WORK(&link->work, bpf_link_put_deferred);
--		schedule_work(&link->work);
--	} else {
--		bpf_link_free(link);
--	}
-+	INIT_WORK(&link->work, bpf_link_put_deferred);
-+	schedule_work(&link->work);
- }
- EXPORT_SYMBOL(bpf_link_put);
-=20
-+static void bpf_link_put_direct(struct bpf_link *link)
-+{
-+	if (!atomic64_dec_and_test(&link->refcnt))
-+		return;
-+	bpf_link_free(link);
-+}
-+
- static int bpf_link_release(struct inode *inode, struct file *filp)
- {
- 	struct bpf_link *link =3D filp->private_data;
-=20
--	bpf_link_put(link);
-+	bpf_link_put_direct(link);
- 	return 0;
- }
-=20
-@@ -4764,7 +4767,7 @@ static int link_update(union bpf_attr *attr)
- 	if (ret)
- 		bpf_prog_put(new_prog);
- out_put_link:
--	bpf_link_put(link);
-+	bpf_link_put_direct(link);
- 	return ret;
- }
-=20
-@@ -4787,7 +4790,7 @@ static int link_detach(union bpf_attr *attr)
- 	else
- 		ret =3D -EOPNOTSUPP;
-=20
--	bpf_link_put(link);
-+	bpf_link_put_direct(link);
- 	return ret;
- }
-=20
-@@ -4857,7 +4860,7 @@ static int bpf_link_get_fd_by_id(const union bpf_attr=
- *attr)
-=20
- 	fd =3D bpf_link_new_fd(link);
- 	if (fd < 0)
--		bpf_link_put(link);
-+		bpf_link_put_direct(link);
-=20
- 	return fd;
- }
-@@ -4934,7 +4937,7 @@ static int bpf_iter_create(union bpf_attr *attr)
- 		return PTR_ERR(link);
-=20
- 	err =3D bpf_iter_new_fd(link);
--	bpf_link_put(link);
-+	bpf_link_put_direct(link);
-=20
- 	return err;
- }
---=20
-2.40.1
+Set xdp_frag_size in all successful flows of mlx5e_build_rq_frags_info.
+
+v4 changes:
+
+No changes, rebased over the latest net-next.
+
+Maxim Mikityanskiy (2):
+  net/mlx5e: XDP, Allow growing tail for XDP multi buffer
+  net/mlx5e: xsk: Set napi_id to support busy polling on XSK RQ
+
+ drivers/net/ethernet/mellanox/mlx5/core/en/params.c    | 8 ++++++--
+ drivers/net/ethernet/mellanox/mlx5/core/en/params.h    | 1 +
+ drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c      | 7 ++++---
+ 4 files changed, 12 insertions(+), 6 deletions(-)
+
+-- 
+2.41.0
 
 
