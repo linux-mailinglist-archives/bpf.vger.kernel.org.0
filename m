@@ -1,52 +1,50 @@
-Return-Path: <bpf+bounces-2574-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2575-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED6E772F3A8
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 06:40:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C060C72F3EE
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 07:05:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A68C52812D9
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 04:40:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1BE31C20B06
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 05:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7122B138E;
-	Wed, 14 Jun 2023 04:40:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9026A15BD;
+	Wed, 14 Jun 2023 05:05:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07232361;
-	Wed, 14 Jun 2023 04:40:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4107C433C8;
-	Wed, 14 Jun 2023 04:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0A9361;
+	Wed, 14 Jun 2023 05:05:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BE6CC433C0;
+	Wed, 14 Jun 2023 05:05:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686717643;
-	bh=0ucmmW3adV4+eqQVBYgvmKckBTOl6NDz0Ul52vNk6IM=;
+	s=k20201202; t=1686719109;
+	bh=lqfQbJAQZd06+abR9A08Hw+k3lRkhhEnD9V9drW6m5g=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=dg5101Tl455j/arfoVjzrVjaCZJ819UcB4X9QiFmxupTrdGqx1Dqyyu0LzxEjeSgQ
-	 bgdUJ+70vxtma18+RsVJ0os0UTx/4PnxmeQJjDfraBHIkaOCUPK2KFcudlKy46vMHD
-	 jYPxoEWIB1RnzC9hoIbnBXX63RaKo4mkzvlj1yVqpmbtuPP1j1kDwPRgoKltNymPi5
-	 dDy8BM78W/Tsxmcpl3HuV9Sux36JiZIb5qtTHEOOazDoSlftFhRcXNzDW2yVdAStsB
-	 LLmwm8OEhXtnYN0V75Pl0o5YInS/HjzxIkDWfq2I/XtBH01g+SaFykQCa8kBEKI888
-	 oBw+xT+d8oG0Q==
-Date: Tue, 13 Jun 2023 21:40:41 -0700
+	b=rTraGRTAkAvqzwoBAy2iuH7DjLZ8AxNKRNeJI0ogBhNqJdAKKxonXB23bZ/G5oOpm
+	 I5QxN590wl4efECf71hDGvHZtjoecHeJONQdrKB1qRrEmelqw8fXGyXX7q0p4QnwAK
+	 f+YB8xvsNjuffNIwSrk2Y4keeladVNmmaXJ8jdz006Hh6xpbGsp8fxtBuQU1m0drw7
+	 6z7S5q8Vpc4fGAgF1J7yG85Td8f6Wqo5qdMTr/TPGVgbTET0vRSt+brB+jOUqIYm+T
+	 UuenL/17dM+KX5gHCjemufIVSdbCilGZ0Gff6CnHJyvYqCc7H+m9TBuyEOe85g216D
+	 a2GwCFetvWqyw==
+Date: Tue, 13 Jun 2023 22:05:07 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: <davem@davemloft.net>, <pabeni@redhat.com>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, Lorenzo Bianconi <lorenzo@kernel.org>,
- Alexander Duyck <alexander.duyck@gmail.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Eric
- Dumazet <edumazet@google.com>, Jonathan Corbet <corbet@lwn.net>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
- Fastabend <john.fastabend@gmail.com>, <linux-doc@vger.kernel.org>,
- <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next v4 5/5] page_pool: update document about frag
- API
-Message-ID: <20230613214041.1c29a357@kernel.org>
-In-Reply-To: <20230612130256.4572-6-linyunsheng@huawei.com>
-References: <20230612130256.4572-1-linyunsheng@huawei.com>
-	<20230612130256.4572-6-linyunsheng@huawei.com>
+To: David Ahern <dsahern@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+ jolsa@kernel.org, willemb@google.com, magnus.karlsson@intel.com,
+ bjorn@kernel.org, maciej.fijalkowski@intel.com, netdev@vger.kernel.org
+Subject: Re: [RFC bpf-next 0/7] bpf: netdev TX metadata
+Message-ID: <20230613220507.0678bd02@kernel.org>
+In-Reply-To: <70d0f31b-3358-d615-a00c-7e664f5f789f@kernel.org>
+References: <20230612172307.3923165-1-sdf@google.com>
+	<20230613203125.7c7916bc@kernel.org>
+	<70d0f31b-3358-d615-a00c-7e664f5f789f@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,20 +54,43 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 12 Jun 2023 21:02:56 +0800 Yunsheng Lin wrote:
-> +2. page_pool_alloc_frag(): allocate memory with page splitting when driver knows
-> +   that the memory it need is always smaller than or equal to half of the page
-> +   allocated from page pool. Page splitting enables memory saving and thus avoid
-> +   TLB/cache miss for data access, but there also is some cost to implement page
-> +   splitting, mainly some cache line dirtying/bouncing for 'struct page' and
-> +   atomic operation for page->pp_frag_count.
-> +
-> +3. page_pool_alloc(): allocate memory with or without page splitting depending
-> +   on the requested memory size when driver doesn't know the size of memory it
-> +   need beforehand. It is a mix of the above two case, so it is a wrapper of the
-> +   above API to simplify driver's interface for memory allocation with least
-> +   memory utilization and performance penalty.
+On Tue, 13 Jun 2023 20:54:26 -0700 David Ahern wrote:
+> On 6/13/23 9:31 PM, Jakub Kicinski wrote:
+> > On Mon, 12 Jun 2023 10:23:00 -0700 Stanislav Fomichev wrote:  
+> >> The goal of this series is to add two new standard-ish places
+> >> in the transmit path:
+> >>
+> >> 1. Right before the packet is transmitted (with access to TX
+> >>    descriptors)  
+> 
+> If a device requires multiple Tx descriptors per skb or multibuf frame,
+> how would that be handled within the XDP API?
+> 
+> > I'm not sure that the Tx descriptors can be populated piecemeal.  
+> 
+> If it is host memory before the pidx move, why would that matter? Do you
+> have a specific example in mind?
 
-Seems like the semantics of page_pool_alloc() are always better than
-page_pool_alloc_frag(). Is there a reason to keep these two separate?
+I don't mean it's impossible implement, but it's may get cumbersome.
+TSO/CSO/crypto may all need to know where L4 header starts, f.e.
+Some ECN marking in the NIC may also want to know where L3 is.
+So the offsets will get duplicated in each API.
+
+> > If we were ever to support more standard offload features, which
+> > require packet geometry (hdr offsets etc.) to be described "call
+> > per feature" will end up duplicating arguments, and there will be
+> > a lot of args..
+> > 
+> > And if there is an SKB path in the future combining the normal SKB
+> > offloads with the half-rendered descriptors may be a pain.  
+> 
+> Once the descriptor(s) is (are) populated, the skb is irrelevant is it
+> not? Only complication that comes to mind is wanting to add or remove
+> headers (e.g., tunnels) which will be much more complicated at this
+> point, but might still be possible on a per NIC (and maybe version) basis.
+
+I guess one can write the skb descriptors first, then modify them from
+the BPF. Either way I feel like the helper approach for Tx will result
+in drivers saving the info into some local struct and then rendering
+the descriptors after. We'll see.
 
