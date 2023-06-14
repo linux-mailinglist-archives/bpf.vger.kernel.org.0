@@ -1,296 +1,214 @@
-Return-Path: <bpf+bounces-2581-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2582-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5A1D72F7EE
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 10:33:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C384272F7F4
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 10:34:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66F45280EF7
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 08:33:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C226B1C20CC1
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 08:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1885215BD;
-	Wed, 14 Jun 2023 08:33:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D8D15BD;
+	Wed, 14 Jun 2023 08:34:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB225369
-	for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 08:33:44 +0000 (UTC)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F611BD4
-	for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 01:33:42 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3f8cc04c287so3224365e9.0
-        for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 01:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1686731621; x=1689323621;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kRpCXoZix0pOWS728xP7zdE75KY3Fmxsvn5IvxdZ5gQ=;
-        b=FSiBWwRkjVYFMKCNKi9FE762JYyR8MUIfSIrKN5jU+ikKdC5Uq7nXjwnBiz94w+sSN
-         w0G3Gk2/xNMgbyqPUm1vpzYSK0PC9Mi5cJBkszkPRFeEaKtc51S2nSb21x0pbyIPSRnQ
-         aO/6fuetP9lb5cVhd83pK7KzHXLEuoOa2/jnWDT1TUrPYbrZVfIyI2bRJjIdgH/6bIoX
-         D/7xGNs7p3mSOKKRPLdkDE+kdEPFT6dU34lwh1CaacriDIKYbKuE5u4Dc4nNNPhC1Y+I
-         v6ZPyd60ziEV4WgUmI0QG265UpAJZIMZ6c5g2AqrzNhR7YVBzmSQLlr/dRUAJtL6QzhJ
-         k72w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686731621; x=1689323621;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kRpCXoZix0pOWS728xP7zdE75KY3Fmxsvn5IvxdZ5gQ=;
-        b=aJcqEMlBzN5JqbphlgGvTdNGLO3ERIikfe1cKZLsfylRCmVHP+QdssfWyOAoTnVUoM
-         1C+Am7bG9q14qVApznUzUI6GYNaO+KscGvaVfZ+lP1WiNmv+AicfP5EYEmw7FhL0XMNg
-         Nl6fYPO8zTzUIjdZdM4BeYdpV0jugxYizp6r5Q89/fiJmDP0SZUdMtFsyTqqdcSD+whI
-         5NOnpJdcsRle9+a8gCJoXx7LXG6yFi224/87DcXHv+N8a9QMQUSf+eyX6sWlWNTlHthv
-         8nw0Fww8zL1jy1uC8xaDrnjVBo/6kRswFXOaHow1D11wTtetcPHgH8zGUZgqbOGi/aMM
-         8kbA==
-X-Gm-Message-State: AC+VfDzmovvfNa8p70Za8FlhT9cCMgcffTfgW3YPk4vAKX8wNEX0vOrH
-	ILGTXx2HLwllNw460CNaWFgfSg==
-X-Google-Smtp-Source: ACHHUZ58N58pxV7jLB0NP5FDfdcY0M4gjTYHerFcwYdZqj1QbF2Tg837vyped0uQPV3DW9HNEl+AiA==
-X-Received: by 2002:a7b:cd0d:0:b0:3f7:e497:aa03 with SMTP id f13-20020a7bcd0d000000b003f7e497aa03mr9862064wmj.28.1686731620926;
-        Wed, 14 Jun 2023 01:33:40 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:e9c4:e1ca:ed10:31ea? ([2a02:8011:e80c:0:e9c4:e1ca:ed10:31ea])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05600c204700b003f7a562ff31sm16729579wmg.6.2023.06.14.01.33.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jun 2023 01:33:40 -0700 (PDT)
-Message-ID: <df9ffd9e-9c0d-c3c8-b96a-c697319be1ac@isovalent.com>
-Date: Wed, 14 Jun 2023 09:33:39 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460BB369
+	for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 08:34:36 +0000 (UTC)
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D24199C;
+	Wed, 14 Jun 2023 01:34:34 -0700 (PDT)
+Date: Wed, 14 Jun 2023 10:34:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1686731671;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z9JEhE0hBbRNxo8+2E1TzVaia14Yakp3vq1MLnG86lA=;
+	b=foJ+Wbj0WC+nPGHftYz9yJRHPEhztvj3Sdeps8Ljt6YHB540Vw1kBFhIjuPsL1sSWMhMQ6
+	Y/TeO5Y+Jy5j/hlU4EQO9kEk2/rIhZz7ejsw452xfqxf6/W2hAUmRAPUZ7ulKOrof/kN6P
+	0/PuQgNjujNzEXgSVXHgk5sqOSD/u/Y84YOMQo/6Fm/rq8KP0IyOdfHPTCTl7eXV5JnDfI
+	bOCM80aWeNLjR9PplBGYenpUjKmU6qADFVlaP2eb2eobHijFLAoI+l9HQp2uXH9btudZqp
+	kH0DE4lVCVJy9p9IivOh+vVfcIPe5vRzM8zQDmiQT+M1brAT6Caw28nFZVxTQQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1686731671;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z9JEhE0hBbRNxo8+2E1TzVaia14Yakp3vq1MLnG86lA=;
+	b=pkD7kUXK6OwOM9xLCsZ6ECtfUNx+zHRoZ4mXbogQRlYhTlZK/TZcLLbqnF3eGEGr7NjCQ9
+	AHK4EAsrWRQY7+BA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: [PATCH v4] bpf: Remove in_atomic() from bpf_link_put().
+Message-ID: <20230614083430.oENawF8f@linutronix.de>
+References: <20230509132433.2FSY_6t7@linutronix.de>
+ <CAEf4BzZcPKsRJDQfdVk9D1Nt6kgT4STpEUrsQ=UD3BDZnNp8eQ@mail.gmail.com>
+ <CAADnVQLzZyZ+cPqBFfrqa8wtQ8ZhWvTSN6oD9z4Y2gtrfs8Vdg@mail.gmail.com>
+ <CAEf4BzY-MRYnzGiZmW7AVJYgYdHW1_jOphbipRrHRTtdfq3_wQ@mail.gmail.com>
+ <20230525141813.TFZLWM4M@linutronix.de>
+ <CAEf4Bzaipoo6X_2Fh5WTV-m0yjP0pvhqi7-FPFtGOrSzNpdGJQ@mail.gmail.com>
+ <20230526112356.fOlWmeOF@linutronix.de>
+ <CAEf4Bzawgrn2DhR9uvXwFFiLR9g+j4RYC6cr3n+eRD_RoKBAJA@mail.gmail.com>
+ <20230605163733.LD-UCcso@linutronix.de>
+ <CAEf4BzZ=VZcLZmtRefLtRyRb7uLTb6e=RVw82rxjLNqE=8kT-w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3 bpf-next 03/10] bpftool: Show probed function in
- kprobe_multi link info
-Content-Language: en-GB
-To: Yafang Shao <laoar.shao@gmail.com>, Kui-Feng Lee <sinquersw@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
- rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-References: <20230612151608.99661-1-laoar.shao@gmail.com>
- <20230612151608.99661-4-laoar.shao@gmail.com>
- <06f219e8-9ae5-01a1-f955-25f556ad5077@gmail.com>
- <CALOAHbCjmn5_E8W+JG1_KYaprBm6k0PUGDFsydHbfSDzLmFxOQ@mail.gmail.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CALOAHbCjmn5_E8W+JG1_KYaprBm6k0PUGDFsydHbfSDzLmFxOQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <CAEf4BzZ=VZcLZmtRefLtRyRb7uLTb6e=RVw82rxjLNqE=8kT-w@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-2023-06-14 10:42 UTC+0800 ~ Yafang Shao <laoar.shao@gmail.com>
-> On Wed, Jun 14, 2023 at 6:36=E2=80=AFAM Kui-Feng Lee <sinquersw@gmail.c=
-om> wrote:
->>
->>
->>
->> On 6/12/23 08:16, Yafang Shao wrote:
->>> Show the already expose kprobe_multi link info in bpftool. The result=
- as
->>> follows,
->>>
->>> 52: kprobe_multi  prog 381
->>>          retprobe 0  func_cnt 7
->>>          addrs ffffffff9ec44f20  funcs schedule_timeout_interruptible=
+bpf_free_inode() is invoked as a RCU callback. Usually RCU callbacks are
+invoked within softirq context. By setting rcutree.use_softirq=3D0 boot
+option the RCU callbacks will be invoked in a per-CPU kthread with
+bottom halves disabled which implies a RCU read section.
 
->>>                ffffffff9ec44f60        schedule_timeout_killable
->>>                ffffffff9ec44fa0        schedule_timeout_uninterruptib=
-le
->>>                ffffffff9ec44fe0        schedule_timeout_idle
->>>                ffffffffc09468d0        xfs_trans_get_efd [xfs]
->>>                ffffffffc0953a10        xfs_trans_get_buf_map [xfs]
->>>                ffffffffc0957320        xfs_trans_get_dqtrx [xfs]
->>>          pids kprobe_multi(559862)
->>> 53: kprobe_multi  prog 381
->>>          retprobe 1  func_cnt 7
->>>          addrs ffffffff9ec44f20  funcs schedule_timeout_interruptible=
+On PREEMPT_RT the context remains fully preemptible. The RCU read
+section however does not allow schedule() invocation. The latter happens
+in mutex_lock() performed by bpf_trampoline_unlink_prog() originated
+=66rom bpf_link_put().
 
->>>                ffffffff9ec44f60        schedule_timeout_killable
->>>                ffffffff9ec44fa0        schedule_timeout_uninterruptib=
-le
->>>                ffffffff9ec44fe0        schedule_timeout_idle
->>>                ffffffffc09468d0        xfs_trans_get_efd [xfs]
->>>                ffffffffc0953a10        xfs_trans_get_buf_map [xfs]
->>>                ffffffffc0957320        xfs_trans_get_dqtrx [xfs]
->>>          pids kprobe_multi(559862)
->>>
->>> $ tools/bpf/bpftool/bpftool link show -j
->>> [{"id":52,"type":"kprobe_multi","prog_id":381,"retprobe":0,"func_cnt"=
-:7,"funcs":[{"addr":18446744072078249760,"func":"schedule_timeout_interru=
-ptible","module":""},{"addr":18446744072078249824,"func":"schedule_timeou=
-t_killable","module":""},{"addr":18446744072078249888,"func":"schedule_ti=
-meout_uninterruptible","module":""},{"addr":18446744072078249952,"func":"=
-schedule_timeout_idle","module":""},{"addr":18446744072645535952,"func":"=
-xfs_trans_get_efd","module":"[xfs]"},{"addr":18446744072645589520,"func":=
-"xfs_trans_get_buf_map","module":"[xfs]"},{"addr":18446744072645604128,"f=
-unc":"xfs_trans_get_dqtrx","module":"[xfs]"}],"pids":[{"pid":559862,"comm=
-":"kprobe_multi"}]},{"id":53,"type":"kprobe_multi","prog_id":381,"retprob=
-e":1,"func_cnt":7,"funcs":[{"addr":18446744072078249760,"func":"schedule_=
-timeout_interruptible","module":""},{"addr":18446744072078249824,"func":"=
-schedule_timeout_killable","module":""},{"addr":18446744072078249888,"fun=
-c":"schedule_timeout_uninterruptible","module":""},{"addr":18446744072078=
-249952,"func":"schedule_timeout_idle","module":""},{"addr":18446744072645=
-535952,"func":"xfs_trans_get_efd","module":"[xfs]"},{"addr":1844674407264=
-5589520,"func":"xfs_trans_get_buf_map","module":"[xfs]"},{"addr":18446744=
-072645604128,"func":"xfs_trans_get_dqtrx","module":"[xfs]"}],"pids":[{"pi=
-d":559862,"comm":"kprobe_multi"}]}]
->>>
->>> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->>> ---
->>>   tools/bpf/bpftool/link.c | 109 ++++++++++++++++++++++++++++++++++++=
-++++++++++-
->>>   1 file changed, 108 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
->>> index 2d78607..0015582 100644
->>> --- a/tools/bpf/bpftool/link.c
->>> +++ b/tools/bpf/bpftool/link.c
->>> @@ -14,8 +14,10 @@
->>>
->>>   #include "json_writer.h"
->>>   #include "main.h"
->>> +#include "xlated_dumper.h"
->>>
->>>   static struct hashmap *link_table;
->>> +static struct dump_data dd =3D {};
->>>
->>>   static int link_parse_fd(int *argc, char ***argv)
->>>   {
->>> @@ -166,6 +168,45 @@ static int get_prog_info(int prog_id, struct bpf=
-_prog_info *info)
->>>       return err;
->>>   }
->>>
->>> +static int cmp_u64(const void *A, const void *B)
->>> +{
->>> +     const __u64 *a =3D A, *b =3D B;
->>> +
->>> +     return *a - *b;
->>> +}
->>> +
->>> +static void
->>> +show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wt=
-r)
->>> +{
->>> +     __u32 i, j =3D 0;
->>> +     __u64 *addrs;
->>> +
->>> +     jsonw_uint_field(json_wtr, "retprobe",
->>> +                      info->kprobe_multi.flags & BPF_F_KPROBE_MULTI_=
-RETURN);
->>> +     jsonw_uint_field(json_wtr, "func_cnt", info->kprobe_multi.count=
-);
->>> +     jsonw_name(json_wtr, "funcs");
->>> +     jsonw_start_array(json_wtr);
->>> +     addrs =3D (__u64 *)u64_to_ptr(info->kprobe_multi.addrs);
->>> +     qsort((void *)addrs, info->kprobe_multi.count, sizeof(__u64), c=
-mp_u64);
->>> +
->>> +     /* Load it once for all. */
->>> +     if (!dd.sym_count)
->>> +             kernel_syms_load(&dd);
->>> +     for (i =3D 0; i < dd.sym_count; i++) {
->>> +             if (dd.sym_mapping[i].address !=3D addrs[j])
->>> +                     continue;
->>> +             jsonw_start_object(json_wtr);
->>> +             jsonw_uint_field(json_wtr, "addr", dd.sym_mapping[i].ad=
-dress);
->>> +             jsonw_string_field(json_wtr, "func", dd.sym_mapping[i].=
-name);
->>> +             /* Print none if it is vmlinux */
->>> +             jsonw_string_field(json_wtr, "module", dd.sym_mapping[i=
-].module);
->>> +             jsonw_end_object(json_wtr);
->>> +             if (j++ =3D=3D info->kprobe_multi.count)
->>> +                     break;
->>> +     }
->>> +     jsonw_end_array(json_wtr);
->>> +}
->>> +
->>>   static int show_link_close_json(int fd, struct bpf_link_info *info)=
+It was pointed out that the bpf_link_put() invocation should not be
+delayed if originated from close(). It was also pointed out that other
+invocations from within a syscall should also avoid the workqueue.
+Everyone else should use workqueue by default to remain safe in the
+future (while auditing the code, every caller was preemptible except for
+the RCU case).
 
->>>   {
->>>       struct bpf_prog_info prog_info;
->>> @@ -218,6 +259,9 @@ static int show_link_close_json(int fd, struct bp=
-f_link_info *info)
->>>               jsonw_uint_field(json_wtr, "map_id",
->>>                                info->struct_ops.map_id);
->>>               break;
->>> +     case BPF_LINK_TYPE_KPROBE_MULTI:
->>> +             show_kprobe_multi_json(info, json_wtr);
->>> +             break;
->>>       default:
->>>               break;
->>>       }
->>> @@ -351,6 +395,44 @@ void netfilter_dump_plain(const struct bpf_link_=
-info *info)
->>>               printf(" flags 0x%x", info->netfilter.flags);
->>>   }
->>>
->>> +static void show_kprobe_multi_plain(struct bpf_link_info *info)
->>> +{
->>> +     __u32 i, j =3D 0;
->>> +     __u64 *addrs;
->>> +
->>> +     if (!info->kprobe_multi.count)
->>> +             return;
->>> +
->>> +     printf("\n\tretprobe %d  func_cnt %u  ",
->>> +            info->kprobe_multi.flags & BPF_F_KPROBE_MULTI_RETURN,
->>> +            info->kprobe_multi.count);
->>> +     addrs =3D (__u64 *)u64_to_ptr(info->kprobe_multi.addrs);
->>> +     qsort((void *)addrs, info->kprobe_multi.count, sizeof(__u64), c=
-mp_u64);
->>> +
->>> +     /* Load it once for all. */
->>> +     if (!dd.sym_count)
->>> +             kernel_syms_load(&dd);
->>> +     for (i =3D 0; i < dd.sym_count; i++) {
->>> +             if (dd.sym_mapping[i].address !=3D addrs[j])
->>> +                     continue;
->>> +             if (!j)
->>> +                     printf("\n\taddrs %016lx  funcs %s",
->>> +                            dd.sym_mapping[i].address,
->>> +                            dd.sym_mapping[i].name);
->>> +             else
->>> +                     printf("\n\t      %016lx        %s",
->>> +                            dd.sym_mapping[i].address,
->>> +                            dd.sym_mapping[i].name);
->>> +             if (dd.sym_mapping[i].module[0] !=3D '\0')
->>> +                     printf(" %s  ", dd.sym_mapping[i].module);
->>> +             else
->>> +                     printf("  ");
->>
->> Could you explain what these extra spaces after module names are for?
->=20
-> There are two spaces. We use two spaces to seperate different items
-> printed in bpftool. For example,
->   "4: kprobe_multi  prog 16"
-> There are two spaces between the "type" and the "prog".
->=20
-> We always print these two spaces after one item is printed:
->   printf("type %u  ", info->type);
->   printf("prog %u  ", info->prog_id);
-> That way, we can add new item easily and consistently.
->=20
+Let bpf_link_put() use the worker unconditionally. Add
+bpf_link_put_direct() which will directly free the resources and is used
+by close() and from within __sys_bpf().
 
-I'm not sure we _always_ do it at the end of lines, but it seems to be
-rather consistent in link.c at least. For my part I don't know if this
-printf("  ") is really necessary - I'd rather avoid spaces at the end of
-lines, but then there would be several other locations to update. So I
-don't have any objection, either.
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+v3=E2=80=A6v4:
+  - Revert back to bpf_link_put_direct() to the direct free and let
+    bpf_link_put() use the worker. Let close() and all invocations from
+    within the syscall use bpf_link_put_direct() which are all instances
+    within syscall.c here.
 
-Quentin
+v2=E2=80=A6v3:
+  - Drop bpf_link_put_direct(). Let bpf_link_put() do the direct free
+    and add bpf_link_put_from_atomic() to do the delayed free via the
+    worker.
+
+v1=E2=80=A6v2:
+   - Add bpf_link_put_direct() to be used from bpf_link_release() as
+     suggested.
+
+ kernel/bpf/syscall.c | 29 ++++++++++++++++-------------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 14f39c1e573ee..8f09aef5949d4 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2777,28 +2777,31 @@ static void bpf_link_put_deferred(struct work_struc=
+t *work)
+ 	bpf_link_free(link);
+ }
+=20
+-/* bpf_link_put can be called from atomic context, but ensures that resour=
+ces
+- * are freed from process context
++/* bpf_link_put might be called from atomic context. It needs to be called
++ * from sleepable context in order to acquire sleeping locks during the pr=
+ocess.
+  */
+ void bpf_link_put(struct bpf_link *link)
+ {
+ 	if (!atomic64_dec_and_test(&link->refcnt))
+ 		return;
+=20
+-	if (in_atomic()) {
+-		INIT_WORK(&link->work, bpf_link_put_deferred);
+-		schedule_work(&link->work);
+-	} else {
+-		bpf_link_free(link);
+-	}
++	INIT_WORK(&link->work, bpf_link_put_deferred);
++	schedule_work(&link->work);
+ }
+ EXPORT_SYMBOL(bpf_link_put);
+=20
++static void bpf_link_put_direct(struct bpf_link *link)
++{
++	if (!atomic64_dec_and_test(&link->refcnt))
++		return;
++	bpf_link_free(link);
++}
++
+ static int bpf_link_release(struct inode *inode, struct file *filp)
+ {
+ 	struct bpf_link *link =3D filp->private_data;
+=20
+-	bpf_link_put(link);
++	bpf_link_put_direct(link);
+ 	return 0;
+ }
+=20
+@@ -4764,7 +4767,7 @@ static int link_update(union bpf_attr *attr)
+ 	if (ret)
+ 		bpf_prog_put(new_prog);
+ out_put_link:
+-	bpf_link_put(link);
++	bpf_link_put_direct(link);
+ 	return ret;
+ }
+=20
+@@ -4787,7 +4790,7 @@ static int link_detach(union bpf_attr *attr)
+ 	else
+ 		ret =3D -EOPNOTSUPP;
+=20
+-	bpf_link_put(link);
++	bpf_link_put_direct(link);
+ 	return ret;
+ }
+=20
+@@ -4857,7 +4860,7 @@ static int bpf_link_get_fd_by_id(const union bpf_attr=
+ *attr)
+=20
+ 	fd =3D bpf_link_new_fd(link);
+ 	if (fd < 0)
+-		bpf_link_put(link);
++		bpf_link_put_direct(link);
+=20
+ 	return fd;
+ }
+@@ -4934,7 +4937,7 @@ static int bpf_iter_create(union bpf_attr *attr)
+ 		return PTR_ERR(link);
+=20
+ 	err =3D bpf_iter_new_fd(link);
+-	bpf_link_put(link);
++	bpf_link_put_direct(link);
+=20
+ 	return err;
+ }
+--=20
+2.40.1
+
 
