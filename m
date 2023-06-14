@@ -1,193 +1,205 @@
-Return-Path: <bpf+bounces-2590-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2591-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26F7B73014C
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 16:09:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3814873016F
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 16:14:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58CED1C20D42
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 14:09:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4AAD2814CC
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 14:14:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28657DDC1;
-	Wed, 14 Jun 2023 14:09:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC14DDDC4;
+	Wed, 14 Jun 2023 14:14:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 013717FC
-	for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 14:09:33 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 835FD26AE;
-	Wed, 14 Jun 2023 07:09:15 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 35EE4nrU030630;
-	Wed, 14 Jun 2023 07:08:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=q5X49LdogohVL/O2oq/Crg04NQqxejIHXf9S7xKKjlY=;
- b=jlSU/ch+NGmKlTsElWUq7mcff1ZSbn3h0y6xGTF5MQy05LRcC4QqLHqxrPz6nRiQ0Uew
- MLfbOL/XajAKaFPxp/YQKylINvTUEoSe4BmSbLHNONslb3mKVKSFITO9xSxlFuNgfNJj
- 1yB1Uw4WLLIFykFdFvYlmkFyC1nvl6NkjhCjCvvUQyPfxRDZWowMnCx7u+QjDxSUkPsX
- tpkGTmxWH3RP1+MDQnlGctw3zVSg13wlt/d+9BI0bp88cGjIMnpSFrnhHP9+X+eZC2l6
- cU9EfEhKqiuQych9VC7FB7xql8PCIN7o2BAXJjW5EGGi+D98q1WuykmCc1YeZuO+NMiL Og== 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2176.outbound.protection.outlook.com [104.47.57.176])
-	by m0089730.ppops.net (PPS) with ESMTPS id 3r6q9e9uw0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Jun 2023 07:08:51 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D/KvsL5JhZwv37Lr/QEVc46FEJi6qK3bAXGhI+eDOub/9DqLaH50PIHenuh7nLdg8CNTaQEl+gvbWB4kcFq42FvNGsob3evn8DDA5FYvb6WcDd6n4Q5V+uYJEsxOArnwXJITAbjy8nrozssRqzqfzSxU9MgR0WB/LaFF4D7JcYAiltJiCPHyJgsGHV3P5hPI5MtwBs9LBf8/MZpshiDhmlPb26nqhaBV8NynoWiXtJsUkjMO8yZ199aMvQw835ynqhAimPELfs8af1oI8erA48pc7OjcCM/z4y1GxBW0OI+McHmxVMqd7Yv8J6Ij/jlH44B5lRZz2xkC1D+W8xfjRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q5X49LdogohVL/O2oq/Crg04NQqxejIHXf9S7xKKjlY=;
- b=nY0HWkD1j8+NTDe4hDoIJe4SKNHThb11FyjLdwRK+QskhsWlN9OMUggM3lol48NL/f3Kizj70Ds8ZMuBps9JZJKDnygqJJFWCr+2aWut0b2zLhtZ4jMgQ9qXOVlTCHeBRV3XnLWmu3c1T1X8rYj3+dIIwZLuehIOhoHcIzh55SwuXNmkHRLO7L7Wfzo8Mf09ytlS4nz6Y2iPYoVHkhpENm4u/BBemAlM1CWIJNDnHAdMhvYmMRJdH7pfqknM6WQQDLpCkgJdPIjzDQT0mQu59C6iidfEZ6cMXd/BX9Gn7rQgM3/EqS09IHGHl1YEPO4BLmvlqbDY2jcZqP5MufbXcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by MW4PR15MB4380.namprd15.prod.outlook.com (2603:10b6:303:101::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6477.37; Wed, 14 Jun
- 2023 14:08:49 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812%6]) with mapi id 15.20.6455.043; Wed, 14 Jun 2023
- 14:08:49 +0000
-Message-ID: <0b12a94a-e3e9-e2a2-389e-48a588d5ad6b@meta.com>
-Date: Wed, 14 Jun 2023 07:08:46 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH] selftests/bpf: Fix the address is NULL
-To: wuyonggang001@208suo.com, andrii@kernel.org, shuah@kernel.org
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230614073443.4894-1-zhanglibing@cdjrlc.com>
- <7f34bd3ce377d9d89626c2df8fa584e0@208suo.com>
-Content-Language: en-US
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <7f34bd3ce377d9d89626c2df8fa584e0@208suo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BYAPR06CA0050.namprd06.prod.outlook.com
- (2603:10b6:a03:14b::27) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91BEAC137
+	for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 14:14:25 +0000 (UTC)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88F2CD;
+	Wed, 14 Jun 2023 07:14:23 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9745d99cfccso125687566b.1;
+        Wed, 14 Jun 2023 07:14:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686752062; x=1689344062;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bZcc1N+pfWDP9EyHMZ8HVe/V78CMvOZrkT7dGeTorW0=;
+        b=lRelaGos+jd5arMyCLOFQs5LM5DoQgXvA6qkSU8/8bb5j7QTCdDcjrFAzA5+09H8va
+         Vj7IxMejFnY3Wonw15taxTIZ7FhIbq4g6J/kbiKvHzZg/x4JC/Ca0ksRK9RD8k80HCFg
+         Q5CMj8tvbCuzJSrpYk+jMRlsEWw4++lg+xaXbXjG+1nEEkPAeWX3W3sWRGeKkF3q1V+S
+         FB8z7px0eY6vTAlJp8z+C5ebYA13En7kfjZ2v+lq9laZCZciEHy2MzTCdaFp4MrLMPNb
+         5pQLSkpVcFQLpacWxrwndWmA78B/d9LGuYXRtiVKpOJnapEu1A3ca41O2vDQGhbwsDgq
+         cnuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686752062; x=1689344062;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bZcc1N+pfWDP9EyHMZ8HVe/V78CMvOZrkT7dGeTorW0=;
+        b=goazEibIucGrvD4g52KKI/TyYL7nzrfCDo5CSjQoha75dPj5D4UUAbydLXs/YyvCrO
+         7NAL8bgw7ynwahAZWGo3KdJEXVJRl6h0/CzlCXuzGatrfeYC6VoZR6/xM41LUQ9Lu8w2
+         opEv94c/I9dHmNJAQxYoyvDF1YrNiuHU3kFpSwpCwpMdSm+KpfRACMI9DCvDOyDDcrL7
+         E+s0EpvYB0Nz39QjJr4zP2gLex3lAX/i2CylyuWd9uRQfTMFUs/QThs16fx7OOfxIwl+
+         J1SDjeK67SHvM8UrG6FagUnBScCQ0fTS1YoEDot7IPjeMAeCh1/h4qirvSe5x/MT7uk0
+         IVog==
+X-Gm-Message-State: AC+VfDyYlTFshOGXV9tmynu/oMYF3X7y1o5IA146JS+j+o5ji94KpibJ
+	uZALsxsUJjcSd+8OxpumHhE=
+X-Google-Smtp-Source: ACHHUZ5AOEghS7r/YuBm8qLG9tdWa5T4rDdMOPaDHJ4gyt0FnJMgDbUWn7gXD2yBpY+ahQw+UsIwkw==
+X-Received: by 2002:a17:907:7f93:b0:974:218d:c048 with SMTP id qk19-20020a1709077f9300b00974218dc048mr19264188ejc.26.1686752061928;
+        Wed, 14 Jun 2023 07:14:21 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id e26-20020a1709062c1a00b00974556e50a6sm8103322ejh.114.2023.06.14.07.14.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jun 2023 07:14:21 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 14 Jun 2023 16:14:19 +0200
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Yonghong Song <yhs@meta.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jackie Liu <liu.yun@linux.dev>
+Subject: Re: [PATCHv2] ftrace: Show all functions with addresses in
+ available_filter_functions_addrs
+Message-ID: <ZInLO4/xly/f+Zk3@krava>
+References: <20230611130029.1202298-1-jolsa@kernel.org>
+ <53a11f31-256d-e7bc-eca5-597571076dc5@meta.com>
+ <20230611225407.3e9b8ad2@gandalf.local.home>
+ <20230611225754.01350a50@gandalf.local.home>
+ <d5ffd64c-65b7-e28c-b8ee-0d2ff9dcd78b@meta.com>
+ <20230612110222.50c254f3@gandalf.local.home>
+ <ZId/UL/iujOdgel+@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MW4PR15MB4380:EE_
-X-MS-Office365-Filtering-Correlation-Id: 119a00a5-4105-4a3e-2eda-08db6ce0dff6
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	jBkZxW58cDi0cUT/DVIyal5Gl6bxW3TK/iAB9OZjcaAzrLOF1PwzY/07qk/wa3Lr9XfMaqdh2oF3LKAcjaSkJRwWwb/5o0cgTk4kXI5welAOBTacnmcSm/oTvl10axiae2XizHOesTFE3DYZxrGKnj9wCAJEQD6r3i/B0SfX8z5J+MocpYP9XZB15UBec8Qu9KT92VPHCrvdGbh6VmSk7QlyV95lchNhhPB708aCtgrET/GxfjEEEPv1kcV/+IlSylzvLxJF+NTJljm4/Jvu/XyeI1zb/gmej2GzQpMM8b9tAhtCRF7/jUrJ3Hdl1o7qtBGw+UhSV1RPIN8DFryV2TKy4Yb/78FzPR650+5MdGxCS+7cIdfdistLwafHevRca6A9tfMve+3XUM5z1FR+tT8mFM2qcr/wmQcwJMCnxWRf7lorFvxhcGWSa4r0HWdImv1F4pXkvsOFtq8XmeDH7JiCol/bz6TOVnjwG2nEKJBGmWVZVIXz3+/5ACnGmwmoS+qbGkKTUg0kkvXs+NXksCsIdW3nSKI41MPHQ1TLP2gvjRhM3n8NwK8qtHx8vjUynK2KVgG+CIzvN2kqi9/q+oybVJbc8EAsbHCRRf6QfqlEeXofOku4eSRAylggqit6c8jk87dwck21PxutPOKj0A==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(366004)(346002)(396003)(136003)(376002)(451199021)(83380400001)(5660300002)(186003)(6506007)(2906002)(31686004)(2616005)(41300700001)(6512007)(8936002)(8676002)(6486002)(316002)(31696002)(53546011)(6666004)(36756003)(478600001)(38100700002)(86362001)(4326008)(66476007)(66556008)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?S2xEcW9KMXBjNnZuaWhOMVRoWFh2dld0bllzNmMzWWJjTytrQml0ajN2Z2k2?=
- =?utf-8?B?RVpVTklCUm5ublladWk1cG1CU1hEcklUMndyN2dTdkZPTmk1MmlQMExNaG9x?=
- =?utf-8?B?MmwrQXliM1ZmVm5GdkVtS1l5SGY1Ykp3L1BQaVNoOTIzeC9sVmplY045M2Uv?=
- =?utf-8?B?a21jY1MybGdnN0lwb2VpVmtOelVRbStycWdlcGNHa3NHc2dLZjdCMTk2SmFj?=
- =?utf-8?B?UDJxQU5EYTFkUGRsWkh6dkI0UGtZZnViODR6UDNxT3N0RHlUaFhVOXA2d1dz?=
- =?utf-8?B?UlBKa3p5NTRTYWpXNG5VY2pkMERCK2FHS1Roc0dLQi9wS2owdWFkTXExSm5w?=
- =?utf-8?B?TytmeWxBa0xNRGsxUVlBZi84YW5IUm1nMjhDKzNlNEN0eTlQZmJvOWx1alk1?=
- =?utf-8?B?OG95Q2dmNE0wV1JEcVdlME8zZ2llQ3Z6N25LTjhFTGc5ZTZEWVdWRlBtc0Vk?=
- =?utf-8?B?d0FCdjEySllxR25UWmFCc0p3UVFzRVNOWXFuWGhKMmxGS1hBRUIvRG8rZlYv?=
- =?utf-8?B?dlVwdiszMmRyWTN6dFZuV2k1M1pzY0trS3owRUdPSFg2VWpEM1cyaTRkYzBH?=
- =?utf-8?B?SkJtdEdlQ2FjdDJMUHFtQ1grVlBOejNaN2NhaFI4UzJXYWZYMGxsUDlQcEQw?=
- =?utf-8?B?OGpkdEV4dkh3VllXWkpHa1kvdkQ2NUlYYmtZSjlBK2YwbDFBZ1BhTDdHZ2hn?=
- =?utf-8?B?RUxTMDhDQ0JNTkthZnMyTFBhM3hOS1RxQUJCa0JKbVUyN2xZVVp4bGJIL0l0?=
- =?utf-8?B?UGEzMG9RK3YrUHJhNHFsTE1wYlIvamtMNmJMcHgvL3UxMzhpejlrc3FDMFpo?=
- =?utf-8?B?ektPYjZyV1FQNGZjQlR2NDNrb0VCT3NSeVB2K1pxS2dMZHdTMjkyQVQ1T2di?=
- =?utf-8?B?dlBacEhWSk5BTTl2dHd6UUZ2RXZ3eVNYMnhlOUlBbTBmNXVuY2xveTNUN2Qv?=
- =?utf-8?B?MG5Vd3cxdTBqaG83TVdybDgxUFhoa1M5OGhCdlA5NlFjcE1uQ1ZmTHhTbEQw?=
- =?utf-8?B?L0djMjlQdktaZmtzQmpMK0pTWnNrRlg0bWNOQmd1SXdwMGZzRHRQOGFLNmxr?=
- =?utf-8?B?M253Q1VLVXlyMmtMN0FEc3M1T0pYRUJMemxmWFNYVkEyUFV3bGxWNExVRUlB?=
- =?utf-8?B?dXY1QTZnMDMybjE2RFRMY0I2cFltZUNjNmRKOHVCWXdneGhFWGZsTHlGRmlt?=
- =?utf-8?B?UDdXeU5aNmRCU1kvTmVGUC9CU3dDNzN2OEJ4NEJZWEE0aSt0NGhUbENtUFd5?=
- =?utf-8?B?VHdiWHg3UTdHTTB0U1pJdjVqSU1TTVl1VW1qQWJJTGViRkZ0bUpPanV2a1U2?=
- =?utf-8?B?OWN5a0dZbnNhTHd0NUNUL3h3eHhDdGpGSHNudS9teGo0OHBHRVBPOTI0dGxj?=
- =?utf-8?B?dEEyc2EycW03T2dBeEUvWGZsLzJpU24wV2piNjl0VjIvZTFzZFpNY2w0dEt5?=
- =?utf-8?B?SHluaThTK0kzdm5sSUV0dTc3UG5mNGFQV2FkOWp2QkdIZnNvMy82amZZNStu?=
- =?utf-8?B?eXZIU2JuYWxXYVVkckRIZzNCT0xhbmY4ZURkNjc0RmpYSXl0NlZlMUZZM3Vh?=
- =?utf-8?B?SXo0ckoxUHB4L3NtQzc5RFl3MUc5eU9LTlNuM01WTDVOaCs2UW9SaUZ4Tm9o?=
- =?utf-8?B?KzVtY1o0V0dIRVFsOFZuL3ZRaW0vNzR1V2x0WXhRZlBvaGtJbVdreFlUdno3?=
- =?utf-8?B?eG5IZEJQYzFpMFVNdjA3elp6Sm9JUmFFSldwRE8xd29WZm5VVjMxQnRHdjBn?=
- =?utf-8?B?TG5QVVNKbm1sMjZWSi9XNUthM1lNeTFaV2gzeHdRbi80RldMMlBBQW4wbUc2?=
- =?utf-8?B?RTFKejhyTXJkRGR4SGhncU4yUGVseHJjOUt1cm4zUlJJOGZDaXVabEU4dlM2?=
- =?utf-8?B?OGtROFdEMVc2L0cwSW84WjBOS1RLZEVmejZtYWgwL3pla29oMC9TQnVBQkJx?=
- =?utf-8?B?QVBWSmx3Q3dtbEo2YUNleGNoclpiUDRTOUw0d3pvcnFLMWRlTU5ydDBQYm9Z?=
- =?utf-8?B?WGVlT1FZRVhNTk9QNU1HSjdHb014N0I2bkxwcUY4SUY2bm9uNmRHZ1FZVFFX?=
- =?utf-8?B?ZTU3S1hIdDV2ZXBhZDRDcTdEVVJNTjJzYzQ2WXZ5cXpNdENzVWVIbUlQdWkr?=
- =?utf-8?B?TkVXMTVlbUJEYUhyYWcwODRjWFFiYmpRUlBIYWhCcXd5QUtYNVo1Vmd0UitM?=
- =?utf-8?B?d2c9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 119a00a5-4105-4a3e-2eda-08db6ce0dff6
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2023 14:08:49.1686
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +2Zcs2Frn+Yi49mBFLH9hkeBFEi6CvLraYLTPh1ZbOkZYR7/rsbCqiDXboRTvUZI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4380
-X-Proofpoint-GUID: y7KdZmynskLYtYmCXFknIxCCSR2ulidy
-X-Proofpoint-ORIG-GUID: y7KdZmynskLYtYmCXFknIxCCSR2ulidy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-14_10,2023-06-14_01,2023-05-22_02
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZId/UL/iujOdgel+@krava>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Mon, Jun 12, 2023 at 10:25:55PM +0200, Jiri Olsa wrote:
+> On Mon, Jun 12, 2023 at 11:02:22AM -0400, Steven Rostedt wrote:
+> > On Mon, 12 Jun 2023 07:49:53 -0700
+> > Yonghong Song <yhs@meta.com> wrote:
+> > 
+> > > I am actually interested in how available_filter_functions_addrs
+> > > will be used. For example, bpf_program__attach_kprobe_multi_opts()
+> > > can already take addresses from kallsyms. How to use
+> > > available_filter_functions_addrs to facilitate kprobe_multi?
+> 
+> the problem is that we need to do 2 passes:
+> 
+>  - through available_filter_functions and find out if the function is traceable
+>  - through /proc/kallsyms to get the address for traceable function
+> 
+> having available_filter_functions symbols together with addresses allow
+> us to skip the kallsyms step
+> 
+> and we are ok with the address in available_filter_functions_addr not being the
+> function entry, because kprobe_multi uses fprobe and that handles both entry and
+> patch-site address properly
+> 
+> > > Do we need to change kernel APIs? It would be great at least we
+> > > got a RFC patch to answer these questions.
+> > 
+> > I agree, having that information would also be useful to me.
+> > 
+> > Jiri? Andrii?
+> 
+> so we have 2 interfaces how to create kprobe_multi link:
+> 
+>   a) passing symbols to kernel
+> 
+>      1) user gathers symbols and need to ensure that they are
+>         trace-able -> pass through available_filter_functions file
+> 
+>      2) kernel takes those symbols and translates them to addresses
+>         through kallsyms api
+> 
+>      3) addresses are passed to fprobe/ftrace through:
+> 
+>          register_fprobe_ips
+>          -> ftrace_set_filter_ips
+> 
+>   b) passing addresses to kernel
+> 
+>      1) user gathers symbols and needs to ensure that they are
+>         trace-able -> pass through available_filter_functions file
+> 
+>      2) user takes those symbols and translates them to addresses
+>        through /proc/kallsyms
+> 
+>      3) addresses are passed to the kernel and kernel calls:
+> 
+>          register_fprobe_ips
+>          -> ftrace_set_filter_ips
+> 
+> 
+> The new available_filter_functions_addrs file helps us with option b),
+> because we can make 'b 1' and 'b 2' in one step - while filtering traceable
+> functions, we get the address directly.
+> 
+> I tested the new available_filter_functions_addrs changes with some hacked
+> selftest changes, you can check it in here [1].
+> 
+> I assume Jackie Liu will send new version of her patchset [2] based on this
+> new available_filter_functions_addrs file.
+> 
+> I think we should have these changes coming together and add some perf
+> measurements from before and after to make the benefit apparent.
+
+FYI I did some perf meassurements and the speedup is not substantial :-\
+
+looks like the symbols resolving to addresses we do in kernel for kprobe_multi
+link is more faster/cheaper than I thought 
+
+but still there is 'some' speedup and we will get rid of the extra
+/proc/kallsyms parsing, so I think it's still worth it to have the
+new file
 
 
-On 6/14/23 12:42 AM, wuyonggang001@208suo.com wrote:
-> Fix the following coccicheck error:
-> 
-> tools/testing/selftests/bpf/progs/test_ksyms_weak.c:53:6-20: ERROR: test 
-> of a variable/field address
+base:
 
-I didn't see clang/gcc compiler warns about this. Maybe need some
-additional flags beyond what current selftest/bpf already has
-in order to trigger this warning?
-If you feel this warning has some merit, could you propose
-it to gcc/llvm community?
+ Performance counter stats for './test_progs -n 103/1':
 
-> 
-> Signed-off-by: Yonggang Wu <wuyonggang001@208suo.com>
-> ---
->   tools/testing/selftests/bpf/progs/test_ksyms_weak.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_weak.c 
-> b/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
-> index d00268c91e19..768a4d6ee6f5 100644
-> --- a/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
-> +++ b/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
-> @@ -50,7 +50,7 @@ int pass_handler(const void *ctx)
->       /* tests non-existent symbols. */
->       out__non_existent_typed = (__u64)&bpf_link_fops2;
-> 
-> -    if (&bpf_link_fops2) /* can't happen */
-> +    if (&bpf_link_fops2 != NULL) /* can't happen */
->           out__non_existent_typed = 
-> (__u64)bpf_per_cpu_ptr(&bpf_link_fops2, 0);
-> 
->       if (!bpf_ksym_exists(bpf_task_acquire))
-> 
+       103,423,103      cycles:u
+    79,279,231,029      cycles:k
+    79,382,694,663      cycles
+
+      18.627593589 seconds time elapsed
+
+       0.025999000 seconds user
+      18.323855000 seconds sys
+
+
+with fix:
+
+ Performance counter stats for './test_progs -n 103/1':
+
+       126,659,572      cycles:u
+    77,951,768,179      cycles:k
+    78,078,467,451      cycles
+
+      18.651464273 seconds time elapsed
+
+       0.025001000 seconds user
+      18.243828000 seconds sys
+
+
+jirka
 
