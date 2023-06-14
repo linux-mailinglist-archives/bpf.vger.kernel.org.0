@@ -1,136 +1,115 @@
-Return-Path: <bpf+bounces-2606-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85267730A00
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 23:48:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE0A3730A63
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 00:08:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D0BB281058
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 21:48:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB5F61C20DB2
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 22:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E33134CC;
-	Wed, 14 Jun 2023 21:48:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707B6134DA;
+	Wed, 14 Jun 2023 22:08:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5721134C0
-	for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 21:48:24 +0000 (UTC)
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FF2268C;
-	Wed, 14 Jun 2023 14:48:22 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51a1d539ffaso291727a12.0;
-        Wed, 14 Jun 2023 14:48:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39794134A7
+	for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 22:08:06 +0000 (UTC)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34031A1
+	for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 15:08:05 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5695f6ebd85so13992887b3.3
+        for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 15:08:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686779301; x=1689371301;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z4aA7epvssoPGg5rKcRh6aIf+fYOU5PxCzsadmXXnuA=;
-        b=qFzhXfcLqCB2MSCLrlFYYTIxeaK5Z94fsXhWGJoebSatJORl6vk8BDQ4siY2DXEgOt
-         o9o3qkvC9tcvTTreGFSz5R2gm6l8Zfme2nX9DuU05b1Nt2Updfx8hApStrSWgZ1YPs0R
-         LaLpYMLvTuEySyVGl0vjkvo4yUM8PEdVqPO/guESDel1KF3TbryqXQSqXO3nCmkV3x4r
-         U5Hiz257+vR7OszPDKgm3cA6EHxr5LVrecE+Zr9mzi2y2I7kSHOf3MEP+BXxHtvNizW1
-         oTJ3pW3Y1LYJYKt7m5jNqcj0Izsx5PWQ1SqL9M00CBEYN8iNsPLx7ompRdJ1TR3vi+Wt
-         JxGw==
+        d=google.com; s=20221208; t=1686780485; x=1689372485;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=x3BUJLDspDnJhEEyf+azmgiFOjJ2X54+mzIKWsRlcE0=;
+        b=N3p52AIWMxc/Elpz8txy9HvdmfisqXbrd7PNb4MixAl/uoiJRiLkJqugVLOEx4Vrbn
+         FEr4aURTqna51lpuCS5kb1HwgEn1AX2MGsqvXliZMUyRgSWPqH7QMOvHZkphMf3YFI/F
+         5mRIzIamfv8/Ii/8GQF4imMH6WWUXxAD4Aif7jbqVgLrcbJnC96FYZo6oTFP4EmgM6J7
+         bK34YSI4atUPlHcPwlzIXfOu2QgeBhcPSsyaHj5hrCD6cTuqzEg6KE6Lg0mhxiU3O9fJ
+         Tfojb1YpGauGmZ2n33KIh/ZYaBiQTlvP/cRgfKbMZLLLZbjrZnQiZGX0wYvOSnY6CDX0
+         dQVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686779301; x=1689371301;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z4aA7epvssoPGg5rKcRh6aIf+fYOU5PxCzsadmXXnuA=;
-        b=Ix+T11qaZWQL2sC2/s3jNt8A0vubzO8qOjRjsIJV6KXXbxGdSaRusiyPZnaLsO4Wnu
-         GF8DSOb46IYFi6yvXgDwm80GAEGt2/kViLSGKQ3j7zO+itOY0732tW3yjJvoogJOC/H+
-         PA6eLfu0VpR9jKOZ5F4yXzzAm9EEMGbxXmG+Mi/cktT6OPYj0kUx/AxfsmzwrS2lwKea
-         ulRo9XZ4OqK6MtxrlO/Uq2z1UPLyOk4U2X+3nuc66cBdVVoP9ZvG6aywIvNZdwmI6yDT
-         Ef+CtTvztIwTmfHrHKP2UgENAoZNA3lmVl7lJ6CbYuUvmquohYZP3NuVWVOfP6VUBh99
-         LGiw==
-X-Gm-Message-State: AC+VfDx3nRxbo/6DS02oKJBWD9r2qMTfnULoXvImy1g3kl1IookVSVp7
-	lk+KLLqBpL389RdOeT7cLEUWRw0hz/fJ8smhi17k5sFJC/s=
-X-Google-Smtp-Source: ACHHUZ4dAD8KrNsvAoAwgxrkO665PN2j4lts/r2C6YriF4GjM2RHOgVk1Vh7//pO//qNwmKoXWTTnQjHAOVuJKVpJiI=
-X-Received: by 2002:a05:6402:2683:b0:4ea:a9b0:a518 with SMTP id
- w3-20020a056402268300b004eaa9b0a518mr3028443edd.17.1686779301148; Wed, 14 Jun
- 2023 14:48:21 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1686780485; x=1689372485;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x3BUJLDspDnJhEEyf+azmgiFOjJ2X54+mzIKWsRlcE0=;
+        b=EbS9sy1VgMkbOo2OJ16i6yXxKpZqMKOk1QALPtUc0JfupH4iDnJvP9t0jMBkIJkM/O
+         8x5X+/BGiRfoZBMISBpx/agIgzwMbtCNsmEfzlMsJ0u1rWzIPsjA2MDREIP0GiuE7j1X
+         z/NpXCXQco1GubxWW0oDQtDcV/JYZVSgRx8f+bCS5nYHkM6unGK0FWdBR+vYtV4Qcrgm
+         sfY884/5SScS0CAsmfAbVFk/UJR2egNOMEhWdLme7o9X5XFLbSqWlzeDkoEtPcWNu0b+
+         Cr9xFXi0MZ6xSVyfAGGJz3FAegr/sZs+FdRqARTnoF1ANTtjaWK0NrLZEVHZaIqReNnY
+         pkBA==
+X-Gm-Message-State: AC+VfDxh82mXlMnE8AyRPdHUPiQlEYWD1ALIOzBWl3LzMX6R3ZOhhSlr
+	IbkuHCHh0gFdIuOSWwChV1m7ZLg=
+X-Google-Smtp-Source: ACHHUZ7zCsNNz5sEJkXpC7NOxRmeFDGj+nZBU27IX3Pujt76AV+qlOW1p3GYDhcoC68Y0YQctO1i+qE=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a81:4325:0:b0:56d:502:9eb0 with SMTP id
+ q37-20020a814325000000b0056d05029eb0mr1367581ywa.6.1686780484915; Wed, 14 Jun
+ 2023 15:08:04 -0700 (PDT)
+Date: Wed, 14 Jun 2023 15:08:03 -0700
+In-Reply-To: <20230613223533.3689589-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CAJc0_fwx6MQa+Uozk+PJB0qb3JP5=9_WcCjOb8qa34u=DVbDmQ@mail.gmail.com>
- <2023061453-guacamole-porous-8a0e@gregkh>
-In-Reply-To: <2023061453-guacamole-porous-8a0e@gregkh>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 14 Jun 2023 14:48:09 -0700
-Message-ID: <CAADnVQLuHTNPEuXpSUgkNHoK1-X8KxU=spdYWB2bMp6icS+j0g@mail.gmail.com>
-Subject: Re: BPF regression in 5.10.168 and 5.15.93 impacting Cilium
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Robert Kolchmeyer <rkolchmeyer@google.com>, stable <stable@vger.kernel.org>, 
-	regressions@lists.linux.dev, Martin KaFai Lau <kafai@fb.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Sasha Levin <sashal@kernel.org>, Paul Chaignon <paul@isovalent.com>, 
-	Meena Shanmugam <meenashanmugam@google.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Mime-Version: 1.0
+References: <20230613223533.3689589-1-andrii@kernel.org>
+Message-ID: <ZIo6Q60/OdG6AqhW@google.com>
+Subject: Re: [PATCH bpf-next 0/4] Clean up BPF permissions checks
+From: Stanislav Fomichev <sdf@google.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 14, 2023 at 1:57=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Wed, Jun 14, 2023 at 11:23:52AM -0700, Robert Kolchmeyer wrote:
-> > Hi all,
-> >
-> > I believe 5.10.168 and 5.15.93 introduced a regression that impacts
-> > the Cilium project. Some information on the nature of the regression
-> > is available at https://github.com/cilium/cilium/issues/25500. The
-> > primary symptom seems to be the error `BPF program is too large.`
-> >
-> > My colleague has found that reverting the following two commits:
-> >
-> > 8de8c4a "bpf: Support <8-byte scalar spill and refill"
-> > 9ff2beb "bpf: Fix incorrect state pruning for <8B spill/fill"
-> >
-> > resolves the regression.
-> >
-> > If we revert these in the stable tree, there may be a few changes that
-> > depend on those that also need to be reverted, but I'm not sure yet.
-> >
-> > Would it make sense to revert these changes (and any dependent ones)
-> > in the 5.10 and 5.15 trees? If anyone has other ideas, I can help test
-> > possible solutions.
->
-> Can you actually test if those reverts work properly for you and if
-> there are other dependencies involved?
->
-> And is this issue also in 6.1.y and Linus's tree?  If not, why not, are
-> we just missing a commit?  We can't revert something from a stable
-> release if you are going to hit the same issue when moving to a new
-> release, right?
->
-> thanks,
->
-> greg k-h
+On 06/13, Andrii Nakryiko wrote:
+> This patch set contains a few refactorings to BPF map and BPF program creation
+> permissions checks, which were originally part of BPF token patch set ([0]),
+> but are logically completely independent and useful in their own right.
+> 
+>   [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=755113&state=*
+> 
+> Andrii Nakryiko (4):
+>   bpf: move unprivileged checks into map_create() and bpf_prog_load()
+>   bpf: inline map creation logic in map_create() function
+>   bpf: centralize permissions checks for all BPF map types
+>   bpf: keep BPF_PROG_LOAD permission checks clear of validations
+> 
+>  kernel/bpf/bloom_filter.c                     |   3 -
+>  kernel/bpf/bpf_local_storage.c                |   3 -
+>  kernel/bpf/bpf_struct_ops.c                   |   3 -
+>  kernel/bpf/cpumap.c                           |   4 -
+>  kernel/bpf/devmap.c                           |   3 -
+>  kernel/bpf/hashtab.c                          |   6 -
+>  kernel/bpf/lpm_trie.c                         |   3 -
+>  kernel/bpf/queue_stack_maps.c                 |   4 -
+>  kernel/bpf/reuseport_array.c                  |   3 -
+>  kernel/bpf/stackmap.c                         |   3 -
+>  kernel/bpf/syscall.c                          | 155 +++++++++++-------
+>  net/core/sock_map.c                           |   4 -
+>  net/xdp/xskmap.c                              |   4 -
+>  .../bpf/prog_tests/unpriv_bpf_disabled.c      |   6 +-
+>  14 files changed, 102 insertions(+), 102 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
 
-Before jumping to reverts..
-how is it fixed in 6.0+ kernels?
+Since I took a look at this as part of the original series, and these
+are really non-controversial changes, feel free to use:
 
-"BPF program is too large" can probably be worked around on the cilium side=
-.
-The kernel cannot guarantee that a particular program will
-always be verifiable. We find safety bugs in the verifier and often
-enough the fixes to such issues make the verifier work harder to prove
-the safety of the program.
-This is one of such cases. These two commits are necessary.
-Reverting them will prevent loading of valid programs.
-So reverts is a dangerous path.
-The best is to identify the other patches from 6.0+ and backport them.
-The second best path is to bump 1M limit to something higher to
-mitigate "more work by the verifier".
+Acked-by: Stanislav Fomichev <sdf@google.com>
 
