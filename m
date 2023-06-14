@@ -1,181 +1,97 @@
-Return-Path: <bpf+bounces-2587-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2588-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE25E72FDBD
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 14:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E6EE72FDD4
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 14:05:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 890EA281443
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 12:00:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29996281424
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 12:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C536E8C19;
-	Wed, 14 Jun 2023 12:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7248F47;
+	Wed, 14 Jun 2023 12:04:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA40E8BF0;
-	Wed, 14 Jun 2023 12:00:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2D01C433C8;
-	Wed, 14 Jun 2023 12:00:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686744001;
-	bh=LoiUr0uaRsxJzM8cKaoy60Y9Kl407w7j8YRTKBB3PNw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=IcEwk0Majrvg8ASspBOSZfyC24I+nob4cEzYOBg/PguNe+5K+BrsOrREZLD7xBOxU
-	 DpuumrODe6NSQp7RiVCZ0RWbCBjPbDvTxio3G+GHS7CfnWssCSotHiVv4TFIVq8F4L
-	 qHt8i1KpagVvQIT8wv6bqadH+iOL4BYKrsKEmrwzTy/knznhknEEVdez6PLrpFI7/O
-	 wCvKVpNL5Tl/FNHbNMyZCBQYFcUBmfennFsddQrgwTNH6x03xKdscsSFBWwFb/c7CJ
-	 iXW7wzGo1wea0pGkw5Y2Bq/LWdI/u6PSKRtjkQle+W6LySsYLDzZ/Se9wk/FlZyEx+
-	 rE9wcNyL14zAg==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 82638BBEB5E; Wed, 14 Jun 2023 13:59:57 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Stanislav Fomichev
- <sdf@google.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Willem de Bruijn <willemb@google.com>, David Ahern
- <dsahern@kernel.org>, "Karlsson, Magnus" <magnus.karlsson@intel.com>,
- =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, "Fijalkowski, Maciej"
- <maciej.fijalkowski@intel.com>, Network Development
- <netdev@vger.kernel.org>
-Subject: Re: [RFC bpf-next 0/7] bpf: netdev TX metadata
-In-Reply-To: <CAADnVQ+CCOw9_LbCAaFz0593eydKNb7RxnGr6_FatUOKmvPmBg@mail.gmail.com>
-References: <20230612172307.3923165-1-sdf@google.com>
- <87cz20xunt.fsf@toke.dk> <ZIiaHXr9M0LGQ0Ht@google.com>
- <877cs7xovi.fsf@toke.dk>
- <CAKH8qBt5tQ69Zs9kYGc7j-_3Yx9D6+pmS4KCN5G0s9UkX545Mg@mail.gmail.com>
- <87v8frw546.fsf@toke.dk>
- <CAKH8qBtsvsWvO3Avsqb2PbvZgh5GDMxe2fok-jS4DrJM=x2Row@mail.gmail.com>
- <CAADnVQKFmXAQDYVZxjvH8qbxk+3M2COGbfmtd=w8Nxvf9=DaeA@mail.gmail.com>
- <CAKH8qBvAMKtfrZ1jdwVS2pF161UdeXPSpY4HSzKYGTYNTupmTg@mail.gmail.com>
- <CAADnVQ+CCOw9_LbCAaFz0593eydKNb7RxnGr6_FatUOKmvPmBg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 14 Jun 2023 13:59:57 +0200
-Message-ID: <877cs6l0ea.fsf@toke.dk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8318463;
+	Wed, 14 Jun 2023 12:04:45 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6688E2109;
+	Wed, 14 Jun 2023 05:04:42 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Qh3rH2Kqtz18KBZ;
+	Wed, 14 Jun 2023 19:59:43 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Wed, 14 Jun
+ 2023 20:04:39 +0800
+Subject: Re: [PATCH net-next v4 5/5] page_pool: update document about frag API
+To: Jakub Kicinski <kuba@kernel.org>
+CC: <davem@davemloft.net>, <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Lorenzo Bianconi <lorenzo@kernel.org>,
+	Alexander Duyck <alexander.duyck@gmail.com>, Jesper Dangaard Brouer
+	<hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Eric
+ Dumazet <edumazet@google.com>, Jonathan Corbet <corbet@lwn.net>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
+ Fastabend <john.fastabend@gmail.com>, <linux-doc@vger.kernel.org>,
+	<bpf@vger.kernel.org>
+References: <20230612130256.4572-1-linyunsheng@huawei.com>
+ <20230612130256.4572-6-linyunsheng@huawei.com>
+ <20230613214041.1c29a357@kernel.org>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <1dc9b2e3-65ee-aa33-d604-a758fea98eb8@huawei.com>
+Date: Wed, 14 Jun 2023 20:04:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230613214041.1c29a357@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+On 2023/6/14 12:40, Jakub Kicinski wrote:
+> On Mon, 12 Jun 2023 21:02:56 +0800 Yunsheng Lin wrote:
+>> +2. page_pool_alloc_frag(): allocate memory with page splitting when driver knows
+>> +   that the memory it need is always smaller than or equal to half of the page
+>> +   allocated from page pool. Page splitting enables memory saving and thus avoid
+>> +   TLB/cache miss for data access, but there also is some cost to implement page
+>> +   splitting, mainly some cache line dirtying/bouncing for 'struct page' and
+>> +   atomic operation for page->pp_frag_count.
+>> +
+>> +3. page_pool_alloc(): allocate memory with or without page splitting depending
+>> +   on the requested memory size when driver doesn't know the size of memory it
+>> +   need beforehand. It is a mix of the above two case, so it is a wrapper of the
+>> +   above API to simplify driver's interface for memory allocation with least
+>> +   memory utilization and performance penalty.
+> 
+> Seems like the semantics of page_pool_alloc() are always better than
+> page_pool_alloc_frag(). Is there a reason to keep these two separate?
 
-> On Tue, Jun 13, 2023 at 4:16=E2=80=AFPM Stanislav Fomichev <sdf@google.co=
-m> wrote:
->>
->> On Tue, Jun 13, 2023 at 3:32=E2=80=AFPM Alexei Starovoitov
->> <alexei.starovoitov@gmail.com> wrote:
->> >
->> > On Tue, Jun 13, 2023 at 2:17=E2=80=AFPM Stanislav Fomichev <sdf@google=
-.com> wrote:
->> > >
->> > > > >> >> > --- UAPI ---
->> > > > >> >> >
->> > > > >> >> > The hooks are implemented in a HID-BPF style. Meaning they=
- don't
->> > > > >> >> > expose any UAPI and are implemented as tracing programs th=
-at call
->> > > > >> >> > a bunch of kfuncs. The attach/detach operation happen via =
-BPF syscall
->> > > > >> >> > programs. The series expands device-bound infrastructure t=
-o tracing
->> > > > >> >> > programs.
->> > > > >> >>
->> > > > >> >> Not a fan of the "attach from BPF syscall program" thing. Th=
-ese are part
->> > > > >> >> of the XDP data path API, and I think we should expose them =
-as proper
->> > > > >> >> bpf_link attachments from userspace with introspection etc. =
-But I guess
->> > > > >> >> the bpf_mprog thing will give us that?
->> > > > >> >
->> > > > >> > bpf_mprog will just make those attach kfuncs return the link =
-fd. The
->> > > > >> > syscall program will still stay :-(
->> > > > >>
->> > > > >> Why does the attachment have to be done this way, exactly? Coul=
-dn't we
->> > > > >> just use the regular bpf_link attachment from userspace? AFAICT=
- it's not
->> > > > >> really piggy-backing on the function override thing anyway when=
- the
->> > > > >> attachment is per-dev? Or am I misunderstanding how all this wo=
-rks?
->> > > > >
->> > > > > It's UAPI vs non-UAPI. I'm assuming kfunc makes it non-UAPI and =
-gives
->> > > > > us an opportunity to fix things.
->> > > > > We can do it via a regular syscall path if there is a consensus.
->> > > >
->> > > > Yeah, the API exposed to the BPF program is kfunc-based in any cas=
-e. If
->> > > > we were to at some point conclude that this whole thing was not us=
-eful
->> > > > at all and deprecate it, it doesn't seem to me that it makes much
->> > > > difference whether that means "you can no longer create a link
->> > > > attachment of this type via BPF_LINK_CREATE" or "you can no longer
->> > > > create a link attachment of this type via BPF_PROG_RUN of a syscal=
-l type
->> > > > program" doesn't really seem like a significant detail to me...
->> > >
->> > > In this case, why do you prefer it to go via regular syscall? Seems
->> > > like we can avoid a bunch of boileplate syscall work with a kfunc th=
-at
->> > > does the attachment?
->> > > We might as well abstract it at, say, libbpf layer which would
->> > > generate/load this small bpf program to call a kfunc.
->> >
->> > I'm not sure we're on the same page here.
->> > imo using syscall bpf prog that calls kfunc to do a per-device attach
->> > is an overkill here.
->> > It's an experimental feature, but you're already worried about
->> > multiple netdevs?
->> >
->> > Can you add an empty nop function and attach to it tracing style
->> > with fentry ?
->> > It won't be per-netdev, but do you have to do per-device demux
->> > by the kernel? Can your tracing bpf prog do that instead?
->> > It's just an ifindex compare.
->> > This way than non-uapi bits will be even smaller and no need
->> > to change struct netdevice.
->>
->> It's probably going to work if each driver has a separate set of tx
->> fentry points, something like:
->>   {veth,mlx5,etc}_devtx_submit()
->>   {veth,mlx5,etc}_devtx_complete()
+I am agree the semantics of page_pool_alloc() is better, I was thinking
+about combining those two too.
+The reason I am keeping it is about the nic hw with fixed buffer size for
+each desc, and that buffer size is always smaller than or equal to half
+of the page allocated from page pool, so it doesn't bother doing the
+checking of 'size << 1 > max_size' and doesn't care about the actual
+truesize.
 
-I really don't get the opposition to exposing proper APIs; as a
-dataplane developer I want to attach a program to an interface. The
-kernel's role is to provide a consistent interface for this, not to
-require users to become driver developers just to get at the required
-details.
-
-> Right. And per-driver descriptors.
-> The 'generic' xdptx metadata is unlikely to be practical.
-> Marshaling in and out of it is going to be too perf sensitive.
-> I'd just add an attach point in the driver with enough
-> args for bpf progs to make sense of the context and extend
-> the verifier to make few safe fields writeable.
-
-This is a rehashing of the argument we had on the RX side: just exposing
-descriptors is a bad API because it forces BPF programs to deal with
-hardware errata - which is exactly the kind of thing that belongs in a
-driver. Exposing kfuncs allows drivers to deal with hardware quirks
-while exposing a consistent API to (BPF) users.
-
-> kfuncs to read/request timestamp are probably too slow.
-
-Which is why we should be inlining them :)
-
--Toke
+> .
+> 
 
