@@ -1,147 +1,173 @@
-Return-Path: <bpf+bounces-2577-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2578-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A90172F50E
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 08:43:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E02A472F556
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 09:03:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F0E7281335
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 06:43:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F5681C20323
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 07:03:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9FAA53;
-	Wed, 14 Jun 2023 06:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9DC21385;
+	Wed, 14 Jun 2023 07:03:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 156DB7F
-	for <bpf@vger.kernel.org>; Wed, 14 Jun 2023 06:42:53 +0000 (UTC)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C841A3;
-	Tue, 13 Jun 2023 23:42:52 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-310b631c644so512977f8f.0;
-        Tue, 13 Jun 2023 23:42:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68DDE7F;
+	Wed, 14 Jun 2023 07:03:03 +0000 (UTC)
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2071a.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaa::71a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BEC35A1;
+	Wed, 14 Jun 2023 00:02:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kjoqNEKAKaaBteEeqHf8QcW23b8oP4lbaZ6+dau/TyspayvyIZ9jKRCu+cXleb6NXd+3ucXsTE2BCqbAOLk9DfKSt0d5j/xyx8d9z2HEiKxmoE/6aSEefNBhsI/joRdg6ICjTSiaf0/ccmOckUzwLQL6vr30uhqxUldQorHIwzYsw7OZtQgMzi6xXPj/SQz72cTnRyHJ7jPbMIgWCoumodEpjtYn+8NlEqlBEfyJMyUOACNfFo3B6CUlALdnCquzE/kWSKRmCEgBaiWU77pVNgJroGsHFBGHsi+1GVQNbVjGeM8gpnSyjiJtI+GfjDXanPZoZVfN9ZVjrb98nEFV+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Qu+Vu1Fqr0izpYpHUXGiPlAZfxJEN/1hL7VSGsaCCDc=;
+ b=Bh90o9otGsnc6bXnca+u6PRm03fSg1HS86GuqWSQ89xkZG7XGg0LzisroVwEqLOBbvmNWgKehPJV751iBEAlV/7mqoP1gN21zRhQZmJckRo20Y6hqu3BIA9qUkMTesaiMeWVNslJHIuAA1sY0lmWvWmvdFCh0v7Gk4X48NYKso4OERRBaRwiIda1VXTM+dvpuor2x2r30mXLxJjVe2hQFXjT8BN91VeNRL7wxWK3F3KhDPDWRjDApEuFigh7oTymZkdTiL8b0Ma+po80EXCbE0pnqdnxIOUKGoHUM/C7WlmzDLrinSK04SRIJ9ZO2yL+S5RFlhMmnfwR9m/djwy7Ew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686724970; x=1689316970;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tmdEkfLeOgGxB3Q9AIBuyne+hWdSajk51LvARVCqqic=;
-        b=bb5a5z6Jj/LuTLtvf9GgxMLUdTQKDG9xeM7fb/9DhVTvbOQKwhKhvRsQMx1mdV2EjB
-         1P1WkD89YMLWXoxF+UwharvRk/SKA7mUfMVJfNFjC4d9OUKfaXXNfIA5/Bd8uslIZsl+
-         Ws1hNMvTtkDo+0qMpEohZjQcDN8yi2ovWMhhUr/yp5mozx0+W8Skh3v4qezHtBvGCIBX
-         rHpgy+cj6mSVBcVcG4Csjd4PAdhmC9RGNvUauCMEQ9SZlSTEMrTTElvsxN1UuAylahXP
-         O4DtqU8Ua2KvLTzIUhJTmHeNjP+9uNWR1ZTTon7DfunYdZlhzhcygzd3g9c6+6uv7X1A
-         cFAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686724970; x=1689316970;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tmdEkfLeOgGxB3Q9AIBuyne+hWdSajk51LvARVCqqic=;
-        b=TeZaeLd6akPXSwsJmgC/f0+I0FDjtGBJWghA/1VPUTwyo70T1fVmp48vJHs41MMjeU
-         Qu9WL/UatFer+yzcbrNDkMZ7BqGV0tU3an6KAz2N729eEGquk2YbzLgKe+2P/at7fbx2
-         QCa8V6oZy7rYConIKeXCJx3lzdMcSXyhApBvZhbu0Hb2uAiRt0zq0NeJz2WDeUqXLj9N
-         AWKhyd1L8df8LVs0OiYgGNdwIkZJufoRSnB5Uk6ZNsR8PXrFSn+tovZhbPfwhVghbINB
-         Ex8ohdHLj0wbM4ws5Wz7ocafmnYUS0UorBLmJSRcAV/HWTqxdZmVfa2wqd0rhyHSmydM
-         34Gw==
-X-Gm-Message-State: AC+VfDw7mH6SdqRKWglSaVdVQ8KnHlsUarv3raVR6VsQ7UJ6JGkkTM5u
-	iN+AgsaT5DfMJuJdnjza9Z4=
-X-Google-Smtp-Source: ACHHUZ6TYA0Ii1kImtzYdAbRoLNit9gVczXVEMxUjSMRl8RC/73ZOWvWsBHLwgdfFVWQ0ksjSQy/xg==
-X-Received: by 2002:a05:6000:46:b0:301:8551:446a with SMTP id k6-20020a056000004600b003018551446amr10343725wrx.2.1686724970365;
-        Tue, 13 Jun 2023 23:42:50 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id e17-20020a05600c219100b003f18b942338sm16490823wme.3.2023.06.13.23.42.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jun 2023 23:42:49 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 14 Jun 2023 08:42:47 +0200
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-	bpf@vger.kernel.org
-Subject: Re: [RFC] fprobe call of rethook_try_get faults
-Message-ID: <ZIlhZ6gbhfvmZP2r@krava>
-References: <ZICzdpvp46Xk1rIv@krava>
- <20230613174844.4d50991d@gandalf.local.home>
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qu+Vu1Fqr0izpYpHUXGiPlAZfxJEN/1hL7VSGsaCCDc=;
+ b=sPBA4ihCbHi6Bi9OI+S27IRAsYF6wRjCU8MoPuKnhNCRjPf2hcpOREgC009WSa4SkkSg9UwNSW2wTwbIxfjbm4NtIGor4XdPZybsLYPje9SpN61Xc0BetNzmqRzZzAwxZrz6B+mXzXUL6+xC1z3yl9mUtrwNHY/hUICpKqAb7H4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by SA1PR13MB4829.namprd13.prod.outlook.com (2603:10b6:806:1a1::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6477.29; Wed, 14 Jun
+ 2023 07:02:31 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::eb8f:e482:76e0:fe6e%4]) with mapi id 15.20.6477.028; Wed, 14 Jun 2023
+ 07:02:31 +0000
+Date: Wed, 14 Jun 2023 09:02:24 +0200
+From: Simon Horman <simon.horman@corigine.com>
+To: Stanislav Fomichev <sdf@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+	haoluo@google.com, jolsa@kernel.org, netdev@vger.kernel.org
+Subject: Re: [RFC bpf-next 3/7] bpf: implement devtx hook points
+Message-ID: <ZIlmAB4OYUvfqQTr@corigine.com>
+References: <20230612172307.3923165-1-sdf@google.com>
+ <20230612172307.3923165-4-sdf@google.com>
+ <ZIiGVrHLKQRzMzGg@corigine.com>
+ <CAKH8qBvfp7Do1tSD4YiiNVojG2gB9+mrNNLiVFz+ts4gU+pJrA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKH8qBvfp7Do1tSD4YiiNVojG2gB9+mrNNLiVFz+ts4gU+pJrA@mail.gmail.com>
+X-ClientProxiedBy: AM9P250CA0018.EURP250.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21c::23) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230613174844.4d50991d@gandalf.local.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|SA1PR13MB4829:EE_
+X-MS-Office365-Filtering-Correlation-Id: 70b0c7ea-7daf-4272-9cb2-08db6ca5525e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	rHkp9A3a8NMWqxdcX8sXxAA2zLzEH86x3VYI+WuWuoF7a2iYO+JKiOzey/EJvPzL7bGMz8jUgpyUYYTtJUWotsG3ZNmJOPdppDwfIm03lJowydSzOu5T4PzmnBbB7w2tDWxpO8GqZOuGCVwhVohLfFDzKaCXdwjpIn/v0EfnZ3ZwAO5GedMAydR0DRyQuhy6eGPNbMWYqczQK7i4GgPOlIYbMz6iAwmOiapyUiYvHwMTf77rlH+sQsHoL8+dcmLauBqSjOkMDUZZEG3d1qAt46rnguH9z9TL/ZkltjO8jpwaRMS7Q587W1QWfiwExPHFJxRx3qnxp4Uggvq+t6s4P+d9nZyVJDUo4Jqg2Lzk+gdD7zXJFISjkDD2kEVYUwL91fB2LIRYYD6DCwDC2cI7dJueKwWHwna21rRw2e8ZqoEpJO5h0lQhx9Y1UcCm2iXOlGX/rxlzxolBwRqDDm+XyFsAXAPPrPmHav/QjvO3UjxI4xJsVKIAGheoMC33dRgKKtvVQvoFMrSZBjvIljDfBfe10Q+oKG8VmmCyaz0yQYwYLe4JVTP/CyfHGB5EDvpA
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(39830400003)(136003)(396003)(376002)(451199021)(86362001)(7416002)(6486002)(316002)(8676002)(41300700001)(83380400001)(5660300002)(6512007)(38100700002)(53546011)(6506007)(6666004)(44832011)(8936002)(66556008)(36756003)(66476007)(6916009)(66946007)(4326008)(478600001)(186003)(2906002)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SVUrck9EUmsyMnlZQ1gxQ2tZVTV4NlREOGxFNzdxMnpjcTZWNHp4aDEvNmdv?=
+ =?utf-8?B?VlNGNmhQUFVOOW9lWEFic053aDViME1adnlOajdTSm03Ky9FakZ3bmRzR3Zz?=
+ =?utf-8?B?OVlSTzRudUI4bEVDTkUrc0hHVGZaU2JzSURUNHBmcThDSzJ5bUd3WWlEcGt5?=
+ =?utf-8?B?WXNXeDAzS3FSZWlTVlZHYmJpQTNqTzVsNXdPUnNFWnZmZXV3MVh5NkhXdUI2?=
+ =?utf-8?B?c3N0RTcvR1RGbFh1NGp1V0tjY1hqVDRUMXZKaHJyb3FMYncxeDlGMkovWGZ4?=
+ =?utf-8?B?L3ViOUNrZFpUdTZQTkI3OS9TT0hHN2YrWHFqSlc1RHlqUXZVMmZ5TTI2WjlM?=
+ =?utf-8?B?SGtCd2k0SEJsNVJtSW1jU3BEUnpaV1J5WmozSTF6dTNZZHJpRmNIVEd3MHBL?=
+ =?utf-8?B?eVRsZ2l2M2lSRzRSWnk1T2FKQ0FaN1dha2xXQng4cGxzUnNhb1JmM0NUVUM4?=
+ =?utf-8?B?a21TdW8yKy92dnRuRndURUdTMjFZRHZNY0x6akNqZTkrUXg5Q3ByMmpmdXE3?=
+ =?utf-8?B?Y1QvOExoOHl0YStSb3dDZGNiSUV4d2JJSmdsOU1XcXdNS3c1RGFuRnJFb3lR?=
+ =?utf-8?B?MGVnREtqSmZveHVDZHpTbHFVUFN4M3QxT0ZNSmloYnlQZzFUUXVCcHR3MEpR?=
+ =?utf-8?B?VVZ2QTczdDd1dCtES3dpVWhrK2NpUGthQWlIekFFemJCMzRtdUc0KzMrY1Va?=
+ =?utf-8?B?aERHQTJaNERVMWpnc2JJRmtRekE5MUxmZ2s5azdVclJsOVFnekpYMzBndTFW?=
+ =?utf-8?B?eUl6YWJENDE5eGJxTXlvQWdUNk16dWExZjJHMlJCU24xcXFudlBKRHBmZnFG?=
+ =?utf-8?B?MXBMUlAvc2ZmNVZudFJaaEp3ODFmYWd2T2RPS3ByNTEwZXAyTFEvQXB3WnR2?=
+ =?utf-8?B?bkRjZXNyQWREVUJidXVZUDM5SWZnRXFxVTBBTk1zeVRNcllSZXEzUCs3Tlpk?=
+ =?utf-8?B?d1BOOGN1dEllUjZkUTlpSjVWNzI2ejZidFBYMFBsNFd5WldaZ1g0eGpBRmky?=
+ =?utf-8?B?UHA4U05FUFIybFRkenkrZzRhUFpFRFFtaWNUUjdDZG5uYjFaaVlmRStyUTRY?=
+ =?utf-8?B?Y0wraXRIaEIvSXgzOFducDU2ckdPK0lWMFVzU1ViT1pDQ2ZiNytkcVlmTmNP?=
+ =?utf-8?B?eUVpeEM2RTVGNkpVYmIzcVRLUjIyd3EvNVlJTGlTdzhDb1p6SlRpMnhlblpr?=
+ =?utf-8?B?WnlCcDZyeExhcHZRVU93K25NVWNpVlpqUTlQTTdZTlFyanFIcjhpWHZnLzJU?=
+ =?utf-8?B?cWFrcTFCLzRKN2YvOUpRNU43VExrMUpmUWE4bEpBRkJSS2FONTlqb0dTT0dQ?=
+ =?utf-8?B?bm1rbEdxL1N3YVRsSGN5Y3NQYWhoN3NpQ3hXMlptdTd4YkhQVXVOQ0E5Z2l4?=
+ =?utf-8?B?VCtsazdZcG9qNWREcEVrYWdLNUYxaWt6N2NnQXdwL0t4THk1N2pUY0VjYTZv?=
+ =?utf-8?B?ZnNITU8vdjhTT1JmbSt6UC82dUR4SVpZNjQ0V0Nsa3FnWkZDY2tSaUgzcFc0?=
+ =?utf-8?B?bDVZWmltNEFMQWxXcE93bFNhZDJnY2hlY3pTMUZPMEg1MENHTjRNamsrZFY5?=
+ =?utf-8?B?bmRaR25uVGZCaVVoZHJ0T3NMMWEzSEcxV3hWZVEzZUFjSVJzTDFsaTgyNERP?=
+ =?utf-8?B?V2VvdW1XcDhiQWJhbVlSWWoyUWViaWc5YkZjS3pvbWY3S1lKck93UnFSOVhu?=
+ =?utf-8?B?KzlRNG9tMlY1NllTcUllVkJxU2FBMmptMXBSVmlrRStZRHJ2OUkwRkY5THgx?=
+ =?utf-8?B?N0tQemY5dlNJR2dhd1FOS0Q2bnlESFV0bEtRY29VL0VkOUo3cXdMQ1ZpdzNU?=
+ =?utf-8?B?aG00Y0Y5SUxMWlo1dGtsZDVtbk9XQzFyM2YyUTYrMyt5cm9jbUlHZW1kbm1a?=
+ =?utf-8?B?R096Mzd5TWhKRlZjaW1mL3FPbExpeExJSmJBcW1aRnRLZWRsNU9mUnFlWm9x?=
+ =?utf-8?B?M3pGeFlkbDB6a1grMVJ5WXdxWUN4VmxoZVU1aW4vdmFseTVpRURZeG5zR2Nq?=
+ =?utf-8?B?RmQ0Z25jWURVL3B2VXBvL3Uza09TTnhjVStTVjdyK3FpM2JWTk1NQldzelBF?=
+ =?utf-8?B?emdmRFRPN0F5TWIyTTgrakVQajVLRlJPL0grWlJmUUI1R0I3MTZmKzdlM0Vq?=
+ =?utf-8?B?RVhKanR6MEtOa0R2R0NoTi9JcW1aRDNUR0hacVl6MTY4dHVmRzdmcGFnTm95?=
+ =?utf-8?B?b3owYkhvL25XNndaKzJmV09oUE5KMWZoOFlDenJwRm9Zd3ZYc0pzelEwSmpG?=
+ =?utf-8?B?OFk1bkNOWEFmMnNML2k1NTkzdXZRPT0=?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70b0c7ea-7daf-4272-9cb2-08db6ca5525e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jun 2023 07:02:31.1920
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: irayT3pKltS1RqgY3tTEn/NMtLsymY27KlBffth79Ar0BYGMVLoBv+A3yg/fKNEyc/JNB295F8tzcuJuWDrFhbxjWHRPz5nRCVoAGmi4CB8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR13MB4829
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 13, 2023 at 05:48:44PM -0400, Steven Rostedt wrote:
-> On Wed, 7 Jun 2023 09:42:30 -0700
-> Jiri Olsa <olsajiri@gmail.com> wrote:
-> 
-> > I can't really reliable reproduce this, but while checking the code, I wonder
-> > we should call rethook_free only after we call unregister_ftrace_function like
-> > in the patch below
-> 
-> Yeah, I think you're right!
-> 
-> > 
-> > jirka
-> > 
-> > 
-> > ---
-> > diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-> > index 18d36842faf5..0121e8c0d54e 100644
-> > --- a/kernel/trace/fprobe.c
-> > +++ b/kernel/trace/fprobe.c
-> > @@ -364,19 +364,13 @@ int unregister_fprobe(struct fprobe *fp)
-> >  		    fp->ops.saved_func != fprobe_kprobe_handler))
-> >  		return -EINVAL;
-> >  
-> > -	/*
-> > -	 * rethook_free() starts disabling the rethook, but the rethook handlers
-> > -	 * may be running on other processors at this point. To make sure that all
-> > -	 * current running handlers are finished, call unregister_ftrace_function()
-> > -	 * after this.
-> > -	 */
-> > -	if (fp->rethook)
-> > -		rethook_free(fp->rethook);
-> 
-> The above only waits for RCU to finish and then starts to free rethook.
-> 
-> This also means that something could be on the trampoline already and was
-> preempted. It could be that this code path gets preempted. Anyway, I don't
-> see how freeing rethook is safe before disabling all users.
-> 
-> Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+On Tue, Jun 13, 2023 at 12:00:25PM -0700, Stanislav Fomichev wrote:
+> On Tue, Jun 13, 2023 at 8:08 AM Simon Horman <simon.horman@corigine.com> wrote:
+> > On Mon, Jun 12, 2023 at 10:23:03AM -0700, Stanislav Fomichev wrote:
 
-thanks, I'll send formal patch
+...
 
-jirka
+> > > +void devtx_complete(struct net_device *netdev, struct devtx_frame *ctx)
+> > > +{
+> > > +     rcu_read_lock();
+> > > +     devtx_run(netdev, ctx, &netdev->devtx_cp);
+> > > +     rcu_read_unlock();
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(devtx_complete);
+> > > +
+> > > +/**
+> > > + * devtx_sb - Called for every egress netdev packet
+> >
+> > As this is a kernel doc, it would be good to document the ctx parameter here.
+> 
+> I didn't really find a convincing way to add a comment, I've had the
+> following which I've removed prio to submission:
+> @ctx devtx_frame context
+> 
+> But it doesn't seem like it brings anything useful? Or ok to keep it that way?
 
-> 
-> -- Steve
-> 
-> 
-> > -
-> >  	ret = unregister_ftrace_function(&fp->ops);
-> >  	if (ret < 0)
-> >  		return ret;
-> >  
-> > +	if (fp->rethook)
-> > +		rethook_free(fp->rethook);
-> > +
-> >  	ftrace_free_filter(&fp->ops);
-> >  
-> >  	return ret;
-> 
+Thanks Stan,
+
+I see what you are saying wrt it not bringing much value.
+But I'm more thinking that something is better than nothing.
+Anyway, I'll drop this topic if you prefer.
 
