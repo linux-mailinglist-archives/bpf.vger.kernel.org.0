@@ -1,110 +1,108 @@
-Return-Path: <bpf+bounces-2596-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA2DD7304E0
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 18:28:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93EDF73057A
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 18:53:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 078141C2074E
-	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 16:28:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F65628146E
+	for <lists+bpf@lfdr.de>; Wed, 14 Jun 2023 16:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA18E111B9;
-	Wed, 14 Jun 2023 16:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC3CAD47;
+	Wed, 14 Jun 2023 16:53:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997A91095C;
-	Wed, 14 Jun 2023 16:28:02 +0000 (UTC)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00ED2211F;
-	Wed, 14 Jun 2023 09:28:00 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5169f614977so11659904a12.3;
-        Wed, 14 Jun 2023 09:28:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BACE87F;
+	Wed, 14 Jun 2023 16:53:03 +0000 (UTC)
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0CA1BC6;
+	Wed, 14 Jun 2023 09:53:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686760079; x=1689352079;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7z5ClOpmYGeSB+jF+gmA2VEIzPNCp15J3pxp/TfhBNU=;
-        b=RD0aj9ql3Z4vG8A/EeYpgGfLabHYhEzSjLEBvohzqu9CAUbPwMRG+6Ormde0hYFI5J
-         lK66cvCJZId6gmHr83AiEmBhLdXbcP1La4sD/g3Mh11UPeQLNjQLN6cawr/E62i2JRQC
-         0AKFfFMp+3yKEG2wvUkWFFJYK8qM1extAYGoxmhD54YqXOA88NOiNnqJHKF/TJSN6XzH
-         yoKuqw0kIBmXpOK8oQyWNNMBzQiQisfx2sVv8Wcqz6vNw5OX43Og7ybG+dDcnr2ue72D
-         yeauXOcvq3S4Wb2FL7WXMPhaMSYOKnhiVT8FcvKNz32Wur5PDEFvNpuY99Nb+2xAjoot
-         hA2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686760079; x=1689352079;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7z5ClOpmYGeSB+jF+gmA2VEIzPNCp15J3pxp/TfhBNU=;
-        b=CASv63FXWnVdGLRj73K2xbW5B7oOQy8XCj2qIVbsYCg5nBeW5sIdOslS/K4sAEVCr1
-         P1dJqOLONv6P00KcrSXm/qTqylVPv7KFD9S5m+LCZBjrM3Qve0Csam1QTL5jYgVpx8CD
-         R0prV7WmOXHm32gShBmzxUSPt2fWyB2bW32X6zYedh/nVfvsXQMPyeaMcJ6gCyMXkXro
-         QgUH8jeBKm6e6cUfWg6khFsENmqYBXJIDBdmJramIdVMMyL1QzmwyK25MBIU8TFqsrAG
-         gl+mzq4OuE8Vc0kgMg133d10Ap9tyZj+t0UQ401hWmzUp/sutizsb2A0eL8nJ6p7rxfn
-         RLOw==
-X-Gm-Message-State: AC+VfDxKZZ0f0w2quiy+WNObqHFk9+XrgtbSzExqwzOQ/pKBCWJeT9Nk
-	FCSjQe9cTKlMm3ZApI72F88chvI3EpirzYFVxuQ=
-X-Google-Smtp-Source: ACHHUZ43Tbhi3lUORo6ThPJOyZDmVAiNE1w3G/BuyEp5qSSSVHcR0cIgDsAll9cKajDQ/tvOijtEElEs+cKvgnROJE4=
-X-Received: by 2002:aa7:c50e:0:b0:50b:c89f:f381 with SMTP id
- o14-20020aa7c50e000000b0050bc89ff381mr10387978edq.29.1686760079101; Wed, 14
- Jun 2023 09:27:59 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1686761582; x=1718297582;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=eplfOdVA/Gtb1sMFHGiGQO4cWp3IaiH84feaBJgtGc8=;
+  b=vTaROZBP2k5WputhhE4s4JzQMQObZ6l8rA87stgxP7t7z++VgEZ9goK1
+   iHGjYVHjxl0/VkbkZH7UQGA922bgHQnaD1+cgH6P2eSWQEbU5oAnkd419
+   BQKTmSTwQTAX6/BDZF9putnKTloOptdSD7xo0prG9/7nU/LCFA6qbvy0L
+   Q=;
+X-IronPort-AV: E=Sophos;i="6.00,243,1681171200"; 
+   d="scan'208";a="10138159"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2023 16:53:00 +0000
+Received: from EX19MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+	by email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com (Postfix) with ESMTPS id C812240DF5;
+	Wed, 14 Jun 2023 16:52:58 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 14 Jun 2023 16:52:56 +0000
+Received: from 88665a182662.ant.amazon.com (10.187.170.18) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 14 Jun 2023 16:52:51 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <lmb@isovalent.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
+	<edumazet@google.com>, <haoluo@google.com>, <hemanthmalla@gmail.com>,
+	<joe@wand.net.nz>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
+	<kpsingh@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<martin.lau@linux.dev>, <mykolal@fb.com>, <netdev@vger.kernel.org>,
+	<pabeni@redhat.com>, <sdf@google.com>, <shuah@kernel.org>, <song@kernel.org>,
+	<willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
+Subject: Re: [PATCH bpf-next v2 3/6] net: remove duplicate reuseport_lookup functions
+Date: Wed, 14 Jun 2023 09:52:44 -0700
+Message-ID: <20230614165244.59782-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAN+4W8ijtoew8ouaN3i1NXtg0_G_HHmZyAtf5LsCBb6shCAx2Q@mail.gmail.com>
+References: <CAN+4W8ijtoew8ouaN3i1NXtg0_G_HHmZyAtf5LsCBb6shCAx2Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230612172307.3923165-1-sdf@google.com> <87cz20xunt.fsf@toke.dk>
- <ZIiaHXr9M0LGQ0Ht@google.com> <877cs7xovi.fsf@toke.dk> <CAKH8qBt5tQ69Zs9kYGc7j-_3Yx9D6+pmS4KCN5G0s9UkX545Mg@mail.gmail.com>
- <87v8frw546.fsf@toke.dk> <CAKH8qBtsvsWvO3Avsqb2PbvZgh5GDMxe2fok-jS4DrJM=x2Row@mail.gmail.com>
- <CAADnVQKFmXAQDYVZxjvH8qbxk+3M2COGbfmtd=w8Nxvf9=DaeA@mail.gmail.com>
- <CAKH8qBvAMKtfrZ1jdwVS2pF161UdeXPSpY4HSzKYGTYNTupmTg@mail.gmail.com>
- <CAADnVQ+CCOw9_LbCAaFz0593eydKNb7RxnGr6_FatUOKmvPmBg@mail.gmail.com> <877cs6l0ea.fsf@toke.dk>
-In-Reply-To: <877cs6l0ea.fsf@toke.dk>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 14 Jun 2023 09:27:47 -0700
-Message-ID: <CAADnVQJM6ttxLjj2FGCO1DKOwHdj9eqcz75dFpsfwJ_4b3iqDw@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/7] bpf: netdev TX metadata
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Willem de Bruijn <willemb@google.com>, David Ahern <dsahern@kernel.org>, 
-	"Karlsson, Magnus" <magnus.karlsson@intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.187.170.18]
+X-ClientProxiedBy: EX19D046UWB002.ant.amazon.com (10.13.139.181) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 14, 2023 at 5:00=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@kernel.org> wrote:
->
-> >>
-> >> It's probably going to work if each driver has a separate set of tx
-> >> fentry points, something like:
-> >>   {veth,mlx5,etc}_devtx_submit()
-> >>   {veth,mlx5,etc}_devtx_complete()
->
-> I really don't get the opposition to exposing proper APIs; as a
-> dataplane developer I want to attach a program to an interface. The
-> kernel's role is to provide a consistent interface for this, not to
-> require users to become driver developers just to get at the required
-> details.
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Wed, 14 Jun 2023 16:25:05 +0100
+> On Tue, Jun 13, 2023 at 7:57 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> >
+> >                         else {
+> >                                 result = sk;
+> >                         }
+> >
+> > The assignment to result below is buggy.  Let's say SO_REUSEPROT group
+> > have TCP_CLOSE and TCP_ESTABLISHED sockets.
+> 
+> I'm not very familiar with SO_REUSEPORT, I assumed (incorrectly
+> probably) that such a group would only ever have TCP_CLOSE in UDP case
+> and TCP_LISTENING in TCP case. Can you explain how I could end up in
+> this situation?
 
-Consistent interface can appear only when there is a consistency
-across nic manufacturers.
-I'm suggesting to experiment in the most unstable way and
-if/when the consistency is discovered then generalize.
+When we call conenct() for UDP socket in SO_REUSEPORT group, the state
+is changed from TCP_CLOSE to TCP_ESTABLISHED in __ip4_datagram_connect(),
+and the socket remains in the group.
+
+That's why we check TCP_ESTABLISHED in reuseport_select_sock_by_hash()
+that is always false for TCP but true for UDP in the case above.
 
