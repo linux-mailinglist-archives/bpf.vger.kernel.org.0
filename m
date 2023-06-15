@@ -1,86 +1,72 @@
-Return-Path: <bpf+bounces-2644-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2645-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5096B731D79
-	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 18:11:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3D02731D92
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 18:17:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FDE81C20EDB
-	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 16:11:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A2A628148D
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 16:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47925182CB;
-	Thu, 15 Jun 2023 16:10:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AEB4182CB;
+	Thu, 15 Jun 2023 16:17:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 068B5156C0;
-	Thu, 15 Jun 2023 16:10:50 +0000 (UTC)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091B41BC3;
-	Thu, 15 Jun 2023 09:10:47 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-518ff822360so2565074a12.1;
-        Thu, 15 Jun 2023 09:10:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC36F15AE1
+	for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 16:17:46 +0000 (UTC)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA55C3
+	for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 09:17:44 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b4470e1500so11722471fa.1
+        for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 09:17:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686845445; x=1689437445;
+        d=gmail.com; s=20221208; t=1686845863; x=1689437863;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m6oF4O/3EA5olKSB626xfLYiUy/lhqpKUwualmtgXOY=;
-        b=Kyxb9xM4MSdy/GID1WQVmnBVf3YUuKcg0xA4nWHLITgRtumn1ZMSyzYipDy0bLKODN
-         1BDCoy5yDX8dlM18Fr8NQB2ckzBf7ItdfyuVIkCpNtNlEokPYIFSJmHJWgkxlbK9OGxq
-         Y1kng/t8OjlhueScat3JXziUaCfIWI+4XKYiQQNobTsQ6cfuuD3ggKydD0sFsezHkiGb
-         lY63S+OdfwXFTOgUY50beXrdBPIZfrQsOb5tOvLG3tnhAhH25Q/Uz3TEn0CqoCYOuTw3
-         zIeOybr1zPsbT7iKZ58KwRIA5Gcznya3PnttZT2Q68bvA4Dde5Sl8Qm4mrvcyctrTWcY
-         ZmHA==
+        bh=vkOWrf86Mam2v8kp/hOctV0jsvDdu4S/Uec0JVMybMM=;
+        b=K9Gv2u+c33J/IM7fEsSnGtdwzud3ruVc0uTIqIINcvvRZUIDmaY5wzc6gVXLEJVulU
+         l5OIG4LB775SX1hGFkvjAXPlm3629He58gRsYD6J73ElVuHF77RSHTq1fCFfKgQkSo0I
+         AugDkupZ2zXD6DPhiuBBRl1DN/6m4YaghYOmGXfCxmB7Rm4h28lr8EyLqA+aDnwBJuL6
+         4YyPQ0emVss9InNCzEYqcAnWQvffwET4p4dFc2FF457I631LFZm6LheF0l2an4Rq+bcn
+         4pPtQMfnODmQ80XaQ9FmZ2c6ZS8RBw40JXRIZyXz8uO86eyfJ1y8zeIfBDfCnhf3uWgQ
+         ffVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686845445; x=1689437445;
+        d=1e100.net; s=20221208; t=1686845863; x=1689437863;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=m6oF4O/3EA5olKSB626xfLYiUy/lhqpKUwualmtgXOY=;
-        b=jzxI1DkcVgya3fHKKz06hprXCyr2KhRdDXEsFiA0q/CtrKTfp3dWUph89+5p5tGQKZ
-         8kcKnNs0d38AHBrd5YwVfcbwz6iHoqLrwisnP+Cqp9Z/IKHpZTQ7+Cr/YVK5qJmZJmRX
-         0aWbTsNPmZV9TRqBJya+qmOEJd5DH1jNlSgjUdIyM/z+D/cSVgR68MDAAX6lYG/rgdtZ
-         c6mPReV2AYbMcKADNcLdnLyduCh8L5QY4ENWvAUn6T83dJTKolGiqa4OhpFly1cEAiGm
-         +WnPMpRE9oj6LeAkJJ3ZSwrN8C3+fN3DjORA00zPzi8SZtvpJsyySaNmsGDHjeZmjvdy
-         4lrw==
-X-Gm-Message-State: AC+VfDztQkMffraNcxMX96U1Ylp8/fRwaGu8WHphWKd0bL7rQ+pI+/Yj
-	3wRnD98KsMf0ctE18ltpkjYSv2WxwB+euUOR82s=
-X-Google-Smtp-Source: ACHHUZ5ZtlHaXnpS0WI4lKB88rLfn+k/K19HMqxayec1Q8iRulYaJOxI2C9+2tbRY6AVabfJ2wh7/i9IwN7V9t8YQiI=
-X-Received: by 2002:a05:6402:5172:b0:518:7bc3:4cec with SMTP id
- d18-20020a056402517200b005187bc34cecmr4233691ede.22.1686845445155; Thu, 15
- Jun 2023 09:10:45 -0700 (PDT)
+        bh=vkOWrf86Mam2v8kp/hOctV0jsvDdu4S/Uec0JVMybMM=;
+        b=iueaF5Hy2L/xIMBRKFXLZeQtgYFb8wsut7nRx0YVn+DGyh+QfhyKpd/g7jz6KhKypy
+         PT+m8rsGLnQ2Hz2nShi07QpIzOsI5V+QKp6NJUJMS+ogg69VBRL3j57l3UgS2bOig20p
+         +JomHUsDZMiHGWJlNbvYZrVsAFizScPP1D5Inb6IVMwi+nrxzBbwUPAYwxJ4+Z3Vy6xb
+         r11aQomAWtfU6CxDzrpUmt8MdtgAhQJa9wK2MQ8f/oWF6oeNrUPFJ7M95bakCjr0tZbb
+         qwmUx5KBWKGKBWHhZaKbnvZiVaQY/ZXu0Ql7dTWfRLyCLGywK+o1otlzH2P4dEpBvnej
+         2uOg==
+X-Gm-Message-State: AC+VfDyNUkA0oBepmiMBK60XyAsKscPfDj2hRoVqeODA6jjfjYHKFoqH
+	GMDT+CcTnXfFnbFgI+I4sDQapBvyzJgWRuVMVlLX+tc3
+X-Google-Smtp-Source: ACHHUZ5gKRGoI0i0xy+G9TyfiQeAQ1XQIYa80kERxaR9lXooLDUK5//ITySZWrZrLJgPwss9FbiT0ljR/zvLJsJuTXU=
+X-Received: by 2002:a2e:901a:0:b0:2b4:48de:b2cb with SMTP id
+ h26-20020a2e901a000000b002b448deb2cbmr1072229ljg.50.1686845862376; Thu, 15
+ Jun 2023 09:17:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230612172307.3923165-1-sdf@google.com> <87cz20xunt.fsf@toke.dk>
- <ZIiaHXr9M0LGQ0Ht@google.com> <877cs7xovi.fsf@toke.dk> <CAKH8qBt5tQ69Zs9kYGc7j-_3Yx9D6+pmS4KCN5G0s9UkX545Mg@mail.gmail.com>
- <87v8frw546.fsf@toke.dk> <CAKH8qBtsvsWvO3Avsqb2PbvZgh5GDMxe2fok-jS4DrJM=x2Row@mail.gmail.com>
- <CAADnVQKFmXAQDYVZxjvH8qbxk+3M2COGbfmtd=w8Nxvf9=DaeA@mail.gmail.com>
- <CAKH8qBvAMKtfrZ1jdwVS2pF161UdeXPSpY4HSzKYGTYNTupmTg@mail.gmail.com>
- <CAADnVQ+CCOw9_LbCAaFz0593eydKNb7RxnGr6_FatUOKmvPmBg@mail.gmail.com>
- <877cs6l0ea.fsf@toke.dk> <CAADnVQJM6ttxLjj2FGCO1DKOwHdj9eqcz75dFpsfwJ_4b3iqDw@mail.gmail.com>
- <87pm5wgaws.fsf@toke.dk>
-In-Reply-To: <87pm5wgaws.fsf@toke.dk>
+References: <bd173bf2-dea6-3e0e-4176-4a9256a9a056@google.com>
+In-Reply-To: <bd173bf2-dea6-3e0e-4176-4a9256a9a056@google.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 15 Jun 2023 09:10:33 -0700
-Message-ID: <CAADnVQKvn-6xio0DyO8EDJktHKtWykfEQc3VosO7oji+Fk1oMA@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/7] bpf: netdev TX metadata
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Willem de Bruijn <willemb@google.com>, David Ahern <dsahern@kernel.org>, 
-	"Karlsson, Magnus" <magnus.karlsson@intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Network Development <netdev@vger.kernel.org>
+Date: Thu, 15 Jun 2023 09:17:31 -0700
+Message-ID: <CAADnVQKbNjKJgYODUS0zO3dR8dxEcFpgY3GkhEEmwT462HW+wA@mail.gmail.com>
+Subject: Re: Calling functions while holding a spinlock
+To: Barret Rhoden <brho@google.com>
+Cc: bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -90,36 +76,31 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 15, 2023 at 5:36=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@kernel.org> wrote:
+On Wed, Jun 14, 2023 at 1:32=E2=80=AFPM Barret Rhoden <brho@google.com> wro=
+te:
 >
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> Hi -
 >
-> > On Wed, Jun 14, 2023 at 5:00=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgense=
-n <toke@kernel.org> wrote:
-> >>
-> >> >>
-> >> >> It's probably going to work if each driver has a separate set of tx
-> >> >> fentry points, something like:
-> >> >>   {veth,mlx5,etc}_devtx_submit()
-> >> >>   {veth,mlx5,etc}_devtx_complete()
-> >>
-> >> I really don't get the opposition to exposing proper APIs; as a
-> >> dataplane developer I want to attach a program to an interface. The
-> >> kernel's role is to provide a consistent interface for this, not to
-> >> require users to become driver developers just to get at the required
-> >> details.
-> >
-> > Consistent interface can appear only when there is a consistency
-> > across nic manufacturers.
-> > I'm suggesting to experiment in the most unstable way and
-> > if/when the consistency is discovered then generalize.
+> Would it be possible to add logic to the verifier to handle calling
+> functions within my program (subprograms?) while holding a bpf_spin_lock?
 >
-> That would be fine for new experimental HW features, but we're talking
-> about timestamps here: a feature that is already supported by multiple
-> drivers and for which the stack has a working abstraction. There's no
-> reason why we can't have that for the XDP path as well.
+> Some of my functions are large enough that the compiler won't inline
+> them, so I'll get a BPF_CALL to PC + offset (relative call within my
+> program).  Whenever this pops up, I force the compiler to inline the
+> function, but that's brittle.  I'd rather just have the ability to call
+> a function.
 
-... has an abstraction to receive, but has no mechanism to set it
-selectively per packet and read it on completion.
+always_inline works as a workaround, right?
+And it's guaranteed to work, no?
+I'm not sure why you're saying it's brittle.
+It probably generates less performant code,
+so it would be good to add such support.
+It wasn't done earlier, because spin_lock-ed section
+supposed to be short. So the restriction was kinda forcing
+program authors to minimize the lock time.
+Could you please share the example code where you want to use it?
+Just to make sure we're talking about calling bpf subprograms only
+and you're not requesting to call arbitrary helpers and kfuncs
+while holding the lock.
+Some of the kfuncs can be allowed under lock if there is a real need.
 
