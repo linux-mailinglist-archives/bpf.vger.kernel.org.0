@@ -1,79 +1,79 @@
-Return-Path: <bpf+bounces-2680-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EFC97322DE
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 00:49:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C84767322E9
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 00:56:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF033281548
-	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 22:49:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 625C2281511
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 22:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21AB6106;
-	Thu, 15 Jun 2023 22:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83305101D6;
+	Thu, 15 Jun 2023 22:56:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7508B7464
-	for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 22:48:52 +0000 (UTC)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446021FF7;
-	Thu, 15 Jun 2023 15:48:50 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-982a99fda0dso152870766b.1;
-        Thu, 15 Jun 2023 15:48:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F27A657
+	for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 22:56:06 +0000 (UTC)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13EC272C;
+	Thu, 15 Jun 2023 15:55:47 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9768fd99c0cso271490466b.0;
+        Thu, 15 Jun 2023 15:55:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686869329; x=1689461329;
+        d=gmail.com; s=20221208; t=1686869746; x=1689461746;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sBGpFuGRUhV5pr54u8KylWf9NrEzngRZbN+P89tTIS0=;
-        b=lI1k1VXdjAH8r9QWL5oFe3y0Ie0WQCeGy+gS05PBn9TB+5mt+1gC8zbipz6FQixBdW
-         hOLQlKzvQjjPep+JTH859k/z1R5kvxDcUDDZDLEZWFF3IfZ7Oc2i7D+O584BNvfAM2+n
-         wWoIGXqUnE0DhMqrAbqMN+Da79DU7/9DnOXeGupZZV7l2yqoXWLNOeauhfGjNLUK0lON
-         AAENXpiCYZLdyZLb6vOzRggOs5oTgX7n9FIWjoLwVMZolC1Sj9wPo2+sitoIl6vpycIC
-         Zhzdr0X049bbI8rHL3YO4nc5r1V67tP5ZO2nDw9ES+hkx7D+b8wW68bqcQB/Y3so3k0n
-         XWLQ==
+        bh=2OIqj0mkVEvQN1nrIc1Z5Ri9jhKdt39NZZowMGmv+P8=;
+        b=fJjUP22XueRFN6dD1JCd9oLT8C+wK8r1hcdvrjthTXLEFvWtND7WXX7GDzqjnKbblS
+         U/3vl6D2QpYGfs79hv1gvM871QKIgPZbXXfcRNiu3D5u6bMWGVuxG3lN2dzTjd8RDa8n
+         /f294YloEDGV64IM3OaYu+rIpRfThX+xJNHhBAIorF0pDMrjX+go8Rnde8rnnNJ8DRy6
+         iF5ga0IvEEHixxVAP1avVt4r2k6lieykw8k3mgN1tD0OdyG1y3Z698F3lAdosGIwc1v5
+         l8XVi4fbj5HADhfb9M75pyBUs8X9XB+Ml431iXqWQv4e1zPz50dDIkvn9rYWaMaxdZXk
+         2Wgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686869329; x=1689461329;
+        d=1e100.net; s=20221208; t=1686869746; x=1689461746;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sBGpFuGRUhV5pr54u8KylWf9NrEzngRZbN+P89tTIS0=;
-        b=U7rAGvoYMn7fqako9vZoXqYbtFo3bxzprGurSVm+3U1o/iaqbHWAKf4RtdYJzHrDQH
-         qZKksupBrT69Obf36D8lN+zBwNq3vziYDvNoZmXiIi1tAwxOy0Yu+eWB0n6Hc2/kI1QK
-         YA8BADgtBatXc5Mh0cgS0rTWU94RcscZdpKQF5IE4wp7g3JIJc/EBoNj/X/mW6i1b38L
-         AhBOWVryr1QzPxatFV2WcDQkNLoK0CD8KqikRso3OyOGG1dQVXttp46dZwYbWQNBIbSz
-         0PeU67l1M6u8D2UPpumA0WXvunwBHd1wMNhnMQf5tdAiuEwuOgwkNIzDfyPXQ1HO/mt7
-         4/qw==
-X-Gm-Message-State: AC+VfDzjJTvKC99MlyAL+QrRuxMaqG43eECna1yaU+9JifeExHhDqZXX
-	2o6RzR4Il3HwivobV1N8bEu3oQ80H2+2I0H2w3s=
-X-Google-Smtp-Source: ACHHUZ6yr8QuWOXa/V8SnguyEEf3r8lrc17r3X8ZcQcGr7TTE4sfH/IoMEa4778qQkvNfN3Fgc0l2Jh54TieEGVMVVw=
-X-Received: by 2002:a17:907:1c9c:b0:960:d9d:ffb5 with SMTP id
- nb28-20020a1709071c9c00b009600d9dffb5mr390112ejc.41.1686869328485; Thu, 15
- Jun 2023 15:48:48 -0700 (PDT)
+        bh=2OIqj0mkVEvQN1nrIc1Z5Ri9jhKdt39NZZowMGmv+P8=;
+        b=EOnzOoEuWe+H8ZHQaaryrdnZuCcQ2OYEhIfNRI3sPb3wlZUtrfXDoxAQWSj57qU8HC
+         0r0+DaPh7OF6idHOsHZqEY7FCj34N5DfDHefsnRl2YzfoKteIgfQwgunCdjsII12wiP0
+         lMyJ94bSHrSWX8o/DIfB34jBz/S4soGexHj41qkSKphXofjyR6eLO2cKvkLhcjBp9daX
+         Bi46BHOEFfqA6/4FASFSdfziNhahQULvsGAgHGXtdU/7y+m1Ck41aIJRtZTatLX0Gdei
+         xvSokLWhDBchUtdR4XNxS43uES5BWZ69P6zxYb04tKiZhJC+DYSe0OOnbtU/rfgeMhmd
+         5sHw==
+X-Gm-Message-State: AC+VfDxD9Y82l46aYs5DcTfzt/kIJMBu65cDrlw3JTRJwqdbE9szagqo
+	tV/aFovwfTj7FvnMSxnOzKfFfribNcCDDVCGW9w=
+X-Google-Smtp-Source: ACHHUZ6cDpcEQdp9rrKtPC9PgB9EYKnG+ApbnJZAIXa6V2QdIgiWMGxblRuh+O0QnfrfP+pI8vzTL3Xdiao6GWdFAdc=
+X-Received: by 2002:a17:907:2d09:b0:94a:653b:ba41 with SMTP id
+ gs9-20020a1709072d0900b0094a653bba41mr157717ejc.15.1686869745922; Thu, 15 Jun
+ 2023 15:55:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230607235352.1723243-1-andrii@kernel.org> <CAEiveUdNrHfVXzF_6ogChifKyje3kA07pd8mpP+s24AEbKD7Cg@mail.gmail.com>
- <CAEf4BzaDDqfODPS9MM5twXiXdDCAMs2U2-XK+gGPuSpnGFh=pQ@mail.gmail.com>
- <CAEiveUeDLr00SjyU=SMSc4XbHSA6LTn4U2DHr12760rbo5WqSw@mail.gmail.com>
- <CAEf4BzaQSKBJ_+8HaHdBHa9_guL_QCVgHZHb6jpCqv6CboCniQ@mail.gmail.com>
- <CAEiveUdU7On9c27iek2rRmqSLFTKduNUtjEAD0iaCPQ4wZoH6Q@mail.gmail.com> <20230614-geruch-verzug-db3903a52383@brauner>
-In-Reply-To: <20230614-geruch-verzug-db3903a52383@brauner>
+References: <20230607235352.1723243-1-andrii@kernel.org> <871qik28bs.fsf@toke.dk>
+ <CAEf4BzYin==+WF27QBXoj23tHcr5BeezbPj2u9RW6qz4sLJsKw@mail.gmail.com>
+ <87h6rgz60u.fsf@toke.dk> <CAEf4Bzasz_1qRXh4b7B8V1mOfyD++mVNYnhm6v__-cc7cU_33w@mail.gmail.com>
+ <87bkhlymyk.fsf@toke.dk> <CAEf4BzZRKgMjOQhxdC_fvn1SPwPh-GXhy_1TJVB6eVpZ8k04vw@mail.gmail.com>
+ <874jnal046.fsf@toke.dk>
+In-Reply-To: <874jnal046.fsf@toke.dk>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 Jun 2023 15:48:36 -0700
-Message-ID: <CAEf4BzawogpzENKC=KYk+mvc375ZF8Rs0gnu5grOywUsM0AV+Q@mail.gmail.com>
+Date: Thu, 15 Jun 2023 15:55:34 -0700
+Message-ID: <CAEf4BzZRrm26rzB5MOx-98PstVZxjhR73GiWK+Fjof1oSV_Oxw@mail.gmail.com>
 Subject: Re: [PATCH v2 bpf-next 00/18] BPF token
-To: Christian Brauner <brauner@kernel.org>
-Cc: Djalal Harouni <tixxdz@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
 	linux-security-module@vger.kernel.org, keescook@chromium.org, 
-	lennart@poettering.net, cyphar@cyphar.com, luto@kernel.org, 
-	kernel-team@meta.com, Sargun Dhillon <sargun@sargun.me>
+	brauner@kernel.org, lennart@poettering.net, cyphar@cyphar.com, 
+	luto@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,150 +83,124 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 14, 2023 at 2:39=E2=80=AFAM Christian Brauner <brauner@kernel.o=
-rg> wrote:
+On Wed, Jun 14, 2023 at 5:12=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <t=
+oke@redhat.com> wrote:
 >
-> On Wed, Jun 14, 2023 at 02:23:02AM +0200, Djalal Harouni wrote:
-> > On Tue, Jun 13, 2023 at 12:27=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Mon, Jun 12, 2023 at 5:02=E2=80=AFAM Djalal Harouni <tixxdz@gmail.=
-com> wrote:
-> > > >
-> > > > On Sat, Jun 10, 2023 at 12:57=E2=80=AFAM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Jun 9, 2023 at 3:30=E2=80=AFPM Djalal Harouni <tixxdz@gma=
-il.com> wrote:
-> > > > > >
-> > > > > > Hi Andrii,
-> > > > > >
-> > > > > > On Thu, Jun 8, 2023 at 1:54=E2=80=AFAM Andrii Nakryiko <andrii@=
-kernel.org> wrote:
-> > > > > > >
-> > > > > > > ...
-> > > > > > > creating new BPF objects like BPF programs, BPF maps, etc.
-> > > > > >
-> > > > > > Is there a reason for coupling this only with the userns?
-> > > > >
-> > > > > There is no coupling. Without userns it is at least possible to g=
-rant
-> > > > > CAP_BPF and other capabilities from init ns. With user namespace =
-that
-> > > > > becomes impossible.
-> > > >
-> > > > But these are not the same: delegate full cap vs delegate an fd mas=
-k?
-> > >
-> > > What FD mask are we talking about here? I don't recall us talking
-> > > about any FD masks, so this one is a bit confusing without more
-> > > context.
-> >
-> > Ah err, sorry yes referring to fd token (which I assumed is a mask of
-> > allowed operations or something like that).
-> >
-> > So I want the possibility to delegate the fd token in the init userns.
-> >
-> > > >
-> > > > One can argue unprivileged in init userns is the same privileged in
-> > > > nested userns
-> > > > Getting to delegate fd in init userns, then in nested ones seems lo=
-gical...
-> > >
-> > > Again, sorry, I'm not following. Can you please elaborate what you me=
-an?
-> >
-> > I mean can we use the fd token in the init user namespace too? not
-> > only in the nested user namespaces but in the first one? Sorry I
-> > didn't check the code.
-> >
-
-[...]
-
-> >
-> > > >
-> > > > Having the fd or "token" that gives access rights pinned in two
-> > > > separate bpffs mounts seems too much, it crosses namespaces (mount,
-> > > > userns etc), environments setup by privileged...
-> > >
-> > > See above, there is nothing namespaceable about BPF itself, and BPF
-> > > token as well. If some production setup benefits from pinning one BPF
-> > > token in multiple places, I don't see the problem with that.
-> > >
-> > > >
-> > > > I would just make it per bpffs mount and that's it, nothing more. I=
-f a
-> > > > program wants to bind mount it somewhere else then it's not a bpf
-> > > > problem.
-> > >
-> > > And if some application wants to pin BPF token, why would that be BPF
-> > > subsystem's problem as well?
-> >
-> > The credentials, capabilities, keyring, different namespaces, etc are
-> > all attached to the owning user namespace, if the BPF subsystem goes
-> > its own way and creates a token to split up CAP_BPF without following
-> > that model, then it's definitely a BPF subsystem problem...  I don't
-> > recommend that.
-> >
-> > Feels it's going more of a system-wide approach opening BPF
-> > functionality where ultimately it clashes with the argument: delegate
-> > a subset of BPF functionality to a *trusted* unprivileged application.
-> > My reading of delegation is within a container/service hierarchy
-> > nothing more.
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 >
-> You're making the exact arguments that Lennart, Aleksa, and I have been
-> making in the LSFMM presentation about this topic. It's even recorded:
+> > On Mon, Jun 12, 2023 at 3:49=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgense=
+n <toke@kernel.org> wrote:
+> >>
+> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> >>
+> >> > On Fri, Jun 9, 2023 at 2:21=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgen=
+sen <toke@kernel.org> wrote:
+> >> >>
+> >> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> >> >>
+> >> >> > On Fri, Jun 9, 2023 at 4:17=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8r=
+gensen <toke@kernel.org> wrote:
+> >> >> >>
+> >> >> >> Andrii Nakryiko <andrii@kernel.org> writes:
+> >> >> >>
+> >> >> >> > This patch set introduces new BPF object, BPF token, which all=
+ows to delegate
+> >> >> >> > a subset of BPF functionality from privileged system-wide daem=
+on (e.g.,
+> >> >> >> > systemd or any other container manager) to a *trusted* unprivi=
+leged
+> >> >> >> > application. Trust is the key here. This functionality is not =
+about allowing
+> >> >> >> > unconditional unprivileged BPF usage. Establishing trust, thou=
+gh, is
+> >> >> >> > completely up to the discretion of respective privileged appli=
+cation that
+> >> >> >> > would create a BPF token.
+> >> >> >>
+> >> >> >> I am not convinced that this token-based approach is a good way =
+to solve
+> >> >> >> this: having the delegation mechanism be one where you can basic=
+ally
+> >> >> >> only grant a perpetual delegation with no way to retract it, no =
+way to
+> >> >> >> check what exactly it's being used for, and that is transitive (=
+can be
+> >> >> >> passed on to others with no restrictions) seems like a recipe fo=
+r
+> >> >> >> disaster. I believe this was basically the point Casey was makin=
+g as
+> >> >> >> well in response to v1.
+> >> >> >
+> >> >> > Most of this can be added, if we really need to. Ability to revok=
+e BPF
+> >> >> > token is easy to implement (though of course it will apply only f=
+or
+> >> >> > subsequent operations). We can allocate ID for BPF token just lik=
+e we
+> >> >> > do for BPF prog/map/link and let tools iterate and fetch informat=
+ion
+> >> >> > about it. As for controlling who's passing what and where, I don'=
+t
+> >> >> > think the situation is different for any other FD-based mechanism=
+. You
+> >> >> > might as well create a BPF map/prog/link, pass it through SCM_RIG=
+HTS
+> >> >> > or BPF FS, and that application can keep doing the same to other
+> >> >> > processes.
+> >> >>
+> >> >> No, but every other fd-based mechanism is limited in scope. E.g., i=
+f you
+> >> >> pass a map fd that's one specific map that can be passed around, wi=
+th a
+> >> >> token it's all operations (of a specific type) which is way broader=
+.
+> >> >
+> >> > It's not black and white. Once you have a BPF program FD, you can
+> >> > attach it many times, for example, and cause regressions. Sure, here
+> >> > we are talking about creating multiple BPF maps or loading multiple
+> >> > BPF programs, so it's wider in scope, but still, it's not that
+> >> > fundamentally different.
+> >>
+> >> Right, but the difference is that a single BPF program is a known
+> >> entity, so even if the application you pass the fd to can attach it
+> >> multiple times, it can't make it do new things (e.g., bpf_probe_read()
+> >> stuff it is not supposed to). Whereas with bpf_token you have no such
+> >> guarantee.
+> >
+> > Sure, I'm not claiming BPF token is just like passing BPF program FD
+> > around. My point is that anything in the kernel that is representable
+> > by FD can be passed around to an unintended process through
+> > SCM_RIGHTS. And if you want to have tighter control over who's passing
+> > what, you'd probably need LSM. But it's not a requirement.
+> >
+> > With BPF token it is important to trust the application you are
+> > passing BPF token to. This is not a mechanism to just freely pass
+> > around the ability to do BPF. You do it only to applications you
+> > control.
+>
+> Trust is not binary, though. "Do I trust this application to perform
+> this specific action" is different from "do I trust this application to
+> perform any action in the future". A security mechanism should grant the
+> minimum required privileges required to perform the operation; this
+> token thing encourages (defaults to) broader grants, which is worrysome.
 
-Alright, so (I think) I get a pretty good feel now for what the main
-concerns are, and why people are trying to push this to be an FS. And
-it's not so much that BPF token grants bpf() syscall usage to unpriv
-(but trusted) workloads or that BPF itself is not namespaceable. The
-main worry is that BPF token, once issues, could be
-illegally/uncontrollably passed outside of container, intentionally or
-not. And by having this association with mount namespace (through BPF
-FS) we automatically limit the sharing to only contain that has access
-to that BPF FS.
-
-So I agree that it makes sense to have this mount namespace
-association, but I also would like to keep BPF token to be a separate
-entity from BPF FS itself, and have the ability to have multiple
-different BPF tokens exposed in a single BPF FS instance. I think the
-latter is important.
-
-So how about this slight modification: when a BPF token is created
-using BPF_TOKEN_CREATE command, the user has to provide an FD for
-"associated" BPF FS instance (superblock). What that does is allows
-BPF token to be created with BPF FS and/or mount namespace association
-set in stone. After that BPF token can only be pinned in that BPF FS
-instance and cannot leave the boundaries of that mount namespace
-(specific details to be worked out, this is new area for me, so I'm
-sorry if I'm missing nuances).
-
-What this slight tweak gives us is that we can still have multiple BPF
-token instances within a single BPF FS. It is still pinnable/gettable
-through common bpf() syscall's BPF_OBJ_PIN/BPF_OBJ_GET commands. You
-still can have more nuances file permission and getting BPF token can
-be controlled further through LSM. Also we still get to use an
-extensible and familiar (to BPF users) bpf_attr binary approach.
-Basically, it is very much native to BPF subsystem, but it is mount
-namespace-bound like was requested by proponents of merging BPF token
-and BPF FS together.
-
-I assume that this BPF FS fd can be fetched using fsopen() or fspick()
-syscalls, is that right?
-
-WDYT? Does that sound like it would address all the above concerns?
-Please point to any important details I might be missing (as I
-mentioned, very unfamiliar territory).
+BPF token defaults to not allowing anything, unless you explicitly
+allow commands/progs/maps. If you don't set allow_cmds, you literally
+get a useless BPF token that grants you nothing.
 
 >
-> https://youtu.be/4CCRTWEZLpw?t=3D1546
+> > With user namespaces, if we could grant CAP_BPF and co to use BPF,
+> > we'd do that. But we can't. BPF token at least gives us this
+> > opportunity.
 >
-> So we fully agree with you here.
-
-I actually just rewatched that entire discussion. :) And after talking
-about BPF token at length in the halls of the conference and email
-discussions on this patch set, it was very useful to relisten (again)
-all the finer points that were made back then. Thanks for the
-remainder and the link.
+> If the use case is to punch holes in the user namespace isolation I feel
+> like that is better solved at the user namespace level than the BPF
+> subsystem level...
+>
+> -Toke
+>
+>
+> (Ran out of time and I'm about to leave for PTO, so dropping the RPC
+> discussion for now)
+>
 
