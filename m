@@ -1,164 +1,101 @@
-Return-Path: <bpf+bounces-2628-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2629-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 699F773183A
-	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 14:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ED67E731905
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 14:36:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2366D280E46
-	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 12:11:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABCB7280C20
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 12:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17F4715AC2;
-	Thu, 15 Jun 2023 12:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E4FA6FC0;
+	Thu, 15 Jun 2023 12:36:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D83156F1
-	for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 12:11:24 +0000 (UTC)
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144B21B2;
-	Thu, 15 Jun 2023 05:11:23 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-62de85dd962so25485726d6.0;
-        Thu, 15 Jun 2023 05:11:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686831082; x=1689423082;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fegt9akVYBSE0LUaHpMRKpjWLqmUt7+8r975NZq+Uao=;
-        b=f44NpdKqr1HzhqlBzEbl1xqY41UcOYkKLWkadu1I+bjq2A79B0gr1JvosVQ/66xb9g
-         /bg6i6XUsnhWeFp5PabrFvh9yxj+6iY6/fKCqeOiLWqrhTRXN4htlJzEZm7DfONHovWh
-         gQmnzCE7MQSpODo7LT9afIuF+7EHeD9TM8w8xkLzFIVUbmAnJql2yY9j4C4eNjDnFD4p
-         zHNxGsJ1sFdFMM1558BE8IDsOGQlfykZYjOWqof62ONBnnj4R2/4daNVl/Nkpmjo3H8Q
-         RhYxmq1xhSQ/3bBgh03LLrLzTkn4IC25VvzKEYNzSbJQU9+rEF8En5fmZ5DOhsPmU45Z
-         VJZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686831082; x=1689423082;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fegt9akVYBSE0LUaHpMRKpjWLqmUt7+8r975NZq+Uao=;
-        b=jLIhX+30B+X1LRCIA7biPYRfhpwNCpHgq3HxvGaclmYLyJ3ehjvV6BGrXLuNBKgqnc
-         8cr6+jK/Qcup5m9RohQKeugz/gDfPSHDMHRFxMYL/vqxmgLxRYLXPl3oziKBFYkn3+g9
-         4aTpAbrPik0wjXVQ+0FeIX/3YnFUZGraVQn/0sAVBdrpw4Y5P6wgTvlcwuu4Di4V8gzT
-         pnt7AnjmhdoWp/1ABU0ztUwwiJ8yR2ivHNWR8xXmrsDf1PSdhsG6EajY2R12LkDXRKbU
-         3/2tHi8jdNtYsieJjAEDqsekyb/vE74w7FFU7DdKnTIq3CMEfnaCY9rh+iH33lQVLBDi
-         V2VA==
-X-Gm-Message-State: AC+VfDx4OK9OgzYfls6G9hZlxx/OLCho/f/+jfIcvl4rA53DN5nUxxFw
-	tDVaqVow1VHN+Kn/aus443EnVQCbKKbvCxVLaTw=
-X-Google-Smtp-Source: ACHHUZ4gTzMVfAZJaUQ1KPRjVXpE16EfvHodbXUSKJm9uEkAAUXrQ9LivKUC3WLmAvfQbaQ/vq9XdfLOqcqvjWwDXy0=
-X-Received: by 2002:a05:6214:e8e:b0:5d5:fd1d:6ef5 with SMTP id
- hf14-20020a0562140e8e00b005d5fd1d6ef5mr24240424qvb.12.1686831081998; Thu, 15
- Jun 2023 05:11:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D271FDA;
+	Thu, 15 Jun 2023 12:36:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C17C433C0;
+	Thu, 15 Jun 2023 12:36:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686832582;
+	bh=GkT9ZzUS0jxyoPU9+PHr+3Ug0LWT0zu1rrz4M6oSY8A=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=Q+kGfUAeKphnJdA63xi3HZo4FErUcmtmycIDnm0g8JvmsvBoRk24vZC1yUFdQnc1Y
+	 ThlmJUs13K720bqY1SU57awY10l/TPjgDSx5rPLa5qmdMvgU1QfcI3HXOn3fsxWwmw
+	 9xDIsylg36S5YNam25bdgzWzjd+rGOJawASLYpz/wDsSk+EJk3MiF+TRL4/g4jDsc/
+	 NxdppriMG99TMKNvr4GPim+2uVXXjUXHTFsXkgs4Zya/3MSNbTpuaxzif+1TpZ5InH
+	 AkTx8OMxLvtOXTYhCwsEBD8j/GooVVXZmlkKRSmZqE8Wrg4GGSnyHauqPT0OKDUOPf
+	 zzzPPmAFQVFcA==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 92CDEBBEC2F; Thu, 15 Jun 2023 14:36:19 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+ <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Willem de Bruijn <willemb@google.com>, David Ahern
+ <dsahern@kernel.org>, "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+ =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, "Fijalkowski, Maciej"
+ <maciej.fijalkowski@intel.com>, Network Development
+ <netdev@vger.kernel.org>
+Subject: Re: [RFC bpf-next 0/7] bpf: netdev TX metadata
+In-Reply-To: <CAADnVQJM6ttxLjj2FGCO1DKOwHdj9eqcz75dFpsfwJ_4b3iqDw@mail.gmail.com>
+References: <20230612172307.3923165-1-sdf@google.com>
+ <87cz20xunt.fsf@toke.dk> <ZIiaHXr9M0LGQ0Ht@google.com>
+ <877cs7xovi.fsf@toke.dk>
+ <CAKH8qBt5tQ69Zs9kYGc7j-_3Yx9D6+pmS4KCN5G0s9UkX545Mg@mail.gmail.com>
+ <87v8frw546.fsf@toke.dk>
+ <CAKH8qBtsvsWvO3Avsqb2PbvZgh5GDMxe2fok-jS4DrJM=x2Row@mail.gmail.com>
+ <CAADnVQKFmXAQDYVZxjvH8qbxk+3M2COGbfmtd=w8Nxvf9=DaeA@mail.gmail.com>
+ <CAKH8qBvAMKtfrZ1jdwVS2pF161UdeXPSpY4HSzKYGTYNTupmTg@mail.gmail.com>
+ <CAADnVQ+CCOw9_LbCAaFz0593eydKNb7RxnGr6_FatUOKmvPmBg@mail.gmail.com>
+ <877cs6l0ea.fsf@toke.dk>
+ <CAADnVQJM6ttxLjj2FGCO1DKOwHdj9eqcz75dFpsfwJ_4b3iqDw@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 15 Jun 2023 14:36:19 +0200
+Message-ID: <87pm5wgaws.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230612151608.99661-1-laoar.shao@gmail.com> <20230612151608.99661-9-laoar.shao@gmail.com>
- <ZIrmLo9UH//V4sYP@krava>
-In-Reply-To: <ZIrmLo9UH//V4sYP@krava>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 15 Jun 2023 20:10:46 +0800
-Message-ID: <CALOAHbDOmnEW9BJD=GfuXWwThoxOTqxkxpXPfL8HCDoBUszyYg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 08/10] bpf: Support ->fill_link_info for perf_event
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, quentin@isovalent.com, 
-	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Thu, Jun 15, 2023 at 6:21=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Mon, Jun 12, 2023 at 03:16:06PM +0000, Yafang Shao wrote:
->
-> SNIP
->
-> >
-> >  /* User bpf_sock_addr struct to access socket fields and sockaddr stru=
-ct passed
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 80c9ec0..fe354d5 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -3303,9 +3303,133 @@ static void bpf_perf_link_dealloc(struct bpf_li=
-nk *link)
-> >       kfree(perf_link);
-> >  }
-> >
-> > +static int bpf_perf_link_fill_name(const struct perf_event *event,
-> > +                                char __user *uname, u32 ulen,
-> > +                                u64 *probe_offset, u64 *probe_addr,
-> > +                                u32 *fd_type)
-> > +{
->
-> this function name sounds misleading, it does query all the link data
-> plus copying the name.. seems like this should be renamed and separated
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Will do it.
-
+> On Wed, Jun 14, 2023 at 5:00=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen =
+<toke@kernel.org> wrote:
+>>
+>> >>
+>> >> It's probably going to work if each driver has a separate set of tx
+>> >> fentry points, something like:
+>> >>   {veth,mlx5,etc}_devtx_submit()
+>> >>   {veth,mlx5,etc}_devtx_complete()
+>>
+>> I really don't get the opposition to exposing proper APIs; as a
+>> dataplane developer I want to attach a program to an interface. The
+>> kernel's role is to provide a consistent interface for this, not to
+>> require users to become driver developers just to get at the required
+>> details.
 >
->
-> > +     const char *buf;
-> > +     u32 prog_id;
-> > +     size_t len;
-> > +     int err;
-> > +
-> > +     if (!ulen ^ !uname)
-> > +             return -EINVAL;
-> > +     if (!uname)
-> > +             return 0;
-> > +
-> > +     err =3D bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
-> > +                                   probe_offset, probe_addr);
-> > +     if (err)
-> > +             return err;
-> > +
-> > +     len =3D strlen(buf);
-> > +     if (buf) {
-> > +             err =3D bpf_copy_to_user(uname, buf, ulen, len);
-> > +             if (err)
-> > +                     return err;
-> > +     } else {
-> > +             char zero =3D '\0';
-> > +
-> > +             if (put_user(zero, uname))
-> > +                     return -EFAULT;
-> > +     }
-> > +     return 0;
-> > +}
-> > +
-> > +static int bpf_perf_link_fill_probe(const struct perf_event *event,
-> > +                                 struct bpf_link_info *info)
-> > +{
-> > +     char __user *uname;
-> > +     u64 addr, offset;
-> > +     u32 ulen, type;
-> > +     int err;
-> > +
-> > +#ifdef CONFIG_KPROBE_EVENTS
->
-> this will break compilation when CONFIG_KPROBE_EVENTS or CONFIG_UPROBE_EV=
-ENTS
-> options are not defined
+> Consistent interface can appear only when there is a consistency
+> across nic manufacturers.
+> I'm suggesting to experiment in the most unstable way and
+> if/when the consistency is discovered then generalize.
 
-Indeed. Will improve it.
+That would be fine for new experimental HW features, but we're talking
+about timestamps here: a feature that is already supported by multiple
+drivers and for which the stack has a working abstraction. There's no
+reason why we can't have that for the XDP path as well.
 
---=20
-Regards
-Yafang
+-Toke
 
