@@ -1,69 +1,70 @@
-Return-Path: <bpf+bounces-2640-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2641-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56014731C3F
-	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 17:15:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D4E1731C5A
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 17:21:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 127F828131F
-	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 15:15:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B87621C20EB4
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 15:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA4415AE3;
-	Thu, 15 Jun 2023 15:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5396215AEF;
+	Thu, 15 Jun 2023 15:21:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF02453AF
-	for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 15:15:49 +0000 (UTC)
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32131FD5;
-	Thu, 15 Jun 2023 08:15:47 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4f764e9295dso3404632e87.0;
-        Thu, 15 Jun 2023 08:15:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC6520F5
+	for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 15:21:20 +0000 (UTC)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A73B12E;
+	Thu, 15 Jun 2023 08:21:18 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4f62cf9755eso10612790e87.1;
+        Thu, 15 Jun 2023 08:21:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686842146; x=1689434146;
+        d=gmail.com; s=20221208; t=1686842476; x=1689434476;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YUaNNvZJKqvPxJEh/yVf9+7PUgSKVV+0gV2t9sS/ypA=;
-        b=gtBkvbmC3awURjBcjuKRpkhNYHCGwqQEiP6++Pg23rRI2myK8abB/2Yrc28Ahk05RB
-         mGwlv917eC5NWYSrmwmqPEzLf4v1pJo0M6q3ztvTmxAp2rtvnOMp7n0NxqQrct2zFgsr
-         ATAk2MXKyVx2E3J6DsT5aVsEJHmQnwYso/xL7lla2Dv1hpA8XqP9qzy+jpIBa15Du+Z9
-         uUax8ZynxmYBl9hOKkVYsS4zRh4DO8DAcT+KZvG5fWLwj6Us0+g+nmMxNa/N3OVoKGF9
-         UceRQxmE7eayNwl5vLvnxp+ScOrgaC+AKoTa7TKQQooSCD0LkEn31+kSZf+U4EWpZceI
-         syIA==
+        bh=GZGTBGF0vX5H+cBn/kub68kDoPw51WDE6/g4hKhy20Y=;
+        b=r4EC4w7/hLiXXodN+vKFdcpd3m6kuBmapXE1AOZ6UcODUUTNVzMmph/aqZ9g+LHKUE
+         EdXsIoE6Ls5mnlOrsmCD4NlfyrOjxzYScYm8sC3mWUL1Gs8T+MXQ/gVice3fQ4fG5erc
+         cNB1kK6dMFSJ2AKVENHLwCmccTRZ74ietR4NH+gBOVeQ2fZw/tcQGHN5FX4NlQ/W0QHO
+         wT8vqebLC/N+KLrubvrPKCK5+EWqqTWIhH+knrayrc1ELV8AAX8AlyCvi3UNOQh/OJuS
+         AvffhwZptYWY5xgb/XqbMEbJewi89360Pg5ucZzksey9tgotY5oqNlsK+QC4BF5RTDRa
+         5a+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686842146; x=1689434146;
+        d=1e100.net; s=20221208; t=1686842476; x=1689434476;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=YUaNNvZJKqvPxJEh/yVf9+7PUgSKVV+0gV2t9sS/ypA=;
-        b=T1MgtlidX3Ni0wYIp3HdvLP9ZFIaPhZlzaP2SFTz23tY+d9k9O6AuFYLD8U7qNtHUz
-         ePB4cxEQ2kKwM9gN8wodkpBQG1vy1d//CoB0uRgdmIAiuXQ/W9rI7jgoR/rJuRRgVMnd
-         7UJF2GBZ0mWg79RW0AEPfAVjJptO4dKjgNXVgOPbJLC5YWZ45XsIkx2uKx9kDb2fQ9fb
-         FxfyhDH5Eg1xbPxJBngsVoD0kQw0JWenZ33ZOSQB5Eyrw26j7yd/tC91o5JTRLR4ELd2
-         H5xQeBgPUaQ5lEuBHv+wWGCOSVcnmRWtQbs65yL3Iz+bVYp8x+jL+P/Q8CHGbN+TYK3a
-         5PXQ==
-X-Gm-Message-State: AC+VfDy3i+y2iLJs+fpGX/3Qx8SW5JfTmuyTcEA6EQxEliVzqBPcrQHQ
-	AmnluZ/ERrf/clwCX4Mx8ys=
-X-Google-Smtp-Source: ACHHUZ7LhhmoE7hT+VcIyuQuudJ0L1nUjSBZ3wptDDSycMrHh+TqsBiBWohqsUUEKBo6/BEHPQn0Kw==
-X-Received: by 2002:ac2:4d96:0:b0:4f6:259d:3d40 with SMTP id g22-20020ac24d96000000b004f6259d3d40mr9934961lfe.2.1686842145828;
-        Thu, 15 Jun 2023 08:15:45 -0700 (PDT)
+        bh=GZGTBGF0vX5H+cBn/kub68kDoPw51WDE6/g4hKhy20Y=;
+        b=c30Kx2UUIex1cMGyFWvX7SBP85h0hzrtRz4Y4luZONdKPmmWJjAnngZfoBgPOnzTS9
+         vnS0aP4H4DVEgYAU9j1jDCbbFotx4KLNzCSQRzNgUYlnyR+HJz3+BnZEG5J8T7/fyoYq
+         cpQvt0K98/CNX8fFzMjk8qvWIVIuv68yteG6zF+7hLoD+uUCT4c3E0sxuoYUiWfhBeG2
+         HD6D51hpUqHpd/+cagvo9wxw0NMsFMfIZI7XmggLCqfwZth5XK8rkv0oUnM0nquH6uv/
+         5nj4DOWcd6MbaTw4b7WSAIqFFoHl/ZhHpGmL8DFfAzeWUqDlaVA5JqNpwKvoNySdCjkW
+         doAw==
+X-Gm-Message-State: AC+VfDxZCSvGACcNrwWfCOd3iEOgbWrORWSZaYJxjaN/0rwPTi2x6TC8
+	tAG1pIEH7ivHdOmjixOVEUQA5WYY8i0=
+X-Google-Smtp-Source: ACHHUZ5swJgtHHCiscBDnu3XBnMgyD+DMNaqAeOlJnpWSzZVzCbi2gRUZcpL3gpmA/8ttmCY4rWXFA==
+X-Received: by 2002:a19:440a:0:b0:4e9:cfd2:e2d with SMTP id r10-20020a19440a000000b004e9cfd20e2dmr10245992lfa.65.1686842476163;
+        Thu, 15 Jun 2023 08:21:16 -0700 (PDT)
 Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id 16-20020ac24830000000b004e95f53adc7sm2639097lft.27.2023.06.15.08.15.44
+        by smtp.gmail.com with ESMTPSA id v13-20020a056512048d00b004f84706d761sm177758lfq.20.2023.06.15.08.21.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jun 2023 08:15:45 -0700 (PDT)
-Message-ID: <8d6c094ec12c32e4166299f4a89be7fa4d0f9360.camel@gmail.com>
+        Thu, 15 Jun 2023 08:21:15 -0700 (PDT)
+Message-ID: <e2620d326d60acb4e5fbd31a1bc9391b14395dcc.camel@gmail.com>
 Subject: Re: ppc64le vmlinuz is huge when building with BTF
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Dominique Martinet <asmadeus@codewreck.org>, Arnaldo Carvalho de Melo
 	 <acme@kernel.org>, dwarves@vger.kernel.org, bpf@vger.kernel.org
-Date: Thu, 15 Jun 2023 18:15:43 +0300
-In-Reply-To: <ZIqGSJDaZObKjLnN@codewreck.org>
+Date: Thu, 15 Jun 2023 18:21:14 +0300
+In-Reply-To: <8d6c094ec12c32e4166299f4a89be7fa4d0f9360.camel@gmail.com>
 References: <ZIqGSJDaZObKjLnN@codewreck.org>
+	 <8d6c094ec12c32e4166299f4a89be7fa4d0f9360.camel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.4-0ubuntu1 
@@ -80,60 +81,67 @@ X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, 2023-06-15 at 12:32 +0900, Dominique Martinet wrote:
-> Hi,
+On Thu, 2023-06-15 at 18:15 +0300, Eduard Zingerman wrote:
+> On Thu, 2023-06-15 at 12:32 +0900, Dominique Martinet wrote:
+> > Hi,
+> >=20
+> > coming from alpine: https://gitlab.alpinelinux.org/alpine/aports/-/issu=
+es/12563
+> >=20
+> > alice noticed the kernel packages got quite bigger, in particular for
+> > ppc64le I've confirmed that the vmlinuz file size jump when building
+> > with BTF:
+> > currently released package with BTF:
+> > https://dl-cdn.alpinelinux.org/alpine/edge/main/ppc64le/linux-lts-6.1.3=
+3-r0.apk
+> > 272M	boot/vmlinuz-lts
 >=20
-> coming from alpine: https://gitlab.alpinelinux.org/alpine/aports/-/issues=
-/12563
+> Hi Dominique,
 >=20
-> alice noticed the kernel packages got quite bigger, in particular for
-> ppc64le I've confirmed that the vmlinuz file size jump when building
-> with BTF:
-> currently released package with BTF:
-> https://dl-cdn.alpinelinux.org/alpine/edge/main/ppc64le/linux-lts-6.1.33-=
-r0.apk
-> 272M	boot/vmlinuz-lts
+> I've just checked the linked apk and it looks like DWARF sections are
+> not stripped and take most of the space, e.g.:
+>=20
+> $ llvm-objdump --headers boot/vmlinuz-lts | grep \.debug \
+>   | gawk '{ sum +=3D strtonum("0x"$3); } END { print sum; }' | numfmt --t=
+o iec
+> 228M
+>=20
+> Compare this to BTF sections size:
+>=20
+> $ llvm-objdump --headers boot/vmlinuz-lts | grep BTF \
+>   | gawk '{ sum +=3D strtonum("0x"$3); } END { print sum; }' | numfmt --t=
+o iec
+> 3,9M
 
-Hi Dominique,
-
-I've just checked the linked apk and it looks like DWARF sections are
-not stripped and take most of the space, e.g.:
-
-$ llvm-objdump --headers boot/vmlinuz-lts | grep \.debug \
-  | gawk '{ sum +=3D strtonum("0x"$3); } END { print sum; }' | numfmt --to =
-iec
-228M
-
-Compare this to BTF sections size:
-
-$ llvm-objdump --headers boot/vmlinuz-lts | grep BTF \
-  | gawk '{ sum +=3D strtonum("0x"$3); } END { print sum; }' | numfmt --to =
-iec
-3,9M
+Heh, Alan answered while I was looking into it, sorry for the spam.
 
 >=20
-> test build without BTF:
-> https://gitlab.alpinelinux.org/martinetd/aports/-/jobs/1049335
-> 44M	boot/vmlinuz-lts
+> >=20
+> > test build without BTF:
+> > https://gitlab.alpinelinux.org/martinetd/aports/-/jobs/1049335
+> > 44M	boot/vmlinuz-lts
+> >=20
+> >=20
+> > Is that a known issue?
+> > We'll probably just turn off BTF for the ppc64le build for now, but it
+> > might be worth checking.
+> >=20
+> >=20
+> > While I have your attention, even the x86_64 package grew much bigger
+> > than I thought it would, the installed modules directory go from 90MB t=
+o
+> > 108MB gzipped); it's a 18% increase (including kernel: 103->122MB) whic=
+h
+> > is more than what I'd expect out of BTF.
+> > Most users don't care about BTF so it'd be great if they could be built
+> > and installed separately (debug package all over again..) or limiting
+> > the growth a bit more if possible.
+> > I haven't tried yet but at this point ikheaders is probably worth
+> > considering instead..
+> > Perhaps we're missing some stripping option or something?
+> >=20
+> >=20
+> > Thanks!
 >=20
->=20
-> Is that a known issue?
-> We'll probably just turn off BTF for the ppc64le build for now, but it
-> might be worth checking.
->=20
->=20
-> While I have your attention, even the x86_64 package grew much bigger
-> than I thought it would, the installed modules directory go from 90MB to
-> 108MB gzipped); it's a 18% increase (including kernel: 103->122MB) which
-> is more than what I'd expect out of BTF.
-> Most users don't care about BTF so it'd be great if they could be built
-> and installed separately (debug package all over again..) or limiting
-> the growth a bit more if possible.
-> I haven't tried yet but at this point ikheaders is probably worth
-> considering instead..
-> Perhaps we're missing some stripping option or something?
->=20
->=20
-> Thanks!
 
 
