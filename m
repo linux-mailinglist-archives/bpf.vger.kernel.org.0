@@ -1,204 +1,132 @@
-Return-Path: <bpf+bounces-2648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE96A731E10
-	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 18:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3EDD731EA3
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 19:05:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04BF41C20ECE
-	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 16:43:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA92A1C20BD6
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 17:05:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9AE42E0C9;
-	Thu, 15 Jun 2023 16:43:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3887E2E0D1;
+	Thu, 15 Jun 2023 17:05:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91B22E0C3
-	for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 16:43:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CCF1C433C8;
-	Thu, 15 Jun 2023 16:43:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686847392;
-	bh=29UqMzKsugUAu7mXMIRtYH9jxqLb1Je4+7bj236hTb8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=F3kFwHCPwFJb/DBd8wsyfsUvhNvNulgEhWc8Va1EnvZwlcFpUiWjbuLnQwNWMhzYh
-	 M63Pn2ICZtH88nfS9Z8EIP1wIKbEqBLrR4TBRr3AfmV7nxqgfZYoEaXT8BCuZsGSYX
-	 wUucwyUM7wVUJdV07e6b5HO3RmaqjK2bROIqXe9kKZa9e+rYdrbaOjKlPTOFlZdP2q
-	 +iXfxOlDt2AgJjqS5W4k1EPn3QE6IWsAfGGqRJMY/JTwAZ4qyzpXb2vV0FxEx0bY6z
-	 NMGtx5RVB7RbSJ54S6hqbADLQ6MjDMhGr8IkH1FRl+238n6ydHGh39sU8xZI8AIS0Z
-	 eyFT+PorSo6EA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id DCDE9CE0BB2; Thu, 15 Jun 2023 09:43:11 -0700 (PDT)
-Date: Thu, 15 Jun 2023 09:43:11 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v4] bpf: Remove in_atomic() from bpf_link_put().
-Message-ID: <0658d317-4f44-4b74-8234-8dc037505f77@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CAEf4BzZcPKsRJDQfdVk9D1Nt6kgT4STpEUrsQ=UD3BDZnNp8eQ@mail.gmail.com>
- <CAADnVQLzZyZ+cPqBFfrqa8wtQ8ZhWvTSN6oD9z4Y2gtrfs8Vdg@mail.gmail.com>
- <CAEf4BzY-MRYnzGiZmW7AVJYgYdHW1_jOphbipRrHRTtdfq3_wQ@mail.gmail.com>
- <20230525141813.TFZLWM4M@linutronix.de>
- <CAEf4Bzaipoo6X_2Fh5WTV-m0yjP0pvhqi7-FPFtGOrSzNpdGJQ@mail.gmail.com>
- <20230526112356.fOlWmeOF@linutronix.de>
- <CAEf4Bzawgrn2DhR9uvXwFFiLR9g+j4RYC6cr3n+eRD_RoKBAJA@mail.gmail.com>
- <20230605163733.LD-UCcso@linutronix.de>
- <CAEf4BzZ=VZcLZmtRefLtRyRb7uLTb6e=RVw82rxjLNqE=8kT-w@mail.gmail.com>
- <20230614083430.oENawF8f@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DFDEAC1
+	for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 17:05:17 +0000 (UTC)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A75194;
+	Thu, 15 Jun 2023 10:05:16 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b443ebae0dso16163461fa.2;
+        Thu, 15 Jun 2023 10:05:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686848715; x=1689440715;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=crBt2ITg8SZ2kjr+v53DzcSzxyBX77tw0/FzCIW8K/M=;
+        b=DUuKjGKkLd3xr6fw7ISZK9UObyf9IKsH9P5OAMVKBBFO2p+gWILzdkAlmpX9qvis6c
+         rNIKx3JtA3BKucyQwwzgvgLT/405EdgBeNp5o+KsahwdLKpFFRk9rdnmg7z7SHJOZPzK
+         YLn4jzrY3rv65y71YS5w+xMd3K7068Y2Ui+ewyGSM6j7z0BXzwe5aXPLS7TmDcO+Qqzg
+         u3bCkITTMBXCH1+h/MQ7hxPK1TxyNbFO/XRceINXXj2lvq5Cvd0+DfnTBuN35QDj6r2X
+         eopRfgU6pF4o7AAyjP/vnsM63+YkWAp33Gis/C6he4BMsfBKr714P9vuRcc0m1IPGn+S
+         u2Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686848715; x=1689440715;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=crBt2ITg8SZ2kjr+v53DzcSzxyBX77tw0/FzCIW8K/M=;
+        b=ikk9cwurbU7oeMZYoclSWrh2//W79KeWqHQwGqJsGH/kBa/XraXxiV9P/5AYnu98fB
+         Nd6IJOmGeH/n4fwZB+v8gUA23Z4080V/d4jwCAROIJB/en6tKoduNVnFT/L8Iw9J5XJt
+         COINcN5efdFy3nSCOiA37aODQPngNpTHPdZs0px9BmxBwHeYMJy7gTLSiyHTMXWBuuG8
+         E93MoEYt6Cq8lljQDl3+VW+g1EK5K2P5QVjBqBLC1sWT2ugjzSFEY8e/TEXaNqVkbGr+
+         r9ZQDrKt32VLiLgJa0ap096vKBhn0wF/fuoS4Ne4sRYlKrv4ixQR/HaMldHJbtzmuFXR
+         3kRA==
+X-Gm-Message-State: AC+VfDy6hnecGDlgPqjNSuBFN25HxxkonSkhOphWGsC/wdjLR7m7pXIs
+	9zfTh1ueL7jj+T4XBzNLShepUT8WLK5org==
+X-Google-Smtp-Source: ACHHUZ7r4SbDTfLJT6A+Xdd3hkh4l9+0lbKnY5uI/8PhcRo2xcI7zxTj5tNJ3wYJvt8qxVxw9ze7ug==
+X-Received: by 2002:a2e:a175:0:b0:2b3:47b3:3c39 with SMTP id u21-20020a2ea175000000b002b347b33c39mr49134ljl.23.1686848714423;
+        Thu, 15 Jun 2023 10:05:14 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id z27-20020a05651c023b00b002adc6c2cb3bsm3195205ljn.5.2023.06.15.10.05.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jun 2023 10:05:13 -0700 (PDT)
+Message-ID: <fbd79f5f2b250ec913c78d91b94ca96fb96f67ee.camel@gmail.com>
+Subject: Re: [PATCH bpf] bpf/btf: Accept function names that contain dots
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Florent Revest <revest@chromium.org>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org,  song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org,  sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+ nathan@kernel.org,  ndesaulniers@google.com, trix@redhat.com,
+ stable@vger.kernel.org
+Date: Thu, 15 Jun 2023 20:05:11 +0300
+In-Reply-To: <CABRcYm+C+tPwXAGnaDRR_U2hzyt+09fjkKBp3tPx6iKT4wBE2Q@mail.gmail.com>
+References: <20230615145607.3469985-1-revest@chromium.org>
+	 <CABRcYm+C+tPwXAGnaDRR_U2hzyt+09fjkKBp3tPx6iKT4wBE2Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230614083430.oENawF8f@linutronix.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, Jun 14, 2023 at 10:34:30AM +0200, Sebastian Andrzej Siewior wrote:
-> bpf_free_inode() is invoked as a RCU callback. Usually RCU callbacks are
-> invoked within softirq context. By setting rcutree.use_softirq=0 boot
-> option the RCU callbacks will be invoked in a per-CPU kthread with
-> bottom halves disabled which implies a RCU read section.
-> 
-> On PREEMPT_RT the context remains fully preemptible. The RCU read
-> section however does not allow schedule() invocation. The latter happens
-> in mutex_lock() performed by bpf_trampoline_unlink_prog() originated
-> from bpf_link_put().
+On Thu, 2023-06-15 at 17:44 +0200, Florent Revest wrote:
+> On Thu, Jun 15, 2023 at 4:56=E2=80=AFPM Florent Revest <revest@chromium.o=
+rg> wrote:
+> >=20
+> > When building a kernel with LLVM=3D1, LLVM_IAS=3D0 and CONFIG_KASAN=3Dy=
+, LLVM
+> > leaves DWARF tags for the "asan.module_ctor" & co symbols.
+>=20
+> To be fair I can't tell if this is an LLVM bug. It's sort of curious
+> that with LLVM_IAS=3D1, these debugging symbols are not kept and they
+> are with LLVM_IAS=3D0 but I don't know what the expected behavior should
+> be and how BTF should deal with it. I'll let people with more context
+> comment on this! :)
+>=20
+> An easy reproducer is:
+>=20
+> $ touch pwet.c
+>=20
+> $ clang -g -fsanitize=3Dkernel-address -c -o pwet.o pwet.c
+> $ llvm-dwarfdump pwet.o | grep module_ctor
+>=20
+> $ clang -fno-integrated-as -g -fsanitize=3Dkernel-address -c -o pwet.o pw=
+et.c
+> $ llvm-dwarfdump pwet.o | grep module_ctor
+>                 DW_AT_name      ("asan.module_ctor")
 
-Just to make sure that I understand, you are proposing that the RCU
-callbacks continue to run with BH disabled, but that BH-disabled regions
-are preemptible in kernels built with CONFIG_PREEMPT_RT=y?
+Interestingly, I am unable to reproduce it using either
+clang version 14.0.0-1ubuntu1 or clang main (bd66f4b1da30).
 
-Or did I miss a turn in there somewhere?
+>=20
+> > In a dramatic turn of event, this BTF verification failure can cause
+> > the netfilter_bpf initialization to fail, causing netfilter_core to
+> > free the netfilter_helper hashmap and netfilter_ftp to trigger a
+> > use-after-free. The risk of u-a-f in netfilter will be addressed
+> > separately
+>=20
+> To be precise, I meant "netfilter conntrack".
+>=20
+> I sent the following patch as a more targeted mitigation for the uaf
+> https://lore.kernel.org/netfilter-devel/20230615152918.3484699-1-revest@c=
+hromium.org/T/#u
+>=20
 
-							Thanx, Paul
-
-> It was pointed out that the bpf_link_put() invocation should not be
-> delayed if originated from close(). It was also pointed out that other
-> invocations from within a syscall should also avoid the workqueue.
-> Everyone else should use workqueue by default to remain safe in the
-> future (while auditing the code, every caller was preemptible except for
-> the RCU case).
-> 
-> Let bpf_link_put() use the worker unconditionally. Add
-> bpf_link_put_direct() which will directly free the resources and is used
-> by close() and from within __sys_bpf().
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
-> v3…v4:
->   - Revert back to bpf_link_put_direct() to the direct free and let
->     bpf_link_put() use the worker. Let close() and all invocations from
->     within the syscall use bpf_link_put_direct() which are all instances
->     within syscall.c here.
-> 
-> v2…v3:
->   - Drop bpf_link_put_direct(). Let bpf_link_put() do the direct free
->     and add bpf_link_put_from_atomic() to do the delayed free via the
->     worker.
-> 
-> v1…v2:
->    - Add bpf_link_put_direct() to be used from bpf_link_release() as
->      suggested.
-> 
->  kernel/bpf/syscall.c | 29 ++++++++++++++++-------------
->  1 file changed, 16 insertions(+), 13 deletions(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 14f39c1e573ee..8f09aef5949d4 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2777,28 +2777,31 @@ static void bpf_link_put_deferred(struct work_struct *work)
->  	bpf_link_free(link);
->  }
->  
-> -/* bpf_link_put can be called from atomic context, but ensures that resources
-> - * are freed from process context
-> +/* bpf_link_put might be called from atomic context. It needs to be called
-> + * from sleepable context in order to acquire sleeping locks during the process.
->   */
->  void bpf_link_put(struct bpf_link *link)
->  {
->  	if (!atomic64_dec_and_test(&link->refcnt))
->  		return;
->  
-> -	if (in_atomic()) {
-> -		INIT_WORK(&link->work, bpf_link_put_deferred);
-> -		schedule_work(&link->work);
-> -	} else {
-> -		bpf_link_free(link);
-> -	}
-> +	INIT_WORK(&link->work, bpf_link_put_deferred);
-> +	schedule_work(&link->work);
->  }
->  EXPORT_SYMBOL(bpf_link_put);
->  
-> +static void bpf_link_put_direct(struct bpf_link *link)
-> +{
-> +	if (!atomic64_dec_and_test(&link->refcnt))
-> +		return;
-> +	bpf_link_free(link);
-> +}
-> +
->  static int bpf_link_release(struct inode *inode, struct file *filp)
->  {
->  	struct bpf_link *link = filp->private_data;
->  
-> -	bpf_link_put(link);
-> +	bpf_link_put_direct(link);
->  	return 0;
->  }
->  
-> @@ -4764,7 +4767,7 @@ static int link_update(union bpf_attr *attr)
->  	if (ret)
->  		bpf_prog_put(new_prog);
->  out_put_link:
-> -	bpf_link_put(link);
-> +	bpf_link_put_direct(link);
->  	return ret;
->  }
->  
-> @@ -4787,7 +4790,7 @@ static int link_detach(union bpf_attr *attr)
->  	else
->  		ret = -EOPNOTSUPP;
->  
-> -	bpf_link_put(link);
-> +	bpf_link_put_direct(link);
->  	return ret;
->  }
->  
-> @@ -4857,7 +4860,7 @@ static int bpf_link_get_fd_by_id(const union bpf_attr *attr)
->  
->  	fd = bpf_link_new_fd(link);
->  	if (fd < 0)
-> -		bpf_link_put(link);
-> +		bpf_link_put_direct(link);
->  
->  	return fd;
->  }
-> @@ -4934,7 +4937,7 @@ static int bpf_iter_create(union bpf_attr *attr)
->  		return PTR_ERR(link);
->  
->  	err = bpf_iter_new_fd(link);
-> -	bpf_link_put(link);
-> +	bpf_link_put_direct(link);
->  
->  	return err;
->  }
-> -- 
-> 2.40.1
-> 
 
