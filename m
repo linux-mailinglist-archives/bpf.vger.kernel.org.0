@@ -1,43 +1,67 @@
-Return-Path: <bpf+bounces-2633-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2634-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3552731AFA
-	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 16:14:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30E30731B41
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 16:25:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 005231C20E81
-	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 14:14:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D282B281420
+	for <lists+bpf@lfdr.de>; Thu, 15 Jun 2023 14:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6AE174D4;
-	Thu, 15 Jun 2023 14:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F9B17AA5;
+	Thu, 15 Jun 2023 14:25:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A480171A5;
-	Thu, 15 Jun 2023 14:14:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 415DFC433C8;
-	Thu, 15 Jun 2023 14:14:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686838461;
-	bh=8rQHH3i3Wo5LBZJWaXmkXUPZ8PkbfaTGdpx89FRgdlc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eVcq7D+at5yU0wLc1QcYhsVui8Qh4sjzCQOmfZTW/SkJguIl18b8rCQ87bK+4S6ce
-	 GTgYQ7a3ULd9Q9jbw0aKUE53rEzMtCacbOkv2PyXg2zyT5m6znaljpCNOFAOeSouF4
-	 H9sDSyYWUXO0HIyFl8MP44EHK6fW3R9G82sHpJwCPTP8rJ20OLktaLOdKRt7ncF2TO
-	 Hg2BAqej9rLPAXu76YWTd+9Kr7n5uYZQrVHTFGh67kRibKGkHGy/r1HNfcqNKWBkpz
-	 b6YIDKE3+0OPG98Hw+JduIooHL2+58pZtetJmmJUlxR3+NpGUpGj8Drl9dkgrccw66
-	 wSJUxdl44hiXA==
-Date: Thu, 15 Jun 2023 16:14:15 +0200
-From: Simon Horman <horms@kernel.org>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59100171BE
+	for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 14:25:10 +0000 (UTC)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5491FE5
+	for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 07:25:08 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3f8d2bfec3bso20010215e9.2
+        for <bpf@vger.kernel.org>; Thu, 15 Jun 2023 07:25:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1686839107; x=1689431107;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YnRaEq/R+qqN1l7MGLXRX4Jh2MLTeQ4xQu8xZjVF/9E=;
+        b=noOMb35ytk+HSd7Sg7wpxWDhOqSYGWdXJ1rDSk0c9X/IZBV4KKQPOSTUPqjUnWYxPP
+         pwIBnqTXLACqrH4kXUWkEioaJ3k+577u5bA5fZ7e9Ngr7K0ctQxKXtHPjDqVS1Cy/1tX
+         X2L4wpGgPAxCsCAJUlAsQnTVCJSicdZb9Lp35b4SllE5FAln2tH/a/9lumdApRtSdUHB
+         cWUMV10MSSClyOgvTosV1zEkcK/2Tnmm/x6t4w5aM36Ey5J9stGpw6Z5MNZbj0mzE1eV
+         zU8nWLgf53oKIvcy8SZo2cJy8Npxbyq7IyyO675lDngEHZzx23kB6x42PzsEZrtJnphS
+         sa6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686839107; x=1689431107;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YnRaEq/R+qqN1l7MGLXRX4Jh2MLTeQ4xQu8xZjVF/9E=;
+        b=cHJ9/YfIibPL51hM2fLBa7M825FrCl7HSEunw68BRroOcfpmky8ra8wY1rUyTpv0gx
+         wFbzRK3RsyQ3tdoitleNo1vgkX+Xi5D6lRhs7nGdYJEMCZLx1DQFIF4PeCidJp8QZkVu
+         jsPuGW+4Rex+c2OmoohUyTqwIAf7NqaRTM4IU40MioDdN+Ty0TF3dxWdl09EZjSFmwq1
+         iTXllOxHc9mRpan0KuOKnZ8Sw7A3CZyZlsSzPMpxY3ZPygTr1ir3BvCxmN+gcmUMvgV0
+         QMPmkIBxT9O8SssS/JuwJ+DO0QGs9ADuMugBiz05Js8opzvSUqEQM+CZ7zN0bPdOC/wP
+         naVw==
+X-Gm-Message-State: AC+VfDz3duN+1lq5QnO0Eot+ZSKdQV5jvrYV1P2Xpu9iaqjN2JT5xL7V
+	LxvxUCCGCdO0GiZTfBNcttpBcQ==
+X-Google-Smtp-Source: ACHHUZ6/POVDebMNcxTEAlIgxHE9CAAQgcjr+eY2tthAxS4zMPp+MzA34nBwadH7vsqmMHlo1hEzlg==
+X-Received: by 2002:a05:600c:255:b0:3f6:53a:6665 with SMTP id 21-20020a05600c025500b003f6053a6665mr16182726wmj.19.1686839106865;
+        Thu, 15 Jun 2023 07:25:06 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id c12-20020a05600c0acc00b003f195d540d9sm20654630wmr.14.2023.06.15.07.25.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jun 2023 07:25:04 -0700 (PDT)
+Date: Thu, 15 Jun 2023 17:25:00 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Simon Horman <horms@kernel.org>
 Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
 	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Andre Guedes <andre.guedes@intel.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -46,17 +70,15 @@ Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	Jithu Joseph <jithu.joseph@intel.com>,
 	John Fastabend <john.fastabend@gmail.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Vedang Patel <vedang.patel@intel.com>,
 	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
 	bpf@vger.kernel.org
 Subject: Re: [PATCH RFC net] igc: Avoid dereference of ptr_err in
  igc_clean_rx_irq()
-Message-ID: <ZIsct/J9NeY874b9@kernel.org>
+Message-ID: <278e2ad2-847d-44a5-9bfe-46e11f4fea80@kadam.mountain>
 References: <20230615-igc-err-ptr-v1-1-a17145eb8d62@kernel.org>
- <ZIrgEVVQfvJwneLx@boxer>
- <ZIr1s6KHVGh/ZuEj@kernel.org>
- <ZIr/iX7qNbUpXocP@boxer>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,72 +87,52 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZIr/iX7qNbUpXocP@boxer>
+In-Reply-To: <20230615-igc-err-ptr-v1-1-a17145eb8d62@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Thu, Jun 15, 2023 at 02:09:45PM +0200, Maciej Fijalkowski wrote:
-> On Thu, Jun 15, 2023 at 01:27:47PM +0200, Simon Horman wrote:
-> > On Thu, Jun 15, 2023 at 11:55:29AM +0200, Maciej Fijalkowski wrote:
-> > > On Thu, Jun 15, 2023 at 11:45:36AM +0200, Simon Horman wrote:
-> > 
-> > Hi Marciej,
-> > 
-> > > Hi Simon,
-> > > 
-> > > > In igc_clean_rx_irq() the result of a call to igc_xdp_run_prog() is assigned
-> > > > to the skb local variable. This may be an ERR_PTR.
-> > > > 
-> > > > A little later the following is executed, which seems to be a
-> > > > possible dereference of an ERR_PTR.
-> > > > 
-> > > > 	total_bytes += skb->len;
-> > > > 
-> > > > Avoid this problem by continuing the loop in which all of the
-> > > > above occurs once the handling of the NULL case completes.
-> > > > 
-> > > > This proposed fix is speculative - I do not have deep knowledge of this
-> > > > driver.  And I am concerned about the effect of skipping the following
-> > > > logic:
-> > > > 
-> > > >   igc_put_rx_buffer(rx_ring, rx_buffer, rx_buffer_pgcnt);
-> > > >   cleaned_count++;
-> > > 
-> > > this will break - you have to recycle the buffer to have it going.
-> > 
-> > Thanks. As I said I wasn't sure about the fix: it was a strawman.
-> > 
-> > > > Flagged by Smatch as:
-> > > > 
-> > > >   .../igc_main.c:2467 igc_xdp_run_prog() warn: passing zero to 'ERR_PTR'
-> > > 
-> > > how about PTR_ERR_OR_ZERO() ? this would silence smatch and is not an
-> > > intrusive change. another way is to get rid of ERR_PTR() around skb/xdp
-> > > run result but i think the former would be just fine.
-> > 
-> > Sorry, there were two warnings. And I accidently trimmed the one
-> > that is more relevant instead of the one that is less relevant.
-> > I do agree the one above does not appear to be a bug.
-> > 
-> > But I am concerned abut this one:
-> > 
-> >   .../igc_main.c:2618 igc_clean_rx_irq() error: 'skb' dereferencing possible ERR_PTR()
-> > 
-> > If skb is an error pointer, e.g. ERR_PTR(-IGC_XDP_PASS), and
-> > it is dereferenced, that would be a problem, right?
+The original code is okay.  Passing zero to ERR_PTR() is intentional.
+
+On Thu, Jun 15, 2023 at 11:45:36AM +0200, Simon Horman wrote:
+> In igc_clean_rx_irq() the result of a call to igc_xdp_run_prog() is assigned
+> to the skb local variable. This may be an ERR_PTR.
 > 
-> IGC_XDP_PASS is 0. -0 is still 0 right?
+> A little later the following is executed, which seems to be a
+> possible dereference of an ERR_PTR.
+> 
+> 	total_bytes += skb->len;
 
-Yes, I missed that point.
-Though I could have chosen a different value which is not zero.
 
-> this means skb is NULL and igc_{build,construct}_skb() will init it. For
-> ERR_PTR, igc_cleanup_headers() does IS_ERR() against it and continues. So
-> you will get to line 2618 only for valid skb, it just happens that logic
-> is written in a way that skb is supposed to carry XDP return code. We
-> removed this in ice for example but i40e works like that for many years
-> without issues, AFAICT...
+There is an IS_ERR() check in igc_cleanup_headers() which prevents
+this.  Sort of tricky to see.  Do you have the cross function database
+set up?  If so then Smatch shouldn't warn about this dereference.
 
-Thanks. I now see that the key point I was missing is the IS_ERR()
-check in igc_cleanup_headers().
+> 
+> Avoid this problem by continuing the loop in which all of the
+> above occurs once the handling of the NULL case completes.
+> 
+> This proposed fix is speculative - I do not have deep knowledge of this
+> driver.  And I am concerned about the effect of skipping the following
+> logic:
+> 
+>   igc_put_rx_buffer(rx_ring, rx_buffer, rx_buffer_pgcnt);
+>   cleaned_count++;
+> 
+> Flagged by Smatch as:
+> 
+>   .../igc_main.c:2467 igc_xdp_run_prog() warn: passing zero to 'ERR_PTR'
 
-I agree this is not a bug.
+Linus once complained to me that this check is bogus and passing zero to
+ERR_PTR() is fine and an intended use case.  But actually this test
+does really find a lot of bugs.  I think for new warnings it is less
+than 10% false positives.  But we fix the bugs so warnings which are
+over three month old are probably 97% false positives.
+
+regards,
+dan carpenter
+
 
