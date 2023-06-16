@@ -1,218 +1,220 @@
-Return-Path: <bpf+bounces-2718-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2719-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E167733548
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:00:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C5F73358F
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:14:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D8C0281684
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 16:00:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80FEB2817C8
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 16:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290851ACA5;
-	Fri, 16 Jun 2023 16:00:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 598281ACDC;
+	Fri, 16 Jun 2023 16:13:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37C318B1D;
-	Fri, 16 Jun 2023 16:00:32 +0000 (UTC)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141C62D5D;
-	Fri, 16 Jun 2023 09:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686931231; x=1718467231;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=kGEhgTRN28m0EK1O5VMPcfIfbuK/PkTjN9+K3CXcQ+E=;
-  b=NJWLoA8tJGebjzTB9TEPLQYSHe2o6Y7u/JrnxAOBlMRlGJnx/frj2k0D
-   23rvzfeJCN1xZlvM6FR79SDWn0DvDf0TGsbWiWQbgLVYeBUcSL3aqUxiJ
-   Sw/RN7vMmvbLEsppLXyEAgLOd981dFXbaMShrjQWE46/NOwu9ETTosITH
-   idqaOvgQgvwdz+dAK0dSh6Wz9rXr/8W2at/F/7QOrybLjlInwYZHjlKGb
-   dGL1/IYRPx8/fXrP27ui0c4VUMdJdZ19cN0RIZHQtJbMT7akHgUnL6ODg
-   gfKCag5h3mAYtcY6u6uYnHaTpKyIpgUjKocjrK+FPmcdTrYrU+iiEl9FD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="422898477"
-X-IronPort-AV: E=Sophos;i="6.00,247,1681196400"; 
-   d="scan'208";a="422898477"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2023 09:00:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="742717785"
-X-IronPort-AV: E=Sophos;i="6.00,247,1681196400"; 
-   d="scan'208";a="742717785"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga008.jf.intel.com with ESMTP; 16 Jun 2023 09:00:24 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Fri, 16 Jun 2023 09:00:22 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Fri, 16 Jun 2023 09:00:22 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.41) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Fri, 16 Jun 2023 09:00:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eOw+MwR/uPGeZKQUkQhhmallZEOXg7CbXhAHNCJB1bZxgEmt7bpNSBR0O0FlozW7+ipkOfXB7Bly60FaXKqT/ms6FeCJ2RMtH6l7fqmqWA+XRuUl8adPlyRFOcq1EOwV637JQFXTrdN6jSvMb9Fv30CtbgL2Iq0LHqQyhpW+DpS6N8OSNfyxWuTkRAe1twj72c/KtnvM0pXwjNPLeF+pAjouZtjJO5ZAgqbwukp1zQhn183JUa6V8Jn+jW9H+0lMB+ZEKf4hEDrTWB9G32KupCAJ/iDuKYYkFeJ59zo435yAzvDy3VDhJR7soJx9+L/0npY8eO0KAtFasV6jYVWmWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kGEhgTRN28m0EK1O5VMPcfIfbuK/PkTjN9+K3CXcQ+E=;
- b=BgO1WVMAZWZCkWvDD8cmMMN3wg86fQ9PHpRRfLYAzZRGcVQ7RvaW6AwH69LirfwM0oV/FI3ggMvqL4FFoVf4HwcYk6mK+mIv92oc2SHu8o96aAa0lnrvy1e8GQm26aFC/USPyRmiYpaJ9pO/YU6jVCogtDC7LHGWC5Me0R4z5FRGYawsbzUdODrCqgwiBff3BvrUMYTqWby1tbwHaPVnMuMZd2GAY9fX09wQT/Bm8o+mOrmyyt3uB68Q1FKu/Fn4s93etaV7WA97ygJdJNqESOx2P8wZ3fYysrEktlpzFDWkw6uH2g821Kt2Ngt/jP8nK6dlXK7Ww/R577S81Gr+Qg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by CO1PR11MB4930.namprd11.prod.outlook.com (2603:10b6:303:9b::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.27; Fri, 16 Jun
- 2023 16:00:19 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::6984:19a5:fe1c:dfec]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::6984:19a5:fe1c:dfec%7]) with mapi id 15.20.6500.029; Fri, 16 Jun 2023
- 16:00:19 +0000
-From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"rppt@kernel.org" <rppt@kernel.org>
-CC: "tglx@linutronix.de" <tglx@linutronix.de>, "mcgrof@kernel.org"
-	<mcgrof@kernel.org>, "deller@gmx.de" <deller@gmx.de>, "davem@davemloft.net"
-	<davem@davemloft.net>, "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
-	"linux@armlinux.org.uk" <linux@armlinux.org.uk>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-mips@vger.kernel.org"
-	<linux-mips@vger.kernel.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "hca@linux.ibm.com" <hca@linux.ibm.com>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
-	"puranjay12@gmail.com" <puranjay12@gmail.com>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, "palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"chenhuacai@kernel.org" <chenhuacai@kernel.org>, "tsbogend@alpha.franken.de"
-	<tsbogend@alpha.franken.de>, "linux-trace-kernel@vger.kernel.org"
-	<linux-trace-kernel@vger.kernel.org>, "linux-parisc@vger.kernel.org"
-	<linux-parisc@vger.kernel.org>, "christophe.leroy@csgroup.eu"
-	<christophe.leroy@csgroup.eu>, "x86@kernel.org" <x86@kernel.org>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>, "mark.rutland@arm.com"
-	<mark.rutland@arm.com>, "rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"will@kernel.org" <will@kernel.org>, "dinguyen@kernel.org"
-	<dinguyen@kernel.org>, "naveen.n.rao@linux.ibm.com"
-	<naveen.n.rao@linux.ibm.com>, "sparclinux@vger.kernel.org"
-	<sparclinux@vger.kernel.org>, "linux-modules@vger.kernel.org"
-	<linux-modules@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "song@kernel.org" <song@kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>, "loongarch@lists.linux.dev"
-	<loongarch@lists.linux.dev>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 01/12] nios2: define virtual address space for modules
-Thread-Topic: [PATCH v2 01/12] nios2: define virtual address space for modules
-Thread-Index: AQHZoC/AtDqnmjljKUyti1SYZxHTgK+NluyA
-Date: Fri, 16 Jun 2023 16:00:19 +0000
-Message-ID: <6f9e9c385096bd965e53c49065848953398f5b8e.camel@intel.com>
-References: <20230616085038.4121892-1-rppt@kernel.org>
-	 <20230616085038.4121892-2-rppt@kernel.org>
-In-Reply-To: <20230616085038.4121892-2-rppt@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.44.4-0ubuntu1 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|CO1PR11MB4930:EE_
-x-ms-office365-filtering-correlation-id: d6aad173-1d51-4717-51e1-08db6e82c8d5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: R0d9JFxv9hosLiwtk71F42QPxQJUZw+1FtgfKmHbzDl6ab253MV3UCzK7OViBrQoLgOw5PRqlxNZTzwJrKi5mtjiRalPEcNofoSHKpmuhCdEHctTE8AWalKU+hQ+hzMgMY1M8UCZ7eLbJnUdNEmMVdd6Z8MdMYA/C+qZ7sj0SxD3oZAUXiyBX6G05TBslyCl6oo1o0ssGkKQaFyU/uWIefvIPfL64q9yXgIdQl/pTnQnUbBv8M35s+fYECF7n2rdbIBDsKPRNIs08ICbGJuDA1utnOPFZ0oEa/CiiKXVq5EDNK6C1lQTskizNcbY5eAoSccdzh1qRBJg3l5nwOzQmSKOlh15dLjqvu5k3mlSbCHux16giA1TA7R7CMlUgUek7OQXafC8mgFvvsrLgL9MIw0rB34AkFZzDqmyyfC5esxem95QsyIsPdn6Ed4yfH95YAtdFraeV1bEpXEs9+qiIS7HP3B1cICMY4wyDWdMnLwhoTDITv8gVzEkyRLJw0d0XzzT38jmUkSO9D4KcBklsEJfQT4q0qH8L+o4p/f4aPkPG4G5ihtZeoVVAqiz2pii+hWH23jpqW31Ii4AIJQLEoyJfXJZCoMXWkRgeMFVMcskj/as7XbvBx4I0TRBt2MK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(376002)(346002)(396003)(39860400002)(136003)(451199021)(110136005)(54906003)(41300700001)(86362001)(66946007)(66446008)(64756008)(66556008)(66476007)(8676002)(6486002)(71200400001)(8936002)(316002)(91956017)(76116006)(36756003)(4326008)(38070700005)(478600001)(6512007)(7416002)(7406005)(26005)(5660300002)(6506007)(2906002)(4744005)(82960400001)(186003)(38100700002)(2616005)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?b3hCK3Z0YmxPQm5DdkRyMG53NmNsVzdvaEJmbGUzWkYrVFoyVlJ4by8ySHlz?=
- =?utf-8?B?blhEMlc3RTBBMTFlQWxVUUVjVXNFamkyQ0V6b2RnMFkyaVgrWjJleHRWOHkr?=
- =?utf-8?B?UFVUdGFScHUvbTEyYnZDM05SeTg2OWlKdkZkRDQwUndMdDVCeXJrYjFrQTdZ?=
- =?utf-8?B?MVNybmZtWlVsV3BQMmt5akFNWFFQVDhrZ01NYnZ0RXUwSHJwckswZVE3KzdR?=
- =?utf-8?B?ZHNjelhDU3pTYVdFNkpLcER6ZzVPeVJIc1JoOENuTUJFMG9xTnNVRGR4bFNL?=
- =?utf-8?B?VmRMMUpCZmlEVzRpbVU5YnN6ekhTTDk0UlIzaVpZOERvZTBnL0ZRdWVPOFpz?=
- =?utf-8?B?RjdIeFNDVDNkekVtQXArcElkbGQybUpQb25GTnFpcWtSMzV0bjhocFR1eGxO?=
- =?utf-8?B?Z2RUZExOZHZHQVNTbWprREZpa0NVb3VPczJLdUYwY09kNDhsMGNtTUl1dngz?=
- =?utf-8?B?dnNjUFFROEdGNkxPSENBbkJlVnI4L0tFQWRWTWovalFXQ1RSanNQQnBHM3RB?=
- =?utf-8?B?MndyY3BQWml5akZLUG1qT1dxNUdMYmZvTmp4V0g0ajFlbWVoYUpQdzRSMEd1?=
- =?utf-8?B?SVBwN0x4L2orL3JyRzFOb2pGVlkvTS9vUEhhWjdCcmhoN3lvOVkvYTc1ZnNr?=
- =?utf-8?B?SU1ESnpDUTJWTUhZT3NJWC9qRlU2Q3k4SjBRRS9RMHQxM09vVkJsYm5jTDd3?=
- =?utf-8?B?TkxIN3RtbUNobTd6bUZtbU51MlQ0ZWhpYlR2MGY1cU9CcTFnVUg5b0tldEM3?=
- =?utf-8?B?N01GRjNUZ096ZXBlY1Q2VXJoZVpXUlZ3cGczVCtFR1JiTVVoU1FOSkE3Rk1V?=
- =?utf-8?B?LzBzcXFVUlMyNDQ5S1VWeUFYMnFtbDV4eEprYzhWY09PN0gzQlQyRUJROThG?=
- =?utf-8?B?UU5La1AyeUZzOEVKT00zdTJIVjR0Y3hJd1VSNFJTTWxQZXhNYWQzWnV6S2p5?=
- =?utf-8?B?UHltOC8xVDh4TjMyVklqblRjU1I2aUpMNzhkSFVqZnphNHNaUSs0bjNpaDk2?=
- =?utf-8?B?MGxBdWNQajdDbHZEbDlzRXdlbUxINCtnKzA4dXpDQmdoK003WG9vclY4bGYy?=
- =?utf-8?B?WnpGRENFMy9yaGVSbWUyK2JCVElaUDlKaFN5T0h3N2d2eW1Yb082Q2NYQTRB?=
- =?utf-8?B?dWYzOG1ZTldMQzVFRFI1WnpCbmtLeHQ0RjJ5QzFUWWQ1eGQ1VFZpTE5YUThS?=
- =?utf-8?B?d21aN0JRUXBPaHBlZUZvY3dEcUQwTkFzelhBTUFHV0JFcEh1b2t4MXAwbTQx?=
- =?utf-8?B?ZkdMLzZZQlM5T0FFZUI1TFQwMnpOVXNnaC9hZlBBd1Q3b0RhUDlCYWlFU0FH?=
- =?utf-8?B?WFZDQXlSa2NJb2ZaL3B4WDVVWFEvY0V5N3pZUlBYMzRtZUMreU9UUzFzYzd5?=
- =?utf-8?B?U2NLN2Vsd1V5RFNxMVBKd0tpS2puNFRHUkNSMDI2MlFJbjd3Q2Z1QWJ0NkYv?=
- =?utf-8?B?UG9FN2tXU3VBWnZTZHFJSFlGSGQ0aUNub2poSUhkQjZLY0RLZXV1OVB2L1pp?=
- =?utf-8?B?ZWI1M0xDaW5WWUtmSmkrckIraU5OSTVBd3B1V3BLdHlGci9yejJjN0pCZXFG?=
- =?utf-8?B?cExaVjhLeWVWYkY0RWR5eS9GRC9sMjhoT21VaVM5ekJmb1BvQVdNcnBaSjhE?=
- =?utf-8?B?ZHJRSEFrRDdRNzV6SlVxVGVYeEt4VGRWQ2JIMjhKV0Y1T2tMLzlwZ1RIWnlm?=
- =?utf-8?B?R2d4dzExc2tvWGNmOHN2OC9SRjJ6OWIwR016ellDNlh2YXhtQzQrZmpDMmdr?=
- =?utf-8?B?VTFlYW10My9vNmhmZm4wRHNodUVJMEFuWndhaTVaM0V5UjhkS2ZpY1hKdDJz?=
- =?utf-8?B?R25iajAzREtiSTI4czRzZ2ZRdFJwcEhBTTZvNVF5UjF0QWtNZ0l5U3Yra1VG?=
- =?utf-8?B?Ym5EQkgzSmVjQldVNFluc0ZkaEpRYk5OVjI1RFRaMHBqU3RkRnZvUElSOG42?=
- =?utf-8?B?Yk5KMC9uZHM3WXRlcWJoc1dLQ0oxYU53bzYvcHhIVWt4ejRQck5XellSNnBi?=
- =?utf-8?B?THQ1SWtOM3dpbDBNSDNhUFkyMkVCQkF3WHBHcGIvQ0VxWCtoTjlnZTdMV2dB?=
- =?utf-8?B?bUdsbGEvVWU0T1hZMjczMml6UnY5Y0JlV2h6VHJDUG5SZllVZ2NQdUpIOXl3?=
- =?utf-8?B?SFhjb3piamkraklBWHVSWW5PdDhMdjdPRWRaSjNER3NZY085SDEyUG9LSnN4?=
- =?utf-8?B?emc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <51EC89E559359A42A3CFEFF5B8575430@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31C7D1ACA2
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 16:13:25 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859BB35A4
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 09:13:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1686932002;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/uSTCkptTsC4xYTqgPPYvFLo6KQm6ldgKXcPsN3l6RA=;
+	b=dyif0BDg4cCQUc2PxbFVZkyW4cUKW0rP//ySlFJzmjtUSZXZrk0TeqboB31rwXngErOdPa
+	Zr11JATJDKdCrS6vKSsAg42H701U3Qjs2u/eo3GSYDkdGF/vEVAJ50oqBjmOYHkoF0/MqK
+	XuBoCZWrit7cqDMvbk5M9y6QwbijKp4=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-114-0Z8wEYp2Nm2gZ4mNz8jpMA-1; Fri, 16 Jun 2023 12:13:19 -0400
+X-MC-Unique: 0Z8wEYp2Nm2gZ4mNz8jpMA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 55C361C05ABF;
+	Fri, 16 Jun 2023 16:13:18 +0000 (UTC)
+Received: from warthog.procyon.org.com (unknown [10.42.28.51])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 9325540CF8F6;
+	Fri, 16 Jun 2023 16:13:14 +0000 (UTC)
+From: David Howells <dhowells@redhat.com>
+To: netdev@vger.kernel.org
+Cc: David Howells <dhowells@redhat.com>,
+	Alexander Duyck <alexander.duyck@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	David Ahern <dsahern@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	Karsten Graul <kgraul@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Jan Karcher <jaka@linux.ibm.com>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>,
+	Boris Pismenny <borisp@nvidia.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	bpf@vger.kernel.org,
+	linux-s390@vger.kernel.org
+Subject: [PATCH net-next 03/17] tcp_bpf, smc, tls, espintcp: Reduce MSG_SENDPAGE_NOTLAST usage
+Date: Fri, 16 Jun 2023 17:12:46 +0100
+Message-ID: <20230616161301.622169-4-dhowells@redhat.com>
+In-Reply-To: <20230616161301.622169-1-dhowells@redhat.com>
+References: <20230616161301.622169-1-dhowells@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d6aad173-1d51-4717-51e1-08db6e82c8d5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jun 2023 16:00:19.6983
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7eJebylubOtMiPhgXFTAuv50fnd6CdnT2+4jN/Riy0Ni5nDFvnhJJjBAQ8aKFtYDVWrcAdOF18WXjFDglsQ2HzQUVKIAcpSArlvkoHWoAy4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4930
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-T24gRnJpLCAyMDIzLTA2LTE2IGF0IDExOjUwICswMzAwLCBNaWtlIFJhcG9wb3J0IHdyb3RlOgo+
-IMKgdm9pZCAqbW9kdWxlX2FsbG9jKHVuc2lnbmVkIGxvbmcgc2l6ZSkKPiDCoHsKPiAtwqDCoMKg
-wqDCoMKgwqBpZiAoc2l6ZSA9PSAwKQo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBy
-ZXR1cm4gTlVMTDsKPiAtwqDCoMKgwqDCoMKgwqByZXR1cm4ga21hbGxvYyhzaXplLCBHRlBfS0VS
-TkVMKTsKPiAtfQo+IC0KPiAtLyogRnJlZSBtZW1vcnkgcmV0dXJuZWQgZnJvbSBtb2R1bGVfYWxs
-b2MgKi8KPiAtdm9pZCBtb2R1bGVfbWVtZnJlZSh2b2lkICptb2R1bGVfcmVnaW9uKQo+IC17Cj4g
-LcKgwqDCoMKgwqDCoMKga2ZyZWUobW9kdWxlX3JlZ2lvbik7Cj4gK8KgwqDCoMKgwqDCoMKgcmV0
-dXJuIF9fdm1hbGxvY19ub2RlX3JhbmdlKHNpemUsIDEsIE1PRFVMRVNfVkFERFIsCj4gTU9EVUxF
-U19FTkQsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIEdGUF9LRVJORUwsIFBBR0VfS0VSTkVMX0VYRUMsCj4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIFZNX0ZMVVNIX1JFU0VUX1BFUk1TLAo+IE5VTUFfTk9fTk9ERSwKPiArwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgX19idWlsdGluX3JldHVybl9hZGRyZXNzKDApKTsKPiDCoH0KPiDCoAo+IMKgaW50IGFw
-cGx5X3JlbG9jYXRlX2FkZChFbGYzMl9TaGRyICpzZWNoZHJzLCBjb25zdCBjaGFyICpzCgpJIHdv
-bmRlciBpZiB0aGUgKHNpemUgPT0gMCkgY2hlY2sgaXMgcmVhbGx5IG5lZWRlZCwgYnV0Cl9fdm1h
-bGxvY19ub2RlX3JhbmdlKCkgd2lsbCBXQVJOIG9uIHRoaXMgY2FzZSB3aGVyZSB0aGUgb2xkIGNv
-ZGUgd29uJ3QuCg==
+As MSG_SENDPAGE_NOTLAST is being phased out along with sendpage(), don't
+use it further in than the sendpage methods, but rather translate it to
+MSG_MORE and use that instead.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: John Fastabend <john.fastabend@gmail.com>
+cc: Jakub Sitnicki <jakub@cloudflare.com>
+cc: Eric Dumazet <edumazet@google.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: David Ahern <dsahern@kernel.org>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: Karsten Graul <kgraul@linux.ibm.com>
+cc: Wenjia Zhang <wenjia@linux.ibm.com>
+cc: Jan Karcher <jaka@linux.ibm.com>
+cc: "D. Wythe" <alibuda@linux.alibaba.com>
+cc: Tony Lu <tonylu@linux.alibaba.com>
+cc: Wen Gu <guwen@linux.alibaba.com>
+cc: Boris Pismenny <borisp@nvidia.com>
+cc: Steffen Klassert <steffen.klassert@secunet.com>
+cc: Herbert Xu <herbert@gondor.apana.org.au>
+cc: netdev@vger.kernel.org
+cc: bpf@vger.kernel.org
+cc: linux-s390@vger.kernel.org
+---
+ net/ipv4/tcp_bpf.c   |  3 ---
+ net/smc/smc_tx.c     |  6 ++++--
+ net/tls/tls_device.c |  4 ++--
+ net/xfrm/espintcp.c  | 10 ++++++----
+ 4 files changed, 12 insertions(+), 11 deletions(-)
+
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 5a84053ac62b..adcba77b0c50 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -111,9 +111,6 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
+ 		if (has_tx_ulp)
+ 			msghdr.msg_flags |= MSG_SENDPAGE_NOPOLICY;
+ 
+-		if (flags & MSG_SENDPAGE_NOTLAST)
+-			msghdr.msg_flags |= MSG_MORE;
+-
+ 		bvec_set_page(&bvec, page, size, off);
+ 		iov_iter_bvec(&msghdr.msg_iter, ITER_SOURCE, &bvec, 1, size);
+ 		ret = tcp_sendmsg_locked(sk, &msghdr, size);
+diff --git a/net/smc/smc_tx.c b/net/smc/smc_tx.c
+index 45128443f1f1..9b9e0a190734 100644
+--- a/net/smc/smc_tx.c
++++ b/net/smc/smc_tx.c
+@@ -168,8 +168,7 @@ static bool smc_tx_should_cork(struct smc_sock *smc, struct msghdr *msg)
+ 	 * should known how/when to uncork it.
+ 	 */
+ 	if ((msg->msg_flags & MSG_MORE ||
+-	     smc_tx_is_corked(smc) ||
+-	     msg->msg_flags & MSG_SENDPAGE_NOTLAST) &&
++	     smc_tx_is_corked(smc)) &&
+ 	    atomic_read(&conn->sndbuf_space))
+ 		return true;
+ 
+@@ -306,6 +305,9 @@ int smc_tx_sendpage(struct smc_sock *smc, struct page *page, int offset,
+ 	struct kvec iov;
+ 	int rc;
+ 
++	if (flags & MSG_SENDPAGE_NOTLAST)
++		msg.msg_flags |= MSG_MORE;
++
+ 	iov.iov_base = kaddr + offset;
+ 	iov.iov_len = size;
+ 	iov_iter_kvec(&msg.msg_iter, ITER_SOURCE, &iov, 1, size);
+diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
+index b82770f68807..975299d7213b 100644
+--- a/net/tls/tls_device.c
++++ b/net/tls/tls_device.c
+@@ -449,7 +449,7 @@ static int tls_push_data(struct sock *sk,
+ 		return -sk->sk_err;
+ 
+ 	flags |= MSG_SENDPAGE_DECRYPTED;
+-	tls_push_record_flags = flags | MSG_SENDPAGE_NOTLAST;
++	tls_push_record_flags = flags | MSG_MORE;
+ 
+ 	timeo = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
+ 	if (tls_is_partially_sent_record(tls_ctx)) {
+@@ -532,7 +532,7 @@ static int tls_push_data(struct sock *sk,
+ 		if (!size) {
+ last_record:
+ 			tls_push_record_flags = flags;
+-			if (flags & (MSG_SENDPAGE_NOTLAST | MSG_MORE)) {
++			if (flags & MSG_MORE) {
+ 				more = true;
+ 				break;
+ 			}
+diff --git a/net/xfrm/espintcp.c b/net/xfrm/espintcp.c
+index 3504925babdb..d3b3f9e720b3 100644
+--- a/net/xfrm/espintcp.c
++++ b/net/xfrm/espintcp.c
+@@ -205,13 +205,15 @@ static int espintcp_sendskb_locked(struct sock *sk, struct espintcp_msg *emsg,
+ static int espintcp_sendskmsg_locked(struct sock *sk,
+ 				     struct espintcp_msg *emsg, int flags)
+ {
+-	struct msghdr msghdr = { .msg_flags = flags | MSG_SPLICE_PAGES, };
++	struct msghdr msghdr = {
++		.msg_flags = flags | MSG_SPLICE_PAGES | MSG_MORE,
++	};
+ 	struct sk_msg *skmsg = &emsg->skmsg;
++	bool more = flags & MSG_MORE;
+ 	struct scatterlist *sg;
+ 	int done = 0;
+ 	int ret;
+ 
+-	msghdr.msg_flags |= MSG_SENDPAGE_NOTLAST;
+ 	sg = &skmsg->sg.data[skmsg->sg.start];
+ 	do {
+ 		struct bio_vec bvec;
+@@ -221,8 +223,8 @@ static int espintcp_sendskmsg_locked(struct sock *sk,
+ 
+ 		emsg->offset = 0;
+ 
+-		if (sg_is_last(sg))
+-			msghdr.msg_flags &= ~MSG_SENDPAGE_NOTLAST;
++		if (sg_is_last(sg) && !more)
++			msghdr.msg_flags &= ~MSG_MORE;
+ 
+ 		p = sg_page(sg);
+ retry:
+
 
