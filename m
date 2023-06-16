@@ -1,241 +1,154 @@
-Return-Path: <bpf+bounces-2750-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F2EE733782
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 19:34:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECF6B7337F8
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 20:15:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8691F1C20D2B
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 17:34:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9AEC281444
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:14:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798EC1D2CB;
-	Fri, 16 Jun 2023 17:34:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 502CB1DCBC;
+	Fri, 16 Jun 2023 18:14:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4418319E69;
-	Fri, 16 Jun 2023 17:34:41 +0000 (UTC)
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 573021FF7;
-	Fri, 16 Jun 2023 10:34:39 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-25e8545ea28so781704a91.0;
-        Fri, 16 Jun 2023 10:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686936879; x=1689528879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kxA+ZqGfFPqYw3C9ialTd5Ien3AooaP5NvhhVbxD7jk=;
-        b=k8VOj7blc5+BW5q9oY08+FkzwflcaI8z9k70mTiZPwgDMJTWtpx7vpERhzdxujkp8L
-         cD+FDXJQ3YEyHPmOyjqniCM1J+IqUasyEg+LnEkO0EbMP8t7S3DA57ote9QG5tiCIDHz
-         6rlxEHySklqJ7cQO+hQYRJeYDLFmI43j89MzNUyuNC5vtDKJ4FbfAiOQWe/w+u5ENQo/
-         4Od1SMFoJThcEuVwnAg1tzivco1RtwV9W7smQ+PtGidtHxgQyQlvMII5tBi7mHL5JX4K
-         SsetE+7HjeIASKbBid0IFGAZPc0tEuLPIyOKrQA3hRWnn3Yt13QVlH2WsgOrzjkNrK3U
-         TBKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686936879; x=1689528879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kxA+ZqGfFPqYw3C9ialTd5Ien3AooaP5NvhhVbxD7jk=;
-        b=WJwAQh+l71QXdzate4tu0eW54ul6BfKp/Dd3ykl5HG9BenMmNzCWiT4gTyiw+fc63l
-         AGQng4TIVoVD+NwUFnKIy0QowP/x8MkWGiHOx0JtBDFvaRU+YJyT/SrDDmUiiieoopHV
-         +myg2dySCVVNcMrusEyEEJ7fXhdLWKCIL9CXfU9bt3Bbh8mtM7C7oTyFpX6Qaf6/LsmQ
-         VAkQ37AowbhsZL8kZ4ZXguE33pHl9KMXZldEYwGE/W3ZqxP9+QJUlIFQBPssg05/Jxvs
-         t6Ql9vmJT/k6zzEZcSpniDsPuDDtXOd9Y9MkYP2anMEuYqdQjjMKCuCJDfPMbnpdVWt5
-         c0cQ==
-X-Gm-Message-State: AC+VfDzVvPdJ6iMwNs/m94VKwP+XaN9iFwcVF+XIXL4xLmfyzYn4n9ll
-	iJix4yMPaHgKMIDg32opkQqaOvSF0jv8msByUY8=
-X-Google-Smtp-Source: ACHHUZ5OH1Hyzn3IS5GqShw67bYvUR2eMaDWOMyDgnmPwmGsdeM1ZOBJQoLVpc0HRTkmFjd0Yzqp5bz/x6Ms5M1pITg=
-X-Received: by 2002:a17:90b:a4b:b0:255:9038:fe0d with SMTP id
- gw11-20020a17090b0a4b00b002559038fe0dmr2347329pjb.38.1686936878634; Fri, 16
- Jun 2023 10:34:38 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D1019E69;
+	Fri, 16 Jun 2023 18:14:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DE44C43391;
+	Fri, 16 Jun 2023 18:14:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686939285;
+	bh=BGYZV1Km+8ZgDrE9neT/E0fU3u3ixvSh8AYCC3TbmE4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=MRdJy0RgrSJF59KF/EC7N3hN4NM7JkZeq3KagnV0DWy1PIpTqhhanwN+rGe8zgC2V
+	 MRnDgp8J0NexGL29v4Mucemw/3yZahpXPMUqiEhZDo6PLZ3uYpYsxd3ZL1fbGvwWwe
+	 p/R8vyd2pT+khqUskQVZmRQf+jE0REJ8n2qSSkUm6kasMtDdPJCEzuxpbIe8qI0/Ui
+	 gBxANtpHkUielBt2ehqqh3PqnGUAKKbbWba+orljx4X0xezuIPakLsTrSk3Gr6J6ZG
+	 8yTxdvadfsX9qXvWVMaa8ZKkExpaD1sIFaCwY2WSngDPZW1skSPKVqWoP3yaiF1YJ9
+	 Nln3oL3E93qMg==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-4f62b512fe2so1433702e87.1;
+        Fri, 16 Jun 2023 11:14:45 -0700 (PDT)
+X-Gm-Message-State: AC+VfDxwQUWCu6tmRoI+BsvqbJNP5p7Fj2QoKu4gc46NnqER1XFteijC
+	BIY2SecOEQhYFc9tPP49acRIW8YocA8eJ488Vkw=
+X-Google-Smtp-Source: ACHHUZ76yiO622Uh9+9rKEsm8ImEC4jXzUaBUsNUHgrPnEQ5V1l0GL/PgIuvK/efbFnHaYtpj3eltn1zagg/5cT90Eo=
+X-Received: by 2002:a19:ab11:0:b0:4f3:bbfe:db4e with SMTP id
+ u17-20020a19ab11000000b004f3bbfedb4emr1747329lfe.56.1686939283176; Fri, 16
+ Jun 2023 11:14:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230609131740.7496-1-linyunsheng@huawei.com> <20230609131740.7496-4-linyunsheng@huawei.com>
- <CAKgT0UfVwQ=ri7ZDNnsATH2RQpEz+zDBBb6YprvniMEWGdw+dQ@mail.gmail.com>
- <36366741-8df2-1137-0dd9-d498d0f770e4@huawei.com> <CAKgT0UdXTSv1fDHBX4UC6Ok9NXKMJ_9F88CEv5TK+mpzy0N21g@mail.gmail.com>
- <c06f6f59-6c35-4944-8f7a-7f6f0e076649@huawei.com> <CAKgT0UccmDe+CE6=zDYQHi1=3vXf5MptzDo+BsPrKdmP5j9kgQ@mail.gmail.com>
- <0ba1bf9c-2e45-cd44-60d3-66feeb3268f3@redhat.com> <dcc9db4c-207b-e118-3d84-641677cd3d80@huawei.com>
- <f8ce176f-f975-af11-641c-b56c53a8066a@redhat.com>
-In-Reply-To: <f8ce176f-f975-af11-641c-b56c53a8066a@redhat.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Fri, 16 Jun 2023 10:34:02 -0700
-Message-ID: <CAKgT0UfzP30OiBQu+YKefLD+=32t+oA6KGzkvsW6k7CMTXU8KA@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 3/4] page_pool: introduce page_pool_alloc() API
-To: Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc: Yunsheng Lin <linyunsheng@huawei.com>, brouer@redhat.com, davem@davemloft.net, 
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
-	Eric Dumazet <edumazet@google.com>, Maryam Tahhan <mtahhan@redhat.com>, bpf <bpf@vger.kernel.org>
+References: <20230616085038.4121892-1-rppt@kernel.org> <20230616085038.4121892-2-rppt@kernel.org>
+In-Reply-To: <20230616085038.4121892-2-rppt@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Fri, 16 Jun 2023 11:14:31 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4nDne7L=Qh142w+dMX2pqM_4k+SZSB=QBJ8ruG_j8dug@mail.gmail.com>
+Message-ID: <CAPhsuW4nDne7L=Qh142w+dMX2pqM_4k+SZSB=QBJ8ruG_j8dug@mail.gmail.com>
+Subject: Re: [PATCH v2 01/12] nios2: define virtual address space for modules
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nadav Amit <nadav.amit@gmail.com>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Puranjay Mohan <puranjay12@gmail.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, 
+	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Fri, Jun 16, 2023 at 9:31=E2=80=AFAM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
+On Fri, Jun 16, 2023 at 1:51=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wro=
+te:
 >
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 >
+> nios2 uses kmalloc() to implement module_alloc() because CALL26/PCREL26
+> cannot reach all of vmalloc address space.
 >
-> On 16/06/2023 13.57, Yunsheng Lin wrote:
-> > On 2023/6/16 0:19, Jesper Dangaard Brouer wrote:
-> >
-> > ...
-> >
-> >> You have mentioned veth as the use-case. I know I acked adding page_po=
-ol
-> >> use-case to veth, for when we need to convert an SKB into an
-> >> xdp_buff/xdp-frame, but maybe it was the wrong hammer(?).
-> >> In this case in veth, the size is known at the page allocation time.
-> >> Thus, using the page_pool API is wasting memory.  We did this for
-> >> performance reasons, but we are not using PP for what is was intended
-> >> for.  We mostly use page_pool, because it an existing recycle return
-> >> path, and we were too lazy to add another alloc-type (see enum
-> >> xdp_mem_type).
-> >>
-> >> Maybe you/we can extend veth to use this dynamic size API, to show us
-> >> that this is API is a better approach.  I will signup for benchmarking
-> >> this (and coordinating with CC Maryam as she came with use-case we
-> >> improved on).
-> >
-> > Thanks, let's find out if page pool is the right hammer for the
-> > veth XDP case.
-> >
-> > Below is the change for veth using the new api in this patch.
-> > Only compile test as I am not familiar enough with veth XDP and
-> > testing environment for it.
-> > Please try it if it is helpful.
-> >
-> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> > index 614f3e3efab0..8850394f1d29 100644
-> > --- a/drivers/net/veth.c
-> > +++ b/drivers/net/veth.c
-> > @@ -736,7 +736,7 @@ static int veth_convert_skb_to_xdp_buff(struct veth=
-_rq *rq,
-> >          if (skb_shared(skb) || skb_head_is_locked(skb) ||
-> >              skb_shinfo(skb)->nr_frags ||
-> >              skb_headroom(skb) < XDP_PACKET_HEADROOM) {
-> > -               u32 size, len, max_head_size, off;
-> > +               u32 size, len, max_head_size, off, truesize, page_offse=
-t;
-> >                  struct sk_buff *nskb;
-> >                  struct page *page;
-> >                  int i, head_off;
-> > @@ -752,12 +752,15 @@ static int veth_convert_skb_to_xdp_buff(struct ve=
-th_rq *rq,
-> >                  if (skb->len > PAGE_SIZE * MAX_SKB_FRAGS + max_head_si=
-ze)
-> >                          goto drop;
-> >
-> > +               size =3D min_t(u32, skb->len, max_head_size);
-> > +               truesize =3D size;
-> > +
-> >                  /* Allocate skb head */
-> > -               page =3D page_pool_dev_alloc_pages(rq->page_pool);
-> > +               page =3D page_pool_dev_alloc(rq->page_pool, &page_offse=
-t, &truesize);
+> Define module space as 32MiB below the kernel base and switch nios2 to
+> use vmalloc for module allocations.
 >
-> Maybe rename API to:
->
->   addr =3D netmem_alloc(rq->page_pool, &truesize);
->
-> >                  if (!page)
-> >                          goto drop;
-> >
-> > -               nskb =3D napi_build_skb(page_address(page), PAGE_SIZE);
-> > +               nskb =3D napi_build_skb(page_address(page) + page_offse=
-t, truesize);
->
-> IMHO this illustrates that API is strange/funky.
-> (I think this is what Alex Duyck is also pointing out).
->
-> This is the memory (virtual) address "pointer":
->   addr =3D page_address(page) + page_offset
->
-> This is what napi_build_skb() takes as input. (I looked at other users
-> of napi_build_skb() whom all give a mem ptr "va" as arg.)
-> So, why does your new API provide the "page" and not just the address?
->
-> As proposed above:
->    addr =3D netmem_alloc(rq->page_pool, &truesize);
->
-> Maybe the API should be renamed, to indicate this isn't returning a "page=
-"?
-> We have talked about the name "netmem" before.
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> Acked-by: Dinh Nguyen <dinguyen@kernel.org>
 
-Yeah, this is more-or-less what I was getting at. Keep in mind this is
-likely the most common case since most frames passed and forth aren't
-ever usually much larger than 1500B.
+Acked-by: Song Liu <song@kernel.org>
 
-> >                  if (!nskb) {
-> >                          page_pool_put_full_page(rq->page_pool, page, t=
-rue);
-> >                          goto drop;
-> > @@ -767,7 +770,6 @@ static int veth_convert_skb_to_xdp_buff(struct veth=
-_rq *rq,
-> >                  skb_copy_header(nskb, skb);
-> >                  skb_mark_for_recycle(nskb);
-> >
-> > -               size =3D min_t(u32, skb->len, max_head_size);
-> >                  if (skb_copy_bits(skb, 0, nskb->data, size)) {
-> >                          consume_skb(nskb);
-> >                          goto drop;
-> > @@ -782,14 +784,17 @@ static int veth_convert_skb_to_xdp_buff(struct ve=
-th_rq *rq,
-> >                  len =3D skb->len - off;
-> >
-> >                  for (i =3D 0; i < MAX_SKB_FRAGS && off < skb->len; i++=
-) {
-> > -                       page =3D page_pool_dev_alloc_pages(rq->page_poo=
-l);
-> > +                       size =3D min_t(u32, len, PAGE_SIZE);
-> > +                       truesize =3D size;
-> > +
-> > +                       page =3D page_pool_dev_alloc(rq->page_pool, &pa=
-ge_offset,
-> > +                                                  &truesize);
-> >                          if (!page) {
-> >                                  consume_skb(nskb);
-> >                                  goto drop;
-> >                          }
-> >
-> > -                       size =3D min_t(u32, len, PAGE_SIZE);
-> > -                       skb_add_rx_frag(nskb, i, page, 0, size, PAGE_SI=
-ZE);
-> > +                       skb_add_rx_frag(nskb, i, page, page_offset, siz=
-e, truesize);
+
+> ---
+>  arch/nios2/include/asm/pgtable.h |  5 ++++-
+>  arch/nios2/kernel/module.c       | 19 ++++---------------
+>  2 files changed, 8 insertions(+), 16 deletions(-)
 >
-> Guess, this shows the opposite; that the "page" _is_ used by the
-> existing API.
-
-This is a sort-of. One thing that has come up as of late is that all
-this stuff is being moved over to folios anyway and getting away from
-pages. In addition I am not sure how often we are having to take this
-path as I am not sure how many non-Tx frames end up having to have
-fragments added to them. For something like veth it might be more
-common though since Tx becomes Rx in this case.
-
-One thought I had on this is that we could look at adding a new
-function that abstracts this away and makes use of netmem instead.
-Then the whole page/folio thing would be that much further removed.
-
-One other question I have now that I look at this code as well. Why is
-it using page_pool and not just a frag cache allocator, or pages
-themselves? It doesn't seem like it has a DMA mapping to deal with
-since this is essentially copy-break code. Seems problematic that
-there is no DMA involved here at all. This could be more easily
-handled with just a single page_frag_cache style allocator.
+> diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pg=
+table.h
+> index 0f5c2564e9f5..0073b289c6a4 100644
+> --- a/arch/nios2/include/asm/pgtable.h
+> +++ b/arch/nios2/include/asm/pgtable.h
+> @@ -25,7 +25,10 @@
+>  #include <asm-generic/pgtable-nopmd.h>
+>
+>  #define VMALLOC_START          CONFIG_NIOS2_KERNEL_MMU_REGION_BASE
+> -#define VMALLOC_END            (CONFIG_NIOS2_KERNEL_REGION_BASE - 1)
+> +#define VMALLOC_END            (CONFIG_NIOS2_KERNEL_REGION_BASE - SZ_32M=
+ - 1)
+> +
+> +#define MODULES_VADDR          (CONFIG_NIOS2_KERNEL_REGION_BASE - SZ_32M=
+)
+> +#define MODULES_END            (CONFIG_NIOS2_KERNEL_REGION_BASE - 1)
+>
+>  struct mm_struct;
+>
+> diff --git a/arch/nios2/kernel/module.c b/arch/nios2/kernel/module.c
+> index 76e0a42d6e36..9c97b7513853 100644
+> --- a/arch/nios2/kernel/module.c
+> +++ b/arch/nios2/kernel/module.c
+> @@ -21,23 +21,12 @@
+>
+>  #include <asm/cacheflush.h>
+>
+> -/*
+> - * Modules should NOT be allocated with kmalloc for (obvious) reasons.
+> - * But we do it for now to avoid relocation issues. CALL26/PCREL26 canno=
+t reach
+> - * from 0x80000000 (vmalloc area) to 0xc00000000 (kernel) (kmalloc retur=
+ns
+> - * addresses in 0xc0000000)
+> - */
+>  void *module_alloc(unsigned long size)
+>  {
+> -       if (size =3D=3D 0)
+> -               return NULL;
+> -       return kmalloc(size, GFP_KERNEL);
+> -}
+> -
+> -/* Free memory returned from module_alloc */
+> -void module_memfree(void *module_region)
+> -{
+> -       kfree(module_region);
+> +       return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+> +                                   GFP_KERNEL, PAGE_KERNEL_EXEC,
+> +                                   VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
+> +                                   __builtin_return_address(0));
+>  }
+>
+>  int apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
+> --
+> 2.35.1
+>
 
