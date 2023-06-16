@@ -1,309 +1,218 @@
-Return-Path: <bpf+bounces-2717-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 870C0733182
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 14:44:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E167733548
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:00:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CB2B281798
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 12:44:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D8C0281684
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 16:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10460125D7;
-	Fri, 16 Jun 2023 12:44:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290851ACA5;
+	Fri, 16 Jun 2023 16:00:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6143653;
-	Fri, 16 Jun 2023 12:44:30 +0000 (UTC)
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2089C3C0D;
-	Fri, 16 Jun 2023 05:44:00 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6667e221f75so621591b3a.1;
-        Fri, 16 Jun 2023 05:44:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686919418; x=1689511418;
-        h=content-transfer-encoding:subject:to:from:cc:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q91LMqsIB4qZ7S0jCEYhCeWPk3aMqz/NCsS9bfdEeVA=;
-        b=SnL5sxTgN52fC+Ff4/GlLsnlySBEOtb0JKvoAk5NliQsPea9A+kP/OzVx8/NCezJXE
-         Zu0X7eorrXaUPEimaveVmvGz4rqfDYR1wGqgX6GC5fir2K0BjbccGjO4VlUEqEqy25C6
-         yteuDf0Tfvkbkds+T/wV0DhG25d38/bFmsXe1ZCF+aIiT7FAS/hlxjuL9yjPBLjBYet/
-         GWMQrF5mCPpGT0HocTrzXhvPMfT+fR8ia6N51MuUZ0dD0UvSiU8B7MCd6tgxLCGIylhI
-         qhyofm8o7hrRbVeKE1R/ch7YV+3e2Tt51sLj4QHyu/siZxliA3j2PJaMK7lkkUdx5OW2
-         wz8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686919418; x=1689511418;
-        h=content-transfer-encoding:subject:to:from:cc:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=q91LMqsIB4qZ7S0jCEYhCeWPk3aMqz/NCsS9bfdEeVA=;
-        b=QC79I2zRSPK+g5TE8rUB7KespmviXRg/hHoxfAF59A3y3P66E1tF9RztuzZLKlnxJu
-         G26taPNxDIvlQy8EkEBCYM3U1bEmJmstCQMJ57svga8fPopEspl7j2x2O6cQWTuj5bby
-         pkiiD5/Hi1gfgYlkSMV7XQNJG6/Njn5VrHw1fmvUszEp1LFBHoBdkKWcRQ0khIdn2PbC
-         uIIX4ybqx3UG88qVWT4Da5Dn5kfIjeRGzB+lNX0mck2WUKSwhLztl9Aewvv5UVL2mBGQ
-         Uezaa7Ld9BwA8/SKAVOUobCDOnFWW4c/5ljZnLRFq6+fEOYgyMf6FNEF2IW32WarEPDY
-         lmuQ==
-X-Gm-Message-State: AC+VfDwxN95wjqkWLt3N6bi3xvDluR90QEBvihCIcX88UUpFcpdlI64z
-	cGYRM6GYDFICHY0OYVCz1NZwRRSvG/M=
-X-Google-Smtp-Source: ACHHUZ57UHsO8YY+elbXrosr7QOXUSA8JFKnQxpae1jI/U0kXI5msWQwNR926vSwgmW+bselvP6Caw==
-X-Received: by 2002:a17:90b:1803:b0:258:842e:e23b with SMTP id lw3-20020a17090b180300b00258842ee23bmr1402157pjb.34.1686919418426;
-        Fri, 16 Jun 2023 05:43:38 -0700 (PDT)
-Received: from [192.168.0.103] ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id i9-20020a17090a2ac900b002591f7ff90csm1378200pjg.43.2023.06.16.05.43.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jun 2023 05:43:38 -0700 (PDT)
-Message-ID: <8bfaee54-3117-65d3-d723-6408edf93961@gmail.com>
-Date: Fri, 16 Jun 2023 19:43:19 +0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37C318B1D;
+	Fri, 16 Jun 2023 16:00:32 +0000 (UTC)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141C62D5D;
+	Fri, 16 Jun 2023 09:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686931231; x=1718467231;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=kGEhgTRN28m0EK1O5VMPcfIfbuK/PkTjN9+K3CXcQ+E=;
+  b=NJWLoA8tJGebjzTB9TEPLQYSHe2o6Y7u/JrnxAOBlMRlGJnx/frj2k0D
+   23rvzfeJCN1xZlvM6FR79SDWn0DvDf0TGsbWiWQbgLVYeBUcSL3aqUxiJ
+   Sw/RN7vMmvbLEsppLXyEAgLOd981dFXbaMShrjQWE46/NOwu9ETTosITH
+   idqaOvgQgvwdz+dAK0dSh6Wz9rXr/8W2at/F/7QOrybLjlInwYZHjlKGb
+   dGL1/IYRPx8/fXrP27ui0c4VUMdJdZ19cN0RIZHQtJbMT7akHgUnL6ODg
+   gfKCag5h3mAYtcY6u6uYnHaTpKyIpgUjKocjrK+FPmcdTrYrU+iiEl9FD
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="422898477"
+X-IronPort-AV: E=Sophos;i="6.00,247,1681196400"; 
+   d="scan'208";a="422898477"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2023 09:00:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="742717785"
+X-IronPort-AV: E=Sophos;i="6.00,247,1681196400"; 
+   d="scan'208";a="742717785"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga008.jf.intel.com with ESMTP; 16 Jun 2023 09:00:24 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Fri, 16 Jun 2023 09:00:22 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Fri, 16 Jun 2023 09:00:22 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Fri, 16 Jun 2023 09:00:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eOw+MwR/uPGeZKQUkQhhmallZEOXg7CbXhAHNCJB1bZxgEmt7bpNSBR0O0FlozW7+ipkOfXB7Bly60FaXKqT/ms6FeCJ2RMtH6l7fqmqWA+XRuUl8adPlyRFOcq1EOwV637JQFXTrdN6jSvMb9Fv30CtbgL2Iq0LHqQyhpW+DpS6N8OSNfyxWuTkRAe1twj72c/KtnvM0pXwjNPLeF+pAjouZtjJO5ZAgqbwukp1zQhn183JUa6V8Jn+jW9H+0lMB+ZEKf4hEDrTWB9G32KupCAJ/iDuKYYkFeJ59zo435yAzvDy3VDhJR7soJx9+L/0npY8eO0KAtFasV6jYVWmWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kGEhgTRN28m0EK1O5VMPcfIfbuK/PkTjN9+K3CXcQ+E=;
+ b=BgO1WVMAZWZCkWvDD8cmMMN3wg86fQ9PHpRRfLYAzZRGcVQ7RvaW6AwH69LirfwM0oV/FI3ggMvqL4FFoVf4HwcYk6mK+mIv92oc2SHu8o96aAa0lnrvy1e8GQm26aFC/USPyRmiYpaJ9pO/YU6jVCogtDC7LHGWC5Me0R4z5FRGYawsbzUdODrCqgwiBff3BvrUMYTqWby1tbwHaPVnMuMZd2GAY9fX09wQT/Bm8o+mOrmyyt3uB68Q1FKu/Fn4s93etaV7WA97ygJdJNqESOx2P8wZ3fYysrEktlpzFDWkw6uH2g821Kt2Ngt/jP8nK6dlXK7Ww/R577S81Gr+Qg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
+ by CO1PR11MB4930.namprd11.prod.outlook.com (2603:10b6:303:9b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.27; Fri, 16 Jun
+ 2023 16:00:19 +0000
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::6984:19a5:fe1c:dfec]) by MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::6984:19a5:fe1c:dfec%7]) with mapi id 15.20.6500.029; Fri, 16 Jun 2023
+ 16:00:19 +0000
+From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"rppt@kernel.org" <rppt@kernel.org>
+CC: "tglx@linutronix.de" <tglx@linutronix.de>, "mcgrof@kernel.org"
+	<mcgrof@kernel.org>, "deller@gmx.de" <deller@gmx.de>, "davem@davemloft.net"
+	<davem@davemloft.net>, "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
+	"linux@armlinux.org.uk" <linux@armlinux.org.uk>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-mips@vger.kernel.org"
+	<linux-mips@vger.kernel.org>, "linux-riscv@lists.infradead.org"
+	<linux-riscv@lists.infradead.org>, "hca@linux.ibm.com" <hca@linux.ibm.com>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
+	"puranjay12@gmail.com" <puranjay12@gmail.com>, "linux-s390@vger.kernel.org"
+	<linux-s390@vger.kernel.org>, "palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"chenhuacai@kernel.org" <chenhuacai@kernel.org>, "tsbogend@alpha.franken.de"
+	<tsbogend@alpha.franken.de>, "linux-trace-kernel@vger.kernel.org"
+	<linux-trace-kernel@vger.kernel.org>, "linux-parisc@vger.kernel.org"
+	<linux-parisc@vger.kernel.org>, "christophe.leroy@csgroup.eu"
+	<christophe.leroy@csgroup.eu>, "x86@kernel.org" <x86@kernel.org>,
+	"mpe@ellerman.id.au" <mpe@ellerman.id.au>, "mark.rutland@arm.com"
+	<mark.rutland@arm.com>, "rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	"will@kernel.org" <will@kernel.org>, "dinguyen@kernel.org"
+	<dinguyen@kernel.org>, "naveen.n.rao@linux.ibm.com"
+	<naveen.n.rao@linux.ibm.com>, "sparclinux@vger.kernel.org"
+	<sparclinux@vger.kernel.org>, "linux-modules@vger.kernel.org"
+	<linux-modules@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "song@kernel.org" <song@kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, "loongarch@lists.linux.dev"
+	<loongarch@lists.linux.dev>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 01/12] nios2: define virtual address space for modules
+Thread-Topic: [PATCH v2 01/12] nios2: define virtual address space for modules
+Thread-Index: AQHZoC/AtDqnmjljKUyti1SYZxHTgK+NluyA
+Date: Fri, 16 Jun 2023 16:00:19 +0000
+Message-ID: <6f9e9c385096bd965e53c49065848953398f5b8e.camel@intel.com>
+References: <20230616085038.4121892-1-rppt@kernel.org>
+	 <20230616085038.4121892-2-rppt@kernel.org>
+In-Reply-To: <20230616085038.4121892-2-rppt@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.44.4-0ubuntu1 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|CO1PR11MB4930:EE_
+x-ms-office365-filtering-correlation-id: d6aad173-1d51-4717-51e1-08db6e82c8d5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: R0d9JFxv9hosLiwtk71F42QPxQJUZw+1FtgfKmHbzDl6ab253MV3UCzK7OViBrQoLgOw5PRqlxNZTzwJrKi5mtjiRalPEcNofoSHKpmuhCdEHctTE8AWalKU+hQ+hzMgMY1M8UCZ7eLbJnUdNEmMVdd6Z8MdMYA/C+qZ7sj0SxD3oZAUXiyBX6G05TBslyCl6oo1o0ssGkKQaFyU/uWIefvIPfL64q9yXgIdQl/pTnQnUbBv8M35s+fYECF7n2rdbIBDsKPRNIs08ICbGJuDA1utnOPFZ0oEa/CiiKXVq5EDNK6C1lQTskizNcbY5eAoSccdzh1qRBJg3l5nwOzQmSKOlh15dLjqvu5k3mlSbCHux16giA1TA7R7CMlUgUek7OQXafC8mgFvvsrLgL9MIw0rB34AkFZzDqmyyfC5esxem95QsyIsPdn6Ed4yfH95YAtdFraeV1bEpXEs9+qiIS7HP3B1cICMY4wyDWdMnLwhoTDITv8gVzEkyRLJw0d0XzzT38jmUkSO9D4KcBklsEJfQT4q0qH8L+o4p/f4aPkPG4G5ihtZeoVVAqiz2pii+hWH23jpqW31Ii4AIJQLEoyJfXJZCoMXWkRgeMFVMcskj/as7XbvBx4I0TRBt2MK
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(376002)(346002)(396003)(39860400002)(136003)(451199021)(110136005)(54906003)(41300700001)(86362001)(66946007)(66446008)(64756008)(66556008)(66476007)(8676002)(6486002)(71200400001)(8936002)(316002)(91956017)(76116006)(36756003)(4326008)(38070700005)(478600001)(6512007)(7416002)(7406005)(26005)(5660300002)(6506007)(2906002)(4744005)(82960400001)(186003)(38100700002)(2616005)(122000001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?b3hCK3Z0YmxPQm5DdkRyMG53NmNsVzdvaEJmbGUzWkYrVFoyVlJ4by8ySHlz?=
+ =?utf-8?B?blhEMlc3RTBBMTFlQWxVUUVjVXNFamkyQ0V6b2RnMFkyaVgrWjJleHRWOHkr?=
+ =?utf-8?B?UFVUdGFScHUvbTEyYnZDM05SeTg2OWlKdkZkRDQwUndMdDVCeXJrYjFrQTdZ?=
+ =?utf-8?B?MVNybmZtWlVsV3BQMmt5akFNWFFQVDhrZ01NYnZ0RXUwSHJwckswZVE3KzdR?=
+ =?utf-8?B?ZHNjelhDU3pTYVdFNkpLcER6ZzVPeVJIc1JoOENuTUJFMG9xTnNVRGR4bFNL?=
+ =?utf-8?B?VmRMMUpCZmlEVzRpbVU5YnN6ekhTTDk0UlIzaVpZOERvZTBnL0ZRdWVPOFpz?=
+ =?utf-8?B?RjdIeFNDVDNkekVtQXArcElkbGQybUpQb25GTnFpcWtSMzV0bjhocFR1eGxO?=
+ =?utf-8?B?Z2RUZExOZHZHQVNTbWprREZpa0NVb3VPczJLdUYwY09kNDhsMGNtTUl1dngz?=
+ =?utf-8?B?dnNjUFFROEdGNkxPSENBbkJlVnI4L0tFQWRWTWovalFXQ1RSanNQQnBHM3RB?=
+ =?utf-8?B?MndyY3BQWml5akZLUG1qT1dxNUdMYmZvTmp4V0g0ajFlbWVoYUpQdzRSMEd1?=
+ =?utf-8?B?SVBwN0x4L2orL3JyRzFOb2pGVlkvTS9vUEhhWjdCcmhoN3lvOVkvYTc1ZnNr?=
+ =?utf-8?B?SU1ESnpDUTJWTUhZT3NJWC9qRlU2Q3k4SjBRRS9RMHQxM09vVkJsYm5jTDd3?=
+ =?utf-8?B?TkxIN3RtbUNobTd6bUZtbU51MlQ0ZWhpYlR2MGY1cU9CcTFnVUg5b0tldEM3?=
+ =?utf-8?B?N01GRjNUZ096ZXBlY1Q2VXJoZVpXUlZ3cGczVCtFR1JiTVVoU1FOSkE3Rk1V?=
+ =?utf-8?B?LzBzcXFVUlMyNDQ5S1VWeUFYMnFtbDV4eEprYzhWY09PN0gzQlQyRUJROThG?=
+ =?utf-8?B?UU5La1AyeUZzOEVKT00zdTJIVjR0Y3hJd1VSNFJTTWxQZXhNYWQzWnV6S2p5?=
+ =?utf-8?B?UHltOC8xVDh4TjMyVklqblRjU1I2aUpMNzhkSFVqZnphNHNaUSs0bjNpaDk2?=
+ =?utf-8?B?MGxBdWNQajdDbHZEbDlzRXdlbUxINCtnKzA4dXpDQmdoK003WG9vclY4bGYy?=
+ =?utf-8?B?WnpGRENFMy9yaGVSbWUyK2JCVElaUDlKaFN5T0h3N2d2eW1Yb082Q2NYQTRB?=
+ =?utf-8?B?dWYzOG1ZTldMQzVFRFI1WnpCbmtLeHQ0RjJ5QzFUWWQ1eGQ1VFZpTE5YUThS?=
+ =?utf-8?B?d21aN0JRUXBPaHBlZUZvY3dEcUQwTkFzelhBTUFHV0JFcEh1b2t4MXAwbTQx?=
+ =?utf-8?B?ZkdMLzZZQlM5T0FFZUI1TFQwMnpOVXNnaC9hZlBBd1Q3b0RhUDlCYWlFU0FH?=
+ =?utf-8?B?WFZDQXlSa2NJb2ZaL3B4WDVVWFEvY0V5N3pZUlBYMzRtZUMreU9UUzFzYzd5?=
+ =?utf-8?B?U2NLN2Vsd1V5RFNxMVBKd0tpS2puNFRHUkNSMDI2MlFJbjd3Q2Z1QWJ0NkYv?=
+ =?utf-8?B?UG9FN2tXU3VBWnZTZHFJSFlGSGQ0aUNub2poSUhkQjZLY0RLZXV1OVB2L1pp?=
+ =?utf-8?B?ZWI1M0xDaW5WWUtmSmkrckIraU5OSTVBd3B1V3BLdHlGci9yejJjN0pCZXFG?=
+ =?utf-8?B?cExaVjhLeWVWYkY0RWR5eS9GRC9sMjhoT21VaVM5ekJmb1BvQVdNcnBaSjhE?=
+ =?utf-8?B?ZHJRSEFrRDdRNzV6SlVxVGVYeEt4VGRWQ2JIMjhKV0Y1T2tMLzlwZ1RIWnlm?=
+ =?utf-8?B?R2d4dzExc2tvWGNmOHN2OC9SRjJ6OWIwR016ellDNlh2YXhtQzQrZmpDMmdr?=
+ =?utf-8?B?VTFlYW10My9vNmhmZm4wRHNodUVJMEFuWndhaTVaM0V5UjhkS2ZpY1hKdDJz?=
+ =?utf-8?B?R25iajAzREtiSTI4czRzZ2ZRdFJwcEhBTTZvNVF5UjF0QWtNZ0l5U3Yra1VG?=
+ =?utf-8?B?Ym5EQkgzSmVjQldVNFluc0ZkaEpRYk5OVjI1RFRaMHBqU3RkRnZvUElSOG42?=
+ =?utf-8?B?Yk5KMC9uZHM3WXRlcWJoc1dLQ0oxYU53bzYvcHhIVWt4ejRQck5XellSNnBi?=
+ =?utf-8?B?THQ1SWtOM3dpbDBNSDNhUFkyMkVCQkF3WHBHcGIvQ0VxWCtoTjlnZTdMV2dB?=
+ =?utf-8?B?bUdsbGEvVWU0T1hZMjczMml6UnY5Y0JlV2h6VHJDUG5SZllVZ2NQdUpIOXl3?=
+ =?utf-8?B?SFhjb3piamkraklBWHVSWW5PdDhMdjdPRWRaSjNER3NZY085SDEyUG9LSnN4?=
+ =?utf-8?B?emc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <51EC89E559359A42A3CFEFF5B8575430@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Content-Language: en-US
-Cc: Linux Networking <netdev@vger.kernel.org>, Linux BPF
- <bpf@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Regressions <regressions@lists.linux.dev>
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: "David S. Miller" <davem@davemloft.net>, David Ahern
- <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Subject: Fwd: inet6_sock_destruct->inet_sock_destruct trigger Call Trace
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6aad173-1d51-4717-51e1-08db6e82c8d5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jun 2023 16:00:19.6983
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7eJebylubOtMiPhgXFTAuv50fnd6CdnT2+4jN/Riy0Ni5nDFvnhJJjBAQ8aKFtYDVWrcAdOF18WXjFDglsQ2HzQUVKIAcpSArlvkoHWoAy4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4930
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
-
-I notice a regression report on Bugzilla [1]. Quoting from it:
-
-> When the IPv6 address or NIC configuration changes, the following kerne=
-l warnings may be triggered:
->=20
-> Thu Jun 15 09:02:31 2023 daemon.info : 09[KNL] interface utun deleted
-> Thu Jun 15 09:02:31 2023 daemon.info : 13[KNL] interface utun deleted
-> Thu Jun 15 09:02:32 2023 daemon.notice procd: /etc/rc.d/S99zerotier: di=
-sabled in config
-> Thu Jun 15 09:02:33 2023 daemon.info procd: - init complete -
-> Thu Jun 15 09:02:45 2023 daemon.info : 09[KNL] interface utun deleted
-> Thu Jun 15 09:02:45 2023 daemon.info : 15[KNL] interface utun deleted
-> Thu Jun 15 09:02:48 2023 user.notice firewall: Reloading firewall due t=
-o ifup of lan6 (br-switch)
-> Thu Jun 15 09:02:51 2023 daemon.err uhttpd[2929]: cat: can't open '/tmp=
-/cpu.usage': No such file or directory
-> Thu Jun 15 09:03:03 2023 user.notice firewall: Reloading firewall due t=
-o ifup of wg (wg)
-> Thu Jun 15 09:03:03 2023 daemon.info : 13[KNL] interface tunh activated=
-
-> Thu Jun 15 09:03:03 2023 daemon.info : 16[KNL] fe80::5efe:c0a8:7df9 app=
-eared on tunh
-> Thu Jun 15 09:03:03 2023 daemon.info : 08[KNL] 10.10.13.1 appeared on t=
-unh
-> Thu Jun 15 09:03:03 2023 daemon.info : 13[KNL] interface utun deleted
-> Thu Jun 15 09:03:03 2023 daemon.info : 05[KNL] interface utun deleted
-> Thu Jun 15 09:03:04 2023 auth.err passwd: password for root changed by =
-root
-> Thu Jun 15 09:03:17 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/tasks=
-: line 7: extra_command: not found
-> Thu Jun 15 09:03:17 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/tasks=
-: line 8: extra_command: not found
-> Thu Jun 15 09:03:17 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/tasks=
-: line 9: extra_command: not found
-> Thu Jun 15 09:03:17 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/tasks=
-: line 10: extra_command: not found
-> Thu Jun 15 09:03:17 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/tasks=
-: line 11: extra_command: not found
-> Thu Jun 15 09:03:23 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/tasks=
-: line 7: extra_command: not found
-> Thu Jun 15 09:03:23 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/tasks=
-: line 8: extra_command: not found
-> Thu Jun 15 09:03:23 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/tasks=
-: line 9: extra_command: not found
-> Thu Jun 15 09:03:23 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/tasks=
-: line 10: extra_command: not found
-> Thu Jun 15 09:03:23 2023 daemon.err uhttpd[2929]: sh: /etc/init.d/tasks=
-: line 11: extra_command: not found
-> Thu Jun 15 09:03:35 2023 daemon.err uhttpd[2929]: Error: The backup GPT=
- table is corrupt, but the primary appears OK, so that will be used.
-> Thu Jun 15 09:03:35 2023 daemon.err uhttpd[2929]: Warning: Not all of t=
-he space available to /dev/sda appears to be used, you can fix the GPT to=
- use all of the space (an extra 6111 blocks) or continue with the current=
- setting?
-> Thu Jun 15 09:03:59 2023 daemon.info acpid: starting up with netlink an=
-d the input layer
-> Thu Jun 15 09:03:59 2023 daemon.info acpid: 1 rule loaded
-> Thu Jun 15 09:03:59 2023 daemon.info acpid: waiting for events: event l=
-ogging is off
-> Thu Jun 15 09:11:16 2023 daemon.err uhttpd[2929]: getopt: unrecognized =
-option: no-validate
-> Thu Jun 15 10:06:07 2023 daemon.err uhttpd[2929]: getopt: unrecognized =
-option: no-validate
-> Thu Jun 15 10:09:27 2023 daemon.info : 09[KNL] interface utun deleted
-> Thu Jun 15 10:09:27 2023 daemon.info : 13[KNL] interface utun deleted
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.437330] ------------[=
- cut here ]------------
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.439948] WARNING: CPU:=
- 1 PID: 19 at inet_sock_destruct+0x190/0x1c0
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.440967] Modules linke=
-d in: pppoe ppp_async l2tp_ppp i915 wireguard video sch_fq_pie pppox ppp_=
-mppe ppp_generic mt7921u mt7921s mt7921e mt7921_common mt7915e mt76x2u mt=
-76x2e mt76x2_common mt76x02_usb mt76x02_lib mt76_usb mt76_sdio mt76_conna=
-c_lib mt76 mac80211 libchacha20poly1305 ipt_REJECT curve25519_x86_64 chac=
-ha_x86_64 cfg80211 ax88179_178a zstd xt_time xt_tcpudp xt_tcpmss xt_strin=
-g xt_statistic xt_state xt_socket xt_recent xt_quota xt_policy xt_pkttype=
- xt_owner xt_nat xt_multiport xt_mark xt_mac xt_limit xt_length xt_iprang=
-e xt_hl xt_helper xt_hashlimit xt_esp xt_ecn xt_dscp xt_conntrack xt_conn=
-mark xt_connlimit xt_connbytes xt_comment xt_cgroup xt_bpf xt_addrtype xt=
-_TPROXY xt_TCPMSS xt_REDIRECT xt_MASQUERADE xt_LOG xt_IPMARK xt_HL xt_FLO=
-WOFFLOAD xt_DSCP xt_CT xt_CLASSIFY wmi via_velocity usbnet ums_usbat ums_=
-sddr55 ums_sddr09 ums_karma ums_jumpshot ums_isd200 ums_freecom ums_dataf=
-ab ums_cypress ums_alauda tulip ts_fsm ts_bm tcp_bbr slhc sch_pie sch_cak=
-e rtl8150 r8168 r8152 r8125
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.441064]  poly1305_x86=
-_64 pcnet32 nf_tproxy_ipv6 nf_tproxy_ipv4 nf_socket_ipv6 nf_socket_ipv4 n=
-f_reject_ipv4 nf_nat_tftp nf_nat_snmp_basic nf_nat_sip nf_nat_pptp nf_nat=
-_irc nf_nat_h323 nf_nat_ftp nf_nat_amanda nf_log_syslog nf_flow_table nf_=
-conntrack_tftp nf_conntrack_snmp nf_conntrack_sip nf_conntrack_pptp nf_co=
-nntrack_netlink nf_conntrack_irc nf_conntrack_h323 nf_conntrack_ftp nf_co=
-nntrack_broadcast ts_kmp nf_conntrack_amanda nf_conncount mlx5_core mlx4_=
-en mlx4_core mdev macvlan lzo_rle lzo libcurve25519_generic libchacha kvm=
-_intel kvm ipvlan iptable_raw iptable_nat iptable_mangle iptable_filter i=
-pt_ah ipt_ECN ip_tables iommu_v2 igc iavf i40e forcedeth e1000e drm_displ=
-ay_helper drm_buddy crc_ccitt compat_xtables compat cls_flower br_netfilt=
-er bnx2x bnx2 alx act_vlan 8139too 8139cp ntfs3 cls_bpf act_bpf sch_tbf s=
-ch_ingress sch_htb sch_hfsc em_u32 cls_u32 cls_route cls_matchall cls_fw =
-cls_flow cls_basic act_skbedit act_mirred act_gact configs sg evdev i2c_d=
-ev cryptodev xt_set
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.453861]  ip_set_list_=
-set ip_set_hash_netportnet ip_set_hash_netport ip_set_hash_netnet ip_set_=
-hash_netiface ip_set_hash_net ip_set_hash_mac ip_set_hash_ipportnet ip_se=
-t_hash_ipportip ip_set_hash_ipport ip_set_hash_ipmark ip_set_hash_ipmac i=
-p_set_hash_ip ip_set_bitmap_port ip_set_bitmap_ipmac ip_set_bitmap_ip ip_=
-set st ip6table_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip6=
-t_NPT ip6table_mangle ip6table_filter ip6_tables ip6t_REJECT x_tables nf_=
-reject_ipv6 nfsv4 nfsd nfs bonding ip_gre gre ixgbe igbvf e1000 amd_xgbe =
-mdio_devres dummy sit mdio l2tp_netlink l2tp_core udp_tunnel ip6_udp_tunn=
-el ipcomp6 xfrm6_tunnel esp6 ah6 xfrm4_tunnel ipcomp esp4 ah4 ipip tunnel=
-6 tunnel4 ip_tunnel udp_diag tcp_diag raw_diag inet_diag rpcsec_gss_krb5 =
-auth_rpcgss veth tun nbd xfrm_user xfrm_ipcomp af_key xfrm_algo virtiofs =
-fuse lockd sunrpc grace hfs cifs oid_registry cifs_md4 cifs_arc4 asn1_dec=
-oder dns_resolver md_mod nls_utf8 nls_cp950 nls_cp936 ena shortcut_fe_ipv=
-6 shortcut_fe crypto_user
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.462923]  algif_skciph=
-er algif_rng algif_hash algif_aead af_alg sha512_ssse3 sha512_generic sha=
-1_ssse3 sha1_generic seqiv jitterentropy_rng drbg md5 hmac echainiv des_g=
-eneric libdes deflate cts cmac authencesn authenc arc4 crypto_acompress n=
-ls_iso8859_1 nls_cp437 uas sdhci_pltfm xhci_plat_hcd fsl_mph_dr_of ehci_p=
-latform ehci_fsl igb vfat fat exfat btrfs zstd_decompress zstd_compress z=
-std_common xxhash xor raid6_pq lzo_decompress lzo_compress dm_mirror dm_r=
-egion_hash dm_log dm_crypt dm_mod dax button_hotplug mii libphy tpm cbc s=
-ha256_ssse3 sha256_generic libsha256 encrypted_keys trusted
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.472554] CPU: 1 PID: 1=
-9 Comm: ksoftirqd/1 Not tainted 6.1.34 #0
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.473025] Hardware name=
-: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.1-0-g3208b098f51a-pr=
-ebuilt.qemu.org 04/01/2014
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.473731] RIP: 0010:ine=
-t_sock_destruct+0x190/0x1c0
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.474204] Code: bc 24 4=
-0 01 00 00 e8 af 0d f0 ff 49 8b bc 24 88 00 00 00 e8 a2 0d f0 ff 5b 41 5c=
- 5d c3 4c 89 e7 e8 e5 7e ed ff e9 70 ff ff ff <0f> 0b eb c3 0f 0b 41 8b 8=
-4 24 54 01 00 00 85 c0 74 9d 0f 0b 41 8b
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.475522] RSP: 0018:fff=
-fc900000afda8 EFLAGS: 00010206
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.475947] RAX: 00000000=
-00000e00 RBX: ffff888015c9b040 RCX: 0000000000000007
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.476450] RDX: 00000000=
-00000000 RSI: 0000000000000e00 RDI: ffff888015c9b040
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.476966] RBP: ffffc900=
-000afdb8 R08: ffff88800aba5900 R09: 000000008020001a
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.477588] R10: 00000000=
-40000000 R11: 0000000000000000 R12: ffff888015c9af80
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.478326] R13: ffff8880=
-02931540 R14: ffffc900000afe28 R15: ffff88807dd253f8
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.478872] FS:  00000000=
-00000000(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.479434] CS:  0010 DS:=
- 0000 ES: 0000 CR0: 0000000080050033
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.479886] CR2: 00007f11=
-fc4cd0a0 CR3: 0000000021cbe004 CR4: 0000000000370ee0
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.480533] Call Trace:
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.480851]  <TASK>
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.481169]  ? show_regs.=
-part.0+0x1e/0x20
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.481631]  ? show_regs.=
-cold+0x8/0xd
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.482248]  ? __warn+0x6=
-e/0xc0
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.483300]  ? inet_sock_=
-destruct+0x190/0x1c0
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.484240]  ? report_bug=
-+0xed/0x140
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.484937]  ? handle_bug=
-+0x46/0x80
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.485448]  ? exc_invali=
-d_op+0x19/0x70
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.485963]  ? asm_exc_in=
-valid_op+0x1b/0x20
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.486360]  ? inet_sock_=
-destruct+0x190/0x1c0
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.486888]  inet6_sock_d=
-estruct+0x16/0x20
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.487289]  __sk_destruc=
-t+0x23/0x180
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.487638]  rcu_core+0x2=
-8f/0x690
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.487964]  rcu_core_si+=
-0x9/0x10
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.488285]  __do_softirq=
-+0xbd/0x1e8
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.488973]  run_ksoftirq=
-d+0x24/0x40
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.489370]  smpboot_thre=
-ad_fn+0xdb/0x1d0
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.489826]  kthread+0xde=
-/0x110
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.490572]  ? sort_range=
-+0x20/0x20
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.491356]  ? kthread_co=
-mplete_and_exit+0x20/0x20
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.491839]  ret_from_for=
-k+0x1f/0x30
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.492195]  </TASK>
-> Thu Jun 15 10:09:28 2023 kern.warn kernel: [ 4071.492448] ---[ end trac=
-e 0000000000000000 ]---
-
-Later, the reporter revealed his setup:
-
-> This is an openwrt gateway device on x86_64 platform. I'm not sure the =
-exact version number that came up, it seems like 6.1.27 was not encounter=
-ed before. I have encountered it since kernel 6.1.32, but it is also from=
- this version that I have relatively large IPv6 udp traffic, conntrack -L=
-|grep -c udp shows that the number is between 600 - 2000.
-
-See Bugzilla for the full thread and attached log.
-
-Anyway, I'm adding it to regzbot:
-
-#regzbot introduced: v6.1.27..v6.1.32 https://bugzilla.kernel.org/show_bu=
-g.cgi?id=3D217555
-#regzbot title: kernel warning (oops) at inet_sock_destruct
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D217555
---=20
-An old man doll... just what I always wanted! - Clara
+T24gRnJpLCAyMDIzLTA2LTE2IGF0IDExOjUwICswMzAwLCBNaWtlIFJhcG9wb3J0IHdyb3RlOgo+
+IMKgdm9pZCAqbW9kdWxlX2FsbG9jKHVuc2lnbmVkIGxvbmcgc2l6ZSkKPiDCoHsKPiAtwqDCoMKg
+wqDCoMKgwqBpZiAoc2l6ZSA9PSAwKQo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBy
+ZXR1cm4gTlVMTDsKPiAtwqDCoMKgwqDCoMKgwqByZXR1cm4ga21hbGxvYyhzaXplLCBHRlBfS0VS
+TkVMKTsKPiAtfQo+IC0KPiAtLyogRnJlZSBtZW1vcnkgcmV0dXJuZWQgZnJvbSBtb2R1bGVfYWxs
+b2MgKi8KPiAtdm9pZCBtb2R1bGVfbWVtZnJlZSh2b2lkICptb2R1bGVfcmVnaW9uKQo+IC17Cj4g
+LcKgwqDCoMKgwqDCoMKga2ZyZWUobW9kdWxlX3JlZ2lvbik7Cj4gK8KgwqDCoMKgwqDCoMKgcmV0
+dXJuIF9fdm1hbGxvY19ub2RlX3JhbmdlKHNpemUsIDEsIE1PRFVMRVNfVkFERFIsCj4gTU9EVUxF
+U19FTkQsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIEdGUF9LRVJORUwsIFBBR0VfS0VSTkVMX0VYRUMsCj4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIFZNX0ZMVVNIX1JFU0VUX1BFUk1TLAo+IE5VTUFfTk9fTk9ERSwKPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgX19idWlsdGluX3JldHVybl9hZGRyZXNzKDApKTsKPiDCoH0KPiDCoAo+IMKgaW50IGFw
+cGx5X3JlbG9jYXRlX2FkZChFbGYzMl9TaGRyICpzZWNoZHJzLCBjb25zdCBjaGFyICpzCgpJIHdv
+bmRlciBpZiB0aGUgKHNpemUgPT0gMCkgY2hlY2sgaXMgcmVhbGx5IG5lZWRlZCwgYnV0Cl9fdm1h
+bGxvY19ub2RlX3JhbmdlKCkgd2lsbCBXQVJOIG9uIHRoaXMgY2FzZSB3aGVyZSB0aGUgb2xkIGNv
+ZGUgd29uJ3QuCg==
 
