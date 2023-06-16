@@ -1,153 +1,202 @@
-Return-Path: <bpf+bounces-2747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2748-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2626C73376E
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 19:30:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 178AD733776
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 19:32:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D246D2817C8
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 17:30:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48B191C20D98
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 17:32:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5421D2A2;
-	Fri, 16 Jun 2023 17:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790C91D2C8;
+	Fri, 16 Jun 2023 17:32:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B61D79F7
-	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 17:30:33 +0000 (UTC)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14D5269E;
-	Fri, 16 Jun 2023 10:30:31 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-51a2c60c529so1248115a12.3;
-        Fri, 16 Jun 2023 10:30:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347C01C774
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 17:32:20 +0000 (UTC)
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E199E1FD7
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 10:32:12 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-54f71fa7e41so644331a12.3
+        for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 10:32:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686936630; x=1689528630;
+        d=google.com; s=20221208; t=1686936732; x=1689528732;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3pNmnngxiEhIiRvBXuB1ZJgxGNhge5uLTtwEosNjp94=;
-        b=FGfUbbwEAPbQVuu9zcediuO2rg8ejYXvYrvBl8ry+3wnmeYBJkl59ALuvYT6ua7shz
-         KbaSvWaIr/XMvmh+oCgUayYpU+lvCBskwfSco55XqO0dFy6YtnSAHDNvwsENuh/9onXm
-         IlBeCREeLpRmZvIer+PdK4LcjAkLaY0sGi3jeRg6w90h/Ba75ez20xmyqdnYXc0vhj8z
-         FflCx7rURdM8zt/5FLUn5/i1j4054eFRqum6eANHLVFErPJzAV1oS5/3UlSzwheT9cQt
-         Gm7MPhtGkRstIz4957zDELm6fHn6QjAFuy91vDzZOnCHY9zG6ibYl6GbrcmzKa851skY
-         bm2w==
+        bh=bPNdCKJ+trkPSt2qe+X8tZYGTr7hvKkW/jt6Owxsv0A=;
+        b=AjsqkQdec5f5zbNbtPIolc9V9LQK2tLmCzqZ5b2Kd6Nrsgz39P3d7nTQXfsieTLLL/
+         EdqBhSuPZVnCKUKmEBl7IrdSmiT1foONuG+QHtSuLNbbdeoHxOqRfogXaIwgcwhf4lvN
+         AIxLvJL8jzJ8jKp7CngXFVIn7wnCcq4kKwD2LChYvo5mg9lWEcnmj2k5ISbh1YXx+3uZ
+         QnCAezCTP4NTD9wPo/OVS+fU6ySJ9m5ZiPTm70EuppruLbTZV7r9xjA0EKUBb0S3EDsE
+         KxP1cnIqNibWoP9KLPesPwh0r+2D/DkOnbQ5uqWuDx8nUyWI2+urm2gwajVKzCk2GC6b
+         CBWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686936630; x=1689528630;
+        d=1e100.net; s=20221208; t=1686936732; x=1689528732;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3pNmnngxiEhIiRvBXuB1ZJgxGNhge5uLTtwEosNjp94=;
-        b=NXkLz4pr2ngpWAQvtPzelmjQISFC8ZWR9m+keggiciWbBzwqQpp1L52oDKB5m6r32X
-         EMS9eblqNEb4hexleRrErjq8KKJpizFYzzASCvabz+Tt6fLl0m0oTahi9dOq2Akh7EIu
-         0K6l7mYzszOfboMcHEqq7k+3Si9MJEsAFIPB2mkK4MzjxcUUhE4qi//JFBmdcG/5CitO
-         TO9djFFzFct475VOpo0VRPuVwGwaywdisgEBU7ry/1kLB0s3UKG0xU0kSXDKL3YoaRBU
-         ByWYRuGxgPQjuOw3GEYXPEmJLlGd6a55pB3NshTMiN7Fs6bej/0VUZdYwaclyxM6kxoG
-         o1HQ==
-X-Gm-Message-State: AC+VfDxM+8Kh5x1YDcqTfWW9VEeLUOyWX5P9EIufU9m8sH7wsBjtTpV8
-	urFE/hPwHFVCMS7J2axJ5Xxnr0e+eERr9fsXpdM=
-X-Google-Smtp-Source: ACHHUZ5ojqU+hKiLZbtlwA/RqPBGowaA6L8WZhUb7bZkXOJMGZu/2lBFh4fuEX2PDABMANw1/KBrGa9jxiHBs6+4qXc=
-X-Received: by 2002:aa7:d287:0:b0:518:7bc3:4cec with SMTP id
- w7-20020aa7d287000000b005187bc34cecmr1753533edq.22.1686936630095; Fri, 16 Jun
- 2023 10:30:30 -0700 (PDT)
+        bh=bPNdCKJ+trkPSt2qe+X8tZYGTr7hvKkW/jt6Owxsv0A=;
+        b=RMbsIGK4OIk10TvUd+WGimQGZyeRbkzBag9DY063IUj+zhYNaNlb0Fq71XwhJueqIE
+         qgwuBaY4lD3PetobhJGFZueeSAzjko8/ZdgTwB8lRI4oecMUCpGt5odIKjEE0TUss+5p
+         6N9/6e1/awfk5tQ8WFLv0AjfiHmwzW4Z5tIQg95taownl38SIP4yZkyl6OMZxEOP//bL
+         jj4ljSWo/9Y76BmM/kqXlVbMJob9km18TEzW4wzBeRAnCmf2MSzi2eue7Jxu7xsKawKa
+         TMYWfDlihc0U3qgBCKtk2dPdmxiephka9IGaeFMqwMTZQdDT2QBjokbFIYTYpWdhnBuo
+         lOTA==
+X-Gm-Message-State: AC+VfDzBastcP0IZ0X3Qhi0B0LZEZE/MJcXkwYObxqNskm1cndCEGncz
+	jgk0ym11+IFRxB7HVPggKaQwF6umSFyEaQNxPbCCGQ==
+X-Google-Smtp-Source: ACHHUZ7uYPPfa+dWjP/WNfeBI2QjSTQLGhfRQrwLJhB/jBv91WUYl8CKbKR66axu0KgBPCTpi8g/7pIWJsb//drqm5M=
+X-Received: by 2002:a17:90a:1908:b0:256:5dec:50ed with SMTP id
+ 8-20020a17090a190800b002565dec50edmr2154818pjg.7.1686936732156; Fri, 16 Jun
+ 2023 10:32:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230612151608.99661-1-laoar.shao@gmail.com> <20230612151608.99661-4-laoar.shao@gmail.com>
-In-Reply-To: <20230612151608.99661-4-laoar.shao@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 16 Jun 2023 10:30:18 -0700
-Message-ID: <CAEf4BzaZEb_Uz21WDmQr7UC8Q50EfHDr2=dK477Z8fGEinCZ7w@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 03/10] bpftool: Show probed function in
- kprobe_multi link info
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	quentin@isovalent.com, rostedt@goodmis.org, mhiramat@kernel.org, 
-	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20230612172307.3923165-1-sdf@google.com> <87cz20xunt.fsf@toke.dk>
+ <CAKH8qBuAUems8a7kKJPcFvarW2jy4qTf4sAM8oUC8UHj-gE=ug@mail.gmail.com> <CAJ8uoz2Bx3cd7braAZjZFNYfqX0JjJzSvr4RBN=j8CiH8Ld5-w@mail.gmail.com>
+In-Reply-To: <CAJ8uoz2Bx3cd7braAZjZFNYfqX0JjJzSvr4RBN=j8CiH8Ld5-w@mail.gmail.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Fri, 16 Jun 2023 10:32:00 -0700
+Message-ID: <CAKH8qBscx=SWSCL_WTMPyNPu=63OzFJcenCySds2KoV1agWW9w@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/7] bpf: netdev TX metadata
+To: Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
+	bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org, willemb@google.com, 
+	dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org, 
+	maciej.fijalkowski@intel.com, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 12, 2023 at 8:16=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
-wrote:
+On Fri, Jun 16, 2023 at 1:13=E2=80=AFAM Magnus Karlsson
+<magnus.karlsson@gmail.com> wrote:
 >
-> Show the already expose kprobe_multi link info in bpftool. The result as
-> follows,
+> On Fri, 16 Jun 2023 at 02:09, Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > On Mon, Jun 12, 2023 at 2:01=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgense=
+n <toke@kernel.org> wrote:
+> > >
+> > > Some immediate thoughts after glancing through this:
+> > >
+> > > > --- Use cases ---
+> > > >
+> > > > The goal of this series is to add two new standard-ish places
+> > > > in the transmit path:
+> > > >
+> > > > 1. Right before the packet is transmitted (with access to TX
+> > > >    descriptors)
+> > > > 2. Right after the packet is actually transmitted and we've receive=
+d the
+> > > >    completion (again, with access to TX completion descriptors)
+> > > >
+> > > > Accessing TX descriptors unlocks the following use-cases:
+> > > >
+> > > > - Setting device hints at TX: XDP/AF_XDP might use these new hooks =
+to
+> > > > use device offloads. The existing case implements TX timestamp.
+> > > > - Observability: global per-netdev hooks can be used for tracing
+> > > > the packets and exploring completion descriptors for all sorts of
+> > > > device errors.
+> > > >
+> > > > Accessing TX descriptors also means that the hooks have to be calle=
+d
+> > > > from the drivers.
+> > > >
+> > > > The hooks are a light-weight alternative to XDP at egress and curre=
+ntly
+> > > > don't provide any packet modification abilities. However, eventuall=
+y,
+> > > > can expose new kfuncs to operate on the packet (or, rather, the act=
+ual
+> > > > descriptors; for performance sake).
+> > >
+> > > dynptr?
+> > >
+> > > > --- UAPI ---
+> > > >
+> > > > The hooks are implemented in a HID-BPF style. Meaning they don't
+> > > > expose any UAPI and are implemented as tracing programs that call
+> > > > a bunch of kfuncs. The attach/detach operation happen via BPF sysca=
+ll
+> > > > programs. The series expands device-bound infrastructure to tracing
+> > > > programs.
+> > >
+> > > Not a fan of the "attach from BPF syscall program" thing. These are p=
+art
+> > > of the XDP data path API, and I think we should expose them as proper
+> > > bpf_link attachments from userspace with introspection etc. But I gue=
+ss
+> > > the bpf_mprog thing will give us that?
+> > >
+> > > > --- skb vs xdp ---
+> > > >
+> > > > The hooks operate on a new light-weight devtx_frame which contains:
+> > > > - data
+> > > > - len
+> > > > - sinfo
+> > > >
+> > > > This should allow us to have a unified (from BPF POW) place at TX
+> > > > and not be super-taxing (we need to copy 2 pointers + len to the st=
+ack
+> > > > for each invocation).
+> > >
+> > > Not sure what I think about this one. At the very least I think we
+> > > should expose xdp->data_meta as well. I'm not sure what the use case =
+for
+> > > accessing skbs is? If that *is* indeed useful, probably there will al=
+so
+> > > end up being a use case for accessing the full skb?
+> >
+> > I spent some time looking at data_meta story on AF_XDP TX and it
+> > doesn't look like it's supported (at least in a general way).
+> > You obviously get some data_meta when you do XDP_TX, but if you want
+> > to pass something to the bpf prog when doing TX via the AF_XDP ring,
+> > it gets complicated.
 >
-> 52: kprobe_multi  prog 381
->         retprobe 0  func_cnt 7
->         addrs ffffffff9ec44f20  funcs schedule_timeout_interruptible
->               ffffffff9ec44f60        schedule_timeout_killable
->               ffffffff9ec44fa0        schedule_timeout_uninterruptible
->               ffffffff9ec44fe0        schedule_timeout_idle
->               ffffffffc09468d0        xfs_trans_get_efd [xfs]
->               ffffffffc0953a10        xfs_trans_get_buf_map [xfs]
->               ffffffffc0957320        xfs_trans_get_dqtrx [xfs]
->         pids kprobe_multi(559862)
-> 53: kprobe_multi  prog 381
->         retprobe 1  func_cnt 7
->         addrs ffffffff9ec44f20  funcs schedule_timeout_interruptible
->               ffffffff9ec44f60        schedule_timeout_killable
->               ffffffff9ec44fa0        schedule_timeout_uninterruptible
->               ffffffff9ec44fe0        schedule_timeout_idle
->               ffffffffc09468d0        xfs_trans_get_efd [xfs]
->               ffffffffc0953a10        xfs_trans_get_buf_map [xfs]
->               ffffffffc0957320        xfs_trans_get_dqtrx [xfs]
+> When we designed this some 5 - 6 years ago, we thought that there
+> would be an XDP for egress action in the "nearish" future that could
+> be used to interpret the metadata field in front of the packet.
+> Basically, the user would load an XDP egress program that would define
+> the metadata layout by the operations it would perform on the metadata
+> area. But since XDP on egress has not happened, you are right, there
+> is definitely something missing to be able to use metadata on Tx. Or
+> could your proposed hook points be used for something like this?
 
-it all subjective, but this format is a bit weird where "addrs" and
-"funcs" is in first row to the left. Just makes everything wider. Why
-not something like
+Thanks for the context!
+Yes, the proposal is to use these new tx hooks to read out af_xdp
+metadata and apply it to the packet via a bunch of tbd kfuncs.
+AF_XDP and BPF programs would have to have a contract about the
+metadata layout (same as we have on rx).
 
-addr              func
-ffffffff9ec44f20  schedule_timeout_interruptible
-ffffffff9ec44f60  schedule_timeout_killable
-ffffffffc0953a10  xfs_trans_get_buf_map [xfs]
-ffffffffc0957320  xfs_trans_get_dqtrx [xfs]
-
-Not it's singular (addr and func) because it's column names,
-basically. Can also do "addr func [module]".
-
->         pids kprobe_multi(559862)
+> > In zerocopy mode, we can probably use XDP_UMEM_UNALIGNED_CHUNK_FLAG
+> > and pass something in the headroom.
 >
-> $ tools/bpf/bpftool/bpftool link show -j
-> [{"id":52,"type":"kprobe_multi","prog_id":381,"retprobe":0,"func_cnt":7,"=
-funcs":[{"addr":18446744072078249760,"func":"schedule_timeout_interruptible=
-","module":""},{"addr":18446744072078249824,"func":"schedule_timeout_killab=
-le","module":""},{"addr":18446744072078249888,"func":"schedule_timeout_unin=
-terruptible","module":""},{"addr":18446744072078249952,"func":"schedule_tim=
-eout_idle","module":""},{"addr":18446744072645535952,"func":"xfs_trans_get_=
-efd","module":"[xfs]"},{"addr":18446744072645589520,"func":"xfs_trans_get_b=
-uf_map","module":"[xfs]"},{"addr":18446744072645604128,"func":"xfs_trans_ge=
-t_dqtrx","module":"[xfs]"}],"pids":[{"pid":559862,"comm":"kprobe_multi"}]},=
-{"id":53,"type":"kprobe_multi","prog_id":381,"retprobe":1,"func_cnt":7,"fun=
-cs":[{"addr":18446744072078249760,"func":"schedule_timeout_interruptible","=
-module":""},{"addr":18446744072078249824,"func":"schedule_timeout_killable"=
-,"module":""},{"addr":18446744072078249888,"func":"schedule_timeout_uninter=
-ruptible","module":""},{"addr":18446744072078249952,"func":"schedule_timeou=
-t_idle","module":""},{"addr":18446744072645535952,"func":"xfs_trans_get_efd=
-","module":"[xfs]"},{"addr":18446744072645589520,"func":"xfs_trans_get_buf_=
-map","module":"[xfs]"},{"addr":18446744072645604128,"func":"xfs_trans_get_d=
-qtrx","module":"[xfs]"}],"pids":[{"pid":559862,"comm":"kprobe_multi"}]}]
->
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  tools/bpf/bpftool/link.c | 109 +++++++++++++++++++++++++++++++++++++++++=
-+++++-
->  1 file changed, 108 insertions(+), 1 deletion(-)
->
+> This feature is mainly used to allow for multiple packets on the same
+> chunk (to save space) and also to be able to have packets spanning two
+> chunks. Even in aligned mode, you can start a packet at an arbitrary
+> address in the chunk as long as the whole packet fits into the chunk.
+> So no problem having headroom in any of the modes.
 
-[...]
+But if I put it into the headroom it will only be passed down to the
+driver in zero-copy mode, right?
+If I do tx_desc->addr =3D packet_start, no medata (that goes prior to
+packet_start) gets copied into skb in the copy mode (it seems).
+Or do you suggest that the interface should be tx_desc->addr =3D
+metadata_start and the bpf program should call the equivalent of
+bpf_xdp_adjust_head to consume this metadata?
 
