@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-2686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD13732413
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 02:05:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62BE5732416
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 02:05:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C07051C20EE6
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 00:05:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAAF9281592
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 00:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2B162F;
-	Fri, 16 Jun 2023 00:05:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD9D563B;
+	Fri, 16 Jun 2023 00:05:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B12E626
-	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 00:05:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DA2FC433CB;
-	Fri, 16 Jun 2023 00:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D17626
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 00:05:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B65FDC43391;
+	Fri, 16 Jun 2023 00:05:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686873902;
-	bh=SRUUHvNU9VjkTuHjE3eV7qCSj9Zf5AcJHxpRvRhWpTA=;
+	s=k20201202; t=1686873904;
+	bh=Iz2fqg5BiVRYVn+P4ee3dWG8MTDBbvD3LegRU3GRmwQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=usRRsy7KX/8kIusvvMu1xTNiFam4CunVRwoXmOGgBu92KdUfwcfpj16vXYPR3IyS0
-	 JmOyICqgqoOo+EZweQ0Gc68TdsHqXs77gqbHJ/qexPHyMaO20OuIKbEBmt3TD+UC06
-	 BZgiKpkcGl9mzSj9WfZPmL6G1yx6m3X41xqaXQRxIHRerxx4hS1f0zdyyx2N4ezl6S
-	 kNDehvaT2lQOLACVIh0sQsG8V+u1JPt5k554d7KbzhY6/Is0gaqGCoIc2dd/SERE1I
-	 YIfNgpMmZxvFVu5+lFmFcluuDSGiFa+ZLPznR5eRHKMrbG+72Up6byJnNt22afrlmq
-	 WXI7Lg1P4dk2g==
+	b=N9ozvBW2/pOeFXVC5TOH0Tfsi+w7Pqon01VmxUe4zK2eJyDsYCXS0VAC2Xzn74+hE
+	 cOw6I35bGIwBl2dz/x6974wztF0ZulA+H/CE+EFtEP/RsC+HPtVWwQ7Qa5m8nsV7Jw
+	 sbFSH45wgOFPtec0pPgJFg3ERsnkIkII6ju5IaUCOOZxuhuUn8IjpY7GsTKusevz/z
+	 qVKm7QmCp5n21xIgNx3vve3kRjGL+gKxnKRPpJ/6P2jwW2cttewNBtE5ILOCKIfYw5
+	 fW0osoxJuuKXk1eWOI2BHHEXpaXS6nLpdt5OogA0RCICphZSiI2ombF19v7Jezm62c
+	 UFQnOjuF74zHQ==
 From: KP Singh <kpsingh@kernel.org>
 To: linux-security-module@vger.kernel.org,
 	bpf@vger.kernel.org
@@ -41,9 +41,9 @@ Cc: paul@paul-moore.com,
 	ast@kernel.org,
 	jannh@google.com,
 	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH v2 4/5] bpf: Only enable BPF LSM hooks when an LSM program is attached
-Date: Fri, 16 Jun 2023 02:04:40 +0200
-Message-ID: <20230616000441.3677441-5-kpsingh@kernel.org>
+Subject: [PATCH v2 5/5] security: Add CONFIG_SECURITY_HOOK_LIKELY
+Date: Fri, 16 Jun 2023 02:04:41 +0200
+Message-ID: <20230616000441.3677441-6-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
 In-Reply-To: <20230616000441.3677441-1-kpsingh@kernel.org>
 References: <20230616000441.3677441-1-kpsingh@kernel.org>
@@ -55,14 +55,74 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-BPF LSM hooks have side-effects (even when a default value is returned),
-as some hooks end up behaving differently due to the very presence of
-the hook.
+This config influences the nature of the static key that guards the
+static call for LSM hooks.
 
-The static keys guarding the BPF LSM hooks are disabled by default and
-enabled only when a BPF program is attached implementing the hook
-logic. This avoids the issue of the side-effects and also the minor
-overhead associated with the empty callback.
+When enabled, it indicates that an LSM static call slot is more likely
+to be initialized. When disabled, it optimizes for the case when static
+call slot is more likely to be not initialized.
+
+When a major LSM like (SELinux, AppArmor, Smack etc) is active on a
+system the system would benefit from enabling the config. However there
+are other cases which would benefit from the config being disabled
+(e.g. a system with a BPF LSM with no hooks enabled by default, or an
+LSM like loadpin / yama). Ultimately, there is no one-size fits all
+solution.
+
+with CONFIG_SECURITY_HOOK_LIKELY enabled, the inactive /
+uninitialized case is penalized with a direct jmp (still better than
+an indirect jmp):
+
+function security_file_ioctl:
+   0xffffffff818f0c80 <+0>:	endbr64
+   0xffffffff818f0c84 <+4>:	nopl   0x0(%rax,%rax,1)
+   0xffffffff818f0c89 <+9>:	push   %rbp
+   0xffffffff818f0c8a <+10>:	push   %r14
+   0xffffffff818f0c8c <+12>:	push   %rbx
+   0xffffffff818f0c8d <+13>:	mov    %rdx,%rbx
+   0xffffffff818f0c90 <+16>:	mov    %esi,%ebp
+   0xffffffff818f0c92 <+18>:	mov    %rdi,%r14
+   0xffffffff818f0c95 <+21>:	jmp    0xffffffff818f0ca8 <security_file_ioctl+40>
+
+   jump to skip the inactive BPF LSM hook.
+
+   0xffffffff818f0c97 <+23>:	mov    %r14,%rdi
+   0xffffffff818f0c9a <+26>:	mov    %ebp,%esi
+   0xffffffff818f0c9c <+28>:	mov    %rbx,%rdx
+   0xffffffff818f0c9f <+31>:	call   0xffffffff8141e3b0 <bpf_lsm_file_ioctl>
+   0xffffffff818f0ca4 <+36>:	test   %eax,%eax
+   0xffffffff818f0ca6 <+38>:	jne    0xffffffff818f0cbf <security_file_ioctl+63>
+   0xffffffff818f0ca8 <+40>:	endbr64
+   0xffffffff818f0cac <+44>:	jmp    0xffffffff818f0ccd <security_file_ioctl+77>
+
+   jump to skip the empty slot.
+
+   0xffffffff818f0cae <+46>:	mov    %r14,%rdi
+   0xffffffff818f0cb1 <+49>:	mov    %ebp,%esi
+   0xffffffff818f0cb3 <+51>:	mov    %rbx,%rdx
+   0xffffffff818f0cb6 <+54>:	nopl   0x0(%rax,%rax,1)
+  				^^^^^^^^^^^^^^^^^^^^^^^
+				Empty slot
+
+   0xffffffff818f0cbb <+59>:	test   %eax,%eax
+   0xffffffff818f0cbd <+61>:	je     0xffffffff818f0ccd <security_file_ioctl+77>
+   0xffffffff818f0cbf <+63>:	endbr64
+   0xffffffff818f0cc3 <+67>:	pop    %rbx
+   0xffffffff818f0cc4 <+68>:	pop    %r14
+   0xffffffff818f0cc6 <+70>:	pop    %rbp
+   0xffffffff818f0cc7 <+71>:	cs jmp 0xffffffff82c00000 <__x86_return_thunk>
+   0xffffffff818f0ccd <+77>:	endbr64
+   0xffffffff818f0cd1 <+81>:	xor    %eax,%eax
+   0xffffffff818f0cd3 <+83>:	jmp    0xffffffff818f0cbf <security_file_ioctl+63>
+   0xffffffff818f0cd5 <+85>:	mov    %r14,%rdi
+   0xffffffff818f0cd8 <+88>:	mov    %ebp,%esi
+   0xffffffff818f0cda <+90>:	mov    %rbx,%rdx
+   0xffffffff818f0cdd <+93>:	pop    %rbx
+   0xffffffff818f0cde <+94>:	pop    %r14
+   0xffffffff818f0ce0 <+96>:	pop    %rbp
+   0xffffffff818f0ce1 <+97>:	ret
+
+When the config is disabled, the case optimizes the scenario above.
 
 security_file_ioctl:
    0xffffffff818f0e30 <+0>:	endbr64
@@ -73,16 +133,11 @@ security_file_ioctl:
    0xffffffff818f0e3d <+13>:	mov    %rdx,%rbx
    0xffffffff818f0e40 <+16>:	mov    %esi,%ebp
    0xffffffff818f0e42 <+18>:	mov    %rdi,%r14
-   0xffffffff818f0e45 <+21>:	jmp    0xffffffff818f0e57 <security_file_ioctl+39>
-   				^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-   Static key enabled for SELinux
-
+   0xffffffff818f0e45 <+21>:	xchg   %ax,%ax
    0xffffffff818f0e47 <+23>:	xchg   %ax,%ax
-   				^^^^^^^^^^^^^^
 
-   Static key disabled for BPF. This gets patched when a BPF LSM program
-   is attached
+   The static keys in their disabled state do not create jumps leading
+   to faster code.
 
    0xffffffff818f0e49 <+25>:	xor    %eax,%eax
    0xffffffff818f0e4b <+27>:	xchg   %ax,%ax
@@ -94,7 +149,7 @@ security_file_ioctl:
    0xffffffff818f0e5b <+43>:	mov    %r14,%rdi
    0xffffffff818f0e5e <+46>:	mov    %ebp,%esi
    0xffffffff818f0e60 <+48>:	mov    %rbx,%rdx
-   0xffffffff818f0e63 <+51>:	call   0xffffffff819033c0 <selinux_file_ioctl>
+   0xffffffff818f0e63 <+51>:	call   0xffffffff8141e3b0 <bpf_lsm_file_ioctl>
    0xffffffff818f0e68 <+56>:	test   %eax,%eax
    0xffffffff818f0e6a <+58>:	jne    0xffffffff818f0e4d <security_file_ioctl+29>
    0xffffffff818f0e6c <+60>:	jmp    0xffffffff818f0e47 <security_file_ioctl+23>
@@ -102,7 +157,7 @@ security_file_ioctl:
    0xffffffff818f0e72 <+66>:	mov    %r14,%rdi
    0xffffffff818f0e75 <+69>:	mov    %ebp,%esi
    0xffffffff818f0e77 <+71>:	mov    %rbx,%rdx
-   0xffffffff818f0e7a <+74>:	call   0xffffffff8141e3b0 <bpf_lsm_file_ioctl>
+   0xffffffff818f0e7a <+74>:	nopl   0x0(%rax,%rax,1)
    0xffffffff818f0e7f <+79>:	test   %eax,%eax
    0xffffffff818f0e81 <+81>:	jne    0xffffffff818f0e4d <security_file_ioctl+29>
    0xffffffff818f0e83 <+83>:	jmp    0xffffffff818f0e49 <security_file_ioctl+25>
@@ -117,212 +172,77 @@ security_file_ioctl:
 
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- include/linux/bpf.h       |  1 +
- include/linux/bpf_lsm.h   |  5 +++++
- include/linux/lsm_hooks.h | 13 ++++++++++++-
- kernel/bpf/trampoline.c   | 29 +++++++++++++++++++++++++++--
- security/bpf/hooks.c      | 25 ++++++++++++++++++++++++-
- security/security.c       |  3 ++-
- 6 files changed, 71 insertions(+), 5 deletions(-)
+ security/Kconfig    | 11 +++++++++++
+ security/security.c | 13 ++++++++-----
+ 2 files changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f58895830ada..d288b65836c4 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1134,6 +1134,7 @@ struct bpf_attach_target_info {
- 	struct module *tgt_mod;
- 	const char *tgt_name;
- 	const struct btf_type *tgt_type;
-+	bool is_lsm_target;
- };
+diff --git a/security/Kconfig b/security/Kconfig
+index 52c9af08ad35..bd2a0dff991a 100644
+--- a/security/Kconfig
++++ b/security/Kconfig
+@@ -32,6 +32,17 @@ config SECURITY
  
- #define BPF_DISPATCHER_MAX 48 /* Fits in 2048B */
-diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-index 1de7ece5d36d..5bbc31ac948c 100644
---- a/include/linux/bpf_lsm.h
-+++ b/include/linux/bpf_lsm.h
-@@ -29,6 +29,7 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+ 	  If you are unsure how to answer this question, answer N.
  
- bool bpf_lsm_is_sleepable_hook(u32 btf_id);
- bool bpf_lsm_is_trusted(const struct bpf_prog *prog);
-+void bpf_lsm_toggle_hook(void *addr, bool value);
- 
- static inline struct bpf_storage_blob *bpf_inode(
- 	const struct inode *inode)
-@@ -78,6 +79,10 @@ static inline void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
- {
- }
- 
-+static inline void bpf_lsm_toggle_hook(void *addr, bool value)
-+{
-+}
++config SECURITY_HOOK_LIKELY
++	bool "LSM hooks are likely to be initialized"
++	depends on SECURITY
++	default y
++	help
++	  This controls the behaviour of the static keys that guard LSM hooks.
++	  If LSM hooks are likely to be initialized by LSMs, then one gets
++	  better performance by enabling this option. However, if the system is
++	  using an LSM where hooks are much likely to be disabled, one gets
++	  better performance by disabling this config.
 +
- #endif /* CONFIG_BPF_LSM */
- 
- #endif /* _LINUX_BPF_LSM_H */
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 069da0fa617a..96fa610ce443 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -96,11 +96,14 @@ struct lsm_static_calls_table {
-  * @scalls: The beginning of the array of static calls assigned to this hook.
-  * @hook: The callback for the hook.
-  * @lsm: The name of the lsm that owns this hook.
-+ * @default_state: The state of the LSM hook when initialized. If set to false,
-+ * the static key guarding the hook will be set to disabled.
-  */
- struct security_hook_list {
- 	struct lsm_static_call	*scalls;
- 	union security_list_options	hook;
- 	const char			*lsm;
-+	bool				default_state;
- } __randomize_layout;
- 
- /*
-@@ -131,7 +134,15 @@ struct lsm_blob_sizes {
- #define LSM_HOOK_INIT(NAME, CALLBACK)			\
- 	{						\
- 		.scalls = static_calls_table.NAME,	\
--		.hook = { .NAME = CALLBACK }		\
-+		.hook = { .NAME = CALLBACK },		\
-+		.default_state = true			\
-+	}
-+
-+#define LSM_HOOK_INIT_DISABLED(NAME, CALLBACK)		\
-+	{						\
-+		.scalls = static_calls_table.NAME,	\
-+		.hook = { .NAME = CALLBACK },		\
-+		.default_state = false			\
- 	}
- 
- extern char *lsm_names;
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 78acf28d4873..5b17cd7aab30 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -13,6 +13,7 @@
- #include <linux/bpf_verifier.h>
- #include <linux/bpf_lsm.h>
- #include <linux/delay.h>
-+#include <linux/bpf_lsm.h>
- 
- /* dummy _ops. The verifier will operate on target program's ops. */
- const struct bpf_verifier_ops bpf_extension_verifier_ops = {
-@@ -514,7 +515,7 @@ static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_tr
- {
- 	enum bpf_tramp_prog_type kind;
- 	struct bpf_tramp_link *link_exiting;
--	int err = 0;
-+	int err = 0, num_lsm_progs = 0;
- 	int cnt = 0, i;
- 
- 	kind = bpf_attach_type_to_tramp(link->link.prog);
-@@ -545,8 +546,14 @@ static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_tr
- 			continue;
- 		/* prog already linked */
- 		return -EBUSY;
-+
-+		if (link_exiting->link.prog->type == BPF_PROG_TYPE_LSM)
-+			num_lsm_progs++;
- 	}
- 
-+	if (!num_lsm_progs && link->link.prog->type == BPF_PROG_TYPE_LSM)
-+		bpf_lsm_toggle_hook(tr->func.addr, true);
-+
- 	hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
- 	tr->progs_cnt[kind]++;
- 	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
-@@ -569,8 +576,10 @@ int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline
- 
- static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
- {
-+	struct bpf_tramp_link *link_exiting;
- 	enum bpf_tramp_prog_type kind;
--	int err;
-+	bool lsm_link_found = false;
-+	int err, num_lsm_progs = 0;
- 
- 	kind = bpf_attach_type_to_tramp(link->link.prog);
- 	if (kind == BPF_TRAMP_REPLACE) {
-@@ -580,8 +589,24 @@ static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_
- 		tr->extension_prog = NULL;
- 		return err;
- 	}
-+
-+	if (link->link.prog->type == BPF_PROG_TYPE_LSM) {
-+		hlist_for_each_entry(link_exiting, &tr->progs_hlist[kind],
-+				     tramp_hlist) {
-+			if (link_exiting->link.prog->type == BPF_PROG_TYPE_LSM)
-+				num_lsm_progs++;
-+
-+			if (link_exiting->link.prog == link->link.prog)
-+				lsm_link_found = true;
-+		}
-+	}
-+
- 	hlist_del_init(&link->tramp_hlist);
- 	tr->progs_cnt[kind]--;
-+
-+	if (lsm_link_found && num_lsm_progs == 1)
-+		bpf_lsm_toggle_hook(tr->func.addr, false);
-+
- 	return bpf_trampoline_update(tr, true /* lock_direct_mutex */);
- }
- 
-diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
-index cfaf1d0e6a5f..1957244196d0 100644
---- a/security/bpf/hooks.c
-+++ b/security/bpf/hooks.c
-@@ -8,7 +8,7 @@
- 
- static struct security_hook_list bpf_lsm_hooks[] __ro_after_init = {
- 	#define LSM_HOOK(RET, DEFAULT, NAME, ...) \
--	LSM_HOOK_INIT(NAME, bpf_lsm_##NAME),
-+	LSM_HOOK_INIT_DISABLED(NAME, bpf_lsm_##NAME),
- 	#include <linux/lsm_hook_defs.h>
- 	#undef LSM_HOOK
- 	LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
-@@ -32,3 +32,26 @@ DEFINE_LSM(bpf) = {
- 	.init = bpf_lsm_init,
- 	.blobs = &bpf_lsm_blob_sizes
- };
-+
-+void bpf_lsm_toggle_hook(void *addr, bool value)
-+{
-+	struct lsm_static_call *scalls;
-+	struct security_hook_list *h;
-+	int i, j;
-+
-+	for (i = 0; i < ARRAY_SIZE(bpf_lsm_hooks); i++) {
-+		h = &bpf_lsm_hooks[i];
-+		scalls = h->scalls;
-+		if (h->hook.lsm_callback == addr)
-+			continue;
-+
-+		for (j = 0; j < MAX_LSM_COUNT; j++) {
-+			if (scalls[j].hl != h)
-+				continue;
-+			if (value)
-+				static_branch_enable(scalls[j].active);
-+			else
-+				static_branch_disable(scalls[j].active);
-+		}
-+	}
-+}
+ config SECURITYFS
+ 	bool "Enable the securityfs filesystem"
+ 	help
 diff --git a/security/security.c b/security/security.c
-index 9ae7c0ec5cac..4aec25949212 100644
+index 4aec25949212..da80a8918e7d 100644
 --- a/security/security.c
 +++ b/security/security.c
-@@ -374,7 +374,8 @@ static void __init lsm_static_call_init(struct security_hook_list *hl)
- 			__static_call_update(scall->key, scall->trampoline,
- 					     hl->hook.lsm_callback);
- 			scall->hl = hl;
--			static_branch_enable(scall->active);
-+			if (hl->default_state)
-+				static_branch_enable(scall->active);
- 			return;
- 		}
- 		scall++;
+@@ -99,9 +99,9 @@ static __initdata struct lsm_info *exclusive;
+  * Define static calls and static keys for each LSM hook.
+  */
+ 
+-#define DEFINE_LSM_STATIC_CALL(NUM, NAME, RET, ...)			\
+-	DEFINE_STATIC_CALL_NULL(LSM_STATIC_CALL(NAME, NUM),		\
+-				*((RET(*)(__VA_ARGS__))NULL));		\
++#define DEFINE_LSM_STATIC_CALL(NUM, NAME, RET, ...)               \
++	DEFINE_STATIC_CALL_NULL(LSM_STATIC_CALL(NAME, NUM),       \
++				*((RET(*)(__VA_ARGS__))NULL));    \
+ 	DEFINE_STATIC_KEY_FALSE(SECURITY_HOOK_ACTIVE_KEY(NAME, NUM));
+ 
+ #define LSM_HOOK(RET, DEFAULT, NAME, ...)				\
+@@ -110,6 +110,9 @@ static __initdata struct lsm_info *exclusive;
+ #undef LSM_HOOK
+ #undef DEFINE_LSM_STATIC_CALL
+ 
++#define security_hook_active(n, h) \
++	static_branch_maybe(CONFIG_SECURITY_HOOK_LIKELY, &SECURITY_HOOK_ACTIVE_KEY(h, n))
++
+ /*
+  * Initialise a table of static calls for each LSM hook.
+  * DEFINE_STATIC_CALL_NULL invocation above generates a key (STATIC_CALL_KEY)
+@@ -816,7 +819,7 @@ static int lsm_superblock_alloc(struct super_block *sb)
+  */
+ #define __CALL_STATIC_VOID(NUM, HOOK, ...)				     \
+ do {									     \
+-	if (static_branch_unlikely(&SECURITY_HOOK_ACTIVE_KEY(HOOK, NUM))) {    \
++	if (security_hook_active(NUM, HOOK)) {    			     \
+ 		static_call(LSM_STATIC_CALL(HOOK, NUM))(__VA_ARGS__);	     \
+ 	}								     \
+ } while (0);
+@@ -828,7 +831,7 @@ do {									     \
+ 
+ #define __CALL_STATIC_INT(NUM, R, HOOK, LABEL, ...)			     \
+ do {									     \
+-	if (static_branch_unlikely(&SECURITY_HOOK_ACTIVE_KEY(HOOK, NUM))) {  \
++	if (security_hook_active(NUM, HOOK)) {    \
+ 		R = static_call(LSM_STATIC_CALL(HOOK, NUM))(__VA_ARGS__);    \
+ 		if (R != 0)						     \
+ 			goto LABEL;					     \
 -- 
 2.41.0.162.gfafddb0af9-goog
 
