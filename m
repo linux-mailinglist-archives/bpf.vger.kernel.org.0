@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-2746-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2747-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3F7F73376C
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 19:25:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2626C73376E
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 19:30:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FE932817BB
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 17:25:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D246D2817C8
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 17:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0DCD1C773;
-	Fri, 16 Jun 2023 17:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5421D2A2;
+	Fri, 16 Jun 2023 17:30:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8636D182D2
-	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 17:25:48 +0000 (UTC)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E751FD7;
-	Fri, 16 Jun 2023 10:25:47 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-51a200fc3eeso1257118a12.3;
-        Fri, 16 Jun 2023 10:25:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B61D79F7
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 17:30:33 +0000 (UTC)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14D5269E;
+	Fri, 16 Jun 2023 10:30:31 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-51a2c60c529so1248115a12.3;
+        Fri, 16 Jun 2023 10:30:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686936345; x=1689528345;
+        d=gmail.com; s=20221208; t=1686936630; x=1689528630;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9WOUSqHHDDxpch1TJqgV2f+62UgYbb/xkkpc8zQS/vs=;
-        b=MUPpRm1DBRAQ1gr4rZOgCEmRnFugKNFVBtAkm3SAVULh8n6N8tTKaZ13eYJDIC3MVx
-         RwpH9C2dHdAy4HitSSiJTYvcf8lUrDcOOuD1DBFmpifbSyjdqrnkIspBcB55YLUrRDLp
-         uAm3WUj4BnW+Zu7TRHpWlTr17rS9fkkczVyLDtkGLVzF5iOIdM9hwvB33cfV00eF64tF
-         fbwH+LYrfk2EsIb/r5wdb6ozCktFz1Ay4Sr3yWu5o4Jy6HPkyxA789pyZNZNd7l9ygPm
-         el4lteuXHHGm0fv83cw4M7EYrX6uJ3RM3jCnJ8kNr1/GQh972dTMHLq8G4Vq5dF8FhnQ
-         +4hw==
+        bh=3pNmnngxiEhIiRvBXuB1ZJgxGNhge5uLTtwEosNjp94=;
+        b=FGfUbbwEAPbQVuu9zcediuO2rg8ejYXvYrvBl8ry+3wnmeYBJkl59ALuvYT6ua7shz
+         KbaSvWaIr/XMvmh+oCgUayYpU+lvCBskwfSco55XqO0dFy6YtnSAHDNvwsENuh/9onXm
+         IlBeCREeLpRmZvIer+PdK4LcjAkLaY0sGi3jeRg6w90h/Ba75ez20xmyqdnYXc0vhj8z
+         FflCx7rURdM8zt/5FLUn5/i1j4054eFRqum6eANHLVFErPJzAV1oS5/3UlSzwheT9cQt
+         Gm7MPhtGkRstIz4957zDELm6fHn6QjAFuy91vDzZOnCHY9zG6ibYl6GbrcmzKa851skY
+         bm2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686936345; x=1689528345;
+        d=1e100.net; s=20221208; t=1686936630; x=1689528630;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9WOUSqHHDDxpch1TJqgV2f+62UgYbb/xkkpc8zQS/vs=;
-        b=eu7lZJTL9t/0chIleH6a4hrwcMIRJGc4JqTEMf+4rshz9ILs9hqCF1k5Hp9ujWxSAA
-         b83zK3X26Ue6e4Rs11SByF6rbypVHpXuQtP3eh95XCKGFJdLBCdtCRwTdYssTJIWlzRt
-         D55KiIo6cjVe6sNzXbUPzNgovorRlFoeaqQDADaIxAfFv9ZwN72BtYLsn4AZdjnMGceP
-         rPYkt9m8us8XTwyh36Jnkcm7f3vu4JoGoUhUrc7yvk8m+GW7fN6rDfh82eg7InoWsIcK
-         CORE3hN8LLKxN3kBJNI1HMmGdLgZkWT852PZWifbP6d5dRJapsQzWZMiyy5Rubhl8tj5
-         4FyA==
-X-Gm-Message-State: AC+VfDz7e6fCGvoIC8QOvBpdUfymp+PbFrrF7pHw9tCqPoY0xbq6VKz0
-	++ReUF15fKoGtpC5uVVuuD1RGUlhDr1e82W1UBQ=
-X-Google-Smtp-Source: ACHHUZ76xlzfeIwKLiHd4oP1VgbNqo7VJdVDE+Na0RquLFbhBE+9KkeMHfU5owTJOPOpEBg1RGIdzQO0A/bz/v+y62s=
-X-Received: by 2002:a17:907:9720:b0:973:df9c:b1aa with SMTP id
- jg32-20020a170907972000b00973df9cb1aamr2509399ejc.71.1686936345410; Fri, 16
- Jun 2023 10:25:45 -0700 (PDT)
+        bh=3pNmnngxiEhIiRvBXuB1ZJgxGNhge5uLTtwEosNjp94=;
+        b=NXkLz4pr2ngpWAQvtPzelmjQISFC8ZWR9m+keggiciWbBzwqQpp1L52oDKB5m6r32X
+         EMS9eblqNEb4hexleRrErjq8KKJpizFYzzASCvabz+Tt6fLl0m0oTahi9dOq2Akh7EIu
+         0K6l7mYzszOfboMcHEqq7k+3Si9MJEsAFIPB2mkK4MzjxcUUhE4qi//JFBmdcG/5CitO
+         TO9djFFzFct475VOpo0VRPuVwGwaywdisgEBU7ry/1kLB0s3UKG0xU0kSXDKL3YoaRBU
+         ByWYRuGxgPQjuOw3GEYXPEmJLlGd6a55pB3NshTMiN7Fs6bej/0VUZdYwaclyxM6kxoG
+         o1HQ==
+X-Gm-Message-State: AC+VfDxM+8Kh5x1YDcqTfWW9VEeLUOyWX5P9EIufU9m8sH7wsBjtTpV8
+	urFE/hPwHFVCMS7J2axJ5Xxnr0e+eERr9fsXpdM=
+X-Google-Smtp-Source: ACHHUZ5ojqU+hKiLZbtlwA/RqPBGowaA6L8WZhUb7bZkXOJMGZu/2lBFh4fuEX2PDABMANw1/KBrGa9jxiHBs6+4qXc=
+X-Received: by 2002:aa7:d287:0:b0:518:7bc3:4cec with SMTP id
+ w7-20020aa7d287000000b005187bc34cecmr1753533edq.22.1686936630095; Fri, 16 Jun
+ 2023 10:30:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230612151608.99661-1-laoar.shao@gmail.com> <20230612151608.99661-3-laoar.shao@gmail.com>
-In-Reply-To: <20230612151608.99661-3-laoar.shao@gmail.com>
+References: <20230612151608.99661-1-laoar.shao@gmail.com> <20230612151608.99661-4-laoar.shao@gmail.com>
+In-Reply-To: <20230612151608.99661-4-laoar.shao@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 16 Jun 2023 10:25:33 -0700
-Message-ID: <CAEf4BzYWMu9LDBewPh+dJ7niCURbSEtdNmDEmAbkrfeBr5QnYw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 02/10] bpftool: Dump the kernel symbol's
- module name
+Date: Fri, 16 Jun 2023 10:30:18 -0700
+Message-ID: <CAEf4BzaZEb_Uz21WDmQr7UC8Q50EfHDr2=dK477Z8fGEinCZ7w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 03/10] bpftool: Show probed function in
+ kprobe_multi link info
 To: Yafang Shao <laoar.shao@gmail.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
 	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
@@ -84,58 +84,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 On Mon, Jun 12, 2023 at 8:16=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
 wrote:
 >
-> If the kernel symbol is in a module, we will dump the module name as
-> well.
+> Show the already expose kprobe_multi link info in bpftool. The result as
+> follows,
+>
+> 52: kprobe_multi  prog 381
+>         retprobe 0  func_cnt 7
+>         addrs ffffffff9ec44f20  funcs schedule_timeout_interruptible
+>               ffffffff9ec44f60        schedule_timeout_killable
+>               ffffffff9ec44fa0        schedule_timeout_uninterruptible
+>               ffffffff9ec44fe0        schedule_timeout_idle
+>               ffffffffc09468d0        xfs_trans_get_efd [xfs]
+>               ffffffffc0953a10        xfs_trans_get_buf_map [xfs]
+>               ffffffffc0957320        xfs_trans_get_dqtrx [xfs]
+>         pids kprobe_multi(559862)
+> 53: kprobe_multi  prog 381
+>         retprobe 1  func_cnt 7
+>         addrs ffffffff9ec44f20  funcs schedule_timeout_interruptible
+>               ffffffff9ec44f60        schedule_timeout_killable
+>               ffffffff9ec44fa0        schedule_timeout_uninterruptible
+>               ffffffff9ec44fe0        schedule_timeout_idle
+>               ffffffffc09468d0        xfs_trans_get_efd [xfs]
+>               ffffffffc0953a10        xfs_trans_get_buf_map [xfs]
+>               ffffffffc0957320        xfs_trans_get_dqtrx [xfs]
+
+it all subjective, but this format is a bit weird where "addrs" and
+"funcs" is in first row to the left. Just makes everything wider. Why
+not something like
+
+addr              func
+ffffffff9ec44f20  schedule_timeout_interruptible
+ffffffff9ec44f60  schedule_timeout_killable
+ffffffffc0953a10  xfs_trans_get_buf_map [xfs]
+ffffffffc0957320  xfs_trans_get_dqtrx [xfs]
+
+Not it's singular (addr and func) because it's column names,
+basically. Can also do "addr func [module]".
+
+>         pids kprobe_multi(559862)
+>
+> $ tools/bpf/bpftool/bpftool link show -j
+> [{"id":52,"type":"kprobe_multi","prog_id":381,"retprobe":0,"func_cnt":7,"=
+funcs":[{"addr":18446744072078249760,"func":"schedule_timeout_interruptible=
+","module":""},{"addr":18446744072078249824,"func":"schedule_timeout_killab=
+le","module":""},{"addr":18446744072078249888,"func":"schedule_timeout_unin=
+terruptible","module":""},{"addr":18446744072078249952,"func":"schedule_tim=
+eout_idle","module":""},{"addr":18446744072645535952,"func":"xfs_trans_get_=
+efd","module":"[xfs]"},{"addr":18446744072645589520,"func":"xfs_trans_get_b=
+uf_map","module":"[xfs]"},{"addr":18446744072645604128,"func":"xfs_trans_ge=
+t_dqtrx","module":"[xfs]"}],"pids":[{"pid":559862,"comm":"kprobe_multi"}]},=
+{"id":53,"type":"kprobe_multi","prog_id":381,"retprobe":1,"func_cnt":7,"fun=
+cs":[{"addr":18446744072078249760,"func":"schedule_timeout_interruptible","=
+module":""},{"addr":18446744072078249824,"func":"schedule_timeout_killable"=
+,"module":""},{"addr":18446744072078249888,"func":"schedule_timeout_uninter=
+ruptible","module":""},{"addr":18446744072078249952,"func":"schedule_timeou=
+t_idle","module":""},{"addr":18446744072645535952,"func":"xfs_trans_get_efd=
+","module":"[xfs]"},{"addr":18446744072645589520,"func":"xfs_trans_get_buf_=
+map","module":"[xfs]"},{"addr":18446744072645604128,"func":"xfs_trans_get_d=
+qtrx","module":"[xfs]"}],"pids":[{"pid":559862,"comm":"kprobe_multi"}]}]
 >
 > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > ---
->  tools/bpf/bpftool/xlated_dumper.c | 6 +++++-
->  tools/bpf/bpftool/xlated_dumper.h | 2 ++
->  2 files changed, 7 insertions(+), 1 deletion(-)
+>  tools/bpf/bpftool/link.c | 109 +++++++++++++++++++++++++++++++++++++++++=
++++++-
+>  1 file changed, 108 insertions(+), 1 deletion(-)
 >
-> diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated=
-_dumper.c
-> index da608e1..dd917f3 100644
-> --- a/tools/bpf/bpftool/xlated_dumper.c
-> +++ b/tools/bpf/bpftool/xlated_dumper.c
-> @@ -46,7 +46,11 @@ void kernel_syms_load(struct dump_data *dd)
->                 }
->                 dd->sym_mapping =3D tmp;
->                 sym =3D &dd->sym_mapping[dd->sym_count];
-> -               if (sscanf(buff, "%p %*c %s", &address, sym->name) !=3D 2=
-)
-> +
-> +               /* module is optional */
-> +               sym->module[0] =3D '\0';
-> +               if (sscanf(buff, "%p %*c %s %s", &address, sym->name,
-> +                   sym->module) < 2)
 
-nit: please keep it single line if it fits in under 100 characters
-
->                         continue;
->                 sym->address =3D (unsigned long)address;
->                 if (!strcmp(sym->name, "__bpf_call_base")) {
-> diff --git a/tools/bpf/bpftool/xlated_dumper.h b/tools/bpf/bpftool/xlated=
-_dumper.h
-> index 9a94637..5df8025 100644
-> --- a/tools/bpf/bpftool/xlated_dumper.h
-> +++ b/tools/bpf/bpftool/xlated_dumper.h
-> @@ -5,12 +5,14 @@
->  #define __BPF_TOOL_XLATED_DUMPER_H
->
->  #define SYM_MAX_NAME   256
-> +#define MODULE_NAME_LEN        64
->
->  struct bpf_prog_linfo;
->
->  struct kernel_sym {
->         unsigned long address;
->         char name[SYM_MAX_NAME];
-> +       char module[MODULE_NAME_LEN];
->  };
->
->  struct dump_data {
-> --
-> 1.8.3.1
->
+[...]
 
