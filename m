@@ -1,219 +1,229 @@
-Return-Path: <bpf+bounces-2731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B18C733716
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 19:04:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCF7773371E
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 19:04:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E45522817DF
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 17:04:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0947F1C20EC5
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 17:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33D771ACDF;
-	Fri, 16 Jun 2023 17:03:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 018BC1C774;
+	Fri, 16 Jun 2023 17:03:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFEA41ACC4;
-	Fri, 16 Jun 2023 17:03:33 +0000 (UTC)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AAF635BF;
-	Fri, 16 Jun 2023 10:03:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686934991; x=1718470991;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=zHd3TS71swFhG8RMGSnlbtJ7WI0MBrRbGEKCUVGjX0Q=;
-  b=NPdk+8/mU/I98hM5f3sDOnCNHnLFvYKuCS89olLJGSrs8ifKUfRFMoQ7
-   4EE4tbLFgkgX8eJv+modZJ20/KJJD64lL0fezhnnJ4u1jaqBG686a8Qku
-   KCMTbF+5dQhZclBAx0GzIMlyTDPqTWdwCn7boTSMBg9//WpsMhz3kzFxU
-   zerbcrtz7VwRWLf9S1NDdV19KUtc2V2xWRwFMXpQpgiEM7525kfNyuSvo
-   VYDqysdOqSBPM1AQa4f0PWr0qN9/qiktgPGhgJDRu66eHACPZRTDN0wiJ
-   /EeWGh8ZS9lxjr8i8EZ0a4e01wy+2lSxg7ckE3K1ueKL+xhiVah6jL/GM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="358135424"
-X-IronPort-AV: E=Sophos;i="6.00,248,1681196400"; 
-   d="scan'208";a="358135424"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2023 10:02:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="716092462"
-X-IronPort-AV: E=Sophos;i="6.00,248,1681196400"; 
-   d="scan'208";a="716092462"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Jun 2023 10:02:53 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Fri, 16 Jun 2023 10:02:53 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Fri, 16 Jun 2023 10:02:52 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23 via Frontend Transport; Fri, 16 Jun 2023 10:02:52 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.104)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.23; Fri, 16 Jun 2023 10:02:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aNpY7uIBBNXVqe2fOVLh9gLcMfp1euWmmgIP4qOmo39/LuNts/nPYPYCq5K3ICnpBKaWGQPkeR4yD4iKp/lrujywlAP5emcgONW+Nnon3BFic4aTh4PSFGC+3XoW0KgDYgHtV60065wSGiMhfmhN+KN5D3cWDT4YC+XvaphSbsppWYCIfqnhakPnsSdP3jDBLdzs4SZTV31u/9xucd35qoksu33rM2Nt2PsEqXbTJ4G7697ANMNwbT0liyDZy9FuQoJ/zvRecpjJv341BLOFgfBoIYKHbGZYa0tnpbPuiDWUGA9zF3cGjKJ2qSvT0LdffPucZ2ZGkEpMSAmiWmaq1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zHd3TS71swFhG8RMGSnlbtJ7WI0MBrRbGEKCUVGjX0Q=;
- b=nusVKTysbu35+Mmh/CeuEzRLT5sBtpL5JtDAH+562fKEE58+Pfu1VYstTkhIR4H7y1GM76p6oBXJsypAJGZbXEAZsJ3dHnftuVRJqiZGVvH8G7qJSivcj4VNSTlepgHy+T6hgpwx7sluRiB00e5T+Kbk4Yy99brTdmG0Wto26ZWt5VDXpMIPN5SOtW8o/oYN5X1f1u9UR2GRRzp2TDxte3rSdgCBQkSZ49DUvCHsJPWhTxgfzDMjcmKUaONm/bThqw2MuZDsczJnWj0EL6LskUDSR9Le209m8SDY6fDSlFJwmn4ByEsquTETXkiuwY2CybBbHcRcIa/uAZ8d7hR8AQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by PH0PR11MB5015.namprd11.prod.outlook.com (2603:10b6:510:39::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.25; Fri, 16 Jun
- 2023 17:02:50 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::6984:19a5:fe1c:dfec]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::6984:19a5:fe1c:dfec%7]) with mapi id 15.20.6500.029; Fri, 16 Jun 2023
- 17:02:50 +0000
-From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"rppt@kernel.org" <rppt@kernel.org>
-CC: "tglx@linutronix.de" <tglx@linutronix.de>, "mcgrof@kernel.org"
-	<mcgrof@kernel.org>, "deller@gmx.de" <deller@gmx.de>, "davem@davemloft.net"
-	<davem@davemloft.net>, "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
-	"linux@armlinux.org.uk" <linux@armlinux.org.uk>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-mips@vger.kernel.org"
-	<linux-mips@vger.kernel.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "hca@linux.ibm.com" <hca@linux.ibm.com>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
-	"puranjay12@gmail.com" <puranjay12@gmail.com>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, "palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"chenhuacai@kernel.org" <chenhuacai@kernel.org>, "tsbogend@alpha.franken.de"
-	<tsbogend@alpha.franken.de>, "linux-trace-kernel@vger.kernel.org"
-	<linux-trace-kernel@vger.kernel.org>, "linux-parisc@vger.kernel.org"
-	<linux-parisc@vger.kernel.org>, "christophe.leroy@csgroup.eu"
-	<christophe.leroy@csgroup.eu>, "x86@kernel.org" <x86@kernel.org>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>, "mark.rutland@arm.com"
-	<mark.rutland@arm.com>, "rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"will@kernel.org" <will@kernel.org>, "dinguyen@kernel.org"
-	<dinguyen@kernel.org>, "naveen.n.rao@linux.ibm.com"
-	<naveen.n.rao@linux.ibm.com>, "sparclinux@vger.kernel.org"
-	<sparclinux@vger.kernel.org>, "linux-modules@vger.kernel.org"
-	<linux-modules@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "song@kernel.org" <song@kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>, "loongarch@lists.linux.dev"
-	<loongarch@lists.linux.dev>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 00/12] mm: jit/text allocator
-Thread-Topic: [PATCH v2 00/12] mm: jit/text allocator
-Thread-Index: AQHZoC+0c1p3dpPJ0Umm53KR18jBkK+NqGKA
-Date: Fri, 16 Jun 2023 17:02:50 +0000
-Message-ID: <557b2205c6826ce00c4cb76d8d8679807eb0ff58.camel@intel.com>
-References: <20230616085038.4121892-1-rppt@kernel.org>
-In-Reply-To: <20230616085038.4121892-1-rppt@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.44.4-0ubuntu1 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|PH0PR11MB5015:EE_
-x-ms-office365-filtering-correlation-id: c0a47551-35b1-4512-9c4b-08db6e8b8441
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TejL0XHybv9fjD47zhrpMJcVYKnhdJKohm/7rGrV3fadxqN8WIDf6LCbTqORF3P1sk6Ko9gkPRsVgACdvD5ZzrxN0slwwKScNK8F9sGfyNz4UTNwldVYSAIQ69EXd91H1LNnaKjkGz1/2f8Vc4UHE8gMsTMeQhDb1oJ+CCAhJqRS6TFOikZu1vhJP92S4qwrv2LQE1HkVLZtKRD7nC25rBnrp6dQPrykP/3zt4v90cxYeM2HrxmDPxKaPPyYQenbMGysmQvbXUq8oNPGGXxODpRVL7d1X6TqOd4B7vX0t7D8izAGIdVNxwBhVSKCB/t26BE8DyjvlbQK8iG/QF+JAK8+UHIEo5CnNo9D1qgr7ty8bsBgDCmpBopEX++nS+3oSd1UZo7IFptABls/ncDpaToldWtCvMAOq1WODlSLsKExfjKeif8Ve7QmYvFmnPGRlGBtJTHLVLDD+xsUJe9tMz57hUWMeZiH4eZyajrwWIYGc2gO8wvx8FDeH8VBwhgROdWBXAg37oXRRNCfC13mFI+m3MoE2B3HdbK9oNM5V2UfT+pxB4Hq3NYk88DHWRcuNb2/rJq459CBmcYo/AjvwnhlTSs+XhyJ+v74SCflgYw3o6l2ReHHhqkDXUxBUge4
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(376002)(366004)(396003)(39860400002)(346002)(451199021)(5660300002)(38100700002)(82960400001)(122000001)(186003)(2616005)(2906002)(4744005)(6506007)(6512007)(7406005)(7416002)(478600001)(26005)(38070700005)(66446008)(66946007)(316002)(66476007)(6486002)(71200400001)(64756008)(66556008)(8936002)(8676002)(41300700001)(86362001)(76116006)(91956017)(4326008)(36756003)(54906003)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZG5DcElmUE5vbk9WUkgyTFpkamxXNXgxMURNSkZrcytOWnFCRlpVQjdjZmow?=
- =?utf-8?B?MVcrMTE5VUJyUHZaNHVoZ1JoUkhNOHkzWXVjaDBrYm9yM25QbDJrWGJ5Q0py?=
- =?utf-8?B?a3QvVFlPWGlNUHBQQzROWEwxN01nTjYzdSttTHJWUm92VzBEdmJvdkRBNWRw?=
- =?utf-8?B?bDBxNU00cmNMWjY2eHZqNmtFMU55Z3RJRGt6K0ZzeXNST0JoZDZTaFJuUTRm?=
- =?utf-8?B?R0p3aTZpRStTeXBvZmVGeDZQTUFXdlJZSVV2L3M4N1ZIOU11UEg3ZXRGMTNw?=
- =?utf-8?B?eGtXN25HVFE3NmZnT2ZjMzR1NFJ1MG00WnRaWEVvTC9WWUxPR1JRS1Y3Uk5r?=
- =?utf-8?B?RFFISENjbFcvd01wYXBYUFVoOVVPc3U0WmQyc3lKYzUrTGRNdzd6V1lLK0hI?=
- =?utf-8?B?aEVhd29FZTFyK2NZQithQmR4bktxSk16c0xqSmo2TmhxQ3YvV2VlZGd6bTJy?=
- =?utf-8?B?YlBrRTFid3ZhMmlpbWhtZ1U1RXVKRmlBaXBGZ3VDbVlRaTVLalF0TjllRTln?=
- =?utf-8?B?UnF0ZEJiVk5Gblp0aUxHTVlGclNkemtLcDlWMEFIS1Zrd3NRamhEZEhlNGdv?=
- =?utf-8?B?MktwQktPWXhXd2RIK0dzTVJ5LzVqejFDU1ZwVVFmdkFvY3JpS3pxeE5kVkxy?=
- =?utf-8?B?WE1YTjJkbEdjMDJpYzRpdU1aUllqV2o0S2pEL1NtV0ZpSXBjRE9iVTR6RTNO?=
- =?utf-8?B?QmZHNUd3eHNlc3BMMkVzNGpaR24yQzA4QVpyZnU4T3V4ZnFOcFJ4NXdSN3Fs?=
- =?utf-8?B?eHVxNEZBRS8yeVpaeEt4aUZPY2tYQkkxb0VQWlZxODNBUXJBT2xvQnNFcldo?=
- =?utf-8?B?VDhoZXRtZXZzMDJ4L2ZJbXdIVTBsbXVRR1JjVlprbzBnQ3ZRRGZ5bmp4RVgr?=
- =?utf-8?B?Lyt0TG9ibWFnd2ZjT3hzS0lZZXoveStLWnE1Yzg3L09JUlVFcUxHcndaSDJF?=
- =?utf-8?B?S01ra3RyaC9sd3pzeUNNM3g0MFFxc0VBd042Skg0RnExRzhjSUhRM1dCNlhq?=
- =?utf-8?B?TmhYQlpLWU9QQ1dOMTFZZnR0dDMrYkg3OXlXY0t4UlRWM1RmS3RNMHdvckRz?=
- =?utf-8?B?cXVuUFVQM2FyYjl5QzJzNXhKT05qRStrRldNT1RMN3dMQ3hxSzRDcnBlTGk2?=
- =?utf-8?B?b2FtTU96cTBDUkEzTTA0OFhzVDRXY09UcWs1MEdEY1hLNENrNkVUdk9TQ1E0?=
- =?utf-8?B?K3VXZ3VoSVZ1OUJUMFlkVXFtQUtBTkFUanlES3BHb3pFMFlwempvclpGOEs0?=
- =?utf-8?B?NEc2ZzNRVmlObVcvazRwUFJadk4vV2ZUQ01tYnJmRk4vbjQ4ZU1kdk1TYktq?=
- =?utf-8?B?WWVYUlhzM0w0NjQzS0VRcm8rdklXU3ZSZWJLU0VFOWZMa2JQRThFRWsvdmdE?=
- =?utf-8?B?RjYrMExEb0xXVzJkTEFRUlYwOVlvd2U4NCtDUFFINVpnemZyc2pWNGZpKzVE?=
- =?utf-8?B?MDdyWFA5MEpWM2dveUpKTG1ITlQ2dVhNbWtNYlBFUUEzNlFaNGlraWZXV1hW?=
- =?utf-8?B?eEVRVWJYZW1SbWdwcTM3cGNrUGhJdXlNUG9RSmFndndBWkJQaGZsc25tb3gv?=
- =?utf-8?B?OUZianlNa1dkSGJMWWZkTFFvcnRWSm1sZlFYSjY5MFB2UmpBRmZ0RmlJSjkr?=
- =?utf-8?B?MEk5bDdSVlJ1YW5RWkRZWlFTYVMrVDV0SjZ4elBaNXBtWENmZ2FiTmt4RzE5?=
- =?utf-8?B?TllTT0YvTy9YdG1CbVBvSjd2R0RHNWNPYzcyeWhXbGZ4WG8rWXVWdmVEelNa?=
- =?utf-8?B?cEJrMzF2ZGpYcEhGQmtZUXZFc04rbkJmWWZPVHoyd1h6SWhpbEcrRHJIOVJ4?=
- =?utf-8?B?TXZHYWE4aEptczJmZHcwN1M1ZEszejRtbFBvZzc4V1I0dmROWiswZS9ydW5V?=
- =?utf-8?B?Z29pVi9BZjZEa0VCM0xldjRvM2dqWVJrdkpCcjIybHpFT2czQTZkTmZrcUZD?=
- =?utf-8?B?R2RpVUszRk5zUklwUTlGR3FvaHkwd3YwK0NoYk1ldlpwUUtHWmZiWW13RzJE?=
- =?utf-8?B?WmZBdWJVRk1ZYjNuOHZBeTJPOWR0elpzeFRjeW9Ya1lFbzNjNCsvZGVoSmZK?=
- =?utf-8?B?RU1YcXdsQW4xL3lqUzVrWStjUW0rYlJsbm9VQ3BIalVqWkxMaExJZ1NxZmlG?=
- =?utf-8?B?eWEzeWc2b2xZaHVjWVJFRm5DSW9aTzloMVJzeURTNkJvRlBNUHF0UFBuMzFr?=
- =?utf-8?B?NlE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <007468AB03AB764CA8371FF7D2F58E71@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA281C764
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 17:03:35 +0000 (UTC)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8573F3A8E
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 10:03:16 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5196a728d90so1271308a12.0
+        for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 10:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686934994; x=1689526994;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8aYA3y3Y+F6LzyOS7evX9mNQ2yYDoRHEfHRu0V5MFPQ=;
+        b=mKW8nOVTJ8M0kLGhuENazfmKy+ZVBwtxjfHASdrJ2GfdBiQK1uxmTCKsB1VtwF+a+k
+         ehiCii7lvkJR300qlItvJJYgNdN+Qf1iETyMClqplqW/g8ScdvcHpp7+cOOdVOO7Q0Zf
+         +rZ4LrWqO5m6T02Te0LGCue03df9Lg3Nj0h1ONd5d7iE82KTH8SiKdZNqKlnrnXO2rCJ
+         eHFZcgHhbgYS1Rd47Gya428TRdE49LeVIZoX0ip9Oy5mAeJuLyVJYkR31Zk5qJqxzVIz
+         FMSrAyl0xIL0MaqO1bHdnzfqSQV+lFk9mf0nMll8TJ6vYDG1nzoB1aLUioCY3A1hnHB9
+         BkQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686934994; x=1689526994;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8aYA3y3Y+F6LzyOS7evX9mNQ2yYDoRHEfHRu0V5MFPQ=;
+        b=fzxWa4R/mZtEMREJpaN7VppLvzfeyk7C2qZmCPqkspjtxJE/7WuaYVXZypGFX0NaFL
+         wmGQSrs44XX2+PNlfmRznJfPgGd7+4uf5oQngYjGJhRZFqfF+xF263hD4htIrG0gJB4C
+         aB1ZayTV5psvvzeC1YOvnQH+5LQXyd+ARU9+ArqHGM9p0HlOOcYZd8PgWPzEPdnjWTL0
+         0i6NtlF6l+ZqkGjGg7UQdLYD5yU9rhsXe9X6Qvr5jAXdDP5Vrw0DBGL4X92ZsOz+bWPR
+         G5id48GzgmibPfEnbp9SsQ169fnNkUIqSi4CdC7uKid2L5KZ7cL1wZFd3/8yJ08nGcNd
+         /lXw==
+X-Gm-Message-State: AC+VfDzlaCGoJDOR9VP0RUH6GdAXjncpINofxud8yD8cldPgmC1eNgjF
+	TkWNPpl4D6cq1Gh074Swki1g0TBcPZsZZD/zDrU=
+X-Google-Smtp-Source: ACHHUZ7d7tAEMzRvje2Q21eiMnZTHMmiXQUY/J+jW3xF9Hs0QNSw8ArFupBJwGBikUTRqqquV8uGxDLM5fkBfKRSWRI=
+X-Received: by 2002:a17:907:8748:b0:974:1c91:a751 with SMTP id
+ qo8-20020a170907874800b009741c91a751mr2128829ejc.29.1686934994434; Fri, 16
+ Jun 2023 10:03:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0a47551-35b1-4512-9c4b-08db6e8b8441
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jun 2023 17:02:50.1302
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AxNS+ahK+DX1qWqlhMqp8dGmxRY2V1uAK49QA5AQIKPjhPYDLmEE/uWc8XataiNhlTucVUMvPXTbfyxsBS2XERmqw4bOuyDR4kHjwNoPlVg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5015
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <20230615142520.10280-1-eddyz87@gmail.com>
+In-Reply-To: <20230615142520.10280-1-eddyz87@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 16 Jun 2023 10:03:01 -0700
+Message-ID: <CAEf4Bzb4VJ7h02QAbg77sp9jgVFJBWoXrRuWGxHkXqQdPJ6EPw@mail.gmail.com>
+Subject: Re: [RFC bpf-next] bpf: generate 'nomerge' for map helpers in bpf_helper_defs.h
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, yhs@fb.com, 
+	jemarch@gnu.org, david.faust@oracle.com, dzq.aishenghu0@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-T24gRnJpLCAyMDIzLTA2LTE2IGF0IDExOjUwICswMzAwLCBNaWtlIFJhcG9wb3J0IHdyb3RlOg0K
-PiBGcm9tOiAiTWlrZSBSYXBvcG9ydCAoSUJNKSIgPHJwcHRAa2VybmVsLm9yZz4NCj4gDQo+IEhp
-LA0KPiANCj4gbW9kdWxlX2FsbG9jKCkgaXMgdXNlZCBldmVyeXdoZXJlIGFzIGEgbWVhbiB0byBh
-bGxvY2F0ZSBtZW1vcnkgZm9yDQo+IGNvZGUuDQo+IA0KPiBCZXNpZGUgYmVpbmcgc2VtYW50aWNh
-bGx5IHdyb25nLCB0aGlzIHVubmVjZXNzYXJpbHkgdGllcyBhbGwNCj4gc3Vic3lzdG1lcw0KPiB0
-aGF0IG5lZWQgdG8gYWxsb2NhdGUgY29kZSwgc3VjaCBhcyBmdHJhY2UsIGtwcm9iZXMgYW5kIEJQ
-RiB0bw0KPiBtb2R1bGVzIGFuZA0KPiBwdXRzIHRoZSBidXJkZW4gb2YgY29kZSBhbGxvY2F0aW9u
-IHRvIHRoZSBtb2R1bGVzIGNvZGUuDQo+IA0KPiBTZXZlcmFsIGFyY2hpdGVjdHVyZXMgb3ZlcnJp
-ZGUgbW9kdWxlX2FsbG9jKCkgYmVjYXVzZSBvZiB2YXJpb3VzDQo+IGNvbnN0cmFpbnRzIHdoZXJl
-IHRoZSBleGVjdXRhYmxlIG1lbW9yeSBjYW4gYmUgbG9jYXRlZCBhbmQgdGhpcw0KPiBjYXVzZXMN
-Cj4gYWRkaXRpb25hbCBvYnN0YWNsZXMgZm9yIGltcHJvdmVtZW50cyBvZiBjb2RlIGFsbG9jYXRp
-b24uDQoNCkkgbGlrZSBob3cgdGhpcyBzZXJpZXMgbGVhdmVzIHRoZSBhbGxvY2F0aW9uIGNvZGUg
-Y2VudHJhbGl6ZWQgYXQgdGhlDQplbmQgb2YgaXQgYmVjYXVzZSBpdCB3aWxsIGJlIG11Y2ggZWFz
-aWVyIHdoZW4gd2UgZ2V0IHRvIFJPWCwgaHVnZSBwYWdlLA0KdGV4dF9wb2tpbmcoKSB0eXBlIHN0
-dWZmLg0KDQpJIGd1ZXNzIHRoYXQncyB0aGUgaWRlYS4gSSdtIGp1c3QgY2F0Y2hpbmcgdXAgb24g
-d2hhdCB5b3UgYW5kIFNvbmcgaGF2ZQ0KYmVlbiB1cCB0by4NCg0KDQo=
+On Thu, Jun 15, 2023 at 7:25=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> Update code generation for bpf_helper_defs.h by adding
+> __attribute__((nomerge)) for a set of helper functions to prevent some
+> verifier unfriendly compiler optimizations.
+>
+> This addresses a recent mailing list thread [1].
+> There Zhongqiu Duan and Yonghong Song discussed a C program as below:
+>
+>      if (data_end - data > 1024) {
+>          bpf_for_each_map_elem(&map1, cb, &cb_data, 0);
+>      } else {
+>          bpf_for_each_map_elem(&map2, cb, &cb_data, 0);
+>      }
+>
+> Which was converted by clang to something like this:
+>
+>      if (data_end - data > 1024)
+>        tmp =3D &map1;
+>      else
+>        tmp =3D &map2;
+>      bpf_for_each_map_elem(tmp, cb, &cb_data, 0);
+>
+> Which in turn triggered verification error, because
+> verifier.c:record_func_map() requires a single map address for each
+> bpf_for_each_map_elem() call.
+>
+> In fact, this is a requirement for the following helpers:
+> - bpf_tail_call
+> - bpf_map_lookup_elem
+> - bpf_map_update_elem
+> - bpf_map_delete_elem
+> - bpf_map_push_elem
+> - bpf_map_pop_elem
+> - bpf_map_peek_elem
+> - bpf_for_each_map_elem
+> - bpf_redirect_map
+> - bpf_map_lookup_percpu_elem
+>
+> I had an off-list discussion with Yonghong where we agreed that clang
+> attribute 'nomerge' (see [2]) could be used to prevent the
+> optimization hitting in [1]. However, currently 'nomerge' applies only
+> to functions and statements, hence I submitted change requests [3],
+> [4] to allow specifying 'nomerge' for function pointers as well.
+>
+> The patch below updates bpf_helper_defs.h generation by adding a
+> definition of __nomerge macro, and using this macro in definitions of
+> relevant helpers.
+>
+> The generated code looks as follows:
+>
+>     /* This is auto-generated file. See bpf_doc.py for details. */
+>
+>     #if __has_attribute(nomerge)
+>     #define __nomerge __attribute__((nomerge))
+>     #else
+>     #define __nomerge
+>     #endif
+>
+>     /* Forward declarations of BPF structs */
+>     ...
+>     static long (*bpf_for_each_map_elem)(void *map, ...) __nomerge =3D (v=
+oid *) 164;
+>     ...
+>
+> (In non-RFC version the macro definition would have to be updated to
+>  check for supported clang version).
+>
+> Does community agree with such approach?
+
+Makes sense to me. Let's just be very careful to do proper detection
+of __nomerge "applicability" to ensure we don't cause compilation
+errors for unsupported Clang (which I'm sure you are well aware of)
+*and* make it compatible with GCC, so we don't fix it later.
+
+>
+> [1] https://lore.kernel.org/bpf/03bdf90f-f374-1e67-69d6-76dd9c8318a4@meta=
+.com/
+> [2] https://clang.llvm.org/docs/AttributeReference.html#nomerge
+> [3] https://reviews.llvm.org/D152986
+> [4] https://reviews.llvm.org/D152987
+> ---
+>  scripts/bpf_doc.py | 37 ++++++++++++++++++++++++++++++-------
+>  1 file changed, 30 insertions(+), 7 deletions(-)
+>
+> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> index eaae2ce78381..dbd4893c793e 100755
+> --- a/scripts/bpf_doc.py
+> +++ b/scripts/bpf_doc.py
+> @@ -777,14 +777,33 @@ class PrinterHelpers(Printer):
+>          'bpf_get_socket_cookie',
+>          'bpf_sk_assign',
+>      ]
+> +    # Helpers that need __nomerge attribute
+> +    nomerge_helpers =3D set([
+> +       "bpf_tail_call",
+> +       "bpf_map_lookup_elem",
+> +       "bpf_map_update_elem",
+> +       "bpf_map_delete_elem",
+> +       "bpf_map_push_elem",
+> +       "bpf_map_pop_elem",
+> +       "bpf_map_peek_elem",
+> +       "bpf_for_each_map_elem",
+> +       "bpf_redirect_map",
+> +       "bpf_map_lookup_percpu_elem"
+> +    ])
+> +
+> +    macros =3D '''\
+> +#if __has_attribute(nomerge)
+> +#define __nomerge __attribute__((nomerge))
+> +#else
+> +#define __nomerge
+> +#endif'''
+>
+>      def print_header(self):
+> -        header =3D '''\
+> -/* This is auto-generated file. See bpf_doc.py for details. */
+> -
+> -/* Forward declarations of BPF structs */'''
+> -
+> -        print(header)
+> +        print('/* This is auto-generated file. See bpf_doc.py for detail=
+s. */')
+> +        print()
+> +        print(self.macros)
+> +        print()
+> +        print('/* Forward declarations of BPF structs */')
+>          for fwd in self.type_fwds:
+>              print('%s;' % fwd)
+>          print('')
+> @@ -846,7 +865,11 @@ class PrinterHelpers(Printer):
+>              comma =3D ', '
+>              print(one_arg, end=3D'')
+>
+> -        print(') =3D (void *) %d;' % helper.enum_val)
+> +        print(')', end=3D'')
+> +        if proto['name'] in self.nomerge_helpers:
+> +            print(' __nomerge', end=3D'')
+> +
+> +        print(' =3D (void *) %d;' % helper.enum_val)
+>          print('')
+>
+>  ########################################################################=
+#######
+> --
+> 2.40.1
+>
 
