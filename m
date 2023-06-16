@@ -1,229 +1,136 @@
-Return-Path: <bpf+bounces-2724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F19917335FB
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:31:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C499B733627
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:34:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC6FF2817F4
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 16:31:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6FBA1C21039
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 16:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD8B417757;
-	Fri, 16 Jun 2023 16:31:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FCD8182D7;
+	Fri, 16 Jun 2023 16:34:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 840BF23D47
-	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 16:31:37 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FEF297A
-	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 09:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1686933095;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FPytIYwEkl6QEu7Rgu+ICkD4rqXTkTJ3ru8gg8dbkVU=;
-	b=YDCamqWyurashZ3i5O1OandqxeUipq6I1ZoEcS2TcWUrOmfc+zKmIGSnw9+re52Wtr3ZHA
-	C7W5mAnLDSfQgx6KjVZJf7JPWXvI22bb9H+w5GRiMNOzeM/EQ7KCvCvCg+ebkyIYhXcdoI
-	DPDVGcVbEegfl3I6BHGn2wTiBoe0d1M=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-610-xtB-p74PMCaCwQjIv5E8Rw-1; Fri, 16 Jun 2023 12:31:33 -0400
-X-MC-Unique: xtB-p74PMCaCwQjIv5E8Rw-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9715654ab36so61156266b.0
-        for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 09:31:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF758F59
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 16:34:25 +0000 (UTC)
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480983592;
+	Fri, 16 Jun 2023 09:34:11 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b4470e1500so13043871fa.1;
+        Fri, 16 Jun 2023 09:34:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686933249; x=1689525249;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ciLmmISBnAmBNpL57ZkiVLZdSgI5RvZx0KnVLxEMLQA=;
+        b=rZLz4t1BzNZQb2SDswJNFyGKJ8WIjGulQ96rA0XoBDm4CuASgdXM+yqAoyEvUyqtHT
+         HQWx1TQ+0gU2JHhVssNB+mTm91uyQi9uuNjL+RXBTzL2nZbUgpD2W8KqgnSGCWQx6lfw
+         7Pl0ZXWHfB796z+BD7TlgijK0JO2Di1hrwUCddN/eAihOU9J7fWczr35jdc6zE790oiB
+         XPFOD+noWYH9QUkPeCRdEpHxFKrmZEXzbZD6Sve+moKkU1bsgRsLXeFPntmOZ9EOQhrM
+         Co/guy3EFea7xzzxX/oJT+42XAeaPS0tKXNAB+jSEQzhDW4YSmkv6iro7T8Fb7uBEPZE
+         WvFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686933092; x=1689525092;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FPytIYwEkl6QEu7Rgu+ICkD4rqXTkTJ3ru8gg8dbkVU=;
-        b=ASyMdOqd2wx0X8f+VtZC0trWDz43B+usbsjX6fXH8kDzfeXWdtcUnTGfpDXz2FhTyc
-         CGr/eOInhH1/dcni3Zd4zEaqCaJuVF1yZhz1VcX+7TfivAIPGHZoXLhhttcDqqxi8hFT
-         xpZiHcCEwDf/RRY+QlVK1EcTXArGTBCso8+r5Mote6JVke50fmhObS0T9r3mGBFufncR
-         rzjXSCogexSPTgIIxDte7fbmnSysYd0jyb9z6BZ/LfVWfFxkVu4S0nFt2jisPfwO3eT9
-         Vpy+grL87OqPMmNHPiwqr6aQeVvl586j9aIzHoFwxFCoy4/O4Y+STyUG0zsT98sNxuwn
-         3btA==
-X-Gm-Message-State: AC+VfDx6XlSl32TESH6mxob/7EjAmSgGKRqQpUvfr43jElUPzlgzZgmL
-	RS5XUJVlXzJ9RismjcmNjzFG6PfuvllmbXuRJfLUurxnpHAASAARnhQYdmnGnfJt8+Guv/vxQcm
-	lpbCH83qkgez4
-X-Received: by 2002:a17:907:2cc4:b0:978:70e1:f02e with SMTP id hg4-20020a1709072cc400b0097870e1f02emr2251702ejc.22.1686933092335;
-        Fri, 16 Jun 2023 09:31:32 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6QwaRaNv6ifNugvelfv7foAf6nRIFf7h4Hs5kRZnyhyelYJppcvYV1pqXjZMzTH6ieVSVktw==
-X-Received: by 2002:a17:907:2cc4:b0:978:70e1:f02e with SMTP id hg4-20020a1709072cc400b0097870e1f02emr2251685ejc.22.1686933091957;
-        Fri, 16 Jun 2023 09:31:31 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id s2-20020a170906960200b00982834553a6sm3278848ejx.165.2023.06.16.09.31.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jun 2023 09:31:31 -0700 (PDT)
-From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <f8ce176f-f975-af11-641c-b56c53a8066a@redhat.com>
-Date: Fri, 16 Jun 2023 18:31:29 +0200
+        d=1e100.net; s=20221208; t=1686933249; x=1689525249;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ciLmmISBnAmBNpL57ZkiVLZdSgI5RvZx0KnVLxEMLQA=;
+        b=QjkhlluKxFXFalHT1yyj3JpXGfaT/Z/FuSlQOiS245TrUuB0dSnnceCsInm9T4bQIx
+         2cYWX1gNgZL9qpBApISC9FpXxP42ih446Q8gvFmUnOmZAKqvfodpHfvSovNKX1JpXy2A
+         5qfK2L7XC0mWl/rOFqLHof6FBORt9BnAYFL4NC5ZVel5OQEfmVcqkldi9RaKTfqfPSR0
+         +FiPqjd/RBf+g491P7uiN+jFDgdlo83+wzPTAQFSp2JNd3uUtQs/CXXcQBHhyU3lWToO
+         YJmMvUluynlgyocpShQRftdgFYPO61BO9tn8BuSAEwj9A810NMIol5eMg08LYcqUuVl0
+         VvjA==
+X-Gm-Message-State: AC+VfDyb49F18n9U3XqJmyS4EnoSq0fTfLsUssVg/FHVN3Dyzz7tabMV
+	KqokagEMZlVEY+Kj0N/3Z8Gmz4AK2qcgqcsSQAo=
+X-Google-Smtp-Source: ACHHUZ5J3J6BmXsqJ/ro7uibmi2MV6S2YWYrzOXs8CKYMYul39VCGUXxT/xgg7e42mm0CbGF5mxSq8p5ebcL5iOaLn4=
+X-Received: by 2002:a2e:8756:0:b0:2b1:ae75:2781 with SMTP id
+ q22-20020a2e8756000000b002b1ae752781mr2023912ljj.27.1686933249196; Fri, 16
+ Jun 2023 09:34:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Cc: brouer@redhat.com, davem@davemloft.net, kuba@kernel.org,
- pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Lorenzo Bianconi <lorenzo@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Eric Dumazet <edumazet@google.com>, Maryam Tahhan <mtahhan@redhat.com>,
- bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 3/4] page_pool: introduce page_pool_alloc()
- API
-Content-Language: en-US
-To: Yunsheng Lin <linyunsheng@huawei.com>,
- Jesper Dangaard Brouer <jbrouer@redhat.com>,
- Alexander Duyck <alexander.duyck@gmail.com>
-References: <20230609131740.7496-1-linyunsheng@huawei.com>
- <20230609131740.7496-4-linyunsheng@huawei.com>
- <CAKgT0UfVwQ=ri7ZDNnsATH2RQpEz+zDBBb6YprvniMEWGdw+dQ@mail.gmail.com>
- <36366741-8df2-1137-0dd9-d498d0f770e4@huawei.com>
- <CAKgT0UdXTSv1fDHBX4UC6Ok9NXKMJ_9F88CEv5TK+mpzy0N21g@mail.gmail.com>
- <c06f6f59-6c35-4944-8f7a-7f6f0e076649@huawei.com>
- <CAKgT0UccmDe+CE6=zDYQHi1=3vXf5MptzDo+BsPrKdmP5j9kgQ@mail.gmail.com>
- <0ba1bf9c-2e45-cd44-60d3-66feeb3268f3@redhat.com>
- <dcc9db4c-207b-e118-3d84-641677cd3d80@huawei.com>
-In-Reply-To: <dcc9db4c-207b-e118-3d84-641677cd3d80@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+References: <20230614073443.4894-1-zhanglibing@cdjrlc.com> <7f34bd3ce377d9d89626c2df8fa584e0@208suo.com>
+ <0b12a94a-e3e9-e2a2-389e-48a588d5ad6b@meta.com>
+In-Reply-To: <0b12a94a-e3e9-e2a2-389e-48a588d5ad6b@meta.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 16 Jun 2023 09:33:57 -0700
+Message-ID: <CAEf4BzZYF=WMuhPTdRaDEhrhR10gu-G_U-=9keq+pimoGq41EQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: Fix the address is NULL
+To: Yonghong Song <yhs@meta.com>
+Cc: wuyonggang001@208suo.com, andrii@kernel.org, shuah@kernel.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Wed, Jun 14, 2023 at 7:09=E2=80=AFAM Yonghong Song <yhs@meta.com> wrote:
+>
+>
+>
+> On 6/14/23 12:42 AM, wuyonggang001@208suo.com wrote:
+> > Fix the following coccicheck error:
+> >
+> > tools/testing/selftests/bpf/progs/test_ksyms_weak.c:53:6-20: ERROR: tes=
+t
+> > of a variable/field address
+>
+> I didn't see clang/gcc compiler warns about this. Maybe need some
+> additional flags beyond what current selftest/bpf already has
+> in order to trigger this warning?
+> If you feel this warning has some merit, could you propose
+> it to gcc/llvm community?
 
+bpf_link_fops2 is a weak symbol, this check is totally valid and reasonable=
+.
 
-On 16/06/2023 13.57, Yunsheng Lin wrote:
-> On 2023/6/16 0:19, Jesper Dangaard Brouer wrote:
-> 
-> ...
-> 
->> You have mentioned veth as the use-case. I know I acked adding page_pool
->> use-case to veth, for when we need to convert an SKB into an
->> xdp_buff/xdp-frame, but maybe it was the wrong hammer(?).
->> In this case in veth, the size is known at the page allocation time.
->> Thus, using the page_pool API is wasting memory.  We did this for
->> performance reasons, but we are not using PP for what is was intended
->> for.  We mostly use page_pool, because it an existing recycle return
->> path, and we were too lazy to add another alloc-type (see enum
->> xdp_mem_type).
->>
->> Maybe you/we can extend veth to use this dynamic size API, to show us
->> that this is API is a better approach.  I will signup for benchmarking
->> this (and coordinating with CC Maryam as she came with use-case we
->> improved on).
-> 
-> Thanks, let's find out if page pool is the right hammer for the
-> veth XDP case.
-> 
-> Below is the change for veth using the new api in this patch.
-> Only compile test as I am not familiar enough with veth XDP and
-> testing environment for it.
-> Please try it if it is helpful.
-> 
-> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> index 614f3e3efab0..8850394f1d29 100644
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -736,7 +736,7 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
->          if (skb_shared(skb) || skb_head_is_locked(skb) ||
->              skb_shinfo(skb)->nr_frags ||
->              skb_headroom(skb) < XDP_PACKET_HEADROOM) {
-> -               u32 size, len, max_head_size, off;
-> +               u32 size, len, max_head_size, off, truesize, page_offset;
->                  struct sk_buff *nskb;
->                  struct page *page;
->                  int i, head_off;
-> @@ -752,12 +752,15 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
->                  if (skb->len > PAGE_SIZE * MAX_SKB_FRAGS + max_head_size)
->                          goto drop;
-> 
-> +               size = min_t(u32, skb->len, max_head_size);
-> +               truesize = size;
-> +
->                  /* Allocate skb head */
-> -               page = page_pool_dev_alloc_pages(rq->page_pool);
-> +               page = page_pool_dev_alloc(rq->page_pool, &page_offset, &truesize);
+There are two problems here, though:
 
-Maybe rename API to:
+a) coccicheck shouldn't warn about "test of a variable/field address"
+for weak symbols, because they can be NULL.
 
-  addr = netmem_alloc(rq->page_pool, &truesize);
+b) this patch is not even fixing that warning, it does a no-op change
+from implicit non-NULL check to explicit non-NULL check. And the
+former is actually the preferred style.
 
->                  if (!page)
->                          goto drop;
-> 
-> -               nskb = napi_build_skb(page_address(page), PAGE_SIZE);
-> +               nskb = napi_build_skb(page_address(page) + page_offset, truesize);
+So this patch is doubly wrong.
 
-IMHO this illustrates that API is strange/funky.
-(I think this is what Alex Duyck is also pointing out).
-
-This is the memory (virtual) address "pointer":
-  addr = page_address(page) + page_offset
-
-This is what napi_build_skb() takes as input. (I looked at other users 
-of napi_build_skb() whom all give a mem ptr "va" as arg.)
-So, why does your new API provide the "page" and not just the address?
-
-As proposed above:
-   addr = netmem_alloc(rq->page_pool, &truesize);
-
-Maybe the API should be renamed, to indicate this isn't returning a "page"?
-We have talked about the name "netmem" before.
-
->                  if (!nskb) {
->                          page_pool_put_full_page(rq->page_pool, page, true);
->                          goto drop;
-> @@ -767,7 +770,6 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
->                  skb_copy_header(nskb, skb);
->                  skb_mark_for_recycle(nskb);
-> 
-> -               size = min_t(u32, skb->len, max_head_size);
->                  if (skb_copy_bits(skb, 0, nskb->data, size)) {
->                          consume_skb(nskb);
->                          goto drop;
-> @@ -782,14 +784,17 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
->                  len = skb->len - off;
-> 
->                  for (i = 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
-> -                       page = page_pool_dev_alloc_pages(rq->page_pool);
-> +                       size = min_t(u32, len, PAGE_SIZE);
-> +                       truesize = size;
-> +
-> +                       page = page_pool_dev_alloc(rq->page_pool, &page_offset,
-> +                                                  &truesize);
->                          if (!page) {
->                                  consume_skb(nskb);
->                                  goto drop;
->                          }
-> 
-> -                       size = min_t(u32, len, PAGE_SIZE);
-> -                       skb_add_rx_frag(nskb, i, page, 0, size, PAGE_SIZE);
-> +                       skb_add_rx_frag(nskb, i, page, page_offset, size, truesize);
-
-Guess, this shows the opposite; that the "page" _is_ used by the 
-existing API.
-
->                          if (skb_copy_bits(skb, off, page_address(page),
->                                            size)) {
->                                  consume_skb(nskb);
-
---Jesper
-
+>
+> >
+> > Signed-off-by: Yonggang Wu <wuyonggang001@208suo.com>
+> > ---
+> >   tools/testing/selftests/bpf/progs/test_ksyms_weak.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
+> > b/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
+> > index d00268c91e19..768a4d6ee6f5 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
+> > @@ -50,7 +50,7 @@ int pass_handler(const void *ctx)
+> >       /* tests non-existent symbols. */
+> >       out__non_existent_typed =3D (__u64)&bpf_link_fops2;
+> >
+> > -    if (&bpf_link_fops2) /* can't happen */
+> > +    if (&bpf_link_fops2 !=3D NULL) /* can't happen */
+> >           out__non_existent_typed =3D
+> > (__u64)bpf_per_cpu_ptr(&bpf_link_fops2, 0);
+> >
+> >       if (!bpf_ksym_exists(bpf_task_acquire))
+> >
 
