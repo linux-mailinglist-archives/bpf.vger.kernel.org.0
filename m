@@ -1,273 +1,189 @@
-Return-Path: <bpf+bounces-2757-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E99EB733878
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 20:54:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B357673386F
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 20:54:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F7CE281687
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:54:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA99D1C20FD5
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:54:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2015B1DCCF;
-	Fri, 16 Jun 2023 18:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D8E1D2BE;
+	Fri, 16 Jun 2023 18:54:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E00F21DCCB
-	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 18:54:16 +0000 (UTC)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522BB3C13
-	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 11:53:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686941636; x=1718477636;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=12gXpbKnTGnZ/Sp0/iPY0+ZciWr9OZerMc0prgXo3Co=;
-  b=hoyhRq1CFoixh5t+njQrJK3VQvu381BekrrU3SqysjM3pz1NtPP5GqWn
-   SxtS3Hl7M7cjkBWZzuAy91ScihTA28RKdzg2kYLjv7n5gvJ/Txassdrgj
-   kavTIdBp9r8pJ/8glPHayl0ibWhrIU1Gch79RG5ByRNfyvvGru0Py8lvT
-   DW60Egfp8YJ2zQqN3jL+oI9IADr1ksq62KJi0FB0LA15l653RNyQ8LwKf
-   eqd3Dqil7R7IOuvu5g86w3M2bfgUQmg3ms4WJXsntwvLZpqBZ/QTXBMyt
-   wPNvBrRj4AioTKyXnu5HPDoi/lCi+yAV79UYbcdwIU8fc+OlCyzjZDfVj
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="356778864"
-X-IronPort-AV: E=Sophos;i="6.00,248,1681196400"; 
-   d="scan'208";a="356778864"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2023 11:53:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="887198660"
-X-IronPort-AV: E=Sophos;i="6.00,248,1681196400"; 
-   d="scan'208";a="887198660"
-Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 16 Jun 2023 11:53:50 -0700
-Received: from kbuild by 783282924a45 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qAEZy-0001io-0F;
-	Fri, 16 Jun 2023 18:53:50 +0000
-Date: Sat, 17 Jun 2023 02:53:29 +0800
-From: kernel test robot <lkp@intel.com>
-To: Alan Maguire <alan.maguire@oracle.com>, acme@kernel.org, ast@kernel.org,
-	andrii@kernel.org, daniel@iogearbox.net, quentin@isovalent.com,
-	jolsa@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, martin.lau@linux.dev, song@kernel.org,
-	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-	sdf@google.com, haoluo@google.com, mykolal@fb.com,
-	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCH v2 bpf-next 6/9] btf: generate BTF kind layout for
- vmlinux/module BTF
-Message-ID: <202306170238.L0eHQOJd-lkp@intel.com>
-References: <20230616171728.530116-7-alan.maguire@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93908171DE;
+	Fri, 16 Jun 2023 18:54:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11526C433A9;
+	Fri, 16 Jun 2023 18:54:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686941649;
+	bh=Yn4AaKJNeoRa5k6Rpqw8rOaWUpFfj0b/8Nallv5Pzds=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=VAiGa0I3VACBcfckeYjIsmg+o/Lg4sS9yo0qhzfoNoM8HW3/yOwai3153O/GUAXbj
+	 YJtd0QtbYHxESgW/1famknmpEyl1VcqqZbhSsOi11zU9/ZMOErIBdZBoGkIJK30tWt
+	 unGcQ+mitBz6SxYbCiSHZpCoP8hgQukNeXy1UbCOP0F5ZH682Nli8SfcUiRSggpyfA
+	 eBElWbeNqWyPxCKgFRONE3eKcW6XHG/HLKpP7a6yELMQu7jW7a8McQDjl83mpuO51f
+	 IpRYwyGRjNbRqpToW+gHjtGgDrWOf+YGXI32hL/bT3NIgnBpJWshrLsqdj1cuzU+Nn
+	 8iQhg6Wj6381A==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-4f611ac39c5so1473711e87.2;
+        Fri, 16 Jun 2023 11:54:08 -0700 (PDT)
+X-Gm-Message-State: AC+VfDwmHOtdCIK0tW0WmUXAj//MrcdUuJ+KWS+wKAHJwCKNzvtDC/Ao
+	u5LNahUCuO/+on0bAqCQpkUaO1gnY+NXz0cMia4=
+X-Google-Smtp-Source: ACHHUZ6uZ3NRfESc1LLdM7pG5QakOfq/c/daJr3jT6A/NUchGYkSu86UqZO3PB3EltPOLvcz17COALW9nYWOKlX1r+w=
+X-Received: by 2002:a19:7b05:0:b0:4f6:d9e:7c3b with SMTP id
+ w5-20020a197b05000000b004f60d9e7c3bmr2147967lfc.44.1686941646932; Fri, 16 Jun
+ 2023 11:54:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230616171728.530116-7-alan.maguire@oracle.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+References: <20230616085038.4121892-1-rppt@kernel.org> <20230616085038.4121892-5-rppt@kernel.org>
+In-Reply-To: <20230616085038.4121892-5-rppt@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Fri, 16 Jun 2023 11:53:54 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7xE8sz8Nh2AdNb62k=8kgEPxaBCw3w50EfXraxmKca-A@mail.gmail.com>
+Message-ID: <CAPhsuW7xE8sz8Nh2AdNb62k=8kgEPxaBCw3w50EfXraxmKca-A@mail.gmail.com>
+Subject: Re: [PATCH v2 04/12] mm/execmem, arch: convert remaining overrides of
+ module_alloc to execmem
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nadav Amit <nadav.amit@gmail.com>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Puranjay Mohan <puranjay12@gmail.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, 
+	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Alan,
+On Fri, Jun 16, 2023 at 1:51=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wro=
+te:
+[...]
+> diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+> index 5af4975caeb5..c3d999f3a3dd 100644
+> --- a/arch/arm64/kernel/module.c
+> +++ b/arch/arm64/kernel/module.c
+> @@ -17,56 +17,50 @@
+>  #include <linux/moduleloader.h>
+>  #include <linux/scs.h>
+>  #include <linux/vmalloc.h>
+> +#include <linux/execmem.h>
+>  #include <asm/alternative.h>
+>  #include <asm/insn.h>
+>  #include <asm/scs.h>
+>  #include <asm/sections.h>
+>
+> -void *module_alloc(unsigned long size)
+> +static struct execmem_params execmem_params =3D {
+> +       .modules =3D {
+> +               .flags =3D EXECMEM_KASAN_SHADOW,
+> +               .text =3D {
+> +                       .alignment =3D MODULE_ALIGN,
+> +               },
+> +       },
+> +};
+> +
+> +struct execmem_params __init *execmem_arch_params(void)
+>  {
+>         u64 module_alloc_end =3D module_alloc_base + MODULES_VSIZE;
+> -       gfp_t gfp_mask =3D GFP_KERNEL;
+> -       void *p;
+> -
+> -       /* Silence the initial allocation */
+> -       if (IS_ENABLED(CONFIG_ARM64_MODULE_PLTS))
+> -               gfp_mask |=3D __GFP_NOWARN;
+>
+> -       if (IS_ENABLED(CONFIG_KASAN_GENERIC) ||
+> -           IS_ENABLED(CONFIG_KASAN_SW_TAGS))
+> -               /* don't exceed the static module region - see below */
+> -               module_alloc_end =3D MODULES_END;
+> +       execmem_params.modules.text.pgprot =3D PAGE_KERNEL;
+> +       execmem_params.modules.text.start =3D module_alloc_base;
 
-kernel test robot noticed the following build errors:
+I think I mentioned this earlier. For arm64 with CONFIG_RANDOMIZE_BASE,
+module_alloc_base is not yet set when execmem_arch_params() is
+called. So we will need some extra logic for this.
 
-[auto build test ERROR on bpf-next/master]
+Thanks,
+Song
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Alan-Maguire/btf-add-kind-layout-encoding-crcs-to-UAPI/20230617-012110
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230616171728.530116-7-alan.maguire%40oracle.com
-patch subject: [PATCH v2 bpf-next 6/9] btf: generate BTF kind layout for vmlinux/module BTF
-config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230617/202306170238.L0eHQOJd-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230617/202306170238.L0eHQOJd-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306170238.L0eHQOJd-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
---
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   loongarch64-linux-gcc: error: unrecognized command-line option '-mexplicit-relocs'
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
->> scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   loongarch64-linux-gcc: error: unrecognized command-line option '-mexplicit-relocs'
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-   scripts/pahole-flags.sh: 29: [[: not found
-   scripts/pahole-flags.sh: 32: [[: not found
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> +       execmem_params.modules.text.end =3D module_alloc_end;
+>
+> -       p =3D __vmalloc_node_range(size, MODULE_ALIGN, module_alloc_base,
+> -                               module_alloc_end, gfp_mask, PAGE_KERNEL, =
+VM_DEFER_KMEMLEAK,
+> -                               NUMA_NO_NODE, __builtin_return_address(0)=
+);
+> -
+> -       if (!p && IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
+> +       /*
+> +        * KASAN without KASAN_VMALLOC can only deal with module
+> +        * allocations being served from the reserved module region,
+> +        * since the remainder of the vmalloc region is already
+> +        * backed by zero shadow pages, and punching holes into it
+> +        * is non-trivial. Since the module region is not randomized
+> +        * when KASAN is enabled without KASAN_VMALLOC, it is even
+> +        * less likely that the module region gets exhausted, so we
+> +        * can simply omit this fallback in that case.
+> +        */
+> +       if (IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
+>             (IS_ENABLED(CONFIG_KASAN_VMALLOC) ||
+>              (!IS_ENABLED(CONFIG_KASAN_GENERIC) &&
+> -             !IS_ENABLED(CONFIG_KASAN_SW_TAGS))))
+> -               /*
+> -                * KASAN without KASAN_VMALLOC can only deal with module
+> -                * allocations being served from the reserved module regi=
+on,
+> -                * since the remainder of the vmalloc region is already
+> -                * backed by zero shadow pages, and punching holes into i=
+t
+> -                * is non-trivial. Since the module region is not randomi=
+zed
+> -                * when KASAN is enabled without KASAN_VMALLOC, it is eve=
+n
+> -                * less likely that the module region gets exhausted, so =
+we
+> -                * can simply omit this fallback in that case.
+> -                */
+> -               p =3D __vmalloc_node_range(size, MODULE_ALIGN, module_all=
+oc_base,
+> -                               module_alloc_base + SZ_2G, GFP_KERNEL,
+> -                               PAGE_KERNEL, 0, NUMA_NO_NODE,
+> -                               __builtin_return_address(0));
+> -
+> -       if (p && (kasan_alloc_module_shadow(p, size, gfp_mask) < 0)) {
+> -               vfree(p);
+> -               return NULL;
+> +             !IS_ENABLED(CONFIG_KASAN_SW_TAGS)))) {
+> +               unsigned long end =3D module_alloc_base + SZ_2G;
+> +
+> +               execmem_params.modules.text.fallback_start =3D module_all=
+oc_base;
+> +               execmem_params.modules.text.fallback_end =3D end;
+>         }
+>
+> -       /* Memory is intended to be executable, reset the pointer tag. */
+> -       return kasan_reset_tag(p);
+> +       return &execmem_params;
+>  }
+>
+>  enum aarch64_reloc_op {
 
