@@ -1,118 +1,126 @@
-Return-Path: <bpf+bounces-2726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D290973363C
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:37:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67720733677
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:48:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FA401C20E8E
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 16:37:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22F2C281861
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 16:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDEC618C07;
-	Fri, 16 Jun 2023 16:36:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD23F1ACB7;
+	Fri, 16 Jun 2023 16:48:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F1F182D2
-	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 16:36:53 +0000 (UTC)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE6926BA;
-	Fri, 16 Jun 2023 09:36:43 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-985fd30ef48so138806966b.2;
-        Fri, 16 Jun 2023 09:36:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686933402; x=1689525402;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TZ/2cnaprLbI2wNpBmKSE5QmI8fvvyfpUiJJFQ63Lj0=;
-        b=pGVfex1a1I59pGSmjW/NbaYePvF2g1/jQUZw87Bgt2xKMLoyUsMMv9WgcW7H0BMekw
-         NMzTkKdEwTFtNwCzmwLpo5vkNQHLT8WlgitNiIhN0nVCsdSlKmFmr7mj2iIgvP+u2bq4
-         TiChMpINy4eL3sF7A7TBJ3ErodvBhbSBELgZ1KvlnNqWUl0Aj32kuga04SRB+kCxka1M
-         aE7BCaahOVO8FfHV+VMoqSkbG9NJ6DqXbFx/M7DIW51aWt7Rb8l60JsdU0JHQNvBfZ2o
-         gcv17ZCOWZBVS11n4T++0CYSAZnLWe187LFPcJkjXNq8BvcUphYeQc+R7uPB+M3F2iKZ
-         3y5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686933402; x=1689525402;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TZ/2cnaprLbI2wNpBmKSE5QmI8fvvyfpUiJJFQ63Lj0=;
-        b=BUUnakANFJwbJPEB7DmYjbb7aRDMluvorqLygMaj3Dbb7FK937lZVASncHUAOgvgfl
-         yFW6ZxuEbtX8OzVkMmjOT2/ksHfer0sG2vfTrNiE+sGu9Y7f4dYr3VpCVPvH4bLDxsk+
-         V5RwUDfliU7DVeyZbOYfEZFyUTI6liRbbydhDmkQNBcXr7JMYrJgV72T7HdlBb4MJWJb
-         u1/CjsJT6wVIvzKT3LYIWSARoS+LwIVmKB/A27r4+RgUyl1XPZuknlujn8J7XRdWe1Sh
-         kLI6VF9JcRvHNkiJZUCU4VJLcuHlIePKr+UUjruFenYdcf1u1tcRTX4rO40c4sfQHl6j
-         0HPg==
-X-Gm-Message-State: AC+VfDzigGM5Io5DfyOsl7uf/nYKmSxfNO1LMnFf96hPT8SLK8xnbvqp
-	Zi5jw6Rx0YHObK6zP+A7YmC3XonR6iElBOfoMwmlyxtn6j7YYA==
-X-Google-Smtp-Source: ACHHUZ6GBfltzqr4B1exwMEy6IY0Upw3JCeOtTnWXW1CMs1BhBfjdoCg7MV0OW/OReNy7aFuJ9mQI1dazLli4hYIwns=
-X-Received: by 2002:a17:906:ef0b:b0:94f:29f0:edc0 with SMTP id
- f11-20020a170906ef0b00b0094f29f0edc0mr2456014ejs.44.1686933402015; Fri, 16
- Jun 2023 09:36:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC971ACA9
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 16:48:13 +0000 (UTC)
+Received: from out-17.mta0.migadu.com (out-17.mta0.migadu.com [IPv6:2001:41d0:1004:224b::11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05B63581
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 09:48:10 -0700 (PDT)
+Date: Fri, 16 Jun 2023 12:48:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1686934088;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IfKIglpY59qnffneasZzBrgWBI/BVVKcO3nvK+88q6Q=;
+	b=f7uDVOP+LriTx1GPKpO/iGQAeI7fAgmRpvVnoi5jo3ti6yVsQ9wInwSxipV6MgfOy574mI
+	FDCFPj1N9Nd5bgTFZS6HIo1mpnuNsg8Mx89vQT9KdcpGA0IcSmQVrnh8mL+CQCqd9x3abe
+	jZmmh6fZtZim0+prcqCTRKU0uIKCYhg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev, netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v2 02/12] mm: introduce execmem_text_alloc() and
+ jit_text_alloc()
+Message-ID: <ZIySQgafdTHk5Yet@moria.home.lan>
+References: <20230616085038.4121892-1-rppt@kernel.org>
+ <20230616085038.4121892-3-rppt@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230614082626.45467-1-luojianhong@cdjrlc.com> <f629797b0b525095352acbf565b48481@208suo.com>
-In-Reply-To: <f629797b0b525095352acbf565b48481@208suo.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 16 Jun 2023 09:36:30 -0700
-Message-ID: <CAEf4Bzbs5m6Pt4VZC8LBj5Cnw1--cgMRcR1vqOOTVi1o9yKoqg@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: zip: Remove unneeded semicolon from zip_archive_open()
-To: baomingtong001@208suo.com
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230616085038.4121892-3-rppt@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 14, 2023 at 1:29=E2=80=AFAM <baomingtong001@208suo.com> wrote:
->
-> ./tools/lib/bpf/zip.c:226:2-3: Unneeded semicolon
+On Fri, Jun 16, 2023 at 11:50:28AM +0300, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> module_alloc() is used everywhere as a mean to allocate memory for code.
+> 
+> Beside being semantically wrong, this unnecessarily ties all subsystems
+> that need to allocate code, such as ftrace, kprobes and BPF to modules
+> and puts the burden of code allocation to the modules code.
+> 
+> Several architectures override module_alloc() because of various
+> constraints where the executable memory can be located and this causes
+> additional obstacles for improvements of code allocation.
+> 
+> Start splitting code allocation from modules by introducing
+> execmem_text_alloc(), execmem_free(), jit_text_alloc(), jit_free() APIs.
+> 
+> Initially, execmem_text_alloc() and jit_text_alloc() are wrappers for
+> module_alloc() and execmem_free() and jit_free() are replacements of
+> module_memfree() to allow updating all call sites to use the new APIs.
+> 
+> The intention semantics for new allocation APIs:
+> 
+> * execmem_text_alloc() should be used to allocate memory that must reside
+>   close to the kernel image, like loadable kernel modules and generated
+>   code that is restricted by relative addressing.
+> 
+> * jit_text_alloc() should be used to allocate memory for generated code
+>   when there are no restrictions for the code placement. For
+>   architectures that require that any code is within certain distance
+>   from the kernel image, jit_text_alloc() will be essentially aliased to
+>   execmem_text_alloc().
+> 
+> The names execmem_text_alloc() and jit_text_alloc() emphasize that the
+> allocated memory is for executable code, the allocations of the
+> associated data, like data sections of a module will use
+> execmem_data_alloc() interface that will be added later.
 
-This is not a very human-readable commit message. Something like
+I like the API split - at the risk of further bikeshedding, perhaps
+near_text_alloc() and far_text_alloc()? Would be more explicit.
 
-Drop unnecessary semicolon, which triggers (presumable coccicheck?) warning=
-:
-
-./tools/lib/bpf/zip.c:226:2-3: Unneeded semicolon
-
-
-But also this doesn't apply cleanly to bpf-next tree. Please rebase
-and resend. Also make sure to have [PATCH bpf-next] prefix in email
-subject. Thanks.
-
->
-> Signed-off-by: Mingtong Bao <baomingtong001@208suo.com>
-> ---
->   tools/lib/bpf/zip.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/zip.c b/tools/lib/bpf/zip.c
-> index 3f26d629b2b4..88c376a8348d 100644
-> --- a/tools/lib/bpf/zip.c
-> +++ b/tools/lib/bpf/zip.c
-> @@ -223,7 +223,7 @@ struct zip_archive *zip_archive_open(const char
-> *path)
->       if (!archive) {
->           munmap(data, size);
->           return ERR_PTR(-ENOMEM);
-> -    };
-> +    }
->
->       archive->data =3D data;
->       archive->size =3D size;
+Reviewed-by: Kent Overstreet <kent.overstreet@linux.dev>
 
