@@ -1,126 +1,136 @@
-Return-Path: <bpf+bounces-2727-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2728-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67720733677
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:48:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27D3D7336B8
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 18:53:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22F2C281861
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 16:48:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 598AC1C21013
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 16:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD23F1ACB7;
-	Fri, 16 Jun 2023 16:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0137919E69;
+	Fri, 16 Jun 2023 16:53:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC971ACA9
-	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 16:48:13 +0000 (UTC)
-Received: from out-17.mta0.migadu.com (out-17.mta0.migadu.com [IPv6:2001:41d0:1004:224b::11])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05B63581
-	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 09:48:10 -0700 (PDT)
-Date: Fri, 16 Jun 2023 12:48:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1686934088;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IfKIglpY59qnffneasZzBrgWBI/BVVKcO3nvK+88q6Q=;
-	b=f7uDVOP+LriTx1GPKpO/iGQAeI7fAgmRpvVnoi5jo3ti6yVsQ9wInwSxipV6MgfOy574mI
-	FDCFPj1N9Nd5bgTFZS6HIo1mpnuNsg8Mx89vQT9KdcpGA0IcSmQVrnh8mL+CQCqd9x3abe
-	jZmmh6fZtZim0+prcqCTRKU0uIKCYhg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v2 02/12] mm: introduce execmem_text_alloc() and
- jit_text_alloc()
-Message-ID: <ZIySQgafdTHk5Yet@moria.home.lan>
-References: <20230616085038.4121892-1-rppt@kernel.org>
- <20230616085038.4121892-3-rppt@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38A913AC6
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 16:53:44 +0000 (UTC)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C94A4ED5
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 09:53:25 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b45a71c9caso11114251fa.3
+        for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 09:53:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686934393; x=1689526393;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eYB+h7FcMyfPq2tug+zPFjkFmKHYe7UKU9BeWIK1a68=;
+        b=hzALOmgK9MzC+Kh/9ste4+yuqlA4YyhhyVBiDl3RUHlF3jbA1Sw7sXT/6/Lo/umhpx
+         4nPbvy7cA0Ofc4oX+WwAsov9gKxXtI+ewCziDFoIlFwiABL8aldPUwyLMxH2kKZFgrLA
+         w67MqKzMY75NZqqAxQhbO3CzdV/tee4Iauwuo1BUDmEoOkT3+GE+xWlMd1r3sH/9v7Hj
+         Yad6rTzUerW2mk26DCkWkmolpQe0EUIRZo+dSlrd9aBwOiGNYQEl2w8v4VjRwaHwbs1Z
+         ASMf9RxuF3dBjrgRNGAwkxwJLacKSvbM+pC3gJK9HpLye+xCc8PflzMzxSwfKeZ8df9e
+         I6lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686934393; x=1689526393;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eYB+h7FcMyfPq2tug+zPFjkFmKHYe7UKU9BeWIK1a68=;
+        b=PMDBxb+owA9KmBwqCaHMCS2h9413afvmOGKranXg6TKUHZVQq+tpLIRsLWQi2MYITu
+         0fm5gAJlBWrm0Zqj+HMdYO3Gz2mqH+SGYUrrc8dSs3AVKHAWV+UhoCvO2acHwiMPaTeq
+         oedfZO+SxxaGM9DgUBJJ2EjyfrN/JcnIVWXxaozVHuJmBIL9pukc5xrvEv9wlI9KnjLd
+         jeOLAayBIjeK9IV0SE7ulPb6lcY8yxCjgI4gHfYlHRnBlHMc0bWa/sSB8pzSvb8CWju2
+         cNF8SU6uMuikDZdjRokppjt5z4yXygL3U6DmyD8cROkTRGbRDN1YqGxDn/54Th4j4GaQ
+         ZqXg==
+X-Gm-Message-State: AC+VfDzQvafZJphJKU4E75uOxhDNAhN9iERDdFl1gZ+Oir0N7qgg/qTv
+	q9uTRaRTMQGuA9m30HpRhw2itz+wxB/+PXgKH1w=
+X-Google-Smtp-Source: ACHHUZ752JyquLhQqQ7+EKChQiGoCqhRAU+y00aVofvUTwiKnnkSH1XL8gpaetw/GOpbtohqAdRhSIZGe4jjfF6bnXU=
+X-Received: by 2002:a2e:878c:0:b0:2b1:d34d:4e08 with SMTP id
+ n12-20020a2e878c000000b002b1d34d4e08mr2191455lji.6.1686934392558; Fri, 16 Jun
+ 2023 09:53:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230616085038.4121892-3-rppt@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20230613113119.2348619-1-jolsa@kernel.org>
+In-Reply-To: <20230613113119.2348619-1-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 16 Jun 2023 09:53:00 -0700
+Message-ID: <CAEf4BzaoecaejztBK9O+hbh1d-g_iTSXgpDrJAZmcaWYiWBn3Q@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Force kprobe multi expected_attach_type for
+ kprobe_multi link
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 16, 2023 at 11:50:28AM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> module_alloc() is used everywhere as a mean to allocate memory for code.
-> 
-> Beside being semantically wrong, this unnecessarily ties all subsystems
-> that need to allocate code, such as ftrace, kprobes and BPF to modules
-> and puts the burden of code allocation to the modules code.
-> 
-> Several architectures override module_alloc() because of various
-> constraints where the executable memory can be located and this causes
-> additional obstacles for improvements of code allocation.
-> 
-> Start splitting code allocation from modules by introducing
-> execmem_text_alloc(), execmem_free(), jit_text_alloc(), jit_free() APIs.
-> 
-> Initially, execmem_text_alloc() and jit_text_alloc() are wrappers for
-> module_alloc() and execmem_free() and jit_free() are replacements of
-> module_memfree() to allow updating all call sites to use the new APIs.
-> 
-> The intention semantics for new allocation APIs:
-> 
-> * execmem_text_alloc() should be used to allocate memory that must reside
->   close to the kernel image, like loadable kernel modules and generated
->   code that is restricted by relative addressing.
-> 
-> * jit_text_alloc() should be used to allocate memory for generated code
->   when there are no restrictions for the code placement. For
->   architectures that require that any code is within certain distance
->   from the kernel image, jit_text_alloc() will be essentially aliased to
->   execmem_text_alloc().
-> 
-> The names execmem_text_alloc() and jit_text_alloc() emphasize that the
-> allocated memory is for executable code, the allocations of the
-> associated data, like data sections of a module will use
-> execmem_data_alloc() interface that will be added later.
+On Tue, Jun 13, 2023 at 4:31=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> We currently allow to create perf link for program with
+> expected_attach_type =3D=3D BPF_TRACE_KPROBE_MULTI.
+>
+> This will cause crash when we call helpers like get_attach_cookie or
+> get_func_ip in such program, because it will call the kprobe_multi's
+> version (current->bpf_ctx context setup) of those helpers while it
+> expects perf_link's current->bpf_ctx context setup.
+>
+> Making sure that we use BPF_TRACE_KPROBE_MULTI expected_attach_type
+> only for programs attaching through kprobe_multi link.
+>
+> Fixes: ca74823c6e16 ("bpf: Add cookie support to programs attached with k=
+probe multi link")
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  kernel/bpf/syscall.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 0c21d0d8efe4..e8fe04a5db93 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -4675,6 +4675,11 @@ static int link_create(union bpf_attr *attr, bpfpt=
+r_t uattr)
+>                 ret =3D bpf_perf_link_attach(attr, prog);
+>                 break;
+>         case BPF_PROG_TYPE_KPROBE:
+> +               if (prog->expected_attach_type =3D=3D BPF_TRACE_KPROBE_MU=
+LTI &&
+> +                   attr->link_create.attach_type !=3D BPF_TRACE_KPROBE_M=
+ULTI) {
+> +                       ret =3D -EINVAL;
+> +                       goto out;
+> +               }
 
-I like the API split - at the risk of further bikeshedding, perhaps
-near_text_alloc() and far_text_alloc()? Would be more explicit.
+there is a separate expected attach type validation switch above this,
+shouldn't this go there? We also have
+bpf_prog_attach_check_attach_type() call above as well, and tbh by now
+I'm not sure why we have like three places to check conditions like
+this... But I'd put this check in either
+bpf_prog_attach_check_attach_type() or in the dedicated switch for
+attach_type checks.
 
-Reviewed-by: Kent Overstreet <kent.overstreet@linux.dev>
+
+>                 if (attr->link_create.attach_type =3D=3D BPF_PERF_EVENT)
+>                         ret =3D bpf_perf_link_attach(attr, prog);
+>                 else
+> --
+> 2.40.1
+>
 
