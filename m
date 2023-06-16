@@ -1,230 +1,311 @@
-Return-Path: <bpf+bounces-2771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50DFA733B5B
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 23:10:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E9F9733C68
+	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 00:27:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BBC12817FC
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 21:10:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 419251C2104F
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 22:27:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEEAA6AC2;
-	Fri, 16 Jun 2023 21:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F90179EA;
+	Fri, 16 Jun 2023 22:27:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B5546AB5
-	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 21:10:00 +0000 (UTC)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67B0D8;
-	Fri, 16 Jun 2023 14:09:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686949797; x=1718485797;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MGvblgTiM/nU8S83WbvkzafTeQ3MttQEJKhdcqTmHXA=;
-  b=cC/P13p8D+JtG7AGB1tD9maM7qkDok4qvcVI/xt2JbVnElNDeKXbl1Y1
-   0ugPrHah7SMB2LlZC/zCfD+i9RI/oCe2jL+TnrVRcmW8PuGxeD+Gatr6i
-   hlG+REsA26uG0/supS8hedr3QiCAuwqk2o6lgpbHFuGLhgQReAwiCmTye
-   ROC6eUwlwmvK62Nyi99Ez7+FP1iax60wB/QVUHDGKQxzHxeZaPZj85XHq
-   dQKOAlYCfDZMGW/jUH0LDu3Q7166mrYD7Dx+pIbnYAlGNEthRZMysbAZ6
-   +MHiBPSrCaddG48b8wsG9/u+YyqpmjNd8/Szyg1OYJCFchffw7MGz758Q
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="344052164"
-X-IronPort-AV: E=Sophos;i="6.00,248,1681196400"; 
-   d="scan'208";a="344052164"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2023 14:09:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10743"; a="802970275"
-X-IronPort-AV: E=Sophos;i="6.00,248,1681196400"; 
-   d="scan'208";a="802970275"
-Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 16 Jun 2023 14:09:54 -0700
-Received: from kbuild by 783282924a45 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qAGhd-0001ok-2j;
-	Fri, 16 Jun 2023 21:09:53 +0000
-Date: Sat, 17 Jun 2023 05:09:45 +0800
-From: kernel test robot <lkp@intel.com>
-To: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, paul@paul-moore.com,
-	keescook@chromium.org, casey@schaufler-ca.com, song@kernel.org,
-	daniel@iogearbox.net, ast@kernel.org, jannh@google.com,
-	KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH v2 3/5] security: Replace indirect LSM hook calls with
- static calls
-Message-ID: <202306170414.br6e1YPW-lkp@intel.com>
-References: <20230616000441.3677441-4-kpsingh@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6936C6FB5
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 22:27:22 +0000 (UTC)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E0B2D6B;
+	Fri, 16 Jun 2023 15:27:20 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51a3f911135so1272032a12.2;
+        Fri, 16 Jun 2023 15:27:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686954439; x=1689546439;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vgNYOZdyMOwSHnpOJ7lvM3rZtCedpFSxafavg3976zw=;
+        b=AolVwGPNkzPMFPI3MMGklY2inBtrhVzGKISimrIuwyDPVLgdWZarAN9G9CszVtFqR4
+         /FonPVGxZsGyxqOrWnOevLiIL2zF8iNZo0NKANzEIWAHx+iM033GNzI552PFZ5FUFpNn
+         m3O3fdqQ7rX7Eo5T9iBPiNm8lQ7fkflJF8fFzb1TlinC+noOLpIxx9fnU9nYfP9ywU+r
+         kFnMRXJ3sBUR+SdlOlSPS6tsSoApVptQ3t03OxU9j0HKtPEEojQk49fo/1ShDLv0HRiB
+         3Y3Ora1yb7Kmb0IxzdAVefxfgEHUfISUVvy4rScI8lI762XPJ6zNYPigRVQKRPPK7ELn
+         O4LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686954439; x=1689546439;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vgNYOZdyMOwSHnpOJ7lvM3rZtCedpFSxafavg3976zw=;
+        b=G4L61vlYo9iwZPTdf8RGn18Fbtt8rLhv/64LRL6aG//d58A9eAuDVqamTnY7ocWquL
+         P34Q9bBhlC8MvPDJrWRThxWTwmTiPqBZH8c2u07PMWiE3bPlbKcZzqBMf5M8KAQBFjpZ
+         QDJkyT+APBzmyu99H0URGZr/0RLyTdmYCs0EhnWEGhdddsBZGb5d72St4S0ONBeWSApc
+         BOU7z9C1KmwyIsIvBDqp3TYJM661S6/osofPdDcUuAEgpx+U3YxZKeYI8lJiSizmTmVr
+         QNaiFQZIeVCVF8yYzXC6bdktlXYLFXyMCxSBqUu9avDNXYDfZrvw4dVy4Dt0Q3XzjNG2
+         APZw==
+X-Gm-Message-State: AC+VfDx7zj1Ye5iwGijdUA2U35oWwejVuoaw4N2repzT2Z3x1wE6nmQg
+	LE3w1bAU8qAw1Wt2Evj7V3FGCO87Xvti/zf4rjvCIpqF489zGg==
+X-Google-Smtp-Source: ACHHUZ6Ba/HBPWlSZGi+4owH5RtCSL4uNeN8wzM8KHp6yrt2IXy39aFYOC0YN+lrzvU107VFUUx6fDS1FX4abrsBrXU=
+X-Received: by 2002:aa7:d287:0:b0:518:7bc3:4cec with SMTP id
+ w7-20020aa7d287000000b005187bc34cecmr2137472edq.22.1686954438566; Fri, 16 Jun
+ 2023 15:27:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230616000441.3677441-4-kpsingh@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230616000441.3677441-1-kpsingh@kernel.org> <20230616000441.3677441-3-kpsingh@kernel.org>
+ <72bd13a2-a5b3-328e-a751-87102107293e@schaufler-ca.com>
+In-Reply-To: <72bd13a2-a5b3-328e-a751-87102107293e@schaufler-ca.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 16 Jun 2023 15:27:06 -0700
+Message-ID: <CAEf4BzYuurXCTfqkfLc3RvWZiUzJ2am2GwcYgZgiEb91cGGZaw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] security: Count the LSMs enabled at compile time
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org, 
+	bpf@vger.kernel.org, paul@paul-moore.com, keescook@chromium.org, 
+	song@kernel.org, daniel@iogearbox.net, ast@kernel.org, jannh@google.com, 
+	Kui-Feng Lee <sinquersw@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi KP,
+On Thu, Jun 15, 2023 at 5:38=E2=80=AFPM Casey Schaufler <casey@schaufler-ca=
+.com> wrote:
+>
+> On 6/15/2023 5:04 PM, KP Singh wrote:
+> > These macros are a clever trick to determine a count of the number of
+> > LSMs that are enabled in the config to ascertain the maximum number of
+> > static calls that need to be configured per LSM hook.
+> >
+> > Without this one would need to generate static calls for (number of
+> > possible LSMs * number of LSM hooks) which ends up being quite wasteful
+> > especially when some LSMs are not compiled into the kernel.
+> >
+> > Suggested-by: Kui-Feng Lee <sinquersw@gmail.com>
+> > Signed-off-by: KP Singh <kpsingh@kernel.org>
+> > ---
+> >  include/linux/lsm_count.h | 131 ++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 131 insertions(+)
+> >  create mode 100644 include/linux/lsm_count.h
+> >
+> > diff --git a/include/linux/lsm_count.h b/include/linux/lsm_count.h
+> > new file mode 100644
+> > index 000000000000..818f62ffa723
+> > --- /dev/null
+> > +++ b/include/linux/lsm_count.h
+> > @@ -0,0 +1,131 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +
+> > +/*
+> > + * Copyright (C) 2023 Google LLC.
+> > + */
+> > +
+> > +#ifndef __LINUX_LSM_COUNT_H
+> > +#define __LINUX_LSM_COUNT_H
+> > +
+> > +#include <linux/kconfig.h>
+> > +
+> > +/*
+> > + * Macros to count the number of LSMs enabled in the kernel at compile=
+ time.
+> > + */
+> > +
+> > +#define __LSM_COUNT_15(x, y...) 15
+> > +#define __LSM_COUNT_14(x, y...) 14
+> > +#define __LSM_COUNT_13(x, y...) 13
+> > +#define __LSM_COUNT_12(x, y...) 12
+> > +#define __LSM_COUNT_11(x, y...) 11
+> > +#define __LSM_COUNT_10(x, y...) 10
+> > +#define __LSM_COUNT_9(x, y...) 9
+> > +#define __LSM_COUNT_8(x, y...) 8
+> > +#define __LSM_COUNT_7(x, y...) 7
+> > +#define __LSM_COUNT_6(x, y...) 6
+> > +#define __LSM_COUNT_5(x, y...) 5
+> > +#define __LSM_COUNT_4(x, y...) 4
+> > +#define __LSM_COUNT_3(x, y...) 3
+> > +#define __LSM_COUNT_2(x, y...) 2
+> > +#define __LSM_COUNT_1(x, y...) 1
+> > +#define __LSM_COUNT_0(x, y...) 0
+> > +
+> > +#define __LSM_COUNT1_15(x, y...) __LSM_COUNT ## x ## _15(y)
+> > +#define __LSM_COUNT1_14(x, y...) __LSM_COUNT ## x ## _14(y)
+> > +#define __LSM_COUNT1_13(x, y...) __LSM_COUNT ## x ## _13(y)
+> > +#define __LSM_COUNT1_12(x, y...) __LSM_COUNT ## x ## _12(y)
+> > +#define __LSM_COUNT1_10(x, y...) __LSM_COUNT ## x ## _11(y)
+> > +#define __LSM_COUNT1_9(x, y...) __LSM_COUNT ## x ## _10(y)
+> > +#define __LSM_COUNT1_8(x, y...) __LSM_COUNT ## x ## _9(y)
+> > +#define __LSM_COUNT1_7(x, y...) __LSM_COUNT ## x ## _8(y)
+> > +#define __LSM_COUNT1_6(x, y...) __LSM_COUNT ## x ## _7(y)
+> > +#define __LSM_COUNT1_5(x, y...) __LSM_COUNT ## x ## _6(y)
+> > +#define __LSM_COUNT1_4(x, y...) __LSM_COUNT ## x ## _5(y)
+> > +#define __LSM_COUNT1_3(x, y...) __LSM_COUNT ## x ## _4(y)
+> > +#define __LSM_COUNT1_2(x, y...) __LSM_COUNT ## x ## _3(y)
+> > +#define __LSM_COUNT1_1(x, y...) __LSM_COUNT ## x ## _2(y)
+> > +#define __LSM_COUNT1_0(x, y...) __LSM_COUNT ## x ## _1(y)
+> > +#define __LSM_COUNT(x, y...) __LSM_COUNT ## x ## _0(y)
+> > +
+> > +#define __LSM_COUNT_EXPAND(x...) __LSM_COUNT(x)
+> > +
+> > +#if IS_ENABLED(CONFIG_SECURITY)
+> > +#define CAPABILITIES_ENABLED 1,
+> > +#else
+> > +#define CAPABILITIES_ENABLED
+> > +#endif
+> > +
+> > +#if IS_ENABLED(CONFIG_SECURITY_SELINUX)
+> > +#define SELINUX_ENABLED 1,
+> > +#else
+> > +#define SELINUX_ENABLED
+> > +#endif
+> > +
+> > +#if IS_ENABLED(CONFIG_SECURITY_SMACK)
+> > +#define SMACK_ENABLED 1,
+> > +#else
+> > +#define SMACK_ENABLED
+> > +#endif
+> > +
+> > +#if IS_ENABLED(CONFIG_SECURITY_APPARMOR)
+> > +#define APPARMOR_ENABLED 1,
+> > +#else
+> > +#define APPARMOR_ENABLED
+> > +#endif
+> > +
+> > +#if IS_ENABLED(CONFIG_SECURITY_TOMOYO)
+> > +#define TOMOYO_ENABLED 1,
+> > +#else
+> > +#define TOMOYO_ENABLED
+> > +#endif
+> > +
+> > +#if IS_ENABLED(CONFIG_SECURITY_YAMA)
+> > +#define YAMA_ENABLED 1,
+> > +#else
+> > +#define YAMA_ENABLED
+> > +#endif
+> > +
+> > +#if IS_ENABLED(CONFIG_SECURITY_LOADPIN)
+> > +#define LOADPIN_ENABLED 1,
+> > +#else
+> > +#define LOADPIN_ENABLED
+> > +#endif
+> > +
+> > +#if IS_ENABLED(CONFIG_SECURITY_LOCKDOWN_LSM)
+> > +#define LOCKDOWN_ENABLED 1,
+> > +#else
+> > +#define LOCKDOWN_ENABLED
+> > +#endif
+> > +
+> > +#if IS_ENABLED(CONFIG_BPF_LSM)
+> > +#define BPF_LSM_ENABLED 1,
+> > +#else
+> > +#define BPF_LSM_ENABLED
+> > +#endif
+> > +
+> > +#if IS_ENABLED(CONFIG_BPF_LSM)
+> > +#define BPF_LSM_ENABLED 1,
+> > +#else
+> > +#define BPF_LSM_ENABLED
+> > +#endif
 
-kernel test robot noticed the following build errors:
+duplicate that redefined BPF_LSM_ENABLED unnecessarily
 
-[auto build test ERROR on next-20230615]
-[also build test ERROR on v6.4-rc6]
-[cannot apply to bpf-next/master bpf/master pcmoore-selinux/next linus/master v6.4-rc6 v6.4-rc5 v6.4-rc4]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > +
+> > +#if IS_ENABLED(CONFIG_SECURITY_LANDLOCK)
+> > +#define LANDLOCK_ENABLED 1,
+> > +#else
+> > +#define LANDLOCK_ENABLED
+> > +#endif
+> > +
+> > +#define MAX_LSM_COUNT                        \
+> > +     __LSM_COUNT_EXPAND(             \
+> > +             CAPABILITIES_ENABLED    \
+> > +             SELINUX_ENABLED         \
+> > +             SMACK_ENABLED           \
+> > +             APPARMOR_ENABLED        \
+> > +             TOMOYO_ENABLED          \
+> > +             YAMA_ENABLED            \
+> > +             LOADPIN_ENABLED         \
+> > +             LOCKDOWN_ENABLED        \
+> > +             BPF_LSM_ENABLED         \
+> > +             LANDLOCK_ENABLED)
+> > +
+>
+> Wouldn't the following be simpler? It's from my LSM syscall patchset.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/KP-Singh/kernel-Add-helper-macros-for-loop-unrolling/20230616-080708
-base:   next-20230615
-patch link:    https://lore.kernel.org/r/20230616000441.3677441-4-kpsingh%40kernel.org
-patch subject: [PATCH v2 3/5] security: Replace indirect LSM hook calls with static calls
-config: s390-defconfig (https://download.01.org/0day-ci/archive/20230617/202306170414.br6e1YPW-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230617/202306170414.br6e1YPW-lkp@intel.com/reproduce)
+Of course it would be, but unfortunately it doesn't work with the
+UNROLL() macro. This MAX_LSM_COUNT has to evaluate a compile-time
+integer *literal* (not any sort of expression), so that UNROLL(N,...)
+can do its magic.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306170414.br6e1YPW-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+KP, this __LSM_COUNT_EXPAND() is actually doing exactly what already
+existing COUNT_ARGS() macro from linux/kernel.h does, which is
+implemented way more succinctly:
 
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x28): undefined reference to `__SCT__lsm_static_call_binder_set_context_mgr_0'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x48): undefined reference to `__SCT__lsm_static_call_binder_set_context_mgr_1'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x68): undefined reference to `__SCT__lsm_static_call_binder_set_context_mgr_2'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x88): undefined reference to `__SCT__lsm_static_call_binder_set_context_mgr_3'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0xa8): undefined reference to `__SCT__lsm_static_call_binder_set_context_mgr_4'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0xc8): undefined reference to `__SCT__lsm_static_call_binder_transaction_0'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0xe8): undefined reference to `__SCT__lsm_static_call_binder_transaction_1'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x108): undefined reference to `__SCT__lsm_static_call_binder_transaction_2'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x128): undefined reference to `__SCT__lsm_static_call_binder_transaction_3'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x148): undefined reference to `__SCT__lsm_static_call_binder_transaction_4'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x168): undefined reference to `__SCT__lsm_static_call_binder_transfer_binder_0'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x188): undefined reference to `__SCT__lsm_static_call_binder_transfer_binder_1'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x1a8): undefined reference to `__SCT__lsm_static_call_binder_transfer_binder_2'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x1c8): undefined reference to `__SCT__lsm_static_call_binder_transfer_binder_3'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x1e8): undefined reference to `__SCT__lsm_static_call_binder_transfer_binder_4'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x208): undefined reference to `__SCT__lsm_static_call_binder_transfer_file_0'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x228): undefined reference to `__SCT__lsm_static_call_binder_transfer_file_1'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x248): undefined reference to `__SCT__lsm_static_call_binder_transfer_file_2'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x268): undefined reference to `__SCT__lsm_static_call_binder_transfer_file_3'
->> s390-linux-ld: security/security.o:(.data..ro_after_init+0x288): undefined reference to `__SCT__lsm_static_call_binder_transfer_file_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x2a8): undefined reference to `__SCT__lsm_static_call_ptrace_access_check_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x2c8): undefined reference to `__SCT__lsm_static_call_ptrace_access_check_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x2e8): undefined reference to `__SCT__lsm_static_call_ptrace_access_check_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x308): undefined reference to `__SCT__lsm_static_call_ptrace_access_check_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x328): undefined reference to `__SCT__lsm_static_call_ptrace_access_check_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x348): undefined reference to `__SCT__lsm_static_call_ptrace_traceme_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x368): undefined reference to `__SCT__lsm_static_call_ptrace_traceme_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x388): undefined reference to `__SCT__lsm_static_call_ptrace_traceme_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x3a8): undefined reference to `__SCT__lsm_static_call_ptrace_traceme_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x3c8): undefined reference to `__SCT__lsm_static_call_ptrace_traceme_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x3e8): undefined reference to `__SCT__lsm_static_call_capget_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x408): undefined reference to `__SCT__lsm_static_call_capget_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x428): undefined reference to `__SCT__lsm_static_call_capget_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x448): undefined reference to `__SCT__lsm_static_call_capget_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x468): undefined reference to `__SCT__lsm_static_call_capget_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x488): undefined reference to `__SCT__lsm_static_call_capset_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x4a8): undefined reference to `__SCT__lsm_static_call_capset_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x4c8): undefined reference to `__SCT__lsm_static_call_capset_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x4e8): undefined reference to `__SCT__lsm_static_call_capset_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x508): undefined reference to `__SCT__lsm_static_call_capset_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x528): undefined reference to `__SCT__lsm_static_call_capable_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x548): undefined reference to `__SCT__lsm_static_call_capable_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x568): undefined reference to `__SCT__lsm_static_call_capable_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x588): undefined reference to `__SCT__lsm_static_call_capable_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x5a8): undefined reference to `__SCT__lsm_static_call_capable_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x5c8): undefined reference to `__SCT__lsm_static_call_quotactl_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x5e8): undefined reference to `__SCT__lsm_static_call_quotactl_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x608): undefined reference to `__SCT__lsm_static_call_quotactl_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x628): undefined reference to `__SCT__lsm_static_call_quotactl_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x648): undefined reference to `__SCT__lsm_static_call_quotactl_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x668): undefined reference to `__SCT__lsm_static_call_quota_on_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x688): undefined reference to `__SCT__lsm_static_call_quota_on_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x6a8): undefined reference to `__SCT__lsm_static_call_quota_on_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x6c8): undefined reference to `__SCT__lsm_static_call_quota_on_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x6e8): undefined reference to `__SCT__lsm_static_call_quota_on_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x708): undefined reference to `__SCT__lsm_static_call_syslog_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x728): undefined reference to `__SCT__lsm_static_call_syslog_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x748): undefined reference to `__SCT__lsm_static_call_syslog_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x768): undefined reference to `__SCT__lsm_static_call_syslog_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x788): undefined reference to `__SCT__lsm_static_call_syslog_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x7a8): undefined reference to `__SCT__lsm_static_call_settime_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x7c8): undefined reference to `__SCT__lsm_static_call_settime_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x7e8): undefined reference to `__SCT__lsm_static_call_settime_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x808): undefined reference to `__SCT__lsm_static_call_settime_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x828): undefined reference to `__SCT__lsm_static_call_settime_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x848): undefined reference to `__SCT__lsm_static_call_vm_enough_memory_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x868): undefined reference to `__SCT__lsm_static_call_vm_enough_memory_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x888): undefined reference to `__SCT__lsm_static_call_vm_enough_memory_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x8a8): undefined reference to `__SCT__lsm_static_call_vm_enough_memory_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x8c8): undefined reference to `__SCT__lsm_static_call_vm_enough_memory_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x8e8): undefined reference to `__SCT__lsm_static_call_bprm_creds_for_exec_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x908): undefined reference to `__SCT__lsm_static_call_bprm_creds_for_exec_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x928): undefined reference to `__SCT__lsm_static_call_bprm_creds_for_exec_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x948): undefined reference to `__SCT__lsm_static_call_bprm_creds_for_exec_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x968): undefined reference to `__SCT__lsm_static_call_bprm_creds_for_exec_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x988): undefined reference to `__SCT__lsm_static_call_bprm_creds_from_file_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x9a8): undefined reference to `__SCT__lsm_static_call_bprm_creds_from_file_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x9c8): undefined reference to `__SCT__lsm_static_call_bprm_creds_from_file_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0x9e8): undefined reference to `__SCT__lsm_static_call_bprm_creds_from_file_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xa08): undefined reference to `__SCT__lsm_static_call_bprm_creds_from_file_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xa28): undefined reference to `__SCT__lsm_static_call_bprm_check_security_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xa48): undefined reference to `__SCT__lsm_static_call_bprm_check_security_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xa68): undefined reference to `__SCT__lsm_static_call_bprm_check_security_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xa88): undefined reference to `__SCT__lsm_static_call_bprm_check_security_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xaa8): undefined reference to `__SCT__lsm_static_call_bprm_check_security_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xac8): undefined reference to `__SCT__lsm_static_call_bprm_committing_creds_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xae8): undefined reference to `__SCT__lsm_static_call_bprm_committing_creds_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xb08): undefined reference to `__SCT__lsm_static_call_bprm_committing_creds_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xb28): undefined reference to `__SCT__lsm_static_call_bprm_committing_creds_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xb48): undefined reference to `__SCT__lsm_static_call_bprm_committing_creds_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xb68): undefined reference to `__SCT__lsm_static_call_bprm_committed_creds_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xb88): undefined reference to `__SCT__lsm_static_call_bprm_committed_creds_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xba8): undefined reference to `__SCT__lsm_static_call_bprm_committed_creds_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xbc8): undefined reference to `__SCT__lsm_static_call_bprm_committed_creds_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xbe8): undefined reference to `__SCT__lsm_static_call_bprm_committed_creds_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xc08): undefined reference to `__SCT__lsm_static_call_fs_context_dup_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xc28): undefined reference to `__SCT__lsm_static_call_fs_context_dup_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xc48): undefined reference to `__SCT__lsm_static_call_fs_context_dup_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xc68): undefined reference to `__SCT__lsm_static_call_fs_context_dup_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xc88): undefined reference to `__SCT__lsm_static_call_fs_context_dup_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xca8): undefined reference to `__SCT__lsm_static_call_fs_context_parse_param_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xcc8): undefined reference to `__SCT__lsm_static_call_fs_context_parse_param_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xce8): undefined reference to `__SCT__lsm_static_call_fs_context_parse_param_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xd08): undefined reference to `__SCT__lsm_static_call_fs_context_parse_param_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xd28): undefined reference to `__SCT__lsm_static_call_fs_context_parse_param_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xd48): undefined reference to `__SCT__lsm_static_call_sb_alloc_security_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xd68): undefined reference to `__SCT__lsm_static_call_sb_alloc_security_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xd88): undefined reference to `__SCT__lsm_static_call_sb_alloc_security_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xda8): undefined reference to `__SCT__lsm_static_call_sb_alloc_security_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xdc8): undefined reference to `__SCT__lsm_static_call_sb_alloc_security_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xde8): undefined reference to `__SCT__lsm_static_call_sb_delete_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xe08): undefined reference to `__SCT__lsm_static_call_sb_delete_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xe28): undefined reference to `__SCT__lsm_static_call_sb_delete_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xe48): undefined reference to `__SCT__lsm_static_call_sb_delete_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xe68): undefined reference to `__SCT__lsm_static_call_sb_delete_4'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xe88): undefined reference to `__SCT__lsm_static_call_sb_free_security_0'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xea8): undefined reference to `__SCT__lsm_static_call_sb_free_security_1'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xec8): undefined reference to `__SCT__lsm_static_call_sb_free_security_2'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xee8): undefined reference to `__SCT__lsm_static_call_sb_free_security_3'
-   s390-linux-ld: security/security.o:(.data..ro_after_init+0xf08): undefined reference to `__SCT__lsm_static_call_sb_free_security_4'
+#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11,
+_12, _n, X...) _n
+#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6,
+5, 4, 3, 2, 1, 0)
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+The only problem is that:
+
+#define ___COUNT_ARGS(args...) COUNT_ARGS(args)
+#define MAX_LSM_COUNT                   \
+        ___COUNT_ARGS(                  \
+                CAPABILITIES_ENABLED    \
+                SELINUX_ENABLED         \
+                SMACK_ENABLED           \
+                APPARMOR_ENABLED        \
+                TOMOYO_ENABLED          \
+                YAMA_ENABLED            \
+                LOADPIN_ENABLED         \
+                LOCKDOWN_ENABLED        \
+                BPF_LSM_ENABLED         \
+                LANDLOCK_ENABLED)
+
+overcounts by one, because of that trailing command within each
+XXX_ENABLED definition.
+
+
+But still, instead of a multi-line __LSM_COUNT{,1}_N set of macros, it
+might be better to use the COUNT_ARGS trick, but just account for
+those trailing commas? E.g., maybe just do a COUNT_COMMAS() macro
+which will adjust all the return values by 1 down, except when there
+is no comma (still 0).
+
+It's pretty minor in the grand scheme of things, but just something
+for you to be aware of.
+
+
+> It certainly takes up fewer lines and would be easier to maintain
+> than the set of macros you've proposed.
+>
+> +#define LSM_COUNT ( \
+> +       (IS_ENABLED(CONFIG_SECURITY) ? 1 : 0) + \
+> +       (IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
+> +       (IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) + \
+> +       (IS_ENABLED(CONFIG_SECURITY_TOMOYO) ? 1 : 0) + \
+> +       (IS_ENABLED(CONFIG_IMA) ? 1 : 0) + \
+> +       (IS_ENABLED(CONFIG_SECURITY_APPARMOR) ? 1 : 0) + \
+> +       (IS_ENABLED(CONFIG_SECURITY_YAMA) ? 1 : 0) + \
+> +       (IS_ENABLED(CONFIG_SECURITY_LOADPIN) ? 1 : 0) + \
+> +       (IS_ENABLED(CONFIG_SECURITY_SAFESETID) ? 1 : 0) + \
+> +       (IS_ENABLED(CONFIG_SECURITY_LOCKDOWN_LSM) ? 1 : 0) + \
+> +       (IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0) + \
+> +       (IS_ENABLED(CONFIG_SECURITY_LANDLOCK) ? 1 : 0))
+>
+>
+> > +#endif  /* __LINUX_LSM_COUNT_H */
+>
 
