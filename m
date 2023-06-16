@@ -1,267 +1,99 @@
-Return-Path: <bpf+bounces-2712-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2713-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64EC1732AAE
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 10:57:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74E5A732F5D
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 13:03:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01DF3280D46
-	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 08:57:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C0BD1C2037E
+	for <lists+bpf@lfdr.de>; Fri, 16 Jun 2023 11:03:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE6518C1C;
-	Fri, 16 Jun 2023 08:52:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2362107A1;
+	Fri, 16 Jun 2023 11:03:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DFDDD519;
-	Fri, 16 Jun 2023 08:52:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56BDBC433B7;
-	Fri, 16 Jun 2023 08:52:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B4322E0F6
+	for <bpf@vger.kernel.org>; Fri, 16 Jun 2023 11:03:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B03CC433C8;
+	Fri, 16 Jun 2023 11:03:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686905576;
-	bh=SlBOw3U7lsp9qLHlWO7lhIx8iQG/0zpTGMZK7G5/it8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hYgQUzoC3B593p/Dgn3+TPdeozzDLlm25AwOJLKar+VYJDrbbr1SdOshPlvaqnZ8s
-	 oK4MqcxpbnUG6MN7D2/qW05fsNi7mGmQ8dkORzT35xnDbj/W36F4FOLgzNY6M4PcNO
-	 R3dJCpZ2E2H3cOtS1aHqXGRpmTKYKqXX++q6sKyIgoNy1Dep39n7ShkhJ3lsnlw8th
-	 aR1/N9N5ytcJ2bDrtfUkFPDUA8Szf79x0wrzFCuYoJoIX5C0i1dhO9TiZnBW1OemBT
-	 RXhSF4tkazIA43z1geCwwCrTDTs/h4A7kL6naX8kmJ5EqzOEA8QYfISw3S41ve05F0
-	 LFf/ib3wO4hbg==
-From: Mike Rapoport <rppt@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Mike Rapoport <rppt@kernel.org>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev,
-	netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	x86@kernel.org
-Subject: [PATCH v2 12/12] kprobes: remove dependcy on CONFIG_MODULES
-Date: Fri, 16 Jun 2023 11:50:38 +0300
-Message-Id: <20230616085038.4121892-13-rppt@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230616085038.4121892-1-rppt@kernel.org>
-References: <20230616085038.4121892-1-rppt@kernel.org>
+	s=k20201202; t=1686913404;
+	bh=K3lFwyOnVKe+TMdTvX27i4bzBi+CYkU0SDSmg004bso=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+	b=dQayLtCOyPqzP2H1hF4KitPWW/+uNGDZJ1aD7SYu4gFeE3ZHAtwwiBdB/B87hZrKG
+	 YDZ5KkNAP8/lXLyFDd5YkbSyhVqw+JqmEPc+7ZvoKlpZLca9X+eYIkbIFLirZqvAnt
+	 KIa/Mu/ZJh+wh34K+cvjlQ0CvGvGSF+R5MApYS8ZcnTmFLc7vRwEwRxNB+1BXmv3xN
+	 YjxGPq/P8G+rnYxYNiZaE1bcyh+8nrsPxLXcRZXufcNwF5SxX3AiQ+RwOetQvww38G
+	 K+AOoh0b115OU+XpyuX6Ozj2Z3fMb1zxTOUq9nQWKcGvA3jxKD89QNj7f+eh8Uj+jE
+	 yMEYM5KMxRqUw==
+Date: Fri, 16 Jun 2023 16:28:53 +0530
+From: Naveen N Rao <naveen@kernel.org>
+Subject: Re: ppc64le vmlinuz is huge when building with BTF
+To: Alan Maguire <alan.maguire@oracle.com>, Dominique Martinet
+	<asmadeus@codewreck.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, bpf@vger.kernel.org,
+	dwarves@vger.kernel.org, Jiri Olsa <olsajiri@gmail.com>,
+	linuxppc-dev@lists.ozlabs.org
+References: <ZIqGSJDaZObKjLnN@codewreck.org> <ZIrONqGJeATpbg3Y@krava>
+	<ZIr7aaVpOaP8HjbZ@codewreck.org>
+	<6b26dfef-016c-43df-07f5-c2f88157d1dc@oracle.com>
+	<ZIt11crcIjfyeygA@codewreck.org>
+In-Reply-To: <ZIt11crcIjfyeygA@codewreck.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: astroid/0.16.0 (https://github.com/astroidmail/astroid)
+Message-Id: <1686912543.c6zqyw5s4x.naveen@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+[Cc linuxppc-dev]
 
-kprobes depended on CONFIG_MODULES because it has to allocate memory for
-code.
+Dominique Martinet wrote:
+>=20
+> Alan Maguire wrote on Thu, Jun 15, 2023 at 03:31:49PM +0100:
+>> However the problem I suspect is this:
+>>=20
+>>  51 .debug_info   0a488b55  0000000000000000  0000000000000000  026f8d20
+>>  2**0
+>>                   CONTENTS, READONLY, DEBUGGING
+>> [...]
+>>=20
+>> The debug info hasn't been stripped, so I suspect the packaging spec
+>> file or equivalent - in perhaps trying to preserve the .BTF section -
+>> is preserving debug info too. DWARF needs to be there at BTF
+>> generation time in vmlinux but is usually stripped for non-debug
+>> packages.
+>=20
+> Thanks Alan and Eduard!
+> I guess I should have checked that first, it helps.
+>=20
+> We're not stripping anything in vmlinuz for other archs -- the linker
+> script already should be including only the bare minimum to decompress
+> itself (+compressed useful bits), so I guess it's a Kbuild issue for the
+> arch.
 
-Since code allocations are now implemented with execmem, kprobes can be
-enabled in non-modular kernels.
+For a related discussion, see:
+http://lore.kernel.org/CAK18DXZKs2PNmLndeGYqkPxmrrBR=3D6ca3bhyYCj=3DGhyA7dH=
+fAQ@mail.gmail.com
 
-Add #ifdef CONFIG_MODULE guards for the code dealing with kprobes inside
-modules, make CONFIG_KPROBES select CONFIG_EXECMEM and drop the
-dependency of CONFIG_KPROBES on CONFIG_MODULES.
+> We can add a strip but I unfortunately have no way of testing ppc build,
+> I'll ask around the build linux-kbuild and linuxppc-dev lists if that's
+> expected; it shouldn't be that bad now that's figured out.
 
-Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
----
- arch/Kconfig                |  2 +-
- kernel/kprobes.c            | 43 +++++++++++++++++++++----------------
- kernel/trace/trace_kprobe.c | 11 ++++++++++
- 3 files changed, 37 insertions(+), 19 deletions(-)
+Stripping vmlinux would indeed be the way to go. As mentioned in the=20
+above link, fedora also packages a strip'ed vmlinux for ppc64le:
+https://src.fedoraproject.org/rpms/kernel/blob/4af17bffde7a1eca9ab164e5de0e=
+391c277998a4/f/kernel.spec#_1797
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 205fd23e0cad..f2e9f82c7d0d 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -39,9 +39,9 @@ config GENERIC_ENTRY
- 
- config KPROBES
- 	bool "Kprobes"
--	depends on MODULES
- 	depends on HAVE_KPROBES
- 	select KALLSYMS
-+	select EXECMEM
- 	select TASKS_RCU if PREEMPTION
- 	help
- 	  Kprobes allows you to trap at almost any kernel address and
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 37c928d5deaf..2c2ba29d3f9a 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1568,6 +1568,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
- 		goto out;
- 	}
- 
-+#ifdef CONFIG_MODULES
- 	/* Check if 'p' is probing a module. */
- 	*probed_mod = __module_text_address((unsigned long) p->addr);
- 	if (*probed_mod) {
-@@ -1591,6 +1592,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
- 			ret = -ENOENT;
- 		}
- 	}
-+#endif
-+
- out:
- 	preempt_enable();
- 	jump_label_unlock();
-@@ -2484,24 +2487,6 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
- 	return 0;
- }
- 
--/* Remove all symbols in given area from kprobe blacklist */
--static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
--{
--	struct kprobe_blacklist_entry *ent, *n;
--
--	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
--		if (ent->start_addr < start || ent->start_addr >= end)
--			continue;
--		list_del(&ent->list);
--		kfree(ent);
--	}
--}
--
--static void kprobe_remove_ksym_blacklist(unsigned long entry)
--{
--	kprobe_remove_area_blacklist(entry, entry + 1);
--}
--
- int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
- 				   char *type, char *sym)
- {
-@@ -2566,6 +2551,25 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
- 	return ret ? : arch_populate_kprobe_blacklist();
- }
- 
-+#ifdef CONFIG_MODULES
-+/* Remove all symbols in given area from kprobe blacklist */
-+static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
-+{
-+	struct kprobe_blacklist_entry *ent, *n;
-+
-+	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
-+		if (ent->start_addr < start || ent->start_addr >= end)
-+			continue;
-+		list_del(&ent->list);
-+		kfree(ent);
-+	}
-+}
-+
-+static void kprobe_remove_ksym_blacklist(unsigned long entry)
-+{
-+	kprobe_remove_area_blacklist(entry, entry + 1);
-+}
-+
- static void add_module_kprobe_blacklist(struct module *mod)
- {
- 	unsigned long start, end;
-@@ -2667,6 +2671,7 @@ static struct notifier_block kprobe_module_nb = {
- 	.notifier_call = kprobes_module_callback,
- 	.priority = 0
- };
-+#endif
- 
- void kprobe_free_init_mem(void)
- {
-@@ -2726,8 +2731,10 @@ static int __init init_kprobes(void)
- 	err = arch_init_kprobes();
- 	if (!err)
- 		err = register_die_notifier(&kprobe_exceptions_nb);
-+#ifdef CONFIG_MODULES
- 	if (!err)
- 		err = register_module_notifier(&kprobe_module_nb);
-+#endif
- 
- 	kprobes_initialized = (err == 0);
- 	kprobe_sysctls_init();
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 59cda19a9033..cf804e372554 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
- 	return strncmp(module_name(mod), name, len) == 0 && name[len] == ':';
- }
- 
-+#ifdef CONFIG_MODULES
- static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
- {
- 	char *p;
-@@ -129,6 +130,12 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
- 
- 	return ret;
- }
-+#else
-+static inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
-+{
-+	return false;
-+}
-+#endif
- 
- static bool trace_kprobe_is_busy(struct dyn_event *ev)
- {
-@@ -670,6 +677,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
- 	return ret;
- }
- 
-+#ifdef CONFIG_MODULES
- /* Module notifier call back, checking event on the module */
- static int trace_kprobe_module_callback(struct notifier_block *nb,
- 				       unsigned long val, void *data)
-@@ -704,6 +712,7 @@ static struct notifier_block trace_kprobe_module_nb = {
- 	.notifier_call = trace_kprobe_module_callback,
- 	.priority = 1	/* Invoked after kprobe module callback */
- };
-+#endif
- 
- static int __trace_kprobe_create(int argc, const char *argv[])
- {
-@@ -1797,8 +1806,10 @@ static __init int init_kprobe_trace_early(void)
- 	if (ret)
- 		return ret;
- 
-+#ifdef CONFIG_MODULES
- 	if (register_module_notifier(&trace_kprobe_module_nb))
- 		return -EINVAL;
-+#endif
- 
- 	return 0;
- }
--- 
-2.35.1
+
+- Naveen
 
 
