@@ -1,38 +1,38 @@
-Return-Path: <bpf+bounces-2791-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2792-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58A46733EE4
-	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 08:53:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E57A5733EF4
+	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 08:59:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14E2D281572
-	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 06:53:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 231471C20B74
+	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 06:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A4D63AA;
-	Sat, 17 Jun 2023 06:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE0C63B3;
+	Sat, 17 Jun 2023 06:58:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE86833FD;
-	Sat, 17 Jun 2023 06:53:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22C22C433C0;
-	Sat, 17 Jun 2023 06:52:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16A002E0EA;
+	Sat, 17 Jun 2023 06:58:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9588BC433C0;
+	Sat, 17 Jun 2023 06:58:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686984783;
-	bh=s5IbUS/R9FUeza7Uno3Hll+WeqZYFms0rCFRllsd4i8=;
+	s=k20201202; t=1686985126;
+	bh=9S4P8JW7Aw6+2ZoVDniU5EdIBLc9OdiTvqw3YA9ECf4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O0jdChYvxLTPBx1BOB1xElON4yTO54jJpqqtDjBH7kzjTk7h8ut1Zvwg88nJSwHD5
-	 dR46BC1yX4kfsB9fmhzM3g5FAiBBJ7EopEe68OhToY9ZvFD0H28XYCChSftyR0QUBZ
-	 RDI9hk6abzU7ADT2Mp8RObMy225YcvgqAzj8bWooQ/IUkq2S0z3QH97xrM4q9eh/eL
-	 W9Ix4DLih/xlZ3Zq9c6AydZXL5tY2UznK8+LjAqeaAIVsE4aQyWtPv0n7kE5DQG+KX
-	 YYFIH+XCs7DhkCWkawXBSwV8RH6HWXBuasnHhsf1ZYp1zsYvUdnbybweDJ02yKksNs
-	 +4CfHcBEs1MPg==
-Date: Sat, 17 Jun 2023 09:52:16 +0300
+	b=nHkTyW+hctadrgmIg2I6LaptKR6YKkmtmdcOS/HSni9feQ5p1DZtCSX6Dnam1slU3
+	 FLDQnf/OEx1d4jSPxMmAwLEhSg3dDkigyXgxGzkX1VJc1UJnkk6n01fCEZ0qwx4ELP
+	 r6wbjQNoXnPg5HveUgv1zS7owOZuF5kej34YgRIGZdC2tH3sGX0H+MpQa784HSW6mk
+	 qjN9Au7ZhvMEPLupJ+gAv5/GudEwZVVlLyNGJFO9CDGv8qdQ0I+Zmw8CDlXcjxb8w/
+	 RZuOMQ5h8Q4Z/8VeTux+zm8PEK9dnLGg98fBUnC+4CbpTq0gKeC8d5BMUXJufl+4IU
+	 tPAEuFrGSOYnA==
+Date: Sat, 17 Jun 2023 09:57:59 +0300
 From: Mike Rapoport <rppt@kernel.org>
-To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+To: Song Liu <song@kernel.org>
 Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
 	Catalin Marinas <catalin.marinas@arm.com>,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
@@ -49,7 +49,7 @@ Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Puranjay Mohan <puranjay12@gmail.com>,
 	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
@@ -60,51 +60,77 @@ Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
 	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev, netdev@vger.kernel.org,
 	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v2 12/12] kprobes: remove dependcy on CONFIG_MODULES
-Message-ID: <20230617065216.GS52412@kernel.org>
+Subject: Re: [PATCH v2 07/12] arm64, execmem: extend execmem_params for
+ generated code definitions
+Message-ID: <20230617065759.GT52412@kernel.org>
 References: <20230616085038.4121892-1-rppt@kernel.org>
- <20230616085038.4121892-13-rppt@kernel.org>
- <87r0qbmy14.fsf@all.your.base.are.belong.to.us>
+ <20230616085038.4121892-8-rppt@kernel.org>
+ <CAPhsuW6BG2oVrGDOpCKyOEvU9fBOboYYhducv96KUBe276Mvng@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87r0qbmy14.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <CAPhsuW6BG2oVrGDOpCKyOEvU9fBOboYYhducv96KUBe276Mvng@mail.gmail.com>
 
-On Fri, Jun 16, 2023 at 01:44:55PM +0200, Björn Töpel wrote:
-> Mike Rapoport <rppt@kernel.org> writes:
-> 
+On Fri, Jun 16, 2023 at 01:05:29PM -0700, Song Liu wrote:
+> On Fri, Jun 16, 2023 at 1:52â€¯AM Mike Rapoport <rppt@kernel.org> wrote:
+> >
 > > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 > >
-> > kprobes depended on CONFIG_MODULES because it has to allocate memory for
-> > code.
+> > The memory allocations for kprobes on arm64 can be placed anywhere in
+> > vmalloc address space and currently this is implemented with an override
+> > of alloc_insn_page() in arm64.
+> >
+> > Extend execmem_params with a range for generated code allocations and
+> > make kprobes on arm64 use this extension rather than override
+> > alloc_insn_page().
+> >
+> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> > ---
+> >  arch/arm64/kernel/module.c         |  9 +++++++++
+> >  arch/arm64/kernel/probes/kprobes.c |  7 -------
+> >  include/linux/execmem.h            | 11 +++++++++++
+> >  mm/execmem.c                       | 14 +++++++++++++-
+> >  4 files changed, 33 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+> > index c3d999f3a3dd..52b09626bc0f 100644
+> > --- a/arch/arm64/kernel/module.c
+> > +++ b/arch/arm64/kernel/module.c
+> > @@ -30,6 +30,13 @@ static struct execmem_params execmem_params = {
+> >                         .alignment = MODULE_ALIGN,
+> >                 },
+> >         },
+> > +       .jit = {
+> > +               .text = {
+> > +                       .start = VMALLOC_START,
+> > +                       .end = VMALLOC_END,
+> > +                       .alignment = 1,
+> > +               },
+> > +       },
+> >  };
 > 
-> I think you can remove the MODULES dependency from BPF_JIT as well:
+> This is growing fast. :) We have 3 now: text, data, jit. And it will be
+> 5 when we split data into rw data, ro data, ro after init data. I wonder
+> whether we should still do some type enum here. But we can revisit
+> this topic later.
 
-Yeah, I think so. Thanks!
+I don't think we'd need 5. Four at most :)
+
+I don't know yet what would be the best way to differentiate RW and RO
+data, but ro_after_init surely won't need a new type. It either will be
+allocated as RW and then the caller will have to set it RO after
+initialization is done, or it will be allocated as RO and the caller will
+have to do something like text_poke to update it.
  
-> --8<--
-> diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-> index 2dfe1079f772..fa4587027f8b 100644
-> --- a/kernel/bpf/Kconfig
-> +++ b/kernel/bpf/Kconfig
-> @@ -41,7 +41,6 @@ config BPF_JIT
->         bool "Enable BPF Just In Time compiler"
->         depends on BPF
->         depends on HAVE_CBPF_JIT || HAVE_EBPF_JIT
-> -       depends on MODULES
->         help
->           BPF programs are normally handled by a BPF interpreter. This option
->           allows the kernel to generate native code when a program is loaded
-> --8<--
+> Other than that
 > 
-> 
-> Björn
+> Acked-by: Song Liu <song@kernel.org>
 
 -- 
 Sincerely yours,
