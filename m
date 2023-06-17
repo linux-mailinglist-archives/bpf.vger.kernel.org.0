@@ -1,133 +1,165 @@
-Return-Path: <bpf+bounces-2789-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2790-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4BC6733ECD
-	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 08:45:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 394AC733EDB
+	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 08:52:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF6391C20F98
-	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 06:45:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92EEC281959
+	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 06:52:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A2F5231;
-	Sat, 17 Jun 2023 06:45:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0FEA6122;
+	Sat, 17 Jun 2023 06:51:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2912633FD;
-	Sat, 17 Jun 2023 06:45:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC914C433C8;
-	Sat, 17 Jun 2023 06:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A002E0EA;
+	Sat, 17 Jun 2023 06:51:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F5A2C433C0;
+	Sat, 17 Jun 2023 06:51:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686984307;
-	bh=Uw5cw1TPn0rntsQJRbeXZU+V2i3I8bpFiME/qcflP08=;
+	s=k20201202; t=1686984717;
+	bh=/qKKDaoSMPytALuHQ04GytBWLf/bqmvRcK74ppFE2a8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A0C/04zwp8Svpx/hprFTuDwIwHJCnHpNRmn2tDdvfcmYt4wp3n7OAxHp5Py33C+kd
-	 4kMHu8FACuUr1jN3jGFObWQ4Pw9NFQKQAIyO/G6pFYoVPUe76lGyVXZO3TQemSokHm
-	 VXxdoS02gSAauNcMun3iVu1Zubv2t9PebDcIDYD6cqQx8/HkOPh4X4/5bVg3dgu6dB
-	 sBHr55LVzNEboL0DRdq7gLRwtJOv/T3RNn91O3Tsgsn70wRNMkVoUNRgpMFOdo78UU
-	 n4UYOHCQfFtBs9Glr8+Avi1tBIrn2kszVYZ167A35xKrcwfLNkZs7DpMC2d48GQpfN
-	 ByDutHlpcGnYg==
-Date: Sat, 17 Jun 2023 09:44:21 +0300
+	b=P0RFez1EfGYRPTyev/ddBuUzPfaI7NYAV3qwPAYDnlRPd3VlORPb9LLwAJNsB7HOD
+	 XaTNoL/vc3WgcVwGzmW11kDKJAUwiH+6/aq1FZDc7+GKKGRDNnH6fEazV3xviU4Xdu
+	 C+/q5uFaTCGSUOqz7wG3tCyqcwsxuFowQGM9EqAXvug3eByaI82gwGU/LAA7W+0x7N
+	 lIyzQgQ47UaYju+tMMa6eYibyB5m2xJlH6icNOvjTXhyI/Ih1KbRLoHwZvr/gyzXyu
+	 vOgqeIZZrqb6yw/imXyF8xZATseZuyfjlfKJVafWUrfVejHNNcMI379QODomewks5q
+	 shTjXZO35vEXQ==
+Date: Sat, 17 Jun 2023 09:51:11 +0300
 From: Mike Rapoport <rppt@kernel.org>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"mcgrof@kernel.org" <mcgrof@kernel.org>,
-	"deller@gmx.de" <deller@gmx.de>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"nadav.amit@gmail.com" <nadav.amit@gmail.com>,
-	"linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"hca@linux.ibm.com" <hca@linux.ibm.com>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
-	"puranjay12@gmail.com" <puranjay12@gmail.com>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-	"tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-	"mark.rutland@arm.com" <mark.rutland@arm.com>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"will@kernel.org" <will@kernel.org>,
-	"dinguyen@kernel.org" <dinguyen@kernel.org>,
-	"naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"song@kernel.org" <song@kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
+To: Song Liu <song@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev, netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org, x86@kernel.org
 Subject: Re: [PATCH v2 06/12] mm/execmem: introduce execmem_data_alloc()
-Message-ID: <20230617064421.GQ52412@kernel.org>
+Message-ID: <20230617065111.GR52412@kernel.org>
 References: <20230616085038.4121892-1-rppt@kernel.org>
  <20230616085038.4121892-7-rppt@kernel.org>
- <90a64b6f040491da16af0694172a6cbdaba33669.camel@intel.com>
+ <CAPhsuW4J+rFvh9WJVWLZxFHtcYxahYk=NoKYdU9FMibZU8986w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <90a64b6f040491da16af0694172a6cbdaba33669.camel@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW4J+rFvh9WJVWLZxFHtcYxahYk=NoKYdU9FMibZU8986w@mail.gmail.com>
 
-On Fri, Jun 16, 2023 at 04:55:53PM +0000, Edgecombe, Rick P wrote:
-> On Fri, 2023-06-16 at 11:50 +0300, Mike Rapoport wrote:
+On Fri, Jun 16, 2023 at 01:01:08PM -0700, Song Liu wrote:
+> On Fri, Jun 16, 2023 at 1:51 AM Mike Rapoport <rppt@kernel.org> wrote:
+> >
 > > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > 
-> > Data related to code allocations, such as module data section, need
-> > to
+> >
+> > Data related to code allocations, such as module data section, need to
 > > comply with architecture constraints for its placement and its
 > > allocation right now was done using execmem_text_alloc().
-> > 
-> > Create a dedicated API for allocating data related to code
-> > allocations
-> > and allow architectures to define address ranges for data
-> > allocations.
+> >
+> > Create a dedicated API for allocating data related to code allocations
+> > and allow architectures to define address ranges for data allocations.
+> >
+> > Since currently this is only relevant for powerpc variants that use the
+> > VMALLOC address space for module data allocations, automatically reuse
+> > address ranges defined for text unless address range for data is
+> > explicitly defined by an architecture.
+> >
+> > With separation of code and data allocations, data sections of the
+> > modules are now mapped as PAGE_KERNEL rather than PAGE_KERNEL_EXEC which
+> > was a default on many architectures.
+> >
+> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> [...]
+> >  static void free_mod_mem(struct module *mod)
+> > diff --git a/mm/execmem.c b/mm/execmem.c
+> > index a67acd75ffef..f7bf496ad4c3 100644
+> > --- a/mm/execmem.c
+> > +++ b/mm/execmem.c
+> > @@ -63,6 +63,20 @@ void *execmem_text_alloc(size_t size)
+> >                              fallback_start, fallback_end, kasan);
+> >  }
+> >
+> > +void *execmem_data_alloc(size_t size)
+> > +{
+> > +       unsigned long start = execmem_params.modules.data.start;
+> > +       unsigned long end = execmem_params.modules.data.end;
+> > +       pgprot_t pgprot = execmem_params.modules.data.pgprot;
+> > +       unsigned int align = execmem_params.modules.data.alignment;
+> > +       unsigned long fallback_start = execmem_params.modules.data.fallback_start;
+> > +       unsigned long fallback_end = execmem_params.modules.data.fallback_end;
+> > +       bool kasan = execmem_params.modules.flags & EXECMEM_KASAN_SHADOW;
+> > +
+> > +       return execmem_alloc(size, start, end, align, pgprot,
+> > +                            fallback_start, fallback_end, kasan);
+> > +}
+> > +
+> >  void execmem_free(void *ptr)
+> >  {
+> >         /*
+> > @@ -101,6 +115,28 @@ static bool execmem_validate_params(struct execmem_params *p)
+> >         return true;
+> >  }
+> >
+> > +static void execmem_init_missing(struct execmem_params *p)
 > 
-> Right now the cross-arch way to specify kernel memory permissions is
-> encoded in the function names of all the set_memory_foo()'s. You can't
-> just have unified prot names because some arch's have NX and some have
-> X bits, etc. CPA wouldn't know if it needs to set or unset a bit if you
-> pass in a PROT.
+> Shall we call this execmem_default_init_data?
 
-The idea is that allocator never uses CPA. It allocates with the
-permissions defined by architecture at the first place and then the callers
-might use CPA to change them. Ideally, that shouldn't be needed for
-anything but ro_after_init, but we are far from there.
-
-> But then you end up with a new function for *each* combination (i.e.
-> set_memory_rox()). I wish CPA has flags like mmap() does, and I wonder
-> if it makes sense here instead of execmem_data_alloc().
-
-I don't think execmem should handle all the combinations. The code is
-always allocated as ROX for architectures that support text poking and as
-RWX for those that don't.
-
-Maybe execmem_data_alloc() will need to able to handle RW and RO data
-differently at some point, but that's the only variant I can think of, but
-even then I don't expect CPA will be used by execmem. 
-
-We also might move resetting the permissions to default from vmalloc to
-execmem, but again, we are far from there.
+This also fills in jit.text (next patch), so _data doesn't work here :)
+And it's not really a default, the defaults are set explicitly for arches
+that don't have execmem_arch_params.
  
-> Maybe that is an overhaul for another day though...
+> > +{
+> > +       struct execmem_modules_range *m = &p->modules;
+> > +
+> > +       if (!pgprot_val(execmem_params.modules.data.pgprot))
+> > +               execmem_params.modules.data.pgprot = PAGE_KERNEL;
+> 
+> Do we really need to check each of these? IOW, can we do:
+> 
+> if (!pgprot_val(execmem_params.modules.data.pgprot)) {
+>        execmem_params.modules.data.pgprot = PAGE_KERNEL;
+>        execmem_params.modules.data.alignment = m->text.alignment;
+>        execmem_params.modules.data.start = m->text.start;
+>        execmem_params.modules.data.end = m->text.end;
+>        execmem_params.modules.data.fallback_start = m->text.fallback_start;
+>       execmem_params.modules.data.fallback_end = m->text.fallback_end;
+> }
 
-CPA surely needs some love :)
+Yes, we can have a single check here.
+ 
+> Thanks,
+> Song
+> 
+> [...]
 
 -- 
 Sincerely yours,
