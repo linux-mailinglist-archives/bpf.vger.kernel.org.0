@@ -1,138 +1,121 @@
-Return-Path: <bpf+bounces-2792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E57A5733EF4
-	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 08:59:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B728A733FED
+	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 11:47:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 231471C20B74
-	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 06:59:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 612892818E4
+	for <lists+bpf@lfdr.de>; Sat, 17 Jun 2023 09:47:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE0C63B3;
-	Sat, 17 Jun 2023 06:58:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064EC6FD9;
+	Sat, 17 Jun 2023 09:47:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16A002E0EA;
-	Sat, 17 Jun 2023 06:58:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9588BC433C0;
-	Sat, 17 Jun 2023 06:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C377FA
+	for <bpf@vger.kernel.org>; Sat, 17 Jun 2023 09:47:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E24C7C433C0;
+	Sat, 17 Jun 2023 09:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686985126;
-	bh=9S4P8JW7Aw6+2ZoVDniU5EdIBLc9OdiTvqw3YA9ECf4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nHkTyW+hctadrgmIg2I6LaptKR6YKkmtmdcOS/HSni9feQ5p1DZtCSX6Dnam1slU3
-	 FLDQnf/OEx1d4jSPxMmAwLEhSg3dDkigyXgxGzkX1VJc1UJnkk6n01fCEZ0qwx4ELP
-	 r6wbjQNoXnPg5HveUgv1zS7owOZuF5kej34YgRIGZdC2tH3sGX0H+MpQa784HSW6mk
-	 qjN9Au7ZhvMEPLupJ+gAv5/GudEwZVVlLyNGJFO9CDGv8qdQ0I+Zmw8CDlXcjxb8w/
-	 RZuOMQ5h8Q4Z/8VeTux+zm8PEK9dnLGg98fBUnC+4CbpTq0gKeC8d5BMUXJufl+4IU
-	 tPAEuFrGSOYnA==
-Date: Sat, 17 Jun 2023 09:57:59 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Song Liu <song@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>,
+	s=k20201202; t=1686995222;
+	bh=d9JppF1OB3clmSKXHuYWpmtIhrX7ndE0udMJPpQlMlk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=aeWrP8MlUoLe1DnJN6pO6cV0x6syd1Vrx+dpfkFANqLKPQESkm4+06wJ/FU9q2jeD
+	 y5AfAUpTLzeNVUYGzJdRdM0xZAnVR2F7fkHMfD0Fit2qQyPIiOsS1id/ylFOc9tjuX
+	 hMlt3Q0Os3bahFQ4KRnPqVWqbAM/bbfritHI6bHF5BOG9g5L1IYXx0FPL54DWZH8Mr
+	 niVfIwyzSz/UylzwuPFy0PLIwp0VbK8x7AkXCIrobwk9LvyhRC4KUTNjCkbAhoj58B
+	 MpKTnRtV958fyRVALytHECE0s+4nvGcJfCG+WUta9AnzjaunUZuuYOypxGyfTpZV5A
+	 dYq5ahJfXaSzw==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: linux-trace-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v2 07/12] arm64, execmem: extend execmem_params for
- generated code definitions
-Message-ID: <20230617065759.GT52412@kernel.org>
-References: <20230616085038.4121892-1-rppt@kernel.org>
- <20230616085038.4121892-8-rppt@kernel.org>
- <CAPhsuW6BG2oVrGDOpCKyOEvU9fBOboYYhducv96KUBe276Mvng@mail.gmail.com>
+	mhiramat@kernel.org,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf@vger.kernel.org
+Subject: [PATCH 0/5] tracing: Improbe BTF support on probe events
+Date: Sat, 17 Jun 2023 18:46:58 +0900
+Message-ID:  <168699521817.528797.13179901018528120324.stgit@mhiramat.roam.corp.google.com>
+X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW6BG2oVrGDOpCKyOEvU9fBOboYYhducv96KUBe276Mvng@mail.gmail.com>
 
-On Fri, Jun 16, 2023 at 01:05:29PM -0700, Song Liu wrote:
-> On Fri, Jun 16, 2023 at 1:52 AM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> >
-> > The memory allocations for kprobes on arm64 can be placed anywhere in
-> > vmalloc address space and currently this is implemented with an override
-> > of alloc_insn_page() in arm64.
-> >
-> > Extend execmem_params with a range for generated code allocations and
-> > make kprobes on arm64 use this extension rather than override
-> > alloc_insn_page().
-> >
-> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> > ---
-> >  arch/arm64/kernel/module.c         |  9 +++++++++
-> >  arch/arm64/kernel/probes/kprobes.c |  7 -------
-> >  include/linux/execmem.h            | 11 +++++++++++
-> >  mm/execmem.c                       | 14 +++++++++++++-
-> >  4 files changed, 33 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
-> > index c3d999f3a3dd..52b09626bc0f 100644
-> > --- a/arch/arm64/kernel/module.c
-> > +++ b/arch/arm64/kernel/module.c
-> > @@ -30,6 +30,13 @@ static struct execmem_params execmem_params = {
-> >                         .alignment = MODULE_ALIGN,
-> >                 },
-> >         },
-> > +       .jit = {
-> > +               .text = {
-> > +                       .start = VMALLOC_START,
-> > +                       .end = VMALLOC_END,
-> > +                       .alignment = 1,
-> > +               },
-> > +       },
-> >  };
-> 
-> This is growing fast. :) We have 3 now: text, data, jit. And it will be
-> 5 when we split data into rw data, ro data, ro after init data. I wonder
-> whether we should still do some type enum here. But we can revisit
-> this topic later.
+Hi,
 
-I don't think we'd need 5. Four at most :)
+Here is a seires of patches to improve the BTF support on probe events.
 
-I don't know yet what would be the best way to differentiate RW and RO
-data, but ro_after_init surely won't need a new type. It either will be
-allocated as RW and then the caller will have to set it RO after
-initialization is done, or it will be allocated as RO and the caller will
-have to do something like text_poke to update it.
- 
-> Other than that
-> 
-> Acked-by: Song Liu <song@kernel.org>
+In the previous series, I introduced BTF based function argument support.
+This series focuses on accessing data structure fields and string type
+checking. Here is the list of the patches.
 
--- 
-Sincerely yours,
-Mike.
+- [1/5] Add data field access support from BTF args.
+- [2/5] Add data field access support from retval.
+- [3/5] "string" type checks the BTF type and add dereference
+        automatically.
+- [4/5] Update testcases
+- [5/5] Update documents
+
+With this series, you can trace information from function entry/exit and
+tracepoints. For example, you can get information about data structures
+that are not exposed to user space (via traceevent), or find out what
+the data in the data structure pointed by the return value of a function
+was.
+This was previously possible with the `perf probe` command, but with BTF
+you can do it with just tracefs. (Of course `perf probe` is still useful
+for debugging kernel with tracing function body or where any tracepoint
+is not provided.)
+
+Example:
+
+ # echo 'f getname_flags%return retval->name:string' > dynamic_events
+ # echo 1 > events/fprobes/getname_flags__exit/enable
+ # ls > /dev/null
+ # head -n 40 trace | tail
+              ls-87      [000] ...1.  8067.616101: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./function_profile_enabled"
+              ls-87      [000] ...1.  8067.616108: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./trace_stat"
+              ls-87      [000] ...1.  8067.616115: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_graph_notrace"
+              ls-87      [000] ...1.  8067.616122: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_graph_function"
+              ls-87      [000] ...1.  8067.616129: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_ftrace_notrace"
+
+
+This series can be applied on top of "probes/core" branch of the
+linux-trace.git.
+
+You can also get this series from:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git topic/fprobe-event-ext
+
+
+Thank you,
+
+---
+
+Masami Hiramatsu (Google) (5):
+      tracing/probes: Support BTF based data structure field access
+      tracing/probes: Support BTF field access from retval
+      tracing/probes: Add string type check with BTF
+      selftests/ftrace: Add BTF fields access testcases
+      Documentation: tracing: Update fprobe event example with BTF field
+
+
+ Documentation/trace/fprobetrace.rst                |   50 ++-
+ kernel/trace/trace_probe.c                         |  347 ++++++++++++++++++--
+ kernel/trace/trace_probe.h                         |   19 +
+ .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   11 +
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ 5 files changed, 376 insertions(+), 55 deletions(-)
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
