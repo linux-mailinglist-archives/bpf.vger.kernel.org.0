@@ -1,145 +1,128 @@
-Return-Path: <bpf+bounces-2811-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2812-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 854FB7344F2
-	for <lists+bpf@lfdr.de>; Sun, 18 Jun 2023 07:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08364734555
+	for <lists+bpf@lfdr.de>; Sun, 18 Jun 2023 10:01:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 715322812D4
-	for <lists+bpf@lfdr.de>; Sun, 18 Jun 2023 05:07:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 698C228121F
+	for <lists+bpf@lfdr.de>; Sun, 18 Jun 2023 08:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB9910F9;
-	Sun, 18 Jun 2023 05:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3877F15B9;
+	Sun, 18 Jun 2023 08:01:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25989A23
-	for <bpf@vger.kernel.org>; Sun, 18 Jun 2023 05:07:07 +0000 (UTC)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E495E137;
-	Sat, 17 Jun 2023 22:07:05 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3111547c8f9so2353323f8f.1;
-        Sat, 17 Jun 2023 22:07:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687064824; x=1689656824;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J+qqsqpcmp1BNuckvDBNutT1wsju4zMnJ/FPnqSF/3I=;
-        b=lalI1AI7uebE7hPNOhbKNNQC24Lh5BL1X/SgQMnMTwRk+fvPSCcVn0KajZnibVQX+a
-         QzoW9DNa2quSr6CQiYd9M9vcaTiKmcMUToe7KmIBRdux7BBFdr8tQ5dWM/40KJCxQrqn
-         P8dKrQkQzZKCrEqAuoKBglwhZ7BBGvRsmZ0x+lXytN98bc/QKCG/tzckuHudZqbmi1fI
-         Lgqm/Hbsiigmhmk/tgNTT3n4htYQQUWJFLhaiG2qm2SmjlBzsGAfhBsUVgxjpvQG4xP+
-         kJMyJQzzbCDEVVYQEUxumz1+t/Fu74q61/ePHBwaSh9krXhswGKFSfXaOGOBssBY1puc
-         G/ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687064824; x=1689656824;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J+qqsqpcmp1BNuckvDBNutT1wsju4zMnJ/FPnqSF/3I=;
-        b=kuFbwDzbTjmW9EXsr3/t3LgTnmGrGh1kOj7GbGDji5mh1gcW2g5Q64Lw2upXm6BcoL
-         1g5v14suILLqV7eS/Ew9jYJNIBIuW0cDwLHpf4Gg3AOzkbYqqSEd101SZiGtr+YHCdiY
-         WPwq07+rbBPj8rzSbazGZCTGigHZAVzWyHgcwN3OAAGfLNCX/dlczRS5fPfzwcK28Fbv
-         CcoAAr3Lq2Pzh2Dul3E/SdCzoGLJRRX0pdz32JpTMd86omh1F1n3Wvo+EPEcRc8KGgks
-         x9YZgLZWQyUW5Guqm6LWeC8HRXm9623c4nwi6ebw3Kud5Ybrkej13O69l2x7wVrLdq0m
-         7WqA==
-X-Gm-Message-State: AC+VfDwHoX4T/UKqQ3+o3FKxa/HAVm7QDJIj1uJtXSKXQe5Yq6A37YY3
-	/LzFz7Ccsl7Ogg117fWckZpw8mZvjxg=
-X-Google-Smtp-Source: ACHHUZ4XBWvxBlkNE5O4VAGreNupZntG7t9PNSr3dj/W2txjWoJ2+sUq4ds23q6UJFj0qQpWMLYGEw==
-X-Received: by 2002:adf:db47:0:b0:30f:c6c3:e6d9 with SMTP id f7-20020adfdb47000000b0030fc6c3e6d9mr5011298wrj.46.1687064824120;
-        Sat, 17 Jun 2023 22:07:04 -0700 (PDT)
-Received: from suse.localnet (host-79-26-32-1.retail.telecomitalia.it. [79.26.32.1])
-        by smtp.gmail.com with ESMTPSA id e8-20020adff348000000b00304adbeeabbsm27943038wrp.99.2023.06.17.22.07.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jun 2023 22:07:03 -0700 (PDT)
-From: "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- Sumitra Sharma <sumitraartsy@gmail.com>
-Cc: Ira Weiny <ira.weiny@intel.com>, Deepak R Varma <drv@mailo.com>
-Subject:
- Re: [PATCH v2] lib/test_bpf: Call page_address() on page acquired with
- GFP_KERNEL flag
-Date: Sun, 18 Jun 2023 07:07:00 +0200
-Message-ID: <3564297.R56niFO833@suse>
-In-Reply-To: <20230613071756.GA359746@sumitra.com>
-References: <20230613071756.GA359746@sumitra.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA4EA2A;
+	Sun, 18 Jun 2023 08:01:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DA1EC433C0;
+	Sun, 18 Jun 2023 08:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1687075275;
+	bh=JOdF7gdXvqBjASqKs6SWBkQKDgB3N69nrNaZPukvaeM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sRSVsUz+8qwPDTD+DbQ8ZGj3oxWbs6Q2yclpQ5oA01FgfO3x99AMq57vy9vTmKGCz
+	 zxsNFAk2tsVXc2/ZMKN5WrqHKwwq7cFYa5f3HPOYIxlAVh8JcIK7E8a/4ukOQRZ4nx
+	 MkY7brx+YmsqJJOWjKI+esA6758vzynczNeZM28mb8D2036W2Ac3dVaBq4RYIRm2lO
+	 UwBKETxVcKwPW5jcSjXTb+3J9p7JSrJABXAw2lEoobsEXKewtbcSu8Iyl/ROefguVb
+	 JB6NowqZPjsvgPvrW3+OErG+qxYX7mjk/nhQmoo1FPg/indEYGUiochf7rWuDn85yN
+	 s8jpvUG70jw+A==
+Date: Sun, 18 Jun 2023 11:00:27 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Andy Lutomirski <luto@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick P Edgecombe <rick.p.edgecombe@intel.com>,
+	"Russell King (Oracle)" <linux@armlinux.org.uk>,
+	Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev, netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [PATCH v2 02/12] mm: introduce execmem_text_alloc() and
+ jit_text_alloc()
+Message-ID: <20230618080027.GA52412@kernel.org>
+References: <20230616085038.4121892-1-rppt@kernel.org>
+ <20230616085038.4121892-3-rppt@kernel.org>
+ <f9a7eebe-d36e-4587-b99d-35d4edefdd14@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f9a7eebe-d36e-4587-b99d-35d4edefdd14@app.fastmail.com>
 
-On marted=EC 13 giugno 2023 09:17:56 CEST Sumitra Sharma wrote:
-> generate_test_data() acquires a page with alloc_page(GFP_KERNEL). Pages
-> allocated with GFP_KERNEL cannot come from Highmem. This is why
-> there is no need to call kmap() on them.
->=20
-> Therefore, use a plain page_address() on that page.
->=20
-> Suggested-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> Signed-off-by: Sumitra Sharma <sumitraartsy@gmail.com>
-> ---
->=20
-> Changes in v2:
-> 	- Remove the kmap() call and call page_address() instead.
+On Sat, Jun 17, 2023 at 01:38:29PM -0700, Andy Lutomirski wrote:
+> On Fri, Jun 16, 2023, at 1:50 AM, Mike Rapoport wrote:
+> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> >
+> > module_alloc() is used everywhere as a mean to allocate memory for code.
+> >
+> > Beside being semantically wrong, this unnecessarily ties all subsystems
+> > that need to allocate code, such as ftrace, kprobes and BPF to modules
+> > and puts the burden of code allocation to the modules code.
+> >
+> > Several architectures override module_alloc() because of various
+> > constraints where the executable memory can be located and this causes
+> > additional obstacles for improvements of code allocation.
+> >
+> > Start splitting code allocation from modules by introducing
+> > execmem_text_alloc(), execmem_free(), jit_text_alloc(), jit_free() APIs.
+> >
+> > Initially, execmem_text_alloc() and jit_text_alloc() are wrappers for
+> > module_alloc() and execmem_free() and jit_free() are replacements of
+> > module_memfree() to allow updating all call sites to use the new APIs.
+> >
+> > The intention semantics for new allocation APIs:
+> >
+> > * execmem_text_alloc() should be used to allocate memory that must reside
+> >   close to the kernel image, like loadable kernel modules and generated
+> >   code that is restricted by relative addressing.
+> >
+> > * jit_text_alloc() should be used to allocate memory for generated code
+> >   when there are no restrictions for the code placement. For
+> >   architectures that require that any code is within certain distance
+> >   from the kernel image, jit_text_alloc() will be essentially aliased to
+> >   execmem_text_alloc().
+> >
+> 
+> Is there anything in this series to help users do the appropriate
+> synchronization when the actually populate the allocated memory with
+> code?  See here, for example:
 
-NIT: Give credit to whom asked you for this removal and explain why the=20
-mapping is not required.
+This series only factors out the executable allocations from modules and
+puts them in a central place.
+Anything else would go on top after this lands.
+ 
+> https://lore.kernel.org/linux-fsdevel/cb6533c6-cea0-4f04-95cf-b8240c6ab405@app.fastmail.com/T/#u
 
-> 	- Change the commit subject and message.
->=20
->  lib/test_bpf.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> index ade9ac672adb..70fcd0bcf14b 100644
-> --- a/lib/test_bpf.c
-> +++ b/lib/test_bpf.c
-> @@ -14388,11 +14388,10 @@ static void *generate_test_data(struct bpf_test
-> *test, int sub) if (!page)
->  			goto err_kfree_skb;
->=20
-> -		ptr =3D kmap(page);
-> +		ptr =3D page_address(page);
->  		if (!ptr)
->  			goto err_free_page;
-
-What is the reason of this test? Could "ptr" ever be NULL? What is the code=
-=20
-checking just few lines above this latter test?
-
-Please, take a deeper look at this function as a whole.
-
-=46abio
-
->  		memcpy(ptr, test->frag_data, MAX_DATA);
-> -		kunmap(page);
->  		skb_add_rx_frag(skb, 0, page, 0, MAX_DATA, MAX_DATA);
->  	}
->=20
-> --
-> 2.25.1
-
-
-
-
+-- 
+Sincerely yours,
+Mike.
 
