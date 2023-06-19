@@ -1,49 +1,72 @@
-Return-Path: <bpf+bounces-2856-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2857-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99FC7735708
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 14:42:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AC8C7358AB
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 15:33:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDD071C208A3
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 12:42:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D281C1C20AAD
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 13:33:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171D0D52A;
-	Mon, 19 Jun 2023 12:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D4C1119D;
+	Mon, 19 Jun 2023 13:33:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF3EF33DC;
-	Mon, 19 Jun 2023 12:42:02 +0000 (UTC)
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B1F91;
-	Mon, 19 Jun 2023 05:41:59 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VlXETWq_1687178514;
-Received: from localhost(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VlXETWq_1687178514)
-          by smtp.aliyun-inc.com;
-          Mon, 19 Jun 2023 20:41:55 +0800
-Date: Mon, 19 Jun 2023 20:41:54 +0800
-From: Heng Qi <hengqi@linux.alibaba.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9BC10799;
+	Mon, 19 Jun 2023 13:33:36 +0000 (UTC)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F556E59;
+	Mon, 19 Jun 2023 06:33:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687181614; x=1718717614;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Xqr/3S2/EUn4m71NKoQyh8sBO7P+dlIVRJAQ29FZbC0=;
+  b=CHMk6AhnIWk+Im9wJP6uxwPvsnS397PoajdUdOZD+uPXHZQSm3PSEm6N
+   UUV4EM/5w8PBaOmDV3W97kKshcwAqMTgXsbeFGlqM7sGzTXdwXiWSkDuj
+   7fXlhQ3e7MFC1QHH85P7olXR+v+mFWwyjDfN1/iVmT0EbNR5S7K94ffaj
+   424DwUUqm8RneKoceHc/XVWpUMzbhPmy/Rq0Hj283PAd5GIHp5szHDWbI
+   aRsiF5gT6+cjd7rvwhcdPaejps6j8VhR2Tsy5DRYUOxJePmW+Tnwal2Od
+   c+tX9gA5DqvsK1Lwf0/QQAbt1RAsYJ+Cb/0LL4zxMlRjt892J3k9rrB3e
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="446005346"
+X-IronPort-AV: E=Sophos;i="6.00,254,1681196400"; 
+   d="scan'208";a="446005346"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2023 06:33:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="1043902171"
+X-IronPort-AV: E=Sophos;i="6.00,254,1681196400"; 
+   d="scan'208";a="1043902171"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 19 Jun 2023 06:33:30 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qBF0b-0004jw-1i;
+	Mon, 19 Jun 2023 13:33:29 +0000
+Date: Mon, 19 Jun 2023 21:32:46 +0800
+From: kernel test robot <lkp@intel.com>
+To: Heng Qi <hengqi@linux.alibaba.com>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	"Michael S. Tsirkin" <mst@redhat.com>,
 	Jason Wang <jasowang@redhat.com>,
 	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH net-next 4/4] virtio-net: remove F_GUEST_CSUM check for
- XDP loading
-Message-ID: <20230619124154.GC74977@h68b04307.sqa.eu95>
-References: <20230619105738.117733-1-hengqi@linux.alibaba.com>
- <20230619105738.117733-5-hengqi@linux.alibaba.com>
- <20230619071347-mutt-send-email-mst@kernel.org>
+Subject: Re: [PATCH net-next 2/4] virtio-net: reprobe csum related fields for
+ skb passed by XDP
+Message-ID: <202306192151.YMz3NiKw-lkp@intel.com>
+References: <20230619105738.117733-3-hengqi@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,81 +75,101 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230619071347-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230619105738.117733-3-hengqi@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 19, 2023 at 07:16:20AM -0400, Michael S. Tsirkin wrote:
-> On Mon, Jun 19, 2023 at 06:57:38PM +0800, Heng Qi wrote:
-> > Lay the foundation for the subsequent patch
-> 
-> which subsequent patch? this is the last one in series.
-> 
-> > to complete the coexistence
-> > of XDP and virtio-net guest csum.
-> > 
-> > Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
-> > Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >  drivers/net/virtio_net.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 25b486ab74db..79471de64b56 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -60,7 +60,6 @@ static const unsigned long guest_offloads[] = {
-> >  	VIRTIO_NET_F_GUEST_TSO6,
-> >  	VIRTIO_NET_F_GUEST_ECN,
-> >  	VIRTIO_NET_F_GUEST_UFO,
-> > -	VIRTIO_NET_F_GUEST_CSUM,
-> >  	VIRTIO_NET_F_GUEST_USO4,
-> >  	VIRTIO_NET_F_GUEST_USO6,
-> >  	VIRTIO_NET_F_GUEST_HDRLEN
-> 
-> What is this doing? Drop support for VIRTIO_NET_F_GUEST_CSUM? Why?
+Hi Heng,
 
-guest_offloads[] is used by the VIRTIO_NET_CTRL_GUEST_OFFLOADS_SET
-command to switch features when XDP is loaded/unloaded.
+kernel test robot noticed the following build warnings:
 
-If the VIRTIO_NET_F_CTRL_GUEST_OFFLOADS feature is negotiated:
-1. When XDP is loaded, virtnet_xdp_set() uses virtnet_clear_guest_offloads()
-to automatically turn off the features in guest_offloads[].
+[auto build test WARNING on net-next/main]
 
-2. when XDP is unloaded, virtnet_xdp_set() uses virtnet_restore_guest_offloads()
-to automatically restore the features in guest_offloads[].
+url:    https://github.com/intel-lab-lkp/linux/commits/Heng-Qi/virtio-net-a-helper-for-probing-the-pseudo-header-checksum/20230619-190212
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20230619105738.117733-3-hengqi%40linux.alibaba.com
+patch subject: [PATCH net-next 2/4] virtio-net: reprobe csum related fields for skb passed by XDP
+config: x86_64-randconfig-r014-20230619 (https://download.01.org/0day-ci/archive/20230619/202306192151.YMz3NiKw-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230619/202306192151.YMz3NiKw-lkp@intel.com/reproduce)
 
-Now, this work no longer makes XDP and _F_GUEST_CSUM mutually
-exclusive, so this patch removed the _F_GUEST_CSUM from guest_offloads[].
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306192151.YMz3NiKw-lkp@intel.com/
 
-> This will disable all of guest offloads I think ..
+All warnings (new ones prefixed by >>):
 
-No. This doesn't change the dependencies of other features on
-_F_GUEST_CSUM. Removing _F_GUEST_CSUM here does not mean that other
-features that depend on it will be turned off at the same time, such as
-_F_GUEST_TSO{4,6}, F_GUEST_USO{4,6}, etc.
+   drivers/net/virtio_net.c:1648:17: error: call to undeclared function 'csum_ipv6_magic'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+                           uh->check = ~csum_ipv6_magic((const struct in6_addr *)&ip6h->saddr,
+                                        ^
+   drivers/net/virtio_net.c:1648:17: note: did you mean 'csum_tcpudp_magic'?
+   include/asm-generic/checksum.h:52:1: note: 'csum_tcpudp_magic' declared here
+   csum_tcpudp_magic(__be32 saddr, __be32 daddr, __u32 len,
+   ^
+   drivers/net/virtio_net.c:1657:17: error: call to undeclared function 'csum_ipv6_magic'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+                           th->check = ~csum_ipv6_magic((const struct in6_addr *)&ip6h->saddr,
+                                        ^
+>> drivers/net/virtio_net.c:1695:19: warning: use of logical '&&' with constant operand [-Wconstant-logical-operand]
+           } else if (flags && VIRTIO_NET_HDR_F_DATA_VALID) {
+                            ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/virtio_net.c:1695:19: note: use '&' for a bitwise operation
+           } else if (flags && VIRTIO_NET_HDR_F_DATA_VALID) {
+                            ^~
+                            &
+   drivers/net/virtio_net.c:1695:19: note: remove constant to silence this warning
+           } else if (flags && VIRTIO_NET_HDR_F_DATA_VALID) {
+                           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 warning and 2 errors generated.
 
-Thanks.
 
-> 
-> 
-> > @@ -3522,10 +3521,9 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
-> >  	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO6) ||
-> >  	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
-> >  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
-> > -		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM) ||
-> >  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO4) ||
-> >  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO6))) {
-> > -		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW/CSUM, disable GRO_HW/CSUM first");
-> > +		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW, disable GRO_HW first");
-> >  		return -EOPNOTSUPP;
-> >  	}
-> >  
-> > -- 
-> > 2.19.1.6.gb485710b
+vim +1695 drivers/net/virtio_net.c
+
+  1667	
+  1668	static int virtnet_set_csum_after_xdp(struct virtnet_info *vi,
+  1669					      struct sk_buff *skb,
+  1670					      __u8 flags)
+  1671	{
+  1672		int err;
+  1673	
+  1674		/* When XDP program is loaded, for example, the vm-vm scenario
+  1675		 * on the same host, packets marked as VIRTIO_NET_HDR_F_NEEDS_CSUM
+  1676		 * will travel. Although these packets are safe from the point of
+  1677		 * view of the vm, to avoid modification by XDP and successful
+  1678		 * forwarding in the upper layer, we re-probe the necessary checksum
+  1679		 * related information: skb->csum_{start, offset}, pseudo-header csum.
+  1680		 *
+  1681		 * This benefits us:
+  1682		 * 1. XDP can be loaded when there's _F_GUEST_CSUM.
+  1683		 * 2. The device verifies the checksum of packets , especially
+  1684		 *    benefiting for large packets.
+  1685		 * 3. In the same-host vm-vm scenario, packets marked as
+  1686		 *    VIRTIO_NET_HDR_F_NEEDS_CSUM are no longer dropped after being
+  1687		 *    processed by XDP.
+  1688		 */
+  1689		if (flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
+  1690			err = virtnet_flow_dissect_udp_tcp(vi, skb);
+  1691			if (err < 0)
+  1692				return -EINVAL;
+  1693	
+  1694			skb->ip_summed = CHECKSUM_PARTIAL;
+> 1695		} else if (flags && VIRTIO_NET_HDR_F_DATA_VALID) {
+  1696			/* We want to benefit from this: XDP guarantees that packets marked
+  1697			 * as VIRTIO_NET_HDR_F_DATA_VALID still have correct csum after they
+  1698			 * are processed.
+  1699			 */
+  1700			skb->ip_summed = CHECKSUM_UNNECESSARY;
+  1701		}
+  1702	
+  1703		return 0;
+  1704	}
+  1705	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
