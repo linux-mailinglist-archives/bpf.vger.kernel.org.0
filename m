@@ -1,193 +1,120 @@
-Return-Path: <bpf+bounces-2859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2862-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81177735904
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 16:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1345773591A
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 16:03:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BE64281116
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 14:00:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C18E5281121
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 14:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E3411C88;
-	Mon, 19 Jun 2023 14:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CBC11C8F;
+	Mon, 19 Jun 2023 14:03:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED251118B
-	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 14:00:26 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E7B19C;
-	Mon, 19 Jun 2023 07:00:24 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QlBH82SJkz4f4cBp;
-	Mon, 19 Jun 2023 22:00:20 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgCH77JtX5BkiIFAMA--.58229S6;
-	Mon, 19 Jun 2023 22:00:21 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yhs@fb.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	rcu@vger.kernel.org,
-	houtao1@huawei.com
-Subject: [RFC PATCH bpf-next v5 2/2] bpf: Call rcu_momentary_dyntick_idle() in task work periodically
-Date: Mon, 19 Jun 2023 22:32:31 +0800
-Message-Id: <20230619143231.222536-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20230619143231.222536-1-houtao@huaweicloud.com>
-References: <20230619143231.222536-1-houtao@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A4C11C88
+	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 14:03:20 +0000 (UTC)
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF2B10D
+	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 07:03:18 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b549e81cecso4851475ad.0
+        for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 07:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1687183398; x=1689775398;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c4zA2x2rf1p5pzoQJxSBuzoBeRkUzNS4Bq8HFTmaCoE=;
+        b=b+fkLYr3MnYz/OQ9BhX6fL07uLzvPcMpQDFVDzDecktXyoL50Q3ZJxYZPSun/2NE/k
+         KAeGe8M8bNjBkwmPAz++D+U7I948YLAmWCn1fOit3orWSOPF/RnJZYfh3GMaN9pBA8N3
+         3V7ScFFz8VQoikvuMgU/IicArKbCOUt6tCa2c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687183398; x=1689775398;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c4zA2x2rf1p5pzoQJxSBuzoBeRkUzNS4Bq8HFTmaCoE=;
+        b=aEhnLGvD/MVCXIfhjW78BQuTzq0bG2hRYGV3OzwxG/cNMQB1lNsrL5QPyZPHAC6tx8
+         oaAWGju7Cj0eBL8iUv5h7JJDkRXIL4a9n47ThPyOZVSDNd8ThMzrlozniqyuHV46OE7c
+         y50SgrIXyjFzQHJjphTldzmb+EamseFGhUzMWqZpm8JujqKP1tk6Mg4o5Zc7jhYi6n9v
+         qhka0tkg/ZDJ5Sv48rHG7e12yeJZhhu4zBS9WT1hqaBqZ25wHtl9IhhBp31JNrpVAkJ/
+         t3XqOkOhrdiP59AJVElmGq4gZ5Qevt7xVik5jBx7MuOLFZ7BGEKJ6vBOo0BIOyX+quU4
+         dPUg==
+X-Gm-Message-State: AC+VfDyD6bSGbxc/W8ftRnA4kFGXm66RAJFtGzbb44k+Sb5yyTwY5Emg
+	b2bW/0IaVdsTIchIctJ6ujJ3f2/2RD9NPTRNOxueZQ==
+X-Google-Smtp-Source: ACHHUZ4v3i2RgZ9YWY86OIWqNc5hX+EADjk5U09Liihu9nq6bBliCQ8oKBwC0e38lv6wShZ5U2kDtW6XiCKfFXAjnS0=
+X-Received: by 2002:a17:903:1112:b0:1af:a293:e155 with SMTP id
+ n18-20020a170903111200b001afa293e155mr6269262plh.16.1687183398115; Mon, 19
+ Jun 2023 07:03:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCH77JtX5BkiIFAMA--.58229S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw47Cw1UCw43CrWfGFW5Awb_yoW5tw15pF
-	Way345Ars8XFsFgw4ayws7AwsxJw4Fqa47Kay7uas8urWSqwnxKas7KFy2vry5urWrGr13
-	AFWqyFyUu3y0kr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-	MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <20230615145607.3469985-1-revest@chromium.org> <CAEf4BzbjCt3tKJ40tg12rMjCLXrm7UoGuOdC62vGnpTTt8-buw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbjCt3tKJ40tg12rMjCLXrm7UoGuOdC62vGnpTTt8-buw@mail.gmail.com>
+From: Florent Revest <revest@chromium.org>
+Date: Mon, 19 Jun 2023 16:03:07 +0200
+Message-ID: <CABRcYmK=yXDumZj3tdW7341+sSV1zmZw1UpQkfSF6RFgnBQjew@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf/btf: Accept function names that contain dots
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+	martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, jolsa@kernel.org, nathan@kernel.org, 
+	ndesaulniers@google.com, trix@redhat.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Hou Tao <houtao1@huawei.com>
+On Fri, Jun 16, 2023 at 6:57=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jun 15, 2023 at 7:56=E2=80=AFAM Florent Revest <revest@chromium.o=
+rg> wrote:
+> >
+> > When building a kernel with LLVM=3D1, LLVM_IAS=3D0 and CONFIG_KASAN=3Dy=
+, LLVM
+> > leaves DWARF tags for the "asan.module_ctor" & co symbols. In turn,
+> > pahole creates BTF_KIND_FUNC entries for these and this makes the BTF
+> > metadata validation fail because they contain a dot.
+> >
+> > In a dramatic turn of event, this BTF verification failure can cause
+> > the netfilter_bpf initialization to fail, causing netfilter_core to
+> > free the netfilter_helper hashmap and netfilter_ftp to trigger a
+> > use-after-free. The risk of u-a-f in netfilter will be addressed
+> > separately but the existence of "asan.module_ctor" debug info under som=
+e
+> > build conditions sounds like a good enough reason to accept functions
+> > that contain dots in BTF.
+>
+> I don't see much harm in allowing dots. There are also all those .isra
+> and other modifications to functions that we currently don't have in
+> BTF, but with the discussions about recording function addrs we might
+> eventually have those as well. So:
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-After doing reuse-after-RCU-GP in bpf memory allocator, if there are
-intensive memory allocation and free in bpf memory allocator and RCU GP
-is slow, the peak memory usage for bpf memory allocator will be high.
+Thanks Andrii! :)
 
-To reduce memory usage for bpf memory allocator, call
-rcu_momentary_dyntick_idle() in task work periodically to accelerate the
-expiration of RCU grace period.
+> > Cc: stable@vger.kernel.org
+> > Fixes: 1dc92851849c ("bpf: kernel side support for BTF Var and DataSec"=
+)
 
-The following benchmark results the memory usage reduce a lot after
-applying the patch:
-
-Before:
-overwrite           per-prod-op 49.11 ± 1.30k/s, avg mem 313.09 ± 80.36MiB, peak mem 509.09MiB
-batch_add_batch_del per-prod-op 76.06 ± 2.38k/s, avg mem 287.97 ± 63.59MiB, peak mem 496.81MiB
-add_del_on_diff_cpu per-prod-op 18.75 ± 0.09k/s, avg mem  27.71 ±  4.92MiB, peak mem  44.54MiB
-
-After:
-overwrite           per-prod-op 51.17 ± 0.30k/s, avg mem 105.09 ±  7.74MiB, peak mem 143.60MiB
-batch_add_batch_del per-prod-op 86.43 ± 0.90k/s, avg mem  85.82 ± 11.81MiB, peak mem 118.93MiB
-add_del_on_diff_cpu per-prod-op 18.71 ± 0.08k/s, avg mem  26.92 ±  5.50MiB, peak mem  43.18MiB
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/memalloc.c | 46 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
-
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 9b31c53fd285..c4b4cae04400 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -6,6 +6,7 @@
- #include <linux/irq_work.h>
- #include <linux/bpf_mem_alloc.h>
- #include <linux/memcontrol.h>
-+#include <linux/task_work.h>
- #include <asm/local.h>
- 
- /* Any context (including NMI) BPF specific memory allocator.
-@@ -123,6 +124,16 @@ struct bpf_reuse_batch {
- 	struct rcu_head rcu;
- };
- 
-+#define BPF_GP_ACC_RUNNING 0
-+
-+struct bpf_rcu_gp_acc_ctx {
-+	unsigned long flags;
-+	unsigned long next_run;
-+	struct callback_head work;
-+};
-+
-+static DEFINE_PER_CPU(struct bpf_rcu_gp_acc_ctx, bpf_acc_ctx);
-+
- static struct llist_node notrace *__llist_del_first(struct llist_head *head)
- {
- 	struct llist_node *entry, *next;
-@@ -347,12 +358,47 @@ static void dyn_reuse_rcu(struct rcu_head *rcu)
- 	kfree(batch);
- }
- 
-+static void bpf_rcu_gp_acc_work(struct callback_head *head)
-+{
-+	struct bpf_rcu_gp_acc_ctx *ctx = container_of(head, struct bpf_rcu_gp_acc_ctx, work);
-+
-+	local_irq_disable();
-+	rcu_momentary_dyntick_idle();
-+	local_irq_enable();
-+
-+	/* The interval between rcu_momentary_dyntick_idle() calls is
-+	 * at least 10ms.
-+	 */
-+	WRITE_ONCE(ctx->next_run, jiffies + msecs_to_jiffies(10));
-+	clear_bit(BPF_GP_ACC_RUNNING, &ctx->flags);
-+}
-+
-+static void bpf_mem_rcu_gp_acc(struct bpf_mem_cache *c)
-+{
-+	struct bpf_rcu_gp_acc_ctx *ctx = this_cpu_ptr(&bpf_acc_ctx);
-+
-+	if (atomic_read(&c->dyn_reuse_rcu_cnt) < 128 ||
-+	    time_before(jiffies, READ_ONCE(ctx->next_run)))
-+		return;
-+
-+	if ((current->flags & PF_KTHREAD) ||
-+	    test_and_set_bit(BPF_GP_ACC_RUNNING, &ctx->flags))
-+		return;
-+
-+	init_task_work(&ctx->work, bpf_rcu_gp_acc_work);
-+	/* Task is exiting ? */
-+	if (task_work_add(current, &ctx->work, TWA_RESUME))
-+		clear_bit(BPF_GP_ACC_RUNNING, &ctx->flags);
-+}
-+
- static void reuse_bulk(struct bpf_mem_cache *c)
- {
- 	struct llist_node *head, *tail;
- 	struct bpf_reuse_batch *batch;
- 	unsigned long flags;
- 
-+	bpf_mem_rcu_gp_acc(c);
-+
- 	head = llist_del_all(&c->free_llist_extra);
- 	tail = head;
- 	while (tail && tail->next)
--- 
-2.29.2
-
+So do you think these trailers should be kept ? I suppose we can
+either see this as a "new feature" to accommodate .isra that should go
+through bpf-next or as a bug fix that goes through bpf and gets
+backported to stable (without this, BTF wouldn't work on old kernels
+built under a new clang and with LLVM_IAS=3D0 and CONFIG_KASAN=3Dy so this
+sounds like a legitimate bug fix to me, I just wanted to double check)
 
