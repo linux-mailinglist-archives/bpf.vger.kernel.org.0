@@ -1,120 +1,190 @@
-Return-Path: <bpf+bounces-2862-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2863-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1345773591A
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 16:03:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E32C47359A9
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 16:34:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C18E5281121
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 14:03:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7CA11C20B4C
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 14:34:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CBC11C8F;
-	Mon, 19 Jun 2023 14:03:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA661095F;
+	Mon, 19 Jun 2023 14:33:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A4C11C88
-	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 14:03:20 +0000 (UTC)
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF2B10D
-	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 07:03:18 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b549e81cecso4851475ad.0
-        for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 07:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1687183398; x=1689775398;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c4zA2x2rf1p5pzoQJxSBuzoBeRkUzNS4Bq8HFTmaCoE=;
-        b=b+fkLYr3MnYz/OQ9BhX6fL07uLzvPcMpQDFVDzDecktXyoL50Q3ZJxYZPSun/2NE/k
-         KAeGe8M8bNjBkwmPAz++D+U7I948YLAmWCn1fOit3orWSOPF/RnJZYfh3GMaN9pBA8N3
-         3V7ScFFz8VQoikvuMgU/IicArKbCOUt6tCa2c=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BFD4D53B
+	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 14:33:55 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AF218C
+	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 07:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1687185233;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qaR034a/uYZWArvb4NS/fyabanvCu3PnPemgTnGF4j4=;
+	b=fgViziUYOfwdRCGSNw5bzffWTE8keX2l1HYqinQbkUvrvirVS81fYahLVwXw5XPItYppCF
+	RDOWigBs7USoTnk2EgxJddwS3NmQ4eMvJDwqOZAUw/Q9xOZCk5COpuAfMHT5RRD/GjeG6e
+	wLgOm/gT2acPBxT4b+dU8huFqTaRM1A=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-126-guvh83HLMhO2P26JvNNeGw-1; Mon, 19 Jun 2023 10:33:50 -0400
+X-MC-Unique: guvh83HLMhO2P26JvNNeGw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f7ef0e0292so15799875e9.3
+        for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 07:33:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687183398; x=1689775398;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c4zA2x2rf1p5pzoQJxSBuzoBeRkUzNS4Bq8HFTmaCoE=;
-        b=aEhnLGvD/MVCXIfhjW78BQuTzq0bG2hRYGV3OzwxG/cNMQB1lNsrL5QPyZPHAC6tx8
-         oaAWGju7Cj0eBL8iUv5h7JJDkRXIL4a9n47ThPyOZVSDNd8ThMzrlozniqyuHV46OE7c
-         y50SgrIXyjFzQHJjphTldzmb+EamseFGhUzMWqZpm8JujqKP1tk6Mg4o5Zc7jhYi6n9v
-         qhka0tkg/ZDJ5Sv48rHG7e12yeJZhhu4zBS9WT1hqaBqZ25wHtl9IhhBp31JNrpVAkJ/
-         t3XqOkOhrdiP59AJVElmGq4gZ5Qevt7xVik5jBx7MuOLFZ7BGEKJ6vBOo0BIOyX+quU4
-         dPUg==
-X-Gm-Message-State: AC+VfDyD6bSGbxc/W8ftRnA4kFGXm66RAJFtGzbb44k+Sb5yyTwY5Emg
-	b2bW/0IaVdsTIchIctJ6ujJ3f2/2RD9NPTRNOxueZQ==
-X-Google-Smtp-Source: ACHHUZ4v3i2RgZ9YWY86OIWqNc5hX+EADjk5U09Liihu9nq6bBliCQ8oKBwC0e38lv6wShZ5U2kDtW6XiCKfFXAjnS0=
-X-Received: by 2002:a17:903:1112:b0:1af:a293:e155 with SMTP id
- n18-20020a170903111200b001afa293e155mr6269262plh.16.1687183398115; Mon, 19
- Jun 2023 07:03:18 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687185229; x=1689777229;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qaR034a/uYZWArvb4NS/fyabanvCu3PnPemgTnGF4j4=;
+        b=gAxmdTqf2flHrEnScH8SUTZSAMFoMrlEmhjSaHQzS8GHEOusXEEYsXrrmXdXDge9ln
+         4LkrW6ijdLKqYMJJYfQ+gnimmQy4EoiJUMQCNBbM82snioHUn8LTf0OZQhALCQ74YRmc
+         rVkKJEKR5ij2/og25vXlrPpJ7f2vqpUdZdi3+a5S4WbOqOebd70h9p4hCZ3VEk+dfW2P
+         TmTPxFL/zhPBZO9+4rQc1uRghySNlN0um5M3fkVPcBTgWOceny599Cy05t8PBJnIZQ5Y
+         htSF4vUa7CEFYW6JXLLGJPqe9Qs0U+DPcu0dBP4VCgtvWiTtSunrccop2Vjg/t/ODWYQ
+         MwiA==
+X-Gm-Message-State: AC+VfDyvmBzaJGdiDvdTA5vwHCqCgCIX+oHoDAzYEKNV4eYa3M3tBX5X
+	Q8w1z11JIv5MRdPmDkfMYG4v0qSzW4enhzS92Z7IEKZvHSrF+IsEYeNYRtj5TN6KW5WVaycyUo+
+	DldeFdZX+v/v/
+X-Received: by 2002:a05:600c:2257:b0:3f1:9b85:e305 with SMTP id a23-20020a05600c225700b003f19b85e305mr8159104wmm.34.1687185229395;
+        Mon, 19 Jun 2023 07:33:49 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ4TK3G50ReBw3v7K3vUKmvd0N+5fhCX8RdNRkKpusiONzyHxuWcWKNF3b6hThRV9oZcCiFurw==
+X-Received: by 2002:a05:600c:2257:b0:3f1:9b85:e305 with SMTP id a23-20020a05600c225700b003f19b85e305mr8159086wmm.34.1687185229022;
+        Mon, 19 Jun 2023 07:33:49 -0700 (PDT)
+Received: from redhat.com ([2.52.15.156])
+        by smtp.gmail.com with ESMTPSA id d22-20020a1c7316000000b003f80946116dsm10900656wmb.45.2023.06.19.07.33.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jun 2023 07:33:48 -0700 (PDT)
+Date: Mon, 19 Jun 2023 10:33:44 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Heng Qi <hengqi@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH net-next 4/4] virtio-net: remove F_GUEST_CSUM check for
+ XDP loading
+Message-ID: <20230619103208-mutt-send-email-mst@kernel.org>
+References: <20230619105738.117733-1-hengqi@linux.alibaba.com>
+ <20230619105738.117733-5-hengqi@linux.alibaba.com>
+ <20230619071347-mutt-send-email-mst@kernel.org>
+ <20230619124154.GC74977@h68b04307.sqa.eu95>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230615145607.3469985-1-revest@chromium.org> <CAEf4BzbjCt3tKJ40tg12rMjCLXrm7UoGuOdC62vGnpTTt8-buw@mail.gmail.com>
-In-Reply-To: <CAEf4BzbjCt3tKJ40tg12rMjCLXrm7UoGuOdC62vGnpTTt8-buw@mail.gmail.com>
-From: Florent Revest <revest@chromium.org>
-Date: Mon, 19 Jun 2023 16:03:07 +0200
-Message-ID: <CABRcYmK=yXDumZj3tdW7341+sSV1zmZw1UpQkfSF6RFgnBQjew@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf/btf: Accept function names that contain dots
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
-	martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, nathan@kernel.org, 
-	ndesaulniers@google.com, trix@redhat.com, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230619124154.GC74977@h68b04307.sqa.eu95>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-	autolearn_force=no version=3.4.6
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 16, 2023 at 6:57=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Jun 15, 2023 at 7:56=E2=80=AFAM Florent Revest <revest@chromium.o=
-rg> wrote:
-> >
-> > When building a kernel with LLVM=3D1, LLVM_IAS=3D0 and CONFIG_KASAN=3Dy=
-, LLVM
-> > leaves DWARF tags for the "asan.module_ctor" & co symbols. In turn,
-> > pahole creates BTF_KIND_FUNC entries for these and this makes the BTF
-> > metadata validation fail because they contain a dot.
-> >
-> > In a dramatic turn of event, this BTF verification failure can cause
-> > the netfilter_bpf initialization to fail, causing netfilter_core to
-> > free the netfilter_helper hashmap and netfilter_ftp to trigger a
-> > use-after-free. The risk of u-a-f in netfilter will be addressed
-> > separately but the existence of "asan.module_ctor" debug info under som=
-e
-> > build conditions sounds like a good enough reason to accept functions
-> > that contain dots in BTF.
->
-> I don't see much harm in allowing dots. There are also all those .isra
-> and other modifications to functions that we currently don't have in
-> BTF, but with the discussions about recording function addrs we might
-> eventually have those as well. So:
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+On Mon, Jun 19, 2023 at 08:41:54PM +0800, Heng Qi wrote:
+> On Mon, Jun 19, 2023 at 07:16:20AM -0400, Michael S. Tsirkin wrote:
+> > On Mon, Jun 19, 2023 at 06:57:38PM +0800, Heng Qi wrote:
+> > > Lay the foundation for the subsequent patch
+> > 
+> > which subsequent patch? this is the last one in series.
+> > 
+> > > to complete the coexistence
+> > > of XDP and virtio-net guest csum.
+> > > 
+> > > Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+> > > Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > ---
+> > >  drivers/net/virtio_net.c | 4 +---
+> > >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > index 25b486ab74db..79471de64b56 100644
+> > > --- a/drivers/net/virtio_net.c
+> > > +++ b/drivers/net/virtio_net.c
+> > > @@ -60,7 +60,6 @@ static const unsigned long guest_offloads[] = {
+> > >  	VIRTIO_NET_F_GUEST_TSO6,
+> > >  	VIRTIO_NET_F_GUEST_ECN,
+> > >  	VIRTIO_NET_F_GUEST_UFO,
+> > > -	VIRTIO_NET_F_GUEST_CSUM,
+> > >  	VIRTIO_NET_F_GUEST_USO4,
+> > >  	VIRTIO_NET_F_GUEST_USO6,
+> > >  	VIRTIO_NET_F_GUEST_HDRLEN
+> > 
+> > What is this doing? Drop support for VIRTIO_NET_F_GUEST_CSUM? Why?
+> 
+> guest_offloads[] is used by the VIRTIO_NET_CTRL_GUEST_OFFLOADS_SET
+> command to switch features when XDP is loaded/unloaded.
+> 
+> If the VIRTIO_NET_F_CTRL_GUEST_OFFLOADS feature is negotiated:
+> 1. When XDP is loaded, virtnet_xdp_set() uses virtnet_clear_guest_offloads()
+> to automatically turn off the features in guest_offloads[].
+> 
+> 2. when XDP is unloaded, virtnet_xdp_set() uses virtnet_restore_guest_offloads()
+> to automatically restore the features in guest_offloads[].
+> 
+> Now, this work no longer makes XDP and _F_GUEST_CSUM mutually
+> exclusive, so this patch removed the _F_GUEST_CSUM from guest_offloads[].
+> 
+> > This will disable all of guest offloads I think ..
+> 
+> No. This doesn't change the dependencies of other features on
+> _F_GUEST_CSUM. Removing _F_GUEST_CSUM here does not mean that other
+> features that depend on it will be turned off at the same time, such as
+> _F_GUEST_TSO{4,6}, F_GUEST_USO{4,6}, etc.
+> 
+> Thanks.
 
-Thanks Andrii! :)
+Hmm I don't get it.
 
-> > Cc: stable@vger.kernel.org
-> > Fixes: 1dc92851849c ("bpf: kernel side support for BTF Var and DataSec"=
-)
+static int virtnet_restore_guest_offloads(struct virtnet_info *vi)
+{               
+        u64 offloads = vi->guest_offloads;
+                        
+        if (!vi->guest_offloads)
+                return 0;
+        
+        return virtnet_set_guest_offloads(vi, offloads); 
+}               
+                        
+is the bit _F_GUEST_CSUM set in vi->guest_offloads?
 
-So do you think these trailers should be kept ? I suppose we can
-either see this as a "new feature" to accommodate .isra that should go
-through bpf-next or as a bug fix that goes through bpf and gets
-backported to stable (without this, BTF wouldn't work on old kernels
-built under a new clang and with LLVM_IAS=3D0 and CONFIG_KASAN=3Dy so this
-sounds like a legitimate bug fix to me, I just wanted to double check)
+Because if it isn't then we'll try to set _F_GUEST_TSO
+without setting _F_GUEST_CSUM and that's a spec
+violation I think.
+
+
+> > 
+> > 
+> > > @@ -3522,10 +3521,9 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+> > >  	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO6) ||
+> > >  	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
+> > >  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
+> > > -		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM) ||
+> > >  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO4) ||
+> > >  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO6))) {
+> > > -		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW/CSUM, disable GRO_HW/CSUM first");
+> > > +		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW, disable GRO_HW first");
+> > >  		return -EOPNOTSUPP;
+> > >  	}
+> > >  
+> > > -- 
+> > > 2.19.1.6.gb485710b
+
 
