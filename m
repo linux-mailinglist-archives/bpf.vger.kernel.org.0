@@ -1,58 +1,59 @@
-Return-Path: <bpf+bounces-2831-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2832-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E688B73515A
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 12:02:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88E8373515C
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 12:02:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9818C28109F
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 10:01:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B2A2280FAF
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 10:02:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE0AC2F1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970A5C8C2;
 	Mon, 19 Jun 2023 10:01:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4320DC14A
-	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 10:01:50 +0000 (UTC)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA281A4;
-	Mon, 19 Jun 2023 03:01:24 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3112902f785so1568263f8f.0;
-        Mon, 19 Jun 2023 03:01:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 604B1C2EA
+	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 10:01:51 +0000 (UTC)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C07D1BE;
+	Mon, 19 Jun 2023 03:01:25 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-30e3caa6aa7so3231696f8f.1;
+        Mon, 19 Jun 2023 03:01:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20221208; t=1687168883; x=1689760883;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+5JCEFkwThlYY8Fjj11zfxl1bhhJup7NfesMfshfPMI=;
-        b=KPPyqEWsDQlkY8r1nmviT6ME7Abt0tSf8Y3xmcatbn7x8Y+IIB1dJIuZzDrpbKbaG7
-         Ne6fg/WKpQ7fVQmaQ0Wyer0G3WMxHEws6mE9SkeI0YAahMwBiBIRxw2Vd1IOp3+Q8mqS
-         ShZJtCqcWjJOlO5g0E5KS9U0facr1PE7tlR6sjFxaCFHJU7K4moGjIZ+fphBTsxBtZvW
-         vWz5Q6jnkn/zDNtPg+Rjeyk+2O7e7RXDhqA9yyK5+Qp2lIR8dVopDXYVqkaHEUwznXpy
-         80mZ+/fN14dgoqq6dSMwinl4RjRSwSim0IrsmpIX0MJt+VN62OnZj7KkHGR0gt7he9/3
-         K7rw==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9REFMTd6lRNNEelcN/tfneZyz71MzFoj98cDgvpdoUg=;
+        b=AvcEfz2bWWnx1FsfFiWeo2EpAqHkH84mshYwS3CEbdpCXr4jftHxlJvyV6U1exEWRE
+         J5/4OtQ8KKd7TjbUbPJ4sgx1zo/h4kehvWGpG8QS5Co50CYV7J7veWOqGCATmuyRrnzG
+         dW86jOmF+JwCtJ8+gNmpjkPQRTUDgn8G8Ig/BZ+5YQ2sf1uZx1jjNOHGPwRTo3z4fnqa
+         GD8i9z3ZInjdR1ujlg+W8OOCFQH15xccSku8jIAg2zPc6WhVciHVB1mn9S88c3fcSEyS
+         RYDGMyYNrqhqDH1zHvWpaL2uRXrxpFpgHPFgBVmWyXsADXWgnhF9XpH3GnU1i43jitHk
+         jQVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1687168883; x=1689760883;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+5JCEFkwThlYY8Fjj11zfxl1bhhJup7NfesMfshfPMI=;
-        b=GPpnV19Kp1fa8RIUa8gzHDde/jM9rym3w65BN4fMSNkzhSZJZ+gRuZ6CVS7Jom91BA
-         /+rBr0Aw+GjPvsVplxkQZIcUkevx7CnFbTW3wb6BXp1QBNCLAT4H/vN6OnXIXAFtfSnc
-         IMTZaH+nRMFn5h3nXPAOJR+JupD+/LmK/2rvm4jtMQmVjzNV3aRblgInKISVPt0GFtGA
-         34yaund9fXr1bLQTTreveOUfky+LFmOqyvgYlYL/aT0oNIvfK/7jsf2k3vglUXKa54xc
-         m8niUhHyaQYSS8Sj9CG7NhENGs9EVvsaMXHo0lB43mS7Agn2mQLuPWVPEa5PWrUMGw3I
-         sXCw==
-X-Gm-Message-State: AC+VfDzr1c+DvyEsAO2NBwtAOyG2Sbqr5ncY8jIj1LNZXXV+qvRWQGi3
-	NtGKo7Eh4Xb/3rPytx/Od/Y=
-X-Google-Smtp-Source: ACHHUZ5dNrl9XdIGtk/5v3EmAMV20NgM70Ba102dBQK3jrK+escJKKaGrPvDXu6fLQYZ5i1EGBBtbg==
-X-Received: by 2002:adf:e4cb:0:b0:311:f11:4c55 with SMTP id v11-20020adfe4cb000000b003110f114c55mr7844262wrm.13.1687168882355;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9REFMTd6lRNNEelcN/tfneZyz71MzFoj98cDgvpdoUg=;
+        b=VK2DK6scYHRnoy/Ya8Um1rHECfCPI1vbyOlav2DEUSgDSEv0L7N3eZaK2fN5U/HBSu
+         clkgDZhItVtgaSBOEl9nDNQiDC+m4iAizHSI6otDh0ckir5PVjRUJED+QqUN38JL6cJe
+         mYyg0VQo24TaSDzrm4+iIaZG125jWaa5oxEk7JgODjijkbuPLVdnsV+b3boHyrLvr+Ej
+         dsbPpVkA2OIq6wpS8IKgHNjuMgSWyIxgSYq4IJQ7bb+/WQHVYP3BKssG5UboZhdncDma
+         IHnucwj9fqjXSYE+cPZgeyRy89LDmpJfYvu5qZR9nJ/XffnsZt2oZyW5EuV6aaf00Lv2
+         eQaw==
+X-Gm-Message-State: AC+VfDy2CQwNOWLUvW0Fe9UZb8SQG3XjvghH+3zAWlf8KEq5lAj9Bqz2
+	FKEKvEY5TCbz9hmwbO8/7fo=
+X-Google-Smtp-Source: ACHHUZ5d+P77ReekMD4/QzGWh2U7zpoBrdO8ZxiseRWdurChvXg92s1jN/Q/VRIolLOER/63E5xy+w==
+X-Received: by 2002:a5d:468d:0:b0:30a:f2a0:64fa with SMTP id u13-20020a5d468d000000b0030af2a064famr8242914wrq.10.1687168882983;
         Mon, 19 Jun 2023 03:01:22 -0700 (PDT)
 Received: from ip-172-31-22-112.eu-west-1.compute.internal (ec2-54-154-23-32.eu-west-1.compute.amazonaws.com. [54.154.23.32])
-        by smtp.gmail.com with ESMTPSA id a4-20020a056000050400b0030ae3a6be4asm31352451wrf.72.2023.06.19.03.01.21
+        by smtp.gmail.com with ESMTPSA id a4-20020a056000050400b0030ae3a6be4asm31352451wrf.72.2023.06.19.03.01.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 19 Jun 2023 03:01:22 -0700 (PDT)
 From: Puranjay Mohan <puranjay12@gmail.com>
@@ -68,10 +69,12 @@ To: ast@kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v3 0/3] bpf, arm64: use BPF prog pack allocator in BPF JIT
-Date: Mon, 19 Jun 2023 10:01:18 +0000
-Message-Id: <20230619100121.27534-1-puranjay12@gmail.com>
+Subject: [PATCH bpf-next v3 1/3] bpf: make bpf_prog_pack allocator portable
+Date: Mon, 19 Jun 2023 10:01:19 +0000
+Message-Id: <20230619100121.27534-2-puranjay12@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230619100121.27534-1-puranjay12@gmail.com>
+References: <20230619100121.27534-1-puranjay12@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,108 +89,68 @@ X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-BPF programs currently consume a page each on ARM64. For systems with many BPF
-programs, this adds significant pressure to instruction TLB. High iTLB pressure
-usually causes slow down for the whole system.
+The bpf_prog_pack allocator currently uses module_alloc() and
+module_memfree() to allocate and free memory. This is not portable
+because different architectures use different methods for allocating
+memory for BPF programs. Like ARM64 uses vmalloc()/vfree().
 
-Song Liu introduced the BPF prog pack allocator[1] to mitigate the above issue.
-It packs multiple BPF programs into a single huge page. It is currently only
-enabled for the x86_64 BPF JIT.
+Use bpf_jit_alloc_exec() and bpf_jit_free_exec() for memory management
+in bpf_prog_pack allocator. Other architectures can override these with
+their implementation and will be able to use bpf_prog_pack directly.
 
-This patch series enables the BPF prog pack allocator for the ARM64 BPF JIT.
-
-====================================================
-Performance Analysis of prog pack allocator on ARM64
-====================================================
-
-To test the performance of the BPF prog pack allocator on ARM64, a stresser
-tool[2] was built. This tool loads 8 BPF programs on the system and triggers
-5 of them in an infinite loop by doing system calls.
-
-The runner script starts 20 instances of the above which loads 8*20=160 BPF
-programs on the system, 5*20=100 of which are being constantly triggered.
-
-In the above environment we try to build Python-3.8.4 and try to find different
-iTLB metrics for the compilation done by gcc-12.2.0.
-
-The source code[3] is  configured with the following command:
-./configure --enable-optimizations --with-ensurepip=install
-
-Then the runner script is executed with the following command:
-./run.sh "perf stat -e ITLB_WALK,L1I_TLB,INST_RETIRED,iTLB-load-misses -a make -j32"
-
-This builds Python while 160 BPF programs are loaded and 100 are being constantly
-triggered and measures iTLB related metrics.
-
-The output of the above command is discussed below before and after enabling the
-BPF prog pack allocator.
-
-The tests were run on qemu-system-aarch64 with 32 cpus, 4G memory, -machine virt,
--cpu host, and -enable-kvm.
-
-Results
--------
-
-Before enabling prog pack allocator:
-------------------------------------
-
-Performance counter stats for 'system wide':
-
-         333278635      ITLB_WALK
-     6762692976558      L1I_TLB
-    25359571423901      INST_RETIRED
-       15824054789      iTLB-load-misses
-
-     189.029769053 seconds time elapsed
-
-After enabling prog pack allocator:
------------------------------------
-
-Performance counter stats for 'system wide':
-
-         190333544      ITLB_WALK
-     6712712386528      L1I_TLB
-    25278233304411      INST_RETIRED
-        5716757866      iTLB-load-misses
-
-     185.392650561 seconds time elapsed
-
-Improvements in metrics
------------------------
-
-Compilation time                             ---> 1.92% faster
-iTLB-load-misses/Sec (Less is better)        ---> 63.16% decrease
-ITLB_WALK/1000 INST_RETIRED (Less is better) ---> 42.71% decrease
-ITLB_Walk/L1I_TLB (Less is better)           ---> 42.47% decrease
-
-[1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
-[2] https://github.com/puranjaymohan/BPF-Allocator-Bench
-[3] https://www.python.org/ftp/python/3.8.4/Python-3.8.4.tgz
-
-Chanes in V2 => V3: Changes only in 3rd patch
-1. Set prog = orig_prog; in the failure path of bpf_jit_binary_pack_finalize()
-call.
-2. Add comments explaining the usage of the offsets in the exception table.
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+Acked-by: Song Liu <song@kernel.org>
+---
+Changes in V2 => V3:
+- No changes
 
 Changes in v1 => v2:
-1. Make the naming consistent in the 3rd patch:
-   ro_image and image
-   ro_header and header
-   ro_image_ptr and image_ptr
-2. Use names dst/src in place of addr/opcode in second patch.
-3. Add Acked-by: Song Liu <song@kernel.org> in 1st and 2nd patch.
+- No code changes.
+- Added Acked-by: Song Liu <song@kernel.org>
 
-Puranjay Mohan (3):
-  bpf: make bpf_prog_pack allocator portable
-  arm64: patching: Add aarch64_insn_copy()
-  bpf, arm64: use bpf_jit_binary_pack_alloc
+kernel/bpf/core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
- arch/arm64/include/asm/patching.h |   1 +
- arch/arm64/kernel/patching.c      |  39 +++++++++
- arch/arm64/net/bpf_jit_comp.c     | 138 +++++++++++++++++++++++++-----
- kernel/bpf/core.c                 |   8 +-
- 4 files changed, 159 insertions(+), 27 deletions(-)
-
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index dc85240a0134..599136cb5096 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -860,7 +860,7 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_ins
+ 		       GFP_KERNEL);
+ 	if (!pack)
+ 		return NULL;
+-	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
++	pack->ptr = bpf_jit_alloc_exec(BPF_PROG_PACK_SIZE);
+ 	if (!pack->ptr) {
+ 		kfree(pack);
+ 		return NULL;
+@@ -884,7 +884,7 @@ void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insns)
+ 	mutex_lock(&pack_mutex);
+ 	if (size > BPF_PROG_PACK_SIZE) {
+ 		size = round_up(size, PAGE_SIZE);
+-		ptr = module_alloc(size);
++		ptr = bpf_jit_alloc_exec(size);
+ 		if (ptr) {
+ 			bpf_fill_ill_insns(ptr, size);
+ 			set_vm_flush_reset_perms(ptr);
+@@ -922,7 +922,7 @@ void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 
+ 	mutex_lock(&pack_mutex);
+ 	if (hdr->size > BPF_PROG_PACK_SIZE) {
+-		module_memfree(hdr);
++		bpf_jit_free_exec(hdr);
+ 		goto out;
+ 	}
+ 
+@@ -946,7 +946,7 @@ void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 	if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
+ 				       BPF_PROG_CHUNK_COUNT, 0) == 0) {
+ 		list_del(&pack->list);
+-		module_memfree(pack->ptr);
++		bpf_jit_free_exec(pack->ptr);
+ 		kfree(pack);
+ 	}
+ out:
 -- 
 2.40.1
 
