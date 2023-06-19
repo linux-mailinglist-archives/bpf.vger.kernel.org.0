@@ -1,269 +1,220 @@
-Return-Path: <bpf+bounces-2870-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2871-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19776735D64
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 20:17:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC4D7735D81
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 20:36:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 392A71C20B0B
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 18:17:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 037FF1C20B99
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 18:36:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABCB14283;
-	Mon, 19 Jun 2023 18:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E6313ADC;
+	Mon, 19 Jun 2023 18:36:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA33A125C7
-	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 18:17:43 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E2291;
-	Mon, 19 Jun 2023 11:17:42 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35JCt1mG018165;
-	Mon, 19 Jun 2023 11:17:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=eHMQcXs5/nGCmheyHVTHtMewrJELS6Cq8QOfyp2SFfQ=;
- b=gGwcKLKLRXDZwNZEbUQnvUk5EjRZAxjb5W1LaLx2TnNTAiSMiBxLhbnQUDhVUQiB5S9f
- Au1m9mj741km4SYHH2f9xftBId5j8WXt8z2/V/zHiaFuLkHtJmZlElSDIO8cqxqbmvIM
- IJK33ofGQY773NiHggG49Z3Oc1xoBm3W+9q6fmbvHMvnC4RigZTi3mNEopVhSaU5iUvx
- 1MFp3kqJ/HWzzykPBu9G88/Q3wWQcWL0stH/cE4c24+O3BdLElYiI8tKxmHDsFoarqb3
- pwesgHzKM1CCEvL9L565NSM2M2tzONJIWr3XxbBywfHNd5bbdajtlXQfufkXu9g896KW tg== 
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2043.outbound.protection.outlook.com [104.47.56.43])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r99xy64qy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Jun 2023 11:17:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nbTC8Q3aOxnblWwbYLI2uQIfcSQz/112KVDzuUtziZxYaw+oMZIzlc1fVLew0RxqFEQSp+Olz7LW9i5fnET6ZlX3HJpLFfOmL+u+iipsJw9qCYz9zvQkzCx/R7zLstb67h+LSbR/u7veSq22piBdGUxTgntZ5tG7I81oAOKcEuTl66MJnlNb5grPcvlnjZqSaueR+xKmMDk2MBMqw8ofX0BYSw8GALSckTdvCvW5UYkG7hHcbPtFLRvSerSBquf6moWgDGiB8O7zy3M8mM7/Ot/9PR3fD6tO9nEGKAnONqJe0n8uVtApY1ToFP/t+NIVuttioc6zilOOXfdC/DWYng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eHMQcXs5/nGCmheyHVTHtMewrJELS6Cq8QOfyp2SFfQ=;
- b=YHJ+x0hW9VMxix8iu/APNm0ey3sJw0P+Cdy+Hva29DzY/ulKt1o8nEkYlKk3pH9YExg/8Nz92wTfPbXw0w6VJJdUg0N6o2JKvkPrlJ19Jm/cAirrO3aEU3S70x5QLjtYCTQnW9yFyCu6DuAxlhq/8aeNkmSBNlQ3DmjeafuhVoxE7mAmHFf28BNHDmVBJ9ykPtfpyHMFnU3kKq/juwRRm0EAb7xlIGbAIYu4tvi+SusUoh9mzJ/N3aEDXpSgu4ZYdwSiqMziU/LnY3f+TUiD4nmqen95G1GlXuxwKhAof4Do5wz2xlkDRqjbR2S2DzffGUw/lu1u7qmloKO6d61rfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by IA1PR15MB5509.namprd15.prod.outlook.com (2603:10b6:208:41b::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.37; Mon, 19 Jun
- 2023 18:17:13 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812%6]) with mapi id 15.20.6500.036; Mon, 19 Jun 2023
- 18:17:14 +0000
-Message-ID: <c26de68d-4a56-03a0-2625-25c7e2997d45@meta.com>
-Date: Mon, 19 Jun 2023 11:17:08 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH bpf] bpf/btf: Accept function names that contain dots
-To: Florent Revest <revest@chromium.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com, stable@vger.kernel.org
-References: <20230615145607.3469985-1-revest@chromium.org>
- <CAEf4BzbjCt3tKJ40tg12rMjCLXrm7UoGuOdC62vGnpTTt8-buw@mail.gmail.com>
- <CABRcYmK=yXDumZj3tdW7341+sSV1zmZw1UpQkfSF6RFgnBQjew@mail.gmail.com>
-Content-Language: en-US
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <CABRcYmK=yXDumZj3tdW7341+sSV1zmZw1UpQkfSF6RFgnBQjew@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BY5PR20CA0010.namprd20.prod.outlook.com
- (2603:10b6:a03:1f4::23) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A8C12B8D
+	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 18:36:23 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DE0198
+	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 11:36:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1687199781;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6tXqvFRbqVeegIFkRm+Yup+Juz0OkTsWuPIXeSIwfwM=;
+	b=R5Jvb6e/d2wAA0Bb105lFVsPoyFr5snyPZz8iC/aTRbwzJcOCv1uq6lGkIwggFXIlBHxAw
+	UsANPh1F3yWR2c54uIiGoEgNQF3nIudiSyay4GJxFsC7XIK5Q1QesEoIr+a0r5UAAN9RBi
+	I4NBsxNTk+CEC0nKG+cHJSewfta0PI0=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-655-ZPL4K6BHOd2W9-V2Zq6iTQ-1; Mon, 19 Jun 2023 14:36:19 -0400
+X-MC-Unique: ZPL4K6BHOd2W9-V2Zq6iTQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f9b12b55cfso7037245e9.2
+        for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 11:36:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687199778; x=1689791778;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6tXqvFRbqVeegIFkRm+Yup+Juz0OkTsWuPIXeSIwfwM=;
+        b=PCYcT4j+9KQDxpvLgKFc+PDQIT83/10zPpFSOcB/d4fYvCypW8YJvColAGY9391RSm
+         mXHgrnidt4Ibhv31UnUB1fKJ4x9EIiiaDu7HZ3goy3fZ1BYMZRNlbB2L/9k38++PBvii
+         CSXPUrFHep6otvsjv/n9Emo5ES3x+Bek1GkbA8fQQkl5obb2jRYgKE7i4FEbxHItVNdu
+         TH2Exj2L28VCo8pIXFj3da0lUH8TzFV/QoDtHnS9BpQmZND2wdQJbMrbj07JOZU9w236
+         b/vqdFNPplpflfCcCYYERmMCqLk/XZtA+2pYvQjnoW1PrQWKsd7B89No38pZSU4Zq7af
+         +qOA==
+X-Gm-Message-State: AC+VfDxKL1i9mvOSOQAzPNU4SYCiBDMtTATx/d/1Lrz8ZscnPiuHyxg6
+	dCRXpCfG1HDEpWynD9PBMZAsiD0Np+fJheeS0KT0mVSmY+e+WpUTtJqoCK6UeXTtofZyynVBrey
+	c3G0gCkvxa09OdD02MdJC
+X-Received: by 2002:a05:600c:2041:b0:3f9:871:c2da with SMTP id p1-20020a05600c204100b003f90871c2damr5525027wmg.40.1687199778269;
+        Mon, 19 Jun 2023 11:36:18 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ55bLbAxXw958nhB3hm9JoNG6FmsfGyuT2z4TvhLue76HhSuEIZNL/wIebjUPGWw82KQR35dA==
+X-Received: by 2002:a05:600c:2041:b0:3f9:871:c2da with SMTP id p1-20020a05600c204100b003f90871c2damr5525009wmg.40.1687199777903;
+        Mon, 19 Jun 2023 11:36:17 -0700 (PDT)
+Received: from redhat.com ([2.52.15.156])
+        by smtp.gmail.com with ESMTPSA id n8-20020a05600c294800b003f90a604885sm405763wmd.34.2023.06.19.11.36.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jun 2023 11:36:17 -0700 (PDT)
+Date: Mon, 19 Jun 2023 14:36:13 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Heng Qi <hengqi@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH net-next 4/4] virtio-net: remove F_GUEST_CSUM check for
+ XDP loading
+Message-ID: <20230619143536-mutt-send-email-mst@kernel.org>
+References: <20230619105738.117733-1-hengqi@linux.alibaba.com>
+ <20230619105738.117733-5-hengqi@linux.alibaba.com>
+ <20230619071347-mutt-send-email-mst@kernel.org>
+ <20230619124154.GC74977@h68b04307.sqa.eu95>
+ <20230619103208-mutt-send-email-mst@kernel.org>
+ <20230619154329.GD74977@h68b04307.sqa.eu95>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|IA1PR15MB5509:EE_
-X-MS-Office365-Filtering-Correlation-Id: 782510dc-1f95-43eb-2202-08db70f16815
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	BwkiDTsr/UdNJhSBPgrlvtRXDxBif3na01qZvxmFmwOGMoo59kAaRiOoCsSI/qDLZEidfuIzdY9Q6lz4joR7a3p/RiB8Oq1H+lt/72vpuDxTIsX2Zx74G085xxtjvKTbgGlkJls+BWxXApWASx/p8I0BNy7xJuaxMEfkrB+H9xYFx47KpipoWOmItRzeO1vxDIa/goHV1TTcXghtgjqQJExoAopgztRL2JJSOeLV47903KYQtI0EcCHzplCR46oHhOXxbSu4064MqtzJdAU0Vb1abKqTBrrjXOhM26BDz3sbsmgj1qREW8wrY505wQUi0RrtxvvEt4wzipns1G1EJJBnzzJbNQaRh8lxGcxw8A4wROGBvFE/ZbVgBhu9Ihuqdji3imCFtWsTKdgSNp+5wten7/q3OEi2Xv0XNla17iFovUjcRgm7ni9aUnT+qde6SsBfhAt5fbPf+9mcGW+giuGzW0N21affe8BByMlNb09LjrK7oXlf8oAiOiEdgKI6eVFgEZwQG3TYrS1H4fWD2OxXGDFBb4C9mnuZecWN73vzWCBD7Fj4Oxgc5tU18WZI/oBl/lAOiTSO0fwnw8gv37FMp3uiEn8+hBBzEzLvBSGA3JGiZfrtZiflZ0cNwRcUK9FGVpqWA3qiTiWSDr2tog==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(396003)(39860400002)(376002)(346002)(451199021)(186003)(8676002)(8936002)(66946007)(66556008)(66476007)(5660300002)(110136005)(4326008)(6666004)(6486002)(316002)(38100700002)(478600001)(41300700001)(36756003)(53546011)(6506007)(6512007)(7416002)(86362001)(2906002)(31696002)(83380400001)(31686004)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?V0wyQ3NVbzRjMHd3VXdPbGl5UDEwckh4bjE0dWhQc1hVS3J0a21hUmk2eld5?=
- =?utf-8?B?RzJ2NXpybisxTC9LdmVKYlNMNHI2RExWOGNsamlkRXp0OVJDRGRDRTZIcEY5?=
- =?utf-8?B?M1U4K0VzMUl1dVU5RFVQT1FWSHRNVElFU3hTdE1KZmhZVTlYK1d2bGFrNWpY?=
- =?utf-8?B?Z0syTTlPOFJKbVA0bVhWNFZ3emtBQ2dwN0w2dUY2U0x0MWNUSG4wUlJROWdJ?=
- =?utf-8?B?OEl3NE8zZ2VJS1BINFVVanVOTUxvQm1Id2VadU5XMW9PTGFoaEJ6RGVkeGxR?=
- =?utf-8?B?WkxYU0xUaDhaM1NIcUswYXRSZHFQWW1sM1BRNEdrdm5BL1BmalFjWk9UcW82?=
- =?utf-8?B?SmZJdWE1M1JwK0czdjdRcVBCNUJqMm12a0p0dUVzVmw5ZnZQY09DRzl4N25X?=
- =?utf-8?B?Y3lMUVRSMkNWN1VMYnU5R2ZlRnEzWURDKzRtYkRkNzMzaS85Y0FIQjg4aTVI?=
- =?utf-8?B?Zk5jYVdmb3JKRXFPSW9GbnU5NVNFZkRFUXNKbzl6UEwwVGd6b1lwT2FCaWdz?=
- =?utf-8?B?QVRpc1pzRVFpTlVFR3ovVEVXcWd2QTlXblpOOGJyZUdPeXBYUnFBZ1ZtaERP?=
- =?utf-8?B?czNCa1VSS0RHUVREQzJHZEJlaXNLWTI3c3h2VUdQbUp2VDhnMWNHN1NOMXZ0?=
- =?utf-8?B?YVRHcytZUEtBTW1nQjIvbVUyTFRVSzErYmZZd3J3dlFaYXpTKzJiR21lWW1N?=
- =?utf-8?B?NnhyOEdRZUlXT20rbXF6TnVOY2dTR2RHUGJ3OHRhYVQ2NThFaTdRUXdMNjJX?=
- =?utf-8?B?TnVDRC83c0QxMXlpSlJDU1M2N2lZK1dzbmVDR25NRjFOMkNrbjFvQm96eU8w?=
- =?utf-8?B?RFNUU3FWd1I0TSt1a05MS1BvY1dpMTg5MFhJRS8vSjNwbVVGbG5pREZrTmpO?=
- =?utf-8?B?eUIxUzRINGxTZFRrVWdXZThpSVNnVkNuekNNTFpNM050NEE0anNUeWJMdlpZ?=
- =?utf-8?B?YnVEZUE1cURMRkhXbEt2SGUyV09oUk1KUUUwN0s5dHVSSGRZUHNWY2YzYmJz?=
- =?utf-8?B?eTc4bDBKQ3B6MTdUK3Y3eTlqdS9vSVdPSTg2T3ZIZm5PZTlpU24zamNNczRU?=
- =?utf-8?B?TVl4REEzRjcwTnhseW8zcThCTE1lcWFtWit5ay9KbEVxQmxFbDluUjBNYzlZ?=
- =?utf-8?B?L3d6S1lIYkorU1BYVElNU1pEcm9Qd2NQdUtzdjZmb0dLdmtsVThhaHBDejhq?=
- =?utf-8?B?Y2xHZy9ZTXlObjVsWVN6Z3lHMGpJdWtqdW1ZcWtmL09LRWM1Y2UwVFlXUXQr?=
- =?utf-8?B?ZnJrVk1HT1pMb2VyY0VXN0lrSWVuR2lWcmtoOTRSUGRuWWhhc1ZYNkk1VVlo?=
- =?utf-8?B?TUx5dmNsRG1YcGlDS0YrcUI2VHlxbW5RSjdmcjRkeGVmUjFNbFpmdlZzc2hQ?=
- =?utf-8?B?WlcvM1Y3MnF6c1IvTGY0dC9GbURQb1ZSSHBDN0tkcklsLzFjYVBJQnpudk9m?=
- =?utf-8?B?T2dvMlFlWjVPUTVCdHpxWG0wR21LeEpVcUxoZ1BPZlc4aDQxVzJOalpYYTRu?=
- =?utf-8?B?TndNRjBDTk5kSUt1K3JHbFZMaFEzL095S3pGaU82eFpFRmk4ekswZ09sSmU1?=
- =?utf-8?B?Mm5pTWtXUm8zU2VtT3FnOXhySGNJTitPRXpyaldtSHNoTXE3N3JKZEtEQ00r?=
- =?utf-8?B?Z1d3bVpQUnV0WEczR08zQzNhSjdCelBGVlpxemExTXRVTTYxbXJhK3g3YTRS?=
- =?utf-8?B?ekxaTk1kMzFtdEJOR1hIeVREM285a0R4Wnl0d1N5ekFrSTllQk5ZNkNDVnNO?=
- =?utf-8?B?d3dqaUd3MEJkdVFiaEIvU3N1K2ZwREJXelFOZkZad2Q0UTlibkM5TDVOM2p1?=
- =?utf-8?B?Mm9YSUdFdnozOVBYR3B2L3lQaTFiWGlkcWpWTWt0cnJqTHZ6cGkwSGlWZjhQ?=
- =?utf-8?B?NEhySm9ZZERVeU45dVpzQmM3cXRxODE2aHFhNWR5UktxalRWTk00ZmMwVzAz?=
- =?utf-8?B?ZUhmZXk4UkN2WE1kWlFIZ1A2bGdNbHRzaDBTMFcwWWJxR2MzQ1MrT3lFcmtE?=
- =?utf-8?B?bzVMd2pVWDlKUS9sbnA0UzdtajFZTFRDRTd5ZXo0bVZKKzJiZ0xJVUkxalJ1?=
- =?utf-8?B?VmZYYU16NmxLZ2NubVdhazFXUzBQQ1dZcEpDNnVJVkRsTmpxZEY0Vm1KcW9G?=
- =?utf-8?B?Q1JsNmJXaUgxV2JzZGF2OWlvazR3RG5NN3pRLzhoaE9HbG9jTUZJVTcxeDZJ?=
- =?utf-8?B?NkE9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 782510dc-1f95-43eb-2202-08db70f16815
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2023 18:17:14.0312
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iWKOVp4PX0NJijqb5wqdfnod8283qujngzlwEwhOrQuvtQIro1D65/y3RBW/Gqab
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR15MB5509
-X-Proofpoint-GUID: GokTkZ2IQAVECOiOtQIn_8QRzBbLSmJh
-X-Proofpoint-ORIG-GUID: GokTkZ2IQAVECOiOtQIn_8QRzBbLSmJh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-06-19_11,2023-06-16_01,2023-05-22_02
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230619154329.GD74977@h68b04307.sqa.eu95>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
-
-On 6/19/23 7:03 AM, Florent Revest wrote:
-> On Fri, Jun 16, 2023 at 6:57 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->>
->> On Thu, Jun 15, 2023 at 7:56 AM Florent Revest <revest@chromium.org> wrote:
->>>
->>> When building a kernel with LLVM=1, LLVM_IAS=0 and CONFIG_KASAN=y, LLVM
->>> leaves DWARF tags for the "asan.module_ctor" & co symbols. In turn,
->>> pahole creates BTF_KIND_FUNC entries for these and this makes the BTF
->>> metadata validation fail because they contain a dot.
->>>
->>> In a dramatic turn of event, this BTF verification failure can cause
->>> the netfilter_bpf initialization to fail, causing netfilter_core to
->>> free the netfilter_helper hashmap and netfilter_ftp to trigger a
->>> use-after-free. The risk of u-a-f in netfilter will be addressed
->>> separately but the existence of "asan.module_ctor" debug info under some
->>> build conditions sounds like a good enough reason to accept functions
->>> that contain dots in BTF.
->>
->> I don't see much harm in allowing dots. There are also all those .isra
->> and other modifications to functions that we currently don't have in
->> BTF, but with the discussions about recording function addrs we might
->> eventually have those as well. So:
->>
->> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+On Mon, Jun 19, 2023 at 11:43:29PM +0800, Heng Qi wrote:
+> On Mon, Jun 19, 2023 at 10:33:44AM -0400, Michael S. Tsirkin wrote:
+> > On Mon, Jun 19, 2023 at 08:41:54PM +0800, Heng Qi wrote:
+> > > On Mon, Jun 19, 2023 at 07:16:20AM -0400, Michael S. Tsirkin wrote:
+> > > > On Mon, Jun 19, 2023 at 06:57:38PM +0800, Heng Qi wrote:
+> > > > > Lay the foundation for the subsequent patch
+> > > > 
+> > > > which subsequent patch? this is the last one in series.
+> > > > 
+> > > > > to complete the coexistence
+> > > > > of XDP and virtio-net guest csum.
+> > > > > 
+> > > > > Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+> > > > > Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > ---
+> > > > >  drivers/net/virtio_net.c | 4 +---
+> > > > >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > > > index 25b486ab74db..79471de64b56 100644
+> > > > > --- a/drivers/net/virtio_net.c
+> > > > > +++ b/drivers/net/virtio_net.c
+> > > > > @@ -60,7 +60,6 @@ static const unsigned long guest_offloads[] = {
+> > > > >  	VIRTIO_NET_F_GUEST_TSO6,
+> > > > >  	VIRTIO_NET_F_GUEST_ECN,
+> > > > >  	VIRTIO_NET_F_GUEST_UFO,
+> > > > > -	VIRTIO_NET_F_GUEST_CSUM,
+> > > > >  	VIRTIO_NET_F_GUEST_USO4,
+> > > > >  	VIRTIO_NET_F_GUEST_USO6,
+> > > > >  	VIRTIO_NET_F_GUEST_HDRLEN
+> > > > 
+> > > > What is this doing? Drop support for VIRTIO_NET_F_GUEST_CSUM? Why?
+> > > 
+> > > guest_offloads[] is used by the VIRTIO_NET_CTRL_GUEST_OFFLOADS_SET
+> > > command to switch features when XDP is loaded/unloaded.
+> > > 
+> > > If the VIRTIO_NET_F_CTRL_GUEST_OFFLOADS feature is negotiated:
+> > > 1. When XDP is loaded, virtnet_xdp_set() uses virtnet_clear_guest_offloads()
+> > > to automatically turn off the features in guest_offloads[].
+> > > 
+> > > 2. when XDP is unloaded, virtnet_xdp_set() uses virtnet_restore_guest_offloads()
+> > > to automatically restore the features in guest_offloads[].
+> > > 
+> > > Now, this work no longer makes XDP and _F_GUEST_CSUM mutually
+> > > exclusive, so this patch removed the _F_GUEST_CSUM from guest_offloads[].
+> > > 
+> > > > This will disable all of guest offloads I think ..
+> > > 
+> > > No. This doesn't change the dependencies of other features on
+> > > _F_GUEST_CSUM. Removing _F_GUEST_CSUM here does not mean that other
+> > > features that depend on it will be turned off at the same time, such as
+> > > _F_GUEST_TSO{4,6}, F_GUEST_USO{4,6}, etc.
+> > > 
+> > > Thanks.
+> > 
+> > Hmm I don't get it.
+> > 
+> > static int virtnet_restore_guest_offloads(struct virtnet_info *vi)
+> > {               
+> >         u64 offloads = vi->guest_offloads;
+> >                         
+> >         if (!vi->guest_offloads)
+> >                 return 0;
+> >         
+> >         return virtnet_set_guest_offloads(vi, offloads); 
+> > }               
+> >                         
+> > is the bit _F_GUEST_CSUM set in vi->guest_offloads?
 > 
-> Thanks Andrii! :)
+> No, but first we doesn't clear _F_GUEST_CSUM in virtnet_clear_guest_offloads().
 > 
->>> Cc: stable@vger.kernel.org
->>> Fixes: 1dc92851849c ("bpf: kernel side support for BTF Var and DataSec")
+> If VIRTIO_NET_F_CTRL_GUEST_OFFLOADS is negotiated, features that can
+> be dynamically controlled by the VIRTIO_NET_CTRL_GUEST_OFFLOADS_SET
+> command must also be negotiated. Therefore, if GRO_HW_MASK features such
+> as _F_GUEST_TSO exist, then _F_GUEST_CSUM must exist (according to the
+> dependencies defined by the spec).
 > 
-> So do you think these trailers should be kept ? I suppose we can
-> either see this as a "new feature" to accommodate .isra that should go
-> through bpf-next or as a bug fix that goes through bpf and gets
-> backported to stable (without this, BTF wouldn't work on old kernels
-> built under a new clang and with LLVM_IAS=0 and CONFIG_KASAN=y so this
-> sounds like a legitimate bug fix to me, I just wanted to double check)
+> Now, we only dynamically turn off/on the features contained in
+> guest_offloads[] through XDP loading/unloading (with this patch,
+> _F_GUEST_CSUM will not be controlled), and _F_GUEST_CSUM is always on.
+> 
+> Another point is that the virtio-net NETIF_F_RXCSUM corresponding to
+> _F_GUEST_CSUM is only included in dev->features, not in dev->hw_features,
+> which means that users cannot manually control the switch of
+> _F_GUEST_CSUM.
 
-How many people really build the kernel with
-    LLVM=1 LLVM_IAS=0
-which uses clang compiler ans gcc 'as'.
-I think distro most likely won't do this if they intend to
-build the kernel with clang.
+I think I get it now.
 
-Note that
-    LLVM=1
-implies to use both clang compiler and clang assembler.
+> > 
+> > Because if it isn't then we'll try to set _F_GUEST_TSO
+> > without setting _F_GUEST_CSUM and that's a spec
+> > violation I think.
+> 
+> As explained above, we did not cause a specification violation.
+> 
+> Thanks.
 
-Using clang17 and 'LLVM=1 LLVM_IAS=0', with latest bpf-next,
-I actually hit some build errors like:
+Right.
 
-/tmp/video-bios-59fa52.s: Assembler messages:
-/tmp/video-bios-59fa52.s:4: Error: junk at end of line, first 
-unrecognized character is `"'
-/tmp/video-bios-59fa52.s:4: Error: file number less than one
-/tmp/video-bios-59fa52.s:5: Error: junk at end of line, first 
-unrecognized character is `"'
-/tmp/video-bios-59fa52.s:6: Error: junk at end of line, first 
-unrecognized character is `"'
-/tmp/video-bios-59fa52.s:7: Error: junk at end of line, first 
-unrecognized character is `"'
-/tmp/video-bios-59fa52.s:8: Error: junk at end of line, first 
-unrecognized character is `"'
-/tmp/video-bios-59fa52.s:9: Error: junk at end of line, first 
-unrecognized character is `"'
-/tmp/video-bios-59fa52.s:10: Error: junk at end of line, first 
-unrecognized character is `"'
-/tmp/video-bios-59fa52.s:68: Error: junk at end of line, first 
-unrecognized character is `"'
-clang: error: assembler command failed with exit code 1 (use -v to see 
-invocation)
-make[4]: *** [/home/yhs/work/bpf-next/scripts/Makefile.build:252: 
-arch/x86/realmode/rm/video-bios.o] Error 1
-make[4]: *** Waiting for unfinished jobs....
-/tmp/wakemain-88777c.s: Assembler messages:
-/tmp/wakemain-88777c.s:4: Error: junk at end of line, first unrecognized 
-character is `"'
-/tmp/wakemain-88777c.s:4: Error: file number less than one
-/tmp/wakemain-88777c.s:5: Error: junk at end of line, first unrecognized 
-character is `"'
-/tmp/wakemain-88777c.s:6: Error: junk at end of line, first unrecognized 
-character is `"'
-/tmp/wakemain-88777c.s:7: Error: junk at end of line, first unrecognized 
-character is `"'
-/tmp/wakemain-88777c.s:8: Error: junk at end of line, first unrecognized 
-character is `"'
-/tmp/wakemain-88777c.s:81: Error: junk at end of line, first 
-unrecognized character is `"'
-/tmp/wakemain-88777c.s:312: Error: junk at end of line, first 
-unrecognized character is `"'
-clang: error: assembler command failed with exit code 1 (use -v to see 
-invocation)
+> > 
+> > 
+> > > > 
+> > > > 
+> > > > > @@ -3522,10 +3521,9 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+> > > > >  	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO6) ||
+> > > > >  	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
+> > > > >  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
+> > > > > -		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM) ||
+> > > > >  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO4) ||
+> > > > >  		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO6))) {
+> > > > > -		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW/CSUM, disable GRO_HW/CSUM first");
+> > > > > +		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW, disable GRO_HW first");
+> > > > >  		return -EOPNOTSUPP;
+> > > > >  	}
+> > > > >  
+> > > > > -- 
+> > > > > 2.19.1.6.gb485710b
 
-Potentially because of my local gnu assembler 2.30-120.el8 won't work
-with some syntax generated by clang. Mixing clang compiler and arbitrary
-gnu assembler are not a good idea (see the above example). It might
-work with close-to-latest gnu assembler.
-
-To support function name like '<fname>.isra', some llvm work will be 
-needed, and it may take some time.
-
-So in my opinion, this patch is NOT a bug fix. It won't affect distro.
-Whether we should backport to the old kernel, I am not sure whether it
-is absolutely necessary as casual build can always remove LLVM_IAS=0 or
-hack the kernel source itself.
 
