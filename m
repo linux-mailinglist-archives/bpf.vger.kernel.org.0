@@ -1,137 +1,123 @@
-Return-Path: <bpf+bounces-2826-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 770BF734B44
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 07:17:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AAA9734C20
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 09:09:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81F991C2093B
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 05:17:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20162280FC1
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 07:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4603C34;
-	Mon, 19 Jun 2023 05:16:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CFD23C35;
+	Mon, 19 Jun 2023 07:09:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E84C290B
-	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 05:16:56 +0000 (UTC)
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF78AEE
-	for <bpf@vger.kernel.org>; Sun, 18 Jun 2023 22:16:54 -0700 (PDT)
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-778d823038bso290481939f.3
-        for <bpf@vger.kernel.org>; Sun, 18 Jun 2023 22:16:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21236210F
+	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 07:09:37 +0000 (UTC)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD07DD
+	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 00:09:36 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4f63ab1ac4aso3755727e87.0
+        for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 00:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687158574; x=1689750574;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7kPKQBWkCqfXL/YCyDu7OJatGpc+xQgvIt+1p6NnFSk=;
+        b=mJ5QZ3rS4xOIr3+xsEmuKE3E0MU3ecWR4V9UILBI2325IZ/tvxL65gjaKu31j0z5/w
+         6eNzEFJAxFmRhzkH+GQkTdQTAvLS18hhyU4zST2ix/wiw2KvUKPgs6iihry6Z2W0rrU1
+         O57ay5zM9BhEdsbc0VkCjCz1b3w13t9K7BfVCQ2AOgjMOyLos2IwILISaAFepSFnW5eB
+         hWpNp6n/RaruNnaNHATAgArK+UAzoUhTiApPuVXGHUn/uokF8QVrYsxVU87canf/Z0zb
+         fMfsj+vzOcmFWXgRUK2jBPumpnHFA80xM+wtPkZdmZhtJ2QvwAhz4G8K2DidAax1vgxR
+         BHQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687151814; x=1689743814;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        d=1e100.net; s=20221208; t=1687158574; x=1689750574;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=eMyLT01zqKPRiI1X/lV/7KH/QqoRQe0rS+m01dwVN7s=;
-        b=aQPZkGhjRRka4/lTrhvRB2fhVzgoXIKbLgbQVSSM56Vak1L1nshd1IiXGQQf9S10pF
-         N2k2yh2CaEdf1nnP1KHmGeVuh1QKCpvRjRZBCSRXlnPzklF8ObfrGDlDRAIRdQ567GGj
-         +D76wTTk2OKczQnZ12ArW6QljlIavKgVNRreMjJnXqoV/DtPBQTKlqhkaNZRWtTXCA6F
-         hdbzRpWUWRADBUh16GPFad5wgEHbpYi2SM/ATPSEgtXU5elm6E+1bk/E2F/mq91BGkp5
-         di58eiq9G2pTjsJ5YYbJY71C3zGkpkQhhOS+klc5YwQ0vZooPS51Srd8HAEvp+pMv3is
-         i/5A==
-X-Gm-Message-State: AC+VfDwYGvvyOve49/byUyHLmfFPEzEk4yQBsj9/UfyfC7KQPDw0n7+A
-	8BtTSKIEyS2wuGl26Dv3STcETWxzvW61to2jNclzTXhdgpQKtThL2A==
-X-Google-Smtp-Source: ACHHUZ5GYVs1CA2p6OFbtt3L3wCxopwlljQqI6CF8Vddx1qLPvu7A3FlhTsm90vdaOO9CPLWCfvWPmPJTIenMbVujgCBZSFsj14m
+        bh=7kPKQBWkCqfXL/YCyDu7OJatGpc+xQgvIt+1p6NnFSk=;
+        b=Yt3V7KGQ8cAefljQ5zK/mOybAo4nOEEQO492rGyq/x3A9028WMNQJSkwafsjBfAMFk
+         evMEtfRpYNNU9ZeqNbNx+A7N9sORkosAadtlHm+3JNqYzZ1c9RmYzbzBs8wcJauhrWAe
+         1rtHjDxHKxLN8/o/u+UM0/e2xuTUWf2BTbG8JGcXp7t+U4USRPfMrpq2kCk6oFKuSSE0
+         MdDXAWnVigJPyd0hX8v5tPIsyXp7Hqyyc0Hdf5WHmsq1hNJmbvcaYXl9C+xkGbBvWJmM
+         XIkmi/Pz7r2Wk4/8QqF295C4GKsFvVl2EIOVbKs/S8CL5njk5hjHAn6F/uGqijA2J5sf
+         qfjQ==
+X-Gm-Message-State: AC+VfDxpOwDgtfESC5qPwVdejfwAX/Qp+6T1uwskrAG/2AZgpe8IsR7T
+	RVc+JVONXbEiztoVbw8hsh0dBHythLd6S9o6aspIv1sdYM2TP8v4
+X-Google-Smtp-Source: ACHHUZ4kbqdIav0sKh0oO3RBA94X4jFU+D7iLgUmAolf7BabNdUsefiCvTvcBLMAXdHOX//puCaH7RxlT0UZvTOvgqM=
+X-Received: by 2002:a19:7719:0:b0:4f3:ac64:84f5 with SMTP id
+ s25-20020a197719000000b004f3ac6484f5mr3889250lfc.36.1687158574073; Mon, 19
+ Jun 2023 00:09:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2051:b0:77d:c2c3:4e39 with SMTP id
- z17-20020a056602205100b0077dc2c34e39mr2444681iod.1.1687151814083; Sun, 18 Jun
- 2023 22:16:54 -0700 (PDT)
-Date: Sun, 18 Jun 2023 22:16:54 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008f885d05fe74a486@google.com>
-Subject: [syzbot] [net?] KASAN: null-ptr-deref Read in nsim_dev_trap_report_work
-From: syzbot <syzbot+f9b37508c6a44a2b72b6@syzkaller.appspotmail.com>
-To: bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+From: Patrick ZHANG <patrickzhang2333@gmail.com>
+Date: Mon, 19 Jun 2023 15:09:22 +0800
+Message-ID: <CAOqUrdh5xGKM+8aKAmmH7vco5GxAQFej9-tVPD6UkEUg5Nn=vA@mail.gmail.com>
+Subject: eBPF Verifier's Design Principles
+To: bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
+Hi there,
+I am not sure I am doing this in the right way.
+I am writing to seek your guidance and expertise regarding kernel security.
+Specifically, my focus has been on the eBPF environment and its verifier,
+which plays a crucial role in ensuring kernel safety.
 
-syzbot found the following issue on:
+While conducting my research, I discovered that there are no official
+documents available that outline the principles of the verifier.
+Consequently, I have endeavored to deduce the kernel safety principles
+ensured by the verifier by studying its code. Based on my analysis, I
+have identified the following principles:
+1. Control Flow Integrity: It came to my attention that the verifier
+rejects BPF programs containing indirect call instructions (callx). By
+disallowing indirect control flow, the verifier ensures the identification
+of all branch targets, thereby upholding control flow integrity (CFI).
 
-HEAD commit:    3a2cb45ca0cc net: mlxsw: i2c: Switch back to use struct i2..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=158b6207280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=526f919910d4a671
-dashboard link: https://syzkaller.appspot.com/bug?extid=f9b37508c6a44a2b72b6
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+2. Memory Safety: BPF programs are restricted to accessing predefined
+data, including the stack, maps, and the context. The verifier effectively
+prevents out-of-bounds access and modifies memory access to thwart
+Spectre attacks, thus promoting memory safety.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+3. Prevention of Information Leak: Through a comprehensive analysis of
+all register types, the verifier prohibits the writing of pointer-type
+registers
+into maps. This preventive measure restricts user processes from reading
+kernel pointers, thereby mitigating the risk of information leaks.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5fa469ebaab3/disk-3a2cb45c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e92fd67e9282/vmlinux-3a2cb45c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5201fed94bfc/bzImage-3a2cb45c.xz
+4. Prevention of Denial-of-Service (DoS): The verifier guarantees the
+absence of deadlocks and crashes (e.g., division by zero), while also
+imposing a limit on the execution time of BPF programs (up to 1M
+instructions). These measures effectively prevent DoS attacks.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f9b37508c6a44a2b72b6@syzkaller.appspotmail.com
+I would greatly appreciate it if someone could review the aforementioned
+principles to ensure their accuracy and comprehensiveness. If there are
+any additional principles that I may have overlooked, I would be grateful
+for your insights on this matter.
 
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:68 [inline]
-BUG: KASAN: null-ptr-deref in _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
-BUG: KASAN: null-ptr-deref in netif_running include/linux/netdevice.h:3619 [inline]
-BUG: KASAN: null-ptr-deref in nsim_dev_trap_report_work+0x117/0xc80 drivers/net/netdevsim/dev.c:850
-Read of size 8 at addr 0000000000000038 by task kworker/1:2/29478
+Furthermore, I would like to explore why the static verifier was chosen as
+the means to guarantee kernel security when there are other sandboxing
+techniques that can achieve kernel safety by careful design.
 
-CPU: 1 PID: 29478 Comm: kworker/1:2 Not tainted 6.4.0-rc5-syzkaller-01182-g3a2cb45ca0cc #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
-Workqueue: events nsim_dev_trap_report_work
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
- print_report mm/kasan/report.c:465 [inline]
- kasan_report+0xec/0x130 mm/kasan/report.c:572
- check_region_inline mm/kasan/generic.c:181 [inline]
- kasan_check_range+0x141/0x190 mm/kasan/generic.c:187
- instrument_atomic_read include/linux/instrumented.h:68 [inline]
- _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
- netif_running include/linux/netdevice.h:3619 [inline]
- nsim_dev_trap_report_work+0x117/0xc80 drivers/net/netdevsim/dev.c:850
- process_one_work+0x99a/0x15e0 kernel/workqueue.c:2405
- worker_thread+0x67d/0x10c0 kernel/workqueue.c:2552
- kthread+0x344/0x440 kernel/kthread.c:379
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
-==================================================================
+The possible reasons I can think of are that verified (and jitted) BPF
+programs can run at nearly native speed, and that eBPF inherits the verifier
+from cBPF for compatibility reasons.
 
+Thank you very much for your time and attention. I appreciate the  feedback
+and insights.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Best,
+Patrick
 
