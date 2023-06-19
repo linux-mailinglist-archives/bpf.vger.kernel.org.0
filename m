@@ -1,137 +1,169 @@
-Return-Path: <bpf+bounces-2864-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2865-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4677735B10
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 17:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF77735B13
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 17:25:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8F801C209DC
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 15:24:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9118A1C20430
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 15:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63A4812B88;
-	Mon, 19 Jun 2023 15:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F7C12B86;
+	Mon, 19 Jun 2023 15:24:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6092D2F8;
-	Mon, 19 Jun 2023 15:24:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AA4DC433C8;
-	Mon, 19 Jun 2023 15:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687188257;
-	bh=N4a6+AKTlpfQu+hNLgDTvYGemlpqgXPewbtXySTT2Wk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kRzjt2nDIAl4X26ojRiB8w8CJVn45eTmiPbIYkIvDYRBR/QR7IVpfAXYd9FpfNQDQ
-	 OvemWMKmfnlcr5GwcS7TCX2oTJmzf2fUUsDJHf2Oq+4RHGmHWKbk0CASnuDz6Gk1Ld
-	 1e26ENdIJqn1qjqL2vy8CRe3zudh+ZqjAZ7btzz+Jja4UEKxYRLaqjs+hNR8TPWi48
-	 sYyUqJtdsNHbcbOzxo9zMe/AaYlu9nZhYjfHu5NSh21mKAk+otvslcioi5dkhxeNTF
-	 EnxnECqDbcsPkYZvvYUeyjGiH7IzMmaAIOnWvmMc+HuAd2WDWUtK2BFwEfTtd03m+J
-	 SY9K1sARFWi7g==
-Date: Mon, 19 Jun 2023 18:23:34 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v2 06/12] mm/execmem: introduce execmem_data_alloc()
-Message-ID: <20230619152334.GC52412@kernel.org>
-References: <20230616085038.4121892-1-rppt@kernel.org>
- <20230616085038.4121892-7-rppt@kernel.org>
- <87jzw0qu3s.ffs@tglx>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE12B12B75
+	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 15:24:54 +0000 (UTC)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664E2FA;
+	Mon, 19 Jun 2023 08:24:53 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b46f5f4d79so21804781fa.1;
+        Mon, 19 Jun 2023 08:24:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687188291; x=1689780291;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tvsv/WghBZtMVC+4mKl//bfuiXAwAB2g1EzwWwnS4WY=;
+        b=hmTfkVb+5LmAraeoRlAOtQU14wJrr/lgzvR+pDJxJ7X2TCQxz9veq5BwYSt39JR1um
+         fKJGbSp1IWE5aslsjXPVUho0EMDZ4bRE6wJkt768yw0v+lxdELB77ZDd9nAmmmZLEbVs
+         D5VHK5W0jz9fPmJsuYlOrMqoaZsr1vOK50OzAz39gP4y7j64wNGVM9ekZSm1jDo7bCrc
+         4tnCoZrgax2KIniW6LeEd1BtaYeYEgjtXZI2VS5n/n+3+R6XGkHtZKJiuNAVGUdP64Tp
+         jnx6X0d68TpmsanR2eHuE4wuWo0Y9n4ZGdtl29klrSRgrKYxtDCQEt1lu0b/ZrmfwuxK
+         5k7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687188291; x=1689780291;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tvsv/WghBZtMVC+4mKl//bfuiXAwAB2g1EzwWwnS4WY=;
+        b=X/wCmEFUwOZ/+K0qwwxL1AgRoIdNjP8RFj69XJQSji7lvkcrwUFoDYFA6JK4aKvfbS
+         d+mWpD3HmmuV0itMSDfFMgtYVJCKaEXWYfkEq6bNBCoV3p0WjBmgkV1z22taOqXiXbRq
+         9GBPFqEqVZYuRLrw8PEzlnvrnm8gYVg/hEtXPlythFYzrbw1A4bYEnnoGil6ngjb006m
+         Ae67xZZNeU4tXRuoEPHIRjKrQU7RWhRvnHKq2qcppwiP3Ko7ftd3/BBzuOOUvdYYIlAz
+         bCe9DokyFeUp1sKZFp+z1HUNWaWU8Zf3HV45gyY0AiuX7Be7eeLd/25V6Y2IYFR+jwHw
+         8aRA==
+X-Gm-Message-State: AC+VfDxTPmiMHOp1z4Jn8I4ezXq5Yycnb0TdGowJmso3Wdz7Hli1l/nR
+	ybd4cZu/IPRoC7UpBI8KwD8=
+X-Google-Smtp-Source: ACHHUZ7A1W0yVDwzsTAdsr/IbmVvuV/7c1xvRqXSQlsbE31LJj2Z0Ti8MaZzcSuz6xpu+pZnnF0n4A==
+X-Received: by 2002:a2e:b5cc:0:b0:2b4:7500:3094 with SMTP id g12-20020a2eb5cc000000b002b475003094mr1308798ljn.3.1687188291342;
+        Mon, 19 Jun 2023 08:24:51 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id 15-20020a05651c008f00b002b47e824518sm388769ljq.76.2023.06.19.08.24.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jun 2023 08:24:50 -0700 (PDT)
+Message-ID: <478f608e3b8de1218798c792b34dca75fa91f6a9.camel@gmail.com>
+Subject: Re: [PATCH bpf] bpf/btf: Accept function names that contain dots
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Florent Revest <revest@chromium.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+  martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org,  song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org,  sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+ nathan@kernel.org,  ndesaulniers@google.com, trix@redhat.com,
+ stable@vger.kernel.org
+Date: Mon, 19 Jun 2023 18:24:49 +0300
+In-Reply-To: <CABRcYmKY_4_udQtsu7E9CVPruPphnejcgCvGnfHzzu-yc4Kshg@mail.gmail.com>
+References: <20230615145607.3469985-1-revest@chromium.org>
+	 <CABRcYm+C+tPwXAGnaDRR_U2hzyt+09fjkKBp3tPx6iKT4wBE2Q@mail.gmail.com>
+	 <fbd79f5f2b250ec913c78d91b94ca96fb96f67ee.camel@gmail.com>
+	 <CABRcYmLaummOg=Nf0qXVN2eci=25OqXLD0zpCUz4CgmTjvo9LA@mail.gmail.com>
+	 <CABRcYmKY_4_udQtsu7E9CVPruPphnejcgCvGnfHzzu-yc4Kshg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87jzw0qu3s.ffs@tglx>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Mon, Jun 19, 2023 at 12:32:55AM +0200, Thomas Gleixner wrote:
-> Mike!
-> 
-> Sorry for being late on this ...
-> 
-> On Fri, Jun 16 2023 at 11:50, Mike Rapoport wrote:
-> 
-> The fact that my suggestions had a 'mod_' namespace prefix does not make
-> any of my points moot.
+On Mon, 2023-06-19 at 15:55 +0200, Florent Revest wrote:
+> On Mon, Jun 19, 2023 at 1:20=E2=80=AFPM Florent Revest <revest@chromium.o=
+rg> wrote:
+> >=20
+> > On Thu, Jun 15, 2023 at 7:05=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
+.com> wrote:
+> > >=20
+> > > On Thu, 2023-06-15 at 17:44 +0200, Florent Revest wrote:
+> > > > An easy reproducer is:
+> > > >=20
+> > > > $ touch pwet.c
+> > > >=20
+> > > > $ clang -g -fsanitize=3Dkernel-address -c -o pwet.o pwet.c
+> > > > $ llvm-dwarfdump pwet.o | grep module_ctor
+> > > >=20
+> > > > $ clang -fno-integrated-as -g -fsanitize=3Dkernel-address -c -o pwe=
+t.o pwet.c
+> > > > $ llvm-dwarfdump pwet.o | grep module_ctor
+> > > >                 DW_AT_name      ("asan.module_ctor")
+> > >=20
+> > > Interestingly, I am unable to reproduce it using either
+> > > clang version 14.0.0-1ubuntu1 or clang main (bd66f4b1da30).
+> >=20
+> > Somehow, I didn't think of trying other clang versions! Thanks, that's
+> > a good point Eduard. :)
+> >=20
+> > I also can't reproduce it on a 14x build.
+> >=20
+> > However, I seem to be able to reproduce it on main:
+> >=20
+> >   git clone https://github.com/llvm/llvm-project.git
+> >   mkdir llvm-project/build
+> >   cd llvm-project/build
+> >   git checkout bd66f4b1da30
+> >   cmake -DLLVM_ENABLE_PROJECTS=3Dclang -DCMAKE_BUILD_TYPE=3DRelease -G
+> > "Unix Makefiles" ../llvm
+> >   make -j $(nproc)
+> >=20
+> >   bin/clang -fno-integrated-as -g -fsanitize=3Dkernel-address -c -o
+> > ~/pwet.o ~/pwet.c
+> >   bin/llvm-dwarfdump ~/pwet.o | grep module_ctor
+> >   # Shows module_ctor
+> >=20
+> > I started a bisection, hopefully that will point to something interesti=
+ng
+>=20
+> The bisection pointed to a LLVM patch from Nick in October 2022:
+> e3bb359aacdd ("[clang][Toolchains][Gnu] pass -g through to assembler")
+>=20
+> Based on the context I have, that commit sounds fair enough. I don't
+> think LLVM does anything wrong here, it seems like BPF should be the
+> one dealing with dots in function debug info.
 
-The prefix does not matter. What matters is what we are trying to abstract.
-Your suggestion is based of the memory used by modules. I'm abstracting
-address spaces for different types of executable and related memory. They
-are similar, yes, but they are not the same.
+That explains why I could not reproduce the issue: I tried with gas 2.38.
+Using gas 2.40 I see the same behavior as you.
 
-The TEXT, INIT_TEXT and *_DATA do not match to what we have from arch POV.
-They have modules with text, rw data, ro data and ro after init data and
-the memory for the generated code. The memory for modules and memory for
-other users have different restrictions for their placement, so using a
-single TEXT type for them is semantically wrong. BPF and kprobes do not
-necessarily must be at the same address range as modules and init text does
-not differ from normal text.
+If one tries to generate assembly file with '-fsanitize':
 
-> Song did an extremly good job in abstracting things out, but you decided
-> to ditch his ground work instead of building on it and keeping the good
-> parts. That's beyond sad.
+  $ clang -fno-integrated-as -g -fsanitize=3Dkernel-address -S -o pwet.s pw=
+et.c
+  $ cat pwet.s
+  	.text
+  	.file	"pwet.c"
+  	.p2align	4, 0x90                         # -- Begin function asan.module=
+_ctor
+  	.type	asan.module_ctor,@function
+  asan.module_ctor:                       # @asan.module_ctor
+  .Lfunc_begin0:
+      ...
 
-Actually not. The core idea to describe address range suitable for code
-allocations with a structure and have arch code initialize this structure
-at boot and be done with it is the same. But I don't think vmalloc
-parameters belong there, they should be completely encapsulated in the
-allocator. Having fallback range named explicitly is IMO clearer than an
-array of address spaces.
+And then compile it using Gnu assembler:
 
-I accept your point that the structures describing ranges for different
-types should be unified and I've got carried away with making the wrappers
-to convert that structure to parameters to the core allocation function.
+  $ as --64 -o pwet.o pwet.s -g -gdwarf-5
 
-I've chosen to define ranges as fields in the containing structure rather
-than enum with types and an array because I strongly feel that the callers
-should not care about these parameters. These parameters are defined by
-architecture and the callers should not need to know how each and every
-arch defines restrictions suitable for modules, bpf or kprobes.
+The behavior differs between 2.38 and 2.40, the older version does not
+produce debug entry for 'asan.module_ctor', while newer does.
 
-That's also the reason to have different names for API calls, exactly to
-avoid having alloc(KPROBES,...), alloc(BPF, ...), alloc(MODULES, ...) an so
-on.
-
-All in all, if I filter all the ranting, this boils down to having a
-unified structure for all the address ranges and passing this structure
-from the wrappers to the core alloc as is rather that translating it to
-separate parameters, with which I agree.
-
-> Thanks,
-> 
->         tglx
-
--- 
-Sincerely yours,
-Mike.
 
