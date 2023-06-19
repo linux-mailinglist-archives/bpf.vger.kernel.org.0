@@ -1,128 +1,181 @@
-Return-Path: <bpf+bounces-2844-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2845-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8CA37355EA
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 13:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DBA2735622
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 13:50:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05B411C20753
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 11:34:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 287C31C209B9
+	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 11:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDFCDD52C;
-	Mon, 19 Jun 2023 11:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6568D532;
+	Mon, 19 Jun 2023 11:50:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A86796FAD
-	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 11:34:37 +0000 (UTC)
-Received: from out-6.mta0.migadu.com (out-6.mta0.migadu.com [91.218.175.6])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A96100
-	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 04:34:34 -0700 (PDT)
-Date: Mon, 19 Jun 2023 07:34:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1687174472;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Tt3RWh8BEKoqLhK86LDh7llJ14l6KCTXk/okAyPXAzA=;
-	b=i+cENnWbA17Y+F/fishc8UmKkX2d11aFrfbkEA/RSeJGs8DaK+pP54Vf1C7aoZ8NsEj74R
-	cXaE50KWXHIuXWZXVuGC783hgIjWLesjrEEDAYhwTaqLKdCoI85w4n4+GuOUgBvzA2QigP
-	oa1A17/zsm0VN2UgH6YNfjC3Cc/g4gI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Andy Lutomirski <luto@kernel.org>
-Cc: Mike Rapoport <rppt@kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick P Edgecombe <rick.p.edgecombe@intel.com>,
-	"Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [PATCH v2 02/12] mm: introduce execmem_text_alloc() and
- jit_text_alloc()
-Message-ID: <20230619113426.c37bpwvdagbzyevn@moria.home.lan>
-References: <20230616085038.4121892-1-rppt@kernel.org>
- <20230616085038.4121892-3-rppt@kernel.org>
- <f9a7eebe-d36e-4587-b99d-35d4edefdd14@app.fastmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BBF88C06
+	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 11:50:18 +0000 (UTC)
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EFCC9;
+	Mon, 19 Jun 2023 04:50:17 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 41be03b00d2f7-54fac329a71so1525268a12.1;
+        Mon, 19 Jun 2023 04:50:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687175416; x=1689767416;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=64u26Yf13gseox4XSvgxkjMEaJCrfYA5il6c3OKayvc=;
+        b=DqB0N1f3nW5gWg5lKR2R4SXptZMKR4VsBaU8Mk/DsDeP20DA9jYOeOUWf1K387neqo
+         VUlPRncrrK8V5B5KfkSl5q5BzPr6QrmJEKE8Bse72JjtRRS9a5Trl4GmwBrf/4A0lr8n
+         B5as/3eoIizGcKofy+elfHvSRQQkflB2vIlL9EgjRSlb4+Ei6Fm+4+ZIUcweSguN9pd0
+         zoOWrj9FozMak+VUSz0sz9Xv/MksRVp4MVn6hwoEXI/1Y9NjlxS/Z9Kra+q6twioFRdZ
+         T0e+vxgJSbKUXo5R7/gURT/KRwclaEGiMbEKBM0qCls3GTv/DijDKh6LA2sBGiMgfxVl
+         AxvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687175416; x=1689767416;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=64u26Yf13gseox4XSvgxkjMEaJCrfYA5il6c3OKayvc=;
+        b=aGuKe5kkgzLKeSJVm9FFwxJ7UcI475s5E+TWeT66by5hdksSTTQf4rxZfZRNfrRQG5
+         yMrPXn+8vdTnDkTx37RVoIsJO/Gw52A0X4WoJv1RryZvgH50RcEculq8Y/E5KFXluOAj
+         OCs6LBhPDYoVXYoZ36C8rHJ31rVTc/i6+RyMMgSJHxmPyjgrALx4AH+eX8qY/Sch1sdO
+         yTXi7zxXACQ/RMwfqkcoOA65qKxGijCymDFsy9c2u450DZceb9Mc/Pf5YsAsaLqTcNHh
+         jBEDiUDORngGDmCkJqAR3spH0MJWz71ODpHUPb0Uc9ysNA/mAhDPPvk1EeZ6pwlEo5wH
+         Sj2w==
+X-Gm-Message-State: AC+VfDxNHC7hfpscrjkcInYW1qwtF4nFRLa0b6/L1pDjRNwf9uadUJOd
+	T3lzsri7iAFMhjd5piwJsjg=
+X-Google-Smtp-Source: ACHHUZ5A8OdIEqGvX58BuD1kdcWZu0WstUIytLxJuSmGmLkicbiqfpR5O613urudGUlNH9HIJ5NbNg==
+X-Received: by 2002:a05:6a21:329e:b0:10e:d90f:35d5 with SMTP id yt30-20020a056a21329e00b0010ed90f35d5mr6610862pzb.51.1687175416381;
+        Mon, 19 Jun 2023 04:50:16 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.86])
+        by smtp.gmail.com with ESMTPSA id k1-20020a170902694100b001aaf370b1c7sm20287882plt.278.2023.06.19.04.50.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jun 2023 04:50:15 -0700 (PDT)
+From: menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To: yhs@meta.com,
+	alexei.starovoitov@gmail.com
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	benbjiang@tencent.com,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Menglong Dong <imagedong@tencent.com>
+Subject: [PATCH bpf-next v6 0/3] bpf, x86: allow function arguments up to 12 for TRACING
+Date: Mon, 19 Jun 2023 19:49:44 +0800
+Message-Id: <20230619114947.1543848-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f9a7eebe-d36e-4587-b99d-35d4edefdd14@app.fastmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Jun 17, 2023 at 01:38:29PM -0700, Andy Lutomirski wrote:
-> On Fri, Jun 16, 2023, at 1:50 AM, Mike Rapoport wrote:
-> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> >
-> > module_alloc() is used everywhere as a mean to allocate memory for code.
-> >
-> > Beside being semantically wrong, this unnecessarily ties all subsystems
-> > that need to allocate code, such as ftrace, kprobes and BPF to modules
-> > and puts the burden of code allocation to the modules code.
-> >
-> > Several architectures override module_alloc() because of various
-> > constraints where the executable memory can be located and this causes
-> > additional obstacles for improvements of code allocation.
-> >
-> > Start splitting code allocation from modules by introducing
-> > execmem_text_alloc(), execmem_free(), jit_text_alloc(), jit_free() APIs.
-> >
-> > Initially, execmem_text_alloc() and jit_text_alloc() are wrappers for
-> > module_alloc() and execmem_free() and jit_free() are replacements of
-> > module_memfree() to allow updating all call sites to use the new APIs.
-> >
-> > The intention semantics for new allocation APIs:
-> >
-> > * execmem_text_alloc() should be used to allocate memory that must reside
-> >   close to the kernel image, like loadable kernel modules and generated
-> >   code that is restricted by relative addressing.
-> >
-> > * jit_text_alloc() should be used to allocate memory for generated code
-> >   when there are no restrictions for the code placement. For
-> >   architectures that require that any code is within certain distance
-> >   from the kernel image, jit_text_alloc() will be essentially aliased to
-> >   execmem_text_alloc().
-> >
-> 
-> Is there anything in this series to help users do the appropriate synchronization when the actually populate the allocated memory with code?  See here, for example:
-> 
-> https://lore.kernel.org/linux-fsdevel/cb6533c6-cea0-4f04-95cf-b8240c6ab405@app.fastmail.com/T/#u
+From: Menglong Dong <imagedong@tencent.com>
 
-We're still in need of an arch independent text_poke() api.
+For now, the BPF program of type BPF_PROG_TYPE_TRACING can only be used
+on the kernel functions whose arguments count less than 6. This is not
+friendly at all, as too many functions have arguments count more than 6.
+According to the current kernel version, below is a statistics of the
+function arguments count:
+
+argument count | function count
+7              | 704
+8              | 270
+9              | 84
+10             | 47
+11             | 47
+12             | 27
+13             | 22
+14             | 5
+15             | 0
+16             | 1
+
+Therefore, let's enhance it by increasing the function arguments count
+allowed in arch_prepare_bpf_trampoline(), for now, only x86_64.
+
+In the 1st patch, we save/restore regs with BPF_DW size to make the code
+in save_regs()/restore_regs() simpler.
+
+In the 2nd patch, we make arch_prepare_bpf_trampoline() support to copy
+function arguments in stack for x86 arch. Therefore, the maximum
+arguments can be up to MAX_BPF_FUNC_ARGS for FENTRY and FEXIT. Meanwhile,
+we clean the potentian garbage value when we copy the arguments on-stack.
+
+And the 3rd patches are for the testcases of the this series.
+
+Changes since v5:
+- adjust the commit log of the 1st patch, avoiding confusing people that
+  bugs exist in current code
+- introduce get_nr_regs() to get the space that used to pass args on
+  stack correct in the 2nd patch
+- add testcases to tracing_struct.c instead of fentry_test.c and
+  fexit_test.c
+
+Changes since v4:
+- consider the case of the struct in arguments can't be hold by regs
+- add comment for some code
+- add testcases for MODIFY_RETURN
+- rebase to the latest
+
+Changes since v3:
+- try make the stack pointer 16-byte aligned. Not sure if I'm right :)
+- introduce clean_garbage() to clean the grabage when argument count is 7
+- use different data type in bpf_testmod_fentry_test{7,12}
+- add testcase for grabage values in ctx
+
+Changes since v2:
+- keep MAX_BPF_FUNC_ARGS still
+- clean garbage value in upper bytes in the 2nd patch
+- move bpf_fentry_test{7,12} to bpf_testmod.c and rename them to
+  bpf_testmod_fentry_test{7,12} meanwhile in the 3rd patch
+
+Changes since v1:
+- change the maximun function arguments to 14 from 12
+- add testcases (Jiri Olsa)
+- instead EMIT4 with EMIT3_off32 for "lea" to prevent overflow
+
+Menglong Dong (3):
+  bpf, x86: save/restore regs with BPF_DW size
+  bpf, x86: allow function arguments up to 12 for TRACING
+  selftests/bpf: add testcase for TRACING with 6+ arguments
+
+ arch/x86/net/bpf_jit_comp.c                   | 249 +++++++++++++++---
+ net/bpf/test_run.c                            |  23 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  49 +++-
+ .../selftests/bpf/prog_tests/fentry_fexit.c   |   4 +-
+ .../selftests/bpf/prog_tests/fentry_test.c    |   2 +
+ .../selftests/bpf/prog_tests/fexit_test.c     |   2 +
+ .../selftests/bpf/prog_tests/modify_return.c  |  20 +-
+ .../selftests/bpf/prog_tests/tracing_struct.c |  19 ++
+ .../testing/selftests/bpf/progs/fentry_test.c |  32 +++
+ .../testing/selftests/bpf/progs/fexit_test.c  |  33 +++
+ .../selftests/bpf/progs/modify_return.c       |  40 +++
+ .../selftests/bpf/progs/tracing_struct.c      |  48 ++++
+ 12 files changed, 471 insertions(+), 50 deletions(-)
+
+-- 
+2.40.1
+
 
