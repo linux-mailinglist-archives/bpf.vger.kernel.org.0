@@ -1,177 +1,104 @@
-Return-Path: <bpf+bounces-2878-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2879-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A9FA736227
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 05:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 662927363A8
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 08:36:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C50A1C209CB
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 03:24:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 981B91C20A2A
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 06:36:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AC6415CF;
-	Tue, 20 Jun 2023 03:24:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EDF8256E;
+	Tue, 20 Jun 2023 06:36:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C461D15AE;
-	Tue, 20 Jun 2023 03:24:37 +0000 (UTC)
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC8EE59;
-	Mon, 19 Jun 2023 20:24:34 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vla-UuY_1687231470;
-Received: from localhost(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0Vla-UuY_1687231470)
-          by smtp.aliyun-inc.com;
-          Tue, 20 Jun 2023 11:24:30 +0800
-Date: Tue, 20 Jun 2023 11:24:30 +0800
-From: Heng Qi <hengqi@linux.alibaba.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH net-next 3/4] virtio-net: support coexistence of XDP and
- _F_GUEST_CSUM
-Message-ID: <20230620032430.GE74977@h68b04307.sqa.eu95>
-References: <20230619105738.117733-1-hengqi@linux.alibaba.com>
- <20230619105738.117733-4-hengqi@linux.alibaba.com>
- <20230619072320-mutt-send-email-mst@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053531FA2;
+	Tue, 20 Jun 2023 06:36:02 +0000 (UTC)
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id D2586E6E;
+	Mon, 19 Jun 2023 23:36:00 -0700 (PDT)
+Date: Tue, 20 Jun 2023 08:35:55 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Florent Revest <revest@chromium.org>
+Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, kadlec@netfilter.org, fw@strlen.de,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, lirongqing@baidu.com, wangli39@baidu.com,
+	zhangyu31@baidu.com, daniel@iogearbox.net, ast@kernel.org,
+	kpsingh@kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH nf] netfilter: conntrack: Avoid nf_ct_helper_hash uses
+ after free
+Message-ID: <ZJFIy+oJS+vTGJer@calendula>
+References: <20230615152918.3484699-1-revest@chromium.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230619072320-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230615152918.3484699-1-revest@chromium.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 19, 2023 at 07:26:44AM -0400, Michael S. Tsirkin wrote:
-> On Mon, Jun 19, 2023 at 06:57:37PM +0800, Heng Qi wrote:
-> > We are now re-probing the csum related fields and  trying
-> > to have XDP and RX hw checksum capabilities coexist on the
-> > XDP path. For the benefit of:
-> > 1. RX hw checksum capability can be used if XDP is loaded.
-> > 2. Avoid packet loss when loading XDP in the vm-vm scenario.
-> > 
-> > Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
-> > Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >  drivers/net/virtio_net.c | 36 ++++++++++++++++++++++++------------
-> >  1 file changed, 24 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 07b4801d689c..25b486ab74db 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -1709,6 +1709,7 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
-> >  	struct net_device *dev = vi->dev;
-> >  	struct sk_buff *skb;
-> >  	struct virtio_net_hdr_mrg_rxbuf *hdr;
-> > +	__u8 flags;
-> >  
-> >  	if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
-> >  		pr_debug("%s: short packet %i\n", dev->name, len);
-> > @@ -1717,6 +1718,8 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
-> >  		return;
-> >  	}
-> >  
-> > +	flags = ((struct virtio_net_hdr_mrg_rxbuf *)buf)->hdr.flags;
-> > +
-> >  	if (vi->mergeable_rx_bufs)
-> >  		skb = receive_mergeable(dev, vi, rq, buf, ctx, len, xdp_xmit,
-> >  					stats);
+On Thu, Jun 15, 2023 at 05:29:18PM +0200, Florent Revest wrote:
+> If register_nf_conntrack_bpf() fails (for example, if the .BTF section
+> contains an invalid entry), nf_conntrack_init_start() calls
+> nf_conntrack_helper_fini() as part of its cleanup path and
+> nf_ct_helper_hash gets freed.
 > 
-> what's going on here?
-
-Hi, Michael.
-
-Is your question about the function of this code?
-1. If yes,
-this sentence saves the flags value in virtio-net-hdr in advance
-before entering the XDP processing logic, so that it can be used to
-judge further logic after XDP processing.
-
-If _NEEDS_CSUM is included in flags before XDP processing, then after
-XDP processing we need to re-probe the csum fields and calculate the
-pseudo-header checksum.
-
-2. If not,
-do you mean that mergeable and small modes should be distinguished for
-save actions?
-The answer is that we don't need it. The information in virtio-net-hdr in
-the current small mode is also forcibly converted into the
-virtio_net_hdr_mrg_rxbuf structure, which is consistent with the
-virtio_net_hdr structure in terms of code layout, and the results are
-consistent.
-
-If you think this is semantically wrong, then we need a bugfix patch.
-The simplest example is in receive_small_xdp():
-"
-unsigned int header_offset = VIRTNET_RX_PAD + xdp_headroom;
-...
-struct virtio_net_hdr_mrg_rxbuf *hdr = buf + header_offset; "
-
-
-Thanks.
-
+> Further netfilter modules like netfilter_conntrack_ftp don't check
+> whether nf_conntrack initialized correctly and call
+> nf_conntrack_helpers_register() which accesses the freed
+> nf_ct_helper_hash and causes a uaf.
 > 
-> > @@ -1728,19 +1731,28 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
-> >  	if (unlikely(!skb))
-> >  		return;
-> >  
-> > -	hdr = skb_vnet_hdr(skb);
-> > -	if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report)
-> > -		virtio_skb_set_hash((const struct virtio_net_hdr_v1_hash *)hdr, skb);
-> > -
-> > -	if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
-> > -		skb->ip_summed = CHECKSUM_UNNECESSARY;
-> > +	if (unlikely(vi->xdp_enabled)) {
-> > +		if (virtnet_set_csum_after_xdp(vi, skb, flags) < 0) {
-> > +			pr_debug("%s: errors occurred in flow dissector setting csum",
-> > +				 dev->name);
-> > +			goto frame_err;
-> > +		}
-> >  
-> > -	if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
-> > -				  virtio_is_little_endian(vi->vdev))) {
-> > -		net_warn_ratelimited("%s: bad gso: type: %u, size: %u\n",
-> > -				     dev->name, hdr->hdr.gso_type,
-> > -				     hdr->hdr.gso_size);
-> > -		goto frame_err;
-> > +	} else {
-> > +		hdr = skb_vnet_hdr(skb);
-> > +		if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report)
-> > +			virtio_skb_set_hash((const struct virtio_net_hdr_v1_hash *)hdr, skb);
-> > +
-> > +		if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
-> > +			skb->ip_summed = CHECKSUM_UNNECESSARY;
-> > +
-> > +		if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
-> > +					  virtio_is_little_endian(vi->vdev))) {
-> > +			net_warn_ratelimited("%s: bad gso: type: %u, size: %u\n",
-> > +					     dev->name, hdr->hdr.gso_type,
-> > +					     hdr->hdr.gso_size);
-> > +			goto frame_err;
-> > +		}
-> >  	}
-> >  
-> >  	skb_record_rx_queue(skb, vq2rxq(rq->vq));
-> > -- 
-> > 2.19.1.6.gb485710b
+> This patch guards nf_conntrack_helper_register() from accessing
+> freed/uninitialized nf_ct_helper_hash maps and fixes a boot-time
+> use-after-free.
+
+How could this possibly happen?
+
+nf_conntrack_ftp depends on nf_conntrack.
+
+If nf_conntrack fails to load, how can nf_conntrack_ftp be loaded?
+
+> Cc: stable@vger.kernel.org
+> Fixes: 12f7a505331e ("netfilter: add user-space connection tracking helper infrastructure")
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+>  net/netfilter/nf_conntrack_helper.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/net/netfilter/nf_conntrack_helper.c b/net/netfilter/nf_conntrack_helper.c
+> index 0c4db2f2ac43..f22691f83853 100644
+> --- a/net/netfilter/nf_conntrack_helper.c
+> +++ b/net/netfilter/nf_conntrack_helper.c
+> @@ -360,6 +360,9 @@ int nf_conntrack_helper_register(struct nf_conntrack_helper *me)
+>  	BUG_ON(me->expect_class_max >= NF_CT_MAX_EXPECT_CLASSES);
+>  	BUG_ON(strlen(me->name) > NF_CT_HELPER_NAME_LEN - 1);
+>  
+> +	if (!nf_ct_helper_hash)
+> +		return -ENOENT;
+> +
+>  	if (me->expect_policy->max_expected > NF_CT_EXPECT_MAX_CNT)
+>  		return -EINVAL;
+>  
+> @@ -515,4 +518,5 @@ int nf_conntrack_helper_init(void)
+>  void nf_conntrack_helper_fini(void)
+>  {
+>  	kvfree(nf_ct_helper_hash);
+> +	nf_ct_helper_hash = NULL;
+>  }
+> -- 
+> 2.41.0.162.gfafddb0af9-goog
+> 
 
