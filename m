@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-2885-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2886-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC0A673665E
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 10:37:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1A9F736661
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 10:37:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 681D6280FB0
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 08:37:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86935280E3F
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 08:37:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2B6C125;
-	Tue, 20 Jun 2023 08:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF54AD48;
+	Tue, 20 Jun 2023 08:36:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9A6AD56
-	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 08:36:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1877C433C0;
-	Tue, 20 Jun 2023 08:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDC6A92D
+	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 08:36:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88662C433C0;
+	Tue, 20 Jun 2023 08:36:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687250204;
-	bh=h//siKybRBzMTZgE+8dt4NYeHULN+9EGiD1YACvFZDU=;
+	s=k20201202; t=1687250214;
+	bh=06oeXnl0kz7cJxQhrJIMD+OV+KR3HkftQMs7oAY3JQQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MPAK2AzzmGcS73XYJqKszO4y8q13fFVoahcpij8v0zLRmhdEFzxTWzsJzo1H7cxVC
-	 cPL162TRhJCJr8tmsjokx2wQ80wjoS9bS4O6AS7JgSOiZYTTklxS4p3r3i4vKGSmNW
-	 J1ba1Y5lrGN1TdWeJWrtpPKkaiJMTGw/21ZjTrpPa4/N8B2+6O00h8pwwkmVEjrQbm
-	 4gcZXZn5bxXjq4fP2MA1X9GREIPViLmSL7fP6Va6Z024VB5nT99NRsJPkVKR2iPEAS
-	 3aas/3Avkb0Kqzz0ZhF2tqiI8FP942CelPl5kDvNaaW2ku9KiMCRJx4wl07hpimOIz
-	 tNvlA0tlAG5VQ==
+	b=bpY2RhsXiviTjXoV6dFpk3/hVJF0SCXEcowYAkS6IJgjxLiagI6zyOwmmmxs/pV9P
+	 EShy9+Z9TkUpkEcRN7EBP0fjGWfmQbHOQYmAr0A3VmMGeHYNaB1tCz/vdYjMVdBy5U
+	 tH6bLsWMumfMTJg5he3MrS6Ry8DqMv5/jV3jKqElbQ7D7+RtI3gxKPxelqlCBvuRtO
+	 iSDpyREIv3lIHc1BHXxFqOgQw1Mvv+tvsnXAgDJPJ5/abCZES5giRNLIeYFA/zZgYE
+	 qMufnzZk/3D0q9emZMbWMs4oTlUd5Z8XfiF9OZQkq7o01ZjtbtUJxIZO7nRoWvrwSW
+	 IxyXlpVHSlq/g==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -42,9 +42,9 @@ Cc: bpf@vger.kernel.org,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>
-Subject: [PATCHv2 bpf-next 05/24] libbpf: Add uprobe_multi attach type and link names
-Date: Tue, 20 Jun 2023 10:35:31 +0200
-Message-ID: <20230620083550.690426-6-jolsa@kernel.org>
+Subject: [PATCHv2 bpf-next 06/24] libbpf: Add elf symbol iterator
+Date: Tue, 20 Jun 2023 10:35:32 +0200
+Message-ID: <20230620083550.690426-7-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230620083550.690426-1-jolsa@kernel.org>
 References: <20230620083550.690426-1-jolsa@kernel.org>
@@ -56,35 +56,259 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding new uprobe_multi attach type and link names,
-so the functions can resolve the new values.
+Adding elf symbol iterator object (and some functions) that follow
+open-coded iterator pattern and some functions to ease up iterating
+elf object symbols.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+The idea is to iterate single symbol section with:
+
+  struct elf_symbol_iter iter;
+  struct elf_symbol *sym;
+
+  if (elf_symbol_iter_new(&iter, elf, binary_path, SHT_DYNSYM))
+        goto error;
+
+  while ((sym = elf_symbol_iter_next(&iter))) {
+        ...
+  }
+
+I considered opening the elf inside the iterator and iterate all symbol
+sections, but then it gets more complicated wrt user checks for when
+the next section is processed.
+
+Plus side is the we don't need 'exit' function, because caller/user is
+in charge of that.
+
+The returned iterated symbol object from elf_symbol_iter_next function
+is placed inside the struct elf_symbol_iter, so no extra allocation or
+argument is needed.
+
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/lib/bpf/libbpf.c | 179 ++++++++++++++++++++++++++---------------
+ 1 file changed, 114 insertions(+), 65 deletions(-)
 
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 47632606b06d..af52188daa80 100644
+index af52188daa80..cdac368c7ce1 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -117,6 +117,7 @@ static const char * const attach_type_name[] = {
- 	[BPF_PERF_EVENT]		= "perf_event",
- 	[BPF_TRACE_KPROBE_MULTI]	= "trace_kprobe_multi",
- 	[BPF_STRUCT_OPS]		= "struct_ops",
-+	[BPF_TRACE_UPROBE_MULTI]	= "trace_uprobe_multi",
- };
+@@ -10824,6 +10824,109 @@ static Elf_Scn *elf_find_next_scn_by_type(Elf *elf, int sh_type, Elf_Scn *scn)
+ 	return NULL;
+ }
  
- static const char * const link_type_name[] = {
-@@ -131,6 +132,7 @@ static const char * const link_type_name[] = {
- 	[BPF_LINK_TYPE_KPROBE_MULTI]		= "kprobe_multi",
- 	[BPF_LINK_TYPE_STRUCT_OPS]		= "struct_ops",
- 	[BPF_LINK_TYPE_NETFILTER]		= "netfilter",
-+	[BPF_LINK_TYPE_UPROBE_MULTI]		= "uprobe_multi",
- };
++struct elf_symbol {
++	const char *name;
++	unsigned long offset;
++	int bind;
++};
++
++struct elf_symbol_iter {
++	Elf *elf;
++	Elf_Data *symbols;
++	size_t nr_syms;
++	size_t strtabidx;
++	size_t idx;
++	struct elf_symbol sym;
++};
++
++static int elf_symbol_iter_new(struct elf_symbol_iter *iter,
++			       Elf *elf, const char *binary_path,
++			       int sh_type)
++{
++	Elf_Scn *scn = NULL;
++	GElf_Ehdr ehdr;
++	GElf_Shdr sh;
++
++	memset(iter, 0, sizeof(*iter));
++
++	if (!gelf_getehdr(elf, &ehdr)) {
++		pr_warn("elf: failed to get ehdr from %s: %s\n", binary_path, elf_errmsg(-1));
++		return -LIBBPF_ERRNO__FORMAT;
++	}
++
++	scn = elf_find_next_scn_by_type(elf, sh_type, NULL);
++	if (!scn) {
++		pr_debug("elf: failed to find symbol table ELF sections in '%s'\n",
++			 binary_path);
++		return -EINVAL;
++	}
++
++	if (!gelf_getshdr(scn, &sh))
++		return -EINVAL;
++
++	iter->strtabidx = sh.sh_link;
++	iter->symbols = elf_getdata(scn, 0);
++	if (!iter->symbols) {
++		pr_warn("elf: failed to get symbols for symtab section in '%s': %s\n",
++			binary_path, elf_errmsg(-1));
++		return -LIBBPF_ERRNO__FORMAT;
++	}
++	iter->nr_syms = iter->symbols->d_size / sh.sh_entsize;
++	iter->elf = elf;
++	return 0;
++}
++
++static struct elf_symbol *elf_symbol_iter_next(struct elf_symbol_iter *iter)
++{
++	struct elf_symbol *ret = &iter->sym;
++	unsigned long offset = 0;
++	const char *name = NULL;
++	GElf_Shdr sym_sh;
++	Elf_Scn *sym_scn;
++	GElf_Sym sym;
++	size_t idx;
++
++	for (idx = iter->idx; idx < iter->nr_syms; idx++) {
++		if (!gelf_getsym(iter->symbols, idx, &sym))
++			continue;
++		if (GELF_ST_TYPE(sym.st_info) != STT_FUNC)
++			continue;
++		name = elf_strptr(iter->elf, iter->strtabidx, sym.st_name);
++		if (!name)
++			continue;
++
++		/* Transform symbol's virtual address (absolute for
++		 * binaries and relative for shared libs) into file
++		 * offset, which is what kernel is expecting for
++		 * uprobe/uretprobe attachment.
++		 * See Documentation/trace/uprobetracer.rst for more
++		 * details.
++		 * This is done by looking up symbol's containing
++		 * section's header and using iter's virtual address
++		 * (sh_addr) and corresponding file offset (sh_offset)
++		 * to transform sym.st_value (virtual address) into
++		 * desired final file offset.
++		 */
++		sym_scn = elf_getscn(iter->elf, sym.st_shndx);
++		if (!sym_scn)
++			continue;
++		if (!gelf_getshdr(sym_scn, &sym_sh))
++			continue;
++
++		offset = sym.st_value - sym_sh.sh_addr + sym_sh.sh_offset;
++		break;
++	}
++
++	/* we reached the last symbol */
++	if (idx == iter->nr_syms)
++		return NULL;
++	iter->idx = idx + 1;
++	ret->name = name;
++	ret->bind = GELF_ST_BIND(sym.st_info);
++	ret->offset = offset;
++	return ret;
++}
++
+ /* Find offset of function name in the provided ELF object. "binary_path" is
+  * the path to the ELF binary represented by "elf", and only used for error
+  * reporting matters. "name" matches symbol name or name@@LIB for library
+@@ -10855,94 +10958,40 @@ static long elf_find_func_offset(Elf *elf, const char *binary_path, const char *
+ 	 * reported as a warning/error.
+ 	 */
+ 	for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
+-		size_t nr_syms, strtabidx, idx;
+-		Elf_Data *symbols = NULL;
+-		Elf_Scn *scn = NULL;
++		struct elf_symbol_iter iter;
++		struct elf_symbol *sym;
+ 		int last_bind = -1;
+-		const char *sname;
+-		GElf_Shdr sh;
  
- static const char * const map_type_name[] = {
+-		scn = elf_find_next_scn_by_type(elf, sh_types[i], NULL);
+-		if (!scn) {
+-			pr_debug("elf: failed to find symbol table ELF sections in '%s'\n",
+-				 binary_path);
++		if (elf_symbol_iter_new(&iter, elf, binary_path, sh_types[i]))
+ 			continue;
+-		}
+-		if (!gelf_getshdr(scn, &sh))
+-			continue;
+-		strtabidx = sh.sh_link;
+-		symbols = elf_getdata(scn, 0);
+-		if (!symbols) {
+-			pr_warn("elf: failed to get symbols for symtab section in '%s': %s\n",
+-				binary_path, elf_errmsg(-1));
+-			ret = -LIBBPF_ERRNO__FORMAT;
+-			goto out;
+-		}
+-		nr_syms = symbols->d_size / sh.sh_entsize;
+-
+-		for (idx = 0; idx < nr_syms; idx++) {
+-			int curr_bind;
+-			GElf_Sym sym;
+-			Elf_Scn *sym_scn;
+-			GElf_Shdr sym_sh;
+-
+-			if (!gelf_getsym(symbols, idx, &sym))
+-				continue;
+-
+-			if (GELF_ST_TYPE(sym.st_info) != STT_FUNC)
+-				continue;
+-
+-			sname = elf_strptr(elf, strtabidx, sym.st_name);
+-			if (!sname)
+-				continue;
+-
+-			curr_bind = GELF_ST_BIND(sym.st_info);
+ 
++		while ((sym = elf_symbol_iter_next(&iter))) {
+ 			/* User can specify func, func@@LIB or func@@LIB_VERSION. */
+-			if (strncmp(sname, name, name_len) != 0)
++			if (strncmp(sym->name, name, name_len) != 0)
+ 				continue;
+ 			/* ...but we don't want a search for "foo" to match 'foo2" also, so any
+ 			 * additional characters in sname should be of the form "@@LIB".
+ 			 */
+-			if (!is_name_qualified && sname[name_len] != '\0' && sname[name_len] != '@')
++			if (!is_name_qualified && sym->name[name_len] != '\0' && sym->name[name_len] != '@')
+ 				continue;
+ 
+ 			if (ret >= 0) {
+ 				/* handle multiple matches */
+-				if (last_bind != STB_WEAK && curr_bind != STB_WEAK) {
++				if (last_bind != STB_WEAK && sym->bind != STB_WEAK) {
+ 					/* Only accept one non-weak bind. */
+ 					pr_warn("elf: ambiguous match for '%s', '%s' in '%s'\n",
+-						sname, name, binary_path);
++						sym->name, name, binary_path);
+ 					ret = -LIBBPF_ERRNO__FORMAT;
+ 					goto out;
+-				} else if (curr_bind == STB_WEAK) {
++				} else if (sym->bind == STB_WEAK) {
+ 					/* already have a non-weak bind, and
+ 					 * this is a weak bind, so ignore.
+ 					 */
+ 					continue;
+ 				}
+ 			}
+-
+-			/* Transform symbol's virtual address (absolute for
+-			 * binaries and relative for shared libs) into file
+-			 * offset, which is what kernel is expecting for
+-			 * uprobe/uretprobe attachment.
+-			 * See Documentation/trace/uprobetracer.rst for more
+-			 * details.
+-			 * This is done by looking up symbol's containing
+-			 * section's header and using it's virtual address
+-			 * (sh_addr) and corresponding file offset (sh_offset)
+-			 * to transform sym.st_value (virtual address) into
+-			 * desired final file offset.
+-			 */
+-			sym_scn = elf_getscn(elf, sym.st_shndx);
+-			if (!sym_scn)
+-				continue;
+-			if (!gelf_getshdr(sym_scn, &sym_sh))
+-				continue;
+-
+-			ret = sym.st_value - sym_sh.sh_addr + sym_sh.sh_offset;
+-			last_bind = curr_bind;
++			last_bind = sym->bind;
++			ret = sym->offset;
+ 		}
+ 		if (ret > 0)
+ 			break;
 -- 
 2.41.0
 
