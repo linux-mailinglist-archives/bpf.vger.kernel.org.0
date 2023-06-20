@@ -1,196 +1,79 @@
-Return-Path: <bpf+bounces-2957-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2958-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D44073777F
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 00:31:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80CAF7377ED
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 01:25:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F3CB1C20DEA
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 22:31:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F140281400
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 23:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E367182BC;
-	Tue, 20 Jun 2023 22:31:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2484818B0E;
+	Tue, 20 Jun 2023 23:25:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBEAF23D9;
-	Tue, 20 Jun 2023 22:31:20 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50D81735;
-	Tue, 20 Jun 2023 15:31:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=5XZASC4vvRomRFOoRSw3LbUkU0zai0fOoDyVCyjU/XQ=; b=nBjo7QomORnLyjaD+STtU66BMP
-	Vlq9oByVsrdForTELr9HsrzFJBtmVwPeq5GWOhykMcQIlRSiqDEYk6G+FBsYc9fMAuDEab/huWam4
-	jrEziuc2a0fg+6oPwhV9aEWR98HVfU9EdYQpRzUsqhIJZkf+TroPdCcWl7ilO9rm3qAuqE4sO9iW9
-	rxt0WffmkxV5/bBc2zHXmmQPXtLyqMTPNohAQaQDVLqLxoqRYaWac5G5G0/41GRkBEsSetlFYaSqX
-	VH+ctewumMfQTiA03BlNITACMcacrl2hmJBockOE2uLjBWTMyzXjfZB4h7UJTHbcYnwzr1tcSg/te
-	54ewkoww==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qBjsJ-0003nd-8Z; Wed, 21 Jun 2023 00:30:59 +0200
-Received: from [178.197.248.26] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qBjsI-0004xN-7z; Wed, 21 Jun 2023 00:30:58 +0200
-Subject: Re: [PATCH bpf,v5 3/4] bpf: fix bpf socket lookup from tc/xdp to
- respect socket VRF bindings
-To: Gilad Sever <gilad9366@gmail.com>, dsahern@kernel.org,
- martin.lau@linux.dev, john.fastabend@gmail.com, ast@kernel.org,
- andrii@kernel.org, song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
- shuah@kernel.org, hawk@kernel.org, joe@wand.net.nz
-Cc: eyal.birger@gmail.com, shmulik.ladkani@gmail.com, bpf@vger.kernel.org,
- netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20230608114155.39367-1-gilad9366@gmail.com>
- <20230608114155.39367-4-gilad9366@gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <1a36a60c-ec8f-9927-a932-f4fda0a52af3@iogearbox.net>
-Date: Wed, 21 Jun 2023 00:30:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7026C2AB42
+	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 23:25:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC362C433C9;
+	Tue, 20 Jun 2023 23:25:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1687303513;
+	bh=vKs3Nn3T/tb9VC69M13qftg8yAfs62GKs6eI5yArd/g=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=h5gLCg7QDfJ81tP2+/Va4XfHxM18mMN55498n2NiTw+wlLeE47Renbz+YpICVh7Pu
+	 7HwHvpMMzlKqGH5VHfEDJd0TxWWVvLFpD0PxnXkKHHhksurtr4o3tIeC0tN0ctUjd2
+	 TWYf5jgsXMdjMY7mfU8NMcWF1mK6u1UwbUd2DYDe93s5lKkVWG+1+pd21v5wS6hzEd
+	 nRek0IVVuGsep5lInTahMLflKtF2nnFulQGIgbsM/tkPYXWNRaSgqsjjrCumRPtxqj
+	 mWrHQVsfjs52o4Em9fcr0qV0pyzi3/MGBXmTczaXSotOXXzww7ExGPtt7WYt1TtzWJ
+	 91mikawwFt2VQ==
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-4f86e6e4038so3635579e87.0;
+        Tue, 20 Jun 2023 16:25:13 -0700 (PDT)
+X-Gm-Message-State: AC+VfDz86lk3HuLQ2UsHx4Wafl5ht1m1hvMMru3+OT54EHu1T5EaLgbw
+	87C70i1WjDTYDSyo8XdxNc/EMrIej8lw1k5C0h4=
+X-Google-Smtp-Source: ACHHUZ4uR5DEQ8f5ra7Q+/O6bWWssR1OOIHGdmsuiBLVUBsE5Y0ZJwFefrImhfNab17AYlhtRbsnMCBYBbG4Wlixexs=
+X-Received: by 2002:a05:6512:2346:b0:4f6:1307:80b0 with SMTP id
+ p6-20020a056512234600b004f6130780b0mr7329104lfu.12.1687303511923; Tue, 20 Jun
+ 2023 16:25:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230608114155.39367-4-gilad9366@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26945/Tue Jun 20 09:30:24 2023)
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_SBL_CSS,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.6
-X-Spam-Level: *
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+References: <20230619100121.27534-1-puranjay12@gmail.com> <20230619100121.27534-4-puranjay12@gmail.com>
+In-Reply-To: <20230619100121.27534-4-puranjay12@gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 20 Jun 2023 16:24:59 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7FHYpccw-YRK6ka_EX8pVDuHvhvT0myLhZOkrGjJ6=Ng@mail.gmail.com>
+Message-ID: <CAPhsuW7FHYpccw-YRK6ka_EX8pVDuHvhvT0myLhZOkrGjJ6=Ng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] bpf, arm64: use bpf_jit_binary_pack_alloc
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, catalin.marinas@arm.com, mark.rutland@arm.com, 
+	bpf@vger.kernel.org, kpsingh@kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 6/8/23 1:41 PM, Gilad Sever wrote:
-> When calling bpf_sk_lookup_tcp(), bpf_sk_lookup_udp() or
-> bpf_skc_lookup_tcp() from tc/xdp ingress, VRF socket bindings aren't
-> respoected, i.e. unbound sockets are returned, and bound sockets aren't
-> found.
-> 
-> VRF binding is determined by the sdif argument to sk_lookup(), however
-> when called from tc the IP SKB control block isn't initialized and thus
-> inet{,6}_sdif() always returns 0.
-> 
-> Fix by calculating sdif for the tc/xdp flows by observing the device's
-> l3 enslaved state.
-> 
-> The cg/sk_skb hooking points which are expected to support
-> inet{,6}_sdif() pass sdif=-1 which makes __bpf_skc_lookup() use the
-> existing logic.
-> 
-> Fixes: 6acc9b432e67 ("bpf: Add helper to retrieve socket in BPF")
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-> Reviewed-by: Eyal Birger <eyal.birger@gmail.com>
-> Signed-off-by: Gilad Sever <gilad9366@gmail.com>
+On Mon, Jun 19, 2023 at 3:01=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.co=
+m> wrote:
+>
+> Use bpf_jit_binary_pack_alloc for memory management of JIT binaries in
+> ARM64 BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW and RX
+> buffers. The JIT writes the program into the RW buffer. When the JIT is
+> done, the program is copied to the final RX buffer
+> with bpf_jit_binary_pack_finalize.
+>
+> Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for ARM64
+> JIT as these functions are required by bpf_jit_binary_pack allocator.
+>
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 
-Overall this series looks good to go, just small nits which would be great
-to still address.
+LGTM! Thanks!
 
-> ---
-> v5: Use reverse xmas tree indentation
-> 
-> v4: Move dev_sdif() to include/linux/netdevice.h as suggested by Stanislav Fomichev
-> 
-> v3: Rename bpf_l2_sdif() to dev_sdif() as suggested by Stanislav Fomichev
-> ---
->   include/linux/netdevice.h |  9 +++++++
->   net/core/filter.c         | 54 ++++++++++++++++++++++++---------------
->   2 files changed, 42 insertions(+), 21 deletions(-)
-> 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index c2f0c6002a84..db1bfca6b8b4 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -5093,6 +5093,15 @@ static inline bool netif_is_l3_slave(const struct net_device *dev)
->   	return dev->priv_flags & IFF_L3MDEV_SLAVE;
->   }
->   
-> +static inline int dev_sdif(const struct net_device *dev)
-> +{
-> +#if IS_ENABLED(CONFIG_NET_L3_MASTER_DEV)
-
-Why IS_ENABLED? config NET_L3_MASTER_DEV says bool, so #ifdef CONFIG_NET_L3_MASTER_DEV
-should suffice?
-
-> +	if (netif_is_l3_slave(dev))
-> +		return dev->ifindex;
-> +#endif
-> +	return 0;
-> +}
-> +
->   static inline bool netif_is_bridge_master(const struct net_device *dev)
->   {
->   	return dev->priv_flags & IFF_EBRIDGE;
-[...]
-
->   static const struct bpf_func_proto bpf_tc_sk_lookup_tcp_proto = {
-> @@ -6778,10 +6782,11 @@ BPF_CALL_5(bpf_tc_sk_lookup_udp, struct sk_buff *, skb,
->   {
->   	struct net *caller_net = dev_net(skb->dev);
->   	int ifindex = skb->dev->ifindex;
-> +	int sdif = dev_sdif(skb->dev);
->   
->   	return (unsigned long)__bpf_sk_lookup(skb, tuple, len, caller_net,
->   					      ifindex, IPPROTO_UDP, netns_id,
-> -					      flags);
-> +					      flags, sdif);
->   }
->   
->   static const struct bpf_func_proto bpf_tc_sk_lookup_udp_proto = {
-> @@ -6814,11 +6819,13 @@ BPF_CALL_5(bpf_xdp_sk_lookup_udp, struct xdp_buff *, ctx,
->   	   struct bpf_sock_tuple *, tuple, u32, len, u32, netns_id, u64, flags)
->   {
->   	struct net *caller_net = dev_net(ctx->rxq->dev);
-> -	int ifindex = ctx->rxq->dev->ifindex;
-> +	struct net_device *dev = ctx->rxq->dev;
-
-Why not doing this before the struct net *caller_net and also use it there
-for the dev_net()? Same in other XDP places. It would be nice to also do the
-same for the tc helpers.
-
-> +	int ifindex = dev->ifindex;
-> +	int sdif = dev_sdif(dev);
->   
->   	return (unsigned long)__bpf_sk_lookup(NULL, tuple, len, caller_net,
->   					      ifindex, IPPROTO_UDP, netns_id,
-> -					      flags);
-> +					      flags, sdif);
->   }
->   
->   static const struct bpf_func_proto bpf_xdp_sk_lookup_udp_proto = {
-> @@ -6837,11 +6844,13 @@ BPF_CALL_5(bpf_xdp_skc_lookup_tcp, struct xdp_buff *, ctx,
->   	   struct bpf_sock_tuple *, tuple, u32, len, u32, netns_id, u64, flags)
->   {
->   	struct net *caller_net = dev_net(ctx->rxq->dev);
-> -	int ifindex = ctx->rxq->dev->ifindex;
-> +	struct net_device *dev = ctx->rxq->dev;
-> +	int ifindex = dev->ifindex;
-> +	int sdif = dev_sdif(dev);
->   
->   	return (unsigned long)__bpf_skc_lookup(NULL, tuple, len, caller_net,
->   					       ifindex, IPPROTO_TCP, netns_id,
-> -					       flags);
-> +					       flags, sdif);
->   }
->   
->   static const struct bpf_func_proto bpf_xdp_skc_lookup_tcp_proto = {
+Acked-by: Song Liu <song@kernel.org>
 
