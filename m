@@ -1,279 +1,238 @@
-Return-Path: <bpf+bounces-2876-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2877-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F69373601C
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 01:25:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA72873613A
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 03:42:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36EF11C20757
-	for <lists+bpf@lfdr.de>; Mon, 19 Jun 2023 23:25:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 167FC280E74
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 01:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DD1DF5D;
-	Mon, 19 Jun 2023 23:25:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBBA41363;
+	Tue, 20 Jun 2023 01:42:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F0DC2CC
-	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 23:25:17 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9736F1980
-	for <bpf@vger.kernel.org>; Mon, 19 Jun 2023 16:25:15 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35JKWcwF021087;
-	Mon, 19 Jun 2023 16:24:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=a8/cg9yijXxoo6DW2LYyb1LloJWM6tyfIaeNuC+EIEQ=;
- b=nR9gA8DvYA+9k9L0MTYPPhkqkk1aScaQhhpuldA9t12Q878gt7iKsQcqLkZG/5djiTvL
- CdPWo5VAkjhotijEvIqT+Mva57YCvPZ73QgyN+EI4t/ELZxcDU6wSR+MN7zIUDvDwbzD
- mRU6/ssWyETSiWraAnSpf/MA1m8MMuHmkpJkKatL8bECHPJJ/6EOGbmWeYh5AxycEVKV
- Unh1slT1DVgonWcoFr1xrjUE/S3eRCZx5JhfSR/xwx+c5jq/khRxTw0gC0WIS+yNO6iN
- oQ1JwxBN3z3H0LjiemMFrBIGoA/z1i981uzMCgvyjYdHKl8kmQ+yHCtCoEXwJ3eZhOSq 0Q== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3r99xy7hvy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Jun 2023 16:24:51 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gIOWOOSV/Wq0M91RybV9hOlS3rXe17pC+fJJQcQOO0l9GEWysN/92o/HzG7KOrasZuV+hYrb3OIJnIA0X7oZH70UjrBeTlS1tfEifUSuyw2z9KslVZjpdxye/PJ5SGs3XJ2ARN1nB3MeQusTeo+RJG8MzycF86Sx5EF9VbGZPL3K8YGAChe5AkPmVM+mgSHOC5Le0P9VKqfBQ22xeC+EkjKI+Y/atO/wvXmSL+LRGQ7albDJXOoSUPa2V3OaWYqBB5cd9eKF5Zx8jDspvQCo2LRoW15MuNJUckfnEqjFLciV8SYAaJ5Y/l4enyfI4bu6mBBDHaWJ0FWKfs5IFiNnWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a8/cg9yijXxoo6DW2LYyb1LloJWM6tyfIaeNuC+EIEQ=;
- b=ilCiNZSsU+HXZqULLfeh75gm80V2BgXIzhQWveB2Zh0ZwxmzmUW9wR9jFLb03v/cUtYl31kHBz+16UrWWWBVKU4Bqmb8XL8pRsSbwEXPWB8nLfaO2n7jm2E/lIQtWrT2I2PaiRLpLM0O/VOyVBo4rv/tku92g0WnuzwJMoXR+fXOi2e3oUCdzD47FtKHEUZ5dp/J4/ta/JmVqXjQY1WfwsjJWK5s9P2hssU57VDRZL99wtJAJsifCtB90Q3gDmgjZYTqcX94WRo6Lmtn06LMwKsQOZoWJQVgk02kWSZviSGDDJPDSQdJkHAId2wfBi8z/DEQV/hzCXgAHB/rk/4lTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by BL3PR15MB5388.namprd15.prod.outlook.com (2603:10b6:208:3b3::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.37; Mon, 19 Jun
- 2023 23:24:48 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812%6]) with mapi id 15.20.6500.036; Mon, 19 Jun 2023
- 23:24:48 +0000
-Message-ID: <552caa49-5a88-7842-068c-36d105e8929d@meta.com>
-Date: Mon, 19 Jun 2023 16:24:44 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v2 bpf-next 5/9] libbpf: add kind layout encoding, crc
- support
-Content-Language: en-US
-To: Alan Maguire <alan.maguire@oracle.com>, acme@kernel.org, ast@kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net, quentin@isovalent.com,
-        jolsa@kernel.org
-Cc: martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, mykolal@fb.com, bpf@vger.kernel.org
-References: <20230616171728.530116-1-alan.maguire@oracle.com>
- <20230616171728.530116-6-alan.maguire@oracle.com>
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <20230616171728.530116-6-alan.maguire@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR06CA0043.namprd06.prod.outlook.com
- (2603:10b6:a03:14b::20) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A888010E3
+	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 01:42:17 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5FFE59;
+	Mon, 19 Jun 2023 18:42:13 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QlTrx72Z7z4f422l;
+	Tue, 20 Jun 2023 09:42:09 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgBHJ9XvA5Fkyw8VMA--.19533S2;
+	Tue, 20 Jun 2023 09:42:10 +0800 (CST)
+Subject: Re: [PATCH bpf-next v6 5/5] selftests/bpf: Add benchmark for bpf
+ memory allocator
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+ houtao1@huawei.com
+References: <20230613080921.1623219-1-houtao@huaweicloud.com>
+ <20230613080921.1623219-6-houtao@huaweicloud.com>
+ <20230619203543.sb3pqx62uxqnucuo@MacBook-Pro-8.local>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <ead4cfa0-b446-e55d-fa22-588e0e2f31f6@huaweicloud.com>
+Date: Tue, 20 Jun 2023 09:42:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|BL3PR15MB5388:EE_
-X-MS-Office365-Filtering-Correlation-Id: c533c6dd-729d-49dc-e11c-08db711c5fdd
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	bfyAeXFAuPHq9QIcrax6PI/8zSjsTsyUpZ6CRlbuKNXoSkp+JtBeDi3azwHqaLxwCkNGpZhRDMOBP3+xJxyetkSp1riYGekivfib/2vJ4lCHG5E8ootA0AJPND6AAikPFXuVpWdLSjVzhN5lkECPEvI8AgZdcAfl+zivBO8smGNm2tKdSgTPkif5rw09HAX706JkYQmxp2t6uMXVXNtVNdJJcGYUuWenPiscGOMWewFHl84hTYs4y+jAhXyIQ2Cj8OLAXABmTZGmf8BkPLvHLXqAIoHuwKONtx4pARYgkD0zarR7IvwdXtlGzTP/MuPazYBBF//GWfICrA1s27vP5+78UdMA2C1KFz20baldB8CVSqmn/ti56NQqX5nqLFDYeb3obcVLk2WdKDQ8xeYZAreUUXcXXuQ0DPGgcbLBrVCwb2MwAvthaQYJ9ATqLTaqBAaQo1PsJ0wxpi8xlX1NvH3fZXvJL8cYNiwciO6SGeZzJaqi4HtBeGU/dwVH9Ia86lJWw09k0dZcS5outbfoCEFUs/3Z/SDQNFJtnBoW0q2QeDbVl2H9mpmk+xOoEq1iaZUIFWU0lp4++eYx4FzPn+VCYAr70sTvVdp+JgsddvmT+jHfItFFU9xHJQWDcYlhBS9HHptnyesY9Ao57DWyMg==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(366004)(346002)(136003)(396003)(451199021)(4326008)(316002)(66946007)(66556008)(66476007)(31696002)(86362001)(2616005)(2906002)(83380400001)(36756003)(7416002)(8676002)(8936002)(5660300002)(38100700002)(53546011)(186003)(6512007)(6506007)(41300700001)(6486002)(6666004)(478600001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?cGpRSFUvQ0JNU2RCOFY4Yk5kMGRnb2lWTTVtMlNKVWYxSTRMejZNbjhWOXg4?=
- =?utf-8?B?MzEvOXNTRjYxZkdFTFd6RDZYOVI0WnkrZ0dKOElLMHZ1dmROUkFBYTZvYk1Y?=
- =?utf-8?B?bTBFSlVrTGVVT0RKdWZ5ckRteldzVWpJb1djZzFyMkJ2bmFKMjEyU2hkQ0Nr?=
- =?utf-8?B?VEVxL3NJT0dXNXVFeC81eUdpMEZ1Y3EvRDRlU2R3OXp5U3l6aDE2LzRkV2Z3?=
- =?utf-8?B?ejNGbnFGc1pnR0RWeGhuM0RPWjF5aDRveTk0cnh1TUxKMVVpUWRpTUZhVmRq?=
- =?utf-8?B?MGlpYmprYWhzZFVuak9PWXVXRXJRa2d5Ty9ST2hxUnA2OG5RR2txRzNWeFNj?=
- =?utf-8?B?UTlidnVIREpTT3RyZ1kxbVZ1eTAreXRDcThuRWd5YXJPUzRnYUR2UmNZQlVs?=
- =?utf-8?B?K3g1V0QzN2M0NkpxVnMrSDlNWTdHQmNNQXI3Q21RcXAwbG5wQW82Q1dTVExm?=
- =?utf-8?B?RkNUK2twcnFYTC9EWEFFZzBKRllCc3dYbG50SThOMUs0cVNxQkIrMUJ5SDA2?=
- =?utf-8?B?VHIwWWR1SHdGc1hJNlBEejI1eTNWbWV1cjVaUnlxcitURU5yRjRucEFxWnBk?=
- =?utf-8?B?VjFJN1c0MjZvTG83UDBQTlBsWlg3MmV4cm1zbVVMYkNHdllQNFdoYXVETzhv?=
- =?utf-8?B?bFhQZll0M01SZ0ZJK0I0QmIwdVFsR3hlb0RNOWM0SG4yMXFscGpxMEhoK1E3?=
- =?utf-8?B?b29PdTl2WEhkcVl0T2cvUzlLdEsvb3RMNHNpcEJiNmtNczl2amgzSmo5UXZO?=
- =?utf-8?B?c201eGwrOHRUTnRBVXdsMk5zdkJaMm9nNTNKRmFuRGpUb05TWG5IbFdtMFVt?=
- =?utf-8?B?Q2ZzR1g3SHhEK1VHUnRJTmptaWJ1WWpVdmVkTFJRaTEwcmlDaHNGSjdVeWp6?=
- =?utf-8?B?MmpoYU9HVXhIc3B0cTFwYVdmMTlSSFFQVGk0SjRTY0VSN1JlYlFCaklPVSto?=
- =?utf-8?B?M2IzNzg5eTlNZ0xRQ01Mczh1bUJPWkFRamFkVWdSYkpKYzIzdDlqbTEydzBT?=
- =?utf-8?B?clQ4am12ZXpBcFBNRlkyL28wMnJRODJ4bkVQeEE2cU9ta3Y5QjNtR1RnSkdY?=
- =?utf-8?B?cGw0TTRKVlRwMEo1MGFydjdlbzN4WVJxQk1UWnB3TC81b1lnT2EvZnJPOTEr?=
- =?utf-8?B?bWJjcHVPZmx2aVJGVDdFbWRQT3JFeXJIenljVjdnRVR6WmtwdXR2NGZBcndv?=
- =?utf-8?B?YVIxa0JpYmV4eU44dWlQWEhHenBVOVMxVHd5dVdEQ2wxa1ZzcmlzODZBdVBR?=
- =?utf-8?B?R1dMUnMvRk95Qy9ZV05SUU1wcGlZVUIxRHcrT3laTi9UOUJUdkVlUW8xL3lr?=
- =?utf-8?B?dEg5YmhDWTdhc1psaWVKdkhmM2RvOTQvNWdvaStqQ0RCSHRQK3FWVkg3OXJh?=
- =?utf-8?B?bFJlMmZDV0FyVjQyU1p1aU02cGRCdkRkY0kvdjZEeVhrRWEwaitoYnZNTGNw?=
- =?utf-8?B?bkxYMmVRdlpTNnovZEtQRktobEhYTGdYSW5CSThQVCtNLzlmUFJ0QnFaYU9h?=
- =?utf-8?B?Z2hNeTdRaHVCMjRtOFczQ2txZVh1bWRaQ2VxVXhSVFc3QWRtV0IvTlpDbDFE?=
- =?utf-8?B?L3o0Y1UyeG53TndXZTNzamk4SXRYWWFOLzBoTXMwOVJCbWs4alhDN3RXbStO?=
- =?utf-8?B?cTNRM0R0RWtkSHVsS1h4TkQwTEpWSmZhWWszMkNKb3Jtbmo2cVQ2czlXWDJB?=
- =?utf-8?B?L2o2ZVV4ck9RdUluT1FsbUh6MzRZQi9pN3Ztd3pNbW1FdGpHYnUyWFhmUE5o?=
- =?utf-8?B?ekM0L29BQ2FsOXBHS3pwcGNGZXN0YXg2VndHbWNPdTVzSXpyajVTUCs2UXdp?=
- =?utf-8?B?cDk4U3o4aWozL0hBZWZ6bVFDYmFHUmJFSVJPb2ZMTDdmSVlWVzhUTEtuVytQ?=
- =?utf-8?B?bDJud0pKVCtvamxudjdnQTArMG4rTkNST0ZvT0d2cy9VQnpDTnFBL0QxU1JY?=
- =?utf-8?B?bXlYYU9FeGpPRkR1WU1BYU5RQ1ZzZTBhYWZWUXNoUE83UHdtWnY1ZEtuKzVy?=
- =?utf-8?B?dCtFMWtQUzBBM1F3VkptZXkwS1dJNG9VZjc5MCtDVUhiTTd1SlNwR1N2Qkdi?=
- =?utf-8?B?azFWcTJWWDRyeGQ5Y3pEK2FoR2JMOHlDbllPNjYzUDM4eWFhNkFDTkc2b28z?=
- =?utf-8?B?SEJxSDhjejdGRktLWjdVbS9idDJ1T0IyREs0ZXpjbEpFVnpBenpncHlMaTY5?=
- =?utf-8?B?cHc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c533c6dd-729d-49dc-e11c-08db711c5fdd
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2023 23:24:48.6006
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ecv6YK0OZE4jKmGEyx5Zthab1BhqYg1onKS/nvTdIEQpQNVlcTi/yUyfEUA5zrbz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR15MB5388
-X-Proofpoint-GUID: OF0D4yCOBqE5R1sVl2IDA-aLhmtVAZGk
-X-Proofpoint-ORIG-GUID: OF0D4yCOBqE5R1sVl2IDA-aLhmtVAZGk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-06-19_14,2023-06-16_01,2023-05-22_02
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230619203543.sb3pqx62uxqnucuo@MacBook-Pro-8.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgBHJ9XvA5Fkyw8VMA--.19533S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXryDur13ZFy5uFWUXry5Jwb_yoWrWw1DpF
+	W0kay8GFn8tw1jvFyvqw4kJFW8Jrn8Jr12vry8K345Aryqk3WSgry3GFWrKF4rur95GF1j
+	9a1jqFZxCwn5XFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+	MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+Hi Alexei,
 
+On 6/20/2023 4:35 AM, Alexei Starovoitov wrote:
+> On Tue, Jun 13, 2023 at 04:09:21PM +0800, Hou Tao wrote:
+>> +
+>> +static void htab_mem_notify_wait_producer(pthread_barrier_t *notify)
+> notify_wait and wait_notify names are confusing.
+> The first one is doing map_update and 2nd is map_delete, right?
+> Just call them such?
+OK.
+>
+>> +{
+>> +	while (true) {
+>> +		(void)syscall(__NR_getpgid);
+>> +		/* Notify for start */
+> the comment is confusing too.
+> Maybe /* Notify map_deleter that map_updates are done */ ?
+Will update.
+>
+>> +		pthread_barrier_wait(notify);
+>> +		/* Wait for completion */
+> and /* Wait for deletions to complete */ ?
+Yes. Will update.
+>
+>> +		pthread_barrier_wait(notify);
+>> +	}
+>> +}
+>> +
+>> +static void htab_mem_wait_notify_producer(pthread_barrier_t *notify)
+>> +{
+>> +	while (true) {
+>> +		/* Wait for start */
+>> +		pthread_barrier_wait(notify);
+>> +		(void)syscall(__NR_getpgid);
+>> +		/* Notify for completion */
+> similar.
+Will update.
+>
+>> +		pthread_barrier_wait(notify);
+>> +	}
+>> +}
+>
+>> +static int write_htab(unsigned int i, struct update_ctx *ctx, unsigned int flags)
+>> +{
+>> +	if (ctx->from >= MAX_ENTRIES)
+>> +		return 1;
+> It can never be hit, right?
+> Remove it then?
+MAX_ENTRIES / 64 = 128, so when then number of producers is greater than
+128, it will be hit. But I think we can remove it and adjust max_entries
+accordingly when the number of producers is greater than 128.
+>
+>> +
+>> +	bpf_map_update_elem(&htab, &ctx->from, zeroed_value, flags);
+> please add error check.
+> I think update/delete notification is correct, but it could be silently broken.
+> update(BPF_NOEXIST) could be returning error in one thread and
+> map_delete_elem could be failing too...
+If these threads update or delete the non-overlapped part of the hash
+map, then there will be no fail. But when the number of producer is
+greater than the number of online CPU, there will be failure, but this
+use case is not expected benchmark use case.
 
-On 6/16/23 10:17 AM, Alan Maguire wrote:
-> Support encoding of BTF kind layout data and crcs via
-> btf__new_empty_opts().
-> 
-> Current supported opts are base_btf, add_kind_layout and
-> add_crc.
-> 
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->   tools/lib/bpf/btf.c      | 99 ++++++++++++++++++++++++++++++++++++++--
->   tools/lib/bpf/btf.h      | 11 +++++
->   tools/lib/bpf/libbpf.map |  1 +
->   3 files changed, 108 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 457997c2a43c..060a93809f64 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -16,6 +16,7 @@
->   #include <linux/err.h>
->   #include <linux/btf.h>
->   #include <gelf.h>
-> +#include <zlib.h>
->   #include "btf.h"
->   #include "bpf.h"
->   #include "libbpf.h"
-> @@ -882,8 +883,58 @@ void btf__free(struct btf *btf)
->   	free(btf);
->   }
->   
-> -static struct btf *btf_new_empty(struct btf *base_btf)
-> +static void btf_add_kind_layout(struct btf *btf, __u8 kind,
-> +				__u16 flags, __u8 info_sz, __u8 elem_sz)
->   {
-> +	struct btf_kind_layout *k = &btf->kind_layout[kind];
-> +
-> +	k->flags = flags;
-> +	k->info_sz = info_sz;
-> +	k->elem_sz = elem_sz;
-> +	btf->hdr->kind_layout_len += sizeof(*k);
-> +}
-> +
-> +static int btf_ensure_modifiable(struct btf *btf);
-> +
-> +static int btf_add_kind_layouts(struct btf *btf, struct btf_new_opts *opts)
-> +{
-> +	if (btf_ensure_modifiable(btf))
-> +		return libbpf_err(-ENOMEM);
-> +
-> +	btf->kind_layout = calloc(NR_BTF_KINDS, sizeof(struct btf_kind_layout));
-> +
-> +	if (!btf->kind_layout)
-> +		return -ENOMEM;
-> +
-> +	/* all supported kinds should describe their layout here. */
-> +	btf_add_kind_layout(btf, BTF_KIND_UNKN, 0, 0, 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_INT, 0, sizeof(__u32), 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_PTR, 0, 0, 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_ARRAY, 0, sizeof(struct btf_array), 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_STRUCT, 0, 0, sizeof(struct btf_member));
-> +	btf_add_kind_layout(btf, BTF_KIND_UNION, 0, 0, sizeof(struct btf_member));
-> +	btf_add_kind_layout(btf, BTF_KIND_ENUM, 0, 0, sizeof(struct btf_enum));
-> +	btf_add_kind_layout(btf, BTF_KIND_FWD, 0, 0, 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_TYPEDEF, 0, 0, 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_VOLATILE, 0, 0, 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_CONST, 0, 0, 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_RESTRICT, 0, 0, 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_FUNC, 0, 0, 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_FUNC_PROTO, 0, 0, sizeof(struct btf_param));
-> +	btf_add_kind_layout(btf, BTF_KIND_VAR, 0, sizeof(struct btf_var), 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_DATASEC, 0, 0, sizeof(struct btf_var_secinfo));
-> +	btf_add_kind_layout(btf, BTF_KIND_FLOAT, 0, 0, 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_DECL_TAG, BTF_KIND_LAYOUT_OPTIONAL,
-> +							sizeof(struct btf_decl_tag), 0);
-> +	btf_add_kind_layout(btf, BTF_KIND_TYPE_TAG, BTF_KIND_LAYOUT_OPTIONAL, 0, 0);
+>
+>> +	ctx->from += ctx->step;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int overwrite_htab(unsigned int i, struct update_ctx *ctx)
+>> +{
+>> +	return write_htab(i, ctx, 0);
+>> +}
+>> +
+>> +static int newwrite_htab(unsigned int i, struct update_ctx *ctx)
+>> +{
+>> +	return write_htab(i, ctx, BPF_NOEXIST);
+>> +}
+>> +
+>> +static int del_htab(unsigned int i, struct update_ctx *ctx)
+>> +{
+>> +	if (ctx->from >= MAX_ENTRIES)
+>> +		return 1;
+> delete?
+Will fix.
+>
+>> +
+>> +	bpf_map_delete_elem(&htab, &ctx->from);
+> and here.
+>
+>> +	ctx->from += ctx->step;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +SEC("?tp/syscalls/sys_enter_getpgid")
+>> +int overwrite(void *ctx)
+>> +{
+>> +	struct update_ctx update;
+>> +
+>> +	update.from = bpf_get_smp_processor_id();
+>> +	update.step = nr_thread;
+>> +	bpf_loop(64, overwrite_htab, &update, 0);
+>> +	__sync_fetch_and_add(&op_cnt, 1);
+>> +	return 0;
+>> +}
+>> +
+>> +SEC("?tp/syscalls/sys_enter_getpgid")
+>> +int batch_add_batch_del(void *ctx)
+>> +{
+>> +	struct update_ctx update;
+>> +
+>> +	update.from = bpf_get_smp_processor_id();
+>> +	update.step = nr_thread;
+>> +	bpf_loop(64, overwrite_htab, &update, 0);
+>> +
+>> +	update.from = bpf_get_smp_processor_id();
+>> +	bpf_loop(64, del_htab, &update, 0);
+>> +
+>> +	__sync_fetch_and_add(&op_cnt, 2);
+>> +	return 0;
+>> +}
+>> +
+>> +SEC("?tp/syscalls/sys_enter_getpgid")
+>> +int add_del_on_diff_cpu(void *ctx)
+>> +{
+>> +	struct update_ctx update;
+>> +	unsigned int from;
+>> +
+>> +	from = bpf_get_smp_processor_id();
+>> +	update.from = from / 2;
+> why extra 'from' variable? Just combine above two lines.
+from is also used below to decide the bpf program should do update or
+deletion.
+>
+>> +	update.step = nr_thread / 2;
+>> +
+>> +	if (from & 1)
+>> +		bpf_loop(64, newwrite_htab, &update, 0);
+>> +	else
+>> +		bpf_loop(64, del_htab, &update, 0);
+> I think it's cleaner to split this into two bpf programs.
+> Do update(NOEXIST) in one triggered by sys_enter_getpgid
+> and do delete_elem() in another triggered by a different syscall.
+OK. Will do that in next version.
+>
+>> +
+>> +	__sync_fetch_and_add(&op_cnt, 1);
+>> +	return 0;
+>> +}
+>> -- 
+>> 2.29.2
+>>
 
-BTF_KIND_TYPE_TAG cannot be optional. For example,
-   ptr -> type_tag -> const -> int
-
-if type_tag becomes optional, the whole type chain cannot be parsed
-properly.
-
-Also, in Patch 3, we have
-
-+static int btf_type_size(const struct btf *btf, const struct btf_type *t)
-  {
-  	const int base_size = sizeof(struct btf_type);
-  	__u16 vlen = btf_vlen(t);
-@@ -363,8 +391,7 @@ static int btf_type_size(const struct btf_type *t)
-  	case BTF_KIND_DECL_TAG:
-  		return base_size + sizeof(struct btf_decl_tag);
-  	default:
--		pr_debug("Unsupported BTF_KIND:%u\n", btf_kind(t));
--		return -EINVAL;
-+		return btf_type_size_unknown(btf, t);
-  	}
-  }
-
-Clearly even if we mark decl_tag as optional, it still handled properly
-in the above. So decl_tag does not need BTF_KIND_LAYOUT_OPTIONAL, right?
-
-I guess what we really want to test is in the selftest:
-   - Add a couple of new kinds for testing purpose, e.g.,
-       BTF_KIND_OPTIONAL, BTF_KIND_NOT_OPTIONAL,
-     generate two btf's which uses BTF_KIND_OPTIONAL
-     and BTF_KIND_NOT_OPTIONAL respectively.
-   - test these two btf's with this patch set to see whether it
-     works as expected or not.
-
-Does this make sense?
-
-> +	btf_add_kind_layout(btf, BTF_KIND_ENUM64, 0, 0, sizeof(struct btf_enum64));
-> +
-> +	return 0;
-> +}
-> +
-[...]
 
