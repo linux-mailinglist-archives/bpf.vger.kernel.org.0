@@ -1,147 +1,100 @@
-Return-Path: <bpf+bounces-2954-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2955-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6712F737685
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 23:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 55B21737691
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 23:22:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E4E8281468
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 21:17:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12142281464
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 21:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52664182CD;
-	Tue, 20 Jun 2023 21:17:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F93182C7;
+	Tue, 20 Jun 2023 21:22:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8CF174D1;
-	Tue, 20 Jun 2023 21:17:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1C7CC433C9;
-	Tue, 20 Jun 2023 21:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687295825;
-	bh=VSt5kV5zA9koKw+yON45/sHrnzDV4SzSWC86WRbHIeY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KQGv0q9HX7IhJ8yP+50t80IdMhMWRtzzvDXTZEhNbTJH3ZV0WdqcrShRSDg5Bjkwb
-	 BTfnQyNnkTAdD/JNyDqbqt13s6bOKsk62tuunQgHrTk+xC/nfCTIaBRLSkiJxXRAGN
-	 NgJfGtEduvDnd42gkm4qnCjJXNx4dsGlR0ca9gWwldikrLKFCKnzLnP+aXsaoD2Jtw
-	 Jz4VrM7ZNsxFA8G2eUm+xCa4UuUSQnlwsYr2afi+fFcitbgsPR+HoEthmk7IR9eWDO
-	 Z5RXRSQ5lagEeDiSAwmqS3wdbvWGwS4SHLfpc8dxuOA1QIKLZxOGIV6V2N8wCRk0nC
-	 BXhQjK+JT8RDg==
-Date: Tue, 20 Jun 2023 23:16:59 +0200
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Alexander Duyck <alexander.duyck@gmail.com>
-Cc: Jesper Dangaard Brouer <jbrouer@redhat.com>, brouer@redhat.com,
-	Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Maryam Tahhan <mtahhan@redhat.com>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 3/4] page_pool: introduce page_pool_alloc()
- API
-Message-ID: <ZJIXSyjxPf7FQQKo@lore-rh-laptop>
-References: <c06f6f59-6c35-4944-8f7a-7f6f0e076649@huawei.com>
- <CAKgT0UccmDe+CE6=zDYQHi1=3vXf5MptzDo+BsPrKdmP5j9kgQ@mail.gmail.com>
- <0ba1bf9c-2e45-cd44-60d3-66feeb3268f3@redhat.com>
- <dcc9db4c-207b-e118-3d84-641677cd3d80@huawei.com>
- <f8ce176f-f975-af11-641c-b56c53a8066a@redhat.com>
- <CAKgT0UfzP30OiBQu+YKefLD+=32t+oA6KGzkvsW6k7CMTXU8KA@mail.gmail.com>
- <699563f5-c4fa-0246-5e79-61a29e1a8db3@redhat.com>
- <CAKgT0UcNOYwxRP_zkaBaZh-VBL-CriL8dFG-VY7-FUyzxfHDWw@mail.gmail.com>
- <ZI8dP5+guKdR7IFE@lore-desk>
- <CAKgT0UfFVFa4zT2DnPZEGaHp0uh5V1u1aGymgdL4Vu8Q1VV8hQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7421417AB2
+	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 21:22:14 +0000 (UTC)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04571DC;
+	Tue, 20 Jun 2023 14:22:13 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-519b771f23aso6816165a12.1;
+        Tue, 20 Jun 2023 14:22:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687296131; x=1689888131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l25q0nDbX64Q4NQ/7YLY/l1l/6F0DR4cuAypL+FKwEA=;
+        b=WM1Yb2Ik3akdQ+w2usD9eiDDO7nRcNDFoDjr/UbUSBXpbGVhtoKaqzRufOek6yLZB2
+         +fchhqCemVgP7A5MSaaYjFhwd6R5RXo5dREqT/77fTzGyPtBESqXgNi9IQLX+5v5pwCb
+         +lKlyBZWl80l02nVyV4gknoY3TAkCQ9qmBKXfc1xMIWjB4ePVHhzwLx15AZZFDF5FD/F
+         dqF06hD+UBjsnsolTmfQ67v/axs9EqgcoRK+IcbhIUI9T5TBup98uAtEvycS3AQEcVW/
+         gLD4cuUjE3Qzf9fo9eeAiTcw/RmUoppOuYurGx1+pVxqPOooEFW3DKoXeu7qYO9ArUog
+         pFjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687296131; x=1689888131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l25q0nDbX64Q4NQ/7YLY/l1l/6F0DR4cuAypL+FKwEA=;
+        b=TyLU4k2xtLPfDo6gaWN/Ph6W0GFqLEtKDhUfASYNmpI7blvzu+QhrdbtMmumFnKZWm
+         idP7MNizIP45ZMwTGXHFx2UYW1/iPKVjD7Vp89zyQnLjNyI0RXlPBD54PIzq12LfLUEz
+         rSFAFCh9vznLDOTUk6LYwOKf957Ylx2hjaVqD6EYigXzahxTx+QgcBlnfNKvGvgNje0Q
+         WXxWEdaR+JE0OBRC1YRHYi4PlJDGkWSOV5eiMpr/Z3Gi+sKEE5kJQo24SGx6R1G+hSY8
+         5XfrrqwkuueHB048ag7L5EUhAiXCTTl8rhvyUyh226JCyzHzitfX00XbQjoqShRqaoGw
+         FTwQ==
+X-Gm-Message-State: AC+VfDxfJh+s5ANk+hCvBphmmLfqf4DYjwGDyAtD+Jve/kxbeP+FbiQH
+	A6Ashf2MzCyK22ahU985116kkZONhypL2kQOAVk=
+X-Google-Smtp-Source: ACHHUZ6sKZeI9lMkfEwPbiRy8jlZ95af+fSx1XHpNiG77d/mGdJWIeSei7RDjJ+MpSj9vpRGfZ+6qrMf8UriaBJqQA0=
+X-Received: by 2002:aa7:d9c3:0:b0:51a:3df4:5697 with SMTP id
+ v3-20020aa7d9c3000000b0051a3df45697mr8894950eds.35.1687296131216; Tue, 20 Jun
+ 2023 14:22:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="IDE08eaH4RavKRtY"
-Content-Disposition: inline
-In-Reply-To: <CAKgT0UfFVFa4zT2DnPZEGaHp0uh5V1u1aGymgdL4Vu8Q1VV8hQ@mail.gmail.com>
-
-
---IDE08eaH4RavKRtY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20230620163008.3718-1-laoar.shao@gmail.com> <20230620163008.3718-10-laoar.shao@gmail.com>
+In-Reply-To: <20230620163008.3718-10-laoar.shao@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 20 Jun 2023 14:22:00 -0700
+Message-ID: <CAADnVQLjaKbe6JgPFe+=dJWxmNwdo9rQzCjvoqJ9Frn_DOSpCw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 09/11] bpf: Support ->fill_link_info for perf_event
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Quentin Monnet <quentin@isovalent.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-[...]
+On Tue, Jun 20, 2023 at 9:30=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
+>
+> +enum bpf_perf_event_type {
+> +       BPF_PERF_EVENT_UNSPEC =3D 0,
+> +       BPF_PERF_EVENT_UPROBE =3D 1,
+> +       BPF_PERF_EVENT_KPROBE =3D 2,
+> +       BPF_PERF_EVENT_TRACEPOINT =3D 3,
+> +       BPF_PERF_EVENT_EVENT =3D 4,
+> +
+> +       MAX_BPF_PERF_EVENT_TYPE,
+> +};
 
-> > I did some experiments using page_frag_cache/page_frag_alloc() instead =
-of
-> > page_pools in a simple environment I used to test XDP for veth driver.
-> > In particular, I allocate a new buffer in veth_convert_skb_to_xdp_buff(=
-) from
-> > the page_frag_cache in order to copy the full skb in the new one, actua=
-lly
-> > "linearizing" the packet (since we know the original skb length).
-> > I run an iperf TCP connection over a veth pair where the
-> > remote device runs the xdp_rxq_info sample (available in the kernel sou=
-rce
-> > tree, with action XDP_PASS):
-> >
-> > TCP clietn -- v0 =3D=3D=3D v1 (xdp_rxq_info) -- TCP server
-> >
-> > net-next (page_pool):
-> > - MTU 1500B: ~  7.5 Gbps
-> > - MTU 8000B: ~ 15.3 Gbps
-> >
-> > net-next + page_frag_alloc:
-> > - MTU 1500B: ~  8.4 Gbps
-> > - MTU 8000B: ~ 14.7 Gbps
-> >
-> > It seems there is no a clear "win" situation here (at least in this env=
-ironment
-> > and we this simple approach). Moreover:
->=20
-> For the 1500B packets it is a win, but for 8000B it looks like there
-> is a regression. Any idea what is causing it?
-
-nope, I have not looked into it yet.
-
->=20
-> > - can the linearization introduce any issue whenever we perform XDP_RED=
-IRECT
-> >   into a destination device?
->=20
-> It shouldn't. If it does it would probably point to an issue w/ the
-> destination driver rather than an issue with the code doing this.
-
-ack, fine.
-
->=20
-> > - can the page_frag_cache introduce more memory fragmentation (IIRC we =
-were
-> >   experiencing this issue in mt76 before switching to page_pools).
->=20
-> I think it largely depends on where the packets are ending up. I know
-> this is the approach we are using for sockets, see
-> skb_page_frag_refill(). If nothing else, if you took a similar
-> approach to it you might be able to bypass the need for the
-> page_frag_cache itself, although you would likely still end up
-> allocating similar structures.
-
-ack.
-
-Regards,
-Lorenzo
-
---IDE08eaH4RavKRtY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZJIXSAAKCRA6cBh0uS2t
-rLojAP4vEPyrpT81w5Pjsfhued/eWj+HL/TUK74YFhQg7gHJ7gD/TpqIHLpG45Tn
-cY88letgy76oS6jrFFZlVyzqmkuDXwk=
-=dC3S
------END PGP SIGNATURE-----
-
---IDE08eaH4RavKRtY--
+afaics MAX_BPF_PERF_EVENT_TYPE is completely unused.
+Every patch should be focusing on minimizing additions to uapi.
 
