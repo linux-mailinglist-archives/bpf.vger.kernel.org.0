@@ -1,213 +1,193 @@
-Return-Path: <bpf+bounces-2915-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2916-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAB12736D3C
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 15:25:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5114E736E77
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 16:15:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11D7A1C20C36
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 13:25:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 059C72812EF
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 14:15:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E2C4156F5;
-	Tue, 20 Jun 2023 13:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91926168BA;
+	Tue, 20 Jun 2023 14:15:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB2714286
-	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 13:25:00 +0000 (UTC)
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC5D1991
-	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 06:24:59 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-53fa455cd94so2344159a12.2
-        for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 06:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1687267498; x=1689859498;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=re+SyBILUicxlS34iUets7Pi+i9q+UR/ma+OQFUNz3A=;
-        b=MYxidG8ghbS9JZpyM0oIyctDaxTcuG0OjKbKNW5EmF0G2lZtyabzimYhrZkGaI1XQ3
-         UQmJwgKBI3acaQe8oPPZ0xWIvVQYUF5tEZjvjsek+aLid2jDgKfL91VBZSRhlJIS9BrD
-         E7ALLVoCgge9Jk8TCSdpdFBuDz9UR6cXt3CSY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687267498; x=1689859498;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=re+SyBILUicxlS34iUets7Pi+i9q+UR/ma+OQFUNz3A=;
-        b=fq5WCjjvIkxu+f8ATwyiqkbPBHLX2CLv9Tn5RXUOAqUjFJZCPdK8Bt5qhBVrkkTJmm
-         auhPQB9h9yXB7humfmejpy3pLRoh2ToT/dEykHIzZaSv0v0kNgpw8KHdr8iuOgnTYcQP
-         9/8A47mpAWRLNtCBYjrHfJT8GIqApb+TSJeQq5RI5B7KB41MPFw+BN2Dx1m4SDt3EREJ
-         bKJBZHwC29CLAmG0omy/v0Bcvz+EIt2xqNZAJgym1CCkD9Df2cg9znQWeJ40SLb+gDHg
-         3BhguRYMfDwSwLUelEqBKXdMy/EIxwBHZl3ZV9/VPMwWAsAj3l9AJwzW7QnlDLbqFXru
-         9u5Q==
-X-Gm-Message-State: AC+VfDw3IoI2p1uOgH+39VsIpFw335OBwQ7fheUybn18GaBg63MlGBpk
-	N/IJB1R/a77/3P4JzCkPyteCLHrefTBEnFNI+HFdug==
-X-Google-Smtp-Source: ACHHUZ5K3/8TLzGIfM4jjvCSa4fJcEYPFzG/qAHAv1A2vluglx+NqbztVcunHa0YS421ZIYE+QiMZfeSH0B6my2vaRA=
-X-Received: by 2002:a17:902:e548:b0:1b6:788a:551d with SMTP id
- n8-20020a170902e54800b001b6788a551dmr2794705plf.44.1687267498470; Tue, 20 Jun
- 2023 06:24:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5078916421;
+	Tue, 20 Jun 2023 14:15:41 +0000 (UTC)
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6EFE6E;
+	Tue, 20 Jun 2023 07:15:38 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VlcDhnY_1687270532;
+Received: from localhost(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0VlcDhnY_1687270532)
+          by smtp.aliyun-inc.com;
+          Tue, 20 Jun 2023 22:15:33 +0800
+Date: Tue, 20 Jun 2023 22:15:32 +0800
+From: Heng Qi <hengqi@linux.alibaba.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH net-next 3/4] virtio-net: support coexistence of XDP and
+ _F_GUEST_CSUM
+Message-ID: <20230620141532.GH74977@h68b04307.sqa.eu95>
+References: <20230619105738.117733-1-hengqi@linux.alibaba.com>
+ <20230619105738.117733-4-hengqi@linux.alibaba.com>
+ <20230619072320-mutt-send-email-mst@kernel.org>
+ <20230620032430.GE74977@h68b04307.sqa.eu95>
+ <20230620064711-mutt-send-email-mst@kernel.org>
+ <20230620110148.GF74977@h68b04307.sqa.eu95>
+ <20230620080926-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230615145607.3469985-1-revest@chromium.org> <CAEf4BzbjCt3tKJ40tg12rMjCLXrm7UoGuOdC62vGnpTTt8-buw@mail.gmail.com>
- <CABRcYmK=yXDumZj3tdW7341+sSV1zmZw1UpQkfSF6RFgnBQjew@mail.gmail.com> <c26de68d-4a56-03a0-2625-25c7e2997d45@meta.com>
-In-Reply-To: <c26de68d-4a56-03a0-2625-25c7e2997d45@meta.com>
-From: Florent Revest <revest@chromium.org>
-Date: Tue, 20 Jun 2023 15:24:47 +0200
-Message-ID: <CABRcYm+-x-Dou0zMgTPEXL+7dLoE7xDFQSLR+sU_Pyjg9=Ub0g@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf/btf: Accept function names that contain dots
-To: Yonghong Song <yhs@meta.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, martin.lau@linux.dev, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, song@kernel.org, 
-	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, nathan@kernel.org, 
-	ndesaulniers@google.com, trix@redhat.com, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230620080926-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 19, 2023 at 8:17=E2=80=AFPM Yonghong Song <yhs@meta.com> wrote:
->
->
->
-> On 6/19/23 7:03 AM, Florent Revest wrote:
-> > On Fri, Jun 16, 2023 at 6:57=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >>
-> >> On Thu, Jun 15, 2023 at 7:56=E2=80=AFAM Florent Revest <revest@chromiu=
-m.org> wrote:
-> >>>
-> >>> When building a kernel with LLVM=3D1, LLVM_IAS=3D0 and CONFIG_KASAN=
-=3Dy, LLVM
-> >>> leaves DWARF tags for the "asan.module_ctor" & co symbols. In turn,
-> >>> pahole creates BTF_KIND_FUNC entries for these and this makes the BTF
-> >>> metadata validation fail because they contain a dot.
-> >>>
-> >>> In a dramatic turn of event, this BTF verification failure can cause
-> >>> the netfilter_bpf initialization to fail, causing netfilter_core to
-> >>> free the netfilter_helper hashmap and netfilter_ftp to trigger a
-> >>> use-after-free. The risk of u-a-f in netfilter will be addressed
-> >>> separately but the existence of "asan.module_ctor" debug info under s=
-ome
-> >>> build conditions sounds like a good enough reason to accept functions
-> >>> that contain dots in BTF.
-> >>
-> >> I don't see much harm in allowing dots. There are also all those .isra
-> >> and other modifications to functions that we currently don't have in
-> >> BTF, but with the discussions about recording function addrs we might
-> >> eventually have those as well. So:
-> >>
-> >> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> > Thanks Andrii! :)
-> >
-> >>> Cc: stable@vger.kernel.org
-> >>> Fixes: 1dc92851849c ("bpf: kernel side support for BTF Var and DataSe=
-c")
-> >
-> > So do you think these trailers should be kept ? I suppose we can
-> > either see this as a "new feature" to accommodate .isra that should go
-> > through bpf-next or as a bug fix that goes through bpf and gets
-> > backported to stable (without this, BTF wouldn't work on old kernels
-> > built under a new clang and with LLVM_IAS=3D0 and CONFIG_KASAN=3Dy so t=
-his
-> > sounds like a legitimate bug fix to me, I just wanted to double check)
->
-> How many people really build the kernel with
->     LLVM=3D1 LLVM_IAS=3D0
-> which uses clang compiler ans gcc 'as'.
-> I think distro most likely won't do this if they intend to
-> build the kernel with clang.
+On Tue, Jun 20, 2023 at 08:10:38AM -0400, Michael S. Tsirkin wrote:
+> On Tue, Jun 20, 2023 at 07:01:48PM +0800, Heng Qi wrote:
+> > On Tue, Jun 20, 2023 at 06:50:34AM -0400, Michael S. Tsirkin wrote:
+> > > On Tue, Jun 20, 2023 at 11:24:30AM +0800, Heng Qi wrote:
+> > > > On Mon, Jun 19, 2023 at 07:26:44AM -0400, Michael S. Tsirkin wrote:
+> > > > > On Mon, Jun 19, 2023 at 06:57:37PM +0800, Heng Qi wrote:
+> > > > > > We are now re-probing the csum related fields and  trying
+> > > > > > to have XDP and RX hw checksum capabilities coexist on the
+> > > > > > XDP path. For the benefit of:
+> > > > > > 1. RX hw checksum capability can be used if XDP is loaded.
+> > > > > > 2. Avoid packet loss when loading XDP in the vm-vm scenario.
+> > > > > > 
+> > > > > > Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+> > > > > > Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > > ---
+> > > > > >  drivers/net/virtio_net.c | 36 ++++++++++++++++++++++++------------
+> > > > > >  1 file changed, 24 insertions(+), 12 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > > > > index 07b4801d689c..25b486ab74db 100644
+> > > > > > --- a/drivers/net/virtio_net.c
+> > > > > > +++ b/drivers/net/virtio_net.c
+> > > > > > @@ -1709,6 +1709,7 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
+> > > > > >  	struct net_device *dev = vi->dev;
+> > > > > >  	struct sk_buff *skb;
+> > > > > >  	struct virtio_net_hdr_mrg_rxbuf *hdr;
+> > > > > > +	__u8 flags;
+> > > > > >  
+> > > > > >  	if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
+> > > > > >  		pr_debug("%s: short packet %i\n", dev->name, len);
+> > > > > > @@ -1717,6 +1718,8 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
+> > > > > >  		return;
+> > > > > >  	}
+> > > > > >  
+> > > > > > +	flags = ((struct virtio_net_hdr_mrg_rxbuf *)buf)->hdr.flags;
+> > > > > > +
+> > > > > >  	if (vi->mergeable_rx_bufs)
+> > > > > >  		skb = receive_mergeable(dev, vi, rq, buf, ctx, len, xdp_xmit,
+> > > > > >  					stats);
+> > > > > 
+> > > > > what's going on here?
+> > > > 
+> > > > Hi, Michael.
+> > > > 
+> > > > Is your question about the function of this code?
+> > > > 1. If yes,
+> > > > this sentence saves the flags value in virtio-net-hdr in advance
+> > > > before entering the XDP processing logic, so that it can be used to
+> > > > judge further logic after XDP processing.
+> > > > 
+> > > > If _NEEDS_CSUM is included in flags before XDP processing, then after
+> > > > XDP processing we need to re-probe the csum fields and calculate the
+> > > > pseudo-header checksum.
+> > > 
+> > > Yes but we previously used this:
+> > > -       hdr = skb_vnet_hdr(skb);
+> > > which pokes at the copy in skb cb.
+> > > 
+> > > Is anything wrong with this?
+> > > 
+> > 
+> > This is where we save the hdr when there is no XDP loaded (note that
+> > this is the complete hdr, including flags, and also including GSO and
+> > other information). When XDP is loaded, because hdr is invalid, we will
+> > not save it into skb->cb.
+> > 
+> > But the above situation is not what we want. Now our purpose is to save
+> > the hdr information before XDP processing, that is, when the driver has
+> > just received the packet and has not built the skb (in fact, we only
+> > need flags). Therefore, only flags are saved here.
+> > 
+> > Thanks.
+> 
+> I don't get it. this seems to be the only use of flags:
+> 
+> 
+> +       if (unlikely(vi->xdp_enabled)) {
+> +               if (virtnet_set_csum_after_xdp(vi, skb, flags) < 0) {
+> +                       pr_debug("%s: errors occurred in flow dissector setting csum",
+> +                                dev->name);
+> +                       goto frame_err;
+> +               }
+> 
+> looks like skb has already been created here.
 
-I tend to agree with you
+I explain more:
 
-> Note that
->     LLVM=3D1
-> implies to use both clang compiler and clang assembler.
+First, this patchset only focuses on XDP loaded scenes.
 
-However, this is only true since:
-f12b034afeb3 ("scripts/Makefile.clang: default to LLVM_IAS=3D1")
+Then in the same-host vm-vm scenario, when the receiver loads XDP, this
+is the packet receiving process:
+1. The driver receives a packet, represented by *buf.
 
-5.10 stable for example does not have that commit and LLVM_IAS=3D0 is
-still the default there. (actually that's how I stumbled upon this: by
-building a 5.10 LTS and then finding a way to reproduce it upstream by
-disabling LLVM_IAS)
+2. The XDP program builds xdp_buff based on *buf.
+   virtio_net_hdr_mrg_rxbuf is located in the headroom of xdp_buff.
 
-> Using clang17 and 'LLVM=3D1 LLVM_IAS=3D0', with latest bpf-next,
-> I actually hit some build errors like:
->
-> /tmp/video-bios-59fa52.s: Assembler messages:
-> /tmp/video-bios-59fa52.s:4: Error: junk at end of line, first
-> unrecognized character is `"'
-> /tmp/video-bios-59fa52.s:4: Error: file number less than one
-> /tmp/video-bios-59fa52.s:5: Error: junk at end of line, first
-> unrecognized character is `"'
-> /tmp/video-bios-59fa52.s:6: Error: junk at end of line, first
-> unrecognized character is `"'
-> /tmp/video-bios-59fa52.s:7: Error: junk at end of line, first
-> unrecognized character is `"'
-> /tmp/video-bios-59fa52.s:8: Error: junk at end of line, first
-> unrecognized character is `"'
-> /tmp/video-bios-59fa52.s:9: Error: junk at end of line, first
-> unrecognized character is `"'
-> /tmp/video-bios-59fa52.s:10: Error: junk at end of line, first
-> unrecognized character is `"'
-> /tmp/video-bios-59fa52.s:68: Error: junk at end of line, first
-> unrecognized character is `"'
-> clang: error: assembler command failed with exit code 1 (use -v to see
-> invocation)
-> make[4]: *** [/home/yhs/work/bpf-next/scripts/Makefile.build:252:
-> arch/x86/realmode/rm/video-bios.o] Error 1
-> make[4]: *** Waiting for unfinished jobs....
-> /tmp/wakemain-88777c.s: Assembler messages:
-> /tmp/wakemain-88777c.s:4: Error: junk at end of line, first unrecognized
-> character is `"'
-> /tmp/wakemain-88777c.s:4: Error: file number less than one
-> /tmp/wakemain-88777c.s:5: Error: junk at end of line, first unrecognized
-> character is `"'
-> /tmp/wakemain-88777c.s:6: Error: junk at end of line, first unrecognized
-> character is `"'
-> /tmp/wakemain-88777c.s:7: Error: junk at end of line, first unrecognized
-> character is `"'
-> /tmp/wakemain-88777c.s:8: Error: junk at end of line, first unrecognized
-> character is `"'
-> /tmp/wakemain-88777c.s:81: Error: junk at end of line, first
-> unrecognized character is `"'
-> /tmp/wakemain-88777c.s:312: Error: junk at end of line, first
-> unrecognized character is `"'
-> clang: error: assembler command failed with exit code 1 (use -v to see
-> invocation)
->
-> Potentially because of my local gnu assembler 2.30-120.el8 won't work
-> with some syntax generated by clang. Mixing clang compiler and arbitrary
-> gnu assembler are not a good idea (see the above example). It might
-> work with close-to-latest gnu assembler.
+3. The XDP program returns XDP_PASS and modifies the headroom, that is,
+the information in virtio_net_hdr_mrg_rxbuf becomes invalid (including
+flags). So information like csum_{start, offset} is no longer correct.
+Therefore, the skb converted from xdp_buff does not save information in
+skb cb. And, skb->ip_summed = CHECKSUM_NONE, there is a high probability of
+packet loss at this time because the incorrect check value.
 
-I did not hit this bug with clang 17 and bpf-next so it's probably an
-incompatibility with that gnu assembler indeed.
+So, in order to solve this problem (not only), we save the flags in
+virtio_net_hdr_mrg_rxbuf before the #2 step above, which is the
+original information, just to know whether the packet is _NEEDS_CSUM or
+_DATA_VALID.
 
-> To support function name like '<fname>.isra', some llvm work will be
-> needed, and it may take some time.
->
-> So in my opinion, this patch is NOT a bug fix. It won't affect distro.
-> Whether we should backport to the old kernel, I am not sure whether it
-> is absolutely necessary as casual build can always remove LLVM_IAS=3D0 or
-> hack the kernel source itself.
+If the saved flags contains _NEEDS_CSUM, then we use
+virtnet_set_csum_after_xdp() to recalculate csum_{start, offset},
+pseudo-header checksum for the skb converted from xdp_buff. That is, the
+saved flags are only used to identify whether we want to re-probe for
+the packet to avoiding the packet dropping.
 
-If you think it's not worth backporting to 5.10 (where LLVM_IAS=3D0 is
-the default) then I could drop these trailers and send it to bpf-next
-with a different justification. Either way is fine by me.
+Thanks.
+
+> 
+> is there another use of flags that I missed?
+> 
+> 
+> 
+> > > It seems preferable not to poke at the header an extra time.
+> > > 
+> > > -- 
+> > > MST
 
