@@ -1,84 +1,90 @@
-Return-Path: <bpf+bounces-2941-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2942-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D92A073725E
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 19:11:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72C0273726F
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 19:14:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16CE21C20CBA
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 17:11:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2BB21C2097D
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 17:14:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28CC2AB3D;
-	Tue, 20 Jun 2023 17:11:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 666882AB41;
+	Tue, 20 Jun 2023 17:14:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F8212AB30
-	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 17:11:20 +0000 (UTC)
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AD410E2
-	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 10:11:19 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b53e1cd0ffso20011225ad.0
-        for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 10:11:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B6802AB32
+	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 17:14:16 +0000 (UTC)
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE50A1727;
+	Tue, 20 Jun 2023 10:14:15 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-570654fadf8so51322437b3.1;
+        Tue, 20 Jun 2023 10:14:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687281079; x=1689873079;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vMCL9MBUgaXBCtQ1dLciPYdPyIFXYIps1O+bKc0deQ0=;
-        b=c2NaxhmRSgTGmqtwGOgcvj17CEnylSGIv3WcFdpUb2eSNKfvAXIf5IUF1+mQuVOQyB
-         BZtQiOT36t8kSMVYMAQow+OtzTbB5DHwAQePge6xo4TWNMJDcpDGSEx58wUFuOYeBScE
-         cbdfvLI5uI6PoA8/caFs2LkU7IzA19uV5b57SKbt0w8JM3Sc/vcsdit1ZiGxHaz9QYhg
-         +rINOnacoQWX4Lz/7/kmSIQWtjVeAhKh59yN9kNPfPun7IE2vNFcy7qYmSLvuJAeLVHd
-         mEPuh+jL57kfzgEX/VjHrtuOux6aLqDKhybvbbB3VUfhNZQqDY+5bUq7OkItnGgmviUU
-         UmpA==
+        d=gmail.com; s=20221208; t=1687281254; x=1689873254;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lRaalUOCoIVfPrkXnrF7LBogOQ5R9CqLsQELkMYwGpQ=;
+        b=qYxn95q5Wba6IvRogpLkIvfFDh1m0VLshIb05xqVUgSbimCzlrtEGP20WB5oTWIk3R
+         xlLbXSCczIl5Bbi9HTm76tmr+4ZGA+f+VRIv2LjKI3V8UE+1+e2UJN9EG7LV3JmJhQQN
+         c/5Qewg2V9ULcubws23hTYrIvI8BvGrP2KrpadeBBjLjfeLPuOIYJAKkj9cYddzOsHZS
+         AcEL1SFZLuSoid9Fke6nN5R2AIi1QuejidkmeNov8WyCsrpA6H3BMplqCg74Qg9siBn/
+         gxLJ5tqELQBs+n4Uv4ibvW+JuXU/giGNqnb5JRhiFs2ZYDVK4K6vOgpErAcg+F57Bon1
+         VIaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687281079; x=1689873079;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vMCL9MBUgaXBCtQ1dLciPYdPyIFXYIps1O+bKc0deQ0=;
-        b=AKRljhZWtqzO+ivEnD8SEkbbQadnAUUzP4pu09JxcQoXt718wQO/sNgZR+gnEUlUpo
-         2yCkh7CT0nevQmyjRrGWtbbGYBMaLJ5qzuxCTUG/ve3FYS0vNXOgBn9F9s1e0INV45b6
-         CDgeQEfhYhzrC4YVxnbB1PaRMZC2kwUEOIyc93ec4ComaVVln9YPC05BIV+Gxzf+BZtk
-         5w1j6JqUIG6rOsZTR8UGKCsY+jZ5yLzluLILyKNk8lRcoy2mc0Evz0SvPgJ6Cnu1uvEW
-         aCsJnIrdGx76f277SM/TD0R4Yop75tU1oy+u2GvJe99JaODDeXH4/I1waV4Szp9Cds4e
-         p8Ug==
-X-Gm-Message-State: AC+VfDyt6mGOEQBdyBlhDmP7W5eaH1nVWG1HYQ1ARwB9xy03Bsh5Wkjy
-	1f6DOqjJmt2QhUncHnEV5wg=
-X-Google-Smtp-Source: ACHHUZ5RfcJeeo+Vn4GGoz3KLpbtyjmwvoRLXSAF+HdLHSrTN3Nth52WFit/tkU3h9DABhJMbrAQEA==
-X-Received: by 2002:a17:902:d2ca:b0:1ad:bb89:16f6 with SMTP id n10-20020a170902d2ca00b001adbb8916f6mr10096565plc.50.1687281078659;
-        Tue, 20 Jun 2023 10:11:18 -0700 (PDT)
-Received: from MacBook-Pro-8.local ([2620:10d:c090:400::5:e719])
-        by smtp.gmail.com with ESMTPSA id i10-20020a17090332ca00b001b6758a2d94sm1835893plr.305.2023.06.20.10.11.16
+        d=1e100.net; s=20221208; t=1687281254; x=1689873254;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lRaalUOCoIVfPrkXnrF7LBogOQ5R9CqLsQELkMYwGpQ=;
+        b=NTBMX01cIkQYOIK0iFn9zNyZQpa5BU/NMPnAMDR1aRqZmSPUHd9tSefqApeYCGMASO
+         TaiF4VHYvUUYEdcf91A90RTlXJPVRebIdanhjXabChqA8GbX7Dg0VR1M4/Aoq5oqZqpZ
+         szAYuP7EZ4GK3myoolr2j/XHEueP0XnS9sg/s9+jWM0jO6hUpIHYjFdh7KX3w8Eu21fC
+         PjE0v1su1XdJOcbTm9aZnJ3ZL2XLU4L0oaUm5OitcltEsTjjFtfRdOhfVL+4Yj0umbgO
+         yoxQ9cTeFW+4uBzPVoKawTSEoG8A6WOK7jetQAc8T6cohLd2/88AA64iEI2EQ7qYAyk9
+         qjJg==
+X-Gm-Message-State: AC+VfDyrUUE/Gy31S4rwGviOOvR4tmiCjXRusG6BlM2XFCA16zwGHJ6e
+	QEwXLrES5Gl81Ozqg+PM4fgGkWhCK4c=
+X-Google-Smtp-Source: ACHHUZ74skO8UWt4NetU63H1fOdc3/h278jiG0eDO9Ub6DCuRHxn3cxtMduRh0xAvXGysmc0mIvUig==
+X-Received: by 2002:a0d:cb57:0:b0:570:22f:af3 with SMTP id n84-20020a0dcb57000000b00570022f0af3mr14139699ywd.22.1687281254477;
+        Tue, 20 Jun 2023 10:14:14 -0700 (PDT)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:5338:88af:5817:a5f])
+        by smtp.gmail.com with ESMTPSA id u81-20020a814754000000b00555df877a4csm195139ywa.102.2023.06.20.10.14.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jun 2023 10:11:18 -0700 (PDT)
-Date: Tue, 20 Jun 2023 10:11:15 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCHv2 bpf-next 01/24] bpf: Add multi uprobe link
-Message-ID: <20230620171115.ebel6f7kjeyy4msn@MacBook-Pro-8.local>
-References: <20230620083550.690426-1-jolsa@kernel.org>
- <20230620083550.690426-2-jolsa@kernel.org>
+        Tue, 20 Jun 2023 10:14:14 -0700 (PDT)
+From: Kui-Feng Lee <thinker.li@gmail.com>
+X-Google-Original-From: Kui-Feng Lee <kuifeng@meta.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	yhs@fb.com,
+	kpsingh@kernel.org,
+	shuah@kernel.org,
+	john.fastabend@gmail.com,
+	sdf@google.com,
+	mykolal@fb.com,
+	linux-kselftest@vger.kernel.org,
+	jolsa@kernel.org,
+	haoluo@google.com
+Cc: Kui-Feng Lee <kuifeng@meta.com>
+Subject: [PATCH bpf-next v3 0/2] Fix missing synack in BPF cgroup_skb filters
+Date: Tue, 20 Jun 2023 10:14:07 -0700
+Message-Id: <20230620171409.166001-1-kuifeng@meta.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230620083550.690426-2-jolsa@kernel.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -86,48 +92,82 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 20, 2023 at 10:35:27AM +0200, Jiri Olsa wrote:
-> +static int uprobe_prog_run(struct bpf_uprobe *uprobe,
-> +			   unsigned long entry_ip,
-> +			   struct pt_regs *regs)
-> +{
-> +	struct bpf_uprobe_multi_link *link = uprobe->link;
-> +	struct bpf_uprobe_multi_run_ctx run_ctx = {
-> +		.entry_ip = entry_ip,
-> +	};
-> +	struct bpf_prog *prog = link->link.prog;
-> +	struct bpf_run_ctx *old_run_ctx;
-> +	int err = 0;
-> +
-> +	might_fault();
-> +
-> +	rcu_read_lock_trace();
-> +	migrate_disable();
-> +
-> +	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1))
-> +		goto out;
+TCP SYN/ACK packets of connections from processes/sockets outside a
+cgroup on the same host are not received by the cgroup's installed
+cgroup_skb filters.
 
-bpf_prog_run_array_sleepable() doesn't do such things.
-Such 'proteciton' will actively hurt.
-The sleepable prog below will block all kprobes on this cpu.
-please remove.
+There were two BPF cgroup_skb programs attached to a cgroup named
+"my_cgroup".
 
-> +
-> +	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> +
-> +	if (!prog->aux->sleepable)
-> +		rcu_read_lock();
-> +
-> +	err = bpf_prog_run(link->link.prog, regs);
-> +
-> +	if (!prog->aux->sleepable)
-> +		rcu_read_unlock();
-> +
-> +	bpf_reset_run_ctx(old_run_ctx);
-> +
-> +out:
-> +	__this_cpu_dec(bpf_prog_active);
-> +	migrate_enable();
-> +	rcu_read_unlock_trace();
-> +	return err;
+    SEC("cgroup_skb/ingress")
+    int ingress(struct __sk_buff *skb)
+    {
+        /* .... process skb ... */
+        return 1;
+    }
+
+    SEC("cgroup_skb/egress")
+    int egress(struct __sk_buff *skb)
+    {
+        /* .... process skb ... */
+        return 1;
+    
+    }
+
+We discovered that when running the command "nc -6 -l 8000" in
+"my_group" and connecting to it from outside of "my_cgroup" with the
+command "nc -6 localhost 8000", the egress filter did not detect the
+SYN/ACK packet. However, we did observe the SYN/ACK packet at the
+ingress when connecting from a socket in "my_cgroup" to a socket
+outside of it.
+
+We came across BPF_CGROUP_RUN_PROG_INET_EGRESS(). This macro is
+responsible for calling BPF programs that are attached to the egress
+hook of a cgroup and it skips programs if the sending socket is not the
+owner of the skb. Specifically, in our situation, the SYN/ACK
+skb is owned by a struct request_sock instance, but the sending
+socket is the listener socket we use to receive incoming
+connections. The request_sock is created to manage an incoming
+connection.
+
+It has been determined that checking the owner of a skb against
+the sending socket is not required. Removing this check will allow the
+filters to receive SYN/ACK packets.
+
+To ensure that cgroup_skb filters can receive all signaling packets,
+including SYN, SYN/ACK, ACK, FIN, and FIN/ACK. A new self-test has
+been added as well.
+
+Changes from v2:
+
+ - Remove redundant blank lines.
+
+Changes from v1:
+
+ - Check the number of observed packets instead of just sleeping.
+
+ - Use ASSERT_XXX() instead of CHECK()/
+
+[v1] https://lore.kernel.org/all/20230612191641.441774-1-kuifeng@meta.com/
+[v2] https://lore.kernel.org/all/20230617052756.640916-2-kuifeng@meta.com/
+
+Kui-Feng Lee (2):
+  net: bpf: Always call BPF cgroup filters for egress.
+  selftests/bpf: Verify that the cgroup_skb filters receive expected
+    packets.
+
+ include/linux/bpf-cgroup.h                    |   2 +-
+ tools/testing/selftests/bpf/cgroup_helpers.c  |  12 +
+ tools/testing/selftests/bpf/cgroup_helpers.h  |   1 +
+ tools/testing/selftests/bpf/cgroup_tcp_skb.h  |  35 ++
+ .../selftests/bpf/prog_tests/cgroup_tcp_skb.c | 399 ++++++++++++++++++
+ .../selftests/bpf/progs/cgroup_tcp_skb.c      | 382 +++++++++++++++++
+ 6 files changed, 830 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/cgroup_tcp_skb.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_tcp_skb.c
+
+-- 
+2.34.1
+
 
