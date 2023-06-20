@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-2934-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2935-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A282D73719F
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 18:31:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AC367371A2
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 18:31:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E9EB281369
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 16:31:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CF40280CFC
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 16:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CDA2182A3;
-	Tue, 20 Jun 2023 16:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14273182BD;
+	Tue, 20 Jun 2023 16:30:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4282419524
-	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 16:30:28 +0000 (UTC)
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39361737;
-	Tue, 20 Jun 2023 09:30:26 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-39ecf031271so2020305b6e.1;
-        Tue, 20 Jun 2023 09:30:26 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65C519937
+	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 16:30:30 +0000 (UTC)
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5105100;
+	Tue, 20 Jun 2023 09:30:28 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-25eb777c7f2so2038801a91.0;
+        Tue, 20 Jun 2023 09:30:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687278626; x=1689870626;
+        d=gmail.com; s=20221208; t=1687278628; x=1689870628;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Gv+tPT5eAlvNoQ80V3EmyTwHswl30O9kG2EfoBAZWRg=;
-        b=RV+EXQdU/oXDko6hZobrCco4399gIgixyQa4wQbLrtpu/iqbbdDfZh1n58Obp9EjPy
-         1hmDiI8YaP7XbGurd4mIMZvLUOl/cL/S61Uive6F9Br7KNJLnnKOY0v5W4u11FhKwRe3
-         2v4t+v66FwgC5ChwUC5C7VyMwOAC6o6ZkDwQoGWsw80PdS3n03uaniK+JvY8HWFpIy6b
-         9ueyAJhoY3Nlr+TXtDBLrhL+3KNay0V0CbvfyFz6lhRO4dmLGYHGc+bidQ0+3zTTn8Vl
-         kFBRSFt/2URNyl60Fvzqw+7DGfJSqg7D0rTdfMTAIU8VbEkxWPEOM3hrGamQVfu4EQBZ
-         tQXw==
+        bh=gyYbQyqyiVM9g5n2rww2bISilT8aqkXPzSI5XyPezvE=;
+        b=FHORSIsxyB2e5F+WDg4EC5eqGqMDHRX/lCSrq734fmaj03OnYfncUtDHC0+rEc5itg
+         T0ySRkaw5Z6boAkXmu1+A8kzn3lc9rAUaPB8ln8mY2IqeSJKZXVyE8/YLePNFmC6c7au
+         a6aZDquzWQywL1ZaE/GpEuJhMXVAgs/R/GB+Tpi5Pg6PfvuecTkhpyz4gouA92XDuDL8
+         3N/483dKBvHzWmj38JY3r9Hv82CCGYgHdsdrH8WBhtPtTO14SzpyNKmTGSVgFHVL0Y9E
+         JdDSaJ6Nb/LfbAVrO1+/EJkLSMlG0b/cQGjVhEXHYj8O1xgygwG83jk7GZmjSypwBl+2
+         EHJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687278626; x=1689870626;
+        d=1e100.net; s=20221208; t=1687278628; x=1689870628;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Gv+tPT5eAlvNoQ80V3EmyTwHswl30O9kG2EfoBAZWRg=;
-        b=jlY5zq0JjF7A9ajPTC3I0NkgEyjd59F2DCgoHpQ7Bs9po6qkFru9lDBfcSV58iTods
-         BN4mUa0VDDqBekUfmYre6W++C/lWQPskAd6a9TRqWUNDl+MNwKgQa6zTiw9bodrZ0UGW
-         hr8AbsMjjjrgSV1UnUQ9feToG+Wd+JvC2musKQonc98lNLQIIqW/O1TEHTtgYo9XmbJN
-         Ys0sZrHQDNPqZJA760ZGzdg7d61dVNGQv86QReEFYJBQxOQp9iblxSVtYmIRLLiNZ0As
-         LI2tKx0A1i1R6beswpiGO0F/V08MjQnrEr5Y8At601Xgp/U3h2O/fhL+E4t6ZnUug87m
-         +t0g==
-X-Gm-Message-State: AC+VfDyEXC6IECCFn4VoUK/YAghFUI17lI5uYiRNQmiVZSrw5sAbb8GR
-	ZRknFtL0DOVuPP0Us9rr4DQ=
-X-Google-Smtp-Source: ACHHUZ4ZVWukC2718oZGTXeSBiYqDs+ZdjHVdhztfSqIZZ/6d1v9m2SCov33eQHLJLWLESJA1y/g6g==
-X-Received: by 2002:a05:6808:614:b0:3a0:3623:11f with SMTP id y20-20020a056808061400b003a03623011fmr3400802oih.21.1687278626052;
-        Tue, 20 Jun 2023 09:30:26 -0700 (PDT)
+        bh=gyYbQyqyiVM9g5n2rww2bISilT8aqkXPzSI5XyPezvE=;
+        b=Gmj/VkGFQtS+V21aDkLN6qIw+kCbGa2YJwS3wOFnHEP5B3ZXoqdTAxpMaGUY1BKAfN
+         PJi20lngkW3gPRnJRbLZk/48RU318Fb6/2LBudqxZsMnbNI9LQe+TcIDo7UgvrUaX92j
+         jxbYp+SRIAXmcods6mS/Ne6ApIPsl7HsrufzjIlu09zivO2S1D9IVjviW4k4bQQjC0mF
+         cZ4N5Q7+t+WE2jELY2q1GsPh7W5bmsP+O/SQsT6dRloTXoC3+LpKGbzbhlfrHaSwvYr1
+         PyLK6U4SUEE9as1V/WkoLhFaHygALqqyWb/5rzQSaXSHy+Ymluqrl2jHNBHqf7eXaVTs
+         RLdg==
+X-Gm-Message-State: AC+VfDz0Nm0nonorIpZicPwhXMgBGY0Y4+M6RfXwOxSHqVh9Ao4GFt7t
+	m2ZRYcl9q/BTfZmz7W4rJEw=
+X-Google-Smtp-Source: ACHHUZ63HvyaITyK3ygZ01lUuHv4DyBK9nJfxvO97p1KOgIQ+IOjTIqANDMK4m87BHtFz2aIwpHyUQ==
+X-Received: by 2002:a17:90a:fe8d:b0:255:b1d9:a206 with SMTP id co13-20020a17090afe8d00b00255b1d9a206mr6897606pjb.22.1687278628061;
+        Tue, 20 Jun 2023 09:30:28 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac02:b96:5400:4ff:fe7b:3b23])
-        by smtp.gmail.com with ESMTPSA id t8-20020a17090a3b4800b0025c1cfdb93esm1854286pjf.13.2023.06.20.09.30.24
+        by smtp.gmail.com with ESMTPSA id t8-20020a17090a3b4800b0025c1cfdb93esm1854286pjf.13.2023.06.20.09.30.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jun 2023 09:30:25 -0700 (PDT)
+        Tue, 20 Jun 2023 09:30:27 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -74,9 +74,9 @@ To: ast@kernel.org,
 Cc: bpf@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v4 bpf-next 05/11] bpf: Clear the probe_addr for uprobe
-Date: Tue, 20 Jun 2023 16:30:02 +0000
-Message-Id: <20230620163008.3718-6-laoar.shao@gmail.com>
+Subject: [PATCH v4 bpf-next 06/11] bpf: Expose symbol's respective address
+Date: Tue, 20 Jun 2023 16:30:03 +0000
+Message-Id: <20230620163008.3718-7-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230620163008.3718-1-laoar.shao@gmail.com>
 References: <20230620163008.3718-1-laoar.shao@gmail.com>
@@ -94,35 +94,40 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-To avoid returning uninitialized or random values when querying the file
-descriptor (fd) and accessing probe_addr, it is necessary to clear the
-variable prior to its use.
+Since different symbols can share the same name, it is insufficient to only
+expose the symbol name. It is essential to also expose the symbol address
+so that users can accurately identify which one is being probed.
 
-Fixes: 41bdc4b40ed6 ("bpf: introduce bpf subcommand BPF_TASK_FD_QUERY")
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Acked-by: Yonghong Song <yhs@fb.com>
 ---
- kernel/trace/bpf_trace.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ kernel/trace/trace_kprobe.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 2123197b..45ee111 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2372,10 +2372,12 @@ int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
- 						  event->attr.type == PERF_TYPE_TRACEPOINT);
- #endif
- #ifdef CONFIG_UPROBE_EVENTS
--		if (flags & TRACE_EVENT_FL_UPROBE)
-+		if (flags & TRACE_EVENT_FL_UPROBE) {
- 			err = bpf_get_uprobe_info(event, fd_type, buf,
- 						  probe_offset,
- 						  event->attr.type == PERF_TYPE_TRACEPOINT);
-+			*probe_addr = 0x0;
-+		}
- #endif
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index e4554db..17e1729 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -1547,15 +1547,15 @@ int bpf_get_kprobe_info(const struct perf_event *event, u32 *fd_type,
+ 	if (tk->symbol) {
+ 		*symbol = tk->symbol;
+ 		*probe_offset = tk->rp.kp.offset;
+-		*probe_addr = 0;
+ 	} else {
+ 		*symbol = NULL;
+ 		*probe_offset = 0;
+-		if (kallsyms_show_value(current_cred()))
+-			*probe_addr = (unsigned long)tk->rp.kp.addr;
+-		else
+-			*probe_addr = 0;
  	}
- 
++
++	if (kallsyms_show_value(current_cred()))
++		*probe_addr = (unsigned long)tk->rp.kp.addr;
++	else
++		*probe_addr = 0;
+ 	return 0;
+ }
+ #endif	/* CONFIG_PERF_EVENTS */
 -- 
 1.8.3.1
 
