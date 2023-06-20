@@ -1,225 +1,147 @@
-Return-Path: <bpf+bounces-2951-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2952-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86DC173740B
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 20:28:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7149737443
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 20:32:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8C401C20CC7
-	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 18:27:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5FB41C20D7C
+	for <lists+bpf@lfdr.de>; Tue, 20 Jun 2023 18:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B183F17AB5;
-	Tue, 20 Jun 2023 18:27:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9617717FF0;
+	Tue, 20 Jun 2023 18:32:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F96E17722
-	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 18:27:49 +0000 (UTC)
-Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC9910C2
-	for <bpf@vger.kernel.org>; Tue, 20 Jun 2023 11:27:48 -0700 (PDT)
-Received: from fencepost.gnu.org ([2001:470:142:3::e])
-	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.90_1)
-	(envelope-from <jemarch@gnu.org>)
-	id 1qBg4u-00076u-0A; Tue, 20 Jun 2023 14:27:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
-	s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
-	From; bh=Wm/qDe6Ulpe+BjyrYthYUY1BVdd7diYpFHNPkyoZnTU=; b=ROBr4pd4WDwa80awATO7
-	YXHxAQH0BBztR86oQKN2i+hDxFrtKE+T6tanDE8ibkVM3P6EHRdMhnu6/M/UTmMxgAAHLEp91hjVU
-	NFltJSzO4t13abBnpupFI550IiTdbnwvVXrd74Jrn2snilNTPhQq4eCr/sdfEKZ1a85iBXj6y/TTU
-	TDrs8MHVOeAIOYHRBOasFMX2nHEzGAI9Mr8m+Q/ZrXohYDpbaOrGm34zF2Gcjmqn6zp38U0PvXHgi
-	3x48T6JPOBbAutJPXLR2ZIuU6vOdhYaJSE4V9sN+ih/Ns8rN8zlVRocpsOTXtfcVxw21IF3BCPubm
-	1pHPXqYOYGd2cQ==;
-Received: from [141.143.193.75] (helo=termi)
-	by fencepost.gnu.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.90_1)
-	(envelope-from <jemarch@gnu.org>)
-	id 1qBg4t-0007d3-Bz; Tue, 20 Jun 2023 14:27:43 -0400
-From: "Jose E. Marchesi" <jemarch@gnu.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,  bpf@vger.kernel.org,
-  ast@kernel.org,  andrii@kernel.org,  daniel@iogearbox.net,
-  martin.lau@linux.dev,  kernel-team@fb.com,  yhs@fb.com,
-  david.faust@oracle.com,  dzq.aishenghu0@gmail.com
-Subject: Re: [RFC bpf-next] bpf: generate 'nomerge' for map helpers in
- bpf_helper_defs.h
-In-Reply-To: <CAEf4Bzb4VJ7h02QAbg77sp9jgVFJBWoXrRuWGxHkXqQdPJ6EPw@mail.gmail.com>
-	(Andrii Nakryiko's message of "Fri, 16 Jun 2023 10:03:01 -0700")
-References: <20230615142520.10280-1-eddyz87@gmail.com>
-	<CAEf4Bzb4VJ7h02QAbg77sp9jgVFJBWoXrRuWGxHkXqQdPJ6EPw@mail.gmail.com>
-Date: Tue, 20 Jun 2023 20:27:39 +0200
-Message-ID: <87ttv2f0pw.fsf@gnu.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC1417ACF;
+	Tue, 20 Jun 2023 18:31:59 +0000 (UTC)
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2857C10C2;
+	Tue, 20 Jun 2023 11:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1687285910; x=1718821910;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=kP7uUg6bTWjebzwk/DY0XKPv7AdGZoJ1Fbg26s6nHds=;
+  b=LOGDrxLLJUW8VtKNdaNrtYOFvUnws2nfn2luYVhxhsP465psYu09U1w3
+   Qw8bwGNBkKVGMsIEHMQ47npNXpRWfvmqMf3Xq1NfMdjZR1UtfnVY1nWcN
+   AhDWjVVp7mzEZcGjd07FLavq8wYcpwiLS73BMKbpJ8obYNGn5nscjbkbu
+   E=;
+X-IronPort-AV: E=Sophos;i="6.00,257,1681171200"; 
+   d="scan'208";a="11370153"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-96feee09.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2023 18:31:46 +0000
+Received: from EX19MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+	by email-inbound-relay-iad-1a-m6i4x-96feee09.us-east-1.amazon.com (Postfix) with ESMTPS id 630E546DFB;
+	Tue, 20 Jun 2023 18:31:39 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 20 Jun 2023 18:31:38 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.106.101.48) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.26;
+ Tue, 20 Jun 2023 18:31:32 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <lmb@isovalent.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
+	<edumazet@google.com>, <haoluo@google.com>, <hemanthmalla@gmail.com>,
+	<joe@wand.net.nz>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
+	<kpsingh@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<martin.lau@linux.dev>, <mykolal@fb.com>, <netdev@vger.kernel.org>,
+	<pabeni@redhat.com>, <sdf@google.com>, <shuah@kernel.org>, <song@kernel.org>,
+	<willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
+Subject: Re: [PATCH bpf-next v2 3/6] net: remove duplicate reuseport_lookup functions
+Date: Tue, 20 Jun 2023 11:31:23 -0700
+Message-ID: <20230620183123.74585-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAN+4W8ge-ZQjins-E1=GHDnsi9myFqt7pwNqMkUQHZOPHQhFvQ@mail.gmail.com>
+References: <CAN+4W8ge-ZQjins-E1=GHDnsi9myFqt7pwNqMkUQHZOPHQhFvQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.106.101.48]
+X-ClientProxiedBy: EX19D036UWB003.ant.amazon.com (10.13.139.172) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Tue, 20 Jun 2023 15:26:05 +0100
+> On Tue, Jun 13, 2023 at 7:57 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> >
+> > The assignment to result below is buggy.  Let's say SO_REUSEPROT group
+> > have TCP_CLOSE and TCP_ESTABLISHED sockets.
+> >
+> >   1. Find TCP_CLOSE sk and do SO_REUSEPORT lookup
+> >   2. result is not NULL, but the group has TCP_ESTABLISHED sk
+> >   3. result = result
+> >   4. Find TCP_ESTABLISHED sk, which has a higher score
+> >   5. result = result (TCP_CLOSE) <-- should be sk.
+> >
+> > Same for v6 function.
+> 
+> Thanks for your explanation, I think I get it now. I misunderstood
+> that you were worried about returning TCP_ESTABLISHED instead of
+> TCP_CLOSE, but it's exactly the other way around.
+> 
+> I have a follow up question regarding the existing code:
+> 
+>     result = lookup_reuseport(net, sk, skb,
+>                     saddr, sport, daddr, hnum);
+>     /* Fall back to scoring if group has connections */
+>     if (result && !reuseport_has_conns(sk))
+>         return result;
+> 
+>     result = result ? : sk;
+>     badness = score;
+> 
+> Assuming that result != NULL but reuseport_has_conns() == true, we use
+> the reuseport socket as the result, but assign the score of sk to
+> badness. Shouldn't we use the score of the reuseport socket?
 
-> On Thu, Jun 15, 2023 at 7:25=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
-om> wrote:
->>
->> Update code generation for bpf_helper_defs.h by adding
->> __attribute__((nomerge)) for a set of helper functions to prevent some
->> verifier unfriendly compiler optimizations.
->>
->> This addresses a recent mailing list thread [1].
->> There Zhongqiu Duan and Yonghong Song discussed a C program as below:
->>
->>      if (data_end - data > 1024) {
->>          bpf_for_each_map_elem(&map1, cb, &cb_data, 0);
->>      } else {
->>          bpf_for_each_map_elem(&map2, cb, &cb_data, 0);
->>      }
->>
->> Which was converted by clang to something like this:
->>
->>      if (data_end - data > 1024)
->>        tmp =3D &map1;
->>      else
->>        tmp =3D &map2;
->>      bpf_for_each_map_elem(tmp, cb, &cb_data, 0);
->>
->> Which in turn triggered verification error, because
->> verifier.c:record_func_map() requires a single map address for each
->> bpf_for_each_map_elem() call.
->>
->> In fact, this is a requirement for the following helpers:
->> - bpf_tail_call
->> - bpf_map_lookup_elem
->> - bpf_map_update_elem
->> - bpf_map_delete_elem
->> - bpf_map_push_elem
->> - bpf_map_pop_elem
->> - bpf_map_peek_elem
->> - bpf_for_each_map_elem
->> - bpf_redirect_map
->> - bpf_map_lookup_percpu_elem
->>
->> I had an off-list discussion with Yonghong where we agreed that clang
->> attribute 'nomerge' (see [2]) could be used to prevent the
->> optimization hitting in [1]. However, currently 'nomerge' applies only
->> to functions and statements, hence I submitted change requests [3],
->> [4] to allow specifying 'nomerge' for function pointers as well.
->>
->> The patch below updates bpf_helper_defs.h generation by adding a
->> definition of __nomerge macro, and using this macro in definitions of
->> relevant helpers.
->>
->> The generated code looks as follows:
->>
->>     /* This is auto-generated file. See bpf_doc.py for details. */
->>
->>     #if __has_attribute(nomerge)
->>     #define __nomerge __attribute__((nomerge))
->>     #else
->>     #define __nomerge
->>     #endif
->>
->>     /* Forward declarations of BPF structs */
->>     ...
->>     static long (*bpf_for_each_map_elem)(void *map, ...) __nomerge =3D (=
-void *) 164;
->>     ...
->>
->> (In non-RFC version the macro definition would have to be updated to
->>  check for supported clang version).
->>
->> Does community agree with such approach?
->
-> Makes sense to me. Let's just be very careful to do proper detection
-> of __nomerge "applicability" to ensure we don't cause compilation
-> errors for unsupported Clang (which I'm sure you are well aware of)
-> *and* make it compatible with GCC, so we don't fix it later.
+Good point.  This is based on an assumption that all SO_REUSEPORT
+sockets have the same score, which is wrong for two corner cases
+if reuseport_has_conns() == true :
 
-GCC doesn't support the "nomerge" attribute at this point.  We will look
-into adding it or find some other equivalent mechanism that can be
-abstracted in the __nomerge macro.
+  1) SO_INCOMING_CPU is set
+     -> selected sk might have +1 score
 
->>
->> [1] https://lore.kernel.org/bpf/03bdf90f-f374-1e67-69d6-76dd9c8318a4@met=
-a.com/
->> [2] https://clang.llvm.org/docs/AttributeReference.html#nomerge
->> [3] https://reviews.llvm.org/D152986
->> [4] https://reviews.llvm.org/D152987
->> ---
->>  scripts/bpf_doc.py | 37 ++++++++++++++++++++++++++++++-------
->>  1 file changed, 30 insertions(+), 7 deletions(-)
->>
->> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
->> index eaae2ce78381..dbd4893c793e 100755
->> --- a/scripts/bpf_doc.py
->> +++ b/scripts/bpf_doc.py
->> @@ -777,14 +777,33 @@ class PrinterHelpers(Printer):
->>          'bpf_get_socket_cookie',
->>          'bpf_sk_assign',
->>      ]
->> +    # Helpers that need __nomerge attribute
->> +    nomerge_helpers =3D set([
->> +       "bpf_tail_call",
->> +       "bpf_map_lookup_elem",
->> +       "bpf_map_update_elem",
->> +       "bpf_map_delete_elem",
->> +       "bpf_map_push_elem",
->> +       "bpf_map_pop_elem",
->> +       "bpf_map_peek_elem",
->> +       "bpf_for_each_map_elem",
->> +       "bpf_redirect_map",
->> +       "bpf_map_lookup_percpu_elem"
->> +    ])
->> +
->> +    macros =3D '''\
->> +#if __has_attribute(nomerge)
->> +#define __nomerge __attribute__((nomerge))
->> +#else
->> +#define __nomerge
->> +#endif'''
->>
->>      def print_header(self):
->> -        header =3D '''\
->> -/* This is auto-generated file. See bpf_doc.py for details. */
->> -
->> -/* Forward declarations of BPF structs */'''
->> -
->> -        print(header)
->> +        print('/* This is auto-generated file. See bpf_doc.py for detai=
-ls. */')
->> +        print()
->> +        print(self.macros)
->> +        print()
->> +        print('/* Forward declarations of BPF structs */')
->>          for fwd in self.type_fwds:
->>              print('%s;' % fwd)
->>          print('')
->> @@ -846,7 +865,11 @@ class PrinterHelpers(Printer):
->>              comma =3D ', '
->>              print(one_arg, end=3D'')
->>
->> -        print(') =3D (void *) %d;' % helper.enum_val)
->> +        print(')', end=3D'')
->> +        if proto['name'] in self.nomerge_helpers:
->> +            print(' __nomerge', end=3D'')
->> +
->> +        print(' =3D (void *) %d;' % helper.enum_val)
->>          print('')
->>
->>  #######################################################################=
-########
->> --
->> 2.40.1
->>
+  2) BPF prog returns ESTABLISHED and/or SO_INCOMING_CPU sk
+     -> selected sk will have more than 8
+
+Using the old score could trigger more lookups depending on the
+order that sockets are created.
+
+  sk -> sk (SO_INCOMING_CPU) -> sk (ESTABLISHED)
+  |     |
+  `-> select the next SO_INCOMING_CPU sk
+        |
+	`-> select itself (We should save this lookup)
+
+So, yes, we should update badness like
+
+  if (unlikely(result)) {
+      badness = compute_score(result, ...);
+  } else {
+      result = sk;
+      badness = score;
+  }
 
