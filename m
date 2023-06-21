@@ -1,172 +1,244 @@
-Return-Path: <bpf+bounces-3018-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3019-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2559F738485
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 15:11:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50AD273848F
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 15:12:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76FEA281604
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 13:11:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D3E4281604
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 13:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A75171B0;
-	Wed, 21 Jun 2023 13:11:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3625171BB;
+	Wed, 21 Jun 2023 13:11:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D384813AEA
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 13:11:07 +0000 (UTC)
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF781BCB
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 06:11:02 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 19B745C00C2;
-	Wed, 21 Jun 2023 09:11:00 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 21 Jun 2023 09:11:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm2; t=1687353060; x=1687439460; bh=IP
-	HnfX43ssHmQRMsBhsgWZilxlXhth9oSVqkSBUAPwc=; b=rSySMGmf4XNW4gkWWM
-	7Bph11dnkHo6XNZ5wry3w06e0jgdD+1IqNBWyV5B82RbrdhSV2MYecM+YXYdFdSo
-	blTcyydXtfos2LkkwFysm+DnfZiJsK0Htdl+CsVGl3ELGtPvsI9P4QB9LZJjfEsW
-	P19CZUjc2FSiDIw+hW6U9Zel0r3UJJUzAvVeRa6rtNEtU51FbQ4OTJA4Ndt5Qljx
-	2Z0Fmi0Zf77i4Hoer9KwwDATPY4Z7l7DO8QxitFZkT19D9YzWsAiQTX+DxNC9IA6
-	y5ylIGKoyQHrUIluN7+3YV73372l6fKCogGHLqsS3jactITFA2/WAg/0VUDqOnbF
-	+q1A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1687353060; x=1687439460; bh=IPHnfX43ssHmQ
-	RMsBhsgWZilxlXhth9oSVqkSBUAPwc=; b=jLBCS//c9okaNjAl3z8TH09xIjVv2
-	EXSYMcDeFmqOXld1cewGIIVeVi6JguC2USKBXt11ljrNjOpbJOr/L/NDGdWlhFUV
-	/0TKzA8cQVCOpVAaxDibkhioyP2HBl4/eTrGZhTyKNOAJ0z5pZJYejRfm1lAWKk4
-	eYXh6/jvDSNg1V8Lg8zRNiTc2j6xD1A0/u2aVS0LFrjQgzE5a9RbRcuCS1CaRoM2
-	0UPJJMnc+xB6x8A/2j8yo1hF/GhQQznFFBRD4V+c/HUl/WEMPPQ35iBVtr9/qSjZ
-	ruuMBH2tPdzkOSHZR0Cn/vLsHUVHZuN4WVD/c9XFVZSFa4AmAm8Sb22bw==
-X-ME-Sender: <xms:4_aSZCQtEfW0RBi5ncV2GS1iUe7WwFOS5HDduE87zJ4CPh5COOpTow>
-    <xme:4_aSZHysBOTbYMXu14RmMQVQJ_xnuZ5krlrnfyBXbu6QlLys34jtKfbO5UqTdE-6n
-    WyXJ4X1MlaKRg>
-X-ME-Received: <xmr:4_aSZP0wpcqV4HUcUJaCwMQbHwmoGzNsOM7-3IJzDGEZPz4EwdtV3F0nsWaFqC6CmAz8A8f6nGYg2lWHX4AyainGebGczWJULNeiVnAawKg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgeefkedgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
-    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
-    hhrdgtohhm
-X-ME-Proxy: <xmx:4_aSZOCVeIa8b6rs613kgFmmE5YNnqhrizDRorsgt_UzyRPqyA3aTA>
-    <xmx:4_aSZLjUwj6a2o6ZaZuytxrlKlapDUQ9UMIs86pIHktXRRNPddqC2A>
-    <xmx:4_aSZKp-mO7TkysV_5mJiOLxSPz31MQ6m_9l_BSpU2qWqv7kkIPDgg>
-    <xmx:5PaSZLdfxuhVmG43T-DhkfvqytmYWX7Q5oDrmLQ4IkOOJxW-2TFJPA>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 21 Jun 2023 09:10:58 -0400 (EDT)
-Date: Wed, 21 Jun 2023 15:10:57 +0200
-From: Greg KH <greg@kroah.com>
-To: Joel Granados <j.granados@samsung.com>
-Cc: mcgrof@kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 00/11] Remove the end element in sysctl table arrays.
-Message-ID: <2023062102-letdown-roving-921d@gregkh>
-References: <CGME20230621091002eucas1p28cbe3260b7d4c2a086f0b5ac79a7f038@eucas1p2.samsung.com>
- <20230621091000.424843-1-j.granados@samsung.com>
- <2023062117-federal-dash-cf50@gregkh>
- <20230621123816.ufqbob6qthz4hujx@localhost>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B26F613AEA
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 13:11:55 +0000 (UTC)
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AC71706;
+	Wed, 21 Jun 2023 06:11:53 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230621131151euoutp01bc8bebbea69ba176d6badb7e87a484a8~qrrcKFwCf2130921309euoutp01B;
+	Wed, 21 Jun 2023 13:11:51 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230621131151euoutp01bc8bebbea69ba176d6badb7e87a484a8~qrrcKFwCf2130921309euoutp01B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1687353111;
+	bh=2O4y4/AbWeMueqHe0D/3ZI0FDn7vWoH6W/Bnc1hXI8w=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=HqRo1EN8b5bvWQROkfcTVVqyVQ/zAmv8ITfXv9JJ9+7esSpiHIkQt5cgn3r7wvisB
+	 Upp0PfutetwFf1EtjqJwOPJYz1nmdb7Z6O/7l6kL3D0sazLhYuLRrtXbSiM86je+X2
+	 lcP/wE2su+BtkwSQSh9IpXJYr6GqpDaeQ7hw9dxs=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20230621131151eucas1p1847f565a11eec2b83f826f4735d9bd39~qrrb1c2Im0883608836eucas1p1_;
+	Wed, 21 Jun 2023 13:11:51 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+	eusmges2new.samsung.com (EUCPMTA) with SMTP id 00.D3.11320.617F2946; Wed, 21
+	Jun 2023 14:11:51 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20230621131150eucas1p1c9668cfd8aebcd4005ffe3a20510bf14~qrrbSWi6l0379603796eucas1p16;
+	Wed, 21 Jun 2023 13:11:50 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20230621131150eusmtrp2346919855b4d636ebdd3c48db15ffdec~qrrbQcedz0242302423eusmtrp2c;
+	Wed, 21 Jun 2023 13:11:50 +0000 (GMT)
+X-AuditID: cbfec7f4-97dff70000022c38-f6-6492f716f94f
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id 9A.D9.14344.617F2946; Wed, 21
+	Jun 2023 14:11:50 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20230621131150eusmtip1db8bda4ae533f60ba50a09ddffd39f68~qrra5kf3_0998709987eusmtip1L;
+	Wed, 21 Jun 2023 13:11:50 +0000 (GMT)
+Received: from localhost (106.210.248.248) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Wed, 21 Jun 2023 14:11:49 +0100
+Date: Wed, 21 Jun 2023 15:11:47 +0200
+From: Joel Granados <j.granados@samsung.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+CC: <mcgrof@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, Theodore Ts'o
+	<tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Juergen Gross <jgross@suse.com>, Stefano
+	Stabellini <sstabellini@kernel.org>, Benjamin LaHaise <bcrl@kvack.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
+	<brauner@kernel.org>, Jeff Layton <jlayton@kernel.org>, Chuck Lever
+	<chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>, Kees Cook
+	<keescook@chromium.org>, Iurii Zaikin <yzaikin@google.com>, Alexei
+	Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii
+	Nakryiko <andrii@kernel.org>, Balbir Singh <bsingharora@gmail.com>, Eric
+	Biederman <ebiederm@xmission.com>, "Naveen N. Rao"
+	<naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
+	<anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
+	Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra
+	<peterz@infradead.org>, Will Deacon <will@kernel.org>, Petr Mladek
+	<pmladek@suse.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, Juri
+	Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>, Andrew Morton
+	<akpm@linux-foundation.org>, Mike Kravetz <mike.kravetz@oracle.com>, Muchun
+	Song <muchun.song@linux.dev>, Naoya Horiguchi <naoya.horiguchi@nec.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, David Howells
+	<dhowells@redhat.com>, Jarkko Sakkinen <jarkko@kernel.org>, Paul Moore
+	<paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn"
+	<serge@hallyn.com>, "H. Peter Anvin" <hpa@zytor.com>, Oleksandr Tyshchenko
+	<oleksandr_tyshchenko@epam.com>, Amir Goldstein <amir73il@gmail.com>, John
+	Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau
+	<martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+	<yhs@fb.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, John
+	Ogness <john.ogness@linutronix.de>, Dietmar Eggemann
+	<dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
+	<mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin
+	Schneider <vschneid@redhat.com>, Andy Lutomirski <luto@amacapital.net>, Will
+	Drewry <wad@chromium.org>, Mark Rutland <mark.rutland@arm.com>, Miaohe Lin
+	<linmiaohe@huawei.com>, <linux-kernel@vger.kernel.org>,
+	<xen-devel@lists.xenproject.org>, <linux-aio@kvack.org>,
+	<linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+	<bpf@vger.kernel.org>, <kexec@lists.infradead.org>,
+	<linux-trace-kernel@vger.kernel.org>, <keyrings@vger.kernel.org>,
+	<linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH 08/11] sysctl: Add size to register_sysctl_init
+Message-ID: <20230621131147.c3jegl4hgjplcrpu@localhost>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="iqp637iv5bkrldev"
 Content-Disposition: inline
-In-Reply-To: <20230621123816.ufqbob6qthz4hujx@localhost>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+In-Reply-To: <36fae2b0-4cd2-58b5-cc12-9abdd5ce235b@kernel.org>
+X-Originating-IP: [106.210.248.248]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTa1CUZRTH53nfZ99dIHQFJh65VAOkDaAm3s5kOBU6vR/UIJssbKZ24B28
+	wOrsumUREyybuZgJq0ECxsLmsu6uLBAwIgiIjCuBcvEGCmIrCggidySCjfUlc6Zvv3PO//+c
+	8//wiGi3TJGXaJd0PyeTSmL9GGdcdmnq6jLPSU30myfKMGRbzAw0F5gQTE5n0VDRewfD2NQd
+	IaTMlmAwlyRRMFo4y8BonZWB/osjCFrv32Agoy9pztvXKAR7Zw8FutwJGnoLf0CQ3aTCMKic
+	xvAgtZQGe5lKCMk6CwO11mohpBd5QlZGMgWaqVQE9254QXZ7CAye9IEpvVEIBRYdBcqzBgrK
+	rucgqDueSUPn0Z8xNB6Og4qGcQpKO5QM9FQdoUA9eQrD8XQlgsrz9Riunctm4K7ZLoChH20M
+	1FmuYGi4dBmD6UyiAE7daqHArD4tgLbUBwiODT5EoMtfAsPV26C1RkuBvvxPDC1JNQhMx2eE
+	8HR6WgB3NBkYrEdqKLDfHxdA1aF7FLQ+7cdQUZTHvPMBO/n9T5jtGpjBrPlXM2KzElswW3K6
+	nWI7TpUjNi15UMiWZ3YKWVXVbSGrLVawNys+ZVV1jwXs74ZAVlfZR7Epba00W2xUM+FvRDq/
+	Hc3F7vqSk63Y8IXzzkKDFu2rWXjgZrINJyKLawpyEhHxatI0rUYpyFnkJjYgYnw6w/DFGCJP
+	SvoFfDGKyK0LecLnlvar86p8RHJNWfi5qjPl3rylFJGeyyeRw4LFr5O+M0O0gxlxMGka6HjG
+	HnN9fbnx2VO0eOJlotToGcfAXRxGzid3CxzsKl5HjEfzaJ4XkfoT3djBtPgA0TzMm1sgmmNv
+	kj8rcqCTeAOxTbnwl/qTW1U6hucE8kfJbcqxiojbXyLN+QbMDzaSjAzrfDR38shaMs8+xF6e
+	M284hkj17JCQL0yI6JPGKV61nqiud8873iUGpebZQUS8gLQ9XsTfuYBoyjJovu1KDh1049VL
+	iOnuAE5F/pkvJMt8IVnmf8n4djDRVoww/2sHEX1uP81zKCkoeIK1SGhEnpxCHhfDyUOk3FfL
+	5ZI4uUIaszxqb1wxmvuyDbPWsbMo/9Hw8lpEiVAtCpgz2wpNzcgLS/dKOT8PV99iTbSba7Tk
+	62842d7PZYpYTl6LvEXYz9M1KLQ+yk0cI9nP7eG4fZzs3yklcvJKpCIu5nQ1/WJzGdt5+9vw
+	huDcssjtihO7u1au3eg/4P1+fEdt6OzhkPTdUWkeXgmBbQcbvavzjUyie++eljR7ucE4LNvR
+	seHa2WXq4SvnV65670zYCplq6X2niM/CjC6b1u1ZvbVxy6ZGVcxRxfCI/qB0sjtP12c55NfV
+	zQXVVzaXJqz13Ry2pSoh+Zwl4Fh8F9QJLiz2Cl74qq1I9VCNnWqt3qHN2t2NAUVXLrmcPBx7
+	pFK7ZrqODVgwod0RlWb+yL6GfNJhcJMg07b1Xft++zs+77tVr/go3lJHWFvdC/o2hyttY+e2
+	rnstMnZm+8bFSfEJIXSSvMV3xPcvaVR4xcKlH2/3+dAPy3dKVgbSMrnkH/B7UHotBQAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTfUxTZxTG9957e1vcmB34cYM4tYPFOC200nJAYDNbluuWDBNNwLnZdXCl
+	OFpMC8aBbhQw48tREGUUcEBXUChgETsYCgSZjOkUEJQOUYcftcr4KogVhRXqMpP993vPc57n
+	nLzJ4eBuJrYHJ1oRxygV0hgeuYi4ONsxuGHZdG6kb4PRA4pqDSR01VQhmJ4pxKHpwQABk/YB
+	NmTM1hNgqFdjYDs1S4KtvYOER+cnEPTc6SMh36omoMh6iQ1zgxYMdKWPcXhw6jsERVdSCRhJ
+	niHgnuYMDnOmVDak6GpJaOtoYcMx43IozE/BINeuQXC7zzHfLISRYk+wl1eyoaZWh0FywwkM
+	TL0/ImjP0+IwmH2UgEuZcmi6OIXBmRvJJFiaD2OQPq0nIO9YMoKz5zoJuPpLEQk3DXMsGMsa
+	IqG99g8CLl74jYCq6iQW6K93Y2BIP8mCfs09BEdG7iPQVbwN4y3boKe1BIPyxr8I6Fa3IqjK
+	e86GJzMzLBjIzSeg43ArBnN3pljQnHYbg54njwhoMpaR74XS04e+J+hbw88J2nDcgOjCpG6C
+	rj9pxugb+kZE56SMsOlG7SCbTm3+k02X1MXT15p20Kntf7Po0yfW0bqzVozO6O/B6brKdHLr
+	2k/5QcrY+DhmtSxWFRfM2ykAIV8QAHyhXwBfsNH/80ChiOcTEhTJxETvY5Q+IV/wZTNZE2hv
+	8+L9xsfFKAlVu2YgFw7F9aOumC+TGWgRx42rR9TN88PIKXhSxsk+lpPdqWfXMl40jSPqaetP
+	Lx5nEGXNvI/NdxFcb8paPYbPM8ldT10ZvrHASxz18sbKBQPOnVhGWbM0xLzgzn2fOpdyd2GE
+	K9efqswuw52p04j6tb8LdwpvUJ0FdxcMOHcf1ak2O/bjOHgFVTHLmUcXbgg1ZH/Vuelb1PVm
+	Henkg5Tt+X2kQe7al4K0LwVp/wtyltdR/bNW7H/ld6jy0ke4k4OpmppRogSxK9ESJl4lj5Kr
+	hHyVVK6KV0TxI2LldchxNKYL9voGdPLhOL8NYRzUhrwczqFTVV3Ig1DEKhjeEteVdbmRbq6R
+	0q8TGGWsRBkfw6jakMjxizm4x9KIWMcFKuIkArGvSOAnDvAVBYg38pa7btmbJnXjRknjmK8Y
+	Zi+j/NeHcVw8krBtipXfhLVMKCVX/aoyG9ZvX+0X2sKow7XeA22yUPHgVYm/aP/HG8NOvEuf
+	vp1+QPy7KbqyEweFWviR6ZWYgt5E3eLgcUP5ls9eXyxcurmEvJPo+VrY0YrCPfny6uBd9MCb
+	l1g5Xwaq7P7+1VGtOxL3EHWHeqsDu1m7fZIK1lpGp8K9zIkrHvJWnV5zNiVow5GQoVub0rL1
+	xwNt3uG37nrv9Prw2VN326Ro50jBKqN+uGtTdExUzaTtZ02kZUyccKCw6BPZwYZG7zWlZZaH
+	u8MvF1/enqAsP7ZMFfrgA0lEc41tuVZyQLY1peKHb+nQhAiLzMeWEzJaau0x62TnvFLFuzZn
+	8giVTCpYhytV0n8AeVQNz8kEAAA=
+X-CMS-MailID: 20230621131150eucas1p1c9668cfd8aebcd4005ffe3a20510bf14
+X-Msg-Generator: CA
+X-RootMTR: 20230621091037eucas1p188e11d8064526a5a0549217d5a419647
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230621091037eucas1p188e11d8064526a5a0549217d5a419647
+References: <20230621091000.424843-1-j.granados@samsung.com>
+	<CGME20230621091037eucas1p188e11d8064526a5a0549217d5a419647@eucas1p1.samsung.com>
+	<20230621091000.424843-9-j.granados@samsung.com>
+	<36fae2b0-4cd2-58b5-cc12-9abdd5ce235b@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
 	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
 	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 21, 2023 at 02:38:16PM +0200, Joel Granados wrote:
-> On Wed, Jun 21, 2023 at 12:46:47PM +0200, Greg KH wrote:
-> > On Wed, Jun 21, 2023 at 11:09:49AM +0200, Joel Granados wrote:
-> > > This is part of the effort to remove the empty element from the ctl_table
-> > > structures (used to calculate size) and replace it with the ARRAY_SIZE macro.
-> > > The "sysctl: Remove the end element in sysctl table arrays" commit is the one that
-> > > actually removes the empty element. With a "yesall" configuration the bloat-o-meter
-> > > says that 9158 bytes where saved (report at the end of the cover letter).
-> > 
-> > 9k in ram or read-only memory?
-> AFAIK its ro as I'm removing all the "empty" end elements from ctl_table
-> array that are hardcoded all over the place.
-> > 
-> > > Main changes:
-> > > 1. Add the ctl_table size into the ctl_table_header
-> > > 2. Remove the empty element at the end of all ctl_table arrays
-> > > 
-> > > Commit Overview:
-> > > 1. There are preparation commits that make sure that we have the
-> > >    ctl_table_header in all the places that we need to have the array size.
-> > >       sysctl: Prefer ctl_table_header in proc_sysct
-> > >       sysctl: Use the ctl header in list ctl_table macro
-> > >       sysctl: Add ctl_table_size to ctl_table_header
-> > > 
-> > > 2. Add size to relevant register calls. Calculate the ctl_table array size
-> > >    where register_sysctl is called. Add a table_size argument to the relevant
-> > >    sysctl register functions (init_header, __register_sysctl_table,
-> > >    register_net_sysctl, register_sysctl and register_sysctl_init). Important to
-> > >    note that these commits do NOT change the way we calculate size; they plumb
-> > >    things in preparation for the empty element removal commit. Care is taken to
-> > >    leave the tree in a state where it can be compiled which is the reason to
-> > >    not separate the "big" commits (like "sysctl: Add size to the
-> > >    register_net_sysctl function"). If you have an alternative way of dealing
-> > >    with such a big commit while leaving it in a compilable state, please let me
-> > >    know.
-> > >       sysctl: Add size argument to init_header
-> > >       sysctl: Add a size arg to __register_sysctl_table
-> > >       sysctl: Add size to the register_net_sysctl function
-> > >       sysctl: Add size to register_sysctl
-> > >       sysctl: Add size to register_sysctl_init
-> > 
-> > Why not make these calls automatically calculate the size based on the
-> > structure passed into them by using a #define instead of having to touch
-> > the code everywhere?  That would make this much simpler AND make it
-> > impossible for future people to get this wrong.
-> I considered this at the outset, but it will not work with callers that
-> use a pointer instead of the actual array.
+--iqp637iv5bkrldev
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Then make 2 functions, one a "normal" one where you can't get it wrong
-as you pass in the structure that you can compute ARRAY_SIZE() and one
-that you have to do it manually.
+On Wed, Jun 21, 2023 at 11:56:03AM +0200, Jiri Slaby wrote:
+> On 21. 06. 23, 11:09, Joel Granados wrote:
+> > In order to remove the end element from the ctl_table struct arrays, we
+> > explicitly define the size when registering the targes. We add a size
+> > argument to the register_sysctl_init call and pass an ARRAY_SIZE for all
+> > the callers.
+>=20
+> Hi, I am missing here (or in 00/00) _why_ you are doing that. Is it by a
+Not sure what happened. I used the kernels get_maintainers.pl script
+together with git-send-email. These are my settings:
 
-Don't force developers to think about stuff like this as now you are
-going to have to constantly audit the code to verify that the array size
-is correct.  Right now it always "just works" due to the null
-termination, and now you are going to add complexity to the author in
-order to save a trivial amount of memory that no one is asking for :)
+"
+tocmd =3D"`pwd`/scripts/get_maintainer.pl --nogit --nogit-fallback --norole=
+stats --m --nol --nor"
+cccmd =3D"`pwd`/scripts/get_maintainer.pl --nogit --nogit-fallback --norole=
+stats --l --r --nom"
+"
 
-> Additionally, we would not avoid big commits as we would have to go
-> looking in all the files where register is called directly or indirectly
-> and make sure the logic is sound.
+Could it be that there is an error in MAINTAINERS?
 
-Then you need to think about how this could be done better, having "flag
-days" like this just doesn't work, sorry.  There are ways to evolve
-common apis, and it's not like this patch set :)
+> chance those saved 9k? I hope not.
+Not by chance. It is an expected consequence of removing the empty sentinel
+element from ctl_table arrays
 
-I'm all for saving space, but do NOT do it at the expense of making apis
-harder to use and easier to get incorrect.  That will just cause more
-long-term problems and bugs, which is NOT a good trade off you ever want
-to make.
+Best
+>=20
+> thanks,
+> --=20
+> js
+> suse labs
+>=20
 
-thanks,
+--=20
 
-greg k-h
+Joel Granados
+
+--iqp637iv5bkrldev
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmSS9xMACgkQupfNUreW
+QU/SugwAjz9Nx/luD2X1jMmB/DLFYSelLyv19pjyd9G0GZhEpbjgMPAZSdozNRfh
+SJiGP9v4VptCMgQA6clQZvFGtQZ7H2RWzwmXM5xilft5bLPFIOwb+tMctiP7iJ3h
+DMaPmx8BBTPNE5NRtEYVqsF0sA9GqO6d7PgZMNBi/9PMlleQMKROdUeyRq3sDXMQ
+098gOYeuVIRNTWnLfNiCju8zkthUVEGlMZ3jOVaOFDCGE5Ua42l0StHVu/8oB+WD
+bVNpOUAFalLOyYSGJj0Jau58jKdiBwfxBhS4tJgFHzxWNPkfIZSu0YPfIJbEcdAC
+mVT4X9lNxFnO2J1vCfIuch/GaTxYC6r3jY3ffaMdV/LtProQLo+Swb3/QOOSHj6p
+Ut9ZznrnIvPjjny+MRuKC8eMoGPYmU163B/4AN8isdHtdMy2YRLCrnZW+CwmxDvI
+dTLcQzvZnyo1pCjXQL5bwFdi3BVUdGD9V2gqDaFGj/eJj/U6G2zu5MGoRrJKO/Hi
+b7C5kEHu
+=2P4k
+-----END PGP SIGNATURE-----
+
+--iqp637iv5bkrldev--
 
