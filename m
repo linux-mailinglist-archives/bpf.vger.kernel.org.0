@@ -1,530 +1,261 @@
-Return-Path: <bpf+bounces-3039-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3040-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10740738937
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 17:32:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9772F738A7F
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 18:09:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15CAA1C20ED5
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 15:32:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DAC6281635
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 16:09:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B928E19530;
-	Wed, 21 Jun 2023 15:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D0751990B;
+	Wed, 21 Jun 2023 16:09:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F2A219523
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 15:31:39 +0000 (UTC)
-Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A058198B
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 08:31:18 -0700 (PDT)
-Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-780a729b2baso216837139f.0
-        for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 08:31:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687361467; x=1689953467;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MjsUVnFk8eOEzkwWUeTDGT5qsOOJTHmbl4qYcExeKtw=;
-        b=QvKbXzyaqKe1Aq/lRYcnYjsB25FO5EkGm+lFOZep/okfqUqk/v360enA727h6NYkaa
-         5/A/bA3wV94F9DKfaZ9Eca47amEhTsJCP72qDV36CO+GONOoWSYN3H6Zi3mLekTt4qGX
-         Cx3rIHLvJprK3q39uUHUwJ7k7nUJQC9yTnBIKjd9Fsl7C7yGexzjBaGTfdpcS0usJ2hu
-         5k4g4RtzYmKCIYgz+rrA7PqVyeXk2UuQ7mlIo/fZ4vXbpT21s0JeceU8ghmjTv2gc30z
-         dglRndAwmZ7RkVLlGeXSgizrqSubLUgRU8Ovk60+4SBOiIBtyxrL0NLjR4rtcHHHJsJs
-         Ojlw==
-X-Gm-Message-State: AC+VfDy0BW11XoGVeZJ9qAKztzqU2OVLA+yv5qDUF41R9sCBHHiI7Du6
-	CVbNMpFTsqd8Z2nCLeZ2geZkn6cQFwqGluNMAEcfYV6hIt1UMU6LAg==
-X-Google-Smtp-Source: ACHHUZ616R4kT3wh7IPwIkpQ5nimULLQphrr9UCy8wkm2hUfKYvRNiXo2B7fU7h2YmODyJp1usYfyPgWSg9O/yJZC9bABDNFbH/4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4978D18C35
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 16:09:15 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C80E1996;
+	Wed, 21 Jun 2023 09:09:12 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35LAnAkD027210;
+	Wed, 21 Jun 2023 09:08:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=MOZXvh4cZHO+BhDu9KZqtG8g4mFib5difjlS9+/Vm30=;
+ b=V7opiwgoo219RjanvMYIeYVt0MO4nRhdO8hOmvNknuRmwnyPhDRSQrw0OgFJ/E+KBFdM
+ Tv2VMr3uOmCBveCnwo02AYKDM0wAMU3Of+rLhGZ/je0dCDhh3xFElwZ13Y4eZzccOI4P
+ ykQqUehGOrbkweZRHdaHI83FTRJ3JD1OjIRsPBLNlKh4nJutkstk5AFlXcQgPF0knJ0n
+ ic/pUk3WBUQZt2C07a+AdA9/4s3fFjgbe7UFr6NCwFdK/y+ft4cXeu+gBjIbGDNyQqd8
+ NqDsjr8sN+os4hcHuns40b0GfXQmwiS3rhD/CWqPyrvm7DmlsRs6xjtTeyz7rD3IdWBq iA== 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rby4cjean-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Jun 2023 09:08:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WRa/pEWP4KqyWM5bbEapwysKDESEw2OfvODOnPH4yZsTLFqVrBaqeknWbcMKCQg8+7Qnd+DZZwJWcV1PD7DPV9aGYerfkzp0XhohGqWwYbt1DWYfj4gdIVYT/C642tcyL07sIXGcSWG/fZE0WX8/ODINfiOBzRbFx1iG47PLDyUojmygyTelVy1EETF0yezVQJvazW7KEUWA1uysLVVeUMNB6wiN97Y7cHuQpThuIFmD2crBMyjuZyDOKoasa5R/fwvZE+W+4EJehJNtfLIAE5kmj2XojsUz1qIuBiq4V4ne3WlrqNNKA+EeC25DYT1So4YDanhy6bOH210WEuc63A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MOZXvh4cZHO+BhDu9KZqtG8g4mFib5difjlS9+/Vm30=;
+ b=Onv3Hibv/97TWDniveg5IHHTODGSBRzZWKlUeR3oqqNPCFdTGPswsZAWzxNclISfzUq5T4Yw4VSRlaBRy1sgLbRuLzRIO06mjb0WAPXMSz6fvoNPYmK8cNasFeUnPDiyam4OM3ku5o10dFXyvhSlMqtpKkAxGUeEfPqQwHcwzasfOocO1Myk2+P6VCk/KgfHTNeL4eMHAICr0+e521sX/He2H+PYDH/FEIl3QueCaeiQaXSg01wxm9g7Y2VL0fH221KkwhTOrUXztO+c1mowHGUv7vDUdUAv22yWI5yEkHzFNarIGCMBWWkSzYt2N3d/Uuy/14zfM0yOKX3wDaVOXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DS0PR15MB5745.namprd15.prod.outlook.com (2603:10b6:8:14b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.27; Wed, 21 Jun
+ 2023 16:08:00 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::428f:acec:2c1f:c812]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::428f:acec:2c1f:c812%7]) with mapi id 15.20.6521.023; Wed, 21 Jun 2023
+ 16:08:00 +0000
+Message-ID: <f0f3fe74-0d0e-e428-e676-2eb5911bbcfb@meta.com>
+Date: Wed, 21 Jun 2023 09:07:53 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH bpf-next v6 0/3] bpf, x86: allow function arguments up to
+ 12 for TRACING
+Content-Language: en-US
+To: menglong8.dong@gmail.com, alexei.starovoitov@gmail.com
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, benbjiang@tencent.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <imagedong@tencent.com>
+References: <20230619114947.1543848-1-imagedong@tencent.com>
+From: Yonghong Song <yhs@meta.com>
+In-Reply-To: <20230619114947.1543848-1-imagedong@tencent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR06CA0031.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::44) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:a103:0:b0:423:d1b:9c8c with SMTP id
- f3-20020a02a103000000b004230d1b9c8cmr5618648jag.3.1687361467679; Wed, 21 Jun
- 2023 08:31:07 -0700 (PDT)
-Date: Wed, 21 Jun 2023 08:31:07 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e38d1605fea5747e@google.com>
-Subject: [syzbot] [net?] possible deadlock in netlink_set_err
-From: syzbot <syzbot+a7d200a347f912723e5c@syzkaller.appspotmail.com>
-To: bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|DS0PR15MB5745:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2461a33a-f3b1-4483-c604-08db7271ada7
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	VpKJd4XDBKOKkxKf7mzU6Z9cqjddZb4Lvr1U04aUHeSQDeD9KBffsU8HHm+CdpP71AhuCL499tN2vRkXZA886EK+oQgd5OQB42S6J56YRCxag4Ajdm1pffnU7y3vHX9oUMSMTLnFHcXTRpJuOV/9i3NdozBd8ElO6vNJCBpjWBrPWnfwQh4JPODC9bWFBbOt6emIwwQFrVCBDL/LnpM60X5oaF3qk7grdIZ5oQaUimu1rMtFp+mfdSwq0G0Uy86J9soKL69aefVNG7S1z6FHFgPVYu0QJlBXX4u+Z4QP0WW6u6bMTHcRvDv70+SQdXgQiu/aTicTHGsIX67dxnpdRUtHfoth/hltTaMDBsw+o6WQFQKm1aYm0B8xBBg66ff32Ty1FU6WplnPhjXtb9Lee08XCsWTZAbCt7SgBsAG6MSAU+dVqx/MAS1hWiU+g26tYXLfQ1DdH9sOCmOkwLCq23I2ZlL/PUsuJZMEwoUY2F0I6jHLh5/H0WfmVOhTUpxk2tbX05jQuOj/mbzqjgzKge4oPioFah1zTvv3KGOn4YD+oCgB8JgiWaeRBZmDBctBYLFY4L5aBJIfbv/We5ylKKwbYCjcKL5k0Eoe0jjD5YSOcqEq5LmRTPAITq9pjrtnSv/GDIPqR9G6qd914UJblw==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(346002)(396003)(366004)(39860400002)(451199021)(38100700002)(83380400001)(53546011)(2616005)(2906002)(6506007)(7416002)(478600001)(5660300002)(6512007)(66556008)(41300700001)(6486002)(316002)(86362001)(66476007)(66946007)(6666004)(8676002)(31696002)(4326008)(8936002)(186003)(31686004)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?UDZvWVArS29CeXBNMzg0ZEZ5dnQ4V0NGRlBpR3ZLOG9qdUtzemp6bDNWTVNr?=
+ =?utf-8?B?K1JqSzdWVjZEalR2UXRxWDdaR3U4ZlBJZlYvbXU4eVk2NlE2ZjlDNnpobjY4?=
+ =?utf-8?B?dmxCa2RLcDN5b2hyT05QektKKzNwVzBOLzFWMm5jNnpaYUthWC9ReWxFLzcw?=
+ =?utf-8?B?M3pZVUplVGNHTVlsZDVBUURWc1hkcmkrLzREMUVtamRxUnZIY3BURUNxejVt?=
+ =?utf-8?B?U1lxUk9BbFBMUkFHZjdGY0VWQ1NWZ3UrSUFoUXg0QmVGRzF3VGs5Y0xCS1Ba?=
+ =?utf-8?B?WVlHYW5LOURDUitOa1EwdVMwbVNOZWhWL0J3RjM0b2l1YUlSTWdCZHYxdThn?=
+ =?utf-8?B?akQrcTQ2aTMyM3BraWl6T3pKZGJ4N29ONTR5UlUyalNnSjlXS3NqYklkWjJP?=
+ =?utf-8?B?c3lYVytxVlNEQ1RRb0JhS2tFWVJuMFJQTlM1ZFRVTkNTTG51ZTJrV1BMeGsw?=
+ =?utf-8?B?ZkpmcUI4YVd6NnVlQm0rbVMzQTJQZmx0VERuWEkwR1BBNEhuTTFSZVZQRnR6?=
+ =?utf-8?B?Yk5oS0dPYkMxanpwVXBNUUxUZlRwWnRYc2laOUxXZWhVVXJvRFJ5cUZrN3FM?=
+ =?utf-8?B?L1R3cTFCVjgyREpCQU1VT2hjMnhHZm5ya29tL1d0dXl2UUpFMFlCdUNFNmI2?=
+ =?utf-8?B?LzRVTXB4NTcxRnl3SEY2Q0c5TWVnd2FVRUxyWkxoa3RYaGxVZFdxQzVuMFBr?=
+ =?utf-8?B?Z0V6bXdhZzBvL0ZuYjczc1J0L1B0amJxdmhZbXI3dkYraXIydjNZenZEeTBE?=
+ =?utf-8?B?K2g0MnZWWVZHZWUrUUw0a0xQeXVqWFhUOGRMek4zWENhTEVtbXZrY1JKeGp0?=
+ =?utf-8?B?MmNLNTVTQUxYbFZacE4yaHpwTzduc3BtaWhMVFNORnkwWmVtZ1pxUkE3Y09H?=
+ =?utf-8?B?U0NFQU5nOVZITDJaU0VadGJUb2NySjFSTnFwSndKTVZLc0NNUmdvUmpaZHJj?=
+ =?utf-8?B?ZisvS04zMFpwSmZzRGpXZGpNQUVxQ2pvZEZHZGJQREZZbnFPQ2Nyc24rWjU1?=
+ =?utf-8?B?aFhieXRmd0pGSXBmd1ZwREZTS1N3aGw1MHd1NlZlRkw2Vko2emI1b3lRa1VL?=
+ =?utf-8?B?WklVY0xBNVVURzdyc3RlT2RzdUV6VmQ5cDZKTUZwTGQ5VWl0aEovK3RXamFj?=
+ =?utf-8?B?UWZzZGpsaG1UOXBjV1E4Y0Rkakp4bTBKOTFEWkdidjB0SnRTaE1PclJOejNP?=
+ =?utf-8?B?V3VqTG5DMFQ4K3dRdUlidUZmUE5Hek5SaWVjaTloYkdIamNvcmYxKzloL2hz?=
+ =?utf-8?B?VkdzY0JzZU0rbXNLVjhnMlFVclI1QmZ0cVZ5OFoxNkJZQkJ1ZUszbGdrU0x3?=
+ =?utf-8?B?TzR4eGcxbzlMRGQzOXE5RE9xRDFnRjhxL1Z6MFVSamJyM1FweWhrbTBpdEF0?=
+ =?utf-8?B?dDhlc05STlJiNUhTU21nY0tRakJwRWdzY0tIZ3RTQmlKdkY1UE1CSFVraUNN?=
+ =?utf-8?B?S3dtNjdzaFl6M045UGl0NGxYdXJ3emZ1ZXNRbitnUmNGYWxzQmI1cjBZMWhU?=
+ =?utf-8?B?SUFaM3hPRGVYa0JCY0FOQ0hvSVdIV2crRVVxMmZEWHl6bWk4VEl5d05PMnJl?=
+ =?utf-8?B?d2ZBNUJFZ3Fsd1AvTTh2N1ZZeEFLYW9icFV0dnFpNWc1dDlqc1NNNE8zVm5w?=
+ =?utf-8?B?WVp4YUJkNjlGV0dzQTh0aU0yTEFoRTBBNEZ2cThteE5GSXFlS0M0SEo4VC9k?=
+ =?utf-8?B?UWYxK3RHZGd6eVFmNVN3ZHhOUzlpODJmRlJ4QmFuTlgxbHJZbzUxRGU0ZXF3?=
+ =?utf-8?B?MnNKdmEwSVcvZWNZMk56K1luVWMyMTlIcFdEenJSeDZFcXdlWDF4cVRHQk85?=
+ =?utf-8?B?LzFyY3pLVmJCLzdRaGhHQU5pMDd0b3lTQndCUkExbCtJZGxJNGgrQjkrOHJV?=
+ =?utf-8?B?WlZkbEpub3paQmZiWm5iYzR0OGhQVHlSVC96bEl5c2pZeXkzbUEyendDcnFF?=
+ =?utf-8?B?ajF2cUE0OGMydkNFR0JUazFWdFJ3YmtuRE80SXYzVUpSa1RuKzA4N0FOZk05?=
+ =?utf-8?B?WUhiSWR5UFFvQWRFRUxpcUp2R1ZmQnd6SFlYL0dQSUU4VGpqWVZLbk1lL2pZ?=
+ =?utf-8?B?STZtTnhpSFFYQVcvRTdYaVhOOFgxczZFb1FBUUQ4SG4yU3dZUHBYWjN4bncr?=
+ =?utf-8?B?Y1BhTnNXWHkzVDMzUTQ5M25sanFSTTduVDE3UUJ6MDU1OFVoWDc5MGxoOTIr?=
+ =?utf-8?B?THc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2461a33a-f3b1-4483-c604-08db7271ada7
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2023 16:08:00.2732
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fPuyM844R+hF5X4vg/fwoMAK3zfBgjpjU65QvC17aaCe0A4khUdr408AGVJP+Q08
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR15MB5745
+X-Proofpoint-GUID: yt3s_hKvtT1OuFWsqBvP3q76aDAu6qs6
+X-Proofpoint-ORIG-GUID: yt3s_hKvtT1OuFWsqBvP3q76aDAu6qs6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-06-21_09,2023-06-16_01,2023-05-22_02
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    4e9f0ec38852 wifi: iwlwifi: pcie: Handle SO-F device for P..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=159c29eb280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ac246111fb601aec
-dashboard link: https://syzkaller.appspot.com/bug?extid=a7d200a347f912723e5c
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8866213bd704/disk-4e9f0ec3.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5ae048a89b9b/vmlinux-4e9f0ec3.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2a5e193eed3a/bzImage-4e9f0ec3.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a7d200a347f912723e5c@syzkaller.appspotmail.com
-
-RAX: ffffffffffffffda RBX: 00007f887bbabf80 RCX: 00007f887ba8c389
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000006
-RBP: 00007f887c7651d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffc4dd1155f R14: 00007f887c765300 R15: 0000000000022000
- </TASK>
-========================================================
-WARNING: possible irq lock inversion dependency detected
-6.4.0-rc6-syzkaller-00240-g4e9f0ec38852 #0 Not tainted
---------------------------------------------------------
-syz-executor.2/23011 just changed the state of lock:
-ffffffff8e1a7a58 (nl_table_lock){.+.?}-{2:2}, at: netlink_set_err+0x2e/0x3a0 net/netlink/af_netlink.c:1612
-but this lock was taken by another, SOFTIRQ-safe lock in the past:
- (&local->queue_stop_reason_lock){..-.}-{2:2}
 
 
-and interrupts could create inverse lock ordering between them.
+On 6/19/23 4:49 AM, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <imagedong@tencent.com>
+> 
+> For now, the BPF program of type BPF_PROG_TYPE_TRACING can only be used
+> on the kernel functions whose arguments count less than 6. This is not
 
+less than or equal to 6, if not considering '> 8 bytes'
+struct arguments.
 
-other info that might help us debug this:
- Possible interrupt unsafe locking scenario:
+> friendly at all, as too many functions have arguments count more than 6.
+> According to the current kernel version, below is a statistics of the
+> function arguments count:
+> 
+> argument count | function count
+> 7              | 704
+> 8              | 270
+> 9              | 84
+> 10             | 47
+> 11             | 47
+> 12             | 27
+> 13             | 22
+> 14             | 5
+> 15             | 0
+> 16             | 1
+> 
+> Therefore, let's enhance it by increasing the function arguments count
+> allowed in arch_prepare_bpf_trampoline(), for now, only x86_64.
+> 
+> In the 1st patch, we save/restore regs with BPF_DW size to make the code
+> in save_regs()/restore_regs() simpler.
+> 
+> In the 2nd patch, we make arch_prepare_bpf_trampoline() support to copy
+> function arguments in stack for x86 arch. Therefore, the maximum
+> arguments can be up to MAX_BPF_FUNC_ARGS for FENTRY and FEXIT.
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(nl_table_lock);
-                               local_irq_disable();
-                               lock(&local->queue_stop_reason_lock);
-                               lock(nl_table_lock);
-  <Interrupt>
-    lock(&local->queue_stop_reason_lock);
+for FENTRY, FEXIT and MODIFY_RETURN.
 
- *** DEADLOCK ***
+  Meanwhile,
+> we clean the potentian garbage value when we copy the arguments on-stack.
 
-1 lock held by syz-executor.2/23011:
- #0: ffffffff8e115ba8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:78 [inline]
- #0: ffffffff8e115ba8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3e8/0xd50 net/core/rtnetlink.c:6414
+potentian -> potential
 
-the shortest dependencies between 2nd lock and 1st lock:
- -> (&local->queue_stop_reason_lock){..-.}-{2:2} {
-    IN-SOFTIRQ-W at:
-                      lock_acquire kernel/locking/lockdep.c:5705 [inline]
-                      lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5670
-                      __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-                      _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
-                      ieee80211_tx_dequeue+0x1f2/0x1d50 net/mac80211/tx.c:3803
-                      wake_tx_push_queue net/mac80211/util.c:301 [inline]
-                      ieee80211_handle_wake_tx_queue+0x197/0x260 net/mac80211/util.c:322
-                      drv_wake_tx_queue net/mac80211/driver-ops.h:1241 [inline]
-                      schedule_and_wake_txq net/mac80211/driver-ops.h:1248 [inline]
-                      ieee80211_queue_skb+0x1281/0x2040 net/mac80211/tx.c:1680
-                      ieee80211_tx+0x2d2/0x420 net/mac80211/tx.c:1982
-                      ieee80211_xmit+0x30e/0x3e0 net/mac80211/tx.c:2078
-                      __ieee80211_subif_start_xmit+0xa62/0x1390 net/mac80211/tx.c:4312
-                      ieee80211_subif_start_xmit+0xf0/0x1370 net/mac80211/tx.c:4504
-                      __netdev_start_xmit include/linux/netdevice.h:4918 [inline]
-                      netdev_start_xmit include/linux/netdevice.h:4932 [inline]
-                      xmit_one net/core/dev.c:3578 [inline]
-                      dev_hard_start_xmit+0x187/0x700 net/core/dev.c:3594
-                      __dev_queue_xmit+0x2be2/0x3b10 net/core/dev.c:4244
-                      dev_queue_xmit include/linux/netdevice.h:3088 [inline]
-                      neigh_hh_output include/net/neighbour.h:528 [inline]
-                      neigh_output include/net/neighbour.h:542 [inline]
-                      ip6_finish_output2+0xfbd/0x1560 net/ipv6/ip6_output.c:134
-                      __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-                      ip6_finish_output+0x69a/0x1170 net/ipv6/ip6_output.c:206
-                      NF_HOOK_COND include/linux/netfilter.h:292 [inline]
-                      ip6_output+0x1f1/0x540 net/ipv6/ip6_output.c:227
-                      dst_output include/net/dst.h:458 [inline]
-                      NF_HOOK include/linux/netfilter.h:303 [inline]
-                      ndisc_send_skb+0xa63/0x1850 net/ipv6/ndisc.c:508
-                      ndisc_send_rs+0x132/0x6f0 net/ipv6/ndisc.c:718
-                      addrconf_rs_timer+0x3f1/0x870 net/ipv6/addrconf.c:3936
-                      call_timer_fn+0x1a0/0x580 kernel/time/timer.c:1700
-                      expire_timers+0x29b/0x4b0 kernel/time/timer.c:1751
-                      __run_timers kernel/time/timer.c:2022 [inline]
-                      __run_timers kernel/time/timer.c:1995 [inline]
-                      run_timer_softirq+0x326/0x910 kernel/time/timer.c:2035
-                      __do_softirq+0x1d4/0x905 kernel/softirq.c:571
-                      invoke_softirq kernel/softirq.c:445 [inline]
-                      __irq_exit_rcu+0x114/0x190 kernel/softirq.c:650
-                      irq_exit_rcu+0x9/0x20 kernel/softirq.c:662
-                      sysvec_apic_timer_interrupt+0x97/0xc0 arch/x86/kernel/apic/apic.c:1106
-                      asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-                      __sanitizer_cov_trace_pc+0x60/0x70 kernel/kcov.c:223
-                      is_cow_mapping include/linux/mm.h:1543 [inline]
-                      copy_present_pte mm/memory.c:957 [inline]
-                      copy_pte_range mm/memory.c:1064 [inline]
-                      copy_pmd_range mm/memory.c:1150 [inline]
-                      copy_pud_range mm/memory.c:1187 [inline]
-                      copy_p4d_range mm/memory.c:1211 [inline]
-                      copy_page_range+0xfc4/0x3830 mm/memory.c:1309
-                      dup_mmap+0x10bc/0x19d0 kernel/fork.c:761
-                      dup_mm kernel/fork.c:1692 [inline]
-                      copy_mm kernel/fork.c:1741 [inline]
-                      copy_process+0x6663/0x75c0 kernel/fork.c:2507
-                      kernel_clone+0xeb/0x890 kernel/fork.c:2915
-                      __do_sys_clone+0xba/0x100 kernel/fork.c:3058
-                      do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                      do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-                      entry_SYSCALL_64_after_hwframe+0x63/0xcd
-    INITIAL USE at:
-                     lock_acquire kernel/locking/lockdep.c:5705 [inline]
-                     lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5670
-                     __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-                     _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
-                     ieee80211_tx_dequeue+0x1f2/0x1d50 net/mac80211/tx.c:3803
-                     wake_tx_push_queue net/mac80211/util.c:301 [inline]
-                     ieee80211_handle_wake_tx_queue+0x197/0x260 net/mac80211/util.c:322
-                     drv_wake_tx_queue net/mac80211/driver-ops.h:1241 [inline]
-                     schedule_and_wake_txq net/mac80211/driver-ops.h:1248 [inline]
-                     ieee80211_queue_skb+0x1281/0x2040 net/mac80211/tx.c:1680
-                     ieee80211_tx+0x2d2/0x420 net/mac80211/tx.c:1982
-                     ieee80211_xmit+0x30e/0x3e0 net/mac80211/tx.c:2078
-                     __ieee80211_subif_start_xmit+0xa62/0x1390 net/mac80211/tx.c:4312
-                     ieee80211_subif_start_xmit+0xf0/0x1370 net/mac80211/tx.c:4504
-                     __netdev_start_xmit include/linux/netdevice.h:4918 [inline]
-                     netdev_start_xmit include/linux/netdevice.h:4932 [inline]
-                     xmit_one net/core/dev.c:3578 [inline]
-                     dev_hard_start_xmit+0x187/0x700 net/core/dev.c:3594
-                     __dev_queue_xmit+0x2be2/0x3b10 net/core/dev.c:4244
-                     dev_queue_xmit include/linux/netdevice.h:3088 [inline]
-                     neigh_resolve_output net/core/neighbour.c:1552 [inline]
-                     neigh_resolve_output+0x51b/0x870 net/core/neighbour.c:1532
-                     neigh_output include/net/neighbour.h:544 [inline]
-                     ip6_finish_output2+0x55a/0x1560 net/ipv6/ip6_output.c:134
-                     __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
-                     ip6_finish_output+0x69a/0x1170 net/ipv6/ip6_output.c:206
-                     NF_HOOK_COND include/linux/netfilter.h:292 [inline]
-                     ip6_output+0x1f1/0x540 net/ipv6/ip6_output.c:227
-                     dst_output include/net/dst.h:458 [inline]
-                     NF_HOOK include/linux/netfilter.h:303 [inline]
-                     NF_HOOK include/linux/netfilter.h:297 [inline]
-                     mld_sendpack+0xa09/0xed0 net/ipv6/mcast.c:1820
-                     mld_send_cr net/ipv6/mcast.c:2121 [inline]
-                     mld_ifc_work+0x73c/0xe20 net/ipv6/mcast.c:2653
-                     process_one_work+0x99a/0x15e0 kernel/workqueue.c:2405
-                     worker_thread+0x67d/0x10c0 kernel/workqueue.c:2552
-                     kthread+0x344/0x440 kernel/kthread.c:379
-                     ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
-  }
-  ... key      at: [<ffffffff921be140>] __key.19+0x0/0x40
-  ... acquired at:
-   __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:160 [inline]
-   _raw_read_lock_irqsave+0x74/0x90 kernel/locking/spinlock.c:236
-   netlink_lock_table net/netlink/af_netlink.c:472 [inline]
-   netlink_broadcast+0x74/0xd90 net/netlink/af_netlink.c:1533
-   nlmsg_multicast include/net/netlink.h:1083 [inline]
-   genlmsg_multicast_netns include/net/genetlink.h:392 [inline]
-   nl80211_frame_tx_status+0x9dc/0xc20 net/wireless/nl80211.c:18807
-   ieee80211_report_ack_skb net/mac80211/status.c:680 [inline]
-   ieee80211_report_used_skb+0x107f/0x1a10 net/mac80211/status.c:763
-   ieee80211_free_txskb+0x24/0x40 net/mac80211/status.c:1260
-   ieee80211_do_stop+0xc71/0x1f50 net/mac80211/iface.c:640
-   ieee80211_runtime_change_iftype net/mac80211/iface.c:1866 [inline]
-   ieee80211_if_change_type+0x416/0x8b0 net/mac80211/iface.c:1904
-   ieee80211_change_iface+0x5b/0x440 net/mac80211/cfg.c:217
-   rdev_change_virtual_intf net/wireless/rdev-ops.h:74 [inline]
-   cfg80211_change_iface+0x5c1/0xe00 net/wireless/util.c:1163
-   nl80211_set_interface+0x695/0x960 net/wireless/nl80211.c:4217
-   genl_family_rcv_msg_doit.isra.0+0x1e6/0x2d0 net/netlink/genetlink.c:968
-   genl_family_rcv_msg net/netlink/genetlink.c:1048 [inline]
-   genl_rcv_msg+0x4ff/0x7e0 net/netlink/genetlink.c:1065
-   netlink_rcv_skb+0x165/0x440 net/netlink/af_netlink.c:2546
-   genl_rcv+0x28/0x40 net/netlink/genetlink.c:1076
-   netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
-   netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1365
-   netlink_sendmsg+0x925/0xe30 net/netlink/af_netlink.c:1913
-   sock_sendmsg_nosec net/socket.c:724 [inline]
-   sock_sendmsg+0xde/0x190 net/socket.c:747
-   ____sys_sendmsg+0x71c/0x900 net/socket.c:2503
-   ___sys_sendmsg+0x110/0x1b0 net/socket.c:2557
-   __sys_sendmsg+0xf7/0x1c0 net/socket.c:2586
-   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-   do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> And the 3rd patches are for the testcases of the this series.
 
--> (nl_table_lock){.+.?}-{2:2} {
-   HARDIRQ-ON-R at:
-                    lock_acquire kernel/locking/lockdep.c:5705 [inline]
-                    lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5670
-                    __raw_read_lock include/linux/rwlock_api_smp.h:150 [inline]
-                    _raw_read_lock+0x5f/0x70 kernel/locking/spinlock.c:228
-                    netlink_set_err+0x2e/0x3a0 net/netlink/af_netlink.c:1612
-                    rtnl_set_sk_err net/core/rtnetlink.c:779 [inline]
-                    rtmsg_ifinfo_build_skb+0x226/0x280 net/core/rtnetlink.c:4029
-                    rtmsg_ifinfo_event net/core/rtnetlink.c:4051 [inline]
-                    rtmsg_ifinfo_event net/core/rtnetlink.c:4041 [inline]
-                    rtmsg_ifinfo+0x9f/0x1a0 net/core/rtnetlink.c:4060
-                    netdev_state_change net/core/dev.c:1319 [inline]
-                    netdev_state_change+0x11e/0x130 net/core/dev.c:1310
-                    do_setlink+0x2f6a/0x3b70 net/core/rtnetlink.c:3102
-                    rtnl_group_changelink net/core/rtnetlink.c:3402 [inline]
-                    __rtnl_newlink+0xb90/0x1840 net/core/rtnetlink.c:3658
-                    rtnl_newlink+0x68/0xa0 net/core/rtnetlink.c:3695
-                    rtnetlink_rcv_msg+0x43d/0xd50 net/core/rtnetlink.c:6417
-                    netlink_rcv_skb+0x165/0x440 net/netlink/af_netlink.c:2546
-                    netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
-                    netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1365
-                    netlink_sendmsg+0x925/0xe30 net/netlink/af_netlink.c:1913
-                    sock_sendmsg_nosec net/socket.c:724 [inline]
-                    sock_sendmsg+0xde/0x190 net/socket.c:747
-                    ____sys_sendmsg+0x71c/0x900 net/socket.c:2503
-                    ___sys_sendmsg+0x110/0x1b0 net/socket.c:2557
-                    __sys_sendmsg+0xf7/0x1c0 net/socket.c:2586
-                    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                    do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-                    entry_SYSCALL_64_after_hwframe+0x63/0xcd
-   IN-SOFTIRQ-R at:
-                    lock_acquire kernel/locking/lockdep.c:5705 [inline]
-                    lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5670
-                    __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:160 [inline]
-                    _raw_read_lock_irqsave+0x49/0x90 kernel/locking/spinlock.c:236
-                    netlink_lock_table net/netlink/af_netlink.c:472 [inline]
-                    netlink_broadcast+0x74/0xd90 net/netlink/af_netlink.c:1533
-                    nlmsg_multicast include/net/netlink.h:1083 [inline]
-                    nlmsg_notify+0x93/0x280 net/netlink/af_netlink.c:2589
-                    __neigh_notify+0xdc/0x160 net/core/neighbour.c:3513
-                    neigh_update_notify net/core/neighbour.c:2655 [inline]
-                    __neigh_update+0x109a/0x2bb0 net/core/neighbour.c:1469
-                    arp_process+0x863/0x21b0 net/ipv4/arp.c:932
-                    NF_HOOK include/linux/netfilter.h:303 [inline]
-                    NF_HOOK include/linux/netfilter.h:297 [inline]
-                    arp_rcv net/ipv4/arp.c:988 [inline]
-                    arp_rcv+0x3d2/0x540 net/ipv4/arp.c:963
-                    __netif_receive_skb_list_ptype net/core/dev.c:5541 [inline]
-                    __netif_receive_skb_list_ptype net/core/dev.c:5525 [inline]
-                    __netif_receive_skb_list_core+0x6c6/0x8f0 net/core/dev.c:5584
-                    __netif_receive_skb_list net/core/dev.c:5636 [inline]
-                    netif_receive_skb_list_internal+0x75f/0xdc0 net/core/dev.c:5727
-                    gro_normal_list include/net/gro.h:433 [inline]
-                    gro_normal_list include/net/gro.h:429 [inline]
-                    napi_complete_done+0x243/0x9a0 net/core/dev.c:6067
-                    virtqueue_napi_complete drivers/net/virtio_net.c:408 [inline]
-                    virtnet_poll+0xe2b/0x14b0 drivers/net/virtio_net.c:1858
-                    __napi_poll+0xb7/0x6f0 net/core/dev.c:6498
-                    napi_poll net/core/dev.c:6565 [inline]
-                    net_rx_action+0x8a9/0xcb0 net/core/dev.c:6698
-                    __do_softirq+0x1d4/0x905 kernel/softirq.c:571
-                    invoke_softirq kernel/softirq.c:445 [inline]
-                    __irq_exit_rcu+0x114/0x190 kernel/softirq.c:650
-                    irq_exit_rcu+0x9/0x20 kernel/softirq.c:662
-                    common_interrupt+0xad/0xd0 arch/x86/kernel/irq.c:240
-                    asm_common_interrupt+0x26/0x40 arch/x86/include/asm/idtentry.h:636
-                    rep_nop arch/x86/include/asm/vdso/processor.h:13 [inline]
-                    cpu_relax arch/x86/include/asm/vdso/processor.h:18 [inline]
-                    csd_lock_wait kernel/smp.c:285 [inline]
-                    smp_call_function_many_cond+0x67f/0x15a0 kernel/smp.c:828
-                    on_each_cpu_cond_mask+0x5a/0xa0 kernel/smp.c:996
-                    on_each_cpu include/linux/smp.h:71 [inline]
-                    text_poke_sync arch/x86/kernel/alternative.c:1770 [inline]
-                    text_poke_bp_batch+0x634/0x770 arch/x86/kernel/alternative.c:2053
-                    text_poke_flush arch/x86/kernel/alternative.c:2161 [inline]
-                    text_poke_flush arch/x86/kernel/alternative.c:2158 [inline]
-                    text_poke_finish+0x1a/0x30 arch/x86/kernel/alternative.c:2168
-                    arch_jump_label_transform_apply+0x17/0x30 arch/x86/kernel/jump_label.c:146
-                    jump_label_update+0x32f/0x410 kernel/jump_label.c:829
-                    static_key_disable_cpuslocked+0x156/0x1b0 kernel/jump_label.c:235
-                    static_key_disable+0x1a/0x20 kernel/jump_label.c:243
-                    once_deferred+0x68/0xc0 lib/once.c:20
-                    process_one_work+0x99a/0x15e0 kernel/workqueue.c:2405
-                    worker_thread+0x67d/0x10c0 kernel/workqueue.c:2552
-                    kthread+0x344/0x440 kernel/kthread.c:379
-                    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
-   SOFTIRQ-ON-R at:
-                    lock_acquire kernel/locking/lockdep.c:5705 [inline]
-                    lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5670
-                    __raw_read_lock include/linux/rwlock_api_smp.h:150 [inline]
-                    _raw_read_lock+0x5f/0x70 kernel/locking/spinlock.c:228
-                    netlink_set_err+0x2e/0x3a0 net/netlink/af_netlink.c:1612
-                    rtnl_set_sk_err net/core/rtnetlink.c:779 [inline]
-                    rtmsg_ifinfo_build_skb+0x226/0x280 net/core/rtnetlink.c:4029
-                    rtmsg_ifinfo_event net/core/rtnetlink.c:4051 [inline]
-                    rtmsg_ifinfo_event net/core/rtnetlink.c:4041 [inline]
-                    rtmsg_ifinfo+0x9f/0x1a0 net/core/rtnetlink.c:4060
-                    netdev_state_change net/core/dev.c:1319 [inline]
-                    netdev_state_change+0x11e/0x130 net/core/dev.c:1310
-                    do_setlink+0x2f6a/0x3b70 net/core/rtnetlink.c:3102
-                    rtnl_group_changelink net/core/rtnetlink.c:3402 [inline]
-                    __rtnl_newlink+0xb90/0x1840 net/core/rtnetlink.c:3658
-                    rtnl_newlink+0x68/0xa0 net/core/rtnetlink.c:3695
-                    rtnetlink_rcv_msg+0x43d/0xd50 net/core/rtnetlink.c:6417
-                    netlink_rcv_skb+0x165/0x440 net/netlink/af_netlink.c:2546
-                    netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
-                    netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1365
-                    netlink_sendmsg+0x925/0xe30 net/netlink/af_netlink.c:1913
-                    sock_sendmsg_nosec net/socket.c:724 [inline]
-                    sock_sendmsg+0xde/0x190 net/socket.c:747
-                    ____sys_sendmsg+0x71c/0x900 net/socket.c:2503
-                    ___sys_sendmsg+0x110/0x1b0 net/socket.c:2557
-                    __sys_sendmsg+0xf7/0x1c0 net/socket.c:2586
-                    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                    do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-                    entry_SYSCALL_64_after_hwframe+0x63/0xcd
-   INITIAL USE at:
-                   lock_acquire kernel/locking/lockdep.c:5705 [inline]
-                   lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5670
-                   __raw_write_lock_irq include/linux/rwlock_api_smp.h:195 [inline]
-                   _raw_write_lock_irq+0x36/0x50 kernel/locking/spinlock.c:326
-                   netlink_table_grab net/netlink/af_netlink.c:438 [inline]
-                   netlink_add_usersock_entry net/netlink/af_netlink.c:2851 [inline]
-                   netlink_proto_init+0x158/0x3d0 net/netlink/af_netlink.c:2942
-                   do_one_initcall+0x102/0x540 init/main.c:1246
-                   do_initcall_level init/main.c:1319 [inline]
-                   do_initcalls init/main.c:1335 [inline]
-                   do_basic_setup init/main.c:1354 [inline]
-                   kernel_init_freeable+0x64e/0xba0 init/main.c:1571
-                   kernel_init+0x1e/0x2c0 init/main.c:1462
-                   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
-   INITIAL READ USE at:
-                        lock_acquire kernel/locking/lockdep.c:5705 [inline]
-                        lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5670
-                        __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:160 [inline]
-                        _raw_read_lock_irqsave+0x74/0x90 kernel/locking/spinlock.c:236
-                        netlink_lock_table net/netlink/af_netlink.c:472 [inline]
-                        netlink_broadcast+0x74/0xd90 net/netlink/af_netlink.c:1533
-                        nlmsg_multicast include/net/netlink.h:1083 [inline]
-                        genlmsg_multicast_netns include/net/genetlink.h:392 [inline]
-                        genl_ctrl_event.isra.0+0x3be/0xa50 net/netlink/genetlink.c:1360
-                        genl_register_family.part.0+0x72b/0xf20 net/netlink/genetlink.c:675
-                        genl_register_family+0x35/0x50 net/netlink/genetlink.c:635
-                        thermal_init+0x16/0x370 drivers/thermal/thermal_core.c:1533
-                        do_one_initcall+0x102/0x540 init/main.c:1246
-                        do_initcall_level init/main.c:1319 [inline]
-                        do_initcalls init/main.c:1335 [inline]
-                        do_basic_setup init/main.c:1354 [inline]
-                        kernel_init_freeable+0x64e/0xba0 init/main.c:1571
-                        kernel_init+0x1e/0x2c0 init/main.c:1462
-                        ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- }
- ... key      at: [<ffffffff8e1a7a58>] nl_table_lock+0x18/0x60
- ... acquired at:
-   mark_lock kernel/locking/lockdep.c:4620 [inline]
-   mark_usage kernel/locking/lockdep.c:4569 [inline]
-   __lock_acquire+0x8ef/0x5f30 kernel/locking/lockdep.c:5042
-   lock_acquire kernel/locking/lockdep.c:5705 [inline]
-   lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5670
-   __raw_read_lock include/linux/rwlock_api_smp.h:150 [inline]
-   _raw_read_lock+0x5f/0x70 kernel/locking/spinlock.c:228
-   netlink_set_err+0x2e/0x3a0 net/netlink/af_netlink.c:1612
-   rtnl_set_sk_err net/core/rtnetlink.c:779 [inline]
-   rtmsg_ifinfo_build_skb+0x226/0x280 net/core/rtnetlink.c:4029
-   rtmsg_ifinfo_event net/core/rtnetlink.c:4051 [inline]
-   rtmsg_ifinfo_event net/core/rtnetlink.c:4041 [inline]
-   rtmsg_ifinfo+0x9f/0x1a0 net/core/rtnetlink.c:4060
-   netdev_state_change net/core/dev.c:1319 [inline]
-   netdev_state_change+0x11e/0x130 net/core/dev.c:1310
-   do_setlink+0x2f6a/0x3b70 net/core/rtnetlink.c:3102
-   rtnl_group_changelink net/core/rtnetlink.c:3402 [inline]
-   __rtnl_newlink+0xb90/0x1840 net/core/rtnetlink.c:3658
-   rtnl_newlink+0x68/0xa0 net/core/rtnetlink.c:3695
-   rtnetlink_rcv_msg+0x43d/0xd50 net/core/rtnetlink.c:6417
-   netlink_rcv_skb+0x165/0x440 net/netlink/af_netlink.c:2546
-   netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
-   netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1365
-   netlink_sendmsg+0x925/0xe30 net/netlink/af_netlink.c:1913
-   sock_sendmsg_nosec net/socket.c:724 [inline]
-   sock_sendmsg+0xde/0x190 net/socket.c:747
-   ____sys_sendmsg+0x71c/0x900 net/socket.c:2503
-   ___sys_sendmsg+0x110/0x1b0 net/socket.c:2557
-   __sys_sendmsg+0xf7/0x1c0 net/socket.c:2586
-   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-   do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+the 3rd patch is ...
 
-
-stack backtrace:
-CPU: 0 PID: 23011 Comm: syz-executor.2 Not tainted 6.4.0-rc6-syzkaller-00240-g4e9f0ec38852 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
- print_irq_inversion_bug.part.0+0x3d9/0x580 kernel/locking/lockdep.c:4058
- print_irq_inversion_bug kernel/locking/lockdep.c:4011 [inline]
- check_usage_backwards kernel/locking/lockdep.c:4124 [inline]
- mark_lock_irq kernel/locking/lockdep.c:4214 [inline]
- mark_lock.part.0+0x822/0x1970 kernel/locking/lockdep.c:4656
- mark_lock kernel/locking/lockdep.c:4620 [inline]
- mark_usage kernel/locking/lockdep.c:4569 [inline]
- __lock_acquire+0x8ef/0x5f30 kernel/locking/lockdep.c:5042
- lock_acquire kernel/locking/lockdep.c:5705 [inline]
- lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5670
- __raw_read_lock include/linux/rwlock_api_smp.h:150 [inline]
- _raw_read_lock+0x5f/0x70 kernel/locking/spinlock.c:228
- netlink_set_err+0x2e/0x3a0 net/netlink/af_netlink.c:1612
- rtnl_set_sk_err net/core/rtnetlink.c:779 [inline]
- rtmsg_ifinfo_build_skb+0x226/0x280 net/core/rtnetlink.c:4029
- rtmsg_ifinfo_event net/core/rtnetlink.c:4051 [inline]
- rtmsg_ifinfo_event net/core/rtnetlink.c:4041 [inline]
- rtmsg_ifinfo+0x9f/0x1a0 net/core/rtnetlink.c:4060
- netdev_state_change net/core/dev.c:1319 [inline]
- netdev_state_change+0x11e/0x130 net/core/dev.c:1310
- do_setlink+0x2f6a/0x3b70 net/core/rtnetlink.c:3102
- rtnl_group_changelink net/core/rtnetlink.c:3402 [inline]
- __rtnl_newlink+0xb90/0x1840 net/core/rtnetlink.c:3658
- rtnl_newlink+0x68/0xa0 net/core/rtnetlink.c:3695
- rtnetlink_rcv_msg+0x43d/0xd50 net/core/rtnetlink.c:6417
- netlink_rcv_skb+0x165/0x440 net/netlink/af_netlink.c:2546
- netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
- netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1365
- netlink_sendmsg+0x925/0xe30 net/netlink/af_netlink.c:1913
- sock_sendmsg_nosec net/socket.c:724 [inline]
- sock_sendmsg+0xde/0x190 net/socket.c:747
- ____sys_sendmsg+0x71c/0x900 net/socket.c:2503
- ___sys_sendmsg+0x110/0x1b0 net/socket.c:2557
- __sys_sendmsg+0xf7/0x1c0 net/socket.c:2586
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f887ba8c389
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f887c765168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f887bbabf80 RCX: 00007f887ba8c389
-RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000006
-RBP: 00007f887c7651d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffc4dd1155f R14: 00007f887c765300 R15: 0000000000022000
- </TASK>
-IPv6: ADDRCONF(NETDEV_CHANGE): vcan0: link becomes ready
-IPv6: ADDRCONF(NETDEV_CHANGE): vxcan0: link becomes ready
-IPv6: ADDRCONF(NETDEV_CHANGE): vxcan1: link becomes ready
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> 
+> Changes since v5:
+> - adjust the commit log of the 1st patch, avoiding confusing people that
+>    bugs exist in current code
+> - introduce get_nr_regs() to get the space that used to pass args on
+>    stack correct in the 2nd patch
+> - add testcases to tracing_struct.c instead of fentry_test.c and
+>    fexit_test.c
+> 
+> Changes since v4:
+> - consider the case of the struct in arguments can't be hold by regs
+> - add comment for some code
+> - add testcases for MODIFY_RETURN
+> - rebase to the latest
+> 
+> Changes since v3:
+> - try make the stack pointer 16-byte aligned. Not sure if I'm right :)
+> - introduce clean_garbage() to clean the grabage when argument count is 7
+> - use different data type in bpf_testmod_fentry_test{7,12}
+> - add testcase for grabage values in ctx
+> 
+> Changes since v2:
+> - keep MAX_BPF_FUNC_ARGS still
+> - clean garbage value in upper bytes in the 2nd patch
+> - move bpf_fentry_test{7,12} to bpf_testmod.c and rename them to
+>    bpf_testmod_fentry_test{7,12} meanwhile in the 3rd patch
+> 
+> Changes since v1:
+> - change the maximun function arguments to 14 from 12
+> - add testcases (Jiri Olsa)
+> - instead EMIT4 with EMIT3_off32 for "lea" to prevent overflow
+> 
+> Menglong Dong (3):
+>    bpf, x86: save/restore regs with BPF_DW size
+>    bpf, x86: allow function arguments up to 12 for TRACING
+>    selftests/bpf: add testcase for TRACING with 6+ arguments
+> 
+>   arch/x86/net/bpf_jit_comp.c                   | 249 +++++++++++++++---
+>   net/bpf/test_run.c                            |  23 +-
+>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  49 +++-
+>   .../selftests/bpf/prog_tests/fentry_fexit.c   |   4 +-
+>   .../selftests/bpf/prog_tests/fentry_test.c    |   2 +
+>   .../selftests/bpf/prog_tests/fexit_test.c     |   2 +
+>   .../selftests/bpf/prog_tests/modify_return.c  |  20 +-
+>   .../selftests/bpf/prog_tests/tracing_struct.c |  19 ++
+>   .../testing/selftests/bpf/progs/fentry_test.c |  32 +++
+>   .../testing/selftests/bpf/progs/fexit_test.c  |  33 +++
+>   .../selftests/bpf/progs/modify_return.c       |  40 +++
+>   .../selftests/bpf/progs/tracing_struct.c      |  48 ++++
+>   12 files changed, 471 insertions(+), 50 deletions(-)
+> 
 
