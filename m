@@ -1,196 +1,226 @@
-Return-Path: <bpf+bounces-3046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3047-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3CFA738C6A
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 18:55:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CAAC738C84
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 19:03:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 224091C20E17
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 16:55:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46A1C1C20F85
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 17:03:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCAAA1992A;
-	Wed, 21 Jun 2023 16:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9B519BA5;
+	Wed, 21 Jun 2023 17:02:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775A919900
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 16:55:42 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1144610C;
-	Wed, 21 Jun 2023 09:55:40 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35LBEw7S007052;
-	Wed, 21 Jun 2023 09:55:00 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=suNQ1P0ycBvRSV4aTnxP1727DDPFg2lHH2tI35zApqI=;
- b=XAcX8qXN/OBKWujMlxmDZYB1lpho14wPIH7/N6us4QEmHstNiQdrk7NLUq2wDr2Dq4yn
- MjE821Csw6jP2Suka3IwzPQCyBi7ea24kUqIQ+ayu787EWDSNu1SRPIa1F5vyhvxj2up
- fOznHdOoEYU1TrhaalAMxecKTkhI5ofmZGwE/TosK83DI8TsIyR3a90aP1wI4DF2dg26
- Z7UAiD+VQt9kvAc+L8uu+GAjkLI2/eIYoCWCwUYhwy6hTjg/7RxmfcALCt5uhnhyAhe+
- 3XDToo671JGX3e0ZryUAATmpprfYq9m4D7er9Q/R7CxuC7aOZ1FMw0zOXSTFf29BXCgM NQ== 
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2045.outbound.protection.outlook.com [104.47.73.45])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rc05htk98-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Jun 2023 09:55:00 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FdQLYWgZm7vNgeXNT6Y2Yv7iNK1nsNoIt/oDjag5LmM7vThgVgIrqKx8MZHUsEX84Pyu83BNvElGRPA7bJQ1c/rRDAZl5War7MWPDYyAi4sFCvoRRGkib6zsR8mDBwMUPEQ891R+vPkUtveNAgzDZhaIWWVYWrtZQLDIr8qKIoVMMt4nH0U20olgJihvfxGuxsEQ7f2dtjWf00jMZf71FFz0koFvuXdT7QHPGPgrp/cnHb3MI5vCKp3p9IErBQr3yn8QGeVG2RTqq22y8G9jAxpYqice8CQ7wJ8rsSNumqwE38UGRDizIalRc6dakbVw5RlYkrpSadGFn0gdFh8Ezw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=suNQ1P0ycBvRSV4aTnxP1727DDPFg2lHH2tI35zApqI=;
- b=GUEHz/0R/lVn9TgWV8H8qz7m3ivUec1AtvxtX+3+W0vrYs1cqAZrnhiiMiM0ZfGwWo2fFxTwoHJyPu+3tt7/v1x0iZrc27r+e4EzjwaTIN/8OAh0IF2VWWSmnqnlOKEv0I/3MUzf7OzvRNbygbL+y8hLr18awFfgkc3L7eND+PIrcIeJmnImRNcMq17hzxSVJB5F8GHvQnTerxIrrf7Mr+WCJIelf0nzf1CmB3Mw6aywOLhBfvWLCIJIIkENWqsThj5A6Q+UQZRvPdi6ESsW5jorOC0rwj4n116WN8i3ws8SP0qlxY1ORh1yEKinL833pM2P2mmcDUxGxcViGkQ9iw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by MW3PR15MB3788.namprd15.prod.outlook.com (2603:10b6:303:4e::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Wed, 21 Jun
- 2023 16:54:57 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812%7]) with mapi id 15.20.6521.023; Wed, 21 Jun 2023
- 16:54:57 +0000
-Message-ID: <a850fe4e-4f67-7209-4793-731f3d88f1f0@meta.com>
-Date: Wed, 21 Jun 2023 09:54:53 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH bpf-next v6 3/3] selftests/bpf: add testcase for TRACING
- with 6+ arguments
-Content-Language: en-US
-To: menglong8.dong@gmail.com, alexei.starovoitov@gmail.com
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, benbjiang@tencent.com,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <imagedong@tencent.com>
-References: <20230619114947.1543848-1-imagedong@tencent.com>
- <20230619114947.1543848-4-imagedong@tencent.com>
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <20230619114947.1543848-4-imagedong@tencent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR05CA0025.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::38) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C03519BA1
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 17:02:49 +0000 (UTC)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47131120
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:47 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-56ff81be091so86286207b3.0
+        for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1687366966; x=1689958966;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FFau3rCjgBYfdrd4tyecw+C9r18qZygu//gOk0flpYQ=;
+        b=YGjduLoERQQMuPSo1cZtoXl4BLnCbh1UCp1qVQP3im0g0fJbTLlPNogjUD5HOpN3n7
+         UmFUIf8uT2icvFeCb7sishpGvhEf/lwxTou8wpLPvqrcmiwRB2zlc0IyVneLopc9O7kk
+         uahjIexi3qArm/nnSKDoiNes4F0In6/zU+EdydY6BL88wto0yHeD6Ca1/BZo5H72I/nu
+         HI7KBKu9TV7CV32mJWV5sAYFFiOgY2qDmO2RcdOJSfN4xxKCBAfplk/Z9j+WOmsxVFoX
+         D7DKEERzwXybQZUhLI6JYzdKn4PwLRsJHNU797HlrAEiLRrV/XjJTPFQWGMVmHwAxYO9
+         VwaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687366966; x=1689958966;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FFau3rCjgBYfdrd4tyecw+C9r18qZygu//gOk0flpYQ=;
+        b=G1EumbcxcJHZl+VYL9vZl40LHEK8UYtMd89ikr826qmss6dUAYESGnA9xkEt354NPC
+         4Lr9f6dDjJ6JjIoElhqk5gRViDpQZqDykSYKxq99I23gn8zjbdkmWBUZO4XT3hsIZj1L
+         MjOjcIORokQzqA5TmEftiA0v1OjGk87e1R0kfl6E44DWlEwVDEl3OoaOoFLVhk6DR4DQ
+         t6d3I2QhnBt+gMMZ3O2W5xg98xbswDST7srOdNXlBCWkZHcHyd6qjLCES4OwqW1nNEFy
+         HUW/oT8Sr66MlqT1xraV1mT+z2/1pz6AuuapRfufrRkASzMXlwsZI3lCMFjpcThkDL4j
+         KFIQ==
+X-Gm-Message-State: AC+VfDyiIZo9aFNDSEHp31WIItM4kSnczAtJGdCxFvAFbX10XZXiO5zn
+	oK1GxBTCqmS3v7ZqXxyf60BX2DgqQXWN67vP80UHqi8qCD9271ksZTJime+wRv1KihD2d9WdiNo
+	oQS2NE/GyFlIB9bFVIg2V9b1I9cWNwz0+jJUI/Ktjkh2fhO47Ew==
+X-Google-Smtp-Source: ACHHUZ7VGNbxGxKugstDwiOmh22Zunr5ER6sYPcB66gE7U+3ah2kFaRiKfY4mrkx8Gs25dLJ+rxmzLo=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a81:b710:0:b0:565:9f59:664f with SMTP id
+ v16-20020a81b710000000b005659f59664fmr6699750ywh.6.1687366966479; Wed, 21 Jun
+ 2023 10:02:46 -0700 (PDT)
+Date: Wed, 21 Jun 2023 10:02:33 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MW3PR15MB3788:EE_
-X-MS-Office365-Filtering-Correlation-Id: cf25864a-61e1-4fd5-f71b-08db72783e61
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	mPexQf27+nPf2qw+IW6AtbcU7Gls3tyOrR8KkCLcxTvt+zTh7sSb/1Pr6/tVDISybxVcDh9Q0Ba0K0DJ6H30S54FbiY+dxfoAZhxYiQqimnwyVftYFwrSJ9tmhHOYqhai/GSKzY/1l5NJemApetN+qmrgpPoYiaAhYxhr+lqiJ+qAYgUs7KqF46LOjn42w/qDns6hQwvqZr3FwTAy6KmRN8azOXCC6Swg6aqmEU3iB0P7cgHzj0EeN5zgc8bFI/fyfa2qK6dFrwYLpOT/SfeG3PdmJCDZqRxv04YLCj5i1PhGs++R7/rT6Wl6S8N6iqNBJ7+T9x//TxE4w/gfQp4exGevD6gyzN2ClOGgyQmWAIw3NDho8zHPJwFElT+5+bgN4XStravnle3TWUSOs04ArMPvvrm+CHQCtP0NpQ3csz0OmJnwpwQRwfxNH2xTgAvVfg5XYts/VWKrCUWBFfdXqGst6kF3uivmR8EbrVoCkgfBKHNYvR1IP+ARqQyYV8+1zK5n4HtG0V+1raixJBcEULe1XeBIThnjpYw2L5ZjE3TESkjuRu7E1bg9F5xhGrv1tbX+cMH/S1GWJaVoKUdrh2EpadRBkbnsQxyuygkSCueo7KxQJ1OdmM/ThgEH3kkGJxQU/Op+Bm4PLYIcv5CjQ==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(396003)(136003)(346002)(366004)(451199021)(478600001)(6486002)(6666004)(186003)(53546011)(6506007)(6512007)(2906002)(66946007)(4744005)(66556008)(8936002)(66476007)(4326008)(5660300002)(8676002)(7416002)(41300700001)(316002)(38100700002)(86362001)(31696002)(36756003)(2616005)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?a2xNQUZiL29KOFp0Y2R0ZERleUhPZ1QyWGFHalBrUjMvOFdLVzk3Z2hha240?=
- =?utf-8?B?eTdLczFWRmtvZ0Z3NHNtR0ZlUnVCcXFxb21ZMXJiaHRTRE50dElVR0N4V3Q0?=
- =?utf-8?B?dTc0Q1RRL2NQVjhDU1hDb3BBWDVpSlJDd3ErbE5adnpBWjRQVjBnc1JzVFVE?=
- =?utf-8?B?Uit6S0phVko2STVpZmhIMlVZZmZWbU1tSUdRUDVET0RkYndFMGJ3eU5iVGhl?=
- =?utf-8?B?cUFIOVFTRlhuc01ONGJDSkVyZ3oxT1RXVk9ONkpGTmZyMHlLRDB4d1dGdEJP?=
- =?utf-8?B?OGZSWGpzMlZRNFM4THp2aHVlazNoNkZ6aEpzQjVtdXB1eVBzS3dmV2RTaXh5?=
- =?utf-8?B?ejlpR0MxMVhyUnBXWWxPc1JIc3o2bUJRbDNsUVQrT1Vlb1dmTWQ0MXUrSUFL?=
- =?utf-8?B?TE9jZ1RlSlZqVDkxREtwZlB5UVNNY2k1ckNObHBxV1BNRW5RYURuQm5Nencr?=
- =?utf-8?B?R2I0STcyc1lqY3ppdEhTYW10SzFCYUxLWlZhNmxORlFTZ2YzNEpIWlRvSnJX?=
- =?utf-8?B?VVAxR09MemhXRmlPZmxxRGZGd1lpSHVKL2dBeFRFUXpwUkp5RExIbUhKZTZZ?=
- =?utf-8?B?TFBuZ2drYkpLUHlENzhjT2lUdzV3QnJVTGRDS2pxaWZsMGh0c1FHektUdXF1?=
- =?utf-8?B?QXh0UzNxWUdFdGJFYVU2TUl4c3pQdlphZ0s5dVRoTW0xTkVqZWQ2WmNDR2s4?=
- =?utf-8?B?NVIzTVdmQVN5RkxQdE81RFExQytoL3V5bzQ0azlmekdoQy9XcFBzZTFNM2Zw?=
- =?utf-8?B?YTZyRCtiZlFpS3UrQ0xKbFlMdkVQRDVTLzJzLyt3Rmx5M3Z0U0dRTXRxODdl?=
- =?utf-8?B?TGhqK0xDWUlQLzBCV1M1bEYzOG5yWS8yZFljTmN1ZkVLbTI5aG1jQk9ZZGxa?=
- =?utf-8?B?TWNPQm1XZXdIa2FBajNETXU4c2pidkVjUGtwMEQxQVlKRHg1aWIwZmhMNCtw?=
- =?utf-8?B?dmM5ajVYZUFvOStzRHZrYkhjTko2UUxJb2NIaGZWdzlIc3g1YkNMcHh4bWhy?=
- =?utf-8?B?UGJLSmFQSkRIMDVicWl0QktPNWhiTXVvdDJEL2Zuc1ZDeG9McExKUTFLOU1H?=
- =?utf-8?B?ZHkvYXAzUjJSKzYwTitpZmxsTTBpVDQvNHNLNlQ3djJnRFpVak5wZUJXS0FS?=
- =?utf-8?B?YzdjelZlVmFibWl0Yk1adnN4VTBOcFhFdUlVN0psZkZUbFN0NEE1dWxQSUJz?=
- =?utf-8?B?dkRlRkRJUmo3K3MxU1FxMm4rNFJjQjJBVjZTcnc0alJWVUR5VWVSWmxTZnFx?=
- =?utf-8?B?UVVoN1lNbWdkY3doYWR2dHVyY1FtT3NLNHAyL2QzdVJYQTNZVEFYaVhBTjdW?=
- =?utf-8?B?L3ErZHkveW1CbElPUmk4NHJYWCt4bXhrbFZpbkhwcklMdUlPRFc3cW5FSVg3?=
- =?utf-8?B?b2tBV0pJN1ZIRkZNbS9sY2pnYXprcnBaZHJYMDhTbkk2d1BhOTdrdnRHamdJ?=
- =?utf-8?B?bWJjL0dSa2J4b2N5cE5QRVhVbVEyV3lmZUFOQStvaTg2SGRLZ3YzNjhkWDFN?=
- =?utf-8?B?aGdJQVgzMG5PNDR1aHRrWFl5SDFPN3Jpdm82TnhYWFJOT1l5QUt5c2sybUJB?=
- =?utf-8?B?NWlUbS9VeVV2YXAxMjAzMFFSL2owWUl4aFEyV1lFMGtXWkFITlFXcUIxWTJS?=
- =?utf-8?B?MXprS1ZXb1l5ZzNHajJSeEJVWWllaTdQZFdGNUpPVFRBaEhGM05zZnJGTWpX?=
- =?utf-8?B?bG5aUm5Mb2k1dy92ekZiSWxFcnpxV1lTbHFkclhKd0J0R2F5eW0wWTV3eFFo?=
- =?utf-8?B?TnZNQW9TdFFpUjRQOElEUUE3R1Y2T1hWNTFvcXM4TFlRK2FrSkkxb0d0YmZR?=
- =?utf-8?B?UUhVU3pkYzdFY29vc20wNDV2MVBZbG5VYzdSTWU2NFppd1RoNXIyalF3VzhW?=
- =?utf-8?B?cHkvdmtIckdIWFJBZlNOaGJzN0JacFprZEUzUlc3YjFmTWc3VHNHWVk2ZzhW?=
- =?utf-8?B?emJNVmQ3Yk5POEM5TzJiSVB5bzFvbjFSbmhwRzBzK0JKU3RpcXZ1SnRSUDR0?=
- =?utf-8?B?bXYrbm1oVFpuNWp0eXdLT013T3Z2QzVreFZTM05MUDM2YVIvRmFBT1QvU0xw?=
- =?utf-8?B?K0N1NkZ2VklKclV0VUJta21kSGllcEpseVo5bXJlY3hvKzBwNG4vbFlGeXNq?=
- =?utf-8?B?SkhVVlhBNXdvVG9MTWdqMXIxRndMSEp4YmlRTC9LNFF2WWh1emE4NzdOVVNt?=
- =?utf-8?B?RkE9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf25864a-61e1-4fd5-f71b-08db72783e61
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2023 16:54:57.2877
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fOp2DNqAn522Iibatwg5rFYNvra5hiCba/1R0gnbhoMX3R4vqE+ed3x1NuLuGgnG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3788
-X-Proofpoint-GUID: uFjiFVECl3_H_NDEdea20NfelUgQ2r45
-X-Proofpoint-ORIG-GUID: uFjiFVECl3_H_NDEdea20NfelUgQ2r45
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-06-21_10,2023-06-16_01,2023-05-22_02
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
+Message-ID: <20230621170244.1283336-1-sdf@google.com>
+Subject: [RFC bpf-next v2 00/11] bpf: Netdev TX metadata
+From: Stanislav Fomichev <sdf@google.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	toke@kernel.org, willemb@google.com, dsahern@kernel.org, 
+	magnus.karlsson@intel.com, bjorn@kernel.org, maciej.fijalkowski@intel.com, 
+	brouer@redhat.com, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+--- Changes since RFC v1 ---
 
+- Support passing metadata via XSK
+  - Showcase how to consume this metadata at TX in the selftests
+- Sample untested mlx5 implementation
+- Simplify attach/detach story with simple global fentry (Alexei)
+- Add 'return 0' in xdp_metadata selftest (Willem)
+- Add missing 'sizeof(*ip6h)' in xdp_hw_metadata selftest (Willem)
+- Document 'timestamp' argument of kfunc (Simon)
+- Not relevant due to attach/detach rework:
+  - s/devtx_sb/devtx_submit/ in netdev (Willem)
+  - s/devtx_cp/devtx_complete/ in netdev (Willem)
+  - Document 'devtx_complete' and 'devtx_submit' in netdev (Simon)
+  - Add devtx_sb/devtx_cp forward declaration (Simon)
+  - Add missing __rcu/rcu_dereference annotations (Simon)
 
-On 6/19/23 4:49 AM, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <imagedong@tencent.com>
-> 
-> Add test9/test10 in fexit_test.c and fentry_test.c to test the fentry
-> and fexit whose target function have 7/11 arguments.
-> 
-> Correspondingly, add bpf_testmod_fentry_test7() and
-> bpf_testmod_fentry_test11() to bpf_testmod.c
-> 
-> Meanwhile, add bpf_modify_return_test2() to test_run.c to test the
-> MODIFY_RETURN with 7 arguments.
-> 
-> Add bpf_testmod_test_struct_arg_7/bpf_testmod_test_struct_arg_7 in
-> bpf_testmod.c to test the struct in the arguments.
-> 
-> And the testcases passed:
-> 
-> ./test_progs -t fexit
-> Summary: 5/12 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> ./test_progs -t fentry
-> Summary: 3/0 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> ./test_progs -t modify_return
-> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> ./test_progs -t tracing_struct
-> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+v1: https://lore.kernel.org/bpf/CAJ8uoz2zOHpBRfKhN97eR0VWipBTxnh=R9G57Z2UUujX4JzneQ@mail.gmail.com/T/#md354573364f75a8598e443dd51114b4feb4c3714
 
-Acked-by: Yonghong Song <yhs@fb.com>
+--- Use cases ---
+
+The goal of this series is to add two new standard-ish places
+in the transmit path:
+
+1. Right before the packet is transmitted (with access to TX
+   descriptors)
+2. Right after the packet is actually transmitted and we've received the
+   completion (again, with access to TX completion descriptors)
+
+Accessing TX descriptors unlocks the following use-cases:
+
+- Setting device hints at TX: XDP/AF_XDP might use these new hooks to
+use device offloads. The existing case implements TX timestamp.
+- Observability: global per-netdev hooks can be used for tracing
+the packets and exploring completion descriptors for all sorts of
+device errors.
+
+Accessing TX descriptors also means that the hooks have to be called
+from the drivers.
+
+The hooks are a light-weight alternative to XDP at egress and currently
+don't provide any packet modification abilities. However, eventually,
+can expose new kfuncs to operate on the packet (or, rather, the actual
+descriptors; for performance sake).
+
+--- UAPI ---
+
+The hooks are implemented in a HID-BPF style. Meaning they don't
+expose any UAPI and are implemented as tracing programs that call
+a bunch of kfuncs. The attach/detach operation happen via regular
+global fentry points. Network namespace and ifindex are exposed
+to allow filtering out particular netdev.
+
+--- skb vs xdp ---
+
+The hooks operate on a new light-weight devtx_frame which contains:
+- data
+- len
+- metadata_len
+- sinfo (frags)
+- netdev
+
+This should allow us to have a unified (from BPF POW) place at TX
+and not be super-taxing (we need to copy 2 pointers + len to the stack
+for each invocation).
+
+--- TODO ---
+
+Things that I'm planning to do for the non-RFC series:
+- have some real device support to verify xdp_hw_metadata works
+  - performance numbers with/without feature enabled (Toke)
+- freplace
+- explore dynptr (Toke)
+- Documentation/networking/xdp-rx-metadata.rst - like documentation
+
+--- CC ---
+
+CC'ing people only on the cover letter. Hopefully can find the rest via
+lore.
+
+Cc: toke@kernel.org
+Cc: willemb@google.com
+Cc: dsahern@kernel.org
+Cc: john.fastabend@gmail.com
+Cc: magnus.karlsson@intel.com
+Cc: bjorn@kernel.org
+Cc: maciej.fijalkowski@intel.com
+Cc: brouer@redhat.com
+Cc: netdev@vger.kernel.org
+
+Stanislav Fomichev (11):
+  bpf: Rename some xdp-metadata functions into dev-bound
+  bpf: Resolve single typedef when walking structs
+  xsk: Support XDP_TX_METADATA_LEN
+  bpf: Implement devtx hook points
+  bpf: Implement devtx timestamp kfunc
+  net: veth: Implement devtx timestamp kfuncs
+  selftests/xsk: Support XDP_TX_METADATA_LEN
+  selftests/bpf: Add helper to query current netns cookie
+  selftests/bpf: Extend xdp_metadata with devtx kfuncs
+  selftests/bpf: Extend xdp_hw_metadata with devtx kfuncs
+  net/mlx5e: Support TX timestamp metadata
+
+ MAINTAINERS                                   |   2 +
+ .../net/ethernet/mellanox/mlx5/core/en/txrx.h |  11 +
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  96 ++++++++-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |   9 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   |   3 +
+ .../net/ethernet/mellanox/mlx5/core/en_tx.c   |  16 ++
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  26 ++-
+ drivers/net/veth.c                            | 116 +++++++++-
+ include/linux/netdevice.h                     |   4 +
+ include/net/devtx.h                           |  71 +++++++
+ include/net/offload.h                         |  38 ++++
+ include/net/xdp.h                             |  18 +-
+ include/net/xdp_sock.h                        |   1 +
+ include/net/xsk_buff_pool.h                   |   1 +
+ include/uapi/linux/if_xdp.h                   |   1 +
+ kernel/bpf/btf.c                              |   2 +
+ kernel/bpf/offload.c                          |  49 ++++-
+ kernel/bpf/verifier.c                         |   4 +-
+ net/core/Makefile                             |   1 +
+ net/core/dev.c                                |   1 +
+ net/core/devtx.c                              | 149 +++++++++++++
+ net/core/xdp.c                                |  20 +-
+ net/xdp/xsk.c                                 |  31 ++-
+ net/xdp/xsk_buff_pool.c                       |   1 +
+ net/xdp/xsk_queue.h                           |   7 +-
+ tools/testing/selftests/bpf/network_helpers.c |  21 ++
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../selftests/bpf/prog_tests/xdp_metadata.c   |  62 +++++-
+ .../selftests/bpf/progs/xdp_hw_metadata.c     | 107 ++++++++++
+ .../selftests/bpf/progs/xdp_metadata.c        | 118 +++++++++++
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 198 ++++++++++++++++--
+ tools/testing/selftests/bpf/xdp_metadata.h    |  14 ++
+ tools/testing/selftests/bpf/xsk.c             |  17 ++
+ tools/testing/selftests/bpf/xsk.h             |   1 +
+ 34 files changed, 1142 insertions(+), 75 deletions(-)
+ create mode 100644 include/net/devtx.h
+ create mode 100644 include/net/offload.h
+ create mode 100644 net/core/devtx.c
+
+-- 
+2.41.0.162.gfafddb0af9-goog
+
 
