@@ -1,238 +1,198 @@
-Return-Path: <bpf+bounces-3023-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3024-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04F76738575
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 15:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 30B0773857B
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 15:41:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B50B8281667
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 13:40:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DF4A2815E9
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 13:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708B218004;
-	Wed, 21 Jun 2023 13:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF6BA182DE;
+	Wed, 21 Jun 2023 13:39:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4178D17ACE
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 13:31:29 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112B8198D
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 06:31:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1687354241;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VIp8iVbV+P5Dx+n5TxKVDlGyBK7fZsapXNE0EAOF2Qs=;
-	b=Ne2Wm9AbQWSsULkrmu9JffbnBTvkZLL7RYR5ELxy0TGNzTH9Laktk+rP+0edl6y4Hc1Rn7
-	VZYjFiCzB9na39nDEdIIw8mpHu0tisJ+wYuQLfGV2xRex+utrRIv+sELp3F5cWs9zHq0Og
-	x5JhVx+YEpN+/N5WghzSzMekD98vEM4=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-78-swGAtt6nPOaTXHZp3zsDrA-1; Wed, 21 Jun 2023 09:30:40 -0400
-X-MC-Unique: swGAtt6nPOaTXHZp3zsDrA-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b46e0e096aso32356161fa.1
-        for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 06:30:39 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F8417747
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 13:39:11 +0000 (UTC)
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B1AE59
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 06:39:09 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-78f36f37e36so2108239241.3
+        for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 06:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1687354749; x=1689946749;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HkLY4acLLjF0A3xk0LZgmQ+TO1EiwpzKoMSwjPDVWZc=;
+        b=k/88j7JjShr9vImgDPEUIWiHbk24HJrF3XhtdRJTjNVM+TtI3njFjpQ8zzVD/yZI3V
+         5Ljhgo6HfkbhkkzX8KzGpRSb45sYiox9wHY7EIePx8JcsbH7g+JKP4Zk1ML7BAGCD2Ki
+         tTjzMbXKxqUSUfoMn9qmnnES1ZHHY55rFpuLzKit8v3J4W8rKuRtBulpsIxZ6SCQ3Ik1
+         jfsT2oPw+Kqghonzvkzi+2jrtF87eaEXqdti3NnSX+UhZ2PO4L0COsDd5o6cuONbwjrp
+         KETQLWsBR3fxDG8eNYeM2gua+sQXhtl1O6fFITE53Ph84DpuczuByFPKrMuakgiorUWz
+         LMYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687354238; x=1689946238;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VIp8iVbV+P5Dx+n5TxKVDlGyBK7fZsapXNE0EAOF2Qs=;
-        b=eVcopbEx7O40bxAeQHDsRUPze5ROi/tGOKPRNhUGbX5iFAEhKVvYdD8FrjQV8SNwKA
-         0qESPotSR1b2ZYBwF+sFv6avdR/gIWqFMZUtIb/6nwOrYU8OKBOTwO7EUHGtFYYuzrK1
-         rAkt7JYNX4P5O4LSeBuC6JKHyEUverGX7520v5J8il7A0s70G6iK33otogdbSKJ9yDC8
-         KuJZRSNj6dV25XzkWYDZoRMUQrgpUQ3IuUD/u2tcC2xtILQTkNSvitSOEa8hy0PwT2dr
-         ZXmlz6F7dwP1P34yxo27JqTb1OiVV/UvONhkojBwrXJpuRXVJ5WvYqsoF305Mk7DgNde
-         BF8Q==
-X-Gm-Message-State: AC+VfDx8akyprrv2JN3ZntZOm2oeV6EpfcS0bhGEJrlAMU+heJOmi7i2
-	O/Y8rtc3VJP+qqxUaXLnhhm8FgaveOM+CPDW0tKi75IEtkG1r+zCx0stz/NqxbfxOcVtHyaKgAR
-	YltUJTTOFXAtc
-X-Received: by 2002:a2e:9217:0:b0:2b4:48de:b2cb with SMTP id k23-20020a2e9217000000b002b448deb2cbmr9355981ljg.50.1687354238059;
-        Wed, 21 Jun 2023 06:30:38 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ4pDrW0Sog/gf+Q2hMpBSFt0vaGNQ9bb94RQpS0m7tMAHO9YrCXCKt6N5NdCqC389eEbUbOow==
-X-Received: by 2002:a2e:9217:0:b0:2b4:48de:b2cb with SMTP id k23-20020a2e9217000000b002b448deb2cbmr9355964ljg.50.1687354237523;
-        Wed, 21 Jun 2023 06:30:37 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id hk12-20020a170906c9cc00b009659ad1072fsm3149754ejb.113.2023.06.21.06.30.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jun 2023 06:30:36 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 8371ABBF240; Wed, 21 Jun 2023 15:30:36 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- netdev@vger.kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org,
- tirthendu.sarkar@intel.com, simon.horman@corigine.com
-Subject: Re: [PATCH v4 bpf-next 15/22] xsk: add multi-buffer documentation
-In-Reply-To: <CAJ8uoz2hfXzu29KEgqm3rNm+hayDtUkJatFVA0n4nZz6F9de0w@mail.gmail.com>
-References: <20230615172606.349557-1-maciej.fijalkowski@intel.com>
- <20230615172606.349557-16-maciej.fijalkowski@intel.com>
- <87zg4uca21.fsf@toke.dk>
- <CAJ8uoz2hfXzu29KEgqm3rNm+hayDtUkJatFVA0n4nZz6F9de0w@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 21 Jun 2023 15:30:36 +0200
-Message-ID: <87o7l9c58j.fsf@toke.dk>
+        d=1e100.net; s=20221208; t=1687354749; x=1689946749;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HkLY4acLLjF0A3xk0LZgmQ+TO1EiwpzKoMSwjPDVWZc=;
+        b=HqiE2pi/CUaw5MZgQ7pgRh/st8thz4WloFvvc9nu0FwNAquH3Lww6k6vvkKLKAl7pD
+         Qts/WUav7k8gE7YoKV/zQEekGaAzNEVSm3OYCk9YMUVUZzGAVnxvvhs9AIQVa8CYxQrR
+         fCz9Cioj4VgWhdty+y9Z2fM4wQy9WNHjrWf8siKFmasNdPG+446sl+7ZevlLneYC44wt
+         aoFVToPUfDnlDDLRZZKqAhbJj9J8Wgnm8lBY8dRsuusM/LdSeVAimB+e0+EoJs8n/kvy
+         6W802TjHJmpyZT5d4NaSCUhUZmWJ9376hhQipfiOMSQvZalzPTps5lvTgql4PxWThou4
+         vz5w==
+X-Gm-Message-State: AC+VfDzHgx9IyNYhbUySt7O/GdR4etxmCFcc31sqGISNN6v+BCelbJja
+	7w81PV+DvZHxOwEECfo/rbl2vPLad7MyO21zh8OVqA==
+X-Google-Smtp-Source: ACHHUZ7fcrBNIO3CGgjLEKdIkYbKMTvL7QMNQqJfTkKqwlHIaMaK7I3JdmLhKFbk6WgAJIn79mGez/9/1yvhNajnKCQ=
+X-Received: by 2002:a05:6102:2f8:b0:440:a341:b45b with SMTP id
+ j24-20020a05610202f800b00440a341b45bmr5884538vsj.10.1687354748953; Wed, 21
+ Jun 2023 06:39:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CA+G9fYuifLivwhCh33kedtpU=6zUpTQ_uSkESyzdRKYp8WbTFQ@mail.gmail.com>
+ <ZJLzsWsIPD57pDgc@FVFF77S0Q05N>
+In-Reply-To: <ZJLzsWsIPD57pDgc@FVFF77S0Q05N>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 21 Jun 2023 19:08:57 +0530
+Message-ID: <CA+G9fYvwriD8X+kmDx35PavSv-youSUmYTuYTfQ4oBWnZzVRUQ@mail.gmail.com>
+Subject: Re: next: Rpi4: Unexpected kernel BRK exception at EL1
+To: Mark Rutland <mark.rutland@arm.com>, Puranjay Mohan <puranjay12@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>
+Cc: Linux ARM <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>, linux-rpi-kernel@lists.infradead.org, 
+	Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org, 
+	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Anshuman Khandual <anshuman.khandual@arm.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Magnus Karlsson <magnus.karlsson@gmail.com> writes:
-
-> On Tue, 20 Jun 2023 at 19:34, Toke H=C3=B8iland-J=C3=B8rgensen <toke@kern=
-el.org> wrote:
->>
->> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
->>
->> > From: Magnus Karlsson <magnus.karlsson@intel.com>
->> >
->> > Add AF_XDP multi-buffer support documentation including two
->> > pseudo-code samples.
->> >
->> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
->> > ---
->> >  Documentation/networking/af_xdp.rst | 177 ++++++++++++++++++++++++++++
->> >  1 file changed, 177 insertions(+)
->> >
->> > diff --git a/Documentation/networking/af_xdp.rst b/Documentation/netwo=
-rking/af_xdp.rst
->> > index 247c6c4127e9..2b583f58967b 100644
->> > --- a/Documentation/networking/af_xdp.rst
->> > +++ b/Documentation/networking/af_xdp.rst
->> > @@ -453,6 +453,93 @@ XDP_OPTIONS getsockopt
->> >  Gets options from an XDP socket. The only one supported so far is
->> >  XDP_OPTIONS_ZEROCOPY which tells you if zero-copy is on or not.
->> >
->> > +Multi-Buffer Support
->> > +--------------------
->> > +
->> > +With multi-buffer support, programs using AF_XDP sockets can receive
->> > +and transmit packets consisting of multiple buffers both in copy and
->> > +zero-copy mode. For example, a packet can consist of two
->> > +frames/buffers, one with the header and the other one with the data,
->> > +or a 9K Ethernet jumbo frame can be constructed by chaining together
->> > +three 4K frames.
->> > +
->> > +Some definitions:
->> > +
->> > +* A packet consists of one or more frames
->> > +
->> > +* A descriptor in one of the AF_XDP rings always refers to a single
->> > +  frame. In the case the packet consists of a single frame, the
->> > +  descriptor refers to the whole packet.
->> > +
->> > +To enable multi-buffer support for an AF_XDP socket, use the new bind
->> > +flag XDP_USE_SG. If this is not provided, all multi-buffer packets
->> > +will be dropped just as before. Note that the XDP program loaded also
->> > +needs to be in multi-buffer mode. This can be accomplished by using
->> > +"xdp.frags" as the section name of the XDP program used.
->> > +
->> > +To represent a packet consisting of multiple frames, a new flag called
->> > +XDP_PKT_CONTD is introduced in the options field of the Rx and Tx
->> > +descriptors. If it is true (1) the packet continues with the next
->> > +descriptor and if it is false (0) it means this is the last descriptor
->> > +of the packet. Why the reverse logic of end-of-packet (eop) flag found
->> > +in many NICs? Just to preserve compatibility with non-multi-buffer
->> > +applications that have this bit set to false for all packets on Rx,
->> > +and the apps set the options field to zero for Tx, as anything else
->> > +will be treated as an invalid descriptor.
->> > +
->> > +These are the semantics for producing packets onto AF_XDP Tx ring
->> > +consisting of multiple frames:
->> > +
->> > +* When an invalid descriptor is found, all the other
->> > +  descriptors/frames of this packet are marked as invalid and not
->> > +  completed. The next descriptor is treated as the start of a new
->> > +  packet, even if this was not the intent (because we cannot guess
->> > +  the intent). As before, if your program is producing invalid
->> > +  descriptors you have a bug that must be fixed.
->> > +
->> > +* Zero length descriptors are treated as invalid descriptors.
->> > +
->> > +* For copy mode, the maximum supported number of frames in a packet is
->> > +  equal to CONFIG_MAX_SKB_FRAGS + 1. If it is exceeded, all
->> > +  descriptors accumulated so far are dropped and treated as
->> > +  invalid. To produce an application that will work on any system
->> > +  regardless of this config setting, limit the number of frags to 18,
->> > +  as the minimum value of the config is 17.
->> > +
->> > +* For zero-copy mode, the limit is up to what the NIC HW
->> > +  supports. Usually at least five on the NICs we have checked. We
->> > +  consciously chose to not enforce a rigid limit (such as
->> > +  CONFIG_MAX_SKB_FRAGS + 1) for zero-copy mode, as it would have
->> > +  resulted in copy actions under the hood to fit into what limit
->> > +  the NIC supports. Kind of defeats the purpose of zero-copy mode.
->>
->> How is an application supposed to discover the actual limit for a given
->> NIC/driver?
+On Wed, 21 Jun 2023 at 18:27, Mark Rutland <mark.rutland@arm.com> wrote:
 >
-> Thanks for your comments Toke. I will add an example here of how to
-> discover this. Basically you can send a packet with N frags (N =3D 2 to
-> start with), check the error stats through the getsockopt. If no
-> invalid_tx_desc error, increase N with one and send this new packet.
-> If you get an error, then the max number of frags is N-1.
-
-Hmm, okay, that sounds pretty tedious :P
-
-Also, it has side effects (you'll be putting frames on the wire while
-testing, right?), so I guess this is not something you'll do on every
-startup of your application? What are you expecting app developers to do
-here in practice? Run the test while developing and expect the value to
-stay constant for a given driver (does it?), or? Or will most people in
-practice only need a few frags to get up to 9k MTU?
-
->> > +* The ZC batch API guarantees that it will provide a batch of Tx
->> > +  descriptors that ends with full packet at the end. If not, ZC
->> > +  drivers would have to gather the full packet on their side. The
->> > +  approach we picked makes ZC drivers' life much easier (at least on
->> > +  Tx side).
->>
->> This seems like it implies some constraint on how an application can use
->> the APIs, but it's not quite clear to me what those constraints are, nor
->> what happens if an application does something different. This should
->> probably be spelled out...
->>
->> > +On the Rx path in copy-mode, the xsk core copies the XDP data into
->> > +multiple descriptors, if needed, and sets the XDP_PKT_CONTD flag as
->> > +detailed before. Zero-copy mode works the same, though the data is not
->> > +copied. When the application gets a descriptor with the XDP_PKT_CONTD
->> > +flag set to one, it means that the packet consists of multiple buffers
->> > +and it continues with the next buffer in the following
->> > +descriptor. When a descriptor with XDP_PKT_CONTD =3D=3D 0 is received=
-, it
->> > +means that this is the last buffer of the packet. AF_XDP guarantees
->> > +that only a complete packet (all frames in the packet) is sent to the
->> > +application.
->>
->> In light of the comment on batch size below, I think it would be useful
->> to spell out what this means exactly. IIUC correctly, it means that the
->> kernel will check the ringbuffer before starting to copy the data, and
->> if there are not enough descriptors available, it will drop the packet
->> instead of doing a partial copy, right? And this is the case for both ZC
->> and copy mode?
+> On Wed, Jun 21, 2023 at 06:06:51PM +0530, Naresh Kamboju wrote:
+> > Following boot warnings and crashes noticed on arm64 Rpi4 device running
+> > Linux next-20230621 kernel.
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >
+> > boot log:
+> >
+> > [   22.331748] Kernel text patching generated an invalid instruction
+> > at 0xffff8000835d6580!
+> > [   22.340579] Unexpected kernel BRK exception at EL1
+> > [   22.346141] Internal error: BRK handler: 00000000f2000100 [#1] PREEMPT SMP
 >
-> I will make this paragraph and the previous one clearer. And yes, copy
-> mode and zc mode have the same behaviour.
+> This indicates execution of AARCH64_BREAK_FAULT.
 
-Alright, great!
+I see kernel panic with kselftest merge configs on Juno-r2 and Rpi4.
 
--Toke
+>
+> That could be from dodgy arguments to aarch64_insn_gen_*(), or elsewhere, and
+> given this is in the networking code I suspect this'll be related to BPF.
+>
+> Looking at next-20230621 I see commit:
+>
+>   49703aa2adfaff28 ("bpf, arm64: use bpf_jit_binary_pack_alloc")
+>
+> ... which changed the way BPF allocates memory, and has code that pads memory
+> with a bunch of AARCH64_BREAK_FAULT, so it looks like that *might* be related.
+>
+> Are you able to bisect this?
 
+I have not started bisection on this issue yet.
+Let me give it a try.
+
+>
+> In the mean time, I've Cc'd the relevant BPF people to give them a heads-up.
+
+Thanks.
+
+Extra information from boot failures.
+This is always reproducible on Juno-r2 and Rpi4 devices.
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Boot crash log:
+[    3.605232] Kernel text patching generated an invalid instruction
+at bpf_prog_99a0cd861b84ee07___loader.prog+0x0/0x728!
+[    3.616052] Unexpected kernel BRK exception at EL1
+[    3.620849] Internal error: BRK handler: 00000000f2000100 [#1] PREEMPT SMP
+[    3.627736] Modules linked in:
+[    3.630796] CPU: 1 PID: 1 Comm: swapper/0 Not tainted
+6.4.0-rc7-next-20230621 #1
+[    3.638140] hub 1-1:1.0: USB hub found
+[    3.638206] Hardware name: ARM Juno development board (r2) (DT)
+[    3.638210] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[    3.642431] hub 1-1:1.0: 4 ports detected
+[    3.647879] pc : bpf_prog_99a0cd861b84ee07___loader.prog+0x0/0x728
+[    3.647891] lr : kern_sys_bpf+0x130/0x218
+[    3.669061] sp : ffff80008391bc10
+[    3.672376] x29: ffff80008391bc10 x28: ffff8000826e70d8 x27: ffff800082450110
+[    3.679533] x26: ffff8000820ed948 x25: ffff800082427b10 x24: 0000000000000289
+[    3.686687] x23: ffff000800acfa00 x22: ffff8000837f8000 x21: ffff000823dbc240
+[    3.693841] x20: ffff8000839b1000 x19: ffff80008391bca8 x18: 000000001d03406d
+[    3.700995] x17: ffff800080464204 x16: ffff8000804640b4 x15: ffff8000803f8af0
+[    3.708149] x14: ffff8000803f88f8 x13: ffff800081717720 x12: ffff8000824514b4
+[    3.715302] x11: ffff800080015788 x10: ffff800082470304 x9 : ffff8000800f3338
+[    3.722456] x8 : ffff80008391bcf8 x7 : 0000000000000000 x6 : 0000000000000001
+[    3.729609] x5 : 0000000000000001 x4 : ffff8000831f0000 x3 : ffff8008fc63d000
+[    3.736763] x2 : ffff800083b6d88c x1 : ffff8000839b1048 x0 : ffff000823dbc240
+[    3.743917] Call trace:
+[    3.746362]  bpf_prog_99a0cd861b84ee07___loader.prog+0x0/0x728
+[    3.752210]  bpf_load_and_run.constprop.0+0x120/0x1d8
+[    3.757270]  load+0xf4/0x278
+[    3.760159]  do_one_initcall+0x50/0x2f0
+[    3.764001]  kernel_init_freeable+0x224/0x438
+[    3.768368]  kernel_init+0x30/0x200
+[    3.771862]  ret_from_fork+0x10/0x20
+[    3.775447] Code: d4202000 00000780 d4202000 d4202000 (910003c9)
+[    3.781550] ---[ end trace 0000000000000000 ]---
+[    3.786172] note: swapper/0[1] exited with irqs disabled
+[    3.791526] note: swapper/0[1] exited with preempt_count 1
+[    3.797043] Kernel panic - not syncing: Attempted to kill init!
+exitcode=0x0000000b
+[    3.804711] SMP: stopping secondary CPUs
+[    3.808843] Kernel Offset: disabled
+[    3.812331] CPU features: 0x40000106,1e010000,0000421b
+[    3.817476] Memory Limit: none
+[    3.820536] ---[ end Kernel panic - not syncing: Attempted to kill
+init! exitcode=0x0000000b ]---
+
+Links:
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230621/testrun/17701148/suite/log-parser-test/tests/
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230621/testrun/17701148/suite/log-parser-test/test/check-kernel-panic/log
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230621/testrun/17701148/suite/log-parser-test/test/check-kernel-panic/details/
+
+
+metadata:
+  git_ref: master
+  git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git_sha: 15e71592dbae49a674429c618a10401d7f992ac3
+  git_describe: next-20230621
+  kernel_version: 6.4.0-rc7
+  kernel-config:
+    https://storage.tuxsuite.com/public/linaro/lkft/builds/2RVAA4lj35ia3YDkqaoV6ztyqdW/config
+  artifact-location:
+    https://storage.tuxsuite.com/public/linaro/lkft/builds/2RVAA4lj35ia3YDkqaoV6ztyqdW/
+  toolchain: gcc-11
+  build_name: gcc-11-lkftconfig-kselftest
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
