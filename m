@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-3049-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3050-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A683738C89
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 19:04:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 102BE738C8A
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 19:04:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56AC52816E2
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 17:04:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4174A1C20E85
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 17:04:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5D219E41;
-	Wed, 21 Jun 2023 17:02:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 167B719E4E;
+	Wed, 21 Jun 2023 17:02:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DC819BCE
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 17:02:51 +0000 (UTC)
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB75120
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:50 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-53f84f75bf4so2886828a12.3
-        for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CA819E4B
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 17:02:53 +0000 (UTC)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9491510D
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:52 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-bfe702f99b8so1416581276.1
+        for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687366970; x=1689958970;
+        d=google.com; s=20221208; t=1687366972; x=1689958972;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=urWJm7reT2IarzSkE9tEiPm+OWYgjit92cM3b8fi47A=;
-        b=CDe40wq+ByPLHcciah53IyY8ka+k/FUoh9rlvUpk0Rz5YkBccmLt3wUrapCI6HMtqD
-         nZxp8Bqv60jel7eAZmLxSoMXdNENuypCbVFCeH8QquCA1Ip1q1nRmSimkOtsY9iWS1yl
-         IYqe6Xx0LLp/gMBVqTyGXFOekUpDa8s4tCkYPZShFrbgwyr7qco/N+m9MyDrQmalEppi
-         I3skQXpqbpInihHpmi1NwgCLEyg+/FMITmbNezFTMvVErPd0x7UWmDcJq50R35AxPuIq
-         KT9dfW1d4gxU856yNbpSfj4HKOjxb27nbSJz4AMDDWJY8oPUAQqwY4ZLjgK2FnsEddvG
-         j/Ig==
+        bh=CmMMVFKL+uO4vUmhJXphZq0hHrHUgs2Y3e/LjEOYX1E=;
+        b=GTXdXkLOwfBndj/ey9c5yVQ3uqcPYCXQjlas28xoEM4O/ozfC3qYpeukFNNyMm+kDN
+         TY1WznK1/pr3ZiK4FyUswGrHOA3zcJGvqs1SjmhxLJ/WZIIycxvqMob29mUGZ1tHCf6h
+         Fy9Uqgmj4WZuTp1QJATRm1g5ZcOIHkn49McBamdhAz9amRRT+pyF/fVRFnp63TMNqoNk
+         kSPkq+2mNyqnKyF3OTflrGOkQNBhlyjQdt97gBZD8jgyrq19xQhncfRZ4yWHI4b/D1Pq
+         pQM1RJ/RUnkzl3Khxo0sVZf6u2et17QrKTAPHQYdB1EyO+x3B953aRyCM5u/pjChGNbj
+         JsSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687366970; x=1689958970;
+        d=1e100.net; s=20221208; t=1687366972; x=1689958972;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=urWJm7reT2IarzSkE9tEiPm+OWYgjit92cM3b8fi47A=;
-        b=ZpKjZ0XBQdDsyl/fjR4fFI4SUUu9J1UW1zsxXFYVvbb7ciesxcySOxlzurBY4cT2uz
-         Bv2bI/ez9dtSd2ZkyPpUxmiG45rwXDE2/wUjMQ97r+5x/NlU1g6w4Lr01vp3+pUn6jaS
-         rkkynPz84o3n/I0ATMV/WDhXg4Fv7xAqb32zpMYNCDd6e4CfejUFVJZmwpD+d/biwiRn
-         5NwkVwx3bRXsu85QWV7W2RdtvXKdpx5MIQ+U/peOVKEOGCkJ1IxuoR3e38uLBysKt6W0
-         ushMK+JEDxXfAwL6dLo/d0Lpz1weI25/xX5PdmT9LYd/+10qfuLxS9UOeqxRGaZFYwd+
-         Ngog==
-X-Gm-Message-State: AC+VfDwnQn6Ose+9x0mq2vvayGud9Rs/F4oIEmvxm+UQTibwsGUIrYI+
-	ndm9eOvnQeCPNI1RP/9r1jhaZc5OSv8NTrE0Z98eTUL6cdYLtRzDPJZHF34sWlWdkwQgjiwPo8i
-	C5Gs3wihxSWL3QlPKFDkPlE0iB8hVhZCcf4gLgRCcU2g9wKM7Ww==
-X-Google-Smtp-Source: ACHHUZ7T4z5BMYP8aOK9EXSfV5iL1qhQkAqfBTuu6hJZfby78AK9fENfUPBKIY8cnY//hlpEXkd6pfE=
+        bh=CmMMVFKL+uO4vUmhJXphZq0hHrHUgs2Y3e/LjEOYX1E=;
+        b=EsTS8JZu9I9QOaA/V2AN+gKgVB1t4MDup33gbc1SjMNyhfSlkcUGHJOlOsFuT75Gke
+         wU18JDQYijyTzrxBzwXyS/oylvchcFgcQ7aqz/zssYL7K8laJ+kFcR3/erHaqTK/bGD3
+         oAfOPi6GfhUFR4pkQYUpT/Wl/+nwjKHUEFCz+Oz8z6A67Pu43bKs0wI5ILI6ywlyWHsh
+         lxkCMzAeYR6q/STypjpmIRHANuY8wwHhKU3VQFwZZicfwuq5hF5C0uw1M4DjRYodtj0e
+         mKrdqJEWFEqAqppZ5gdQLuV2u0bcxUwA9d1GAd33+3dBBtxRRwtMJV9rIquW9VNLW8QE
+         sxIQ==
+X-Gm-Message-State: AC+VfDzj8A5Ia9UqylG9QsHZOmIFo2CgcQTij+ybuNl0zU6vIZoOhN4C
+	gUmgeEpfoJ430b09gd6+gRPp0+pAXOFuRjq+NENu1+Yy8OwAjOghLtRt74RNpmFO0bmToH75l5P
+	yZ/7ACp9bxUbg2WmcY/sW5j2ykQkYQXrDobpcdRPLHfwJNOunWg==
+X-Google-Smtp-Source: ACHHUZ4iiXFc+nsiyhcFiaYXPY5UyL0vT7S0GUIb9ABTvrq36uh9VhEiCvjuAJNTkG5wd3HDfKFZgR0=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:5896:b0:261:2e5:b5af with SMTP id
- j22-20020a17090a589600b0026102e5b5afmr266907pji.1.1687366969970; Wed, 21 Jun
- 2023 10:02:49 -0700 (PDT)
-Date: Wed, 21 Jun 2023 10:02:35 -0700
+ (user=sdf job=sendgmr) by 2002:a25:addb:0:b0:be3:b9a6:a6b2 with SMTP id
+ d27-20020a25addb000000b00be3b9a6a6b2mr2143660ybe.9.1687366971803; Wed, 21 Jun
+ 2023 10:02:51 -0700 (PDT)
+Date: Wed, 21 Jun 2023 10:02:36 -0700
 In-Reply-To: <20230621170244.1283336-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,44 +63,179 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230621170244.1283336-1-sdf@google.com>
 X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
-Message-ID: <20230621170244.1283336-3-sdf@google.com>
-Subject: [RFC bpf-next v2 02/11] bpf: Resolve single typedef when walking structs
+Message-ID: <20230621170244.1283336-4-sdf@google.com>
+Subject: [RFC bpf-next v2 03/11] xsk: Support XDP_TX_METADATA_LEN
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
 	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	netdev@vger.kernel.org
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-It is impossible to use skb_frag_t in the tracing program. So let's
-resolve a single typedef when walking the struct.
+For zerocopy mode, tx_desc->addr can point to the arbitrary offset
+and carry some TX metadata in the headroom. For copy mode, there
+is no way currently to populate skb metadata.
 
-Cc: netdev@vger.kernel.org
+Introduce new XDP_TX_METADATA_LEN that indicates how many bytes
+to treat as metadata. Metadata bytes come prior to tx_desc address
+(same as in RX case).
+
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- kernel/bpf/btf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/net/xdp_sock.h      |  1 +
+ include/net/xsk_buff_pool.h |  1 +
+ include/uapi/linux/if_xdp.h |  1 +
+ net/xdp/xsk.c               | 31 ++++++++++++++++++++++++++++++-
+ net/xdp/xsk_buff_pool.c     |  1 +
+ net/xdp/xsk_queue.h         |  7 ++++---
+ 6 files changed, 38 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index bd2cac057928..9bdaa1225e8a 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6140,6 +6140,8 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 	*flag = 0;
- again:
- 	tname = __btf_name_by_offset(btf, t->name_off);
-+	if (btf_type_is_typedef(t))
-+		t = btf_type_by_id(btf, t->type);
- 	if (!btf_type_is_struct(t)) {
- 		bpf_log(log, "Type '%s' is not a struct\n", tname);
- 		return -EINVAL;
+diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+index e96a1151ec75..30018b3b862d 100644
+--- a/include/net/xdp_sock.h
++++ b/include/net/xdp_sock.h
+@@ -51,6 +51,7 @@ struct xdp_sock {
+ 	struct list_head flush_node;
+ 	struct xsk_buff_pool *pool;
+ 	u16 queue_id;
++	u8 tx_metadata_len;
+ 	bool zc;
+ 	enum {
+ 		XSK_READY = 0,
+diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+index a8d7b8a3688a..751fea51a6af 100644
+--- a/include/net/xsk_buff_pool.h
++++ b/include/net/xsk_buff_pool.h
+@@ -75,6 +75,7 @@ struct xsk_buff_pool {
+ 	u32 chunk_size;
+ 	u32 chunk_shift;
+ 	u32 frame_len;
++	u8 tx_metadata_len; /* inherited from xsk_sock */
+ 	u8 cached_need_wakeup;
+ 	bool uses_need_wakeup;
+ 	bool dma_need_sync;
+diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
+index a78a8096f4ce..2374eafff7db 100644
+--- a/include/uapi/linux/if_xdp.h
++++ b/include/uapi/linux/if_xdp.h
+@@ -63,6 +63,7 @@ struct xdp_mmap_offsets {
+ #define XDP_UMEM_COMPLETION_RING	6
+ #define XDP_STATISTICS			7
+ #define XDP_OPTIONS			8
++#define XDP_TX_METADATA_LEN		9
+ 
+ struct xdp_umem_reg {
+ 	__u64 addr; /* Start of packet data area */
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index cc1e7f15fa73..c9b2daba7b6d 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -485,6 +485,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 		int err;
+ 
+ 		hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
++		hr = max(hr, L1_CACHE_ALIGN((u32)xs->tx_metadata_len));
+ 		tr = dev->needed_tailroom;
+ 		len = desc->len;
+ 
+@@ -493,14 +494,21 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 			return ERR_PTR(err);
+ 
+ 		skb_reserve(skb, hr);
+-		skb_put(skb, len);
++		skb_put(skb, len + xs->tx_metadata_len);
+ 
+ 		buffer = xsk_buff_raw_get_data(xs->pool, desc->addr);
++		buffer -= xs->tx_metadata_len;
++
+ 		err = skb_store_bits(skb, 0, buffer, len);
+ 		if (unlikely(err)) {
+ 			kfree_skb(skb);
+ 			return ERR_PTR(err);
+ 		}
++
++		if (xs->tx_metadata_len) {
++			skb_metadata_set(skb, xs->tx_metadata_len);
++			__skb_pull(skb, xs->tx_metadata_len);
++		}
+ 	}
+ 
+ 	skb->dev = dev;
+@@ -1137,6 +1145,27 @@ static int xsk_setsockopt(struct socket *sock, int level, int optname,
+ 		mutex_unlock(&xs->mutex);
+ 		return err;
+ 	}
++	case XDP_TX_METADATA_LEN:
++	{
++		int val;
++
++		if (optlen < sizeof(val))
++			return -EINVAL;
++		if (copy_from_sockptr(&val, optval, sizeof(val)))
++			return -EFAULT;
++
++		if (val >= 256)
++			return -EINVAL;
++
++		mutex_lock(&xs->mutex);
++		if (xs->state != XSK_READY) {
++			mutex_unlock(&xs->mutex);
++			return -EBUSY;
++		}
++		xs->tx_metadata_len = val;
++		mutex_unlock(&xs->mutex);
++		return err;
++	}
+ 	default:
+ 		break;
+ 	}
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index 26f6d304451e..66ff9c345a67 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -85,6 +85,7 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
+ 		XDP_PACKET_HEADROOM;
+ 	pool->umem = umem;
+ 	pool->addrs = umem->addrs;
++	pool->tx_metadata_len = xs->tx_metadata_len;
+ 	INIT_LIST_HEAD(&pool->free_list);
+ 	INIT_LIST_HEAD(&pool->xsk_tx_list);
+ 	spin_lock_init(&pool->xsk_tx_list_lock);
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index 6d40a77fccbe..c8d287c18d64 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -133,12 +133,13 @@ static inline bool xskq_cons_read_addr_unchecked(struct xsk_queue *q, u64 *addr)
+ static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
+ 					    struct xdp_desc *desc)
+ {
+-	u64 offset = desc->addr & (pool->chunk_size - 1);
++	u64 addr = desc->addr - pool->tx_metadata_len;
++	u64 offset = addr & (pool->chunk_size - 1);
+ 
+ 	if (offset + desc->len > pool->chunk_size)
+ 		return false;
+ 
+-	if (desc->addr >= pool->addrs_cnt)
++	if (addr >= pool->addrs_cnt)
+ 		return false;
+ 
+ 	if (desc->options)
+@@ -149,7 +150,7 @@ static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
+ static inline bool xp_unaligned_validate_desc(struct xsk_buff_pool *pool,
+ 					      struct xdp_desc *desc)
+ {
+-	u64 addr = xp_unaligned_add_offset_to_addr(desc->addr);
++	u64 addr = xp_unaligned_add_offset_to_addr(desc->addr) - pool->tx_metadata_len;
+ 
+ 	if (desc->len > pool->chunk_size)
+ 		return false;
 -- 
 2.41.0.162.gfafddb0af9-goog
 
