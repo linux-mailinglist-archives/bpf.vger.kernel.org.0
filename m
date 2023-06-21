@@ -1,283 +1,395 @@
-Return-Path: <bpf+bounces-2979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29A307379B4
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 05:28:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA7F77379E3
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 05:50:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03E131C20D74
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 03:28:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2D8E1C20D97
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 03:50:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BAAF17FA;
-	Wed, 21 Jun 2023 03:28:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00F3B1FAF;
+	Wed, 21 Jun 2023 03:50:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F6C917EC
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 03:28:46 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49DD5DC;
-	Tue, 20 Jun 2023 20:28:45 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35L0Fb0F006572;
-	Tue, 20 Jun 2023 20:28:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=J8wxnOwdnptZrdgiH7+QqGmhk1ut888eKBpsu2fPbl4=;
- b=gxryR+2dTHoB8D+0Gn0R990O+s77xDHRgv42SxfC8u9/Q558+rAbuncqGi0RJgqkZELd
- ZtwpecK4dOIqRClkXd2FLKoFhh5nr7xnZb9LIPbccwy2DvZB/I9jorNBgyjKOMfdAo8j
- 93e8NSPZV2pOKgGnfJ8dMlmllH3uf+LjTO8paTYgpPk6+8xnVZmkBCQcjHpWb0CKf8+4
- cICnabR9hDQvz8josLPfD3KUSjC16vmrJFj51o8B6axfuQyXFyV27IdZu7X237DMFtuT
- 2yHbcnS7INx5zzgWVyjXpGIMCvhupvHjvB/RbOcqaxdth1eZJfv6F6pd/u2pEAfm4Vze tg== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rb1cy9ukc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Jun 2023 20:28:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DB4cFGWZYUvDPIDuDG8H+fOVNPkySBhq8r6E2v+hmPam6p2jif9h3PkKsnOu2Ze6RkYj/2rQ9EfoD9UTCX1S1fuiCGzxrEgWmW/etlZCZmgLwXZOzwDrCC1VZDSNc4rhHM00oum7TdaKg7Yme7OIqVN2x3qCOO2q4UGEZiGyW9SHLSwU853qt5XvaE8d0zfwrij9zEGokjAIMg19fCcYhghEOEXyMqspOcCaQwC7si/Xen/IwMXhkFsXulAGLU6yIn2s2ZH4YWjBQhpbfddn+awEaro4LRc90bxAG802ZigjL3gmerhHy9RjOkUW1y76nTL0gdGx9ozPjYh8bLhq8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J8wxnOwdnptZrdgiH7+QqGmhk1ut888eKBpsu2fPbl4=;
- b=XO3oUYx+H+fS2pqWGqYng4cSQhH2b9IsKUOC3oV/c9zLf7t7/TS8fT3otsEmn6g1ElmbMN2RxKwmrRWgaK3Xyr6vAPIwfShoHhBJNpamqe6LCWaNm9LEO72X+vtufo7BwbpEqlc3xoqpAKgtw67umntWpT2rSWAo/90XBUGeFdbHykwWkRKNogc0NMEUDdZxBu6oE068bLQXYUX4/tAj2G5ZAg/TCVL/z4geQ7cnkAAFYwuCgcmtunx05IqvGzhmmUfdd+MgeKageF8gICid+SoYgBUTKLo3Wjue89/5akfA22PghGAOmz2FgHe9k8xMaPR9xFiqWc2E+qaOaxkj2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN7PR15MB5826.namprd15.prod.outlook.com (2603:10b6:806:32c::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.36; Wed, 21 Jun
- 2023 03:28:17 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812%7]) with mapi id 15.20.6500.036; Wed, 21 Jun 2023
- 03:28:17 +0000
-Message-ID: <2dcc697a-46fe-0933-0508-90ebad9ac8f3@meta.com>
-Date: Tue, 20 Jun 2023 20:28:13 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH bpf] bpf/btf: Accept function names that contain dots
-Content-Language: en-US
-To: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Florent Revest <revest@chromium.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, nathan@kernel.org,
-        trix@redhat.com, stable@vger.kernel.org
-References: <20230615145607.3469985-1-revest@chromium.org>
- <CAEf4BzbjCt3tKJ40tg12rMjCLXrm7UoGuOdC62vGnpTTt8-buw@mail.gmail.com>
- <CABRcYmK=yXDumZj3tdW7341+sSV1zmZw1UpQkfSF6RFgnBQjew@mail.gmail.com>
- <c26de68d-4a56-03a0-2625-25c7e2997d45@meta.com>
- <CAKwvOdnehNwrDNV5LvBBwM=jqPJvL7vB9HwF0YU-X5=zbByrmg@mail.gmail.com>
- <6b63301f-96b2-74b9-c156-3a34fb5ad346@meta.com>
- <CAKwvOdna=1Sg4Aab=BE6F86H9ZE7kPRM=VTkqQuGiF-Jdze-cA@mail.gmail.com>
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <CAKwvOdna=1Sg4Aab=BE6F86H9ZE7kPRM=VTkqQuGiF-Jdze-cA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ2PR07CA0016.namprd07.prod.outlook.com
- (2603:10b6:a03:505::16) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E57A17F5;
+	Wed, 21 Jun 2023 03:50:05 +0000 (UTC)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F4EB4;
+	Tue, 20 Jun 2023 20:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687319402; x=1718855402;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TOhW2dCrEqO92/S8khU2VP1aE9OJwgUs2zYb9lyiKPU=;
+  b=YcTAyeOy+kTlFrdAKIrxpyLvyxSlTTl1r/4UqgL+ydTidjkl2QltqUaS
+   KFM4BFy5YNH9hxu3GPBQZyxNvaGumY4tRIGB3DUpiqTjk7Wk8VDTMSVDB
+   rDos5ncsb4BmDKeduoZo6lJcxRL4lAQLH6YfEjg/gs2UEhOCClwwsSin0
+   KFML1Qb3NZ+ouJ+SdSZIPjsFktbsp5Uom+5TkAyaXAYDWWl9RuyJ27jCX
+   5pgiksRcBj5eb2j/DvrM8hcVL7USckht2SetFUSKZ1DtqoVqkdmbhOSQ1
+   WHmV2Zuic6tMr2LgqOOiQReDBRDr35vffv63jB/RnStIcxV6DWVn6l0VF
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="446431954"
+X-IronPort-AV: E=Sophos;i="6.00,259,1681196400"; 
+   d="scan'208";a="446431954"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2023 20:50:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="744008593"
+X-IronPort-AV: E=Sophos;i="6.00,259,1681196400"; 
+   d="scan'208";a="744008593"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 20 Jun 2023 20:49:56 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qBoqx-0006XH-0k;
+	Wed, 21 Jun 2023 03:49:55 +0000
+Date: Wed, 21 Jun 2023 11:49:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: Arnd Bergmann <arnd@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+	Grygorii Strashko <grygorii.strashko@ti.com>,
+	linux-omap@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Mao Wenan <maowenan@huawei.com>, Andrew Lunn <andrew@lunn.ch>,
+	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Roger Quadros <rogerq@kernel.org>,
+	Simon Horman <simon.horman@corigine.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH 3/3] net: ethernet: ti-cpsw: fix linking built-in code to
+ modules
+Message-ID: <202306211136.w0yw4Tmn-lkp@intel.com>
+References: <20230612124024.520720-3-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SN7PR15MB5826:EE_
-X-MS-Office365-Filtering-Correlation-Id: c4a7a2c8-a22b-456d-50fc-08db72078db9
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	q4io8xG99DKK/bOLtSvIsL1hc5HfgTDOaj1iCRh2gHsbC25tyexEgTS7sgp5SsFLd7bU2Gnuld/Rc7XDRaOYoV0JQOdj/CZKBWVzm9R4u68CkKyUhtM630Mr+trGjKvvaf6nqnecR2NENZ1fldgUokE3no5F43UMddOsPYOZ/UUWQApWtfSuV4O2Hc9ZsLI0SGBDGhs9OPIY7UmBrbutOiRskHi6xaMw2O5ZefVFpVgFr7m1nqDvL5UMsefZWeBU+f0wn6qlHt9OmdmowfaYEv5s1BDg4z+s4N5RN8IxdeRKsibcghVT85Xo3KiIp5IuU8xGOFTA3K72aUR0U3/Oc/rAzAahNzywn/YdG0JR1SEsriDbnHI+hgco2xDHk1cFxYffSv9HV+wYNv2GTPMbN2lkT48LiLR/+urqMu9sWN+MgPCoecvzWu6FECJ5kXm6pF8rjHMrkju/pUpogxw+LZzxlEe2U9YbX/NFvLAndXeWt2rS09GBrF4yGBrDsLgeKf394F3a/AYoctxHl+xmBu7zZx1vQxAYJXavfAzz/yH5xszTBGUeieHT24bKzeuxoU5OCM5Wbjows57t4iQyG8Fl/R0kb9Dy3Xlsx0z1T1/PJSFSZp2cCYqNRJgcVAFBEmKlLisUT/H4ezc+Uv8jfQ==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(136003)(396003)(376002)(366004)(451199021)(7416002)(478600001)(5660300002)(31686004)(66476007)(66946007)(4326008)(6916009)(66556008)(2906002)(54906003)(316002)(41300700001)(6666004)(6486002)(8936002)(8676002)(53546011)(6512007)(186003)(6506007)(2616005)(83380400001)(38100700002)(36756003)(86362001)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?ZW9xZmhQVVVDUUNsT1RVdU8wNVEvZGVuMWJMRXA3VTVieHNkb0IxelVGOWxD?=
- =?utf-8?B?RGdnZElFalJXaldTSVdmQm5UdExTODljTHpqYlo3bHdXQ3lvY2cxeThEUmJP?=
- =?utf-8?B?aWNPRXFyUUdrOTl5OHNBcloyaW5rai9MT1kxN0YzQkRQYjVpTHhkRkRBVXJT?=
- =?utf-8?B?dk8ycHZTVG1JMHIzK1cyTzJDVjNjNlNsQVNYSGtZRGMxckY0d2RrazJTWFpO?=
- =?utf-8?B?U0pPMXRsV1k0RmFOTjJPeW9ONlBrSDMwdDVYNm9OUXVHbDRQZXFYMEcrVFFP?=
- =?utf-8?B?bzNFeUNxdm5FVDVBTngwdHlyTFhoMkIvRm1HMWtOK1pORDA1L0JnbzlQS3Y5?=
- =?utf-8?B?cFoxK1FVS1h1ZU01UWV6dDNWT3MzY2lWSVZ5TWN2OElRTGFQcUxKVFVTczFk?=
- =?utf-8?B?YlV3MHhQTHNSYUJlelhlaW9UQWdEemtNaTlTQVJ3Rk9sT25BeWxJVlVQQlo1?=
- =?utf-8?B?R1d6cXdYUDZ4MXhFWS8rbHF5ZTdWTEx6K1RuNmNTRnh6ZHBQb0hzQ3pMZzBk?=
- =?utf-8?B?bWF4czM3clFtZXJ4SkVPTFJ3d0Z1Si81Tk5KcmxzTWI5N3oxSWh5OVdWazdx?=
- =?utf-8?B?OTdDSGEyWFM0NFZ3c2g0dTBidWNDcTQzMzBEcWhLRFVWMHZReHZ2Wm1laVM2?=
- =?utf-8?B?MzRuOE1YTlV1eWVMSjAwa2M2R2pCMi9lL0IvY0Y5OCtrM3JKakpWRWduVTB2?=
- =?utf-8?B?dC9FMnZicGswSkFkanFlT1pBQThrQTFtTWVnUnNMMlJ0QmJUZ0Z3RlRkUzZH?=
- =?utf-8?B?aTRacWJQSWNXZW42RUxWeHBoeld1WWp0RDY3VHRsRGdoMTdDM1ovUmpFeXQy?=
- =?utf-8?B?ZG5OOVNRdzRmZjFJSmkzRmxyU0FnbGNKZnN5OU1pa1QveUxaaThVcnh0UUxK?=
- =?utf-8?B?WW1mWEpqOVVqdjhSZWNyZVRGYVE2Mnd1VEpPWnZxeGh3T1NzSUEzSDVuZDZ1?=
- =?utf-8?B?Qk5jbHl0WTBTR2Nra2xlcFluMWNFa1poTGdzdmN6M0RJRHgvUSsvZCtReVlt?=
- =?utf-8?B?YkZibUpnWWs1QTY1aGVSQnpjdzJpSnh1bnE3MURVVnZSZEtyYy9sbC85d3h5?=
- =?utf-8?B?TGJOMCtJSnliTmMrUkhmVW9SeWJyd2xvRWdkQWl3Y3o0L2dsMERHRnp4dXlI?=
- =?utf-8?B?NTRKRlFmTXBMU1czbGxwSlFWSU1NQVNoSnVISnN1K1VJdHBRWGROMlEyZ2xI?=
- =?utf-8?B?RWd0bUtCbE9yQkwyemN5VlNFT3hVOWNkZTF0OVNnZzdIRktCaXA3Z3ZoNWtF?=
- =?utf-8?B?bkhNZkduQ2lralpyaGtQREY1c0kvbk05V0grZFBBWW9WSm5vOHRycjNwNGJo?=
- =?utf-8?B?RlB5OXl2RmpqcXhNN0RxcGtyTzMyK2V4OEFDQmluQlU5QUo3alZVNEw0cWVv?=
- =?utf-8?B?RnlpcGxwVUdPdFZlZ2FtOWNzTUpjelNIejZ2VVMvN3piaXJ2SERxU1V3eEZK?=
- =?utf-8?B?QVZHYm5RZ2I2RW1FdWd2RStkS3dwUGszOW5qQy9PMXNNYUwwSWkrK2ZiVWV2?=
- =?utf-8?B?ZXJYM2JaRHZyYVo5Ykc0dnU5TloxTHhvSDd2aUh4cUhTME1SYlQvQkdzOHhu?=
- =?utf-8?B?b1hCajB3VjVXYWRlOFpFZkh3dWVCc1J5RFZ1N3gyVENRakx6OFczc1VPOUlt?=
- =?utf-8?B?V3lYdGU3aWNUbmQ2WjFRVVgwUmxZLzkyQmdGTlhQWEpkWUlzNG1pSEw1bnJu?=
- =?utf-8?B?Q2plY01qMzA1amp1Q2MrMTNpMTNrNS9ZMWMwd3oyVjE2TE03ZEhib0l0Tk5S?=
- =?utf-8?B?Slp2MXJmWmp5bjVYWWFjeHIrN1ZpN2IvdEpVeHZOYWF6SUxjTmQ2bnRTS3dl?=
- =?utf-8?B?M0pvT2VyNTU4WTBBRGlaUXJsK1VBKytkTmx0cEpTQUZpejJyeG9QVTdZREFH?=
- =?utf-8?B?UEl3dGNGczhRYjJ5YWd5L3h0Vm0yNEY5cHV1czFPeExYU3NuTmdEdGJ3d0Nx?=
- =?utf-8?B?czJtVUNMZjk0TVNsQ1lRRk9XSjVVMWlLUDFHUEFTQm1BTUpWRjZDV1Y1QU5h?=
- =?utf-8?B?U3J5a2U0Yk8xWFFOSFYzZ0tQbmV0U1FjbGhyNzkwN21SQ2wyQkUrVDY0c0dq?=
- =?utf-8?B?MkxJNFBCK1RWN3I3SURFNllmZkcyQUhGcitod3kzRG1SMU1WYThOTlBVUERk?=
- =?utf-8?B?bHpqSDE2d1V4UEZwZ0NtNE1VS1BFMndQVExoRWxCWlpDNWFLRTI5MSsrQytH?=
- =?utf-8?B?SEE9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4a7a2c8-a22b-456d-50fc-08db72078db9
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2023 03:28:17.3092
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sWaMc6AJRnOMdZLZeTbRuv4HRwY9uedgPG57Eq+8ODQPYBN26r0DSsWXqBvzgCFr
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB5826
-X-Proofpoint-ORIG-GUID: q-oRzR_5_IkY1-r18tLV3VYSvOmSYyNW
-X-Proofpoint-GUID: q-oRzR_5_IkY1-r18tLV3VYSvOmSYyNW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-06-21_01,2023-06-16_01,2023-05-22_02
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230612124024.520720-3-arnd@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+Hi Arnd,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on net-next/main]
+[also build test ERROR on net/main soc/for-next linus/master v6.4-rc7 next-20230620]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/net-ethernet-ti-cpsw-rename-soft_reset-function/20230612-211612
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20230612124024.520720-3-arnd%40kernel.org
+patch subject: [PATCH 3/3] net: ethernet: ti-cpsw: fix linking built-in code to modules
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20230621/202306211136.w0yw4Tmn-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230621/202306211136.w0yw4Tmn-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306211136.w0yw4Tmn-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   aarch64-linux-ld: Unexpected GOT/PLT entries detected!
+   aarch64-linux-ld: Unexpected run-time procedure linkages detected!
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_intr_enable':
+>> drivers/net/ethernet/ti/cpsw_priv.c:42: undefined reference to `cpdma_ctlr_int_ctrl'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_intr_disable':
+   drivers/net/ethernet/ti/cpsw_priv.c:51: undefined reference to `cpdma_ctlr_int_ctrl'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_misc_interrupt':
+>> drivers/net/ethernet/ti/cpsw_priv.c:129: undefined reference to `cpdma_ctlr_eoi'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_rx_interrupt':
+   drivers/net/ethernet/ti/cpsw_priv.c:112: undefined reference to `cpdma_ctlr_eoi'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_tx_mq_poll':
+>> drivers/net/ethernet/ti/cpsw_priv.c:145: undefined reference to `cpdma_ctrl_txchs_state'
+>> aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.c:156: undefined reference to `cpdma_chan_process'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_rx_mq_poll':
+>> drivers/net/ethernet/ti/cpsw_priv.c:197: undefined reference to `cpdma_ctrl_rxchs_state'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.c:208: undefined reference to `cpdma_chan_process'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_need_resplit':
+>> drivers/net/ethernet/ti/cpsw_priv.c:348: undefined reference to `cpdma_chan_get_rate'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_split_res':
+   drivers/net/ethernet/ti/cpsw_priv.c:373: undefined reference to `cpdma_chan_get_rate'
+>> aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.c:422: undefined reference to `cpdma_chan_set_weight'
+>> aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.c:409: undefined reference to `cpdma_chan_get_rate'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.c:427: undefined reference to `cpdma_chan_set_weight'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_init_common':
+>> drivers/net/ethernet/ti/cpsw_priv.c:548: undefined reference to `cpdma_ctlr_create'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_create_rx_pool':
+>> drivers/net/ethernet/ti/cpsw_priv.c:1197: undefined reference to `cpdma_chan_get_rx_buf_num'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_xdp_tx_frame':
+>> drivers/net/ethernet/ti/cpsw_priv.c:1336: undefined reference to `cpdma_chan_submit_mapped'
+>> aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.c:1342: undefined reference to `cpdma_chan_submit'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_tx_poll':
+>> drivers/net/ethernet/ti/cpsw_priv.c:175: undefined reference to `cpdma_chan_process'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_rx_poll':
+   drivers/net/ethernet/ti/cpsw_priv.c:227: undefined reference to `cpdma_chan_process'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_tx_interrupt':
+   drivers/net/ethernet/ti/cpsw_priv.c:95: undefined reference to `cpdma_ctlr_eoi'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_fill_rx_channels':
+   drivers/net/ethernet/ti/cpsw_priv.c:1138: undefined reference to `cpdma_chan_get_rx_buf_num'
+>> aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.c:1151: undefined reference to `cpdma_chan_idle_submit_mapped'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_intr_disable':
+   drivers/net/ethernet/ti/cpsw_priv.c:51: undefined reference to `cpdma_ctlr_int_ctrl'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_ndo_tx_timeout':
+>> drivers/net/ethernet/ti/cpsw_priv.c:314: undefined reference to `cpdma_chan_stop'
+>> aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.c:315: undefined reference to `cpdma_chan_start'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_intr_enable':
+>> drivers/net/ethernet/ti/cpsw_priv.c:42: undefined reference to `cpdma_ctlr_int_ctrl'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.o: in function `cpsw_ndo_set_tx_maxrate':
+>> drivers/net/ethernet/ti/cpsw_priv.c:766: undefined reference to `cpdma_chan_get_min_rate'
+>> aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_priv.c:782: undefined reference to `cpdma_chan_set_rate'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_ethtool.o: in function `cpsw_update_channels_res':
+>> drivers/net/ethernet/ti/cpsw_ethtool.c:575: undefined reference to `cpdma_chan_create'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_ethtool.c:593: undefined reference to `cpdma_chan_destroy'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_ethtool.o: in function `cpsw_suspend_data_pass':
+   drivers/net/ethernet/ti/cpsw_ethtool.c:503: undefined reference to `cpdma_ctlr_stop'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_ethtool.o: in function `cpsw_resume_data_pass':
+   drivers/net/ethernet/ti/cpsw_ethtool.c:518: undefined reference to `cpdma_ctlr_start'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_ethtool.o: in function `cpsw_get_ringparam':
+   drivers/net/ethernet/ti/cpsw_ethtool.c:689: undefined reference to `cpdma_get_num_tx_descs'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_ethtool.c:691: undefined reference to `cpdma_get_num_rx_descs'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_ethtool.o: in function `cpsw_get_ethtool_stats':
+   drivers/net/ethernet/ti/cpsw_ethtool.c:295: undefined reference to `cpdma_chan_get_stats'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_ethtool.c:304: undefined reference to `cpdma_chan_get_stats'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_ethtool.o: in function `cpsw_set_ringparam':
+   drivers/net/ethernet/ti/cpsw_ethtool.c:710: undefined reference to `cpdma_get_num_rx_descs'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_ethtool.c:716: undefined reference to `cpdma_set_num_rx_descs'
+   aarch64-linux-ld: drivers/net/ethernet/ti/cpsw_ethtool.c:735: undefined reference to `cpdma_set_num_rx_descs'
 
 
-On 6/20/23 8:07 AM, Nick Desaulniers wrote:
-> On Tue, Jun 20, 2023 at 10:53 AM Yonghong Song <yhs@meta.com> wrote:
->>
->>
->>
->> On 6/20/23 7:38 AM, Nick Desaulniers wrote:
->>> 3. you did not run defconfig/menuconfig to have kconfig check for
->>> DWARFv5 support.
->>
->> Yes, I didn't run defconfig/menuconfig.
-> 
-> That doesn't mean the odd combo of clang+gas doesn't work.
-> 
-> Just like how using scripts/config is a hazard since it also doesn't
-> run kconfig and allows you to set incompatible configurations. Garbage
-> in; garbage out.
-> 
->>
->>>
->>> The kconfigs should prevent you from selecting DWARFv5 if your
->>> toolchain combination doesn't support it; if you run kconfig.
->>>
->>>> /tmp/video-bios-59fa52.s:4: Error: file number less than one
->>>> /tmp/video-bios-59fa52.s:5: Error: junk at end of line, first
->>>> unrecognized character is `"'
->>>> /tmp/video-bios-59fa52.s:6: Error: junk at end of line, first
->>>> unrecognized character is `"'
->>>> /tmp/video-bios-59fa52.s:7: Error: junk at end of line, first
->>>> unrecognized character is `"'
->>>> /tmp/video-bios-59fa52.s:8: Error: junk at end of line, first
->>>> unrecognized character is `"'
->>>> /tmp/video-bios-59fa52.s:9: Error: junk at end of line, first
->>>> unrecognized character is `"'
->>>> /tmp/video-bios-59fa52.s:10: Error: junk at end of line, first
->>>> unrecognized character is `"'
->>>> /tmp/video-bios-59fa52.s:68: Error: junk at end of line, first
->>>> unrecognized character is `"'
->>>> clang: error: assembler command failed with exit code 1 (use -v to see
->>>> invocation)
->>>> make[4]: *** [/home/yhs/work/bpf-next/scripts/Makefile.build:252:
->>>> arch/x86/realmode/rm/video-bios.o] Error 1
->>>> make[4]: *** Waiting for unfinished jobs....
->>>> /tmp/wakemain-88777c.s: Assembler messages:
->>>> /tmp/wakemain-88777c.s:4: Error: junk at end of line, first unrecognized
->>>> character is `"'
->>>> /tmp/wakemain-88777c.s:4: Error: file number less than one
->>>> /tmp/wakemain-88777c.s:5: Error: junk at end of line, first unrecognized
->>>> character is `"'
->>>> /tmp/wakemain-88777c.s:6: Error: junk at end of line, first unrecognized
->>>> character is `"'
->>>> /tmp/wakemain-88777c.s:7: Error: junk at end of line, first unrecognized
->>>> character is `"'
->>>> /tmp/wakemain-88777c.s:8: Error: junk at end of line, first unrecognized
->>>> character is `"'
->>>> /tmp/wakemain-88777c.s:81: Error: junk at end of line, first
->>>> unrecognized character is `"'
->>>> /tmp/wakemain-88777c.s:312: Error: junk at end of line, first
->>>> unrecognized character is `"'
->>>> clang: error: assembler command failed with exit code 1 (use -v to see
->>>> invocation)
->>>>
->>>> Potentially because of my local gnu assembler 2.30-120.el8 won't work
->>>
->>> It's recorded in lib/Kconfig.debug that 2.35.2 is required for DWARFv5
->>> support if you're using GAS.  My machine has 2.40.
->>>
->>>> with some syntax generated by clang. Mixing clang compiler and arbitrary
->>>> gnu assembler are not a good idea (see the above example). It might
->>>
->>> I agree, but for older branches of stable which are still supported,
->>> we didn't quite have clang assembler support usable.  We still need to
->>> support those branches of stable.
->>
->> Thanks Florent pointing out 5.10 stable kernels which have this issue.
-> 
-> No, all kernels have this issue, when using `LLVM=1 LLVM_IAS=0`.  It's
-> more likely that someone is using that combination for branches of
-> stable that predate 4.19 (such as 4.14) but we do still try to support
-> that combination somewhat, even if we recommend just using `LLVM=1`.
-> Interop between toolchains is still important, even if "why would you
-> do that?"
+vim +42 drivers/net/ethernet/ti/cpsw_priv.c
 
-Okay, yes, although 'LLVM=1' is recommended way to compiler clang
-based kernel, users can certainly do 'LLVM=1 LLVM_IAS=0' as well
-although not recommended. Then it is okay to put a bug fix in
-the commit message. Just need to clarify that
-   - > 5.10 kernel, LLVM=1 (LLVM_IAS=0 is not the default)
-     is recommended but user can still have LLVM=1 LLVM_IAS=0
-     to trigger the issue
-   - <= 5.10 kernel, LLVM=1 (LLVM_IAS=0 is the default) is
-     recommended in which case gnu as will be used.
+51a9533797b07b Grygorii Strashko 2019-11-20   36  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   37  void cpsw_intr_enable(struct cpsw_common *cpsw)
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   38  {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   39  	writel_relaxed(0xFF, &cpsw->wr_regs->tx_en);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   40  	writel_relaxed(0xFF, &cpsw->wr_regs->rx_en);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   41  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  @42  	cpdma_ctlr_int_ctrl(cpsw->dma, true);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   43  }
+c8722a36e372f4 Arnd Bergmann     2023-06-12   44  EXPORT_SYMBOL_GPL(cpsw_intr_enable);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   45  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   46  void cpsw_intr_disable(struct cpsw_common *cpsw)
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   47  {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   48  	writel_relaxed(0, &cpsw->wr_regs->tx_en);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   49  	writel_relaxed(0, &cpsw->wr_regs->rx_en);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   50  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  @51  	cpdma_ctlr_int_ctrl(cpsw->dma, false);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   52  }
+c8722a36e372f4 Arnd Bergmann     2023-06-12   53  EXPORT_SYMBOL_GPL(cpsw_intr_disable);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   54  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   55  void cpsw_tx_handler(void *token, int len, int status)
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   56  {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   57  	struct cpsw_meta_xdp	*xmeta;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   58  	struct xdp_frame	*xdpf;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   59  	struct net_device	*ndev;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   60  	struct netdev_queue	*txq;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   61  	struct sk_buff		*skb;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   62  	int			ch;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   63  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   64  	if (cpsw_is_xdpf_handle(token)) {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   65  		xdpf = cpsw_handle_to_xdpf(token);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   66  		xmeta = (void *)xdpf + CPSW_XMETA_OFFSET;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   67  		ndev = xmeta->ndev;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   68  		ch = xmeta->ch;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   69  		xdp_return_frame(xdpf);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   70  	} else {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   71  		skb = token;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   72  		ndev = skb->dev;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   73  		ch = skb_get_queue_mapping(skb);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   74  		cpts_tx_timestamp(ndev_to_cpsw(ndev)->cpts, skb);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   75  		dev_kfree_skb_any(skb);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   76  	}
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   77  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   78  	/* Check whether the queue is stopped due to stalled tx dma, if the
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   79  	 * queue is stopped then start the queue as we have free desc for tx
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   80  	 */
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   81  	txq = netdev_get_tx_queue(ndev, ch);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   82  	if (unlikely(netif_tx_queue_stopped(txq)))
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   83  		netif_tx_wake_queue(txq);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   84  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   85  	ndev->stats.tx_packets++;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   86  	ndev->stats.tx_bytes += len;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   87  }
+c8722a36e372f4 Arnd Bergmann     2023-06-12   88  EXPORT_SYMBOL_GPL(cpsw_tx_handler);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   89  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   90  irqreturn_t cpsw_tx_interrupt(int irq, void *dev_id)
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   91  {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   92  	struct cpsw_common *cpsw = dev_id;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   93  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   94  	writel(0, &cpsw->wr_regs->tx_en);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  @95  	cpdma_ctlr_eoi(cpsw->dma, CPDMA_EOI_TX);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   96  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   97  	if (cpsw->quirk_irq) {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   98  		disable_irq_nosync(cpsw->irqs_table[1]);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20   99  		cpsw->tx_irq_disabled = true;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  100  	}
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  101  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  102  	napi_schedule(&cpsw->napi_tx);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  103  	return IRQ_HANDLED;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  104  }
+c8722a36e372f4 Arnd Bergmann     2023-06-12  105  EXPORT_SYMBOL_GPL(cpsw_tx_interrupt);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  106  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  107  irqreturn_t cpsw_rx_interrupt(int irq, void *dev_id)
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  108  {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  109  	struct cpsw_common *cpsw = dev_id;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  110  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  111  	writel(0, &cpsw->wr_regs->rx_en);
+51302f77bedab8 Grygorii Strashko 2019-12-06 @112  	cpdma_ctlr_eoi(cpsw->dma, CPDMA_EOI_RX);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  113  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  114  	if (cpsw->quirk_irq) {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  115  		disable_irq_nosync(cpsw->irqs_table[0]);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  116  		cpsw->rx_irq_disabled = true;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  117  	}
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  118  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  119  	napi_schedule(&cpsw->napi_rx);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  120  	return IRQ_HANDLED;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  121  }
+c8722a36e372f4 Arnd Bergmann     2023-06-12  122  EXPORT_SYMBOL_GPL(cpsw_rx_interrupt);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  123  
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23  124  irqreturn_t cpsw_misc_interrupt(int irq, void *dev_id)
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23  125  {
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23  126  	struct cpsw_common *cpsw = dev_id;
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23  127  
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23  128  	writel(0, &cpsw->wr_regs->misc_en);
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23 @129  	cpdma_ctlr_eoi(cpsw->dma, CPDMA_EOI_MISC);
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23  130  	cpts_misc_interrupt(cpsw->cpts);
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23  131  	writel(0x10, &cpsw->wr_regs->misc_en);
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23  132  
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23  133  	return IRQ_HANDLED;
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23  134  }
+c8722a36e372f4 Arnd Bergmann     2023-06-12  135  EXPORT_SYMBOL_GPL(cpsw_misc_interrupt);
+84ea9c0a95d7b3 Grygorii Strashko 2020-04-23  136  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  137  int cpsw_tx_mq_poll(struct napi_struct *napi_tx, int budget)
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  138  {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  139  	struct cpsw_common	*cpsw = napi_to_cpsw(napi_tx);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  140  	int			num_tx, cur_budget, ch;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  141  	u32			ch_map;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  142  	struct cpsw_vector	*txv;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  143  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  144  	/* process every unprocessed channel */
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20 @145  	ch_map = cpdma_ctrl_txchs_state(cpsw->dma);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  146  	for (ch = 0, num_tx = 0; ch_map & 0xff; ch_map <<= 1, ch++) {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  147  		if (!(ch_map & 0x80))
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  148  			continue;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  149  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  150  		txv = &cpsw->txv[ch];
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  151  		if (unlikely(txv->budget > budget - num_tx))
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  152  			cur_budget = budget - num_tx;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  153  		else
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  154  			cur_budget = txv->budget;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  155  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20 @156  		num_tx += cpdma_chan_process(txv->ch, cur_budget);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  157  		if (num_tx >= budget)
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  158  			break;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  159  	}
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  160  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  161  	if (num_tx < budget) {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  162  		napi_complete(napi_tx);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  163  		writel(0xff, &cpsw->wr_regs->tx_en);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  164  	}
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  165  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  166  	return num_tx;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  167  }
+c8722a36e372f4 Arnd Bergmann     2023-06-12  168  EXPORT_SYMBOL_GPL(cpsw_tx_mq_poll);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  169  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  170  int cpsw_tx_poll(struct napi_struct *napi_tx, int budget)
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  171  {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  172  	struct cpsw_common *cpsw = napi_to_cpsw(napi_tx);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  173  	int num_tx;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  174  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20 @175  	num_tx = cpdma_chan_process(cpsw->txv[0].ch, budget);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  176  	if (num_tx < budget) {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  177  		napi_complete(napi_tx);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  178  		writel(0xff, &cpsw->wr_regs->tx_en);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  179  		if (cpsw->tx_irq_disabled) {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  180  			cpsw->tx_irq_disabled = false;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  181  			enable_irq(cpsw->irqs_table[1]);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  182  		}
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  183  	}
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  184  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  185  	return num_tx;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  186  }
+c8722a36e372f4 Arnd Bergmann     2023-06-12  187  EXPORT_SYMBOL_GPL(cpsw_tx_poll);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  188  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  189  int cpsw_rx_mq_poll(struct napi_struct *napi_rx, int budget)
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  190  {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  191  	struct cpsw_common	*cpsw = napi_to_cpsw(napi_rx);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  192  	int			num_rx, cur_budget, ch;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  193  	u32			ch_map;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  194  	struct cpsw_vector	*rxv;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  195  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  196  	/* process every unprocessed channel */
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20 @197  	ch_map = cpdma_ctrl_rxchs_state(cpsw->dma);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  198  	for (ch = 0, num_rx = 0; ch_map; ch_map >>= 1, ch++) {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  199  		if (!(ch_map & 0x01))
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  200  			continue;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  201  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  202  		rxv = &cpsw->rxv[ch];
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  203  		if (unlikely(rxv->budget > budget - num_rx))
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  204  			cur_budget = budget - num_rx;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  205  		else
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  206  			cur_budget = rxv->budget;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  207  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20 @208  		num_rx += cpdma_chan_process(rxv->ch, cur_budget);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  209  		if (num_rx >= budget)
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  210  			break;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  211  	}
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  212  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  213  	if (num_rx < budget) {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  214  		napi_complete_done(napi_rx, num_rx);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  215  		writel(0xff, &cpsw->wr_regs->rx_en);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  216  	}
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  217  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  218  	return num_rx;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  219  }
+c8722a36e372f4 Arnd Bergmann     2023-06-12  220  EXPORT_SYMBOL_GPL(cpsw_rx_mq_poll);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  221  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  222  int cpsw_rx_poll(struct napi_struct *napi_rx, int budget)
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  223  {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  224  	struct cpsw_common *cpsw = napi_to_cpsw(napi_rx);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  225  	int num_rx;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  226  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20 @227  	num_rx = cpdma_chan_process(cpsw->rxv[0].ch, budget);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  228  	if (num_rx < budget) {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  229  		napi_complete_done(napi_rx, num_rx);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  230  		writel(0xff, &cpsw->wr_regs->rx_en);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  231  		if (cpsw->rx_irq_disabled) {
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  232  			cpsw->rx_irq_disabled = false;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  233  			enable_irq(cpsw->irqs_table[0]);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  234  		}
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  235  	}
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  236  
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  237  	return num_rx;
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  238  }
+c8722a36e372f4 Arnd Bergmann     2023-06-12  239  EXPORT_SYMBOL_GPL(cpsw_rx_poll);
+c5013ac1dd0e11 Grygorii Strashko 2019-11-20  240  
 
-> 
->> I am okay with backporting to old stable kernels if that is needed.
->> But the patch going to bpf-next should not have a bug-fix tag and
->> the patch commit message can be tweaked for backport to 5.10 though.
->>
->>>
->>>> work with close-to-latest gnu assembler.
->>>>
->>>> To support function name like '<fname>.isra', some llvm work will be
->>>> needed, and it may take some time.
->>>>
->>>> So in my opinion, this patch is NOT a bug fix. It won't affect distro.
->>>> Whether we should backport to the old kernel, I am not sure whether it
->>>> is absolutely necessary as casual build can always remove LLVM_IAS=0 or
->>>> hack the kernel source itself.
->>>
->>>
->>>
-> 
-> 
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
