@@ -1,121 +1,181 @@
-Return-Path: <bpf+bounces-3035-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3036-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15CD8738852
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 17:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A0C57388AC
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 17:20:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC74F28165F
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 15:03:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 361D82812B6
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 15:20:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B712718C3C;
-	Wed, 21 Jun 2023 15:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BECBC19511;
+	Wed, 21 Jun 2023 15:19:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC0D125C7;
-	Wed, 21 Jun 2023 15:02:52 +0000 (UTC)
-Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673934239;
-	Wed, 21 Jun 2023 08:02:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A395C15E;
+	Wed, 21 Jun 2023 15:19:56 +0000 (UTC)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCE1212F;
+	Wed, 21 Jun 2023 08:19:54 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b46d4e1b0aso63373751fa.2;
+        Wed, 21 Jun 2023 08:19:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1687359745; x=1718895745;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zbPAeOGrUEIOV+JujOL9INmhyma6JwFI+vqDZGWGqOk=;
-  b=fop1sEkk90qtxm8OZfTFpmBI5Q6kymfZtycgyCraGKaaWw9K/9hyrbgo
-   2dd2Zr5+kIjW+fiVrNDuF48N/eztk0PKMT8Ucj7qseujBHBP7jI5lFKWM
-   ulpXD9rnjwKELepcnj/AN1kzf451o37NV+N/YQXPVTtoWbAycsf6VlC/3
-   Y=;
-X-IronPort-AV: E=Sophos;i="6.00,260,1681171200"; 
-   d="scan'208";a="138321779"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-d40ec5a9.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2023 15:01:15 +0000
-Received: from EX19MTAUWC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-	by email-inbound-relay-pdx-2a-m6i4x-d40ec5a9.us-west-2.amazon.com (Postfix) with ESMTPS id EC7B840D4E;
-	Wed, 21 Jun 2023 15:01:12 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 21 Jun 2023 15:01:12 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.119.169.70) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 21 Jun 2023 15:01:07 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <lmb@isovalent.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <hemanthmalla@gmail.com>,
-	<joe@wand.net.nz>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-	<kpsingh@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<martin.lau@linux.dev>, <mykolal@fb.com>, <netdev@vger.kernel.org>,
-	<pabeni@redhat.com>, <sdf@google.com>, <shuah@kernel.org>, <song@kernel.org>,
-	<willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v2 3/6] net: remove duplicate reuseport_lookup functions
-Date: Wed, 21 Jun 2023 08:00:58 -0700
-Message-ID: <20230621150058.59250-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAN+4W8gYuW5P3t5881YdMq1pYnG9DsQJFiJWPoLFsKVsZiLLQQ@mail.gmail.com>
-References: <CAN+4W8gYuW5P3t5881YdMq1pYnG9DsQJFiJWPoLFsKVsZiLLQQ@mail.gmail.com>
+        d=gmail.com; s=20221208; t=1687360793; x=1689952793;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YFy+7jY3Q/B3fIYTXq5qOshlUqCtAeH0fFjxezMJ7mU=;
+        b=GOBaPld/+7/uckPmlyvUEOrUHbnzb/xeQVb9ttphaPlOVx7SyWpw3q1EZ9lqCOrFr1
+         f8VlC75jrLsv+1oSumRkFGEobcO2HjohE6wMZ/Lkv73OS2pSAfCwpH0uaQ4sE0JSC+Db
+         A14lHcRRcAU/PcHq9jab/BUjltkYhk9zTXsbt4bD2qH/PkTs4Jdwc2JxFcE1SymsO7qs
+         peyVC9iKCNhEfaCkgylo0eYlRMhRaYETf3cPqeXd5Bcjfub2Dq7JSFQXnM5nIrIqv38f
+         Hz8O6R7OtyG1OrGo3a+TncT2DvoDQcNUVfteo64tKc82njjnV2xrFc95C0DCJEDf+UhT
+         RJfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687360793; x=1689952793;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YFy+7jY3Q/B3fIYTXq5qOshlUqCtAeH0fFjxezMJ7mU=;
+        b=ZcjmTmzLTeH+JHCtK4DwggY1k1fl1+o6RhPe/68sSSdcKN1/aa/PPjFtPNBAB4w7bN
+         DCyeEL7GK7tQ0VR391LBX/lLE5/fax0algd4wRPlpRcc8s8Xwex+TJ7z/qm32/gzhoct
+         G+cbezmTkx2fgBcia0Cupp58cwXCBZn0plUYa61b7Kvt9P99XchL/7goBa6qHvzxbc2q
+         b+EB+Dt4CbQKdWf2KrHEhY8v4fuEn0Afo8rFofPN3XVLdmYrL3KADzCF+lg+J6G+LR0h
+         0fWGv/gB2+l0Jt7U/2F8qYMj9UqawcNwdn2ztTYoHtKtYVAB6nPMs9wY2uIbzXwHmbaY
+         1vEg==
+X-Gm-Message-State: AC+VfDx46UPcP271zzroK5ty7XfHqPagfN8+MglklxdCEWE4VDkOZRMw
+	Z0yabaAPWIo9l+qt60GQIWaaFJ1E+t7D85M6l54=
+X-Google-Smtp-Source: ACHHUZ7S366xJDGv2BenqM0RSR5nG3v/w66oTeggW0Zt6a61/Wjn/ZeU0yVAL/ODGB0B6G6jG4VWc+DojP3NyAQ/DmI=
+X-Received: by 2002:a2e:80c9:0:b0:2b1:c039:e977 with SMTP id
+ r9-20020a2e80c9000000b002b1c039e977mr9673072ljg.16.1687360792618; Wed, 21 Jun
+ 2023 08:19:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <CA+G9fYuifLivwhCh33kedtpU=6zUpTQ_uSkESyzdRKYp8WbTFQ@mail.gmail.com>
+ <ZJLzsWsIPD57pDgc@FVFF77S0Q05N> <CA+G9fYvwriD8X+kmDx35PavSv-youSUmYTuYTfQ4oBWnZzVRUQ@mail.gmail.com>
+ <CANk7y0imD3tK1Jox_V_f1vfzFi2tPhUzGOA_mLLkYy-VDHdncg@mail.gmail.com> <CA+G9fYuK4FWaLizcuVyW3ApR6fcgjMccYp3YxdAm61BOedXxzQ@mail.gmail.com>
+In-Reply-To: <CA+G9fYuK4FWaLizcuVyW3ApR6fcgjMccYp3YxdAm61BOedXxzQ@mail.gmail.com>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Wed, 21 Jun 2023 17:19:41 +0200
+Message-ID: <CANk7y0g9Qhe4H+WTbrsEUa_XXn_GkXWDOE4kP1icbxfJyri8XQ@mail.gmail.com>
+Subject: Re: next: Rpi4: Unexpected kernel BRK exception at EL1
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Alexei Starovoitov <ast@kernel.org>, Song Liu <song@kernel.org>, 
+	Linux ARM <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>, linux-rpi-kernel@lists.infradead.org, 
+	Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org, 
+	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Anshuman Khandual <anshuman.khandual@arm.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.119.169.70]
-X-ClientProxiedBy: EX19D044UWB003.ant.amazon.com (10.13.139.168) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Wed, 21 Jun 2023 09:01:15 +0100
-> On Tue, Jun 20, 2023 at 7:31 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+Hi,
+
+On Wed, Jun 21, 2023 at 4:41=E2=80=AFPM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> On Wed, 21 Jun 2023 at 19:46, Puranjay Mohan <puranjay12@gmail.com> wrote=
+:
 > >
-> > Good point.  This is based on an assumption that all SO_REUSEPORT
-> > sockets have the same score, which is wrong for two corner cases
-> > if reuseport_has_conns() == true :
+> > Hi,
 > >
-> >   1) SO_INCOMING_CPU is set
-> >      -> selected sk might have +1 score
+> > On Wed, Jun 21, 2023 at 3:39=E2=80=AFPM Naresh Kamboju
+> > <naresh.kamboju@linaro.org> wrote:
+> > >
+> > > On Wed, 21 Jun 2023 at 18:27, Mark Rutland <mark.rutland@arm.com> wro=
+te:
+> > > >
+> > > > On Wed, Jun 21, 2023 at 06:06:51PM +0530, Naresh Kamboju wrote:
+> > > > > Following boot warnings and crashes noticed on arm64 Rpi4 device =
+running
+> > > > > Linux next-20230621 kernel.
+> > > > >
+> > > > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > > > >
+> > > > > boot log:
+> > > > >
+> > > > > [   22.331748] Kernel text patching generated an invalid instruct=
+ion
+> > > > > at 0xffff8000835d6580!
+> > > > > [   22.340579] Unexpected kernel BRK exception at EL1
+> > > > > [   22.346141] Internal error: BRK handler: 00000000f2000100 [#1]=
+ PREEMPT SMP
+> > > >
+> > > > This indicates execution of AARCH64_BREAK_FAULT.
+> > >
+> > > I see kernel panic with kselftest merge configs on Juno-r2 and Rpi4.
 > >
-> >   2) BPF prog returns ESTABLISHED and/or SO_INCOMING_CPU sk
-> >      -> selected sk will have more than 8
+> > Is there a way to reproduce this setup on Qemu?
+>
+> Not reproducible on Qemu-arm64.
+> I see only on arm64 devices Juno-r2 and Rpi4.
+>
 > >
-> > Using the old score could trigger more lookups depending on the
-> > order that sockets are created.
-> 
-> So the result will still be correct, but it's less performant? Happy
-> to fix a perf regression, but if the result is incorrect this might
-> need a separate fix?
+> > I am able to build the linux-next kernel with the config given below.
+> > But the bug doesn't reproduce in Qemu with debian rootfs.
+> >
+> > I guess I would need the Rootfs that is being used here to reproduce it=
+.
+> > Can you point me to the rootfs for this?
+>
+> Here is the link for rootfs - OE one.
+> https://storage.tuxsuite.com/public/linaro/lkft/oebuilds/2RVA7dHPf73agY0g=
+DJD6XEdBQBI/images/juno/
 
-Right, the result is always correct.
+I tested this rootfs and couldn't reproduce on Qemu. Now, I will try
+to use my raspberry pi and try to reproduce this.
 
-If BPF prog selects a different socket per lookup, there is no
-consistency, but it _is_ corret.
+Thanks.
+
+>
+> >
+> > Thanks,
+> > Puranjay
+> >
+> > > metadata:
+> > >   git_ref: master
+> > >   git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+> > >   git_sha: 15e71592dbae49a674429c618a10401d7f992ac3
+> > >   git_describe: next-20230621
+> > >   kernel_version: 6.4.0-rc7
+> > >   kernel-config:
+> > >     https://storage.tuxsuite.com/public/linaro/lkft/builds/2RVAA4lj35=
+ia3YDkqaoV6ztyqdW/config
+> > >   artifact-location:
+> > >     https://storage.tuxsuite.com/public/linaro/lkft/builds/2RVAA4lj35=
+ia3YDkqaoV6ztyqdW/
+> > >   toolchain: gcc-11
+> > >   build_name: gcc-11-lkftconfig-kselftest
+> > >
+> > >
+> > > --
+> > > Linaro LKFT
+> > > https://lkft.linaro.org
+>
+> - Naresh
 
 
-> I did some more digging. I think this was introduced by commit
-> efc6b6f6c311 ("udp: Improve load balancing for SO_REUSEPORT.") which
-> unfortunately ran into a merge conflict. That resulted in Dave Miller
-> moving the bug around in commit a57066b1a019 ("Merge
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net"). Can you
-> take a look and let me know if you think that is correct?
 
-Yes, I should have updated the score too in efc6b6f6c311 to save
-unneeded lookups.  The conflict itself was resolved properly.
+--
+Thanks and Regards
+
+Yours Truly,
+
+Puranjay Mohan
 
