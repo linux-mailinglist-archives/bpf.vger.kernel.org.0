@@ -1,80 +1,79 @@
-Return-Path: <bpf+bounces-2962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00AA87378A3
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 03:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 053447378B8
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 03:29:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4E79281451
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 01:21:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3E512813EE
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 01:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A108D15B1;
-	Wed, 21 Jun 2023 01:21:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D05315B5;
+	Wed, 21 Jun 2023 01:29:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FFC210FB
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 01:21:06 +0000 (UTC)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFB31BC;
-	Tue, 20 Jun 2023 18:21:04 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5196a728d90so7022919a12.0;
-        Tue, 20 Jun 2023 18:21:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4793C15A6
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 01:29:46 +0000 (UTC)
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA3F10F9;
+	Tue, 20 Jun 2023 18:29:45 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-6300f6ab032so33352646d6.2;
+        Tue, 20 Jun 2023 18:29:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687310463; x=1689902463;
+        d=gmail.com; s=20221208; t=1687310984; x=1689902984;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UWBVUT+cD808rcc2n6ymRH7MFq+VQPAGI3BHK3Um+Y4=;
-        b=HWjJ6/5Tn/CD9kaPg91ZWHke2DU9pw/Vlb2h5ZmTmQ3auClyGF1ZDl1OhBt5TvFV8w
-         8mkAkFsX1q63yTYViN+KRS7dpTY64JoEXyUTnNIsCSFuryDcOW9fsR9uK2N0vuhnYOn1
-         /i6GH9l+h734t8bnW6ZWucoCrvyVilZOU0jhau74NQrm6AY34IjFOT30zYDvxFRy3Vym
-         dk8eDEzqFLexQvT24ghUQ12/pDdzheDbaYjP+RbL8939BOVGsJFQj/dlzk0jOaM8GMJC
-         XvW5uwE5X2fwwyZuBAc1F8Y0CgllLfQFK+LMw6fwkoTcrbowZkOMzxJxRSs91DWriU8m
-         ivYA==
+        bh=0dJ+y6an3ZyYlZhJ1PwrQ2SfTniPJELOXrnVqRBZUys=;
+        b=elMxAphxwB2YZmqHv3WRjzTLi+x4PN9gIP20gurXhoELnXKQ9g6tDyYEEHB8VdmGV4
+         8F+5GBfpxDAQZX5qs+sevXKAyHn4dvljkNyt9eUEC+s01ontLWnGOPc7R+9yuKsHYuPX
+         t0c5IqiXWFyTXuyrIS4E/S8hpTWP9uGg08ElATdxJBmGRSC5nnKOy5/GkijxeCR8l5q+
+         OsU8bZIv+6hLVcMvK2asEmmuM5CMwTofUz4Puc3Vw6xO87GczPKiFjE0fBOKTZwycZz2
+         pwdSxRbUNXgYM9CMWTw59uJ9fK6Gu5cMuCkUSVpHIvNAZ3oZ/Ofw27apTicDhUOmyLVx
+         USCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687310463; x=1689902463;
+        d=1e100.net; s=20221208; t=1687310984; x=1689902984;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UWBVUT+cD808rcc2n6ymRH7MFq+VQPAGI3BHK3Um+Y4=;
-        b=Xr+lIVK3mJjR4IZ1vtAl/KGCuVufd82Gv10j43VVw7rXoCZHCOs68KvPABQHR2sVOg
-         26DEkTQdPo77hETTn6fk3UPh9kDqSKIK01Pfj0mONP5CKabX2TplS3uvcB8Rv0WaDoB4
-         qz0htUCe6bxsE6qNUtQzIiVZlWk5XzKdZxz5+4szKZCCkU7tlU+mdLYmAUNHDiQ4NNm9
-         zU7Po+3/xgtt7q+ztRsWvaKVeCt+iKatLTE+TdE1V3KUOON7wR7MnSQ6wxMF4BFy577U
-         dPGLp2jpUy5s/5nyHa4T996W/RuYZxBRZ4/O+YG3d+dO2H9I6z49EESTBa5wwBtEuM/A
-         hsbA==
-X-Gm-Message-State: AC+VfDx70o3YcnpDJ2ofUqH1imohfSXhVWR85u716qcyfHtavc2SfTP9
-	m1/T9tpKIsdGiWi7g+77C0b7QgU6g+D3KdS6OSo=
-X-Google-Smtp-Source: ACHHUZ4SmQfz0sFH/Om0wBNV8pm0qEHWAIM4MuAaODCiUcceoVayHDfwrii3CF679IA2jbvgzNW1ZsWbL0/CVALccFE=
-X-Received: by 2002:a05:6402:124d:b0:514:9bb7:d0bd with SMTP id
- l13-20020a056402124d00b005149bb7d0bdmr10019012edw.24.1687310463066; Tue, 20
- Jun 2023 18:21:03 -0700 (PDT)
+        bh=0dJ+y6an3ZyYlZhJ1PwrQ2SfTniPJELOXrnVqRBZUys=;
+        b=B+HdwhMqtBnFoQcF9z4F63cU2eJ62t+kz9zGK5Vu0Aa6f0sBpSYHcegkALMRaNc6Zf
+         0MlksxnDpRdu7gg/IOig1wSKWB25TV6jZODO/rZncLYQ61lPKFCnU6YtI2OXuO4MU5ub
+         s3/wySjRgtBjgtqdFKmAR6sTGdFEixMh2Zw6gAu4NmDqGcy29568F4gPfutNDngZnusc
+         UMNS0yFMYclWwujKMXtr30HOYgRsl0kWU+DWOCcCd3eXgzTf7+oI4osm44ThVT9+Fspq
+         x4iZprsUcDh+78IaspVoflYw3NWren3Mq2nkALGlemdnFk3A7MnSqMoiOKKZi0A50I4Y
+         W5Rw==
+X-Gm-Message-State: AC+VfDy9zk9vZkaCAmIAb7E6ip8KD7RvvdBIw6HQt2SHCFWvVgHjx2Wu
+	2D3qoXAq2PgyawjhqPTEKp9z5X8TFv//13dhcZ0=
+X-Google-Smtp-Source: ACHHUZ4v1LoOQx2MrnHTV7KNQXvsVcfKxisqdfFkZJn/xA3Ktb+NeRY+6fhhcklKWDzc6J7m0l0KuNHVIS4CuD/NbzU=
+X-Received: by 2002:a05:6214:518f:b0:630:228d:6d38 with SMTP id
+ kl15-20020a056214518f00b00630228d6d38mr7580844qvb.46.1687310984270; Tue, 20
+ Jun 2023 18:29:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230619143231.222536-1-houtao@huaweicloud.com>
- <20230619143231.222536-3-houtao@huaweicloud.com> <CAADnVQLPpnTT2W1Ev6Q5g2h2qk6aoFa9uFsuc7Q6Xb36e4YV3w@mail.gmail.com>
- <88a55864-d279-d004-e134-fa9a57c37bc7@huaweicloud.com>
-In-Reply-To: <88a55864-d279-d004-e134-fa9a57c37bc7@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 20 Jun 2023 18:20:51 -0700
-Message-ID: <CAADnVQ+xLcb3eb1xTnVdv_5MnG8UMD1hOor8-exVcqKsvfwD_A@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v5 2/2] bpf: Call rcu_momentary_dyntick_idle()
- in task work periodically
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yhs@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org, 
-	Hou Tao <houtao1@huawei.com>
+References: <20230612151608.99661-1-laoar.shao@gmail.com> <20230612151608.99661-4-laoar.shao@gmail.com>
+ <CAEf4BzaZEb_Uz21WDmQr7UC8Q50EfHDr2=dK477Z8fGEinCZ7w@mail.gmail.com>
+ <CALOAHbC=fJfsE=r=o87sT36gq_OP-rLGv4yb-BuTxadu1KQ-pw@mail.gmail.com> <CAEf4BzaySGo4UOxA1YkehPkW4n2A9XpUoeUTOM6zcBCQOB-gGw@mail.gmail.com>
+In-Reply-To: <CAEf4BzaySGo4UOxA1YkehPkW4n2A9XpUoeUTOM6zcBCQOB-gGw@mail.gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 21 Jun 2023 09:29:07 +0800
+Message-ID: <CALOAHbD+QAqjeCzCHKuz+=3cvA6ujDb9P=SnPLbscC-Ut2UUfA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 03/10] bpftool: Show probed function in
+ kprobe_multi link info
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	quentin@isovalent.com, rostedt@goodmis.org, mhiramat@kernel.org, 
+	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,46 +83,73 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 20, 2023 at 6:07=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
+On Wed, Jun 21, 2023 at 1:17=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Hi,
->
-> On 6/21/2023 12:15 AM, Alexei Starovoitov wrote:
-> > On Mon, Jun 19, 2023 at 7:00=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
+> On Fri, Jun 16, 2023 at 8:09=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
 > wrote:
-> >> +static void bpf_rcu_gp_acc_work(struct callback_head *head)
-> >> +{
-> >> +       struct bpf_rcu_gp_acc_ctx *ctx =3D container_of(head, struct b=
-pf_rcu_gp_acc_ctx, work);
-> >> +
-> >> +       local_irq_disable();
-> >> +       rcu_momentary_dyntick_idle();
-> >> +       local_irq_enable();
-> > We discussed this with Paul off-line and decided to go a different rout=
-e.
-> "A different route" means the method used to reduce the memory footprint
-> is different or the method to do reuse-after-rcu-gp is different ?
+> >
+> > On Sat, Jun 17, 2023 at 1:30=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Mon, Jun 12, 2023 at 8:16=E2=80=AFAM Yafang Shao <laoar.shao@gmail=
+.com> wrote:
+> > > >
+> > > > Show the already expose kprobe_multi link info in bpftool. The resu=
+lt as
+> > > > follows,
+> > > >
+> > > > 52: kprobe_multi  prog 381
+> > > >         retprobe 0  func_cnt 7
+> > > >         addrs ffffffff9ec44f20  funcs schedule_timeout_interruptibl=
+e
+> > > >               ffffffff9ec44f60        schedule_timeout_killable
+> > > >               ffffffff9ec44fa0        schedule_timeout_uninterrupti=
+ble
+> > > >               ffffffff9ec44fe0        schedule_timeout_idle
+> > > >               ffffffffc09468d0        xfs_trans_get_efd [xfs]
+> > > >               ffffffffc0953a10        xfs_trans_get_buf_map [xfs]
+> > > >               ffffffffc0957320        xfs_trans_get_dqtrx [xfs]
+> > > >         pids kprobe_multi(559862)
+> > > > 53: kprobe_multi  prog 381
+> > > >         retprobe 1  func_cnt 7
+> > > >         addrs ffffffff9ec44f20  funcs schedule_timeout_interruptibl=
+e
+> > > >               ffffffff9ec44f60        schedule_timeout_killable
+> > > >               ffffffff9ec44fa0        schedule_timeout_uninterrupti=
+ble
+> > > >               ffffffff9ec44fe0        schedule_timeout_idle
+> > > >               ffffffffc09468d0        xfs_trans_get_efd [xfs]
+> > > >               ffffffffc0953a10        xfs_trans_get_buf_map [xfs]
+> > > >               ffffffffc0957320        xfs_trans_get_dqtrx [xfs]
+> > >
+> > > it all subjective, but this format is a bit weird where "addrs" and
+> > > "funcs" is in first row to the left. Just makes everything wider. Why
+> > > not something like
+> > >
+> > > addr              func
+> > > ffffffff9ec44f20  schedule_timeout_interruptible
+> > > ffffffff9ec44f60  schedule_timeout_killable
+> > > ffffffffc0953a10  xfs_trans_get_buf_map [xfs]
+> > > ffffffffc0957320  xfs_trans_get_dqtrx [xfs]
+> >
+> > It may be a little strange if there's only one function, but I don't
+> > mind doing it as you suggested.
+> >
+> > >
+> > > Not it's singular (addr and func) because it's column names,
+> > > basically. Can also do "addr func [module]".
+> >
+> > The length of the function name is variable, so it is not easy to
+> > determine where to put the "[module]". So I prefer to not show  the
+> > "[module]".
+>
+> "func [module]" in the header will give a hint of what is that value
+> in square brackets. I didn't mean to align it into a third column
 
-Pretty much everything is different.
+Thanks for the clarification. Will change it.
 
-> > Paul prepared a patch for us to expose rcu_request_urgent_qs_task().
-> > I'll be sending the series later this week.
-> Do you plan to take over the reuse-after-rcu-gp patchset ?
-
-I took a different approach.
-It will be easier to discuss when I post patches.
-Hopefully later today or tomorrow.
-
-> I did a quick test, it showed that the memory footprint is smaller and
-> the performance is similar when using rcu_request_urgent_qs_task()
-> instead of rcu_momentary_dyntick_idle().
-
-Right. I saw a similar effect as well.
-My understanding is that rcu_momentary_dyntick_idle() is a heavier mechanis=
-m
-and absolutely should not be used while holding rcu_read_lock().
-So calling from irq_work is not ok.
-Only kworker, as you did, is ok from safety pov.
-Still not recommended in general. Hence rcu_request_urgent_qs_task.
+--=20
+Regards
+Yafang
 
