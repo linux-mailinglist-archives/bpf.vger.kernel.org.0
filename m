@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-3048-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06C28738C85
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 19:03:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A683738C89
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 19:04:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FC651C20F1E
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 17:03:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56AC52816E2
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 17:04:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 880B319BB2;
-	Wed, 21 Jun 2023 17:02:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5D219E41;
+	Wed, 21 Jun 2023 17:02:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6914419BA1
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 17:02:50 +0000 (UTC)
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D3C129
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:48 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55384b34f86so2397825a12.2
-        for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DC819BCE
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 17:02:51 +0000 (UTC)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB75120
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:50 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-53f84f75bf4so2886828a12.3
+        for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687366968; x=1689958968;
+        d=google.com; s=20221208; t=1687366970; x=1689958970;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qsajQXCojYmprUydGUF65Mhm0IhEwrrdRl69Y6JxBAY=;
-        b=CtVGRjt4JYkoFb07tvlGiD4Aw3ZVNE8Zkp87FkyBwE5h1f9+bd4JdtDA40x4DKGIIF
-         WjuT++7Ib4HGEcgCQGk8IkKwIxSnOEEe7pE+z6DHo33zqL0H81T8fwke4ck8Fkp1DeyT
-         vM1USJCfNJ22r17+4fUYKOiEvGeCgs43NBw9Fvr+OFQqkNiAkWfHfrRSUiQs69+9IvWk
-         k+konaDkgIi4M+JdSByHuog8mYg/A/mE6i8CrC6n5iPuBsnejqRxxtkp04RP4/xkJ4YG
-         mA4bIdU3+yms5ggUotONE3srvVoJ2q2sqNiAXolJLb/k9zIDJJMU9Ch9aWW4dtnvaLXH
-         hr/Q==
+        bh=urWJm7reT2IarzSkE9tEiPm+OWYgjit92cM3b8fi47A=;
+        b=CDe40wq+ByPLHcciah53IyY8ka+k/FUoh9rlvUpk0Rz5YkBccmLt3wUrapCI6HMtqD
+         nZxp8Bqv60jel7eAZmLxSoMXdNENuypCbVFCeH8QquCA1Ip1q1nRmSimkOtsY9iWS1yl
+         IYqe6Xx0LLp/gMBVqTyGXFOekUpDa8s4tCkYPZShFrbgwyr7qco/N+m9MyDrQmalEppi
+         I3skQXpqbpInihHpmi1NwgCLEyg+/FMITmbNezFTMvVErPd0x7UWmDcJq50R35AxPuIq
+         KT9dfW1d4gxU856yNbpSfj4HKOjxb27nbSJz4AMDDWJY8oPUAQqwY4ZLjgK2FnsEddvG
+         j/Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687366968; x=1689958968;
+        d=1e100.net; s=20221208; t=1687366970; x=1689958970;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qsajQXCojYmprUydGUF65Mhm0IhEwrrdRl69Y6JxBAY=;
-        b=VWlnqU1uN42EiJkxoRyMtwnJYK/tM3+E3jw5f1e7tk19r2n+DKZnK7fcVbqkVnQ7Oa
-         h449PnXIQiwzC1zG7xFkY/hq2QqwGsrEcLowwdfXuw1Hk6OL1jXyRRV1NEqSOsjunpMt
-         30epB+5eyLSNrGGN+JwZlK6ZMv7C/5uZME1OuqE87o28oiU+IHbnskI/qAlgAXil/HuO
-         rkupHmY2jrHAdXnQ7BSB+eZtehN5ubbxpKB78RqhZp1TMn+zwiqcBZ4xP4LjxSmBfQIt
-         W1uzbb4lVcmcZ0vMBLNxnFNyyrQw2kV/Wl+NjQ4mRCZFjceBooTC+/sFWAhQtf7J9Hhd
-         eoeA==
-X-Gm-Message-State: AC+VfDwsDR7cdZR30GbAzmUKP1LUy1blyKV1diqTVCVNsy+mGNPKAXOn
-	PIr4BJqTQfsrqPdbvEIxqiivohNiI005N2QT6QOB+pY1FnxuWhwOuEGlk59AXqQMswDx4mRfCrp
-	BoB+8hHMbDmgo3s3U5ssXoU/xbWPF6dE/I/omitKu3p79NFhNoQ==
-X-Google-Smtp-Source: ACHHUZ6QwAt+kQccaj4t/qokyIjDKomaB+RFYszQgMILg9wzsAmiSp25+3pL/7MCrudtxyH38SGZKvc=
+        bh=urWJm7reT2IarzSkE9tEiPm+OWYgjit92cM3b8fi47A=;
+        b=ZpKjZ0XBQdDsyl/fjR4fFI4SUUu9J1UW1zsxXFYVvbb7ciesxcySOxlzurBY4cT2uz
+         Bv2bI/ez9dtSd2ZkyPpUxmiG45rwXDE2/wUjMQ97r+5x/NlU1g6w4Lr01vp3+pUn6jaS
+         rkkynPz84o3n/I0ATMV/WDhXg4Fv7xAqb32zpMYNCDd6e4CfejUFVJZmwpD+d/biwiRn
+         5NwkVwx3bRXsu85QWV7W2RdtvXKdpx5MIQ+U/peOVKEOGCkJ1IxuoR3e38uLBysKt6W0
+         ushMK+JEDxXfAwL6dLo/d0Lpz1weI25/xX5PdmT9LYd/+10qfuLxS9UOeqxRGaZFYwd+
+         Ngog==
+X-Gm-Message-State: AC+VfDwnQn6Ose+9x0mq2vvayGud9Rs/F4oIEmvxm+UQTibwsGUIrYI+
+	ndm9eOvnQeCPNI1RP/9r1jhaZc5OSv8NTrE0Z98eTUL6cdYLtRzDPJZHF34sWlWdkwQgjiwPo8i
+	C5Gs3wihxSWL3QlPKFDkPlE0iB8hVhZCcf4gLgRCcU2g9wKM7Ww==
+X-Google-Smtp-Source: ACHHUZ7T4z5BMYP8aOK9EXSfV5iL1qhQkAqfBTuu6hJZfby78AK9fENfUPBKIY8cnY//hlpEXkd6pfE=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:6286:0:b0:553:a9aa:965d with SMTP id
- w128-20020a636286000000b00553a9aa965dmr1509689pgb.2.1687366968316; Wed, 21
- Jun 2023 10:02:48 -0700 (PDT)
-Date: Wed, 21 Jun 2023 10:02:34 -0700
+ (user=sdf job=sendgmr) by 2002:a17:90a:5896:b0:261:2e5:b5af with SMTP id
+ j22-20020a17090a589600b0026102e5b5afmr266907pji.1.1687366969970; Wed, 21 Jun
+ 2023 10:02:49 -0700 (PDT)
+Date: Wed, 21 Jun 2023 10:02:35 -0700
 In-Reply-To: <20230621170244.1283336-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,8 +63,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230621170244.1283336-1-sdf@google.com>
 X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
-Message-ID: <20230621170244.1283336-2-sdf@google.com>
-Subject: [RFC bpf-next v2 01/11] bpf: Rename some xdp-metadata functions into dev-bound
+Message-ID: <20230621170244.1283336-3-sdf@google.com>
+Subject: [RFC bpf-next v2 02/11] bpf: Resolve single typedef when walking structs
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
@@ -79,210 +79,28 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-No functional changes.
-
-To make existing dev-bound infrastructure more generic and be
-less tightly bound to the xdp layer, rename some functions and
-move kfunc-related things into kernel/bpf/offload.c
+It is impossible to use skb_frag_t in the tracing program. So let's
+resolve a single typedef when walking the struct.
 
 Cc: netdev@vger.kernel.org
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/net/offload.h | 28 ++++++++++++++++++++++++++++
- include/net/xdp.h     | 18 +-----------------
- kernel/bpf/offload.c  | 26 ++++++++++++++++++++++++--
- kernel/bpf/verifier.c |  4 ++--
- net/core/xdp.c        | 20 ++------------------
- 5 files changed, 57 insertions(+), 39 deletions(-)
- create mode 100644 include/net/offload.h
+ kernel/bpf/btf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/net/offload.h b/include/net/offload.h
-new file mode 100644
-index 000000000000..264a35881473
---- /dev/null
-+++ b/include/net/offload.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef __LINUX_NET_OFFLOAD_H__
-+#define __LINUX_NET_OFFLOAD_H__
-+
-+#include <linux/types.h>
-+
-+#define XDP_METADATA_KFUNC_xxx	\
-+	NETDEV_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP, \
-+			      bpf_xdp_metadata_rx_timestamp) \
-+	NETDEV_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_HASH, \
-+			      bpf_xdp_metadata_rx_hash)
-+
-+enum {
-+#define NETDEV_METADATA_KFUNC(name, _) name,
-+XDP_METADATA_KFUNC_xxx
-+#undef NETDEV_METADATA_KFUNC
-+MAX_NETDEV_METADATA_KFUNC,
-+};
-+
-+#ifdef CONFIG_NET
-+u32 bpf_dev_bound_kfunc_id(int id);
-+bool bpf_is_dev_bound_kfunc(u32 btf_id);
-+#else
-+static inline u32 bpf_dev_bound_kfunc_id(int id) { return 0; }
-+static inline bool bpf_is_dev_bound_kfunc(u32 btf_id) { return false; }
-+#endif
-+
-+#endif /* __LINUX_NET_OFFLOAD_H__ */
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index d1c5381fc95f..de4c3b70abde 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -9,6 +9,7 @@
- #include <linux/skbuff.h> /* skb_shared_info */
- #include <uapi/linux/netdev.h>
- #include <linux/bitfield.h>
-+#include <net/offload.h>
- 
- /**
-  * DOC: XDP RX-queue information
-@@ -384,19 +385,6 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
- 
- #define DEV_MAP_BULK_SIZE XDP_BULK_QUEUE_SIZE
- 
--#define XDP_METADATA_KFUNC_xxx	\
--	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_TIMESTAMP, \
--			   bpf_xdp_metadata_rx_timestamp) \
--	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_HASH, \
--			   bpf_xdp_metadata_rx_hash) \
--
--enum {
--#define XDP_METADATA_KFUNC(name, _) name,
--XDP_METADATA_KFUNC_xxx
--#undef XDP_METADATA_KFUNC
--MAX_XDP_METADATA_KFUNC,
--};
--
- enum xdp_rss_hash_type {
- 	/* First part: Individual bits for L3/L4 types */
- 	XDP_RSS_L3_IPV4		= BIT(0),
-@@ -444,14 +432,10 @@ enum xdp_rss_hash_type {
- };
- 
- #ifdef CONFIG_NET
--u32 bpf_xdp_metadata_kfunc_id(int id);
--bool bpf_dev_bound_kfunc_id(u32 btf_id);
- void xdp_set_features_flag(struct net_device *dev, xdp_features_t val);
- void xdp_features_set_redirect_target(struct net_device *dev, bool support_sg);
- void xdp_features_clear_redirect_target(struct net_device *dev);
- #else
--static inline u32 bpf_xdp_metadata_kfunc_id(int id) { return 0; }
--static inline bool bpf_dev_bound_kfunc_id(u32 btf_id) { return false; }
- 
- static inline void
- xdp_set_features_flag(struct net_device *dev, xdp_features_t val)
-diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
-index 8a26cd8814c1..235d81f7e0ed 100644
---- a/kernel/bpf/offload.c
-+++ b/kernel/bpf/offload.c
-@@ -844,9 +844,9 @@ void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id)
- 	if (!ops)
- 		goto out;
- 
--	if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP))
-+	if (func_id == bpf_dev_bound_kfunc_id(XDP_METADATA_KFUNC_RX_TIMESTAMP))
- 		p = ops->xmo_rx_timestamp;
--	else if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_HASH))
-+	else if (func_id == bpf_dev_bound_kfunc_id(XDP_METADATA_KFUNC_RX_HASH))
- 		p = ops->xmo_rx_hash;
- out:
- 	up_read(&bpf_devs_lock);
-@@ -854,6 +854,28 @@ void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id)
- 	return p;
- }
- 
-+BTF_SET_START(dev_bound_kfunc_ids)
-+#define NETDEV_METADATA_KFUNC(name, str) BTF_ID(func, str)
-+XDP_METADATA_KFUNC_xxx
-+#undef NETDEV_METADATA_KFUNC
-+BTF_SET_END(dev_bound_kfunc_ids)
-+
-+BTF_ID_LIST(dev_bound_kfunc_ids_unsorted)
-+#define NETDEV_METADATA_KFUNC(name, str) BTF_ID(func, str)
-+XDP_METADATA_KFUNC_xxx
-+#undef NETDEV_METADATA_KFUNC
-+
-+u32 bpf_dev_bound_kfunc_id(int id)
-+{
-+	/* dev_bound_kfunc_ids is sorted and can't be used */
-+	return dev_bound_kfunc_ids_unsorted[id];
-+}
-+
-+bool bpf_is_dev_bound_kfunc(u32 btf_id)
-+{
-+	return btf_id_set_contains(&dev_bound_kfunc_ids, btf_id);
-+}
-+
- static int __init bpf_offload_init(void)
- {
- 	return rhashtable_init(&offdevs, &offdevs_params);
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1e38584d497c..4db48b5af47e 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2721,7 +2721,7 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
- 		}
- 	}
- 
--	if (bpf_dev_bound_kfunc_id(func_id)) {
-+	if (bpf_is_dev_bound_kfunc(func_id)) {
- 		err = bpf_dev_bound_kfunc_check(&env->log, prog_aux);
- 		if (err)
- 			return err;
-@@ -17757,7 +17757,7 @@ static void specialize_kfunc(struct bpf_verifier_env *env,
- 	void *xdp_kfunc;
- 	bool is_rdonly;
- 
--	if (bpf_dev_bound_kfunc_id(func_id)) {
-+	if (bpf_is_dev_bound_kfunc(func_id)) {
- 		xdp_kfunc = bpf_dev_bound_resolve_kfunc(prog, func_id);
- 		if (xdp_kfunc) {
- 			*addr = (unsigned long)xdp_kfunc;
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 41e5ca8643ec..819767697370 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -741,9 +741,9 @@ __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash,
- __diag_pop();
- 
- BTF_SET8_START(xdp_metadata_kfunc_ids)
--#define XDP_METADATA_KFUNC(_, name) BTF_ID_FLAGS(func, name, 0)
-+#define NETDEV_METADATA_KFUNC(_, name) BTF_ID_FLAGS(func, name, 0)
- XDP_METADATA_KFUNC_xxx
--#undef XDP_METADATA_KFUNC
-+#undef NETDEV_METADATA_KFUNC
- BTF_SET8_END(xdp_metadata_kfunc_ids)
- 
- static const struct btf_kfunc_id_set xdp_metadata_kfunc_set = {
-@@ -751,22 +751,6 @@ static const struct btf_kfunc_id_set xdp_metadata_kfunc_set = {
- 	.set   = &xdp_metadata_kfunc_ids,
- };
- 
--BTF_ID_LIST(xdp_metadata_kfunc_ids_unsorted)
--#define XDP_METADATA_KFUNC(name, str) BTF_ID(func, str)
--XDP_METADATA_KFUNC_xxx
--#undef XDP_METADATA_KFUNC
--
--u32 bpf_xdp_metadata_kfunc_id(int id)
--{
--	/* xdp_metadata_kfunc_ids is sorted and can't be used */
--	return xdp_metadata_kfunc_ids_unsorted[id];
--}
--
--bool bpf_dev_bound_kfunc_id(u32 btf_id)
--{
--	return btf_id_set8_contains(&xdp_metadata_kfunc_ids, btf_id);
--}
--
- static int __init xdp_metadata_init(void)
- {
- 	return register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &xdp_metadata_kfunc_set);
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index bd2cac057928..9bdaa1225e8a 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6140,6 +6140,8 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
+ 	*flag = 0;
+ again:
+ 	tname = __btf_name_by_offset(btf, t->name_off);
++	if (btf_type_is_typedef(t))
++		t = btf_type_by_id(btf, t->type);
+ 	if (!btf_type_is_struct(t)) {
+ 		bpf_log(log, "Type '%s' is not a struct\n", tname);
+ 		return -EINVAL;
 -- 
 2.41.0.162.gfafddb0af9-goog
 
