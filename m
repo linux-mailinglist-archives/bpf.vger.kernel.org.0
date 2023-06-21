@@ -1,137 +1,112 @@
-Return-Path: <bpf+bounces-2987-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2989-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9C71737D91
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 10:40:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3F67737DBD
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 10:44:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AB18281485
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 08:40:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F6F4281436
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 08:44:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A90C8CC;
-	Wed, 21 Jun 2023 08:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A709C8C1;
+	Wed, 21 Jun 2023 08:44:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECFD0C8C1
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 08:39:46 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 488BD19A5;
-	Wed, 21 Jun 2023 01:39:15 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8Axy8Yyt5JkuBEAAA--.120S3;
-	Wed, 21 Jun 2023 16:39:14 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3c4st5JkmlAAAA--.2097S4;
-	Wed, 21 Jun 2023 16:39:12 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org,
-	loongarch@lists.linux.dev,
-	linux-arch@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	loongson-kernel@lists.loongnix.cn
-Subject: [PATCH v2 2/2] tools arch: Remove uapi bitsperlong.h of hexagon and microblaze
-Date: Wed, 21 Jun 2023 16:39:08 +0800
-Message-Id: <1687336748-4898-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1687336748-4898-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1687336748-4898-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID:AQAAf8Ax3c4st5JkmlAAAA--.2097S4
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxJr1DAFWUWFykKr4UGFWxuFX_yoW5Jr1UpF
-	95XwsrWF48CryjkrWFkF1jqrW3A39rGF4jga1xWry8ZrWxJF18Ar4S9FsFya47JayIqa1r
-	uF93WryUKa1kKagCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-	AKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
-	6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0epB3UUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ACC95C97
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 08:44:11 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C9A1985;
+	Wed, 21 Jun 2023 01:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=YGAjFCPPEDmRlHxNKozvmFJN8CRVKmi74gig/bzaVnI=; b=LiDb+DkjazX6QuMd6qNXUjrM0M
+	NK/IYXnN5GNENo3hHKhXxhQgKy89SLho0Abds00xLded015Dg5idJ12Mlcm8DmF+R3whIUBpCQ7z4
+	oKsa0PY1cnjbbP1JnB7Ju33dclISf59zA/W4hDcJXjS6UiB3hiNiDD9zsUClxu7RdfW4j3svKLJi5
+	S3BPqjkEVYrz7O/1Sx4V+Lts76xkHHu93YohE5cV6PQUXf8Fd/YrCTk3orAi9mGXrHmUPRElcIpGT
+	YeapTVwp2pyBJ/D+/eN7KBOLsMoOPkBL/4uYiNzQePLBGatgciiEBzbkuyYZWhj8WM05/aaXJZ28x
+	fCP0MWrA==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qBtRV-0002Ke-0N; Wed, 21 Jun 2023 10:43:57 +0200
+Received: from [178.197.248.44] (helo=linux.home)
+	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qBtRU-000N9r-8i; Wed, 21 Jun 2023 10:43:56 +0200
+Subject: Re: [PATCH bpf] bpf/btf: Accept function names that contain dots
+To: Yonghong Song <yhs@meta.com>, Nick Desaulniers <ndesaulniers@google.com>
+Cc: Florent Revest <revest@chromium.org>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev, martin.lau@linux.dev,
+ ast@kernel.org, andrii@kernel.org, song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, nathan@kernel.org, trix@redhat.com,
+ stable@vger.kernel.org
+References: <20230615145607.3469985-1-revest@chromium.org>
+ <CAEf4BzbjCt3tKJ40tg12rMjCLXrm7UoGuOdC62vGnpTTt8-buw@mail.gmail.com>
+ <CABRcYmK=yXDumZj3tdW7341+sSV1zmZw1UpQkfSF6RFgnBQjew@mail.gmail.com>
+ <c26de68d-4a56-03a0-2625-25c7e2997d45@meta.com>
+ <CAKwvOdnehNwrDNV5LvBBwM=jqPJvL7vB9HwF0YU-X5=zbByrmg@mail.gmail.com>
+ <6b63301f-96b2-74b9-c156-3a34fb5ad346@meta.com>
+ <CAKwvOdna=1Sg4Aab=BE6F86H9ZE7kPRM=VTkqQuGiF-Jdze-cA@mail.gmail.com>
+ <2dcc697a-46fe-0933-0508-90ebad9ac8f3@meta.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <b0084c8b-fe32-f1db-ad01-961265ce00fb@iogearbox.net>
+Date: Wed, 21 Jun 2023 10:43:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <2dcc697a-46fe-0933-0508-90ebad9ac8f3@meta.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26945/Tue Jun 20 09:30:24 2023)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-After the following two commits:
+On 6/21/23 5:28 AM, Yonghong Song wrote:
+> On 6/20/23 8:07 AM, Nick Desaulniers wrote:
+[...]
+>> No, all kernels have this issue, when using `LLVM=1 LLVM_IAS=0`.  It's
+>> more likely that someone is using that combination for branches of
+>> stable that predate 4.19 (such as 4.14) but we do still try to support
+>> that combination somewhat, even if we recommend just using `LLVM=1`.
+>> Interop between toolchains is still important, even if "why would you
+>> do that?"
+> 
+> Okay, yes, although 'LLVM=1' is recommended way to compiler clang
+> based kernel, users can certainly do 'LLVM=1 LLVM_IAS=0' as well
+> although not recommended. Then it is okay to put a bug fix in
+> the commit message. Just need to clarify that
+>    - > 5.10 kernel, LLVM=1 (LLVM_IAS=0 is not the default)
+>      is recommended but user can still have LLVM=1 LLVM_IAS=0
+>      to trigger the issue
+>    - <= 5.10 kernel, LLVM=1 (LLVM_IAS=0 is the default) is
+>      recommended in which case gnu as will be used.
 
-  commit 872e24d5c698 ("hexagon: remove asm/bitsperlong.h")
-  commit 83f0124ad81e ("microblaze: remove asm-generic wrapper headers")
+Given this was already applied to bpf few days ago, I've just updated the
+commit message to reflect the above. Agree that this is valuable info to
+retain for the log.
 
-the arch-specific headers of hexagon and microblaze have been removed,
-the tools arch uapi headers are useless too, remove them.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- tools/arch/hexagon/include/uapi/asm/bitsperlong.h  | 27 ----------------------
- .../arch/microblaze/include/uapi/asm/bitsperlong.h |  2 --
- 2 files changed, 29 deletions(-)
- delete mode 100644 tools/arch/hexagon/include/uapi/asm/bitsperlong.h
- delete mode 100644 tools/arch/microblaze/include/uapi/asm/bitsperlong.h
-
-diff --git a/tools/arch/hexagon/include/uapi/asm/bitsperlong.h b/tools/arch/hexagon/include/uapi/asm/bitsperlong.h
-deleted file mode 100644
-index 5adca0d..0000000
---- a/tools/arch/hexagon/include/uapi/asm/bitsperlong.h
-+++ /dev/null
-@@ -1,27 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--/*
-- * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 and
-- * only version 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-- * 02110-1301, USA.
-- */
--
--#ifndef __ASM_HEXAGON_BITSPERLONG_H
--#define __ASM_HEXAGON_BITSPERLONG_H
--
--#define __BITS_PER_LONG 32
--
--#include <asm-generic/bitsperlong.h>
--
--#endif
-diff --git a/tools/arch/microblaze/include/uapi/asm/bitsperlong.h b/tools/arch/microblaze/include/uapi/asm/bitsperlong.h
-deleted file mode 100644
-index 76da34b..0000000
---- a/tools/arch/microblaze/include/uapi/asm/bitsperlong.h
-+++ /dev/null
-@@ -1,2 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--#include <asm-generic/bitsperlong.h>
--- 
-2.1.0
-
+Thanks everyone,
+Daniel
 
