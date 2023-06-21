@@ -1,128 +1,252 @@
-Return-Path: <bpf+bounces-3005-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3006-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 267B4738240
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 13:15:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E560738244
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 13:18:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 589DA1C20B12
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 11:15:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B426281234
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 11:18:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFA3111CBD;
-	Wed, 21 Jun 2023 11:15:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51A03125C7;
+	Wed, 21 Jun 2023 11:18:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD09D53F;
-	Wed, 21 Jun 2023 11:15:08 +0000 (UTC)
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06EC186;
-	Wed, 21 Jun 2023 04:15:06 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1qBvna-0006ir-Ck; Wed, 21 Jun 2023 13:14:54 +0200
-Date: Wed, 21 Jun 2023 13:14:54 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Florent Revest <revest@chromium.org>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
-	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, kadlec@netfilter.org, fw@strlen.de,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, lirongqing@baidu.com, wangli39@baidu.com,
-	zhangyu31@baidu.com, daniel@iogearbox.net, ast@kernel.org,
-	kpsingh@kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH nf] netfilter: conntrack: Avoid nf_ct_helper_hash uses
- after free
-Message-ID: <20230621111454.GB24035@breakpoint.cc>
-References: <20230615152918.3484699-1-revest@chromium.org>
- <ZJFIy+oJS+vTGJer@calendula>
- <CABRcYmJjv-JoadtzZwU5A+SZwbmbgnzWb27UNZ-UC+9r+JnVxg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BEBDF5C;
+	Wed, 21 Jun 2023 11:18:04 +0000 (UTC)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B7C184;
+	Wed, 21 Jun 2023 04:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687346282; x=1718882282;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=bNOOeYVCQ7poh+/POpUoy8h5Fc7oKKTV5NlBm31y8T8=;
+  b=UwWPAw+/N37hMw7X+nGZKpKlbKMwdZwvU+RQSpoKtcCgHwAHlhG1R0Bz
+   mdQuYCMMNAaFMEkH7GrE4t3WUk2LY/5Pcnf2XGALDNK9RwMDVImCbKHMg
+   qoOzDu8Gcpxdq/rZVd9n7TljpxDRVX4QNw/YfVDT6F30txm34vFMxXfrb
+   KOm3AeOH23cSslUWfXulopUv1Ymrabi373RGtL5NwNXUaKveRfwRjWum2
+   5UHnjpMjtR78BKPbQg5XHQQBYzvRvOHoG3xnfMxW2NmjyCJbH96j0tEg6
+   nOjpaqQe/fp4wEK6ZzsCO4YL+JCONvGwpYn8qdpKeL2Pwdr9aQXiY+jDK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="339758007"
+X-IronPort-AV: E=Sophos;i="6.00,260,1681196400"; 
+   d="scan'208";a="339758007"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2023 04:17:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="664623042"
+X-IronPort-AV: E=Sophos;i="6.00,260,1681196400"; 
+   d="scan'208";a="664623042"
+Received: from unknown (HELO localhost) ([10.237.66.162])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2023 04:16:58 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Joel Granados <j.granados@samsung.com>, mcgrof@kernel.org, Russell King
+ <linux@armlinux.org.uk>, Catalin
+	Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Michael
+	Ellerman <mpe@ellerman.id.au>, Heiko Carstens <hca@linux.ibm.com>, Vasily
+	Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Andy Lutomirski
+ <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, Herbert Xu
+ <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>,
+ Russ
+	Weight <russell.h.weight@intel.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Phillip Potter <phil@philpotter.co.uk>,
+ Clemens Ladisch <clemens@ladisch.de>, Arnd Bergmann <arnd@arndb.de>, Corey
+	Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>, "Jason A.
+ Donenfeld" <Jason@zx2c4.com>, Joonas Lahtinen
+ <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+ Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, David Airlie
+ <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, "K. Y.
+ Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+ Wei
+	Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jason Gunthorpe
+ <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Benjamin Herrenschmidt
+ <benh@kernel.crashing.org>, Song Liu <song@kernel.org>, Robin Holt
+ <robinmholt@gmail.com>, Steve Wahl <steve.wahl@hpe.com>, David Ahern
+ <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Sudip Mukherjee
+ <sudipm.mukherjee@gmail.com>, Mark Rutland <mark.rutland@arm.com>, "James
+ E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen"
+ <martin.petersen@oracle.com>, Doug Gilbert <dgilbert@interlog.com>, Jiri
+	Slaby <jirislaby@kernel.org>, Juergen Gross <jgross@suse.com>, Stefano
+	Stabellini <sstabellini@kernel.org>, Alexander Viro
+ <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
+ Benjamin
+	LaHaise <bcrl@kvack.org>, David Howells <dhowells@redhat.com>, Jan Harkes
+ <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Trond Myklebust
+ <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, Chuck
+	Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Jan Kara
+ <jack@suse.cz>, Anton Altaparmakov <anton@tuxera.com>, Mark Fasheh
+ <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi
+ <joseph.qi@linux.alibaba.com>, Kees Cook <keescook@chromium.org>, Iurii
+	Zaikin <yzaikin@google.com>, Eric Biggers <ebiggers@kernel.org>, "Darrick
+ J.
+ Wong" <djwong@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
+	Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Balbir
+	Singh <bsingharora@gmail.com>, Eric Biederman <ebiederm@xmission.com>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
+ <anil.s.keshavamurthy@intel.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Petr Mladek <pmladek@suse.com>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>, Juri Lelli
+ <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
+ John
+	Stultz <jstultz@google.com>, Steven Rostedt <rostedt@goodmis.org>, Andrew
+	Morton <akpm@linux-foundation.org>, Mike Kravetz <mike.kravetz@oracle.com>,
+ Muchun Song <muchun.song@linux.dev>, Naoya Horiguchi
+ <naoya.horiguchi@nec.com>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Joerg Reuter <jreuter@yaina.de>, Ralf Baechle
+ <ralf@linux-mips.org>, Pablo
+	Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>,
+ Florian Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>, Nikolay
+	Aleksandrov <razor@blackwall.org>, Alexander Aring <alex.aring@gmail.com>,
+ Stefan Schmidt <stefan@datenfreihafen.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Steffen Klassert
+ <steffen.klassert@secunet.com>, Matthieu Baerts
+ <matthieu.baerts@tessares.net>, Mat Martineau <martineau@kernel.org>,
+ Simon
+	Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, Remi
+	Denis-Courmont <courmisch@gmail.com>, Santosh Shilimkar
+ <santosh.shilimkar@oracle.com>, Marc Dionne <marc.dionne@auristor.com>,
+ Neil
+	Horman <nhorman@tuxdriver.com>, Marcelo Ricardo Leitner
+ <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, Karsten
+ Graul <kgraul@linux.ibm.com>, Wenjia Zhang <wenjia@linux.ibm.com>, Jan
+ Karcher <jaka@linux.ibm.com>, Jon Maloy <jmaloy@redhat.com>, Ying Xue
+ <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, John Johansen
+ <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James
+	Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Jarkko
+	Sakkinen <jarkko@kernel.org>
+Cc: Joel Granados <j.granados@samsung.com>, Nicholas Piggin
+ <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
+ <svens@linux.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, "Rafael J.
+ Wysocki" <rafael@kernel.org>, Mike Travis <mike.travis@hpe.com>, Oleksandr
+ Tyshchenko <oleksandr_tyshchenko@epam.com>, Amir Goldstein
+ <amir73il@gmail.com>, Matthew Bobrowski <repnop@google.com>, John
+ Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Yonghong Song <yhs@fb.com>, KP Singh
+ <kpsingh@kernel.org>, Stanislav
+	Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Waiman Long <longman@redhat.com>, Boqun Feng
+ <boqun.feng@gmail.com>, John Ogness <john.ogness@linutronix.de>, Dietmar
+	Eggemann <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel
+	Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Valentin Schneider <vschneid@redhat.com>, Andy Lutomirski
+ <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Stephen Boyd
+ <sboyd@kernel.org>, Miaohe Lin <linmiaohe@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
+ openipmi-developer@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-raid@vger.kernel.org,
+ netdev@vger.kernel.org, linux-scsi@vger.kernel.org,
+ xen-devel@lists.xenproject.org, linux-fsdevel@vger.kernel.org,
+ linux-aio@kvack.org, linux-cachefs@redhat.com, codalist@coda.cs.cmu.edu,
+ linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
+ fsverity@lists.linux.dev, linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
+ kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+ linux-hams@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ coreteam@netfilter.org, bridge@lists.linux-foundation.org,
+ dccp@vger.kernel.org, linux-wpan@vger.kernel.org, mptcp@lists.linux.dev,
+ lvs-devel@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-afs@lists.infradead.org, linux-sctp@vger.kernel.org,
+ tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org,
+ apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+ keyrings@vger.kernel.org
+Subject: Re: [PATCH 09/11] sysctl: Remove the end element in sysctl table
+ arrays
+In-Reply-To: <20230621094817.433842-1-j.granados@samsung.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230621091000.424843-1-j.granados@samsung.com>
+ <CGME20230621094824eucas1p2b6adfbd3f15ff3665674917f419b25d3@eucas1p2.samsung.com>
+ <20230621094817.433842-1-j.granados@samsung.com>
+Date: Wed, 21 Jun 2023 14:16:55 +0300
+Message-ID: <87o7l92hg8.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABRcYmJjv-JoadtzZwU5A+SZwbmbgnzWb27UNZ-UC+9r+JnVxg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+	SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Florent Revest <revest@chromium.org> wrote:
-> On Tue, Jun 20, 2023 at 8:35 AM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> >
-> > On Thu, Jun 15, 2023 at 05:29:18PM +0200, Florent Revest wrote:
-> > > If register_nf_conntrack_bpf() fails (for example, if the .BTF section
-> > > contains an invalid entry), nf_conntrack_init_start() calls
-> > > nf_conntrack_helper_fini() as part of its cleanup path and
-> > > nf_ct_helper_hash gets freed.
-> > >
-> > > Further netfilter modules like netfilter_conntrack_ftp don't check
-> > > whether nf_conntrack initialized correctly and call
-> > > nf_conntrack_helpers_register() which accesses the freed
-> > > nf_ct_helper_hash and causes a uaf.
-> > >
-> > > This patch guards nf_conntrack_helper_register() from accessing
-> > > freed/uninitialized nf_ct_helper_hash maps and fixes a boot-time
-> > > use-after-free.
-> >
-> > How could this possibly happen?
-> 
-> Here is one way to reproduce this bug:
-> 
->   # Use nf/main
->   git clone git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git
->   cd nf
-> 
->   # Start from a minimal config
->   make LLVM=1 LLVM_IAS=0 defconfig
-> 
->   # Enable KASAN, BTF and nf_conntrack_ftp
->   scripts/config -e KASAN -e BPF_SYSCALL -e DEBUG_INFO -e
-> DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT -e DEBUG_INFO_BTF -e
-> NF_CONNTRACK_FTP
->   make LLVM=1 LLVM_IAS=0 olddefconfig
-> 
->   # Build without the LLVM integrated assembler
->   make LLVM=1 LLVM_IAS=0 -j `nproc`
-> 
-> (Note that the use of LLVM_IAS=0, KASAN and BTF is just to trigger a
-> bug in BTF that will be fixed by
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=9724160b3942b0a967b91a59f81da5593f28b8ba
-> Independently of that specific BTF bug, it shows how an error in
-> nf_conntrack_bpf can cause a boot-time uaf in netfilter)
-> 
-> Then, booting gives me:
-> 
-> [    4.624666] BPF: [13893] FUNC asan.module_ctor
-> [    4.625611] BPF: type_id=1
-> [    4.626176] BPF:
-> [    4.626601] BPF: Invalid name
-> [    4.627208] BPF:
-> [    4.627723] ==================================================================
-> [    4.628610] BUG: KASAN: slab-use-after-free in
-> nf_conntrack_helper_register+0x129/0x2f0
-> [    4.628610] Read of size 8 at addr ffff888102d24000 by task swapper/0/1
-> [    4.628610]
+On Wed, 21 Jun 2023, Joel Granados <j.granados@samsung.com> wrote:
+> Remove the empty end element from all the arrays that are passed to the
+> register sysctl calls. In some files this means reducing the explicit
+> array size by one. Also make sure that we are using the size in
+> ctl_table_header instead of evaluating the .procname element.
 
-Isn't that better than limping along?
+Where's the harm in removing the end elements driver by driver? This is
+an unwieldy patch to handle.
 
-in this case an initcall is failing and I think panic is preferrable
-to a kernel that behaves like NF_CONNTRACK_FTP=n.
+> diff --git a/drivers/gpu/drm/i915/i915_perf.c b/drivers/gpu/drm/i915/i915_perf.c
+> index f43950219ffc..e4d7372afb10 100644
+> --- a/drivers/gpu/drm/i915/i915_perf.c
+> +++ b/drivers/gpu/drm/i915/i915_perf.c
+> @@ -4884,24 +4884,23 @@ int i915_perf_remove_config_ioctl(struct drm_device *dev, void *data,
+>  
+>  static struct ctl_table oa_table[] = {
+>  	{
+> -	 .procname = "perf_stream_paranoid",
+> -	 .data = &i915_perf_stream_paranoid,
+> -	 .maxlen = sizeof(i915_perf_stream_paranoid),
+> -	 .mode = 0644,
+> -	 .proc_handler = proc_dointvec_minmax,
+> -	 .extra1 = SYSCTL_ZERO,
+> -	 .extra2 = SYSCTL_ONE,
+> -	 },
+> +		.procname = "perf_stream_paranoid",
+> +		.data = &i915_perf_stream_paranoid,
+> +		.maxlen = sizeof(i915_perf_stream_paranoid),
+> +		.mode = 0644,
+> +		.proc_handler = proc_dointvec_minmax,
+> +		.extra1 = SYSCTL_ZERO,
+> +		.extra2 = SYSCTL_ONE,
+> +	},
+>  	{
+> -	 .procname = "oa_max_sample_rate",
+> -	 .data = &i915_oa_max_sample_rate,
+> -	 .maxlen = sizeof(i915_oa_max_sample_rate),
+> -	 .mode = 0644,
+> -	 .proc_handler = proc_dointvec_minmax,
+> -	 .extra1 = SYSCTL_ZERO,
+> -	 .extra2 = &oa_sample_rate_hard_limit,
+> -	 },
+> -	{}
+> +		.procname = "oa_max_sample_rate",
+> +		.data = &i915_oa_max_sample_rate,
+> +		.maxlen = sizeof(i915_oa_max_sample_rate),
+> +		.mode = 0644,
+> +		.proc_handler = proc_dointvec_minmax,
+> +		.extra1 = SYSCTL_ZERO,
+> +		.extra2 = &oa_sample_rate_hard_limit,
+> +	}
+>  };
 
-AFAICS this problem is specific to NF_CONNTRACK_FTP=y
-(or any other helper module, for that matter).
+The existing indentation is off, but fixing it doesn't really belong in
+this patch.
 
-If you disagree please resend with a commit message that
-makes it clear that this is only relevant for the 'builtin' case.
+BR,
+Jani.
+
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
 
