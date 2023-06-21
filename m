@@ -1,235 +1,410 @@
-Return-Path: <bpf+bounces-3066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1CAC73906C
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 21:53:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25B1E739086
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 22:05:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D8BE281781
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 19:53:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CB3E1C20FB4
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 20:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514C31C747;
-	Wed, 21 Jun 2023 19:52:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3181C748;
+	Wed, 21 Jun 2023 20:05:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84A91B90F;
-	Wed, 21 Jun 2023 19:52:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89C99C433C8;
-	Wed, 21 Jun 2023 19:52:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687377165;
-	bh=vTL4Y8a8sFEsX3Xqt4OIZCRU2/7UfNvPDdjp0N/3dJE=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=tBqvzi0BueVyLSEbesqZv6Z2lEPP3VHDK/0ro+NhJgrWCN7POU/GnsfWmg+au/I1/
-	 qhi//1NZGnRyBWC+DfSRBIODYBQomanDaEsbNql7Uti143OqrGRxW4LYitKm3HOUFm
-	 3AFCsCq6C4olFaFCKGiCtIGy0tLgZnX0NusQlw4HgjVra9Ac5A8Ylg7+9/P0lUpR5a
-	 +VLBtjm16h891O76lVM1Ta8bhTOaRz+hamckCGdfcbzLfSMEYWZEagHpIq+7Dm+VlU
-	 f0RFgH+s7zmUzeMyOo6a8vBaboDD6pPbvwZcf5WIVyOhAezSg+L8WY3I+kat7Le9is
-	 Pb20wj8vyk/yg==
-Message-ID: <2a5a069572b46b59dd16fe8d54e549a9b5bbb6eb.camel@kernel.org>
-Subject: Re: [PATCH 00/79] fs: new accessors for inode->i_ctime
-From: Jeff Layton <jlayton@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>, Michael
- Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Heiko Carstens
- <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>, Christian Borntraeger
- <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Arve
- =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>, Todd Kjos
- <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes
- <joel@joelfernandes.org>, Christian Brauner <brauner@kernel.org>, Carlos
- Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>,
- Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, Jason
- Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Brad Warrum
- <bwarrum@linux.ibm.com>, Ritu Agarwal <rituagar@linux.ibm.com>, Eric Van
- Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>,
- Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck
- <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, David Howells
- <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Alexander
- Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>, Luis de
- Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>,
- "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Eric Biederman
- <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, Chris Mason
- <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Xiubo Li
- <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jan Harkes
- <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, Joel Becker <jlbec@evilplan.org>,
- Christoph Hellwig <hch@lst.de>, Nicolas Pitre <nico@fluxnic.net>,  "Rafael
- J. Wysocki" <rafael@kernel.org>, Tyler Hicks <code@tyhicks.com>, Ard
- Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>, Chao Yu
- <chao@kernel.org>,  Yue Hu <huyue2@coolpad.com>, Jeffle Xu
- <jefflexu@linux.alibaba.com>, Namjae Jeon <linkinjeon@kernel.org>, Sungjong
- Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>, Theodore Ts'o
- <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim
- <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Miklos
- Szeredi <miklos@szeredi.hu>, Bob Peterson <rpeterso@redhat.com>, Andreas
- Gruenbacher <agruenba@redhat.com>, Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>, Mikulas Patocka
- <mikulas@artax.karlin.mff.cuni.cz>,  Mike Kravetz
- <mike.kravetz@oracle.com>, Muchun Song <muchun.song@linux.dev>, David
- Woodhouse <dwmw2@infradead.org>, Dave Kleikamp <shaggy@kernel.org>, Tejun
- Heo <tj@kernel.org>, Trond Myklebust <trond.myklebust@hammerspace.com>,
- Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
- Ryusuke Konishi <konishi.ryusuke@gmail.com>, Anton Altaparmakov
- <anton@tuxera.com>,  Konstantin Komarov
- <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>,
- Joseph Qi <joseph.qi@linux.alibaba.com>, Bob Copeland <me@bobcopeland.com>,
- Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg
- <martin@omnibond.com>, Luis Chamberlain <mcgrof@kernel.org>, Iurii Zaikin
- <yzaikin@google.com>, Tony Luck <tony.luck@intel.com>,  "Guilherme G.
- Piccoli" <gpiccoli@igalia.com>, Anders Larsen <al@alarsen.net>, Steve
- French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, Ronnie
- Sahlberg <lsahlber@redhat.com>, Shyam Prasad N <sprasad@microsoft.com>, Tom
- Talpey <tom@talpey.com>, Sergey Senozhatsky <senozhatsky@chromium.org>,
- Phillip Lougher <phillip@squashfs.org.uk>, Masami Hiramatsu
- <mhiramat@kernel.org>, Evgeniy Dushistov <dushistov@mail.ru>, Hans de Goede
- <hdegoede@redhat.com>, "Darrick J. Wong" <djwong@kernel.org>, Damien Le
- Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, Johannes
- Thumshirn <jth@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Hugh Dickins
- <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, John Johansen
- <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James
- Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Stephen
- Smalley <stephen.smalley.work@gmail.com>, Eric Paris
- <eparis@parisplace.org>,  Juergen Gross <jgross@suse.com>, Ruihan Li
- <lrh2000@pku.edu.cn>, Laurent Pinchart
- <laurent.pinchart+renesas@ideasonboard.com>, Wolfram Sang
- <wsa+renesas@sang-engineering.com>, Udipto Goswami
- <quic_ugoswami@quicinc.com>,  Linyu Yuan <quic_linyyuan@quicinc.com>, John
- Keeping <john@keeping.me.uk>, Andrzej Pietrasiewicz
- <andrzej.p@collabora.com>, Dan Carpenter <error27@gmail.com>, Yuta Hayama
- <hayama@lineo.co.jp>, Jozef Martiniak <jomajm@gmail.com>, Jens Axboe
- <axboe@kernel.dk>, Alan Stern <stern@rowland.harvard.edu>, Sandeep Dhavale
- <dhavale@google.com>, Dave Chinner <dchinner@redhat.com>, Johannes Weiner
- <hannes@cmpxchg.org>, ZhangPeng <zhangpeng362@huawei.com>, Viacheslav
- Dubeyko <slava@dubeyko.com>, Tetsuo Handa
- <penguin-kernel@I-love.SAKURA.ne.jp>,  Aditya Garg <gargaditya08@live.com>,
- Erez Zadok <ezk@cs.stonybrook.edu>, Yifei Liu <yifeliu@cs.stonybrook.edu>,
- Yu Zhe <yuzhe@nfschina.com>, "Matthew Wilcox (Oracle)"
- <willy@infradead.org>, Oleg Kanatov <okanatov@gmail.com>, "Dr. David Alan
- Gilbert" <linux@treblig.org>, Jiangshan Yi <yijiangshan@kylinos.cn>, xu xin
- <cgel.zte@gmail.com>, Stefan Roesch <shr@devkernel.io>, Zhihao Cheng
- <chengzhihao1@huawei.com>, "Liam R. Howlett" <Liam.Howlett@Oracle.com>, 
- Alexey Dobriyan <adobriyan@gmail.com>, Minghao Chi
- <chi.minghao@zte.com.cn>, Seth Forshee <sforshee@digitalocean.com>, Zeng
- Jingxiang <linuszeng@tencent.com>, Bart Van Assche <bvanassche@acm.org>,
- Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>,
- Zhang Yi <yi.zhang@huawei.com>, Tom Rix <trix@redhat.com>, "Fabio M. De
- Francesco" <fmdefrancesco@gmail.com>, Chen Zhongjin
- <chenzhongjin@huawei.com>, Zhengchao Shao <shaozhengchao@huawei.com>, Rik
- van Riel <riel@surriel.com>, Jingyu Wang <jingyuwang_vip@163.com>, Hangyu
- Hua <hbh25y@gmail.com>, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org,  linux-s390@vger.kernel.org,
- linux-rdma@vger.kernel.org,  linux-usb@vger.kernel.org,
- v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
- linux-afs@lists.infradead.org, autofs@vger.kernel.org, linux-mm@kvack.org, 
- linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
- codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
- linux-efi@vger.kernel.org,  linux-erofs@lists.ozlabs.org,
- linux-ext4@vger.kernel.org,  linux-f2fs-devel@lists.sourceforge.net,
- cluster-devel@redhat.com,  linux-um@lists.infradead.org,
- linux-mtd@lists.infradead.org,  jfs-discussion@lists.sourceforge.net,
- linux-nfs@vger.kernel.org,  linux-nilfs@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net,  ntfs3@lists.linux.dev,
- ocfs2-devel@oss.oracle.com,  linux-karma-devel@lists.sourceforge.net,
- devel@lists.orangefs.org,  linux-unionfs@vger.kernel.org,
- linux-hardening@vger.kernel.org,  reiserfs-devel@vger.kernel.org,
- linux-cifs@vger.kernel.org,  samba-technical@lists.samba.org,
- linux-trace-kernel@vger.kernel.org,  linux-xfs@vger.kernel.org,
- bpf@vger.kernel.org, netdev@vger.kernel.org,  apparmor@lists.ubuntu.com,
- linux-security-module@vger.kernel.org,  selinux@vger.kernel.org
-Date: Wed, 21 Jun 2023 15:52:27 -0400
-In-Reply-To: <20230621152141.5961cf5f@gandalf.local.home>
-References: <20230621144507.55591-1-jlayton@kernel.org>
-	 <20230621152141.5961cf5f@gandalf.local.home>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.3 (3.48.3-1.fc38) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A621C742
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 20:05:25 +0000 (UTC)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CBD186;
+	Wed, 21 Jun 2023 13:05:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687377921; x=1718913921;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aUFm6KPq9IvsRQ99jHoURsxZubS26tpLZrj0RUPfm1A=;
+  b=Dw/r+95vAPQb/612qh6H962Pc39UWLCphyNp7tXQ5aZcO72Qxc3v8Zro
+   Cup2sIbCNzzcbO2fL8ruEMTm3/YpUwbmNSE00etDWzchCs25dYLvhtCrO
+   5030O09CXcPMRwWDoFcEC4i8L5ZWsKiBXofHnU6jZ+EnbcvcImM8Xt4dh
+   L0O3+UF+i3dAhNj1Rw5SonU6niDeXDuDyqTdORxmcCbjebtPG6T6qi7Fr
+   G75WQ9MQQzYYLUTLYYcOwCu6YnFhsSKiDXe/gVyozCKBiUFjM20ljLn2z
+   0r+oIuUjAXjyWjkpo/nJiCLlxMno0NUO2K9IdnM2/XtO8+SsG6oImaODC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10748"; a="350016589"
+X-IronPort-AV: E=Sophos;i="6.00,261,1681196400"; 
+   d="scan'208";a="350016589"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2023 13:05:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10748"; a="859129494"
+X-IronPort-AV: E=Sophos;i="6.00,261,1681196400"; 
+   d="scan'208";a="859129494"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 21 Jun 2023 13:05:18 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qC44r-00074B-20;
+	Wed, 21 Jun 2023 20:05:17 +0000
+Date: Thu, 22 Jun 2023 04:04:28 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tiezhu Yang <yangtiezhu@loongson.cn>, Arnd Bergmann <arnd@arndb.de>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, loongarch@lists.linux.dev,
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH v2 1/2] asm-generic: Unify uapi bitsperlong.h for arm64,
+ riscv and loongarch
+Message-ID: <202306220334.C80BpATp-lkp@intel.com>
+References: <1687336748-4898-2-git-send-email-yangtiezhu@loongson.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1687336748-4898-2-git-send-email-yangtiezhu@loongson.cn>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, 2023-06-21 at 15:21 -0400, Steven Rostedt wrote:
-> On Wed, 21 Jun 2023 10:45:05 -0400
-> Jeff Layton <jlayton@kernel.org> wrote:
->=20
-> > Most of this conversion was done via coccinelle, with a few of the more
-> > non-standard accesses done by hand. There should be no behavioral
-> > changes with this set. That will come later, as we convert individual
-> > filesystems to use multigrain timestamps.
->=20
-> BTW, Linus has suggested to me that whenever a conccinelle script is used=
-,
-> it should be included in the change log.
->=20
+Hi Tiezhu,
 
-Ok, here's what I have. I note again that my usage of coccinelle is
-pretty primitive, so I ended up doing a fair bit of by-hand fixing after
-applying these.
+kernel test robot noticed the following build warnings:
 
-Given the way that this change is broken up into 77 patches by
-subsystem, to which changelogs should I add it? I could add it to the
-"infrastructure" patch, but that's the one where I _didn't_ use it.=A0
+[auto build test WARNING on arnd-asm-generic/master]
+[also build test WARNING on soc/for-next arm64/for-next/core linus/master v6.4-rc7 next-20230621]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Maybe to patch #79 (the one that renames i_ctime)?
+url:    https://github.com/intel-lab-lkp/linux/commits/Tiezhu-Yang/asm-generic-Unify-uapi-bitsperlong-h-for-arm64-riscv-and-loongarch/20230621-172223
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git master
+patch link:    https://lore.kernel.org/r/1687336748-4898-2-git-send-email-yangtiezhu%40loongson.cn
+patch subject: [PATCH v2 1/2] asm-generic: Unify uapi bitsperlong.h for arm64, riscv and loongarch
+config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20230622/202306220334.C80BpATp-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230622/202306220334.C80BpATp-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306220334.C80BpATp-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from lib/kunit/test.c:9:
+   In file included from include/kunit/resource.h:12:
+   In file included from include/kunit/test.h:12:
+   In file included from include/kunit/assert.h:12:
+   In file included from include/linux/err.h:5:
+   In file included from include/linux/compiler.h:246:
+   In file included from ./arch/x86/include/generated/asm/rwonce.h:1:
+   In file included from include/asm-generic/rwonce.h:26:
+   In file included from include/linux/kasan-checks.h:5:
+   In file included from include/linux/types.h:6:
+   In file included from include/uapi/linux/types.h:5:
+   In file included from ./arch/x86/include/generated/uapi/asm/types.h:1:
+   In file included from include/uapi/asm-generic/types.h:7:
+   In file included from include/asm-generic/int-ll64.h:11:
+   In file included from include/uapi/asm-generic/int-ll64.h:12:
+   In file included from arch/x86/include/uapi/asm/bitsperlong.h:11:
+   In file included from include/asm-generic/bitsperlong.h:5:
+>> include/uapi/asm-generic/bitsperlong.h:13:9: warning: '__BITS_PER_LONG' macro redefined [-Wmacro-redefined]
+   #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+           ^
+   arch/x86/include/uapi/asm/bitsperlong.h:6:10: note: previous definition is here
+   # define __BITS_PER_LONG 64
+            ^
+   1 warning generated.
+--
+>> include/uapi/asm-generic/bitsperlong.h:13:9: warning: '__BITS_PER_LONG' macro redefined [-Wmacro-redefined], err: false
+--
+   In file included from lib/decompress_inflate.c:21:
+   In file included from include/linux/zutil.h:17:
+   In file included from include/linux/string.h:5:
+   In file included from include/linux/compiler.h:246:
+   In file included from ./arch/x86/include/generated/asm/rwonce.h:1:
+   In file included from include/asm-generic/rwonce.h:26:
+   In file included from include/linux/kasan-checks.h:5:
+   In file included from include/linux/types.h:6:
+   In file included from include/uapi/linux/types.h:5:
+   In file included from ./arch/x86/include/generated/uapi/asm/types.h:1:
+   In file included from include/uapi/asm-generic/types.h:7:
+   In file included from include/asm-generic/int-ll64.h:11:
+   In file included from include/uapi/asm-generic/int-ll64.h:12:
+   In file included from arch/x86/include/uapi/asm/bitsperlong.h:11:
+   In file included from include/asm-generic/bitsperlong.h:5:
+>> include/uapi/asm-generic/bitsperlong.h:13:9: warning: '__BITS_PER_LONG' macro redefined [-Wmacro-redefined]
+   #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+           ^
+   arch/x86/include/uapi/asm/bitsperlong.h:6:10: note: previous definition is here
+   # define __BITS_PER_LONG 64
+            ^
+   lib/decompress_inflate.c:42:17: warning: no previous prototype for function '__gunzip' [-Wmissing-prototypes]
+   STATIC int INIT __gunzip(unsigned char *buf, long len,
+                   ^
+   lib/decompress_inflate.c:42:8: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   STATIC int INIT __gunzip(unsigned char *buf, long len,
+          ^
+          static 
+   2 warnings generated.
+--
+   In file included from lib/decompress_unxz.c:107:
+   In file included from include/linux/decompress/mm.h:79:
+   In file included from include/linux/kernel.h:16:
+   In file included from include/linux/limits.h:6:
+   In file included from include/linux/types.h:6:
+   In file included from include/uapi/linux/types.h:5:
+   In file included from ./arch/x86/include/generated/uapi/asm/types.h:1:
+   In file included from include/uapi/asm-generic/types.h:7:
+   In file included from include/asm-generic/int-ll64.h:11:
+   In file included from include/uapi/asm-generic/int-ll64.h:12:
+   In file included from arch/x86/include/uapi/asm/bitsperlong.h:11:
+   In file included from include/asm-generic/bitsperlong.h:5:
+>> include/uapi/asm-generic/bitsperlong.h:13:9: warning: '__BITS_PER_LONG' macro redefined [-Wmacro-redefined]
+   #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+           ^
+   arch/x86/include/uapi/asm/bitsperlong.h:6:10: note: previous definition is here
+   # define __BITS_PER_LONG 64
+            ^
+   lib/decompress_unxz.c:251:17: warning: no previous prototype for function 'unxz' [-Wmissing-prototypes]
+   STATIC int INIT unxz(unsigned char *in, long in_size,
+                   ^
+   lib/decompress_unxz.c:251:8: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   STATIC int INIT unxz(unsigned char *in, long in_size,
+          ^
+          static 
+   2 warnings generated.
+--
+   In file included from lib/decompress_unzstd.c:74:
+   In file included from include/linux/decompress/mm.h:79:
+   In file included from include/linux/kernel.h:16:
+   In file included from include/linux/limits.h:6:
+   In file included from include/linux/types.h:6:
+   In file included from include/uapi/linux/types.h:5:
+   In file included from ./arch/x86/include/generated/uapi/asm/types.h:1:
+   In file included from include/uapi/asm-generic/types.h:7:
+   In file included from include/asm-generic/int-ll64.h:11:
+   In file included from include/uapi/asm-generic/int-ll64.h:12:
+   In file included from arch/x86/include/uapi/asm/bitsperlong.h:11:
+   In file included from include/asm-generic/bitsperlong.h:5:
+>> include/uapi/asm-generic/bitsperlong.h:13:9: warning: '__BITS_PER_LONG' macro redefined [-Wmacro-redefined]
+   #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+           ^
+   arch/x86/include/uapi/asm/bitsperlong.h:6:10: note: previous definition is here
+   # define __BITS_PER_LONG 64
+            ^
+   lib/decompress_unzstd.c:331:17: warning: no previous prototype for function 'unzstd' [-Wmissing-prototypes]
+   STATIC int INIT unzstd(unsigned char *buf, long len,
+                   ^
+   lib/decompress_unzstd.c:331:8: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   STATIC int INIT unzstd(unsigned char *buf, long len,
+          ^
+          static 
+   2 warnings generated.
+--
+   In file included from lib/maple_tree.c:54:
+   In file included from include/linux/maple_tree.h:11:
+   In file included from include/linux/kernel.h:16:
+   In file included from include/linux/limits.h:6:
+   In file included from include/linux/types.h:6:
+   In file included from include/uapi/linux/types.h:5:
+   In file included from ./arch/x86/include/generated/uapi/asm/types.h:1:
+   In file included from include/uapi/asm-generic/types.h:7:
+   In file included from include/asm-generic/int-ll64.h:11:
+   In file included from include/uapi/asm-generic/int-ll64.h:12:
+   In file included from arch/x86/include/uapi/asm/bitsperlong.h:11:
+   In file included from include/asm-generic/bitsperlong.h:5:
+>> include/uapi/asm-generic/bitsperlong.h:13:9: warning: '__BITS_PER_LONG' macro redefined [-Wmacro-redefined]
+   #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+           ^
+   arch/x86/include/uapi/asm/bitsperlong.h:6:10: note: previous definition is here
+   # define __BITS_PER_LONG 64
+            ^
+   lib/maple_tree.c:331:21: warning: unused function 'mte_set_full' [-Wunused-function]
+   static inline void *mte_set_full(const struct maple_enode *node)
+                       ^
+   lib/maple_tree.c:336:21: warning: unused function 'mte_clear_full' [-Wunused-function]
+   static inline void *mte_clear_full(const struct maple_enode *node)
+                       ^
+   lib/maple_tree.c:341:20: warning: unused function 'mte_has_null' [-Wunused-function]
+   static inline bool mte_has_null(const struct maple_enode *node)
+                      ^
+   4 warnings generated.
+--
+   In file included from lib/radix-tree.c:12:
+   In file included from include/linux/bitmap.h:8:
+   In file included from include/linux/bitops.h:5:
+   In file included from ./arch/x86/include/generated/uapi/asm/types.h:1:
+   In file included from include/uapi/asm-generic/types.h:7:
+   In file included from include/asm-generic/int-ll64.h:11:
+   In file included from include/uapi/asm-generic/int-ll64.h:12:
+   In file included from arch/x86/include/uapi/asm/bitsperlong.h:11:
+   In file included from include/asm-generic/bitsperlong.h:5:
+>> include/uapi/asm-generic/bitsperlong.h:13:9: warning: '__BITS_PER_LONG' macro redefined [-Wmacro-redefined]
+   #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+           ^
+   arch/x86/include/uapi/asm/bitsperlong.h:6:10: note: previous definition is here
+   # define __BITS_PER_LONG 64
+            ^
+   lib/radix-tree.c:288:6: warning: no previous prototype for function 'radix_tree_node_rcu_free' [-Wmissing-prototypes]
+   void radix_tree_node_rcu_free(struct rcu_head *head)
+        ^
+   lib/radix-tree.c:288:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   void radix_tree_node_rcu_free(struct rcu_head *head)
+   ^
+   static 
+   lib/radix-tree.c:1134:50: warning: parameter 'slot' set but not used [-Wunused-but-set-parameter]
+   void __rcu **radix_tree_iter_resume(void __rcu **slot,
+                                                    ^
+   3 warnings generated.
+--
+   In file included from lib/zstd/compress/huf_compress.c:23:
+   In file included from lib/zstd/compress/../common/zstd_deps.h:29:
+   In file included from include/linux/limits.h:6:
+   In file included from include/linux/types.h:6:
+   In file included from include/uapi/linux/types.h:5:
+   In file included from ./arch/x86/include/generated/uapi/asm/types.h:1:
+   In file included from include/uapi/asm-generic/types.h:7:
+   In file included from include/asm-generic/int-ll64.h:11:
+   In file included from include/uapi/asm-generic/int-ll64.h:12:
+   In file included from arch/x86/include/uapi/asm/bitsperlong.h:11:
+   In file included from include/asm-generic/bitsperlong.h:5:
+>> include/uapi/asm-generic/bitsperlong.h:13:9: warning: '__BITS_PER_LONG' macro redefined [-Wmacro-redefined]
+   #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+           ^
+   arch/x86/include/uapi/asm/bitsperlong.h:6:10: note: previous definition is here
+   # define __BITS_PER_LONG 64
+            ^
+   lib/zstd/compress/huf_compress.c:471:16: warning: unused function 'HUF_isSorted' [-Wunused-function]
+   MEM_STATIC int HUF_isSorted(nodeElt huffNode[], U32 const maxSymbolValue1) {
+                  ^
+   2 warnings generated.
+--
+   In file included from lib/zstd/compress/zstd_lazy.c:11:
+   In file included from lib/zstd/compress/zstd_compress_internal.h:21:
+   In file included from lib/zstd/compress/../common/zstd_internal.h:23:
+   In file included from lib/zstd/compress/../common/cpu.h:19:
+   In file included from lib/zstd/compress/../common/mem.h:18:
+   In file included from ./arch/x86/include/generated/asm/unaligned.h:1:
+   In file included from include/asm-generic/unaligned.h:9:
+   In file included from include/linux/unaligned/packed_struct.h:4:
+   In file included from include/linux/types.h:6:
+   In file included from include/uapi/linux/types.h:5:
+   In file included from ./arch/x86/include/generated/uapi/asm/types.h:1:
+   In file included from include/uapi/asm-generic/types.h:7:
+   In file included from include/asm-generic/int-ll64.h:11:
+   In file included from include/uapi/asm-generic/int-ll64.h:12:
+   In file included from arch/x86/include/uapi/asm/bitsperlong.h:11:
+   In file included from include/asm-generic/bitsperlong.h:5:
+>> include/uapi/asm-generic/bitsperlong.h:13:9: warning: '__BITS_PER_LONG' macro redefined [-Wmacro-redefined]
+   #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+           ^
+   arch/x86/include/uapi/asm/bitsperlong.h:6:10: note: previous definition is here
+   # define __BITS_PER_LONG 64
+            ^
+   lib/zstd/compress/zstd_lazy.c:835:16: warning: unused function 'ZSTD_isAligned' [-Wunused-function]
+   MEM_STATIC int ZSTD_isAligned(void const* ptr, size_t align) {
+                  ^
+   2 warnings generated.
+--
+   In file included from arch/x86/kernel/cpu/common.c:5:
+   In file included from include/linux/memblock.h:11:
+   In file included from include/linux/init.h:5:
+   In file included from include/linux/build_bug.h:5:
+   In file included from include/linux/compiler.h:246:
+   In file included from ./arch/x86/include/generated/asm/rwonce.h:1:
+   In file included from include/asm-generic/rwonce.h:26:
+   In file included from include/linux/kasan-checks.h:5:
+   In file included from include/linux/types.h:6:
+   In file included from include/uapi/linux/types.h:5:
+   In file included from ./arch/x86/include/generated/uapi/asm/types.h:1:
+   In file included from include/uapi/asm-generic/types.h:7:
+   In file included from include/asm-generic/int-ll64.h:11:
+   In file included from include/uapi/asm-generic/int-ll64.h:12:
+   In file included from arch/x86/include/uapi/asm/bitsperlong.h:11:
+   In file included from include/asm-generic/bitsperlong.h:5:
+>> include/uapi/asm-generic/bitsperlong.h:13:9: warning: '__BITS_PER_LONG' macro redefined [-Wmacro-redefined]
+   #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+           ^
+   arch/x86/include/uapi/asm/bitsperlong.h:6:10: note: previous definition is here
+   # define __BITS_PER_LONG 64
+            ^
+   arch/x86/kernel/cpu/common.c:366:19: warning: unused function 'flag_is_changeable_p' [-Wunused-function]
+   static inline int flag_is_changeable_p(u32 flag)
+                     ^
+   2 warnings generated.
+--
+   In file included from lib/mpi/mpi-inv.c:20:
+   In file included from lib/mpi/mpi-internal.h:20:
+   In file included from include/linux/module.h:12:
+   In file included from include/linux/list.h:5:
+   In file included from include/linux/container_of.h:5:
+   In file included from include/linux/build_bug.h:5:
+   In file included from include/linux/compiler.h:246:
+   In file included from ./arch/x86/include/generated/asm/rwonce.h:1:
+   In file included from include/asm-generic/rwonce.h:26:
+   In file included from include/linux/kasan-checks.h:5:
+   In file included from include/linux/types.h:6:
+   In file included from include/uapi/linux/types.h:5:
+   In file included from ./arch/x86/include/generated/uapi/asm/types.h:1:
+   In file included from include/uapi/asm-generic/types.h:7:
+   In file included from include/asm-generic/int-ll64.h:11:
+   In file included from include/uapi/asm-generic/int-ll64.h:12:
+   In file included from arch/x86/include/uapi/asm/bitsperlong.h:11:
+   In file included from include/asm-generic/bitsperlong.h:5:
+>> include/uapi/asm-generic/bitsperlong.h:13:9: warning: '__BITS_PER_LONG' macro redefined [-Wmacro-redefined]
+   #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+           ^
+   arch/x86/include/uapi/asm/bitsperlong.h:6:10: note: previous definition is here
+   # define __BITS_PER_LONG 64
+            ^
+   lib/mpi/mpi-inv.c:34:15: warning: variable 'k' set but not used [-Wunused-but-set-variable]
+           unsigned int k;
+                        ^
+   2 warnings generated.
+..
 
 
-------------------------8<------------------------------
-@@
-expression inode;
-@@
+vim +/__BITS_PER_LONG +13 include/uapi/asm-generic/bitsperlong.h
 
-- inode->i_ctime =3D current_time(inode)
-+ inode_set_current_ctime(inode)
+     4	
+     5	/*
+     6	 * In order to keep safe and avoid regression, only unify uapi
+     7	 * bitsperlong.h for some archs which are using newer toolchains
+     8	 * that have the definitions of __CHAR_BIT__ and __SIZEOF_LONG__.
+     9	 * See the following link for more info:
+    10	 * https://lore.kernel.org/linux-arch/b9624545-2c80-49a1-ac3c-39264a591f7b@app.fastmail.com/
+    11	 */
+    12	#if defined(__CHAR_BIT__) && defined(__SIZEOF_LONG__)
+  > 13	#define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+    14	#else
+    15	/*
+    16	 * There seems to be no way of detecting this automatically from user
+    17	 * space, so 64 bit architectures should override this in their
+    18	 * bitsperlong.h. In particular, an architecture that supports
+    19	 * both 32 and 64 bit user space must not rely on CONFIG_64BIT
+    20	 * to decide it, but rather check a compiler provided macro.
+    21	 */
+    22	#ifndef __BITS_PER_LONG
+    23	#define __BITS_PER_LONG 32
+    24	#endif
+    25	#endif
+    26	
 
-@@
-expression inode;
-@@
-
-- inode->i_ctime =3D inode->i_mtime =3D current_time(inode)
-+ inode->i_mtime =3D inode_set_current_ctime(inode)
-
-@@
-struct inode *inode;
-expression value;
-@@
-
-- inode->i_ctime =3D value;
-+ inode_set_ctime(inode, value);
-
-@@
-struct inode *inode;
-expression val;
-@@
-- inode->i_ctime.tv_sec =3D val
-+ inode_set_ctime_sec(inode, val)
-
-@@
-struct inode *inode;
-expression val;
-@@
-- inode->i_ctime.tv_nsec =3D val
-+ inode_set_ctime_nsec(inode, val)
-
-@@
-struct inode *inode;
-@@
-- inode->i_ctime
-+ inode_ctime_peek(inode)
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
