@@ -1,274 +1,238 @@
-Return-Path: <bpf+bounces-2983-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2984-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34C43737CB1
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 10:06:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5291737D2D
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 10:16:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 643E91C20D87
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 08:06:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B3E62813B4
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 08:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BA9CC2EE;
-	Wed, 21 Jun 2023 08:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E373C8C1;
+	Wed, 21 Jun 2023 08:16:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DCF32AB55;
-	Wed, 21 Jun 2023 08:06:21 +0000 (UTC)
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E45519AF;
-	Wed, 21 Jun 2023 01:06:12 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-62eeafc0c14so10522216d6.1;
-        Wed, 21 Jun 2023 01:06:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687334771; x=1689926771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hWd+0GOHlWdYgM6e9AF1bG/a1Ry3VWLc+87uu1Jeh9Y=;
-        b=OJ3PG1VTeTH8n9nFuI7JdzxSo52SxIbQt+hZk84eudUoyyDzClj7ST+W5YZyku8ZtL
-         tOver63AnhuuMRBpHVrzPKqjFicig5lFIFjgIU2fKWSc+Wp9nYoiK6y3sHw4BMtIGusM
-         v7Q5eXVL6RE9XuB/zm9VGy6AACNKbj9jzUUSDnRXivuBV1d1znfJ5RCR4cwK/VqFdrn+
-         L3R74TiKt6N73Tr6cgTPV9vjzAaj1ZeNcXgsd5jT3AqwO7mCWr0KQmUlJE9/Y68LNUce
-         g4i2+LKBGiX0RxVBTb99pu2ocIp4F/Rpcvt5AsV8sJnSqAQs+Ynq+21VKRh07BHUGSOY
-         yxoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687334771; x=1689926771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hWd+0GOHlWdYgM6e9AF1bG/a1Ry3VWLc+87uu1Jeh9Y=;
-        b=aPJVi+hZkRYR1zjTyXbgd+uVHkMGGcYvp3+Z62yaznJgvOzG/b1jGAdcmAwnCFz6j+
-         9THwx+DBAYtzbrMFhCL/MMKDc9NdzXW/4ZlAURqmu3EtgwPe53WFpmP7GnnPVx8kdGYp
-         zSabO0XeFXSNoMr9V4M/yInZIJ9p0QABkdyY2zuO78bmQYg6ea0K7WoXZiAoqHlmoI6+
-         XDSGkrrmpUmxa93WwyMB6EIh+2dwupqTB+uZ5XqAEtHWKEa1jd4+4YYYSGjqU6CcZvxA
-         Ygi4AsbWUIiI3tdyreyB3WgRmk1sUhBzbAg7PQHpM5C367qzzZB7/r+Fx2IqFr2dZpiI
-         lkEA==
-X-Gm-Message-State: AC+VfDy2G4wrTuc2RecXvj7cXzqsa5pi3AXOEfpHpu4yRjL8+4M78nIo
-	SWdBqzLojFb2NZJ/b6M+OVjzJP/6de9lFdl0s60=
-X-Google-Smtp-Source: ACHHUZ4B71qrF3sf2dnbRET9UFSJKnVQrujBq3fvDKkfgyj+vgMgzWexi9pbTzfAIyyPJxQZFjOwIoQOWxjllVU7VPU=
-X-Received: by 2002:a05:6214:401a:b0:62b:5410:322d with SMTP id
- kd26-20020a056214401a00b0062b5410322dmr18790621qvb.6.1687334771540; Wed, 21
- Jun 2023 01:06:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D0E2AB55;
+	Wed, 21 Jun 2023 08:16:09 +0000 (UTC)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B7519A1;
+	Wed, 21 Jun 2023 01:16:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687335366; x=1718871366;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=2xcOPbX1DdUySYKbMp949A8XnZ4eN8565fGdYNWZUM0=;
+  b=fOMNPbUwm7VUkJwAXWbmcMzErv4mGDGnDHAUvrEKJVKyiNExl8PzRRt8
+   7GNQLBffgb/KJ/sZ2MnX8htrXlMpsoikhUJbANwMwyqlJQ0tFfpFuuACF
+   kSOMGdeRwWv2PRl8z+icOn5hjrluRU2Zj2BL2hR5MEjhtncvJv41Op4rF
+   KkWZWbHsKoNWxy55TTOTTrYr6T6Kcw6A47g+sGkf69ISeclPkjEy5zE2H
+   5ClDpc0uenqMRbxcjOaN17VUgWlkpsLNSIuZVYFTCitVSb2FsY/FxkYEQ
+   HCX5a1WVDIQ18LbnMFUoT1pMH14ljML8lIgJVub6GaSXiAlRMScaNiO41
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="426060045"
+X-IronPort-AV: E=Sophos;i="6.00,259,1681196400"; 
+   d="scan'208";a="426060045"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2023 01:16:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="888573705"
+X-IronPort-AV: E=Sophos;i="6.00,259,1681196400"; 
+   d="scan'208";a="888573705"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga005.jf.intel.com with ESMTP; 21 Jun 2023 01:16:02 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 21 Jun 2023 01:16:02 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23 via Frontend Transport; Wed, 21 Jun 2023 01:16:02 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.175)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.23; Wed, 21 Jun 2023 01:16:02 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LwtQNPQgndKBimbLmGwXpfjspw/F2GUL2yOgRg2QHko508e7avB9O4WygvJ/CYroTQoPqxXPTPSawDRD/pbINmv8Tw3YIzm7V90Dqcxq7KTWs4/R8GHXPhIZs/QjuJaM4dx3EpZovQSimsg4wvJ217x8OKArSAo1v617x5obh5MJAa9XwJ3AbMkgDFGk832Dd+hOfDoSFRwgNFdW4jrwSdOd1PjP59O5w6MwA1EwiukskK5WAQguquc3AmtCwKZoQkC3aXttEC589C27U5159Zksu7z96NDYJFlv/kYjtowbKmUSMif3pVqHC9N8LTyTlE7l/V7h4ib/0PtzOCDdGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tAAgi3tAT5Ju7RzgXJcGZuUZQv9ylkgmoZ+ExYLPT5k=;
+ b=AxjOErCP9592AJ7xA+gHmzv2vHk1BUTb243mimLrBLrYnqgsAdafOmVssYqRwfNZIktX6+O4l1Pud5ZMj8l4COaXBp5R593c4yiY+wjKt/QHJdwOmsnwOMVpoZoTKUvO5WgoVWizGeEcdDxwWH58lER/Tq9ItRL63u/rRF0xzjSgCTHzzuD8mW88/sq28q5MAqadIrd9g0/+JT9aMxUBPVeJfM5fNtROo4A+xv7sUO7HEckmesizhqw1Bf8UZQfuYOhpOzF9AxeR4eYddYTYB42TXwbPpe+YpZuxqimX9n/3SaO881GJ6dwt/DjjoA6A8+oXb7/nPJ7p6m5Vi5C+pA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SN7PR11MB6655.namprd11.prod.outlook.com (2603:10b6:806:26d::20)
+ by IA1PR11MB6217.namprd11.prod.outlook.com (2603:10b6:208:3eb::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Wed, 21 Jun
+ 2023 08:15:59 +0000
+Received: from SN7PR11MB6655.namprd11.prod.outlook.com
+ ([fe80::b883:574:e550:3d67]) by SN7PR11MB6655.namprd11.prod.outlook.com
+ ([fe80::b883:574:e550:3d67%6]) with mapi id 15.20.6500.036; Wed, 21 Jun 2023
+ 08:15:59 +0000
+From: "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>
+To: =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org"
+	<andrii@kernel.org>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "Karlsson, Magnus"
+	<magnus.karlsson@intel.com>, "bjorn@kernel.org" <bjorn@kernel.org>,
+	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+	"simon.horman@corigine.com" <simon.horman@corigine.com>
+Subject: RE: [PATCH v4 bpf-next 06/22] xsk: introduce wrappers and helpers for
+ supporting multi-buffer in Tx path
+Thread-Topic: [PATCH v4 bpf-next 06/22] xsk: introduce wrappers and helpers
+ for supporting multi-buffer in Tx path
+Thread-Index: AQHZn66M9KVHikymvU6aRq3dvwXcuK+T+RCAgAD3qSA=
+Date: Wed, 21 Jun 2023 08:15:59 +0000
+Message-ID: <SN7PR11MB665536C0588850F0374EFBA3905DA@SN7PR11MB6655.namprd11.prod.outlook.com>
+References: <20230615172606.349557-1-maciej.fijalkowski@intel.com>
+ <20230615172606.349557-7-maciej.fijalkowski@intel.com>
+ <87352mdp10.fsf@toke.dk>
+In-Reply-To: <87352mdp10.fsf@toke.dk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN7PR11MB6655:EE_|IA1PR11MB6217:EE_
+x-ms-office365-filtering-correlation-id: 9a5b30a4-34da-4b48-664b-08db722fbee0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: iryX+bAZGKcB0fh2E35aMOwFznbISys6NokVQoXZFTeoebDF45hHdTJWRthIAS0ciTyKkos6z6m+UEiJ8l+IOm9Wqi71J2yKVlHKyAYUUgh06wVb6AgRuemqMkIYqz65dEe9BywcAk48kfxvCk6RZNUPGhN+xRLzZExWNOW/OMRC1DophCisasP0V4Sb1xDdDnSGFKoMxqftsgRZme7rqAqLw4VdIRpZhnyGB4EZ5wZiry/rJ/FB5D2YZn/ew9JPbkGNhE+iR0yVzCHrgLgTl4KvP6LOc/QQH+v9PWAdHdf7Z6lfN+1yCSNirsPncBVmjudYxOcH4bmcQ7jZNVkOYAjX5ilczi8LCv7bmE441anj2tniG4o2P9j/tnYsinYkrJGm/iMWD/URAnJJbZwZqh1lzc6qyhJKaKPeGL6ftm5Q8ziPHcjbyysqldubzFmQyQ3CCLlo188hnTfsaT7IZEaDj6A1ogWD8Qs5/mgJx2uESwhcUEzj7LlOY84vebODQ3tIzpb51tp/3WJDOSVyY7m1kycJi3Tmg3QF5Joo9aKVX1bd/VxELa1BJbaqdGISS3rSzwFQD4aYNnLtqhaAOz/QdPsTXyW3M997LC6wNPyLhJDuVxFuMnX6kZ9PuZBP
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB6655.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(346002)(136003)(396003)(366004)(376002)(451199021)(82960400001)(38070700005)(86362001)(33656002)(38100700002)(122000001)(66574015)(83380400001)(478600001)(110136005)(54906003)(7696005)(71200400001)(64756008)(316002)(66476007)(4326008)(66446008)(76116006)(66946007)(66556008)(55016003)(6506007)(53546011)(8676002)(8936002)(41300700001)(186003)(9686003)(26005)(2906002)(52536014)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?5vm1SpFh4omW/gxf6JkWnmdCv02A6dYlPK9v9lqhxqhRGKqu2l7r5s080V?=
+ =?iso-8859-1?Q?drk9ZWBWo7E2ERl/6pZqSNTY1mMaXJl77vzWYkJa9rYom2CdUakkTnABKK?=
+ =?iso-8859-1?Q?p2prkiEtIrFTmswKzD5ZVZOWHt39qG3QuEpAE06IFIMDqYzWlJmDogJlYb?=
+ =?iso-8859-1?Q?34SRDNZo28WydkmuFrzon6NyMH42GnQRy1izuTg0sGR24T72T7UsB1O9N6?=
+ =?iso-8859-1?Q?b7degRNA4vEL9KM8EYV8l0U9bBOQOVnwnKoI0017513k0BBVRteL8EXMmy?=
+ =?iso-8859-1?Q?w3I99Ws+ry5p8ymLUfoSLnt9WMgRucalqIFKmZCYdtN42KNtiL9N5rbOsr?=
+ =?iso-8859-1?Q?PWfBy9tDInXs9IzGxM9jfdAEp/mnwEF6VHijsmrLTqpZHX0oodFYwUlXy3?=
+ =?iso-8859-1?Q?AtnC18Q68f5+WZhDAvpy8AFeDRjRUwT7Hk235glAoGO6hZ7IZxaLvImZ2z?=
+ =?iso-8859-1?Q?p7KrkvTX75fparrvuld/4SKNTqwSD4q7U1AzwoDnlXd5Jmmu2f5tpr2uSr?=
+ =?iso-8859-1?Q?jDE2QSZbkyYgCAUwz5wqrhymM5EmrRDMieMwbNq1KE0UjpH4g63I3QOIPZ?=
+ =?iso-8859-1?Q?irmXxu4sQC+EzOKlcK1r759bAjkz6jA5l1xfZGUtNKcYtVo+Y0KMSn1c2e?=
+ =?iso-8859-1?Q?vGyliqCtK80iNe7rvSSz8wLfEPWFdeS9G9O9C5vTUAFAhfKVPpQg//pW9g?=
+ =?iso-8859-1?Q?WR67sP7nFExHot27MUJfs8saPubpNGLUSZQB3EJuuqTrWalvoE5eh1o0Hu?=
+ =?iso-8859-1?Q?G+S42/rBTvCHJXagIWKTe28b6d3ov584tMoygqKKCNk/NEKOB8qFF0VEx3?=
+ =?iso-8859-1?Q?dh0YiLgIUScrHYbyVGc3DLE9whuA7rDCJqJpv8bYbAzW1BC6ylJpb5ifeW?=
+ =?iso-8859-1?Q?6506H1ysVWwhSTbNswKyyS+ckvWni0mmfcQxBoCmprfQ8BaeBf1TsvH4+B?=
+ =?iso-8859-1?Q?R4XF+hxSVfXktiPrc0pULDxHa4KAdGyPWJ+nUvqD96uQ63cI4mxJCU//jO?=
+ =?iso-8859-1?Q?8vXhqF9nHtPeTaLr4ZyWwn8yJDc/cqHGGcVUBwWcffFWZ2n8KXsjd5BzWU?=
+ =?iso-8859-1?Q?yD9j25FcXCQUXbXzrF+AAPT2nAS9LpJ21hiAn98ngbHOSvM/DCqEry6x6L?=
+ =?iso-8859-1?Q?mU1p5VxUJlFP5blaiMowqs8t6bjVf4bOJzKr3DTb04C2xGTofagEsowqHc?=
+ =?iso-8859-1?Q?hy/1VzMEcgRJX45NDVirxsdoeBcVNWGcYT121LuYVLl9Xmhas/tjiRQYIc?=
+ =?iso-8859-1?Q?wi4OZcjM6iwZ7LSAS8tv6nXCalGdeNWb0ShO5UDSQkDIyYljaTM2GQgHVe?=
+ =?iso-8859-1?Q?OKvuIAhu/gfDLQK7SeuLd0ZaSRpxCg6d/Bo0iTj+j6yFzBTRBFOdKTgzrB?=
+ =?iso-8859-1?Q?F0QjR2e2N4UqeGXJbxtvXJTaUft7/KZw4WiMwUqDpVpSJiE+Wp+L63Ksli?=
+ =?iso-8859-1?Q?WP+7pVgNHZ8+SPx85P/SGWnAErOm51cT8JsM/h+ktFRPN11VCYaZP2Nc5T?=
+ =?iso-8859-1?Q?4VSIQmeQsaR+9mKytD70I0Oxkz5A7PZCJkUQ6Npa0mYjFy4ERCoIkmzU6D?=
+ =?iso-8859-1?Q?yeKSgM8hVseB3y+8nPFWmroQYFLRRkMqYk4HaanyOq+8P5zZIUdJS3p00t?=
+ =?iso-8859-1?Q?C3lSeeLQn+WQ4ekgpzotZKCjUpWJcqVBij?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230615172606.349557-1-maciej.fijalkowski@intel.com>
- <20230615172606.349557-16-maciej.fijalkowski@intel.com> <87zg4uca21.fsf@toke.dk>
-In-Reply-To: <87zg4uca21.fsf@toke.dk>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Wed, 21 Jun 2023 10:06:00 +0200
-Message-ID: <CAJ8uoz2hfXzu29KEgqm3rNm+hayDtUkJatFVA0n4nZz6F9de0w@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 15/22] xsk: add multi-buffer documentation
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org, 
-	magnus.karlsson@intel.com, bjorn@kernel.org, tirthendu.sarkar@intel.com, 
-	simon.horman@corigine.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB6655.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a5b30a4-34da-4b48-664b-08db722fbee0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jun 2023 08:15:59.4231
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PO1zAP/PevbVN2yuf0Hl3aJfVDvZkCfF77C3nF/jDyGFj3sqn7nlJozpc57HN3tcf6Rf7IDdBXXp9JFEsMedBNF5IxL1194tQF1Q5OV0ORg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6217
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, 20 Jun 2023 at 19:34, Toke H=C3=B8iland-J=C3=B8rgensen <toke@kernel=
-.org> wrote:
->
+> -----Original Message-----
+> From: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
+> Sent: Tuesday, June 20, 2023 10:56 PM
+>>
+> Subject: Re: [PATCH v4 bpf-next 06/22] xsk: introduce wrappers and helper=
+s
+> for supporting multi-buffer in Tx path
+>=20
 > Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
->
-> > From: Magnus Karlsson <magnus.karlsson@intel.com>
+>=20
+> > From: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
 > >
-> > Add AF_XDP multi-buffer support documentation including two
-> > pseudo-code samples.
+> > In Tx path, xsk core reserves space for each desc to be transmitted in
+> > the completion queue and it's address contained in it is stored in the
+> > skb destructor arg. After successful transmission the skb destructor
+> > submits the addr marking completion.
 > >
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > To handle multiple descriptors per packet, now along with reserving
+> > space for each descriptor, the corresponding address is also stored in
+> > completion queue. The number of pending descriptors are stored in skb
+> > destructor arg and is used by the skb destructor to update completions.
+> >
+> > Introduce 'skb' in xdp_sock to store a partially built packet when
+> > __xsk_generic_xmit() must return before it sees the EOP descriptor for
+> > the current packet so that packet building can resume in next call of
+> > __xsk_generic_xmit().
+> >
+> > Helper functions are introduced to set and get the pending descriptors
+> > in the skb destructor arg. Also, wrappers are introduced for storing
+> > descriptor addresses, submitting and cancelling (for unsuccessful
+> > transmissions) the number of completions.
+> >
+> > Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
 > > ---
-> >  Documentation/networking/af_xdp.rst | 177 ++++++++++++++++++++++++++++
-> >  1 file changed, 177 insertions(+)
+> >  include/net/xdp_sock.h |  6 ++++
+> >  net/xdp/xsk.c          | 74 ++++++++++++++++++++++++++++++------------
+> >  net/xdp/xsk_queue.h    | 19 ++++-------
+> >  3 files changed, 67 insertions(+), 32 deletions(-)
 > >
-> > diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networ=
-king/af_xdp.rst
-> > index 247c6c4127e9..2b583f58967b 100644
-> > --- a/Documentation/networking/af_xdp.rst
-> > +++ b/Documentation/networking/af_xdp.rst
-> > @@ -453,6 +453,93 @@ XDP_OPTIONS getsockopt
-> >  Gets options from an XDP socket. The only one supported so far is
-> >  XDP_OPTIONS_ZEROCOPY which tells you if zero-copy is on or not.
+> > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > index 36b0411a0d1b..1617af380162 100644
+> > --- a/include/net/xdp_sock.h
+> > +++ b/include/net/xdp_sock.h
+> > @@ -68,6 +68,12 @@ struct xdp_sock {
+> >  	u64 rx_dropped;
+> >  	u64 rx_queue_full;
 > >
-> > +Multi-Buffer Support
-> > +--------------------
-> > +
-> > +With multi-buffer support, programs using AF_XDP sockets can receive
-> > +and transmit packets consisting of multiple buffers both in copy and
-> > +zero-copy mode. For example, a packet can consist of two
-> > +frames/buffers, one with the header and the other one with the data,
-> > +or a 9K Ethernet jumbo frame can be constructed by chaining together
-> > +three 4K frames.
-> > +
-> > +Some definitions:
-> > +
-> > +* A packet consists of one or more frames
-> > +
-> > +* A descriptor in one of the AF_XDP rings always refers to a single
-> > +  frame. In the case the packet consists of a single frame, the
-> > +  descriptor refers to the whole packet.
-> > +
-> > +To enable multi-buffer support for an AF_XDP socket, use the new bind
-> > +flag XDP_USE_SG. If this is not provided, all multi-buffer packets
-> > +will be dropped just as before. Note that the XDP program loaded also
-> > +needs to be in multi-buffer mode. This can be accomplished by using
-> > +"xdp.frags" as the section name of the XDP program used.
-> > +
-> > +To represent a packet consisting of multiple frames, a new flag called
-> > +XDP_PKT_CONTD is introduced in the options field of the Rx and Tx
-> > +descriptors. If it is true (1) the packet continues with the next
-> > +descriptor and if it is false (0) it means this is the last descriptor
-> > +of the packet. Why the reverse logic of end-of-packet (eop) flag found
-> > +in many NICs? Just to preserve compatibility with non-multi-buffer
-> > +applications that have this bit set to false for all packets on Rx,
-> > +and the apps set the options field to zero for Tx, as anything else
-> > +will be treated as an invalid descriptor.
-> > +
-> > +These are the semantics for producing packets onto AF_XDP Tx ring
-> > +consisting of multiple frames:
-> > +
-> > +* When an invalid descriptor is found, all the other
-> > +  descriptors/frames of this packet are marked as invalid and not
-> > +  completed. The next descriptor is treated as the start of a new
-> > +  packet, even if this was not the intent (because we cannot guess
-> > +  the intent). As before, if your program is producing invalid
-> > +  descriptors you have a bug that must be fixed.
-> > +
-> > +* Zero length descriptors are treated as invalid descriptors.
-> > +
-> > +* For copy mode, the maximum supported number of frames in a packet is
-> > +  equal to CONFIG_MAX_SKB_FRAGS + 1. If it is exceeded, all
-> > +  descriptors accumulated so far are dropped and treated as
-> > +  invalid. To produce an application that will work on any system
-> > +  regardless of this config setting, limit the number of frags to 18,
-> > +  as the minimum value of the config is 17.
-> > +
-> > +* For zero-copy mode, the limit is up to what the NIC HW
-> > +  supports. Usually at least five on the NICs we have checked. We
-> > +  consciously chose to not enforce a rigid limit (such as
-> > +  CONFIG_MAX_SKB_FRAGS + 1) for zero-copy mode, as it would have
-> > +  resulted in copy actions under the hood to fit into what limit
-> > +  the NIC supports. Kind of defeats the purpose of zero-copy mode.
->
-> How is an application supposed to discover the actual limit for a given
-> NIC/driver?
-
-Thanks for your comments Toke. I will add an example here of how to
-discover this. Basically you can send a packet with N frags (N =3D 2 to
-start with), check the error stats through the getsockopt. If no
-invalid_tx_desc error, increase N with one and send this new packet.
-If you get an error, then the max number of frags is N-1.
-
-> > +* The ZC batch API guarantees that it will provide a batch of Tx
-> > +  descriptors that ends with full packet at the end. If not, ZC
-> > +  drivers would have to gather the full packet on their side. The
-> > +  approach we picked makes ZC drivers' life much easier (at least on
-> > +  Tx side).
->
-> This seems like it implies some constraint on how an application can use
-> the APIs, but it's not quite clear to me what those constraints are, nor
-> what happens if an application does something different. This should
-> probably be spelled out...
->
-> > +On the Rx path in copy-mode, the xsk core copies the XDP data into
-> > +multiple descriptors, if needed, and sets the XDP_PKT_CONTD flag as
-> > +detailed before. Zero-copy mode works the same, though the data is not
-> > +copied. When the application gets a descriptor with the XDP_PKT_CONTD
-> > +flag set to one, it means that the packet consists of multiple buffers
-> > +and it continues with the next buffer in the following
-> > +descriptor. When a descriptor with XDP_PKT_CONTD =3D=3D 0 is received,=
- it
-> > +means that this is the last buffer of the packet. AF_XDP guarantees
-> > +that only a complete packet (all frames in the packet) is sent to the
-> > +application.
->
-> In light of the comment on batch size below, I think it would be useful
-> to spell out what this means exactly. IIUC correctly, it means that the
-> kernel will check the ringbuffer before starting to copy the data, and
-> if there are not enough descriptors available, it will drop the packet
-> instead of doing a partial copy, right? And this is the case for both ZC
-> and copy mode?
-
-I will make this paragraph and the previous one clearer. And yes, copy
-mode and zc mode have the same behaviour.
-
-> > +If application reads a batch of descriptors, using for example the lib=
-xdp
-> > +interfaces, it is not guaranteed that the batch will end with a full
-> > +packet. It might end in the middle of a packet and the rest of the
-> > +buffers of that packet will arrive at the beginning of the next batch,
-> > +since the libxdp interface does not read the whole ring (unless you
-> > +have an enormous batch size or a very small ring size).
-> > +
-> > +An example program each for Rx and Tx multi-buffer support can be foun=
-d
-> > +later in this document.
-> > +
-> >  Usage
-> >  =3D=3D=3D=3D=3D
-> >
-> > @@ -532,6 +619,96 @@ like this:
-> >  But please use the libbpf functions as they are optimized and ready to
-> >  use. Will make your life easier.
-> >
-> > +Usage Multi-Buffer Rx
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +Here is a simple Rx path pseudo-code example (using libxdp interfaces
-> > +for simplicity). Error paths have been excluded to keep it short:
-> > +
-> > +.. code-block:: c
-> > +
-> > +    void rx_packets(struct xsk_socket_info *xsk)
-> > +    {
-> > +        static bool new_packet =3D true;
-> > +        u32 idx_rx =3D 0, idx_fq =3D 0;
-> > +        static char *pkt;
-> > +
-> > +        int rcvd =3D xsk_ring_cons__peek(&xsk->rx, opt_batch_size, &id=
-x_rx);
-> > +
-> > +        xsk_ring_prod__reserve(&xsk->umem->fq, rcvd, &idx_fq);
-> > +
-> > +        for (int i =3D 0; i < rcvd; i++) {
-> > +            struct xdp_desc *desc =3D xsk_ring_cons__rx_desc(&xsk->rx,=
- idx_rx++);
-> > +            char *frag =3D xsk_umem__get_data(xsk->umem->buffer, desc-=
->addr);
-> > +            bool eop =3D !(desc->options & XDP_PKT_CONTD);
-> > +
-> > +        if (new_packet)
-> > +            pkt =3D frag;
-> > +        else
-> > +            add_frag_to_pkt(pkt, frag);
-> > +
-> > +        if (eop)
-> > +            process_pkt(pkt);
-> > +
-> > +        new_packet =3D eop;
-> > +
-> > +        *xsk_ring_prod__fill_addr(&xsk->umem->fq, idx_fq++) =3D desc->=
-addr;
->
-> Indentation is off here...
-
-Will fix.
-
->
+> > +	/* When __xsk_generic_xmit() must return before it sees the EOP
+> descriptor for the current
+> > +	 * packet, the partially built skb is saved here so that packet build=
+ing
+> can resume in next
+> > +	 * call of __xsk_generic_xmit().
+> > +	 */
+> > +	struct sk_buff *skb;
+>=20
+> What ensures this doesn't leak? IIUC, when the loop in
+> __xsk_generic_xmit() gets to the end of a batch, userspace will get an
+> EAGAIN error and be expected to retry the call later, right? But if
+> userspace never retries, could the socket be torn down with this pointer
+> still populated? I looked for something that would prevent this in
+> subsequent patches, but couldn't find it; am I missing something?
+>=20
 > -Toke
->
+>=20
+
+Thanks for catching this. We will add cleanup during socket termination in =
+v5.
+
 
