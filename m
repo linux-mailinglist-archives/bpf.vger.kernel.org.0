@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-3053-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FABE738CA0
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 19:05:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8F82738CA6
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 19:06:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BEA1281741
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 17:05:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9F481C20F74
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 17:06:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2F71ACDA;
-	Wed, 21 Jun 2023 17:02:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CF0D1B8F8;
+	Wed, 21 Jun 2023 17:03:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FBF119E5E
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 17:02:59 +0000 (UTC)
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209B910D
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:58 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-66872bfa48aso3313419b3a.0
-        for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21021B8E2
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 17:03:00 +0000 (UTC)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0328F10C
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:03:00 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5538f216c7aso2000790a12.0
+        for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 10:02:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687366977; x=1689958977;
+        d=google.com; s=20221208; t=1687366979; x=1689958979;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oh4MSgHmxCb0wLEkBD2zbZNTxXKYUJSkffgOtaf+rTs=;
-        b=RAIsuwPnJxewMm+JMGNDPEzSp7rm1vTOL3l+y+Ek4+VM6VDxu4eE1PyQ0u9FKximZ3
-         koBXX5rYHhqULcsdiNZaqy29sLGW+n6d6GgP1i0tZYpp7HOtPBdAmlbuthG/TRdGhmoL
-         vbgefmU1Lz6QrDmBv7dWneXWd6bz3BOSqLV1R9B3FzBOmD2NKWyGzCfpAProCLSkX/Vj
-         Tc5auvESSEkxGAt+uSXPAHRCJr96XhsTHif/1PjX+0pLi9g96dZC7LmNL/YKK266Y89+
-         LHAxIBIKQ4cL25fOyzXQgq+vI3LaRrbpnSJlw2JnIPEQDsMuYt9L0PC/oK6NuwSVoE+v
-         1vMw==
+        bh=G8oJ5/OEX1pF9nKL0tJ4RgAA4zY2+vJRV/bxjv3VyJo=;
+        b=yqIO9pNDHL5lnesoiE6dji/e40TET35LO0r4r68gm3RLNDFg78HfKUqrh77HexkKJX
+         l1Aq2FlXV7MY2fYEPYkIJDk/Emuki2dRSX+ZtM+u/qQnddM867uFqJLy0UYK739Gz0HC
+         pn1gffq7MNCUBNZ6QbcTw6fSkxq+j4JJ2UHqq/2etTFTMQXTvfd3bPDr67YOTw9yrcJl
+         tMtCwgFr9RL05VnFxSkWeIBCauyIxJxlSmy8oJ8dpwnzXgbx6IOUWPlANHj9Q2F5PEdD
+         +UkQvymnRdQM/4NbA3mBEYT72ipEfM88lU4npVevujhyHGd0ID7+YADCK0lAH9gdTgG4
+         ysZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687366977; x=1689958977;
+        d=1e100.net; s=20221208; t=1687366979; x=1689958979;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oh4MSgHmxCb0wLEkBD2zbZNTxXKYUJSkffgOtaf+rTs=;
-        b=ccEnBIgwcCAIazt1w+P7cEkXg+MRLCcCXnyXFGIKTlDP9M/P0pLbAkxesXE16dnnVs
-         NOQULVXEsu6K1/dIJCdoRlmtBR1ehxMk3OWH+NcctvQllP8zu7+2eE6j2/CVynopVRyv
-         onAj/u+dwOYpRbjYuL4RZCIrrfzp0xBvTr10CGRhQj2GoYUHNe4ekj2aGgit3YoR+cfF
-         lFb5PEJObpQhZh8LC5fw3trFIdpqgSWUNY9H2ir7J+b68TE7zuiNhqIUy51A8ca3Fkls
-         zxTWgMkR+fBRk2+rd86MIIGqAC5OtklkHYPzqAT3K4FcAhcXwSi07Urwt7hnAaDZ4/9E
-         FLLw==
-X-Gm-Message-State: AC+VfDzxk9kg2kIayX+ajppP7z5UcwEPRhK/hijUD69Vy/GAIp6aG75M
-	aawoylP13QeA8zUSbNuyULPK/0BHqSbZFfx35sYHXx5QS6/cnan5f0Qo/tAzhyHx8IKbvICOKBI
-	ZLAo2oZ4caMWJyam/2mj96Lev24OLhpnLgPs9rIj+3q8ar83pOg==
-X-Google-Smtp-Source: ACHHUZ7noYnqFnY0BjqO4dFxzymGP5h5Lq4p21OkqJJlR/O84AnCDKsNb4KlYY4MWyOCBqsVKwEVPSI=
+        bh=G8oJ5/OEX1pF9nKL0tJ4RgAA4zY2+vJRV/bxjv3VyJo=;
+        b=XULHcAsKpCN85vhf8OSy65Wz+OcUVr0mCtNvKiOjRszOGk08bVKUKHDilePtxbOvBI
+         jFZ3K6YoJfg2+4vTsj9Nv8SaF7iUMNpXI/egs/gWpoMVMJ7cva+0hBxLp/4KIaJyjADz
+         J0jVhuYKM8s8teuGcDwukbvOW6JBF0Xr9FEIn+4NnZx/uDON4ZdzKcf63IGidwz7rUmp
+         lAu10M+BCjzzoqQDXQZajbw6hc4Rbsqfi1WdDLBycDBmB/+zXeOyQkd4L/CXr5WNQK+0
+         JGFBoBh/gRzlBsoRtEik8aH85wR/WBC+Dbpw3APxcnUOyyu9119MTKiUOsDRb3/aaIBJ
+         my7Q==
+X-Gm-Message-State: AC+VfDy2+Kf3Vk+fJll5P22UFU9hQgSpcp7HZD4B6I7iZoG6sbHnKpk3
+	oVSf/8AZ19QufnjDvzrhzzpilOFNpEjnMMWPiRbxHPTFDvplPGsq9q73HVwZGoD0SyEKHQq7n0A
+	xUpNurcCIgDQti6vkXb/arIDL2UNaGekfuHza5n140MBYnjCcgg==
+X-Google-Smtp-Source: ACHHUZ7MXaeIj+L3sJhtCwKD2+lI8agv7n+0CugRgLu0uoJG7O3LAjcGs2Hk/XL2sCA1Yg6JLGvA/yQ=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:3912:b0:667:26bb:db7 with SMTP id
- fh18-20020a056a00391200b0066726bb0db7mr3521641pfb.1.1687366977569; Wed, 21
- Jun 2023 10:02:57 -0700 (PDT)
-Date: Wed, 21 Jun 2023 10:02:39 -0700
+ (user=sdf job=sendgmr) by 2002:a63:4382:0:b0:551:eb6:1ea6 with SMTP id
+ q124-20020a634382000000b005510eb61ea6mr1810212pga.10.1687366979318; Wed, 21
+ Jun 2023 10:02:59 -0700 (PDT)
+Date: Wed, 21 Jun 2023 10:02:40 -0700
 In-Reply-To: <20230621170244.1283336-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,242 +63,89 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230621170244.1283336-1-sdf@google.com>
 X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
-Message-ID: <20230621170244.1283336-7-sdf@google.com>
-Subject: [RFC bpf-next v2 06/11] net: veth: Implement devtx timestamp kfuncs
+Message-ID: <20230621170244.1283336-8-sdf@google.com>
+Subject: [RFC bpf-next v2 07/11] selftests/xsk: Support XDP_TX_METADATA_LEN
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
 	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	netdev@vger.kernel.org
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-	version=3.4.6
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Have a software-based example for kfuncs to showcase how it
-can be used in the real devices and to have something to
-test against in the selftests.
+Add new config field and call setsockopt.
 
-Both path (skb & xdp) are covered. Only the skb path is really
-tested though.
-
-Cc: netdev@vger.kernel.org
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- drivers/net/veth.c | 116 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 112 insertions(+), 4 deletions(-)
+ tools/testing/selftests/bpf/xsk.c | 17 +++++++++++++++++
+ tools/testing/selftests/bpf/xsk.h |  1 +
+ 2 files changed, 18 insertions(+)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 614f3e3efab0..632f0f3771e4 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -27,6 +27,7 @@
- #include <linux/bpf_trace.h>
- #include <linux/net_tstamp.h>
- #include <net/page_pool.h>
-+#include <net/devtx.h>
+diff --git a/tools/testing/selftests/bpf/xsk.c b/tools/testing/selftests/bpf/xsk.c
+index 687d83e707f8..c659713e2d43 100644
+--- a/tools/testing/selftests/bpf/xsk.c
++++ b/tools/testing/selftests/bpf/xsk.c
+@@ -47,6 +47,10 @@
+  #define PF_XDP AF_XDP
+ #endif
  
- #define DRV_NAME	"veth"
- #define DRV_VERSION	"1.0"
-@@ -123,6 +124,13 @@ struct veth_xdp_buff {
- 	struct sk_buff *skb;
- };
++#ifndef XDP_TX_METADATA_LEN
++#define XDP_TX_METADATA_LEN 9
++#endif
++
+ #define pr_warn(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
  
-+struct veth_devtx_frame {
-+	struct devtx_frame frame;
-+	bool request_timestamp;
-+	ktime_t xdp_tx_timestamp;
-+	struct sk_buff *skb;
-+};
-+
- static int veth_get_link_ksettings(struct net_device *dev,
- 				   struct ethtool_link_ksettings *cmd)
- {
-@@ -313,10 +321,43 @@ static int veth_xdp_rx(struct veth_rq *rq, struct sk_buff *skb)
- 	return NET_RX_SUCCESS;
- }
- 
-+__weak noinline void veth_devtx_submit(struct devtx_frame *ctx)
-+{
-+}
-+
-+__weak noinline void veth_devtx_complete(struct devtx_frame *ctx)
-+{
-+}
-+
-+BTF_SET8_START(veth_devtx_hook_ids)
-+BTF_ID_FLAGS(func, veth_devtx_submit)
-+BTF_ID_FLAGS(func, veth_devtx_complete)
-+BTF_SET8_END(veth_devtx_hook_ids)
-+
- static int veth_forward_skb(struct net_device *dev, struct sk_buff *skb,
--			    struct veth_rq *rq, bool xdp)
-+			    struct veth_rq *rq, bool xdp, bool request_timestamp)
- {
--	return __dev_forward_skb(dev, skb) ?: xdp ?
-+	struct net_device *orig_dev = skb->dev;
-+	int ret;
-+
-+	ret = __dev_forward_skb(dev, skb);
-+	if (ret)
-+		return ret;
-+
-+	if (devtx_enabled()) {
-+		struct veth_devtx_frame ctx;
-+
-+		if (unlikely(request_timestamp))
-+			__net_timestamp(skb);
-+
-+		devtx_frame_from_skb(&ctx.frame, skb, orig_dev);
-+		ctx.frame.data -= ETH_HLEN; /* undo eth_type_trans pull */
-+		ctx.frame.len += ETH_HLEN;
-+		ctx.skb = skb;
-+		veth_devtx_complete(&ctx.frame);
-+	}
-+
-+	return xdp ?
- 		veth_xdp_rx(rq, skb) :
- 		__netif_rx(skb);
- }
-@@ -343,6 +384,7 @@ static bool veth_skb_is_eligible_for_gro(const struct net_device *dev,
- static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct veth_priv *rcv_priv, *priv = netdev_priv(dev);
-+	bool request_timestamp = false;
- 	struct veth_rq *rq = NULL;
- 	struct net_device *rcv;
- 	int length = skb->len;
-@@ -356,6 +398,15 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
- 		goto drop;
+ #define XSKMAP_SIZE 1
+@@ -124,12 +128,14 @@ static int xsk_set_xdp_socket_config(struct xsk_socket_config *cfg,
+ 		cfg->rx_size = XSK_RING_CONS__DEFAULT_NUM_DESCS;
+ 		cfg->tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
+ 		cfg->bind_flags = 0;
++		cfg->tx_metadata_len = 0;
+ 		return 0;
  	}
  
-+	if (devtx_enabled()) {
-+		struct veth_devtx_frame ctx;
-+
-+		devtx_frame_from_skb(&ctx.frame, skb, dev);
-+		ctx.request_timestamp = false;
-+		veth_devtx_submit(&ctx.frame);
-+		request_timestamp = ctx.request_timestamp;
-+	}
-+
- 	rcv_priv = netdev_priv(rcv);
- 	rxq = skb_get_queue_mapping(skb);
- 	if (rxq < rcv->real_num_rx_queues) {
-@@ -370,7 +421,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
- 	}
+ 	cfg->rx_size = usr_cfg->rx_size;
+ 	cfg->tx_size = usr_cfg->tx_size;
+ 	cfg->bind_flags = usr_cfg->bind_flags;
++	cfg->tx_metadata_len = usr_cfg->tx_metadata_len;
  
- 	skb_tx_timestamp(skb);
--	if (likely(veth_forward_skb(rcv, skb, rq, use_napi) == NET_RX_SUCCESS)) {
-+	if (likely(veth_forward_skb(rcv, skb, rq, use_napi, request_timestamp) == NET_RX_SUCCESS)) {
- 		if (!use_napi)
- 			dev_lstats_add(dev, length);
- 	} else {
-@@ -483,6 +534,7 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
- {
- 	struct veth_priv *rcv_priv, *priv = netdev_priv(dev);
- 	int i, ret = -ENXIO, nxmit = 0;
-+	ktime_t tx_timestamp = 0;
- 	struct net_device *rcv;
- 	unsigned int max_len;
- 	struct veth_rq *rq;
-@@ -511,9 +563,32 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
- 		void *ptr = veth_xdp_to_ptr(frame);
- 
- 		if (unlikely(xdp_get_frame_len(frame) > max_len ||
--			     __ptr_ring_produce(&rq->xdp_ring, ptr)))
-+			     __ptr_ring_full(&rq->xdp_ring)))
-+			break;
-+
-+		if (devtx_enabled()) {
-+			struct veth_devtx_frame ctx;
-+
-+			devtx_frame_from_xdp(&ctx.frame, frame, dev);
-+			ctx.request_timestamp = false;
-+			veth_devtx_submit(&ctx.frame);
-+
-+			if (unlikely(ctx.request_timestamp))
-+				tx_timestamp = ktime_get_real();
-+		}
-+
-+		if (unlikely(__ptr_ring_produce(&rq->xdp_ring, ptr)))
- 			break;
- 		nxmit++;
-+
-+		if (devtx_enabled()) {
-+			struct veth_devtx_frame ctx;
-+
-+			devtx_frame_from_xdp(&ctx.frame, frame, dev);
-+			ctx.xdp_tx_timestamp = tx_timestamp;
-+			ctx.skb = NULL;
-+			veth_devtx_complete(&ctx.frame);
-+		}
- 	}
- 	spin_unlock(&rq->xdp_ring.producer_lock);
- 
-@@ -1732,6 +1807,28 @@ static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash,
  	return 0;
  }
+@@ -479,6 +485,17 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+ 			umem->tx_ring_setup_done = true;
+ 	}
  
-+static int veth_devtx_sb_request_timestamp(const struct devtx_frame *_ctx)
-+{
-+	struct veth_devtx_frame *ctx = (struct veth_devtx_frame *)_ctx;
++	if (xsk->config.tx_metadata_len) {
++		int optval = xsk->config.tx_metadata_len;
 +
-+	ctx->request_timestamp = true;
-+
-+	return 0;
-+}
-+
-+static int veth_devtx_cp_timestamp(const struct devtx_frame *_ctx, u64 *timestamp)
-+{
-+	struct veth_devtx_frame *ctx = (struct veth_devtx_frame *)_ctx;
-+
-+	if (ctx->skb) {
-+		*timestamp = ctx->skb->tstamp;
-+		return 0;
++		err = setsockopt(xsk->fd, SOL_XDP, XDP_TX_METADATA_LEN,
++				 &optval, sizeof(optval));
++		if (err) {
++			err = -errno;
++			goto out_put_ctx;
++		}
 +	}
 +
-+	*timestamp = ctx->xdp_tx_timestamp;
-+	return 0;
-+}
-+
- static const struct net_device_ops veth_netdev_ops = {
- 	.ndo_init            = veth_dev_init,
- 	.ndo_open            = veth_open,
-@@ -1756,6 +1853,8 @@ static const struct net_device_ops veth_netdev_ops = {
- static const struct xdp_metadata_ops veth_xdp_metadata_ops = {
- 	.xmo_rx_timestamp		= veth_xdp_rx_timestamp,
- 	.xmo_rx_hash			= veth_xdp_rx_hash,
-+	.xmo_sb_request_timestamp	= veth_devtx_sb_request_timestamp,
-+	.xmo_cp_timestamp		= veth_devtx_cp_timestamp,
+ 	err = xsk_get_mmap_offsets(xsk->fd, &off);
+ 	if (err) {
+ 		err = -errno;
+diff --git a/tools/testing/selftests/bpf/xsk.h b/tools/testing/selftests/bpf/xsk.h
+index 8da8d557768b..57e0af403aa8 100644
+--- a/tools/testing/selftests/bpf/xsk.h
++++ b/tools/testing/selftests/bpf/xsk.h
+@@ -212,6 +212,7 @@ struct xsk_socket_config {
+ 	__u32 rx_size;
+ 	__u32 tx_size;
+ 	__u16 bind_flags;
++	__u8 tx_metadata_len;
  };
  
- #define VETH_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HW_CSUM | \
-@@ -2041,11 +2140,20 @@ static struct rtnl_link_ops veth_link_ops = {
- 
- static __init int veth_init(void)
- {
-+	int ret;
-+
-+	ret = devtx_hooks_register(&veth_devtx_hook_ids, &veth_xdp_metadata_ops);
-+	if (ret) {
-+		pr_warn("failed to register devtx hooks: %d", ret);
-+		return ret;
-+	}
-+
- 	return rtnl_link_register(&veth_link_ops);
- }
- 
- static __exit void veth_exit(void)
- {
-+	devtx_hooks_unregister(&veth_devtx_hook_ids);
- 	rtnl_link_unregister(&veth_link_ops);
- }
- 
+ /* Set config to NULL to get the default configuration. */
 -- 
 2.41.0.162.gfafddb0af9-goog
 
