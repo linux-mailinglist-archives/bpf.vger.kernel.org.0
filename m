@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-2974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2975-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F245E73793E
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 04:36:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0496737940
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 04:37:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EA5C1C20DDF
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 02:36:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D64B1C20D42
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 02:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E822AD21;
-	Wed, 21 Jun 2023 02:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CEFDBE63;
+	Wed, 21 Jun 2023 02:33:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053A3A937;
-	Wed, 21 Jun 2023 02:33:16 +0000 (UTC)
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02889B4;
-	Tue, 20 Jun 2023 19:33:15 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b6824141b4so9699205ad.1;
-        Tue, 20 Jun 2023 19:33:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09BFDBA5F;
+	Wed, 21 Jun 2023 02:33:20 +0000 (UTC)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067D1B7;
+	Tue, 20 Jun 2023 19:33:19 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-668704a5b5bso3119179b3a.0;
+        Tue, 20 Jun 2023 19:33:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687314794; x=1689906794;
+        d=gmail.com; s=20221208; t=1687314798; x=1689906798;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wtnIfLf/LPJTKp8G83PSPJyAcD0QiLkQGEhE11oDtAQ=;
-        b=Xe/1E+JMggzR2gAo3k6EuEek9c/3RlwT7XNLFTxjYllnvHcPgCxUFxzKsH7+WoXDdo
-         cwGsUPASALMliQh+O8nah/PbIELBl17qAnrvJPKFDURx7aMR5fMEbNVMEvI2GhLlDUrZ
-         AOBSBwfCRmQQgJhiJ6MNNA6cVFSkPN/0xTNReMlAEc7W4mrYl0Xk5tjFP63OIwRbs5Kr
-         QDxLmX8UPHYgDKqAlWul+rIz07YMBwUUUKalocL+gPmSM01HwZAkZJgFJpNntG2cvJFf
-         cXa5Y9VNMB0RGH9feLDg3yHx2Qtf1TQNJjtuuMAJCiW3ShTu0NIf6E7nWLZb2CeIfaCu
-         ysvg==
+        bh=QJFALLSA0Zej+KutPxvztQdPk2ASSkOODjkIKNtNWzE=;
+        b=qKNLJ1TSm1wXJWHwDkxH9F/UzLEIyQuftptzJGSxXDZzZPkvJMyfYJNfy2DOcRGeby
+         Ahrs4o4hF7ae485L/o3G/NhiZHxL9sbkDJbII4IwY0v1V4LrOL734V5wObhehFb8ttpS
+         XaHaIIpwRAhslQf3NXcsyysXV3VY5ftaURSaA5PhveF7rhdlCTvqISXfDgIub596Yn2i
+         Pc/nNDoeIPjzvtdYOktGRck8y7vQUuw8nz3CYRFAWalA6YOxbhg7MzLviKaF+eLwP9K6
+         0bbbmDnyeVP+RNEkaDsB05pQoH2sarACh0VNBmDab31tir1hSfa8hRXpeEIzS7FI2rn1
+         vRjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687314794; x=1689906794;
+        d=1e100.net; s=20221208; t=1687314798; x=1689906798;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wtnIfLf/LPJTKp8G83PSPJyAcD0QiLkQGEhE11oDtAQ=;
-        b=IhuKCDlqC7xNNJmcbiSB+f4RuTX+6aT+hj+N2mVJ7xqo3tbw38+RlJEzuYZ79mvRLn
-         zc4AkG/fkNqFF3UMMFJ1Dk7teE49z9CpAFzxhYGXIwRHy6rXRe2vu34CQK4WF+XlDw7N
-         rdS2V31JgJ0INqdJJVv8J3k2rp81PUGsG5sV53TB/8v5YnXAiTPGSTIDPFu066/P33QG
-         PEnHpHSwGilgYykLh6ShIP9UWtQnQRRnsCQzBfIzTbR5D2ba+3AN2eFQnC59N1ZaQM+v
-         I3rigShcEs97crNisCYxvn6oc7hM6bupji8lJMV8k2+WTMZJ3/EwbWibQGL/a1z8zgTh
-         DMXA==
-X-Gm-Message-State: AC+VfDx0aYsnWydUfh56Jbw0GIyF27iXgYTFLLJwg9iJ7DO3JvS4No+G
-	3PE4OVmJAk3sqqVptmn7rbE=
-X-Google-Smtp-Source: ACHHUZ6WvrksB8kF5pyesxHwJdU6H/DuUEsC7Cf1lxQMdkzxZxlKpgQPQGVssZaoF/7CAFdRP69RMQ==
-X-Received: by 2002:a17:902:cec7:b0:1b3:db5d:e8a0 with SMTP id d7-20020a170902cec700b001b3db5de8a0mr19915922plg.28.1687314794365;
-        Tue, 20 Jun 2023 19:33:14 -0700 (PDT)
+        bh=QJFALLSA0Zej+KutPxvztQdPk2ASSkOODjkIKNtNWzE=;
+        b=J1VSCLpj6u87pbZl9OUII/NLE1ChQalcu8SnheiA0Db+VBogd6wd67iAnLaSeRgT/s
+         hWCYrXkAGNsMV3maUU32tmsATJciaUJwXCb9BGmLh/Syn9uxMxt8Wi/PZRojMh0hFG0h
+         KOBt54tjOrzymgN0U3UAWsqdHuKRxTYLgo8GTHM0IkQZvNXo5uqghoyp4hpfVJPHLYy6
+         f6FaqmNKIwf5xKaYYjfB3q9SUT8ut8lBldlGiFK0yVJcN5fAq+tC8ei5qTIU9pFY7bmU
+         KjmkPup42MYAgRmYNTN3Nz/R8rGCJMgq5/hjZvHTHNgFjJqk2gGaNUrsXxnnmMtLNQVn
+         b3fQ==
+X-Gm-Message-State: AC+VfDy0woEFBt2OiUW90e/e+8F790b4AHWFFpUoUnS9nA9PhHOYwgIj
+	zgwafroPG52vkJxMRDzeYwQ=
+X-Google-Smtp-Source: ACHHUZ76+u1Qgg4DLJ6cVJswS48hyHGNQJ1ZvA7sgFImciRpXkia92T++/EuLi7ytgn24KKIS3/i7Q==
+X-Received: by 2002:a05:6a00:1a56:b0:658:c1a9:becc with SMTP id h22-20020a056a001a5600b00658c1a9beccmr20215081pfv.12.1687314798237;
+        Tue, 20 Jun 2023 19:33:18 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:400::5:e719])
-        by smtp.gmail.com with ESMTPSA id v23-20020a1709028d9700b001b5656b0bf9sm2212768plo.286.2023.06.20.19.33.12
+        by smtp.gmail.com with ESMTPSA id d20-20020aa78154000000b00666a83bd544sm1894485pfn.23.2023.06.20.19.33.16
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 20 Jun 2023 19:33:13 -0700 (PDT)
+        Tue, 20 Jun 2023 19:33:17 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: daniel@iogearbox.net,
 	andrii@kernel.org,
@@ -67,9 +67,9 @@ Cc: tj@kernel.org,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next 08/12] bpf: Allow reuse from waiting_for_gp_ttrace list.
-Date: Tue, 20 Jun 2023 19:32:34 -0700
-Message-Id: <20230621023238.87079-9-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next 09/12] rcu: Export rcu_request_urgent_qs_task()
+Date: Tue, 20 Jun 2023 19:32:35 -0700
+Message-Id: <20230621023238.87079-10-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 In-Reply-To: <20230621023238.87079-1-alexei.starovoitov@gmail.com>
 References: <20230621023238.87079-1-alexei.starovoitov@gmail.com>
@@ -87,36 +87,71 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Alexei Starovoitov <ast@kernel.org>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-alloc_bulk() can reuse elements from free_by_rcu_ttrace.
-Let it reuse from waiting_for_gp_ttrace as well to avoid unnecessary kmalloc().
+If a CPU is executing a long series of non-sleeping system calls,
+RCU grace periods can be delayed for on the order of a couple hundred
+milliseconds.  This is normally not a problem, but if each system call
+does a call_rcu(), those callbacks can stack up.  RCU will eventually
+notice this callback storm, but use of rcu_request_urgent_qs_task()
+allows the code invoking call_rcu() to give RCU a heads up.
 
+This function is not for general use, not yet, anyway.
+
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/memalloc.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ include/linux/rcutiny.h | 2 ++
+ include/linux/rcutree.h | 1 +
+ kernel/rcu/rcu.h        | 2 --
+ 3 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 8b7645bffd1a..10d027674743 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -202,6 +202,15 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
- 	if (i >= cnt)
- 		return;
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 7f17acf29dda..7b949292908a 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -138,6 +138,8 @@ static inline int rcu_needs_cpu(void)
+ 	return 0;
+ }
  
-+	for (; i < cnt; i++) {
-+		obj = llist_del_first(&c->waiting_for_gp_ttrace);
-+		if (!obj)
-+			break;
-+		add_obj_to_free_list(c, obj);
-+	}
-+	if (i >= cnt)
-+		return;
++static inline void rcu_request_urgent_qs_task(struct task_struct *t) { }
 +
- 	memcg = get_memcg(c);
- 	old_memcg = set_active_memcg(memcg);
- 	for (; i < cnt; i++) {
+ /*
+  * Take advantage of the fact that there is only one CPU, which
+  * allows us to ignore virtualization-based context switches.
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index 56bccb5a8fde..126f6b418f6a 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -21,6 +21,7 @@ void rcu_softirq_qs(void);
+ void rcu_note_context_switch(bool preempt);
+ int rcu_needs_cpu(void);
+ void rcu_cpu_stall_reset(void);
++void rcu_request_urgent_qs_task(struct task_struct *t);
+ 
+ /*
+  * Note a virtualization-based context switch.  This is simply a
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index 4a1b9622598b..6f5fb3f7ebf3 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -493,7 +493,6 @@ static inline void rcu_expedite_gp(void) { }
+ static inline void rcu_unexpedite_gp(void) { }
+ static inline void rcu_async_hurry(void) { }
+ static inline void rcu_async_relax(void) { }
+-static inline void rcu_request_urgent_qs_task(struct task_struct *t) { }
+ #else /* #ifdef CONFIG_TINY_RCU */
+ bool rcu_gp_is_normal(void);     /* Internal RCU use. */
+ bool rcu_gp_is_expedited(void);  /* Internal RCU use. */
+@@ -508,7 +507,6 @@ void show_rcu_tasks_gp_kthreads(void);
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ static inline void show_rcu_tasks_gp_kthreads(void) {}
+ #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+-void rcu_request_urgent_qs_task(struct task_struct *t);
+ #endif /* #else #ifdef CONFIG_TINY_RCU */
+ 
+ #define RCU_SCHEDULER_INACTIVE	0
 -- 
 2.34.1
 
