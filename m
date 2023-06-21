@@ -1,70 +1,113 @@
-Return-Path: <bpf+bounces-2990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-2991-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A882B737E08
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 11:10:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FA76737E0E
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 11:11:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B435B1C20E25
-	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 09:10:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 464B32814C2
+	for <lists+bpf@lfdr.de>; Wed, 21 Jun 2023 09:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39552C8E2;
-	Wed, 21 Jun 2023 09:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFC1D2FD;
+	Wed, 21 Jun 2023 09:10:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DABD2C8C7
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 09:10:07 +0000 (UTC)
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD271B4
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 02:10:04 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230621091003euoutp0287b531ab72189cbd2d5a5ca1f4575d6f~qoYUL81ty0778307783euoutp02g
-	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 09:10:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230621091003euoutp0287b531ab72189cbd2d5a5ca1f4575d6f~qoYUL81ty0778307783euoutp02g
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB965C2DE
+	for <bpf@vger.kernel.org>; Wed, 21 Jun 2023 09:10:57 +0000 (UTC)
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D61211D;
+	Wed, 21 Jun 2023 02:10:40 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230621091038euoutp01e123bf7eae2cf2239ff74cab5dc393bb~qoY0vfCZa1411914119euoutp01Y;
+	Wed, 21 Jun 2023 09:10:38 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230621091038euoutp01e123bf7eae2cf2239ff74cab5dc393bb~qoY0vfCZa1411914119euoutp01Y
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1687338603;
-	bh=dVX38NvYQpq3apgVKZU22xdcef1kpF1RLqHX48qUVYo=;
-	h=From:To:CC:Subject:Date:References:From;
-	b=dJsCF+4qehoykQ0AW2qScZBciXMzhOrq2KWa+o5cCuHWP6qGLGzMI1EFieVW/mZIV
-	 rBtSwe8srG43glwZaVe5S7pgwUYpxfNN4gtxOpHegt+BJ8ySIzPYGPQL1MXUtdzv3h
-	 VCWvh4Yxpck2lmkHh/9GnWlf5s0Og2DY62lzbHq4=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	s=mail20170921; t=1687338638;
+	bh=QatUAmwjfSE5CpygwEgoo8d+plIGyvB6WfjKfmq8pF4=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+	b=WBbh3ysmBwasQEKtTmaoGsleQTqlgmC4R8U/+mJGvSWtNFexng/wooaURelQr0+Ix
+	 8bW/6HMQT73Ttuk4jBTTZ0Ql7yFJyGuRmdDguixw0HvwHLYcsOK8JUwaCs1YNo80PM
+	 2YVN8Dq1QLsiAczxi+aWjbg8pywEOsXt/1a01AMI=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
 	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20230621091003eucas1p10086211e1487555b90658b5c9c90e4e2~qoYUFWcjM1958619586eucas1p10;
-	Wed, 21 Jun 2023 09:10:03 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id 0F.12.42423.A6EB2946; Wed, 21
-	Jun 2023 10:10:02 +0100 (BST)
+	20230621091037eucas1p17e649ac102168b47064feeb1a5d9d0d7~qoY0XqSpU2864928649eucas1p1t;
+	Wed, 21 Jun 2023 09:10:37 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges2new.samsung.com (EUCPMTA) with SMTP id B0.AE.11320.D8EB2946; Wed, 21
+	Jun 2023 10:10:37 +0100 (BST)
 Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20230621091002eucas1p28cbe3260b7d4c2a086f0b5ac79a7f038~qoYTqYpNH1816318163eucas1p2j;
-	Wed, 21 Jun 2023 09:10:02 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20230621091037eucas1p188e11d8064526a5a0549217d5a419647~qoYzsEdLT3017130171eucas1p10;
+	Wed, 21 Jun 2023 09:10:37 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
 	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20230621091002eusmtrp2d2042c11b1a39ca581f42aa4e93e6182~qoYTp1HH72182221822eusmtrp2R;
-	Wed, 21 Jun 2023 09:10:02 +0000 (GMT)
-X-AuditID: cbfec7f2-a51ff7000002a5b7-02-6492be6a7135
+	20230621091036eusmtrp23053e0e91e9e88b462059cc6e116b0c7~qoYzpFHdu2207922079eusmtrp2g;
+	Wed, 21 Jun 2023 09:10:36 +0000 (GMT)
+X-AuditID: cbfec7f4-97dff70000022c38-fb-6492be8d52ed
 Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id 53.D1.14344.A6EB2946; Wed, 21
-	Jun 2023 10:10:02 +0100 (BST)
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id 7D.1F.10549.C8EB2946; Wed, 21
+	Jun 2023 10:10:36 +0100 (BST)
 Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
 	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20230621091002eusmtip149da010cbd9e27bd73feeba9b62c8347~qoYTYNHcL2784427844eusmtip1B;
-	Wed, 21 Jun 2023 09:10:02 +0000 (GMT)
+	20230621091036eusmtip1064192b2f7098b941992ae887d268647~qoYzRi0Su1210112101eusmtip1N;
+	Wed, 21 Jun 2023 09:10:36 +0000 (GMT)
 Received: from localhost (106.210.248.248) by CAMSVWEXC02.scsc.local
 	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Wed, 21 Jun 2023 10:10:01 +0100
+	Wed, 21 Jun 2023 10:10:35 +0100
 From: Joel Granados <j.granados@samsung.com>
-To: <mcgrof@kernel.org>
-CC: Joel Granados <j.granados@samsung.com>, <bpf@vger.kernel.org>
-Subject: [PATCH 00/11] Remove the end element in sysctl table arrays.
-Date: Wed, 21 Jun 2023 11:09:49 +0200
-Message-ID: <20230621091000.424843-1-j.granados@samsung.com>
+To: <mcgrof@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, Theodore Ts'o
+	<tytso@mit.edu>, "Jason A. Donenfeld" <Jason@zx2c4.com>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Juergen
+	Gross <jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>,
+	Benjamin LaHaise <bcrl@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>, Kees Cook
+	<keescook@chromium.org>, Iurii Zaikin <yzaikin@google.com>, Alexei
+	Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii
+	Nakryiko <andrii@kernel.org>, Balbir Singh <bsingharora@gmail.com>, Eric
+	Biederman <ebiederm@xmission.com>, "Naveen N. Rao"
+	<naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
+	<anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
+	Masami Hiramatsu <mhiramat@kernel.org>, Peter Zijlstra
+	<peterz@infradead.org>, Will Deacon <will@kernel.org>, Petr Mladek
+	<pmladek@suse.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, Juri
+	Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>, Andrew Morton
+	<akpm@linux-foundation.org>, Mike Kravetz <mike.kravetz@oracle.com>, Muchun
+	Song <muchun.song@linux.dev>, Naoya Horiguchi <naoya.horiguchi@nec.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, David Howells
+	<dhowells@redhat.com>, Jarkko Sakkinen <jarkko@kernel.org>, Paul Moore
+	<paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn"
+	<serge@hallyn.com>
+CC: Joel Granados <j.granados@samsung.com>, "H. Peter Anvin"
+	<hpa@zytor.com>, Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, Amir
+	Goldstein <amir73il@gmail.com>, John Fastabend <john.fastabend@gmail.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+	Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+	<jolsa@kernel.org>, Waiman Long <longman@redhat.com>, Boqun Feng
+	<boqun.feng@gmail.com>, John Ogness <john.ogness@linutronix.de>, Dietmar
+	Eggemann <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel
+	Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>, Andy Lutomirski
+	<luto@amacapital.net>, Will Drewry <wad@chromium.org>, Mark Rutland
+	<mark.rutland@arm.com>, Miaohe Lin <linmiaohe@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
+	<linux-aio@kvack.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-mm@kvack.org>, <bpf@vger.kernel.org>, <kexec@lists.infradead.org>,
+	<linux-trace-kernel@vger.kernel.org>, <keyrings@vger.kernel.org>,
+	<linux-security-module@vger.kernel.org>
+Subject: [PATCH 08/11] sysctl: Add size to register_sysctl_init
+Date: Wed, 21 Jun 2023 11:09:57 +0200
+Message-ID: <20230621091000.424843-9-j.granados@samsung.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230621091000.424843-1-j.granados@samsung.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,46 +115,61 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [106.210.248.248]
 X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
 	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJIsWRmVeSWpSXmKPExsWy7djPc7pZ+yalGCxfZGnx+chxNosbE54y
-	OjB5bFrVyebxeZNcAFMUl01Kak5mWWqRvl0CV8b05XtYC/Z2MFWsvNrE0sD4o7SLkZNDQsBE
-	omHBMpYuRi4OIYEVjBK/J09mh3C+MEqcmfOJGaRKSOAzo8TtA4EwHXv/bmKDiC9nlFjxQxKi
-	AahmWncLM4SzlVHi5aXb7CBVbAI6Euff3AGbJCIgLnHi9GZGEJtZwFHi0o+XQDYHh7CAq8TW
-	baogYRYBVYmGZXdYQMK8AjYS87ptIPbKS7Rdnw7WySsgKHFy5hMWiCnyEs1bZzND1ChLXN+3
-	mA3CrpU4teUWE8g5EgIzOSQ+X1vAApFwkXj35T1UkbDEq+Nb2CFsGYn/O+dDNUxmlNj/7wM7
-	hLOaUWJZ41cmiCpriZYrT9hBrmMW0JRYv0sfIuwo8e3fLTaQsIQAn8SNt4IQx/FJTNo2nRki
-	zCvR0SYEUa0msfreG5YJjMqzkLwzC8k7sxDmL2BkXsUonlpanJueWmyYl1quV5yYW1yal66X
-	nJ+7iRGYGk7/O/5pB+PcVx/1DjEycTAeYpTgYFYS4ZXdNClFiDclsbIqtSg/vqg0J7X4EKM0
-	B4uSOK+27clkIYH0xJLU7NTUgtQimCwTB6dUA1OexDkfBU4Rh98bV/1Z6v5ouf6Rh9sygpJ1
-	jI4YxxtKZpQLyDi4n/DJeC57ZT338v8zXfzFlRJ+/c0565MQ/dP0TKBxsHCnxSKRzys+HVFi
-	2MCzLqf1DNPzCV8sfVVCzezUXu8zfrOTI3zJCuOcpnNX8xzlPWKUTt7MtEiXeWBdqnSpTcH2
-	NBtj86qGnqyX9k3Fe3r/C+g/Wv118szGFs2L34XXZDxf9+aWf33DtOvx+3ZJf/qX7mCtEaF/
-	rDb90rxpzx4wXdSVMpQ3rQ+0LK2Z6nE+bZKIoAKz5X0NJqO7U88/zOfYFGLqOeHFqsNnyhTb
-	fD5/DbQ5G2dduuPPod+LAxXkLFYeKDZRf75lqxJLcUaioRZzUXEiAPc1R/F8AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrFLMWRmVeSWpSXmKPExsVy+t/xu7pZ+yalGOz7J23x+chxNosbE54y
-	OjB5bFrVyebxeZNcAFOUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1K
-	ak5mWWqRvl2CXsb05XtYC/Z2MFWsvNrE0sD4o7SLkZNDQsBEYu/fTWxdjFwcQgJLGSW2zl7M
-	BJGQkdj45SorhC0s8edaF1TRR0aJQ5emsEI4Wxkljv49xQ5SxSagI3H+zR1mEFtEQFzixOnN
-	jCA2s4CjxKUfL4FsDg5hAVeJrdtUQcIsAqoSDcvusICEeQVsJOZ120Dskpdouz4drJpZQFNi
-	/S59kDCvgKDEyZlPWCAGyks0b53NDFGuLHF932I2CLtW4vPfZ4wTGIVmIXTPQtI9C0n3Akbm
-	VYwiqaXFuem5xUZ6xYm5xaV56XrJ+bmbGIGRsO3Yzy07GFe++qh3iJGJg/EQowQHs5IIr+ym
-	SSlCvCmJlVWpRfnxRaU5qcWHGE2BnpnILCWanA+MxbySeEMzA1NDEzNLA1NLM2MlcV7Pgo5E
-	IYH0xJLU7NTUgtQimD4mDk6pBib1uSHH+EJMvTuFluiv4i00ZOG+e8hwyRKNOKGzFkJiF9ri
-	nfTe+ARtte/p15Gd2570rVnt05Xdh1Zu8XFyaDGsUqhoV5nDOUfm+mSNvQL/7i4UfV1UsvaP
-	k7GF4QIGjcX/cpXKfE5sdGsKPdWfPuPI8kTOCaZbVZJvMdw/cjM4ZXM2Y9zcwvwlXndlQ9qN
-	6pv9tfOWn05NmXrpy8/Xze0BOk847/T9ZdjG9pEjMGyjnrpSksvzpzd8Em6ukLFK/61k9+tE
-	TpXRiphI1hfPHy5tFxfWeyxit/l6O5e2+Y7I2/la1a+Xasos49QSuy7luYhNxW6Cxe2DH/Xm
-	9gl3R5gHcx/w4NvfKSdybvJHJZbijERDLeai4kQAETJrjQ0DAAA=
-X-CMS-MailID: 20230621091002eucas1p28cbe3260b7d4c2a086f0b5ac79a7f038
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta0xTZxj2O+frOYUNUxDDF2Vh6TbH2NBpXPKqKC7Z5nFxUed0N5PJ5YQa
+	BLQFNs3MoKDIVahIt4KjQigIKIiFwLgVZFYshtHJqHIHGSCIcrcDYcBhC/+e932e53uf58cn
+	ph162HXi44HBvDzQ64SUscUld6yN7vFVKt/3TTEukFaQz8AfN/IQTM+k0lA+0IphwtrKQsyc
+	HkO+PpyC8cI5BsbrjAwM3R5DYO5tZkA9GI4hbbCBhfn2fgoyr07RMFAYhSCtMRLDiHIGQ19i
+	MQ3zJZEsRGQWMFBrrGYh5aYTpKojKFBZExF0Na+DtIdbYOSKM1h1uSzcKMikQFmaQ0HJg3QE
+	dckaGtovXsbQEBsA5aZJCorblAz0V8VTED2dhSE5RYmgorIew5+/pTHQkT8vgudxPQzUFdzH
+	YLpzF0Pe9TARZLU0UZAffU0ElsQ+BJdG/kaQmb0BRqsPgdmgpUBX1o2hKdyAIC/5JQsvZmZE
+	0KpSYzDGGyiY750UQdWFLgrML4YwlN/MYHbv56bPJWCuc/gl5vJ/zUdcalgT5vTXHlJcW1YZ
+	4pIiRliuTNPOcpFVj1hOWxTC/VX+NRdZ91TE3cpx4zIrBikuxmKmuaLcaOaA6ze2Hr78ieOh
+	vHzTrmO2ssrcBnyydAD98Lt+FoUhswHFIBsxkWwl2p8Ll7CDJAeRMbM4Btku4IkFPGVghWEc
+	EdWj3v8dk2VdWCCyEam6n0IL9gXVPaufQBQj0pkSiRcJRvIeaRxuoxcJR8msHTFZjUvv0hKj
+	DTGrm5lF1RqJJ+nIK15wiMVY8hbJuX58cW0n8SDDqhosnHYh51vUSzFsJDtJY+8zLGjsSf0v
+	j5cwvaCJKE6lBUxIzcAALXjfIC1VmYyAz5J7+kfUYgYi0b1KGq3Jy8RHJEHds3xsDXli1LMC
+	dibzZenLhkuIVM89Z4UhDxFd+CQlqHaQyAePlx0fkhylCi22IZLVxPLUXki0mqhK1LSwtiMX
+	zjskojc1KzpoVnTQrOigRXQucuJDFAF+vGJLIP/9RoVXgCIk0G+jT1BAEVr4hqY540Qpyn4y
+	urEWUWJUi4iYljravVak8nWw8/U6fYaXB30nDznBK2rRejGWOtm9u7Pex0Hi5xXM+/P8SV7+
+	H0uJbdaFUbn6n5QbZPZ3FY4TZ9xGj1ZezDBK92x6vV85VZkV7Z6UsX0+fQc+5hKuYS0qM3/E
+	r8lj/IDsq+xPawy0q+9n3T2uctPYkPezVTJ3W84nblPs5Je3CkM6dqdIv7AapHv2BhSf3Bx6
+	UPNBbPvattjDQxb1425NVu+5l9sOZkjNE24lI1crpp27Pg/q99zWMnGqK9F/X+gnSeGzb0ed
+	vSF758p4c4xIg001HrvW6rz99yccLuK0h6Ks5R9/q9++XhdITk1VcLt9ivindY2jR/Yx/6zq
+	3Xo4uLPccts7fhR7Vj+Ilb/C6zKaK93qtdd9f2z174vjhjosWs+G05dTmw1BpweOyqRYIfPa
+	7EbLFV7/AndzzmT1BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02TezBcdxTH53fv3buLmm5E5dZQHR0dI7WsVw8VTf+oXmlm0qnMtNHppDts
+	kbIru0RipINdDSqpCBFsRO2seKyIxxqveMX7UW+SICXeod7vZ7HtjP8+c873e77n/HFYuE4E
+	U5/lLfDniwQ8H2NSk2jZaxgyj66I9bDcnrMAWa6ShI4n2QjWt5NxKJsaIGBlc4AJUXuFBCgL
+	QzFYfrpHwnJtAwkzz5cQdI32kpAwHUqAbLqVCftDkxjI/1zDYerpLQSydikBc2HbBIzHqHDY
+	L5IyQSLPJaGmoZIJ9/NOQXKCBIPYzRgEw736IHtpBXMPDWAzPYsJT3LlGIQVZ2BQ1PMIQW1c
+	Eg5Df8QT0Pq7L5S1rGKgGgwjYbLiNgaR6woC4u6HISh/1kRAd6mMhNfKfQYsRL8hoTa3jYCW
+	+kYCsnNCGKDo78RAGZnJgBcx4wjuzU0gkD/+GBYrXaGrKhWD9JIRAjpDqxBkx+0yYWN7mwED
+	sQkENNyuwmB/dJUBFRHDGHRtzBBQlpdGnr1Ar4ffIei/Z3cJWpmiRHRySCdBF2a+xOhBRQmi
+	70rmmHRJ0hCTlla8YtKp+QF0X9klWlr7D4MuyDCj5eXTGB31ogun87MiyW9M3TiOImGAP/9D
+	L6HY/4zxD1yw4nDtgWNlY8/hWn/6o4OVrbGFk6MH38f7Gl9k4fQTx+tZVivhVzyFrtcV7qAQ
+	1FWFopAGi2LbUKslw8Qh67AViFpaNFTXDai8lV6Gmk9SO31RpFqziKiZTosopHnAKkTNZo4e
+	iUj2J1T77CB+2NBlb2lTOw/qjhJwdp0GVR9hecgn2Z9Tr7NVB2ksFsE2oTJyvA/L2mxHaja2
+	mlCHGVG/9SccWTXYZ6j20fn/lnOkHi10I7X+BNWUOEaoxxtRElUyrmaKqp6awtVzPqL6K+Sk
+	mm9Sy7sTKAbpJh2zJx2zJx2zpyI8C+nyA8S+nr5iLkfM8xUHCDw57kLffHTwEkX1mwXFKOXt
+	IqcGYSxUgygWbqyrbZgf66Gj7cG7EcQXCS+LAnz44hpke3DmXVz/PXfhwU8J/C9z7SxtuTZ2
+	9pa29nbWxqe0XfwieDpsT54//xc+348v+t+HsTT0QzDijXdB86ur31qcXq7tq68/Z63VF9j7
+	VaukxzTeuslGuzbRRXrV69Z3oQXRk2560pCd/I79d8vmWTzJnZhKVVqbWXCv8wm/HHP9xPWc
+	augbYwRn1T13ZK1VXbym6ftzH+/XuP63zela79iUCtyvTCC9v67Eht/UdVgsOSsvxYtce0iz
+	DknQ0meuN9rSFRYmjzn3LgwYyBSB7l/EOz9UqJSyrY3z80aBzReVI+wPNLRM19JWBKEOZqYj
+	kq3x71FRRWklVzqMOS1/3V3ODpb1LrQFXRfYCPnFC4aXzmeuMNJOW+vNN4Zvtntnj4+ZtLg5
+	h5l/6SIcrBqs639gq0p5n3uu0ZgQe/G4ZrhIzPsXGRMQfZsEAAA=
+X-CMS-MailID: 20230621091037eucas1p188e11d8064526a5a0549217d5a419647
 X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20230621091002eucas1p28cbe3260b7d4c2a086f0b5ac79a7f038
+X-RootMTR: 20230621091037eucas1p188e11d8064526a5a0549217d5a419647
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20230621091002eucas1p28cbe3260b7d4c2a086f0b5ac79a7f038
-References: <CGME20230621091002eucas1p28cbe3260b7d4c2a086f0b5ac79a7f038@eucas1p2.samsung.com>
+X-CMS-RootMailID: 20230621091037eucas1p188e11d8064526a5a0549217d5a419647
+References: <20230621091000.424843-1-j.granados@samsung.com>
+	<CGME20230621091037eucas1p188e11d8064526a5a0549217d5a419647@eucas1p1.samsung.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
 	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
@@ -120,560 +178,851 @@ X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This is part of the effort to remove the empty element from the ctl_table
-structures (used to calculate size) and replace it with the ARRAY_SIZE macro.
-The "sysctl: Remove the end element in sysctl table arrays" commit is the one that
-actually removes the empty element. With a "yesall" configuration the bloat-o-meter
-says that 9158 bytes where saved (report at the end of the cover letter).
+In order to remove the end element from the ctl_table struct arrays, we
+explicitly define the size when registering the targes. We add a size
+argument to the register_sysctl_init call and pass an ARRAY_SIZE for all
+the callers.
 
-Main changes:
-1. Add the ctl_table size into the ctl_table_header
-2. Remove the empty element at the end of all ctl_table arrays
+Signed-off-by: Joel Granados <j.granados@samsung.com>
+---
+ arch/x86/kernel/cpu/intel.c      |  2 +-
+ drivers/char/random.c            |  3 ++-
+ drivers/tty/tty_io.c             |  2 +-
+ drivers/xen/balloon.c            |  3 ++-
+ fs/aio.c                         |  2 +-
+ fs/coredump.c                    |  3 ++-
+ fs/dcache.c                      |  3 ++-
+ fs/exec.c                        |  3 ++-
+ fs/file_table.c                  |  3 ++-
+ fs/inode.c                       |  2 +-
+ fs/locks.c                       |  2 +-
+ fs/namei.c                       |  2 +-
+ fs/namespace.c                   |  3 ++-
+ fs/notify/dnotify/dnotify.c      |  3 ++-
+ fs/pipe.c                        |  3 ++-
+ fs/proc/proc_sysctl.c            | 11 ++---------
+ fs/quota/dquot.c                 |  3 ++-
+ fs/sysctls.c                     |  3 ++-
+ fs/userfaultfd.c                 |  3 ++-
+ include/linux/sysctl.h           |  8 +++++---
+ init/do_mounts_initrd.c          |  3 ++-
+ kernel/acct.c                    |  3 ++-
+ kernel/bpf/syscall.c             |  3 ++-
+ kernel/delayacct.c               |  3 ++-
+ kernel/exit.c                    |  3 ++-
+ kernel/hung_task.c               |  3 ++-
+ kernel/kexec_core.c              |  3 ++-
+ kernel/kprobes.c                 |  3 ++-
+ kernel/latencytop.c              |  3 ++-
+ kernel/locking/lockdep.c         |  3 ++-
+ kernel/panic.c                   |  3 ++-
+ kernel/pid_namespace.c           |  3 ++-
+ kernel/printk/sysctl.c           |  3 ++-
+ kernel/reboot.c                  |  3 ++-
+ kernel/sched/autogroup.c         |  3 ++-
+ kernel/sched/core.c              |  3 ++-
+ kernel/sched/deadline.c          |  3 ++-
+ kernel/sched/fair.c              |  3 ++-
+ kernel/sched/rt.c                |  3 ++-
+ kernel/sched/topology.c          |  3 ++-
+ kernel/seccomp.c                 |  3 ++-
+ kernel/signal.c                  |  3 ++-
+ kernel/stackleak.c               |  3 ++-
+ kernel/sysctl.c                  |  4 ++--
+ kernel/trace/ftrace.c            |  3 ++-
+ kernel/trace/trace_events_user.c |  3 ++-
+ kernel/umh.c                     |  3 ++-
+ kernel/watchdog.c                |  3 ++-
+ mm/compaction.c                  |  2 +-
+ mm/hugetlb.c                     |  2 +-
+ mm/hugetlb_vmemmap.c             |  3 ++-
+ mm/memory-failure.c              |  3 ++-
+ mm/oom_kill.c                    |  3 ++-
+ mm/page-writeback.c              |  3 ++-
+ security/keys/sysctl.c           |  2 +-
+ 55 files changed, 104 insertions(+), 66 deletions(-)
 
-Commit Overview:
-1. There are preparation commits that make sure that we have the
-   ctl_table_header in all the places that we need to have the array size.
-      sysctl: Prefer ctl_table_header in proc_sysct
-      sysctl: Use the ctl header in list ctl_table macro
-      sysctl: Add ctl_table_size to ctl_table_header
-
-2. Add size to relevant register calls. Calculate the ctl_table array size
-   where register_sysctl is called. Add a table_size argument to the relevant
-   sysctl register functions (init_header, __register_sysctl_table,
-   register_net_sysctl, register_sysctl and register_sysctl_init). Important to
-   note that these commits do NOT change the way we calculate size; they plumb
-   things in preparation for the empty element removal commit. Care is taken to
-   leave the tree in a state where it can be compiled which is the reason to
-   not separate the "big" commits (like "sysctl: Add size to the
-   register_net_sysctl function"). If you have an alternative way of dealing
-   with such a big commit while leaving it in a compilable state, please let me
-   know.
-      sysctl: Add size argument to init_header
-      sysctl: Add a size arg to __register_sysctl_table
-      sysctl: Add size to the register_net_sysctl function
-      sysctl: Add size to register_sysctl
-      sysctl: Add size to register_sysctl_init
-
-3. Do the final empty element remove. This commit both removes the empty final
-   element from the ctl_table array and switches to managing array size with
-   the ctl_table_header size. This is also a "big" commit; please get back to
-   me if you have an alternate way of handling it.
-      sysctl: Remove the end element in sysctl table arrays
-
-4. Clean things up by removing things that no longer make sense logically.
-      sysctl: Remove nr_entries from new_links
-      sysctl: rm "child" from __register_sysctl_table doc
-
-Additional Comments:
-1. Still waiting on 0-day to tell me what I missed. Will address any issues in
-   a V2 if necessary.
-
-2. @mcgrof: let me know if you have any way of making the big commits a bit
-   more digestible. You have done some of these big patches before and maybe
-   you have a trick that make reviewing easier.
-
-Comments/feedback greatly appreciated
-
-Best
-Joel
-
-add/remove: 6/1 grow/shrink: 155/160 up/down: 3391/-12549 (-9158)
-Function                                     old     new   delta
-nf_conntrack_standalone_init_sysctl.constprop       -    1438   +1438
-new_links                                    926    1083    +157
-get_links                                    505     659    +154
-drop_sysctl_table                            797     869     +72
-put_links                                   1079    1149     +70
-__pfx_nf_conntrack_standalone_init_sysctl.constprop       -      64     +64
-__pfx_ipv6_route_sysctl_table_size             -      64     +64
-__pfx_ipv6_icmp_sysctl_table_size              -      64     +64
-sysctl_check_table                          1039    1090     +51
-insert_header                               1068    1119     +51
-ipv6_route_sysctl_table_size                   -      40     +40
-ipv6_icmp_sysctl_table_size                    -      40     +40
-ipv6_sysctl_net_init                         509     536     +27
-test_sysctl_init                             767     786     +19
-setup_sysctl_set                             212     228     +16
-__register_sysctl_init                       153     169     +16
-nf_log_net_init                              856     871     +15
-smc_sysctl_net_init                          485     498     +13
-unix_sysctl_register                         262     274     +12
-sysctl_init_bases                             93     105     +12
-sysctl_core_net_init                         363     375     +12
-register_sysctl                               74      86     +12
-register_net_sysctl                          114     126     +12
-mptcp_net_init                               640     652     +12
-ipv4_sysctl_init_net                         537     549     +12
-ipmi_poweroff_init                           288     300     +12
-__ip_vs_lblcr_init                           523     535     +12
-__ip_vs_lblc_init                            523     535     +12
-init_nlm                                     205     216     +11
-xpc_init                                    1060    1070     +10
-xfrm6_net_init                               393     403     +10
-xfrm4_net_init                               393     403     +10
-sysctl_route_net_init                        469     479     +10
-pid_namespaces_init                          146     156     +10
-parport_proc_register                        804     814     +10
-ip_vs_control_net_init_sysctl               2387    2397     +10
-ucma_init                                    378     387      +9
-sched_set_itmt_support                       156     165      +9
-rpc_register_sysctl                          137     146      +9
-reboot_ksysfs_init                           205     214      +9
-parport_default_proc_register                176     185      +9
-page_writeback_init                          192     201      +9
-nf_conntrack_standalone_init                 293     302      +9
-lowpan_net_frag_init                         479     488      +9
-llc_sysctl_init                              294     303      +9
-iw_cm_init                                   305     314      +9
-ipv6_sysctl_register                         194     203      +9
-ipv6_frag_init                               550     559      +9
-init_devpts_fs                               120     129      +9
-hpet_init                                    244     253      +9
-coda_sysctl_init                             137     146      +9
-xprt_rdma_init                               208     215      +7
-xfs_sysctl_register                           97     104      +7
-xfrm_sysctl_init                             391     398      +7
-x25_register_sysctl                          106     113      +7
-utsname_sysctl_init                           58      65      +7
-tipc_register_sysctl                         106     113      +7
-timer_sysctl_init                             58      65      +7
-sysctl_ipv4_init                             137     144      +7
-sysctl_core_init                              84      91      +7
-sld_mitigate_sysctl_init                      67      74      +7
-setup_userns_sysctls                         332     339      +7
-setup_ipc_sysctls                            721     728      +7
-seccomp_sysctl_init                           67      74      +7
-sctp_sysctl_register                          92      99      +7
-scsi_init_sysctl                              97     104      +7
-sched_rt_sysctl_init                          48      55      +7
-sched_fair_sysctl_init                        48      55      +7
-sched_energy_aware_sysctl_init                48      55      +7
-sched_dl_sysctl_init                          48      55      +7
-sched_core_sysctl_init                        48      55      +7
-rxrpc_sysctl_init                            106     113      +7
-rose_register_sysctl                          92      99      +7
-register_firmware_config_sysctl               97     104      +7
-rds_sysctl_init                              152     159      +7
-rds_ib_sysctl_init                           106     113      +7
-random_sysctls_init                           67      74      +7
-printk_sysctl_init                            65      72      +7
-phonet_sysctl_init                           106     113      +7
-ntfs_sysctl                                  193     200      +7
-nr_register_sysctl                           106     113      +7
-nfs_register_sysctl                           97     104      +7
-nfs4_register_sysctl                          97     104      +7
-nf_ct_net_init                               624     631      +7
-mpls_net_init                                360     367      +7
-memory_failure_sysctl_init                    67      74      +7
-mac_hid_init                                  97     104      +7
-lowpan_frags_init_net                        594     601      +7
-lockup_detector_init                         293     300      +7
-kexec_core_sysctl_init                        67      74      +7
-kernel_panic_sysctls_init                     67      74      +7
-kernel_lockdep_sysctls_init                   43      50      +7
-kernel_exit_sysctls_init                      67      74      +7
-kernel_do_mounts_initrd_sysctls_init          67      74      +7
-kernel_delayacct_sysctls_init                 67      74      +7
-kernel_acct_sysctls_init                      67      74      +7
-ipv6_frags_init_net                          543     550      +7
-ipv4_frags_init_net                          612     619      +7
-ipfrag_init                                  415     422      +7
-ip_static_sysctl_init                         67      74      +7
-init_umh_sysctls                              67      74      +7
-init_socket_xprt                             165     172      +7
-init_signal_sysctls                           67      74      +7
-init_security_keys_sysctls                    67      74      +7
-init_pipe_fs                                 191     198      +7
-init_kprobes                                 968     975      +7
-init_fs_sysctls                               67      74      +7
-init_fs_stat_sysctls                          87      94      +7
-init_fs_namespace_sysctls                     67      74      +7
-init_fs_namei_sysctls                         67      74      +7
-init_fs_locks_sysctls                         67      74      +7
-init_fs_inode_sysctls                         67      74      +7
-init_fs_exec_sysctls                          67      74      +7
-init_fs_dcache_sysctls                        67      74      +7
-init_fs_coredump_sysctls                      67      74      +7
-ia32_binfmt_init                              39      46      +7
-i915_perf_sysctl_register                     83      90      +7
-ftrace_sysctl_init                            64      71      +7
-dccp_sysctl_init                             106     113      +7
-cachefiles_register_error_injection           97     104      +7
-bpf_syscall_sysctl_init                       67      74      +7
-atalk_register_sysctl                        106     113      +7
-net_sysctl_init                              210     216      +6
-yama_init                                    123     128      +5
-vrf_netns_init                               334     339      +5
-userfaultfd_init                             167     172      +5
-tty_init                                     490     495      +5
-trace_events_user_init                      1031    1036      +5
-svc_rdma_init                                774     779      +5
-rds_tcp_init_net                             657     662      +5
-parport_device_proc_register                 519     524      +5
-oom_init                                     143     148      +5
-ocfs2_stack_glue_init                        354     359      +5
-md_init                                      608     613      +5
-loadpin_init                                 584     589      +5
-kcompactd_init                               285     290      +5
-inotify_user_setup                           488     493      +5
-init_sg                                      873     878      +5
-init_lstats_procfs                            95     100      +5
-hv_common_init                               897     902      +5
-hung_task_init                               193     198      +5
-hugetlb_vmemmap_init                         379     384      +5
-hugetlb_init                                3630    3635      +5
-fsverity_init_signature                      309     314      +5
-fanotify_user_setup                          609     614      +5
-eventpoll_init                               491     496      +5
-dquot_init                                   554     559      +5
-dnotify_init                                 264     269      +5
-devinet_init_net                            1129    1134      +5
-cdrom_sysctl_register                        627     632      +5
-brnf_init_net                                502     507      +5
-balloon_init                                1092    1097      +5
-ax25_register_dev_sysctl                     370     375      +5
-autogroup_init                               105     110      +5
-apparmor_init                               1075    1080      +5
-aio_setup                                    263     268      +5
-__devinet_sysctl_register                    439     444      +5
-setup_mq_sysctls                             495     499      +4
-register_sysctl_mount_point                   73      77      +4
-user_namespace_sysctl_init                   394     396      +2
-nf_conntrack_pernet_init.cold                 25      26      +1
-__register_sysctl_table                      700     682     -18
-__addrconf_sysctl_register                   673     650     -23
-new_dir                                      506     480     -26
-sctp_sysctl_net_register                     385     351     -34
-neigh_sysctl_register                        846     807     -39
-mpls_dev_sysctl_register                     460     408     -52
-yama_sysctl_table                            128      64     -64
-xs_tunables_table                            448     384     -64
-xr_tunables_table                            448     384     -64
-xpc_sys_xpc_hb                               192     128     -64
-xpc_sys_xpc                                  128      64     -64
-xfs_table                                   1024     960     -64
-xfrm_table                                   320     256     -64
-xfrm6_policy_table                           128      64     -64
-xfrm4_policy_table                           128      64     -64
-x25_table                                    448     384     -64
-watchdog_sysctls                             640     576     -64
-vs_vars                                     1984    1920     -64
-vrf_table                                    128      64     -64
-vm_userfaultfd_table                         128      64     -64
-vm_table                                    1856    1792     -64
-vm_page_writeback_sysctls                    512     448     -64
-vm_oom_kill_table                            256     192     -64
-vm_compaction                                320     256     -64
-uts_kern_table                               448     384     -64
-usermodehelper_table                         192     128     -64
-user_table                                   832     768     -64
-user_event_sysctls                           128      64     -64
-unix_table                                   128      64     -64
-ucma_ctl_table                               128      64     -64
-tty_table                                    192     128     -64
-tipc_table                                   448     384     -64
-timer_sysctl                                 128      64     -64
-test_table_unregister                        128      64     -64
-test_table                                   576     512     -64
-svcrdma_parm_table                           832     768     -64
-smc_table                                    384     320     -64
-sld_sysctls                                  128      64     -64
-signal_debug_table                           128      64     -64
-sg_sysctls                                   128      64     -64
-seccomp_sysctl_table                         192     128     -64
-sctp_table                                   256     192     -64
-sctp_net_table                              2304    2240     -64
-scsi_table                                   128      64     -64
-sched_rt_sysctls                             256     192     -64
-sched_fair_sysctls                           256     192     -64
-sched_energy_aware_sysctls                   128      64     -64
-sched_dl_sysctls                             192     128     -64
-sched_core_sysctls                           384     320     -64
-sched_autogroup_sysctls                      128      64     -64
-rxrpc_sysctl_table                           704     640     -64
-rose_table                                   704     640     -64
-root_table                                   128      64     -64
-rds_tcp_sysctl_table                         192     128     -64
-rds_sysctl_rds_table                         384     320     -64
-rds_ib_sysctl_table                          384     320     -64
-random_table                                 448     384     -64
-raid_table                                   192     128     -64
-pty_table                                    256     192     -64
-printk_sysctls                               512     448     -64
-pid_ns_ctl_table_vm                          128      64     -64
-pid_ns_ctl_table                             128      64     -64
-phonet_table                                 128      64     -64
-ocfs2_nm_table                               128      64     -64
-oa_table                                     192     128     -64
-ntfs_sysctls                                 128      64     -64
-nr_table                                     832     768     -64
-nlm_sysctls                                  448     384     -64
-nfs_cb_sysctls                               192     128     -64
-nfs4_cb_sysctls                              192     128     -64
-nf_log_sysctl_table                          768     704     -64
-nf_log_sysctl_ftable                         128      64     -64
-nf_ct_sysctl_table                          3200    3136     -64
-nf_ct_netfilter_table                        128      64     -64
-nf_ct_frag6_sysctl_table                     256     192     -64
-netns_core_table                             256     192     -64
-net_core_table                              2240    2176     -64
-neigh_sysctl_template                       1416    1352     -64
-namei_sysctls                                320     256     -64
-mq_sysctls                                   384     320     -64
-mptcp_sysctl_table                           448     384     -64
-mpls_table                                   256     192     -64
-mpls_dev_table                               128      64     -64
-memory_failure_table                         192     128     -64
-mac_hid_files                                256     192     -64
-lowpan_frags_ns_ctl_table                    256     192     -64
-lowpan_frags_ctl_table                       128      64     -64
-locks_sysctls                                192     128     -64
-loadpin_sysctl_table                         128      64     -64
-llc_station_table                             64       -     -64
-llc2_timeout_table                           320     256     -64
-latencytop_sysctl                            128      64     -64
-kprobe_sysctls                               128      64     -64
-key_sysctls                                  448     384     -64
-kexec_core_sysctls                           256     192     -64
-kern_table                                  2560    2496     -64
-kern_reboot_table                            192     128     -64
-kern_panic_table                             192     128     -64
-kern_lockdep_table                           192     128     -64
-kern_exit_table                              128      64     -64
-kern_do_mounts_initrd_table                  128      64     -64
-kern_delayacct_table                         128      64     -64
-kern_acct_table                              128      64     -64
-iwcm_ctl_table                               128      64     -64
-itmt_kern_table                              128      64     -64
-ipv6_table_template                         1344    1280     -64
-ipv6_route_table_template                    768     704     -64
-ipv6_rotable                                 320     256     -64
-ipv6_icmp_table_template                     448     384     -64
-ipv4_table                                  1024     960     -64
-ipv4_route_table                             832     768     -64
-ipv4_route_netns_table                       320     256     -64
-ipv4_net_table                              7296    7232     -64
-ipmi_table                                   128      64     -64
-ipc_sysctls                                  832     768     -64
-ip6_frags_ns_ctl_table                       256     192     -64
-ip6_frags_ctl_table                          128      64     -64
-ip4_frags_ns_ctl_table                       320     256     -64
-ip4_frags_ctl_table                          128      64     -64
-inotify_table                                256     192     -64
-inodes_sysctls                               192     128     -64
-hv_ctl_table                                 128      64     -64
-hung_task_sysctls                            448     384     -64
-hugetlb_vmemmap_sysctls                      128      64     -64
-hugetlb_table                                320     256     -64
-hpet_table                                   128      64     -64
-ftrace_sysctls                               128      64     -64
-fsverity_sysctl_table                        128      64     -64
-fs_stat_sysctls                              256     192     -64
-fs_shared_sysctls                            192     128     -64
-fs_pipe_sysctls                              256     192     -64
-fs_namespace_sysctls                         128      64     -64
-fs_exec_sysctls                              128      64     -64
-fs_dqstats_table                             576     512     -64
-fs_dcache_sysctls                            128      64     -64
-firmware_config_table                        192     128     -64
-fanotify_table                               256     192     -64
-epoll_table                                  128      64     -64
-dnotify_sysctls                              128      64     -64
-devinet_sysctl                              2184    2120     -64
-debug_table                                  384     320     -64
-dccp_default_table                           576     512     -64
-ctl_forward_entry                            128      64     -64
-coredump_sysctls                             256     192     -64
-coda_table                                   256     192     -64
-cdrom_table                                  448     384     -64
-cachefiles_sysctls                           128      64     -64
-brnf_table                                   448     384     -64
-bpf_syscall_table                            192     128     -64
-balloon_table                                128      64     -64
-ax25_param_table                             960     896     -64
-atalk_table                                  320     256     -64
-apparmor_sysctl_table                        192     128     -64
-aio_sysctls                                  192     128     -64
-addrconf_sysctl                             3776    3712     -64
-abi_table2                                   128      64     -64
-vs_vars_table                                256     128    -128
-parport_sysctl_template                      912     720    -192
-parport_default_sysctl_table                 584     136    -448
-parport_device_sysctl_template               776     136    -640
-nf_conntrack_pernet_init                    2073     724   -1349
-Total: Before=430062205, After=430053047, chg -0.00%
-
-Joel Granados (11):
-  sysctl: Prefer ctl_table_header in proc_sysctl
-  sysctl: Use the ctl header in list ctl_table macro
-  sysctl: Add ctl_table_size to ctl_table_header
-  sysctl: Add size argument to init_header
-  sysctl: Add a size arg to __register_sysctl_table
-  sysctl: Add size to register_net_sysctl function
-  sysctl: Add size to register_sysctl
-  sysctl: Add size to register_sysctl_init
-  sysctl: Remove the end element in sysctl table arrays
-  sysctl: Remove nr_entries from new_links
-  sysctl: rm "child" from __register_sysctl_table doc
-
- arch/arm/kernel/isa.c                         |   6 +-
- arch/arm64/kernel/armv8_deprecated.c          |  10 +-
- arch/arm64/kernel/fpsimd.c                    |  12 +-
- arch/arm64/kernel/process.c                   |   6 +-
- arch/ia64/kernel/crash.c                      |   6 +-
- arch/powerpc/kernel/idle.c                    |   6 +-
- arch/powerpc/platforms/pseries/mobility.c     |   6 +-
- arch/s390/appldata/appldata_base.c            |  11 +-
- arch/s390/kernel/debug.c                      |   6 +-
- arch/s390/kernel/topology.c                   |   6 +-
- arch/s390/mm/cmm.c                            |   6 +-
- arch/s390/mm/pgalloc.c                        |   6 +-
- arch/x86/entry/vdso/vdso32-setup.c            |   5 +-
- arch/x86/kernel/cpu/intel.c                   |   5 +-
- arch/x86/kernel/itmt.c                        |   6 +-
- crypto/fips.c                                 |   6 +-
- drivers/base/firmware_loader/fallback_table.c |   9 +-
- drivers/cdrom/cdrom.c                         |   6 +-
- drivers/char/hpet.c                           |  16 +--
- drivers/char/ipmi/ipmi_poweroff.c             |   6 +-
- drivers/char/random.c                         |   6 +-
- drivers/gpu/drm/i915/i915_perf.c              |  36 ++---
- drivers/hv/hv_common.c                        |   6 +-
- drivers/infiniband/core/iwcm.c                |   6 +-
- drivers/infiniband/core/ucma.c                |   7 +-
- drivers/macintosh/mac_hid.c                   |   6 +-
- drivers/md/md.c                               |   6 +-
- drivers/misc/sgi-xp/xpc_main.c                |  12 +-
- drivers/net/vrf.c                             |   6 +-
- drivers/parport/procfs.c                      |  53 ++++----
- drivers/perf/arm_pmuv3.c                      |   6 +-
- drivers/scsi/scsi_sysctl.c                    |   6 +-
- drivers/scsi/sg.c                             |   6 +-
- drivers/tty/tty_io.c                          |   5 +-
- drivers/xen/balloon.c                         |   6 +-
- fs/aio.c                                      |   5 +-
- fs/cachefiles/error_inject.c                  |   6 +-
- fs/coda/sysctl.c                              |   6 +-
- fs/coredump.c                                 |   6 +-
- fs/dcache.c                                   |   6 +-
- fs/devpts/inode.c                             |   6 +-
- fs/eventpoll.c                                |   5 +-
- fs/exec.c                                     |   6 +-
- fs/file_table.c                               |   6 +-
- fs/inode.c                                    |   5 +-
- fs/lockd/svc.c                                |   6 +-
- fs/locks.c                                    |   5 +-
- fs/namei.c                                    |   5 +-
- fs/namespace.c                                |   6 +-
- fs/nfs/nfs4sysctl.c                           |   6 +-
- fs/nfs/sysctl.c                               |   6 +-
- fs/notify/dnotify/dnotify.c                   |   6 +-
- fs/notify/fanotify/fanotify_user.c            |   6 +-
- fs/notify/inotify/inotify_user.c              |   6 +-
- fs/ntfs/sysctl.c                              |   6 +-
- fs/ocfs2/stackglue.c                          |   6 +-
- fs/pipe.c                                     |   6 +-
- fs/proc/proc_sysctl.c                         | 126 ++++++++----------
- fs/quota/dquot.c                              |   6 +-
- fs/sysctls.c                                  |   6 +-
- fs/userfaultfd.c                              |   6 +-
- fs/verity/signature.c                         |   7 +-
- fs/xfs/xfs_sysctl.c                           |   7 +-
- include/linux/sysctl.h                        |  30 +++--
- include/net/ipv6.h                            |   2 +
- include/net/net_namespace.h                   |   4 +-
- init/do_mounts_initrd.c                       |   6 +-
- ipc/ipc_sysctl.c                              |   7 +-
- ipc/mq_sysctl.c                               |   7 +-
- kernel/acct.c                                 |   6 +-
- kernel/bpf/syscall.c                          |   6 +-
- kernel/delayacct.c                            |   6 +-
- kernel/exit.c                                 |   6 +-
- kernel/hung_task.c                            |   6 +-
- kernel/kexec_core.c                           |   6 +-
- kernel/kprobes.c                              |   6 +-
- kernel/latencytop.c                           |   6 +-
- kernel/locking/lockdep.c                      |   6 +-
- kernel/panic.c                                |   6 +-
- kernel/pid_namespace.c                        |   6 +-
- kernel/pid_sysctl.h                           |   5 +-
- kernel/printk/sysctl.c                        |   6 +-
- kernel/reboot.c                               |   6 +-
- kernel/sched/autogroup.c                      |   6 +-
- kernel/sched/core.c                           |   6 +-
- kernel/sched/deadline.c                       |   6 +-
- kernel/sched/fair.c                           |   6 +-
- kernel/sched/rt.c                             |   6 +-
- kernel/sched/topology.c                       |   6 +-
- kernel/seccomp.c                              |   6 +-
- kernel/signal.c                               |   6 +-
- kernel/stackleak.c                            |   6 +-
- kernel/sysctl.c                               |  10 +-
- kernel/time/timer.c                           |   5 +-
- kernel/trace/ftrace.c                         |   6 +-
- kernel/trace/trace_events_user.c              |   6 +-
- kernel/ucount.c                               |  12 +-
- kernel/umh.c                                  |   6 +-
- kernel/utsname_sysctl.c                       |   5 +-
- kernel/watchdog.c                             |   6 +-
- lib/test_sysctl.c                             |  15 ++-
- mm/compaction.c                               |   5 +-
- mm/hugetlb.c                                  |   5 +-
- mm/hugetlb_vmemmap.c                          |   6 +-
- mm/memory-failure.c                           |   6 +-
- mm/oom_kill.c                                 |   6 +-
- mm/page-writeback.c                           |   6 +-
- net/appletalk/sysctl_net_atalk.c              |   7 +-
- net/ax25/sysctl_net_ax25.c                    |   8 +-
- net/bridge/br_netfilter_hooks.c               |   5 +-
- net/core/neighbour.c                          |  15 ++-
- net/core/sysctl_net_core.c                    |  11 +-
- net/dccp/sysctl.c                             |   7 +-
- net/ieee802154/6lowpan/reassembly.c           |  12 +-
- net/ipv4/devinet.c                            |  11 +-
- net/ipv4/ip_fragment.c                        |  12 +-
- net/ipv4/route.c                              |  12 +-
- net/ipv4/sysctl_net_ipv4.c                    |  12 +-
- net/ipv4/xfrm4_policy.c                       |   6 +-
- net/ipv6/addrconf.c                           |   8 +-
- net/ipv6/icmp.c                               |   8 +-
- net/ipv6/netfilter/nf_conntrack_reasm.c       |   6 +-
- net/ipv6/reassembly.c                         |  12 +-
- net/ipv6/route.c                              |   8 +-
- net/ipv6/sysctl_net_ipv6.c                    |  19 +--
- net/ipv6/xfrm6_policy.c                       |   6 +-
- net/llc/sysctl_net_llc.c                      |  13 +-
- net/mpls/af_mpls.c                            |  75 ++++++-----
- net/mptcp/ctrl.c                              |   6 +-
- net/netfilter/ipvs/ip_vs_ctl.c                |   6 +-
- net/netfilter/ipvs/ip_vs_lblc.c               |   8 +-
- net/netfilter/ipvs/ip_vs_lblcr.c              |   8 +-
- net/netfilter/nf_conntrack_standalone.c       |  18 ++-
- net/netfilter/nf_log.c                        |  10 +-
- net/netrom/sysctl_net_netrom.c                |   6 +-
- net/phonet/sysctl.c                           |   7 +-
- net/rds/ib_sysctl.c                           |   7 +-
- net/rds/sysctl.c                              |   8 +-
- net/rds/tcp.c                                 |   6 +-
- net/rose/sysctl_net_rose.c                    |   7 +-
- net/rxrpc/sysctl.c                            |   6 +-
- net/sctp/sysctl.c                             |  17 ++-
- net/smc/smc_sysctl.c                          |   6 +-
- net/sunrpc/sysctl.c                           |   6 +-
- net/sunrpc/xprtrdma/svc_rdma.c                |   6 +-
- net/sunrpc/xprtrdma/transport.c               |   7 +-
- net/sunrpc/xprtsock.c                         |   7 +-
- net/sysctl_net.c                              |   6 +-
- net/tipc/sysctl.c                             |   6 +-
- net/unix/sysctl_net_unix.c                    |   6 +-
- net/x25/sysctl_net_x25.c                      |   7 +-
- net/xfrm/xfrm_sysctl.c                        |   6 +-
- security/apparmor/lsm.c                       |   7 +-
- security/keys/sysctl.c                        |   9 +-
- security/loadpin/loadpin.c                    |   6 +-
- security/yama/yama_lsm.c                      |   6 +-
- 156 files changed, 696 insertions(+), 690 deletions(-)
-
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 1c4639588ff9..c77a3961443d 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -1195,7 +1195,7 @@ static struct ctl_table sld_sysctls[] = {
+ 
+ static int __init sld_mitigate_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", sld_sysctls);
++	register_sysctl_init("kernel", sld_sysctls, ARRAY_SIZE(sld_sysctls));
+ 	return 0;
+ }
+ 
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 253f2ddb8913..8db2ea9e3d66 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -1692,7 +1692,8 @@ static struct ctl_table random_table[] = {
+  */
+ static int __init random_sysctls_init(void)
+ {
+-	register_sysctl_init("kernel/random", random_table);
++	register_sysctl_init("kernel/random", random_table,
++			     ARRAY_SIZE(random_table));
+ 	return 0;
+ }
+ device_initcall(random_sysctls_init);
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index c84be40fb8df..63fb3c543b94 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -3618,7 +3618,7 @@ static struct ctl_table tty_table[] = {
+  */
+ int __init tty_init(void)
+ {
+-	register_sysctl_init("dev/tty", tty_table);
++	register_sysctl_init("dev/tty", tty_table, ARRAY_SIZE(tty_table));
+ 	cdev_init(&tty_cdev, &tty_fops);
+ 	if (cdev_add(&tty_cdev, MKDEV(TTYAUX_MAJOR, 0), 1) ||
+ 	    register_chrdev_region(MKDEV(TTYAUX_MAJOR, 0), 1, "/dev/tty") < 0)
+diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
+index 586a1673459e..e4544262a429 100644
+--- a/drivers/xen/balloon.c
++++ b/drivers/xen/balloon.c
+@@ -729,7 +729,8 @@ static int __init balloon_init(void)
+ #ifdef CONFIG_XEN_BALLOON_MEMORY_HOTPLUG
+ 	set_online_page_callback(&xen_online_page);
+ 	register_memory_notifier(&xen_memory_nb);
+-	register_sysctl_init("xen/balloon", balloon_table);
++	register_sysctl_init("xen/balloon", balloon_table,
++			     ARRAY_SIZE(balloon_table));
+ #endif
+ 
+ 	balloon_add_regions();
+diff --git a/fs/aio.c b/fs/aio.c
+index b0b17bd098bb..b09abe7a14d3 100644
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -244,7 +244,7 @@ static struct ctl_table aio_sysctls[] = {
+ 
+ static void __init aio_sysctl_init(void)
+ {
+-	register_sysctl_init("fs", aio_sysctls);
++	register_sysctl_init("fs", aio_sysctls, ARRAY_SIZE(aio_sysctls));
+ }
+ #else
+ #define aio_sysctl_init() do { } while (0)
+diff --git a/fs/coredump.c b/fs/coredump.c
+index ece7badf701b..7e55428dce13 100644
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -984,7 +984,8 @@ static struct ctl_table coredump_sysctls[] = {
+ 
+ static int __init init_fs_coredump_sysctls(void)
+ {
+-	register_sysctl_init("kernel", coredump_sysctls);
++	register_sysctl_init("kernel", coredump_sysctls,
++			     ARRAY_SIZE(coredump_sysctls));
+ 	return 0;
+ }
+ fs_initcall(init_fs_coredump_sysctls);
+diff --git a/fs/dcache.c b/fs/dcache.c
+index 52e6d5fdab6b..f02bfd383e66 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -196,7 +196,8 @@ static struct ctl_table fs_dcache_sysctls[] = {
+ 
+ static int __init init_fs_dcache_sysctls(void)
+ {
+-	register_sysctl_init("fs", fs_dcache_sysctls);
++	register_sysctl_init("fs", fs_dcache_sysctls,
++			     ARRAY_SIZE(fs_dcache_sysctls));
+ 	return 0;
+ }
+ fs_initcall(init_fs_dcache_sysctls);
+diff --git a/fs/exec.c b/fs/exec.c
+index a466e797c8e2..5572d148738b 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -2170,7 +2170,8 @@ static struct ctl_table fs_exec_sysctls[] = {
+ 
+ static int __init init_fs_exec_sysctls(void)
+ {
+-	register_sysctl_init("fs", fs_exec_sysctls);
++	register_sysctl_init("fs", fs_exec_sysctls,
++			     ARRAY_SIZE(fs_exec_sysctls));
+ 	return 0;
+ }
+ 
+diff --git a/fs/file_table.c b/fs/file_table.c
+index 372653b92617..23a645521960 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -120,7 +120,8 @@ static struct ctl_table fs_stat_sysctls[] = {
+ 
+ static int __init init_fs_stat_sysctls(void)
+ {
+-	register_sysctl_init("fs", fs_stat_sysctls);
++	register_sysctl_init("fs", fs_stat_sysctls,
++			     ARRAY_SIZE(fs_stat_sysctls));
+ 	if (IS_ENABLED(CONFIG_BINFMT_MISC)) {
+ 		struct ctl_table_header *hdr;
+ 		hdr = register_sysctl_mount_point("fs/binfmt_misc");
+diff --git a/fs/inode.c b/fs/inode.c
+index 577799b7855f..0a0ad1a2a5d2 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -135,7 +135,7 @@ static struct ctl_table inodes_sysctls[] = {
+ 
+ static int __init init_fs_inode_sysctls(void)
+ {
+-	register_sysctl_init("fs", inodes_sysctls);
++	register_sysctl_init("fs", inodes_sysctls, ARRAY_SIZE(inodes_sysctls));
+ 	return 0;
+ }
+ early_initcall(init_fs_inode_sysctls);
+diff --git a/fs/locks.c b/fs/locks.c
+index df8b26a42524..ce5733480aa6 100644
+--- a/fs/locks.c
++++ b/fs/locks.c
+@@ -116,7 +116,7 @@ static struct ctl_table locks_sysctls[] = {
+ 
+ static int __init init_fs_locks_sysctls(void)
+ {
+-	register_sysctl_init("fs", locks_sysctls);
++	register_sysctl_init("fs", locks_sysctls, ARRAY_SIZE(locks_sysctls));
+ 	return 0;
+ }
+ early_initcall(init_fs_locks_sysctls);
+diff --git a/fs/namei.c b/fs/namei.c
+index e4fe0879ae55..9b567af081af 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -1073,7 +1073,7 @@ static struct ctl_table namei_sysctls[] = {
+ 
+ static int __init init_fs_namei_sysctls(void)
+ {
+-	register_sysctl_init("fs", namei_sysctls);
++	register_sysctl_init("fs", namei_sysctls, ARRAY_SIZE(namei_sysctls));
+ 	return 0;
+ }
+ fs_initcall(init_fs_namei_sysctls);
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 54847db5b819..e7f251e40485 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -4715,7 +4715,8 @@ static struct ctl_table fs_namespace_sysctls[] = {
+ 
+ static int __init init_fs_namespace_sysctls(void)
+ {
+-	register_sysctl_init("fs", fs_namespace_sysctls);
++	register_sysctl_init("fs", fs_namespace_sysctls,
++			     ARRAY_SIZE(fs_namespace_sysctls));
+ 	return 0;
+ }
+ fs_initcall(init_fs_namespace_sysctls);
+diff --git a/fs/notify/dnotify/dnotify.c b/fs/notify/dnotify/dnotify.c
+index 190aa717fa32..2c6fe98d6fe1 100644
+--- a/fs/notify/dnotify/dnotify.c
++++ b/fs/notify/dnotify/dnotify.c
+@@ -33,7 +33,8 @@ static struct ctl_table dnotify_sysctls[] = {
+ };
+ static void __init dnotify_sysctl_init(void)
+ {
+-	register_sysctl_init("fs", dnotify_sysctls);
++	register_sysctl_init("fs", dnotify_sysctls,
++			     ARRAY_SIZE(dnotify_sysctls));
+ }
+ #else
+ #define dnotify_sysctl_init() do { } while (0)
+diff --git a/fs/pipe.c b/fs/pipe.c
+index 2d88f73f585a..8a808fc25552 100644
+--- a/fs/pipe.c
++++ b/fs/pipe.c
+@@ -1508,7 +1508,8 @@ static int __init init_pipe_fs(void)
+ 		}
+ 	}
+ #ifdef CONFIG_SYSCTL
+-	register_sysctl_init("fs", fs_pipe_sysctls);
++	register_sysctl_init("fs", fs_pipe_sysctls,
++			     ARRAY_SIZE(fs_pipe_sysctls));
+ #endif
+ 	return err;
+ }
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index 66c9d7a07d2e..9670c5b7b5b2 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1443,16 +1443,9 @@ EXPORT_SYMBOL(register_sysctl);
+  * Context: if your base directory does not exist it will be created for you.
+  */
+ void __init __register_sysctl_init(const char *path, struct ctl_table *table,
+-				 const char *table_name)
++				 const char *table_name, size_t table_size)
+ {
+-	int count = 0;
+-	struct ctl_table *entry;
+-	struct ctl_table_header t_hdr, *hdr;
+-
+-	t_hdr.ctl_table = table;
+-	list_for_each_table_entry(entry, (&t_hdr))
+-		count++;
+-	hdr = register_sysctl(path, table, count);
++	struct ctl_table_header *hdr = register_sysctl(path, table, table_size);
+ 
+ 	if (unlikely(!hdr)) {
+ 		pr_err("failed when register_sysctl %s to %s\n", table_name, path);
+diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+index ffd40dc3e4e9..7c07654e4253 100644
+--- a/fs/quota/dquot.c
++++ b/fs/quota/dquot.c
+@@ -2953,7 +2953,8 @@ static int __init dquot_init(void)
+ 
+ 	printk(KERN_NOTICE "VFS: Disk quotas %s\n", __DQUOT_VERSION__);
+ 
+-	register_sysctl_init("fs/quota", fs_dqstats_table);
++	register_sysctl_init("fs/quota", fs_dqstats_table,
++			     ARRAY_SIZE(fs_dqstats_table));
+ 
+ 	dquot_cachep = kmem_cache_create("dquot",
+ 			sizeof(struct dquot), sizeof(unsigned long) * 4,
+diff --git a/fs/sysctls.c b/fs/sysctls.c
+index 76a0aee8c229..944254dd92c0 100644
+--- a/fs/sysctls.c
++++ b/fs/sysctls.c
+@@ -31,7 +31,8 @@ static struct ctl_table fs_shared_sysctls[] = {
+ 
+ static int __init init_fs_sysctls(void)
+ {
+-	register_sysctl_init("fs", fs_shared_sysctls);
++	register_sysctl_init("fs", fs_shared_sysctls,
++			     ARRAY_SIZE(fs_shared_sysctls));
+ 	return 0;
+ }
+ 
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 0fd96d6e39ce..4c3858769226 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -2219,7 +2219,8 @@ static int __init userfaultfd_init(void)
+ 						SLAB_HWCACHE_ALIGN|SLAB_PANIC,
+ 						init_once_userfaultfd_ctx);
+ #ifdef CONFIG_SYSCTL
+-	register_sysctl_init("vm", vm_userfaultfd_table);
++	register_sysctl_init("vm", vm_userfaultfd_table,
++			     ARRAY_SIZE(vm_userfaultfd_table));
+ #endif
+ 	return 0;
+ }
+diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+index 71d7935e50f0..3074a506592d 100644
+--- a/include/linux/sysctl.h
++++ b/include/linux/sysctl.h
+@@ -233,8 +233,9 @@ void unregister_sysctl_table(struct ctl_table_header * table);
+ 
+ extern int sysctl_init_bases(void);
+ extern void __register_sysctl_init(const char *path, struct ctl_table *table,
+-				 const char *table_name);
+-#define register_sysctl_init(path, table) __register_sysctl_init(path, table, #table)
++				 const char *table_name, size_t table_size);
++#define register_sysctl_init(path, table, size)	\
++	__register_sysctl_init(path, table, #table, size)
+ extern struct ctl_table_header *register_sysctl_mount_point(const char *path);
+ 
+ void do_sysctl_args(void);
+@@ -254,7 +255,8 @@ extern int no_unaligned_warning;
+ 
+ #else /* CONFIG_SYSCTL */
+ 
+-static inline void register_sysctl_init(const char *path, struct ctl_table *table)
++static inline void register_sysctl_init(const char *path, struct ctl_table *table,
++					size_t table_size)
+ {
+ }
+ 
+diff --git a/init/do_mounts_initrd.c b/init/do_mounts_initrd.c
+index 34731241377d..2b10abb8c80e 100644
+--- a/init/do_mounts_initrd.c
++++ b/init/do_mounts_initrd.c
+@@ -34,7 +34,8 @@ static struct ctl_table kern_do_mounts_initrd_table[] = {
+ 
+ static __init int kernel_do_mounts_initrd_sysctls_init(void)
+ {
+-	register_sysctl_init("kernel", kern_do_mounts_initrd_table);
++	register_sysctl_init("kernel", kern_do_mounts_initrd_table,
++			     ARRAY_SIZE(kern_do_mounts_initrd_table));
+ 	return 0;
+ }
+ late_initcall(kernel_do_mounts_initrd_sysctls_init);
+diff --git a/kernel/acct.c b/kernel/acct.c
+index 010667ce6080..67125b7c5ca2 100644
+--- a/kernel/acct.c
++++ b/kernel/acct.c
+@@ -89,7 +89,8 @@ static struct ctl_table kern_acct_table[] = {
+ 
+ static __init int kernel_acct_sysctls_init(void)
+ {
+-	register_sysctl_init("kernel", kern_acct_table);
++	register_sysctl_init("kernel", kern_acct_table,
++			     ARRAY_SIZE(kern_acct_table));
+ 	return 0;
+ }
+ late_initcall(kernel_acct_sysctls_init);
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 14f39c1e573e..a81b5122b16b 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -5406,7 +5406,8 @@ static struct ctl_table bpf_syscall_table[] = {
+ 
+ static int __init bpf_syscall_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", bpf_syscall_table);
++	register_sysctl_init("kernel", bpf_syscall_table,
++			     ARRAY_SIZE(bpf_syscall_table));
+ 	return 0;
+ }
+ late_initcall(bpf_syscall_sysctl_init);
+diff --git a/kernel/delayacct.c b/kernel/delayacct.c
+index 6f0c358e73d8..4ef14cb5b5a0 100644
+--- a/kernel/delayacct.c
++++ b/kernel/delayacct.c
+@@ -79,7 +79,8 @@ static struct ctl_table kern_delayacct_table[] = {
+ 
+ static __init int kernel_delayacct_sysctls_init(void)
+ {
+-	register_sysctl_init("kernel", kern_delayacct_table);
++	register_sysctl_init("kernel", kern_delayacct_table,
++			     ARRAY_SIZE(kern_delayacct_table));
+ 	return 0;
+ }
+ late_initcall(kernel_delayacct_sysctls_init);
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 34b90e2e7cf7..633c7a52ef80 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -95,7 +95,8 @@ static struct ctl_table kern_exit_table[] = {
+ 
+ static __init int kernel_exit_sysctls_init(void)
+ {
+-	register_sysctl_init("kernel", kern_exit_table);
++	register_sysctl_init("kernel", kern_exit_table,
++			     ARRAY_SIZE(kern_exit_table));
+ 	return 0;
+ }
+ late_initcall(kernel_exit_sysctls_init);
+diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+index 9a24574988d2..816f133266c4 100644
+--- a/kernel/hung_task.c
++++ b/kernel/hung_task.c
+@@ -318,7 +318,8 @@ static struct ctl_table hung_task_sysctls[] = {
+ 
+ static void __init hung_task_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", hung_task_sysctls);
++	register_sysctl_init("kernel", hung_task_sysctls,
++			     ARRAY_SIZE(hung_task_sysctls));
+ }
+ #else
+ #define hung_task_sysctl_init() do { } while (0)
+diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+index 3d578c6fefee..63b04e710890 100644
+--- a/kernel/kexec_core.c
++++ b/kernel/kexec_core.c
+@@ -1007,7 +1007,8 @@ static struct ctl_table kexec_core_sysctls[] = {
+ 
+ static int __init kexec_core_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", kexec_core_sysctls);
++	register_sysctl_init("kernel", kexec_core_sysctls,
++			     ARRAY_SIZE(kexec_core_sysctls));
+ 	return 0;
+ }
+ late_initcall(kexec_core_sysctl_init);
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 00e177de91cc..06a3ac7993f0 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -973,7 +973,8 @@ static struct ctl_table kprobe_sysctls[] = {
+ 
+ static void __init kprobe_sysctls_init(void)
+ {
+-	register_sysctl_init("debug", kprobe_sysctls);
++	register_sysctl_init("debug", kprobe_sysctls,
++			     ARRAY_SIZE(kprobe_sysctls));
+ }
+ #endif /* CONFIG_SYSCTL */
+ 
+diff --git a/kernel/latencytop.c b/kernel/latencytop.c
+index 781249098cb6..55050ae0e197 100644
+--- a/kernel/latencytop.c
++++ b/kernel/latencytop.c
+@@ -293,7 +293,8 @@ static int __init init_lstats_procfs(void)
+ {
+ 	proc_create("latency_stats", 0644, NULL, &lstats_proc_ops);
+ #ifdef CONFIG_SYSCTL
+-	register_sysctl_init("kernel", latencytop_sysctl);
++	register_sysctl_init("kernel", latencytop_sysctl,
++			     ARRAY_SIZE(latencytop_sysctl));
+ #endif
+ 	return 0;
+ }
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index dcd1d5bfc1e0..1e29cec7e00c 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -102,7 +102,8 @@ static struct ctl_table kern_lockdep_table[] = {
+ 
+ static __init int kernel_lockdep_sysctls_init(void)
+ {
+-	register_sysctl_init("kernel", kern_lockdep_table);
++	register_sysctl_init("kernel", kern_lockdep_table,
++			     ARRAY_SIZE(kern_lockdep_table));
+ 	return 0;
+ }
+ late_initcall(kernel_lockdep_sysctls_init);
+diff --git a/kernel/panic.c b/kernel/panic.c
+index 886d2ebd0a0d..0008273d23fd 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -104,7 +104,8 @@ static struct ctl_table kern_panic_table[] = {
+ 
+ static __init int kernel_panic_sysctls_init(void)
+ {
+-	register_sysctl_init("kernel", kern_panic_table);
++	register_sysctl_init("kernel", kern_panic_table,
++			     ARRAY_SIZE(kern_panic_table));
+ 	return 0;
+ }
+ late_initcall(kernel_panic_sysctls_init);
+diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+index b43eee07b00c..7fd5e8adc2e8 100644
+--- a/kernel/pid_namespace.c
++++ b/kernel/pid_namespace.c
+@@ -472,7 +472,8 @@ static __init int pid_namespaces_init(void)
+ 	pid_ns_cachep = KMEM_CACHE(pid_namespace, SLAB_PANIC | SLAB_ACCOUNT);
+ 
+ #ifdef CONFIG_CHECKPOINT_RESTORE
+-	register_sysctl_init("kernel", pid_ns_ctl_table);
++	register_sysctl_init("kernel", pid_ns_ctl_table,
++			     ARRAY_SIZE(pid_ns_ctl_table));
+ #endif
+ 
+ 	register_pid_ns_sysctl_table_vm();
+diff --git a/kernel/printk/sysctl.c b/kernel/printk/sysctl.c
+index c228343eeb97..28f37b86414e 100644
+--- a/kernel/printk/sysctl.c
++++ b/kernel/printk/sysctl.c
+@@ -81,5 +81,6 @@ static struct ctl_table printk_sysctls[] = {
+ 
+ void __init printk_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", printk_sysctls);
++	register_sysctl_init("kernel", printk_sysctls,
++			     ARRAY_SIZE(printk_sysctls));
+ }
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index 3bba88c7ffc6..cf81d8bfb523 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -1277,7 +1277,8 @@ static struct ctl_table kern_reboot_table[] = {
+ 
+ static void __init kernel_reboot_sysctls_init(void)
+ {
+-	register_sysctl_init("kernel", kern_reboot_table);
++	register_sysctl_init("kernel", kern_reboot_table,
++			     ARRAY_SIZE(kern_reboot_table));
+ }
+ #else
+ #define kernel_reboot_sysctls_init() do { } while (0)
+diff --git a/kernel/sched/autogroup.c b/kernel/sched/autogroup.c
+index 991fc9002535..2b9ce82279a5 100644
+--- a/kernel/sched/autogroup.c
++++ b/kernel/sched/autogroup.c
+@@ -24,7 +24,8 @@ static struct ctl_table sched_autogroup_sysctls[] = {
+ 
+ static void __init sched_autogroup_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", sched_autogroup_sysctls);
++	register_sysctl_init("kernel", sched_autogroup_sysctls,
++			     ARRAY_SIZE(sched_autogroup_sysctls));
+ }
+ #else
+ #define sched_autogroup_sysctl_init() do { } while (0)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index a68d1276bab0..b8c7e01dd78a 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4677,7 +4677,8 @@ static struct ctl_table sched_core_sysctls[] = {
+ };
+ static int __init sched_core_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", sched_core_sysctls);
++	register_sysctl_init("kernel", sched_core_sysctls,
++			     ARRAY_SIZE(sched_core_sysctls));
+ 	return 0;
+ }
+ late_initcall(sched_core_sysctl_init);
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 5a9a4b81c972..2aacf5ea2ff3 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -46,7 +46,8 @@ static struct ctl_table sched_dl_sysctls[] = {
+ 
+ static int __init sched_dl_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", sched_dl_sysctls);
++	register_sysctl_init("kernel", sched_dl_sysctls,
++			     ARRAY_SIZE(sched_dl_sysctls));
+ 	return 0;
+ }
+ late_initcall(sched_dl_sysctl_init);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 373ff5f55884..db09e56c2dd3 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -217,7 +217,8 @@ static struct ctl_table sched_fair_sysctls[] = {
+ 
+ static int __init sched_fair_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", sched_fair_sysctls);
++	register_sysctl_init("kernel", sched_fair_sysctls,
++			     ARRAY_SIZE(sched_fair_sysctls));
+ 	return 0;
+ }
+ late_initcall(sched_fair_sysctl_init);
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 00e0e5074115..aab9b900ed6f 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -57,7 +57,8 @@ static struct ctl_table sched_rt_sysctls[] = {
+ 
+ static int __init sched_rt_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", sched_rt_sysctls);
++	register_sysctl_init("kernel", sched_rt_sysctls,
++			     ARRAY_SIZE(sched_rt_sysctls));
+ 	return 0;
+ }
+ late_initcall(sched_rt_sysctl_init);
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 6682535e37c8..46d7c3f3e830 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -255,7 +255,8 @@ static struct ctl_table sched_energy_aware_sysctls[] = {
+ 
+ static int __init sched_energy_aware_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", sched_energy_aware_sysctls);
++	register_sysctl_init("kernel", sched_energy_aware_sysctls,
++			     ARRAY_SIZE(sched_energy_aware_sysctls));
+ 	return 0;
+ }
+ 
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index d3e584065c7f..9683a9a4709d 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -2386,7 +2386,8 @@ static struct ctl_table seccomp_sysctl_table[] = {
+ 
+ static int __init seccomp_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel/seccomp", seccomp_sysctl_table);
++	register_sysctl_init("kernel/seccomp", seccomp_sysctl_table,
++			     ARRAY_SIZE(seccomp_sysctl_table));
+ 	return 0;
+ }
+ 
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 5ba4150c01a7..19791930f12a 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -4788,7 +4788,8 @@ static struct ctl_table signal_debug_table[] = {
+ 
+ static int __init init_signal_sysctls(void)
+ {
+-	register_sysctl_init("debug", signal_debug_table);
++	register_sysctl_init("debug", signal_debug_table,
++			     ARRAY_SIZE(signal_debug_table));
+ 	return 0;
+ }
+ early_initcall(init_signal_sysctls);
+diff --git a/kernel/stackleak.c b/kernel/stackleak.c
+index 34c9d81eea94..123844341148 100644
+--- a/kernel/stackleak.c
++++ b/kernel/stackleak.c
+@@ -59,7 +59,8 @@ static struct ctl_table stackleak_sysctls[] = {
+ 
+ static int __init stackleak_sysctls_init(void)
+ {
+-	register_sysctl_init("kernel", stackleak_sysctls);
++	register_sysctl_init("kernel", stackleak_sysctls,
++			     ARRAY_SIZE(stackleak_sysctls));
+ 	return 0;
+ }
+ late_initcall(stackleak_sysctls_init);
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 48046932d573..2b9b0c8569ba 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2321,8 +2321,8 @@ static struct ctl_table vm_table[] = {
+ 
+ int __init sysctl_init_bases(void)
+ {
+-	register_sysctl_init("kernel", kern_table);
+-	register_sysctl_init("vm", vm_table);
++	register_sysctl_init("kernel", kern_table, ARRAY_SIZE(kern_table));
++	register_sysctl_init("vm", vm_table, ARRAY_SIZE(vm_table));
+ 
+ 	return 0;
+ }
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 764668467155..84ef42111f78 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -8219,7 +8219,8 @@ static struct ctl_table ftrace_sysctls[] = {
+ 
+ static int __init ftrace_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", ftrace_sysctls);
++	register_sysctl_init("kernel", ftrace_sysctls,
++			     ARRAY_SIZE(ftrace_sysctls));
+ 	return 0;
+ }
+ late_initcall(ftrace_sysctl_init);
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index b1ecd7677642..ac019cb21b18 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -2563,7 +2563,8 @@ static int __init trace_events_user_init(void)
+ 	if (dyn_event_register(&user_event_dops))
+ 		pr_warn("user_events could not register with dyn_events\n");
+ 
+-	register_sysctl_init("kernel", user_event_sysctls);
++	register_sysctl_init("kernel", user_event_sysctls,
++			     ARRAY_SIZE(user_event_sysctls));
+ 
+ 	return 0;
+ }
+diff --git a/kernel/umh.c b/kernel/umh.c
+index 41088c5c39fd..187a30ff8541 100644
+--- a/kernel/umh.c
++++ b/kernel/umh.c
+@@ -565,7 +565,8 @@ static struct ctl_table usermodehelper_table[] = {
+ 
+ static int __init init_umh_sysctls(void)
+ {
+-	register_sysctl_init("kernel/usermodehelper", usermodehelper_table);
++	register_sysctl_init("kernel/usermodehelper", usermodehelper_table,
++			     ARRAY_SIZE(usermodehelper_table));
+ 	return 0;
+ }
+ early_initcall(init_umh_sysctls);
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 8e61f21e7e33..dd5a343fadde 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -847,7 +847,8 @@ static struct ctl_table watchdog_sysctls[] = {
+ 
+ static void __init watchdog_sysctl_init(void)
+ {
+-	register_sysctl_init("kernel", watchdog_sysctls);
++	register_sysctl_init("kernel", watchdog_sysctls,
++			     ARRAY_SIZE(watchdog_sysctls));
+ }
+ #else
+ #define watchdog_sysctl_init() do { } while (0)
+diff --git a/mm/compaction.c b/mm/compaction.c
+index c8bcdea15f5f..ca09cdd72bf3 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -3145,7 +3145,7 @@ static int __init kcompactd_init(void)
+ 
+ 	for_each_node_state(nid, N_MEMORY)
+ 		kcompactd_run(nid);
+-	register_sysctl_init("vm", vm_compaction);
++	register_sysctl_init("vm", vm_compaction, ARRAY_SIZE(vm_compaction));
+ 	return 0;
+ }
+ subsys_initcall(kcompactd_init)
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index f154019e6b84..7838b0c0b82b 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4681,7 +4681,7 @@ static struct ctl_table hugetlb_table[] = {
+ 
+ static void hugetlb_sysctl_init(void)
+ {
+-	register_sysctl_init("vm", hugetlb_table);
++	register_sysctl_init("vm", hugetlb_table, ARRAY_SIZE(hugetlb_table));
+ }
+ #endif /* CONFIG_SYSCTL */
+ 
+diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+index 27f001e0f0a2..65885a06269b 100644
+--- a/mm/hugetlb_vmemmap.c
++++ b/mm/hugetlb_vmemmap.c
+@@ -597,7 +597,8 @@ static int __init hugetlb_vmemmap_init(void)
+ 
+ 	for_each_hstate(h) {
+ 		if (hugetlb_vmemmap_optimizable(h)) {
+-			register_sysctl_init("vm", hugetlb_vmemmap_sysctls);
++			register_sysctl_init("vm", hugetlb_vmemmap_sysctls,
++					     ARRAY_SIZE(hugetlb_vmemmap_sysctls));
+ 			break;
+ 		}
+ 	}
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 5b663eca1f29..46aef76d8e91 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -148,7 +148,8 @@ static struct ctl_table memory_failure_table[] = {
+ 
+ static int __init memory_failure_sysctl_init(void)
+ {
+-	register_sysctl_init("vm", memory_failure_table);
++	register_sysctl_init("vm", memory_failure_table,
++			     ARRAY_SIZE(memory_failure_table));
+ 	return 0;
+ }
+ late_initcall(memory_failure_sysctl_init);
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 044e1eed720e..500cf2ef9faa 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -734,7 +734,8 @@ static int __init oom_init(void)
+ {
+ 	oom_reaper_th = kthread_run(oom_reaper, NULL, "oom_reaper");
+ #ifdef CONFIG_SYSCTL
+-	register_sysctl_init("vm", vm_oom_kill_table);
++	register_sysctl_init("vm", vm_oom_kill_table,
++			     ARRAY_SIZE(vm_oom_kill_table));
+ #endif
+ 	return 0;
+ }
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index db7943999007..9f997de8d12f 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2320,7 +2320,8 @@ void __init page_writeback_init(void)
+ 	cpuhp_setup_state(CPUHP_MM_WRITEBACK_DEAD, "mm/writeback:dead", NULL,
+ 			  page_writeback_cpu_online);
+ #ifdef CONFIG_SYSCTL
+-	register_sysctl_init("vm", vm_page_writeback_sysctls);
++	register_sysctl_init("vm", vm_page_writeback_sysctls,
++			     ARRAY_SIZE(vm_page_writeback_sysctls));
+ #endif
+ }
+ 
+diff --git a/security/keys/sysctl.c b/security/keys/sysctl.c
+index b72b82bb20c6..fa305f74f658 100644
+--- a/security/keys/sysctl.c
++++ b/security/keys/sysctl.c
+@@ -71,7 +71,7 @@ struct ctl_table key_sysctls[] = {
+ 
+ static int __init init_security_keys_sysctls(void)
+ {
+-	register_sysctl_init("kernel/keys", key_sysctls);
++	register_sysctl_init("kernel/keys", key_sysctls, ARRAY_SIZE(key_sysctls));
+ 	return 0;
+ }
+ early_initcall(init_security_keys_sysctls);
 -- 
 2.30.2
 
