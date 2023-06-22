@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-3130-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3131-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69797739DC3
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 11:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9008F739DC4
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 11:53:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D4041C210A7
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 09:53:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5DF41C2109B
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 09:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB9B15ACD;
-	Thu, 22 Jun 2023 09:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C569174FA;
+	Thu, 22 Jun 2023 09:52:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21455689
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 09:52:40 +0000 (UTC)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0FAE57
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 02:52:38 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-987accb4349so842002666b.0
-        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 02:52:38 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8DF43AABC
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 09:52:46 +0000 (UTC)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17DF5E57
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 02:52:41 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-988c30a540aso526972366b.3
+        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 02:52:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1687427557; x=1690019557;
+        d=isovalent.com; s=google; t=1687427559; x=1690019559;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UVQa5WOs7mJWnqHaHkY9ND5deT3RSOw+ABvXr+yhfJU=;
-        b=Gs3GG6SFR6QVYAelvHG8slhck3BNt7WRJq2KYpo1FCl7U7dNXBlyNvBUr+gFPMhVwC
-         q1YB0q6MBxiNPFQ01Z0q6apD4G4J3bCjuDgJBkr5YG/EPmmGy23Jm/7TiBqt5S9Opbxt
-         KsFjY3E1/ww3AmymYzWrvUKCgswY3rovVct91/bZ2VngLeQdkQlK3oq9yKfAyFf3bNgI
-         RjXemVygrR/wuFdQOV70O0Hro+4dKSGG6Gdh3aytvsVLrnwskcYU1Gqn3TFAJPzJ049G
-         HtSt9uw+TWkcIv67ebfc5iCsv0YhrEncBocuEgMn29km931sYNmyS7xNkCxVYdwAUdh/
-         EqNg==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0a6ytnPIv4bSCUbVNzaNSFkuRHHv2dsHtWfD6EriV+0=;
+        b=Xc4JOFuMGLCLvu/CPvSa6QKRlPG4Hwk3gmxdDlG7rEDqgP+q/uvw+V1K4zOPTXA1XX
+         JrXOWHiegG78k5SOLGlQ8lSRAOluQmPbMzmGaJx4qtX9KmH+nfsk8LhZUFwNHRMEWjjQ
+         djQHI2beJ425QbftPCRsn+NogPUZdP74zWin5BBW0N8SFsCIEH+TxEid8LHnQNG9ZemP
+         /Nq41oYFYz7uJm2Y96R+y4kJdGVCswX435ArpithG4ND1s8gIyCL6GlikdVs1c3yXxL6
+         VytVd1vIhtJ/wbSRoljNB2YSaW53mVuvhcq+c3g7kPWJZa2GD589hk2kgaX95gomISJu
+         nK+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687427557; x=1690019557;
+        d=1e100.net; s=20221208; t=1687427559; x=1690019559;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UVQa5WOs7mJWnqHaHkY9ND5deT3RSOw+ABvXr+yhfJU=;
-        b=DEm7mJWU8iLG/b1TI6b7UtNnAGIMZ2sGLaPMBI965qeuuRtWjFBJXf+DT7P6ziyoJQ
-         kgRbnQnXMrIlvZdxJJiKdJMF6Y1wry2+Ck0m1d4b1iXVevyOQoJhtlZF0vbezitjtVjw
-         UXXzHsIyRWr7k9+tHDaUE/RhHqrA23K9ffm60Y8QT+EDfTqRlFj5Hrqv7T52TBkaTQqs
-         V+TgTp4hJWSOJjzZxVph40XOG6xE+CQ7iAZ+qD1G/QQlq4FAHJ495MXF0I5q1MjPpDg2
-         Xj0QvE/XP+ZQq9C6fUji5g3DhqvL8HZ9PYQ/+nh+2irC2xQVgEsTU711asUmCZfv6eGX
-         ng+w==
-X-Gm-Message-State: AC+VfDw51fb4Sw22qLA7pWV6xuoND0Ux4X2mRe47UBRWCtzeUmT00byd
-	Q2mOa7GLr3Q7QaxxhFm2d2zHig==
-X-Google-Smtp-Source: ACHHUZ5o0k4XCi3lv+l8k4dofuwdLTLqfIPrM6bFMf8fR8lKxj6GjIBUXnOvA2hXcxhHiwd05VAp9Q==
-X-Received: by 2002:a17:907:7e8b:b0:988:fafd:d93a with SMTP id qb11-20020a1709077e8b00b00988fafdd93amr8584553ejc.70.1687427557405;
-        Thu, 22 Jun 2023 02:52:37 -0700 (PDT)
+        bh=0a6ytnPIv4bSCUbVNzaNSFkuRHHv2dsHtWfD6EriV+0=;
+        b=i4ScfQLZao0rE7LRVE+BYfEmmGbo5t6RCFlGUAZ+2EzjiU6TnTEzeZRDfV70D7trdQ
+         DaHMkMxPfvtXozfb2/ZY4a36uADoaplsQ+jVURdWdRsE0sf7IgMfT2MVF+E19eEE39x7
+         zywh8nYqsT3ihkictr05nc20BLHF9cZHURXZKNry7U+/TPzhWam3kfVZed7R6iMpjTJM
+         1+bLQoYpnyoiuhceKSH0Jl7NQbHIF44DvxD45iy/g2vXKfeM9hypjQOGeOVHwo61svFg
+         1ubHFJIVOfkS9/Yplupb0ITjQ3CQK1d5QN6w/zxTdgLwPB0yogarchlFM2qKtQrUAals
+         6eZQ==
+X-Gm-Message-State: AC+VfDys/Y58rXrw35sojycA8yg0jOS42UjgjanrxJW66RmB4Px58dnb
+	7Auj3nFteFa874kmd28rFnDNOQ==
+X-Google-Smtp-Source: ACHHUZ4koJtMaCMqO5ffOfghAQ2RQi1dJi4Y9qui4M0Gaa94Fcr0bAIPsm3eiVOfW1IJQvn/ZQ7XdQ==
+X-Received: by 2002:a17:907:7204:b0:988:e451:f35c with SMTP id dr4-20020a170907720400b00988e451f35cmr7742451ejc.65.1687427559069;
+        Thu, 22 Jun 2023 02:52:39 -0700 (PDT)
 Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id y12-20020a17090614cc00b0098951bb4dc3sm3387985ejc.184.2023.06.22.02.52.36
+        by smtp.gmail.com with ESMTPSA id y12-20020a17090614cc00b0098951bb4dc3sm3387985ejc.184.2023.06.22.02.52.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jun 2023 02:52:37 -0700 (PDT)
+        Thu, 22 Jun 2023 02:52:38 -0700 (PDT)
 From: Anton Protopopov <aspsk@isovalent.com>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,11 +68,12 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
 	bpf@vger.kernel.org
-Cc: Anton Protopopov <aspsk@isovalent.com>
-Subject: [RFC v2 PATCH bpf-next 2/4] bpf: populate the per-cpu insertions/deletions counters for hashmaps
-Date: Thu, 22 Jun 2023 09:53:28 +0000
-Message-Id: <20230622095330.1023453-3-aspsk@isovalent.com>
+Subject: [RFC v2 PATCH bpf-next 3/4] bpf: make preloaded map iterators to display map elements count
+Date: Thu, 22 Jun 2023 09:53:29 +0000
+Message-Id: <20230622095330.1023453-4-aspsk@isovalent.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230622095330.1023453-1-aspsk@isovalent.com>
 References: <20230622095330.1023453-1-aspsk@isovalent.com>
@@ -90,205 +91,645 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Initialize and utilize the per-cpu insertions/deletions counters for hash-based
-maps. The non-trivial changes only apply to the preallocated maps for which the
-inc_elem_count/dec_elem_count functions were not called before.
+Add another column to the /sys/fs/bpf/maps.debug iterator to display
+cur_entries, the current number of entries in the map as is returned
+by the bpf_map_sum_elements_counter kfunc. Also fix formatting.
+
+Example:
+
+    # cat /sys/fs/bpf/maps.debug
+      id name             max_entries  cur_entries
+       2 iterator.rodata            1            0
+     125 cilium_auth_map       524288          666
+     126 cilium_runtime_          256            0
+     127 cilium_signals            32            0
+     128 cilium_node_map        16384         1344
+     129 cilium_events             32            0
+     ...
 
 Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
 ---
- kernel/bpf/hashtab.c | 102 +++++++++++++++++++++++++------------------
- 1 file changed, 60 insertions(+), 42 deletions(-)
+ kernel/bpf/preload/iterators/iterators.bpf.c  |   9 +-
+ .../iterators/iterators.lskel-little-endian.h | 513 +++++++++---------
+ 2 files changed, 269 insertions(+), 253 deletions(-)
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 9901efee4339..0b4a2d61afa9 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -217,6 +217,49 @@ static bool htab_has_extra_elems(struct bpf_htab *htab)
- 	return !htab_is_percpu(htab) && !htab_is_lru(htab);
+diff --git a/kernel/bpf/preload/iterators/iterators.bpf.c b/kernel/bpf/preload/iterators/iterators.bpf.c
+index 03af863314ea..7add8822e34b 100644
+--- a/kernel/bpf/preload/iterators/iterators.bpf.c
++++ b/kernel/bpf/preload/iterators/iterators.bpf.c
+@@ -73,6 +73,8 @@ static const char *get_name(struct btf *btf, long btf_id, const char *fallback)
+ 	return str + name_off;
  }
  
-+/* compute_batch_value() computes batch value as num_online_cpus() * 2
-+ * and __percpu_counter_compare() needs
-+ * htab->max_entries - cur_number_of_elems to be more than batch * num_online_cpus()
-+ * for percpu_counter to be faster than atomic_t. In practice the average bpf
-+ * hash map size is 10k, which means that a system with 64 cpus will fill
-+ * hashmap to 20% of 10k before percpu_counter becomes ineffective. Therefore
-+ * define our own batch count as 32 then 10k hash map can be filled up to 80%:
-+ * 10k - 8k > 32 _batch_ * 64 _cpus_
-+ * and __percpu_counter_compare() will still be fast. At that point hash map
-+ * collisions will dominate its performance anyway. Assume that hash map filled
-+ * to 50+% isn't going to be O(1) and use the following formula to choose
-+ * between percpu_counter and atomic_t.
-+ */
-+#define PERCPU_COUNTER_BATCH 32
++__s64 bpf_map_sum_elements_counter(struct bpf_map *map) __ksym;
 +
-+static bool is_map_full(struct bpf_htab *htab)
-+{
-+	if (htab->use_percpu_counter)
-+		return __percpu_counter_compare(&htab->pcount, htab->map.max_entries,
-+						PERCPU_COUNTER_BATCH) >= 0;
-+	return atomic_read(&htab->count) >= htab->map.max_entries;
-+}
-+
-+static void inc_elem_count(struct bpf_htab *htab)
-+{
-+	bpf_map_inc_elements_counter(&htab->map);
-+
-+	if (htab->use_percpu_counter)
-+		percpu_counter_add_batch(&htab->pcount, 1, PERCPU_COUNTER_BATCH);
-+	else
-+		atomic_inc(&htab->count);
-+}
-+
-+static void dec_elem_count(struct bpf_htab *htab)
-+{
-+	bpf_map_dec_elements_counter(&htab->map);
-+
-+	if (htab->use_percpu_counter)
-+		percpu_counter_add_batch(&htab->pcount, -1, PERCPU_COUNTER_BATCH);
-+	else
-+		atomic_dec(&htab->count);
-+}
-+
- static void htab_free_prealloced_timers(struct bpf_htab *htab)
+ SEC("iter/bpf_map")
+ int dump_bpf_map(struct bpf_iter__bpf_map *ctx)
  {
- 	u32 num_entries = htab->map.max_entries;
-@@ -539,20 +582,6 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+@@ -84,9 +86,12 @@ int dump_bpf_map(struct bpf_iter__bpf_map *ctx)
+ 		return 0;
  
- 	htab_init_buckets(htab);
- 
--/* compute_batch_value() computes batch value as num_online_cpus() * 2
-- * and __percpu_counter_compare() needs
-- * htab->max_entries - cur_number_of_elems to be more than batch * num_online_cpus()
-- * for percpu_counter to be faster than atomic_t. In practice the average bpf
-- * hash map size is 10k, which means that a system with 64 cpus will fill
-- * hashmap to 20% of 10k before percpu_counter becomes ineffective. Therefore
-- * define our own batch count as 32 then 10k hash map can be filled up to 80%:
-- * 10k - 8k > 32 _batch_ * 64 _cpus_
-- * and __percpu_counter_compare() will still be fast. At that point hash map
-- * collisions will dominate its performance anyway. Assume that hash map filled
-- * to 50+% isn't going to be O(1) and use the following formula to choose
-- * between percpu_counter and atomic_t.
-- */
--#define PERCPU_COUNTER_BATCH 32
- 	if (attr->max_entries / 2 > num_online_cpus() * PERCPU_COUNTER_BATCH)
- 		htab->use_percpu_counter = true;
- 
-@@ -587,8 +616,14 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
- 		}
- 	}
- 
-+	err = bpf_map_init_elements_counter(&htab->map);
-+	if (err)
-+		goto free_extra_elements;
+ 	if (seq_num == 0)
+-		BPF_SEQ_PRINTF(seq, "  id name             max_entries\n");
++		BPF_SEQ_PRINTF(seq, "  id name             max_entries  cur_entries\n");
 +
- 	return &htab->map;
++	BPF_SEQ_PRINTF(seq, "%4u %-16s  %10d   %10lld\n",
++		       map->id, map->name, map->max_entries,
++		       bpf_map_sum_elements_counter(map));
  
-+free_extra_elements:
-+	free_percpu(htab->extra_elems);
- free_prealloc:
- 	prealloc_destroy(htab);
- free_map_locked:
-@@ -810,6 +845,7 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
- 		if (l == tgt_l) {
- 			hlist_nulls_del_rcu(&l->hash_node);
- 			check_and_free_fields(htab, l);
-+			dec_elem_count(htab);
- 			break;
- 		}
- 
-@@ -896,40 +932,16 @@ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
- 	}
+-	BPF_SEQ_PRINTF(seq, "%4u %-16s%6d\n", map->id, map->name, map->max_entries);
+ 	return 0;
  }
  
--static bool is_map_full(struct bpf_htab *htab)
--{
--	if (htab->use_percpu_counter)
--		return __percpu_counter_compare(&htab->pcount, htab->map.max_entries,
--						PERCPU_COUNTER_BATCH) >= 0;
--	return atomic_read(&htab->count) >= htab->map.max_entries;
--}
--
--static void inc_elem_count(struct bpf_htab *htab)
--{
--	if (htab->use_percpu_counter)
--		percpu_counter_add_batch(&htab->pcount, 1, PERCPU_COUNTER_BATCH);
--	else
--		atomic_inc(&htab->count);
--}
--
--static void dec_elem_count(struct bpf_htab *htab)
--{
--	if (htab->use_percpu_counter)
--		percpu_counter_add_batch(&htab->pcount, -1, PERCPU_COUNTER_BATCH);
--	else
--		atomic_dec(&htab->count);
--}
--
--
- static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
- {
- 	htab_put_fd_value(htab, l);
+diff --git a/kernel/bpf/preload/iterators/iterators.lskel-little-endian.h b/kernel/bpf/preload/iterators/iterators.lskel-little-endian.h
+index 70f236a82fe1..497fdc5c956a 100644
+--- a/kernel/bpf/preload/iterators/iterators.lskel-little-endian.h
++++ b/kernel/bpf/preload/iterators/iterators.lskel-little-endian.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+-/* THIS FILE IS AUTOGENERATED! */
++/* THIS FILE IS AUTOGENERATED BY BPFTOOL! */
+ #ifndef __ITERATORS_BPF_SKEL_H__
+ #define __ITERATORS_BPF_SKEL_H__
  
-+	dec_elem_count(htab);
-+
- 	if (htab_is_prealloc(htab)) {
- 		check_and_free_fields(htab, l);
- 		__pcpu_freelist_push(&htab->freelist, &l->fnode);
- 	} else {
--		dec_elem_count(htab);
- 		htab_elem_free(htab, l);
- 	}
+@@ -18,8 +18,6 @@ struct iterators_bpf {
+ 		int dump_bpf_map_fd;
+ 		int dump_bpf_prog_fd;
+ 	} links;
+-	struct iterators_bpf__rodata {
+-	} *rodata;
+ };
+ 
+ static inline int
+@@ -68,7 +66,6 @@ iterators_bpf__destroy(struct iterators_bpf *skel)
+ 	iterators_bpf__detach(skel);
+ 	skel_closenz(skel->progs.dump_bpf_map.prog_fd);
+ 	skel_closenz(skel->progs.dump_bpf_prog.prog_fd);
+-	skel_free_map_data(skel->rodata, skel->maps.rodata.initial_value, 4096);
+ 	skel_closenz(skel->maps.rodata.map_fd);
+ 	skel_free(skel);
  }
-@@ -1006,6 +1018,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
- 			if (!l)
- 				return ERR_PTR(-E2BIG);
- 			l_new = container_of(l, struct htab_elem, fnode);
-+			inc_elem_count(htab);
- 		}
- 	} else {
- 		if (is_map_full(htab))
-@@ -1227,9 +1240,11 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
- 	 * concurrent search will find it before old elem
- 	 */
- 	hlist_nulls_add_head_rcu(&l_new->hash_node, head);
-+	inc_elem_count(htab);
- 	if (l_old) {
- 		bpf_lru_node_set_ref(&l_new->lru_node);
- 		hlist_nulls_del_rcu(&l_old->hash_node);
-+		dec_elem_count(htab);
- 	}
- 	ret = 0;
+@@ -81,15 +78,6 @@ iterators_bpf__open(void)
+ 	if (!skel)
+ 		goto cleanup;
+ 	skel->ctx.sz = (void *)&skel->links - (void *)skel;
+-	skel->rodata = skel_prep_map_data((void *)"\
+-\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+-\x20\x20\x20\x6d\x61\x78\x5f\x65\x6e\x74\x72\x69\x65\x73\x0a\0\x25\x34\x75\x20\
+-\x25\x2d\x31\x36\x73\x25\x36\x64\x0a\0\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\
+-\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x61\x74\x74\x61\x63\x68\x65\
+-\x64\x0a\0\x25\x34\x75\x20\x25\x2d\x31\x36\x73\x20\x25\x73\x20\x25\x73\x0a\0", 4096, 98);
+-	if (!skel->rodata)
+-		goto cleanup;
+-	skel->maps.rodata.initial_value = (__u64) (long) skel->rodata;
+ 	return skel;
+ cleanup:
+ 	iterators_bpf__destroy(skel);
+@@ -103,7 +91,7 @@ iterators_bpf__load(struct iterators_bpf *skel)
+ 	int err;
  
-@@ -1357,6 +1372,7 @@ static long __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
- 		pcpu_init_value(htab, htab_elem_get_ptr(l_new, key_size),
- 				value, onallcpus);
- 		hlist_nulls_add_head_rcu(&l_new->hash_node, head);
-+		inc_elem_count(htab);
- 		l_new = NULL;
- 	}
- 	ret = 0;
-@@ -1443,9 +1459,10 @@ static long htab_lru_map_delete_elem(struct bpf_map *map, void *key)
+ 	opts.ctx = (struct bpf_loader_ctx *)skel;
+-	opts.data_sz = 6056;
++	opts.data_sz = 6216;
+ 	opts.data = (void *)"\
+ \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+ \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+@@ -138,190 +126,198 @@ iterators_bpf__load(struct iterators_bpf *skel)
+ \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+ \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+ \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x9f\xeb\x01\0\
+-\x18\0\0\0\0\0\0\0\x1c\x04\0\0\x1c\x04\0\0\xf9\x04\0\0\0\0\0\0\0\0\0\x02\x02\0\
++\x18\0\0\0\0\0\0\0\x80\x04\0\0\x80\x04\0\0\x37\x05\0\0\0\0\0\0\0\0\0\x02\x02\0\
+ \0\0\x01\0\0\0\x02\0\0\x04\x10\0\0\0\x13\0\0\0\x03\0\0\0\0\0\0\0\x18\0\0\0\x04\
+ \0\0\0\x40\0\0\0\0\0\0\0\0\0\0\x02\x08\0\0\0\0\0\0\0\0\0\0\x02\x0d\0\0\0\0\0\0\
+ \0\x01\0\0\x0d\x06\0\0\0\x1c\0\0\0\x01\0\0\0\x20\0\0\0\0\0\0\x01\x04\0\0\0\x20\
+-\0\0\x01\x24\0\0\0\x01\0\0\x0c\x05\0\0\0\xa3\0\0\0\x03\0\0\x04\x18\0\0\0\xb1\0\
+-\0\0\x09\0\0\0\0\0\0\0\xb5\0\0\0\x0b\0\0\0\x40\0\0\0\xc0\0\0\0\x0b\0\0\0\x80\0\
+-\0\0\0\0\0\0\0\0\0\x02\x0a\0\0\0\xc8\0\0\0\0\0\0\x07\0\0\0\0\xd1\0\0\0\0\0\0\
+-\x08\x0c\0\0\0\xd7\0\0\0\0\0\0\x01\x08\0\0\0\x40\0\0\0\x94\x01\0\0\x03\0\0\x04\
+-\x18\0\0\0\x9c\x01\0\0\x0e\0\0\0\0\0\0\0\x9f\x01\0\0\x11\0\0\0\x20\0\0\0\xa4\
+-\x01\0\0\x0e\0\0\0\xa0\0\0\0\xb0\x01\0\0\0\0\0\x08\x0f\0\0\0\xb6\x01\0\0\0\0\0\
+-\x01\x04\0\0\0\x20\0\0\0\xc3\x01\0\0\0\0\0\x01\x01\0\0\0\x08\0\0\x01\0\0\0\0\0\
+-\0\0\x03\0\0\0\0\x10\0\0\0\x12\0\0\0\x10\0\0\0\xc8\x01\0\0\0\0\0\x01\x04\0\0\0\
+-\x20\0\0\0\0\0\0\0\0\0\0\x02\x14\0\0\0\x2c\x02\0\0\x02\0\0\x04\x10\0\0\0\x13\0\
+-\0\0\x03\0\0\0\0\0\0\0\x3f\x02\0\0\x15\0\0\0\x40\0\0\0\0\0\0\0\0\0\0\x02\x18\0\
+-\0\0\0\0\0\0\x01\0\0\x0d\x06\0\0\0\x1c\0\0\0\x13\0\0\0\x44\x02\0\0\x01\0\0\x0c\
+-\x16\0\0\0\x90\x02\0\0\x01\0\0\x04\x08\0\0\0\x99\x02\0\0\x19\0\0\0\0\0\0\0\0\0\
+-\0\0\0\0\0\x02\x1a\0\0\0\xea\x02\0\0\x06\0\0\x04\x38\0\0\0\x9c\x01\0\0\x0e\0\0\
+-\0\0\0\0\0\x9f\x01\0\0\x11\0\0\0\x20\0\0\0\xf7\x02\0\0\x1b\0\0\0\xc0\0\0\0\x08\
+-\x03\0\0\x15\0\0\0\0\x01\0\0\x11\x03\0\0\x1d\0\0\0\x40\x01\0\0\x1b\x03\0\0\x1e\
+-\0\0\0\x80\x01\0\0\0\0\0\0\0\0\0\x02\x1c\0\0\0\0\0\0\0\0\0\0\x0a\x10\0\0\0\0\0\
+-\0\0\0\0\0\x02\x1f\0\0\0\0\0\0\0\0\0\0\x02\x20\0\0\0\x65\x03\0\0\x02\0\0\x04\
+-\x08\0\0\0\x73\x03\0\0\x0e\0\0\0\0\0\0\0\x7c\x03\0\0\x0e\0\0\0\x20\0\0\0\x1b\
+-\x03\0\0\x03\0\0\x04\x18\0\0\0\x86\x03\0\0\x1b\0\0\0\0\0\0\0\x8e\x03\0\0\x21\0\
+-\0\0\x40\0\0\0\x94\x03\0\0\x23\0\0\0\x80\0\0\0\0\0\0\0\0\0\0\x02\x22\0\0\0\0\0\
+-\0\0\0\0\0\x02\x24\0\0\0\x98\x03\0\0\x01\0\0\x04\x04\0\0\0\xa3\x03\0\0\x0e\0\0\
+-\0\0\0\0\0\x0c\x04\0\0\x01\0\0\x04\x04\0\0\0\x15\x04\0\0\x0e\0\0\0\0\0\0\0\0\0\
+-\0\0\0\0\0\x03\0\0\0\0\x1c\0\0\0\x12\0\0\0\x23\0\0\0\x8b\x04\0\0\0\0\0\x0e\x25\
+-\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x03\0\0\0\0\x1c\0\0\0\x12\0\0\0\x0e\0\0\0\x9f\x04\
+-\0\0\0\0\0\x0e\x27\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x03\0\0\0\0\x1c\0\0\0\x12\0\0\0\
+-\x20\0\0\0\xb5\x04\0\0\0\0\0\x0e\x29\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x03\0\0\0\0\
+-\x1c\0\0\0\x12\0\0\0\x11\0\0\0\xca\x04\0\0\0\0\0\x0e\x2b\0\0\0\0\0\0\0\0\0\0\0\
+-\0\0\0\x03\0\0\0\0\x10\0\0\0\x12\0\0\0\x04\0\0\0\xe1\x04\0\0\0\0\0\x0e\x2d\0\0\
+-\0\x01\0\0\0\xe9\x04\0\0\x04\0\0\x0f\x62\0\0\0\x26\0\0\0\0\0\0\0\x23\0\0\0\x28\
+-\0\0\0\x23\0\0\0\x0e\0\0\0\x2a\0\0\0\x31\0\0\0\x20\0\0\0\x2c\0\0\0\x51\0\0\0\
+-\x11\0\0\0\xf1\x04\0\0\x01\0\0\x0f\x04\0\0\0\x2e\0\0\0\0\0\0\0\x04\0\0\0\0\x62\
+-\x70\x66\x5f\x69\x74\x65\x72\x5f\x5f\x62\x70\x66\x5f\x6d\x61\x70\0\x6d\x65\x74\
+-\x61\0\x6d\x61\x70\0\x63\x74\x78\0\x69\x6e\x74\0\x64\x75\x6d\x70\x5f\x62\x70\
+-\x66\x5f\x6d\x61\x70\0\x69\x74\x65\x72\x2f\x62\x70\x66\x5f\x6d\x61\x70\0\x30\
+-\x3a\x30\0\x2f\x77\x2f\x6e\x65\x74\x2d\x6e\x65\x78\x74\x2f\x6b\x65\x72\x6e\x65\
+-\x6c\x2f\x62\x70\x66\x2f\x70\x72\x65\x6c\x6f\x61\x64\x2f\x69\x74\x65\x72\x61\
+-\x74\x6f\x72\x73\x2f\x69\x74\x65\x72\x61\x74\x6f\x72\x73\x2e\x62\x70\x66\x2e\
+-\x63\0\x09\x73\x74\x72\x75\x63\x74\x20\x73\x65\x71\x5f\x66\x69\x6c\x65\x20\x2a\
+-\x73\x65\x71\x20\x3d\x20\x63\x74\x78\x2d\x3e\x6d\x65\x74\x61\x2d\x3e\x73\x65\
+-\x71\x3b\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x6d\x65\x74\x61\0\x73\x65\x71\0\
+-\x73\x65\x73\x73\x69\x6f\x6e\x5f\x69\x64\0\x73\x65\x71\x5f\x6e\x75\x6d\0\x73\
+-\x65\x71\x5f\x66\x69\x6c\x65\0\x5f\x5f\x75\x36\x34\0\x75\x6e\x73\x69\x67\x6e\
+-\x65\x64\x20\x6c\x6f\x6e\x67\x20\x6c\x6f\x6e\x67\0\x30\x3a\x31\0\x09\x73\x74\
+-\x72\x75\x63\x74\x20\x62\x70\x66\x5f\x6d\x61\x70\x20\x2a\x6d\x61\x70\x20\x3d\
+-\x20\x63\x74\x78\x2d\x3e\x6d\x61\x70\x3b\0\x09\x69\x66\x20\x28\x21\x6d\x61\x70\
+-\x29\0\x09\x5f\x5f\x75\x36\x34\x20\x73\x65\x71\x5f\x6e\x75\x6d\x20\x3d\x20\x63\
+-\x74\x78\x2d\x3e\x6d\x65\x74\x61\x2d\x3e\x73\x65\x71\x5f\x6e\x75\x6d\x3b\0\x30\
+-\x3a\x32\0\x09\x69\x66\x20\x28\x73\x65\x71\x5f\x6e\x75\x6d\x20\x3d\x3d\x20\x30\
+-\x29\0\x09\x09\x42\x50\x46\x5f\x53\x45\x51\x5f\x50\x52\x49\x4e\x54\x46\x28\x73\
+-\x65\x71\x2c\x20\x22\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\x20\x20\x20\x20\
+-\x20\x20\x20\x20\x20\x20\x20\x20\x6d\x61\x78\x5f\x65\x6e\x74\x72\x69\x65\x73\
+-\x5c\x6e\x22\x29\x3b\0\x62\x70\x66\x5f\x6d\x61\x70\0\x69\x64\0\x6e\x61\x6d\x65\
+-\0\x6d\x61\x78\x5f\x65\x6e\x74\x72\x69\x65\x73\0\x5f\x5f\x75\x33\x32\0\x75\x6e\
+-\x73\x69\x67\x6e\x65\x64\x20\x69\x6e\x74\0\x63\x68\x61\x72\0\x5f\x5f\x41\x52\
+-\x52\x41\x59\x5f\x53\x49\x5a\x45\x5f\x54\x59\x50\x45\x5f\x5f\0\x09\x42\x50\x46\
+-\x5f\x53\x45\x51\x5f\x50\x52\x49\x4e\x54\x46\x28\x73\x65\x71\x2c\x20\x22\x25\
+-\x34\x75\x20\x25\x2d\x31\x36\x73\x25\x36\x64\x5c\x6e\x22\x2c\x20\x6d\x61\x70\
+-\x2d\x3e\x69\x64\x2c\x20\x6d\x61\x70\x2d\x3e\x6e\x61\x6d\x65\x2c\x20\x6d\x61\
+-\x70\x2d\x3e\x6d\x61\x78\x5f\x65\x6e\x74\x72\x69\x65\x73\x29\x3b\0\x7d\0\x62\
+-\x70\x66\x5f\x69\x74\x65\x72\x5f\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\x70\x72\
+-\x6f\x67\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\x69\x74\x65\
+-\x72\x2f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\x09\x73\x74\x72\x75\x63\x74\x20\x62\
+-\x70\x66\x5f\x70\x72\x6f\x67\x20\x2a\x70\x72\x6f\x67\x20\x3d\x20\x63\x74\x78\
+-\x2d\x3e\x70\x72\x6f\x67\x3b\0\x09\x69\x66\x20\x28\x21\x70\x72\x6f\x67\x29\0\
+-\x62\x70\x66\x5f\x70\x72\x6f\x67\0\x61\x75\x78\0\x09\x61\x75\x78\x20\x3d\x20\
+-\x70\x72\x6f\x67\x2d\x3e\x61\x75\x78\x3b\0\x09\x09\x42\x50\x46\x5f\x53\x45\x51\
+-\x5f\x50\x52\x49\x4e\x54\x46\x28\x73\x65\x71\x2c\x20\x22\x20\x20\x69\x64\x20\
+-\x6e\x61\x6d\x65\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x61\x74\
+-\x74\x61\x63\x68\x65\x64\x5c\x6e\x22\x29\x3b\0\x62\x70\x66\x5f\x70\x72\x6f\x67\
+-\x5f\x61\x75\x78\0\x61\x74\x74\x61\x63\x68\x5f\x66\x75\x6e\x63\x5f\x6e\x61\x6d\
+-\x65\0\x64\x73\x74\x5f\x70\x72\x6f\x67\0\x66\x75\x6e\x63\x5f\x69\x6e\x66\x6f\0\
+-\x62\x74\x66\0\x09\x42\x50\x46\x5f\x53\x45\x51\x5f\x50\x52\x49\x4e\x54\x46\x28\
+-\x73\x65\x71\x2c\x20\x22\x25\x34\x75\x20\x25\x2d\x31\x36\x73\x20\x25\x73\x20\
+-\x25\x73\x5c\x6e\x22\x2c\x20\x61\x75\x78\x2d\x3e\x69\x64\x2c\0\x30\x3a\x34\0\
+-\x30\x3a\x35\0\x09\x69\x66\x20\x28\x21\x62\x74\x66\x29\0\x62\x70\x66\x5f\x66\
+-\x75\x6e\x63\x5f\x69\x6e\x66\x6f\0\x69\x6e\x73\x6e\x5f\x6f\x66\x66\0\x74\x79\
+-\x70\x65\x5f\x69\x64\0\x30\0\x73\x74\x72\x69\x6e\x67\x73\0\x74\x79\x70\x65\x73\
+-\0\x68\x64\x72\0\x62\x74\x66\x5f\x68\x65\x61\x64\x65\x72\0\x73\x74\x72\x5f\x6c\
+-\x65\x6e\0\x09\x74\x79\x70\x65\x73\x20\x3d\x20\x62\x74\x66\x2d\x3e\x74\x79\x70\
+-\x65\x73\x3b\0\x09\x62\x70\x66\x5f\x70\x72\x6f\x62\x65\x5f\x72\x65\x61\x64\x5f\
+-\x6b\x65\x72\x6e\x65\x6c\x28\x26\x74\x2c\x20\x73\x69\x7a\x65\x6f\x66\x28\x74\
+-\x29\x2c\x20\x74\x79\x70\x65\x73\x20\x2b\x20\x62\x74\x66\x5f\x69\x64\x29\x3b\0\
+-\x09\x73\x74\x72\x20\x3d\x20\x62\x74\x66\x2d\x3e\x73\x74\x72\x69\x6e\x67\x73\
+-\x3b\0\x62\x74\x66\x5f\x74\x79\x70\x65\0\x6e\x61\x6d\x65\x5f\x6f\x66\x66\0\x09\
+-\x6e\x61\x6d\x65\x5f\x6f\x66\x66\x20\x3d\x20\x42\x50\x46\x5f\x43\x4f\x52\x45\
+-\x5f\x52\x45\x41\x44\x28\x74\x2c\x20\x6e\x61\x6d\x65\x5f\x6f\x66\x66\x29\x3b\0\
+-\x30\x3a\x32\x3a\x30\0\x09\x69\x66\x20\x28\x6e\x61\x6d\x65\x5f\x6f\x66\x66\x20\
+-\x3e\x3d\x20\x62\x74\x66\x2d\x3e\x68\x64\x72\x2e\x73\x74\x72\x5f\x6c\x65\x6e\
+-\x29\0\x09\x72\x65\x74\x75\x72\x6e\x20\x73\x74\x72\x20\x2b\x20\x6e\x61\x6d\x65\
+-\x5f\x6f\x66\x66\x3b\0\x30\x3a\x33\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x6d\
+-\x61\x70\x2e\x5f\x5f\x5f\x66\x6d\x74\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x6d\
+-\x61\x70\x2e\x5f\x5f\x5f\x66\x6d\x74\x2e\x31\0\x64\x75\x6d\x70\x5f\x62\x70\x66\
+-\x5f\x70\x72\x6f\x67\x2e\x5f\x5f\x5f\x66\x6d\x74\0\x64\x75\x6d\x70\x5f\x62\x70\
+-\x66\x5f\x70\x72\x6f\x67\x2e\x5f\x5f\x5f\x66\x6d\x74\x2e\x32\0\x4c\x49\x43\x45\
+-\x4e\x53\x45\0\x2e\x72\x6f\x64\x61\x74\x61\0\x6c\x69\x63\x65\x6e\x73\x65\0\0\0\
+-\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x2d\x09\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x02\0\0\
+-\0\x04\0\0\0\x62\0\0\0\x01\0\0\0\x80\x04\0\0\0\0\0\0\0\0\0\0\x69\x74\x65\x72\
+-\x61\x74\x6f\x72\x2e\x72\x6f\x64\x61\x74\x61\0\0\0\0\0\0\0\0\0\0\0\0\0\x2f\0\0\
+-\0\0\0\0\0\0\0\0\0\0\0\0\0\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\x20\x20\x20\
+-\x20\x20\x20\x20\x20\x20\x20\x20\x20\x6d\x61\x78\x5f\x65\x6e\x74\x72\x69\x65\
+-\x73\x0a\0\x25\x34\x75\x20\x25\x2d\x31\x36\x73\x25\x36\x64\x0a\0\x20\x20\x69\
+-\x64\x20\x6e\x61\x6d\x65\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+-\x61\x74\x74\x61\x63\x68\x65\x64\x0a\0\x25\x34\x75\x20\x25\x2d\x31\x36\x73\x20\
+-\x25\x73\x20\x25\x73\x0a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+-\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x47\x50\x4c\0\0\0\0\0\
+-\x79\x12\0\0\0\0\0\0\x79\x26\0\0\0\0\0\0\x79\x17\x08\0\0\0\0\0\x15\x07\x1b\0\0\
+-\0\0\0\x79\x11\0\0\0\0\0\0\x79\x11\x10\0\0\0\0\0\x55\x01\x08\0\0\0\0\0\xbf\xa4\
+-\0\0\0\0\0\0\x07\x04\0\0\xe8\xff\xff\xff\xbf\x61\0\0\0\0\0\0\x18\x62\0\0\0\0\0\
+-\0\0\0\0\0\0\0\0\0\xb7\x03\0\0\x23\0\0\0\xb7\x05\0\0\0\0\0\0\x85\0\0\0\x7e\0\0\
+-\0\x61\x71\0\0\0\0\0\0\x7b\x1a\xe8\xff\0\0\0\0\xb7\x01\0\0\x04\0\0\0\xbf\x72\0\
+-\0\0\0\0\0\x0f\x12\0\0\0\0\0\0\x7b\x2a\xf0\xff\0\0\0\0\x61\x71\x14\0\0\0\0\0\
+-\x7b\x1a\xf8\xff\0\0\0\0\xbf\xa4\0\0\0\0\0\0\x07\x04\0\0\xe8\xff\xff\xff\xbf\
+-\x61\0\0\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x23\0\0\0\xb7\x03\0\0\x0e\0\0\0\
+-\xb7\x05\0\0\x18\0\0\0\x85\0\0\0\x7e\0\0\0\xb7\0\0\0\0\0\0\0\x95\0\0\0\0\0\0\0\
+-\0\0\0\0\x07\0\0\0\0\0\0\0\x42\0\0\0\x7b\0\0\0\x1e\x3c\x01\0\x01\0\0\0\x42\0\0\
+-\0\x7b\0\0\0\x24\x3c\x01\0\x02\0\0\0\x42\0\0\0\xee\0\0\0\x1d\x44\x01\0\x03\0\0\
+-\0\x42\0\0\0\x0f\x01\0\0\x06\x4c\x01\0\x04\0\0\0\x42\0\0\0\x1a\x01\0\0\x17\x40\
+-\x01\0\x05\0\0\0\x42\0\0\0\x1a\x01\0\0\x1d\x40\x01\0\x06\0\0\0\x42\0\0\0\x43\
+-\x01\0\0\x06\x58\x01\0\x08\0\0\0\x42\0\0\0\x56\x01\0\0\x03\x5c\x01\0\x0f\0\0\0\
+-\x42\0\0\0\xdc\x01\0\0\x02\x64\x01\0\x1f\0\0\0\x42\0\0\0\x2a\x02\0\0\x01\x6c\
+-\x01\0\0\0\0\0\x02\0\0\0\x3e\0\0\0\0\0\0\0\x08\0\0\0\x08\0\0\0\x3e\0\0\0\0\0\0\
+-\0\x10\0\0\0\x02\0\0\0\xea\0\0\0\0\0\0\0\x20\0\0\0\x02\0\0\0\x3e\0\0\0\0\0\0\0\
+-\x28\0\0\0\x08\0\0\0\x3f\x01\0\0\0\0\0\0\x78\0\0\0\x0d\0\0\0\x3e\0\0\0\0\0\0\0\
+-\x88\0\0\0\x0d\0\0\0\xea\0\0\0\0\0\0\0\xa8\0\0\0\x0d\0\0\0\x3f\x01\0\0\0\0\0\0\
+-\x1a\0\0\0\x21\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+-\0\0\0\0\0\0\0\0\0\0\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x6d\x61\x70\0\0\0\0\
+-\0\0\0\0\x1c\0\0\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x10\0\0\0\0\0\0\
+-\0\0\0\0\0\x0a\0\0\0\x01\0\0\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+-\0\x10\0\0\0\0\0\0\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x62\x70\x66\x5f\x6d\
+-\x61\x70\0\0\0\0\0\0\0\0\x47\x50\x4c\0\0\0\0\0\x79\x12\0\0\0\0\0\0\x79\x26\0\0\
+-\0\0\0\0\x79\x12\x08\0\0\0\0\0\x15\x02\x3c\0\0\0\0\0\x79\x11\0\0\0\0\0\0\x79\
+-\x27\0\0\0\0\0\0\x79\x11\x10\0\0\0\0\0\x55\x01\x08\0\0\0\0\0\xbf\xa4\0\0\0\0\0\
+-\0\x07\x04\0\0\xd0\xff\xff\xff\xbf\x61\0\0\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\
+-\x31\0\0\0\xb7\x03\0\0\x20\0\0\0\xb7\x05\0\0\0\0\0\0\x85\0\0\0\x7e\0\0\0\x7b\
+-\x6a\xc8\xff\0\0\0\0\x61\x71\0\0\0\0\0\0\x7b\x1a\xd0\xff\0\0\0\0\xb7\x03\0\0\
+-\x04\0\0\0\xbf\x79\0\0\0\0\0\0\x0f\x39\0\0\0\0\0\0\x79\x71\x28\0\0\0\0\0\x79\
+-\x78\x30\0\0\0\0\0\x15\x08\x18\0\0\0\0\0\xb7\x02\0\0\0\0\0\0\x0f\x21\0\0\0\0\0\
+-\0\x61\x11\x04\0\0\0\0\0\x79\x83\x08\0\0\0\0\0\x67\x01\0\0\x03\0\0\0\x0f\x13\0\
+-\0\0\0\0\0\x79\x86\0\0\0\0\0\0\xbf\xa1\0\0\0\0\0\0\x07\x01\0\0\xf8\xff\xff\xff\
+-\xb7\x02\0\0\x08\0\0\0\x85\0\0\0\x71\0\0\0\xb7\x01\0\0\0\0\0\0\x79\xa3\xf8\xff\
+-\0\0\0\0\x0f\x13\0\0\0\0\0\0\xbf\xa1\0\0\0\0\0\0\x07\x01\0\0\xf4\xff\xff\xff\
+-\xb7\x02\0\0\x04\0\0\0\x85\0\0\0\x71\0\0\0\xb7\x03\0\0\x04\0\0\0\x61\xa1\xf4\
+-\xff\0\0\0\0\x61\x82\x10\0\0\0\0\0\x3d\x21\x02\0\0\0\0\0\x0f\x16\0\0\0\0\0\0\
+-\xbf\x69\0\0\0\0\0\0\x7b\x9a\xd8\xff\0\0\0\0\x79\x71\x18\0\0\0\0\0\x7b\x1a\xe0\
+-\xff\0\0\0\0\x79\x71\x20\0\0\0\0\0\x79\x11\0\0\0\0\0\0\x0f\x31\0\0\0\0\0\0\x7b\
+-\x1a\xe8\xff\0\0\0\0\xbf\xa4\0\0\0\0\0\0\x07\x04\0\0\xd0\xff\xff\xff\x79\xa1\
+-\xc8\xff\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x51\0\0\0\xb7\x03\0\0\x11\0\0\0\
+-\xb7\x05\0\0\x20\0\0\0\x85\0\0\0\x7e\0\0\0\xb7\0\0\0\0\0\0\0\x95\0\0\0\0\0\0\0\
+-\0\0\0\0\x17\0\0\0\0\0\0\0\x42\0\0\0\x7b\0\0\0\x1e\x80\x01\0\x01\0\0\0\x42\0\0\
+-\0\x7b\0\0\0\x24\x80\x01\0\x02\0\0\0\x42\0\0\0\x60\x02\0\0\x1f\x88\x01\0\x03\0\
+-\0\0\x42\0\0\0\x84\x02\0\0\x06\x94\x01\0\x04\0\0\0\x42\0\0\0\x1a\x01\0\0\x17\
+-\x84\x01\0\x05\0\0\0\x42\0\0\0\x9d\x02\0\0\x0e\xa0\x01\0\x06\0\0\0\x42\0\0\0\
+-\x1a\x01\0\0\x1d\x84\x01\0\x07\0\0\0\x42\0\0\0\x43\x01\0\0\x06\xa4\x01\0\x09\0\
+-\0\0\x42\0\0\0\xaf\x02\0\0\x03\xa8\x01\0\x11\0\0\0\x42\0\0\0\x1f\x03\0\0\x02\
+-\xb0\x01\0\x18\0\0\0\x42\0\0\0\x5a\x03\0\0\x06\x04\x01\0\x1b\0\0\0\x42\0\0\0\0\
+-\0\0\0\0\0\0\0\x1c\0\0\0\x42\0\0\0\xab\x03\0\0\x0f\x10\x01\0\x1d\0\0\0\x42\0\0\
+-\0\xc0\x03\0\0\x2d\x14\x01\0\x1f\0\0\0\x42\0\0\0\xf7\x03\0\0\x0d\x0c\x01\0\x21\
+-\0\0\0\x42\0\0\0\0\0\0\0\0\0\0\0\x22\0\0\0\x42\0\0\0\xc0\x03\0\0\x02\x14\x01\0\
+-\x25\0\0\0\x42\0\0\0\x1e\x04\0\0\x0d\x18\x01\0\x28\0\0\0\x42\0\0\0\0\0\0\0\0\0\
+-\0\0\x29\0\0\0\x42\0\0\0\x1e\x04\0\0\x0d\x18\x01\0\x2c\0\0\0\x42\0\0\0\x1e\x04\
+-\0\0\x0d\x18\x01\0\x2d\0\0\0\x42\0\0\0\x4c\x04\0\0\x1b\x1c\x01\0\x2e\0\0\0\x42\
+-\0\0\0\x4c\x04\0\0\x06\x1c\x01\0\x2f\0\0\0\x42\0\0\0\x6f\x04\0\0\x0d\x24\x01\0\
+-\x31\0\0\0\x42\0\0\0\x1f\x03\0\0\x02\xb0\x01\0\x40\0\0\0\x42\0\0\0\x2a\x02\0\0\
+-\x01\xc0\x01\0\0\0\0\0\x14\0\0\0\x3e\0\0\0\0\0\0\0\x08\0\0\0\x08\0\0\0\x3e\0\0\
+-\0\0\0\0\0\x10\0\0\0\x14\0\0\0\xea\0\0\0\0\0\0\0\x20\0\0\0\x14\0\0\0\x3e\0\0\0\
+-\0\0\0\0\x28\0\0\0\x18\0\0\0\x3e\0\0\0\0\0\0\0\x30\0\0\0\x08\0\0\0\x3f\x01\0\0\
+-\0\0\0\0\x88\0\0\0\x1a\0\0\0\x3e\0\0\0\0\0\0\0\x98\0\0\0\x1a\0\0\0\xea\0\0\0\0\
+-\0\0\0\xb0\0\0\0\x1a\0\0\0\x52\x03\0\0\0\0\0\0\xb8\0\0\0\x1a\0\0\0\x56\x03\0\0\
+-\0\0\0\0\xc8\0\0\0\x1f\0\0\0\x84\x03\0\0\0\0\0\0\xe0\0\0\0\x20\0\0\0\xea\0\0\0\
+-\0\0\0\0\xf8\0\0\0\x20\0\0\0\x3e\0\0\0\0\0\0\0\x20\x01\0\0\x24\0\0\0\x3e\0\0\0\
+-\0\0\0\0\x58\x01\0\0\x1a\0\0\0\xea\0\0\0\0\0\0\0\x68\x01\0\0\x20\0\0\0\x46\x04\
+-\0\0\0\0\0\0\x90\x01\0\0\x1a\0\0\0\x3f\x01\0\0\0\0\0\0\xa0\x01\0\0\x1a\0\0\0\
+-\x87\x04\0\0\0\0\0\0\xa8\x01\0\0\x18\0\0\0\x3e\0\0\0\0\0\0\0\x1a\0\0\0\x42\0\0\
+-\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
+-\0\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\0\0\0\0\0\0\x1c\0\0\
+-\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\x1a\0\
+-\0\0\x01\0\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\0\
+-\0\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\0\0\
+-\0\0\0\0";
+-	opts.insns_sz = 2216;
++\0\0\x01\x24\0\0\0\x01\0\0\x0c\x05\0\0\0\xb0\0\0\0\x03\0\0\x04\x18\0\0\0\xbe\0\
++\0\0\x09\0\0\0\0\0\0\0\xc2\0\0\0\x0b\0\0\0\x40\0\0\0\xcd\0\0\0\x0b\0\0\0\x80\0\
++\0\0\0\0\0\0\0\0\0\x02\x0a\0\0\0\xd5\0\0\0\0\0\0\x07\0\0\0\0\xde\0\0\0\0\0\0\
++\x08\x0c\0\0\0\xe4\0\0\0\0\0\0\x01\x08\0\0\0\x40\0\0\0\xae\x01\0\0\x03\0\0\x04\
++\x18\0\0\0\xb6\x01\0\0\x0e\0\0\0\0\0\0\0\xb9\x01\0\0\x11\0\0\0\x20\0\0\0\xbe\
++\x01\0\0\x0e\0\0\0\xa0\0\0\0\xca\x01\0\0\0\0\0\x08\x0f\0\0\0\xd0\x01\0\0\0\0\0\
++\x01\x04\0\0\0\x20\0\0\0\xdd\x01\0\0\0\0\0\x01\x01\0\0\0\x08\0\0\x01\0\0\0\0\0\
++\0\0\x03\0\0\0\0\x10\0\0\0\x12\0\0\0\x10\0\0\0\xe2\x01\0\0\0\0\0\x01\x04\0\0\0\
++\x20\0\0\0\0\0\0\0\x01\0\0\x0d\x14\0\0\0\x2c\x05\0\0\x04\0\0\0\x2b\x02\0\0\0\0\
++\0\x08\x15\0\0\0\x31\x02\0\0\0\0\0\x01\x08\0\0\0\x40\0\0\x01\x3b\x02\0\0\x01\0\
++\0\x0c\x13\0\0\0\0\0\0\0\0\0\0\x02\x18\0\0\0\x58\x02\0\0\x02\0\0\x04\x10\0\0\0\
++\x13\0\0\0\x03\0\0\0\0\0\0\0\x6b\x02\0\0\x19\0\0\0\x40\0\0\0\0\0\0\0\0\0\0\x02\
++\x1c\0\0\0\0\0\0\0\x01\0\0\x0d\x06\0\0\0\x1c\0\0\0\x17\0\0\0\x70\x02\0\0\x01\0\
++\0\x0c\x1a\0\0\0\xbc\x02\0\0\x01\0\0\x04\x08\0\0\0\xc5\x02\0\0\x1d\0\0\0\0\0\0\
++\0\0\0\0\0\0\0\0\x02\x1e\0\0\0\x16\x03\0\0\x06\0\0\x04\x38\0\0\0\xb6\x01\0\0\
++\x0e\0\0\0\0\0\0\0\xb9\x01\0\0\x11\0\0\0\x20\0\0\0\x23\x03\0\0\x1f\0\0\0\xc0\0\
++\0\0\x34\x03\0\0\x19\0\0\0\0\x01\0\0\x3d\x03\0\0\x21\0\0\0\x40\x01\0\0\x47\x03\
++\0\0\x22\0\0\0\x80\x01\0\0\0\0\0\0\0\0\0\x02\x20\0\0\0\0\0\0\0\0\0\0\x0a\x10\0\
++\0\0\0\0\0\0\0\0\0\x02\x23\0\0\0\0\0\0\0\0\0\0\x02\x24\0\0\0\x91\x03\0\0\x02\0\
++\0\x04\x08\0\0\0\x9f\x03\0\0\x0e\0\0\0\0\0\0\0\xa8\x03\0\0\x0e\0\0\0\x20\0\0\0\
++\x47\x03\0\0\x03\0\0\x04\x18\0\0\0\xb2\x03\0\0\x1f\0\0\0\0\0\0\0\xba\x03\0\0\
++\x25\0\0\0\x40\0\0\0\xc0\x03\0\0\x27\0\0\0\x80\0\0\0\0\0\0\0\0\0\0\x02\x26\0\0\
++\0\0\0\0\0\0\0\0\x02\x28\0\0\0\xc4\x03\0\0\x01\0\0\x04\x04\0\0\0\xcf\x03\0\0\
++\x0e\0\0\0\0\0\0\0\x38\x04\0\0\x01\0\0\x04\x04\0\0\0\x41\x04\0\0\x0e\0\0\0\0\0\
++\0\0\0\0\0\0\0\0\0\x03\0\0\0\0\x20\0\0\0\x12\0\0\0\x30\0\0\0\xb7\x04\0\0\0\0\0\
++\x0e\x29\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x03\0\0\0\0\x20\0\0\0\x12\0\0\0\x1a\0\0\0\
++\xcb\x04\0\0\0\0\0\x0e\x2b\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x03\0\0\0\0\x20\0\0\0\
++\x12\0\0\0\x20\0\0\0\xe1\x04\0\0\0\0\0\x0e\x2d\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x03\
++\0\0\0\0\x20\0\0\0\x12\0\0\0\x11\0\0\0\xf6\x04\0\0\0\0\0\x0e\x2f\0\0\0\0\0\0\0\
++\0\0\0\0\0\0\0\x03\0\0\0\0\x10\0\0\0\x12\0\0\0\x04\0\0\0\x0d\x05\0\0\0\0\0\x0e\
++\x31\0\0\0\x01\0\0\0\x15\x05\0\0\x01\0\0\x0f\x04\0\0\0\x36\0\0\0\0\0\0\0\x04\0\
++\0\0\x1c\x05\0\0\x04\0\0\x0f\x7b\0\0\0\x2a\0\0\0\0\0\0\0\x30\0\0\0\x2c\0\0\0\
++\x30\0\0\0\x1a\0\0\0\x2e\0\0\0\x4a\0\0\0\x20\0\0\0\x30\0\0\0\x6a\0\0\0\x11\0\0\
++\0\x24\x05\0\0\x01\0\0\x0f\x04\0\0\0\x32\0\0\0\0\0\0\0\x04\0\0\0\x2c\x05\0\0\0\
++\0\0\x0e\x06\0\0\0\x01\0\0\0\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x5f\x62\x70\
++\x66\x5f\x6d\x61\x70\0\x6d\x65\x74\x61\0\x6d\x61\x70\0\x63\x74\x78\0\x69\x6e\
++\x74\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x6d\x61\x70\0\x69\x74\x65\x72\x2f\
++\x62\x70\x66\x5f\x6d\x61\x70\0\x30\x3a\x30\0\x2f\x68\x6f\x6d\x65\x2f\x61\x73\
++\x70\x73\x6b\x2f\x73\x72\x63\x2f\x62\x70\x66\x2d\x6e\x65\x78\x74\x2f\x6b\x65\
++\x72\x6e\x65\x6c\x2f\x62\x70\x66\x2f\x70\x72\x65\x6c\x6f\x61\x64\x2f\x69\x74\
++\x65\x72\x61\x74\x6f\x72\x73\x2f\x69\x74\x65\x72\x61\x74\x6f\x72\x73\x2e\x62\
++\x70\x66\x2e\x63\0\x09\x73\x74\x72\x75\x63\x74\x20\x73\x65\x71\x5f\x66\x69\x6c\
++\x65\x20\x2a\x73\x65\x71\x20\x3d\x20\x63\x74\x78\x2d\x3e\x6d\x65\x74\x61\x2d\
++\x3e\x73\x65\x71\x3b\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x6d\x65\x74\x61\0\
++\x73\x65\x71\0\x73\x65\x73\x73\x69\x6f\x6e\x5f\x69\x64\0\x73\x65\x71\x5f\x6e\
++\x75\x6d\0\x73\x65\x71\x5f\x66\x69\x6c\x65\0\x5f\x5f\x75\x36\x34\0\x75\x6e\x73\
++\x69\x67\x6e\x65\x64\x20\x6c\x6f\x6e\x67\x20\x6c\x6f\x6e\x67\0\x30\x3a\x31\0\
++\x09\x73\x74\x72\x75\x63\x74\x20\x62\x70\x66\x5f\x6d\x61\x70\x20\x2a\x6d\x61\
++\x70\x20\x3d\x20\x63\x74\x78\x2d\x3e\x6d\x61\x70\x3b\0\x09\x69\x66\x20\x28\x21\
++\x6d\x61\x70\x29\0\x30\x3a\x32\0\x09\x5f\x5f\x75\x36\x34\x20\x73\x65\x71\x5f\
++\x6e\x75\x6d\x20\x3d\x20\x63\x74\x78\x2d\x3e\x6d\x65\x74\x61\x2d\x3e\x73\x65\
++\x71\x5f\x6e\x75\x6d\x3b\0\x09\x69\x66\x20\x28\x73\x65\x71\x5f\x6e\x75\x6d\x20\
++\x3d\x3d\x20\x30\x29\0\x09\x09\x42\x50\x46\x5f\x53\x45\x51\x5f\x50\x52\x49\x4e\
++\x54\x46\x28\x73\x65\x71\x2c\x20\x22\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\
++\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x6d\x61\x78\x5f\x65\x6e\x74\
++\x72\x69\x65\x73\x20\x20\x63\x75\x72\x5f\x65\x6e\x74\x72\x69\x65\x73\x5c\x6e\
++\x22\x29\x3b\0\x62\x70\x66\x5f\x6d\x61\x70\0\x69\x64\0\x6e\x61\x6d\x65\0\x6d\
++\x61\x78\x5f\x65\x6e\x74\x72\x69\x65\x73\0\x5f\x5f\x75\x33\x32\0\x75\x6e\x73\
++\x69\x67\x6e\x65\x64\x20\x69\x6e\x74\0\x63\x68\x61\x72\0\x5f\x5f\x41\x52\x52\
++\x41\x59\x5f\x53\x49\x5a\x45\x5f\x54\x59\x50\x45\x5f\x5f\0\x09\x42\x50\x46\x5f\
++\x53\x45\x51\x5f\x50\x52\x49\x4e\x54\x46\x28\x73\x65\x71\x2c\x20\x22\x25\x34\
++\x75\x20\x25\x2d\x31\x36\x73\x20\x20\x25\x31\x30\x64\x20\x20\x20\x25\x31\x30\
++\x6c\x6c\x64\x5c\x6e\x22\x2c\0\x7d\0\x5f\x5f\x73\x36\x34\0\x6c\x6f\x6e\x67\x20\
++\x6c\x6f\x6e\x67\0\x62\x70\x66\x5f\x6d\x61\x70\x5f\x73\x75\x6d\x5f\x65\x6c\x65\
++\x6d\x65\x6e\x74\x73\x5f\x63\x6f\x75\x6e\x74\x65\x72\0\x62\x70\x66\x5f\x69\x74\
++\x65\x72\x5f\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\x70\x72\x6f\x67\0\x64\x75\
++\x6d\x70\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\x69\x74\x65\x72\x2f\x62\x70\x66\
++\x5f\x70\x72\x6f\x67\0\x09\x73\x74\x72\x75\x63\x74\x20\x62\x70\x66\x5f\x70\x72\
++\x6f\x67\x20\x2a\x70\x72\x6f\x67\x20\x3d\x20\x63\x74\x78\x2d\x3e\x70\x72\x6f\
++\x67\x3b\0\x09\x69\x66\x20\x28\x21\x70\x72\x6f\x67\x29\0\x62\x70\x66\x5f\x70\
++\x72\x6f\x67\0\x61\x75\x78\0\x09\x61\x75\x78\x20\x3d\x20\x70\x72\x6f\x67\x2d\
++\x3e\x61\x75\x78\x3b\0\x09\x09\x42\x50\x46\x5f\x53\x45\x51\x5f\x50\x52\x49\x4e\
++\x54\x46\x28\x73\x65\x71\x2c\x20\x22\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\
++\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x61\x74\x74\x61\x63\x68\x65\
++\x64\x5c\x6e\x22\x29\x3b\0\x62\x70\x66\x5f\x70\x72\x6f\x67\x5f\x61\x75\x78\0\
++\x61\x74\x74\x61\x63\x68\x5f\x66\x75\x6e\x63\x5f\x6e\x61\x6d\x65\0\x64\x73\x74\
++\x5f\x70\x72\x6f\x67\0\x66\x75\x6e\x63\x5f\x69\x6e\x66\x6f\0\x62\x74\x66\0\x09\
++\x42\x50\x46\x5f\x53\x45\x51\x5f\x50\x52\x49\x4e\x54\x46\x28\x73\x65\x71\x2c\
++\x20\x22\x25\x34\x75\x20\x25\x2d\x31\x36\x73\x20\x25\x73\x20\x25\x73\x5c\x6e\
++\x22\x2c\x20\x61\x75\x78\x2d\x3e\x69\x64\x2c\0\x30\x3a\x34\0\x30\x3a\x35\0\x09\
++\x69\x66\x20\x28\x21\x62\x74\x66\x29\0\x62\x70\x66\x5f\x66\x75\x6e\x63\x5f\x69\
++\x6e\x66\x6f\0\x69\x6e\x73\x6e\x5f\x6f\x66\x66\0\x74\x79\x70\x65\x5f\x69\x64\0\
++\x30\0\x73\x74\x72\x69\x6e\x67\x73\0\x74\x79\x70\x65\x73\0\x68\x64\x72\0\x62\
++\x74\x66\x5f\x68\x65\x61\x64\x65\x72\0\x73\x74\x72\x5f\x6c\x65\x6e\0\x09\x74\
++\x79\x70\x65\x73\x20\x3d\x20\x62\x74\x66\x2d\x3e\x74\x79\x70\x65\x73\x3b\0\x09\
++\x62\x70\x66\x5f\x70\x72\x6f\x62\x65\x5f\x72\x65\x61\x64\x5f\x6b\x65\x72\x6e\
++\x65\x6c\x28\x26\x74\x2c\x20\x73\x69\x7a\x65\x6f\x66\x28\x74\x29\x2c\x20\x74\
++\x79\x70\x65\x73\x20\x2b\x20\x62\x74\x66\x5f\x69\x64\x29\x3b\0\x09\x73\x74\x72\
++\x20\x3d\x20\x62\x74\x66\x2d\x3e\x73\x74\x72\x69\x6e\x67\x73\x3b\0\x62\x74\x66\
++\x5f\x74\x79\x70\x65\0\x6e\x61\x6d\x65\x5f\x6f\x66\x66\0\x09\x6e\x61\x6d\x65\
++\x5f\x6f\x66\x66\x20\x3d\x20\x42\x50\x46\x5f\x43\x4f\x52\x45\x5f\x52\x45\x41\
++\x44\x28\x74\x2c\x20\x6e\x61\x6d\x65\x5f\x6f\x66\x66\x29\x3b\0\x30\x3a\x32\x3a\
++\x30\0\x09\x69\x66\x20\x28\x6e\x61\x6d\x65\x5f\x6f\x66\x66\x20\x3e\x3d\x20\x62\
++\x74\x66\x2d\x3e\x68\x64\x72\x2e\x73\x74\x72\x5f\x6c\x65\x6e\x29\0\x09\x72\x65\
++\x74\x75\x72\x6e\x20\x73\x74\x72\x20\x2b\x20\x6e\x61\x6d\x65\x5f\x6f\x66\x66\
++\x3b\0\x30\x3a\x33\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x6d\x61\x70\x2e\x5f\
++\x5f\x5f\x66\x6d\x74\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x6d\x61\x70\x2e\x5f\
++\x5f\x5f\x66\x6d\x74\x2e\x31\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x70\x72\x6f\
++\x67\x2e\x5f\x5f\x5f\x66\x6d\x74\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x70\x72\
++\x6f\x67\x2e\x5f\x5f\x5f\x66\x6d\x74\x2e\x32\0\x4c\x49\x43\x45\x4e\x53\x45\0\
++\x2e\x6b\x73\x79\x6d\x73\0\x2e\x72\x6f\x64\x61\x74\x61\0\x6c\x69\x63\x65\x6e\
++\x73\x65\0\x64\x75\x6d\x6d\x79\x5f\x6b\x73\x79\x6d\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
++\0\0\0\0\xcf\x09\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x02\0\0\0\x04\0\0\0\x7b\0\0\0\x01\
++\0\0\0\x80\0\0\0\0\0\0\0\0\0\0\0\x69\x74\x65\x72\x61\x74\x6f\x72\x2e\x72\x6f\
++\x64\x61\x74\x61\0\0\0\0\0\0\0\0\0\0\0\0\0\x34\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
++\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
++\x20\x20\x20\x6d\x61\x78\x5f\x65\x6e\x74\x72\x69\x65\x73\x20\x20\x63\x75\x72\
++\x5f\x65\x6e\x74\x72\x69\x65\x73\x0a\0\x25\x34\x75\x20\x25\x2d\x31\x36\x73\x20\
++\x20\x25\x31\x30\x64\x20\x20\x20\x25\x31\x30\x6c\x6c\x64\x0a\0\x20\x20\x69\x64\
++\x20\x6e\x61\x6d\x65\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x61\
++\x74\x74\x61\x63\x68\x65\x64\x0a\0\x25\x34\x75\x20\x25\x2d\x31\x36\x73\x20\x25\
++\x73\x20\x25\x73\x0a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
++\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x47\x50\x4c\0\0\0\0\0\x79\
++\x12\0\0\0\0\0\0\x79\x26\0\0\0\0\0\0\x79\x17\x08\0\0\0\0\0\x15\x07\x1d\0\0\0\0\
++\0\x79\x21\x10\0\0\0\0\0\x55\x01\x08\0\0\0\0\0\xbf\xa4\0\0\0\0\0\0\x07\x04\0\0\
++\xe0\xff\xff\xff\xbf\x61\0\0\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xb7\
++\x03\0\0\x30\0\0\0\xb7\x05\0\0\0\0\0\0\x85\0\0\0\x7e\0\0\0\x61\x71\0\0\0\0\0\0\
++\x7b\x1a\xe0\xff\0\0\0\0\xb7\x01\0\0\x04\0\0\0\xbf\x72\0\0\0\0\0\0\x0f\x12\0\0\
++\0\0\0\0\x7b\x2a\xe8\xff\0\0\0\0\x61\x71\x14\0\0\0\0\0\x7b\x1a\xf0\xff\0\0\0\0\
++\xbf\x71\0\0\0\0\0\0\x85\x20\0\0\0\0\0\0\x7b\x0a\xf8\xff\0\0\0\0\xbf\xa4\0\0\0\
++\0\0\0\x07\x04\0\0\xe0\xff\xff\xff\xbf\x61\0\0\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\
++\0\0\x30\0\0\0\xb7\x03\0\0\x1a\0\0\0\xb7\x05\0\0\x20\0\0\0\x85\0\0\0\x7e\0\0\0\
++\xb7\0\0\0\0\0\0\0\x95\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x42\0\0\0\x88\0\
++\0\0\x1e\x44\x01\0\x01\0\0\0\x42\0\0\0\x88\0\0\0\x24\x44\x01\0\x02\0\0\0\x42\0\
++\0\0\xfb\0\0\0\x1d\x4c\x01\0\x03\0\0\0\x42\0\0\0\x1c\x01\0\0\x06\x54\x01\0\x04\
++\0\0\0\x42\0\0\0\x2b\x01\0\0\x1d\x48\x01\0\x05\0\0\0\x42\0\0\0\x50\x01\0\0\x06\
++\x60\x01\0\x07\0\0\0\x42\0\0\0\x63\x01\0\0\x03\x64\x01\0\x0e\0\0\0\x42\0\0\0\
++\xf6\x01\0\0\x02\x6c\x01\0\x21\0\0\0\x42\0\0\0\x29\x02\0\0\x01\x80\x01\0\0\0\0\
++\0\x02\0\0\0\x3e\0\0\0\0\0\0\0\x08\0\0\0\x08\0\0\0\x3e\0\0\0\0\0\0\0\x10\0\0\0\
++\x02\0\0\0\xf7\0\0\0\0\0\0\0\x20\0\0\0\x08\0\0\0\x27\x01\0\0\0\0\0\0\x70\0\0\0\
++\x0d\0\0\0\x3e\0\0\0\0\0\0\0\x80\0\0\0\x0d\0\0\0\xf7\0\0\0\0\0\0\0\xa0\0\0\0\
++\x0d\0\0\0\x27\x01\0\0\0\0\0\0\x1a\0\0\0\x23\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
++\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x64\x75\x6d\x70\x5f\x62\
++\x70\x66\x5f\x6d\x61\x70\0\0\0\0\0\0\0\0\x1c\0\0\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\
++\0\0\0\x01\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\x09\0\0\0\x01\0\0\0\0\0\0\0\x07\0\0\
++\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\0\0\0\x62\x70\x66\x5f\x69\x74\
++\x65\x72\x5f\x62\x70\x66\x5f\x6d\x61\x70\0\0\0\0\0\0\0\0\x62\x70\x66\x5f\x6d\
++\x61\x70\x5f\x73\x75\x6d\x5f\x65\x6c\x65\x6d\x65\x6e\x74\x73\x5f\x63\x6f\x75\
++\x6e\x74\x65\x72\0\0\0\0\x47\x50\x4c\0\0\0\0\0\x79\x12\0\0\0\0\0\0\x79\x26\0\0\
++\0\0\0\0\x79\x11\x08\0\0\0\0\0\x15\x01\x3b\0\0\0\0\0\x79\x17\0\0\0\0\0\0\x79\
++\x21\x10\0\0\0\0\0\x55\x01\x08\0\0\0\0\0\xbf\xa4\0\0\0\0\0\0\x07\x04\0\0\xd0\
++\xff\xff\xff\xbf\x61\0\0\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x4a\0\0\0\xb7\x03\
++\0\0\x20\0\0\0\xb7\x05\0\0\0\0\0\0\x85\0\0\0\x7e\0\0\0\x7b\x6a\xc8\xff\0\0\0\0\
++\x61\x71\0\0\0\0\0\0\x7b\x1a\xd0\xff\0\0\0\0\xb7\x03\0\0\x04\0\0\0\xbf\x79\0\0\
++\0\0\0\0\x0f\x39\0\0\0\0\0\0\x79\x71\x28\0\0\0\0\0\x79\x78\x30\0\0\0\0\0\x15\
++\x08\x18\0\0\0\0\0\xb7\x02\0\0\0\0\0\0\x0f\x21\0\0\0\0\0\0\x61\x11\x04\0\0\0\0\
++\0\x79\x83\x08\0\0\0\0\0\x67\x01\0\0\x03\0\0\0\x0f\x13\0\0\0\0\0\0\x79\x86\0\0\
++\0\0\0\0\xbf\xa1\0\0\0\0\0\0\x07\x01\0\0\xf8\xff\xff\xff\xb7\x02\0\0\x08\0\0\0\
++\x85\0\0\0\x71\0\0\0\xb7\x01\0\0\0\0\0\0\x79\xa3\xf8\xff\0\0\0\0\x0f\x13\0\0\0\
++\0\0\0\xbf\xa1\0\0\0\0\0\0\x07\x01\0\0\xf4\xff\xff\xff\xb7\x02\0\0\x04\0\0\0\
++\x85\0\0\0\x71\0\0\0\xb7\x03\0\0\x04\0\0\0\x61\xa1\xf4\xff\0\0\0\0\x61\x82\x10\
++\0\0\0\0\0\x3d\x21\x02\0\0\0\0\0\x0f\x16\0\0\0\0\0\0\xbf\x69\0\0\0\0\0\0\x7b\
++\x9a\xd8\xff\0\0\0\0\x79\x71\x18\0\0\0\0\0\x7b\x1a\xe0\xff\0\0\0\0\x79\x71\x20\
++\0\0\0\0\0\x79\x11\0\0\0\0\0\0\x0f\x31\0\0\0\0\0\0\x7b\x1a\xe8\xff\0\0\0\0\xbf\
++\xa4\0\0\0\0\0\0\x07\x04\0\0\xd0\xff\xff\xff\x79\xa1\xc8\xff\0\0\0\0\x18\x62\0\
++\0\0\0\0\0\0\0\0\0\x6a\0\0\0\xb7\x03\0\0\x11\0\0\0\xb7\x05\0\0\x20\0\0\0\x85\0\
++\0\0\x7e\0\0\0\xb7\0\0\0\0\0\0\0\x95\0\0\0\0\0\0\0\0\0\0\0\x1b\0\0\0\0\0\0\0\
++\x42\0\0\0\x88\0\0\0\x1e\x94\x01\0\x01\0\0\0\x42\0\0\0\x88\0\0\0\x24\x94\x01\0\
++\x02\0\0\0\x42\0\0\0\x8c\x02\0\0\x1f\x9c\x01\0\x03\0\0\0\x42\0\0\0\xb0\x02\0\0\
++\x06\xa8\x01\0\x04\0\0\0\x42\0\0\0\xc9\x02\0\0\x0e\xb4\x01\0\x05\0\0\0\x42\0\0\
++\0\x2b\x01\0\0\x1d\x98\x01\0\x06\0\0\0\x42\0\0\0\x50\x01\0\0\x06\xb8\x01\0\x08\
++\0\0\0\x42\0\0\0\xdb\x02\0\0\x03\xbc\x01\0\x10\0\0\0\x42\0\0\0\x4b\x03\0\0\x02\
++\xc4\x01\0\x17\0\0\0\x42\0\0\0\x86\x03\0\0\x06\x04\x01\0\x1a\0\0\0\x42\0\0\0\
++\x4b\x03\0\0\x02\xc4\x01\0\x1b\0\0\0\x42\0\0\0\xd7\x03\0\0\x0f\x10\x01\0\x1c\0\
++\0\0\x42\0\0\0\xec\x03\0\0\x2d\x14\x01\0\x1e\0\0\0\x42\0\0\0\x23\x04\0\0\x0d\
++\x0c\x01\0\x20\0\0\0\x42\0\0\0\x4b\x03\0\0\x02\xc4\x01\0\x21\0\0\0\x42\0\0\0\
++\xec\x03\0\0\x02\x14\x01\0\x24\0\0\0\x42\0\0\0\x4a\x04\0\0\x0d\x18\x01\0\x27\0\
++\0\0\x42\0\0\0\x4b\x03\0\0\x02\xc4\x01\0\x28\0\0\0\x42\0\0\0\x4a\x04\0\0\x0d\
++\x18\x01\0\x2b\0\0\0\x42\0\0\0\x4a\x04\0\0\x0d\x18\x01\0\x2c\0\0\0\x42\0\0\0\
++\x78\x04\0\0\x1b\x1c\x01\0\x2d\0\0\0\x42\0\0\0\x78\x04\0\0\x06\x1c\x01\0\x2e\0\
++\0\0\x42\0\0\0\x9b\x04\0\0\x0d\x24\x01\0\x30\0\0\0\x42\0\0\0\x4b\x03\0\0\x02\
++\xc4\x01\0\x3f\0\0\0\x42\0\0\0\x29\x02\0\0\x01\xd4\x01\0\0\0\0\0\x18\0\0\0\x3e\
++\0\0\0\0\0\0\0\x08\0\0\0\x08\0\0\0\x3e\0\0\0\0\0\0\0\x10\0\0\0\x18\0\0\0\xf7\0\
++\0\0\0\0\0\0\x20\0\0\0\x1c\0\0\0\x3e\0\0\0\0\0\0\0\x28\0\0\0\x08\0\0\0\x27\x01\
++\0\0\0\0\0\0\x80\0\0\0\x1e\0\0\0\x3e\0\0\0\0\0\0\0\x90\0\0\0\x1e\0\0\0\xf7\0\0\
++\0\0\0\0\0\xa8\0\0\0\x1e\0\0\0\x7e\x03\0\0\0\0\0\0\xb0\0\0\0\x1e\0\0\0\x82\x03\
++\0\0\0\0\0\0\xc0\0\0\0\x23\0\0\0\xb0\x03\0\0\0\0\0\0\xd8\0\0\0\x24\0\0\0\xf7\0\
++\0\0\0\0\0\0\xf0\0\0\0\x24\0\0\0\x3e\0\0\0\0\0\0\0\x18\x01\0\0\x28\0\0\0\x3e\0\
++\0\0\0\0\0\0\x50\x01\0\0\x1e\0\0\0\xf7\0\0\0\0\0\0\0\x60\x01\0\0\x24\0\0\0\x72\
++\x04\0\0\0\0\0\0\x88\x01\0\0\x1e\0\0\0\x27\x01\0\0\0\0\0\0\x98\x01\0\0\x1e\0\0\
++\0\xb3\x04\0\0\0\0\0\0\xa0\x01\0\0\x1c\0\0\0\x3e\0\0\0\0\0\0\0\x1a\0\0\0\x41\0\
++\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\
++\0\0\0\x64\x75\x6d\x70\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\0\0\0\0\0\0\x1c\0\
++\0\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\x19\
++\0\0\0\x01\0\0\0\0\0\0\0\x12\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\
++\0\0\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\0\
++\0\0\0\0\0";
++	opts.insns_sz = 2456;
+ 	opts.insns = (void *)"\
+ \xbf\x16\0\0\0\0\0\0\xbf\xa1\0\0\0\0\0\0\x07\x01\0\0\x78\xff\xff\xff\xb7\x02\0\
+ \0\x88\0\0\0\xb7\x03\0\0\0\0\0\0\x85\0\0\0\x71\0\0\0\x05\0\x14\0\0\0\0\0\x61\
+@@ -331,68 +327,76 @@ iterators_bpf__load(struct iterators_bpf *skel)
+ \0\0\0\x85\0\0\0\xa8\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x61\x01\0\0\0\0\
+ \0\0\xd5\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\xbf\x70\0\0\
+ \0\0\0\0\x95\0\0\0\0\0\0\0\x61\x60\x08\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
+-\x48\x0e\0\0\x63\x01\0\0\0\0\0\0\x61\x60\x0c\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\
+-\0\0\x44\x0e\0\0\x63\x01\0\0\0\0\0\0\x79\x60\x10\0\0\0\0\0\x18\x61\0\0\0\0\0\0\
+-\0\0\0\0\x38\x0e\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\x05\0\0\
+-\x18\x61\0\0\0\0\0\0\0\0\0\0\x30\x0e\0\0\x7b\x01\0\0\0\0\0\0\xb7\x01\0\0\x12\0\
+-\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x30\x0e\0\0\xb7\x03\0\0\x1c\0\0\0\x85\0\0\0\
++\xe8\x0e\0\0\x63\x01\0\0\0\0\0\0\x61\x60\x0c\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\
++\0\0\xe4\x0e\0\0\x63\x01\0\0\0\0\0\0\x79\x60\x10\0\0\0\0\0\x18\x61\0\0\0\0\0\0\
++\0\0\0\0\xd8\x0e\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\x05\0\0\
++\x18\x61\0\0\0\0\0\0\0\0\0\0\xd0\x0e\0\0\x7b\x01\0\0\0\0\0\0\xb7\x01\0\0\x12\0\
++\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\xd0\x0e\0\0\xb7\x03\0\0\x1c\0\0\0\x85\0\0\0\
+ \xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\xd4\xff\0\0\0\0\x63\x7a\x78\xff\0\0\0\0\
+-\x61\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x80\x0e\0\0\x63\x01\0\0\0\
++\x61\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x20\x0f\0\0\x63\x01\0\0\0\
+ \0\0\0\x61\x60\x1c\0\0\0\0\0\x15\0\x03\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
+-\x5c\x0e\0\0\x63\x01\0\0\0\0\0\0\xb7\x01\0\0\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\
+-\0\x50\x0e\0\0\xb7\x03\0\0\x48\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\
++\xfc\x0e\0\0\x63\x01\0\0\0\0\0\0\xb7\x01\0\0\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\
++\0\xf0\x0e\0\0\xb7\x03\0\0\x48\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\
+ \xc5\x07\xc3\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x63\x71\0\0\0\0\0\
+-\0\x79\x63\x20\0\0\0\0\0\x15\x03\x08\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x98\
+-\x0e\0\0\xb7\x02\0\0\x62\0\0\0\x61\x60\x04\0\0\0\0\0\x45\0\x02\0\x01\0\0\0\x85\
++\0\x79\x63\x20\0\0\0\0\0\x15\x03\x08\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x38\
++\x0f\0\0\xb7\x02\0\0\x7b\0\0\0\x61\x60\x04\0\0\0\0\0\x45\0\x02\0\x01\0\0\0\x85\
+ \0\0\0\x94\0\0\0\x05\0\x01\0\0\0\0\0\x85\0\0\0\x71\0\0\0\x18\x62\0\0\0\0\0\0\0\
+-\0\0\0\0\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x08\x0f\0\0\x63\
+-\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\x0f\0\0\x18\x61\0\0\0\0\0\0\0\0\
+-\0\0\x10\x0f\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x98\x0e\0\0\
+-\x18\x61\0\0\0\0\0\0\0\0\0\0\x18\x0f\0\0\x7b\x01\0\0\0\0\0\0\xb7\x01\0\0\x02\0\
+-\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x08\x0f\0\0\xb7\x03\0\0\x20\0\0\0\x85\0\0\0\
++\0\0\0\0\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xc0\x0f\0\0\x63\
++\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xb8\x0f\0\0\x18\x61\0\0\0\0\0\0\0\
++\0\0\0\xc8\x0f\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x38\x0f\0\0\
++\x18\x61\0\0\0\0\0\0\0\0\0\0\xd0\x0f\0\0\x7b\x01\0\0\0\0\0\0\xb7\x01\0\0\x02\0\
++\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\xc0\x0f\0\0\xb7\x03\0\0\x20\0\0\0\x85\0\0\0\
+ \xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x9f\xff\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\
+-\0\0\0\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x28\x0f\0\0\x63\
+-\x01\0\0\0\0\0\0\xb7\x01\0\0\x16\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x28\x0f\0\0\
++\0\0\0\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xe0\x0f\0\0\x63\
++\x01\0\0\0\0\0\0\xb7\x01\0\0\x16\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\xe0\x0f\0\0\
+ \xb7\x03\0\0\x04\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x92\xff\
+-\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x30\x0f\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
+-\x78\x11\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x38\x0f\0\0\x18\
+-\x61\0\0\0\0\0\0\0\0\0\0\x70\x11\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\
+-\0\0\0\x40\x10\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xb8\x11\0\0\x7b\x01\0\0\0\0\0\0\
+-\x18\x60\0\0\0\0\0\0\0\0\0\0\x48\x10\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xc8\x11\0\
+-\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xe8\x10\0\0\x18\x61\0\0\0\0\
+-\0\0\0\0\0\0\xe8\x11\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\0\0\
+-\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xe0\x11\0\0\x7b\x01\0\0\0\0\0\0\x61\x60\x08\0\0\
+-\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x80\x11\0\0\x63\x01\0\0\0\0\0\0\x61\x60\x0c\
+-\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x84\x11\0\0\x63\x01\0\0\0\0\0\0\x79\x60\
+-\x10\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x88\x11\0\0\x7b\x01\0\0\0\0\0\0\x61\
+-\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xb0\x11\0\0\x63\x01\0\0\0\0\0\
+-\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xf8\x11\0\0\xb7\x02\0\0\x11\0\0\0\xb7\x03\0\0\
++\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xe8\x0f\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
++\x20\x12\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xf0\x0f\0\0\x18\
++\x61\0\0\0\0\0\0\0\0\0\0\x18\x12\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\
++\0\0\0\x08\x11\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x60\x12\0\0\x7b\x01\0\0\0\0\0\0\
++\x18\x60\0\0\0\0\0\0\0\0\0\0\x10\x11\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x70\x12\0\
++\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xa0\x11\0\0\x18\x61\0\0\0\0\
++\0\0\0\0\0\0\x90\x12\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\0\0\
++\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x88\x12\0\0\x7b\x01\0\0\0\0\0\0\x61\x60\x08\0\0\
++\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x28\x12\0\0\x63\x01\0\0\0\0\0\0\x61\x60\x0c\
++\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x2c\x12\0\0\x63\x01\0\0\0\0\0\0\x79\x60\
++\x10\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x30\x12\0\0\x7b\x01\0\0\0\0\0\0\x61\
++\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x58\x12\0\0\x63\x01\0\0\0\0\0\
++\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xa0\x12\0\0\xb7\x02\0\0\x11\0\0\0\xb7\x03\0\0\
+ \x0c\0\0\0\xb7\x04\0\0\0\0\0\0\x85\0\0\0\xa7\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\
+-\x5c\xff\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x68\x11\0\0\x63\x70\x6c\0\0\0\0\0\
+-\x77\x07\0\0\x20\0\0\0\x63\x70\x70\0\0\0\0\0\xb7\x01\0\0\x05\0\0\0\x18\x62\0\0\
+-\0\0\0\0\0\0\0\0\x68\x11\0\0\xb7\x03\0\0\x8c\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\
+-\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xd8\x11\0\0\x61\x01\0\0\0\0\0\0\xd5\
+-\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\xc5\x07\x4a\xff\0\0\
+-\0\0\x63\x7a\x80\xff\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x10\x12\0\0\x18\x61\0\
+-\0\0\0\0\0\0\0\0\0\x10\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\
+-\x18\x12\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x08\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\
+-\x60\0\0\0\0\0\0\0\0\0\0\x28\x14\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x50\x17\0\0\
+-\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x30\x14\0\0\x18\x61\0\0\0\0\0\
+-\0\0\0\0\0\x60\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xd0\x15\
+-\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x80\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\
+-\0\0\0\0\0\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x78\x17\0\0\x7b\x01\0\0\0\0\
+-\0\0\x61\x60\x08\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x18\x17\0\0\x63\x01\0\0\
+-\0\0\0\0\x61\x60\x0c\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x1c\x17\0\0\x63\x01\
+-\0\0\0\0\0\0\x79\x60\x10\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x20\x17\0\0\x7b\
+-\x01\0\0\0\0\0\0\x61\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x48\x17\0\
+-\0\x63\x01\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x90\x17\0\0\xb7\x02\0\0\x12\
++\x5c\xff\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x10\x12\0\0\x63\x70\x6c\0\0\0\0\0\
++\x77\x07\0\0\x20\0\0\0\x63\x70\x70\0\0\0\0\0\x18\x68\0\0\0\0\0\0\0\0\0\0\xa8\
++\x10\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xb8\x12\0\0\xb7\x02\0\0\x1d\0\0\0\xb7\x03\
++\0\0\x0c\0\0\0\xb7\x04\0\0\0\0\0\0\x85\0\0\0\xa7\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\
++\x07\x4d\xff\0\0\0\0\x75\x07\x03\0\0\0\0\0\x62\x08\x04\0\0\0\0\0\x6a\x08\x02\0\
++\0\0\0\0\x05\0\x0a\0\0\0\0\0\x63\x78\x04\0\0\0\0\0\xbf\x79\0\0\0\0\0\0\x77\x09\
++\0\0\x20\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\x01\0\0\x63\x90\0\0\0\0\0\0\x55\
++\x09\x02\0\0\0\0\0\x6a\x08\x02\0\0\0\0\0\x05\0\x01\0\0\0\0\0\x6a\x08\x02\0\x40\
++\0\0\0\xb7\x01\0\0\x05\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x10\x12\0\0\xb7\x03\0\
++\0\x8c\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\
++\0\0\x01\0\0\x61\x01\0\0\0\0\0\0\xd5\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\
++\0\0\0\xa8\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x80\x12\0\0\x61\x01\0\0\0\0\0\0\
++\xd5\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\xc5\x07\x2c\xff\
++\0\0\0\0\x63\x7a\x80\xff\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xd8\x12\0\0\x18\
++\x61\0\0\0\0\0\0\0\0\0\0\xb0\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\
++\0\0\0\xe0\x12\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xa8\x17\0\0\x7b\x01\0\0\0\0\0\0\
++\x18\x60\0\0\0\0\0\0\0\0\0\0\xe8\x14\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xf0\x17\0\
++\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xf0\x14\0\0\x18\x61\0\0\0\0\
++\0\0\0\0\0\0\0\x18\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x80\x16\
++\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x20\x18\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\
++\0\0\0\0\0\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x18\x18\0\0\x7b\x01\0\0\0\0\
++\0\0\x61\x60\x08\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xb8\x17\0\0\x63\x01\0\0\
++\0\0\0\0\x61\x60\x0c\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xbc\x17\0\0\x63\x01\
++\0\0\0\0\0\0\x79\x60\x10\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xc0\x17\0\0\x7b\
++\x01\0\0\0\0\0\0\x61\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xe8\x17\0\
++\0\x63\x01\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x30\x18\0\0\xb7\x02\0\0\x12\
+ \0\0\0\xb7\x03\0\0\x0c\0\0\0\xb7\x04\0\0\0\0\0\0\x85\0\0\0\xa7\0\0\0\xbf\x07\0\
+-\0\0\0\0\0\xc5\x07\x13\xff\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\x17\0\0\x63\
++\0\0\0\0\0\xc5\x07\xf5\xfe\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xa0\x17\0\0\x63\
+ \x70\x6c\0\0\0\0\0\x77\x07\0\0\x20\0\0\0\x63\x70\x70\0\0\0\0\0\xb7\x01\0\0\x05\
+-\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\0\x17\0\0\xb7\x03\0\0\x8c\0\0\0\x85\0\0\0\
+-\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x70\x17\0\0\x61\x01\
++\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\xa0\x17\0\0\xb7\x03\0\0\x8c\0\0\0\x85\0\0\0\
++\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x10\x18\0\0\x61\x01\
+ \0\0\0\0\0\0\xd5\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\xc5\
+-\x07\x01\xff\0\0\0\0\x63\x7a\x84\xff\0\0\0\0\x61\xa1\x78\xff\0\0\0\0\xd5\x01\
++\x07\xe3\xfe\0\0\0\0\x63\x7a\x84\xff\0\0\0\0\x61\xa1\x78\xff\0\0\0\0\xd5\x01\
+ \x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x61\xa0\x80\xff\0\0\0\0\
+ \x63\x06\x28\0\0\0\0\0\x61\xa0\x84\xff\0\0\0\0\x63\x06\x2c\0\0\0\0\0\x18\x61\0\
+ \0\0\0\0\0\0\0\0\0\0\0\0\0\x61\x10\0\0\0\0\0\0\x63\x06\x18\0\0\0\0\0\xb7\0\0\0\
+@@ -400,10 +404,6 @@ iterators_bpf__load(struct iterators_bpf *skel)
+ 	err = bpf_load_and_run(&opts);
+ 	if (err < 0)
+ 		return err;
+-	skel->rodata = skel_finalize_map_data(&skel->maps.rodata.initial_value,
+-					4096, PROT_READ, skel->maps.rodata.map_fd);
+-	if (!skel->rodata)
+-		return -ENOMEM;
+ 	return 0;
+ }
  
- 	l = lookup_elem_raw(head, hash, key, key_size);
+@@ -422,4 +422,15 @@ iterators_bpf__open_and_load(void)
+ 	return skel;
+ }
  
--	if (l)
-+	if (l) {
-+		dec_elem_count(htab);
- 		hlist_nulls_del_rcu(&l->hash_node);
--	else
-+	} else
- 		ret = -ENOENT;
- 
- 	htab_unlock_bucket(htab, b, hash, flags);
-@@ -1529,6 +1546,7 @@ static void htab_map_free(struct bpf_map *map)
- 		prealloc_destroy(htab);
- 	}
- 
-+	bpf_map_free_elements_counter(map);
- 	free_percpu(htab->extra_elems);
- 	bpf_map_area_free(htab->buckets);
- 	bpf_mem_alloc_destroy(&htab->pcpu_ma);
++__attribute__((unused)) static void
++iterators_bpf__assert(struct iterators_bpf *s __attribute__((unused)))
++{
++#ifdef __cplusplus
++#define _Static_assert static_assert
++#endif
++#ifdef __cplusplus
++#undef _Static_assert
++#endif
++}
++
+ #endif /* __ITERATORS_BPF_SKEL_H__ */
 -- 
 2.34.1
 
