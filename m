@@ -1,70 +1,71 @@
-Return-Path: <bpf+bounces-3202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE91573AC4D
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 00:05:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F24A373AC4E
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 00:05:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 880832810BD
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 22:05:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADED62816ED
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 22:05:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67F2C22573;
-	Thu, 22 Jun 2023 22:04:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E430F22578;
+	Thu, 22 Jun 2023 22:04:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DB9420690
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 22:04:51 +0000 (UTC)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FD61BE1
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 15:04:49 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3113da5260dso5080229f8f.2
-        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 15:04:49 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C282420690
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 22:04:56 +0000 (UTC)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91561BD0
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 15:04:54 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3f90b8ace97so511055e9.2
+        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 15:04:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687471487; x=1690063487;
+        d=gmail.com; s=20221208; t=1687471493; x=1690063493;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t1hTy5vdu1bOFWMATojKwDYdxlFvKiz+PnwXaMeypU0=;
-        b=Umw+5f8zPs41B/Du+e9q41NSw1AIDNRQDDQq0XQ0yPzggT9Qb9kMQdSLmZWyamxOcA
-         wZQNUNAQlRO33Alizd1a557MlZAajnZvUBss+vWfTXd++zpWP0xtWtgShY1frgAQSuLu
-         PRdNphhsm/Pf0A+mwzD2rPGn69rnbVkxbAqqKlBk0geBNl8Lf8pXNiNkncF4mOCG4j08
-         ih1sRElFeFlE0wPXhhvOyy81OSvFoRN5fclAi0ptGClfcY2hV5qpfpWYWPqGd+Gmniyl
-         TRPOm+ta2H4ql0pfRhWQEAMx7w41kH9BlGKutRTs5ya5l2hmJe04Mi0iVH+1gLlxj4M8
-         2kSQ==
+        bh=LujOXmM/k7wgPtidmXuGKcEe/byLIdn8sn1BJB0VqSo=;
+        b=qd0/pDPLmza3n9Q6dhJfoJ9/GZf2pNsVDCeS9uZrFIS4YToUWIY7m6KSff0zQEWbYc
+         EuWygHj14GnP+9SYnIIonNUQJlVinLY969fCcgcABq73Hraf3FYI35+oHG6zixvim6lP
+         PgWxzWpV7MqAdbzz+xhWMJuMsvHV9yGXj6Ll/NcfwZwwuQp5Tss5yJM1Zrszy3CCXUcn
+         vzkHPPK9e2YabwMR7tTFjeUJudgANmhCtnEOse1onzBTIPpDSme7zz4YDpVIvkTEYpRS
+         wpJ3tG5/ecZNBl4VqLhjnesKyyYbrOs4sn8obsOgMLurt1i+6GcDk9Tm37Q5T8pqyj54
+         Os/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687471487; x=1690063487;
+        d=1e100.net; s=20221208; t=1687471493; x=1690063493;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t1hTy5vdu1bOFWMATojKwDYdxlFvKiz+PnwXaMeypU0=;
-        b=fia2bvCWtCK+lzKSf+6bblq4mOc7ky5GHIdz99z9AuI4fUnKCnJg2P/cQ7OTRXsICX
-         +impLzEgAolrSMhxc5ffrJQMxd3YrHPiWtTla2wveE2XsE5Fj+DzWIG3B/WjuKaDNDdO
-         Pzkk9OtgimYl+RXoie1fbetZJgM3/Zo0zUbtPK+vNL6jowajOyM7/Sw0Itn3ggNJdcce
-         FxxntZkrf7yMRQqz0lxhvj44IGaM8dY2L9GMwr5DPUE5gf+5hW9D1DVb5dLZO1FbemO6
-         uuUomDHWSBNBE7nr5jeqHyDxmiirKjb4D0QJXzIaZa2EptRTilP8KX03HN8XBIlVUljS
-         ML9Q==
-X-Gm-Message-State: AC+VfDxsA+uMVlaZ1us8r5YTPVWd6PE3TGogCR6Rs8Nful55Md3IGBWP
-	cj0QWqy5AqckP/8JZReshvAdafdh3ilL7AlmMcc=
-X-Google-Smtp-Source: ACHHUZ7bi3tcmu1oGzUbXGBoZGyr75w5rp3th7BGwChqBtT5xWfCFx8ukUA/8wcDiL64sNyRWrrG76Tyxfll+/Vdi44=
-X-Received: by 2002:a5d:558a:0:b0:30f:be0f:fbf with SMTP id
- i10-20020a5d558a000000b0030fbe0f0fbfmr2921386wrv.22.1687471487450; Thu, 22
- Jun 2023 15:04:47 -0700 (PDT)
+        bh=LujOXmM/k7wgPtidmXuGKcEe/byLIdn8sn1BJB0VqSo=;
+        b=Hjt1iJMOgwcabkXiHCvwOOKWG2I6+M1aze7NGhyEMtYTIavhayx7T7xud5Kx2XFVBG
+         3Ha8Wi7Hufz7X4mhboDPqhM/ERY9bCr5D1EL8nI0TPKoYmbOfXOCJDwRj2OO6ND+PovO
+         2bKC592rdkdSIfq323K8/4QAiJ4pI2PC/7e2rNfCN3wCXz3UUwqj+5O3VZWSP9Ntkjsf
+         fx7fyOS9mCiPexQg6L91Fm0SwqQNdmyVJQayevKPt4icjAypp1+a/fgbA+vRZ7Upcpif
+         cPGF6UzSJvS0golFLedrnomjbXH1iG7smWkn30yARC0wr28nHSnpB2dq8sB4VsPujgD/
+         29WA==
+X-Gm-Message-State: AC+VfDwwBwi7aLMJAJNv8kSmg3w6+p67K58EY0JJCfquMQ+xGdu+G2Or
+	achYYoO9APH+iuCQLKxYMAwNGuxji6DYOj8i5hs=
+X-Google-Smtp-Source: ACHHUZ57P5rIYCoCSc3P5JT2crp2hesI5sxPA8dsGi1lsI/fvFra9uhbkxZQ/ZfTIYdIEeojKMjEvn6s2oEarHQKnDw=
+X-Received: by 2002:a7b:c457:0:b0:3f9:bd3c:31b0 with SMTP id
+ l23-20020a7bc457000000b003f9bd3c31b0mr5155800wmi.39.1687471493084; Thu, 22
+ Jun 2023 15:04:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230616171728.530116-1-alan.maguire@oracle.com> <20230616171728.530116-6-alan.maguire@oracle.com>
-In-Reply-To: <20230616171728.530116-6-alan.maguire@oracle.com>
+References: <20230616171728.530116-1-alan.maguire@oracle.com> <20230616171728.530116-8-alan.maguire@oracle.com>
+In-Reply-To: <20230616171728.530116-8-alan.maguire@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 22 Jun 2023 15:04:35 -0700
-Message-ID: <CAEf4BzbeTk87XtqSL+9DTqtVu0Eokr+eDJ-Ytek7G_BgSGMPEg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 5/9] libbpf: add kind layout encoding, crc support
+Date: Thu, 22 Jun 2023 15:04:41 -0700
+Message-ID: <CAEf4BzaSJAKZ-iEvzcLuoJTuEr2Z_JPgrSLABtFPh8zKOz+OvA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 7/9] bpftool: add BTF dump "format meta" to
+ dump header/metadata
 To: Alan Maguire <alan.maguire@oracle.com>
 Cc: acme@kernel.org, ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
 	quentin@isovalent.com, jolsa@kernel.org, martin.lau@linux.dev, 
@@ -82,258 +83,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 On Fri, Jun 16, 2023 at 10:18=E2=80=AFAM Alan Maguire <alan.maguire@oracle.=
 com> wrote:
 >
-> Support encoding of BTF kind layout data and crcs via
-> btf__new_empty_opts().
+> Provide a way to dump BTF metadata info via bpftool; this
+> consists of BTF size, header fields and kind layout info
+> (if available); for example
 >
-> Current supported opts are base_btf, add_kind_layout and
-> add_crc.
+> $ bpftool btf dump file vmlinux format meta
+> size 4966513
+> magic 0xeb9f
+> version 1
+> flags 0x0
+> hdr_len 24
+> type_len 2929900
+> type_off 0
+> str_len 2036589
+> str_off 2929900
+>
+> ...or for vmlinux with kind layout, crc:
+>
+> $ bpftool btf dump file vmlinux format meta
+> size 5034496
+> magic 0xeb9f
+> version 1
+> flags 0x1
+> hdr_len 40
+> type_len 2973628
+> type_off 0
+> str_len 2060745
+> str_off 2973628
+> kind_layout_len 80
+> kind_layout_off 5034376
+> crc 0xb6a5171f
+> base_crc 0x0
+> kind 0    flags 0x0    info_sz 0    elem_sz 0
+> kind 1    flags 0x0    info_sz 4    elem_sz 0
+> kind 2    flags 0x0    info_sz 0    elem_sz 0
+> kind 3    flags 0x0    info_sz 12   elem_sz 0
+> kind 4    flags 0x0    info_sz 0    elem_sz 12
+
+well, bpftool will know symbolic names for most of these, so why not
+emit them? I think it's fine to emit both, something like
+
+
+kind INT (1)  flags ....
+...
+
+and for unknown:
+
+kind <unknown> (123) flags ....
+
+
+WDYT?
+
+> ...
+>
+> JSON output is also supported:
+>
+> $ bpftool -j btf dump file vmlinux format meta
+> {"size":4904369,{"header":"magic":60319,"version":1,"flags":0,"hdr_len":2=
+4,"type_len":2893508,"type_off":0,"str_len":2010837,"str_off":2893508}}
 >
 > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 > ---
->  tools/lib/bpf/btf.c      | 99 ++++++++++++++++++++++++++++++++++++++--
->  tools/lib/bpf/btf.h      | 11 +++++
->  tools/lib/bpf/libbpf.map |  1 +
->  3 files changed, 108 insertions(+), 3 deletions(-)
+>  tools/bpf/bpftool/bash-completion/bpftool |  2 +-
+>  tools/bpf/bpftool/btf.c                   | 93 ++++++++++++++++++++++-
+>  2 files changed, 92 insertions(+), 3 deletions(-)
 >
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 457997c2a43c..060a93809f64 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -16,6 +16,7 @@
->  #include <linux/err.h>
->  #include <linux/btf.h>
->  #include <gelf.h>
-> +#include <zlib.h>
->  #include "btf.h"
->  #include "bpf.h"
->  #include "libbpf.h"
-> @@ -882,8 +883,58 @@ void btf__free(struct btf *btf)
->         free(btf);
->  }
->
-> -static struct btf *btf_new_empty(struct btf *base_btf)
-> +static void btf_add_kind_layout(struct btf *btf, __u8 kind,
-> +                               __u16 flags, __u8 info_sz, __u8 elem_sz)
->  {
-> +       struct btf_kind_layout *k =3D &btf->kind_layout[kind];
-> +
-> +       k->flags =3D flags;
-> +       k->info_sz =3D info_sz;
-> +       k->elem_sz =3D elem_sz;
-> +       btf->hdr->kind_layout_len +=3D sizeof(*k);
-> +}
-> +
-> +static int btf_ensure_modifiable(struct btf *btf);
-> +
-> +static int btf_add_kind_layouts(struct btf *btf, struct btf_new_opts *op=
-ts)
-> +{
-> +       if (btf_ensure_modifiable(btf))
-> +               return libbpf_err(-ENOMEM);
-> +
-> +       btf->kind_layout =3D calloc(NR_BTF_KINDS, sizeof(struct btf_kind_=
-layout));
-> +
-> +       if (!btf->kind_layout)
-> +               return -ENOMEM;
-> +
-> +       /* all supported kinds should describe their layout here. */
 
-why not have a static table for each known kind and then just memcpy
-it? Seems both more elegant and more maintainable?
-
-static struct btf_kind_layout layout[] =3D {
-    [BTF_KIND_UNKN] =3D {0, 0, 0},
-    [BTF_KIND_UNKN] =3D {0, sizeof(__u32), 0},
-    ...
-    [BTF_KIND_STRUCT] =3D {0, 0, sizeof(struct btf_member)},
-};
-
-?
-
-
-> +       btf_add_kind_layout(btf, BTF_KIND_UNKN, 0, 0, 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_INT, 0, sizeof(__u32), 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_PTR, 0, 0, 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_ARRAY, 0, sizeof(struct btf_arr=
-ay), 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_STRUCT, 0, 0, sizeof(struct btf=
-_member));
-> +       btf_add_kind_layout(btf, BTF_KIND_UNION, 0, 0, sizeof(struct btf_=
-member));
-> +       btf_add_kind_layout(btf, BTF_KIND_ENUM, 0, 0, sizeof(struct btf_e=
-num));
-> +       btf_add_kind_layout(btf, BTF_KIND_FWD, 0, 0, 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_TYPEDEF, 0, 0, 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_VOLATILE, 0, 0, 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_CONST, 0, 0, 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_RESTRICT, 0, 0, 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_FUNC, 0, 0, 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_FUNC_PROTO, 0, 0, sizeof(struct=
- btf_param));
-> +       btf_add_kind_layout(btf, BTF_KIND_VAR, 0, sizeof(struct btf_var),=
- 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_DATASEC, 0, 0, sizeof(struct bt=
-f_var_secinfo));
-> +       btf_add_kind_layout(btf, BTF_KIND_FLOAT, 0, 0, 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_DECL_TAG, BTF_KIND_LAYOUT_OPTIO=
-NAL,
-> +                                                       sizeof(struct btf=
-_decl_tag), 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_TYPE_TAG, BTF_KIND_LAYOUT_OPTIO=
-NAL, 0, 0);
-> +       btf_add_kind_layout(btf, BTF_KIND_ENUM64, 0, 0, sizeof(struct btf=
-_enum64));
-> +
-> +       return 0;
-> +}
-> +
-> +static struct btf *btf_new_empty(struct btf_new_opts *opts)
-> +{
-> +       struct btf *base_btf =3D OPTS_GET(opts, base_btf, NULL);
->         struct btf *btf;
->
->         btf =3D calloc(1, sizeof(*btf));
-> @@ -920,17 +971,53 @@ static struct btf *btf_new_empty(struct btf *base_b=
-tf)
->         btf->strs_data =3D btf->raw_data + btf->hdr->hdr_len;
->         btf->hdr->str_len =3D base_btf ? 0 : 1; /* empty string at offset=
- 0 */
->
-> +       if (opts->add_kind_layout) {
-> +               int err =3D btf_add_kind_layouts(btf, opts);
-> +
-
-as I mentioned, I'd always add it internally, but allow to control
-whether it has to be emitted into raw_data
-
-> +               if (err) {
-> +                       free(btf->raw_data);
-> +                       free(btf);
-> +                       return ERR_PTR(err);
-> +               }
-> +       }
-> +       if (opts->add_crc) {
-> +               if (btf->base_btf) {
-> +                       struct btf_header *base_hdr =3D btf->base_btf->hd=
-r;
-> +
-> +                       if (base_hdr->hdr_len >=3D sizeof(struct btf_head=
-er) &&
-> +                           base_hdr->flags & BTF_FLAG_CRC_SET) {
-> +                               btf->hdr->base_crc =3D base_hdr->crc;
-> +                               btf->hdr->flags |=3D BTF_FLAG_BASE_CRC_SE=
-T;
-> +                       }
-> +               }
-> +               btf->hdr->flags |=3D BTF_FLAG_CRC_SET;
-> +       }
-> +
->         return btf;
->  }
->
->  struct btf *btf__new_empty(void)
->  {
-> -       return libbpf_ptr(btf_new_empty(NULL));
-> +       LIBBPF_OPTS(btf_new_opts, opts);
-> +
-> +       return libbpf_ptr(btf_new_empty(&opts));
-
-why? just pass NULL, it's fine, no need to create empty opts
-
->  }
->
->  struct btf *btf__new_empty_split(struct btf *base_btf)
->  {
-> -       return libbpf_ptr(btf_new_empty(base_btf));
-> +       LIBBPF_OPTS(btf_new_opts, opts);
-> +
-> +       opts.base_btf =3D base_btf;
-
-nit: it's cleaner to initialize opts on declaration in this case
-
-LIBBPF_OPTS(btf_new_opts, opts, .base_btf =3D base_btf);
-
-> +
-> +       return libbpf_ptr(btf_new_empty(&opts));
-> +}
-> +
-> +struct btf *btf__new_empty_opts(struct btf_new_opts *opts)
-> +{
-> +       if (!OPTS_VALID(opts, btf_new_opts))
-> +               return libbpf_err_ptr(-EINVAL);
-> +
-> +       return libbpf_ptr(btf_new_empty(opts));
->  }
->
->  static struct btf *btf_new(const void *data, __u32 size, struct btf *bas=
-e_btf)
-> @@ -1377,6 +1464,12 @@ static void *btf_get_raw_data(const struct btf *bt=
-f, __u32 *size, bool swap_endi
->                         btf_bswap_kind_layout_sec(p, hdr->kind_layout_len=
-);
->                 p +=3D hdr->kind_layout_len;
->         }
-> +       if (hdr->flags & BTF_FLAG_CRC_SET) {
-> +               struct btf_header *h =3D data;
-> +
-> +               h->crc =3D crc32(0L, (const Bytef *)&data, sizeof(data));
-
-is crc32() part of zlib's public API?
-
-> +       }
-> +
->         *size =3D data_sz;
->         return data;
->  err_out:
-> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-> index 8e6880d91c84..d25bd5c19eec 100644
-> --- a/tools/lib/bpf/btf.h
-> +++ b/tools/lib/bpf/btf.h
-> @@ -107,6 +107,17 @@ LIBBPF_API struct btf *btf__new_empty(void);
->   */
->  LIBBPF_API struct btf *btf__new_empty_split(struct btf *base_btf);
->
-> +struct btf_new_opts {
-> +       size_t sz;
-> +       struct btf *base_btf;   /* optional base BTF */
-> +       bool add_kind_layout;   /* add BTF kind layout information */
-
-I'd say let's make it opt-out option and by default do emit kind
-layout? so rather "skip_kind_layout"
-
-> +       bool add_crc;           /* add CRC information */
-
-same for crc? "skip_crc"?
-
-btw, does add_crc imply both crc and base_crc (if base_btf !=3D NULL)?
-just thinking out loud if we need to control that independently...
-
-
-
-> +       size_t:0;
-> +};
-> +#define btf_new_opts__last_field add_crc
-> +
-> +LIBBPF_API struct btf *btf__new_empty_opts(struct btf_new_opts *opts);
-> +
->  LIBBPF_API struct btf *btf__parse(const char *path, struct btf_ext **btf=
-_ext);
->  LIBBPF_API struct btf *btf__parse_split(const char *path, struct btf *ba=
-se_btf);
->  LIBBPF_API struct btf *btf__parse_elf(const char *path, struct btf_ext *=
-*btf_ext);
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 7521a2fb7626..edd8be4b21d0 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -395,4 +395,5 @@ LIBBPF_1.2.0 {
->  LIBBPF_1.3.0 {
->         global:
->                 bpf_obj_pin_opts;
-> +               btf__new_empty_opts;
->  } LIBBPF_1.2.0;
-> --
-> 2.39.3
->
+[...]
 
