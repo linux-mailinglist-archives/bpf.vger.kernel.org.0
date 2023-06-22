@@ -1,177 +1,181 @@
-Return-Path: <bpf+bounces-3164-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3165-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FEC173A627
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 18:34:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B06D73A631
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 18:38:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F4502807F3
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 16:34:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB8081C21193
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 16:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C7C11F182;
-	Thu, 22 Jun 2023 16:34:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D8F8200A3;
+	Thu, 22 Jun 2023 16:37:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48224E557
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 16:34:08 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E0A1FC0;
-	Thu, 22 Jun 2023 09:34:04 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 35MBoO5J022543;
-	Thu, 22 Jun 2023 09:33:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=628f++TG59QTOfc6GmJSe8uaJvcukYTTZOE4wtUfn0A=;
- b=LP6zgj2K9DCLkVuN0o3h7v20Li3SOaYY566q0Fx0CotLhO+ZGgpaKZUXciYHA70JUKVx
- iiEXFwqMqFxub+W+/32xKbiijYvFP2ijnXCMK6c8knYbNoMwk+ivw8ClWOs7RtbX4RYK
- YcrUzK06Iw1x/38nkMdw8xI97LAOsOVmzV7gMX2ZOk1I5H2UB3gYTbC2/o+08UkIKVx/
- 9t9vSKb+RoHdtSBoY2x0PZGGrfJesjXfqWzMrnFNz1UzYx3OY+XKr9xqTRjazHBWEcgG
- UPm8hyonLK9GnzGAHwkC8YV2597TmFoFp8S6LSwZCisRsJCssQlMU53E9dWc04tTmfA7 Xg== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
-	by m0089730.ppops.net (PPS) with ESMTPS id 3rbnmp8b04-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Jun 2023 09:33:45 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lHm308RP2pTtevhW/KI60d3t+xDaOW4K4pmTfcBANMckdWGxQ5BAzz4nuKSDT29Fh4i04S6bWSRBKOfR2raB5c/oYEOIgX/Jn7/W4O3F86/KNR1gZKmamZFFCapuJMYt4QzkGW4A4/FbzqkxyeUfiHMV7NGMIioG9eLLhFuLRgnDFz7URqkLG6r8bmMH2OcLkouzKfytiNKQWhmBJ2j31GTfM5GcRNnkFXspJTFUCd3wZuA+Uvmwoz+cWq8JunZTMwXH2WxR0O9dupvVxtsgu4eazP+2eMK12e96C6DVMb3Ot2cJ6nk7fk18qrKsi+jqyT0hDrYrYfJE4xWDIO66hg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=628f++TG59QTOfc6GmJSe8uaJvcukYTTZOE4wtUfn0A=;
- b=bJWGyk2Ph8U8X2Mho27fCPl1tLSrtpCug6l42z97tkwjrBOQGqcvi+xWdQbrYY4J3oVwhfI0CDSXIZmXjY6vMU8LDnWGOi5YqvOCTu4o6kiuwfQe1P7k9NBRZH+0zyGsq73tN9ySiFmRKDtO+jw9Mo6Xjm8AGzjtRjg8I9mQPqhnt0XidOkytQ6Scw2W2pFxkw6+LAmUZ1xzgXP1g5K7UYZeUKAty53EKFtPOdfPIZIQqdXxCy9tkhyBcF5aPfpJdRGG5w7jYZh5Jy6tOGyZ8Ws1VPWS9FQMgsALQh10g/7pTT0JUjPR14cKKaFQZOcmq6qi5AJBRCVvFjpfvgnSFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA3PR15MB6099.namprd15.prod.outlook.com (2603:10b6:806:302::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.24; Thu, 22 Jun
- 2023 16:33:42 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::428f:acec:2c1f:c812%7]) with mapi id 15.20.6521.024; Thu, 22 Jun 2023
- 16:33:42 +0000
-Message-ID: <0529b858-b8aa-300b-99d9-54c158e71d0a@meta.com>
-Date: Thu, 22 Jun 2023 09:33:38 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH bpf-next] bpf, docs: BPF Iterator Document
-Content-Language: en-US
-To: Anton Protopopov <aspsk@isovalent.com>, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Vernet <void@manifault.com>,
-        Sreevani Sreejith <psreep@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-        Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <20230622095407.1024053-1-aspsk@isovalent.com>
-From: Yonghong Song <yhs@meta.com>
-In-Reply-To: <20230622095407.1024053-1-aspsk@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0212.namprd13.prod.outlook.com
- (2603:10b6:a03:2c1::7) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01691F17C
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 16:37:51 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CC51FC0
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 09:37:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1687451869;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9JewwlfUhZBK+i/3ORJq58l+o9JnC1L/BGtep803e2U=;
+	b=WoXtPGAWji56lU96Km4vJPoHWZCv8m8DWNTsxnEOUd3DUo8UTE3SjGPdKjsi6pRGqFuJFn
+	9f2ySdUc4gQJbDjrGzz78RN4oEwSEf1GfGlxJZOUhbZ0u5/1LK2g5i0YL2ZYMrvDj5YwE1
+	no0E8a/QkkKKJuNbPL3/+t1IDxSIj5Y=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-150-DtdL2qewN5mN44yILNmmyw-1; Thu, 22 Jun 2023 12:37:44 -0400
+X-MC-Unique: DtdL2qewN5mN44yILNmmyw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-94a355cf318so544643866b.2
+        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 09:37:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687451844; x=1690043844;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9JewwlfUhZBK+i/3ORJq58l+o9JnC1L/BGtep803e2U=;
+        b=STThv78bR7WjXjm0hY9nbdrw5AjtKjcNH7ouGWgxt0bWJKxqT6igFvG2W7C1sBCgvI
+         fjCceeAJMSR+Dc6b+zgNXK3Zm/YvueKgShNhdPLhFekHS5znSfQKOPmvkit0DC0+XDVk
+         EGty2RFXc6LZPn32A6vWrd09i8nj93U7c3zm7n0m7W0e+Bt9jlgYCgKlgM3dUJirV/YF
+         5QLtbqROZ/MJPEMwsriBtNoGrUh3SGN0GS0VuIwwThlg5LpWrgluWJJyOq81XpBg4MIU
+         ltstsxNfIdCvHFQgAouRuuETkceyGytUzoAw1A1b5kv7AmR9Mqnq2wymKS+mWYvk9wJd
+         dh4Q==
+X-Gm-Message-State: AC+VfDz4TvpY3VyPu3L/ySZNy/W+LMzY7iy8pcl6B1z6cNYCD43bNEb9
+	++5mlrpUEfUoFuK0zEtuacVfMDn34rIp4xqmadM+gV0O+ZKrSt3/DkpProT6ZFsn6qSfkYCOaYQ
+	+JqI+IqLMkDvo
+X-Received: by 2002:a17:906:1d05:b0:98d:3b40:eecf with SMTP id n5-20020a1709061d0500b0098d3b40eecfmr1372771ejh.4.1687451844708;
+        Thu, 22 Jun 2023 09:37:24 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ6WBDrRLIvqjb1enN3k1BFXMWSMSHxFtm3j7J6yA27lcpfSf8BJASjPHEgLDkecnWxmEIbgwA==
+X-Received: by 2002:a17:906:1d05:b0:98d:3b40:eecf with SMTP id n5-20020a1709061d0500b0098d3b40eecfmr1372763ejh.4.1687451844433;
+        Thu, 22 Jun 2023 09:37:24 -0700 (PDT)
+Received: from sgarzare-redhat (host-87-11-6-160.retail.telecomitalia.it. [87.11.6.160])
+        by smtp.gmail.com with ESMTPSA id e22-20020a1709067e1600b0096f675ce45csm4808601ejr.182.2023.06.22.09.37.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jun 2023 09:37:23 -0700 (PDT)
+Date: Thu, 22 Jun 2023 18:37:21 +0200
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Bobby Eshleman <bobby.eshleman@bytedance.com>
+Cc: Stefan Hajnoczi <stefanha@redhat.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, "K. Y. Srinivasan" <kys@microsoft.com>, 
+	Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, 
+	Bryan Tan <bryantan@vmware.com>, Vishnu Dasa <vdasa@vmware.com>, 
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Simon Horman <simon.horman@corigine.com>, Krasnov Arseniy <oxffffaa@gmail.com>, kvm@vger.kernel.org, 
+	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH RFC net-next v4 7/8] vsock: Add lockless sendmsg() support
+Message-ID: <6aif4uoucg6fhqwg2fmx76jkt6542dt7cqsxrtnebpboihfjeb@akpxj3yd2xle>
+References: <20230413-b4-vsock-dgram-v4-0-0cebbb2ae899@bytedance.com>
+ <20230413-b4-vsock-dgram-v4-7-0cebbb2ae899@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SA3PR15MB6099:EE_
-X-MS-Office365-Filtering-Correlation-Id: 43e6835b-d1ff-4e9f-ae29-08db733e70f0
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	mf9nsN1i4/+UDO0sanaomP6oCee4wybA/WIw5gVwk4K3F7tDJ1qmVy+PTix81tNcdVIUA52KFpmBZ46+jA/giizMDbjd5LmtH6ROr8dZxcAZVHDYUmI+lJRdkCfCgi4e+xSX0S3JHIXuNfj3VY9NdVQMkIuyzWWLQeCNpK4jb43jMJNp2txw42OvXt6BUOTnd8LAXfaNdpBPCT5u+rSIAfVGdJXsa5+ONW1vwYi+dSlvdDZrrKc95o37vrE1TgDiIoMD3rRfXv/RmYSdb3756ih2MtqcmEPYXy7wAuPIuSeokyQzI1iphYKk9V+PyxaFBa94EAX8WhDwjwfHfnG5MD/0PDkeWxOHVzunGHTOxSN79tMqCi/i+Db6HrVLgJVuUpoBtSyaufZcD+ma5u+ulOCLSxXa2PdhuDSKVIqV46z/RHt3m6JnRuD6giOPCEm3rUgDa4h8nLPsRGo8LlAjMvgjsU1Byc17EwPjf9K1cinH07jmPEIZcdvOqBIHxJutGTLESbw/WMLLpwHVkIOYKZrZm1S8ipJdm2JEgzyiXn6ni/wDZfR4cVZullkGT+B38ti/3zJ0NcG8/5okN+LUIQ/SlYvX4TYxYDgOT5/GjSAcd+tFHe6tNTpVKLrqs+3fU9xjjZbBILN+Pnx3mCLaeDD5YBpevmECtFZQCRHkL+o=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(346002)(366004)(376002)(39860400002)(451199021)(8676002)(8936002)(6506007)(6512007)(5660300002)(38100700002)(921005)(41300700001)(6666004)(31686004)(7416002)(186003)(53546011)(2906002)(4744005)(6486002)(66556008)(66476007)(36756003)(110136005)(478600001)(2616005)(66946007)(316002)(86362001)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?WTZ5d0J3S0svY2JOdks3cmV5ZmMycjlFRWpSY3hZeWM1dlFPNzFCZ3JjSXJj?=
- =?utf-8?B?U1NyNFZKdUw2aTZYcWF6UUFpd3F1SHNWdERaOUZzSDhxNjB1QVNBTWZYdzlO?=
- =?utf-8?B?MTN4dVZmU1I3Q29jc3Q1bGhLU29TYm9hRXgxR09GdEx5M0dCSDI4UWw5WE1r?=
- =?utf-8?B?UEhWY20xMTBra3FMTzB3RTFwZzc5MFM2aUpqWW11QVZpdnJza2lCNkVaMjJn?=
- =?utf-8?B?eGpUVnJjUW1jVk5sSEZNUlZVMG5xS1Z3STQrN3V3OFFwRmhUaDdGWEhITkZn?=
- =?utf-8?B?MHZyWitsR0FGeGxUMFJwTU14N25SRmZmY1VtUDNkVmVVN0w2NVhxTlV6cytk?=
- =?utf-8?B?WGJFb0oxWEpKSWdVaUVsTnlqejRzZXJ2M1BVRkZoQXhpZnFMbEM4NW9pd3JB?=
- =?utf-8?B?NlpzWnFKR0hPYlZ3SCsvb1pMOEplMnlGMnVWdjdSMmR5ZTV1MFIwQzRiUE5K?=
- =?utf-8?B?Y0dpY2h2MzFNNzBQVFZjaytUL2dBQ0dPamVIMG1VYWJ0aUtBT1J1T0RmdXF3?=
- =?utf-8?B?eTdoSkVOSG1HMkdOQ25oN1hHZ2ZoaVk3Uzd1c3U5L1FHdlVpL3JmSThGaTBC?=
- =?utf-8?B?Z2ZIR0ZPOVNFNUZBU2ZmU1IwaU84V0dWR3VoWS9BekVubzZObzlpOUl1VEov?=
- =?utf-8?B?cUNTY3NSUlZWYm0zajZPUWV2TUVaRkwxcDVzVkhSaW9ITFRJdTExVVRTNzBy?=
- =?utf-8?B?cG5qc2lwL28vTGVEdkxiZjB3RG90OXJ4T09UdDVwaHF5QVZteU82M3RnMmRI?=
- =?utf-8?B?aEVtVjlxZXFqVUsrWUNtUGRPYVZNR3pDWmJHM0NLaTAwdmlxOHdLdzlVcFpY?=
- =?utf-8?B?WURoQnNpeStNa3M0MXpNRUxWY081dm1Wd2wzOGExL2RtdHpYbVQ5SGx0WS9H?=
- =?utf-8?B?RTd6NG1XQVF5amt1ZWJYdFl3Y0RwcWNZR1NFOXhKcW50V0lLMTY3SXphanJK?=
- =?utf-8?B?VGhpeVl2YXFiVEJJbGhKVWNGUC9oVS82SGhVYXlMNlV1VzFadHBHNU1JK2Jz?=
- =?utf-8?B?TmxxU3doRGNjVWtpTjYrS0Rxb3VPYmNKaHl1VFFtQ0ZQaitBT3V5OS90WURE?=
- =?utf-8?B?RmRtVnlxZ2wrWXc2eDBtR24xb0ttRkxyWGdQUzhHK2U5UlBHUUJwdFdNS3lN?=
- =?utf-8?B?MU5XYy9CcFZBZHZ0Q210MHd1QU1hNGptOVErZncyOWllR0Y1RUhLNnJkc3FU?=
- =?utf-8?B?WkdKVS9RekZMUmtwZ2FoUlFvdko5ZTQrcXJWUlVMZnliWStUVWtQSzUwSUJ2?=
- =?utf-8?B?UVBpejRjd3V5T2lyM3ArYTBZMVl5aVpPZkdFSExEdjdBbnUrVGhsZ010dHlH?=
- =?utf-8?B?Uml1NVJsdjh2WkxpNEpoMXUwanl3VFdRTU43NklEMEFZdEJsS1RGRkJzQ0Qw?=
- =?utf-8?B?Qjk4aDVUTEROTjVZbXlUeDRZdHpXT2ZZMC9wUjA0bEZRV1luNHYxbkZBYmhP?=
- =?utf-8?B?Z1pwUXM2bmp1R3hxNVQ3aFRjbFRZaEEzL2dtdFQrcjZDalZIQ2M5Zlo0bHFh?=
- =?utf-8?B?M0Z1UXc3eW9ZNkVDT2c5b2RyaE90YUxpblFMM3BYbVJ1UHM1OXh2NnUvV1Y2?=
- =?utf-8?B?d3J3d1hRb0Y5WUdnWHJwMWdudHpNVlE3dGtMMG1oUnJObGgyejFzcWR1Zjgv?=
- =?utf-8?B?clRBN0VLZklJQm9XOWpJR3h5Rno3ZjgxNWlieU5idnhQZ21mcnVhcDBPdHF5?=
- =?utf-8?B?MVE5MTYwdHZmN3lFWkgya3cvK1grOW1DN2FtOXV2eWJTMHExUVZ1aHlrMEJH?=
- =?utf-8?B?ajA4bk94UUJMZjZXNDBnelVvRVpHVW9zaGQxMVRkNzY5bGRBYkRudEJQbGVV?=
- =?utf-8?B?M0lXc0Mva0tHTlNnOTlGZGt5c0ZrcC8xN0xJQ1hiNzRwRDRibjkrOHVleHg2?=
- =?utf-8?B?MWlMUHRKbnMrY1MzYjYvalZUZ05Ob3JkMlYxR3FBVkhDZ0oyWWxIRXBTWDhS?=
- =?utf-8?B?NXIwSkp0a3IxWHEzczZzcEVDWFoxc1RVbGp1aTlDQTErbGR4NFRzRG1RSm94?=
- =?utf-8?B?R0VXeTNpRGFmczV5YzBjdHI4cC9Ma3l3cDJuLysyMUMrN20xOHkybFVxWHVp?=
- =?utf-8?B?UWF0M1JrUG9LNVlLMGh1MWp4OTlWejBDMjYrWDd5K0tGRERJRVVkU0JPSFI2?=
- =?utf-8?B?YnV3dzBTdTEvMVVjZ3orK1owcEpXdmRNUjFsMUgzWU1WVWphcThBRlBSTVMw?=
- =?utf-8?B?Znc9PQ==?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43e6835b-d1ff-4e9f-ae29-08db733e70f0
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2023 16:33:42.4675
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dWAQERs/I/Fmtztgl5n0qeBeRu2W0buU2twFRX63ngyodjMs88+b9UMx+NXx6Idy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR15MB6099
-X-Proofpoint-GUID: C3XwDXm3qILeRcg6GNUMHGL8jkLEvV9-
-X-Proofpoint-ORIG-GUID: C3XwDXm3qILeRcg6GNUMHGL8jkLEvV9-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-06-22_11,2023-06-22_02,2023-05-22_02
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230413-b4-vsock-dgram-v4-7-0cebbb2ae899@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Sat, Jun 10, 2023 at 12:58:34AM +0000, Bobby Eshleman wrote:
+>Because the dgram sendmsg() path for AF_VSOCK acquires the socket lock
+>it does not scale when many senders share a socket.
+>
+>Prior to this patch the socket lock is used to protect both reads and
+>writes to the local_addr, remote_addr, transport, and buffer size
+>variables of a vsock socket. What follows are the new protection schemes
+>for these fields that ensure a race-free and usually lock-free
+>multi-sender sendmsg() path for vsock dgrams.
+>
+>- local_addr
+>local_addr changes as a result of binding a socket. The write path
+>for local_addr is bind() and various vsock_auto_bind() call sites.
+>After a socket has been bound via vsock_auto_bind() or bind(), subsequent
+>calls to bind()/vsock_auto_bind() do not write to local_addr again. bind()
+>rejects the user request and vsock_auto_bind() early exits.
+>Therefore, the local addr can not change while a parallel thread is
+>in sendmsg() and lock-free reads of local addr in sendmsg() are safe.
+>Change: only acquire lock for auto-binding as-needed in sendmsg().
+>
+>- buffer size variables
+>Not used by dgram, so they do not need protection. No change.
+>
+>- remote_addr and transport
+>Because a remote_addr update may result in a changed transport, but we
+>would like to be able to read these two fields lock-free but coherently
+>in the vsock send path, this patch packages these two fields into a new
+>struct vsock_remote_info that is referenced by an RCU-protected pointer.
+>
+>Writes are synchronized as usual by the socket lock. Reads only take
+>place in RCU read-side critical sections. When remote_addr or transport
+>is updated, a new remote info is allocated. Old readers still see the
+>old coherent remote_addr/transport pair, and new readers will refer to
+>the new coherent. The coherency between remote_addr and transport
+>previously provided by the socket lock alone is now also preserved by
+>RCU, except with the highly-scalable lock-free read-side.
+>
+>Helpers are introduced for accessing and updating the new pointer.
+>
+>The new structure is contains an rcu_head so that kfree_rcu() can be
+>used. This removes the need of writers to use synchronize_rcu() after
+>freeing old structures which is simply more efficient and reduces code
+>churn where remote_addr/transport are already being updated inside RCU
+>read-side sections.
+>
+>Only virtio has been tested, but updates were necessary to the VMCI and
+>hyperv code. Unfortunately the author does not have access to
+>VMCI/hyperv systems so those changes are untested.
 
+@Dexuan, @Vishnu, @Bryan, can you test this?
 
-On 6/22/23 2:54 AM, Anton Protopopov wrote:
-> Fix the description of the seq_info field of the bpf_iter_reg structure which
-> was wrong due to an accidental copy/paste of the previous field's description.
-> 
-> Fixes: 8972e18a439d ("bpf, docs: BPF Iterator Document")
-> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+>
+>Perf Tests (results from patch v2)
+>vCPUS: 16
+>Threads: 16
+>Payload: 4KB
+>Test Runs: 5
+>Type: SOCK_DGRAM
+>
+>Before: 245.2 MB/s
+>After: 509.2 MB/s (+107%)
+>
+>Notably, on the same test system, vsock dgram even outperforms
+>multi-threaded UDP over virtio-net with vhost and MQ support enabled.
+>
+>Throughput metrics for single-threaded SOCK_DGRAM and
+>single/multi-threaded SOCK_STREAM showed no statistically signficant
+>throughput changes (lowest p-value reaching 0.27), with the range of the
+>mean difference ranging between -5% to +1%.
+>
 
-Thanks for fixing the bpf_iter documentation!
+Quite nice. Did you see any improvements also on stream/seqpacket
+sockets?
 
-Acked-by: Yonghong Song <yhs@fb.com>
+However this is a big change, maybe I would move it to another series,
+because it takes time to be reviewed and tested properly.
+
+WDYT?
+
+Thanks,
+Stefano
+
 
