@@ -1,173 +1,165 @@
-Return-Path: <bpf+bounces-3166-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3167-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F267573A66B
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 18:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19E3873A70A
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 19:16:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC552281A3D
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 16:50:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D33BE281AC7
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 17:16:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9BBE200A9;
-	Thu, 22 Jun 2023 16:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D999200C3;
+	Thu, 22 Jun 2023 17:16:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21EE01EA98
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 16:50:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68473C433C8;
-	Thu, 22 Jun 2023 16:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687452615;
-	bh=W5B1EoieuFITn7VHZ5d47xW7gpUpfyKhprvwWti/EZQ=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=c8hNyHt5HJbKVyWN9tIHLGLU3FzWVV6jEybouRn0u6xcHVD5UXGRQ4k+eyY1M8Btt
-	 uIdbrd0bwDbr2LMQLnHNWBtOGKrCzGeSuVq2Np/pW1PM7CjN080JOx8oFXFJ68AiS6
-	 ZG8zIvi3vrd+4xtTPlYez+jMsFRsAUJErtHuBRThV/uiNSIQ7HX0iJKwL3Td4Eu5U+
-	 zmS6iReRued9On6c46db4YLE4NNyDXyjNai7jHW6jNGKRbp2Qvd2sCfVNU2ZkgmRYP
-	 Ta/62mSy0vakTotMQDWrEMxNo3rRbESwlOH7EwjZRHK7PYTcbrx5CCeFMpAR7rbZks
-	 O3DXerUa+tGOw==
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 6274827C0054;
-	Thu, 22 Jun 2023 12:50:14 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute3.internal (MEProxy); Thu, 22 Jun 2023 12:50:14 -0400
-X-ME-Sender: <xms:xXuUZPPvN1Fit3S_cC-7mb5s4ztTGzZxHyCre3Cx8mh0X5MtI39xYA>
-    <xme:xXuUZJ-YXwxrTVLTw6bhJmlafzLawIkAYxjperneH7JIJJpG98c3Ca1FdoYXapqDt
-    fVD8RaJPqjcN7SHlv4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgeeguddguddtgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
-    tehnugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqne
-    cuggftrfgrthhtvghrnhepteeggedtfeejteekueejieetleehteduvefhuefgvefftdet
-    hfeugfekueefjefhnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdphhhtthhpthhorg
-    hmrghgihgtihhprghnughpohhrthdrhihouhenucevlhhushhtvghrufhiiigvpedtnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsoh
-    hnrghlihhthidqudduiedukeehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghr
-    nhgvlhdrohhrgheslhhinhhugidrlhhuthhordhush
-X-ME-Proxy: <xmx:xXuUZOQtx7O8nk3a3PkpXH200fEB5CD-dMg7X7j8-2C_v0xz3kj1iw>
-    <xmx:xXuUZDvOHMrXRzb3BgzjudsV1m1xfiMknDWmsIM0hfuijC6OrASGwA>
-    <xmx:xXuUZHeVNHQX6_cdQpv-udWds47gmzqylCHaAaNzgrvBKtlFHpJSxw>
-    <xmx:xnuUZJuI7J3CchXjGuARcNxxFHJY9XTqmJzIBhR3ChhNt1ibo9Z5Gw>
-Feedback-ID: ieff94742:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id BFBBA31A0063; Thu, 22 Jun 2023 12:50:13 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-499-gf27bbf33e2-fm-20230619.001-gf27bbf33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A313200AC
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 17:16:03 +0000 (UTC)
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A4610F8;
+	Thu, 22 Jun 2023 10:16:02 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-570808d8ddeso72940157b3.0;
+        Thu, 22 Jun 2023 10:16:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687454161; x=1690046161;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TEnAlh0A1rSWWfeD+1Qy14fcJjs4y6p0u8wAzS5Zevk=;
+        b=kCDPeH5GLPLUABiTrOFsKoF1oP4qb7vxRBFMKqtz7BFaOHiCEfcDXc+Ay6veL93e73
+         mgPka4er5laatRQXQRRTmhMKv1OzygI+3CEUd0ZNq+vpgIfDR2TfkC1CdDsi9odJaAQI
+         7tMDuMQRhbMkAgVrB8153sHC98t2v44ufBJCFIxFp4Iv6wUOgAyeK/xG7a5OVWpUH0Rn
+         T1V/9k7lhH4Xk+H4XZdwOz/yoDoUHnbGBP3ZVwkDnSF3v3JPSWo1hmMOrGogdisRclRh
+         GIygBqHaiKKpBvj1gDH63XYxYc8uhK+GrJ1aaUq7bumsZ2IkQPtdDe8PYnfLlHaokLTP
+         qzWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687454161; x=1690046161;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TEnAlh0A1rSWWfeD+1Qy14fcJjs4y6p0u8wAzS5Zevk=;
+        b=ecPlPHj1lfN3JUxonevfyzHuyIuwUPYUq3zqvtdqCDAQuG+qjEy9+C4/83OMMumHPK
+         oqtWlogKEEXa41lMQOXC+tEfP1p9PfGtobIUaYGOgpXBTQEomyocngkOBpE4H0Ol/R26
+         +NkABQPaXrccESKYiy08EU2mcpVhrkuZDPE6Snb/+YtkFmiK45Qe2VOsEl3eHdL7LAM0
+         OT7Ljxs9Uu3w57Evg2txaXW+fpfju0dDDJ72GFH2xLSp9uce8ala1G0PuqyhqoRH9VPJ
+         iDDsjKQgp3KsEG6B0E47p4GyVxIZvIDhcsX9o0gXkGuri9GejNuk1BNHBPbj+uJwSDjF
+         8ydg==
+X-Gm-Message-State: AC+VfDymyYZDdWHjxcQSn5mDU1JetwQAfm1Bk4G4+Ga6JtmQ+sr4wpFl
+	6Zy7c3vCUfFnMVx76rHBLKE=
+X-Google-Smtp-Source: ACHHUZ6wllZbiJyF2Efoxd1nUYC7vkzT0xcpxhZwihGL3jUQKSFdPTzcO0F25rmTSuY7b/E9kb1DUg==
+X-Received: by 2002:a0d:d0c2:0:b0:570:4842:a59d with SMTP id s185-20020a0dd0c2000000b005704842a59dmr22090007ywd.22.1687454161344;
+        Thu, 22 Jun 2023 10:16:01 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:9e96:aa3:eeff:a087? ([2600:1700:6cf8:1240:9e96:aa3:eeff:a087])
+        by smtp.gmail.com with ESMTPSA id n187-20020a0dfdc4000000b005731dbd4928sm1915619ywf.69.2023.06.22.10.15.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Jun 2023 10:16:00 -0700 (PDT)
+Message-ID: <2693aaa4-eb33-553c-291c-3eb555452ea6@gmail.com>
+Date: Thu, 22 Jun 2023 10:15:58 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <bc4f99af-0c46-49b2-9f2d-9a01e6a03af3@app.fastmail.com>
-In-Reply-To: <5eb4264e-d491-a7a2-93c7-928b06ce264d@redhat.com>
-References: <20230607235352.1723243-1-andrii@kernel.org>
- <c1a8d5e8-023b-4ef9-86b3-bdd70efe1340@app.fastmail.com>
- <CAEf4BzazbMqAh_Nj_geKNLshxT+4NXOCd-LkZ+sRKsbZAJ1tUw@mail.gmail.com>
- <a73da819-b334-448c-8e5c-50d9f7c28b8f@app.fastmail.com>
- <CAEf4Bzb__Cmf5us1Dy6zTkbn2O+3GdJQ=khOZ0Ui41tkoE7S0Q@mail.gmail.com>
- <5eb4264e-d491-a7a2-93c7-928b06ce264d@redhat.com>
-Date: Thu, 22 Jun 2023 09:49:40 -0700
-From: "Andy Lutomirski" <luto@kernel.org>
-To: "Maryam Tahhan" <mtahhan@redhat.com>,
- "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
-Cc: "Andrii Nakryiko" <andrii@kernel.org>, bpf@vger.kernel.org,
- linux-security-module@vger.kernel.org, "Kees Cook" <keescook@chromium.org>,
- "Christian Brauner" <brauner@kernel.org>, lennart@poettering.net,
- cyphar@cyphar.com, kernel-team@meta.com
-Subject: Re: [PATCH v2 bpf-next 00/18] BPF token
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH bpf-next v3 1/2] net: bpf: Always call BPF cgroup filters
+ for egress.
+Content-Language: en-US
+To: Yonghong Song <yhs@meta.com>, Kui-Feng Lee <thinker.li@gmail.com>,
+ bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, daniel@iogearbox.net, yhs@fb.com,
+ kpsingh@kernel.org, shuah@kernel.org, john.fastabend@gmail.com,
+ sdf@google.com, mykolal@fb.com, linux-kselftest@vger.kernel.org,
+ jolsa@kernel.org, haoluo@google.com
+Cc: Kui-Feng Lee <kuifeng@meta.com>
+References: <20230620171409.166001-1-kuifeng@meta.com>
+ <20230620171409.166001-2-kuifeng@meta.com>
+ <4d46ba3a-61e9-2482-a359-7a8805f1dbc8@meta.com>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <4d46ba3a-61e9-2482-a359-7a8805f1dbc8@meta.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
 
 
-On Thu, Jun 22, 2023, at 1:22 AM, Maryam Tahhan wrote:
-> On 22/06/2023 00:48, Andrii Nakryiko wrote:
+On 6/21/23 20:37, Yonghong Song wrote:
+> 
+> 
+> On 6/20/23 10:14 AM, Kui-Feng Lee wrote:
+>> Always call BPF filters if CGROUP BPF is enabled for EGRESS without
+>> checking skb->sk against sk.
 >>
->>>>> Giving a way to enable BPF in a container is only a small part of =
-the overall task -- making BPF behave sensibly in that container seems l=
-ike it should also be necessary.
->>>> BPF is still a privileged thing. You can't just say that any
->>>> unprivileged application should be able to use BPF. That's why BPF
->>>> token is about trusting unpriv application in a controlled environm=
-ent
->>>> (production) to not do something crazy. It can be enforced further
->>>> through LSM usage, but in a lot of cases, when dealing with internal
->>>> production applications it's enough to have a proper application
->>>> design and rely on code review process to avoid any negative effect=
-s.
->>> We really shouldn=E2=80=99t be creating new kinds of privileged cont=
-ainers that do uncontained things.
->>>
->>> If you actually want to go this route, I think you would do much bet=
-ter to introduce a way for a container manager to usefully proxy BPF on =
-behalf of the container.
->> Please see Hao's reply ([0]) about his and Google's (not so rosy)
->> experiences with building and using such BPF proxy. We (Meta)
->> internally didn't go this route at all and strongly prefer not to.
->> There are lots of downsides and complications to having a BPF proxy.
->> In the end, this is just shuffling around where the decision about
->> trusting a given application with BPF access is being made. BPF proxy
->> adds lots of unnecessary logistical, operational, and development
->> complexity, but doesn't magically make anything safer.
+>> The filters were called only if skb is owned by the sock that the
+>> skb is sent out through.  In another words, skb->sk should point to
+>> the sock that it is sending through its egress.  However, the filters 
+>> would
+>> miss SYNACK skbs that they are owned by a request_sock but sent through
+>> the listening sock, that is the socket listening incoming connections.
+>> This is an unnecessary restrict.
+> 
+> The original patch which introduced 'sk == skb->sk' is
+>    3007098494be  cgroup: add support for eBPF programs
+> There are no mentioning in commit message why 'sk == skb->sk'
+> is needed. So it is possible that this is just restricted
+> for use cases at that moment. Now there are use cases
+> where 'sk != skb->sk' so removing this check can enable
+> the new use case. Maybe you can add this into your commit
+> message so people can understand the history of 'sk == skb->sk'.
+
+After checking the code and the Alexei's comment[1] again, this check
+may be different from what I thought. In another post[2],
+Daniel Borkmann mentioned
+
+     Wouldn't that mean however, when you go through stacked devices that
+     you'd run the same eBPF cgroup program for skb->sk multiple times?
+
+I read this paragraph several times.
+This check ensures the filters are only called for the device on
+the top of a stack.  So, I probably should change the check to
+
+     sk == skb_to_full_sk(skb)
+
+instead of removing it.  If we remove the check, egress filters
+could be called multiple times for a skb, just like what Daniel said.
+
+Does that make sense?
+
+[1] 
+https://lore.kernel.org/all/CAADnVQKi0c=Mf3b=z43=b6n2xBVhwPw4QoV_au5+pFE29iLkaQ@mail.gmail.com/
+[2] https://lore.kernel.org/all/58193E9D.7040201@iogearbox.net/
+
+> 
 >>
->>    [0] https://lore.kernel.org/bpf/CA+khW7h95RpurRL8qmKdSJQEXNYuqSWnP=
-16o-uRZ9G0KqCfM4Q@mail.gmail.com/
+>> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+>> ---
+>>   include/linux/bpf-cgroup.h | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
 >>
-> Apologies for being blunt, but=C2=A0 the token approach to me seems to=
- be a=20
-> work around providing the right level/classification for a pod/contain=
-er=20
-> in order to say you support unprivileged containers using eBPF. I thin=
-k=20
-> if your container needs to do privileged things it should have and be=20
-> classified with the right permissions (privileges) to do what it needs=20
-> to do.
-
-Bluntness is great.
-
-I think that this whole level/classification thing is utterly wrong.  Re=
-place "BPF" with basically anything else, and you'll see how absurd it i=
-s.
-
-"the token approach to me seems like a work around providing the right l=
-evel/classification for a pod/container in order to say you support unpr=
-ivileged containers using files on disk"
-
-That's very 1990's.  Maybe 1980's.  Of *course* giving access to a files=
-ystem has some inherent security exposure.  So we can give containers ac=
-cess to *different* filesystems.  Or we can use ACLs.  Or MAC policy.  O=
-r whatever.  We have many solutions, none of which are perfect, and we'r=
-e doing okay.
-
-"the token approach to me seems like a work around providing the right l=
-evel/classification for a pod/container in order to say you support unpr=
-ivileged containers using the network"
-
-The network is a big deal.  For some reason, it's cool these days to tre=
-at TCP as highly privileged.  You can get secrets from your favorite (or=
- least favorite) cloud provider with unauthenticated HTTP to a magic IP =
-and port.  You can bypass a whole lot of authenticating/authorizing prox=
-ies with unauthenticated HTTP (no TLS!) if you're on the right network.
-
-This is IMO obnoxious, but we deal with it by having network namespaces =
-and firewalls and rather outdated port <=3D 1024 rules.
-
-"the token approach to me seems like a work around providing the right l=
-evel/classification for a pod/container in order to say you support unpr=
-ivileged containers using BPF"
-
-My response is: what's wrong with BPF?  BPF has maps and programs and su=
-ch, and we could easily apply 1990's style ownership and DAC rules to th=
-em.  I even *wrote the code*.  But for some reason, the BPF community wa=
-nts to bury its head in the sand, pretend it's 1980, declare that BPF is=
- too privileged to have access control, and instead just have a complica=
-ted switch to turn it on and off in different contexts.
-
-Please try harder.
+>> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+>> index 57e9e109257e..e656da531f9f 100644
+>> --- a/include/linux/bpf-cgroup.h
+>> +++ b/include/linux/bpf-cgroup.h
+>> @@ -199,7 +199,7 @@ static inline bool cgroup_bpf_sock_enabled(struct 
+>> sock *sk,
+>>   #define BPF_CGROUP_RUN_PROG_INET_EGRESS(sk, skb)                   \
+>>   ({                                           \
+>>       int __ret = 0;                                   \
+>> -    if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk && sk == 
+>> skb->sk) { \
+>> +    if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk) {               \
+>>           typeof(sk) __sk = sk_to_full_sk(sk);                   \
+>>           if (sk_fullsock(__sk) &&                       \
+>>               cgroup_bpf_sock_enabled(__sk, 
+>> CGROUP_INET_EGRESS))           \
+> 
 
