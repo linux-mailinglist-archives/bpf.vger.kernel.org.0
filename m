@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-3101-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3102-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B82073963F
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 06:20:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0530739647
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 06:21:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E3A01C2101A
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 04:20:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCBFA1C21024
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 04:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4516F23DB;
-	Thu, 22 Jun 2023 04:19:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D3B3C27;
+	Thu, 22 Jun 2023 04:20:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1961C02;
-	Thu, 22 Jun 2023 04:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A4603C25;
+	Thu, 22 Jun 2023 04:20:12 +0000 (UTC)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA42B10CE;
-	Wed, 21 Jun 2023 21:19:56 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D419A1BD8;
+	Wed, 21 Jun 2023 21:20:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1687407596; x=1718943596;
+  t=1687407609; x=1718943609;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=UtwbdSn3PxBMhABoZLMkSt6Wfnm48v4gql/S1jq6XPg=;
-  b=WFSKNX3PIbuGIYpNud4Pq7ujruS71JAs/eyB+UvOBByu4QIhb/Al0KPl
-   Qgdt9uIrpxymD7gnjwdPf/doe3O47q/cwa+kinzr9rxj4KGjRiiqoC/PX
-   4gFOr1Gl6HiO8rd3TJxdEpEwef/4aPG44QWrJ0gpc6kA1eEmMSs+WNXQv
-   4eGh97zMbVK9hqTteXolHUB8hSRzMVafSh+mOouGO1l6dMjq1uZDe6HcS
-   0/m0sNHgiGi5TLKo2cgepX/Qnd7AL3Z5mFRDmDvC+uo2Js+oQ3YifpWQj
-   aOwh1A1cDTtuKIUGwersWeWN6hTidwE3itfdXSrRAWIOQGAQCkJ/rLbny
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10748"; a="363811776"
+  bh=Zyt+QXbWH/hEYQv+Zq2xXU3qTdjhA8YElygEXrQATwQ=;
+  b=hhkgdl2KdZiUvDsqxO+DzfbCt1zovhMXqQrpKgs0iKTOcQZOi4YkkmsM
+   0/85e82R04SgABWOtExL0y+PJGLAQXp2WadaVgYd9LIbyONdohY16jBI5
+   5JaYUC83Mn06jo+OEkIFo08eTgqwjrkUMsUwzR1cEc0c4aHduC91Vs2LQ
+   RYsFcDCH2bR7GL0NJagsti02nVB6Wndfn+bbqnEyNTd810z4WwiYyNLOH
+   rMmEfjbSGDCMv6Sr70OxBb1JID5BeWYtP9sRyVGFrg3qUZjmGdWDKRV38
+   B3qrSI5SmnaOoW0nIURpKPEmI8uks9dzaqzg9kppc9Zl3v8PAiv6UadzT
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10748"; a="363811835"
 X-IronPort-AV: E=Sophos;i="6.00,262,1681196400"; 
-   d="scan'208";a="363811776"
+   d="scan'208";a="363811835"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2023 21:19:55 -0700
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2023 21:20:07 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10748"; a="744453742"
+X-IronPort-AV: E=McAfee;i="6600,9927,10748"; a="744453777"
 X-IronPort-AV: E=Sophos;i="6.00,262,1681196400"; 
-   d="scan'208";a="744453742"
+   d="scan'208";a="744453777"
 Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
-  by orsmga008.jf.intel.com with ESMTP; 21 Jun 2023 21:19:44 -0700
+  by orsmga008.jf.intel.com with ESMTP; 21 Jun 2023 21:19:57 -0700
 From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 To: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
 	David E Box <david.e.box@intel.com>,
@@ -86,9 +86,9 @@ Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Tan@web.codeaurora.org, Tee Min <tee.min.tan@linux.intel.com>,
 	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
 	Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: [PATCH net-next 1/6] platform/x86: intel_pmc_core: Add IPC mailbox accessor function and add SoC register access
-Date: Thu, 22 Jun 2023 12:19:00 +0800
-Message-Id: <20230622041905.629430-2-yong.liang.choong@linux.intel.com>
+Subject: [PATCH net-next 2/6] net: pcs: xpcs: combine C37 SGMII AN and 2500BASEX for Intel mGbE controller
+Date: Thu, 22 Jun 2023 12:19:01 +0800
+Message-Id: <20230622041905.629430-3-yong.liang.choong@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230622041905.629430-1-yong.liang.choong@linux.intel.com>
 References: <20230622041905.629430-1-yong.liang.choong@linux.intel.com>
@@ -106,260 +106,183 @@ X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: "David E. Box" <david.e.box@linux.intel.com>
+From: "Tan, Tee Min" <tee.min.tan@linux.intel.com>
 
-- Exports intel_pmc_core_ipc() for host access to the PMC IPC mailbox
-- Add support to use IPC command allows host to access SoC registers
-through PMC firmware that are otherwise inaccessible to the host due to
-security policies.
+This commit introduces xpcs_sgmii_2500basex_features[] that combine
+xpcs_sgmii_features[] and xpcs_2500basex_features[] for Intel mGbE
+controller that desire to interchange the speed mode of
+10/100/1000/2500Mbps at runtime.
 
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-Signed-off-by: Chao Qin <chao.qin@intel.com>
+Also, we introduce xpcs_config_aneg_c37_sgmii_2500basex() function
+which is called by the xpcs_do_config() with the new AN mode:
+DW_SGMII_2500BASEX, and this new function will proceed next-level
+calling to perform C37 SGMII AN/2500BASEX configuration based on
+the PHY interface updated by PHY driver.
+
+Signed-off-by: Tan, Tee Min <tee.min.tan@linux.intel.com>
 Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
 ---
- MAINTAINERS                                   |  1 +
- drivers/platform/x86/intel/pmc/adl.c          |  2 +-
- drivers/platform/x86/intel/pmc/cnp.c          |  2 +-
- drivers/platform/x86/intel/pmc/core.c         | 63 ++++++++++++++++++-
- drivers/platform/x86/intel/pmc/icl.c          |  2 +-
- drivers/platform/x86/intel/pmc/mtl.c          |  2 +-
- drivers/platform/x86/intel/pmc/spt.c          |  2 +-
- drivers/platform/x86/intel/pmc/tgl.c          |  2 +-
- .../core.h => include/linux/intel_pmc_core.h  | 27 +++++++-
- 9 files changed, 95 insertions(+), 8 deletions(-)
- rename drivers/platform/x86/intel/pmc/core.h => include/linux/intel_pmc_core.h (95%)
+ drivers/net/pcs/pcs-xpcs.c   | 72 ++++++++++++++++++++++++++++++------
+ include/linux/pcs/pcs-xpcs.h |  1 +
+ 2 files changed, 62 insertions(+), 11 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index cb14589d14ab..bdb08a79a5f8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10581,6 +10581,7 @@ L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
- F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
- F:	drivers/platform/x86/intel/pmc/
-+F:	include/linux/intel_pmc_core*
- 
- INTEL PMIC GPIO DRIVERS
- M:	Andy Shevchenko <andy@kernel.org>
-diff --git a/drivers/platform/x86/intel/pmc/adl.c b/drivers/platform/x86/intel/pmc/adl.c
-index 5cbd40979f2a..b6a376c536c0 100644
---- a/drivers/platform/x86/intel/pmc/adl.c
-+++ b/drivers/platform/x86/intel/pmc/adl.c
-@@ -8,7 +8,7 @@
-  *
-  */
- 
--#include "core.h"
-+#include <linux/intel_pmc_core.h>
- 
- /* Alder Lake: PGD PFET Enable Ack Status Register(s) bitmap */
- const struct pmc_bit_map adl_pfear_map[] = {
-diff --git a/drivers/platform/x86/intel/pmc/cnp.c b/drivers/platform/x86/intel/pmc/cnp.c
-index 7fb38815c4eb..504034cc5ec3 100644
---- a/drivers/platform/x86/intel/pmc/cnp.c
-+++ b/drivers/platform/x86/intel/pmc/cnp.c
-@@ -8,7 +8,7 @@
-  *
-  */
- 
--#include "core.h"
-+#include <linux/intel_pmc_core.h>
- 
- /* Cannon Lake: PGD PFET Enable Ack Status Register(s) bitmap */
- const struct pmc_bit_map cnp_pfear_map[] = {
-diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
-index da6e7206d38b..0d60763c5144 100644
---- a/drivers/platform/x86/intel/pmc/core.c
-+++ b/drivers/platform/x86/intel/pmc/core.c
-@@ -16,6 +16,7 @@
- #include <linux/delay.h>
- #include <linux/dmi.h>
- #include <linux/io.h>
-+#include <linux/intel_pmc_core.h>
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/slab.h>
-@@ -26,7 +27,9 @@
- #include <asm/msr.h>
- #include <asm/tsc.h>
- 
--#include "core.h"
-+#define PMC_IPCS_PARAM_COUNT           7
-+
-+static const struct x86_cpu_id *pmc_cpu_id;
- 
- /* Maximum number of modes supported by platfoms that has low power mode capability */
- const char *pmc_lpm_modes[] = {
-@@ -53,6 +56,63 @@ const struct pmc_bit_map msr_map[] = {
- 	{}
+diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+index e4e59aa9faf7..cd1dc09c422f 100644
+--- a/drivers/net/pcs/pcs-xpcs.c
++++ b/drivers/net/pcs/pcs-xpcs.c
+@@ -104,6 +104,21 @@ static const int xpcs_2500basex_features[] = {
+ 	__ETHTOOL_LINK_MODE_MASK_NBITS,
  };
  
-+int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf)
-+{
-+	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-+	union acpi_object params[PMC_IPCS_PARAM_COUNT] = {
-+		{.type = ACPI_TYPE_INTEGER,},
-+		{.type = ACPI_TYPE_INTEGER,},
-+		{.type = ACPI_TYPE_INTEGER,},
-+		{.type = ACPI_TYPE_INTEGER,},
-+		{.type = ACPI_TYPE_INTEGER,},
-+		{.type = ACPI_TYPE_INTEGER,},
-+		{.type = ACPI_TYPE_INTEGER,},
-+	};
-+	struct acpi_object_list arg_list = { PMC_IPCS_PARAM_COUNT, params };
-+	union acpi_object *obj;
-+	int status;
-+
-+	if (!pmc_cpu_id || !ipc_cmd || !rbuf)
-+		return -EINVAL;
-+
-+	/*
-+	 * 0: IPC Command
-+	 * 1: IPC Sub Command
-+	 * 2: Size
-+	 * 3-6: Write Buffer for offset
-+	 */
-+	params[0].integer.value = ipc_cmd->cmd;
-+	params[1].integer.value = ipc_cmd->sub_cmd;
-+	params[2].integer.value = ipc_cmd->size;
-+	params[3].integer.value = ipc_cmd->wbuf[0];
-+	params[4].integer.value = ipc_cmd->wbuf[1];
-+	params[5].integer.value = ipc_cmd->wbuf[2];
-+	params[6].integer.value = ipc_cmd->wbuf[3];
-+
-+	status = acpi_evaluate_object(NULL, "\\IPCS", &arg_list, &buffer);
-+	if (ACPI_FAILURE(status))
-+		return -ENODEV;
-+
-+	obj = buffer.pointer;
-+	/* Check if the number of elements in package is 5 */
-+	if (obj && obj->type == ACPI_TYPE_PACKAGE && obj->package.count == 5) {
-+		const union acpi_object *objs = obj->package.elements;
-+
-+		if ((u8)objs[0].integer.value != 0)
-+			return -EINVAL;
-+
-+		rbuf[0] = objs[1].integer.value;
-+		rbuf[1] = objs[2].integer.value;
-+		rbuf[2] = objs[3].integer.value;
-+		rbuf[3] = objs[4].integer.value;
-+	} else {
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(intel_pmc_core_ipc);
-+
- static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int reg_offset)
- {
- 	return readl(pmcdev->regbase + reg_offset);
-@@ -1130,6 +1190,7 @@ static int pmc_core_probe(struct platform_device *pdev)
- 	mutex_init(&pmcdev->lock);
- 	core_init(pmcdev);
- 
-+	pmc_cpu_id = cpu_id;
- 
- 	if (lpit_read_residency_count_address(&slp_s0_addr)) {
- 		pmcdev->base_addr = PMC_BASE_ADDR_DEFAULT;
-diff --git a/drivers/platform/x86/intel/pmc/icl.c b/drivers/platform/x86/intel/pmc/icl.c
-index 2f11b1a6daeb..f18048ff9382 100644
---- a/drivers/platform/x86/intel/pmc/icl.c
-+++ b/drivers/platform/x86/intel/pmc/icl.c
-@@ -8,7 +8,7 @@
-  *
-  */
- 
--#include "core.h"
-+#include <linux/intel_pmc_core.h>
- 
- const struct pmc_bit_map icl_pfear_map[] = {
- 	{"RES_65",		BIT(0)},
-diff --git a/drivers/platform/x86/intel/pmc/mtl.c b/drivers/platform/x86/intel/pmc/mtl.c
-index e8cc156412ce..7897f5fe9881 100644
---- a/drivers/platform/x86/intel/pmc/mtl.c
-+++ b/drivers/platform/x86/intel/pmc/mtl.c
-@@ -9,7 +9,7 @@
-  */
- 
- #include <linux/pci.h>
--#include "core.h"
-+#include <linux/intel_pmc_core.h>
- 
- const struct pmc_reg_map mtl_reg_map = {
- 	.pfear_sts = ext_tgl_pfear_map,
-diff --git a/drivers/platform/x86/intel/pmc/spt.c b/drivers/platform/x86/intel/pmc/spt.c
-index e16982236778..95ce490cf5d6 100644
---- a/drivers/platform/x86/intel/pmc/spt.c
-+++ b/drivers/platform/x86/intel/pmc/spt.c
-@@ -8,7 +8,7 @@
-  *
-  */
- 
--#include "core.h"
-+#include <linux/intel_pmc_core.h>
- 
- const struct pmc_bit_map spt_pll_map[] = {
- 	{"MIPI PLL",			SPT_PMC_BIT_MPHY_CMN_LANE0},
-diff --git a/drivers/platform/x86/intel/pmc/tgl.c b/drivers/platform/x86/intel/pmc/tgl.c
-index c245ada849d0..a1719d809497 100644
---- a/drivers/platform/x86/intel/pmc/tgl.c
-+++ b/drivers/platform/x86/intel/pmc/tgl.c
-@@ -8,7 +8,7 @@
-  *
-  */
- 
--#include "core.h"
-+#include <linux/intel_pmc_core.h>
- 
- #define ACPI_S0IX_DSM_UUID		"57a6512e-3979-4e9d-9708-ff13b2508972"
- #define ACPI_GET_LOW_MODE_REGISTERS	1
-diff --git a/drivers/platform/x86/intel/pmc/core.h b/include/linux/intel_pmc_core.h
-similarity index 95%
-rename from drivers/platform/x86/intel/pmc/core.h
-rename to include/linux/intel_pmc_core.h
-index 9ca9b9746719..82810e8b92a2 100644
---- a/drivers/platform/x86/intel/pmc/core.h
-+++ b/include/linux/intel_pmc_core.h
-@@ -250,7 +250,16 @@ enum ppfear_regs {
- #define MTL_LPM_STATUS_OFFSET			0x1700
- #define MTL_LPM_LIVE_STATUS_OFFSET		0x175C
- 
--extern const char *pmc_lpm_modes[];
-+#define IPC_SOC_REGISTER_ACCESS			0xAA
-+#define IPC_SOC_SUB_CMD_READ			0x00
-+#define IPC_SOC_SUB_CMD_WRITE			0x01
-+
-+struct pmc_ipc_cmd {
-+	u32 cmd;
-+	u32 sub_cmd;
-+	u32 size;
-+	u32 wbuf[4];
++static const int xpcs_sgmii_2500basex_features[] = {
++	ETHTOOL_LINK_MODE_Pause_BIT,
++	ETHTOOL_LINK_MODE_Asym_Pause_BIT,
++	ETHTOOL_LINK_MODE_Autoneg_BIT,
++	ETHTOOL_LINK_MODE_10baseT_Half_BIT,
++	ETHTOOL_LINK_MODE_10baseT_Full_BIT,
++	ETHTOOL_LINK_MODE_100baseT_Half_BIT,
++	ETHTOOL_LINK_MODE_100baseT_Full_BIT,
++	ETHTOOL_LINK_MODE_1000baseT_Half_BIT,
++	ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
++	ETHTOOL_LINK_MODE_2500baseX_Full_BIT,
++	ETHTOOL_LINK_MODE_2500baseT_Full_BIT,
++	__ETHTOOL_LINK_MODE_MASK_NBITS,
 +};
++
+ static const phy_interface_t xpcs_usxgmii_interfaces[] = {
+ 	PHY_INTERFACE_MODE_USXGMII,
+ };
+@@ -133,6 +148,12 @@ static const phy_interface_t xpcs_2500basex_interfaces[] = {
+ 	PHY_INTERFACE_MODE_MAX,
+ };
  
- struct pmc_bit_map {
- 	const char *name;
-@@ -427,4 +436,20 @@ static const struct file_operations __name ## _fops = {			\
- 	.release	= single_release,				\
++static const phy_interface_t xpcs_sgmii_2500basex_interfaces[] = {
++	PHY_INTERFACE_MODE_SGMII,
++	PHY_INTERFACE_MODE_2500BASEX,
++	PHY_INTERFACE_MODE_MAX,
++};
++
+ enum {
+ 	DW_XPCS_USXGMII,
+ 	DW_XPCS_10GKR,
+@@ -141,6 +162,7 @@ enum {
+ 	DW_XPCS_SGMII,
+ 	DW_XPCS_1000BASEX,
+ 	DW_XPCS_2500BASEX,
++	DW_XPCS_SGMII_2500BASEX,
+ 	DW_XPCS_INTERFACE_MAX,
+ };
+ 
+@@ -267,6 +289,7 @@ static int xpcs_soft_reset(struct dw_xpcs *xpcs,
+ 	case DW_AN_C37_SGMII:
+ 	case DW_2500BASEX:
+ 	case DW_AN_C37_1000BASEX:
++	case DW_SGMII_2500BASEX:
+ 		dev = MDIO_MMD_VEND2;
+ 		break;
+ 	default:
+@@ -712,6 +735,8 @@ static int xpcs_config_aneg_c37_sgmii(struct dw_xpcs *xpcs, unsigned int mode)
+ 	else
+ 		ret &= ~DW_VR_MII_DIG_CTRL1_MAC_AUTO_SW;
+ 
++	/* Disable 2.5G GMII for SGMII C37 mode */
++	ret &= ~DW_VR_MII_DIG_CTRL1_2G5_EN;
+ 	ret = xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
+ 	if (ret < 0)
+ 		return ret;
+@@ -807,6 +832,26 @@ static int xpcs_config_2500basex(struct dw_xpcs *xpcs)
+ 	return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL, ret);
  }
  
-+#if IS_ENABLED(CONFIG_INTEL_PMC_CORE)
-+/**
-+ * intel_pmc_core_ipc() - PMC IPC Mailbox accessor
-+ * @ipc_cmd:  struct pmc_ipc_cmd prepared with input to send
-+ * @rbuf:     Allocated u32[4] array for returned IPC data
-+ *
-+ * Return: 0 on success. Non-zero on mailbox error
-+ */
-+int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf);
-+#else
-+static inline int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf)
++static int xpcs_config_aneg_c37_sgmii_2500basex(struct dw_xpcs *xpcs,
++						unsigned int mode,
++						phy_interface_t interface)
 +{
-+	return -ENODEV;
-+}
-+#endif /* CONFIG_INTEL_PMC_CORE */
++	int ret = -EOPNOTSUPP;
 +
- #endif /* PMC_CORE_H */
++	switch (interface) {
++	case PHY_INTERFACE_MODE_SGMII:
++		ret = xpcs_config_aneg_c37_sgmii(xpcs, mode);
++		break;
++	case PHY_INTERFACE_MODE_2500BASEX:
++		ret = xpcs_config_2500basex(xpcs);
++		break;
++	default:
++		break;
++	}
++
++	return ret;
++}
++
+ int xpcs_do_config(struct dw_xpcs *xpcs, phy_interface_t interface,
+ 		   unsigned int mode, const unsigned long *advertising)
+ {
+@@ -843,6 +888,12 @@ int xpcs_do_config(struct dw_xpcs *xpcs, phy_interface_t interface,
+ 		if (ret)
+ 			return ret;
+ 		break;
++	case DW_SGMII_2500BASEX:
++		ret = xpcs_config_aneg_c37_sgmii_2500basex(xpcs, mode,
++							   interface);
++		if (ret)
++			return ret;
++		break;
+ 	default:
+ 		return -1;
+ 	}
+@@ -1028,6 +1079,11 @@ static void xpcs_get_state(struct phylink_pcs *pcs,
+ 		}
+ 		break;
+ 	case DW_AN_C37_SGMII:
++	case DW_SGMII_2500BASEX:
++		/* 2500BASEX is not supported for in-band AN mode. */
++		if (state->interface == PHY_INTERFACE_MODE_2500BASEX)
++			break;
++
+ 		ret = xpcs_get_state_c37_sgmii(xpcs, state);
+ 		if (ret) {
+ 			pr_err("xpcs_get_state_c37_sgmii returned %pe\n",
+@@ -1180,23 +1236,17 @@ static const struct xpcs_compat synopsys_xpcs_compat[DW_XPCS_INTERFACE_MAX] = {
+ 		.num_interfaces = ARRAY_SIZE(xpcs_10gbaser_interfaces),
+ 		.an_mode = DW_10GBASER,
+ 	},
+-	[DW_XPCS_SGMII] = {
+-		.supported = xpcs_sgmii_features,
+-		.interface = xpcs_sgmii_interfaces,
+-		.num_interfaces = ARRAY_SIZE(xpcs_sgmii_interfaces),
+-		.an_mode = DW_AN_C37_SGMII,
+-	},
+ 	[DW_XPCS_1000BASEX] = {
+ 		.supported = xpcs_1000basex_features,
+ 		.interface = xpcs_1000basex_interfaces,
+ 		.num_interfaces = ARRAY_SIZE(xpcs_1000basex_interfaces),
+ 		.an_mode = DW_AN_C37_1000BASEX,
+ 	},
+-	[DW_XPCS_2500BASEX] = {
+-		.supported = xpcs_2500basex_features,
+-		.interface = xpcs_2500basex_interfaces,
+-		.num_interfaces = ARRAY_SIZE(xpcs_2500basex_interfaces),
+-		.an_mode = DW_2500BASEX,
++	[DW_XPCS_SGMII_2500BASEX] = {
++		.supported = xpcs_sgmii_2500basex_features,
++		.interface = xpcs_sgmii_2500basex_interfaces,
++		.num_interfaces = ARRAY_SIZE(xpcs_sgmii_2500basex_features),
++		.an_mode = DW_SGMII_2500BASEX,
+ 	},
+ };
+ 
+diff --git a/include/linux/pcs/pcs-xpcs.h b/include/linux/pcs/pcs-xpcs.h
+index ec8175b847cc..3e2265ca9e22 100644
+--- a/include/linux/pcs/pcs-xpcs.h
++++ b/include/linux/pcs/pcs-xpcs.h
+@@ -19,6 +19,7 @@
+ #define DW_2500BASEX			3
+ #define DW_AN_C37_1000BASEX		4
+ #define DW_10GBASER			5
++#define DW_SGMII_2500BASEX		6
+ 
+ struct xpcs_id;
+ 
 -- 
 2.25.1
 
