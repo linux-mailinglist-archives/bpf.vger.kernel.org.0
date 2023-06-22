@@ -1,70 +1,71 @@
-Return-Path: <bpf+bounces-3198-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3199-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DC7373AC48
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 00:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC83873AC49
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 00:03:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 142E62810BD
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 22:03:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BCBE28183A
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 22:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A56092256E;
-	Thu, 22 Jun 2023 22:02:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB7E22572;
+	Thu, 22 Jun 2023 22:03:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A9922557
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 22:02:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2493622557
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 22:03:02 +0000 (UTC)
 Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8ED1BE1
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 15:02:54 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3112c11fdc9so5748060f8f.3
-        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 15:02:54 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100531BD0
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 15:03:01 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3113dabc549so6591013f8f.1
+        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 15:03:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687471373; x=1690063373;
+        d=gmail.com; s=20221208; t=1687471379; x=1690063379;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Fa3/2jpcWPbeZjQPQ3CC6YFS7XeDy8NvVsxfvJoE0I8=;
-        b=XP7QQUlKtIfYZyFotuJMtEPE/Fcs3faGAGgMAXpDb3xw47+nrla7Tncb+t+tlPMC7d
-         hJoBKre9RhY01uiejN04F5JVLkdiisAxjoCSOpT58x1oLcfUHxMRguCF2n4UAirOXDsM
-         fZIUZMNRi4WRyWWVJquJYJloQJiOcPwNISTFw8M+Tnk8oFYsRzM1l4a9ZAw8qRGuPhfd
-         Oh9m7nyBVh50/ugbKU2tYfIZEGDeYMyrw6ZVNAtzp3vUpWRSXOb3lXHNfRdKQPuHxWIV
-         XKRxYz2iwWDVRueSBP1Fmvfq2c9lQAqIg/CXbKF5Zf4PoslT938qKExfEuNgi0nY1Izt
-         NF6g==
+        bh=jmhqMgt9JydWi9RjQqxjbTagQswa8W+5CzJ3Q++Hdxw=;
+        b=G/4gp5yVi6ZQ+W0TVtbWbaJnu8yCL0tH98YY5YwE1XS4HXylOIiuU/hGe/Z3AG0SWI
+         RUXARFvJp7RyjsPPOPYNNKOd0KFMNBB7sWrzyu06ycY9UYYnAqAnMzKWmaRKuqWBAoeE
+         kj5nVvxzdhTHPLyQeyh7/sUZYYLpxrHodSIopGRG+DpdYTiZJRliHt0fIUBz1vqk+RTx
+         8qU76WS4A6pF7ksB3vUgolkmY35MYPbi9XRkUAtb4N3wfTDMlCBC/wfCNDe5Nt1h/lB7
+         v8w459cmn0uBlFQ3MQ8juqwFsScdeUQRVEs04d3+eJKb5wbtYfptxey2374rzUKGueq9
+         qNXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687471373; x=1690063373;
+        d=1e100.net; s=20221208; t=1687471379; x=1690063379;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Fa3/2jpcWPbeZjQPQ3CC6YFS7XeDy8NvVsxfvJoE0I8=;
-        b=ap8WDA6bI/2Nho/IqGtJZGhY/pe2d6v8bDrp8yEc9UHYmQQeqYLBsgI1KkyPyFKQY5
-         f2HYfc442m2Jj7Ui0axhT+7S1NYV6MWADWubKLVZ3rX1HEhwo2Wmwn1uF/zsHDvARSlj
-         eO0z6ZjVGt8oez1IbEU8DkHLOshdjzkaH+4SPg5mgzKE6DQgcnKFndiiAZKnEl64rlxG
-         tm0I+pKNDKXxRWElsPa54TZXoWP+8yLhVzbiZOoq741huN377UgiMtwLbbYUX9LcuXd/
-         F44tUJLU94FsuvwkxKR1Jli2POWf/4dHO2LVDxakE99VKlMItEmVaRyWFP79dKi6MaBG
-         s9Eg==
-X-Gm-Message-State: AC+VfDwqDt6ckQQ3KaCeC/KJot91+I8R3K9mEIdJPD8rlIMI+F7KG1os
-	uklwxfFRT9u/VmU+7cOm0ApxDZu//Ni7zKK/QE8=
-X-Google-Smtp-Source: ACHHUZ4MZN6jbLfxDN2258EeJ2BgkdACK0I8nrLs6s/pQEtpE4xzOy/L+MtxJyETOU6SgIhlwL7K6IJr4HF0HklhSnc=
-X-Received: by 2002:a5d:54c2:0:b0:306:2c16:8359 with SMTP id
- x2-20020a5d54c2000000b003062c168359mr14523495wrv.39.1687471372544; Thu, 22
- Jun 2023 15:02:52 -0700 (PDT)
+        bh=jmhqMgt9JydWi9RjQqxjbTagQswa8W+5CzJ3Q++Hdxw=;
+        b=Eyn7E3SxDjv4Adu1IXPGtsAH+gRaX1MT2D3ryVfvgdxXHCJCTnx1AtsU4kP64cSbf1
+         Y5pMrfz/BUFmcfTOlMQX7hf0QTztju/6A8P5nTgInsOXji3Pqkzf/H5pCtZ0UDzMvHnG
+         5WmvpogNFI9n9oBVs+adTrwWQm4KMB8HrJwXRwQ9/0yZmwb7LxstRfyj/4Kszw7LlfZy
+         BaQv/X6tCQdFEuG63HqcarkKc7+lX7xmsQ6QUFRTCxpAQNgTFi4tYjQHAjzBSqtRXvHi
+         4GYUrZOUVGz68+oteVWbkaWUaTPLQrW3BhRkKzgJ+oQu1YEqxOqsGM9DRGWWFiA/hoUW
+         12Kg==
+X-Gm-Message-State: AC+VfDxDj7f4WlHY7DDYCNvjgRoCjhHQysiF6XVt5kgoduQkuIUFEbTy
+	MQmsGklCRD/OxqZaEXMtCRc3Xt1TLO+iZ718ryE=
+X-Google-Smtp-Source: ACHHUZ7AXlhilhovzlgOXgF8nROwDkVajU8mgY9FHypO2y98QCmm2n4TSvHuP0LVjD/+qEvogt9JirVEIhpMwQM4TLg=
+X-Received: by 2002:adf:f811:0:b0:311:17af:df96 with SMTP id
+ s17-20020adff811000000b0031117afdf96mr19955126wrp.44.1687471379232; Thu, 22
+ Jun 2023 15:02:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230616171728.530116-1-alan.maguire@oracle.com> <20230616171728.530116-2-alan.maguire@oracle.com>
-In-Reply-To: <20230616171728.530116-2-alan.maguire@oracle.com>
+References: <20230616171728.530116-1-alan.maguire@oracle.com> <20230616171728.530116-3-alan.maguire@oracle.com>
+In-Reply-To: <20230616171728.530116-3-alan.maguire@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 22 Jun 2023 15:02:40 -0700
-Message-ID: <CAEf4BzapHdQb=gXq9xLRGfRFBC=3xcQ=OSdV1o=+5nvgDwT4HA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/9] btf: add kind layout encoding, crcs to UAPI
+Date: Thu, 22 Jun 2023 15:02:47 -0700
+Message-ID: <CAEf4BzZ_s+MxxbQP99s5vbduHO-WE6VXMvZjCC270xgpmK9r2w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/9] libbpf: support handling of kind layout
+ section in BTF
 To: Alan Maguire <alan.maguire@oracle.com>
 Cc: acme@kernel.org, ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
 	quentin@isovalent.com, jolsa@kernel.org, martin.lau@linux.dev, 
@@ -82,168 +83,249 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 On Fri, Jun 16, 2023 at 10:17=E2=80=AFAM Alan Maguire <alan.maguire@oracle.=
 com> wrote:
 >
-> BTF kind layouts provide information to parse BTF kinds.
-> By separating parsing BTF from using all the information
-> it provides, we allow BTF to encode new features even if
-> they cannot be used.  This is helpful in particular for
-> cases where newer tools for BTF generation run on an
-> older kernel; BTF kinds may be present that the kernel
-> cannot yet use, but at least it can parse the BTF
-> provided.  Meanwhile userspace tools with newer libbpf
-> may be able to use the newer information.
+> support reading in kind layout fixing endian issues on reading;
+> also support writing kind layout section to raw BTF object.
+> There is not yet an API to populate the kind layout with meaningful
+> information.
 >
-> The intent is to support encoding of kind layouts
-> optionally so that tools like pahole can add this
-> information.  So for each kind we record
->
-> - kind-related flags
-> - length of singular element following struct btf_type
-> - length of each of the btf_vlen() elements following
->
-> In addition we make space in the BTF header for
-> CRC32s computed over the BTF along with a CRC for
-> the base BTF; this allows split BTF to identify
-> a mismatch explicitly.
->
-> The ideas here were discussed at [1], [2]; hence
->
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
->
-> [1] https://lore.kernel.org/bpf/CAEf4BzYjWHRdNNw4B=3DeOXOs_ONrDwrgX4bn=3D=
-Nuc1g8JPFC34MA@mail.gmail.com/
-> [2] https://lore.kernel.org/bpf/20230531201936.1992188-1-alan.maguire@ora=
-cle.com/
 > ---
->  include/uapi/linux/btf.h       | 24 ++++++++++++++++++++++++
->  tools/include/uapi/linux/btf.h | 24 ++++++++++++++++++++++++
->  2 files changed, 48 insertions(+)
+>  tools/lib/bpf/btf.c | 132 +++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 99 insertions(+), 33 deletions(-)
 >
-> diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
-> index ec1798b6d3ff..cea9125ed953 100644
-> --- a/include/uapi/linux/btf.h
-> +++ b/include/uapi/linux/btf.h
-> @@ -8,6 +8,22 @@
->  #define BTF_MAGIC      0xeB9F
->  #define BTF_VERSION    1
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 8484b563b53d..f9f919fdc728 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -39,40 +39,44 @@ struct btf {
 >
-> +/* is this information required? If so it cannot be sanitized safely. */
-> +#define BTF_KIND_LAYOUT_OPTIONAL               (1 << 0)
 
-hm.. I thought we agreed to not have OPTIONAL flag last time, no? From
-kernel's perspective nothing is optional. From libbpf perspective
-everything should be optional, unless we get type_id reference to
-something that we don't recognize. So why the flag and extra code to
-handle it?
+[...]
 
-We can always add it later, if necessary.
-
-> +
-> +/* kind layout section consists of a struct btf_kind_layout for each kno=
-wn
-> + * kind at BTF encoding time.
-> + */
-> +struct btf_kind_layout {
-> +       __u16 flags;            /* see BTF_KIND_LAYOUT_* values above */
-> +       __u8 info_sz;           /* size of singular element after btf_typ=
-e */
-> +       __u8 elem_sz;           /* size of each of btf_vlen(t) elements *=
-/
-> +};
-> +
-> +/* for CRCs for BTF, base BTF to be considered usable, flags must be set=
-. */
-> +#define BTF_FLAG_CRC_SET               (1 << 0)
-> +#define BTF_FLAG_BASE_CRC_SET          (1 << 1)
-> +
->  struct btf_header {
->         __u16   magic;
->         __u8    version;
-> @@ -19,8 +35,16 @@ struct btf_header {
->         __u32   type_len;       /* length of type section       */
->         __u32   str_off;        /* offset of string section     */
->         __u32   str_len;        /* length of string section     */
-> +       __u32   kind_layout_off;/* offset of kind layout section */
-> +       __u32   kind_layout_len;/* length of kind layout section */
-> +
-> +       __u32   crc;            /* crc of BTF; used if flags set BTF_FLAG=
-_CRC_VALID */
-> +       __u32   base_crc;       /* crc of base BTF; used if flags set BTF=
-_FLAG_BASE_CRC_VALID */
->  };
+>         struct btf_header *hdr;
 >
-> +/* required minimum BTF header length */
-> +#define BTF_HEADER_MIN_LEN     (sizeof(struct btf_header) - 16)
-
-offsetof(struct btf_header, kind_layout_off) ?
-
-but actually why this needs to be a part of UAPI?
-
-> +
->  /* Max # of type identifier */
->  #define BTF_MAX_TYPE   0x000fffff
->  /* Max offset into the string section */
-> diff --git a/tools/include/uapi/linux/btf.h b/tools/include/uapi/linux/bt=
-f.h
-> index ec1798b6d3ff..cea9125ed953 100644
-> --- a/tools/include/uapi/linux/btf.h
-> +++ b/tools/include/uapi/linux/btf.h
-> @@ -8,6 +8,22 @@
->  #define BTF_MAGIC      0xeB9F
->  #define BTF_VERSION    1
+> @@ -116,6 +120,8 @@ struct btf {
+>         /* whether strings are already deduplicated */
+>         bool strs_deduped;
 >
-> +/* is this information required? If so it cannot be sanitized safely. */
-> +#define BTF_KIND_LAYOUT_OPTIONAL               (1 << 0)
+> +       struct btf_kind_layout *kind_layout;
 > +
-> +/* kind layout section consists of a struct btf_kind_layout for each kno=
-wn
-> + * kind at BTF encoding time.
-> + */
-> +struct btf_kind_layout {
-> +       __u16 flags;            /* see BTF_KIND_LAYOUT_* values above */
-> +       __u8 info_sz;           /* size of singular element after btf_typ=
-e */
-> +       __u8 elem_sz;           /* size of each of btf_vlen(t) elements *=
-/
-> +};
-> +
-> +/* for CRCs for BTF, base BTF to be considered usable, flags must be set=
-. */
-> +#define BTF_FLAG_CRC_SET               (1 << 0)
-> +#define BTF_FLAG_BASE_CRC_SET          (1 << 1)
-> +
->  struct btf_header {
->         __u16   magic;
->         __u8    version;
-> @@ -19,8 +35,16 @@ struct btf_header {
->         __u32   type_len;       /* length of type section       */
->         __u32   str_off;        /* offset of string section     */
->         __u32   str_len;        /* length of string section     */
-> +       __u32   kind_layout_off;/* offset of kind layout section */
-> +       __u32   kind_layout_len;/* length of kind layout section */
-> +
-> +       __u32   crc;            /* crc of BTF; used if flags set BTF_FLAG=
-_CRC_VALID */
-
-why are we making crc optional? shouldn't we just say that crc is
-always filled out?
-
-> +       __u32   base_crc;       /* crc of base BTF; used if flags set BTF=
-_FLAG_BASE_CRC_VALID */
-
-here it would be nice if we could just rely on zero meaning not set,
-but I suspect not everyone will be happy about this, as technically
-crc 0 is a valid crc :(
-
-
->  };
+>         /* BTF object FD, if loaded into kernel */
+>         int fd;
 >
-> +/* required minimum BTF header length */
-> +#define BTF_HEADER_MIN_LEN     (sizeof(struct btf_header) - 16)
+> @@ -215,6 +221,13 @@ static void btf_bswap_hdr(struct btf_header *h)
+>         h->type_len =3D bswap_32(h->type_len);
+>         h->str_off =3D bswap_32(h->str_off);
+>         h->str_len =3D bswap_32(h->str_len);
+> +       if (h->hdr_len >=3D sizeof(struct btf_header)) {
+> +               h->kind_layout_off =3D bswap_32(h->kind_layout_off);
+> +               h->kind_layout_len =3D bswap_32(h->kind_layout_len);
+> +               h->crc =3D bswap_32(h->crc);
+> +               h->base_crc =3D bswap_32(h->base_crc);
+> +       }
 > +
->  /* Max # of type identifier */
->  #define BTF_MAX_TYPE   0x000fffff
->  /* Max offset into the string section */
+
+nit: unnecessary empty line
+
+>  }
+>
+>  static int btf_parse_hdr(struct btf *btf)
+> @@ -222,14 +235,17 @@ static int btf_parse_hdr(struct btf *btf)
+>         struct btf_header *hdr =3D btf->hdr;
+>         __u32 meta_left;
+>
+> -       if (btf->raw_size < sizeof(struct btf_header)) {
+> +       if (btf->raw_size < BTF_HEADER_MIN_LEN) {
+>                 pr_debug("BTF header not found\n");
+>                 return -EINVAL;
+>         }
+>
+>         if (hdr->magic =3D=3D bswap_16(BTF_MAGIC)) {
+> +               int swapped_len =3D bswap_32(hdr->hdr_len);
+> +
+>                 btf->swapped_endian =3D true;
+> -               if (bswap_32(hdr->hdr_len) !=3D sizeof(struct btf_header)=
+) {
+> +               if (swapped_len !=3D sizeof(struct btf_header) &&
+> +                   swapped_len !=3D BTF_HEADER_MIN_LEN) {
+>                         pr_warn("Can't load BTF with non-native endiannes=
+s due to unsupported header length %u\n",
+>                                 bswap_32(hdr->hdr_len));
+>                         return -ENOTSUP;
+> @@ -285,6 +301,32 @@ static int btf_parse_str_sec(struct btf *btf)
+>         return 0;
+>  }
+>
+> +static void btf_bswap_kind_layout_sec(struct btf_kind_layout *k, int len=
+)
+> +{
+> +       struct btf_kind_layout *end =3D (void *)k + len;
+> +
+> +       while (k < end) {
+> +               k->flags =3D bswap_16(k->flags);
+> +               k++;
+> +       }
+> +}
+> +
+> +static int btf_parse_kind_layout_sec(struct btf *btf)
+> +{
+> +       const struct btf_header *hdr =3D btf->hdr;
+> +
+> +       if (hdr->hdr_len < sizeof(struct btf_header) ||
+> +           !hdr->kind_layout_off || !hdr->kind_layout_len)
+> +               return 0;
+
+instead of having to remember to check `hdr->hdr_len < sizeof(struct
+btf_header)` before accessing kind_layout_off and kind_layout_len,
+let's just allocate a copy of full btf_header on initialization, copy
+min(sizeof(struct btf_header), hdr->len) into it, and then point
+btf->hdr to this copy everywhere?
+
+> +       if (hdr->kind_layout_len < sizeof(struct btf_kind_layout)) {
+
+shouldn't it be the check that hdr->kind_layout_len is a multiple of
+sizeof(struct btf_kind_layout) ?
+
+> +               pr_debug("Invalid BTF kind layout section\n");
+> +               return -EINVAL;
+> +       }
+> +       btf->kind_layout =3D btf->raw_data + btf->hdr->hdr_len + btf->hdr=
+->kind_layout_off;
+> +
+> +       return 0;
+> +}
+> +
+>  static int btf_type_size(const struct btf_type *t)
+>  {
+>         const int base_size =3D sizeof(struct btf_type);
+> @@ -901,6 +943,7 @@ static struct btf *btf_new(const void *data, __u32 si=
+ze, struct btf *base_btf)
+>         btf->types_data =3D btf->raw_data + btf->hdr->hdr_len + btf->hdr-=
+>type_off;
+>
+>         err =3D btf_parse_str_sec(btf);
+> +       err =3D err ?: btf_parse_kind_layout_sec(btf);
+>         err =3D err ?: btf_parse_type_sec(btf);
+>         if (err)
+>                 goto done;
+> @@ -1267,6 +1310,11 @@ static void *btf_get_raw_data(const struct btf *bt=
+f, __u32 *size, bool swap_endi
+>         }
+>
+>         data_sz =3D hdr->hdr_len + hdr->type_len + hdr->str_len;
+> +       if (btf->kind_layout) {
+> +               data_sz =3D roundup(data_sz, 4);
+> +               data_sz +=3D hdr->kind_layout_len;
+> +               hdr->kind_layout_off =3D roundup(hdr->type_len + hdr->str=
+_len, 4);
+
+can we avoid modifying hdr here? we expect const struct btf *, so it's
+a bit iffy that we are adjusting header here
+
+maybe we can just make sure that kind_layout_off is always maintained corre=
+ctly?
+
+> +       }
+>         data =3D calloc(1, data_sz);
+>         if (!data)
+>                 return NULL;
+> @@ -1293,8 +1341,15 @@ static void *btf_get_raw_data(const struct btf *bt=
+f, __u32 *size, bool swap_endi
+>         p +=3D hdr->type_len;
+>
+>         memcpy(p, btf_strs_data(btf), hdr->str_len);
+> -       p +=3D hdr->str_len;
+> +       /* round up to 4 byte alignment to match offset above */
+> +       p =3D data + hdr->hdr_len + roundup(hdr->type_len + hdr->str_len,=
+ 4);
+
+instead of reimplementing roundup logic, why not just use
+hdr->kind_layout_off here?
+
+>
+> +       if (btf->kind_layout) {
+> +               memcpy(p, btf->kind_layout, hdr->kind_layout_len);
+> +               if (swap_endian)
+> +                       btf_bswap_kind_layout_sec(p, hdr->kind_layout_len=
+);
+> +               p +=3D hdr->kind_layout_len;
+> +       }
+>         *size =3D data_sz;
+>         return data;
+>  err_out:
+> @@ -1425,13 +1480,13 @@ static void btf_invalidate_raw_data(struct btf *b=
+tf)
+>         }
+>  }
+>
+> -/* Ensure BTF is ready to be modified (by splitting into a three memory
+> - * regions for header, types, and strings). Also invalidate cached
+> - * raw_data, if any.
+> +/* Ensure BTF is ready to be modified (by splitting into a three or four=
+ memory
+
+nit: gmail suggests that "a" is not necessary before "three" here
+
+> + * regions for header, types, strings and optional kind layout). Also in=
+validate
+> + * cached raw_data, if any.
+>   */
+>  static int btf_ensure_modifiable(struct btf *btf)
+>  {
+> -       void *hdr, *types;
+> +       void *hdr, *types, *kind_layout =3D NULL;
+>         struct strset *set =3D NULL;
+>         int err =3D -ENOMEM;
+>
+> @@ -1446,9 +1501,17 @@ static int btf_ensure_modifiable(struct btf *btf)
+>         types =3D malloc(btf->hdr->type_len);
+>         if (!hdr || !types)
+>                 goto err_out;
+> +       if (btf->hdr->hdr_len >=3D sizeof(struct btf_header)  &&
+> +           btf->hdr->kind_layout_off && btf->hdr->kind_layout_len) {
+> +               kind_layout =3D calloc(1, btf->hdr->kind_layout_len);
+> +               if (!kind_layout)
+> +                       goto err_out;
+> +       }
+>
+>         memcpy(hdr, btf->hdr, btf->hdr->hdr_len);
+>         memcpy(types, btf->types_data, btf->hdr->type_len);
+> +       if (kind_layout)
+> +               memcpy(kind_layout, btf->kind_layout, btf->hdr->kind_layo=
+ut_len);
+>
+
+let's just emit kind_layout always, why making it optional on writing
+out new BTF?
+
+why not make it always present internally in libbpf, and either read
+it from BTF, if it's present, or created it from scratch based on
+libbpf's version and knowledge of all the kinds? This will be simpler,
+the only place where we'd need to handle it optionally is during
+initialization
+
+
+>         /* build lookup index for all strings */
+>         set =3D strset__new(BTF_MAX_STR_OFFSET, btf->strs_data, btf->hdr-=
+>str_len);
+> @@ -1463,6 +1526,8 @@ static int btf_ensure_modifiable(struct btf *btf)
+>         btf->types_data_cap =3D btf->hdr->type_len;
+>         btf->strs_data =3D NULL;
+>         btf->strs_set =3D set;
+> +       btf->kind_layout =3D kind_layout;
+> +
+>         /* if BTF was created from scratch, all strings are guaranteed to=
+ be
+>          * unique and deduplicated
+>          */
+> @@ -1480,6 +1545,7 @@ static int btf_ensure_modifiable(struct btf *btf)
+>         strset__free(set);
+>         free(hdr);
+>         free(types);
+> +       free(kind_layout);
+>         return err;
+>  }
+>
 > --
 > 2.39.3
 >
