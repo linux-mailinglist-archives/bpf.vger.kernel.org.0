@@ -1,206 +1,195 @@
-Return-Path: <bpf+bounces-3204-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3205-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A984F73AC64
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 00:13:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6722773ACC6
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 00:57:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69BA11C20B37
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 22:13:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 980531C20C5A
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 22:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCED222579;
-	Thu, 22 Jun 2023 22:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D828223C61;
+	Thu, 22 Jun 2023 22:57:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 903E920690
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 22:13:19 +0000 (UTC)
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35892116
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 15:13:17 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-39eab4bbe8aso5162042b6e.1
-        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 15:13:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B2E3AA87;
+	Thu, 22 Jun 2023 22:57:41 +0000 (UTC)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC021BE3;
+	Thu, 22 Jun 2023 15:57:39 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-666eef03ebdso3632542b3a.1;
+        Thu, 22 Jun 2023 15:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687471997; x=1690063997;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yjfet1c76BcQ5Q4APZ9MestCxufHqmp9KfsmJbI8P/k=;
-        b=apZm26oiTGp+Uc1/K6gPWpMyPV1z21weNweGveS0P7VmmCo2i7lXPcCzQIdEBvi/Si
-         8zI+KxBtFtErE7zkom/sZNC6QM4gK2KK7FvC4ueg7xDR+oK7YeBoKgkqHCB9Sp50HS+W
-         vNg3GCBESr4WI2q+geDbPHwnOj0no+YHAiJI1EnOVZIDJ20Ys3yRmuPkelncoMIZiXi7
-         WKfU9IuolvEojaOOnUak3SdOBuP3nVMwCmwsc7ndREpCa9rnHCdp6uVoyWM5112cQE+n
-         esf1CQlWZY2nmk8+FLFW1m0qWnMdBM4qP24e/0PTNvw0jTOyeMcbKNXeV5tJLRTJtT49
-         okLQ==
+        d=gmail.com; s=20221208; t=1687474658; x=1690066658;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ube1u5c4NbZrOXQ7QZi7ovBKihafwkeYJORY+Y8lW+M=;
+        b=mkqvlA3vHLj9PdKFBBsnZec/uAiIUF/jFFYftf9skrHkHzyhzPQvyhABZOiFqbCpUd
+         oPIhTDJTYBfQXsT3anymepENrdZqK+7gO/ph5KHMVBQnC03cstvVk7BgHPsjvW9e6Gbb
+         511JnXa8HipVIqGGj0zIbx2raQvU2q076gO5eNaftkv4z5uE2C7kcJBmySBx7tAwLbAv
+         tV8aAHl9LurW7xUgBBnojm+1N9624YIRxv1vwuHMo+vtxm7yDAEVdDZPAF3WSqOk8uAu
+         4FEih+f7ZYavMXd4cyzX5SgFVURC4v7HWLxmMRX42/rsZr3XwFo/Ppxy+OPhbG5f/YiA
+         72hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687471997; x=1690063997;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yjfet1c76BcQ5Q4APZ9MestCxufHqmp9KfsmJbI8P/k=;
-        b=eb39daCY0hcKvLWe71OgodPRoJCb1dRZaoBmP/L4RXUKUhDckKjpdK31UORvAAvBnC
-         3ZPfXJWOYfR6BJ+MbwWfUuxiluS+tsAbOvshgnolryJKJ3E0M0hwuR8ZPK4GKA/ISL/B
-         JxQmV7RHxVvzp421Pqck7WWaJPxJuKD+6XBPvVZLZy+LUdqPQY13BTCa5VOLQzoTaC3P
-         IcjULqbf+4ehNoZDnGeHYbgURUacCtMDd+3NbrMR01x9Arz/geWeq7U7LbKMpo6IizwG
-         E45k+ddzGS5Bj0ssxnBorfmqWcBkiU0fgwH3sRi4q9ejAUl8QYuJMOvM41LzR+9ygR8D
-         KucQ==
-X-Gm-Message-State: AC+VfDyfeoWLyq7QMvjS63aIHAov8lKZIusJQbpICgWMnBKHXKTHg1gM
-	J5eR7AwXkOjbJ+fanGG3RkXMqZLIB3hZjmm+DL/nMw==
-X-Google-Smtp-Source: ACHHUZ5zUl/hOnjU20mL3ptukJG4Irq0Xf4zIX5/nbjQKq464j9kJBxiLroDFX59NUKRcqU1zjNqJmyfm7e8QbCV2Ag=
-X-Received: by 2002:a05:6808:6397:b0:39c:767e:bfc6 with SMTP id
- ec23-20020a056808639700b0039c767ebfc6mr17903401oib.10.1687471997129; Thu, 22
- Jun 2023 15:13:17 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687474658; x=1690066658;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ube1u5c4NbZrOXQ7QZi7ovBKihafwkeYJORY+Y8lW+M=;
+        b=IcfXFCgBBF/frGWVX+4G7PzYGSUgJzXmZ9HTSOH/lDtizJeW72QQBZ/xnWxE1sJPcP
+         xv5RyvgHErz/c4rhjuUaqwjjttxWSd3Isp9iSOU/f4VvGErtbOn7cKg66d3iIlboevg3
+         pXcMklwjK5CXFLYNGe0eOgDZW6poWj/FhxGd7EYQqTU74GdTJkFIJK/uoTDsvlLJx2/q
+         6fkfA6D5R2xHyePc8Qh1bXz2FxrBMrJUvPKt32EfxTYeTqThW5tJPf6vjpFYWBab4Cyp
+         t/DUCs8TnjOalBMC5xhhu3R9RjmrHIbLvCjf0eQcQVaMpiOH1+UfiR3VMYtpY4dRr1yq
+         MvbQ==
+X-Gm-Message-State: AC+VfDwMAqWguLK/hP5JJi/kE5V83jhW7KNLcAkVi9UVg/4uKrNIaFAk
+	0LwcWud9oSJrkB7PevNym+s=
+X-Google-Smtp-Source: ACHHUZ6c0nBStl7QEKFb5zgGeWuLmbj4hPVuLRFH+2iitNhqtiuX93S0i6zk95rQFLuyEdlgacRuoQ==
+X-Received: by 2002:a05:6a20:3cab:b0:106:c9b7:c932 with SMTP id b43-20020a056a203cab00b00106c9b7c932mr11574804pzj.1.1687474658304;
+        Thu, 22 Jun 2023 15:57:38 -0700 (PDT)
+Received: from localhost (ec2-54-67-115-33.us-west-1.compute.amazonaws.com. [54.67.115.33])
+        by smtp.gmail.com with ESMTPSA id o9-20020a170902bcc900b001b526ec4a84sm5797042pls.279.2023.06.22.15.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jun 2023 15:57:37 -0700 (PDT)
+Date: Thu, 22 Jun 2023 22:57:37 +0000
+From: Bobby Eshleman <bobbyeshleman@gmail.com>
+To: Stefano Garzarella <sgarzare@redhat.com>
+Cc: Bobby Eshleman <bobby.eshleman@bytedance.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Bryan Tan <bryantan@vmware.com>, Vishnu Dasa <vdasa@vmware.com>,
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Simon Horman <simon.horman@corigine.com>,
+	Krasnov Arseniy <oxffffaa@gmail.com>, kvm@vger.kernel.org,
+	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH RFC net-next v4 7/8] vsock: Add lockless sendmsg() support
+Message-ID: <ZJTR4bl7JGmEakUL@bullseye>
+References: <20230413-b4-vsock-dgram-v4-0-0cebbb2ae899@bytedance.com>
+ <20230413-b4-vsock-dgram-v4-7-0cebbb2ae899@bytedance.com>
+ <6aif4uoucg6fhqwg2fmx76jkt6542dt7cqsxrtnebpboihfjeb@akpxj3yd2xle>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230621170244.1283336-1-sdf@google.com> <20230621170244.1283336-12-sdf@google.com>
- <20230622195757.kmxqagulvu4mwhp6@macbook-pro-8.dhcp.thefacebook.com>
- <CAKH8qBvJmKwgdrLkeT9EPnCiTu01UAOKvPKrY_oHWySiYyp4nQ@mail.gmail.com> <CAADnVQKfcGT9UaHtAmWKywtuyP9+_NX0_mMaR0m9D0-a=Ymf5Q@mail.gmail.com>
-In-Reply-To: <CAADnVQKfcGT9UaHtAmWKywtuyP9+_NX0_mMaR0m9D0-a=Ymf5Q@mail.gmail.com>
-From: Stanislav Fomichev <sdf@google.com>
-Date: Thu, 22 Jun 2023 15:13:05 -0700
-Message-ID: <CAKH8qBuJpybiTFz9vx+M+5DoGuK-pPq6HapMKq7rZGsngsuwkw@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 11/11] net/mlx5e: Support TX timestamp metadata
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6aif4uoucg6fhqwg2fmx76jkt6542dt7cqsxrtnebpboihfjeb@akpxj3yd2xle>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 22, 2023 at 2:47=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Jun 22, 2023 at 1:13=E2=80=AFPM Stanislav Fomichev <sdf@google.co=
-m> wrote:
-> >
-> > On Thu, Jun 22, 2023 at 12:58=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Wed, Jun 21, 2023 at 10:02:44AM -0700, Stanislav Fomichev wrote:
-> > > > WIP, not tested, only to show the overall idea.
-> > > > Non-AF_XDP paths are marked with 'false' for now.
-> > > >
-> > > > Cc: netdev@vger.kernel.org
-> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > > ---
-> > > >  .../net/ethernet/mellanox/mlx5/core/en/txrx.h | 11 +++
-> > > >  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 96 +++++++++++++++=
-+++-
-> > > >  .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  9 +-
-> > > >  .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   |  3 +
-> > > >  .../net/ethernet/mellanox/mlx5/core/en_tx.c   | 16 ++++
-> > > >  .../net/ethernet/mellanox/mlx5/core/main.c    | 26 ++++-
-> > > >  6 files changed, 156 insertions(+), 5 deletions(-)
-> > > >
-> > > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h b/dr=
-ivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-> > > > index 879d698b6119..e4509464e0b1 100644
-> > > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-> > > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-> > > > @@ -6,6 +6,7 @@
-> > > >
-> > > >  #include "en.h"
-> > > >  #include <linux/indirect_call_wrapper.h>
-> > > > +#include <net/devtx.h>
-> > > >
-> > > >  #define MLX5E_TX_WQE_EMPTY_DS_COUNT (sizeof(struct mlx5e_tx_wqe) /=
- MLX5_SEND_WQE_DS)
-> > > >
-> > > > @@ -506,4 +507,14 @@ static inline struct mlx5e_mpw_info *mlx5e_get=
-_mpw_info(struct mlx5e_rq *rq, int
-> > > >
-> > > >       return (struct mlx5e_mpw_info *)((char *)rq->mpwqe.info + arr=
-ay_size(i, isz));
-> > > >  }
-> > > > +
-> > > > +struct mlx5e_devtx_frame {
-> > > > +     struct devtx_frame frame;
-> > > > +     struct mlx5_cqe64 *cqe; /* tx completion */
-> > >
-> > > cqe is only valid at completion.
-> > >
-> > > > +     struct mlx5e_tx_wqe *wqe; /* tx */
-> > >
-> > > wqe is only valid at submission.
-> > >
-> > > imo that's a very clear sign that this is not a generic datastructure=
-.
-> > > The code is trying hard to make 'frame' part of it look common,
-> > > but it won't help bpf prog to be 'generic'.
-> > > It is still going to precisely coded for completion vs submission.
-> > > Similarly a bpf prog for completion in veth will be different than bp=
-f prog for completion in mlx5.
-> > > As I stated earlier this 'generalization' and 'common' datastructure =
-only adds code complexity.
-> >
-> > The reason I went with this abstract context is to allow the programs
-> > to be attached to the different devices.
-> > For example, the xdp_hw_metadata we currently have is not really tied
-> > down to the particular implementation.
-> > If every hook declaration looks different, it seems impossible to
-> > create portable programs.
-> >
-> > The frame part is not really needed, we can probably rename it to ctx
-> > and pass data/frags over the arguments?
-> >
-> > struct devtx_ctx {
-> >   struct net_device *netdev;
-> >   /* the devices will be able to create wrappers to stash descriptor po=
-inters */
-> > };
-> > void veth_devtx_submit(struct devtx_ctx *ctx, void *data, u16 len, u8
-> > meta_len, struct skb_shared_info *sinfo);
-> >
-> > But striving to have a similar hook declaration seems useful to
-> > program portability sake?
->
-> portability across what ?
-> 'timestamp' on veth doesn't have a real use. It's testing only.
-> Even testing is a bit dubious.
-> I can see a need for bpf prog to run in the datacenter on mlx, brcm
-> and whatever other nics, but they will have completely different
-> hw descriptors. timestamp kfuncs to request/read can be common,
-> but to read the descriptors bpf prog authors would need to write
-> different code anyway.
-> So kernel code going out its way to present somewhat common devtx_ctx
-> just doesn't help. It adds code to the kernel, but bpf prog still
-> has to be tailored for mlx and brcm differently.
+On Thu, Jun 22, 2023 at 06:37:21PM +0200, Stefano Garzarella wrote:
+> On Sat, Jun 10, 2023 at 12:58:34AM +0000, Bobby Eshleman wrote:
+> > Because the dgram sendmsg() path for AF_VSOCK acquires the socket lock
+> > it does not scale when many senders share a socket.
+> > 
+> > Prior to this patch the socket lock is used to protect both reads and
+> > writes to the local_addr, remote_addr, transport, and buffer size
+> > variables of a vsock socket. What follows are the new protection schemes
+> > for these fields that ensure a race-free and usually lock-free
+> > multi-sender sendmsg() path for vsock dgrams.
+> > 
+> > - local_addr
+> > local_addr changes as a result of binding a socket. The write path
+> > for local_addr is bind() and various vsock_auto_bind() call sites.
+> > After a socket has been bound via vsock_auto_bind() or bind(), subsequent
+> > calls to bind()/vsock_auto_bind() do not write to local_addr again. bind()
+> > rejects the user request and vsock_auto_bind() early exits.
+> > Therefore, the local addr can not change while a parallel thread is
+> > in sendmsg() and lock-free reads of local addr in sendmsg() are safe.
+> > Change: only acquire lock for auto-binding as-needed in sendmsg().
+> > 
+> > - buffer size variables
+> > Not used by dgram, so they do not need protection. No change.
+> > 
+> > - remote_addr and transport
+> > Because a remote_addr update may result in a changed transport, but we
+> > would like to be able to read these two fields lock-free but coherently
+> > in the vsock send path, this patch packages these two fields into a new
+> > struct vsock_remote_info that is referenced by an RCU-protected pointer.
+> > 
+> > Writes are synchronized as usual by the socket lock. Reads only take
+> > place in RCU read-side critical sections. When remote_addr or transport
+> > is updated, a new remote info is allocated. Old readers still see the
+> > old coherent remote_addr/transport pair, and new readers will refer to
+> > the new coherent. The coherency between remote_addr and transport
+> > previously provided by the socket lock alone is now also preserved by
+> > RCU, except with the highly-scalable lock-free read-side.
+> > 
+> > Helpers are introduced for accessing and updating the new pointer.
+> > 
+> > The new structure is contains an rcu_head so that kfree_rcu() can be
+> > used. This removes the need of writers to use synchronize_rcu() after
+> > freeing old structures which is simply more efficient and reduces code
+> > churn where remote_addr/transport are already being updated inside RCU
+> > read-side sections.
+> > 
+> > Only virtio has been tested, but updates were necessary to the VMCI and
+> > hyperv code. Unfortunately the author does not have access to
+> > VMCI/hyperv systems so those changes are untested.
+> 
+> @Dexuan, @Vishnu, @Bryan, can you test this?
+> 
+> > 
+> > Perf Tests (results from patch v2)
+> > vCPUS: 16
+> > Threads: 16
+> > Payload: 4KB
+> > Test Runs: 5
+> > Type: SOCK_DGRAM
+> > 
+> > Before: 245.2 MB/s
+> > After: 509.2 MB/s (+107%)
+> > 
+> > Notably, on the same test system, vsock dgram even outperforms
+> > multi-threaded UDP over virtio-net with vhost and MQ support enabled.
+> > 
+> > Throughput metrics for single-threaded SOCK_DGRAM and
+> > single/multi-threaded SOCK_STREAM showed no statistically signficant
+> > throughput changes (lowest p-value reaching 0.27), with the range of the
+> > mean difference ranging between -5% to +1%.
+> > 
+> 
+> Quite nice. Did you see any improvements also on stream/seqpacket
+> sockets?
+> 
 
-Isn't it the same discussion/arguments we had during the RX series?
-We want to provide common sane interfaces/abstractions via kfuncs.
-That will make most BPF programs portable from mlx to brcm (for
-example) without doing a rewrite.
-We're also exposing raw (readonly) descriptors (via that get_ctx
-helper) to the users who know what to do with them.
-Most users don't know what to do with raw descriptors; the specs are
-not public; things can change depending on fw version/etc/etc.
-So the progs that touch raw descriptors are not the primary use-case.
-(that was the tl;dr for rx part, seems like it applies here?)
+The change seemed to be null for stream sockets. I assumed the same
+would be for seqpacket too, but I'll run some numbers there too for the
+next revision.
 
-Let's maybe discuss that mlx5 example? Are you proposing to do
-something along these lines?
+> However this is a big change, maybe I would move it to another series,
+> because it takes time to be reviewed and tested properly.
+> 
+> WDYT?
+> 
 
-void mlx5e_devtx_submit(struct mlx5e_tx_wqe *wqe);
-void mlx5e_devtx_complete(struct mlx5_cqe64 *cqe);
+Sounds good to me, I'll lop it off and resend on its own.
 
-If yes, I'm missing how we define the common kfuncs in this case. The
-kfuncs need to have some common context. We're defining them with:
-bpf_devtx_<kfunc>(const struct devtx_frame *ctx);
+> Thanks,
+> Stefano
+> 
+
+Thanks!
+Bobby
 
