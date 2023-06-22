@@ -1,232 +1,162 @@
-Return-Path: <bpf+bounces-3189-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3190-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D1EC73A95B
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 22:12:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A3E673A95E
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 22:14:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D3AB1C2119D
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 20:12:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6028281AB5
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 20:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E624D21093;
-	Thu, 22 Jun 2023 20:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C60D2109B;
+	Thu, 22 Jun 2023 20:13:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7F820690
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 20:12:03 +0000 (UTC)
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386CD1BD8
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 13:12:02 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-553a1f13d9fso4634006a12.1
-        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 13:12:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4918421080
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 20:13:45 +0000 (UTC)
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46231FCB
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 13:13:43 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-544c0d768b9so6006894a12.0
+        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 13:13:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687464721; x=1690056721;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nz9m/AVCYpJY3TUjuJI6d3jH2k5Z0Vv2asMMTB+tRqo=;
-        b=oi54k3a6PzfK58BAyNrHNoPwClihk6T7cevgw1Gcc6MU1oyB8Ao5JE2dLVrFLYEbhh
-         nVUZQyQzfBVdktztor5sTfV63ehHxzCzCeTwONEAlI/DqiNZdqT+x2WZOiq2DLE1cyV2
-         szV4Hp4cvBcLQmzIAS4yWft+fJYD3NOdbYTdyLwAvEf5il6bC8HR7yTCzL8lqhD3p2IL
-         s+7D/fjwv1dyv1UtVmhNttweEfV+o+4tigWgmVv3EpNyJY1WyZQVxRF8Vc/UmcRcmiZt
-         xylTfs9lG0lK5pc7V6vVe0pNIOWq8wI/k7PcOQ+g6kV1FG8hG47O5+3WKu/rrNj8Bl18
-         1Y/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687464721; x=1690056721;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1687464823; x=1690056823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nz9m/AVCYpJY3TUjuJI6d3jH2k5Z0Vv2asMMTB+tRqo=;
-        b=O6j4galrx+F7p7CHDvC4j6n+lkKCTYxnkBfInQ9Ok8a6rY+d4lrsdTmNW+dcAs5jyz
-         QlK4pF8IiH3+dVktshYAXzkBZMMEokw1Jvit4tOgT1vMjw/paGlV2KTXOVpkxvZ4WGZO
-         CMY8fDERf0WRI172ymu0zb2ySRTy/kfM4AK96u/gjAedAs/AP11CVT4ybEQ9Yf50EXh/
-         wSfqjCnBq1yXAsEIreppFctJ1n5blWaw/tQeUiS7vT5Ic8p7RHwDAERM9wOedOgTT6ei
-         Ho7O2+avPvsfDVaOkz67xAMPrULzKGJQLcNpRsak8xEVf1kwCllkM4nK1JfU/exN0mXx
-         3kVg==
-X-Gm-Message-State: AC+VfDztC+jka5HeWr3Yd29yHbRfFv0L8YzNmNYdmGVZI9ecRrD93OS2
-	VZmg6XCNGLtIW4AqmSyy5oU5mEx0f8M=
-X-Google-Smtp-Source: ACHHUZ6U58SRIJGUzjf1Qy/C0X9mb8tApFh03KaSuqJ5e81TVSsDXBjGvCnEMGHRKz40RxzxRrNqsA==
-X-Received: by 2002:a17:902:9a0b:b0:1b0:663e:4b10 with SMTP id v11-20020a1709029a0b00b001b0663e4b10mr18174585plp.64.1687464721597;
-        Thu, 22 Jun 2023 13:12:01 -0700 (PDT)
-Received: from macbook-pro-8.dhcp.thefacebook.com ([2620:10d:c090:500::4:95b5])
-        by smtp.gmail.com with ESMTPSA id y13-20020a1709027c8d00b001ac937171e4sm5706880pll.254.2023.06.22.13.11.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jun 2023 13:12:01 -0700 (PDT)
-Date: Thu, 22 Jun 2023 13:11:58 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Anton Protopopov <aspsk@isovalent.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [RFC v2 PATCH bpf-next 1/4] bpf: add percpu stats for bpf_map
- elements insertions/deletions
-Message-ID: <20230622201158.s56vbdas5rcilwbd@macbook-pro-8.dhcp.thefacebook.com>
-References: <20230622095330.1023453-1-aspsk@isovalent.com>
- <20230622095330.1023453-2-aspsk@isovalent.com>
+        bh=f4s7Xb1mFKjZORtZXFmNM1Jj59hKU38cNm71OLPfccM=;
+        b=CY0b2DGUimY4gE2KMnjbMx/01/6J/ljAQ0DyVTXFaG+QFQhtG6NkGdrXbdqL7d8zkQ
+         Ddf6577+arcSIwnLZNxaxWsBwaQbR5TUf1hSKg4GGvqkgBXXJKuv0sMMdX03Ldcw/RYW
+         34HOqKzuclT/6CR/HsRo0MvHcHNubWA27OV2rkPvovUmIFi1lTSpTwaDncLSL3Bbb/IY
+         MIfOwya73/N2XbaT7HuD6ai3zv017V9EzEb/c5gJBeax1Ni6zAnmMQwtl90NZmHIn9TR
+         o+kgKIG2wRilCy7w07x32t3D2CdoIHBrrIZ9an6PnN7fzWOQfXD1oOSKzI8WRqMtB8Qg
+         1wtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687464823; x=1690056823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f4s7Xb1mFKjZORtZXFmNM1Jj59hKU38cNm71OLPfccM=;
+        b=MOK7r8VUJZEkiiV6Fdc8otwgU5PhCCaIVGSEclznrN29x1+6cTtLh95e/BzCdG6TLK
+         jF20+A5xwFjBfMKwFjGee1m2Wsa0sJBPFbl22UrXpLbO4S+u/9sOQAZrGlmy0PHJ0adY
+         Z4BYMZMoZUj9Goikg87euE0dIlQysxDMe0aasYeGLEGgvuGFS6RiQo+7+iojDIUVZhk2
+         1rHAeahg8vm0R2jW6ZAU8vhCnPlDMS3ha30vvTjanrLxq5ZFQEAQQWQiYh7AjJUWnbp7
+         h5Yw8BYkly8H2BNu4dE9h2xukZ7qHVumfO3LH8KCf9FuZay7bFvcfpXkFLLxkOe3gI3l
+         h8Fg==
+X-Gm-Message-State: AC+VfDzysAGNGdvzU9v6NtCxJbA5WGWO7Y+wSmk+jhUbb7s1fvwcwzS0
+	SU3V2yNxPmjnP7Zkr/crLT85ANBvIP2u8ob/jXwccg==
+X-Google-Smtp-Source: ACHHUZ7hd2SuUXpCuYfbdCmfpqSroTeZ6cF/XbD2idLp3R8X0T5yTZLAIstTU+aC8zfiyU27ahYbya7gBcVxQoF7msc=
+X-Received: by 2002:a05:6a20:5495:b0:122:5ed2:b521 with SMTP id
+ i21-20020a056a20549500b001225ed2b521mr11020337pzk.59.1687464823122; Thu, 22
+ Jun 2023 13:13:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230622095330.1023453-2-aspsk@isovalent.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20230621170244.1283336-1-sdf@google.com> <20230621170244.1283336-12-sdf@google.com>
+ <20230622195757.kmxqagulvu4mwhp6@macbook-pro-8.dhcp.thefacebook.com>
+In-Reply-To: <20230622195757.kmxqagulvu4mwhp6@macbook-pro-8.dhcp.thefacebook.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Thu, 22 Jun 2023 13:13:31 -0700
+Message-ID: <CAKH8qBvJmKwgdrLkeT9EPnCiTu01UAOKvPKrY_oHWySiYyp4nQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 11/11] net/mlx5e: Support TX timestamp metadata
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
+	jolsa@kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 22, 2023 at 09:53:27AM +0000, Anton Protopopov wrote:
-> Add a generic percpu stats for bpf_map elements insertions/deletions in order
-> to keep track of both, the current (approximate) number of elements in a map
-> and per-cpu statistics on update/delete operations.
-> 
-> To expose these stats a particular map implementation should initialize the
-> counter and adjust it as needed using the 'bpf_map_*_elements_counter' helpers
-> provided by this commit. The counter can be read by an iterator program.
-> 
-> A bpf_map_sum_elements_counter kfunc was added to simplify getting the sum of
-> the per-cpu values. If a map doesn't implement the counter, then it will always
-> return 0.
-> 
-> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> ---
->  include/linux/bpf.h   | 30 +++++++++++++++++++++++++++
->  kernel/bpf/map_iter.c | 48 ++++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 77 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index f58895830ada..20292a096188 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -275,6 +275,7 @@ struct bpf_map {
->  	} owner;
->  	bool bypass_spec_v1;
->  	bool frozen; /* write-once; write-protected by freeze_mutex */
-> +	s64 __percpu *elements_count;
->  };
->  
->  static inline const char *btf_field_type_name(enum btf_field_type type)
-> @@ -2040,6 +2041,35 @@ bpf_map_alloc_percpu(const struct bpf_map *map, size_t size, size_t align,
->  }
->  #endif
->  
-> +static inline int
-> +bpf_map_init_elements_counter(struct bpf_map *map)
-> +{
-> +	size_t size = sizeof(*map->elements_count), align = size;
-> +	gfp_t flags = GFP_USER | __GFP_NOWARN;
-> +
-> +	map->elements_count = bpf_map_alloc_percpu(map, size, align, flags);
-> +	if (!map->elements_count)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
-> +static inline void
-> +bpf_map_free_elements_counter(struct bpf_map *map)
-> +{
-> +	free_percpu(map->elements_count);
-> +}
-> +
-> +static inline void bpf_map_inc_elements_counter(struct bpf_map *map)
+On Thu, Jun 22, 2023 at 12:58=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Jun 21, 2023 at 10:02:44AM -0700, Stanislav Fomichev wrote:
+> > WIP, not tested, only to show the overall idea.
+> > Non-AF_XDP paths are marked with 'false' for now.
+> >
+> > Cc: netdev@vger.kernel.org
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  .../net/ethernet/mellanox/mlx5/core/en/txrx.h | 11 +++
+> >  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 96 ++++++++++++++++++-
+> >  .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  9 +-
+> >  .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   |  3 +
+> >  .../net/ethernet/mellanox/mlx5/core/en_tx.c   | 16 ++++
+> >  .../net/ethernet/mellanox/mlx5/core/main.c    | 26 ++++-
+> >  6 files changed, 156 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h b/driver=
+s/net/ethernet/mellanox/mlx5/core/en/txrx.h
+> > index 879d698b6119..e4509464e0b1 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
+> > @@ -6,6 +6,7 @@
+> >
+> >  #include "en.h"
+> >  #include <linux/indirect_call_wrapper.h>
+> > +#include <net/devtx.h>
+> >
+> >  #define MLX5E_TX_WQE_EMPTY_DS_COUNT (sizeof(struct mlx5e_tx_wqe) / MLX=
+5_SEND_WQE_DS)
+> >
+> > @@ -506,4 +507,14 @@ static inline struct mlx5e_mpw_info *mlx5e_get_mpw=
+_info(struct mlx5e_rq *rq, int
+> >
+> >       return (struct mlx5e_mpw_info *)((char *)rq->mpwqe.info + array_s=
+ize(i, isz));
+> >  }
+> > +
+> > +struct mlx5e_devtx_frame {
+> > +     struct devtx_frame frame;
+> > +     struct mlx5_cqe64 *cqe; /* tx completion */
+>
+> cqe is only valid at completion.
+>
+> > +     struct mlx5e_tx_wqe *wqe; /* tx */
+>
+> wqe is only valid at submission.
+>
+> imo that's a very clear sign that this is not a generic datastructure.
+> The code is trying hard to make 'frame' part of it look common,
+> but it won't help bpf prog to be 'generic'.
+> It is still going to precisely coded for completion vs submission.
+> Similarly a bpf prog for completion in veth will be different than bpf pr=
+og for completion in mlx5.
+> As I stated earlier this 'generalization' and 'common' datastructure only=
+ adds code complexity.
 
-bpf_map_inc_elem_count() to match existing inc_elem_count() ?
+The reason I went with this abstract context is to allow the programs
+to be attached to the different devices.
+For example, the xdp_hw_metadata we currently have is not really tied
+down to the particular implementation.
+If every hook declaration looks different, it seems impossible to
+create portable programs.
 
-> +{
-> +	this_cpu_inc(*map->elements_count);
-> +}
-> +
-> +static inline void bpf_map_dec_elements_counter(struct bpf_map *map)
-> +{
-> +	this_cpu_dec(*map->elements_count);
-> +}
-> +
->  extern int sysctl_unprivileged_bpf_disabled;
->  
->  static inline bool bpf_allow_ptr_leaks(void)
-> diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
-> index b0fa190b0979..26ca00dde962 100644
-> --- a/kernel/bpf/map_iter.c
-> +++ b/kernel/bpf/map_iter.c
-> @@ -93,7 +93,7 @@ static struct bpf_iter_reg bpf_map_reg_info = {
->  	.ctx_arg_info_size	= 1,
->  	.ctx_arg_info		= {
->  		{ offsetof(struct bpf_iter__bpf_map, map),
-> -		  PTR_TO_BTF_ID_OR_NULL },
-> +		  PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
+The frame part is not really needed, we can probably rename it to ctx
+and pass data/frags over the arguments?
 
-this and below should be in separate patch.
+struct devtx_ctx {
+  struct net_device *netdev;
+  /* the devices will be able to create wrappers to stash descriptor pointe=
+rs */
+};
+void veth_devtx_submit(struct devtx_ctx *ctx, void *data, u16 len, u8
+meta_len, struct skb_shared_info *sinfo);
 
->  	},
->  	.seq_info		= &bpf_map_seq_info,
->  };
-> @@ -193,3 +193,49 @@ static int __init bpf_map_iter_init(void)
->  }
->  
->  late_initcall(bpf_map_iter_init);
-> +
-> +__diag_push();
-> +__diag_ignore_all("-Wmissing-prototypes",
-> +		  "Global functions as their definitions will be in vmlinux BTF");
-> +
-> +__bpf_kfunc s64 bpf_map_sum_elements_counter(struct bpf_map *map)
-> +{
-> +	s64 *pcount;
-> +	s64 ret = 0;
-> +	int cpu;
-> +
-> +	if (!map || !map->elements_count)
-> +		return 0;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		pcount = per_cpu_ptr(map->elements_count, cpu);
-> +		ret += READ_ONCE(*pcount);
-> +	}
-> +	return ret;
-> +}
-> +
-> +__diag_pop();
-> +
-> +BTF_SET8_START(bpf_map_iter_kfunc_ids)
-> +BTF_ID_FLAGS(func, bpf_map_sum_elements_counter, KF_TRUSTED_ARGS)
-> +BTF_SET8_END(bpf_map_iter_kfunc_ids)
-> +
-> +static int tracing_iter_filter(const struct bpf_prog *prog, u32 kfunc_id)
-> +{
-> +	if (btf_id_set8_contains(&bpf_map_iter_kfunc_ids, kfunc_id) &&
-> +	    prog->expected_attach_type != BPF_TRACE_ITER)
-
-why restrict to trace_iter?
-
-> +		return -EACCES;
-> +	return 0;
-> +}
-> +
-> +static const struct btf_kfunc_id_set bpf_map_iter_kfunc_set = {
-> +	.owner = THIS_MODULE,
-> +	.set   = &bpf_map_iter_kfunc_ids,
-> +	.filter = tracing_iter_filter,
-> +};
-> +
-> +static int init_subsystem(void)
-> +{
-> +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_map_iter_kfunc_set);
-> +}
-> +late_initcall(init_subsystem);
-> -- 
-> 2.34.1
-> 
+But striving to have a similar hook declaration seems useful to
+program portability sake?
 
