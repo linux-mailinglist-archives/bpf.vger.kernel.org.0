@@ -1,82 +1,80 @@
-Return-Path: <bpf+bounces-3181-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3182-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB57973A8C1
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 21:02:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3710F73A8CC
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 21:06:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B25481C21185
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 19:02:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9C2A281AF0
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 19:06:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F1D21064;
-	Thu, 22 Jun 2023 19:02:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6A821063;
+	Thu, 22 Jun 2023 19:06:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED9C31F923;
-	Thu, 22 Jun 2023 19:02:25 +0000 (UTC)
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A491FF2;
-	Thu, 22 Jun 2023 12:02:23 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-763c997ee0aso203651685a.3;
-        Thu, 22 Jun 2023 12:02:23 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A208D1F923
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 19:06:00 +0000 (UTC)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF6B186;
+	Thu, 22 Jun 2023 12:05:57 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3f9c2913133so23772505e9.1;
+        Thu, 22 Jun 2023 12:05:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687460543; x=1690052543;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rUKVqpAkvwcAkqRbgPqSJCnjEmHwpCRiTBM6V9Wl0JI=;
-        b=NFMjkIPQ8n5THqXlJ3GBdHE9pkALJhyaCi25q3wcypdND5JeqRRgBH+hLOalXh2zHo
-         pIp1kOG3fM2Q9MDgAPqQAtVGHvOOjlJTOL8TJa55415jsSjFgkjJo2WkV7UDpoeoh3je
-         9ZJ6Kyw1ljjo/req3uf37Bk9sAw2MEqtMKvCpje0rIrzXUWQQFuBtmeeC78Ccp3Q5/jw
-         zwzVPI7Z2cArK+KdK9PZpFQ45G2sjmPUuwqmdgvcOe3R07+fVyNED0lygxzegm8D9eFu
-         z7XOKZtQrX4JZoXg/BubrG5uo68ORY9f/RJpsLufL03AZLIDMsS/APOfS0IIhtLwyBpo
-         T2jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687460543; x=1690052543;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1687460756; x=1690052756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rUKVqpAkvwcAkqRbgPqSJCnjEmHwpCRiTBM6V9Wl0JI=;
-        b=OYr7TMqaim5B7yIVIYgMTJRS7Re2ZIBwOLmGBfQhtaKSSbvZbYZhKKphzGmhYR7TqV
-         MCT0gxLUt9MGsjIkOzHBs0qq/rBfZX2qQx/eVGk4TuEZ7P90hBQzyNvQCYAthqx5QwXv
-         52VxAon/xzKh704Xy6iv5MUwY/5Yr6rCWXkT7qGgGVYxwfQAzP9zX6NReyKgHodVI1Wx
-         w0aEttP/mp+Sv757nYamNJsjMFGLAxG/xw9IV5lsqtb8/S19/Pvv1wq5fXHDr/45g0lg
-         av2+tddQAYWh4pBSTMVhOdF+w3+mxt0KnD0ba59lHIlou8SpRt8GyyBzrPz5iWyx8FdE
-         lN5w==
-X-Gm-Message-State: AC+VfDyoos+kvi44L13w7FCHZq+dWf09oulQvJR8BEdcd6FI+S576K7v
-	XkOTPMjji03xlOZckgVrBzx8DdoJwTlxfs4g
-X-Google-Smtp-Source: ACHHUZ5CoD5bFfxw3o+JrwBisUgD4pIRoMw0clbbU+tXPVo0sEN48tKJ8OQ+/roTw9WcJG2RXowD5g==
-X-Received: by 2002:a05:620a:6846:b0:75d:54fc:47b1 with SMTP id ru6-20020a05620a684600b0075d54fc47b1mr22804244qkn.54.1687460542955;
-        Thu, 22 Jun 2023 12:02:22 -0700 (PDT)
-Received: from localhost (modemcable065.128-200-24.mc.videotron.ca. [24.200.128.65])
-        by smtp.gmail.com with ESMTPSA id p6-20020a0cf546000000b00623819de804sm4115104qvm.127.2023.06.22.12.02.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jun 2023 12:02:22 -0700 (PDT)
-Date: Thu, 22 Jun 2023 15:02:21 -0400
-From: Benjamin Poirier <benjamin.poirier@gmail.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, netdev@vger.kernel.org,
-	magnus.karlsson@intel.com, bjorn@kernel.org,
-	tirthendu.sarkar@intel.com, simon.horman@corigine.com,
-	toke@kernel.org
-Subject: Re: [PATCH v4 bpf-next 01/22] xsk: prepare 'options' in xdp_desc for
- multi-buffer use
-Message-ID: <ZJSavRFNNvSvoATt@d3>
-References: <20230615172606.349557-1-maciej.fijalkowski@intel.com>
- <20230615172606.349557-2-maciej.fijalkowski@intel.com>
+        bh=GKzX8HU3iGA7YZj30ZFXXUvRRkmVjRXxGOr7ayh9S3A=;
+        b=axRLq/UrfBfmAnnxFqYiAYsBCZiOmsrSXfV50vA+P8oUiRXariryLoCZ27zD14Db01
+         qKTvFS7xauU57l4FMiIfNxTT6VhFvvhuis0lNlq101LtVsWtQli4Xc2LeRoKNLNi8nom
+         qqISy04YrcXwgr/TDTvkXXuoRB06QtoFiUGnuisS+GWFV5AHp9e/TIyhWyPKWohIlekt
+         Km7skWrSZAgI0pKZfNUiD/SI0fy8r5F0nR7L7RceV0ektQUnt7Xn4/hsogJEMvm0rDOB
+         GeEhL0ScvrdQzIHNzSN9Y2RopDBgw1FFR2FaTkwmtCdWYk6J7Mj+lKkX9MPvWcq6c7fj
+         Rw4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687460756; x=1690052756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GKzX8HU3iGA7YZj30ZFXXUvRRkmVjRXxGOr7ayh9S3A=;
+        b=CeHeA5/TdkvC4ieiPcSrPWNRCEFsMjTTZJ4fegn43c24dE7CW3Egia/F1JO4njOpog
+         Rz06349d4fh5ZwELjHarsk9cfbhiGunW1jYC1HG2XaHWw/fUYpo/rotZ/h3ImMSskPJr
+         EYWKAwrZT8PAkp5chS1cJhVJKPgGdXWO5X2dFRSVFROGHbVm52J3a6GqXjOx2SgfCDio
+         ae1zPQ7ghw2TIaPjgSfUB6D+KPkEiS2A3RBoVeYF/E4fC8uRC8AwEA7KxDmNf0kkaaeo
+         zMKOpZONFymKcKBeUjJDi3nGXJBYY9g56+vXZ0BzKFpFiwUGU0LYwNQVoXbp0abPhl7y
+         agHg==
+X-Gm-Message-State: AC+VfDwSJ0L+1pBBF8b8vx0hQju/WXxXiMdWbUmxCRG4oRrtsoWj+3P7
+	CCBZ+MJQwiyWFP+8156K8MX4n0/XIoGX9jy6L+o=
+X-Google-Smtp-Source: ACHHUZ7WKBQRnyHouM0Mgv81oRiCwPqkvyDlRShbq6U3hsDIsxxguVSgoGiRKSJELSHtOtbCwrlD/vXJQm8tafox5I0=
+X-Received: by 2002:adf:df0b:0:b0:311:1009:10c9 with SMTP id
+ y11-20020adfdf0b000000b00311100910c9mr2654579wrl.5.1687460755621; Thu, 22 Jun
+ 2023 12:05:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230615172606.349557-2-maciej.fijalkowski@intel.com>
+References: <20230607235352.1723243-1-andrii@kernel.org> <c1a8d5e8-023b-4ef9-86b3-bdd70efe1340@app.fastmail.com>
+ <CAEf4BzazbMqAh_Nj_geKNLshxT+4NXOCd-LkZ+sRKsbZAJ1tUw@mail.gmail.com>
+ <a73da819-b334-448c-8e5c-50d9f7c28b8f@app.fastmail.com> <CAEf4Bzb__Cmf5us1Dy6zTkbn2O+3GdJQ=khOZ0Ui41tkoE7S0Q@mail.gmail.com>
+ <5eb4264e-d491-a7a2-93c7-928b06ce264d@redhat.com> <bc4f99af-0c46-49b2-9f2d-9a01e6a03af3@app.fastmail.com>
+In-Reply-To: <bc4f99af-0c46-49b2-9f2d-9a01e6a03af3@app.fastmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 22 Jun 2023 12:05:43 -0700
+Message-ID: <CAEf4BzZz2yOkHZSuzpYd2Hv_6pxDJt2GdGVnd3yG8AUj0tSudw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 00/18] BPF token
+To: Andy Lutomirski <luto@kernel.org>
+Cc: Maryam Tahhan <mtahhan@redhat.com>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
+	Christian Brauner <brauner@kernel.org>, lennart@poettering.net, cyphar@cyphar.com, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,35 +82,124 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 2023-06-15 19:25 +0200, Maciej Fijalkowski wrote:
-> From: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-> 
-> Use the 'options' field in xdp_desc as a packet continuity marker. Since
-> 'options' field was unused till now and was expected to be set to 0, the
-> 'eop' descriptor will have it set to 0, while the non-eop descriptors
-> will have to set it to 1. This ensures legacy applications continue to
-> work without needing any change for single-buffer packets.
-> 
-> Add helper functions and extend xskq_prod_reserve_desc() to use the
-> 'options' field.
-> 
-> Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-> ---
->  include/uapi/linux/if_xdp.h |  7 +++++++
->  net/xdp/xsk.c               |  8 ++++----
->  net/xdp/xsk_queue.h         | 12 +++++++++---
->  3 files changed, 20 insertions(+), 7 deletions(-)
-> 
-[...]
-> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> index 6d40a77fccbe..ad81b19e6fdf 100644
-> --- a/net/xdp/xsk_queue.h
-> +++ b/net/xdp/xsk_queue.h
-> @@ -130,6 +130,11 @@ static inline bool xskq_cons_read_addr_unchecked(struct xsk_queue *q, u64 *addr)
->  	return false;
->  }
->  
-> +static inline bool xp_unused_options_set(u16 options)
-                                            ^
-To match struct xdp_desc, this should be u32, no?
+On Thu, Jun 22, 2023 at 9:50=E2=80=AFAM Andy Lutomirski <luto@kernel.org> w=
+rote:
+>
+>
+>
+> On Thu, Jun 22, 2023, at 1:22 AM, Maryam Tahhan wrote:
+> > On 22/06/2023 00:48, Andrii Nakryiko wrote:
+> >>
+> >>>>> Giving a way to enable BPF in a container is only a small part of t=
+he overall task -- making BPF behave sensibly in that container seems like =
+it should also be necessary.
+> >>>> BPF is still a privileged thing. You can't just say that any
+> >>>> unprivileged application should be able to use BPF. That's why BPF
+> >>>> token is about trusting unpriv application in a controlled environme=
+nt
+> >>>> (production) to not do something crazy. It can be enforced further
+> >>>> through LSM usage, but in a lot of cases, when dealing with internal
+> >>>> production applications it's enough to have a proper application
+> >>>> design and rely on code review process to avoid any negative effects=
+.
+> >>> We really shouldn=E2=80=99t be creating new kinds of privileged conta=
+iners that do uncontained things.
+> >>>
+> >>> If you actually want to go this route, I think you would do much bett=
+er to introduce a way for a container manager to usefully proxy BPF on beha=
+lf of the container.
+> >> Please see Hao's reply ([0]) about his and Google's (not so rosy)
+> >> experiences with building and using such BPF proxy. We (Meta)
+> >> internally didn't go this route at all and strongly prefer not to.
+> >> There are lots of downsides and complications to having a BPF proxy.
+> >> In the end, this is just shuffling around where the decision about
+> >> trusting a given application with BPF access is being made. BPF proxy
+> >> adds lots of unnecessary logistical, operational, and development
+> >> complexity, but doesn't magically make anything safer.
+> >>
+> >>    [0] https://lore.kernel.org/bpf/CA+khW7h95RpurRL8qmKdSJQEXNYuqSWnP1=
+6o-uRZ9G0KqCfM4Q@mail.gmail.com/
+> >>
+> > Apologies for being blunt, but  the token approach to me seems to be a
+> > work around providing the right level/classification for a pod/containe=
+r
+> > in order to say you support unprivileged containers using eBPF. I think
+> > if your container needs to do privileged things it should have and be
+> > classified with the right permissions (privileges) to do what it needs
+> > to do.
+>
+> Bluntness is great.
+>
+> I think that this whole level/classification thing is utterly wrong.  Rep=
+lace "BPF" with basically anything else, and you'll see how absurd it is.
+
+BPF is not "anything else", it's important to understand that BPF is
+inherently not compratmentalizable. And it's vast and generic in its
+capabilities. This changes everything. So your analogies are
+misleading.
+
+>
+> "the token approach to me seems like a work around providing the right le=
+vel/classification for a pod/container in order to say you support unprivil=
+eged containers using files on disk"
+>
+> That's very 1990's.  Maybe 1980's.  Of *course* giving access to a filesy=
+stem has some inherent security exposure.  So we can give containers access=
+ to *different* filesystems.  Or we can use ACLs.  Or MAC policy.  Or whate=
+ver.  We have many solutions, none of which are perfect, and we're doing ok=
+ay.
+>
+> "the token approach to me seems like a work around providing the right le=
+vel/classification for a pod/container in order to say you support unprivil=
+eged containers using the network"
+>
+> The network is a big deal.  For some reason, it's cool these days to trea=
+t TCP as highly privileged.  You can get secrets from your favorite (or lea=
+st favorite) cloud provider with unauthenticated HTTP to a magic IP and por=
+t.  You can bypass a whole lot of authenticating/authorizing proxies with u=
+nauthenticated HTTP (no TLS!) if you're on the right network.
+>
+> This is IMO obnoxious, but we deal with it by having network namespaces a=
+nd firewalls and rather outdated port <=3D 1024 rules.
+>
+> "the token approach to me seems like a work around providing the right le=
+vel/classification for a pod/container in order to say you support unprivil=
+eged containers using BPF"
+>
+> My response is: what's wrong with BPF?  BPF has maps and programs and suc=
+h, and we could easily apply 1990's style ownership and DAC rules to them.
+
+Can you apply DAC rules to which kernel events BPF program can be run
+on? Can you apply DAC rules to which in-kernel data structures a BPF
+program can look at and make sure that it doesn't access a
+task/socket/etc that "belongs" to some other container/user/etc?
+
+Can we limit XDP or AF_XDP BPF programs from seeing and controlling
+network traffic that will be eventually routed to a container that XDP
+program "should not" have access to? Without making everything so slow
+that it's useless?
+
+> I even *wrote the code*.
+
+Did you submit it upstream for review and wide discussion? Did you
+test it and integrate it with production workloads to prove that your
+solution is actually a viable real-world solution and not a toy?
+Writing the code doesn't mean solving the problem.
+
+> But for some reason, the BPF community wants to bury its head in the sand=
+, pretend it's 1980, declare that BPF is too privileged to have access cont=
+rol, and instead just have a complicated switch to turn it on and off in di=
+fferent contexts.
+
+I won't speak on behalf of the entire BPF community, but I'm trying to
+explain that BPF cannot be reasonably sandboxed and has to be
+privileged due to its global nature. And I haven't yet seen any
+realistic counter-proposal to change that. And it's not about
+ownership of the BPF map or BPF program, it's way beyond that..
+
+>
+> Please try harder.
+
+Well, maybe there is something in that "some reason" you mentioned
+above that you so quickly dismissed?
 
