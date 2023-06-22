@@ -1,145 +1,130 @@
-Return-Path: <bpf+bounces-3160-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3161-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1AD073A520
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 17:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 17E8B73A5AA
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 18:10:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A29AB281958
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 15:35:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5BF1281A03
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 16:10:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0DA1F94B;
-	Thu, 22 Jun 2023 15:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E74200A3;
+	Thu, 22 Jun 2023 16:10:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89791F18B
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 15:34:56 +0000 (UTC)
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736D8135;
-	Thu, 22 Jun 2023 08:34:55 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5700e993f37so11700547b3.0;
-        Thu, 22 Jun 2023 08:34:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687448094; x=1690040094;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pNO1bZUUdZQncZNLhfTqahVoegQD9v3GiW3j87Muoio=;
-        b=Zzu0hv6LxduhsPHh4hO0E/FOmqAwA/BUWfWKxBy5fzme3qwLxwRc3xJ2z3J5R64xzQ
-         XwltgpM7zao+n2e8jHZFW0ocwxXQFiXC0Nvbg/mjUk0Fvuqx3glo9L5TJSVphNxiKmAQ
-         xf6GnrcuxklZI8b3Bm91t5c1XytjF7z8faz/FphcIP3jhz7S7050IU3OoG3eJXEXsJ5J
-         wceM1zJvXcT9LNw+hC8U1FupUSIkcRa5sW05UjyhXa0qeOEUsnqdayYMrscw1Fe/cgWy
-         q1yykU4mnuqP7BnTdJrhgac+rDbpZIhNIp2bLk27hJVKyaZuaxujJ4x7as2JIaqB7CKe
-         IbQQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D7E1F95D
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 16:10:05 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1291FEB
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 09:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1687450191;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a4ZeA3fCzpsP/weTyEHljBjdeImnc1sztgg04Zvr3Iw=;
+	b=FRSVsHcxCtKhffxsiURcxdDsh3FXHGnZ4rlHgSEFYmOZU2lpx1gPVdbeCProCWgZ8d4vq3
+	LYysXfwbTPASeKZBx4FJY2qktrIvbnISFZ+PvM4OzWyyU+jHPVlu4TImkyH+Y/gDGjjLAi
+	aNQ/u24o3Dy1H8pmxnDkGP3BJZZLhuc=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-662-8OuRDdcRNDCPizflr5mU3w-1; Thu, 22 Jun 2023 12:09:35 -0400
+X-MC-Unique: 8OuRDdcRNDCPizflr5mU3w-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b46bfa6710so48136691fa.1
+        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 09:09:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687448094; x=1690040094;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pNO1bZUUdZQncZNLhfTqahVoegQD9v3GiW3j87Muoio=;
-        b=duDQXrEh1l47tOOiMpUYarnz6O4xRmwABM7QNhBUT2qfjGtjJPgwLk2UVudNQOaaOS
-         Y4Z17v1KzwfgavXamg/xUon0ZPnv32srDcWwHDtV+59GgN8zYZEycgJ0JVVSMsodtmOH
-         OHieUTxvIylfHWj9BYXSAb0NS+nYozgY0kayGNeR/Snun0X4qPxGZBr6dT4WhhO2/KKf
-         81e+pi3RFcImNbnnXSCnuPfQD5kePWWHQFeIhjwOB/hGNHjeNk6TWvuG9s72j/0eA47E
-         p+Oj/Hfe/6cxVw2kqmml8bi0JyWoamYXFK/5mGDbahsAX2LkZ8qSokr0GXSYdl/ho5bl
-         LWeA==
-X-Gm-Message-State: AC+VfDwaBRYWXmvhJdyK0r8p1Ily4IvE5ZDSOrB+FvGobA95nxUe+Q9M
-	76TC0DcRa82lwxwPwa1se+w=
-X-Google-Smtp-Source: ACHHUZ4dyb4tOrqPXK+4oI7F2fvLfPHeOsdGIDkcv7LfRpvrJSauP1lMoQQyD2de6BFzhNbg74GBuA==
-X-Received: by 2002:a81:4e91:0:b0:56f:ecda:b519 with SMTP id c139-20020a814e91000000b0056fecdab519mr21906513ywb.9.1687448094614;
-        Thu, 22 Jun 2023 08:34:54 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:9e96:aa3:eeff:a087? ([2600:1700:6cf8:1240:9e96:aa3:eeff:a087])
-        by smtp.gmail.com with ESMTPSA id x62-20020a814a41000000b00570253fc3e5sm1846242ywa.105.2023.06.22.08.34.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jun 2023 08:34:54 -0700 (PDT)
-Message-ID: <6066b072-b78f-7e8e-6a0b-3ed15349b873@gmail.com>
-Date: Thu, 22 Jun 2023 08:34:52 -0700
+        d=1e100.net; s=20221208; t=1687450156; x=1690042156;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a4ZeA3fCzpsP/weTyEHljBjdeImnc1sztgg04Zvr3Iw=;
+        b=lX5Dfq/7Hs7kXzZX0oPTNz/pTpRRQagj9GJhCNsL2HmqyHO7YAHgR2J0Z52IZAFYNd
+         w13zln7A+xpCj7GqCvjHlDZyntqehXxNcEldFHuzuriR/+4v6q/nvHzd0bNEgnfQMfr4
+         Eh1/eApZPJE+qrn8N2dhZu9CGlYwMkevap2RN56jmCS4HxFLh0QHKalpY3vyxlY25GPA
+         k0AOTFDY42bW4NXQ3uSmy+ml0lwt+NK01Uy2NwAhde3xuveswDfzRadEUfFn7xcM7VE1
+         HT7ijKhCTkwTRWu7dSoIweQ8d39feyqgMayDofghWNJZR8aHs71cVYaTH3qayPvo6Gm4
+         t2yQ==
+X-Gm-Message-State: AC+VfDwIbpC5nxGegWXLaJ6hRMI2d8hZ6ih0uDXuBGJa1sBmbV37auax
+	SST27MKhJ1UsU5fSqQjwXt3tkJLDdNwwyho23HzAsDJGt0pvln6TTVEhwvwazwezo2gOUC+Eq2/
+	LuJWWXE5Pum25
+X-Received: by 2002:a2e:9a8e:0:b0:2b5:8cfd:5236 with SMTP id p14-20020a2e9a8e000000b002b58cfd5236mr2267181lji.17.1687450155866;
+        Thu, 22 Jun 2023 09:09:15 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ6PUI9RE8kTcJcsGtpi7DjRk/Abacp0W+tVcBZjDh9XPq5tuQJut8wknojrAHXz03XIsMl3gQ==
+X-Received: by 2002:a2e:9a8e:0:b0:2b5:8cfd:5236 with SMTP id p14-20020a2e9a8e000000b002b58cfd5236mr2267154lji.17.1687450155518;
+        Thu, 22 Jun 2023 09:09:15 -0700 (PDT)
+Received: from sgarzare-redhat (host-87-11-6-160.retail.telecomitalia.it. [87.11.6.160])
+        by smtp.gmail.com with ESMTPSA id f13-20020a1709067f8d00b0098d2f91c850sm1026234ejr.89.2023.06.22.09.09.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jun 2023 09:09:14 -0700 (PDT)
+Date: Thu, 22 Jun 2023 18:09:12 +0200
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Arseniy Krasnov <oxffffaa@gmail.com>
+Cc: Bobby Eshleman <bobby.eshleman@bytedance.com>, 
+	Stefan Hajnoczi <stefanha@redhat.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, 
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, 
+	Bryan Tan <bryantan@vmware.com>, Vishnu Dasa <vdasa@vmware.com>, 
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Simon Horman <simon.horman@corigine.com>, kvm@vger.kernel.org, virtualization@lists.linux-foundation.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+	bpf@vger.kernel.org
+Subject: Re: [PATCH RFC net-next v4 6/8] virtio/vsock: support dgrams
+Message-ID: <ppx75eomyyb354knfkwbwin3il2ot7hf5cefwrt6ztpcbc3pps@q736cq5v4bdh>
+References: <20230413-b4-vsock-dgram-v4-0-0cebbb2ae899@bytedance.com>
+ <20230413-b4-vsock-dgram-v4-6-0cebbb2ae899@bytedance.com>
+ <92b3a6df-ded3-6470-39d1-fe0939441abc@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH bpf-next v3 1/2] net: bpf: Always call BPF cgroup filters
- for egress.
-Content-Language: en-US
-To: Yonghong Song <yhs@meta.com>, Kui-Feng Lee <thinker.li@gmail.com>,
- bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, daniel@iogearbox.net, yhs@fb.com,
- kpsingh@kernel.org, shuah@kernel.org, john.fastabend@gmail.com,
- sdf@google.com, mykolal@fb.com, linux-kselftest@vger.kernel.org,
- jolsa@kernel.org, haoluo@google.com
-Cc: Kui-Feng Lee <kuifeng@meta.com>
-References: <20230620171409.166001-1-kuifeng@meta.com>
- <20230620171409.166001-2-kuifeng@meta.com>
- <4d46ba3a-61e9-2482-a359-7a8805f1dbc8@meta.com>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <4d46ba3a-61e9-2482-a359-7a8805f1dbc8@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <92b3a6df-ded3-6470-39d1-fe0939441abc@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
-
-On 6/21/23 20:37, Yonghong Song wrote:
-> 
-> 
-> On 6/20/23 10:14 AM, Kui-Feng Lee wrote:
->> Always call BPF filters if CGROUP BPF is enabled for EGRESS without
->> checking skb->sk against sk.
+On Sun, Jun 11, 2023 at 11:49:02PM +0300, Arseniy Krasnov wrote:
+>Hello Bobby!
+>
+>On 10.06.2023 03:58, Bobby Eshleman wrote:
+>> This commit adds support for datagrams over virtio/vsock.
 >>
->> The filters were called only if skb is owned by the sock that the
->> skb is sent out through.  In another words, skb->sk should point to
->> the sock that it is sending through its egress.  However, the filters 
->> would
->> miss SYNACK skbs that they are owned by a request_sock but sent through
->> the listening sock, that is the socket listening incoming connections.
->> This is an unnecessary restrict.
-> 
-> The original patch which introduced 'sk == skb->sk' is
->    3007098494be  cgroup: add support for eBPF programs
-> There are no mentioning in commit message why 'sk == skb->sk'
-> is needed. So it is possible that this is just restricted
-> for use cases at that moment. Now there are use cases
-> where 'sk != skb->sk' so removing this check can enable
-> the new use case. Maybe you can add this into your commit
-> message so people can understand the history of 'sk == skb->sk'.
+>> Message boundaries are preserved on a per-skb and per-vq entry basis.
+>
+>I'm a little bit confused about the following case: let vhost sends 4097 bytes
+>datagram to the guest. Guest uses 4096 RX buffers in it's virtio queue, each
+>buffer has attached empty skb to it. Vhost places first 4096 bytes to the first
+>buffer of guests RX queue, and 1 last byte to the second buffer. Now IIUC guest
+>has two skb in it rx queue, and user in guest wants to read data - does it read
+>4097 bytes, while guest has two skb - 4096 bytes and 1 bytes? In seqpacket there is
+>special marker in header which shows where message ends, and how it works here?
 
-I will put it down on the next version.
+I think the main difference is that DGRAM is not connection-oriented, so
+we don't have a stream and we can't split the packet into 2 (maybe we
+could, but we have no guarantee that the second one for example will be
+not discarded because there is no space).
 
-> 
->>
->> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
->> ---
->>   include/linux/bpf-cgroup.h | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
->> index 57e9e109257e..e656da531f9f 100644
->> --- a/include/linux/bpf-cgroup.h
->> +++ b/include/linux/bpf-cgroup.h
->> @@ -199,7 +199,7 @@ static inline bool cgroup_bpf_sock_enabled(struct 
->> sock *sk,
->>   #define BPF_CGROUP_RUN_PROG_INET_EGRESS(sk, skb)                   \
->>   ({                                           \
->>       int __ret = 0;                                   \
->> -    if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk && sk == 
->> skb->sk) { \
->> +    if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk) {               \
->>           typeof(sk) __sk = sk_to_full_sk(sk);                   \
->>           if (sk_fullsock(__sk) &&                       \
->>               cgroup_bpf_sock_enabled(__sk, 
->> CGROUP_INET_EGRESS))           \
-> 
+So I think it is acceptable as a restriction to keep it simple.
+
+My only doubt is, should we make the RX buffer size configurable,
+instead of always using 4k?
+
+Thanks,
+Stefano
+
 
