@@ -1,140 +1,232 @@
-Return-Path: <bpf+bounces-3188-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3189-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE96273A94D
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 22:06:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D1EC73A95B
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 22:12:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FBC9281ACD
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 20:06:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D3AB1C2119D
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 20:12:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7CFA2108E;
-	Thu, 22 Jun 2023 20:06:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E624D21093;
+	Thu, 22 Jun 2023 20:12:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8885620690
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 20:06:17 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BB019B;
-	Thu, 22 Jun 2023 13:06:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=1iD8w/UaK9dH9GDXVeWytepJSEZs7Q5LQ6mZtRTdGts=; b=YjVq4FYEcrC1Dgn9RLYRS1nxdI
-	bi6yhwreXs5jK6TuluDPgdN//C1PkW7hqJJnd4O+hF7XlExibr+YONoYIt6c63CAnHoEFL0F/cabX
-	dxcBMAjul/Nl8+QiNu/bUlEewdI4DtoNRmxvNoKyd619Nr2Rfk8l3kpogJBjGaJp5b+5+AAb2Gs9q
-	E5JiCNtOZ2HJb4NHsDDNq09BtITs9crF11Lt+k9HCVXeDgaRjosprTiX3Va09t7iFoBTHh9HJjbZT
-	4qnOvMrXVM9DRaIt6DDJH5lHjBnW/J9xcKg48TVwop0RHgzfGtFsePSrK4yZY1Ipn/6chu9tn3yuh
-	TIx0FzWw==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qCQZG-0000cq-RN; Thu, 22 Jun 2023 22:06:10 +0200
-Received: from [178.197.249.45] (helo=linux.home)
-	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qCQZE-000EiN-KH; Thu, 22 Jun 2023 22:06:10 +0200
-Subject: Re: [PATCH bpf-next v3 1/2] net: bpf: Always call BPF cgroup filters
- for egress.
-To: Yonghong Song <yhs@meta.com>, Kui-Feng Lee <sinquersw@gmail.com>,
- Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org, yhs@fb.com, kpsingh@kernel.org, shuah@kernel.org,
- john.fastabend@gmail.com, sdf@google.com, mykolal@fb.com,
- linux-kselftest@vger.kernel.org, jolsa@kernel.org, haoluo@google.com
-Cc: Kui-Feng Lee <kuifeng@meta.com>
-References: <20230620171409.166001-1-kuifeng@meta.com>
- <20230620171409.166001-2-kuifeng@meta.com>
- <4d46ba3a-61e9-2482-a359-7a8805f1dbc8@meta.com>
- <2693aaa4-eb33-553c-291c-3eb555452ea6@gmail.com>
- <94226479-8d79-cc83-9ecf-6db0b376a7fd@meta.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <461e9be3-d533-d727-8ef9-0e20972ae0b4@iogearbox.net>
-Date: Thu, 22 Jun 2023 22:06:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE7F820690
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 20:12:03 +0000 (UTC)
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386CD1BD8
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 13:12:02 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-553a1f13d9fso4634006a12.1
+        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 13:12:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687464721; x=1690056721;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nz9m/AVCYpJY3TUjuJI6d3jH2k5Z0Vv2asMMTB+tRqo=;
+        b=oi54k3a6PzfK58BAyNrHNoPwClihk6T7cevgw1Gcc6MU1oyB8Ao5JE2dLVrFLYEbhh
+         nVUZQyQzfBVdktztor5sTfV63ehHxzCzCeTwONEAlI/DqiNZdqT+x2WZOiq2DLE1cyV2
+         szV4Hp4cvBcLQmzIAS4yWft+fJYD3NOdbYTdyLwAvEf5il6bC8HR7yTCzL8lqhD3p2IL
+         s+7D/fjwv1dyv1UtVmhNttweEfV+o+4tigWgmVv3EpNyJY1WyZQVxRF8Vc/UmcRcmiZt
+         xylTfs9lG0lK5pc7V6vVe0pNIOWq8wI/k7PcOQ+g6kV1FG8hG47O5+3WKu/rrNj8Bl18
+         1Y/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687464721; x=1690056721;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nz9m/AVCYpJY3TUjuJI6d3jH2k5Z0Vv2asMMTB+tRqo=;
+        b=O6j4galrx+F7p7CHDvC4j6n+lkKCTYxnkBfInQ9Ok8a6rY+d4lrsdTmNW+dcAs5jyz
+         QlK4pF8IiH3+dVktshYAXzkBZMMEokw1Jvit4tOgT1vMjw/paGlV2KTXOVpkxvZ4WGZO
+         CMY8fDERf0WRI172ymu0zb2ySRTy/kfM4AK96u/gjAedAs/AP11CVT4ybEQ9Yf50EXh/
+         wSfqjCnBq1yXAsEIreppFctJ1n5blWaw/tQeUiS7vT5Ic8p7RHwDAERM9wOedOgTT6ei
+         Ho7O2+avPvsfDVaOkz67xAMPrULzKGJQLcNpRsak8xEVf1kwCllkM4nK1JfU/exN0mXx
+         3kVg==
+X-Gm-Message-State: AC+VfDztC+jka5HeWr3Yd29yHbRfFv0L8YzNmNYdmGVZI9ecRrD93OS2
+	VZmg6XCNGLtIW4AqmSyy5oU5mEx0f8M=
+X-Google-Smtp-Source: ACHHUZ6U58SRIJGUzjf1Qy/C0X9mb8tApFh03KaSuqJ5e81TVSsDXBjGvCnEMGHRKz40RxzxRrNqsA==
+X-Received: by 2002:a17:902:9a0b:b0:1b0:663e:4b10 with SMTP id v11-20020a1709029a0b00b001b0663e4b10mr18174585plp.64.1687464721597;
+        Thu, 22 Jun 2023 13:12:01 -0700 (PDT)
+Received: from macbook-pro-8.dhcp.thefacebook.com ([2620:10d:c090:500::4:95b5])
+        by smtp.gmail.com with ESMTPSA id y13-20020a1709027c8d00b001ac937171e4sm5706880pll.254.2023.06.22.13.11.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jun 2023 13:12:01 -0700 (PDT)
+Date: Thu, 22 Jun 2023 13:11:58 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Anton Protopopov <aspsk@isovalent.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+Subject: Re: [RFC v2 PATCH bpf-next 1/4] bpf: add percpu stats for bpf_map
+ elements insertions/deletions
+Message-ID: <20230622201158.s56vbdas5rcilwbd@macbook-pro-8.dhcp.thefacebook.com>
+References: <20230622095330.1023453-1-aspsk@isovalent.com>
+ <20230622095330.1023453-2-aspsk@isovalent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <94226479-8d79-cc83-9ecf-6db0b376a7fd@meta.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26947/Thu Jun 22 09:29:54 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230622095330.1023453-2-aspsk@isovalent.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 6/22/23 8:28 PM, Yonghong Song wrote:
-> On 6/22/23 10:15 AM, Kui-Feng Lee wrote:
->> On 6/21/23 20:37, Yonghong Song wrote:
->>> On 6/20/23 10:14 AM, Kui-Feng Lee wrote:
->>>> Always call BPF filters if CGROUP BPF is enabled for EGRESS without
->>>> checking skb->sk against sk.
->>>>
->>>> The filters were called only if skb is owned by the sock that the
->>>> skb is sent out through.  In another words, skb->sk should point to
->>>> the sock that it is sending through its egress.  However, the filters would
->>>> miss SYNACK skbs that they are owned by a request_sock but sent through
->>>> the listening sock, that is the socket listening incoming connections.
->>>> This is an unnecessary restrict.
->>>
->>> The original patch which introduced 'sk == skb->sk' is
->>>    3007098494be  cgroup: add support for eBPF programs
->>> There are no mentioning in commit message why 'sk == skb->sk'
->>> is needed. So it is possible that this is just restricted
->>> for use cases at that moment. Now there are use cases
->>> where 'sk != skb->sk' so removing this check can enable
->>> the new use case. Maybe you can add this into your commit
->>> message so people can understand the history of 'sk == skb->sk'.
->>
->> After checking the code and the Alexei's comment[1] again, this check
->> may be different from what I thought. In another post[2],
->> Daniel Borkmann mentioned
->>
->>      Wouldn't that mean however, when you go through stacked devices that
->>      you'd run the same eBPF cgroup program for skb->sk multiple times?
->>
->> I read this paragraph several times.
->> This check ensures the filters are only called for the device on
->> the top of a stack.  So, I probably should change the check to
->>
->>      sk == skb_to_full_sk(skb)
+On Thu, Jun 22, 2023 at 09:53:27AM +0000, Anton Protopopov wrote:
+> Add a generic percpu stats for bpf_map elements insertions/deletions in order
+> to keep track of both, the current (approximate) number of elements in a map
+> and per-cpu statistics on update/delete operations.
 > 
-> I think this should work. It exactly covers your use case:
->    they are owned by a request_sock but sent through
->    the listening sock, that is the socket listening incoming connections
-> and sk == skb->sk for non request_sock/listening_sock case.
+> To expose these stats a particular map implementation should initialize the
+> counter and adjust it as needed using the 'bpf_map_*_elements_counter' helpers
+> provided by this commit. The counter can be read by an iterator program.
+> 
+> A bpf_map_sum_elements_counter kfunc was added to simplify getting the sum of
+> the per-cpu values. If a map doesn't implement the counter, then it will always
+> return 0.
+> 
+> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> ---
+>  include/linux/bpf.h   | 30 +++++++++++++++++++++++++++
+>  kernel/bpf/map_iter.c | 48 ++++++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 77 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index f58895830ada..20292a096188 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -275,6 +275,7 @@ struct bpf_map {
+>  	} owner;
+>  	bool bypass_spec_v1;
+>  	bool frozen; /* write-once; write-protected by freeze_mutex */
+> +	s64 __percpu *elements_count;
+>  };
+>  
+>  static inline const char *btf_field_type_name(enum btf_field_type type)
+> @@ -2040,6 +2041,35 @@ bpf_map_alloc_percpu(const struct bpf_map *map, size_t size, size_t align,
+>  }
+>  #endif
+>  
+> +static inline int
+> +bpf_map_init_elements_counter(struct bpf_map *map)
+> +{
+> +	size_t size = sizeof(*map->elements_count), align = size;
+> +	gfp_t flags = GFP_USER | __GFP_NOWARN;
+> +
+> +	map->elements_count = bpf_map_alloc_percpu(map, size, align, flags);
+> +	if (!map->elements_count)
+> +		return -ENOMEM;
+> +
+> +	return 0;
+> +}
+> +
+> +static inline void
+> +bpf_map_free_elements_counter(struct bpf_map *map)
+> +{
+> +	free_percpu(map->elements_count);
+> +}
+> +
+> +static inline void bpf_map_inc_elements_counter(struct bpf_map *map)
 
-Just a thought, should the test look like the below?
+bpf_map_inc_elem_count() to match existing inc_elem_count() ?
 
-         int __ret = 0;                                                         \
-         if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk) {                    \
-                 typeof(sk) __sk = sk_to_full_sk(sk);                           \
-                 if (sk_fullsock(__sk) && __sk == skb_to_full_sk(skb) &&        \
-                     cgroup_bpf_sock_enabled(__sk, CGROUP_INET_EGRESS))         \
-                         __ret = __cgroup_bpf_run_filter_skb(__sk, skb,         \
-                                                       CGROUP_INET_EGRESS); \
-         }                                                                      \
+> +{
+> +	this_cpu_inc(*map->elements_count);
+> +}
+> +
+> +static inline void bpf_map_dec_elements_counter(struct bpf_map *map)
+> +{
+> +	this_cpu_dec(*map->elements_count);
+> +}
+> +
+>  extern int sysctl_unprivileged_bpf_disabled;
+>  
+>  static inline bool bpf_allow_ptr_leaks(void)
+> diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
+> index b0fa190b0979..26ca00dde962 100644
+> --- a/kernel/bpf/map_iter.c
+> +++ b/kernel/bpf/map_iter.c
+> @@ -93,7 +93,7 @@ static struct bpf_iter_reg bpf_map_reg_info = {
+>  	.ctx_arg_info_size	= 1,
+>  	.ctx_arg_info		= {
+>  		{ offsetof(struct bpf_iter__bpf_map, map),
+> -		  PTR_TO_BTF_ID_OR_NULL },
+> +		  PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
 
-Iow, we do already convert __sk to full sk, so we should then also use that
-for the test with skb_to_full_sk(skb).
+this and below should be in separate patch.
 
-Thanks,
-Daniel
+>  	},
+>  	.seq_info		= &bpf_map_seq_info,
+>  };
+> @@ -193,3 +193,49 @@ static int __init bpf_map_iter_init(void)
+>  }
+>  
+>  late_initcall(bpf_map_iter_init);
+> +
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +		  "Global functions as their definitions will be in vmlinux BTF");
+> +
+> +__bpf_kfunc s64 bpf_map_sum_elements_counter(struct bpf_map *map)
+> +{
+> +	s64 *pcount;
+> +	s64 ret = 0;
+> +	int cpu;
+> +
+> +	if (!map || !map->elements_count)
+> +		return 0;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		pcount = per_cpu_ptr(map->elements_count, cpu);
+> +		ret += READ_ONCE(*pcount);
+> +	}
+> +	return ret;
+> +}
+> +
+> +__diag_pop();
+> +
+> +BTF_SET8_START(bpf_map_iter_kfunc_ids)
+> +BTF_ID_FLAGS(func, bpf_map_sum_elements_counter, KF_TRUSTED_ARGS)
+> +BTF_SET8_END(bpf_map_iter_kfunc_ids)
+> +
+> +static int tracing_iter_filter(const struct bpf_prog *prog, u32 kfunc_id)
+> +{
+> +	if (btf_id_set8_contains(&bpf_map_iter_kfunc_ids, kfunc_id) &&
+> +	    prog->expected_attach_type != BPF_TRACE_ITER)
+
+why restrict to trace_iter?
+
+> +		return -EACCES;
+> +	return 0;
+> +}
+> +
+> +static const struct btf_kfunc_id_set bpf_map_iter_kfunc_set = {
+> +	.owner = THIS_MODULE,
+> +	.set   = &bpf_map_iter_kfunc_ids,
+> +	.filter = tracing_iter_filter,
+> +};
+> +
+> +static int init_subsystem(void)
+> +{
+> +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_map_iter_kfunc_set);
+> +}
+> +late_initcall(init_subsystem);
+> -- 
+> 2.34.1
+> 
 
