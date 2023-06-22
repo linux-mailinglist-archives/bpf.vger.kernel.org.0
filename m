@@ -1,73 +1,77 @@
-Return-Path: <bpf+bounces-3193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24D7473AB2A
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 23:06:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A9C573ABAE
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 23:36:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9670281A82
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 21:06:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E8181C20CDE
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 21:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D625122557;
-	Thu, 22 Jun 2023 21:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF3D22562;
+	Thu, 22 Jun 2023 21:35:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A71C20690
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 21:06:01 +0000 (UTC)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112874483
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 14:05:31 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3f90b4ac529so182295e9.0
-        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 14:05:30 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06BFB20690
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 21:35:54 +0000 (UTC)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311901FCB
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 14:35:46 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51a200fc3eeso9635502a12.3
+        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 14:35:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687467873; x=1690059873;
+        d=gmail.com; s=20221208; t=1687469744; x=1690061744;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kDbVsTManhHVsI9mtLf6Vkc2Lh4qyxu+YtSadeFerp0=;
-        b=RNI8pmSvM7BMm0KFuxA/fpBM8RoolshzkUCd1c6rGS29HEGucZAhm+PMtd6wI0RPay
-         lFFMcMpVzavGL4zR+ESCArPGO54fn4yHGUyLKWEpfV5h6DdC5zVbeY7xRooNGrDz9ozu
-         8G5yghptVtP4JDoG7omT79YyAvmz6C95tWQFGJchbnw04UHQg/hClPGvc6ZNTUZrRQCn
-         rEt3wqBX7JUFkiKMOnuti8uLqCejJmLGUvTFMIerHE27MYnqy9AAT1F8rb/yZYfh6DkH
-         PZpt9FtgA56Raiemv3lR+K4L2mekHDukDyddycGXicQCkWPyeAUEJ+j6tmMuW7bEup9X
-         6xGA==
+        bh=pPZQesVDxmMmKXqVsW4tcHyZp77AxBuILZnaWb8IfNk=;
+        b=DP+/28RH75MZbYOUslTJmQIL3J2QLFUak7RdjfszU64A4zJGV5Z965tgBG5iyeMBUr
+         HHJq3AckhIVqysH1uP2USsPu5jkuMv0BKkfVre24xK6KZPWDPV1j3Lc8nM9/rTsOEi0E
+         kt71LfDqW63GkcAd/+uSdUl1JwHZYlTvp4Uig/ujQVULIZpSclZ448TsgI+skt7A4N1K
+         Egenz5HoBJecNn5MYwBIZR8duDzcZ6wOps6vI0HjaNgCXltcrcykaNSDj3cSiVO2gflZ
+         bpNZbcgAQJDSQFiHHarCvIkD/aXxsn5cQM4QaZ8gq70dJhP4FnxbG7HqJvWe3Vi/xsKL
+         iUMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687467873; x=1690059873;
+        d=1e100.net; s=20221208; t=1687469744; x=1690061744;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kDbVsTManhHVsI9mtLf6Vkc2Lh4qyxu+YtSadeFerp0=;
-        b=iZF4vxMziK4pFHAaELMyDP5/WsEdFdT5SyB9a+ZxmgoAjCCWxZWFpyUonZdaOY9bbM
-         zMdXsGsq8xbqQHRkSjrOBKhh+bkFm8oDaHmuEtjuqKh4F6nLdLILCWQF5WTpp+q0DTMN
-         DwzxbYmCWIptaPNTp0XeoOmq5G0nrddmNXq2OMDTnn8lXLJoCXDRDnlkHDXRuhZosxI1
-         LFKzJmX6CJ8ZGZ4I8lr/g8ulrYWLEkSVfzQcTF14pyOfzaCIna7E1jRht10KP5aFbpJI
-         35UqvK2tUpOQEjg0MWigeILo9rEJDPcJZxJW+tUqT2Xv46C15r/ojEwRdVnVCBcuUdLA
-         2u7g==
-X-Gm-Message-State: AC+VfDwBp0no4XE1spK7ZfODKKHhCgcKeNk2z5clWUNhlhRoew4iTKzr
-	I0+Ac+kLPv6l+v9clWLgpfVZF+z2haVZIR2CtdCl6cWjsQc=
-X-Google-Smtp-Source: ACHHUZ6NXi7eh+amG+l4JAaPfIxJ5cRJrLwkhjFfIykRKWG2ntXqd8jN4/uZTXTr8CnJen3qtDEd10FG/Omla17wVfo=
-X-Received: by 2002:a7b:cb99:0:b0:3f9:c986:a2ca with SMTP id
- m25-20020a7bcb99000000b003f9c986a2camr3547871wmi.24.1687467873262; Thu, 22
- Jun 2023 14:04:33 -0700 (PDT)
+        bh=pPZQesVDxmMmKXqVsW4tcHyZp77AxBuILZnaWb8IfNk=;
+        b=MnAHmQcxzDknXPMtm+qYIs+or/UmdCOZThpr8eKMOhCIUTszogVS40wtZ/8k6izfqY
+         RS7jlw36pjHqzv7XN1r5B36Wr/Vel4q8WT1AwEIC5hTtWnIhAwd3tiKCyyDs4kZrWbSu
+         OG6LT72wLF9sdzvEHefwd52NeQ2JMZ6A8pNMKwIyGFcF76xme8SlNiUL3+GSJRMAMNQq
+         PX5XRM4DWr9SJyHDsyaH7aNbGIMeGXnJkn2jBb3ZvOuWHBtiiJ43WxWaYMa4NOWLcL/k
+         CbWuwDJVhI+kDQa6Wu48PMSf+3Uj2yFrFXPX5M18fqA7bxSULnrfIjh0ISZCPddysCok
+         QbDg==
+X-Gm-Message-State: AC+VfDza8cUY5xmgcUgqb5u+UyiSsywZdl6M9qWKgZn4gU85j+REKThB
+	+3Qbibh8DKtypP/B/i71BoEsBANxSHWoZZS6FOU=
+X-Google-Smtp-Source: ACHHUZ71N1UQpDro9p5xUjc/LhzLcMDroT0l49BmrXTadOoM28a94FrF6fAlko1ggBDGbCB0KPiCt5gOrSeUod2mn8w=
+X-Received: by 2002:a05:6402:7cd:b0:514:95b1:f0ba with SMTP id
+ u13-20020a05640207cd00b0051495b1f0bamr13822660edy.34.1687469744280; Thu, 22
+ Jun 2023 14:35:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <bd173bf2-dea6-3e0e-4176-4a9256a9a056@google.com>
- <CAADnVQKbNjKJgYODUS0zO3dR8dxEcFpgY3GkhEEmwT462HW+wA@mail.gmail.com> <9642870b-3876-6b99-cf62-45ca11cfe80e@google.com>
-In-Reply-To: <9642870b-3876-6b99-cf62-45ca11cfe80e@google.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 22 Jun 2023 14:04:20 -0700
-Message-ID: <CAEf4BzbgKVBiVwmfhZ6=umYF_V21pzoAzFhnjxhv0Lz02iWGmg@mail.gmail.com>
-Subject: Re: Calling functions while holding a spinlock
-To: Barret Rhoden <brho@google.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>
+References: <20230615142520.10280-1-eddyz87@gmail.com> <CAEf4Bzb4VJ7h02QAbg77sp9jgVFJBWoXrRuWGxHkXqQdPJ6EPw@mail.gmail.com>
+ <87ttv2f0pw.fsf@gnu.org>
+In-Reply-To: <87ttv2f0pw.fsf@gnu.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 22 Jun 2023 14:35:32 -0700
+Message-ID: <CAADnVQKH6i2D2K4VGAzbxkKifjSEq+0K02-zOKDqQVJtmrfHdw@mail.gmail.com>
+Subject: Re: [RFC bpf-next] bpf: generate 'nomerge' for map helpers in bpf_helper_defs.h
+To: "Jose E. Marchesi" <jemarch@gnu.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>, 
+	David Faust <david.faust@oracle.com>, dzq.aishenghu0@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,73 +81,135 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jun 20, 2023 at 3:41=E2=80=AFAM Barret Rhoden <brho@google.com> wro=
-te:
->
-> On 6/15/23 12:17, Alexei Starovoitov wrote:
-> > On Wed, Jun 14, 2023 at 1:32=E2=80=AFPM Barret Rhoden <brho@google.com>=
+On Tue, Jun 20, 2023 at 11:27=E2=80=AFAM Jose E. Marchesi <jemarch@gnu.org>=
  wrote:
+>
+>
+> > On Thu, Jun 15, 2023 at 7:25=E2=80=AFAM Eduard Zingerman <eddyz87@gmail=
+.com> wrote:
 > >>
-> >> Hi -
+> >> Update code generation for bpf_helper_defs.h by adding
+> >> __attribute__((nomerge)) for a set of helper functions to prevent some
+> >> verifier unfriendly compiler optimizations.
 > >>
-> >> Would it be possible to add logic to the verifier to handle calling
-> >> functions within my program (subprograms?) while holding a bpf_spin_lo=
-ck?
+> >> This addresses a recent mailing list thread [1].
+> >> There Zhongqiu Duan and Yonghong Song discussed a C program as below:
 > >>
-> >> Some of my functions are large enough that the compiler won't inline
-> >> them, so I'll get a BPF_CALL to PC + offset (relative call within my
-> >> program).  Whenever this pops up, I force the compiler to inline the
-> >> function, but that's brittle.  I'd rather just have the ability to cal=
-l
-> >> a function.
+> >>      if (data_end - data > 1024) {
+> >>          bpf_for_each_map_elem(&map1, cb, &cb_data, 0);
+> >>      } else {
+> >>          bpf_for_each_map_elem(&map2, cb, &cb_data, 0);
+> >>      }
+> >>
+> >> Which was converted by clang to something like this:
+> >>
+> >>      if (data_end - data > 1024)
+> >>        tmp =3D &map1;
+> >>      else
+> >>        tmp =3D &map2;
+> >>      bpf_for_each_map_elem(tmp, cb, &cb_data, 0);
+> >>
+> >> Which in turn triggered verification error, because
+> >> verifier.c:record_func_map() requires a single map address for each
+> >> bpf_for_each_map_elem() call.
+> >>
+> >> In fact, this is a requirement for the following helpers:
+> >> - bpf_tail_call
+> >> - bpf_map_lookup_elem
+> >> - bpf_map_update_elem
+> >> - bpf_map_delete_elem
+> >> - bpf_map_push_elem
+> >> - bpf_map_pop_elem
+> >> - bpf_map_peek_elem
+> >> - bpf_for_each_map_elem
+> >> - bpf_redirect_map
+> >> - bpf_map_lookup_percpu_elem
+> >>
+> >> I had an off-list discussion with Yonghong where we agreed that clang
+> >> attribute 'nomerge' (see [2]) could be used to prevent the
+> >> optimization hitting in [1]. However, currently 'nomerge' applies only
+> >> to functions and statements, hence I submitted change requests [3],
+> >> [4] to allow specifying 'nomerge' for function pointers as well.
+> >>
+> >> The patch below updates bpf_helper_defs.h generation by adding a
+> >> definition of __nomerge macro, and using this macro in definitions of
+> >> relevant helpers.
+> >>
+> >> The generated code looks as follows:
+> >>
+> >>     /* This is auto-generated file. See bpf_doc.py for details. */
+> >>
+> >>     #if __has_attribute(nomerge)
+> >>     #define __nomerge __attribute__((nomerge))
+> >>     #else
+> >>     #define __nomerge
+> >>     #endif
+> >>
+> >>     /* Forward declarations of BPF structs */
+> >>     ...
+> >>     static long (*bpf_for_each_map_elem)(void *map, ...) __nomerge =3D=
+ (void *) 164;
+> >>     ...
+> >>
+> >> (In non-RFC version the macro definition would have to be updated to
+> >>  check for supported clang version).
+> >>
+> >> Does community agree with such approach?
 > >
-> > always_inline works as a workaround, right?
-> > And it's guaranteed to work, no?
-> > I'm not sure why you're saying it's brittle.
+> > Makes sense to me. Let's just be very careful to do proper detection
+> > of __nomerge "applicability" to ensure we don't cause compilation
+> > errors for unsupported Clang (which I'm sure you are well aware of)
+> > *and* make it compatible with GCC, so we don't fix it later.
 >
-> yeah, it works.  the brittleness comes when i don't mark a function
-> always_inline, but i don't notice since the compiler was inlining it
-> anyways.  but eventually i make a change and the compiler decides to
-> not-inline it.  e.g. i call the same function again somewhere else in my
-> program, and now it's worth it to make it a separate function.
+> GCC doesn't support the "nomerge" attribute at this point.  We will look
+> into adding it or find some other equivalent mechanism that can be
+> abstracted in the __nomerge macro.
 >
-> it's not super urgent - and i've been hit by it enough times that i can
-> usually find the problem if it pops up.
->
-> > It probably generates less performant code,
-> > so it would be good to add such support.
-> > It wasn't done earlier, because spin_lock-ed section
-> > supposed to be short. So the restriction was kinda forcing
-> > program authors to minimize the lock time.
-> > Could you please share the example code where you want to use it?
->
-> stuff like this:
->
-> https://github.com/google/ghost-userspace/blob/main/third_party/bpf/biff_=
-flux.bpf.c#L115
->
-> similar to that one, i have an "AVL tree insert" function that the
-> compiler didn't want to inline - especially if i called it twice.  (the
-> AVL code hasn't hit our opensource ghost repo yet).
->
-> > Just to make sure we're talking about calling bpf subprograms only
-> > and you're not requesting to call arbitrary helpers and kfuncs
-> > while holding the lock.
-> > Some of the kfuncs can be allowed under lock if there is a real need.
->
-> i was talking about bpf subprogs.  though one helper that would be nice
-> to call while holding a lock is bpf_loop.  i've got some loops that i'd
-> turn into bpf-loops, but can't due to the spinlock.
+> >>
+> >> [1] https://lore.kernel.org/bpf/03bdf90f-f374-1e67-69d6-76dd9c8318a4@m=
+eta.com/
+> >> [2] https://clang.llvm.org/docs/AttributeReference.html#nomerge
+> >> [3] https://reviews.llvm.org/D152986
+> >> [4] https://reviews.llvm.org/D152987
+> >> ---
+> >>  scripts/bpf_doc.py | 37 ++++++++++++++++++++++++++++++-------
+> >>  1 file changed, 30 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> >> index eaae2ce78381..dbd4893c793e 100755
+> >> --- a/scripts/bpf_doc.py
+> >> +++ b/scripts/bpf_doc.py
+> >> @@ -777,14 +777,33 @@ class PrinterHelpers(Printer):
+> >>          'bpf_get_socket_cookie',
+> >>          'bpf_sk_assign',
+> >>      ]
+> >> +    # Helpers that need __nomerge attribute
+> >> +    nomerge_helpers =3D set([
+> >> +       "bpf_tail_call",
+> >> +       "bpf_map_lookup_elem",
+> >> +       "bpf_map_update_elem",
+> >> +       "bpf_map_delete_elem",
+> >> +       "bpf_map_push_elem",
+> >> +       "bpf_map_pop_elem",
+> >> +       "bpf_map_peek_elem",
+> >> +       "bpf_for_each_map_elem",
+> >> +       "bpf_redirect_map",
+> >> +       "bpf_map_lookup_percpu_elem"
+> >> +    ])
+> >> +
+> >> +    macros =3D '''\
+> >> +#if __has_attribute(nomerge)
+> >> +#define __nomerge __attribute__((nomerge))
+> >> +#else
+> >> +#define __nomerge
+> >> +#endif'''
 
-try open-coded iterators instead of bpf_loop(), if you can afford to
-depend on a slightly newer kernel. See bpf_for() macro in
-bpf_helpers.h in libbpf
-
->
-> thanks,
->
-> barret
->
->
->
+Let's add an extensive comment here,
+so that people looking at bpf_helper_defs.h don't need
+to search clang documentation on what this attr is doing.
+I bet even compiler experts won't be able to explain 'why'
+after reading the doc:
+https://clang.llvm.org/docs/AttributeReference.html#nomerge
+The example from the commit log should probably be in the comment too.
+Other than that the approach makes sense to me.
 
