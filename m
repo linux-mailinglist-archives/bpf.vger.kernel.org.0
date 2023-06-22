@@ -1,205 +1,513 @@
-Return-Path: <bpf+bounces-3182-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3183-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3710F73A8CC
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 21:06:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADF1973A8F3
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 21:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9C2A281AF0
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 19:06:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 668A3281AE8
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 19:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6A821063;
-	Thu, 22 Jun 2023 19:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E362107F;
+	Thu, 22 Jun 2023 19:23:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A208D1F923
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 19:06:00 +0000 (UTC)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF6B186;
-	Thu, 22 Jun 2023 12:05:57 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3f9c2913133so23772505e9.1;
-        Thu, 22 Jun 2023 12:05:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E181E536;
+	Thu, 22 Jun 2023 19:23:32 +0000 (UTC)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F72E6E;
+	Thu, 22 Jun 2023 12:23:29 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b45b6adffbso103862921fa.3;
+        Thu, 22 Jun 2023 12:23:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687460756; x=1690052756;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GKzX8HU3iGA7YZj30ZFXXUvRRkmVjRXxGOr7ayh9S3A=;
-        b=axRLq/UrfBfmAnnxFqYiAYsBCZiOmsrSXfV50vA+P8oUiRXariryLoCZ27zD14Db01
-         qKTvFS7xauU57l4FMiIfNxTT6VhFvvhuis0lNlq101LtVsWtQli4Xc2LeRoKNLNi8nom
-         qqISy04YrcXwgr/TDTvkXXuoRB06QtoFiUGnuisS+GWFV5AHp9e/TIyhWyPKWohIlekt
-         Km7skWrSZAgI0pKZfNUiD/SI0fy8r5F0nR7L7RceV0ektQUnt7Xn4/hsogJEMvm0rDOB
-         GeEhL0ScvrdQzIHNzSN9Y2RopDBgw1FFR2FaTkwmtCdWYk6J7Mj+lKkX9MPvWcq6c7fj
-         Rw4Q==
+        d=gmail.com; s=20221208; t=1687461808; x=1690053808;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Df3C9o+jyHgFt4v9MKKnPb27TCZxS6OX8UG6w0FVZtQ=;
+        b=rF5TIApn9sIUcpC0S8nCtAQIETqTxH2DNABJmnqk10ThSbvs7o5t68IVGhuW3P0gL3
+         3yhhDlCb5J1YDCB1jAJuZLeCadFx3yLkm1Wn0wgykz0GMAiOAGZkb/IHz30aFFdkP+0y
+         o8pacfiR5NkfKFhbrkp4xC0dDnjzllmZ5IQ7DK6y+s+n2uytbNBl2fm+J4hAp6cG1LNv
+         D861YZg4kl7MgIaG1b+MECOXHMyRncuKh5cI/FYig1hfSzId9FAQQxoisyWCFihxT6+j
+         ocsEcgtpMtLpBMUuiCL23a6tsxr7iEPKgYDKqkapnrWwaOdbCQ/uDeG2XOTzHY9xtYwB
+         tVbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687460756; x=1690052756;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GKzX8HU3iGA7YZj30ZFXXUvRRkmVjRXxGOr7ayh9S3A=;
-        b=CeHeA5/TdkvC4ieiPcSrPWNRCEFsMjTTZJ4fegn43c24dE7CW3Egia/F1JO4njOpog
-         Rz06349d4fh5ZwELjHarsk9cfbhiGunW1jYC1HG2XaHWw/fUYpo/rotZ/h3ImMSskPJr
-         EYWKAwrZT8PAkp5chS1cJhVJKPgGdXWO5X2dFRSVFROGHbVm52J3a6GqXjOx2SgfCDio
-         ae1zPQ7ghw2TIaPjgSfUB6D+KPkEiS2A3RBoVeYF/E4fC8uRC8AwEA7KxDmNf0kkaaeo
-         zMKOpZONFymKcKBeUjJDi3nGXJBYY9g56+vXZ0BzKFpFiwUGU0LYwNQVoXbp0abPhl7y
-         agHg==
-X-Gm-Message-State: AC+VfDwSJ0L+1pBBF8b8vx0hQju/WXxXiMdWbUmxCRG4oRrtsoWj+3P7
-	CCBZ+MJQwiyWFP+8156K8MX4n0/XIoGX9jy6L+o=
-X-Google-Smtp-Source: ACHHUZ7WKBQRnyHouM0Mgv81oRiCwPqkvyDlRShbq6U3hsDIsxxguVSgoGiRKSJELSHtOtbCwrlD/vXJQm8tafox5I0=
-X-Received: by 2002:adf:df0b:0:b0:311:1009:10c9 with SMTP id
- y11-20020adfdf0b000000b00311100910c9mr2654579wrl.5.1687460755621; Thu, 22 Jun
- 2023 12:05:55 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687461808; x=1690053808;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Df3C9o+jyHgFt4v9MKKnPb27TCZxS6OX8UG6w0FVZtQ=;
+        b=VrwTYYGOwO6Diot3wjT8PLt+sJPfkO71Br471tcN4sZAacv17lidsOtW+l1dQoSiRy
+         VVH396ztC6s5dhMl7OhLZHVMAC/GeIiaIwfHaXFf6yJXg/1H2HqoMGYWRC3+Fl4/a4KH
+         zz7UTB5hidkP+iga7F/zlt12vaQkZi9ViTVQdw3DwPc/OQQHr8JJrgujsuc2IK1dnOhv
+         LPKGKkm4CZms/xaYbjwLps8a3tJl6zVM1SMVgbwSWhgzzPJ16480NoAz6QdMlUZ5AVIQ
+         iPmalTG81ZXsZa4ZtU/akrV3NVaCJrkWLttdkkYhq//TIjqcSui7x7qD2Sf/FJMbUdvq
+         +tgQ==
+X-Gm-Message-State: AC+VfDyt1nJbMlFm5/1LUtlX7cH5vdZMot6B7ksKojpGJgF/h36kq2TV
+	D9ZNbkfGfMeSuaEB4l1QXBY=
+X-Google-Smtp-Source: ACHHUZ4WsYtxniEOb1Anch/tBe9/4Cy0dqvi9k80rzxi2VLEiOccAZ9V4INRXS/Vwvw7AQHXB5Cvhw==
+X-Received: by 2002:a2e:b059:0:b0:2b4:6456:4545 with SMTP id d25-20020a2eb059000000b002b464564545mr11820241ljl.9.1687461807732;
+        Thu, 22 Jun 2023 12:23:27 -0700 (PDT)
+Received: from [192.168.0.112] ([77.220.140.242])
+        by smtp.gmail.com with ESMTPSA id y2-20020a2e7d02000000b002b4840990d7sm1434860ljc.114.2023.06.22.12.23.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Jun 2023 12:23:27 -0700 (PDT)
+Message-ID: <2a0c29d5-d696-ac24-2a4a-1d691eef8daf@gmail.com>
+Date: Thu, 22 Jun 2023 22:23:26 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230607235352.1723243-1-andrii@kernel.org> <c1a8d5e8-023b-4ef9-86b3-bdd70efe1340@app.fastmail.com>
- <CAEf4BzazbMqAh_Nj_geKNLshxT+4NXOCd-LkZ+sRKsbZAJ1tUw@mail.gmail.com>
- <a73da819-b334-448c-8e5c-50d9f7c28b8f@app.fastmail.com> <CAEf4Bzb__Cmf5us1Dy6zTkbn2O+3GdJQ=khOZ0Ui41tkoE7S0Q@mail.gmail.com>
- <5eb4264e-d491-a7a2-93c7-928b06ce264d@redhat.com> <bc4f99af-0c46-49b2-9f2d-9a01e6a03af3@app.fastmail.com>
-In-Reply-To: <bc4f99af-0c46-49b2-9f2d-9a01e6a03af3@app.fastmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 22 Jun 2023 12:05:43 -0700
-Message-ID: <CAEf4BzZz2yOkHZSuzpYd2Hv_6pxDJt2GdGVnd3yG8AUj0tSudw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 00/18] BPF token
-To: Andy Lutomirski <luto@kernel.org>
-Cc: Maryam Tahhan <mtahhan@redhat.com>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
-	Christian Brauner <brauner@kernel.org>, lennart@poettering.net, cyphar@cyphar.com, 
-	kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH RFC net-next v4 1/8] vsock/dgram: generalize recvmsg and
+ drop transport->dgram_dequeue
+Content-Language: en-US
+To: Stefano Garzarella <sgarzare@redhat.com>
+Cc: Bobby Eshleman <bobby.eshleman@bytedance.com>,
+ Stefan Hajnoczi <stefanha@redhat.com>, "Michael S. Tsirkin"
+ <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Bryan Tan <bryantan@vmware.com>,
+ Vishnu Dasa <vdasa@vmware.com>,
+ VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+ Dan Carpenter <dan.carpenter@linaro.org>,
+ Simon Horman <simon.horman@corigine.com>, kvm@vger.kernel.org,
+ virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20230413-b4-vsock-dgram-v4-0-0cebbb2ae899@bytedance.com>
+ <20230413-b4-vsock-dgram-v4-1-0cebbb2ae899@bytedance.com>
+ <3eb6216b-a3d2-e1ef-270c-8a0032a4a8a5@gmail.com>
+ <63ko2n5fwjdefot6rzcxdftfh6pilg6vmqn66v4ue5dgf4oz53@tntmdijw4ghr>
+From: Arseniy Krasnov <oxffffaa@gmail.com>
+In-Reply-To: <63ko2n5fwjdefot6rzcxdftfh6pilg6vmqn66v4ue5dgf4oz53@tntmdijw4ghr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 22, 2023 at 9:50=E2=80=AFAM Andy Lutomirski <luto@kernel.org> w=
-rote:
->
->
->
-> On Thu, Jun 22, 2023, at 1:22 AM, Maryam Tahhan wrote:
-> > On 22/06/2023 00:48, Andrii Nakryiko wrote:
-> >>
-> >>>>> Giving a way to enable BPF in a container is only a small part of t=
-he overall task -- making BPF behave sensibly in that container seems like =
-it should also be necessary.
-> >>>> BPF is still a privileged thing. You can't just say that any
-> >>>> unprivileged application should be able to use BPF. That's why BPF
-> >>>> token is about trusting unpriv application in a controlled environme=
-nt
-> >>>> (production) to not do something crazy. It can be enforced further
-> >>>> through LSM usage, but in a lot of cases, when dealing with internal
-> >>>> production applications it's enough to have a proper application
-> >>>> design and rely on code review process to avoid any negative effects=
-.
-> >>> We really shouldn=E2=80=99t be creating new kinds of privileged conta=
-iners that do uncontained things.
-> >>>
-> >>> If you actually want to go this route, I think you would do much bett=
-er to introduce a way for a container manager to usefully proxy BPF on beha=
-lf of the container.
-> >> Please see Hao's reply ([0]) about his and Google's (not so rosy)
-> >> experiences with building and using such BPF proxy. We (Meta)
-> >> internally didn't go this route at all and strongly prefer not to.
-> >> There are lots of downsides and complications to having a BPF proxy.
-> >> In the end, this is just shuffling around where the decision about
-> >> trusting a given application with BPF access is being made. BPF proxy
-> >> adds lots of unnecessary logistical, operational, and development
-> >> complexity, but doesn't magically make anything safer.
-> >>
-> >>    [0] https://lore.kernel.org/bpf/CA+khW7h95RpurRL8qmKdSJQEXNYuqSWnP1=
-6o-uRZ9G0KqCfM4Q@mail.gmail.com/
-> >>
-> > Apologies for being blunt, but  the token approach to me seems to be a
-> > work around providing the right level/classification for a pod/containe=
-r
-> > in order to say you support unprivileged containers using eBPF. I think
-> > if your container needs to do privileged things it should have and be
-> > classified with the right permissions (privileges) to do what it needs
-> > to do.
->
-> Bluntness is great.
->
-> I think that this whole level/classification thing is utterly wrong.  Rep=
-lace "BPF" with basically anything else, and you'll see how absurd it is.
 
-BPF is not "anything else", it's important to understand that BPF is
-inherently not compratmentalizable. And it's vast and generic in its
-capabilities. This changes everything. So your analogies are
-misleading.
 
->
-> "the token approach to me seems like a work around providing the right le=
-vel/classification for a pod/container in order to say you support unprivil=
-eged containers using files on disk"
->
-> That's very 1990's.  Maybe 1980's.  Of *course* giving access to a filesy=
-stem has some inherent security exposure.  So we can give containers access=
- to *different* filesystems.  Or we can use ACLs.  Or MAC policy.  Or whate=
-ver.  We have many solutions, none of which are perfect, and we're doing ok=
-ay.
->
-> "the token approach to me seems like a work around providing the right le=
-vel/classification for a pod/container in order to say you support unprivil=
-eged containers using the network"
->
-> The network is a big deal.  For some reason, it's cool these days to trea=
-t TCP as highly privileged.  You can get secrets from your favorite (or lea=
-st favorite) cloud provider with unauthenticated HTTP to a magic IP and por=
-t.  You can bypass a whole lot of authenticating/authorizing proxies with u=
-nauthenticated HTTP (no TLS!) if you're on the right network.
->
-> This is IMO obnoxious, but we deal with it by having network namespaces a=
-nd firewalls and rather outdated port <=3D 1024 rules.
->
-> "the token approach to me seems like a work around providing the right le=
-vel/classification for a pod/container in order to say you support unprivil=
-eged containers using BPF"
->
-> My response is: what's wrong with BPF?  BPF has maps and programs and suc=
-h, and we could easily apply 1990's style ownership and DAC rules to them.
+On 22.06.2023 17:51, Stefano Garzarella wrote:
+> On Sun, Jun 11, 2023 at 11:43:15PM +0300, Arseniy Krasnov wrote:
+>> Hello Bobby! Thanks for this patchset! Small comment below:
+>>
+>> On 10.06.2023 03:58, Bobby Eshleman wrote:
+>>> This commit drops the transport->dgram_dequeue callback and makes
+>>> vsock_dgram_recvmsg() generic. It also adds additional transport
+>>> callbacks for use by the generic vsock_dgram_recvmsg(), such as for
+>>> parsing skbs for CID/port which vary in format per transport.
+>>>
+>>> Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+>>> ---
+>>>  drivers/vhost/vsock.c                   |  4 +-
+>>>  include/linux/virtio_vsock.h            |  3 ++
+>>>  include/net/af_vsock.h                  | 13 ++++++-
+>>>  net/vmw_vsock/af_vsock.c                | 51 ++++++++++++++++++++++++-
+>>>  net/vmw_vsock/hyperv_transport.c        | 17 +++++++--
+>>>  net/vmw_vsock/virtio_transport.c        |  4 +-
+>>>  net/vmw_vsock/virtio_transport_common.c | 18 +++++++++
+>>>  net/vmw_vsock/vmci_transport.c          | 68 +++++++++++++--------------------
+>>>  net/vmw_vsock/vsock_loopback.c          |  4 +-
+>>>  9 files changed, 132 insertions(+), 50 deletions(-)
+>>>
+>>> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>>> index 6578db78f0ae..c8201c070b4b 100644
+>>> --- a/drivers/vhost/vsock.c
+>>> +++ b/drivers/vhost/vsock.c
+>>> @@ -410,9 +410,11 @@ static struct virtio_transport vhost_transport = {
+>>>          .cancel_pkt               = vhost_transport_cancel_pkt,
+>>>
+>>>          .dgram_enqueue            = virtio_transport_dgram_enqueue,
+>>> -        .dgram_dequeue            = virtio_transport_dgram_dequeue,
+>>>          .dgram_bind               = virtio_transport_dgram_bind,
+>>>          .dgram_allow              = virtio_transport_dgram_allow,
+>>> +        .dgram_get_cid          = virtio_transport_dgram_get_cid,
+>>> +        .dgram_get_port          = virtio_transport_dgram_get_port,
+>>> +        .dgram_get_length      = virtio_transport_dgram_get_length,
+>>>
+>>>          .stream_enqueue           = virtio_transport_stream_enqueue,
+>>>          .stream_dequeue           = virtio_transport_stream_dequeue,
+>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>>> index c58453699ee9..23521a318cf0 100644
+>>> --- a/include/linux/virtio_vsock.h
+>>> +++ b/include/linux/virtio_vsock.h
+>>> @@ -219,6 +219,9 @@ bool virtio_transport_stream_allow(u32 cid, u32 port);
+>>>  int virtio_transport_dgram_bind(struct vsock_sock *vsk,
+>>>                  struct sockaddr_vm *addr);
+>>>  bool virtio_transport_dgram_allow(u32 cid, u32 port);
+>>> +int virtio_transport_dgram_get_cid(struct sk_buff *skb, unsigned int *cid);
+>>> +int virtio_transport_dgram_get_port(struct sk_buff *skb, unsigned int *port);
+>>> +int virtio_transport_dgram_get_length(struct sk_buff *skb, size_t *len);
+>>>
+>>>  int virtio_transport_connect(struct vsock_sock *vsk);
+>>>
+>>> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>>> index 0e7504a42925..7bedb9ee7e3e 100644
+>>> --- a/include/net/af_vsock.h
+>>> +++ b/include/net/af_vsock.h
+>>> @@ -120,11 +120,20 @@ struct vsock_transport {
+>>>
+>>>      /* DGRAM. */
+>>>      int (*dgram_bind)(struct vsock_sock *, struct sockaddr_vm *);
+>>> -    int (*dgram_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
+>>> -                 size_t len, int flags);
+>>>      int (*dgram_enqueue)(struct vsock_sock *, struct sockaddr_vm *,
+>>>                   struct msghdr *, size_t len);
+>>>      bool (*dgram_allow)(u32 cid, u32 port);
+>>> +    int (*dgram_get_cid)(struct sk_buff *skb, unsigned int *cid);
+>>> +    int (*dgram_get_port)(struct sk_buff *skb, unsigned int *port);
+>>> +    int (*dgram_get_length)(struct sk_buff *skb, size_t *length);
+>>> +
+>>> +    /* The number of bytes into the buffer at which the payload starts, as
+>>> +     * first seen by the receiving socket layer. For example, if the
+>>> +     * transport presets the skb pointers using skb_pull(sizeof(header))
+>>> +     * than this would be zero, otherwise it would be the size of the
+>>> +     * header.
+>>> +     */
+>>> +    const size_t dgram_payload_offset;
+>>>
+>>>      /* STREAM. */
+>>>      /* TODO: stream_bind() */
+>>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>>> index efb8a0937a13..ffb4dd8b6ea7 100644
+>>> --- a/net/vmw_vsock/af_vsock.c
+>>> +++ b/net/vmw_vsock/af_vsock.c
+>>> @@ -1271,11 +1271,15 @@ static int vsock_dgram_connect(struct socket *sock,
+>>>  int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+>>>              size_t len, int flags)
+>>>  {
+>>> +    const struct vsock_transport *transport;
+>>>  #ifdef CONFIG_BPF_SYSCALL
+>>>      const struct proto *prot;
+>>>  #endif
+>>>      struct vsock_sock *vsk;
+>>> +    struct sk_buff *skb;
+>>> +    size_t payload_len;
+>>>      struct sock *sk;
+>>> +    int err;
+>>>
+>>>      sk = sock->sk;
+>>>      vsk = vsock_sk(sk);
+>>> @@ -1286,7 +1290,52 @@ int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+>>>          return prot->recvmsg(sk, msg, len, flags, NULL);
+>>>  #endif
+>>>
+>>> -    return vsk->transport->dgram_dequeue(vsk, msg, len, flags);
+>>> +    if (flags & MSG_OOB || flags & MSG_ERRQUEUE)
+>>> +        return -EOPNOTSUPP;
+>>> +
+>>> +    transport = vsk->transport;
+>>> +
+>>> +    /* Retrieve the head sk_buff from the socket's receive queue. */
+>>> +    err = 0;
+>>> +    skb = skb_recv_datagram(sk_vsock(vsk), flags, &err);
+>>> +    if (!skb)
+>>> +        return err;
+>>> +
+>>> +    err = transport->dgram_get_length(skb, &payload_len);
+> 
+> What about ssize_t return value here?
+> 
+> Or maybe a single callback that return both length and offset?
+> 
+> .dgram_get_payload_info(skb, &payload_len, &payload_off)
 
-Can you apply DAC rules to which kernel events BPF program can be run
-on? Can you apply DAC rules to which in-kernel data structures a BPF
-program can look at and make sure that it doesn't access a
-task/socket/etc that "belongs" to some other container/user/etc?
+Just architectural question:
 
-Can we limit XDP or AF_XDP BPF programs from seeing and controlling
-network traffic that will be eventually routed to a container that XDP
-program "should not" have access to? Without making everything so slow
-that it's useless?
+May be we can avoid this callback for length? IIUC concept of skbuff is that
+current level of network stack already have pointer to its data 'skb->data' and
+length of the payload 'skb->len' (both are set by previous stack handler - transport in
+this case), so here we can use just 'skb->len' and thats all. There is no need to ask
+lower level of network stack for length of payload? I see that VMCI stores metadata
+with payload in 'data' buffer, but may be it is more correctly to do 'skb_pull()'
+in vmci before inserting skbuff to sockets queue? In this case field with dgram payload
+offset could be removed from transport.
 
-> I even *wrote the code*.
+Thanks, Arseniy
 
-Did you submit it upstream for review and wide discussion? Did you
-test it and integrate it with production workloads to prove that your
-solution is actually a viable real-world solution and not a toy?
-Writing the code doesn't mean solving the problem.
-
-> But for some reason, the BPF community wants to bury its head in the sand=
-, pretend it's 1980, declare that BPF is too privileged to have access cont=
-rol, and instead just have a complicated switch to turn it on and off in di=
-fferent contexts.
-
-I won't speak on behalf of the entire BPF community, but I'm trying to
-explain that BPF cannot be reasonably sandboxed and has to be
-privileged due to its global nature. And I haven't yet seen any
-realistic counter-proposal to change that. And it's not about
-ownership of the BPF map or BPF program, it's way beyond that..
-
->
-> Please try harder.
-
-Well, maybe there is something in that "some reason" you mentioned
-above that you so quickly dismissed?
+> 
+>>> +    if (err)
+>>> +        goto out;
+>>> +
+>>> +    if (payload_len > len) {
+>>> +        payload_len = len;
+>>> +        msg->msg_flags |= MSG_TRUNC;
+>>> +    }
+>>> +
+>>> +    /* Place the datagram payload in the user's iovec. */
+>>> +    err = skb_copy_datagram_msg(skb, transport->dgram_payload_offset, msg, payload_len);
+>>> +    if (err)
+>>> +        goto out;
+>>> +
+>>> +    if (msg->msg_name) {
+>>> +        /* Provide the address of the sender. */
+>>> +        DECLARE_SOCKADDR(struct sockaddr_vm *, vm_addr, msg->msg_name);
+>>> +        unsigned int cid, port;
+>>> +
+>>> +        err = transport->dgram_get_cid(skb, &cid);
+>>> +        if (err)
+>>> +            goto out;
+>>> +
+>>> +        err = transport->dgram_get_port(skb, &port);
+>>> +        if (err)
+>>> +            goto out;
+>>
+>> Maybe we can merge 'dgram_get_cid' and 'dgram_get_port' to a single callback? Because I see that this is
+>> the only place where both are used (correct me if i'm wrong) and logically both operates with addresses:
+>> CID and port. E.g. something like that: dgram_get_cid_n_port().
+> 
+> What about .dgram_addr_init(struct sk_buff *skb, struct sockaddr_vm *addr)
+> and the transport can set cid and port?
+> 
+>>
+>> Moreover, I'm not sure, but is it good "tradeoff" here: remove transport specific callback for dgram receive
+>> where we already have 'msghdr' with both data buffer and buffer for 'sockaddr_vm' and instead of it add new
+>> several fields (callbacks) to transports like dgram_get_cid(), dgram_get_port()? I agree, that in each transport
+>> specific callback we will have same copying logic by calling 'skb_copy_datagram_msg()' and filling address
+>> by using 'vsock_addr_init()', but in this case we don't need to update transports too much. For example HyperV
+>> still unchanged as it does not support SOCK_DGRAM. For VMCI You just need to add 'vsock_addr_init()' logic
+>> to it's dgram dequeue callback.
+>>
+>> What do You think?
+> 
+> Honestly, I'd rather avoid duplicate code than reduce changes in
+> transports that don't support dgram.
+> 
+> One thing I do agree on though is minimizing the number of callbacks
+> to call to reduce the number of indirection (more performance?).
+> 
+> Thanks,
+> Stefano
+> 
+>>
+>> Thanks, Arseniy
+>>
+>>> +
+>>> +        vsock_addr_init(vm_addr, cid, port);
+>>> +        msg->msg_namelen = sizeof(*vm_addr);
+>>> +    }
+>>> +    err = payload_len;
+>>> +
+>>> +out:
+>>> +    skb_free_datagram(&vsk->sk, skb);
+>>> +    return err;
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(vsock_dgram_recvmsg);
+>>>
+>>> diff --git a/net/vmw_vsock/hyperv_transport.c b/net/vmw_vsock/hyperv_transport.c
+>>> index 7cb1a9d2cdb4..ff6e87e25fa0 100644
+>>> --- a/net/vmw_vsock/hyperv_transport.c
+>>> +++ b/net/vmw_vsock/hyperv_transport.c
+>>> @@ -556,8 +556,17 @@ static int hvs_dgram_bind(struct vsock_sock *vsk, struct sockaddr_vm *addr)
+>>>      return -EOPNOTSUPP;
+>>>  }
+>>>
+>>> -static int hvs_dgram_dequeue(struct vsock_sock *vsk, struct msghdr *msg,
+>>> -                 size_t len, int flags)
+>>> +static int hvs_dgram_get_cid(struct sk_buff *skb, unsigned int *cid)
+>>> +{
+>>> +    return -EOPNOTSUPP;
+>>> +}
+>>> +
+>>> +static int hvs_dgram_get_port(struct sk_buff *skb, unsigned int *port)
+>>> +{
+>>> +    return -EOPNOTSUPP;
+>>> +}
+>>> +
+>>> +static int hvs_dgram_get_length(struct sk_buff *skb, size_t *len)
+>>>  {
+>>>      return -EOPNOTSUPP;
+>>>  }
+>>> @@ -833,7 +842,9 @@ static struct vsock_transport hvs_transport = {
+>>>      .shutdown                 = hvs_shutdown,
+>>>
+>>>      .dgram_bind               = hvs_dgram_bind,
+>>> -    .dgram_dequeue            = hvs_dgram_dequeue,
+>>> +    .dgram_get_cid          = hvs_dgram_get_cid,
+>>> +    .dgram_get_port          = hvs_dgram_get_port,
+>>> +    .dgram_get_length      = hvs_dgram_get_length,
+>>>      .dgram_enqueue            = hvs_dgram_enqueue,
+>>>      .dgram_allow              = hvs_dgram_allow,
+>>>
+>>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>>> index e95df847176b..5763cdf13804 100644
+>>> --- a/net/vmw_vsock/virtio_transport.c
+>>> +++ b/net/vmw_vsock/virtio_transport.c
+>>> @@ -429,9 +429,11 @@ static struct virtio_transport virtio_transport = {
+>>>          .cancel_pkt               = virtio_transport_cancel_pkt,
+>>>
+>>>          .dgram_bind               = virtio_transport_dgram_bind,
+>>> -        .dgram_dequeue            = virtio_transport_dgram_dequeue,
+>>>          .dgram_enqueue            = virtio_transport_dgram_enqueue,
+>>>          .dgram_allow              = virtio_transport_dgram_allow,
+>>> +        .dgram_get_cid          = virtio_transport_dgram_get_cid,
+>>> +        .dgram_get_port          = virtio_transport_dgram_get_port,
+>>> +        .dgram_get_length      = virtio_transport_dgram_get_length,
+>>>
+>>>          .stream_dequeue           = virtio_transport_stream_dequeue,
+>>>          .stream_enqueue           = virtio_transport_stream_enqueue,
+>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>>> index b769fc258931..e6903c719964 100644
+>>> --- a/net/vmw_vsock/virtio_transport_common.c
+>>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>>> @@ -797,6 +797,24 @@ int virtio_transport_dgram_bind(struct vsock_sock *vsk,
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(virtio_transport_dgram_bind);
+>>>
+>>> +int virtio_transport_dgram_get_cid(struct sk_buff *skb, unsigned int *cid)
+>>> +{
+>>> +    return -EOPNOTSUPP;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(virtio_transport_dgram_get_cid);
+>>> +
+>>> +int virtio_transport_dgram_get_port(struct sk_buff *skb, unsigned int *port)
+>>> +{
+>>> +    return -EOPNOTSUPP;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(virtio_transport_dgram_get_port);
+>>> +
+>>> +int virtio_transport_dgram_get_length(struct sk_buff *skb, size_t *len)
+>>> +{
+>>> +    return -EOPNOTSUPP;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(virtio_transport_dgram_get_length);
+>>> +
+>>>  bool virtio_transport_dgram_allow(u32 cid, u32 port)
+>>>  {
+>>>      return false;
+>>> diff --git a/net/vmw_vsock/vmci_transport.c b/net/vmw_vsock/vmci_transport.c
+>>> index b370070194fa..bbc63826bf48 100644
+>>> --- a/net/vmw_vsock/vmci_transport.c
+>>> +++ b/net/vmw_vsock/vmci_transport.c
+>>> @@ -1731,57 +1731,40 @@ static int vmci_transport_dgram_enqueue(
+>>>      return err - sizeof(*dg);
+>>>  }
+>>>
+>>> -static int vmci_transport_dgram_dequeue(struct vsock_sock *vsk,
+>>> -                    struct msghdr *msg, size_t len,
+>>> -                    int flags)
+>>> +static int vmci_transport_dgram_get_cid(struct sk_buff *skb, unsigned int *cid)
+>>>  {
+>>> -    int err;
+>>>      struct vmci_datagram *dg;
+>>> -    size_t payload_len;
+>>> -    struct sk_buff *skb;
+>>>
+>>> -    if (flags & MSG_OOB || flags & MSG_ERRQUEUE)
+>>> -        return -EOPNOTSUPP;
+>>> +    dg = (struct vmci_datagram *)skb->data;
+>>> +    if (!dg)
+>>> +        return -EINVAL;
+>>>
+>>> -    /* Retrieve the head sk_buff from the socket's receive queue. */
+>>> -    err = 0;
+>>> -    skb = skb_recv_datagram(&vsk->sk, flags, &err);
+>>> -    if (!skb)
+>>> -        return err;
+>>> +    *cid = dg->src.context;
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static int vmci_transport_dgram_get_port(struct sk_buff *skb, unsigned int *port)
+>>> +{
+>>> +    struct vmci_datagram *dg;
+>>>
+>>>      dg = (struct vmci_datagram *)skb->data;
+>>>      if (!dg)
+>>> -        /* err is 0, meaning we read zero bytes. */
+>>> -        goto out;
+>>> -
+>>> -    payload_len = dg->payload_size;
+>>> -    /* Ensure the sk_buff matches the payload size claimed in the packet. */
+>>> -    if (payload_len != skb->len - sizeof(*dg)) {
+>>> -        err = -EINVAL;
+>>> -        goto out;
+>>> -    }
+>>> +        return -EINVAL;
+>>>
+>>> -    if (payload_len > len) {
+>>> -        payload_len = len;
+>>> -        msg->msg_flags |= MSG_TRUNC;
+>>> -    }
+>>> +    *port = dg->src.resource;
+>>> +    return 0;
+>>> +}
+>>>
+>>> -    /* Place the datagram payload in the user's iovec. */
+>>> -    err = skb_copy_datagram_msg(skb, sizeof(*dg), msg, payload_len);
+>>> -    if (err)
+>>> -        goto out;
+>>> +static int vmci_transport_dgram_get_length(struct sk_buff *skb, size_t *len)
+>>> +{
+>>> +    struct vmci_datagram *dg;
+>>>
+>>> -    if (msg->msg_name) {
+>>> -        /* Provide the address of the sender. */
+>>> -        DECLARE_SOCKADDR(struct sockaddr_vm *, vm_addr, msg->msg_name);
+>>> -        vsock_addr_init(vm_addr, dg->src.context, dg->src.resource);
+>>> -        msg->msg_namelen = sizeof(*vm_addr);
+>>> -    }
+>>> -    err = payload_len;
+>>> +    dg = (struct vmci_datagram *)skb->data;
+>>> +    if (!dg)
+>>> +        return -EINVAL;
+>>>
+>>> -out:
+>>> -    skb_free_datagram(&vsk->sk, skb);
+>>> -    return err;
+>>> +    *len = dg->payload_size;
+>>> +    return 0;
+>>>  }
+>>>
+>>>  static bool vmci_transport_dgram_allow(u32 cid, u32 port)
+>>> @@ -2040,9 +2023,12 @@ static struct vsock_transport vmci_transport = {
+>>>      .release = vmci_transport_release,
+>>>      .connect = vmci_transport_connect,
+>>>      .dgram_bind = vmci_transport_dgram_bind,
+>>> -    .dgram_dequeue = vmci_transport_dgram_dequeue,
+>>>      .dgram_enqueue = vmci_transport_dgram_enqueue,
+>>>      .dgram_allow = vmci_transport_dgram_allow,
+>>> +    .dgram_get_cid = vmci_transport_dgram_get_cid,
+>>> +    .dgram_get_port = vmci_transport_dgram_get_port,
+>>> +    .dgram_get_length = vmci_transport_dgram_get_length,
+>>> +    .dgram_payload_offset = sizeof(struct vmci_datagram),
+>>>      .stream_dequeue = vmci_transport_stream_dequeue,
+>>>      .stream_enqueue = vmci_transport_stream_enqueue,
+>>>      .stream_has_data = vmci_transport_stream_has_data,
+>>> diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
+>>> index 5c6360df1f31..2f3cabc79ee5 100644
+>>> --- a/net/vmw_vsock/vsock_loopback.c
+>>> +++ b/net/vmw_vsock/vsock_loopback.c
+>>> @@ -62,9 +62,11 @@ static struct virtio_transport loopback_transport = {
+>>>          .cancel_pkt               = vsock_loopback_cancel_pkt,
+>>>
+>>>          .dgram_bind               = virtio_transport_dgram_bind,
+>>> -        .dgram_dequeue            = virtio_transport_dgram_dequeue,
+>>>          .dgram_enqueue            = virtio_transport_dgram_enqueue,
+>>>          .dgram_allow              = virtio_transport_dgram_allow,
+>>> +        .dgram_get_cid          = virtio_transport_dgram_get_cid,
+>>> +        .dgram_get_port          = virtio_transport_dgram_get_port,
+>>> +        .dgram_get_length      = virtio_transport_dgram_get_length,
+>>>
+>>>          .stream_dequeue           = virtio_transport_stream_dequeue,
+>>>          .stream_enqueue           = virtio_transport_stream_enqueue,
+>>>
+>>
+> 
 
