@@ -1,84 +1,90 @@
-Return-Path: <bpf+bounces-3113-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3114-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04667739886
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 09:53:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ECF47398AC
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 09:57:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8996281809
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 07:53:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EFF828183B
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 07:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2C6C8CF;
-	Thu, 22 Jun 2023 07:53:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A33111CBD;
+	Thu, 22 Jun 2023 07:57:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6244863A4
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 07:53:11 +0000 (UTC)
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1163F1FC3;
-	Thu, 22 Jun 2023 00:52:53 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-25e9e5f9e0cso3901892a91.0;
-        Thu, 22 Jun 2023 00:52:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 187C563A4
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 07:57:34 +0000 (UTC)
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D75119AB;
+	Thu, 22 Jun 2023 00:57:33 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 41be03b00d2f7-54fac3b7725so3214140a12.3;
+        Thu, 22 Jun 2023 00:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687420372; x=1690012372;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1zvHJttdtiCO46p+k5M+Fw9sy+2nAJFqu/9noB7Z5VY=;
-        b=A/8+Y5aZUmT/FJHf7VZQZDImXfjS8v2Xesr4SFZO5W0RMcwQADwQFJpnrfVOTItlI6
-         Jso3SwSF8TJlzVGc2hTa+T4X3VWy9PrJnyGZTFbEE2kJS6Pk49gQPO0BrUHRlquxOe8x
-         roalo8anv5CtyBrHvDV3dmWi2yLM2w2NZAfE+LeeqvHRJVfdwydCKHM5/rw/Q2RNOr8X
-         EGvkZg16WCU/ISbmAH4PQlIGgSkvR2S9rJvGYN1HcWIoUSt3rGwKwt8CfyptOqwlH8gE
-         +NCwv+E2ZP8AdF6KpfiZDdYvd2FlGmGBBypIMHnhTZuug4U5fB6KrtsqDEBhZWbqrpM8
-         m51w==
+        d=gmail.com; s=20221208; t=1687420653; x=1690012653;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sSrox6nZu5QisyWxc0yjYaiViKB1+/tnFUYJAfTfoEM=;
+        b=gBESjUDwZc68KmBsSEzmnm1I19QdU3P6QZDbfADNgX+GCuAMFXA0VnAD9fgHZXn5OH
+         Vtx1bWsoTrOXvZ5J2qw35/yCtII+l95zIeP7WvwHvZgEcdgiS7OOkNDKb9vZZWb4vWh/
+         eGMNHvbuK/3Z6mvB7SQitqMkMB1rvJoMrWi1gH75a9DxeuF0/yig4Hzv+a0Qb3+CpqDA
+         XvzauPe2Dj7HWzMYHixSBqlwatfPF/gHY2TltYzn0YcC26Y6z5+tGKFdTYz4Ok+LUdDM
+         xhcKyTBzQTCYLEExdcaeE1Jppk4FUncbfrNQsiU5VPDjVPeqOTww0yfP++kHMyoB2pIu
+         /pDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687420372; x=1690012372;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1zvHJttdtiCO46p+k5M+Fw9sy+2nAJFqu/9noB7Z5VY=;
-        b=V3C6F0NUkpdCzZyljFV87mb8rJVvmMOnp8/YYtIoceIhNL6z4bFfaL+JmXlbRfCFQx
-         sIKENMqFUeQA+GU24aW4x2Tbqi+6w+4/1sTBBWy4dyPTP7i96BoqsKx7Yo1cwDXyr3ep
-         1I7SjYTpyRWn07Qe2VAQX/6Ul25m5NSER+EWtnu2nQRncJGlrgkJkkdpq3rK9CoBmiFU
-         7gmG0pNR8BaAfQSBrNx6wc5YnSpKDzmITUhBRrSpnAPQY92KxOkRha+s2qAUL9VWTUT1
-         QddtWhd2QyXjIL6x0RtUrTqUn+pkSVKN1NZmUCG7r8cc/eBGTNk/XyvvKgo5/Y+Fj/hQ
-         KJzw==
-X-Gm-Message-State: AC+VfDx0iAvqs4jW9DU+QExVJzUWN4LiMFttRuJRaImlELlZ5OEPPFEf
-	2nlo4T1ekoeVLzjNgypC6p0=
-X-Google-Smtp-Source: ACHHUZ5Cq7hLqb63EB0zYMu1LZxRizxqR3fW77sTUixr6RNC/ul4FXs68NMHfkfeOXiaYm8tHf1S8Q==
-X-Received: by 2002:a17:90a:c7cd:b0:25b:e081:54e6 with SMTP id gf13-20020a17090ac7cd00b0025be08154e6mr14006745pjb.37.1687420372288;
-        Thu, 22 Jun 2023 00:52:52 -0700 (PDT)
-Received: from sumitra.com ([59.89.167.84])
-        by smtp.gmail.com with ESMTPSA id l2-20020a17090b078200b00259b53dccddsm4281769pjz.34.2023.06.22.00.52.46
+        d=1e100.net; s=20221208; t=1687420653; x=1690012653;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sSrox6nZu5QisyWxc0yjYaiViKB1+/tnFUYJAfTfoEM=;
+        b=hQqUFSVm4/E0D2KYwo+r0Q07YPZpX1b0lvb1fA0aysfEhROEAO8eawjmYfX8pEU63d
+         Xtbss4zerjjW8QlnWe+hKJBtSFeE8jhiLT1Q1yIZOOavT8inAYZuDkpjmfnsNATRfn5F
+         1IpyVtfzhxQHbXqr4omMwt26SKtOx4Ols3rFhgfAPh2h4oA5xqvkbwTShZJG/weE/Idd
+         5Gbu0zrjp5ex5ZWRDXzrkDjVrGxuv0qtre8vWrc8oL8o/oqTctedAabW6JePoSeQLJP1
+         9rQIYPN2JoJsEaI/hH1A0oYGUn838l3X4Hs6Zvn+vMAzbQiBjEOzJFgrVrkb00MT3Jus
+         TuZQ==
+X-Gm-Message-State: AC+VfDyjsYJx0UuNXyv76exmEPhL5hlNsu/pVTmK1BiL+gD7ZSsjCmKT
+	KEitOVhzYC3cpoUzjOVymrg=
+X-Google-Smtp-Source: ACHHUZ4YlN5Zn3b8QblLLYKVAAHkJuqTHvNhxz3lwfTRHrGWrK5D2+ZlIHoNPbm12tJOFHoDUAbpCg==
+X-Received: by 2002:a05:6a20:4fa3:b0:11d:2b0c:7f49 with SMTP id gh35-20020a056a204fa300b0011d2b0c7f49mr13471857pzb.36.1687420652704;
+        Thu, 22 Jun 2023 00:57:32 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.82])
+        by smtp.gmail.com with ESMTPSA id iz3-20020a170902ef8300b001b3e84240b4sm4733338plb.67.2023.06.22.00.57.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jun 2023 00:52:51 -0700 (PDT)
-Date: Thu, 22 Jun 2023 00:52:44 -0700
-From: Sumitra Sharma <sumitraartsy@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Ira Weiny <ira.weiny@intel.com>, Fabio <fmdefrancesco@gmail.com>,
-	Deepak R Varma <drv@mailo.com>,
-	Sumitra Sharma <sumitraartsy@gmail.com>
-Subject: [PATCH v3] lib/test_bpf: Call page_address() on page acquired with
- GFP_KERNEL flag
-Message-ID: <20230622075244.GA426694@sumitra.com>
+        Thu, 22 Jun 2023 00:57:32 -0700 (PDT)
+From: menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To: yhs@meta.com,
+	alexei.starovoitov@gmail.com
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	benbjiang@tencent.com,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Menglong Dong <imagedong@tencent.com>
+Subject: [PATCH bpf-next v7 0/3] bpf, x86: allow function arguments up to 12 for TRACING
+Date: Thu, 22 Jun 2023 15:57:12 +0800
+Message-Id: <20230622075715.1818144-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -86,75 +92,97 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-generate_test_data() acquires a page with alloc_page(GFP_KERNEL).
-The GFP_KERNEL is typical for kernel-internal allocations.
-The caller requires ZONE_NORMAL or a lower zone for direct access.
+From: Menglong Dong <imagedong@tencent.com>
 
-Therefore the page cannot come from ZONE_HIGHMEM. Thus there's
-no need to map it with kmap().
+For now, the BPF program of type BPF_PROG_TYPE_TRACING can only be used
+on the kernel functions whose arguments count less than or equal to 6, if
+not considering '> 8 bytes' struct argument. This is not friendly at all,
+as too many functions have arguments count more than 6. According to the
+current kernel version, below is a statistics of the function arguments
+count:
 
-Also, the kmap() is being deprecated in favor of
-kmap_local_page() [1].
+argument count | function count
+7              | 704
+8              | 270
+9              | 84
+10             | 47
+11             | 47
+12             | 27
+13             | 22
+14             | 5
+15             | 0
+16             | 1
 
-Hence, use a plain page_address() directly.
+Therefore, let's enhance it by increasing the function arguments count
+allowed in arch_prepare_bpf_trampoline(), for now, only x86_64.
 
-Since the page passed to the page_address() is not from the highmem
-zone, the page_address() function will always return a valid kernel
-virtual address and will not return NULL. Hence, remove the check
-'if (!ptr)'.
+In the 1st patch, we save/restore regs with BPF_DW size to make the code
+in save_regs()/restore_regs() simpler.
 
-Remove the unused variable 'ptr'.
+In the 2nd patch, we make arch_prepare_bpf_trampoline() support to copy
+function arguments in stack for x86 arch. Therefore, the maximum
+arguments can be up to MAX_BPF_FUNC_ARGS for FENTRY, FEXIT and
+MODIFY_RETURN. Meanwhile, we clean the potential garbage value when we
+copy the arguments on-stack.
 
-[1]: https://lore.kernel.org/all/20220813220034.806698-1-ira.weiny
-@intel.com/
+And the 3rd patch is for the testcases of the this series.
 
-Suggested-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-Signed-off-by: Sumitra Sharma <sumitraartsy@gmail.com>
----
+Changes since v6:
+- somit nits from commit message and comment in the 1st patch
+- remove the inline in get_nr_regs() in the 1st patch
+- rename some function and various in the 1st patch
 
-- Link to v1: https://lore.kernel.org/bpf/20230613073020.GA359792@sumitra.com/T/
-- Link to v2: https://lore.kernel.org/lkml/3564297.R56niFO833@suse/T/
+Changes since v5:
+- adjust the commit log of the 1st patch, avoiding confusing people that
+  bugs exist in current code
+- introduce get_nr_regs() to get the space that used to pass args on
+  stack correct in the 2nd patch
+- add testcases to tracing_struct.c instead of fentry_test.c and
+  fexit_test.c
 
-Changes in v3:
-Noted by: Fabio M. De Francesco<fmdefrancesco@gmail.com>
-	- Remove the check 'if (!ptr)'.
-	- Remove the unused variable 'ptr'.
-	- Change the commit message.
+Changes since v4:
+- consider the case of the struct in arguments can't be hold by regs
+- add comment for some code
+- add testcases for MODIFY_RETURN
+- rebase to the latest
 
-Changes in v2:
-Noted by: Fabio M. De Francesco<fmdefrancesco@gmail.com>
-	- Remove the kmap() call and call page_address() instead.
-	- Change the commit subject and message.
+Changes since v3:
+- try make the stack pointer 16-byte aligned. Not sure if I'm right :)
+- introduce clean_garbage() to clean the grabage when argument count is 7
+- use different data type in bpf_testmod_fentry_test{7,12}
+- add testcase for grabage values in ctx
 
+Changes since v2:
+- keep MAX_BPF_FUNC_ARGS still
+- clean garbage value in upper bytes in the 2nd patch
+- move bpf_fentry_test{7,12} to bpf_testmod.c and rename them to
+  bpf_testmod_fentry_test{7,12} meanwhile in the 3rd patch
 
- lib/test_bpf.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+Changes since v1:
+- change the maximun function arguments to 14 from 12
+- add testcases (Jiri Olsa)
+- instead EMIT4 with EMIT3_off32 for "lea" to prevent overflow
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index ade9ac672adb..448bc1b0b8b5 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -14381,18 +14381,12 @@ static void *generate_test_data(struct bpf_test *test, int sub)
- 		 * single fragment to the skb, filled with
- 		 * test->frag_data.
- 		 */
--		void *ptr;
--
- 		page = alloc_page(GFP_KERNEL);
- 
- 		if (!page)
- 			goto err_kfree_skb;
- 
--		ptr = kmap(page);
--		if (!ptr)
--			goto err_free_page;
--		memcpy(ptr, test->frag_data, MAX_DATA);
--		kunmap(page);
-+		memcpy(page_address(page), test->frag_data, MAX_DATA);
- 		skb_add_rx_frag(skb, 0, page, 0, MAX_DATA, MAX_DATA);
- 	}
- 
+Menglong Dong (3):
+  bpf, x86: save/restore regs with BPF_DW size
+  bpf, x86: allow function arguments up to 12 for TRACING
+  selftests/bpf: add testcase for TRACING with 6+ arguments
+
+ arch/x86/net/bpf_jit_comp.c                   | 246 +++++++++++++++---
+ net/bpf/test_run.c                            |  23 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  49 +++-
+ .../selftests/bpf/prog_tests/fentry_fexit.c   |   4 +-
+ .../selftests/bpf/prog_tests/fentry_test.c    |   2 +
+ .../selftests/bpf/prog_tests/fexit_test.c     |   2 +
+ .../selftests/bpf/prog_tests/modify_return.c  |  20 +-
+ .../selftests/bpf/prog_tests/tracing_struct.c |  19 ++
+ .../testing/selftests/bpf/progs/fentry_test.c |  32 +++
+ .../testing/selftests/bpf/progs/fexit_test.c  |  33 +++
+ .../selftests/bpf/progs/modify_return.c       |  40 +++
+ .../selftests/bpf/progs/tracing_struct.c      |  54 ++++
+ 12 files changed, 474 insertions(+), 50 deletions(-)
+
 -- 
-2.25.1
+2.40.1
 
 
