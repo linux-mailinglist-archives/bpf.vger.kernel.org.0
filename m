@@ -1,117 +1,120 @@
-Return-Path: <bpf+bounces-3172-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3173-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFBFB73A7CA
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 19:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A90EF73A7CD
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 19:56:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D46D281A73
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 17:55:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42142281A6C
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 17:56:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719AA20688;
-	Thu, 22 Jun 2023 17:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2FF200D8;
+	Thu, 22 Jun 2023 17:55:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2E1200D8
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 17:55:24 +0000 (UTC)
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F062118
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 10:55:19 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-25edb50c3acso4394369a91.1
-        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 10:55:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109932068D
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 17:55:30 +0000 (UTC)
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D54B1FF6
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 10:55:26 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-25e7fe2fbc9so3733980a91.2
+        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 10:55:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687456518; x=1690048518;
+        d=google.com; s=20221208; t=1687456526; x=1690048526;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PKB3mRshSFmiO5X8mqfZaGcfAhkZf796XK49+KeA2nU=;
-        b=nivLASTMpRo9d/C5fU3XT02fBFJtnMyhaVhTA12az8nfW0Kci8JI7GsMYwiT7aFrCG
-         eHybnL8S/H57MRFUktTry87TMzQPNlnF2W0zAdq3t0rhIkQpo1NmPoDfEvNdF+3UVshT
-         fuV1N8YtFS1mt6PCw47isfruWcAGY33DdBjFG1sOlgcDA2QBzqq4DHsVDcXZMZKZuirD
-         uaD747fWPzyYvG80kZaPdmVkgSq6l3FcJxbjkq/9V0fPkWvQKCG+YNROpxDX2gqW6Jms
-         jf080wzNs+La5akpx2/SR26z5zxAVktXdubWWvsbl4koSLgoclR8uc4E4AnHSOEPgW4N
-         ITHQ==
+        bh=Jp48nVtGyA7Br8JQvoHipeg5lrmuPTRf+zZ/Ox3/D1Q=;
+        b=hyuLl0aOwBk06RO/KCeKwpeASbRRuwk+J8d/SapksEOFoivhOssFweFwx6v6if4gAx
+         WhgI3RAANIA6zZeriPODW8jQW2VK98pVKgEkawYkKJ2AUUekakUtz04V24oGGLO02Bdx
+         Uw89ZbLnXPXdQtwTeEPYX782hHML9gnLfQBOBGEpeFIe4hZ/4VNvGLyFxxSej2C168VP
+         4EsLh23xpe5+fGM8xZPfiMVNbKlsFpggYZW45VDlm9q2p9wmSZvDrIDdfdwMj1SCnvD5
+         ZPtwNdEgTv/dBAJeyTWijby0if7eyivywp/XrheMYBkZPtWRur/mkSPyus8xQf6ZcPF9
+         hkbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687456518; x=1690048518;
+        d=1e100.net; s=20221208; t=1687456526; x=1690048526;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PKB3mRshSFmiO5X8mqfZaGcfAhkZf796XK49+KeA2nU=;
-        b=Fjb33VdOlhhrZirU4gMxQ9NS3WYv6euAld27D3aAOOoCIQ+FaxPAJU37IPc/bJkL0L
-         /UsrChKO8n5BpPEvtjS9ZY8JjgnZz2Dylnxd0zX5/nA2nVQ8rzVQzAc48IU/LWTDRnp7
-         mqhzNfGWoX74pFQkEJduByiJHfjuJI6+/Yi36a3n2dEs9S/0pdvd/wy9nAYLx3E5nKSc
-         W/cJjFf/OiYSAr6q1FRkPtokBJSh3hT9bqnP5n/SCUBo56dk2cA0/aC8AZ3M0MJdOgrU
-         mud0sJK1ER5rbEucYGuVhKEOJ3rkuD38uYLm5XyqTSl9PR+uA/zOl7ZELccmucP2cT77
-         MslA==
-X-Gm-Message-State: AC+VfDy7pEAVKBIhHA5oHahmyEny+UfVGWE1qZqz6ihkbIBlaMSF3v6P
-	vdI+dA+WysFoh/wpaclwwvCb4HMVd5q8YqPzvBAVwg==
-X-Google-Smtp-Source: ACHHUZ4TuFEAfOpGSTIkuuYTNosZ4GiLS4czTKFi2KQ1GHQT99Gl+2Ti2MPTwkGC0EMbHvrwDRfu5KIHymSiNHRSMUg=
-X-Received: by 2002:a17:90a:bc85:b0:260:9a19:5864 with SMTP id
- x5-20020a17090abc8500b002609a195864mr11786094pjr.1.1687456518292; Thu, 22 Jun
- 2023 10:55:18 -0700 (PDT)
+        bh=Jp48nVtGyA7Br8JQvoHipeg5lrmuPTRf+zZ/Ox3/D1Q=;
+        b=Gwe10S0/s8tN5rRnb7PaIMTy6Gi4yfr1K+08YnsAGOg6VcpkS1vFTtuZXauDGsyYa1
+         LmovFhQ0eeetynRhXuQWfVoTSq1kAH4xTbneHdQKl+u30N0AFwlhqTSqkW7wzUuA7dAa
+         xGKgYWR/qSFnWu+vuQGu5LAgdBGoqyh5HA5kvqUgR5B+HraeJSpC1pfPFGOxrVdfzlPB
+         IzFoqLoPL5nLZyMFzxV4djQj0VpSBUySlIQeGo8YUz6Kz0P8pHiI9+nw/9v1S1djSk6F
+         sxGpvQ313L/M7lJIbx8EFs1qiO+GqQiBFFXegF7Gk0Prwje2YLyfPEI0JSgyYf9Ocgcz
+         wADw==
+X-Gm-Message-State: AC+VfDzazxdUycxqqTWTrpz+xHuTZu+sCFhge5vxHsCqVcT62oAlHDaj
+	mkOKOrJVCT5liQ6nBS6IlxIWXHNk3kcuSvFmudZIHQ==
+X-Google-Smtp-Source: ACHHUZ7FtQbcRUc8WTLtjIXwmhf0dP4E0sMApQm7RE+yKIgq4QNlnxIanJNTRDZhTsnXNaRQmz1bVKfp83v4/d6NFV4=
+X-Received: by 2002:a17:90b:3141:b0:259:548b:d394 with SMTP id
+ ip1-20020a17090b314100b00259548bd394mr13787062pjb.28.1687456525795; Thu, 22
+ Jun 2023 10:55:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230621170244.1283336-1-sdf@google.com> <20230621170244.1283336-4-sdf@google.com>
- <57b9fc14-c02e-f0e5-148d-a549ebab6cf6@brouer.com>
-In-Reply-To: <57b9fc14-c02e-f0e5-148d-a549ebab6cf6@brouer.com>
+References: <20230621170244.1283336-1-sdf@google.com> <20230621170244.1283336-6-sdf@google.com>
+ <00c76c9d-cce8-f3a7-2eda-1c4cc6f36d93@brouer.com>
+In-Reply-To: <00c76c9d-cce8-f3a7-2eda-1c4cc6f36d93@brouer.com>
 From: Stanislav Fomichev <sdf@google.com>
-Date: Thu, 22 Jun 2023 10:55:06 -0700
-Message-ID: <CAKH8qBsk3MDbx2PyU-_+tDV4C0R6J_wzxi9Co6ekHv_tWzp7Tw@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 03/11] xsk: Support XDP_TX_METADATA_LEN
+Date: Thu, 22 Jun 2023 10:55:14 -0700
+Message-ID: <CAKH8qBthYBKdxGs8idSXwM6VRpv4-sQH+j9N_QD9eXDmrAnmEA@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 05/11] bpf: Implement devtx timestamp kfunc
 To: "Jesper D. Brouer" <netdev@brouer.com>
 Cc: bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org, 
 	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
 	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	haoluo@google.com, jolsa@kernel.org, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	"Karlsson, Magnus" <magnus.karlsson@intel.com>, 
-	"xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>
+	haoluo@google.com, jolsa@kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
 	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 22, 2023 at 2:11=E2=80=AFAM Jesper D. Brouer <netdev@brouer.com=
+On Thu, Jun 22, 2023 at 5:07=E2=80=AFAM Jesper D. Brouer <netdev@brouer.com=
 > wrote:
 >
 >
-> This needs to be reviewed by AF_XDP maintainers Magnus and Bj=C3=B8rn (Cc=
-)
 >
 > On 21/06/2023 19.02, Stanislav Fomichev wrote:
-> > For zerocopy mode, tx_desc->addr can point to the arbitrary offset
-> > and carry some TX metadata in the headroom. For copy mode, there
-> > is no way currently to populate skb metadata.
+> > Two kfuncs, one per hook point:
 > >
-> > Introduce new XDP_TX_METADATA_LEN that indicates how many bytes
-> > to treat as metadata. Metadata bytes come prior to tx_desc address
-> > (same as in RX case).
+> > 1. at submit time - bpf_devtx_sb_request_timestamp - to request HW
+> >     to put TX timestamp into TX completion descriptors
+> >
+> > 2. at completion time - bpf_devtx_cp_timestamp - to read out
+> >     TX timestamp
+> >
+> [...]
+> >
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index 08fbd4622ccf..2fdb0731eb67 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> [...]
+> >   struct xdp_metadata_ops {
+> >       int     (*xmo_rx_timestamp)(const struct xdp_md *ctx, u64 *timest=
+amp);
+> >       int     (*xmo_rx_hash)(const struct xdp_md *ctx, u32 *hash,
+> >                              enum xdp_rss_hash_type *rss_type);
+> > +     int     (*xmo_sb_request_timestamp)(const struct devtx_frame *ctx=
+);
+> > +     int     (*xmo_cp_timestamp)(const struct devtx_frame *ctx, u64 *t=
+imestamp);
+> >   };
 >
->  From looking at the code, this introduces a socket option for this TX
-> metadata length (tx_metadata_len).
-> This implies the same fixed TX metadata size is used for all packets.
-> Maybe describe this in patch desc.
+> The "sb" and "cp" abbreviations, what do they stand for?
 
-I was planning to do a proper documentation page once we settle on all
-the details (similar to the one we have for rx).
-
-> What is the plan for dealing with cases that doesn't populate same/full
-> TX metadata size ?
-
-Do we need to support that? I was assuming that the TX layout would be
-fixed between the userspace and BPF.
-If every packet would have a different metadata length, it seems like
-a nightmare to parse?
+SuBmit and ComPlete. Should I spell them out? Or any other suitable
+abbreviation?
 
