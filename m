@@ -1,130 +1,231 @@
-Return-Path: <bpf+bounces-3161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E8B73A5AA
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 18:10:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 794E973A613
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 18:27:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5BF1281A03
-	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 16:10:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EB4F1C21167
+	for <lists+bpf@lfdr.de>; Thu, 22 Jun 2023 16:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E74200A3;
-	Thu, 22 Jun 2023 16:10:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4BA200A8;
+	Thu, 22 Jun 2023 16:27:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D7E1F95D
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 16:10:05 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1291FEB
-	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 09:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1687450191;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a4ZeA3fCzpsP/weTyEHljBjdeImnc1sztgg04Zvr3Iw=;
-	b=FRSVsHcxCtKhffxsiURcxdDsh3FXHGnZ4rlHgSEFYmOZU2lpx1gPVdbeCProCWgZ8d4vq3
-	LYysXfwbTPASeKZBx4FJY2qktrIvbnISFZ+PvM4OzWyyU+jHPVlu4TImkyH+Y/gDGjjLAi
-	aNQ/u24o3Dy1H8pmxnDkGP3BJZZLhuc=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-662-8OuRDdcRNDCPizflr5mU3w-1; Thu, 22 Jun 2023 12:09:35 -0400
-X-MC-Unique: 8OuRDdcRNDCPizflr5mU3w-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b46bfa6710so48136691fa.1
-        for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 09:09:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687450156; x=1690042156;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a4ZeA3fCzpsP/weTyEHljBjdeImnc1sztgg04Zvr3Iw=;
-        b=lX5Dfq/7Hs7kXzZX0oPTNz/pTpRRQagj9GJhCNsL2HmqyHO7YAHgR2J0Z52IZAFYNd
-         w13zln7A+xpCj7GqCvjHlDZyntqehXxNcEldFHuzuriR/+4v6q/nvHzd0bNEgnfQMfr4
-         Eh1/eApZPJE+qrn8N2dhZu9CGlYwMkevap2RN56jmCS4HxFLh0QHKalpY3vyxlY25GPA
-         k0AOTFDY42bW4NXQ3uSmy+ml0lwt+NK01Uy2NwAhde3xuveswDfzRadEUfFn7xcM7VE1
-         HT7ijKhCTkwTRWu7dSoIweQ8d39feyqgMayDofghWNJZR8aHs71cVYaTH3qayPvo6Gm4
-         t2yQ==
-X-Gm-Message-State: AC+VfDwIbpC5nxGegWXLaJ6hRMI2d8hZ6ih0uDXuBGJa1sBmbV37auax
-	SST27MKhJ1UsU5fSqQjwXt3tkJLDdNwwyho23HzAsDJGt0pvln6TTVEhwvwazwezo2gOUC+Eq2/
-	LuJWWXE5Pum25
-X-Received: by 2002:a2e:9a8e:0:b0:2b5:8cfd:5236 with SMTP id p14-20020a2e9a8e000000b002b58cfd5236mr2267181lji.17.1687450155866;
-        Thu, 22 Jun 2023 09:09:15 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ6PUI9RE8kTcJcsGtpi7DjRk/Abacp0W+tVcBZjDh9XPq5tuQJut8wknojrAHXz03XIsMl3gQ==
-X-Received: by 2002:a2e:9a8e:0:b0:2b5:8cfd:5236 with SMTP id p14-20020a2e9a8e000000b002b58cfd5236mr2267154lji.17.1687450155518;
-        Thu, 22 Jun 2023 09:09:15 -0700 (PDT)
-Received: from sgarzare-redhat (host-87-11-6-160.retail.telecomitalia.it. [87.11.6.160])
-        by smtp.gmail.com with ESMTPSA id f13-20020a1709067f8d00b0098d2f91c850sm1026234ejr.89.2023.06.22.09.09.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jun 2023 09:09:14 -0700 (PDT)
-Date: Thu, 22 Jun 2023 18:09:12 +0200
-From: Stefano Garzarella <sgarzare@redhat.com>
-To: Arseniy Krasnov <oxffffaa@gmail.com>
-Cc: Bobby Eshleman <bobby.eshleman@bytedance.com>, 
-	Stefan Hajnoczi <stefanha@redhat.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
-	Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, 
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, 
-	Bryan Tan <bryantan@vmware.com>, Vishnu Dasa <vdasa@vmware.com>, 
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Simon Horman <simon.horman@corigine.com>, kvm@vger.kernel.org, virtualization@lists.linux-foundation.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	bpf@vger.kernel.org
-Subject: Re: [PATCH RFC net-next v4 6/8] virtio/vsock: support dgrams
-Message-ID: <ppx75eomyyb354knfkwbwin3il2ot7hf5cefwrt6ztpcbc3pps@q736cq5v4bdh>
-References: <20230413-b4-vsock-dgram-v4-0-0cebbb2ae899@bytedance.com>
- <20230413-b4-vsock-dgram-v4-6-0cebbb2ae899@bytedance.com>
- <92b3a6df-ded3-6470-39d1-fe0939441abc@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DB3D8494
+	for <bpf@vger.kernel.org>; Thu, 22 Jun 2023 16:27:44 +0000 (UTC)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D5F1BD9;
+	Thu, 22 Jun 2023 09:27:42 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35MF5TUh017775;
+	Thu, 22 Jun 2023 09:26:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=CLyTbworMchDlx4OcnrXwOp5NwyzE2wxp1hMHiNOa7c=;
+ b=elRayK9BdQL/dl4aAfNZx4GgsfaMSMnz7EGApfy2cJ9r4iz14DELWq/YrvagqJjcKRUs
+ kJPzNh26TbTRQKObxY9Ht3Vvb5dygpvMFd13XBjAuJRCz7wNwCdeYLtUNu1nrtmT/bx2
+ 57/Y2mO6/lPZGosS1Ugs9p8uS0wr95N7eM1CLWCbt0DrIlqfDN7fxMqNwvlJI4IaHeVv
+ QsTXVSwt5/Hs4MM4ChDol97WbZDKKawSXiWp32gJvbBKjvO7Q/RVrwL2nUpoU5EHWwjS
+ KmiBE9RS6lXjmU2hunwir8K/nTKYFTF35NQH86mAtcBV5UnYwpgUMNE2mzbzZbdlSDTk Dw== 
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2041.outbound.protection.outlook.com [104.47.56.41])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rcn2ct83d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Jun 2023 09:26:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EdaRa31mfb8VOx5swR64u2XbkXqHp6d2H3HH34tw5X4DMrFwInXGm52Qhj9+FOiiRhzwrmsiqPi7mJ5K8d3fdZYMebrhIiZF1NWNLNR5HGLH5uMLmhxOcd00X+gRYs68qznOSUpKsqDKVN5jzsVJCBuhT77sBHucdwzy80AbDWLFh/zE8TmRo+JQbQONnzdr/2rHUaidJMq4H4DorLSpNrZi3bux3h6m1nXPFqNLZ8CikYwfQsK/D0flHmwMnyoC5vFgtUW45NAckinucflh1PnOLC9Q0PueQnztZJJDAE6f5RI+CLLceStiNxP8tnObhq/3GxRvxuyfVyno5h+PfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CLyTbworMchDlx4OcnrXwOp5NwyzE2wxp1hMHiNOa7c=;
+ b=XHQPGwaVpdwMYU8Kfq03Fg6r9tZ/FOy06iu2tYUaz3guVHpy4F/AHEYll7JiwfKYnT/02LjgJSaroICttTDjKvukq/GGM99IrtiIrahg2MMsXPHlGf+Vb5jB9jQpSUvFfCNqdCK3Tby2Prq4ebv42AT4otYKsQMxltc7n1ewmAjRrdVqTPDBI9DmjdI/2WhHIauCIrppDeCNHfx0nwOMkWJi2PaIHsehYtv8Np0XlkhxspfBbwaYaTftFyvNvVNZQ4goccbvVeX79N5GMgV8JUiWu33saNyE4pPk8jq7m2J5lCqAv0C+a2Y5cmA9W+r4z9X1TZdU6HGJ3D71m4JJEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by MN6PR15MB6002.namprd15.prod.outlook.com (2603:10b6:208:475::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.24; Thu, 22 Jun
+ 2023 16:26:46 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::428f:acec:2c1f:c812]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::428f:acec:2c1f:c812%7]) with mapi id 15.20.6521.024; Thu, 22 Jun 2023
+ 16:26:46 +0000
+Message-ID: <c59ab814-32d2-963d-e098-7965f6ff1441@meta.com>
+Date: Thu, 22 Jun 2023 09:26:41 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH bpf-next v5 2/3] bpf, x86: allow function arguments up to
+ 12 for TRACING
+Content-Language: en-US
+To: David Laight <David.Laight@ACULAB.COM>,
+        "menglong8.dong@gmail.com" <menglong8.dong@gmail.com>,
+        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>
+Cc: "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "sdf@google.com"
+ <sdf@google.com>,
+        "haoluo@google.com" <haoluo@google.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "benbjiang@tencent.com" <benbjiang@tencent.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Menglong Dong <imagedong@tencent.com>
+References: <20230613025226.3167956-1-imagedong@tencent.com>
+ <20230613025226.3167956-3-imagedong@tencent.com>
+ <ca490974-0c5c-cfe9-0c6f-3ead163e7a7b@meta.com>
+ <7a82744f454944778f55c36e8445762f@AcuMS.aculab.com>
+From: Yonghong Song <yhs@meta.com>
+In-Reply-To: <7a82744f454944778f55c36e8445762f@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0177.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::32) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <92b3a6df-ded3-6470-39d1-fe0939441abc@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|MN6PR15MB6002:EE_
+X-MS-Office365-Filtering-Correlation-Id: df7a69f4-6998-4883-6f3c-08db733d78b6
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	nq9NZwtj9Q1aT2lWwHxMQlEL2NyM8gmiv6Q1MtJxN13I+W3jrak0qZeGzcgreOUr4J4Gv/LE4Q36WW5S1R4fLYV6fQxxd9hh4rU/PoiBp2XBYHyuPRRd6W1skCZuaAXjipxeLw6ZX0wDrvGaFP5FqV3ofHoKduLuETpRHY+AMr7zvDCdzy9pwk55Alhjkjg8g78xe83AGuX7KdByHII/y2SaTYQ5upHdR7HqO/tYSfIBjv06iaJDhj6yFSLYOHuVeSuXJ+DhmdPXlrSanfGuX+iLkoCkflqyzWoan70h88hC6eXo4npEdZESOLpQ64B68xCVaiarxGsc801OaT4wvPaXDRGl/kFRLu7hlpSIlcPDloh7/RZjh8B3WV/Ye/pl+Xbe67mIc7M70lUN6Yez7KKmIZ3SDLsCs5LJCISZN5HIDxF5iu+zFwB25b1lXG3680chjBk1/GEXHj4ddext5N4uJRRsL/yfkt7WR7b0vx9ctNe5ZYGnhrQDU/0dXOaPhTkNbHTbgiCshttx7SvaC10Ad6Afe67q5ipMABvfcA3zi8O5FHaG4jiWatGSS9oOGairhWLcOsCzHe5KjPSilIbJLqAwYaA9n4KcKcILElnVw02ZP9I5Qd8oglEQhO2rDh/e+HNjJ7gkdqBZCxO2tw==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(39860400002)(366004)(136003)(346002)(451199021)(7416002)(5660300002)(8936002)(36756003)(8676002)(38100700002)(2906002)(478600001)(6666004)(6486002)(186003)(31696002)(110136005)(54906003)(86362001)(2616005)(31686004)(53546011)(6512007)(6506007)(4326008)(66946007)(66476007)(66556008)(41300700001)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?dU5xY0dGbElkTG8vRnJlckd3blZaM3pkUCt5dDRUdG8wMVg1WFowZW9QTFhw?=
+ =?utf-8?B?anFDSFp1SnhENGpXeC8xVGNrY1FqYWVvRUpNR2dSQjZ6SHJpdDhkZ3BoMGlB?=
+ =?utf-8?B?M0NtVDluR3VIV1V2c2hHMTRlZ2JhaGQ0dTJ4aGg3L21WRTZNTkxDM2gyUFFs?=
+ =?utf-8?B?TkdYWWoxN0s4UERJVkJCcWpUUEZ6S3VlKzF2ZU5oYUZKUS92RFpGV0hQUnZN?=
+ =?utf-8?B?d1o1Y2hCalZYUlZMd21tK3ZhTUZvT0hDdkd5eEN5dEt3SndDeVZxbUlLUWRx?=
+ =?utf-8?B?RzVtKzF2YlRlQk1PS2JvdWU0d2J0M1ZkNXlCWXRnV0pYSFZHcHNFSzdsVVc1?=
+ =?utf-8?B?c0svY0daZTF1WlVTTEJKUlVTNjJGZ29jRVd2Y2RYaTROY0NLZ0R0N2p2a3Bs?=
+ =?utf-8?B?aEJOY1RqMFhFSDRVMkhrOWRvV3VRYnZRY05DMjZrekxEcUVpZ0dyQ2p2YjZq?=
+ =?utf-8?B?Ry9XdWJUdlFSVmJmMVVvOCtNOGpVak5PZkxGWUNvUXJRNWlaT1RFUGJ3ZFAx?=
+ =?utf-8?B?cThMeEtyZXZDS1FvY3VCRFNYQytBQzZBWDBsODdYZkdmL0t6d0NHbEp6M050?=
+ =?utf-8?B?eDRVKytRREpFYlhlc29CeUpNN2ptVVkwRVozSi94REFJMjZQQ2JqWFBUamlj?=
+ =?utf-8?B?eUtoS2tkOEtoMHdKYitucFBjcTF0ZjZ6TFAvUU5JRTdCWEc2c1hsR2xmdUZ2?=
+ =?utf-8?B?ckdyL3lqb0VDZ0V0c09Ed1Z4b1dPeDRjZUhxanJuVGpTVFkwT2tWOWMrbjh6?=
+ =?utf-8?B?a3hUVmhQcGdCM0NmSnlObjFVakczYUtTVlNHcGZtSUI1WGY2OEpEanNQY0lp?=
+ =?utf-8?B?d21la0ZSR3JOZEFud1J1VGNKb3dLV3ZMcXU1NXR4cjZsdWdTSU9rQkowMk4v?=
+ =?utf-8?B?MWo1dVRKb0pyQ1BkVEtDZzYrZlU4MFdTeUN4L0RnTWk0d25La3dIZ2hSdmQ1?=
+ =?utf-8?B?UG9xSU8xc1RxSUQ3QSsxTm1LNi9KNU55SXZYbHhZMDU1WjNMY040MURlWS9y?=
+ =?utf-8?B?SE9aUWdFSHQ1V1UyQmozdkgxWjRrK0JWY0RTVGVXdDRaR2hMeHR6dTRrNVNn?=
+ =?utf-8?B?TmJob2FDQ0NkV1ZBUXN3RUlRcE0rRHd2SVg0NGxaT252R25ETXdKdnhQV2J6?=
+ =?utf-8?B?K3pnMit1ejMrUU5aZEZ0a2JQZTVBOE4xV0xxVkJ1YnJmUExWblpWTUVVOUR2?=
+ =?utf-8?B?UUpTZ2o4cnlPdEw0WGNTOHBDZ1BIYmlyTWtlbXpiYWg2N3paQ2x6T2duM2Uy?=
+ =?utf-8?B?bXA5RHFWaVFYQWs5TERvUWdRZjNqWTFhV2V1OXhlb0sxVkJnMXZjWkZhOWwy?=
+ =?utf-8?B?S3FGMTNzNFNmOE4xbGpqUVE5OUxQVVRpY2JXR0dnQjBOYlFoaHF0T3ROUzRM?=
+ =?utf-8?B?bmdsbFgrelhNWmJ1blBNMnZrMFI1bmNlZ2tDc1hlMmtEaHBCU1FUbHZVRUVt?=
+ =?utf-8?B?Z1NKbHZtZFEwd0ozR2N1dmJpRXdlcGtmUk42Qmo3VjhNM1BuNGUxaUxYeTBa?=
+ =?utf-8?B?YVhHRElQM3BYSHBxdUUvUmRKeU5zS05kT2ZDRU5XT3pJc1BHeDNyVmwxb0NL?=
+ =?utf-8?B?M2ZaSk91cXU1RWFoWlFMN0lNcllKeEFTUnRuV2RnZjF1bzVId0tob0FORmVH?=
+ =?utf-8?B?R2VadlhVWU84WGl5V1dvdzYvT2dlSXhGbnNHSUJRdlp2eXhwR01kUHA1UTdm?=
+ =?utf-8?B?NGl2MFg5YWxBUGUwR0tQcE5GL0RXUlhycyt5Uys5ejlZLzNZNGxwUW9lMk1J?=
+ =?utf-8?B?TmtENGUyZUlYV1Fpd3JodGRNVjBFdkdQSWxlbTROSFhhaUZOQ1BoUEdJVG1p?=
+ =?utf-8?B?eVkyTUFNcVR0aXZlZVBFeHo4QmlPWDRmZ0FBelNpN1ZNVXlBZ0ZCZ0xDY3BP?=
+ =?utf-8?B?S1NzMlJMKzhEc0o4THNzSHA3dGZrdzFDWDkrV0dmNmxOdFhsRTdWbC9kZWhX?=
+ =?utf-8?B?UkM5TGhndHVYNFcvMTQwQ3dHK3lSTEt5dm9weDR6QS9PaTA2NXpyMXhaMXF6?=
+ =?utf-8?B?WmtSenloM2pReXdFY0l1dWV0NmxuQWZ2eCtRWDgrRjRIVGkyYUsxSlVSWk44?=
+ =?utf-8?B?Vyt2YnZlZFl1VVRHWmVWSS9YeUIzZnVIa0c1dUpvL2FuMkxRM0I4ME1NWms0?=
+ =?utf-8?B?WFhrb3RCUlRTTFBwNHVVZVdCNnhhdHdQaFZZUVpSUDR0Q1NDSlNWUmNZN08y?=
+ =?utf-8?B?Zmc9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: df7a69f4-6998-4883-6f3c-08db733d78b6
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2023 16:26:45.9740
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PVOJ73yvFcGD6YS4eyHJcrM5i3WEpY4kmCuENuR7yNLHqKuAFC9jpE9+h4JrFp5y
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR15MB6002
+X-Proofpoint-ORIG-GUID: GLotAy8hc79X671MWQGcHaUJHUOexgd7
+X-Proofpoint-GUID: GLotAy8hc79X671MWQGcHaUJHUOexgd7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-06-22_11,2023-06-22_02,2023-05-22_02
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sun, Jun 11, 2023 at 11:49:02PM +0300, Arseniy Krasnov wrote:
->Hello Bobby!
->
->On 10.06.2023 03:58, Bobby Eshleman wrote:
->> This commit adds support for datagrams over virtio/vsock.
+
+
+On 6/22/23 2:06 AM, David Laight wrote:
+> ...
+>>> +	/* Generally speaking, the compiler will pass the arguments
+>>> +	 * on-stack with "push" instruction, which will take 8-byte
+>>> +	 * on the stack. On this case, there won't be garbage values
 >>
->> Message boundaries are preserved on a per-skb and per-vq entry basis.
->
->I'm a little bit confused about the following case: let vhost sends 4097 bytes
->datagram to the guest. Guest uses 4096 RX buffers in it's virtio queue, each
->buffer has attached empty skb to it. Vhost places first 4096 bytes to the first
->buffer of guests RX queue, and 1 last byte to the second buffer. Now IIUC guest
->has two skb in it rx queue, and user in guest wants to read data - does it read
->4097 bytes, while guest has two skb - 4096 bytes and 1 bytes? In seqpacket there is
->special marker in header which shows where message ends, and how it works here?
+>> On this case -> In this case. The same for below another case.
+>>
+>>> +	 * while we copy the arguments from origin stack frame to current
+>>> +	 * in BPF_DW.
+>>> +	 *
+>>> +	 * However, sometimes the compiler will only allocate 4-byte on
+>>> +	 * the stack for the arguments. For now, this case will only
+>>> +	 * happen if there is only one argument on-stack and its size
+>>> +	 * not more than 4 byte. On this case, there will be garbage
+>>> +	 * values on the upper 4-byte where we store the argument on
+>>> +	 * current stack frame.
+> 
+> Is that right for 86-64?
 
-I think the main difference is that DGRAM is not connection-oriented, so
-we don't have a stream and we can't split the packet into 2 (maybe we
-could, but we have no guarantee that the second one for example will be
-not discarded because there is no space).
+yes,
 
-So I think it is acceptable as a restriction to keep it simple.
+> 
+> IIRC arguments always take (at least) 64bits.
+> For any 32bit argument (register or stack) the high bits are undefined.
+> (Maybe in kernel they are always zero?
+>  From 32bit userspace they are definitely random.)
+> 
+> I think the called code is also responsible form masking 8 and 16bit
+> values (in reality char/short args and return values just add code
+> bloat).
 
-My only doubt is, should we make the RX buffer size configurable,
-instead of always using 4k?
+yes, it does. For example, if an argument has type u8, so
+x86_64 might only put a u8 value into 1-byte subregister
+and rest of if is undefined. This is what happened to bpf program,
+   (1). the whole register/stack is saved to 8-byte stack slot.
+   (2). in bpf program, the 8-byte stack slot will be read
+        and then cast to u8, so the compiler will do proper
+        left shift and right shift to get proper value.
 
-Thanks,
-Stefano
+If the argument is u32/s32, the 32-bit subregister 'w*' could
+be used without left/right shifting (similar to x86_64 subregister).
 
+So we should be okay here.
+
+> 
+> A 128bit value is either passed in two registers or two stack
+> slots. If the last register is skipped it will be used for the
+> next argument.
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
 
