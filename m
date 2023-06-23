@@ -1,152 +1,141 @@
-Return-Path: <bpf+bounces-3244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF74173B2E9
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 10:51:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 456D373B2EC
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 10:51:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 533981C2108A
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 08:51:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3220281932
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 08:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB79717FC;
-	Fri, 23 Jun 2023 08:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27951184E;
+	Fri, 23 Jun 2023 08:51:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1BA10F7
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 08:50:58 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6C31706;
-	Fri, 23 Jun 2023 01:50:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=TK9RukHDlDjrby2IyF7+J31ZsckbWp6T46JLpvbSxlc=; b=H0lw14iivXlqc3vMBLxKIMpWdT
-	typiAsoDN7KmImH7Oi2XvfY5lKgMmUz+nD/jimGt7mS2jdfoCbXxlVOhyyduIFnQ38j8h5DaWT2pN
-	zUZoepuuXx7/N5C/BTYwBcN/TO30bkdWw8Ga1r2iYkQ/Cpyr3fzW0+A/ImYy3I88C7JfYeulCg82e
-	EZ8qHOS8qOhGmRfjcrg37Xsg4rsrBcqtK7C9R1RIXuAKGWlMtLb7mz0581U12E25YG7MZAUz0lCAV
-	ni7ioufDkt4TY/9v8MT3uKCWrITVO+lnrnpEDVIPEOAABp60i1/JM7d1VnF5lx9QO4QRUaWYsML81
-	mQhPw9NQ==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qCcVF-0009Zf-Qu; Fri, 23 Jun 2023 10:50:49 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qCcVF-0007SR-6L; Fri, 23 Jun 2023 10:50:49 +0200
-Subject: Re: [PATCH bpf-next v3 1/2] net: bpf: Always call BPF cgroup filters
- for egress.
-To: Kui-Feng Lee <sinquersw@gmail.com>, Yonghong Song <yhs@meta.com>,
- Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org, yhs@fb.com, kpsingh@kernel.org, shuah@kernel.org,
- john.fastabend@gmail.com, sdf@google.com, mykolal@fb.com,
- linux-kselftest@vger.kernel.org, jolsa@kernel.org, haoluo@google.com
-Cc: Kui-Feng Lee <kuifeng@meta.com>
-References: <20230620171409.166001-1-kuifeng@meta.com>
- <20230620171409.166001-2-kuifeng@meta.com>
- <4d46ba3a-61e9-2482-a359-7a8805f1dbc8@meta.com>
- <2693aaa4-eb33-553c-291c-3eb555452ea6@gmail.com>
- <94226479-8d79-cc83-9ecf-6db0b376a7fd@meta.com>
- <461e9be3-d533-d727-8ef9-0e20972ae0b4@iogearbox.net>
- <e22923d0-3241-2b2e-6c9e-c41cd6c10997@gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <674a12a9-3776-1637-f132-9c0bf692b18a@iogearbox.net>
-Date: Fri, 23 Jun 2023 10:50:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E84211388
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 08:51:34 +0000 (UTC)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A6D1706
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 01:51:32 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4f96da99965so395521e87.1
+        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 01:51:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1687510291; x=1690102291;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FBp/5we+F098cYxjClAH39IPPmeDVkhswEY+vCjkrLU=;
+        b=Ldb53M44W8TbeL/H4zJekM/7x63/asS5bW6zXQ9hJOyWbKLNY7keLnKXhRj4QrC0l/
+         DLXXI4bXuMJbOq8ckfyr5v1acn0wXTqUNlru42rjmYpwkXm+H96OgZgoI/kCnW2k7oxl
+         5Da53GQIaNEpKCSkb9q0VDRLUTm8EeZ/Egqsr8ggJ3t+EiI4Mf3FiuOKj5/uk1Ro4Szo
+         5fx2JdV1Gj8eUq+940HvdiGUJOJJoB464Of3kP4xSxRYeC/5T4GTYNjml1HW49/4/0Mg
+         nTS0IoQC1ppNOJGvTDABxyXAPGh/iA1087WWe5v1Fr96c6G0LMb6JgKCuGj+56lCYl3C
+         Jyww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687510291; x=1690102291;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FBp/5we+F098cYxjClAH39IPPmeDVkhswEY+vCjkrLU=;
+        b=PkMLJ2Gr3Vb8NDo2VfEQCQS+7q1CnBj8U20kp8LS2NntReDaAWIlKjLeZfZRtVozsL
+         g0+aVKxMwCGu7weXyM+V4W7cahXS6L9NdFUtxPbByfpuWVHa0A5mOwNDSMTLZwhQ9zPB
+         MPrfKaaVWHSmjHgHwnUliafFBg5h0UnpCMRHwO1fYi4nVWgUu2+US7/BuipXczmguzlN
+         PvC5l2E0aW7yw+vwKyMqn0xP5YIMcjIZqtNKIvbmstbfCuF9likDeisBUafWvWpABJeD
+         9eluMuxeKj4ev/kD409s2gN5oK/GGKBDTZH6JfB+s+Vjm2lOL4AksMbrRrcHjWI3apA9
+         03EA==
+X-Gm-Message-State: AC+VfDyW3ekMDokaQUHD4rYturoI/X3DqtT1aqzx8K2G6APHv/6LmWSx
+	TniRZooV03EAkb07E800Eum9Zg==
+X-Google-Smtp-Source: ACHHUZ4bJ8bVgtgP/IjbqRrFOwLkmmEY0vE1BaZUiA+/j8tie7A0E3PJlHa8tG/xQQi6uTLzNyUNhA==
+X-Received: by 2002:a19:6544:0:b0:4f6:d7b:2f19 with SMTP id c4-20020a196544000000b004f60d7b2f19mr11832148lfj.24.1687510290980;
+        Fri, 23 Jun 2023 01:51:30 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:9cb8:f81f:3342:3b44? ([2a02:8011:e80c:0:9cb8:f81f:3342:3b44])
+        by smtp.gmail.com with ESMTPSA id f23-20020a1c6a17000000b003eddc6aa5fasm1671290wmc.39.2023.06.23.01.51.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jun 2023 01:51:30 -0700 (PDT)
+Message-ID: <a5d419e4-f2ea-27f6-9259-a7b6486ab616@isovalent.com>
+Date: Fri, 23 Jun 2023 09:51:29 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <e22923d0-3241-2b2e-6c9e-c41cd6c10997@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26948/Fri Jun 23 09:28:15 2023)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] bpf: Replace deprecated -target with --target= for Clang
+Content-Language: en-GB
+To: Fangrui Song <maskray@google.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+References: <20230623020908.1410959-1-maskray@google.com>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20230623020908.1410959-1-maskray@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 6/23/23 1:55 AM, Kui-Feng Lee wrote:
-> On 6/22/23 13:06, Daniel Borkmann wrote:
->> On 6/22/23 8:28 PM, Yonghong Song wrote:
->>> On 6/22/23 10:15 AM, Kui-Feng Lee wrote:
->>>> On 6/21/23 20:37, Yonghong Song wrote:
->>>>> On 6/20/23 10:14 AM, Kui-Feng Lee wrote:
->>>>>> Always call BPF filters if CGROUP BPF is enabled for EGRESS without
->>>>>> checking skb->sk against sk.
->>>>>>
->>>>>> The filters were called only if skb is owned by the sock that the
->>>>>> skb is sent out through.  In another words, skb->sk should point to
->>>>>> the sock that it is sending through its egress.  However, the filters would
->>>>>> miss SYNACK skbs that they are owned by a request_sock but sent through
->>>>>> the listening sock, that is the socket listening incoming connections.
->>>>>> This is an unnecessary restrict.
->>>>>
->>>>> The original patch which introduced 'sk == skb->sk' is
->>>>>    3007098494be  cgroup: add support for eBPF programs
->>>>> There are no mentioning in commit message why 'sk == skb->sk'
->>>>> is needed. So it is possible that this is just restricted
->>>>> for use cases at that moment. Now there are use cases
->>>>> where 'sk != skb->sk' so removing this check can enable
->>>>> the new use case. Maybe you can add this into your commit
->>>>> message so people can understand the history of 'sk == skb->sk'.
->>>>
->>>> After checking the code and the Alexei's comment[1] again, this check
->>>> may be different from what I thought. In another post[2],
->>>> Daniel Borkmann mentioned
->>>>
->>>>      Wouldn't that mean however, when you go through stacked devices that
->>>>      you'd run the same eBPF cgroup program for skb->sk multiple times?
->>>>
->>>> I read this paragraph several times.
->>>> This check ensures the filters are only called for the device on
->>>> the top of a stack.  So, I probably should change the check to
->>>>
->>>>      sk == skb_to_full_sk(skb)
->>>
->>> I think this should work. It exactly covers your use case:
->>>    they are owned by a request_sock but sent through
->>>    the listening sock, that is the socket listening incoming connections
->>> and sk == skb->sk for non request_sock/listening_sock case.
->>
->> Just a thought, should the test look like the below?
->>
->>          int __ret = 0;                                                         \
->>          if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk) {                    \
->>                  typeof(sk) __sk = sk_to_full_sk(sk);                           \
->>                  if (sk_fullsock(__sk) && __sk == skb_to_full_sk(skb) &&        \
->>                      cgroup_bpf_sock_enabled(__sk, CGROUP_INET_EGRESS))         \
->>                          __ret = __cgroup_bpf_run_filter_skb(__sk, skb,         \
->> CGROUP_INET_EGRESS); \
->> }                                                                      \
->>
->> Iow, we do already convert __sk to full sk, so we should then also use that
->> for the test with skb_to_full_sk(skb).
+2023-06-23 02:09 UTC+0000 ~ Fangrui Song <maskray@google.com>
+> -target has been deprecated since Clang 3.4 in 2013. Use the preferred
+> --target=bpf form instead. This matches how we use --target= in
+> scripts/Makefile.clang.
+
+This seems to be the relevant commit, for reference:
+
+https://github.com/llvm/llvm-project/commit/274b6f0c87a6a1798de0a68135afc7f95def6277
+
 > 
-> Agree!
+> Signed-off-by: Fangrui Song <maskray@google.com>
+> ---
+>  Documentation/bpf/bpf_devel_QA.rst              | 10 +++++-----
+>  Documentation/bpf/btf.rst                       |  4 ++--
+>  Documentation/bpf/llvm_reloc.rst                |  6 +++---
+>  drivers/hid/bpf/entrypoints/Makefile            |  2 +-
+>  kernel/bpf/preload/iterators/Makefile           |  2 +-
+>  samples/bpf/Makefile                            |  6 +++---
+>  samples/bpf/gnu/stubs.h                         |  3 ++-
+>  samples/bpf/test_lwt_bpf.sh                     |  2 +-
+>  samples/hid/Makefile                            |  6 +++---
+>  tools/bpf/bpftool/Documentation/bpftool-gen.rst |  4 ++--
+>  tools/bpf/bpftool/Makefile                      |  2 +-
+>  tools/bpf/runqslower/Makefile                   |  2 +-
+>  tools/build/feature/Makefile                    |  2 +-
+>  tools/perf/Documentation/perf-config.txt        |  2 +-
+>  tools/perf/Makefile.perf                        |  4 ++--
+>  tools/perf/util/llvm-utils.c                    |  4 ++--
+>  tools/testing/selftests/bpf/Makefile            |  6 +++---
+>  tools/testing/selftests/bpf/gnu/stubs.h         |  3 ++-
+>  tools/testing/selftests/hid/Makefile            |  6 +++---
+>  tools/testing/selftests/net/Makefile            |  4 ++--
+>  tools/testing/selftests/tc-testing/Makefile     |  2 +-
+>  21 files changed, 42 insertions(+), 40 deletions(-)
+> 
 
-It would also be useful to do an in-depth analysis for the commit msg in which
-cases the sk == skb->sk matches and sk was not a full sock (but __sk is) given
-the __sk = sk_to_full_sk(sk) exists in the code to document which situation this
-is covering in the existing code (... perhaps it used to work back then for
-synack just that later changes altered it without anyone noticing until now).
+> diff --git a/samples/bpf/gnu/stubs.h b/samples/bpf/gnu/stubs.h
+> index 719225b16626..cc37155fbfa5 100644
+> --- a/samples/bpf/gnu/stubs.h
+> +++ b/samples/bpf/gnu/stubs.h
+> @@ -1 +1,2 @@
+> -/* dummy .h to trick /usr/include/features.h to work with 'clang -target bpf' */
+> +/* SPDX-License-Identifier: GPL-2.0 */
 
-Thanks,
-Daniel
+Are these necessary, seeing that the files only contain this single-line
+comment?
+
+> +/* dummy .h to trick /usr/include/features.h to work with 'clang --target=bpf' */
+
+Other than this, the change looks good, thanks. Although it should
+probably target bpf-next rather than bpf?
+
+Acked-by: Quentin Monnet <quentin@isovalent.com>
+
 
