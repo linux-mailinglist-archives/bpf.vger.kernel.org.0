@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-3287-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3288-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E387A73BC86
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 18:27:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4260273BC8F
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 18:29:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F2991C21288
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 16:27:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1EDB281C65
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 16:29:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CE91100B6;
-	Fri, 23 Jun 2023 16:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C865100B8;
+	Fri, 23 Jun 2023 16:29:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41826100A6
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 16:27:33 +0000 (UTC)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75B018B
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 09:27:31 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3f9c0abc8b1so10339915e9.1
-        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 09:27:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC39100A6
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 16:29:29 +0000 (UTC)
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D18189
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 09:29:27 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4f954d78bf8so1119438e87.3
+        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 09:29:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687537650; x=1690129650;
+        d=gmail.com; s=20221208; t=1687537766; x=1690129766;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+N4JlccHakKrLPQ1lY3+HAUHCI52VAp5ISn02l+oVFQ=;
-        b=qrVgIJTR31MTSbWBLnCtyvPQvGTQ/HFnBWcJ0h92SoUAYO4NK0HzCPNTeavb5vjYe/
-         NH4RsiNuo3Is2T5uwZRpUgzMQA6Zvvjr431CHdjzlT7K+gtwPM0H4mbPp/cJnoT56z1U
-         9FgjJbyhWDAtYxe/kQ3Q5uTbyj4yQkWDxuItO06iwOcNkjQOi7ADAd4Cd8yR3VFfytja
-         IPwf4sPEl3qPSkDo9wSIChhxHm6o2Ae5zVL9wZ0gL0aBrP6NlgU1ZbH8Ov4O3J2cnnGJ
-         dCqbCrOTw6VSy4dy1I78mXRoaXPZVyDObOy8tCxjeMLmGo0TW4XhCpPZRerBrPhvQ7to
-         pSPg==
+        bh=8G5cUOjROyfafnQmZG+7nVziUpAb6qlfVHt8x51WPJU=;
+        b=IQlrzicA2Apfbvt13NPKUiqayI1VGzF6HcNPeCYgfwP1HfLiN3jB7pTJteS4o67w0R
+         6g5DipwB6svs3udJAn5sCIlM4DJIh5hDeF7ao23BIpTElCykSizIfIgZS/79mMm391x7
+         9UQCmwDjUSWl2JmOkKP4nxedb+fBvrI9Va7YqAeCg0S2zIyQjoxpKTCkIreJCrfGcFf3
+         mtM2+y+B2mhIJCQc6UGIKykAaKuUYWp+STm4R/I1tBh3ys4zJIenVz5cNH0V4ssBHa4d
+         smt8FZszQqTcF7nsUwPpskPSdbMOS7PpRplQI1Ncta6O/Y1FrVE/NLW1W2S9GGIrL84G
+         spmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687537650; x=1690129650;
+        d=1e100.net; s=20221208; t=1687537766; x=1690129766;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+N4JlccHakKrLPQ1lY3+HAUHCI52VAp5ISn02l+oVFQ=;
-        b=Rpb4317pXbEW0NucCSDDUasc1L+QOSCxRLNqThunq6v6K6ESn/s4Da3ORXQPb+Xtuo
-         InAf+4dbBYvJjzSNRfaXaR+m+/avtUNQFcYtcvwtgRhxfEE73zY/xwXrPur7FeT2MvWi
-         TRicHFMGdxRsChHf1pCNdXh+d3mBvIeCAmOzVeRdWFY1YYM4qLDXbJNVKJqqbmn0zedw
-         Jqh0tGLtA4b0r4OWo96vHg71uUSIVqOUEhiFZihyi1gqxnYeV44UlRkOciiusERHAAW7
-         S/cOlHqGI1QvFAvHCA+7ByzjGqSlWL1spnx01GitbM6bY4GhLnZyzPvsl3ZsnrgUT9Gq
-         bVTg==
-X-Gm-Message-State: AC+VfDyOAaLROzsVVLoUvbEAKmGEJN0DGQrnc0YT6fVE9W53VDU+aNtn
-	nFoJHh1kSbRUkg0SuN49Ul1QmXKMrK8a0KdoSQ0=
-X-Google-Smtp-Source: ACHHUZ6931IZ4XK6W7zyYnle+bB/elS4gq3gq0D2urKoAcDmwPM0m6KXyGGhEOeoscQbIcqvGUI+yFJEETiaaauxMaM=
-X-Received: by 2002:a1c:4c0d:0:b0:3f8:ffc8:bb00 with SMTP id
- z13-20020a1c4c0d000000b003f8ffc8bb00mr18581514wmf.37.1687537650082; Fri, 23
- Jun 2023 09:27:30 -0700 (PDT)
+        bh=8G5cUOjROyfafnQmZG+7nVziUpAb6qlfVHt8x51WPJU=;
+        b=QyWlKLDQ3RzZK1ItbFZP+JPkhgKXbRIvOcY/9MG3MGwvgkwKxsyHZ7VzKZroVxXd8g
+         rup6LtLopIEyRBmaQKKxuzizqsKhnRWd7UsxFL5cRd/MpWPTAxUwGfn5/XgulxbYOJ/W
+         0T4UeUjbPI1Ky4AY4d3ZA1WH3J0bRZwfuSpPx37Bq+jQ0HZ580DPKO3xqlbN23BOitIB
+         3G/E6c6RN90fYDTnj+4VvbJvzAhZHCUMq6oOe2YfEsETIZaVcHWJDcxhmqzetcIPJCX2
+         zk9FD/KXY10ZrAi1xO7l8uHAnADqK7uoWgWi+ZVZpY2MkcnChBPUwnEoGrKoHJAPWXsq
+         81YA==
+X-Gm-Message-State: AC+VfDwE/F4GDK1FSkyYeJlQyGD7xLBd5fxkXD12OQknjH0jXvL/WsFA
+	B+GF+DMMQ0p6WLGYCrh69JZSqraa7DT5Sm+YY/8=
+X-Google-Smtp-Source: ACHHUZ5hKtA5/ocQMKsk+923qcIDCEBILjdoEQuSNxXI4HTt+edtlbMkc14Q52KrAj1uq/fWngwNCqNzdW2U2wEsHog=
+X-Received: by 2002:a19:384a:0:b0:4f8:5637:2cd0 with SMTP id
+ d10-20020a19384a000000b004f856372cd0mr12462806lfj.26.1687537765553; Fri, 23
+ Jun 2023 09:29:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,8 +63,8 @@ References: <20230620083550.690426-1-jolsa@kernel.org> <20230620083550.690426-7-
  <CAEf4BzbVJ4y2-y8WFicA_iSkVUoieWWHbv_f1mLwoY3fSPeTRw@mail.gmail.com> <ZJVVf2Ml/gvUSF+I@krava>
 In-Reply-To: <ZJVVf2Ml/gvUSF+I@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 23 Jun 2023 09:27:18 -0700
-Message-ID: <CAEf4BzZ-sUp3h5LTWTTz_VNKFFb1ns=hqno1x8=3FjD_u8m9jA@mail.gmail.com>
+Date: Fri, 23 Jun 2023 09:29:13 -0700
+Message-ID: <CAEf4BzbAJt2NBup=Puyxd=tT8hf8jmiP6X88U=pQ3Eys1RXgwg@mail.gmail.com>
 Subject: Re: [PATCHv2 bpf-next 06/24] libbpf: Add elf symbol iterator
 To: Jiri Olsa <olsajiri@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -133,6 +133,13 @@ r
 >
 > yes, I thought doing the move after this is merged might be better,
 > because it's quite big already
+
+true (and btw, please give me a bit more time to review the rest of
+patches before posting a new version), but I'm ok with just going
+straight to elf.c move. Either way it's a lot of +++ and ---, whether
+it's in the same file or not doesn't matter all that much.
+
+
 >
 > >
 > >
@@ -153,175 +160,6 @@ lf *elf, int sh_type, Elf_Scn *scn)
 > > > +
 > > > +struct elf_symbol_iter {
 > >
-> > naming nits: elf_sym and elf_sym_iter? keep it short, keep it cool :)
->
-> ok
->
-> >
-> > > +       Elf *elf;
-> > > +       Elf_Data *symbols;
-> >
-> > syms :-P
->
-> ook ;-)
->
-> >
-> > > +       size_t nr_syms;
-> > > +       size_t strtabidx;
-> > > +       size_t idx;
-> >
-> > next_sym_idx?
->
-> ok
->
-> >
-> > > +       struct elf_symbol sym;
-> > > +};
-> > > +
-> > > +static int elf_symbol_iter_new(struct elf_symbol_iter *iter,
-> > > +                              Elf *elf, const char *binary_path,
-> > > +                              int sh_type)
-> > > +{
-> > > +       Elf_Scn *scn =3D NULL;
-> > > +       GElf_Ehdr ehdr;
-> > > +       GElf_Shdr sh;
-> > > +
-> > > +       memset(iter, 0, sizeof(*iter));
-> > > +
-> > > +       if (!gelf_getehdr(elf, &ehdr)) {
-> > > +               pr_warn("elf: failed to get ehdr from %s: %s\n", bina=
-ry_path, elf_errmsg(-1));
-> > > +               return -LIBBPF_ERRNO__FORMAT;
-> > > +       }
-> > > +
-> > > +       scn =3D elf_find_next_scn_by_type(elf, sh_type, NULL);
-> > > +       if (!scn) {
-> > > +               pr_debug("elf: failed to find symbol table ELF sectio=
-ns in '%s'\n",
-> > > +                        binary_path);
-> > > +               return -EINVAL;
-> > > +       }
-> > > +
-> > > +       if (!gelf_getshdr(scn, &sh))
-> > > +               return -EINVAL;
-> > > +
-> > > +       iter->strtabidx =3D sh.sh_link;
-> > > +       iter->symbols =3D elf_getdata(scn, 0);
-> > > +       if (!iter->symbols) {
-> > > +               pr_warn("elf: failed to get symbols for symtab sectio=
-n in '%s': %s\n",
-> > > +                       binary_path, elf_errmsg(-1));
-> > > +               return -LIBBPF_ERRNO__FORMAT;
-> > > +       }
-> > > +       iter->nr_syms =3D iter->symbols->d_size / sh.sh_entsize;
-> > > +       iter->elf =3D elf;
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +static struct elf_symbol *elf_symbol_iter_next(struct elf_symbol_ite=
-r *iter)
-> > > +{
-> > > +       struct elf_symbol *ret =3D &iter->sym;
-> > > +       unsigned long offset =3D 0;
-> > > +       const char *name =3D NULL;
-> > > +       GElf_Shdr sym_sh;
-> > > +       Elf_Scn *sym_scn;
-> > > +       GElf_Sym sym;
-> > > +       size_t idx;
-> > > +
-> > > +       for (idx =3D iter->idx; idx < iter->nr_syms; idx++) {
-> > > +               if (!gelf_getsym(iter->symbols, idx, &sym))
-> > > +                       continue;
-> > > +               if (GELF_ST_TYPE(sym.st_info) !=3D STT_FUNC)
-> > > +                       continue;
-> >
-> > it would be more generic if this symbol type filter was a parameter to
-> > iterator, instead of hard-coding it?
->
-> ok
->
-> >
-> > > +               name =3D elf_strptr(iter->elf, iter->strtabidx, sym.s=
-t_name);
-> > > +               if (!name)
-> > > +                       continue;
-> > > +
-> > > +               /* Transform symbol's virtual address (absolute for
-> > > +                * binaries and relative for shared libs) into file
-> > > +                * offset, which is what kernel is expecting for
-> > > +                * uprobe/uretprobe attachment.
-> > > +                * See Documentation/trace/uprobetracer.rst for more
-> > > +                * details.
-> > > +                * This is done by looking up symbol's containing
-> > > +                * section's header and using iter's virtual address
-> > > +                * (sh_addr) and corresponding file offset (sh_offset=
-)
-> > > +                * to transform sym.st_value (virtual address) into
-> > > +                * desired final file offset.
-> > > +                */
-> > > +               sym_scn =3D elf_getscn(iter->elf, sym.st_shndx);
-> > > +               if (!sym_scn)
-> > > +                       continue;
-> > > +               if (!gelf_getshdr(sym_scn, &sym_sh))
-> > > +                       continue;
-> > > +
-> > > +               offset =3D sym.st_value - sym_sh.sh_addr + sym_sh.sh_=
-offset;
-> >
-> > I think this part is not really generic "let's iterate ELF symbols",
-> > maybe let users of iterator do this? We can have a helper to do
-> > translation if we need to do it in few different places.
->
-> yes this will be called in all the places we use the iterator,
-> I'll add the helper for it
->
-> >
-> > > +               break;
-> > > +       }
-> > > +
-> > > +       /* we reached the last symbol */
-> > > +       if (idx =3D=3D iter->nr_syms)
-> > > +               return NULL;
-> > > +       iter->idx =3D idx + 1;
-> > > +       ret->name =3D name;
-> > > +       ret->bind =3D GELF_ST_BIND(sym.st_info);
-> > > +       ret->offset =3D offset;
-> >
-> > Why not just return entire GElf_Sym information and let user process
-> > it as desired. So basically for each symbol you'll give back its name,
-> > GElf_Sym info, and I'd return symbol index as well. That will keep
-> > this very generic for future uses.
->
-> ok, so you have other users of this iterator in mind already?
 
-well, there is linker.c that also iterates ELF symbols, though that
-one is assuming Elf64_Sym, so I wouldn't go updating it. So it's more
-of a general feeling that "ELF symbol iterator" shouldn't assume
-functions and func_offset translation, it should just return symbols.
-
->
-> >
-> > > +       return ret;
-> >
-> > I'd structure this a bit different. If we got out of loop, just return
-> > NULL. Then inside the for loop, when we found the symbol, fill out ret
-> > and return from inside the for loop. I think it's more
-> > straightforward.
->
-> ok, will change
->
-> thanks,
-> jirka
->
-> >
-> > > +}
-> > > +
-> > >  /* Find offset of function name in the provided ELF object. "binary_=
-path" is
-> > >   * the path to the ELF binary represented by "elf", and only used fo=
-r error
-> > >   * reporting matters. "name" matches symbol name or name@@LIB for li=
-brary
-> >
-> > [...]
+[...]
 
