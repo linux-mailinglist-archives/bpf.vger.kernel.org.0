@@ -1,194 +1,147 @@
-Return-Path: <bpf+bounces-3247-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3248-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47B473B4F3
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 12:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 95E2173B4FE
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 12:16:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D29F281AF2
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 10:13:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50A90281AD7
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 10:16:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4024C6119;
-	Fri, 23 Jun 2023 10:11:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4803A611F;
+	Fri, 23 Jun 2023 10:16:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3878F47
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 10:11:48 +0000 (UTC)
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDC2449E
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 03:11:21 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-76246351f0cso38989285a.1
-        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 03:11:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687515060; x=1690107060;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9P/n3MhrSfoNR3/6mU+dwnY9YqLdGf1sUb14ysI8UbM=;
-        b=WzeqLwy5cf2p4wtJSvkcYxB0ezugdZfOzx9EhbYlTZeaaA/hMgIYQNQP9sTronghyG
-         mUrD0rmiEk/0zbXOIP8prewEVs9vnqsq18a+So3tDIWHpBDdKTP76q29HGKiQKqxxPmN
-         9hJdXnmg05uXDi8oNYFtTquJb7RghIzblDDIgweyR1+gKhbJrBTrLsR2ZSLbCzv7cwj8
-         KKr7YHmmRYJ5hVRCpGlChWVVgCSGk7rASV9U4mJQ6vnAtFHcqYD2aaho4SADBmQkhKk+
-         TmIVgQ51leFAPnus3t4dGkRlR0rgbEoLEc3ocXq/kPPyla/lJbZnYtJiFEN4b/BRWam4
-         HpLw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BA3D5694
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 10:16:16 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6358D3
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 03:16:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1687515374;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wbb+i4KWtaqSPWTYfrigxDvU8UMGL/SwUc27+u/CQjI=;
+	b=hordSQ/P91W0jOsuY3ja8DCjxnXnXUgiWNC6XVVIgQSUYWIL9Sjx+Z/ufsGIZjZPk0g06s
+	DPwB48o9gsTXinrGYOo0jQjL+fJSnTw+YdAEMuofdpGgjdX45H4+vUjqj89fJM376M2fdC
+	SWEgpuYITiKal8KwTQX5AhchzdTRYDM=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-433-TGNHqypBPkSmDCDCzT8h5A-1; Fri, 23 Jun 2023 06:16:12 -0400
+X-MC-Unique: TGNHqypBPkSmDCDCzT8h5A-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3f9b8e0896aso3791235e9.0
+        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 03:16:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687515060; x=1690107060;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9P/n3MhrSfoNR3/6mU+dwnY9YqLdGf1sUb14ysI8UbM=;
-        b=HOnxZgW3uQ/pXCLAfKOmddKA6p2ZlOaU05lqVYYj3lJZ6/3P4oYWQthM9bA5W3kJX5
-         OvPDVAIgWTRmmDHp3BJD4rjGheMHXp/SNbUnnabJaJj8xdrq0Y4Xn4TBewuDsQaoHRb/
-         QFfPxj0NNuv7knoMaRFVgiZkD4IsOvl4F2MPQjaJZdsZKyHFFRsltmSeIWlJUcT0CKy4
-         owKh0dg6WrpMihOFdzAOex27ZOiIVZP9Q3sO+QfZE/SOj82xxRYJFcVssfTFa0wyurgQ
-         MwFHp8cFgd9a+jq26V1b3UGxMgM9xSZYdX1yCT5dYxEsTwuXFSV7AguUHRQJ/fAsI3vk
-         zCsw==
-X-Gm-Message-State: AC+VfDwiSSRV5VmWJEPVu7IEtjWcG/oqH1eG2Kz5V3RkZQO6EsuB05Q0
-	qvZWebNO9oAjqDwZBglCxBk1nU2W9Ro7iIChhz8=
-X-Google-Smtp-Source: ACHHUZ521FxFEkJfnv16zztFKwHyTrHi2ZyGiC6z2Kd2etwfVuwwv0THZcRv/6DuneO234aGgSCec1L8eTw9cNF+6TY=
-X-Received: by 2002:ad4:5ded:0:b0:632:27c1:23fc with SMTP id
- jn13-20020ad45ded000000b0063227c123fcmr4620872qvb.39.1687515059713; Fri, 23
- Jun 2023 03:10:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687515371; x=1690107371;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wbb+i4KWtaqSPWTYfrigxDvU8UMGL/SwUc27+u/CQjI=;
+        b=ZCXcbQVzidGE7tiGsu1+kMD+E7WKGCLp8ahkdcsXfPsYMADQBrNcWB7h84cEXX9Pqv
+         uf+lEczozNZn0srlDDXSDM0eysdEciaCmE1tdhRbh3drLxgGJ3h6gbyM3JzRf2M0GlBG
+         YXwvGTc5t/XxVsnvTJHk3hBIQydeZ0BStdEysQyYt6h3JaGHmCDg69ZgkMVFVkOFeVP0
+         rC+Vwf49rSr3eYBaNsvb8oiORoCVBrWU7tR0XSBOfMSIoCHlq9FF2uMF2l5IGe5pRkus
+         xxVbO5MbMFOcudOKpOB4/WXJI4o2vDMwhokhQhh90dOQr/smG4nVFLyuiD8MKWBzNNQF
+         ZUrg==
+X-Gm-Message-State: AC+VfDxFGVMGQFu9moGefFj672SnxNh+xFcj4MYDEel62YSSZpCZ7e7+
+	RXATvSS9+G3xAKrMQqG1vjRYTA9m20NVHShi9pDnfDqID2D7+qNFiXiYNvir6bMHQK380O/uPQo
+	rSJU2ryNRB7b+
+X-Received: by 2002:a1c:750a:0:b0:3f7:cb42:fa28 with SMTP id o10-20020a1c750a000000b003f7cb42fa28mr16958405wmc.28.1687515371584;
+        Fri, 23 Jun 2023 03:16:11 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ6fJS9nJI4SwLbDjsqYFbuD3TUHJL0rCF1ImCa1c3AcxPaUTTkGAHJ3URCyVur3mmn7xeUjww==
+X-Received: by 2002:a1c:750a:0:b0:3f7:cb42:fa28 with SMTP id o10-20020a1c750a000000b003f7cb42fa28mr16958382wmc.28.1687515371255;
+        Fri, 23 Jun 2023 03:16:11 -0700 (PDT)
+Received: from [192.168.0.12] ([78.18.22.70])
+        by smtp.gmail.com with ESMTPSA id y12-20020a05600c364c00b003f7f249e7dfsm1959206wmq.4.2023.06.23.03.16.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jun 2023 03:16:10 -0700 (PDT)
+Message-ID: <4c592016-5b5e-9670-2231-b44642091d46@redhat.com>
+Date: Fri, 23 Jun 2023 11:16:09 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230621120012.3883-1-laoar.shao@gmail.com> <CAADnVQJizR0kMaQxKvs8tgvedPVExcHNFgDde28M7TgtzeEjkw@mail.gmail.com>
-In-Reply-To: <CAADnVQJizR0kMaQxKvs8tgvedPVExcHNFgDde28M7TgtzeEjkw@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 23 Jun 2023 18:10:23 +0800
-Message-ID: <CALOAHbAjVotSPDP9r90yAxFn0XzaVJgkvSSL-X9WTtjcd6VDXw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next] bpf: Fix an error in verifying a field in a union
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [RFC bpf-next v2 11/11] net/mlx5e: Support TX timestamp metadata
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Stanislav Fomichev <sdf@google.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Network Development <netdev@vger.kernel.org>,
+ "Wiles, Keith" <keith.wiles@intel.com>, Jesper Brouer <jbrouer@redhat.com>
+References: <20230621170244.1283336-1-sdf@google.com>
+ <20230621170244.1283336-12-sdf@google.com>
+ <20230622195757.kmxqagulvu4mwhp6@macbook-pro-8.dhcp.thefacebook.com>
+ <CAKH8qBvJmKwgdrLkeT9EPnCiTu01UAOKvPKrY_oHWySiYyp4nQ@mail.gmail.com>
+ <CAADnVQKfcGT9UaHtAmWKywtuyP9+_NX0_mMaR0m9D0-a=Ymf5Q@mail.gmail.com>
+ <CAKH8qBuJpybiTFz9vx+M+5DoGuK-pPq6HapMKq7rZGsngsuwkw@mail.gmail.com>
+ <CAADnVQ+611dOqVFuoffbM_cnOf62n6h+jaB1LwD2HWxS5if2CA@mail.gmail.com>
+From: Maryam Tahhan <mtahhan@redhat.com>
+In-Reply-To: <CAADnVQ+611dOqVFuoffbM_cnOf62n6h+jaB1LwD2HWxS5if2CA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 23, 2023 at 7:42=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On 23/06/2023 03:35, Alexei Starovoitov wrote:
+> Why do you think so?
+> Who are those users?
+> I see your proposal and thumbs up from onlookers.
+> afaict there are zero users for rx side hw hints too.
 >
-> On Wed, Jun 21, 2023 at 5:00=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> >
-> > We are utilizing BPF LSM to monitor BPF operations within our container
-> > environment. When we add support for raw_tracepoint, it hits below
-> > error.
-> >
-> > ; (const void *)attr->raw_tracepoint.name);
-> > 27: (79) r3 =3D *(u64 *)(r2 +0)
-> > access beyond the end of member map_type (mend:4) in struct (anon) with=
- off 0 size 8
-> >
-> > It can be reproduced with below BPF prog.
-> >
-> > SEC("lsm/bpf")
-> > int BPF_PROG(bpf_audit, int cmd, union bpf_attr *attr, unsigned int siz=
-e)
-> > {
-> >         switch (cmd) {
-> >         case BPF_RAW_TRACEPOINT_OPEN:
-> >                 bpf_printk("raw_tracepoint is %s", attr->raw_tracepoint=
-.name);
-> >                 break;
-> >         default:
-> >                 break;
-> >         }
-> >         return 0;
-> > }
-> >
-> > The reason is that when accessing a field in a union, such as bpf_attr,=
- if
-> > the field is located within a nested struct that is not the first membe=
-r of
-> > the union, it can result in incorrect field verification.
-> >
-> >   union bpf_attr {
-> >       struct {
-> >           __u32 map_type; <<<< Actually it will find that field.
-> >           __u32 key_size;
-> >           __u32 value_size;
-> >          ...
-> >       };
-> >       ...
-> >       struct {
-> >           __u64 name;    <<<< We want to verify this field.
-> >           __u32 prog_fd;
-> >       } raw_tracepoint;
-> >   };
-> >
-> > Considering the potential deep nesting levels, finding a perfect soluti=
-on
-> > to address this issue has proven challenging. Therefore, I propose a
-> > solution where we simply skip the verification process if the field in
-> > question is located within a union.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  kernel/bpf/btf.c | 13 +++++++++----
-> >  1 file changed, 9 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index bd2cac057928..79ee4506bba4 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -6129,7 +6129,7 @@ enum bpf_struct_walk_result {
-> >  static int btf_struct_walk(struct bpf_verifier_log *log, const struct =
-btf *btf,
-> >                            const struct btf_type *t, int off, int size,
-> >                            u32 *next_btf_id, enum bpf_type_flag *flag,
-> > -                          const char **field_name)
-> > +                          const char **field_name, bool *in_union)
-> >  {
-> >         u32 i, moff, mtrue_end, msize =3D 0, total_nelems =3D 0;
-> >         const struct btf_type *mtype, *elem_type =3D NULL;
-> > @@ -6188,6 +6188,8 @@ static int btf_struct_walk(struct bpf_verifier_lo=
-g *log, const struct btf *btf,
-> >                 return -EACCES;
-> >         }
-> >
-> > +       if (BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_UNION && !in_union)
-> > +               *in_union =3D true;
-> >         for_each_member(i, t, member) {
-> >                 /* offset of the field in bytes */
-> >                 moff =3D __btf_member_bit_offset(t, member) / 8;
-> > @@ -6372,7 +6374,7 @@ static int btf_struct_walk(struct bpf_verifier_lo=
-g *log, const struct btf *btf,
-> >                  * that also allows using an array of int as a scratch
-> >                  * space. e.g. skb->cb[].
-> >                  */
-> > -               if (off + size > mtrue_end) {
-> > +               if (off + size > mtrue_end && !in_union) {
+>> the specs are
+>> not public; things can change depending on fw version/etc/etc.
+>> So the progs that touch raw descriptors are not the primary use-case.
+>> (that was the tl;dr for rx part, seems like it applies here?)
+>>
+>> Let's maybe discuss that mlx5 example? Are you proposing to do
+>> something along these lines?
+>>
+>> void mlx5e_devtx_submit(struct mlx5e_tx_wqe *wqe);
+>> void mlx5e_devtx_complete(struct mlx5_cqe64 *cqe);
+>>
+>> If yes, I'm missing how we define the common kfuncs in this case. The
+>> kfuncs need to have some common context. We're defining them with:
+>> bpf_devtx_<kfunc>(const struct devtx_frame *ctx);
+> I'm looking at xdp_metadata and wondering who's using it.
+> I haven't seen a single bug report.
+> No bugs means no one is using it. There is zero chance that we managed
+> to implement it bug-free on the first try.
+> So new tx side things look like a feature creep to me.
+> rx side is far from proven to be useful for anything.
+> Yet you want to add new things.
 >
-> Just allow it for (flag & PTR_UNTRUSTED).
-> We set it when we start walking BTF_KIND_UNION.
-> No need for extra bool.
 
-It seems we can't check the flag, because it clears the flag when it
-enters btf_struct_walk()[1].
-We only set it when we find a nested union, but we don't set this flag
-when the btf_type itself is a union. So that can't apply to `union
-bpf_attr`.
+Hi folks
 
-[1]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/=
-kernel/bpf/btf.c#n6140
+We in CNDP (https://github.com/CloudNativeDataPlane/cndp) have been 
+looking to use xdp_metadata to relay receive side offloads from the NIC 
+to our AF_XDP applications. We see this is a key feature that is 
+essential for the viability of AF_XDP in the real world. We would love 
+to see something adopted for the TX side alongside what's on the RX 
+side. We don't want to waste cycles do everything in software when the 
+NIC HW supports many features that we need.
 
---=20
-Regards
-Yafang
+Thank you
+Maryam
+
 
