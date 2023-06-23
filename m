@@ -1,186 +1,137 @@
-Return-Path: <bpf+bounces-3289-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3290-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 747D773BC92
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 18:30:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8853273BC9B
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 18:32:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63B7C1C212C8
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 16:30:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70F431C212C8
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 16:32:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8363DAD3D;
-	Fri, 23 Jun 2023 16:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89B1BE48;
+	Fri, 23 Jun 2023 16:32:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F08100BE
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 16:30:44 +0000 (UTC)
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE774189;
-	Fri, 23 Jun 2023 09:30:42 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-763a2e39b88so70235185a.1;
-        Fri, 23 Jun 2023 09:30:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D80100B5;
+	Fri, 23 Jun 2023 16:32:33 +0000 (UTC)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9EC26A9;
+	Fri, 23 Jun 2023 09:32:31 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b477e9d396so13976211fa.3;
+        Fri, 23 Jun 2023 09:32:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687537842; x=1690129842;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KOqCSC5tdzLCbXq/0sb8wjpcEBb6jV8Uqij3uN10+vw=;
-        b=SH3ij7ZuXtZHKhbDD6govfjr+FG0r9arXUnv0FPvMaZin12UfHv31HhDdOJvyfJMy0
-         P28e2mPfrzF2WuLmhUGAYogRFD/+6JRtM0bPJC1hxmp2LGnJEbJTAd9gzdcND4WXgbRj
-         7BnJjW5KPiFGMvM2nrlmTGD9TkBZq4V+QGzm/c67p8Idp86PM/xxb++8KxUWp/oHKOhx
-         UUnV/3ESMJKdAm0tAavtKDHm61qdXu1jG3vm2kc1K5VdzBpBnjvu6s48VeicYNHDoHBw
-         7PP1a6W8knOFqWYf0HaTxSHZb2xC3wk/3IXi4QaDg67yZYnrk9IHPo24V9d3xyGF/JkL
-         QLXw==
+        d=gmail.com; s=20221208; t=1687537950; x=1690129950;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2I3GjaHedd8UwqHCD/cICvG+HnMoaDQVwpMURCXNbWM=;
+        b=ioRCSav5i/KJc6UheQJQp+/pherHS7TJA4doFCMudjZ8PyA1SimcloaNAtx2HKwNKR
+         2uJ0GhR3m2EvzA+dMm9b3EBqvPwqWcPR3R09OyP57WYVE4ASK8WhrTwXCXDFEbiswmN2
+         I7zqDO2u84i5sHByXZidl4KnXxUcAfkMCccUPunTW5VUz9P7fG6Xipln3g79oABQsxC0
+         +x3WzKnUH8d3MwRigN888G4Blfbjg8+6HvPT3xMxP+HRvDMJ9Ofx2QAP83AmaTSiVjMY
+         bgCnjvQ1p1gkG8II2AlFg3aCSjKehJs6H4itiQ5MF6sgONbXZYf6R/xIg+kJGHTwGevQ
+         swxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687537842; x=1690129842;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KOqCSC5tdzLCbXq/0sb8wjpcEBb6jV8Uqij3uN10+vw=;
-        b=PmX096ptI53O0vVn60yMM7BX3HBIeVg79XSf7KiH40krHKrgaubjvCOWBWWmfPjCLX
-         Cnq/vk4GbST4d5paNSIXonMKjlFDhazlxECO1I/OpycHMR8c+xyNOc/+e89JmOj1XDaw
-         OQFNGvgQj8Lm+Sj4++RAJZC81H0kAFtdhA4nM9/aEsl/BqXyTnEKCmS0Um0NwvdLGLIy
-         /gleUrZ6Nd691RfkQx0kEo8e8riEbyIFRq6aRN6zUTaJJY54pATxNtoGkQiyY+BUSrDQ
-         ewsFg5ZGknl6+n4K2Y/cy7Ghw5EonexJdKMLQfX/lk+VSMIeN3goGTAOOw4B2T9Z/L61
-         853g==
-X-Gm-Message-State: AC+VfDwmp3Rvo+QchYZmgdvGRoCAk41MQES3B3TANd/gWQL5aa1Aobpv
-	1myla/wu75mDptkTbROrIRA=
-X-Google-Smtp-Source: ACHHUZ4tROgHRgaJvVY7p6iKKZ9z+MnEUvnQc4olJ8rndxgssNUlGVrktQ9Noc4E0uLc8uRQUNQy+w==
-X-Received: by 2002:a05:620a:3d90:b0:763:e0bf:535a with SMTP id ts16-20020a05620a3d9000b00763e0bf535amr6905391qkn.57.1687537841859;
-        Fri, 23 Jun 2023 09:30:41 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:fc87:90dc:8d80:e050? ([2600:1700:6cf8:1240:fc87:90dc:8d80:e050])
-        by smtp.gmail.com with ESMTPSA id b142-20020a0dd994000000b0056974f4019esm2551405ywe.6.2023.06.23.09.30.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jun 2023 09:30:41 -0700 (PDT)
-Message-ID: <89a2cbd5-a448-c588-ba6a-0ca1a4591856@gmail.com>
-Date: Fri, 23 Jun 2023 09:30:39 -0700
+        d=1e100.net; s=20221208; t=1687537950; x=1690129950;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2I3GjaHedd8UwqHCD/cICvG+HnMoaDQVwpMURCXNbWM=;
+        b=h0sQT5j39+mvo/EHHCmthLtncVXMM1JkZOOnb9XTND5U/yU4sDCfuReYGxbcAD6YA0
+         x3l+0XNFLMWy5+ZHZQOhLx7UHabebbpg28DNT9C6zNq6I/SMIzsD47gfljI6vBkAwkEB
+         TC+PyEG3KiRMFVJLSD/oYjlLhnfcOJuKJKrvgEKaPuXK4GjnYr5f6IC9VeFkhxAEp22t
+         LnPgPd7Ktc9pTK8jWXIXOocQJVM9bHJjCyO2kYebesIqekjXSqQ29vDriykTQuMUJ0hI
+         jc7jN22KV4yrXJvA4uGTVapJZX9C1qiQiNBa/XzISavsFAIkhhR1BKS74TmRu6YS+L6B
+         BKTQ==
+X-Gm-Message-State: AC+VfDwRFPuTDukuoWS3RpuIPInco5JfKl/OwQSvglHzqumexRBtl6aT
+	mohQaacUTkSbKFY1270e1z/qnUDCc9hwLXywFfk=
+X-Google-Smtp-Source: ACHHUZ5S/at/i6kLM6YR/JIGPMDyIJU3E/zSkDUpsnv9G/W9xjd6SC9GiIKxbnpztpujI9hS3uL4Mm4qrHOdd1w8QUw=
+X-Received: by 2002:a2e:9105:0:b0:2b5:910c:ecda with SMTP id
+ m5-20020a2e9105000000b002b5910cecdamr4867354ljg.44.1687537949658; Fri, 23 Jun
+ 2023 09:32:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH bpf-next v3 1/2] net: bpf: Always call BPF cgroup filters
- for egress.
-To: Daniel Borkmann <daniel@iogearbox.net>, Yonghong Song <yhs@meta.com>,
- Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org, yhs@fb.com, kpsingh@kernel.org, shuah@kernel.org,
- john.fastabend@gmail.com, sdf@google.com, mykolal@fb.com,
- linux-kselftest@vger.kernel.org, jolsa@kernel.org, haoluo@google.com
-Cc: Kui-Feng Lee <kuifeng@meta.com>
-References: <20230620171409.166001-1-kuifeng@meta.com>
- <20230620171409.166001-2-kuifeng@meta.com>
- <4d46ba3a-61e9-2482-a359-7a8805f1dbc8@meta.com>
- <2693aaa4-eb33-553c-291c-3eb555452ea6@gmail.com>
- <94226479-8d79-cc83-9ecf-6db0b376a7fd@meta.com>
- <461e9be3-d533-d727-8ef9-0e20972ae0b4@iogearbox.net>
- <e22923d0-3241-2b2e-6c9e-c41cd6c10997@gmail.com>
- <674a12a9-3776-1637-f132-9c0bf692b18a@iogearbox.net>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <674a12a9-3776-1637-f132-9c0bf692b18a@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+References: <20230621170244.1283336-1-sdf@google.com> <20230621170244.1283336-12-sdf@google.com>
+ <20230622195757.kmxqagulvu4mwhp6@macbook-pro-8.dhcp.thefacebook.com>
+ <CAKH8qBvJmKwgdrLkeT9EPnCiTu01UAOKvPKrY_oHWySiYyp4nQ@mail.gmail.com>
+ <CAADnVQKfcGT9UaHtAmWKywtuyP9+_NX0_mMaR0m9D0-a=Ymf5Q@mail.gmail.com>
+ <CAKH8qBuJpybiTFz9vx+M+5DoGuK-pPq6HapMKq7rZGsngsuwkw@mail.gmail.com>
+ <CAADnVQ+611dOqVFuoffbM_cnOf62n6h+jaB1LwD2HWxS5if2CA@mail.gmail.com> <4c592016-5b5e-9670-2231-b44642091d46@redhat.com>
+In-Reply-To: <4c592016-5b5e-9670-2231-b44642091d46@redhat.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 23 Jun 2023 09:32:18 -0700
+Message-ID: <CAADnVQKT06t=-4zrHQobSpL06JpQh90vMfPpcYvXs8881GxMWg@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 11/11] net/mlx5e: Support TX timestamp metadata
+To: Maryam Tahhan <mtahhan@redhat.com>
+Cc: Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, "Wiles, Keith" <keith.wiles@intel.com>, 
+	Jesper Brouer <jbrouer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Fri, Jun 23, 2023 at 3:16=E2=80=AFAM Maryam Tahhan <mtahhan@redhat.com> =
+wrote:
+>
+> On 23/06/2023 03:35, Alexei Starovoitov wrote:
+> > Why do you think so?
+> > Who are those users?
+> > I see your proposal and thumbs up from onlookers.
+> > afaict there are zero users for rx side hw hints too.
+> >
+> >> the specs are
+> >> not public; things can change depending on fw version/etc/etc.
+> >> So the progs that touch raw descriptors are not the primary use-case.
+> >> (that was the tl;dr for rx part, seems like it applies here?)
+> >>
+> >> Let's maybe discuss that mlx5 example? Are you proposing to do
+> >> something along these lines?
+> >>
+> >> void mlx5e_devtx_submit(struct mlx5e_tx_wqe *wqe);
+> >> void mlx5e_devtx_complete(struct mlx5_cqe64 *cqe);
+> >>
+> >> If yes, I'm missing how we define the common kfuncs in this case. The
+> >> kfuncs need to have some common context. We're defining them with:
+> >> bpf_devtx_<kfunc>(const struct devtx_frame *ctx);
+> > I'm looking at xdp_metadata and wondering who's using it.
+> > I haven't seen a single bug report.
+> > No bugs means no one is using it. There is zero chance that we managed
+> > to implement it bug-free on the first try.
+> > So new tx side things look like a feature creep to me.
+> > rx side is far from proven to be useful for anything.
+> > Yet you want to add new things.
+> >
+>
+> Hi folks
+>
+> We in CNDP (https://github.com/CloudNativeDataPlane/cndp) have been
 
+with TCP stack in user space over af_xdp...
 
-On 6/23/23 01:50, Daniel Borkmann wrote:
-> On 6/23/23 1:55 AM, Kui-Feng Lee wrote:
->> On 6/22/23 13:06, Daniel Borkmann wrote:
->>> On 6/22/23 8:28 PM, Yonghong Song wrote:
->>>> On 6/22/23 10:15 AM, Kui-Feng Lee wrote:
->>>>> On 6/21/23 20:37, Yonghong Song wrote:
->>>>>> On 6/20/23 10:14 AM, Kui-Feng Lee wrote:
->>>>>>> Always call BPF filters if CGROUP BPF is enabled for EGRESS without
->>>>>>> checking skb->sk against sk.
->>>>>>>
->>>>>>> The filters were called only if skb is owned by the sock that the
->>>>>>> skb is sent out through.  In another words, skb->sk should point to
->>>>>>> the sock that it is sending through its egress.  However, the 
->>>>>>> filters would
->>>>>>> miss SYNACK skbs that they are owned by a request_sock but sent 
->>>>>>> through
->>>>>>> the listening sock, that is the socket listening incoming 
->>>>>>> connections.
->>>>>>> This is an unnecessary restrict.
->>>>>>
->>>>>> The original patch which introduced 'sk == skb->sk' is
->>>>>>    3007098494be  cgroup: add support for eBPF programs
->>>>>> There are no mentioning in commit message why 'sk == skb->sk'
->>>>>> is needed. So it is possible that this is just restricted
->>>>>> for use cases at that moment. Now there are use cases
->>>>>> where 'sk != skb->sk' so removing this check can enable
->>>>>> the new use case. Maybe you can add this into your commit
->>>>>> message so people can understand the history of 'sk == skb->sk'.
->>>>>
->>>>> After checking the code and the Alexei's comment[1] again, this check
->>>>> may be different from what I thought. In another post[2],
->>>>> Daniel Borkmann mentioned
->>>>>
->>>>>      Wouldn't that mean however, when you go through stacked 
->>>>> devices that
->>>>>      you'd run the same eBPF cgroup program for skb->sk multiple 
->>>>> times?
->>>>>
->>>>> I read this paragraph several times.
->>>>> This check ensures the filters are only called for the device on
->>>>> the top of a stack.  So, I probably should change the check to
->>>>>
->>>>>      sk == skb_to_full_sk(skb)
->>>>
->>>> I think this should work. It exactly covers your use case:
->>>>    they are owned by a request_sock but sent through
->>>>    the listening sock, that is the socket listening incoming 
->>>> connections
->>>> and sk == skb->sk for non request_sock/listening_sock case.
->>>
->>> Just a thought, should the test look like the below?
->>>
->>>          int __ret = 
->>> 0;                                                         \
->>>          if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk) 
->>> {                    \
->>>                  typeof(sk) __sk = 
->>> sk_to_full_sk(sk);                           \
->>>                  if (sk_fullsock(__sk) && __sk == skb_to_full_sk(skb) 
->>> &&        \
->>>                      cgroup_bpf_sock_enabled(__sk, 
->>> CGROUP_INET_EGRESS))         \
->>>                          __ret = __cgroup_bpf_run_filter_skb(__sk, 
->>> skb,         \
->>> CGROUP_INET_EGRESS); \
->>> }                                                                      \
->>>
->>> Iow, we do already convert __sk to full sk, so we should then also 
->>> use that
->>> for the test with skb_to_full_sk(skb).
->>
->> Agree!
-> 
-> It would also be useful to do an in-depth analysis for the commit msg in 
-> which
-> cases the sk == skb->sk matches and sk was not a full sock (but __sk is) 
-> given
-> the __sk = sk_to_full_sk(sk) exists in the code to document which 
-> situation this
-> is covering in the existing code (... perhaps it used to work back then for
-> synack just that later changes altered it without anyone noticing until 
-> now).
+> looking to use xdp_metadata to relay receive side offloads from the NIC
+> to our AF_XDP applications. We see this is a key feature that is
+> essential for the viability of AF_XDP in the real world. We would love
+> to see something adopted for the TX side alongside what's on the RX
+> side. We don't want to waste cycles do everything in software when the
+> NIC HW supports many features that we need.
 
-I did a test that trace how a packet going through L2TP
-devices. I am going to include the analysis of the test and other
-related links of discussions in the commit log.
+Please specify "many features". If that means HW TSO to accelerate
+your TCP in user space, then sorry, but no.
 
