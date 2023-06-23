@@ -1,238 +1,196 @@
-Return-Path: <bpf+bounces-3261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73CC873B801
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 14:47:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F78073B86E
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 15:09:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A54771C21253
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 12:47:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FF0E281B65
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 13:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E9C7499;
-	Fri, 23 Jun 2023 12:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287A4883C;
+	Fri, 23 Jun 2023 13:09:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 748F18F4D
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 12:46:51 +0000 (UTC)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671281FF7
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 05:46:07 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-311099fac92so721440f8f.0
-        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 05:46:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE918BE0
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 13:09:03 +0000 (UTC)
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760842129;
+	Fri, 23 Jun 2023 06:09:02 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id a1e0cc1a2514c-78f6a9800c9so215222241.3;
+        Fri, 23 Jun 2023 06:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1687524364; x=1690116364;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nws9t6DWS4itJILSC6AFa25TyDnEnKfRyzn9fkk6/wo=;
-        b=Q8SHPXtfpT+Eg6nG+Th5GjvKt+k/UHwcv9AqpE6+aAbrFJUQs1bchIrBRq9mOajEUm
-         z6cWksq2nOLB7O002JNNa0kapw35/yqp0YRy6+oRy9w7Emx6UjSlWdf6UYOi2Ca60QWI
-         2rVgo9BFeByh1ODjaqwT/U6yJVgwNmyY1WOQ3lk1FA5qAVO/yg9NYXXRrWzcxhb2FB6W
-         q1ZynmSCoqH2T1k8OOuUiF7algovXtcVanLfHJRPawvQFPkmBo0QRKAMq069rNegfQ9u
-         FFCKu7BLbvkQuLXzf7TaG/cmtQYfEjcZUhGhnCvMLkE3QD8v2HKW82IoseyT0sWRr8m/
-         y4JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687524364; x=1690116364;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1687525741; x=1690117741;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nws9t6DWS4itJILSC6AFa25TyDnEnKfRyzn9fkk6/wo=;
-        b=K6+nopCb7wCW17iM7EKbTNeWHbpsClQ3WyrTeFaE3Q7rT5dhbeejWPKfzQUde9LM/a
-         CHs8kiq2kKiSQuW9p4GgCYochxTPtlgB2cCFmGBA2fiIEueuqrlRf9PUTHsjNnoFX8ou
-         XeV/aI6KLIpWh8ZZS+3VKdqTlRKsVQj/TQyZUjV6qCSzjd8pNz9QkMBk/WNJyjwzYTuv
-         77u8guTVw7ClwzSW4oxn2JDMXTc77EzyxluKTH9gqfc5I6XPL2ggGbAGgSCBxXNP8f/X
-         sQ7TzJNylblW8rELhhUmanVRgCt+iM6uTjnMSweucBpg2UTi8v4v1pYX3ORb7KsPsyiP
-         ddCw==
-X-Gm-Message-State: AC+VfDyKl6huoq9gPboiHE1iriWIsluu1/rBid549qL/qETAUtRSaDDo
-	yNP9uBJwX/2rArKIuIRtmQG4JQ==
-X-Google-Smtp-Source: ACHHUZ5RVg8j506Jw75i6PaY+S4mPvOY8Ves/vgOHJc4JxjBhvngX6fpEV3HspEEeJ3kZxxdYZahyQ==
-X-Received: by 2002:a5d:5960:0:b0:30e:19a8:4b0a with SMTP id e32-20020a5d5960000000b0030e19a84b0amr19023401wri.2.1687524364410;
-        Fri, 23 Jun 2023 05:46:04 -0700 (PDT)
-Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id u2-20020a5d5142000000b003113dc327fbsm9495287wrt.22.2023.06.23.05.46.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jun 2023 05:46:03 -0700 (PDT)
-Date: Fri, 23 Jun 2023 12:47:06 +0000
-From: Anton Protopopov <aspsk@isovalent.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [RFC v2 PATCH bpf-next 1/4] bpf: add percpu stats for bpf_map
- elements insertions/deletions
-Message-ID: <ZJWUShe0R87HDmWA@zh-lab-node-5>
-References: <20230622095330.1023453-1-aspsk@isovalent.com>
- <20230622095330.1023453-2-aspsk@isovalent.com>
- <20230622201158.s56vbdas5rcilwbd@macbook-pro-8.dhcp.thefacebook.com>
+        bh=g2gur0xTyOFyTfCQR7Vs6vSqivbDaTiXYcT1KXbo1Nc=;
+        b=o4bdvVEsKnnuG/AUZ+SvBanLkTmh7OmaSbskvWBViOapYz8Hb+CCJs0vrYxtweKowq
+         s+L3dmVMbvu3S0GxevKn1CziUe+sCgIYBGgJkbA03IiXylBAxgJnrG/SF2OazQ2LhNPp
+         dTIPJWtMA2uA1UzzpyEWhhhQzoQj92nt53lACKdKnmJqYjFJI+2ydY4lcLUxhKz+fVEY
+         bwfKbkC8VMeXmHJjF/9bee/i3v/iK1KBTDRXjPhtzxIVEWqGim/K1GNH9Il5vIHkWn8f
+         vsA6LAQdkgzKKwXYd4lwlJBmZICDxd4dplKz9+L1VtJ6N6XMti5CkbhZaBNrwzp5qu+u
+         IHbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687525741; x=1690117741;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g2gur0xTyOFyTfCQR7Vs6vSqivbDaTiXYcT1KXbo1Nc=;
+        b=CRK7DEBFE7GH2hxdbdRHs4V+UVAzSdAexHI+WtXBVcpa4C0seg7SXvnZsNV2hRqGVj
+         v0v7Qj72K/XKnGUttGVJjt2NlaHmjdapBhzzqua9AmuRsNOKIFvFgWc+dEE6rpu95Vlw
+         fU85RzQ1D0PLA+jFYrZgBd6ai19MqyvO8H7v/lQeEvtXDWTctaTdQdbgQbs8wdpIVUsA
+         CL7MZU+qGHCpJQNQMmZfVl9f8tXO39KQuuFhIUeKR9+77FslEwWMaY2qZOJtF3IYzPks
+         3A0hHCur7Um2BSWtOa7avVCazRE3A+9wpowEE0cssVI1idxsvQ9wcbiC1RLqzm312MDG
+         lX2A==
+X-Gm-Message-State: AC+VfDxmkwmgDW5reVoOxjaJLdinX+XZew23XATDrvwB44PW64QQbXWt
+	l4coksvy2ZpDGxt4KTCrfjUw6zbo47yyr8jU3n8=
+X-Google-Smtp-Source: ACHHUZ721dDUmO3rfpLqG/sIqBq/DqFVJ+cLdKn1aZGWxRXenL5Eu7Vld0XBRnNaL7EAxZcWHwa4QYAB2eJ/HxBYa44=
+X-Received: by 2002:a67:d003:0:b0:440:cd04:dba0 with SMTP id
+ r3-20020a67d003000000b00440cd04dba0mr7190139vsi.13.1687525741220; Fri, 23 Jun
+ 2023 06:09:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230622201158.s56vbdas5rcilwbd@macbook-pro-8.dhcp.thefacebook.com>
+References: <20230613025226.3167956-1-imagedong@tencent.com>
+ <20230613025226.3167956-3-imagedong@tencent.com> <ca490974-0c5c-cfe9-0c6f-3ead163e7a7b@meta.com>
+ <7a82744f454944778f55c36e8445762f@AcuMS.aculab.com> <CADxym3bY5EcZhuJG=x5s7kH+BS93ySAyvV8yZ7yYoXf7HCsZVw@mail.gmail.com>
+ <84050129b8ce4db9b4579be0fc022723@AcuMS.aculab.com>
+In-Reply-To: <84050129b8ce4db9b4579be0fc022723@AcuMS.aculab.com>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Fri, 23 Jun 2023 21:08:49 +0800
+Message-ID: <CADxym3akFCuMgQTF5kM1THUd8yofc4hVrACYGi3APwySftCtxA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/3] bpf, x86: allow function arguments up to
+ 12 for TRACING
+To: David Laight <David.Laight@aculab.com>
+Cc: Yonghong Song <yhs@meta.com>, 
+	"alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>, "ast@kernel.org" <ast@kernel.org>, 
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org" <andrii@kernel.org>, 
+	"martin.lau@linux.dev" <martin.lau@linux.dev>, "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>, 
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
+	"sdf@google.com" <sdf@google.com>, "haoluo@google.com" <haoluo@google.com>, 
+	"jolsa@kernel.org" <jolsa@kernel.org>, "benbjiang@tencent.com" <benbjiang@tencent.com>, 
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Menglong Dong <imagedong@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 22, 2023 at 01:11:58PM -0700, Alexei Starovoitov wrote:
-> On Thu, Jun 22, 2023 at 09:53:27AM +0000, Anton Protopopov wrote:
-> > Add a generic percpu stats for bpf_map elements insertions/deletions in order
-> > to keep track of both, the current (approximate) number of elements in a map
-> > and per-cpu statistics on update/delete operations.
-> > 
-> > To expose these stats a particular map implementation should initialize the
-> > counter and adjust it as needed using the 'bpf_map_*_elements_counter' helpers
-> > provided by this commit. The counter can be read by an iterator program.
-> > 
-> > A bpf_map_sum_elements_counter kfunc was added to simplify getting the sum of
-> > the per-cpu values. If a map doesn't implement the counter, then it will always
-> > return 0.
-> > 
-> > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> > ---
-> >  include/linux/bpf.h   | 30 +++++++++++++++++++++++++++
-> >  kernel/bpf/map_iter.c | 48 ++++++++++++++++++++++++++++++++++++++++++-
-> >  2 files changed, 77 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index f58895830ada..20292a096188 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -275,6 +275,7 @@ struct bpf_map {
-> >  	} owner;
-> >  	bool bypass_spec_v1;
-> >  	bool frozen; /* write-once; write-protected by freeze_mutex */
-> > +	s64 __percpu *elements_count;
-> >  };
-> >  
-> >  static inline const char *btf_field_type_name(enum btf_field_type type)
-> > @@ -2040,6 +2041,35 @@ bpf_map_alloc_percpu(const struct bpf_map *map, size_t size, size_t align,
-> >  }
-> >  #endif
-> >  
-> > +static inline int
-> > +bpf_map_init_elements_counter(struct bpf_map *map)
-> > +{
-> > +	size_t size = sizeof(*map->elements_count), align = size;
-> > +	gfp_t flags = GFP_USER | __GFP_NOWARN;
-> > +
-> > +	map->elements_count = bpf_map_alloc_percpu(map, size, align, flags);
-> > +	if (!map->elements_count)
-> > +		return -ENOMEM;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static inline void
-> > +bpf_map_free_elements_counter(struct bpf_map *map)
-> > +{
-> > +	free_percpu(map->elements_count);
-> > +}
-> > +
-> > +static inline void bpf_map_inc_elements_counter(struct bpf_map *map)
-> 
-> bpf_map_inc_elem_count() to match existing inc_elem_count() ?
-> 
-> > +{
-> > +	this_cpu_inc(*map->elements_count);
-> > +}
-> > +
-> > +static inline void bpf_map_dec_elements_counter(struct bpf_map *map)
-> > +{
-> > +	this_cpu_dec(*map->elements_count);
-> > +}
-> > +
-> >  extern int sysctl_unprivileged_bpf_disabled;
-> >  
-> >  static inline bool bpf_allow_ptr_leaks(void)
-> > diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
-> > index b0fa190b0979..26ca00dde962 100644
-> > --- a/kernel/bpf/map_iter.c
-> > +++ b/kernel/bpf/map_iter.c
-> > @@ -93,7 +93,7 @@ static struct bpf_iter_reg bpf_map_reg_info = {
-> >  	.ctx_arg_info_size	= 1,
-> >  	.ctx_arg_info		= {
-> >  		{ offsetof(struct bpf_iter__bpf_map, map),
-> > -		  PTR_TO_BTF_ID_OR_NULL },
-> > +		  PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
-> 
-> this and below should be in separate patch.
-> 
-> >  	},
-> >  	.seq_info		= &bpf_map_seq_info,
-> >  };
-> > @@ -193,3 +193,49 @@ static int __init bpf_map_iter_init(void)
-> >  }
-> >  
-> >  late_initcall(bpf_map_iter_init);
-> > +
-> > +__diag_push();
-> > +__diag_ignore_all("-Wmissing-prototypes",
-> > +		  "Global functions as their definitions will be in vmlinux BTF");
-> > +
-> > +__bpf_kfunc s64 bpf_map_sum_elements_counter(struct bpf_map *map)
-> > +{
-> > +	s64 *pcount;
-> > +	s64 ret = 0;
-> > +	int cpu;
-> > +
-> > +	if (!map || !map->elements_count)
-> > +		return 0;
-> > +
-> > +	for_each_possible_cpu(cpu) {
-> > +		pcount = per_cpu_ptr(map->elements_count, cpu);
-> > +		ret += READ_ONCE(*pcount);
-> > +	}
-> > +	return ret;
-> > +}
-> > +
-> > +__diag_pop();
-> > +
-> > +BTF_SET8_START(bpf_map_iter_kfunc_ids)
-> > +BTF_ID_FLAGS(func, bpf_map_sum_elements_counter, KF_TRUSTED_ARGS)
-> > +BTF_SET8_END(bpf_map_iter_kfunc_ids)
-> > +
-> > +static int tracing_iter_filter(const struct bpf_prog *prog, u32 kfunc_id)
-> > +{
-> > +	if (btf_id_set8_contains(&bpf_map_iter_kfunc_ids, kfunc_id) &&
-> > +	    prog->expected_attach_type != BPF_TRACE_ITER)
-> 
-> why restrict to trace_iter?
+On Thu, Jun 22, 2023 at 10:19=E2=80=AFPM David Laight <David.Laight@aculab.=
+com> wrote:
+>
+> ...
+> > > Is that right for 86-64?
+> > >
+> > > IIRC arguments always take (at least) 64bits.
+> > > For any 32bit argument (register or stack) the high bits are undefine=
+d.
+> > > (Maybe in kernel they are always zero?
+> > > From 32bit userspace they are definitely random.)
+> > >
+> >
+> > Hello,
+> >
+> > According to my testing, the compiler will always
+> > pass the arguments on 8-byte size with "push" insn
+> > if the count of the arguments that need to be passed
+> > on stack more than 1 and the size of the argument
+> > doesn't exceed 8-byte. In this case, there won't be
+> > garbage. For example, the high 4-byte will be made 0
+> > if the size of the argument is 4-byte, as the "push" insn
+> > will copy the argument from regs or imm into stack
+> > in 8-byte.
+>
+> You have to know whether a value is expected to be 4 or 8
+> bytes - a negative 32bit value is zero extended so can't
+> be treated as a 64bit value.
+>
+> That is even true for values passed in registers.
+>
+> There is also a common problem with values passed in registers
+> to system calls by 32bit code (maybe bpf is tracing these).
+> In this case the high 32 bits of the register are random.
+> They don't get zerod in 32bit mode.
+>
+> > If the count of the arguments on-stack is 1 and its size
+> > doesn't exceed 4-byte, some compiler, like clang, may
+> > not use the "push" insn. Instead, it allocates 4 bytes in the
+> > stack, and copies the arguments from regs or imm into
+> > stack in 4-byte. This is the case we deal with here.
+>
+> If the compiler sometimes writes a 4 byte (or smaller) value
+> to pre-allocated stack then it is always allowed to do that.
+> So the high bytes of the stack slot that contains a 32bit
+> argument might always be junk.
+> The count of on-stack arguments isn't relevant.
+>
 
-Thanks, I will remove it.
+Yes, the way we clean garbage values is not
+relevant, which comes from assumption. However,
+It should be ok with the BPF program? like what Yonghong
+said.
 
-All your other comments in this series make sense as well, will address them.
+> > I'm not sure if I understand you correctly. Do you mean
+> > that there will be garbage values for 32bit args?
+>
+> I'm pretty sure that the function call ABI doesn't require the
+> caller set the high bits of sub-64bit arguments.
+> The fact that they are often written with a push instruction
+> that zeros the high bytes isn't really relevant.
+>
+> > > I think the called code is also responsible form masking 8 and 16bit
+> > > values (in reality char/short args and return values just add code
+> > > bloat).
+> > >
+> > > A 128bit value is either passed in two registers or two stack
+> > > slots. If the last register is skipped it will be used for the
+> > > next argument.
+> > >
+> >
+> > Yeah, this point is considered in save_args(). Once
+> > this happen, the count of stack slots should more
+> > then 1, and the arguments on-stack will be stored with
+> > "push" insn in 8-byte. Therefore, there shouldn't be garbage
+> > values in this case?
+> >
+> > Do I miss something?
+>
+> The register/stack for these two calls is the same:
+>         foo(1, 2, 3, 4, 5, 6, (int128_t)7);
+>         bar(1, 2, 3, 4, 5, (int128_t)7, 6);
+>
 
-> > +		return -EACCES;
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct btf_kfunc_id_set bpf_map_iter_kfunc_set = {
-> > +	.owner = THIS_MODULE,
-> > +	.set   = &bpf_map_iter_kfunc_ids,
-> > +	.filter = tracing_iter_filter,
-> > +};
-> > +
-> > +static int init_subsystem(void)
-> > +{
-> > +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_map_iter_kfunc_set);
-> > +}
-> > +late_initcall(init_subsystem);
-> > -- 
-> > 2.34.1
-> > 
+It is ok, as we already consider such cases. For
+the foo(), the order we copy args is:
+
+reg1, reg2, reg3, reg4, reg5, reg6, stack1, stack2
+
+and for the bar (), it is:
+
+reg1, reg2, reg3, reg4, reg5, stack1,stack2, reg6
+
+The order of the arguments in the array we passed
+to the BPF program is ok.
+
+Thanks!
+Menglong Dong
+
+>         David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
+ 1PT, UK
+> Registration No: 1397386 (Wales)
 
