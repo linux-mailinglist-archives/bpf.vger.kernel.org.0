@@ -1,77 +1,78 @@
-Return-Path: <bpf+bounces-3302-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3303-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0349B73BDF2
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 19:41:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D81773BDF3
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 19:41:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B19BB281CE4
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 17:41:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3748B281D06
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 17:41:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007A2101C3;
-	Fri, 23 Jun 2023 17:40:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33695100DB;
+	Fri, 23 Jun 2023 17:41:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADACED2FF
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 17:40:47 +0000 (UTC)
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A532A11C
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 10:40:45 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-5440e98616cso1474145a12.0
-        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 10:40:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D92A3D2FF
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 17:41:19 +0000 (UTC)
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A7611C
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 10:41:18 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-51452556acdso607914a12.2
+        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 10:41:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687542045; x=1690134045;
+        d=google.com; s=20221208; t=1687542078; x=1690134078;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SCPznyUQlLVG1j2ms7R2mLf8gMGERmZmpYSON8gxMCw=;
-        b=EDCOUL3+YDeCYRM+qYsLvL7aRJajJKijFVqrscMPDamDb7SENPwOiIJ2LWNjB//Lif
-         UdPrPupGG8sgzJgFKAIHaG84nOZB0vCTDVQVbq1CTn3HcEmoVLLg2GB1O4uQrafxVk5k
-         aN63tPbZAzENP0Joi0zz9XTf7KzsA+9fm9qMlNK378uM/SYowBNH5fD5BoYOnETOumYd
-         tpqQCyt58wKkHODl/RHJFNf4Mmk4bAXKKnt1sfW9n/1msKkFnPDcBU3hF+0R1OMpW0Tq
-         t/B61TPk5AKDRDrqUBTg1YlNK0Fop43PuEoDCuDNHtVF56iF2NNEixb5WPUmXj61IG46
-         pxpA==
+        bh=C9PD3+q6iQpZf8LtCTS6oacA8NFAVMaG9Rqjb2xMy84=;
+        b=t6wK7bdT6ibzU+XvWml6Uq+jT+AyEkVqZSmShuCNmuLr70DodC0FRo1sXPkjNUtuYl
+         F2K8pHah0BpX9LbgS9ZJzn9FsZHG/Yt+ms0reH/WdnHDu5dnjt/YXDdFSksLBiRqPuUe
+         LTPJAZwmbMC5miPnyJuVQMDTRxzZMaBeSqevvzoeDmmbaoU/903oTnX2FgKV1b61rac+
+         /f0LlXN7ZVuG1U4h2Q7WuFoNdWDUcgnkJ4JWrB00jn2sr7pPBWEUZhNlXn2Tq85QHw14
+         qcrMyNdNlkWz8UV0WvrHUA5KiOifWVclMRJuc+nYNHuj/Y9NgyysETwK7LqZck4j97jn
+         4IAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687542045; x=1690134045;
+        d=1e100.net; s=20221208; t=1687542078; x=1690134078;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SCPznyUQlLVG1j2ms7R2mLf8gMGERmZmpYSON8gxMCw=;
-        b=bcNjfuK4oz5vsXRM6o6Glohc0u3v67KUNDNQ+/V13n4c+pFBy0WPp049cFdZzzToVV
-         XhFXhOc5YjY3B4t9qOCxuyeuKEjw95DQJ8RaZ4LOK1HmYi4KiLTk+EOw2OZNiuh7PY+2
-         89ZbNlTSXuGzWVsqXR/V8sclgpQp601Z3dZORPN9pxMYjzL/7w/JizuZr9kO6OzdRoZg
-         B3RkD8LqFv81j6ut41kXFoqDPYfh0wk1Xo37guCQUt3OMslgfpFbBBWHScmlQEJPKLfx
-         zqilzeziKjDu1Ue8Q/oosMpj75BaDAwJaJdCBWc7UIcoI/k5NN5rcy/1YbSYAH1hR9ZV
-         ZKLQ==
-X-Gm-Message-State: AC+VfDyx+OSJ5xyOsjhAiM7jDy2BnQkhds3CFwk8wDLxuviU6gOt7i1O
-	DCPM1iDSgURed+F3jrbS5VYmIbszzKJRe21tGqd30w==
-X-Google-Smtp-Source: ACHHUZ52puql8/XSBHfteIOJ8jEi9P2aihca43xdPuqAY1YFO5uIFWRbIdzIGXKw/6yCd44AjeMmnDkl4+UGcDyG+1o=
-X-Received: by 2002:a17:90a:eb18:b0:25e:c876:26e9 with SMTP id
- j24-20020a17090aeb1800b0025ec87626e9mr27321235pjz.22.1687542044961; Fri, 23
- Jun 2023 10:40:44 -0700 (PDT)
+        bh=C9PD3+q6iQpZf8LtCTS6oacA8NFAVMaG9Rqjb2xMy84=;
+        b=kg0klQI1yQ6V3mzbZzncGerHt0pqsvj1/TJOnNZucfB8cWjzD5gGE6z7XvI0TBpqsU
+         OFxinBVdPzINOapRSjP2YvnyFIuJXKwLkwoIuGFWLyit5QuyqDZGcRSZgMBKdTj4Ii2N
+         8zk++H4dQLrgLHAx95SVtkB1+1mJv2Nijh81mSBQB/bQJ6RSsNIuyTAlUdGfomzaybXK
+         cigrjOCOeZ/5O9PTEoN2AXAVE26RAO+inzB48XILkska1pHZWhejovtCStlYgl+Beht0
+         WQT9ScOlDt/hn8Hb0RRpmxpCl8tC4+TB86N+FN/ooqxDW1evSNg9nXbevsqQ3owN9z2t
+         xTQQ==
+X-Gm-Message-State: AC+VfDwfHZVUX1dNURq9y0KonlNecstw1IOCBSaXVoKSYiQ4jJOWNPXe
+	IhYt57p25RD6EMsmhk4NYyJQKhygcsWdEqzRM4lTaQ==
+X-Google-Smtp-Source: ACHHUZ6j4/ztWxetQRdS1AKcTujIbxNQaqipobjuGH8eq5qLLFb4I3ejngpvqDj3iK0TDDaGQNHmBNLdiDDMJHInqrU=
+X-Received: by 2002:a17:90a:7641:b0:25b:ca75:8f44 with SMTP id
+ s1-20020a17090a764100b0025bca758f44mr14772699pjl.4.1687542077508; Fri, 23 Jun
+ 2023 10:41:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230621170244.1283336-1-sdf@google.com> <20230621170244.1283336-10-sdf@google.com>
- <a50de565-23a7-2ac5-d5cb-e568e3ad77c9@brouer.com>
-In-Reply-To: <a50de565-23a7-2ac5-d5cb-e568e3ad77c9@brouer.com>
+References: <20230621170244.1283336-1-sdf@google.com> <20230621170244.1283336-4-sdf@google.com>
+ <57b9fc14-c02e-f0e5-148d-a549ebab6cf6@brouer.com> <CAKH8qBsk3MDbx2PyU-_+tDV4C0R6J_wzxi9Co6ekHv_tWzp7Tw@mail.gmail.com>
+ <c936bd6c-7060-47da-d522-747b49bee8a0@redhat.com>
+In-Reply-To: <c936bd6c-7060-47da-d522-747b49bee8a0@redhat.com>
 From: Stanislav Fomichev <sdf@google.com>
-Date: Fri, 23 Jun 2023 10:40:33 -0700
-Message-ID: <CAKH8qBvr5ePwSP2fL4z3YPG4cmCFvTYQc8+6awNX9=LKHySKXg@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 09/11] selftests/bpf: Extend xdp_metadata with
- devtx kfuncs
-To: "Jesper D. Brouer" <netdev@brouer.com>
-Cc: bpf@vger.kernel.org, brouer@redhat.com, ast@kernel.org, 
+Date: Fri, 23 Jun 2023 10:41:06 -0700
+Message-ID: <CAKH8qBsqdE7=4JC8LfkL4gV9eQHEZjMpBSen2a+4q2Y7DpiOow@mail.gmail.com>
+Subject: Re: [RFC bpf-next v2 03/11] xsk: Support XDP_TX_METADATA_LEN
+To: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc: brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org, 
 	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
 	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	haoluo@google.com, jolsa@kernel.org, netdev@vger.kernel.org, 
+	haoluo@google.com, jolsa@kernel.org, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	"Karlsson, Magnus" <magnus.karlsson@intel.com>, 
 	"xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -83,230 +84,106 @@ X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 23, 2023 at 4:12=E2=80=AFAM Jesper D. Brouer <netdev@brouer.com=
-> wrote:
+On Fri, Jun 23, 2023 at 3:24=E2=80=AFAM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
 >
 >
 >
-> On 21/06/2023 19.02, Stanislav Fomichev wrote:
-> > Attach kfuncs that request and report TX timestamp via ringbuf.
-> > Confirm on the userspace side that the program has triggered
-> > and the timestamp is non-zero.
+> On 22/06/2023 19.55, Stanislav Fomichev wrote:
+> > On Thu, Jun 22, 2023 at 2:11=E2=80=AFAM Jesper D. Brouer <netdev@brouer=
+.com> wrote:
+> >>
+> >>
+> >> This needs to be reviewed by AF_XDP maintainers Magnus and Bj=C3=B8rn =
+(Cc)
+> >>
+> >> On 21/06/2023 19.02, Stanislav Fomichev wrote:
+> >>> For zerocopy mode, tx_desc->addr can point to the arbitrary offset
+> >>> and carry some TX metadata in the headroom. For copy mode, there
+> >>> is no way currently to populate skb metadata.
+> >>>
+> >>> Introduce new XDP_TX_METADATA_LEN that indicates how many bytes
+> >>> to treat as metadata. Metadata bytes come prior to tx_desc address
+> >>> (same as in RX case).
+> >>
+> >>   From looking at the code, this introduces a socket option for this T=
+X
+> >> metadata length (tx_metadata_len).
+> >> This implies the same fixed TX metadata size is used for all packets.
+> >> Maybe describe this in patch desc.
 > >
-> > Also make sure devtx_frame has a sensible pointers and data.
+> > I was planning to do a proper documentation page once we settle on all
+> > the details (similar to the one we have for rx).
 > >
-> [...]
->
->
-> > diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata.c b/tools/t=
-esting/selftests/bpf/progs/xdp_metadata.c
-> > index d151d406a123..fc025183d45a 100644
-> > --- a/tools/testing/selftests/bpf/progs/xdp_metadata.c
-> > +++ b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-> [...]
-> > @@ -19,10 +24,25 @@ struct {
-> >       __type(value, __u32);
-> >   } prog_arr SEC(".maps");
+> >> What is the plan for dealing with cases that doesn't populate same/ful=
+l
+> >> TX metadata size ?
 > >
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_RINGBUF);
-> > +     __uint(max_entries, 10);
-> > +} tx_compl_buf SEC(".maps");
-> > +
-> > +__u64 pkts_fail_tx =3D 0;
-> > +
-> > +int ifindex =3D -1;
-> > +__u64 net_cookie =3D -1;
-> > +
-> >   extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
-> >                                        __u64 *timestamp) __ksym;
-> >   extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *=
-hash,
-> >                                   enum xdp_rss_hash_type *rss_type) __k=
-sym;
-> > +extern int bpf_devtx_sb_request_timestamp(const struct devtx_frame *ct=
-x) __ksym;
-> > +extern int bpf_devtx_cp_timestamp(const struct devtx_frame *ctx, __u64=
- *timestamp) __ksym;
-> > +
-> > +extern int bpf_devtx_sb_attach(int ifindex, int prog_fd) __ksym;
-> > +extern int bpf_devtx_cp_attach(int ifindex, int prog_fd) __ksym;
+> > Do we need to support that? I was assuming that the TX layout would be
+> > fixed between the userspace and BPF.
+>
+> I hope you don't mean fixed layout, as the whole point is adding
+> flexibility and extensibility.
+
+I do mean a fixed layout between the userspace (af_xdp) and devtx program.
+At least fixed max size of the metadata. The userspace and the bpf
+prog can then use this fixed space to implement some flexibility
+(btf_ids, versioned structs, bitmasks, tlv, etc).
+If we were to make the metalen vary per packet, we'd have to signal
+its size per packet. Probably not worth it?
+
+> > If every packet would have a different metadata length, it seems like
+> > a nightmare to parse?
 > >
-> >   SEC("xdp")
-> >   int rx(struct xdp_md *ctx)
-> > @@ -61,4 +81,102 @@ int rx(struct xdp_md *ctx)
-> >       return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
-> >   }
-> >
-> > +static inline int verify_frame(const struct devtx_frame *frame)
-> > +{
-> > +     struct ethhdr eth =3D {};
-> > +
-> > +     /* all the pointers are set up correctly */
-> > +     if (!frame->data)
-> > +             return -1;
-> > +     if (!frame->sinfo)
-> > +             return -1;
-> > +
-> > +     /* can get to the frags */
-> > +     if (frame->sinfo->nr_frags !=3D 0)
-> > +             return -1;
-> > +     if (frame->sinfo->frags[0].bv_page !=3D 0)
-> > +             return -1;
-> > +     if (frame->sinfo->frags[0].bv_len !=3D 0)
-> > +             return -1;
-> > +     if (frame->sinfo->frags[0].bv_offset !=3D 0)
-> > +             return -1;
-> > +
-> > +     /* the data has something that looks like ethernet */
-> > +     if (frame->len !=3D 46)
-> > +             return -1;
-> > +     bpf_probe_read_kernel(&eth, sizeof(eth), frame->data);
-> > +
-> > +     if (eth.h_proto !=3D bpf_htons(ETH_P_IP))
-> > +             return -1;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +SEC("fentry/veth_devtx_submit")
-> > +int BPF_PROG(tx_submit, const struct devtx_frame *frame)
-> > +{
-> > +     struct xdp_tx_meta meta =3D {};
-> > +     int ret;
-> > +
-> > +     if (frame->netdev->ifindex !=3D ifindex)
-> > +             return 0;
-> > +     if (frame->netdev->nd_net.net->net_cookie !=3D net_cookie)
-> > +             return 0;
-> > +     if (frame->meta_len !=3D TX_META_LEN)
-> > +             return 0;
-> > +
-> > +     bpf_probe_read_kernel(&meta, sizeof(meta), frame->data - TX_META_=
-LEN);
-> > +     if (!meta.request_timestamp)
-> > +             return 0;
-> > +
-> > +     ret =3D verify_frame(frame);
-> > +     if (ret < 0) {
-> > +             __sync_add_and_fetch(&pkts_fail_tx, 1);
-> > +             return 0;
-> > +     }
-> > +
-> > +     ret =3D bpf_devtx_sb_request_timestamp(frame);
 >
-> My original design thoughts were that BPF-progs would write into
-> metadata area, with the intend that at TX-complete we can access this
-> metadata area again.
+> No parsing is really needed.  We can simply use BTF IDs and type cast in
+> BPF-prog. Both BPF-prog and userspace have access to the local BTF ids,
+> see [1] and [2].
 >
-> In this case with request_timestamp it would make sense to me, to store
-> a sequence number (+ the TX-queue number), such that program code can
-> correlate on complete event.
+> It seems we are talking slightly past each-other(?).  Let me rephrase
+> and reframe the question, what is your *plan* for dealing with different
+> *types* of TX metadata.  The different struct *types* will of-cause have
+> different sizes, but that is okay as long as they fit into the maximum
+> size set by this new socket option XDP_TX_METADATA_LEN.
+> Thus, in principle I'm fine with XSK having configured a fixed headroom
+> for metadata, but we need a plan for handling more than one type and
+> perhaps a xsk desc indicator/flag for knowing TX metadata isn't random
+> data ("leftover" since last time this mem was used).
 
-Yeah, we can probably follow up on that. I'm trying to start with a
-read-only path for now.
-Can we expose metadata mutating operations via some new kfunc helpers?
-Something that returns a ptr/dynptr to the metadata portion?
+Yeah, I think the above correctly catches my expectation here. Some
+headroom is reserved via XDP_TX_METADATA_LEN and the flexibility is
+offloaded to the bpf program via btf_id/tlv/etc.
 
-> Like xdp_hw_metadata example, I would likely also to add a software
-> timestamp, what I could check at TX complete hook.
->
-> > +     if (ret < 0) {
-> > +             __sync_add_and_fetch(&pkts_fail_tx, 1);
-> > +             return 0;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +SEC("fentry/veth_devtx_complete")
-> > +int BPF_PROG(tx_complete, const struct devtx_frame *frame)
-> > +{
-> > +     struct xdp_tx_meta meta =3D {};
-> > +     struct devtx_sample *sample;
-> > +     int ret;
-> > +
-> > +     if (frame->netdev->ifindex !=3D ifindex)
-> > +             return 0;
-> > +     if (frame->netdev->nd_net.net->net_cookie !=3D net_cookie)
-> > +             return 0;
-> > +     if (frame->meta_len !=3D TX_META_LEN)
-> > +             return 0;
-> > +
-> > +     bpf_probe_read_kernel(&meta, sizeof(meta), frame->data - TX_META_=
-LEN);
-> > +     if (!meta.request_timestamp)
-> > +             return 0;
-> > +
-> > +     ret =3D verify_frame(frame);
-> > +     if (ret < 0) {
-> > +             __sync_add_and_fetch(&pkts_fail_tx, 1);
-> > +             return 0;
-> > +     }
-> > +
-> > +     sample =3D bpf_ringbuf_reserve(&tx_compl_buf, sizeof(*sample), 0)=
-;
-> > +     if (!sample)
-> > +             return 0;
->
-> Sending this via a ringbuffer to userspace, will make it hard to
-> correlate. (For AF_XDP it would help a little to add the TX-queue
-> number, as this hook isn't queue bound but AF_XDP is).
+Regarding leftover metadata: can we assume the userspace will take
+care of setting it up?
 
-Agreed. I was looking into putting the metadata back into the ring initiall=
-y.
-It's somewhat doable for zero-copy, but needs some special care for copy mo=
-de.
-So I've decided not to over-complicate the series and land the
-read-only hooks at least.
-Does it sound fair? We can allow mutating metadata separately.
-
-> > +
-> > +     sample->timestamp_retval =3D bpf_devtx_cp_timestamp(frame, &sampl=
-e->timestamp);
-> > +
+> With this kfunc approach, then things in-principle, becomes a contract
+> between the "local" TX-hook BPF-prog and AF_XDP userspace.   These two
+> components can as illustrated here [1]+[2] can coordinate based on local
+> BPF-prog BTF IDs.  This approach works as-is today, but patchset
+> selftests examples don't use this and instead have a very static
+> approach (that people will copy-paste).
 >
-> I were expecting to see, information being written into the metadata
-> area of the frame, such that AF_XDP completion-queue handling can
-> extract this obtained timestamp.
+> An unsolved problem with TX-hook is that it can also get packets from
+> XDP_REDIRECT and even normal SKBs gets processed (right?).  How does the
+> BPF-prog know if metadata is valid and intended to be used for e.g.
+> requesting the timestamp? (imagine metadata size happen to match)
 
-SG, will add!
+My assumption was the bpf program can do ifindex/netns filtering. Plus
+maybe check that the meta_len is the one that's expected.
+Will that be enough to handle XDP_REDIRECT?
 
-> > +     bpf_ringbuf_submit(sample, 0);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >   char _license[] SEC("license") =3D "GPL";
-> > diff --git a/tools/testing/selftests/bpf/xdp_metadata.h b/tools/testing=
-/selftests/bpf/xdp_metadata.h
-> > index 938a729bd307..e410f2b95e64 100644
-> > --- a/tools/testing/selftests/bpf/xdp_metadata.h
-> > +++ b/tools/testing/selftests/bpf/xdp_metadata.h
-> > @@ -18,3 +18,17 @@ struct xdp_meta {
-> >               __s32 rx_hash_err;
-> >       };
-> >   };
-> > +
-> > +struct devtx_sample {
-> > +     int timestamp_retval;
-> > +     __u64 timestamp;
-> > +};
-> > +
-> > +#define TX_META_LEN  8
->
-> Very static design.
->
-> > +
-> > +struct xdp_tx_meta {
-> > +     __u8 request_timestamp;
-> > +     __u8 padding0;
-> > +     __u16 padding1;
-> > +     __u32 padding2;
-> > +};
->
-> padding2 could be a btf_id for creating a more flexible design.
 
-Right, up to the programs on how to make it more flexible (same as
-rx), will add more on that in your other reply.
+> --Jesper
+>
+> BPF-prog API bpf_core_type_id_local:
+>   - [1]
+> https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interactio=
+n/af_xdp_kern.c#L80
+>
+> Userspace API btf__find_by_name_kind:
+>   - [2]
+> https://github.com/xdp-project/bpf-examples/blob/master/AF_XDP-interactio=
+n/lib_xsk_extend.c#L185
+>
 
