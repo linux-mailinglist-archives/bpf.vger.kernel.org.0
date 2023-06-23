@@ -1,76 +1,116 @@
-Return-Path: <bpf+bounces-3281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3282-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9493373BB61
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 17:17:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6E8A73BB80
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 17:20:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DED05281C5F
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 15:17:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70D04281BA6
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 15:20:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97373AD4F;
-	Fri, 23 Jun 2023 15:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E830C2C9;
+	Fri, 23 Jun 2023 15:20:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E40BAD41
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 15:17:21 +0000 (UTC)
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21E1E48;
-	Fri, 23 Jun 2023 08:16:58 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-666eba6f3d6so427084b3a.3;
-        Fri, 23 Jun 2023 08:16:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687533415; x=1690125415;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J1o/pL8VifmRkhg9N/fLgEY6Kfl6O6cZ7IhXs/6AQWA=;
-        b=f3tdIYRj/Qnjj4wTj6d5h1filcc0g7aVJ1duPxCvWWLV6nk3TzSLMBJAcz05+mwBXd
-         EAW9lrn0Z1BQGEYyJnxuhDDhNgwWcEVkQVyjMhoG/NCID9nZGaFO+EiIQqhCwpLWTwIe
-         676Dmn/Pfg6VVm5mBQfhYuo1qU+G5aK1bDUrQbSJQdVD19Qhaw/akUXlTrKeeaP/EwvY
-         fV5J7jhIRsWF0o3I2U2y2OgGavOTsmLXAmBnuZUd/D1TFfLizibYdTy3q8CLhFk/641S
-         7heuiRQv+thHKvQyHO1SUFP+1lKJr0Axr7mhatleBGimkng/1jWk1oYTt6GU4OY/hh3p
-         3noQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687533415; x=1690125415;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J1o/pL8VifmRkhg9N/fLgEY6Kfl6O6cZ7IhXs/6AQWA=;
-        b=VgNxWxMz3PF29jZP1FOgW+CxwIdwc8D+TfLHy+xs/9Vn67YwH9D7IuLl5wd7kIdVSv
-         HUimCPev1hyrN26zl5gJYrnYeGCAQkgyFq613VE2GPn8D4jPThFj1WpaVrx1QxsuUF+M
-         MrpYsjn15390XM80ck16kB+hHl4UXW9ELTKWu96cRbmnHB2JrRBK1q3exU8ag2njS+Nq
-         93AnV2mv7oYG52fQvISjQXo1OwESvnPxV2A4BnEHQzH+lGPLBJhp2jnsrIfq6qGbfYMq
-         fdJz1Gqww/4BWZAQn5qApZmBrLoUQMM40L7m8QsuRmDctVwwkgAHhze+IO5gISXxxJjn
-         Fg1g==
-X-Gm-Message-State: AC+VfDx3n4t4/HBvi+FJ+Bqt97APNHuNbFOVj3NTwDsuYYOs1Cu2UQsE
-	zWwrhvn9yexjNQiJQLI2toI=
-X-Google-Smtp-Source: ACHHUZ5IRGokayu9WQG701u41H3ifU3+Nlm2eD6n9M7pPACGCw6oF90m6riV8Q7SAviIkxVR8fq1Qg==
-X-Received: by 2002:a05:6a21:78a7:b0:10b:e88f:597c with SMTP id bf39-20020a056a2178a700b0010be88f597cmr12054883pzc.44.1687533415380;
-        Fri, 23 Jun 2023 08:16:55 -0700 (PDT)
-Received: from sumitra.com ([117.199.160.11])
-        by smtp.gmail.com with ESMTPSA id jc3-20020a17090325c300b001b39ffff838sm7431770plb.25.2023.06.23.08.16.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jun 2023 08:16:54 -0700 (PDT)
-Date: Fri, 23 Jun 2023 08:16:44 -0700
-From: Sumitra Sharma <sumitraartsy@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C66C151
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 15:20:30 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238FC10C1;
+	Fri, 23 Jun 2023 08:20:29 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+	by smtp-out2.suse.de (Postfix) with ESMTP id D24151F45F;
+	Fri, 23 Jun 2023 15:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1687533627; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1mTZQB6E8gpW9xyv3IdX7kwRMApo1npl8Ta69cylcgI=;
+	b=cw+6g9R2o/Umv74/BGjs0HZFU73NXkDTjRhAwElwD9yLjkG2loVWkX98zsq+Jw9f7GWEbv
+	1LhcZAdPyuPlH6OaETf856CLkRN01mJSpFOO8X/jovaGWHnPkt2fDQYbq4M0K8/oavd3Ir
+	XsYDO2FS6i0HJDFn6EWyGK6+OhLducU=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by relay2.suse.de (Postfix) with ESMTPS id 1AE602C141;
+	Fri, 23 Jun 2023 15:20:22 +0000 (UTC)
+Date: Fri, 23 Jun 2023 17:20:17 +0200
+From: Petr Mladek <pmladek@suse.com>
+To: Joel Granados <j.granados@samsung.com>
+Cc: Jiri Slaby <jirislaby@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, mcgrof@kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	Theodore Ts'o <tytso@mit.edu>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Juergen Gross <jgross@suse.com>,
+	Stefano Stabellini <sstabellini@kernel.org>,
+	Benjamin LaHaise <bcrl@kvack.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+	Kees Cook <keescook@chromium.org>,
+	Iurii Zaikin <yzaikin@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
+	Balbir Singh <bsingharora@gmail.com>,
+	Eric Biederman <ebiederm@xmission.com>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Will Deacon <will@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Naoya Horiguchi <naoya.horiguchi@nec.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	David Howells <dhowells@redhat.com>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+	Amir Goldstein <amir73il@gmail.com>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Ira Weiny <ira.weiny@intel.com>, Fabio <fmdefrancesco@gmail.com>,
-	Deepak R Varma <drv@mailo.com>,
-	Sumitra Sharma <sumitraartsy@gmail.com>
-Subject: [PATCH v4] lib/test_bpf: Call page_address() on page acquired with
- GFP_KERNEL flag
-Message-ID: <20230623151644.GA434468@sumitra.com>
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	John Ogness <john.ogness@linutronix.de>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Andy Lutomirski <luto@amacapital.net>,
+	Will Drewry <wad@chromium.org>, Mark Rutland <mark.rutland@arm.com>,
+	Miaohe Lin <linmiaohe@huawei.com>, linux-kernel@vger.kernel.org,
+	xen-devel@lists.xenproject.org, linux-aio@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	bpf@vger.kernel.org, kexec@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, keyrings@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 08/11] sysctl: Add size to register_sysctl_init
+Message-ID: <ZJW4MdIvrWjbKtVy@alley>
+References: <20230621091000.424843-1-j.granados@samsung.com>
+ <CGME20230621091037eucas1p188e11d8064526a5a0549217d5a419647@eucas1p1.samsung.com>
+ <20230621091000.424843-9-j.granados@samsung.com>
+ <2023062150-outbound-quiet-2609@gregkh>
+ <20230621131552.pqsordxcjmiopciq@localhost>
+ <fc37eccc-b9b3-d888-6b57-78cd61986a11@kernel.org>
+ <20230622140021.g3odhui75ybwuai5@localhost>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,92 +119,73 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230622140021.g3odhui75ybwuai5@localhost>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-generate_test_data() acquires a page with alloc_page(GFP_KERNEL).
-The GFP_KERNEL is typical for kernel-internal allocations.
-The caller requires ZONE_NORMAL or a lower zone for direct access.
+On Thu 2023-06-22 16:00:21, Joel Granados wrote:
+> On Thu, Jun 22, 2023 at 06:21:48AM +0200, Jiri Slaby wrote:
+> > On 21. 06. 23, 15:15, Joel Granados wrote:
+> > > On Wed, Jun 21, 2023 at 12:47:58PM +0200, Greg Kroah-Hartman wrote:
+> > > > On Wed, Jun 21, 2023 at 11:09:57AM +0200, Joel Granados wrote:
+> > > > >   static int __init random_sysctls_init(void)
+> > > > >   {
+> > > > > -	register_sysctl_init("kernel/random", random_table);
+> > > > > +	register_sysctl_init("kernel/random", random_table,
+> > > > > +			     ARRAY_SIZE(random_table));
+> > > > 
+> > > > As mentioned before, why not just do:
+> > > > 
+> > > > #define register_sysctl_init(string, table)	\
+> > > > 	__register_sysctl_init(string, table, ARRAY_SIZE(table);
+> > > Answered you in the original mail where you suggested it.
+> > 
+> > I am curious what that was, do you have a link?
+> of course. I think you will find it here https://lore.kernel.org/all/20230621123816.ufqbob6qthz4hujx@localhost/
 
-Therefore the page cannot come from ZONE_HIGHMEM. Thus there's
-no need to map it with kmap().
+Let me to copy the answer here:
 
-Also, the kmap() is being deprecated in favor of kmap_local_page() [1].
+<paste>
+I considered this at the outset, but it will not work with callers that
+use a pointer instead of the actual array.
+Additionally, we would not avoid big commits as we would have to go
+looking in all the files where register is called directly or indirectly
+and make sure the logic is sound.
+</paste>
 
-Hence, use a plain page_address() directly.
+For the callers using a pointer. A solution would be to create another
+wrapper which would take the array size, e.g.
 
-Since the page passed to the page_address() is not from the highmem
-zone, the page_address() function will always return a valid kernel
-virtual address and will not return NULL. Hence, remove the check
-'if (!ptr)'.
+#define register_sysctl_init_limited(string, table, size)	\
+	__register_sysctl_init(string, table, size);
 
-Remove the unused variable 'ptr' and label 'err_free_page'.
 
-[1]: https://lore.kernel.org/all/20220813220034.806698-1-ira.weiny@intel.com/
+And ARRAY_SIZE() is defined in include/linux/kernel.h as:
 
-Suggested-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-Signed-off-by: Sumitra Sharma <sumitraartsy@gmail.com>
----
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
 
-- Link to v1: https://lore.kernel.org/bpf/20230613073020.GA359792@sumitra.com/T/
-- Link to v2: https://lore.kernel.org/all/20230613071756.GA359746@sumitra.com/
-- Link to v3: https://lore.kernel.org/all/20230622080729.GA426913@sumitra.com/
+It will create a compiler error when either an array[] or *array is
+passed.
 
-Changes in v4:
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202306230559.hU5Aonpl-lkp@intel.com/
-	- Remove unused label 'err_free_page'.
+When using this:
 
-Changes in v3:
-Noted by: Fabio M. De Francesco<fmdefrancesco@gmail.com>
-	- Remove the check 'if (!ptr)'.
-	- Remove the unused variable 'ptr'.
-	- Change the commit message.
+1. The compiler will tell us where the other wrapper is needed.
 
-Changes in v2:
-Noted by: Fabio M. De Francesco<fmdefrancesco@gmail.com>
-	- Remove the kmap() call and call page_address() instead.
-	- Change the commit subject and message.
+2. Some locations might need the @size parameter even when a static
+   array is passed. For example, neigh_sysctl_register() terminates
+   the array early.
 
- lib/test_bpf.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+   But this will work when __register_sysctl_init() supports
+   both ways.I mean that it will stop either on @size or empty
+   element, as discussed in the other subthread.
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index ade9ac672adb..a5cc5f9fc4e8 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -14381,25 +14381,17 @@ static void *generate_test_data(struct bpf_test *test, int sub)
- 		 * single fragment to the skb, filled with
- 		 * test->frag_data.
- 		 */
--		void *ptr;
--
- 		page = alloc_page(GFP_KERNEL);
- 
- 		if (!page)
- 			goto err_kfree_skb;
- 
--		ptr = kmap(page);
--		if (!ptr)
--			goto err_free_page;
--		memcpy(ptr, test->frag_data, MAX_DATA);
--		kunmap(page);
-+		memcpy(page_address(page), test->frag_data, MAX_DATA);
- 		skb_add_rx_frag(skb, 0, page, 0, MAX_DATA, MAX_DATA);
- 	}
- 
- 	return skb;
- 
--err_free_page:
--	__free_page(page);
- err_kfree_skb:
- 	kfree_skb(skb);
- 	return NULL;
--- 
-2.25.1
+   This should be caught when the final "empty" is removed
+   from the particular caller.
 
+Best Regards,
+Petr
 
