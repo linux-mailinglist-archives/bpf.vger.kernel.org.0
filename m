@@ -1,159 +1,194 @@
-Return-Path: <bpf+bounces-3246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1598673B42C
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 11:53:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C47B473B4F3
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 12:13:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EC581C20B12
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 09:53:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D29F281AF2
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 10:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19CB524F;
-	Fri, 23 Jun 2023 09:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4024C6119;
+	Fri, 23 Jun 2023 10:11:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3415246
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 09:53:48 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34F92689
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 02:53:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=rEwzez6DbGNCs0gh0F4GeXUf/DEY4Tugli1sW4Pw/WI=; b=o4eLDg6W/L0q2mMNqH3QND845T
-	f7aojKGlWePCNrIjxbNXvr6pZWepWKNNrveQRlfSIFGPgIeqMjLK0Lg7Rz91JbW2sV6PPomc2xeMh
-	CIS36gnm5GnPzbPTgOLeN2d8BvpxB7GLJYCOxTzbDFX6s7mBQATIHr8zSJYYhmzeH5lxvDc2xJmmn
-	oNruB4miAYla7Ru13/NFORJ4eUXZnS2eUkZMvUNBaaFv7pnrHMF2SDJv6MrDd0CgWFTcDvuNh4+Um
-	/WeAj6zRPEhkx4gQ1B8bkddHTdX06zKRGpItW4Y72zP8vUQtjSS2czkJh5C/kpeKifsaq8GckA1hR
-	CZTguF2Q==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qCdTs-0002g6-7u; Fri, 23 Jun 2023 11:53:28 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qCdTr-000ESQ-PJ; Fri, 23 Jun 2023 11:53:27 +0200
-Subject: Re: [RFC v2 PATCH bpf-next 0/4] bpf: add percpu stats for bpf_map
-To: Anton Protopopov <aspsk@isovalent.com>,
- Alexei Starovoitov <ast@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-References: <20230622095330.1023453-1-aspsk@isovalent.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d981e123-43a1-4d91-8b52-0097087656b2@iogearbox.net>
-Date: Fri, 23 Jun 2023 11:53:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3878F47
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 10:11:48 +0000 (UTC)
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDC2449E
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 03:11:21 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-76246351f0cso38989285a.1
+        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 03:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687515060; x=1690107060;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9P/n3MhrSfoNR3/6mU+dwnY9YqLdGf1sUb14ysI8UbM=;
+        b=WzeqLwy5cf2p4wtJSvkcYxB0ezugdZfOzx9EhbYlTZeaaA/hMgIYQNQP9sTronghyG
+         mUrD0rmiEk/0zbXOIP8prewEVs9vnqsq18a+So3tDIWHpBDdKTP76q29HGKiQKqxxPmN
+         9hJdXnmg05uXDi8oNYFtTquJb7RghIzblDDIgweyR1+gKhbJrBTrLsR2ZSLbCzv7cwj8
+         KKr7YHmmRYJ5hVRCpGlChWVVgCSGk7rASV9U4mJQ6vnAtFHcqYD2aaho4SADBmQkhKk+
+         TmIVgQ51leFAPnus3t4dGkRlR0rgbEoLEc3ocXq/kPPyla/lJbZnYtJiFEN4b/BRWam4
+         HpLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687515060; x=1690107060;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9P/n3MhrSfoNR3/6mU+dwnY9YqLdGf1sUb14ysI8UbM=;
+        b=HOnxZgW3uQ/pXCLAfKOmddKA6p2ZlOaU05lqVYYj3lJZ6/3P4oYWQthM9bA5W3kJX5
+         OvPDVAIgWTRmmDHp3BJD4rjGheMHXp/SNbUnnabJaJj8xdrq0Y4Xn4TBewuDsQaoHRb/
+         QFfPxj0NNuv7knoMaRFVgiZkD4IsOvl4F2MPQjaJZdsZKyHFFRsltmSeIWlJUcT0CKy4
+         owKh0dg6WrpMihOFdzAOex27ZOiIVZP9Q3sO+QfZE/SOj82xxRYJFcVssfTFa0wyurgQ
+         MwFHp8cFgd9a+jq26V1b3UGxMgM9xSZYdX1yCT5dYxEsTwuXFSV7AguUHRQJ/fAsI3vk
+         zCsw==
+X-Gm-Message-State: AC+VfDwiSSRV5VmWJEPVu7IEtjWcG/oqH1eG2Kz5V3RkZQO6EsuB05Q0
+	qvZWebNO9oAjqDwZBglCxBk1nU2W9Ro7iIChhz8=
+X-Google-Smtp-Source: ACHHUZ521FxFEkJfnv16zztFKwHyTrHi2ZyGiC6z2Kd2etwfVuwwv0THZcRv/6DuneO234aGgSCec1L8eTw9cNF+6TY=
+X-Received: by 2002:ad4:5ded:0:b0:632:27c1:23fc with SMTP id
+ jn13-20020ad45ded000000b0063227c123fcmr4620872qvb.39.1687515059713; Fri, 23
+ Jun 2023 03:10:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230622095330.1023453-1-aspsk@isovalent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26948/Fri Jun 23 09:28:15 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20230621120012.3883-1-laoar.shao@gmail.com> <CAADnVQJizR0kMaQxKvs8tgvedPVExcHNFgDde28M7TgtzeEjkw@mail.gmail.com>
+In-Reply-To: <CAADnVQJizR0kMaQxKvs8tgvedPVExcHNFgDde28M7TgtzeEjkw@mail.gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Fri, 23 Jun 2023 18:10:23 +0800
+Message-ID: <CALOAHbAjVotSPDP9r90yAxFn0XzaVJgkvSSL-X9WTtjcd6VDXw@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Fix an error in verifying a field in a union
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 6/22/23 11:53 AM, Anton Protopopov wrote:
-> This series adds a mechanism for maps to populate per-cpu counters of elements
-> on insertions/deletions. The sum of these counters can be accessed by a new
-> kfunc from a map iterator program.
-> 
-> The following patches are present in the series:
-> 
->    * Patch 1 adds a generic per-cpu counter to struct bpf_map
->    * Patch 2 utilizes this mechanism for hash-based maps
->    * Patch 3 extends the preloaded map iterator to dump the sum
->    * Patch 4 adds a self-test for the change
-> 
-> The reason for adding this functionality in our case (Cilium) is to get
-> signals about how full some heavy-used maps are and what the actual dynamic
-> profile of map capacity is. In the case of LRU maps this is impossible to get
-> this information anyhow else. See also [1].
-> 
-> This is a v2 for the https://lore.kernel.org/bpf/20230531110511.64612-1-aspsk@isovalent.com/T/#t
-> It was rewritten according to previous comments.  I've turned this series into
-> an RFC for two reasons:
-> 
-> 1) This patch only works on systems where this_cpu_{inc,dec} is atomic for s64.
-> For systems which might write s64 non-atomically this would be required to use
-> some locking mechanism to prevent readers from reading trash via the
-> bpf_map_sum_elements_counter() kfunc (see patch 1)
-> 
-> 2) In comparison with the v1, we're adding extra instructions per map operation
-> (for preallocated maps, as well as for non-preallocated maps). The only
-> functionality we're interested at the moment is the number of elements present
-> in a map, not a per-cpu statistics. This could be better achieved by using
-> the v1 version, which only adds computations for preallocated maps.
-> 
-> So, the question is: won't it be fine to do the changes in the following way:
-> 
->    * extend the preallocated hash maps to populate percpu batch counters as in v1
->    * add a kfunc as in v2 to get the current sum
-> 
-> This works as
-> 
->    * nobody at the moment actually requires the per-cpu statistcs
->    * this implementation can be transparently turned into per-cpu statistics, if
->      such a need occurs on practice (the only thing to change would be to
->      re-implement the kfunc and, maybe, add more kfuncs to get per-cpu stats)
->    * the "v1 way" is the least intrusive: it only affects preallocated maps, as
->      other maps already provide the required functionality
-> 
->    [1] https://lpc.events/event/16/contributions/1368/
-> 
-> v1 -> v2:
-> - make the counters generic part of struct bpf_map
-> - don't use map_info and /proc/self/fdinfo in favor of a kfunc
+On Fri, Jun 23, 2023 at 7:42=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Jun 21, 2023 at 5:00=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com=
+> wrote:
+> >
+> > We are utilizing BPF LSM to monitor BPF operations within our container
+> > environment. When we add support for raw_tracepoint, it hits below
+> > error.
+> >
+> > ; (const void *)attr->raw_tracepoint.name);
+> > 27: (79) r3 =3D *(u64 *)(r2 +0)
+> > access beyond the end of member map_type (mend:4) in struct (anon) with=
+ off 0 size 8
+> >
+> > It can be reproduced with below BPF prog.
+> >
+> > SEC("lsm/bpf")
+> > int BPF_PROG(bpf_audit, int cmd, union bpf_attr *attr, unsigned int siz=
+e)
+> > {
+> >         switch (cmd) {
+> >         case BPF_RAW_TRACEPOINT_OPEN:
+> >                 bpf_printk("raw_tracepoint is %s", attr->raw_tracepoint=
+.name);
+> >                 break;
+> >         default:
+> >                 break;
+> >         }
+> >         return 0;
+> > }
+> >
+> > The reason is that when accessing a field in a union, such as bpf_attr,=
+ if
+> > the field is located within a nested struct that is not the first membe=
+r of
+> > the union, it can result in incorrect field verification.
+> >
+> >   union bpf_attr {
+> >       struct {
+> >           __u32 map_type; <<<< Actually it will find that field.
+> >           __u32 key_size;
+> >           __u32 value_size;
+> >          ...
+> >       };
+> >       ...
+> >       struct {
+> >           __u64 name;    <<<< We want to verify this field.
+> >           __u32 prog_fd;
+> >       } raw_tracepoint;
+> >   };
+> >
+> > Considering the potential deep nesting levels, finding a perfect soluti=
+on
+> > to address this issue has proven challenging. Therefore, I propose a
+> > solution where we simply skip the verification process if the field in
+> > question is located within a union.
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  kernel/bpf/btf.c | 13 +++++++++----
+> >  1 file changed, 9 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index bd2cac057928..79ee4506bba4 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -6129,7 +6129,7 @@ enum bpf_struct_walk_result {
+> >  static int btf_struct_walk(struct bpf_verifier_log *log, const struct =
+btf *btf,
+> >                            const struct btf_type *t, int off, int size,
+> >                            u32 *next_btf_id, enum bpf_type_flag *flag,
+> > -                          const char **field_name)
+> > +                          const char **field_name, bool *in_union)
+> >  {
+> >         u32 i, moff, mtrue_end, msize =3D 0, total_nelems =3D 0;
+> >         const struct btf_type *mtype, *elem_type =3D NULL;
+> > @@ -6188,6 +6188,8 @@ static int btf_struct_walk(struct bpf_verifier_lo=
+g *log, const struct btf *btf,
+> >                 return -EACCES;
+> >         }
+> >
+> > +       if (BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_UNION && !in_union)
+> > +               *in_union =3D true;
+> >         for_each_member(i, t, member) {
+> >                 /* offset of the field in bytes */
+> >                 moff =3D __btf_member_bit_offset(t, member) / 8;
+> > @@ -6372,7 +6374,7 @@ static int btf_struct_walk(struct bpf_verifier_lo=
+g *log, const struct btf *btf,
+> >                  * that also allows using an array of int as a scratch
+> >                  * space. e.g. skb->cb[].
+> >                  */
+> > -               if (off + size > mtrue_end) {
+> > +               if (off + size > mtrue_end && !in_union) {
+>
+> Just allow it for (flag & PTR_UNTRUSTED).
+> We set it when we start walking BTF_KIND_UNION.
+> No need for extra bool.
 
-Tbh, I did like v1 approach a bit better. We are trying to bend over backwards just
-so that we don't add things to uapi, but in the end we are also adding it to the
-maps.debug, etc (yes, it has .debug in the name and all) ...
+It seems we can't check the flag, because it clears the flag when it
+enters btf_struct_walk()[1].
+We only set it when we find a nested union, but we don't set this flag
+when the btf_type itself is a union. So that can't apply to `union
+bpf_attr`.
 
- > for maps can be extended to print the element count, so the user can have
- > convenient 'cat /sys/fs/bpf/maps.debug' way to debug maps.
+[1]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/=
+kernel/bpf/btf.c#n6140
 
-... I feel with convenience access, some folks in the wild might build apps parsing
-it in the end instead of writing iterators.
-
-I would be curious to hear from Google and Meta folks in terms of how you observe
-map fillup or other useful map related stats in production (unless you don't watch
-out for this?), and if there is a common denominator we could come up with that
-would be really useful for all parties and thus potentially make sense for fdinfo
-or as an extensible bpf_map_info stats extension in case there is some agreement?
-
-In our case we don't really care about exact numbers, just more around whether a
-user is scaling up their k8s cluster to the point where the previous configurations
-on sizing e.g. around LB mappings etc would hit the limits in the foreseeable future
-if they dial up further. This is exported to dashboards (e.g. grafana) for visibility
-so operators can know ahead of time.
-
-The iterator approach is okay, less convenient, but if there is indeed nothing
-common from other production users which helped map visibility over the years, then
-so be it. I thought to at least ask given we have this thread. :)
-
-Thanks,
-Daniel
+--=20
+Regards
+Yafang
 
