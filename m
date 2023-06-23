@@ -1,141 +1,159 @@
-Return-Path: <bpf+bounces-3245-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3246-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 456D373B2EC
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 10:51:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1598673B42C
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 11:53:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3220281932
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 08:51:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EC581C20B12
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 09:53:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27951184E;
-	Fri, 23 Jun 2023 08:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19CB524F;
+	Fri, 23 Jun 2023 09:53:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E84211388
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 08:51:34 +0000 (UTC)
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A6D1706
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 01:51:32 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4f96da99965so395521e87.1
-        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 01:51:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1687510291; x=1690102291;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FBp/5we+F098cYxjClAH39IPPmeDVkhswEY+vCjkrLU=;
-        b=Ldb53M44W8TbeL/H4zJekM/7x63/asS5bW6zXQ9hJOyWbKLNY7keLnKXhRj4QrC0l/
-         DLXXI4bXuMJbOq8ckfyr5v1acn0wXTqUNlru42rjmYpwkXm+H96OgZgoI/kCnW2k7oxl
-         5Da53GQIaNEpKCSkb9q0VDRLUTm8EeZ/Egqsr8ggJ3t+EiI4Mf3FiuOKj5/uk1Ro4Szo
-         5fx2JdV1Gj8eUq+940HvdiGUJOJJoB464Of3kP4xSxRYeC/5T4GTYNjml1HW49/4/0Mg
-         nTS0IoQC1ppNOJGvTDABxyXAPGh/iA1087WWe5v1Fr96c6G0LMb6JgKCuGj+56lCYl3C
-         Jyww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687510291; x=1690102291;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FBp/5we+F098cYxjClAH39IPPmeDVkhswEY+vCjkrLU=;
-        b=PkMLJ2Gr3Vb8NDo2VfEQCQS+7q1CnBj8U20kp8LS2NntReDaAWIlKjLeZfZRtVozsL
-         g0+aVKxMwCGu7weXyM+V4W7cahXS6L9NdFUtxPbByfpuWVHa0A5mOwNDSMTLZwhQ9zPB
-         MPrfKaaVWHSmjHgHwnUliafFBg5h0UnpCMRHwO1fYi4nVWgUu2+US7/BuipXczmguzlN
-         PvC5l2E0aW7yw+vwKyMqn0xP5YIMcjIZqtNKIvbmstbfCuF9likDeisBUafWvWpABJeD
-         9eluMuxeKj4ev/kD409s2gN5oK/GGKBDTZH6JfB+s+Vjm2lOL4AksMbrRrcHjWI3apA9
-         03EA==
-X-Gm-Message-State: AC+VfDyW3ekMDokaQUHD4rYturoI/X3DqtT1aqzx8K2G6APHv/6LmWSx
-	TniRZooV03EAkb07E800Eum9Zg==
-X-Google-Smtp-Source: ACHHUZ4bJ8bVgtgP/IjbqRrFOwLkmmEY0vE1BaZUiA+/j8tie7A0E3PJlHa8tG/xQQi6uTLzNyUNhA==
-X-Received: by 2002:a19:6544:0:b0:4f6:d7b:2f19 with SMTP id c4-20020a196544000000b004f60d7b2f19mr11832148lfj.24.1687510290980;
-        Fri, 23 Jun 2023 01:51:30 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:9cb8:f81f:3342:3b44? ([2a02:8011:e80c:0:9cb8:f81f:3342:3b44])
-        by smtp.gmail.com with ESMTPSA id f23-20020a1c6a17000000b003eddc6aa5fasm1671290wmc.39.2023.06.23.01.51.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jun 2023 01:51:30 -0700 (PDT)
-Message-ID: <a5d419e4-f2ea-27f6-9259-a7b6486ab616@isovalent.com>
-Date: Fri, 23 Jun 2023 09:51:29 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3415246
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 09:53:48 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34F92689
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 02:53:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=rEwzez6DbGNCs0gh0F4GeXUf/DEY4Tugli1sW4Pw/WI=; b=o4eLDg6W/L0q2mMNqH3QND845T
+	f7aojKGlWePCNrIjxbNXvr6pZWepWKNNrveQRlfSIFGPgIeqMjLK0Lg7Rz91JbW2sV6PPomc2xeMh
+	CIS36gnm5GnPzbPTgOLeN2d8BvpxB7GLJYCOxTzbDFX6s7mBQATIHr8zSJYYhmzeH5lxvDc2xJmmn
+	oNruB4miAYla7Ru13/NFORJ4eUXZnS2eUkZMvUNBaaFv7pnrHMF2SDJv6MrDd0CgWFTcDvuNh4+Um
+	/WeAj6zRPEhkx4gQ1B8bkddHTdX06zKRGpItW4Y72zP8vUQtjSS2czkJh5C/kpeKifsaq8GckA1hR
+	CZTguF2Q==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qCdTs-0002g6-7u; Fri, 23 Jun 2023 11:53:28 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qCdTr-000ESQ-PJ; Fri, 23 Jun 2023 11:53:27 +0200
+Subject: Re: [RFC v2 PATCH bpf-next 0/4] bpf: add percpu stats for bpf_map
+To: Anton Protopopov <aspsk@isovalent.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+References: <20230622095330.1023453-1-aspsk@isovalent.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d981e123-43a1-4d91-8b52-0097087656b2@iogearbox.net>
+Date: Fri, 23 Jun 2023 11:53:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] bpf: Replace deprecated -target with --target= for Clang
-Content-Language: en-GB
-To: Fangrui Song <maskray@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <20230623020908.1410959-1-maskray@google.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20230623020908.1410959-1-maskray@google.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20230622095330.1023453-1-aspsk@isovalent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26948/Fri Jun 23 09:28:15 2023)
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-2023-06-23 02:09 UTC+0000 ~ Fangrui Song <maskray@google.com>
-> -target has been deprecated since Clang 3.4 in 2013. Use the preferred
-> --target=bpf form instead. This matches how we use --target= in
-> scripts/Makefile.clang.
-
-This seems to be the relevant commit, for reference:
-
-https://github.com/llvm/llvm-project/commit/274b6f0c87a6a1798de0a68135afc7f95def6277
-
+On 6/22/23 11:53 AM, Anton Protopopov wrote:
+> This series adds a mechanism for maps to populate per-cpu counters of elements
+> on insertions/deletions. The sum of these counters can be accessed by a new
+> kfunc from a map iterator program.
 > 
-> Signed-off-by: Fangrui Song <maskray@google.com>
-> ---
->  Documentation/bpf/bpf_devel_QA.rst              | 10 +++++-----
->  Documentation/bpf/btf.rst                       |  4 ++--
->  Documentation/bpf/llvm_reloc.rst                |  6 +++---
->  drivers/hid/bpf/entrypoints/Makefile            |  2 +-
->  kernel/bpf/preload/iterators/Makefile           |  2 +-
->  samples/bpf/Makefile                            |  6 +++---
->  samples/bpf/gnu/stubs.h                         |  3 ++-
->  samples/bpf/test_lwt_bpf.sh                     |  2 +-
->  samples/hid/Makefile                            |  6 +++---
->  tools/bpf/bpftool/Documentation/bpftool-gen.rst |  4 ++--
->  tools/bpf/bpftool/Makefile                      |  2 +-
->  tools/bpf/runqslower/Makefile                   |  2 +-
->  tools/build/feature/Makefile                    |  2 +-
->  tools/perf/Documentation/perf-config.txt        |  2 +-
->  tools/perf/Makefile.perf                        |  4 ++--
->  tools/perf/util/llvm-utils.c                    |  4 ++--
->  tools/testing/selftests/bpf/Makefile            |  6 +++---
->  tools/testing/selftests/bpf/gnu/stubs.h         |  3 ++-
->  tools/testing/selftests/hid/Makefile            |  6 +++---
->  tools/testing/selftests/net/Makefile            |  4 ++--
->  tools/testing/selftests/tc-testing/Makefile     |  2 +-
->  21 files changed, 42 insertions(+), 40 deletions(-)
+> The following patches are present in the series:
 > 
+>    * Patch 1 adds a generic per-cpu counter to struct bpf_map
+>    * Patch 2 utilizes this mechanism for hash-based maps
+>    * Patch 3 extends the preloaded map iterator to dump the sum
+>    * Patch 4 adds a self-test for the change
+> 
+> The reason for adding this functionality in our case (Cilium) is to get
+> signals about how full some heavy-used maps are and what the actual dynamic
+> profile of map capacity is. In the case of LRU maps this is impossible to get
+> this information anyhow else. See also [1].
+> 
+> This is a v2 for the https://lore.kernel.org/bpf/20230531110511.64612-1-aspsk@isovalent.com/T/#t
+> It was rewritten according to previous comments.  I've turned this series into
+> an RFC for two reasons:
+> 
+> 1) This patch only works on systems where this_cpu_{inc,dec} is atomic for s64.
+> For systems which might write s64 non-atomically this would be required to use
+> some locking mechanism to prevent readers from reading trash via the
+> bpf_map_sum_elements_counter() kfunc (see patch 1)
+> 
+> 2) In comparison with the v1, we're adding extra instructions per map operation
+> (for preallocated maps, as well as for non-preallocated maps). The only
+> functionality we're interested at the moment is the number of elements present
+> in a map, not a per-cpu statistics. This could be better achieved by using
+> the v1 version, which only adds computations for preallocated maps.
+> 
+> So, the question is: won't it be fine to do the changes in the following way:
+> 
+>    * extend the preallocated hash maps to populate percpu batch counters as in v1
+>    * add a kfunc as in v2 to get the current sum
+> 
+> This works as
+> 
+>    * nobody at the moment actually requires the per-cpu statistcs
+>    * this implementation can be transparently turned into per-cpu statistics, if
+>      such a need occurs on practice (the only thing to change would be to
+>      re-implement the kfunc and, maybe, add more kfuncs to get per-cpu stats)
+>    * the "v1 way" is the least intrusive: it only affects preallocated maps, as
+>      other maps already provide the required functionality
+> 
+>    [1] https://lpc.events/event/16/contributions/1368/
+> 
+> v1 -> v2:
+> - make the counters generic part of struct bpf_map
+> - don't use map_info and /proc/self/fdinfo in favor of a kfunc
 
-> diff --git a/samples/bpf/gnu/stubs.h b/samples/bpf/gnu/stubs.h
-> index 719225b16626..cc37155fbfa5 100644
-> --- a/samples/bpf/gnu/stubs.h
-> +++ b/samples/bpf/gnu/stubs.h
-> @@ -1 +1,2 @@
-> -/* dummy .h to trick /usr/include/features.h to work with 'clang -target bpf' */
-> +/* SPDX-License-Identifier: GPL-2.0 */
+Tbh, I did like v1 approach a bit better. We are trying to bend over backwards just
+so that we don't add things to uapi, but in the end we are also adding it to the
+maps.debug, etc (yes, it has .debug in the name and all) ...
 
-Are these necessary, seeing that the files only contain this single-line
-comment?
+ > for maps can be extended to print the element count, so the user can have
+ > convenient 'cat /sys/fs/bpf/maps.debug' way to debug maps.
 
-> +/* dummy .h to trick /usr/include/features.h to work with 'clang --target=bpf' */
+... I feel with convenience access, some folks in the wild might build apps parsing
+it in the end instead of writing iterators.
 
-Other than this, the change looks good, thanks. Although it should
-probably target bpf-next rather than bpf?
+I would be curious to hear from Google and Meta folks in terms of how you observe
+map fillup or other useful map related stats in production (unless you don't watch
+out for this?), and if there is a common denominator we could come up with that
+would be really useful for all parties and thus potentially make sense for fdinfo
+or as an extensible bpf_map_info stats extension in case there is some agreement?
 
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+In our case we don't really care about exact numbers, just more around whether a
+user is scaling up their k8s cluster to the point where the previous configurations
+on sizing e.g. around LB mappings etc would hit the limits in the foreseeable future
+if they dial up further. This is exported to dashboards (e.g. grafana) for visibility
+so operators can know ahead of time.
 
+The iterator approach is okay, less convenient, but if there is indeed nothing
+common from other production users which helped map visibility over the years, then
+so be it. I thought to at least ask given we have this thread. :)
+
+Thanks,
+Daniel
 
