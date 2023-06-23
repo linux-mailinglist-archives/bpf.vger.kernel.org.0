@@ -1,146 +1,152 @@
-Return-Path: <bpf+bounces-3243-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3244-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E5A273B298
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 10:21:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF74173B2E9
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 10:51:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33B941C2105C
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 08:21:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 533981C2108A
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 08:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF9D2106;
-	Fri, 23 Jun 2023 08:21:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB79717FC;
+	Fri, 23 Jun 2023 08:50:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07C520E4
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 08:21:42 +0000 (UTC)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73C3212C
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 01:21:31 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-307d58b3efbso362775f8f.0
-        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 01:21:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687508490; x=1690100490;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6BAROl3zysUoHqWEgKlzyyXHZlcOcMgghjEDqCOgxJA=;
-        b=CWAJfwF9guGvg4j8gRv2zxdUZEaH92osCKalVeIidIVr8yudq//cvq/uWvGZ7o8I7Q
-         VTHY82jSQCPWAccWK+n+UfNRKe/Pbug7s9ZYZIrRaSSafm94kwLAp+3/eP2iIRs1JPXG
-         u9AS+ME0NKjHqYMy+TonGgUgFEGN1GZCRcGYD7g48pH6H39R2iJ0QUQuv2skCyiJuUx6
-         HEGB4hSziVCXIZqUTZYY3e175Hefdnry55zu2ZyBqWL55xsvOmF5anzpwiPpYI6M7uQw
-         v58awJny5J7hsXdaxt8LVdSpinMypTckxI75TRedxgMmf7M5l5ZUDNdkrQdqDEDNX/SI
-         4WMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687508490; x=1690100490;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6BAROl3zysUoHqWEgKlzyyXHZlcOcMgghjEDqCOgxJA=;
-        b=bVGesvBoHcQH39uORulGOoJVkQXOVU8awvpTuomUZBeTBx/P0muKp63X90XuBRvSgy
-         RSweilg8yp1/pB2nVgqTOilJ0Cu0IOaFfhc/4Hk3R2Syb5ssdM3fmaRuiIYrMV43ptA5
-         bsHhmKOQXLDTh6HUzbOxp4aPSaXkpw0EgXuv/7xLHvcH3XxmHicYytDsbswISfZoqlN/
-         EP4cMoqGGg5dVlioTMLa7NesTVdkeyYtqF6r1GWxJBpX8FVsVj7+grekgEZW03b8R99L
-         oMkhWXr/yT8DfGX9mpbbyu/71rPE/YeVBbj26xP0Cc2Gt/9eZjtV8NwJnwpV6D32EjJD
-         NhJg==
-X-Gm-Message-State: AC+VfDxv97A0v+2q5bDM+XM7I+Io5KACBsGnjno9TflrCciQm+RR9CH/
-	Xzknsb9h0+ZCpVsqihIc9CM=
-X-Google-Smtp-Source: ACHHUZ7RDLCDkXv0csxLLQzeYMIGEKl+0QfJmQ6+IaMKHRrSh9ixoE2RaK1XSmYQo5j3G2utP/Md+Q==
-X-Received: by 2002:adf:ee8f:0:b0:30a:dee7:e48e with SMTP id b15-20020adfee8f000000b0030adee7e48emr14283054wro.8.1687508489897;
-        Fri, 23 Jun 2023 01:21:29 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id t16-20020a5d4610000000b003112dbc3257sm8954960wrq.90.2023.06.23.01.21.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jun 2023 01:21:29 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 23 Jun 2023 10:21:27 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCHv2 bpf-next 07/24] libbpf: Add open_elf/close_elf functions
-Message-ID: <ZJVWB1gpRdJRPSNS@krava>
-References: <20230620083550.690426-1-jolsa@kernel.org>
- <20230620083550.690426-8-jolsa@kernel.org>
- <CAEf4BzZAVUycbMeCMjGN8Sh+sR3Fe84neU1fkt_xp0EVMQe3CA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1BA10F7
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 08:50:58 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6C31706;
+	Fri, 23 Jun 2023 01:50:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=TK9RukHDlDjrby2IyF7+J31ZsckbWp6T46JLpvbSxlc=; b=H0lw14iivXlqc3vMBLxKIMpWdT
+	typiAsoDN7KmImH7Oi2XvfY5lKgMmUz+nD/jimGt7mS2jdfoCbXxlVOhyyduIFnQ38j8h5DaWT2pN
+	zUZoepuuXx7/N5C/BTYwBcN/TO30bkdWw8Ga1r2iYkQ/Cpyr3fzW0+A/ImYy3I88C7JfYeulCg82e
+	EZ8qHOS8qOhGmRfjcrg37Xsg4rsrBcqtK7C9R1RIXuAKGWlMtLb7mz0581U12E25YG7MZAUz0lCAV
+	ni7ioufDkt4TY/9v8MT3uKCWrITVO+lnrnpEDVIPEOAABp60i1/JM7d1VnF5lx9QO4QRUaWYsML81
+	mQhPw9NQ==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qCcVF-0009Zf-Qu; Fri, 23 Jun 2023 10:50:49 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qCcVF-0007SR-6L; Fri, 23 Jun 2023 10:50:49 +0200
+Subject: Re: [PATCH bpf-next v3 1/2] net: bpf: Always call BPF cgroup filters
+ for egress.
+To: Kui-Feng Lee <sinquersw@gmail.com>, Yonghong Song <yhs@meta.com>,
+ Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org, yhs@fb.com, kpsingh@kernel.org, shuah@kernel.org,
+ john.fastabend@gmail.com, sdf@google.com, mykolal@fb.com,
+ linux-kselftest@vger.kernel.org, jolsa@kernel.org, haoluo@google.com
+Cc: Kui-Feng Lee <kuifeng@meta.com>
+References: <20230620171409.166001-1-kuifeng@meta.com>
+ <20230620171409.166001-2-kuifeng@meta.com>
+ <4d46ba3a-61e9-2482-a359-7a8805f1dbc8@meta.com>
+ <2693aaa4-eb33-553c-291c-3eb555452ea6@gmail.com>
+ <94226479-8d79-cc83-9ecf-6db0b376a7fd@meta.com>
+ <461e9be3-d533-d727-8ef9-0e20972ae0b4@iogearbox.net>
+ <e22923d0-3241-2b2e-6c9e-c41cd6c10997@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <674a12a9-3776-1637-f132-9c0bf692b18a@iogearbox.net>
+Date: Fri, 23 Jun 2023 10:50:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <e22923d0-3241-2b2e-6c9e-c41cd6c10997@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZAVUycbMeCMjGN8Sh+sR3Fe84neU1fkt_xp0EVMQe3CA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26948/Fri Jun 23 09:28:15 2023)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 22, 2023 at 05:33:33PM -0700, Andrii Nakryiko wrote:
-> On Tue, Jun 20, 2023 at 1:37 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding open_elf/close_elf functions and using it in
-> > elf_find_func_offset_from_file function. It will be
-> > used in following changes to save some code.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 62 ++++++++++++++++++++++++++++++------------
-> >  1 file changed, 44 insertions(+), 18 deletions(-)
-> >
+On 6/23/23 1:55 AM, Kui-Feng Lee wrote:
+> On 6/22/23 13:06, Daniel Borkmann wrote:
+>> On 6/22/23 8:28 PM, Yonghong Song wrote:
+>>> On 6/22/23 10:15 AM, Kui-Feng Lee wrote:
+>>>> On 6/21/23 20:37, Yonghong Song wrote:
+>>>>> On 6/20/23 10:14 AM, Kui-Feng Lee wrote:
+>>>>>> Always call BPF filters if CGROUP BPF is enabled for EGRESS without
+>>>>>> checking skb->sk against sk.
+>>>>>>
+>>>>>> The filters were called only if skb is owned by the sock that the
+>>>>>> skb is sent out through.  In another words, skb->sk should point to
+>>>>>> the sock that it is sending through its egress.  However, the filters would
+>>>>>> miss SYNACK skbs that they are owned by a request_sock but sent through
+>>>>>> the listening sock, that is the socket listening incoming connections.
+>>>>>> This is an unnecessary restrict.
+>>>>>
+>>>>> The original patch which introduced 'sk == skb->sk' is
+>>>>>    3007098494be  cgroup: add support for eBPF programs
+>>>>> There are no mentioning in commit message why 'sk == skb->sk'
+>>>>> is needed. So it is possible that this is just restricted
+>>>>> for use cases at that moment. Now there are use cases
+>>>>> where 'sk != skb->sk' so removing this check can enable
+>>>>> the new use case. Maybe you can add this into your commit
+>>>>> message so people can understand the history of 'sk == skb->sk'.
+>>>>
+>>>> After checking the code and the Alexei's comment[1] again, this check
+>>>> may be different from what I thought. In another post[2],
+>>>> Daniel Borkmann mentioned
+>>>>
+>>>>      Wouldn't that mean however, when you go through stacked devices that
+>>>>      you'd run the same eBPF cgroup program for skb->sk multiple times?
+>>>>
+>>>> I read this paragraph several times.
+>>>> This check ensures the filters are only called for the device on
+>>>> the top of a stack.  So, I probably should change the check to
+>>>>
+>>>>      sk == skb_to_full_sk(skb)
+>>>
+>>> I think this should work. It exactly covers your use case:
+>>>    they are owned by a request_sock but sent through
+>>>    the listening sock, that is the socket listening incoming connections
+>>> and sk == skb->sk for non request_sock/listening_sock case.
+>>
+>> Just a thought, should the test look like the below?
+>>
+>>          int __ret = 0;                                                         \
+>>          if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk) {                    \
+>>                  typeof(sk) __sk = sk_to_full_sk(sk);                           \
+>>                  if (sk_fullsock(__sk) && __sk == skb_to_full_sk(skb) &&        \
+>>                      cgroup_bpf_sock_enabled(__sk, CGROUP_INET_EGRESS))         \
+>>                          __ret = __cgroup_bpf_run_filter_skb(__sk, skb,         \
+>> CGROUP_INET_EGRESS); \
+>> }                                                                      \
+>>
+>> Iow, we do already convert __sk to full sk, so we should then also use that
+>> for the test with skb_to_full_sk(skb).
 > 
-> we should definitely move all this into separate elf.c file
+> Agree!
 
-right, also we could use this in usdt_manager_attach_usdt as well
+It would also be useful to do an in-depth analysis for the commit msg in which
+cases the sk == skb->sk matches and sk was not a full sock (but __sk is) given
+the __sk = sk_to_full_sk(sk) exists in the code to document which situation this
+is covering in the existing code (... perhaps it used to work back then for
+synack just that later changes altered it without anyone noticing until now).
 
-
-> 
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index cdac368c7ce1..30d9e3b69114 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -10927,6 +10927,45 @@ static struct elf_symbol *elf_symbol_iter_next(struct elf_symbol_iter *iter)
-> >         return ret;
-> >  }
-> >
-> > +struct elf_fd {
-> > +       Elf *elf;
-> > +       int fd;
-> > +};
-> > +
-> > +static int open_elf(const char *binary_path, struct elf_fd *elf_fd)
-> > +{
-> > +       char errmsg[STRERR_BUFSIZE];
-> > +       int fd, ret;
-> > +       Elf *elf;
-> > +
-> > +       if (elf_version(EV_CURRENT) == EV_NONE) {
-> > +               pr_warn("failed to init libelf for %s\n", binary_path);
-> > +               return -LIBBPF_ERRNO__LIBELF;
-> > +       }
-> > +       fd = open(binary_path, O_RDONLY | O_CLOEXEC);
-> > +       if (fd < 0) {
-> > +               ret = -errno;
-> > +               pr_warn("failed to open %s: %s\n", binary_path,
-> > +                       libbpf_strerror_r(ret, errmsg, sizeof(errmsg)));
-> 
-> let's add "elf: " prefix for consistency?
-
-ok
-
-jirka
+Thanks,
+Daniel
 
