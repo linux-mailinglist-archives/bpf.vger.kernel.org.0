@@ -1,168 +1,310 @@
-Return-Path: <bpf+bounces-3317-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3318-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D630373C187
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 22:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 20A3473C235
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 23:13:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9F9E1C2128D
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 20:54:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44B4F1C20EBF
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 21:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A204D12B65;
-	Fri, 23 Jun 2023 20:54:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064BB134DA;
+	Fri, 23 Jun 2023 21:13:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D59F101E7
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 20:54:16 +0000 (UTC)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AD4E41
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 13:54:12 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3f8fb0e7709so13226065e9.2
-        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 13:54:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687553650; x=1690145650;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qblkJCdJtTY+YbYPS+1fbTmV0LVbHLIkG3ECD0+fNRE=;
-        b=gOTvo8ytC4mZ8R0mg7CjeNQaNLDIyBMsxO7UTYonX+o2gPftV0zfok3/gXytPQ72kS
-         o84l2/YGdRE4aWbIUQ2yqvcGPPmNpP314NhDXEF8q/q5QbBte+dOTINhl0kl0j2rGb89
-         VE/uhlWXqUcc313sUzAITsSxsdRxD6VymDhxxBo7WV7m10os/sdlen4HzyDvBNmi1Ytl
-         i2Ut1SIhzer4Jle7PzVV7/PnNLPvSpQ02AtYazedwgnHWpErrEX2QF5psJ/16KlsnG/O
-         +NZh0V7ejgxFAl2VLg1NO/XdNZUG3dBWXHb+COr7Ln1PxO0pGDKYHNoTTO6QtnZMqNjw
-         n4CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687553650; x=1690145650;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qblkJCdJtTY+YbYPS+1fbTmV0LVbHLIkG3ECD0+fNRE=;
-        b=fwMhkOgxGWmNrS/kHgz/jeYkiRzxrm0HP0rv5aRQyXNhPQJgxNXuYWth48zXslB7ST
-         +UY8ovA/aVUsPR36HxYO48vVTkgyGCPX++JGTcobPnqgHIWDtSC4yaEnXARYEdcuuTyO
-         CnYtgG5KRqWdAn3+D5lbGeII4xGUuDLArTbxbYvF7knngNn5pPm4LNKZZ8flaW86ujYp
-         DHgcrT8RC+iiPURD9hGTJtEj1z2NTowAak2RaaKjgWy757GgbGQIJ0hh/jWtWrh81lH+
-         RVHqFhij6Sb0ASP9P8mlgv93w8UfOFW9wyrjEXNA2veGnWl5aeo5EACrwKAloecKcP58
-         AXyQ==
-X-Gm-Message-State: AC+VfDy4Jgst+kbGiuN9EM+8EucXXGosQz37nVAxgw5QfVdCMoOwqHHL
-	iMzcyVZPhtaEdiGShHMZejJ26r1ud3018LQKx9wPh3izPho=
-X-Google-Smtp-Source: ACHHUZ7S4YS5F7wFDF+1QXJ23X3GmHCeNSHQYS9ep6weDiA/caf8ZcCS7LKk7msnwyXVpraNRCd8kM/gtsPI0eTbdMQ=
-X-Received: by 2002:a7b:c017:0:b0:3f7:aad8:4e05 with SMTP id
- c23-20020a7bc017000000b003f7aad84e05mr17621680wmb.11.1687553650317; Fri, 23
- Jun 2023 13:54:10 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95420134A0;
+	Fri, 23 Jun 2023 21:13:02 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361C483;
+	Fri, 23 Jun 2023 14:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=iM6XiYzcOvYvmJY1x36fh/FcKP0wY71gqcBtL3f0WTI=; b=jaTled3nUisRZQ7NLYEC62IV21
+	7Wr0puaAB7QlUmAh/bP3h4gl8qqfvJouQ/oL0eQd/vBnNlu645gMB7XmnLS+81x6835L4FFeubo6E
+	a3hD0Fd3mN5+gvzaGsuzaUK696RYWu3H4bgdqJMhP3ik/p1bYOebrEve+ZeKCp+yI88EgvalCoLAd
+	XqLRC6uixlLiKTThIwrAuuA5wQ7qhhUHMj95JwuSlZeWkXF+Ge4VmdFYji76I5jSe5/PVvIMQWUe2
+	uYeS43nAn1O7wm3B1QZ97CpD5KiImca9ZFXdGgpylkOmMv71SKD3ZVk8+xXWBcRb02b4xy5AASOu9
+	Ddk1wJZg==;
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qCo5R-0002ef-6C; Fri, 23 Jun 2023 23:12:57 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: davem@davemloft.net
+Cc: kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: pull-request: bpf-next 2023-06-23
+Date: Fri, 23 Jun 2023 23:12:56 +0200
+Message-Id: <20230623211256.8409-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAGQdkDvYU_e=_NX+6DRkL_-TeH3p+QtsdZwHkmH0w3Fuzw0C4w@mail.gmail.com>
-In-Reply-To: <CAGQdkDvYU_e=_NX+6DRkL_-TeH3p+QtsdZwHkmH0w3Fuzw0C4w@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 23 Jun 2023 13:53:58 -0700
-Message-ID: <CAEf4BzZWWjhrpGpbkU+qy5+ZoPVDHnhp9grQcFoxf11B9Lq1Ow@mail.gmail.com>
-Subject: Re: [QUESTION] Check weird behavior with CO-RE relocations
-To: andrea terzolo <andreaterzolo3@gmail.com>, Alexei Starovoitov <ast@kernel.org>
-Cc: bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26948/Fri Jun 23 09:28:15 2023)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 21, 2023 at 3:51=E2=80=AFAM andrea terzolo <andreaterzolo3@gmai=
-l.com> wrote:
->
-> Hi all!
->
-> Recently I faced a strange issue with CO-RE relocations and the
-> required privileged to run our eBPF probe. In Falco, we try to support
-> a vast range of kernel versions and distros, so to support COS systems
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-what's COS?
+The following pull-request contains BPF updates for your *net-next* tree.
 
-> we added this custom patch [0]. More in detail:
->
-> if(...)
-> {
-> }
-> else
-> {
->     struct task_struct___cos *task_cos =3D (void *)task;
->
->     if(bpf_core_field_exists(task_cos->audit->loginuid))
+We've added 49 non-merge commits during the last 24 day(s) which contain
+a total of 70 files changed, 1935 insertions(+), 442 deletions(-).
 
-unrelated to your issue, but I think you are misusing
-bpf_core_field_exists() here. You should only have one arrow in the
-field expression (i.e., no extra pointer dereferences except). Or
-better use the form bpf_core_field_exists(struct task_struct___cos,
-audit). As you wrote it, it might be checking only existence of
-loginuid inside typeof(task_cos->audit), but it doesn't check that
-task_struct has audit field.
+The main changes are:
 
->     {
->         BPF_CORE_READ_INTO(loginuid, task_cos, audit, loginuid.val);
->     }
-> }
->
-> The issue is that now when running on not-COS systems we face this
-> error when using only `CAP_BPF` and `CAP_PERFMON` capabilities:
->
-> libbpf: failed to iterate BTF objects: -1
-> libbpf: prog 't1_execve_x': relo #791: target candidate search failed
-> for [1238] struct audit_task_info: -1
-> libbpf: prog 't1_execve_x': relo #791: failed to relocate: -1
-> libbpf: failed to perform CO-RE relocations: -1
-> libbpf: failed to load object 'bpf_probe'
-> libbpf: failed to load BPF skeleton 'bpf_probe': -1
->
-> If we use CAP_SYS_ADMIN all seems to work fine. The issue seems
-> related to the fact that during the relocation libbpf is not able
-> to find `audit_task_info` in the running kernel BTF, since we are not
-> running on COS system, and for this reason, it searches for it in
-> modules BTF, but in order to do that we need CAP_SYS_ADMIN[1].
-> Is this the intended behavior?
+1) Extend bpf_fib_lookup helper to allow passing the route table ID, from Louis DeLosSantos.
 
-Not really, though it is unfortunate that we need CAP_SYS_ADMIN just
-to find kernel module's BTF. cc Alexei, maybe we can relax some rules
-at least for BTFs?
+2) Fix regsafe() in verifier to call check_ids() for scalar registers, from Eduard Zingerman.
 
-> If we want to support specific kernel structs like `audit_task_info`
-> do we need to run with CAP_SYS_ADMIN always enabled?
-> Is there a way to disable BTF module search with libbpf?
+3) Extend the set of cpumask kfuncs with bpf_cpumask_first_and() and a rework of
+   bpf_cpumask_any*() kfuncs. Additionally, add selftests, from David Vernet.
 
-We should probably just say that if CAP_SYS_ADMIN is not granted, we
-can't relocate against kernel module BTFs.
+4) Fix socket lookup BPF helpers for tc/XDP to respect VRF bindings, from Gilad Sever.
 
-In load_module_btfs(), just add an extra check after
-bpf_btf_get_next_id() for -EPERM. Would you like to submit a fix?
+5) Change bpf_link_put() to use workqueue unconditionally to fix it under PREEMPT_RT,
+   from Sebastian Andrzej Siewior.
 
->
-> Side point:
-> Not sure this is the right place to report it but it seems that some
-> COS versions ([2]) backported something wrong: they backported the
-> `BPF_FUNC_ktime_get_coarse_ns` bpf helper but not the memcg-based
-> memory accounting. For this reason, libbpf doesn't bump the
-> RLIMIT_MEMLOCK supposing that the system uses a  memcg-based memory
-> accounting and so we face the same error reported here [3]
+6) Follow-ups to address issues in the bpf_refcount shared ownership implementation,
+   from Dave Marchevsky.
 
-this feature detection gap is a known issue, unfortunately. There is
-no nice way to detect the need for memcg-based accounting,
-unfortunately. You'll have to bump RLIMI_MEMLOCK yourself, sorry.
+7) A few general refactorings to BPF map and program creation permissions checks which
+   were part of the BPF token series, from Andrii Nakryiko.
 
+8) Various fixes for benchmark framework and add a new benchmark for BPF memory
+   allocator to BPF selftests, from Hou Tao.
 
->
-> [0]: https://github.com/falcosecurity/libs/pull/1062
-> [1]: https://github.com/torvalds/linux/blob/692b7dc87ca6d55ab254f8259e6f9=
-70171dc9d01/kernel/bpf/syscall.c#L3704
-> [2]: https://github.com/falcosecurity/falco/issues/2626
-> [3]: https://lore.kernel.org/netdev/20220610112648.29695-1-quentin@isoval=
-ent.com/T/
->
+9) Documentation improvements around iterators and trusted pointers, from Anton Protopopov.
+
+10) Small cleanup in verifier to improve allocated object check, from Daniel T. Lee.
+
+11) Improve performance of bpf_xdp_pointer() by avoiding access to shared_info when
+    XDP packet does not have frags, from Jesper Dangaard Brouer.
+
+12) Silence a harmless syzbot-reported warning in btf_type_id_size(), from Yonghong Song.
+
+13) Remove duplicate bpfilter_umh_cleanup in favor of umd_cleanup_helper, from Jarkko Sakkinen.
+
+14) Fix BPF selftests build for resolve_btfids under custom HOSTCFLAGS, from Viktor Malik.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Andrii Nakryiko, Dan Carpenter, Eyal Birger, Jiri Olsa, Kees Cook, 
+kernel test robot, Kumar Kartikeya Dwivedi, Lorenzo Bianconi, Maciej 
+Fijalkowski, Shmulik Ladkani, Simon Horman, Stanislav Fomichev, Tariq 
+Toukan, Toke Høiland-Jørgensen, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit bc590b47549225a03c6b36bbc1aede75c917767b:
+
+  r8169: check for PCI read error in probe (2023-05-30 13:14:53 +0200)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
+
+for you to fetch changes up to fbc5669de62a452fb3a26a4560668637d5c9e7b5:
+
+  bpf, docs: Document existing macros instead of deprecated (2023-06-22 19:47:32 +0200)
+
+----------------------------------------------------------------
+bpf-next-for-netdev
+
+----------------------------------------------------------------
+Andrii Nakryiko (5):
+      Merge branch 'verify scalar ids mapping in regsafe()'
+      bpf: Move unprivileged checks into map_create() and bpf_prog_load()
+      bpf: Inline map creation logic in map_create() function
+      bpf: Centralize permissions checks for all BPF map types
+      bpf: Keep BPF_PROG_LOAD permission checks clear of validations
+
+Anton Protopopov (2):
+      bpf, docs: BPF Iterator Document
+      bpf, docs: Document existing macros instead of deprecated
+
+Arnd Bergmann (1):
+      bpf: Hide unused bpf_patch_call_args
+
+Azeem Shaikh (1):
+      bpf: Replace all non-returning strlcpy with strscpy
+
+Daniel T. Lee (1):
+      bpf: Replace open code with for allocated object check
+
+Dave Marchevsky (3):
+      bpf: Set kptr_struct_meta for node param to list and rbtree insert funcs
+      bpf: Fix __bpf_{list,rbtree}_add's beginning-of-node calculation
+      bpf: Make bpf_refcount_acquire fallible for non-owning refs
+
+David Vernet (8):
+      bpf: Teach verifier that trusted PTR_TO_BTF_ID pointers are non-NULL
+      selftests/bpf: Add test for non-NULLable PTR_TO_BTF_IDs
+      selftests/bpf: Add missing selftests kconfig options
+      bpf: Add bpf_cpumask_first_and() kfunc
+      selftests/bpf: Add test for new bpf_cpumask_first_and() kfunc
+      bpf: Replace bpf_cpumask_any* with bpf_cpumask_any_distribute*
+      selftests/bpf: Update bpf_cpumask_any* tests to use bpf_cpumask_any_distribute*
+      bpf/docs: Update documentation for new cpumask kfuncs
+
+Eduard Zingerman (5):
+      selftests/bpf: Fix invalid pointer check in get_xlated_program()
+      bpf: Use scalar ids in mark_chain_precision()
+      selftests/bpf: Check if mark_chain_precision() follows scalar ids
+      bpf: Verify scalar ids mapping in regsafe() using check_ids()
+      selftests/bpf: Verify that check_ids() is used for scalars in regsafe()
+
+Gilad Sever (4):
+      bpf: Factor out socket lookup functions for the TC hookpoint.
+      bpf: Call __bpf_sk_lookup()/__bpf_skc_lookup() directly via TC hookpoint
+      bpf: Fix bpf socket lookup from tc/xdp to respect socket VRF bindings
+      selftests/bpf: Add vrf_socket_lookup tests
+
+Hou Tao (5):
+      bpf: Factor out a common helper free_all()
+      selftests/bpf: Use producer_cnt to allocate local counter array
+      selftests/bpf: Output the correct error code for pthread APIs
+      selftests/bpf: Ensure that next_cpu() returns a valid CPU number
+      selftests/bpf: Set the default value of consumer_cnt as 0
+
+Jarkko Sakkinen (1):
+      net: Use umd_cleanup_helper()
+
+Jesper Dangaard Brouer (3):
+      samples/bpf: xdp1 and xdp2 reduce XDPBUFSIZE to 60
+      bpf/xdp: optimize bpf_xdp_pointer to avoid reading sinfo
+      selftests/bpf: Fix check_mtu using wrong variable type
+
+Jiri Olsa (1):
+      selftests/bpf: Add missing prototypes for several test kfuncs
+
+Louis DeLosSantos (2):
+      bpf: Add table ID to bpf_fib_lookup BPF helper
+      selftests/bpf: Test table ID fib lookup BPF helper
+
+Ruiqi Gong (1):
+      bpf: Cleanup unused function declaration
+
+Sebastian Andrzej Siewior (1):
+      bpf: Remove in_atomic() from bpf_link_put().
+
+Su Hui (1):
+      bpf/tests: Use struct_size()
+
+Viktor Malik (1):
+      tools/resolve_btfids: Fix setting HOSTCFLAGS
+
+Yonghong Song (3):
+      bpf: Silence a warning in btf_type_id_size()
+      selftests/bpf: Add a test where map key_type_id with decl_tag type
+      selftests/bpf: Fix compilation failure for prog vrf_socket_lookup
+
+YueHaibing (1):
+      xsk: Remove unused inline function xsk_buff_discard()
+
+ Documentation/bpf/bpf_iterators.rst                |   7 +-
+ Documentation/bpf/cpumasks.rst                     |   5 +-
+ Documentation/bpf/kfuncs.rst                       |  38 +-
+ include/linux/bpf_verifier.h                       |  25 +-
+ include/linux/bpfilter.h                           |   1 -
+ include/linux/filter.h                             |   1 -
+ include/linux/netdevice.h                          |   9 +
+ include/net/xdp_sock_drv.h                         |   4 -
+ include/uapi/linux/bpf.h                           |  21 +-
+ kernel/bpf/bloom_filter.c                          |   3 -
+ kernel/bpf/bpf_local_storage.c                     |   3 -
+ kernel/bpf/bpf_struct_ops.c                        |   3 -
+ kernel/bpf/btf.c                                   |  19 +-
+ kernel/bpf/core.c                                  |   8 +-
+ kernel/bpf/cpumap.c                                |   4 -
+ kernel/bpf/cpumask.c                               |  38 +-
+ kernel/bpf/devmap.c                                |   3 -
+ kernel/bpf/hashtab.c                               |   6 -
+ kernel/bpf/helpers.c                               |  12 +-
+ kernel/bpf/lpm_trie.c                              |   3 -
+ kernel/bpf/memalloc.c                              |  31 +-
+ kernel/bpf/preload/bpf_preload_kern.c              |   4 +-
+ kernel/bpf/queue_stack_maps.c                      |   4 -
+ kernel/bpf/reuseport_array.c                       |   3 -
+ kernel/bpf/stackmap.c                              |   3 -
+ kernel/bpf/syscall.c                               | 184 +++---
+ kernel/bpf/verifier.c                              | 248 ++++++--
+ lib/test_bpf.c                                     |   3 +-
+ net/bpfilter/bpfilter_kern.c                       |   2 +-
+ net/core/filter.c                                  | 147 ++++-
+ net/core/sock_map.c                                |   4 -
+ net/ipv4/bpfilter/sockopt.c                        |  11 +-
+ net/xdp/xskmap.c                                   |   4 -
+ samples/bpf/xdp1_kern.c                            |   2 +-
+ samples/bpf/xdp2_kern.c                            |   2 +-
+ tools/bpf/resolve_btfids/Makefile                  |   4 +-
+ tools/include/uapi/linux/bpf.h                     |  21 +-
+ tools/testing/selftests/bpf/bench.c                |  15 +-
+ tools/testing/selftests/bpf/bench.h                |   1 +
+ .../selftests/bpf/benchs/bench_bloom_filter_map.c  |  14 +-
+ .../bpf/benchs/bench_bpf_hashmap_full_update.c     |  10 +-
+ .../bpf/benchs/bench_bpf_hashmap_lookup.c          |  10 +-
+ .../testing/selftests/bpf/benchs/bench_bpf_loop.c  |  10 +-
+ tools/testing/selftests/bpf/benchs/bench_count.c   |  14 +-
+ .../selftests/bpf/benchs/bench_local_storage.c     |  12 +-
+ .../bpf/benchs/bench_local_storage_create.c        |   8 +-
+ .../benchs/bench_local_storage_rcu_tasks_trace.c   |  10 +-
+ tools/testing/selftests/bpf/benchs/bench_rename.c  |  15 +-
+ .../testing/selftests/bpf/benchs/bench_ringbufs.c  |   2 +-
+ tools/testing/selftests/bpf/benchs/bench_strncmp.c |  11 +-
+ tools/testing/selftests/bpf/benchs/bench_trigger.c |  21 +-
+ .../selftests/bpf/benchs/run_bench_ringbufs.sh     |  26 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c        |  16 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h  |   7 +
+ tools/testing/selftests/bpf/config                 |   4 +
+ tools/testing/selftests/bpf/prog_tests/btf.c       |  40 ++
+ tools/testing/selftests/bpf/prog_tests/check_mtu.c |   2 +-
+ tools/testing/selftests/bpf/prog_tests/cpumask.c   |   2 +
+ .../testing/selftests/bpf/prog_tests/fib_lookup.c  |  61 +-
+ .../selftests/bpf/prog_tests/unpriv_bpf_disabled.c |   6 +-
+ tools/testing/selftests/bpf/prog_tests/verifier.c  |   2 +
+ .../selftests/bpf/prog_tests/vrf_socket_lookup.c   | 312 ++++++++++
+ tools/testing/selftests/bpf/progs/cpumask_common.h |   6 +-
+ .../testing/selftests/bpf/progs/cpumask_success.c  |  64 +-
+ .../testing/selftests/bpf/progs/refcounted_kptr.c  |   2 +
+ .../selftests/bpf/progs/refcounted_kptr_fail.c     |   4 +-
+ .../selftests/bpf/progs/verifier_scalar_ids.c      | 659 +++++++++++++++++++++
+ .../selftests/bpf/progs/vrf_socket_lookup.c        |  89 +++
+ tools/testing/selftests/bpf/test_verifier.c        |  24 +-
+ tools/testing/selftests/bpf/verifier/precise.c     |   8 +-
+ 70 files changed, 1935 insertions(+), 442 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/vrf_socket_lookup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
+ create mode 100644 tools/testing/selftests/bpf/progs/vrf_socket_lookup.c
 
