@@ -1,111 +1,170 @@
-Return-Path: <bpf+bounces-3251-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3252-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92AE973B5BA
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 12:51:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F3A673B5E1
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 13:11:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76FD81C210FA
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 10:51:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8348281674
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 11:11:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07DAF1FCF;
-	Fri, 23 Jun 2023 10:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 083FB1FCF;
+	Fri, 23 Jun 2023 11:11:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD6515A2
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 10:51:36 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B23BE6D
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 03:51:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=uLLQLrsnWHwVZLaK3hn9mldZ0h1G4OW4xAx9lT6pycQ=; b=im2E+IulJBy++GaciBixgw/BNM
-	9eiUKCp7r79bP27chWIR2Ycdu2BEIO3CB1DE4xyZu73RpJkOhMRHc4XCYk0o6rRmqXI8ub0J46opj
-	Qw3crsO+OFTyb5rV43j3veXYlYoXoghczSbKx4Y+mMo/gXXGttZHQ8IJFGRNCrANaQlcdlCoxiJgT
-	LESiGNY64ztq/o1217FKeu1/pelb9nlsMQ21i7jH+A09WpKFrLq7o1mXD8X4Xm+Yi+X/n64LBegAL
-	A2IYWrObR5fXEfN51fCIAV97+MDTkXoeUG8BBxf7rGHKhaxxjlgczVISGuEwJW8fwMBLIJjr1S6Ya
-	UIi4Kicg==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qCeNu-000JmS-HM; Fri, 23 Jun 2023 12:51:22 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qCeNu-000DqF-3G; Fri, 23 Jun 2023 12:51:22 +0200
-Subject: Re: [RFC v2 PATCH bpf-next 1/4] bpf: add percpu stats for bpf_map
- elements insertions/deletions
-To: Anton Protopopov <aspsk@isovalent.com>,
- Alexei Starovoitov <ast@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-References: <20230622095330.1023453-1-aspsk@isovalent.com>
- <20230622095330.1023453-2-aspsk@isovalent.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8e18e99d-afca-8afd-6777-c9d0b728baf5@iogearbox.net>
-Date: Fri, 23 Jun 2023 12:51:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB2E33D6A
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 11:11:43 +0000 (UTC)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB26510F6;
+	Fri, 23 Jun 2023 04:11:41 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4f973035d60so494415e87.3;
+        Fri, 23 Jun 2023 04:11:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687518700; x=1690110700;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=do2bpdVMJ85bRb47mVgKbZvqePYWno5Te4+1xoLO+cA=;
+        b=rAxKMbv6GqbOHjUiDS8dFT6/c0ePaFssDunkFQr3S5e+t+4F35gxilj77Tk8q7MQkC
+         e4Dep24F5Yy6ZmT2PDgYXix7AYefI8wsJ0p5iJvAvLqqR84cl94I1Lhge5eTQFf63Dyr
+         eK1vz+ynecIclLPAxSchNaK0fmn7s9kFllsgtIRYRz/V8eFqa238MQmiU10FZQtmd9Ql
+         8gOEsXyC6PBQzEvNTHvVf8RU3muJKRG5QCiccxPP2OhdQXwrMDBs7mJFzkmkBDdkQcBK
+         AcI6haW9a49UHk1qmsxk/7vEGA1G7Y+HD5D8DGtpih0IzR2Df1A0oJEyiKFGXDPrJbFq
+         iVOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687518700; x=1690110700;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=do2bpdVMJ85bRb47mVgKbZvqePYWno5Te4+1xoLO+cA=;
+        b=Zazk28F+R6v0VbnyEbvtoo9uZs1oLZPEDGEOOADJMZmp6BNwgMfAhhs9s6N97/3Zuh
+         d5ePPJutfbvRp0L1GVs+oFBoLEV5mE7dBy3jWzqCNrMUfTVPTJ7SlwLtyMSkISLU57eU
+         yoiUrdpZccrRBBt9qOJIbsiqfxhloiq880BKof4s+GO3GGCo1wyzU97/rfJwGSuIij+8
+         mCuu1fo6jkz+ggT9gdU0x/KfAfsharjCB0YRuJaQuonjAzdK4Qj5ugmdTGTGp/yi/qJg
+         lLbeCMfWRelxB9IWUTjucL5HnzgvXyaA2b7zBE6lCbhL536hr2HIGWehuyXgDYmUkqt9
+         KUAA==
+X-Gm-Message-State: AC+VfDwBvKfh/j6+J48FchWvTu0b2CILxVsbP1F/aC3r/v/OIK0hQtsP
+	2cgUr2vfK7721ZW1ZqIin7/UXHhG38I=
+X-Google-Smtp-Source: ACHHUZ4803QgZmjT5Dlbvcvt9KwmbS0zzuCrnTbJO0AFMNORcAcWIN2QouoqCxwoMM/Mg4OTgZGMyQ==
+X-Received: by 2002:a19:ab11:0:b0:4f8:7614:48a5 with SMTP id u17-20020a19ab11000000b004f8761448a5mr7273219lfe.66.1687518699691;
+        Fri, 23 Jun 2023 04:11:39 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id c14-20020a7bc84e000000b003f8126bcf34sm2009848wml.48.2023.06.23.04.11.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jun 2023 04:11:38 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 23 Jun 2023 13:11:36 +0200
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] fprobe: Release rethook after the ftrace_ops is
+ unregistered
+Message-ID: <ZJV96BqF8EAXAOOd@krava>
+References: <20230615115236.3476617-1-jolsa@kernel.org>
+ <20230615085920.7dadac74@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230622095330.1023453-2-aspsk@isovalent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26948/Fri Jun 23 09:28:15 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230615085920.7dadac74@gandalf.local.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 6/22/23 11:53 AM, Anton Protopopov wrote:
-> Add a generic percpu stats for bpf_map elements insertions/deletions in order
-> to keep track of both, the current (approximate) number of elements in a map
-> and per-cpu statistics on update/delete operations.
+On Thu, Jun 15, 2023 at 08:59:20AM -0400, Steven Rostedt wrote:
 > 
-> To expose these stats a particular map implementation should initialize the
-> counter and adjust it as needed using the 'bpf_map_*_elements_counter' helpers
-> provided by this commit. The counter can be read by an iterator program.
+> Masami,
 > 
-> A bpf_map_sum_elements_counter kfunc was added to simplify getting the sum of
-> the per-cpu values. If a map doesn't implement the counter, then it will always
-> return 0.
-> 
-> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> ---
->   include/linux/bpf.h   | 30 +++++++++++++++++++++++++++
->   kernel/bpf/map_iter.c | 48 ++++++++++++++++++++++++++++++++++++++++++-
->   2 files changed, 77 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index f58895830ada..20292a096188 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -275,6 +275,7 @@ struct bpf_map {
->   	} owner;
->   	bool bypass_spec_v1;
->   	bool frozen; /* write-once; write-protected by freeze_mutex */
-> +	s64 __percpu *elements_count;
+> Want to take this via your probes/urgent branch and send it off to Linus?
 
-To avoid corruption on 32 bit archs, should we convert this into local64_t here?
+hi,
+did this one make it into some tree?
+
+thanks,
+jirka
+
+
+> 
+> -- Steve
+> 
+> 
+> On Thu, 15 Jun 2023 13:52:36 +0200
+> Jiri Olsa <jolsa@kernel.org> wrote:
+> 
+> > While running bpf selftests it's possible to get following fault:
+> > 
+> >   general protection fault, probably for non-canonical address \
+> >   0x6b6b6b6b6b6b6b6b: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC NOPTI
+> >   ...
+> >   Call Trace:
+> >    <TASK>
+> >    fprobe_handler+0xc1/0x270
+> >    ? __pfx_bpf_testmod_init+0x10/0x10
+> >    ? __pfx_bpf_testmod_init+0x10/0x10
+> >    ? bpf_fentry_test1+0x5/0x10
+> >    ? bpf_fentry_test1+0x5/0x10
+> >    ? bpf_testmod_init+0x22/0x80
+> >    ? do_one_initcall+0x63/0x2e0
+> >    ? rcu_is_watching+0xd/0x40
+> >    ? kmalloc_trace+0xaf/0xc0
+> >    ? do_init_module+0x60/0x250
+> >    ? __do_sys_finit_module+0xac/0x120
+> >    ? do_syscall_64+0x37/0x90
+> >    ? entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> >    </TASK>
+> > 
+> > In unregister_fprobe function we can't release fp->rethook while it's
+> > possible there are some of its users still running on another cpu.
+> > 
+> > Moving rethook_free call after fp->ops is unregistered with
+> > unregister_ftrace_function call.
+> > 
+> > Fixes: 5b0ab78998e3 ("fprobe: Add exit_handler support")
+> > Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/trace/fprobe.c | 12 +++---------
+> >  1 file changed, 3 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> > index 18d36842faf5..0121e8c0d54e 100644
+> > --- a/kernel/trace/fprobe.c
+> > +++ b/kernel/trace/fprobe.c
+> > @@ -364,19 +364,13 @@ int unregister_fprobe(struct fprobe *fp)
+> >  		    fp->ops.saved_func != fprobe_kprobe_handler))
+> >  		return -EINVAL;
+> >  
+> > -	/*
+> > -	 * rethook_free() starts disabling the rethook, but the rethook handlers
+> > -	 * may be running on other processors at this point. To make sure that all
+> > -	 * current running handlers are finished, call unregister_ftrace_function()
+> > -	 * after this.
+> > -	 */
+> > -	if (fp->rethook)
+> > -		rethook_free(fp->rethook);
+> > -
+> >  	ret = unregister_ftrace_function(&fp->ops);
+> >  	if (ret < 0)
+> >  		return ret;
+> >  
+> > +	if (fp->rethook)
+> > +		rethook_free(fp->rethook);
+> > +
+> >  	ftrace_free_filter(&fp->ops);
+> >  
+> >  	return ret;
+> 
 
