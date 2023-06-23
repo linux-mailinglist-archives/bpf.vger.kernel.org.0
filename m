@@ -1,186 +1,143 @@
-Return-Path: <bpf+bounces-3237-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3238-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E5F373B080
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 08:02:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78D2073B245
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 10:02:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73FB61C20E36
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 06:02:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8C571C21088
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 08:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F271382;
-	Fri, 23 Jun 2023 06:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F4F1C2D;
+	Fri, 23 Jun 2023 08:02:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF284A3B;
-	Fri, 23 Jun 2023 06:02:21 +0000 (UTC)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67CDE46;
-	Thu, 22 Jun 2023 23:02:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1687500139; x=1719036139;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Vodh8wAG7sJf3qs+Aw5XI9b3gtoEQcZ37TMv9wZhJAw=;
-  b=IqM+zcJFVp8xZ91p74L4XTdCccCnLhdRaa2TYYwNE2TSLCkn8oJFmqts
-   nYgIlK3JOnO72GwZ19On6Yh5/+josU/pVDidt4P31dLQlFvwbuBEfmbpQ
-   oxGuOnHeiRxodsluBP9uFawVUwFg1XiOlcR7I32q7wRPFZp6bmSpdXEbM
-   K8UbueXeG1bIDGC+QIaU1PT36Ny7yj/zgjWs9hL/UbmoIlvPNWlT0DneY
-   2MmkeaNlrZvQj0SNwBPzEaWyJ1HAMUOfw/L4sJtyJMKHE9mjkVUfLc09P
-   2ufRjEYkViC28jevmE63Bo3BhAdi5qzPLLkytCFV0nEqpqpCIAmy2gocZ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10749"; a="390612532"
-X-IronPort-AV: E=Sophos;i="6.01,151,1684825200"; 
-   d="scan'208";a="390612532"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2023 23:02:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10749"; a="828253855"
-X-IronPort-AV: E=Sophos;i="6.01,151,1684825200"; 
-   d="scan'208";a="828253855"
-Received: from choongyo-mobl.gar.corp.intel.com (HELO [10.215.253.116]) ([10.215.253.116])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2023 23:02:06 -0700
-Message-ID: <20b1302a-a437-bd66-e7a4-0224875488f2@linux.intel.com>
-Date: Fri, 23 Jun 2023 14:02:04 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D754B17D3
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 08:02:06 +0000 (UTC)
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FF81FE3
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 01:02:01 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b4790ff688so5992141fa.1
+        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 01:02:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687507320; x=1690099320;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8kOL7IZpJlvvWQ/5Wx9fFtB+uPjTzhg6rgZdpESupZI=;
+        b=ByIlM2hvDTlKf1af2Qy5rYr9Q6vzUbFX0r0rUjme0ExxI2q2zf+ZhhFPI6RPcEXNeh
+         9i7HH/BOtI5fLXA1rQKQYO/d8gIh7n2Rr7JW+VuW4+8a+WxMAinBzS0dm+a/FsGHspyh
+         yjKXorT3X0wdkRGF2Yy6OxVcRzCS0+ysjasKaSeh+lsNdiz9WnfjFTMsw8o/MdE+diwv
+         awTJxEcWZWKeR1x3ISSQ9rowSxdtam7CAv5eOKVpdaCrVSO5nTgKY6dl9I33FUKo4Pfc
+         vt5RCKl7OcDUaG08trlxUm7VgunDeGkdyjg7DJTTNJZKh63n/K65qJjbcA3Z4qy67mTa
+         2VTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687507320; x=1690099320;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8kOL7IZpJlvvWQ/5Wx9fFtB+uPjTzhg6rgZdpESupZI=;
+        b=Z9cfTYFK7X/SXHYZAv8EoMIz617zcDT0kWzRuy854l4/SDvSHGPL2TV54h1GEukePG
+         jZ3K9sKXQ0QOQvKLAYuy0/rigvy8vAvnserFLEElKTIdlU+f2uDHIfg1RyEpKeCVwgQy
+         Ut90vm55RnC+N5edY7Ea6TOGRDYhNh37H9LEqYfQib5nK36VJXX3UEEi8Yf/VvwKg1nD
+         W3wEbCKVjQxrTP2GZBl5WcdfvHzGtwgPrxOpx6p01S98zfHj7fFdEJf4GEYuEZVKDoHS
+         uJzP6UUesodSVQ8HTXyoEf0S6Bi4l4H9kSnzHEMgb8hf9kmyBIiwJCyPMYP84FgWt3ky
+         ZOqg==
+X-Gm-Message-State: AC+VfDzsvTs8+PPMM/bc2+CZ0jMRwU3vY7KivU82QTRAdbllor2Pct7X
+	dDaFAT54upHJtlELUMAqblQ=
+X-Google-Smtp-Source: ACHHUZ5TqyMv9RtDGKkctZrylBsyhrsLUuMjnZaVw19tJiEYVMOVryOVbR4ecjNJXsX2gfP1RfeYbA==
+X-Received: by 2002:a19:7108:0:b0:4f3:8507:d90d with SMTP id m8-20020a197108000000b004f38507d90dmr11866610lfc.34.1687507319324;
+        Fri, 23 Jun 2023 01:01:59 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id e25-20020a5d5959000000b003063db8f45bsm8868435wri.23.2023.06.23.01.01.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jun 2023 01:01:58 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 23 Jun 2023 10:01:55 +0200
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCHv2 bpf-next 02/24] bpf: Add cookies support for
+ uprobe_multi link
+Message-ID: <ZJVRc2uuMI5D1lNl@krava>
+References: <20230620083550.690426-1-jolsa@kernel.org>
+ <20230620083550.690426-3-jolsa@kernel.org>
+ <CAEf4BzY9qYSmGsAOZt2W1KGuDZu+wtKFn5FNECuKkNpk7WNvwA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH net-next 3/6] net: phy: update in-band AN mode when
- changing interface by PHY driver
-Content-Language: en-US
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>,
- Simon Horman <simon.horman@corigine.com>
-Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
- David E Box <david.e.box@intel.com>, Hans de Goede <hdegoede@redhat.com>,
- Mark Gross <markgross@kernel.org>, Jose Abreu <Jose.Abreu@synopsys.com>,
- Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, =?UTF-8?Q?Marek_Beh=c3=ban?=
- <kabel@kernel.org>, Jean Delvare <jdelvare@suse.com>,
- Guenter Roeck <linux@roeck-us.net>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Richard Cochran <richardcochran@gmail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Wong Vee Khee
- <veekhee@apple.com>, Jon Hunter <jonathanh@nvidia.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Revanth Kumar Uppala <ruppala@nvidia.com>,
- Shenwei Wang <shenwei.wang@nxp.com>,
- Andrey Konovalov <andrey.konovalov@linaro.org>,
- Jochen Henneberg <jh@henneberg-systemdesign.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org,
- linux-hwmon@vger.kernel.org, bpf@vger.kernel.org,
- Voon Wei Feng <weifeng.voon@intel.com>,
- "Tan, Tee Min" <tee.min.tan@linux.intel.com>,
- Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
- Lai Peter Jun Ann <jun.ann.lai@intel.com>
-References: <20230622041905.629430-1-yong.liang.choong@linux.intel.com>
- <20230622041905.629430-4-yong.liang.choong@linux.intel.com>
- <ZJReJ2yxqKGQx1BU@corigine.com> <ZJRjd0oqj95U0nHc@shell.armlinux.org.uk>
-From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-In-Reply-To: <ZJRjd0oqj95U0nHc@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzY9qYSmGsAOZt2W1KGuDZu+wtKFn5FNECuKkNpk7WNvwA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Russell,
+On Thu, Jun 22, 2023 at 05:18:10PM -0700, Andrii Nakryiko wrote:
+> On Tue, Jun 20, 2023 at 1:36 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Adding support to specify cookies array for uprobe_multi link.
+> >
+> > The cookies array share indexes and length with other uprobe_multi
+> > arrays (offsets/ref_ctr_offsets).
+> >
+> > The cookies[i] value defines cookie for i-the uprobe and will be
+> > returned by bpf_get_attach_cookie helper when called from ebpf
+> > program hooked to that specific uprobe.
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/uapi/linux/bpf.h       |  1 +
+> >  kernel/bpf/syscall.c           |  2 +-
+> >  kernel/trace/bpf_trace.c       | 48 +++++++++++++++++++++++++++++++---
+> >  tools/include/uapi/linux/bpf.h |  1 +
+> >  4 files changed, 47 insertions(+), 5 deletions(-)
+> >
+> 
+> [...]
+> 
+> > @@ -3026,6 +3045,16 @@ uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, s
+> >         return uprobe_prog_run(uprobe, func, regs);
+> >  }
+> >
+> > +static u64 bpf_uprobe_multi_cookie(struct bpf_run_ctx *ctx)
+> > +{
+> > +       struct bpf_uprobe_multi_run_ctx *run_ctx;
+> > +
+> > +       if (!ctx)
+> > +               return 0;
+> 
+> can't happen, let's crash if it does happen?
 
-Thank you for pointing that out.
-I will fix it and send out version 2.
+ok, will remove
 
-On 22/6/2023 11:06 pm, Russell King (Oracle) wrote:
-> On Thu, Jun 22, 2023 at 04:43:51PM +0200, Simon Horman wrote:
->> On Thu, Jun 22, 2023 at 12:19:02PM +0800, Choong Yong Liang wrote:
->>> From: "Tan, Tee Min" <tee.min.tan@linux.intel.com>
->>>
->>> Add cur_link_an_mode into phy_device struct for PHY drivers to
->>> communicate the in-band AN mode setting with phylink framework.
->>>
->>> As there is a mechanism in PHY drivers to switch the PHY interface
->>> between SGMII and 2500BaseX according to link speed. In this case,
->>> the in-band AN mode should be switching based on the PHY interface
->>> as well, if the PHY interface has been changed/updated by PHY driver.
->>>
->>> For e.g., disable in-band AN in 2500BaseX mode, or enable in-band AN
->>> back for SGMII mode (10/100/1000Mbps).
->>>
->>> Signed-off-by: Tan, Tee Min <tee.min.tan@linux.intel.com>
->>> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
->>
->> ...
->>
->>> diff --git a/include/linux/phy.h b/include/linux/phy.h
->>> index 11c1e91563d4..c685b526e307 100644
->>> --- a/include/linux/phy.h
->>> +++ b/include/linux/phy.h
->>> @@ -756,6 +756,8 @@ struct phy_device {
->>>   	/* MACsec management functions */
->>>   	const struct macsec_ops *macsec_ops;
->>>   #endif
->>> +	/* For communicate the AN mode setting with phylink framework. */
->>> +	u8 cur_link_an_mode;
->>>   };
->>
->> Hi Choong Yong Liang,
->>
->> Please consider adding cur_link_an_mode to the kernel doc
->> for struct phy_device - which is above the definition of struct phy_device.
+jirka
+
 > 
-> This looks like it's grabbing something from phylink and stuffing it
-> into phylib.  However, I have no idea, because I don't seem to have
-> received the original patches. I'm guessing the reason is:
 > 
-> 2023-06-22 05:21:24 1qCBoy-0003ji-G9 H=mga03.intel.com
-> [134.134.136.65]:57703 I=[78.32.30.218]:25
-> X=TLS1.2:ECDHE_SECP521R1__RSA_SHA512__AES_256_GCM:256
-> F=<yong.liang.choong@linux.intel.com> rejected after DATA: unqualified
-> address not permitted: failing address in "Cc:" header is: Tan
+> > +       run_ctx = container_of(current->bpf_ctx, struct bpf_uprobe_multi_run_ctx, run_ctx);
+> > +       return run_ctx->uprobe->cookie;
+> > +}
+> > +
 > 
-> Which I suspect came from:
-> 
-> 	Tan, Tee Min <tee.min.tan@linux.intel.com>
-> 
-> and someone doesn't realise that a "," in the display-name part of
-> an address *must* be quoted, otherwise "," is taken to be a separator
-> in the address list.
-> 
-> Consequently, it has now become:
-> 
-> 	Tan@web.codeaurora.org, Tee Min <tee.min.tan@linux.intel.com>,
-> 
-> It should have been:
-> 
-> 	"Tan, Tee Min" <tee.min.tan@linux.intel.com>
-> 
-> with the double-quotes.
-> 
-> Please do not review this series further, but instead, please can the
-> author repost it forthwith with correct conformant headers so that a
-> proper review can be undertaken by all?
-> 
-> Thanks.
-> 
+> [...]
 
