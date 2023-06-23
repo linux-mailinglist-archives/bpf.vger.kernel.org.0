@@ -1,59 +1,58 @@
-Return-Path: <bpf+bounces-3276-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3277-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C90F773BA4E
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 16:37:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEE8E73BA55
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 16:38:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E8B2281C53
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 14:37:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BEA31C212A2
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 14:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0CFA95C;
-	Fri, 23 Jun 2023 14:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1248C02;
+	Fri, 23 Jun 2023 14:38:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B526AD23
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 14:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D16423113
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 14:38:04 +0000 (UTC)
 Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AEC172A
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 07:36:45 -0700 (PDT)
-Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-77e3208a8cbso45769739f.2
-        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 07:36:45 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99519172A
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 07:38:01 -0700 (PDT)
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-780d09214ffso85533939f.0
+        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 07:38:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687531004; x=1690123004;
+        d=1e100.net; s=20221208; t=1687531081; x=1690123081;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GZBDt3VSlZMCbOtP38Q983YuZEFJ3hM8P/mKOfrYCJQ=;
-        b=lwKdVeJixZvzvfIuoyE1MRhWedQlWM5AKboVR3SAinjabOnJIJryH16bIuu1yP+wAf
-         mtjn/pxI1dkg09otT9pZI+YpPEszkAjMT8f5X7PwqYq2ywSa1/EWn9zf4IAga8s7lyWO
-         kWiJRwEfnbIFLZdumyRbQVDlRszI9NLH/16BpfGLsIrMus0AJgyTxsiQJcsEp9uKXgSE
-         bULLLbZgVyVOqKQGblAOBGAkzugBmS7yBJ9RUOS8EcMZbdD8+fhqvcx3R9W8GVOeOovA
-         21qMfEgBafiWrsvcw5sZsJTT6ou+o8UW/KrYdo+FiFUEroFGBcN4ttBpfbmLbrYaV98R
-         0x5A==
-X-Gm-Message-State: AC+VfDwhzKm0weZTPxTRlMEcmo9skaVQl0yy9EUUlVDh9Tlee1WmJTAD
-	ZQVRh6OUHTwwUY5z9IizXptT7cOamZU3Eoy0xHAA+4L8Pa9giz9Ccw==
-X-Google-Smtp-Source: ACHHUZ6GklxOJotBu/I9XgXKouxBmNr5XKHhpiiyUqdj5d+Oca3tSFdoNTo6XTtaZWv52Xj0JFqOxlKXfXS54jOBaNoWfEGOZHc+
+        bh=92pwCV4fKKNhe01hHVdoCqgEIL8zomg86DHJeEualbE=;
+        b=kC+x7dxmCpOLcn43cOAjoyI9lH9Qqf+fieGQlU8uYb7DweyTt8n40mSbRyVPhjMJDw
+         UUQYlWLGreUVAS9/+Qti2Gjs2PSZs6bfDKHvFt7dhuBSkJFwqBDxBgV20Ud/UbodiP/z
+         WdMIDSaWWT5hHNdzdX+IHDDOkiQudfuv2WdfnXm0GnWuJoxtQKHUCAZ06Z3BA+eRh3cJ
+         b2HrHgTOefYM5QLLpEW8kRjfFFoKgnl+hCS4b4fBBVb6x2pkhFrw9UcmhSavXmOilj18
+         X6v0iIpl/154MKaekR76+ELK/GYo5dkEVPtO7yk42VTavnS9vS2CoRavclpn80Dyommq
+         wRkw==
+X-Gm-Message-State: AC+VfDyWlfBMRZEqkA1a9ce/D4gGi/g+9xNX8UkYwZU2XlgCnQ26T7Qs
+	Yzgw57Jwu+rFm+WGbVLba5pTfWmd5eUxV1Q8PEKIBHOp+8hLlLab0g==
+X-Google-Smtp-Source: ACHHUZ72bR0s5CYWr4d53WMdmSKGgcNRuPtYWIplUy4Ab6Q4UkaMW0sgpXtsEibEFuWFnnaZmdNM2swIIQ+lNQ8QY8HcJKISZUDY
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c0c8:0:b0:33e:6d38:8f7b with SMTP id
- t8-20020a92c0c8000000b0033e6d388f7bmr8359179ilf.1.1687531004374; Fri, 23 Jun
- 2023 07:36:44 -0700 (PDT)
-Date: Fri, 23 Jun 2023 07:36:44 -0700
+X-Received: by 2002:a02:a1cf:0:b0:423:215d:b76b with SMTP id
+ o15-20020a02a1cf000000b00423215db76bmr7695680jah.1.1687531080864; Fri, 23 Jun
+ 2023 07:38:00 -0700 (PDT)
+Date: Fri, 23 Jun 2023 07:38:00 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000010353a05fecceea0@google.com>
-Subject: [syzbot] [net?] WARNING in inet_sock_destruct (4)
-From: syzbot <syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com>
-To: bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org, 
-	edumazet@google.com, jacob.e.keller@intel.com, jiri@nvidia.com, 
+Message-ID: <0000000000009f59f005feccf27e@google.com>
+Subject: [syzbot] [net?] BUG: sleeping function called from invalid context in __lock_sock_fast
+From: syzbot <syzbot+c54a9e997982d1a7dc11@syzkaller.appspotmail.com>
+To: bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
 	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
 	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -68,117 +67,93 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    45a3e24f65e9 Linux 6.4-rc7
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=160cc82f280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2cbd298d0aff1140
-dashboard link: https://syzkaller.appspot.com/bug?extid=de6565462ab540f50e47
+HEAD commit:    98e95872f2b8 Merge branch 'mptcp-expose-more-info-and-smal..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=109c5c1b280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a4a7d74e6a7c3211
+dashboard link: https://syzkaller.appspot.com/bug?extid=c54a9e997982d1a7dc11
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=160aacb7280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c115d3280000
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c09bcd4ec365/disk-45a3e24f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/03549b639718/vmlinux-45a3e24f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/91f203e5f63e/bzImage-45a3e24f.xz
-
-The issue was bisected to:
-
-commit 565b4824c39fa335cba2028a09d7beb7112f3c9a
-Author: Jiri Pirko <jiri@nvidia.com>
-Date:   Mon Feb 6 09:41:51 2023 +0000
-
-    devlink: change port event netdev notifier from per-net to global
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=110a1a5b280000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=130a1a5b280000
-console output: https://syzkaller.appspot.com/x/log.txt?x=150a1a5b280000
+disk image: https://storage.googleapis.com/syzbot-assets/9846b6358605/disk-98e95872.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c2ebfcba122e/vmlinux-98e95872.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c5c7c23565e4/bzImage-98e95872.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+de6565462ab540f50e47@syzkaller.appspotmail.com
-Fixes: 565b4824c39f ("devlink: change port event netdev notifier from per-net to global")
+Reported-by: syzbot+c54a9e997982d1a7dc11@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5025 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x6df/0x8a0 net/ipv4/af_inet.c:154
-Modules linked in:
-CPU: 0 PID: 5025 Comm: syz-executor250 Not tainted 6.4.0-rc7-syzkaller #0
+BUG: sleeping function called from invalid context at net/core/sock.c:3549
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 10350, name: syz-executor.3
+preempt_count: 1, expected: 0
+RCU nest depth: 1, expected: 0
+7 locks held by syz-executor.3/10350:
+ #0: ffffffff8e125408 (sock_diag_mutex){+.+.}-{3:3}, at: sock_diag_rcv+0x1b/0x40 net/core/sock_diag.c:279
+ #1: ffffffff8e125588 (sock_diag_table_mutex){+.+.}-{3:3}, at: sock_diag_rcv_msg net/core/sock_diag.c:259 [inline]
+ #1: ffffffff8e125588 (sock_diag_table_mutex){+.+.}-{3:3}, at: sock_diag_rcv_msg+0x2d2/0x440 net/core/sock_diag.c:248
+ #2: ffff88802f311688 (nlk_cb_mutex-SOCK_DIAG){+.+.}-{3:3}, at: netlink_dump+0xbe/0xc50 net/netlink/af_netlink.c:2215
+ #3: ffffffff8e29a628 (inet_diag_table_mutex){+.+.}-{3:3}, at: inet_diag_lock_handler+0x6e/0x100 net/ipv4/inet_diag.c:63
+ #4: ffffffff8c7990c0 (rcu_read_lock){....}-{1:2}, at: mptcp_diag_dump_listeners net/mptcp/mptcp_diag.c:95 [inline]
+ #4: ffffffff8c7990c0 (rcu_read_lock){....}-{1:2}, at: mptcp_diag_dump+0x7c8/0x1330 net/mptcp/mptcp_diag.c:197
+ #5: ffffc9000130c330 (&h->lhash2[i].lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:350 [inline]
+ #5: ffffc9000130c330 (&h->lhash2[i].lock){+.+.}-{2:2}, at: mptcp_diag_dump_listeners net/mptcp/mptcp_diag.c:98 [inline]
+ #5: ffffc9000130c330 (&h->lhash2[i].lock){+.+.}-{2:2}, at: mptcp_diag_dump+0x838/0x1330 net/mptcp/mptcp_diag.c:197
+ #6: ffff88805c820cf0 (msk_lock-AF_INET){+.+.}-{0:0}, at: mptcp_diag_get_info+0x1ae/0x380 net/mptcp/mptcp_diag.c:224
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 1 PID: 10350 Comm: syz-executor.3 Not tainted 6.4.0-rc6-syzkaller-01415-g98e95872f2b8 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-RIP: 0010:inet_sock_destruct+0x6df/0x8a0 net/ipv4/af_inet.c:154
-Code: ff e8 c5 9f e0 f8 0f 0b e9 07 fe ff ff e8 b9 9f e0 f8 0f 0b e9 3f fe ff ff e8 ad 9f e0 f8 0f 0b e9 95 fd ff ff e8 a1 9f e0 f8 <0f> 0b e9 9f fe ff ff e8 d5 6a 33 f9 e9 7a fc ff ff 4c 89 e7 e8 08
-RSP: 0018:ffffc90000007de8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 00000000fffff000 RCX: 0000000000000100
-RDX: ffff8880792f8000 RSI: ffffffff88a3a73f RDI: 0000000000000005
-RBP: ffff88814aa99980 R08: 0000000000000005 R09: 0000000000000000
-R10: 00000000fffff000 R11: 0000000000094001 R12: ffff88814aa999a8
-R13: ffff88814aa99bf4 R14: ffffc90000007ed8 R15: 0000000000000004
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f579b4f6ec8 CR3: 000000000c571000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- <IRQ>
- __sk_destruct+0x4d/0x770 net/core/sock.c:2130
- rcu_do_batch kernel/rcu/tree.c:2115 [inline]
- rcu_core+0x806/0x1ad0 kernel/rcu/tree.c:2377
- __do_softirq+0x1d4/0x905 kernel/softirq.c:571
- invoke_softirq kernel/softirq.c:445 [inline]
- __irq_exit_rcu+0x114/0x190 kernel/softirq.c:650
- irq_exit_rcu+0x9/0x20 kernel/softirq.c:662
- sysvec_apic_timer_interrupt+0x97/0xc0 arch/x86/kernel/apic/apic.c:1106
- </IRQ>
  <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-RIP: 0010:write_comp_data+0x3c/0x90 kernel/kcov.c:236
-Code: 01 00 00 49 89 f8 65 48 8b 14 25 c0 bb 03 00 a9 00 01 ff 00 74 0e 85 f6 74 59 8b 82 0c 16 00 00 85 c0 74 4f 8b 82 e8 15 00 00 <83> f8 03 75 44 48 8b 82 f0 15 00 00 8b 92 ec 15 00 00 48 8b 38 48
-RSP: 0018:ffffc90003a7fbf8 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: ffffc90003a7b020 RCX: ffffffff814d76d1
-RDX: ffff8880792f8000 RSI: 0000000000000000 RDI: 0000000000000007
-RBP: ffff8880792f8000 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000094001 R12: 0000000000000000
-R13: ffffc90003a78000 R14: dffffc0000000000 R15: ffff8880792f85f8
- stack_not_used include/linux/sched/task_stack.h:107 [inline]
- check_stack_usage kernel/exit.c:776 [inline]
- do_exit+0x17f1/0x29b0 kernel/exit.c:918
- do_group_exit+0xd4/0x2a0 kernel/exit.c:1024
- get_signal+0x2318/0x25b0 kernel/signal.c:2876
- arch_do_signal_or_restart+0x79/0x5c0 arch/x86/kernel/signal.c:306
- exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
- exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
- syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297
- do_syscall_64+0x46/0xb0 arch/x86/entry/common.c:86
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x136/0x150 lib/dump_stack.c:106
+ __might_resched+0x358/0x580 kernel/sched/core.c:10153
+ __lock_sock_fast+0x25/0xe0 net/core/sock.c:3549
+ lock_sock_fast include/net/sock.h:1744 [inline]
+ mptcp_diag_fill_info+0x45c/0x9c0 net/mptcp/sockopt.c:930
+ mptcp_diag_get_info+0x1ae/0x380 net/mptcp/mptcp_diag.c:224
+ inet_sk_diag_fill+0x1258/0x1fd0 net/ipv4/inet_diag.c:342
+ sk_diag_dump net/mptcp/mptcp_diag.c:24 [inline]
+ sk_diag_dump net/mptcp/mptcp_diag.c:16 [inline]
+ mptcp_diag_dump_listeners net/mptcp/mptcp_diag.c:125 [inline]
+ mptcp_diag_dump+0xc5e/0x1330 net/mptcp/mptcp_diag.c:197
+ __inet_diag_dump+0x114/0x2e0 net/ipv4/inet_diag.c:1179
+ inet_diag_dump_compat+0x209/0x290 net/ipv4/inet_diag.c:1287
+ netlink_dump+0x570/0xc50 net/netlink/af_netlink.c:2268
+ __netlink_dump_start+0x6c0/0x9b0 net/netlink/af_netlink.c:2375
+ netlink_dump_start include/linux/netlink.h:330 [inline]
+ inet_diag_rcv_msg_compat+0x26d/0x2d0 net/ipv4/inet_diag.c:1321
+ __sock_diag_cmd net/core/sock_diag.c:240 [inline]
+ sock_diag_rcv_msg+0x2eb/0x440 net/core/sock_diag.c:269
+ netlink_rcv_skb+0x165/0x440 net/netlink/af_netlink.c:2548
+ sock_diag_rcv+0x2a/0x40 net/core/sock_diag.c:280
+ netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
+ netlink_unicast+0x547/0x7f0 net/netlink/af_netlink.c:1365
+ netlink_sendmsg+0x925/0xe30 net/netlink/af_netlink.c:1913
+ sock_sendmsg_nosec net/socket.c:724 [inline]
+ sock_sendmsg+0xde/0x190 net/socket.c:747
+ splice_to_socket+0x964/0xee0 fs/splice.c:915
+ do_splice_from fs/splice.c:967 [inline]
+ direct_splice_actor+0x114/0x180 fs/splice.c:1155
+ splice_direct_to_actor+0x34a/0x9c0 fs/splice.c:1101
+ do_splice_direct+0x1ad/0x280 fs/splice.c:1207
+ do_sendfile+0xb19/0x12c0 fs/read_write.c:1254
+ __do_sys_sendfile64 fs/read_write.c:1322 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1308 [inline]
+ __x64_sys_sendfile64+0x1d0/0x210 fs/read_write.c:1308
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f579b4a1d39
-Code: Unable to access opcode bytes at 0x7f579b4a1d0f.
-RSP: 002b:00007f579b431308 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 00007f579b52a4d8 RCX: 00007f579b4a1d39
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f579b52a4d8
-RBP: 00007f579b52a4d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f579b4f72c0
-R13: 00007f579b52a4dc R14: 00007f579b431400 R15: 0000000000022000
+RIP: 0033:0x7fa74588c389
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa7443fe168 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007fa7459ac050 RCX: 00007fa74588c389
+RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000009
+RBP: 00007fa7458d7493 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000021fd1ee9 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffca549394f R14: 00007fa7443fe300 R15: 0000000000022000
  </TASK>
-----------------
-Code disassembly (best guess):
-   0:	01 00                	add    %eax,(%rax)
-   2:	00 49 89             	add    %cl,-0x77(%rcx)
-   5:	f8                   	clc
-   6:	65 48 8b 14 25 c0 bb 	mov    %gs:0x3bbc0,%rdx
-   d:	03 00
-   f:	a9 00 01 ff 00       	test   $0xff0100,%eax
-  14:	74 0e                	je     0x24
-  16:	85 f6                	test   %esi,%esi
-  18:	74 59                	je     0x73
-  1a:	8b 82 0c 16 00 00    	mov    0x160c(%rdx),%eax
-  20:	85 c0                	test   %eax,%eax
-  22:	74 4f                	je     0x73
-  24:	8b 82 e8 15 00 00    	mov    0x15e8(%rdx),%eax
-* 2a:	83 f8 03             	cmp    $0x3,%eax <-- trapping instruction
-  2d:	75 44                	jne    0x73
-  2f:	48 8b 82 f0 15 00 00 	mov    0x15f0(%rdx),%rax
-  36:	8b 92 ec 15 00 00    	mov    0x15ec(%rdx),%edx
-  3c:	48 8b 38             	mov    (%rax),%rdi
-  3f:	48                   	rex.W
 
 
 ---
@@ -188,14 +163,9 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 If the bug is already fixed, let syzbot know by replying with:
 #syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to change bug's subsystems, reply with:
 #syz set subsystems: new-subsystem
