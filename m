@@ -1,60 +1,61 @@
-Return-Path: <bpf+bounces-3265-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3264-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE3D173B9AE
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 16:16:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 936E173B9AD
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 16:16:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BCE91C21206
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 14:16:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A21C81C21280
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 14:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF912945F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7737945A;
 	Fri, 23 Jun 2023 14:16:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769D68F68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 740D28F5D
 	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 14:16:19 +0000 (UTC)
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B002135;
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A4B1FE3;
 	Fri, 23 Jun 2023 07:16:17 -0700 (PDT)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1a98cf01151so529523fac.2;
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6b2c3ec38f0so535697a34.1;
         Fri, 23 Jun 2023 07:16:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687529776; x=1690121776;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3opNLfaofO4XDCJOexejaNUpNBSFcotehkIKcHQoks8=;
-        b=WIYgG7ZqUDc+/2yhaP8uOLlHKmIPhUoFJRghb9WbmAZ9LdG+4CvnE7PHSpPhN4A7AN
-         z2RSatXw656h+zQAfv+RdO5d4DqTR6PqN8g5U9FIQzXN8sSh9PZa9L/y3GP5vfLnNF0H
-         YPhPylwz28YUFxxnQwi9hGQhUxtfd7SbkD4wZC7uhlHOxfuKqHi65yz1dnDkDbN2UGHt
-         e/Cn5fA7mN0j6h2++eS6uFsnN1Zmi63f1oSj/Fsv4E/DaQc98Q+IA+Wl+4RMitkU65T6
-         dlrO/M/jU4JA9UxCpSSvXr94CDQwKx08fhsJNNGOGWRyHsfhTMCuZC2987cWPgWQdsgd
-         KFtw==
+        d=gmail.com; s=20221208; t=1687529777; x=1690121777;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nn+VvMrPWCKqoo4PubFGskWvnQBFZ4/nSXCXeyqhAzE=;
+        b=XAZRw8vajFuODFkWd0plHtuUiOq+1ZKOAt8yEy7ldYVPh3llA64dm+uptKo7kKCifh
+         SeYIKhVmratGs6p4h0m/+8NSpaAGgcYkyy8chX2OkeWOGFNWGSRPMKwcdrGPJeQH7CgQ
+         WmEYxzbTyljLsKpVVPyiv9hahupaRCwjjiyX34AA4RS0vFff8nolx5+5GlKLXU/9ypLa
+         JGFuD4uFjwDwn4JOx4b4RDBVv5NWQQsCTFZoPYUliA9jD7zeTFZ/VDf4Fm/4i6qUs//0
+         7JBODTBDfmUesKE7MXnPCLitQLITxXRI+46yq0yGIn589obv3chvxF0oJWkJXBhrNT1w
+         F9bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687529776; x=1690121776;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3opNLfaofO4XDCJOexejaNUpNBSFcotehkIKcHQoks8=;
-        b=fsmpQvu1WjuaDCqBjrALgLJAk2UgpAFlxN1aipdyWS723EWWTC2b9aisHA/sZhSztM
-         qlTt7Jr2VNTHO58jKr6sO26sKIhAyjbLK70GwlaLpbRIALXcJfTdCXY4rIcy20VcoCoM
-         L8nZYWJL++th6JHKMC/UUr3RRy5VfMsrdv4/m1gghtc3JmlZ1o/yufyLowfuqZbpZ1pl
-         YZ0i37/6GG7aO9ilBDDj56kdzpXu/QbKhv6g4mXrc4zGbQdWKMitxsRZmRDbAwhxqDUW
-         X2K3XPaIfHVvUnRMVFyY+JIZmE4mrmEgd+QERFryi+/fUCTkYAhn9wzOYK1q8wpcIilO
-         qdbQ==
-X-Gm-Message-State: AC+VfDyac5Y9KyTNxB6eSM1g2b911iutgTAVQ/qBRYjMPbF9sPbTXdOT
-	xfBet9YML98oFJiG1lgxjC8=
-X-Google-Smtp-Source: ACHHUZ6vb2KZVS65PMxFWWabJvydHNvxI3HDf7lW6YN6SMdKNb4LsKrm12mfiIFGS8qPKRnUv1hbfg==
-X-Received: by 2002:a05:6871:8506:b0:1a9:a12d:f7b8 with SMTP id sx6-20020a056871850600b001a9a12df7b8mr23055121oab.41.1687529775680;
-        Fri, 23 Jun 2023 07:16:15 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687529777; x=1690121777;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Nn+VvMrPWCKqoo4PubFGskWvnQBFZ4/nSXCXeyqhAzE=;
+        b=a1V52yv9qk9MhOq3sG+M1XPmkrsKiW/aiF2hEpe+yrPTg0RdJMcst5mgE2c5YQ+n6U
+         Zib4eiuw/faOuxdvrCPl01a69IZqA9do2nVVzJC/GaWiw5xe3s2nvOdO9Wc/wNnYGhBI
+         QItWPmGtuYplnF47ZQS/PZ6Y9vQnxSSeDhfXaFccHCg0Y6wdTAisIiSsVfszx+1fWtUh
+         PO0wO912WyR02XENfxOtlFi4DP+STWTcA4lO+evPkbpqyjiZQctEa5CgCfaQMeU9eubZ
+         1VWposg3jUXX1NspZ5dNMiL1tFHHj2oYpW9fCHZRYYYI1iDANxzZUrZ3QI8vVNwEtnYA
+         oONg==
+X-Gm-Message-State: AC+VfDwbqRhRhZRL1WVwaKUAlxLQTMvfA9qruADyLLAM1fp5spWLwSnN
+	OK3QGuER3B1YGCP2Y0VZEco=
+X-Google-Smtp-Source: ACHHUZ4qMvsiDtG0Kn4xihh6gv+bz+axMmIg56sCFqFPVVv/druj3efQuaNd8Mc4SVAFt2vFQGzPvw==
+X-Received: by 2002:a9d:6ad1:0:b0:6b5:e4f9:9202 with SMTP id m17-20020a9d6ad1000000b006b5e4f99202mr5134104otq.3.1687529777153;
+        Fri, 23 Jun 2023 07:16:17 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac01:1058:5400:4ff:fe7c:972])
-        by smtp.gmail.com with ESMTPSA id p14-20020a63e64e000000b005533c53f550sm6505942pgj.45.2023.06.23.07.16.14
+        by smtp.gmail.com with ESMTPSA id p14-20020a63e64e000000b005533c53f550sm6505942pgj.45.2023.06.23.07.16.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jun 2023 07:16:15 -0700 (PDT)
+        Fri, 23 Jun 2023 07:16:16 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -73,10 +74,12 @@ To: ast@kernel.org,
 Cc: bpf@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v5 bpf-next 00/11] bpf: Support ->fill_link_info for kprobe_multi and perf_event links 
-Date: Fri, 23 Jun 2023 14:15:35 +0000
-Message-Id: <20230623141546.3751-1-laoar.shao@gmail.com>
+Subject: [PATCH v5 bpf-next 01/11] bpf: Support ->fill_link_info for kprobe_multi
+Date: Fri, 23 Jun 2023 14:15:36 +0000
+Message-Id: <20230623141546.3751-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230623141546.3751-1-laoar.shao@gmail.com>
+References: <20230623141546.3751-1-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,97 +94,108 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patchset enhances the usability of kprobe_multi program by introducing
-support for ->fill_link_info. This allows users to easily determine the
-probed functions associated with a kprobe_multi program. While
-`bpftool perf show` already provides information about functions probed by
-perf_event programs, supporting ->fill_link_info ensures consistent access
-to this information across all bpf links.
+With the addition of support for fill_link_info to the kprobe_multi link,
+users will gain the ability to inspect it conveniently using the
+`bpftool link show`. This enhancement provides valuable information to the
+user, including the count of probed functions and their respective
+addresses. It's important to note that if the kptr_restrict setting is not
+permitted, the probed address will not be exposed, ensuring security.
 
-In addition, this patch extends support to generic perf events, which are
-currently not covered by `bpftool perf show`. While userspace is exposed to
-only the perf type and config, other attributes such as sample_period and
-sample_freq are disregarded.
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+---
+ include/uapi/linux/bpf.h       |  5 +++++
+ kernel/trace/bpf_trace.c       | 28 ++++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h |  5 +++++
+ 3 files changed, 38 insertions(+)
 
-To ensure accurate identification of probed functions, it is preferable to
-expose the address directly rather than relying solely on the symbol name.
-However, this implementation respects the kptr_restrict setting and avoids
-exposing the address if it is not permitted.
-
-v4->v5:
-- Print "func [module]" in the kprobe_multi header (Andrii)
-- Remove MAX_BPF_PERF_EVENT_TYPE (Alexei)
-- Add padding field for future reuse (Yonghong)
-
-v3->v4:
-- From Quentin
-  - Rename MODULE_NAME_LEN to MODULE_MAX_NAME
-  - Convert retprobe to boolean for json output
-  - Trim the square brackets around module names for json output
-  - Move perf names into link.c
-  - Use a generic helper to get perf names
-  - Show address before func name, for consistency
-  - Use switch-case instead of if-else
-  - Increase the buff len to PATH_MAX
-  - Move macros to the top of the file
-- From Andrii
-  - kprobe_multi flags should always be returned
-  - Keep it single line if it fits in under 100 characters
-  - Change the output format when showing kprobe_multi
-  - Imporve the format of perf_event names
-  - Rename struct perf_link to struct perf_event, and change the names of
-    the enum consequently
-- From Yonghong
-  - Avoid disallowing extensions for all structs in the big union
-- From Jiri
-  - Add flags to bpf_kprobe_multi_link
-  - Report kprobe_multi selftests errors
-  - Rename bpf_perf_link_fill_name and make it a separate patch
-  - Avoid breaking compilation when CONFIG_KPROBE_EVENTS or
-    CONFIG_UPROBE_EVENTS options are not defined
-
-v2->v3:
-- Expose flags instead of retporbe (Andrii)
-- Simplify the check on kmulti_link->cnt (Andrii)
-- Use kallsyms_show_value() instead (Andrii)
-- Show also the module name for kprobe_multi (Andrii)
-- Add new enum bpf_perf_link_type (Andrii)
-- Move perf event names into bpftool (Andrii, Quentin, Jiri)
-- Keep perf event names in sync with perf tools (Jiri) 
-
-v1->v2:
-- Fix sparse warning (Stanislav, lkp@intel.com)
-- Fix BPF CI build error
-- Reuse kernel_syms_load() (Alexei)
-- Print 'name' instead of 'func' (Alexei)
-- Show whether the probe is retprobe or not (Andrii)
-- Add comment for the meaning of perf_event name (Andrii)
-- Add support for generic perf event
-- Adhere to the kptr_restrict setting
-
-Yafang Shao (11):
-  bpf: Support ->fill_link_info for kprobe_multi
-  bpftool: Dump the kernel symbol's module name
-  bpftool: Show kprobe_multi link info
-  bpf: Protect probed address based on kptr_restrict setting
-  bpf: Clear the probe_addr for uprobe
-  bpf: Expose symbol's respective address
-  bpf: Add a common helper bpf_copy_to_user()
-  bpf: Add bpf_perf_link_fill_common()
-  bpf: Support ->fill_link_info for perf_event
-  bpftool: Add perf event names
-  bpftool: Show perf link info
-
- include/uapi/linux/bpf.h          |  40 ++++
- kernel/bpf/syscall.c              | 183 +++++++++++++++--
- kernel/trace/bpf_trace.c          |  32 ++-
- kernel/trace/trace_kprobe.c       |   7 +-
- tools/bpf/bpftool/link.c          | 413 +++++++++++++++++++++++++++++++++++++-
- tools/bpf/bpftool/xlated_dumper.c |   6 +-
- tools/bpf/bpftool/xlated_dumper.h |   2 +
- tools/include/uapi/linux/bpf.h    |  40 ++++
- 8 files changed, 703 insertions(+), 20 deletions(-)
-
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index a7b5e91..23691ea 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -6438,6 +6438,11 @@ struct bpf_link_info {
+ 			__s32 priority;
+ 			__u32 flags;
+ 		} netfilter;
++		struct {
++			__aligned_u64 addrs; /* in/out: addresses buffer ptr */
++			__u32 count;
++			__u32 flags;
++		} kprobe_multi;
+ 	};
+ } __attribute__((aligned(8)));
+ 
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 2bc41e6..2123197b 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2459,6 +2459,7 @@ struct bpf_kprobe_multi_link {
+ 	u32 cnt;
+ 	u32 mods_cnt;
+ 	struct module **mods;
++	u32 flags;
+ };
+ 
+ struct bpf_kprobe_multi_run_ctx {
+@@ -2548,9 +2549,35 @@ static void bpf_kprobe_multi_link_dealloc(struct bpf_link *link)
+ 	kfree(kmulti_link);
+ }
+ 
++static int bpf_kprobe_multi_link_fill_link_info(const struct bpf_link *link,
++						struct bpf_link_info *info)
++{
++	u64 __user *uaddrs = u64_to_user_ptr(info->kprobe_multi.addrs);
++	struct bpf_kprobe_multi_link *kmulti_link;
++	u32 ucount = info->kprobe_multi.count;
++
++	if (!uaddrs ^ !ucount)
++		return -EINVAL;
++
++	kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
++	info->kprobe_multi.count = kmulti_link->cnt;
++	info->kprobe_multi.flags = kmulti_link->flags;
++
++	if (!uaddrs)
++		return 0;
++	if (ucount < kmulti_link->cnt)
++		return -EINVAL;
++	if (!kallsyms_show_value(current_cred()))
++		return 0;
++	if (copy_to_user(uaddrs, kmulti_link->addrs, ucount * sizeof(u64)))
++		return -EFAULT;
++	return 0;
++}
++
+ static const struct bpf_link_ops bpf_kprobe_multi_link_lops = {
+ 	.release = bpf_kprobe_multi_link_release,
+ 	.dealloc = bpf_kprobe_multi_link_dealloc,
++	.fill_link_info = bpf_kprobe_multi_link_fill_link_info,
+ };
+ 
+ static void bpf_kprobe_multi_cookie_swap(void *a, void *b, int size, const void *priv)
+@@ -2862,6 +2889,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 	link->addrs = addrs;
+ 	link->cookies = cookies;
+ 	link->cnt = cnt;
++	link->flags = flags;
+ 
+ 	if (cookies) {
+ 		/*
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index a7b5e91..23691ea 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -6438,6 +6438,11 @@ struct bpf_link_info {
+ 			__s32 priority;
+ 			__u32 flags;
+ 		} netfilter;
++		struct {
++			__aligned_u64 addrs; /* in/out: addresses buffer ptr */
++			__u32 count;
++			__u32 flags;
++		} kprobe_multi;
+ 	};
+ } __attribute__((aligned(8)));
+ 
 -- 
 1.8.3.1
 
