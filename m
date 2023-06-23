@@ -1,86 +1,80 @@
-Return-Path: <bpf+bounces-3262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F78073B86E
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 15:09:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 911F173B930
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 15:58:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FF0E281B65
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 13:09:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF9EB1C2122B
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 13:58:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287A4883C;
-	Fri, 23 Jun 2023 13:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224358F62;
+	Fri, 23 Jun 2023 13:58:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE918BE0
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 13:09:03 +0000 (UTC)
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760842129;
-	Fri, 23 Jun 2023 06:09:02 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id a1e0cc1a2514c-78f6a9800c9so215222241.3;
-        Fri, 23 Jun 2023 06:09:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08E09441
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 13:57:59 +0000 (UTC)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF3FE52
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 06:57:57 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31122c346f4so911428f8f.3
+        for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 06:57:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687525741; x=1690117741;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g2gur0xTyOFyTfCQR7Vs6vSqivbDaTiXYcT1KXbo1Nc=;
-        b=o4bdvVEsKnnuG/AUZ+SvBanLkTmh7OmaSbskvWBViOapYz8Hb+CCJs0vrYxtweKowq
-         s+L3dmVMbvu3S0GxevKn1CziUe+sCgIYBGgJkbA03IiXylBAxgJnrG/SF2OazQ2LhNPp
-         dTIPJWtMA2uA1UzzpyEWhhhQzoQj92nt53lACKdKnmJqYjFJI+2ydY4lcLUxhKz+fVEY
-         bwfKbkC8VMeXmHJjF/9bee/i3v/iK1KBTDRXjPhtzxIVEWqGim/K1GNH9Il5vIHkWn8f
-         vsA6LAQdkgzKKwXYd4lwlJBmZICDxd4dplKz9+L1VtJ6N6XMti5CkbhZaBNrwzp5qu+u
-         IHbA==
+        d=gmail.com; s=20221208; t=1687528676; x=1690120676;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pnX6MkWX6kMUW0OWpSnnnbXh1LEFHo8ykyPryeM/CCA=;
+        b=BMealwlPz2t4WMSOuUgRRKQQGVkUfKfkGOn9vqgMLr6KzqqtQEncog2bzeSqIhCl67
+         RTh8fDP3tvrKAUotdVTKJksIuHWWZdiLoNIP3kTJJ/P9qzX4bBLn82E+FzmWfxPsmkdb
+         Jw+ri8Te9II3ZC2TSYPNRh0Q4Jc6hItflEJsSy4sjyZI+sw6HzUKbWfEUhs/OCT5Ihjv
+         cEIDrXTHBprEKENqyDe83eC0K2iplTMegVbCTLuWyxfffoWYFb0BMFO375J7gxy9Mf1c
+         jAw5n2ooApbMiAH5RZN1xlnxc47wZotmK4vxL/Nt4qpRCMQsSY8UyOxbidzzyBQA8DqG
+         5yEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687525741; x=1690117741;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g2gur0xTyOFyTfCQR7Vs6vSqivbDaTiXYcT1KXbo1Nc=;
-        b=CRK7DEBFE7GH2hxdbdRHs4V+UVAzSdAexHI+WtXBVcpa4C0seg7SXvnZsNV2hRqGVj
-         v0v7Qj72K/XKnGUttGVJjt2NlaHmjdapBhzzqua9AmuRsNOKIFvFgWc+dEE6rpu95Vlw
-         fU85RzQ1D0PLA+jFYrZgBd6ai19MqyvO8H7v/lQeEvtXDWTctaTdQdbgQbs8wdpIVUsA
-         CL7MZU+qGHCpJQNQMmZfVl9f8tXO39KQuuFhIUeKR9+77FslEwWMaY2qZOJtF3IYzPks
-         3A0hHCur7Um2BSWtOa7avVCazRE3A+9wpowEE0cssVI1idxsvQ9wcbiC1RLqzm312MDG
-         lX2A==
-X-Gm-Message-State: AC+VfDxmkwmgDW5reVoOxjaJLdinX+XZew23XATDrvwB44PW64QQbXWt
-	l4coksvy2ZpDGxt4KTCrfjUw6zbo47yyr8jU3n8=
-X-Google-Smtp-Source: ACHHUZ721dDUmO3rfpLqG/sIqBq/DqFVJ+cLdKn1aZGWxRXenL5Eu7Vld0XBRnNaL7EAxZcWHwa4QYAB2eJ/HxBYa44=
-X-Received: by 2002:a67:d003:0:b0:440:cd04:dba0 with SMTP id
- r3-20020a67d003000000b00440cd04dba0mr7190139vsi.13.1687525741220; Fri, 23 Jun
- 2023 06:09:01 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687528676; x=1690120676;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pnX6MkWX6kMUW0OWpSnnnbXh1LEFHo8ykyPryeM/CCA=;
+        b=FYT3/UtdA4V3udpUg+8mcRBH5xGLdWq44aTep2F4+/4G3JX9iJ1yyGP8PYaaWBBCxI
+         8DZ59XGIoTCccGGWnkBdPoJnDGgx7vNq+HABN3Ke2ZWQvGamO5fEguCinI7fSohSCDlB
+         IWXY/GtTpJjVlvKNE/NANdvtmJ5VJFknKpqGAQ7Eh4KapQrYBNNaM3X/hUs3cX4hqtc0
+         jtgZWXK7dTZevE/gTsdwrXyDMtThzoDjvZzAli2eD1IR9M1yuJeLavzq/g31Knwl7m2/
+         FYaVbZPGDoJkoum1HZOrlcUH966dYQwKSq6brOHOqoZvKVzjEVOg+9kDadjAnhnTuoSW
+         FLLQ==
+X-Gm-Message-State: AC+VfDx+t1WJHzkKJ+ygL1ifsFHpThTIhiH0ejSrUBPtGuLwhifRZsnE
+	8PtkiH7tabuMCx1DsnD43yU=
+X-Google-Smtp-Source: ACHHUZ7E3OSLKNdtvuWZCs9NYbCrhkaObo1CbbR1bbakzA/YjzpYqgV8ecIqKOlWq7HqIWRQtmsWNA==
+X-Received: by 2002:adf:f88d:0:b0:311:19a2:e7f8 with SMTP id u13-20020adff88d000000b0031119a2e7f8mr22877806wrp.1.1687528675723;
+        Fri, 23 Jun 2023 06:57:55 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id u2-20020a5d5142000000b003113dc327fbsm9639795wrt.22.2023.06.23.06.57.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jun 2023 06:57:55 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 23 Jun 2023 15:57:52 +0200
+To: Jackie Liu <liu.yun@linux.dev>
+Cc: olsajiri@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+	song@kernel.org, yhs@fb.com, bpf@vger.kernel.org,
+	liuyun01@kylinos.cn, rostedt@goodmis.org
+Subject: Re: [PATCH] libbpf: kprobe.multi: Filter with
+ available_filter_functions_addrs
+Message-ID: <ZJWk4MR984KMiXKi@krava>
+References: <20230623021245.2887248-1-liu.yun@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230613025226.3167956-1-imagedong@tencent.com>
- <20230613025226.3167956-3-imagedong@tencent.com> <ca490974-0c5c-cfe9-0c6f-3ead163e7a7b@meta.com>
- <7a82744f454944778f55c36e8445762f@AcuMS.aculab.com> <CADxym3bY5EcZhuJG=x5s7kH+BS93ySAyvV8yZ7yYoXf7HCsZVw@mail.gmail.com>
- <84050129b8ce4db9b4579be0fc022723@AcuMS.aculab.com>
-In-Reply-To: <84050129b8ce4db9b4579be0fc022723@AcuMS.aculab.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Fri, 23 Jun 2023 21:08:49 +0800
-Message-ID: <CADxym3akFCuMgQTF5kM1THUd8yofc4hVrACYGi3APwySftCtxA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/3] bpf, x86: allow function arguments up to
- 12 for TRACING
-To: David Laight <David.Laight@aculab.com>
-Cc: Yonghong Song <yhs@meta.com>, 
-	"alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>, "ast@kernel.org" <ast@kernel.org>, 
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org" <andrii@kernel.org>, 
-	"martin.lau@linux.dev" <martin.lau@linux.dev>, "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>, 
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org" <kpsingh@kernel.org>, 
-	"sdf@google.com" <sdf@google.com>, "haoluo@google.com" <haoluo@google.com>, 
-	"jolsa@kernel.org" <jolsa@kernel.org>, "benbjiang@tencent.com" <benbjiang@tencent.com>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Menglong Dong <imagedong@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230623021245.2887248-1-liu.yun@linux.dev>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -88,109 +82,68 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 22, 2023 at 10:19=E2=80=AFPM David Laight <David.Laight@aculab.=
-com> wrote:
->
-> ...
-> > > Is that right for 86-64?
-> > >
-> > > IIRC arguments always take (at least) 64bits.
-> > > For any 32bit argument (register or stack) the high bits are undefine=
-d.
-> > > (Maybe in kernel they are always zero?
-> > > From 32bit userspace they are definitely random.)
-> > >
-> >
-> > Hello,
-> >
-> > According to my testing, the compiler will always
-> > pass the arguments on 8-byte size with "push" insn
-> > if the count of the arguments that need to be passed
-> > on stack more than 1 and the size of the argument
-> > doesn't exceed 8-byte. In this case, there won't be
-> > garbage. For example, the high 4-byte will be made 0
-> > if the size of the argument is 4-byte, as the "push" insn
-> > will copy the argument from regs or imm into stack
-> > in 8-byte.
->
-> You have to know whether a value is expected to be 4 or 8
-> bytes - a negative 32bit value is zero extended so can't
-> be treated as a 64bit value.
->
-> That is even true for values passed in registers.
->
-> There is also a common problem with values passed in registers
-> to system calls by 32bit code (maybe bpf is tracing these).
-> In this case the high 32 bits of the register are random.
-> They don't get zerod in 32bit mode.
->
-> > If the count of the arguments on-stack is 1 and its size
-> > doesn't exceed 4-byte, some compiler, like clang, may
-> > not use the "push" insn. Instead, it allocates 4 bytes in the
-> > stack, and copies the arguments from regs or imm into
-> > stack in 4-byte. This is the case we deal with here.
->
-> If the compiler sometimes writes a 4 byte (or smaller) value
-> to pre-allocated stack then it is always allowed to do that.
-> So the high bytes of the stack slot that contains a 32bit
-> argument might always be junk.
-> The count of on-stack arguments isn't relevant.
->
+On Fri, Jun 23, 2023 at 10:12:45AM +0800, Jackie Liu wrote:
 
-Yes, the way we clean garbage values is not
-relevant, which comes from assumption. However,
-It should be ok with the BPF program? like what Yonghong
-said.
+SNIP
 
-> > I'm not sure if I understand you correctly. Do you mean
-> > that there will be garbage values for 32bit args?
->
-> I'm pretty sure that the function call ABI doesn't require the
-> caller set the high bits of sub-64bit arguments.
-> The fact that they are often written with a push instruction
-> that zeros the high bytes isn't really relevant.
->
-> > > I think the called code is also responsible form masking 8 and 16bit
-> > > values (in reality char/short args and return values just add code
-> > > bloat).
-> > >
-> > > A 128bit value is either passed in two registers or two stack
-> > > slots. If the last register is skipped it will be used for the
-> > > next argument.
-> > >
-> >
-> > Yeah, this point is considered in save_args(). Once
-> > this happen, the count of stack slots should more
-> > then 1, and the arguments on-stack will be stored with
-> > "push" insn in 8-byte. Therefore, there shouldn't be garbage
-> > values in this case?
-> >
-> > Do I miss something?
->
-> The register/stack for these two calls is the same:
->         foo(1, 2, 3, 4, 5, 6, (int128_t)7);
->         bar(1, 2, 3, 4, 5, (int128_t)7, 6);
->
+> +
+> +static void kprobe_multi_resolve_free(struct kprobe_multi_resolve *res)
+> +{
+> +	free(res->addrs);
+> +
+> +	/* reset to zero, when fallback */
+> +	res->cap = 0;
+> +	res->cnt = 0;
+> +	res->addrs = NULL;
+> +}
+> +
+>  struct bpf_link *
+>  bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>  				      const char *pattern,
+> @@ -10477,9 +10539,16 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>  		return libbpf_err_ptr(-EINVAL);
+>  
+>  	if (pattern) {
+> -		err = libbpf_kallsyms_parse(resolve_kprobe_multi_cb, &res);
+> -		if (err)
+> -			goto error;
+> +		err = libbpf_available_kprobes_parse(ftrace_resolve_kprobe_multi_cb,
+> +						     &res);
+> +		if (err) {
+> +			/* fallback to kallsyms */
+> +			kprobe_multi_resolve_free(&res);
+> +			err = libbpf_kallsyms_parse(kallsyms_resolve_kprobe_multi_cb,
+> +						    &res);
+> +			if (err)
+> +				goto error;
+> +		}
+>  		if (!res.cnt) {
+>  			err = -ENOENT;
+>  			goto error;
+> @@ -10512,12 +10581,12 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>  		goto error;
+>  	}
+>  	link->fd = link_fd;
+> -	free(res.addrs);
+> +	kprobe_multi_resolve_free(&res);
 
-It is ok, as we already consider such cases. For
-the foo(), the order we copy args is:
+we don't need to zero res in here, so we could just leave the original
+free(res.addrs) in here and perhaps rename kprobe_multi_resolve_free
+to kprobe_multi_resolve_reinit
 
-reg1, reg2, reg3, reg4, reg5, reg6, stack1, stack2
+thanks,
+jirka
 
-and for the bar (), it is:
-
-reg1, reg2, reg3, reg4, reg5, stack1,stack2, reg6
-
-The order of the arguments in the array we passed
-to the BPF program is ok.
-
-Thanks!
-Menglong Dong
-
->         David
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
- 1PT, UK
-> Registration No: 1397386 (Wales)
+>  	return link;
+>  
+>  error:
+>  	free(link);
+> -	free(res.addrs);
+> +	kprobe_multi_resolve_free(&res);
+>  	return libbpf_err_ptr(err);
+>  }
+>  
+> -- 
+> 2.25.1
+> 
 
