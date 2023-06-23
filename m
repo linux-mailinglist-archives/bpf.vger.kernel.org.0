@@ -1,123 +1,170 @@
-Return-Path: <bpf+bounces-3280-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3281-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 909CD73BB2E
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 17:11:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9493373BB61
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 17:17:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1AD81C21195
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 15:11:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DED05281C5F
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 15:17:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF6EAD49;
-	Fri, 23 Jun 2023 15:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97373AD4F;
+	Fri, 23 Jun 2023 15:17:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E394A8BF5
-	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 15:10:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7654C433B8;
-	Fri, 23 Jun 2023 15:10:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687533055;
-	bh=QBE/kH9Q80W4WJgITS8+fO0pjyCVTYSsyr+2jnkMnpU=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=ZVPko1/injThMSOKx4LYVq42w7G4RXDkA3YrJ69K9WBDDKioNw+ni3s+kEsKQWBPR
-	 17WtdzZsKuiYv/zwoFPNpgOd3QG0o5919aJBYDcxivGA1T7NgRbutPsrr2CmqT1xqX
-	 T+6U9Ei82rc/YvYfcYniL+gPOxcFDZ7sebOqYTDP1s58gH53bH/kkJJjup4Qr/IGCQ
-	 kAehtGjo7v5wg6kXkgajRN2aqPmhJRoJ833Dn+EcOk/lpLQnMkhf7qSe0MZ78JR2+S
-	 xYyctu9KMab4P3CMdY5upz8uHxNTHKBHe5JrF7jvFrXw6aSnM+nEThUNKnZKTV0prb
-	 lKwcsihgjv/qA==
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 8D9C327C005B;
-	Fri, 23 Jun 2023 11:10:53 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute3.internal (MEProxy); Fri, 23 Jun 2023 11:10:53 -0400
-X-ME-Sender: <xms:_bWVZBDpLFg3qKAQdsRgRE2kSK41_YU9fsMuDt-PQOto4yDZBiRxvg>
-    <xme:_bWVZPi3OeePMktmI2FFLOMFy0x0rT4MiEYubXA737O3J-2O-g8tEm1CqYKLQEU7h
-    7g_8BQNnW9OnHyp5y8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgeeggedgkeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvdfhuedvtdfhudffhfekkefftefghfeltdelgeffteehueegjeff
-    udehgfetiefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
-    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
-    igrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:_bWVZMl83O41PIIoJ_aQGs4GF8z0dEzLtYzo3VTqa9bUEZoeheS0Ug>
-    <xmx:_bWVZLwjLWjaxFmsj-1i4MdnZW1bi3yQugItIDfdsjjLI6ZMbIK-Cg>
-    <xmx:_bWVZGTj5h6QEngz8WgDmCzIOMH73u_wrIw7xj3iqfEsnh5U9UOHcQ>
-    <xmx:_bWVZDQw4XdIDDmcQWLpETLFOofa1qvqop1hvO_eq2KbxFMAqD__OA>
-Feedback-ID: ieff94742:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id F34CE31A0063; Fri, 23 Jun 2023 11:10:52 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-499-gf27bbf33e2-fm-20230619.001-gf27bbf33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E40BAD41
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 15:17:21 +0000 (UTC)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21E1E48;
+	Fri, 23 Jun 2023 08:16:58 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-666eba6f3d6so427084b3a.3;
+        Fri, 23 Jun 2023 08:16:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687533415; x=1690125415;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=J1o/pL8VifmRkhg9N/fLgEY6Kfl6O6cZ7IhXs/6AQWA=;
+        b=f3tdIYRj/Qnjj4wTj6d5h1filcc0g7aVJ1duPxCvWWLV6nk3TzSLMBJAcz05+mwBXd
+         EAW9lrn0Z1BQGEYyJnxuhDDhNgwWcEVkQVyjMhoG/NCID9nZGaFO+EiIQqhCwpLWTwIe
+         676Dmn/Pfg6VVm5mBQfhYuo1qU+G5aK1bDUrQbSJQdVD19Qhaw/akUXlTrKeeaP/EwvY
+         fV5J7jhIRsWF0o3I2U2y2OgGavOTsmLXAmBnuZUd/D1TFfLizibYdTy3q8CLhFk/641S
+         7heuiRQv+thHKvQyHO1SUFP+1lKJr0Axr7mhatleBGimkng/1jWk1oYTt6GU4OY/hh3p
+         3noQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687533415; x=1690125415;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J1o/pL8VifmRkhg9N/fLgEY6Kfl6O6cZ7IhXs/6AQWA=;
+        b=VgNxWxMz3PF29jZP1FOgW+CxwIdwc8D+TfLHy+xs/9Vn67YwH9D7IuLl5wd7kIdVSv
+         HUimCPev1hyrN26zl5gJYrnYeGCAQkgyFq613VE2GPn8D4jPThFj1WpaVrx1QxsuUF+M
+         MrpYsjn15390XM80ck16kB+hHl4UXW9ELTKWu96cRbmnHB2JrRBK1q3exU8ag2njS+Nq
+         93AnV2mv7oYG52fQvISjQXo1OwESvnPxV2A4BnEHQzH+lGPLBJhp2jnsrIfq6qGbfYMq
+         fdJz1Gqww/4BWZAQn5qApZmBrLoUQMM40L7m8QsuRmDctVwwkgAHhze+IO5gISXxxJjn
+         Fg1g==
+X-Gm-Message-State: AC+VfDx3n4t4/HBvi+FJ+Bqt97APNHuNbFOVj3NTwDsuYYOs1Cu2UQsE
+	zWwrhvn9yexjNQiJQLI2toI=
+X-Google-Smtp-Source: ACHHUZ5IRGokayu9WQG701u41H3ifU3+Nlm2eD6n9M7pPACGCw6oF90m6riV8Q7SAviIkxVR8fq1Qg==
+X-Received: by 2002:a05:6a21:78a7:b0:10b:e88f:597c with SMTP id bf39-20020a056a2178a700b0010be88f597cmr12054883pzc.44.1687533415380;
+        Fri, 23 Jun 2023 08:16:55 -0700 (PDT)
+Received: from sumitra.com ([117.199.160.11])
+        by smtp.gmail.com with ESMTPSA id jc3-20020a17090325c300b001b39ffff838sm7431770plb.25.2023.06.23.08.16.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jun 2023 08:16:54 -0700 (PDT)
+Date: Fri, 23 Jun 2023 08:16:44 -0700
+From: Sumitra Sharma <sumitraartsy@gmail.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Ira Weiny <ira.weiny@intel.com>, Fabio <fmdefrancesco@gmail.com>,
+	Deepak R Varma <drv@mailo.com>,
+	Sumitra Sharma <sumitraartsy@gmail.com>
+Subject: [PATCH v4] lib/test_bpf: Call page_address() on page acquired with
+ GFP_KERNEL flag
+Message-ID: <20230623151644.GA434468@sumitra.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <9b0e9227-4cf4-4acb-ba88-52f65b099709@app.fastmail.com>
-In-Reply-To: <82b79e57-a0ad-4559-abc9-858e0f51fbba@app.fastmail.com>
-References: <20230607235352.1723243-1-andrii@kernel.org>
- <c1a8d5e8-023b-4ef9-86b3-bdd70efe1340@app.fastmail.com>
- <CAEf4BzazbMqAh_Nj_geKNLshxT+4NXOCd-LkZ+sRKsbZAJ1tUw@mail.gmail.com>
- <a73da819-b334-448c-8e5c-50d9f7c28b8f@app.fastmail.com>
- <CAEf4Bzb__Cmf5us1Dy6zTkbn2O+3GdJQ=khOZ0Ui41tkoE7S0Q@mail.gmail.com>
- <5eb4264e-d491-a7a2-93c7-928b06ce264d@redhat.com>
- <bc4f99af-0c46-49b2-9f2d-9a01e6a03af3@app.fastmail.com>
- <5a75d1f0-4ed9-399c-4851-2df0755de9b5@redhat.com>
- <CAEf4Bza9GvJ0vw2-0M8GKSXmOQ8VQCmeqEiQpMuZBjwqpA03vw@mail.gmail.com>
- <82b79e57-a0ad-4559-abc9-858e0f51fbba@app.fastmail.com>
-Date: Fri, 23 Jun 2023 08:10:32 -0700
-From: "Andy Lutomirski" <luto@kernel.org>
-To: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>,
- "Maryam Tahhan" <mtahhan@redhat.com>
-Cc: "Andrii Nakryiko" <andrii@kernel.org>, bpf@vger.kernel.org,
- linux-security-module@vger.kernel.org, "Kees Cook" <keescook@chromium.org>,
- "Christian Brauner" <brauner@kernel.org>, lennart@poettering.net,
- cyphar@cyphar.com, kernel-team@meta.com
-Subject: Re: [PATCH v2 bpf-next 00/18] BPF token
-Content-Type: text/plain
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
+generate_test_data() acquires a page with alloc_page(GFP_KERNEL).
+The GFP_KERNEL is typical for kernel-internal allocations.
+The caller requires ZONE_NORMAL or a lower zone for direct access.
 
+Therefore the page cannot come from ZONE_HIGHMEM. Thus there's
+no need to map it with kmap().
 
-On Thu, Jun 22, 2023, at 6:02 PM, Andy Lutomirski wrote:
-> On Thu, Jun 22, 2023, at 11:40 AM, Andrii Nakryiko wrote:
->
->> Hopefully you can see where I'm going with this. And this is just one
->> random tiny example. We can think up tons of other cases to prove BPF
->> is not isolatable to any sort of "container".
->
-> No.  You have not come up with an example of why BPF is not isolatable 
-> to a container.  You have come up with an example of why binding to a 
-> sched_switch raw tracepoint does not make sense in a container without 
-> additional mechanisms to give it well defined functionality and 
-> appropriate security.
+Also, the kmap() is being deprecated in favor of kmap_local_page() [1].
 
-Thinking about this some more:
+Hence, use a plain page_address() directly.
 
-Suppose the goal is to allow a workload in a container to monitor itself by attaching to a tracepoint (something in the scheduler, for example).  The workload is in the container.  The tracepoint is global.  Kernel memory is global unless something that is trusted and understands the containers is doing the reading.  And proxying BPF is a mess.
+Since the page passed to the page_address() is not from the highmem
+zone, the page_address() function will always return a valid kernel
+virtual address and will not return NULL. Hence, remove the check
+'if (!ptr)'.
 
-So here are a couple of possible solutions:
+Remove the unused variable 'ptr' and label 'err_free_page'.
 
-(a) Improve BPF maps a bit so that BPF maps work well in containers.  It should be possible to create a map and share it (the file descriptor!) between the outside and the container without running into various snags.  (IIRC my patch series was a decent step in this direction,)  Now load the BPF program and attach it to the tracepoint outside the container but have it write its gathered data to the map that's in the container.  So you end up with a daemon outside the container that gets a request like "help me monitor such-and-such by running BPF program such-and-such (where the BPF program code presumably comes from a library outside the container", and the daemon arranges for the requesting container to have access to the map it needs to get the data.
+[1]: https://lore.kernel.org/all/20220813220034.806698-1-ira.weiny@intel.com/
 
-(b) Make a way to pass a pre-approved program into a container.  So a daemon outside loads the program and does some new magic to say "make an fd that can be used to attach this particular program to this particular tracepoint" and pass that into the container.
+Suggested-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Signed-off-by: Sumitra Sharma <sumitraartsy@gmail.com>
+---
 
-I think (a) is better.  In particular, if you have a workload with many containers, and they all want to monitor the same tracepoint as it relates to their container, you will get much better performance if a single BPF program does the monitoring and sends the data out to each container as needed instead of having one copy of the program per container.
+- Link to v1: https://lore.kernel.org/bpf/20230613073020.GA359792@sumitra.com/T/
+- Link to v2: https://lore.kernel.org/all/20230613071756.GA359746@sumitra.com/
+- Link to v3: https://lore.kernel.org/all/20230622080729.GA426913@sumitra.com/
 
-For what it's worth, BPF tokens seem like they'll have the same performance problem -- without coordination, you can end up with N containers generating N hooks all targeting the same global resource, resulting in overhead that scales linearly with the number of containers.
+Changes in v4:
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202306230559.hU5Aonpl-lkp@intel.com/
+	- Remove unused label 'err_free_page'.
 
-And, again, I'm not an XDP expert, but if you have one NIC, and you attach N XDP programs to it, and each one is inspecting packets and sending some to one particular container's AF_XDP socket, you are not going to get good performance.  You want *one* XDP program fanning the packets out to the relevant containers.
+Changes in v3:
+Noted by: Fabio M. De Francesco<fmdefrancesco@gmail.com>
+	- Remove the check 'if (!ptr)'.
+	- Remove the unused variable 'ptr'.
+	- Change the commit message.
 
-If this is hard right now, perhaps you could add new kernel mechanisms as needed to improve the situation.
+Changes in v2:
+Noted by: Fabio M. De Francesco<fmdefrancesco@gmail.com>
+	- Remove the kmap() call and call page_address() instead.
+	- Change the commit subject and message.
 
---Andy
+ lib/test_bpf.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
+
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index ade9ac672adb..a5cc5f9fc4e8 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -14381,25 +14381,17 @@ static void *generate_test_data(struct bpf_test *test, int sub)
+ 		 * single fragment to the skb, filled with
+ 		 * test->frag_data.
+ 		 */
+-		void *ptr;
+-
+ 		page = alloc_page(GFP_KERNEL);
+ 
+ 		if (!page)
+ 			goto err_kfree_skb;
+ 
+-		ptr = kmap(page);
+-		if (!ptr)
+-			goto err_free_page;
+-		memcpy(ptr, test->frag_data, MAX_DATA);
+-		kunmap(page);
++		memcpy(page_address(page), test->frag_data, MAX_DATA);
+ 		skb_add_rx_frag(skb, 0, page, 0, MAX_DATA, MAX_DATA);
+ 	}
+ 
+ 	return skb;
+ 
+-err_free_page:
+-	__free_page(page);
+ err_kfree_skb:
+ 	kfree_skb(skb);
+ 	return NULL;
+-- 
+2.25.1
+
 
