@@ -1,310 +1,214 @@
-Return-Path: <bpf+bounces-3318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3319-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A3473C235
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 23:13:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54B9F73C31E
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 23:45:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44B4F1C20EBF
-	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 21:13:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0901A281E0C
+	for <lists+bpf@lfdr.de>; Fri, 23 Jun 2023 21:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064BB134DA;
-	Fri, 23 Jun 2023 21:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FEE8156D9;
+	Fri, 23 Jun 2023 21:45:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95420134A0;
-	Fri, 23 Jun 2023 21:13:02 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361C483;
-	Fri, 23 Jun 2023 14:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=iM6XiYzcOvYvmJY1x36fh/FcKP0wY71gqcBtL3f0WTI=; b=jaTled3nUisRZQ7NLYEC62IV21
-	7Wr0puaAB7QlUmAh/bP3h4gl8qqfvJouQ/oL0eQd/vBnNlu645gMB7XmnLS+81x6835L4FFeubo6E
-	a3hD0Fd3mN5+gvzaGsuzaUK696RYWu3H4bgdqJMhP3ik/p1bYOebrEve+ZeKCp+yI88EgvalCoLAd
-	XqLRC6uixlLiKTThIwrAuuA5wQ7qhhUHMj95JwuSlZeWkXF+Ge4VmdFYji76I5jSe5/PVvIMQWUe2
-	uYeS43nAn1O7wm3B1QZ97CpD5KiImca9ZFXdGgpylkOmMv71SKD3ZVk8+xXWBcRb02b4xy5AASOu9
-	Ddk1wJZg==;
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qCo5R-0002ef-6C; Fri, 23 Jun 2023 23:12:57 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: davem@davemloft.net
-Cc: kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: pull-request: bpf-next 2023-06-23
-Date: Fri, 23 Jun 2023 23:12:56 +0200
-Message-Id: <20230623211256.8409-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B0A154AC
+	for <bpf@vger.kernel.org>; Fri, 23 Jun 2023 21:45:37 +0000 (UTC)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F798EA;
+	Fri, 23 Jun 2023 14:45:36 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fa7eb35a13so8807865e9.0;
+        Fri, 23 Jun 2023 14:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687556734; x=1690148734;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5aXV+xHVk/DmJ1RMVZY3EixPNi5+HVg53fJKj2ymUCk=;
+        b=cJ8zZRYEvROfR/jBArFmBVlS65/N0J//p+UXwl+hN8KJRSJ660YXAy/02mwx7sGOYK
+         KxU5i6VyQqq8qTpwDPnuCbk20LZ2jZqxnJRnRnN1qnhiShsh8H/v77ZQLE8yVbYMPkcb
+         TcxqunMMwg6RTjMGyEGh6feCK+iFSdg2oX2Z5BofwCJpiboujLCOHnMsGVh6gy51usj3
+         HpgH8Jkx2EPEamlI6axrtTbEhl1yq/Xj7DzlqKQ908IunOmkh9tEzL8pJ7P+4+243mgZ
+         jxsptnfuTH8/2NrAXWvJKxGC8EyXOk4iv2iLuRa/CLRCvr0TGfEhaIxYORxmwK55wBts
+         viIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687556734; x=1690148734;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5aXV+xHVk/DmJ1RMVZY3EixPNi5+HVg53fJKj2ymUCk=;
+        b=CUTOH8PV9mCd/EtGA6adYqplGbrQtAzk9tG+5TublhgU0i8DVf+mTcEgbvBtZPR76Q
+         sV5yuKtjry45WVFemYpBi9NPwbyx0DBaK7lgw69Kjbsm3AYG0ZzxLxwSG2/31pQPcqWN
+         H6GVXQnnXfrltb7bhxGHJDp8Nv3pRYzfOhD87J876BPKsOE/iGQ7krAixKPHoDMaa9kS
+         x++S1HGIjlArVfIZIG/vZPZ5TldQExICCZP2TBrIb3MR7DLnPiu6GBC1LK8nMsEA+thz
+         0isQSf27RgUY/OqUzsFgPIeLTNULMRFe4k/x0V2WBqyu2dX3zYvaBubtHGu9Dt5VX3um
+         zNXw==
+X-Gm-Message-State: AC+VfDytIfQUG9QjjN2tcGhikaI4yIGITHEicquMCLcNCXWGqwoB4EBE
+	fyKdJlskVmhVDZj8f++rw6dsuoPh8xIUVdm2OaA=
+X-Google-Smtp-Source: ACHHUZ7F30e6JNtaOYSLN3pSoOzjsGPCa06IW/QELyfYwLSQHt1FfrpywlO3veKvQ741qjfEKg2x8IxRSxYcpx/nbuE=
+X-Received: by 2002:a7b:c356:0:b0:3f8:f6fe:26bf with SMTP id
+ l22-20020a7bc356000000b003f8f6fe26bfmr15912987wmj.12.1687556734345; Fri, 23
+ Jun 2023 14:45:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26948/Fri Jun 23 09:28:15 2023)
+References: <20230623141546.3751-1-laoar.shao@gmail.com> <20230623141546.3751-2-laoar.shao@gmail.com>
+In-Reply-To: <20230623141546.3751-2-laoar.shao@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 23 Jun 2023 14:45:22 -0700
+Message-ID: <CAEf4BzaYmAmkm9HL1BPoddPtq=A2caqPm0QR_yQn44GA7TZVVQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 01/11] bpf: Support ->fill_link_info for kprobe_multi
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	quentin@isovalent.com, rostedt@goodmis.org, mhiramat@kernel.org, 
+	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+On Fri, Jun 23, 2023 at 7:16=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
+>
+> With the addition of support for fill_link_info to the kprobe_multi link,
+> users will gain the ability to inspect it conveniently using the
+> `bpftool link show`. This enhancement provides valuable information to th=
+e
+> user, including the count of probed functions and their respective
+> addresses. It's important to note that if the kptr_restrict setting is no=
+t
+> permitted, the probed address will not be exposed, ensuring security.
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  include/uapi/linux/bpf.h       |  5 +++++
+>  kernel/trace/bpf_trace.c       | 28 ++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  5 +++++
+>  3 files changed, 38 insertions(+)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index a7b5e91..23691ea 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -6438,6 +6438,11 @@ struct bpf_link_info {
+>                         __s32 priority;
+>                         __u32 flags;
+>                 } netfilter;
+> +               struct {
+> +                       __aligned_u64 addrs; /* in/out: addresses buffer =
+ptr */
+> +                       __u32 count;
+> +                       __u32 flags;
+> +               } kprobe_multi;
+>         };
+>  } __attribute__((aligned(8)));
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 2bc41e6..2123197b 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2459,6 +2459,7 @@ struct bpf_kprobe_multi_link {
+>         u32 cnt;
+>         u32 mods_cnt;
+>         struct module **mods;
+> +       u32 flags;
+>  };
+>
+>  struct bpf_kprobe_multi_run_ctx {
+> @@ -2548,9 +2549,35 @@ static void bpf_kprobe_multi_link_dealloc(struct b=
+pf_link *link)
+>         kfree(kmulti_link);
+>  }
+>
+> +static int bpf_kprobe_multi_link_fill_link_info(const struct bpf_link *l=
+ink,
+> +                                               struct bpf_link_info *inf=
+o)
+> +{
+> +       u64 __user *uaddrs =3D u64_to_user_ptr(info->kprobe_multi.addrs);
+> +       struct bpf_kprobe_multi_link *kmulti_link;
+> +       u32 ucount =3D info->kprobe_multi.count;
+> +
+> +       if (!uaddrs ^ !ucount)
+> +               return -EINVAL;
+> +
+> +       kmulti_link =3D container_of(link, struct bpf_kprobe_multi_link, =
+link);
+> +       info->kprobe_multi.count =3D kmulti_link->cnt;
+> +       info->kprobe_multi.flags =3D kmulti_link->flags;
+> +
+> +       if (!uaddrs)
+> +               return 0;
+> +       if (ucount < kmulti_link->cnt)
+> +               return -EINVAL;
 
-The following pull-request contains BPF updates for your *net-next* tree.
+it would be probably sane behavior to copy ucount items and return -E2BIG
 
-We've added 49 non-merge commits during the last 24 day(s) which contain
-a total of 70 files changed, 1935 insertions(+), 442 deletions(-).
+> +       if (!kallsyms_show_value(current_cred()))
+> +               return 0;
 
-The main changes are:
+at least we should zero out kmulti_link->cnt elements. Otherwise it's
+hard for user-space know whether returned data is garbage or not?
 
-1) Extend bpf_fib_lookup helper to allow passing the route table ID, from Louis DeLosSantos.
 
-2) Fix regsafe() in verifier to call check_ids() for scalar registers, from Eduard Zingerman.
+> +       if (copy_to_user(uaddrs, kmulti_link->addrs, ucount * sizeof(u64)=
+))
 
-3) Extend the set of cpumask kfuncs with bpf_cpumask_first_and() and a rework of
-   bpf_cpumask_any*() kfuncs. Additionally, add selftests, from David Vernet.
+s/ucount/kmulti_link->cnt/ ?
 
-4) Fix socket lookup BPF helpers for tc/XDP to respect VRF bindings, from Gilad Sever.
-
-5) Change bpf_link_put() to use workqueue unconditionally to fix it under PREEMPT_RT,
-   from Sebastian Andrzej Siewior.
-
-6) Follow-ups to address issues in the bpf_refcount shared ownership implementation,
-   from Dave Marchevsky.
-
-7) A few general refactorings to BPF map and program creation permissions checks which
-   were part of the BPF token series, from Andrii Nakryiko.
-
-8) Various fixes for benchmark framework and add a new benchmark for BPF memory
-   allocator to BPF selftests, from Hou Tao.
-
-9) Documentation improvements around iterators and trusted pointers, from Anton Protopopov.
-
-10) Small cleanup in verifier to improve allocated object check, from Daniel T. Lee.
-
-11) Improve performance of bpf_xdp_pointer() by avoiding access to shared_info when
-    XDP packet does not have frags, from Jesper Dangaard Brouer.
-
-12) Silence a harmless syzbot-reported warning in btf_type_id_size(), from Yonghong Song.
-
-13) Remove duplicate bpfilter_umh_cleanup in favor of umd_cleanup_helper, from Jarkko Sakkinen.
-
-14) Fix BPF selftests build for resolve_btfids under custom HOSTCFLAGS, from Viktor Malik.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Andrii Nakryiko, Dan Carpenter, Eyal Birger, Jiri Olsa, Kees Cook, 
-kernel test robot, Kumar Kartikeya Dwivedi, Lorenzo Bianconi, Maciej 
-Fijalkowski, Shmulik Ladkani, Simon Horman, Stanislav Fomichev, Tariq 
-Toukan, Toke Høiland-Jørgensen, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit bc590b47549225a03c6b36bbc1aede75c917767b:
-
-  r8169: check for PCI read error in probe (2023-05-30 13:14:53 +0200)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
-
-for you to fetch changes up to fbc5669de62a452fb3a26a4560668637d5c9e7b5:
-
-  bpf, docs: Document existing macros instead of deprecated (2023-06-22 19:47:32 +0200)
-
-----------------------------------------------------------------
-bpf-next-for-netdev
-
-----------------------------------------------------------------
-Andrii Nakryiko (5):
-      Merge branch 'verify scalar ids mapping in regsafe()'
-      bpf: Move unprivileged checks into map_create() and bpf_prog_load()
-      bpf: Inline map creation logic in map_create() function
-      bpf: Centralize permissions checks for all BPF map types
-      bpf: Keep BPF_PROG_LOAD permission checks clear of validations
-
-Anton Protopopov (2):
-      bpf, docs: BPF Iterator Document
-      bpf, docs: Document existing macros instead of deprecated
-
-Arnd Bergmann (1):
-      bpf: Hide unused bpf_patch_call_args
-
-Azeem Shaikh (1):
-      bpf: Replace all non-returning strlcpy with strscpy
-
-Daniel T. Lee (1):
-      bpf: Replace open code with for allocated object check
-
-Dave Marchevsky (3):
-      bpf: Set kptr_struct_meta for node param to list and rbtree insert funcs
-      bpf: Fix __bpf_{list,rbtree}_add's beginning-of-node calculation
-      bpf: Make bpf_refcount_acquire fallible for non-owning refs
-
-David Vernet (8):
-      bpf: Teach verifier that trusted PTR_TO_BTF_ID pointers are non-NULL
-      selftests/bpf: Add test for non-NULLable PTR_TO_BTF_IDs
-      selftests/bpf: Add missing selftests kconfig options
-      bpf: Add bpf_cpumask_first_and() kfunc
-      selftests/bpf: Add test for new bpf_cpumask_first_and() kfunc
-      bpf: Replace bpf_cpumask_any* with bpf_cpumask_any_distribute*
-      selftests/bpf: Update bpf_cpumask_any* tests to use bpf_cpumask_any_distribute*
-      bpf/docs: Update documentation for new cpumask kfuncs
-
-Eduard Zingerman (5):
-      selftests/bpf: Fix invalid pointer check in get_xlated_program()
-      bpf: Use scalar ids in mark_chain_precision()
-      selftests/bpf: Check if mark_chain_precision() follows scalar ids
-      bpf: Verify scalar ids mapping in regsafe() using check_ids()
-      selftests/bpf: Verify that check_ids() is used for scalars in regsafe()
-
-Gilad Sever (4):
-      bpf: Factor out socket lookup functions for the TC hookpoint.
-      bpf: Call __bpf_sk_lookup()/__bpf_skc_lookup() directly via TC hookpoint
-      bpf: Fix bpf socket lookup from tc/xdp to respect socket VRF bindings
-      selftests/bpf: Add vrf_socket_lookup tests
-
-Hou Tao (5):
-      bpf: Factor out a common helper free_all()
-      selftests/bpf: Use producer_cnt to allocate local counter array
-      selftests/bpf: Output the correct error code for pthread APIs
-      selftests/bpf: Ensure that next_cpu() returns a valid CPU number
-      selftests/bpf: Set the default value of consumer_cnt as 0
-
-Jarkko Sakkinen (1):
-      net: Use umd_cleanup_helper()
-
-Jesper Dangaard Brouer (3):
-      samples/bpf: xdp1 and xdp2 reduce XDPBUFSIZE to 60
-      bpf/xdp: optimize bpf_xdp_pointer to avoid reading sinfo
-      selftests/bpf: Fix check_mtu using wrong variable type
-
-Jiri Olsa (1):
-      selftests/bpf: Add missing prototypes for several test kfuncs
-
-Louis DeLosSantos (2):
-      bpf: Add table ID to bpf_fib_lookup BPF helper
-      selftests/bpf: Test table ID fib lookup BPF helper
-
-Ruiqi Gong (1):
-      bpf: Cleanup unused function declaration
-
-Sebastian Andrzej Siewior (1):
-      bpf: Remove in_atomic() from bpf_link_put().
-
-Su Hui (1):
-      bpf/tests: Use struct_size()
-
-Viktor Malik (1):
-      tools/resolve_btfids: Fix setting HOSTCFLAGS
-
-Yonghong Song (3):
-      bpf: Silence a warning in btf_type_id_size()
-      selftests/bpf: Add a test where map key_type_id with decl_tag type
-      selftests/bpf: Fix compilation failure for prog vrf_socket_lookup
-
-YueHaibing (1):
-      xsk: Remove unused inline function xsk_buff_discard()
-
- Documentation/bpf/bpf_iterators.rst                |   7 +-
- Documentation/bpf/cpumasks.rst                     |   5 +-
- Documentation/bpf/kfuncs.rst                       |  38 +-
- include/linux/bpf_verifier.h                       |  25 +-
- include/linux/bpfilter.h                           |   1 -
- include/linux/filter.h                             |   1 -
- include/linux/netdevice.h                          |   9 +
- include/net/xdp_sock_drv.h                         |   4 -
- include/uapi/linux/bpf.h                           |  21 +-
- kernel/bpf/bloom_filter.c                          |   3 -
- kernel/bpf/bpf_local_storage.c                     |   3 -
- kernel/bpf/bpf_struct_ops.c                        |   3 -
- kernel/bpf/btf.c                                   |  19 +-
- kernel/bpf/core.c                                  |   8 +-
- kernel/bpf/cpumap.c                                |   4 -
- kernel/bpf/cpumask.c                               |  38 +-
- kernel/bpf/devmap.c                                |   3 -
- kernel/bpf/hashtab.c                               |   6 -
- kernel/bpf/helpers.c                               |  12 +-
- kernel/bpf/lpm_trie.c                              |   3 -
- kernel/bpf/memalloc.c                              |  31 +-
- kernel/bpf/preload/bpf_preload_kern.c              |   4 +-
- kernel/bpf/queue_stack_maps.c                      |   4 -
- kernel/bpf/reuseport_array.c                       |   3 -
- kernel/bpf/stackmap.c                              |   3 -
- kernel/bpf/syscall.c                               | 184 +++---
- kernel/bpf/verifier.c                              | 248 ++++++--
- lib/test_bpf.c                                     |   3 +-
- net/bpfilter/bpfilter_kern.c                       |   2 +-
- net/core/filter.c                                  | 147 ++++-
- net/core/sock_map.c                                |   4 -
- net/ipv4/bpfilter/sockopt.c                        |  11 +-
- net/xdp/xskmap.c                                   |   4 -
- samples/bpf/xdp1_kern.c                            |   2 +-
- samples/bpf/xdp2_kern.c                            |   2 +-
- tools/bpf/resolve_btfids/Makefile                  |   4 +-
- tools/include/uapi/linux/bpf.h                     |  21 +-
- tools/testing/selftests/bpf/bench.c                |  15 +-
- tools/testing/selftests/bpf/bench.h                |   1 +
- .../selftests/bpf/benchs/bench_bloom_filter_map.c  |  14 +-
- .../bpf/benchs/bench_bpf_hashmap_full_update.c     |  10 +-
- .../bpf/benchs/bench_bpf_hashmap_lookup.c          |  10 +-
- .../testing/selftests/bpf/benchs/bench_bpf_loop.c  |  10 +-
- tools/testing/selftests/bpf/benchs/bench_count.c   |  14 +-
- .../selftests/bpf/benchs/bench_local_storage.c     |  12 +-
- .../bpf/benchs/bench_local_storage_create.c        |   8 +-
- .../benchs/bench_local_storage_rcu_tasks_trace.c   |  10 +-
- tools/testing/selftests/bpf/benchs/bench_rename.c  |  15 +-
- .../testing/selftests/bpf/benchs/bench_ringbufs.c  |   2 +-
- tools/testing/selftests/bpf/benchs/bench_strncmp.c |  11 +-
- tools/testing/selftests/bpf/benchs/bench_trigger.c |  21 +-
- .../selftests/bpf/benchs/run_bench_ringbufs.sh     |  26 +-
- .../selftests/bpf/bpf_testmod/bpf_testmod.c        |  16 +-
- .../selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h  |   7 +
- tools/testing/selftests/bpf/config                 |   4 +
- tools/testing/selftests/bpf/prog_tests/btf.c       |  40 ++
- tools/testing/selftests/bpf/prog_tests/check_mtu.c |   2 +-
- tools/testing/selftests/bpf/prog_tests/cpumask.c   |   2 +
- .../testing/selftests/bpf/prog_tests/fib_lookup.c  |  61 +-
- .../selftests/bpf/prog_tests/unpriv_bpf_disabled.c |   6 +-
- tools/testing/selftests/bpf/prog_tests/verifier.c  |   2 +
- .../selftests/bpf/prog_tests/vrf_socket_lookup.c   | 312 ++++++++++
- tools/testing/selftests/bpf/progs/cpumask_common.h |   6 +-
- .../testing/selftests/bpf/progs/cpumask_success.c  |  64 +-
- .../testing/selftests/bpf/progs/refcounted_kptr.c  |   2 +
- .../selftests/bpf/progs/refcounted_kptr_fail.c     |   4 +-
- .../selftests/bpf/progs/verifier_scalar_ids.c      | 659 +++++++++++++++++++++
- .../selftests/bpf/progs/vrf_socket_lookup.c        |  89 +++
- tools/testing/selftests/bpf/test_verifier.c        |  24 +-
- tools/testing/selftests/bpf/verifier/precise.c     |   8 +-
- 70 files changed, 1935 insertions(+), 442 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/vrf_socket_lookup.c
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_scalar_ids.c
- create mode 100644 tools/testing/selftests/bpf/progs/vrf_socket_lookup.c
+> +               return -EFAULT;
+> +       return 0;
+> +}
+> +
+>  static const struct bpf_link_ops bpf_kprobe_multi_link_lops =3D {
+>         .release =3D bpf_kprobe_multi_link_release,
+>         .dealloc =3D bpf_kprobe_multi_link_dealloc,
+> +       .fill_link_info =3D bpf_kprobe_multi_link_fill_link_info,
+>  };
+>
+>  static void bpf_kprobe_multi_cookie_swap(void *a, void *b, int size, con=
+st void *priv)
+> @@ -2862,6 +2889,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_at=
+tr *attr, struct bpf_prog *pr
+>         link->addrs =3D addrs;
+>         link->cookies =3D cookies;
+>         link->cnt =3D cnt;
+> +       link->flags =3D flags;
+>
+>         if (cookies) {
+>                 /*
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index a7b5e91..23691ea 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -6438,6 +6438,11 @@ struct bpf_link_info {
+>                         __s32 priority;
+>                         __u32 flags;
+>                 } netfilter;
+> +               struct {
+> +                       __aligned_u64 addrs; /* in/out: addresses buffer =
+ptr */
+> +                       __u32 count;
+> +                       __u32 flags;
+> +               } kprobe_multi;
+>         };
+>  } __attribute__((aligned(8)));
+>
+> --
+> 1.8.3.1
+>
 
