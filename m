@@ -1,30 +1,30 @@
-Return-Path: <bpf+bounces-3368-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3369-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ADE273CAE3
-	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 14:27:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DDC573CAE5
+	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 14:27:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E876E2811A3
-	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 12:27:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2661D281F10
+	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 12:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31175685;
-	Sat, 24 Jun 2023 12:26:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DFD56120;
+	Sat, 24 Jun 2023 12:26:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB26566E;
-	Sat, 24 Jun 2023 12:26:13 +0000 (UTC)
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E39E41;
-	Sat, 24 Jun 2023 05:26:11 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vlp2O3J_1687609567;
-Received: from localhost(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0Vlp2O3J_1687609567)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438AA610E;
+	Sat, 24 Jun 2023 12:26:15 +0000 (UTC)
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF93DBF;
+	Sat, 24 Jun 2023 05:26:13 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vlp4Xdk_1687609568;
+Received: from localhost(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0Vlp4Xdk_1687609568)
           by smtp.aliyun-inc.com;
-          Sat, 24 Jun 2023 20:26:08 +0800
+          Sat, 24 Jun 2023 20:26:09 +0800
 From: Heng Qi <hengqi@linux.alibaba.com>
 To: netdev@vger.kernel.org,
 	bpf@vger.kernel.org
@@ -39,9 +39,9 @@ Cc: "Michael S . Tsirkin" <mst@redhat.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>
-Subject: [PATCH net-next v2 2/3] virtio-net: support coexistence of XDP and GUEST_CSUM
-Date: Sat, 24 Jun 2023 20:26:03 +0800
-Message-Id: <20230624122604.110958-3-hengqi@linux.alibaba.com>
+Subject: [PATCH net-next v2 3/3] virtio-net: remove GUEST_CSUM check for XDP
+Date: Sat, 24 Jun 2023 20:26:04 +0800
+Message-Id: <20230624122604.110958-4-hengqi@linux.alibaba.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20230624122604.110958-1-hengqi@linux.alibaba.com>
 References: <20230624122604.110958-1-hengqi@linux.alibaba.com>
@@ -59,85 +59,42 @@ X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-We are now re-probing the csum related fields and  trying
-to have XDP and RX hw checksum capabilities coexist on the
-XDP path. For the benefit of:
-1. RX hw checksum capability can be used if XDP is loaded.
-2. Avoid packet loss when loading XDP in the vm-vm scenario.
+XDP and GUEST_CSUM no longer conflict now, so we removed the
+check for GUEST_CSUM for XDP loading/unloading.
 
 Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
 Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/net/virtio_net.c | 41 ++++++++++++++++++++++++++++------------
- 1 file changed, 29 insertions(+), 12 deletions(-)
+v1->v2:
+  - Rewrite the commit log.
+
+ drivers/net/virtio_net.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 83ab9257043a..7643a188ec37 100644
+index 7643a188ec37..df7cca4d950f 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -1712,6 +1712,7 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
- 	struct net_device *dev = vi->dev;
- 	struct sk_buff *skb;
- 	struct virtio_net_hdr_mrg_rxbuf *hdr;
-+	__u8 flags;
- 
- 	if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
- 		pr_debug("%s: short packet %i\n", dev->name, len);
-@@ -1720,6 +1721,13 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
- 		return;
+@@ -61,7 +61,6 @@ static const unsigned long guest_offloads[] = {
+ 	VIRTIO_NET_F_GUEST_TSO6,
+ 	VIRTIO_NET_F_GUEST_ECN,
+ 	VIRTIO_NET_F_GUEST_UFO,
+-	VIRTIO_NET_F_GUEST_CSUM,
+ 	VIRTIO_NET_F_GUEST_USO4,
+ 	VIRTIO_NET_F_GUEST_USO6,
+ 	VIRTIO_NET_F_GUEST_HDRLEN
+@@ -3530,10 +3529,9 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_TSO6) ||
+ 	        virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_ECN) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_UFO) ||
+-		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_CSUM) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO4) ||
+ 		virtio_has_feature(vi->vdev, VIRTIO_NET_F_GUEST_USO6))) {
+-		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW/CSUM, disable GRO_HW/CSUM first");
++		NL_SET_ERR_MSG_MOD(extack, "Can't set XDP while host is implementing GRO_HW, disable GRO_HW first");
+ 		return -EOPNOTSUPP;
  	}
  
-+	/* Save the flags of the hdr before XDP processes the data.
-+	 * It is ok to use this for both mergeable and small modes.
-+	 * Because that's what we do now.
-+	 */
-+	if (unlikely(vi->xdp_enabled))
-+		flags = ((struct virtio_net_hdr_mrg_rxbuf *)buf)->hdr.flags;
-+
- 	if (vi->mergeable_rx_bufs)
- 		skb = receive_mergeable(dev, vi, rq, buf, ctx, len, xdp_xmit,
- 					stats);
-@@ -1731,19 +1739,28 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
- 	if (unlikely(!skb))
- 		return;
- 
--	hdr = skb_vnet_hdr(skb);
--	if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report)
--		virtio_skb_set_hash((const struct virtio_net_hdr_v1_hash *)hdr, skb);
--
--	if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
--		skb->ip_summed = CHECKSUM_UNNECESSARY;
-+	if (unlikely(vi->xdp_enabled)) {
-+		if (virtnet_set_csum_after_xdp(vi, skb, flags) < 0) {
-+			pr_debug("%s: errors occurred in flow dissector setting csum",
-+				 dev->name);
-+			goto frame_err;
-+		}
- 
--	if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
--				  virtio_is_little_endian(vi->vdev))) {
--		net_warn_ratelimited("%s: bad gso: type: %u, size: %u\n",
--				     dev->name, hdr->hdr.gso_type,
--				     hdr->hdr.gso_size);
--		goto frame_err;
-+	} else {
-+		hdr = skb_vnet_hdr(skb);
-+		if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report)
-+			virtio_skb_set_hash((const struct virtio_net_hdr_v1_hash *)hdr, skb);
-+
-+		if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
-+			skb->ip_summed = CHECKSUM_UNNECESSARY;
-+
-+		if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
-+					  virtio_is_little_endian(vi->vdev))) {
-+			net_warn_ratelimited("%s: bad gso: type: %u, size: %u\n",
-+					     dev->name, hdr->hdr.gso_type,
-+					     hdr->hdr.gso_size);
-+			goto frame_err;
-+		}
- 	}
- 
- 	skb_record_rx_queue(skb, vq2rxq(rq->vq));
 -- 
 2.19.1.6.gb485710b
 
