@@ -1,84 +1,82 @@
-Return-Path: <bpf+bounces-3340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0AF273C663
-	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 04:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50A1973C669
+	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 05:13:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41B6A281E6B
-	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 02:52:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD963281EBB
+	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 03:13:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3B139F;
-	Sat, 24 Jun 2023 02:52:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F31EC634;
+	Sat, 24 Jun 2023 03:13:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A8387F;
-	Sat, 24 Jun 2023 02:52:18 +0000 (UTC)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95AE510F4;
-	Fri, 23 Jun 2023 19:52:16 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4f957a45b10so1688476e87.0;
-        Fri, 23 Jun 2023 19:52:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB587F;
+	Sat, 24 Jun 2023 03:13:39 +0000 (UTC)
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217F3E47;
+	Fri, 23 Jun 2023 20:13:38 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-56312517201so666701eaf.2;
+        Fri, 23 Jun 2023 20:13:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687575135; x=1690167135;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YiaSgwKIgDzjt8h2SP6OaFlkBqoIZ7USz7iUuScyu0k=;
-        b=R18NtES5xWXIYIVjryWLi2jv9T0ndZTK0Kbxfw0GIdd1xKRClH1hDmPz9sj7xFLpiy
-         ZyrT0ip+LjEiI9zduiPbGA3ipZiTy/IYrtfPMGI5XsYkmJBVAlUAQFKXoN1/3qPFHNbU
-         88IiF6X1KmVDPLoyc2V4CfUgtJpj3ODxQAzndJIO26F1MjuWSRBCdacdsrh8fjJ1FWWm
-         9+WMt3Mi+TJyDfgLnqeOWJPWK3MpJVDsCwQ0LVF+LoJ1lpb93XIsjV8D2NvXsMNP4cNM
-         6aRGrlgFHyRzZtel1KkHLDa3GUMCpBZvv7XRwUsB1AyOF7Nja9VkB1ekiWRc3VwWNsiQ
-         FTMA==
+        d=gmail.com; s=20221208; t=1687576417; x=1690168417;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kof3tILyq2QWhgxlTTivqlLH4+fHohvvsiUKB9n1vWI=;
+        b=S1comwnLUtmnAvnLv3hzcDQSyUIyyg5wG2/oq/Y2zZNp5JarR1R/UDK+kkCda06cRl
+         4cBHROk6I0t33tEWAIWwYDG5FUP5hWtWgRcKdbatHQk9NDZ9/kcMbJXL2i7DLCi2YVEb
+         JscRJOahSHuvy5O/MV9vpaQ/GnRctQwbvGoQPFrafBr3gPhpJWA+hDLkoUPrTQiSiVSp
+         t4j1LXMYTuouEBU3SmyeOa6fjHh91QFsun88yVY82rk7fVfVFrqw+FFU/LC8UFGmZl1R
+         aKW/qpUsJSB4txBLXltPEhrXmzq/pHm5H8odHhfWk1gju0I29xLeUf+Z0hZr9YDDU+pu
+         aoLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687575135; x=1690167135;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YiaSgwKIgDzjt8h2SP6OaFlkBqoIZ7USz7iUuScyu0k=;
-        b=JeCJlVL2NMfWgcz9ND8oRANhToL/eIk0EjfkJthemfvyhGQ6NTitO/zK3fcK7vSOV/
-         2Mx8ZASYBdAKtN4OC2hmZYt1xd+gtWi/qG983Cek4ejpOVmOsHjm8fYYifbrVLrIvq/p
-         VEUCziD9WHESQqd1A+yqky8s74/p3OAJ25xqwtgjz9QYhEnKDEFk5MRrspe+qZckU2Ss
-         +1uVd1REQEZFHeBlF1TKjUU27jOfolCp5yQ8Cem03dXH8lX7ugY0nMRDvUSNtgZJrNuh
-         LH3jqc23x4D8xHI6DNbyzh1Ny9SAzBk6oR4QThR5ZwNsNjaEbvnF50fhrBoRknrCiMsB
-         2Z2w==
-X-Gm-Message-State: AC+VfDyunWKY3nXgMGo3LeF4qVH0mmfgt/IMpYvOxd2mfg/kdwkz7ym3
-	ai2pCtgVlWC1pZyB/yDwA/g2zy7XpSSOWB7eEiw=
-X-Google-Smtp-Source: ACHHUZ5pTxM16a5/EW6GTIFyrL4F2xPaqSvAj6vnxF2XIJx40+cSRKV/XlKkkizTyB4CF6189f6wOOGsByYn6mM5YO4=
-X-Received: by 2002:a19:4f52:0:b0:4f8:66e1:14e3 with SMTP id
- a18-20020a194f52000000b004f866e114e3mr11143450lfk.17.1687575134374; Fri, 23
- Jun 2023 19:52:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687576417; x=1690168417;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Kof3tILyq2QWhgxlTTivqlLH4+fHohvvsiUKB9n1vWI=;
+        b=OOcEog0LlnuRu22Q+fMzdYQiL6pUHHD86XD89lFGaPiNipVaRepH+X+DQbVdsU3Qam
+         nxyPyLe82ytn2XI+gyFKRs3WPo0YGkMY3LMQ3e7p6Lf5n6FsBK/Ga0rbhqsGlxWo+gLa
+         rtyGHbJJyFct9ojmWcpAr5w6fQUUXBPaLx6Qy94+LD7t6UK5DWgyduZ2dkie1vCSzSQK
+         KtOdKERhF0KI9nB2xIf5CvKm2BTWwTILbTNz0OCFsI31Ea82tHG5wTcmCfF8ksmK268a
+         kwdLO9FM8GaL18qKQ5ivhIi/opGlAqR5cbsXQEeoi9v6nRorMk2eGAL3mCIz9u4jXEr8
+         5U4Q==
+X-Gm-Message-State: AC+VfDw49IMj03fwZNlfmF3mLIencmLpr1dBjhk+GwNOHm/xj7Q5JmRr
+	Uyfa5nYAgBK7ULcZ+CW945nXzVvBzyU=
+X-Google-Smtp-Source: ACHHUZ5uq01H/9Q9NyAJ2gSugYagFtF95Hk+ct2uOPVUwDja9WarvunUL67+GNtg7+bsklaRSk/KYQ==
+X-Received: by 2002:a05:6359:60f:b0:130:e1d1:36d8 with SMTP id eh15-20020a056359060f00b00130e1d136d8mr16611708rwb.20.1687576417179;
+        Fri, 23 Jun 2023 20:13:37 -0700 (PDT)
+Received: from localhost.localdomain ([2620:10d:c090:400::5:b07c])
+        by smtp.gmail.com with ESMTPSA id m24-20020a170902bb9800b001aaed55aff3sm239954pls.137.2023.06.23.20.13.35
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 23 Jun 2023 20:13:36 -0700 (PDT)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: daniel@iogearbox.net,
+	andrii@kernel.org,
+	void@manifault.com,
+	houtao@huaweicloud.com,
+	paulmck@kernel.org
+Cc: tj@kernel.org,
+	rcu@vger.kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH v2 bpf-next 00/13] bpf: Introduce bpf_mem_cache_free_rcu().
+Date: Fri, 23 Jun 2023 20:13:20 -0700
+Message-Id: <20230624031333.96597-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230621170244.1283336-1-sdf@google.com> <20230621170244.1283336-12-sdf@google.com>
- <20230622195757.kmxqagulvu4mwhp6@macbook-pro-8.dhcp.thefacebook.com>
- <CAKH8qBvJmKwgdrLkeT9EPnCiTu01UAOKvPKrY_oHWySiYyp4nQ@mail.gmail.com>
- <CAADnVQKfcGT9UaHtAmWKywtuyP9+_NX0_mMaR0m9D0-a=Ymf5Q@mail.gmail.com>
- <CAKH8qBuJpybiTFz9vx+M+5DoGuK-pPq6HapMKq7rZGsngsuwkw@mail.gmail.com>
- <CAADnVQ+611dOqVFuoffbM_cnOf62n6h+jaB1LwD2HWxS5if2CA@mail.gmail.com>
- <m2bkh69fcp.fsf@gmail.com> <649637e91a709_7bea820894@john.notmuch>
-In-Reply-To: <649637e91a709_7bea820894@john.notmuch>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 23 Jun 2023 19:52:03 -0700
-Message-ID: <CAADnVQKUVDEg12jOc=5iKmfN-aHvFEtvFKVEDBFsmZizwkXT4w@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 11/11] net/mlx5e: Support TX timestamp metadata
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: Donald Hunter <donald.hunter@gmail.com>, Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -86,97 +84,83 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 23, 2023 at 5:25=E2=80=AFPM John Fastabend <john.fastabend@gmai=
-l.com> wrote:
->
-> Donald Hunter wrote:
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >
-> > > On Thu, Jun 22, 2023 at 3:13=E2=80=AFPM Stanislav Fomichev <sdf@googl=
-e.com> wrote:
-> > >>
-> > >> We want to provide common sane interfaces/abstractions via kfuncs.
-> > >> That will make most BPF programs portable from mlx to brcm (for
-> > >> example) without doing a rewrite.
-> > >> We're also exposing raw (readonly) descriptors (via that get_ctx
-> > >> helper) to the users who know what to do with them.
-> > >> Most users don't know what to do with raw descriptors;
-> > >
-> > > Why do you think so?
-> > > Who are those users?
-> > > I see your proposal and thumbs up from onlookers.
-> > > afaict there are zero users for rx side hw hints too.
-> >
-> > We have customers in various sectors that want to use rx hw timestamps.
-> >
-> > There are several use cases especially in Telco where they use DPDK
-> > today and want to move to AF_XDP but they need to be able to benefit
-> > from the hw capabilities of the NICs they purchase. Not having access t=
-o
-> > hw offloads on rx and tx is a barrier to AF_XDP adoption.
-> >
-> > The most notable gaps in AF_XDP are checksum offloads and multi buffer
-> > support.
-> >
-> > >> the specs are
-> > >> not public; things can change depending on fw version/etc/etc.
-> > >> So the progs that touch raw descriptors are not the primary use-case=
-.
-> > >> (that was the tl;dr for rx part, seems like it applies here?)
-> > >>
-> > >> Let's maybe discuss that mlx5 example? Are you proposing to do
-> > >> something along these lines?
-> > >>
-> > >> void mlx5e_devtx_submit(struct mlx5e_tx_wqe *wqe);
-> > >> void mlx5e_devtx_complete(struct mlx5_cqe64 *cqe);
-> > >>
-> > >> If yes, I'm missing how we define the common kfuncs in this case. Th=
-e
-> > >> kfuncs need to have some common context. We're defining them with:
-> > >> bpf_devtx_<kfunc>(const struct devtx_frame *ctx);
-> > >
-> > > I'm looking at xdp_metadata and wondering who's using it.
-> > > I haven't seen a single bug report.
-> > > No bugs means no one is using it. There is zero chance that we manage=
-d
-> > > to implement it bug-free on the first try.
-> >
-> > Nobody is using xdp_metadata today, not because they don't want to, but
-> > because there was no consensus for how to use it. We have internal POCs
-> > that use xdp_metadata and are still trying to build the foundations
-> > needed to support it consistently across different hardware. Jesper
-> > Brouer proposed a way to describe xdp_metadata with BTF and it was
-> > rejected. The current plan to use kfuncs for xdp hints is the most
-> > recent attempt to find a solution.
->
-> The hold up on my side is getting it in a LST kernel so we can get it
-> deployed in real environments. Although my plan is to just cast the
-> ctx to a kernel ctx and read the data out we need.
+From: Alexei Starovoitov <ast@kernel.org>
 
-+1
+v1->v2:
+- Fixed race condition spotted by Hou. Patch 7.
 
-> >
-> > > So new tx side things look like a feature creep to me.
-> > > rx side is far from proven to be useful for anything.
-> > > Yet you want to add new things.
->
-> From my side if we just had a hook there and could cast the ctx to
-> something BTF type safe so we can simply read through the descriptor
-> I think that would sufficient for many use cases. To write into the
-> descriptor that might take more thought a writeable BTF flag?
+v1:
 
-That's pretty much what I'm suggesting.
-Add two driver specific __weak nop hook points where necessary
-with few driver specific kfuncs.
-Don't build generic infra when it's too early to generalize.
+Introduce bpf_mem_cache_free_rcu() that is similar to kfree_rcu except
+the objects will go through an additional RCU tasks trace grace period
+before being freed into slab.
 
-It would mean that bpf progs will be driver specific,
-but when something novel like this is being proposed it's better
-to start with minimal code change to core kernel (ideally none)
-and when common things are found then generalize.
+Patches 1-9 - a bunch of prep work
+Patch 10 - a patch from Paul that exports rcu_request_urgent_qs_task().
+Patch 12 - the main bpf_mem_cache_free_rcu patch.
+Patch 13 - use it in bpf_cpumask.
 
-Sounds like Stanislav use case is timestamps in TX
-while Donald's are checksums on RX, TX. These use cases are too different.
-To make HW TX checksum compute checksum driven by AF_XDP
-a lot more needs to be done than what Stan is proposing for timestamps.
+bpf_local_storage, bpf_obj_drop, qp-trie will be other users eventually.
+
+With additional hack patch to htab that replaces bpf_mem_cache_free with bpf_mem_cache_free_rcu
+the following are benchmark results:
+- map_perf_test 4 8 16348 1000000
+drops from 800k to 600k. Waiting for RCU GP makes objects cache cold.
+
+- bench htab-mem -a -p 8
+20% drop in performance and big increase in memory. From 3 Mbyte to 50 Mbyte. As expected.
+
+- bench htab-mem -a -p 16 --use-case add_del_on_diff_cpu
+Same performance and better memory consumption.
+Before these patches this bench would OOM (with or without 'reuse after GP')
+Patch 8 addresses the issue.
+
+At the end the performance drop and additional memory consumption due to _rcu()
+were expected and came out to be within reasonable margin.
+Without Paul's patch 10 the memory consumption in 'bench htab-mem' is in Gbytes
+which wouldn't be acceptable.
+
+Patch 8 is a heuristic to address 'alloc on one cpu, free on another' issue.
+It works well in practice. One can probably construct an artificial benchmark
+to make heuristic ineffective, but we have to trade off performance, code complexity,
+and memory consumption.
+
+The life cycle of objects:
+alloc: dequeue free_llist
+free: enqeueu free_llist
+free_llist above high watermark -> free_by_rcu_ttrace
+free_rcu: enqueue free_by_rcu -> waiting_for_gp
+after RCU GP waiting_for_gp -> free_by_rcu_ttrace
+free_by_rcu_ttrace -> waiting_for_gp_ttrace -> slab
+
+Alexei Starovoitov (12):
+  bpf: Rename few bpf_mem_alloc fields.
+  bpf: Simplify code of destroy_mem_alloc() with kmemdup().
+  bpf: Let free_all() return the number of freed elements.
+  bpf: Refactor alloc_bulk().
+  bpf: Further refactor alloc_bulk().
+  bpf: Optimize moving objects from free_by_rcu_ttrace to
+    waiting_for_gp_ttrace.
+  bpf: Change bpf_mem_cache draining process.
+  bpf: Add a hint to allocated objects.
+  bpf: Allow reuse from waiting_for_gp_ttrace list.
+  selftests/bpf: Improve test coverage of bpf_mem_alloc.
+  bpf: Introduce bpf_mem_free_rcu() similar to kfree_rcu().
+  bpf: Convert bpf_cpumask to bpf_mem_cache_free_rcu.
+
+Paul E. McKenney (1):
+  rcu: Export rcu_request_urgent_qs_task()
+
+ include/linux/bpf_mem_alloc.h                 |   2 +
+ include/linux/rcutiny.h                       |   2 +
+ include/linux/rcutree.h                       |   1 +
+ kernel/bpf/cpumask.c                          |  20 +-
+ kernel/bpf/memalloc.c                         | 322 +++++++++++++-----
+ kernel/rcu/rcu.h                              |   2 -
+ .../testing/selftests/bpf/progs/linked_list.c |   2 +-
+ 7 files changed, 251 insertions(+), 100 deletions(-)
+
+-- 
+2.34.1
+
 
