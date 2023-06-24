@@ -1,204 +1,135 @@
-Return-Path: <bpf+bounces-3371-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3372-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C186C73CB70
-	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 16:44:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CD0873CB96
+	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 17:28:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDFDC1C2098B
-	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 14:44:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DBAE1C20937
+	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 15:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5BE35675;
-	Sat, 24 Jun 2023 14:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ADD85697;
+	Sat, 24 Jun 2023 15:28:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE3846B0;
-	Sat, 24 Jun 2023 14:44:38 +0000 (UTC)
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B673818E;
-	Sat, 24 Jun 2023 07:44:36 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1347357a12.1;
-        Sat, 24 Jun 2023 07:44:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687617876; x=1690209876;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3vJmDaKU4Ib4pJXRd1yORA65Rzqd159XVS7SbpIKack=;
-        b=R+YZN6sCYnkNmfLbovLwWUQwPShZrJnInzBwM1/U6Pcex/G+vwiGdSe2U6rNWIxY7l
-         xEY4Q3xhjhPBlX1yMJgiPxxmfEhMuLBpNW5WHlzB4kYP9ZsR/gpUNttdFj35Xp39dSxb
-         +367SYkL0eqIriiUgNxiUKQjjwPczy/gyao1VTHzdy2LwKyq29Tmw87LM6woAeCB4qTe
-         E0IBQd0uRgp1Tkl1HPGj0CxrIYIC7MvvLuqXeWYctvFIZbzFk+7o9eC7YGbyNpJeA+o8
-         QyyiD1q1zGxGsFWFzvupor1byEZvzAAJt6KBj0k/H8VGrLSHi4Hb72dgWFvQKfrdr2er
-         xt4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687617876; x=1690209876;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3vJmDaKU4Ib4pJXRd1yORA65Rzqd159XVS7SbpIKack=;
-        b=iRWuUEgk/CSijKsbuAUdmBD1KNGSjitFd7xb8DPoLpV5M+ejQlt3NKW9RXZ55V1poE
-         EGJwwz9XBre0gNZkK+v3IFV/BqHiCQSderLl7xGHvv+kuwq6umd7d5/gBHZk2TTXgjT+
-         HGk9LAFDzF16ZlT8tbNuJzoPxh+//AS8DIcUQu0tutqQ0KR/WpE3S9g5dizS1GUhKHCk
-         MI+IHCLZzblhlYBGQLT5ghW7+/vh3f8zk34s7xQDlypwzSfchLh39tPuSuuXN2QKjGiE
-         Y0sGPgGdVUPe3bt+Bx6Qk4L26yFBaNvoP9cjRA97LY0cwDBZE8qSDiKDHpI4/FeVNGIq
-         q0fQ==
-X-Gm-Message-State: AC+VfDyDhgq2mbcDhI/Va4jCSb3svar9y9q9CCHHOPXcyM7FaIoP0ljV
-	XjAHps0+TGzJNVbl29j13bBav5arGxEc3Jn+8wo=
-X-Google-Smtp-Source: ACHHUZ7CP0TUiEYRNEhB+Q/AnZCddjvg/nUlVf6D2r9b0dEkDcWeQYwnqajmoL5F0mwMxKlJLk5GBA==
-X-Received: by 2002:a17:90a:e60d:b0:25e:8326:488e with SMTP id j13-20020a17090ae60d00b0025e8326488emr24028485pjy.17.1687617875824;
-        Sat, 24 Jun 2023 07:44:35 -0700 (PDT)
-Received: from ?IPv6:2409:8a55:301b:e120:5d8f:b0cc:e645:f4d? ([2409:8a55:301b:e120:5d8f:b0cc:e645:f4d])
-        by smtp.gmail.com with ESMTPSA id o6-20020a63e346000000b00553b9e0510esm1333096pgj.60.2023.06.24.07.44.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jun 2023 07:44:35 -0700 (PDT)
-Subject: Re: [PATCH net-next v3 3/4] page_pool: introduce page_pool_alloc()
- API
-To: Jesper Dangaard Brouer <jbrouer@redhat.com>,
- Lorenzo Bianconi <lorenzo@kernel.org>,
- Alexander Duyck <alexander.duyck@gmail.com>
-Cc: brouer@redhat.com, Yunsheng Lin <linyunsheng@huawei.com>,
- davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Eric Dumazet <edumazet@google.com>, Maryam Tahhan <mtahhan@redhat.com>,
- bpf <bpf@vger.kernel.org>
-References: <c06f6f59-6c35-4944-8f7a-7f6f0e076649@huawei.com>
- <CAKgT0UccmDe+CE6=zDYQHi1=3vXf5MptzDo+BsPrKdmP5j9kgQ@mail.gmail.com>
- <0ba1bf9c-2e45-cd44-60d3-66feeb3268f3@redhat.com>
- <dcc9db4c-207b-e118-3d84-641677cd3d80@huawei.com>
- <f8ce176f-f975-af11-641c-b56c53a8066a@redhat.com>
- <CAKgT0UfzP30OiBQu+YKefLD+=32t+oA6KGzkvsW6k7CMTXU8KA@mail.gmail.com>
- <699563f5-c4fa-0246-5e79-61a29e1a8db3@redhat.com>
- <CAKgT0UcNOYwxRP_zkaBaZh-VBL-CriL8dFG-VY7-FUyzxfHDWw@mail.gmail.com>
- <ZI8dP5+guKdR7IFE@lore-desk>
- <CAKgT0UfFVFa4zT2DnPZEGaHp0uh5V1u1aGymgdL4Vu8Q1VV8hQ@mail.gmail.com>
- <ZJIXSyjxPf7FQQKo@lore-rh-laptop>
- <3e6c191a-3be3-d6ff-92a2-2685bade2e66@redhat.com>
-From: Yunsheng Lin <yunshenglin0825@gmail.com>
-Message-ID: <8d93fbf0-43bb-7a9c-9470-0085cf25a228@gmail.com>
-Date: Sat, 24 Jun 2023 22:44:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A602B20F0
+	for <bpf@vger.kernel.org>; Sat, 24 Jun 2023 15:28:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CAB6C433C8;
+	Sat, 24 Jun 2023 15:28:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1687620507;
+	bh=ky4bwl+Jvhzuw604b2TcsXkBxuI4T4UZ0oC38KWIYNw=;
+	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+	b=DpFB2BNaY/LV3LuiP+j1e9YK9hmzA3YmwzrAwe73GDwTB+3CxKrmdVkcxe7TTN0pK
+	 OxIPgeX3QMaODC/sqa1sh1/WnFCWjaj++0WUpOvjLHeZ+xAgkuIMxN139R2AFndWrv
+	 8xxxyu4+gpQHJCLh6dLCbCz6ZEG+ViMIL5SCUrY/YbflUPJns856vapGFNRlL0DfJS
+	 9SVunNH7EGc2R562vp7eiAeJrWMKTsWNGMRP+cy855kaEEaJ3KsWTFW6lkTPQQ/yqb
+	 M6rCO/pEGOBEeAq26N1f8RWqV2b8K+fR3Xh7k0EEzi7be63T63pRJrXfJAxWTnnvSo
+	 tt4wJYfhNFbfQ==
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailauth.nyi.internal (Postfix) with ESMTP id 580C627C0054;
+	Sat, 24 Jun 2023 11:28:25 -0400 (EDT)
+Received: from imap48 ([10.202.2.98])
+  by compute3.internal (MEProxy); Sat, 24 Jun 2023 11:28:25 -0400
+X-ME-Sender: <xms:mAuXZMSQ44gUknqi7yPhZymNBRJ6NOPgOtvxLCzBireM0uu6fV7vOA>
+    <xme:mAuXZJzXmnHUftm-EzkA2Rx780XdkY4W3meGOpv9WxwUMeFT9ilqEv3l7S2I_WVNb
+    kRJnVOpIrKUCr7eAXA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgeegjedgkeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
+    ggtffrrghtthgvrhhnpeduveffvdegvdefhfegjeejlefgtdffueekudfgkeduvdetvddu
+    ieeluefgjeeggfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
+    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
+    hugidrlhhuthhordhush
+X-ME-Proxy: <xmx:mAuXZJ1N1H-icH1Hfv0nWxqsk70PhdQmAgF91u9juQ4wzR05wx3QWA>
+    <xmx:mAuXZACGvyKn21kNAf7watbksqrdmwCHXRTt6j7izJ6XvutVshZK5w>
+    <xmx:mAuXZFjSM6L63lZTvdeAM7KrCpC0V7MvctICtiKWcsZYryiCfX0T0g>
+    <xmx:mQuXZGXXVWBZqOlPKq8w-0aEmnaNQlsfen5HvF2Ljs27qg2zR28SAw>
+Feedback-ID: ieff94742:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id DBBC531A0063; Sat, 24 Jun 2023 11:28:24 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-499-gf27bbf33e2-fm-20230619.001-gf27bbf33
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <3e6c191a-3be3-d6ff-92a2-2685bade2e66@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Message-Id: <8340aaf2-8b4c-4f7d-8eed-f72f615f6fd0@app.fastmail.com>
+In-Reply-To: <fe47aeb6-dae8-43a6-bcb0-ada2ebf62e08@app.fastmail.com>
+References: <20230607235352.1723243-1-andrii@kernel.org>
+ <c1a8d5e8-023b-4ef9-86b3-bdd70efe1340@app.fastmail.com>
+ <CAEf4BzazbMqAh_Nj_geKNLshxT+4NXOCd-LkZ+sRKsbZAJ1tUw@mail.gmail.com>
+ <a73da819-b334-448c-8e5c-50d9f7c28b8f@app.fastmail.com>
+ <CAEf4Bzb__Cmf5us1Dy6zTkbn2O+3GdJQ=khOZ0Ui41tkoE7S0Q@mail.gmail.com>
+ <5eb4264e-d491-a7a2-93c7-928b06ce264d@redhat.com>
+ <bc4f99af-0c46-49b2-9f2d-9a01e6a03af3@app.fastmail.com>
+ <5a75d1f0-4ed9-399c-4851-2df0755de9b5@redhat.com>
+ <CAEf4Bza9GvJ0vw2-0M8GKSXmOQ8VQCmeqEiQpMuZBjwqpA03vw@mail.gmail.com>
+ <82b79e57-a0ad-4559-abc9-858e0f51fbba@app.fastmail.com>
+ <9b0e9227-4cf4-4acb-ba88-52f65b099709@app.fastmail.com>
+ <173f0af7-e6e1-f4b7-e0a6-a91b7a4da5d7@iogearbox.net>
+ <fe47aeb6-dae8-43a6-bcb0-ada2ebf62e08@app.fastmail.com>
+Date: Sat, 24 Jun 2023 08:28:04 -0700
+From: "Andy Lutomirski" <luto@kernel.org>
+To: "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Andrii Nakryiko" <andrii.nakryiko@gmail.com>,
+ "Maryam Tahhan" <mtahhan@redhat.com>
+Cc: "Andrii Nakryiko" <andrii@kernel.org>, bpf@vger.kernel.org,
+ linux-security-module@vger.kernel.org, "Kees Cook" <keescook@chromium.org>,
+ "Christian Brauner" <brauner@kernel.org>, lennart@poettering.net,
+ cyphar@cyphar.com, kernel-team@meta.com
+Subject: Re: [PATCH v2 bpf-next 00/18] BPF token
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2023/6/21 19:55, Jesper Dangaard Brouer wrote:
-> 
-> 
-> On 20/06/2023 23.16, Lorenzo Bianconi wrote:
->> [...]
->>
->>>> I did some experiments using page_frag_cache/page_frag_alloc() instead of
->>>> page_pools in a simple environment I used to test XDP for veth driver.
->>>> In particular, I allocate a new buffer in veth_convert_skb_to_xdp_buff() from
->>>> the page_frag_cache in order to copy the full skb in the new one, actually
->>>> "linearizing" the packet (since we know the original skb length).
->>>> I run an iperf TCP connection over a veth pair where the
->>>> remote device runs the xdp_rxq_info sample (available in the kernel source
->>>> tree, with action XDP_PASS):
->>>>
->>>> TCP clietn -- v0 === v1 (xdp_rxq_info) -- TCP server
->>>>
->>>> net-next (page_pool):
->>>> - MTU 1500B: ~  7.5 Gbps
->>>> - MTU 8000B: ~ 15.3 Gbps
->>>>
->>>> net-next + page_frag_alloc:
->>>> - MTU 1500B: ~  8.4 Gbps
->>>> - MTU 8000B: ~ 14.7 Gbps
->>>>
->>>> It seems there is no a clear "win" situation here (at least in this environment
->>>> and we this simple approach). Moreover:
->>>
->>> For the 1500B packets it is a win, but for 8000B it looks like there
->>> is a regression. Any idea what is causing it?
->>
->> nope, I have not looked into it yet.
->>
-> 
-> I think I can explain via using micro-benchmark numbers.
-> (Lorenzo and I have discussed this over IRC, so this is our summary)
-> 
-> *** MTU 1500***
-> 
-> * The MTU 1500 case, where page_frag_alloc is faster than PP (page_pool):
-> 
-> The PP alloc a 4K page for MTU 1500. The cost of alloc + recycle via
-> ptr_ring cost 48 cycles (page_pool02_ptr_ring Per elem: 48 cycles(tsc)).
-> 
-> The page_frag_alloc API allocates a 32KB order-3 page, and chops it up
-> for packets.  The order-3 alloc + free cost 514 cycles (page_bench01:
-> alloc_pages order:3(32768B) 514 cycles). The MTU 1500 needs alloc size
-> 1514+320+256 = 2090 bytes.  In 32KB we can fit 15 packets.  Thus, the
-> amortized cost per packet is only 34.3 cycles (514/15).
-> 
-> Thus, this explains why page_frag_alloc API have an advantage here, as
-> amortized cost per packet is lower (for page_frag_alloc).
-> 
-> 
-> *** MTU 8000 ***
-> 
-> * The MTU 8000 case, where PP is faster than page_frag_alloc.
-> 
-> The page_frag_alloc API cannot slice the same 32KB into as many packets.
-> The MTU 8000 needs alloc size 8000+14+256+320 = 8590 bytes.  This is can
-> only store 3 full packets (32768/8590 = 3.81).
-> Thus, cost is 514/3 = 171 cycles.
-> 
-> The PP is actually challenged at MTU 8000, because it unfortunately
-> leads to allocating 3 full pages (12KiB), due to needed alloc size 8590
-> bytes. Thus cost is 3x 48 cycles = 144 cycles.
-> (There is also a chance of Jakubs "allow_direct" optimization in page_pool_return_skb_page to increase performance for PP).
-> 
-> Thus, this explains why PP is fastest in this case.
 
-Great analysis.
-So the problem seems to be: can we optimize the page fragment cache
-implementation so that it can at least match the performance of PP
-for the above case? As Alexander seems to be against using PP for
-the veth case without involving DMA mapping.
 
-> 
-> 
-> *** Surprising insights ***
-> 
-> My (maybe) surprising conclusion is that we should combine the two
-> approaches.  Which is basically what Lin's patchset is doing!
-> Thus, I'm actually suddenly become a fan of this patchset...
-> 
-> The insight is that PP can also work with higher-order pages and the
-> cost of PP recycles via ptr_ring will be the same, regardless of page
-> order size.  Thus, we can reduced the order-3 cost 514 cycles to
-> basically 48 cycles, and fit 15 packets (MTU 1500) resulting is
-> amortized allocator cost 48/15 = 3.2 cycles.
-> 
-> On the PP alloc-side this will be amazingly fast. When PP recycles frags
-> side, see page_pool_defrag_page() there is an atomic_sub operation.
-> I've measured atomic_inc to cost 17 cycles (for optimal non-contended
-> case), thus 3+17 = 20 cycles, it should still be a win.
-> 
-> 
-> --Jesper
-> 
-> 
+On Sat, Jun 24, 2023, at 6:59 AM, Andy Lutomirski wrote:
+> On Fri, Jun 23, 2023, at 4:23 PM, Daniel Borkmann wrote:
+
+>
+> If this series was about passing a =E2=80=9Cmay load kernel modules=E2=
+=80=9D token=20
+> around, I think it would get an extremely chilly reception, even thoug=
+h=20
+> we have module signatures.  I don=E2=80=99t see anything about BPF tha=
+t makes=20
+> BPF tokens more reasonable unless a real security model is developed=20
+> first.
+>
+
+To be clear, I'm not saying that there should not be a mechanism to use =
+BPF from a user namespace.  I'm saying the mechanism should have explici=
+t access control.  It wouldn't need to solve all problems right away, bu=
+t it should allow incrementally more features to be enabled as the acces=
+s control solution gets more powerful over time.
+
+BPF, unlike kernel modules, has a verifier.  While it would be a departu=
+re from current practice, permission to use BPF could come with an expli=
+cit list of allowed functions and allowed hooks.
+
+(The hooks wouldn't just be a list, presumably -- premission to install =
+an XDP program would be scoped to networks over which one has CAP_NET_AD=
+MIN, presumably.  Other hooks would have their own scoping.  Attaching t=
+o a cgroup should (and maybe already does?) require some kind of permiss=
+ion on the cgroup.  Etc.)
+
+If new, more restrictive functions are needed, they could be added.
+
+
+Alternatively, people could try a limited form of BPF proxying.  It woul=
+dn't need to be a full proxy -- an outside daemon really could approve t=
+he attachment of a BPF program, and it could parse the program, examine =
+the list of function it uses and what the proposed attachment is to, and=
+ make an educated decision.  This would need some API changes (maybe), b=
+ut it seems eminently doable.
 
