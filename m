@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-3345-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3346-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EF4D73C672
-	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 05:15:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D31373C674
+	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 05:16:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FFCF1C2144F
-	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 03:15:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B157281F50
+	for <lists+bpf@lfdr.de>; Sat, 24 Jun 2023 03:16:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3029917C3;
-	Sat, 24 Jun 2023 03:13:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E18C51FD2;
+	Sat, 24 Jun 2023 03:13:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 028F27F;
-	Sat, 24 Jun 2023 03:13:55 +0000 (UTC)
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C9AE47;
-	Fri, 23 Jun 2023 20:13:53 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-55e57337756so930487eaf.0;
-        Fri, 23 Jun 2023 20:13:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D587F;
+	Sat, 24 Jun 2023 03:13:58 +0000 (UTC)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A314E47;
+	Fri, 23 Jun 2023 20:13:57 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-666edfc50deso953948b3a.0;
+        Fri, 23 Jun 2023 20:13:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687576433; x=1690168433;
+        d=gmail.com; s=20221208; t=1687576437; x=1690168437;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=16uWDlZdQR3Juwac+BQwsJvGxkAsevnPbRvEaTU5eEY=;
-        b=B6XZ3jgGD6DdakMXT0qyN74hn0ckaNLgOrz8SwvtV14P8yqvRf1fwJKAmUFyOrNUI5
-         px/z0LunAxAckmSg94/eu2ncizYvsfZQnLzugWukkZ1lId4C+gHt77zzXyU0tSqHCZMu
-         2EFBzdZwEAmTMyNgX771KnWdtRID/wxJdN2Qox6+V1UoYHmlZQ6DnfMhlgsGsseFT9rK
-         9Yzdsx174V9l79V9urKNEtjh9CsPeY8CmFzlCoBDFIgzSTlMBPv0yJkcRBxy4lsbiq1Y
-         EpGgntBqp5F9bTmuLzlhYEzAsZFAQzG1ZPb5TqN2nfA80blFUjELRL73+kgVoXlfBE8X
-         X0ag==
+        bh=demoIvd6FUiWf68KRG+qXQL3nbt4VblYJWw6+Cz8IOo=;
+        b=sgfK82GqNhjk9qkC5VjJV3YL8U0hG58WuUkRH8QQaDbWoVOyqfWOtHerQJiGmOhpXa
+         SWj2jdviKPi/pwl7Q3rGnfvUSVraoEAhVjAf3Vl+f6o+XCI4TMWbUE/srSt0QA79Zg3+
+         9D+fE78lpjld3RaWGkS+HItFKnld3Uc7U+1iux3aq/vOyyGVsdrPM5IZvjL+FoIwu3vB
+         TaO07/kk7rDWNHKFSXGRWBg3G6WbmKwkuTlS1ReKDXgbXFYLfeQ+dW59F+AS/ZxNObgW
+         EDxAQdb0nhjQ8U1p590MV7jf+KuWKwGjgjS1Rphv0Lsq/vwAJLxuvNS0mNiUL12CELZw
+         cofg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687576433; x=1690168433;
+        d=1e100.net; s=20221208; t=1687576437; x=1690168437;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=16uWDlZdQR3Juwac+BQwsJvGxkAsevnPbRvEaTU5eEY=;
-        b=GC4X+z5qJDXVS1/xlL5WJM9x1XDRzDurh6kJU+QuCaDEI37T02aIq2byMk2T+x6JGN
-         P6VYyrez0WRyMvTl+k8/QyXmDsPECDVOdfNj7U3Mb/LJVkeBq2tMOXITgPavc6yqtIWv
-         z36cneFFHdHDvXn2ijqp3FxAur/hwHS5+nTBaD6z1dghybLE+6m9GqlnpJzGZIT+J0mR
-         e+hNg0ymP+rnXyhxPdmRfQi1nBvKHoZjZwfL6srn5lQWH9INtapURUtIRzCUtGqFE0nh
-         2tQjkBIdGOq1hwPumwR+pTurTm1zYobxS5vPNJttMHhwzHaP78Y9c0XrOtvkqkkcLStS
-         O7jQ==
-X-Gm-Message-State: AC+VfDwYMjrT1L8W18AdB8VgZ4wlyv8Wio657tV5o3Y/Sg7q+A9nRCUV
-	d/fOZRZ5O83skYnQdyuJ5R4=
-X-Google-Smtp-Source: ACHHUZ6i4Q6XBEi1sWyBTXB8kwICKU1XyzeLDi9VjKLqnvRFRaPgV4AqnmvXMhFgS8mZ6rtGRoKFXg==
-X-Received: by 2002:a05:6808:b28:b0:3a1:aef1:bbf3 with SMTP id t8-20020a0568080b2800b003a1aef1bbf3mr2949957oij.23.1687576432861;
-        Fri, 23 Jun 2023 20:13:52 -0700 (PDT)
+        bh=demoIvd6FUiWf68KRG+qXQL3nbt4VblYJWw6+Cz8IOo=;
+        b=ZIFhVwUiNuD1DcDnKZBmn/ZhBhBJw0VrdU5uB+Jzo49ZxCuqlnyiGt0EiAwZrxuYVD
+         p7w2d42xZNMD1WgSTxoTJZpx1QTOV1eaXhSBsiJJ89ZMbZyy2e/9rQrBTVzBYSOnzH5Y
+         zfkQEX2+Za+p9/ZNk/aLb6sFCpCE6s3Vl/ZoVRo4usDrf0CtSh2ngmD3tD8lDWdcMZTk
+         xqYMB/sM3hTtDU/JfaAow7z7jws7/Legz2+5nb9w3WMRu39yhjejU7mbIWAAGbgZ8tgc
+         Hjo0chGkUWe5tzUXKD2CPuhyXeUxQk5GIOSFpcVkdacTfl0qgoiJka/p+taIy9NaRR0a
+         urOg==
+X-Gm-Message-State: AC+VfDwt4P1+UZoeHD8cSJXrMqzmKBzyAQI5zyN/3u4sD1qfKR9YIhWM
+	EdfsAU3ngJ7AHprh8DcGIzU=
+X-Google-Smtp-Source: ACHHUZ6EJt5ILDUNDUuY7/FujMmanXoq+PAdTjPZ8EouZHKZ38QPRAvZIMlVBjHBUVmXj7E+cQZ6Iw==
+X-Received: by 2002:a05:6a00:1493:b0:668:9b2d:b534 with SMTP id v19-20020a056a00149300b006689b2db534mr19237238pfu.1.1687576436618;
+        Fri, 23 Jun 2023 20:13:56 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:400::5:b07c])
-        by smtp.gmail.com with ESMTPSA id a19-20020a170902b59300b001b04c2023e3sm229348pls.218.2023.06.23.20.13.51
+        by smtp.gmail.com with ESMTPSA id x13-20020a056a00270d00b0064fabbc047dsm217051pfv.55.2023.06.23.20.13.55
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 23 Jun 2023 20:13:52 -0700 (PDT)
+        Fri, 23 Jun 2023 20:13:56 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: daniel@iogearbox.net,
 	andrii@kernel.org,
@@ -67,9 +67,9 @@ Cc: tj@kernel.org,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH v2 bpf-next 04/13] bpf: Refactor alloc_bulk().
-Date: Fri, 23 Jun 2023 20:13:24 -0700
-Message-Id: <20230624031333.96597-5-alexei.starovoitov@gmail.com>
+Subject: [PATCH v2 bpf-next 05/13] bpf: Further refactor alloc_bulk().
+Date: Fri, 23 Jun 2023 20:13:25 -0700
+Message-Id: <20230624031333.96597-6-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 In-Reply-To: <20230624031333.96597-1-alexei.starovoitov@gmail.com>
 References: <20230624031333.96597-1-alexei.starovoitov@gmail.com>
@@ -89,82 +89,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Factor out inner body of alloc_bulk into separate helper.
-No functioncal changes.
+In certain scenarios alloc_bulk() migth be taking free objects mainly from
+free_by_rcu_ttrace list. In such case get_memcg() and set_active_memcg() are
+redundant, but they show up in perf profile. Split the loop and only set memcg
+when allocating from slab. No performance difference in this patch alone, but
+it helps in combination with further patches.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/memalloc.c | 46 ++++++++++++++++++++++++-------------------
- 1 file changed, 26 insertions(+), 20 deletions(-)
+ kernel/bpf/memalloc.c | 30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 693651d2648b..9693b1f8cbda 100644
+index 9693b1f8cbda..b07368d77343 100644
 --- a/kernel/bpf/memalloc.c
 +++ b/kernel/bpf/memalloc.c
-@@ -154,11 +154,35 @@ static struct mem_cgroup *get_memcg(const struct bpf_mem_cache *c)
- #endif
- }
- 
-+static void add_obj_to_free_list(struct bpf_mem_cache *c, void *obj)
-+{
-+	unsigned long flags;
-+
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		/* In RT irq_work runs in per-cpu kthread, so disable
-+		 * interrupts to avoid preemption and interrupts and
-+		 * reduce the chance of bpf prog executing on this cpu
-+		 * when active counter is busy.
-+		 */
-+		local_irq_save(flags);
-+	/* alloc_bulk runs from irq_work which will not preempt a bpf
-+	 * program that does unit_alloc/unit_free since IRQs are
-+	 * disabled there. There is no race to increment 'active'
-+	 * counter. It protects free_llist from corruption in case NMI
-+	 * bpf prog preempted this loop.
-+	 */
-+	WARN_ON_ONCE(local_inc_return(&c->active) != 1);
-+	__llist_add(obj, &c->free_llist);
-+	c->free_cnt++;
-+	local_dec(&c->active);
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		local_irq_restore(flags);
-+}
-+
- /* Mostly runs from irq_work except __init phase. */
- static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
- {
- 	struct mem_cgroup *memcg = NULL, *old_memcg;
--	unsigned long flags;
+@@ -186,8 +186,6 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
  	void *obj;
  	int i;
  
-@@ -188,25 +212,7 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
- 			if (!obj)
- 				break;
- 		}
--		if (IS_ENABLED(CONFIG_PREEMPT_RT))
--			/* In RT irq_work runs in per-cpu kthread, so disable
--			 * interrupts to avoid preemption and interrupts and
--			 * reduce the chance of bpf prog executing on this cpu
--			 * when active counter is busy.
+-	memcg = get_memcg(c);
+-	old_memcg = set_active_memcg(memcg);
+ 	for (i = 0; i < cnt; i++) {
+ 		/*
+ 		 * free_by_rcu_ttrace is only manipulated by irq work refill_work().
+@@ -202,16 +200,24 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
+ 		 * numa node and it is not a guarantee.
+ 		 */
+ 		obj = __llist_del_first(&c->free_by_rcu_ttrace);
+-		if (!obj) {
+-			/* Allocate, but don't deplete atomic reserves that typical
+-			 * GFP_ATOMIC would do. irq_work runs on this cpu and kmalloc
+-			 * will allocate from the current numa node which is what we
+-			 * want here.
 -			 */
--			local_irq_save(flags);
--		/* alloc_bulk runs from irq_work which will not preempt a bpf
--		 * program that does unit_alloc/unit_free since IRQs are
--		 * disabled there. There is no race to increment 'active'
--		 * counter. It protects free_llist from corruption in case NMI
--		 * bpf prog preempted this loop.
--		 */
--		WARN_ON_ONCE(local_inc_return(&c->active) != 1);
--		__llist_add(obj, &c->free_llist);
--		c->free_cnt++;
--		local_dec(&c->active);
--		if (IS_ENABLED(CONFIG_PREEMPT_RT))
--			local_irq_restore(flags);
+-			obj = __alloc(c, node, GFP_NOWAIT | __GFP_NOWARN | __GFP_ACCOUNT);
+-			if (!obj)
+-				break;
+-		}
++		if (!obj)
++			break;
 +		add_obj_to_free_list(c, obj);
++	}
++	if (i >= cnt)
++		return;
++
++	memcg = get_memcg(c);
++	old_memcg = set_active_memcg(memcg);
++	for (; i < cnt; i++) {
++		/* Allocate, but don't deplete atomic reserves that typical
++		 * GFP_ATOMIC would do. irq_work runs on this cpu and kmalloc
++		 * will allocate from the current numa node which is what we
++		 * want here.
++		 */
++		obj = __alloc(c, node, GFP_NOWAIT | __GFP_NOWARN | __GFP_ACCOUNT);
++		if (!obj)
++			break;
+ 		add_obj_to_free_list(c, obj);
  	}
  	set_active_memcg(old_memcg);
- 	mem_cgroup_put(memcg);
 -- 
 2.34.1
 
