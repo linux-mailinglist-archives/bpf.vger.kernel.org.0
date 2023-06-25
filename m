@@ -1,88 +1,94 @@
-Return-Path: <bpf+bounces-3382-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3383-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 148CA73CDC5
-	for <lists+bpf@lfdr.de>; Sun, 25 Jun 2023 03:19:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 018B373CDC6
+	for <lists+bpf@lfdr.de>; Sun, 25 Jun 2023 03:19:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 491521C2086E
-	for <lists+bpf@lfdr.de>; Sun, 25 Jun 2023 01:19:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4E30280F9F
+	for <lists+bpf@lfdr.de>; Sun, 25 Jun 2023 01:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4969C62C;
-	Sun, 25 Jun 2023 01:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569A962C;
+	Sun, 25 Jun 2023 01:19:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118EF7F
-	for <bpf@vger.kernel.org>; Sun, 25 Jun 2023 01:19:06 +0000 (UTC)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6807EA
-	for <bpf@vger.kernel.org>; Sat, 24 Jun 2023 18:19:04 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3110ab7110aso2394972f8f.3
-        for <bpf@vger.kernel.org>; Sat, 24 Jun 2023 18:19:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0BA7F
+	for <bpf@vger.kernel.org>; Sun, 25 Jun 2023 01:19:21 +0000 (UTC)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B28BEA
+	for <bpf@vger.kernel.org>; Sat, 24 Jun 2023 18:19:19 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3f9c0abc8b1so25785135e9.1
+        for <bpf@vger.kernel.org>; Sat, 24 Jun 2023 18:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687655943; x=1690247943;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KiQ4JgXnGFrOeyQ/KeQJ4um2D002IQlYsTC872Wv00U=;
-        b=YXIFh3PIqZXjY8zsQe/IZwZo84cqfcxBJ6iYPqEcHUgQk1LSCFRy6rIfqAWtIzpNmE
-         uqYt99nJ5Z9utycxSYNNgads/hi5rDJil9C2RjjI4n74o4SNkMF0c8J7VuAViMVZVHcM
-         t6ydD2c1IKd+HdzdQfq15U2CkoUULmrn2UI3F8ic5dVDg+ixtGHZDuDOw4bGTxXYBw67
-         GrZ9DZUs1DGc/JAPmHtVEKU0icXbIXelSxcZwJURKljRkcy0Mev8UL/mtmsbkSIFv1+3
-         gpLb/SVC6E6HL9ISkrv74468dVTzxT+RFZHASfGftqd/MHp+F8OFSSpC3XqOhFtD3US6
-         tiiA==
+        d=gmail.com; s=20221208; t=1687655958; x=1690247958;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YFfheJgBv8hOKGtN29y/O18Bd1ZF+XKPCoSCdp++obE=;
+        b=YhBiQiuLeViPO/mKXKlLB3N5S+XGXXaJFGtxAIKEmgTeBlD1b803BwraCd8xdUrdEQ
+         vd2mWD65x0FvFo5l6H+S2B4zaR8+hrZNPP07GfTTNuabmg09rCMXs66TSd6c7IsyEBbU
+         y7B/uC1C0dQsvkdEiO3WbGme0Zlhp16sF40v9lYhYzT93aXm2LehIBIajQjdMHClxCXR
+         bHFP+tkm+4ij6dYXSaXeP36Lm+Rf2wvIl9K0fyMygMJePzS2sOEgdIXcShTjkkd5rUqH
+         aBoRyUUUftIQU8qktZowB+lryeSQYvZInbPUU7RPz7M22Ej2tbJ0kMD9jz8SKoxJmAz2
+         jApg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687655943; x=1690247943;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KiQ4JgXnGFrOeyQ/KeQJ4um2D002IQlYsTC872Wv00U=;
-        b=TARZqp3PUXCCKoivJgWCwDra4tvgOOcwJmgFmNcFyDepSJZI0BI6eDernWR1H+2uEt
-         aamcYGlXoENLsi4n/z59QLKDuR3RYliXpcVnEha7GGB1YigS1PTXh//qkC6Z4hjdtIae
-         wwdfOJBZZp+firgi3hMSFI5yVZRI1eY+tKGkf2sinhO2Yv9L9ZiV7mRE5XxJgJU954e+
-         uDMYvVjab3+t+mo1nZbbZhC4oJl6uMYKLs7euZiGZKv1SvODuXa76t9hMv+msLiZngl2
-         aZT6hEty90djmGp/WVSwbJRMyJkeBTTVU40e3xiPX6BngX27IF9oZtBO2dfIi6YwOqjR
-         7KSA==
-X-Gm-Message-State: AC+VfDy7lEEjKcPLR4ELJWWXaew+P3S9QYAczsrTxZHKruW4KDydXm3d
-	+GZpBWkWoW9IeJPVbLhLCc8=
-X-Google-Smtp-Source: ACHHUZ6Y3nHf8Bgi5NdLID9UDaT1HdNvZNMyhNM5lQqUTv5sCVZWgShn1xivK/9rAFto6WzLKawGKA==
-X-Received: by 2002:adf:f611:0:b0:30a:e369:5acb with SMTP id t17-20020adff611000000b0030ae3695acbmr22021484wrp.68.1687655943040;
-        Sat, 24 Jun 2023 18:19:03 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687655958; x=1690247958;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YFfheJgBv8hOKGtN29y/O18Bd1ZF+XKPCoSCdp++obE=;
+        b=Z+m4lhhadovQz/z6ocNQKblVD4magOZU0gdXO/iN7XcPhXkFrbT8mLgoQ/JI4oP+EF
+         Zt2dP1C8BvJ3LncI8tJiXFiC+iiuJ2bAVDBjGVzu1UKxI4XkNE7StQL4tuHP3jkwcprA
+         cNDzQAvl61KLQDFGhPrulXkImC5lFFW5g3NqdHsIMeQAW9yUBLhbdP6uzX22FEKKY3fB
+         XzwARgICSY+XNzJ91iZGyyFxRCB4IAwkGz6+25iGjGsJoppO6O6GAnfqDvEFMKYyITZL
+         Pp23gHfCbsHdrcRQKM2pDH/wk9qNyz9tsQbSkSuLYSUigo5iNPsS/RJRkaGsDy/Y7GBf
+         QP2w==
+X-Gm-Message-State: AC+VfDwbEF+CjAYNkl312sKoCyjSocBLm5y9E8DvwlNECpsk2oWXbDQw
+	RpVg/V9/r3XzHd/e2HPrbIY=
+X-Google-Smtp-Source: ACHHUZ4dGwYEkPX5e7HenqVOVNxYhG1tP2tUhQaobKGf6aUM2tTMcwoXpMwLXv808q09EfQC5DDLDA==
+X-Received: by 2002:a1c:f317:0:b0:3f8:fc96:6bfd with SMTP id q23-20020a1cf317000000b003f8fc966bfdmr21750997wmq.17.1687655957661;
+        Sat, 24 Jun 2023 18:19:17 -0700 (PDT)
 Received: from krava (brn-rj-tbond05.sa.cz. [185.94.55.134])
-        by smtp.gmail.com with ESMTPSA id d13-20020a5d4f8d000000b003063db8f45bsm3344223wru.23.2023.06.24.18.19.01
+        by smtp.gmail.com with ESMTPSA id a10-20020a1cf00a000000b003f8fb02c413sm3469887wmb.8.2023.06.24.18.19.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jun 2023 18:19:02 -0700 (PDT)
+        Sat, 24 Jun 2023 18:19:17 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 25 Jun 2023 03:18:58 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+Date: Sun, 25 Jun 2023 03:19:13 +0200
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
 	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
 	Yonghong Song <yhs@fb.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
 Subject: Re: [PATCHv2 bpf-next 01/24] bpf: Add multi uprobe link
-Message-ID: <ZJeWAiW5qxQPghGm@krava>
+Message-ID: <ZJeWEZu2lKw67dnS@krava>
 References: <20230620083550.690426-1-jolsa@kernel.org>
  <20230620083550.690426-2-jolsa@kernel.org>
  <CAEf4BzZnn-m-5sTQEmCSyaQPNNyreE37Vu2GWtdLT=k+zR+kDA@mail.gmail.com>
  <ZJVViQEvUnMQN43b@krava>
  <CAEf4BzaQGqhO3hoGW-zvhioE=VKVpuMw5NTTvUw=sXTEoFptxA@mail.gmail.com>
+ <CAADnVQKT2=MHXj4RD9TXwqnPqau94UMHgjspYGgyGpz_aUQjCg@mail.gmail.com>
+ <CAEf4BzZRwsPK1mHDob4ROWjFyxaGM7vcQ7xZ8xQgEuY-7hFu_w@mail.gmail.com>
+ <CAADnVQ+DVo2a6bCqzV3ipDVLEaVmiUgziM9im1ovG9S5epR5VQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzaQGqhO3hoGW-zvhioE=VKVpuMw5NTTvUw=sXTEoFptxA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+DVo2a6bCqzV3ipDVLEaVmiUgziM9im1ovG9S5epR5VQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -90,77 +96,80 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 23, 2023 at 09:24:22AM -0700, Andrii Nakryiko wrote:
-
-SNIP
-
-> > > > +
-> > > > +       if (!uprobes || !ref_ctr_offsets || !link)
-> > > > +               goto error_free;
-> > > > +
-> > > > +       for (i = 0; i < cnt; i++) {
-> > > > +               if (uref_ctr_offsets && __get_user(ref_ctr_offset, uref_ctr_offsets + i)) {
-> > > > +                       err = -EFAULT;
-> > > > +                       goto error_free;
-> > > > +               }
-> > > > +               if (__get_user(offset, uoffsets + i)) {
-> > > > +                       err = -EFAULT;
-> > > > +                       goto error_free;
-> > > > +               }
-> > > > +
-> > > > +               uprobes[i].offset = offset;
-> > > > +               uprobes[i].link = link;
-> > > > +
-> > > > +               if (flags & BPF_F_UPROBE_MULTI_RETURN)
-> > > > +                       uprobes[i].consumer.ret_handler = uprobe_multi_link_ret_handler;
-> > > > +               else
-> > > > +                       uprobes[i].consumer.handler = uprobe_multi_link_handler;
-> > > > +
-> > > > +               ref_ctr_offsets[i] = ref_ctr_offset;
-> > > > +       }
-> > > > +
-> > > > +       link->cnt = cnt;
-> > > > +       link->uprobes = uprobes;
-> > > > +       link->path = path;
-> > > > +
-> > > > +       bpf_link_init(&link->link, BPF_LINK_TYPE_UPROBE_MULTI,
-> > > > +                     &bpf_uprobe_multi_link_lops, prog);
-> > > > +
-> > > > +       err = bpf_link_prime(&link->link, &link_primer);
-> > > > +       if (err)
-> > > > +               goto error_free;
-> > > > +
-> > > > +       for (i = 0; i < cnt; i++) {
-> > > > +               err = uprobe_register_refctr(d_real_inode(link->path.dentry),
-> > > > +                                            uprobes[i].offset, ref_ctr_offsets[i],
-> > > > +                                            &uprobes[i].consumer);
-> > > > +               if (err) {
-> > > > +                       bpf_uprobe_unregister(&path, uprobes, i);
-> > >
-> > > bpf_link_cleanup() will do this through
-> > > bpf_uprobe_multi_link_release(), no? So you are double unregistering?
-> > > Either drop cnt to zero, or just don't do this here? Latter is better,
-> > > IMO.
+On Fri, Jun 23, 2023 at 10:20:26AM -0700, Alexei Starovoitov wrote:
+> On Fri, Jun 23, 2023 at 10:11 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > bpf_link_cleanup path won't call release callback so we have to do that
+> > On Fri, Jun 23, 2023 at 9:39 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Jun 23, 2023 at 9:24 AM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > > > > +
+> > > > > > > +static int uprobe_prog_run(struct bpf_uprobe *uprobe,
+> > > > > > > +                          unsigned long entry_ip,
+> > > > > > > +                          struct pt_regs *regs)
+> > > > > > > +{
+> > > > > > > +       struct bpf_uprobe_multi_link *link = uprobe->link;
+> > > > > > > +       struct bpf_uprobe_multi_run_ctx run_ctx = {
+> > > > > > > +               .entry_ip = entry_ip,
+> > > > > > > +       };
+> > > > > > > +       struct bpf_prog *prog = link->link.prog;
+> > > > > > > +       struct bpf_run_ctx *old_run_ctx;
+> > > > > > > +       int err = 0;
+> > > > > > > +
+> > > > > > > +       might_fault();
+> > > > > > > +
+> > > > > > > +       rcu_read_lock_trace();
+> > > > > >
+> > > > > > we don't need this if uprobe is not sleepable, right? why unconditional then?
+> > > > >
+> > > > > I won't pretend I understand what rcu_read_lock_trace does ;-)
+> > > > >
+> > > > > I tried to follow bpf_prog_run_array_sleepable where it's called
+> > > > > unconditionally for both sleepable and non-sleepable progs
+> > > > >
+> > > > > there are conditional rcu_read_un/lock calls later on
+> > > > >
+> > > > > I will check
+> > > >
+> > > > hm... Alexei can chime in here, but given here we actually are trying
+> > > > to run one BPF program (not entire array of them), we do know whether
+> > > > it's going to be sleepable or not. So we can avoid unnecessary
+> > > > rcu_read_{lock,unlock}_trace() calls. rcu_read_lock_trace() is used
+> > > > when there is going to be sleepable BPF program executed to protect
+> > > > BPF maps and other resources from being freed too soon. But if we know
+> > > > that we don't need sleepable, we can avoid that.
+> > >
+> > > We can add more checks and bool flags to avoid rcu_read_{lock,unlock}_trace(),
+> > > but it will likely be slower. These calls are very fast.
+> >
+> > that's ok then. But seeing how we do
+> >
+> > rcu_read_lock_trace();
+> > if (!sleepable)
+> >     rcu_read_lock();
+> >
+> > it felt like we might as well just do
+> >
+> > if (sleepable)
+> >     rcu_read_lock_trace();
+> > else
+> >     rcu_read_lock();
+
+ok
+
+> >
+> >
+> > As I mentioned, in this case we have a single bpf_prog, not a
+> > bpf_prog_array, so that changes things a bit.
 > 
-> bpf_link_cleanup() does fput(primer->file); which eventually calls
-> release callback, no? I'd add printk and simulate failure just to be
-> sure
+> Ahh. It's only one prog. I missed that. Above makes sense then.
+> But why is it not an array? We can attach multiple uprobes to the same
+> location. Anyway that can be dealt with later.
 
-I recall we had similar discussion for kprobe_multi link ;-)
-
-I'll double check that but I think bpf_link_cleanup calls just
-dealloc callback not release
+I think we could add support for this later if it's needed
 
 jirka
-
-> 
-> >
-> > I think I can add simple selftest to have this path covered
-> >
-> > thanks,
-> > jirka
-
-SNIP
 
