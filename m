@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-3384-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3385-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D16073CDC7
-	for <lists+bpf@lfdr.de>; Sun, 25 Jun 2023 03:19:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADD0A73CDC8
+	for <lists+bpf@lfdr.de>; Sun, 25 Jun 2023 03:19:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D9181C2032A
-	for <lists+bpf@lfdr.de>; Sun, 25 Jun 2023 01:19:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEE5D1C20865
+	for <lists+bpf@lfdr.de>; Sun, 25 Jun 2023 01:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B320162C;
-	Sun, 25 Jun 2023 01:19:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8692E62C;
+	Sun, 25 Jun 2023 01:19:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F6E77F
-	for <bpf@vger.kernel.org>; Sun, 25 Jun 2023 01:19:32 +0000 (UTC)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946F6EA
-	for <bpf@vger.kernel.org>; Sat, 24 Jun 2023 18:19:30 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31297125334so1737804f8f.0
-        for <bpf@vger.kernel.org>; Sat, 24 Jun 2023 18:19:30 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B287F
+	for <bpf@vger.kernel.org>; Sun, 25 Jun 2023 01:19:47 +0000 (UTC)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D13BEA
+	for <bpf@vger.kernel.org>; Sat, 24 Jun 2023 18:19:45 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3f8fe9dc27aso18273105e9.3
+        for <bpf@vger.kernel.org>; Sat, 24 Jun 2023 18:19:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687655969; x=1690247969;
+        d=gmail.com; s=20221208; t=1687655984; x=1690247984;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=XooyKelbzR8y0tBkBizKCTmBSsNUTpvVKxds+EvEiHk=;
-        b=OFIcJ76A3n1y/fxOAhU3cUUuMbjcYVfWvFkF9/4lzqV25m1B5n+ZZx4yKHLpQ3AWcc
-         pbusnnMUAW+fMa/b3QsLHvGjNh5AezS8kRxy+XL+T/USTHEEGyMgLa1Gm/fQ/qnbIHiU
-         0S/Kq6P3R+XSj+WVcIWuwJD1WlAMsEdAUwJj05vQMDJCFaZS87oLdIImZqBUh+/bU4Mi
-         iwoh8j52YlhMBbrqzX2DGID8ubLRxv237DFDcnVZVuIC3rZ+QDMRHFlKAHFRz4AmjYNf
-         qVLOAK3ycWOiC+RNUzrNBIZ2wI+9+jSmEsPRIgb+iX4ZpwWJ7MbxzAQlgK+OfZeO0cWK
-         9JiA==
+        bh=iZK/pAFfNj65S9PWDkc5nhrIQ3lRgFW7VYz+PNBViXY=;
+        b=dNxsExtc1/nCuDK3LRdQcsNgiCZlhSkxSZvJBmZFjAq97DYQru1wWKqxKK5DM8f0Ih
+         ECeaJWTunAbt0HcbT2ohZdVvqqmuZ2Am0s3asbTCx3LPQIa0cMnjAfkgWowziT/KPSJz
+         LnSMmCOqzdjy1lKTVrTd0H60LXm/5SOfwH9TrKWUgKsppjIqyGDAug4LXdky5CiBVY09
+         XkfYNs+rMYJ/yqN6vB85DeILywAbyJI5NQjM8Rp0I8sFYeZA+XomEgXmPlX7AY//r7sg
+         XQCQ7XHKwk0xfKtgzN+B48sA+JkVjCCJr9ELFzgsxFJuWnmoXXQ24FldbFpyVeydpflc
+         FTuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687655969; x=1690247969;
+        d=1e100.net; s=20221208; t=1687655984; x=1690247984;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XooyKelbzR8y0tBkBizKCTmBSsNUTpvVKxds+EvEiHk=;
-        b=Mb1eL4JQ9s6mVidGLRvV0u+2aOaB9DHIvy2ypl/f28y0/AZOoYfkm9xCUa4lJLcvjH
-         bpgSeX6OuggbTqj+GAcY3zEtGke/HG3DnY6lbtF+nJs3crU48ClTKtdTBz8QRrcP417C
-         2Xt3nbp22NNqu1QjYJr+G7/Kq1lAtAb75CuzJ6bTUOgakGn2tkBSmLK4OPedy+di7KQ0
-         6Uu4QuuWuYsFxUfakMkF+OCU+j6tWMWZz3T2dZ8sD6lvE7zj3cJAIkDf6YmtILH0G7mX
-         NFqb9OMh5gJiCKCUcOnQLJppB1DnhPfONY5+Bfod5QiLSEC01tLENs7mjGuhjEeNlF1E
-         nexw==
-X-Gm-Message-State: AC+VfDxBdR+0k+LPQdAsefYqD2NhR/YSTDtTrkHPWC20IwxDGVMOHueR
-	weA/lbt/LmGq1custJmgnjs=
-X-Google-Smtp-Source: ACHHUZ73J8eGTnanxPen14kl46S9rKb+48hY1Brumy0ovuUCNXzRKweJruRYzauu01P6/RUDFC8Lgg==
-X-Received: by 2002:a05:600c:138c:b0:3fa:7bf0:7a81 with SMTP id u12-20020a05600c138c00b003fa7bf07a81mr5354264wmf.0.1687655968813;
-        Sat, 24 Jun 2023 18:19:28 -0700 (PDT)
+        bh=iZK/pAFfNj65S9PWDkc5nhrIQ3lRgFW7VYz+PNBViXY=;
+        b=OYeXz0BZ0KgT1ku2JNDVnUijzPY7511toWrIm5mOSDDbNbugwnS7PABtaxgt5FCgfo
+         RnTIx7hBCxpkK3hkzvTb56VKbi0FOKk/do+6GtzCLKo1jF/iroI5eQIew2kbA+CAv3wT
+         uklC2Z996nWc6fool7iU0Ffz3ThJsew/icjJaRQzuF9jHA2pjbtDBXEO6iWEDRByKqNB
+         micWW8/5tUlD+UxsLh39lN2ciHfctpROPCrsNWsOrFCJ/tD2qccFxxJnFHT7dOACkBUM
+         fqvp/2M0/60tVl6sGRfwk2ExYGjAZ1lPeeBI7ilVeT6ieCynG18hQ1Z3C3M4yZEZ2oLz
+         Pjyg==
+X-Gm-Message-State: AC+VfDxcxYhhN7zbfKBxiciZI1QZjNYHnIRpFx252E8+FUjyvMPbpK+B
+	39k4IzdrvOU+9wo4UKx2R+4=
+X-Google-Smtp-Source: ACHHUZ49UDX941Mk2eZVZX6AEgih7HghxDBtnrnQOyntjQg1URLAoBnlTPfMBvi6uPv0pDBdMrIk8g==
+X-Received: by 2002:a7b:cbd9:0:b0:3fa:7d9d:456f with SMTP id n25-20020a7bcbd9000000b003fa7d9d456fmr2971499wmi.40.1687655983654;
+        Sat, 24 Jun 2023 18:19:43 -0700 (PDT)
 Received: from krava (brn-rj-tbond05.sa.cz. [185.94.55.134])
-        by smtp.gmail.com with ESMTPSA id hn8-20020a05600ca38800b003fa722e8b48sm6432524wmb.32.2023.06.24.18.19.26
+        by smtp.gmail.com with ESMTPSA id v14-20020a1cf70e000000b003f9b2c602c0sm6386525wmh.37.2023.06.24.18.19.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jun 2023 18:19:28 -0700 (PDT)
+        Sat, 24 Jun 2023 18:19:43 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 25 Jun 2023 03:19:24 +0200
+Date: Sun, 25 Jun 2023 03:19:36 +0200
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,12 +68,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCHv2 bpf-next 08/24] libbpf: Add elf_find_multi_func_offset
- function
-Message-ID: <ZJeWHKFXubOWd+Mj@krava>
+Subject: Re: [PATCHv2 bpf-next 09/24] libbpf: Add
+ elf_find_pattern_func_offset function
+Message-ID: <ZJeWKDmj3QO4PLqz@krava>
 References: <20230620083550.690426-1-jolsa@kernel.org>
- <20230620083550.690426-9-jolsa@kernel.org>
- <CAEf4BzZFipgUhpaUY7-Cy9+jBOtBws5bdnFMh0FgWk_kh-z6pQ@mail.gmail.com>
+ <20230620083550.690426-10-jolsa@kernel.org>
+ <CAEf4BzYq2LsFkJxGGxU1QG=t8dn3aAqTa4XRdKcFkKjf2n_kow@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,7 +83,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZFipgUhpaUY7-Cy9+jBOtBws5bdnFMh0FgWk_kh-z6pQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYq2LsFkJxGGxU1QG=t8dn3aAqTa4XRdKcFkKjf2n_kow@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -91,172 +91,165 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 23, 2023 at 01:39:54PM -0700, Andrii Nakryiko wrote:
+On Fri, Jun 23, 2023 at 01:39:58PM -0700, Andrii Nakryiko wrote:
 > On Tue, Jun 20, 2023 at 1:37 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > Adding elf_find_multi_func_offset function that looks up
-> > offsets for symbols specified in syms array argument.
+> > Adding elf_find_pattern_func_offset function that looks up
+> > offsets for symbols specified by pattern argument.
 > >
-> > Offsets are returned in allocated array with the 'cnt' size,
-> > that needs to be released by the caller.
+> > The 'pattern' argument allows wildcards (*?' supported).
+> >
+> > Offsets are returned in allocated array together with its
+> > size and needs to be released by the caller.
 > >
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  tools/lib/bpf/libbpf.c          | 112 ++++++++++++++++++++++++++++++++
-> >  tools/lib/bpf/libbpf_internal.h |   2 +
-> >  2 files changed, 114 insertions(+)
+> >  tools/lib/bpf/libbpf.c          | 78 +++++++++++++++++++++++++++++++++
+> >  tools/lib/bpf/libbpf_internal.h |  3 ++
+> >  2 files changed, 81 insertions(+)
 > >
 > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 30d9e3b69114..1c310b718961 100644
+> > index 1c310b718961..3e5c88caf5d5 100644
 > > --- a/tools/lib/bpf/libbpf.c
 > > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -11053,6 +11053,118 @@ static long elf_find_func_offset(Elf *elf, const char *binary_path, const char *
+> > @@ -11165,6 +11165,84 @@ int elf_find_multi_func_offset(const char *binary_path, int cnt,
 > >         return ret;
 > >  }
 > >
-> > +struct elf_symbol_offset {
-> > +       const char *name;
-> > +       unsigned long offset;
-> > +       int bind;
-> > +       int idx;
-> > +};
-> > +
-> > +static int cmp_func_offset(const void *_a, const void *_b)
-> > +{
-> > +       const struct elf_symbol_offset *a = _a;
-> > +       const struct elf_symbol_offset *b = _b;
-> > +
-> > +       return strcmp(a->name, b->name);
-> > +}
-> > +
 > > +static int
-> > +__elf_find_multi_func_offset(Elf *elf, const char *binary_path, int cnt,
-> > +                            const char **syms, unsigned long **poffsets)
+> > +__elf_find_pattern_func_offset(Elf *elf, const char *binary_path, const char *pattern,
+> > +                              const char ***pnames, unsigned long **poffsets, size_t *pcnt)
 > > +{
 > > +       int sh_types[2] = { SHT_DYNSYM, SHT_SYMTAB };
-> > +       struct elf_symbol_offset *func_offs;
-> > +       int err = 0, i, idx, cnt_done = 0;
+> > +       struct elf_symbol_offset *func_offs = NULL;
 > > +       unsigned long *offsets = NULL;
-> > +
-> > +       func_offs = calloc(cnt, sizeof(*func_offs));
-> > +       if (!func_offs)
-> > +               return -ENOMEM;
-> > +
-> > +       for (i = 0; i < cnt; i++) {
-> > +               func_offs[i].name = syms[i];
-> > +               func_offs[i].idx = i;
-> > +       }
-> > +
-> > +       qsort(func_offs, cnt, sizeof(*func_offs), cmp_func_offset);
+> > +       const char **names = NULL;
+> > +       size_t func_offs_cnt = 0;
+> > +       size_t func_offs_cap = 0;
+> > +       int err = 0, i;
 > > +
 > > +       for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
 > > +               struct elf_symbol_iter iter;
 > > +               struct elf_symbol *sym;
 > > +
 > > +               if (elf_symbol_iter_new(&iter, elf, binary_path, sh_types[i]))
-> 
-> a bit lax handling of initialization errors here, let's be a bit more
-> strict here?
-
-right, I'll have elf_symbol_iter_new return -ENOENT in case there's no
-'sh_types[i]' section type (and we want to try next section type) and
-fail otherwise
-
-> 
 > > +                       continue;
+> 
+> same as in the previous patch, error handling?
+
+ok, same solution as in my previous answer
+
+> 
 > > +
 > > +               while ((sym = elf_symbol_iter_next(&iter))) {
-> > +                       struct elf_symbol_offset *fo, tmp = {
-> > +                               .name = sym->name,
-> > +                       };
-> > +
-> > +                       fo = bsearch(&tmp, func_offs, cnt, sizeof(*func_offs),
-> > +                                    cmp_func_offset);
-> > +                       if (!fo)
+> > +                       if (!glob_match(sym->name, pattern))
 > > +                               continue;
 > > +
-> > +                       if (fo->offset > 0) {
-> > +                               /* same offset, no problem */
-> > +                               if (fo->offset == sym->offset)
-> > +                                       continue;
-> > +                               /* handle multiple matches */
-> > +                               if (fo->bind != STB_WEAK && sym->bind != STB_WEAK) {
-> > +                                       /* Only accept one non-weak bind. */
-> > +                                       pr_warn("elf: ambiguous match for '%s', '%s' in '%s'\n",
-> > +                                               sym->name, fo->name, binary_path);
-> > +                                       err = -LIBBPF_ERRNO__FORMAT;
-> > +                                       goto out;
-> > +                               } else if (sym->bind == STB_WEAK) {
-> > +                                       /* already have a non-weak bind, and
-> > +                                        * this is a weak bind, so ignore.
-> > +                                        */
-> > +                                       continue;
-> > +                               }
-> > +                       }
-> > +                       if (!fo->offset)
-> > +                               cnt_done++;
-> > +                       fo->offset = sym->offset;
-> > +                       fo->bind = sym->bind;
+> > +                       err = libbpf_ensure_mem((void **) &func_offs, &func_offs_cap,
+> > +                                               sizeof(*func_offs), func_offs_cnt + 1);
+> > +                       if (err)
+> > +                               goto out;
+> > +
+> > +                       func_offs[func_offs_cnt].offset = sym->offset;
+> > +                       func_offs[func_offs_cnt].name = strdup(sym->name);
+> 
+> check for NULL?
+> 
+> and I'm actually unsure why you need to reuse elf_symbol_offset struct
+> here? You just need names and offsets in two separate array, so just
+> do that?..
+
+I guess it seemed easier to do just single libbpf_ensure_mem call,
+then doing two and maintain cap/cnt for both arrays.. but right,
+I guess there will be good solution without the extra array
+
+> 
+> > +                       func_offs_cnt++;
 > > +               }
+> > +
+> > +               /* If we found anything in the first symbol section,
+> > +                * do not search others to avoid duplicates.
+> > +                */
+> > +               if (func_offs_cnt)
+> > +                       break;
 > > +       }
 > > +
-> > +       if (cnt != cnt_done) {
-> > +               err = -ENOENT;
-> > +               goto out;
-> > +       }
-> > +       offsets = calloc(cnt, sizeof(*offsets));
-> 
-> you can allocate it at the very beginning and fill it out based on
-> fo->idx, there is no need to store offset in elf_symbol_offset
-
-true, will fix
-
-> 
-> > +       if (!offsets) {
+> > +       offsets = calloc(func_offs_cnt, sizeof(*offsets));
+> > +       names = calloc(func_offs_cnt, sizeof(*names));
+> > +       if (!offsets || !names) {
+> > +               free(offsets);
+> > +               free(names);
 > > +               err = -ENOMEM;
 > > +               goto out;
 > > +       }
-> > +       for (i = 0; i < cnt; i++) {
-> > +               idx = func_offs[i].idx;
-> > +               offsets[idx] = func_offs[i].offset;
+> > +
+> > +       for (i = 0; i < func_offs_cnt; i++) {
+> > +               offsets[i] = func_offs[i].offset;
+> > +               names[i] = func_offs[i].name;
+> 
+> see above, why not fill these out right away during elf symbols iteration?
+
+ok
+
+> 
 > > +       }
 > > +
-> > +out:
+> > +       *pnames = names;
 > > +       *poffsets = offsets;
+> > +       *pcnt = func_offs_cnt;
+> > +out:
 > > +       free(func_offs);
 > > +       return err;
 > > +}
 > > +
-> > +int elf_find_multi_func_offset(const char *binary_path, int cnt,
-> > +                              const char **syms, unsigned long **poffsets)
+> > +int elf_find_pattern_func_offset(const char *binary_path, const char *pattern,
+> > +                                const char ***pnames, unsigned long **poffsets,
+> > +                                size_t *pcnt)
 > > +{
 > > +       struct elf_fd elf_fd = {};
-> 
-> do you need to initialize this struct?
-
-I recall getting gcc warn/error, which I can't see anymore ;-)
-will remove
-
-> 
 > > +       long ret = -ENOENT;
-> 
-> same here, you always override ret, so no need to init it?
-
-yes
-
-> 
 > > +
 > > +       ret = open_elf(binary_path, &elf_fd);
 > > +       if (ret)
 > > +               return ret;
 > > +
-> > +       ret = __elf_find_multi_func_offset(elf_fd.elf, binary_path, cnt, syms, poffsets);
+> > +       ret = __elf_find_pattern_func_offset(elf_fd.elf, binary_path, pattern, pnames, poffsets, pcnt);
 > 
-> is there a point of having elf_find_multi_func_offset and
-> __elf_find_multi_func_offset separately? can you please combine?
+> I don't really like these underscored functions,
+> elf_find_pattern_func_offset() already has to do goto out for clean
+> ups, this close_elf() thing is just another resource to clean up
+> there, I don't see much reason to separate open_elf/close_elf in this
+> case
 
-ok
+I think that happened because I originally did the 'struct elf_fd' cleanup
+as last patch and only then moved it up the git log, so I did not realize
+elf_find_pattern_func_offset could be single function, will change
 
 thanks,
 jirka
+
+> 
+> 
+> > +       close_elf(&elf_fd);
+> > +       return ret;
+> > +}
+> > +
+> >  /* Find offset of function name in ELF object specified by path. "name" matches
+> >   * symbol name or name@@LIB for library functions.
+> >   */
+> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> > index 13d5c12fbd0b..22b0834e7fe1 100644
+> > --- a/tools/lib/bpf/libbpf_internal.h
+> > +++ b/tools/lib/bpf/libbpf_internal.h
+> > @@ -579,4 +579,7 @@ int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
+> >
+> >  int elf_find_multi_func_offset(const char *binary_path, int cnt,
+> >                                const char **syms, unsigned long **poffsets);
+> > +int elf_find_pattern_func_offset(const char *binary_path, const char *pattern,
+> > +                                const char ***pnames, unsigned long **poffsets,
+> > +                                size_t *pcnt);
+> >  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
+> > --
+> > 2.41.0
+> >
 
