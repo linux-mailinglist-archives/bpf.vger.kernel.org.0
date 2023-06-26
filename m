@@ -1,363 +1,247 @@
-Return-Path: <bpf+bounces-3485-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3486-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C396D73EB5C
-	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 22:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB12773EBE7
+	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 22:36:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1354D280E59
-	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 20:03:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88EEB280EC0
+	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 20:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89B814271;
-	Mon, 26 Jun 2023 20:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 434D6125DA;
+	Mon, 26 Jun 2023 20:36:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7599DD505;
-	Mon, 26 Jun 2023 20:03:43 +0000 (UTC)
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBEC2940;
-	Mon, 26 Jun 2023 13:03:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1687809801; x=1719345801;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Nqaoi3Cyia2kgM9EB/SIf9EIHf/ApdjE+FZSiJFCs90=;
-  b=BaV5Y8mrsOR9T8Ep6S5GtvoAWe8vZMDncYGY+Y4T+5atwKlcA2cLav3t
-   Z6qvhitj+BLoUOs7XAk0O5X/mC7VTPZ2NKqU+pRrmRpLjQsqI2F2UZHLh
-   qAG8EjI5sAQIqoAlvtTNT/Iw22R6avu7nNKzHtBQJhHsTxgv8Sn80I8Dd
-   0=;
-X-IronPort-AV: E=Sophos;i="6.01,160,1684800000"; 
-   d="scan'208";a="12592082"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-54a853e6.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2023 20:03:16 +0000
-Received: from EX19MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-	by email-inbound-relay-iad-1a-m6i4x-54a853e6.us-east-1.amazon.com (Postfix) with ESMTPS id 530004654A;
-	Mon, 26 Jun 2023 20:03:10 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117EA13AC0
+	for <bpf@vger.kernel.org>; Mon, 26 Jun 2023 20:36:48 +0000 (UTC)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26B0E4D;
+	Mon, 26 Jun 2023 13:36:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687811807; x=1719347807;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=EpXIVl/sMTGdWkvNqtqcriGI+S5B9klQttO6f03fg6I=;
+  b=REXr3EU2xpQpREBK3mKF/bNca/6yJE8IMcPFdmgfVP2LkOBTzcSqwtrB
+   O04GkyYoY7OZJBrjoth55WqUB2KqZ0jbAhn03loAL4nHtb3RhBZBhyjY6
+   1PyoROZBwMmOO5y2FRedUbg07Ad//DKdTKZ/A0dpv/LIh8m6IiBqPUGY+
+   UiaQb6ej39VpxRiMzw5iXeLKmCNRn6x3JHt8piWIY4muWjBItYAyy0YMW
+   5j5UxuJy2IqvOhEw0CU06CX72XRRTIHMXTI6RIvMYMhcKfuXtVVpkcKYt
+   SM16i9GwheyUt034Kq+b2abIqy4c+D8LMgfC+Bqez3gEZTODHzJDu7gkn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="363924884"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="363924884"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2023 13:36:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="1046642103"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="1046642103"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga005.fm.intel.com with ESMTP; 26 Jun 2023 13:36:46 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 26 Jun 2023 13:36:46 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 26 Jun 2023 13:36:45 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 26 Jun 2023 13:36:45 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 26 Jun 2023 20:02:52 +0000
-Received: from 88665a182662.ant.amazon.com (10.187.170.15) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 26 Jun 2023 20:02:48 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <lmb@isovalent.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <hemanthmalla@gmail.com>,
-	<joe@wand.net.nz>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-	<kpsingh@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<martin.lau@linux.dev>, <mykolal@fb.com>, <netdev@vger.kernel.org>,
-	<pabeni@redhat.com>, <sdf@google.com>, <shuah@kernel.org>, <song@kernel.org>,
-	<willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v3 5/7] net: remove duplicate sk_lookup helpers
-Date: Mon, 26 Jun 2023 13:02:38 -0700
-Message-ID: <20230626200238.75316-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230613-so-reuseport-v3-5-907b4cbb7b99@isovalent.com>
-References: <20230613-so-reuseport-v3-5-907b4cbb7b99@isovalent.com>
+ 15.1.2507.23; Mon, 26 Jun 2023 13:36:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MSEgwj9ty5xVX5aevXmhp+wFps5S/LyXL+Kp4LAZJrMZR68TNHbrjA1pVZkLNh/ARfG9L3AqOmrNWk5QRcCX3zg1Zj9u/s5WvHq9F0ulHdFdwheembePwftWScptTDgdVMOwslEREEjRl3areHbT8Wv3gBpRRLzzG4KbkrfBqwARtZSx8Z8s5brBSIV/3Kd1zEDIQyd/xBA9v3KMN3rcfCL9SdJoS5zEmM/CP0Yb3+L/evNpVU7avFOhV/y9GB6okY/ckPBWmZ7SlRhEScXjsHR4xF6khyj8SWefrduW9wnjjzxMnf4hW1U6JQvTrmUN/KtpfIoWKfTQi4usvwfKhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K5zWWcBitxMAAsXg/oViT2XjxagoXKZcd8ra3h3lC2Y=;
+ b=TJiNFK+/xpvQ7O38+9DLRPiMT4lGgi7zXpPhqvD2ZrIV+Bp7VAvPdcJNfH6F9IzvBwq08bZEV/mE6pvatdDH3vl8gD5mqq9GUPLSUPOI8P61kvaaafRDYd+2L26/36wjJtv5oB/Dsd78N8TWTg2qp8XqqCvqg8Sfufc9pQlTBTJYpVqRz3dwV0KgY7MgLg7d8un5Lhl76aHxPPYTHG3ry+GET38wG1TDZc+1HofJnbYM32Ke/BgNv1ELwjpEkJkzMS/suGniWrIVsKEqXof5qLJgC6fHR0D8zT8M9Ld3M2VAqKJyB0WofoFSKTqUNr6QH8SeIrFJh45aETjj/pnDQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by PH8PR11MB6804.namprd11.prod.outlook.com (2603:10b6:510:1bc::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Mon, 26 Jun
+ 2023 20:36:37 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::7237:cab8:f7f:52a5]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::7237:cab8:f7f:52a5%7]) with mapi id 15.20.6521.024; Mon, 26 Jun 2023
+ 20:36:37 +0000
+Date: Mon, 26 Jun 2023 13:36:28 -0700
+From: Ira Weiny <ira.weiny@intel.com>
+To: Sumitra Sharma <sumitraartsy@gmail.com>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+	<song@kernel.org>, Yonghong Song <yhs@fb.com>, John Fastabend
+	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	<bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: Ira Weiny <ira.weiny@intel.com>, Fabio <fmdefrancesco@gmail.com>, "Deepak
+ R Varma" <drv@mailo.com>, Sumitra Sharma <sumitraartsy@gmail.com>
+Subject: Re: [PATCH v3] lib/test_bpf: Call page_address() on page acquired
+ with GFP_KERNEL flag
+Message-ID: <6499f6cc97d6e_7517929478@iweiny-mobl.notmuch>
+References: <20230622075244.GA426694@sumitra.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230622075244.GA426694@sumitra.com>
+X-ClientProxiedBy: BYAPR01CA0042.prod.exchangelabs.com (2603:10b6:a03:94::19)
+ To SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.187.170.15]
-X-ClientProxiedBy: EX19D046UWA004.ant.amazon.com (10.13.139.76) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-	version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|PH8PR11MB6804:EE_
+X-MS-Office365-Filtering-Correlation-Id: 73c96063-038c-43dd-e215-08db768509ea
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QhnOK2M1g3t4HxPCKj3hnZALB0LbtBykr5Ix8xfGiQpLfDxqJZ5osDDyzMYboYAE31HKrDm+SUghhSZHPshmhBM9qvIwWkobIdxCp7iMQZOmqg+1V1cAnCF/Uu/KBkp358Ag1LDgmTj+5NRTergAxggVqahOCYF8Te17PP0KAdF2vP/7SdJ2CG0YglpNTGyhAyd9toh5uDGBagUj/NYfboYRBsI5H4SyqH9q9f80rCzVp9vTTTHDk8Q9+6vSmVm1/EY5l+kW1xFR0s5tMJ7X840Gu/+15uTIa92ZYHK4aFAs91nw+RLQgLeRsQaysD6jtUKDgXPPkq8+OHrCwah8ZBbnvzQHWGM32RNeFUJIbxI2pB9bj/BHbEy+V4H7+aqbTpw2SMR29cGeTCOGI/hOtXXbYKds3M5UUY979/wzvx7Ff5kJsBp9IVrmuek7+cPY+DufhrvAXw/qgJyBQ6LxFBPhsJEfwHo9qx+Y1JZskfoMpOg5Pg7jbKs0uO7SGlA4RfcD27oD5Kak/MHjPJoq2dQggNmmPDQQZH0uA1TKYefL5TjwRDb+5J3PpKEM4uA/grwsQwXlfkSc95DqM/9v1vFT3eanSYlBASOQQbbETRuYfyD88K4VSQ7nmUvIexbb
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(376002)(136003)(346002)(366004)(39860400002)(451199021)(6506007)(6486002)(966005)(478600001)(54906003)(6666004)(110136005)(83380400001)(2906002)(6512007)(26005)(186003)(9686003)(5660300002)(7416002)(44832011)(316002)(86362001)(921005)(38100700002)(82960400001)(66946007)(8936002)(8676002)(66476007)(4326008)(41300700001)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?20SVV+eScw2b3+niupHrN58kKJbWelESEb9EHAIA5j+fe53+uexmiSJD30zo?=
+ =?us-ascii?Q?iPLsFBsqDaTtj7T8PGOYvxdizsEREBEPmEHeoOZ+vvltKfC68NW5rsS4DnLQ?=
+ =?us-ascii?Q?gnlUwIXmIvkyPA12dTkFQNtkuCrwtHROUUsIQiHsCaTpyTrJ1XF/9RGUQj6Z?=
+ =?us-ascii?Q?0itKYUWYBUgSmwKGHy0UmHWIcoJp68ZOxubxyeGrRiODvkBMZ18fnaN4qK/4?=
+ =?us-ascii?Q?FJ7xicSADBM2aYEWmIbL1Jr+O8UP3syXIHyX01aLKQyjQx14RAt85h8MQ9Ss?=
+ =?us-ascii?Q?lxk7RFzY1GeDGULsZEazm3mvJ/x8FSIaU0ncar+EWup3kXX0RgjAtNhO2TEY?=
+ =?us-ascii?Q?prhqOgyp1Pqsdt/fdAB5oQ6Tm/ewAo++rxyx+DjwCcVACNef3UCaf6XcVPpO?=
+ =?us-ascii?Q?fWToYlZgFs5HK6JypYaHzSyR+WG2gazjcP9JvaAo3IIA8ZgCMmPXt5Zo8c4t?=
+ =?us-ascii?Q?sOe+WlF8R3WbWK7fi4gdgWc256d+EMlaDpI6vIcjarLZ+itGGkyAfbR/6zkG?=
+ =?us-ascii?Q?twRK+tOPYeXopU7/eYp7wAE6A7VQCFB42QP2DSgT0cEpm8bCHyFzMvfDxY4l?=
+ =?us-ascii?Q?AxjQkS67dFAjXE5Amklc0dtf+LfjfbjHCjjmpdafsa0Z9iQkSMlhY2KG9kYI?=
+ =?us-ascii?Q?1JcgUceqNaRTkaboXtyPcNIGo2+n5iiJfB6Ia58ZtDB10ExQyLZQJ5NJN4Nf?=
+ =?us-ascii?Q?95kda2be8y9XVAqUf0SME4V2n0C4PEKpij7ha8J93v9vxXLXVIrKVdS8heti?=
+ =?us-ascii?Q?yoLGSmqpHRHjyCfnUvc4m0pTZZfoaTf/+sO6qRTuP+K9IdpcN6ZijC9/y1+O?=
+ =?us-ascii?Q?aVCHu3dWIaDr/cgmxJkDrQLc4gBeWqBJqv/7BwfRwGZDSSe63mcVi5nJVxA7?=
+ =?us-ascii?Q?G6xSpFZIuHC8z9vEA3lW1zFYcVbt+VkeO37vJJ0Di12T2NGzN2hZ2MIWl5fQ?=
+ =?us-ascii?Q?MwdKyZRnhYMIBlMYIxdiB7wpUD+xR5qo40Vhvl0p5a84iUR2fdmXHA8fFRQY?=
+ =?us-ascii?Q?J9Fub+JfsktMDWTN9wNGkhTpvtF/Jm4c1tCVjVsnle8O+P7Ypzeu0rwYEV6I?=
+ =?us-ascii?Q?gFuH/3UdIKrCG1gL2gTUtM/7ZhbHX8+F/xx6tEuwGQgDTIYFIB7qpKZjSC59?=
+ =?us-ascii?Q?WKoVQO2keHZEDVerZdDRcgLT9MrlQPyhGZsFGYZvNFeiQl0r85V25S0m7PXa?=
+ =?us-ascii?Q?nhQo/7GdW8eVFP1baAOMYfr/ii3j6YPwKz1JZYTTr7NGWod+GQlnE2+i0twm?=
+ =?us-ascii?Q?hr4dpxojFTLzcdGEWXKVZT6tPMaVBnCFRa/Dy8WtS+Z7CJVFx/U4cW595VQ+?=
+ =?us-ascii?Q?2J7aUr/fkMm9Yix10jUnobAAIXNl2o1SdGhO+b5gWK2YNVN/mc7IPXWCng30?=
+ =?us-ascii?Q?4W8I46JoINy4UgUUWERAOpbfDJhfoSFG4G6Rzf7hFd6dcvsOEI557uwF+jeY?=
+ =?us-ascii?Q?F4ezCmc0It9zWtjbzgjDCD/3LH7Pg2HtWVn6QYeR6Lmg5eN9gFPNVQD/5IsL?=
+ =?us-ascii?Q?NKibrUB4DGp6cf0gsnOQOXQ3M7g9yi2lFc05ZC7akByQ2rRoQcEkp4Sl5sws?=
+ =?us-ascii?Q?kHdY+tQY9SpL2dL4NgqZv+yD1NoFtNfnp3xPiw0n?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73c96063-038c-43dd-e215-08db768509ea
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2023 20:36:37.6366
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1TzifbTWf4a0F1S3INoMeIbZGQ5OiuCCzmWlErLoyOIYnFJA+lp2q/dzltp4BfPbvOp0X3ZVXEETXaqZRlB8dA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6804
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Mon, 26 Jun 2023 16:09:02 +0100
-> Now that inet[6]_lookup_reuseport are parameterised on the ehashfn
-> we can remove two sk_lookup helpers.
+Sumitra Sharma wrote:
+> generate_test_data() acquires a page with alloc_page(GFP_KERNEL).
+> The GFP_KERNEL is typical for kernel-internal allocations.
+> The caller requires ZONE_NORMAL or a lower zone for direct access.
 > 
-> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
+> Therefore the page cannot come from ZONE_HIGHMEM. Thus there's
+> no need to map it with kmap().
+> 
+> Also, the kmap() is being deprecated in favor of
+> kmap_local_page() [1].
+> 
+> Hence, use a plain page_address() directly.
+> 
+> Since the page passed to the page_address() is not from the highmem
+> zone, the page_address() function will always return a valid kernel
+> virtual address and will not return NULL. Hence, remove the check
+> 'if (!ptr)'.
+> 
+> Remove the unused variable 'ptr'.
+> 
+> [1]: https://lore.kernel.org/all/20220813220034.806698-1-ira.weiny
+> @intel.com/
 
-Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Odd line break here which makes looking at this reference harder.
 
+> 
+> Suggested-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> Signed-off-by: Sumitra Sharma <sumitraartsy@gmail.com>
+
+The code looks good though.
+
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
 > ---
->  include/net/inet6_hashtables.h |  9 +++++++++
->  include/net/inet_hashtables.h  |  7 +++++++
->  net/ipv4/inet_hashtables.c     | 26 +++++++++++++-------------
->  net/ipv4/udp.c                 | 32 +++++---------------------------
->  net/ipv6/inet6_hashtables.c    | 31 ++++++++++++++++---------------
->  net/ipv6/udp.c                 | 34 +++++-----------------------------
->  6 files changed, 55 insertions(+), 84 deletions(-)
 > 
-> diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
-> index 49d586454287..4d2a1a3c0be7 100644
-> --- a/include/net/inet6_hashtables.h
-> +++ b/include/net/inet6_hashtables.h
-> @@ -73,6 +73,15 @@ struct sock *inet6_lookup_listener(struct net *net,
->  				   const unsigned short hnum,
->  				   const int dif, const int sdif);
->  
-> +struct sock *inet6_lookup_run_sk_lookup(struct net *net,
-> +					int protocol,
-> +					struct sk_buff *skb, int doff,
-> +					const struct in6_addr *saddr,
-> +					const __be16 sport,
-> +					const struct in6_addr *daddr,
-> +					const u16 hnum, const int dif,
-> +					inet6_ehashfn_t ehashfn);
-> +
->  static inline struct sock *__inet6_lookup(struct net *net,
->  					  struct inet_hashinfo *hashinfo,
->  					  struct sk_buff *skb, int doff,
-> diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
-> index 51ab6a1a3601..aa02f1db1f86 100644
-> --- a/include/net/inet_hashtables.h
-> +++ b/include/net/inet_hashtables.h
-> @@ -393,6 +393,13 @@ struct sock *inet_lookup_reuseport(struct net *net, struct sock *sk,
->  				   __be32 daddr, unsigned short hnum,
->  				   inet_ehashfn_t ehashfn);
->  
-> +struct sock *inet_lookup_run_sk_lookup(struct net *net,
-> +				       int protocol,
-> +				       struct sk_buff *skb, int doff,
-> +				       __be32 saddr, __be16 sport,
-> +				       __be32 daddr, u16 hnum, const int dif,
-> +				       inet_ehashfn_t ehashfn);
-> +
->  static inline struct sock *
->  	inet_lookup_established(struct net *net, struct inet_hashinfo *hashinfo,
->  				const __be32 saddr, const __be16 sport,
-> diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-> index 0dd768ab22d9..34e44a096795 100644
-> --- a/net/ipv4/inet_hashtables.c
-> +++ b/net/ipv4/inet_hashtables.c
-> @@ -405,25 +405,23 @@ static struct sock *inet_lhash2_lookup(struct net *net,
->  	return result;
->  }
->  
-> -static inline struct sock *inet_lookup_run_bpf(struct net *net,
-> -					       struct inet_hashinfo *hashinfo,
-> -					       struct sk_buff *skb, int doff,
-> -					       __be32 saddr, __be16 sport,
-> -					       __be32 daddr, u16 hnum, const int dif)
-> +struct sock *inet_lookup_run_sk_lookup(struct net *net,
-> +				       int protocol,
-> +				       struct sk_buff *skb, int doff,
-> +				       __be32 saddr, __be16 sport,
-> +				       __be32 daddr, u16 hnum, const int dif,
-> +				       inet_ehashfn_t ehashfn)
->  {
->  	struct sock *sk, *reuse_sk;
->  	bool no_reuseport;
->  
-> -	if (hashinfo != net->ipv4.tcp_death_row.hashinfo)
-> -		return NULL; /* only TCP is supported */
-> -
-> -	no_reuseport = bpf_sk_lookup_run_v4(net, IPPROTO_TCP, saddr, sport,
-> +	no_reuseport = bpf_sk_lookup_run_v4(net, protocol, saddr, sport,
->  					    daddr, hnum, dif, &sk);
->  	if (no_reuseport || IS_ERR_OR_NULL(sk))
->  		return sk;
->  
->  	reuse_sk = inet_lookup_reuseport(net, sk, skb, doff, saddr, sport, daddr, hnum,
-> -					 inet_ehashfn);
-> +					 ehashfn);
->  	if (reuse_sk)
->  		sk = reuse_sk;
->  	return sk;
-> @@ -441,9 +439,11 @@ struct sock *__inet_lookup_listener(struct net *net,
->  	unsigned int hash2;
->  
->  	/* Lookup redirect from BPF */
-> -	if (static_branch_unlikely(&bpf_sk_lookup_enabled)) {
-> -		result = inet_lookup_run_bpf(net, hashinfo, skb, doff,
-> -					     saddr, sport, daddr, hnum, dif);
-> +	if (static_branch_unlikely(&bpf_sk_lookup_enabled) &&
-> +	    hashinfo == net->ipv4.tcp_death_row.hashinfo) {
-> +		result = inet_lookup_run_sk_lookup(net, IPPROTO_TCP, skb, doff,
-> +						   saddr, sport, daddr, hnum, dif,
-> +						   inet_ehashfn);
->  		if (result)
->  			goto done;
->  	}
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index 7258edece691..eb79268f216d 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
-> @@ -464,30 +464,6 @@ static struct sock *udp4_lib_lookup2(struct net *net,
->  	return result;
->  }
->  
-> -static struct sock *udp4_lookup_run_bpf(struct net *net,
-> -					struct udp_table *udptable,
-> -					struct sk_buff *skb,
-> -					__be32 saddr, __be16 sport,
-> -					__be32 daddr, u16 hnum, const int dif)
-> -{
-> -	struct sock *sk, *reuse_sk;
-> -	bool no_reuseport;
-> -
-> -	if (udptable != net->ipv4.udp_table)
-> -		return NULL; /* only UDP is supported */
-> -
-> -	no_reuseport = bpf_sk_lookup_run_v4(net, IPPROTO_UDP, saddr, sport,
-> -					    daddr, hnum, dif, &sk);
-> -	if (no_reuseport || IS_ERR_OR_NULL(sk))
-> -		return sk;
-> -
-> -	reuse_sk = inet_lookup_reuseport(net, sk, skb, sizeof(struct udphdr),
-> -					 saddr, sport, daddr, hnum, udp_ehashfn);
-> -	if (reuse_sk)
-> -		sk = reuse_sk;
-> -	return sk;
-> -}
-> -
->  /* UDP is nearly always wildcards out the wazoo, it makes no sense to try
->   * harder than this. -DaveM
->   */
-> @@ -512,9 +488,11 @@ struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr,
->  		goto done;
->  
->  	/* Lookup redirect from BPF */
-> -	if (static_branch_unlikely(&bpf_sk_lookup_enabled)) {
-> -		sk = udp4_lookup_run_bpf(net, udptable, skb,
-> -					 saddr, sport, daddr, hnum, dif);
-> +	if (static_branch_unlikely(&bpf_sk_lookup_enabled) &&
-> +	    udptable == net->ipv4.udp_table) {
-> +		sk = inet_lookup_run_sk_lookup(net, IPPROTO_UDP, skb, sizeof(struct udphdr),
-> +					       saddr, sport, daddr, hnum, dif,
-> +					       udp_ehashfn);
->  		if (sk) {
->  			result = sk;
->  			goto done;
-> diff --git a/net/ipv6/inet6_hashtables.c b/net/ipv6/inet6_hashtables.c
-> index b5de1642bc51..e908aa3cb7ea 100644
-> --- a/net/ipv6/inet6_hashtables.c
-> +++ b/net/ipv6/inet6_hashtables.c
-> @@ -179,31 +179,30 @@ static struct sock *inet6_lhash2_lookup(struct net *net,
->  	return result;
->  }
->  
-> -static inline struct sock *inet6_lookup_run_bpf(struct net *net,
-> -						struct inet_hashinfo *hashinfo,
-> -						struct sk_buff *skb, int doff,
-> -						const struct in6_addr *saddr,
-> -						const __be16 sport,
-> -						const struct in6_addr *daddr,
-> -						const u16 hnum, const int dif)
-> +struct sock *inet6_lookup_run_sk_lookup(struct net *net,
-> +					int protocol,
-> +					struct sk_buff *skb, int doff,
-> +					const struct in6_addr *saddr,
-> +					const __be16 sport,
-> +					const struct in6_addr *daddr,
-> +					const u16 hnum, const int dif,
-> +					inet6_ehashfn_t ehashfn)
->  {
->  	struct sock *sk, *reuse_sk;
->  	bool no_reuseport;
->  
-> -	if (hashinfo != net->ipv4.tcp_death_row.hashinfo)
-> -		return NULL; /* only TCP is supported */
-> -
-> -	no_reuseport = bpf_sk_lookup_run_v6(net, IPPROTO_TCP, saddr, sport,
-> +	no_reuseport = bpf_sk_lookup_run_v6(net, protocol, saddr, sport,
->  					    daddr, hnum, dif, &sk);
->  	if (no_reuseport || IS_ERR_OR_NULL(sk))
->  		return sk;
->  
->  	reuse_sk = inet6_lookup_reuseport(net, sk, skb, doff,
-> -					  saddr, sport, daddr, hnum, inet6_ehashfn);
-> +					  saddr, sport, daddr, hnum, ehashfn);
->  	if (reuse_sk)
->  		sk = reuse_sk;
->  	return sk;
->  }
-> +EXPORT_SYMBOL_GPL(inet6_lookup_run_sk_lookup);
->  
->  struct sock *inet6_lookup_listener(struct net *net,
->  		struct inet_hashinfo *hashinfo,
-> @@ -217,9 +216,11 @@ struct sock *inet6_lookup_listener(struct net *net,
->  	unsigned int hash2;
->  
->  	/* Lookup redirect from BPF */
-> -	if (static_branch_unlikely(&bpf_sk_lookup_enabled)) {
-> -		result = inet6_lookup_run_bpf(net, hashinfo, skb, doff,
-> -					      saddr, sport, daddr, hnum, dif);
-> +	if (static_branch_unlikely(&bpf_sk_lookup_enabled) &&
-> +	    hashinfo == net->ipv4.tcp_death_row.hashinfo) {
-> +		result = inet6_lookup_run_sk_lookup(net, IPPROTO_TCP, skb, doff,
-> +						    saddr, sport, daddr, hnum, dif,
-> +						    inet6_ehashfn);
->  		if (result)
->  			goto done;
->  	}
-> diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-> index ebac9200b15c..8a6d94cabee0 100644
-> --- a/net/ipv6/udp.c
-> +++ b/net/ipv6/udp.c
-> @@ -205,32 +205,6 @@ static struct sock *udp6_lib_lookup2(struct net *net,
->  	return result;
->  }
->  
-> -static inline struct sock *udp6_lookup_run_bpf(struct net *net,
-> -					       struct udp_table *udptable,
-> -					       struct sk_buff *skb,
-> -					       const struct in6_addr *saddr,
-> -					       __be16 sport,
-> -					       const struct in6_addr *daddr,
-> -					       u16 hnum, const int dif)
-> -{
-> -	struct sock *sk, *reuse_sk;
-> -	bool no_reuseport;
-> -
-> -	if (udptable != net->ipv4.udp_table)
-> -		return NULL; /* only UDP is supported */
-> -
-> -	no_reuseport = bpf_sk_lookup_run_v6(net, IPPROTO_UDP, saddr, sport,
-> -					    daddr, hnum, dif, &sk);
-> -	if (no_reuseport || IS_ERR_OR_NULL(sk))
-> -		return sk;
-> -
-> -	reuse_sk = inet6_lookup_reuseport(net, sk, skb, sizeof(struct udphdr),
-> -					  saddr, sport, daddr, hnum, udp6_ehashfn);
-> -	if (reuse_sk)
-> -		sk = reuse_sk;
-> -	return sk;
-> -}
-> -
->  /* rcu_read_lock() must be held */
->  struct sock *__udp6_lib_lookup(struct net *net,
->  			       const struct in6_addr *saddr, __be16 sport,
-> @@ -255,9 +229,11 @@ struct sock *__udp6_lib_lookup(struct net *net,
->  		goto done;
->  
->  	/* Lookup redirect from BPF */
-> -	if (static_branch_unlikely(&bpf_sk_lookup_enabled)) {
-> -		sk = udp6_lookup_run_bpf(net, udptable, skb,
-> -					 saddr, sport, daddr, hnum, dif);
-> +	if (static_branch_unlikely(&bpf_sk_lookup_enabled) &&
-> +	    udptable == net->ipv4.udp_table) {
-> +		sk = inet6_lookup_run_sk_lookup(net, IPPROTO_UDP, skb, sizeof(struct udphdr),
-> +						saddr, sport, daddr, hnum, dif,
-> +						udp6_ehashfn);
->  		if (sk) {
->  			result = sk;
->  			goto done;
+> - Link to v1: https://lore.kernel.org/bpf/20230613073020.GA359792@sumitra.com/T/
+> - Link to v2: https://lore.kernel.org/lkml/3564297.R56niFO833@suse/T/
 > 
+> Changes in v3:
+> Noted by: Fabio M. De Francesco<fmdefrancesco@gmail.com>
+> 	- Remove the check 'if (!ptr)'.
+> 	- Remove the unused variable 'ptr'.
+> 	- Change the commit message.
+> 
+> Changes in v2:
+> Noted by: Fabio M. De Francesco<fmdefrancesco@gmail.com>
+> 	- Remove the kmap() call and call page_address() instead.
+> 	- Change the commit subject and message.
+> 
+> 
+>  lib/test_bpf.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
+> 
+> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+> index ade9ac672adb..448bc1b0b8b5 100644
+> --- a/lib/test_bpf.c
+> +++ b/lib/test_bpf.c
+> @@ -14381,18 +14381,12 @@ static void *generate_test_data(struct bpf_test *test, int sub)
+>  		 * single fragment to the skb, filled with
+>  		 * test->frag_data.
+>  		 */
+> -		void *ptr;
+> -
+>  		page = alloc_page(GFP_KERNEL);
+>  
+>  		if (!page)
+>  			goto err_kfree_skb;
+>  
+> -		ptr = kmap(page);
+> -		if (!ptr)
+> -			goto err_free_page;
+> -		memcpy(ptr, test->frag_data, MAX_DATA);
+> -		kunmap(page);
+> +		memcpy(page_address(page), test->frag_data, MAX_DATA);
+>  		skb_add_rx_frag(skb, 0, page, 0, MAX_DATA, MAX_DATA);
+>  	}
+>  
 > -- 
-> 2.40.1
+> 2.25.1
+> 
+
+
 
