@@ -1,163 +1,117 @@
-Return-Path: <bpf+bounces-3476-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3477-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC7B373E713
-	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 19:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E70A73E71D
+	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 20:00:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18EA71C209A4
-	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 17:58:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A4141C209C3
+	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 18:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B67134B3;
-	Mon, 26 Jun 2023 17:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B4A134B8;
+	Mon, 26 Jun 2023 17:59:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A470D520;
-	Mon, 26 Jun 2023 17:57:50 +0000 (UTC)
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9112C130;
-	Mon, 26 Jun 2023 10:57:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD21C12B9C;
+	Mon, 26 Jun 2023 17:59:55 +0000 (UTC)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E09134;
+	Mon, 26 Jun 2023 10:59:54 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b466744368so54158991fa.0;
+        Mon, 26 Jun 2023 10:59:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1687802269; x=1719338269;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=CjHChph3jHdZoR8racjXNtVY5fiZpsb8Si0LuL7/rhg=;
-  b=Wb0/SNLIl8Cbffi3+SrCCeDu8jeqiO6U3/ak9mEV/yBhnnr2Vecq3MTl
-   g5EMYSor7c1cCL1x6Wz4aPY6D9nHeSE0tfqiXowgGneeM4hfsbQ0KUciJ
-   TnmZS+D2lJ+Tfvkw3Hyowf/KpvN4g6AVDqcun0kivwtcEXJZxOvWzH/2z
-   A=;
-X-IronPort-AV: E=Sophos;i="6.01,160,1684800000"; 
-   d="scan'208";a="341074945"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-153b24bc.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2023 17:57:46 +0000
-Received: from EX19MTAUWA002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-	by email-inbound-relay-iad-1d-m6i4x-153b24bc.us-east-1.amazon.com (Postfix) with ESMTPS id 073FFC15FB;
-	Mon, 26 Jun 2023 17:57:39 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 26 Jun 2023 17:57:39 +0000
-Received: from 88665a182662.ant.amazon.com (10.187.170.15) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.30;
- Mon, 26 Jun 2023 17:57:34 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <lmb@isovalent.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <hemanthmalla@gmail.com>,
-	<joe@wand.net.nz>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-	<kpsingh@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<martin.lau@linux.dev>, <mykolal@fb.com>, <netdev@vger.kernel.org>,
-	<pabeni@redhat.com>, <sdf@google.com>, <shuah@kernel.org>, <song@kernel.org>,
-	<willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v3 3/7] net: document inet[6]_lookup_reuseport sk_state requirements
-Date: Mon, 26 Jun 2023 10:57:26 -0700
-Message-ID: <20230626175726.61467-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230613-so-reuseport-v3-3-907b4cbb7b99@isovalent.com>
-References: <20230613-so-reuseport-v3-3-907b4cbb7b99@isovalent.com>
+        d=gmail.com; s=20221208; t=1687802392; x=1690394392;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8W2Vu6H3RZPcR125CB3aaW89Om4/7DJA4ZWdtcc1FEM=;
+        b=dV8emcZZAUyiyZNzHDvOIzlNdhMA6E6J924vtGJ4dLdMFOdPHZzSMYIbw2WG3Oc07s
+         pAlFOY+OsRVyyxWKOjHCdfkZnIR3jrCRYgaePv1UQPry10QjKCisdLeFKWjxov5io6ix
+         rvs1EeUWi2mszD277Yv18dC2SjOItnT2LOOY42qzCEhD02oXfJ45T3vRXb909VsDEB6v
+         yZ2o1+O1VGYDIwJ47u99uzWXqx6rPGKxLODTpUfZsBIbxUR6FcBn8s+XaMnzLKEYNe3w
+         IYVebSmKpVSfiWokHyZTw7InFcY5MFgo807x+yl4ABQCPz8LBurwiRNaNUCG00FvkHid
+         cLQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687802392; x=1690394392;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8W2Vu6H3RZPcR125CB3aaW89Om4/7DJA4ZWdtcc1FEM=;
+        b=NOdC8nXvRM9/SG1YPBTlSwhs3NXq0JmuaUx78EqgSyC6GKbXbzA1zYvdLiWxgUOl2I
+         G3JGpCPBgAEUw7mDZoYmVybDcHJOyg/AoaS0ITItbX76KmVQLgFy/fG83r03bZiG4+Go
+         YqSAvahvofrfW9xCtM5z8HfwaYQnFcoIwzESmixnGKmZvGWcy6bxiMsCKxk4mZs/c5+A
+         QYpjhhW3Ou3BPsVZNDefrKE2/aB5dNWU8UJRzNxYuOANJZhCxCOU5/vYezW0Y5/lW1ad
+         Ew437uGkmQpXNbJ5rdq5NxJ3cZ0a6P36scpe8EoNKjpgrn5x8yg2yFyRSUnCCCh9Ci0W
+         7QKA==
+X-Gm-Message-State: AC+VfDy3SdClmU2f/lmyFc60pLSl9wLP3qLVwZDmwbBaF9n9ZSuJdZ7y
+	BnY5zNJTxKnlC9jz/Q4leT0AmG+Yz9CBw+DxIpo=
+X-Google-Smtp-Source: ACHHUZ5UI/NF9B52J0wA6As3GXR8+axwHNPhmShfQDrziWpavyo7MHNzGTtQp0uf1ipvBNz1cpL1oYMdPlscdJZsfcc=
+X-Received: by 2002:a2e:9c4d:0:b0:2b6:a841:e66d with SMTP id
+ t13-20020a2e9c4d000000b002b6a841e66dmr485980ljj.37.1687802392087; Mon, 26 Jun
+ 2023 10:59:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.187.170.15]
-X-ClientProxiedBy: EX19D037UWB003.ant.amazon.com (10.13.138.115) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-	version=3.4.6
+References: <20230624031333.96597-1-alexei.starovoitov@gmail.com>
+ <20230624031333.96597-14-alexei.starovoitov@gmail.com> <20230626154228.GA6798@maniforge>
+ <CAADnVQK7rgcSevdyrG8t-rPqg-n8=Eic8K63q-q3SPtOR0VP2Q@mail.gmail.com> <20230626175538.GA6750@maniforge>
+In-Reply-To: <20230626175538.GA6750@maniforge>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 26 Jun 2023 10:59:40 -0700
+Message-ID: <CAADnVQ+vBRZ3ySX-YOVQnfL-J4UV1pJymXxee-AqjGGAHtv2Jg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 13/13] bpf: Convert bpf_cpumask to bpf_mem_cache_free_rcu.
+To: David Vernet <void@manifault.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Hou Tao <houtao@huaweicloud.com>, "Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>, 
+	rcu@vger.kernel.org, Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Mon, 26 Jun 2023 16:09:00 +0100
-> The current implementation was extracted from inet[6]_lhash2_lookup
-> in commit 80b373f74f9e ("inet: Extract helper for selecting socket
-> from reuseport group") and commit 5df6531292b5 ("inet6: Extract helper
-> for selecting socket from reuseport group"). In the original context,
-> sk is always in TCP_LISTEN state and so did not have a separate check.
-> 
-> Add documentation that specifies which sk_state are valid to pass to
-> the function.
-> 
-> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-> ---
->  net/ipv4/inet_hashtables.c  | 14 ++++++++++++++
->  net/ipv6/inet6_hashtables.c | 14 ++++++++++++++
->  2 files changed, 28 insertions(+)
-> 
-> diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-> index 920131e4a65d..91f9210d4e83 100644
-> --- a/net/ipv4/inet_hashtables.c
-> +++ b/net/ipv4/inet_hashtables.c
-> @@ -332,6 +332,20 @@ static inline int compute_score(struct sock *sk, struct net *net,
->  	return score;
->  }
->  
-> +/**
-> + * inet_lookup_reuseport() - execute reuseport logic on AF_INET socket if necessary.
-> + * @net: network namespace.
-> + * @sk: AF_INET socket, must be in TCP_LISTEN state for TCP or TCP_CLOSE for UDP.
+On Mon, Jun 26, 2023 at 10:55=E2=80=AFAM David Vernet <void@manifault.com> =
+wrote:
+>
+> > > > +
+> > > > +     migrate_disable();
+> > > > +     bpf_mem_cache_free_rcu(&bpf_cpumask_ma, cpumask);
+> > > > +     migrate_enable();
+> > >
+> > > The fact that callers have to disable migration like this in order to
+> > > safely free the memory feels a bit leaky. Is there any reason we can'=
+t
+> > > move this into bpf_mem_{cache_}free_rcu()?
+> >
+> > migrate_disable/enable() are actually not necessary here.
+> > We can call bpf_mem_cache_free_rcu() directly from any kfunc.
+>
+> Could you please clarify why? Can't we migrate if the kfunc is called
+> from a sleepable struct_ops callback?
 
-nit: " or TCP_CLOSE for UDP"
+migration is disabled for all bpf progs including sleepable.
 
-This part should be added in the next patch,
-or this patch should be 4th patch.
-
-
-> + * @skb: context for a potential SK_REUSEPORT program.
-> + * @doff: header offset.
-> + * @saddr: source address.
-> + * @sport: source port.
-> + * @daddr: destination address.
-> + * @hnum: destination port in host byte order.
-> + *
-> + * Return: NULL if sk doesn't have SO_REUSEPORT set, otherwise a pointer to
-> + *         the selected sock or an error.
-> + */
->  struct sock *inet_lookup_reuseport(struct net *net, struct sock *sk,
->  				   struct sk_buff *skb, int doff,
->  				   __be32 saddr, __be16 sport,
-> diff --git a/net/ipv6/inet6_hashtables.c b/net/ipv6/inet6_hashtables.c
-> index b7c56867314e..208998694ae3 100644
-> --- a/net/ipv6/inet6_hashtables.c
-> +++ b/net/ipv6/inet6_hashtables.c
-> @@ -111,6 +111,20 @@ static inline int compute_score(struct sock *sk, struct net *net,
->  	return score;
->  }
->  
-> +/**
-> + * inet6_lookup_reuseport() - execute reuseport logic on AF_INET6 socket if necessary.
-> + * @net: network namespace.
-> + * @sk: AF_INET6 socket, must be in TCP_LISTEN state for TCP or TCP_CLOSE for UDP.
-> + * @skb: context for a potential SK_REUSEPORT program.
-> + * @doff: header offset.
-> + * @saddr: source address.
-> + * @sport: source port.
-> + * @daddr: destination address.
-> + * @hnum: destination port in host byte order.
-> + *
-> + * Return: NULL if sk doesn't have SO_REUSEPORT set, otherwise a pointer to
-> + *         the selected sock or an error.
-> + */
->  struct sock *inet6_lookup_reuseport(struct net *net, struct sock *sk,
->  				    struct sk_buff *skb, int doff,
->  				    const struct in6_addr *saddr,
-> 
-> -- 
-> 2.40.1
+> If migration is always disabled
+> for any kfunc then I agree these migrate_{en,dis}able() calls can be
+> removed. Otherwise from my reading of the code we'd race between calling
+> this_cpu_ptr() and the local_irq_save() in unit_free().
+>
+> Thanks,
+> David
+>
+> > Explicit migrate_disable() is only necessary from syscall.
+> >
+> > I believe rcu callbacks also cannot migrate, so the existing
+> > code probably doesn't need them either.
 
