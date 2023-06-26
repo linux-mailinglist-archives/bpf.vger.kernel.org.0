@@ -1,495 +1,136 @@
-Return-Path: <bpf+bounces-3461-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3462-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0532673E2F3
-	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 17:13:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F0E973E329
+	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 17:23:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4958280D9C
-	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 15:13:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EACC280DA9
+	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 15:23:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E3411C86;
-	Mon, 26 Jun 2023 15:09:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABE4BE64;
+	Mon, 26 Jun 2023 15:23:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB732111AD
-	for <bpf@vger.kernel.org>; Mon, 26 Jun 2023 15:09:25 +0000 (UTC)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BFC810D8
-	for <bpf@vger.kernel.org>; Mon, 26 Jun 2023 08:09:21 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-311099fac92so4707681f8f.0
-        for <bpf@vger.kernel.org>; Mon, 26 Jun 2023 08:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1687792160; x=1690384160;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Rrd+oVQwBiLqnLnpd+kxgQqY6NXFWO5dlCZVFiDqXJs=;
-        b=BFsL6sINMVaWePlHs/jt/2afGXwYpZilnvJeihcnRJVUofXwASokKpt/6cHPYTQK09
-         Di0UgJOyrXrGwdGAQ9MdVEKKJ4XFg0XjY4hcLpyICrubwFZLw9WP7QKlJneJct8tzVN1
-         i3HPDBtlw8STN5WcRo2PwmNLecbyFlhSgE1Z2HcU2yozqYiN1tOWqnsWx8fob5nnLp3E
-         X4zjYeJfcQy1Bt2poJh+o2fwR/mXl5ZAxprAs9BoXkwiw00MrIyvsk/7qDhyYGP+UKEY
-         B9BTEerUsvU2isuMPfHqUm5FZ/BFROT3BazKGmIhTNJQSAlGbZ6nsh4ZI5lzLvTEtpg9
-         Aj6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687792160; x=1690384160;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rrd+oVQwBiLqnLnpd+kxgQqY6NXFWO5dlCZVFiDqXJs=;
-        b=Rst/f2YFRSofAt45buDETbdOjpRDUo3M3sfEWEyVt4Pqg0dRtMBs4Xi2w3dRx12TCr
-         da9NtQWT/qBmIMvejoTlQniof5MzQOmgAuFS6ZJBdAQMT3Vq3RCEOAeLjeun0pDs4m1o
-         fj9d98qdtt2lavs6ZJi1pXSOj6pIiYkxAho+ysNLUlcadP4Gkizr9fBosI1i5Dyv/Vk+
-         FvZHnuE8+AEOFjFzC5aMAXDNgh8ltUqotlYc1Nfzpy7ESJBJVAUb7sEYzMZaFokpa4F9
-         HGb5F+pOVG7daAPekOnsPB9BrX71NsoCkQitl31BellNVxqTp91LW+8jm+Q24m5PinJ7
-         bI1A==
-X-Gm-Message-State: AC+VfDy5lmWayEQtiUQnScjLF0GmH3i1eHrIImUt6H4AOyIJQ5eYGgCJ
-	6hoP7ehedSNJLO6CL/rVs0bmZQ==
-X-Google-Smtp-Source: ACHHUZ7F6XvEI28XrMPDv+oc/zhq1SZlEnRVR/xGZ41jRyPRs9eky8SiMGrxIH3MLazXZw0UOLxu5Q==
-X-Received: by 2002:a5d:63c7:0:b0:313:eee3:a4a4 with SMTP id c7-20020a5d63c7000000b00313eee3a4a4mr3392258wrw.64.1687792159839;
-        Mon, 26 Jun 2023 08:09:19 -0700 (PDT)
-Received: from [192.168.1.193] (f.c.7.0.0.0.0.0.0.0.0.0.0.0.0.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff::7cf])
-        by smtp.gmail.com with ESMTPSA id v1-20020adfe281000000b00311299df211sm7668710wri.77.2023.06.26.08.09.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jun 2023 08:09:19 -0700 (PDT)
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Mon, 26 Jun 2023 16:09:04 +0100
-Subject: [PATCH bpf-next v3 7/7] selftests/bpf: Test that SO_REUSEPORT can
- be used with sk_assign helper
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B86BA4A
+	for <bpf@vger.kernel.org>; Mon, 26 Jun 2023 15:23:30 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFA311D;
+	Mon, 26 Jun 2023 08:23:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:Subject:From:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=iMBHjiX13Jx2K+DUN0zShMC0AlcRS4tKjEDHKV4mywk=; b=UAtm1cxFQMpuZX6cTGkMWX6y8b
+	nV/4ausApWc8hcwfgl5hDowvfngHesjWHzni65gu4oQoe6ZZBhp+o9s4jHTrSTM/27UgDlS4dz5z7
+	OMcB9DUHy2qCG+W01Pc3qT6K6HHbTbuz+m6v7D1Vfsr5cdHjRnGvN5E6EU6bcE3uDhqUb63jmmw8/
+	toSNystTez3MUqRPMdzgzZfm+LzK7Vwxj6rKG8M0FETa/TuhRQKgZshREGFIKJBCsOJMrVBO2J8Xo
+	q/7tE99Rc5eKUByu+xyHniPYJ/3Dag32HRoxfHMgSsUSd7SYb1+TDX/GIyvd0B/f/jp1n+FxgBgOl
+	7y4hdKSQ==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qDo3i-0005Kz-0c; Mon, 26 Jun 2023 17:23:18 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qDo3h-000H7M-KP; Mon, 26 Jun 2023 17:23:17 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH v2 bpf-next 00/18] BPF token
+To: Andy Lutomirski <luto@kernel.org>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Maryam Tahhan <mtahhan@redhat.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ linux-security-module@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+ Christian Brauner <brauner@kernel.org>, lennart@poettering.net,
+ cyphar@cyphar.com, kernel-team@meta.com
+References: <20230607235352.1723243-1-andrii@kernel.org>
+ <c1a8d5e8-023b-4ef9-86b3-bdd70efe1340@app.fastmail.com>
+ <CAEf4BzazbMqAh_Nj_geKNLshxT+4NXOCd-LkZ+sRKsbZAJ1tUw@mail.gmail.com>
+ <a73da819-b334-448c-8e5c-50d9f7c28b8f@app.fastmail.com>
+ <CAEf4Bzb__Cmf5us1Dy6zTkbn2O+3GdJQ=khOZ0Ui41tkoE7S0Q@mail.gmail.com>
+ <5eb4264e-d491-a7a2-93c7-928b06ce264d@redhat.com>
+ <bc4f99af-0c46-49b2-9f2d-9a01e6a03af3@app.fastmail.com>
+ <5a75d1f0-4ed9-399c-4851-2df0755de9b5@redhat.com>
+ <CAEf4Bza9GvJ0vw2-0M8GKSXmOQ8VQCmeqEiQpMuZBjwqpA03vw@mail.gmail.com>
+ <82b79e57-a0ad-4559-abc9-858e0f51fbba@app.fastmail.com>
+ <9b0e9227-4cf4-4acb-ba88-52f65b099709@app.fastmail.com>
+ <173f0af7-e6e1-f4b7-e0a6-a91b7a4da5d7@iogearbox.net>
+ <fe47aeb6-dae8-43a6-bcb0-ada2ebf62e08@app.fastmail.com>
+ <8340aaf2-8b4c-4f7d-8eed-f72f615f6fd0@app.fastmail.com>
+Message-ID: <77fc8c9b-220f-da93-c6b8-a8f36eb1086f@iogearbox.net>
+Date: Mon, 26 Jun 2023 17:23:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230613-so-reuseport-v3-7-907b4cbb7b99@isovalent.com>
-References: <20230613-so-reuseport-v3-0-907b4cbb7b99@isovalent.com>
-In-Reply-To: <20230613-so-reuseport-v3-0-907b4cbb7b99@isovalent.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
- Joe Stringer <joe@wand.net.nz>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: Hemanth Malla <hemanthmalla@gmail.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Lorenz Bauer <lmb@isovalent.com>, 
- Joe Stringer <joe@cilium.io>
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-	autolearn_force=no version=3.4.6
+In-Reply-To: <8340aaf2-8b4c-4f7d-8eed-f72f615f6fd0@app.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26951/Mon Jun 26 09:29:31 2023)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+On 6/24/23 5:28 PM, Andy Lutomirski wrote:
+> On Sat, Jun 24, 2023, at 6:59 AM, Andy Lutomirski wrote:
+>> On Fri, Jun 23, 2023, at 4:23 PM, Daniel Borkmann wrote:
+>>
+>> If this series was about passing a “may load kernel modules” token
+>> around, I think it would get an extremely chilly reception, even though
+>> we have module signatures.  I don’t see anything about BPF that makes
+>> BPF tokens more reasonable unless a real security model is developed
+>> first.
+> 
+> To be clear, I'm not saying that there should not be a mechanism to use BPF from a user namespace.  I'm saying the mechanism should have explicit access control.  It wouldn't need to solve all problems right away, but it should allow incrementally more features to be enabled as the access control solution gets more powerful over time.
+> 
+> BPF, unlike kernel modules, has a verifier.  While it would be a departure from current practice, permission to use BPF could come with an explicit list of allowed functions and allowed hooks.
+> 
+> (The hooks wouldn't just be a list, presumably -- premission to install an XDP program would be scoped to networks over which one has CAP_NET_ADMIN, presumably.  Other hooks would have their own scoping.  Attaching to a cgroup should (and maybe already does?) require some kind of permission on the cgroup.  Etc.)
+> 
+> If new, more restrictive functions are needed, they could be added.
 
-We use two programs to check that the new reuseport logic is executed
-appropriately.
+Wasn't this the idea of the BPF tokens proposal, meaning you could create them with
+restricted access as you mentioned - allowing an explicit subset of program types to
+be loaded, subset of helpers/kfuncs, map types, etc.. Given you pass in this token
+context upon program load-time (resp. map creation), the verifier is then extended
+for restricted access. For example, see the bpf_token_allow_{cmd,map_type,prog_type}()
+in this series. The user namespace relation was part of the use cases, but not strictly
+part of the mechanism itself in this series.
 
-The first is a TC clsact program which bpf_sk_assigns
-the skb to a UDP or TCP socket created by user space. Since the test
-communicates via lo we see both directions of packets in the eBPF.
-Traffic ingressing to the reuseport socket is identified by looking
-at the destination port. For TCP, we additionally need to make sure
-that we only assign the initial SYN packets towards our listening
-socket. The network stack then creates a request socket which
-transitions to ESTABLISHED after the 3WHS.
+With regards to the scoping, are you saying that the current design with the bitmasks
+in the token create uapi is not flexible enough? If yes, what concrete alternative do
+you propose?
 
-The second is a reuseport program which shares the fact that
-it has been executed with user space. This tells us that the delayed
-lookup mechanism is working.
+> Alternatively, people could try a limited form of BPF proxying.  It wouldn't need to be a full proxy -- an outside daemon really could approve the attachment of a BPF program, and it could parse the program, examine the list of function it uses and what the proposed attachment is to, and make an educated decision.  This would need some API changes (maybe), but it seems eminently doable.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Co-developed-by: Lorenz Bauer <lmb@isovalent.com>
-Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-Cc: Joe Stringer <joe@cilium.io>
----
- tools/testing/selftests/bpf/network_helpers.c      |   3 +
- .../selftests/bpf/prog_tests/assign_reuse.c        | 197 +++++++++++++++++++++
- .../selftests/bpf/progs/test_assign_reuse.c        | 142 +++++++++++++++
- 3 files changed, 342 insertions(+)
+Thinking about this from an k8s environment angle, I think this wouldn't really be
+practical for various reasons.. you now need to maintain two implementations for your
+container images which ships BPF one which loads programs as today, and another one
+which talks to this proxy if available, then you also need to standardize and support
+the various loader libraries for this, you need to deal with yet one more component
+in your cluster which could fail (compared to talking to kernel directly), and being
+dependent on new proxy functionality becomes similar as with waiting for new kernels
+to hit mainstream, it could potentially take a very long time until production upgrades.
+What is being proposed here in this regard is less complex given no extra proxy is
+involved. I would certainly prefer a kernel-based solution.
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index a105c0cd008a..8a33bcea97de 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -423,6 +423,9 @@ struct nstoken *open_netns(const char *name)
- 
- void close_netns(struct nstoken *token)
- {
-+	if (!token)
-+		return;
-+
- 	ASSERT_OK(setns(token->orig_netns_fd, CLONE_NEWNET), "setns");
- 	close(token->orig_netns_fd);
- 	free(token);
-diff --git a/tools/testing/selftests/bpf/prog_tests/assign_reuse.c b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-new file mode 100644
-index 000000000000..622f123410f4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-@@ -0,0 +1,197 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Isovalent */
-+#include <uapi/linux/if_link.h>
-+#include <test_progs.h>
-+
-+#include <netinet/tcp.h>
-+#include <netinet/udp.h>
-+
-+#include "network_helpers.h"
-+#include "test_assign_reuse.skel.h"
-+
-+#define NS_TEST "assign_reuse"
-+#define LOOPBACK 1
-+#define PORT 4443
-+
-+static int attach_reuseport(int sock_fd, int prog_fd)
-+{
-+	return setsockopt(sock_fd, SOL_SOCKET, SO_ATTACH_REUSEPORT_EBPF,
-+			  &prog_fd, sizeof(prog_fd));
-+}
-+
-+static __u64 cookie(int fd)
-+{
-+	__u64 cookie = 0;
-+	socklen_t cookie_len = sizeof(cookie);
-+	int ret;
-+
-+	ret = getsockopt(fd, SOL_SOCKET, SO_COOKIE, &cookie, &cookie_len);
-+	ASSERT_OK(ret, "cookie");
-+	ASSERT_GT(cookie, 0, "cookie_invalid");
-+
-+	return cookie;
-+}
-+
-+static int echo_test_udp(int fd_sv)
-+{
-+	struct sockaddr_storage addr = {};
-+	socklen_t len = sizeof(addr);
-+	char buff[1] = {};
-+	int fd_cl = -1, ret;
-+
-+	fd_cl = connect_to_fd(fd_sv, 100);
-+	ASSERT_GT(fd_cl, 0, "create_client");
-+	ASSERT_EQ(getsockname(fd_cl, (void *)&addr, &len), 0, "getsockname");
-+
-+	ASSERT_EQ(send(fd_cl, buff, sizeof(buff), 0), 1, "send_client");
-+
-+	ret = recv(fd_sv, buff, sizeof(buff), 0);
-+	if (ret < 0)
-+		return errno;
-+
-+	ASSERT_EQ(ret, 1, "recv_server");
-+	ASSERT_EQ(sendto(fd_sv, buff, sizeof(buff), 0, (void *)&addr, len), 1, "send_server");
-+	ASSERT_EQ(recv(fd_cl, buff, sizeof(buff), 0), 1, "recv_client");
-+	close(fd_cl);
-+	return 0;
-+}
-+
-+static int echo_test_tcp(int fd_sv)
-+{
-+	char buff[1] = {};
-+	int fd_cl = -1, fd_sv_cl = -1;
-+
-+	fd_cl = connect_to_fd(fd_sv, 100);
-+	if (fd_cl < 0)
-+		return errno;
-+
-+	fd_sv_cl = accept(fd_sv, NULL, NULL);
-+	ASSERT_GE(fd_sv_cl, 0, "accept_fd");
-+
-+	ASSERT_EQ(send(fd_cl, buff, sizeof(buff), 0), 1, "send_client");
-+	ASSERT_EQ(recv(fd_sv_cl, buff, sizeof(buff), 0), 1, "recv_server");
-+	ASSERT_EQ(send(fd_sv_cl, buff, sizeof(buff), 0), 1, "send_server");
-+	ASSERT_EQ(recv(fd_cl, buff, sizeof(buff), 0), 1, "recv_client");
-+	close(fd_sv_cl);
-+	close(fd_cl);
-+	return 0;
-+}
-+
-+void run_assign_reuse(int family, int sotype, const char *ip, __u16 port)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-+		.ifindex = LOOPBACK,
-+		.attach_point = BPF_TC_INGRESS,
-+	);
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, tc_opts,
-+		.handle = 1,
-+		.priority = 1,
-+	);
-+	bool hook_created = false, tc_attached = false;
-+	int ret, fd_tc, fd_accept, fd_drop, fd_map;
-+	int *fd_sv = NULL;
-+	__u64 fd_val;
-+	struct test_assign_reuse *skel;
-+	const int zero = 0;
-+
-+	skel = test_assign_reuse__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+
-+	skel->rodata->dest_port = port;
-+
-+	ret = test_assign_reuse__load(skel);
-+	if (!ASSERT_OK(ret, "skel_load"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->sk_cookie_seen, 0, "cookie_init");
-+
-+	fd_tc = bpf_program__fd(skel->progs.tc_main);
-+	fd_accept = bpf_program__fd(skel->progs.reuse_accept);
-+	fd_drop = bpf_program__fd(skel->progs.reuse_drop);
-+	fd_map = bpf_map__fd(skel->maps.sk_map);
-+
-+	fd_sv = start_reuseport_server(family, sotype, ip, port, 100, 1);
-+	if (!ASSERT_NEQ(fd_sv, NULL, "start_reuseport_server"))
-+		goto cleanup;
-+
-+	ret = attach_reuseport(*fd_sv, fd_drop);
-+	if (!ASSERT_OK(ret, "attach_reuseport"))
-+		goto cleanup;
-+
-+	fd_val = *fd_sv;
-+	ret = bpf_map_update_elem(fd_map, &zero, &fd_val, BPF_NOEXIST);
-+	if (!ASSERT_OK(ret, "bpf_sk_map"))
-+		goto cleanup;
-+
-+	ret = bpf_tc_hook_create(&tc_hook);
-+	if (ret == 0)
-+		hook_created = true;
-+	ret = ret == -EEXIST ? 0 : ret;
-+	if (!ASSERT_OK(ret, "bpf_tc_hook_create"))
-+		goto cleanup;
-+
-+	tc_opts.prog_fd = fd_tc;
-+	ret = bpf_tc_attach(&tc_hook, &tc_opts);
-+	if (!ASSERT_OK(ret, "bpf_tc_attach"))
-+		goto cleanup;
-+	tc_attached = true;
-+
-+	if (sotype == SOCK_STREAM)
-+		ASSERT_EQ(echo_test_tcp(*fd_sv), ECONNREFUSED, "drop_tcp");
-+	else
-+		ASSERT_EQ(echo_test_udp(*fd_sv), EAGAIN, "drop_udp");
-+	ASSERT_EQ(skel->bss->reuseport_executed, 1, "program executed once");
-+
-+	skel->bss->sk_cookie_seen = 0;
-+	skel->bss->reuseport_executed = 0;
-+	ASSERT_OK(attach_reuseport(*fd_sv, fd_accept), "attach_reuseport(accept)");
-+
-+	if (sotype == SOCK_STREAM)
-+		ASSERT_EQ(echo_test_tcp(*fd_sv), 0, "echo_tcp");
-+	else
-+		ASSERT_EQ(echo_test_udp(*fd_sv), 0, "echo_udp");
-+
-+	ASSERT_EQ(skel->bss->sk_cookie_seen, cookie(*fd_sv),
-+		  "cookie_mismatch");
-+	ASSERT_EQ(skel->bss->reuseport_executed, 1, "program executed once");
-+cleanup:
-+	if (tc_attached) {
-+		tc_opts.flags = tc_opts.prog_fd = tc_opts.prog_id = 0;
-+		ret = bpf_tc_detach(&tc_hook, &tc_opts);
-+		ASSERT_OK(ret, "bpf_tc_detach");
-+	}
-+	if (hook_created) {
-+		tc_hook.attach_point = BPF_TC_INGRESS | BPF_TC_EGRESS;
-+		bpf_tc_hook_destroy(&tc_hook);
-+	}
-+	test_assign_reuse__destroy(skel);
-+	free_fds(fd_sv, 1);
-+}
-+
-+void test_assign_reuse(void)
-+{
-+	struct nstoken *tok = NULL;
-+
-+	SYS(out, "ip netns add %s", NS_TEST);
-+	SYS(cleanup, "ip -net %s link set dev lo up", NS_TEST);
-+
-+	tok = open_netns(NS_TEST);
-+	if (!ASSERT_OK_PTR(tok, "netns token"))
-+		return;
-+
-+	if (test__start_subtest("tcpv4"))
-+		run_assign_reuse(AF_INET, SOCK_STREAM, "127.0.0.1", PORT);
-+	if (test__start_subtest("tcpv6"))
-+		run_assign_reuse(AF_INET6, SOCK_STREAM, "::1", PORT);
-+	if (test__start_subtest("udpv4"))
-+		run_assign_reuse(AF_INET, SOCK_DGRAM, "127.0.0.1", PORT);
-+	if (test__start_subtest("udpv6"))
-+		run_assign_reuse(AF_INET6, SOCK_DGRAM, "::1", PORT);
-+
-+cleanup:
-+	close_netns(tok);
-+	SYS_NOFAIL("ip netns delete %s", NS_TEST);
-+out:
-+	return;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_assign_reuse.c b/tools/testing/selftests/bpf/progs/test_assign_reuse.c
-new file mode 100644
-index 000000000000..4f2e2321ea06
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_assign_reuse.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Isovalent */
-+#include <stdbool.h>
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <linux/in.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/tcp.h>
-+#include <linux/udp.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+#include <linux/pkt_cls.h>
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+__u64 sk_cookie_seen;
-+__u64 reuseport_executed;
-+union {
-+	struct tcphdr tcp;
-+	struct udphdr udp;
-+} headers;
-+
-+const volatile __u16 dest_port;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sk_map SEC(".maps");
-+
-+SEC("sk_reuseport")
-+int reuse_accept(struct sk_reuseport_md *ctx)
-+{
-+	reuseport_executed++;
-+
-+	if (ctx->ip_protocol == IPPROTO_TCP) {
-+		if (ctx->data + sizeof(headers.tcp) > ctx->data_end)
-+			return SK_DROP;
-+
-+		if (__builtin_memcmp(&headers.tcp, ctx->data, sizeof(headers.tcp)) != 0)
-+			return SK_DROP;
-+	} else if (ctx->ip_protocol == IPPROTO_UDP) {
-+		if (ctx->data + sizeof(headers.udp) > ctx->data_end)
-+			return SK_DROP;
-+
-+		if (__builtin_memcmp(&headers.udp, ctx->data, sizeof(headers.udp)) != 0)
-+			return SK_DROP;
-+	} else {
-+		return SK_DROP;
-+	}
-+
-+	sk_cookie_seen = bpf_get_socket_cookie(ctx->sk);
-+	return SK_PASS;
-+}
-+
-+SEC("sk_reuseport")
-+int reuse_drop(struct sk_reuseport_md *ctx)
-+{
-+	reuseport_executed++;
-+	sk_cookie_seen = 0;
-+	return SK_DROP;
-+}
-+
-+static int
-+assign_sk(struct __sk_buff *skb)
-+{
-+	int zero = 0, ret = 0;
-+	struct bpf_sock *sk;
-+
-+	sk = bpf_map_lookup_elem(&sk_map, &zero);
-+	if (!sk)
-+		return TC_ACT_SHOT;
-+	ret = bpf_sk_assign(skb, sk, 0);
-+	bpf_sk_release(sk);
-+	return ret ? TC_ACT_SHOT : TC_ACT_OK;
-+}
-+
-+static bool
-+maybe_assign_tcp(struct __sk_buff *skb, struct tcphdr *th)
-+{
-+	if (th + 1 > (void *)(long)(skb->data_end))
-+		return TC_ACT_SHOT;
-+
-+	if (!th->syn || th->ack || th->dest != bpf_htons(dest_port))
-+		return TC_ACT_OK;
-+
-+	__builtin_memcpy(&headers.tcp, th, sizeof(headers.tcp));
-+	return assign_sk(skb);
-+}
-+
-+static bool
-+maybe_assign_udp(struct __sk_buff *skb, struct udphdr *uh)
-+{
-+	if (uh + 1 > (void *)(long)(skb->data_end))
-+		return TC_ACT_SHOT;
-+
-+	if (uh->dest != bpf_htons(dest_port))
-+		return TC_ACT_OK;
-+
-+	__builtin_memcpy(&headers.udp, uh, sizeof(headers.udp));
-+	return assign_sk(skb);
-+}
-+
-+SEC("tc")
-+int tc_main(struct __sk_buff *skb)
-+{
-+	void *data_end = (void *)(long)skb->data_end;
-+	void *data = (void *)(long)skb->data;
-+	struct ethhdr *eth;
-+
-+	eth = (struct ethhdr *)(data);
-+	if (eth + 1 > data_end)
-+		return TC_ACT_SHOT;
-+
-+	if (eth->h_proto == bpf_htons(ETH_P_IP)) {
-+		struct iphdr *iph = (struct iphdr *)(data + sizeof(*eth));
-+
-+		if (iph + 1 > data_end)
-+			return TC_ACT_SHOT;
-+
-+		if (iph->protocol == IPPROTO_TCP)
-+			return maybe_assign_tcp(skb, (struct tcphdr *)(iph + 1));
-+		else if (iph->protocol == IPPROTO_UDP)
-+			return maybe_assign_udp(skb, (struct udphdr *)(iph + 1));
-+		else
-+			return TC_ACT_SHOT;
-+	} else {
-+		struct ipv6hdr *ip6h = (struct ipv6hdr *)(data + sizeof(*eth));
-+
-+		if (ip6h + 1 > data_end)
-+			return TC_ACT_SHOT;
-+
-+		if (ip6h->nexthdr == IPPROTO_TCP)
-+			return maybe_assign_tcp(skb, (struct tcphdr *)(ip6h + 1));
-+		else if (ip6h->nexthdr == IPPROTO_UDP)
-+			return maybe_assign_udp(skb, (struct udphdr *)(ip6h + 1));
-+		else
-+			return TC_ACT_SHOT;
-+	}
-+}
-
--- 
-2.40.1
-
+Thanks,
+Daniel
 
