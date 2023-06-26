@@ -1,165 +1,198 @@
-Return-Path: <bpf+bounces-3506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F94173EEB4
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 00:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA9B73EEF5
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 01:02:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 732021C20A01
-	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 22:38:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFEC21C20A1C
+	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 23:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013131C17;
-	Mon, 26 Jun 2023 22:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FE8615AE0;
+	Mon, 26 Jun 2023 23:02:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDE315AC4;
-	Mon, 26 Jun 2023 22:37:59 +0000 (UTC)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7753E71;
-	Mon, 26 Jun 2023 15:37:57 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b6a675743dso16661111fa.2;
-        Mon, 26 Jun 2023 15:37:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687819076; x=1690411076;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fGKAFHbZC4cH7Ih+qJbRUkOpVmcOgEOXjYwSvJ4Lvgg=;
-        b=RIHDV327WnntGMoaDhWBjriya4erCYEhKRMDZ3sfrt3BHDrbRQ3BffTu4o9n0T6GPn
-         pOCD5xfUyCNqY6kQ4Vu+RS5cWBoWwOoqVDCGlzyLhJ681wmaLwC33uLl1HRQLfHiEEML
-         huXx1LWRIC9Q8UmilKW0VXPASR0cq1xirBubEC7Ev4wWtafdKK3NxRfg9rugsi1GX/hF
-         SH8bhjQKUgGL2Do8N73Gxes7cH2rVTNpG6r/IEbYuwlURk8iBe8/xD4JCqAMvoO8MU9f
-         VaOZtzXOmLpnE1ija/PUj1BD+3VBEGfqf+/fODv5/jfABkBNd/43XLLB04IFBlqMvsqx
-         q48g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687819076; x=1690411076;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fGKAFHbZC4cH7Ih+qJbRUkOpVmcOgEOXjYwSvJ4Lvgg=;
-        b=BMvFE8ltqjHUZb3eEF+Bbjqjg8BTmHOgdYVNQpwiOSYe29DHn25fvYkY55U6DyHLlI
-         N40o3lGaMHnnt+HJt03jKNegIWlCP85vyoOy2x6yOreiQPRi+GyzSJB/RM2tezauXDEm
-         0gTbzQIIvTJJzNSMNedBef73JlqGxRTNafEYikqQV+h01mIp604h06s4D9ljydF5nsgs
-         hTGwv4V/3tblPoaCGTDF0ewkZp9umCXJKtxjMo13O59heWU6zQuNTopnXxERTP2Glnj/
-         X/WVhLBtIR0VqsPWICaBGSJH3PGutY/V69/isS2ZSIAXM5X4U2br2wn+7t7CoMLkH8Ng
-         t9Tg==
-X-Gm-Message-State: AC+VfDz0v/FDPnfBgENTbkqrNS1R+YzfTpVPysBCrml8JJJswrd1iSe1
-	7YzCNAFozB8rgf+WTBwF4VQoqnkSIYpA7brQiUg=
-X-Google-Smtp-Source: ACHHUZ7ock+asetNFMgH9r8OM4sh2UOfPQXFq8CTlan1/hLD/+e4P19VDE1hXlakS5yYw6WVOJvaZ2hKGTum/mMY8K0=
-X-Received: by 2002:a2e:9a8e:0:b0:2b6:a52b:24ac with SMTP id
- p14-20020a2e9a8e000000b002b6a52b24acmr2383951lji.22.1687819075481; Mon, 26
- Jun 2023 15:37:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8D6125DF;
+	Mon, 26 Jun 2023 23:02:26 +0000 (UTC)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB21010E2;
+	Mon, 26 Jun 2023 16:02:23 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.nyi.internal (Postfix) with ESMTP id CCD135C0120;
+	Mon, 26 Jun 2023 19:02:19 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 26 Jun 2023 19:02:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
+	:subject:to:to; s=fm1; t=1687820539; x=1687906939; bh=i+8OuBfbOb
+	CWELCv1iVIGo3uNjpR3WlawSQL1LNzwes=; b=VYB854Kusx3ppHI4Z4B3ZcDzis
+	LRnU0J6seQeLryAj39+NkNO7UK2sVheAurLHbXp/HlMbM5TjwJmgnPIrRX4UQZ6N
+	bMEJZKSQAMphpWHYYCXuDtaCZF8n1CzyCafqbuzcFAksQfzOZRJtlEfB1NvuKgx7
+	zjWikoxx/DkV+poPwUYYF0p6XojcbTiTnCOwSSG9osczaNH1w2oTs0erP4kYlmGG
+	/Z/x8viT6R/uWYGK65m9RRsc2+fY9K0f/Hr0pADrrnklQc5lGZhnNIDTGZys9Z4h
+	l2nTbmcCUppXDotFevaI2qLKI2ZpoVCGAqKNwrSei+uKbn48Jik6fdTNZWeQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1687820539; x=1687906939; bh=i+8OuBfbObCWE
+	LCv1iVIGo3uNjpR3WlawSQL1LNzwes=; b=o8GnYwts5WqsJGN8GMjOQMXmYalqu
+	+3EOIGdNJ1haFTpwvAu9HAu2gip+u8LrYCq4/SmUw2vMncaOIPE3AeyTk5NR3Ei7
+	dQMJIt0wDaFEuirrIJSm+el3uJ8YfSBITTvLgrvhl57bbOh+z97JHLtIfHLVNLdk
+	s3t1YbQ8GiIypFBL7RS0YvaTZDI573j1Tdx696IKKY6yLUCDnFAqQlVEMp2W4uW1
+	xP/wfxoz6ftKPOC3hZxDsm3oYfbD2NEEgkFzzZr8ujRd5cemc+7pccVw5nH8BRaq
+	kayukgEeZT7/xAoPfi8ff8LwRH6PKYqF1EnpAsdEQ8GwOKfyA3ZzVWYaw==
+X-ME-Sender: <xms:-xiaZEhOAvBFyJ7gletXvWP7WgarqYHMxSjB403qMpvhtRaSf4lvFA>
+    <xme:-xiaZNAgpiUl3rtwwO5HRL12SZAtUWgSb0arrTXX6cTkpOxKR63IAKQAsiug4eMjY
+    ICDQq_bVeJZrhNBZA>
+X-ME-Received: <xmr:-xiaZMEwV-BAg-rxRVh5tPwwGoWVs-16fG9JX6Fe7E_2l8kAHrF9AEEoPH1wrxeghPaMlbm0s1Jp3MnYh6Pt1y9tSRFYdZ-kqDnJeAvt4lQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrgeehgedgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefhvf
+    evufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
+    uhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepueekjeeviefghfethedtgf
+    duheevheelfffgueekffetheelieetgfdvfffghfffnecuffhomhgrihhnpehivghtfhdr
+    ohhrghdpkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:-xiaZFSUvG_G0tfySAKsXAV1NqaufI3PaWz2CJmOzTJ7DzxPOg_8Nw>
+    <xmx:-xiaZBxkQtJUsE-Zju4j-GQUZMT-toXCOBXm3Osoty6dxou1YTct7Q>
+    <xmx:-xiaZD5k7D4shybHrbzCZHig8DAABy2bF2jA6G0w3dK1xVhoGQzdlg>
+    <xmx:-xiaZAx_Gax5MBN_hgx9JgewsUVrc04bPEYv-_RL-bNYKBaVd3j3ig>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 26 Jun 2023 19:02:18 -0400 (EDT)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	coreteam@netfilter.org,
+	netfilter-devel@vger.kernel.org,
+	fw@strlen.de,
+	daniel@iogearbox.net
+Cc: dsahern@kernel.org
+Subject: [PATCH bpf-next 0/7] Support defragmenting IPv(4|6) packets in BPF
+Date: Mon, 26 Jun 2023 17:02:07 -0600
+Message-Id: <cover.1687819413.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230622195757.kmxqagulvu4mwhp6@macbook-pro-8.dhcp.thefacebook.com>
- <CAKH8qBvJmKwgdrLkeT9EPnCiTu01UAOKvPKrY_oHWySiYyp4nQ@mail.gmail.com>
- <CAADnVQKfcGT9UaHtAmWKywtuyP9+_NX0_mMaR0m9D0-a=Ymf5Q@mail.gmail.com>
- <CAKH8qBuJpybiTFz9vx+M+5DoGuK-pPq6HapMKq7rZGsngsuwkw@mail.gmail.com>
- <CAADnVQ+611dOqVFuoffbM_cnOf62n6h+jaB1LwD2HWxS5if2CA@mail.gmail.com>
- <m2bkh69fcp.fsf@gmail.com> <649637e91a709_7bea820894@john.notmuch>
- <CAADnVQKUVDEg12jOc=5iKmfN-aHvFEtvFKVEDBFsmZizwkXT4w@mail.gmail.com>
- <20230624143834.26c5b5e8@kernel.org> <ZJeUlv/omsyXdO/R@google.com> <ZJoExxIaa97JGPqM@google.com>
-In-Reply-To: <ZJoExxIaa97JGPqM@google.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 26 Jun 2023 15:37:44 -0700
-Message-ID: <CAADnVQKePtxk6Nn=M6in6TTKaDNnMZm-g+iYzQ=mPoOh8peoZQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 11/11] net/mlx5e: Support TX timestamp metadata
-To: Stanislav Fomichev <sdf@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 26, 2023 at 2:36=E2=80=AFPM Stanislav Fomichev <sdf@google.com>=
- wrote:
->
-> > >
-> > > I'd think HW TX csum is actually simpler than dealing with time,
-> > > will you change your mind if Stan posts Tx csum within a few days? :)
+=== Context ===
 
-Absolutely :) Happy to change my mind.
+In the context of a middlebox, fragmented packets are tricky to handle.
+The full 5-tuple of a packet is often only available in the first
+fragment which makes enforcing consistent policy difficult. There are
+really only two stateless options, neither of which are very nice:
 
-> > > The set of offloads is barely changing, the lack of clarity
-> > > on what is needed seems overstated. IMHO AF_XDP is getting no use
-> > > today, because everything remotely complex was stripped out of
-> > > the implementation to get it merged. Aren't we hand waving the
-> > > complexity away simply because we don't want to deal with it?
-> > >
-> > > These are the features today's devices support (rx/tx is a mirror):
-> > >  - L4 csum
-> > >  - segmentation
-> > >  - time reporting
-> > >
-> > > Some may also support:
-> > >  - forwarding md tagging
-> > >  - Tx launch time
-> > >  - no fcs
-> > > Legacy / irrelevant:
-> > >  - VLAN insertion
-> >
-> > Right, the goal of the series is to lay out the foundation to support
-> > AF_XDP offloads. I'm starting with tx timestamp because that's more
-> > pressing. But, as I mentioned in another thread, we do have other
-> > users that want to adopt AF_XDP, but due to missing tx offloads, they
-> > aren't able to.
-> >
-> > IMHO, with pre-tx/post-tx hooks, it's pretty easy to go from TX
-> > timestamp to TX checksum offload, we don't need a lot:
-> > - define another generic kfunc bpf_request_tx_csum(from, to)
-> > - drivers implement it
-> > - af_xdp users call this kfunc from devtx hook
-> >
-> > We seem to be arguing over start-with-my-specific-narrow-use-case vs
-> > start-with-generic implementation, so maybe time for the office hours?
-> > I can try to present some cohesive plan of how we start with the framew=
-ork
-> > plus tx-timestamp and expand with tx-checksum/etc. There is a lot of
-> > commonality in these offloads, so I'm probably not communicating it
-> > properly..
->
-> Or, maybe a better suggestion: let me try to implement TX checksum
-> kfunc in the v3 (to show how to build on top this series).
-> Having code is better than doing slides :-D
+1. Enforce policy on first fragment and accept all subsequent fragments.
+   This works but may let in certain attacks or allow data exfiltration.
 
-That would certainly help :)
-What I got out of your lsfmmbpf talk is that timestamp is your
-main and only use case. tx checksum for af_xdp is the other use case,
-but it's not yours, so you sort-of use it as an extra justification
-for timestamp. Hence my negative reaction to 'generality'.
-I think we'll have better results in designing an api
-when we look at these two use cases independently.
-And implement them in patches solving specifically timestamp
-with normal skb traffic and tx checksum for af_xdp as two independent apis.
-If it looks like we can extract a common framework out of them. Great.
-But trying to generalize before truly addressing both cases
-is likely to cripple both apis.
+2. Enforce policy on first fragment and drop all subsequent fragments.
+   This does not really work b/c some protocols may rely on
+   fragmentation. For example, DNS may rely on oversized UDP packets for
+   large responses.
 
-It doesn't have to be only two use cases.
-I completely agree with Kuba that:
- - L4 csum
- - segmentation
- - time reporting
-are universal HW NIC features and we need to have an api
-that exposes these features in programmable way to bpf progs in the kernel
-and through af_xdp to user space.
-I mainly suggest addressing them one by one and look
-for common code bits and api similarities later.
+So stateful tracking is the only sane option. RFC 8900 [0] calls this
+out as well in section 6.3:
+
+    Middleboxes [...] should process IP fragments in a manner that is
+    consistent with [RFC0791] and [RFC8200]. In many cases, middleboxes
+    must maintain state in order to achieve this goal.
+
+=== BPF related bits ===
+
+Policy has traditionally been enforced from XDP/TC hooks. Both hooks
+run before kernel reassembly facilities. However, with the new
+BPF_PROG_TYPE_NETFILTER, we can rather easily hook into existing
+netfilter reassembly infra.
+
+The basic idea is we bump a refcnt on the netfilter defrag module and
+then run the bpf prog after the defrag module runs. This allows bpf
+progs to transparently see full, reassembled packets. The nice thing
+about this is that progs don't have to carry around logic to detect
+fragments.
+
+=== Patchset details ===
+
+There was an earlier attempt at providing defrag via kfuncs [1]. The
+feedback was that we could end up doing too much stuff in prog execution
+context (like sending ICMP error replies). However, I think there are
+still some outstanding discussion w.r.t. performance when it comes to
+netfilter vs the previous approach. I'll schedule some time during
+office hours for this.
+
+Patches 1 & 2 are stolenfrom Florian. Hopefully he doesn't mind. There
+were some outstanding comments on the v2 [2] but it doesn't look like a
+v3 was ever submitted.  I've addressed the comments and put them in this
+patchset cuz I needed them.
+
+Finally, the new selftest seems to be a little flaky. I'm not quite
+sure why the server will fail to `recvfrom()` occassionaly. I'm fairly
+sure it's a timing related issue with creating veths. I'll keep
+debugging but I didn't want that to hold up discussion on this patchset.
+
+
+[0]: https://datatracker.ietf.org/doc/html/rfc8900
+[1]: https://lore.kernel.org/bpf/cover.1677526810.git.dxu@dxuuu.xyz/
+[2]: https://lore.kernel.org/bpf/20230525110100.8212-1-fw@strlen.de/
+
+Daniel Xu (7):
+  tools: libbpf: add netfilter link attach helper
+  selftests/bpf: Add bpf_program__attach_netfilter helper test
+  netfilter: defrag: Add glue hooks for enabling/disabling defrag
+  netfilter: bpf: Support BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+  bpf: selftests: Support not connecting client socket
+  bpf: selftests: Support custom type and proto for client sockets
+  bpf: selftests: Add defrag selftests
+
+ include/linux/netfilter.h                     |  12 +
+ include/uapi/linux/bpf.h                      |   5 +
+ net/ipv4/netfilter/nf_defrag_ipv4.c           |   8 +
+ net/ipv6/netfilter/nf_defrag_ipv6_hooks.c     |  10 +
+ net/netfilter/core.c                          |   6 +
+ net/netfilter/nf_bpf_link.c                   | 108 ++++++-
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/lib/bpf/bpf.c                           |   8 +
+ tools/lib/bpf/bpf.h                           |   6 +
+ tools/lib/bpf/libbpf.c                        |  47 +++
+ tools/lib/bpf/libbpf.h                        |  15 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../selftests/bpf/generate_udp_fragments.py   |  90 ++++++
+ .../selftests/bpf/ip_check_defrag_frags.h     |  57 ++++
+ tools/testing/selftests/bpf/network_helpers.c |  26 +-
+ tools/testing/selftests/bpf/network_helpers.h |   3 +
+ .../bpf/prog_tests/ip_check_defrag.c          | 282 ++++++++++++++++++
+ .../bpf/prog_tests/netfilter_basic.c          |  78 +++++
+ .../selftests/bpf/progs/ip_check_defrag.c     | 104 +++++++
+ .../bpf/progs/test_netfilter_link_attach.c    |  14 +
+ 21 files changed, 868 insertions(+), 21 deletions(-)
+ create mode 100755 tools/testing/selftests/bpf/generate_udp_fragments.py
+ create mode 100644 tools/testing/selftests/bpf/ip_check_defrag_frags.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_basic.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ip_check_defrag.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_attach.c
+
+-- 
+2.40.1
+
 
