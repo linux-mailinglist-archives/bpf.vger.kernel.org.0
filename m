@@ -1,491 +1,199 @@
-Return-Path: <bpf+bounces-3480-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3481-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73EBE73E742
-	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 20:12:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BD2C73E81D
+	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 20:23:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96D181C209AA
-	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 18:12:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6EB21C209BC
+	for <lists+bpf@lfdr.de>; Mon, 26 Jun 2023 18:23:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC3D134DC;
-	Mon, 26 Jun 2023 18:12:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414F513AC6;
+	Mon, 26 Jun 2023 18:23:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808B6134B3;
-	Mon, 26 Jun 2023 18:12:33 +0000 (UTC)
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156392942;
-	Mon, 26 Jun 2023 11:12:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A25134CE
+	for <bpf@vger.kernel.org>; Mon, 26 Jun 2023 18:22:59 +0000 (UTC)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7638A1987
+	for <bpf@vger.kernel.org>; Mon, 26 Jun 2023 11:22:32 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fb7acaa7a5so1286539e87.1
+        for <bpf@vger.kernel.org>; Mon, 26 Jun 2023 11:22:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1687803136; x=1719339136;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=eSK17/Nu3oaFQ2VpG4P41G6xg6u1+jOi/ite1ltKpmI=;
-  b=oxZgnOUmBSzcsiRRfrledeQclCoQnt2h0f5sycQikg3q334OjFbrI7wa
-   KJ/me9HrJYSFsI+Axa3RIAhnXEBdjzclc1U3k5xdemj3xMyJ90WH0dI+j
-   LYQpvVtCkGMJL/VcViY+4wl/4O0oy2QCCFzRrRUVqaQ5puq1uzHWz461v
-   U=;
-X-IronPort-AV: E=Sophos;i="6.01,160,1684800000"; 
-   d="scan'208";a="347902966"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-8a14c045.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2023 18:12:10 +0000
-Received: from EX19MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-	by email-inbound-relay-pdx-2a-m6i4x-8a14c045.us-west-2.amazon.com (Postfix) with ESMTPS id 3F03D805EB;
-	Mon, 26 Jun 2023 18:12:09 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 26 Jun 2023 18:12:08 +0000
-Received: from 88665a182662.ant.amazon.com (10.187.170.15) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.30;
- Mon, 26 Jun 2023 18:12:04 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <lmb@isovalent.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <hemanthmalla@gmail.com>,
-	<joe@wand.net.nz>, <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-	<kpsingh@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<martin.lau@linux.dev>, <mykolal@fb.com>, <netdev@vger.kernel.org>,
-	<pabeni@redhat.com>, <sdf@google.com>, <shuah@kernel.org>, <song@kernel.org>,
-	<willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v3 4/7] net: remove duplicate reuseport_lookup functions
-Date: Mon, 26 Jun 2023 11:11:56 -0700
-Message-ID: <20230626181156.62006-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230613-so-reuseport-v3-4-907b4cbb7b99@isovalent.com>
-References: <20230613-so-reuseport-v3-4-907b4cbb7b99@isovalent.com>
+        d=gmail.com; s=20221208; t=1687803712; x=1690395712;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=12lFLZLSXgkTkPCwfgRZ92qmdnntBBAXAquDS6NIEKA=;
+        b=g8MLf+sl/ULmpq0gRZB3a+3fdE3HZa2AqIRHimNYL88+AvOU2TDLZOG2Nu0+kaC1k7
+         7Gmke7r/v6/25XkOYGY2BIcNbtxlpcsLQzabKPk2J1wPdu1PNXXHV6bPEtVDH/6Ehx7Z
+         xyF2OYyzBINiv82ab7lmOW0cAJzEqwJh2hMxYBpBHIPFBjBv1Gwzv/rEZTZEbhQfGXjO
+         gu2XEYdrN+hkUfgcRjK1fj4uH/XKn74fvozWUyNTZqtOm7xXh9OB0FdYgg9q7mTFgnho
+         H7KBDhsVFztwblWXv8DJNBwlaOZzjthtq1+oCbnNH6p4zLq/ZOKDEWWU9HVVOcy7y+fo
+         y5VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687803712; x=1690395712;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=12lFLZLSXgkTkPCwfgRZ92qmdnntBBAXAquDS6NIEKA=;
+        b=kGzPS50JLWkbt+ly70fLv8BFDxPhq7yWVtb0JWtayfGUf80Fo7Hsm/xoc42h+1kbnB
+         RuVWnSELC+DO7r6qr+ORBcYK7jAKalzBt3T77WB9g7t8vPUIDYerMF0kvepBhjjBpdhi
+         tuaTMHxD2Vlt2OtL+IVle9BfYm/d2mjbBL7Cq7PLt/tUYcQUmLfQ2h4bsibsSnWgX4Iz
+         1GXIMW8RMsYjzzt8tga+NUO3759pI0LyAWR06VbGxEuuCwDm2SwXF3LN29X8M/TiJiG4
+         WwHlxEiWeEuHtvNU+vN9KsqqVrPGJL9xFS5km+khpqRJmgKtp0feyG+V7iPpAcjPgv4O
+         WV8A==
+X-Gm-Message-State: AC+VfDwfNO2cSQ5phzEUIlJBncZua0273Jz92DxNBMm1VfjbPvHP6vJl
+	pHWVjeilAkAr/1MPkRr3itg4mi9deYE6OIgynzE=
+X-Google-Smtp-Source: ACHHUZ4DaZkApmQpKbPGLs4vvVVKzMLlU3JnEE79MNDaLnmEXQnBqojBBn5a1/xrgpfICEr3Fz4jEBPzlfFSMigvkzQ=
+X-Received: by 2002:a05:6512:281f:b0:4fb:772a:af19 with SMTP id
+ cf31-20020a056512281f00b004fb772aaf19mr2166440lfb.34.1687803711954; Mon, 26
+ Jun 2023 11:21:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.187.170.15]
-X-ClientProxiedBy: EX19D045UWA001.ant.amazon.com (10.13.139.83) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-	version=3.4.6
+References: <20230620083550.690426-1-jolsa@kernel.org> <20230620083550.690426-14-jolsa@kernel.org>
+ <CAEf4BzZpq96QUsWitv+TBuaE2ehy0PKuEvq0rYgjOQj6jegTGQ@mail.gmail.com> <ZJeV48zw9C1h/mYs@krava>
+In-Reply-To: <ZJeV48zw9C1h/mYs@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 26 Jun 2023 11:21:40 -0700
+Message-ID: <CAEf4BzZ_n14aXgqEjv2=hFUHMLOseZ2WdtHfiBD1VeGaBspi4w@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 13/24] libbpf: Add uprobe multi link detection
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Mon, 26 Jun 2023 16:09:01 +0100
-> There are currently four copies of reuseport_lookup: one each for
-> (TCP, UDP)x(IPv4, IPv6). This forces us to duplicate all callers of
-> those functions as well. This is already the case for sk_lookup
-> helpers (inet,inet6,udp4,udp6)_lookup_run_bpf.
-> 
-> There are two differences between the reuseport_lookup helpers:
-> 
-> 1. They call different hash functions depending on protocol
-> 2. UDP reuseport_lookup checks that sk_state != TCP_ESTABLISHED
-> 
-> Move the check for sk_state into the caller and use the INDIRECT_CALL
-> infrastructure to cut down the helpers to one per IP version.
-> 
-> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-> ---
->  include/net/inet6_hashtables.h | 11 ++++++++++-
->  include/net/inet_hashtables.h  | 15 ++++++++++-----
->  include/net/udp.h              |  8 ++++++++
->  net/ipv4/inet_hashtables.c     | 23 ++++++++++++++++-------
->  net/ipv4/udp.c                 | 34 +++++++++++++---------------------
->  net/ipv6/inet6_hashtables.c    | 17 +++++++++++++----
->  net/ipv6/udp.c                 | 41 ++++++++++++++++-------------------------
->  7 files changed, 86 insertions(+), 63 deletions(-)
-> 
-> diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
-> index 032ddab48f8f..49d586454287 100644
-> --- a/include/net/inet6_hashtables.h
-> +++ b/include/net/inet6_hashtables.h
-> @@ -48,12 +48,21 @@ struct sock *__inet6_lookup_established(struct net *net,
->  					const u16 hnum, const int dif,
->  					const int sdif);
->  
-> +typedef u32 (*inet6_ehashfn_t)(const struct net *net,
-> +			       const struct in6_addr *laddr, const u16 lport,
-> +			       const struct in6_addr *faddr, const __be16 fport);
-> +
-> +u32 inet6_ehashfn(const struct net *net,
-> +		  const struct in6_addr *laddr, const u16 lport,
-> +		  const struct in6_addr *faddr, const __be16 fport);
+On Sat, Jun 24, 2023 at 6:18=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Fri, Jun 23, 2023 at 01:40:20PM -0700, Andrii Nakryiko wrote:
+> > On Tue, Jun 20, 2023 at 1:38=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wr=
+ote:
+> > >
+> > > Adding uprobe-multi link detection. It will be used later in
+> > > bpf_program__attach_usdt function to check and use uprobe_multi
+> > > link over standard uprobe links.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c          | 29 +++++++++++++++++++++++++++++
+> > >  tools/lib/bpf/libbpf_internal.h |  2 ++
+> > >  2 files changed, 31 insertions(+)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index e42080258ec7..3d570898459e 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -4815,6 +4815,32 @@ static int probe_perf_link(void)
+> > >         return link_fd < 0 && err =3D=3D -EBADF;
+> > >  }
+> > >
+> > > +static int probe_uprobe_multi_link(void)
+> > > +{
+> > > +       struct bpf_insn insns[] =3D {
+> > > +               BPF_MOV64_IMM(BPF_REG_0, 0),
+> > > +               BPF_EXIT_INSN(),
+> > > +       };
+> > > +       int prog_fd, link_fd, err;
+> > > +
+> > > +       prog_fd =3D bpf_prog_load(BPF_PROG_TYPE_KPROBE, NULL, "GPL",
+> > > +                               insns, ARRAY_SIZE(insns), NULL);
+> >
+> > I thought we needed to specify expected_attach_type (BPF_TRACE_UPROBE_M=
+ULTI)?
+>
+> hm it should.. I guess it worked because of the KPROBE/UPROBE
+> typo you found in the patch earlier, will check
+>
+> >
+> > > +       if (prog_fd < 0)
+> > > +               return -errno;
+> > > +
+> > > +       /* No need to specify attach function. If the link is not sup=
+ported
+> > > +        * we will get -EOPNOTSUPP error before any other check is pe=
+rformed.
+> >
+> > what will actually return this -EOPNOTSUPP? I couldn't find this in
+> > the code quickly, can you please point me where?
+>
+>         #else /* !CONFIG_UPROBES */
+>         int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, stru=
+ct bpf_prog *prog)
+>         {
+>                 return -EOPNOTSUPP;
+>         }
 
-Can we use inet6_ehashfn_t here ?
+that's a new code in new kernel that doesn't have CONFIG_UPROBES. What
+about old kernels? They will return -EINVAL, no? Which we will assume
+means "yep, multi-uprobe BPF link is supported", which would be wrong.
+Or am I missing something?
 
-Same for .c file, IPv4, and UDP.
-
-
-> +
->  struct sock *inet6_lookup_reuseport(struct net *net, struct sock *sk,
->  				    struct sk_buff *skb, int doff,
->  				    const struct in6_addr *saddr,
->  				    __be16 sport,
->  				    const struct in6_addr *daddr,
-> -				    unsigned short hnum);
-> +				    unsigned short hnum,
-> +				    inet6_ehashfn_t ehashfn);
->  
->  struct sock *inet6_lookup_listener(struct net *net,
->  				   struct inet_hashinfo *hashinfo,
-> diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
-> index 8734f3488f5d..51ab6a1a3601 100644
-> --- a/include/net/inet_hashtables.h
-> +++ b/include/net/inet_hashtables.h
-> @@ -379,10 +379,19 @@ struct sock *__inet_lookup_established(struct net *net,
->  				       const __be32 daddr, const u16 hnum,
->  				       const int dif, const int sdif);
->  
-> +typedef u32 (*inet_ehashfn_t)(const struct net *net,
-> +			      const __be32 laddr, const __u16 lport,
-> +			      const __be32 faddr, const __be16 fport);
-> +
-> +u32 inet_ehashfn(const struct net *net,
-> +		 const __be32 laddr, const __u16 lport,
-> +		 const __be32 faddr, const __be16 fport);
-> +
->  struct sock *inet_lookup_reuseport(struct net *net, struct sock *sk,
->  				   struct sk_buff *skb, int doff,
->  				   __be32 saddr, __be16 sport,
-> -				   __be32 daddr, unsigned short hnum);
-> +				   __be32 daddr, unsigned short hnum,
-> +				   inet_ehashfn_t ehashfn);
->  
->  static inline struct sock *
->  	inet_lookup_established(struct net *net, struct inet_hashinfo *hashinfo,
-> @@ -453,10 +462,6 @@ static inline struct sock *__inet_lookup_skb(struct inet_hashinfo *hashinfo,
->  			     refcounted);
->  }
->  
-> -u32 inet6_ehashfn(const struct net *net,
-> -		  const struct in6_addr *laddr, const u16 lport,
-> -		  const struct in6_addr *faddr, const __be16 fport);
-> -
->  static inline void sk_daddr_set(struct sock *sk, __be32 addr)
->  {
->  	sk->sk_daddr = addr; /* alias of inet_daddr */
-> diff --git a/include/net/udp.h b/include/net/udp.h
-> index 5cad44318d71..3b404b429f88 100644
-> --- a/include/net/udp.h
-> +++ b/include/net/udp.h
-> @@ -317,6 +317,14 @@ struct sock *udp6_lib_lookup_skb(const struct sk_buff *skb,
->  				 __be16 sport, __be16 dport);
->  int udp_read_skb(struct sock *sk, skb_read_actor_t recv_actor);
->  
-> +INDIRECT_CALLABLE_DECLARE(u32 udp_ehashfn(const struct net *,
-> +					  const __be32, const __u16,
-> +					  const __be32, const __be16));
-> +
-> +INDIRECT_CALLABLE_DECLARE(u32 udp6_ehashfn(const struct net *,
-> +					   const struct in6_addr *, const u16,
-> +					   const struct in6_addr *, const __be16));
-> +
->  /* UDP uses skb->dev_scratch to cache as much information as possible and avoid
->   * possibly multiple cache miss on dequeue()
->   */
-> diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-> index 91f9210d4e83..0dd768ab22d9 100644
-> --- a/net/ipv4/inet_hashtables.c
-> +++ b/net/ipv4/inet_hashtables.c
-> @@ -28,9 +28,9 @@
->  #include <net/tcp.h>
->  #include <net/sock_reuseport.h>
->  
-> -static u32 inet_ehashfn(const struct net *net, const __be32 laddr,
-> -			const __u16 lport, const __be32 faddr,
-> -			const __be16 fport)
-> +u32 inet_ehashfn(const struct net *net, const __be32 laddr,
-> +		 const __u16 lport, const __be32 faddr,
-> +		 const __be16 fport)
->  {
->  	static u32 inet_ehash_secret __read_mostly;
->  
-> @@ -39,6 +39,7 @@ static u32 inet_ehashfn(const struct net *net, const __be32 laddr,
->  	return __inet_ehashfn(laddr, lport, faddr, fport,
->  			      inet_ehash_secret + net_hash_mix(net));
->  }
-> +EXPORT_SYMBOL_GPL(inet_ehashfn);
->  
->  /* This function handles inet_sock, but also timewait and request sockets
->   * for IPv4/IPv6.
-> @@ -332,6 +333,10 @@ static inline int compute_score(struct sock *sk, struct net *net,
->  	return score;
->  }
->  
-> +INDIRECT_CALLABLE_DECLARE(u32 udp_ehashfn(const struct net *,
-> +					  const __be32, const __u16,
-> +					  const __be32, const __be16));
-> +
->  /**
->   * inet_lookup_reuseport() - execute reuseport logic on AF_INET socket if necessary.
->   * @net: network namespace.
-> @@ -342,6 +347,7 @@ static inline int compute_score(struct sock *sk, struct net *net,
->   * @sport: source port.
->   * @daddr: destination address.
->   * @hnum: destination port in host byte order.
-> + * @ehashfn: hash function used to generate the fallback hash.
->   *
->   * Return: NULL if sk doesn't have SO_REUSEPORT set, otherwise a pointer to
->   *         the selected sock or an error.
-> @@ -349,13 +355,15 @@ static inline int compute_score(struct sock *sk, struct net *net,
->  struct sock *inet_lookup_reuseport(struct net *net, struct sock *sk,
->  				   struct sk_buff *skb, int doff,
->  				   __be32 saddr, __be16 sport,
-> -				   __be32 daddr, unsigned short hnum)
-> +				   __be32 daddr, unsigned short hnum,
-> +				   inet_ehashfn_t ehashfn)
->  {
->  	struct sock *reuse_sk = NULL;
->  	u32 phash;
->  
->  	if (sk->sk_reuseport) {
-> -		phash = inet_ehashfn(net, daddr, hnum, saddr, sport);
-> +		phash = INDIRECT_CALL_2(ehashfn, udp_ehashfn, inet_ehashfn,
-> +					net, daddr, hnum, saddr, sport);
->  		reuse_sk = reuseport_select_sock(sk, phash, skb, doff);
->  	}
->  	return reuse_sk;
-> @@ -385,7 +393,7 @@ static struct sock *inet_lhash2_lookup(struct net *net,
->  		score = compute_score(sk, net, hnum, daddr, dif, sdif);
->  		if (score > hiscore) {
->  			result = inet_lookup_reuseport(net, sk, skb, doff,
-> -						       saddr, sport, daddr, hnum);
-> +						       saddr, sport, daddr, hnum, inet_ehashfn);
->  			if (result)
->  				return result;
->  
-> @@ -414,7 +422,8 @@ static inline struct sock *inet_lookup_run_bpf(struct net *net,
->  	if (no_reuseport || IS_ERR_OR_NULL(sk))
->  		return sk;
->  
-> -	reuse_sk = inet_lookup_reuseport(net, sk, skb, doff, saddr, sport, daddr, hnum);
-> +	reuse_sk = inet_lookup_reuseport(net, sk, skb, doff, saddr, sport, daddr, hnum,
-> +					 inet_ehashfn);
->  	if (reuse_sk)
->  		sk = reuse_sk;
->  	return sk;
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index 5ef478d2c408..7258edece691 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
-> @@ -405,9 +405,9 @@ static int compute_score(struct sock *sk, struct net *net,
->  	return score;
->  }
->  
-> -static u32 udp_ehashfn(const struct net *net, const __be32 laddr,
-> -		       const __u16 lport, const __be32 faddr,
-> -		       const __be16 fport)
-> +INDIRECT_CALLABLE_SCOPE
-> +u32 udp_ehashfn(const struct net *net, const __be32 laddr, const __u16 lport,
-> +		const __be32 faddr, const __be16 fport)
->  {
->  	static u32 udp_ehash_secret __read_mostly;
->  
-> @@ -417,22 +417,6 @@ static u32 udp_ehashfn(const struct net *net, const __be32 laddr,
->  			      udp_ehash_secret + net_hash_mix(net));
->  }
->  
-> -static struct sock *lookup_reuseport(struct net *net, struct sock *sk,
-> -				     struct sk_buff *skb,
-> -				     __be32 saddr, __be16 sport,
-> -				     __be32 daddr, unsigned short hnum)
-> -{
-> -	struct sock *reuse_sk = NULL;
-> -	u32 hash;
-> -
-> -	if (sk->sk_reuseport && sk->sk_state != TCP_ESTABLISHED) {
-> -		hash = udp_ehashfn(net, daddr, hnum, saddr, sport);
-> -		reuse_sk = reuseport_select_sock(sk, hash, skb,
-> -						 sizeof(struct udphdr));
-> -	}
-> -	return reuse_sk;
-> -}
-> -
->  /* called with rcu_read_lock() */
->  static struct sock *udp4_lib_lookup2(struct net *net,
->  				     __be32 saddr, __be16 sport,
-> @@ -451,7 +435,14 @@ static struct sock *udp4_lib_lookup2(struct net *net,
->  				      daddr, hnum, dif, sdif);
->  		if (score > badness) {
->  			badness = score;
-> -			result = lookup_reuseport(net, sk, skb, saddr, sport, daddr, hnum);
-> +
-> +			if (sk->sk_state == TCP_ESTABLISHED) {
-> +				result = sk;
-> +				continue;
-> +			}
-> +
-> +			result = inet_lookup_reuseport(net, sk, skb, sizeof(struct udphdr),
-> +						       saddr, sport, daddr, hnum, udp_ehashfn);
->  			if (!result) {
->  				result = sk;
->  				continue;
-> @@ -490,7 +481,8 @@ static struct sock *udp4_lookup_run_bpf(struct net *net,
->  	if (no_reuseport || IS_ERR_OR_NULL(sk))
->  		return sk;
->  
-> -	reuse_sk = lookup_reuseport(net, sk, skb, saddr, sport, daddr, hnum);
-> +	reuse_sk = inet_lookup_reuseport(net, sk, skb, sizeof(struct udphdr),
-> +					 saddr, sport, daddr, hnum, udp_ehashfn);
->  	if (reuse_sk)
->  		sk = reuse_sk;
->  	return sk;
-> diff --git a/net/ipv6/inet6_hashtables.c b/net/ipv6/inet6_hashtables.c
-> index 208998694ae3..b5de1642bc51 100644
-> --- a/net/ipv6/inet6_hashtables.c
-> +++ b/net/ipv6/inet6_hashtables.c
-> @@ -39,6 +39,7 @@ u32 inet6_ehashfn(const struct net *net,
->  	return __inet6_ehashfn(lhash, lport, fhash, fport,
->  			       inet6_ehash_secret + net_hash_mix(net));
->  }
-> +EXPORT_SYMBOL_GPL(inet6_ehashfn);
->  
->  /*
->   * Sockets in TCP_CLOSE state are _always_ taken out of the hash, so
-> @@ -111,6 +112,10 @@ static inline int compute_score(struct sock *sk, struct net *net,
->  	return score;
->  }
->  
-> +INDIRECT_CALLABLE_DECLARE(u32 udp6_ehashfn(const struct net *,
-> +					   const struct in6_addr *, const u16,
-> +					   const struct in6_addr *, const __be16));
-> +
->  /**
->   * inet6_lookup_reuseport() - execute reuseport logic on AF_INET6 socket if necessary.
->   * @net: network namespace.
-> @@ -121,6 +126,7 @@ static inline int compute_score(struct sock *sk, struct net *net,
->   * @sport: source port.
->   * @daddr: destination address.
->   * @hnum: destination port in host byte order.
-> + * @ehashfn: hash function used to generate the fallback hash.
->   *
->   * Return: NULL if sk doesn't have SO_REUSEPORT set, otherwise a pointer to
->   *         the selected sock or an error.
-> @@ -130,13 +136,15 @@ struct sock *inet6_lookup_reuseport(struct net *net, struct sock *sk,
->  				    const struct in6_addr *saddr,
->  				    __be16 sport,
->  				    const struct in6_addr *daddr,
-> -				    unsigned short hnum)
-> +				    unsigned short hnum,
-> +				    inet6_ehashfn_t ehashfn)
->  {
->  	struct sock *reuse_sk = NULL;
->  	u32 phash;
->  
->  	if (sk->sk_reuseport) {
-> -		phash = inet6_ehashfn(net, daddr, hnum, saddr, sport);
-> +		phash = INDIRECT_CALL_INET(ehashfn, udp6_ehashfn, inet6_ehashfn,
-> +					   net, daddr, hnum, saddr, sport);
->  		reuse_sk = reuseport_select_sock(sk, phash, skb, doff);
->  	}
->  	return reuse_sk;
-> @@ -159,7 +167,7 @@ static struct sock *inet6_lhash2_lookup(struct net *net,
->  		score = compute_score(sk, net, hnum, daddr, dif, sdif);
->  		if (score > hiscore) {
->  			result = inet6_lookup_reuseport(net, sk, skb, doff,
-> -							saddr, sport, daddr, hnum);
-> +							saddr, sport, daddr, hnum, inet6_ehashfn);
->  			if (result)
->  				return result;
->  
-> @@ -190,7 +198,8 @@ static inline struct sock *inet6_lookup_run_bpf(struct net *net,
->  	if (no_reuseport || IS_ERR_OR_NULL(sk))
->  		return sk;
->  
-> -	reuse_sk = inet6_lookup_reuseport(net, sk, skb, doff, saddr, sport, daddr, hnum);
-> +	reuse_sk = inet6_lookup_reuseport(net, sk, skb, doff,
-> +					  saddr, sport, daddr, hnum, inet6_ehashfn);
->  	if (reuse_sk)
->  		sk = reuse_sk;
->  	return sk;
-> diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-> index 8b3cb1d7da7c..ebac9200b15c 100644
-> --- a/net/ipv6/udp.c
-> +++ b/net/ipv6/udp.c
-> @@ -70,11 +70,12 @@ int udpv6_init_sock(struct sock *sk)
->  	return 0;
->  }
->  
-> -static u32 udp6_ehashfn(const struct net *net,
-> -			const struct in6_addr *laddr,
-> -			const u16 lport,
-> -			const struct in6_addr *faddr,
-> -			const __be16 fport)
-> +INDIRECT_CALLABLE_SCOPE
-> +u32 udp6_ehashfn(const struct net *net,
-> +		 const struct in6_addr *laddr,
-> +		 const u16 lport,
-> +		 const struct in6_addr *faddr,
-> +		 const __be16 fport)
->  {
->  	static u32 udp6_ehash_secret __read_mostly;
->  	static u32 udp_ipv6_hash_secret __read_mostly;
-> @@ -159,24 +160,6 @@ static int compute_score(struct sock *sk, struct net *net,
->  	return score;
->  }
->  
-> -static struct sock *lookup_reuseport(struct net *net, struct sock *sk,
-> -				     struct sk_buff *skb,
-> -				     const struct in6_addr *saddr,
-> -				     __be16 sport,
-> -				     const struct in6_addr *daddr,
-> -				     unsigned int hnum)
-> -{
-> -	struct sock *reuse_sk = NULL;
-> -	u32 hash;
-> -
-> -	if (sk->sk_reuseport && sk->sk_state != TCP_ESTABLISHED) {
-> -		hash = udp6_ehashfn(net, daddr, hnum, saddr, sport);
-> -		reuse_sk = reuseport_select_sock(sk, hash, skb,
-> -						 sizeof(struct udphdr));
-> -	}
-> -	return reuse_sk;
-> -}
-> -
->  /* called with rcu_read_lock() */
->  static struct sock *udp6_lib_lookup2(struct net *net,
->  		const struct in6_addr *saddr, __be16 sport,
-> @@ -194,7 +177,14 @@ static struct sock *udp6_lib_lookup2(struct net *net,
->  				      daddr, hnum, dif, sdif);
->  		if (score > badness) {
->  			badness = score;
-> -			result = lookup_reuseport(net, sk, skb, saddr, sport, daddr, hnum);
-> +
-> +			if (sk->sk_state == TCP_ESTABLISHED) {
-> +				result = sk;
-> +				continue;
-> +			}
-> +
-> +			result = inet6_lookup_reuseport(net, sk, skb, sizeof(struct udphdr),
-> +							saddr, sport, daddr, hnum, udp6_ehashfn);
->  			if (!result) {
->  				result = sk;
->  				continue;
-> @@ -234,7 +224,8 @@ static inline struct sock *udp6_lookup_run_bpf(struct net *net,
->  	if (no_reuseport || IS_ERR_OR_NULL(sk))
->  		return sk;
->  
-> -	reuse_sk = lookup_reuseport(net, sk, skb, saddr, sport, daddr, hnum);
-> +	reuse_sk = inet6_lookup_reuseport(net, sk, skb, sizeof(struct udphdr),
-> +					  saddr, sport, daddr, hnum, udp6_ehashfn);
->  	if (reuse_sk)
->  		sk = reuse_sk;
->  	return sk;
-> 
-> -- 
-> 2.40.1
+>
+> >
+> > > +        */
+> > > +       link_fd =3D bpf_link_create(prog_fd, -1, BPF_TRACE_UPROBE_MUL=
+TI, NULL);
+> > > +       err =3D -errno; /* close() can clobber errno */
+> > > +
+> > > +       if (link_fd >=3D 0)
+> > > +               close(link_fd);
+> > > +       close(prog_fd);
+> > > +
+> > > +       return link_fd < 0 && err !=3D -EOPNOTSUPP;
+> > > +}
+> > > +
+> > >  static int probe_kern_bpf_cookie(void)
+> > >  {
+> > >         struct bpf_insn insns[] =3D {
+> > > @@ -4911,6 +4937,9 @@ static struct kern_feature_desc {
+> > >         [FEAT_SYSCALL_WRAPPER] =3D {
+> > >                 "Kernel using syscall wrapper", probe_kern_syscall_wr=
+apper,
+> > >         },
+> > > +       [FEAT_UPROBE_LINK] =3D {
+> > > +               "BPF uprobe multi link support", probe_uprobe_multi_l=
+ink,
+> > > +       },
+> > >  };
+> > >
+> > >  bool kernel_supports(const struct bpf_object *obj, enum kern_feature=
+_id feat_id)
+> > > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_i=
+nternal.h
+> > > index 22b0834e7fe1..a257eb81af25 100644
+> > > --- a/tools/lib/bpf/libbpf_internal.h
+> > > +++ b/tools/lib/bpf/libbpf_internal.h
+> > > @@ -354,6 +354,8 @@ enum kern_feature_id {
+> > >         FEAT_BTF_ENUM64,
+> > >         /* Kernel uses syscall wrapper (CONFIG_ARCH_HAS_SYSCALL_WRAPP=
+ER) */
+> > >         FEAT_SYSCALL_WRAPPER,
+> > > +       /* BPF uprobe_multi link support */
+> > > +       FEAT_UPROBE_LINK,
+> >
+> > UPROBE_MULTI_LINK, we might have non-multi link in the future as well
+>
+> ok
+>
+> thanks,
+> jirka
 
