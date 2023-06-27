@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-3585-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3586-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D150B7402E2
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 20:11:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 602037402E6
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 20:11:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C3FE28112F
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 18:11:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B7C1281126
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 18:11:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5771ACB2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38151ACB8;
 	Tue, 27 Jun 2023 18:10:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C827419BB9
-	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 18:10:52 +0000 (UTC)
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1188297B
-	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 11:10:48 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-55ab1b28c14so1320781a12.3
-        for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 11:10:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A64F019BB9
+	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 18:10:53 +0000 (UTC)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3722D4A
+	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 11:10:51 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-57325434999so67281967b3.1
+        for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 11:10:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687889448; x=1690481448;
+        d=google.com; s=20221208; t=1687889450; x=1690481450;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=E3xFrkPN2+sT/sY0g+uTpgnQ+XoDit6j6d+F4zxTHTs=;
-        b=mDO2RZPnw3ueZUEgv1txbCfJHsBa5ZLGazmnDmvs1Rka9T1sryG8ukUK81nej5lSNu
-         ORauHXjoy1ZWTbiDpbmxh/Ik0yEX7nG/6Kexgltr82+VRMVArq9QsoYWy6GTx+sXEhB3
-         urulGJs2wXbd8LaN7yG5ZJqtHm+FAftrzBsdkM2+8018xoe9DHQG72o2CvaG1m85vGlz
-         5IEf668Pba9cgBJXVY9EVU3x9C/nLzyHwbwQ9aRW7k03A7HvDUY/BXQN3+h7C74R5BUU
-         hnFpuLkVqktQKdKBdU8mQoYsp4xWyf4aNgy7FU5a/VIu3RjDzRNmIU//UnIc4IDcJBDk
-         CsNQ==
+        bh=pylB9mwmAKl3TUVj6l4nL/JaxRJCwOWbixQnNb1VbG4=;
+        b=DwonPv3+k7d87RYPLiQHRluN8geVSL/JuBedm0iIRSSridMUKd+QRAh1UTNbrX4Rc+
+         2tRuCmYb7a+HMHtj2KZX571wOPyJrGR60Dq3/+JaFxSG0GwbdlvEzEp6fxBQetHs3DJ3
+         yFXaBGg9M+J8lE9iiX4UNTSDmX6x5pSWn2U5u/BIDPEoK5Qg185uhmRrS8ED6F1LE5jG
+         dabyrr6kNBhj3hMpTPKXaptlQ3c9GVv9jv0jzRjvzTvVfngEgYWKc5xQfRpm1tT/IC7W
+         irQV1RF7wayw3JHLbxBub63u0hwGyuMWjq1Y/13neXOMviL18Rv36saBLHX/JYwsdlo6
+         mElg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687889448; x=1690481448;
+        d=1e100.net; s=20221208; t=1687889450; x=1690481450;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=E3xFrkPN2+sT/sY0g+uTpgnQ+XoDit6j6d+F4zxTHTs=;
-        b=UL1QwsDnHRupljIODbzFhSEqtgS09xBUNEKMoESWe98wAEa1/xWXdLu3EfkMC+LK7h
-         3a7ONNDyNtiQNdomqpJKPA5hNoe7HFkbvTo+99L8onDtnl5K5fFxtMq+RjZtIHwBhFJm
-         14erYUy1ogfflGQzRChqfylp9VydkpuOdwsvqDCXm8dI8AQ0bCC5VWzebW9ou/jSNEsY
-         k57DfRhqbnaJhP/J05DcP/Y07wwG9+pOIk+Lf2HHMfDEm1xhrnXO99Fm5pwd7dmJo/N6
-         dE/fMgTPE23ANkXdtrZHI8DFbT5N/3MWZgDqphWnednl6CDCg8mmioG1rX8IcKGSMfsv
-         PVnw==
-X-Gm-Message-State: AC+VfDycZhTM4C851ZQRMw0n9P8pB3PdweG9dizIgNNXXhzNL3VZw1KQ
-	0GsfA/qP2HHh+ZH1zB30Cd0fe4Qhlm2/
-X-Google-Smtp-Source: ACHHUZ5mB+sRufre0MS10vvaUmW/lZoKm7KiOFOjWsJZZ/Z0hFb1Aj5m0AyV+IoElXQMnCvyrcjdO2AbKUr/
+        bh=pylB9mwmAKl3TUVj6l4nL/JaxRJCwOWbixQnNb1VbG4=;
+        b=kUhbIMdjYhLb47HmH2v7cFdo1IpwpYxc77bIAi+CeWcwk9Xf0D/azB2AURzbk/fty9
+         P29tjE0IQQZu3bi9H/6laKQtHJMOtf2JZhmUlloZzesvSILKtygq5O2CbtIvOi61naLp
+         RtjYCOqCr6aiu3Uh6m09sC+b2S3brZW82U/xS901WZOedBhX6j1qQBxt6oDCZ6b7kKeO
+         /Y1EATJiNTMzkDiG49hENRRDqcrAbbGbRScTTEvOBflEtKwVWjQk2yeoiAkOVSD28a/n
+         hy3krClyxFLDXN0Px3eI6U2kPQbCgZG2MNFtJaqA0Qw+8Oj8JQGMmNlz4sOoshP+Czxp
+         sATA==
+X-Gm-Message-State: AC+VfDyAA+zAoScQCWIsfi6spqArLp+4kab5PyZ1rm8QE1y8Lv7L9zu6
+	ZDXD3GJxPc/IbYrdDz5y79CySgFOtRUY
+X-Google-Smtp-Source: ACHHUZ4XYIxsTEbA4adKWxNXnm8MjJHZ+dVuNGVRGkIxnc/aVH6goL6IK/5IA70vJOxc3jszcWLIrfctyYob
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a518:9a69:cf62:b4d9])
- (user=irogers job=sendgmr) by 2002:a17:90a:c695:b0:262:dc49:3bff with SMTP id
- n21-20020a17090ac69500b00262dc493bffmr1357157pjt.5.1687889448289; Tue, 27 Jun
- 2023 11:10:48 -0700 (PDT)
-Date: Tue, 27 Jun 2023 11:10:20 -0700
+ (user=irogers job=sendgmr) by 2002:a81:ae64:0:b0:573:7ae2:2684 with SMTP id
+ g36-20020a81ae64000000b005737ae22684mr9718244ywk.4.1687889450770; Tue, 27 Jun
+ 2023 11:10:50 -0700 (PDT)
+Date: Tue, 27 Jun 2023 11:10:21 -0700
 In-Reply-To: <20230627181030.95608-1-irogers@google.com>
-Message-Id: <20230627181030.95608-4-irogers@google.com>
+Message-Id: <20230627181030.95608-5-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230627181030.95608-1-irogers@google.com>
 X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
-Subject: [PATCH v2 03/13] perf parse-events: Remove two unused tokens
+Subject: [PATCH v2 04/13] perf parse-events: Add more comments to parse_events_state
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
@@ -80,26 +80,43 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The tokens PE_PREFIX_RAW and PE_PREFIX_GROUP are unused so remove them.
+Improve documentation of struct parse_events_state.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/parse-events.y | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/parse-events.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index 4ee6c6865655..b09a5fa92144 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -61,7 +61,7 @@ static void free_list_evsel(struct list_head* list_evsel)
- %token PE_BPF_OBJECT PE_BPF_SOURCE
- %token PE_MODIFIER_EVENT PE_MODIFIER_BP PE_BP_COLON PE_BP_SLASH
- %token PE_LEGACY_CACHE
--%token PE_PREFIX_MEM PE_PREFIX_RAW PE_PREFIX_GROUP
-+%token PE_PREFIX_MEM
- %token PE_ERROR
- %token PE_ARRAY_ALL PE_ARRAY_RANGE
- %token PE_DRV_CFG_TERM
+diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+index b0eb95f93e9c..b37e5ee193a8 100644
+--- a/tools/perf/util/parse-events.h
++++ b/tools/perf/util/parse-events.h
+@@ -121,17 +121,25 @@ struct parse_events_error {
+ };
+ 
+ struct parse_events_state {
++	/* The list parsed events are placed on. */
+ 	struct list_head	   list;
++	/* The updated index used by entries as they are added. */
+ 	int			   idx;
++	/* Error information. */
+ 	struct parse_events_error *error;
++	/* Used by BPF event creation. */
+ 	struct evlist		  *evlist;
++	/* Holds returned terms for term parsing. */
+ 	struct list_head	  *terms;
++	/* Start token. */
+ 	int			   stoken;
++	/* Special fake PMU marker for testing. */
+ 	struct perf_pmu		  *fake_pmu;
+ 	/* If non-null, when wildcard matching only match the given PMU. */
+ 	const char		  *pmu_filter;
+ 	/* Should PE_LEGACY_NAME tokens be generated for config terms? */
+ 	bool			   match_legacy_cache_terms;
++	/* Were multiple PMUs scanned to find events? */
+ 	bool			   wild_card_pmus;
+ };
+ 
 -- 
 2.41.0.162.gfafddb0af9-goog
 
