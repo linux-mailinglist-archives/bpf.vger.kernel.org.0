@@ -1,109 +1,198 @@
-Return-Path: <bpf+bounces-3546-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3547-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A643273F7ED
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 10:57:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBC6F73F82F
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 11:05:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D782C1C2029D
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 08:57:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77408280D5D
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 09:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ACFC16436;
-	Tue, 27 Jun 2023 08:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0FE9168B9;
+	Tue, 27 Jun 2023 09:05:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B3B8481
-	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 08:56:56 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C30610D7
-	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 01:56:54 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-991fee3a6b1so125301066b.0
-        for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 01:56:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1687856213; x=1690448213;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eYgpTiJom9vTkRE0jx1R8WBPCb88VK4slYOWvHxvlgw=;
-        b=hrowBFAGh0MRWzInnCwWpZB7vWCnOx6Exj+2+1COfmutUEowgDWy8Qm9363nUWClSN
-         4lO4g6lQYYAC4L+x5901zXXz6GDmsg67Et9c5oKIIcwPWyNwAQAgv7qz5XGTOSGU7x2m
-         O7H9TB3HA5SjPH77qgt4YsAF3ZxPyVM//gC9IUcGlSo93SpTxp4bFndaI3dWt5zUpVGF
-         80a64BDoif9t78NXY284ceMfSDXej/oSuvjDEbdjlQm8ayBXbz/u/koQOVawySotBgWK
-         WOflccXgz5A/vpUDAhduA1kKzN7BuTxflAzd+rGeAj/kBSLXX2fWbNteGY1cbYgWjLfV
-         5Dgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687856213; x=1690448213;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eYgpTiJom9vTkRE0jx1R8WBPCb88VK4slYOWvHxvlgw=;
-        b=YYY98zdAStvxhqliwMfXxdDEeuuvcL518oyvCvaH9JEGenjrCdIFWxoKEYz34JFfzu
-         lIK0HvKS9Cc+ar9ad0SPlONe3kmFBG2d75MnGsuJjwywZjeIsEZIXmvrjZTMYl+VUUpH
-         aRAeVsTZ0VdpPqDwcmAJlLis2qNHkX4YPOc8XB8M+uqWSi2lYserNzke/IKMeQw8qT6l
-         N8hfkwTygf8lvNkxUUEH/vOECASRg5e1RQGv7ZVPzjal23kCAyjzRMMsOIBGEdpGY19o
-         tT6WZCb1ZFn3vFgJt0gm3v4Zi+1Pggwc681ck/qzA3jeiMFCUL8zoJqMTEkowIjMWHmf
-         sPcg==
-X-Gm-Message-State: AC+VfDxktyagrwvrMX4J2ZnGB3NdSdpeaxfD2AKyhzHDxU8LFmas81Ia
-	vFnw/28GG8QHyB3m+Ss3pCW+kSP4FER7bqPq9fcAHA==
-X-Google-Smtp-Source: ACHHUZ4ZVIMQkP0IyNc/KDl9+luEXaR/1YGktg1CgYACrmeJFMiuBR2LziRDdqD2wJwLA+J4q+XtA1Q+I2fh3u0l9xA=
-X-Received: by 2002:a17:906:684c:b0:98e:4c96:6e16 with SMTP id
- a12-20020a170906684c00b0098e4c966e16mr4864925ejs.5.1687856212807; Tue, 27 Jun
- 2023 01:56:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A125616434;
+	Tue, 27 Jun 2023 09:05:34 +0000 (UTC)
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC2826AF;
+	Tue, 27 Jun 2023 02:05:23 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vm59os0_1687856719;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vm59os0_1687856719)
+          by smtp.aliyun-inc.com;
+          Tue, 27 Jun 2023 17:05:20 +0800
+Message-ID: <1687856491.8062844-5-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v10 03/10] virtio_ring: split: support add premapped buf
+Date: Tue, 27 Jun 2023 17:01:31 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: virtualization@lists.linux-foundation.org,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ netdev@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20230602092206.50108-1-xuanzhuo@linux.alibaba.com>
+ <20230602092206.50108-4-xuanzhuo@linux.alibaba.com>
+ <CACGkMEtFiutSpM--2agR1YhS0MxreH4vFFAEdCaC6E8qxyjZ4g@mail.gmail.com>
+In-Reply-To: <CACGkMEtFiutSpM--2agR1YhS0MxreH4vFFAEdCaC6E8qxyjZ4g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230613-so-reuseport-v3-2-907b4cbb7b99@isovalent.com> <20230626173249.57682-1-kuniyu@amazon.com>
-In-Reply-To: <20230626173249.57682-1-kuniyu@amazon.com>
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Tue, 27 Jun 2023 09:56:42 +0100
-Message-ID: <CAN+4W8hnPzhuKPorSjHeOQHFgAuk=A9oa1hW5jckUPoF=5zEQQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/7] net: export inet_lookup_reuseport and inet6_lookup_reuseport
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org, 
-	edumazet@google.com, haoluo@google.com, hemanthmalla@gmail.com, 
-	joe@wand.net.nz, john.fastabend@gmail.com, jolsa@kernel.org, 
-	kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, martin.lau@linux.dev, mykolal@fb.com, 
-	netdev@vger.kernel.org, pabeni@redhat.com, sdf@google.com, shuah@kernel.org, 
-	song@kernel.org, willemdebruijn.kernel@gmail.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Mon, Jun 26, 2023 at 6:33=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.co=
-m> wrote:
+On Tue, 27 Jun 2023 16:03:26 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> On Fri, Jun 2, 2023 at 5:22=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.=
+com> wrote:
+> >
+> > If the vq is the premapped mode, use the sg_dma_address() directly.
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >  drivers/virtio/virtio_ring.c | 46 ++++++++++++++++++++++--------------
+> >  1 file changed, 28 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > index 2afdfb9e3e30..18212c3e056b 100644
+> > --- a/drivers/virtio/virtio_ring.c
+> > +++ b/drivers/virtio/virtio_ring.c
+> > @@ -598,8 +598,12 @@ static inline int virtqueue_add_split(struct virtq=
+ueue *_vq,
+> >                 for (sg =3D sgs[n]; sg; sg =3D sg_next(sg)) {
+> >                         dma_addr_t addr;
+> >
+> > -                       if (vring_map_one_sg(vq, sg, DMA_TO_DEVICE, &ad=
+dr))
+> > -                               goto unmap_release;
+> > +                       if (vq->premapped) {
+> > +                               addr =3D sg_dma_address(sg);
+> > +                       } else {
+> > +                               if (vring_map_one_sg(vq, sg, DMA_TO_DEV=
+ICE, &addr))
+> > +                                       goto unmap_release;
+> > +                       }
 >
-> From: Lorenz Bauer <lmb@isovalent.com>
-> Date: Mon, 26 Jun 2023 16:08:59 +0100
-> > Rename the existing reuseport helpers for IPv4 and IPv6 so that they
-> > can be invoked in the follow up commit. Export them so that DCCP which
-> > may be built as a module can access them.
->
-> We need not export the functions unless there is a real user.
->
-> I added a deprecation notice for DCCP recently, so I bet DCCP
-> will not get SO_REUSEPORT support.
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/commit/?id=
-=3Db144fcaf46d4
+> Btw, I wonder whether or not it would be simple to implement the
+> vq->premapped check inside vring_map_one_sg() assuming the
+> !use_dma_api is done there as well.
 
-Misleading commit message, it turns out that ipv6 as a module also
-needs (the v6 functions at least) to be EXPORT_SYMBOL'd. That's
-because of some special shenanigans where inet6_hashtables.c is linked
-into vmlinux even when CONFIG_IPV6=3Dm.
 
-Also not sure how to work around this: DCCP may be deprecated but
-without the export a module build of it fails.
+YES,
+
+That will more simple for the caller.
+
+But we will have things like:
+
+int func(bool do)
+{
+if (!do)
+    return;
+}
+
+I like this way, but you don't like it in last version.
+
+>
+> >
+> >                         prev =3D i;
+> >                         /* Note that we trust indirect descriptor
+> > @@ -614,8 +618,12 @@ static inline int virtqueue_add_split(struct virtq=
+ueue *_vq,
+> >                 for (sg =3D sgs[n]; sg; sg =3D sg_next(sg)) {
+> >                         dma_addr_t addr;
+> >
+> > -                       if (vring_map_one_sg(vq, sg, DMA_FROM_DEVICE, &=
+addr))
+> > -                               goto unmap_release;
+> > +                       if (vq->premapped) {
+> > +                               addr =3D sg_dma_address(sg);
+> > +                       } else {
+> > +                               if (vring_map_one_sg(vq, sg, DMA_FROM_D=
+EVICE, &addr))
+> > +                                       goto unmap_release;
+> > +                       }
+> >
+> >                         prev =3D i;
+> >                         /* Note that we trust indirect descriptor
+> > @@ -689,21 +697,23 @@ static inline int virtqueue_add_split(struct virt=
+queue *_vq,
+> >         return 0;
+> >
+> >  unmap_release:
+> > -       err_idx =3D i;
+> > +       if (!vq->premapped) {
+>
+> Can vq->premapped be true here? The label is named as "unmap_relase"
+> which implies "map" beforehand which seems not the case for
+> premapping.
+
+I see.
+
+Rethink about this, there is a better way.
+I will fix in next version.
+
+
+Thanks.
+
+
+>
+> Thanks
+>
+>
+> > +               err_idx =3D i;
+> >
+> > -       if (indirect)
+> > -               i =3D 0;
+> > -       else
+> > -               i =3D head;
+> > -
+> > -       for (n =3D 0; n < total_sg; n++) {
+> > -               if (i =3D=3D err_idx)
+> > -                       break;
+> > -               if (indirect) {
+> > -                       vring_unmap_one_split_indirect(vq, &desc[i]);
+> > -                       i =3D virtio16_to_cpu(_vq->vdev, desc[i].next);
+> > -               } else
+> > -                       i =3D vring_unmap_one_split(vq, i);
+> > +               if (indirect)
+> > +                       i =3D 0;
+> > +               else
+> > +                       i =3D head;
+> > +
+> > +               for (n =3D 0; n < total_sg; n++) {
+> > +                       if (i =3D=3D err_idx)
+> > +                               break;
+> > +                       if (indirect) {
+> > +                               vring_unmap_one_split_indirect(vq, &des=
+c[i]);
+> > +                               i =3D virtio16_to_cpu(_vq->vdev, desc[i=
+].next);
+> > +                       } else
+> > +                               i =3D vring_unmap_one_split(vq, i);
+> > +               }
+> >         }
+> >
+> >         if (indirect)
+> > --
+> > 2.32.0.3.g01195cf9f
+> >
+>
 
