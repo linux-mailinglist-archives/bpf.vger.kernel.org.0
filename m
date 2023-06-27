@@ -1,82 +1,93 @@
-Return-Path: <bpf+bounces-3565-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3566-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0FDC73FCE8
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 15:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AF0473FD6C
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 16:10:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35E612810B3
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 13:35:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E6C02810DF
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 14:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18735182C2;
-	Tue, 27 Jun 2023 13:35:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4973718B0C;
+	Tue, 27 Jun 2023 14:10:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DE7111E;
-	Tue, 27 Jun 2023 13:35:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1E91C433C8;
-	Tue, 27 Jun 2023 13:35:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CBDD12B66;
+	Tue, 27 Jun 2023 14:10:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CA6F7C433C9;
+	Tue, 27 Jun 2023 14:10:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687872914;
-	bh=TV1qg0oAArUuXRSZzw89Zq1glYP5kqNzvG4JVxR8jsc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ZVWM2DOQTPyNLM0jr058t8nyoWeZx05XtSj1kMXwvZrs61+O+oyOFvIBHWxgrptg+
-	 EKxgkemPvjy1WtQU8bj2F7sRSvuU27r704GrrYiHomnpkte0s5pS3DZ7QU7o1OssMf
-	 ZgW7efuqCNMjYII3JmF+rlQnWN+YCrqdut4G47FvJhbKbyGLKZfS5+0o0fjKSzULuC
-	 o54npEkZQsItYBoSplxxv+92odkF9rpKxSJ/M5PLnXxY3M3+8wySjPJshDr5PJV65S
-	 wNZVQifM2lPH76Qgt0DJOTc+kIOhRE+v98W5f1iE+PWk8r8P1a6bXQKaRZDk7Lhp4o
-	 sIsTwrgxz5Jrg==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 16905BBFF5A; Tue, 27 Jun 2023 15:35:12 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To: Stanislav Fomichev <sdf@google.com>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Donald Hunter <donald.hunter@gmail.com>, bpf
- <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Network Development
- <netdev@vger.kernel.org>
-Subject: Re: [RFC bpf-next v2 11/11] net/mlx5e: Support TX timestamp metadata
-In-Reply-To: <CAKH8qBv-jU6TUcWrze5VeiVhiJ-HUcpHX7rMJzN5o2tXFkS8kA@mail.gmail.com>
-References: <20230622195757.kmxqagulvu4mwhp6@macbook-pro-8.dhcp.thefacebook.com>
- <CAKH8qBvJmKwgdrLkeT9EPnCiTu01UAOKvPKrY_oHWySiYyp4nQ@mail.gmail.com>
- <CAADnVQKfcGT9UaHtAmWKywtuyP9+_NX0_mMaR0m9D0-a=Ymf5Q@mail.gmail.com>
- <CAKH8qBuJpybiTFz9vx+M+5DoGuK-pPq6HapMKq7rZGsngsuwkw@mail.gmail.com>
- <CAADnVQ+611dOqVFuoffbM_cnOf62n6h+jaB1LwD2HWxS5if2CA@mail.gmail.com>
- <m2bkh69fcp.fsf@gmail.com> <649637e91a709_7bea820894@john.notmuch>
- <CAADnVQKUVDEg12jOc=5iKmfN-aHvFEtvFKVEDBFsmZizwkXT4w@mail.gmail.com>
- <20230624143834.26c5b5e8@kernel.org> <ZJeUlv/omsyXdO/R@google.com>
- <ZJoExxIaa97JGPqM@google.com>
- <CAADnVQKePtxk6Nn=M6in6TTKaDNnMZm-g+iYzQ=mPoOh8peoZQ@mail.gmail.com>
- <CAKH8qBv-jU6TUcWrze5VeiVhiJ-HUcpHX7rMJzN5o2tXFkS8kA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Tue, 27 Jun 2023 15:35:12 +0200
-Message-ID: <878rc5hvu7.fsf@toke.dk>
+	s=k20201202; t=1687875020;
+	bh=41mhKtRygxn0cfvIJ7LiprOmFh4P7ibsganlOCklc90=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=FpJczB8rgiC0c1lLjEbvYtuZGTO6gmy8c8JTg2YFHip4pPITMtGMQXV+a4YwAz4DN
+	 m+dd9lUkrT0uRa3rsGE21yA379NFgAEX7OAISGMQbA4jpFJIWlANuMvA25mcnTObdl
+	 SnW5ci4Yi/E/htpbK60FT9i2S1JDl5x7MJf9kdNpKhpp/UbigbWowR5rNhuUlSyB0i
+	 LuPzqTcGR9CfJGj/DXtA5quva8CjZrdv6cyi6hzN7AnSQUmwxNq61LO9ao4AMFfrvx
+	 QrPnypixdLL/RnNKrJA48Ro7BkrRiQu0+iR8MxZtIvUUykzEEI0YJE1+8RpotFBrWL
+	 yrVMgh91htJjw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A63D3E53800;
+	Tue, 27 Jun 2023 14:10:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] perf trace: fix MSG_SPLICE_PAGES build error
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <168787502067.23817.13449627195435393734.git-patchwork-notify@kernel.org>
+Date: Tue, 27 Jun 2023 14:10:20 +0000
+References: <20230626090239.899672-1-matthieu.baerts@tessares.net>
+In-Reply-To: <20230626090239.899672-1-matthieu.baerts@tessares.net>
+To: Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc: dhowells@redhat.com, acme@kernel.org, adrian.hunter@intel.com,
+ alexander.shishkin@linux.intel.com, bpf@vger.kernel.org, davem@davemloft.net,
+ irogers@google.com, jolsa@kernel.org, kuba@kernel.org,
+ linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, mark.rutland@arm.com, mingo@redhat.com,
+ namhyung@kernel.org, netdev@vger.kernel.org, peterz@infradead.org,
+ sfr@canb.auug.org.au, acme@redhat.com
 
-Stanislav Fomichev <sdf@google.com> writes:
+Hello:
 
-> Ack, let me see if I can fit tx csum into the picture. I still feel
-> like we need these dev-bound tracing programs if we want to trigger
-> kfuncs safely, but maybe we can simplify further..
+This patch was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-FWIW, I absolutely think we should go with "attach to ifindex + dev
-bound" model instead of the "attach to driver kfunc and check ifindex in
-BPF". The latter may be fine for BPF kernel devs, but it's a terrible
-API for a dataplane, which IMO is what we're building here...
+On Mon, 26 Jun 2023 11:02:39 +0200 you wrote:
+> Our MPTCP CI and Stephen got this error:
+> 
+>     In file included from builtin-trace.c:907:
+>     trace/beauty/msg_flags.c: In function 'syscall_arg__scnprintf_msg_flags':
+>     trace/beauty/msg_flags.c:28:21: error: 'MSG_SPLICE_PAGES' undeclared (first use in this function)
+>        28 |         if (flags & MSG_##n) {           |                     ^~~~
+>     trace/beauty/msg_flags.c:50:9: note: in expansion of macro 'P_MSG_FLAG'
+>        50 |         P_MSG_FLAG(SPLICE_PAGES);
+>           |         ^~~~~~~~~~
+>     trace/beauty/msg_flags.c:28:21: note: each undeclared identifier is reported only once for each function it appears in
+>        28 |         if (flags & MSG_##n) {           |                     ^~~~
+>     trace/beauty/msg_flags.c:50:9: note: in expansion of macro 'P_MSG_FLAG'
+>        50 |         P_MSG_FLAG(SPLICE_PAGES);
+>           |         ^~~~~~~~~~
+> 
+> [...]
 
--Toke
+Here is the summary with links:
+  - [net-next] perf trace: fix MSG_SPLICE_PAGES build error
+    https://git.kernel.org/netdev/net-next/c/2553a5270d6c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
