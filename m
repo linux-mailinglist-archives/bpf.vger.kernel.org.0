@@ -1,89 +1,72 @@
-Return-Path: <bpf+bounces-3581-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3576-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE6FC74021D
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 19:25:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECCF57400C1
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 18:21:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF0B31C20385
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 17:25:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A84DE2810ED
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 16:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1912213098;
-	Tue, 27 Jun 2023 17:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A9E19E69;
+	Tue, 27 Jun 2023 16:20:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D161713064;
-	Tue, 27 Jun 2023 17:25:19 +0000 (UTC)
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2A326BF;
-	Tue, 27 Jun 2023 10:25:17 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-666edfc50deso66937b3a.0;
-        Tue, 27 Jun 2023 10:25:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1DF819E40
+	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 16:20:53 +0000 (UTC)
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A60A3591;
+	Tue, 27 Jun 2023 09:20:44 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so45278a12.0;
+        Tue, 27 Jun 2023 09:20:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687886717; x=1690478717;
+        d=gmail.com; s=20221208; t=1687882843; x=1690474843;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tAy3BdEspJlPeDmEFZs9sE+/cUDTXl7LmDXHAzonOMU=;
-        b=sa7cziA981RYM/ui/S3lmxnf2XasU2ILz8wt9ERWgRTOfDc8m10TTwaKH7tB67XbCH
-         7rsYn6l2vUVOJI8DO/5zIUA7bjt1BkIBwIlVBWeHDk1kLA4bo5oFXyYJZvhzsuFPwVSy
-         oXOGIeJqge+hH5kCXtLNrR+10jqJiDozwyrh9KOvi6GzHFisaFpXGzPPIB3USUZKV6vF
-         WlMT0Hdi5TTsTBtBwE5sUqvglm6w6aDskYJN9dYEAUld5giNWs9PpI97ONnvUQc4ZPu8
-         yeB5G3lkyNtOSOCv5DMaGCx/cINWeGtp4fD2IDF2Y5+K792vy+cAl7n5TOfyTH/rM3VR
-         7rMw==
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d6dcOHsJQgpksMKnRP4FYw4su0q3QNatEqCaxVPjHrs=;
+        b=UbzhqNFwDvC31obTcEjFweFhdR50GuCSbHXQcGPTJDxq/1how9bl6YUMBKh6PLZMBG
+         QC8ahwIIrAci1ZfdjHUTJKt/1t40kQkDXbXbnChLqnJYrPM/DBgzE9hTS96vXbvMSGY2
+         OeWoPGmsx6Lb8G36Ee4H/f4/6+RkLVFX8XwEwODahPIEZIjHX6+ufGCDGVg04Z1f78eM
+         7RLAgidAQeWEbeZxiRDg3IqptRINunrtJCmBz5nOGsJx5YHW/cgfHCuQuDLUPAtmLbkl
+         izoGyzS3HRuWwz9VbBwFCoVWcMmpOfMhgEegomaq0J6x/KqU5pOT6JMw6QV8aAT/QqPw
+         Szpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687886717; x=1690478717;
+        d=1e100.net; s=20221208; t=1687882843; x=1690474843;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tAy3BdEspJlPeDmEFZs9sE+/cUDTXl7LmDXHAzonOMU=;
-        b=jw+S+2djQ9gPIUj1MeRTCtypl/t7/1Bkj+Y81iN95L1z5H8j1rsTEB48/TBTmzTSUW
-         qD+V64OB+d6VIac1Tah9vPJL+e+/c2v8xS3OdECwH8h3rRueFpXaiQ5TOk8xGMkpWOJz
-         u2Us4q8Y2xHtuLRDBwdfvW2KUxN+VkvdPisPVrUZbcWjb7mFUREXVJBR+wYzyt2UbYlL
-         sEEaoJIvYmDiD3FzcIgTwuyk5ChUzcQQzB9JVSaJNoYsosE15TOjru8SAGSDp8XeSyw1
-         dgoh3x6gyAod8lgcySX0uwVtOErG7HdAGflJVMo8PJWCD6uQX8ut/TRLC4v3OmlA80vu
-         odgQ==
-X-Gm-Message-State: AC+VfDzg7TzdDWmTNwYWdH9w235os9CsDjWd1bUqWq9cpZVALzBl1aEG
-	kwSjPMGeFvOq0j8Hfqc98Bg=
-X-Google-Smtp-Source: ACHHUZ7obCo50dBOrmWezxMqSsQT++fExXVdK6D/0djOUDPgv8ohuvHhxmDfmFkzxBZ//Y/o/SZ8ZQ==
-X-Received: by 2002:a05:6a00:b4e:b0:67f:d5e7:4604 with SMTP id p14-20020a056a000b4e00b0067fd5e74604mr744066pfo.13.1687886716976;
-        Tue, 27 Jun 2023 10:25:16 -0700 (PDT)
-Received: from localhost (ec2-54-67-115-33.us-west-1.compute.amazonaws.com. [54.67.115.33])
-        by smtp.gmail.com with ESMTPSA id x21-20020aa793b5000000b00673e652985esm4265097pff.44.2023.06.27.10.25.16
+        bh=d6dcOHsJQgpksMKnRP4FYw4su0q3QNatEqCaxVPjHrs=;
+        b=hZyF4cVsod+ROf7D2h6kP3vJeokDq7tLMocmBz3LQEblrHFM+v1esaamMYw96JNXmQ
+         Jycc6AmM9G2vxZtBtkkADCt6xedUO3qr3WiKvX8CyhhbP06kDkMZQdqcwke/0KExdztS
+         BqDk0wSNDlYIo6caSotG6B4yVZ+J9CtgmNQsKvR2mUVvM6rumL+q8taI0trT6Z71zcBs
+         OiAh8MekQUlSIBbdADeffvzIkwe0X+HwgZN5kfP+rFm9hbFGdW6cK1ucb27MMLIiHpx2
+         7sDrZuV7rVqlWCO94TgZ6RmeCte38NDMiGwlcHRsaCn9PULUusA1WatG6o/aJGJogae7
+         I+rA==
+X-Gm-Message-State: AC+VfDw+1jLXhRXhfsD9WjdTL87ftGcpI6bNS1qTZkZ+ot76xIs7RCAT
+	MhSC852cLCMi0ga4kD4xJngKXHEqq23Ld7km
+X-Google-Smtp-Source: ACHHUZ5pIG6VTyBZ8yAbebNwTnq+PYqWCyK4mDhwR+HXUwcL/YN0yrKmSE/mA4rArjH9he4bggqUaQ==
+X-Received: by 2002:aa7:cd65:0:b0:51d:89b2:7d8d with SMTP id ca5-20020aa7cd65000000b0051d89b27d8dmr8954054edb.15.1687882842757;
+        Tue, 27 Jun 2023 09:20:42 -0700 (PDT)
+Received: from krava (net-93-65-241-219.cust.vodafonedsl.it. [93.65.241.219])
+        by smtp.gmail.com with ESMTPSA id a17-20020a50ff11000000b0051a4fcf7187sm3854474edu.62.2023.06.27.09.20.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jun 2023 10:25:16 -0700 (PDT)
-Date: Tue, 27 Jun 2023 01:19:43 +0000
-From: Bobby Eshleman <bobbyeshleman@gmail.com>
-To: Stefano Garzarella <sgarzare@redhat.com>
-Cc: linux-hyperv@vger.kernel.org,
-	Bobby Eshleman <bobby.eshleman@bytedance.com>, kvm@vger.kernel.org,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-	Simon Horman <simon.horman@corigine.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>,
-	virtualization@lists.linux-foundation.org,
-	Eric Dumazet <edumazet@google.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Bryan Tan <bryantan@vmware.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Arseniy Krasnov <oxffffaa@gmail.com>,
-	Vishnu Dasa <vdasa@vmware.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH RFC net-next v4 6/8] virtio/vsock: support dgrams
-Message-ID: <ZJo5L+IM1P3kFAhe@bullseye>
-References: <20230413-b4-vsock-dgram-v4-0-0cebbb2ae899@bytedance.com>
- <20230413-b4-vsock-dgram-v4-6-0cebbb2ae899@bytedance.com>
- <92b3a6df-ded3-6470-39d1-fe0939441abc@gmail.com>
- <ppx75eomyyb354knfkwbwin3il2ot7hf5cefwrt6ztpcbc3pps@q736cq5v4bdh>
- <ZJUho6NbpCgGatap@bullseye>
- <d53tgo4igvz34pycgs36xikjosrncejlzuvh47bszk55milq52@whcyextsxfka>
+        Tue, 27 Jun 2023 09:20:42 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 27 Jun 2023 18:20:39 +0200
+To: SeongJae Park <sj@kernel.org>
+Cc: martin.lau@linux.dev, ast@kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Egorenkov <Alexander.Egorenkov@ibm.com>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] btf: warn but return no error for NULL btf from
+ __register_btf_kfunc_id_set()
+Message-ID: <ZJsMVxGVCJoF19wQ@krava>
+References: <20230626181120.7086-1-sj@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,93 +75,74 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d53tgo4igvz34pycgs36xikjosrncejlzuvh47bszk55milq52@whcyextsxfka>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230626181120.7086-1-sj@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 26, 2023 at 05:03:15PM +0200, Stefano Garzarella wrote:
-> On Fri, Jun 23, 2023 at 04:37:55AM +0000, Bobby Eshleman wrote:
-> > On Thu, Jun 22, 2023 at 06:09:12PM +0200, Stefano Garzarella wrote:
-> > > On Sun, Jun 11, 2023 at 11:49:02PM +0300, Arseniy Krasnov wrote:
-> > > > Hello Bobby!
-> > > >
-> > > > On 10.06.2023 03:58, Bobby Eshleman wrote:
-> > > > > This commit adds support for datagrams over virtio/vsock.
-> > > > >
-> > > > > Message boundaries are preserved on a per-skb and per-vq entry basis.
-> > > >
-> > > > I'm a little bit confused about the following case: let vhost sends 4097 bytes
-> > > > datagram to the guest. Guest uses 4096 RX buffers in it's virtio queue, each
-> > > > buffer has attached empty skb to it. Vhost places first 4096 bytes to the first
-> > > > buffer of guests RX queue, and 1 last byte to the second buffer. Now IIUC guest
-> > > > has two skb in it rx queue, and user in guest wants to read data - does it read
-> > > > 4097 bytes, while guest has two skb - 4096 bytes and 1 bytes? In seqpacket there is
-> > > > special marker in header which shows where message ends, and how it works here?
-> > > 
-> > > I think the main difference is that DGRAM is not connection-oriented, so
-> > > we don't have a stream and we can't split the packet into 2 (maybe we
-> > > could, but we have no guarantee that the second one for example will be
-> > > not discarded because there is no space).
-> > > 
-> > > So I think it is acceptable as a restriction to keep it simple.
-> > > 
-> > > My only doubt is, should we make the RX buffer size configurable,
-> > > instead of always using 4k?
-> > > 
-> > I think that is a really good idea. What mechanism do you imagine?
+On Mon, Jun 26, 2023 at 06:11:20PM +0000, SeongJae Park wrote:
+> __register_btf_kfunc_id_set() assumes .BTF to be part of the module's
+> .ko file if CONFIG_DEBUG_INFO_BTF is enabled.  If that's not the case,
+> the function prints an error message and return an error.  As a result,
+> such modules cannot be loaded.
 > 
-> Some parameter in sysfs?
+> However, the section could be stripped out during a build process.  It
+> would be better to let the modules loaded, because their basic
+> functionalities have no problem[1], though the BTF functionalities will
+> not be supported.  Make the function to lower the level of the message
+> from error to warn, and return no error.
 > 
-
-I comment more on this below.
-
-> > 
-> > For sendmsg() with buflen > VQ_BUF_SIZE, I think I'd like -ENOBUFS
+> [1] https://lore.kernel.org/bpf/20220219082037.ow2kbq5brktf4f2u@apollo.legion/
 > 
-> For the guest it should be easy since it allocates the buffers, but for
-> the host?
+> Reported-by: Alexander Egorenkov <Alexander.Egorenkov@ibm.com>
+> Link: https://lore.kernel.org/bpf/87y228q66f.fsf@oc8242746057.ibm.com/
+> Suggested-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Link: https://lore.kernel.org/bpf/20220219082037.ow2kbq5brktf4f2u@apollo.legion/
+> Fixes: dee872e124e8 ("bpf: Populate kfunc BTF ID sets in struct btf")
+
+should it be this one in Fixes instead?
+  c446fdacb10d bpf: fix register_btf_kfunc_id_set for !CONFIG_DEBUG_INFO_BTF
+
+other than that looks good
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+> Cc: <stable@vger.kernel.org> # 5.17.x
+> Signed-off-by: SeongJae Park <sj@kernel.org>
+> ---
+>  kernel/bpf/btf.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
 > 
-> Maybe we should add a field in the configuration space that reports some
-> sort of MTU.
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 6b682b8e4b50..d683f034996f 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -7848,14 +7848,10 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
+>  
+>  	btf = btf_get_module_btf(kset->owner);
+>  	if (!btf) {
+> -		if (!kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
+> -			pr_err("missing vmlinux BTF, cannot register kfuncs\n");
+> -			return -ENOENT;
+> -		}
+> -		if (kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES)) {
+> -			pr_err("missing module BTF, cannot register kfuncs\n");
+> -			return -ENOENT;
+> -		}
+> +		if (!kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF))
+> +			pr_warn("missing vmlinux BTF, cannot register kfuncs\n");
+> +		if (kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
+> +			pr_warn("missing module BTF, cannot register kfuncs\n");
+>  		return 0;
+>  	}
+>  	if (IS_ERR(btf))
+> -- 
+> 2.25.1
 > 
-> Something in addition to what Laura had proposed here:
-> https://markmail.org/message/ymhz7wllutdxji3e
 > 
-
-That sounds good to me.
-
-IIUC vhost exposes the limit via the configuration space, and the guest
-can configure the RX buffer size up to that limit via sysfs?
-
-> > returned even though it is uncharacteristic of Linux sockets.
-> > Alternatively, silently dropping is okay... but seems needlessly
-> > unhelpful.
-> 
-> UDP takes advantage of IP fragmentation, right?
-> But what happens if a fragment is lost?
-> 
-> We should try to behave in a similar way.
-> 
-
-AFAICT in UDP the sending socket will see EHOSTUNREACH on its error
-queue and the packet will be dropped.
-
-For more details:
-- the IP defragmenter will emit an ICMP_TIME_EXCEEDED from ip_expire()
-  if the fragment queue is not completed within time.
-- Upon seeing ICMP_TIME_EXCEEDED, the sending stack will then add
-  EHOSTUNREACH to the socket's error queue, as seen in __udp4_lib_err().
-
-Given some updated man pages I think enqueuing EHOSTUNREACH is okay for
-vsock too. This also reserves ENOBUFS/ENOMEM only for shortage on local
-buffers / mem.
-
-What do you think?
-
-Thanks,
-Bobby
 
