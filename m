@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-3594-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3595-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 723047402FA
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 20:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DC7B7402FB
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 20:13:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A24AE1C20A10
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 18:12:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E7821C203B4
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 18:13:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057D01B902;
-	Tue, 27 Jun 2023 18:11:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4DCF1C74A;
+	Tue, 27 Jun 2023 18:11:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86291308B
-	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 18:11:12 +0000 (UTC)
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D809297E
-	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 11:11:10 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-262dc227ca9so2530273a91.1
-        for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 11:11:10 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CA11308B
+	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 18:11:15 +0000 (UTC)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBE32733
+	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 11:11:13 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-56ffa565092so65434067b3.2
+        for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 11:11:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687889469; x=1690481469;
+        d=google.com; s=20221208; t=1687889472; x=1690481472;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZsQdXnzAIiBdOVv7YXiT/yMeAfvTF44QJmtH1jnvKyU=;
-        b=V6MFh8t05RNKCKRaCyI+bwGnMYj4Vf7/14+gVHDl5oBQPkA8a9ovHrm3DBudUNtGg4
-         s9JjJ+BMUhZ/nhvHDKy66J4cZW4WNJBBwPG5AaP5B19tJmii4o5pJwrTNxutm3Uf9Ek1
-         yuxH7tSvlX8B2EZ+aH4AeinD52jClkt4kkA9quoTQ0o29Qq4j9TFvVRvM3sOPNFakYS+
-         OwQQpCWuPzonR2120gRiqMpjG2EKzojkWeilof/J68+ePCpBxn/D+IYq2snLXG3SHGk2
-         Xf3JlDD0S3+ODBGcifpN++iKUsptql3aU8lMJcRMQLV/fl2IzI/xKOGNbLpc6l5JTX9B
-         ZWUg==
+        bh=/xtK5HWFrotXOQTFAtNsXMiJLnjczB0bKaJqMYYAdAw=;
+        b=oW5Nw8CaZlguvVXnWXrJCyRqJYAVwXXD99hYzQcoeE0ITiJM35Lhadh3q6zb4/iv8L
+         LoLj3jARhvxaEXR1qszm5BP0ezvL+QzCCPMkgm+gR4yzm8M5lJBpsBruMpzcd0QxMDGC
+         9nXx9hQDzbvTPEnkSVw5s1VEb+umG92l809VG8DurQ+Xy7t7oMFKn1YpVU6FybqjB2Bw
+         5VUxTLUK7TetoD1OEK5cWJsqz7xJDR/G9ibr3Vt9AnKV1tRlGAnt2g6ryGS5+TyOK6xU
+         Qrbcwl/ESPNFj7fYUM1Dpw/RsKAA5q37hivFSgqyIRIjX4cOXaSIPy+eMqildaC4hcPs
+         Xz3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687889469; x=1690481469;
+        d=1e100.net; s=20221208; t=1687889472; x=1690481472;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZsQdXnzAIiBdOVv7YXiT/yMeAfvTF44QJmtH1jnvKyU=;
-        b=FKPZxstD8hOoJDWMxTylnuF5nVkttkiMpO8V70beCkC0bg9VgycbNIu/8NZsnQt9ES
-         RAsEl4Did0u3WHG6SebstAOa1F4AjDBI3mXt1NTE5FwBkloYyxO4b6NrdZRxUaSKripU
-         raDFFONReq4/ZCDg+k169wSuQ+LzKUw2c46aws3Bq11VIdlkWUNZMkKGNqY+X77yZtB2
-         Ha6VjC/+HFJEf5/TulLihfUxhuqek4/3NP1gFn/N+DzCGj+5JfR/IPVLWisl6H+lUYj8
-         BAj1piv7DQRa7EazgXt36/tXlxgc0N6NUbntxno1QnjwFqoXSHeilfakPEEtXu+NheN6
-         fPaw==
-X-Gm-Message-State: AC+VfDxWyAJASe62m1Hgx0cOl/UgOUenGFaQdMvkbk88ouUdVlhcoJqm
-	9nHHzWC++cLpGjrxEea9zovMM8je+gmd
-X-Google-Smtp-Source: ACHHUZ6MjQuQeqq9PKCC4v3qfuiB37nqIjkuxyWR9iVnQ2dzQXIbLIDTJFSeM5vQsIpNIp0VuLCJ3HrkmEXU
+        bh=/xtK5HWFrotXOQTFAtNsXMiJLnjczB0bKaJqMYYAdAw=;
+        b=Uk6ZOLkIxrSvZ+BPAgPx0kiI879BT5bl8Ky0RlQ9AyyvOQ3qDjaaD3/XyexhZ3bHay
+         CGZs2ckZvvCSiyEecEoGTlgjZgLdIMEqekQLTIfei0fIPSu3EL8MuJDvdVBUSUr+nY4a
+         +agV9VMsTG+kBhM2kpLbA61QeHQEpkkO+wp6bTILI63vL9GRgSWxUThjqxn3B6Bn3XB7
+         qhe1PLLH256qT89CSxQ8ZzVZhzrq/Wj863QkMlEmdznysJ1CDLaOqurnwOLHexox2g2C
+         yTYuUfi1BG1uH3ARP7bQN3eQVgeEvEMsTC2URX2jhYXxneDV1LqHj0rUW2M7qvts4wva
+         A2YA==
+X-Gm-Message-State: AC+VfDyb4+AYrmjXYn5/wyUIxVUX+YQCcfHscGux0f8ADXULuXvF3mmr
+	AF/G70FE5Xme/n6i+74DC1UG5zpLNmBu
+X-Google-Smtp-Source: ACHHUZ7rpFDD6/goG6mY4Mg+AjnbBdtPEAm8hqbeCCfMPVjJsYX0ztNDVCSjsbxN1b7sm3KW4MtRFbHUFpTz
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a518:9a69:cf62:b4d9])
- (user=irogers job=sendgmr) by 2002:a17:90a:d483:b0:263:2f09:20c3 with SMTP id
- s3-20020a17090ad48300b002632f0920c3mr160538pju.9.1687889469588; Tue, 27 Jun
- 2023 11:11:09 -0700 (PDT)
-Date: Tue, 27 Jun 2023 11:10:29 -0700
+ (user=irogers job=sendgmr) by 2002:a25:c943:0:b0:c15:42bf:22f with SMTP id
+ z64-20020a25c943000000b00c1542bf022fmr3603446ybf.9.1687889472210; Tue, 27 Jun
+ 2023 11:11:12 -0700 (PDT)
+Date: Tue, 27 Jun 2023 11:10:30 -0700
 In-Reply-To: <20230627181030.95608-1-irogers@google.com>
-Message-Id: <20230627181030.95608-13-irogers@google.com>
+Message-Id: <20230627181030.95608-14-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230627181030.95608-1-irogers@google.com>
 X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
-Subject: [PATCH v2 12/13] perf parse-events: Improve location for add pmu
+Subject: [PATCH v2 13/13] perf parse-events: Remove ABORT_ON
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
@@ -80,139 +80,61 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Improve the location for add PMU for cases when PMUs aren't found.
+Prefer informative messages rather than none with ABORT_ON. Document
+one failure mode and add an error message for another.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/parse-events.c | 12 +++++++-----
- tools/perf/util/parse-events.h |  4 ++--
- tools/perf/util/parse-events.y |  8 ++++----
- 3 files changed, 13 insertions(+), 11 deletions(-)
+ tools/perf/util/parse-events.y | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index fdd304fbed7c..58fcfff99ec4 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -1567,13 +1567,14 @@ static bool config_term_percore(struct list_head *config_terms)
- int parse_events_add_pmu(struct parse_events_state *parse_state,
- 			 struct list_head *list, char *name,
- 			 struct list_head *head_config,
--			 bool auto_merge_stats)
-+			 bool auto_merge_stats, void *loc_)
- {
- 	struct perf_event_attr attr;
- 	struct perf_pmu_info info;
- 	struct perf_pmu *pmu;
- 	struct evsel *evsel;
- 	struct parse_events_error *err = parse_state->error;
-+	YYLTYPE *loc = loc_;
- 	LIST_HEAD(config_terms);
- 
- 	pmu = parse_state->fake_pmu ?: perf_pmus__find(name);
-@@ -1597,7 +1598,7 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
- 		if (asprintf(&err_str,
- 				"Cannot find PMU `%s'. Missing kernel support?",
- 				name) >= 0)
--			parse_events_error__handle(err, 0, err_str, NULL);
-+			parse_events_error__handle(err, loc->first_column, err_str, NULL);
- 		return -EINVAL;
- 	}
- 	if (head_config)
-@@ -1683,12 +1684,13 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
- 
- int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
- 			       char *str, struct list_head *head,
--			       struct list_head **listp)
-+			       struct list_head **listp, void *loc_)
- {
- 	struct parse_events_term *term;
- 	struct list_head *list = NULL;
- 	struct list_head *orig_head = NULL;
- 	struct perf_pmu *pmu = NULL;
-+	YYLTYPE *loc = loc_;
- 	int ok = 0;
- 	char *config;
- 
-@@ -1735,7 +1737,7 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
- 				parse_events_copy_term_list(head, &orig_head);
- 				if (!parse_events_add_pmu(parse_state, list,
- 							  pmu->name, orig_head,
--							  auto_merge_stats)) {
-+							  auto_merge_stats, loc)) {
- 					pr_debug("%s -> %s/%s/\n", str,
- 						 pmu->name, alias->str);
- 					parse_state->wild_card_pmus = true;
-@@ -1748,7 +1750,7 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
- 
- 	if (parse_state->fake_pmu) {
- 		if (!parse_events_add_pmu(parse_state, list, str, head,
--					  /*auto_merge_stats=*/true)) {
-+					  /*auto_merge_stats=*/true, loc)) {
- 			pr_debug("%s -> %s/%s/\n", str, "fake_pmu", str);
- 			ok++;
- 		}
-diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-index cabbe70adb82..e59b33805886 100644
---- a/tools/perf/util/parse-events.h
-+++ b/tools/perf/util/parse-events.h
-@@ -202,7 +202,7 @@ int parse_events_add_breakpoint(struct parse_events_state *parse_state,
- int parse_events_add_pmu(struct parse_events_state *parse_state,
- 			 struct list_head *list, char *name,
- 			 struct list_head *head_config,
--			 bool auto_merge_stats);
-+			bool auto_merge_stats, void *loc);
- 
- struct evsel *parse_events__add_event(int idx, struct perf_event_attr *attr,
- 				      const char *name, const char *metric_id,
-@@ -211,7 +211,7 @@ struct evsel *parse_events__add_event(int idx, struct perf_event_attr *attr,
- int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
- 			       char *str,
- 			       struct list_head *head_config,
--			       struct list_head **listp);
-+			       struct list_head **listp, void *loc);
- 
- int parse_events_copy_term_list(struct list_head *old,
- 				 struct list_head **new);
 diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index 50f5b819de37..844646752462 100644
+index 844646752462..454577f7aff6 100644
 --- a/tools/perf/util/parse-events.y
 +++ b/tools/perf/util/parse-events.y
-@@ -313,7 +313,7 @@ PE_NAME opt_pmu_config
+@@ -22,12 +22,6 @@
+ 
+ void parse_events_error(YYLTYPE *loc, void *parse_state, void *scanner, char const *msg);
+ 
+-#define ABORT_ON(val) \
+-do { \
+-	if (val) \
+-		YYABORT; \
+-} while (0)
+-
+ #define PE_ABORT(val) \
+ do { \
+ 	if (val == -ENOMEM) \
+@@ -618,7 +612,9 @@ PE_RAW opt_event_config
  		YYNOMEM;
- 	}
- 	/* Attempt to add to list assuming $1 is a PMU name. */
--	if (parse_events_add_pmu(parse_state, list, $1, $2, /*auto_merge_stats=*/false)) {
-+	if (parse_events_add_pmu(parse_state, list, $1, $2, /*auto_merge_stats=*/false, &@1)) {
- 		struct perf_pmu *pmu = NULL;
- 		int ok = 0;
+ 	errno = 0;
+ 	num = strtoull($1 + 1, NULL, 16);
+-	ABORT_ON(errno);
++	/* Given the lexer will only give [a-fA-F0-9]+ a failure here should be impossible. */
++	if (errno)
++		YYABORT;
+ 	free($1);
+ 	err = parse_events_add_numeric(_parse_state, list, PERF_TYPE_RAW, num, $2,
+ 				       /*wildcard=*/false);
+@@ -978,7 +974,17 @@ PE_VALUE PE_ARRAY_RANGE PE_VALUE
+ {
+ 	struct parse_events_array array;
  
-@@ -341,7 +341,7 @@ PE_NAME opt_pmu_config
- 					YYNOMEM;
- 				}
- 				if (!parse_events_add_pmu(parse_state, list, pmu->name, terms,
--							  auto_merge_stats)) {
-+							  auto_merge_stats, &@1)) {
- 					ok++;
- 					parse_state->wild_card_pmus = true;
- 				}
-@@ -352,7 +352,7 @@ PE_NAME opt_pmu_config
- 		if (!ok) {
- 			/* Failure to add, assume $1 is an event name. */
- 			zfree(&list);
--			ok = !parse_events_multi_pmu_add(parse_state, $1, $2, &list);
-+			ok = !parse_events_multi_pmu_add(parse_state, $1, $2, &list, &@1);
- 			$2 = NULL;
- 		}
- 		if (!ok) {
-@@ -379,7 +379,7 @@ PE_NAME sep_dc
- 	struct list_head *list;
- 	int err;
- 
--	err = parse_events_multi_pmu_add(_parse_state, $1, NULL, &list);
-+	err = parse_events_multi_pmu_add(_parse_state, $1, NULL, &list, &@1);
- 	if (err < 0) {
- 		struct parse_events_state *parse_state = _parse_state;
- 		struct parse_events_error *error = parse_state->error;
+-	ABORT_ON($3 < $1);
++	if ($3 < $1) {
++		struct parse_events_state *parse_state = _parse_state;
++		struct parse_events_error *error = parse_state->error;
++		char *err_str;
++
++		if (asprintf(&err_str, "Expected '%ld' to be less-than '%ld'", $3, $1) < 0)
++			err_str = NULL;
++
++		parse_events_error__handle(error, @1.first_column, err_str, NULL);
++		YYABORT;
++	}
+ 	array.nr_ranges = 1;
+ 	array.ranges = malloc(sizeof(array.ranges[0]));
+ 	if (!array.ranges)
 -- 
 2.41.0.162.gfafddb0af9-goog
 
