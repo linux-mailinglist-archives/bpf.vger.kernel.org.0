@@ -1,461 +1,520 @@
-Return-Path: <bpf+bounces-3550-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3551-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8293B73F8A7
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 11:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 258B373F91B
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 11:52:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A53161C20993
-	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 09:24:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 022D91C20A9C
+	for <lists+bpf@lfdr.de>; Tue, 27 Jun 2023 09:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B032171A7;
-	Tue, 27 Jun 2023 09:23:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1119171BC;
+	Tue, 27 Jun 2023 09:52:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7D3168BE;
-	Tue, 27 Jun 2023 09:23:49 +0000 (UTC)
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CC9DC;
-	Tue, 27 Jun 2023 02:23:47 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vm5Kw2K_1687857822;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vm5Kw2K_1687857822)
-          by smtp.aliyun-inc.com;
-          Tue, 27 Jun 2023 17:23:43 +0800
-Message-ID: <1687857807.2478845-8-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v10 10/10] virtio_net: support dma premapped
-Date: Tue, 27 Jun 2023 17:23:27 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Jason Wang <jasowang@redhat.com>
-Cc: virtualization@lists.linux-foundation.org,
- "Michael S. Tsirkin" <mst@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- netdev@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20230602092206.50108-1-xuanzhuo@linux.alibaba.com>
- <20230602092206.50108-11-xuanzhuo@linux.alibaba.com>
- <CACGkMEsyP7bxOchyaKPb=y+td=1F34NwxxP3atyNBwFAtNOsxw@mail.gmail.com>
-In-Reply-To: <CACGkMEsyP7bxOchyaKPb=y+td=1F34NwxxP3atyNBwFAtNOsxw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0788481
+	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 09:52:15 +0000 (UTC)
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8911835A9
+	for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 02:52:00 -0700 (PDT)
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-780cc4a0799so269113539f.2
+        for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 02:52:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687859519; x=1690451519;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y0tIqaORmJmU7z2UPPlx/oOuuumIv3OuEFInhj266iI=;
+        b=LugmqWiSyxF+6kly9PNLWjc88GeUyuzj4jgUNhVakIzpUoawZf/wR1PNUElf8qXCSs
+         D+jZdkjd/1Mk/IwqSTsccwY0X7I6sTBQsH3KZOiaAzjeaCfVAf/ris52LGWFlWqVVcSC
+         5NOU33jSnSavb0CpXLwBZShJTqfqOGHv7oW0bnMVAHRzwPNbn8cI9ffg946IYfw/RJI+
+         8DoVR71hNJdcNVsAt98Kfv6Ai3DKmDQaQc2PqrRf3HG87FKlx8M3ti/83yB2Supp0ijG
+         YGh9PnSh/t3x7+LJg+ei7s27N21IjDDemOxAxtIIR6kU+uKgrnC76vyvFbgx3J/ruiW3
+         x2rw==
+X-Gm-Message-State: AC+VfDxQbgN7ptq5mlONqnBBwoLB0NUbZDVFvlmSmAxKZ8T3UsmDD7mV
+	sj1tZeJwgg7DAflL1YLKh24A/iQYxbcYsmGw81Rt7y7vn3g7
+X-Google-Smtp-Source: ACHHUZ7T3xmOxKvdS/k/j/oIoEuY5mgCte14Sxig08Mc2pMq9sOCGnE17xOsBYVcNiKIHGga2PKC26RofIyA3MqyOVygW2wD7XvG
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-Received: by 2002:a02:85c6:0:b0:429:bfc:7db5 with SMTP id
+ d64-20020a0285c6000000b004290bfc7db5mr2152173jai.5.1687859519364; Tue, 27 Jun
+ 2023 02:51:59 -0700 (PDT)
+Date: Tue, 27 Jun 2023 02:51:59 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001526c405ff196bc1@google.com>
+Subject: [syzbot] [tomoyo?] [bpf?] INFO: rcu detected stall in
+ security_file_open (6)
+From: syzbot <syzbot+bb11ad7bb33b56ca4d4b@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, jmorris@namei.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, paul@paul-moore.com, 
+	penguin-kernel@I-love.SAKURA.ne.jp, serge@hallyn.com, 
+	syzkaller-bugs@googlegroups.com, takedakn@nttdata.co.jp, 
+	tomoyo-dev-en@lists.osdn.me
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Tue, 27 Jun 2023 16:03:35 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Fri, Jun 2, 2023 at 5:22=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.=
-com> wrote:
-> >
-> > Introduce the module param "experiment_premapped" to enable the function
-> > that the virtio-net do dma mapping.
-> >
-> > If that is true, the vq of virtio-net is under the premapped mode.
-> > It just handle the sg with dma_address. And the driver must get the dma
-> > address of the buffer to unmap after get the buffer from virtio core.
-> >
-> > That will be useful when AF_XDP is enable, AF_XDP tx and the kernel pac=
-ket
-> > xmit will share the tx queue, so the skb xmit must support the premapped
-> > mode.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >  drivers/net/virtio_net.c | 163 +++++++++++++++++++++++++++++++++------
-> >  1 file changed, 141 insertions(+), 22 deletions(-)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 2396c28c0122..5898212fcb3c 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -26,10 +26,11 @@
-> >  static int napi_weight =3D NAPI_POLL_WEIGHT;
-> >  module_param(napi_weight, int, 0444);
-> >
-> > -static bool csum =3D true, gso =3D true, napi_tx =3D true;
-> > +static bool csum =3D true, gso =3D true, napi_tx =3D true, experiment_=
-premapped;
-> >  module_param(csum, bool, 0444);
-> >  module_param(gso, bool, 0444);
-> >  module_param(napi_tx, bool, 0644);
-> > +module_param(experiment_premapped, bool, 0644);
->
-> Having a module parameter is sub-optimal. I think we can demonstrate
-> real benefit:
->
-> In the case of a merge rx buffer, if the mapping is done by the
-> virtio-core, it needs to be done per buffer (< PAGE_SIZE).
->
-> But if it is done by the virtio-net, we have a chance to map the
-> buffer per page. Which can save a lot of mappings and unmapping. A lot
-> of other optimizations could be done on top as well.
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    8a28a0b6f1a1 Merge tag 'net-6.4-rc8' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1335a9db280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2cbd298d0aff1140
+dashboard link: https://syzkaller.appspot.com/bug?extid=bb11ad7bb33b56ca4d4b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16841cc0a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16fc6e1f280000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d02009a9822d/disk-8a28a0b6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f33ad4ef1182/vmlinux-8a28a0b6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f795a8ae7a8c/bzImage-8a28a0b6.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bb11ad7bb33b56ca4d4b@syzkaller.appspotmail.com
+
+imon 2-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+rcu: INFO: rcu_preempt self-detected stall on CPU
+rcu: 	0-....: (7435 ticks this GP) idle=b9b4/1/0x4000000000000000 softirq=8258/8258 fqs=2193
+rcu: 	         hardirqs   softirqs   csw/system
+rcu: 	 number:        0          0            0
+rcu: 	cputime:      160      52287         1450   ==> 52450(ms)
+rcu: 	(t=10500 jiffies g=3745 q=548 ncpus=2)
+CPU: 0 PID: 4453 Comm: udevd Not tainted 6.4.0-rc7-syzkaller-00194-g8a28a0b6f1a1 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+RIP: 0010:_raw_spin_unlock_irqrestore+0x3c/0x70 kernel/locking/spinlock.c:194
+Code: 74 24 10 e8 66 8f 51 f7 48 89 ef e8 8e fd 51 f7 81 e3 00 02 00 00 75 25 9c 58 f6 c4 02 75 2d 48 85 db 74 01 fb bf 01 00 00 00 <e8> ff d2 43 f7 65 8b 05 60 61 ef 75 85 c0 74 0a 5b 5d c3 e8 9c 8c
+RSP: 0018:ffffc90000007b18 EFLAGS: 00000206
+RAX: 0000000000000006 RBX: 0000000000000200 RCX: 1ffffffff22af18e
+RDX: 0000000000000000 RSI: 0000000000000101 RDI: 0000000000000001
+RBP: ffff888021d68000 R08: 0000000000000001 R09: ffffffff9152bdcf
+R10: 0000000000000001 R11: 0000000000094001 R12: ffff888021de9440
+R13: ffff88801771d000 R14: dffffc0000000000 R15: ffff88801eaedd00
+FS:  00007ff685e95c80(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555b2efca778 CR3: 0000000029bdf000 CR4: 0000000000350ef0
+Call Trace:
+ <IRQ>
+ spin_unlock_irqrestore include/linux/spinlock.h:405 [inline]
+ dummy_timer+0x1519/0x3400 drivers/usb/gadget/udc/dummy_hcd.c:2002
+ call_timer_fn+0x1a0/0x580 kernel/time/timer.c:1700
+ expire_timers+0x29b/0x4b0 kernel/time/timer.c:1751
+ __run_timers kernel/time/timer.c:2022 [inline]
+ __run_timers kernel/time/timer.c:1995 [inline]
+ run_timer_softirq+0x326/0x910 kernel/time/timer.c:2035
+ __do_softirq+0x1d4/0x905 kernel/softirq.c:571
+ invoke_softirq kernel/softirq.c:445 [inline]
+ __irq_exit_rcu+0x114/0x190 kernel/softirq.c:650
+ irq_exit_rcu+0x9/0x20 kernel/softirq.c:662
+ sysvec_apic_timer_interrupt+0x97/0xc0 arch/x86/kernel/apic/apic.c:1106
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+RIP: 0010:__sanitizer_cov_trace_const_cmp2+0x8/0x20 kernel/kcov.c:297
+Code: 00 00 f3 0f 1e fa 48 8b 0c 24 40 0f b6 d6 40 0f b6 f7 bf 01 00 00 00 e9 d6 fe ff ff 66 0f 1f 44 00 00 f3 0f 1e fa 48 8b 0c 24 <0f> b7 d6 0f b7 f7 bf 03 00 00 00 e9 b8 fe ff ff 0f 1f 84 00 00 00
+RSP: 0018:ffffc9000311f770 EFLAGS: 00000206
+RAX: 0000000000000000 RBX: 0000000000000044 RCX: ffffffff83d0673a
+RDX: ffff88807d6fbb80 RSI: 0000000000000044 RDI: 00000000000000ff
+RBP: dffffc0000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000094001 R12: ffffc9000311f868
+R13: ffff88802ad9cb00 R14: ffff88802ad9cbb0 R15: 0000000000000044
+ tomoyo_check_acl+0x31a/0x440 security/tomoyo/domain.c:183
+ tomoyo_path_permission security/tomoyo/file.c:586 [inline]
+ tomoyo_path_permission+0x1ff/0x3a0 security/tomoyo/file.c:573
+ tomoyo_check_open_permission+0x337/0x3a0 security/tomoyo/file.c:780
+ tomoyo_file_open security/tomoyo/tomoyo.c:332 [inline]
+ tomoyo_file_open+0xa1/0xc0 security/tomoyo/tomoyo.c:327
+ security_file_open+0x49/0xb0 security/security.c:2797
+ do_dentry_open+0x575/0x13f0 fs/open.c:907
+ do_open fs/namei.c:3636 [inline]
+ path_openat+0x1baa/0x2750 fs/namei.c:3791
+ do_filp_open+0x1ba/0x410 fs/namei.c:3818
+ do_sys_openat2+0x16d/0x4c0 fs/open.c:1356
+ do_sys_open fs/open.c:1372 [inline]
+ __do_sys_openat fs/open.c:1388 [inline]
+ __se_sys_openat fs/open.c:1383 [inline]
+ __x64_sys_openat+0x143/0x1f0 fs/open.c:1383
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7ff685f609a4
+Code: 24 20 48 8d 44 24 30 48 89 44 24 28 64 8b 04 25 18 00 00 00 85 c0 75 2c 44 89 e2 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 76 60 48 8b 15 55 a4 0d 00 f7 d8 64 89 02 48 83
+RSP: 002b:00007fff03a42790 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000555b2d993040 RCX: 00007ff685f609a4
+RDX: 0000000000080141 RSI: 0000555b2d9760d8 RDI: 00000000ffffff9c
+RBP: 0000555b2d9760d8 R08: 00000000ffffffff R09: 0000000000000000
+R10: 00000000000001a4 R11: 0000000000000246 R12: 0000000000080141
+R13: ffffffffffffffff R14: 00000000ffffffff R15: 00000000ffffffff
+ </TASK>
+imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 2-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
+imon 3-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
 
 
-Good point.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
->
-> If we manage to prove this, we don't need any experimental module
-> parameters at all.
->
-> Thanks
->
->
-> >
-> >  /* FIXME: MTU in config. */
-> >  #define GOOD_PACKET_LEN (ETH_HLEN + VLAN_HLEN + ETH_DATA_LEN)
-> > @@ -142,6 +143,9 @@ struct send_queue {
-> >
-> >         /* Record whether sq is in reset state. */
-> >         bool reset;
-> > +
-> > +       /* The vq is premapped mode. */
-> > +       bool premapped;
-> >  };
-> >
-> >  /* Internal representation of a receive virtqueue */
-> > @@ -174,6 +178,9 @@ struct receive_queue {
-> >         char name[16];
-> >
-> >         struct xdp_rxq_info xdp_rxq;
-> > +
-> > +       /* The vq is premapped mode. */
-> > +       bool premapped;
-> >  };
-> >
-> >  /* This structure can contain rss message with maximum settings for in=
-direction table and keysize
-> > @@ -546,6 +553,105 @@ static struct sk_buff *page_to_skb(struct virtnet=
-_info *vi,
-> >         return skb;
-> >  }
-> >
-> > +static int virtnet_generic_unmap(struct virtqueue *vq, struct virtqueu=
-e_detach_cursor *cursor)
-> > +{
-> > +       enum dma_data_direction dir;
-> > +       dma_addr_t addr;
-> > +       u32 len;
-> > +       int err;
-> > +
-> > +       do {
-> > +               err =3D virtqueue_detach(vq, cursor, &addr, &len, &dir);
-> > +               if (!err || err =3D=3D -EAGAIN)
-> > +                       dma_unmap_page_attrs(virtqueue_dma_dev(vq), add=
-r, len, dir, 0);
-> > +
-> > +       } while (err =3D=3D -EAGAIN);
-> > +
-> > +       return err;
-> > +}
-> > +
-> > +static void *virtnet_detach_unused_buf(struct virtqueue *vq, bool prem=
-apped)
-> > +{
-> > +       struct virtqueue_detach_cursor cursor;
-> > +       void *buf;
-> > +
-> > +       if (!premapped)
-> > +               return virtqueue_detach_unused_buf(vq);
-> > +
-> > +       buf =3D virtqueue_detach_unused_buf_premapped(vq, &cursor);
-> > +       if (buf)
-> > +               virtnet_generic_unmap(vq, &cursor);
-> > +
-> > +       return buf;
-> > +}
-> > +
-> > +static void *virtnet_get_buf_ctx(struct virtqueue *vq, bool premapped,=
- u32 *len, void **ctx)
-> > +{
-> > +       struct virtqueue_detach_cursor cursor;
-> > +       void *buf;
-> > +
-> > +       if (!premapped)
-> > +               return virtqueue_get_buf_ctx(vq, len, ctx);
-> > +
-> > +       buf =3D virtqueue_get_buf_premapped(vq, len, ctx, &cursor);
-> > +       if (buf)
-> > +               virtnet_generic_unmap(vq, &cursor);
-> > +
-> > +       return buf;
-> > +}
-> > +
-> > +#define virtnet_rq_get_buf(rq, plen, pctx) \
-> > +({ \
-> > +       typeof(rq) _rq =3D (rq); \
-> > +       virtnet_get_buf_ctx(_rq->vq, _rq->premapped, plen, pctx); \
-> > +})
-> > +
-> > +#define virtnet_sq_get_buf(sq, plen, pctx) \
-> > +({ \
-> > +       typeof(sq) _sq =3D (sq); \
-> > +       virtnet_get_buf_ctx(_sq->vq, _sq->premapped, plen, pctx); \
-> > +})
-> > +
-> > +static int virtnet_add_sg(struct virtqueue *vq, bool premapped,
-> > +                         struct scatterlist *sg, unsigned int num, boo=
-l out,
-> > +                         void *data, void *ctx, gfp_t gfp)
-> > +{
-> > +       enum dma_data_direction dir;
-> > +       struct device *dev;
-> > +       int err, ret;
-> > +
-> > +       if (!premapped)
-> > +               return virtqueue_add_sg(vq, sg, num, out, data, ctx, gf=
-p);
-> > +
-> > +       dir =3D out ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
-> > +       dev =3D virtqueue_dma_dev(vq);
-> > +
-> > +       ret =3D dma_map_sg_attrs(dev, sg, num, dir, 0);
-> > +       if (ret !=3D num)
-> > +               goto err;
-> > +
-> > +       err =3D virtqueue_add_sg(vq, sg, num, out, data, ctx, gfp);
-> > +       if (err < 0)
-> > +               goto err;
-> > +
-> > +       return 0;
-> > +
-> > +err:
-> > +       dma_unmap_sg_attrs(dev, sg, num, dir, 0);
-> > +       return -ENOMEM;
-> > +}
-> > +
-> > +static int virtnet_add_outbuf(struct send_queue *sq, unsigned int num,=
- void *data)
-> > +{
-> > +       return virtnet_add_sg(sq->vq, sq->premapped, sq->sg, num, true,=
- data, NULL, GFP_ATOMIC);
-> > +}
-> > +
-> > +static int virtnet_add_inbuf(struct receive_queue *rq, unsigned int nu=
-m, void *data,
-> > +                            void *ctx, gfp_t gfp)
-> > +{
-> > +       return virtnet_add_sg(rq->vq, rq->premapped, rq->sg, num, false=
-, data, ctx, gfp);
-> > +}
-> > +
-> >  static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
-> >  {
-> >         unsigned int len;
-> > @@ -553,7 +659,7 @@ static void free_old_xmit_skbs(struct send_queue *s=
-q, bool in_napi)
-> >         unsigned int bytes =3D 0;
-> >         void *ptr;
-> >
-> > -       while ((ptr =3D virtqueue_get_buf(sq->vq, &len)) !=3D NULL) {
-> > +       while ((ptr =3D virtnet_sq_get_buf(sq, &len, NULL)) !=3D NULL) {
-> >                 if (likely(!is_xdp_frame(ptr))) {
-> >                         struct sk_buff *skb =3D ptr;
-> >
-> > @@ -667,8 +773,7 @@ static int __virtnet_xdp_xmit_one(struct virtnet_in=
-fo *vi,
-> >                             skb_frag_size(frag), skb_frag_off(frag));
-> >         }
-> >
-> > -       err =3D virtqueue_add_outbuf(sq->vq, sq->sg, nr_frags + 1,
-> > -                                  xdp_to_ptr(xdpf), GFP_ATOMIC);
-> > +       err =3D virtnet_add_outbuf(sq, nr_frags + 1, xdp_to_ptr(xdpf));
-> >         if (unlikely(err))
-> >                 return -ENOSPC; /* Caller handle free/refcnt */
-> >
-> > @@ -744,7 +849,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
-> >         }
-> >
-> >         /* Free up any pending old buffers before queueing new ones. */
-> > -       while ((ptr =3D virtqueue_get_buf(sq->vq, &len)) !=3D NULL) {
-> > +       while ((ptr =3D virtnet_sq_get_buf(sq, &len, NULL)) !=3D NULL) {
-> >                 if (likely(is_xdp_frame(ptr))) {
-> >                         struct xdp_frame *frame =3D ptr_to_xdp(ptr);
-> >
-> > @@ -828,7 +933,7 @@ static struct page *xdp_linearize_page(struct recei=
-ve_queue *rq,
-> >                 void *buf;
-> >                 int off;
-> >
-> > -               buf =3D virtqueue_get_buf(rq->vq, &buflen);
-> > +               buf =3D virtnet_rq_get_buf(rq, &buflen, NULL);
-> >                 if (unlikely(!buf))
-> >                         goto err_buf;
-> >
-> > @@ -1119,7 +1224,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_=
-device *dev,
-> >                 return -EINVAL;
-> >
-> >         while (--*num_buf > 0) {
-> > -               buf =3D virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
-> > +               buf =3D virtnet_rq_get_buf(rq, &len, &ctx);
-> >                 if (unlikely(!buf)) {
-> >                         pr_debug("%s: rx error: %d buffers out of %d mi=
-ssing\n",
-> >                                  dev->name, *num_buf,
-> > @@ -1344,7 +1449,7 @@ static struct sk_buff *receive_mergeable(struct n=
-et_device *dev,
-> >         while (--num_buf) {
-> >                 int num_skb_frags;
-> >
-> > -               buf =3D virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
-> > +               buf =3D virtnet_rq_get_buf(rq, &len, &ctx);
-> >                 if (unlikely(!buf)) {
-> >                         pr_debug("%s: rx error: %d buffers out of %d mi=
-ssing\n",
-> >                                  dev->name, num_buf,
-> > @@ -1407,7 +1512,7 @@ static struct sk_buff *receive_mergeable(struct n=
-et_device *dev,
-> >  err_skb:
-> >         put_page(page);
-> >         while (num_buf-- > 1) {
-> > -               buf =3D virtqueue_get_buf(rq->vq, &len);
-> > +               buf =3D virtnet_rq_get_buf(rq, &len, NULL);
-> >                 if (unlikely(!buf)) {
-> >                         pr_debug("%s: rx error: %d buffers missing\n",
-> >                                  dev->name, num_buf);
-> > @@ -1534,7 +1639,7 @@ static int add_recvbuf_small(struct virtnet_info =
-*vi, struct receive_queue *rq,
-> >         alloc_frag->offset +=3D len;
-> >         sg_init_one(rq->sg, buf + VIRTNET_RX_PAD + xdp_headroom,
-> >                     vi->hdr_len + GOOD_PACKET_LEN);
-> > -       err =3D virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, gf=
-p);
-> > +       err =3D virtnet_add_inbuf(rq, 1, buf, ctx, gfp);
-> >         if (err < 0)
-> >                 put_page(virt_to_head_page(buf));
-> >         return err;
-> > @@ -1581,8 +1686,8 @@ static int add_recvbuf_big(struct virtnet_info *v=
-i, struct receive_queue *rq,
-> >
-> >         /* chain first in list head */
-> >         first->private =3D (unsigned long)list;
-> > -       err =3D virtqueue_add_inbuf(rq->vq, rq->sg, vi->big_packets_num=
-_skbfrags + 2,
-> > -                                 first, gfp);
-> > +       err =3D virtnet_add_inbuf(rq, vi->big_packets_num_skbfrags + 2,
-> > +                               first, NULL, gfp);
-> >         if (err < 0)
-> >                 give_pages(rq, first);
-> >
-> > @@ -1645,7 +1750,7 @@ static int add_recvbuf_mergeable(struct virtnet_i=
-nfo *vi,
-> >
-> >         sg_init_one(rq->sg, buf, len);
-> >         ctx =3D mergeable_len_to_ctx(len + room, headroom);
-> > -       err =3D virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, gf=
-p);
-> > +       err =3D virtnet_add_inbuf(rq, 1, buf, ctx, gfp);
-> >         if (err < 0)
-> >                 put_page(virt_to_head_page(buf));
-> >
-> > @@ -1768,13 +1873,13 @@ static int virtnet_receive(struct receive_queue=
- *rq, int budget,
-> >                 void *ctx;
-> >
-> >                 while (stats.packets < budget &&
-> > -                      (buf =3D virtqueue_get_buf_ctx(rq->vq, &len, &ct=
-x))) {
-> > +                      (buf =3D virtnet_rq_get_buf(rq, &len, &ctx))) {
-> >                         receive_buf(vi, rq, buf, len, ctx, xdp_xmit, &s=
-tats);
-> >                         stats.packets++;
-> >                 }
-> >         } else {
-> >                 while (stats.packets < budget &&
-> > -                      (buf =3D virtqueue_get_buf(rq->vq, &len)) !=3D N=
-ULL) {
-> > +                      (buf =3D virtnet_rq_get_buf(rq, &len, NULL)) !=
-=3D NULL) {
-> >                         receive_buf(vi, rq, buf, len, NULL, xdp_xmit, &=
-stats);
-> >                         stats.packets++;
-> >                 }
-> > @@ -1984,7 +2089,7 @@ static int xmit_skb(struct send_queue *sq, struct=
- sk_buff *skb)
-> >                         return num_sg;
-> >                 num_sg++;
-> >         }
-> > -       return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg, skb, GFP_AT=
-OMIC);
-> > +       return virtnet_add_outbuf(sq, num_sg, skb);
-> >  }
-> >
-> >  static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *=
-dev)
-> > @@ -3552,15 +3657,17 @@ static void free_unused_bufs(struct virtnet_inf=
-o *vi)
-> >         int i;
-> >
-> >         for (i =3D 0; i < vi->max_queue_pairs; i++) {
-> > -               struct virtqueue *vq =3D vi->sq[i].vq;
-> > -               while ((buf =3D virtqueue_detach_unused_buf(vq)) !=3D N=
-ULL)
-> > -                       virtnet_sq_free_unused_buf(vq, buf);
-> > +               struct send_queue *sq =3D &vi->sq[i];
-> > +
-> > +               while ((buf =3D virtnet_detach_unused_buf(sq->vq, sq->p=
-remapped)) !=3D NULL)
-> > +                       virtnet_sq_free_unused_buf(sq->vq, buf);
-> >         }
-> >
-> >         for (i =3D 0; i < vi->max_queue_pairs; i++) {
-> > -               struct virtqueue *vq =3D vi->rq[i].vq;
-> > -               while ((buf =3D virtqueue_detach_unused_buf(vq)) !=3D N=
-ULL)
-> > -                       virtnet_rq_free_unused_buf(vq, buf);
-> > +               struct receive_queue *rq =3D &vi->rq[i];
-> > +
-> > +               while ((buf =3D virtnet_detach_unused_buf(rq->vq, rq->p=
-remapped)) !=3D NULL)
-> > +                       virtnet_rq_free_unused_buf(rq->vq, buf);
-> >         }
-> >  }
-> >
-> > @@ -3658,6 +3765,18 @@ static int virtnet_find_vqs(struct virtnet_info =
-*vi)
-> >                 vi->rq[i].vq =3D vqs[rxq2vq(i)];
-> >                 vi->rq[i].min_buf_len =3D mergeable_min_buf_len(vi, vi-=
->rq[i].vq);
-> >                 vi->sq[i].vq =3D vqs[txq2vq(i)];
-> > +
-> > +               if (experiment_premapped) {
-> > +                       if (!virtqueue_set_premapped(vi->rq[i].vq))
-> > +                               vi->rq[i].premapped =3D true;
-> > +                       else
-> > +                               netdev_warn(vi->dev, "RXQ (%d) enable p=
-remapped failure.\n", i);
-> > +
-> > +                       if (!virtqueue_set_premapped(vi->sq[i].vq))
-> > +                               vi->sq[i].premapped =3D true;
-> > +                       else
-> > +                               netdev_warn(vi->dev, "TXQ (%d) enable p=
-remapped failure.\n", i);
-> > +               }
-> >         }
-> >
-> >         /* run here: ret =3D=3D 0. */
-> > --
-> > 2.32.0.3.g01195cf9f
-> >
->
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
