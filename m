@@ -1,151 +1,77 @@
-Return-Path: <bpf+bounces-3669-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C053C74175A
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 19:38:58 +0200 (CEST)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D3F71C20826
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 17:38:57 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D630D51C;
-	Wed, 28 Jun 2023 17:38:42 +0000 (UTC)
-X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93758D50B;
-	Wed, 28 Jun 2023 17:38:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FA0FC433C8;
-	Wed, 28 Jun 2023 17:38:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687973920;
-	bh=Q6yM//pVwi9E0luzrkgH54PhcqKCZoxQtodXfYVlXQw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=UNbDwr2qZYaJbiI+vtdigJ499Li+Rk+sKee2XuYGllb6MDtI1KbHGLa+hWDLQwylX
-	 gKgQ9sqKh/50KKRRlRX++D6xWbXPfWp6ZaBckjYvQo2R0ksGqVqLC/+M+Z9O36Qcon
-	 mo98SILsX+GmyemzIAdTlQCoJ6WzAIztbsjrOKb5nXBCFhJ2QqxzwLkY2LRj+Encm0
-	 9LZSP7kj0JpFKqztahMluX49zh+wGHSaXwHFhCF+FUZ6DqGQaVOFX8ajyeZpn2VGN2
-	 kJI2KM9wa10Fl1D0B4sUaFhpf2zneVool9A/XIJK/gj514MPA+a2cdzrNhVl9nhRIc
-	 2+Fv1eOTqz4bA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id ADDCDCE39D5; Wed, 28 Jun 2023 10:38:39 -0700 (PDT)
-Date: Wed, 28 Jun 2023 10:38:39 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: Alexei Starovoitov <ast@meta.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>,
-	rcu@vger.kernel.org, Network Development <netdev@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 09/13] bpf: Allow reuse from
- waiting_for_gp_ttrace list.
-Message-ID: <9d88270e-01e7-4022-8332-940e13a5177a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230624031333.96597-1-alexei.starovoitov@gmail.com>
- <20230624031333.96597-10-alexei.starovoitov@gmail.com>
- <9cc35513-5522-9229-469b-7d691c9790e1@huaweicloud.com>
- <CAADnVQJViJh47Cze186XCS0_jeQMb1wu6BfVZiQL6982a_hhfg@mail.gmail.com>
- <417e4d9c-7b69-0b9a-07e3-9af4b3b3299f@huaweicloud.com>
- <2bf11b56-7494-c0a9-09d4-c9e41aaba850@meta.com>
- <957dd5cd-0855-1197-7045-4cb1590bd753@huaweicloud.com>
-Precedence: bulk
-X-Mailing-List: bpf@vger.kernel.org
-List-Id: <bpf.vger.kernel.org>
-List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 80EBD741769
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 19:44:52 +0200 (CEST)
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S231745AbjF1Rod (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jun 2023 13:44:33 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:4480 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231750AbjF1RoH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Jun 2023 13:44:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1687974247; x=1719510247;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=PrG4tYO/ZphjCkN2Y/btvDogyR+oDAvStHHOQ5Xdam4=;
+  b=F/zR4J0WgotPHVqfpRL9FNx2HWFFIMDV7V33jLujr+tq/X2uo28Y7w0I
+   QjpDaYBHxt7EIEDilj7/Br1+z9MC2cjg4Q+sLwYZnp/5GgF3jc/qAUTzI
+   nCJX56RUv0Yr/HlBrZK2vrtv+4kCHr/QqtdHvUM/FP3CpufTVYlcpWvBr
+   M=;
+X-IronPort-AV: E=Sophos;i="6.01,166,1684800000"; 
+   d="scan'208";a="336700844"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2023 17:44:04 +0000
+Received: from EX19MTAUWB002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com (Postfix) with ESMTPS id F28FC160DAE;
+        Wed, 28 Jun 2023 17:43:57 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 28 Jun 2023 17:43:45 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.187.170.50) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 28 Jun 2023 17:43:40 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <lmb@isovalent.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <dsahern@kernel.org>, <edumazet@google.com>, <haoluo@google.com>,
+        <hemanthmalla@gmail.com>, <joe@wand.net.nz>,
+        <john.fastabend@gmail.com>, <jolsa@kernel.org>,
+        <kpsingh@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <martin.lau@linux.dev>, <mykolal@fb.com>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>, <sdf@google.com>, <shuah@kernel.org>,
+        <song@kernel.org>, <willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
+Subject: Re: [PATCH bpf-next v4 2/7] net: export inet_lookup_reuseport and inet6_lookup_reuseport
+Date:   Wed, 28 Jun 2023 10:43:29 -0700
+Message-ID: <20230628174329.68454-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230613-so-reuseport-v4-2-4ece76708bba@isovalent.com>
+References: <20230613-so-reuseport-v4-2-4ece76708bba@isovalent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <957dd5cd-0855-1197-7045-4cb1590bd753@huaweicloud.com>
+Content-Type: text/plain
+X-Originating-IP: [10.187.170.50]
+X-ClientProxiedBy: EX19D044UWB001.ant.amazon.com (10.13.139.171) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: bulk
+List-ID: <bpf.vger.kernel.org>
+X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 28, 2023 at 04:09:14PM +0800, Hou Tao wrote:
-> Hi,
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Wed, 28 Jun 2023 10:48:17 +0100
+> Rename the existing reuseport helpers for IPv4 and IPv6 so that they
+> can be invoked in the follow up commit. Export them so that building
+> DCCP and IPv6 as a module works.
 > 
-> On 6/28/2023 8:59 AM, Alexei Starovoitov wrote:
-> > On 6/26/23 12:16 AM, Hou Tao wrote:
-> >> Hi,
-> >>
-> >> On 6/26/2023 12:42 PM, Alexei Starovoitov wrote:
-> >>> On Sun, Jun 25, 2023 at 8:30 PM Hou Tao <houtao@huaweicloud.com> wrote:
-> >>>> Hi,
-> >>>>
-> >>>> On 6/24/2023 11:13 AM, Alexei Starovoitov wrote:
-> >>>>> From: Alexei Starovoitov <ast@kernel.org>
-> >>>>>
-> >>>>> alloc_bulk() can reuse elements from free_by_rcu_ttrace.
-> >>>>> Let it reuse from waiting_for_gp_ttrace as well to avoid
-> >>>>> unnecessary kmalloc().
-> >>>>>
-> >>>>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> >>>>> ---
-> >>>>>   kernel/bpf/memalloc.c | 9 +++++++++
-> >>>>>   1 file changed, 9 insertions(+)
-> >>>>>
-> SNIP
-> >>        // free A (from c1), ..., last free X (allocated from c0)
-> >>      P3: unit_free(c1)
-> >>          // the last freed element X is from c0
-> >>          c1->tgt = c0
-> >>          c1->free_llist->first -> X -> Y -> ... -> A
-> >>      P3: free_bulk(c1)
-> >>          enque_to_free(c0)
-> >>              c0->free_by_rcu_ttrace->first -> A -> ... -> Y -> X
-> >>          __llist_add_batch(c0->waiting_for_gp_ttrace)
-> >>              c0->waiting_for_gp_ttrace = A -> ... -> Y -> X
-> >
-> > In theory that's possible, but for this to happen one cpu needs
-> > to be thousand times slower than all others and since there is no
-> > preemption in llist_del_first I don't think we need to worry about it.
+> No change in functionality.
 > 
-> Not sure whether or not such case will be possible in a VM, after all,
-> the CPU X is just a thread in host and it may be preempted in any time
-> and with any duration.
+> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
 
-vCPU preemption can happen even with guest-OS interrupts disabled, and
-such preemption can persist for hundreds of milliseconds, or even for
-several seconds.  So admittedly quite rare, but also quite possible.
-
-							Thanx, Paul
-
-> > Also with removal of _tail optimization the above
-> > llist_add_batch(waiting_for_gp_ttrace)
-> > will become a loop, so reused element will be at the very end
-> > instead of top, so one cpu to million times slower which is not
-> > realistic.
-> 
-> It is still possible A will be added back as
-> waiting_for_gp_ttrace->first after switching to llist_add() as shown
-> below. My questions is how much is the benefit for reusing from
-> waiting_for_gp_ttrace ?
-> 
->     // free A (from c1), ..., last free X (allocated from c0) 
->     P3: unit_free(c1)
->         // the last freed element X is allocated from c0
->         c1->tgt = c0
->         c1->free_llist->first -> A -> ... -> Y
->         c1->free_llist_extra -> X
-> 
->     P3: free_bulk(c1)
->         enque_to_free(c0) 
->             c0->free_by_rcu_ttrace->first -> Y -> ... A
->             c0->free_by_rcu_ttrace->first -> X -> Y -> ... A
-> 
->         llist_add(c0->waiting_for_gp_ttrace)
->             c0->waiting_for_gp_ttrace = A -> .. -> Y -> X
-> 
-> >
-> >> P1:
-> >>      // A is added back as first again
-> >>      // but llist_del_first() didn't know
-> >>      try_cmpxhg(&c0->waiting_for_gp_ttrace->first, A, B)
-> >>      // c0->waiting_for_gp_trrace is corrupted
-> >>      c0->waiting_for_gp_ttrace->first = B
-> >>
-> 
-
+Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
