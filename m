@@ -1,122 +1,102 @@
-Return-Path: <bpf-owner@vger.kernel.org>
+Return-Path: <bpf+bounces-3675-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F108741868
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 20:56:58 +0200 (CEST)
-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbjF1S4N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jun 2023 14:56:13 -0400
-Received: from smtp-fw-9105.amazon.com ([207.171.188.204]:55113 "EHLO
-        smtp-fw-9105.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232708AbjF1SyN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Jun 2023 14:54:13 -0400
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B360741873
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 20:58:54 +0200 (CEST)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B47EA1C203B1
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 18:58:53 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68AB7107A9;
+	Wed, 28 Jun 2023 18:58:39 +0000 (UTC)
+X-Original-To: bpf@vger.kernel.org
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 248E9D53A;
+	Wed, 28 Jun 2023 18:58:38 +0000 (UTC)
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE34294E;
+	Wed, 28 Jun 2023 11:58:37 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b69e6cce7dso2341521fa.2;
+        Wed, 28 Jun 2023 11:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1687978454; x=1719514454;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Sj4D9/YhFa5gm+2Xbpetvt8RuR2FgzUgdFX5Vd7PyHk=;
-  b=H+bRP7RkcTc9SPLVmZV4zgn12WQ4P9+hzkw5GJF2Yp2VzVfoHdgs7eFf
-   5qWaxRGKJY9OpU5gzj8kdBpZQYNkXedh85MfdM8hgcJT5x8KTVT5B+Nxk
-   3HPK3h4hKYLPgwyS0R57ygybpgfV6z5ZDgE8UtKr7Dlne/e1KxLVGpIYO
-   8=;
-X-IronPort-AV: E=Sophos;i="6.01,166,1684800000"; 
-   d="scan'208";a="657569115"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-cadc3fbd.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2023 18:54:09 +0000
-Received: from EX19MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2b-m6i4x-cadc3fbd.us-west-2.amazon.com (Postfix) with ESMTPS id 07C7DA0A9B;
-        Wed, 28 Jun 2023 18:54:06 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 28 Jun 2023 18:54:06 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.187.170.50) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.30;
- Wed, 28 Jun 2023 18:54:00 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     <lmb@isovalent.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <dsahern@kernel.org>, <edumazet@google.com>, <haoluo@google.com>,
-        <hemanthmalla@gmail.com>, <joe@cilium.io>, <joe@wand.net.nz>,
-        <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-        <kpsingh@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <martin.lau@linux.dev>, <mykolal@fb.com>, <netdev@vger.kernel.org>,
-        <pabeni@redhat.com>, <sdf@google.com>, <shuah@kernel.org>,
-        <song@kernel.org>, <willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v4 6/7] bpf, net: Support SO_REUSEPORT sockets with bpf_sk_assign
-Date:   Wed, 28 Jun 2023 11:53:52 -0700
-Message-ID: <20230628185352.76923-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230613-so-reuseport-v4-6-4ece76708bba@isovalent.com>
-References: <20230613-so-reuseport-v4-6-4ece76708bba@isovalent.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.187.170.50]
-X-ClientProxiedBy: EX19D035UWA001.ant.amazon.com (10.13.139.101) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+        d=gmail.com; s=20221208; t=1687978716; x=1690570716;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7Pp3/6WHOX3IhCc8i+jwBDxBIWCrCEEZYNsbdhw2Vzw=;
+        b=kgOuC/NLgkBG5JldvkeV+tBAlM+B9NFfIH9O4aGGaoBZOE7oc66SQJLaHj4ERhZmPh
+         wZkOTTHK4PUL3fItkOi/fSIL8JsWCynhWfUwNY8HAPdwPGwQjSf+ZCYAalC+PGFBx67I
+         c782945YUvOPTn4d3EbeDqip024QyN/U0c7GUwuIlmkYIELt8P8NTExxXd0wG0RN2ZPS
+         Ui12zouCNxytvV4F2ii6kbh0JxyC/VKLle2p9QjFc0nweyHbZUpFNCCUjL3gOlu8BsSM
+         lcNh4Q8N3gTbq+dvcIa/ProtpWjm3QbOXLXepNI0Uqa+DKDju3SgcBwvXLdVScQYWE1k
+         ESyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687978716; x=1690570716;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7Pp3/6WHOX3IhCc8i+jwBDxBIWCrCEEZYNsbdhw2Vzw=;
+        b=ckoHKplD25HvgYMRpiMst9E6LxhmkB2rGA6JDXlnKrlkx9CpcAMCROEWz0+kDGWr6W
+         PLyS3oXmVlTo48GdGV2AdXTXQp7NX+qxNcDjlaFOV9Ir+OUij2dSKqzhS45sTXeky5yO
+         jmLgAVfADptKKhPCy5xRj+XcrX/ycwICxkgMgE8g8DsWr8jX8rNyyw6HmPJV6LYqCeKm
+         zuP+SxM9BnVW+gJWZqiMMSVnfqiC29lr+SLqPSYePhOT9BH+tlkaFkMJzrXYTxjFYRjo
+         2k0/kkKkky+hyJ5TTUTBExBz0efoMGiIvW8e7ESAhN8rNxz+gUuTqSRb8xL3/SW0rrlg
+         FFBw==
+X-Gm-Message-State: AC+VfDwDfXha6uqh8HD5K9ZyDQN5juiIWcVlBxAw32O2X4nbkm7ZT28c
+	olb0I4LwJerGPVk6boJchLwrp0WvpkKE5x4xrz4Plm+k
+X-Google-Smtp-Source: ACHHUZ7MgzQGhT0lFe9/3LXZJAkDu1+MCARStQWQGqvkRxaBkspbafFeITgCyHqIpUd1CzkmIcfYTn4jCt/lmfkPKu0=
+X-Received: by 2002:a2e:8443:0:b0:2b1:edfe:8171 with SMTP id
+ u3-20020a2e8443000000b002b1edfe8171mr21883013ljh.36.1687978715441; Wed, 28
+ Jun 2023 11:58:35 -0700 (PDT)
 Precedence: bulk
-List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
+List-Id: <bpf.vger.kernel.org>
+List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20230628015634.33193-1-alexei.starovoitov@gmail.com>
+ <20230628015634.33193-7-alexei.starovoitov@gmail.com> <ZJxWR9SZ5lya+MN+@corigine.com>
+In-Reply-To: <ZJxWR9SZ5lya+MN+@corigine.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 28 Jun 2023 11:58:23 -0700
+Message-ID: <CAADnVQJcQif0ZvOeF4YD+KzR3Vp85qL=K=eyKkUvFhc4G_pgoA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 06/13] bpf: Further refactor alloc_bulk().
+To: Simon Horman <simon.horman@corigine.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	David Vernet <void@manifault.com>, Hou Tao <houtao@huaweicloud.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>, rcu@vger.kernel.org, 
+	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Wed, 28 Jun 2023 10:48:21 +0100
-> diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
-> index a6722d6ef80f..7d677b89f269 100644
-> --- a/include/net/inet6_hashtables.h
-> +++ b/include/net/inet6_hashtables.h
-> @@ -103,6 +103,46 @@ static inline struct sock *__inet6_lookup(struct net *net,
->  				     daddr, hnum, dif, sdif);
->  }
->  
-> +static inline
-> +struct sock *inet6_steal_sock(struct net *net, struct sk_buff *skb, int doff,
-> +			      const struct in6_addr *saddr, const __be16 sport,
-> +			      const struct in6_addr *daddr, const __be16 dport,
-> +			      bool *refcounted, inet6_ehashfn_t *ehashfn)
-> +{
-> +	struct sock *sk, *reuse_sk;
-> +	bool prefetched;
-> +
-> +	sk = skb_steal_sock(skb, refcounted, &prefetched);
-> +	if (!sk)
-> +		return NULL;
-> +
-> +	if (!prefetched)
-> +		return sk;
-> +
-> +	if (sk->sk_protocol == IPPROTO_TCP) {
-> +		if (sk->sk_state != TCP_LISTEN)
-> +			return sk;
-> +	} else if (sk->sk_protocol == IPPROTO_UDP) {
-> +		if (sk->sk_state != TCP_CLOSE)
-> +			return sk;
-> +	} else {
-> +		return sk;
-> +	}
-> +
-> +	reuse_sk = inet6_lookup_reuseport(net, sk, skb, doff,
-> +					  saddr, sport, daddr, ntohs(dport),
-> +					  ehashfn);
-> +	if (!reuse_sk || reuse_sk == sk)
-> +		return sk;
-> +
-> +	/* We've chosen a new reuseport sock which is never refcounted. This
-> +	 * implies that sk also isn't refcounted.
-> +	 */
-> +	WARN_ON_ONCE(*refcounted);
+On Wed, Jun 28, 2023 at 8:48=E2=80=AFAM Simon Horman <simon.horman@corigine=
+.com> wrote:
+>
+> On Tue, Jun 27, 2023 at 06:56:27PM -0700, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > In certain scenarios alloc_bulk() migth be taking free objects mainly f=
+rom
+>
+> Hi Alexi,
+>
+> checkpatch --codespell flags: 'migth' -> 'might'
+> It also flags some typos in several other patches in this series.
+> But it seems silly to flag them individually. So I'll leave this topic he=
+re.
 
-One more nit.
+Thanks for flagging.
+Did you find this manually? bpf/netdev CI doesn't report such things.
 
-WARN_ON_ONCE() should be tested before inet6?_lookup_reuseport() not to
-miss the !reuse_sk case.
-
-
-> +
-> +	return reuse_sk;
-> +}
