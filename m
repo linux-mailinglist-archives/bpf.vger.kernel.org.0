@@ -1,158 +1,149 @@
-Return-Path: <bpf+bounces-3631-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3632-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C158740810
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 04:03:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A46740813
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 04:04:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5806F2811E4
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 02:03:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01D8A2811FA
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 02:04:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B438EBE4A;
-	Wed, 28 Jun 2023 01:57:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46D0E1C37;
+	Wed, 28 Jun 2023 02:03:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F52BA4E;
-	Wed, 28 Jun 2023 01:57:31 +0000 (UTC)
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838CEDA;
-	Tue, 27 Jun 2023 18:57:30 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-668711086f4so337165b3a.1;
-        Tue, 27 Jun 2023 18:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687917450; x=1690509450;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=smMeUc5DmNi2lwy4EGV+uTKZDtjMFbrXIGNYOVUZ5Gs=;
-        b=XvEvIhM86CnhKh0MD8v5OB1VCZSoCvFBANEUAqcshG+pb7gx6vMwdcHcXGhacPz5OC
-         dzOpn5T9RCvCwszlYF+T7XwUFz/ftQKzcsdkeGnSuG6/VpZLhfzQhzKzhZ2tnuuR0ixA
-         7aaVFJBkudfejdrOT1V4P/0rk0waJvVkH8CN4OkMmsRRTDNMAnVPZNAa5m/r5Ea8Yr8h
-         h+R6nygbgzs8w54MY15/dD4cZRh92ucujhifl3IoxaOgazv8ZKY589fOXmTdk7vWQy2P
-         RQZ0ed0OScWddZgcI7mrsBlkOCgYZNy0IUfyL5IM2zHuY4mzrHrPJ2Jt90vbHKzYQqW6
-         Qeqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687917450; x=1690509450;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=smMeUc5DmNi2lwy4EGV+uTKZDtjMFbrXIGNYOVUZ5Gs=;
-        b=i13OEbX+y6zpJMe8j4Kjgz9V9sfsZ5GeATotnIfmB1h+uSIQGc56mI+IVGBRgY5G7X
-         asgnFATFbknZCDZzo03cXgDh/MmnQ3oRqHbPKD3n8GaDol0vz2Z9qxc0DqQmvQcNvTLI
-         TcYCzsMxbRwBn/aiKVBgkG9YkKCoZ+g/TiSHqwhlLjJHXb/3xcwLUyVzYvYhmZb/MEoe
-         kmHLbO4tAbQf/0kRlxKMa+BD4L7C/TnhcMMKQynvkEqNtwBHU0p71jSDkuVS3CFIw45V
-         KQgASNPvLqDUpCN66qkdBgWkoTAYubeetfYlcFC5sP67dwqWFE9IIw6gkX6edsC+c+DX
-         f8oQ==
-X-Gm-Message-State: AC+VfDyPOKL3UuMpV87xnXDcnI0yEhcYp7Xv3LgLyTsfDl93qt+eHdM+
-	0q6mGsLmgavxK8xqKcd851c=
-X-Google-Smtp-Source: ACHHUZ4h0VwbFvM6lSorEvSu4x8a4hE0merf/XO2OIQII0dgJ1Xy1ru2Gqpgrpv74Yx4Kg7SEj7OLA==
-X-Received: by 2002:a05:6a00:b4e:b0:67f:d5e7:4604 with SMTP id p14-20020a056a000b4e00b0067fd5e74604mr2023474pfo.13.1687917449856;
-        Tue, 27 Jun 2023 18:57:29 -0700 (PDT)
-Received: from localhost.localdomain ([2620:10d:c090:400::5:6420])
-        by smtp.gmail.com with ESMTPSA id e6-20020aa78c46000000b0065ecdefa57fsm98977pfd.0.2023.06.27.18.57.28
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 27 Jun 2023 18:57:29 -0700 (PDT)
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: daniel@iogearbox.net,
-	andrii@kernel.org,
-	void@manifault.com,
-	houtao@huaweicloud.com,
-	paulmck@kernel.org
-Cc: tj@kernel.org,
-	rcu@vger.kernel.org,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH v3 bpf-next 13/13] bpf: Convert bpf_cpumask to bpf_mem_cache_free_rcu.
-Date: Tue, 27 Jun 2023 18:56:34 -0700
-Message-Id: <20230628015634.33193-14-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
-In-Reply-To: <20230628015634.33193-1-alexei.starovoitov@gmail.com>
-References: <20230628015634.33193-1-alexei.starovoitov@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AFA115A0;
+	Wed, 28 Jun 2023 02:03:43 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C65297C;
+	Tue, 27 Jun 2023 19:03:42 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QrPy32VgZz4f3pFp;
+	Wed, 28 Jun 2023 10:03:39 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgD31dP4lJtktNZ5Mg--.2504S2;
+	Wed, 28 Jun 2023 10:03:40 +0800 (CST)
+Subject: Re: [PATCH v2 bpf-next 12/13] bpf: Introduce bpf_mem_free_rcu()
+ similar to kfree_rcu().
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@meta.com>, Tejun Heo <tj@kernel.org>,
+ rcu@vger.kernel.org, Network Development <netdev@vger.kernel.org>,
+ bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, David Vernet <void@manifault.com>,
+ Andrii Nakryiko <andrii@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>
+References: <20230624031333.96597-1-alexei.starovoitov@gmail.com>
+ <20230624031333.96597-13-alexei.starovoitov@gmail.com>
+ <bfb3cbff-2837-156c-c240-5cf0a046ed38@huaweicloud.com>
+ <3410a621-afc7-ba7b-47b8-b64e35f5a8fa@meta.com>
+ <9e714217-e054-635d-a580-b677992385e5@huaweicloud.com>
+ <CAADnVQJEzv-9ovAOJzaoN0+52iPTbce8QWHcpGmmMm3_93kw-w@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <63b6c8e9-e9fd-df77-c652-5508be367416@huaweicloud.com>
+Date: Wed, 28 Jun 2023 10:03:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CAADnVQJEzv-9ovAOJzaoN0+52iPTbce8QWHcpGmmMm3_93kw-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgD31dP4lJtktNZ5Mg--.2504S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CFy8XF47KF4kCr4UKry5XFb_yoW8trW7pF
+	y8Jry8JrWUJF1xJr17Jr18ZFy3Jw1UJa4UJa48AFy2yw13trn0qFWkWr1S9ry5Ar4kGw15
+	JFW5XF1UZr4UXr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+	uYvjxUrR6zUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Alexei Starovoitov <ast@kernel.org>
+Hi,
 
-Convert bpf_cpumask to bpf_mem_cache_free_rcu.
-Note that migrate_disable() in bpf_cpumask_release() is still necessary, since
-bpf_cpumask_release() is a dtor. bpf_obj_free_fields() can be converted to do
-migrate_disable() there in a follow up.
+On 6/28/2023 9:51 AM, Alexei Starovoitov wrote:
+> On Tue, Jun 27, 2023 at 6:43 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>
+SNIP
+>>> re: draining.
+>>> I'll switch to do if (draing) free_all; else call_rcu; scheme
+>>> to address potential memory leak though I wasn't able to repro it.
+>> For v2, it was also hard for me to reproduce the leak problem. But after
+>> I injected some delay by using udelay() in __free_by_rcu/__free_rcu()
+>> after reading c->draining, it was relatively easy to reproduce the problems.
+> 1. Please respin htab bench.
+> We're still discussing patching without having the same base line.
+Almost done. Need to do benchmark again to update the numbers in commit
+message.
+>
+> 2. 'adding udelay()' is too vague. Pls post a diff hunk of what exactly
+> you mean.
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: David Vernet <void@manifault.com>
----
- kernel/bpf/cpumask.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -4,6 +4,7 @@
+ #include <linux/llist.h>
+ #include <linux/bpf.h>
+ #include <linux/irq_work.h>
++#include <linux/delay.h>
+ #include <linux/bpf_mem_alloc.h>
+ #include <linux/memcontrol.h>
+ #include <asm/local.h>
+@@ -261,12 +262,17 @@ static int free_all(struct llist_node *llnode,
+bool percpu)
+        return cnt;
+ }
 
-diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-index 938a60ff4295..6983af8e093c 100644
---- a/kernel/bpf/cpumask.c
-+++ b/kernel/bpf/cpumask.c
-@@ -9,7 +9,6 @@
- /**
-  * struct bpf_cpumask - refcounted BPF cpumask wrapper structure
-  * @cpumask:	The actual cpumask embedded in the struct.
-- * @rcu:	The RCU head used to free the cpumask with RCU safety.
-  * @usage:	Object reference counter. When the refcount goes to 0, the
-  *		memory is released back to the BPF allocator, which provides
-  *		RCU safety.
-@@ -25,7 +24,6 @@
-  */
- struct bpf_cpumask {
- 	cpumask_t cpumask;
--	struct rcu_head rcu;
- 	refcount_t usage;
- };
- 
-@@ -82,16 +80,6 @@ __bpf_kfunc struct bpf_cpumask *bpf_cpumask_acquire(struct bpf_cpumask *cpumask)
- 	return cpumask;
- }
- 
--static void cpumask_free_cb(struct rcu_head *head)
--{
--	struct bpf_cpumask *cpumask;
--
--	cpumask = container_of(head, struct bpf_cpumask, rcu);
--	migrate_disable();
--	bpf_mem_cache_free(&bpf_cpumask_ma, cpumask);
--	migrate_enable();
--}
--
- /**
-  * bpf_cpumask_release() - Release a previously acquired BPF cpumask.
-  * @cpumask: The cpumask being released.
-@@ -102,8 +90,12 @@ static void cpumask_free_cb(struct rcu_head *head)
-  */
- __bpf_kfunc void bpf_cpumask_release(struct bpf_cpumask *cpumask)
- {
--	if (refcount_dec_and_test(&cpumask->usage))
--		call_rcu(&cpumask->rcu, cpumask_free_cb);
-+	if (!refcount_dec_and_test(&cpumask->usage))
-+		return;
++static unsigned int delay;
++module_param(delay, uint, 0644);
 +
-+	migrate_disable();
-+	bpf_mem_cache_free_rcu(&bpf_cpumask_ma, cpumask);
-+	migrate_enable();
- }
- 
- /**
--- 
-2.34.1
+ static void __free_rcu(struct rcu_head *head)
+ {
+        struct bpf_mem_cache *c = container_of(head, struct
+bpf_mem_cache, rcu_ttrace);
+
+        if (unlikely(READ_ONCE(c->draining)))
+                goto out;
++       if (delay)
++               udelay(delay);
+        free_all(llist_del_all(&c->waiting_for_gp_ttrace),
+!!c->percpu_size);
+ out:
+        atomic_set(&c->call_rcu_ttrace_in_progress, 0);
+@@ -361,6 +367,8 @@ static void __free_by_rcu(struct rcu_head *head)
+
+        if (unlikely(READ_ONCE(c->draining)))
+                goto out;
++       if (delay)
++               udelay(delay);
+
+        llnode = llist_del_all(&c->waiting_for_gp);
+        if (!llnode)
+
+>
+> 3. I'll send v3 shortly. Let's move discussion there.
+Sure.
 
 
