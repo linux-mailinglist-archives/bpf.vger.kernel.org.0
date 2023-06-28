@@ -1,301 +1,415 @@
-Return-Path: <bpf+bounces-3673-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EFBA741830
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 20:49:52 +0200 (CEST)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55FA31C203B1
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 18:49:51 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA75DD53A;
-	Wed, 28 Jun 2023 18:49:41 +0000 (UTC)
-X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985BAA923
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 18:49:41 +0000 (UTC)
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3133F3AB5
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 11:49:39 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-55b22f82ac8so916931a12.1
-        for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 11:49:39 -0700 (PDT)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id C4C1C741833
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 20:51:07 +0200 (CEST)
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S231908AbjF1Suu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jun 2023 14:50:50 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:57835 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbjF1Su3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Jun 2023 14:50:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687978178; x=1690570178;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KgaN56lEm0ZmpqNHWkSOtd80x9mkubEd8uoaFEqBMgs=;
-        b=bFxxvi0NVv6rMtyYu10FMUz8qfbPjlLsR52jO6dscEReVBu0cHa9NHSVZMYpiAl3hL
-         uULfGznVRWlMq/329brqNqXHhsOyoKW+ro8eFEUHIU11Z/BwJ2mhxUjbKrzBJKXnaqeX
-         VEMhwUczUiIwvDohMnwisAtbxVRJYIrkLlMV7/tbK9Y/wwxIHZBo/JlLTYk2bD2kUH4l
-         CEUVPt7uKuFBekT/NewzmPw/zef2YPscEElJqst9ZADiFV0zEPuFKYWGesiC3ht1DEkf
-         Lj6PWndVmVfilwHcCL2CtrBq5smyWForJhp2boT4GqfUDM67j0HSAeVoZsvPm94jH4NO
-         DPBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687978178; x=1690570178;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KgaN56lEm0ZmpqNHWkSOtd80x9mkubEd8uoaFEqBMgs=;
-        b=baj4gXQgF12vaJ/g5HUyRX57hOs3ccd8lnftEAMP3VoHejfgg1O7rAtBYyXdIm1m9i
-         DAzcIqUu0Ylm+hOUMEAuT2HeXyqfqjYThnb71Zk7bLqjCaRbaR7XiIHVborzEVR6j71/
-         Hfw+aqH0TLLMyqYFznOERJ8z27OPf+CPkEE3vPEM3vgy91XqBciCompuc/7638bqbkVV
-         3JJMnCARpfBy05NAeS8zdPgFbzfOFuh7aTyRzX7raMgYT8S7a9QcTN60Jj+xOCn7KCJJ
-         hBImRzfLKs2bn+u4hhIwWL+ayK6YLc+ZXYTg75ZuvLFNJTq1pMvHwMYXH68W7t4Ri0JM
-         0DVg==
-X-Gm-Message-State: AC+VfDyvvKGFcUkLx7r39+JK2sAIqJbJ08YKndAf/6/UyYIXd0B6cF42
-	OAmT0OG0vVYaHSPL7nltV3UiCurOVtCEMhtD7cR0vw==
-X-Google-Smtp-Source: ACHHUZ4IbfKMVHThMuQt9NsFrggAFQx4Rv5qpBGTG3h+eAy6ncxooyhJNA3gaLLBdOgPONwb5i0/LZYb5dES96URox4=
-X-Received: by 2002:a17:90b:2d8d:b0:262:fe4b:b45 with SMTP id
- sj13-20020a17090b2d8d00b00262fe4b0b45mr2600575pjb.19.1687978178329; Wed, 28
- Jun 2023 11:49:38 -0700 (PDT)
-Precedence: bulk
-X-Mailing-List: bpf@vger.kernel.org
-List-Id: <bpf.vger.kernel.org>
-List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1687978230; x=1719514230;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=0C6AI79x8rcE4/d5YSavZ3njDTjpbEI5cdT3SSecK+w=;
+  b=lM4fm9zyulqABTAO0DA00Q0UctdKzz3QNZMQASUYDvr3JrpCeNL+Gk3d
+   OzT6DHJ/UT3q5FEQLnHeX+1HUozrY67QRLHhtx0zOQaxff43SvBZI/M00
+   eeZkRevec7jF5WxAlqkGN5olGUaZwg32HS4ednlTH1UEmWJ0naWZ2tDSd
+   8=;
+X-IronPort-AV: E=Sophos;i="6.01,166,1684800000"; 
+   d="scan'208";a="336712928"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-8a14c045.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2023 18:50:24 +0000
+Received: from EX19MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2a-m6i4x-8a14c045.us-west-2.amazon.com (Postfix) with ESMTPS id 48C7B805C7;
+        Wed, 28 Jun 2023 18:50:22 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 28 Jun 2023 18:50:21 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.187.170.50) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 28 Jun 2023 18:50:16 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <lmb@isovalent.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <dsahern@kernel.org>, <edumazet@google.com>, <haoluo@google.com>,
+        <hemanthmalla@gmail.com>, <joe@cilium.io>, <joe@wand.net.nz>,
+        <john.fastabend@gmail.com>, <jolsa@kernel.org>,
+        <kpsingh@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <martin.lau@linux.dev>, <mykolal@fb.com>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>, <sdf@google.com>, <shuah@kernel.org>,
+        <song@kernel.org>, <willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
+Subject: Re: [PATCH bpf-next v4 6/7] bpf, net: Support SO_REUSEPORT sockets with bpf_sk_assign
+Date:   Wed, 28 Jun 2023 11:50:06 -0700
+Message-ID: <20230628185006.76632-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230613-so-reuseport-v4-6-4ece76708bba@isovalent.com>
+References: <20230613-so-reuseport-v4-6-4ece76708bba@isovalent.com>
 MIME-Version: 1.0
-References: <20230621170244.1283336-1-sdf@google.com> <20230621170244.1283336-4-sdf@google.com>
- <57b9fc14-c02e-f0e5-148d-a549ebab6cf6@brouer.com> <CAKH8qBsk3MDbx2PyU-_+tDV4C0R6J_wzxi9Co6ekHv_tWzp7Tw@mail.gmail.com>
- <c936bd6c-7060-47da-d522-747b49bee8a0@redhat.com> <CAKH8qBsqdE7=4JC8LfkL4gV9eQHEZjMpBSen2a+4q2Y7DpiOow@mail.gmail.com>
- <435d1630-c3f4-97fb-b6fe-9795d1f0bf33@redhat.com> <CAKH8qBtdKHCnFWUiz8H_5miPF82nqKhG4Dfx9GbQYgWbYfERjg@mail.gmail.com>
- <CAJ8uoz0MuXYJE_a58PCtCypscZfevE2tgheC32e=zqEdNPgbnw@mail.gmail.com>
-In-Reply-To: <CAJ8uoz0MuXYJE_a58PCtCypscZfevE2tgheC32e=zqEdNPgbnw@mail.gmail.com>
-From: Stanislav Fomichev <sdf@google.com>
-Date: Wed, 28 Jun 2023 11:49:25 -0700
-Message-ID: <CAKH8qBui6gieETYzDugG0=nmBR-QnhhhyqaF3px0sjG7-BKLhQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next v2 03/11] xsk: Support XDP_TX_METADATA_LEN
-To: Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc: Jesper Dangaard Brouer <jbrouer@redhat.com>, brouer@redhat.com, bpf@vger.kernel.org, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	haoluo@google.com, jolsa@kernel.org, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	"Karlsson, Magnus" <magnus.karlsson@intel.com>, 
-	"xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.187.170.50]
+X-ClientProxiedBy: EX19D041UWB003.ant.amazon.com (10.13.139.176) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: bulk
+List-ID: <bpf.vger.kernel.org>
+X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 28, 2023 at 1:09=E2=80=AFAM Magnus Karlsson
-<magnus.karlsson@gmail.com> wrote:
->
-> On Mon, 26 Jun 2023 at 19:06, Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > On Sat, Jun 24, 2023 at 2:02=E2=80=AFAM Jesper Dangaard Brouer
-> > <jbrouer@redhat.com> wrote:
-> > >
-> > >
-> > >
-> > > On 23/06/2023 19.41, Stanislav Fomichev wrote:
-> > > > On Fri, Jun 23, 2023 at 3:24=E2=80=AFAM Jesper Dangaard Brouer
-> > > > <jbrouer@redhat.com> wrote:
-> > > >>
-> > > >>
-> > > >>
-> > > >> On 22/06/2023 19.55, Stanislav Fomichev wrote:
-> > > >>> On Thu, Jun 22, 2023 at 2:11=E2=80=AFAM Jesper D. Brouer <netdev@=
-brouer.com> wrote:
-> > > >>>>
-> > > >>>>
-> > > >>>> This needs to be reviewed by AF_XDP maintainers Magnus and Bj=C3=
-=B8rn (Cc)
-> > > >>>>
-> > > >>>> On 21/06/2023 19.02, Stanislav Fomichev wrote:
-> > > >>>>> For zerocopy mode, tx_desc->addr can point to the arbitrary off=
-set
-> > > >>>>> and carry some TX metadata in the headroom. For copy mode, ther=
-e
-> > > >>>>> is no way currently to populate skb metadata.
-> > > >>>>>
-> > > >>>>> Introduce new XDP_TX_METADATA_LEN that indicates how many bytes
-> > > >>>>> to treat as metadata. Metadata bytes come prior to tx_desc addr=
-ess
-> > > >>>>> (same as in RX case).
-> > > >>>>
-> > > >>>>    From looking at the code, this introduces a socket option for=
- this TX
-> > > >>>> metadata length (tx_metadata_len).
-> > > >>>> This implies the same fixed TX metadata size is used for all pac=
-kets.
-> > > >>>> Maybe describe this in patch desc.
-> > > >>>
-> > > >>> I was planning to do a proper documentation page once we settle o=
-n all
-> > > >>> the details (similar to the one we have for rx).
-> > > >>>
-> > > >>>> What is the plan for dealing with cases that doesn't populate sa=
-me/full
-> > > >>>> TX metadata size ?
-> > > >>>
-> > > >>> Do we need to support that? I was assuming that the TX layout wou=
-ld be
-> > > >>> fixed between the userspace and BPF.
-> > > >>
-> > > >> I hope you don't mean fixed layout, as the whole point is adding
-> > > >> flexibility and extensibility.
-> > > >
-> > > > I do mean a fixed layout between the userspace (af_xdp) and devtx p=
-rogram.
-> > > > At least fixed max size of the metadata. The userspace and the bpf
-> > > > prog can then use this fixed space to implement some flexibility
-> > > > (btf_ids, versioned structs, bitmasks, tlv, etc).
-> > > > If we were to make the metalen vary per packet, we'd have to signal
-> > > > its size per packet. Probably not worth it?
-> > >
-> > > Existing XDP metadata implementation also expand in a fixed/limited
-> > > sized memory area, but communicate size per packet in this area (also
-> > > for validation purposes).  BUT for AF_XDP we don't have room for anot=
-her
-> > > pointer or size in the AF_XDP descriptor (see struct xdp_desc).
-> > >
-> > >
-> > > >
-> > > >>> If every packet would have a different metadata length, it seems =
-like
-> > > >>> a nightmare to parse?
-> > > >>>
-> > > >>
-> > > >> No parsing is really needed.  We can simply use BTF IDs and type c=
-ast in
-> > > >> BPF-prog. Both BPF-prog and userspace have access to the local BTF=
- ids,
-> > > >> see [1] and [2].
-> > > >>
-> > > >> It seems we are talking slightly past each-other(?).  Let me rephr=
-ase
-> > > >> and reframe the question, what is your *plan* for dealing with dif=
-ferent
-> > > >> *types* of TX metadata.  The different struct *types* will of-caus=
-e have
-> > > >> different sizes, but that is okay as long as they fit into the max=
-imum
-> > > >> size set by this new socket option XDP_TX_METADATA_LEN.
-> > > >> Thus, in principle I'm fine with XSK having configured a fixed hea=
-droom
-> > > >> for metadata, but we need a plan for handling more than one type a=
-nd
-> > > >> perhaps a xsk desc indicator/flag for knowing TX metadata isn't ra=
-ndom
-> > > >> data ("leftover" since last time this mem was used).
-> > > >
-> > > > Yeah, I think the above correctly catches my expectation here. Some
-> > > > headroom is reserved via XDP_TX_METADATA_LEN and the flexibility is
-> > > > offloaded to the bpf program via btf_id/tlv/etc.
-> > > >
-> > > > Regarding leftover metadata: can we assume the userspace will take
-> > > > care of setting it up?
-> > > >
-> > > >> With this kfunc approach, then things in-principle, becomes a cont=
-ract
-> > > >> between the "local" TX-hook BPF-prog and AF_XDP userspace.   These=
- two
-> > > >> components can as illustrated here [1]+[2] can coordinate based on=
- local
-> > > >> BPF-prog BTF IDs.  This approach works as-is today, but patchset
-> > > >> selftests examples don't use this and instead have a very static
-> > > >> approach (that people will copy-paste).
-> > > >>
-> > > >> An unsolved problem with TX-hook is that it can also get packets f=
-rom
-> > > >> XDP_REDIRECT and even normal SKBs gets processed (right?).  How do=
-es the
-> > > >> BPF-prog know if metadata is valid and intended to be used for e.g=
-.
-> > > >> requesting the timestamp? (imagine metadata size happen to match)
-> > > >
-> > > > My assumption was the bpf program can do ifindex/netns filtering. P=
-lus
-> > > > maybe check that the meta_len is the one that's expected.
-> > > > Will that be enough to handle XDP_REDIRECT?
-> > >
-> > > I don't think so, using the meta_len (+ ifindex/netns) to communicate
-> > > activation of TX hardware hints is too weak and not enough.  This is =
-an
-> > > implicit API for BPF-programmers to understand and can lead to implic=
-it
-> > > activation.
-> > >
-> > > Think about what will happen for your AF_XDP send use-case.  For
-> > > performance reasons AF_XDP don't zero out frame memory.  Thus, meta_l=
-en
-> > > is fixed even if not used (and can contain garbage), it can by accide=
-nt
-> > > create hard-to-debug situations.  As discussed with Magnus+Maryam
-> > > before, we found it was practical (and faster than mem zero) to exten=
-d
-> > > AF_XDP descriptor (see struct xdp_desc) with some flags to
-> > > indicate/communicate this frame comes with TX metadata hints.
-> >
-> > What is that "if not used" situation? Can the metadata itself have
-> > is_used bit? The userspace has to initialize at least that bit.
-> > We can definitely add that extra "has_metadata" bit to the descriptor,
-> > but I'm trying to understand whether we can do without it.
->
-> To me, this "has_metadata" bit in the descriptor is just an
-> optimization. If it is 0, then there is no need to go and check the
-> metadata field and you save some performance. Regardless of this bit,
-> you need some way to say "is_used" for each metadata entry (at least
-> when the number of metadata entries is >1). Three options come to mind
-> each with their pros and cons.
->
-> #1: Let each metadata entry have an invalid state. Not possible for
-> every metadata and requires the user/kernel to go scan through every
-> entry for every packet.
->
-> #2: Have a field of bits at the start of the metadata section (closest
-> to packet data) that signifies if a metadata entry is valid or not. If
-> there are N metadata entries in the metadata area, then N bits in this
-> field would be used to signify if the corresponding metadata is used
-> or not. Only requires the user/kernel to scan the valid entries plus
-> one access for the "is_used" bits.
->
-> #3: Have N bits in the AF_XDP descriptor options field instead of the
-> N bits in the metadata area of #2. Faster but would consume many
-> precious bits in the fixed descriptor and cap the number of metadata
-> entries possible at around 8. E.g., 8 for Rx, 8 for Tx, 1 for the
-> multi-buffer work, and 15 for some future use. Depends on how daring
-> we are.
->
-> The "has_metadata" bit suggestion can be combined with 1 or 2.
-> Approach 3 is just a fine grained extension of the idea itself.
->
-> IMO, the best approach unfortunately depends on the metadata itself.
-> If it is rarely valid, you want something like the "has_metadata" bit.
-> If it is nearly always valid and used, approach #1 (if possible for
-> the metadata) should be the fastest. The decision also depends on the
-> number of metadata entries you have per packet. Sorry that I do not
-> have a good answer. My feeling is that we need something like #1 or
-> #2, or maybe both, then if needed we can add the "has_metadata" bit or
-> bits (#3) optimization. Can we do this encoding and choice (#1, #2, or
-> a combo) in the eBPF program itself? Would provide us with the
-> flexibility, if possible.
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Wed, 28 Jun 2023 10:48:21 +0100
+> Currently the bpf_sk_assign helper in tc BPF context refuses SO_REUSEPORT
+> sockets. This means we can't use the helper to steer traffic to Envoy,
+> which configures SO_REUSEPORT on its sockets. In turn, we're blocked
+> from removing TPROXY from our setup.
+> 
+> The reason that bpf_sk_assign refuses such sockets is that the
+> bpf_sk_lookup helpers don't execute SK_REUSEPORT programs. Instead,
+> one of the reuseport sockets is selected by hash. This could cause
+> dispatch to the "wrong" socket:
+> 
+>     sk = bpf_sk_lookup_tcp(...) // select SO_REUSEPORT by hash
+>     bpf_sk_assign(skb, sk) // SK_REUSEPORT wasn't executed
+> 
+> Fixing this isn't as simple as invoking SK_REUSEPORT from the lookup
+> helpers unfortunately. In the tc context, L2 headers are at the start
+> of the skb, while SK_REUSEPORT expects L3 headers instead.
+> 
+> Instead, we execute the SK_REUSEPORT program when the assigned socket
+> is pulled out of the skb, further up the stack. This creates some
+> trickiness with regards to refcounting as bpf_sk_assign will put both
+> refcounted and RCU freed sockets in skb->sk. reuseport sockets are RCU
+> freed. We can infer that the sk_assigned socket is RCU freed if the
+> reuseport lookup succeeds, but convincing yourself of this fact isn't
+> straight forward. Therefore we defensively check refcounting on the
+> sk_assign sock even though it's probably not required in practice.
+> 
+> Fixes: 8e368dc72e86 ("bpf: Fix use of sk->sk_reuseport from sk_assign")
+> Fixes: cf7fbe660f2d ("bpf: Add socket assign support")
+> Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
+> Cc: Joe Stringer <joe@cilium.io>
+> Link: https://lore.kernel.org/bpf/CACAyw98+qycmpQzKupquhkxbvWK4OFyDuuLMBNROnfWMZxUWeA@mail.gmail.com/
 
-Here is my take on it, lmk if I'm missing something:
+Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
 
-af_xdp users call this new setsockopt(XDP_TX_METADATA_LEN) when they
-plan to use metadata on tx.
-This essentially requires allocating a fixed headroom to carry the metadata=
-.
-af_xdp machinery exports this fixed len into the bpf programs somehow
-(devtx_frame.meta_len in this series).
-Then it's up to the userspace and bpf program to agree on the layout.
-If not every packet is expected to carry the metadata, there might be
-some bitmask in the metadata area to indicate that.
+I left minor comments below, but this series overall looks good.
 
-Iow, the metadata isn't interpreted by the kernel. It's up to the prog
-to interpret it and call appropriate kfunc to enable some offload.
+Thanks!
 
-Jesper raises a valid point with "what about redirected packets?". But
-I'm not sure we need to care? Presumably the programs that do
-xdp_redirect will have to conform to the same metadata layout?
 
+> ---
+>  include/net/inet6_hashtables.h | 56 ++++++++++++++++++++++++++++++++++++++----
+>  include/net/inet_hashtables.h  | 49 ++++++++++++++++++++++++++++++++++--
+>  include/net/sock.h             |  7 ++++--
+>  include/uapi/linux/bpf.h       |  3 ---
+>  net/core/filter.c              |  2 --
+>  net/ipv4/udp.c                 |  8 ++++--
+>  net/ipv6/udp.c                 | 10 +++++---
+>  tools/include/uapi/linux/bpf.h |  3 ---
+>  8 files changed, 116 insertions(+), 22 deletions(-)
+> 
+> diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
+> index a6722d6ef80f..7d677b89f269 100644
+> --- a/include/net/inet6_hashtables.h
+> +++ b/include/net/inet6_hashtables.h
+> @@ -103,6 +103,46 @@ static inline struct sock *__inet6_lookup(struct net *net,
+>  				     daddr, hnum, dif, sdif);
+>  }
+>  
+> +static inline
+> +struct sock *inet6_steal_sock(struct net *net, struct sk_buff *skb, int doff,
+> +			      const struct in6_addr *saddr, const __be16 sport,
+> +			      const struct in6_addr *daddr, const __be16 dport,
+> +			      bool *refcounted, inet6_ehashfn_t *ehashfn)
+> +{
+> +	struct sock *sk, *reuse_sk;
+> +	bool prefetched;
+> +
+> +	sk = skb_steal_sock(skb, refcounted, &prefetched);
+> +	if (!sk)
+> +		return NULL;
+> +
+> +	if (!prefetched)
+> +		return sk;
+> +
+> +	if (sk->sk_protocol == IPPROTO_TCP) {
+> +		if (sk->sk_state != TCP_LISTEN)
+> +			return sk;
+> +	} else if (sk->sk_protocol == IPPROTO_UDP) {
+> +		if (sk->sk_state != TCP_CLOSE)
+> +			return sk;
+> +	} else {
+> +		return sk;
+> +	}
+> +
+> +	reuse_sk = inet6_lookup_reuseport(net, sk, skb, doff,
+> +					  saddr, sport, daddr, ntohs(dport),
+> +					  ehashfn);
+> +	if (!reuse_sk || reuse_sk == sk)
+
+nit: compiler might have optimised though, given here is the fast path,
+we can save reuse_sk == sk check.
+
+
+> +		return sk;
+> +
+> +	/* We've chosen a new reuseport sock which is never refcounted. This
+> +	 * implies that sk also isn't refcounted.
+> +	 */
+> +	WARN_ON_ONCE(*refcounted);
+> +
+> +	return reuse_sk;
+> +}
+> +
+>  static inline struct sock *__inet6_lookup_skb(struct inet_hashinfo *hashinfo,
+>  					      struct sk_buff *skb, int doff,
+>  					      const __be16 sport,
+> @@ -110,14 +150,20 @@ static inline struct sock *__inet6_lookup_skb(struct inet_hashinfo *hashinfo,
+>  					      int iif, int sdif,
+>  					      bool *refcounted)
+>  {
+> -	struct sock *sk = skb_steal_sock(skb, refcounted);
+> -
+> +	struct net *net = dev_net(skb_dst(skb)->dev);
+> +	const struct ipv6hdr *ip6h = ipv6_hdr(skb);
+> +	struct sock *sk;
+> +
+> +	sk = inet6_steal_sock(net, skb, doff, &ip6h->saddr, sport, &ip6h->daddr, dport,
+> +			      refcounted, inet6_ehashfn);
+> +	if (IS_ERR(sk))
+> +		return NULL;
+>  	if (sk)
+>  		return sk;
+>  
+> -	return __inet6_lookup(dev_net(skb_dst(skb)->dev), hashinfo, skb,
+> -			      doff, &ipv6_hdr(skb)->saddr, sport,
+> -			      &ipv6_hdr(skb)->daddr, ntohs(dport),
+> +	return __inet6_lookup(net, hashinfo, skb,
+> +			      doff, &ip6h->saddr, sport,
+> +			      &ip6h->daddr, ntohs(dport),
+>  			      iif, sdif, refcounted);
+>  }
+>  
+> diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
+> index c0532cc7587f..c6ae0af12ce0 100644
+> --- a/include/net/inet_hashtables.h
+> +++ b/include/net/inet_hashtables.h
+> @@ -449,6 +449,46 @@ static inline struct sock *inet_lookup(struct net *net,
+>  	return sk;
+>  }
+>  
+> +static inline
+> +struct sock *inet_steal_sock(struct net *net, struct sk_buff *skb, int doff,
+> +			     const __be32 saddr, const __be16 sport,
+> +			     const __be32 daddr, const __be16 dport,
+> +			     bool *refcounted, inet_ehashfn_t *ehashfn)
+> +{
+> +	struct sock *sk, *reuse_sk;
+> +	bool prefetched;
+> +
+> +	sk = skb_steal_sock(skb, refcounted, &prefetched);
+> +	if (!sk)
+> +		return NULL;
+> +
+> +	if (!prefetched)
+> +		return sk;
+> +
+> +	if (sk->sk_protocol == IPPROTO_TCP) {
+> +		if (sk->sk_state != TCP_LISTEN)
+> +			return sk;
+> +	} else if (sk->sk_protocol == IPPROTO_UDP) {
+> +		if (sk->sk_state != TCP_CLOSE)
+> +			return sk;
+> +	} else {
+> +		return sk;
+> +	}
+> +
+> +	reuse_sk = inet_lookup_reuseport(net, sk, skb, doff,
+> +					 saddr, sport, daddr, ntohs(dport),
+> +					 ehashfn);
+> +	if (!reuse_sk || reuse_sk == sk)
+
+Same here.
+
+
+> +		return sk;
+> +
+> +	/* We've chosen a new reuseport sock which is never refcounted. This
+> +	 * implies that sk also isn't refcounted.
+> +	 */
+> +	WARN_ON_ONCE(*refcounted);
+> +
+> +	return reuse_sk;
+> +}
+> +
+>  static inline struct sock *__inet_lookup_skb(struct inet_hashinfo *hashinfo,
+>  					     struct sk_buff *skb,
+>  					     int doff,
+> @@ -457,13 +497,18 @@ static inline struct sock *__inet_lookup_skb(struct inet_hashinfo *hashinfo,
+>  					     const int sdif,
+>  					     bool *refcounted)
+>  {
+> -	struct sock *sk = skb_steal_sock(skb, refcounted);
+> +	struct net *net = dev_net(skb_dst(skb)->dev);
+>  	const struct iphdr *iph = ip_hdr(skb);
+> +	struct sock *sk;
+>  
+> +	sk = inet_steal_sock(net, skb, doff, iph->saddr, sport, iph->daddr, dport,
+> +			     refcounted, inet_ehashfn);
+> +	if (IS_ERR(sk))
+> +		return NULL;
+>  	if (sk)
+>  		return sk;
+>  
+> -	return __inet_lookup(dev_net(skb_dst(skb)->dev), hashinfo, skb,
+> +	return __inet_lookup(net, hashinfo, skb,
+>  			     doff, iph->saddr, sport,
+>  			     iph->daddr, dport, inet_iif(skb), sdif,
+>  			     refcounted);
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index 656ea89f60ff..5645570c2a64 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -2806,20 +2806,23 @@ sk_is_refcounted(struct sock *sk)
+>   * skb_steal_sock - steal a socket from an sk_buff
+>   * @skb: sk_buff to steal the socket from
+>   * @refcounted: is set to true if the socket is reference-counted
+> + * @prefetched: is set to true if the socket was assigned from bpf
+>   */
+>  static inline struct sock *
+> -skb_steal_sock(struct sk_buff *skb, bool *refcounted)
+> +skb_steal_sock(struct sk_buff *skb, bool *refcounted, bool *prefetched)
+>  {
+>  	if (skb->sk) {
+>  		struct sock *sk = skb->sk;
+>  
+>  		*refcounted = true;
+> -		if (skb_sk_is_prefetched(skb))
+> +		*prefetched = skb_sk_is_prefetched(skb);
+> +		if (*prefetched)
+>  			*refcounted = sk_is_refcounted(sk);
+>  		skb->destructor = NULL;
+>  		skb->sk = NULL;
+>  		return sk;
+>  	}
+> +	*prefetched = false;
+>  	*refcounted = false;
+>  	return NULL;
+>  }
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index a7b5e91dd768..d6fb6f43b0f3 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4158,9 +4158,6 @@ union bpf_attr {
+>   *		**-EOPNOTSUPP** if the operation is not supported, for example
+>   *		a call from outside of TC ingress.
+>   *
+> - *		**-ESOCKTNOSUPPORT** if the socket type is not supported
+> - *		(reuseport).
+> - *
+>   * long bpf_sk_assign(struct bpf_sk_lookup *ctx, struct bpf_sock *sk, u64 flags)
+>   *	Description
+>   *		Helper is overloaded depending on BPF program type. This
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 428df050d021..d4be0a1d754c 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -7278,8 +7278,6 @@ BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
+>  		return -EOPNOTSUPP;
+>  	if (unlikely(dev_net(skb->dev) != sock_net(sk)))
+>  		return -ENETUNREACH;
+> -	if (unlikely(sk_fullsock(sk) && sk->sk_reuseport))
+> -		return -ESOCKTNOSUPPORT;
+>  	if (sk_is_refcounted(sk) &&
+>  	    unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
+>  		return -ENOENT;
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index eb79268f216d..b256f1f73b4d 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -2388,7 +2388,11 @@ int __udp4_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
+>  	if (udp4_csum_init(skb, uh, proto))
+>  		goto csum_error;
+>  
+> -	sk = skb_steal_sock(skb, &refcounted);
+> +	sk = inet_steal_sock(net, skb, sizeof(struct udphdr), saddr, uh->source, daddr, uh->dest,
+> +			     &refcounted, udp_ehashfn);
+> +	if (IS_ERR(sk))
+> +		goto no_sk;
+> +
+>  	if (sk) {
+>  		struct dst_entry *dst = skb_dst(skb);
+>  		int ret;
+> @@ -2409,7 +2413,7 @@ int __udp4_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
+>  	sk = __udp4_lib_lookup_skb(skb, uh->source, uh->dest, udptable);
+>  	if (sk)
+>  		return udp_unicast_rcv_skb(sk, skb, uh);
+> -
+> +no_sk:
+>  	if (!xfrm4_policy_check(NULL, XFRM_POLICY_IN, skb))
+>  		goto drop;
+>  	nf_reset_ct(skb);
+> diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+> index 8a6d94cabee0..2d4c05bc322a 100644
+> --- a/net/ipv6/udp.c
+> +++ b/net/ipv6/udp.c
+> @@ -923,9 +923,9 @@ int __udp6_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
+>  	enum skb_drop_reason reason = SKB_DROP_REASON_NOT_SPECIFIED;
+>  	const struct in6_addr *saddr, *daddr;
+>  	struct net *net = dev_net(skb->dev);
+> +	bool refcounted;
+>  	struct udphdr *uh;
+>  	struct sock *sk;
+> -	bool refcounted;
+>  	u32 ulen = 0;
+>  
+>  	if (!pskb_may_pull(skb, sizeof(struct udphdr)))
+> @@ -962,7 +962,11 @@ int __udp6_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
+>  		goto csum_error;
+>  
+>  	/* Check if the socket is already available, e.g. due to early demux */
+> -	sk = skb_steal_sock(skb, &refcounted);
+> +	sk = inet6_steal_sock(net, skb, sizeof(struct udphdr), saddr, uh->source, daddr, uh->dest,
+> +			      &refcounted, udp6_ehashfn);
+> +	if (IS_ERR(sk))
+> +		goto no_sk;
+> +
+>  	if (sk) {
+>  		struct dst_entry *dst = skb_dst(skb);
+>  		int ret;
+> @@ -996,7 +1000,7 @@ int __udp6_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
+>  			goto report_csum_error;
+>  		return udp6_unicast_rcv_skb(sk, skb, uh);
+>  	}
+> -
+> +no_sk:
+>  	reason = SKB_DROP_REASON_NO_SOCKET;
+>  
+>  	if (!uh->check)
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index a7b5e91dd768..d6fb6f43b0f3 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -4158,9 +4158,6 @@ union bpf_attr {
+>   *		**-EOPNOTSUPP** if the operation is not supported, for example
+>   *		a call from outside of TC ingress.
+>   *
+> - *		**-ESOCKTNOSUPPORT** if the socket type is not supported
+> - *		(reuseport).
+> - *
+>   * long bpf_sk_assign(struct bpf_sk_lookup *ctx, struct bpf_sock *sk, u64 flags)
+>   *	Description
+>   *		Helper is overloaded depending on BPF program type. This
+> 
+> -- 
+> 2.40.1
