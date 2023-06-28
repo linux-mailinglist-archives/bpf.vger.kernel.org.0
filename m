@@ -1,495 +1,319 @@
-Return-Path: <bpf+bounces-3647-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC8BE740DCA
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 11:52:20 +0200 (CEST)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7276D280FFD
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 09:52:19 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E04EC8DD;
-	Wed, 28 Jun 2023 09:48:47 +0000 (UTC)
-X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A7CC8D6
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 09:48:47 +0000 (UTC)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8CD2D7C
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 02:48:45 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fba9daf043so14577025e9.1
-        for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 02:48:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1687945723; x=1690537723;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Rrd+oVQwBiLqnLnpd+kxgQqY6NXFWO5dlCZVFiDqXJs=;
-        b=iEES/poOKrLptVoHsJpDsv8Cs372Sd8KK4kv1/mhPfihmm3c6SnuvKjrfXX3Qs6HUW
-         nJe8o7gXaiMNsNpm2cOu6si7noXu4ZL7G+31M8WB0NJvnI1+DPgsaFgDx46JlmRIv5RS
-         yvCMiQbE8vj50UBnjrBNGOcpEVnPKiH23DfYUDqsM7tOaHLmyJ+QqGxN3V/qwo6cbW9N
-         Z+DvmI4T/aUu5kE8Z6GDkIMXnvbnA+y+n1/KZ+sFjSiDMcB6lTMdrxbNjQC5mHgaFfan
-         c6BfxxNXvn09W/+4U2HqtQAhKjhREqbF/WtyrX+6l8/3KwoeqVWShw0z+IHLfEEGqF0M
-         RHZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687945723; x=1690537723;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rrd+oVQwBiLqnLnpd+kxgQqY6NXFWO5dlCZVFiDqXJs=;
-        b=FATEMNpnAUigmOJizfudJWPx2xjFsF/WHyNHjt7jq8+mZM/OIAk68ChYskAGNzzSNX
-         MxZhmyGQFXoXIrhYyK+AJJZtWjyd27Br18Vf4CTJfF6qYoXKMvBcf+XvvsMJN2hsZumL
-         DvEtkfMbe7AKgedks9AThoEHyyMHa7opF5VAqzPZvcI21+nBgwZ57T0OeQYzqPTNDV1U
-         rEzHRJOMbKtS79qxAHVEj1qgSuacl/yENbpedNvEVOUxsD9cmmTTdikY2mzsuynLk8Wy
-         eZUwx7E7fxu53zsLUTRoPr96PbleT/J/tqvywSUC4NsgQeW2FQVW8u32NZCFd9cF3TNC
-         +o9Q==
-X-Gm-Message-State: AC+VfDzDDtvmfHYH2AVOmTFF4YhgiJklzyNwn/HHuWhaQLom3wDRX4LI
-	chW1+73E4ba/RCfI7VSm8GVYfw==
-X-Google-Smtp-Source: ACHHUZ6F6DU+I1zZoqKy0uQQiThIvfyFKpnnNjVjpk/AceBeqT24Hi/rUNCb6SlZOrpPOyEB+U1VKg==
-X-Received: by 2002:a7b:ca4c:0:b0:3f9:b30f:a013 with SMTP id m12-20020a7bca4c000000b003f9b30fa013mr20668470wml.6.1687945723591;
-        Wed, 28 Jun 2023 02:48:43 -0700 (PDT)
-Received: from [192.168.1.193] (f.c.7.0.0.0.0.0.0.0.0.0.0.0.0.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff::7cf])
-        by smtp.gmail.com with ESMTPSA id k26-20020a7bc41a000000b003fbb1a9586esm1187613wmi.15.2023.06.28.02.48.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jun 2023 02:48:43 -0700 (PDT)
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Wed, 28 Jun 2023 10:48:22 +0100
-Subject: [PATCH bpf-next v4 7/7] selftests/bpf: Test that SO_REUSEPORT can
- be used with sk_assign helper
-Precedence: bulk
-X-Mailing-List: bpf@vger.kernel.org
-List-Id: <bpf.vger.kernel.org>
-List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 2395F740E32
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 12:07:35 +0200 (CEST)
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S232004AbjF1KHG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jun 2023 06:07:06 -0400
+Received: from out30-124.freemail.mail.aliyun.com ([115.124.30.124]:20465 "EHLO
+        out30-124.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235394AbjF1KCp (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 28 Jun 2023 06:02:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vm9ReOA_1687946560;
+Received: from 30.221.150.33(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0Vm9ReOA_1687946560)
+          by smtp.aliyun-inc.com;
+          Wed, 28 Jun 2023 18:02:41 +0800
+Message-ID: <620af708-42a0-f711-cd7c-43362751c842@linux.alibaba.com>
+Date:   Wed, 28 Jun 2023 18:02:36 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230613-so-reuseport-v4-7-4ece76708bba@isovalent.com>
-References: <20230613-so-reuseport-v4-0-4ece76708bba@isovalent.com>
-In-Reply-To: <20230613-so-reuseport-v4-0-4ece76708bba@isovalent.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
- Joe Stringer <joe@wand.net.nz>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: Hemanth Malla <hemanthmalla@gmail.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Lorenz Bauer <lmb@isovalent.com>, 
- Joe Stringer <joe@cilium.io>
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH net-next v4 1/2] virtio-net: support coexistence of XDP
+ and GUEST_CSUM
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20230628030506.2213-1-hengqi@linux.alibaba.com>
+ <20230628030506.2213-2-hengqi@linux.alibaba.com>
+ <CACGkMEv7aVH0dgdd6N3RMH+57BWuxnq9NR8sPzD9wRQZ5TZRFQ@mail.gmail.com>
+ <c6411922-51ad-3d8f-88aa-28883b44573d@linux.alibaba.com>
+ <CACGkMEu=Cs5DFP+EFqxUXaiqz7vewhQ5zMMtChGpR_oGjrvMCg@mail.gmail.com>
+ <20230628045626.GA32321@h68b04307.sqa.eu95>
+ <CACGkMEt6Kb60Akn=aJjzJQg6Zg8F_24ezqAtwPOZxiu4-f7E3g@mail.gmail.com>
+From:   Heng Qi <hengqi@linux.alibaba.com>
+In-Reply-To: <CACGkMEt6Kb60Akn=aJjzJQg6Zg8F_24ezqAtwPOZxiu4-f7E3g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Precedence: bulk
+List-ID: <bpf.vger.kernel.org>
+X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
 
-We use two programs to check that the new reuseport logic is executed
-appropriately.
 
-The first is a TC clsact program which bpf_sk_assigns
-the skb to a UDP or TCP socket created by user space. Since the test
-communicates via lo we see both directions of packets in the eBPF.
-Traffic ingressing to the reuseport socket is identified by looking
-at the destination port. For TCP, we additionally need to make sure
-that we only assign the initial SYN packets towards our listening
-socket. The network stack then creates a request socket which
-transitions to ESTABLISHED after the 3WHS.
+在 2023/6/28 下午2:50, Jason Wang 写道:
+> On Wed, Jun 28, 2023 at 12:56 PM Heng Qi <hengqi@linux.alibaba.com> wrote:
+>> On Wed, Jun 28, 2023 at 12:02:17PM +0800, Jason Wang wrote:
+>>> On Wed, Jun 28, 2023 at 11:42 AM Heng Qi <hengqi@linux.alibaba.com> wrote:
+>>>>
+>>>>
+>>>> 在 2023/6/28 上午11:22, Jason Wang 写道:
+>>>>> On Wed, Jun 28, 2023 at 11:05 AM Heng Qi <hengqi@linux.alibaba.com> wrote:
+>>>>>> We are now re-probing the csum related fields and trying
+>>>>>> to have XDP and RX hw checksum capabilities coexist on the
+>>>>>> XDP path. For the benefit of:
+>>>>>> 1. RX hw checksum capability can be used if XDP is loaded.
+>>>>>> 2. Avoid packet loss when loading XDP in the vm-vm scenario.
+>>>>>>
+>>>>>> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+>>>>>> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+>>>>>> ---
+>>>>>> v3->v4:
+>>>>>>     - Rewrite some comments.
+>>>>>>
+>>>>>> v2->v3:
+>>>>>>     - Use skb_checksum_setup() instead of virtnet_flow_dissect_udp_tcp().
+>>>>>>       Essentially equivalent.
+>>>>>>
+>>>>>>    drivers/net/virtio_net.c | 82 +++++++++++++++++++++++++++++++++-------
+>>>>>>    1 file changed, 69 insertions(+), 13 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>>>>>> index 5a7f7a76b920..a47342f972b5 100644
+>>>>>> --- a/drivers/net/virtio_net.c
+>>>>>> +++ b/drivers/net/virtio_net.c
+>>>>>> @@ -1568,6 +1568,41 @@ static void virtio_skb_set_hash(const struct virtio_net_hdr_v1_hash *hdr_hash,
+>>>>>>           skb_set_hash(skb, __le32_to_cpu(hdr_hash->hash_value), rss_hash_type);
+>>>>>>    }
+>>>>>>
+>>>>>> +static int virtnet_set_csum_after_xdp(struct virtnet_info *vi,
+>>>>>> +                                     struct sk_buff *skb,
+>>>>>> +                                     __u8 flags)
+>>>>>> +{
+>>>>>> +       int err = 0;
+>>>>>> +
+>>>>>> +       /* When XDP program is loaded, the vm-vm scenario on the same host,
+>>>>>> +        * packets marked VIRTIO_NET_HDR_F_NEEDS_CSUM without a complete checksum
+>>>>>> +        * will travel. Although these packets are safe from the point of
+>>>>>> +        * view of the vm, in order to be successfully forwarded on the upper
+>>>>>> +        * layer and to avoid packet loss caused by XDP modification,
+>>>>>> +        * we re-probe the necessary checksum related information:
+>>>>>> +        * skb->csum_{start, offset}, pseudo-header checksum.
+>>>>>> +        *
+>>>>>> +        * If the received packet is marked VIRTIO_NET_HDR_F_DATA_VALID:
+>>>>>> +        * when _F_GUEST_CSUM is negotiated, the device validates the checksum
+>>>>>> +        * and virtio-net sets skb->ip_summed to CHECKSUM_UNNECESSARY;
+>>>>>> +        * otherwise, virtio-net hands over to the stack to validate the checksum.
+>>>>>> +        */
+>>>>>> +       if (flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
+>>>>>> +               /* No need to care about SCTP because virtio-net currently doesn't
+>>>>>> +                * support SCTP CRC checksum offloading, that is, SCTP packets have
+>>>>>> +                * complete checksums.
+>>>>>> +                */
+>>>>>> +               err = skb_checksum_setup(skb, true);
+>>>>> A second thought, any reason why a checksum is a must here. Could we simply:
+>>>> When net.ipv4.ip_forward sysctl is enabled, such packets may be
+>>>> forwarded (return to the tx path) at the IP layer.
+>>>> If the device has the tx hw checksum offloading cap, packets will have
+>>>> complete checksums based on our calculated 'check' value.
+>>> Actually, I mean why can't we offload the checksum to the hardware in this case?
+>> Yes that's what I explained:)
+>>
+>> Checksum of udp/tcp includes the pseudo-header checksum and the checksum of the entire udp/tcp payload.
+>> When tx checksum offloading is enabled, the upper layer will only calculate the pseudo-header checksum,
+>> and the rest of the checksum of the entire udp/tcp payload will be calculated by hardware.
+>>
+>>
+>> Please see udp_send_skb():
+>>
+>> "
+>>          } else if (skb->ip_summed == CHECKSUM_PARTIAL) { /* UDP hardware csum */
+>> csum_partial:
+>>
+>>                  udp4_hwcsum(skb, fl4->saddr, fl4->daddr);
+>>                  goto send;
+>>
+>>          } else
+>>                  csum = udp_csum(skb);
+>>
+>>          /* add protocol-dependent pseudo-header */
+>>          uh->check = csum_tcpudp_magic(fl4->saddr, fl4->daddr, len,
+>>                                        sk->sk_protocol, csum);
+>>          if (uh->check == 0)
+>>                  uh->check = CSUM_MANGLED_0;
+>>
+>> send:
+>>          err = ip_send_skb(sock_net(sk), skb);
+>> "
+> Ok, so I think what I missed is that the CHECKSUM_PARTIAL is set up by
+> skb_checksum_setup() so we don't even need to care about that.
 
-The second is a reuseport program which shares the fact that
-it has been executed with user space. This tells us that the delayed
-lookup mechanism is working.
+Yes. It works fine after skb_checksum_setup().
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Co-developed-by: Lorenz Bauer <lmb@isovalent.com>
-Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-Cc: Joe Stringer <joe@cilium.io>
----
- tools/testing/selftests/bpf/network_helpers.c      |   3 +
- .../selftests/bpf/prog_tests/assign_reuse.c        | 197 +++++++++++++++++++++
- .../selftests/bpf/progs/test_assign_reuse.c        | 142 +++++++++++++++
- 3 files changed, 342 insertions(+)
+>
+>>>>> 1) probe the csum_start/offset
+>>>>> 2) leave it as CHECKSUM_PARTIAL
+>>>>>
+>>>>> ?
+>>>> The reason is as I explained above.
+>>>>
+>>>>>> +       } else if (flags & VIRTIO_NET_HDR_F_DATA_VALID) {
+>>>>>> +               /* XDP guarantees that packets marked as VIRTIO_NET_HDR_F_DATA_VALID
+>>>>>> +                * still have correct checksum after they are processed.
+>>>>>> +                */
+>>>>> Do you mean it's the charge of the XDP program to calculate the csum
+>>>>> in this case? Seems strange.
+>>>> Packet with complete checksum (and has been verified by rx device
+>>>> because it has VIRTIO_NET_HDR_F_DATA_VALID)
+>>>> when modified by XDP, XDP program should use the helper provided by XDP
+>>>> core to make the checksum correct,
+>>> Could you give me a pointer to that helper?
+>> bpf_csum_diff(),
+> Ok.
+>
+>> bpf_{l3,l4}_csum_replace()
+> This seems not to be a helpr for XDP but for other bpf like cls.
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index a105c0cd008a..8a33bcea97de 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -423,6 +423,9 @@ struct nstoken *open_netns(const char *name)
- 
- void close_netns(struct nstoken *token)
- {
-+	if (!token)
-+		return;
-+
- 	ASSERT_OK(setns(token->orig_netns_fd, CLONE_NEWNET), "setns");
- 	close(token->orig_netns_fd);
- 	free(token);
-diff --git a/tools/testing/selftests/bpf/prog_tests/assign_reuse.c b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-new file mode 100644
-index 000000000000..622f123410f4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-@@ -0,0 +1,197 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Isovalent */
-+#include <uapi/linux/if_link.h>
-+#include <test_progs.h>
-+
-+#include <netinet/tcp.h>
-+#include <netinet/udp.h>
-+
-+#include "network_helpers.h"
-+#include "test_assign_reuse.skel.h"
-+
-+#define NS_TEST "assign_reuse"
-+#define LOOPBACK 1
-+#define PORT 4443
-+
-+static int attach_reuseport(int sock_fd, int prog_fd)
-+{
-+	return setsockopt(sock_fd, SOL_SOCKET, SO_ATTACH_REUSEPORT_EBPF,
-+			  &prog_fd, sizeof(prog_fd));
-+}
-+
-+static __u64 cookie(int fd)
-+{
-+	__u64 cookie = 0;
-+	socklen_t cookie_len = sizeof(cookie);
-+	int ret;
-+
-+	ret = getsockopt(fd, SOL_SOCKET, SO_COOKIE, &cookie, &cookie_len);
-+	ASSERT_OK(ret, "cookie");
-+	ASSERT_GT(cookie, 0, "cookie_invalid");
-+
-+	return cookie;
-+}
-+
-+static int echo_test_udp(int fd_sv)
-+{
-+	struct sockaddr_storage addr = {};
-+	socklen_t len = sizeof(addr);
-+	char buff[1] = {};
-+	int fd_cl = -1, ret;
-+
-+	fd_cl = connect_to_fd(fd_sv, 100);
-+	ASSERT_GT(fd_cl, 0, "create_client");
-+	ASSERT_EQ(getsockname(fd_cl, (void *)&addr, &len), 0, "getsockname");
-+
-+	ASSERT_EQ(send(fd_cl, buff, sizeof(buff), 0), 1, "send_client");
-+
-+	ret = recv(fd_sv, buff, sizeof(buff), 0);
-+	if (ret < 0)
-+		return errno;
-+
-+	ASSERT_EQ(ret, 1, "recv_server");
-+	ASSERT_EQ(sendto(fd_sv, buff, sizeof(buff), 0, (void *)&addr, len), 1, "send_server");
-+	ASSERT_EQ(recv(fd_cl, buff, sizeof(buff), 0), 1, "recv_client");
-+	close(fd_cl);
-+	return 0;
-+}
-+
-+static int echo_test_tcp(int fd_sv)
-+{
-+	char buff[1] = {};
-+	int fd_cl = -1, fd_sv_cl = -1;
-+
-+	fd_cl = connect_to_fd(fd_sv, 100);
-+	if (fd_cl < 0)
-+		return errno;
-+
-+	fd_sv_cl = accept(fd_sv, NULL, NULL);
-+	ASSERT_GE(fd_sv_cl, 0, "accept_fd");
-+
-+	ASSERT_EQ(send(fd_cl, buff, sizeof(buff), 0), 1, "send_client");
-+	ASSERT_EQ(recv(fd_sv_cl, buff, sizeof(buff), 0), 1, "recv_server");
-+	ASSERT_EQ(send(fd_sv_cl, buff, sizeof(buff), 0), 1, "send_server");
-+	ASSERT_EQ(recv(fd_cl, buff, sizeof(buff), 0), 1, "recv_client");
-+	close(fd_sv_cl);
-+	close(fd_cl);
-+	return 0;
-+}
-+
-+void run_assign_reuse(int family, int sotype, const char *ip, __u16 port)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-+		.ifindex = LOOPBACK,
-+		.attach_point = BPF_TC_INGRESS,
-+	);
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, tc_opts,
-+		.handle = 1,
-+		.priority = 1,
-+	);
-+	bool hook_created = false, tc_attached = false;
-+	int ret, fd_tc, fd_accept, fd_drop, fd_map;
-+	int *fd_sv = NULL;
-+	__u64 fd_val;
-+	struct test_assign_reuse *skel;
-+	const int zero = 0;
-+
-+	skel = test_assign_reuse__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+
-+	skel->rodata->dest_port = port;
-+
-+	ret = test_assign_reuse__load(skel);
-+	if (!ASSERT_OK(ret, "skel_load"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->sk_cookie_seen, 0, "cookie_init");
-+
-+	fd_tc = bpf_program__fd(skel->progs.tc_main);
-+	fd_accept = bpf_program__fd(skel->progs.reuse_accept);
-+	fd_drop = bpf_program__fd(skel->progs.reuse_drop);
-+	fd_map = bpf_map__fd(skel->maps.sk_map);
-+
-+	fd_sv = start_reuseport_server(family, sotype, ip, port, 100, 1);
-+	if (!ASSERT_NEQ(fd_sv, NULL, "start_reuseport_server"))
-+		goto cleanup;
-+
-+	ret = attach_reuseport(*fd_sv, fd_drop);
-+	if (!ASSERT_OK(ret, "attach_reuseport"))
-+		goto cleanup;
-+
-+	fd_val = *fd_sv;
-+	ret = bpf_map_update_elem(fd_map, &zero, &fd_val, BPF_NOEXIST);
-+	if (!ASSERT_OK(ret, "bpf_sk_map"))
-+		goto cleanup;
-+
-+	ret = bpf_tc_hook_create(&tc_hook);
-+	if (ret == 0)
-+		hook_created = true;
-+	ret = ret == -EEXIST ? 0 : ret;
-+	if (!ASSERT_OK(ret, "bpf_tc_hook_create"))
-+		goto cleanup;
-+
-+	tc_opts.prog_fd = fd_tc;
-+	ret = bpf_tc_attach(&tc_hook, &tc_opts);
-+	if (!ASSERT_OK(ret, "bpf_tc_attach"))
-+		goto cleanup;
-+	tc_attached = true;
-+
-+	if (sotype == SOCK_STREAM)
-+		ASSERT_EQ(echo_test_tcp(*fd_sv), ECONNREFUSED, "drop_tcp");
-+	else
-+		ASSERT_EQ(echo_test_udp(*fd_sv), EAGAIN, "drop_udp");
-+	ASSERT_EQ(skel->bss->reuseport_executed, 1, "program executed once");
-+
-+	skel->bss->sk_cookie_seen = 0;
-+	skel->bss->reuseport_executed = 0;
-+	ASSERT_OK(attach_reuseport(*fd_sv, fd_accept), "attach_reuseport(accept)");
-+
-+	if (sotype == SOCK_STREAM)
-+		ASSERT_EQ(echo_test_tcp(*fd_sv), 0, "echo_tcp");
-+	else
-+		ASSERT_EQ(echo_test_udp(*fd_sv), 0, "echo_udp");
-+
-+	ASSERT_EQ(skel->bss->sk_cookie_seen, cookie(*fd_sv),
-+		  "cookie_mismatch");
-+	ASSERT_EQ(skel->bss->reuseport_executed, 1, "program executed once");
-+cleanup:
-+	if (tc_attached) {
-+		tc_opts.flags = tc_opts.prog_fd = tc_opts.prog_id = 0;
-+		ret = bpf_tc_detach(&tc_hook, &tc_opts);
-+		ASSERT_OK(ret, "bpf_tc_detach");
-+	}
-+	if (hook_created) {
-+		tc_hook.attach_point = BPF_TC_INGRESS | BPF_TC_EGRESS;
-+		bpf_tc_hook_destroy(&tc_hook);
-+	}
-+	test_assign_reuse__destroy(skel);
-+	free_fds(fd_sv, 1);
-+}
-+
-+void test_assign_reuse(void)
-+{
-+	struct nstoken *tok = NULL;
-+
-+	SYS(out, "ip netns add %s", NS_TEST);
-+	SYS(cleanup, "ip -net %s link set dev lo up", NS_TEST);
-+
-+	tok = open_netns(NS_TEST);
-+	if (!ASSERT_OK_PTR(tok, "netns token"))
-+		return;
-+
-+	if (test__start_subtest("tcpv4"))
-+		run_assign_reuse(AF_INET, SOCK_STREAM, "127.0.0.1", PORT);
-+	if (test__start_subtest("tcpv6"))
-+		run_assign_reuse(AF_INET6, SOCK_STREAM, "::1", PORT);
-+	if (test__start_subtest("udpv4"))
-+		run_assign_reuse(AF_INET, SOCK_DGRAM, "127.0.0.1", PORT);
-+	if (test__start_subtest("udpv6"))
-+		run_assign_reuse(AF_INET6, SOCK_DGRAM, "::1", PORT);
-+
-+cleanup:
-+	close_netns(tok);
-+	SYS_NOFAIL("ip netns delete %s", NS_TEST);
-+out:
-+	return;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_assign_reuse.c b/tools/testing/selftests/bpf/progs/test_assign_reuse.c
-new file mode 100644
-index 000000000000..4f2e2321ea06
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_assign_reuse.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Isovalent */
-+#include <stdbool.h>
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <linux/in.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/tcp.h>
-+#include <linux/udp.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+#include <linux/pkt_cls.h>
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+__u64 sk_cookie_seen;
-+__u64 reuseport_executed;
-+union {
-+	struct tcphdr tcp;
-+	struct udphdr udp;
-+} headers;
-+
-+const volatile __u16 dest_port;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sk_map SEC(".maps");
-+
-+SEC("sk_reuseport")
-+int reuse_accept(struct sk_reuseport_md *ctx)
-+{
-+	reuseport_executed++;
-+
-+	if (ctx->ip_protocol == IPPROTO_TCP) {
-+		if (ctx->data + sizeof(headers.tcp) > ctx->data_end)
-+			return SK_DROP;
-+
-+		if (__builtin_memcmp(&headers.tcp, ctx->data, sizeof(headers.tcp)) != 0)
-+			return SK_DROP;
-+	} else if (ctx->ip_protocol == IPPROTO_UDP) {
-+		if (ctx->data + sizeof(headers.udp) > ctx->data_end)
-+			return SK_DROP;
-+
-+		if (__builtin_memcmp(&headers.udp, ctx->data, sizeof(headers.udp)) != 0)
-+			return SK_DROP;
-+	} else {
-+		return SK_DROP;
-+	}
-+
-+	sk_cookie_seen = bpf_get_socket_cookie(ctx->sk);
-+	return SK_PASS;
-+}
-+
-+SEC("sk_reuseport")
-+int reuse_drop(struct sk_reuseport_md *ctx)
-+{
-+	reuseport_executed++;
-+	sk_cookie_seen = 0;
-+	return SK_DROP;
-+}
-+
-+static int
-+assign_sk(struct __sk_buff *skb)
-+{
-+	int zero = 0, ret = 0;
-+	struct bpf_sock *sk;
-+
-+	sk = bpf_map_lookup_elem(&sk_map, &zero);
-+	if (!sk)
-+		return TC_ACT_SHOT;
-+	ret = bpf_sk_assign(skb, sk, 0);
-+	bpf_sk_release(sk);
-+	return ret ? TC_ACT_SHOT : TC_ACT_OK;
-+}
-+
-+static bool
-+maybe_assign_tcp(struct __sk_buff *skb, struct tcphdr *th)
-+{
-+	if (th + 1 > (void *)(long)(skb->data_end))
-+		return TC_ACT_SHOT;
-+
-+	if (!th->syn || th->ack || th->dest != bpf_htons(dest_port))
-+		return TC_ACT_OK;
-+
-+	__builtin_memcpy(&headers.tcp, th, sizeof(headers.tcp));
-+	return assign_sk(skb);
-+}
-+
-+static bool
-+maybe_assign_udp(struct __sk_buff *skb, struct udphdr *uh)
-+{
-+	if (uh + 1 > (void *)(long)(skb->data_end))
-+		return TC_ACT_SHOT;
-+
-+	if (uh->dest != bpf_htons(dest_port))
-+		return TC_ACT_OK;
-+
-+	__builtin_memcpy(&headers.udp, uh, sizeof(headers.udp));
-+	return assign_sk(skb);
-+}
-+
-+SEC("tc")
-+int tc_main(struct __sk_buff *skb)
-+{
-+	void *data_end = (void *)(long)skb->data_end;
-+	void *data = (void *)(long)skb->data;
-+	struct ethhdr *eth;
-+
-+	eth = (struct ethhdr *)(data);
-+	if (eth + 1 > data_end)
-+		return TC_ACT_SHOT;
-+
-+	if (eth->h_proto == bpf_htons(ETH_P_IP)) {
-+		struct iphdr *iph = (struct iphdr *)(data + sizeof(*eth));
-+
-+		if (iph + 1 > data_end)
-+			return TC_ACT_SHOT;
-+
-+		if (iph->protocol == IPPROTO_TCP)
-+			return maybe_assign_tcp(skb, (struct tcphdr *)(iph + 1));
-+		else if (iph->protocol == IPPROTO_UDP)
-+			return maybe_assign_udp(skb, (struct udphdr *)(iph + 1));
-+		else
-+			return TC_ACT_SHOT;
-+	} else {
-+		struct ipv6hdr *ip6h = (struct ipv6hdr *)(data + sizeof(*eth));
-+
-+		if (ip6h + 1 > data_end)
-+			return TC_ACT_SHOT;
-+
-+		if (ip6h->nexthdr == IPPROTO_TCP)
-+			return maybe_assign_tcp(skb, (struct tcphdr *)(ip6h + 1));
-+		else if (ip6h->nexthdr == IPPROTO_UDP)
-+			return maybe_assign_udp(skb, (struct udphdr *)(ip6h + 1));
-+		else
-+			return TC_ACT_SHOT;
-+	}
-+}
+Yes.
 
--- 
-2.40.1
+>
+>>> Btw, is there a way for
+>>> the XDP program to know whether the csum has been verified by the
+>>> device? ( I guess not).
+>>>
+>> Not. But we only do this (mark skb->ip_summed = CHECKSUM_UNNECESSARY) for packets with VIRTIO_NET_HDR_F_DATA_VALID now.
+> So if I understand you correctly, you meant for the XDP program that
+> wants to modify the packet:
+>
+> 1) check whether the checksum is valid
+> 2) if yes, recalculate the checksum after the modification
+> 3) if not, just do nothing for the checksum and the driver need to
+> re-probe the csum_start/offset
+>
+> ?
 
+I don't think we need to make many assumptions about the behavior of XDP 
+programs.
+Because we are out of control for various users using XDP.
+
+The core purpose of this patch is to:
+#1 Solve the packet loss problem caused by loading XDP between vm-vm on 
+the same host (scenario with partial checksum).
+#2 For scenarios other than #1, virtio-net with this patch is already 
+consistent with other existing NIC drivers (simple such as 
+ixgbe[1]/bnxt[2]/mvneta[3]/..):
+the rx side only needs to have NETIF_F_RXCSUM and the device has 
+verified the packet has a valid checksum.
+Then skb converted from xdp_buff (XDP returns XDP_PASS) can have 
+skb->ip_summed = CHECKSUM_UNNECESSARY.
+
+If the comment for DATA_VALID is confusing, I'll just remove it.
+
+[1] ixgbe_clean_rx_irq()-> ixgbe_run_xdp()-> ixgbe_process_skb_fields() 
+->ixgbe_rx_checksum()
+[2] bnxt_xdp_build_skb()
+[3] mvneta_swbm_build_skb
+
+Thanks.
+
+>
+> Thanks
+>
+>> Thanks.
+>>
+>>> Thanks
+>>>
+>>>
+>>>> otherwise, VIRTIO_NET_HDR_F_DATA_VALID has been cleared and skb
+>>>> ->ip_summed=CHECKSUM_NONE, so the stack
+>>>> will re-verify the checksum, causing packet loss due to wrong checksum.
+>>>>
+>>>> Thanks.
+>>>>
+>>>>> Thanks
+>>>>>
+>>>>>> +               skb->ip_summed = CHECKSUM_UNNECESSARY;
+>>>>>> +       }
+>>>>>> +
+>>>>>> +       return err;
+>>>>>> +}
+>>>>>> +
+>>>>>>    static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
+>>>>>>                           void *buf, unsigned int len, void **ctx,
+>>>>>>                           unsigned int *xdp_xmit,
+>>>>>> @@ -1576,6 +1611,7 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
+>>>>>>           struct net_device *dev = vi->dev;
+>>>>>>           struct sk_buff *skb;
+>>>>>>           struct virtio_net_hdr_mrg_rxbuf *hdr;
+>>>>>> +       __u8 flags;
+>>>>>>
+>>>>>>           if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
+>>>>>>                   pr_debug("%s: short packet %i\n", dev->name, len);
+>>>>>> @@ -1584,6 +1620,12 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
+>>>>>>                   return;
+>>>>>>           }
+>>>>>>
+>>>>>> +       /* XDP may modify/overwrite the packet, including the virtnet hdr,
+>>>>>> +        * so save the flags of the virtnet hdr before XDP processing.
+>>>>>> +        */
+>>>>>> +       if (unlikely(vi->xdp_enabled))
+>>>>>> +               flags = ((struct virtio_net_hdr_mrg_rxbuf *)buf)->hdr.flags;
+>>>>>> +
+>>>>>>           if (vi->mergeable_rx_bufs)
+>>>>>>                   skb = receive_mergeable(dev, vi, rq, buf, ctx, len, xdp_xmit,
+>>>>>>                                           stats);
+>>>>>> @@ -1595,23 +1637,37 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
+>>>>>>           if (unlikely(!skb))
+>>>>>>                   return;
+>>>>>>
+>>>>>> -       hdr = skb_vnet_hdr(skb);
+>>>>>> -       if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report)
+>>>>>> -               virtio_skb_set_hash((const struct virtio_net_hdr_v1_hash *)hdr, skb);
+>>>>>> -
+>>>>>> -       if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
+>>>>>> -               skb->ip_summed = CHECKSUM_UNNECESSARY;
+>>>>>> +       if (unlikely(vi->xdp_enabled)) {
+>>>>>> +               /* Required to do this before re-probing and calculating
+>>>>>> +                * the pseudo-header checksum.
+>>>>>> +                */
+>>>>>> +               skb->protocol = eth_type_trans(skb, dev);
+>>>>>> +               skb_reset_network_header(skb);
+>>>>>> +               if (virtnet_set_csum_after_xdp(vi, skb, flags) < 0) {
+>>>>>> +                       pr_debug("%s: errors occurred in setting partial csum",
+>>>>>> +                                dev->name);
+>>>>>> +                       goto frame_err;
+>>>>>> +               }
+>>>>>> +       } else {
+>>>>>> +               hdr = skb_vnet_hdr(skb);
+>>>>>> +               if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report)
+>>>>>> +                       virtio_skb_set_hash((const struct virtio_net_hdr_v1_hash *)hdr, skb);
+>>>>>> +
+>>>>>> +               if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
+>>>>>> +                       skb->ip_summed = CHECKSUM_UNNECESSARY;
+>>>>>> +
+>>>>>> +               if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
+>>>>>> +                                         virtio_is_little_endian(vi->vdev))) {
+>>>>>> +                       net_warn_ratelimited("%s: bad gso: type: %u, size: %u\n",
+>>>>>> +                                            dev->name, hdr->hdr.gso_type,
+>>>>>> +                                            hdr->hdr.gso_size);
+>>>>>> +                       goto frame_err;
+>>>>>> +               }
+>>>>>>
+>>>>>> -       if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
+>>>>>> -                                 virtio_is_little_endian(vi->vdev))) {
+>>>>>> -               net_warn_ratelimited("%s: bad gso: type: %u, size: %u\n",
+>>>>>> -                                    dev->name, hdr->hdr.gso_type,
+>>>>>> -                                    hdr->hdr.gso_size);
+>>>>>> -               goto frame_err;
+>>>>>> +               skb->protocol = eth_type_trans(skb, dev);
+>>>>>>           }
+>>>>>>
+>>>>>>           skb_record_rx_queue(skb, vq2rxq(rq->vq));
+>>>>>> -       skb->protocol = eth_type_trans(skb, dev);
+>>>>>>           pr_debug("Receiving skb proto 0x%04x len %i type %i\n",
+>>>>>>                    ntohs(skb->protocol), skb->len, skb->pkt_type);
+>>>>>>
+>>>>>> --
+>>>>>> 2.19.1.6.gb485710b
+>>>>>>
 
