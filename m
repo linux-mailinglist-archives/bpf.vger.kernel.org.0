@@ -1,112 +1,116 @@
-Return-Path: <bpf+bounces-3668-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 714AF7416AC
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 18:46:25 +0200 (CEST)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 040D0280DA8
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 16:46:24 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09119D2FA;
-	Wed, 28 Jun 2023 16:46:16 +0000 (UTC)
-X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823C1322E
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 16:46:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF24C433C9;
-	Wed, 28 Jun 2023 16:46:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687970773;
-	bh=Anh7J4kRhla0M1qr85cZBcy7HHbIz4mqCgOTHfAu7b4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jjWMAEUDSlBwfrfqiCEyfcuBYUqTlz/wwd8ni3Lu7xzaEwKOtQ9FP/L9et5oyjVVJ
-	 ZgEmyFeNGrWs84CYZANfS8F0unnD0CWsQyPUjzVlxc9S5ZYyGA0QdYyBCdbdGDIgL5
-	 NBszENm6/4vgSOv2dcK4+mWK0RCdyO8ikAxKJkL30Pc+LmNCAY4oKzF+wvoUMv4TJN
-	 vFemQWAni9uVer6e2IFtc9+0Bn3sNFbxbPEj5I1GzKjXhc6rhin82rZeUfQ8IHbyUx
-	 uk/s4bO9MhQ6bHDAlW4WUzKyjOXZeUwVRTX99QLpk4jtEoVuBmN2SR6blmjERdOiyY
-	 9WFcjPJKmXOiA==
-From: SeongJae Park <sj@kernel.org>
-To: martin.lau@linux.dev
-Cc: SeongJae Park <sj@kernel.org>,
-	Alexander.Egorenkov@ibm.com,
-	ast@kernel.org,
-	memxor@gmail.com,
-	olsajiri@gmail.com,
-	bpf@vger.kernel.org,
-	stable@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH v2] btf: warn but return no error for NULL btf from __register_btf_kfunc_id_set()
-Date: Wed, 28 Jun 2023 16:46:11 +0000
-Message-Id: <20230628164611.83038-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-Precedence: bulk
-X-Mailing-List: bpf@vger.kernel.org
-List-Id: <bpf.vger.kernel.org>
-List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id CC6017416F6
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 19:08:22 +0200 (CEST)
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S229941AbjF1RIL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jun 2023 13:08:11 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:47827 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230055AbjF1RIK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 28 Jun 2023 13:08:10 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 8BF403200893;
+        Wed, 28 Jun 2023 13:08:09 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 28 Jun 2023 13:08:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1687972089; x=1688058489; bh=Qp
+        SrMdysUNieu5qT+irX1lyFyfaREyITlqTu815mPP0=; b=VSaMqdOeF+VC2Oy4HB
+        /BNXxvWzG2ZOgRegFaJDEB1W+84F8cnYwCxDVVxvoGDfXtZLkQ1kclhu5y/SPjha
+        ZlqFpbd5I1RmvUArC5T1OQ2Wo8kHlNJ3L4Bsl0Soh4DgG7rQY1wyB04VMn2uig60
+        dXaKNOvN73GThnMuthTb8dlY+j32vxkc6tuE7/guqnPrXrUJ/2A4jbokIL6sX/c4
+        HtMUQdYYCpY7IvcAQQWoxEYwt+ayTSJVkm8floVAIHyRJhbBvVJDYVnJLyHP8zD2
+        5J7UEY3aOmr7ieOGoZZ3GNF72p6BgoFRe+rlhrl/lc6Otxy70dZZJVTejVwj5Skp
+        a0qg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1687972089; x=1688058489; bh=QpSrMdysUNieu
+        5qT+irX1lyFyfaREyITlqTu815mPP0=; b=eQ7DmOL+AikN3LMpowcUDDWHo0xxK
+        KYdbYzar2tgKmIB4AOZEVmg9t6iTkxWvOHhGwRpcofLEMvE8wdQj13zK7TShDD+1
+        ytOkDDNvA3Z6WTH5F3qGpbaXcXxJu+jzD6sxQiKu9DX5jf6Rs9643Ampo1Nt7cNs
+        8E2FGWGsnY7S6dZkvymLnaTyK8P5+fFV7EVxjkUetShlGFGp5zLIpf5qJDsoZXZF
+        hXZ7EakRnlUhoF8AKvcrKVCjI8fb9h9CdicYkVFzhtXmOlduGDv3eoFGx/j94Pz0
+        AIap1Hbd63riXpcv5kMk1xyE0NzgyU/bKKgtNbsVVSwci7NBXnxBxlBhg==
+X-ME-Sender: <xms:-GicZAVl_ZLQup0UBuNWPl6xD219sFMtSxnBnHkYhiwpMlDPPdXaGQ>
+    <xme:-GicZEmdOP0mPL6XNzuSR0Pr301pjABGdgDBPva9JlQLuf2FwHzPARvEZEl5s-pZT
+    tENVU9Yc39hSwD7_w>
+X-ME-Received: <xmr:-GicZEbmFvOaUGN1jiMBGQiUEHWHWC_is17X9ffJYfRgRImD_zTPRaE1mqTk9UX7yR4b_KS0xOL-YPlkM8Ux3IsCHINz_NGzkv18>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrtddvgddutdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
+    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:-GicZPVbDlUsIJ300ajvCSgla414PCv3ewfkIbjb1P5GDwBLLvti_A>
+    <xmx:-GicZKkJ25Vw76oeOF0pZg5SG-wrppSUnmxjzZig3f9nTBEemHHgbA>
+    <xmx:-GicZEePo49O9D7RdLoJmHBNZFKuEd4pZKL8pDzw6EZy0AW84Q4BzA>
+    <xmx:-WicZPxCdHVpv16KBTwvA5cuBpYQws1IYDkgOg7ItDsd6Qhx0TiAhQ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 28 Jun 2023 13:08:08 -0400 (EDT)
+Date:   Wed, 28 Jun 2023 11:08:07 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 0/2] libbpf: add netfilter link attach helper
+Message-ID: <c3mwjvbobfmmzeuiqeifxdjguk52mitltp3xqj46sozkrgqaeg@xvc6ifaaacpo>
+References: <20230628152738.22765-1-fw@strlen.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230628152738.22765-1-fw@strlen.de>
+Precedence: bulk
+List-ID: <bpf.vger.kernel.org>
+X-Mailing-List: bpf@vger.kernel.org
 
-__register_btf_kfunc_id_set() assumes .BTF to be part of the module's
-.ko file if CONFIG_DEBUG_INFO_BTF is enabled.  If that's not the case,
-the function prints an error message and return an error.  As a result,
-such modules cannot be loaded.
+On Wed, Jun 28, 2023 at 05:27:36PM +0200, Florian Westphal wrote:
+> v4: address comment from Daniel Xu:
+>   - use human-readable test names in 2/2
+> 
+> v3: address comments from Andrii:
+>   - prune verbose error message in 1/2
+>   - use bpf_link_create internally in 1/2
+>   - use subtests in patch 2/2
+> 
+> When initial netfilter bpf program type support got added one
+> suggestion was to extend libbpf with a helper to ease attachment
+> of nf programs to the hook locations.
+> 
+> Add such a helper and a demo test case that attaches a dummy
+> program to various combinations.
+> 
+> I tested that the selftest fails when changing the expected
+> outcome (i.e., set 'success' when it should fail and v.v.).
+> 
+> Florian Westphal (2):
+>   tools: libbpf: add netfilter link attach helper
+>   selftests/bpf: Add bpf_program__attach_netfilter helper test
+> 
+>  tools/lib/bpf/bpf.c                           |  6 ++
+>  tools/lib/bpf/bpf.h                           |  6 ++
+>  tools/lib/bpf/libbpf.c                        | 42 +++++++++
+>  tools/lib/bpf/libbpf.h                        | 15 ++++
+>  tools/lib/bpf/libbpf.map                      |  1 +
+>  .../bpf/prog_tests/netfilter_link_attach.c    | 86 +++++++++++++++++++
+>  .../bpf/progs/test_netfilter_link_attach.c    | 14 +++
+>  7 files changed, 170 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_attach.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_attach.c
+> 
+> -- 
+> 2.39.3
+> 
+> 
+For the series:
 
-However, the section could be stripped out during a build process.  It
-would be better to let the modules loaded, because their basic
-functionalities have no problem[1], though the BTF functionalities will
-not be supported.  Make the function to lower the level of the message
-from error to warn, and return no error.
-
-[1] https://lore.kernel.org/bpf/20220219082037.ow2kbq5brktf4f2u@apollo.legion/
-
-Reported-by: Alexander Egorenkov <Alexander.Egorenkov@ibm.com>
-Link: https://lore.kernel.org/bpf/87y228q66f.fsf@oc8242746057.ibm.com/
-Suggested-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Link: https://lore.kernel.org/bpf/20220219082037.ow2kbq5brktf4f2u@apollo.legion/
-Fixes: c446fdacb10d ("bpf: fix register_btf_kfunc_id_set for !CONFIG_DEBUG_INFO_BTF")
-Cc: <stable@vger.kernel.org> # 5.18.x
-Signed-off-by: SeongJae Park <sj@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
----
-Changes from v1
-(https://lore.kernel.org/all/20230626181120.7086-1-sj@kernel.org/)
-- Fix Fixes: tag (Jiri Olsa)
-- Add 'Acked-by: ' from Jiri Olsa
-
- kernel/bpf/btf.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 6b682b8e4b50..d683f034996f 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -7848,14 +7848,10 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
- 
- 	btf = btf_get_module_btf(kset->owner);
- 	if (!btf) {
--		if (!kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
--			pr_err("missing vmlinux BTF, cannot register kfuncs\n");
--			return -ENOENT;
--		}
--		if (kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES)) {
--			pr_err("missing module BTF, cannot register kfuncs\n");
--			return -ENOENT;
--		}
-+		if (!kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF))
-+			pr_warn("missing vmlinux BTF, cannot register kfuncs\n");
-+		if (kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
-+			pr_warn("missing module BTF, cannot register kfuncs\n");
- 		return 0;
- 	}
- 	if (IS_ERR(btf))
--- 
-2.25.1
-
-
+Acked-by: Daniel Xu <dxu@dxuuu.xyz>
