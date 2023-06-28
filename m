@@ -2,58 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 543F7740B1C
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 10:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A18740B1D
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 10:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234271AbjF1IW0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jun 2023 04:22:26 -0400
-Received: from mail.simsborovin.com ([89.40.118.18]:40514 "EHLO
-        mail.simsborovin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233461AbjF1ION (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Jun 2023 04:14:13 -0400
-Received: by mail.simsborovin.com (Postfix, from userid 1001)
-        id 05F8D86AF1; Wed, 28 Jun 2023 09:11:29 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=simsborovin.com;
-        s=mail; t=1687939955;
-        bh=so3xiFooQ9N0D/cd/+ivPaO6nnHsd9cY/G2xa/w5Tfg=;
-        h=Date:From:To:Subject:From;
-        b=NSx9T2Vin1MAR1NEy4PQDstHQowbpM1cuzOjJVVPoAQildDXt84FbPp1cwKlYhqn6
-         5egbQn6Ag3x4S7dgpRy63js3ckcLCakKAfbfj23Z2l0WKYAUWCsUVr8Dq3H6LfK2i2
-         1ZXzu2YseHkbpz7GtFlhTUVO8hai4TE6azVhDjk/drvLusIUhfyE7LDw8JbUuMfADn
-         sNaKzFNCE0ooM/aX6YsY7Q6nTHB373l7AEw3WXnDJ+wQH/G+W01p04VV9EMLJvm9dJ
-         XH1wHtoyJOAgYf1Q59gopTzXXBau0lAKejOJWW0ydnGYerFhNKJQDQJr1/h+d1SXL0
-         skED0NOd2SI0w==
-Received: by mail.simsborovin.com for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 08:11:03 GMT
-Message-ID: <20230628074503-0.1.4d.noz6.0.0bhp16hij0@simsborovin.com>
-Date:   Wed, 28 Jun 2023 08:11:03 GMT
-From:   "Konrad Trojanowski" <konrad.trojanowski@simsborovin.com>
-To:     <bpf@vger.kernel.org>
-Subject: W sprawie samochodu
-X-Mailer: mail.simsborovin.com
+        id S233702AbjF1IWX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jun 2023 04:22:23 -0400
+Received: from dggsgout11.his.huawei.com ([45.249.212.51]:7591 "EHLO
+        dggsgout11.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233595AbjF1IOY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Jun 2023 04:14:24 -0400
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QrZ9m1QnTz4f3jMJ;
+        Wed, 28 Jun 2023 16:14:20 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP1 (Coremail) with SMTP id cCh0CgBnhzHa65tkpkgbMA--.49136S2;
+        Wed, 28 Jun 2023 16:14:21 +0800 (CST)
+Subject: Re: [PATCH v3 bpf-next 11/13] selftests/bpf: Improve test coverage of
+ bpf_mem_alloc.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     tj@kernel.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com, daniel@iogearbox.net,
+        andrii@kernel.org, void@manifault.com, paulmck@kernel.org
+References: <20230628015634.33193-1-alexei.starovoitov@gmail.com>
+ <20230628015634.33193-12-alexei.starovoitov@gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <36014508-54cd-278c-accf-e5d71cade6d1@huaweicloud.com>
+Date:   Wed, 28 Jun 2023 16:14:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230628015634.33193-12-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: cCh0CgBnhzHa65tkpkgbMA--.49136S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYV7kC6x804xWl14x267AKxVW8JVW5JwAF
+        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r
+        4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3
+        Jr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYx
+        BIdaVFxhVjvjDU0xZFpf9x07UCg4fUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dzie=C5=84 dobry,
-
-chcieliby=C5=9Bmy zapewni=C4=87 Pa=C5=84stwu kompleksowe rozwi=C4=85zania=
-, je=C5=9Bli chodzi o system monitoringu GPS.
-
-Precyzyjne monitorowanie pojazd=C3=B3w na mapach cyfrowych, =C5=9Bledzeni=
-e ich parametr=C3=B3w eksploatacyjnych w czasie rzeczywistym oraz kontrol=
-a paliwa to kluczowe funkcjonalno=C5=9Bci naszego systemu.=20
-
-Organizowanie pracy pracownik=C3=B3w jest dzi=C4=99ki temu prostsze i bar=
-dziej efektywne, a oszcz=C4=99dno=C5=9Bci i optymalizacja w zakresie pono=
-szonych koszt=C3=B3w, maj=C4=85 dla ka=C5=BCdego przedsi=C4=99biorcy ogro=
-mne znaczenie.
-
-Dopasujemy nasz=C4=85 ofert=C4=99 do Pa=C5=84stwa oczekiwa=C5=84 i potrze=
-b organizacji. Czy mogliby=C5=9Bmy porozmawia=C4=87 o naszej propozycji?
 
 
-Pozdrawiam
-Konrad Trojanowski
+On 6/28/2023 9:56 AM, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> bpf_obj_new() calls bpf_mem_alloc(), but doing alloc/free of 8 elements
+> is not triggering watermark conditions in bpf_mem_alloc.
+> Increase to 200 elements to make sure alloc_bulk/free_bulk is exercised.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Hou Tao <houtao1@huawei.com>
+
