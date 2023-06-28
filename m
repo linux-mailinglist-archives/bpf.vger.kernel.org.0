@@ -1,258 +1,246 @@
-Return-Path: <bpf-owner@vger.kernel.org>
+Return-Path: <bpf+bounces-3639-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3470740C80
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 11:18:27 +0200 (CEST)
-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234696AbjF1JSU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jun 2023 05:18:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57841 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233249AbjF1IxM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 28 Jun 2023 04:53:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1687942326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=su9PvChmWiVRJcH0aNEvF2GH7iXfYZGfbrKz513TiwY=;
-        b=LBG6EHfMvK17vszyEaSMLJ5djXTd477VikidfAJCa0f2lHIbaeXkqdK3FmWk3lQRp4n9JN
-        jQI63PAnO+u1H494laDu7K6r5bbt/tqmlbwkTKRjIcRg9Bs/ATAZOdIcE738O83Kkl/pIx
-        yiYhEpnRHNEda1aIkgMnOxo4GHYSbhk=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-536-xxPPYTKFMq-gt22R48zaeQ-1; Wed, 28 Jun 2023 02:51:21 -0400
-X-MC-Unique: xxPPYTKFMq-gt22R48zaeQ-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-4edc7406cbaso4181757e87.2
-        for <bpf@vger.kernel.org>; Tue, 27 Jun 2023 23:51:21 -0700 (PDT)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0932740B2C
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 10:23:09 +0200 (CEST)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0F132811E6
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 08:23:08 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8006FAD;
+	Wed, 28 Jun 2023 08:23:00 +0000 (UTC)
+X-Original-To: bpf@vger.kernel.org
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFEF63C9
+	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 08:23:00 +0000 (UTC)
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB1D2D73;
+	Wed, 28 Jun 2023 01:22:58 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-7659dc74d91so364735385a.0;
+        Wed, 28 Jun 2023 01:22:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687940577; x=1690532577;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OPlJ3d55zkkCE0158NpdPdIacPtyKpxD+77cxWNgQn4=;
+        b=B/FZcfHwfA80FMXQD1r+by4GfJ0G7ym+e7/y8s8Dee0ja1UvDXu8hKfBtvH2b7omy4
+         iT2OS4wkVrFBsCEOfq2lPYFeWGMp25v0lOosQ2FsDX90HXA1RCJikhqpyOYR57VSWCYU
+         HUZkoJEPXkhwug4GOxIrQue/HFohjUSoIXllRFpNNsKQL73oNgrsqCPqjIbezwC8i8cz
+         hwQQYWWOBblL/zFLWntF32HtInNOxKnpqM5HAlqh5Rip8WXlQLddiQTz7HqF03uRQsJz
+         LC0xfiBf+i0vX0VrRdbjeFnHtWDtSe0L1JFNnd9Icg+eOK0964Pc+8KNOR5dv3Pqy1Dc
+         vfew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687935080; x=1690527080;
+        d=1e100.net; s=20221208; t=1687940577; x=1690532577;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=su9PvChmWiVRJcH0aNEvF2GH7iXfYZGfbrKz513TiwY=;
-        b=gnDCQNIYSnZY/DwiFjyc2HUyPzJPVyWmjBY/e7wU92iQKQPuDP/iHkDQKOvxjq+DW3
-         xJ1DCWMVRmY5iAurfjeE9QSVZTi7tIVrhiyM4btmsf8t2vxxPm/7xOXMY+L4O0WFSpT/
-         BNKu96a3gfAUy4/bJbaLITaLSlmQ+bg1y+VU79PgCGDSLtjP3UH706I+mnkIOg+ud/gM
-         Ry2UJOjbDnw9YXN4T4RADTZDB+6c7Bq8VuofO0HSA6xfXdW9cUq33m5Q4QqLZJvToLla
-         7ShoQK7yBEkhmYtjLB8eg/sAA/lv+7UeZ836f+jaHdSrvMmY+R/5Ha1G61JayDLdAf1V
-         wqcw==
-X-Gm-Message-State: AC+VfDwKByYUUQamCoqZP7jr27/AFEH13cs82W4pze5zYCWOkDUGOfe7
-        nGOHj4NkjZoTzn/c71qmaiUZMei/8khzXs9nUfKdeyt8JlJA50hvqneV0IPB2M7XJDtklydBuBC
-        Nw6SEfFSWstqEzh+hKqEoGQ+993PV
-X-Received: by 2002:a19:ca58:0:b0:4f8:b349:6938 with SMTP id h24-20020a19ca58000000b004f8b3496938mr12994475lfj.65.1687935080148;
-        Tue, 27 Jun 2023 23:51:20 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ7mv/3o+OYScVrxaKdO8aw/adM4SivgvUgQcZTOZQ3rB1LnCfP7sgXl+EWa854Ej82KZ6RtMTKkjSWEuj6scx8=
-X-Received: by 2002:a19:ca58:0:b0:4f8:b349:6938 with SMTP id
- h24-20020a19ca58000000b004f8b3496938mr12994457lfj.65.1687935079753; Tue, 27
- Jun 2023 23:51:19 -0700 (PDT)
+        bh=OPlJ3d55zkkCE0158NpdPdIacPtyKpxD+77cxWNgQn4=;
+        b=MjWxZTrHLVlxW/2+31BV5YYgeh7oVR6QRM/zd/g/bIQ+UfSOIYMTIV39niaVN6XXVe
+         NWGyBT+c62OL+iMLLGWpxdK1hMD8rkvIMtUWCleKBUzpWqHADqgOqsgy8zK6UHTcti8o
+         4d2otioCSEu0g6YPvpl57iOTaFibLciu5nbH55Tvcu9wNdrZkOvxHbdULWO88bt8j3QG
+         xY8ba3h8/Gj694q+7nJm2MC/9ZzB2wDOgn2BqjatdIyLp52qMX7XhGbrvP8sQdflynnR
+         gOHUKsqjkx3CGoLQmY3dvya1h2WAesCM4OR7r2UZzq7E9auLXtyPHNpF2hGXYmMsHmXw
+         7lbA==
+X-Gm-Message-State: AC+VfDxgAqpqcbeVeYXKl8wLVUIXm6ndDily+hDmJyUDfkbRcha7HASc
+	uXMfeUsYiqFEJrWGOzhWWWBv9kcHvUyOCuONdZOcV19vzStasQ==
+X-Google-Smtp-Source: ACHHUZ4SZINxUDCT1VOxGKSGnyrORp5xMAlVWVYZ4VVr9D12NJWQpx1JwNxevKpURs5vLH73EZrUYAMXE2UkZpD5Us8=
+X-Received: by 2002:a05:6214:2524:b0:5f4:5af6:1304 with SMTP id
+ gg4-20020a056214252400b005f45af61304mr36084024qvb.16.1687936643694; Wed, 28
+ Jun 2023 00:17:23 -0700 (PDT)
+Precedence: bulk
+X-Mailing-List: bpf@vger.kernel.org
+List-Id: <bpf.vger.kernel.org>
+List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230602092206.50108-1-xuanzhuo@linux.alibaba.com>
- <20230602092206.50108-4-xuanzhuo@linux.alibaba.com> <CACGkMEtFiutSpM--2agR1YhS0MxreH4vFFAEdCaC6E8qxyjZ4g@mail.gmail.com>
- <1687856491.8062844-5-xuanzhuo@linux.alibaba.com> <CACGkMEsmxax+kOdQA=e4D_xT0WkTPRcooxRHNvsi6xpaV+8ahQ@mail.gmail.com>
- <1687932052.6412272-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1687932052.6412272-1-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Wed, 28 Jun 2023 14:51:08 +0800
-Message-ID: <CACGkMEumhkBShqXXbWXviS+xZA1aYrnZFoU_avdsWZ_9sBAwUQ@mail.gmail.com>
-Subject: Re: [PATCH vhost v10 03/10] virtio_ring: split: support add premapped buf
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20230517034510.15639-1-zegao@tencent.com> <20230517034510.15639-3-zegao@tencent.com>
+In-Reply-To: <20230517034510.15639-3-zegao@tencent.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 28 Jun 2023 15:16:47 +0800
+Message-ID: <CALOAHbC6UpfFOOibdDiC7xFc5YFUgZnk3MZ=3Ny6we=AcrNbew@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] fprobe: make fprobe_kprobe_handler recursion free
+To: Ze Gao <zegao2021@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Borislav Petkov <bp@alien8.de>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Vasily Gorbik <gor@linux.ibm.com>, x86@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	Conor Dooley <conor@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	Ze Gao <zegao@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Precedence: bulk
-List-ID: <bpf.vger.kernel.org>
-X-Mailing-List: bpf@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, Jun 28, 2023 at 2:02=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
+On Wed, May 17, 2023 at 11:45=E2=80=AFAM Ze Gao <zegao2021@gmail.com> wrote=
+:
 >
-> On Wed, 28 Jun 2023 12:07:10 +0800, Jason Wang <jasowang@redhat.com> wrot=
-e:
-> > On Tue, Jun 27, 2023 at 5:05=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.aliba=
-ba.com> wrote:
-> > >
-> > > On Tue, 27 Jun 2023 16:03:26 +0800, Jason Wang <jasowang@redhat.com> =
-wrote:
-> > > > On Fri, Jun 2, 2023 at 5:22=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.al=
-ibaba.com> wrote:
-> > > > >
-> > > > > If the vq is the premapped mode, use the sg_dma_address() directl=
-y.
-> > > > >
-> > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > > ---
-> > > > >  drivers/virtio/virtio_ring.c | 46 ++++++++++++++++++++++--------=
-------
-> > > > >  1 file changed, 28 insertions(+), 18 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio=
-_ring.c
-> > > > > index 2afdfb9e3e30..18212c3e056b 100644
-> > > > > --- a/drivers/virtio/virtio_ring.c
-> > > > > +++ b/drivers/virtio/virtio_ring.c
-> > > > > @@ -598,8 +598,12 @@ static inline int virtqueue_add_split(struct=
- virtqueue *_vq,
-> > > > >                 for (sg =3D sgs[n]; sg; sg =3D sg_next(sg)) {
-> > > > >                         dma_addr_t addr;
-> > > > >
-> > > > > -                       if (vring_map_one_sg(vq, sg, DMA_TO_DEVIC=
-E, &addr))
-> > > > > -                               goto unmap_release;
-> > > > > +                       if (vq->premapped) {
-> > > > > +                               addr =3D sg_dma_address(sg);
-> > > > > +                       } else {
-> > > > > +                               if (vring_map_one_sg(vq, sg, DMA_=
-TO_DEVICE, &addr))
-> > > > > +                                       goto unmap_release;
-> > > > > +                       }
-> > > >
-> > > > Btw, I wonder whether or not it would be simple to implement the
-> > > > vq->premapped check inside vring_map_one_sg() assuming the
-> > > > !use_dma_api is done there as well.
-> > >
-> > >
-> > > YES,
-> > >
-> > > That will more simple for the caller.
-> > >
-> > > But we will have things like:
-> > >
-> > > int func(bool do)
-> > > {
-> > > if (!do)
-> > >     return;
-> > > }
-> > >
-> > > I like this way, but you don't like it in last version.
-> >
-> > I see :)
-> >
-> > So I think it depends on the error handling path, we should choose a
-> > way that can let us easily deal with errors.
-> >
-> > For example, it seems the current approach is better since it doesn't
-> > need to change the unmap_release.
+> Current implementation calls kprobe related functions before doing
+> ftrace recursion check in fprobe_kprobe_handler, which opens door
+> to kernel crash due to stack recursion if preempt_count_{add, sub}
+> is traceable in kprobe_busy_{begin, end}.
 >
-> NO,
+> Things goes like this without this patch quoted from Steven:
+> "
+> fprobe_kprobe_handler() {
+>    kprobe_busy_begin() {
+>       preempt_disable() {
+>          preempt_count_add() {  <-- trace
+>             fprobe_kprobe_handler() {
+>                 [ wash, rinse, repeat, CRASH!!! ]
+> "
 >
-> The unmap_release is same for two way.
+> By refactoring the common part out of fprobe_kprobe_handler and
+> fprobe_handler and call ftrace recursion detection at the very beginning,
+> the whole fprobe_kprobe_handler is free from recursion.
 >
-> Thanks.
-
-Ok, so either is fine for me.
-
-Thanks
-
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Link: https://lore.kernel.org/linux-trace-kernel/20230516071830.8190-3-ze=
+gao@tencent.com
+> ---
+>  kernel/trace/fprobe.c | 59 ++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 44 insertions(+), 15 deletions(-)
 >
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index 9abb3905bc8e..097c740799ba 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -20,30 +20,22 @@ struct fprobe_rethook_node {
+>         char data[];
+>  };
 >
-> >
-> > Thanks
-> >
-> > >
-> > > >
-> > > > >
-> > > > >                         prev =3D i;
-> > > > >                         /* Note that we trust indirect descriptor
-> > > > > @@ -614,8 +618,12 @@ static inline int virtqueue_add_split(struct=
- virtqueue *_vq,
-> > > > >                 for (sg =3D sgs[n]; sg; sg =3D sg_next(sg)) {
-> > > > >                         dma_addr_t addr;
-> > > > >
-> > > > > -                       if (vring_map_one_sg(vq, sg, DMA_FROM_DEV=
-ICE, &addr))
-> > > > > -                               goto unmap_release;
-> > > > > +                       if (vq->premapped) {
-> > > > > +                               addr =3D sg_dma_address(sg);
-> > > > > +                       } else {
-> > > > > +                               if (vring_map_one_sg(vq, sg, DMA_=
-FROM_DEVICE, &addr))
-> > > > > +                                       goto unmap_release;
-> > > > > +                       }
-> > > > >
-> > > > >                         prev =3D i;
-> > > > >                         /* Note that we trust indirect descriptor
-> > > > > @@ -689,21 +697,23 @@ static inline int virtqueue_add_split(struc=
-t virtqueue *_vq,
-> > > > >         return 0;
-> > > > >
-> > > > >  unmap_release:
-> > > > > -       err_idx =3D i;
-> > > > > +       if (!vq->premapped) {
-> > > >
-> > > > Can vq->premapped be true here? The label is named as "unmap_relase=
-"
-> > > > which implies "map" beforehand which seems not the case for
-> > > > premapping.
-> > >
-> > > I see.
-> > >
-> > > Rethink about this, there is a better way.
-> > > I will fix in next version.
-> > >
-> > >
-> > > Thanks.
-> > >
-> > >
-> > > >
-> > > > Thanks
-> > > >
-> > > >
-> > > > > +               err_idx =3D i;
-> > > > >
-> > > > > -       if (indirect)
-> > > > > -               i =3D 0;
-> > > > > -       else
-> > > > > -               i =3D head;
-> > > > > -
-> > > > > -       for (n =3D 0; n < total_sg; n++) {
-> > > > > -               if (i =3D=3D err_idx)
-> > > > > -                       break;
-> > > > > -               if (indirect) {
-> > > > > -                       vring_unmap_one_split_indirect(vq, &desc[=
-i]);
-> > > > > -                       i =3D virtio16_to_cpu(_vq->vdev, desc[i].=
-next);
-> > > > > -               } else
-> > > > > -                       i =3D vring_unmap_one_split(vq, i);
-> > > > > +               if (indirect)
-> > > > > +                       i =3D 0;
-> > > > > +               else
-> > > > > +                       i =3D head;
-> > > > > +
-> > > > > +               for (n =3D 0; n < total_sg; n++) {
-> > > > > +                       if (i =3D=3D err_idx)
-> > > > > +                               break;
-> > > > > +                       if (indirect) {
-> > > > > +                               vring_unmap_one_split_indirect(vq=
-, &desc[i]);
-> > > > > +                               i =3D virtio16_to_cpu(_vq->vdev, =
-desc[i].next);
-> > > > > +                       } else
-> > > > > +                               i =3D vring_unmap_one_split(vq, i=
+> -static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+> -                          struct ftrace_ops *ops, struct ftrace_regs *fr=
+egs)
+> +static inline void __fprobe_handler(unsigned long ip, unsigned long
+> +               parent_ip, struct ftrace_ops *ops, struct ftrace_regs *fr=
+egs)
+>  {
+>         struct fprobe_rethook_node *fpr;
+>         struct rethook_node *rh =3D NULL;
+>         struct fprobe *fp;
+>         void *entry_data =3D NULL;
+> -       int bit, ret;
+> +       int ret;
+>
+>         fp =3D container_of(ops, struct fprobe, ops);
+> -       if (fprobe_disabled(fp))
+> -               return;
+> -
+> -       bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
+> -       if (bit < 0) {
+> -               fp->nmissed++;
+> -               return;
+> -       }
+>
+>         if (fp->exit_handler) {
+>                 rh =3D rethook_try_get(fp->rethook);
+>                 if (!rh) {
+>                         fp->nmissed++;
+> -                       goto out;
+> +                       return;
+>                 }
+>                 fpr =3D container_of(rh, struct fprobe_rethook_node, node=
 );
-> > > > > +               }
-> > > > >         }
-> > > > >
-> > > > >         if (indirect)
-> > > > > --
-> > > > > 2.32.0.3.g01195cf9f
-> > > > >
-> > > >
-> > >
-> >
+>                 fpr->entry_ip =3D ip;
+> @@ -61,23 +53,60 @@ static void fprobe_handler(unsigned long ip, unsigned=
+ long parent_ip,
+>                 else
+>                         rethook_hook(rh, ftrace_get_regs(fregs), true);
+>         }
+> -out:
+> +}
+> +
+> +static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+> +               struct ftrace_ops *ops, struct ftrace_regs *fregs)
+> +{
+> +       struct fprobe *fp;
+> +       int bit;
+> +
+> +       fp =3D container_of(ops, struct fprobe, ops);
+> +       if (fprobe_disabled(fp))
+> +               return;
+> +
+> +       /* recursion detection has to go before any traceable function an=
+d
+> +        * all functions before this point should be marked as notrace
+> +        */
+> +       bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
+> +       if (bit < 0) {
+> +               fp->nmissed++;
+> +               return;
+> +       }
+> +       __fprobe_handler(ip, parent_ip, ops, fregs);
+>         ftrace_test_recursion_unlock(bit);
+> +
+>  }
+>  NOKPROBE_SYMBOL(fprobe_handler);
 >
+>  static void fprobe_kprobe_handler(unsigned long ip, unsigned long parent=
+_ip,
+>                                   struct ftrace_ops *ops, struct ftrace_r=
+egs *fregs)
+>  {
+> -       struct fprobe *fp =3D container_of(ops, struct fprobe, ops);
+> +       struct fprobe *fp;
+> +       int bit;
+> +
+> +       fp =3D container_of(ops, struct fprobe, ops);
+> +       if (fprobe_disabled(fp))
+> +               return;
+> +
+> +       /* recursion detection has to go before any traceable function an=
+d
+> +        * all functions called before this point should be marked as not=
+race
+> +        */
+> +       bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
+> +       if (bit < 0) {
+> +               fp->nmissed++;
+> +               return;
+> +       }
+>
+>         if (unlikely(kprobe_running())) {
+>                 fp->nmissed++;
+
+I have just looked through this patchset, just out of curiosity,
+shouldn't we call ftrace_test_recursion_unlock(bit) here ?
+We have already locked it successfully, so why should we not unlock it?
+
+>                 return;
+>         }
+> +
+>         kprobe_busy_begin();
+> -       fprobe_handler(ip, parent_ip, ops, fregs);
+> +       __fprobe_handler(ip, parent_ip, ops, fregs);
+>         kprobe_busy_end();
+> +       ftrace_test_recursion_unlock(bit);
+>  }
+>
+>  static void fprobe_exit_handler(struct rethook_node *rh, void *data,
+> --
+> 2.40.1
+>
+>
+
+
+--=20
+Regards
+Yafang
 
