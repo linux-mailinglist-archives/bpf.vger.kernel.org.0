@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-3649-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3650-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08B58741069
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 13:52:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DE4E74106B
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 13:52:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 396531C20818
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 11:52:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED84A280E19
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 11:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264E7BE69;
-	Wed, 28 Jun 2023 11:52:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B22BE74;
+	Wed, 28 Jun 2023 11:52:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F4DBE4B
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 11:52:11 +0000 (UTC)
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851D51BD4
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 04:52:10 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b80512a7f2so22335365ad.3
-        for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 04:52:10 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CE9BE47
+	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 11:52:13 +0000 (UTC)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B174FF
+	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 04:52:12 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b7f223994fso34125135ad.3
+        for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 04:52:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687953130; x=1690545130;
+        d=gmail.com; s=20221208; t=1687953131; x=1690545131;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MenM5RhfOSkTkIi9MjbCzp+y8rVjV2v6pS6jO1takAk=;
-        b=Zz29Zuh+o2TjQ2Q1YNnJYg0twjdUiwst1HntdeLD8bhbO9RwRYF9FdYHJavvIoz6CT
-         NEqdFCN/qzsWGrw1bvoWOxe7aDIjLrZ8Rosx2XCJJOfOHung/wYIEb0A6VZvxQ2YZHsY
-         hK5iv8qdziTcoVaGOh0mvyZxYSIoT8+M8TZ1dRYxWUL0QUa/qLLk6FQASRSPFNKf1/tl
-         Vl2WwmAhLyZEnU1kFnCs/LIRCWrRS5/Baxpze+MkApdePjR49zqURjDnq33NYqbY5a5E
-         8GJyhs4B3C0jageQHxwXDfdJ/obFotiRRoruHh0AHnMFgRCxX/D9YiJjnWL7fWxR9QfK
-         oJ4Q==
+        bh=bLlpd+9cq+iVzEW7RWjKZweEWG5U9g9cyOtRfBdjXm0=;
+        b=grmGUCqDbelAoaeDKc9z6xfMNrAPgN0B4GziQ5WrBQTzhv4RYYWwXbkTtyRNiZK9/7
+         75OPLcFDVHxMAdsjZ+7UNud61else7/4X01+mhQS9q/m656zK7DWnTj0OxC5o6OVHQge
+         ijtMBcNBKCY0iqi+U7Ss7bmdMt5bIFKEvYvNGOlLh8ngcI8JGhD1oe01Jc/YjDci/XS8
+         JgmNCsNRAWjGc9PpKO1XtChiKQi8w9jihTAwaCEz86ti+PCgd7sPqdC+m0b4qucP3TrF
+         67jioTlZQu+XUMEMBn5feGbgyVkC4+pFe4yEWwoSdOUk61SNz5mNCi3EDqxuCGC73Pkh
+         qMIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687953130; x=1690545130;
+        d=1e100.net; s=20221208; t=1687953131; x=1690545131;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MenM5RhfOSkTkIi9MjbCzp+y8rVjV2v6pS6jO1takAk=;
-        b=kgLWzCfj19L0UdfsIR1PgZzLNKcg/Bzpml2nYQJYS1gr4rZx9Ofg1IAhjHbR2bfGck
-         oxEdUhInun1vyXeG+pgtDfJTOYcFiW5IJbZYcq2FAQwGb2XBGGynIqymN3SAEngxfeWQ
-         SUYS4fJTC4ywjQO+78aNFsDGKBIbIubhzDb7wQMTZMOMn+s9VC/cICz36tAPP0QCB4/N
-         Tp55Y9Pf+KEDJ9bnJjn26STi14jbktknykKQVoKHBStLylxrOrwXqg3t2H45tBGa69zD
-         oUIDgHoWsR1IajjXhIyC6vP874R+01IsqtA1fBhjnsZgTEMDh8QP59sVN77f5DOLLq4z
-         m+hg==
-X-Gm-Message-State: AC+VfDzOK9tXuJlfJeuK5ZCNGov1O30C52x4iJUKN4oczZ2fhJCfwehF
-	pQj8QqEifZLQxt2M/a2Cecg=
-X-Google-Smtp-Source: ACHHUZ7rH45Q98m1xv1Jy8odbxqS0mQvSK8nM59eQWQCyYL1jgCZtgIuKAS6n1iqv1VVVQ9VM55gSQ==
-X-Received: by 2002:a17:902:a715:b0:1b8:1687:b53 with SMTP id w21-20020a170902a71500b001b816870b53mr4723872plq.26.1687953129968;
-        Wed, 28 Jun 2023 04:52:09 -0700 (PDT)
+        bh=bLlpd+9cq+iVzEW7RWjKZweEWG5U9g9cyOtRfBdjXm0=;
+        b=SR8FD5d6ZlJkssFD1lsgak7+kEXmE3kDrrHoM7ag4cQTHBT7Gd9xqHlw4cFMPnkusF
+         P46mpLc+ixnvNe1eaIxTp84FKt1OwShAKNVj0UcZlvAT2iJad8YPsAUXPd+dVf1Q62NJ
+         7i/4zt7iQKOVqGZAiVe1BUsDDgvnlirbOrMVCjV3Qwb3hPxzARwCFeS4PsOjr3L96KGE
+         za7HDKdOF6cqJvAM8t+PL6DN1cEMaVb7e359oFl1sv0IHHdufr10352Ht1sBmdPXkrzn
+         HNlf/JfORTKFHqWwwqWvMQOuqfYRTk5YuHZ217/rK2t/sDy1U+q3yiOX+vTAtA4p0L1r
+         WTXg==
+X-Gm-Message-State: AC+VfDxSpUM6+Y6llRW9/vGSdONwWPP3CF+cW3eERf47PoyibAhRuAnr
+	IdmUQqwCFSF0Qgg34SHhA4E=
+X-Google-Smtp-Source: ACHHUZ4RFlcbd/wOCqbjqAQt3FukodJmDAx60kgQzYYEc/NwSlm5P6CgNjSSFDVlFr8Gap/x+npWLA==
+X-Received: by 2002:a17:902:ce88:b0:1b6:68bb:6ad0 with SMTP id f8-20020a170902ce8800b001b668bb6ad0mr16921772plg.55.1687953131331;
+        Wed, 28 Jun 2023 04:52:11 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac02:b79:5400:4ff:fe7d:3e26])
-        by smtp.gmail.com with ESMTPSA id jf5-20020a170903268500b001b7eeffbdbfsm6607133plb.261.2023.06.28.04.52.08
+        by smtp.gmail.com with ESMTPSA id jf5-20020a170903268500b001b7eeffbdbfsm6607133plb.261.2023.06.28.04.52.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jun 2023 04:52:09 -0700 (PDT)
+        Wed, 28 Jun 2023 04:52:10 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -70,9 +70,9 @@ To: ast@kernel.org,
 	jolsa@kernel.org
 Cc: bpf@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 1/2] bpf: Fix an error around PTR_UNTRUSTED
-Date: Wed, 28 Jun 2023 11:52:04 +0000
-Message-Id: <20230628115205.248395-2-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next 2/2] bpf: Fix an error in verifying a field in a union
+Date: Wed, 28 Jun 2023 11:52:05 +0000
+Message-Id: <20230628115205.248395-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230628115205.248395-1-laoar.shao@gmail.com>
 References: <20230628115205.248395-1-laoar.shao@gmail.com>
@@ -90,69 +90,71 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Per discussion with Alexei, the PTR_UNTRUSTED flag should not been
-cleared when we start to walk a new struct, because the struct in
-question may be a struct nested in a union. We should also check and set
-this flag before we walk its each member, in case itself is a union.
+We are utilizing BPF LSM to monitor BPF operations within our container
+environment. When we add support for raw_tracepoint, it hits below
+error.
 
-Fixes: 6fcd486b3a0a ("bpf: Refactor RCU enforcement in the verifier.")
+; (const void *)attr->raw_tracepoint.name);
+27: (79) r3 = *(u64 *)(r2 +0)
+access beyond the end of member map_type (mend:4) in struct (anon) with off 0 size 8
+
+It can be reproduced with below BPF prog.
+
+SEC("lsm/bpf")
+int BPF_PROG(bpf_audit, int cmd, union bpf_attr *attr, unsigned int size)
+{
+	switch (cmd) {
+	case BPF_RAW_TRACEPOINT_OPEN:
+		bpf_printk("raw_tracepoint is %s", attr->raw_tracepoint.name);
+		break;
+	default:
+		break;
+	}
+	return 0;
+}
+
+The reason is that when accessing a field in a union, such as bpf_attr,
+if the field is located within a nested struct that is not the first
+member of the union, it can result in incorrect field verification.
+
+  union bpf_attr {
+      struct {
+          __u32 map_type; <<<< Actually it will find that field.
+          __u32 key_size;
+          __u32 value_size;
+         ...
+      };
+      ...
+      struct {
+          __u64 name;    <<<< We want to verify this field.
+          __u32 prog_fd;
+      } raw_tracepoint;
+  };
+
+Considering the potential deep nesting levels, finding a perfect
+solution to address this issue has proven challenging. Therefore, I
+propose a solution where we simply skip the verification process if the
+field in question is located within a union.
+
+Fixes: 7e3617a72df3 ("bpf: Add array support to btf_struct_access")
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/bpf/btf.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ kernel/bpf/btf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 29fe21099298..e0a493230727 100644
+index e0a493230727..8ad27b16bc8b 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -6133,7 +6133,6 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 	const char *tname, *mname, *tag_value;
- 	u32 vlen, elem_id, mid;
- 
--	*flag = 0;
- again:
- 	tname = __btf_name_by_offset(btf, t->name_off);
- 	if (!btf_type_is_struct(t)) {
-@@ -6142,6 +6141,14 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 	}
- 
- 	vlen = btf_type_vlen(t);
-+	if (BTF_INFO_KIND(t->info) == BTF_KIND_UNION && vlen != 1)
-+		/*
-+		 * walking unions yields untrusted pointers
-+		 * with exception of __bpf_md_ptr and other
-+		 * unions with a single member
-+		 */
-+		*flag |= PTR_UNTRUSTED;
-+
- 	if (off + size > t->size) {
- 		/* If the last element is a variable size array, we may
- 		 * need to relax the rule.
-@@ -6302,15 +6309,6 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 		 * of this field or inside of this struct
+@@ -6366,7 +6366,7 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
+ 		 * that also allows using an array of int as a scratch
+ 		 * space. e.g. skb->cb[].
  		 */
- 		if (btf_type_is_struct(mtype)) {
--			if (BTF_INFO_KIND(mtype->info) == BTF_KIND_UNION &&
--			    btf_type_vlen(mtype) != 1)
--				/*
--				 * walking unions yields untrusted pointers
--				 * with exception of __bpf_md_ptr and other
--				 * unions with a single member
--				 */
--				*flag |= PTR_UNTRUSTED;
--
- 			/* our field must be inside that union or struct */
- 			t = mtype;
- 
-@@ -6476,7 +6474,7 @@ bool btf_struct_ids_match(struct bpf_verifier_log *log,
- 			  bool strict)
- {
- 	const struct btf_type *type;
--	enum bpf_type_flag flag;
-+	enum bpf_type_flag flag = 0;
- 	int err;
- 
- 	/* Are we already done? */
+-		if (off + size > mtrue_end) {
++		if (off + size > mtrue_end && !(*flag & PTR_UNTRUSTED)) {
+ 			bpf_log(log,
+ 				"access beyond the end of member %s (mend:%u) in struct %s with off %u size %u\n",
+ 				mname, mtrue_end, tname, off, size);
 -- 
 2.39.3
 
