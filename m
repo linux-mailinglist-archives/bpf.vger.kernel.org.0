@@ -1,77 +1,327 @@
-Return-Path: <bpf-owner@vger.kernel.org>
+Return-Path: <bpf+bounces-3670-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EBD741769
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 19:44:52 +0200 (CEST)
-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbjF1Rod (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jun 2023 13:44:33 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:4480 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231750AbjF1RoH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Jun 2023 13:44:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1687974247; x=1719510247;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PrG4tYO/ZphjCkN2Y/btvDogyR+oDAvStHHOQ5Xdam4=;
-  b=F/zR4J0WgotPHVqfpRL9FNx2HWFFIMDV7V33jLujr+tq/X2uo28Y7w0I
-   QjpDaYBHxt7EIEDilj7/Br1+z9MC2cjg4Q+sLwYZnp/5GgF3jc/qAUTzI
-   nCJX56RUv0Yr/HlBrZK2vrtv+4kCHr/QqtdHvUM/FP3CpufTVYlcpWvBr
-   M=;
-X-IronPort-AV: E=Sophos;i="6.01,166,1684800000"; 
-   d="scan'208";a="336700844"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2023 17:44:04 +0000
-Received: from EX19MTAUWB002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com (Postfix) with ESMTPS id F28FC160DAE;
-        Wed, 28 Jun 2023 17:43:57 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 28 Jun 2023 17:43:45 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.187.170.50) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 28 Jun 2023 17:43:40 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     <lmb@isovalent.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <dsahern@kernel.org>, <edumazet@google.com>, <haoluo@google.com>,
-        <hemanthmalla@gmail.com>, <joe@wand.net.nz>,
-        <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-        <kpsingh@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <martin.lau@linux.dev>, <mykolal@fb.com>, <netdev@vger.kernel.org>,
-        <pabeni@redhat.com>, <sdf@google.com>, <shuah@kernel.org>,
-        <song@kernel.org>, <willemdebruijn.kernel@gmail.com>, <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v4 2/7] net: export inet_lookup_reuseport and inet6_lookup_reuseport
-Date:   Wed, 28 Jun 2023 10:43:29 -0700
-Message-ID: <20230628174329.68454-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230613-so-reuseport-v4-2-4ece76708bba@isovalent.com>
-References: <20230613-so-reuseport-v4-2-4ece76708bba@isovalent.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.187.170.50]
-X-ClientProxiedBy: EX19D044UWB001.ant.amazon.com (10.13.139.171) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 044827417B2
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 19:57:45 +0200 (CEST)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18B911C203AF
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 17:57:44 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EB7D52C;
+	Wed, 28 Jun 2023 17:57:28 +0000 (UTC)
+X-Original-To: bpf@vger.kernel.org
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B202322E;
+	Wed, 28 Jun 2023 17:57:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D52BC433C8;
+	Wed, 28 Jun 2023 17:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1687975046;
+	bh=sGdzZoRjT4g9yAAnk8VSoH0g5CyKtglm3SrmHU5ORDE=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=D/0hBH9uJQN8Jdo9CnGQEc5TKh9J735dfGksJZVxVBgthgIAXpcDlEe6C+wuHcPiM
+	 dz24j6pQ2SN4SKKD2QPw8BX9XnjL9SpBir7RxxDBr2W/txornvQ2vWCQ58pl/eHqGE
+	 ih2Lwe6fkh7Gr7UXETu0WiQss41IHxgxl8bDBmSiexEnGmCtYRaV65DJBvLTXe1GBV
+	 wNJIrNfAHYrOMEDhJCpxLcO07kSLIAtu4y2EvQlPrfTgytedeyYe6AU9MHpyDkbRv8
+	 GEM+KY8q6H6qcV8fQm0+Ydet9MrsSFQcMLahwRpretom2khUcbVHcQECNhBiGGhb4C
+	 TjLyYxPmuZvpQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 23F50CE39D4; Wed, 28 Jun 2023 10:57:26 -0700 (PDT)
+Date: Wed, 28 Jun 2023 10:57:26 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: daniel@iogearbox.net, andrii@kernel.org, void@manifault.com,
+	houtao@huaweicloud.com, tj@kernel.org, rcu@vger.kernel.org,
+	netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v3 bpf-next 12/13] bpf: Introduce bpf_mem_free_rcu()
+ similar to kfree_rcu().
+Message-ID: <6f8e0e91-44b4-4d0e-8df3-c1e765653255@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230628015634.33193-1-alexei.starovoitov@gmail.com>
+ <20230628015634.33193-13-alexei.starovoitov@gmail.com>
 Precedence: bulk
-List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
+List-Id: <bpf.vger.kernel.org>
+List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230628015634.33193-13-alexei.starovoitov@gmail.com>
 
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Wed, 28 Jun 2023 10:48:17 +0100
-> Rename the existing reuseport helpers for IPv4 and IPv6 so that they
-> can be invoked in the follow up commit. Export them so that building
-> DCCP and IPv6 as a module works.
+On Tue, Jun 27, 2023 at 06:56:33PM -0700, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> No change in functionality.
+> Introduce bpf_mem_[cache_]free_rcu() similar to kfree_rcu().
+> Unlike bpf_mem_[cache_]free() that links objects for immediate reuse into
+> per-cpu free list the _rcu() flavor waits for RCU grace period and then moves
+> objects into free_by_rcu_ttrace list where they are waiting for RCU
+> task trace grace period to be freed into slab.
 > 
-> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
+> The life cycle of objects:
+> alloc: dequeue free_llist
+> free: enqeueu free_llist
+> free_rcu: enqueue free_by_rcu -> waiting_for_gp
+> free_llist above high watermark -> free_by_rcu_ttrace
+> after RCU GP waiting_for_gp -> free_by_rcu_ttrace
+> free_by_rcu_ttrace -> waiting_for_gp_ttrace -> slab
+> 
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  include/linux/bpf_mem_alloc.h |   2 +
+>  kernel/bpf/memalloc.c         | 129 +++++++++++++++++++++++++++++++++-
+>  2 files changed, 128 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
+> index 3929be5743f4..d644bbb298af 100644
+> --- a/include/linux/bpf_mem_alloc.h
+> +++ b/include/linux/bpf_mem_alloc.h
+> @@ -27,10 +27,12 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
+>  /* kmalloc/kfree equivalent: */
+>  void *bpf_mem_alloc(struct bpf_mem_alloc *ma, size_t size);
+>  void bpf_mem_free(struct bpf_mem_alloc *ma, void *ptr);
+> +void bpf_mem_free_rcu(struct bpf_mem_alloc *ma, void *ptr);
+>  
+>  /* kmem_cache_alloc/free equivalent: */
+>  void *bpf_mem_cache_alloc(struct bpf_mem_alloc *ma);
+>  void bpf_mem_cache_free(struct bpf_mem_alloc *ma, void *ptr);
+> +void bpf_mem_cache_free_rcu(struct bpf_mem_alloc *ma, void *ptr);
+>  void bpf_mem_cache_raw_free(void *ptr);
+>  void *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags);
+>  
+> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> index 40524d9454c7..3081d06a434c 100644
+> --- a/kernel/bpf/memalloc.c
+> +++ b/kernel/bpf/memalloc.c
+> @@ -101,6 +101,15 @@ struct bpf_mem_cache {
+>  	bool draining;
+>  	struct bpf_mem_cache *tgt;
+>  
+> +	/* list of objects to be freed after RCU GP */
+> +	struct llist_head free_by_rcu;
+> +	struct llist_node *free_by_rcu_tail;
+> +	struct llist_head waiting_for_gp;
+> +	struct llist_node *waiting_for_gp_tail;
+> +	struct rcu_head rcu;
+> +	atomic_t call_rcu_in_progress;
+> +	struct llist_head free_llist_extra_rcu;
+> +
+>  	/* list of objects to be freed after RCU tasks trace GP */
+>  	struct llist_head free_by_rcu_ttrace;
+>  	struct llist_head waiting_for_gp_ttrace;
+> @@ -344,6 +353,69 @@ static void free_bulk(struct bpf_mem_cache *c)
+>  	do_call_rcu_ttrace(tgt);
+>  }
+>  
+> +static void __free_by_rcu(struct rcu_head *head)
+> +{
+> +	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+> +	struct bpf_mem_cache *tgt = c->tgt;
+> +	struct llist_node *llnode;
+> +
+> +	llnode = llist_del_all(&c->waiting_for_gp);
+> +	if (!llnode)
+> +		goto out;
+> +
+> +	llist_add_batch(llnode, c->waiting_for_gp_tail, &tgt->free_by_rcu_ttrace);
+> +
+> +	/* Objects went through regular RCU GP. Send them to RCU tasks trace */
+> +	do_call_rcu_ttrace(tgt);
+> +out:
+> +	atomic_set(&c->call_rcu_in_progress, 0);
+> +}
+> +
+> +static void check_free_by_rcu(struct bpf_mem_cache *c)
+> +{
+> +	struct llist_node *llnode, *t;
+> +	unsigned long flags;
+> +
+> +	/* drain free_llist_extra_rcu */
+> +	if (unlikely(!llist_empty(&c->free_llist_extra_rcu))) {
+> +		inc_active(c, &flags);
+> +		llist_for_each_safe(llnode, t, llist_del_all(&c->free_llist_extra_rcu))
+> +			if (__llist_add(llnode, &c->free_by_rcu))
+> +				c->free_by_rcu_tail = llnode;
+> +		dec_active(c, flags);
+> +	}
+> +
+> +	if (llist_empty(&c->free_by_rcu))
+> +		return;
+> +
+> +	if (atomic_xchg(&c->call_rcu_in_progress, 1)) {
+> +		/*
+> +		 * Instead of kmalloc-ing new rcu_head and triggering 10k
+> +		 * call_rcu() to hit rcutree.qhimark and force RCU to notice
+> +		 * the overload just ask RCU to hurry up. There could be many
+> +		 * objects in free_by_rcu list.
+> +		 * This hint reduces memory consumption for an artifical
+> +		 * benchmark from 2 Gbyte to 150 Mbyte.
+> +		 */
+> +		rcu_request_urgent_qs_task(current);
 
-Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+I have been going back and forth on whether rcu_request_urgent_qs_task()
+needs to throttle calls to itself, for example, to pay attention to only
+one invocation per jiffy.  The theory here is that RCU's state machine
+normally only advances about once per jiffy anyway.
+
+The main risk of *not* throttling is if several CPUs were to invoke
+rcu_request_urgent_qs_task() in tight loops while those same CPUs were
+undergoing interrupt storms, which would result in heavy lock contention
+in __rcu_irq_enter_check_tick().  This is not exactly a common-case
+scenario, but on the other hand, if you are having this degree of trouble,
+should RCU really be adding lock contention to your troubles?
+
+Thoughts?
+
+							Thanx, Paul
+
+> +		return;
+> +	}
+> +
+> +	WARN_ON_ONCE(!llist_empty(&c->waiting_for_gp));
+> +
+> +	inc_active(c, &flags);
+> +	WRITE_ONCE(c->waiting_for_gp.first, __llist_del_all(&c->free_by_rcu));
+> +	c->waiting_for_gp_tail = c->free_by_rcu_tail;
+> +	dec_active(c, flags);
+> +
+> +	if (unlikely(READ_ONCE(c->draining))) {
+> +		free_all(llist_del_all(&c->waiting_for_gp), !!c->percpu_size);
+> +		atomic_set(&c->call_rcu_in_progress, 0);
+> +	} else {
+> +		call_rcu_hurry(&c->rcu, __free_by_rcu);
+> +	}
+> +}
+> +
+>  static void bpf_mem_refill(struct irq_work *work)
+>  {
+>  	struct bpf_mem_cache *c = container_of(work, struct bpf_mem_cache, refill_work);
+> @@ -358,6 +430,8 @@ static void bpf_mem_refill(struct irq_work *work)
+>  		alloc_bulk(c, c->batch, NUMA_NO_NODE);
+>  	else if (cnt > c->high_watermark)
+>  		free_bulk(c);
+> +
+> +	check_free_by_rcu(c);
+>  }
+>  
+>  static void notrace irq_work_raise(struct bpf_mem_cache *c)
+> @@ -486,6 +560,9 @@ static void drain_mem_cache(struct bpf_mem_cache *c)
+>  	free_all(llist_del_all(&c->waiting_for_gp_ttrace), percpu);
+>  	free_all(__llist_del_all(&c->free_llist), percpu);
+>  	free_all(__llist_del_all(&c->free_llist_extra), percpu);
+> +	free_all(__llist_del_all(&c->free_by_rcu), percpu);
+> +	free_all(__llist_del_all(&c->free_llist_extra_rcu), percpu);
+> +	free_all(llist_del_all(&c->waiting_for_gp), percpu);
+>  }
+>  
+>  static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
+> @@ -498,8 +575,8 @@ static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
+>  
+>  static void free_mem_alloc(struct bpf_mem_alloc *ma)
+>  {
+> -	/* waiting_for_gp_ttrace lists was drained, but __free_rcu might
+> -	 * still execute. Wait for it now before we freeing percpu caches.
+> +	/* waiting_for_gp[_ttrace] lists were drained, but RCU callbacks
+> +	 * might still execute. Wait for them.
+>  	 *
+>  	 * rcu_barrier_tasks_trace() doesn't imply synchronize_rcu_tasks_trace(),
+>  	 * but rcu_barrier_tasks_trace() and rcu_barrier() below are only used
+> @@ -508,7 +585,8 @@ static void free_mem_alloc(struct bpf_mem_alloc *ma)
+>  	 * rcu_trace_implies_rcu_gp(), it will be OK to skip rcu_barrier() by
+>  	 * using rcu_trace_implies_rcu_gp() as well.
+>  	 */
+> -	rcu_barrier_tasks_trace();
+> +	rcu_barrier(); /* wait for __free_by_rcu */
+> +	rcu_barrier_tasks_trace(); /* wait for __free_rcu */
+>  	if (!rcu_trace_implies_rcu_gp())
+>  		rcu_barrier();
+>  	free_mem_alloc_no_barrier(ma);
+> @@ -561,6 +639,7 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
+>  			irq_work_sync(&c->refill_work);
+>  			drain_mem_cache(c);
+>  			rcu_in_progress += atomic_read(&c->call_rcu_ttrace_in_progress);
+> +			rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
+>  		}
+>  		/* objcg is the same across cpus */
+>  		if (c->objcg)
+> @@ -577,6 +656,7 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
+>  				irq_work_sync(&c->refill_work);
+>  				drain_mem_cache(c);
+>  				rcu_in_progress += atomic_read(&c->call_rcu_ttrace_in_progress);
+> +				rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
+>  			}
+>  		}
+>  		if (c->objcg)
+> @@ -661,6 +741,27 @@ static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
+>  		irq_work_raise(c);
+>  }
+>  
+> +static void notrace unit_free_rcu(struct bpf_mem_cache *c, void *ptr)
+> +{
+> +	struct llist_node *llnode = ptr - LLIST_NODE_SZ;
+> +	unsigned long flags;
+> +
+> +	c->tgt = *(struct bpf_mem_cache **)llnode;
+> +
+> +	local_irq_save(flags);
+> +	if (local_inc_return(&c->active) == 1) {
+> +		if (__llist_add(llnode, &c->free_by_rcu))
+> +			c->free_by_rcu_tail = llnode;
+> +	} else {
+> +		llist_add(llnode, &c->free_llist_extra_rcu);
+> +	}
+> +	local_dec(&c->active);
+> +	local_irq_restore(flags);
+> +
+> +	if (!atomic_read(&c->call_rcu_in_progress))
+> +		irq_work_raise(c);
+> +}
+> +
+>  /* Called from BPF program or from sys_bpf syscall.
+>   * In both cases migration is disabled.
+>   */
+> @@ -694,6 +795,20 @@ void notrace bpf_mem_free(struct bpf_mem_alloc *ma, void *ptr)
+>  	unit_free(this_cpu_ptr(ma->caches)->cache + idx, ptr);
+>  }
+>  
+> +void notrace bpf_mem_free_rcu(struct bpf_mem_alloc *ma, void *ptr)
+> +{
+> +	int idx;
+> +
+> +	if (!ptr)
+> +		return;
+> +
+> +	idx = bpf_mem_cache_idx(ksize(ptr - LLIST_NODE_SZ));
+> +	if (idx < 0)
+> +		return;
+> +
+> +	unit_free_rcu(this_cpu_ptr(ma->caches)->cache + idx, ptr);
+> +}
+> +
+>  void notrace *bpf_mem_cache_alloc(struct bpf_mem_alloc *ma)
+>  {
+>  	void *ret;
+> @@ -710,6 +825,14 @@ void notrace bpf_mem_cache_free(struct bpf_mem_alloc *ma, void *ptr)
+>  	unit_free(this_cpu_ptr(ma->cache), ptr);
+>  }
+>  
+> +void notrace bpf_mem_cache_free_rcu(struct bpf_mem_alloc *ma, void *ptr)
+> +{
+> +	if (!ptr)
+> +		return;
+> +
+> +	unit_free_rcu(this_cpu_ptr(ma->cache), ptr);
+> +}
+> +
+>  /* Directly does a kfree() without putting 'ptr' back to the free_llist
+>   * for reuse and without waiting for a rcu_tasks_trace gp.
+>   * The caller must first go through the rcu_tasks_trace gp for 'ptr'
+> -- 
+> 2.34.1
+> 
+
