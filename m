@@ -1,246 +1,144 @@
-Return-Path: <bpf+bounces-3639-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0932740B2C
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 10:23:09 +0200 (CEST)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0F132811E6
-	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 08:23:08 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8006FAD;
-	Wed, 28 Jun 2023 08:23:00 +0000 (UTC)
-X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFEF63C9
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 08:23:00 +0000 (UTC)
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB1D2D73;
-	Wed, 28 Jun 2023 01:22:58 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-7659dc74d91so364735385a.0;
-        Wed, 28 Jun 2023 01:22:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687940577; x=1690532577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OPlJ3d55zkkCE0158NpdPdIacPtyKpxD+77cxWNgQn4=;
-        b=B/FZcfHwfA80FMXQD1r+by4GfJ0G7ym+e7/y8s8Dee0ja1UvDXu8hKfBtvH2b7omy4
-         iT2OS4wkVrFBsCEOfq2lPYFeWGMp25v0lOosQ2FsDX90HXA1RCJikhqpyOYR57VSWCYU
-         HUZkoJEPXkhwug4GOxIrQue/HFohjUSoIXllRFpNNsKQL73oNgrsqCPqjIbezwC8i8cz
-         hwQQYWWOBblL/zFLWntF32HtInNOxKnpqM5HAlqh5Rip8WXlQLddiQTz7HqF03uRQsJz
-         LC0xfiBf+i0vX0VrRdbjeFnHtWDtSe0L1JFNnd9Icg+eOK0964Pc+8KNOR5dv3Pqy1Dc
-         vfew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687940577; x=1690532577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OPlJ3d55zkkCE0158NpdPdIacPtyKpxD+77cxWNgQn4=;
-        b=MjWxZTrHLVlxW/2+31BV5YYgeh7oVR6QRM/zd/g/bIQ+UfSOIYMTIV39niaVN6XXVe
-         NWGyBT+c62OL+iMLLGWpxdK1hMD8rkvIMtUWCleKBUzpWqHADqgOqsgy8zK6UHTcti8o
-         4d2otioCSEu0g6YPvpl57iOTaFibLciu5nbH55Tvcu9wNdrZkOvxHbdULWO88bt8j3QG
-         xY8ba3h8/Gj694q+7nJm2MC/9ZzB2wDOgn2BqjatdIyLp52qMX7XhGbrvP8sQdflynnR
-         gOHUKsqjkx3CGoLQmY3dvya1h2WAesCM4OR7r2UZzq7E9auLXtyPHNpF2hGXYmMsHmXw
-         7lbA==
-X-Gm-Message-State: AC+VfDxgAqpqcbeVeYXKl8wLVUIXm6ndDily+hDmJyUDfkbRcha7HASc
-	uXMfeUsYiqFEJrWGOzhWWWBv9kcHvUyOCuONdZOcV19vzStasQ==
-X-Google-Smtp-Source: ACHHUZ4SZINxUDCT1VOxGKSGnyrORp5xMAlVWVYZ4VVr9D12NJWQpx1JwNxevKpURs5vLH73EZrUYAMXE2UkZpD5Us8=
-X-Received: by 2002:a05:6214:2524:b0:5f4:5af6:1304 with SMTP id
- gg4-20020a056214252400b005f45af61304mr36084024qvb.16.1687936643694; Wed, 28
- Jun 2023 00:17:23 -0700 (PDT)
-Precedence: bulk
-X-Mailing-List: bpf@vger.kernel.org
-List-Id: <bpf.vger.kernel.org>
-List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 37EB6740D31
+	for <lists+bpf@lfdr.de>; Wed, 28 Jun 2023 11:39:47 +0200 (CEST)
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S232392AbjF1JiY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jun 2023 05:38:24 -0400
+Received: from dggsgout11.his.huawei.com ([45.249.212.51]:7590 "EHLO
+        dggsgout11.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233473AbjF1IJV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Jun 2023 04:09:21 -0400
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QrZ3x11gQz4f468f;
+        Wed, 28 Jun 2023 16:09:17 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgDXt9Wq6ptkXUONMg--.704S2;
+        Wed, 28 Jun 2023 16:09:17 +0800 (CST)
+Subject: Re: [PATCH v2 bpf-next 09/13] bpf: Allow reuse from
+ waiting_for_gp_ttrace list.
+To:     Alexei Starovoitov <ast@meta.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Vernet <void@manifault.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
+        rcu@vger.kernel.org, Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+References: <20230624031333.96597-1-alexei.starovoitov@gmail.com>
+ <20230624031333.96597-10-alexei.starovoitov@gmail.com>
+ <9cc35513-5522-9229-469b-7d691c9790e1@huaweicloud.com>
+ <CAADnVQJViJh47Cze186XCS0_jeQMb1wu6BfVZiQL6982a_hhfg@mail.gmail.com>
+ <417e4d9c-7b69-0b9a-07e3-9af4b3b3299f@huaweicloud.com>
+ <2bf11b56-7494-c0a9-09d4-c9e41aaba850@meta.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <957dd5cd-0855-1197-7045-4cb1590bd753@huaweicloud.com>
+Date:   Wed, 28 Jun 2023 16:09:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20230517034510.15639-1-zegao@tencent.com> <20230517034510.15639-3-zegao@tencent.com>
-In-Reply-To: <20230517034510.15639-3-zegao@tencent.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 28 Jun 2023 15:16:47 +0800
-Message-ID: <CALOAHbC6UpfFOOibdDiC7xFc5YFUgZnk3MZ=3Ny6we=AcrNbew@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] fprobe: make fprobe_kprobe_handler recursion free
-To: Ze Gao <zegao2021@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Borislav Petkov <bp@alien8.de>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Vasily Gorbik <gor@linux.ibm.com>, x86@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	Conor Dooley <conor@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+In-Reply-To: <2bf11b56-7494-c0a9-09d4-c9e41aaba850@meta.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgDXt9Wq6ptkXUONMg--.704S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr18uF4ruF17urWUXw13Jwb_yoW5AryDpr
+        48tFy5GryUJrWIyr1DKr1UGFyUtr48J3WDX3yUXFyftr15XFn0gF1xWrWjgr13Aw48Gry7
+        tr4kXryxZr15A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUzAwIDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+Precedence: bulk
+List-ID: <bpf.vger.kernel.org>
+X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 17, 2023 at 11:45=E2=80=AFAM Ze Gao <zegao2021@gmail.com> wrote=
-:
->
-> Current implementation calls kprobe related functions before doing
-> ftrace recursion check in fprobe_kprobe_handler, which opens door
-> to kernel crash due to stack recursion if preempt_count_{add, sub}
-> is traceable in kprobe_busy_{begin, end}.
->
-> Things goes like this without this patch quoted from Steven:
-> "
-> fprobe_kprobe_handler() {
->    kprobe_busy_begin() {
->       preempt_disable() {
->          preempt_count_add() {  <-- trace
->             fprobe_kprobe_handler() {
->                 [ wash, rinse, repeat, CRASH!!! ]
-> "
->
-> By refactoring the common part out of fprobe_kprobe_handler and
-> fprobe_handler and call ftrace recursion detection at the very beginning,
-> the whole fprobe_kprobe_handler is free from recursion.
->
-> Signed-off-by: Ze Gao <zegao@tencent.com>
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Link: https://lore.kernel.org/linux-trace-kernel/20230516071830.8190-3-ze=
-gao@tencent.com
-> ---
->  kernel/trace/fprobe.c | 59 ++++++++++++++++++++++++++++++++-----------
->  1 file changed, 44 insertions(+), 15 deletions(-)
->
-> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-> index 9abb3905bc8e..097c740799ba 100644
-> --- a/kernel/trace/fprobe.c
-> +++ b/kernel/trace/fprobe.c
-> @@ -20,30 +20,22 @@ struct fprobe_rethook_node {
->         char data[];
->  };
->
-> -static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
-> -                          struct ftrace_ops *ops, struct ftrace_regs *fr=
-egs)
-> +static inline void __fprobe_handler(unsigned long ip, unsigned long
-> +               parent_ip, struct ftrace_ops *ops, struct ftrace_regs *fr=
-egs)
->  {
->         struct fprobe_rethook_node *fpr;
->         struct rethook_node *rh =3D NULL;
->         struct fprobe *fp;
->         void *entry_data =3D NULL;
-> -       int bit, ret;
-> +       int ret;
->
->         fp =3D container_of(ops, struct fprobe, ops);
-> -       if (fprobe_disabled(fp))
-> -               return;
-> -
-> -       bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
-> -       if (bit < 0) {
-> -               fp->nmissed++;
-> -               return;
-> -       }
->
->         if (fp->exit_handler) {
->                 rh =3D rethook_try_get(fp->rethook);
->                 if (!rh) {
->                         fp->nmissed++;
-> -                       goto out;
-> +                       return;
->                 }
->                 fpr =3D container_of(rh, struct fprobe_rethook_node, node=
-);
->                 fpr->entry_ip =3D ip;
-> @@ -61,23 +53,60 @@ static void fprobe_handler(unsigned long ip, unsigned=
- long parent_ip,
->                 else
->                         rethook_hook(rh, ftrace_get_regs(fregs), true);
->         }
-> -out:
-> +}
-> +
-> +static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
-> +               struct ftrace_ops *ops, struct ftrace_regs *fregs)
-> +{
-> +       struct fprobe *fp;
-> +       int bit;
-> +
-> +       fp =3D container_of(ops, struct fprobe, ops);
-> +       if (fprobe_disabled(fp))
-> +               return;
-> +
-> +       /* recursion detection has to go before any traceable function an=
-d
-> +        * all functions before this point should be marked as notrace
-> +        */
-> +       bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
-> +       if (bit < 0) {
-> +               fp->nmissed++;
-> +               return;
-> +       }
-> +       __fprobe_handler(ip, parent_ip, ops, fregs);
->         ftrace_test_recursion_unlock(bit);
-> +
->  }
->  NOKPROBE_SYMBOL(fprobe_handler);
->
->  static void fprobe_kprobe_handler(unsigned long ip, unsigned long parent=
-_ip,
->                                   struct ftrace_ops *ops, struct ftrace_r=
-egs *fregs)
->  {
-> -       struct fprobe *fp =3D container_of(ops, struct fprobe, ops);
-> +       struct fprobe *fp;
-> +       int bit;
-> +
-> +       fp =3D container_of(ops, struct fprobe, ops);
-> +       if (fprobe_disabled(fp))
-> +               return;
-> +
-> +       /* recursion detection has to go before any traceable function an=
-d
-> +        * all functions called before this point should be marked as not=
-race
-> +        */
-> +       bit =3D ftrace_test_recursion_trylock(ip, parent_ip);
-> +       if (bit < 0) {
-> +               fp->nmissed++;
-> +               return;
-> +       }
->
->         if (unlikely(kprobe_running())) {
->                 fp->nmissed++;
+Hi,
 
-I have just looked through this patchset, just out of curiosity,
-shouldn't we call ftrace_test_recursion_unlock(bit) here ?
-We have already locked it successfully, so why should we not unlock it?
-
->                 return;
->         }
-> +
->         kprobe_busy_begin();
-> -       fprobe_handler(ip, parent_ip, ops, fregs);
-> +       __fprobe_handler(ip, parent_ip, ops, fregs);
->         kprobe_busy_end();
-> +       ftrace_test_recursion_unlock(bit);
->  }
+On 6/28/2023 8:59 AM, Alexei Starovoitov wrote:
+> On 6/26/23 12:16 AM, Hou Tao wrote:
+>> Hi,
+>>
+>> On 6/26/2023 12:42 PM, Alexei Starovoitov wrote:
+>>> On Sun, Jun 25, 2023 at 8:30 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>> Hi,
+>>>>
+>>>> On 6/24/2023 11:13 AM, Alexei Starovoitov wrote:
+>>>>> From: Alexei Starovoitov <ast@kernel.org>
+>>>>>
+>>>>> alloc_bulk() can reuse elements from free_by_rcu_ttrace.
+>>>>> Let it reuse from waiting_for_gp_ttrace as well to avoid
+>>>>> unnecessary kmalloc().
+>>>>>
+>>>>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>>>>> ---
+>>>>>   kernel/bpf/memalloc.c | 9 +++++++++
+>>>>>   1 file changed, 9 insertions(+)
+>>>>>
+SNIP
+>>        // free A (from c1), ..., last free X (allocated from c0)
+>>      P3: unit_free(c1)
+>>          // the last freed element X is from c0
+>>          c1->tgt = c0
+>>          c1->free_llist->first -> X -> Y -> ... -> A
+>>      P3: free_bulk(c1)
+>>          enque_to_free(c0)
+>>              c0->free_by_rcu_ttrace->first -> A -> ... -> Y -> X
+>>          __llist_add_batch(c0->waiting_for_gp_ttrace)
+>>              c0->waiting_for_gp_ttrace = A -> ... -> Y -> X
 >
->  static void fprobe_exit_handler(struct rethook_node *rh, void *data,
-> --
-> 2.40.1
->
->
+> In theory that's possible, but for this to happen one cpu needs
+> to be thousand times slower than all others and since there is no
+> preemption in llist_del_first I don't think we need to worry about it.
 
+Not sure whether or not such case will be possible in a VM, after all,
+the CPU X is just a thread in host and it may be preempted in any time
+and with any duration.
+> Also with removal of _tail optimization the above
+> llist_add_batch(waiting_for_gp_ttrace)
+> will become a loop, so reused element will be at the very end
+> instead of top, so one cpu to million times slower which is not
+> realistic.
 
---=20
-Regards
-Yafang
+It is still possible A will be added back as
+waiting_for_gp_ttrace->first after switching to llist_add() as shown
+below. My questions is how much is the benefit for reusing from
+waiting_for_gp_ttrace ?
+
+    // free A (from c1), ..., last free X (allocated from c0) 
+    P3: unit_free(c1)
+        // the last freed element X is allocated from c0
+        c1->tgt = c0
+        c1->free_llist->first -> A -> ... -> Y
+        c1->free_llist_extra -> X
+
+    P3: free_bulk(c1)
+        enque_to_free(c0) 
+            c0->free_by_rcu_ttrace->first -> Y -> ... A
+            c0->free_by_rcu_ttrace->first -> X -> Y -> ... A
+
+        llist_add(c0->waiting_for_gp_ttrace)
+            c0->waiting_for_gp_ttrace = A -> .. -> Y -> X
+
+>
+>> P1:
+>>      // A is added back as first again
+>>      // but llist_del_first() didn't know
+>>      try_cmpxhg(&c0->waiting_for_gp_ttrace->first, A, B)
+>>      // c0->waiting_for_gp_trrace is corrupted
+>>      c0->waiting_for_gp_ttrace->first = B
+>>
 
