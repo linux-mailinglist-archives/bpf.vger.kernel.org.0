@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-3693-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3695-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3B3A741FB5
-	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 07:19:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB652741FBF
+	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 07:19:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0128A1C2048A
-	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 05:19:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65CF1280CF5
+	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 05:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 598225250;
-	Thu, 29 Jun 2023 05:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA60F5399;
+	Thu, 29 Jun 2023 05:18:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DAD25223
-	for <bpf@vger.kernel.org>; Thu, 29 Jun 2023 05:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E505384
+	for <bpf@vger.kernel.org>; Thu, 29 Jun 2023 05:18:51 +0000 (UTC)
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84E7194
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 22:18:42 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAAB194
+	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 22:18:50 -0700 (PDT)
 Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35T0jafr021825
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 22:18:42 -0700
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35T0jaZC021819
+	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 22:18:50 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rgypq1pn2-1
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rgypq1pnk-5
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 22:18:42 -0700
-Received: from twshared24695.38.frc1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 22:18:50 -0700
+Received: from twshared29562.14.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 28 Jun 2023 22:18:41 -0700
+ 15.1.2507.23; Wed, 28 Jun 2023 22:18:47 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 7EA3133AFB43B; Wed, 28 Jun 2023 22:18:36 -0700 (PDT)
+	id 9530633AFB462; Wed, 28 Jun 2023 22:18:38 -0700 (PDT)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>
 CC: <linux-security-module@vger.kernel.org>, <keescook@chromium.org>,
         <brauner@kernel.org>, <lennart@poettering.net>, <cyphar@cyphar.com>,
         <luto@kernel.org>, <kernel-team@meta.com>, <sargun@sargun.me>
-Subject: [PATCH RESEND v3 bpf-next 02/14] libbpf: add bpf_token_create() API
-Date: Wed, 28 Jun 2023 22:18:20 -0700
-Message-ID: <20230629051832.897119-3-andrii@kernel.org>
+Subject: [PATCH RESEND v3 bpf-next 03/14] selftests/bpf: add BPF_TOKEN_CREATE test
+Date: Wed, 28 Jun 2023 22:18:21 -0700
+Message-ID: <20230629051832.897119-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230629051832.897119-1-andrii@kernel.org>
 References: <20230629051832.897119-1-andrii@kernel.org>
@@ -54,8 +54,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: 2YNWSRajEjnwsG9EVOHwXKMJN1o5oMkV
-X-Proofpoint-ORIG-GUID: 2YNWSRajEjnwsG9EVOHwXKMJN1o5oMkV
+X-Proofpoint-GUID: X73oEpFQa3_MzE5dlsd86UwWKGRR46sx
+X-Proofpoint-ORIG-GUID: X73oEpFQa3_MzE5dlsd86UwWKGRR46sx
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-06-28_14,2023-06-27_01,2023-05-22_02
@@ -66,107 +66,120 @@ X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add low-level wrapper API for BPF_TOKEN_CREATE command in bpf() syscall.
+Add a subtest validating BPF_TOKEN_CREATE command, pinning/getting BPF
+token in/from BPF FS, and creating derived BPF tokens using token_fd
+parameter.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/bpf.c      | 21 +++++++++++++++++++++
- tools/lib/bpf/bpf.h      | 32 ++++++++++++++++++++++++++++++++
- tools/lib/bpf/libbpf.map |  1 +
- 3 files changed, 54 insertions(+)
+ .../testing/selftests/bpf/prog_tests/token.c  | 96 +++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/token.c
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index ed86b37d8024..a247a1612f29 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -1201,3 +1201,24 @@ int bpf_prog_bind_map(int prog_fd, int map_fd,
- 	ret =3D sys_bpf(BPF_PROG_BIND_MAP, &attr, attr_sz);
- 	return libbpf_err_errno(ret);
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/token.c b/tools/testi=
+ng/selftests/bpf/prog_tests/token.c
+new file mode 100644
+index 000000000000..153c4e26ef6b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/token.c
+@@ -0,0 +1,96 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++#include "linux/bpf.h"
++#include <test_progs.h>
++#include <bpf/btf.h>
++#include "cap_helpers.h"
 +
-+int bpf_token_create(int pin_path_fd, const char *pin_pathname, struct b=
-pf_token_create_opts *opts)
++static int drop_priv_caps(__u64 *old_caps)
 +{
-+	const size_t attr_sz =3D offsetofend(union bpf_attr, token_create);
-+	union bpf_attr attr;
-+	int ret;
-+
-+	if (!OPTS_VALID(opts, bpf_token_create_opts))
-+		return libbpf_err(-EINVAL);
-+
-+	memset(&attr, 0, attr_sz);
-+	attr.token_create.pin_path_fd =3D pin_path_fd;
-+	attr.token_create.pin_pathname =3D ptr_to_u64(pin_pathname);
-+	attr.token_create.token_fd =3D OPTS_GET(opts, token_fd, 0);
-+	attr.token_create.token_flags =3D OPTS_GET(opts, token_flags, 0);
-+	attr.token_create.pin_flags =3D OPTS_GET(opts, pin_flags, 0);
-+	attr.token_create.allowed_cmds =3D OPTS_GET(opts, allowed_cmds, 0);
-+
-+	ret =3D sys_bpf(BPF_TOKEN_CREATE, &attr, attr_sz);
-+	return libbpf_err_errno(ret);
++	return cap_disable_effective((1ULL << CAP_BPF) |
++				     (1ULL << CAP_PERFMON) |
++				     (1ULL << CAP_NET_ADMIN) |
++				     (1ULL << CAP_SYS_ADMIN), old_caps);
 +}
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 9aa0ee473754..ab0355d90a2c 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -551,6 +551,38 @@ struct bpf_test_run_opts {
- LIBBPF_API int bpf_prog_test_run_opts(int prog_fd,
- 				      struct bpf_test_run_opts *opts);
-=20
-+struct bpf_token_create_opts {
-+	size_t sz; /* size of this struct for forward/backward compatibility */
-+	__u32 token_fd;
-+	__u32 token_flags;
-+	__u32 pin_flags;
-+	__u64 allowed_cmds;
-+	size_t :0;
-+};
-+#define bpf_token_create_opts__last_field allowed_cmds
 +
-+/**
-+ * @brief **bpf_token_create()** creates a new instance of BPF token, pi=
-nning
-+ * it at the specified location in BPF FS.
-+ *
-+ * BPF token created and pinned with this API can be subsequently opened=
- using
-+ * bpf_obj_get() API to obtain FD that can be passed to bpf() syscall fo=
-r
-+ * commands like BPF_PROG_LOAD, BPF_MAP_CREATE, etc.
-+ *
-+ * @param pin_path_fd O_PATH FD (see man 2 openat() for semantics) speci=
-fying,
-+ * in combination with *pin_pathname*, target location in BPF FS at whic=
-h to
-+ * create and pin BPF token.
-+ * @param pin_pathname absolute or relative path specifying, in combinat=
-ion
-+ * with *pin_path_fd*, specifying in combination with *pin_path_fd*, tar=
-get
-+ * location in BPF FS at which to create and pin BPF token.
-+ * @param opts optional BPF token creation options, can be NULL
-+ *
-+ * @return 0, on success; negative error code, otherwise (errno is also =
-set to
-+ * the error code)
-+ */
-+LIBBPF_API int bpf_token_create(int pin_path_fd, const char *pin_pathnam=
-e,
-+				struct bpf_token_create_opts *opts);
++static int restore_priv_caps(__u64 old_caps)
++{
++	return cap_enable_effective(old_caps, NULL);
++}
 +
- #ifdef __cplusplus
- } /* extern "C" */
- #endif
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 7521a2fb7626..62cbe4775081 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -395,4 +395,5 @@ LIBBPF_1.2.0 {
- LIBBPF_1.3.0 {
- 	global:
- 		bpf_obj_pin_opts;
-+		bpf_token_create;
- } LIBBPF_1.2.0;
++#define BPFFS_PATH "/sys/fs/bpf"
++#define TOKEN_PATH BPFFS_PATH "/test_token"
++
++static void subtest_token_create(void)
++{
++	LIBBPF_OPTS(bpf_token_create_opts, opts);
++	int token_fd =3D 0, limited_token_fd =3D 0, err;
++	__u64 old_caps =3D 0;
++
++	/* check that any current and future cmd can be specified */
++	opts.allowed_cmds =3D ~0ULL;
++	err =3D bpf_token_create(-EBADF, TOKEN_PATH, &opts);
++	if (!ASSERT_OK(err, "token_create_future_proof"))
++		return;
++	unlink(TOKEN_PATH);
++
++	/* create BPF token which allows creating derived BPF tokens */
++	opts.allowed_cmds =3D 1ULL << BPF_TOKEN_CREATE;
++	err =3D bpf_token_create(-EBADF, TOKEN_PATH, &opts);
++	if (!ASSERT_OK(err, "token_create"))
++		return;
++
++	token_fd =3D bpf_obj_get(TOKEN_PATH);
++	if (!ASSERT_GT(token_fd, 0, "token_get"))
++		goto cleanup;
++	unlink(TOKEN_PATH);
++
++	/* validate pinning and getting works as expected */
++	err =3D bpf_obj_pin(token_fd, TOKEN_PATH);
++	if (!ASSERT_ERR(err, "token_pin_unexpected_success"))
++		goto cleanup;
++
++
++	/* drop privileges to test token_fd passing */
++	if (!ASSERT_OK(drop_priv_caps(&old_caps), "drop_caps"))
++		goto cleanup;
++
++	/* unprivileged BPF_TOKEN_CREATE should fail */
++	err =3D bpf_token_create(-EBADF, TOKEN_PATH, NULL);
++	if (!ASSERT_ERR(err, "token_create_unpriv_fail"))
++		goto cleanup;
++
++	/* unprivileged BPF_TOKEN_CREATE using granted BPF token succeeds */
++	opts.allowed_cmds =3D 0; /* ask for BPF token which doesn't allow new t=
+okens */
++	opts.token_fd =3D token_fd;
++	err =3D bpf_token_create(-EBADF, TOKEN_PATH, &opts);
++	if (!ASSERT_OK(limited_token_fd, "token_create_limited"))
++		goto cleanup;
++
++	limited_token_fd =3D bpf_obj_get(TOKEN_PATH);
++	if (!ASSERT_GT(limited_token_fd, 0, "token_get_limited"))
++		goto cleanup;
++	unlink(TOKEN_PATH);
++
++	/* creating yet another token using "limited" BPF token should fail */
++	opts.allowed_cmds =3D 0;
++	opts.token_fd =3D limited_token_fd;
++	err =3D bpf_token_create(-EBADF, TOKEN_PATH,  &opts);
++	if (!ASSERT_ERR(err, "token_create_from_lim_fail"))
++		goto cleanup;
++
++cleanup:
++	if (token_fd)
++		close(token_fd);
++	if (limited_token_fd)
++		close(limited_token_fd);
++	unlink(TOKEN_PATH);
++	if (old_caps)
++		ASSERT_OK(restore_priv_caps(old_caps), "restore_caps");
++}
++
++void test_token(void)
++{
++	if (test__start_subtest("token_create"))
++		subtest_token_create();
++}
 --=20
 2.34.1
 
