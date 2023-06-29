@@ -1,181 +1,131 @@
-Return-Path: <bpf+bounces-3735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776AC742797
-	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 15:41:14 +0200 (CEST)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A87841C20B60
-	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 13:41:13 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DB711CBE;
-	Thu, 29 Jun 2023 13:40:58 +0000 (UTC)
-X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3B41096A
-	for <bpf@vger.kernel.org>; Thu, 29 Jun 2023 13:40:57 +0000 (UTC)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C4230F7
-	for <bpf@vger.kernel.org>; Thu, 29 Jun 2023 06:40:56 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-313e09a5b19so582510f8f.0
-        for <bpf@vger.kernel.org>; Thu, 29 Jun 2023 06:40:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1688046054; x=1690638054;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cGXK3C74QJuocmmCvr9+ftQeIaLnPFI8vnaWY2A8whc=;
-        b=i9SfxqWHjUp/WXLt1WJ2bmxBsACWRUAk0rc+V4t4bXJqrRLDp5ae8ea4vJjVjUtaCc
-         mRsTi6+2uDtnKCnGs2Dl+jKyV4CiBkGpBDRR7mBIo4HbDbLrs71NrdEFYnkewf17R6BM
-         E+vGOhOdG7VGFvSXeCAx/+pP/5x17yrsCSkjLHFJnVR3xBo+8teD+D1UBRg2ujWeEkde
-         BWA9Ygce/DcyLo9lom39b60W2aIgOYdp+ErSnuxp0QB92mtVgyCJ4oPpvnfi69xw+4aC
-         XOEK0QuZtgIgOEreL822AsNcoUWiYBOaKqve1WcHPVJW3v1PIWWFUv5YcLAe4BOPqLgY
-         lxlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688046054; x=1690638054;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cGXK3C74QJuocmmCvr9+ftQeIaLnPFI8vnaWY2A8whc=;
-        b=cdO7i+nQU1KYrkp0R6QxaMwxVEcebU1/TiE+HL+2go74x08PomDYTmOkopAh8xo7nE
-         9hKeiC525GLSuBQakXvS/ASOtYhhYQ2wcSYMag41YiJLhDFByck3FI0bcK4ZhPVMUATv
-         OXCuLQZS4B8asaqdCfGJnsae0Tpccy+K3e1gO6R3GT0ZJAtYqqkXhpg3MLn1qTjt3dSw
-         p/YAA8aqIEUS5p80OpCbXGDBSZGC7fXrymT5vERhOHVV10RLCysJvdyorI2V45oIsAOo
-         hkC9sCN5g2sszbqW8IhTIdrDn406SIAWUvd4lwWN5kbrd63u8Sa/PJ9bPzkyiucNmpzF
-         QoVA==
-X-Gm-Message-State: ABy/qLZPe7OdhFKEBMKhh2EGjVVEFoq17O5DOKZEkqUNC/qwcXTe2tPA
-	tAKNpofz257fMUMfOW2f6s6YXg==
-X-Google-Smtp-Source: APBJJlGotcoLWANjsEy3iSZbDwVbvoXo/ZN4D3rSkJn1WhYaYLlTFvVKgS8hGYILgrkTNRiMSERfgA==
-X-Received: by 2002:a5d:440f:0:b0:314:11da:7c73 with SMTP id z15-20020a5d440f000000b0031411da7c73mr3210307wrq.11.1688046053981;
-        Thu, 29 Jun 2023 06:40:53 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:48c4:4b87:cc05:b4fb? ([2a02:8011:e80c:0:48c4:4b87:cc05:b4fb])
-        by smtp.gmail.com with ESMTPSA id k9-20020adff5c9000000b0031411b7087dsm2902402wrp.20.2023.06.29.06.40.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jun 2023 06:40:53 -0700 (PDT)
-Message-ID: <ebb24b2d-e7f4-a726-a03d-a89dc483efac@isovalent.com>
-Date: Thu, 29 Jun 2023 14:40:52 +0100
-Precedence: bulk
-X-Mailing-List: bpf@vger.kernel.org
-List-Id: <bpf.vger.kernel.org>
-List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v6 bpf-next 11/11] bpftool: Show perf link info
-Content-Language: en-GB
-To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
- john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org
-Cc: bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-References: <20230628115329.248450-1-laoar.shao@gmail.com>
- <20230628115329.248450-12-laoar.shao@gmail.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20230628115329.248450-12-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 24151742798
+	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 15:42:42 +0200 (CEST)
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S232048AbjF2Nmj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Jun 2023 09:42:39 -0400
+Received: from mail-dm6nam11on2132.outbound.protection.outlook.com ([40.107.223.132]:52384
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232037AbjF2Nmh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Jun 2023 09:42:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EPJ1USPT+fIZJb4/kumkTM5WjsKNd8BbsC47xPNBVQmoM1irc+Aln9lqN2F5A4cKv5+FJfkfcKGMnt3LBR3SEmhpxFfZmKeUD4H1xzOQtIU6FaDIz+CpmBdj5uQ+kRRHL/awRz/9yxhXZiPdH9b//QkI65JJjvcZDsBOJMtgWFsTllqle+WSieS6DVCeF4Zxv2K0wX7rhxf9ySZ1d8RzhYXJj0EkqgTiO/DB5bEGi7z7HcJxjotxFqWI9ZLGcP6wnHlNlsL2F3rCXg4E67lEyiOi3ziez/4m0HacUDvTEIV86Xi9CrKK9u7klJnEVpuai/csgmLgIbJpo5yVU47igw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nKIbcx37EKx98KkbYLFyHIWfgCl8E4XG71yxBwrPzJs=;
+ b=mM7BWG57VJTI5mV1vHoErCPUtmUkz+D2vrXiSTL8PIZCPG2nZ3VvmjtlVpQ2vGY3j49HfStIwurTCh8CIkaKnDzT7MRK+Efh2Cp7FSJBqez1va81hgV+pSjmfpSE9k+afrhWgb27wFo7ef7Egsy9JwUmoU3/wP9/QQ4AGSgRV2q+vz3QQvwGEt1beXvmzPvGNeL3vI6SoCqkWFDDhwq1vIi2rY6/unsSn0cZ7BLc3pIaF7VF6N2lsDTgYiTWLKcP4pd4GThALBleUS9kw8t/vMeVNdtjzmg4PmLZb9JOMQpqtZij3tk9KiUfjcQF5MZEJKEKkJVODFE8v4ac2wAKKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nKIbcx37EKx98KkbYLFyHIWfgCl8E4XG71yxBwrPzJs=;
+ b=Ex3owltmoYHJeSebVRO+6nPwTSPd0JMWsB9JYuPU3n0o8Xcxx5wc8RbWbLQocBjxQrIA2WiGWxqGLUDRmK/Km8Ibjo23OUErVp7BTesKvWtnlEOMQOYFImkNyamG5JNUtIJL8EToCw33d8YF9fpG3CY38pgdk0ff2VQKr/WHRqo=
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
+ by BY5PR21MB1473.namprd21.prod.outlook.com (2603:10b6:a03:239::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.8; Thu, 29 Jun
+ 2023 13:42:35 +0000
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::8708:6828:fb9f:7bd5]) by PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::8708:6828:fb9f:7bd5%4]) with mapi id 15.20.6544.010; Thu, 29 Jun 2023
+ 13:42:35 +0000
+From:   Dave Thaler <dthaler@microsoft.com>
+To:     Yonghong Song <yhs@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Fangrui Song <maskray@google.com>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: RE: [RFC PATCH bpf-next 00/13] bpf: Support new insns from cpu v4
+Thread-Topic: [RFC PATCH bpf-next 00/13] bpf: Support new insns from cpu v4
+Thread-Index: AQHZqlQzqBvLT71SNkSEKbXTQ3XlmK+hyjqA
+Date:   Thu, 29 Jun 2023 13:42:34 +0000
+Message-ID: <PH7PR21MB38786422B9929D253E279810A325A@PH7PR21MB3878.namprd21.prod.outlook.com>
+References: <20230629063715.1646832-1-yhs@fb.com>
+In-Reply-To: <20230629063715.1646832-1-yhs@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=98e71f03-60fc-489d-9cdf-1590a7418074;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-06-29T13:41:44Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|BY5PR21MB1473:EE_
+x-ms-office365-filtering-correlation-id: 40c6248e-f42a-4fc8-730b-08db78a6b1f7
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DbD5I4lsFS2Q9nMmox6VTzw4Fa2QnePPYhu7BfI5LIsqvq3Sgfp+uC6CXPG9fFOaUu3uAVWPHzJHScO21OJCuGD7NtWjq33xlX+9FEakB9fAdTXBtB68otQDbfcIcJd8+VNUiUrvllo2jOcONsLq+4zWuoIRGgd1CTLyEvxbGqUOnnoA4J2j2+dowtygQJsheLdVvoRQG+FoeJPlvmDQkaGU+JARQvPtljb04qoRdYS99HezJ16QUdNxeoSA+KPm+PFFh56SFvvVX+/otrmpAL+zxfQPaQSL6W6Efjcp20KtyFTnwDFc2PWPO2Ox6XkfpWSDsWB6BZ9H03FDqlKIJLoXWl3ybxFGjMKTWjUgzs9BwpF9o7WQOs8e6s+IqZc+bUnBNJQAszhwDYvw7jQAsNN2ySg01bbmFqwhBlzWoGSSQDSAKGkJhcFm4hi9UIPm/MSz9aY9Y8hBPMVs95PCcUsuwj324UDOW1j68FxzoEAVU4s9NCJ6J2+GyVehbSLZnqQB94lAazRT+eHHGi0X6hXs9h7xnekxuPl7OjhMn+ioHw71I0c/Si5GwHE8mdh3hMT9kzclbnV+hd+BvLxqGad/wTBAdNTOEPy9d8HWkDHVrT3ce8Bo81vPNhLcmVeCZLNR6jkw7pIMRQ7NuMoDCcr6v3GjsCGNFPmP21zj8S4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3878.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(366004)(396003)(346002)(39860400002)(451199021)(7696005)(71200400001)(10290500003)(478600001)(110136005)(76116006)(54906003)(86362001)(38070700005)(33656002)(55016003)(4744005)(2906002)(66946007)(186003)(9686003)(6506007)(26005)(8990500004)(82950400001)(38100700002)(122000001)(82960400001)(66476007)(64756008)(41300700001)(316002)(66556008)(4326008)(8936002)(8676002)(66446008)(5660300002)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TNxtmOXlqizaaBARqF1ssIDeWyHKhiYt52WRasz1Vim+YxDDkwktY3vgt9CM?=
+ =?us-ascii?Q?SB3Ox1aZsaZYXSV6gncqcn6p04uON3dvgDDHx0URp4EYCrgjUOaQmTMH+1z3?=
+ =?us-ascii?Q?jofpt+ivezCHsc6Mrtd1K5TL3VsylEEf74EX0yjX2q1x5sFzgMx0s+jdx2nb?=
+ =?us-ascii?Q?DVBT+FiibTPUVR6QF2iSrtlMRzKZo5RApQmV2UNVQLnRqTaOZzdkM32H7phM?=
+ =?us-ascii?Q?l+ZBd+BKLQvHUiUQK0GhvSQQjyJ0ezm8+UiW6m1FH407USzxdiF6Vl0UerCQ?=
+ =?us-ascii?Q?hgegCrJkJWQ5ixM/IqFegk+GaDfdsxU/5MCGP5N88ysHPRln2Br+actHxvQL?=
+ =?us-ascii?Q?+VZ06DMyPN8Np6tIuN7gapkZiS3bFmKn8M34evVreNsQBVzgSdR/PTY9jXLM?=
+ =?us-ascii?Q?C1Ayt9RXcX2sTYPQJFpOIth/ltDQmnDlafXvcLJ07p9+FYUWlfYlAqjkvnl1?=
+ =?us-ascii?Q?WO+fYnCDj9Z4n3Lh2HUTfqahsE0YKnjlQCrGcz2CFh/siBMX2m6r56VIL47r?=
+ =?us-ascii?Q?oXkMNHtDsgJgKmV6pIfIT8vYdhekFFx6bDTqosih8cLYmDDdrPBHQaraibBR?=
+ =?us-ascii?Q?wWL9KmydfMHtRJAtU6o/cF6IDjQy2WdwVXnwo4fFtUPfpc2+gp3ZW4BBUUMB?=
+ =?us-ascii?Q?KqFAyKUhyJn7aSt2nRCorFridcKHtR9yUxotIYU0s7kX2q4lW7RBG6KTJw8n?=
+ =?us-ascii?Q?s96Dd088QdmzkPv5OBDlUiwiGEUzGdGA0ffA9vLOxD1kGDlIzsPDzOPS6jrV?=
+ =?us-ascii?Q?unTwPzSppeO3aG497teYb93ey//h3xTXoluTsKMKI1i7/27hZv/GMqKGR8Iq?=
+ =?us-ascii?Q?7oQj+wWH/uaIAVWAii0rszA5RXNL7Cjvm03SeLreLVCaXBjLTKQbiG7tosnp?=
+ =?us-ascii?Q?4hu9IWOIYJxM5TYGYwJAtaVlK/ov63gfusdwmTyCd4CBeQTRpUeGnlgAsq8l?=
+ =?us-ascii?Q?V2MAC2LZwD5r4H7z70BQS5bF/3hN92GxBO4IAKporWXoGkMQEgycnL4jCTSW?=
+ =?us-ascii?Q?qw4QN1ZXT1Luk2wHhSrpFuj2qw0AyTUURa5RZbQLracJxD1mk0SyxmvMWubI?=
+ =?us-ascii?Q?z99YjKJjnzQExW7+Dzos7PjcpHHBX1Fz6E+0L7QT/k4AJ560Ufv/cbfNeej+?=
+ =?us-ascii?Q?ePheMH9uhKnrYmakZ0Vx7WkbAup5QYhPfhtEf5FLkCAtXLpzP2EuoT1noMum?=
+ =?us-ascii?Q?3cO8n+vNVLgqAfK24iU1CuYCPZqeaKmWsSQ/deQOjovTkMN+NJMo8AkRzVTL?=
+ =?us-ascii?Q?X8Zaqdi0Jy9YwX4Kv46vztDd/3hN6lMq4KRlHjwi8moWn1S5Mfs49F250YWz?=
+ =?us-ascii?Q?n35+27bu3Ln+RcgzZqBJnB2zANU01zl3G8xhfN0Yv4ay/HtzJ9WTNWWDZXB1?=
+ =?us-ascii?Q?tkp4gBsBQ6e1zUM7QPXj6YhEd/5UIrw6ivBa/QkfXkDiN2WSYRp//qQAEdAJ?=
+ =?us-ascii?Q?Un9lQhDzuKam/LVADpqcqCbWG6TfDFG5bHInHen+4u4CQ16R1JYe4EsrzrVW?=
+ =?us-ascii?Q?wMxB3a0RCRXh0IZd/dqRIN6GIbCf/uTZEkip0iJXLmzAWuUpusUz1ZRalAKj?=
+ =?us-ascii?Q?kqx11v8BK3K4YWHJEnPfvT3RDjvf4t9ED0JFOqWNJgL2F0PNruh7KxaqgbTT?=
+ =?us-ascii?Q?Pw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40c6248e-f42a-4fc8-730b-08db78a6b1f7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2023 13:42:34.8394
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3rs55zf7i7Z23DcIyUfW2AnzUJE4PMLfjjT5uHJE8MIUtQVqAgwi6XU/mls9L4ExbNU5puKuv1DhSICvuB13GZkwPhh4QZrphtTve76xVk4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR21MB1473
+Precedence: bulk
+List-ID: <bpf.vger.kernel.org>
+X-Mailing-List: bpf@vger.kernel.org
 
-2023-06-28 11:53 UTC+0000 ~ Yafang Shao <laoar.shao@gmail.com>
-> Enhance bpftool to display comprehensive information about exposed
-> perf_event links, covering uprobe, kprobe, tracepoint, and generic perf=
+Yonghong Song <yhs@fb.com> wrote:=20
+> In previous discussion ([1]), it is agreed that we should introduce cpu v=
+ersion
+> 4 (llvm flag -mcpu=3Dv4) which contains some instructions which can simpl=
+ify
+> code, make code easier to understand, fix the existing problem, or simply=
+ for
+> feature completeness. More specifically, the following new insns are
+> proposed:
+[...]
 
-> event. The resulting output will include the following details:
->=20
-> $ tools/bpf/bpftool/bpftool link show
-> 3: perf_event  prog 14
->         event software:cpu-clock
->         bpf_cookie 0
->         pids perf_event(19483)
-> 4: perf_event  prog 14
->         event hw-cache:LLC-load-misses
->         bpf_cookie 0
->         pids perf_event(19483)
-> 5: perf_event  prog 14
->         event hardware:cpu-cycles
->         bpf_cookie 0
->         pids perf_event(19483)
-> 6: perf_event  prog 19
->         tracepoint sched_switch
->         bpf_cookie 0
->         pids tracepoint(20947)
-> 7: perf_event  prog 26
->         uprobe /home/dev/waken/bpf/uprobe/a.out+0x1338
->         bpf_cookie 0
->         pids uprobe(21973)
-> 8: perf_event  prog 27
->         uretprobe /home/dev/waken/bpf/uprobe/a.out+0x1338
->         bpf_cookie 0
->         pids uprobe(21973)
-> 10: perf_event  prog 43
->         kprobe ffffffffb70a9660 kernel_clone
->         bpf_cookie 0
->         pids kprobe(35275)
-> 11: perf_event  prog 41
->         kretprobe ffffffffb70a9660 kernel_clone
->         bpf_cookie 0
->         pids kprobe(35275)
->=20
-> $ tools/bpf/bpftool/bpftool link show -j
-> [{"id":3,"type":"perf_event","prog_id":14,"event_type":"software","even=
-t_config":"cpu-clock","bpf_cookie":0,"pids":[{"pid":19483,"comm":"perf_ev=
-ent"}]},{"id":4,"type":"perf_event","prog_id":14,"event_type":"hw-cache",=
-"event_config":"LLC-load-misses","bpf_cookie":0,"pids":[{"pid":19483,"com=
-m":"perf_event"}]},{"id":5,"type":"perf_event","prog_id":14,"event_type":=
-"hardware","event_config":"cpu-cycles","bpf_cookie":0,"pids":[{"pid":1948=
-3,"comm":"perf_event"}]},{"id":6,"type":"perf_event","prog_id":19,"tracep=
-oint":"sched_switch","bpf_cookie":0,"pids":[{"pid":20947,"comm":"tracepoi=
-nt"}]},{"id":7,"type":"perf_event","prog_id":26,"retprobe":false,"file":"=
-/home/dev/waken/bpf/uprobe/a.out","offset":4920,"bpf_cookie":0,"pids":[{"=
-pid":21973,"comm":"uprobe"}]},{"id":8,"type":"perf_event","prog_id":27,"r=
-etprobe":true,"file":"/home/dev/waken/bpf/uprobe/a.out","offset":4920,"bp=
-f_cookie":0,"pids":[{"pid":21973,"comm":"uprobe"}]},{"id":10,"type":"perf=
-_event","prog_id":43,"retprobe":false,"addr":18446744072485508704,"func":=
-"kernel_clone","offset":0,"bpf_cookie":0,"pids":[{"pid":35275,"comm":"kpr=
-obe"}]},{"id":11,"type":"perf_event","prog_id":41,"retprobe":true,"addr":=
-18446744072485508704,"func":"kernel_clone","offset":0,"bpf_cookie":0,"pid=
-s":[{"pid":35275,"comm":"kprobe"}]}]
->=20
-> For generic perf events, the displayed information in bpftool is limite=
-d to
-> the type and configuration, while other attributes such as sample_perio=
-d,
-> sample_freq, etc., are not included.
->=20
-> The kernel function address won't be exposed if it is not permitted by
-> kptr_restrict. The result as follows when kptr_restrict is 2.
->=20
-> $ tools/bpf/bpftool/bpftool link show
-> 3: perf_event  prog 14
->         event software:cpu-clock
-> 4: perf_event  prog 14
->         event hw-cache:LLC-load-misses
-> 5: perf_event  prog 14
->         event hardware:cpu-cycles
-> 6: perf_event  prog 19
->         tracepoint sched_switch
-> 7: perf_event  prog 26
->         uprobe /home/dev/waken/bpf/uprobe/a.out+0x1338
-> 8: perf_event  prog 27
->         uretprobe /home/dev/waken/bpf/uprobe/a.out+0x1338
-> 10: perf_event  prog 43
->         kprobe kernel_clone
-> 11: perf_event  prog 41
->         kretprobe kernel_clone
->=20
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+What about also updating instruction-set.rst?
 
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-
-Thank you!
+Dave
+=20
 
