@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-3710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CEB5742073
-	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 08:37:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE107742074
+	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 08:38:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E8951C20962
-	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 06:37:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D11A3280D7F
+	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 06:38:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A00355257;
-	Thu, 29 Jun 2023 06:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0D053A1;
+	Thu, 29 Jun 2023 06:37:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78EFA15D2
-	for <bpf@vger.kernel.org>; Thu, 29 Jun 2023 06:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E77715D2
+	for <bpf@vger.kernel.org>; Thu, 29 Jun 2023 06:37:49 +0000 (UTC)
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5891727
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 23:37:42 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35T0WD5n016988
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 23:37:41 -0700
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21281727
+	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 23:37:47 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35SHwevI006893
+	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 23:37:47 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=xEevr6V9RfsVQ2tUVoxWMPsoZAX+luWtD02dH7XrfxY=;
- b=XyfnUF+A9eEyDylPypk0qk6bkbq8eNjIvfLuuFdigkzRRuvdmdg6eKespfFuwEUpOgxJ
- Sa6mcU2DlDttHrqhGOHOf3zVww8pEhzEKVbw4cZmj13oIM4o2SI8BIC9ADDQfls3uYTm
- YRWbsH5Yl0mE1tQKS4DBxy2J/oHfcfGwJT0= 
+ bh=DXkSX1nG42pjM2Tk4il2oW2FOHe9gt+69ygdkeY07L0=;
+ b=htDtV4tZHLAzCXkgbn2EksA5sJg7XeioK0qUhq+NY3fzK56E8qoJA7O6wVKwPPnuCgAN
+ Htrk4BHC3DtGt+InhWjA2BU7UF10CgEBRaobZeLhmCy0f3bg3/CWUlQy7vOUcfRVfaeF
+ SQCYW4cmCQK3IgwIFcE08ZVVrl1ZvLoFEvg= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rgyg3j96d-1
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rghjv9437-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 23:37:41 -0700
-Received: from twshared37136.03.ash8.facebook.com (2620:10d:c0a8:1c::11) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 23:37:46 -0700
+Received: from twshared18891.17.frc2.facebook.com (2620:10d:c0a8:1b::30) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 28 Jun 2023 23:37:40 -0700
+ 15.1.2507.23; Wed, 28 Jun 2023 23:37:45 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 87478221E7BE9; Wed, 28 Jun 2023 23:37:26 -0700 (PDT)
+	id A52CD221E7C15; Wed, 28 Jun 2023 23:37:33 -0700 (PDT)
 From: Yonghong Song <yhs@fb.com>
 To: <bpf@vger.kernel.org>
 CC: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Fangrui Song <maskray@google.com>, <kernel-team@fb.com>
-Subject: [RFC PATCH bpf-next 02/13] bpf: Add verifier support for sign-extension load insns
-Date: Wed, 28 Jun 2023 23:37:26 -0700
-Message-ID: <20230629063726.1649316-1-yhs@fb.com>
+Subject: [RFC PATCH bpf-next 03/13] bpf: Support new sign-extension mov insns
+Date: Wed, 28 Jun 2023 23:37:33 -0700
+Message-ID: <20230629063733.1650134-1-yhs@fb.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230629063715.1646832-1-yhs@fb.com>
 References: <20230629063715.1646832-1-yhs@fb.com>
@@ -61,8 +61,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: SP89flEoro_KMtodCjRVLA4SkAu3Vb8Q
-X-Proofpoint-ORIG-GUID: SP89flEoro_KMtodCjRVLA4SkAu3Vb8Q
+X-Proofpoint-ORIG-GUID: gLQOeL_OD_YaJLKD78wrTjkCqeedzThY
+X-Proofpoint-GUID: gLQOeL_OD_YaJLKD78wrTjkCqeedzThY
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-06-28_14,2023-06-27_01,2023-05-22_02
@@ -74,150 +74,188 @@ X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add sign-extension load support for map values. This is a minimum
-change to make selftests passing.
+Add interpreter/jit support for new sign-extension mov insns.
+The verifier support is basic and the better register range
+calculation will be done in the future revision.
+
+NOTE: currently new insns support:
+  ALU:
+      dst =3D (s8)src
+      dst =3D (s16)src
+  ALU64:
+      dst =3D (s8)src
+      dst =3D (s16)src
+      dst =3D (s32)src
+while unsigned mov insns support:
+  ALU:
+      dst =3D (u32)src
+  ALU64:
+      dst =3D src
+Should we support more unsigned-extension mov insns like below?
+  ALU:
+      dst =3D (u8)src
+      dst =3D (u16)src
+  ALU64:
+      dst =3D (u8)src
+      dst =3D (u16)src
+      dst =3D (u32)src
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- kernel/bpf/verifier.c | 38 ++++++++++++++++++++++++++------------
- 1 file changed, 26 insertions(+), 12 deletions(-)
+ arch/x86/net/bpf_jit_comp.c | 43 ++++++++++++++++++++++++++++++++++---
+ kernel/bpf/core.c           | 28 ++++++++++++++++++++++--
+ kernel/bpf/verifier.c       | 14 +++++++++++-
+ 3 files changed, 79 insertions(+), 6 deletions(-)
 
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 70d6a2c289ec..7c85d1b01931 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -701,6 +701,38 @@ static void emit_mov_reg(u8 **pprog, bool is64, u32 =
+dst_reg, u32 src_reg)
+ 	*pprog =3D prog;
+ }
+=20
++static void emit_movs_reg(u8 **pprog, int num_bits, bool is64, u32 dst_r=
+eg,
++			  u32 src_reg)
++{
++	u8 *prog =3D *pprog;
++
++	if (is64) {
++		/* movs[b,w,l]q dst, src */
++		if (num_bits =3D=3D 8)
++			EMIT4(add_2mod(0x48, src_reg, dst_reg), 0x0f, 0xbe,
++			      add_2reg(0xC0, src_reg, dst_reg));
++		else if (num_bits =3D=3D 16)
++			EMIT4(add_2mod(0x48, src_reg, dst_reg), 0x0f, 0xbf,
++			      add_2reg(0xC0, src_reg, dst_reg));
++		else if (num_bits =3D=3D 32)
++			EMIT3(add_2mod(0x48, src_reg, dst_reg), 0x63,
++			      add_2reg(0xC0, src_reg, dst_reg));
++	} else {
++		/* movs[b,w]l dst, src */
++		if (num_bits =3D=3D 8) {
++			EMIT4(add_2mod(0x40, src_reg, dst_reg), 0x0f, 0xbe,
++			      add_2reg(0xC0, src_reg, dst_reg));
++		} else if (num_bits =3D=3D 16) {
++			if (is_ereg(dst_reg) || is_ereg(src_reg))
++				EMIT1(add_2mod(0x40, src_reg, dst_reg));
++			EMIT3(add_2mod(0x0f, src_reg, dst_reg), 0xbf,
++			      add_2reg(0xC0, src_reg, dst_reg));
++		}
++	}
++
++	*pprog =3D prog;
++}
++
+ /* Emit the suffix (ModR/M etc) for addressing *(ptr_reg + off) and val_=
+reg */
+ static void emit_insn_suffix(u8 **pprog, u32 ptr_reg, u32 val_reg, int o=
+ff)
+ {
+@@ -1051,9 +1083,14 @@ static int do_jit(struct bpf_prog *bpf_prog, int *=
+addrs, u8 *image, u8 *rw_image
+=20
+ 		case BPF_ALU64 | BPF_MOV | BPF_X:
+ 		case BPF_ALU | BPF_MOV | BPF_X:
+-			emit_mov_reg(&prog,
+-				     BPF_CLASS(insn->code) =3D=3D BPF_ALU64,
+-				     dst_reg, src_reg);
++			if (insn->off =3D=3D 0)
++				emit_mov_reg(&prog,
++					     BPF_CLASS(insn->code) =3D=3D BPF_ALU64,
++					     dst_reg, src_reg);
++			else
++				emit_movs_reg(&prog, insn->off,
++					      BPF_CLASS(insn->code) =3D=3D BPF_ALU64,
++					      dst_reg, src_reg);
+ 			break;
+=20
+ 			/* neg dst */
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index acb7abd2eba0..72ee246ac3af 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -61,6 +61,7 @@
+ #define AX	regs[BPF_REG_AX]
+ #define ARG1	regs[BPF_REG_ARG1]
+ #define CTX	regs[BPF_REG_CTX]
++#define OFF	insn->off
+ #define IMM	insn->imm
+=20
+ struct bpf_mem_alloc bpf_global_ma;
+@@ -1736,13 +1737,36 @@ static u64 ___bpf_prog_run(u64 *regs, const struc=
+t bpf_insn *insn)
+ 		DST =3D -DST;
+ 		CONT;
+ 	ALU_MOV_X:
+-		DST =3D (u32) SRC;
++		switch (OFF) {
++		case 0:
++			DST =3D (u32) SRC;
++			break;
++		case 8:
++			DST =3D (s8) SRC;
++			break;
++		case 16:
++			DST =3D (s16) SRC;
++			break;
++		}
+ 		CONT;
+ 	ALU_MOV_K:
+ 		DST =3D (u32) IMM;
+ 		CONT;
+ 	ALU64_MOV_X:
+-		DST =3D SRC;
++		switch (OFF) {
++		case 0:
++			DST =3D SRC;
++			break;
++		case 8:
++			DST =3D (s8) SRC;
++			break;
++		case 16:
++			DST =3D (s16) SRC;
++			break;
++		case 32:
++			DST =3D (s32) SRC;
++			break;
++		}
+ 		CONT;
+ 	ALU64_MOV_K:
+ 		DST =3D IMM;
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 212c367e2f46..6845504d42a5 100644
+index 6845504d42a5..5c5b37b6b39a 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -6247,7 +6247,7 @@ static int check_stack_access_within_bounds(
-  */
- static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, =
-u32 regno,
- 			    int off, int bpf_size, enum bpf_access_type t,
--			    int value_regno, bool strict_alignment_once)
-+			    int value_regno, bool strict_alignment_once, bool sign_ext_ld)
- {
- 	struct bpf_reg_state *regs =3D cur_regs(env);
- 	struct bpf_reg_state *reg =3D regs + regno;
-@@ -6316,6 +6316,19 @@ static int check_mem_access(struct bpf_verifier_en=
-v *env, int insn_idx, u32 regn
- 				__mark_reg_known(&regs[value_regno], val);
- 			} else {
- 				mark_reg_unknown(env, regs, value_regno);
-+
-+				if (sign_ext_ld) {
-+					if (size =3D=3D 1) {
-+						regs[value_regno].smax_value =3D (char)INT_MAX;
-+						regs[value_regno].smin_value =3D (char)INT_MIN;
-+					} else if (size =3D=3D 2) {
-+						regs[value_regno].smax_value =3D (short)INT_MAX;
-+						regs[value_regno].smin_value =3D (short)INT_MIN;
-+					} else if (size =3D=3D 4) {
-+						regs[value_regno].smax_value =3D INT_MAX;
-+						regs[value_regno].smin_value =3D INT_MIN;
-+					}
-+				}
+@@ -12926,11 +12926,23 @@ static int check_alu_op(struct bpf_verifier_env=
+ *env, struct bpf_insn *insn)
+ 	} else if (opcode =3D=3D BPF_MOV) {
+=20
+ 		if (BPF_SRC(insn->code) =3D=3D BPF_X) {
+-			if (insn->imm !=3D 0 || insn->off !=3D 0) {
++			if (insn->imm !=3D 0) {
+ 				verbose(env, "BPF_MOV uses reserved fields\n");
+ 				return -EINVAL;
  			}
- 		}
- 	} else if (base_type(reg->type) =3D=3D PTR_TO_MEM) {
-@@ -6477,7 +6490,7 @@ static int check_mem_access(struct bpf_verifier_env=
- *env, int insn_idx, u32 regn
- 	}
 =20
- 	if (!err && size < BPF_REG_SIZE && value_regno >=3D 0 && t =3D=3D BPF_R=
-EAD &&
--	    regs[value_regno].type =3D=3D SCALAR_VALUE) {
-+	    regs[value_regno].type =3D=3D SCALAR_VALUE && !sign_ext_ld) {
- 		/* b/h/w load zero-extends, mark upper bits as known 0 */
- 		coerce_reg_to_size(&regs[value_regno], size);
- 	}
-@@ -6571,17 +6584,17 @@ static int check_atomic(struct bpf_verifier_env *=
-env, int insn_idx, struct bpf_i
- 	 * case to simulate the register fill.
- 	 */
- 	err =3D check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
--			       BPF_SIZE(insn->code), BPF_READ, -1, true);
-+			       BPF_SIZE(insn->code), BPF_READ, -1, true, false);
- 	if (!err && load_reg >=3D 0)
- 		err =3D check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
- 				       BPF_SIZE(insn->code), BPF_READ, load_reg,
--				       true);
-+				       true, false);
- 	if (err)
- 		return err;
-=20
- 	/* Check whether we can write into the same memory. */
- 	err =3D check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
--			       BPF_SIZE(insn->code), BPF_WRITE, -1, true);
-+			       BPF_SIZE(insn->code), BPF_WRITE, -1, true, false);
- 	if (err)
- 		return err;
-=20
-@@ -6827,7 +6840,7 @@ static int check_helper_mem_access(struct bpf_verif=
-ier_env *env, int regno,
- 				return zero_size_allowed ? 0 : -EACCES;
-=20
- 			return check_mem_access(env, env->insn_idx, regno, offset, BPF_B,
--						atype, -1, false);
-+						atype, -1, false, false);
- 		}
-=20
- 		fallthrough;
-@@ -7199,7 +7212,7 @@ static int process_dynptr_func(struct bpf_verifier_=
-env *env, int regno, int insn
- 		/* we write BPF_DW bits (8 bytes) at a time */
- 		for (i =3D 0; i < BPF_DYNPTR_SIZE; i +=3D 8) {
- 			err =3D check_mem_access(env, insn_idx, regno,
--					       i, BPF_DW, BPF_WRITE, -1, false);
-+					       i, BPF_DW, BPF_WRITE, -1, false, false);
++			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU) {
++				if (insn->off !=3D 0 && insn->off !=3D 8 && insn->off !=3D 16) {
++					verbose(env, "BPF_MOV uses reserved fields\n");
++					return -EINVAL;
++				}
++			} else {
++				if (insn->off !=3D 0 && insn->off !=3D 8 && insn->off !=3D 16 && ins=
+n->off !=3D 32) {
++					verbose(env, "BPF_MOV uses reserved fields\n");
++					return -EINVAL;
++				}
++			}
++
+ 			/* check src operand */
+ 			err =3D check_reg_arg(env, insn->src_reg, SRC_OP);
  			if (err)
- 				return err;
- 		}
-@@ -7292,7 +7305,7 @@ static int process_iter_arg(struct bpf_verifier_env=
- *env, int regno, int insn_id
-=20
- 		for (i =3D 0; i < nr_slots * 8; i +=3D BPF_REG_SIZE) {
- 			err =3D check_mem_access(env, insn_idx, regno,
--					       i, BPF_DW, BPF_WRITE, -1, false);
-+					       i, BPF_DW, BPF_WRITE, -1, false, false);
- 			if (err)
- 				return err;
- 		}
-@@ -9422,7 +9435,7 @@ static int check_helper_call(struct bpf_verifier_en=
-v *env, struct bpf_insn *insn
- 	 */
- 	for (i =3D 0; i < meta.access_size; i++) {
- 		err =3D check_mem_access(env, insn_idx, meta.regno, i, BPF_B,
--				       BPF_WRITE, -1, false);
-+				       BPF_WRITE, -1, false, false);
- 		if (err)
- 			return err;
- 	}
-@@ -16300,7 +16313,8 @@ static int do_check(struct bpf_verifier_env *env)
- 			 */
- 			err =3D check_mem_access(env, env->insn_idx, insn->src_reg,
- 					       insn->off, BPF_SIZE(insn->code),
--					       BPF_READ, insn->dst_reg, false);
-+					       BPF_READ, insn->dst_reg, false,
-+					       BPF_MODE(insn->code) =3D=3D BPF_MEMS);
- 			if (err)
- 				return err;
-=20
-@@ -16337,7 +16351,7 @@ static int do_check(struct bpf_verifier_env *env)
- 			/* check that memory (dst_reg + off) is writeable */
- 			err =3D check_mem_access(env, env->insn_idx, insn->dst_reg,
- 					       insn->off, BPF_SIZE(insn->code),
--					       BPF_WRITE, insn->src_reg, false);
-+					       BPF_WRITE, insn->src_reg, false, false);
- 			if (err)
- 				return err;
-=20
-@@ -16362,7 +16376,7 @@ static int do_check(struct bpf_verifier_env *env)
- 			/* check that memory (dst_reg + off) is writeable */
- 			err =3D check_mem_access(env, env->insn_idx, insn->dst_reg,
- 					       insn->off, BPF_SIZE(insn->code),
--					       BPF_WRITE, -1, false);
-+					       BPF_WRITE, -1, false, false);
- 			if (err)
- 				return err;
-=20
 --=20
 2.34.1
 
