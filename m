@@ -1,77 +1,77 @@
-Return-Path: <bpf+bounces-3685-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3686-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54DD741ED8
-	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 05:47:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCA8C741EE9
+	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 05:52:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFAC71C204E8
-	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 03:47:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C636F1C20490
+	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 03:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3329A1FCC;
-	Thu, 29 Jun 2023 03:47:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D01F1FDE;
+	Thu, 29 Jun 2023 03:52:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F423C10E9
-	for <bpf@vger.kernel.org>; Thu, 29 Jun 2023 03:47:35 +0000 (UTC)
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195E6171E
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 20:47:34 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-635e3ceb152so1764616d6.2
-        for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 20:47:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1DA1FB9;
+	Thu, 29 Jun 2023 03:52:27 +0000 (UTC)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F06D297C;
+	Wed, 28 Jun 2023 20:52:26 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fb77f21c63so347121e87.2;
+        Wed, 28 Jun 2023 20:52:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688010453; x=1690602453;
+        d=gmail.com; s=20221208; t=1688010744; x=1690602744;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kOQehtPxuCDA16kVtd/xK3Xl5LiUTWzm7L/9vvVQNOQ=;
-        b=N8ZUvlkmLOYC2VCOXuj3Kt+Bj3JXMZZhPX5+uVz9IX4vxlWaESs1GRAT7JS+h99XSy
-         3hp33nJaoPZB9o0jjClMv2aqhuJbn+WPct5BECfPjEFIINHKCgmJBspLUQFt2v+w9xP0
-         IvGebbLvvNdx8y4Cgt+Tr4vj6m/ZwBj/+U0SAREX6i3emlWMSxExUE/4pMFlwig0s4Li
-         t88Y/FrVpgt0tNfzs4BZ5b0+zPuDk9+oRHnzUZg17b8XvYc+X9PwFL8o28EcOScAel89
-         RK2MuaoLyPfbqGuJuP7RAw0qR3qj6o3u98sPCy4RTo8j1veadnNZDUfUOV0e8MBqitrz
-         Zx3Q==
+        bh=G/mShnN9MUl1H+Uj5ppePaa4sMACmwUz9u37+BJFKZE=;
+        b=BVEN9r7qrjVLVv6PkvHynYjAu6Rjd6ivk1td+rcqFxtYPiFqgHpDVeUxPVXNorBeSb
+         WvG5QrrjFJmYfqLE+coobGParakanK7ubUkKygoomHbksDcn9TPUlxtOyqoFF2i6xRtL
+         wqeabKDvK/TI+ADiNqHg9jWm8Yvimae2yNxWaziwSXsd9lUJlAAD4V7sDigJRglpctL3
+         gQu4Ws31EET/KAFLc2lgKaTO64KRySyYNjqTU54K6+xfdI3yY5FhukB43BG0Pdd227Tr
+         QsOUmIIq2cXDEM+yxnA2UgXg0+MgInEApDd0EB5o/xjdQzrSWlDGxdHiWWCwLGrbOV6w
+         lNvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688010453; x=1690602453;
+        d=1e100.net; s=20221208; t=1688010744; x=1690602744;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kOQehtPxuCDA16kVtd/xK3Xl5LiUTWzm7L/9vvVQNOQ=;
-        b=P5KkCqR/KamSSKStRvvGYl83tOOZ0O/SEIf7t83MkPK6ZqkhrXVKtDNCVBVK175NAn
-         KJENhhEocpqmcKpw3LWCEgLiaCnLMXhb4tuks9jTyYGnhCJren70ypABbEbaf7rNTwWk
-         np9B7tN+ghbhPSo4Y9rNlQLaYr4Lmk+aX4sDtB2sobrDMLsN/11oqDGFMKLvi5KpBGaM
-         qf8NFIIaPWezbdhHBER9z2sZJzBegtExzbNt+pP0dzt2ddGICSoTQT0pSjlLIO7O2IkB
-         nXdLmPWXCjmA42AVyYZLdRDks76rsUHYxJwY515zBUhZKTqqr5LkqZebVkhHEJEctTdE
-         u/Fw==
-X-Gm-Message-State: AC+VfDy7qi8dtu9K5jr2rPBbl5Fp0TQya4th3rcsj7J+fKe0p7kLNgU5
-	y1ghtGE6Bwt+noLPOXpZER3e7dqroiXWOVLlDTA=
-X-Google-Smtp-Source: ACHHUZ6MSlZSUBJ7jK8dNn1+qgg/5eQIdn3PnAIJcH3h4cph3bS/FZh79sWhLGzodJ7QDUCrTogd4D4XR+i9MdsUl5A=
-X-Received: by 2002:ad4:5bcf:0:b0:635:f201:f714 with SMTP id
- t15-20020ad45bcf000000b00635f201f714mr6666026qvt.34.1688010453041; Wed, 28
- Jun 2023 20:47:33 -0700 (PDT)
+        bh=G/mShnN9MUl1H+Uj5ppePaa4sMACmwUz9u37+BJFKZE=;
+        b=A0TIiNPBNm7YOAFdDrqtGr2tt/fgYQ+hyB+NThgTg2Su6O4PcVJkkKS9BCVqOuTGRh
+         btV36/dV5Zoiz5hCRtHWo4eVX3PachnaC8sVYMySWxx7wg28cvxsgmRtFiZpjkUHybIs
+         dW6eZKc4bj1+AVIzn4DsPJQ9EECdmZgaXZQT8HLXQwdmfJlRDpwfUXWu3cpi1O3n+8yp
+         kaH9QNdOhw0N75ruMxMmpxEbn1cfyjZoRo/IUKKcU3Kg71dXqn7QSEodWvAVUYdx/+JN
+         gihUpMntuTwfRZfzUwTsL4zHj5tk+Ek2li6ER7DFXjCOxtm3pEN6Wf9WIWcQXKealZsK
+         6CYA==
+X-Gm-Message-State: AC+VfDx0lt4nDMpDyCt1mYkAdQyDVEqx1a5nYjfHIxY2GBjeN+RMwK40
+	uLDfzMSZUQobDg2YodZe7HtCtEjmdbY1ujVIkHY=
+X-Google-Smtp-Source: ACHHUZ4k+FMX1pP2TTmE1EQ6BD+dsv0O4YCLc/H6iUPCtg1z5Tm4nCtOkeTgKJYpXHPT/qdL5j9P/vLchyo7pE+Smyk=
+X-Received: by 2002:a05:6512:3d06:b0:4fb:7be5:8f4e with SMTP id
+ d6-20020a0565123d0600b004fb7be58f4emr8145248lfv.6.1688010744064; Wed, 28 Jun
+ 2023 20:52:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230628115205.248395-1-laoar.shao@gmail.com> <20230628115205.248395-2-laoar.shao@gmail.com>
- <CALOAHbCreRRkLwt0Vyp9rUbL7JVzD5A4CET=jKoUJwAHXPop7g@mail.gmail.com> <CAADnVQK7kriNBmRZ04PvoYbL02acJkLiNWNa7j4bN3oh4M+Png@mail.gmail.com>
-In-Reply-To: <CAADnVQK7kriNBmRZ04PvoYbL02acJkLiNWNa7j4bN3oh4M+Png@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 29 Jun 2023 11:46:57 +0800
-Message-ID: <CALOAHbA-svPRA0Kcp7266xK_5ytP6i9g3V09ZUeVHDdOEUPZUA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix an error around PTR_UNTRUSTED
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>
+References: <20230628015634.33193-1-alexei.starovoitov@gmail.com>
+ <20230628015634.33193-13-alexei.starovoitov@gmail.com> <6f8e0e91-44b4-4d0e-8df3-c1e765653255@paulmck-laptop>
+In-Reply-To: <6f8e0e91-44b4-4d0e-8df3-c1e765653255@paulmck-laptop>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 28 Jun 2023 20:52:12 -0700
+Message-ID: <CAADnVQJq+NA0denwyr56jYz73n5BnkKF_GtY0zpwqsSvCrGs6Q@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 12/13] bpf: Introduce bpf_mem_free_rcu()
+ similar to kfree_rcu().
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	David Vernet <void@manifault.com>, Hou Tao <houtao@huaweicloud.com>, Tejun Heo <tj@kernel.org>, 
+	rcu@vger.kernel.org, Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,116 +81,151 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 29, 2023 at 11:35=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Jun 28, 2023 at 10:57=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
+rg> wrote:
 >
-> On Wed, Jun 28, 2023 at 8:12=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
+> On Tue, Jun 27, 2023 at 06:56:33PM -0700, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
 > >
-> > On Wed, Jun 28, 2023 at 7:52=E2=80=AFPM Yafang Shao <laoar.shao@gmail.c=
-om> wrote:
-> > >
-> > > Per discussion with Alexei, the PTR_UNTRUSTED flag should not been
-> > > cleared when we start to walk a new struct, because the struct in
-> > > question may be a struct nested in a union. We should also check and =
-set
-> > > this flag before we walk its each member, in case itself is a union.
-> > >
-> > > Fixes: 6fcd486b3a0a ("bpf: Refactor RCU enforcement in the verifier."=
-)
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > ---
-> > >  kernel/bpf/btf.c | 20 +++++++++-----------
-> > >  1 file changed, 9 insertions(+), 11 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 29fe21099298..e0a493230727 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -6133,7 +6133,6 @@ static int btf_struct_walk(struct bpf_verifier_=
-log *log, const struct btf *btf,
-> > >         const char *tname, *mname, *tag_value;
-> > >         u32 vlen, elem_id, mid;
-> > >
-> > > -       *flag =3D 0;
-> > >  again:
-> > >         tname =3D __btf_name_by_offset(btf, t->name_off);
-> > >         if (!btf_type_is_struct(t)) {
-> > > @@ -6142,6 +6141,14 @@ static int btf_struct_walk(struct bpf_verifier=
-_log *log, const struct btf *btf,
-> > >         }
-> > >
-> > >         vlen =3D btf_type_vlen(t);
-> > > +       if (BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_UNION && vlen !=3D=
- 1)
-> > > +               /*
-> > > +                * walking unions yields untrusted pointers
-> > > +                * with exception of __bpf_md_ptr and other
-> > > +                * unions with a single member
-> > > +                */
-> > > +               *flag |=3D PTR_UNTRUSTED;
-> > > +
-> > >         if (off + size > t->size) {
-> > >                 /* If the last element is a variable size array, we m=
-ay
-> > >                  * need to relax the rule.
-> > > @@ -6302,15 +6309,6 @@ static int btf_struct_walk(struct bpf_verifier=
-_log *log, const struct btf *btf,
-> > >                  * of this field or inside of this struct
-> > >                  */
-> > >                 if (btf_type_is_struct(mtype)) {
-> > > -                       if (BTF_INFO_KIND(mtype->info) =3D=3D BTF_KIN=
-D_UNION &&
-> > > -                           btf_type_vlen(mtype) !=3D 1)
-> > > -                               /*
-> > > -                                * walking unions yields untrusted po=
-inters
-> > > -                                * with exception of __bpf_md_ptr and=
- other
-> > > -                                * unions with a single member
-> > > -                                */
-> > > -                               *flag |=3D PTR_UNTRUSTED;
-> > > -
-> > >                         /* our field must be inside that union or str=
-uct */
-> > >                         t =3D mtype;
-> > >
-> > > @@ -6476,7 +6474,7 @@ bool btf_struct_ids_match(struct bpf_verifier_l=
-og *log,
-> > >                           bool strict)
-> > >  {
-> > >         const struct btf_type *type;
-> > > -       enum bpf_type_flag flag;
-> > > +       enum bpf_type_flag flag =3D 0;
-> > >         int err;
-> > >
-> > >         /* Are we already done? */
-> > > --
-> > > 2.39.3
-> > >
+> > Introduce bpf_mem_[cache_]free_rcu() similar to kfree_rcu().
+> > Unlike bpf_mem_[cache_]free() that links objects for immediate reuse in=
+to
+> > per-cpu free list the _rcu() flavor waits for RCU grace period and then=
+ moves
+> > objects into free_by_rcu_ttrace list where they are waiting for RCU
+> > task trace grace period to be freed into slab.
 > >
-> > Just noticed that it breaks test_sk_storage_tracing, because skb->sk
-> > is in a union:
-> >    struct sk_buff {
-> >        ...
-> >        union {
-> >            struct sock             *sk;
-> >            int                     ip_defrag_offset;
-> >        };
-> >        ...
-> >    };
+> > The life cycle of objects:
+> > alloc: dequeue free_llist
+> > free: enqeueu free_llist
+> > free_rcu: enqueue free_by_rcu -> waiting_for_gp
+> > free_llist above high watermark -> free_by_rcu_ttrace
+> > after RCU GP waiting_for_gp -> free_by_rcu_ttrace
+> > free_by_rcu_ttrace -> waiting_for_gp_ttrace -> slab
 > >
-> > I will think about it.
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >  include/linux/bpf_mem_alloc.h |   2 +
+> >  kernel/bpf/memalloc.c         | 129 +++++++++++++++++++++++++++++++++-
+> >  2 files changed, 128 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_allo=
+c.h
+> > index 3929be5743f4..d644bbb298af 100644
+> > --- a/include/linux/bpf_mem_alloc.h
+> > +++ b/include/linux/bpf_mem_alloc.h
+> > @@ -27,10 +27,12 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma=
+);
+> >  /* kmalloc/kfree equivalent: */
+> >  void *bpf_mem_alloc(struct bpf_mem_alloc *ma, size_t size);
+> >  void bpf_mem_free(struct bpf_mem_alloc *ma, void *ptr);
+> > +void bpf_mem_free_rcu(struct bpf_mem_alloc *ma, void *ptr);
+> >
+> >  /* kmem_cache_alloc/free equivalent: */
+> >  void *bpf_mem_cache_alloc(struct bpf_mem_alloc *ma);
+> >  void bpf_mem_cache_free(struct bpf_mem_alloc *ma, void *ptr);
+> > +void bpf_mem_cache_free_rcu(struct bpf_mem_alloc *ma, void *ptr);
+> >  void bpf_mem_cache_raw_free(void *ptr);
+> >  void *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags)=
+;
+> >
+> > diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> > index 40524d9454c7..3081d06a434c 100644
+> > --- a/kernel/bpf/memalloc.c
+> > +++ b/kernel/bpf/memalloc.c
+> > @@ -101,6 +101,15 @@ struct bpf_mem_cache {
+> >       bool draining;
+> >       struct bpf_mem_cache *tgt;
+> >
+> > +     /* list of objects to be freed after RCU GP */
+> > +     struct llist_head free_by_rcu;
+> > +     struct llist_node *free_by_rcu_tail;
+> > +     struct llist_head waiting_for_gp;
+> > +     struct llist_node *waiting_for_gp_tail;
+> > +     struct rcu_head rcu;
+> > +     atomic_t call_rcu_in_progress;
+> > +     struct llist_head free_llist_extra_rcu;
+> > +
+> >       /* list of objects to be freed after RCU tasks trace GP */
+> >       struct llist_head free_by_rcu_ttrace;
+> >       struct llist_head waiting_for_gp_ttrace;
+> > @@ -344,6 +353,69 @@ static void free_bulk(struct bpf_mem_cache *c)
+> >       do_call_rcu_ttrace(tgt);
+> >  }
+> >
+> > +static void __free_by_rcu(struct rcu_head *head)
+> > +{
+> > +     struct bpf_mem_cache *c =3D container_of(head, struct bpf_mem_cac=
+he, rcu);
+> > +     struct bpf_mem_cache *tgt =3D c->tgt;
+> > +     struct llist_node *llnode;
+> > +
+> > +     llnode =3D llist_del_all(&c->waiting_for_gp);
+> > +     if (!llnode)
+> > +             goto out;
+> > +
+> > +     llist_add_batch(llnode, c->waiting_for_gp_tail, &tgt->free_by_rcu=
+_ttrace);
+> > +
+> > +     /* Objects went through regular RCU GP. Send them to RCU tasks tr=
+ace */
+> > +     do_call_rcu_ttrace(tgt);
+> > +out:
+> > +     atomic_set(&c->call_rcu_in_progress, 0);
+> > +}
+> > +
+> > +static void check_free_by_rcu(struct bpf_mem_cache *c)
+> > +{
+> > +     struct llist_node *llnode, *t;
+> > +     unsigned long flags;
+> > +
+> > +     /* drain free_llist_extra_rcu */
+> > +     if (unlikely(!llist_empty(&c->free_llist_extra_rcu))) {
+> > +             inc_active(c, &flags);
+> > +             llist_for_each_safe(llnode, t, llist_del_all(&c->free_lli=
+st_extra_rcu))
+> > +                     if (__llist_add(llnode, &c->free_by_rcu))
+> > +                             c->free_by_rcu_tail =3D llnode;
+> > +             dec_active(c, flags);
+> > +     }
+> > +
+> > +     if (llist_empty(&c->free_by_rcu))
+> > +             return;
+> > +
+> > +     if (atomic_xchg(&c->call_rcu_in_progress, 1)) {
+> > +             /*
+> > +              * Instead of kmalloc-ing new rcu_head and triggering 10k
+> > +              * call_rcu() to hit rcutree.qhimark and force RCU to not=
+ice
+> > +              * the overload just ask RCU to hurry up. There could be =
+many
+> > +              * objects in free_by_rcu list.
+> > +              * This hint reduces memory consumption for an artifical
+> > +              * benchmark from 2 Gbyte to 150 Mbyte.
+> > +              */
+> > +             rcu_request_urgent_qs_task(current);
 >
-> It can be whitelisted similar to BTF_TYPE_SAFE_*.
+> I have been going back and forth on whether rcu_request_urgent_qs_task()
+> needs to throttle calls to itself, for example, to pay attention to only
+> one invocation per jiffy.  The theory here is that RCU's state machine
+> normally only advances about once per jiffy anyway.
+>
+> The main risk of *not* throttling is if several CPUs were to invoke
+> rcu_request_urgent_qs_task() in tight loops while those same CPUs were
+> undergoing interrupt storms, which would result in heavy lock contention
+> in __rcu_irq_enter_check_tick().  This is not exactly a common-case
+> scenario, but on the other hand, if you are having this degree of trouble=
+,
+> should RCU really be adding lock contention to your troubles?
 
-Got it.
-
-> Please add a selftest for the new feature.
-
-Sure, will add it.
-
---=20
-Regards
-Yafang
+I see spin_lock in __rcu_irq_enter_check_tick(), but I didn't observe
+it in practice even when I was calling rcu_request_urgent_qs_task()
+in multiple places through bpf_mem_alloc.
+I left it only in one place (this patch),
+because it was enough to 'hurry up the RCU' and make the difference.
+rdp =3D this_cpu_ptr(&rcu_data); is percpu, so I'm not sure why
+you think that the contention is possible.
+I think we should avoid extra logic either in RCU or in bpf_mem_alloc
+to keep the code simple, since contention is hypothetical at this point.
+I've tried preempt and no preempt configs. With and without debug.
 
