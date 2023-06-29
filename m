@@ -1,77 +1,78 @@
-Return-Path: <bpf+bounces-3683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 062CD741EC3
-	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 05:36:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 380E3741ECF
+	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 05:43:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2216F280D0A
-	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 03:36:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E650B280D64
+	for <lists+bpf@lfdr.de>; Thu, 29 Jun 2023 03:43:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB55D1FC2;
-	Thu, 29 Jun 2023 03:36:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26BD1FD9;
+	Thu, 29 Jun 2023 03:42:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44001FAD
-	for <bpf@vger.kernel.org>; Thu, 29 Jun 2023 03:36:01 +0000 (UTC)
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF23B2961
-	for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 20:35:59 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b6a152a933so2971951fa.1
-        for <bpf@vger.kernel.org>; Wed, 28 Jun 2023 20:35:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 582CC1FAD;
+	Thu, 29 Jun 2023 03:42:46 +0000 (UTC)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552312728;
+	Wed, 28 Jun 2023 20:42:44 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b6a084a34cso2881171fa.1;
+        Wed, 28 Jun 2023 20:42:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688009758; x=1690601758;
+        d=gmail.com; s=20221208; t=1688010162; x=1690602162;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MtjWRrQAdegg0v7Gu/Yiufgv2AvWdLD3GmggOzaJVBQ=;
-        b=aDnmVndkVnmjALZrMPWrsrKJMDy5DkwgQoUSx3nt01Q5ptLRDdsjYvcKIpToUgkCMy
-         TE2/QIDY8GIeZe1vk7R5zpxrDIlsprjzfDuSjHbMmc8aF4dWGji4Uwir+KcJNyu1Uy9h
-         PlJ3IEpNPZGMkmTF3hkExL16wfRkuf81dJ5mXeaveb7oUA7quzZRGiKCfkU1dHr+DogN
-         Ku96n9toTXOISVLpkuH6NOuMhOQpXHb35zBapYGCitOoS2o7x6L0PRAe8FoRMA1/kxTg
-         NI4UcRnlMtsqZ1SOD2TgvgR9XWyA7ddyYmnB1MSuJG6nLmbMdR/ubsVg+DV3QPzuxS3Y
-         DpTg==
+        bh=wr149jZoNPWXuN3QHy5A1rvPR4vA8OIAR36UxjCf/SA=;
+        b=rwSqMVC8T5Rx1SRIA3yNto/INYUm6JZvH+MR2NTn3iYgnmO2idbdBrZTPXjC9eAQRk
+         NwKLWhQ3HmWcJTnKqnhkRYWlJfAbzVnSX5aL5rarctM1LxX6XjHMoveXJ1tVZqRUVCZz
+         j/EM+oc/QWq5MwD+NRtTCm0mm2KqPKReEV+aX7gt+riaLM1R+5pGchjKTGaqEvfZPwRL
+         tDr/qojRO/wp4dt55E6ZorMn5oImdLLQ2hmyS1sjcH9kbgS+QqQ/820n3vvNDlYpLcaS
+         +6AzDw5nFWt0majLak73aaIaOhHvMpZQ4E2qkIHTRnsHftsxjEMgnBpcgdZP6Q1U6ZQr
+         Gzww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688009758; x=1690601758;
+        d=1e100.net; s=20221208; t=1688010162; x=1690602162;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MtjWRrQAdegg0v7Gu/Yiufgv2AvWdLD3GmggOzaJVBQ=;
-        b=N+1/2cC0wcbLVBAcIppV18jVPz/q6DMxJ3XPfstc/iF9XuK39helPXk9tqjZYLsSGG
-         WNF1lcxoEivGwov6Q+1Wwxdvk11NIuzR5JX9nL+GndzTDqNqU6mQsNrcXXqifNtTRldc
-         +ZN622IbptHR/c8Z71IlJL//sujIYprC+HoqxI070bMoqrJkqU/De5rzGqZg+RZx1q1/
-         +u5l0KD0Lo1/jnsfUW3aYOKYYCCRc+EAWrcGOJhk7lPQaXiC2sbgu1qZTbvStVCoAXHb
-         ZCBqP4wjwZz1mNt1NzQvD+249fX2YtCRseUrFwGbKdVEDEfI/wde+LTCjtPOr3DlOInn
-         TIxw==
-X-Gm-Message-State: AC+VfDwKdSK6OF5oYtJic3x/z9uNFVNA1QnZz9ryFwJNqpIZW+JCXOGO
-	Fn3iwtiFKbudQg40e89vIj1dLRTP0wCnqGKa9HE=
-X-Google-Smtp-Source: ACHHUZ6T49NAE4FCHikmECFoEggGGnkrVA8SNSxlhXFhzfrmhnc2C7JdiwMfdcQiSxnrBlT00b2qTQQAXnVA6BhhIG4=
-X-Received: by 2002:a2e:9014:0:b0:2b6:9c1d:dea3 with SMTP id
- h20-20020a2e9014000000b002b69c1ddea3mr8777911ljg.2.1688009757639; Wed, 28 Jun
- 2023 20:35:57 -0700 (PDT)
+        bh=wr149jZoNPWXuN3QHy5A1rvPR4vA8OIAR36UxjCf/SA=;
+        b=JBfFKKVgAOQyL8eRsKLYUj94ZZuUiagjWbUtICeqBp/G6GmHCceizDKe9OogcrGAYZ
+         AA7PdtrCnVJ7GlE7pw0LO6dtOrqmhQVAcJoKt6+Qwgex30WhROlgeG/u/SPnqyd1uu0D
+         PjYP7qTzD4LWkxC8eZwPZslpUwF50tLV/cst5uRmyaRD/10LThtPd4o4dEeMqXmVbLg3
+         AROJSJlAwM+fTsU95tBFP8AvTe0g1j/y6IYj/8hDUr2cJjz6j6HhzFZvaBylnRdnvurz
+         3hQno10VX/2hzfyxtXZiqZTqrfLAfVWymGDV3NkzFdiOxwHDP3VWANazqHBEoR5zjyUh
+         AQ5Q==
+X-Gm-Message-State: AC+VfDyhbuaWkm3ODisa0JR7DhGXdVstq9f/Jx8/sNA91P6I9E/WqBx4
+	z1oCJFCcDHF52IVQw4yVG2WFaoQ/bJY7i0qdVxA=
+X-Google-Smtp-Source: ACHHUZ75OV1yg39k+UNCOrVGppDdjMiIKg9L95G0FO/zmcjy6aEDejVpRZNUf6xxTI9Ie721nq7UOLqJqfdqbuJ1crA=
+X-Received: by 2002:a2e:b602:0:b0:2b5:7f93:b3ae with SMTP id
+ r2-20020a2eb602000000b002b57f93b3aemr17941211ljn.38.1688010162270; Wed, 28
+ Jun 2023 20:42:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230628115205.248395-1-laoar.shao@gmail.com> <20230628115205.248395-2-laoar.shao@gmail.com>
- <CALOAHbCreRRkLwt0Vyp9rUbL7JVzD5A4CET=jKoUJwAHXPop7g@mail.gmail.com>
-In-Reply-To: <CALOAHbCreRRkLwt0Vyp9rUbL7JVzD5A4CET=jKoUJwAHXPop7g@mail.gmail.com>
+References: <20230628015634.33193-1-alexei.starovoitov@gmail.com>
+ <20230628015634.33193-13-alexei.starovoitov@gmail.com> <57ceda87-e882-54b0-057a-2767c4395122@huaweicloud.com>
+In-Reply-To: <57ceda87-e882-54b0-057a-2767c4395122@huaweicloud.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 28 Jun 2023 20:35:45 -0700
-Message-ID: <CAADnVQK7kriNBmRZ04PvoYbL02acJkLiNWNa7j4bN3oh4M+Png@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix an error around PTR_UNTRUSTED
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>
+Date: Wed, 28 Jun 2023 20:42:31 -0700
+Message-ID: <CAADnVQ+V_SiZynZfGMWjSqkKb+8xggvBUmy7oTFUcvGq_2CcLg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 12/13] bpf: Introduce bpf_mem_free_rcu()
+ similar to kfree_rcu().
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: Tejun Heo <tj@kernel.org>, rcu@vger.kernel.org, 
+	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Kernel Team <kernel-team@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, David Vernet <void@manifault.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,102 +82,83 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 28, 2023 at 8:12=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
-wrote:
+On Wed, Jun 28, 2023 at 7:24=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
 >
-> On Wed, Jun 28, 2023 at 7:52=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
+> Hi,
+>
+> On 6/28/2023 9:56 AM, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
 > >
-> > Per discussion with Alexei, the PTR_UNTRUSTED flag should not been
-> > cleared when we start to walk a new struct, because the struct in
-> > question may be a struct nested in a union. We should also check and se=
-t
-> > this flag before we walk its each member, in case itself is a union.
+> > Introduce bpf_mem_[cache_]free_rcu() similar to kfree_rcu().
+> > Unlike bpf_mem_[cache_]free() that links objects for immediate reuse in=
+to
+> > per-cpu free list the _rcu() flavor waits for RCU grace period and then=
+ moves
+> > objects into free_by_rcu_ttrace list where they are waiting for RCU
+> > task trace grace period to be freed into slab.
 > >
-> > Fixes: 6fcd486b3a0a ("bpf: Refactor RCU enforcement in the verifier.")
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  kernel/bpf/btf.c | 20 +++++++++-----------
-> >  1 file changed, 9 insertions(+), 11 deletions(-)
+> > The life cycle of objects:
+> > alloc: dequeue free_llist
+> > free: enqeueu free_llist
+> > free_rcu: enqueue free_by_rcu -> waiting_for_gp
+> > free_llist above high watermark -> free_by_rcu_ttrace
+> > after RCU GP waiting_for_gp -> free_by_rcu_ttrace
+> > free_by_rcu_ttrace -> waiting_for_gp_ttrace -> slab
 > >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 29fe21099298..e0a493230727 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -6133,7 +6133,6 @@ static int btf_struct_walk(struct bpf_verifier_lo=
-g *log, const struct btf *btf,
-> >         const char *tname, *mname, *tag_value;
-> >         u32 vlen, elem_id, mid;
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> SNIP
 > >
-> > -       *flag =3D 0;
-> >  again:
-> >         tname =3D __btf_name_by_offset(btf, t->name_off);
-> >         if (!btf_type_is_struct(t)) {
-> > @@ -6142,6 +6141,14 @@ static int btf_struct_walk(struct bpf_verifier_l=
-og *log, const struct btf *btf,
-> >         }
-> >
-> >         vlen =3D btf_type_vlen(t);
-> > +       if (BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_UNION && vlen !=3D 1=
-)
-> > +               /*
-> > +                * walking unions yields untrusted pointers
-> > +                * with exception of __bpf_md_ptr and other
-> > +                * unions with a single member
-> > +                */
-> > +               *flag |=3D PTR_UNTRUSTED;
+> > +static void __free_by_rcu(struct rcu_head *head)
+> > +{
+> > +     struct bpf_mem_cache *c =3D container_of(head, struct bpf_mem_cac=
+he, rcu);
+> > +     struct bpf_mem_cache *tgt =3D c->tgt;
+> > +     struct llist_node *llnode;
 > > +
-> >         if (off + size > t->size) {
-> >                 /* If the last element is a variable size array, we may
-> >                  * need to relax the rule.
-> > @@ -6302,15 +6309,6 @@ static int btf_struct_walk(struct bpf_verifier_l=
-og *log, const struct btf *btf,
-> >                  * of this field or inside of this struct
-> >                  */
-> >                 if (btf_type_is_struct(mtype)) {
-> > -                       if (BTF_INFO_KIND(mtype->info) =3D=3D BTF_KIND_=
-UNION &&
-> > -                           btf_type_vlen(mtype) !=3D 1)
-> > -                               /*
-> > -                                * walking unions yields untrusted poin=
-ters
-> > -                                * with exception of __bpf_md_ptr and o=
-ther
-> > -                                * unions with a single member
-> > -                                */
-> > -                               *flag |=3D PTR_UNTRUSTED;
-> > -
-> >                         /* our field must be inside that union or struc=
-t */
-> >                         t =3D mtype;
-> >
-> > @@ -6476,7 +6474,7 @@ bool btf_struct_ids_match(struct bpf_verifier_log=
- *log,
-> >                           bool strict)
-> >  {
-> >         const struct btf_type *type;
-> > -       enum bpf_type_flag flag;
-> > +       enum bpf_type_flag flag =3D 0;
-> >         int err;
-> >
-> >         /* Are we already done? */
-> > --
-> > 2.39.3
-> >
+> > +     llnode =3D llist_del_all(&c->waiting_for_gp);
+> > +     if (!llnode)
+> > +             goto out;
+> > +
+> > +     llist_add_batch(llnode, c->waiting_for_gp_tail, &tgt->free_by_rcu=
+_ttrace);
+> > +
+> > +     /* Objects went through regular RCU GP. Send them to RCU tasks tr=
+ace */
+> > +     do_call_rcu_ttrace(tgt);
 >
-> Just noticed that it breaks test_sk_storage_tracing, because skb->sk
-> is in a union:
->    struct sk_buff {
->        ...
->        union {
->            struct sock             *sk;
->            int                     ip_defrag_offset;
->        };
->        ...
->    };
->
-> I will think about it.
+> I still got report about leaked free_by_rcu_ttrace without adding any
+> extra hack except using bpf_mem_cache_free_rcu() in htab.
 
-It can be whitelisted similar to BTF_TYPE_SAFE_*.
-Please add a selftest for the new feature.
+Please share the steps to repro.
+
+> When bpf ma is freed through free_mem_alloc(), the following sequence
+> may lead to leak of free_by_rcu_ttrace:
+>
+> P1: bpf_mem_alloc_destroy()
+>     P2: __free_by_rcu()
+>
+>     // got false
+>     P2: read c->draining
+>
+> P1: c->draining =3D true
+> P1: llist_del_all(&c->free_by_rcu_ttrace)
+>
+>     // add to free_by_rcu_ttrace again
+>     P2: llist_add_batch(..., &tgt->free_by_rcu_ttrace)
+>         P2: do_call_rcu_ttrace()
+>             // call_rcu_ttrace_in_progress is 1, so xchg return 1
+>             // and it doesn't being moved to waiting_for_gp_ttrace
+>             P2: atomic_xchg(&c->call_rcu_ttrace_in_progress, 1)
+>
+> // got 1
+> P1: atomic_read(&c->call_rcu_ttrace_in_progress)
+> // objects in free_by_rcu_ttrace is leaked
+>
+> I think the race could be fixed by checking c->draining in
+> do_call_rcu_ttrace() when atomic_xchg() returns 1 as shown below:
+
+If the theory of the bug holds true then the fix makes sense,
+but did you repro without fix and cannot repro with the fix?
+We should not add extra code based on a hunch.
 
