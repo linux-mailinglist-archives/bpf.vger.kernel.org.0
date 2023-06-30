@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-3785-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3786-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00C3574377B
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 10:37:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FB2C74377C
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 10:37:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 312A31C209A2
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 08:37:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 605881C20B7F
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 08:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B1B8A957;
-	Fri, 30 Jun 2023 08:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E62FEA957;
+	Fri, 30 Jun 2023 08:37:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F89A932
-	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 08:37:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C1FAC433C8;
-	Fri, 30 Jun 2023 08:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1FAA932
+	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 08:37:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7DCFC433CC;
+	Fri, 30 Jun 2023 08:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688114244;
-	bh=E92IeJoLSBFkGbrsbYzpFje+U2zekAnDaxcskWWFil0=;
+	s=k20201202; t=1688114256;
+	bh=IoOBhwY1eF6Gv08BSOfriLcg7VCmDxonftgpfGo4Dvo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kTdmJ/a8VNxJNWMkhaBEnwDqFjxZLU5MkjStmQeOqTmtnpzW/Ez8IwOoI+cZj2RO/
-	 r/M+xvjbp6NYi9iO6YiMzKZY6TlaL5vRn72CFcsHHWTh42L2P0Z72NPIWdOI0pbGkM
-	 tz7MdNA73vA3vVkxwCBv7Q7xPjLbG8ELgHGX9kXsZmj+ChK31BRAwffGMH6a0YNvhZ
-	 MRVs+0Y++wLXn9vweDG3U2M+lUsE4j7e2M/ip2xQmnsvHYjNWcOSMotyOGsmFvyVP4
-	 cjjuYANZCQ1ioWIwnZ+SpHT1N+hml20fMqp2oJAVpXh+0pswYeYvmC4/PgfUj3lrXC
-	 /CGQH1LVUNOCw==
+	b=AJ1UmnOXv5AlHtJGMw4C01T6b1uwKgasCp75cm1KFOGthPeX+isH6aMW+1cuk8sQb
+	 a9Y3ZITT0gqVGqWU3A2Yj8Pi0qGCU44+9F5uDc9ZXnRO1XOMRgBbiftBHkAJTP0aCU
+	 ZSZSIDSe71nfc9H+izpYeoMndTyW1qYJU+wO/DXVYT6iKJd5KnR4B1RWnNRBK5j2tX
+	 IhDzz9SeAiIifYen25ZjIjA4SdgALZ4s2iftj4at262TU5SDMAtPuAdYsNBO9UEYOL
+	 2g7z0UM08ZdklWfrsfaAuf6rwFf0qUnIxdEPtJEWvhAKeGtcG7+Zj5Z8vYUTQMhKXm
+	 SMftd8IB+sB1g==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -42,9 +42,9 @@ Cc: bpf@vger.kernel.org,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>
-Subject: [PATCHv3 bpf-next 18/26] selftests/bpf: Add uprobe_multi api test
-Date: Fri, 30 Jun 2023 10:33:36 +0200
-Message-ID: <20230630083344.984305-19-jolsa@kernel.org>
+Subject: [PATCHv3 bpf-next 19/26] selftests/bpf: Add uprobe_multi link test
+Date: Fri, 30 Jun 2023 10:33:37 +0200
+Message-ID: <20230630083344.984305-20-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230630083344.984305-1-jolsa@kernel.org>
 References: <20230630083344.984305-1-jolsa@kernel.org>
@@ -56,100 +56,105 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding uprobe_multi test for bpf_program__attach_uprobe_multi
-attach function.
+Adding uprobe_multi test for bpf_link_create attach function.
 
-Testing attachment using glob patterns and via bpf_uprobe_multi_opts
-paths/syms fields.
+Testing attachment using the struct bpf_link_create_opts.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../bpf/prog_tests/uprobe_multi_test.c        | 71 +++++++++++++++++++
- 1 file changed, 71 insertions(+)
+ .../bpf/prog_tests/uprobe_multi_test.c        | 68 +++++++++++++++++++
+ 1 file changed, 68 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-index 5cd1116bbb62..f97a68871e73 100644
+index f97a68871e73..fd858636b8b0 100644
 --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
 +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-@@ -69,8 +69,79 @@ static void test_skel_api(void)
- 	uprobe_multi__destroy(skel);
+@@ -3,6 +3,7 @@
+ #include <unistd.h>
+ #include <test_progs.h>
+ #include "uprobe_multi.skel.h"
++#include "bpf/libbpf_elf.h"
+ 
+ static char test_data[] = "test_data";
+ 
+@@ -136,6 +137,71 @@ static void test_attach_api_syms(void)
+ 	test_attach_api("/proc/self/exe", NULL, &opts);
  }
  
-+static void
-+test_attach_api(const char *binary, const char *pattern, struct bpf_uprobe_multi_opts *opts)
++static void test_link_api(void)
 +{
-+	struct bpf_link *link1 = NULL, *link2 = NULL;
-+	struct bpf_link *link3 = NULL, *link4 = NULL;
++	int prog_fd, link1_fd = -1, link2_fd = -1, link3_fd = -1, link4_fd = -1;
++	LIBBPF_OPTS(bpf_link_create_opts, opts);
++	const char *path = "/proc/self/exe";
 +	struct uprobe_multi *skel = NULL;
-+
-+	skel = uprobe_multi__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_multi__open_and_load"))
-+		goto cleanup;
-+
-+	opts->retprobe = false;
-+	link1 = bpf_program__attach_uprobe_multi(skel->progs.test_uprobe, -1,
-+						      binary, pattern, opts);
-+	if (!ASSERT_OK_PTR(link1, "bpf_program__attach_uprobe_multi"))
-+		goto cleanup;
-+
-+	opts->retprobe = true;
-+	link2 = bpf_program__attach_uprobe_multi(skel->progs.test_uretprobe, -1,
-+						      binary, pattern, opts);
-+	if (!ASSERT_OK_PTR(link2, "bpf_program__attach_uprobe_multi_retprobe"))
-+		goto cleanup;
-+
-+	opts->retprobe = false;
-+	link3 = bpf_program__attach_uprobe_multi(skel->progs.test_uprobe_sleep, -1,
-+						      binary, pattern, opts);
-+	if (!ASSERT_OK_PTR(link1, "bpf_program__attach_uprobe_multi"))
-+		goto cleanup;
-+
-+	opts->retprobe = true;
-+	link4 = bpf_program__attach_uprobe_multi(skel->progs.test_uretprobe_sleep, -1,
-+						      binary, pattern, opts);
-+	if (!ASSERT_OK_PTR(link2, "bpf_program__attach_uprobe_multi_retprobe"))
-+		goto cleanup;
-+
-+	uprobe_multi_test_run(skel);
-+
-+cleanup:
-+	bpf_link__destroy(link4);
-+	bpf_link__destroy(link3);
-+	bpf_link__destroy(link2);
-+	bpf_link__destroy(link1);
-+	uprobe_multi__destroy(skel);
-+}
-+
-+static void test_attach_api_pattern(void)
-+{
-+	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
-+
-+	test_attach_api("/proc/self/exe", "uprobe_multi_func_*", &opts);
-+	test_attach_api("/proc/self/exe", "uprobe_multi_func_?", &opts);
-+}
-+
-+static void test_attach_api_syms(void)
-+{
-+	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
++	unsigned long *offsets = NULL;
 +	const char *syms[3] = {
 +		"uprobe_multi_func_1",
 +		"uprobe_multi_func_2",
 +		"uprobe_multi_func_3",
 +	};
++	int err;
 +
-+	opts.syms = syms;
-+	opts.cnt = ARRAY_SIZE(syms);
-+	test_attach_api("/proc/self/exe", NULL, &opts);
++	err = elf_resolve_syms_offsets(path, 3, syms, (unsigned long **) &offsets);
++	if (!ASSERT_OK(err, "elf_resolve_syms_offsets"))
++		return;
++
++	opts.uprobe_multi.path = path;
++	opts.uprobe_multi.offsets = offsets;
++	opts.uprobe_multi.cnt = ARRAY_SIZE(syms);
++
++	skel = uprobe_multi__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_multi__open_and_load"))
++		goto cleanup;
++
++	opts.kprobe_multi.flags = 0;
++	prog_fd = bpf_program__fd(skel->progs.test_uprobe);
++	link1_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &opts);
++	if (!ASSERT_GE(link1_fd, 0, "link1_fd"))
++		goto cleanup;
++
++	opts.kprobe_multi.flags = BPF_F_UPROBE_MULTI_RETURN;
++	prog_fd = bpf_program__fd(skel->progs.test_uretprobe);
++	link2_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &opts);
++	if (!ASSERT_GE(link2_fd, 0, "link2_fd"))
++		goto cleanup;
++
++	opts.kprobe_multi.flags = 0;
++	prog_fd = bpf_program__fd(skel->progs.test_uprobe_sleep);
++	link3_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &opts);
++	if (!ASSERT_GE(link1_fd, 0, "link3_fd"))
++		goto cleanup;
++
++	opts.kprobe_multi.flags = BPF_F_UPROBE_MULTI_RETURN;
++	prog_fd = bpf_program__fd(skel->progs.test_uretprobe_sleep);
++	link4_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &opts);
++	if (!ASSERT_GE(link2_fd, 0, "link4_fd"))
++		goto cleanup;
++	uprobe_multi_test_run(skel);
++
++cleanup:
++	if (link1_fd >= 0)
++		close(link1_fd);
++	if (link2_fd >= 0)
++		close(link2_fd);
++	if (link3_fd >= 0)
++		close(link3_fd);
++	if (link4_fd >= 0)
++		close(link4_fd);
++
++	uprobe_multi__destroy(skel);
++	free(offsets);
 +}
 +
  void test_uprobe_multi_test(void)
  {
  	if (test__start_subtest("skel_api"))
- 		test_skel_api();
-+	if (test__start_subtest("attach_api_pattern"))
-+		test_attach_api_pattern();
-+	if (test__start_subtest("attach_api_syms"))
-+		test_attach_api_syms();
+@@ -144,4 +210,6 @@ void test_uprobe_multi_test(void)
+ 		test_attach_api_pattern();
+ 	if (test__start_subtest("attach_api_syms"))
+ 		test_attach_api_syms();
++	if (test__start_subtest("link_api"))
++		test_link_api();
  }
 -- 
 2.41.0
