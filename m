@@ -1,390 +1,501 @@
-Return-Path: <bpf+bounces-3758-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3759-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F12BB7434E6
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 08:23:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C2807435D6
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 09:35:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B02091C20B91
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 06:23:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C472280F89
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 07:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3072538C;
-	Fri, 30 Jun 2023 06:23:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B87A92A;
+	Fri, 30 Jun 2023 07:35:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89E5F5240
-	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 06:23:06 +0000 (UTC)
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAE01BCE
-	for <bpf@vger.kernel.org>; Thu, 29 Jun 2023 23:23:04 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-7670479ac4fso30979985a.1
-        for <bpf@vger.kernel.org>; Thu, 29 Jun 2023 23:23:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688106183; x=1690698183;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zn+IvaySyr+8hFvUNeN9VI08I1VCqfQ46AdL4PsISXU=;
-        b=UrbQQozdD4eke3QB7kAQ1U09uC5C1K7t1KWj4dClLEbkFbySTkn25po2x7hX/+2noa
-         2eYNarAqMglEbUzyPVXiSYtKOrjOWwGmZszkV4i8UXRVkUCi0iqExVVPzV1G0BcW6K2V
-         X59RLxONdtSEHrB7MHpJ6UVkiGAD18SmgMFY+lf7xYZsEB4KR+VKWmjyZAkfyc6O+NZb
-         VthpvwtzFPYp5gC2XUT+yusqibmINTZv9t8/2SnhlpLSH7t/jgqKXFmQOt2pm11XMksa
-         lohYMDbswXvtmtAbqP3QPh3483yuiAFsHUvmx5KSbvTbXCtRJ7bi4sNcXTehhhJEjoI4
-         YpZQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717178834
+	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 07:35:30 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FD92703
+	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 00:35:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1688110523;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yvzZRKpw3ApeLTYKDB5Db4szpWf9nkwkkEGTxj7vByA=;
+	b=BmvLaIZuXGBx3DV33Ecbpn05/tZh6Gu9fLxBXdnEK7VPibPC2y8AanHRcSj0QDGdKp364a
+	MHX7cyq3K5SU4ziGpu/nilJUVdL1KodJHkzgo0nBBvksQtNdo+PSh21R+wOKGuNrvIuzWt
+	vYrGcbaSLyBLEuD+EZmFzmF1zlyvong=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-668-TBaKjrhcNCifGaYYwQ3W4Q-1; Fri, 30 Jun 2023 03:35:22 -0400
+X-MC-Unique: TBaKjrhcNCifGaYYwQ3W4Q-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b6a2a5f08aso15571641fa.2
+        for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 00:35:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688106183; x=1690698183;
+        d=1e100.net; s=20221208; t=1688110520; x=1690702520;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zn+IvaySyr+8hFvUNeN9VI08I1VCqfQ46AdL4PsISXU=;
-        b=Mxniuc/Gj3R1Ya4eYMs3Fr06iEVud2fjTKbKpE9JsPXGyuLv+gj/l8zxtU8sONS5xk
-         meAJJyli5jrg5ijp/luwq6gYD2TL7xHPCYGHU4cXoriKXcERdPEoyku+7dPn8ucnBbqB
-         j6SSg4sMpGMm5HdHl60sw26WgTndq5zttkjdfAmYMB48WwRy62PEruhwfGSQGsmJOYww
-         1EwM9tCtRlNSGswcmPu8q3UGpe7ZVmrQcA8gatcybnPIz5FhT7nyEIDne3AQ5hecCYrU
-         Fac4hBQR+n0YwrjnNOs0VU1AoIwGUVJpfmwRN6nwxp76lzV+AMtyE5kyin1xCy/vM0Me
-         ul/A==
-X-Gm-Message-State: ABy/qLb05KI/Gm0eUd5aMyz4FVoq4B9jKuoQuSRi01BmfppoHM65P5KG
-	/rh3+usM589OdJgQCFiivAQsnz1yHqpVKIvX29Y=
-X-Google-Smtp-Source: APBJJlE1bURf+fbpyVzyq1EsCUd1lFm37Y+cPQ2XI3+qEUL7UjlapvLLAb5L3cCQrIwEq+YhQyf0SNm2MZn0O+WmAy4=
-X-Received: by 2002:a0c:f7d2:0:b0:635:fa38:5216 with SMTP id
- f18-20020a0cf7d2000000b00635fa385216mr2161758qvo.0.1688106183065; Thu, 29 Jun
- 2023 23:23:03 -0700 (PDT)
+        bh=yvzZRKpw3ApeLTYKDB5Db4szpWf9nkwkkEGTxj7vByA=;
+        b=gAj+SmBjb91rfR2vA90bC5g7BN9CQd3Snijctz7NSq4mXBiUYfJQcZAL/P3UIt/b1Q
+         EyACI1xxH/q61OoqBzRDYs0ptNW6ZqqqcjmshkKJvcSPB4XI82gqsoXYHsWZ6H5jXWzd
+         fLunrwhN8zK7VknQSJwpnkkaJ7WrKS+HAXoR2BjnuPX/LExMJU6RzT42mUN/xpUlCfke
+         L7zVYXAzWCAABzi8ATrTzH4vzFUSxoPawLZJj6p/2IZzOJVi3gAFjibDWbkiXkkUx+Fq
+         j3DUzfCCT7ptyELkABDD0/7k4aAHyHOSJ3Zcy5S2NUXz/pBYbswJ/YQ+MykeQLWKR/+h
+         2EJw==
+X-Gm-Message-State: ABy/qLbPEOjkd+nwNKJeRT1ckO+aIeC+aXlcO197TBiuKFxpqIbVgX1m
+	rpsQ6KxWGpcwFNyWmzvJfhnwjSe+KKKv2s7ui5qWXRQkGOkXrzcpt9xCeWiHqxX9dLnujEmjRvd
+	u29kIvyxNPUgrmhT+gCOswCU04HQN
+X-Received: by 2002:a2e:9844:0:b0:2b6:cd6a:17f7 with SMTP id e4-20020a2e9844000000b002b6cd6a17f7mr1538187ljj.20.1688110520479;
+        Fri, 30 Jun 2023 00:35:20 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHmy2wRmgzS5X0oeLsjKhyHqRY65CB4fGDqnkVmGQ45hSJXzqcq1rMA7IliihuDVCT9jaj0hiO3sbePpF8neyw=
+X-Received: by 2002:a2e:9844:0:b0:2b6:cd6a:17f7 with SMTP id
+ e4-20020a2e9844000000b002b6cd6a17f7mr1538167ljj.20.1688110520030; Fri, 30 Jun
+ 2023 00:35:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230621170244.1283336-1-sdf@google.com> <20230621170244.1283336-4-sdf@google.com>
- <57b9fc14-c02e-f0e5-148d-a549ebab6cf6@brouer.com> <CAKH8qBsk3MDbx2PyU-_+tDV4C0R6J_wzxi9Co6ekHv_tWzp7Tw@mail.gmail.com>
- <c936bd6c-7060-47da-d522-747b49bee8a0@redhat.com> <CAKH8qBsqdE7=4JC8LfkL4gV9eQHEZjMpBSen2a+4q2Y7DpiOow@mail.gmail.com>
- <435d1630-c3f4-97fb-b6fe-9795d1f0bf33@redhat.com> <CAKH8qBtdKHCnFWUiz8H_5miPF82nqKhG4Dfx9GbQYgWbYfERjg@mail.gmail.com>
- <CAJ8uoz0MuXYJE_a58PCtCypscZfevE2tgheC32e=zqEdNPgbnw@mail.gmail.com>
- <CAKH8qBui6gieETYzDugG0=nmBR-QnhhhyqaF3px0sjG7-BKLhQ@mail.gmail.com>
- <871qhuh5ec.fsf@toke.dk> <CAJ8uoz2Km078-K9e+8KtpiUJwTRN2p6yZrYbMD7bYaEKAfGf4w@mail.gmail.com>
- <87r0pufpf2.fsf@toke.dk>
-In-Reply-To: <87r0pufpf2.fsf@toke.dk>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Fri, 30 Jun 2023 08:22:51 +0200
-Message-ID: <CAJ8uoz0a5ioP=3n+WsTORpQwqy+rTW85VUHLnswa79i7L+Aadg@mail.gmail.com>
-Subject: Re: [xdp-hints] Re: [RFC bpf-next v2 03/11] xsk: Support XDP_TX_METADATA_LEN
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: Stanislav Fomichev <sdf@google.com>, Jesper Dangaard Brouer <jbrouer@redhat.com>, brouer@redhat.com, 
-	bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	"Karlsson, Magnus" <magnus.karlsson@intel.com>, 
-	"xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>
+References: <20230628030506.2213-1-hengqi@linux.alibaba.com>
+ <20230628030506.2213-2-hengqi@linux.alibaba.com> <CACGkMEv7aVH0dgdd6N3RMH+57BWuxnq9NR8sPzD9wRQZ5TZRFQ@mail.gmail.com>
+ <c6411922-51ad-3d8f-88aa-28883b44573d@linux.alibaba.com> <CACGkMEu=Cs5DFP+EFqxUXaiqz7vewhQ5zMMtChGpR_oGjrvMCg@mail.gmail.com>
+ <20230628045626.GA32321@h68b04307.sqa.eu95> <CACGkMEt6Kb60Akn=aJjzJQg6Zg8F_24ezqAtwPOZxiu4-f7E3g@mail.gmail.com>
+ <620af708-42a0-f711-cd7c-43362751c842@linux.alibaba.com> <CACGkMEufm08ym32Ft4ss7AzOjFaEoa5_CuZB29xF9qc3B2ZAhA@mail.gmail.com>
+ <20230629054740.GA77232@h68b04307.sqa.eu95>
+In-Reply-To: <20230629054740.GA77232@h68b04307.sqa.eu95>
+From: Jason Wang <jasowang@redhat.com>
+Date: Fri, 30 Jun 2023 15:35:08 +0800
+Message-ID: <CACGkMEtASF=yFBroLadN=qeMhHZndwydM76xMshED50UzH8Z8w@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 1/2] virtio-net: support coexistence of XDP
+ and GUEST_CSUM
+To: Heng Qi <hengqi@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	"Michael S . Tsirkin" <mst@redhat.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, 29 Jun 2023 at 14:01, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
-.com> wrote:
+On Thu, Jun 29, 2023 at 1:47=E2=80=AFPM Heng Qi <hengqi@linux.alibaba.com> =
+wrote:
 >
-> Magnus Karlsson <magnus.karlsson@gmail.com> writes:
->
-> > On Thu, 29 Jun 2023 at 13:30, Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
-> >>
-> >> Stanislav Fomichev <sdf@google.com> writes:
-> >>
-> >> > On Wed, Jun 28, 2023 at 1:09=E2=80=AFAM Magnus Karlsson
-> >> > <magnus.karlsson@gmail.com> wrote:
-> >> >>
-> >> >> On Mon, 26 Jun 2023 at 19:06, Stanislav Fomichev <sdf@google.com> w=
-rote:
-> >> >> >
-> >> >> > On Sat, Jun 24, 2023 at 2:02=E2=80=AFAM Jesper Dangaard Brouer
-> >> >> > <jbrouer@redhat.com> wrote:
-> >> >> > >
-> >> >> > >
-> >> >> > >
-> >> >> > > On 23/06/2023 19.41, Stanislav Fomichev wrote:
-> >> >> > > > On Fri, Jun 23, 2023 at 3:24=E2=80=AFAM Jesper Dangaard Broue=
-r
-> >> >> > > > <jbrouer@redhat.com> wrote:
-> >> >> > > >>
-> >> >> > > >>
-> >> >> > > >>
-> >> >> > > >> On 22/06/2023 19.55, Stanislav Fomichev wrote:
-> >> >> > > >>> On Thu, Jun 22, 2023 at 2:11=E2=80=AFAM Jesper D. Brouer <n=
-etdev@brouer.com> wrote:
-> >> >> > > >>>>
-> >> >> > > >>>>
-> >> >> > > >>>> This needs to be reviewed by AF_XDP maintainers Magnus and=
- Bj=C3=B8rn (Cc)
-> >> >> > > >>>>
-> >> >> > > >>>> On 21/06/2023 19.02, Stanislav Fomichev wrote:
-> >> >> > > >>>>> For zerocopy mode, tx_desc->addr can point to the arbitra=
-ry offset
-> >> >> > > >>>>> and carry some TX metadata in the headroom. For copy mode=
-, there
-> >> >> > > >>>>> is no way currently to populate skb metadata.
-> >> >> > > >>>>>
-> >> >> > > >>>>> Introduce new XDP_TX_METADATA_LEN that indicates how many=
- bytes
-> >> >> > > >>>>> to treat as metadata. Metadata bytes come prior to tx_des=
-c address
-> >> >> > > >>>>> (same as in RX case).
-> >> >> > > >>>>
-> >> >> > > >>>>    From looking at the code, this introduces a socket opti=
-on for this TX
-> >> >> > > >>>> metadata length (tx_metadata_len).
-> >> >> > > >>>> This implies the same fixed TX metadata size is used for a=
-ll packets.
-> >> >> > > >>>> Maybe describe this in patch desc.
-> >> >> > > >>>
-> >> >> > > >>> I was planning to do a proper documentation page once we se=
-ttle on all
-> >> >> > > >>> the details (similar to the one we have for rx).
-> >> >> > > >>>
-> >> >> > > >>>> What is the plan for dealing with cases that doesn't popul=
-ate same/full
-> >> >> > > >>>> TX metadata size ?
-> >> >> > > >>>
-> >> >> > > >>> Do we need to support that? I was assuming that the TX layo=
-ut would be
-> >> >> > > >>> fixed between the userspace and BPF.
-> >> >> > > >>
-> >> >> > > >> I hope you don't mean fixed layout, as the whole point is ad=
-ding
-> >> >> > > >> flexibility and extensibility.
-> >> >> > > >
-> >> >> > > > I do mean a fixed layout between the userspace (af_xdp) and d=
-evtx program.
-> >> >> > > > At least fixed max size of the metadata. The userspace and th=
-e bpf
-> >> >> > > > prog can then use this fixed space to implement some flexibil=
-ity
-> >> >> > > > (btf_ids, versioned structs, bitmasks, tlv, etc).
-> >> >> > > > If we were to make the metalen vary per packet, we'd have to =
-signal
-> >> >> > > > its size per packet. Probably not worth it?
-> >> >> > >
-> >> >> > > Existing XDP metadata implementation also expand in a fixed/lim=
-ited
-> >> >> > > sized memory area, but communicate size per packet in this area=
- (also
-> >> >> > > for validation purposes).  BUT for AF_XDP we don't have room fo=
-r another
-> >> >> > > pointer or size in the AF_XDP descriptor (see struct xdp_desc).
-> >> >> > >
-> >> >> > >
-> >> >> > > >
-> >> >> > > >>> If every packet would have a different metadata length, it =
-seems like
-> >> >> > > >>> a nightmare to parse?
-> >> >> > > >>>
-> >> >> > > >>
-> >> >> > > >> No parsing is really needed.  We can simply use BTF IDs and =
-type cast in
-> >> >> > > >> BPF-prog. Both BPF-prog and userspace have access to the loc=
-al BTF ids,
-> >> >> > > >> see [1] and [2].
-> >> >> > > >>
-> >> >> > > >> It seems we are talking slightly past each-other(?).  Let me=
- rephrase
-> >> >> > > >> and reframe the question, what is your *plan* for dealing wi=
-th different
-> >> >> > > >> *types* of TX metadata.  The different struct *types* will o=
-f-cause have
-> >> >> > > >> different sizes, but that is okay as long as they fit into t=
-he maximum
-> >> >> > > >> size set by this new socket option XDP_TX_METADATA_LEN.
-> >> >> > > >> Thus, in principle I'm fine with XSK having configured a fix=
-ed headroom
-> >> >> > > >> for metadata, but we need a plan for handling more than one =
-type and
-> >> >> > > >> perhaps a xsk desc indicator/flag for knowing TX metadata is=
-n't random
-> >> >> > > >> data ("leftover" since last time this mem was used).
-> >> >> > > >
-> >> >> > > > Yeah, I think the above correctly catches my expectation here=
-. Some
-> >> >> > > > headroom is reserved via XDP_TX_METADATA_LEN and the flexibil=
-ity is
-> >> >> > > > offloaded to the bpf program via btf_id/tlv/etc.
-> >> >> > > >
-> >> >> > > > Regarding leftover metadata: can we assume the userspace will=
- take
-> >> >> > > > care of setting it up?
-> >> >> > > >
-> >> >> > > >> With this kfunc approach, then things in-principle, becomes =
-a contract
-> >> >> > > >> between the "local" TX-hook BPF-prog and AF_XDP userspace.  =
- These two
-> >> >> > > >> components can as illustrated here [1]+[2] can coordinate ba=
-sed on local
-> >> >> > > >> BPF-prog BTF IDs.  This approach works as-is today, but patc=
-hset
-> >> >> > > >> selftests examples don't use this and instead have a very st=
-atic
-> >> >> > > >> approach (that people will copy-paste).
-> >> >> > > >>
-> >> >> > > >> An unsolved problem with TX-hook is that it can also get pac=
-kets from
-> >> >> > > >> XDP_REDIRECT and even normal SKBs gets processed (right?).  =
-How does the
-> >> >> > > >> BPF-prog know if metadata is valid and intended to be used f=
-or e.g.
-> >> >> > > >> requesting the timestamp? (imagine metadata size happen to m=
-atch)
-> >> >> > > >
-> >> >> > > > My assumption was the bpf program can do ifindex/netns filter=
-ing. Plus
-> >> >> > > > maybe check that the meta_len is the one that's expected.
-> >> >> > > > Will that be enough to handle XDP_REDIRECT?
-> >> >> > >
-> >> >> > > I don't think so, using the meta_len (+ ifindex/netns) to commu=
-nicate
-> >> >> > > activation of TX hardware hints is too weak and not enough.  Th=
-is is an
-> >> >> > > implicit API for BPF-programmers to understand and can lead to =
-implicit
-> >> >> > > activation.
-> >> >> > >
-> >> >> > > Think about what will happen for your AF_XDP send use-case.  Fo=
-r
-> >> >> > > performance reasons AF_XDP don't zero out frame memory.  Thus, =
-meta_len
-> >> >> > > is fixed even if not used (and can contain garbage), it can by =
-accident
-> >> >> > > create hard-to-debug situations.  As discussed with Magnus+Mary=
-am
-> >> >> > > before, we found it was practical (and faster than mem zero) to=
- extend
-> >> >> > > AF_XDP descriptor (see struct xdp_desc) with some flags to
-> >> >> > > indicate/communicate this frame comes with TX metadata hints.
-> >> >> >
-> >> >> > What is that "if not used" situation? Can the metadata itself hav=
+> On Thu, Jun 29, 2023 at 12:03:28PM +0800, Jason Wang wrote:
+> > On Wed, Jun 28, 2023 at 6:02=E2=80=AFPM Heng Qi <hengqi@linux.alibaba.c=
+om> wrote:
+> > >
+> > >
+> > >
+> > > =E5=9C=A8 2023/6/28 =E4=B8=8B=E5=8D=882:50, Jason Wang =E5=86=99=E9=
+=81=93:
+> > > > On Wed, Jun 28, 2023 at 12:56=E2=80=AFPM Heng Qi <hengqi@linux.alib=
+aba.com> wrote:
+> > > >> On Wed, Jun 28, 2023 at 12:02:17PM +0800, Jason Wang wrote:
+> > > >>> On Wed, Jun 28, 2023 at 11:42=E2=80=AFAM Heng Qi <hengqi@linux.al=
+ibaba.com> wrote:
+> > > >>>>
+> > > >>>>
+> > > >>>> =E5=9C=A8 2023/6/28 =E4=B8=8A=E5=8D=8811:22, Jason Wang =E5=86=
+=99=E9=81=93:
+> > > >>>>> On Wed, Jun 28, 2023 at 11:05=E2=80=AFAM Heng Qi <hengqi@linux.=
+alibaba.com> wrote:
+> > > >>>>>> We are now re-probing the csum related fields and trying
+> > > >>>>>> to have XDP and RX hw checksum capabilities coexist on the
+> > > >>>>>> XDP path. For the benefit of:
+> > > >>>>>> 1. RX hw checksum capability can be used if XDP is loaded.
+> > > >>>>>> 2. Avoid packet loss when loading XDP in the vm-vm scenario.
+> > > >>>>>>
+> > > >>>>>> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
+> > > >>>>>> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > >>>>>> ---
+> > > >>>>>> v3->v4:
+> > > >>>>>>     - Rewrite some comments.
+> > > >>>>>>
+> > > >>>>>> v2->v3:
+> > > >>>>>>     - Use skb_checksum_setup() instead of virtnet_flow_dissect=
+_udp_tcp().
+> > > >>>>>>       Essentially equivalent.
+> > > >>>>>>
+> > > >>>>>>    drivers/net/virtio_net.c | 82 +++++++++++++++++++++++++++++=
+++++-------
+> > > >>>>>>    1 file changed, 69 insertions(+), 13 deletions(-)
+> > > >>>>>>
+> > > >>>>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net=
+.c
+> > > >>>>>> index 5a7f7a76b920..a47342f972b5 100644
+> > > >>>>>> --- a/drivers/net/virtio_net.c
+> > > >>>>>> +++ b/drivers/net/virtio_net.c
+> > > >>>>>> @@ -1568,6 +1568,41 @@ static void virtio_skb_set_hash(const s=
+truct virtio_net_hdr_v1_hash *hdr_hash,
+> > > >>>>>>           skb_set_hash(skb, __le32_to_cpu(hdr_hash->hash_value=
+), rss_hash_type);
+> > > >>>>>>    }
+> > > >>>>>>
+> > > >>>>>> +static int virtnet_set_csum_after_xdp(struct virtnet_info *vi=
+,
+> > > >>>>>> +                                     struct sk_buff *skb,
+> > > >>>>>> +                                     __u8 flags)
+> > > >>>>>> +{
+> > > >>>>>> +       int err =3D 0;
+> > > >>>>>> +
+> > > >>>>>> +       /* When XDP program is loaded, the vm-vm scenario on t=
+he same host,
+> > > >>>>>> +        * packets marked VIRTIO_NET_HDR_F_NEEDS_CSUM without =
+a complete checksum
+> > > >>>>>> +        * will travel. Although these packets are safe from t=
+he point of
+> > > >>>>>> +        * view of the vm, in order to be successfully forward=
+ed on the upper
+> > > >>>>>> +        * layer and to avoid packet loss caused by XDP modifi=
+cation,
+> > > >>>>>> +        * we re-probe the necessary checksum related informat=
+ion:
+> > > >>>>>> +        * skb->csum_{start, offset}, pseudo-header checksum.
+> > > >>>>>> +        *
+> > > >>>>>> +        * If the received packet is marked VIRTIO_NET_HDR_F_D=
+ATA_VALID:
+> > > >>>>>> +        * when _F_GUEST_CSUM is negotiated, the device valida=
+tes the checksum
+> > > >>>>>> +        * and virtio-net sets skb->ip_summed to CHECKSUM_UNNE=
+CESSARY;
+> > > >>>>>> +        * otherwise, virtio-net hands over to the stack to va=
+lidate the checksum.
+> > > >>>>>> +        */
+> > > >>>>>> +       if (flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
+> > > >>>>>> +               /* No need to care about SCTP because virtio-n=
+et currently doesn't
+> > > >>>>>> +                * support SCTP CRC checksum offloading, that =
+is, SCTP packets have
+> > > >>>>>> +                * complete checksums.
+> > > >>>>>> +                */
+> > > >>>>>> +               err =3D skb_checksum_setup(skb, true);
+> > > >>>>> A second thought, any reason why a checksum is a must here. Cou=
+ld we simply:
+> > > >>>> When net.ipv4.ip_forward sysctl is enabled, such packets may be
+> > > >>>> forwarded (return to the tx path) at the IP layer.
+> > > >>>> If the device has the tx hw checksum offloading cap, packets wil=
+l have
+> > > >>>> complete checksums based on our calculated 'check' value.
+> > > >>> Actually, I mean why can't we offload the checksum to the hardwar=
+e in this case?
+> > > >> Yes that's what I explained:)
+> > > >>
+> > > >> Checksum of udp/tcp includes the pseudo-header checksum and the ch=
+ecksum of the entire udp/tcp payload.
+> > > >> When tx checksum offloading is enabled, the upper layer will only =
+calculate the pseudo-header checksum,
+> > > >> and the rest of the checksum of the entire udp/tcp payload will be=
+ calculated by hardware.
+> > > >>
+> > > >>
+> > > >> Please see udp_send_skb():
+> > > >>
+> > > >> "
+> > > >>          } else if (skb->ip_summed =3D=3D CHECKSUM_PARTIAL) { /* U=
+DP hardware csum */
+> > > >> csum_partial:
+> > > >>
+> > > >>                  udp4_hwcsum(skb, fl4->saddr, fl4->daddr);
+> > > >>                  goto send;
+> > > >>
+> > > >>          } else
+> > > >>                  csum =3D udp_csum(skb);
+> > > >>
+> > > >>          /* add protocol-dependent pseudo-header */
+> > > >>          uh->check =3D csum_tcpudp_magic(fl4->saddr, fl4->daddr, l=
+en,
+> > > >>                                        sk->sk_protocol, csum);
+> > > >>          if (uh->check =3D=3D 0)
+> > > >>                  uh->check =3D CSUM_MANGLED_0;
+> > > >>
+> > > >> send:
+> > > >>          err =3D ip_send_skb(sock_net(sk), skb);
+> > > >> "
+> > > > Ok, so I think what I missed is that the CHECKSUM_PARTIAL is set up=
+ by
+> > > > skb_checksum_setup() so we don't even need to care about that.
+> > >
+> > > Yes. It works fine after skb_checksum_setup().
+> > >
+> > > >
+> > > >>>>> 1) probe the csum_start/offset
+> > > >>>>> 2) leave it as CHECKSUM_PARTIAL
+> > > >>>>>
+> > > >>>>> ?
+> > > >>>> The reason is as I explained above.
+> > > >>>>
+> > > >>>>>> +       } else if (flags & VIRTIO_NET_HDR_F_DATA_VALID) {
+> > > >>>>>> +               /* XDP guarantees that packets marked as VIRTI=
+O_NET_HDR_F_DATA_VALID
+> > > >>>>>> +                * still have correct checksum after they are =
+processed.
+> > > >>>>>> +                */
+> > > >>>>> Do you mean it's the charge of the XDP program to calculate the=
+ csum
+> > > >>>>> in this case? Seems strange.
+> > > >>>> Packet with complete checksum (and has been verified by rx devic=
 e
-> >> >> > is_used bit? The userspace has to initialize at least that bit.
-> >> >> > We can definitely add that extra "has_metadata" bit to the descri=
-ptor,
-> >> >> > but I'm trying to understand whether we can do without it.
-> >> >>
-> >> >> To me, this "has_metadata" bit in the descriptor is just an
-> >> >> optimization. If it is 0, then there is no need to go and check the
-> >> >> metadata field and you save some performance. Regardless of this bi=
-t,
-> >> >> you need some way to say "is_used" for each metadata entry (at leas=
+> > > >>>> because it has VIRTIO_NET_HDR_F_DATA_VALID)
+> > > >>>> when modified by XDP, XDP program should use the helper provided=
+ by XDP
+> > > >>>> core to make the checksum correct,
+> > > >>> Could you give me a pointer to that helper?
+> > > >> bpf_csum_diff(),
+> > > > Ok.
+> > > >
+> > > >> bpf_{l3,l4}_csum_replace()
+> > > > This seems not to be a helpr for XDP but for other bpf like cls.
+> > >
+> > > Yes.
+> > >
+> > > >
+> > > >>> Btw, is there a way for
+> > > >>> the XDP program to know whether the csum has been verified by the
+> > > >>> device? ( I guess not).
+> > > >>>
+> > > >> Not. But we only do this (mark skb->ip_summed =3D CHECKSUM_UNNECES=
+SARY) for packets with VIRTIO_NET_HDR_F_DATA_VALID now.
+> > > > So if I understand you correctly, you meant for the XDP program tha=
 t
-> >> >> when the number of metadata entries is >1). Three options come to m=
-ind
-> >> >> each with their pros and cons.
-> >> >>
-> >> >> #1: Let each metadata entry have an invalid state. Not possible for
-> >> >> every metadata and requires the user/kernel to go scan through ever=
-y
-> >> >> entry for every packet.
-> >> >>
-> >> >> #2: Have a field of bits at the start of the metadata section (clos=
-est
-> >> >> to packet data) that signifies if a metadata entry is valid or not.=
- If
-> >> >> there are N metadata entries in the metadata area, then N bits in t=
-his
-> >> >> field would be used to signify if the corresponding metadata is use=
-d
-> >> >> or not. Only requires the user/kernel to scan the valid entries plu=
-s
-> >> >> one access for the "is_used" bits.
-> >> >>
-> >> >> #3: Have N bits in the AF_XDP descriptor options field instead of t=
-he
-> >> >> N bits in the metadata area of #2. Faster but would consume many
-> >> >> precious bits in the fixed descriptor and cap the number of metadat=
-a
-> >> >> entries possible at around 8. E.g., 8 for Rx, 8 for Tx, 1 for the
-> >> >> multi-buffer work, and 15 for some future use. Depends on how darin=
-g
-> >> >> we are.
-> >> >>
-> >> >> The "has_metadata" bit suggestion can be combined with 1 or 2.
-> >> >> Approach 3 is just a fine grained extension of the idea itself.
-> >> >>
-> >> >> IMO, the best approach unfortunately depends on the metadata itself=
-.
-> >> >> If it is rarely valid, you want something like the "has_metadata" b=
-it.
-> >> >> If it is nearly always valid and used, approach #1 (if possible for
-> >> >> the metadata) should be the fastest. The decision also depends on t=
-he
-> >> >> number of metadata entries you have per packet. Sorry that I do not
-> >> >> have a good answer. My feeling is that we need something like #1 or
-> >> >> #2, or maybe both, then if needed we can add the "has_metadata" bit=
- or
-> >> >> bits (#3) optimization. Can we do this encoding and choice (#1, #2,=
- or
-> >> >> a combo) in the eBPF program itself? Would provide us with the
-> >> >> flexibility, if possible.
-> >> >
-> >> > Here is my take on it, lmk if I'm missing something:
-> >> >
-> >> > af_xdp users call this new setsockopt(XDP_TX_METADATA_LEN) when they
-> >> > plan to use metadata on tx.
-> >> > This essentially requires allocating a fixed headroom to carry the m=
-etadata.
-> >> > af_xdp machinery exports this fixed len into the bpf programs someho=
-w
-> >> > (devtx_frame.meta_len in this series).
-> >> > Then it's up to the userspace and bpf program to agree on the layout=
-.
-> >> > If not every packet is expected to carry the metadata, there might b=
-e
-> >> > some bitmask in the metadata area to indicate that.
-> >> >
-> >> > Iow, the metadata isn't interpreted by the kernel. It's up to the pr=
-og
-> >> > to interpret it and call appropriate kfunc to enable some offload.
-> >>
-> >> The reason for the flag on RX is mostly performance: there's a
-> >> substantial performance hit from reading the metadata area because it'=
-s
-> >> not cache-hot; we want to avoid that when no metadata is in use. Putti=
-ng
-> >> the flag inside the metadata area itself doesn't work for this, becaus=
-e
-> >> then you incur the cache miss just to read the flag.
+> > > > wants to modify the packet:
+> > > >
+> > > > 1) check whether the checksum is valid
+> > > > 2) if yes, recalculate the checksum after the modification
+> > > > 3) if not, just do nothing for the checksum and the driver need to
+> > > > re-probe the csum_start/offset
+> > > >
+> > > > ?
+> > >
+> > > I don't think we need to make many assumptions about the behavior of =
+XDP
+> > > programs.
+> > > Because we are out of control for various users using XDP.
 > >
-> > Not necessarily. Let us say that the flag is 4 bytes. Increase the
-> > start address of the packet buffer with 4 and the flags field will be
-> > on the same cache line as the first 60 bytes of the packet data
-> > (assuming a 64 byte cache line size and the flags field is closest to
-> > the start of the packet data). As long as you write something in those
-> > first 60 bytes of packet data that cache line will be brought in and
-> > will likely be in the cache when you access the bits in the metadata
-> > field. The trick works similarly for Rx by setting the umem headroom
-> > accordingly.
+> > Exactly, but this patch seems to assume the XDP behaviour as you said p=
+reviously
+> >
 >
-> Yeah, a trick like that was what I was alluding to with the "could" in
-> this bit:
+> Let me sum it up:
+> When getting a skb from XDP_PASS, rx virtio-net will have the following
+> scenarios:
+> 1. In a virtualized environment such as vm-vhost_user-vm, vhost-user or
+> some backends find that no physical link is required to reach the
+> destination, then they will save the cost of calculating the complete
+> checksum on the tx device side. That is, the device
+> directly sends the packet with the pseudo-header checksum, and the
+> rx side directly receives the packet with the pseudo-header checksum.
+> This is a problem we have to deal with, but other hardware
+> NICs don't have this problem (veth actually also has this problem,
+> which I mentioned in the proposal).
 >
-> >> but I see no reason it could not also occur on TX (it'll mostly
-> >> depend on data alignment I guess?).
+> 2. If the packet has passed through the physical link, it means
+> that the received packet has a complete checksum and not only a
+> pseudo-header checksum. At this time, virtio-net only needs to be
+> consistent with other NIC driver behaviors:
 >
-> right below the text you quoted ;)
+>   2.1 If the device has verified the checksum, mark
+>       skb->ip_summend=3DCHECKSUM_UNNECESSARY after XDP processing;
+>   2.2 If the device does not verify the checksum, after XDP processing,
+>       skb->ip_summend=3DCHECKSUM_NONE, the checksum is verified by the st=
+ack.
 
-Ouch! Sorry Toke. Was a bit too trigger-happy there.
+This doesn't answer my question, let me ask you differently.
 
-> > But you are correct in that dedicating a bit in the descriptor will
-> > make sure it is always hot, while the trick above is dependent on the
-> > app wanting to read or write the first cache line worth of packet
-> > data.
+Let's take xdp_tx_iptunnel_kern.c as an example. With your patch, can
+it work when we receive a packet with partial csum? If not, it breaks
+existing applications.
+
+Thanks
+
 >
-> Exactly; which is why I think it's worth the flag bit :)
+> Thanks.
 >
-> -Toke
 >
+> > """
+> > > >>>> Packet with complete checksum (and has been verified by rx devic=
+e
+> > > >>>> because it has VIRTIO_NET_HDR_F_DATA_VALID)
+> > > >>>> when modified by XDP, XDP program should use the helper provided=
+ by XDP
+> > > >>>> core to make the checksum correct,
+> > """
+> >
+> > ?
+> >
+> > >
+> > > The core purpose of this patch is to:
+> > > #1 Solve the packet loss problem caused by loading XDP between vm-vm =
+on
+> > > the same host (scenario with partial checksum).
+> >
+> > So we disabled guest_csum and the host (e.g TAP) will do checksum for
+> > us. Otherwise it should be a bug of the host.
+> >
+> > Thanks
+> >
+> > > #2 For scenarios other than #1, virtio-net with this patch is already
+> > > consistent with other existing NIC drivers (simple such as
+> > > ixgbe[1]/bnxt[2]/mvneta[3]/..):
+> > > the rx side only needs to have NETIF_F_RXCSUM and the device has
+> > > verified the packet has a valid checksum.
+> > > Then skb converted from xdp_buff (XDP returns XDP_PASS) can have
+> > > skb->ip_summed =3D CHECKSUM_UNNECESSARY.
+> > >
+> > > If the comment for DATA_VALID is confusing, I'll just remove it.
+> > >
+> > > [1] ixgbe_clean_rx_irq()-> ixgbe_run_xdp()-> ixgbe_process_skb_fields=
+()
+> > > ->ixgbe_rx_checksum()
+> > > [2] bnxt_xdp_build_skb()
+> > > [3] mvneta_swbm_build_skb
+> > >
+> > > Thanks.
+> > >
+> > > >
+> > > > Thanks
+> > > >
+> > > >> Thanks.
+> > > >>
+> > > >>> Thanks
+> > > >>>
+> > > >>>
+> > > >>>> otherwise, VIRTIO_NET_HDR_F_DATA_VALID has been cleared and skb
+> > > >>>> ->ip_summed=3DCHECKSUM_NONE, so the stack
+> > > >>>> will re-verify the checksum, causing packet loss due to wrong ch=
+ecksum.
+> > > >>>>
+> > > >>>> Thanks.
+> > > >>>>
+> > > >>>>> Thanks
+> > > >>>>>
+> > > >>>>>> +               skb->ip_summed =3D CHECKSUM_UNNECESSARY;
+> > > >>>>>> +       }
+> > > >>>>>> +
+> > > >>>>>> +       return err;
+> > > >>>>>> +}
+> > > >>>>>> +
+> > > >>>>>>    static void receive_buf(struct virtnet_info *vi, struct rec=
+eive_queue *rq,
+> > > >>>>>>                           void *buf, unsigned int len, void **=
+ctx,
+> > > >>>>>>                           unsigned int *xdp_xmit,
+> > > >>>>>> @@ -1576,6 +1611,7 @@ static void receive_buf(struct virtnet_i=
+nfo *vi, struct receive_queue *rq,
+> > > >>>>>>           struct net_device *dev =3D vi->dev;
+> > > >>>>>>           struct sk_buff *skb;
+> > > >>>>>>           struct virtio_net_hdr_mrg_rxbuf *hdr;
+> > > >>>>>> +       __u8 flags;
+> > > >>>>>>
+> > > >>>>>>           if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
+> > > >>>>>>                   pr_debug("%s: short packet %i\n", dev->name,=
+ len);
+> > > >>>>>> @@ -1584,6 +1620,12 @@ static void receive_buf(struct virtnet_=
+info *vi, struct receive_queue *rq,
+> > > >>>>>>                   return;
+> > > >>>>>>           }
+> > > >>>>>>
+> > > >>>>>> +       /* XDP may modify/overwrite the packet, including the =
+virtnet hdr,
+> > > >>>>>> +        * so save the flags of the virtnet hdr before XDP pro=
+cessing.
+> > > >>>>>> +        */
+> > > >>>>>> +       if (unlikely(vi->xdp_enabled))
+> > > >>>>>> +               flags =3D ((struct virtio_net_hdr_mrg_rxbuf *)=
+buf)->hdr.flags;
+> > > >>>>>> +
+> > > >>>>>>           if (vi->mergeable_rx_bufs)
+> > > >>>>>>                   skb =3D receive_mergeable(dev, vi, rq, buf, =
+ctx, len, xdp_xmit,
+> > > >>>>>>                                           stats);
+> > > >>>>>> @@ -1595,23 +1637,37 @@ static void receive_buf(struct virtnet=
+_info *vi, struct receive_queue *rq,
+> > > >>>>>>           if (unlikely(!skb))
+> > > >>>>>>                   return;
+> > > >>>>>>
+> > > >>>>>> -       hdr =3D skb_vnet_hdr(skb);
+> > > >>>>>> -       if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash=
+_report)
+> > > >>>>>> -               virtio_skb_set_hash((const struct virtio_net_h=
+dr_v1_hash *)hdr, skb);
+> > > >>>>>> -
+> > > >>>>>> -       if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
+> > > >>>>>> -               skb->ip_summed =3D CHECKSUM_UNNECESSARY;
+> > > >>>>>> +       if (unlikely(vi->xdp_enabled)) {
+> > > >>>>>> +               /* Required to do this before re-probing and c=
+alculating
+> > > >>>>>> +                * the pseudo-header checksum.
+> > > >>>>>> +                */
+> > > >>>>>> +               skb->protocol =3D eth_type_trans(skb, dev);
+> > > >>>>>> +               skb_reset_network_header(skb);
+> > > >>>>>> +               if (virtnet_set_csum_after_xdp(vi, skb, flags)=
+ < 0) {
+> > > >>>>>> +                       pr_debug("%s: errors occurred in setti=
+ng partial csum",
+> > > >>>>>> +                                dev->name);
+> > > >>>>>> +                       goto frame_err;
+> > > >>>>>> +               }
+> > > >>>>>> +       } else {
+> > > >>>>>> +               hdr =3D skb_vnet_hdr(skb);
+> > > >>>>>> +               if (dev->features & NETIF_F_RXHASH && vi->has_=
+rss_hash_report)
+> > > >>>>>> +                       virtio_skb_set_hash((const struct virt=
+io_net_hdr_v1_hash *)hdr, skb);
+> > > >>>>>> +
+> > > >>>>>> +               if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VAL=
+ID)
+> > > >>>>>> +                       skb->ip_summed =3D CHECKSUM_UNNECESSAR=
+Y;
+> > > >>>>>> +
+> > > >>>>>> +               if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
+> > > >>>>>> +                                         virtio_is_little_end=
+ian(vi->vdev))) {
+> > > >>>>>> +                       net_warn_ratelimited("%s: bad gso: typ=
+e: %u, size: %u\n",
+> > > >>>>>> +                                            dev->name, hdr->h=
+dr.gso_type,
+> > > >>>>>> +                                            hdr->hdr.gso_size=
+);
+> > > >>>>>> +                       goto frame_err;
+> > > >>>>>> +               }
+> > > >>>>>>
+> > > >>>>>> -       if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
+> > > >>>>>> -                                 virtio_is_little_endian(vi->=
+vdev))) {
+> > > >>>>>> -               net_warn_ratelimited("%s: bad gso: type: %u, s=
+ize: %u\n",
+> > > >>>>>> -                                    dev->name, hdr->hdr.gso_t=
+ype,
+> > > >>>>>> -                                    hdr->hdr.gso_size);
+> > > >>>>>> -               goto frame_err;
+> > > >>>>>> +               skb->protocol =3D eth_type_trans(skb, dev);
+> > > >>>>>>           }
+> > > >>>>>>
+> > > >>>>>>           skb_record_rx_queue(skb, vq2rxq(rq->vq));
+> > > >>>>>> -       skb->protocol =3D eth_type_trans(skb, dev);
+> > > >>>>>>           pr_debug("Receiving skb proto 0x%04x len %i type %i\=
+n",
+> > > >>>>>>                    ntohs(skb->protocol), skb->len, skb->pkt_ty=
+pe);
+> > > >>>>>>
+> > > >>>>>> --
+> > > >>>>>> 2.19.1.6.gb485710b
+> > > >>>>>>
+> > >
+>
+
 
