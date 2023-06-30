@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-3774-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3775-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61DCA74375A
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 10:35:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5FFB74375C
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 10:35:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1883B28103A
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 08:35:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8B031C20BEE
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 08:35:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0332FA957;
-	Fri, 30 Jun 2023 08:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1CA7A957;
+	Fri, 30 Jun 2023 08:35:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D3B5A932
-	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 08:35:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3B90C433C0;
-	Fri, 30 Jun 2023 08:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15830A932
+	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 08:35:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7AF6C433C8;
+	Fri, 30 Jun 2023 08:35:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688114113;
-	bh=J8yM+PBhePqqb1qm8PTZ+x79N7m8p5Ir/KVVktpM3RQ=;
+	s=k20201202; t=1688114125;
+	bh=Lo2VfRcx8TDju3ULQzfkd+mHlmoXoIiWwskwmwWB7rY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eiLNL9gl1mgIXM06FkgcyWvUVyRGCHn0B43S3HI14B00KtTtmbCAzTp8LCGU7kGjX
-	 A0TirHAj1OzT9aCFn66V/ZiWADnMEmNjKzJT3PNdc/+P8hA4yLDwCCUrTyDojiJbI3
-	 omEgtMEkhB6ZlGJCFw+IHmRmND5p1B2YSMZE3H9KgTmVQm2OrI9nYF8ctEiugJG9ZI
-	 3ATd95k8SBTyQBWONaEwZ9fP13JI9RkGhzd284af6mySJ8pBxm+bktToPhsZOaTCzx
-	 ADyYyj0mWLWzNu/kxGp1/ZsqhqMeDCZEQKJ/iz3rfs96L91gGD7VW2L1HIquBmi6Cm
-	 8UXvu5icXsuTg==
+	b=uIpfkMmC86NglFlSxwjuWjG8ufAV0amw3i3iZlACmi2lmFiyWMozdCp/gvd6v7i0P
+	 Ijcq3ALLPQ8cqYUtrIGQIYxSxneU4HCrA2U1XfjqpYxmDaPC8FQuPed6afp5BXl5Yp
+	 PlKn/eIxT5KVlsAgntFWxzrvYycgGBI7eI1Led+78BKPl77lH0Gz3e2l3l68PL19U2
+	 ACW1i69tiCWByIIL38bCtr2a/Ls/wsgv9J/KUA8C8QBzZpZuUo7wpYNy65dXaTbB52
+	 Wj03PYFIS+BQ2c9TSvJ34h8CxWkGiId0hLh/7BaUTWWmwhP/Zy52vrY75W5WUVeugb
+	 zdZCPvR2WWQ0A==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -42,9 +42,9 @@ Cc: bpf@vger.kernel.org,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>
-Subject: [PATCHv3 bpf-next 07/26] libbpf: Move elf_find_func_offset* functions to elf object
-Date: Fri, 30 Jun 2023 10:33:25 +0200
-Message-ID: <20230630083344.984305-8-jolsa@kernel.org>
+Subject: [PATCHv3 bpf-next 08/26] libbpf: Add elf_open/elf_close functions
+Date: Fri, 30 Jun 2023 10:33:26 +0200
+Message-ID: <20230630083344.984305-9-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230630083344.984305-1-jolsa@kernel.org>
 References: <20230630083344.984305-1-jolsa@kernel.org>
@@ -56,218 +56,39 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding new elf object that will contain elf related functions.
-There's no functional change.
+Adding elf_open/elf_close functions and using it in
+elf_find_func_offset_from_file function. It will be
+used in following changes to save some common code.
 
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/Build        |   2 +-
- tools/lib/bpf/elf.c        | 198 +++++++++++++++++++++++++++++++++++++
- tools/lib/bpf/libbpf.c     | 186 +---------------------------------
- tools/lib/bpf/libbpf_elf.h |  11 +++
- 4 files changed, 211 insertions(+), 186 deletions(-)
- create mode 100644 tools/lib/bpf/elf.c
- create mode 100644 tools/lib/bpf/libbpf_elf.h
+ tools/lib/bpf/elf.c        | 59 +++++++++++++++++++++++++-------------
+ tools/lib/bpf/libbpf_elf.h |  8 ++++++
+ tools/lib/bpf/usdt.c       | 31 ++++++--------------
+ 3 files changed, 56 insertions(+), 42 deletions(-)
 
-diff --git a/tools/lib/bpf/Build b/tools/lib/bpf/Build
-index b8b0a6369363..2d0c282c8588 100644
---- a/tools/lib/bpf/Build
-+++ b/tools/lib/bpf/Build
-@@ -1,4 +1,4 @@
- libbpf-y := libbpf.o bpf.o nlattr.o btf.o libbpf_errno.o str_error.o \
- 	    netlink.o bpf_prog_linfo.o libbpf_probes.o hashmap.o \
- 	    btf_dump.o ringbuf.o strset.o linker.o gen_loader.o relo_core.o \
--	    usdt.o zip.o
-+	    usdt.o zip.o elf.o
 diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-new file mode 100644
-index 000000000000..2b62b4af28ce
---- /dev/null
+index 2b62b4af28ce..74e35071d22e 100644
+--- a/tools/lib/bpf/elf.c
 +++ b/tools/lib/bpf/elf.c
-@@ -0,0 +1,198 @@
-+// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+
-+#include <libelf.h>
-+#include <gelf.h>
-+#include <fcntl.h>
-+#include <linux/kernel.h>
-+
-+#include "libbpf_elf.h"
-+#include "libbpf_internal.h"
-+#include "str_error.h"
-+
-+#define STRERR_BUFSIZE  128
-+
-+/* Return next ELF section of sh_type after scn, or first of that type if scn is NULL. */
-+static Elf_Scn *elf_find_next_scn_by_type(Elf *elf, int sh_type, Elf_Scn *scn)
-+{
-+	while ((scn = elf_nextscn(elf, scn)) != NULL) {
-+		GElf_Shdr sh;
-+
-+		if (!gelf_getshdr(scn, &sh))
-+			continue;
-+		if (sh.sh_type == sh_type)
-+			return scn;
-+	}
-+	return NULL;
-+}
-+
-+/* Find offset of function name in the provided ELF object. "binary_path" is
-+ * the path to the ELF binary represented by "elf", and only used for error
-+ * reporting matters. "name" matches symbol name or name@@LIB for library
-+ * functions.
-+ */
-+long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
-+{
-+	int i, sh_types[2] = { SHT_DYNSYM, SHT_SYMTAB };
-+	bool is_shared_lib, is_name_qualified;
-+	long ret = -ENOENT;
-+	size_t name_len;
-+	GElf_Ehdr ehdr;
-+
-+	if (!gelf_getehdr(elf, &ehdr)) {
-+		pr_warn("elf: failed to get ehdr from %s: %s\n", binary_path, elf_errmsg(-1));
-+		ret = -LIBBPF_ERRNO__FORMAT;
-+		goto out;
-+	}
-+	/* for shared lib case, we do not need to calculate relative offset */
-+	is_shared_lib = ehdr.e_type == ET_DYN;
-+
-+	name_len = strlen(name);
-+	/* Does name specify "@@LIB"? */
-+	is_name_qualified = strstr(name, "@@") != NULL;
-+
-+	/* Search SHT_DYNSYM, SHT_SYMTAB for symbol. This search order is used because if
-+	 * a binary is stripped, it may only have SHT_DYNSYM, and a fully-statically
-+	 * linked binary may not have SHT_DYMSYM, so absence of a section should not be
-+	 * reported as a warning/error.
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
-+		size_t nr_syms, strtabidx, idx;
-+		Elf_Data *symbols = NULL;
-+		Elf_Scn *scn = NULL;
-+		int last_bind = -1;
-+		const char *sname;
-+		GElf_Shdr sh;
-+
-+		scn = elf_find_next_scn_by_type(elf, sh_types[i], NULL);
-+		if (!scn) {
-+			pr_debug("elf: failed to find symbol table ELF sections in '%s'\n",
-+				 binary_path);
-+			continue;
-+		}
-+		if (!gelf_getshdr(scn, &sh))
-+			continue;
-+		strtabidx = sh.sh_link;
-+		symbols = elf_getdata(scn, 0);
-+		if (!symbols) {
-+			pr_warn("elf: failed to get symbols for symtab section in '%s': %s\n",
-+				binary_path, elf_errmsg(-1));
-+			ret = -LIBBPF_ERRNO__FORMAT;
-+			goto out;
-+		}
-+		nr_syms = symbols->d_size / sh.sh_entsize;
-+
-+		for (idx = 0; idx < nr_syms; idx++) {
-+			int curr_bind;
-+			GElf_Sym sym;
-+			Elf_Scn *sym_scn;
-+			GElf_Shdr sym_sh;
-+
-+			if (!gelf_getsym(symbols, idx, &sym))
-+				continue;
-+
-+			if (GELF_ST_TYPE(sym.st_info) != STT_FUNC)
-+				continue;
-+
-+			sname = elf_strptr(elf, strtabidx, sym.st_name);
-+			if (!sname)
-+				continue;
-+
-+			curr_bind = GELF_ST_BIND(sym.st_info);
-+
-+			/* User can specify func, func@@LIB or func@@LIB_VERSION. */
-+			if (strncmp(sname, name, name_len) != 0)
-+				continue;
-+			/* ...but we don't want a search for "foo" to match 'foo2" also, so any
-+			 * additional characters in sname should be of the form "@@LIB".
-+			 */
-+			if (!is_name_qualified && sname[name_len] != '\0' && sname[name_len] != '@')
-+				continue;
-+
-+			if (ret >= 0) {
-+				/* handle multiple matches */
-+				if (last_bind != STB_WEAK && curr_bind != STB_WEAK) {
-+					/* Only accept one non-weak bind. */
-+					pr_warn("elf: ambiguous match for '%s', '%s' in '%s'\n",
-+						sname, name, binary_path);
-+					ret = -LIBBPF_ERRNO__FORMAT;
-+					goto out;
-+				} else if (curr_bind == STB_WEAK) {
-+					/* already have a non-weak bind, and
-+					 * this is a weak bind, so ignore.
-+					 */
-+					continue;
-+				}
-+			}
-+
-+			/* Transform symbol's virtual address (absolute for
-+			 * binaries and relative for shared libs) into file
-+			 * offset, which is what kernel is expecting for
-+			 * uprobe/uretprobe attachment.
-+			 * See Documentation/trace/uprobetracer.rst for more
-+			 * details.
-+			 * This is done by looking up symbol's containing
-+			 * section's header and using it's virtual address
-+			 * (sh_addr) and corresponding file offset (sh_offset)
-+			 * to transform sym.st_value (virtual address) into
-+			 * desired final file offset.
-+			 */
-+			sym_scn = elf_getscn(elf, sym.st_shndx);
-+			if (!sym_scn)
-+				continue;
-+			if (!gelf_getshdr(sym_scn, &sym_sh))
-+				continue;
-+
-+			ret = sym.st_value - sym_sh.sh_addr + sym_sh.sh_offset;
-+			last_bind = curr_bind;
-+		}
-+		if (ret > 0)
-+			break;
-+	}
-+
-+	if (ret > 0) {
-+		pr_debug("elf: symbol address match for '%s' in '%s': 0x%lx\n", name, binary_path,
-+			 ret);
-+	} else {
-+		if (ret == 0) {
-+			pr_warn("elf: '%s' is 0 in symtab for '%s': %s\n", name, binary_path,
-+				is_shared_lib ? "should not be 0 in a shared library" :
-+						"try using shared library path instead");
-+			ret = -ENOENT;
-+		} else {
-+			pr_warn("elf: failed to find symbol '%s' in '%s'\n", name, binary_path);
-+		}
-+	}
-+out:
-+	return ret;
-+}
-+
-+/* Find offset of function name in ELF object specified by path. "name" matches
-+ * symbol name or name@@LIB for library functions.
-+ */
-+long elf_find_func_offset_from_file(const char *binary_path, const char *name)
+@@ -11,6 +11,40 @@
+ 
+ #define STRERR_BUFSIZE  128
+ 
++int elf_open(const char *binary_path, struct elf_fd *elf_fd)
 +{
 +	char errmsg[STRERR_BUFSIZE];
-+	long ret = -ENOENT;
++	int fd, ret;
 +	Elf *elf;
-+	int fd;
 +
++	if (elf_version(EV_CURRENT) == EV_NONE) {
++		pr_warn("elf: failed to init libelf for %s\n", binary_path);
++		return -LIBBPF_ERRNO__LIBELF;
++	}
 +	fd = open(binary_path, O_RDONLY | O_CLOEXEC);
 +	if (fd < 0) {
 +		ret = -errno;
-+		pr_warn("failed to open %s: %s\n", binary_path,
++		pr_warn("elf: failed to open %s: %s\n", binary_path,
 +			libbpf_strerror_r(ret, errmsg, sizeof(errmsg)));
 +		return ret;
 +	}
@@ -277,200 +98,38 @@ index 000000000000..2b62b4af28ce
 +		close(fd);
 +		return -LIBBPF_ERRNO__FORMAT;
 +	}
-+
-+	ret = elf_find_func_offset(elf, binary_path, name);
-+	elf_end(elf);
-+	close(fd);
-+	return ret;
++	elf_fd->fd = fd;
++	elf_fd->elf = elf;
++	return 0;
 +}
 +
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 53dcf25c4878..093add8124d8 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -54,6 +54,7 @@
- #include "hashmap.h"
- #include "bpf_gen_internal.h"
- #include "zip.h"
-+#include "libbpf_elf.h"
- 
- #ifndef BPF_FS_MAGIC
- #define BPF_FS_MAGIC		0xcafe4a11
-@@ -10811,191 +10812,6 @@ static int perf_event_uprobe_open_legacy(const char *probe_name, bool retprobe,
- 	return err;
- }
- 
--/* Return next ELF section of sh_type after scn, or first of that type if scn is NULL. */
--static Elf_Scn *elf_find_next_scn_by_type(Elf *elf, int sh_type, Elf_Scn *scn)
--{
--	while ((scn = elf_nextscn(elf, scn)) != NULL) {
--		GElf_Shdr sh;
--
--		if (!gelf_getshdr(scn, &sh))
--			continue;
--		if (sh.sh_type == sh_type)
--			return scn;
--	}
--	return NULL;
--}
--
--/* Find offset of function name in the provided ELF object. "binary_path" is
-- * the path to the ELF binary represented by "elf", and only used for error
-- * reporting matters. "name" matches symbol name or name@@LIB for library
-- * functions.
-- */
--static long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
--{
--	int i, sh_types[2] = { SHT_DYNSYM, SHT_SYMTAB };
--	bool is_shared_lib, is_name_qualified;
--	long ret = -ENOENT;
--	size_t name_len;
--	GElf_Ehdr ehdr;
--
--	if (!gelf_getehdr(elf, &ehdr)) {
--		pr_warn("elf: failed to get ehdr from %s: %s\n", binary_path, elf_errmsg(-1));
--		ret = -LIBBPF_ERRNO__FORMAT;
--		goto out;
--	}
--	/* for shared lib case, we do not need to calculate relative offset */
--	is_shared_lib = ehdr.e_type == ET_DYN;
--
--	name_len = strlen(name);
--	/* Does name specify "@@LIB"? */
--	is_name_qualified = strstr(name, "@@") != NULL;
--
--	/* Search SHT_DYNSYM, SHT_SYMTAB for symbol. This search order is used because if
--	 * a binary is stripped, it may only have SHT_DYNSYM, and a fully-statically
--	 * linked binary may not have SHT_DYMSYM, so absence of a section should not be
--	 * reported as a warning/error.
--	 */
--	for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
--		size_t nr_syms, strtabidx, idx;
--		Elf_Data *symbols = NULL;
--		Elf_Scn *scn = NULL;
--		int last_bind = -1;
--		const char *sname;
--		GElf_Shdr sh;
--
--		scn = elf_find_next_scn_by_type(elf, sh_types[i], NULL);
--		if (!scn) {
--			pr_debug("elf: failed to find symbol table ELF sections in '%s'\n",
--				 binary_path);
--			continue;
--		}
--		if (!gelf_getshdr(scn, &sh))
--			continue;
--		strtabidx = sh.sh_link;
--		symbols = elf_getdata(scn, 0);
--		if (!symbols) {
--			pr_warn("elf: failed to get symbols for symtab section in '%s': %s\n",
--				binary_path, elf_errmsg(-1));
--			ret = -LIBBPF_ERRNO__FORMAT;
--			goto out;
--		}
--		nr_syms = symbols->d_size / sh.sh_entsize;
--
--		for (idx = 0; idx < nr_syms; idx++) {
--			int curr_bind;
--			GElf_Sym sym;
--			Elf_Scn *sym_scn;
--			GElf_Shdr sym_sh;
--
--			if (!gelf_getsym(symbols, idx, &sym))
--				continue;
--
--			if (GELF_ST_TYPE(sym.st_info) != STT_FUNC)
--				continue;
--
--			sname = elf_strptr(elf, strtabidx, sym.st_name);
--			if (!sname)
--				continue;
--
--			curr_bind = GELF_ST_BIND(sym.st_info);
--
--			/* User can specify func, func@@LIB or func@@LIB_VERSION. */
--			if (strncmp(sname, name, name_len) != 0)
--				continue;
--			/* ...but we don't want a search for "foo" to match 'foo2" also, so any
--			 * additional characters in sname should be of the form "@@LIB".
--			 */
--			if (!is_name_qualified && sname[name_len] != '\0' && sname[name_len] != '@')
--				continue;
--
--			if (ret >= 0) {
--				/* handle multiple matches */
--				if (last_bind != STB_WEAK && curr_bind != STB_WEAK) {
--					/* Only accept one non-weak bind. */
--					pr_warn("elf: ambiguous match for '%s', '%s' in '%s'\n",
--						sname, name, binary_path);
--					ret = -LIBBPF_ERRNO__FORMAT;
--					goto out;
--				} else if (curr_bind == STB_WEAK) {
--					/* already have a non-weak bind, and
--					 * this is a weak bind, so ignore.
--					 */
--					continue;
--				}
--			}
--
--			/* Transform symbol's virtual address (absolute for
--			 * binaries and relative for shared libs) into file
--			 * offset, which is what kernel is expecting for
--			 * uprobe/uretprobe attachment.
--			 * See Documentation/trace/uprobetracer.rst for more
--			 * details.
--			 * This is done by looking up symbol's containing
--			 * section's header and using it's virtual address
--			 * (sh_addr) and corresponding file offset (sh_offset)
--			 * to transform sym.st_value (virtual address) into
--			 * desired final file offset.
--			 */
--			sym_scn = elf_getscn(elf, sym.st_shndx);
--			if (!sym_scn)
--				continue;
--			if (!gelf_getshdr(sym_scn, &sym_sh))
--				continue;
--
--			ret = sym.st_value - sym_sh.sh_addr + sym_sh.sh_offset;
--			last_bind = curr_bind;
--		}
--		if (ret > 0)
--			break;
--	}
--
--	if (ret > 0) {
--		pr_debug("elf: symbol address match for '%s' in '%s': 0x%lx\n", name, binary_path,
--			 ret);
--	} else {
--		if (ret == 0) {
--			pr_warn("elf: '%s' is 0 in symtab for '%s': %s\n", name, binary_path,
--				is_shared_lib ? "should not be 0 in a shared library" :
--						"try using shared library path instead");
--			ret = -ENOENT;
--		} else {
--			pr_warn("elf: failed to find symbol '%s' in '%s'\n", name, binary_path);
--		}
--	}
--out:
--	return ret;
--}
--
--/* Find offset of function name in ELF object specified by path. "name" matches
-- * symbol name or name@@LIB for library functions.
-- */
--static long elf_find_func_offset_from_file(const char *binary_path, const char *name)
--{
++void elf_close(struct elf_fd *elf_fd)
++{
++	elf_end(elf_fd->elf);
++	close(elf_fd->fd);
++}
++
+ /* Return next ELF section of sh_type after scn, or first of that type if scn is NULL. */
+ static Elf_Scn *elf_find_next_scn_by_type(Elf *elf, int sh_type, Elf_Scn *scn)
+ {
+@@ -171,28 +205,13 @@ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
+  */
+ long elf_find_func_offset_from_file(const char *binary_path, const char *name)
+ {
 -	char errmsg[STRERR_BUFSIZE];
--	long ret = -ENOENT;
++	struct elf_fd elf_fd;
+ 	long ret = -ENOENT;
 -	Elf *elf;
 -	int fd;
--
+ 
 -	fd = open(binary_path, O_RDONLY | O_CLOEXEC);
 -	if (fd < 0) {
 -		ret = -errno;
 -		pr_warn("failed to open %s: %s\n", binary_path,
 -			libbpf_strerror_r(ret, errmsg, sizeof(errmsg)));
--		return ret;
++	ret = elf_open(binary_path, &elf_fd);
++	if (ret)
+ 		return ret;
 -	}
 -	elf = elf_begin(fd, ELF_C_READ_MMAP, NULL);
 -	if (!elf) {
@@ -482,29 +141,111 @@ index 53dcf25c4878..093add8124d8 100644
 -	ret = elf_find_func_offset(elf, binary_path, name);
 -	elf_end(elf);
 -	close(fd);
--	return ret;
--}
++	ret = elf_find_func_offset(elf_fd.elf, binary_path, name);
++	elf_close(&elf_fd);
+ 	return ret;
+ }
 -
- /* Find offset of function name in archive specified by path. Currently
-  * supported are .zip files that do not compress their contents, as used on
-  * Android in the form of APKs, for example. "file_name" is the name of the ELF
 diff --git a/tools/lib/bpf/libbpf_elf.h b/tools/lib/bpf/libbpf_elf.h
-new file mode 100644
-index 000000000000..1b652220fabf
---- /dev/null
+index 1b652220fabf..c763ac35a85e 100644
+--- a/tools/lib/bpf/libbpf_elf.h
 +++ b/tools/lib/bpf/libbpf_elf.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+@@ -5,6 +5,14 @@
+ 
+ #include <libelf.h>
+ 
++struct elf_fd {
++	Elf *elf;
++	int fd;
++};
 +
-+#ifndef __LIBBPF_LIBBPF_ELF_H
-+#define __LIBBPF_LIBBPF_ELF_H
++int elf_open(const char *binary_path, struct elf_fd *elf_fd);
++void elf_close(struct elf_fd *elf_fd);
 +
-+#include <libelf.h>
-+
-+long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name);
-+long elf_find_func_offset_from_file(const char *binary_path, const char *name);
-+
-+#endif /* *__LIBBPF_LIBBPF_ELF_H */
+ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name);
+ long elf_find_func_offset_from_file(const char *binary_path, const char *name);
+ 
+diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+index f1a141555f08..9fa883ebc0bd 100644
+--- a/tools/lib/bpf/usdt.c
++++ b/tools/lib/bpf/usdt.c
+@@ -19,6 +19,7 @@
+ #include "libbpf.h"
+ #include "libbpf_common.h"
+ #include "libbpf_internal.h"
++#include "libbpf_elf.h"
+ #include "hashmap.h"
+ 
+ /* libbpf's USDT support consists of BPF-side state/code and user-space
+@@ -943,32 +944,22 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
+ 					  const char *usdt_provider, const char *usdt_name,
+ 					  __u64 usdt_cookie)
+ {
+-	int i, fd, err, spec_map_fd, ip_map_fd;
++	int i, err, spec_map_fd, ip_map_fd;
+ 	LIBBPF_OPTS(bpf_uprobe_opts, opts);
+ 	struct hashmap *specs_hash = NULL;
+ 	struct bpf_link_usdt *link = NULL;
+ 	struct usdt_target *targets = NULL;
++	struct elf_fd elf_fd;
+ 	size_t target_cnt;
+-	Elf *elf;
+ 
+ 	spec_map_fd = bpf_map__fd(man->specs_map);
+ 	ip_map_fd = bpf_map__fd(man->ip_to_spec_id_map);
+ 
+-	fd = open(path, O_RDONLY | O_CLOEXEC);
+-	if (fd < 0) {
+-		err = -errno;
+-		pr_warn("usdt: failed to open ELF binary '%s': %d\n", path, err);
++	err = elf_open(path, &elf_fd);
++	if (err)
+ 		return libbpf_err_ptr(err);
+-	}
+ 
+-	elf = elf_begin(fd, ELF_C_READ_MMAP, NULL);
+-	if (!elf) {
+-		err = -EBADF;
+-		pr_warn("usdt: failed to parse ELF binary '%s': %s\n", path, elf_errmsg(-1));
+-		goto err_out;
+-	}
+-
+-	err = sanity_check_usdt_elf(elf, path);
++	err = sanity_check_usdt_elf(elf_fd.elf, path);
+ 	if (err)
+ 		goto err_out;
+ 
+@@ -981,7 +972,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
+ 	/* discover USDT in given binary, optionally limiting
+ 	 * activations to a given PID, if pid > 0
+ 	 */
+-	err = collect_usdt_targets(man, elf, path, pid, usdt_provider, usdt_name,
++	err = collect_usdt_targets(man, elf_fd.elf, path, pid, usdt_provider, usdt_name,
+ 				   usdt_cookie, &targets, &target_cnt);
+ 	if (err <= 0) {
+ 		err = (err == 0) ? -ENOENT : err;
+@@ -1066,9 +1057,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
+ 
+ 	free(targets);
+ 	hashmap__free(specs_hash);
+-	elf_end(elf);
+-	close(fd);
+-
++	elf_close(&elf_fd);
+ 	return &link->link;
+ 
+ err_out:
+@@ -1076,9 +1065,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
+ 		bpf_link__destroy(&link->link);
+ 	free(targets);
+ 	hashmap__free(specs_hash);
+-	if (elf)
+-		elf_end(elf);
+-	close(fd);
++	elf_close(&elf_fd);
+ 	return libbpf_err_ptr(err);
+ }
+ 
 -- 
 2.41.0
 
