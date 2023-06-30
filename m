@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-3781-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95113743770
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 10:36:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 186AE743773
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 10:37:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50A67281010
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 08:36:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8990281098
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 08:36:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F65A957;
-	Fri, 30 Jun 2023 08:36:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B05A957;
+	Fri, 30 Jun 2023 08:36:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC8BA932
-	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 08:36:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ACCBC433C0;
-	Fri, 30 Jun 2023 08:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1651FB8
+	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 08:36:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D859C433C0;
+	Fri, 30 Jun 2023 08:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688114197;
-	bh=wmfLgJRPS2h6ShxK5nR4rkG2qWNqblTG4Z1ZPFoze1Q=;
+	s=k20201202; t=1688114208;
+	bh=nSnOgIP1ZTUTvNpA5DrwAPnY2lyaqv1+WHhbzVyevIo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HpZQinMKqWdj034T6bxRyq9F8OTo1f0WZCdmL7OJf3I/pQFW0Y9IkbfL6VcniJOav
-	 516yZV+v3hAM3fRdNW2EAFVyiWqHOzWlmMJhYMP4aX6wdqzmBUNclYgOOEgVsVJxpI
-	 8ZsPgQ/0AWGlGLOhH7eS+FgkARzfzq6XekPGfMAWpMU0r8T+0pUd/Z3zKZgJuGOgSB
-	 Ml1yEP83w7m2vAfqyuS1EKf59EK0C/erpjbAuA2Fb0awEwC/ZEXGX9y6CQpMCuY/29
-	 tJx3/OaYovbQp8opCgU3VS5/VqmTbFNMffvj6wOSVR9jOeHjOGhBuIN32i3TKlpIf0
-	 5PfhQUxq+ynFw==
+	b=KEi8SBmC/Y1AEbjsdx7tnFpyElwGHJeicLIbUB5iVizlcyxWL/NzR4YmCOmtdnZMe
+	 lN9u1zXedATAecQl8ptOkWYIwu8upzhJk3prYC56WFku85qWDa/KL4PEfFQaCP4DFs
+	 ZJO642LCJ6qhGoED4VlyI3BmmV+PApGPQioGdSlgxrel3HaF6dNw/xI3fzU1EDwOQm
+	 uWf6FUalt/5wtYNn4okLrcJpBueCl3k6kmJ0rRBs5ANz9oPymTH/oB0YaND4W33Z6N
+	 JttQvO96rfT8/5aaWOQoTSJ+s0Jj2Sx7+EBMUWlII2OjUeVSgpb8OOqz1BS+taLZIp
+	 LAsgvHhDM3v1w==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -42,9 +42,9 @@ Cc: bpf@vger.kernel.org,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>
-Subject: [PATCHv3 bpf-next 14/26] libbpf: Add support for u[ret]probe.multi[.s] program sections
-Date: Fri, 30 Jun 2023 10:33:32 +0200
-Message-ID: <20230630083344.984305-15-jolsa@kernel.org>
+Subject: [PATCHv3 bpf-next 15/26] libbpf: Add uprobe multi link detection
+Date: Fri, 30 Jun 2023 10:33:33 +0200
+Message-ID: <20230630083344.984305-16-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230630083344.984305-1-jolsa@kernel.org>
 References: <20230630083344.984305-1-jolsa@kernel.org>
@@ -56,75 +56,82 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding support for several uprobe_multi program sections
-to allow auto attach of multi_uprobe programs.
+Adding uprobe-multi link detection. It will be used later in
+bpf_program__attach_usdt function to check and use uprobe_multi
+link over standard uprobe links.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ tools/lib/bpf/libbpf.c          | 35 +++++++++++++++++++++++++++++++++
+ tools/lib/bpf/libbpf_internal.h |  2 ++
+ 2 files changed, 37 insertions(+)
 
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index b942f248038e..06092b9752f1 100644
+index 06092b9752f1..4f61f9dc1748 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -8654,6 +8654,7 @@ static int attach_tp(const struct bpf_program *prog, long cookie, struct bpf_lin
- static int attach_raw_tp(const struct bpf_program *prog, long cookie, struct bpf_link **link);
- static int attach_trace(const struct bpf_program *prog, long cookie, struct bpf_link **link);
- static int attach_kprobe_multi(const struct bpf_program *prog, long cookie, struct bpf_link **link);
-+static int attach_uprobe_multi(const struct bpf_program *prog, long cookie, struct bpf_link **link);
- static int attach_lsm(const struct bpf_program *prog, long cookie, struct bpf_link **link);
- static int attach_iter(const struct bpf_program *prog, long cookie, struct bpf_link **link);
- 
-@@ -8669,6 +8670,10 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("uretprobe.s+",		KPROBE, 0, SEC_SLEEPABLE, attach_uprobe),
- 	SEC_DEF("kprobe.multi+",	KPROBE,	BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
- 	SEC_DEF("kretprobe.multi+",	KPROBE,	BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
-+	SEC_DEF("uprobe.multi+",	KPROBE,	BPF_TRACE_UPROBE_MULTI, SEC_NONE, attach_uprobe_multi),
-+	SEC_DEF("uretprobe.multi+",	KPROBE,	BPF_TRACE_UPROBE_MULTI, SEC_NONE, attach_uprobe_multi),
-+	SEC_DEF("uprobe.multi.s+",	KPROBE,	BPF_TRACE_UPROBE_MULTI, SEC_SLEEPABLE, attach_uprobe_multi),
-+	SEC_DEF("uretprobe.multi.s+",	KPROBE,	BPF_TRACE_UPROBE_MULTI, SEC_SLEEPABLE, attach_uprobe_multi),
- 	SEC_DEF("ksyscall+",		KPROBE,	0, SEC_NONE, attach_ksyscall),
- 	SEC_DEF("kretsyscall+",		KPROBE, 0, SEC_NONE, attach_ksyscall),
- 	SEC_DEF("usdt+",		KPROBE,	0, SEC_NONE, attach_usdt),
-@@ -10730,6 +10735,37 @@ static int attach_kprobe_multi(const struct bpf_program *prog, long cookie, stru
- 	return libbpf_get_error(*link);
+@@ -4817,6 +4817,38 @@ static int probe_perf_link(void)
+ 	return link_fd < 0 && err == -EBADF;
  }
  
-+static int attach_uprobe_multi(const struct bpf_program *prog, long cookie, struct bpf_link **link)
++static int probe_uprobe_multi_link(void)
 +{
-+	char *probe_type = NULL, *binary_path = NULL, *func_name = NULL;
-+	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
-+	int n, ret = -EINVAL;
++	LIBBPF_OPTS(bpf_prog_load_opts, load_opts,
++		.expected_attach_type = BPF_TRACE_UPROBE_MULTI,
++	);
++	LIBBPF_OPTS(bpf_link_create_opts, link_opts);
++	struct bpf_insn insns[] = {
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_EXIT_INSN(),
++	};
++	unsigned long offset = 0;
++	int prog_fd, link_fd;
 +
-+	*link = NULL;
++	prog_fd = bpf_prog_load(BPF_PROG_TYPE_KPROBE, NULL, "GPL",
++				insns, ARRAY_SIZE(insns), &load_opts);
++	if (prog_fd < 0)
++		return -errno;
 +
-+	n = sscanf(prog->sec_name, "%m[^/]/%m[^:]:%ms",
-+		   &probe_type, &binary_path, &func_name);
-+	switch (n) {
-+	case 1:
-+		/* handle SEC("u[ret]probe") - format is valid, but auto-attach is impossible. */
-+		ret = 0;
-+		break;
-+	case 3:
-+		opts.retprobe = strcmp(probe_type, "uretprobe.multi") == 0;
-+		*link = bpf_program__attach_uprobe_multi(prog, -1, binary_path, func_name, &opts);
-+		ret = libbpf_get_error(*link);
-+		break;
-+	default:
-+		pr_warn("prog '%s': invalid format of section definition '%s'\n", prog->name,
-+			prog->sec_name);
-+		break;
-+	}
-+	free(probe_type);
-+	free(binary_path);
-+	free(func_name);
-+	return ret;
++	/* create single uprobe on offset 0 in current process */
++	link_opts.uprobe_multi.path = "/proc/self/exe";
++	link_opts.uprobe_multi.offsets = &offset;
++	link_opts.uprobe_multi.cnt = 1;
++
++	link_fd = bpf_link_create(prog_fd, -1, BPF_TRACE_UPROBE_MULTI, &link_opts);
++
++	if (link_fd >= 0)
++		close(link_fd);
++	close(prog_fd);
++
++	return link_fd >= 0;
 +}
 +
- static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
- 					 const char *binary_path, uint64_t offset)
+ static int probe_kern_bpf_cookie(void)
  {
+ 	struct bpf_insn insns[] = {
+@@ -4913,6 +4945,9 @@ static struct kern_feature_desc {
+ 	[FEAT_SYSCALL_WRAPPER] = {
+ 		"Kernel using syscall wrapper", probe_kern_syscall_wrapper,
+ 	},
++	[FEAT_UPROBE_MULTI_LINK] = {
++		"BPF uprobe multi link support", probe_uprobe_multi_link,
++	},
+ };
+ 
+ bool kernel_supports(const struct bpf_object *obj, enum kern_feature_id feat_id)
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index 7d75b92e531a..9c04b3fe1207 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -354,6 +354,8 @@ enum kern_feature_id {
+ 	FEAT_BTF_ENUM64,
+ 	/* Kernel uses syscall wrapper (CONFIG_ARCH_HAS_SYSCALL_WRAPPER) */
+ 	FEAT_SYSCALL_WRAPPER,
++	/* BPF uprobe_multi link support */
++	FEAT_UPROBE_MULTI_LINK,
+ 	__FEAT_CNT,
+ };
+ 
 -- 
 2.41.0
 
