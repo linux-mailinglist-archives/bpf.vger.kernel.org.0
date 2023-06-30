@@ -1,130 +1,247 @@
-Return-Path: <bpf+bounces-3830-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3832-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE6C17443BB
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 23:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B02C77444C0
+	for <lists+bpf@lfdr.de>; Sat,  1 Jul 2023 00:16:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8D38281234
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 21:03:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F02C2811D5
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 22:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303B51774A;
-	Fri, 30 Jun 2023 21:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48DC817AB9;
+	Fri, 30 Jun 2023 22:16:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6417A16428
-	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 21:02:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEF1CC433C0;
-	Fri, 30 Jun 2023 21:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688158974;
-	bh=JcRoUVFNM9/6PR4mDTjNnE2muKhhGvnoeEasmT4br1g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=byinquFCr/Gggvsv/R7A6N614gv3EUx+4dmFXAZ0rdYEOYUAaZ5fnniEEAPyS6JHA
-	 n6kp6jaizk1QTx7gyAbl30ZH9jidBOv1qFDjQy7mm4+zaJirNeeC7HkKGOC17av1lr
-	 jYfbWFNbe6en6ziR8GSr5LTX6ziEpA2v2XQhxzDI1kMCCCKHSE7XUQkdb+K9aaC/He
-	 GMk4oItAKiyRjJcHhOIzFD4NTmokq96vZS/TWbCJsZm/1XJg2A7zi5cBE8DfyDNn3M
-	 F17bf4dQko3kkURaNgauZR9oJrDbqOuxge9fhH4S7LBn27lrsPDA1E1SESju5saP8Z
-	 xrup+9a4lckFw==
-From: SeongJae Park <sj@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: SeongJae Park <sj@kernel.org>,
-	martin.lau@linux.dev,
-	Alexander.Egorenkov@ibm.com,
-	ast@kernel.org,
-	memxor@gmail.com,
-	olsajiri@gmail.com,
-	bpf@vger.kernel.org,
-	stable@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH v2] btf: warn but return no error for NULL btf from __register_btf_kfunc_id_set()
-Date: Fri, 30 Jun 2023 21:02:51 +0000
-Message-Id: <20230630210251.126928-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <75483b53-bd8e-692e-ed18-a4c87cf20a1b@iogearbox.net>
-References: 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D375E17755;
+	Fri, 30 Jun 2023 22:16:09 +0000 (UTC)
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47B23C32;
+	Fri, 30 Jun 2023 15:16:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=mmrCw93FsSgGVqkQGx3tY+c3DxJ3ErMGqt6cuZmQDk4=; b=3Xi9NJjkd4QPELIEMLqHm1+oJy
+	QNIOVPA8HW3kXP6XuZluim3h/1Z/sfwrG9QOzNRHgYq+vOXcblPYVWq7qnircmbeiJPJDVgOjWyzo
+	LbnhyHqo5AegY+fER/tKQShp8dh+Z/+/bv4xI3KoQiSpmxUAYDgP6p5vAe2pi77qFUU0ycsQEmV7V
+	4gCVdOf3P+PueFWMrnvROKMoMz+u7SsILxSnayKbZrj37v0X+NhKaX7iej/SD3IFAsLN2XayGDdUC
+	G3y/vRbujnR04W/Op5jRENlRX4f86+/5+pwYqxdiQMmhYNN5AwTPrNqa/XDugttEtOweLL0X0YqO/
+	pQ84xrwQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1qFML8-004eW8-2f;
+	Fri, 30 Jun 2023 22:11:42 +0000
+Date: Fri, 30 Jun 2023 15:11:42 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Julia Lawall <julia.lawall@inria.fr>, Takashi Iwai <tiwai@suse.de>
+Cc: Jeff Layton <jlayton@kernel.org>, Jeremy Kerr <jk@ozlabs.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Carlos Llamas <cmllamas@google.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	Brad Warrum <bwarrum@linux.ibm.com>,
+	Ritu Agarwal <rituagar@linux.ibm.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Sterba <dsterba@suse.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Ian Kent <raven@themaw.net>,
+	Luis de Bethencourt <luisbg@kernel.org>,
+	Salah Triki <salah.triki@gmail.com>,
+	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Kees Cook <keescook@chromium.org>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, Xiubo Li <xiubli@redhat.com>,
+	Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>,
+	coda@cs.cmu.edu, Joel Becker <jlbec@evilplan.org>,
+	Christoph Hellwig <hch@lst.de>, Nicolas Pitre <nico@fluxnic.net>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Tyler Hicks <code@tyhicks.com>, Ard Biesheuvel <ardb@kernel.org>,
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+	Yue Hu <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Bob Peterson <rpeterso@redhat.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Anton Altaparmakov <anton@tuxera.com>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Bob Copeland <me@bobcopeland.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Iurii Zaikin <yzaikin@google.com>, Tony Luck <tony.luck@intel.com>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Anders Larsen <al@alarsen.net>, Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <lsahlber@redhat.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Phillip Lougher <phillip@squashfs.org.uk>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Evgeniy Dushistov <dushistov@mail.ru>,
+	Hans de Goede <hdegoede@redhat.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <jth@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Eric Paris <eparis@parisplace.org>, Juergen Gross <jgross@suse.com>,
+	Ruihan Li <lrh2000@pku.edu.cn>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Udipto Goswami <quic_ugoswami@quicinc.com>,
+	Linyu Yuan <quic_linyyuan@quicinc.com>,
+	John Keeping <john@keeping.me.uk>,
+	Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+	Dan Carpenter <error27@gmail.com>, Yuta Hayama <hayama@lineo.co.jp>,
+	Jozef Martiniak <jomajm@gmail.com>, Jens Axboe <axboe@kernel.dk>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Sandeep Dhavale <dhavale@google.com>,
+	Dave Chinner <dchinner@redhat.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	ZhangPeng <zhangpeng362@huawei.com>,
+	Viacheslav Dubeyko <slava@dubeyko.com>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Aditya Garg <gargaditya08@live.com>,
+	Erez Zadok <ezk@cs.stonybrook.edu>,
+	Yifei Liu <yifeliu@cs.stonybrook.edu>, Yu Zhe <yuzhe@nfschina.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Oleg Kanatov <okanatov@gmail.com>,
+	"Dr. David Alan Gilbert" <linux@treblig.org>,
+	Jiangshan Yi <yijiangshan@kylinos.cn>, xu xin <cgel.zte@gmail.com>,
+	Stefan Roesch <shr@devkernel.io>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	Minghao Chi <chi.minghao@zte.com.cn>,
+	Seth Forshee <sforshee@digitalocean.com>,
+	Zeng Jingxiang <linuszeng@tencent.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Zhang Yi <yi.zhang@huawei.com>, Tom Rix <trix@redhat.com>,
+	"Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+	Chen Zhongjin <chenzhongjin@huawei.com>,
+	Zhengchao Shao <shaozhengchao@huawei.com>,
+	Rik van Riel <riel@surriel.com>,
+	Jingyu Wang <jingyuwang_vip@163.com>, Hangyu Hua <hbh25y@gmail.com>,
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+	autofs@vger.kernel.org, linux-mm@kvack.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	cluster-devel@redhat.com, linux-um@lists.infradead.org,
+	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
+	linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+	linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+	ocfs2-devel@oss.oracle.com, linux-karma-devel@lists.sourceforge.net,
+	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, reiserfs-devel@vger.kernel.org,
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+	linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	bpf@vger.kernel.org, netdev@vger.kernel.org,
+	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+	selinux@vger.kernel.org
+Subject: Re: [PATCH 00/79] fs: new accessors for inode->i_ctime
+Message-ID: <ZJ9THiUlOUmm0xpD@bombadil.infradead.org>
+References: <20230621144507.55591-1-jlayton@kernel.org>
+ <20230621152141.5961cf5f@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230621152141.5961cf5f@gandalf.local.home>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, 30 Jun 2023 22:52:24 +0200 Daniel Borkmann <daniel@iogearbox.net> wrote:
-
-> On 6/30/23 9:48 PM, SeongJae Park wrote:
-> > On Fri, 30 Jun 2023 16:53:38 +0200 Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >> On 6/28/23 6:46 PM, SeongJae Park wrote:
-> >>> __register_btf_kfunc_id_set() assumes .BTF to be part of the module's
-> >>> .ko file if CONFIG_DEBUG_INFO_BTF is enabled.  If that's not the case,
-> >>> the function prints an error message and return an error.  As a result,
-> >>> such modules cannot be loaded.
-> >>>
-> >>> However, the section could be stripped out during a build process.  It
-> >>> would be better to let the modules loaded, because their basic
-> >>> functionalities have no problem[1], though the BTF functionalities will
-> >>> not be supported.  Make the function to lower the level of the message
-> >>> from error to warn, and return no error.
-> >>>
-> >>> [1] https://lore.kernel.org/bpf/20220219082037.ow2kbq5brktf4f2u@apollo.legion/
-> >>>
-> >>> Reported-by: Alexander Egorenkov <Alexander.Egorenkov@ibm.com>
-> >>> Link: https://lore.kernel.org/bpf/87y228q66f.fsf@oc8242746057.ibm.com/
-> >>> Suggested-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> >>> Link: https://lore.kernel.org/bpf/20220219082037.ow2kbq5brktf4f2u@apollo.legion/
-> >>> Fixes: c446fdacb10d ("bpf: fix register_btf_kfunc_id_set for !CONFIG_DEBUG_INFO_BTF")
-> >>> Cc: <stable@vger.kernel.org> # 5.18.x
-> >>> Signed-off-by: SeongJae Park <sj@kernel.org>
-> >>> Acked-by: Jiri Olsa <jolsa@kernel.org>
-> >>
-> >> I presume this one is targeted at bpf (rather than bpf-next) tree, right?
-> > 
-> > You're correct.  It's not urgent for us, but I would prefer it to be merged
-> > into all affected kernels as early as possible.
+On Wed, Jun 21, 2023 at 03:21:41PM -0400, Steven Rostedt wrote:
+> On Wed, 21 Jun 2023 10:45:05 -0400
+> Jeff Layton <jlayton@kernel.org> wrote:
 > 
-> Ok, sounds good, bpf tree it is then.
+> > Most of this conversion was done via coccinelle, with a few of the more
+> > non-standard accesses done by hand. There should be no behavioral
+> > changes with this set. That will come later, as we convert individual
+> > filesystems to use multigrain timestamps.
 > 
-> >>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> >>> index 6b682b8e4b50..d683f034996f 100644
-> >>> --- a/kernel/bpf/btf.c
-> >>> +++ b/kernel/bpf/btf.c
-> >>> @@ -7848,14 +7848,10 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
-> >>>    
-> >>>    	btf = btf_get_module_btf(kset->owner);
-> >>>    	if (!btf) {
-> >>> -		if (!kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
-> >>> -			pr_err("missing vmlinux BTF, cannot register kfuncs\n");
-> >>> -			return -ENOENT;
-> >>> -		}
-> >>
-> >> Why the above one needs to be changed? Do you also run into this case? vmlinux BTF
-> >> should be built-in in this case. I understand it's rather the one below for BTF +
-> >> modules instead, no?
-> > 
-> > Again, you're correct.  This change is not really needed.  I was interpreting
-> > Kumar's suggestion merely into code without thinking about his real meaning,
-> > sorry.  I will restore this in the next spin.
-> 
-> Perfect, I think after your v3 respin it should be good to land.
+> BTW, Linus has suggested to me that whenever a conccinelle script is used,
+> it should be included in the change log.
 
-Thank you!  I will send it by tomorrow, to give people enough time to comment.
-If you don't want to wait, please let me know :)
+Sometimes people like the coccinelle included in the commit, sometimes
+people don't [0], it really ends up being up to a subjective maintainer
+preference. A compromise could be to use git notes as these are
+optional, however if we want to go down that path we should try to make
+a general consensus on it so we can send a consistent message.
 
-Also, please note that this will not cleanly applicable on 6.1.y.  I will
-provide the backport to stable@ as soon as this is merged into the mainline.
+[0] https://lore.kernel.org/all/20230512073100.GC32559@twin.jikos.cz/
 
-
-Thanks,
-SJ
-
-> 
-> Thanks,
-> Daniel
-> 
+  Luis
 
