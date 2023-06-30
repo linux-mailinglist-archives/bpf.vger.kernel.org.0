@@ -1,304 +1,255 @@
-Return-Path: <bpf+bounces-3825-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3826-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3081E744295
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 21:02:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C71737442CE
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 21:40:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEB082810FD
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 19:02:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 702CE1C20C52
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 19:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBB8171BB;
-	Fri, 30 Jun 2023 19:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A6B017740;
+	Fri, 30 Jun 2023 19:40:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB52156CB
-	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 19:01:55 +0000 (UTC)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DACEE
-	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 12:01:54 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fba1288bbdso2393160e87.1
-        for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 12:01:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA4B1772A;
+	Fri, 30 Jun 2023 19:40:18 +0000 (UTC)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276FA3C3C;
+	Fri, 30 Jun 2023 12:40:16 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fa93d61d48so25684395e9.0;
+        Fri, 30 Jun 2023 12:40:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688151712; x=1690743712;
+        d=gmail.com; s=20221208; t=1688154014; x=1690746014;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vAbGfNBEJJJiZ07vg0Q9y8r4SjWOnr0Two0v8l2xOvs=;
-        b=XjWA953/zNyT3TME99DOBCcgV18wrLKwrdGAF5rHBWZVtWXPXQUqKySGFGpiMnRKYD
-         SlxJcYQyY/8a2Xl3KJ/i1fnGSg2QMUA7wdzxpVWzzmsi5+gweylYsJFZ+DZ4WpfNgZm8
-         lb0f+CeDnrJmHOcp2uyGF5ZhUAcmVrfmvX33IMM93BwZhOVlLQxAtNm8dSPO+oZ+o9BS
-         m5ey5bLqLzhGvIIQjChAe6nTpmVzEgMT7xWk/hVFGWY1VWYIYGp941yAGhETK0ZxqLmb
-         gQxZ1DZziDtht8DOL7PmZOGjFwmmve7VcqBDaeEfOMCHhCl110IrFXooVjr2XjvrqY+m
-         wTfg==
+        bh=U6pnTwJKxb2Jp5JkpBaLoHKFY7M4ibIn04BA+G59EYg=;
+        b=GnYFHnHbHeh67Ewq22wobUeXiEPGvNiZYMQE+/Tt0YO8b55MUWr1L4/Fp2qu6aPW5z
+         RJvIIcBdHd5zDsT9WmBNbRVdjk05ObOXl0Ze+uroUPUjHwzaDFOhti87+VyMsHJAJV7O
+         YnFtDN/CsVIWam3/lEECcYG0zum+XDJtFvP6L2PZoXQyteRTR0KRrD5jlpBxUeelZKTn
+         Vhk6Xw4Gp+bAS/xi1PReVGaOapjkF0yBaHFQqnQP4ImZOI6fabv9QiHtLF5kSvSwTE71
+         CmeCNfBGKJkxaBmPvnNg1KNPBdCuXgyMCs0+gNJwupvhdMv6h9NrVXZwNQrfI7uZVDzv
+         u+Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688151712; x=1690743712;
+        d=1e100.net; s=20221208; t=1688154014; x=1690746014;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vAbGfNBEJJJiZ07vg0Q9y8r4SjWOnr0Two0v8l2xOvs=;
-        b=J2Cb0mnCap6nMMR1Mh/hFRSWTA12OaZ7FuSBXSOR1/+Cdf7OfSQQvs6v/QpTI8NRVf
-         UVUf/EtfHE55JKJPlAyBvDPybNbfcmtenzyBpJt01UWG7uSkTUqJqgZsnTz6S+RX0Jjh
-         L5WaMU7KL85oes1pucZF5FjzfTCvgkZuZyUA0Ao8vQnvwxXZziia5a8ZCoAm89m2cXds
-         ilxTgqLv+udwzvm63mim6xyIjBJXQKPCeQB610tC/FI+25+eevts49PNSNt//aqUm1EY
-         km38KREcQIz4qYyEvNREmBQ8ISuX6nbwnkOOaCPNi2B1Z/LtJNQZmF+31iIZnKysPSjc
-         Qk4A==
-X-Gm-Message-State: ABy/qLbe78ZE5nNNXoSghyhN/ibXUVXgtD6oJ4/jSvfuvXGR0pnFfxb/
-	gV+5wQFh2ARRRDwEblcwFaDln0VHqLMrgWHPv2igLDOowwQ=
-X-Google-Smtp-Source: APBJJlFlzsDYpa5iQrkmXxAr/K5TiUf9X7VVAZAmjfH8kH29TecDRyF/+zub8z4rJqIvTQQru87QGVJkzfyblCuWXpI=
-X-Received: by 2002:a05:6512:15a3:b0:4fb:7da3:de4 with SMTP id
- bp35-20020a05651215a300b004fb7da30de4mr4162118lfb.13.1688151712108; Fri, 30
- Jun 2023 12:01:52 -0700 (PDT)
+        bh=U6pnTwJKxb2Jp5JkpBaLoHKFY7M4ibIn04BA+G59EYg=;
+        b=ZjvVTnKcewDLPGN7gD5x6JfQDBuZTCQGT7mzZBpADKaq1D6qfQwpzSGaQ4IU7CM/LB
+         T3llxxogHg4wsGIO6wmTwh1sPUismqUFXHwnTE5xS9Pit0o88M13Zx5/GLucxXXeEqV8
+         ajXz+owV0zlC5u12vOkrxM2kPG7vl1lfeoao4jSb+61Y04VTyh0mj0E11bspE7pmLNGK
+         MMR8ollF+mKSbs4/mj05o5eGthAND5F4kDfwALzE9zKhZphVTo+bOhbVYhYjgKoJPoDY
+         iqmWRjCOkBd+Ze+TC++PE0S530UlCMERgiDxxku4l6u9OxNc3H0kWAmNltkamXqXNHMh
+         VlPQ==
+X-Gm-Message-State: AC+VfDyzuqG680A0j18ZLxF5KxSUsLXkhHZE2anlmOFkDmzN+piPlhqX
+	wOCPI8zMEH6koolznY5hhponOOZWNNNc/pmUf9vr5sHFOkA=
+X-Google-Smtp-Source: ACHHUZ60SjUzyBWIZcv4aguG2YXeIZyv6UTTr1qF4Wyreq4/BL70LFZGDpsjjTRAq1/b9km7vJZ7kIpJmVzoLCPNmc8=
+X-Received: by 2002:a05:600c:ac6:b0:3fb:b3aa:1c88 with SMTP id
+ c6-20020a05600c0ac600b003fbb3aa1c88mr2666744wmr.26.1688154014182; Fri, 30 Jun
+ 2023 12:40:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230625011326.1729020-1-liu.yun@linux.dev> <CAEf4BzaaBtGTZa4V7QzxUxeKq6D2w+PSXih0sBL4K10UHR3ycw@mail.gmail.com>
- <211cd152-b018-a803-cd3c-3861eec60eab@linux.dev>
-In-Reply-To: <211cd152-b018-a803-cd3c-3861eec60eab@linux.dev>
+References: <20230628152738.22765-1-fw@strlen.de> <20230628152738.22765-2-fw@strlen.de>
+In-Reply-To: <20230628152738.22765-2-fw@strlen.de>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 30 Jun 2023 12:01:40 -0700
-Message-ID: <CAEf4BzYMq5g6YEG7A-XvRa9yZS8+6XmFrf4ba4MGSWxM8pF3Xw@mail.gmail.com>
-Subject: Re: [PATCH v2] libbpf: kprobe.multi: Filter with available_filter_functions_addrs
-To: Jackie Liu <liu.yun@linux.dev>
-Cc: olsajiri@gmail.com, andrii@kernel.org, martin.lau@linux.dev, 
-	song@kernel.org, yhs@fb.com, bpf@vger.kernel.org, liuyun01@kylinos.cn
+Date: Fri, 30 Jun 2023 12:40:02 -0700
+Message-ID: <CAEf4BzZKPVwGMhJgQgAJBxsiiaSzq5SFYLACTO9fq_w5RPdm7A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/2] tools: libbpf: add netfilter link attach helper
+To: Florian Westphal <fw@strlen.de>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jun 26, 2023 at 6:38=E2=80=AFPM Jackie Liu <liu.yun@linux.dev> wrot=
-e:
+On Wed, Jun 28, 2023 at 8:27=E2=80=AFAM Florian Westphal <fw@strlen.de> wro=
+te:
 >
+> Add new api function: bpf_program__attach_netfilter.
 >
+> It takes a bpf program (netfilter type), and a pointer to a option struct
+> that contains the desired attachment (protocol family, priority, hook
+> location, ...).
 >
-> =E5=9C=A8 2023/6/27 07:46, Andrii Nakryiko =E5=86=99=E9=81=93:
-> > On Sat, Jun 24, 2023 at 6:14=E2=80=AFPM Jackie Liu <liu.yun@linux.dev> =
-wrote:
-> >>
-> >> From: Jackie Liu <liuyun01@kylinos.cn>
-> >>
-> >> When using regular expression matching with "kprobe multi", it scans a=
-ll
-> >> the functions under "/proc/kallsyms" that can be matched. However, not=
- all
-> >> of them can be traced by kprobe.multi. If any one of the functions fai=
-ls
-> >> to be traced, it will result in the failure of all functions. The best
-> >> approach is to filter out the functions that cannot be traced to ensur=
-e
-> >> proper tracking of the functions.
-> >>
-> >> Use available_filter_functions_addrs check first, if failed, fallback =
-to
-> >> kallsyms.
-> >>
-> >
-> > This is good, but it also doesn't address the original problem. On
-> > older kernels that don't have available_filter_functions_addrs, we'll
-> > still be trying to attach to non-attachable kprobes?
-> >
-> > So I think we'll still need to add available_filter_functions-based
-> > filtering on top of kallsyms. I guess we'll have to collect all
-> > symbols+addr from kallsyms, sort them, then go over
-> > available_filter_functions and do binary search. If element is not
-> > found, we'll mark it for removal. Then last pass to filter out marked
-> > entries to keep only addrs to be passed to kernel?
+> It returns a pointer to a 'bpf_link' structure or NULL on error.
 >
-> The first patch I submitted was to re-search available_filter_functions
-> in the case of kallsyms matching. The link is at:
+> Next patch adds new netfilter_basic test that uses this function to
+> attach a program to a few pf/hook/priority combinations.
 >
-> https://lore.kernel.org/all/20230523132547.94384-1-liu.yun@linux.dev/,
+> v2: change name and use bpf_link_create.
 >
-> but it is very slow and takes about 5s to start. If necessary, I can
-> continue to add it to the V3 patch. Maybe you have other better
-> algorithms?
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Link: https://lore.kernel.org/bpf/CAEf4BzZrmUv27AJp0dDxBDMY_B8e55-wLs8DUK=
+K69vCWsCG_pQ@mail.gmail.com/
+> Link: https://lore.kernel.org/bpf/CAEf4BzZ69YgrQW7DHCJUT_X+GqMq_ZQQPBwopa=
+JJVGFD5=3Dd5Vg@mail.gmail.com/
+> Signed-off-by: Florian Westphal <fw@strlen.de>
+> ---
+>  tools/lib/bpf/bpf.c      |  6 ++++++
+>  tools/lib/bpf/bpf.h      |  6 ++++++
+>  tools/lib/bpf/libbpf.c   | 42 ++++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   | 15 ++++++++++++++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  5 files changed, 70 insertions(+)
+>
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index ed86b37d8024..1b4f85f3c5b1 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -741,6 +741,12 @@ int bpf_link_create(int prog_fd, int target_fd,
+>                 if (!OPTS_ZEROED(opts, tracing))
+>                         return libbpf_err(-EINVAL);
+>                 break;
+> +       case BPF_NETFILTER:
+> +               attr.link_create.netfilter.pf =3D OPTS_GET(opts, netfilte=
+r.pf, 0);
+> +               attr.link_create.netfilter.hooknum =3D OPTS_GET(opts, net=
+filter.hooknum, 0);
+> +               attr.link_create.netfilter.priority =3D OPTS_GET(opts, ne=
+tfilter.priority, 0);
+> +               attr.link_create.netfilter.flags =3D OPTS_GET(opts, netfi=
+lter.flags, 0);
 
-Of course it's very slow. For every matched kallsyms symbol you are
-reopening/reparsing/scanning linearly entire
-available_filter_functions. You need to make sure that you parse both
-kallsyms and available_filter_functions just once, and then join them
-together to keep only symbols in both files.
+there should have also done this check:
 
-See my suggestion above about sorting and binary search. That's one
-way to do it efficiently.
+if (!OPTS_ZEROED(opts, netfilter))
+    return libbpf_err(-EINVAL);
 
+ just like in other cases. I added it while applying to bpf-next, thanks.
+
+
+> +               break;
+>         default:
+>                 if (!OPTS_ZEROED(opts, flags))
+>                         return libbpf_err(-EINVAL);
+> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> index 9aa0ee473754..c676295ab9bf 100644
+> --- a/tools/lib/bpf/bpf.h
+> +++ b/tools/lib/bpf/bpf.h
+> @@ -349,6 +349,12 @@ struct bpf_link_create_opts {
+>                 struct {
+>                         __u64 cookie;
+>                 } tracing;
+> +               struct {
+> +                       __u32 pf;
+> +                       __u32 hooknum;
+> +                       __s32 priority;
+> +                       __u32 flags;
+> +               } netfilter;
+>         };
+>         size_t :0;
+>  };
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 214f828ece6b..f193eca16382 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -11811,6 +11811,48 @@ static int attach_iter(const struct bpf_program =
+*prog, long cookie, struct bpf_l
+>         return libbpf_get_error(*link);
+>  }
 >
-> --
-> Jackie Liu
->
-> >
-> >
-> >> Here is the test eBPF program [1].
-> >> [1] https://github.com/JackieLiu1/ketones/tree/master/src/funccount
-> >>
-> >> Suggested-by: Jiri Olsa <jolsa@kernel.org>
-> >> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
-> >> ---
-> >>   tools/lib/bpf/libbpf.c | 81 ++++++++++++++++++++++++++++++++++++++--=
---
-> >>   1 file changed, 75 insertions(+), 6 deletions(-)
-> >>
-> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> >> index a27f6e9ccce7..fca5d2e412c5 100644
-> >> --- a/tools/lib/bpf/libbpf.c
-> >> +++ b/tools/lib/bpf/libbpf.c
-> >> @@ -10107,6 +10107,12 @@ static const char *tracefs_uprobe_events(void=
-)
-> >>          return use_debugfs() ? DEBUGFS"/uprobe_events" : TRACEFS"/upr=
-obe_events";
-> >>   }
-> >>
-> >> +static const char *tracefs_available_filter_functions_addrs(void)
-> >> +{
-> >> +       return use_debugfs() ? DEBUGFS"/available_filter_functions_add=
-rs" :
-> >> +                              TRACEFS"/available_filter_functions_add=
-rs";
-> >> +}
-> >> +
-> >>   static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
-> >>                                           const char *kfunc_name, size=
-_t offset)
-> >>   {
-> >> @@ -10422,9 +10428,8 @@ struct kprobe_multi_resolve {
-> >>          size_t cnt;
-> >>   };
-> >>
-> >> -static int
-> >> -resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
-> >> -                       const char *sym_name, void *ctx)
-> >> +static int ftrace_resolve_kprobe_multi_cb(unsigned long long sym_addr=
-,
-> >> +                                         const char *sym_name, void *=
-ctx)
-> >>   {
-> >>          struct kprobe_multi_resolve *res =3D ctx;
-> >>          int err;
-> >> @@ -10441,6 +10446,63 @@ resolve_kprobe_multi_cb(unsigned long long sy=
-m_addr, char sym_type,
-> >>          return 0;
-> >>   }
-> >>
-> >> +static int
-> >> +kallsyms_resolve_kprobe_multi_cb(unsigned long long sym_addr, char sy=
-m_type,
-> >> +                                const char *sym_name, void *ctx)
-> >> +{
-> >> +       return ftrace_resolve_kprobe_multi_cb(sym_addr, sym_name, ctx)=
+> +struct bpf_link *bpf_program__attach_netfilter(const struct bpf_program =
+*prog,
+> +                                              const struct bpf_netfilter=
+_opts *opts)
+> +{
+> +       LIBBPF_OPTS(bpf_link_create_opts, lopts);
+> +       struct bpf_link *link;
+> +       int prog_fd, link_fd;
+> +
+> +       if (!OPTS_VALID(opts, bpf_netfilter_opts))
+> +               return libbpf_err_ptr(-EINVAL);
+> +
+> +       prog_fd =3D bpf_program__fd(prog);
+> +       if (prog_fd < 0) {
+> +               pr_warn("prog '%s': can't attach before loaded\n", prog->=
+name);
+> +               return libbpf_err_ptr(-EINVAL);
+> +       }
+> +
+> +       link =3D calloc(1, sizeof(*link));
+> +       if (!link)
+> +               return libbpf_err_ptr(-ENOMEM);
+> +
+> +       link->detach =3D &bpf_link__detach_fd;
+> +
+> +       lopts.netfilter.pf =3D OPTS_GET(opts, pf, 0);
+> +       lopts.netfilter.hooknum =3D OPTS_GET(opts, hooknum, 0);
+> +       lopts.netfilter.priority =3D OPTS_GET(opts, priority, 0);
+> +       lopts.netfilter.flags =3D OPTS_GET(opts, flags, 0);
+> +
+> +       link_fd =3D bpf_link_create(prog_fd, 0, BPF_NETFILTER, &lopts);
+> +       if (link_fd < 0) {
+> +               char errmsg[STRERR_BUFSIZE];
+> +
+> +               link_fd =3D -errno;
+> +               free(link);
+> +               pr_warn("prog '%s': failed to attach to netfilter: %s\n",
+> +                       prog->name, libbpf_strerror_r(link_fd, errmsg, si=
+zeof(errmsg)));
+> +               return libbpf_err_ptr(link_fd);
+> +       }
+> +       link->fd =3D link_fd;
+> +
+> +       return link;
+> +}
+> +
+>  struct bpf_link *bpf_program__attach(const struct bpf_program *prog)
+>  {
+>         struct bpf_link *link =3D NULL;
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 754da73c643b..10642ad69d76 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -718,6 +718,21 @@ LIBBPF_API struct bpf_link *
+>  bpf_program__attach_freplace(const struct bpf_program *prog,
+>                              int target_fd, const char *attach_func_name)=
 ;
-> >> +}
-> >> +
-> >> +typedef int (*available_kprobe_cb_t)(unsigned long long sym_addr,
-> >> +                                    const char *sym_name, void *ctx);
-> >> +
-> >> +static int
-> >> +libbpf_available_kprobes_parse(available_kprobe_cb_t cb, void *ctx)
-> >> +{
-> >> +       unsigned long long sym_addr;
-> >> +       char sym_name[256];
-> >> +       FILE *f;
-> >> +       int ret, err =3D 0;
-> >> +       const char *available_path =3D tracefs_available_filter_functi=
-ons_addrs();
-> >> +
-> >> +       f =3D fopen(available_path, "r");
-> >> +       if (!f) {
-> >> +               err =3D -errno;
-> >> +               pr_warn("failed to open %s, fallback to /proc/kallsyms=
-.\n",
-> >> +                       available_path);
-> >
-> > if this is expected to happen, we shouldn't pr_warn() and pollute log o=
-utput
-> >
-> >> +               return err;
-> >> +       }
-> >> +
-> >> +       while (true) {
-> >> +               ret =3D fscanf(f, "%llx %255s%*[^\n]\n", &sym_addr, sy=
-m_name);
-> >> +               if (ret =3D=3D EOF && feof(f))
-> >> +                       break;
-> >> +               if (ret !=3D 2) {
-> >> +                       pr_warn("failed to read available kprobe entry=
-: %d\n",
-> >> +                               ret);
-> >> +                       err =3D -EINVAL;
-> >> +                       break;
-> >> +               }
-> >> +
-> >> +               err =3D cb(sym_addr, sym_name, ctx);
-> >> +               if (err)
-> >> +                       break;
-> >> +       }
-> >> +
-> >> +       fclose(f);
-> >> +       return err;
-> >> +}
-> >> +
-> >> +static void kprobe_multi_resolve_reinit(struct kprobe_multi_resolve *=
-res)
-> >> +{
-> >> +       free(res->addrs);
-> >> +
-> >> +       /* reset to zero, when fallback */
-> >> +       res->cap =3D 0;
-> >> +       res->cnt =3D 0;
-> >> +       res->addrs =3D NULL;
-> >> +}
-> >> +
-> >>   struct bpf_link *
-> >>   bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog=
-,
-> >>                                        const char *pattern,
-> >> @@ -10477,9 +10539,16 @@ bpf_program__attach_kprobe_multi_opts(const s=
-truct bpf_program *prog,
-> >>                  return libbpf_err_ptr(-EINVAL);
-> >>
-> >>          if (pattern) {
-> >> -               err =3D libbpf_kallsyms_parse(resolve_kprobe_multi_cb,=
- &res);
-> >> -               if (err)
-> >> -                       goto error;
-> >> +               err =3D libbpf_available_kprobes_parse(ftrace_resolve_=
-kprobe_multi_cb,
-> >> +                                                    &res);
-> >> +               if (err) {
-> >> +                       /* fallback to kallsyms */
-> >> +                       kprobe_multi_resolve_reinit(&res);
-> >
-> > instead of try, fail, try something else approach, can we check that
-> > tracefs_available_filter_functions_addrs() exists and is readable, and
-> > if yes -- commit to it. If something fails -- to bad. If it doesn't
-> > exist, fallback to kallsyms. And we won't need ugly
-> > kprobe_multi_resolve_reinit() hack.
 >
-> Sounds good.
+> +struct bpf_netfilter_opts {
+> +       /* size of this struct, for forward/backward compatibility */
+> +       size_t sz;
+> +
+> +       __u32 pf;
+> +       __u32 hooknum;
+> +       __s32 priority;
+> +       __u32 flags;
+> +};
+> +#define bpf_netfilter_opts__last_field flags
+> +
+> +LIBBPF_API struct bpf_link *
+> +bpf_program__attach_netfilter(const struct bpf_program *prog,
+> +                             const struct bpf_netfilter_opts *opts);
+> +
+>  struct bpf_map;
 >
-> >
-> >> +                       err =3D libbpf_kallsyms_parse(kallsyms_resolve=
-_kprobe_multi_cb,
-> >> +                                                   &res);
-> >> +                       if (err)
-> >> +                               goto error;
-> >> +               }
-> >>                  if (!res.cnt) {
-> >>                          err =3D -ENOENT;
-> >>                          goto error;
-> >> --
-> >> 2.25.1
-> >>
-> >>
+>  LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_=
+map *map);
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 7521a2fb7626..d9ec4407befa 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -395,4 +395,5 @@ LIBBPF_1.2.0 {
+>  LIBBPF_1.3.0 {
+>         global:
+>                 bpf_obj_pin_opts;
+> +               bpf_program__attach_netfilter;
+>  } LIBBPF_1.2.0;
+> --
+> 2.39.3
+>
 
