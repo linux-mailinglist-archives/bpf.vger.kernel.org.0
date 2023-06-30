@@ -1,501 +1,142 @@
-Return-Path: <bpf+bounces-3759-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3760-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C2807435D6
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 09:35:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6BCC743700
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 10:24:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C472280F89
-	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 07:35:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD58B280FE7
+	for <lists+bpf@lfdr.de>; Fri, 30 Jun 2023 08:24:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B87A92A;
-	Fri, 30 Jun 2023 07:35:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7976E56B;
+	Fri, 30 Jun 2023 08:24:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717178834
-	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 07:35:30 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FD92703
-	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 00:35:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1688110523;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yvzZRKpw3ApeLTYKDB5Db4szpWf9nkwkkEGTxj7vByA=;
-	b=BmvLaIZuXGBx3DV33Ecbpn05/tZh6Gu9fLxBXdnEK7VPibPC2y8AanHRcSj0QDGdKp364a
-	MHX7cyq3K5SU4ziGpu/nilJUVdL1KodJHkzgo0nBBvksQtNdo+PSh21R+wOKGuNrvIuzWt
-	vYrGcbaSLyBLEuD+EZmFzmF1zlyvong=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-668-TBaKjrhcNCifGaYYwQ3W4Q-1; Fri, 30 Jun 2023 03:35:22 -0400
-X-MC-Unique: TBaKjrhcNCifGaYYwQ3W4Q-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b6a2a5f08aso15571641fa.2
-        for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 00:35:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BEA6E55E
+	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 08:24:21 +0000 (UTC)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1C6129
+	for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 01:24:18 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-313fb7f0f80so1801590f8f.2
+        for <bpf@vger.kernel.org>; Fri, 30 Jun 2023 01:24:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1688113457; x=1690705457;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hbGQvR9Vtz7tsWKTPVK91YU2Blr3lMvTchLltgVmnWs=;
+        b=aR6LHbmjUff7gljkFirEO3fCRO1/EufXxwyUAfYOWX41wEQ5/BoSxuprP+4edXlZuq
+         BWVksyqgbKydbYhv/TgVZQWtIM4Io41THo76HVTWCOxt6BTjHWYmsHsILnukkGiCy5UJ
+         dAaTZN7LsqWXYBFLbNwRis13BFxMKGfsiCWlP+OPBHbtln4fPOQFeeXX2Xe4e7JwGSwU
+         UG4lS+hfzGqeP1S6T/sfqxY3WmQYQqU6HxJRVaBor7OCr0NAVsCdR63Eud2T2Nxe0u+A
+         Ao36H3Mms12FylUAIzU2PxanleBqF1WP6x9U23GCusspPz+gJ1iqRJp0u5B4VOW4BBbl
+         cvuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688110520; x=1690702520;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yvzZRKpw3ApeLTYKDB5Db4szpWf9nkwkkEGTxj7vByA=;
-        b=gAj+SmBjb91rfR2vA90bC5g7BN9CQd3Snijctz7NSq4mXBiUYfJQcZAL/P3UIt/b1Q
-         EyACI1xxH/q61OoqBzRDYs0ptNW6ZqqqcjmshkKJvcSPB4XI82gqsoXYHsWZ6H5jXWzd
-         fLunrwhN8zK7VknQSJwpnkkaJ7WrKS+HAXoR2BjnuPX/LExMJU6RzT42mUN/xpUlCfke
-         L7zVYXAzWCAABzi8ATrTzH4vzFUSxoPawLZJj6p/2IZzOJVi3gAFjibDWbkiXkkUx+Fq
-         j3DUzfCCT7ptyELkABDD0/7k4aAHyHOSJ3Zcy5S2NUXz/pBYbswJ/YQ+MykeQLWKR/+h
-         2EJw==
-X-Gm-Message-State: ABy/qLbPEOjkd+nwNKJeRT1ckO+aIeC+aXlcO197TBiuKFxpqIbVgX1m
-	rpsQ6KxWGpcwFNyWmzvJfhnwjSe+KKKv2s7ui5qWXRQkGOkXrzcpt9xCeWiHqxX9dLnujEmjRvd
-	u29kIvyxNPUgrmhT+gCOswCU04HQN
-X-Received: by 2002:a2e:9844:0:b0:2b6:cd6a:17f7 with SMTP id e4-20020a2e9844000000b002b6cd6a17f7mr1538187ljj.20.1688110520479;
-        Fri, 30 Jun 2023 00:35:20 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHmy2wRmgzS5X0oeLsjKhyHqRY65CB4fGDqnkVmGQ45hSJXzqcq1rMA7IliihuDVCT9jaj0hiO3sbePpF8neyw=
-X-Received: by 2002:a2e:9844:0:b0:2b6:cd6a:17f7 with SMTP id
- e4-20020a2e9844000000b002b6cd6a17f7mr1538167ljj.20.1688110520030; Fri, 30 Jun
- 2023 00:35:20 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1688113457; x=1690705457;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hbGQvR9Vtz7tsWKTPVK91YU2Blr3lMvTchLltgVmnWs=;
+        b=QM0IlUx7UpO/IoYWSDtGTM5vMSMOZ3gfF3KKV2VVhtjLn7t53SalCG3RSfdekLiIe9
+         eQkt566pdQgzl8lvCVY1jBGdKRmlSEN7x2ohFR9uhvJHwhapxdsjAiJTfl6f6khlgwfp
+         6kbh3Zh+rQ9wQea/9VKtFGWMemxzWCayfLKQPiZ9W5KvnzYHsxD85MkpzbzGUm0j5qlE
+         jjo32ZApLx0uhlGAwEBf3Gw2neJ9IDRtfweA0MTYMWdRZTnCa+T7nqYI5KsYSHgbU5kj
+         chMy2txMUN83mTBiJwP2RUaWFtjqzsW2JaAqptKUnQ4bWjoYV1eX7JvM6HDuxZsc9zlW
+         I5Rg==
+X-Gm-Message-State: AC+VfDxXpGo50exBoOvplpWpYPVWY/3ljUN5NoyO0k3p1py20NKDNN+h
+	YqoqirAAsiMLOqnHgusxD2KglQ==
+X-Google-Smtp-Source: ACHHUZ4uxyQsT/BA5e0PH6RD49UPBkdiKxKit0qiLyzbRJiMf7iGotTuen+UuhH/H2W+40wYFjw8yQ==
+X-Received: by 2002:a7b:ca48:0:b0:3f9:b7cc:723 with SMTP id m8-20020a7bca48000000b003f9b7cc0723mr1296067wml.21.1688113456638;
+        Fri, 30 Jun 2023 01:24:16 -0700 (PDT)
+Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id h2-20020a1ccc02000000b003fa74bff02asm18189941wmb.26.2023.06.30.01.24.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jun 2023 01:24:16 -0700 (PDT)
+From: Anton Protopopov <aspsk@isovalent.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org
+Cc: Anton Protopopov <aspsk@isovalent.com>
+Subject: [v3 PATCH bpf-next 0/6] bpf: add percpu stats for bpf_map
+Date: Fri, 30 Jun 2023 08:25:10 +0000
+Message-Id: <20230630082516.16286-1-aspsk@isovalent.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230628030506.2213-1-hengqi@linux.alibaba.com>
- <20230628030506.2213-2-hengqi@linux.alibaba.com> <CACGkMEv7aVH0dgdd6N3RMH+57BWuxnq9NR8sPzD9wRQZ5TZRFQ@mail.gmail.com>
- <c6411922-51ad-3d8f-88aa-28883b44573d@linux.alibaba.com> <CACGkMEu=Cs5DFP+EFqxUXaiqz7vewhQ5zMMtChGpR_oGjrvMCg@mail.gmail.com>
- <20230628045626.GA32321@h68b04307.sqa.eu95> <CACGkMEt6Kb60Akn=aJjzJQg6Zg8F_24ezqAtwPOZxiu4-f7E3g@mail.gmail.com>
- <620af708-42a0-f711-cd7c-43362751c842@linux.alibaba.com> <CACGkMEufm08ym32Ft4ss7AzOjFaEoa5_CuZB29xF9qc3B2ZAhA@mail.gmail.com>
- <20230629054740.GA77232@h68b04307.sqa.eu95>
-In-Reply-To: <20230629054740.GA77232@h68b04307.sqa.eu95>
-From: Jason Wang <jasowang@redhat.com>
-Date: Fri, 30 Jun 2023 15:35:08 +0800
-Message-ID: <CACGkMEtASF=yFBroLadN=qeMhHZndwydM76xMshED50UzH8Z8w@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 1/2] virtio-net: support coexistence of XDP
- and GUEST_CSUM
-To: Heng Qi <hengqi@linux.alibaba.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	"Michael S . Tsirkin" <mst@redhat.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jun 29, 2023 at 1:47=E2=80=AFPM Heng Qi <hengqi@linux.alibaba.com> =
-wrote:
->
-> On Thu, Jun 29, 2023 at 12:03:28PM +0800, Jason Wang wrote:
-> > On Wed, Jun 28, 2023 at 6:02=E2=80=AFPM Heng Qi <hengqi@linux.alibaba.c=
-om> wrote:
-> > >
-> > >
-> > >
-> > > =E5=9C=A8 2023/6/28 =E4=B8=8B=E5=8D=882:50, Jason Wang =E5=86=99=E9=
-=81=93:
-> > > > On Wed, Jun 28, 2023 at 12:56=E2=80=AFPM Heng Qi <hengqi@linux.alib=
-aba.com> wrote:
-> > > >> On Wed, Jun 28, 2023 at 12:02:17PM +0800, Jason Wang wrote:
-> > > >>> On Wed, Jun 28, 2023 at 11:42=E2=80=AFAM Heng Qi <hengqi@linux.al=
-ibaba.com> wrote:
-> > > >>>>
-> > > >>>>
-> > > >>>> =E5=9C=A8 2023/6/28 =E4=B8=8A=E5=8D=8811:22, Jason Wang =E5=86=
-=99=E9=81=93:
-> > > >>>>> On Wed, Jun 28, 2023 at 11:05=E2=80=AFAM Heng Qi <hengqi@linux.=
-alibaba.com> wrote:
-> > > >>>>>> We are now re-probing the csum related fields and trying
-> > > >>>>>> to have XDP and RX hw checksum capabilities coexist on the
-> > > >>>>>> XDP path. For the benefit of:
-> > > >>>>>> 1. RX hw checksum capability can be used if XDP is loaded.
-> > > >>>>>> 2. Avoid packet loss when loading XDP in the vm-vm scenario.
-> > > >>>>>>
-> > > >>>>>> Signed-off-by: Heng Qi <hengqi@linux.alibaba.com>
-> > > >>>>>> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > >>>>>> ---
-> > > >>>>>> v3->v4:
-> > > >>>>>>     - Rewrite some comments.
-> > > >>>>>>
-> > > >>>>>> v2->v3:
-> > > >>>>>>     - Use skb_checksum_setup() instead of virtnet_flow_dissect=
-_udp_tcp().
-> > > >>>>>>       Essentially equivalent.
-> > > >>>>>>
-> > > >>>>>>    drivers/net/virtio_net.c | 82 +++++++++++++++++++++++++++++=
-++++-------
-> > > >>>>>>    1 file changed, 69 insertions(+), 13 deletions(-)
-> > > >>>>>>
-> > > >>>>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net=
-.c
-> > > >>>>>> index 5a7f7a76b920..a47342f972b5 100644
-> > > >>>>>> --- a/drivers/net/virtio_net.c
-> > > >>>>>> +++ b/drivers/net/virtio_net.c
-> > > >>>>>> @@ -1568,6 +1568,41 @@ static void virtio_skb_set_hash(const s=
-truct virtio_net_hdr_v1_hash *hdr_hash,
-> > > >>>>>>           skb_set_hash(skb, __le32_to_cpu(hdr_hash->hash_value=
-), rss_hash_type);
-> > > >>>>>>    }
-> > > >>>>>>
-> > > >>>>>> +static int virtnet_set_csum_after_xdp(struct virtnet_info *vi=
-,
-> > > >>>>>> +                                     struct sk_buff *skb,
-> > > >>>>>> +                                     __u8 flags)
-> > > >>>>>> +{
-> > > >>>>>> +       int err =3D 0;
-> > > >>>>>> +
-> > > >>>>>> +       /* When XDP program is loaded, the vm-vm scenario on t=
-he same host,
-> > > >>>>>> +        * packets marked VIRTIO_NET_HDR_F_NEEDS_CSUM without =
-a complete checksum
-> > > >>>>>> +        * will travel. Although these packets are safe from t=
-he point of
-> > > >>>>>> +        * view of the vm, in order to be successfully forward=
-ed on the upper
-> > > >>>>>> +        * layer and to avoid packet loss caused by XDP modifi=
-cation,
-> > > >>>>>> +        * we re-probe the necessary checksum related informat=
-ion:
-> > > >>>>>> +        * skb->csum_{start, offset}, pseudo-header checksum.
-> > > >>>>>> +        *
-> > > >>>>>> +        * If the received packet is marked VIRTIO_NET_HDR_F_D=
-ATA_VALID:
-> > > >>>>>> +        * when _F_GUEST_CSUM is negotiated, the device valida=
-tes the checksum
-> > > >>>>>> +        * and virtio-net sets skb->ip_summed to CHECKSUM_UNNE=
-CESSARY;
-> > > >>>>>> +        * otherwise, virtio-net hands over to the stack to va=
-lidate the checksum.
-> > > >>>>>> +        */
-> > > >>>>>> +       if (flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
-> > > >>>>>> +               /* No need to care about SCTP because virtio-n=
-et currently doesn't
-> > > >>>>>> +                * support SCTP CRC checksum offloading, that =
-is, SCTP packets have
-> > > >>>>>> +                * complete checksums.
-> > > >>>>>> +                */
-> > > >>>>>> +               err =3D skb_checksum_setup(skb, true);
-> > > >>>>> A second thought, any reason why a checksum is a must here. Cou=
-ld we simply:
-> > > >>>> When net.ipv4.ip_forward sysctl is enabled, such packets may be
-> > > >>>> forwarded (return to the tx path) at the IP layer.
-> > > >>>> If the device has the tx hw checksum offloading cap, packets wil=
-l have
-> > > >>>> complete checksums based on our calculated 'check' value.
-> > > >>> Actually, I mean why can't we offload the checksum to the hardwar=
-e in this case?
-> > > >> Yes that's what I explained:)
-> > > >>
-> > > >> Checksum of udp/tcp includes the pseudo-header checksum and the ch=
-ecksum of the entire udp/tcp payload.
-> > > >> When tx checksum offloading is enabled, the upper layer will only =
-calculate the pseudo-header checksum,
-> > > >> and the rest of the checksum of the entire udp/tcp payload will be=
- calculated by hardware.
-> > > >>
-> > > >>
-> > > >> Please see udp_send_skb():
-> > > >>
-> > > >> "
-> > > >>          } else if (skb->ip_summed =3D=3D CHECKSUM_PARTIAL) { /* U=
-DP hardware csum */
-> > > >> csum_partial:
-> > > >>
-> > > >>                  udp4_hwcsum(skb, fl4->saddr, fl4->daddr);
-> > > >>                  goto send;
-> > > >>
-> > > >>          } else
-> > > >>                  csum =3D udp_csum(skb);
-> > > >>
-> > > >>          /* add protocol-dependent pseudo-header */
-> > > >>          uh->check =3D csum_tcpudp_magic(fl4->saddr, fl4->daddr, l=
-en,
-> > > >>                                        sk->sk_protocol, csum);
-> > > >>          if (uh->check =3D=3D 0)
-> > > >>                  uh->check =3D CSUM_MANGLED_0;
-> > > >>
-> > > >> send:
-> > > >>          err =3D ip_send_skb(sock_net(sk), skb);
-> > > >> "
-> > > > Ok, so I think what I missed is that the CHECKSUM_PARTIAL is set up=
- by
-> > > > skb_checksum_setup() so we don't even need to care about that.
-> > >
-> > > Yes. It works fine after skb_checksum_setup().
-> > >
-> > > >
-> > > >>>>> 1) probe the csum_start/offset
-> > > >>>>> 2) leave it as CHECKSUM_PARTIAL
-> > > >>>>>
-> > > >>>>> ?
-> > > >>>> The reason is as I explained above.
-> > > >>>>
-> > > >>>>>> +       } else if (flags & VIRTIO_NET_HDR_F_DATA_VALID) {
-> > > >>>>>> +               /* XDP guarantees that packets marked as VIRTI=
-O_NET_HDR_F_DATA_VALID
-> > > >>>>>> +                * still have correct checksum after they are =
-processed.
-> > > >>>>>> +                */
-> > > >>>>> Do you mean it's the charge of the XDP program to calculate the=
- csum
-> > > >>>>> in this case? Seems strange.
-> > > >>>> Packet with complete checksum (and has been verified by rx devic=
-e
-> > > >>>> because it has VIRTIO_NET_HDR_F_DATA_VALID)
-> > > >>>> when modified by XDP, XDP program should use the helper provided=
- by XDP
-> > > >>>> core to make the checksum correct,
-> > > >>> Could you give me a pointer to that helper?
-> > > >> bpf_csum_diff(),
-> > > > Ok.
-> > > >
-> > > >> bpf_{l3,l4}_csum_replace()
-> > > > This seems not to be a helpr for XDP but for other bpf like cls.
-> > >
-> > > Yes.
-> > >
-> > > >
-> > > >>> Btw, is there a way for
-> > > >>> the XDP program to know whether the csum has been verified by the
-> > > >>> device? ( I guess not).
-> > > >>>
-> > > >> Not. But we only do this (mark skb->ip_summed =3D CHECKSUM_UNNECES=
-SARY) for packets with VIRTIO_NET_HDR_F_DATA_VALID now.
-> > > > So if I understand you correctly, you meant for the XDP program tha=
-t
-> > > > wants to modify the packet:
-> > > >
-> > > > 1) check whether the checksum is valid
-> > > > 2) if yes, recalculate the checksum after the modification
-> > > > 3) if not, just do nothing for the checksum and the driver need to
-> > > > re-probe the csum_start/offset
-> > > >
-> > > > ?
-> > >
-> > > I don't think we need to make many assumptions about the behavior of =
-XDP
-> > > programs.
-> > > Because we are out of control for various users using XDP.
-> >
-> > Exactly, but this patch seems to assume the XDP behaviour as you said p=
-reviously
-> >
->
-> Let me sum it up:
-> When getting a skb from XDP_PASS, rx virtio-net will have the following
-> scenarios:
-> 1. In a virtualized environment such as vm-vhost_user-vm, vhost-user or
-> some backends find that no physical link is required to reach the
-> destination, then they will save the cost of calculating the complete
-> checksum on the tx device side. That is, the device
-> directly sends the packet with the pseudo-header checksum, and the
-> rx side directly receives the packet with the pseudo-header checksum.
-> This is a problem we have to deal with, but other hardware
-> NICs don't have this problem (veth actually also has this problem,
-> which I mentioned in the proposal).
->
-> 2. If the packet has passed through the physical link, it means
-> that the received packet has a complete checksum and not only a
-> pseudo-header checksum. At this time, virtio-net only needs to be
-> consistent with other NIC driver behaviors:
->
->   2.1 If the device has verified the checksum, mark
->       skb->ip_summend=3DCHECKSUM_UNNECESSARY after XDP processing;
->   2.2 If the device does not verify the checksum, after XDP processing,
->       skb->ip_summend=3DCHECKSUM_NONE, the checksum is verified by the st=
-ack.
+This series adds a mechanism for maps to populate per-cpu counters on
+insertions/deletions. The sum of these counters can be accessed by a new kfunc
+from map iterator and tracing programs.
 
-This doesn't answer my question, let me ask you differently.
+The following patches are present in the series:
 
-Let's take xdp_tx_iptunnel_kern.c as an example. With your patch, can
-it work when we receive a packet with partial csum? If not, it breaks
-existing applications.
+  * Patch 1 adds a generic per-cpu counter to struct bpf_map
+  * Patch 2 adds a new kfunc to access the sum of per-cpu counters
+  * Patch 3 utilizes this mechanism for hash-based maps
+  * Patch 4 extends the preloaded map iterator to dump the sum
+  * Patch 5 adds a self-test for the change
+  * Patch 6 patches map_ptr selftest to check that elem_count was initialized
 
-Thanks
+The reason for adding this functionality in our case (Cilium) is to get signals
+about how full some heavy-used maps are and what the actual dynamic profile of
+map capacity is. In the case of LRU maps this is impossible to get this
+information anyhow else. The original presentation can be found here [1].
 
->
-> Thanks.
->
->
-> > """
-> > > >>>> Packet with complete checksum (and has been verified by rx devic=
-e
-> > > >>>> because it has VIRTIO_NET_HDR_F_DATA_VALID)
-> > > >>>> when modified by XDP, XDP program should use the helper provided=
- by XDP
-> > > >>>> core to make the checksum correct,
-> > """
-> >
-> > ?
-> >
-> > >
-> > > The core purpose of this patch is to:
-> > > #1 Solve the packet loss problem caused by loading XDP between vm-vm =
-on
-> > > the same host (scenario with partial checksum).
-> >
-> > So we disabled guest_csum and the host (e.g TAP) will do checksum for
-> > us. Otherwise it should be a bug of the host.
-> >
-> > Thanks
-> >
-> > > #2 For scenarios other than #1, virtio-net with this patch is already
-> > > consistent with other existing NIC drivers (simple such as
-> > > ixgbe[1]/bnxt[2]/mvneta[3]/..):
-> > > the rx side only needs to have NETIF_F_RXCSUM and the device has
-> > > verified the packet has a valid checksum.
-> > > Then skb converted from xdp_buff (XDP returns XDP_PASS) can have
-> > > skb->ip_summed =3D CHECKSUM_UNNECESSARY.
-> > >
-> > > If the comment for DATA_VALID is confusing, I'll just remove it.
-> > >
-> > > [1] ixgbe_clean_rx_irq()-> ixgbe_run_xdp()-> ixgbe_process_skb_fields=
-()
-> > > ->ixgbe_rx_checksum()
-> > > [2] bnxt_xdp_build_skb()
-> > > [3] mvneta_swbm_build_skb
-> > >
-> > > Thanks.
-> > >
-> > > >
-> > > > Thanks
-> > > >
-> > > >> Thanks.
-> > > >>
-> > > >>> Thanks
-> > > >>>
-> > > >>>
-> > > >>>> otherwise, VIRTIO_NET_HDR_F_DATA_VALID has been cleared and skb
-> > > >>>> ->ip_summed=3DCHECKSUM_NONE, so the stack
-> > > >>>> will re-verify the checksum, causing packet loss due to wrong ch=
-ecksum.
-> > > >>>>
-> > > >>>> Thanks.
-> > > >>>>
-> > > >>>>> Thanks
-> > > >>>>>
-> > > >>>>>> +               skb->ip_summed =3D CHECKSUM_UNNECESSARY;
-> > > >>>>>> +       }
-> > > >>>>>> +
-> > > >>>>>> +       return err;
-> > > >>>>>> +}
-> > > >>>>>> +
-> > > >>>>>>    static void receive_buf(struct virtnet_info *vi, struct rec=
-eive_queue *rq,
-> > > >>>>>>                           void *buf, unsigned int len, void **=
-ctx,
-> > > >>>>>>                           unsigned int *xdp_xmit,
-> > > >>>>>> @@ -1576,6 +1611,7 @@ static void receive_buf(struct virtnet_i=
-nfo *vi, struct receive_queue *rq,
-> > > >>>>>>           struct net_device *dev =3D vi->dev;
-> > > >>>>>>           struct sk_buff *skb;
-> > > >>>>>>           struct virtio_net_hdr_mrg_rxbuf *hdr;
-> > > >>>>>> +       __u8 flags;
-> > > >>>>>>
-> > > >>>>>>           if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
-> > > >>>>>>                   pr_debug("%s: short packet %i\n", dev->name,=
- len);
-> > > >>>>>> @@ -1584,6 +1620,12 @@ static void receive_buf(struct virtnet_=
-info *vi, struct receive_queue *rq,
-> > > >>>>>>                   return;
-> > > >>>>>>           }
-> > > >>>>>>
-> > > >>>>>> +       /* XDP may modify/overwrite the packet, including the =
-virtnet hdr,
-> > > >>>>>> +        * so save the flags of the virtnet hdr before XDP pro=
-cessing.
-> > > >>>>>> +        */
-> > > >>>>>> +       if (unlikely(vi->xdp_enabled))
-> > > >>>>>> +               flags =3D ((struct virtio_net_hdr_mrg_rxbuf *)=
-buf)->hdr.flags;
-> > > >>>>>> +
-> > > >>>>>>           if (vi->mergeable_rx_bufs)
-> > > >>>>>>                   skb =3D receive_mergeable(dev, vi, rq, buf, =
-ctx, len, xdp_xmit,
-> > > >>>>>>                                           stats);
-> > > >>>>>> @@ -1595,23 +1637,37 @@ static void receive_buf(struct virtnet=
-_info *vi, struct receive_queue *rq,
-> > > >>>>>>           if (unlikely(!skb))
-> > > >>>>>>                   return;
-> > > >>>>>>
-> > > >>>>>> -       hdr =3D skb_vnet_hdr(skb);
-> > > >>>>>> -       if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash=
-_report)
-> > > >>>>>> -               virtio_skb_set_hash((const struct virtio_net_h=
-dr_v1_hash *)hdr, skb);
-> > > >>>>>> -
-> > > >>>>>> -       if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
-> > > >>>>>> -               skb->ip_summed =3D CHECKSUM_UNNECESSARY;
-> > > >>>>>> +       if (unlikely(vi->xdp_enabled)) {
-> > > >>>>>> +               /* Required to do this before re-probing and c=
-alculating
-> > > >>>>>> +                * the pseudo-header checksum.
-> > > >>>>>> +                */
-> > > >>>>>> +               skb->protocol =3D eth_type_trans(skb, dev);
-> > > >>>>>> +               skb_reset_network_header(skb);
-> > > >>>>>> +               if (virtnet_set_csum_after_xdp(vi, skb, flags)=
- < 0) {
-> > > >>>>>> +                       pr_debug("%s: errors occurred in setti=
-ng partial csum",
-> > > >>>>>> +                                dev->name);
-> > > >>>>>> +                       goto frame_err;
-> > > >>>>>> +               }
-> > > >>>>>> +       } else {
-> > > >>>>>> +               hdr =3D skb_vnet_hdr(skb);
-> > > >>>>>> +               if (dev->features & NETIF_F_RXHASH && vi->has_=
-rss_hash_report)
-> > > >>>>>> +                       virtio_skb_set_hash((const struct virt=
-io_net_hdr_v1_hash *)hdr, skb);
-> > > >>>>>> +
-> > > >>>>>> +               if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VAL=
-ID)
-> > > >>>>>> +                       skb->ip_summed =3D CHECKSUM_UNNECESSAR=
-Y;
-> > > >>>>>> +
-> > > >>>>>> +               if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
-> > > >>>>>> +                                         virtio_is_little_end=
-ian(vi->vdev))) {
-> > > >>>>>> +                       net_warn_ratelimited("%s: bad gso: typ=
-e: %u, size: %u\n",
-> > > >>>>>> +                                            dev->name, hdr->h=
-dr.gso_type,
-> > > >>>>>> +                                            hdr->hdr.gso_size=
-);
-> > > >>>>>> +                       goto frame_err;
-> > > >>>>>> +               }
-> > > >>>>>>
-> > > >>>>>> -       if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
-> > > >>>>>> -                                 virtio_is_little_endian(vi->=
-vdev))) {
-> > > >>>>>> -               net_warn_ratelimited("%s: bad gso: type: %u, s=
-ize: %u\n",
-> > > >>>>>> -                                    dev->name, hdr->hdr.gso_t=
-ype,
-> > > >>>>>> -                                    hdr->hdr.gso_size);
-> > > >>>>>> -               goto frame_err;
-> > > >>>>>> +               skb->protocol =3D eth_type_trans(skb, dev);
-> > > >>>>>>           }
-> > > >>>>>>
-> > > >>>>>>           skb_record_rx_queue(skb, vq2rxq(rq->vq));
-> > > >>>>>> -       skb->protocol =3D eth_type_trans(skb, dev);
-> > > >>>>>>           pr_debug("Receiving skb proto 0x%04x len %i type %i\=
-n",
-> > > >>>>>>                    ntohs(skb->protocol), skb->len, skb->pkt_ty=
-pe);
-> > > >>>>>>
-> > > >>>>>> --
-> > > >>>>>> 2.19.1.6.gb485710b
-> > > >>>>>>
-> > >
->
+  [1] https://lpc.events/event/16/contributions/1368/
+
+v2 -> v3:
+- split commits to better represent update logic
+- remove filter from kfunc to allow all tracing programs
+- extend selftests
+
+v1 -> v2:
+- make the counters generic part of struct bpf_map
+- don't use map_info and /proc/self/fdinfo in favor of a kfunc
+
+Anton Protopopov (6):
+  bpf: add percpu stats for bpf_map elements insertions/deletions
+  bpf: add a new kfunc to return current bpf_map elements count
+  bpf: populate the per-cpu insertions/deletions counters for hashmaps
+  bpf: make preloaded map iterators to display map elements count
+  selftests/bpf: test map percpu stats
+  selftests/bpf: check that ->elem_count is non-zero for the hash map
+
+ include/linux/bpf.h                           |  30 +
+ kernel/bpf/hashtab.c                          |  23 +-
+ kernel/bpf/map_iter.c                         |  39 +-
+ kernel/bpf/preload/iterators/iterators.bpf.c  |   9 +-
+ .../iterators/iterators.lskel-little-endian.h | 526 +++++++++---------
+ .../bpf/map_tests/map_percpu_stats.c          | 336 +++++++++++
+ .../selftests/bpf/progs/map_percpu_stats.c    |  24 +
+ .../selftests/bpf/progs/map_ptr_kern.c        |   3 +
+ 8 files changed, 726 insertions(+), 264 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
+ create mode 100644 tools/testing/selftests/bpf/progs/map_percpu_stats.c
+
+-- 
+2.34.1
 
 
