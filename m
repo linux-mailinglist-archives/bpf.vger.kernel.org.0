@@ -1,167 +1,184 @@
-Return-Path: <bpf+bounces-3841-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3842-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C48507447EF
-	for <lists+bpf@lfdr.de>; Sat,  1 Jul 2023 10:08:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECE13744800
+	for <lists+bpf@lfdr.de>; Sat,  1 Jul 2023 10:18:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5FD91C2031E
-	for <lists+bpf@lfdr.de>; Sat,  1 Jul 2023 08:08:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 291111C20C8D
+	for <lists+bpf@lfdr.de>; Sat,  1 Jul 2023 08:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3AF45242;
-	Sat,  1 Jul 2023 08:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45B25242;
+	Sat,  1 Jul 2023 08:18:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A73CC5239
-	for <bpf@vger.kernel.org>; Sat,  1 Jul 2023 08:08:36 +0000 (UTC)
-Received: from out-5.mta0.migadu.com (out-5.mta0.migadu.com [91.218.175.5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA4CA2
-	for <bpf@vger.kernel.org>; Sat,  1 Jul 2023 01:08:34 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1688198912;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tQoPy2oC72AU6UlKRf9pLai6dEbOpRXLZp1z98k33+0=;
-	b=omzbFpGNt1nYrJagkfIzsjlYlNA0aKwh2BzZcExbgq0SkU1p8O0CYkcRBv0y7/4kpK4M4E
-	8PzHDEe7O0TJaUvBXl26B982nfgxGIlo2oERuQk728vcfkzng7JkJgasNG//q3igw1qJ3W
-	G99sKQByVJg5W7/Cv55X8Z/oeewly3c=
-From: Jackie Liu <liu.yun@linux.dev>
-To: olsajiri@gmail.com,
-	andrii@kernel.org
-Cc: martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	bpf@vger.kernel.org,
-	liuyun01@kylinos.cn
-Subject: [PATCH v2 2/2] libbpf: kprobe.multi: Filter with available_filter_functions_addrs
-Date: Sat,  1 Jul 2023 16:08:17 +0800
-Message-Id: <20230701080817.1768865-2-liu.yun@linux.dev>
-In-Reply-To: <20230701080817.1768865-1-liu.yun@linux.dev>
-References: <20230701080817.1768865-1-liu.yun@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 743C13C3E
+	for <bpf@vger.kernel.org>; Sat,  1 Jul 2023 08:18:30 +0000 (UTC)
+Received: from mail-pl1-f208.google.com (mail-pl1-f208.google.com [209.85.214.208])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0414410FD
+	for <bpf@vger.kernel.org>; Sat,  1 Jul 2023 01:18:12 -0700 (PDT)
+Received: by mail-pl1-f208.google.com with SMTP id d9443c01a7336-1b827476232so25045505ad.1
+        for <bpf@vger.kernel.org>; Sat, 01 Jul 2023 01:18:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688199492; x=1690791492;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Kl2x0AU2cVQ7FABz0Ni0VamxuimXbmE6PGKzfnhMtgg=;
+        b=k5LwFqKictIanVOowVzPQbQPiDW/AacqQkFqPV21Y9acD7oV/oiWXPYjLlyY2RXJrU
+         XYivWhzpY4Kq0i2i03n/IPIph7Ca4/l2+9sNSZo6uGjJRuEvtbcfNeNU0KliwpiXHEr7
+         V510UbnSrm1cki0Oiww7YJ/0+AsTWVY/LsUlRJ4caTG77vb79j34chlB4PhUt4n5okXD
+         Mflzk+tPRAC/Nwa550r6syKLsSQf2K3oLN0+IccD7Sj3VC3JmfaD/pxs+zCdGFU07jUG
+         babYvBD4pCLFAn/nIO0vD2KE6w9pefo0j1742eAHlpg+n532zgS4mv099SdGANwx+Wi/
+         4V4Q==
+X-Gm-Message-State: ABy/qLYwy588jrfWwngug19TvER60XVBSji7P/buHMODJ3ugrLYhCaaR
+	qvsBeZ/UeJutfj35TQQnAaKAWnz33WhfaLllLjG5FSZk9T1pdDiUyQ==
+X-Google-Smtp-Source: APBJJlGccHk7QEpk/UvKZCBy/s3KpeQDJmQrdgCA3vn/un1ZtCcypYiO4dbHyGYlRoL5PUrPtJ7Q65nSoscavg0DxZX/aY2bdtbU
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:905:b0:1ae:531f:366a with SMTP id
+ ll5-20020a170903090500b001ae531f366amr2974798plb.5.1688199492420; Sat, 01 Jul
+ 2023 01:18:12 -0700 (PDT)
+Date: Sat, 01 Jul 2023 01:18:12 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000e4cc105ff68937b@google.com>
+Subject: [syzbot] [modules?] KASAN: invalid-access Read in init_module_from_file
+From: syzbot <syzbot+e3705186451a87fd93b8@syzkaller.appspotmail.com>
+To: bpf@vger.kernel.org, chris@chrisdown.name, linux-kernel@vger.kernel.org, 
+	linux-modules@vger.kernel.org, llvm@lists.linux.dev, mcgrof@kernel.org, 
+	nathan@kernel.org, ndesaulniers@google.com, syzkaller-bugs@googlegroups.com, 
+	trix@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Jackie Liu <liuyun01@kylinos.cn>
+Hello,
 
-Now, we provide a new available_filter_functions_addrs interface, which can
-help us not need to cross-validate available_filter_functions and kallsyms,
-which can effectively improve efficiency. For example, on my device, the
-sample program [1] of start time:
+syzbot found the following issue on:
 
-$ sudo ./funccount "tcp_*"
+HEAD commit:    533925cb7604 Merge tag 'riscv-for-linus-6.5-mw1' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=151dba0ca80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=998aa1e85d118b55
+dashboard link: https://syzkaller.appspot.com/bug?extid=e3705186451a87fd93b8
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a4eb98a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ec1a6f280000
 
-before   after
-1.2s     1.0s
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/03caccccf2c4/disk-533925cb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2fc5ec527ecb/vmlinux-533925cb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1c17e9d79ab7/bzImage-533925cb.xz
 
-[1]: https://github.com/JackieLiu1/ketones/tree/master/src/funccount
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e3705186451a87fd93b8@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000007: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000038-0x000000000000003f]
+CPU: 1 PID: 5014 Comm: syz-executor823 Not tainted 6.4.0-syzkaller-08881-g533925cb7604 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:idempotent kernel/module/main.c:3078 [inline]
+RIP: 0010:init_module_from_file+0x1c1/0x6a0 kernel/module/main.c:3124
+Code: 0f 84 c0 01 00 00 e8 7e ee 12 00 4d 89 e7 49 83 ef 08 74 61 e8 70 ee 12 00 4c 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 59 04 00 00 4d 3b 2f 0f 84 ae 00 00 00 e8 47 ee
+RSP: 0018:ffffc900033ffd28 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 000000000000002e RCX: 0000000000000000
+RDX: 0000000000000007 RSI: ffffffff8170eaa0 RDI: ffffc9000336fe28
+RBP: ffff88807adaa280 R08: 0000000000000001 R09: fffff5200067ff97
+R10: 0000000000000003 R11: 0000000000000001 R12: ffffc9000336fe28
+R13: ffff8880752b54c0 R14: ffffffff91f19290 R15: 000000000000003e
+FS:  0000555556cec3c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000073bff000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __do_sys_finit_module kernel/module/main.c:3171 [inline]
+ __se_sys_finit_module kernel/module/main.c:3154 [inline]
+ __x64_sys_finit_module+0xfd/0x190 kernel/module/main.c:3154
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f4b273fcfa9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd7aa7c1f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+RAX: ffffffffffffffda RBX: 0000000000018ef9 RCX: 00007f4b273fcfa9
+RDX: 0000000000000002 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd7aa7c2ac
+R13: 00007ffd7aa7c2e0 R14: 00007ffd7aa7c2c0 R15: 000000000000000a
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:idempotent kernel/module/main.c:3078 [inline]
+RIP: 0010:init_module_from_file+0x1c1/0x6a0 kernel/module/main.c:3124
+Code: 0f 84 c0 01 00 00 e8 7e ee 12 00 4d 89 e7 49 83 ef 08 74 61 e8 70 ee 12 00 4c 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 59 04 00 00 4d 3b 2f 0f 84 ae 00 00 00 e8 47 ee
+RSP: 0018:ffffc900033ffd28 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 000000000000002e RCX: 0000000000000000
+RDX: 0000000000000007 RSI: ffffffff8170eaa0 RDI: ffffc9000336fe28
+RBP: ffff88807adaa280 R08: 0000000000000001 R09: fffff5200067ff97
+R10: 0000000000000003 R11: 0000000000000001 R12: ffffc9000336fe28
+R13: ffff8880752b54c0 R14: ffffffff91f19290 R15: 000000000000003e
+FS:  0000555556cec3c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000073bff000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	0f 84 c0 01 00 00    	je     0x1c6
+   6:	e8 7e ee 12 00       	callq  0x12ee89
+   b:	4d 89 e7             	mov    %r12,%r15
+   e:	49 83 ef 08          	sub    $0x8,%r15
+  12:	74 61                	je     0x75
+  14:	e8 70 ee 12 00       	callq  0x12ee89
+  19:	4c 89 fa             	mov    %r15,%rdx
+  1c:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  23:	fc ff df
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 59 04 00 00    	jne    0x48d
+  34:	4d 3b 2f             	cmp    (%r15),%r13
+  37:	0f 84 ae 00 00 00    	je     0xeb
+  3d:	e8                   	.byte 0xe8
+  3e:	47 ee                	rex.RXB out %al,(%dx)
+
+
 ---
- tools/lib/bpf/libbpf.c | 58 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 57 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 8ea13de02c67..1ec861ad52a6 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10230,6 +10230,12 @@ static const char *tracefs_available_filter_functions(void)
- 			       TRACEFS"/available_filter_functions";
- }
- 
-+static const char *tracefs_available_filter_functions_addrs(void)
-+{
-+	return use_debugfs() ? DEBUGFS"/available_filter_functions_addrs" :
-+			       TRACEFS"/available_filter_functions_addrs";
-+}
-+
- static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
- 					 const char *kfunc_name, size_t offset)
- {
-@@ -10654,6 +10660,53 @@ static int libbpf_available_kallsyms_parse(struct kprobe_multi_resolve *res)
- 	return err;
- }
- 
-+static bool has_available_filter_functions_addrs(void)
-+{
-+	return access(tracefs_available_filter_functions_addrs(), R_OK) != -1;
-+}
-+
-+static int libbpf_available_kprobes_parse(struct kprobe_multi_resolve *res)
-+{
-+	char sym_name[256];
-+	FILE *f;
-+	int ret, err = 0;
-+	unsigned long long sym_addr;
-+	const char *available_path = tracefs_available_filter_functions_addrs();
-+
-+	f = fopen(available_path, "r");
-+	if (!f) {
-+		err = -errno;
-+		pr_warn("failed to open %s.\n", available_path);
-+		return err;
-+	}
-+
-+	while (true) {
-+		ret = fscanf(f, "%llx %s%*[^\n]\n", &sym_addr, sym_name);
-+		if (ret == EOF && feof(f))
-+			break;
-+
-+		if (ret != 2) {
-+			pr_warn("failed to read available kprobe entry: %d\n",
-+				ret);
-+			err = -EINVAL;
-+			break;
-+		}
-+
-+		if (!glob_match(sym_name, res->pattern))
-+			continue;
-+
-+		err = libbpf_ensure_mem((void **) &res->addrs, &res->cap,
-+					sizeof(unsigned long), res->cnt + 1);
-+		if (err)
-+			break;
-+
-+		res->addrs[res->cnt++] = (unsigned long) sym_addr;
-+	}
-+
-+	fclose(f);
-+	return err;
-+}
-+
- struct bpf_link *
- bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
- 				      const char *pattern,
-@@ -10690,7 +10743,10 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
- 		return libbpf_err_ptr(-EINVAL);
- 
- 	if (pattern) {
--		err = libbpf_available_kallsyms_parse(&res);
-+		if (has_available_filter_functions_addrs())
-+			err = libbpf_available_kprobes_parse(&res);
-+		else
-+			err = libbpf_available_kallsyms_parse(&res);
- 		if (err)
- 			goto error;
- 		if (!res.cnt) {
--- 
-2.25.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
