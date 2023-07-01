@@ -1,224 +1,312 @@
-Return-Path: <bpf+bounces-3833-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3834-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CED67445B7
-	for <lists+bpf@lfdr.de>; Sat,  1 Jul 2023 02:52:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DD3C7445FD
+	for <lists+bpf@lfdr.de>; Sat,  1 Jul 2023 04:06:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D3DD1C20C3C
-	for <lists+bpf@lfdr.de>; Sat,  1 Jul 2023 00:52:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 348211C20C34
+	for <lists+bpf@lfdr.de>; Sat,  1 Jul 2023 02:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6C717D0;
-	Sat,  1 Jul 2023 00:52:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83C517F2;
+	Sat,  1 Jul 2023 02:06:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E18217C8;
-	Sat,  1 Jul 2023 00:52:13 +0000 (UTC)
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAF94201;
-	Fri, 30 Jun 2023 17:52:07 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-55e04a83465so1740814eaf.3;
-        Fri, 30 Jun 2023 17:52:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CB817CB
+	for <bpf@vger.kernel.org>; Sat,  1 Jul 2023 02:06:24 +0000 (UTC)
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727654212;
+	Fri, 30 Jun 2023 19:06:22 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-635dc2f6ef9so17226546d6.3;
+        Fri, 30 Jun 2023 19:06:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688172727; x=1690764727;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1688177181; x=1690769181;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2VPicmntt3qnQ6kFYbLh0AYt3Qn4Ziu9nCMNn3gQzSg=;
-        b=PQHiDR6K5UPc3xz7a+8Q/a0o/cqeotPWy50DDrndnsECk0yOtS4bUlxp3eVsahi3zg
-         PhQi1r4ZBrmQR8vwY95Ws/2Tc4HZxkjhlm6tyIBnNXB1hPuc6+mtX/FB8GjEpKl91HFB
-         ZlkKpg9T/ONXpFT7moIo7zis/gX7xRP15uVAnk/IvWsC4IbZYt7hXQbk5Vq6sqcw+BtL
-         W4eSQ/Ajn2vfLXkYcaOvXgamo2H+dIN486OLQRxlkDXa7dZUD0VoZFZPDlRk6xnQbXDk
-         aItkhg+BwblX4nAj3z/sVvXJKNNhWekukMRPKNDifctGci+avcDItwLUCoDqVPAlQJGG
-         UTng==
+        bh=w3smUnGEw7mT56KK3C7P8wgk7KPZaZlCNBDwAaXBuwc=;
+        b=d6kl8WUsrmoo4SnLz4pH8zGJhVmqwlzJ/48Z0MShfshO9IDRRrTK0IyQ0ZqbfltjrE
+         BGrPyj5lzlHvgJ0eICGR28y7DIGnMKBFjlY3ATxR/SbnR1FcLDs6c5cFT9LVGlsTH/ra
+         /wAyhY4dncgMpfzhv1Pcc/qP1UOyEeWwlBZsOrCvkd7a+EUMIghzHh/bjhzFKZZdfe8R
+         s87UEN9nV9SIVo1F3EMRLbTblyFIJg086niEosG0ClWEz7oHn4toFL3s1y22wIHplfxF
+         9lUZmjhlmKaHZn8INfyvc1fT+drpU3/gJDG/DLg3fZYoqiWHIF5p6+IBLksw1gVtuvEM
+         XQ/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688172727; x=1690764727;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2VPicmntt3qnQ6kFYbLh0AYt3Qn4Ziu9nCMNn3gQzSg=;
-        b=E+NVGsdRIKUYh0YkudKb5TYjFNLVb14IJr3cNuC/XQfTKcjZxAm12nusuMcdWmx/45
-         X/XgESOZbFXVzX+b0NrUqZPY+JD5GBzgFnsB05BVRymv9szNyuEHzkySThTbJF+DOTvx
-         kbvdbmlbGMvgyLjyL0NRwc+tymLmZNXzETfXAWM+HnWtv8gOm+G7XPu5ILtSDV80aWKU
-         452ZIpLPpVbvI/hnCWPAVCs0ogDlrRwS3iNha61EcVRrtfBBlRikBhhI9vwWkRP1ln5+
-         ofCC4SNwsYeYwYGMlcl10lFTxm4J8FskIr7pvGaIo6recQX8UH3v5080yebiPy3VDqE4
-         WF/Q==
-X-Gm-Message-State: ABy/qLZxg/1ffloE5DrqKkQq7tsNs+s8oPfptZfiPl6g9k9gt4R48mF/
-	5M6yjNb6SPRk3DJW8fRZEdk=
-X-Google-Smtp-Source: APBJJlFOaxzB920y3V/8zAeiF8iT3l7HVtt0sUuiUJ8o1wO2Jc1khY31Km9dWgFfbK7YEQXU9wB4JQ==
-X-Received: by 2002:a05:6358:700e:b0:134:d336:a1e8 with SMTP id 14-20020a056358700e00b00134d336a1e8mr3814017rwo.19.1688172727007;
-        Fri, 30 Jun 2023 17:52:07 -0700 (PDT)
-Received: from localhost ([156.39.10.100])
-        by smtp.gmail.com with ESMTPSA id iw13-20020a170903044d00b001b801044466sm9160038plb.114.2023.06.30.17.52.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jun 2023 17:52:06 -0700 (PDT)
-Date: Fri, 30 Jun 2023 17:52:05 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>
-Cc: Stanislav Fomichev <sdf@google.com>, 
- Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
- Donald Hunter <donald.hunter@gmail.com>, 
- bpf <bpf@vger.kernel.org>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Song Liu <song@kernel.org>, 
- Yonghong Song <yhs@fb.com>, 
- KP Singh <kpsingh@kernel.org>, 
- Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, 
- Network Development <netdev@vger.kernel.org>
-Message-ID: <649f78b57358c_30943208c4@john.notmuch>
-In-Reply-To: <87y1k2fq9m.fsf@toke.dk>
-References: <20230622195757.kmxqagulvu4mwhp6@macbook-pro-8.dhcp.thefacebook.com>
- <CAKH8qBvJmKwgdrLkeT9EPnCiTu01UAOKvPKrY_oHWySiYyp4nQ@mail.gmail.com>
- <CAADnVQKfcGT9UaHtAmWKywtuyP9+_NX0_mMaR0m9D0-a=Ymf5Q@mail.gmail.com>
- <CAKH8qBuJpybiTFz9vx+M+5DoGuK-pPq6HapMKq7rZGsngsuwkw@mail.gmail.com>
- <CAADnVQ+611dOqVFuoffbM_cnOf62n6h+jaB1LwD2HWxS5if2CA@mail.gmail.com>
- <m2bkh69fcp.fsf@gmail.com>
- <649637e91a709_7bea820894@john.notmuch>
- <CAADnVQKUVDEg12jOc=5iKmfN-aHvFEtvFKVEDBFsmZizwkXT4w@mail.gmail.com>
- <20230624143834.26c5b5e8@kernel.org>
- <ZJeUlv/omsyXdO/R@google.com>
- <ZJoExxIaa97JGPqM@google.com>
- <CAADnVQKePtxk6Nn=M6in6TTKaDNnMZm-g+iYzQ=mPoOh8peoZQ@mail.gmail.com>
- <CAKH8qBv-jU6TUcWrze5VeiVhiJ-HUcpHX7rMJzN5o2tXFkS8kA@mail.gmail.com>
- <649b581ded8c1_75d8a208c@john.notmuch>
- <20230628115204.595dea8c@kernel.org>
- <87y1k2fq9m.fsf@toke.dk>
-Subject: Re: [RFC bpf-next v2 11/11] net/mlx5e: Support TX timestamp metadata
+        d=1e100.net; s=20221208; t=1688177181; x=1690769181;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w3smUnGEw7mT56KK3C7P8wgk7KPZaZlCNBDwAaXBuwc=;
+        b=GGZEIGyxKzIpvrVs+nMy7zZKbQxfqmF92WnA+2GKnV4gKFhLrpkku5ewLVTkxhZjFa
+         7OmkzuSKzwwn5CccYOmxsH1XnKI2ScKziyIVnwuBZeRzwReJM6rPHkiNp5Jvt0aoym8v
+         e71OgUaOG44eZP4CIksGfnYftCcq+NXWYZkcgIxaqZwnbbWOofSoR3O4SLMDiBom3DPn
+         +UIjulm+hUt3abu1ej3CiEfP+Drg6Lhwkpaz5HF3kDJapuqyTkaPhkpfugwIGNmJlew5
+         f7o2UbO3QpEs94atc0yU/3MDilgMM5kI0QrxSyIErXres1qt63Rc7gcox1jZggIumk4f
+         1txw==
+X-Gm-Message-State: ABy/qLbYArtMN3ZSuNw49DMnBX47bHPFBGFTnLTo70k1q5ZA+HMAtKVy
+	Sbt8PByCSBh+AW0B4aipI11E3LsqN+wLz6/j9Kc=
+X-Google-Smtp-Source: APBJJlEdnQWegqx0e/d3qoYxhCVwdiYFe19JkL6c7pSTObHst6GK9SlMKCOYPFVE1i/EwWPIXSnn3OUicpWaHCFNdI8=
+X-Received: by 2002:ad4:518f:0:b0:62d:df48:baf0 with SMTP id
+ b15-20020ad4518f000000b0062ddf48baf0mr3968797qvp.61.1688177181315; Fri, 30
+ Jun 2023 19:06:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+References: <20230629051832.897119-1-andrii@kernel.org>
+In-Reply-To: <20230629051832.897119-1-andrii@kernel.org>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sat, 1 Jul 2023 10:05:44 +0800
+Message-ID: <CALOAHbBupxQ3RH+SbzUv=W2dRDS-mG1PuRpARrMnMv=o6Ro7Sw@mail.gmail.com>
+Subject: Re: [PATCH RESEND v3 bpf-next 00/14] BPF token
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	keescook@chromium.org, brauner@kernel.org, lennart@poettering.net, 
+	cyphar@cyphar.com, luto@kernel.org, kernel-team@meta.com, sargun@sargun.me
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Jakub Kicinski <kuba@kernel.org> writes:
-> =
-
-> > On Tue, 27 Jun 2023 14:43:57 -0700 John Fastabend wrote:
-> >> What I think would be the most straight-forward thing and most flexi=
-ble
-> >> is to create a <drvname>_devtx_submit_skb(<drivname>descriptor, sk_b=
-uff)
-> >> and <drvname>_devtx_submit_xdp(<drvname>descriptor, xdp_frame) and t=
-hen
-> >> corresponding calls for <drvname>_devtx_complete_{skb|xdp}() Then yo=
-u
-> >> don't spend any cycles building the metadata thing or have to even
-> >> worry about read kfuncs. The BPF program has read access to any
-> >> fields they need. And with the skb, xdp pointer we have the context
-> >> that created the descriptor and generate meaningful metrics.
-> >
-> > Sorry but this is not going to happen without my nack. DPDK was a muc=
-h
-> > cleaner bifurcation point than trying to write datapath drivers in BP=
-F.
-> > Users having to learn how to render descriptors for all the NICs
-> > and queue formats out there is not reasonable. Isovalent hired
-
-I would expect BPF/driver experts would write the libraries for the
-datapath API that the network/switch developer is going to use. I would
-even put the BPF programs in kernel and ship them with the release
-if that helps.
-
-We have different visions on who the BPF user is that writes XDP
-programs I think.
-
-> > a lot of former driver developers so you may feel like it's a good
-> > idea, as a middleware provider. But for the rest of us the matrix
-> > of HW x queue format x people writing BPF is too large. If we can
-
-Its nice though that we have good coverage for XDP so the matrix
-is big. Even with kfuncs though we need someone to write support.
-My thought is its just a question of if they write it in BPF
-or in C code as a reader kfunc. I suspect for these advanced features
-its only a subset at least upfront. Either way BPF or C you are
-stuck finding someone to write that code.
-
-> > write some poor man's DPDK / common BPF driver library to be selected=
-
-> > at linking time - we can as well provide a generic interface in
-> > the kernel itself. Again, we never merged explicit DPDK support, =
-
-> > your idea is strictly worse.
-> =
-
-> I agree: we're writing an operating system kernel here. The *whole
-> point* of an operating system is to provide an abstraction over
-> different types of hardware and provide a common API so users don't hav=
+On Thu, Jun 29, 2023 at 1:18=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
+ wrote:
+>
+> This patch set introduces new BPF object, BPF token, which allows to dele=
+gate
+> a subset of BPF functionality from privileged system-wide daemon (e.g.,
+> systemd or any other container manager) to a *trusted* unprivileged
+> application. Trust is the key here. This functionality is not about allow=
+ing
+> unconditional unprivileged BPF usage. Establishing trust, though, is
+> completely up to the discretion of respective privileged application that
+> would create a BPF token, as different production setups can and do achie=
+ve it
+> through a combination of different means (signing, LSM, code reviews, etc=
+),
+> and it's undesirable and infeasible for kernel to enforce any particular =
+way
+> of validating trustworthiness of particular process.
+>
+> The main motivation for BPF token is a desire to enable containerized
+> BPF applications to be used together with user namespaces. This is curren=
+tly
+> impossible, as CAP_BPF, required for BPF subsystem usage, cannot be names=
+paced
+> or sandboxed, as a general rule. E.g., tracing BPF programs, thanks to BP=
+F
+> helpers like bpf_probe_read_kernel() and bpf_probe_read_user() can safely=
+ read
+> arbitrary memory, and it's impossible to ensure that they only read memor=
+y of
+> processes belonging to any given namespace. This means that it's impossib=
+le to
+> have namespace-aware CAP_BPF capability, and as such another mechanism to
+> allow safe usage of BPF functionality is necessary. BPF token and delegat=
+ion
+> of it to a trusted unprivileged applications is such mechanism. Kernel ma=
+kes
+> no assumption about what "trusted" constitutes in any particular case, an=
+d
+> it's up to specific privileged applications and their surrounding
+> infrastructure to decide that. What kernel provides is a set of APIs to c=
+reate
+> and tune BPF token, and pass it around to privileged BPF commands that ar=
 e
-> to deal with the hardware details.
+> creating new BPF objects like BPF programs, BPF maps, etc.
+>
+> Previous attempt at addressing this very same problem ([0]) attempted to
+> utilize authoritative LSM approach, but was conclusively rejected by upst=
+ream
+> LSM maintainers. BPF token concept is not changing anything about LSM
+> approach, but can be combined with LSM hooks for very fine-grained securi=
+ty
+> policy. Some ideas about making BPF token more convenient to use with LSM=
+ (in
+> particular custom BPF LSM programs) was briefly described in recent LSF/M=
+M/BPF
+> 2023 presentation ([1]). E.g., an ability to specify user-provided data
+> (context), which in combination with BPF LSM would allow implementing a v=
+ery
+> dynamic and fine-granular custom security policies on top of BPF token. I=
+n the
+> interest of minimizing API surface area discussions this is going to be
+> added in follow up patches, as it's not essential to the fundamental conc=
+ept
+> of delegatable BPF token.
+>
+> It should be noted that BPF token is conceptually quite similar to the id=
+ea of
+> /dev/bpf device file, proposed by Song a while ago ([2]). The biggest
+> difference is the idea of using virtual anon_inode file to hold BPF token=
+ and
+> allowing multiple independent instances of them, each with its own set of
+> restrictions. BPF pinning solves the problem of exposing such BPF token
+> through file system (BPF FS, in this case) for cases where transferring F=
+Ds
+> over Unix domain sockets is not convenient. And also, crucially, BPF toke=
+n
+> approach is not using any special stateful task-scoped flags. Instead, bp=
+f()
+> syscall accepts token_fd parameters explicitly for each relevant BPF comm=
+and.
+> This addresses main concerns brought up during the /dev/bpf discussion, a=
+nd
+> fits better with overall BPF subsystem design.
+>
+> This patch set adds a basic minimum of functionality to make BPF token us=
+eful
+> and to discuss API and functionality. Currently only low-level libbpf API=
+s
+> support passing BPF token around, allowing to test kernel functionality, =
+but
+> for the most part is not sufficient for real-world applications, which
+> typically use high-level libbpf APIs based on `struct bpf_object` type. T=
+his
+> was done with the intent to limit the size of patch set and concentrate o=
+n
+> mostly kernel-side changes. All the necessary plumbing for libbpf will be=
+ sent
+> as a separate follow up patch set kernel support makes it upstream.
+>
+> Another part that should happen once kernel-side BPF token is established=
+, is
+> a set of conventions between applications (e.g., systemd), tools (e.g.,
+> bpftool), and libraries (e.g., libbpf) about sharing BPF tokens through B=
+PF FS
+> at well-defined locations to allow applications take advantage of this in
+> automatic fashion without explicit code changes on BPF application's side=
+.
+> But I'd like to postpone this discussion to after BPF token concept lands=
+.
+>
+> Once important distinctions from v2 that should be noted is a chance in t=
+he
+> semantics of a newly added BPF_TOKEN_CREATE command. Previously,
+> BPF_TOKEN_CREATE would create BPF token kernel object and return its FD t=
+o
+> user-space, allowing to (optionally) pin it in BPF FS using BPF_OBJ_PIN
+> command. This v3 version changes this slightly: BPF_TOKEN_CREATE combines=
+ BPF
+> token object creation *and* pinning in BPF FS. Such change ensures that B=
+PF
+> token is always associated with a specific instance of BPF FS and cannot
+> "escape" it by application re-pinning it somewhere else using another
+> BPF_OBJ_PIN call. Now, BPF token can only be pinned once during its creat=
+ion,
+> better containing it inside intended container (under assumption BPF FS i=
+s set
+> up in such a way as to not be shared with other containers on the system)=
+.
+>
+>   [0] https://lore.kernel.org/bpf/20230412043300.360803-1-andrii@kernel.o=
+rg/
+>   [1] http://vger.kernel.org/bpfconf2023_material/Trusted_unprivileged_BP=
+F_LSFMM2023.pdf
+>   [2] https://lore.kernel.org/bpf/20190627201923.2589391-2-songliubraving=
+@fb.com/
+>
+> v3->v3-resend:
+>   - I started integrating token_fd into bpf_object_open_opts and higher-l=
+evel
+>     libbpf bpf_object APIs, but it started going a bit deeper into bpf_ob=
+ject
+>     implementation details and how libbpf performs feature detection and
+>     caching, so I decided to keep it separate from this patch set and not
+>     distract from the mostly kernel-side changes;
+> v2->v3:
+>   - make BPF_TOKEN_CREATE pin created BPF token in BPF FS, and disallow
+>     BPF_OBJ_PIN for BPF token;
+> v1->v2:
+>   - fix build failures on Kconfig with CONFIG_BPF_SYSCALL unset;
+>   - drop BPF_F_TOKEN_UNKNOWN_* flags and simplify UAPI (Stanislav).
+>
+> Andrii Nakryiko (14):
+>   bpf: introduce BPF token object
+>   libbpf: add bpf_token_create() API
+>   selftests/bpf: add BPF_TOKEN_CREATE test
+>   bpf: add BPF token support to BPF_MAP_CREATE command
+>   libbpf: add BPF token support to bpf_map_create() API
+>   selftests/bpf: add BPF token-enabled test for BPF_MAP_CREATE command
+>   bpf: add BPF token support to BPF_BTF_LOAD command
+>   libbpf: add BPF token support to bpf_btf_load() API
+>   selftests/bpf: add BPF token-enabled BPF_BTF_LOAD selftest
+>   bpf: add BPF token support to BPF_PROG_LOAD command
+>   bpf: take into account BPF token when fetching helper protos
+>   bpf: consistenly use BPF token throughout BPF verifier logic
+>   libbpf: add BPF token support to bpf_prog_load() API
+>   selftests/bpf: add BPF token-enabled BPF_PROG_LOAD tests
+>
+>  drivers/media/rc/bpf-lirc.c                   |   2 +-
+>  include/linux/bpf.h                           |  79 ++++-
+>  include/linux/filter.h                        |   2 +-
+>  include/uapi/linux/bpf.h                      |  53 ++++
+>  kernel/bpf/Makefile                           |   2 +-
+>  kernel/bpf/arraymap.c                         |   2 +-
+>  kernel/bpf/cgroup.c                           |   6 +-
+>  kernel/bpf/core.c                             |   3 +-
+>  kernel/bpf/helpers.c                          |   6 +-
+>  kernel/bpf/inode.c                            |  46 ++-
+>  kernel/bpf/syscall.c                          | 183 +++++++++---
+>  kernel/bpf/token.c                            | 201 +++++++++++++
+>  kernel/bpf/verifier.c                         |  13 +-
+>  kernel/trace/bpf_trace.c                      |   2 +-
+>  net/core/filter.c                             |  36 +--
+>  net/ipv4/bpf_tcp_ca.c                         |   2 +-
+>  net/netfilter/nf_bpf_link.c                   |   2 +-
+>  tools/include/uapi/linux/bpf.h                |  53 ++++
+>  tools/lib/bpf/bpf.c                           |  35 ++-
+>  tools/lib/bpf/bpf.h                           |  45 ++-
+>  tools/lib/bpf/libbpf.map                      |   1 +
+>  .../selftests/bpf/prog_tests/libbpf_probes.c  |   4 +
+>  .../selftests/bpf/prog_tests/libbpf_str.c     |   6 +
+>  .../testing/selftests/bpf/prog_tests/token.c  | 277 ++++++++++++++++++
+>  24 files changed, 957 insertions(+), 104 deletions(-)
+>  create mode 100644 kernel/bpf/token.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/token.c
+>
+> --
+> 2.34.1
+>
+>
 
-And just to be clear what we sacrifice then is forwards/backwards
-portability. If its a kernel kfunc we need to add a kfunc for
-every field we want to read and it will only be available then.
-Further, it will need some general agreement that its useful for
-it to be added. A hardware vendor wont be able to add some arbitrary
-field and get access to it. So we lose this by doing kfuncs.
 
-Its pushing complexity into the kernel that we maintain in kernel
-when we could push the complexity into BPF and maintain as user
-space code and BPF codes. Its a choice to make I think.
+Hi Andrii,
 
-Also abstraction can cost cycles. Here we have to prepare the
-structure and call kfunc. The kfunc can be inlined if folks
-do the work. It may be small cost but not free.
+Thanks for your proposal.
+That seems to be a useful functionality, and yet I have some questions.
 
-> =
+1. Why can't we add security_bpf_probe_read_{kernel,user}?
+    If possible, we can use these LSM hooks to refuse the process to
+read other tasks' information. E.g. if the other process is not within
+the same cgroup or the same namespace, we just refuse the reading. I
+think it is not hard to identify if the other process is within the
+same cgroup or the same namespace.
 
-> I feel like there's some tension between "BPF as a dataplane API" and
-> "BPF as a kernel extension language" here, especially as the BPF
+2. Why can't we extend bpf_cookie?
+   We're now using bpf_cookie to identify each user or each
+application, and only the permitted cookies can create new probe
+links.  However we find the bpf_cookie is only supported by tracing,
+perf_event and kprobe_multi, so we're planning to extend it to other
+possible link types, then we can use LSM hooks to control all bpf
+links.  I think that the upstream kernel should also support
+bpf_cookie for all bpf links. If possible, we will post it to the
+upstream in the future.
+   After I have read your BPF token proposal, I just have some other
+ideas. Why can't we just extend bpf_cookie to all other BPF objects?
+For example, all progs and maps should also have the bpf_cookie.
 
-Agree. I'm obviously not maximizing for ease of use for the dataplane
-API as BPF. IMO though even with the kfunc abstraction its niche work
-writing low level datapath code that requires exposing a user
-API higher up the stack. With a DSL (P4, ...) for example you could =
 
-abstract away the complexity and then compile down into these
-details. Or if you like tables an Openflow style table interface
-would provide a table API.
-
-> subsystem has grown more features in the latter direction. In my mind,
-> XDP is still very much a dataplane API; in fact that's one of the main
-> selling points wrt DPDK: you can get high performance networking but
-> still take advantage of the kernel drivers and other abstractions that
-
-I think we agree on the goal a fast datapath for the nic.
-
-> the kernel provides. If you're going for raw performance and the abilit=
-y
-> to twiddle every tiny detail of the hardware, DPDK fills that niche
-> quite nicely (and also shows us the pains of going that route).
-
-Summary on my side is we minimize kernel complexity
-by raw descriptor reads, we don't need to know what we
-want to read in the future and we need folks who understand
-the hardware regardless of where the code lives in BPF
-or C. C certainly helps the picking what kfunc to use
-but we also have BTF that solves this struct/offset problem
-for non-networking use cases already.
-
-> =
-
-> -Toke
-> =
+--=20
+Regards
+Yafang
 
