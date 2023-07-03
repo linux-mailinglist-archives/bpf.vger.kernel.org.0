@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-3909-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3910-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D32374624D
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 20:24:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA36A74624F
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 20:25:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FA291C209F1
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 18:24:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 769DD280633
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 18:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A2918007;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E13891801A;
 	Mon,  3 Jul 2023 18:17:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB1017FEB;
-	Mon,  3 Jul 2023 18:17:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1D6117FEB;
+	Mon,  3 Jul 2023 18:17:38 +0000 (UTC)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43ECE10C2;
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480F110C3;
 	Mon,  3 Jul 2023 11:17:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1688408252; x=1719944252;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=bmM4j59hI6XMaQ5uFEnyIsFi8Ea8WeAFE4olclpHNls=;
-  b=VKCAuGE3hEYUiSvOa5KaC+VD8E3e6IM91YI9NDuGgGSunJy096azUCrZ
-   Kvr4VxWPxznGQnymDz2Ht0HHt9gcR3uJ5wu42H4uysRc6w/Kgy8GWr5vC
-   Od4Nofz/wfWSxMjdJ5pD5ERn+EVuKes+q/GLpNjWYmNAFtjh03BqM6zOf
-   6/uo+cN8iCFCdVimq9SPxnlGaBKD0DaBU3aHIw1Kunp8LC8UPime74M7E
-   jM3EL+d70tKeixeQQyrSKT2K/5k3OKM1GHQZ4SXQchjeadRbGrLQ5+uDL
-   LmyP23VL4OYqMnZQwLkULChWyzluS1kxV05u+xuVoy5/m/inBUWlA2C67
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="393682722"
+  bh=zFzZS0DIjk+EeZetggvdiNMpIpl+LFuLCTSvigsfImk=;
+  b=AFCRw5rY++N7iPTLGq2nN7a7IS/6w8FRMNY4Nalt9vNZ3jg+86cwvMck
+   DBFG+jVo2HefnsWQw322XJx2IYaPkj3ZWAaD3HlC7mw2WHpbcYDUR0I5U
+   a65hS6L2+i4Jz7m2byHiBecEPGXMMhpdpZyyMAeJy4GaEwfX0dZ576kmi
+   SCzzBvWV0unAkLS9L7J/tXgKhmSJKEm1UxTpaZHKvcwO1/s6HBslQQu3l
+   bgw0/hF5yYBLQxBXqt3VWGan5FAgkrZX5UUhbKsYM8BJ+6vxfBD2PQSje
+   BfIVq0O/tgkgf+IclFdLWR101haYCJ2td+6Yq/IW22PS45xYILO9N5Z79
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="393682733"
 X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="393682722"
+   d="scan'208";a="393682733"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2023 11:17:19 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2023 11:17:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="892615160"
+X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="892615164"
 X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="892615160"
+   d="scan'208";a="892615164"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga005.jf.intel.com with ESMTP; 03 Jul 2023 11:17:13 -0700
+  by orsmga005.jf.intel.com with ESMTP; 03 Jul 2023 11:17:15 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 5109435833;
-	Mon,  3 Jul 2023 19:17:12 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 58A8635803;
+	Mon,  3 Jul 2023 19:17:14 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -72,9 +72,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Maryam Tahhan <mtahhan@redhat.com>,
 	xdp-hints@xdp-project.net,
 	netdev@vger.kernel.org
-Subject: [PATCH bpf-next v2 16/20] selftests/bpf: Add flags and new hints to xdp_hw_metadata
-Date: Mon,  3 Jul 2023 20:12:22 +0200
-Message-ID: <20230703181226.19380-17-larysa.zaremba@intel.com>
+Subject: [PATCH bpf-next v2 17/20] veth: Implement VLAN tag and checksum level XDP hint
+Date: Mon,  3 Jul 2023 20:12:23 +0200
+Message-ID: <20230703181226.19380-18-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230703181226.19380-1-larysa.zaremba@intel.com>
 References: <20230703181226.19380-1-larysa.zaremba@intel.com>
@@ -92,198 +92,73 @@ X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add hints added in the previous patches (VLAN tags and checksum level)
-to the xdp_hw_metadata program.
-
-Also, to make metadata layout more straightforward, add flags field
-to pass information about validity of every separate hint separately.
+In order to test VLAN tag and checksum level XDP hints in
+hardware-independent selfttests, implement newly added XDP hints in veth
+driver.
 
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- .../selftests/bpf/progs/xdp_hw_metadata.c     | 35 +++++++++++++---
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 42 ++++++++++++++++---
- tools/testing/selftests/bpf/xdp_metadata.h    | 28 ++++++++++++-
- 3 files changed, 93 insertions(+), 12 deletions(-)
+ drivers/net/veth.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-index 63d7de6c6bbb..f46f75db21b4 100644
---- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-@@ -20,6 +20,11 @@ extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
- extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
- 				    enum xdp_rss_hash_type *rss_type) __ksym;
-+extern int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
-+					__u16 *vlan_tag,
-+					__be16 *vlan_proto) __ksym;
-+extern int bpf_xdp_metadata_rx_csum_lvl(const struct xdp_md *ctx,
-+					__u8 *csum_level) __ksym;
- 
- SEC("xdp")
- int rx(struct xdp_md *ctx)
-@@ -84,15 +89,35 @@ int rx(struct xdp_md *ctx)
- 		return XDP_PASS;
- 	}
- 
-+	meta->hint_valid = 0;
-+
- 	err = bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp);
--	if (!err)
-+	if (err) {
-+		meta->rx_timestamp_err = err;
-+	} else {
-+		meta->hint_valid |= XDP_META_FIELD_TS;
- 		meta->xdp_timestamp = bpf_ktime_get_tai_ns();
-+	}
-+
-+	err = bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash,
-+				       &meta->rx_hash_type);
-+	if (err)
-+		meta->rx_hash_err = err;
- 	else
--		meta->rx_timestamp = 0; /* Used by AF_XDP as not avail signal */
-+		meta->hint_valid |= XDP_META_FIELD_RSS;
- 
--	err = bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash_type);
--	if (err < 0)
--		meta->rx_hash_err = err; /* Used by AF_XDP as no hash signal */
-+	err = bpf_xdp_metadata_rx_vlan_tag(ctx, &meta->rx_vlan_tag,
-+					   &meta->rx_vlan_proto);
-+	if (err)
-+		meta->rx_vlan_tag_err = err;
-+	else
-+		meta->hint_valid |= XDP_META_FIELD_VLAN_TAG;
-+
-+	err = bpf_xdp_metadata_rx_csum_lvl(ctx, &meta->rx_csum_lvl);
-+	if (err)
-+		meta->rx_csum_err = err;
-+	else
-+		meta->hint_valid |= XDP_META_FIELD_CSUM_LVL;
- 
- 	__sync_add_and_fetch(&pkts_redir, 1);
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 613321eb84c1..d234cbcc9103 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -19,6 +19,9 @@
- #include "xsk.h"
- 
- #include <error.h>
-+#include <linux/kernel.h>
-+#include <linux/bits.h>
-+#include <linux/bitfield.h>
- #include <linux/errqueue.h>
- #include <linux/if_link.h>
- #include <linux/net_tstamp.h>
-@@ -150,21 +153,34 @@ static __u64 gettime(clockid_t clock_id)
- 	return (__u64) t.tv_sec * NANOSEC_PER_SEC + t.tv_nsec;
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 614f3e3efab0..a7f2b679551d 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -1732,6 +1732,44 @@ static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash,
+ 	return 0;
  }
  
-+#define VLAN_PRIO_MASK		GENMASK(15, 13) /* Priority Code Point */
-+#define VLAN_CFI_MASK		GENMASK(12, 12) /* Canonical Format / Drop Eligible Indicator */
-+#define VLAN_VID_MASK		GENMASK(11, 0)	/* VLAN Identifier */
-+static void print_vlan_tag(__u16 tag)
++static int veth_xdp_rx_vlan_tag(const struct xdp_md *ctx, u16 *vlan_tag,
++				__be16 *vlan_proto)
 +{
-+	__u16 vlan_id = FIELD_GET(VLAN_VID_MASK, tag);
-+	__u8 pcp = FIELD_GET(VLAN_PRIO_MASK, tag);
-+	bool cfi = FIELD_GET(VLAN_CFI_MASK, tag);
++	struct veth_xdp_buff *_ctx = (void *)ctx;
++	struct sk_buff *skb = _ctx->skb;
++	int err;
 +
-+	printf("PCP=%u, CFI=%d, VID=0x%X\n", pcp, cfi, vlan_id);
++	if (!skb)
++		return -ENODATA;
++
++	err = __vlan_hwaccel_get_tag(skb, vlan_tag);
++	if (err)
++		return err;
++
++	*vlan_proto = skb->vlan_proto;
++	return err;
 +}
 +
- static void verify_xdp_metadata(void *data, clockid_t clock_id)
- {
- 	struct xdp_meta *meta;
- 
- 	meta = data - sizeof(*meta);
- 
--	if (meta->rx_hash_err < 0)
--		printf("No rx_hash err=%d\n", meta->rx_hash_err);
--	else
-+	if (meta->hint_valid & XDP_META_FIELD_RSS)
- 		printf("rx_hash: 0x%X with RSS type:0x%X\n",
- 		       meta->rx_hash, meta->rx_hash_type);
++static int veth_xdp_rx_csum_lvl(const struct xdp_md *ctx, u8 *csum_level)
++{
++	struct veth_xdp_buff *_ctx = (void *)ctx;
++	struct sk_buff *skb = _ctx->skb;
++
++	if (!skb)
++		return -ENODATA;
++
++	if (skb->ip_summed == CHECKSUM_UNNECESSARY)
++		*csum_level = skb->csum_level;
++	else if (skb->ip_summed == CHECKSUM_PARTIAL &&
++		 skb_checksum_start_offset(skb) == skb_transport_offset(skb) ||
++		 skb->csum_valid)
++		*csum_level = 0;
 +	else
-+		printf("No rx_hash, err=%d\n", meta->rx_hash_err);
++		return -ENODATA;
 +
-+	if (meta->hint_valid & XDP_META_FIELD_TS) {
-+		printf("rx_timestamp:  %llu (sec:%0.4f)\n", meta->rx_timestamp,
-+		       (double)meta->rx_timestamp / NANOSEC_PER_SEC);
- 
--	printf("rx_timestamp:  %llu (sec:%0.4f)\n", meta->rx_timestamp,
--	       (double)meta->rx_timestamp / NANOSEC_PER_SEC);
--	if (meta->rx_timestamp) {
- 		__u64 usr_clock = gettime(clock_id);
- 		__u64 xdp_clock = meta->xdp_timestamp;
- 		__s64 delta_X = xdp_clock - meta->rx_timestamp;
-@@ -179,8 +195,22 @@ static void verify_xdp_metadata(void *data, clockid_t clock_id)
- 		       usr_clock, (double)usr_clock / NANOSEC_PER_SEC,
- 		       (double)delta_X2U / NANOSEC_PER_SEC,
- 		       (double)delta_X2U / 1000);
-+	} else {
-+		printf("No rx_timestamp, err=%d\n", meta->rx_timestamp_err);
- 	}
- 
-+	if (meta->hint_valid & XDP_META_FIELD_VLAN_TAG) {
-+		printf("rx_vlan_proto: 0x%X\n", ntohs(meta->rx_vlan_proto));
-+		printf("rx_vlan_tag: ");
-+		print_vlan_tag(meta->rx_vlan_tag);
-+	} else {
-+		printf("No rx_vlan_tag or rx_vlan_proto, err=%d\n", meta->rx_vlan_tag_err);
-+	}
++	return 0;
++}
 +
-+	if (meta->hint_valid & XDP_META_FIELD_CSUM_LVL)
-+		printf("Checksum was checked at level %u\n", meta->rx_csum_lvl);
-+	else
-+		printf("Checksum was not checked, err=%d\n", meta->rx_csum_err);
- }
- 
- static void verify_skb_metadata(int fd)
-diff --git a/tools/testing/selftests/bpf/xdp_metadata.h b/tools/testing/selftests/bpf/xdp_metadata.h
-index 6664893c2c77..ff1372244d34 100644
---- a/tools/testing/selftests/bpf/xdp_metadata.h
-+++ b/tools/testing/selftests/bpf/xdp_metadata.h
-@@ -17,12 +17,38 @@
- #define ETH_P_8021AD 0x88A8
- #endif
- 
-+#ifndef BIT
-+#define BIT(nr)			(1 << (nr))
-+#endif
-+
-+enum xdp_meta_field {
-+	XDP_META_FIELD_TS	= BIT(0),
-+	XDP_META_FIELD_RSS	= BIT(1),
-+	XDP_META_FIELD_VLAN_TAG	= BIT(2),
-+	XDP_META_FIELD_CSUM_LVL	= BIT(3),
-+};
-+
- struct xdp_meta {
--	__u64 rx_timestamp;
-+	union {
-+		__u64 rx_timestamp;
-+		__s32 rx_timestamp_err;
-+	};
- 	__u64 xdp_timestamp;
- 	__u32 rx_hash;
- 	union {
- 		__u32 rx_hash_type;
- 		__s32 rx_hash_err;
- 	};
-+	union {
-+		struct {
-+			__u16 rx_vlan_tag;
-+			__be16 rx_vlan_proto;
-+		};
-+		__s32 rx_vlan_tag_err;
-+	};
-+	union {
-+		__u8 rx_csum_lvl;
-+		__s32 rx_csum_err;
-+	};
-+	enum xdp_meta_field hint_valid;
+ static const struct net_device_ops veth_netdev_ops = {
+ 	.ndo_init            = veth_dev_init,
+ 	.ndo_open            = veth_open,
+@@ -1756,6 +1794,8 @@ static const struct net_device_ops veth_netdev_ops = {
+ static const struct xdp_metadata_ops veth_xdp_metadata_ops = {
+ 	.xmo_rx_timestamp		= veth_xdp_rx_timestamp,
+ 	.xmo_rx_hash			= veth_xdp_rx_hash,
++	.xmo_rx_vlan_tag		= veth_xdp_rx_vlan_tag,
++	.xmo_rx_csum_lvl		= veth_xdp_rx_csum_lvl,
  };
+ 
+ #define VETH_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HW_CSUM | \
 -- 
 2.41.0
 
