@@ -1,160 +1,166 @@
-Return-Path: <bpf+bounces-3892-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3889-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3713B74619F
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 19:54:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96438746194
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 19:53:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E64D4280ECD
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 17:54:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE0911C209ED
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 17:53:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2695F111AB;
-	Mon,  3 Jul 2023 17:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76A8A107A8;
+	Mon,  3 Jul 2023 17:52:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27AA111A8
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 17:53:16 +0000 (UTC)
-Received: from mailrelay.tu-berlin.de (mailrelay.tu-berlin.de [130.149.7.70])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085F7C2
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 10:53:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tu-berlin.de; l=4091; s=dkim-tub; t=1688406793;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=sVFj5XSEpvbTR84sGLSbUV0+aK9N+w+4xBjQ6fw0+Us=;
-  b=gN83bfCGlmS9ligWzIUbjQQtVDQ2IdqSJRpcHrb7ozEkbb6pL+5MFZf3
-   xsrsGT6fvwfAcuvUAKt0eZLopow+6xy5SHKXN2W7Z9LYtmbgn4B+ACB7L
-   /CcGm4xX8WsoKi3qJo89Evx0zK+17KUTQn1ALKPrjrSU1YbjfYf6IGc9y
-   o=;
-X-IronPort-AV: E=Sophos;i="6.01,178,1684792800"; 
-   d="scan'208";a="1320359"
-Received: from bulkmail.tu-berlin.de (HELO mail.tu-berlin.de) ([141.23.12.143])
-  by mailrelay.tu-berlin.de with ESMTP; 03 Jul 2023 19:52:08 +0200
-From: =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <jthinz@mailbox.tu-berlin.de>
-To: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-CC: =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <jthinz@mailbox.tu-berlin.de>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, "David
- S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Shuah Khan
-	<shuah@kernel.org>, Deepa Dinamani <deepa.kernel@gmail.com>, Willem de Bruijn
-	<willemb@google.com>
-Subject: [PATCH 2/2] bpf: Allow setting SO_TIMESTAMPING* with bpf_setsockopt()
-Date: Mon, 3 Jul 2023 19:50:46 +0200
-Message-ID: <20230703175048.151683-3-jthinz@mailbox.tu-berlin.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230703175048.151683-1-jthinz@mailbox.tu-berlin.de>
-References: <20230703175048.151683-1-jthinz@mailbox.tu-berlin.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DB410780;
+	Mon,  3 Jul 2023 17:52:55 +0000 (UTC)
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8ED2E42;
+	Mon,  3 Jul 2023 10:52:53 -0700 (PDT)
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B85E4240008;
+	Mon,  3 Jul 2023 17:52:49 +0000 (UTC)
+From: Ilya Maximets <i.maximets@ovn.org>
+To: netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jason Wang <jasowang@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Ilya Maximets <i.maximets@ovn.org>
+Subject: [PATCH bpf-next] xsk: honor SO_BINDTODEVICE on bind
+Date: Mon,  3 Jul 2023 19:53:29 +0200
+Message-Id: <20230703175329.3259672-1-i.maximets@ovn.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
 	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-A BPF application, e.g., a TCP congestion control, might benefit from or
-even require precise (=hardware) packet timestamps. These timestamps are
-already available in __sk_buff.hwtstamp and bpf_sock_ops.skb_hwtstamp,
-but could not be requested: A BPF program was not allowed to set
-SO_TIMESTAMPING* on a socket.
+Initial creation of an AF_XDP socket requires CAP_NET_RAW capability.
+A privileged process might create the socket and pass it to a
+non-privileged process for later use.  However, that process will be
+able to bind the socket to any network interface.  Even though it will
+not be able to receive any traffic without modification of the BPF map,
+the situation is not ideal.
 
-Enable BPF programs to actively request the generation of timestamps
-from a stream socket. The also required ioctl(SIOCSHWTSTAMP) on the
-network device must still be done separately, in user space.
+Sockets already have a mechanism that can be used to restrict what
+interface they can be attached to.  That is SO_BINDTODEVICE.
 
-Signed-off-by: Jörn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
+To change the SO_BINDTODEVICE binding the process will need CAP_NET_RAW.
+
+Make xsk_bind() honor the SO_BINDTODEVICE in order to allow safer
+workflow when non-privileged process is using AF_XDP.
+
+The intended workflow is following:
+
+  1. First process creates a bare socket with socket(AF_XDP, ...).
+  2. First process loads the XSK program to the interface.
+  3. First process adds the socket fd to a BPF map.
+  4. First process ties socket fd to a particular interface using
+     SO_BINDTODEVICE.
+  5. First process sends socket fd to a second process.
+  6. Second process allocates UMEM.
+  7. Second process binds socket to the interface with bind(...).
+  8. Second process sends/receives the traffic.
+
+All the steps above are possible today if the first process is
+privileged and the second one has sufficient RLIMIT_MEMLOCK and no
+capabilities.  However, the second process will be able to bind the
+socket to any interface it wants on step 7 and send traffic from it.
+With the proposed change, the second process will be able to bind
+the socket only to a specific interface chosen by the first process
+at step 4.
+
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
 ---
- include/uapi/linux/bpf.h                            | 3 ++-
- net/core/filter.c                                   | 2 ++
- tools/include/uapi/linux/bpf.h                      | 3 ++-
- tools/testing/selftests/bpf/progs/bpf_tracing_net.h | 2 ++
- tools/testing/selftests/bpf/progs/setget_sockopt.c  | 4 ++++
- 5 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 60a9d59beeab..3e64b8137931 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -2640,7 +2640,8 @@ union bpf_attr {
-  * 		  **SO_RCVBUF**, **SO_SNDBUF**, **SO_MAX_PACING_RATE**,
-  * 		  **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**,
-  * 		  **SO_BINDTODEVICE**, **SO_KEEPALIVE**, **SO_REUSEADDR**,
-- * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**.
-+ * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**,
-+ * 		  **SO_TIMESTAMPING_NEW**, **SO_TIMESTAMPING_OLD**.
-  * 		* **IPPROTO_TCP**, which supports the following *optname*\ s:
-  * 		  **TCP_CONGESTION**, **TCP_BPF_IW**,
-  * 		  **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 06ba0e56e369..af0f3a6762de 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -5108,6 +5108,8 @@ static int sol_socket_sockopt(struct sock *sk, int optname,
- 	case SO_MAX_PACING_RATE:
- 	case SO_BINDTOIFINDEX:
- 	case SO_TXREHASH:
-+	case SO_TIMESTAMPING_NEW:
-+	case SO_TIMESTAMPING_OLD:
- 		if (*optlen != sizeof(int))
- 			return -EINVAL;
- 		break;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 60a9d59beeab..3e64b8137931 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -2640,7 +2640,8 @@ union bpf_attr {
-  * 		  **SO_RCVBUF**, **SO_SNDBUF**, **SO_MAX_PACING_RATE**,
-  * 		  **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**,
-  * 		  **SO_BINDTODEVICE**, **SO_KEEPALIVE**, **SO_REUSEADDR**,
-- * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**.
-+ * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**,
-+ * 		  **SO_TIMESTAMPING_NEW**, **SO_TIMESTAMPING_OLD**.
-  * 		* **IPPROTO_TCP**, which supports the following *optname*\ s:
-  * 		  **TCP_CONGESTION**, **TCP_BPF_IW**,
-  * 		  **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
-diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-index cfed4df490f3..8d526db8ceeb 100644
---- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-@@ -15,8 +15,10 @@
- #define SO_RCVLOWAT		18
- #define SO_BINDTODEVICE		25
- #define SO_MARK			36
-+#define SO_TIMESTAMPING_OLD     37
- #define SO_MAX_PACING_RATE	47
- #define SO_BINDTOIFINDEX	62
-+#define SO_TIMESTAMPING_NEW     65
- #define SO_TXREHASH		74
- #define __SO_ACCEPTCON		(1 << 16)
+RFC --> PATCH:
+  * Better explained intended workflow in a commit message.
+  * Added ACK from Magnus.
+
+ Documentation/networking/af_xdp.rst | 9 +++++++++
+ net/xdp/xsk.c                       | 6 ++++++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
+index 247c6c4127e9..1cc35de336a4 100644
+--- a/Documentation/networking/af_xdp.rst
++++ b/Documentation/networking/af_xdp.rst
+@@ -433,6 +433,15 @@ start N bytes into the buffer leaving the first N bytes for the
+ application to use. The final option is the flags field, but it will
+ be dealt with in separate sections for each UMEM flag.
  
-diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-index 7a438600ae98..54205d10793c 100644
---- a/tools/testing/selftests/bpf/progs/setget_sockopt.c
-+++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-@@ -48,6 +48,10 @@ static const struct sockopt_test sol_socket_tests[] = {
- 	{ .opt = SO_MARK, .new = 0xeb9f, .expected = 0xeb9f, },
- 	{ .opt = SO_MAX_PACING_RATE, .new = 0xeb9f, .expected = 0xeb9f, },
- 	{ .opt = SO_TXREHASH, .flip = 1, },
-+	{ .opt = SO_TIMESTAMPING_NEW, .new = SOF_TIMESTAMPING_RX_HARDWARE,
-+		.expected = SOF_TIMESTAMPING_RX_HARDWARE, },
-+	{ .opt = SO_TIMESTAMPING_OLD, .new = SOF_TIMESTAMPING_RX_HARDWARE,
-+		.expected = SOF_TIMESTAMPING_RX_HARDWARE, },
- 	{ .opt = 0, },
- };
++SO_BINDTODEVICE setsockopt
++--------------------------
++
++This is a generic SOL_SOCKET option that can be used to tie AF_XDP
++socket to a particular network interface.  It is useful when a socket
++is created by a privileged process and passed to a non-privileged one.
++Once the option is set, kernel will refuse attempts to bind that socket
++to a different interface.  Updating the value requires CAP_NET_RAW.
++
+ XDP_STATISTICS getsockopt
+ -------------------------
  
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 5a8c0dd250af..386ff641db0f 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -886,6 +886,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+ 	struct sock *sk = sock->sk;
+ 	struct xdp_sock *xs = xdp_sk(sk);
+ 	struct net_device *dev;
++	int bound_dev_if;
+ 	u32 flags, qid;
+ 	int err = 0;
+ 
+@@ -899,6 +900,11 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+ 		      XDP_USE_NEED_WAKEUP))
+ 		return -EINVAL;
+ 
++	bound_dev_if = READ_ONCE(sk->sk_bound_dev_if);
++
++	if (bound_dev_if && bound_dev_if != sxdp->sxdp_ifindex)
++		return -EINVAL;
++
+ 	rtnl_lock();
+ 	mutex_lock(&xs->mutex);
+ 	if (xs->state != XSK_READY) {
 -- 
-2.39.2
+2.40.1
 
 
