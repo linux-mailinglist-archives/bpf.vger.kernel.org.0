@@ -1,82 +1,84 @@
-Return-Path: <bpf+bounces-3924-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3925-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8769E7464C7
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 23:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A8457464D3
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 23:26:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEB35280DB7
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 21:19:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB517280DD5
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 21:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6A4125C0;
-	Mon,  3 Jul 2023 21:19:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 845C5125D5;
+	Mon,  3 Jul 2023 21:26:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFC7100B3;
-	Mon,  3 Jul 2023 21:19:15 +0000 (UTC)
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0745E59;
-	Mon,  3 Jul 2023 14:19:13 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1b056276889so4118788fac.2;
-        Mon, 03 Jul 2023 14:19:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A3D100B3;
+	Mon,  3 Jul 2023 21:26:06 +0000 (UTC)
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58392E62;
+	Mon,  3 Jul 2023 14:26:02 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-66872d4a141so2911439b3a.1;
+        Mon, 03 Jul 2023 14:26:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688419153; x=1691011153;
+        d=gmail.com; s=20221208; t=1688419562; x=1691011562;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UpqEkaNg2J+Bvai1eAr5gemxKMDFvKrtFaY0+RQFT44=;
-        b=YNfVyPMrtM+l//4e83mxX3p1YK5+82O1BU/hVANnM1N6jc2ntbgmhK363IxtXgmU6i
-         MYkq24ujV1XDGM3ORTWfQJuonRidDMWsFFoFT9PbCFnPe47VGDgnYE8YkrWzfJm8E6np
-         0lYNyASVemcM8upnFdliO0US3UZ5OtaoyWjtSAAE+pizyQ6y+52TKFOd9ZsNvr7n+Vdc
-         ukSX+Q68u/XydWPUMP8OLc5pkSOcOUmtZJIIZowifISrhJiMxSOZF19Lb4x3E67EoV19
-         zoHO1tXWBrkMN7oK4axUj4yzx+X+XE5x3SqaO9FjkU3VN+vb3f15JZtH2AgTd/8lO2NY
-         J35w==
+        bh=4bmKZ8Y/bfL0lMK2TktVUvKgxAR9Wdg/glmHijui0lE=;
+        b=X0JQ3sIwqpDsvmjbL/qFyefRXGKaTd5daOZPNF2QsYjbFKpMdoOlyCTdiGdXZLLbmn
+         TE9h280nCAXRyMRPToBUNcG8wns2Rneev2GL7FvLyhBReWy/YoYZwD9SoVreW50lHhuo
+         03VjIVhjvpbWh8t1UJeByciP0JY0fABpW917T7Fp7e/0UHwU3Ii09aT7mNPqV2TLCWIN
+         ZdJUuDkmCx/m/6EqLMdKHHYdpLRnGMHHW3DqQSjbxegGW+/JXhrLyHByrIle4ovAchPk
+         j3Fbs+aCtoc2liyztfxUtZA7msaF0e2rgyrcMKlvu267D/wBq3sT9TgluWPFBu20ujC+
+         xghw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688419153; x=1691011153;
+        d=1e100.net; s=20221208; t=1688419562; x=1691011562;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=UpqEkaNg2J+Bvai1eAr5gemxKMDFvKrtFaY0+RQFT44=;
-        b=MsXIesY6dc89Csu4Fq3dlQ9cJGm+IhgbTc8MEXd+NwwoQHcwh0p4MJZNsxcRG5kgyn
-         F0WRRnraHkqjNh2kGyUq4ZdMYyx2HzliQk7f3hhLoKW0w3odrKkw+F7EHPUG73v5gNXd
-         hxsxhB2TNmcvoqI/Pn2nMVQbbqkFVAzPnppVuA8gJJI23g9E4VVurXStIe1JU23J21uS
-         gCIk/EKVgwtHwQp744xZ1+Lgcy370ktm4980bZ3ATMxgCuG50d8ogoJcrxm8Z/PWR+KW
-         A1dLciq2NDp/lKWG9TGKlCRhGIVszxkPT7T0yCNGf2eL5Xy7fqZ1WuIiMTEEXIx585JI
-         xUcw==
-X-Gm-Message-State: ABy/qLYwFyxzeRWXkEn7grLql7DRmXXq3cqOEHbGLnbXZ2ZddmppJQAB
-	YtjZlwAoZYemGOMpfWVQlig=
-X-Google-Smtp-Source: APBJJlHqATpdJTKWq1iDMSIA3foxuxaBzMCf8d8gvgidQSrf4T1i9ibLte2VnDPbJLdegXQwptEYMg==
-X-Received: by 2002:a05:6870:7d8e:b0:1ad:2e18:7090 with SMTP id oq14-20020a0568707d8e00b001ad2e187090mr12419826oab.32.1688419152950;
-        Mon, 03 Jul 2023 14:19:12 -0700 (PDT)
+        bh=4bmKZ8Y/bfL0lMK2TktVUvKgxAR9Wdg/glmHijui0lE=;
+        b=CgcVbXXve6/xLpMsGicf6Ox+bz/FRsu4CxVy6dy2cnFpU02gOYXEztTTxjyhkpOaoi
+         Ia6psj4GUa3rL1oYCtzXFXiuUsQFfJxiYV45wWqQGxJzeBLyb1sgYI/MrEV8CdypmMym
+         h6DwHySc4h1ht/LjX84FyJPs+sOj7Hv8JT9uQGJapVXGJWC4traaO3YYY8EEPhbOERC6
+         4vwW1YadZ6ESpjsL1GrijOPD+HdxnajtR/ZjIleY+8gtlhqDQ0Bnmuo670SxVkWHjUSW
+         LIz8EfT8XIj0x45qIak6SZGZlLsHKe9Ex/7bhxGHLWw8PC4BfFdE5Eju9S0srIjL5CcD
+         jXKw==
+X-Gm-Message-State: AC+VfDx5Ndkdv32CBzhZc0x6GH/GQiG//iyGWI3h6KxOEyvQrxZqqQDG
+	iwtsU4UFSN+ReQAt85g6Unc=
+X-Google-Smtp-Source: ACHHUZ67vfjG9TOTuz6vIg9/gI1HAJ/DfD0VsFRyLGeO9oxaqDjP6MJNysppVbEjM9Xymhho6qmNdw==
+X-Received: by 2002:a05:6a20:8f16:b0:12d:3d9e:2934 with SMTP id b22-20020a056a208f1600b0012d3d9e2934mr9111623pzk.44.1688419561631;
+        Mon, 03 Jul 2023 14:26:01 -0700 (PDT)
 Received: from localhost ([2605:59c8:148:ba10::41f])
-        by smtp.gmail.com with ESMTPSA id gm4-20020a17090b100400b0025023726fc4sm14271294pjb.26.2023.07.03.14.19.11
+        by smtp.gmail.com with ESMTPSA id a13-20020a1709027d8d00b001acae9734c0sm15690664plm.266.2023.07.03.14.26.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Jul 2023 14:19:12 -0700 (PDT)
-Date: Mon, 03 Jul 2023 14:19:11 -0700
+        Mon, 03 Jul 2023 14:26:01 -0700 (PDT)
+Date: Mon, 03 Jul 2023 14:25:59 -0700
 From: John Fastabend <john.fastabend@gmail.com>
-To: Ilya Maximets <i.maximets@ovn.org>, 
+To: =?UTF-8?B?SsO2cm4tVGhvcmJlbiBIaW56?= <jthinz@mailbox.tu-berlin.de>, 
+ bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
  netdev@vger.kernel.org, 
- bpf@vger.kernel.org
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
- Magnus Karlsson <magnus.karlsson@intel.com>, 
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+ linux-kselftest@vger.kernel.org
+Cc: =?UTF-8?B?SsO2cm4tVGhvcmJlbiBIaW56?= <jthinz@mailbox.tu-berlin.de>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
  "David S. Miller" <davem@davemloft.net>, 
  Eric Dumazet <edumazet@google.com>, 
  Jakub Kicinski <kuba@kernel.org>, 
  Paolo Abeni <pabeni@redhat.com>, 
- linux-doc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Jason Wang <jasowang@redhat.com>, 
- Stefan Hajnoczi <stefanha@redhat.com>, 
- Ilya Maximets <i.maximets@ovn.org>
-Message-ID: <64a33b4fcccc_6520520825@john.notmuch>
-In-Reply-To: <20230703175329.3259672-1-i.maximets@ovn.org>
-References: <20230703175329.3259672-1-i.maximets@ovn.org>
-Subject: RE: [PATCH bpf-next] xsk: honor SO_BINDTODEVICE on bind
+ Shuah Khan <shuah@kernel.org>, 
+ Willem de Bruijn <willemb@google.com>, 
+ Deepa Dinamani <deepa.kernel@gmail.com>
+Message-ID: <64a33ce7b50d2_6520520875@john.notmuch>
+In-Reply-To: <20230703175048.151683-1-jthinz@mailbox.tu-berlin.de>
+References: <20230703175048.151683-1-jthinz@mailbox.tu-berlin.de>
+Subject: RE: [PATCH 0/2] bpf, net: Allow setting SO_TIMESTAMPING* from BPF
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -85,7 +87,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -93,47 +95,57 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Ilya Maximets wrote:
-> Initial creation of an AF_XDP socket requires CAP_NET_RAW capability.
-> A privileged process might create the socket and pass it to a
-> non-privileged process for later use.  However, that process will be
-> able to bind the socket to any network interface.  Even though it will
-> not be able to receive any traffic without modification of the BPF map,
-> the situation is not ideal.
-> 
-> Sockets already have a mechanism that can be used to restrict what
-> interface they can be attached to.  That is SO_BINDTODEVICE.
-> 
-> To change the SO_BINDTODEVICE binding the process will need CAP_NET_RAW.
-> 
-> Make xsk_bind() honor the SO_BINDTODEVICE in order to allow safer
-> workflow when non-privileged process is using AF_XDP.
-> 
-> The intended workflow is following:
-> 
->   1. First process creates a bare socket with socket(AF_XDP, ...).
->   2. First process loads the XSK program to the interface.
->   3. First process adds the socket fd to a BPF map.
->   4. First process ties socket fd to a particular interface using
->      SO_BINDTODEVICE.
->   5. First process sends socket fd to a second process.
->   6. Second process allocates UMEM.
->   7. Second process binds socket to the interface with bind(...).
->   8. Second process sends/receives the traffic.
-> 
-> All the steps above are possible today if the first process is
-> privileged and the second one has sufficient RLIMIT_MEMLOCK and no
-> capabilities.  However, the second process will be able to bind the
-> socket to any interface it wants on step 7 and send traffic from it.
-> With the proposed change, the second process will be able to bind
-> the socket only to a specific interface chosen by the first process
-> at step 4.
-> 
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
-> ---
+J=C3=B6rn-Thorben Hinz wrote:
+> BPF applications, e.g., a TCP congestion control, might benefit from
+> precise packet timestamps. These timestamps are already available in
+> __sk_buff and bpf_sock_ops, but could not be requested: A BPF program
+> was not allowed to set SO_TIMESTAMPING* on a socket. This change enable=
+s
+> BPF programs to actively request the generation of timestamps from a
+> stream socket.
+> =
 
-LGTM.
+> To reuse the setget_sockopt BPF prog test for
+> bpf_{get,set}sockopt(SO_TIMESTAMPING_NEW), also implement the missing
+> getsockopt(SO_TIMESTAMPING_NEW) in the network stack.
+> =
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+> I reckon the way I added getsockopt(SO_TIMESTAMPING_NEW) causes an API
+> change: For existing users that set SO_TIMESTAMPING_NEW but queried
+> SO_TIMESTAMPING_OLD afterwards, it would now look as if no timestamping=
+
+> flags have been set. Is this an acceptable change? If not, I=E2=80=99m =
+happy to
+> change getsockopt() to only be strict about the newly-implemented
+> getsockopt(SO_TIMESTAMPING_NEW), or not distinguish between
+> SO_TIMESTAMPING_NEW and SO_TIMESTAMPING_OLD at all.
+
+Yeah, I think it would be best if we keep the old behavior and let
+SO_TIMESTAMPING_OLD return timestamps for both new/old. It looks
+like it should be relatively easy to implement?
+
+Otherwise the series lgtm.
+
+> =
+
+> J=C3=B6rn-Thorben Hinz (2):
+>   net: Implement missing getsockopt(SO_TIMESTAMPING_NEW)
+>   bpf: Allow setting SO_TIMESTAMPING* with bpf_setsockopt()
+> =
+
+>  include/uapi/linux/bpf.h                            | 3 ++-
+>  net/core/filter.c                                   | 2 ++
+>  net/core/sock.c                                     | 9 +++++++--
+>  tools/include/uapi/linux/bpf.h                      | 3 ++-
+>  tools/testing/selftests/bpf/progs/bpf_tracing_net.h | 2 ++
+>  tools/testing/selftests/bpf/progs/setget_sockopt.c  | 4 ++++
+>  6 files changed, 19 insertions(+), 4 deletions(-)
+> =
+
+> -- =
+
+> 2.39.2
+> =
+
+> =
 
