@@ -1,64 +1,72 @@
-Return-Path: <bpf+bounces-3852-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3853-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87E5E745180
-	for <lists+bpf@lfdr.de>; Sun,  2 Jul 2023 21:47:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AF9A745361
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 02:53:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A1A91C203AB
-	for <lists+bpf@lfdr.de>; Sun,  2 Jul 2023 19:47:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1166F1C2084D
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 00:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5B13FE6;
-	Sun,  2 Jul 2023 19:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F18BE386;
+	Mon,  3 Jul 2023 00:53:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615463C2A
-	for <bpf@vger.kernel.org>; Sun,  2 Jul 2023 19:47:19 +0000 (UTC)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521FC7EEC
-	for <bpf@vger.kernel.org>; Sun,  2 Jul 2023 12:46:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688327219; x=1719863219;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bjkZcrlCYzUk4zYchWcObPkc5bbNOF9ptg5FMavZJA8=;
-  b=A4Anf7wuLlc9t28QbagGoHGDMUZGtfq4ZkSSGJU54qKkDBr2gUwsy1p5
-   Q6eDrEtTo7zGCfHUrPUx1+vyZmzhBajzs+G+jskp5bVbo3MfoHCf+9r2f
-   gRqPO+qbTcDvT6UtMCo+OGBJ+0LzUA1Ms+3YWtlWXGO0zAV/LYvqVO1pB
-   +dmGYI2MiVWkl9dLXDpxqtSy+XJqqkrNg+pKiu74F+DWWRq/nDTa5yo67
-   +awzAx7D01Jc1Hja1lrdyPrM09NBOKVl9YDrlDplS2TeS1Ef36UR/a8kr
-   7oKa8J3tTKcN1yfywXFwaOZElh9eUchXtPzlMt71nnDt7p1pJL9ZP8C3D
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10759"; a="426416409"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
-   d="scan'208";a="426416409"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2023 12:46:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10759"; a="718395415"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
-   d="scan'208";a="718395415"
-Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 02 Jul 2023 12:46:47 -0700
-Received: from kbuild by 783282924a45 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qG31y-000Gr5-1i;
-	Sun, 02 Jul 2023 19:46:46 +0000
-Date: Mon, 3 Jul 2023 03:45:49 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jackie Liu <liu.yun@linux.dev>, olsajiri@gmail.com, andrii@kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-	bpf@vger.kernel.org, liuyun01@kylinos.cn
-Subject: Re: [PATCH v2 1/2] libbpf: kprobe.multi: cross filter using
- available_filter_functions and kallsyms
-Message-ID: <202307030355.TdXOHklM-lkp@intel.com>
-References: <20230701080817.1768865-1-liu.yun@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDA3362
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 00:53:44 +0000 (UTC)
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4F1E44
+	for <bpf@vger.kernel.org>; Sun,  2 Jul 2023 17:53:43 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-38c35975545so3091753b6e.1
+        for <bpf@vger.kernel.org>; Sun, 02 Jul 2023 17:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688345622; x=1690937622;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3YIl3ZWl3QyLgO2B2pfQROc9bdW4usFyk2hfLJv297g=;
+        b=akuKmUfWa3wV3aLlC5glsCPHE+IcnAkaFrGmCRTEqD3S1ofdWcINx2qiGFmG90p0iE
+         NN7DvOETWzWAW2B1l+Ud4+XYKHSYB+ebuj+7c6jltdJFlGDy+zUG49/miXwsI/5y7ZrV
+         EIh5eDxVmmN8tqHQeHFZa1SxsGwDev0ZAMwHYBZYPIARUJpbyP+Oqfexq5sEXw5aZKV5
+         ZDROTlpwmMt5eCR5PzTjfp9GdbI2JADfK+aevvONkOF+VYyWrr2f2r+ko2sztgmR55jW
+         x7MocJdw0dg7NOWVedfpytMvDwpvOSmtoRKCNCSatW6NOWpcq7om5dgXfnxd4qix43cP
+         97LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688345622; x=1690937622;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3YIl3ZWl3QyLgO2B2pfQROc9bdW4usFyk2hfLJv297g=;
+        b=WM75x92qXWHybF04I8vj74OUpUOkWZzm5bXXscYwUWGsQW61gUuCmi9qYjz0m1b0ON
+         zzlxACkbZ8Wu3kBa1IT0gxqkb6+3aOQYrTe3rbuZ739mRAZvdYgUuvtBbk+o9N1hYPSR
+         cqHwKHwAdBFu9FrmP1MPyiQeGbw2aZ3oEZ7eCMvmMsoRVlRMuCFVDJl5Oa/oZk2usBG4
+         bLp4UoXkBUvDL7TCcWW5VrCy/DXYzPO9GkgIl2lNTTO8FQLvuSsjavaqmk5ggUui1Cfm
+         u8P0tcTuwkZDOAM/XupISDWC8n3BfF4SZaK+5RZ+9t50VRznLEswwFwMUkGuvhOOMyMO
+         +JbQ==
+X-Gm-Message-State: AC+VfDx6Mk0wk5YfkGKgkXH63cDo91cu2nu9GtBOJ35LMahYTKcqWs9A
+	x5pKdR+VjADjuk+90b1F4Uw=
+X-Google-Smtp-Source: ACHHUZ7XDInD8siLTuDbwkkw0Q8FGsrnZ0tkIo0JwMhnUdtKBvN14o+VsA4asZlQYddCS3Fq9sQjow==
+X-Received: by 2002:a05:6808:a93:b0:3a2:8453:39ca with SMTP id q19-20020a0568080a9300b003a2845339camr9241489oij.14.1688345622383;
+        Sun, 02 Jul 2023 17:53:42 -0700 (PDT)
+Received: from MacBook-Pro-8.local ([2620:10d:c090:400::5:f715])
+        by smtp.gmail.com with ESMTPSA id q17-20020a62ae11000000b00679dc747738sm10660860pff.10.2023.07.02.17.53.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Jul 2023 17:53:41 -0700 (PDT)
+Date: Sun, 2 Jul 2023 17:53:39 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Fangrui Song <maskray@google.com>, kernel-team@fb.com
+Subject: Re: [RFC PATCH bpf-next 01/13] bpf: Support new sign-extension load
+ insns
+Message-ID: <20230703005339.zjljypzmyhh73cfa@MacBook-Pro-8.local>
+References: <20230629063715.1646832-1-yhs@fb.com>
+ <20230629063721.1647917-1-yhs@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,54 +75,43 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230701080817.1768865-1-liu.yun@linux.dev>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+In-Reply-To: <20230629063721.1647917-1-yhs@fb.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Jackie,
+On Wed, Jun 28, 2023 at 11:37:21PM -0700, Yonghong Song wrote:
+>  
+> +/* LDX: dst_reg = *(s8*)(src_reg + off) */
+> +static void emit_lds(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+> +{
+...
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 60a9d59beeab..b28109bc5c54 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -19,6 +19,7 @@
+>  
+>  /* ld/ldx fields */
+>  #define BPF_DW		0x18	/* double word (64-bit) */
+> +#define BPF_MEMS	0x80	/* load with sign extension */
 
-kernel test robot noticed the following build errors:
+Intel assembly instruction to do sign extending mov is called 'movsx'.
+Let's adopt SX suffix here and in other patches ?
 
-[auto build test ERROR on bpf-next/master]
-[also build test ERROR on bpf/master linus/master v6.4 next-20230630]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+s/BPF_MEMS/BPF_MEMSX/ here.
+s/emit_lds/emit_ldsx/ above.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jackie-Liu/libbpf-kprobe-multi-Filter-with-available_filter_functions_addrs/20230701-161010
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230701080817.1768865-1-liu.yun%40linux.dev
-patch subject: [PATCH v2 1/2] libbpf: kprobe.multi: cross filter using available_filter_functions and kallsyms
-config: x86_64-buildonly-randconfig-r001-20230702 (https://download.01.org/0day-ci/archive/20230703/202307030355.TdXOHklM-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230703/202307030355.TdXOHklM-lkp@intel.com/reproduce)
+s/emit_movs_reg/emit_movsx_reg/ in patch 3.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307030355.TdXOHklM-lkp@intel.com/
+s/bpf_movs_string/bpf_movsx_string/ in patch 7
+s/bpf_lds_string/bpf_ldsx_string/ in patch 7.
+s/is_movs/is_movsx/ in patch 7.
 
-All errors (new ones prefixed by >>):
+sdiv/smod can stay as-is.
 
->> libbpf.c:10626:57: error: 'fscanf' may overflow; destination buffer in argument 4 has size 256, but the corresponding specifier may require size 500 [-Werror,-Wfortify-source]
-                   ret = fscanf(f, "%llx %*c %499s%*[^\n]\n", &sym_addr, sym_name);
-                                                                         ^
-   1 error generated.
-   make[5]: *** [tools/build/Makefile.build:97: tools/bpf/resolve_btfids/libbpf/staticobjs/libbpf.o] Error 1
-   make[5]: *** Waiting for unfinished jobs....
-   make[4]: *** [Makefile:157: tools/bpf/resolve_btfids/libbpf/staticobjs/libbpf-in.o] Error 2
-   make[3]: *** [Makefile:63: tools/bpf/resolve_btfids//libbpf/libbpf.a] Error 2
-   make[2]: *** [Makefile:76: bpf/resolve_btfids] Error 2 shuffle=967315254
-   make[1]: *** [Makefile:1446: tools/bpf/resolve_btfids] Error 2 shuffle=967315254
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:226: __sub-make] Error 2 shuffle=967315254
-   make: Target 'prepare' not remade because of errors.
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Naming is hard, of course.
 
