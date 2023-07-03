@@ -1,118 +1,129 @@
-Return-Path: <bpf+bounces-3859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3860-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CD0E745602
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 09:26:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D843E7458B6
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 11:46:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AED8280CC6
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 07:26:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F077B1C2088D
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 09:46:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CD8A52;
-	Mon,  3 Jul 2023 07:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8700D441F;
+	Mon,  3 Jul 2023 09:46:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4820881E
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 07:26:25 +0000 (UTC)
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133DCE79
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 00:26:12 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id a1e0cc1a2514c-76d846a4b85so1220678241.1
-        for <bpf@vger.kernel.org>; Mon, 03 Jul 2023 00:26:12 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C32320F5
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 09:46:14 +0000 (UTC)
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F4EE5D
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 02:46:11 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51d9a925e9aso5353694a12.0
+        for <bpf@vger.kernel.org>; Mon, 03 Jul 2023 02:46:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1688369171; x=1690961171;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=AFhL3WX439UF4ApWUsjLXGA8K76NwNV7mdB9JrDSbOs=;
-        b=DHzBol8NLJ+48zey6G6sAvkl6ZLmYaukks2MSceVz9eVvrtdUcyJ7mgcYSrSO0hTwW
-         2iVMxffzSLK0S2/rPMgLtNkyJjYZUKmqi8+xlyXOlLQjLrlwi/Z83AwdtiZ5b7loS6dA
-         9hhK9Sl0KSPoDlNfosKy43Jfeqn3agIJyzOHO9P4eyJIHAmCkk/HpC0YsAiF7G4UnTBv
-         q2nXKbdUE9jZeWnadixu10OKXl3xbJWeJZAWfW2I/1enV/ofupc3gmNxVbhB+V+Wt8xe
-         aqkGFYTgm1S8qtpKLatDn5ft4qkD7eWDUourxJc5SV8rSaXP0pKTeUIJngzgXv/QvbEM
-         ubNw==
+        d=isovalent.com; s=google; t=1688377570; x=1690969570;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RAVcfp0GiSAt76fo4gLjijfKkWn98YypFzYe/HtvOKU=;
+        b=HD95sOKgKpvDJjMobg5G+wIZgo1K7nnWBpuhskATho6HC5AoGzaZi8rRmPIxXemMq2
+         o900X+GzpDo2XZJD199KKY9MrfZHJFr1QtuwRd07VlpmXVZUTLfY0LLTq3xJYVCf/a4/
+         /0Le0hGJ5S4GMofEHiKUfaE6g50i0psznpRYu0R6MrOjBoTFVXnIkMsSkcUuBrWx8DBw
+         oBHpe79OG2ppm+LVFsp/ULOh1mU+SX9eS6o2rIB95lTdmDBUNaDrUUfwMUNKiKzd7Zv3
+         Tk8Lbpw0bJDK7E0+tJ9vUBc6XdoMDUaVABlzzlWA1H71sDEgy4C5RdTlA38Ni0SAY8p1
+         A+Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688369171; x=1690961171;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AFhL3WX439UF4ApWUsjLXGA8K76NwNV7mdB9JrDSbOs=;
-        b=KMhOmKMeuy8plKKwheHV3plgutQih8yv6d4iYGlMwjIr0BvG+ZcuYk6roRS1dFl7yw
-         ekh/0zRPqcAP4SoNMZHW9CS51xy1fe0ZzOsCxtutNLxoAdmcfTO5ZF490uatDbJceL9g
-         DRHhacXF9nzb2jPnmGDim2Zkow8V/fsQyfFku1bWI1KOsjXGlFGdj44vZFZMh/V+ep0O
-         Oa4oimhx4+HjI5sh0kJ/z/iA6v/UQu72BFLpBNBYc3ULOw1BlreoSRSkKnF30iKJdiVw
-         LtZqLECFaV7UMmb8UIjxVUg80BEE0pc0BZSTAc3nWp3soElEyBi9J51AbNZ6NqgBeCSv
-         XqxQ==
-X-Gm-Message-State: ABy/qLajKy+SuLoTOdHRHa14Fk9hr0Ic4NGyuquMIgWJh6qF5mOyoaRZ
-	jGSXRiafS84jE5HBImK24iLSjjTNC/1eUzcgJEWugA==
-X-Google-Smtp-Source: APBJJlGau/9OizFSeLgMU/K7IoZbflIEWzaM5xflRF3SI1OEFTJw/gCMYBFgMESsm8IteNIYVawKBkXDI8mVc+q8tBM=
-X-Received: by 2002:a67:f651:0:b0:443:51a7:b63d with SMTP id
- u17-20020a67f651000000b0044351a7b63dmr4037175vso.23.1688369171044; Mon, 03
- Jul 2023 00:26:11 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1688377570; x=1690969570;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RAVcfp0GiSAt76fo4gLjijfKkWn98YypFzYe/HtvOKU=;
+        b=KDfnOk19thDFontBz4c4Swh1/vBaypogNN/HJnmiQfzWIa0F2QOyAcr3f1y2J8kwoS
+         P30O36M2gbfVx5m9OrpM7YDYHTXjgSZXMjhwITE6hY14UWeiUqCJ1wAFSvmIPLyhl7rf
+         sZD0Girc3eH4aD3ZC/MdbEGC2gS3mTz5hRnAF3hqh0QxEWFWpL3hH1DUcsnH74nP2Psf
+         gtEpQA07UvvSUUdAGZ1b+s6XSuQblUH3YGVlhm7lQdaG3jT8Jq3HY6AEwmL1d/PArf3P
+         GLPsEQWabC0RUfnWltoYwO5gW6JCotsgeQvEBKLtNLh0J7r/RHAQdhQqFErnD6mYizDE
+         YKgw==
+X-Gm-Message-State: ABy/qLY/zuuz4rIM027SSu3UDdQ4V6eg8xyjsNseMmjL6EKAaHFFdb+f
+	542/uMsopjpNlMwe5lLx9W+z4eXrO/k/HiAzUxcmYQ==
+X-Google-Smtp-Source: APBJJlH9SIlxp9gcpjrHbH85ZHsZVFnc5U9Yd+D/8BddOA5vnCK0mJ3tEWyu6sryEtQD1gdVrrGDxUNjQ+uJXH990sw=
+X-Received: by 2002:a17:906:37cc:b0:94f:449e:75db with SMTP id
+ o12-20020a17090637cc00b0094f449e75dbmr7501039ejc.52.1688377570306; Mon, 03
+ Jul 2023 02:46:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 3 Jul 2023 12:55:59 +0530
-Message-ID: <CA+G9fYt1ZtucYds=p-Z+4sZ+nHMeEAFh2Fbe63VS_03-UsRwBg@mail.gmail.com>
-Subject: next: perf: 32-bit: bench/sched-seccomp-notify.c:139:24: error:
- format '%lu' expects argument of type 'long unsigned int', but argument 2 has
- type 'uint64_t'
-To: open list <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
-	bpf <bpf@vger.kernel.org>
-Cc: Andrei Vagin <avagin@google.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, 
-	Kees Cook <keescook@chromium.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+References: <20230613-so-reuseport-v4-3-4ece76708bba@isovalent.com> <20230628183258.74704-1-kuniyu@amazon.com>
+In-Reply-To: <20230628183258.74704-1-kuniyu@amazon.com>
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Mon, 3 Jul 2023 10:45:59 +0100
+Message-ID: <CAN+4W8ihqdQnZW5oWxhgmNaEDisdG9UDQYozVw_HpR41HkWL_g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/7] net: remove duplicate reuseport_lookup functions
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org, 
+	edumazet@google.com, haoluo@google.com, hemanthmalla@gmail.com, 
+	joe@wand.net.nz, john.fastabend@gmail.com, jolsa@kernel.org, 
+	kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, martin.lau@linux.dev, mykolal@fb.com, 
+	netdev@vger.kernel.org, pabeni@redhat.com, sdf@google.com, shuah@kernel.org, 
+	song@kernel.org, willemdebruijn.kernel@gmail.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Following build regressions noticed on Linux next-20230703.
+On Wed, Jun 28, 2023 at 7:33=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.co=
+m> wrote:
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > +
+> > +inet6_ehashfn_t inet6_ehashfn;
+> > +
+> > +INDIRECT_CALLABLE_DECLARE(inet6_ehashfn_t udp6_ehashfn);
+>
+> We need not define udp6_ehashfn() here as inet6_hashtables.c has
+> the definition.
+>
+> Only inet6_ehashfn() is needed because sk_ehashfn() uses it.
 
-Regressions found on i386:
+Without udp6_ehashfn we get the following error, as reported by Simon
+against v1:
 
-  - build/gcc-11-lkftconfig-perf
+net/ipv4/udp.c:410:5: error: no previous prototype for =E2=80=98udp_ehashfn=
+=E2=80=99
+[-Werror=3Dmissing-prototypes]
+  410 | u32 udp_ehashfn(const struct net *net, const __be32 laddr,
+const __u16 lport,
+      |     ^~~~~~~~~~~
 
-Regressions found on arm:
+> > +inet_ehashfn_t inet_ehashfn;
+> > +
+> > +INDIRECT_CALLABLE_DECLARE(inet_ehashfn_t udp_ehashfn);
+> > +
+>
+> We don't need inet_ehashfn() and udp_ehashfn() declarations here.
 
-  - build/gcc-10-lkftconfig-perf
-  - build/gcc-11-lkftconfig-perf
+Without inet_ehashfn I get:
 
-Build error:
-=======
-bench/sched-seccomp-notify.c: In function 'bench_sched_seccomp_notify':
-bench/sched-seccomp-notify.c:139:24: error: format '%lu' expects
-argument of type 'long unsigned int', but argument 2 has type
-'uint64_t' {aka 'long long unsigned int'} [-Werror=format=]
-  139 |   printf("# Executed %lu system calls\n\n",
-      |                      ~~^
-      |                        |
-      |                        long unsigned int
-      |                      %llu
-  140 |    loops);
-      |    ~~~~~
-      |    |
-      |    uint64_t {aka long long unsigned int}
-cc1: all warnings being treated as errors
-make[4]: *** [tools/build/Makefile.build:97:
-/home/tuxbuild/.cache/tuxmake/builds/1/build/bench/sched-seccomp-notify.o]
-Error 1
+./include/net/inet_hashtables.h: In function =E2=80=98__inet_lookup_skb=E2=
+=80=99:
+./include/net/inet_hashtables.h:501:42: error: =E2=80=98inet_ehashfn=E2=80=
+=99
+undeclared (first use in this function); did you mean =E2=80=98inet_bhashfn=
+=E2=80=99?
+  501 |                              refcounted, inet_ehashfn);
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230703/testrun/18069798/suite/build/test/gcc-10-lkftconfig-perf/history/
+Same problem with the warning as above.
 
-
---
-Linaro LKFT
-https://lkft.linaro.org
+I think this needs to stay the way it is.
 
