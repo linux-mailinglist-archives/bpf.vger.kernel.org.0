@@ -1,157 +1,288 @@
-Return-Path: <bpf+bounces-3918-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3919-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62BF374635B
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 21:33:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D24BA74636A
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 21:38:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9454B1C20A67
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 19:33:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E79F280EA2
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 19:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5B9F11C80;
-	Mon,  3 Jul 2023 19:33:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A6B111B6;
+	Mon,  3 Jul 2023 19:38:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B6B100C6;
-	Mon,  3 Jul 2023 19:33:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA5A6C433C7;
-	Mon,  3 Jul 2023 19:33:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688412784;
-	bh=5GiKGXz2Jjawc0vw5ewoGxNpn1aEI74Qx6QeMHdP0mY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EqiVzHAyn+iKQLe7BUBjNx5Zbc3h9gqQa35t6mLJnAgtPnlEVeaWjkbF6bChLVT8U
-	 K5uKjKaiWKknlauWMtCcYmmy5Q1SSV+6AEg53Hq0IP0KofE7nUrM7dO6EG+RD0Lab1
-	 eDw2YFjoMb5ZpUOJKPkpb46C0Mh5ypv0FXDzFC3JihjhtYIqjtSE98ABwY+/QC+OSm
-	 X5j8gR7YnCywItsh5DJDPQEn6hMIbh7dVFwaW9ZmnCIR0VDCI1ospxUmXZ/G4sQ8mx
-	 uhC1oNH4+FcOTrKToshmRbObVn/21PFwv9O1ioEH+ZI3+TnfcBsO1TbE3MCOWceEVa
-	 PJh+oncs/mzAg==
-Date: Mon, 3 Jul 2023 12:33:03 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
- Stanislav Fomichev <sdf@google.com>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Donald Hunter <donald.hunter@gmail.com>,
- bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Network Development
- <netdev@vger.kernel.org>
-Subject: Re: [RFC bpf-next v2 11/11] net/mlx5e: Support TX timestamp
- metadata
-Message-ID: <20230703123303.220ee6ef@kernel.org>
-In-Reply-To: <64a313d41bd2c_5fc9a20839@john.notmuch>
-References: <20230622195757.kmxqagulvu4mwhp6@macbook-pro-8.dhcp.thefacebook.com>
-	<CAKH8qBvJmKwgdrLkeT9EPnCiTu01UAOKvPKrY_oHWySiYyp4nQ@mail.gmail.com>
-	<CAADnVQKfcGT9UaHtAmWKywtuyP9+_NX0_mMaR0m9D0-a=Ymf5Q@mail.gmail.com>
-	<CAKH8qBuJpybiTFz9vx+M+5DoGuK-pPq6HapMKq7rZGsngsuwkw@mail.gmail.com>
-	<CAADnVQ+611dOqVFuoffbM_cnOf62n6h+jaB1LwD2HWxS5if2CA@mail.gmail.com>
-	<m2bkh69fcp.fsf@gmail.com>
-	<649637e91a709_7bea820894@john.notmuch>
-	<CAADnVQKUVDEg12jOc=5iKmfN-aHvFEtvFKVEDBFsmZizwkXT4w@mail.gmail.com>
-	<20230624143834.26c5b5e8@kernel.org>
-	<ZJeUlv/omsyXdO/R@google.com>
-	<ZJoExxIaa97JGPqM@google.com>
-	<CAADnVQKePtxk6Nn=M6in6TTKaDNnMZm-g+iYzQ=mPoOh8peoZQ@mail.gmail.com>
-	<CAKH8qBv-jU6TUcWrze5VeiVhiJ-HUcpHX7rMJzN5o2tXFkS8kA@mail.gmail.com>
-	<649b581ded8c1_75d8a208c@john.notmuch>
-	<20230628115204.595dea8c@kernel.org>
-	<87y1k2fq9m.fsf@toke.dk>
-	<649f78b57358c_30943208c4@john.notmuch>
-	<20230630201100.0bb9b1f3@kernel.org>
-	<64a313d41bd2c_5fc9a20839@john.notmuch>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6C7111A6
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 19:38:18 +0000 (UTC)
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFB9197
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 12:38:16 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-553b2979fceso1829135a12.3
+        for <bpf@vger.kernel.org>; Mon, 03 Jul 2023 12:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688413096; x=1691005096;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EL1WyYK5AVfgbPEJZhdLd7ON6UVF+qByKm6rgAaeO50=;
+        b=FmXSXvwtnda4qtIlbNUuSNBapFn9AUmXKMSI/eZPBSmRAU6RV9/ejjZpImeG+TxIrz
+         MSY1B5joNpV3XrQ25HheUFdNrv/7GzUVb6WGD0U59U3qkWFsNN+NC5Bbn70H/A41PoSL
+         5WbTnsZ6GbgZamSABbDtheNOFCepw9Nw2ocdd5uufHETbyhXvqPDHid4j72H4XxzCCzw
+         MVKDN8sjLNKV5vGcFZhxuPNQOCg/2XgbsMGS1vapc4Q6KTuIpFoT80n/MVTCzxpJ4gMS
+         02FHykpZaNlCoXUEblBRj4xksT8vK4TBi1J/ZPyT2pgzBAhivy8gkbjZlG+4Zt8hAG5f
+         q07w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688413096; x=1691005096;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EL1WyYK5AVfgbPEJZhdLd7ON6UVF+qByKm6rgAaeO50=;
+        b=a8TzZMAlJj0FJ8WYFVfVWGUfmPEBLvHs1tXJkzbB2SVk53hiAwwvXQ96/fXZe5o8gE
+         xLN/sFy0QN78mavoF3ZdneXzcoJDL/tgJ2Xrr2ybOwIDihX8wahYALA986THF2rQY6Rx
+         lXN1DMwnN8W3xaUMqCmfao0oqRqKk7lgHWSEphmEgi1F4JsVjkg+9ionvbE7jfergtIh
+         JwYhp3+zTDqjaKMEjFPo9mIq7CZbkJnMPvQgH3rQ+rFq9xl7QTZCRJEqTAzg2MCKIjzn
+         4M+hCzoclpZ70NHhajooP8GBz8kyGThdfoP05HAsCbwabBgQFbHMpU2VfM+xZ7YHFtc9
+         UqcA==
+X-Gm-Message-State: AC+VfDwqYxLkGGMpACVqInxhW59csKuw5/3lNe8rhBLOEIsZlrfsFMCI
+	mZk7IOm3nVNggfNo1qlZ8Lo=
+X-Google-Smtp-Source: ACHHUZ6vQP7wJyJQhNZdOs6YpLKSAv6bHBvfYoxu0yqrSAQTGcdEmSdBvG8gD+ZqCmdon8b3PAq8Vg==
+X-Received: by 2002:a05:6a20:488:b0:126:7d25:b0ce with SMTP id 8-20020a056a20048800b001267d25b0cemr9305632pzc.51.1688413095969;
+        Mon, 03 Jul 2023 12:38:15 -0700 (PDT)
+Received: from localhost ([2605:59c8:148:ba10::41f])
+        by smtp.gmail.com with ESMTPSA id e5-20020a17090301c500b001b86deba2f9sm6183718plh.284.2023.07.03.12.38.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Jul 2023 12:38:15 -0700 (PDT)
+Date: Mon, 03 Jul 2023 12:38:14 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Jackie Liu <liu.yun@linux.dev>, 
+ olsajiri@gmail.com, 
+ andrii@kernel.org
+Cc: martin.lau@linux.dev, 
+ song@kernel.org, 
+ yhs@fb.com, 
+ bpf@vger.kernel.org, 
+ liuyun01@kylinos.cn, 
+ lkp@intel.com
+Message-ID: <64a323a635491_628d32081e@john.notmuch>
+In-Reply-To: <20230703013618.1959621-1-liu.yun@linux.dev>
+References: <20230703013618.1959621-1-liu.yun@linux.dev>
+Subject: RE: [PATCH v3 1/2] libbpf: kprobe.multi: cross filter using
+ available_filter_functions and kallsyms
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Mon, 03 Jul 2023 11:30:44 -0700 John Fastabend wrote:
-> Jakub Kicinski wrote:
-> > On Fri, 30 Jun 2023 17:52:05 -0700 John Fastabend wrote:  
-> > > I would expect BPF/driver experts would write the libraries for the
-> > > datapath API that the network/switch developer is going to use. I would
-> > > even put the BPF programs in kernel and ship them with the release
-> > > if that helps.
-> > > 
-> > > We have different visions on who the BPF user is that writes XDP
-> > > programs I think.  
-> > 
-> > Yes, crucially. What I've seen talking to engineers working on TC/XDP
-> > BPF at Meta (and I may not be dealing with experts, Martin would have
-> > a broader view) is that they don't understand basics like s/g or
-> > details of checksums.  
+Jackie Liu wrote:
+> From: Jackie Liu <liuyun01@kylinos.cn>
 > 
-> Interesting data point. But these same engineers will want to get
-> access to the checksum, but don't understand it? Seems if your
-> going to start reading/writing descriptors even through kfuncs
-> we need to get some docs/notes on how to use them correctly then.
-> We certainly wont put guardrails on the read/writes for performance
-> reasons.
-
-Dunno about checksum, but it's definitely the same kind of person
-that'd want access to timestamps.
-
-> > I don't think it is reasonable to call you, Maxim, Nik and co. "users".
-> > We're risking building system so complex normal people will _need_ an
-> > overlay on top to make it work.  
+> When using regular expression matching with "kprobe multi", it scans all
+> the functions under "/proc/kallsyms" that can be matched. However, not all
+> of them can be traced by kprobe.multi. If any one of the functions fails
+> to be traced, it will result in the failure of all functions. The best
+> approach is to filter out the functions that cannot be traced to ensure
+> proper tracking of the functions.
 > 
-> I consider us users. We write networking CNI and observability/sec
-> tooling on top of BPF. Most of what we create is driven by customer
-> environments and performance. Maybe not typical users I guess, but
-> also Meta users are not typical and have their own set of constraints
-> and insights.
-
-One thing Meta certainly does (and I think is a large part of success
-of BPF) is delegating the development of applications away from the core
-kernel team. Meta is different than a smaller company in that it _has_
-a kernel team, but the "network application" teams I suspect are fairly
-typical.
-
-> > > Its pushing complexity into the kernel that we maintain in kernel
-> > > when we could push the complexity into BPF and maintain as user
-> > > space code and BPF codes. Its a choice to make I think.  
-> > 
-> > Right, and I believe having the code in the kernel, appropriately
-> > integrated with the drivers is beneficial. The main argument against 
-> > it is that in certain environments kernels are old. But that's a very
-> > destructive argument.  
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307030355.TdXOHklM-lkp@intel.com/
+> Suggested-by: Jiri Olsa <jolsa@kernel.org>
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+> ---
+>  v2->v3: fix 'fscanf' may overflow
 > 
-> My main concern here is we forget some kfunc that we need and then
-> we are stuck. We don't have the luxury of upgrading kernels easily.
-> It doesn't need to be an either/or discussion if we have a ctx()
-> call we can drop into BTF over the descriptor and use kfuncs for
-> the most common things. Other option is to simply write a kfunc
-> for every field I see that could potentially have some use even
-> if I don't fully understand it at the moment.
+>  tools/lib/bpf/libbpf.c | 122 ++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 109 insertions(+), 13 deletions(-)
 > 
-> I suspect I am less concerned about raw access because we already
-> have BTF infra built up around our network observability/sec
-> solution so we already handle per kernel differences and desc.
-> just looks like another BTF object we want to read. And we
-> know what dev and types we are attaching to so we don't have
-> issues with is this a mlx or intel or etc device.
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 214f828ece6b..232268215bb7 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -10224,6 +10224,12 @@ static const char *tracefs_uprobe_events(void)
+>  	return use_debugfs() ? DEBUGFS"/uprobe_events" : TRACEFS"/uprobe_events";
+>  }
+>  
+> +static const char *tracefs_available_filter_functions(void)
+> +{
+> +	return use_debugfs() ? DEBUGFS"/available_filter_functions" :
+> +			       TRACEFS"/available_filter_functions";
+> +}
+> +
+>  static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
+>  					 const char *kfunc_name, size_t offset)
+>  {
+> @@ -10539,23 +10545,113 @@ struct kprobe_multi_resolve {
+>  	size_t cnt;
+>  };
+>  
+> -static int
+> -resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+> -			const char *sym_name, void *ctx)
+> +static int qsort_compare_function(const void *a, const void *b)
+>  {
+> -	struct kprobe_multi_resolve *res = ctx;
+> -	int err;
+> +	return strcmp(*(const char **)a, *(const char **)b);
+> +}
+>  
+> -	if (!glob_match(sym_name, res->pattern))
+> -		return 0;
+> +static int bsearch_compare_function(const void *a, const void *b)
+> +{
+> +	return strcmp((const char *)a, *(const char **)b);
+> +}
+>  
+> -	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(unsigned long),
+> -				res->cnt + 1);
+> -	if (err)
+> +static int libbpf_available_kallsyms_parse(struct kprobe_multi_resolve *res)
+> +{
+> +	char sym_name[500];
+> +	const char *available_functions_file = tracefs_available_filter_functions();
+> +	FILE *f;
+> +	int err = 0, ret, i;
+> +	struct function_info {
+> +		const char **syms;
+> +		size_t cap;
+> +		size_t cnt;
+> +	} infos = {};
+> +
+> +	f = fopen(available_functions_file, "r");
+> +	if (!f) {
+> +		err = -errno;
+> +		pr_warn("failed to open %s\n", available_functions_file);
+>  		return err;
+> +	}
+>  
+> -	res->addrs[res->cnt++] = (unsigned long) sym_addr;
+> -	return 0;
+> +	while (true) {
+> +		char *name;
+> +
+> +		ret = fscanf(f, "%499s%*[^\n]\n", sym_name);
+> +		if (ret == EOF && feof(f))
+> +			break;
+> +
+
+Looks like you fixed up the fclose() issues, sorry about the noise
+reading email backwards.
+
+
+bit of a nit...
+
+Its probably worth handling the case where ret == EOF and its
+not feof(f) that man page claims can happen on read error for
+example. Might never happen but would be good to distinguish from
+-EINVAL below?
+
+> +		if (ret != 1) {
+> +			pr_warn("failed to read available function file entry: %d\n",
+> +				ret);
+> +			err = -EINVAL;
+> +			goto cleanup;
+> +		}
+> +
+> +		if (!glob_match(sym_name, res->pattern))
+> +			continue;
+> +
+> +		err = libbpf_ensure_mem((void **)&infos.syms, &infos.cap,
+> +					sizeof(void *), infos.cnt + 1);
+> +		if (err)
+> +			goto cleanup;
+> +
+> +		name = strdup(sym_name);
+> +		if (!name) {
+> +			err = -errno;
+> +			goto cleanup;
+> +		}
+> +
+> +		infos.syms[infos.cnt++] = name;
+> +	}
+> +	fclose(f);
+> +
+> +	/* sort available functions */
+> +	qsort(infos.syms, infos.cnt, sizeof(void *), qsort_compare_function);
+> +
+> +	f = fopen("/proc/kallsyms", "r");
+> +	if (!f) {
+> +		err = -errno;
+> +		pr_warn("failed to open /proc/kallsyms\n");
+> +		goto free_infos;
+> +	}
+> +
+> +	while (true) {
+> +		unsigned long long sym_addr;
+> +
+> +		ret = fscanf(f, "%llx %*c %499s%*[^\n]\n", &sym_addr, sym_name);
+> +		if (ret == EOF && feof(f))
+> +			break;
+
+Same off chance we get ret == EOF and !feof(f)?
+
+> +
+> +		if (ret != 2) {
+> +			pr_warn("failed to read kallsyms entry: %d\n", ret);
+> +			err = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		if (!glob_match(sym_name, res->pattern))
+> +			continue;
+> +
+> +		if (!bsearch(&sym_name, infos.syms, infos.cnt, sizeof(void *),
+> +			     bsearch_compare_function))
+> +			continue;
+
+I'm wondering if we could get a debug print if the func was skipped? Its
+not always clear when running many kernels what is going to be skipped
+and where.
+
+> +
+> +		err = libbpf_ensure_mem((void **)&res->addrs, &res->cap,
+> +					sizeof(unsigned long), res->cnt + 1);
+> +		if (err)
+> +			break;
+> +
+> +		res->addrs[res->cnt++] = (unsigned long) sym_addr;
+> +	}
+> +
+> +cleanup:
+> +	fclose(f);
+> +free_infos:
+> +	for (i = 0; i < infos.cnt; i++)
+> +		free((char *)infos.syms[i]);
+> +	free(infos.syms);
+> +
+> +	return err;
+>  }
+>  
+>  struct bpf_link *
+> @@ -10594,7 +10690,7 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>  		return libbpf_err_ptr(-EINVAL);
+>  
+>  	if (pattern) {
+> -		err = libbpf_kallsyms_parse(resolve_kprobe_multi_cb, &res);
+> +		err = libbpf_available_kallsyms_parse(&res);
+>  		if (err)
+>  			goto error;
+>  		if (!res.cnt) {
+> -- 
+> 2.25.1
 > 
-> Also as a more practical concern how do we manage nic specific
-> things? 
-
-What are the NIC specific things?
-
-> Have nic spcific kfuncs? Per descriptor tx_flags and
-> status flags. Other things we need are ptr to skb and access
-> to the descriptor ring so we can pull stats off the ring. I'm
-> not arguing it can't be done with kfuncs, but if we go kfunc
-> route be prepared for a long list of kfuncs and driver specific
-> ones.
-
-IDK why you say that, I gave the base list of offloads in an earlier
-email.
+> 
 
