@@ -1,117 +1,235 @@
-Return-Path: <bpf+bounces-3853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AF9A745361
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 02:53:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF1957453A2
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 03:36:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1166F1C2084D
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 00:53:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 590F5280C68
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 01:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F18BE386;
-	Mon,  3 Jul 2023 00:53:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752E1394;
+	Mon,  3 Jul 2023 01:36:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDA3362
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 00:53:44 +0000 (UTC)
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4F1E44
-	for <bpf@vger.kernel.org>; Sun,  2 Jul 2023 17:53:43 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-38c35975545so3091753b6e.1
-        for <bpf@vger.kernel.org>; Sun, 02 Jul 2023 17:53:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688345622; x=1690937622;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3YIl3ZWl3QyLgO2B2pfQROc9bdW4usFyk2hfLJv297g=;
-        b=akuKmUfWa3wV3aLlC5glsCPHE+IcnAkaFrGmCRTEqD3S1ofdWcINx2qiGFmG90p0iE
-         NN7DvOETWzWAW2B1l+Ud4+XYKHSYB+ebuj+7c6jltdJFlGDy+zUG49/miXwsI/5y7ZrV
-         EIh5eDxVmmN8tqHQeHFZa1SxsGwDev0ZAMwHYBZYPIARUJpbyP+Oqfexq5sEXw5aZKV5
-         ZDROTlpwmMt5eCR5PzTjfp9GdbI2JADfK+aevvONkOF+VYyWrr2f2r+ko2sztgmR55jW
-         x7MocJdw0dg7NOWVedfpytMvDwpvOSmtoRKCNCSatW6NOWpcq7om5dgXfnxd4qix43cP
-         97LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688345622; x=1690937622;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3YIl3ZWl3QyLgO2B2pfQROc9bdW4usFyk2hfLJv297g=;
-        b=WM75x92qXWHybF04I8vj74OUpUOkWZzm5bXXscYwUWGsQW61gUuCmi9qYjz0m1b0ON
-         zzlxACkbZ8Wu3kBa1IT0gxqkb6+3aOQYrTe3rbuZ739mRAZvdYgUuvtBbk+o9N1hYPSR
-         cqHwKHwAdBFu9FrmP1MPyiQeGbw2aZ3oEZ7eCMvmMsoRVlRMuCFVDJl5Oa/oZk2usBG4
-         bLp4UoXkBUvDL7TCcWW5VrCy/DXYzPO9GkgIl2lNTTO8FQLvuSsjavaqmk5ggUui1Cfm
-         u8P0tcTuwkZDOAM/XupISDWC8n3BfF4SZaK+5RZ+9t50VRznLEswwFwMUkGuvhOOMyMO
-         +JbQ==
-X-Gm-Message-State: AC+VfDx6Mk0wk5YfkGKgkXH63cDo91cu2nu9GtBOJ35LMahYTKcqWs9A
-	x5pKdR+VjADjuk+90b1F4Uw=
-X-Google-Smtp-Source: ACHHUZ7XDInD8siLTuDbwkkw0Q8FGsrnZ0tkIo0JwMhnUdtKBvN14o+VsA4asZlQYddCS3Fq9sQjow==
-X-Received: by 2002:a05:6808:a93:b0:3a2:8453:39ca with SMTP id q19-20020a0568080a9300b003a2845339camr9241489oij.14.1688345622383;
-        Sun, 02 Jul 2023 17:53:42 -0700 (PDT)
-Received: from MacBook-Pro-8.local ([2620:10d:c090:400::5:f715])
-        by smtp.gmail.com with ESMTPSA id q17-20020a62ae11000000b00679dc747738sm10660860pff.10.2023.07.02.17.53.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Jul 2023 17:53:41 -0700 (PDT)
-Date: Sun, 2 Jul 2023 17:53:39 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Fangrui Song <maskray@google.com>, kernel-team@fb.com
-Subject: Re: [RFC PATCH bpf-next 01/13] bpf: Support new sign-extension load
- insns
-Message-ID: <20230703005339.zjljypzmyhh73cfa@MacBook-Pro-8.local>
-References: <20230629063715.1646832-1-yhs@fb.com>
- <20230629063721.1647917-1-yhs@fb.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BDD2362
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 01:36:33 +0000 (UTC)
+Received: from out-52.mta0.migadu.com (out-52.mta0.migadu.com [91.218.175.52])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B4C18F
+	for <bpf@vger.kernel.org>; Sun,  2 Jul 2023 18:36:31 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1688348189;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=13N9J5gxTFfgqs14HOsjZrzpqxkCAZ9ktqkserYTFZo=;
+	b=RNTiKDI1SUBK4THCQ4UNH1kwZn08sMCiSA4GBRJPkAEzj1J9tlLHxYyeO8BB9jcSnGMAzA
+	sOU3QDbIK/ZdM6p/s8kFtlXrWmdGpn1yeQSzMK936ZdQKAZyURN7+F/VKMi7tc6eq0X7sV
+	xyfSlbu8XOjQxIw0k81X7z8j71Nk0Ys=
+From: Jackie Liu <liu.yun@linux.dev>
+To: olsajiri@gmail.com,
+	andrii@kernel.org
+Cc: martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	bpf@vger.kernel.org,
+	liuyun01@kylinos.cn,
+	lkp@intel.com
+Subject: [PATCH v3 1/2] libbpf: kprobe.multi: cross filter using available_filter_functions and kallsyms
+Date: Mon,  3 Jul 2023 09:36:17 +0800
+Message-Id: <20230703013618.1959621-1-liu.yun@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230629063721.1647917-1-yhs@fb.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 28, 2023 at 11:37:21PM -0700, Yonghong Song wrote:
->  
-> +/* LDX: dst_reg = *(s8*)(src_reg + off) */
-> +static void emit_lds(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
-> +{
-...
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 60a9d59beeab..b28109bc5c54 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -19,6 +19,7 @@
->  
->  /* ld/ldx fields */
->  #define BPF_DW		0x18	/* double word (64-bit) */
-> +#define BPF_MEMS	0x80	/* load with sign extension */
+From: Jackie Liu <liuyun01@kylinos.cn>
 
-Intel assembly instruction to do sign extending mov is called 'movsx'.
-Let's adopt SX suffix here and in other patches ?
+When using regular expression matching with "kprobe multi", it scans all
+the functions under "/proc/kallsyms" that can be matched. However, not all
+of them can be traced by kprobe.multi. If any one of the functions fails
+to be traced, it will result in the failure of all functions. The best
+approach is to filter out the functions that cannot be traced to ensure
+proper tracking of the functions.
 
-s/BPF_MEMS/BPF_MEMSX/ here.
-s/emit_lds/emit_ldsx/ above.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202307030355.TdXOHklM-lkp@intel.com/
+Suggested-by: Jiri Olsa <jolsa@kernel.org>
+Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+---
+ v2->v3: fix 'fscanf' may overflow
 
-s/emit_movs_reg/emit_movsx_reg/ in patch 3.
+ tools/lib/bpf/libbpf.c | 122 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 109 insertions(+), 13 deletions(-)
 
-s/bpf_movs_string/bpf_movsx_string/ in patch 7
-s/bpf_lds_string/bpf_ldsx_string/ in patch 7.
-s/is_movs/is_movsx/ in patch 7.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 214f828ece6b..232268215bb7 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -10224,6 +10224,12 @@ static const char *tracefs_uprobe_events(void)
+ 	return use_debugfs() ? DEBUGFS"/uprobe_events" : TRACEFS"/uprobe_events";
+ }
+ 
++static const char *tracefs_available_filter_functions(void)
++{
++	return use_debugfs() ? DEBUGFS"/available_filter_functions" :
++			       TRACEFS"/available_filter_functions";
++}
++
+ static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
+ 					 const char *kfunc_name, size_t offset)
+ {
+@@ -10539,23 +10545,113 @@ struct kprobe_multi_resolve {
+ 	size_t cnt;
+ };
+ 
+-static int
+-resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+-			const char *sym_name, void *ctx)
++static int qsort_compare_function(const void *a, const void *b)
+ {
+-	struct kprobe_multi_resolve *res = ctx;
+-	int err;
++	return strcmp(*(const char **)a, *(const char **)b);
++}
+ 
+-	if (!glob_match(sym_name, res->pattern))
+-		return 0;
++static int bsearch_compare_function(const void *a, const void *b)
++{
++	return strcmp((const char *)a, *(const char **)b);
++}
+ 
+-	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(unsigned long),
+-				res->cnt + 1);
+-	if (err)
++static int libbpf_available_kallsyms_parse(struct kprobe_multi_resolve *res)
++{
++	char sym_name[500];
++	const char *available_functions_file = tracefs_available_filter_functions();
++	FILE *f;
++	int err = 0, ret, i;
++	struct function_info {
++		const char **syms;
++		size_t cap;
++		size_t cnt;
++	} infos = {};
++
++	f = fopen(available_functions_file, "r");
++	if (!f) {
++		err = -errno;
++		pr_warn("failed to open %s\n", available_functions_file);
+ 		return err;
++	}
+ 
+-	res->addrs[res->cnt++] = (unsigned long) sym_addr;
+-	return 0;
++	while (true) {
++		char *name;
++
++		ret = fscanf(f, "%499s%*[^\n]\n", sym_name);
++		if (ret == EOF && feof(f))
++			break;
++
++		if (ret != 1) {
++			pr_warn("failed to read available function file entry: %d\n",
++				ret);
++			err = -EINVAL;
++			goto cleanup;
++		}
++
++		if (!glob_match(sym_name, res->pattern))
++			continue;
++
++		err = libbpf_ensure_mem((void **)&infos.syms, &infos.cap,
++					sizeof(void *), infos.cnt + 1);
++		if (err)
++			goto cleanup;
++
++		name = strdup(sym_name);
++		if (!name) {
++			err = -errno;
++			goto cleanup;
++		}
++
++		infos.syms[infos.cnt++] = name;
++	}
++	fclose(f);
++
++	/* sort available functions */
++	qsort(infos.syms, infos.cnt, sizeof(void *), qsort_compare_function);
++
++	f = fopen("/proc/kallsyms", "r");
++	if (!f) {
++		err = -errno;
++		pr_warn("failed to open /proc/kallsyms\n");
++		goto free_infos;
++	}
++
++	while (true) {
++		unsigned long long sym_addr;
++
++		ret = fscanf(f, "%llx %*c %499s%*[^\n]\n", &sym_addr, sym_name);
++		if (ret == EOF && feof(f))
++			break;
++
++		if (ret != 2) {
++			pr_warn("failed to read kallsyms entry: %d\n", ret);
++			err = -EINVAL;
++			break;
++		}
++
++		if (!glob_match(sym_name, res->pattern))
++			continue;
++
++		if (!bsearch(&sym_name, infos.syms, infos.cnt, sizeof(void *),
++			     bsearch_compare_function))
++			continue;
++
++		err = libbpf_ensure_mem((void **)&res->addrs, &res->cap,
++					sizeof(unsigned long), res->cnt + 1);
++		if (err)
++			break;
++
++		res->addrs[res->cnt++] = (unsigned long) sym_addr;
++	}
++
++cleanup:
++	fclose(f);
++free_infos:
++	for (i = 0; i < infos.cnt; i++)
++		free((char *)infos.syms[i]);
++	free(infos.syms);
++
++	return err;
+ }
+ 
+ struct bpf_link *
+@@ -10594,7 +10690,7 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+ 		return libbpf_err_ptr(-EINVAL);
+ 
+ 	if (pattern) {
+-		err = libbpf_kallsyms_parse(resolve_kprobe_multi_cb, &res);
++		err = libbpf_available_kallsyms_parse(&res);
+ 		if (err)
+ 			goto error;
+ 		if (!res.cnt) {
+-- 
+2.25.1
 
-sdiv/smod can stay as-is.
-
-Naming is hard, of course.
 
