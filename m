@@ -1,198 +1,221 @@
-Return-Path: <bpf+bounces-3871-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3872-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D928745AB3
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 12:59:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E194745AD8
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 13:17:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDCF7280CFC
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 10:59:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD626280DB4
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 11:17:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C6CDDDD;
-	Mon,  3 Jul 2023 10:58:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E4CDDDC;
+	Mon,  3 Jul 2023 11:17:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0061FDDC2
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 10:58:43 +0000 (UTC)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBB6D2;
-	Mon,  3 Jul 2023 03:58:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688381922; x=1719917922;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=GZZoC3iTyzrkENAoUyx8fll+6b0qjLWSGcIt+67G8aY=;
-  b=fW1iZcWuyOmDiB/8SOMcQDjgOnV/B6ct4zUBiILa6IASr0RVj7lJ0qml
-   qGOv/J3bpW7AbGYA7hzSKszzPQftRhnmcsANkcqD9I2urtghP7ovYIA7u
-   wpArnjG0y5xWLbXQ92AWrHOTlQvCIZzCgg7Ve1IzW/UdJEj8oV6KIttLG
-   4vJ0OAJpNMuN+vH2BZLQlGwYclBbt7AokCw0pkmIvxntQIaazEjxYVIsk
-   R5h09GKPy4r/6xyjiTPqj3Bukg85zAyA+VCXpj9qaAzq/R3ct6PGdsRJg
-   F5ERYdM0clAnbDbUE67gOSIqb/s4BOvKrl9Q9TsxloaSo/guv2eQ2huDx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10759"; a="360329731"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="360329731"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2023 03:58:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10759"; a="748108266"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="748108266"
-Received: from agrabezh-mobl1.ccr.corp.intel.com (HELO tkristo-desk.intel.com) ([10.252.48.27])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2023 03:58:30 -0700
-From: Tero Kristo <tero.kristo@linux.intel.com>
-To: shuah@kernel.org,
-	tglx@linutronix.de,
-	x86@kernel.org,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	mingo@redhat.com
-Cc: ast@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	bpf@vger.kernel.org
-Subject: [PATCH 2/2] selftests/bpf: Add test for bpf_rdtsc
-Date: Mon,  3 Jul 2023 13:57:45 +0300
-Message-Id: <20230703105745.1314475-3-tero.kristo@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230703105745.1314475-1-tero.kristo@linux.intel.com>
-References: <20230703105745.1314475-1-tero.kristo@linux.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE7EDDA5;
+	Mon,  3 Jul 2023 11:17:03 +0000 (UTC)
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1199D;
+	Mon,  3 Jul 2023 04:16:57 -0700 (PDT)
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+X-GND-Sasl: i.maximets@ovn.org
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0F6DEFF802;
+	Mon,  3 Jul 2023 11:16:49 +0000 (UTC)
+Message-ID: <297fdd01-f1c6-6733-534c-8ed50b74c3ae@ovn.org>
+Date: Mon, 3 Jul 2023 13:17:38 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-	SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Cc: i.maximets@ovn.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Jason Wang <jasowang@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>
+Subject: Re: [RFC bpf-next] xsk: honor SO_BINDTODEVICE on bind
+Content-Language: en-US
+To: Magnus Karlsson <magnus.karlsson@gmail.com>
+References: <20230630145831.2988845-1-i.maximets@ovn.org>
+ <CAJ8uoz1TGjWuJKkZ8C9ZrQB0CDasik3A=qJs=xwdQP8cbn97VQ@mail.gmail.com>
+ <04ed302e-067e-d372-370b-3fef1cf8c7f2@ovn.org>
+ <c6944b25-7ac4-0b75-75b1-465c8a705d02@ovn.org>
+ <CAJ8uoz0ChXfavPKAkjsj8URKp3sJPPcd_dqiHsxP0iG6NjiVzg@mail.gmail.com>
+From: Ilya Maximets <i.maximets@ovn.org>
+In-Reply-To: <CAJ8uoz0ChXfavPKAkjsj8URKp3sJPPcd_dqiHsxP0iG6NjiVzg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add selftest for bpf_rdtsc() which reads the TSC (Time Stamp Counter) on
-x86_64 architectures. The test reads the TSC from both userspace and the
-BPF program, and verifies the TSC values are in incremental order as
-expected. The test is automatically skipped on architectures that do not
-support the feature.
+On 7/3/23 12:24, Magnus Karlsson wrote:
+> On Mon, 3 Jul 2023 at 12:13, Ilya Maximets <i.maximets@ovn.org> wrote:
+>>
+>> On 7/3/23 12:06, Ilya Maximets wrote:
+>>> On 7/3/23 11:48, Magnus Karlsson wrote:
+>>>> On Fri, 30 Jun 2023 at 16:58, Ilya Maximets <i.maximets@ovn.org> wrote:
+>>>>>
+>>>>> Initial creation of an AF_XDP socket requires CAP_NET_RAW capability.
+>>>>> A privileged process might create the socket and pass it to a
+>>>>> non-privileged process for later use.  However, that process will be
+>>>>> able to bind the socket to any network interface.  Even though it will
+>>>>> not be able to receive any traffic without modification of the BPF map,
+>>>>> the situation is not ideal.
+>>>>>
+>>>>> Sockets already have a mechanism that can be used to restrict what
+>>>>> interface they can be attached to.  That is SO_BINDTODEVICE.
+>>>>>
+>>>>> To change the binding the process will need CAP_NET_RAW.
+>>>>>
+>>>>> Make xsk_bind() honor the SO_BINDTODEVICE in order to allow safer
+>>>>> workflow when non-privileged process is using AF_XDP.
+>>>>
+>>>> Rebinding an AF_XDP socket is not allowed today. Any such attempt will
+>>>> return an error from bind. So if I understand the purpose of
+>>>> SO_BINDTODEVICE correctly, you could say that this option is always
+>>>> set for an AF_XDP socket and it is not possible to toggle it. The only
+>>>> way to "rebind" an AF_XDP socket is to close it and open a new one.
+>>>> This was a conscious design decision from day one as it would be very
+>>>> hard to support this, especially in zero-copy mode.
+>>>
+>>> Hi, Magnus.
+>>>
+>>> The purpose of this patch is not to allow re-binding.  The use case is
+>>> following:
+>>>
+>>> 1. First process creates a bare socket with socket(AF_XDP, ...).
+>>> 2. First process loads the XSK program to the interface.
+>>> 3. First process adds the socket fd to a BPF map.
+>>> 4. First process sends socket fd to a second process.
+>>> 5. Second process allocates UMEM.
+>>> 6. Second process binds socket to the interface.
+>>
+>> 7. Second process sends/receives the traffic. :)
+>>
+>>>
+>>> The idea is that the first process will call SO_BINDTODEVICE before
+>>> sending socket fd to a second process, so the second process is limited
+>>> in to which interface it can bind the socket.
+>>>
+>>> Does that make sense?
+> 
+> Thanks for explaining this to me. Yes, that makes sense and seems
+> useful. Could you please send a v2 and include the flow (1-7) above in
+> your commit message? Would be good to add one step with the setsockopt
+> SO_BINDTODEVICE before step #4 just to be clear. With those changes
+> please feel free to include my ack:
+> 
+>  Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
----
- .../selftests/bpf/prog_tests/test_rdtsc.c     | 67 +++++++++++++++++++
- .../testing/selftests/bpf/progs/test_rdtsc.c  | 21 ++++++
- 2 files changed, 88 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_rdtsc.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_rdtsc.c
+Thanks!  I'll update the commit message with the steps above to make it
+more clear.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_rdtsc.c b/tools/testing/selftests/bpf/prog_tests/test_rdtsc.c
-new file mode 100644
-index 000000000000..2b26deb5b35a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_rdtsc.c
-@@ -0,0 +1,67 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright(c) 2023 Intel Corporation */
-+
-+#include "test_progs.h"
-+#include "test_rdtsc.skel.h"
-+
-+#ifdef __x86_64__
-+
-+static inline u64 _rdtsc(void)
-+{
-+	u32 low, high;
-+
-+	__asm__ __volatile__("rdtscp" : "=a" (low), "=d" (high));
-+	return ((u64)high << 32) | low;
-+}
-+
-+static int rdtsc(struct test_rdtsc *skel)
-+{
-+	int err, prog_fd;
-+	u64 user_c1, user_c2;
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+
-+	err = test_rdtsc__attach(skel);
-+	if (!ASSERT_OK(err, "test_rdtsc_attach"))
-+		return err;
-+
-+	user_c1 = _rdtsc();
-+
-+	prog_fd = bpf_program__fd(skel->progs.test1);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+
-+	user_c2 = _rdtsc();
-+
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(topts.retval, 0, "test_run");
-+
-+	test_rdtsc__detach(skel);
-+
-+	ASSERT_GE(skel->bss->c1, user_c1, "bpf c1 > user c1");
-+	ASSERT_GE(user_c2, skel->bss->c2, "user c2 > bpf c2");
-+	ASSERT_GE(skel->bss->c2, user_c1, "bpf c2 > bpf c1");
-+	ASSERT_GE(user_c2, user_c1, "user c2 > user c1");
-+
-+	return 0;
-+}
-+#endif
-+
-+void test_rdtsc(void)
-+{
-+#ifdef __x86_64__
-+	struct test_rdtsc *skel;
-+	int err;
-+
-+	skel = test_rdtsc__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_rdtsc_skel_load"))
-+		goto cleanup;
-+	err = rdtsc(skel);
-+	ASSERT_OK(err, "rdtsc");
-+
-+cleanup:
-+	test_rdtsc__destroy(skel);
-+#else
-+	printf("%s:SKIP:bpf_rdtsc() kfunc not supported\n", __func__);
-+	test__skip();
-+#endif
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_rdtsc.c b/tools/testing/selftests/bpf/progs/test_rdtsc.c
-new file mode 100644
-index 000000000000..14776b83bd3e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_rdtsc.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright(c) 2023 Intel Corporation */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u64 c1;
-+__u64 c2;
-+
-+extern __u64 bpf_rdtsc(void) __ksym;
-+
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG2(test1, int, a)
-+{
-+	c1 = bpf_rdtsc();
-+	c2 = bpf_rdtsc();
-+
-+	return 0;
-+}
--- 
-2.25.1
+I was planning to send a non-RFC version of this patch once the tree is
+open (in a week).  Or are the rules for bpf-next different?
+
+> 
+> Thank you!
+> 
+>>> This workflow allows the second process to have no capabilities
+>>> as long as it has sufficient RLIMIT_MEMLOCK.
+>>
+>> Note that steps 1-7 are working just fine today.  i.e. the umem
+>> registration, bind, ring mapping and traffic send/receive do not
+>> require any extra capabilities.
+>>
+>> We may restrict the bind() call to require CAP_NET_RAW and then
+>> allow it for sockets that had SO_BINDTODEVICE as an alternative.
+>> But restriction will break the current uAPI.
+>>
+>>>
+>>> Best regards, Ilya Maximets.
+>>>
+>>>>
+>>>>> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
+>>>>> ---
+>>>>>
+>>>>> Posting as an RFC for now to probably get some feedback.
+>>>>> Will re-post once the tree is open.
+>>>>>
+>>>>>  Documentation/networking/af_xdp.rst | 9 +++++++++
+>>>>>  net/xdp/xsk.c                       | 6 ++++++
+>>>>>  2 files changed, 15 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
+>>>>> index 247c6c4127e9..1cc35de336a4 100644
+>>>>> --- a/Documentation/networking/af_xdp.rst
+>>>>> +++ b/Documentation/networking/af_xdp.rst
+>>>>> @@ -433,6 +433,15 @@ start N bytes into the buffer leaving the first N bytes for the
+>>>>>  application to use. The final option is the flags field, but it will
+>>>>>  be dealt with in separate sections for each UMEM flag.
+>>>>>
+>>>>> +SO_BINDTODEVICE setsockopt
+>>>>> +--------------------------
+>>>>> +
+>>>>> +This is a generic SOL_SOCKET option that can be used to tie AF_XDP
+>>>>> +socket to a particular network interface.  It is useful when a socket
+>>>>> +is created by a privileged process and passed to a non-privileged one.
+>>>>> +Once the option is set, kernel will refuse attempts to bind that socket
+>>>>> +to a different interface.  Updating the value requires CAP_NET_RAW.
+>>>>> +
+>>>>>  XDP_STATISTICS getsockopt
+>>>>>  -------------------------
+>>>>>
+>>>>> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+>>>>> index 5a8c0dd250af..386ff641db0f 100644
+>>>>> --- a/net/xdp/xsk.c
+>>>>> +++ b/net/xdp/xsk.c
+>>>>> @@ -886,6 +886,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+>>>>>         struct sock *sk = sock->sk;
+>>>>>         struct xdp_sock *xs = xdp_sk(sk);
+>>>>>         struct net_device *dev;
+>>>>> +       int bound_dev_if;
+>>>>>         u32 flags, qid;
+>>>>>         int err = 0;
+>>>>>
+>>>>> @@ -899,6 +900,11 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+>>>>>                       XDP_USE_NEED_WAKEUP))
+>>>>>                 return -EINVAL;
+>>>>>
+>>>>> +       bound_dev_if = READ_ONCE(sk->sk_bound_dev_if);
+>>>>> +
+>>>>> +       if (bound_dev_if && bound_dev_if != sxdp->sxdp_ifindex)
+>>>>> +               return -EINVAL;
+>>>>> +
+>>>>>         rtnl_lock();
+>>>>>         mutex_lock(&xs->mutex);
+>>>>>         if (xs->state != XSK_READY) {
+>>>>> --
+>>>>> 2.40.1
+>>>>>
+>>>>>
+>>>
+>>
 
 
