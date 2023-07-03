@@ -1,129 +1,166 @@
-Return-Path: <bpf+bounces-3860-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3861-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D843E7458B6
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 11:46:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E8A97458C6
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 11:49:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F077B1C2088D
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 09:46:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76B771C2083F
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 09:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8700D441F;
-	Mon,  3 Jul 2023 09:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAAC8441F;
+	Mon,  3 Jul 2023 09:48:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C32320F5
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 09:46:14 +0000 (UTC)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F4EE5D
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 02:46:11 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51d9a925e9aso5353694a12.0
-        for <bpf@vger.kernel.org>; Mon, 03 Jul 2023 02:46:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34D920F5;
+	Mon,  3 Jul 2023 09:48:51 +0000 (UTC)
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD5912C;
+	Mon,  3 Jul 2023 02:48:50 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-636220ca533so5573086d6.0;
+        Mon, 03 Jul 2023 02:48:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1688377570; x=1690969570;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RAVcfp0GiSAt76fo4gLjijfKkWn98YypFzYe/HtvOKU=;
-        b=HD95sOKgKpvDJjMobg5G+wIZgo1K7nnWBpuhskATho6HC5AoGzaZi8rRmPIxXemMq2
-         o900X+GzpDo2XZJD199KKY9MrfZHJFr1QtuwRd07VlpmXVZUTLfY0LLTq3xJYVCf/a4/
-         /0Le0hGJ5S4GMofEHiKUfaE6g50i0psznpRYu0R6MrOjBoTFVXnIkMsSkcUuBrWx8DBw
-         oBHpe79OG2ppm+LVFsp/ULOh1mU+SX9eS6o2rIB95lTdmDBUNaDrUUfwMUNKiKzd7Zv3
-         Tk8Lbpw0bJDK7E0+tJ9vUBc6XdoMDUaVABlzzlWA1H71sDEgy4C5RdTlA38Ni0SAY8p1
-         A+Vg==
+        d=gmail.com; s=20221208; t=1688377729; x=1690969729;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Or8dFWcZaZQ+0fBVUWIhSbo2VVRVHtdq1po7KsbeTx0=;
+        b=j89bmR0pEZdAh1wW0mtwaoyM9ZTL4bdljqEP1mBSHDe2uHocqrRTilD8XW5ziOwKWz
+         hrPZP28u0sBWfIS9859Pvk9/JKqxoQe1taeAF27ItcbIK8njFTg4dL1b8+tj4yVnnVFL
+         RMDgA0dgWjUu9gBAdFjAsdQoWGsnrAyzyUyLkwysrnp4AUMqNLSgzCb6LxHFb9Gd6huN
+         F9FT8Wi3HUJcnguNRJdPA0LHGCAYhm3mQ+Y4C30Q4nyG8e4+nXGlxkGVKaLGb1tWkhLV
+         shvBlXlVd4B1Se5f2fCmzjIIjVG00COmjnaQGfFwibQxKXQlg4rY5clf0bIdlHLA9mLO
+         n7lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688377570; x=1690969570;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RAVcfp0GiSAt76fo4gLjijfKkWn98YypFzYe/HtvOKU=;
-        b=KDfnOk19thDFontBz4c4Swh1/vBaypogNN/HJnmiQfzWIa0F2QOyAcr3f1y2J8kwoS
-         P30O36M2gbfVx5m9OrpM7YDYHTXjgSZXMjhwITE6hY14UWeiUqCJ1wAFSvmIPLyhl7rf
-         sZD0Girc3eH4aD3ZC/MdbEGC2gS3mTz5hRnAF3hqh0QxEWFWpL3hH1DUcsnH74nP2Psf
-         gtEpQA07UvvSUUdAGZ1b+s6XSuQblUH3YGVlhm7lQdaG3jT8Jq3HY6AEwmL1d/PArf3P
-         GLPsEQWabC0RUfnWltoYwO5gW6JCotsgeQvEBKLtNLh0J7r/RHAQdhQqFErnD6mYizDE
-         YKgw==
-X-Gm-Message-State: ABy/qLY/zuuz4rIM027SSu3UDdQ4V6eg8xyjsNseMmjL6EKAaHFFdb+f
-	542/uMsopjpNlMwe5lLx9W+z4eXrO/k/HiAzUxcmYQ==
-X-Google-Smtp-Source: APBJJlH9SIlxp9gcpjrHbH85ZHsZVFnc5U9Yd+D/8BddOA5vnCK0mJ3tEWyu6sryEtQD1gdVrrGDxUNjQ+uJXH990sw=
-X-Received: by 2002:a17:906:37cc:b0:94f:449e:75db with SMTP id
- o12-20020a17090637cc00b0094f449e75dbmr7501039ejc.52.1688377570306; Mon, 03
- Jul 2023 02:46:10 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1688377729; x=1690969729;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Or8dFWcZaZQ+0fBVUWIhSbo2VVRVHtdq1po7KsbeTx0=;
+        b=Q6qMT0qcZUztVqEutltOmvCAbrf8Rsz1yK3Mum9qktoBiJW9jd5KRWQfk9xZL1RIAV
+         8yDmvm+qyb9FRR/J3sSdkN9Ab8EBtCEtN9Btc5N2hc/weMRn7zFiUskVNhHj13vF3m8f
+         JMv2iOsfVTeqx4Sdwakd+bkLzRpUcU8FPXdLgNrs5B+g5Chb3FUTrAXp0G1DIuUWHZwA
+         Dij+2iCEkIJjJ/z19bBZlcEkdCDFkwknyzo61bKaaXGmYwc1Nr2jv26HdaqsqkSMWdB0
+         fnoAMTGzdwW4pti5jt1Em2tCppqEPPV4kcfp8xKMuq2KRiukxMlfoZ0IsuNdxrUt4gXh
+         UEGw==
+X-Gm-Message-State: ABy/qLZRW9TrfKC2CrZnPZdIunbdKugAGnOdq6xvkrXzY2oQy7QrxwOU
+	JiqUvJr8qVI2slDQoW7pUwnVMzkE6Pt0l2u0Is9mnrbkMLc=
+X-Google-Smtp-Source: APBJJlHCHVbQdo+WqYTG17yAsz+Uxt6mkudWjoRztusl1dmRn2e+ADRNdeCGju1yyofs01i+BYhVnJamRuEwnxmaEe0=
+X-Received: by 2002:a05:6214:2685:b0:635:d9d0:cccf with SMTP id
+ gm5-20020a056214268500b00635d9d0cccfmr10789245qvb.4.1688377728977; Mon, 03
+ Jul 2023 02:48:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230613-so-reuseport-v4-3-4ece76708bba@isovalent.com> <20230628183258.74704-1-kuniyu@amazon.com>
-In-Reply-To: <20230628183258.74704-1-kuniyu@amazon.com>
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Mon, 3 Jul 2023 10:45:59 +0100
-Message-ID: <CAN+4W8ihqdQnZW5oWxhgmNaEDisdG9UDQYozVw_HpR41HkWL_g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/7] net: remove duplicate reuseport_lookup functions
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org, 
-	edumazet@google.com, haoluo@google.com, hemanthmalla@gmail.com, 
-	joe@wand.net.nz, john.fastabend@gmail.com, jolsa@kernel.org, 
-	kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, martin.lau@linux.dev, mykolal@fb.com, 
-	netdev@vger.kernel.org, pabeni@redhat.com, sdf@google.com, shuah@kernel.org, 
-	song@kernel.org, willemdebruijn.kernel@gmail.com, yhs@fb.com
+References: <20230630145831.2988845-1-i.maximets@ovn.org>
+In-Reply-To: <20230630145831.2988845-1-i.maximets@ovn.org>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Mon, 3 Jul 2023 11:48:37 +0200
+Message-ID: <CAJ8uoz1TGjWuJKkZ8C9ZrQB0CDasik3A=qJs=xwdQP8cbn97VQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next] xsk: honor SO_BINDTODEVICE on bind
+To: Ilya Maximets <i.maximets@ovn.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Magnus Karlsson <magnus.karlsson@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Jason Wang <jasowang@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 28, 2023 at 7:33=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.co=
-m> wrote:
-
-> > +
-> > +inet6_ehashfn_t inet6_ehashfn;
-> > +
-> > +INDIRECT_CALLABLE_DECLARE(inet6_ehashfn_t udp6_ehashfn);
+On Fri, 30 Jun 2023 at 16:58, Ilya Maximets <i.maximets@ovn.org> wrote:
 >
-> We need not define udp6_ehashfn() here as inet6_hashtables.c has
-> the definition.
+> Initial creation of an AF_XDP socket requires CAP_NET_RAW capability.
+> A privileged process might create the socket and pass it to a
+> non-privileged process for later use.  However, that process will be
+> able to bind the socket to any network interface.  Even though it will
+> not be able to receive any traffic without modification of the BPF map,
+> the situation is not ideal.
 >
-> Only inet6_ehashfn() is needed because sk_ehashfn() uses it.
-
-Without udp6_ehashfn we get the following error, as reported by Simon
-against v1:
-
-net/ipv4/udp.c:410:5: error: no previous prototype for =E2=80=98udp_ehashfn=
-=E2=80=99
-[-Werror=3Dmissing-prototypes]
-  410 | u32 udp_ehashfn(const struct net *net, const __be32 laddr,
-const __u16 lport,
-      |     ^~~~~~~~~~~
-
-> > +inet_ehashfn_t inet_ehashfn;
-> > +
-> > +INDIRECT_CALLABLE_DECLARE(inet_ehashfn_t udp_ehashfn);
-> > +
+> Sockets already have a mechanism that can be used to restrict what
+> interface they can be attached to.  That is SO_BINDTODEVICE.
 >
-> We don't need inet_ehashfn() and udp_ehashfn() declarations here.
+> To change the binding the process will need CAP_NET_RAW.
+>
+> Make xsk_bind() honor the SO_BINDTODEVICE in order to allow safer
+> workflow when non-privileged process is using AF_XDP.
 
-Without inet_ehashfn I get:
+Rebinding an AF_XDP socket is not allowed today. Any such attempt will
+return an error from bind. So if I understand the purpose of
+SO_BINDTODEVICE correctly, you could say that this option is always
+set for an AF_XDP socket and it is not possible to toggle it. The only
+way to "rebind" an AF_XDP socket is to close it and open a new one.
+This was a conscious design decision from day one as it would be very
+hard to support this, especially in zero-copy mode.
 
-./include/net/inet_hashtables.h: In function =E2=80=98__inet_lookup_skb=E2=
-=80=99:
-./include/net/inet_hashtables.h:501:42: error: =E2=80=98inet_ehashfn=E2=80=
-=99
-undeclared (first use in this function); did you mean =E2=80=98inet_bhashfn=
-=E2=80=99?
-  501 |                              refcounted, inet_ehashfn);
-
-Same problem with the warning as above.
-
-I think this needs to stay the way it is.
+> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
+> ---
+>
+> Posting as an RFC for now to probably get some feedback.
+> Will re-post once the tree is open.
+>
+>  Documentation/networking/af_xdp.rst | 9 +++++++++
+>  net/xdp/xsk.c                       | 6 ++++++
+>  2 files changed, 15 insertions(+)
+>
+> diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
+> index 247c6c4127e9..1cc35de336a4 100644
+> --- a/Documentation/networking/af_xdp.rst
+> +++ b/Documentation/networking/af_xdp.rst
+> @@ -433,6 +433,15 @@ start N bytes into the buffer leaving the first N bytes for the
+>  application to use. The final option is the flags field, but it will
+>  be dealt with in separate sections for each UMEM flag.
+>
+> +SO_BINDTODEVICE setsockopt
+> +--------------------------
+> +
+> +This is a generic SOL_SOCKET option that can be used to tie AF_XDP
+> +socket to a particular network interface.  It is useful when a socket
+> +is created by a privileged process and passed to a non-privileged one.
+> +Once the option is set, kernel will refuse attempts to bind that socket
+> +to a different interface.  Updating the value requires CAP_NET_RAW.
+> +
+>  XDP_STATISTICS getsockopt
+>  -------------------------
+>
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 5a8c0dd250af..386ff641db0f 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -886,6 +886,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+>         struct sock *sk = sock->sk;
+>         struct xdp_sock *xs = xdp_sk(sk);
+>         struct net_device *dev;
+> +       int bound_dev_if;
+>         u32 flags, qid;
+>         int err = 0;
+>
+> @@ -899,6 +900,11 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+>                       XDP_USE_NEED_WAKEUP))
+>                 return -EINVAL;
+>
+> +       bound_dev_if = READ_ONCE(sk->sk_bound_dev_if);
+> +
+> +       if (bound_dev_if && bound_dev_if != sxdp->sxdp_ifindex)
+> +               return -EINVAL;
+> +
+>         rtnl_lock();
+>         mutex_lock(&xs->mutex);
+>         if (xs->state != XSK_READY) {
+> --
+> 2.40.1
+>
+>
 
