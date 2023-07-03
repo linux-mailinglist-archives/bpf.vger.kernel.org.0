@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-3898-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3899-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C68D974620C
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 20:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FC36746211
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 20:19:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F82D280E73
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 18:19:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A0C2280E50
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 18:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA20E125CD;
-	Mon,  3 Jul 2023 18:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F88134CC;
+	Mon,  3 Jul 2023 18:17:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8128C10965;
-	Mon,  3 Jul 2023 18:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24D99134B2;
+	Mon,  3 Jul 2023 18:17:28 +0000 (UTC)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98406E5F;
-	Mon,  3 Jul 2023 11:17:08 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA97010C1;
+	Mon,  3 Jul 2023 11:17:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688408228; x=1719944228;
+  t=1688408230; x=1719944230;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=KZNQXWh2MdBwG4N8vnL1xHks2FCMqv9d41s0YCk66eE=;
-  b=V/SlE2zOqUTfoPuOKgaGG3Qzut7Vg8q5+rjhpDtzlM0E6seEE4QlibBq
-   xachyt0DB6ciWIt7e/x5wH7lQEld6zFVdTZY++H4L3aVr4eQJpIMzKrjL
-   e66yu9KLtu5bjlJ7LVXzxTu4PTnNR+3pOdyHD53xsS0INN4zPW0vslTuh
-   p1CCjde0lfLCkzAtqmcj4GzKkZ4UKVQVhTsj9N/Oi0Ee8+8R0WAR8SXy8
-   navpxxLvSH45PJhjlzn3Dkg5vOZ3jwwm78DDkKHzqR56i87Uz6NtqMcol
-   QMNfhCTOwjGSDJvL9if/3kd5vkrl28LSscCER5jZ16NfV9vCP5ALx5AyL
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="393682656"
+  bh=ktMi6lJAwBBbJnnBXbkagW0jsZL48sRSbaC3HQUwtCE=;
+  b=jqRnATbgPz4tiZ6AG8daDL3W2ZcWqlZMs/KckNsq8aE/Ak6fI9y90T/4
+   JCyDdz5Y9t92PnaB6U4EFCI60aXl6ZqT94rXxYz84IEZuLNqK933hg1Nu
+   VamLMiau9sSYxzCuajbUtV9/pO4RDnzGolHXwJk77+rl8fP4jDBieJvNz
+   odiGqbLP5eDFp+pCX9i5zdj828k/stD3j0TcVrF6JR0jkM7n/pzi37ujY
+   5qy6OmtuB7+YboVJUp5Po/7r08jmoxs35dtENZ82UtOsGK2qyw3C81kvi
+   QkXrt+HD6hsDWkkBAvrwPXjL/ITR+pJKET+5xx5Beu+FGivWE9BUqjFDD
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="393682673"
 X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="393682656"
+   d="scan'208";a="393682673"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2023 11:17:08 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2023 11:17:10 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="892615133"
+X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="892615142"
 X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="892615133"
+   d="scan'208";a="892615142"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga005.jf.intel.com with ESMTP; 03 Jul 2023 11:17:02 -0700
+  by orsmga005.jf.intel.com with ESMTP; 03 Jul 2023 11:17:04 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 06BED3580F;
-	Mon,  3 Jul 2023 19:17:00 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 06A6A35833;
+	Mon,  3 Jul 2023 19:17:02 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -72,9 +72,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Maryam Tahhan <mtahhan@redhat.com>,
 	xdp-hints@xdp-project.net,
 	netdev@vger.kernel.org
-Subject: [PATCH bpf-next v2 11/20] ice: use VLAN proto from ring packet context in skb path
-Date: Mon,  3 Jul 2023 20:12:17 +0200
-Message-ID: <20230703181226.19380-12-larysa.zaremba@intel.com>
+Subject: [PATCH bpf-next v2 12/20] xdp: Add checksum level hint
+Date: Mon,  3 Jul 2023 20:12:18 +0200
+Message-ID: <20230703181226.19380-13-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230703181226.19380-1-larysa.zaremba@intel.com>
 References: <20230703181226.19380-1-larysa.zaremba@intel.com>
@@ -92,36 +92,102 @@ X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-VLAN proto, used in ice XDP hints implementation is stored in ring packet
-context. Utilize this value in skb VLAN processing too instead of checking
-netdev features.
+Implement functionality that enables drivers to expose to XDP code,
+whether checksums was checked and on what level.
 
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ Documentation/networking/xdp-rx-metadata.rst |  3 +++
+ include/linux/netdevice.h                    |  1 +
+ include/net/xdp.h                            |  2 ++
+ kernel/bpf/offload.c                         |  2 ++
+ net/core/xdp.c                               | 21 ++++++++++++++++++++
+ 5 files changed, 29 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-index c290c9d20c5c..e9f334fecdf1 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-@@ -291,13 +291,9 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
- void
- ice_receive_skb(struct ice_rx_ring *rx_ring, struct sk_buff *skb, u16 vlan_tag)
- {
--	netdev_features_t features = rx_ring->netdev->features;
--	bool non_zero_vlan = !!(vlan_tag & VLAN_VID_MASK);
--
--	if ((features & NETIF_F_HW_VLAN_CTAG_RX) && non_zero_vlan)
--		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tag);
--	else if ((features & NETIF_F_HW_VLAN_STAG_RX) && non_zero_vlan)
--		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021AD), vlan_tag);
-+	if (vlan_tag & VLAN_VID_MASK && rx_ring->pkt_ctx.vlan_proto)
-+		__vlan_hwaccel_put_tag(skb, rx_ring->pkt_ctx.vlan_proto,
-+				       vlan_tag);
+diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
+index ea6dd79a21d3..4ec6ddfd2a52 100644
+--- a/Documentation/networking/xdp-rx-metadata.rst
++++ b/Documentation/networking/xdp-rx-metadata.rst
+@@ -26,6 +26,9 @@ metadata is supported, this set will grow:
+ .. kernel-doc:: net/core/xdp.c
+    :identifiers: bpf_xdp_metadata_rx_vlan_tag
  
- 	napi_gro_receive(&rx_ring->q_vector->napi, skb);
++.. kernel-doc:: net/core/xdp.c
++   :identifiers: bpf_xdp_metadata_rx_csum_lvl
++
+ An XDP program can use these kfuncs to read the metadata into stack
+ variables for its own consumption. Or, to pass the metadata on to other
+ consumers, an XDP program can store it into the metadata area carried
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 4fa4380e6d89..569563687172 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1660,6 +1660,7 @@ struct xdp_metadata_ops {
+ 			       enum xdp_rss_hash_type *rss_type);
+ 	int	(*xmo_rx_vlan_tag)(const struct xdp_md *ctx, u16 *vlan_tag,
+ 				   __be16 *vlan_proto);
++	int	(*xmo_rx_csum_lvl)(const struct xdp_md *ctx, u8 *csum_level);
+ };
+ 
+ /**
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 89c58f56ffc6..61ed38fa79d1 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -391,6 +391,8 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
+ 			   bpf_xdp_metadata_rx_hash) \
+ 	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_VLAN_TAG, \
+ 			   bpf_xdp_metadata_rx_vlan_tag) \
++	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_CSUM_LVL, \
++			   bpf_xdp_metadata_rx_csum_lvl) \
+ 
+ enum {
+ #define XDP_METADATA_KFUNC(name, _) name,
+diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+index 986e7becfd42..a133fb775f49 100644
+--- a/kernel/bpf/offload.c
++++ b/kernel/bpf/offload.c
+@@ -850,6 +850,8 @@ void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id)
+ 		p = ops->xmo_rx_hash;
+ 	else if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_VLAN_TAG))
+ 		p = ops->xmo_rx_vlan_tag;
++	else if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_CSUM_LVL))
++		p = ops->xmo_rx_csum_lvl;
+ out:
+ 	up_read(&bpf_devs_lock);
+ 
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index f6262c90e45f..c666d3e0a26c 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -758,6 +758,27 @@ __bpf_kfunc int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx, u16 *vlan
+ 	return -EOPNOTSUPP;
  }
+ 
++/**
++ * bpf_xdp_metadata_rx_csum_lvl - Get depth at which HW has checked the checksum.
++ * @ctx: XDP context pointer.
++ * @csum_level: Return value pointer.
++ *
++ * In case of success, csum_level contains depth of the last verified checksum.
++ * If only the outermost checksum was verified, csum_level is 0, if both
++ * encapsulation and inner transport checksums were verified, csum_level is 1,
++ * and so on.
++ * For more details, refer to csum_level field in sk_buff.
++ *
++ * Return:
++ * * Returns 0 on success or ``-errno`` on error.
++ * * ``-EOPNOTSUPP`` : device driver doesn't implement kfunc
++ * * ``-ENODATA``    : Checksum was not validated
++ */
++__bpf_kfunc int bpf_xdp_metadata_rx_csum_lvl(const struct xdp_md *ctx, u8 *csum_level)
++{
++	return -EOPNOTSUPP;
++}
++
+ __diag_pop();
+ 
+ BTF_SET8_START(xdp_metadata_kfunc_ids)
 -- 
 2.41.0
 
