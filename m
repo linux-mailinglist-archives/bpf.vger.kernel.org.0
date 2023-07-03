@@ -1,69 +1,69 @@
-Return-Path: <bpf+bounces-3862-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3863-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF75A745968
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 11:55:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37D5574596F
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 11:57:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C5A51C208FE
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 09:55:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E8BF1C208FB
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 09:57:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 831BC443B;
-	Mon,  3 Jul 2023 09:54:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218E44431;
+	Mon,  3 Jul 2023 09:57:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A9E4430
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 09:54:44 +0000 (UTC)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878304ECF
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 02:54:21 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-98e109525d6so767918966b.0
-        for <bpf@vger.kernel.org>; Mon, 03 Jul 2023 02:54:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E095E1FDA
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 09:57:37 +0000 (UTC)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561A810F2
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 02:57:35 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-51d804c7d14so4773011a12.3
+        for <bpf@vger.kernel.org>; Mon, 03 Jul 2023 02:57:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1688377994; x=1690969994;
+        d=isovalent.com; s=google; t=1688378254; x=1690970254;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4iGJp3Y6rXle8uuZs1n28iqn7SIORXWqojx1agj3edY=;
-        b=bphMktEdQ7kRVbqtpfQc9RhJUAIleyS9jzfQeitBsbWpVglcgIukNLf9QojsnXBl7Y
-         7eSdQy3YQHS1OPoADbZmcuSsaRZk5STkaHKVeeDw93oo9EAUhXR/se9R2HA9zB8B1VDE
-         Le4q6+XaE3HFMyVECQlhecyHDUQuiUUPLRD7mp5u6Bxo+6wHggU+aOaulkVVtGAp76P0
-         8JohFw9mCyGO+KeT4U2cyNE33w6VinERfsudUV3K+H2VQIHfmayxDP6tk371iFBFPODB
-         21ChH2nQM3TqMuFdKHgponFeeppDmhBjYU6CKFWh8OrHzAE35TxFrdfoPBcyBpQ5hdzP
-         +S3w==
+        bh=M45z07O3hHoHAGcB6lIP4valT6fq8gen3lBb2oN7lCY=;
+        b=gmR8vcTKMQ5SYSmqOGiQnOycwHRgw9SBgWT23205ODgFFnQsmAIw3P+J9s6EzqH/EC
+         JNlne7MiIBZsn633QhivnEd3zG9Eja5QBnx2sMp/JB62mhdvc2ZOM/akekC1IGFRbolR
+         iQDy/X2m40nCISOub6GFvn7qB5F67PS/zVWWPINmxc96tBnUZ69vgPCNDXxIzG3qcVeX
+         vgtO/Bdm0yF9M+c+ubOglknHlq4i7wdIWQVkcxgLwbQCspCSThHag6pTMepiq1caED8+
+         eca8TWbmlEY1G2Za09PJ6MQL5u7tG2rTfpsZ1Y/xV7DU7PjvQ8lyGmavYiiWa7PmXDUg
+         npCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688377994; x=1690969994;
+        d=1e100.net; s=20221208; t=1688378254; x=1690970254;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4iGJp3Y6rXle8uuZs1n28iqn7SIORXWqojx1agj3edY=;
-        b=CVNU0F0JivP8pGQnX51sBhj1D6jbkm+Wi2qCLz5LuEJ2Nj8ftdki4X9SOcPUHJxT9G
-         cxEDGdfHBAk0RL/WT5nQriryfeQ9N5x5ovANaHpAlPjlTLMCvrtxg8SU8wHTu4zT37ry
-         PsDBCEtWrS/B9YFLIuZlXuVWaO3sGz3aNL3ohYVR0PDbXqand512Rykf7Dtt1oywrG0I
-         OTb4cNuZ0vaajOK09bTfaq0e3vx1Ny1GpyGUjNliMPfTiFO2q5vlzMui/xs9if/7wL6q
-         OTokI1DvMp6CG6bmkMNCHmkhajrC0bWEKueQVaneLKHXgDvQntyxB5sqFaKEilyZdr9n
-         EjQg==
-X-Gm-Message-State: AC+VfDx+BzOs04W2d3VXEn33wpqm898Ccg8AxIj0lyBHzCIS7a7bcGpa
-	O3Kr0d0rwf4dF+s3zM6nC8SIhuMCqBclMzESVKEZQw==
-X-Google-Smtp-Source: ACHHUZ7bIeou5Mbf5sQ4AuXdSmgs0EUefiJOjBpKJhnQ5LCHfzQaSsQLVcAmXDOIi1h+QBWptSoHuOL31iaBYoluKuQ=
-X-Received: by 2002:a17:907:720c:b0:988:565f:bf46 with SMTP id
- dr12-20020a170907720c00b00988565fbf46mr10110365ejc.32.1688377994535; Mon, 03
- Jul 2023 02:53:14 -0700 (PDT)
+        bh=M45z07O3hHoHAGcB6lIP4valT6fq8gen3lBb2oN7lCY=;
+        b=aWc7n64jTe2A75D+Ly2xcozrS0A2m947q3JUnjnSAemN5zbwrDwsLyj0APHd9UwvAo
+         SO5FjqTEuS4NnGoNqnTU2S+n30/u3VvZTZh4J2utGm0xaIvQSDwpyPYwVOGJe8qnZvVn
+         B1mPweZS2FpRX4h89B/K8bqRiKAO1YB7gGdBm9/zd+JSMRxasuxSJz4tEgWMXi7U/PUF
+         LX8ezE6hl4JlK+nX60CwuiLDoUpNHerc7y6sIwrF4Ndd0gx9/nk9EIBXIiYYf+2TvRPU
+         3/AYQyHVeBnZnkhyu6RyzO62vX1QqKc/D3WQQ8gxmgY51ACP5kqoIoxddyIP1WeaH0y1
+         cjpw==
+X-Gm-Message-State: ABy/qLbmHxlrtc+BcVmmKK7PaCbgJejz52QpE5XACWEPz+Et9mHyOfyo
+	ZPWU2PV0pI6Z8KlsRAeFPlOEiWqQsUBrIRy72G1jAA==
+X-Google-Smtp-Source: APBJJlHJK06Lj4XGRl/BmnIuL51u84nWGWAcTxetG3hpLSZLo2p45TqXsSjUJOOMoVIun1qSvw3W6YSWFc18YGtkNnM=
+X-Received: by 2002:aa7:d68f:0:b0:51d:e4dc:7176 with SMTP id
+ d15-20020aa7d68f000000b0051de4dc7176mr6794062edr.20.1688378253785; Mon, 03
+ Jul 2023 02:57:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230613-so-reuseport-v4-6-4ece76708bba@isovalent.com> <20230628185006.76632-1-kuniyu@amazon.com>
-In-Reply-To: <20230628185006.76632-1-kuniyu@amazon.com>
+References: <20230613-so-reuseport-v4-6-4ece76708bba@isovalent.com> <20230628185352.76923-1-kuniyu@amazon.com>
+In-Reply-To: <20230628185352.76923-1-kuniyu@amazon.com>
 From: Lorenz Bauer <lmb@isovalent.com>
-Date: Mon, 3 Jul 2023 10:53:03 +0100
-Message-ID: <CAN+4W8iktigV4j3t11HiVoo1BLW4r0UsDv+adaE_OZp_bemkOQ@mail.gmail.com>
+Date: Mon, 3 Jul 2023 10:57:23 +0100
+Message-ID: <CAN+4W8hLXYZuNFG+=J-FWLXWhbwT5TrHjMg5VzjQhv2NBo5VaA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v4 6/7] bpf, net: Support SO_REUSEPORT sockets
  with bpf_sk_assign
 To: Kuniyuki Iwashima <kuniyu@amazon.com>
@@ -84,21 +84,29 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jun 28, 2023 at 7:50=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.co=
+On Wed, Jun 28, 2023 at 7:54=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.co=
 m> wrote:
 
-> > +     } else {
-> > +             return sk;
-> > +     }
-> > +
 > > +     reuse_sk =3D inet6_lookup_reuseport(net, sk, skb, doff,
 > > +                                       saddr, sport, daddr, ntohs(dpor=
 t),
 > > +                                       ehashfn);
 > > +     if (!reuse_sk || reuse_sk =3D=3D sk)
+> > +             return sk;
+> > +
+> > +     /* We've chosen a new reuseport sock which is never refcounted. T=
+his
+> > +      * implies that sk also isn't refcounted.
+> > +      */
+> > +     WARN_ON_ONCE(*refcounted);
 >
-> nit: compiler might have optimised though, given here is the fast path,
-> we can save reuse_sk =3D=3D sk check.
+> One more nit.
+>
+> WARN_ON_ONCE() should be tested before inet6?_lookup_reuseport() not to
+> miss the !reuse_sk case.
 
-Ack.
+I was just pondering that as well, but I came to the opposite
+conclusion. In the !reuse_sk case we don't really know anything about
+sk, except that it isn't part of a reuseport group. How can we be sure
+that it's not refcounted?
 
