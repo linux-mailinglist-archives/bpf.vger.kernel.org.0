@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-3894-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3895-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD447461FE
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 20:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F489746203
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 20:17:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46AB0280E4F
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 18:17:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98327280E48
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 18:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E732510966;
-	Mon,  3 Jul 2023 18:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA651111AF;
+	Mon,  3 Jul 2023 18:17:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C2F1100DD;
-	Mon,  3 Jul 2023 18:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944DB11197;
+	Mon,  3 Jul 2023 18:17:13 +0000 (UTC)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 575BCE60;
-	Mon,  3 Jul 2023 11:16:40 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646ADE73;
+	Mon,  3 Jul 2023 11:16:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688408200; x=1719944200;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=8LOkKCUf/lCFx2H2v1v9sFUPEOVkpb3UN6V5E13pSJU=;
-  b=D2dYySY2/5/SWDKTA3B7llT25gjn+dycvEXsyPSqVsaX0F8DZV6ThcQ0
-   JRAlznLcTgDO8h7Cx8tsPLw+iJWXclAuVmcS8l0Q/ie6EpKbIuGKUP21S
-   eS130EwXwigSqQFxdBJcoJespuxJEZ35SEtQTsNZJIwkoj+oIB/3MXMqU
-   0iRv0ayqA1MycWvF1upbyhKMXMEee8kqoi0oH3eIrsq6Z9uR5XUC8NpsM
-   B7KxiTw9h1XFb+wEH+ecd6eFzX/llJRFFsW6gHct+fWOg2FJ13a86mfrk
-   lsz072X7qLqGJMTdygGVkFceDnSjgIicUq8AeAO4YwvN/C2US1yTtl0tI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="428982844"
+  t=1688408202; x=1719944202;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Htin/oKTItDRe4AH6T9xQ8iZpF0S1nUu61um3cVKH8M=;
+  b=NCqyWd7kMW1VvpmBOJYcAooXP3c0RLwTRc+qimnpcbgPnyR/J5eHfA/i
+   1gNQZYWfDuPrCL5GhpfG/6Lb/xQD1OtFrzMzR36BumBtX/aYIakzEr144
+   31/s+DTHhUxG3UPmVMvevantFK+x7JORGaaM7Qsa6zq696Nqo93DvtH6K
+   aNViytn7aq1c7j3qVbmj2wRclPe6OYoCZw/fIrSnOZLQhCllokG2v4CMi
+   CPuKAuS93Aak5WcZlAPNs3JHu5uO9FYaZbOW5Qwv5RirpY4H3WF20Br0d
+   hS6mW/TgbU3VxTOaav/ig7TnylknPiFOPbO9VG0pbJHWpFNjq78D4zEyW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="428982854"
 X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="428982844"
+   d="scan'208";a="428982854"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2023 11:16:33 -0700
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2023 11:16:36 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="753816380"
+X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="753816385"
 X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="753816380"
+   d="scan'208";a="753816385"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga001.jf.intel.com with ESMTP; 03 Jul 2023 11:16:28 -0700
+  by orsmga001.jf.intel.com with ESMTP; 03 Jul 2023 11:16:31 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 6F16B35803;
-	Mon,  3 Jul 2023 19:16:26 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id B1B8035804;
+	Mon,  3 Jul 2023 19:16:29 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -72,10 +72,12 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Maryam Tahhan <mtahhan@redhat.com>,
 	xdp-hints@xdp-project.net,
 	netdev@vger.kernel.org
-Subject: [PATCH bpf-next v2 00/20] XDP metadata via kfuncs for ice
-Date: Mon,  3 Jul 2023 20:12:06 +0200
-Message-ID: <20230703181226.19380-1-larysa.zaremba@intel.com>
+Subject: [PATCH bpf-next v2 01/20] ice: make RX hash reading code more reusable
+Date: Mon,  3 Jul 2023 20:12:07 +0200
+Message-ID: <20230703181226.19380-2-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230703181226.19380-1-larysa.zaremba@intel.com>
+References: <20230703181226.19380-1-larysa.zaremba@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,91 +92,86 @@ X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This series introduces XDP hints via kfuncs [0] to the ice driver.
+Previously, we only needed RX hash in skb path,
+hence all related code was written with skb in mind.
+But with the addition of XDP hints via kfuncs to the ice driver,
+the same logic will be needed in .xmo_() callbacks.
 
-Series brings the following existing hints to the ice driver:
- - HW timestamp
- - RX hash with type
+Separate generic process of reading RX hash from a descriptor
+into a separate function.
 
-Series also introduces new hints and adds their implementation
-to ice and veth:
- - VLAN tag with protocol
- - Checksum level
+Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+---
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 37 +++++++++++++------
+ 1 file changed, 26 insertions(+), 11 deletions(-)
 
-The data above can now be accessed by XDP and userspace (AF_XDP) programs.
-They can also be checked with xdp_metadata test and xdp_hw_metadata program.
-
-[0] https://patchwork.kernel.org/project/netdevbpf/cover/20230119221536.3349901-1-sdf@google.com/
-
-v1:
-https://lore.kernel.org/all/20230512152607.992209-1-larysa.zaremba@intel.com/
-
-Changes since v1:
-- directly return RX hash, RX timestamp and RX checksum status
-  in skb-common functions
-- use intermediate enum value for checksum status in ice
-- get rid of ring structure dependency in ice kfunc implementation
-- make variables const, when possible, in ice implementation
-- use -ENODATA instead of -EOPNOTSUPP for driver implementation
-- instead of having 2 separate functions for c-tag and s-tag,
-  use 1 function that outputs both VLAN tag and protocol ID
-- improve documentation for introduced hints
-- update xdp_metadata selftest to test new hints
-- implement new hints in veth, so they can be tested in xdp_metadata
-- parse VLAN tag in xdp_hw_metadata
-
-Aleksander Lobakin (1):
-  net, xdp: allow metadata > 32
-
-Larysa Zaremba (19):
-  ice: make RX hash reading code more reusable
-  ice: make RX HW timestamp reading code more reusable
-  ice: make RX checksum checking code more reusable
-  ice: Make ptype internal to descriptor info processing
-  ice: Introduce ice_xdp_buff
-  ice: Support HW timestamp hint
-  ice: Support RX hash XDP hint
-  ice: Support XDP hints in AF_XDP ZC mode
-  xdp: Add VLAN tag hint
-  ice: Implement VLAN tag hint
-  ice: use VLAN proto from ring packet context in skb path
-  xdp: Add checksum level hint
-  ice: Implement checksum level hint
-  selftests/bpf: Allow VLAN packets in xdp_hw_metadata
-  selftests/bpf: Add flags and new hints to xdp_hw_metadata
-  veth: Implement VLAN tag and checksum level XDP hint
-  selftests/bpf: Use AF_INET for TX in xdp_metadata
-  selftests/bpf: Check VLAN tag and proto in xdp_metadata
-  selftests/bpf: check checksum level in xdp_metadata
-
- Documentation/networking/xdp-rx-metadata.rst  |  11 +-
- drivers/net/ethernet/intel/ice/ice.h          |   2 +
- drivers/net/ethernet/intel/ice/ice_ethtool.c  |   2 +-
- .../net/ethernet/intel/ice/ice_lan_tx_rx.h    | 412 +++++++++---------
- drivers/net/ethernet/intel/ice/ice_lib.c      |   2 +-
- drivers/net/ethernet/intel/ice/ice_main.c     |  23 +
- drivers/net/ethernet/intel/ice/ice_ptp.c      |  26 +-
- drivers/net/ethernet/intel/ice/ice_ptp.h      |  15 +-
- drivers/net/ethernet/intel/ice/ice_txrx.c     |  15 +-
- drivers/net/ethernet/intel/ice/ice_txrx.h     |  29 +-
- drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 339 +++++++++++---
- drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  16 +-
- drivers/net/ethernet/intel/ice/ice_xsk.c      |  18 +-
- drivers/net/veth.c                            |  40 ++
- include/linux/netdevice.h                     |   3 +
- include/linux/skbuff.h                        |  13 +-
- include/net/xdp.h                             |  14 +-
- kernel/bpf/offload.c                          |   4 +
- net/core/xdp.c                                |  41 ++
- tools/testing/selftests/bpf/network_helpers.c |  37 +-
- tools/testing/selftests/bpf/network_helpers.h |   3 +
- .../selftests/bpf/prog_tests/xdp_metadata.c   | 195 ++++-----
- .../selftests/bpf/progs/xdp_hw_metadata.c     |  45 +-
- .../selftests/bpf/progs/xdp_metadata.c        |  11 +
- tools/testing/selftests/bpf/xdp_hw_metadata.c |  42 +-
- tools/testing/selftests/bpf/xdp_metadata.h    |  36 +-
- 26 files changed, 953 insertions(+), 441 deletions(-)
-
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+index c8322fb6f2b3..8f7f6d78f7bf 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+@@ -63,28 +63,43 @@ static enum pkt_hash_types ice_ptype_to_htype(u16 ptype)
+ }
+ 
+ /**
+- * ice_rx_hash - set the hash value in the skb
++ * ice_get_rx_hash - get RX hash value from descriptor
++ * @rx_desc: specific descriptor
++ *
++ * Returns hash, if present, 0 otherwise.
++ */
++static u32
++ice_get_rx_hash(const union ice_32b_rx_flex_desc *rx_desc)
++{
++	const struct ice_32b_rx_flex_desc_nic *nic_mdid;
++
++	if (rx_desc->wb.rxdid != ICE_RXDID_FLEX_NIC)
++		return 0;
++
++	nic_mdid = (struct ice_32b_rx_flex_desc_nic *)rx_desc;
++	return le32_to_cpu(nic_mdid->rss_hash);
++}
++
++/**
++ * ice_rx_hash_to_skb - set the hash value in the skb
+  * @rx_ring: descriptor ring
+  * @rx_desc: specific descriptor
+  * @skb: pointer to current skb
+  * @rx_ptype: the ptype value from the descriptor
+  */
+ static void
+-ice_rx_hash(struct ice_rx_ring *rx_ring, union ice_32b_rx_flex_desc *rx_desc,
+-	    struct sk_buff *skb, u16 rx_ptype)
++ice_rx_hash_to_skb(const struct ice_rx_ring *rx_ring,
++		   const union ice_32b_rx_flex_desc *rx_desc,
++		   struct sk_buff *skb, u16 rx_ptype)
+ {
+-	struct ice_32b_rx_flex_desc_nic *nic_mdid;
+ 	u32 hash;
+ 
+ 	if (!(rx_ring->netdev->features & NETIF_F_RXHASH))
+ 		return;
+ 
+-	if (rx_desc->wb.rxdid != ICE_RXDID_FLEX_NIC)
+-		return;
+-
+-	nic_mdid = (struct ice_32b_rx_flex_desc_nic *)rx_desc;
+-	hash = le32_to_cpu(nic_mdid->rss_hash);
+-	skb_set_hash(skb, hash, ice_ptype_to_htype(rx_ptype));
++	hash = ice_get_rx_hash(rx_desc);
++	if (likely(hash))
++		skb_set_hash(skb, hash, ice_ptype_to_htype(rx_ptype));
+ }
+ 
+ /**
+@@ -186,7 +201,7 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
+ 		       union ice_32b_rx_flex_desc *rx_desc,
+ 		       struct sk_buff *skb, u16 ptype)
+ {
+-	ice_rx_hash(rx_ring, rx_desc, skb, ptype);
++	ice_rx_hash_to_skb(rx_ring, rx_desc, skb, ptype);
+ 
+ 	/* modifies the skb - consumes the enet header */
+ 	skb->protocol = eth_type_trans(skb, rx_ring->netdev);
 -- 
 2.41.0
 
