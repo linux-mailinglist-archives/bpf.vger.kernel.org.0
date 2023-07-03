@@ -1,116 +1,285 @@
-Return-Path: <bpf+bounces-3874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE22A745C7A
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 14:46:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B50EC745CB4
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 15:00:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A4191C209A4
-	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 12:46:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E521A280DF5
+	for <lists+bpf@lfdr.de>; Mon,  3 Jul 2023 13:00:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8DEEAF4;
-	Mon,  3 Jul 2023 12:46:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27A2F50F;
+	Mon,  3 Jul 2023 13:00:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89310DF4C
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 12:46:36 +0000 (UTC)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7ADFD
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 05:46:34 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-314319c0d3eso1864455f8f.0
-        for <bpf@vger.kernel.org>; Mon, 03 Jul 2023 05:46:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 933E2DDBE
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 13:00:00 +0000 (UTC)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0144DD
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 05:59:58 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51de841a727so4495168a12.3
+        for <bpf@vger.kernel.org>; Mon, 03 Jul 2023 05:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1688388393; x=1690980393;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=c/79rfMRjpcwLCOmyx92ptoqeCBOS3BP6XcahjrCSAk=;
-        b=hSCpnp9yUnzVAFZ4O8bs/QvQ5pUMK17iyGi99r2c/pe1HrbY2+ej9D2V1XR/fYvbIV
-         A/yN3jsqX4ROVNjPL2H+0QTv8UcpMh3/en2zcjYN85JMoX7IJ8rIrCd9tc93MfKtHwdY
-         8OPFTz6J4gPWX7Av3gcxFoJoi/2DXjaZIN/2TJY7M4DfoMlcx0OpN1POtAH75tksA7Yb
-         xIl9fekIJa4BNC/sA6OBlFwQ3o+4XquAnDxYP8VHOKqyEiJ5rHgbTnHVUisc3xJ+1uBL
-         t3cxiglooe9WX2yTxqXkncBug5Kw9+rgR+ccWZKIDuYz+KomMuJJL84eYPTMOIdF67Is
-         Exkg==
+        d=gmail.com; s=20221208; t=1688389197; x=1690981197;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5cZnewjmf7DrJMc5X556bVwXHRxytKI1jw53LG2FMW8=;
+        b=Nx080V3m4hq+yTaxZ/ERiRZsDTDQqX8UkibK72STYxhuJWLJRHYxIhNs7erKYtVxPz
+         /ME2j0x4CzvMUSaA+3fosciuSdEKd/D7c1WNH8YnLMpmaqIwBzcp9v4Bm5yyGtbjS8QY
+         La7JIlMd7A6Z+e6mYecdJogTfRQJu8cZ7L/SHjQr8rCERy/8AaloCDG8fxAu/CgDYYuN
+         gB+bHYX2UAtGA02HeE+kwjjmcT5U4eCR8HJx4Ya2Z4KNnfAEWm4b035gzX5FPsd4kPVS
+         DP93QQDqXVMHXR5XBHkwmj6bdm+OhY0D8fsHdX5+VCHLjJWFfFrb/hfM1n/sHnI5EJHe
+         C79A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688388393; x=1690980393;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c/79rfMRjpcwLCOmyx92ptoqeCBOS3BP6XcahjrCSAk=;
-        b=M3Ur13e/0vrPfC4ETiqUKzvVeHaQdvkvw+jPMZbTzD1OuJ/GbhiYdMZnFlZ4W+CNrb
-         u6QMD5XVX/cPc++q6QXmVQ8gQUCYs9xzvbQTnMdIfrLD76NzWx58mF0+zT5GqV4Kma9s
-         4YmRTK8iz+Juag59dK1lHvG4ZcHAYwhLZjrowXd9warjPj3YWOfm14ZhgF65vGBpVFlr
-         x0LPuOodk9FOxVa88IMWXlUHs7zODLuoHXUpKO/61D/tUI7+0acFDQpZ4Z2oSLeOcJdO
-         7eymf1y/Ctdmf3Uk/Xk3iCW8sMgTnzujOkIIjzq6Juvc5+9+d7JRnQ7z1xSZVCQG/8Nt
-         Srpw==
-X-Gm-Message-State: ABy/qLbIUpetXL2hcdtn3OBgjb23q7oIDXMokzraCPYgLfiEdqnfv6QB
-	NHjQcLgvHGOnmibFymvTuTZMEg==
-X-Google-Smtp-Source: APBJJlFKvCGlRhkpK4us53cBFtT4zZ/fnBK9/a4aEGOPnNXkNQ8FNrgDBBOqv4bnTejmfq33R8m9/Q==
-X-Received: by 2002:adf:f60c:0:b0:313:e741:1caa with SMTP id t12-20020adff60c000000b00313e7411caamr9199998wrp.25.1688388393212;
-        Mon, 03 Jul 2023 05:46:33 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id b3-20020a056000054300b002c70ce264bfsm25687679wrf.76.2023.07.03.05.46.30
+        d=1e100.net; s=20221208; t=1688389197; x=1690981197;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5cZnewjmf7DrJMc5X556bVwXHRxytKI1jw53LG2FMW8=;
+        b=URiYSBS7X8hk6kvjovAJYeR/UqfprUy3G2BTF8XYSGr83VxmhlQuLd7TXbRHAqUnJf
+         K7Qm8O3OY28YBsJDL15Gab0TWH0HZj9/RO5KdwpNygvoZe3bk2GVzPYfkn5hoDg6bCBp
+         sswBUw+EyXMm/hI9/aywB0JsggEC9/Ii6jl4k9Oe1oosLaQruZ7ow6vCDUkkmv9AoIMh
+         iat5m9hCKNI6SHuu2/o01yFUtoFuQHjhBNVF8wpSACW5ZCLg2GdKKDoj4gJ4gwsP1NQc
+         0Vp3n8822ogt3QJlEDziVZj5Gh87p03yoa8+hOEamdV8V0DT+CFFdLCJEDqkqhrH/H1H
+         RqyA==
+X-Gm-Message-State: ABy/qLaPuYBLCE1mLv81WS09RQD3cKm+2ry3tjMTdtlBUc3UnwfV12Sn
+	zDvBlUCGJmLxy3dT5Ygv+AE=
+X-Google-Smtp-Source: APBJJlFG13wRltK0968hUgiYZuZ5bp5BnY0D3osSKcz0xQiXH4+WVZGTRdza2J7Xw/DS5MeUuhtOhg==
+X-Received: by 2002:a05:6402:328:b0:51d:b0f1:bed0 with SMTP id q8-20020a056402032800b0051db0f1bed0mr7291651edw.35.1688389196902;
+        Mon, 03 Jul 2023 05:59:56 -0700 (PDT)
+Received: from krava ([193.46.31.82])
+        by smtp.gmail.com with ESMTPSA id d17-20020a056402001100b0051a53d7b160sm10417659edu.80.2023.07.03.05.59.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Jul 2023 05:46:31 -0700 (PDT)
-Date: Mon, 3 Jul 2023 15:46:28 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Markus Elfring <Markus.Elfring@web.de>,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 01/13] perf parse-events: Remove unused
- PE_PMU_EVENT_FAKE token
-Message-ID: <4eba81ec-14e8-4204-8429-4b686881a9df@kadam.mountain>
-References: <20230627181030.95608-2-irogers@google.com>
- <8dab7522-31de-2137-7474-991885932308@web.de>
- <CAP-5=fVxTYpiXgxDKX1q7ELoAPnAisajWcNOhAp19TZDwnA0oA@mail.gmail.com>
+        Mon, 03 Jul 2023 05:59:56 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 3 Jul 2023 14:59:52 +0200
+To: Jackie Liu <liu.yun@linux.dev>
+Cc: olsajiri@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+	song@kernel.org, yhs@fb.com, bpf@vger.kernel.org,
+	liuyun01@kylinos.cn, lkp@intel.com
+Subject: Re: [PATCH v3 1/2] libbpf: kprobe.multi: cross filter using
+ available_filter_functions and kallsyms
+Message-ID: <ZKLGSFhBNZtOdulu@krava>
+References: <20230703013618.1959621-1-liu.yun@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fVxTYpiXgxDKX1q7ELoAPnAisajWcNOhAp19TZDwnA0oA@mail.gmail.com>
+In-Reply-To: <20230703013618.1959621-1-liu.yun@linux.dev>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 30, 2023 at 10:05:22AM -0700, Ian Rogers wrote:
-> On Fri, Jun 30, 2023 at 9:35 AM Markus Elfring <Markus.Elfring@web.de> wrote:
-> >
-> > > Removed by commit 70c90e4a6b2f ("perf parse-events: Avoid scanning
-> > > PMUs before parsing").
-> >
-> > Will the chances ever grow to add another imperative change suggestion?
-> >
-> > See also:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.4#n94
+On Mon, Jul 03, 2023 at 09:36:17AM +0800, Jackie Liu wrote:
+> From: Jackie Liu <liuyun01@kylinos.cn>
 > 
+> When using regular expression matching with "kprobe multi", it scans all
+> the functions under "/proc/kallsyms" that can be matched. However, not all
+> of them can be traced by kprobe.multi. If any one of the functions fails
+> to be traced, it will result in the failure of all functions. The best
+> approach is to filter out the functions that cannot be traced to ensure
+> proper tracking of the functions.
 > 
-> Sorry, I can't parse this.
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307030355.TdXOHklM-lkp@intel.com/
+> Suggested-by: Jiri Olsa <jolsa@kernel.org>
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+> ---
+>  v2->v3: fix 'fscanf' may overflow
+> 
+>  tools/lib/bpf/libbpf.c | 122 ++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 109 insertions(+), 13 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 214f828ece6b..232268215bb7 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -10224,6 +10224,12 @@ static const char *tracefs_uprobe_events(void)
+>  	return use_debugfs() ? DEBUGFS"/uprobe_events" : TRACEFS"/uprobe_events";
+>  }
+>  
+> +static const char *tracefs_available_filter_functions(void)
+> +{
+> +	return use_debugfs() ? DEBUGFS"/available_filter_functions" :
+> +			       TRACEFS"/available_filter_functions";
+> +}
+> +
+>  static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
+>  					 const char *kfunc_name, size_t offset)
+>  {
+> @@ -10539,23 +10545,113 @@ struct kprobe_multi_resolve {
+>  	size_t cnt;
+>  };
+>  
+> -static int
+> -resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
+> -			const char *sym_name, void *ctx)
+> +static int qsort_compare_function(const void *a, const void *b)
+>  {
+> -	struct kprobe_multi_resolve *res = ctx;
+> -	int err;
+> +	return strcmp(*(const char **)a, *(const char **)b);
+> +}
+>  
+> -	if (!glob_match(sym_name, res->pattern))
+> -		return 0;
+> +static int bsearch_compare_function(const void *a, const void *b)
+> +{
+> +	return strcmp((const char *)a, *(const char **)b);
+> +}
+>  
+> -	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(unsigned long),
+> -				res->cnt + 1);
+> -	if (err)
+> +static int libbpf_available_kallsyms_parse(struct kprobe_multi_resolve *res)
+> +{
+> +	char sym_name[500];
+> +	const char *available_functions_file = tracefs_available_filter_functions();
+> +	FILE *f;
+> +	int err = 0, ret, i;
+> +	struct function_info {
+> +		const char **syms;
+> +		size_t cap;
+> +		size_t cnt;
+> +	} infos = {};
 
-Markus is banned from vger.  Just ignore him.
+do you need to define new struct for this? there's just on infos
+variable of that, you could use just:
 
-regards,
-dan carpenter
+	const char **syms = NULL;
+	size_t cap = 0, cnt = 0;
 
+> +
+> +	f = fopen(available_functions_file, "r");
+> +	if (!f) {
+> +		err = -errno;
+> +		pr_warn("failed to open %s\n", available_functions_file);
+>  		return err;
+> +	}
+>  
+> -	res->addrs[res->cnt++] = (unsigned long) sym_addr;
+> -	return 0;
+> +	while (true) {
+> +		char *name;
+> +
+> +		ret = fscanf(f, "%499s%*[^\n]\n", sym_name);
+> +		if (ret == EOF && feof(f))
+> +			break;
+> +
+> +		if (ret != 1) {
+> +			pr_warn("failed to read available function file entry: %d\n",
+> +				ret);
+> +			err = -EINVAL;
+> +			goto cleanup;
+> +		}
+> +
+> +		if (!glob_match(sym_name, res->pattern))
+> +			continue;
+> +
+> +		err = libbpf_ensure_mem((void **)&infos.syms, &infos.cap,
+> +					sizeof(void *), infos.cnt + 1);
+> +		if (err)
+> +			goto cleanup;
+> +
+> +		name = strdup(sym_name);
+> +		if (!name) {
+> +			err = -errno;
+> +			goto cleanup;
+> +		}
+> +
+> +		infos.syms[infos.cnt++] = name;
+> +	}
+> +	fclose(f);
+
+should you check if you found anything (infos.cnt != 0) and return early
+if there's nothing found
+
+> +
+> +	/* sort available functions */
+> +	qsort(infos.syms, infos.cnt, sizeof(void *), qsort_compare_function);
+> +
+> +	f = fopen("/proc/kallsyms", "r");
+
+why not use libbpf_kallsyms_parse for kallsyms parsing? the call below
+would be in its callback
+
+> +	if (!f) {
+> +		err = -errno;
+> +		pr_warn("failed to open /proc/kallsyms\n");
+> +		goto free_infos;
+> +	}
+> +
+> +	while (true) {
+> +		unsigned long long sym_addr;
+> +
+> +		ret = fscanf(f, "%llx %*c %499s%*[^\n]\n", &sym_addr, sym_name);
+> +		if (ret == EOF && feof(f))
+> +			break;
+> +
+> +		if (ret != 2) {
+> +			pr_warn("failed to read kallsyms entry: %d\n", ret);
+> +			err = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		if (!glob_match(sym_name, res->pattern))
+> +			continue;
+
+hm, we don't need to call glob_match again, we just want to check
+if the kallsyms symbol is in infos.syms
+
+> +
+> +		if (!bsearch(&sym_name, infos.syms, infos.cnt, sizeof(void *),
+> +			     bsearch_compare_function))
+> +			continue;
+> +
+> +		err = libbpf_ensure_mem((void **)&res->addrs, &res->cap,
+> +					sizeof(unsigned long), res->cnt + 1);
+> +		if (err)
+> +			break;
+> +
+> +		res->addrs[res->cnt++] = (unsigned long) sym_addr;
+> +	}
+
+res->cnt is check outside for 0, so we should be find here
+
+jirka
+
+> +
+> +cleanup:
+> +	fclose(f);
+> +free_infos:
+> +	for (i = 0; i < infos.cnt; i++)
+> +		free((char *)infos.syms[i]);
+> +	free(infos.syms);
+> +
+> +	return err;
+>  }
+>  
+>  struct bpf_link *
+> @@ -10594,7 +10690,7 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+>  		return libbpf_err_ptr(-EINVAL);
+>  
+>  	if (pattern) {
+> -		err = libbpf_kallsyms_parse(resolve_kprobe_multi_cb, &res);
+> +		err = libbpf_available_kallsyms_parse(&res);
+>  		if (err)
+>  			goto error;
+>  		if (!res.cnt) {
+> -- 
+> 2.25.1
+> 
 
