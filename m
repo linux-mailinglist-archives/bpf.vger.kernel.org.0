@@ -1,128 +1,140 @@
-Return-Path: <bpf+bounces-3947-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3946-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 633A7746C76
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 10:55:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71882746C74
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 10:55:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E279280E2A
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 08:55:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D56C280E23
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 08:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6D74695;
-	Tue,  4 Jul 2023 08:55:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EE7C4695;
+	Tue,  4 Jul 2023 08:55:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1291468B
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 08:55:39 +0000 (UTC)
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCCC136;
-	Tue,  4 Jul 2023 01:55:38 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d2e1a72fcca58-666eec46206so4374563b3a.3;
-        Tue, 04 Jul 2023 01:55:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688460937; x=1691052937;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qaOalho3nqRwTHuUgTDLzMxibsA/eLeaCFoxfQgxC3g=;
-        b=Lf8Z0jR9X+Mp/jKqeetxppnVfQtNHdOZ9ErjuTJQ8jvNfPwWsgHViNqq4SpVghiAIn
-         PxjnNr43TbIU3qwrjPi03ww8KUe7HRan68O4qX4YI8sMI81bom61e+F5JDE2ptQrAbCV
-         6vdFhsUj28XXBp5JIP5Qxgbw3r95MkZFtZgIRyx2/Y8yMwls8Etixib7w7aGRlUkMyRU
-         /Fw1WIoxdJH+HbKh4g6AFwNxawG/d13BmrSHCyMwoiTsPd4DelegI8MXkdZMPLZcAjkP
-         Bo2JWkQBVmhXSDDEWOtoUMTGXnljk5yQ+iCuLvZTJkbnPxswz+BrvSbXvBfjbnMa8irM
-         GlGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688460937; x=1691052937;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qaOalho3nqRwTHuUgTDLzMxibsA/eLeaCFoxfQgxC3g=;
-        b=daRafbJGoYte71r7e9ecWrfiZ/ViHVtmZMWVH+U8oNFPMN1yQzIV1px3WYsdWmEr9Z
-         2trxnY2hswwovWLpqSQB8JYRu0msQ214saJ+EoKWu6KjyK71wUV7qsd8C3cNGdld8Ty/
-         p3RxOmfXnqiRt65eBugbF6xmnd+xGFsuhLhF/XFZFn38FyQ1dT5EMvsrCf8lmXmR7k85
-         6Hdmzsacki081ui9iLPQHIluLuiaBW7MxnT3K+VQ2Q3AAS6L0XgmtOp18pKyG5O3/GNc
-         1p/AKryALTuw4GcBkWZmTuvY/EN9T/wIacHPgWrg9l6/ywHibM8ogU56fYyPmPDvh4Eg
-         +Hqw==
-X-Gm-Message-State: AC+VfDyHcH86TXx4wh1GQovGPi+VYOSn+u3tOAOhKFIRf+GYAcEq3vt7
-	ybnYzEelsqI0wtp3mVbx/ac=
-X-Google-Smtp-Source: ACHHUZ4S70dsmZu1O+752LEEMqHpgjwxNkRfPkOI+GALKcmWQmEo9altAEg7roJBXXQa7RVdTpZukQ==
-X-Received: by 2002:a05:6a20:3c92:b0:12c:6268:cd31 with SMTP id b18-20020a056a203c9200b0012c6268cd31mr17011918pzj.47.1688460937461;
-        Tue, 04 Jul 2023 01:55:37 -0700 (PDT)
-Received: from localhost ([2409:8a3c:3609:db21:fbac:2cf0:59be:e1b8])
-        by smtp.gmail.com with ESMTPSA id fe21-20020a056a002f1500b0066ebaeb149dsm14443282pfb.88.2023.07.04.01.55.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jul 2023 01:55:37 -0700 (PDT)
-From: John Sanpe <sanpeqf@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org
-Cc: martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	John Sanpe <sanpeqf@gmail.com>
-Subject: [PATCH] libbpf: fix some typo of hashmap init
-Date: Tue,  4 Jul 2023 16:54:29 +0800
-Message-Id: <20230704085429.3110340-1-sanpeqf@gmail.com>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505C6468B
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 08:55:14 +0000 (UTC)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FD0115;
+	Tue,  4 Jul 2023 01:55:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1688460913; x=1719996913;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=/i2oSBocuVBzuMPrP1+dQUATQqxsM/cZlogRxGtMF7g=;
+  b=SWGLExA39sviPVKSZqHYSVaVe1kOS/nGGX4JLsHl3CxiHBPE4UmKpX6O
+   HRIvStzSvTkxc3SFafUphy+FG0OK9JniGQtFeri5p9xzQQSwibPHLJK/P
+   EZAmN2Sq0x9fKbzNomMPzecDBdp2JNMeoJrmuCcXxzoJtHDH+plS55UVz
+   M1SaT+ws72f2/8Z7ZQbLg1gZZN4l8KJ2/na3dUiHSG/3dkGxFrdv99PB+
+   8lKeaDH/X31Ai4JNh/mNPsDvyKs4V8ZGWZp098C+TlS5PStO2Hxo9vj2w
+   WlCwhXFgJ1x9VvPeIXv4ANyJftfHE/OqmjHfEbVLEK/aGGVmfNine4Djw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="365645432"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="365645432"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2023 01:55:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="808862255"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="808862255"
+Received: from guoqingz-mobl1.ger.corp.intel.com (HELO [10.252.42.140]) ([10.252.42.140])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2023 01:55:06 -0700
+Message-ID: <2901d37a-6b5a-9076-1423-0db95b4c12d3@linux.intel.com>
+Date: Tue, 4 Jul 2023 11:55:03 +0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 2/2] selftests/bpf: Add test for bpf_rdtsc
+Content-Language: en-US
+To: John Fastabend <john.fastabend@gmail.com>, shuah@kernel.org,
+ tglx@linutronix.de, x86@kernel.org, bp@alien8.de,
+ dave.hansen@linux.intel.com, mingo@redhat.com
+Cc: ast@kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+ bpf@vger.kernel.org
+References: <20230703105745.1314475-1-tero.kristo@linux.intel.com>
+ <20230703105745.1314475-3-tero.kristo@linux.intel.com>
+ <64a3450a2a062_65205208a9@john.notmuch>
+From: Tero Kristo <tero.kristo@linux.intel.com>
+In-Reply-To: <64a3450a2a062_65205208a9@john.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-rename macro parameters to prevent replacing struct members of hashmap
 
-Signed-off-by: John Sanpe <sanpeqf@gmail.com>
----
- tools/lib/bpf/hashmap.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+On 04/07/2023 01:00, John Fastabend wrote:
+> Tero Kristo wrote:
+>> Add selftest for bpf_rdtsc() which reads the TSC (Time Stamp Counter) on
+>> x86_64 architectures. The test reads the TSC from both userspace and the
+>> BPF program, and verifies the TSC values are in incremental order as
+>> expected. The test is automatically skipped on architectures that do not
+>> support the feature.
+>>
+>> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
+>> ---
+>>   .../selftests/bpf/prog_tests/test_rdtsc.c     | 67 +++++++++++++++++++
+>>   .../testing/selftests/bpf/progs/test_rdtsc.c  | 21 ++++++
+>>   2 files changed, 88 insertions(+)
+>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_rdtsc.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/test_rdtsc.c
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/test_rdtsc.c b/tools/testing/selftests/bpf/prog_tests/test_rdtsc.c
+>> new file mode 100644
+>> index 000000000000..2b26deb5b35a
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/test_rdtsc.c
+>> @@ -0,0 +1,67 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright(c) 2023 Intel Corporation */
+>> +
+>> +#include "test_progs.h"
+>> +#include "test_rdtsc.skel.h"
+>> +
+>> +#ifdef __x86_64__
+>> +
+>> +static inline u64 _rdtsc(void)
+>> +{
+>> +	u32 low, high;
+>> +
+>> +	__asm__ __volatile__("rdtscp" : "=a" (low), "=d" (high));
+> I think its ok but note this could fail if user doesn't have
+> access to rdtscp and iirc that can be restricted?
 
-diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-index 0a5bf1937a7c..bae3feaf29d0 100644
---- a/tools/lib/bpf/hashmap.h
-+++ b/tools/lib/bpf/hashmap.h
-@@ -80,14 +80,14 @@ struct hashmap {
- 	size_t sz;
- };
- 
--#define HASHMAP_INIT(hash_fn, equal_fn, ctx) {	\
--	.hash_fn = (hash_fn),			\
--	.equal_fn = (equal_fn),			\
--	.ctx = (ctx),				\
--	.buckets = NULL,			\
--	.cap = 0,				\
--	.cap_bits = 0,				\
--	.sz = 0,				\
-+#define HASHMAP_INIT(_hash_fn, _equal_fn, _ctx) {	\
-+	.hash_fn = (_hash_fn),				\
-+	.equal_fn = (_equal_fn),			\
-+	.ctx = (_ctx),					\
-+	.buckets = NULL,				\
-+	.cap = 0,					\
-+	.cap_bits = 0,					\
-+	.sz = 0,					\
- }
- 
- void hashmap__init(struct hashmap *map, hashmap_hash_fn hash_fn,
--- 
-2.40.1
+It is possible to restrict RDTSC access from userspace by enabling the 
+TSD bit in CR4 register, and it will cause the userspace process to trap 
+with general protection fault.
 
+However, the usage of RDTSC appears to be built-in to C standard 
+libraries (probably some timer routines) and enabling the CR4 TSD makes 
+the system near unusable. Things like sshd + systemd also start 
+generating the same general protection faults if RDTSC is blocked. Also, 
+attempting to run anything at all with the BPF selftest suite causes the 
+same general protection fault; not only the rdtsc test.
+
+I tried this with couple of setups, one system running a minimalistic 
+buildroot and another one running a fedora37 installation and the 
+results were similar.
+
+-Tero
+
+>
+>> +	return ((u64)high << 32) | low;
+>> +}
 
