@@ -1,495 +1,212 @@
-Return-Path: <bpf+bounces-3979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF8E174734E
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 15:50:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A324B74735F
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 15:56:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58066280F2D
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 13:50:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F247280EC4
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 13:56:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D9379C5;
-	Tue,  4 Jul 2023 13:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6A5613A;
+	Tue,  4 Jul 2023 13:56:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5595B7489
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 13:46:53 +0000 (UTC)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9323B10D8
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 06:46:49 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbab0d0b88so46799395e9.0
-        for <bpf@vger.kernel.org>; Tue, 04 Jul 2023 06:46:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1688478408; x=1691070408;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Rrd+oVQwBiLqnLnpd+kxgQqY6NXFWO5dlCZVFiDqXJs=;
-        b=Ebxg5dzZeOvkYeGBu4Rfg7YlrWT8HPbkCqOIFKa1cZRS58eej26R9fmdpI8Mf/7E/T
-         vBPgEOskiyH6Nmyk4A0VLjjbvOIsgmEwB4RA/1JRdKHd3F/gLHiJWU/oZiuKTAiPvkhl
-         Kx4UxkmbcNp9XXmlN0EafLPfo4kt7kHQxSTNnevoraGIyaxoKdbgIGpEnB1fwrkbjalm
-         I0dBHN5CqUoj9luxV2lYhCZ2BD39DIiq9xpWHBzrUSXpO+y7CyNNnoX+eFsGNOpr91sp
-         6DxC6LTicK+LmxFpO3HDGFbchUi10ZgF8/+AMh2AJdwaKoS13jQ7d4pj8HjpptmyweUR
-         PUGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688478408; x=1691070408;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rrd+oVQwBiLqnLnpd+kxgQqY6NXFWO5dlCZVFiDqXJs=;
-        b=NZ5K3l0Hg7TTu4mzUnSKm3/2fMc0QAReJfS/dIPZ7KK3lHOGoSeCBNadR4a48Yb2l7
-         E6sqIpHIgpNvcwYTWK1yiAeAEHHlf1pfpaDsxAgt3MRXB38SochoLWiagmlo1Gq67EJv
-         rpNB3vUB5TE43Ohj59Aeizy3zmsiIQniuwpLCqGVuiwxQp+wSYbiJTOtOkjwqUam7i9/
-         5W8VSM7bKhEmTJiKnO9mkKWJ6Uqc65M763eGnP2uVBnZ1t863FcHgpB6dKMjKwRTdJKO
-         km3yINRFD+4mpKddXfI6mB3SA3u2T3TnDR2hli/xM2AYEweCx2xm02k9mCyU7/BDhCyY
-         VVyg==
-X-Gm-Message-State: AC+VfDwD7t2YZSYHJGUnb9sViFqdAvGzV6qjaD/Eyj1/Qoq+C6Pvs08Z
-	VltIVByQjGrPl82krLbawXIqWQ==
-X-Google-Smtp-Source: ACHHUZ7crRuHaBty8vY3aYaOZ6c5Dwj81NDvVN+iw6NtVsal5Q4ATDTioxhJql7SyyngSR3PSHa5OQ==
-X-Received: by 2002:a7b:c849:0:b0:3f4:2a69:409 with SMTP id c9-20020a7bc849000000b003f42a690409mr12320493wml.11.1688478408023;
-        Tue, 04 Jul 2023 06:46:48 -0700 (PDT)
-Received: from [192.168.133.175] ([5.148.46.226])
-        by smtp.gmail.com with ESMTPSA id x8-20020a5d60c8000000b003142b0d98b4sm9274680wrt.37.2023.07.04.06.46.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jul 2023 06:46:47 -0700 (PDT)
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Tue, 04 Jul 2023 14:46:29 +0100
-Subject: [PATCH bpf-next v5 7/7] selftests/bpf: Test that SO_REUSEPORT can
- be used with sk_assign helper
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E735A2575
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 13:56:47 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1076ABE
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 06:56:45 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QwPTz6P89z4f3m8k
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 21:56:39 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgAnuDIUJaRkFLrrMQ--.60773S2;
+	Tue, 04 Jul 2023 21:56:40 +0800 (CST)
+Subject: Re: [v3 PATCH bpf-next 3/6] bpf: populate the per-cpu
+ insertions/deletions counters for hashmaps
+To: Anton Protopopov <aspsk@isovalent.com>
+References: <20230630082516.16286-1-aspsk@isovalent.com>
+ <20230630082516.16286-4-aspsk@isovalent.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+Message-ID: <05a3c521-3c6f-79c2-a5a8-1f8ab35eb759@huaweicloud.com>
+Date: Tue, 4 Jul 2023 21:56:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20230630082516.16286-4-aspsk@isovalent.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230613-so-reuseport-v5-7-f6686a0dbce0@isovalent.com>
-References: <20230613-so-reuseport-v5-0-f6686a0dbce0@isovalent.com>
-In-Reply-To: <20230613-so-reuseport-v5-0-f6686a0dbce0@isovalent.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
- Joe Stringer <joe@wand.net.nz>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: Hemanth Malla <hemanthmalla@gmail.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Lorenz Bauer <lmb@isovalent.com>, 
- Joe Stringer <joe@cilium.io>
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgAnuDIUJaRkFLrrMQ--.60773S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF4xtr4DCF15WFyktw13urg_yoWrtryUpF
+	W8Gw4jkw1rZrsrK3yfXw4rKrW3Xw1Fq3W5Kay5Ka4FkF98Wrnagw1UAF17KFn8CrW8ZFn5
+	Xrs09w4rCay2krJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+Hi,
 
-We use two programs to check that the new reuseport logic is executed
-appropriately.
-
-The first is a TC clsact program which bpf_sk_assigns
-the skb to a UDP or TCP socket created by user space. Since the test
-communicates via lo we see both directions of packets in the eBPF.
-Traffic ingressing to the reuseport socket is identified by looking
-at the destination port. For TCP, we additionally need to make sure
-that we only assign the initial SYN packets towards our listening
-socket. The network stack then creates a request socket which
-transitions to ESTABLISHED after the 3WHS.
-
-The second is a reuseport program which shares the fact that
-it has been executed with user space. This tells us that the delayed
-lookup mechanism is working.
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Co-developed-by: Lorenz Bauer <lmb@isovalent.com>
-Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-Cc: Joe Stringer <joe@cilium.io>
----
- tools/testing/selftests/bpf/network_helpers.c      |   3 +
- .../selftests/bpf/prog_tests/assign_reuse.c        | 197 +++++++++++++++++++++
- .../selftests/bpf/progs/test_assign_reuse.c        | 142 +++++++++++++++
- 3 files changed, 342 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index a105c0cd008a..8a33bcea97de 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -423,6 +423,9 @@ struct nstoken *open_netns(const char *name)
- 
- void close_netns(struct nstoken *token)
- {
-+	if (!token)
-+		return;
-+
- 	ASSERT_OK(setns(token->orig_netns_fd, CLONE_NEWNET), "setns");
- 	close(token->orig_netns_fd);
- 	free(token);
-diff --git a/tools/testing/selftests/bpf/prog_tests/assign_reuse.c b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-new file mode 100644
-index 000000000000..622f123410f4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-@@ -0,0 +1,197 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Isovalent */
-+#include <uapi/linux/if_link.h>
-+#include <test_progs.h>
-+
-+#include <netinet/tcp.h>
-+#include <netinet/udp.h>
-+
-+#include "network_helpers.h"
-+#include "test_assign_reuse.skel.h"
-+
-+#define NS_TEST "assign_reuse"
-+#define LOOPBACK 1
-+#define PORT 4443
-+
-+static int attach_reuseport(int sock_fd, int prog_fd)
-+{
-+	return setsockopt(sock_fd, SOL_SOCKET, SO_ATTACH_REUSEPORT_EBPF,
-+			  &prog_fd, sizeof(prog_fd));
-+}
-+
-+static __u64 cookie(int fd)
-+{
-+	__u64 cookie = 0;
-+	socklen_t cookie_len = sizeof(cookie);
-+	int ret;
-+
-+	ret = getsockopt(fd, SOL_SOCKET, SO_COOKIE, &cookie, &cookie_len);
-+	ASSERT_OK(ret, "cookie");
-+	ASSERT_GT(cookie, 0, "cookie_invalid");
-+
-+	return cookie;
-+}
-+
-+static int echo_test_udp(int fd_sv)
-+{
-+	struct sockaddr_storage addr = {};
-+	socklen_t len = sizeof(addr);
-+	char buff[1] = {};
-+	int fd_cl = -1, ret;
-+
-+	fd_cl = connect_to_fd(fd_sv, 100);
-+	ASSERT_GT(fd_cl, 0, "create_client");
-+	ASSERT_EQ(getsockname(fd_cl, (void *)&addr, &len), 0, "getsockname");
-+
-+	ASSERT_EQ(send(fd_cl, buff, sizeof(buff), 0), 1, "send_client");
-+
-+	ret = recv(fd_sv, buff, sizeof(buff), 0);
-+	if (ret < 0)
-+		return errno;
-+
-+	ASSERT_EQ(ret, 1, "recv_server");
-+	ASSERT_EQ(sendto(fd_sv, buff, sizeof(buff), 0, (void *)&addr, len), 1, "send_server");
-+	ASSERT_EQ(recv(fd_cl, buff, sizeof(buff), 0), 1, "recv_client");
-+	close(fd_cl);
-+	return 0;
-+}
-+
-+static int echo_test_tcp(int fd_sv)
-+{
-+	char buff[1] = {};
-+	int fd_cl = -1, fd_sv_cl = -1;
-+
-+	fd_cl = connect_to_fd(fd_sv, 100);
-+	if (fd_cl < 0)
-+		return errno;
-+
-+	fd_sv_cl = accept(fd_sv, NULL, NULL);
-+	ASSERT_GE(fd_sv_cl, 0, "accept_fd");
-+
-+	ASSERT_EQ(send(fd_cl, buff, sizeof(buff), 0), 1, "send_client");
-+	ASSERT_EQ(recv(fd_sv_cl, buff, sizeof(buff), 0), 1, "recv_server");
-+	ASSERT_EQ(send(fd_sv_cl, buff, sizeof(buff), 0), 1, "send_server");
-+	ASSERT_EQ(recv(fd_cl, buff, sizeof(buff), 0), 1, "recv_client");
-+	close(fd_sv_cl);
-+	close(fd_cl);
-+	return 0;
-+}
-+
-+void run_assign_reuse(int family, int sotype, const char *ip, __u16 port)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-+		.ifindex = LOOPBACK,
-+		.attach_point = BPF_TC_INGRESS,
-+	);
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, tc_opts,
-+		.handle = 1,
-+		.priority = 1,
-+	);
-+	bool hook_created = false, tc_attached = false;
-+	int ret, fd_tc, fd_accept, fd_drop, fd_map;
-+	int *fd_sv = NULL;
-+	__u64 fd_val;
-+	struct test_assign_reuse *skel;
-+	const int zero = 0;
-+
-+	skel = test_assign_reuse__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+
-+	skel->rodata->dest_port = port;
-+
-+	ret = test_assign_reuse__load(skel);
-+	if (!ASSERT_OK(ret, "skel_load"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->sk_cookie_seen, 0, "cookie_init");
-+
-+	fd_tc = bpf_program__fd(skel->progs.tc_main);
-+	fd_accept = bpf_program__fd(skel->progs.reuse_accept);
-+	fd_drop = bpf_program__fd(skel->progs.reuse_drop);
-+	fd_map = bpf_map__fd(skel->maps.sk_map);
-+
-+	fd_sv = start_reuseport_server(family, sotype, ip, port, 100, 1);
-+	if (!ASSERT_NEQ(fd_sv, NULL, "start_reuseport_server"))
-+		goto cleanup;
-+
-+	ret = attach_reuseport(*fd_sv, fd_drop);
-+	if (!ASSERT_OK(ret, "attach_reuseport"))
-+		goto cleanup;
-+
-+	fd_val = *fd_sv;
-+	ret = bpf_map_update_elem(fd_map, &zero, &fd_val, BPF_NOEXIST);
-+	if (!ASSERT_OK(ret, "bpf_sk_map"))
-+		goto cleanup;
-+
-+	ret = bpf_tc_hook_create(&tc_hook);
-+	if (ret == 0)
-+		hook_created = true;
-+	ret = ret == -EEXIST ? 0 : ret;
-+	if (!ASSERT_OK(ret, "bpf_tc_hook_create"))
-+		goto cleanup;
-+
-+	tc_opts.prog_fd = fd_tc;
-+	ret = bpf_tc_attach(&tc_hook, &tc_opts);
-+	if (!ASSERT_OK(ret, "bpf_tc_attach"))
-+		goto cleanup;
-+	tc_attached = true;
-+
-+	if (sotype == SOCK_STREAM)
-+		ASSERT_EQ(echo_test_tcp(*fd_sv), ECONNREFUSED, "drop_tcp");
-+	else
-+		ASSERT_EQ(echo_test_udp(*fd_sv), EAGAIN, "drop_udp");
-+	ASSERT_EQ(skel->bss->reuseport_executed, 1, "program executed once");
-+
-+	skel->bss->sk_cookie_seen = 0;
-+	skel->bss->reuseport_executed = 0;
-+	ASSERT_OK(attach_reuseport(*fd_sv, fd_accept), "attach_reuseport(accept)");
-+
-+	if (sotype == SOCK_STREAM)
-+		ASSERT_EQ(echo_test_tcp(*fd_sv), 0, "echo_tcp");
-+	else
-+		ASSERT_EQ(echo_test_udp(*fd_sv), 0, "echo_udp");
-+
-+	ASSERT_EQ(skel->bss->sk_cookie_seen, cookie(*fd_sv),
-+		  "cookie_mismatch");
-+	ASSERT_EQ(skel->bss->reuseport_executed, 1, "program executed once");
-+cleanup:
-+	if (tc_attached) {
-+		tc_opts.flags = tc_opts.prog_fd = tc_opts.prog_id = 0;
-+		ret = bpf_tc_detach(&tc_hook, &tc_opts);
-+		ASSERT_OK(ret, "bpf_tc_detach");
-+	}
-+	if (hook_created) {
-+		tc_hook.attach_point = BPF_TC_INGRESS | BPF_TC_EGRESS;
-+		bpf_tc_hook_destroy(&tc_hook);
-+	}
-+	test_assign_reuse__destroy(skel);
-+	free_fds(fd_sv, 1);
-+}
-+
-+void test_assign_reuse(void)
-+{
-+	struct nstoken *tok = NULL;
-+
-+	SYS(out, "ip netns add %s", NS_TEST);
-+	SYS(cleanup, "ip -net %s link set dev lo up", NS_TEST);
-+
-+	tok = open_netns(NS_TEST);
-+	if (!ASSERT_OK_PTR(tok, "netns token"))
-+		return;
-+
-+	if (test__start_subtest("tcpv4"))
-+		run_assign_reuse(AF_INET, SOCK_STREAM, "127.0.0.1", PORT);
-+	if (test__start_subtest("tcpv6"))
-+		run_assign_reuse(AF_INET6, SOCK_STREAM, "::1", PORT);
-+	if (test__start_subtest("udpv4"))
-+		run_assign_reuse(AF_INET, SOCK_DGRAM, "127.0.0.1", PORT);
-+	if (test__start_subtest("udpv6"))
-+		run_assign_reuse(AF_INET6, SOCK_DGRAM, "::1", PORT);
-+
-+cleanup:
-+	close_netns(tok);
-+	SYS_NOFAIL("ip netns delete %s", NS_TEST);
-+out:
-+	return;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_assign_reuse.c b/tools/testing/selftests/bpf/progs/test_assign_reuse.c
-new file mode 100644
-index 000000000000..4f2e2321ea06
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_assign_reuse.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Isovalent */
-+#include <stdbool.h>
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <linux/in.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/tcp.h>
-+#include <linux/udp.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+#include <linux/pkt_cls.h>
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+__u64 sk_cookie_seen;
-+__u64 reuseport_executed;
-+union {
-+	struct tcphdr tcp;
-+	struct udphdr udp;
-+} headers;
-+
-+const volatile __u16 dest_port;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sk_map SEC(".maps");
-+
-+SEC("sk_reuseport")
-+int reuse_accept(struct sk_reuseport_md *ctx)
-+{
-+	reuseport_executed++;
-+
-+	if (ctx->ip_protocol == IPPROTO_TCP) {
-+		if (ctx->data + sizeof(headers.tcp) > ctx->data_end)
-+			return SK_DROP;
-+
-+		if (__builtin_memcmp(&headers.tcp, ctx->data, sizeof(headers.tcp)) != 0)
-+			return SK_DROP;
-+	} else if (ctx->ip_protocol == IPPROTO_UDP) {
-+		if (ctx->data + sizeof(headers.udp) > ctx->data_end)
-+			return SK_DROP;
-+
-+		if (__builtin_memcmp(&headers.udp, ctx->data, sizeof(headers.udp)) != 0)
-+			return SK_DROP;
-+	} else {
-+		return SK_DROP;
-+	}
-+
-+	sk_cookie_seen = bpf_get_socket_cookie(ctx->sk);
-+	return SK_PASS;
-+}
-+
-+SEC("sk_reuseport")
-+int reuse_drop(struct sk_reuseport_md *ctx)
-+{
-+	reuseport_executed++;
-+	sk_cookie_seen = 0;
-+	return SK_DROP;
-+}
-+
-+static int
-+assign_sk(struct __sk_buff *skb)
-+{
-+	int zero = 0, ret = 0;
-+	struct bpf_sock *sk;
-+
-+	sk = bpf_map_lookup_elem(&sk_map, &zero);
-+	if (!sk)
-+		return TC_ACT_SHOT;
-+	ret = bpf_sk_assign(skb, sk, 0);
-+	bpf_sk_release(sk);
-+	return ret ? TC_ACT_SHOT : TC_ACT_OK;
-+}
-+
-+static bool
-+maybe_assign_tcp(struct __sk_buff *skb, struct tcphdr *th)
-+{
-+	if (th + 1 > (void *)(long)(skb->data_end))
-+		return TC_ACT_SHOT;
-+
-+	if (!th->syn || th->ack || th->dest != bpf_htons(dest_port))
-+		return TC_ACT_OK;
-+
-+	__builtin_memcpy(&headers.tcp, th, sizeof(headers.tcp));
-+	return assign_sk(skb);
-+}
-+
-+static bool
-+maybe_assign_udp(struct __sk_buff *skb, struct udphdr *uh)
-+{
-+	if (uh + 1 > (void *)(long)(skb->data_end))
-+		return TC_ACT_SHOT;
-+
-+	if (uh->dest != bpf_htons(dest_port))
-+		return TC_ACT_OK;
-+
-+	__builtin_memcpy(&headers.udp, uh, sizeof(headers.udp));
-+	return assign_sk(skb);
-+}
-+
-+SEC("tc")
-+int tc_main(struct __sk_buff *skb)
-+{
-+	void *data_end = (void *)(long)skb->data_end;
-+	void *data = (void *)(long)skb->data;
-+	struct ethhdr *eth;
-+
-+	eth = (struct ethhdr *)(data);
-+	if (eth + 1 > data_end)
-+		return TC_ACT_SHOT;
-+
-+	if (eth->h_proto == bpf_htons(ETH_P_IP)) {
-+		struct iphdr *iph = (struct iphdr *)(data + sizeof(*eth));
-+
-+		if (iph + 1 > data_end)
-+			return TC_ACT_SHOT;
-+
-+		if (iph->protocol == IPPROTO_TCP)
-+			return maybe_assign_tcp(skb, (struct tcphdr *)(iph + 1));
-+		else if (iph->protocol == IPPROTO_UDP)
-+			return maybe_assign_udp(skb, (struct udphdr *)(iph + 1));
-+		else
-+			return TC_ACT_SHOT;
-+	} else {
-+		struct ipv6hdr *ip6h = (struct ipv6hdr *)(data + sizeof(*eth));
-+
-+		if (ip6h + 1 > data_end)
-+			return TC_ACT_SHOT;
-+
-+		if (ip6h->nexthdr == IPPROTO_TCP)
-+			return maybe_assign_tcp(skb, (struct tcphdr *)(ip6h + 1));
-+		else if (ip6h->nexthdr == IPPROTO_UDP)
-+			return maybe_assign_udp(skb, (struct udphdr *)(ip6h + 1));
-+		else
-+			return TC_ACT_SHOT;
-+	}
-+}
-
--- 
-2.40.1
+On 6/30/2023 4:25 PM, Anton Protopopov wrote:
+> Initialize and utilize the per-cpu insertions/deletions counters for hash-based
+> maps. Non-trivial changes only apply to the preallocated maps for which the
+> {inc,dec}_elem_count functions are not called, as there's no need in counting
+> elements to sustain proper map operations.
+>
+> To increase/decrease percpu counters for preallocated maps we add raw calls to
+> the bpf_map_{inc,dec}_elem_count functions so that the impact is minimal. For
+> dynamically allocated maps we add corresponding calls to the existing
+> {inc,dec}_elem_count functions.
+>
+> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> ---
+>  kernel/bpf/hashtab.c | 23 ++++++++++++++++++++---
+>  1 file changed, 20 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index 56d3da7d0bc6..faaef4fd3df0 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -581,8 +581,14 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+>  		}
+>  	}
+>  
+> +	err = bpf_map_init_elem_count(&htab->map);
+> +	if (err)
+> +		goto free_extra_elements;
+Considering the per-cpu counter is not always needed, is it a good idea
+to make the elem_count being optional by introducing a new map flag ?
+> +
+>  	return &htab->map;
+>  
+> +free_extra_elements:
+> +	free_percpu(htab->extra_elems);
+>  free_prealloc:
+>  	prealloc_destroy(htab);
+Need to check prealloc before calling prealloc_destroy(htab), otherwise
+for non-preallocated percpu htab prealloc_destroy() will trigger invalid
+memory dereference.
+>  free_map_locked:
+> @@ -804,6 +810,7 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+>  		if (l == tgt_l) {
+>  			hlist_nulls_del_rcu(&l->hash_node);
+>  			check_and_free_fields(htab, l);
+> +			bpf_map_dec_elem_count(&htab->map);
+>  			break;
+>  		}
+>  
+> @@ -900,6 +907,8 @@ static bool is_map_full(struct bpf_htab *htab)
+>  
+>  static void inc_elem_count(struct bpf_htab *htab)
+>  {
+> +	bpf_map_inc_elem_count(&htab->map);
+> +
+>  	if (htab->use_percpu_counter)
+>  		percpu_counter_add_batch(&htab->pcount, 1, PERCPU_COUNTER_BATCH);
+>  	else
+> @@ -908,6 +917,8 @@ static void inc_elem_count(struct bpf_htab *htab)
+>  
+>  static void dec_elem_count(struct bpf_htab *htab)
+>  {
+> +	bpf_map_dec_elem_count(&htab->map);
+> +
+>  	if (htab->use_percpu_counter)
+>  		percpu_counter_add_batch(&htab->pcount, -1, PERCPU_COUNTER_BATCH);
+>  	else
+> @@ -920,6 +931,7 @@ static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
+>  	htab_put_fd_value(htab, l);
+>  
+>  	if (htab_is_prealloc(htab)) {
+> +		bpf_map_dec_elem_count(&htab->map);
+>  		check_and_free_fields(htab, l);
+>  		__pcpu_freelist_push(&htab->freelist, &l->fnode);
+>  	} else {
+> @@ -1000,6 +1012,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
+>  			if (!l)
+>  				return ERR_PTR(-E2BIG);
+>  			l_new = container_of(l, struct htab_elem, fnode);
+> +			bpf_map_inc_elem_count(&htab->map);
+>  		}
+>  	} else {
+>  		if (is_map_full(htab))
+> @@ -1224,7 +1237,8 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
+>  	if (l_old) {
+>  		bpf_lru_node_set_ref(&l_new->lru_node);
+>  		hlist_nulls_del_rcu(&l_old->hash_node);
+> -	}
+> +	} else
+> +		bpf_map_inc_elem_count(&htab->map);
+>  	ret = 0;
+>  
+>  err:
+> @@ -1351,6 +1365,7 @@ static long __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+>  		pcpu_init_value(htab, htab_elem_get_ptr(l_new, key_size),
+>  				value, onallcpus);
+>  		hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+> +		bpf_map_inc_elem_count(&htab->map);
+>  		l_new = NULL;
+>  	}
+>  	ret = 0;
+> @@ -1437,9 +1452,10 @@ static long htab_lru_map_delete_elem(struct bpf_map *map, void *key)
+>  
+>  	l = lookup_elem_raw(head, hash, key, key_size);
+>  
+> -	if (l)
+> +	if (l) {
+> +		bpf_map_dec_elem_count(&htab->map);
+>  		hlist_nulls_del_rcu(&l->hash_node);
+> -	else
+> +	} else
+>  		ret = -ENOENT;
+Also need to decrease elem_count for
+__htab_map_lookup_and_delete_batch() and
+__htab_map_lookup_and_delete_elem() when is_lru_map is true. Maybe for
+LRU map, we could just do bpf_map_dec_elem_count() in
+htab_lru_push_free() and do bpf_map_inc_elem_count() in prealloc_lru_pop().
+>  
+>  	htab_unlock_bucket(htab, b, hash, flags);
+> @@ -1523,6 +1539,7 @@ static void htab_map_free(struct bpf_map *map)
+>  		prealloc_destroy(htab);
+>  	}
+>  
+> +	bpf_map_free_elem_count(map);
+>  	free_percpu(htab->extra_elems);
+>  	bpf_map_area_free(htab->buckets);
+>  	bpf_mem_alloc_destroy(&htab->pcpu_ma);
 
 
