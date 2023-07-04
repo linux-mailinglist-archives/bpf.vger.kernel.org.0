@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-3968-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3969-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3383747199
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 14:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C37A474720A
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 15:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF5F41C2099D
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 12:44:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3B981C209EC
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 13:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161715661;
-	Tue,  4 Jul 2023 12:44:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C71611C;
+	Tue,  4 Jul 2023 13:01:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA6D4417
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 12:43:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC44AC433C8;
-	Tue,  4 Jul 2023 12:43:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D4D15668
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 13:01:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 742B9C433C7;
+	Tue,  4 Jul 2023 13:01:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688474638;
-	bh=3uWWXYQi7kK6BpqNYFmpjXEJwOshnrKioFoy1EDIkNY=;
+	s=k20201202; t=1688475686;
+	bh=yuVUTIiWJvRuqLsHSpscA4HcEHnofJddkhC4EZDiI/E=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GttEWMebhIP3hGh4P0Vw1ZOC3oAxq88jxrLylBbuFhwu/ObeeoHTDvDM8GPJp9M2b
-	 7nblJb/wszRUs3mThk5hxlVwcUE+lcAM4XQi+VN586WOv8eYL4xZzQpFnU7Rs5g5pz
-	 2yitpwrZ8voQGWXsiUVcr68tw2jRMRr2rc1M5MEBIxI4UX1l2Fw/YJQaXpZLtRbYRp
-	 4VJY883r1jv7y6QiR9YFq1vWlWugi810xh59Ni8DkLgfqK/n2TKGxngDiGwXBqyL95
-	 AqxgovhOGAYQjHSg44yPjpMhqx8RZiztOPKiplsTa+UQpX+HyuAeEQg7/bTZSI8lRI
-	 IaRuj6rR8Fk7g==
-Date: Tue, 4 Jul 2023 14:43:53 +0200
+	b=kJAozGZgU7zK0v0m22vDyI067CtOJEBiLpimcGseXRbgL5Ki+dxgp9Gfzas3azDSL
+	 LeI7LOc/YBkMsV9L9+9X35uig0Sqhjq+0hxQL6gLp/hV38n9IJuw/XtnRI7Dm0mdXi
+	 PgP+2pBv4BsU3XsMIPULEX0NkdldzhSHgBWBmLRn/YmS+wDQrzAHqjR8uhmweuyWyb
+	 TvgzTeMMMI85MAu2tWOcj0ZdSbq/yOFu5/8s96hZUJfmjfQSE6sjeSa83rdCU9Jp8V
+	 GMF1ONjSuhUYFydXk9fWxZvna/WMS33xOrnk1uVNTGyKzL5fe7+jF4Yw2nOy11/lii
+	 y4esb91bLw2NA==
+Date: Tue, 4 Jul 2023 15:01:21 +0200
 From: Christian Brauner <brauner@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-	keescook@chromium.org, lennart@poettering.net, cyphar@cyphar.com,
-	luto@kernel.org, kernel-team@meta.com, sargun@sargun.me
-Subject: Re: [PATCH RESEND v3 bpf-next 01/14] bpf: introduce BPF token object
-Message-ID: <20230704-hochverdient-lehne-eeb9eeef785e@brauner>
-References: <20230629051832.897119-1-andrii@kernel.org>
- <20230629051832.897119-2-andrii@kernel.org>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: Alexey Gladkov <legion@kernel.org>, bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: Re: [PATCH v1] fs: Add kfuncs to handle idmapped mounts
+Message-ID: <20230704-anrollen-beenden-9187c7b1b570@brauner>
+References: <c35fbb4cb0a3a9b4653f9a032698469d94ca6e9c.1688123230.git.legion@kernel.org>
+ <babdf7a8-9663-6d71-821a-34da2aff80e2@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -48,226 +49,135 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230629051832.897119-2-andrii@kernel.org>
+In-Reply-To: <babdf7a8-9663-6d71-821a-34da2aff80e2@huaweicloud.com>
 
-On Wed, Jun 28, 2023 at 10:18:19PM -0700, Andrii Nakryiko wrote:
-> Add new kind of BPF kernel object, BPF token. BPF token is meant to to
-> allow delegating privileged BPF functionality, like loading a BPF
-> program or creating a BPF map, from privileged process to a *trusted*
-> unprivileged process, all while have a good amount of control over which
-> privileged operations could be performed using provided BPF token.
+On Tue, Jul 04, 2023 at 07:42:53PM +0800, Hou Tao wrote:
+> Hi,
 > 
-> This patch adds new BPF_TOKEN_CREATE command to bpf() syscall, which
-> allows to create a new BPF token object along with a set of allowed
-> commands that such BPF token allows to unprivileged applications.
-> Currently only BPF_TOKEN_CREATE command itself can be
-> delegated, but other patches gradually add ability to delegate
-> BPF_MAP_CREATE, BPF_BTF_LOAD, and BPF_PROG_LOAD commands.
+> On 6/30/2023 7:08 PM, Alexey Gladkov wrote:
+> > Since the introduction of idmapped mounts, file handling has become
+> > somewhat more complicated. If the inode has been found through an
+> > idmapped mount the idmap of the vfsmount must be used to get proper
+> > i_uid / i_gid. This is important, for example, to correctly take into
+> > account idmapped files when caching, LSM or for an audit.
 > 
-> The above means that new BPF tokens can be created using existing BPF
-> token, if original privileged creator allowed BPF_TOKEN_CREATE command.
-> New derived BPF token cannot be more powerful than the original BPF
-> token.
+> Could you please add a bpf selftest for these newly added kfuncs ?
+> >
+> > Signed-off-by: Alexey Gladkov <legion@kernel.org>
+> > ---
+> >  fs/mnt_idmapping.c | 69 ++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 69 insertions(+)
+> >
+> > diff --git a/fs/mnt_idmapping.c b/fs/mnt_idmapping.c
+> > index 4905665c47d0..ba98ce26b883 100644
+> > --- a/fs/mnt_idmapping.c
+> > +++ b/fs/mnt_idmapping.c
+> > @@ -6,6 +6,7 @@
+> >  #include <linux/mnt_idmapping.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/user_namespace.h>
+> > +#include <linux/bpf.h>
+> >  
+> >  #include "internal.h"
+> >  
+> > @@ -271,3 +272,71 @@ void mnt_idmap_put(struct mnt_idmap *idmap)
+> >  		kfree(idmap);
+> >  	}
+> >  }
+> > +
+> > +__diag_push();
+> > +__diag_ignore_all("-Wmissing-prototypes",
+> > +		  "Global functions as their definitions will be in vmlinux BTF");
+> > +
+> > +/**
+> > + * bpf_is_idmapped_mnt - check whether a mount is idmapped
+> > + * @mnt: the mount to check
+> > + *
+> > + * Return: true if mount is mapped, false if not.
+> > + */
+> > +__bpf_kfunc bool bpf_is_idmapped_mnt(struct vfsmount *mnt)
+> > +{
+> > +	return is_idmapped_mnt(mnt);
+> > +}
+> > +
+> > +/**
+> > + * bpf_file_mnt_idmap - get file idmapping
+> > + * @file: the file from which to get mapping
+> > + *
+> > + * Return: The idmap for the @file.
+> > + */
+> > +__bpf_kfunc struct mnt_idmap *bpf_file_mnt_idmap(struct file *file)
+> > +{
+> > +	return file_mnt_idmap(file);
+> > +}
 > 
-> Importantly, BPF token is automatically pinned at the specified location
-> inside an instance of BPF FS and cannot be repinned using BPF_OBJ_PIN
-> command, unlike BPF prog/map/btf/link. This provides more control over
-> unintended sharing of BPF tokens through pinning it in another BPF FS
-> instances.
+> A dummy question here: the implementation of file_mnt_idmap() is
+> file->f_path.mnt->mnt_idmap, so if the passed file is a BTF pointer, is
+> there any reason why we could not do such dereference directly in bpf
+> program ?
+> > +
+> > +/**
+> > + * bpf_inode_into_vfs_ids - map an inode's i_uid and i_gid down according to an idmapping
+> > + * @idmap: idmap of the mount the inode was found from
+> > + * @inode: inode to map
+> > + *
+> > + * The inode's i_uid and i_gid mapped down according to @idmap. If the inode's
+> > + * i_uid or i_gid has no mapping INVALID_VFSUID or INVALID_VFSGID is returned in
+> > + * the corresponding position.
+> > + *
+> > + * Return: A 64-bit integer containing the current GID and UID, and created as
+> > + * such: *gid* **<< 32 \|** *uid*.
+> > + */
+> > +__bpf_kfunc uint64_t bpf_inode_into_vfs_ids(struct mnt_idmap *idmap,
+> > +		const struct inode *inode)
+> > +{
+> > +	vfsuid_t vfsuid = i_uid_into_vfsuid(idmap, inode);
+> > +	vfsgid_t vfsgid = i_gid_into_vfsgid(idmap, inode);
+> > +
+> > +	return (u64) __vfsgid_val(vfsgid) << 32 |
+> > +		     __vfsuid_val(vfsuid);
+> > +}
+> > +
+> > +__diag_pop();
+> > +
+> > +BTF_SET8_START(idmap_btf_ids)
+> > +BTF_ID_FLAGS(func, bpf_is_idmapped_mnt)
+> > +BTF_ID_FLAGS(func, bpf_file_mnt_idmap)
+> > +BTF_ID_FLAGS(func, bpf_inode_into_vfs_ids)
+> > +BTF_SET8_END(idmap_btf_ids)
+> > +
+> > +static const struct btf_kfunc_id_set idmap_kfunc_set = {
+> > +	.owner = THIS_MODULE,
+> > +	.set   = &idmap_btf_ids,
+> > +};
+> > +
+> > +static int __init bpf_idmap_kfunc_init(void)
+> > +{
+> > +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &idmap_kfunc_set);
+> > +}
+> > +
+> Is BPF_PROG_TYPE_TRACING sufficient for your use case ? It seems
+> BPF_PROG_TYPE_UNSPEC will make these kfuncs be available for all bpf
+> program types.
+> > +late_initcall(bpf_idmap_kfunc_init);
 > 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
 
-The main issue I have with the token approach is that it is a completely
-separate delegation vector on top of user namespaces. We mentioned this
-duringthe conf and this was brought up on the thread here again as well.
-Imho, that's a problem both security-wise and complexity-wise.
+I don't want any of these helpers as kfuncs as they are peeking deeply
+into implementation details that we reserve to change. Specifically in
+the light of:
 
-It's not great if each subsystem gets its own custom delegation
-mechanism. This imposes such a taxing complexity on both kernel- and
-userspace that it will quickly become a huge liability. So I would
-really strongly encourage you to explore another direction.
+    3. kfunc lifecycle expectations part b):
 
-I do think the spirit of your proposal is workable and that it can
-mostly be kept in tact.
+    "Unlike with regular kernel symbols, this is expected behavior for BPF
+     symbols, and out-of-tree BPF programs that use kfuncs should be considered
+     relevant to discussions and decisions around modifying and removing those
+     kfuncs. The BPF community will take an active role in participating in
+     upstream discussions when necessary to ensure that the perspectives of such
+     users are taken into account."
 
-As mentioned before, bpffs has all the means to be taught delegation:
-
-        // In container's user namespace
-        fd_fs = fsopen("bpffs");
-
-        // Delegating task in host userns (systemd-bpfd whatever you want)
-        ret = fsconfig(fd_fs, FSCONFIG_SET_FLAG, "delegate", ...);
-
-        // In container's user namespace
-        fd_mnt = fsmount(fd_fs, 0);
-
-        ret = move_mount(fd_fs, "", -EBADF, "/my/fav/location", MOVE_MOUNT_F_EMPTY_PATH)
-
-Roughly, this would mean:
-
-(i) raise FS_USERNS_MOUNT on bpffs but guard it behind the "delegate"
-    mount option. IOW, it's only possibly to mount bpffs as an
-    unprivileged user if a delegating process like systemd-bpfd with
-    system-level privileges has marked it as delegatable.
-(ii) add fine-grained delegation options that you want this
-     bpffs instance to allow via new mount options. Idk,
-
-     // allow usage of foo
-     fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "foo");
-
-     // also allow usage of bar
-     fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "bar");
-
-     // reset allowed options
-     fsconfig(fd_fs, FSCONFIG_SET_STRING, "");
-
-     // allow usage of schmoo
-     fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "schmoo");
-
-This all seems more intuitive and integrates with user and mount
-namespaces of the container. This can also work for restricting
-non-userns bpf instances fwiw. You can also share instances via
-bind-mount and so on. The userns of the bpffs instance can also be used
-for permission checking provided a given functionality has been
-delegated by e.g., systemd-bpfd or whatever.
-
-So roughly - untested and unfinished:
-
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index b9b93b81af9a..c021b0a674bb 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -623,15 +623,24 @@ struct bpf_prog *bpf_prog_get_type_path(const char *name, enum bpf_prog_type typ
- }
- EXPORT_SYMBOL(bpf_prog_get_type_path);
- 
-+struct bpf_mount_opts {
-+	umode_t mode;
-+	bool delegate;
-+	u64 abilities;
-+};
-+
- /*
-  * Display the mount options in /proc/mounts.
-  */
- static int bpf_show_options(struct seq_file *m, struct dentry *root)
- {
-+	struct bpf_mount_opts *opts = root->d_sb->s_fs_info;
- 	umode_t mode = d_inode(root)->i_mode & S_IALLUGO & ~S_ISVTX;
- 
- 	if (mode != S_IRWXUGO)
- 		seq_printf(m, ",mode=%o", mode);
-+	if (opts->delegate)
-+		seq_printf(m, ",delegate");
- 	return 0;
- }
- 
-@@ -655,17 +664,17 @@ static const struct super_operations bpf_super_ops = {
- 
- enum {
- 	OPT_MODE,
-+	Opt_delegate,
-+	Opt_abilities,
- };
- 
- static const struct fs_parameter_spec bpf_fs_parameters[] = {
--	fsparam_u32oct	("mode",			OPT_MODE),
-+	fsparam_u32oct	     ("mode",			OPT_MODE),
-+	fsparam_flag_no	     ("delegate",		Opt_delegate),
-+	fsparam_string       ("abilities",		Opt_abilities),
- 	{}
- };
- 
--struct bpf_mount_opts {
--	umode_t mode;
--};
--
- static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
- {
- 	struct bpf_mount_opts *opts = fc->fs_private;
-@@ -694,6 +703,16 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 	case OPT_MODE:
- 		opts->mode = result.uint_32 & S_IALLUGO;
- 		break;
-+	case Opt_delegate:
-+		if (fc->user_ns != &init_user_ns && !capable(CAP_SYS_ADMIN))
-+			return -EPERM;
-+
-+		if (!result.negated)
-+			opts->delegate = true;
-+		break;
-+	case Opt_abilities:
-+		// parse param->string to opts->abilities
-+		break;
- 	}
- 
- 	return 0;
-@@ -768,10 +787,20 @@ static int populate_bpffs(struct dentry *parent)
- static int bpf_fill_super(struct super_block *sb, struct fs_context *fc)
- {
- 	static const struct tree_descr bpf_rfiles[] = { { "" } };
--	struct bpf_mount_opts *opts = fc->fs_private;
-+	struct bpf_mount_opts *opts = sb->s_fs_info;
- 	struct inode *inode;
- 	int ret;
- 
-+	if (fc->user_ns != &init_user_ns && !opts->delegate) {
-+		errorfc(fc, "Can't mount bpffs without delegation permissions");
-+		return -EPERM;
-+	}
-+
-+	if (opts->abilities && !opts->delegate) {
-+		errorfc(fc, "Specifying abilities without enabling delegation");
-+		return -EINVAL;
-+	}
-+
- 	ret = simple_fill_super(sb, BPF_FS_MAGIC, bpf_rfiles);
- 	if (ret)
- 		return ret;
-@@ -793,7 +822,10 @@ static int bpf_get_tree(struct fs_context *fc)
- 
- static void bpf_free_fc(struct fs_context *fc)
- {
--	kfree(fc->fs_private);
-+	struct bpf_mount_opts *opts = fc->s_fs_info;
-+
-+	if (opts)
-+		kfree(opts);
- }
- 
- static const struct fs_context_operations bpf_context_ops = {
-@@ -815,17 +847,30 @@ static int bpf_init_fs_context(struct fs_context *fc)
- 
- 	opts->mode = S_IRWXUGO;
- 
--	fc->fs_private = opts;
-+	/* If an instance is delegated it will start with no abilities. */
-+	opts->delegate = false;
-+	opts->abilities = 0;
-+
-+	fc->s_fs_info = opts;
- 	fc->ops = &bpf_context_ops;
- 	return 0;
- }
- 
-+static void bpf_kill_super(struct super_block *sb)
-+{
-+	struct bpf_mount_opts *opts = sb->s_fs_info;
-+
-+	kill_litter_super(sb);
-+	kfree(opts);
-+}
-+
- static struct file_system_type bpf_fs_type = {
- 	.owner		= THIS_MODULE,
- 	.name		= "bpf",
- 	.init_fs_context = bpf_init_fs_context,
- 	.parameters	= bpf_fs_parameters,
--	.kill_sb	= kill_litter_super,
-+	.kill_sb	= bpf_kill_super,
-+	.fs_flags	= FS_USERNS_MOUNT,
- };
- 
- static int __init bpf_init(void)
+That's too much stability for my taste for these helpers. The helpers
+here exposed have been modified multiple times and once we wean off
+idmapped mounts from user namespaces completely they will change again.
+So I'm fine if they're traceable but not as kfuncs with any - even
+minimal - stability guarantees.
 
