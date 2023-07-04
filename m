@@ -1,36 +1,37 @@
-Return-Path: <bpf+bounces-3935-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3936-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A334C74679F
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 04:35:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AA8B7467A0
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 04:35:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F628280F09
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 02:35:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05C3A280F7B
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 02:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F697625;
-	Tue,  4 Jul 2023 02:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AE863D;
+	Tue,  4 Jul 2023 02:35:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FE69181
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 02:35:00 +0000 (UTC)
-Received: from out-40.mta1.migadu.com (out-40.mta1.migadu.com [IPv6:2001:41d0:203:375::28])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B070B188
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 19:34:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B298633
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 02:35:02 +0000 (UTC)
+Received: from out-55.mta1.migadu.com (out-55.mta1.migadu.com [IPv6:2001:41d0:203:375::37])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BDCE5B
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 19:35:00 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1688438095;
+	t=1688438098;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=uHbYoVq30EpzujCoRi565ex9enRDsWDf1OCdTam+DxA=;
-	b=Ay6zVRBPI7gZG1rHx0AUk5ydWYL6MlRbAOmj5x1wIR0LdN99hD+5HNiBBAsOIneCzlVcgv
-	u7BSfc3YJlv4dh71znGLH9r77nNz1R/CHMKfy6IiNFtczKrUp+gwSTdvwev62xdT83tqYM
-	wcobxZ964loeEjyFip/rC7t6kf8Gf8Q=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=732VA0dRQRwUkxJNXaCHIJwpwf9FfW5PxTzLYqX/wpo=;
+	b=wB0l6UM2NBF9BuK3eaxYtQYaLfDphMFgF58PGXENxiAjZBmNfU9V2CqeREIazKk8L7urao
+	haTaYgE3IruviALy3C4UVx3+cP68Y8s9zmPRIKOR2O5O+44y80bma02Zv6MSDq6sXiEU2a
+	PBCOmo3uNLBWH1QHc9ExTNyVVaF0cjY=
 From: Jackie Liu <liu.yun@linux.dev>
 To: olsajiri@gmail.com,
 	andrii@kernel.org
@@ -40,9 +41,11 @@ Cc: martin.lau@linux.dev,
 	bpf@vger.kernel.org,
 	liuyun01@kylinos.cn,
 	lkp@intel.com
-Subject: [PATCH v4 1/2] libbpf: kprobe.multi: cross filter using available_filter_functions and kallsyms
-Date: Tue,  4 Jul 2023 10:34:43 +0800
-Message-Id: <20230704023444.2079069-1-liu.yun@linux.dev>
+Subject: [PATCH v4 2/2] libbpf: kprobe.multi: Filter with available_filter_functions_addrs
+Date: Tue,  4 Jul 2023 10:34:44 +0800
+Message-Id: <20230704023444.2079069-2-liu.yun@linux.dev>
+In-Reply-To: <20230704023444.2079069-1-liu.yun@linux.dev>
+References: <20230704023444.2079069-1-liu.yun@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,92 +63,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Jackie Liu <liuyun01@kylinos.cn>
 
-When using regular expression matching with "kprobe multi", it scans all
-the functions under "/proc/kallsyms" that can be matched. However, not all
-of them can be traced by kprobe.multi. If any one of the functions fails
-to be traced, it will result in the failure of all functions. The best
-approach is to filter out the functions that cannot be traced to ensure
-proper tracking of the functions.
+Now, we provide a new available_filter_functions_addrs interface, which can
+help us not need to cross-validate available_filter_functions and kallsyms,
+which can effectively improve efficiency. For example, on my device, the
+sample program [1] of start time:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202307030355.TdXOHklM-lkp@intel.com/
-Suggested-by: Jiri Olsa <jolsa@kernel.org>
-Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+$ sudo ./funccount "tcp_*"
+
+before   after
+1.2s     1.0s
+
+[1]: https://github.com/JackieLiu1/ketones/tree/master/src/funccount
 Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
 ---
- v3->v4: fix some issue suggested by jiri
-
- tools/lib/bpf/libbpf.c | 126 +++++++++++++++++++++++++++++++++++------
- 1 file changed, 109 insertions(+), 17 deletions(-)
+ tools/lib/bpf/libbpf.c | 62 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 61 insertions(+), 1 deletion(-)
 
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 214f828ece6b..9db0ff6f111f 100644
+index 9db0ff6f111f..3fd4c032b8b9 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -10224,6 +10224,12 @@ static const char *tracefs_uprobe_events(void)
- 	return use_debugfs() ? DEBUGFS"/uprobe_events" : TRACEFS"/uprobe_events";
+@@ -10230,6 +10230,12 @@ static const char *tracefs_available_filter_functions(void)
+ 			       TRACEFS"/available_filter_functions";
  }
  
-+static const char *tracefs_available_filter_functions(void)
++static const char *tracefs_available_filter_functions_addrs(void)
 +{
-+	return use_debugfs() ? DEBUGFS"/available_filter_functions" :
-+			       TRACEFS"/available_filter_functions";
++	return use_debugfs() ? DEBUGFS"/available_filter_functions_addrs" :
++			       TRACEFS"/available_filter_functions_addrs";
 +}
 +
  static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
  					 const char *kfunc_name, size_t offset)
  {
-@@ -10539,23 +10545,113 @@ struct kprobe_multi_resolve {
- 	size_t cnt;
- };
+@@ -10654,6 +10660,57 @@ static int libbpf_available_kallsyms_parse(struct kprobe_multi_resolve *res)
+ 	return err;
+ }
  
--static int
--resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
--			const char *sym_name, void *ctx)
-+static int qsort_compare_function(const void *a, const void *b)
- {
--	struct kprobe_multi_resolve *res = ctx;
--	int err;
-+	return strcmp(*(const char **)a, *(const char **)b);
-+}
- 
--	if (!glob_match(sym_name, res->pattern))
--		return 0;
-+static int bsearch_compare_function(const void *a, const void *b)
++static bool has_available_filter_functions_addrs(void)
 +{
-+	return strcmp((const char *)a, *(const char **)b);
++	return access(tracefs_available_filter_functions_addrs(), R_OK) != -1;
 +}
- 
--	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(unsigned long),
--				res->cnt + 1);
--	if (err)
-+static int libbpf_available_kallsyms_parse(struct kprobe_multi_resolve *res)
++
++static int libbpf_available_kprobes_parse(struct kprobe_multi_resolve *res)
 +{
 +	char sym_name[500];
-+	const char *available_functions_file = tracefs_available_filter_functions();
 +	FILE *f;
-+	int err = 0, ret, i;
-+	const char **syms;
-+	size_t cap = 0, cnt = 0;
++	int ret, err = 0;
++	unsigned long long sym_addr;
++	const char *available_path = tracefs_available_filter_functions_addrs();
 +
-+	f = fopen(available_functions_file, "r");
++	f = fopen(available_path, "r");
 +	if (!f) {
 +		err = -errno;
-+		pr_warn("failed to open %s\n", available_functions_file);
- 		return err;
++		pr_warn("failed to open %s\n", available_path);
++		return err;
 +	}
- 
--	res->addrs[res->cnt++] = (unsigned long) sym_addr;
--	return 0;
-+	while (true) {
-+		char *name;
 +
-+		ret = fscanf(f, "%499s%*[^\n]\n", sym_name);
++	while (true) {
++		ret = fscanf(f, "%llx %499s%*[^\n]\n", &sym_addr, sym_name);
 +		if (ret == EOF && feof(f))
 +			break;
 +
-+		if (ret != 1) {
-+			pr_warn("failed to read available function file entry: %d\n",
++		if (ret != 2) {
++			pr_warn("failed to read available kprobe entry: %d\n",
 +				ret);
 +			err = -EINVAL;
 +			goto cleanup;
@@ -154,52 +135,7 @@ index 214f828ece6b..9db0ff6f111f 100644
 +		if (!glob_match(sym_name, res->pattern))
 +			continue;
 +
-+		err = libbpf_ensure_mem((void **)&syms, &cap, sizeof(void *),
-+					cnt + 1);
-+		if (err)
-+			goto cleanup;
-+
-+		name = strdup(sym_name);
-+		if (!name) {
-+			err = -errno;
-+			goto cleanup;
-+		}
-+
-+		syms[cnt++] = name;
-+	}
-+	fclose(f);
-+
-+	/* not found entry, return direct */
-+	if (!cnt)
-+		return -ENOENT;
-+
-+	/* sort available functions */
-+	qsort(syms, cnt, sizeof(void *), qsort_compare_function);
-+
-+	f = fopen("/proc/kallsyms", "r");
-+	if (!f) {
-+		err = -errno;
-+		pr_warn("failed to open /proc/kallsyms\n");
-+		goto free_syms;
-+	}
-+
-+	while (true) {
-+		unsigned long long sym_addr;
-+
-+		ret = fscanf(f, "%llx %*c %499s%*[^\n]\n", &sym_addr, sym_name);
-+		if (ret == EOF && feof(f))
-+			break;
-+
-+		if (ret != 2) {
-+			pr_warn("failed to read kallsyms entry: %d\n", ret);
-+			err = -EINVAL;
-+			goto cleanup;
-+		}
-+
-+		if (!bsearch(&sym_name, syms, cnt, sizeof(void *), bsearch_compare_function))
-+			continue;
-+
-+		err = libbpf_ensure_mem((void **)&res->addrs, &res->cap,
++		err = libbpf_ensure_mem((void **) &res->addrs, &res->cap,
 +					sizeof(unsigned long), res->cnt + 1);
 +		if (err)
 +			goto cleanup;
@@ -212,30 +148,24 @@ index 214f828ece6b..9db0ff6f111f 100644
 +
 +cleanup:
 +	fclose(f);
-+free_syms:
-+	for (i = 0; i < cnt; i++)
-+		free((char *)syms[i]);
-+	free(syms);
-+
 +	return err;
- }
- 
++}
++
  struct bpf_link *
-@@ -10594,13 +10690,9 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+ 				      const char *pattern,
+@@ -10690,7 +10747,10 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
  		return libbpf_err_ptr(-EINVAL);
  
  	if (pattern) {
--		err = libbpf_kallsyms_parse(resolve_kprobe_multi_cb, &res);
-+		err = libbpf_available_kallsyms_parse(&res);
+-		err = libbpf_available_kallsyms_parse(&res);
++		if (has_available_filter_functions_addrs())
++			err = libbpf_available_kprobes_parse(&res);
++		else
++			err = libbpf_available_kallsyms_parse(&res);
  		if (err)
  			goto error;
--		if (!res.cnt) {
--			err = -ENOENT;
--			goto error;
--		}
  		addrs = res.addrs;
- 		cnt = res.cnt;
- 	}
 -- 
 2.25.1
 
