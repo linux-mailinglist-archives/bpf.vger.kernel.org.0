@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-3961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA8B7746E80
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 12:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 26ABB746EE0
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 12:39:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA8C71C203DA
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 10:24:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 573AD1C20944
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 10:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 490EE5680;
-	Tue,  4 Jul 2023 10:23:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FFD046A1;
+	Tue,  4 Jul 2023 10:39:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198175670
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 10:23:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 768725662
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 10:39:13 +0000 (UTC)
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBB313D
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 03:23:52 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1775918D
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 03:39:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1688466231;
+	s=mimecast20190719; t=1688467151;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=efMYYmzKcoxHmtIWpxVuDkCtLQ7YQKGr9WO/LVN59l8=;
-	b=E/S1NCZ3mfBEj6z5GDJ0DoLV5Lz/N/8mSc+5KhYJjzvYOPr3dW/GYNW1qsR+ejTABy8Czv
-	R28Ub+ninkrt8gjNPTw9FjNoRdLHzdtiwN+x3WxPpDUKiiazueL6bsMkXg8S6bDXSUhpZj
-	SkRKfzFfG/s16qw4eyHHPe7wGnTd1pE=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=hKyh2YKZjw4dZMNDASEhnwjlZJjD/bk3lXbK1isJdxM=;
+	b=Y+EFKtJWZHaUfqpvVkkUZvDQBtPDtbcgotL5BjklHXMt0OXdl56qsukOim3qPj0bzA5+E8
+	FvPa3qBKdsGos6x+ug2NLTehbwy0UK91IN/q9/ftDFWGCbB44Gj5VasXtR5AwmXe9iAstW
+	mGvy8amaUSlQ/467XIORfikgeCNLzJ0=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-362-3dnXv-tYMT-Rk9hQThVWrQ-1; Tue, 04 Jul 2023 06:23:50 -0400
-X-MC-Unique: 3dnXv-tYMT-Rk9hQThVWrQ-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-4fb76659d37so5077223e87.2
-        for <bpf@vger.kernel.org>; Tue, 04 Jul 2023 03:23:49 -0700 (PDT)
+ us-mta-108-lPCyOatiP52VCg01JshvRg-1; Tue, 04 Jul 2023 06:39:09 -0400
+X-MC-Unique: lPCyOatiP52VCg01JshvRg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-313ec030acbso2242637f8f.0
+        for <bpf@vger.kernel.org>; Tue, 04 Jul 2023 03:39:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688466228; x=1691058228;
+        d=1e100.net; s=20221208; t=1688467149; x=1691059149;
         h=content-transfer-encoding:in-reply-to:references:to
          :content-language:subject:cc:user-agent:mime-version:date:message-id
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=efMYYmzKcoxHmtIWpxVuDkCtLQ7YQKGr9WO/LVN59l8=;
-        b=TwuvHmnTsjK7AFAVYnyJ6ZtZliwWl4N2b1RFCCT1TOxD9P4Buw5H1sC8ZKDId5rLUx
-         FcIAoXTbqxBWQGi+p8Q4BbI8kPYHkGPV+v8j8N+dCIBprLRKOH0l99APIoV7R7w3VINx
-         Kw8kYRSS9bs4lW/j/vRKSqxSMBqvM3caiDhginOz9ijklBc+7OWccFdWym9tVAe+DO0c
-         HgGG7t9E17jfBJCjirLCX+biex0znOUTL/h5nmL+c4GC4qhq3wo+OzK/7ET15/8K1HbM
-         MovuUFHBtpJ0onMWnNB98BgXC/zVo5EbdU1BnrVoXlG6Zz3GHmBs284gQUjNnK3yZXjm
-         IzLg==
-X-Gm-Message-State: ABy/qLbdnIDbl7tjfeMFV0SnHYxap1gBRKRZVIR9aKoZrivo523CsfBm
-	n37GtNajGPrGVaXC7GEeBO2XW9e+G0uem7zYRPx3NiKBs4Ev+IGNc7i5G/ayuas4BDQLY4gvuZ/
-	6YDWhuGTjJXx+
-X-Received: by 2002:a19:6d1c:0:b0:4f8:71bf:a25b with SMTP id i28-20020a196d1c000000b004f871bfa25bmr7822373lfc.9.1688466228713;
-        Tue, 04 Jul 2023 03:23:48 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEe58T5Jt5/8xyxSsobmohA9Yv/PKPg7Rs8j5M5JhfU7oZKnDuXDiRkvSFgXLDFi43xiXB5BQ==
-X-Received: by 2002:a19:6d1c:0:b0:4f8:71bf:a25b with SMTP id i28-20020a196d1c000000b004f871bfa25bmr7822350lfc.9.1688466228357;
-        Tue, 04 Jul 2023 03:23:48 -0700 (PDT)
+        bh=hKyh2YKZjw4dZMNDASEhnwjlZJjD/bk3lXbK1isJdxM=;
+        b=ONW4MvBXz6gXXoH2LbS1b4wrfK3F/eW50UGoiA5RC6Vy2BZfG1vZXejSchjqW+wYUU
+         Qw02u4GXpROFcrd4qs56InnRccnvHjxFq5Ztdoc7CHI+rRKGpe2LlN2TqGTpmDsH+ECW
+         /mUaqubgx5qehqBkrnMBtir0PkmglU6lADf83OSu0N1BI1pRurO1hDwoLmEsTg2OOjR5
+         SVZqdgmnxlnXMSYZtv2n23Q4iSl0bsStuQaZqnAjpqJhgOHGoAOSGz1C/bkM/J6rsLHO
+         5nBifSGhw/iKQeEKQHP9bjClpm4WbymCXzo3HnKw1/D9ml+xGREbZIhH9ueCLMM9FH6P
+         /qbA==
+X-Gm-Message-State: AC+VfDzcy7ExL6todCSQ8Vs0jcvksLGszx7RxMXfklpl+rOrnX5mlBuA
+	7+Ae5KxXtjcsfDw0LkLib2QC13vrZYd+hVuqgHoamwp1FlY4X4Oiha2Izhn1JJPNP2kBcqDh/lj
+	AfzQGOrnHvUk8
+X-Received: by 2002:a5d:4244:0:b0:313:f0a7:133a with SMTP id s4-20020a5d4244000000b00313f0a7133amr16032461wrr.13.1688467148808;
+        Tue, 04 Jul 2023 03:39:08 -0700 (PDT)
+X-Google-Smtp-Source: ACHHUZ7nCIDY7KPZacyNtybDMIiVOQFpcJ51/VuZA9mfRPufhxaz0fUdhkdLRNNWHSASiWsaGwUjdw==
+X-Received: by 2002:a5d:4244:0:b0:313:f0a7:133a with SMTP id s4-20020a5d4244000000b00313f0a7133amr16032438wrr.13.1688467148506;
+        Tue, 04 Jul 2023 03:39:08 -0700 (PDT)
 Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id 7-20020a05600c230700b003fa968e9c27sm24855898wmo.9.2023.07.04.03.23.46
+        by smtp.gmail.com with ESMTPSA id v11-20020adff68b000000b0031424950a99sm10813720wrp.81.2023.07.04.03.39.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Jul 2023 03:23:47 -0700 (PDT)
+        Tue, 04 Jul 2023 03:39:07 -0700 (PDT)
 From: Jesper Dangaard Brouer <jbrouer@redhat.com>
 X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <f7aa7eb6-4600-cebf-bd09-d05fc627fd0d@redhat.com>
-Date: Tue, 4 Jul 2023 12:23:45 +0200
+Message-ID: <9cd44759-416c-7274-f805-ee9d756f15b1@redhat.com>
+Date: Tue, 4 Jul 2023 12:39:06 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,155 +83,154 @@ Cc: brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
  Alexander Lobakin <alexandr.lobakin@intel.com>,
  Magnus Karlsson <magnus.karlsson@gmail.com>,
  Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
- netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH bpf-next v2 09/20] xdp: Add VLAN tag hint
+ netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Alexander Duyck <alexander.duyck@gmail.com>
+Subject: Re: [PATCH bpf-next v2 12/20] xdp: Add checksum level hint
 Content-Language: en-US
 To: Larysa Zaremba <larysa.zaremba@intel.com>,
  John Fastabend <john.fastabend@gmail.com>
 References: <20230703181226.19380-1-larysa.zaremba@intel.com>
- <20230703181226.19380-10-larysa.zaremba@intel.com>
- <64a32c661648e_628d32085f@john.notmuch> <ZKPW6azl0Ak27wSO@lincoln>
-In-Reply-To: <ZKPW6azl0Ak27wSO@lincoln>
+ <20230703181226.19380-13-larysa.zaremba@intel.com>
+ <64a331c338a5a_628d3208cb@john.notmuch> <ZKPlZ6Z8ni5+ZJCK@lincoln>
+In-Reply-To: <ZKPlZ6Z8ni5+ZJCK@lincoln>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
 	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+Cc. DaveM+Alex Duyck, as I value your insights on checksums.
 
-
-On 04/07/2023 10.23, Larysa Zaremba wrote:
-> On Mon, Jul 03, 2023 at 01:15:34PM -0700, John Fastabend wrote:
+On 04/07/2023 11.24, Larysa Zaremba wrote:
+> On Mon, Jul 03, 2023 at 01:38:27PM -0700, John Fastabend wrote:
 >> Larysa Zaremba wrote:
->>> Implement functionality that enables drivers to expose VLAN tag
->>> to XDP code.
+>>> Implement functionality that enables drivers to expose to XDP code,
+>>> whether checksums was checked and on what level.
 >>>
 >>> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 >>> ---
->>>   Documentation/networking/xdp-rx-metadata.rst |  8 +++++++-
->>>   include/linux/netdevice.h                    |  2 ++
+>>>   Documentation/networking/xdp-rx-metadata.rst |  3 +++
+>>>   include/linux/netdevice.h                    |  1 +
 >>>   include/net/xdp.h                            |  2 ++
 >>>   kernel/bpf/offload.c                         |  2 ++
->>>   net/core/xdp.c                               | 20 ++++++++++++++++++++
->>>   5 files changed, 33 insertions(+), 1 deletion(-)
+>>>   net/core/xdp.c                               | 21 ++++++++++++++++++++
+>>>   5 files changed, 29 insertions(+)
 >>>
 >>> diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
->>> index 25ce72af81c2..ea6dd79a21d3 100644
+>>> index ea6dd79a21d3..4ec6ddfd2a52 100644
 >>> --- a/Documentation/networking/xdp-rx-metadata.rst
 >>> +++ b/Documentation/networking/xdp-rx-metadata.rst
->>> @@ -18,7 +18,13 @@ Currently, the following kfuncs are supported. In the future, as more
->>>   metadata is supported, this set will grow:
->>>   
+>>> @@ -26,6 +26,9 @@ metadata is supported, this set will grow:
 >>>   .. kernel-doc:: net/core/xdp.c
->>> -   :identifiers: bpf_xdp_metadata_rx_timestamp bpf_xdp_metadata_rx_hash
->>> +   :identifiers: bpf_xdp_metadata_rx_timestamp
->>> +
->>> +.. kernel-doc:: net/core/xdp.c
->>> +   :identifiers: bpf_xdp_metadata_rx_hash
->>> +
->>> +.. kernel-doc:: net/core/xdp.c
->>> +   :identifiers: bpf_xdp_metadata_rx_vlan_tag
+>>>      :identifiers: bpf_xdp_metadata_rx_vlan_tag
 >>>   
+>>> +.. kernel-doc:: net/core/xdp.c
+>>> +   :identifiers: bpf_xdp_metadata_rx_csum_lvl
+>>> +
 >>>   An XDP program can use these kfuncs to read the metadata into stack
 >>>   variables for its own consumption. Or, to pass the metadata on to other
-[...]
+>>>   consumers, an XDP program can store it into the metadata area carried
+>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+>>> index 4fa4380e6d89..569563687172 100644
+>>> --- a/include/linux/netdevice.h
+>>> +++ b/include/linux/netdevice.h
+>>> @@ -1660,6 +1660,7 @@ struct xdp_metadata_ops {
+>>>   			       enum xdp_rss_hash_type *rss_type);
+>>>   	int	(*xmo_rx_vlan_tag)(const struct xdp_md *ctx, u16 *vlan_tag,
+>>>   				   __be16 *vlan_proto);
+>>> +	int	(*xmo_rx_csum_lvl)(const struct xdp_md *ctx, u8 *csum_level);
+>>>   };
+>>>   
+>>>   /**
+>>> diff --git a/include/net/xdp.h b/include/net/xdp.h
+>>> index 89c58f56ffc6..61ed38fa79d1 100644
+>>> --- a/include/net/xdp.h
+>>> +++ b/include/net/xdp.h
+>>> @@ -391,6 +391,8 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
+>>>   			   bpf_xdp_metadata_rx_hash) \
+>>>   	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_VLAN_TAG, \
+>>>   			   bpf_xdp_metadata_rx_vlan_tag) \
+>>> +	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_CSUM_LVL, \
+>>> +			   bpf_xdp_metadata_rx_csum_lvl) \
+>>>   
+>>>   enum {
+>>>   #define XDP_METADATA_KFUNC(name, _) name,
+>>> diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+>>> index 986e7becfd42..a133fb775f49 100644
+>>> --- a/kernel/bpf/offload.c
+>>> +++ b/kernel/bpf/offload.c
+>>> @@ -850,6 +850,8 @@ void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id)
+>>>   		p = ops->xmo_rx_hash;
+>>>   	else if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_VLAN_TAG))
+>>>   		p = ops->xmo_rx_vlan_tag;
+>>> +	else if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_CSUM_LVL))
+>>> +		p = ops->xmo_rx_csum_lvl;
+>>>   out:
+>>>   	up_read(&bpf_devs_lock);
+>>>   
 >>> diff --git a/net/core/xdp.c b/net/core/xdp.c
->>> index 41e5ca8643ec..f6262c90e45f 100644
+>>> index f6262c90e45f..c666d3e0a26c 100644
 >>> --- a/net/core/xdp.c
 >>> +++ b/net/core/xdp.c
->>> @@ -738,6 +738,26 @@ __bpf_kfunc int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, u32 *hash,
+>>> @@ -758,6 +758,27 @@ __bpf_kfunc int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx, u16 *vlan
 >>>   	return -EOPNOTSUPP;
 >>>   }
 >>>   
 >>> +/**
->>> + * bpf_xdp_metadata_rx_vlan_tag - Get XDP packet outermost VLAN tag with protocol
+>>> + * bpf_xdp_metadata_rx_csum_lvl - Get depth at which HW has checked the checksum.
 >>> + * @ctx: XDP context pointer.
->>> + * @vlan_tag: Destination pointer for VLAN tag
->>> + * @vlan_proto: Destination pointer for VLAN protocol identifier in network byte order.
+>>> + * @csum_level: Return value pointer.
 >>> + *
->>> + * In case of success, vlan_tag contains VLAN tag, including 12 least significant bytes
->>> + * containing VLAN ID, vlan_proto contains protocol identifier.
->>
->> Above is a bit confusing to me at least.
->>
->> The vlan tag would be both the 16bit TPID and 16bit TCI. What fields
->> are to be included here? The VlanID or the full 16bit TCI meaning the
->> PCP+DEI+VID?
-> 
-> It contains PCP+DEI+VID, in patch 16 ("selftests/bpf: Add flags and new hints to
-> xdp_hw_metadata") this is more clear, because the tag is parsed.
-> 
-
-Do we really care about the "EtherType" proto (in VLAN speak TPID = Tag
-Protocol IDentifier)?
-I mean, it can basically only have two values[1], and we just wanted to
-know if it is a VLAN (that hardware offloaded/removed for us):
-
-  static __always_inline int proto_is_vlan(__u16 h_proto)
-  {
-	return !!(h_proto == bpf_htons(ETH_P_8021Q) ||
-		  h_proto == bpf_htons(ETH_P_8021AD));
-  }
-
-[1] 
-https://github.com/xdp-project/bpf-examples/blob/master/include/xdp/parsing_helpers.h#L75-L79
-
-Cc. Andrew Lunn, as I notice DSA have a fake VLAN define ETH_P_DSA_8021Q
-(in file include/uapi/linux/if_ether.h)
-Is this actually in use?
-Maybe some hardware can "VLAN" offload this?
-
-
-> What about rephrasing it this way:
-> 
-> In case of success, vlan_proto contains VLAN protocol identifier (TPID),
-> vlan_tag contains the remaining 16 bits of a 802.1Q tag (PCP+DEI+VID).
-> 
-
-Hmm, I think we can improve this further. This text becomes part of the
-documentation for end-users (target audience).  Thus, I think it is
-worth being more verbose and even mention the existing defines that we
-are expecting end-users to take advantage of.
-
-What about:
-
-In case of success. The VLAN EtherType is stored in vlan_proto (usually
-either ETH_P_8021Q or ETH_P_8021AD) also known as TPID (Tag Protocol
-IDentifier). The VLAN tag is stored in vlan_tag, which is a 16-bit field
-containing sub-fields (PCP+DEI+VID). The VLAN ID (VID) is 12-bits
-commonly extracted using mask VLAN_VID_MASK (0x0fff).  For the meaning
-of the sub-fields Priority Code Point (PCP) and Drop Eligible Indicator
-(DEI) (formerly CFI) please reference other documentation. Remember
-these 16-bit fields are stored in network-byte. Thus, transformation
-with byte-order helper functions like bpf_ntohs() are needed.
-
-
-
->> I think by "including 12 least significant bytes" you
->> mean bits,
-> 
-> Yes, my bad.
-> 
->> but also not clear about those 4 other bits.
->>
->> I can likely figure it out in next patches from implementation but
->> would be nice to clean up docs.
->>
+>>> + * In case of success, csum_level contains depth of the last verified checksum.
+>>> + * If only the outermost checksum was verified, csum_level is 0, if both
+>>> + * encapsulation and inner transport checksums were verified, csum_level is 1,
+>>> + * and so on.
+>>> + * For more details, refer to csum_level field in sk_buff.
 >>> + *
 >>> + * Return:
 >>> + * * Returns 0 on success or ``-errno`` on error.
 >>> + * * ``-EOPNOTSUPP`` : device driver doesn't implement kfunc
->>> + * * ``-ENODATA``    : VLAN tag was not stripped or is not available
+>>> + * * ``-ENODATA``    : Checksum was not validated
 >>> + */
->>> +__bpf_kfunc int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx, u16 *vlan_tag,
->>> +					     __be16 *vlan_proto)
+>>> +__bpf_kfunc int bpf_xdp_metadata_rx_csum_lvl(const struct xdp_md *ctx, u8 *csum_level)
+>>
+>> Istead of ENODATA should we return what would be put in the ip_summed field
+>> CHECKSUM_{NONE, UNNECESSARY, COMPLETE, PARTIAL}? Then sig would be,
+
+I was thinking the same, what about checksum "type".
+
+>>
+>>   bpf_xdp_metadata_rx_csum_lvl(const struct xdp_md *ctx, u8 *type, u8 *lvl);
+>>
+>> or something like that? Or is the thought that its not really necessary?
+>> I don't have a strong preference but figured it was worth asking.
+>>
+> 
+> I see no value in returning CHECKSUM_COMPLETE without the actual checksum value.
+> Same with CHECKSUM_PARTIAL and csum_start. Returning those values too would
+> overcomplicate the function signature.
+>   
+
+So, this kfunc bpf_xdp_metadata_rx_csum_lvl() success is it equivilent 
+to CHECKSUM_UNNECESSARY?
+
+Looking at documentation[1] (generated from skbuff.h):
+  [1] 
+https://kernel.org/doc/html/latest/networking/skbuff.html#checksumming-of-received-packets-by-device
+
+Is the idea that we can add another kfunc (new signature) than can deal
+with the other types of checksums (in a later kernel release)?
+
+
 >>> +{
 >>> +	return -EOPNOTSUPP;
 >>> +}
 >>> +
+>>>   __diag_pop();
+> 
 
 
