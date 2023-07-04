@@ -1,140 +1,128 @@
-Return-Path: <bpf+bounces-3946-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3948-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71882746C74
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 10:55:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77D06746D03
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 11:16:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D56C280E23
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 08:55:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A86661C20923
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 09:16:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EE7C4695;
-	Tue,  4 Jul 2023 08:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECD05256;
+	Tue,  4 Jul 2023 09:16:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505C6468B
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 08:55:14 +0000 (UTC)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FD0115;
-	Tue,  4 Jul 2023 01:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688460913; x=1719996913;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=/i2oSBocuVBzuMPrP1+dQUATQqxsM/cZlogRxGtMF7g=;
-  b=SWGLExA39sviPVKSZqHYSVaVe1kOS/nGGX4JLsHl3CxiHBPE4UmKpX6O
-   HRIvStzSvTkxc3SFafUphy+FG0OK9JniGQtFeri5p9xzQQSwibPHLJK/P
-   EZAmN2Sq0x9fKbzNomMPzecDBdp2JNMeoJrmuCcXxzoJtHDH+plS55UVz
-   M1SaT+ws72f2/8Z7ZQbLg1gZZN4l8KJ2/na3dUiHSG/3dkGxFrdv99PB+
-   8lKeaDH/X31Ai4JNh/mNPsDvyKs4V8ZGWZp098C+TlS5PStO2Hxo9vj2w
-   WlCwhXFgJ1x9VvPeIXv4ANyJftfHE/OqmjHfEbVLEK/aGGVmfNine4Djw
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="365645432"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="365645432"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2023 01:55:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10760"; a="808862255"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="808862255"
-Received: from guoqingz-mobl1.ger.corp.intel.com (HELO [10.252.42.140]) ([10.252.42.140])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jul 2023 01:55:06 -0700
-Message-ID: <2901d37a-6b5a-9076-1423-0db95b4c12d3@linux.intel.com>
-Date: Tue, 4 Jul 2023 11:55:03 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E420746A2;
+	Tue,  4 Jul 2023 09:16:21 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DECB3;
+	Tue,  4 Jul 2023 02:16:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=V3G3llqyqDYpZVEogHvFY85hMe7xLSqrYXDqBNV0Ifs=; b=YOEZTrYis9yeXxQwXE2+AuiBuP
+	nsYIAeD+Z5uLOr8jOdbUCC12XGdcCNWm0bhk2TXTByQbEsVpeyiIp2HkrbB1AaQonEc38tfAQWXE2
+	zqtUJqOwxb2ec0nkn34x41V/qyiYJecWXcOGW6HbSdy0mtvNqk63x0kdVbnGMQ20vuiXh3rYLwEpf
+	5UoO5w52Pd5CEV0FtZLLnr4rwqF0MM+xxDvqAyvvYutxjdP2vrLl+DtLC+adgECInJPD9SndYT/cZ
+	1UtUDwI7kZkLydcOHTepdLLDwZk24wWCaQq4fJLOvCv1pt+YzH3YS8GUhZknh0pNiVH4vyaUOwNtv
+	9ZC+lZMw==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qGc8o-000MaJ-Oi; Tue, 04 Jul 2023 11:16:10 +0200
+Received: from [81.6.34.132] (helo=localhost.localdomain)
+	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qGc8o-0003b8-5f; Tue, 04 Jul 2023 11:16:10 +0200
+Subject: Re: [PATCH bpf-next] xsk: honor SO_BINDTODEVICE on bind
+To: Jason Wang <jasowang@redhat.com>, Ilya Maximets <i.maximets@ovn.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+ =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Stefan Hajnoczi <stefanha@redhat.com>
+References: <20230703175329.3259672-1-i.maximets@ovn.org>
+ <CACGkMEs1WyKwSuE2H0bkYigjhqHYJy6pPGnQLjWgOFt9+89hJA@mail.gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <94b00e51-aaac-5e7c-d447-f45af408e389@iogearbox.net>
+Date: Tue, 4 Jul 2023 11:16:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 2/2] selftests/bpf: Add test for bpf_rdtsc
+In-Reply-To: <CACGkMEs1WyKwSuE2H0bkYigjhqHYJy6pPGnQLjWgOFt9+89hJA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To: John Fastabend <john.fastabend@gmail.com>, shuah@kernel.org,
- tglx@linutronix.de, x86@kernel.org, bp@alien8.de,
- dave.hansen@linux.intel.com, mingo@redhat.com
-Cc: ast@kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
- bpf@vger.kernel.org
-References: <20230703105745.1314475-1-tero.kristo@linux.intel.com>
- <20230703105745.1314475-3-tero.kristo@linux.intel.com>
- <64a3450a2a062_65205208a9@john.notmuch>
-From: Tero Kristo <tero.kristo@linux.intel.com>
-In-Reply-To: <64a3450a2a062_65205208a9@john.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/26959/Tue Jul  4 09:29:23 2023)
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
-On 04/07/2023 01:00, John Fastabend wrote:
-> Tero Kristo wrote:
->> Add selftest for bpf_rdtsc() which reads the TSC (Time Stamp Counter) on
->> x86_64 architectures. The test reads the TSC from both userspace and the
->> BPF program, and verifies the TSC values are in incremental order as
->> expected. The test is automatically skipped on architectures that do not
->> support the feature.
+On 7/4/23 4:31 AM, Jason Wang wrote:
+> On Tue, Jul 4, 2023 at 1:53 AM Ilya Maximets <i.maximets@ovn.org> wrote:
 >>
->> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
->> ---
->>   .../selftests/bpf/prog_tests/test_rdtsc.c     | 67 +++++++++++++++++++
->>   .../testing/selftests/bpf/progs/test_rdtsc.c  | 21 ++++++
->>   2 files changed, 88 insertions(+)
->>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_rdtsc.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/test_rdtsc.c
+>> Initial creation of an AF_XDP socket requires CAP_NET_RAW capability.
+>> A privileged process might create the socket and pass it to a
+>> non-privileged process for later use.  However, that process will be
+>> able to bind the socket to any network interface.  Even though it will
+>> not be able to receive any traffic without modification of the BPF map,
+>> the situation is not ideal.
 >>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/test_rdtsc.c b/tools/testing/selftests/bpf/prog_tests/test_rdtsc.c
->> new file mode 100644
->> index 000000000000..2b26deb5b35a
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/prog_tests/test_rdtsc.c
->> @@ -0,0 +1,67 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright(c) 2023 Intel Corporation */
->> +
->> +#include "test_progs.h"
->> +#include "test_rdtsc.skel.h"
->> +
->> +#ifdef __x86_64__
->> +
->> +static inline u64 _rdtsc(void)
->> +{
->> +	u32 low, high;
->> +
->> +	__asm__ __volatile__("rdtscp" : "=a" (low), "=d" (high));
-> I think its ok but note this could fail if user doesn't have
-> access to rdtscp and iirc that can be restricted?
+>> Sockets already have a mechanism that can be used to restrict what
+>> interface they can be attached to.  That is SO_BINDTODEVICE.
+>>
+>> To change the SO_BINDTODEVICE binding the process will need CAP_NET_RAW.
+>>
+>> Make xsk_bind() honor the SO_BINDTODEVICE in order to allow safer
+>> workflow when non-privileged process is using AF_XDP.
+>>
+>> The intended workflow is following:
+>>
+>>    1. First process creates a bare socket with socket(AF_XDP, ...).
+>>    2. First process loads the XSK program to the interface.
+>>    3. First process adds the socket fd to a BPF map.
+>>    4. First process ties socket fd to a particular interface using
+>>       SO_BINDTODEVICE.
+>>    5. First process sends socket fd to a second process.
+>>    6. Second process allocates UMEM.
+>>    7. Second process binds socket to the interface with bind(...).
+>>    8. Second process sends/receives the traffic.
+>>
+>> All the steps above are possible today if the first process is
+>> privileged and the second one has sufficient RLIMIT_MEMLOCK and no
+>> capabilities.  However, the second process will be able to bind the
+>> socket to any interface it wants on step 7 and send traffic from it.
+>> With the proposed change, the second process will be able to bind
+>> the socket only to a specific interface chosen by the first process
+>> at step 4.
+>>
+>> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+>> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
+> 
+> Acked-by: Jason Wang <jasowang@redhat.com>
+> 
+> Is this a stable material or not?
 
-It is possible to restrict RDTSC access from userspace by enabling the 
-TSD bit in CR4 register, and it will cause the userspace process to trap 
-with general protection fault.
-
-However, the usage of RDTSC appears to be built-in to C standard 
-libraries (probably some timer routines) and enabling the CR4 TSD makes 
-the system near unusable. Things like sshd + systemd also start 
-generating the same general protection faults if RDTSC is blocked. Also, 
-attempting to run anything at all with the BPF selftest suite causes the 
-same general protection fault; not only the rdtsc test.
-
-I tried this with couple of setups, one system running a minimalistic 
-buildroot and another one running a fedora37 installation and the 
-results were similar.
-
--Tero
-
->
->> +	return ((u64)high << 32) | low;
->> +}
+To me this is a bug rather than 'feature', so I applied it to bpf tree and
+also added Fixes tag. Thanks everyone!
 
