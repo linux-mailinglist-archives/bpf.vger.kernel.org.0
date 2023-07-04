@@ -1,38 +1,38 @@
-Return-Path: <bpf+bounces-3931-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3932-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4CDF7466DF
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 03:30:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FB9C7466E3
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 03:33:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DA041C20A6F
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 01:30:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF5A31C209FF
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 01:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CDF362B;
-	Tue,  4 Jul 2023 01:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22EC262B;
+	Tue,  4 Jul 2023 01:33:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDD3620
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 01:30:48 +0000 (UTC)
-Received: from out-6.mta1.migadu.com (out-6.mta1.migadu.com [IPv6:2001:41d0:203:375::6])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75167E4E
-	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 18:30:45 -0700 (PDT)
-Message-ID: <e9d00a22-7103-6569-76a2-66d9e7447320@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9A9B620
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 01:33:43 +0000 (UTC)
+Received: from out-43.mta0.migadu.com (out-43.mta0.migadu.com [91.218.175.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41075E4E
+	for <bpf@vger.kernel.org>; Mon,  3 Jul 2023 18:33:42 -0700 (PDT)
+Message-ID: <437ed462-8950-755d-388f-e82c57bb8c44@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1688434243;
+	t=1688434419;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=M8EsR4cpSKsnuf5+HLPjZ3WnNCTJc3b1Jez5DOCErw4=;
-	b=vRGqwPXmzY94lQue2oe+QwuYJh23025hgLd8/2sEx67WtAs+ijNscoCgR7LTfKrRmZ92kW
-	WKPt+OcCaw2cn/ek5hLqY30lBmbzCOBgIAxLichwaplNlQgdbjfAnKIjV0gaqCTtuIsVIV
-	0MmenBb86QSzVvYLqaweCnKbF360yD8=
-Date: Tue, 4 Jul 2023 09:30:18 +0800
+	bh=0tgq8adhpdkzIddXir3w6xNA3qR5UFR1xcesY7LXLs0=;
+	b=ocyYoCGsuhtjNXdwYqNIbguIlZj4sIDehcicqT/3Xc8YnPPE+uSwDmafy0vg7CNhVYIeVx
+	qrl8RU12oTXoZ9aHrHAUWgZFfxBPsr4riGmA4bi/lp8zGDjDCRB2I9TJsOuoTm/fT4c1DK
+	mRK2fJhDmKdaQkkl9wdwew58TB6VRAI=
+Date: Tue, 4 Jul 2023 09:33:15 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -42,15 +42,14 @@ MIME-Version: 1.0
 Subject: Re: [PATCH v3 1/2] libbpf: kprobe.multi: cross filter using
  available_filter_functions and kallsyms
 Content-Language: en-US
-To: John Fastabend <john.fastabend@gmail.com>, olsajiri@gmail.com,
- andrii@kernel.org
-Cc: martin.lau@linux.dev, song@kernel.org, yhs@fb.com, bpf@vger.kernel.org,
- liuyun01@kylinos.cn, lkp@intel.com
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+ bpf@vger.kernel.org, liuyun01@kylinos.cn, lkp@intel.com
 References: <20230703013618.1959621-1-liu.yun@linux.dev>
- <64a323a635491_628d32081e@john.notmuch>
+ <ZKLGSFhBNZtOdulu@krava>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Jackie Liu <liu.yun@linux.dev>
-In-Reply-To: <64a323a635491_628d32081e@john.notmuch>
+In-Reply-To: <ZKLGSFhBNZtOdulu@krava>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -63,8 +62,8 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 
 
-在 2023/7/4 03:38, John Fastabend 写道:
-> Jackie Liu wrote:
+在 2023/7/3 20:59, Jiri Olsa 写道:
+> On Mon, Jul 03, 2023 at 09:36:17AM +0800, Jackie Liu wrote:
 >> From: Jackie Liu <liuyun01@kylinos.cn>
 >>
 >> When using regular expression matching with "kprobe multi", it scans all
@@ -137,6 +136,13 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 >> +		size_t cap;
 >> +		size_t cnt;
 >> +	} infos = {};
+> 
+> do you need to define new struct for this? there's just on infos
+> variable of that, you could use just:
+> 
+> 	const char **syms = NULL;
+> 	size_t cap = 0, cnt = 0;
+> 
 >> +
 >> +	f = fopen(available_functions_file, "r");
 >> +	if (!f) {
@@ -154,22 +160,6 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 >> +		if (ret == EOF && feof(f))
 >> +			break;
 >> +
-> 
-> Looks like you fixed up the fclose() issues, sorry about the noise
-> reading email backwards.
-> 
-> 
-> bit of a nit...
-> 
-> Its probably worth handling the case where ret == EOF and its
-> not feof(f) that man page claims can happen on read error for
-> example. Might never happen but would be good to distinguish from
-> -EINVAL below?
-
-I think it should not be necessary, we only care about whether we have
-read the correct data or not, other cases are read failures.
-
-> 
 >> +		if (ret != 1) {
 >> +			pr_warn("failed to read available function file entry: %d\n",
 >> +				ret);
@@ -194,11 +184,32 @@ read the correct data or not, other cases are read failures.
 >> +		infos.syms[infos.cnt++] = name;
 >> +	}
 >> +	fclose(f);
+> 
+> should you check if you found anything (infos.cnt != 0) and return early
+> if there's nothing found
+> 
 >> +
 >> +	/* sort available functions */
 >> +	qsort(infos.syms, infos.cnt, sizeof(void *), qsort_compare_function);
 >> +
 >> +	f = fopen("/proc/kallsyms", "r");
+> 
+> why not use libbpf_kallsyms_parse for kallsyms parsing? the call below
+> would be in its callback
+
+This place cannot directly use libbpf_kallsyms_parse, because we need
+info.syms, this value cannot be passed into the parameters of
+libbpf_kallsyms_parse, and we cannot turn info.syms into a global
+variable, which is unnecessary. The easiest way is to reimplement a A
+copy of libbpf_kallsyms_parse.
+
+Modifications to other parts will be carried along with the next
+version.
+
+-- 
+Jackie
+
+> 
 >> +	if (!f) {
 >> +		err = -errno;
 >> +		pr_warn("failed to open /proc/kallsyms\n");
@@ -211,9 +222,6 @@ read the correct data or not, other cases are read failures.
 >> +		ret = fscanf(f, "%llx %*c %499s%*[^\n]\n", &sym_addr, sym_name);
 >> +		if (ret == EOF && feof(f))
 >> +			break;
-> 
-> Same off chance we get ret == EOF and !feof(f)?
-> 
 >> +
 >> +		if (ret != 2) {
 >> +			pr_warn("failed to read kallsyms entry: %d\n", ret);
@@ -223,23 +231,14 @@ read the correct data or not, other cases are read failures.
 >> +
 >> +		if (!glob_match(sym_name, res->pattern))
 >> +			continue;
+> 
+> hm, we don't need to call glob_match again, we just want to check
+> if the kallsyms symbol is in infos.syms
+> 
 >> +
 >> +		if (!bsearch(&sym_name, infos.syms, infos.cnt, sizeof(void *),
 >> +			     bsearch_compare_function))
 >> +			continue;
-> 
-> I'm wondering if we could get a debug print if the func was skipped? Its
-> not always clear when running many kernels what is going to be skipped
-> and where.
-> 
-
-If there is no match, it will be skipped, and if you add printing, it
-will become particularly noisy. And print here is not more helpful for
-debugging, we don't care about skipped functions.
-
--- 
-Jackie
-
 >> +
 >> +		err = libbpf_ensure_mem((void **)&res->addrs, &res->cap,
 >> +					sizeof(unsigned long), res->cnt + 1);
@@ -248,6 +247,11 @@ Jackie
 >> +
 >> +		res->addrs[res->cnt++] = (unsigned long) sym_addr;
 >> +	}
+> 
+> res->cnt is check outside for 0, so we should be find here
+> 
+> jirka
+> 
 >> +
 >> +cleanup:
 >> +	fclose(f);
@@ -271,6 +275,5 @@ Jackie
 >>   		if (!res.cnt) {
 >> -- 
 >> 2.25.1
->>
 >>
 
