@@ -1,74 +1,77 @@
-Return-Path: <bpf+bounces-3983-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3984-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A2AD7473FB
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 16:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0200674742C
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 16:33:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9AFF280EDE
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 14:20:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2879280FE8
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 14:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA18163B2;
-	Tue,  4 Jul 2023 14:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638975697;
+	Tue,  4 Jul 2023 14:33:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9619C53B1
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 14:20:28 +0000 (UTC)
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2C8E4F
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 07:20:25 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51d805cb33aso7139633a12.3
-        for <bpf@vger.kernel.org>; Tue, 04 Jul 2023 07:20:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331D5A2C
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 14:33:34 +0000 (UTC)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43365E47
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 07:33:31 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3143493728dso2880300f8f.1
+        for <bpf@vger.kernel.org>; Tue, 04 Jul 2023 07:33:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688480424; x=1691072424;
+        d=isovalent.com; s=google; t=1688481210; x=1691073210;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tGuYNSdIgUBRjL0V9Twj3LxUN39YcpENz5rnG9Fpc2s=;
-        b=ZF6TrxiG8XfQo4T7iiuIr9NbvmdkR3hiAd+Bhgi9zB6DooTRXyae3GKre211wfntP+
-         nkx4Ks9IXkAh2TCfgMIdEV9MEJ+3yrD6scX75oWtD0Ng/b4vUR0fQ8SvWTHgVUG5SKJj
-         1CCjMKngPfQA4XVyjwDW/u58fJUtOKMqjiYfSnz/JMjHM013Th6ALk78FXe4HHlxtruS
-         bYqD94Q9ksSUuuDuAFqFjaAENSde38neZ3cTaokuigZ3YPOeWsltgnvwV9rdLdHZ9K4G
-         7P2WTEsy2yEFlXEsTGBI5taT/yWn7VHYjgde476FTxLpfwn53/MYjoto5B/8y2dvHLzK
-         7MRA==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8cUYxa/RIxSFp2aYnGJvOb11fMXdQnhKS87xLnOI+Kc=;
+        b=V/AJDly5fJh8FVj2aHhpCip6FSGvxY955ns7QInXtUg/6/DKlbHYj5aDrHRu4QllD+
+         rEhsKuDezVPSm8YLE/Pi+Pm6B1KBLz/D3cD8x5yIciP9xI4LGJgssQr48ztkI8jU9QN6
+         YP8NF0f0Otdjvh+KOAO/9O48gVF8wSveyodS1X6iDR87Hg6lHolGnnRx3Md3IjPVBZBU
+         Ns5mv8XqOjuk0KUD2CNokxCMdsIu3Zy5kmet9pgQhYRAQcH8Pke/kwI9OKYQpEmVIQ6C
+         vDmaWFlwq1V5J0g1FxBWzR/jGTUuKOaulAPkX74bOCy6MxHMxHrLJjWmEfcBW8LW44s3
+         tsXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688480424; x=1691072424;
+        d=1e100.net; s=20221208; t=1688481210; x=1691073210;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tGuYNSdIgUBRjL0V9Twj3LxUN39YcpENz5rnG9Fpc2s=;
-        b=TDDPhYQdRE+O8ISfabN8mL4qi2EqnCL5ZTDDAp5psx29jmeAajWf54w+0ipjW5vt8r
-         bDuERLB70GCnpQgsAD0X1lc7Iv07FCJgp3GMkKlzYVLv5EQPk5d9CjfjlKp6JCR0WViD
-         g/WrycjSoP3Av9/mcIQcJ8fykCljxLAhHBt8DgnhXIX3+kIj+sEiPuXotdur2wov1ETt
-         GiJcbo5mBD5AspbU01S8/uRDlWHlbFyMFEPlbSaNaAntURQKmvf2NWFNgmlrDfmlxJbH
-         yw5zKZhvxk28u1u0BgSnJ6IsOch0QX1Tkk0o7uNVOASG52BVaACg2BiZ8FsSeeuWWneZ
-         KhmQ==
-X-Gm-Message-State: ABy/qLbKKkEpvOaS3lkRiUeTi9qrQbvFP1FTMgfCr1H6kPFyqjTqCAI6
-	QgPVdToqCxqz55+scMTayvZOq+1RrisHnQ==
-X-Google-Smtp-Source: APBJJlGCB9vNsjNtZWwgl85+wIh8oNWc/KQnkCM9jJKB5zvwNkFCEC0inF58L657qQ6g0b5kg8vVHA==
-X-Received: by 2002:a50:fc10:0:b0:51b:c714:a2a1 with SMTP id i16-20020a50fc10000000b0051bc714a2a1mr9843654edr.7.1688480423657;
-        Tue, 04 Jul 2023 07:20:23 -0700 (PDT)
-Received: from krava ([193.46.31.82])
-        by smtp.gmail.com with ESMTPSA id b17-20020aa7c6d1000000b0051de018af1esm6815556eds.59.2023.07.04.07.20.22
+        bh=8cUYxa/RIxSFp2aYnGJvOb11fMXdQnhKS87xLnOI+Kc=;
+        b=Jvx9E0h/4AI5mwyNPw4KdnCtVraX33padQXNww1ffTLuhATnMTywcOgZ+I9bg//Tol
+         aunqihQPZxMJhSxaQg1UGzvTyUOIyJzEdGUu4GX0M4BdJLMjpzj2TAdlV7zitNK5K77F
+         6bHbCPAx1WfRaHuIyCWVrborwTUnEIxYOmxS7bczJHO1BNg/kzElboaFgMWBIHGrc4B3
+         bJVwlRuKpw3wJmQwsmV36TKasNb9WT9+bQYSbHv1zTE22I9GsOk2WbdXY1DDKLySgNR7
+         HCyIUOnc0pxsoPYE5xr/nM8+eq0KEo6aM3x0JSdNWiyjf2Ko/uqPAs6Y72xgc9sTTsZO
+         CAKA==
+X-Gm-Message-State: ABy/qLa0PgVUqPwcwsdLwUYWAUyD7hguu7g32P7TOtXxzzqwAqachhNj
+	Qp7kNJA8yZZofaNDuOpMiZkhQQ==
+X-Google-Smtp-Source: APBJJlFofbA3p236vHTlt/wp0KnSdZCjndmk3wG9jEWkc3dhMbQDBCpoQ8AAplS8JQZqQomcI7oakw==
+X-Received: by 2002:a5d:58e9:0:b0:314:14be:1004 with SMTP id f9-20020a5d58e9000000b0031414be1004mr11805253wrd.63.1688481209717;
+        Tue, 04 Jul 2023 07:33:29 -0700 (PDT)
+Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id y11-20020a1c4b0b000000b003fbe4cecc5fsm204687wma.34.2023.07.04.07.33.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jul 2023 07:20:23 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 4 Jul 2023 16:20:19 +0200
-To: Jackie Liu <liu.yun@linux.dev>
-Cc: Jiri Olsa <olsajiri@gmail.com>, andrii@kernel.org, martin.lau@linux.dev,
-	song@kernel.org, yhs@fb.com, bpf@vger.kernel.org,
-	liuyun01@kylinos.cn, lkp@intel.com
-Subject: Re: [PATCH v3 1/2] libbpf: kprobe.multi: cross filter using
- available_filter_functions and kallsyms
-Message-ID: <ZKQqo6bgbbkADkeG@krava>
-References: <20230703013618.1959621-1-liu.yun@linux.dev>
- <ZKLGSFhBNZtOdulu@krava>
- <437ed462-8950-755d-388f-e82c57bb8c44@linux.dev>
- <ZKQnr0VZri1pWyrO@krava>
+        Tue, 04 Jul 2023 07:33:29 -0700 (PDT)
+Date: Tue, 4 Jul 2023 14:34:27 +0000
+From: Anton Protopopov <aspsk@isovalent.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+Subject: Re: [v3 PATCH bpf-next 3/6] bpf: populate the per-cpu
+ insertions/deletions counters for hashmaps
+Message-ID: <ZKQt84Qz0A0ZkgN1@zh-lab-node-5>
+References: <20230630082516.16286-1-aspsk@isovalent.com>
+ <20230630082516.16286-4-aspsk@isovalent.com>
+ <05a3c521-3c6f-79c2-a5a8-1f8ab35eb759@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,128 +80,153 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZKQnr0VZri1pWyrO@krava>
+In-Reply-To: <05a3c521-3c6f-79c2-a5a8-1f8ab35eb759@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 04, 2023 at 04:07:48PM +0200, Jiri Olsa wrote:
-> On Tue, Jul 04, 2023 at 09:33:15AM +0800, Jackie Liu wrote:
+On Tue, Jul 04, 2023 at 09:56:36PM +0800, Hou Tao wrote:
+> Hi,
 > 
-> SNIP
+> On 6/30/2023 4:25 PM, Anton Protopopov wrote:
+> > Initialize and utilize the per-cpu insertions/deletions counters for hash-based
+> > maps. Non-trivial changes only apply to the preallocated maps for which the
+> > {inc,dec}_elem_count functions are not called, as there's no need in counting
+> > elements to sustain proper map operations.
+> >
+> > To increase/decrease percpu counters for preallocated maps we add raw calls to
+> > the bpf_map_{inc,dec}_elem_count functions so that the impact is minimal. For
+> > dynamically allocated maps we add corresponding calls to the existing
+> > {inc,dec}_elem_count functions.
+> >
+> > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> > ---
+> >  kernel/bpf/hashtab.c | 23 ++++++++++++++++++++---
+> >  1 file changed, 20 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> > index 56d3da7d0bc6..faaef4fd3df0 100644
+> > --- a/kernel/bpf/hashtab.c
+> > +++ b/kernel/bpf/hashtab.c
+> > @@ -581,8 +581,14 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+> >  		}
+> >  	}
+> >  
+> > +	err = bpf_map_init_elem_count(&htab->map);
+> > +	if (err)
+> > +		goto free_extra_elements;
+> Considering the per-cpu counter is not always needed, is it a good idea
+> to make the elem_count being optional by introducing a new map flag ?
+
+Per-map-flag or a static key? For me it looked like just doing an unconditional
+`inc` for a per-cpu variable is better vs. doing a check then `inc` or an
+unconditional jump.
+
+> > +
+> >  	return &htab->map;
+> >  
+> > +free_extra_elements:
+> > +	free_percpu(htab->extra_elems);
+> >  free_prealloc:
+> >  	prealloc_destroy(htab);
+> Need to check prealloc before calling prealloc_destroy(htab), otherwise
+> for non-preallocated percpu htab prealloc_destroy() will trigger invalid
+> memory dereference.
+
+Thanks!
+
+> >  free_map_locked:
+> > @@ -804,6 +810,7 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+> >  		if (l == tgt_l) {
+> >  			hlist_nulls_del_rcu(&l->hash_node);
+> >  			check_and_free_fields(htab, l);
+> > +			bpf_map_dec_elem_count(&htab->map);
+> >  			break;
+> >  		}
+> >  
+> > @@ -900,6 +907,8 @@ static bool is_map_full(struct bpf_htab *htab)
+> >  
+> >  static void inc_elem_count(struct bpf_htab *htab)
+> >  {
+> > +	bpf_map_inc_elem_count(&htab->map);
+> > +
+> >  	if (htab->use_percpu_counter)
+> >  		percpu_counter_add_batch(&htab->pcount, 1, PERCPU_COUNTER_BATCH);
+> >  	else
+> > @@ -908,6 +917,8 @@ static void inc_elem_count(struct bpf_htab *htab)
+> >  
+> >  static void dec_elem_count(struct bpf_htab *htab)
+> >  {
+> > +	bpf_map_dec_elem_count(&htab->map);
+> > +
+> >  	if (htab->use_percpu_counter)
+> >  		percpu_counter_add_batch(&htab->pcount, -1, PERCPU_COUNTER_BATCH);
+> >  	else
+> > @@ -920,6 +931,7 @@ static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
+> >  	htab_put_fd_value(htab, l);
+> >  
+> >  	if (htab_is_prealloc(htab)) {
+> > +		bpf_map_dec_elem_count(&htab->map);
+> >  		check_and_free_fields(htab, l);
+> >  		__pcpu_freelist_push(&htab->freelist, &l->fnode);
+> >  	} else {
+> > @@ -1000,6 +1012,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
+> >  			if (!l)
+> >  				return ERR_PTR(-E2BIG);
+> >  			l_new = container_of(l, struct htab_elem, fnode);
+> > +			bpf_map_inc_elem_count(&htab->map);
+> >  		}
+> >  	} else {
+> >  		if (is_map_full(htab))
+> > @@ -1224,7 +1237,8 @@ static long htab_lru_map_update_elem(struct bpf_map *map, void *key, void *value
+> >  	if (l_old) {
+> >  		bpf_lru_node_set_ref(&l_new->lru_node);
+> >  		hlist_nulls_del_rcu(&l_old->hash_node);
+> > -	}
+> > +	} else
+> > +		bpf_map_inc_elem_count(&htab->map);
+> >  	ret = 0;
+> >  
+> >  err:
+> > @@ -1351,6 +1365,7 @@ static long __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+> >  		pcpu_init_value(htab, htab_elem_get_ptr(l_new, key_size),
+> >  				value, onallcpus);
+> >  		hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+> > +		bpf_map_inc_elem_count(&htab->map);
+> >  		l_new = NULL;
+> >  	}
+> >  	ret = 0;
+> > @@ -1437,9 +1452,10 @@ static long htab_lru_map_delete_elem(struct bpf_map *map, void *key)
+> >  
+> >  	l = lookup_elem_raw(head, hash, key, key_size);
+> >  
+> > -	if (l)
+> > +	if (l) {
+> > +		bpf_map_dec_elem_count(&htab->map);
+> >  		hlist_nulls_del_rcu(&l->hash_node);
+> > -	else
+> > +	} else
+> >  		ret = -ENOENT;
+> Also need to decrease elem_count for
+> __htab_map_lookup_and_delete_batch() and
+> __htab_map_lookup_and_delete_elem() when is_lru_map is true. Maybe for
+> LRU map, we could just do bpf_map_dec_elem_count() in
+> htab_lru_push_free() and do bpf_map_inc_elem_count() in prealloc_lru_pop().
+
+Thanks. I will fix the logic and extend the selftest to test the batch ops as well.
+
+> >  
+> >  	htab_unlock_bucket(htab, b, hash, flags);
+> > @@ -1523,6 +1539,7 @@ static void htab_map_free(struct bpf_map *map)
+> >  		prealloc_destroy(htab);
+> >  	}
+> >  
+> > +	bpf_map_free_elem_count(map);
+> >  	free_percpu(htab->extra_elems);
+> >  	bpf_map_area_free(htab->buckets);
+> >  	bpf_mem_alloc_destroy(&htab->pcpu_ma);
 > 
-> > > 
-> > > should you check if you found anything (infos.cnt != 0) and return early
-> > > if there's nothing found
-> > > 
-> > > > +
-> > > > +	/* sort available functions */
-> > > > +	qsort(infos.syms, infos.cnt, sizeof(void *), qsort_compare_function);
-> > > > +
-> > > > +	f = fopen("/proc/kallsyms", "r");
-> > > 
-> > > why not use libbpf_kallsyms_parse for kallsyms parsing? the call below
-> > > would be in its callback
-> > 
-> > This place cannot directly use libbpf_kallsyms_parse, because we need
-> > info.syms, this value cannot be passed into the parameters of
-> > libbpf_kallsyms_parse, 
-> 
-> hum, libbpf_kallsyms_parse takes 'void *ctx', so you can pass anything
-> you want right? 
-
-somthing like below should save some lines and ease up error handling
-
-I'd add similar parse functions for both available_filter_functions and
-available_filter_functions_addrs and add the logic to callbacks
-
-jirka
-
-
----
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index b9282ef3f8a7..04b980293240 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10559,8 +10559,31 @@ static int bsearch_compare_function(const void *a, const void *b)
- 	return strcmp((const char *)a, *(const char **)b);
- }
- 
-+struct avail_kallsyms_data {
-+	const char **syms;
-+	struct kprobe_multi_resolve *res;
-+};
-+
-+static int avail_kallsyms_cb(unsigned long long sym_addr, char sym_type,
-+			     const char *sym_name, void *ctx)
-+{
-+	struct avail_kallsyms_data *data = ctx;
-+	struct kprobe_multi_resolve *res = data->res;
-+
-+	if (!bsearch(&sym_name, data->syms, cnt, sizeof(void *), bsearch_compare_function))
-+		continue;
-+
-+	err = libbpf_ensure_mem((void **)&res->addrs, &res->cap,
-+				sizeof(unsigned long), res->cnt + 1);
-+	if (err)
-+		return err;
-+	res->addrs[res->cnt++] = (unsigned long) sym_addr;
-+	return 0;
-+}
-+
- static int libbpf_available_kallsyms_parse(struct kprobe_multi_resolve *res)
- {
-+	struct avail_kallsyms_data data;
- 	char sym_name[500];
- 	const char *available_functions_file = tracefs_available_filter_functions();
- 	FILE *f;
-@@ -10614,42 +10637,13 @@ static int libbpf_available_kallsyms_parse(struct kprobe_multi_resolve *res)
- 	/* sort available functions */
- 	qsort(syms, cnt, sizeof(void *), qsort_compare_function);
- 
--	f = fopen("/proc/kallsyms", "r");
--	if (!f) {
--		err = -errno;
--		pr_warn("failed to open /proc/kallsyms\n");
--		goto free_syms;
--	}
--
--	while (true) {
--		unsigned long long sym_addr;
--
--		ret = fscanf(f, "%llx %*c %499s%*[^\n]\n", &sym_addr, sym_name);
--		if (ret == EOF && feof(f))
--			break;
--
--		if (ret != 2) {
--			pr_warn("failed to read kallsyms entry: %d\n", ret);
--			err = -EINVAL;
--			goto cleanup;
--		}
--
--		if (!bsearch(&sym_name, syms, cnt, sizeof(void *), bsearch_compare_function))
--			continue;
--
--		err = libbpf_ensure_mem((void **)&res->addrs, &res->cap,
--					sizeof(unsigned long), res->cnt + 1);
--		if (err)
--			goto cleanup;
--
--		res->addrs[res->cnt++] = (unsigned long) sym_addr;
--	}
-+	data.syms = syms;
-+	data.res = res;
-+	libbpf_kallsyms_parse(avail_kallsyms_cb, res);
- 
- 	if (!res->cnt)
- 		err = -ENOENT;
- 
--cleanup:
--	fclose(f);
- free_syms:
- 	for (i = 0; i < cnt; i++)
- 		free((char *)syms[i]);
 
