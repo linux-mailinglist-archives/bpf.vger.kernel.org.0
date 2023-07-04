@@ -1,76 +1,47 @@
-Return-Path: <bpf+bounces-3986-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-3987-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1AD07474AC
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 17:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BCB67474E8
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 17:05:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 063941C20A0B
-	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 15:01:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9C91C20A26
+	for <lists+bpf@lfdr.de>; Tue,  4 Jul 2023 15:05:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F7B63CF;
-	Tue,  4 Jul 2023 15:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5407663CF;
+	Tue,  4 Jul 2023 15:05:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55259A2C
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 15:01:38 +0000 (UTC)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83A010CA
-	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 08:01:35 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbc244d3a8so60096745e9.2
-        for <bpf@vger.kernel.org>; Tue, 04 Jul 2023 08:01:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1688482894; x=1691074894;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=S+gz1vYm/vl0CRJRpowPwSn4IA1GUz3abLmvlZtI0h0=;
-        b=LIGftxdtaaFAIt1CCZV9R5W9qvJMu7AeCHVg5dHhZYgEj8JdUA9Danz+t8XWbMILvj
-         thwD6PwosEYSwy1ZtAtUJkB39346ThNTGKoNpYio9MdRbrdbpoV10vvQmJapiucxBNVV
-         gu9W+lC2L53Ir50wriAgjC+zGpRb2jwuKvv8a5f+Kb00EQBlugk+ExySKDuArmhXbZnd
-         mgVbgcLcjVJT2m0aYItqb4A8I+OZvike9sKmvuz/AL0mqY6goOnNCRlNqIPcosAFcPzt
-         JauWnqiVBwQksdy5LDDknfeSslt2aS6wB+8XzeQyFWNmZvPh1CWAJkIbWmJi3//oKZxO
-         PS+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688482894; x=1691074894;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S+gz1vYm/vl0CRJRpowPwSn4IA1GUz3abLmvlZtI0h0=;
-        b=TOWBhd1SA8uom5WZHXW4B79x5Nmj/tAyx2moBohfgNCZO3i/OQwuATJeMEImqx/ior
-         g1T8vVhDeaVG6jV3KA8Ve2silosopNWjQAhShdAqBsvWXOhPlK0be2o7uWv+dmvgvN0v
-         bMidqdw0TuqzjIyjqsSv/T5fZThvUXe6rlVMAbCpmsvbKsyKH20e9DCyr3MRD8Dwm5cx
-         20qzjVdJi7gwWMICSvMnVz6VVLstbQRcpmBkjALCfTObuwvHCyC5U0HNH/f3jzCtOxSZ
-         hfhO8KtYpVBvYMsKGZx50Mf8+zPR0PoWNgU1/49eU4L/OfWPfSnal3vsGiyVll2xXMA+
-         zoKg==
-X-Gm-Message-State: AC+VfDxebrRCbcINrMvU9gy0MAnnisGXFGRzrhxWwHamCM+m33MN3M7I
-	uG/9HulpdBjNbH0g7zw5XYM+oQ==
-X-Google-Smtp-Source: ACHHUZ4vUAvLUhkIA/BbgxHDzxoJII7Ce8vK7XqWWWsPx931WnW0bv0pXsaeHre4/Uiq79g4D8wW1w==
-X-Received: by 2002:a7b:ce87:0:b0:3f7:aad8:4e05 with SMTP id q7-20020a7bce87000000b003f7aad84e05mr12616698wmj.11.1688482893935;
-        Tue, 04 Jul 2023 08:01:33 -0700 (PDT)
-Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id x9-20020a05600c21c900b003fb41491670sm22882156wmj.24.2023.07.04.08.01.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jul 2023 08:01:33 -0700 (PDT)
-Date: Tue, 4 Jul 2023 15:02:32 +0000
-From: Anton Protopopov <aspsk@isovalent.com>
-To: Hou Tao <houtao1@huawei.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [v3 PATCH bpf-next 5/6] selftests/bpf: test map percpu stats
-Message-ID: <ZKQ0iF+8fMND5Qmg@zh-lab-node-5>
-References: <20230630082516.16286-1-aspsk@isovalent.com>
- <20230630082516.16286-6-aspsk@isovalent.com>
- <3e761472-051d-4e46-8a66-79926493e5db@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD0D263B9
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 15:05:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96112C433C7;
+	Tue,  4 Jul 2023 15:05:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688483128;
+	bh=Qkcd9m+SV34/ZmoHIL3vzsBtk3lpli7AUFnp09k5ECU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SNzRM70NlVz3IA8TUYe1rlXFMEeZMYsqqQ8lmHRk5mRY0vDsYO5lb0Tlcvv7/q5u1
+	 CRQDRaIW6DihFX0UqgJvnT/5CPcdYF2hPrdqpukdf0sH4XiczO4NRmvsXUYyQ3m+VW
+	 Mc0QlzKtTBXwP89SEQuzuajRLwKfXui3Qh/q/MUyRZK3xrEG/k+CK55P2QdMlUE+mM
+	 YnAZDWxeTOmi0U/MxfNwMtqDqHytCF7+/hJ3nqa660wrQH9Q3mGCfwo4Z4n/NCfkAk
+	 kquHZhc2hzBsPVJ5r1DiYC3P0+yANrFFuSCld4AuOKmAF12nhT0nMJqN/Ueqf385wK
+	 iY2ZZTJ5Ymt4w==
+Date: Tue, 4 Jul 2023 17:05:22 +0200
+From: Alexey Gladkov <legion@kernel.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: Re: [PATCH v1] fs: Add kfuncs to handle idmapped mounts
+Message-ID: <ZKQ1Mkf5G9CA1/9J@example.org>
+References: <c35fbb4cb0a3a9b4653f9a032698469d94ca6e9c.1688123230.git.legion@kernel.org>
+ <babdf7a8-9663-6d71-821a-34da2aff80e2@huaweicloud.com>
+ <20230704-anrollen-beenden-9187c7b1b570@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,465 +50,158 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3e761472-051d-4e46-8a66-79926493e5db@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+In-Reply-To: <20230704-anrollen-beenden-9187c7b1b570@brauner>
 
-On Tue, Jul 04, 2023 at 10:41:10PM +0800, Hou Tao wrote:
-> Hi,
+On Tue, Jul 04, 2023 at 03:01:21PM +0200, Christian Brauner wrote:
+> On Tue, Jul 04, 2023 at 07:42:53PM +0800, Hou Tao wrote:
+> > Hi,
+> > 
+> > On 6/30/2023 7:08 PM, Alexey Gladkov wrote:
+> > > Since the introduction of idmapped mounts, file handling has become
+> > > somewhat more complicated. If the inode has been found through an
+> > > idmapped mount the idmap of the vfsmount must be used to get proper
+> > > i_uid / i_gid. This is important, for example, to correctly take into
+> > > account idmapped files when caching, LSM or for an audit.
+> > 
+> > Could you please add a bpf selftest for these newly added kfuncs ?
+> > >
+> > > Signed-off-by: Alexey Gladkov <legion@kernel.org>
+> > > ---
+> > >  fs/mnt_idmapping.c | 69 ++++++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 69 insertions(+)
+> > >
+> > > diff --git a/fs/mnt_idmapping.c b/fs/mnt_idmapping.c
+> > > index 4905665c47d0..ba98ce26b883 100644
+> > > --- a/fs/mnt_idmapping.c
+> > > +++ b/fs/mnt_idmapping.c
+> > > @@ -6,6 +6,7 @@
+> > >  #include <linux/mnt_idmapping.h>
+> > >  #include <linux/slab.h>
+> > >  #include <linux/user_namespace.h>
+> > > +#include <linux/bpf.h>
+> > >  
+> > >  #include "internal.h"
+> > >  
+> > > @@ -271,3 +272,71 @@ void mnt_idmap_put(struct mnt_idmap *idmap)
+> > >  		kfree(idmap);
+> > >  	}
+> > >  }
+> > > +
+> > > +__diag_push();
+> > > +__diag_ignore_all("-Wmissing-prototypes",
+> > > +		  "Global functions as their definitions will be in vmlinux BTF");
+> > > +
+> > > +/**
+> > > + * bpf_is_idmapped_mnt - check whether a mount is idmapped
+> > > + * @mnt: the mount to check
+> > > + *
+> > > + * Return: true if mount is mapped, false if not.
+> > > + */
+> > > +__bpf_kfunc bool bpf_is_idmapped_mnt(struct vfsmount *mnt)
+> > > +{
+> > > +	return is_idmapped_mnt(mnt);
+> > > +}
+> > > +
+> > > +/**
+> > > + * bpf_file_mnt_idmap - get file idmapping
+> > > + * @file: the file from which to get mapping
+> > > + *
+> > > + * Return: The idmap for the @file.
+> > > + */
+> > > +__bpf_kfunc struct mnt_idmap *bpf_file_mnt_idmap(struct file *file)
+> > > +{
+> > > +	return file_mnt_idmap(file);
+> > > +}
+> > 
+> > A dummy question here: the implementation of file_mnt_idmap() is
+> > file->f_path.mnt->mnt_idmap, so if the passed file is a BTF pointer, is
+> > there any reason why we could not do such dereference directly in bpf
+> > program ?
+> > > +
+> > > +/**
+> > > + * bpf_inode_into_vfs_ids - map an inode's i_uid and i_gid down according to an idmapping
+> > > + * @idmap: idmap of the mount the inode was found from
+> > > + * @inode: inode to map
+> > > + *
+> > > + * The inode's i_uid and i_gid mapped down according to @idmap. If the inode's
+> > > + * i_uid or i_gid has no mapping INVALID_VFSUID or INVALID_VFSGID is returned in
+> > > + * the corresponding position.
+> > > + *
+> > > + * Return: A 64-bit integer containing the current GID and UID, and created as
+> > > + * such: *gid* **<< 32 \|** *uid*.
+> > > + */
+> > > +__bpf_kfunc uint64_t bpf_inode_into_vfs_ids(struct mnt_idmap *idmap,
+> > > +		const struct inode *inode)
+> > > +{
+> > > +	vfsuid_t vfsuid = i_uid_into_vfsuid(idmap, inode);
+> > > +	vfsgid_t vfsgid = i_gid_into_vfsgid(idmap, inode);
+> > > +
+> > > +	return (u64) __vfsgid_val(vfsgid) << 32 |
+> > > +		     __vfsuid_val(vfsuid);
+> > > +}
+> > > +
+> > > +__diag_pop();
+> > > +
+> > > +BTF_SET8_START(idmap_btf_ids)
+> > > +BTF_ID_FLAGS(func, bpf_is_idmapped_mnt)
+> > > +BTF_ID_FLAGS(func, bpf_file_mnt_idmap)
+> > > +BTF_ID_FLAGS(func, bpf_inode_into_vfs_ids)
+> > > +BTF_SET8_END(idmap_btf_ids)
+> > > +
+> > > +static const struct btf_kfunc_id_set idmap_kfunc_set = {
+> > > +	.owner = THIS_MODULE,
+> > > +	.set   = &idmap_btf_ids,
+> > > +};
+> > > +
+> > > +static int __init bpf_idmap_kfunc_init(void)
+> > > +{
+> > > +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &idmap_kfunc_set);
+> > > +}
+> > > +
+> > Is BPF_PROG_TYPE_TRACING sufficient for your use case ? It seems
+> > BPF_PROG_TYPE_UNSPEC will make these kfuncs be available for all bpf
+> > program types.
+> > > +late_initcall(bpf_idmap_kfunc_init);
+> > 
 > 
-> On 6/30/2023 4:25 PM, Anton Protopopov wrote:
-> > Add a new map test, map_percpu_stats.c, which is checking the correctness of
-> > map's percpu elements counters.  For supported maps the test upserts a number
-> > of elements, checks the correctness of the counters, then deletes all the
-> > elements and checks again that the counters sum drops down to zero.
-> >
-> > The following map types are tested:
-> >
-> >     * BPF_MAP_TYPE_HASH, BPF_F_NO_PREALLOC
-> >     * BPF_MAP_TYPE_PERCPU_HASH, BPF_F_NO_PREALLOC
-> >     * BPF_MAP_TYPE_HASH,
-> >     * BPF_MAP_TYPE_PERCPU_HASH,
-> >     * BPF_MAP_TYPE_LRU_HASH
-> >     * BPF_MAP_TYPE_LRU_PERCPU_HASH
+> I don't want any of these helpers as kfuncs as they are peeking deeply
+> into implementation details that we reserve to change. Specifically in
+> the light of:
 > 
-> A test for BPF_MAP_TYPE_HASH_OF_MAPS is also needed.
-
-I will add it.
-
-> >
-> > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> > ---
-> >  .../bpf/map_tests/map_percpu_stats.c          | 336 ++++++++++++++++++
-> >  .../selftests/bpf/progs/map_percpu_stats.c    |  24 ++
-> >  2 files changed, 360 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/map_percpu_stats.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c b/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
-> > new file mode 100644
-> > index 000000000000..5b45af230368
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
-> > @@ -0,0 +1,336 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2023 Isovalent */
-> > +
-> > +#include <errno.h>
-> > +#include <unistd.h>
-> > +#include <pthread.h>
-> > +
-> > +#include <bpf/bpf.h>
-> > +#include <bpf/libbpf.h>
-> > +
-> > +#include <bpf_util.h>
-> > +#include <test_maps.h>
-> > +
-> > +#include "map_percpu_stats.skel.h"
-> > +
-> > +#define MAX_ENTRIES 16384
-> > +#define N_THREADS 37
+>     3. kfunc lifecycle expectations part b):
 > 
-> Why 37 thread is needed here ? Does a small number of threads work as well ?
-
-This was used to evict more elements from LRU maps when they are full.
-
-> > +
-> > +#define MAX_MAP_KEY_SIZE 4
-> > +
-> > +static void map_info(int map_fd, struct bpf_map_info *info)
-> > +{
-> > +	__u32 len = sizeof(*info);
-> > +	int ret;
-> > +
-> > +	memset(info, 0, sizeof(*info));
-> > +
-> > +	ret = bpf_obj_get_info_by_fd(map_fd, info, &len);
-> > +	CHECK(ret < 0, "bpf_obj_get_info_by_fd", "error: %s\n", strerror(errno));
-> Please use ASSERT_OK instead.
-
-Ok, thanks, will do (and for all other similar cases you've mentioned below).
-
-> > +}
-> > +
-> > +static const char *map_type_to_s(__u32 type)
-> > +{
-> > +	switch (type) {
-> > +	case BPF_MAP_TYPE_HASH:
-> > +		return "HASH";
-> > +	case BPF_MAP_TYPE_PERCPU_HASH:
-> > +		return "PERCPU_HASH";
-> > +	case BPF_MAP_TYPE_LRU_HASH:
-> > +		return "LRU_HASH";
-> > +	case BPF_MAP_TYPE_LRU_PERCPU_HASH:
-> > +		return "LRU_PERCPU_HASH";
-> > +	default:
-> > +		return "<define-me>";
-> > +	}
-> > +}
-> > +
-> > +/* Map i -> map-type-specific-key */
-> > +static void *map_key(__u32 type, __u32 i)
-> > +{
-> > +	static __thread __u8 key[MAX_MAP_KEY_SIZE];
+>     "Unlike with regular kernel symbols, this is expected behavior for BPF
+>      symbols, and out-of-tree BPF programs that use kfuncs should be considered
+>      relevant to discussions and decisions around modifying and removing those
+>      kfuncs. The BPF community will take an active role in participating in
+>      upstream discussions when necessary to ensure that the perspectives of such
+>      users are taken into account."
 > 
-> Why a per-thread key is necessary here ? Could we just define it when
-> the key is needed ?
+> That's too much stability for my taste for these helpers. The helpers
+> here exposed have been modified multiple times and once we wean off
+> idmapped mounts from user namespaces completely they will change again.
+> So I'm fine if they're traceable but not as kfuncs with any - even
+> minimal - stability guarantees.
 
-Thanks, I will remove it to simplify code.  (This was used to create keys for
-non-hash maps, e.g., LPM-trie in the first version of the patch.)
+I thought that the mnt_idmap interface is already quite stable. I wanted
+to give a minimal interface to bpf programs.
 
-> > +
-> > +	*(__u32 *)key = i;
-> > +	return key;
-> > +}
-> > +
-> > +static __u32 map_count_elements(__u32 type, int map_fd)
-> > +{
-> > +	void *key = map_key(type, -1);
-> > +	int n = 0;
-> > +
-> > +	while (!bpf_map_get_next_key(map_fd, key, key))
-> > +		n++;
-> > +	return n;
-> > +}
-> > +
-> > +static void delete_all_elements(__u32 type, int map_fd)
-> > +{
-> > +	void *key = map_key(type, -1);
-> > +	void *keys;
-> > +	int n = 0;
-> > +	int ret;
-> > +
-> > +	keys = calloc(MAX_MAP_KEY_SIZE, MAX_ENTRIES);
-> > +	CHECK(!keys, "calloc", "error: %s\n", strerror(errno));
-> > +
-> > +	for (; !bpf_map_get_next_key(map_fd, key, key); n++)
-> > +		memcpy(keys + n*MAX_MAP_KEY_SIZE, key, MAX_MAP_KEY_SIZE);
-> > +
-> > +	while (--n >= 0) {
-> > +		ret = bpf_map_delete_elem(map_fd, keys + n*MAX_MAP_KEY_SIZE);
-> > +		CHECK(ret < 0, "bpf_map_delete_elem", "error: %s\n", strerror(errno));
-> > +	}
-> > +}
-> 
-> Please use ASSERT_xxx() to replace CHECK().
-> > +
-> > +static bool is_lru(__u32 map_type)
-> > +{
-> > +	return map_type == BPF_MAP_TYPE_LRU_HASH ||
-> > +	       map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH;
-> > +}
-> > +
-> > +struct upsert_opts {
-> > +	__u32 map_type;
-> > +	int map_fd;
-> > +	__u32 n;
-> > +};
-> > +
-> > +static void *patch_map_thread(void *arg)
-> > +{
-> > +	struct upsert_opts *opts = arg;
-> > +	void *key;
-> > +	int val;
-> > +	int ret;
-> > +	int i;
-> > +
-> > +	for (i = 0; i < opts->n; i++) {
-> > +		key = map_key(opts->map_type, i);
-> > +		val = rand();
-> > +		ret = bpf_map_update_elem(opts->map_fd, key, &val, 0);
-> > +		CHECK(ret < 0, "bpf_map_update_elem", "error: %s\n", strerror(errno));
-> > +	}
-> > +	return NULL;
-> > +}
-> > +
-> > +static void upsert_elements(struct upsert_opts *opts)
-> > +{
-> > +	pthread_t threads[N_THREADS];
-> > +	int ret;
-> > +	int i;
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(threads); i++) {
-> > +		ret = pthread_create(&i[threads], NULL, patch_map_thread, opts);
-> > +		CHECK(ret != 0, "pthread_create", "error: %s\n", strerror(ret));
-> > +	}
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(threads); i++) {
-> > +		ret = pthread_join(i[threads], NULL);
-> > +		CHECK(ret != 0, "pthread_join", "error: %s\n", strerror(ret));
-> > +	}
-> > +}
-> > +
-> > +static __u32 read_cur_elements(int iter_fd)
-> > +{
-> > +	char buf[64];
-> > +	ssize_t n;
-> > +	__u32 ret;
-> > +
-> > +	n = read(iter_fd, buf, sizeof(buf)-1);
-> > +	CHECK(n <= 0, "read", "error: %s\n", strerror(errno));
-> > +	buf[n] = '\0';
-> > +
-> > +	errno = 0;
-> > +	ret = (__u32)strtol(buf, NULL, 10);
-> > +	CHECK(errno != 0, "strtol", "error: %s\n", strerror(errno));
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static __u32 get_cur_elements(int map_id)
-> > +{
-> > +	LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-> > +	union bpf_iter_link_info linfo;
-> > +	struct map_percpu_stats *skel;
-> > +	struct bpf_link *link;
-> > +	int iter_fd;
-> > +	int ret;
-> > +
-> > +	opts.link_info = &linfo;
-> > +	opts.link_info_len = sizeof(linfo);
-> > +
-> > +	skel = map_percpu_stats__open();
-> > +	CHECK(skel == NULL, "map_percpu_stats__open", "error: %s", strerror(errno));
-> > +
-> > +	skel->bss->target_id = map_id;
-> > +
-> > +	ret = map_percpu_stats__load(skel);
-> > +	CHECK(ret != 0, "map_percpu_stats__load", "error: %s", strerror(errno));
-> > +
-> > +	link = bpf_program__attach_iter(skel->progs.dump_bpf_map, &opts);
-> > +	CHECK(!link, "bpf_program__attach_iter", "error: %s\n", strerror(errno));
-> > +
-> > +	iter_fd = bpf_iter_create(bpf_link__fd(link));
-> > +	CHECK(iter_fd < 0, "bpf_iter_create", "error: %s\n", strerror(errno));
-> > +
-> > +	return read_cur_elements(iter_fd);
-> 
-> Need to do close(iter_fd), bpf_link__destroy(link) and
-> map__percpu_stats__destroy() before return, otherwise there will be
-> resource leak.
+Would it be better if I hide the mnt_idmap inside the helper or are you
+against using kfuncs at the moment ?
 
-Yes, thanks.
+Like that:
 
-> > +}
-> > +
-> > +static void __test(int map_fd)
-> > +{
-> > +	__u32 n = MAX_ENTRIES - 1000;
-> > +	__u32 real_current_elements;
-> > +	__u32 iter_current_elements;
-> > +	struct upsert_opts opts = {
-> > +		.map_fd = map_fd,
-> > +		.n = n,
-> > +	};
-> > +	struct bpf_map_info info;
-> > +
-> > +	map_info(map_fd, &info);
-> > +	opts.map_type = info.type;
-> > +
-> > +	/*
-> > +	 * Upsert keys [0, n) under some competition: with random values from
-> > +	 * N_THREADS threads
-> > +	 */
-> > +	upsert_elements(&opts);
-> > +
-> > +	/*
-> > +	 * The sum of percpu elements counters for all hashtable-based maps
-> > +	 * should be equal to the number of elements present in the map. For
-> > +	 * non-lru maps this number should be the number n of upserted
-> > +	 * elements. For lru maps some elements might have been evicted. Check
-> > +	 * that all numbers make sense
-> > +	 */
-> > +	map_info(map_fd, &info);
-> 
-> I think there is no need to call map_info() multiple times because the
-> needed type and id will not be changed after creation.
+__bpf_kfunc uint64_t bpf_get_file_vfs_ids(struct file *file)
+{
+	struct mnt_idmap *idmap = file_mnt_idmap(file);
+	vfsuid_t vfsuid = i_uid_into_vfsuid(idmap, file->f_inode);
+	vfsgid_t vfsgid = i_gid_into_vfsgid(idmap, file->f_inode);
 
-Thanks, will fix. (This code left from the first version when the counter was
-returned by map_info().)
+	return (u64) __vfsgid_val(vfsgid) << 32 |
+		     __vfsuid_val(vfsuid);
+}
 
-> > +	real_current_elements = map_count_elements(info.type, map_fd);
-> > +	if (!is_lru(info.type))
-> > +		CHECK(n != real_current_elements, "map_count_elements",
-> > +		      "real_current_elements(%u) != expected(%u)\n", real_current_elements, n);
-> For LRU map, please use ASSERT_EQ(). For LRU map, should we check "n >=
-> real_current_elements" instead ?
-> > +
-> > +	iter_current_elements = get_cur_elements(info.id);
-> > +	CHECK(iter_current_elements != real_current_elements, "get_cur_elements",
-> > +	      "iter_current_elements=%u, expected %u (map_type=%s,map_flags=%08x)\n",
-> > +	      iter_current_elements, real_current_elements, map_type_to_s(info.type), info.map_flags);
-> > +
-> > +	/*
-> > +	 * Cleanup the map and check that all elements are actually gone and
-> > +	 * that the sum of percpu elements counters is back to 0 as well
-> > +	 */
-> > +	delete_all_elements(info.type, map_fd);
-> > +	map_info(map_fd, &info);
-> > +	real_current_elements = map_count_elements(info.type, map_fd);
-> > +	CHECK(real_current_elements, "map_count_elements",
-> > +	      "expected real_current_elements=0, got %u", real_current_elements);
-> 
-> ASSERT_EQ
-> > +
-> > +	iter_current_elements = get_cur_elements(info.id);
-> > +	CHECK(iter_current_elements != 0, "get_cur_elements",
-> > +	      "iter_current_elements=%u, expected 0 (map_type=%s,map_flags=%08x)\n",
-> > +	      iter_current_elements, map_type_to_s(info.type), info.map_flags);
-> > +
-> ASSERT_NEQ
-> > +	close(map_fd);
-> > +}
-> > +
-> > +static int map_create_opts(__u32 type, const char *name,
-> > +			   struct bpf_map_create_opts *map_opts,
-> > +			   __u32 key_size, __u32 val_size)
-> > +{
-> > +	int map_fd;
-> > +
-> > +	map_fd = bpf_map_create(type, name, key_size, val_size, MAX_ENTRIES, map_opts);
-> > +	CHECK(map_fd < 0, "bpf_map_create()", "error:%s (name=%s)\n",
-> > +			strerror(errno), name);
-> 
-> Please use ASSERT_GE instead.
-> > +
-> > +	return map_fd;
-> > +}
-> > +
-> > +static int map_create(__u32 type, const char *name, struct bpf_map_create_opts *map_opts)
-> > +{
-> > +	return map_create_opts(type, name, map_opts, sizeof(int), sizeof(int));
-> > +}
-> > +
-> > +static int create_hash(void)
-> > +{
-> > +	struct bpf_map_create_opts map_opts = {
-> > +		.sz = sizeof(map_opts),
-> > +		.map_flags = BPF_F_NO_PREALLOC,
-> > +	};
-> > +
-> > +	return map_create(BPF_MAP_TYPE_HASH, "hash", &map_opts);
-> > +}
-> > +
-> > +static int create_percpu_hash(void)
-> > +{
-> > +	struct bpf_map_create_opts map_opts = {
-> > +		.sz = sizeof(map_opts),
-> > +		.map_flags = BPF_F_NO_PREALLOC,
-> > +	};
-> > +
-> > +	return map_create(BPF_MAP_TYPE_PERCPU_HASH, "percpu_hash", &map_opts);
-> > +}
-> > +
-> > +static int create_hash_prealloc(void)
-> > +{
-> > +	return map_create(BPF_MAP_TYPE_HASH, "hash", NULL);
-> > +}
-> > +
-> > +static int create_percpu_hash_prealloc(void)
-> > +{
-> > +	return map_create(BPF_MAP_TYPE_PERCPU_HASH, "percpu_hash_prealloc", NULL);
-> > +}
-> > +
-> > +static int create_lru_hash(void)
-> > +{
-> > +	return map_create(BPF_MAP_TYPE_LRU_HASH, "lru_hash", NULL);
-> > +}
-> > +
-> > +static int create_percpu_lru_hash(void)
-> > +{
-> > +	return map_create(BPF_MAP_TYPE_LRU_PERCPU_HASH, "lru_hash_percpu", NULL);
-> > +}
-> > +
-> > +static void map_percpu_stats_hash(void)
-> > +{
-> > +	__test(create_hash());
-> > +	printf("test_%s:PASS\n", __func__);
-> > +}
-> > +
-> > +static void map_percpu_stats_percpu_hash(void)
-> > +{
-> > +	__test(create_percpu_hash());
-> > +	printf("test_%s:PASS\n", __func__);
-> > +}
-> > +
-> > +static void map_percpu_stats_hash_prealloc(void)
-> > +{
-> > +	__test(create_hash_prealloc());
-> > +	printf("test_%s:PASS\n", __func__);
-> > +}
-> > +
-> > +static void map_percpu_stats_percpu_hash_prealloc(void)
-> > +{
-> > +	__test(create_percpu_hash_prealloc());
-> > +	printf("test_%s:PASS\n", __func__);
-> > +}
-> > +
-> > +static void map_percpu_stats_lru_hash(void)
-> > +{
-> > +	__test(create_lru_hash());
-> > +	printf("test_%s:PASS\n", __func__);
-> > +}
-> > +
-> > +static void map_percpu_stats_percpu_lru_hash(void)
-> > +{
-> > +	__test(create_percpu_lru_hash());
-> > +	printf("test_%s:PASS\n", __func__);
-> 
-> After switch to subtest, the printf() can be removed.
-> > +}
-> > +
-> > +void test_map_percpu_stats(void)
-> > +{
-> > +	map_percpu_stats_hash();
-> > +	map_percpu_stats_percpu_hash();
-> > +	map_percpu_stats_hash_prealloc();
-> > +	map_percpu_stats_percpu_hash_prealloc();
-> > +	map_percpu_stats_lru_hash();
-> > +	map_percpu_stats_percpu_lru_hash();
-> > +}
-> 
-> Please use test__start_subtest() to create multiple subtests.
+-- 
+Rgrds, legion
 
-Thanks.
-
-I will update this selftest in v4 with your comments addressed + batch ops
-tests.
-
-> > diff --git a/tools/testing/selftests/bpf/progs/map_percpu_stats.c b/tools/testing/selftests/bpf/progs/map_percpu_stats.c
-> > new file mode 100644
-> > index 000000000000..10b2325c1720
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/map_percpu_stats.c
-> > @@ -0,0 +1,24 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2023 Isovalent */
-> > +
-> > +#include "vmlinux.h"
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +__u32 target_id;
-> > +
-> > +__s64 bpf_map_sum_elem_count(struct bpf_map *map) __ksym;
-> > +
-> > +SEC("iter/bpf_map")
-> > +int dump_bpf_map(struct bpf_iter__bpf_map *ctx)
-> > +{
-> > +	struct seq_file *seq = ctx->meta->seq;
-> > +	struct bpf_map *map = ctx->map;
-> > +
-> > +	if (map && map->id == target_id)
-> > +		BPF_SEQ_PRINTF(seq, "%lld", bpf_map_sum_elem_count(map));
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> 
 
