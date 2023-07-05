@@ -1,50 +1,78 @@
-Return-Path: <bpf+bounces-4067-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4068-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7253D74880F
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 17:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A0A41748818
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 17:33:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A33521C20AD2
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 15:29:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB0D61C20B4D
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 15:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A1C11CAB;
-	Wed,  5 Jul 2023 15:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9A111CB0;
+	Wed,  5 Jul 2023 15:33:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A855111AF
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 15:29:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D31E3C433C8;
-	Wed,  5 Jul 2023 15:29:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688570942;
-	bh=Mat839npoeJh/Tz7RCFIFfIGntbsPDu65YAK0n8NdEo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=udSh8k4i0iGOR3kNvzIghRWDHrv75FsNWw0blv+6GrlcTSjPskFlTS0E9wxnrd03M
-	 Q8jOiPefK9fkWWQtgkXk6YkoCG6KjzqyFtAFXl8P/lwHUTyDak2W69xwSkEy8ToXat
-	 yFC1mYnYpR4xvGoJDVg4Pa9utkmXbFW0kN0/FXdZH6d21kgJ8CPEdsoiv02+8tVuLa
-	 z7RJXB3CXpzEi0wlaMiCYbiFvI5/nJZEYiDnCHdPM+nie2A6XuKy67cyItmx093vck
-	 y4zFEBVXVXj4ETNQqYLQ62+lSSHexDZSSxMzDprlcIw2iFp4fP2m4R+ikNeqwiESAo
-	 dotaRMlCYQZ+A==
-Date: Wed, 5 Jul 2023 17:28:57 +0200
-From: Alexey Gladkov <legion@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: Re: [PATCH v1] fs: Add kfuncs to handle idmapped mounts
-Message-ID: <ZKWMOaAr7sgabAiW@example.org>
-References: <c35fbb4cb0a3a9b4653f9a032698469d94ca6e9c.1688123230.git.legion@kernel.org>
- <babdf7a8-9663-6d71-821a-34da2aff80e2@huaweicloud.com>
- <ZKQ2kBiRDsQREw6f@example.org>
- <20230704-peitschen-inzwischen-7ad743c764e8@brauner>
- <ZKVzbQESW00w67qS@example.org>
- <20230705-blankziehen-halbwahrheiten-b52fae1fd86a@brauner>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F852D526
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 15:33:01 +0000 (UTC)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B86D171C
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 08:32:59 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fbc0981755so77765575e9.1
+        for <bpf@vger.kernel.org>; Wed, 05 Jul 2023 08:32:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1688571178; x=1691163178;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=p1Q2WBPiU+a447wQ6AIF6oSydJXukz8tbL9yWQBlQjA=;
+        b=YaW8j7yzU6bHEXJ5ZD7q5U35VirSPd0++L0eBDTrM2J6X5cB5C3I+yGSDVrAZP/JJ8
+         XkDfEAcO8LYE5eMN93MKyzjmMlFPtQwHo1RepeVj9KaK53h0GwUIiS8tc8rh/J0hgZoI
+         T19vlpE765Kw5jtgG6CU/2zRrcnKi1AClDf8zgrfCSHMNI3yC/CJCbT353PWL8NJ6xkD
+         2iPZc5wjxR6LjlzqhxoTu1FV9lIoG9p96t0DJ9V+MkPAQ4SeS0QyRvbLf5mhsqwG4y+a
+         uPlLylEw3UwYJtY+f/Re10/xGj/v5Jw3JGY0zIbByOLZghE3K7Y6YapNYjkOuGgEYTUY
+         fN+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688571178; x=1691163178;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p1Q2WBPiU+a447wQ6AIF6oSydJXukz8tbL9yWQBlQjA=;
+        b=YrEk7mMwVYELc7DI2qvOeC3w4x+N++xJX480vHJIQo5rADn5HfgaLFHEQgeTPo+D6x
+         50Rwr11n/3DOHtD70DRZCiT+/s2KgmLO57CqNlUdbCVFeWF1FyuDVoNGVC/dknKqPcFp
+         pgKiG2ujJCmqWiwENpZQC1HuZiZlTszdf/+35HFVbRkYLTlb2eJbTF4aRZ/MeRwMb2XS
+         yiF9WvmCrCo0WYfmuZcbRX5gClwCUgt6Sd9ue2uOmAT1XXhuGvEIYYCZ+LsnKwXwWaYq
+         Q23sk8IGVwwej9WoK4p0wbzzie1Y1TlGMUfHIl1S3BC5G6NopzbYdd6q+Fys1qripDOb
+         Fy0g==
+X-Gm-Message-State: AC+VfDytCtM7ZUSOtQG+RxeJOseoDuq2PMt1PId8zQHRVjO+KAx3/Ilx
+	ZzSJeOJy8m54ZImyGMFl7SqcBw==
+X-Google-Smtp-Source: ACHHUZ591dCfNqKHmzmIr1fP3CrjEgW6sCbas0VyWjBDXeComWiqCfFzpI+2wRx8TKxAMpC/GCF6+g==
+X-Received: by 2002:a7b:cd11:0:b0:3f7:b1df:26d with SMTP id f17-20020a7bcd11000000b003f7b1df026dmr14190964wmj.38.1688571177839;
+        Wed, 05 Jul 2023 08:32:57 -0700 (PDT)
+Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id 25-20020a05600c029900b003fbb06af219sm2461044wmk.32.2023.07.05.08.32.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Jul 2023 08:32:57 -0700 (PDT)
+Date: Wed, 5 Jul 2023 15:34:08 +0000
+From: Anton Protopopov <aspsk@isovalent.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+Subject: Re: [v3 PATCH bpf-next 5/6] selftests/bpf: test map percpu stats
+Message-ID: <ZKWNcE5emIW9X1O1@zh-lab-node-5>
+References: <20230630082516.16286-1-aspsk@isovalent.com>
+ <20230630082516.16286-6-aspsk@isovalent.com>
+ <3e761472-051d-4e46-8a66-79926493e5db@huawei.com>
+ <ZKQ0iF+8fMND5Qmg@zh-lab-node-5>
+ <525f2690-f367-6296-8dde-0138ba8aa42f@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -53,129 +81,77 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230705-blankziehen-halbwahrheiten-b52fae1fd86a@brauner>
+In-Reply-To: <525f2690-f367-6296-8dde-0138ba8aa42f@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, Jul 05, 2023 at 04:18:07PM +0200, Christian Brauner wrote:
-> On Wed, Jul 05, 2023 at 03:43:09PM +0200, Alexey Gladkov wrote:
-> > On Tue, Jul 04, 2023 at 05:28:13PM +0200, Christian Brauner wrote:
-> > > On Tue, Jul 04, 2023 at 05:11:12PM +0200, Alexey Gladkov wrote:
-> > > > On Tue, Jul 04, 2023 at 07:42:53PM +0800, Hou Tao wrote:
-> > > > > Hi,
-> > > > > 
-> > > > > On 6/30/2023 7:08 PM, Alexey Gladkov wrote:
-> > > > > > Since the introduction of idmapped mounts, file handling has become
-> > > > > > somewhat more complicated. If the inode has been found through an
-> > > > > > idmapped mount the idmap of the vfsmount must be used to get proper
-> > > > > > i_uid / i_gid. This is important, for example, to correctly take into
-> > > > > > account idmapped files when caching, LSM or for an audit.
-> > > > > 
-> > > > > Could you please add a bpf selftest for these newly added kfuncs ?
-> > > > > >
-> > > > > > Signed-off-by: Alexey Gladkov <legion@kernel.org>
-> > > > > > ---
-> > > > > >  fs/mnt_idmapping.c | 69 ++++++++++++++++++++++++++++++++++++++++++++++
-> > > > > >  1 file changed, 69 insertions(+)
-> > > > > >
-> > > > > > diff --git a/fs/mnt_idmapping.c b/fs/mnt_idmapping.c
-> > > > > > index 4905665c47d0..ba98ce26b883 100644
-> > > > > > --- a/fs/mnt_idmapping.c
-> > > > > > +++ b/fs/mnt_idmapping.c
-> > > > > > @@ -6,6 +6,7 @@
-> > > > > >  #include <linux/mnt_idmapping.h>
-> > > > > >  #include <linux/slab.h>
-> > > > > >  #include <linux/user_namespace.h>
-> > > > > > +#include <linux/bpf.h>
-> > > > > >  
-> > > > > >  #include "internal.h"
-> > > > > >  
-> > > > > > @@ -271,3 +272,71 @@ void mnt_idmap_put(struct mnt_idmap *idmap)
-> > > > > >  		kfree(idmap);
-> > > > > >  	}
-> > > > > >  }
-> > > > > > +
-> > > > > > +__diag_push();
-> > > > > > +__diag_ignore_all("-Wmissing-prototypes",
-> > > > > > +		  "Global functions as their definitions will be in vmlinux BTF");
-> > > > > > +
-> > > > > > +/**
-> > > > > > + * bpf_is_idmapped_mnt - check whether a mount is idmapped
-> > > > > > + * @mnt: the mount to check
-> > > > > > + *
-> > > > > > + * Return: true if mount is mapped, false if not.
-> > > > > > + */
-> > > > > > +__bpf_kfunc bool bpf_is_idmapped_mnt(struct vfsmount *mnt)
-> > > > > > +{
-> > > > > > +	return is_idmapped_mnt(mnt);
-> > > > > > +}
-> > > > > > +
-> > > > > > +/**
-> > > > > > + * bpf_file_mnt_idmap - get file idmapping
-> > > > > > + * @file: the file from which to get mapping
-> > > > > > + *
-> > > > > > + * Return: The idmap for the @file.
-> > > > > > + */
-> > > > > > +__bpf_kfunc struct mnt_idmap *bpf_file_mnt_idmap(struct file *file)
-> > > > > > +{
-> > > > > > +	return file_mnt_idmap(file);
-> > > > > > +}
-> > > > > 
-> > > > > A dummy question here: the implementation of file_mnt_idmap() is
-> > > > > file->f_path.mnt->mnt_idmap, so if the passed file is a BTF pointer, is
-> > > > > there any reason why we could not do such dereference directly in bpf
-> > > > > program ?
-> > > > 
-> > > > I wanted to provide a minimal API for bpf programs. I thought that this
-> > > > interface is stable enough, but after reading Christian's answer, it looks
-> > > > like I was wrong.
-> > > 
-> > > It isn't even about stability per se. It's unlikely that if we change
-> > > internal details that types or arguments to these helpers change. That's
-> > > why we did the work of abstracting this all away in the first place and
-> > > making this an opaque type.
-> > > 
-> > > The wider point is that according to the docs, kfuncs claim to have
-> > > equivalent status to EXPORT_SYMBOL_*() with the added complexity of
-> > > maybe having to take out of tree bpf programs into account.
-> > > 
-> > > Right now, we can look at the in-kernel users of is_idmapped_mnt(),
-> > > convert them and then kill this thing off if we wanted to. As soon as
-> > > this is a kfunc such an endeavour becomes a measure of "f**** around and
-> > > find out". That's an entirely avoidable conflict if we don't even expose
-> > > it in the first place.
-> > > 
-> > 
-> > I was hoping to make it possible to use is_idmapped_mnt or its equivalent
-> > to at least be able to distinguish a file with an idmapped mount from a
-> > regular one.
+On Wed, Jul 05, 2023 at 11:03:25AM +0800, Hou Tao wrote:
+> Hi,
 > 
-> Afaict, you can do this today pretty easily. For example,
-> 
-> #!/usr/bin/env bpftrace
-> 
-> #include <linux/mount.h>
-> #include <linux/path.h>
-> #include <linux/dcache.h>
-> 
-> kfunc:do_move_mount
-> {
->         printf("Target path           %s\n", str(args->new_path->dentry->d_name.name));
->         printf("Target mount idmapped %d\n", args->new_path->mnt->mnt_idmap != kaddr("nop_mnt_idmap"));
-> }
-> 
-> sample output:
-> 
-> Target path           console
-> Target mount idmapped 0
-> Target path           rootfs
-> Target mount idmapped 1
-> 
+> On 7/4/2023 11:02 PM, Anton Protopopov wrote:
+> > On Tue, Jul 04, 2023 at 10:41:10PM +0800, Hou Tao wrote:
+> >> Hi,
+> >>
+> >> On 6/30/2023 4:25 PM, Anton Protopopov wrote:
+> >>> Add a new map test, map_percpu_stats.c, which is checking the correctness of
+> >>> map's percpu elements counters.  For supported maps the test upserts a number
+> >>> of elements, checks the correctness of the counters, then deletes all the
+> >>> elements and checks again that the counters sum drops down to zero.
+> >>>
+> >>> The following map types are tested:
+> >>>
+> >>>     * BPF_MAP_TYPE_HASH, BPF_F_NO_PREALLOC
+> >>>     * BPF_MAP_TYPE_PERCPU_HASH, BPF_F_NO_PREALLOC
+> >>>     * BPF_MAP_TYPE_HASH,
+> >>>     * BPF_MAP_TYPE_PERCPU_HASH,
+> >>>     * BPF_MAP_TYPE_LRU_HASH
+> >>>     * BPF_MAP_TYPE_LRU_PERCPU_HASH
+> >> A test for BPF_MAP_TYPE_HASH_OF_MAPS is also needed.
+> We could also exercise the test for LRU map with BPF_F_NO_COMMON_LRU.
 
-Well, it's a possible solution, but in this case we don't limit the bpf
-programs in hacking. But on the other hand it will be only their problem.
+Thanks, added.
 
-Since this is the current strategy, this is suitable for me.
+> >
+> SNIP
+> >>> diff --git a/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c b/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
+> >>> new file mode 100644
+> >>> index 000000000000..5b45af230368
+> >>> --- /dev/null
+> >>> +++ b/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
+> >>> @@ -0,0 +1,336 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +/* Copyright (c) 2023 Isovalent */
+> >>> +
+> >>> +#include <errno.h>
+> >>> +#include <unistd.h>
+> >>> +#include <pthread.h>
+> >>> +
+> >>> +#include <bpf/bpf.h>
+> >>> +#include <bpf/libbpf.h>
+> >>> +
+> >>> +#include <bpf_util.h>
+> >>> +#include <test_maps.h>
+> >>> +
+> >>> +#include "map_percpu_stats.skel.h"
+> >>> +
+> >>> +#define MAX_ENTRIES 16384
+> >>> +#define N_THREADS 37
+> >> Why 37 thread is needed here ? Does a small number of threads work as well ?
+> > This was used to evict more elements from LRU maps when they are full.
+> 
+> I see. But in my understanding, for the global LRU list, the eviction
+> (the invocation of htab_lru_map_delete_node) will be possible if the
+> free element is less than LOCAL_FREE_TARGET(128) * nr_running_cpus. Now
+> the number of free elements is 1000 as defined in __test(), the number
+> of vCPU is 8 in my local VM setup (BPF CI also uses 8 vCPUs) and it is
+> hard to trigger the eviction because 8 * 128 is roughly equal with 1000.
+> So I suggest to decrease the number of free elements to 512 and the
+> number of threads to 8, or adjust the number of running thread and free
+> elements according to the number of online CPUs.
 
--- 
-Rgrds, legion
-
+Yes, makes sense. I've changed the test to use 8 threads and offset of 512.
 
