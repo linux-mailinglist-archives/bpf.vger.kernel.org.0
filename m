@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-4126-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4127-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C235749175
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 01:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 084A774918D
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 01:19:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B7251C20C9D
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 23:13:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 397D51C20C58
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 23:19:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B518315AD7;
-	Wed,  5 Jul 2023 23:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140A515AE1;
+	Wed,  5 Jul 2023 23:19:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8EF5156F7;
-	Wed,  5 Jul 2023 23:13:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD9B7C433C7;
-	Wed,  5 Jul 2023 23:12:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15DAC1548B;
+	Wed,  5 Jul 2023 23:19:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D28EAC433C7;
+	Wed,  5 Jul 2023 23:19:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688598798;
-	bh=dbVAcwdmAronKN2/exh+7rTyLVmJxnKKBZZH/rfELec=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=di4vANHGk01g6BG5D+kP8/xay3uXUiIBLtBnwrNkmTzBqnQe5y4Yy3r3sKprZdrZU
-	 hLYRxm6m/yexaa2MvMrDAkxslOrCPsdA+8QIJT4XlTSOO9bW5v7MHkxYlPIViPfKeF
-	 fRn/+0zT6OSrjtw22jXVBH/ovhdvc9vkFCNM1EBs2VjepM0ULrtRhvag5CPbr192w0
-	 cRcfbru+GTcRyXj7Wbzq75c7s6EGwzFcQQiKkr0Wkg0zmTaRA5F4rovPj6XXBdkkmN
-	 kDb1CQGmDyQbWx+r141kxp0SAX3Yzem7fUjViBscjxeGvouGbK76BC9mhrZWRfN3n1
-	 Ec6Ry2aMc3ZpQ==
-Message-ID: <96225b66-61df-ce60-4581-d34f345210a1@kernel.org>
-Date: Thu, 6 Jul 2023 08:12:54 +0900
+	s=k20201202; t=1688599164;
+	bh=KCTloaubNslRR/SoL8UluRoG/IUPJVjSzADYJrfAJHU=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=b2X6YIL6Vy56XALQtKdhzhDP4FaYYu72cv/nQy9J7p20qPoaFddY4NYMECi8UiElG
+	 KXeBp5mYG0Tr3Z/9dS3G7DFV3U+NrS3kS1Bj4OLdG2oLV7lkerc27aKsKkqjab0O9K
+	 FATIdox5v3Da+YKWUBF3YXN3ElwAHoGXAASphNzizKagSfTJcPF38/AQplhEub1AKR
+	 LkLgfDZcW1uv2KNe1PZmf257zQ+kLCx4ktYMXGFo0Ya/ipY5JnCfPPINteVMs1bXpn
+	 61eVfSZI95423vo52gH8KvQcVqXg5RZ32hLmWLwnt3Gj7afC9O4NqxdEhtaz5kVF+Y
+	 8axRcbIlbfAZA==
+Message-ID: <3b403ef1-22e6-0220-6c9c-435e3444b4d3@kernel.org>
+Date: Thu, 6 Jul 2023 08:19:00 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -40,7 +40,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v2 07/92] fs: add ctime accessors infrastructure
+Subject: Re: [PATCH v2 08/92] fs: new helper: simple_rename_timestamp
 Content-Language: en-US
 To: Jeff Layton <jlayton@kernel.org>, jk@ozlabs.org, arnd@arndb.de,
  mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
@@ -120,31 +120,116 @@ To: Jeff Layton <jlayton@kernel.org>, jk@ozlabs.org, arnd@arndb.de,
  linux-xfs@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
  apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
  selinux@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>
 References: <20230705185812.579118-1-jlayton@kernel.org>
- <20230705185812.579118-2-jlayton@kernel.org>
+ <20230705185812.579118-3-jlayton@kernel.org>
 From: Damien Le Moal <dlemoal@kernel.org>
 Organization: Western Digital Research
-In-Reply-To: <20230705185812.579118-2-jlayton@kernel.org>
+In-Reply-To: <20230705185812.579118-3-jlayton@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 7/6/23 03:58, Jeff Layton wrote:
-> struct timespec64 has unused bits in the tv_nsec field that can be used
-> for other purposes. In future patches, we're going to change how the
-> inode->i_ctime is accessed in certain inodes in order to make use of
-> them. In order to do that safely though, we'll need to eradicate raw
-> accesses of the inode->i_ctime field from the kernel.
+> A rename potentially involves updating 4 different inode timestamps. Add
+> a function that handles the details sanely, and convert the libfs.c
+> callers to use it.
 > 
-> Add new accessor functions for the ctime that we use to replace them.
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/libfs.c         | 36 +++++++++++++++++++++++++++---------
+>  include/linux/fs.h |  2 ++
+>  2 files changed, 29 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/libfs.c b/fs/libfs.c
+> index a7e56baf8bbd..9ee79668c909 100644
+> --- a/fs/libfs.c
+> +++ b/fs/libfs.c
+> @@ -692,6 +692,31 @@ int simple_rmdir(struct inode *dir, struct dentry *dentry)
+>  }
+>  EXPORT_SYMBOL(simple_rmdir);
+>  
+> +/**
+> + * simple_rename_timestamp - update the various inode timestamps for rename
+> + * @old_dir: old parent directory
+> + * @old_dentry: dentry that is being renamed
+> + * @new_dir: new parent directory
+> + * @new_dentry: target for rename
+> + *
+> + * POSIX mandates that the old and new parent directories have their ctime and
+> + * mtime updated, and that inodes of @old_dentry and @new_dentry (if any), have
+> + * their ctime updated.
+> + */
+> +void simple_rename_timestamp(struct inode *old_dir, struct dentry *old_dentry,
+> +			     struct inode *new_dir, struct dentry *new_dentry)
+> +{
+> +	struct inode *newino = d_inode(new_dentry);
+> +
+> +	old_dir->i_mtime = inode_set_ctime_current(old_dir);
+> +	if (new_dir != old_dir)
+> +		new_dir->i_mtime = inode_set_ctime_current(new_dir);
+> +	inode_set_ctime_current(d_inode(old_dentry));
+> +	if (newino)
+> +		inode_set_ctime_current(newino);
+> +}
+> +EXPORT_SYMBOL_GPL(simple_rename_timestamp);
+> +
+>  int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
+>  			   struct inode *new_dir, struct dentry *new_dentry)
+>  {
+> @@ -707,11 +732,7 @@ int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
+>  			inc_nlink(old_dir);
+>  		}
+>  	}
+> -	old_dir->i_ctime = old_dir->i_mtime =
+> -	new_dir->i_ctime = new_dir->i_mtime =
+> -	d_inode(old_dentry)->i_ctime =
+> -	d_inode(new_dentry)->i_ctime = current_time(old_dir);
+> -
+> +	simple_rename_timestamp(old_dir, old_dentry, new_dir, new_dentry);
 
-Looks OK to me.
+This is somewhat changing the current behavior: before the patch, the mtime and
+ctime of old_dir, new_dir and the inodes associated with the dentries are always
+equal. But given that simple_rename_timestamp() calls inode_set_ctime_current()
+4 times, the times could potentially be different.
 
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+I am not sure if that is an issue, but it seems that calling
+inode_set_ctime_current() once, recording the "now" time it sets and using that
+value to set all times may be more efficient and preserve the existing behavior.
+
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(simple_rename_exchange);
+> @@ -720,7 +741,6 @@ int simple_rename(struct mnt_idmap *idmap, struct inode *old_dir,
+>  		  struct dentry *old_dentry, struct inode *new_dir,
+>  		  struct dentry *new_dentry, unsigned int flags)
+>  {
+> -	struct inode *inode = d_inode(old_dentry);
+>  	int they_are_dirs = d_is_dir(old_dentry);
+>  
+>  	if (flags & ~(RENAME_NOREPLACE | RENAME_EXCHANGE))
+> @@ -743,9 +763,7 @@ int simple_rename(struct mnt_idmap *idmap, struct inode *old_dir,
+>  		inc_nlink(new_dir);
+>  	}
+>  
+> -	old_dir->i_ctime = old_dir->i_mtime = new_dir->i_ctime =
+> -		new_dir->i_mtime = inode->i_ctime = current_time(old_dir);
+> -
+> +	simple_rename_timestamp(old_dir, old_dentry, new_dir, new_dentry);
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(simple_rename);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index bdfbd11a5811..14e38bd900f1 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2979,6 +2979,8 @@ extern int simple_open(struct inode *inode, struct file *file);
+>  extern int simple_link(struct dentry *, struct inode *, struct dentry *);
+>  extern int simple_unlink(struct inode *, struct dentry *);
+>  extern int simple_rmdir(struct inode *, struct dentry *);
+> +void simple_rename_timestamp(struct inode *old_dir, struct dentry *old_dentry,
+> +			     struct inode *new_dir, struct dentry *new_dentry);
+>  extern int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
+>  				  struct inode *new_dir, struct dentry *new_dentry);
+>  extern int simple_rename(struct mnt_idmap *, struct inode *,
 
 -- 
 Damien Le Moal
