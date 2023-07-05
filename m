@@ -1,312 +1,99 @@
-Return-Path: <bpf+bounces-4111-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4112-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84904748C9E
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 21:00:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 883F4748CA2
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 21:00:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B5CE1C20C18
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 19:00:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7E1B1C20BB3
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 19:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2F9154BB;
-	Wed,  5 Jul 2023 18:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AFA914AB6;
+	Wed,  5 Jul 2023 19:00:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD8E125AC;
-	Wed,  5 Jul 2023 18:59:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54945C433BC;
-	Wed,  5 Jul 2023 18:59:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688583567;
-	bh=upDmKDv+6xjSiy7POdUF+8WFopDSBgqOL9aHcGqhK2Y=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=lcNGsVlnIbVft2o9WVSu7oStzcC7UruKn4c1DTBWmjGO00DNBCt3+ZZxjK6miMMj/
-	 GBdLPvZ/RE2acwmtA26p1q8MtPtZ6AFXE1afuhwSlwu52+nzTrcPM9ox138DUXq3pP
-	 a+auUEyCQ5+EySj5vT4AGLwnwLHJre6WjBG5uo1Fk/D4NwBI39aiCvuIo2r0b4YzkK
-	 eGFkZHIr8aozqfMt+EZCLKVtueQinWQYpN5V9F3hby1Tiu5AXVWEdS37dhPfamlHdD
-	 XsiVC3GdeisubCKxKkTGzRJBTmma2JIDfH5g8iF/7cOUhrr8m/tq4qK4hAP5wOyo8R
-	 g+tGtW7J9HY7Q==
-From: Jeff Layton <jlayton@kernel.org>
-To: jk@ozlabs.org,
-	arnd@arndb.de,
-	mpe@ellerman.id.au,
-	npiggin@gmail.com,
-	christophe.leroy@csgroup.eu,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	agordeev@linux.ibm.com,
-	borntraeger@linux.ibm.com,
-	svens@linux.ibm.com,
-	gregkh@linuxfoundation.org,
-	arve@android.com,
-	tkjos@android.com,
-	maco@android.com,
-	joel@joelfernandes.org,
-	brauner@kernel.org,
-	cmllamas@google.com,
-	surenb@google.com,
-	dennis.dalessandro@cornelisnetworks.com,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	bwarrum@linux.ibm.com,
-	rituagar@linux.ibm.com,
-	ericvh@kernel.org,
-	lucho@ionkov.net,
-	asmadeus@codewreck.org,
-	linux_oss@crudebyte.com,
-	dsterba@suse.com,
-	dhowells@redhat.com,
-	marc.dionne@auristor.com,
-	viro@zeniv.linux.org.uk,
-	raven@themaw.net,
-	luisbg@kernel.org,
-	salah.triki@gmail.com,
-	aivazian.tigran@gmail.com,
-	ebiederm@xmission.com,
-	keescook@chromium.org,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	xiubli@redhat.com,
-	idryomov@gmail.com,
-	jlayton@kernel.org,
-	jaharkes@cs.cmu.edu,
-	coda@cs.cmu.edu,
-	jlbec@evilplan.org,
-	hch@lst.de,
-	nico@fluxnic.net,
-	rafael@kernel.org,
-	code@tyhicks.com,
-	ardb@kernel.org,
-	xiang@kernel.org,
-	chao@kernel.org,
-	huyue2@coolpad.com,
-	jefflexu@linux.alibaba.com,
-	linkinjeon@kernel.org,
-	sj1557.seo@samsung.com,
-	jack@suse.com,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jaegeuk@kernel.org,
-	hirofumi@mail.parknet.co.jp,
-	miklos@szeredi.hu,
-	rpeterso@redhat.com,
-	agruenba@redhat.com,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	mikulas@artax.karlin.mff.cuni.cz,
-	mike.kravetz@oracle.com,
-	muchun.song@linux.dev,
-	dwmw2@infradead.org,
-	shaggy@kernel.org,
-	tj@kernel.org,
-	trond.myklebust@hammerspace.com,
-	anna@kernel.org,
-	chuck.lever@oracle.com,
-	neilb@suse.de,
-	kolga@netapp.com,
-	Dai.Ngo@oracle.com,
-	tom@talpey.com,
-	konishi.ryusuke@gmail.com,
-	anton@tuxera.com,
-	almaz.alexandrovich@paragon-software.com,
-	mark@fasheh.com,
-	joseph.qi@linux.alibaba.com,
-	me@bobcopeland.com,
-	hubcap@omnibond.com,
-	martin@omnibond.com,
-	amir73il@gmail.com,
-	mcgrof@kernel.org,
-	yzaikin@google.com,
-	tony.luck@intel.com,
-	gpiccoli@igalia.com,
-	al@alarsen.net,
-	sfrench@samba.org,
-	pc@manguebit.com,
-	lsahlber@redhat.com,
-	sprasad@microsoft.com,
-	senozhatsky@chromium.org,
-	phillip@squashfs.org.uk,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	dushistov@mail.ru,
-	hdegoede@redhat.com,
-	djwong@kernel.org,
-	dlemoal@kernel.org,
-	naohiro.aota@wdc.com,
-	jth@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	hughd@google.com,
-	akpm@linux-foundation.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	john.johansen@canonical.com,
-	paul@paul-moore.com,
-	jmorris@namei.org,
-	serge@hallyn.com,
-	stephen.smalley.work@gmail.com,
-	eparis@parisplace.org,
-	jgross@suse.com,
-	stern@rowland.harvard.edu,
-	lrh2000@pku.edu.cn,
-	sebastian.reichel@collabora.com,
-	wsa+renesas@sang-engineering.com,
-	quic_ugoswami@quicinc.com,
-	quic_linyyuan@quicinc.com,
-	john@keeping.me.uk,
-	error27@gmail.com,
-	quic_uaggarwa@quicinc.com,
-	hayama@lineo.co.jp,
-	jomajm@gmail.com,
-	axboe@kernel.dk,
-	dhavale@google.com,
-	dchinner@redhat.com,
-	hannes@cmpxchg.org,
-	zhangpeng362@huawei.com,
-	slava@dubeyko.com,
-	gargaditya08@live.com,
-	penguin-kernel@I-love.SAKURA.ne.jp,
-	yifeliu@cs.stonybrook.edu,
-	madkar@cs.stonybrook.edu,
-	ezk@cs.stonybrook.edu,
-	yuzhe@nfschina.com,
-	willy@infradead.org,
-	okanatov@gmail.com,
-	jeffxu@chromium.org,
-	linux@treblig.org,
-	mirimmad17@gmail.com,
-	yijiangshan@kylinos.cn,
-	yang.yang29@zte.com.cn,
-	xu.xin16@zte.com.cn,
-	chengzhihao1@huawei.com,
-	shr@devkernel.io,
-	Liam.Howlett@Oracle.com,
-	adobriyan@gmail.com,
-	chi.minghao@zte.com.cn,
-	roberto.sassu@huawei.com,
-	linuszeng@tencent.com,
-	bvanassche@acm.org,
-	zohar@linux.ibm.com,
-	yi.zhang@huawei.com,
-	trix@redhat.com,
-	fmdefrancesco@gmail.com,
-	ebiggers@google.com,
-	princekumarmaurya06@gmail.com,
-	chenzhongjin@huawei.com,
-	riel@surriel.com,
-	shaozhengchao@huawei.com,
-	jingyuwang_vip@163.com,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	linux-afs@lists.infradead.org,
-	autofs@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	ecryptfs@vger.kernel.org,
-	linux-efi@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com,
-	linux-um@lists.infradead.org,
-	linux-mtd@lists.infradead.org,
-	jfs-discussion@lists.sourceforge.net,
-	linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org,
-	linux-ntfs-dev@lists.sourceforge.net,
-	ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	reiserfs-devel@vger.kernel.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	apparmor@lists.ubuntu.com,
-	linux-security-module@vger.kernel.org,
-	selinux@vger.kernel.org
-Subject: [PATCH v2 92/92] fs: rename i_ctime field to __i_ctime
-Date: Wed,  5 Jul 2023 14:58:12 -0400
-Message-ID: <20230705185812.579118-4-jlayton@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230705185812.579118-1-jlayton@kernel.org>
-References: <20230705185812.579118-1-jlayton@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210F2125AC
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 19:00:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD2C4C433C8;
+	Wed,  5 Jul 2023 19:00:14 +0000 (UTC)
+Date: Wed, 5 Jul 2023 15:00:13 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+ bpf@vger.kernel.org, x86@kernel.org, Masami Hiramatsu
+ <mhiramat@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin"
+ <hpa@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>, Wanpeng Li
+ <wanpengli@tencent.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, Andy
+ Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney"
+ <paulmck@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Uladzislau
+ Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>, Lorenzo
+ Stoakes <lstoakes@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Kees
+ Cook <keescook@chromium.org>, Sami Tolvanen <samitolvanen@google.com>, Ard
+ Biesheuvel <ardb@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Juerg
+ Haefliger <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
+ <nsaenz@kernel.org>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, Nadav Amit <namit@vmware.com>, Dan
+ Carpenter <error27@gmail.com>, Chuang Wang <nashuiliang@gmail.com>, Yang
+ Jihong <yangjihong1@huawei.com>, Petr Mladek <pmladek@suse.com>, "Jason A.
+ Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>, Julian Pidancet
+ <julian.pidancet@oracle.com>, Tom Lendacky <thomas.lendacky@amd.com>,
+ Dionna Glaze <dionnaglaze@google.com>, Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?=
+ <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>, Daniel Bristot
+ de Oliveira <bristot@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
+ Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH 03/14] tracing/filters: Enable filtering a scalar
+ field by a cpumask
+Message-ID: <20230705150013.5ba7ddb8@gandalf.local.home>
+In-Reply-To: <20230705181256.3539027-4-vschneid@redhat.com>
+References: <20230705181256.3539027-1-vschneid@redhat.com>
+	<20230705181256.3539027-4-vschneid@redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Now that everything in-tree is converted to use the accessor functions,
-rename the i_ctime field in the inode to discourage direct access.
+On Wed,  5 Jul 2023 19:12:45 +0100
+Valentin Schneider <vschneid@redhat.com> wrote:
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- include/linux/fs.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> +/* Optimisation of do_filter_cpumask() for scalar values */
+> +static inline int
+> +do_filter_cpumask_scalar(int op, unsigned int cpu, const struct cpumask *mask)
+> +{
+> +	switch (op) {
+> +	case OP_EQ:
+> +		return cpumask_equal(mask, cpumask_of(cpu));
+> +	case OP_NE:
+> +		return !cpumask_equal(mask, cpumask_of(cpu));
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 14e38bd900f1..b66442f91835 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -642,7 +642,7 @@ struct inode {
- 	loff_t			i_size;
- 	struct timespec64	i_atime;
- 	struct timespec64	i_mtime;
--	struct timespec64	i_ctime;
-+	struct timespec64	__i_ctime; /* use inode_*_ctime accessors! */
- 	spinlock_t		i_lock;	/* i_blocks, i_bytes, maybe i_size */
- 	unsigned short          i_bytes;
- 	u8			i_blkbits;
-@@ -1485,7 +1485,7 @@ struct timespec64 inode_set_ctime_current(struct inode *inode);
-  */
- static inline struct timespec64 inode_get_ctime(const struct inode *inode)
- {
--	return inode->i_ctime;
-+	return inode->__i_ctime;
- }
- 
- /**
-@@ -1498,7 +1498,7 @@ static inline struct timespec64 inode_get_ctime(const struct inode *inode)
- static inline struct timespec64 inode_set_ctime_to_ts(struct inode *inode,
- 						      struct timespec64 ts)
- {
--	inode->i_ctime = ts;
-+	inode->__i_ctime = ts;
- 	return ts;
- }
- 
--- 
-2.41.0
+The above two can be optimized much more if the cpu is a scalar. If mask is
+anything but a single CPU, then EQ will always be false, and NE will always
+be true. If the mask contains a single CPU, then we should convert the mask
+into the scalar CPU and just do:
 
+	case OP_EQ:
+		return mask_cpu == cpu;
+	case op_NE:
+		return maks_cpu != cpu;
+
+-- Steve
+
+> +	case OP_BAND:
+> +		return cpumask_test_cpu(cpu, mask);
+> +	default:
+> +		return 0;
+> +	}
+> +}
 
