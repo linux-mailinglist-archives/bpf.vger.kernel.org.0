@@ -1,309 +1,156 @@
-Return-Path: <bpf+bounces-4039-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4036-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B5AB7481A3
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 12:03:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7154074819A
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 12:00:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0625B280FA7
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 10:02:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 608401C20B07
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 10:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0474C95;
-	Wed,  5 Jul 2023 10:02:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D474C94;
+	Wed,  5 Jul 2023 10:00:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C393420F4
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 10:02:50 +0000 (UTC)
-X-Greylist: delayed 2556 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 05 Jul 2023 03:02:44 PDT
-Received: from www.kot-begemot.co.uk (ns1.kot-begemot.co.uk [217.160.28.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080BB173F
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 03:02:43 -0700 (PDT)
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qGyg7-00GIrV-WD
-	for bpf@vger.kernel.org; Wed, 05 Jul 2023 09:20:06 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qGyg5-00CNIz-4N; Wed, 05 Jul 2023 10:20:03 +0100
-From: anton.ivanov@cambridgegreys.com
-To: bpf@vger.kernel.org
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [PATCH] bpf: make ringbuf available to modules
-Date: Wed,  5 Jul 2023 10:19:58 +0100
-Message-Id: <20230705091958.2949447-1-anton.ivanov@cambridgegreys.com>
-X-Mailer: git-send-email 2.30.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7116753AD
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 10:00:31 +0000 (UTC)
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8C01721;
+	Wed,  5 Jul 2023 03:00:28 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-635ee3baa14so35961766d6.3;
+        Wed, 05 Jul 2023 03:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688551227; x=1691143227;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=58WibkHCpM1g4Xv7IPG2CbSP0uwlzOiSxeXSrtGZ2QI=;
+        b=jLmS3By4Uk8wvVrVR0iMC4JBN83wyfdOOZCirCNW452Ksx9aoieyV6Ow+TL9/IBv57
+         BThHpnwKgjKFNE+jevcHresT9SyCIIi98/hFffoyrxwNmnlelCWzIooVQBrKzKIuudUB
+         M/tUh/cO2mlDlSbmDM9Yu1EW9e7cffDaRk6h/rNPb7nUlaa98D5BG/E7XWV96xjpDutn
+         kcMjPoa3F2Qqg3uOUryu8wntP0+62vzjvBUH6uUa1Rga92XTm6gIvqIuPpsOrkJpmy51
+         GI46TLj25Mrb5O4O8J1oJidTHJuj8LvE0KAqIUyw2qNHH62adRWHeK5ZktWzQ6aaAQt4
+         +dOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688551227; x=1691143227;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=58WibkHCpM1g4Xv7IPG2CbSP0uwlzOiSxeXSrtGZ2QI=;
+        b=BD/aAvedXLmYvE/jFykNYxAeYQezqaThM5V4hZ46U/XJwNRnKYZ8rEvwZPNMUZUEjH
+         lrDX3I0WOWlEnqp+KwKR5W/CaF9wCI4ZKyR8x6fvV9IrxvqzdvxBcmzsz1zfGe5Pxv1+
+         /HtrrS8kotivX9UpKk7A0Dqp2EATQe9SrSrtf3wTJR5EfB+4dA9lNRbskpvoK1su3E3G
+         PQ2owbZx2dkl99kWGJJTaqKBrUa6C8juDyX88LshIfnwharoix4LMp9vwfKPD7ma6CA7
+         s56HoSkNgWPAipvHbh3cQCSd4teft3f5DWFeyt+P92t8ha5ie0W6YwPSU8oHS8Hym4u3
+         yEag==
+X-Gm-Message-State: ABy/qLbYDbom+QxINTPvASZaIJjZHOZF6rj+lI9Bmn6g1aFScB+GtsaH
+	F1olvsCOGA7G1DFjuOnFOu2iwrEg9UFRZV804JM=
+X-Google-Smtp-Source: APBJJlHbjJ0KtQnrRqix7O9o3Obrijhc4aClnXpFV3U73jGJ3dViep2SN2wyQ9+Islw9E6+1boQrYz1eNjxXwC3Ba8s=
+X-Received: by 2002:a0c:efc6:0:b0:635:e696:b322 with SMTP id
+ a6-20020a0cefc6000000b00635e696b322mr13179846qvt.35.1688551227338; Wed, 05
+ Jul 2023 03:00:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+References: <20230628115329.248450-1-laoar.shao@gmail.com> <20230628115329.248450-4-laoar.shao@gmail.com>
+ <0097aac1-c15c-8752-b087-32b2144e9d79@iogearbox.net>
+In-Reply-To: <0097aac1-c15c-8752-b087-32b2144e9d79@iogearbox.net>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Wed, 5 Jul 2023 17:59:50 +0800
+Message-ID: <CALOAHbA12SX1j4H3BSObWtPtyLn5axuWiuO8Vp8ePuDpnmZ=9Q@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 03/11] bpftool: Show kprobe_multi link info
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, jolsa@kernel.org, quentin@isovalent.com, 
+	rostedt@goodmis.org, mhiramat@kernel.org, bpf@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+On Wed, Jul 5, 2023 at 4:09=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.ne=
+t> wrote:
+>
+> On 6/28/23 1:53 PM, Yafang Shao wrote:
+> > Show the already expose kprobe_multi link info in bpftool. The result a=
+s
+> > follows,
+> >
+> > $ tools/bpf/bpftool/bpftool link show
+> > 91: kprobe_multi  prog 244
+> >          kprobe.multi  func_cnt 7
+> >          addr             func [module]
+> >          ffffffff98c44f20 schedule_timeout_interruptible
+> >          ffffffff98c44f60 schedule_timeout_killable
+> >          ffffffff98c44fa0 schedule_timeout_uninterruptible
+> >          ffffffff98c44fe0 schedule_timeout_idle
+> >          ffffffffc075b8d0 xfs_trans_get_efd [xfs]
+> >          ffffffffc0768a10 xfs_trans_get_buf_map [xfs]
+> >          ffffffffc076c320 xfs_trans_get_dqtrx [xfs]
+> >          pids kprobe_multi(188367)
+> > 92: kprobe_multi  prog 244
+> >          kretprobe.multi  func_cnt 7
+> >          addr             func [module]
+> >          ffffffff98c44f20 schedule_timeout_interruptible
+> >          ffffffff98c44f60 schedule_timeout_killable
+> >          ffffffff98c44fa0 schedule_timeout_uninterruptible
+> >          ffffffff98c44fe0 schedule_timeout_idle
+> >          ffffffffc075b8d0 xfs_trans_get_efd [xfs]
+> >          ffffffffc0768a10 xfs_trans_get_buf_map [xfs]
+> >          ffffffffc076c320 xfs_trans_get_dqtrx [xfs]
+> >          pids kprobe_multi(188367)
+> >
+> > $ tools/bpf/bpftool/bpftool link show -j
+> > [{"id":91,"type":"kprobe_multi","prog_id":244,"retprobe":false,"func_cn=
+t":7,"funcs":[{"addr":18446744071977586464,"func":"schedule_timeout_interru=
+ptible","module":null},{"addr":18446744071977586528,"func":"schedule_timeou=
+t_killable","module":null},{"addr":18446744071977586592,"func":"schedule_ti=
+meout_uninterruptible","module":null},{"addr":18446744071977586656,"func":"=
+schedule_timeout_idle","module":null},{"addr":18446744072643524816,"func":"=
+xfs_trans_get_efd","module":"xfs"},{"addr":18446744072643578384,"func":"xfs=
+_trans_get_buf_map","module":"xfs"},{"addr":18446744072643592992,"func":"xf=
+s_trans_get_dqtrx","module":"xfs"}],"pids":[{"pid":188367,"comm":"kprobe_mu=
+lti"}]},{"id":92,"type":"kprobe_multi","prog_id":244,"retprobe":true,"func_=
+cnt":7,"funcs":[{"addr":18446744071977586464,"func":"schedule_timeout_inter=
+ruptible","module":null},{"addr":18446744071977586528,"func":"schedule_time=
+out_killable","module":null},{"addr":18446744071977586592,"func":"schedule_=
+timeout_uninterruptible","module":null},{"addr":18446744071977586656,"func"=
+:"schedule_timeout_idle","module":null},{"addr":18446744072643524816,"func"=
+:"xfs_trans_get_efd","module":"xfs"},{"addr":18446744072643578384,"func":"x=
+fs_trans_get_buf_map","module":"xfs"},{"addr":18446744072643592992,"func":"=
+xfs_trans_get_dqtrx","module":"xfs"}],"pids":[{"pid":188367,"comm":"kprobe_=
+multi"}]}]
+> >
+> > When kptr_restrict is 2, the result is,
+> >
+> > $ tools/bpf/bpftool/bpftool link show
+> > 91: kprobe_multi  prog 244
+> >          kprobe.multi  func_cnt 7
+> > 92: kprobe_multi  prog 244
+> >          kretprobe.multi  func_cnt 7
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+>
+> Mainly small nits, but otherwise series lgtm, thanks for improving the vi=
+sibility!
 
-Ringbuf which was developed as a part of BPF infrastructure is
-a very nice, clean, simple and consise API to relay information
-from the kernel to userspace. It can be used in critical sections,
-interrupt handlers, etc.
+Will change them in the next version. Thanks for your review.
 
-This patch exports ringbuf functionality to make it available to
-kernel modules.
-
-Demo: https://github.com/kot-begemot-uk/bpfnic-ng
-
-The demo ships to userspace hardware offload notifications
-without any mallocs, any workqueue and/or delayed work which
-is normally needed to handle these. As a result it is ~ 150
-lines of code instead of the 500+ usually needed to achieve the
-same result.
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- include/linux/bpf.h  | 16 ++++++++++++
- kernel/bpf/inode.c   | 43 ++++++++++++++++++++++++++++++
- kernel/bpf/ringbuf.c | 62 ++++++++++++++++++++++++++++++++++++++------
- 3 files changed, 113 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f58895830ada..0882ba4a44dd 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2004,6 +2004,20 @@ int  generic_map_delete_batch(struct bpf_map *map,
- struct bpf_map *bpf_map_get_curr_or_next(u32 *id);
- struct bpf_prog *bpf_prog_get_curr_or_next(u32 *id);
- 
-+void *_bpf_ringbuf_reserve(struct bpf_map *map,
-+				 u64 size, u64 flags);
-+void _bpf_ringbuf_commit(void *sample, u64 flags);
-+void _bpf_ringbuf_discard(void *sample, u64 flags);
-+int _bpf_ringbuf_output(struct bpf_map *map,
-+			      void *data, u64 size, u64 flags);
-+int _bpf_ringbuf_query(struct bpf_map *map, u64 flags);
-+int _bpf_user_ringbuf_drain(struct bpf_map *map,
-+				  void *callback_fn,
-+				  void *callback_ctx,
-+				  u64 flags);
-+
-+
-+
- #ifdef CONFIG_MEMCG_KMEM
- void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
- 			   int node);
-@@ -2245,6 +2259,8 @@ static inline int bpf_map_attr_numa_node(const union bpf_attr *attr)
- }
- 
- struct bpf_prog *bpf_prog_get_type_path(const char *name, enum bpf_prog_type type);
-+struct bpf_map *bpf_map_get_path(const char *name, fmode_t fmod);
-+
- int array_map_alloc_check(union bpf_attr *attr);
- 
- int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index 4174f76133df..0518f122df68 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -597,6 +597,49 @@ struct bpf_prog *bpf_prog_get_type_path(const char *name, enum bpf_prog_type typ
- }
- EXPORT_SYMBOL(bpf_prog_get_type_path);
- 
-+static struct bpf_map *__get_map_inode(struct inode *inode, fmode_t fmode)
-+{
-+	struct bpf_map *map;
-+	int ret = inode_permission(&nop_mnt_idmap, inode, MAY_READ);
-+
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	if (inode->i_op == &bpf_prog_iops)
-+		return ERR_PTR(-EINVAL);
-+	if (inode->i_op == &bpf_link_iops)
-+		return ERR_PTR(-EINVAL);
-+	if (inode->i_op != &bpf_map_iops)
-+		return ERR_PTR(-EPERM);
-+
-+	map = inode->i_private;
-+
-+	ret = security_bpf_map(map, fmode);
-+
-+	if (ret < 0)
-+		return ERR_PTR(ret);
-+
-+	bpf_map_inc(map);
-+	return map;
-+}
-+
-+struct bpf_map *bpf_map_get_path(const char *name, fmode_t fmode)
-+{
-+	struct bpf_map *map;
-+	struct path path;
-+	int ret = kern_path(name, LOOKUP_FOLLOW, &path);
-+
-+	if (ret)
-+		return ERR_PTR(ret);
-+	map = __get_map_inode(d_backing_inode(path.dentry), fmode);
-+	if (!IS_ERR(map))
-+		touch_atime(&path);
-+	path_put(&path);
-+	return map;
-+}
-+EXPORT_SYMBOL(bpf_map_get_path);
-+
-+
- /*
-  * Display the mount options in /proc/mounts.
-  */
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index 875ac9b698d9..4d4750b9f963 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -452,15 +452,21 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
- 	return (void *)hdr + BPF_RINGBUF_HDR_SZ;
- }
- 
--BPF_CALL_3(bpf_ringbuf_reserve, struct bpf_map *, map, u64, size, u64, flags)
-+void *_bpf_ringbuf_reserve(struct bpf_map *map, u64 size, u64 flags)
- {
- 	struct bpf_ringbuf_map *rb_map;
- 
- 	if (unlikely(flags))
--		return 0;
-+		return NULL;
- 
- 	rb_map = container_of(map, struct bpf_ringbuf_map, map);
--	return (unsigned long)__bpf_ringbuf_reserve(rb_map->rb, size);
-+	return __bpf_ringbuf_reserve(rb_map->rb, size);
-+}
-+EXPORT_SYMBOL(_bpf_ringbuf_reserve);
-+
-+BPF_CALL_3(bpf_ringbuf_reserve, struct bpf_map *, map, u64, size, u64, flags)
-+{
-+	return (unsigned long)_bpf_ringbuf_reserve(map, size, flags);
- }
- 
- const struct bpf_func_proto bpf_ringbuf_reserve_proto = {
-@@ -499,6 +505,12 @@ static void bpf_ringbuf_commit(void *sample, u64 flags, bool discard)
- 		irq_work_queue(&rb->work);
- }
- 
-+void _bpf_ringbuf_commit(void *sample, u64 flags)
-+{
-+	bpf_ringbuf_commit(sample, flags, false);
-+}
-+EXPORT_SYMBOL(_bpf_ringbuf_commit);
-+
- BPF_CALL_2(bpf_ringbuf_submit, void *, sample, u64, flags)
- {
- 	bpf_ringbuf_commit(sample, flags, false /* discard */);
-@@ -512,6 +524,12 @@ const struct bpf_func_proto bpf_ringbuf_submit_proto = {
- 	.arg2_type	= ARG_ANYTHING,
- };
- 
-+void _bpf_ringbuf_discard(void *sample, u64 flags)
-+{
-+	bpf_ringbuf_commit(sample, flags, true);
-+}
-+EXPORT_SYMBOL(_bpf_ringbuf_discard);
-+
- BPF_CALL_2(bpf_ringbuf_discard, void *, sample, u64, flags)
- {
- 	bpf_ringbuf_commit(sample, flags, true /* discard */);
-@@ -525,8 +543,8 @@ const struct bpf_func_proto bpf_ringbuf_discard_proto = {
- 	.arg2_type	= ARG_ANYTHING,
- };
- 
--BPF_CALL_4(bpf_ringbuf_output, struct bpf_map *, map, void *, data, u64, size,
--	   u64, flags)
-+int _bpf_ringbuf_output(struct bpf_map *map, void *data, u64 size,
-+	   u64 flags)
- {
- 	struct bpf_ringbuf_map *rb_map;
- 	void *rec;
-@@ -543,6 +561,13 @@ BPF_CALL_4(bpf_ringbuf_output, struct bpf_map *, map, void *, data, u64, size,
- 	bpf_ringbuf_commit(rec, flags, false /* discard */);
- 	return 0;
- }
-+EXPORT_SYMBOL(_bpf_ringbuf_output);
-+
-+BPF_CALL_4(bpf_ringbuf_output, struct bpf_map *, map, void *, data, u64, size,
-+	   u64, flags)
-+{
-+	return _bpf_ringbuf_output(map, data, size, flags);
-+}
- 
- const struct bpf_func_proto bpf_ringbuf_output_proto = {
- 	.func		= bpf_ringbuf_output,
-@@ -553,7 +578,7 @@ const struct bpf_func_proto bpf_ringbuf_output_proto = {
- 	.arg4_type	= ARG_ANYTHING,
- };
- 
--BPF_CALL_2(bpf_ringbuf_query, struct bpf_map *, map, u64, flags)
-+int _bpf_ringbuf_query(struct bpf_map *map, u64 flags)
- {
- 	struct bpf_ringbuf *rb;
- 
-@@ -572,6 +597,12 @@ BPF_CALL_2(bpf_ringbuf_query, struct bpf_map *, map, u64, flags)
- 		return 0;
- 	}
- }
-+EXPORT_SYMBOL(_bpf_ringbuf_query);
-+
-+BPF_CALL_2(bpf_ringbuf_query, struct bpf_map *, map, u64, flags)
-+{
-+	return _bpf_ringbuf_query(map, flags);
-+}
- 
- const struct bpf_func_proto bpf_ringbuf_query_proto = {
- 	.func		= bpf_ringbuf_query,
-@@ -727,8 +758,8 @@ static void __bpf_user_ringbuf_sample_release(struct bpf_ringbuf *rb, size_t siz
- 	smp_store_release(&rb->consumer_pos, consumer_pos + rounded_size);
- }
- 
--BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
--	   void *, callback_fn, void *, callback_ctx, u64, flags)
-+int __bpf_user_ringbuf_drain(struct bpf_map *map,
-+	   void *callback_fn, void *callback_ctx, u64 flags)
- {
- 	struct bpf_ringbuf *rb;
- 	long samples, discarded_samples = 0, ret = 0;
-@@ -784,6 +815,21 @@ BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
- 	return ret;
- }
- 
-+BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
-+	   void *, callback_fn, void *, callback_ctx, u64, flags)
-+{
-+	return __bpf_user_ringbuf_drain(map, callback_fn, callback_ctx, flags);
-+}
-+
-+
-+int _bpf_user_ringbuf_drain(struct bpf_map *map,
-+	   void *callback_fn, void *callback_ctx, u64 flags)
-+{
-+	return __bpf_user_ringbuf_drain(map, callback_fn, callback_ctx, flags);
-+}
-+EXPORT_SYMBOL(bpf_user_ringbuf_drain);
-+
-+
- const struct bpf_func_proto bpf_user_ringbuf_drain_proto = {
- 	.func		= bpf_user_ringbuf_drain,
- 	.ret_type	= RET_INTEGER,
--- 
-2.30.2
-
+--=20
+Regards
+Yafang
 
