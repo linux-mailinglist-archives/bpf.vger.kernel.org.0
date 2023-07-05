@@ -1,77 +1,72 @@
-Return-Path: <bpf+bounces-4129-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4130-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5504A749209
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 01:48:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2501F74920D
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 01:50:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80B251C20C8A
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 23:48:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D505E2811C9
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 23:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F3715AEA;
-	Wed,  5 Jul 2023 23:48:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F02F15AEC;
+	Wed,  5 Jul 2023 23:49:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7A1156F7
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 23:48:19 +0000 (UTC)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31EA610F5
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 16:48:17 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbc77e76abso931365e9.1
-        for <bpf@vger.kernel.org>; Wed, 05 Jul 2023 16:48:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFA2156E0
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 23:49:52 +0000 (UTC)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8927910F5
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 16:49:50 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbc1218262so905815e9.3
+        for <bpf@vger.kernel.org>; Wed, 05 Jul 2023 16:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688600895; x=1691192895;
+        d=gmail.com; s=20221208; t=1688600989; x=1691192989;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iZV3+AQe87ZlY/zWnWTfprROf7AElZpjB8G+9b+kj2E=;
-        b=jt4yRFGa94GjytV/DxGKwOQUN+Q+JRGiDvYxlLi/Wwag2Ufc8LwWi/Odg4+eo6eT2w
-         kq1YsYdrfz3ePFcZ1qoespv6I6nn10OrBag1w9+fpjk1VwTsOUrABllYWi9PTRxyvkf/
-         7vjt1+VN/31M2s3wOUfWme02PRrbfW5/Z6wWnAoFmzdeggf3lBXi8Qqc3Aol7Uesvjk4
-         6sxOkg4R9iZ+cWZ3JoP84sgWuITrIIV43H25Ix+aj84RRboJKlbXh0l2nOqV3rxCbR6x
-         bquBeYQVvcqvAqybjubEFohfHrrHOnKsfsjgsAV3SLmPg3coWZQ95xEkwRKEF30wLAVD
-         xdbw==
+        bh=RRPuNRvuP1uAseIzUhHNr3Vb/vbtDlRrGC4UsyrQk/A=;
+        b=ZPDslEvoBnYvLGO0W0zhBtUqsCQg+U/zN2YCD4tkPDQxCcSzOG5DnjE1t/G+gPH4lC
+         XHSZwy7Ul7KXgJxZC1RIUj0dVajK1tibii8Sri7Z2tXtbf8EmTc0ZGHRjEp70aeTi8HQ
+         HIS1CYuOPTnkP3tUX1uNm/lulpVRWejO/8eFHuxlE/TlOl906S1mD3VwxkjXf507vath
+         pPKPH+QVQoWQirGZJtBUXa9i5cfNyOLatfNNmv9ETJSI/s783Hm9jOjNM5yN6T18Uvph
+         4glzE1TGdvlV46f4YKah6jUfNcQsLCzRnkNoq8PmPsKH8Zc56EeDQF2oR8GqjxksiOV6
+         AojA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688600895; x=1691192895;
+        d=1e100.net; s=20221208; t=1688600989; x=1691192989;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iZV3+AQe87ZlY/zWnWTfprROf7AElZpjB8G+9b+kj2E=;
-        b=ITDVssFD1yJKA5/rnwJF8YtFP3oNf3Zn1nzS+v2aLh27oe9n920oyBf6yLKsLx1+0+
-         F+MKlGlHxd3kvCYxfGYReDLF4rICKvSwkyWc0B2if+xaw7o6ZQk5xfNSK7+yJ7tp/JK4
-         fwD54PEwGOZeWXMRDCqo0tFqTnwGzOqcqXyDBEW3bwKnV2tETKX/0+y62ZFZR/ZM6/vq
-         UysxyRhyvAAk9394oD5ksQY/k++89sNxZ+a7TL5YI+XTTbKEekyGD7/oTonYOuGDc9i0
-         ieh2PqWL1NAdOAB2It5f0JchvRCFpsE+reatYjb7Xn2Lqr1QMlc5r6o/AxDP9F0rRe0Q
-         NQqw==
-X-Gm-Message-State: ABy/qLZ6fHCYr6qVxn4z96BUklFK/SmUiJHF89dMYq7ou0A/xmQsjCDA
-	Nfe4C4ITS5qlnQG4/CWNCpippLKZcU6Kys4lWIw=
-X-Google-Smtp-Source: APBJJlH/PVYrItSIFHPE7ckjXd+nPoYHgPG0ywRI5poOOY3J1WAdjM4R+LuMfgbenYGtG3+GmUwbrJAR1osz2XZFhGE=
-X-Received: by 2002:a7b:c019:0:b0:3f7:f584:579b with SMTP id
- c25-20020a7bc019000000b003f7f584579bmr81665wmb.9.1688600895282; Wed, 05 Jul
- 2023 16:48:15 -0700 (PDT)
+        bh=RRPuNRvuP1uAseIzUhHNr3Vb/vbtDlRrGC4UsyrQk/A=;
+        b=EzXXjrgZhIpbvtj+zRDbYZ8k/us2I5Odv8eILWQ9vgHXAevh5h0nKfwffFIXucU93/
+         czSWVuXmL1vT/sjXio3tZdSwp+rrDH41peGt+hqa1AOdBtGXSLJNlYA0ieyAddNnONcm
+         ZXmyG9MVVLFTbAuQShi+ELgdi488W8/ZBPe0o0GAQ51ZVR4I1/+04Xjx7EmPjBxlU7t9
+         WpIpOfZieaqrdA43uIwKI1tthBNMKGTEwD9n5Zbu29SllvdVL3pDf5++PLFZ0K5+Cfph
+         Yjjhw8hllXFknN/hh9GSyULJENwVH8914AjT6t+M2mzwN55GD5gPRMp7hnW4isGv2wEh
+         VMgw==
+X-Gm-Message-State: ABy/qLaQ3ZRW2LszzAYCZF6MVyojF8vKB7UfZ+nssOd5qC/duf7p7fO+
+	6wlfkewf4l0YNhirbalAkyf184sO7lzrl7bWW6w=
+X-Google-Smtp-Source: APBJJlHgiW0I9VE41wFEXeyHIrZXWtMXuFeLoJm3eqwK/LXjME8XcJHWpbbukr/vVJeVNm22s+DZeQhnrdNPZBPPw14=
+X-Received: by 2002:a05:600c:220e:b0:3fb:9ea6:7a73 with SMTP id
+ z14-20020a05600c220e00b003fb9ea67a73mr100300wml.23.1688600988904; Wed, 05 Jul
+ 2023 16:49:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230616171728.530116-1-alan.maguire@oracle.com>
- <20230616171728.530116-2-alan.maguire@oracle.com> <CAEf4BzapHdQb=gXq9xLRGfRFBC=3xcQ=OSdV1o=+5nvgDwT4HA@mail.gmail.com>
- <b972e451-3a1f-4f29-b03a-68ce3ac765f1@oracle.com>
-In-Reply-To: <b972e451-3a1f-4f29-b03a-68ce3ac765f1@oracle.com>
+References: <9c636a63-1f3d-442d-9223-96c2dccb9469@moroto.mountain> <61cb2c19-5f09-4f0a-baf1-adc69c3031f4@huaweicloud.com>
+In-Reply-To: <61cb2c19-5f09-4f0a-baf1-adc69c3031f4@huaweicloud.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 5 Jul 2023 16:48:03 -0700
-Message-ID: <CAEf4Bzazke2aLWfEZChN2BCcf83b9_EufQVAP0Z19LY5z=+yZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/9] btf: add kind layout encoding, crcs to UAPI
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: acme@kernel.org, ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net, 
-	quentin@isovalent.com, jolsa@kernel.org, martin.lau@linux.dev, 
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, mykolal@fb.com, bpf@vger.kernel.org
+Date: Wed, 5 Jul 2023 16:49:37 -0700
+Message-ID: <CAEf4Bzau5eNcLj-Us2VSW1zmCET-=jA5pFZTfhVWeEjGqQ2_Nw@mail.gmail.com>
+Subject: Re: [bug report] bpf: Enforce BPF ringbuf size to be the power of 2
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>, andriin@fb.com, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,246 +76,88 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jul 3, 2023 at 6:42=E2=80=AFAM Alan Maguire <alan.maguire@oracle.co=
-m> wrote:
+On Mon, Jul 3, 2023 at 6:47=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wro=
+te:
 >
-> On 22/06/2023 23:02, Andrii Nakryiko wrote:
-> > On Fri, Jun 16, 2023 at 10:17=E2=80=AFAM Alan Maguire <alan.maguire@ora=
-cle.com> wrote:
-> >>
-> >> BTF kind layouts provide information to parse BTF kinds.
-> >> By separating parsing BTF from using all the information
-> >> it provides, we allow BTF to encode new features even if
-> >> they cannot be used.  This is helpful in particular for
-> >> cases where newer tools for BTF generation run on an
-> >> older kernel; BTF kinds may be present that the kernel
-> >> cannot yet use, but at least it can parse the BTF
-> >> provided.  Meanwhile userspace tools with newer libbpf
-> >> may be able to use the newer information.
-> >>
-> >> The intent is to support encoding of kind layouts
-> >> optionally so that tools like pahole can add this
-> >> information.  So for each kind we record
-> >>
-> >> - kind-related flags
-> >> - length of singular element following struct btf_type
-> >> - length of each of the btf_vlen() elements following
-> >>
-> >> In addition we make space in the BTF header for
-> >> CRC32s computed over the BTF along with a CRC for
-> >> the base BTF; this allows split BTF to identify
-> >> a mismatch explicitly.
-> >>
-> >> The ideas here were discussed at [1], [2]; hence
-> >>
-> >> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> >> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> >>
-> >> [1] https://lore.kernel.org/bpf/CAEf4BzYjWHRdNNw4B=3DeOXOs_ONrDwrgX4bn=
-=3DNuc1g8JPFC34MA@mail.gmail.com/
-> >> [2] https://lore.kernel.org/bpf/20230531201936.1992188-1-alan.maguire@=
-oracle.com/
-> >> ---
-> >>  include/uapi/linux/btf.h       | 24 ++++++++++++++++++++++++
-> >>  tools/include/uapi/linux/btf.h | 24 ++++++++++++++++++++++++
-> >>  2 files changed, 48 insertions(+)
-> >>
-> >> diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
-> >> index ec1798b6d3ff..cea9125ed953 100644
-> >> --- a/include/uapi/linux/btf.h
-> >> +++ b/include/uapi/linux/btf.h
-> >> @@ -8,6 +8,22 @@
-> >>  #define BTF_MAGIC      0xeB9F
-> >>  #define BTF_VERSION    1
-> >>
-> >> +/* is this information required? If so it cannot be sanitized safely.=
- */
-> >> +#define BTF_KIND_LAYOUT_OPTIONAL               (1 << 0)
-> >
-> > hm.. I thought we agreed to not have OPTIONAL flag last time, no? From
-> > kernel's perspective nothing is optional. From libbpf perspective
-> > everything should be optional, unless we get type_id reference to
-> > something that we don't recognize. So why the flag and extra code to
-> > handle it?
-> >
-> > We can always add it later, if necessary.
-> >
+> Hi,
 >
-> I totally agree we need to reject any BTF that contains references
-> to unknown objects if these references are made via known ones;
-> so for example an enum64 in a struct (in the case we didn't know
-> about an enum64). However, it's possible a BTF kind could point
-> _at_ other BTF kinds but not be pointed _to_ by any known kinds;
-> in such a case wouldn't optional make sense even for the kernel
-> to say "ignore any kinds that we don't know about that aren't
-> participating in any known BTF relationships"? Default assumption
-> without the optional flag would be to reject such BTF.
-
-I think it's simpler (and would follow what we've been doing with
-kernel-side strict validation of everything) to reject everything
-unknown. "Being pointed to" isn't always contained within BTF itself.
-E.g., for line and func info, type_id comes during BPF_PROG_LOAD. So
-at the point of BTF validation you don't know that some FUNCs will be
-pointed to (as an example). So I'd avoid making unnecessarily
-dangerous assumptions that some pieces of information can be ignored.
-
-And in general, kernel doesn't trust user-space data without
-validation, so we'd have to double-check all this OPTIONAL flags
-somehow anyways.
-
->
-> >> +
-> >> +/* kind layout section consists of a struct btf_kind_layout for each =
-known
-> >> + * kind at BTF encoding time.
-> >> + */
-> >> +struct btf_kind_layout {
-> >> +       __u16 flags;            /* see BTF_KIND_LAYOUT_* values above =
-*/
-> >> +       __u8 info_sz;           /* size of singular element after btf_=
-type */
-> >> +       __u8 elem_sz;           /* size of each of btf_vlen(t) element=
-s */
-> >> +};
-> >> +
-> >> +/* for CRCs for BTF, base BTF to be considered usable, flags must be =
-set. */
-> >> +#define BTF_FLAG_CRC_SET               (1 << 0)
-> >> +#define BTF_FLAG_BASE_CRC_SET          (1 << 1)
-> >> +
-> >>  struct btf_header {
-> >>         __u16   magic;
-> >>         __u8    version;
-> >> @@ -19,8 +35,16 @@ struct btf_header {
-> >>         __u32   type_len;       /* length of type section       */
-> >>         __u32   str_off;        /* offset of string section     */
-> >>         __u32   str_len;        /* length of string section     */
-> >> +       __u32   kind_layout_off;/* offset of kind layout section */
-> >> +       __u32   kind_layout_len;/* length of kind layout section */
-> >> +
-> >> +       __u32   crc;            /* crc of BTF; used if flags set BTF_F=
-LAG_CRC_VALID */
-> >> +       __u32   base_crc;       /* crc of base BTF; used if flags set =
-BTF_FLAG_BASE_CRC_VALID */
-> >>  };
-> >>
-> >> +/* required minimum BTF header length */
-> >> +#define BTF_HEADER_MIN_LEN     (sizeof(struct btf_header) - 16)
+> On 6/30/2023 6:35 PM, Dan Carpenter wrote:
+> > Hello Andrii Nakryiko,
 > >
-> > offsetof(struct btf_header, kind_layout_off) ?
+> > The patch 517bbe1994a3: "bpf: Enforce BPF ringbuf size to be the
+> > power of 2" from Jun 29, 2020, leads to the following Smatch static
+> > checker warning:
 > >
-> > but actually why this needs to be a part of UAPI?
+> >       kernel/bpf/ringbuf.c:198 ringbuf_map_alloc()
+> >       warn: impossible condition '(attr->max_entries > 68719464448)'
 > >
->
-> no not really. I was trying to come up with a more elegant
-> way of differentiating between the old and new header formats
-> on the basis of size and eventually just gave up and added
-> a #define. It can absolutely be removed.
-
-right, so that's why just checking if field is present based on
-btf_header.len and field offset is a good approach? Let's drop
-unnecessary constants from UAPI header
-
->
-> >> +
-> >>  /* Max # of type identifier */
-> >>  #define BTF_MAX_TYPE   0x000fffff
-> >>  /* Max offset into the string section */
-> >> diff --git a/tools/include/uapi/linux/btf.h b/tools/include/uapi/linux=
-/btf.h
-> >> index ec1798b6d3ff..cea9125ed953 100644
-> >> --- a/tools/include/uapi/linux/btf.h
-> >> +++ b/tools/include/uapi/linux/btf.h
-> >> @@ -8,6 +8,22 @@
-> >>  #define BTF_MAGIC      0xeB9F
-> >>  #define BTF_VERSION    1
-> >>
-> >> +/* is this information required? If so it cannot be sanitized safely.=
- */
-> >> +#define BTF_KIND_LAYOUT_OPTIONAL               (1 << 0)
-> >> +
-> >> +/* kind layout section consists of a struct btf_kind_layout for each =
-known
-> >> + * kind at BTF encoding time.
-> >> + */
-> >> +struct btf_kind_layout {
-> >> +       __u16 flags;            /* see BTF_KIND_LAYOUT_* values above =
-*/
-> >> +       __u8 info_sz;           /* size of singular element after btf_=
-type */
-> >> +       __u8 elem_sz;           /* size of each of btf_vlen(t) element=
-s */
-> >> +};
-> >> +
-> >> +/* for CRCs for BTF, base BTF to be considered usable, flags must be =
-set. */
-> >> +#define BTF_FLAG_CRC_SET               (1 << 0)
-> >> +#define BTF_FLAG_BASE_CRC_SET          (1 << 1)
-> >> +
-> >>  struct btf_header {
-> >>         __u16   magic;
-> >>         __u8    version;
-> >> @@ -19,8 +35,16 @@ struct btf_header {
-> >>         __u32   type_len;       /* length of type section       */
-> >>         __u32   str_off;        /* offset of string section     */
-> >>         __u32   str_len;        /* length of string section     */
-> >> +       __u32   kind_layout_off;/* offset of kind layout section */
-> >> +       __u32   kind_layout_len;/* length of kind layout section */
-> >> +
-> >> +       __u32   crc;            /* crc of BTF; used if flags set BTF_F=
-LAG_CRC_VALID */
+> > Also Clang warns:
 > >
-> > why are we making crc optional? shouldn't we just say that crc is
-> > always filled out?
+> > kernel/bpf/ringbuf.c:198:24: warning: result of comparison of constant
+> > 68719464448 with expression of type '__u32' (aka 'unsigned int') is
+> > always false [-Wtautological-constant-out-of-range-compare]
+> >         if (attr->max_entries > RINGBUF_MAX_DATA_SZ)
+> >             ~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~
 > >
->
-> The approach I took was to have libbpf/pahole be flexible about
-> specification of crcs and kind layout; neither, one of these or both
-> are supported. When neither are specified we'll still generate
-> a larger header, but it will be zeros for the new fields so parseable
-> by older libbpf/kernel. I think we probably need to make it optional
-> for a while to support new pahole on older kernels.
-
-I'm not sure how this "optional for a while" will turn to
-"non-optional", tbh, and who and when will decide that. I think the
-"new pahole on old kernel" problem is solvable easily by making all
-this new stuff opt-in. New kernel Makefiles will request pahole to
-emit them, if pahole is new enough. Old kernels won't know about this
-feature and even new pahole won't emit it.
-
-I don't feel too strongly about it, just generally feeling like
-minimizing all the different supportable variations.
-
->
->
-> >> +       __u32   base_crc;       /* crc of base BTF; used if flags set =
-BTF_FLAG_BASE_CRC_VALID */
+> > kernel/bpf/ringbuf.c
+> >     184 static struct bpf_map *ringbuf_map_alloc(union bpf_attr *attr)
+> >     185 {
+> >     186         struct bpf_ringbuf_map *rb_map;
+> >     187
+> >     188         if (attr->map_flags & ~RINGBUF_CREATE_FLAG_MASK)
+> >     189                 return ERR_PTR(-EINVAL);
+> >     190
+> >     191         if (attr->key_size || attr->value_size ||
+> >     192             !is_power_of_2(attr->max_entries) ||
+> >     193             !PAGE_ALIGNED(attr->max_entries))
+> >     194                 return ERR_PTR(-EINVAL);
+> >     195
+> >     196 #ifdef CONFIG_64BIT
+> >     197         /* on 32-bit arch, it's impossible to overflow record's=
+ hdr->pgoff */
+> > --> 198         if (attr->max_entries > RINGBUF_MAX_DATA_SZ)
 > >
-> > here it would be nice if we could just rely on zero meaning not set,
-> > but I suspect not everyone will be happy about this, as technically
-> > crc 0 is a valid crc :(
+> > This check used to be inside bpf_ringbuf_alloc() and it used be:
 > >
->
-> Right, I think we're stuck with the flags unfortunately.
+> >       if (data_sz > RINGBUF_MAX_DATA_SZ)
+> >
+> > In that context where data_sz is a size_t the condition and the
+> > #ifdef CONFIG_64BIT made sense but here it doesn't.  Probably just
+> > delete the check.
+> It seems the check before 517bbe1994a3 is only used for future
+> extension. Considering the type of max_entries is u32, I think it is OK
+> to remove the check and the macro definition.
 
-yep. one extra reason why I like the idea of this being string offset,
-but whatever, small thing
+I'm fine removing this, given page size is always at least 4096,
+ringbuf is capable of addressing all 4GBs easily. Hou, will you be
+able to send a patch?
 
 
-> Thanks for the review (and apologies for the belated response!)
->
-> Alan
->
 > >
-> >>  };
-> >>
-> >> +/* required minimum BTF header length */
-> >> +#define BTF_HEADER_MIN_LEN     (sizeof(struct btf_header) - 16)
-> >> +
-> >>  /* Max # of type identifier */
-> >>  #define BTF_MAX_TYPE   0x000fffff
-> >>  /* Max offset into the string section */
-> >> --
-> >> 2.39.3
-> >>
+> >     199                 return ERR_PTR(-E2BIG);
+> >     200 #endif
+> >     201
+> >     202         rb_map =3D bpf_map_area_alloc(sizeof(*rb_map), NUMA_NO_=
+NODE);
+> >     203         if (!rb_map)
+> >     204                 return ERR_PTR(-ENOMEM);
+> >     205
+> >     206         bpf_map_init_from_attr(&rb_map->map, attr);
+> >     207
+> >     208         rb_map->rb =3D bpf_ringbuf_alloc(attr->max_entries, rb_=
+map->map.numa_node);
+> >     209         if (!rb_map->rb) {
+> >     210                 bpf_map_area_free(rb_map);
+> >     211                 return ERR_PTR(-ENOMEM);
+> >     212         }
+> >     213
+> >     214         return &rb_map->map;
+> >     215 }
+> >
+> > regards,
+> > dan carpenter
+> >
+> > .
+>
+>
 
