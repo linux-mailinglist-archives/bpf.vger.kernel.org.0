@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-4097-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4098-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA029748B5B
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 20:17:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA33C748B5E
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 20:17:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3A4F1C20BC0
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 18:17:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D33351C20B9C
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 18:17:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED58D14A8D;
-	Wed,  5 Jul 2023 18:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBDCD14A90;
+	Wed,  5 Jul 2023 18:16:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97781426D
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 18:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E068134A7
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 18:16:53 +0000 (UTC)
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DE3170B
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 11:16:42 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D508719BF
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 11:16:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1688581001;
+	s=mimecast20190719; t=1688581005;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=touy8a7//BeI9DXwQuTy3DIG1jDKoaRDRv3dbDYYd7A=;
-	b=bRf0/gE2Af75MWSNZa6GZtLmlRk10CBo3aTBBwDMg+36xwGoqleWJ21QUOgO4G/vqMyUPv
-	UGQrPQzp06C56zVhhuBl2lHQpx7rWd4L3DUIyQYyY/P8CJ7GXLIPZuu45X5Usm6cOLCIAb
-	Po/q/AyzuRQNuk0us1FXSYe87qmaRAI=
+	bh=J8rXW514UBch39kVc1ygiPYqeRYBiljQKIWLWtG0jLw=;
+	b=FX1r+ppNlRDeMGoNbaLNkLujoNP9R7FxFlVx8mczJNXxItZigQWKipehItWUWOwnlVMil8
+	E/yG3Ir2qaKxA3RqHwesRb9y7ebiVJJMprsjuymGtQt8DhMEm4UWGJ5s3dBoKpZI3437tr
+	JT8Xuw7LNh4CrauuyrfdV6fNH1OY0qA=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-281-rTU3Fnz6O_mjXhT8Or3jrg-1; Wed, 05 Jul 2023 14:16:38 -0400
-X-MC-Unique: rTU3Fnz6O_mjXhT8Or3jrg-1
+ us-mta-101-9oeIA5OgNLqp_60MHHVNcQ-1; Wed, 05 Jul 2023 14:16:43 -0400
+X-MC-Unique: 9oeIA5OgNLqp_60MHHVNcQ-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6BA218037BA;
-	Wed,  5 Jul 2023 18:16:36 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A8779810BB4;
+	Wed,  5 Jul 2023 18:16:41 +0000 (UTC)
 Received: from vschneid.remote.csb (unknown [10.42.28.164])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 508F218EB4;
-	Wed,  5 Jul 2023 18:16:31 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id A081B18EB4;
+	Wed,  5 Jul 2023 18:16:36 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
@@ -52,7 +52,8 @@ To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
 	bpf@vger.kernel.org,
 	x86@kernel.org
-Cc: Steven Rostedt <rostedt@goodmis.org>,
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Jonathan Corbet <corbet@lwn.net>,
 	Thomas Gleixner <tglx@linutronix.de>,
@@ -94,9 +95,9 @@ Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Daniel Bristot de Oliveira <bristot@redhat.com>,
 	Marcelo Tosatti <mtosatti@redhat.com>,
 	Yair Podemsky <ypodemsk@redhat.com>
-Subject: [RFC PATCH 06/14] objtool: Flesh out warning related to pv_ops[] calls
-Date: Wed,  5 Jul 2023 19:12:48 +0100
-Message-Id: <20230705181256.3539027-7-vschneid@redhat.com>
+Subject: [RFC PATCH 07/14] objtool: Warn about non __ro_after_init static key usage in .noinstr
+Date: Wed,  5 Jul 2023 19:12:49 +0100
+Message-Id: <20230705181256.3539027-8-vschneid@redhat.com>
 In-Reply-To: <20230705181256.3539027-1-vschneid@redhat.com>
 References: <20230705181256.3539027-1-vschneid@redhat.com>
 Precedence: bulk
@@ -115,27 +116,103 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-I had to look into objtool itself to understand what this warning was
-about; make it more explicit.
+Later commits will depend on having no runtime-mutable text in early entry
+code. (ab)use the .noinstr section as a marker of early entry code and warn
+about static keys used in it that can be flipped at runtime.
 
+Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- tools/objtool/check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/objtool/check.c                   | 20 ++++++++++++++++++++
+ tools/objtool/include/objtool/check.h   |  1 +
+ tools/objtool/include/objtool/special.h |  2 ++
+ tools/objtool/special.c                 |  3 +++
+ 4 files changed, 26 insertions(+)
 
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 0fcf99c914000..fe62232f218f9 100644
+index fe62232f218f9..7f8d210ec88c3 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -3404,7 +3404,7 @@ static bool pv_call_dest(struct objtool_file *file, struct instruction *insn)
+@@ -2032,6 +2032,9 @@ static int add_special_section_alts(struct objtool_file *file)
+ 		alt->next = orig_insn->alts;
+ 		orig_insn->alts = alt;
  
- 	list_for_each_entry(target, &file->pv_ops[idx].targets, pv_target) {
- 		if (!target->sec->noinstr) {
--			WARN("pv_ops[%d]: %s", idx, target->name);
-+			WARN("pv_ops[%d]: indirect call to %s() leaves .noinstr.text section", idx, target->name);
- 			file->pv_ops[idx].clean = false;
- 		}
++		if (special_alt->key_sym)
++			orig_insn->key_sym = special_alt->key_sym;
++
+ 		list_del(&special_alt->list);
+ 		free(special_alt);
  	}
+@@ -3520,6 +3523,20 @@ static int validate_return(struct symbol *func, struct instruction *insn, struct
+ 	return 0;
+ }
+ 
++static int validate_static_key(struct instruction *insn, struct insn_state *state)
++{
++	if (state->noinstr && state->instr <= 0) {
++		if ((strcmp(insn->key_sym->sec->name, ".data..ro_after_init"))) {
++			WARN_INSN(insn,
++				  "Non __ro_after_init static key \"%s\" in .noinstr section",
++				  insn->key_sym->name);
++			return 1;
++		}
++	}
++
++	return 0;
++}
++
+ static struct instruction *next_insn_to_validate(struct objtool_file *file,
+ 						 struct instruction *insn)
+ {
+@@ -3670,6 +3687,9 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 		if (handle_insn_ops(insn, next_insn, &state))
+ 			return 1;
+ 
++		if (insn->key_sym)
++			validate_static_key(insn, &state);
++
+ 		switch (insn->type) {
+ 
+ 		case INSN_RETURN:
+diff --git a/tools/objtool/include/objtool/check.h b/tools/objtool/include/objtool/check.h
+index daa46f1f0965a..35dd21f8f41e1 100644
+--- a/tools/objtool/include/objtool/check.h
++++ b/tools/objtool/include/objtool/check.h
+@@ -77,6 +77,7 @@ struct instruction {
+ 	struct symbol *sym;
+ 	struct stack_op *stack_ops;
+ 	struct cfi_state *cfi;
++	struct symbol *key_sym;
+ };
+ 
+ static inline struct symbol *insn_func(struct instruction *insn)
+diff --git a/tools/objtool/include/objtool/special.h b/tools/objtool/include/objtool/special.h
+index 86d4af9c5aa9d..0e61f34fe3a28 100644
+--- a/tools/objtool/include/objtool/special.h
++++ b/tools/objtool/include/objtool/special.h
+@@ -27,6 +27,8 @@ struct special_alt {
+ 	struct section *new_sec;
+ 	unsigned long new_off;
+ 
++	struct symbol *key_sym;
++
+ 	unsigned int orig_len, new_len; /* group only */
+ };
+ 
+diff --git a/tools/objtool/special.c b/tools/objtool/special.c
+index baa85c31526b3..830e6abf173a2 100644
+--- a/tools/objtool/special.c
++++ b/tools/objtool/special.c
+@@ -127,6 +127,9 @@ static int get_alt_entry(struct elf *elf, const struct special_entry *entry,
+ 			return -1;
+ 		}
+ 		alt->key_addend = key_reloc->addend;
++
++		reloc_to_sec_off(key_reloc, &sec, &offset);
++		alt->key_sym = find_symbol_by_offset(sec, offset & ~2);
+ 	}
+ 
+ 	return 0;
 -- 
 2.31.1
 
