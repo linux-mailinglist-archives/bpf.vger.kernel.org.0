@@ -1,118 +1,144 @@
-Return-Path: <bpf+bounces-4016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4017-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44BE5747B75
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 04:17:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96DE9747BA8
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 05:03:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00642281009
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 02:17:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D025C280FCF
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 03:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8173A29;
-	Wed,  5 Jul 2023 02:17:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E19D0A48;
+	Wed,  5 Jul 2023 03:03:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A127F6
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 02:17:44 +0000 (UTC)
-X-Greylist: delayed 600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 04 Jul 2023 19:17:42 PDT
-Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4CD1C10E2;
-	Tue,  4 Jul 2023 19:17:42 -0700 (PDT)
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-	by vmicros1.altlinux.org (Postfix) with ESMTP id CBFD372C90D;
-	Wed,  5 Jul 2023 05:00:40 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
-	by imap.altlinux.org (Postfix) with ESMTPSA id C1F0A36D00E5;
-	Wed,  5 Jul 2023 05:00:40 +0300 (MSK)
-Date: Wed, 5 Jul 2023 05:00:40 +0300
-From: Vitaly Chikunov <vt@altlinux.org>
-To: dwarves@vger.kernel.org, Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: bpf@vger.kernel.org, "Dmitry V. Levin" <ldv@altlinux.org>
-Subject: pahole 1.25 SIGSEGV when building kernel (-j when cores > 81)
-Message-ID: <20230705020040.bqhtd3yxpntk44q5@altlinux.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B279381D
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 03:03:34 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA3DE72
+	for <bpf@vger.kernel.org>; Tue,  4 Jul 2023 20:03:32 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Qwkxq2CXMz4f3q2j
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 11:03:27 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgB30hx93aRk34sUMg--.1702S2;
+	Wed, 05 Jul 2023 11:03:29 +0800 (CST)
+Subject: Re: [v3 PATCH bpf-next 5/6] selftests/bpf: test map percpu stats
+To: Anton Protopopov <aspsk@isovalent.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+References: <20230630082516.16286-1-aspsk@isovalent.com>
+ <20230630082516.16286-6-aspsk@isovalent.com>
+ <3e761472-051d-4e46-8a66-79926493e5db@huawei.com>
+ <ZKQ0iF+8fMND5Qmg@zh-lab-node-5>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <525f2690-f367-6296-8dde-0138ba8aa42f@huaweicloud.com>
+Date: Wed, 5 Jul 2023 11:03:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+In-Reply-To: <ZKQ0iF+8fMND5Qmg@zh-lab-node-5>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgB30hx93aRk34sUMg--.1702S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw45uw1rCF17CFyfWrykXwb_yoW8Kw15pa
+	4FyF4DKFs7Z347t34vva4fWFn2qrs8Ar1UZr1DJr1UArsxKr1Sqr1xAayqkF9a9rW2vwnY
+	v3y29ryfCws5W3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 Hi,
 
-After updating Dwarves to v1.25 we are getting SIGSEGV while building
-kernel on 32-bit x86 architecture. It looks like this:
+On 7/4/2023 11:02 PM, Anton Protopopov wrote:
+> On Tue, Jul 04, 2023 at 10:41:10PM +0800, Hou Tao wrote:
+>> Hi,
+>>
+>> On 6/30/2023 4:25 PM, Anton Protopopov wrote:
+>>> Add a new map test, map_percpu_stats.c, which is checking the correctness of
+>>> map's percpu elements counters.  For supported maps the test upserts a number
+>>> of elements, checks the correctness of the counters, then deletes all the
+>>> elements and checks again that the counters sum drops down to zero.
+>>>
+>>> The following map types are tested:
+>>>
+>>>     * BPF_MAP_TYPE_HASH, BPF_F_NO_PREALLOC
+>>>     * BPF_MAP_TYPE_PERCPU_HASH, BPF_F_NO_PREALLOC
+>>>     * BPF_MAP_TYPE_HASH,
+>>>     * BPF_MAP_TYPE_PERCPU_HASH,
+>>>     * BPF_MAP_TYPE_LRU_HASH
+>>>     * BPF_MAP_TYPE_LRU_PERCPU_HASH
+>> A test for BPF_MAP_TYPE_HASH_OF_MAPS is also needed.
+We could also exercise the test for LRU map with BPF_F_NO_COMMON_LRU.
+>
+SNIP
+>>> diff --git a/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c b/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
+>>> new file mode 100644
+>>> index 000000000000..5b45af230368
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
+>>> @@ -0,0 +1,336 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/* Copyright (c) 2023 Isovalent */
+>>> +
+>>> +#include <errno.h>
+>>> +#include <unistd.h>
+>>> +#include <pthread.h>
+>>> +
+>>> +#include <bpf/bpf.h>
+>>> +#include <bpf/libbpf.h>
+>>> +
+>>> +#include <bpf_util.h>
+>>> +#include <test_maps.h>
+>>> +
+>>> +#include "map_percpu_stats.skel.h"
+>>> +
+>>> +#define MAX_ENTRIES 16384
+>>> +#define N_THREADS 37
+>> Why 37 thread is needed here ? Does a small number of threads work as well ?
+> This was used to evict more elements from LRU maps when they are full.
 
-    BTF     .btf.vmlinux.bin.o
-  scripts/link-vmlinux.sh: line 111: 395728 Segmentation fault      LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${PAHOLE_FLAGS} ${1}
-    LD      .tmp_vmlinux.kallsyms1
-    NM      .tmp_vmlinux.kallsyms1.syms
-    KSYMS   .tmp_vmlinux.kallsyms1.S
-    AS      .tmp_vmlinux.kallsyms1.S
-    LD      .tmp_vmlinux.kallsyms2
-    NM      .tmp_vmlinux.kallsyms2.syms
-    KSYMS   .tmp_vmlinux.kallsyms2.S
-    AS      .tmp_vmlinux.kallsyms2.S
-    LD      vmlinux
-    BTFIDS  vmlinux
-  libbpf: failed to find '.BTF' ELF section in vmlinux
-  FAILED: load BTF from vmlinux: No data available
-
-What crashes is this command:
-
-  pahole -J --btf_gen_floats -j --lang_exclude=rust .tmp_vmlinux.btf
-
-I found that cause of the crash is that build box having 128 cores. By
-experiment I found that with -j81 pahole works OK, but with -j82 or
-greater it crashes.
-
-  $ gdb -q --args pahole -J --btf_gen_floats -j111 --lang_exclude=rust .tmp_vmlinux.btf
-  Thread 15 "pahole" received signal SIGSEGV, Segmentation fault.
-  [Switching to Thread 0xda5ffb40 (LWP 3102466)]
-  0xf7f3c944 in btf_encoder__btf (encoder=0x0) at /usr/src/debug/dwarves-1.25/btf_encoder.c:1890
-  1890            return encoder->btf;
-  (gdb) bt
-  #0  0xf7f3c944 in btf_encoder__btf (encoder=0x0) at /usr/src/debug/dwarves-1.25/btf_encoder.c:1890
-  #1  0x5655c25d in pahole_stealer (cu=0xd9a01f80, conf_load=0x565640c0 <conf_load>, thr_data=0x56567c18) at /usr/src/debug/dwarves-1.25/pahole.c:3100
-  #2  0xf7f452d7 in cu__finalize (cu=cu@entry=0xd9a01f80, conf=0x565640c0 <conf_load>, thr_data=thr_data@entry=0x56567c18)
-      at /usr/src/debug/dwarves-1.25/dwarf_loader.c:3001
-  #3  0xf7f4541d in cus__finalize (thr_data=0x56567c18, conf=<optimized out>, cu=0xd9a01f80, cus=0x565651c0) at /usr/src/debug/dwarves-1.25/dwarf_loader.c:3008
-  #4  dwarf_cus__create_and_process_cu (dcus=dcus@entry=0xffffd19c, cu_die=cu_die@entry=0xda5ff38c, pointer_size=<optimized out>, thr_data=0x56567c18)
-      at /usr/src/debug/dwarves-1.25/dwarf_loader.c:3207
-  #5  0xf7f461af in dwarf_cus__process_cu_thread (arg=0xffffcbf8) at /usr/src/debug/dwarves-1.25/dwarf_loader.c:3250
-  #6  0xf7db4258 in start_thread (arg=<optimized out>) at pthread_create.c:444
-  #7  0xf7e3a878 in clone3 () from /lib/libc.so.6
-  (gdb) p encoder
-  $1 = (struct btf_encoder *) 0x0
-  (gdb) f 1
-  #1  0x5655c25d in pahole_stealer (cu=0xd9a01f80, conf_load=0x565640c0 <conf_load>, thr_data=0x56567c18) at /usr/src/debug/dwarves-1.25/pahole.c:3100
-  3100                                    thread->btf = btf_encoder__btf(thread->encoder);
-  (gdb) list -2
-  3093                                    thread->encoder =
-  3094                                            btf_encoder__new(cu, detached_btf_filename,
-  3095                                                             NULL,
-  3096                                                             skip_encoding_btf_vars,
-  3097                                                             btf_encode_force,
-  3098                                                             btf_gen_floats,
-  3099                                                             global_verbose);
-  3100                                    thread->btf = btf_encoder__btf(thread->encoder);
-  3101                            }
-  3102                            encoder = thread->encoder;
-
-I think that return value of btf_encoder__new is not checked. But did
-not investigate further why is this happening. It would be great to have
-this fixed.
-
-Thanks,
+I see. But in my understanding, for the global LRU list, the eviction
+(the invocation of htab_lru_map_delete_node) will be possible if the
+free element is less than LOCAL_FREE_TARGET(128) * nr_running_cpus. Now
+the number of free elements is 1000 as defined in __test(), the number
+of vCPU is 8 in my local VM setup (BPF CI also uses 8 vCPUs) and it is
+hard to trigger the eviction because 8 * 128 is roughly equal with 1000.
+So I suggest to decrease the number of free elements to 512 and the
+number of threads to 8, or adjust the number of running thread and free
+elements according to the number of online CPUs.
 
 
