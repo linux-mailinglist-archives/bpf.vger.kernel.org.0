@@ -1,176 +1,409 @@
-Return-Path: <bpf+bounces-4122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66CDF749070
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 23:58:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D60F7490F5
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 00:24:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BB6F281161
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 21:58:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ECBB1C20C0A
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 22:24:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A7115AC5;
-	Wed,  5 Jul 2023 21:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DB6F15AC1;
+	Wed,  5 Jul 2023 22:24:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89335134C5;
-	Wed,  5 Jul 2023 21:58:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBE02C433C7;
-	Wed,  5 Jul 2023 21:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7291A134C5
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 22:24:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65BF7C433C7;
+	Wed,  5 Jul 2023 22:24:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688594285;
-	bh=JlErKO6ytzrETfJF10RJ07fFyXoxaUt5+ApLH28Eksk=;
-	h=Subject:From:To:Date:In-Reply-To:References:From;
-	b=ox9UCUOCrMoArAN2UWINeG7QvaXvn/rW6VX3bNg/iJYSvDmftw/A4NpK1NYTdX1NF
-	 gVgMoqKe4Wy+YcaUy/Dyaq00MJKT04z3nDqfKuQM4SFZsRbASIDWrt/F1bfZ/Sk9IA
-	 IlCUdLT6kxy2jL8SF3nViHjnNHXzs55XV4F3VEYsgVxzqxUcCiE9JSR2Z8IfDFpjTE
-	 aAs5GOvVMsx8Eye0YwI4OGGuVtit0IDRpyx+/wLT78cg1mMMLjGSPd8pWmdQxt1+Az
-	 UpvwRSPwHQIIqvl4d9BIKKNlv96fZDtb/zFnJIHpMrXV8Xk+YsvNrTXbO+lqW0MMpc
-	 fXzU6mvU9YhKA==
-Message-ID: <a4e6cfec345487fc9ac8ab814a817c79a61b123a.camel@kernel.org>
-Subject: Re: [PATCH v2 00/89] fs: new accessors for inode->i_ctime
-From: Jeff Layton <jlayton@kernel.org>
-To: jk@ozlabs.org, arnd@arndb.de, mpe@ellerman.id.au, npiggin@gmail.com, 
- christophe.leroy@csgroup.eu, hca@linux.ibm.com, gor@linux.ibm.com, 
- agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, 
- gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
- maco@android.com,  joel@joelfernandes.org, brauner@kernel.org,
- cmllamas@google.com, surenb@google.com, 
- dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca, leon@kernel.org, 
- bwarrum@linux.ibm.com, rituagar@linux.ibm.com, ericvh@kernel.org,
- lucho@ionkov.net,  asmadeus@codewreck.org, linux_oss@crudebyte.com,
- dsterba@suse.com,  dhowells@redhat.com, marc.dionne@auristor.com,
- viro@zeniv.linux.org.uk,  raven@themaw.net, luisbg@kernel.org,
- salah.triki@gmail.com,  aivazian.tigran@gmail.com, ebiederm@xmission.com,
- keescook@chromium.org,  clm@fb.com, josef@toxicpanda.com,
- xiubli@redhat.com, idryomov@gmail.com,  jaharkes@cs.cmu.edu,
- coda@cs.cmu.edu, jlbec@evilplan.org, hch@lst.de,  nico@fluxnic.net,
- rafael@kernel.org, code@tyhicks.com, ardb@kernel.org,  xiang@kernel.org,
- chao@kernel.org, huyue2@coolpad.com, jefflexu@linux.alibaba.com, 
- linkinjeon@kernel.org, sj1557.seo@samsung.com, jack@suse.com,
- tytso@mit.edu,  adilger.kernel@dilger.ca, jaegeuk@kernel.org,
- hirofumi@mail.parknet.co.jp,  miklos@szeredi.hu, rpeterso@redhat.com,
- agruenba@redhat.com, richard@nod.at,  anton.ivanov@cambridgegreys.com,
- johannes@sipsolutions.net,  mikulas@artax.karlin.mff.cuni.cz,
- mike.kravetz@oracle.com, muchun.song@linux.dev,  dwmw2@infradead.org,
- shaggy@kernel.org, tj@kernel.org,  trond.myklebust@hammerspace.com,
- anna@kernel.org, chuck.lever@oracle.com,  neilb@suse.de, kolga@netapp.com,
- Dai.Ngo@oracle.com, tom@talpey.com,  konishi.ryusuke@gmail.com,
- anton@tuxera.com,  almaz.alexandrovich@paragon-software.com,
- mark@fasheh.com,  joseph.qi@linux.alibaba.com, me@bobcopeland.com,
- hubcap@omnibond.com,  martin@omnibond.com, amir73il@gmail.com,
- mcgrof@kernel.org, yzaikin@google.com,  tony.luck@intel.com,
- gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,  pc@manguebit.com,
- lsahlber@redhat.com, sprasad@microsoft.com,  senozhatsky@chromium.org,
- phillip@squashfs.org.uk, rostedt@goodmis.org,  mhiramat@kernel.org,
- dushistov@mail.ru, hdegoede@redhat.com, djwong@kernel.org, 
- dlemoal@kernel.org, naohiro.aota@wdc.com, jth@kernel.org, ast@kernel.org, 
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org,  yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com,  haoluo@google.com, jolsa@kernel.org, hughd@google.com,
- akpm@linux-foundation.org,  davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com,  john.johansen@canonical.com,
- paul@paul-moore.com, jmorris@namei.org,  serge@hallyn.com,
- stephen.smalley.work@gmail.com, eparis@parisplace.org,  jgross@suse.com,
- stern@rowland.harvard.edu, lrh2000@pku.edu.cn, 
- sebastian.reichel@collabora.com, wsa+renesas@sang-engineering.com, 
- quic_ugoswami@quicinc.com, quic_linyyuan@quicinc.com, john@keeping.me.uk, 
- error27@gmail.com, quic_uaggarwa@quicinc.com, hayama@lineo.co.jp,
- jomajm@gmail.com,  axboe@kernel.dk, dhavale@google.com,
- dchinner@redhat.com, hannes@cmpxchg.org,  zhangpeng362@huawei.com,
- slava@dubeyko.com, gargaditya08@live.com, 
- penguin-kernel@I-love.SAKURA.ne.jp, yifeliu@cs.stonybrook.edu, 
- madkar@cs.stonybrook.edu, ezk@cs.stonybrook.edu, yuzhe@nfschina.com, 
- willy@infradead.org, okanatov@gmail.com, jeffxu@chromium.org,
- linux@treblig.org,  mirimmad17@gmail.com, yijiangshan@kylinos.cn,
- yang.yang29@zte.com.cn,  xu.xin16@zte.com.cn, chengzhihao1@huawei.com,
- shr@devkernel.io,  Liam.Howlett@Oracle.com, adobriyan@gmail.com,
- chi.minghao@zte.com.cn,  roberto.sassu@huawei.com, linuszeng@tencent.com,
- bvanassche@acm.org,  zohar@linux.ibm.com, yi.zhang@huawei.com,
- trix@redhat.com, fmdefrancesco@gmail.com,  ebiggers@google.com,
- princekumarmaurya06@gmail.com, chenzhongjin@huawei.com,  riel@surriel.com,
- shaozhengchao@huawei.com, jingyuwang_vip@163.com, 
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, 
- linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
- linux-fsdevel@vger.kernel.org,  linux-afs@lists.infradead.org,
- autofs@vger.kernel.org, linux-mm@kvack.org,  linux-btrfs@vger.kernel.org,
- ceph-devel@vger.kernel.org,  codalist@coda.cs.cmu.edu,
- ecryptfs@vger.kernel.org, linux-efi@vger.kernel.org, 
- linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
- linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, 
- linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, 
- jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, 
- linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, 
- ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
- linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, 
- linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org, 
- reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org, 
- samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org, 
- linux-xfs@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
- apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
- selinux@vger.kernel.org
-Date: Wed, 05 Jul 2023 17:57:46 -0400
-In-Reply-To: <20230705185812.579118-1-jlayton@kernel.org>
-References: <20230705185812.579118-1-jlayton@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=k20201202; t=1688595841;
+	bh=7HeBDOa/LX+W3drzDFVFH2u+XTBdq1prz5VSNxFOvwA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O7zynVxe6Eac6BpYL1V1McKGBDINZNGEmPRkwUM8Qdqe6S3t0I81z9Rh4Dt+xQiWr
+	 8eDkRvOMprfm9HJ7kyDg8trIwwbKj2aWoTc0+1N9ccYUKnIXXmyxZ9z1u/M7X5b6ut
+	 ymMliGEPk4zNTszi/vhyCc5xbb0M55FGrm+qpB9d0Z7C545SoRza5W2SDx9IPy/47B
+	 jSgo2X+UHyiShANFhNBdP7fla1hIC5OIZS4tUySBZo67nqB1QXB6Zs1t6svEmeeaqI
+	 s/nfTdp2IcR30cXGYF6Xzc6fL5FlBeN62KkB3RTIbEozMEFI2u/yLc4yLsRoSWqycT
+	 K4Z14r9HNnGnA==
+Date: Thu, 6 Jul 2023 00:23:57 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+	bpf@vger.kernel.org, x86@kernel.org,
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Juerg Haefliger <juerg.haefliger@canonical.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
+	Chuang Wang <nashuiliang@gmail.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Petr Mladek <pmladek@suse.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+	Julian Pidancet <julian.pidancet@oracle.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH 11/14] context-tracking: Introduce work deferral
+ infrastructure
+Message-ID: <ZKXtfWZiM66dK5xC@localhost.localdomain>
+References: <20230705181256.3539027-1-vschneid@redhat.com>
+ <20230705181256.3539027-12-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230705181256.3539027-12-vschneid@redhat.com>
 
-On Wed, 2023-07-05 at 14:58 -0400, Jeff Layton wrote:
-> v2:
-> - prepend patches to add missing ctime updates
-> - add simple_rename_timestamp helper function
-> - rename ctime accessor functions as inode_get_ctime/inode_set_ctime_*
-> - drop individual inode_ctime_set_{sec,nsec} helpers
->=20
-> I've been working on a patchset to change how the inode->i_ctime is
-> accessed in order to give us conditional, high-res timestamps for the
-> ctime and mtime. struct timespec64 has unused bits in it that we can use
-> to implement this. In order to do that however, we need to wrap all
-> accesses of inode->i_ctime to ensure that bits used as flags are
-> appropriately handled.
->=20
-> The patchset starts with reposts of some missing ctime updates that I
-> spotted in the tree. It then adds a new helper function for updating the
-> timestamp after a successful rename, and new ctime accessor
-> infrastructure.
->=20
-> The bulk of the patchset is individual conversions of different
-> subsysteme to use the new infrastructure. Finally, the patchset renames
-> the i_ctime field to __i_ctime to help ensure that I didn't miss
-> anything.
->=20
-> This should apply cleanly to linux-next as of this morning.
->=20
-> Most of this conversion was done via 5 different coccinelle scripts, run
-> in succession, with a large swath of by-hand conversions to clean up the
-> remainder.
->=20
+Le Wed, Jul 05, 2023 at 07:12:53PM +0100, Valentin Schneider a écrit :
+> +bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
+> +{
+> +	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
+> +	unsigned int old_work;
+> +	bool ret = false;
+> +
+> +	preempt_disable();
+> +
+> +	old_work = atomic_read(&ct->work);
+> +	/*
+> +	 * Try setting the work until either
+> +	 * - the target CPU no longer accepts any more deferred work
+> +	 * - the work has been set
+> +	 */
+> +	while (!(old_work & CONTEXT_WORK_DISABLED) && !ret)
 
-A couple of other things I should note:
+Isn't there a race here where you may have missed a CPU that just entered in
+user and you eventually disturb it?
 
-If you sent me an Acked-by or Reviewed-by in the previous set, then I
-tried to keep it on the patch here, since the respun patches are mostly
-just renaming stuff from v1. Let me know if I've missed any.
+> +		ret = atomic_try_cmpxchg(&ct->work, &old_work, old_work | work);
+> +
+> +	preempt_enable();
+> +	return ret;
+> +}
+[...]
+> @@ -100,14 +158,19 @@ static noinstr void ct_kernel_exit_state(int offset)
+>   */
+>  static noinstr void ct_kernel_enter_state(int offset)
+>  {
+> +	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
+>  	int seq;
+> +	unsigned int work;
+>  
+> +	work = ct_work_fetch(ct);
 
-I've also pushed the pile to my tree as this tag:
+So this adds another fully ordered operation on user <-> kernel transition.
+How many such IPIs can we expect?
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git/tag/?=
-h=3Dctime.20230705
+If this is just about a dozen, can we stuff them in the state like in the
+following? We can potentially add more of them especially on 64 bits we could
+afford 30 different works, this is just shrinking the RCU extended quiescent
+state counter space. Worst case that can happen is that RCU misses 65535
+idle/user <-> kernel transitions and delays a grace period...
 
-In case that's easier to work with.
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 205fd23e0cad..e453e9fb864b 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -851,6 +851,15 @@ config HAVE_CONTEXT_TRACKING_USER_OFFSTACK
+ 	  - No use of instrumentation, unless instrumentation_begin() got
+ 	    called.
+ 
++config HAVE_CONTEXT_TRACKING_WORK
++	bool
++	help
++	  Architecture supports deferring work while not in kernel context.
++	  This is especially useful on setups with isolated CPUs that might
++	  want to avoid being interrupted to perform housekeeping tasks (for
++	  ex. TLB invalidation or icache invalidation). The housekeeping
++	  operations are performed upon re-entering the kernel.
++
+ config HAVE_TIF_NOHZ
+ 	bool
+ 	help
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 53bab123a8ee..490c773105c0 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -197,6 +197,7 @@ config X86
+ 	select HAVE_CMPXCHG_LOCAL
+ 	select HAVE_CONTEXT_TRACKING_USER		if X86_64
+ 	select HAVE_CONTEXT_TRACKING_USER_OFFSTACK	if HAVE_CONTEXT_TRACKING_USER
++	select HAVE_CONTEXT_TRACKING_WORK		if X86_64
+ 	select HAVE_C_RECORDMCOUNT
+ 	select HAVE_OBJTOOL_MCOUNT		if HAVE_OBJTOOL
+ 	select HAVE_OBJTOOL_NOP_MCOUNT		if HAVE_OBJTOOL_MCOUNT
+diff --git a/arch/x86/include/asm/context_tracking_work.h b/arch/x86/include/asm/context_tracking_work.h
+new file mode 100644
+index 000000000000..5bc29e6b2ed3
+--- /dev/null
++++ b/arch/x86/include/asm/context_tracking_work.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_X86_CONTEXT_TRACKING_WORK_H
++#define _ASM_X86_CONTEXT_TRACKING_WORK_H
++
++static __always_inline void arch_context_tracking_work(int work)
++{
++	switch (work) {
++	case CONTEXT_WORK_n:
++		// Do work...
++		break;
++	}
++}
++
++#endif
+diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
+index d3cbb6c16bab..333b26d7cbe5 100644
+--- a/include/linux/context_tracking.h
++++ b/include/linux/context_tracking.h
+@@ -5,6 +5,7 @@
+ #include <linux/sched.h>
+ #include <linux/vtime.h>
+ #include <linux/context_tracking_state.h>
++#include <linux/context_tracking_work.h>
+ #include <linux/instrumentation.h>
+ 
+ #include <asm/ptrace.h>
+@@ -75,7 +76,7 @@ static inline void exception_exit(enum ctx_state prev_ctx)
+ static __always_inline bool context_tracking_guest_enter(void)
+ {
+ 	if (context_tracking_enabled())
+-		__ct_user_enter(CONTEXT_GUEST);
++		__ct_user_enter(CONTEXT_USER);
+ 
+ 	return context_tracking_enabled_this_cpu();
+ }
+@@ -83,7 +84,7 @@ static __always_inline bool context_tracking_guest_enter(void)
+ static __always_inline void context_tracking_guest_exit(void)
+ {
+ 	if (context_tracking_enabled())
+-		__ct_user_exit(CONTEXT_GUEST);
++		__ct_user_exit(CONTEXT_USER);
+ }
+ 
+ #define CT_WARN_ON(cond) WARN_ON(context_tracking_enabled() && (cond))
+@@ -122,6 +123,26 @@ static __always_inline bool rcu_dynticks_curr_cpu_in_eqs(void)
+ 	return !(arch_atomic_read(this_cpu_ptr(&context_tracking.state)) & RCU_DYNTICKS_IDX);
+ }
+ 
++/*
++ * Increment the current CPU's context_tracking structure's ->state field
++ * with ordering and clear the work bits.  Return the new value.
++ */
++static __always_inline unsigned long ct_state_inc_clear_work(int incby)
++{
++	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
++	unsigned long new, old, state;
++
++	state = arch_atomic_read(&ct->state);
++	do {
++		old = state;
++		new = old & ~CONTEXT_WORK_MASK;
++		new += incby;
++		state = arch_atomic_cmpxchg(&ct->state, old, new);
++	} while (old != state);
++
++	return state;
++}
++
+ /*
+  * Increment the current CPU's context_tracking structure's ->state field
+  * with ordering.  Return the new value.
+diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
+index fdd537ea513f..ec3d172601c5 100644
+--- a/include/linux/context_tracking_state.h
++++ b/include/linux/context_tracking_state.h
+@@ -10,14 +10,19 @@
+ #define DYNTICK_IRQ_NONIDLE	((LONG_MAX / 2) + 1)
+ 
+ enum ctx_state {
++	/* Following are values */
+ 	CONTEXT_DISABLED	= -1,	/* returned by ct_state() if unknown */
+ 	CONTEXT_KERNEL		= 0,
+ 	CONTEXT_IDLE		= 1,
+ 	CONTEXT_USER		= 2,
+-	CONTEXT_GUEST		= 3,
+-	CONTEXT_MAX		= 4,
++	/* Following are bit numbers */
++	CONTEXT_WORK		= 2,
++	CONTEXT_MAX		= 16,
+ };
+ 
++#define CONTEXT_MASK (BIT(CONTEXT_WORK) - 1)
++#define CONTEXT_WORK_MASK ((BIT(CONTEXT_MAX) - 1) & ~(BIT(CONTEXT_WORK) - 1))
++
+ /* Even value for idle, else odd. */
+ #define RCU_DYNTICKS_IDX CONTEXT_MAX
+ 
+diff --git a/include/linux/context_tracking_work.h b/include/linux/context_tracking_work.h
+new file mode 100644
+index 000000000000..fb74db8876dd
+--- /dev/null
++++ b/include/linux/context_tracking_work.h
+@@ -0,0 +1,26 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_CONTEXT_TRACKING_WORK_H
++#define _LINUX_CONTEXT_TRACKING_WORK_H
++
++#include <linux/bitops.h>
++
++enum {
++	CONTEXT_WORK_n_OFFSET,
++	CONTEXT_WORK_MAX_OFFSET
++};
++
++enum ct_work {
++	CONTEXT_WORK_n        = BIT(CONTEXT_WORK_n_OFFSET),
++	CONTEXT_WORK_MAX      = BIT(CONTEXT_WORK_MAX_OFFSET)
++};
++
++#include <asm/context_tracking_work.h>
++
++#ifdef CONFIG_CONTEXT_TRACKING_WORK
++extern bool ct_set_cpu_work(unsigned int cpu, unsigned int work);
++#else
++static inline bool
++ct_set_cpu_work(unsigned int cpu, unsigned int work) { return false; }
++#endif
++
++#endif
+diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
+index a09f1c19336a..732042b9a7b7 100644
+--- a/kernel/context_tracking.c
++++ b/kernel/context_tracking.c
+@@ -72,6 +72,58 @@ static __always_inline void rcu_dynticks_task_trace_exit(void)
+ #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+ }
+ 
++#ifdef CONFIG_CONTEXT_TRACKING_WORK
++static noinstr void ct_work_flush(unsigned long seq)
++{
++	unsigned int bit;
++	/*
++	 * arch_context_tracking_work() must be noinstr, non-blocking,
++	 * and NMI safe.
++	 */
++	for_each_set_bit(bit, &seq, CONTEXT_MAX)
++		arch_context_tracking_work(BIT(bit) >> CONTEXT_WORK);
++}
++
++bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
++{
++	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
++	unsigned int old, new, state;
++	bool ret = false;
++
++	preempt_disable();
++
++	work <<= CONTEXT_WORK;
++	state = atomic_read(&ct->state);
++	/*
++	 * Try setting the work until either
++	 * - the target CPU is on the kernel
++	 * - the work has been set
++	 */
++	for (;;) {
++		/* Only set if running in user/guest */
++		old = state;
++		old &= ~CONTEXT_MASK;
++		old |= CONTEXT_USER;
++
++		new = old | work;
++
++		state = atomic_cmpxchg(&ct->state, old, new);
++		if (state & work) {
++			ret = true;
++			break;
++		}
++
++		if ((state & CONTEXT_MASK) != CONTEXT_USER)
++			break;
++	}
++
++	preempt_enable();
++	return ret;
++}
++#else
++static __always_inline void ct_work_flush(unsigned long seq) { }
++#endif
++
+ /*
+  * Record entry into an extended quiescent state.  This is only to be
+  * called when not already in an extended quiescent state, that is,
+@@ -100,14 +152,18 @@ static noinstr void ct_kernel_exit_state(int offset)
+  */
+ static noinstr void ct_kernel_enter_state(int offset)
+ {
+-	int seq;
++	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
++	unsigned long seq;
+ 
+ 	/*
+ 	 * CPUs seeing atomic_add_return() must see prior idle sojourns,
+ 	 * and we also must force ordering with the next RCU read-side
+ 	 * critical section.
+ 	 */
+-	seq = ct_state_inc(offset);
++	seq = ct_state_inc_clear_work(offset);
++	if (seq & CONTEXT_WORK_MASK)
++		ct_work_flush(seq & CONTEXT_WORK_MASK);
++
+ 	// RCU is now watching.  Better not be in an extended quiescent state!
+ 	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & RCU_DYNTICKS_IDX));
+diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
+index bae8f11070be..fdb266f2d774 100644
+--- a/kernel/time/Kconfig
++++ b/kernel/time/Kconfig
+@@ -181,6 +181,11 @@ config CONTEXT_TRACKING_USER_FORCE
+ 	  Say N otherwise, this option brings an overhead that you
+ 	  don't want in production.
+ 
++config CONTEXT_TRACKING_WORK
++	bool
++	depends on HAVE_CONTEXT_TRACKING_WORK && CONTEXT_TRACKING_USER
++	default y
++
+ config NO_HZ
+ 	bool "Old Idle dynticks config"
+ 	help
+-- 
+2.40.1
 
-Cheers,
---=20
-Jeff Layton <jlayton@kernel.org>
 
