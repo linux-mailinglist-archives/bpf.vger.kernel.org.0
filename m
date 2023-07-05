@@ -1,350 +1,176 @@
-Return-Path: <bpf+bounces-4121-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4122-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ADC9748FF9
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 23:39:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66CDF749070
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 23:58:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1BA61C20BF4
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 21:39:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BB6F281161
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 21:58:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B0D156EA;
-	Wed,  5 Jul 2023 21:39:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A7115AC5;
+	Wed,  5 Jul 2023 21:58:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0367134C5
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 21:39:00 +0000 (UTC)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E7F1998;
-	Wed,  5 Jul 2023 14:38:58 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbc0981755so20745e9.1;
-        Wed, 05 Jul 2023 14:38:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688593136; x=1691185136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M2I0VJr35Z/Q2tTn0hViB65Znz9W/ziy02XlIsMkjvc=;
-        b=dKieTbs8RvKcL8Sc7i8rk6auEIvOPxdNUZAR6TGW8ikDlAwS4EOoXXTQUJbobmPnh7
-         BixtizUzgBqTnbm7lJClw3A4jo5vlZyMJBCz+9KKupr06eusou38qyo8DwiLPiM9VJuM
-         A3yNeTDEkEOZC6aR9kmDyUIG92nZ7TcvJw0FQ1cAMriQUHfGkFPIIun3yNWbthItZsmc
-         NM9kVatyV6DbybBVBPkCeYCL6k30TBVGSKinBaai7MaJZwFheOhH1OGbSCPJ+wqghwBj
-         o/bZxBi+TM970TTFnAFTdEwfmcn4rFj4DJ1B8gX25UCH8ks1Jny7nDStN72Ic/L8UtKI
-         y1Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688593136; x=1691185136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M2I0VJr35Z/Q2tTn0hViB65Znz9W/ziy02XlIsMkjvc=;
-        b=PX8aEJWARc6OcXna8YlpRjIdslzxWILKq9yyju9yvQ3H2mDKSC11dOXyEOgaq3ays4
-         jd7wyZqzvUe3BdW1jhl+rtiDx6GtIFUAiUCBXIaVSgd14YxpaHDr//ehiLUTDHO22tgf
-         FuS4GRrCgRYTJgN7fsyjpXydrecMTX+Y9GWHF8PKcBJpeB+yeNxbzBAwZI9FItD+RaMF
-         ZWE5cR35w3YexVvZnskw8/PfO5yw20uSHRqownR6sqRGyQ8WveFjjYCJK0apQUGtQY/7
-         ri4Yaez1KcY4hSnmtlrLmFlIS3hPZeyZPLh9uVRTrYA4fhHP6ZBtAwTc11CA16qdWxZt
-         ssWg==
-X-Gm-Message-State: AC+VfDxWLjkzlQbl1WswNiQaXyr5q6/LoAJ+Jk2Ug3I27JUU1Q3rDKaX
-	5Ag9wT9B0r/2OvwmpKre3bOuOPSRLge7Mo8lDrHp6oKWUyyusQ==
-X-Google-Smtp-Source: ACHHUZ6xYLwn/pNc9ujh4axXDY35Lw8onVjSi5U4YXZtK62qL69GnnzBcK9GOFvfPaq9WkgA4lJVVGMya/Z30STHhJY=
-X-Received: by 2002:a05:600c:ac6:b0:3fb:b3aa:1c88 with SMTP id
- c6-20020a05600c0ac600b003fbb3aa1c88mr14494911wmr.26.1688593136118; Wed, 05
- Jul 2023 14:38:56 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89335134C5;
+	Wed,  5 Jul 2023 21:58:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBE02C433C7;
+	Wed,  5 Jul 2023 21:57:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688594285;
+	bh=JlErKO6ytzrETfJF10RJ07fFyXoxaUt5+ApLH28Eksk=;
+	h=Subject:From:To:Date:In-Reply-To:References:From;
+	b=ox9UCUOCrMoArAN2UWINeG7QvaXvn/rW6VX3bNg/iJYSvDmftw/A4NpK1NYTdX1NF
+	 gVgMoqKe4Wy+YcaUy/Dyaq00MJKT04z3nDqfKuQM4SFZsRbASIDWrt/F1bfZ/Sk9IA
+	 IlCUdLT6kxy2jL8SF3nViHjnNHXzs55XV4F3VEYsgVxzqxUcCiE9JSR2Z8IfDFpjTE
+	 aAs5GOvVMsx8Eye0YwI4OGGuVtit0IDRpyx+/wLT78cg1mMMLjGSPd8pWmdQxt1+Az
+	 UpvwRSPwHQIIqvl4d9BIKKNlv96fZDtb/zFnJIHpMrXV8Xk+YsvNrTXbO+lqW0MMpc
+	 fXzU6mvU9YhKA==
+Message-ID: <a4e6cfec345487fc9ac8ab814a817c79a61b123a.camel@kernel.org>
+Subject: Re: [PATCH v2 00/89] fs: new accessors for inode->i_ctime
+From: Jeff Layton <jlayton@kernel.org>
+To: jk@ozlabs.org, arnd@arndb.de, mpe@ellerman.id.au, npiggin@gmail.com, 
+ christophe.leroy@csgroup.eu, hca@linux.ibm.com, gor@linux.ibm.com, 
+ agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, 
+ gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+ maco@android.com,  joel@joelfernandes.org, brauner@kernel.org,
+ cmllamas@google.com, surenb@google.com, 
+ dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca, leon@kernel.org, 
+ bwarrum@linux.ibm.com, rituagar@linux.ibm.com, ericvh@kernel.org,
+ lucho@ionkov.net,  asmadeus@codewreck.org, linux_oss@crudebyte.com,
+ dsterba@suse.com,  dhowells@redhat.com, marc.dionne@auristor.com,
+ viro@zeniv.linux.org.uk,  raven@themaw.net, luisbg@kernel.org,
+ salah.triki@gmail.com,  aivazian.tigran@gmail.com, ebiederm@xmission.com,
+ keescook@chromium.org,  clm@fb.com, josef@toxicpanda.com,
+ xiubli@redhat.com, idryomov@gmail.com,  jaharkes@cs.cmu.edu,
+ coda@cs.cmu.edu, jlbec@evilplan.org, hch@lst.de,  nico@fluxnic.net,
+ rafael@kernel.org, code@tyhicks.com, ardb@kernel.org,  xiang@kernel.org,
+ chao@kernel.org, huyue2@coolpad.com, jefflexu@linux.alibaba.com, 
+ linkinjeon@kernel.org, sj1557.seo@samsung.com, jack@suse.com,
+ tytso@mit.edu,  adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+ hirofumi@mail.parknet.co.jp,  miklos@szeredi.hu, rpeterso@redhat.com,
+ agruenba@redhat.com, richard@nod.at,  anton.ivanov@cambridgegreys.com,
+ johannes@sipsolutions.net,  mikulas@artax.karlin.mff.cuni.cz,
+ mike.kravetz@oracle.com, muchun.song@linux.dev,  dwmw2@infradead.org,
+ shaggy@kernel.org, tj@kernel.org,  trond.myklebust@hammerspace.com,
+ anna@kernel.org, chuck.lever@oracle.com,  neilb@suse.de, kolga@netapp.com,
+ Dai.Ngo@oracle.com, tom@talpey.com,  konishi.ryusuke@gmail.com,
+ anton@tuxera.com,  almaz.alexandrovich@paragon-software.com,
+ mark@fasheh.com,  joseph.qi@linux.alibaba.com, me@bobcopeland.com,
+ hubcap@omnibond.com,  martin@omnibond.com, amir73il@gmail.com,
+ mcgrof@kernel.org, yzaikin@google.com,  tony.luck@intel.com,
+ gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,  pc@manguebit.com,
+ lsahlber@redhat.com, sprasad@microsoft.com,  senozhatsky@chromium.org,
+ phillip@squashfs.org.uk, rostedt@goodmis.org,  mhiramat@kernel.org,
+ dushistov@mail.ru, hdegoede@redhat.com, djwong@kernel.org, 
+ dlemoal@kernel.org, naohiro.aota@wdc.com, jth@kernel.org, ast@kernel.org, 
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org,  yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com,  haoluo@google.com, jolsa@kernel.org, hughd@google.com,
+ akpm@linux-foundation.org,  davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com,  john.johansen@canonical.com,
+ paul@paul-moore.com, jmorris@namei.org,  serge@hallyn.com,
+ stephen.smalley.work@gmail.com, eparis@parisplace.org,  jgross@suse.com,
+ stern@rowland.harvard.edu, lrh2000@pku.edu.cn, 
+ sebastian.reichel@collabora.com, wsa+renesas@sang-engineering.com, 
+ quic_ugoswami@quicinc.com, quic_linyyuan@quicinc.com, john@keeping.me.uk, 
+ error27@gmail.com, quic_uaggarwa@quicinc.com, hayama@lineo.co.jp,
+ jomajm@gmail.com,  axboe@kernel.dk, dhavale@google.com,
+ dchinner@redhat.com, hannes@cmpxchg.org,  zhangpeng362@huawei.com,
+ slava@dubeyko.com, gargaditya08@live.com, 
+ penguin-kernel@I-love.SAKURA.ne.jp, yifeliu@cs.stonybrook.edu, 
+ madkar@cs.stonybrook.edu, ezk@cs.stonybrook.edu, yuzhe@nfschina.com, 
+ willy@infradead.org, okanatov@gmail.com, jeffxu@chromium.org,
+ linux@treblig.org,  mirimmad17@gmail.com, yijiangshan@kylinos.cn,
+ yang.yang29@zte.com.cn,  xu.xin16@zte.com.cn, chengzhihao1@huawei.com,
+ shr@devkernel.io,  Liam.Howlett@Oracle.com, adobriyan@gmail.com,
+ chi.minghao@zte.com.cn,  roberto.sassu@huawei.com, linuszeng@tencent.com,
+ bvanassche@acm.org,  zohar@linux.ibm.com, yi.zhang@huawei.com,
+ trix@redhat.com, fmdefrancesco@gmail.com,  ebiggers@google.com,
+ princekumarmaurya06@gmail.com, chenzhongjin@huawei.com,  riel@surriel.com,
+ shaozhengchao@huawei.com, jingyuwang_vip@163.com, 
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, 
+ linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org,  linux-afs@lists.infradead.org,
+ autofs@vger.kernel.org, linux-mm@kvack.org,  linux-btrfs@vger.kernel.org,
+ ceph-devel@vger.kernel.org,  codalist@coda.cs.cmu.edu,
+ ecryptfs@vger.kernel.org, linux-efi@vger.kernel.org, 
+ linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
+ linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, 
+ linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, 
+ jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, 
+ linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, 
+ ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
+ linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, 
+ linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org, 
+ reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org, 
+ samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org, 
+ linux-xfs@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+ apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
+ selinux@vger.kernel.org
+Date: Wed, 05 Jul 2023 17:57:46 -0400
+In-Reply-To: <20230705185812.579118-1-jlayton@kernel.org>
+References: <20230705185812.579118-1-jlayton@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230629051832.897119-1-andrii@kernel.org> <20230629051832.897119-2-andrii@kernel.org>
- <20230704-hochverdient-lehne-eeb9eeef785e@brauner> <CAHC9VhTDocBCpNjdz1CoWM2DA76GYZmg31338DHePFGq_-ie-g@mail.gmail.com>
- <20230705-zyklen-exorbitant-4d54d2f220ad@brauner>
-In-Reply-To: <20230705-zyklen-exorbitant-4d54d2f220ad@brauner>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 5 Jul 2023 14:38:43 -0700
-Message-ID: <CAEf4Bza5mUou8nw1zjqFaCPPvfUNq-jpNp+y4DhMhhcXc5HwGg@mail.gmail.com>
-Subject: Re: [PATCH RESEND v3 bpf-next 01/14] bpf: introduce BPF token object
-To: Christian Brauner <brauner@kernel.org>
-Cc: Paul Moore <paul@paul-moore.com>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, keescook@chromium.org, 
-	lennart@poettering.net, cyphar@cyphar.com, luto@kernel.org, 
-	kernel-team@meta.com, sargun@sargun.me
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Wed, Jul 5, 2023 at 7:42=E2=80=AFAM Christian Brauner <brauner@kernel.or=
-g> wrote:
->
-> On Wed, Jul 05, 2023 at 10:16:13AM -0400, Paul Moore wrote:
-> > On Tue, Jul 4, 2023 at 8:44=E2=80=AFAM Christian Brauner <brauner@kerne=
-l.org> wrote:
-> > > On Wed, Jun 28, 2023 at 10:18:19PM -0700, Andrii Nakryiko wrote:
-> > > > Add new kind of BPF kernel object, BPF token. BPF token is meant to=
- to
-> > > > allow delegating privileged BPF functionality, like loading a BPF
-> > > > program or creating a BPF map, from privileged process to a *truste=
-d*
-> > > > unprivileged process, all while have a good amount of control over =
-which
-> > > > privileged operations could be performed using provided BPF token.
-> > > >
-> > > > This patch adds new BPF_TOKEN_CREATE command to bpf() syscall, whic=
-h
-> > > > allows to create a new BPF token object along with a set of allowed
-> > > > commands that such BPF token allows to unprivileged applications.
-> > > > Currently only BPF_TOKEN_CREATE command itself can be
-> > > > delegated, but other patches gradually add ability to delegate
-> > > > BPF_MAP_CREATE, BPF_BTF_LOAD, and BPF_PROG_LOAD commands.
-> > > >
-> > > > The above means that new BPF tokens can be created using existing B=
-PF
-> > > > token, if original privileged creator allowed BPF_TOKEN_CREATE comm=
-and.
-> > > > New derived BPF token cannot be more powerful than the original BPF
-> > > > token.
-> > > >
-> > > > Importantly, BPF token is automatically pinned at the specified loc=
-ation
-> > > > inside an instance of BPF FS and cannot be repinned using BPF_OBJ_P=
-IN
-> > > > command, unlike BPF prog/map/btf/link. This provides more control o=
-ver
-> > > > unintended sharing of BPF tokens through pinning it in another BPF =
-FS
-> > > > instances.
-> > > >
-> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > ---
-> > >
-> > > The main issue I have with the token approach is that it is a complet=
-ely
-> > > separate delegation vector on top of user namespaces. We mentioned th=
-is
-> > > duringthe conf and this was brought up on the thread here again as we=
-ll.
-> > > Imho, that's a problem both security-wise and complexity-wise.
-> > >
-> > > It's not great if each subsystem gets its own custom delegation
-> > > mechanism. This imposes such a taxing complexity on both kernel- and
-> > > userspace that it will quickly become a huge liability. So I would
-> > > really strongly encourage you to explore another direction.
+On Wed, 2023-07-05 at 14:58 -0400, Jeff Layton wrote:
+> v2:
+> - prepend patches to add missing ctime updates
+> - add simple_rename_timestamp helper function
+> - rename ctime accessor functions as inode_get_ctime/inode_set_ctime_*
+> - drop individual inode_ctime_set_{sec,nsec} helpers
+>=20
+> I've been working on a patchset to change how the inode->i_ctime is
+> accessed in order to give us conditional, high-res timestamps for the
+> ctime and mtime. struct timespec64 has unused bits in it that we can use
+> to implement this. In order to do that however, we need to wrap all
+> accesses of inode->i_ctime to ensure that bits used as flags are
+> appropriately handled.
+>=20
+> The patchset starts with reposts of some missing ctime updates that I
+> spotted in the tree. It then adds a new helper function for updating the
+> timestamp after a successful rename, and new ctime accessor
+> infrastructure.
+>=20
+> The bulk of the patchset is individual conversions of different
+> subsysteme to use the new infrastructure. Finally, the patchset renames
+> the i_ctime field to __i_ctime to help ensure that I didn't miss
+> anything.
+>=20
+> This should apply cleanly to linux-next as of this morning.
+>=20
+> Most of this conversion was done via 5 different coccinelle scripts, run
+> in succession, with a large swath of by-hand conversions to clean up the
+> remainder.
+>=20
 
-Alright, thanks a lot for elaborating. I did want to keep everything
-contained to bpf() for various reasons, but it seems like I won't be
-able to get away with this. :)
+A couple of other things I should note:
 
-> > >
-> > > I do think the spirit of your proposal is workable and that it can
-> > > mostly be kept in tact.
+If you sent me an Acked-by or Reviewed-by in the previous set, then I
+tried to keep it on the patch here, since the respun patches are mostly
+just renaming stuff from v1. Let me know if I've missed any.
 
-It's good to know that at least conceptually you support the idea of
-BPF delegation. I have a few more specific questions below and I'd
-appreciate your answers, as I have less familiarity with how exactly
-container managers do stuff at container bootstrapping stage.
+I've also pushed the pile to my tree as this tag:
 
-But first, let's try to get some tentative agreement on design before
-I go and implement the BPF-token-as-FS idea. I have basically just two
-gripes with exact details of what you are proposing, so let me explain
-which and why, and see if we can find some common ground.
+    https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git/tag/?=
+h=3Dctime.20230705
 
-First, the idea of coupling and bundling this "delegation" option with
-BPF FS doesn't feel right. BPF FS is just a container of BPF objects,
-so adding to it a new property of allowing to use privileged BPF
-functionality seems a bit off.
+In case that's easier to work with.
 
-Why not just create a new separate FS, let's code-name it "BPF Token
-FS" for now (naming suggestions are welcome). Such BPF Token FS would
-be dedicated to specifying everything about what's allowable through
-BPF, just like my BPF token implementation. It can then be
-mounted/bind-mounted inside BPF FS (or really, anywhere, it's just a
-FS, right?). User application would open it (I'm guessing with
-open_tree(), right?) and pass it as token_fd to bpf() syscall.
-
-Having it as a separate single-purpose FS seems cleaner, because we
-have use cases where we'd have one BPF FS instance created for a
-container by our container manager, and then exposing a few separate
-tokens with different sets of allowed functionality. E.g., one for
-main intended workload, another for some BPF-based observability
-tools, maybe yet another for more heavy-weight tools like bpftrace for
-extra debugging. In the debugging case our container infrastructure
-will be "evacuating" any other workloads on the same host to avoid
-unnecessary consequences. The point is to not disturb
-workload-under-human-debugging as much as possible, so we'd like to
-keep userns intact, which is why mounting extra (more permissive) BPF
-token inside already running containers is an important consideration.
-
-With such goals, it seems nicer to have a single BPF FS, and few BPF
-token FSs mounted inside it. Yes, we could bundle token functionality
-with BPF FS, but separating those two seems cleaner to me. WDYT?
-
-Second, mount options usage. I'm hearing stories from our production
-folks how some new mount options (on some other FS, not BPF FS) were
-breaking tools unintentionally during kernel/tooling
-upgrades/downgrades, so it makes me a bit hesitant to have these
-complicated sets of mount options to specify parameters of
-BPF-token-as-FS. I've been thinking a bit, and I'm starting to lean
-towards the idea of allowing to set up (and modify as well) all these
-allowed maps/progs/attach types through special auto-created files
-within BPF token FS. Something like below:
-
-# pwd
-/sys/fs/bpf/workload-token
-# ls
-allowed_cmds allowed_map_types allowed_prog_types allowed_attach_types
-# echo "BPF_PROG_LOAD" > allowed_cmds
-# echo "BPF_PROG_TYPE_KPROBE" >> allowed_prog_types
-...
-# cat allowed_prog_types
-BPF_PROG_TYPE_KPROBE,BPF_PROG_TYPE_TRACEPOINT
-
-
-The above is fake (I haven't implemented anything yet), but hopefully
-works as a demonstration. We'll also need to make sure that inside
-non-init userns these files are read-only or allow to just further
-restrict the subset of allowed functionality, never extend it.
-
-Such an approach will actually make it simpler to test and experiment
-with this delegation locally, will make it trivial to observe what's
-allowed from simple shell scripts, etc, etc. With fsmount() and O_PATH
-it will be possible to set everything up from privileged processes
-before ever exposing a BPF Token FS instance through a file system, if
-there are any concerns about racing with user space.
-
-That's the high-level approach I'm thinking of right now. Would that
-work? How critical is it to reuse BPF FS itself and how important to
-you is to rely on mount options vs special files as described above?
-Hopefully not critical, and I can start working on it, and we'll get
-what you want with using FS as a vehicle for delegation, while
-allowing some of the intended use cases that we have in mind in a bit
-cleaner fashion?
-
-> > >
-> > > As mentioned before, bpffs has all the means to be taught delegation:
-> > >
-> > >         // In container's user namespace
-> > >         fd_fs =3D fsopen("bpffs");
-> > >
-> > >         // Delegating task in host userns (systemd-bpfd whatever you =
-want)
-> > >         ret =3D fsconfig(fd_fs, FSCONFIG_SET_FLAG, "delegate", ...);
-> > >
-> > >         // In container's user namespace
-> > >         fd_mnt =3D fsmount(fd_fs, 0);
-> > >
-> > >         ret =3D move_mount(fd_fs, "", -EBADF, "/my/fav/location", MOV=
-E_MOUNT_F_EMPTY_PATH)
-> > >
-> > > Roughly, this would mean:
-> > >
-> > > (i) raise FS_USERNS_MOUNT on bpffs but guard it behind the "delegate"
-> > >     mount option. IOW, it's only possibly to mount bpffs as an
-> > >     unprivileged user if a delegating process like systemd-bpfd with
-> > >     system-level privileges has marked it as delegatable.
-
-Regarding the FS_USERNS_MOUNT flag and fsopen() happening from inside
-the user namespace. Am I missing something subtle and important here,
-why does it have to happen inside the container's user namespace?
-Can't the container manager both fsopen() and fsconfig() everything in
-host userns, and only then fsmount+move_mount inside the container's
-userns? Just trying to understand if there is some important early
-association of userns happening at early steps here?
-
-Also, in your example above, move_mount() should take fd_mnt, not fd_fs, ri=
-ght?
-
-> > > (ii) add fine-grained delegation options that you want this
-> > >      bpffs instance to allow via new mount options. Idk,
-> > >
-> > >      // allow usage of foo
-> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "foo");
-> > >
-> > >      // also allow usage of bar
-> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "bar");
-> > >
-> > >      // reset allowed options
-> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "");
-> > >
-> > >      // allow usage of schmoo
-> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "schmoo");
-> > >
-> > > This all seems more intuitive and integrates with user and mount
-> > > namespaces of the container. This can also work for restricting
-> > > non-userns bpf instances fwiw. You can also share instances via
-> > > bind-mount and so on. The userns of the bpffs instance can also be us=
-ed
-> > > for permission checking provided a given functionality has been
-> > > delegated by e.g., systemd-bpfd or whatever.
-> >
-> > I have no arguments against any of the above, and would prefer to see
-> > something like this over a token-based mechanism.  However we do want
-> > to make sure we have the proper LSM control points for either approach
-> > so that admins who rely on LSM-based security policies can manage
-> > delegation via their policies.
-> >
-> > Using the fsconfig() approach described by Christian above, I believe
-> > we should have the necessary hooks already in
-> > security_fs_context_parse_param() and security_sb_mnt_opts() but I'm
-> > basing that on a quick look this morning, some additional checking
-> > would need to be done.
->
-> I think what I outlined is even unnecessarily complicated. You don't
-> need that pointless "delegate" mount option at all actually. Permission
-> to delegate shouldn't be checked when the mount option is set. The
-> permissions should be checked when the superblock is created. That's the
-> right point in time. So sm like:
->
-
-I think this gets even more straightforward with BPF Token FS being a
-separate one, right? Given BPF Token FS is all about delegation, it
-has to be a privileged operation to even create it.
-
-> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-> index 4174f76133df..a2eb382f5457 100644
-> --- a/kernel/bpf/inode.c
-> +++ b/kernel/bpf/inode.c
-> @@ -746,6 +746,13 @@ static int bpf_fill_super(struct super_block *sb, st=
-ruct fs_context *fc)
->         struct inode *inode;
->         int ret;
->
-> +       /*
-> +        * If you want to delegate this instance then you need to be
-> +        * privileged and know what you're doing. This isn't trust.
-> +        */
-> +       if ((fc->user_ns !=3D &init_user_ns) && !capable(CAP_SYS_ADMIN))
-> +               return -EPERM;
-> +
->         ret =3D simple_fill_super(sb, BPF_FS_MAGIC, bpf_rfiles);
->         if (ret)
->                 return ret;
-> @@ -800,6 +807,7 @@ static struct file_system_type bpf_fs_type =3D {
->         .init_fs_context =3D bpf_init_fs_context,
->         .parameters     =3D bpf_fs_parameters,
->         .kill_sb        =3D kill_litter_super,
-> +       .fs_flags       =3D FS_USERNS_MOUNT,
-
-Just an aside thought. It doesn't seem like there is any reason why
-BPF FS right now is not created with FS_USERNS_MOUNT, so (separately
-from all this discussion) I suspect we can just make it
-FS_USERNS_MOUNT right now (unless we combine it with BPF-token-FS,
-then yeah, we can't do that unconditionally anymore). Given BPF FS is
-just a container of pinned BPF objects, just mounting BPF FS doesn't
-seem to be dangerous in any way. But that's just an aside thought
-here.
-
->  };
->
->  static int __init bpf_init(void)
->
-> In fact this is conceptually generalizable but I'd need to think about
-> that.
+Cheers,
+--=20
+Jeff Layton <jlayton@kernel.org>
 
