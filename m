@@ -1,260 +1,286 @@
-Return-Path: <bpf+bounces-4119-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4120-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A281C748F21
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 22:43:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 949C7748F7C
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 23:01:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 840C91C20C18
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 20:43:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B66091C20C20
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 21:01:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BFA914AA4;
-	Wed,  5 Jul 2023 20:43:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5191548F;
+	Wed,  5 Jul 2023 21:01:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2404C2F38
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 20:43:27 +0000 (UTC)
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C363A19B;
-	Wed,  5 Jul 2023 13:43:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=2uvD9mYwUyQ82PXrNwiJR0+WRJM0PQCF8y2F5N/cONE=; b=djk8cOqXqggfU6Ml1I4iR48Y7x
-	K1cf8UXkaxjEDlwcadptEwEIaddtNIkZ0QgDE05z3bHQsFK/T5BZk/A8EptDgFhNmtZxPrwNXlvJV
-	XqR9O+Eu8jaR3tznarXclGqLXhttQm8PKIkMB2RlU+j6j7xs3SRhCNvr1dqBVjy/o/qjV7pqiuzx2
-	dq1/AwZbWVkovVvjc8c9ypAE/fOd7iZIGqbxgefCqqqOg7/4r8r9OHqD5LuscwVdfRwKLVQhf60Zi
-	Es6WF26h4jXaLqFM+2HbZbyO0rrMU+w7jsQZkzWgNUV3/3f7udrqYKcc3yQc5ERx5e65xwVlGsfrz
-	w+G8Gp6w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1qH9Jr-00CFZa-24;
-	Wed, 05 Jul 2023 20:41:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(Client did not present a certificate)
-	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 32F36300023;
-	Wed,  5 Jul 2023 22:41:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 0F151200E5E98; Wed,  5 Jul 2023 22:41:43 +0200 (CEST)
-Date: Wed, 5 Jul 2023 22:41:42 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-	bpf@vger.kernel.org, x86@kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH 08/14] BROKEN: context_tracking: Make
- context_tracking_key __ro_after_init
-Message-ID: <20230705204142.GB2813335@hirez.programming.kicks-ass.net>
-References: <20230705181256.3539027-1-vschneid@redhat.com>
- <20230705181256.3539027-9-vschneid@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E8D14276
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 21:01:38 +0000 (UTC)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDFD1700
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 14:01:36 -0700 (PDT)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 813D1C1522AB
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 14:01:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1688590896; bh=NekCa60JuITBhpOV0TLCPTHTGoH7m8Hv1kknx5/sK10=;
+	h=To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:List-Post:
+	 List-Help:List-Subscribe:From;
+	b=HSfLM2j5Z0DGut60lHiOse/Q+FuoLo+LPl2Vr++vSNxrac3/jNY+ntSt5/iXisqtJ
+	 Svl+t3tSkfQo3+QUll1vBCqrTxcYr8Mx4dnn6TtjtroJad3Yu5mQj9MoAAhKdm3K4O
+	 CiQXCqASGev/Lycjc9MIO5wOSdXySH7g+cv04oZ8=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 50EBBC14CE3F;
+ Wed,  5 Jul 2023 14:01:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1688590896; bh=NekCa60JuITBhpOV0TLCPTHTGoH7m8Hv1kknx5/sK10=;
+ h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+ List-Post:List-Help:List-Subscribe;
+ b=iUWVwKIE3cNRHQkYUWgxrV5wM52zPFhkfqa/ueMztl1l8l7QRMg2ojWiFQ2RlT3JH
+ 8Qni8+yU3YlhhVJ8HQDq6HHDxsWH1XOaDocwaF0j4urt46z7Efyj7Z2DNascP9enqx
+ 9Ok14MD7yH8i71y3xu1dDjrcVgnNGEtn09SFsaic=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D5E7BC14CE3F
+ for <bpf@ietfa.amsl.com>; Wed,  5 Jul 2023 14:01:34 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -2.096
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HTML_MESSAGE,MAILING_LIST_MULTI,
+	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=microsoft.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Tli6LI5A1UUk for <bpf@ietfa.amsl.com>;
+ Wed,  5 Jul 2023 14:01:33 -0700 (PDT)
+Received: from BN3PR00CU001.outbound.protection.outlook.com
+ (mail-eastus2azon11020017.outbound.protection.outlook.com [52.101.56.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id E5195C14CF1E
+ for <bpf@ietf.org>; Wed,  5 Jul 2023 14:01:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l93dhD0oIaZBgxZgz0zyEYkym4oW233I0B4Ra2/URwr5j7LHOzxIlizaAq+YfJcZnA943JXxEJc9/iBzzn41EJKH17nMIk3tUwDpUQwOi8ofd32nGqzNAjV2PHO2oWMuu3Vy7Z8QxdfhtaGqJuMEEpS0Ofu9VIWpdgjH24r2OgsgDfi5K0Pqth9krT8xZOhgGLTKlg+QROKhXcMekU3LJhfq0iDKixl4XlAkPHnXCKaaLCeUGqIpXB4eFuw5iSUEJG2ZSoNveFlxN8m5TZoC4ExIsM74s0FJAoL8lQum2hVINxaI3WmcKTZzuHW49RfDpn4eX7iAmQQr0m3pfRHmRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MO/5jhRVbQkMlhOgEkEA1i4IAXM885JcfeSP4NF01rA=;
+ b=GMXFLfuMnFWOLmlVNqdu12gshoYdTgDp/QXAU9yyFIxLkGQV4h56sO6vOXMl9fveb0Fz5zgwpFjf/InvPUL20URoo7ZaGG0C1NQRApHTLxcdbA7PrmSpgwIcXgf3bWOe6HhnRH0RJSA3r2vJtLLBy8qIvmV238/J2/RKWVH08YT3GgyKNrXf7nbWG2q0YQuJ/OuCadLmSr2Dn3W+VVj+4zJA4RI7PsQKS6xS0Ik2FpxW9GKC1wtQBnwo4YOas+Rd9L5qsN+zxrPFqCjatQLT+s/rNd4lbwbrmpM0VBOuqYVZO33Z3qYVZ/SFUxK6g+G3w02NRmzG+9YFh8gIO7Kd5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MO/5jhRVbQkMlhOgEkEA1i4IAXM885JcfeSP4NF01rA=;
+ b=U0gDrWP6b/uwrX9tf9NOV8WXzO7d0jtYeXNV2VvxmVzRCFBi7v7MWI/btIZHSrVToSOn+TFDSVzvi179pkOLil4Y5Q666KHYLcOEamHtOgp0J7yjO6R4y+iycKicvBTOlTumzqyZVHPbE2g4bxbhq2wPh6V/0KT0s8+agLyX+/Y=
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
+ by CH2PR21MB1432.namprd21.prod.outlook.com (2603:10b6:610:84::16)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.11; Wed, 5 Jul
+ 2023 21:01:28 +0000
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::8708:6828:fb9f:7bd5]) by PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::8708:6828:fb9f:7bd5%4]) with mapi id 15.20.6544.010; Wed, 5 Jul 2023
+ 21:01:28 +0000
+To: bpf <bpf@vger.kernel.org>, "bpf@ietf.org" <bpf@ietf.org>
+Thread-Topic: IETF BPF blog
+Thread-Index: Admvg7T9pf8LUVH4Q2ugOXPk1CEBOA==
+Date: Wed, 5 Jul 2023 21:01:28 +0000
+Message-ID: <PH7PR21MB3878B9CB5354FA71EA90B87EA32FA@PH7PR21MB3878.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=08319211-83cb-4f3c-ae1c-d9a7ee430cb6;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-05T21:00:07Z; 
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|CH2PR21MB1432:EE_
+x-ms-office365-filtering-correlation-id: f0e06ce3-034a-44f8-e7f1-08db7d9b00a0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bMv+HimxoCHjAfzJNXF3HuYtLrn5JpkM5cMKxVGrE+ZrL3/S+VOlvScK3b+lQxxwzkOyIHobAPJ38kv/CjJ89eDEcaRr3jH1xnDEG4xv66GIk6ArOZsNYHwBqoCblTZcKarpeJMISgxVCwby8qFm2/KBXMCSTdKkK+qoh5li9LLP7fRUE5lyP4wp2dlc6Q8PypcIKy1qHm5pRVPMzPza3u2K6MOsO8reCfertnc1cnORc7FEqTfVG7kb0Mce/DdZlxuAJX1hFXDxGwBqJ1D7T+I3ljN70qrqWQ50CrB+VDE/1ATsbA/W64r1ijD8lG7k8l2riGVSDZfVbqJI7JCQLbzFlbufyhG2K0clK1sdbbnK/AMfa0OJBA51yEHSqr85hzjRXvASbs6KrbeqBQrgq0ULeoGwk4fFKUjOr5RwaE41IDmOZFLrEeDc9SfHnYIA7vIOK7RLA4xqP0uxfUiSGEuCZW7aqT54pXIZj4cubcEBTwxKq54Xx2BZ03G8GdGWsVUCcTABLwF069lhECs7DkSCA8QbjS/D3+FmbAOD79ZnSv2Z5POk5CfLWmyWUmFETJjuAvR0UVtt6ImnI6l41m6UgamWSZrRwuM4yyYa+F7G2b1ktB0HyTG8LjSOtRl7F4xu69mj+oznaBVgWyJOuQ==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
+ IPV:NLI; SFV:NSPM;
+ H:PH7PR21MB3878.namprd21.prod.outlook.com; PTR:; CAT:NONE; 
+ SFS:(13230028)(4636009)(396003)(376002)(346002)(136003)(366004)(39860400002)(451199021)(7696005)(10290500003)(478600001)(71200400001)(110136005)(33656002)(86362001)(38070700005)(166002)(3480700007)(55016003)(82960400001)(8990500004)(2906002)(9686003)(26005)(76116006)(6506007)(186003)(966005)(122000001)(38100700002)(82950400001)(64756008)(66946007)(316002)(66446008)(66476007)(66556008)(8676002)(41300700001)(558084003)(8936002)(5660300002)(7116003)(52536014);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TiyAcOY26MD0gwnkRp+uep+kmu56g9htWCkT+WWHd9hckTnNeOAPmdBUtN0g?=
+ =?us-ascii?Q?CmZFFsJg0xEl5pN3qPUFmBUTOccL4CJA61ciZbXDBf2A4tgux4C9QCKh5dEi?=
+ =?us-ascii?Q?ncCWDmmfUWToJPydpkthkg525RCK3MODynLff2srLyqwiIYPyWxykIyUmS+w?=
+ =?us-ascii?Q?ZaUyR9PsULT83ynA1bEm8SLGrk9sUEjBskqJLf51bbgNFhngxz03QFfPIoFD?=
+ =?us-ascii?Q?L2ISMil/WCsouVvKLNQBIX8/6Y5psjm5Qw4U7VIwY8R4ZVI2oE0l8Y6+ezWr?=
+ =?us-ascii?Q?rd1R9+Aw4AK1xWa6gPsxXlQ+P+crIax3X/0slBJBjGoMr+WI8uphQmWReXiR?=
+ =?us-ascii?Q?EhFNcRQY3M8zra14nOz6qng/a/sOvs7FwxvyTWvHkq28VsFfiawzbh1bVHXc?=
+ =?us-ascii?Q?dEKTuW6oc68EgTAqe/m+TeIe9x/ejO9VA8FA30XRzjYcRvG5iCfTvsoBx13n?=
+ =?us-ascii?Q?gLPkP9WmcigKcbMfwwrB7PFNPiLQ5una8fpKiUkIbiIfghbat4UNa7WAidK2?=
+ =?us-ascii?Q?buYHijT0UvHK3RUStd0/BVtnMZZ4EPgPrDNT3D89HswGA3CjIxSpz+z0tmf0?=
+ =?us-ascii?Q?wcA2kqL2suCBMOZy/Evf9+yHzLSDJ+pvT9LtIFImrfDXJvbX+o//3mXAESBL?=
+ =?us-ascii?Q?f9wTT7sewMTIRACTa+CSvzy8gw2qVzCgwW9FSgFMN/BT9CEkpG1/MHOEnAF9?=
+ =?us-ascii?Q?ORR/yoJnhQqJKTsHkCTrGg9HesFjXlaNSvOCgDHhVDJfSmmis/MnHVWiSclz?=
+ =?us-ascii?Q?p8sVYLxnTZ62vPgSXH39DpoVngFxvhJ3nelU8cccHrSnyEx2QdsR7dIZlPFf?=
+ =?us-ascii?Q?WXe6xx4T2JWSqrsG3ivnEJ3wTY3UmkAurHA83uelV72RRMGrF7hOj0TidZgL?=
+ =?us-ascii?Q?h+o1+6QA/iq7J8UZUWS7oPvQhTA+gdg+eZLNYmrZnuRxZL1r8LY3gBmVyQdL?=
+ =?us-ascii?Q?8ROdpq4paWWx5qiLSnW10UwBFwTvGd28vOSJQCbKFfpid45C2xXAnEiXlhBJ?=
+ =?us-ascii?Q?LMgtpR3aOxlSCFj/fihQ/+ecs/p0I0XneB3NdTqrprevS0g04tO0KFk+8n/x?=
+ =?us-ascii?Q?RqYQiYCTSpI5j3u0ZOF4Lqfz+Y3bVfCKSYdqP6e5nA8QXMzo/9rNtGPp2CdN?=
+ =?us-ascii?Q?gPvX8hLpEHfWPjFpoxMdCwYuLrsRIBkY/MpY2CLgM/jCLl/F3HWjMsJkeX2S?=
+ =?us-ascii?Q?3fmRolZYgC261VkAE+PHaRU/oo3jgmiwj5e51G2OUxr5w+9mTuGkSVkv09kP?=
+ =?us-ascii?Q?P6mQ7f7w1jvtittHnQgQ3MKXPJkHZrkhB8Bkpz4/+zTuc9u1bNbXAh3q1aOn?=
+ =?us-ascii?Q?EB3IX4Gf5JzVlim+ARYhEcz9ieI2nKlHbGx5H++Lfz6cm6rzTTJuTOfbm7lV?=
+ =?us-ascii?Q?cq26Ew1jc+r/MSW+japjtYtcQk4v5YNryjNlEiqNG9ZfT2IzkFxsbxhor/h4?=
+ =?us-ascii?Q?hSIPchcazkglpfOLJ0WvuRfZe2k9VHifQ7DTvPgb1b4yRBi50JqbywesXyHX?=
+ =?us-ascii?Q?F+Xv+s1p/JL9nG+IPh5qnqr8OZt7vPkBnzoETm6OPtplkIwarj0cFMvn+ADS?=
+ =?us-ascii?Q?o+W4wsz89irO9nPiMJnpTZ/VHEEvrSo1zrLsuCEfVo4N5pFUTUdawVqYVDGi?=
+ =?us-ascii?Q?jA=3D=3D?=
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230705181256.3539027-9-vschneid@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-	SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0e06ce3-034a-44f8-e7f1-08db7d9b00a0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jul 2023 21:01:28.6665 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TSLP2gDD1YKEY/ahSdPCUtYxkel35xW+IIkr4Gz6E8d2FZ+miOhipNO7DzvtiZUuMPRElpi/2vgnEBSJAQ/FCx/aZ0Ddeoo/8tx4Dvk1Hww=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR21MB1432
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/L-bKmzj-i1T5LWkyaBaT8_s86vk>
+Subject: [Bpf] IETF BPF blog
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
+ <bpf.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
+ <mailto:bpf-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
+ <mailto:bpf-request@ietf.org?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============0931635130572195107=="
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Original-From: Dave Thaler <dthaler@microsoft.com>
+From: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jul 05, 2023 at 07:12:50PM +0100, Valentin Schneider wrote:
+--===============0931635130572195107==
+Content-Language: en-US
+Content-Type: multipart/alternative;
+ boundary="_000_PH7PR21MB3878B9CB5354FA71EA90B87EA32FAPH7PR21MB3878namp_"
 
-> BROKEN: the struct static_key lives in a read-only mapping after
-> mark_rodata_ro(), which falls apart when the KVM module is loaded after
-> init and a write to the struct happens due to e.g. guest_state_exit_irqoff()
-> relying on the static key:
+--_000_PH7PR21MB3878B9CB5354FA71EA90B87EA32FAPH7PR21MB3878namp_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Right.. so whoever added the whole ro_after_init jump_label support did
-a very poor job of it.
+David Vernet and Suresh Krishnan published a blog today
+about the new IETF BPF working group.
 
-That said; I think it is fixable. Since the key cannot be changed, we
-don't actually need to track the entries list and can thus avoid the key
-update.
+Check it out at https://www.ietf.org/blog/bpf/
 
-Something like the completely untested below...
+Dave Thaler
 
----
-Subject: jump_label: Seal __ro_after_init keys
+--_000_PH7PR21MB3878B9CB5354FA71EA90B87EA32FAPH7PR21MB3878namp_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-When a static_key is marked ro_after_init, its state will never change
-(after init), therefore jump_label_update() will never need to iterate
-the entries, and thus module load won't actually need to track this --
-avoiding the static_key::next write.
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:#0563C1;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri",sans-serif;
+	mso-ligatures:none;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-US" link=3D"#0563C1" vlink=3D"#954F72" style=3D"word-wrap:=
+break-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal">David Vernet and Suresh Krishnan published a blog to=
+day<br>
+about the new IETF BPF working group.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Check it out at <a href=3D"https://www.ietf.org/blog=
+/bpf/">https://www.ietf.org/blog/bpf/</a><o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Dave Thaler<o:p></o:p></p>
+</div>
+</body>
+</html>
 
-Therefore, mark these keys such that jump_label_add_module() might
-recognise them and avoid the modification.
+--_000_PH7PR21MB3878B9CB5354FA71EA90B87EA32FAPH7PR21MB3878namp_--
 
-Use the special state: 'static_key_linked(key) && !static_key_mod(key)'
-to denote such keys.
 
-*UNTESTED*
+--===============0931635130572195107==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-NOT-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/asm-generic/sections.h |  5 +++++
- include/linux/jump_label.h     |  1 +
- init/main.c                    |  1 +
- kernel/jump_label.c            | 44 ++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 51 insertions(+)
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
-diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
-index db13bb620f52..c768de6f19a9 100644
---- a/include/asm-generic/sections.h
-+++ b/include/asm-generic/sections.h
-@@ -180,6 +180,11 @@ static inline bool is_kernel_rodata(unsigned long addr)
- 	       addr < (unsigned long)__end_rodata;
- }
- 
-+static inline bool is_kernel_ro_after_init(unsigned long addr)
-+{
-+	return addr >= (unsigned long)__start_ro_after_init &&
-+	       addr < (unsigned long)__end_ro_after_init;
-+}
- /**
-  * is_kernel_inittext - checks if the pointer address is located in the
-  *                      .init.text section
-diff --git a/include/linux/jump_label.h b/include/linux/jump_label.h
-index f0a949b7c973..88ef9e776af8 100644
---- a/include/linux/jump_label.h
-+++ b/include/linux/jump_label.h
-@@ -216,6 +216,7 @@ extern struct jump_entry __start___jump_table[];
- extern struct jump_entry __stop___jump_table[];
- 
- extern void jump_label_init(void);
-+extern void jump_label_ro(void);
- extern void jump_label_lock(void);
- extern void jump_label_unlock(void);
- extern void arch_jump_label_transform(struct jump_entry *entry,
-diff --git a/init/main.c b/init/main.c
-index ad920fac325c..cb5304ca18f4 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1403,6 +1403,7 @@ static void mark_readonly(void)
- 		 * insecure pages which are W+X.
- 		 */
- 		rcu_barrier();
-+		jump_label_ro();
- 		mark_rodata_ro();
- 		rodata_test();
- 	} else
-diff --git a/kernel/jump_label.c b/kernel/jump_label.c
-index d9c822bbffb8..40fb72d79d7a 100644
---- a/kernel/jump_label.c
-+++ b/kernel/jump_label.c
-@@ -530,6 +530,46 @@ void __init jump_label_init(void)
- 	cpus_read_unlock();
- }
- 
-+static inline bool static_key_sealed(struct static_key *key)
-+{
-+	return (key->type & JUMP_TYPE_LINKED) && !(key->type & ~JUMP_TYPE_MASK);
-+}
-+
-+static inline void static_key_seal(struct static_key *key)
-+{
-+	unsigned long type = key->type & JUMP_TYPE_TRUE;
-+	key->type = JUMP_TYPE_LINKED | type;
-+}
-+
-+void jump_label_ro(void)
-+{
-+	struct jump_entry *iter_start = __start___jump_table;
-+	struct jump_entry *iter_stop = __stop___jump_table;
-+	struct static_key *key = NULL;
-+	struct jump_entry *iter;
-+
-+	if (WARN_ON_ONCE(!static_key_initialized))
-+		return;
-+
-+	cpus_read_lock();
-+	jump_label_lock();
-+
-+	for (iter = iter_start; iter < iter_stop; iter++) {
-+		struct static_key *iterk = jump_entry_key(iter);
-+
-+		if (!is_kernel_ro_after_init(iterk))
-+			continue;
-+
-+		if (static_key_sealed(iterk))
-+			continue;
-+
-+		static_key_seal(iterk);
-+	}
-+
-+	jump_label_unlock();
-+	cpus_read_unlock();
-+}
-+
- #ifdef CONFIG_MODULES
- 
- enum jump_label_type jump_label_init_type(struct jump_entry *entry)
-@@ -650,6 +690,9 @@ static int jump_label_add_module(struct module *mod)
- 			static_key_set_entries(key, iter);
- 			continue;
- 		}
-+		if (static_key_sealed(key))
-+			goto do_poke;
-+
- 		jlm = kzalloc(sizeof(struct static_key_mod), GFP_KERNEL);
- 		if (!jlm)
- 			return -ENOMEM;
-@@ -675,6 +718,7 @@ static int jump_label_add_module(struct module *mod)
- 		static_key_set_linked(key);
- 
- 		/* Only update if we've changed from our initial state */
-+do_poke:
- 		if (jump_label_type(iter) != jump_label_init_type(iter))
- 			__jump_label_update(key, iter, iter_stop, true);
- 	}
+--===============0931635130572195107==--
+
 
