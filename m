@@ -1,88 +1,79 @@
-Return-Path: <bpf+bounces-4069-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4070-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2F20748832
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 17:40:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 827EB7488C8
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 18:01:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B0C9281052
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 15:40:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B014A1C20B6E
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 16:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2125111CB3;
-	Wed,  5 Jul 2023 15:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F038125C5;
+	Wed,  5 Jul 2023 16:00:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77B246AB
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 15:40:26 +0000 (UTC)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68DC010F5
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 08:40:25 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbdfda88f4so23727205e9.1
-        for <bpf@vger.kernel.org>; Wed, 05 Jul 2023 08:40:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C513C125AB
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 16:00:37 +0000 (UTC)
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9C51BC7
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 09:00:13 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-bd0a359ca35so6454553276.3
+        for <bpf@vger.kernel.org>; Wed, 05 Jul 2023 09:00:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1688571624; x=1691163624;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kf9dpGbPYLRb7hYGeUUJzayjWRarC+ddpPgDxkSbtnI=;
-        b=QrruCyyrF/gec5ujb7ePxEv6WXl/c+qaX2kaiBSHLBe2zJBEGWz1FL1BZnrJam8AWQ
-         x//NBX1CpNnGT7aRV/5NGjocWRZ4u/MOPy4Iuyl4SmRby7X6khcSkFEJLcvDrcM55UyG
-         yqjJ3hTb4y/jDQVNIdvIXqSmCqCTkORhguYCsK4tcHeIPNjV6ZN/3U68GeWQw1X0jJhK
-         oAFDIIAePI2SZtmcj+FLGDSJOyq0ZL7kQe2UrcOezvY7nqzQpgVd4yVw+pDGGg+Co5K2
-         OUfjGAqaVrYqaRk0OyJ8Chur9n11HrEN41uAdPCQSxNwl/CVLYQt/ede1oKo7nrdRJ3t
-         OOgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688571624; x=1691163624;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1688572811; x=1691164811;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Kf9dpGbPYLRb7hYGeUUJzayjWRarC+ddpPgDxkSbtnI=;
-        b=hZ11rd1Ha03YENrxhQQeAXzYKggLHVWrVlE0GGekLvVZ2luIm/XGDTCIdSyZs2dlLe
-         DZvGkVEDfHmrKJGeYnkp9vv8D+NaWIMLpPmps6RWy2HSbzYkUzxKBesD6Av4Dc3RNewA
-         3WbA8sIHa7XG03J0RduzCpcy9girVH29Km9065WNaLYPin4aWQwORJIvv69Tf6t6QBad
-         M4ipEsHZmyQ9RfY/0cGmQiLsd3tPRkswuUzc8Kc9FrdgiM+pD2Dfbc0iWd2vGyLAF13S
-         FYbQhlw0O1p0jSrK4KibdR0PLvgVU6BMfV5+nNwXZBzBU8EPIG6rSA24+zgCFpSX7K21
-         7Wuw==
-X-Gm-Message-State: AC+VfDwV1JXulKDjhquD5fNmR0WBFaINM+akKhtP3kPgyr+3xKNagyy4
-	SLtvKXOElc4/SMQz9PCI/sJUIg==
-X-Google-Smtp-Source: ACHHUZ5oACS6Aj6eqqJkRtO/U3DZzHrhMn8vRtOok/dLQ1DnwYFp606s+ItF5bcsIAuUL/9C6vrxPA==
-X-Received: by 2002:a05:600c:2906:b0:3fb:ba04:6d5d with SMTP id i6-20020a05600c290600b003fbba046d5dmr13573203wmd.12.1688571623950;
-        Wed, 05 Jul 2023 08:40:23 -0700 (PDT)
-Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id p7-20020a7bcc87000000b003fbb8c7c799sm2472896wma.30.2023.07.05.08.40.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Jul 2023 08:40:23 -0700 (PDT)
-Date: Wed, 5 Jul 2023 15:41:35 +0000
-From: Anton Protopopov <aspsk@isovalent.com>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [v3 PATCH bpf-next 5/6] selftests/bpf: test map percpu stats
-Message-ID: <ZKWPL4OsRqJcTQbJ@zh-lab-node-5>
-References: <20230630082516.16286-1-aspsk@isovalent.com>
- <20230630082516.16286-6-aspsk@isovalent.com>
- <3e761472-051d-4e46-8a66-79926493e5db@huawei.com>
- <ZKQ0iF+8fMND5Qmg@zh-lab-node-5>
- <ZKQ5chXIwe0ItMbT@zh-lab-node-5>
- <ec62d127-2cc5-3f0a-6eb7-d77a9aaaa7a3@huaweicloud.com>
+        bh=Jb1GF7/QFy5DLYOoe3kcil6ESsrsreq6TCkS9MwOoaw=;
+        b=Mz1utFwn7KVwoaC+nhwhg+E8n0bIozNEDOo1LzmGPiyFmD4is7pYhe1Jn1tuEEHyI6
+         8DsQxVd2GEsHjBoOZyInJsfCPxbss9qx9VTkdy8qm4/cHkR1P8GNV1q98yQpZyMHHHQC
+         ZbQVZwX54kOdLIa9Uw5G2bTBwYyUvV8LayD5GDnEojDBBlsvlDRsPQVHgpOC8avgDnpI
+         e5k9Z/v4OR1jXEwvfVVaJZbQm8CEyjndtT+dIt54XzY9Cub1z1Z2DhxEFeNy24+/JLM+
+         wUK/9pA/qsHmJia4dk1tPQ8O7j5vqIFF96hpv0jU8p6oc13ae45njwmLsN+AyYaLsVk0
+         clnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688572811; x=1691164811;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jb1GF7/QFy5DLYOoe3kcil6ESsrsreq6TCkS9MwOoaw=;
+        b=QFX0NSRpnv/d0KDlmcG0kSUj7kdb2Klxe3b7ecgdrs+f1fNJvwfuQg1i/opqTigDm/
+         MnCZpXjome8jXK2bfEC7mcvBjwY8TbzWiYHQ+dPf+Iq44urgrNbBdtXnH2qoSynU/fiK
+         PTyqSyPWtM8Y+adrkkhGz0ep79Ur6zKjSt7jKl/5RKZAkO4jXlgzAt/1jIxhK65YI4my
+         +ObFRM3TMgmXkwWpc7CqqccxVveVZihKU3yWkSPV7uGFvd6iIyhZXwh+gklXeGLkKPEO
+         6z2/AfbYky8RVhEIw1Y3zsqqY53xaR5Kg31TiFDrSbLFcUcCWuqdWnxr3xfDGm7/58LS
+         vT0g==
+X-Gm-Message-State: ABy/qLbK+qoMcOuMhSvcG12YBMMTpMnYCOFSKbwWQ7+M36uuFZ8CBPuP
+	wcUgy4j+tnN8UtyB//La6Z+eOBm/QCGHWxOm0Shv
+X-Google-Smtp-Source: APBJJlGhXDS/0EzVNGCoiJVcvbujQTAbAR64Dm89krmLzUStttkQhJYfcAsgf7DVM+GiQVhB7wTHpgDQ6Ufi5mKn094=
+X-Received: by 2002:a25:48b:0:b0:c3a:d19c:4ad7 with SMTP id
+ 133-20020a25048b000000b00c3ad19c4ad7mr13917131ybe.62.1688572811037; Wed, 05
+ Jul 2023 09:00:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ec62d127-2cc5-3f0a-6eb7-d77a9aaaa7a3@huaweicloud.com>
+References: <20230629051832.897119-1-andrii@kernel.org> <20230629051832.897119-2-andrii@kernel.org>
+ <20230704-hochverdient-lehne-eeb9eeef785e@brauner> <CAHC9VhTDocBCpNjdz1CoWM2DA76GYZmg31338DHePFGq_-ie-g@mail.gmail.com>
+ <20230705-zyklen-exorbitant-4d54d2f220ad@brauner>
+In-Reply-To: <20230705-zyklen-exorbitant-4d54d2f220ad@brauner>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 5 Jul 2023 12:00:00 -0400
+Message-ID: <CAHC9VhTHjR_auRtOa_oOMd317g=2iFLamssX28AXz+UnyCqpNQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND v3 bpf-next 01/14] bpf: introduce BPF token object
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, keescook@chromium.org, 
+	lennart@poettering.net, cyphar@cyphar.com, luto@kernel.org, 
+	kernel-team@meta.com, sargun@sargun.me
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -90,35 +81,138 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jul 05, 2023 at 08:46:09AM +0800, Hou Tao wrote:
-> Hi,
-> 
-> On 7/4/2023 11:23 PM, Anton Protopopov wrote:
-> > On Tue, Jul 04, 2023 at 03:02:32PM +0000, Anton Protopopov wrote:
-> >> On Tue, Jul 04, 2023 at 10:41:10PM +0800, Hou Tao wrote:
-> >>> Hi,
-> >>>
-> >>> On 6/30/2023 4:25 PM, Anton Protopopov wrote:
-> >>> [...]
-> >>>> +}
-> >>>> +
-> >>>> +void test_map_percpu_stats(void)
-> >>>> +{
-> >>>> +	map_percpu_stats_hash();
-> >>>> +	map_percpu_stats_percpu_hash();
-> >>>> +	map_percpu_stats_hash_prealloc();
-> >>>> +	map_percpu_stats_percpu_hash_prealloc();
-> >>>> +	map_percpu_stats_lru_hash();
-> >>>> +	map_percpu_stats_percpu_lru_hash();
-> >>>> +}
-> >>> Please use test__start_subtest() to create multiple subtests.
-> > After looking at code, I think that I will leave the individual functions here,
-> > as the test__start_subtest() function is only implemented in test_progs (not
-> > test_maps), and adding it here looks like out of scope for this patch.
-> > .
-> I see. But can we just add these tests in test_progs instead which is
-> more flexible ?
+On Wed, Jul 5, 2023 at 10:42=E2=80=AFAM Christian Brauner <brauner@kernel.o=
+rg> wrote:
+> On Wed, Jul 05, 2023 at 10:16:13AM -0400, Paul Moore wrote:
+> > On Tue, Jul 4, 2023 at 8:44=E2=80=AFAM Christian Brauner <brauner@kerne=
+l.org> wrote:
+> > > On Wed, Jun 28, 2023 at 10:18:19PM -0700, Andrii Nakryiko wrote:
+> > > > Add new kind of BPF kernel object, BPF token. BPF token is meant to=
+ to
+> > > > allow delegating privileged BPF functionality, like loading a BPF
+> > > > program or creating a BPF map, from privileged process to a *truste=
+d*
+> > > > unprivileged process, all while have a good amount of control over =
+which
+> > > > privileged operations could be performed using provided BPF token.
+> > > >
+> > > > This patch adds new BPF_TOKEN_CREATE command to bpf() syscall, whic=
+h
+> > > > allows to create a new BPF token object along with a set of allowed
+> > > > commands that such BPF token allows to unprivileged applications.
+> > > > Currently only BPF_TOKEN_CREATE command itself can be
+> > > > delegated, but other patches gradually add ability to delegate
+> > > > BPF_MAP_CREATE, BPF_BTF_LOAD, and BPF_PROG_LOAD commands.
+> > > >
+> > > > The above means that new BPF tokens can be created using existing B=
+PF
+> > > > token, if original privileged creator allowed BPF_TOKEN_CREATE comm=
+and.
+> > > > New derived BPF token cannot be more powerful than the original BPF
+> > > > token.
+> > > >
+> > > > Importantly, BPF token is automatically pinned at the specified loc=
+ation
+> > > > inside an instance of BPF FS and cannot be repinned using BPF_OBJ_P=
+IN
+> > > > command, unlike BPF prog/map/btf/link. This provides more control o=
+ver
+> > > > unintended sharing of BPF tokens through pinning it in another BPF =
+FS
+> > > > instances.
+> > > >
+> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > ---
+> > >
+> > > The main issue I have with the token approach is that it is a complet=
+ely
+> > > separate delegation vector on top of user namespaces. We mentioned th=
+is
+> > > duringthe conf and this was brought up on the thread here again as we=
+ll.
+> > > Imho, that's a problem both security-wise and complexity-wise.
+> > >
+> > > It's not great if each subsystem gets its own custom delegation
+> > > mechanism. This imposes such a taxing complexity on both kernel- and
+> > > userspace that it will quickly become a huge liability. So I would
+> > > really strongly encourage you to explore another direction.
+> > >
+> > > I do think the spirit of your proposal is workable and that it can
+> > > mostly be kept in tact.
+> > >
+> > > As mentioned before, bpffs has all the means to be taught delegation:
+> > >
+> > >         // In container's user namespace
+> > >         fd_fs =3D fsopen("bpffs");
+> > >
+> > >         // Delegating task in host userns (systemd-bpfd whatever you =
+want)
+> > >         ret =3D fsconfig(fd_fs, FSCONFIG_SET_FLAG, "delegate", ...);
+> > >
+> > >         // In container's user namespace
+> > >         fd_mnt =3D fsmount(fd_fs, 0);
+> > >
+> > >         ret =3D move_mount(fd_fs, "", -EBADF, "/my/fav/location", MOV=
+E_MOUNT_F_EMPTY_PATH)
+> > >
+> > > Roughly, this would mean:
+> > >
+> > > (i) raise FS_USERNS_MOUNT on bpffs but guard it behind the "delegate"
+> > >     mount option. IOW, it's only possibly to mount bpffs as an
+> > >     unprivileged user if a delegating process like systemd-bpfd with
+> > >     system-level privileges has marked it as delegatable.
+> > > (ii) add fine-grained delegation options that you want this
+> > >      bpffs instance to allow via new mount options. Idk,
+> > >
+> > >      // allow usage of foo
+> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "foo");
+> > >
+> > >      // also allow usage of bar
+> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "bar");
+> > >
+> > >      // reset allowed options
+> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "");
+> > >
+> > >      // allow usage of schmoo
+> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "schmoo");
+> > >
+> > > This all seems more intuitive and integrates with user and mount
+> > > namespaces of the container. This can also work for restricting
+> > > non-userns bpf instances fwiw. You can also share instances via
+> > > bind-mount and so on. The userns of the bpffs instance can also be us=
+ed
+> > > for permission checking provided a given functionality has been
+> > > delegated by e.g., systemd-bpfd or whatever.
+> >
+> > I have no arguments against any of the above, and would prefer to see
+> > something like this over a token-based mechanism.  However we do want
+> > to make sure we have the proper LSM control points for either approach
+> > so that admins who rely on LSM-based security policies can manage
+> > delegation via their policies.
+> >
+> > Using the fsconfig() approach described by Christian above, I believe
+> > we should have the necessary hooks already in
+> > security_fs_context_parse_param() and security_sb_mnt_opts() but I'm
+> > basing that on a quick look this morning, some additional checking
+> > would need to be done.
+>
+> I think what I outlined is even unnecessarily complicated. You don't
+> need that pointless "delegate" mount option at all actually. Permission
+> to delegate shouldn't be checked when the mount option is set. The
+> permissions should be checked when the superblock is created.
 
-I think that it makes more sense to port this test_prog flexibility to the
-test_maps program. I can volunteer to do this (but not right away).
+From a LSM perspective I think we would want to have policy
+enforcement points both when task A enables delegation and when task B
+makes use of the delegation.  We would likely also want to be able to
+add some additional delegation state to the superblock if delegation
+was enabled in the first enforcement point.
+
+I'm not too bothered by how that ends up looking from a userspace
+perspective, but it seems like requiring an explicit "this fs can be
+delegated" step would be a positive from a security perspective.  In
+other words, just because a task *could* delegated a filesystem, may
+not mean it *wants* to delegate a filesystem.
+
+--=20
+paul-moore.com
 
