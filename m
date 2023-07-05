@@ -1,173 +1,189 @@
-Return-Path: <bpf+bounces-4049-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4048-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40DD5748448
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 14:35:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B936748444
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 14:35:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C84E028104C
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 12:35:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B1861C20B41
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 12:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62EC963CE;
-	Wed,  5 Jul 2023 12:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37916AB1;
+	Wed,  5 Jul 2023 12:35:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341E26FC8
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 12:35:35 +0000 (UTC)
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2113.outbound.protection.outlook.com [40.107.255.113])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259521713;
-	Wed,  5 Jul 2023 05:35:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LInk5TFWd2wtLQOiokfn4CEbMXTIWtP84BWLnB5KxStWPlI5jpXziZLwguCjJsXz/pSCQFibSNzlT33vWBMO/q5rBJ5ZgANj5atWRtxbHgPElWTx1mkeaa7jwwb8u5BEBcLBdN5f4XtqIJ0HUKqs+XaSc0UP/momHC3bWRmx+OvfEF/OrFlrjv7mOgsEts8Rj5sq227dHb7A8lPwxSqlVL+hoeuLUL3zb2i3GX/6TwKtLXen0fHbDS7PhUHwTRHDjjaHi9HOP2PrEJn6Oid5F+1iBicEOZuKyYaV/yuV/6i0hA3lopqDdC418+8q8ROZiB7TgcjOrVhChbNWsdfMGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oSf1BwwojgtB5EZCgQ29ZfTWOsXM8XEouxTmdbpiBoY=;
- b=lBvNNWop7ObC2fAmwd2OB40Y/RKgYvlUqeb+FfSvgVtmUXO3MASS0/FzUtlDurNBex+0zb2L4YcUQT8eCnVz4Blz3YjIjwouA9Je/LQSrpf0W/KhVfI3sJgLcLZaBqa6SqsBxkau3FTLbiNJ8duGUBnPtXM9y1eeyWtqWRGKd5JVgzkJBavCRSAB6KA5CxjSQCMROJr4mayXaxPscMQhml3KDhH9DdLL05WznIhNlbMGeDtx+cFRQCBmh3FJ7YhcWJpXzylQmIAD2huY0UZM8/89CvjPF1teMNzEe7yoA1ljNsuT+OOZC7iBjrHFoz+1Oy6qlGp+6P0GbgNeAGHwew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oSf1BwwojgtB5EZCgQ29ZfTWOsXM8XEouxTmdbpiBoY=;
- b=AqdLUx36a0kmnIw5bsQCK2QdBe0ss0dobv8iH1vgp11VXXm6ObaV2MgYuBuM/RTgN1cVFROAxDeTfKDqtQmcMyZAAmNte0J4bxUWpkl/x6htnJdRi0B90ZKa0bnK4JRARX0BNRgU680I3W7Y8MMhIrCAIFEPLBPRR5Z+XHYiMX2PzrlCDjNPQGM0xRler4r7eoXGkA5MJ7x7U2AENuEGBlkQI5MOP3WUTiayAOtSHgU64Bw3ARQU8msVyhHYgl1X2cWPVxwvp5mMfwsjyS0W9+asEV9GPMlsWFk/naDY6jhJ2PWAPQCuLKgUp++kADCrkyzbG/LEJMVFtaKiJbNbcg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PS1PR0601MB3737.apcprd06.prod.outlook.com
- (2603:1096:300:78::18) by KL1PR0601MB5616.apcprd06.prod.outlook.com
- (2603:1096:820:9b::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.17; Wed, 5 Jul
- 2023 12:35:23 +0000
-Received: from PS1PR0601MB3737.apcprd06.prod.outlook.com
- ([fe80::9531:2f07:fc59:94e]) by PS1PR0601MB3737.apcprd06.prod.outlook.com
- ([fe80::9531:2f07:fc59:94e%4]) with mapi id 15.20.6565.016; Wed, 5 Jul 2023
- 12:35:23 +0000
-From: Wang Ming <machel@vivo.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Wang Ming <machel@vivo.com>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: opensource.kernel@vivo.com
-Subject: [PATCH v1] selftests:bpf:Fix repeated initialization
-Date: Wed,  5 Jul 2023 20:33:57 +0800
-Message-Id: <20230705123432.1655-1-machel@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0118.apcprd02.prod.outlook.com
- (2603:1096:4:92::34) To PS1PR0601MB3737.apcprd06.prod.outlook.com
- (2603:1096:300:78::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CE5946BD
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 12:35:25 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A153172B
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 05:34:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1688560473;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9n2Chuvyr5F1WS1DcynjB5EgkPOLdfP7pefN+jTsGUk=;
+	b=gmNCbHJOc1zVfaMIYzmSR+vTtk9kDBDQf+SbfRlggBWeTZuNUCu5eEjKvjBo10ytd5CiTR
+	6TrpUaDHV67msm2ePWuCvYddSQthBAgjsvKhe5+H5iuamH8hfPKI4GORFyInWsNGwT2c/k
+	UedUElOg94VAIqshKwo1/H7yY7WDUPw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-489-PalxPpxyMFC8LtLfbuBw5A-1; Wed, 05 Jul 2023 08:34:32 -0400
+X-MC-Unique: PalxPpxyMFC8LtLfbuBw5A-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31432b25c2fso3257104f8f.1
+        for <bpf@vger.kernel.org>; Wed, 05 Jul 2023 05:34:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688560471; x=1691152471;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9n2Chuvyr5F1WS1DcynjB5EgkPOLdfP7pefN+jTsGUk=;
+        b=XJtnEDiacoa65N8vrNRAdoFhifPYLhkrRGLVAZURBEHDWSYuwR7jTS7VkKSc9PF9cF
+         b2aHCTXW1MgjMdGCC+EDl+0g558BgmsoPg0risRtZbcdp+S7g49wdqI56GQ4w1R8Q/V7
+         0/hHOTijUGchn14iX0TrU8JaHI0M5Cakx7SUmWpuXsaNVtDZlm2c6MdKvR7azGFrwofr
+         KeBL4TPMnenbDIIbPch+QFjz0d0PBHoZofDatPU3WLUhoSUJF0P6Tw8/09JiByt5mkMB
+         6flank2jr20r5xzEQSO8d4RhbJrw+vdZggoVUhRG9MDnPiY65RDocWF1UEUxivx099fx
+         IjBA==
+X-Gm-Message-State: ABy/qLZAwUUrY0cfmmYNeBP5kgqyxpROpss5AuLU2bphsERNb10vuh6y
+	9Y6WqbhiOMiTPHl+geRNUAad0ykfkqI7mGCe4mi9fgm2hsR1K9/HLWASmjObO1o8EeVV6oksWYM
+	mihDqCRuMu6E5
+X-Received: by 2002:adf:e4c1:0:b0:314:37ac:c896 with SMTP id v1-20020adfe4c1000000b0031437acc896mr11965185wrm.44.1688560470640;
+        Wed, 05 Jul 2023 05:34:30 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHVDjX0j2vlDhMrqZgyZuPY4mV1tg2k5iuAkbToYRMjihI+/Ew0efXto7iasHFqX3KI860e1Q==
+X-Received: by 2002:adf:e4c1:0:b0:314:37ac:c896 with SMTP id v1-20020adfe4c1000000b0031437acc896mr11965158wrm.44.1688560470123;
+        Wed, 05 Jul 2023 05:34:30 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id u4-20020a5d5144000000b0031444673643sm2704145wrt.57.2023.07.05.05.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Jul 2023 05:34:29 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id EA5FEBC12F0; Wed,  5 Jul 2023 14:34:28 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Christian Brauner <brauner@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ linux-security-module@vger.kernel.org, keescook@chromium.org,
+ lennart@poettering.net, cyphar@cyphar.com, luto@kernel.org,
+ kernel-team@meta.com, sargun@sargun.me
+Subject: Re: [PATCH RESEND v3 bpf-next 01/14] bpf: introduce BPF token object
+In-Reply-To: <20230705-praxen-nahmen-644ea9e5c35c@brauner>
+References: <20230629051832.897119-1-andrii@kernel.org>
+ <20230629051832.897119-2-andrii@kernel.org>
+ <20230704-hochverdient-lehne-eeb9eeef785e@brauner>
+ <87sfa3b6j5.fsf@toke.dk>
+ <3555c0bd-7aee-35b0-655d-710437b4876c@iogearbox.net>
+ <20230705-praxen-nahmen-644ea9e5c35c@brauner>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 05 Jul 2023 14:34:28 +0200
+Message-ID: <87h6qibkq3.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PS1PR0601MB3737:EE_|KL1PR0601MB5616:EE_
-X-MS-Office365-Filtering-Correlation-Id: c769e6f5-d712-444b-d2ca-08db7d544d30
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	SCH0cpI0Gnq4FlksUx8HvGkiAy/tct9D0BAzCN10jr7KHnm1DSVUVp9NSdiSsOojiaK7ZM2ms9cbj0JZYDnZAd0jtjuorinIq0vNtWmdedBuA+Itt/+PeWvTgfHd4Xz8btkg0Kx0bxyTvggDMVLICRsJytx3PanknHDuHWeL9RL0CgWXrMUy7YgVls4iv4VQFIsIAbJIqyN47mqDHkU1QkSQtD3Tgc51B61wr8AcVQy/DWZCg8Ff40fa9PSpJKoEzXlnNMEEWv9EaqwpuqU6rsC3FO9xVi7l2RrmFKq/vUXLCznjAoYeJj//xqV4HAUZzwhUnmZ4wcWH20ywPl4jyMTLO6IqbJiCEeCbbaxBI+5oIb1PwR9TYjiJQTPuauP0Ov+fH8XbL6GlgvGGuB6+bkZdDKw1pIqlIA4k2vv8GuHvAYH2SMxpR4JsuichUfun7FHmlDitoKw3jRGsgzWl65WHC9gdfXrNqXHOfkbAqLrrQtj/Tu7+iZ8L4L1ayyB3zCXFhTw1HAF967R8LQlm7nJ1HSg8GYE66GG02GUR1O12iE+zFpRfi8/Wz28Jt0EveU3uNEfLCZltLOyBuVk+nQuuTxJOoFrRuo0yI9wdTwbnY7fY1i6l6XxpS4ivDJB3sTdAfyEMgnpY7R7S4DtSfw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS1PR0601MB3737.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(376002)(39860400002)(136003)(346002)(396003)(451199021)(66476007)(4326008)(66556008)(66946007)(2616005)(921005)(38350700002)(38100700002)(107886003)(86362001)(186003)(6506007)(26005)(1076003)(83380400001)(6666004)(478600001)(6512007)(52116002)(6486002)(110136005)(36756003)(4744005)(41300700001)(8936002)(8676002)(7416002)(5660300002)(2906002)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?PRtPWpdqwNthhecCc/YE5as2yQtxORJ9a6QqPjfggA2W1gvmNpCNS8XiPJTn?=
- =?us-ascii?Q?EiwEQ951tIER8Pyfr6slRruRZLrRJ8i02gWA/F9dY1H2KIg2IGhwNqjTTe2B?=
- =?us-ascii?Q?KO/yBHTjPYfIvCrOTaJp30AkS5Ja4//pBSO/n8Q63rwg2gx3i3/y7zpWatYE?=
- =?us-ascii?Q?ejYz8RLX0IU0/Qg6jxy0Mr+en49F0rdHdRbyWF57HAGLg1IjbachKQa58ZPj?=
- =?us-ascii?Q?8dPdULa3OOnMMZmJEBSBt3pZi3fCt5a4ZqEKKY15z/ki0T2NvtRhWX3Dr8o+?=
- =?us-ascii?Q?7zmdPguitME7kxzGU5jXG6ykVPl3/vG9HuUuyKOVG2jPx7COZQ1mQ2yZ7YcL?=
- =?us-ascii?Q?4VVfsFQYxGn0g66mLvNo46lVvkHV+L/effTzywbDQ+2SD6fFRRxLjTmzRogT?=
- =?us-ascii?Q?oiSf8CWdigTxi4vrL0Mn/wPMC1YwgxkV46oNF/tew8QBWf+Hs5Rmtw+Y+Cin?=
- =?us-ascii?Q?T4injlDH5Kd+1n7RHmrB/g66wPYxHasBbxlcJtwKYzscYrqfRB14P1tm1n/o?=
- =?us-ascii?Q?TZvinaPoaKdnBoMrsi7TSKqyRlaZ2G0zfKIAanAfy5EYP4GgDPBe3kMYLJNJ?=
- =?us-ascii?Q?oKleSoOTTv6tHEyVCtPmYaUNm096rp4cirrLjzF+5AIpEuK5qpMbSpK11sV1?=
- =?us-ascii?Q?+IF/tUyI/WwyuKVSzmVBtNtOy1GW/miYqs4duVGsVlHA1WyuexOa/pE8FV36?=
- =?us-ascii?Q?gFaXmX7VMAYEYlhgpcbBd8zYwJJr501tjyZDoiwYECTH9yF2shFQjKRemq3n?=
- =?us-ascii?Q?Grf95ZwXpK9W5sxbYD/Yu2meJaYBGgYD81Rgwl84hWlXFBfGdy8Cx3ZDkeu0?=
- =?us-ascii?Q?k35xZ+WTKh7pnRe4JUQ4GRjrO+YeXYmsgMELXVBiZ8ppco76MqI/+/yq7A5c?=
- =?us-ascii?Q?U+l0Oc85OD7UeLsE5U1SW4O1ExRhsjSZAGQrOQDJ93h9m283z92RZfI4kuA5?=
- =?us-ascii?Q?/DAtnVSfNGzfej65OBPhzSIHTrZaSLT6rTBdU4ltA/MLcMLlcTk7xM+a2YGU?=
- =?us-ascii?Q?mtikbrbMZPK8dkObN5++c6+ZxbiflP6jDoFy4in7LIjtRR1lN7zdRunIH4bS?=
- =?us-ascii?Q?OmBMDxok5EQYWcD76qsNKZLYyXKU/ldUTb4mSajiTHCJ1m/TFXGNCPykkoOu?=
- =?us-ascii?Q?sX6aGXQLjM7pBEozny5TOocpr2WL8ooK4BNr8hd4kiXri1yQUv+MM2hJAuJ3?=
- =?us-ascii?Q?5qaZT1Lie7ba42ncLaCz4mJLszcotBVz89gWfjZ2cm3OIXW8QAcrrrfrK1zi?=
- =?us-ascii?Q?mgII2ZYd8LoxBT9ZeB74ALNT/oIW9Uvmkw1xfhktOlLFFNQ4MfttRcEqTW/f?=
- =?us-ascii?Q?V0mG+bkESZbknXGBuKQ6853o1v2EmWj0VGN2YYVevby6CtzM5OdA7Lp5nrTu?=
- =?us-ascii?Q?KPadBpgnjM0HZ5UjjGvqDEvQPQFTdTNbSUChXgyDZqV1vhplCIIXkFS7a0yk?=
- =?us-ascii?Q?9pMZhZijr6IkPXVjn6JD3+zJsA5ZYA/RM893hiWGHVMRZb+IkMDxdpdY+GmQ?=
- =?us-ascii?Q?nVUWqfHqzwEqwlJFpkabLorY47Yy/HQnNPuvXM+Oolog20M5293sGGQbnERp?=
- =?us-ascii?Q?fmbKuvRRw1viSeuLbDhtdiBVybKZjtbX/BITr3Od?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c769e6f5-d712-444b-d2ca-08db7d544d30
-X-MS-Exchange-CrossTenant-AuthSource: PS1PR0601MB3737.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2023 12:35:23.0769
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BCcht/UgTtl5WeORJlKaTRo5/DcknxxseGTbQjawZrC8et4sH1GVNKy4WBnag8nrj4b5op6iYeEewey8U7Lqxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB5616
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-In use_missing_map function, value is
-initialized twice.There is no
-connection between the two assignment.
-This patch could fix this bug.
+Christian Brauner <brauner@kernel.org> writes:
 
-Signed-off-by: Wang Ming <machel@vivo.com>
----
- tools/testing/selftests/bpf/progs/test_log_fixup.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+> On Wed, Jul 05, 2023 at 09:20:28AM +0200, Daniel Borkmann wrote:
+>> On 7/5/23 1:28 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> > Christian Brauner <brauner@kernel.org> writes:
+>> > > On Wed, Jun 28, 2023 at 10:18:19PM -0700, Andrii Nakryiko wrote:
+>> > > > Add new kind of BPF kernel object, BPF token. BPF token is meant t=
+o to
+>> > > > allow delegating privileged BPF functionality, like loading a BPF
+>> > > > program or creating a BPF map, from privileged process to a *trust=
+ed*
+>> > > > unprivileged process, all while have a good amount of control over=
+ which
+>> > > > privileged operations could be performed using provided BPF token.
+>> > > >=20
+>> > > > This patch adds new BPF_TOKEN_CREATE command to bpf() syscall, whi=
+ch
+>> > > > allows to create a new BPF token object along with a set of allowed
+>> > > > commands that such BPF token allows to unprivileged applications.
+>> > > > Currently only BPF_TOKEN_CREATE command itself can be
+>> > > > delegated, but other patches gradually add ability to delegate
+>> > > > BPF_MAP_CREATE, BPF_BTF_LOAD, and BPF_PROG_LOAD commands.
+>> > > >=20
+>> > > > The above means that new BPF tokens can be created using existing =
+BPF
+>> > > > token, if original privileged creator allowed BPF_TOKEN_CREATE com=
+mand.
+>> > > > New derived BPF token cannot be more powerful than the original BPF
+>> > > > token.
+>> > > >=20
+>> > > > Importantly, BPF token is automatically pinned at the specified lo=
+cation
+>> > > > inside an instance of BPF FS and cannot be repinned using BPF_OBJ_=
+PIN
+>> > > > command, unlike BPF prog/map/btf/link. This provides more control =
+over
+>> > > > unintended sharing of BPF tokens through pinning it in another BPF=
+ FS
+>> > > > instances.
+>> > > >=20
+>> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>> > > > ---
+>> > >=20
+>> > > The main issue I have with the token approach is that it is a comple=
+tely
+>> > > separate delegation vector on top of user namespaces. We mentioned t=
+his
+>> > > duringthe conf and this was brought up on the thread here again as w=
+ell.
+>> > > Imho, that's a problem both security-wise and complexity-wise.
+>> > >=20
+>> > > It's not great if each subsystem gets its own custom delegation
+>> > > mechanism. This imposes such a taxing complexity on both kernel- and
+>> > > userspace that it will quickly become a huge liability. So I would
+>> > > really strongly encourage you to explore another direction.
+>> >=20
+>> > I share this concern as well, but I'm not quite sure I follow your
+>> > proposal here. IIUC, you're saying that instead of creating the token
+>> > using a BPF_TOKEN_CREATE command, the policy daemon should create a
+>> > bpffs instance and attach the token value directly to that, right? But
+>> > then what? Are you proposing that the calling process inside the
+>> > container open a filesystem reference (how? using fspick()?) and pass
+>> > that to the bpf syscall? Or is there some way to find the right
+>> > filesystem instance to extract this from at the time that the bpf()
+>> > syscall is issued inside the container?
+>>=20
+>> Given there can be multiple bpffs instances, it would have to be similar
+>> as to what Andrii did in that you need to pass the fd to the bpf(2) for
+>> prog/map creation in order to retrieve the opts->abilities from the super
+>> block.
+>
+> I think it's pretty flexible what one can do here. Off the top of my
+> head there could be a dedicated file like /sys/fs/bpf/delegate which
+> only exists if delegation has been enabled. Thought that might be just a
+> wasted inode. There could be a new ioctl() on bpffsd which has the same
+> effect.
+>
+> Probably an ioctl() on the bpffs instance is easier to grok. You could
+> even take away rights granted by a bpffs instance from such an fd via
+> additional ioctl() on it.
 
-diff --git a/tools/testing/selftests/bpf/progs/test_log_fixup.c b/tools/testing/selftests/bpf/progs/test_log_fixup.c
-index 1bd48feaaa42..1c49b2f9be6c 100644
---- a/tools/testing/selftests/bpf/progs/test_log_fixup.c
-+++ b/tools/testing/selftests/bpf/progs/test_log_fixup.c
-@@ -52,13 +52,9 @@ struct {
- SEC("?raw_tp/sys_enter")
- int use_missing_map(const void *ctx)
- {
--	int zero = 0, *value;
-+	int zero = 0;
- 
--	value = bpf_map_lookup_elem(&existing_map, &zero);
--
--	value = bpf_map_lookup_elem(&missing_map, &zero);
--
--	return value != NULL;
-+	return bpf_map_lookup_elem(&missing_map, &zero) != NULL;
- }
- 
- extern int bpf_nonexistent_kfunc(void) __ksym __weak;
--- 
-2.25.1
+Right, gotcha; I was missing whether there was an existing mechanism to
+obtain this; an ioctl makes sense. I can see the utility in attaching
+this to the file system instance instead of as a separate object that's
+pinned (but see my post in the other subthread about using the "ask
+userspace model instead").
+
+-Toke
 
 
