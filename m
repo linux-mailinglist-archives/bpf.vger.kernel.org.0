@@ -1,84 +1,77 @@
-Return-Path: <bpf+bounces-4115-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4116-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF97D748DB8
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 21:25:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3038C748EFF
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 22:37:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F29C71C20BD2
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 19:25:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D92AE281108
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 20:37:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E42F315497;
-	Wed,  5 Jul 2023 19:24:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3E8134D2;
+	Wed,  5 Jul 2023 20:37:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8965615484
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 19:24:59 +0000 (UTC)
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E8126A1
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 12:24:40 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b703cbfaf5so4334181fa.1
-        for <bpf@vger.kernel.org>; Wed, 05 Jul 2023 12:24:40 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0970C2F38
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 20:37:47 +0000 (UTC)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9617F19A3;
+	Wed,  5 Jul 2023 13:37:45 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fbc59de009so76133645e9.3;
+        Wed, 05 Jul 2023 13:37:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688585078; x=1691177078;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OdqnSHHUPLzaJG6/2Azx6H6XGluMluE+rBgznbcpuRs=;
-        b=ZQn/W5OD+PRFSPkdi9GWPChyS93arjILC7ekSGo8HvLYOU/HDqhq5NpJpAkzZroX2G
-         Gfi0nawSdbWJ4JbvusRTf7yi4FPwAWzc+1Ylp8l9zMw85xILIcgSW0/ouMNEoJ064V6S
-         PumF1s9hl/HlsewmvU74QhzhGkmVu2EU2GA6r9g5dKCFrPfN+fbps9LA+EhbFs/cbbhL
-         1AnRQb8m4AHjLyPhSrT66z8CTv/jEUvVRzLIK0aQVR1HuUioe3kjEPWOQmkVBuGKmegE
-         bloam1k2UXXMjJ1PcPm0GM1KvjPwyx0BSLs4omHVqpoR7XdrI4N5wvMgx17AtUmkBGVZ
-         MNsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688585078; x=1691177078;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1688589464; x=1691181464;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OdqnSHHUPLzaJG6/2Azx6H6XGluMluE+rBgznbcpuRs=;
-        b=VhT8jYH8mCtuCTgkIzKU7GQOzmmZcm9Yi3Cfoh94eJN3TEJ41U9GPcuFlPJXyltcuK
-         CbbGfpqn2RmfXGULznMvsg+cHhE1Ue2z+rF4YlosDY+s2zdmhB+4kOdRkTPxqpoykyuc
-         HHkPNdB2fnJWcMYfhyEVwGZA2VdCV7mJf5xLFQ2FlMDixiiiON4OPW+ZtfVEdL02uvDK
-         /zAJBSYim7o8rYHOg6CtCwzKq8HSMoIJQHxMo93A6g/jWyg5pjSzGPxZNxT7Zt4uS99l
-         ezEztgCtUI/NGRXpFlMzIffkA3E27UVj/bxslRfL3BIv36U51hNH4TsjX4dsBck3VfRY
-         aaEg==
-X-Gm-Message-State: ABy/qLYlYdTSk1gKd+ipk/f66yUhldFe7AO1zRj9rVZ5bUwJ5+nJ/Dia
-	qL4cSTzMK+By47UpXfXel6I6kYkLDMMFyg==
-X-Google-Smtp-Source: APBJJlEZMxvC8ReNuwu4pDxXFXA90qubM+j/Ty+fAdqcb9SXpuV0m0qjihzhsIJB31sLtZ2tmrCpLQ==
-X-Received: by 2002:aa7:cc11:0:b0:51e:1692:1111 with SMTP id q17-20020aa7cc11000000b0051e16921111mr64149edt.3.1688584264162;
-        Wed, 05 Jul 2023 12:11:04 -0700 (PDT)
-Received: from krava ([193.46.31.98])
-        by smtp.gmail.com with ESMTPSA id n20-20020a05640206d400b0051e29e1b6c5sm523701edy.16.2023.07.05.12.11.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Jul 2023 12:11:03 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 5 Jul 2023 21:10:59 +0200
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCHv3 bpf-next 00/26] bpf: Add multi uprobe link
-Message-ID: <ZKXAQyQlQ7aL6/B2@krava>
-References: <20230630083344.984305-1-jolsa@kernel.org>
- <4329bb2c-da00-4c19-775b-9d8c1db22caa@iogearbox.net>
+        bh=Cj35583xnzvGWyL7CZfPsTBPJGJLBB11EAo3CBt2aL8=;
+        b=jjS/QqaIOe1xGLTCuaHTgbxwVAT65JqtlgnIbfK6PfzmMWJ9ieRuwWsJ4K78kRwigu
+         NpCN3csAUDk7B3eh7DFUvnPwPC3CFBnyMZiqYBuX/iKR1Do0xn/hZ0xGqbG7kvAmmDZH
+         1lElh1wvIqqTanASkiI4zNxt3Kd3QENfA2gAnmtctfc2yc25zTLTfZKYv49h7ORw/F+1
+         7KbJGr0wVVCEH4muDSdSI26VOCyBeKUlpua8qbyHNCnlRMUMolIH5YcELTaFgb9+1mVs
+         SNwYSItzEZCiG12V/EjQ9ZU+lQiB2xqn/1JkE42IfbJR8VkA7oxu00hL9/4R/hDrEVMQ
+         pu0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688589464; x=1691181464;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cj35583xnzvGWyL7CZfPsTBPJGJLBB11EAo3CBt2aL8=;
+        b=NAFHDipS7RudLmK3pcJCWtYFJuBK4oA3DJ6UR6FSl1oLl5/ym9az7bkAJeQLs8YOxp
+         cj/JzQO5tASYZ6CbCwiLYrn22l7ImNrq9dH/xRaUFNX4PRNvdMZBsc6pu6+XK4nnMrxA
+         0KlxYt9AtVPdZxnwh/x9OomVVdy6iF2c4xWBNN3bWWomwAo6b5HaTSXFAdPlTz3r3+R/
+         pDagGpk2/YsOOYRQP39fUburbvsWp/DqPC/nvvSPwlKDhbYBo+5HQoeIYHIL+XOTtRUi
+         A3f0vgjpiZPVRVSqlddO/2lz0YDmTBgLr+DA+L3wBUAvTmHdyS7qxXkqlSBpvIW2Bh+O
+         6FoQ==
+X-Gm-Message-State: AC+VfDwB88EO54IY03o9D+YTbO+R2KBeVT6LQKgsFIlAKQDAZ3C1vM3d
+	ZOmbFSwVjwmeRxX/SEM5cFGvivUdGsZ0YZ1LQ4k=
+X-Google-Smtp-Source: ACHHUZ6qEwE7QJuSLlhwRI2uvNpOjiLLUWDN0fIqLxlA+ZQ03ExHUjW1bfVQBLkzZ2Bc9PjUPZXSkJi7RiW3KPUPjFQ=
+X-Received: by 2002:a1c:cc16:0:b0:3fb:404c:15e2 with SMTP id
+ h22-20020a1ccc16000000b003fb404c15e2mr14449570wmb.41.1688589463674; Wed, 05
+ Jul 2023 13:37:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4329bb2c-da00-4c19-775b-9d8c1db22caa@iogearbox.net>
+References: <20230629051832.897119-1-andrii@kernel.org> <CALOAHbBupxQ3RH+SbzUv=W2dRDS-mG1PuRpARrMnMv=o6Ro7Sw@mail.gmail.com>
+In-Reply-To: <CALOAHbBupxQ3RH+SbzUv=W2dRDS-mG1PuRpARrMnMv=o6Ro7Sw@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 5 Jul 2023 13:37:31 -0700
+Message-ID: <CAEf4BzbS55xw2Scnid87O5TFQ7To56huPaKg_oH6gLSp+ggpdw@mail.gmail.com>
+Subject: Re: [PATCH RESEND v3 bpf-next 00/14] BPF token
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, keescook@chromium.org, 
+	brauner@kernel.org, lennart@poettering.net, cyphar@cyphar.com, 
+	luto@kernel.org, kernel-team@meta.com, sargun@sargun.me
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -86,247 +79,277 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jul 05, 2023 at 02:45:42PM +0200, Daniel Borkmann wrote:
-> On 6/30/23 10:33 AM, Jiri Olsa wrote:
-> > hi,
-> > this patchset is adding support to attach multiple uprobes and usdt probes
-> > through new uprobe_multi link.
-> > 
-> > The current uprobe is attached through the perf event and attaching many
-> > uprobes takes a lot of time because of that.
-> > 
-> > The main reason is that we need to install perf event for each probed function
-> > and profile shows perf event installation (perf_install_in_context) as culprit.
-> > 
-> > The new uprobe_multi link just creates raw uprobes and attaches the bpf
-> > program to them without perf event being involved.
-> > 
-> > In addition to being faster we also save file descriptors. For the current
-> > uprobe attach we use extra perf event fd for each probed function. The new
-> > link just need one fd that covers all the functions we are attaching to.
-> > 
-> > v3 changes:
-> >    - consolidate attach type checks in bpf_prog_attach_check_attach_type [Andrii]
-> >    - remove bpf_prog_active check [Alexei]
-> >    - change rcu locking [Andrii]
-> >    - allocate ref_ctr_offsets conditionally [Andrii]
-> >    - remove ctx check from bpf_uprobe_multi_cookie [Andrii]
-> >    - move some elf_* functions in elf.c object [Andrii]
-> >    - fix uprobe link detection code [Andrii]
-> >    - add usdt.s program section [Andrii]
-> >    - rename bpf_program__attach_uprobe_multi_opts to bpf_program__attach_uprobe_multi [Andrii]
-> >    - remove extra case from attach_uprobe_multi [Andrii]
-> >    - rework usdt_manager_attach_usdt [Andrii]
-> >    - rework/rename new elf_find_* functions [Andrii]
-> >    - elf iterator fixes [Andrii]
-> >      - renames
-> >      - elf_sym_iter_next loop restruct
-> >      - return directly GElf_Sym in elf_sym
-> >      - add elf_sym_offset helper
-> >      - add st_type arg elf_sym_iter_new
-> >      - get rid of '_' prefixed functions
-> >      - simplify offsets handling
-> >      - other smaller changes
-> >    - added acks
-> >    - todo:
-> >      - seems like more elf_* helpers could go in elf.c object,
-> >        I'll send that as follow up
-> >      - will send fill_info support when [3] is merged [Andrii]
-> > 
-> > 
-> > There's support for bpftrace [2] and tetragon [1].
-> > 
-> > Also available at:
-> >    https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-> >    uprobe_multi
-> > 
-> > thanks,
-> > jirka
-> > 
-> > 
-> > [1] https://github.com/cilium/tetragon/pull/936
-> > [2] https://github.com/iovisor/bpftrace/compare/master...olsajiri:bpftrace:uprobe_multi
-> > [3] https://lore.kernel.org/bpf/20230628115329.248450-1-laoar.shao@gmail.com/
-> > ---
-> > Jiri Olsa (26):
-> >        bpf: Add attach_type checks under bpf_prog_attach_check_attach_type
-> >        bpf: Add multi uprobe link
-> >        bpf: Add cookies support for uprobe_multi link
-> >        bpf: Add pid filter support for uprobe_multi link
-> >        bpf: Add bpf_get_func_ip helper support for uprobe link
-> >        libbpf: Add uprobe_multi attach type and link names
-> >        libbpf: Move elf_find_func_offset* functions to elf object
-> >        libbpf: Add elf_open/elf_close functions
-> >        libbpf: Add elf symbol iterator
-> >        libbpf: Add elf_resolve_syms_offsets function
-> >        libbpf: Add elf_resolve_pattern_offsets function
-> >        libbpf: Add bpf_link_create support for multi uprobes
-> >        libbpf: Add bpf_program__attach_uprobe_multi function
-> >        libbpf: Add support for u[ret]probe.multi[.s] program sections
-> >        libbpf: Add uprobe multi link detection
-> >        libbpf: Add uprobe multi link support to bpf_program__attach_usdt
-> >        selftests/bpf: Add uprobe_multi skel test
-> >        selftests/bpf: Add uprobe_multi api test
-> >        selftests/bpf: Add uprobe_multi link test
-> >        selftests/bpf: Add uprobe_multi test program
-> >        selftests/bpf: Add uprobe_multi bench test
-> >        selftests/bpf: Add usdt_multi test program
-> >        selftests/bpf: Add usdt_multi bench test
-> >        selftests/bpf: Add uprobe_multi cookie test
-> >        selftests/bpf: Add uprobe_multi pid filter tests
-> >        selftests/bpf: Add extra link to uprobe_multi tests
-> > 
-> >   include/linux/trace_events.h                               |   6 ++
-> >   include/uapi/linux/bpf.h                                   |  16 ++++
-> >   kernel/bpf/syscall.c                                       | 122 ++++++++++++-------------
-> >   kernel/trace/bpf_trace.c                                   | 346 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
-> >   tools/include/uapi/linux/bpf.h                             |  16 ++++
-> >   tools/lib/bpf/Build                                        |   2 +-
-> >   tools/lib/bpf/bpf.c                                        |  11 +++
-> >   tools/lib/bpf/bpf.h                                        |  11 ++-
-> >   tools/lib/bpf/elf.c                                        | 435 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> >   tools/lib/bpf/libbpf.c                                     | 396 ++++++++++++++++++++++++++++++++++++++++++---------------------------------------
-> >   tools/lib/bpf/libbpf.h                                     |  27 ++++++
-> >   tools/lib/bpf/libbpf.map                                   |   1 +
-> >   tools/lib/bpf/libbpf_elf.h                                 |  24 +++++
-> >   tools/lib/bpf/libbpf_internal.h                            |   3 +
-> >   tools/lib/bpf/usdt.c                                       | 109 +++++++++++++++--------
-> >   tools/testing/selftests/bpf/Makefile                       |  10 +++
-> >   tools/testing/selftests/bpf/prog_tests/bpf_cookie.c        |  78 ++++++++++++++++
-> >   tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c | 449 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> >   tools/testing/selftests/bpf/progs/uprobe_multi.c           | 110 +++++++++++++++++++++++
-> >   tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c      |  16 ++++
-> >   tools/testing/selftests/bpf/uprobe_multi.c                 |  53 +++++++++++
-> >   tools/testing/selftests/bpf/usdt_multi.c                   |  24 +++++
-> >   22 files changed, 1969 insertions(+), 296 deletions(-)
-> >   create mode 100644 tools/lib/bpf/elf.c
-> >   create mode 100644 tools/lib/bpf/libbpf_elf.h
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c
-> >   create mode 100644 tools/testing/selftests/bpf/uprobe_multi.c
-> >   create mode 100644 tools/testing/selftests/bpf/usdt_multi.c
-> 
-> Looks like BPF CI did not trigger because of build error with LLVM:
-> 
-> https://github.com/kernel-patches/bpf/actions/runs/5423873866/jobs/9908376097
+On Fri, Jun 30, 2023 at 7:06=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
+>
+> On Thu, Jun 29, 2023 at 1:18=E2=80=AFPM Andrii Nakryiko <andrii@kernel.or=
+g> wrote:
+> >
+> > This patch set introduces new BPF object, BPF token, which allows to de=
+legate
+> > a subset of BPF functionality from privileged system-wide daemon (e.g.,
+> > systemd or any other container manager) to a *trusted* unprivileged
+> > application. Trust is the key here. This functionality is not about all=
+owing
+> > unconditional unprivileged BPF usage. Establishing trust, though, is
+> > completely up to the discretion of respective privileged application th=
+at
+> > would create a BPF token, as different production setups can and do ach=
+ieve it
+> > through a combination of different means (signing, LSM, code reviews, e=
+tc),
+> > and it's undesirable and infeasible for kernel to enforce any particula=
+r way
+> > of validating trustworthiness of particular process.
+> >
+> > The main motivation for BPF token is a desire to enable containerized
+> > BPF applications to be used together with user namespaces. This is curr=
+ently
+> > impossible, as CAP_BPF, required for BPF subsystem usage, cannot be nam=
+espaced
+> > or sandboxed, as a general rule. E.g., tracing BPF programs, thanks to =
+BPF
+> > helpers like bpf_probe_read_kernel() and bpf_probe_read_user() can safe=
+ly read
+> > arbitrary memory, and it's impossible to ensure that they only read mem=
+ory of
+> > processes belonging to any given namespace. This means that it's imposs=
+ible to
+> > have namespace-aware CAP_BPF capability, and as such another mechanism =
+to
+> > allow safe usage of BPF functionality is necessary. BPF token and deleg=
+ation
+> > of it to a trusted unprivileged applications is such mechanism. Kernel =
+makes
+> > no assumption about what "trusted" constitutes in any particular case, =
+and
+> > it's up to specific privileged applications and their surrounding
+> > infrastructure to decide that. What kernel provides is a set of APIs to=
+ create
+> > and tune BPF token, and pass it around to privileged BPF commands that =
+are
+> > creating new BPF objects like BPF programs, BPF maps, etc.
+> >
+> > Previous attempt at addressing this very same problem ([0]) attempted t=
+o
+> > utilize authoritative LSM approach, but was conclusively rejected by up=
+stream
+> > LSM maintainers. BPF token concept is not changing anything about LSM
+> > approach, but can be combined with LSM hooks for very fine-grained secu=
+rity
+> > policy. Some ideas about making BPF token more convenient to use with L=
+SM (in
+> > particular custom BPF LSM programs) was briefly described in recent LSF=
+/MM/BPF
+> > 2023 presentation ([1]). E.g., an ability to specify user-provided data
+> > (context), which in combination with BPF LSM would allow implementing a=
+ very
+> > dynamic and fine-granular custom security policies on top of BPF token.=
+ In the
+> > interest of minimizing API surface area discussions this is going to be
+> > added in follow up patches, as it's not essential to the fundamental co=
+ncept
+> > of delegatable BPF token.
+> >
+> > It should be noted that BPF token is conceptually quite similar to the =
+idea of
+> > /dev/bpf device file, proposed by Song a while ago ([2]). The biggest
+> > difference is the idea of using virtual anon_inode file to hold BPF tok=
+en and
+> > allowing multiple independent instances of them, each with its own set =
+of
+> > restrictions. BPF pinning solves the problem of exposing such BPF token
+> > through file system (BPF FS, in this case) for cases where transferring=
+ FDs
+> > over Unix domain sockets is not convenient. And also, crucially, BPF to=
+ken
+> > approach is not using any special stateful task-scoped flags. Instead, =
+bpf()
+> > syscall accepts token_fd parameters explicitly for each relevant BPF co=
+mmand.
+> > This addresses main concerns brought up during the /dev/bpf discussion,=
+ and
+> > fits better with overall BPF subsystem design.
+> >
+> > This patch set adds a basic minimum of functionality to make BPF token =
+useful
+> > and to discuss API and functionality. Currently only low-level libbpf A=
+PIs
+> > support passing BPF token around, allowing to test kernel functionality=
+, but
+> > for the most part is not sufficient for real-world applications, which
+> > typically use high-level libbpf APIs based on `struct bpf_object` type.=
+ This
+> > was done with the intent to limit the size of patch set and concentrate=
+ on
+> > mostly kernel-side changes. All the necessary plumbing for libbpf will =
+be sent
+> > as a separate follow up patch set kernel support makes it upstream.
+> >
+> > Another part that should happen once kernel-side BPF token is establish=
+ed, is
+> > a set of conventions between applications (e.g., systemd), tools (e.g.,
+> > bpftool), and libraries (e.g., libbpf) about sharing BPF tokens through=
+ BPF FS
+> > at well-defined locations to allow applications take advantage of this =
+in
+> > automatic fashion without explicit code changes on BPF application's si=
+de.
+> > But I'd like to postpone this discussion to after BPF token concept lan=
+ds.
+> >
+> > Once important distinctions from v2 that should be noted is a chance in=
+ the
+> > semantics of a newly added BPF_TOKEN_CREATE command. Previously,
+> > BPF_TOKEN_CREATE would create BPF token kernel object and return its FD=
+ to
+> > user-space, allowing to (optionally) pin it in BPF FS using BPF_OBJ_PIN
+> > command. This v3 version changes this slightly: BPF_TOKEN_CREATE combin=
+es BPF
+> > token object creation *and* pinning in BPF FS. Such change ensures that=
+ BPF
+> > token is always associated with a specific instance of BPF FS and canno=
+t
+> > "escape" it by application re-pinning it somewhere else using another
+> > BPF_OBJ_PIN call. Now, BPF token can only be pinned once during its cre=
+ation,
+> > better containing it inside intended container (under assumption BPF FS=
+ is set
+> > up in such a way as to not be shared with other containers on the syste=
+m).
+> >
+> >   [0] https://lore.kernel.org/bpf/20230412043300.360803-1-andrii@kernel=
+.org/
+> >   [1] http://vger.kernel.org/bpfconf2023_material/Trusted_unprivileged_=
+BPF_LSFMM2023.pdf
+> >   [2] https://lore.kernel.org/bpf/20190627201923.2589391-2-songliubravi=
+ng@fb.com/
+> >
+> > v3->v3-resend:
+> >   - I started integrating token_fd into bpf_object_open_opts and higher=
+-level
+> >     libbpf bpf_object APIs, but it started going a bit deeper into bpf_=
+object
+> >     implementation details and how libbpf performs feature detection an=
+d
+> >     caching, so I decided to keep it separate from this patch set and n=
+ot
+> >     distract from the mostly kernel-side changes;
+> > v2->v3:
+> >   - make BPF_TOKEN_CREATE pin created BPF token in BPF FS, and disallow
+> >     BPF_OBJ_PIN for BPF token;
+> > v1->v2:
+> >   - fix build failures on Kconfig with CONFIG_BPF_SYSCALL unset;
+> >   - drop BPF_F_TOKEN_UNKNOWN_* flags and simplify UAPI (Stanislav).
+> >
+> > Andrii Nakryiko (14):
+> >   bpf: introduce BPF token object
+> >   libbpf: add bpf_token_create() API
+> >   selftests/bpf: add BPF_TOKEN_CREATE test
+> >   bpf: add BPF token support to BPF_MAP_CREATE command
+> >   libbpf: add BPF token support to bpf_map_create() API
+> >   selftests/bpf: add BPF token-enabled test for BPF_MAP_CREATE command
+> >   bpf: add BPF token support to BPF_BTF_LOAD command
+> >   libbpf: add BPF token support to bpf_btf_load() API
+> >   selftests/bpf: add BPF token-enabled BPF_BTF_LOAD selftest
+> >   bpf: add BPF token support to BPF_PROG_LOAD command
+> >   bpf: take into account BPF token when fetching helper protos
+> >   bpf: consistenly use BPF token throughout BPF verifier logic
+> >   libbpf: add BPF token support to bpf_prog_load() API
+> >   selftests/bpf: add BPF token-enabled BPF_PROG_LOAD tests
+> >
+> >  drivers/media/rc/bpf-lirc.c                   |   2 +-
+> >  include/linux/bpf.h                           |  79 ++++-
+> >  include/linux/filter.h                        |   2 +-
+> >  include/uapi/linux/bpf.h                      |  53 ++++
+> >  kernel/bpf/Makefile                           |   2 +-
+> >  kernel/bpf/arraymap.c                         |   2 +-
+> >  kernel/bpf/cgroup.c                           |   6 +-
+> >  kernel/bpf/core.c                             |   3 +-
+> >  kernel/bpf/helpers.c                          |   6 +-
+> >  kernel/bpf/inode.c                            |  46 ++-
+> >  kernel/bpf/syscall.c                          | 183 +++++++++---
+> >  kernel/bpf/token.c                            | 201 +++++++++++++
+> >  kernel/bpf/verifier.c                         |  13 +-
+> >  kernel/trace/bpf_trace.c                      |   2 +-
+> >  net/core/filter.c                             |  36 +--
+> >  net/ipv4/bpf_tcp_ca.c                         |   2 +-
+> >  net/netfilter/nf_bpf_link.c                   |   2 +-
+> >  tools/include/uapi/linux/bpf.h                |  53 ++++
+> >  tools/lib/bpf/bpf.c                           |  35 ++-
+> >  tools/lib/bpf/bpf.h                           |  45 ++-
+> >  tools/lib/bpf/libbpf.map                      |   1 +
+> >  .../selftests/bpf/prog_tests/libbpf_probes.c  |   4 +
+> >  .../selftests/bpf/prog_tests/libbpf_str.c     |   6 +
+> >  .../testing/selftests/bpf/prog_tests/token.c  | 277 ++++++++++++++++++
+> >  24 files changed, 957 insertions(+), 104 deletions(-)
+> >  create mode 100644 kernel/bpf/token.c
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/token.c
+> >
+> > --
+> > 2.34.1
+> >
+> >
+>
+>
+> Hi Andrii,
+>
+> Thanks for your proposal.
+> That seems to be a useful functionality, and yet I have some questions.
 
-will check, thanks
+I've answered them below. But I don't think either of them have any
+relation to BPF token and the problem I'm trying to solve.
 
-jirka
+>
+> 1. Why can't we add security_bpf_probe_read_{kernel,user}?
+>     If possible, we can use these LSM hooks to refuse the process to
+> read other tasks' information. E.g. if the other process is not within
+> the same cgroup or the same namespace, we just refuse the reading. I
+> think it is not hard to identify if the other process is within the
+> same cgroup or the same namespace.
 
-> 
->   [...]
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:367:6: error: variable 'attach_end_ns' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (!ASSERT_OK(err, "uprobe_multi__attach"))
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:381:18: note: uninitialized use occurs here
->           attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
->                           ^~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:367:2: note: remove the 'if' if its condition is always false
->           if (!ASSERT_OK(err, "uprobe_multi__attach"))
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:361:6: error: variable 'attach_end_ns' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (!ASSERT_EQ(err, 0, "uprobe_multi__load"))
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:381:18: note: uninitialized use occurs here
->           attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
->                           ^~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:361:2: note: remove the 'if' if its condition is always false
->           if (!ASSERT_EQ(err, 0, "uprobe_multi__load"))
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:352:6: error: variable 'attach_end_ns' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:381:18: note: uninitialized use occurs here
->           attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
->                           ^~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:352:2: note: remove the 'if' if its condition is always false
->           if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:344:37: note: initialize the variable 'attach_end_ns' to silence this warning
->           long attach_start_ns, attach_end_ns;
->                                              ^
->                                               = 0
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:361:6: error: variable 'attach_start_ns' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (!ASSERT_EQ(err, 0, "uprobe_multi__load"))
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:381:34: note: uninitialized use occurs here
->           attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
->                                           ^~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:361:2: note: remove the 'if' if its condition is always false
->           if (!ASSERT_EQ(err, 0, "uprobe_multi__load"))
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:352:6: error: variable 'attach_start_ns' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:381:34: note: uninitialized use occurs here
->           attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
->                                           ^~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:352:2: note: remove the 'if' if its condition is always false
->           if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:344:22: note: initialize the variable 'attach_start_ns' to silence this warning
->           long attach_start_ns, attach_end_ns;
->                               ^
->                                = 0
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:414:6: error: variable 'attach_end_ns' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (!ASSERT_OK_PTR(skel->links.usdt0, "bpf_program__attach_usdt"))
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:428:18: note: uninitialized use occurs here
->           attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
->                           ^~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:414:2: note: remove the 'if' if its condition is always false
->           if (!ASSERT_OK_PTR(skel->links.usdt0, "bpf_program__attach_usdt"))
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:407:6: error: variable 'attach_end_ns' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (!ASSERT_EQ(err, 0, "uprobe_multi_usdt__load"))
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:428:18: note: uninitialized use occurs here
->           attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
->                           ^~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:407:2: note: remove the 'if' if its condition is always false
->           if (!ASSERT_EQ(err, 0, "uprobe_multi_usdt__load"))
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:398:6: error: variable 'attach_end_ns' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:428:18: note: uninitialized use occurs here
->           attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
->                           ^~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:398:2: note: remove the 'if' if its condition is always false
->           if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:391:37: note: initialize the variable 'attach_end_ns' to silence this warning
->           long attach_start_ns, attach_end_ns;
->                                              ^
->                                               = 0
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:407:6: error: variable 'attach_start_ns' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (!ASSERT_EQ(err, 0, "uprobe_multi_usdt__load"))
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:428:34: note: uninitialized use occurs here
->           attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
->                                           ^~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:407:2: note: remove the 'if' if its condition is always false
->           if (!ASSERT_EQ(err, 0, "uprobe_multi_usdt__load"))
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:398:6: error: variable 'attach_start_ns' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:428:34: note: uninitialized use occurs here
->           attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
->                                           ^~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:398:2: note: remove the 'if' if its condition is always false
->           if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c:391:22: note: initialize the variable 'attach_start_ns' to silence this warning
->           long attach_start_ns, attach_end_ns;
->                               ^
->                                = 0
->   10 errors generated.
->     TEST-OBJ [test_progs] lookup_key.test.o
->   make: *** [Makefile:578: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/uprobe_multi_test.test.o] Error 1
->   make: *** Waiting for unfinished jobs....
->   make: Leaving directory '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
->   Error: Process completed with exit code 2.
+There are probably many reasons. First, performance-wide, LSM hook for
+each bpf_probe_read_{kernel,user}() call will be prohibitive. And just
+in general, one would need to be very careful with such LSM hooks,
+because bpf_probe_read_{kernel,user}() often happens from NMI context,
+and LSM policy would have to be written and validated very carefully
+with NMI context in mind.
+
+But, more conceptually, for probe_read you get a random address and
+you know the process context you are running in (but you might be
+actually running in softirq and NMI, and that process context is
+irrelevant). How can you efficiently (or at all) tell if that random
+address "belongs" to cgroup or namespace? Just at conceptual level?
+
+>
+> 2. Why can't we extend bpf_cookie?
+>    We're now using bpf_cookie to identify each user or each
+> application, and only the permitted cookies can create new probe
+> links.  However we find the bpf_cookie is only supported by tracing,
+> perf_event and kprobe_multi, so we're planning to extend it to other
+> possible link types, then we can use LSM hooks to control all bpf
+> links.  I think that the upstream kernel should also support
+> bpf_cookie for all bpf links. If possible, we will post it to the
+> upstream in the future.
+>    After I have read your BPF token proposal, I just have some other
+> ideas. Why can't we just extend bpf_cookie to all other BPF objects?
+> For example, all progs and maps should also have the bpf_cookie.
+>
+
+I'm not exactly clear how you use BPF cookie, but it wasn't intended
+to provide any sort of security or validation policy. It's purely a
+user-provided u64 to help distinguish different attach points when the
+same BPF program is attached in multiple places (e.g., kprobe tracing
+many different kernel functions and needing to distinguish between
+them at runtime).
+
+I do agree BPF cookie is super useful and we should keep extending
+other types of BPF programs with BPF cookie support, of course. It's
+just completely orthogonal to BPF token discussion.
+
+
+>
+> --
+> Regards
+> Yafang
 
