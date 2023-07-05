@@ -1,112 +1,260 @@
-Return-Path: <bpf+bounces-4118-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4119-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84420748F14
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 22:41:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A281C748F21
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 22:43:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B533B1C20C02
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 20:41:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 840C91C20C18
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 20:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E311426C;
-	Wed,  5 Jul 2023 20:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BFA914AA4;
+	Wed,  5 Jul 2023 20:43:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599E02F38
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 20:40:51 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F28A19AA
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 13:40:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2404C2F38
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 20:43:27 +0000 (UTC)
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C363A19B;
+	Wed,  5 Jul 2023 13:43:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=/fifbWuDHoNHAcIjRv3drkHu8ohdeevQzF2oktWj9Io=; b=G9uO9jJwBSadMmycckNc+mmykH
-	EACvs3a9OS5OZib3vrgZ/oIa3ZM7fcIGrhynO/Jex2epRa4F4+cy0owfc7j7Ms8zncXkY18XzzMum
-	fhgVHrNNlFIBMYojP+PfVSeens8FS7CQCD6eNfDibPDYy4A9sYbxoKh6Q8cp6adm3v3kptXpXoYfM
-	nqQ6bZJXw5QZCf/hg3i40O5TdA4ddgLbRxh1rjTfK6Qsqez4LTxawev1rFPLg+Pp+1t1ctVwP/N8M
-	1zyNrkp8b3QHYZ6skrxzMmmXHEKXfK8EL45eeTKMCDjizfysT+2ly9ZXtDjresHhC0cPCQqfF/lz4
-	2swqf7fQ==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qH9It-000JFc-SM; Wed, 05 Jul 2023 22:40:48 +0200
-Received: from [178.197.249.31] (helo=linux.home)
-	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qH9It-000WNG-Kt; Wed, 05 Jul 2023 22:40:47 +0200
-Subject: Re: [PATCH] bpf: make ringbuf available to modules
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, bpf@vger.kernel.org
-References: <20230705091958.2949447-1-anton.ivanov@cambridgegreys.com>
- <04e08645-d793-c32a-36d4-8335002f24ca@iogearbox.net>
- <3490d887-ae2d-df07-fcdb-67b05b87f611@cambridgegreys.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d283109d-8c49-4bbd-bb16-8927c47c69fb@iogearbox.net>
-Date: Wed, 5 Jul 2023 22:40:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=2uvD9mYwUyQ82PXrNwiJR0+WRJM0PQCF8y2F5N/cONE=; b=djk8cOqXqggfU6Ml1I4iR48Y7x
+	K1cf8UXkaxjEDlwcadptEwEIaddtNIkZ0QgDE05z3bHQsFK/T5BZk/A8EptDgFhNmtZxPrwNXlvJV
+	XqR9O+Eu8jaR3tznarXclGqLXhttQm8PKIkMB2RlU+j6j7xs3SRhCNvr1dqBVjy/o/qjV7pqiuzx2
+	dq1/AwZbWVkovVvjc8c9ypAE/fOd7iZIGqbxgefCqqqOg7/4r8r9OHqD5LuscwVdfRwKLVQhf60Zi
+	Es6WF26h4jXaLqFM+2HbZbyO0rrMU+w7jsQZkzWgNUV3/3f7udrqYKcc3yQc5ERx5e65xwVlGsfrz
+	w+G8Gp6w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1qH9Jr-00CFZa-24;
+	Wed, 05 Jul 2023 20:41:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(Client did not present a certificate)
+	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 32F36300023;
+	Wed,  5 Jul 2023 22:41:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 0F151200E5E98; Wed,  5 Jul 2023 22:41:43 +0200 (CEST)
+Date: Wed, 5 Jul 2023 22:41:42 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+	bpf@vger.kernel.org, x86@kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Juerg Haefliger <juerg.haefliger@canonical.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
+	Chuang Wang <nashuiliang@gmail.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Petr Mladek <pmladek@suse.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+	Julian Pidancet <julian.pidancet@oracle.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH 08/14] BROKEN: context_tracking: Make
+ context_tracking_key __ro_after_init
+Message-ID: <20230705204142.GB2813335@hirez.programming.kicks-ass.net>
+References: <20230705181256.3539027-1-vschneid@redhat.com>
+ <20230705181256.3539027-9-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <3490d887-ae2d-df07-fcdb-67b05b87f611@cambridgegreys.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26960/Wed Jul  5 09:29:05 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230705181256.3539027-9-vschneid@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 7/5/23 3:20 PM, Anton Ivanov wrote:
-> On 05/07/2023 12:41, Daniel Borkmann wrote:
->> On 7/5/23 11:19 AM, anton.ivanov@cambridgegreys.com wrote:
->>> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
->>>
->>> Ringbuf which was developed as a part of BPF infrastructure is
->>> a very nice, clean, simple and consise API to relay information
->>> from the kernel to userspace. It can be used in critical sections,
->>> interrupt handlers, etc.
->>>
->>> This patch exports ringbuf functionality to make it available to
->>> kernel modules.
->>>
->>> Demo: https://github.com/kot-begemot-uk/bpfnic-ng
->>>
->>> The demo ships to userspace hardware offload notifications
->>> without any mallocs, any workqueue and/or delayed work which
->>> is normally needed to handle these. As a result it is ~ 150
->>> lines of code instead of the 500+ usually needed to achieve the
->>> same result.
->>>
->>> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
->>
->> Given this is only for out-of-tree code, we cannot merge this patch.
-> 
-> The out of tree code is simply a demo what you can do with ringbuf outside BPF.
-> 
-> Ringbuf can save anyone writing a device driver quite a lot of work. It is a "ready made" IPC with userspace which requires half the code of any alternative (character device drivers, shared memory, etc).
-> 
-> What I am proposing is that it to make it generic and not BPF only.
+On Wed, Jul 05, 2023 at 07:12:50PM +0100, Valentin Schneider wrote:
 
-That is probably an okay goal (depends on the concrete situation / proposal),
-but still this needs to be in upstream tree given we cannot cater for anything
-out-of-tree and exporting symbols without good reason for an in-tree user is
-and always has been a red flag.
+> BROKEN: the struct static_key lives in a read-only mapping after
+> mark_rodata_ro(), which falls apart when the KVM module is loaded after
+> init and a write to the struct happens due to e.g. guest_state_exit_irqoff()
+> relying on the static key:
 
-Thanks,
-Daniel
+Right.. so whoever added the whole ro_after_init jump_label support did
+a very poor job of it.
+
+That said; I think it is fixable. Since the key cannot be changed, we
+don't actually need to track the entries list and can thus avoid the key
+update.
+
+Something like the completely untested below...
+
+---
+Subject: jump_label: Seal __ro_after_init keys
+
+When a static_key is marked ro_after_init, its state will never change
+(after init), therefore jump_label_update() will never need to iterate
+the entries, and thus module load won't actually need to track this --
+avoiding the static_key::next write.
+
+Therefore, mark these keys such that jump_label_add_module() might
+recognise them and avoid the modification.
+
+Use the special state: 'static_key_linked(key) && !static_key_mod(key)'
+to denote such keys.
+
+*UNTESTED*
+
+NOT-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ include/asm-generic/sections.h |  5 +++++
+ include/linux/jump_label.h     |  1 +
+ init/main.c                    |  1 +
+ kernel/jump_label.c            | 44 ++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 51 insertions(+)
+
+diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
+index db13bb620f52..c768de6f19a9 100644
+--- a/include/asm-generic/sections.h
++++ b/include/asm-generic/sections.h
+@@ -180,6 +180,11 @@ static inline bool is_kernel_rodata(unsigned long addr)
+ 	       addr < (unsigned long)__end_rodata;
+ }
+ 
++static inline bool is_kernel_ro_after_init(unsigned long addr)
++{
++	return addr >= (unsigned long)__start_ro_after_init &&
++	       addr < (unsigned long)__end_ro_after_init;
++}
+ /**
+  * is_kernel_inittext - checks if the pointer address is located in the
+  *                      .init.text section
+diff --git a/include/linux/jump_label.h b/include/linux/jump_label.h
+index f0a949b7c973..88ef9e776af8 100644
+--- a/include/linux/jump_label.h
++++ b/include/linux/jump_label.h
+@@ -216,6 +216,7 @@ extern struct jump_entry __start___jump_table[];
+ extern struct jump_entry __stop___jump_table[];
+ 
+ extern void jump_label_init(void);
++extern void jump_label_ro(void);
+ extern void jump_label_lock(void);
+ extern void jump_label_unlock(void);
+ extern void arch_jump_label_transform(struct jump_entry *entry,
+diff --git a/init/main.c b/init/main.c
+index ad920fac325c..cb5304ca18f4 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1403,6 +1403,7 @@ static void mark_readonly(void)
+ 		 * insecure pages which are W+X.
+ 		 */
+ 		rcu_barrier();
++		jump_label_ro();
+ 		mark_rodata_ro();
+ 		rodata_test();
+ 	} else
+diff --git a/kernel/jump_label.c b/kernel/jump_label.c
+index d9c822bbffb8..40fb72d79d7a 100644
+--- a/kernel/jump_label.c
++++ b/kernel/jump_label.c
+@@ -530,6 +530,46 @@ void __init jump_label_init(void)
+ 	cpus_read_unlock();
+ }
+ 
++static inline bool static_key_sealed(struct static_key *key)
++{
++	return (key->type & JUMP_TYPE_LINKED) && !(key->type & ~JUMP_TYPE_MASK);
++}
++
++static inline void static_key_seal(struct static_key *key)
++{
++	unsigned long type = key->type & JUMP_TYPE_TRUE;
++	key->type = JUMP_TYPE_LINKED | type;
++}
++
++void jump_label_ro(void)
++{
++	struct jump_entry *iter_start = __start___jump_table;
++	struct jump_entry *iter_stop = __stop___jump_table;
++	struct static_key *key = NULL;
++	struct jump_entry *iter;
++
++	if (WARN_ON_ONCE(!static_key_initialized))
++		return;
++
++	cpus_read_lock();
++	jump_label_lock();
++
++	for (iter = iter_start; iter < iter_stop; iter++) {
++		struct static_key *iterk = jump_entry_key(iter);
++
++		if (!is_kernel_ro_after_init(iterk))
++			continue;
++
++		if (static_key_sealed(iterk))
++			continue;
++
++		static_key_seal(iterk);
++	}
++
++	jump_label_unlock();
++	cpus_read_unlock();
++}
++
+ #ifdef CONFIG_MODULES
+ 
+ enum jump_label_type jump_label_init_type(struct jump_entry *entry)
+@@ -650,6 +690,9 @@ static int jump_label_add_module(struct module *mod)
+ 			static_key_set_entries(key, iter);
+ 			continue;
+ 		}
++		if (static_key_sealed(key))
++			goto do_poke;
++
+ 		jlm = kzalloc(sizeof(struct static_key_mod), GFP_KERNEL);
+ 		if (!jlm)
+ 			return -ENOMEM;
+@@ -675,6 +718,7 @@ static int jump_label_add_module(struct module *mod)
+ 		static_key_set_linked(key);
+ 
+ 		/* Only update if we've changed from our initial state */
++do_poke:
+ 		if (jump_label_type(iter) != jump_label_init_type(iter))
+ 			__jump_label_update(key, iter, iter_stop, true);
+ 	}
 
