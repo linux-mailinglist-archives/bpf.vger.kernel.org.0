@@ -1,67 +1,59 @@
-Return-Path: <bpf+bounces-4025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4026-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01538747E59
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 09:35:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99C9E747F18
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 10:09:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0F28280FF5
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 07:35:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 845E21C2031A
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 08:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF691C2E;
-	Wed,  5 Jul 2023 07:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA96210A;
+	Wed,  5 Jul 2023 08:09:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A66AD138F;
-	Wed,  5 Jul 2023 07:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BAA5186C
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 08:09:44 +0000 (UTC)
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A570197;
-	Wed,  5 Jul 2023 00:35:07 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C61F1715;
+	Wed,  5 Jul 2023 01:09:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
 	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=l2vY1WwVkbfdJVH6Zyj90CyovKSVcWmyRiX5QdEmv6c=; b=h4A7DMfVXMYwLheaGB/KP3zOrb
-	lbALYWgYyjG5/n3yMALthZN5YxJ3QI5hLK+n+FRnMd8mwB5ogcsrKDALB4Jj/ykzp/2z13PMWMecV
-	t499j9IscxF9UiQZqOaY3kAAKjFYTYQzJIP2hYcGu67q/kliqmsbcslAa+7vJME9u3WxSboAyw3Bz
-	PYXlLp/jeDzkAuIuvznCeJFx7sAUukuc3uzK/PMDsHf7enEhdBlrxeRRvMM75VDt/3NQS6OP4sT2D
-	5VrJDiHBI+X+HJSaS8eA6B0YSrX/IuDvjo16VcWGRtczDyC55OS2GeYR3rr9VVeIaBEQmsvgOAYts
-	7OxqdZWQ==;
+	bh=v9747bgRnusYJ1ZdOYBQKfkjo76G+9w4W0Ow6WUQMqM=; b=dg+tWhXNv4tvXL5fqkXljQq152
+	tiTXD9qhiyUv2PEO9dQbz9DMtLxXq6pSyAYXZFodqwrIfEeUGhU81Oj18tS7K7K1W4CqNu+KasjZz
+	olXTR6ZnkeNXcrKG/Fz3AsdvhxnV80+xAyy/zo+4L3mAEn/tyel2NVneORAhIcGUhOZkHAVo11HDv
+	KBkBVxnZkQ5M8QcpDmO0NQ1fAzWhFGzuulToyyxjsNAA55uG8wb+U6EQ/DTFaevhrXjgcnxnfzlHz
+	Ss62h3VVU6DiWwbTrpidrZEWu1oPogDzKXxZ5C5aSDorirz/xN8KAkRT9Tsnbg2e5t7BQqu4yMh7V
+	67a/geCw==;
 Received: from sslproxy01.your-server.de ([78.46.139.224])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1qGx2N-0009XN-Rv; Wed, 05 Jul 2023 09:34:55 +0200
+	id 1qGxZt-0002tw-78; Wed, 05 Jul 2023 10:09:33 +0200
 Received: from [85.1.206.226] (helo=linux.home)
 	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1qGx2N-000WvA-A7; Wed, 05 Jul 2023 09:34:55 +0200
-Subject: Re: [PATCH bpf-next v2 2/7] bpf: Add fd-based tcx multi-prog infra
- with link support
-To: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, ast@kernel.org,
- andrii@kernel.org, martin.lau@linux.dev, razor@blackwall.org,
- sdf@google.com, john.fastabend@gmail.com, kuba@kernel.org, dxu@dxuuu.xyz,
- joe@cilium.io, toke@kernel.org, davem@davemloft.net, bpf@vger.kernel.org,
- netdev@vger.kernel.org, lmb@isovalent.com
-References: <20230607192625.22641-1-daniel@iogearbox.net>
- <20230607192625.22641-3-daniel@iogearbox.net>
- <CAM0EoMm25tdjxp+7Mq4fowGfCJzFRhbThHhaO7T_46vNJ9y-NQ@mail.gmail.com>
- <fe2e13a6-1fb6-c160-1d6f-31c09264911b@iogearbox.net>
- <CAM0EoM=FFsTNNKaMbRtuRxc8ieJgDFsBifBmZZ2_67u5=+-3BQ@mail.gmail.com>
- <CAEf4BzbuzNw4gRXSSDoHTwGH82moaSWtaX1nvmUAVx4+OgaEyw@mail.gmail.com>
- <CAM0EoM=SeFagzNMWLHqM7LRXt71pWz7BJax_4rvCnLyARDyWig@mail.gmail.com>
- <15ab0ba7-abf7-b9c3-eb5e-7a6b9fd79977@iogearbox.net>
- <CAM0EoMndiP6c20Q9g+dSFMh+XPJCdCAUzjHPXm6-4mmNJtAH3A@mail.gmail.com>
+	id 1qGxZs-000CLC-H9; Wed, 05 Jul 2023 10:09:32 +0200
+Subject: Re: [PATCH v6 bpf-next 03/11] bpftool: Show kprobe_multi link info
+To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
+ john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, quentin@isovalent.com,
+ rostedt@goodmis.org, mhiramat@kernel.org
+Cc: bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20230628115329.248450-1-laoar.shao@gmail.com>
+ <20230628115329.248450-4-laoar.shao@gmail.com>
 From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b147aa2d-6aa5-6336-1484-41c7c1032ecd@iogearbox.net>
-Date: Wed, 5 Jul 2023 09:34:54 +0200
+Message-ID: <0097aac1-c15c-8752-b087-32b2144e9d79@iogearbox.net>
+Date: Wed, 5 Jul 2023 10:09:31 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 Precedence: bulk
@@ -70,10 +62,10 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAM0EoMndiP6c20Q9g+dSFMh+XPJCdCAUzjHPXm6-4mmNJtAH3A@mail.gmail.com>
+In-Reply-To: <20230628115329.248450-4-laoar.shao@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.8/26959/Tue Jul  4 09:29:23 2023)
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,65 +75,172 @@ X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 7/5/23 12:38 AM, Jamal Hadi Salim wrote:
-> On Tue, Jul 4, 2023 at 6:01 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 7/4/23 11:36 PM, Jamal Hadi Salim wrote:
->>> On Thu, Jun 8, 2023 at 5:25 PM Andrii Nakryiko
->>> <andrii.nakryiko@gmail.com> wrote:
->>>> On Thu, Jun 8, 2023 at 12:46 PM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
->>>>> On Thu, Jun 8, 2023 at 6:12 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>>>> On 6/8/23 3:25 AM, Jamal Hadi Salim wrote:
->> [...]
->>>>>> BPF links are supported for XDP today, just tc BPF is one of the few
->>>>>> remainders where it is not the case, hence the work of this series. What
->>>>>> XDP lacks today however is multi-prog support. With the bpf_mprog concept
->>>>>> that could be addressed with that common/uniform api (and Andrii expressed
->>>>>> interest in integrating this also for cgroup progs), so yes, various hook
->>>>>> points/program types could benefit from it.
->>>>>
->>>>> Is there some sample XDP related i could look at?  Let me describe our
->>>>> use case: lets say we load an ebpf program foo attached to XDP of a
->>>>> netdev  and then something further upstream in the stack is consuming
->>>>> the results of that ebpf XDP program. For some reason someone, at some
->>>>> point, decides to replace the XDP prog with a different one - and the
->>>>> new prog does a very different thing. Could we stop the replacement
->>>>> with the link mechanism you describe? i.e the program is still loaded
->>>>> but is no longer attached to the netdev.
->>>>
->>>> If you initially attached an XDP program using BPF link api
->>>> (LINK_CREATE command in bpf() syscall), then subsequent attachment to
->>>> the same interface (of a new link or program with BPF_PROG_ATTACH)
->>>> will fail until the current BPF link is detached through closing its
->>>> last fd.
->>>
->>> So this works as advertised. The problem is however not totally solved
->>> because it seems we need a process that's alive to hold the ownership.
->>> If we had a daemon then that would solve it i think (we dont).
->>> Alternatively,  you pin the link. The pinning part can be
->>> circumvented, unless i misunderstood i,e anybody with the right
->>> permissions can remove it.
->>>
->>> Am I missing something?
->>
->> It would be either of those depending on the use case, and for pinning
->> removal, it would require right permissions/acls. Keep in mind that for
->> your application you can also use your own bpffs mount, so you don't
->> need to use the default /sys/fs/bpf one in hostns.
-> 
-> This helps for sure - doesnt 100% solve it. It would really be nice if
-> we could tie in a kerberos-like ticketing system for ownership of the
-> mount or something even more fine grained like a link. Doesnt have to
-> be kerberos but anything that would allow a digest of some verifiable
-> credentials/token to be handed to the kernel for authorization...
+T24gNi8yOC8yMyAxOjUzIFBNLCBZYWZhbmcgU2hhbyB3cm90ZToNCj4gU2hvdyB0aGUgYWxy
+ZWFkeSBleHBvc2Uga3Byb2JlX211bHRpIGxpbmsgaW5mbyBpbiBicGZ0b29sLiBUaGUgcmVz
+dWx0IGFzDQo+IGZvbGxvd3MsDQo+IA0KPiAkIHRvb2xzL2JwZi9icGZ0b29sL2JwZnRvb2wg
+bGluayBzaG93DQo+IDkxOiBrcHJvYmVfbXVsdGkgIHByb2cgMjQ0DQo+ICAgICAgICAgIGtw
+cm9iZS5tdWx0aSAgZnVuY19jbnQgNw0KPiAgICAgICAgICBhZGRyICAgICAgICAgICAgIGZ1
+bmMgW21vZHVsZV0NCj4gICAgICAgICAgZmZmZmZmZmY5OGM0NGYyMCBzY2hlZHVsZV90aW1l
+b3V0X2ludGVycnVwdGlibGUNCj4gICAgICAgICAgZmZmZmZmZmY5OGM0NGY2MCBzY2hlZHVs
+ZV90aW1lb3V0X2tpbGxhYmxlDQo+ICAgICAgICAgIGZmZmZmZmZmOThjNDRmYTAgc2NoZWR1
+bGVfdGltZW91dF91bmludGVycnVwdGlibGUNCj4gICAgICAgICAgZmZmZmZmZmY5OGM0NGZl
+MCBzY2hlZHVsZV90aW1lb3V0X2lkbGUNCj4gICAgICAgICAgZmZmZmZmZmZjMDc1YjhkMCB4
+ZnNfdHJhbnNfZ2V0X2VmZCBbeGZzXQ0KPiAgICAgICAgICBmZmZmZmZmZmMwNzY4YTEwIHhm
+c190cmFuc19nZXRfYnVmX21hcCBbeGZzXQ0KPiAgICAgICAgICBmZmZmZmZmZmMwNzZjMzIw
+IHhmc190cmFuc19nZXRfZHF0cnggW3hmc10NCj4gICAgICAgICAgcGlkcyBrcHJvYmVfbXVs
+dGkoMTg4MzY3KQ0KPiA5Mjoga3Byb2JlX211bHRpICBwcm9nIDI0NA0KPiAgICAgICAgICBr
+cmV0cHJvYmUubXVsdGkgIGZ1bmNfY250IDcNCj4gICAgICAgICAgYWRkciAgICAgICAgICAg
+ICBmdW5jIFttb2R1bGVdDQo+ICAgICAgICAgIGZmZmZmZmZmOThjNDRmMjAgc2NoZWR1bGVf
+dGltZW91dF9pbnRlcnJ1cHRpYmxlDQo+ICAgICAgICAgIGZmZmZmZmZmOThjNDRmNjAgc2No
+ZWR1bGVfdGltZW91dF9raWxsYWJsZQ0KPiAgICAgICAgICBmZmZmZmZmZjk4YzQ0ZmEwIHNj
+aGVkdWxlX3RpbWVvdXRfdW5pbnRlcnJ1cHRpYmxlDQo+ICAgICAgICAgIGZmZmZmZmZmOThj
+NDRmZTAgc2NoZWR1bGVfdGltZW91dF9pZGxlDQo+ICAgICAgICAgIGZmZmZmZmZmYzA3NWI4
+ZDAgeGZzX3RyYW5zX2dldF9lZmQgW3hmc10NCj4gICAgICAgICAgZmZmZmZmZmZjMDc2OGEx
+MCB4ZnNfdHJhbnNfZ2V0X2J1Zl9tYXAgW3hmc10NCj4gICAgICAgICAgZmZmZmZmZmZjMDc2
+YzMyMCB4ZnNfdHJhbnNfZ2V0X2RxdHJ4IFt4ZnNdDQo+ICAgICAgICAgIHBpZHMga3Byb2Jl
+X211bHRpKDE4ODM2NykNCj4gDQo+ICQgdG9vbHMvYnBmL2JwZnRvb2wvYnBmdG9vbCBsaW5r
+IHNob3cgLWoNCj4gW3siaWQiOjkxLCJ0eXBlIjoia3Byb2JlX211bHRpIiwicHJvZ19pZCI6
+MjQ0LCJyZXRwcm9iZSI6ZmFsc2UsImZ1bmNfY250Ijo3LCJmdW5jcyI6W3siYWRkciI6MTg0
+NDY3NDQwNzE5Nzc1ODY0NjQsImZ1bmMiOiJzY2hlZHVsZV90aW1lb3V0X2ludGVycnVwdGli
+bGUiLCJtb2R1bGUiOm51bGx9LHsiYWRkciI6MTg0NDY3NDQwNzE5Nzc1ODY1MjgsImZ1bmMi
+OiJzY2hlZHVsZV90aW1lb3V0X2tpbGxhYmxlIiwibW9kdWxlIjpudWxsfSx7ImFkZHIiOjE4
+NDQ2NzQ0MDcxOTc3NTg2NTkyLCJmdW5jIjoic2NoZWR1bGVfdGltZW91dF91bmludGVycnVw
+dGlibGUiLCJtb2R1bGUiOm51bGx9LHsiYWRkciI6MTg0NDY3NDQwNzE5Nzc1ODY2NTYsImZ1
+bmMiOiJzY2hlZHVsZV90aW1lb3V0X2lkbGUiLCJtb2R1bGUiOm51bGx9LHsiYWRkciI6MTg0
+NDY3NDQwNzI2NDM1MjQ4MTYsImZ1bmMiOiJ4ZnNfdHJhbnNfZ2V0X2VmZCIsIm1vZHVsZSI6
+InhmcyJ9LHsiYWRkciI6MTg0NDY3NDQwNzI2NDM1NzgzODQsImZ1bmMiOiJ4ZnNfdHJhbnNf
+Z2V0X2J1Zl9tYXAiLCJtb2R1bGUiOiJ4ZnMifSx7ImFkZHIiOjE4NDQ2NzQ0MDcyNjQzNTky
+OTkyLCJmdW5jIjoieGZzX3RyYW5zX2dldF9kcXRyeCIsIm1vZHVsZSI6InhmcyJ9XSwicGlk
+cyI6W3sicGlkIjoxODgzNjcsImNvbW0iOiJrcHJvYmVfbXVsdGkifV19LHsiaWQiOjkyLCJ0
+eXBlIjoia3Byb2JlX211bHRpIiwicHJvZ19pZCI6MjQ0LCJyZXRwcm9iZSI6dHJ1ZSwiZnVu
+Y19jbnQiOjcsImZ1bmNzIjpbeyJhZGRyIjoxODQ0Njc0NDA3MTk3NzU4NjQ2NCwiZnVuYyI6
+InNjaGVkdWxlX3RpbWVvdXRfaW50ZXJydXB0aWJsZSIsIm1vZHVsZSI6bnVsbH0seyJhZGRy
+IjoxODQ0Njc0NDA3MTk3NzU4NjUyOCwiZnVuYyI6InNjaGVkdWxlX3RpbWVvdXRfa2lsbGFi
+bGUiLCJtb2R1bGUiOm51bGx9LHsiYWRkciI6MTg0NDY3NDQwNzE5Nzc1ODY1OTIsImZ1bmMi
+OiJzY2hlZHVsZV90aW1lb3V0X3VuaW50ZXJydXB0aWJsZSIsIm1vZHVsZSI6bnVsbH0seyJh
+ZGRyIjoxODQ0Njc0NDA3MTk3NzU4NjY1NiwiZnVuYyI6InNjaGVkdWxlX3RpbWVvdXRfaWRs
+ZSIsIm1vZHVsZSI6bnVsbH0seyJhZGRyIjoxODQ0Njc0NDA3MjY0MzUyNDgxNiwiZnVuYyI6
+Inhmc190cmFuc19nZXRfZWZkIiwibW9kdWxlIjoieGZzIn0seyJhZGRyIjoxODQ0Njc0NDA3
+MjY0MzU3ODM4NCwiZnVuYyI6Inhmc190cmFuc19nZXRfYnVmX21hcCIsIm1vZHVsZSI6Inhm
+cyJ9LHsiYWRkciI6MTg0NDY3NDQwNzI2NDM1OTI5OTIsImZ1bmMiOiJ4ZnNfdHJhbnNfZ2V0
+X2RxdHJ4IiwibW9kdWxlIjoieGZzIn1dLCJwaWRzIjpbeyJwaWQiOjE4ODM2NywiY29tbSI6
+Imtwcm9iZV9tdWx0aSJ9XX1dDQo+IA0KPiBXaGVuIGtwdHJfcmVzdHJpY3QgaXMgMiwgdGhl
+IHJlc3VsdCBpcywNCj4gDQo+ICQgdG9vbHMvYnBmL2JwZnRvb2wvYnBmdG9vbCBsaW5rIHNo
+b3cNCj4gOTE6IGtwcm9iZV9tdWx0aSAgcHJvZyAyNDQNCj4gICAgICAgICAga3Byb2JlLm11
+bHRpICBmdW5jX2NudCA3DQo+IDkyOiBrcHJvYmVfbXVsdGkgIHByb2cgMjQ0DQo+ICAgICAg
+ICAgIGtyZXRwcm9iZS5tdWx0aSAgZnVuY19jbnQgNw0KPiANCj4gU2lnbmVkLW9mZi1ieTog
+WWFmYW5nIFNoYW8gPGxhb2FyLnNoYW9AZ21haWwuY29tPg0KPiBSZXZpZXdlZC1ieTogUXVl
+bnRpbiBNb25uZXQgPHF1ZW50aW5AaXNvdmFsZW50LmNvbT4NCg0KTWFpbmx5IHNtYWxsIG5p
+dHMsIGJ1dCBvdGhlcndpc2Ugc2VyaWVzIGxndG0sIHRoYW5rcyBmb3IgaW1wcm92aW5nIHRo
+ZSB2aXNpYmlsaXR5IQ0KDQo+ICAgdG9vbHMvYnBmL2JwZnRvb2wvbGluay5jIHwgMTE0ICsr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLQ0KPiAgIDEgZmlsZSBjaGFu
+Z2VkLCAxMTMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdp
+dCBhL3Rvb2xzL2JwZi9icGZ0b29sL2xpbmsuYyBiL3Rvb2xzL2JwZi9icGZ0b29sL2xpbmsu
+Yw0KPiBpbmRleCAyZDc4NjA3MmVkMGQuLjM0ZmExN2NkOWQyYSAxMDA2NDQNCj4gLS0tIGEv
+dG9vbHMvYnBmL2JwZnRvb2wvbGluay5jDQo+ICsrKyBiL3Rvb2xzL2JwZi9icGZ0b29sL2xp
+bmsuYw0KPiBAQCAtMTQsOCArMTQsMTAgQEANCj4gICANCj4gICAjaW5jbHVkZSAianNvbl93
+cml0ZXIuaCINCj4gICAjaW5jbHVkZSAibWFpbi5oIg0KPiArI2luY2x1ZGUgInhsYXRlZF9k
+dW1wZXIuaCINCj4gICANCj4gICBzdGF0aWMgc3RydWN0IGhhc2htYXAgKmxpbmtfdGFibGU7
+DQo+ICtzdGF0aWMgc3RydWN0IGR1bXBfZGF0YSBkZCA9IHt9Ow0KDQpEb2Vzbid0IG5lZWQg
+ZXhwbGljaXQgPSB7fQ0KDQo+ICAgc3RhdGljIGludCBsaW5rX3BhcnNlX2ZkKGludCAqYXJn
+YywgY2hhciAqKiphcmd2KQ0KPiAgIHsNCj4gQEAgLTE2Niw2ICsxNjgsNTAgQEAgc3RhdGlj
+IGludCBnZXRfcHJvZ19pbmZvKGludCBwcm9nX2lkLCBzdHJ1Y3QgYnBmX3Byb2dfaW5mbyAq
+aW5mbykNCj4gICAJcmV0dXJuIGVycjsNCj4gICB9DQo+ICAgDQo+ICtzdGF0aWMgaW50IGNt
+cF91NjQoY29uc3Qgdm9pZCAqQSwgY29uc3Qgdm9pZCAqQikNCj4gK3sNCj4gKwljb25zdCBf
+X3U2NCAqYSA9IEEsICpiID0gQjsNCj4gKw0KPiArCXJldHVybiAqYSAtICpiOw0KPiArfQ0K
+PiArDQo+ICtzdGF0aWMgdm9pZA0KPiArc2hvd19rcHJvYmVfbXVsdGlfanNvbihzdHJ1Y3Qg
+YnBmX2xpbmtfaW5mbyAqaW5mbywganNvbl93cml0ZXJfdCAqd3RyKQ0KPiArew0KPiArCV9f
+dTMyIGksIGogPSAwOw0KPiArCV9fdTY0ICphZGRyczsNCj4gKw0KPiArCWpzb253X2Jvb2xf
+ZmllbGQoanNvbl93dHIsICJyZXRwcm9iZSIsDQo+ICsJCQkgaW5mby0+a3Byb2JlX211bHRp
+LmZsYWdzICYgQlBGX0ZfS1BST0JFX01VTFRJX1JFVFVSTik7DQo+ICsJanNvbndfdWludF9m
+aWVsZChqc29uX3d0ciwgImZ1bmNfY250IiwgaW5mby0+a3Byb2JlX211bHRpLmNvdW50KTsN
+Cj4gKwlqc29ud19uYW1lKGpzb25fd3RyLCAiZnVuY3MiKTsNCj4gKwlqc29ud19zdGFydF9h
+cnJheShqc29uX3d0cik7DQo+ICsJYWRkcnMgPSAoX191NjQgKil1NjRfdG9fcHRyKGluZm8t
+Pmtwcm9iZV9tdWx0aS5hZGRycyk7DQoNCk5vIG5lZWQgdG8gZXhwbGljaXRseSBjYXN0Lg0K
+DQo+ICsJcXNvcnQoKHZvaWQgKilhZGRycywgaW5mby0+a3Byb2JlX211bHRpLmNvdW50LCBz
+aXplb2YoX191NjQpLCBjbXBfdTY0KTsNCg0KRGl0dG8gd3J0IGNhc3QsIGFsc28gc2l6ZW9m
+KGFkZHJzWzBdKQ0KDQo+ICsJLyogTG9hZCBpdCBvbmNlIGZvciBhbGwuICovDQo+ICsJaWYg
+KCFkZC5zeW1fY291bnQpDQo+ICsJCWtlcm5lbF9zeW1zX2xvYWQoJmRkKTsNCj4gKwlmb3Ig
+KGkgPSAwOyBpIDwgZGQuc3ltX2NvdW50OyBpKyspIHsNCj4gKwkJaWYgKGRkLnN5bV9tYXBw
+aW5nW2ldLmFkZHJlc3MgIT0gYWRkcnNbal0pDQo+ICsJCQljb250aW51ZTsNCj4gKwkJanNv
+bndfc3RhcnRfb2JqZWN0KGpzb25fd3RyKTsNCj4gKwkJanNvbndfdWludF9maWVsZChqc29u
+X3d0ciwgImFkZHIiLCBkZC5zeW1fbWFwcGluZ1tpXS5hZGRyZXNzKTsNCj4gKwkJanNvbndf
+c3RyaW5nX2ZpZWxkKGpzb25fd3RyLCAiZnVuYyIsIGRkLnN5bV9tYXBwaW5nW2ldLm5hbWUp
+Ow0KPiArCQkvKiBQcmludCBudWxsIGlmIGl0IGlzIHZtbGludXggKi8NCj4gKwkJaWYgKGRk
+LnN5bV9tYXBwaW5nW2ldLm1vZHVsZVswXSA9PSAnXDAnKSB7DQo+ICsJCQlqc29ud19uYW1l
+KGpzb25fd3RyLCAibW9kdWxlIik7DQo+ICsJCQlqc29ud19udWxsKGpzb25fd3RyKTsNCj4g
+KwkJfSBlbHNlIHsNCj4gKwkJCWpzb253X3N0cmluZ19maWVsZChqc29uX3d0ciwgIm1vZHVs
+ZSIsIGRkLnN5bV9tYXBwaW5nW2ldLm1vZHVsZSk7DQo+ICsJCX0NCj4gKwkJanNvbndfZW5k
+X29iamVjdChqc29uX3d0cik7DQo+ICsJCWlmIChqKysgPT0gaW5mby0+a3Byb2JlX211bHRp
+LmNvdW50KQ0KPiArCQkJYnJlYWs7DQo+ICsJfQ0KPiArCWpzb253X2VuZF9hcnJheShqc29u
+X3d0cik7DQo+ICt9DQo+ICsNCj4gICBzdGF0aWMgaW50IHNob3dfbGlua19jbG9zZV9qc29u
+KGludCBmZCwgc3RydWN0IGJwZl9saW5rX2luZm8gKmluZm8pDQo+ICAgew0KPiAgIAlzdHJ1
+Y3QgYnBmX3Byb2dfaW5mbyBwcm9nX2luZm87DQo+IEBAIC0yMTgsNiArMjY0LDkgQEAgc3Rh
+dGljIGludCBzaG93X2xpbmtfY2xvc2VfanNvbihpbnQgZmQsIHN0cnVjdCBicGZfbGlua19p
+bmZvICppbmZvKQ0KPiAgIAkJanNvbndfdWludF9maWVsZChqc29uX3d0ciwgIm1hcF9pZCIs
+DQo+ICAgCQkJCSBpbmZvLT5zdHJ1Y3Rfb3BzLm1hcF9pZCk7DQo+ICAgCQlicmVhazsNCj4g
+KwljYXNlIEJQRl9MSU5LX1RZUEVfS1BST0JFX01VTFRJOg0KPiArCQlzaG93X2twcm9iZV9t
+dWx0aV9qc29uKGluZm8sIGpzb25fd3RyKTsNCj4gKwkJYnJlYWs7DQo+ICAgCWRlZmF1bHQ6
+DQo+ICAgCQlicmVhazsNCj4gICAJfQ0KPiBAQCAtMzUxLDYgKzQwMCw0NCBAQCB2b2lkIG5l
+dGZpbHRlcl9kdW1wX3BsYWluKGNvbnN0IHN0cnVjdCBicGZfbGlua19pbmZvICppbmZvKQ0K
+PiAgIAkJcHJpbnRmKCIgZmxhZ3MgMHgleCIsIGluZm8tPm5ldGZpbHRlci5mbGFncyk7DQo+
+ICAgfQ0KPiAgIA0KPiArc3RhdGljIHZvaWQgc2hvd19rcHJvYmVfbXVsdGlfcGxhaW4oc3Ry
+dWN0IGJwZl9saW5rX2luZm8gKmluZm8pDQo+ICt7DQo+ICsJX191MzIgaSwgaiA9IDA7DQo+
+ICsJX191NjQgKmFkZHJzOw0KPiArDQo+ICsJaWYgKCFpbmZvLT5rcHJvYmVfbXVsdGkuY291
+bnQpDQo+ICsJCXJldHVybjsNCj4gKw0KPiArCWlmIChpbmZvLT5rcHJvYmVfbXVsdGkuZmxh
+Z3MgJiBCUEZfRl9LUFJPQkVfTVVMVElfUkVUVVJOKQ0KPiArCQlwcmludGYoIlxuXHRrcmV0
+cHJvYmUubXVsdGkgICIpOw0KPiArCWVsc2UNCj4gKwkJcHJpbnRmKCJcblx0a3Byb2JlLm11
+bHRpICAiKTsNCj4gKwlwcmludGYoImZ1bmNfY250ICV1ICAiLCBpbmZvLT5rcHJvYmVfbXVs
+dGkuY291bnQpOw0KPiArCWFkZHJzID0gKF9fdTY0ICopdTY0X3RvX3B0cihpbmZvLT5rcHJv
+YmVfbXVsdGkuYWRkcnMpOw0KPiArCXFzb3J0KCh2b2lkICopYWRkcnMsIGluZm8tPmtwcm9i
+ZV9tdWx0aS5jb3VudCwgc2l6ZW9mKF9fdTY0KSwgY21wX3U2NCk7DQoNClNhbWUuDQoNCj4g
+KwkvKiBMb2FkIGl0IG9uY2UgZm9yIGFsbC4gKi8NCj4gKwlpZiAoIWRkLnN5bV9jb3VudCkN
+Cj4gKwkJa2VybmVsX3N5bXNfbG9hZCgmZGQpOw0KPiArCWlmICghZGQuc3ltX2NvdW50KQ0K
+PiArCQlyZXR1cm47DQo+ICsNCj4gKwlwcmludGYoIlxuXHQlLTE2cyAlcyIsICJhZGRyIiwg
+ImZ1bmMgW21vZHVsZV0iKTsNCj4gKwlmb3IgKGkgPSAwOyBpIDwgZGQuc3ltX2NvdW50OyBp
+KyspIHsNCj4gKwkJaWYgKGRkLnN5bV9tYXBwaW5nW2ldLmFkZHJlc3MgIT0gYWRkcnNbal0p
+DQo+ICsJCQljb250aW51ZTsNCj4gKwkJcHJpbnRmKCJcblx0JTAxNmx4ICVzIiwNCj4gKwkJ
+ICAgICAgIGRkLnN5bV9tYXBwaW5nW2ldLmFkZHJlc3MsIGRkLnN5bV9tYXBwaW5nW2ldLm5h
+bWUpOw0KPiArCQlpZiAoZGQuc3ltX21hcHBpbmdbaV0ubW9kdWxlWzBdICE9ICdcMCcpDQo+
+ICsJCQlwcmludGYoIiBbJXNdICAiLCBkZC5zeW1fbWFwcGluZ1tpXS5tb2R1bGUpOw0KPiAr
+CQllbHNlDQo+ICsJCQlwcmludGYoIiAgIik7DQo+ICsNCj4gKwkJaWYgKGorKyA9PSBpbmZv
+LT5rcHJvYmVfbXVsdGkuY291bnQpDQo+ICsJCQlicmVhazsNCj4gKwl9DQo+ICt9DQo+ICsN
+Cj4gICBzdGF0aWMgaW50IHNob3dfbGlua19jbG9zZV9wbGFpbihpbnQgZmQsIHN0cnVjdCBi
+cGZfbGlua19pbmZvICppbmZvKQ0KPiAgIHsNCj4gICAJc3RydWN0IGJwZl9wcm9nX2luZm8g
+cHJvZ19pbmZvOw0KPiBAQCAtMzk2LDYgKzQ4Myw5IEBAIHN0YXRpYyBpbnQgc2hvd19saW5r
+X2Nsb3NlX3BsYWluKGludCBmZCwgc3RydWN0IGJwZl9saW5rX2luZm8gKmluZm8pDQo+ICAg
+CWNhc2UgQlBGX0xJTktfVFlQRV9ORVRGSUxURVI6DQo+ICAgCQluZXRmaWx0ZXJfZHVtcF9w
+bGFpbihpbmZvKTsNCj4gICAJCWJyZWFrOw0KPiArCWNhc2UgQlBGX0xJTktfVFlQRV9LUFJP
+QkVfTVVMVEk6DQo+ICsJCXNob3dfa3Byb2JlX211bHRpX3BsYWluKGluZm8pOw0KPiArCQli
+cmVhazsNCj4gICAJZGVmYXVsdDoNCj4gICAJCWJyZWFrOw0KPiAgIAl9DQo+IEBAIC00MTcs
+NyArNTA3LDkgQEAgc3RhdGljIGludCBkb19zaG93X2xpbmsoaW50IGZkKQ0KPiAgIHsNCj4g
+ICAJc3RydWN0IGJwZl9saW5rX2luZm8gaW5mbzsNCj4gICAJX191MzIgbGVuID0gc2l6ZW9m
+KGluZm8pOw0KPiArCV9fdTY0ICphZGRycyA9IE5VTEw7DQo+ICAgCWNoYXIgYnVmWzI1Nl07
+DQo+ICsJaW50IGNvdW50Ow0KPiAgIAlpbnQgZXJyOw0KPiAgIA0KPiAgIAltZW1zZXQoJmlu
+Zm8sIDAsIHNpemVvZihpbmZvKSk7DQo+IEBAIC00NDEsMTIgKzUzMywyOCBAQCBzdGF0aWMg
+aW50IGRvX3Nob3dfbGluayhpbnQgZmQpDQo+ICAgCQlpbmZvLml0ZXIudGFyZ2V0X25hbWVf
+bGVuID0gc2l6ZW9mKGJ1Zik7DQo+ICAgCQlnb3RvIGFnYWluOw0KPiAgIAl9DQo+ICsJaWYg
+KGluZm8udHlwZSA9PSBCUEZfTElOS19UWVBFX0tQUk9CRV9NVUxUSSAmJg0KPiArCSAgICAh
+aW5mby5rcHJvYmVfbXVsdGkuYWRkcnMpIHsNCj4gKwkJY291bnQgPSBpbmZvLmtwcm9iZV9t
+dWx0aS5jb3VudDsNCj4gKwkJaWYgKGNvdW50KSB7DQo+ICsJCQlhZGRycyA9IGNhbGxvYyhj
+b3VudCwgc2l6ZW9mKF9fdTY0KSk7DQo+ICsJCQlpZiAoIWFkZHJzKSB7DQo+ICsJCQkJcF9l
+cnIoIm1lbSBhbGxvYyBmYWlsZWQiKTsNCj4gKwkJCQljbG9zZShmZCk7DQo+ICsJCQkJcmV0
+dXJuIC0xOw0KDQotRU5PTUVNDQoNCj4gKwkJCX0NCj4gKwkJCWluZm8ua3Byb2JlX211bHRp
+LmFkZHJzID0gKHVuc2lnbmVkIGxvbmcpYWRkcnM7DQoNCnB0cl90b191NjQoKQ0KDQoNCih0
+aGUgc2FtZSBzaG91bGQgYWxzbyBoYXZlIGJlZW4gdXNlZCBmb3IgYWJvdmUgKHVuc2lnbmVk
+IGxvbmcpJmJ1ZikNCg0KPiArCQkJZ290byBhZ2FpbjsNCj4gKwkJfQ0KPiArCX0NCj4gICAN
+Cj4gICAJaWYgKGpzb25fb3V0cHV0KQ0KPiAgIAkJc2hvd19saW5rX2Nsb3NlX2pzb24oZmQs
+ICZpbmZvKTsNCj4gICAJZWxzZQ0KPiAgIAkJc2hvd19saW5rX2Nsb3NlX3BsYWluKGZkLCAm
+aW5mbyk7DQo+ICAgDQo+ICsJaWYgKGFkZHJzKQ0KPiArCQlmcmVlKGFkZHJzKTsNCj4gICAJ
+Y2xvc2UoZmQpOw0KPiAgIAlyZXR1cm4gMDsNCj4gICB9DQo+IEBAIC00NzEsNyArNTc5LDgg
+QEAgc3RhdGljIGludCBkb19zaG93KGludCBhcmdjLCBjaGFyICoqYXJndikNCj4gICAJCWZk
+ID0gbGlua19wYXJzZV9mZCgmYXJnYywgJmFyZ3YpOw0KPiAgIAkJaWYgKGZkIDwgMCkNCj4g
+ICAJCQlyZXR1cm4gZmQ7DQo+IC0JCXJldHVybiBkb19zaG93X2xpbmsoZmQpOw0KPiArCQlk
+b19zaG93X2xpbmsoZmQpOw0KPiArCQlnb3RvIG91dDsNCj4gICAJfQ0KPiAgIA0KPiAgIAlp
+ZiAoYXJnYykNCj4gQEAgLTUxMCw2ICs2MTksOSBAQCBzdGF0aWMgaW50IGRvX3Nob3coaW50
+IGFyZ2MsIGNoYXIgKiphcmd2KQ0KPiAgIAlpZiAoc2hvd19waW5uZWQpDQo+ICAgCQlkZWxl
+dGVfcGlubmVkX29ial90YWJsZShsaW5rX3RhYmxlKTsNCj4gICANCj4gK291dDoNCj4gKwlp
+ZiAoZGQuc3ltX2NvdW50KQ0KPiArCQlrZXJuZWxfc3ltc19kZXN0cm95KCZkZCk7DQo+ICAg
+CXJldHVybiBlcnJubyA9PSBFTk9FTlQgPyAwIDogLTE7DQo+ICAgfQ0KPiAgIA0KPiANCg0K
 
-What is your use-case, you don't want anyone except your own orchestration
-application to access it, so any kind of ACLs, LSM policies or making the
-mount only available to your container are not enough in this scenario you
-have in mind?
-
-I think the closest to that is probably the prototype which Lorenz recently
-built where the user space application's digest is validated via IMA [0].
-
-   [0] http://vger.kernel.org/bpfconf2023_material/Lorenz_Bauer_-_BPF_signing_using_fsverity_and_LSM_gatekeeper.pdf
-       https://github.com/isovalent/bpf-verity
 
