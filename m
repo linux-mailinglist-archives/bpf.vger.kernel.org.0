@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-4040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B823B7481BE
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 12:09:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 376F57481C5
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 12:13:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 311B6280FDA
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 10:09:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45B6A1C20A5A
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 10:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B20539B;
-	Wed,  5 Jul 2023 10:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7351E539B;
+	Wed,  5 Jul 2023 10:13:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B324C8F
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 10:09:18 +0000 (UTC)
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5736E10A;
-	Wed,  5 Jul 2023 03:09:15 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-635f293884cso39101656d6.3;
-        Wed, 05 Jul 2023 03:09:15 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430174C8F
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 10:13:39 +0000 (UTC)
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5458E122;
+	Wed,  5 Jul 2023 03:13:37 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id a1e0cc1a2514c-784f7f7deddso2036136241.3;
+        Wed, 05 Jul 2023 03:13:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688551754; x=1691143754;
+        d=gmail.com; s=20221208; t=1688552016; x=1691144016;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AUieIrFSQeaCUCCf5YNql2a5kikqQNM5mywYU08iHu8=;
-        b=hQTJqKzG0Uvka8W9lk6zkyVvlz3m4d8kh4l1yfRfj8PBVja5wROgDmkj+87MZ1pgcB
-         rMCqqF6LyKAefgIfX4ireN3aQDjnM37iC6lZU3q8/FSkq6oJrXKPprRJ+ErYtUARc2Lf
-         1wTsxsQZ5k0SJ4Gk/slevtqp5VQFIbQnW4U+GJB1GqbRKqL/29/O2cnQDQlV0WLalYh9
-         vsaISYPo0v/5nDGH8zx6smQZ6AvlGp2W0PI/MOzK0f06WJQOhWAKEbRnY3R9CmKaxONR
-         Sv9/wt/BuSCsbz37TId68WvbBbwG7+PNxm/fbyTIgR0xhFYrKW0OgYOQKgqWYaL2Ij3m
-         4emQ==
+        bh=a3OXLV7670HYbFkf4+KB0EvSTXTvzi9vkrfOeJXtwk8=;
+        b=Xxek6sc/NJyTlF3gXjJlHpXbTOv5WDObTkrp1L72GHGwqCQ91s+iNu10nWq9pKcSd2
+         FI2VjP02cd4AOa4bT3zrpT+qs1534bpAOtl55hdo6yFT+8WWunbEQeFjux8Zzv83aOoX
+         73gvsaF5TSslUKpMquZKzg8KIYNGRGNysOy9Itl6Q0YhgsgaS3TNG5/lpy7blqIjcbqZ
+         NzCG44gJimCpT4dMwF5bHDVKsN+/rcZUXO76UHNraikPm3EbQwbtdGDuu3/8QGGfb8Fn
+         8SjUTRrSvtDLifbgdNmdi4Vh+3hv5QdHRk5SF4hdE3YKpYNg/0KSH6TVE1NVcAx9XHQL
+         8HlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688551754; x=1691143754;
+        d=1e100.net; s=20221208; t=1688552016; x=1691144016;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AUieIrFSQeaCUCCf5YNql2a5kikqQNM5mywYU08iHu8=;
-        b=Wd16mdOqtZqTvbrLz8RMleNz04lDeDpPDjQo/zKOq+/n+ilbkwJrhSGg1kuA72pSma
-         K8hIPn2cjEzApJO4Q8x48oVkGHiDPAAXJIgfZeJTA3hGkOTbt+NS+VjlXQjf9Ca1nVH+
-         tpRlGWK3lJuCp30ehgte2rLtOFPSwjv1LegOSQcpQuBNX/8CcNA4lbjblWudX+EXY09d
-         j22FxWnEgAwLKzzx76JiZI96J3Sma7n7Wp6VwWMFe5yKMH7H6Q65oL/WL4vPiZtyChlB
-         xnjlzOX8URk6jpN9tNdUp8IHjyU9Q/jg8YW/T/voBI5j+/iO0DSKIMPdtuK5HAqACJYc
-         Uc6Q==
-X-Gm-Message-State: ABy/qLYqUbwEBhCfHpFPuV/C/NOHZ3YDEugnXntKKCipwPFIhr5VQ2Wi
-	SX8rgxzUX0etvYY9Qy/ODGp1pQGbyJtk/ABUv2tzZYBE9zz13Q==
-X-Google-Smtp-Source: APBJJlGPy8xi05WsISfUyZWYoLyLNFHHUB7DdYGcHlCGwkKHaX8G2y3o0K803DT89gPn7DOY60+WFQMmOfNkfyFyDpk=
-X-Received: by 2002:a05:6214:21ab:b0:626:3a5a:f8dc with SMTP id
- t11-20020a05621421ab00b006263a5af8dcmr17653655qvc.57.1688551754342; Wed, 05
- Jul 2023 03:09:14 -0700 (PDT)
+        bh=a3OXLV7670HYbFkf4+KB0EvSTXTvzi9vkrfOeJXtwk8=;
+        b=EX0wFVwT5WItrcjku7pdpPtCaKVVAh+/xu3WHv0ZiZDP+hMC57maV9RykbPDAWqTVl
+         opc1xhNCzHOwtpgwQJzJ2BvOCHVRdFBFkKp+fw4+ZS9d1rn/au9F4/Ruykp86CGhcQeR
+         aMFtNxa/V4dETdr6uB5ewQHE7kNGXe5sEGZVHNPItTd9K82nKVnDleqG5EYfjA7HeuG7
+         wcIwpZ8MgsljX6cINe2CBYRGNdOScJOFmpg+2M5NUYaIgV3niwKxiGAwz/0wDzriBKY/
+         3WtPxDT3OBRtnfYZc4VJyoQIDT+N3MRsjOVhPpybdCYiLpfbZMrggoTVT8HJJ5547nZr
+         uUiw==
+X-Gm-Message-State: ABy/qLasMrV6MxqLZ5ewSS/huIuQKHNYIe29lJMtJG2ozoQV5Cr5RbDn
+	gpCPPLwqFzuMT5ppO880h2D8vE7dZZ8ES+l4ehE=
+X-Google-Smtp-Source: APBJJlFgCcXjnb9qP5+oYGH9SmBsr5No45+Ih/zpINS+pNNgixyvKCgP6MFh2b/OAOqEy+8ofbZ76oGFqggYNqJLv7Q=
+X-Received: by 2002:a67:fe07:0:b0:440:dd8e:2aa3 with SMTP id
+ l7-20020a67fe07000000b00440dd8e2aa3mr5265376vsr.35.1688552016369; Wed, 05 Jul
+ 2023 03:13:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230628115329.248450-1-laoar.shao@gmail.com> <20230628115329.248450-10-laoar.shao@gmail.com>
- <e06b149e-2bcc-6a83-ef23-6216c7267632@iogearbox.net>
-In-Reply-To: <e06b149e-2bcc-6a83-ef23-6216c7267632@iogearbox.net>
+References: <20230628115329.248450-1-laoar.shao@gmail.com> <20230628115329.248450-12-laoar.shao@gmail.com>
+ <d991de64-ebdd-bb65-482a-aae64459c739@iogearbox.net>
+In-Reply-To: <d991de64-ebdd-bb65-482a-aae64459c739@iogearbox.net>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 5 Jul 2023 18:08:38 +0800
-Message-ID: <CALOAHbBhxF8S2x8h1b-2otu31u-eg3BuUHyMW3VWBezy6AgMtg@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 09/11] bpf: Support ->fill_link_info for perf_event
+Date: Wed, 5 Jul 2023 18:13:00 +0800
+Message-ID: <CALOAHbBSjzaWrTRKh6fuxL-bpNWYAuojpfoYx4FGa8Lb1i9W+w@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 11/11] bpftool: Show perf link info
 To: Daniel Borkmann <daniel@iogearbox.net>
 Cc: ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org, 
 	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, kpsingh@kernel.org, 
@@ -81,256 +81,257 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jul 5, 2023 at 4:47=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.ne=
+On Wed, Jul 5, 2023 at 4:54=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.ne=
 t> wrote:
 >
 > On 6/28/23 1:53 PM, Yafang Shao wrote:
-> > By introducing support for ->fill_link_info to the perf_event link, use=
-rs
-> > gain the ability to inspect it using `bpftool link show`. While the cur=
-rent
-> > approach involves accessing this information via `bpftool perf show`,
-> > consolidating link information for all link types in one place offers
-> > greater convenience. Additionally, this patch extends support to the
-> > generic perf event, which is not currently accommodated by
-> > `bpftool perf show`. While only the perf type and config are exposed to
-> > userspace, other attributes such as sample_period and sample_freq are
-> > ignored. It's important to note that if kptr_restrict is not permitted,=
- the
-> > probed address will not be exposed, maintaining security measures.
-> >
-> > A new enum bpf_perf_event_type is introduced to help the user understan=
-d
-> > which struct is relevant.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >   include/uapi/linux/bpf.h       |  35 ++++++++++
-> >   kernel/bpf/syscall.c           | 117 ++++++++++++++++++++++++++++++++=
-+
-> >   tools/include/uapi/linux/bpf.h |  35 ++++++++++
-> >   3 files changed, 187 insertions(+)
->
-> For ease of review this should be squashed with the prior one which adds
-> bpf_perf_link_fill_common().
-
-Sure. Will do it.
-
->
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 512ba3ba2ed3..7efe51672c15 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -1057,6 +1057,16 @@ enum bpf_link_type {
-> >       MAX_BPF_LINK_TYPE,
-> >   };
-> >
-> > +enum bpf_perf_event_type {
-> > +     BPF_PERF_EVENT_UNSPEC =3D 0,
-> > +     BPF_PERF_EVENT_UPROBE =3D 1,
-> > +     BPF_PERF_EVENT_URETPROBE =3D 2,
-> > +     BPF_PERF_EVENT_KPROBE =3D 3,
-> > +     BPF_PERF_EVENT_KRETPROBE =3D 4,
-> > +     BPF_PERF_EVENT_TRACEPOINT =3D 5,
-> > +     BPF_PERF_EVENT_EVENT =3D 6,
->
-> Why explicitly defining the values of the enum?
-
-With these newly introduced enums, the user can easily identify what
-kind of perf_event link it is
-See also the discussion:
-https://lore.kernel.org/bpf/CAEf4BzYEwCZ3J51pFnUfGykEAHtdLwB8Kxi0utvUTVvewz=
-4UCg@mail.gmail.com/
-
->
-> > +};
+> [...]
 > > +
-> >   /* cgroup-bpf attach flags used in BPF_PROG_ATTACH command
-> >    *
-> >    * NONE(default): No further bpf programs allowed in the subtree.
-> > @@ -6444,6 +6454,31 @@ struct bpf_link_info {
-> >                       __u32 count;
-> >                       __u32 flags;
-> >               } kprobe_multi;
-> > +             struct {
-> > +                     __u32 type; /* enum bpf_perf_event_type */
-> > +                     __u32 :32;
-> > +                     union {
-> > +                             struct {
-> > +                                     __aligned_u64 file_name; /* in/ou=
-t */
-> > +                                     __u32 name_len;
-> > +                                     __u32 offset;/* offset from file_=
-name */
+> > +static void
+> > +show_perf_event_event_json(struct bpf_link_info *info, json_writer_t *=
+wtr)
+> > +{
+> > +     __u64 config =3D info->perf_event.event.config;
+> > +     __u32 type =3D info->perf_event.event.type;
+> > +     const char *perf_type, *perf_config;
+> > +
+> > +     perf_type =3D perf_event_name(perf_type_name, type);
+> > +     if (perf_type)
+> > +             jsonw_string_field(wtr, "event_type", perf_type);
+> > +     else
+> > +             jsonw_uint_field(wtr, "event_type", type);
+> > +
+> > +     perf_config =3D perf_config_str(type, config);
+> > +     if (perf_config)
+> > +             jsonw_string_field(wtr, "event_config", perf_config);
+> > +     else
+> > +             jsonw_uint_field(wtr, "event_config", config);
+> > +
+> > +     if (type =3D=3D PERF_TYPE_HW_CACHE && perf_config)
+> > +             free((void *)perf_config);
 >
-> nit: spacing wrt comment, also same further below
+> nit no need to cast
 
-Will change it.
+It will discard the 'const', so we have to do the cast here, otherwise
+the compiler will complain.
 
 >
-> > +                             } uprobe; /* BPF_PERF_EVENT_UPROBE, BPF_P=
-ERF_EVENT_URETPROBE */
-> > +                             struct {
-> > +                                     __aligned_u64 func_name; /* in/ou=
-t */
-> > +                                     __u32 name_len;
-> > +                                     __u32 offset;/* offset from func_=
-name */
-> > +                                     __u64 addr;
-> > +                             } kprobe; /* BPF_PERF_EVENT_KPROBE, BPF_P=
-ERF_EVENT_KRETPROBE */
-> > +                             struct {
-> > +                                     __aligned_u64 tp_name;   /* in/ou=
-t */
-> > +                                     __u32 name_len;
-> > +                             } tracepoint; /* BPF_PERF_EVENT_TRACEPOIN=
-T */
-> > +                             struct {
-> > +                                     __u64 config;
-> > +                                     __u32 type;
-> > +                             } event; /* BPF_PERF_EVENT_EVENT */
-> > +                     };
-> > +             } perf_event;
-> >       };
-> >   } __attribute__((aligned(8)));
-> >
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 72de91beabbc..05ff0a560f1a 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -3398,9 +3398,126 @@ static int bpf_perf_link_fill_common(const stru=
-ct perf_event *event,
-> >       return 0;
+> > +}
+> > +
+> >   static int show_link_close_json(int fd, struct bpf_link_info *info)
+> >   {
+> >       struct bpf_prog_info prog_info;
+> > @@ -334,6 +440,26 @@ static int show_link_close_json(int fd, struct bpf=
+_link_info *info)
+> >       case BPF_LINK_TYPE_KPROBE_MULTI:
+> >               show_kprobe_multi_json(info, json_wtr);
+> >               break;
+> > +     case BPF_LINK_TYPE_PERF_EVENT:
+> > +             switch (info->perf_event.type) {
+> > +             case BPF_PERF_EVENT_EVENT:
+> > +                     show_perf_event_event_json(info, json_wtr);
+> > +                     break;
+> > +             case BPF_PERF_EVENT_TRACEPOINT:
+> > +                     show_perf_event_tracepoint_json(info, json_wtr);
+> > +                     break;
+> > +             case BPF_PERF_EVENT_KPROBE:
+> > +             case BPF_PERF_EVENT_KRETPROBE:
+> > +                     show_perf_event_kprobe_json(info, json_wtr);
+> > +                     break;
+> > +             case BPF_PERF_EVENT_UPROBE:
+> > +             case BPF_PERF_EVENT_URETPROBE:
+> > +                     show_perf_event_uprobe_json(info, json_wtr);
+> > +                     break;
+> > +             default:
+> > +                     break;
+> > +             }
+> > +             break;
+> >       default:
+> >               break;
+> >       }
+> > @@ -505,6 +631,75 @@ static void show_kprobe_multi_plain(struct bpf_lin=
+k_info *info)
+> >       }
 > >   }
 > >
-> > +#ifdef CONFIG_KPROBE_EVENTS
-> > +static int bpf_perf_link_fill_kprobe(const struct perf_event *event,
-> > +                                  struct bpf_link_info *info)
+> > +static void show_perf_event_kprobe_plain(struct bpf_link_info *info)
 > > +{
-> > +     char __user *uname;
-> > +     u64 addr, offset;
-> > +     u32 ulen, type;
-> > +     int err;
+> > +     const char *buf;
 > > +
-> > +     uname =3D u64_to_user_ptr(info->perf_event.kprobe.func_name);
-> > +     ulen =3D info->perf_event.kprobe.name_len;
-> > +     err =3D bpf_perf_link_fill_common(event, uname, ulen, &offset, &a=
-ddr,
-> > +                                     &type);
-> > +     if (err)
-> > +             return err;
-> > +     if (type =3D=3D BPF_FD_TYPE_KRETPROBE)
-> > +             info->perf_event.type =3D BPF_PERF_EVENT_KRETPROBE;
+> > +     buf =3D (const char *)u64_to_ptr(info->perf_event.kprobe.func_nam=
+e);
+>
+> ditto, same for the other occurrences further below
+
+Agree.
+
+>
+> > +     if (buf[0] =3D=3D '\0' && !info->perf_event.kprobe.addr)
+> > +             return;
+> > +
+> > +     if (info->perf_event.type =3D=3D BPF_PERF_EVENT_KRETPROBE)
+> > +             printf("\n\tkretprobe ");
 > > +     else
-> > +             info->perf_event.type =3D BPF_PERF_EVENT_KPROBE;
-> > +
-> > +     info->perf_event.kprobe.offset =3D offset;
-> > +     if (!kallsyms_show_value(current_cred()))
-> > +             addr =3D 0;
-> > +     info->perf_event.kprobe.addr =3D addr;
-> > +     return 0;
+> > +             printf("\n\tkprobe ");
+> > +     if (info->perf_event.kprobe.addr)
+> > +             printf("%llx ", info->perf_event.kprobe.addr);
+> > +     printf("%s", buf);
+> > +     if (info->perf_event.kprobe.offset)
+> > +             printf("+%#x", info->perf_event.kprobe.offset);
+> > +     printf("  ");
 > > +}
-> > +#endif
 > > +
-> > +#ifdef CONFIG_UPROBE_EVENTS
-> > +static int bpf_perf_link_fill_uprobe(const struct perf_event *event,
-> > +                                  struct bpf_link_info *info)
+> > +static void show_perf_event_uprobe_plain(struct bpf_link_info *info)
 > > +{
-> > +     char __user *uname;
-> > +     u64 addr, offset;
-> > +     u32 ulen, type;
-> > +     int err;
+> > +     const char *buf;
 > > +
-> > +     uname =3D u64_to_user_ptr(info->perf_event.uprobe.file_name);
-> > +     ulen =3D info->perf_event.uprobe.name_len;
-> > +     err =3D bpf_perf_link_fill_common(event, uname, ulen, &offset, &a=
-ddr,
-> > +                                     &type);
-> > +     if (err)
-> > +             return err;
+> > +     buf =3D (const char *)u64_to_ptr(info->perf_event.uprobe.file_nam=
+e);
+> > +     if (buf[0] =3D=3D '\0')
+> > +             return;
 > > +
-> > +     if (type =3D=3D BPF_FD_TYPE_URETPROBE)
-> > +             info->perf_event.type =3D BPF_PERF_EVENT_URETPROBE;
+> > +     if (info->perf_event.type =3D=3D BPF_PERF_EVENT_URETPROBE)
+> > +             printf("\n\turetprobe ");
 > > +     else
-> > +             info->perf_event.type =3D BPF_PERF_EVENT_UPROBE;
-> > +     info->perf_event.uprobe.offset =3D offset;
-> > +     return 0;
-> > +}
-> > +#endif
-> > +
-> > +static int bpf_perf_link_fill_probe(const struct perf_event *event,
-> > +                                 struct bpf_link_info *info)
-> > +{
-> > +#ifdef CONFIG_KPROBE_EVENTS
-> > +     if (event->tp_event->flags & TRACE_EVENT_FL_KPROBE)
-> > +             return bpf_perf_link_fill_kprobe(event, info);
-> > +#endif
-> > +#ifdef CONFIG_UPROBE_EVENTS
-> > +     if (event->tp_event->flags & TRACE_EVENT_FL_UPROBE)
-> > +             return bpf_perf_link_fill_uprobe(event, info);
-> > +#endif
-> > +     return -EOPNOTSUPP;
+> > +             printf("\n\tuprobe ");
+> > +     printf("%s+%#x  ", buf, info->perf_event.uprobe.offset);
 > > +}
 > > +
-> > +static int bpf_perf_link_fill_tracepoint(const struct perf_event *even=
-t,
-> > +                                      struct bpf_link_info *info)
+> > +static void show_perf_event_tracepoint_plain(struct bpf_link_info *inf=
+o)
 > > +{
-> > +     char __user *uname;
-> > +     u64 addr, offset;
-> > +     u32 ulen, type;
+> > +     const char *buf;
 > > +
-> > +     uname =3D u64_to_user_ptr(info->perf_event.tracepoint.tp_name);
-> > +     ulen =3D info->perf_event.tracepoint.name_len;
-> > +     info->perf_event.type =3D BPF_PERF_EVENT_TRACEPOINT;
-> > +     return bpf_perf_link_fill_common(event, uname, ulen, &offset, &ad=
-dr,
-> > +                                      &type);
+> > +     buf =3D (const char *)u64_to_ptr(info->perf_event.tracepoint.tp_n=
+ame);
+> > +     if (buf[0] =3D=3D '\0')
+> > +             return;
+> > +
+> > +     printf("\n\ttracepoint %s  ", buf);
+> > +}
+> > +
+> > +static void show_perf_event_event_plain(struct bpf_link_info *info)
+> > +{
+> > +     __u64 config =3D info->perf_event.event.config;
+> > +     __u32 type =3D info->perf_event.event.type;
+> > +     const char *perf_type, *perf_config;
+> > +
+> > +     printf("\n\tevent ");
+> > +     perf_type =3D perf_event_name(perf_type_name, type);
+> > +     if (perf_type)
+> > +             printf("%s:", perf_type);
+> > +     else
+> > +             printf("%u :", type);
+> > +
+> > +     perf_config =3D perf_config_str(type, config);
+> > +     if (perf_config)
+> > +             printf("%s  ", perf_config);
+> > +     else
+> > +             printf("%llu  ", config);
+> > +
+> > +     if (type =3D=3D PERF_TYPE_HW_CACHE && perf_config)
+> > +             free((void *)perf_config);
 >
-> Perhaps for data we don't care about in these cases, passing NULL would b=
-e
-> more obvious and letting bpf_perf_link_fill_common() handle NULL inputs.
-
-Agree. That would be better.
-We should let bpf_get_perf_event_info() handle NULL inputs.  As the
-change in bpf_get_perf_event_info() is small, I will change it in the
-same patch.
-
+> same
 >
 > > +}
 > > +
-> > +static int bpf_perf_link_fill_perf_event(const struct perf_event *even=
-t,
-> > +                                      struct bpf_link_info *info)
-> > +{
-> > +     info->perf_event.event.type =3D event->attr.type;
-> > +     info->perf_event.event.config =3D event->attr.config;
-> > +     info->perf_event.type =3D BPF_PERF_EVENT_EVENT;
-> > +     return 0;
-> > +}
-> > +
-> > +static int bpf_perf_link_fill_link_info(const struct bpf_link *link,
-> > +                                     struct bpf_link_info *info)
-> > +{
-> > +     struct bpf_perf_link *perf_link;
-> > +     const struct perf_event *event;
-> > +
-> > +     perf_link =3D container_of(link, struct bpf_perf_link, link);
-> > +     event =3D perf_get_event(perf_link->perf_file);
-> > +     if (IS_ERR(event))
-> > +             return PTR_ERR(event);
-> > +
-> > +     if (!event->prog)
-> > +             return -EINVAL;
+> >   static int show_link_close_plain(int fd, struct bpf_link_info *info)
+> >   {
+> >       struct bpf_prog_info prog_info;
+> > @@ -553,6 +748,26 @@ static int show_link_close_plain(int fd, struct bp=
+f_link_info *info)
+> >       case BPF_LINK_TYPE_KPROBE_MULTI:
+> >               show_kprobe_multi_plain(info);
+> >               break;
+> > +     case BPF_LINK_TYPE_PERF_EVENT:
+> > +             switch (info->perf_event.type) {
+> > +             case BPF_PERF_EVENT_EVENT:
+> > +                     show_perf_event_event_plain(info);
+> > +                     break;
+> > +             case BPF_PERF_EVENT_TRACEPOINT:
+> > +                     show_perf_event_tracepoint_plain(info);
+> > +                     break;
+> > +             case BPF_PERF_EVENT_KPROBE:
+> > +             case BPF_PERF_EVENT_KRETPROBE:
+> > +                     show_perf_event_kprobe_plain(info);
+> > +                     break;
+> > +             case BPF_PERF_EVENT_UPROBE:
+> > +             case BPF_PERF_EVENT_URETPROBE:
+> > +                     show_perf_event_uprobe_plain(info);
+> > +                     break;
+> > +             default:
+> > +                     break;
+> > +             }
+> > +             break;
+> >       default:
+> >               break;
+> >       }
+> > @@ -575,11 +790,12 @@ static int do_show_link(int fd)
+> >       struct bpf_link_info info;
+> >       __u32 len =3D sizeof(info);
+> >       __u64 *addrs =3D NULL;
+> > -     char buf[256];
+> > +     char buf[PATH_MAX];
+> >       int count;
+> >       int err;
+> >
+> >       memset(&info, 0, sizeof(info));
+> > +     buf[0] =3D '\0';
+> >   again:
+> >       err =3D bpf_link_get_info_by_fd(fd, &info, &len);
+> >       if (err) {
+> > @@ -614,6 +830,35 @@ static int do_show_link(int fd)
+> >                       goto again;
+> >               }
+> >       }
+> > +     if (info.type =3D=3D BPF_LINK_TYPE_PERF_EVENT) {
+> > +             switch (info.perf_event.type) {
+> > +             case BPF_PERF_EVENT_TRACEPOINT:
+> > +                     if (!info.perf_event.tracepoint.tp_name) {
+> > +                             info.perf_event.tracepoint.tp_name =3D (u=
+nsigned long)&buf;
 >
-> nit: In which situations do we run into this, would ENOENT be better erro=
-r code
-> here given it's not an invalid arg that user passed to kernel for filling=
- link
-> info.
+> lets use ptr_to_u64() in all these cases
 
-In practice there should be no situations. I think we can remove this
-judgement directly.
+Agree.
+
+>
+> > +                             info.perf_event.tracepoint.name_len =3D s=
+izeof(buf);
+> > +                             goto again;
+> > +                     }
+> > +                     break;
+> > +             case BPF_PERF_EVENT_KPROBE:
+> > +             case BPF_PERF_EVENT_KRETPROBE:
+> > +                     if (!info.perf_event.kprobe.func_name) {
+> > +                             info.perf_event.kprobe.func_name =3D (uns=
+igned long)&buf;
+> > +                             info.perf_event.kprobe.name_len =3D sizeo=
+f(buf);
+> > +                             goto again;
+> > +                     }
+> > +                     break;
+> > +             case BPF_PERF_EVENT_UPROBE:
+> > +             case BPF_PERF_EVENT_URETPROBE:
+> > +                     if (!info.perf_event.uprobe.file_name) {
+> > +                             info.perf_event.uprobe.file_name =3D (uns=
+igned long)&buf;
+> > +                             info.perf_event.uprobe.name_len =3D sizeo=
+f(buf);
+> > +                             goto again;
+> > +                     }
+> > +                     break;
+> > +             default:
+> > +                     break;
+> > +             }
+> > +     }
+> >
+> >       if (json_output)
+> >               show_link_close_json(fd, &info);
+> >
+>
+
 
 --=20
 Regards
