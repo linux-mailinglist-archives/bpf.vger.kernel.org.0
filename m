@@ -1,286 +1,350 @@
-Return-Path: <bpf+bounces-4120-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4121-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 949C7748F7C
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 23:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ADC9748FF9
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 23:39:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B66091C20C20
-	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 21:01:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1BA61C20BF4
+	for <lists+bpf@lfdr.de>; Wed,  5 Jul 2023 21:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5191548F;
-	Wed,  5 Jul 2023 21:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B0D156EA;
+	Wed,  5 Jul 2023 21:39:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E8D14276
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 21:01:38 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDFD1700
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 14:01:36 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 813D1C1522AB
-	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 14:01:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1688590896; bh=NekCa60JuITBhpOV0TLCPTHTGoH7m8Hv1kknx5/sK10=;
-	h=To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:List-Post:
-	 List-Help:List-Subscribe:From;
-	b=HSfLM2j5Z0DGut60lHiOse/Q+FuoLo+LPl2Vr++vSNxrac3/jNY+ntSt5/iXisqtJ
-	 Svl+t3tSkfQo3+QUll1vBCqrTxcYr8Mx4dnn6TtjtroJad3Yu5mQj9MoAAhKdm3K4O
-	 CiQXCqASGev/Lycjc9MIO5wOSdXySH7g+cv04oZ8=
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
- by ietfa.amsl.com (Postfix) with ESMTP id 50EBBC14CE3F;
- Wed,  5 Jul 2023 14:01:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
- t=1688590896; bh=NekCa60JuITBhpOV0TLCPTHTGoH7m8Hv1kknx5/sK10=;
- h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
- List-Post:List-Help:List-Subscribe;
- b=iUWVwKIE3cNRHQkYUWgxrV5wM52zPFhkfqa/ueMztl1l8l7QRMg2ojWiFQ2RlT3JH
- 8Qni8+yU3YlhhVJ8HQDq6HHDxsWH1XOaDocwaF0j4urt46z7Efyj7Z2DNascP9enqx
- 9Ok14MD7yH8i71y3xu1dDjrcVgnNGEtn09SFsaic=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id D5E7BC14CE3F
- for <bpf@ietfa.amsl.com>; Wed,  5 Jul 2023 14:01:34 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -2.096
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HTML_MESSAGE,MAILING_LIST_MULTI,
-	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
- header.d=microsoft.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id Tli6LI5A1UUk for <bpf@ietfa.amsl.com>;
- Wed,  5 Jul 2023 14:01:33 -0700 (PDT)
-Received: from BN3PR00CU001.outbound.protection.outlook.com
- (mail-eastus2azon11020017.outbound.protection.outlook.com [52.101.56.17])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id E5195C14CF1E
- for <bpf@ietf.org>; Wed,  5 Jul 2023 14:01:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l93dhD0oIaZBgxZgz0zyEYkym4oW233I0B4Ra2/URwr5j7LHOzxIlizaAq+YfJcZnA943JXxEJc9/iBzzn41EJKH17nMIk3tUwDpUQwOi8ofd32nGqzNAjV2PHO2oWMuu3Vy7Z8QxdfhtaGqJuMEEpS0Ofu9VIWpdgjH24r2OgsgDfi5K0Pqth9krT8xZOhgGLTKlg+QROKhXcMekU3LJhfq0iDKixl4XlAkPHnXCKaaLCeUGqIpXB4eFuw5iSUEJG2ZSoNveFlxN8m5TZoC4ExIsM74s0FJAoL8lQum2hVINxaI3WmcKTZzuHW49RfDpn4eX7iAmQQr0m3pfRHmRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MO/5jhRVbQkMlhOgEkEA1i4IAXM885JcfeSP4NF01rA=;
- b=GMXFLfuMnFWOLmlVNqdu12gshoYdTgDp/QXAU9yyFIxLkGQV4h56sO6vOXMl9fveb0Fz5zgwpFjf/InvPUL20URoo7ZaGG0C1NQRApHTLxcdbA7PrmSpgwIcXgf3bWOe6HhnRH0RJSA3r2vJtLLBy8qIvmV238/J2/RKWVH08YT3GgyKNrXf7nbWG2q0YQuJ/OuCadLmSr2Dn3W+VVj+4zJA4RI7PsQKS6xS0Ik2FpxW9GKC1wtQBnwo4YOas+Rd9L5qsN+zxrPFqCjatQLT+s/rNd4lbwbrmpM0VBOuqYVZO33Z3qYVZ/SFUxK6g+G3w02NRmzG+9YFh8gIO7Kd5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MO/5jhRVbQkMlhOgEkEA1i4IAXM885JcfeSP4NF01rA=;
- b=U0gDrWP6b/uwrX9tf9NOV8WXzO7d0jtYeXNV2VvxmVzRCFBi7v7MWI/btIZHSrVToSOn+TFDSVzvi179pkOLil4Y5Q666KHYLcOEamHtOgp0J7yjO6R4y+iycKicvBTOlTumzqyZVHPbE2g4bxbhq2wPh6V/0KT0s8+agLyX+/Y=
-Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
- by CH2PR21MB1432.namprd21.prod.outlook.com (2603:10b6:610:84::16)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.11; Wed, 5 Jul
- 2023 21:01:28 +0000
-Received: from PH7PR21MB3878.namprd21.prod.outlook.com
- ([fe80::8708:6828:fb9f:7bd5]) by PH7PR21MB3878.namprd21.prod.outlook.com
- ([fe80::8708:6828:fb9f:7bd5%4]) with mapi id 15.20.6544.010; Wed, 5 Jul 2023
- 21:01:28 +0000
-To: bpf <bpf@vger.kernel.org>, "bpf@ietf.org" <bpf@ietf.org>
-Thread-Topic: IETF BPF blog
-Thread-Index: Admvg7T9pf8LUVH4Q2ugOXPk1CEBOA==
-Date: Wed, 5 Jul 2023 21:01:28 +0000
-Message-ID: <PH7PR21MB3878B9CB5354FA71EA90B87EA32FA@PH7PR21MB3878.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=08319211-83cb-4f3c-ae1c-d9a7ee430cb6;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-05T21:00:07Z; 
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|CH2PR21MB1432:EE_
-x-ms-office365-filtering-correlation-id: f0e06ce3-034a-44f8-e7f1-08db7d9b00a0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bMv+HimxoCHjAfzJNXF3HuYtLrn5JpkM5cMKxVGrE+ZrL3/S+VOlvScK3b+lQxxwzkOyIHobAPJ38kv/CjJ89eDEcaRr3jH1xnDEG4xv66GIk6ArOZsNYHwBqoCblTZcKarpeJMISgxVCwby8qFm2/KBXMCSTdKkK+qoh5li9LLP7fRUE5lyP4wp2dlc6Q8PypcIKy1qHm5pRVPMzPza3u2K6MOsO8reCfertnc1cnORc7FEqTfVG7kb0Mce/DdZlxuAJX1hFXDxGwBqJ1D7T+I3ljN70qrqWQ50CrB+VDE/1ATsbA/W64r1ijD8lG7k8l2riGVSDZfVbqJI7JCQLbzFlbufyhG2K0clK1sdbbnK/AMfa0OJBA51yEHSqr85hzjRXvASbs6KrbeqBQrgq0ULeoGwk4fFKUjOr5RwaE41IDmOZFLrEeDc9SfHnYIA7vIOK7RLA4xqP0uxfUiSGEuCZW7aqT54pXIZj4cubcEBTwxKq54Xx2BZ03G8GdGWsVUCcTABLwF069lhECs7DkSCA8QbjS/D3+FmbAOD79ZnSv2Z5POk5CfLWmyWUmFETJjuAvR0UVtt6ImnI6l41m6UgamWSZrRwuM4yyYa+F7G2b1ktB0HyTG8LjSOtRl7F4xu69mj+oznaBVgWyJOuQ==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
- IPV:NLI; SFV:NSPM;
- H:PH7PR21MB3878.namprd21.prod.outlook.com; PTR:; CAT:NONE; 
- SFS:(13230028)(4636009)(396003)(376002)(346002)(136003)(366004)(39860400002)(451199021)(7696005)(10290500003)(478600001)(71200400001)(110136005)(33656002)(86362001)(38070700005)(166002)(3480700007)(55016003)(82960400001)(8990500004)(2906002)(9686003)(26005)(76116006)(6506007)(186003)(966005)(122000001)(38100700002)(82950400001)(64756008)(66946007)(316002)(66446008)(66476007)(66556008)(8676002)(41300700001)(558084003)(8936002)(5660300002)(7116003)(52536014);
- DIR:OUT; SFP:1102; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TiyAcOY26MD0gwnkRp+uep+kmu56g9htWCkT+WWHd9hckTnNeOAPmdBUtN0g?=
- =?us-ascii?Q?CmZFFsJg0xEl5pN3qPUFmBUTOccL4CJA61ciZbXDBf2A4tgux4C9QCKh5dEi?=
- =?us-ascii?Q?ncCWDmmfUWToJPydpkthkg525RCK3MODynLff2srLyqwiIYPyWxykIyUmS+w?=
- =?us-ascii?Q?ZaUyR9PsULT83ynA1bEm8SLGrk9sUEjBskqJLf51bbgNFhngxz03QFfPIoFD?=
- =?us-ascii?Q?L2ISMil/WCsouVvKLNQBIX8/6Y5psjm5Qw4U7VIwY8R4ZVI2oE0l8Y6+ezWr?=
- =?us-ascii?Q?rd1R9+Aw4AK1xWa6gPsxXlQ+P+crIax3X/0slBJBjGoMr+WI8uphQmWReXiR?=
- =?us-ascii?Q?EhFNcRQY3M8zra14nOz6qng/a/sOvs7FwxvyTWvHkq28VsFfiawzbh1bVHXc?=
- =?us-ascii?Q?dEKTuW6oc68EgTAqe/m+TeIe9x/ejO9VA8FA30XRzjYcRvG5iCfTvsoBx13n?=
- =?us-ascii?Q?gLPkP9WmcigKcbMfwwrB7PFNPiLQ5una8fpKiUkIbiIfghbat4UNa7WAidK2?=
- =?us-ascii?Q?buYHijT0UvHK3RUStd0/BVtnMZZ4EPgPrDNT3D89HswGA3CjIxSpz+z0tmf0?=
- =?us-ascii?Q?wcA2kqL2suCBMOZy/Evf9+yHzLSDJ+pvT9LtIFImrfDXJvbX+o//3mXAESBL?=
- =?us-ascii?Q?f9wTT7sewMTIRACTa+CSvzy8gw2qVzCgwW9FSgFMN/BT9CEkpG1/MHOEnAF9?=
- =?us-ascii?Q?ORR/yoJnhQqJKTsHkCTrGg9HesFjXlaNSvOCgDHhVDJfSmmis/MnHVWiSclz?=
- =?us-ascii?Q?p8sVYLxnTZ62vPgSXH39DpoVngFxvhJ3nelU8cccHrSnyEx2QdsR7dIZlPFf?=
- =?us-ascii?Q?WXe6xx4T2JWSqrsG3ivnEJ3wTY3UmkAurHA83uelV72RRMGrF7hOj0TidZgL?=
- =?us-ascii?Q?h+o1+6QA/iq7J8UZUWS7oPvQhTA+gdg+eZLNYmrZnuRxZL1r8LY3gBmVyQdL?=
- =?us-ascii?Q?8ROdpq4paWWx5qiLSnW10UwBFwTvGd28vOSJQCbKFfpid45C2xXAnEiXlhBJ?=
- =?us-ascii?Q?LMgtpR3aOxlSCFj/fihQ/+ecs/p0I0XneB3NdTqrprevS0g04tO0KFk+8n/x?=
- =?us-ascii?Q?RqYQiYCTSpI5j3u0ZOF4Lqfz+Y3bVfCKSYdqP6e5nA8QXMzo/9rNtGPp2CdN?=
- =?us-ascii?Q?gPvX8hLpEHfWPjFpoxMdCwYuLrsRIBkY/MpY2CLgM/jCLl/F3HWjMsJkeX2S?=
- =?us-ascii?Q?3fmRolZYgC261VkAE+PHaRU/oo3jgmiwj5e51G2OUxr5w+9mTuGkSVkv09kP?=
- =?us-ascii?Q?P6mQ7f7w1jvtittHnQgQ3MKXPJkHZrkhB8Bkpz4/+zTuc9u1bNbXAh3q1aOn?=
- =?us-ascii?Q?EB3IX4Gf5JzVlim+ARYhEcz9ieI2nKlHbGx5H++Lfz6cm6rzTTJuTOfbm7lV?=
- =?us-ascii?Q?cq26Ew1jc+r/MSW+japjtYtcQk4v5YNryjNlEiqNG9ZfT2IzkFxsbxhor/h4?=
- =?us-ascii?Q?hSIPchcazkglpfOLJ0WvuRfZe2k9VHifQ7DTvPgb1b4yRBi50JqbywesXyHX?=
- =?us-ascii?Q?F+Xv+s1p/JL9nG+IPh5qnqr8OZt7vPkBnzoETm6OPtplkIwarj0cFMvn+ADS?=
- =?us-ascii?Q?o+W4wsz89irO9nPiMJnpTZ/VHEEvrSo1zrLsuCEfVo4N5pFUTUdawVqYVDGi?=
- =?us-ascii?Q?jA=3D=3D?=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0367134C5
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 21:39:00 +0000 (UTC)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E7F1998;
+	Wed,  5 Jul 2023 14:38:58 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbc0981755so20745e9.1;
+        Wed, 05 Jul 2023 14:38:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688593136; x=1691185136;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M2I0VJr35Z/Q2tTn0hViB65Znz9W/ziy02XlIsMkjvc=;
+        b=dKieTbs8RvKcL8Sc7i8rk6auEIvOPxdNUZAR6TGW8ikDlAwS4EOoXXTQUJbobmPnh7
+         BixtizUzgBqTnbm7lJClw3A4jo5vlZyMJBCz+9KKupr06eusou38qyo8DwiLPiM9VJuM
+         A3yNeTDEkEOZC6aR9kmDyUIG92nZ7TcvJw0FQ1cAMriQUHfGkFPIIun3yNWbthItZsmc
+         NM9kVatyV6DbybBVBPkCeYCL6k30TBVGSKinBaai7MaJZwFheOhH1OGbSCPJ+wqghwBj
+         o/bZxBi+TM970TTFnAFTdEwfmcn4rFj4DJ1B8gX25UCH8ks1Jny7nDStN72Ic/L8UtKI
+         y1Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688593136; x=1691185136;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M2I0VJr35Z/Q2tTn0hViB65Znz9W/ziy02XlIsMkjvc=;
+        b=PX8aEJWARc6OcXna8YlpRjIdslzxWILKq9yyju9yvQ3H2mDKSC11dOXyEOgaq3ays4
+         jd7wyZqzvUe3BdW1jhl+rtiDx6GtIFUAiUCBXIaVSgd14YxpaHDr//ehiLUTDHO22tgf
+         FuS4GRrCgRYTJgN7fsyjpXydrecMTX+Y9GWHF8PKcBJpeB+yeNxbzBAwZI9FItD+RaMF
+         ZWE5cR35w3YexVvZnskw8/PfO5yw20uSHRqownR6sqRGyQ8WveFjjYCJK0apQUGtQY/7
+         ri4Yaez1KcY4hSnmtlrLmFlIS3hPZeyZPLh9uVRTrYA4fhHP6ZBtAwTc11CA16qdWxZt
+         ssWg==
+X-Gm-Message-State: AC+VfDxWLjkzlQbl1WswNiQaXyr5q6/LoAJ+Jk2Ug3I27JUU1Q3rDKaX
+	5Ag9wT9B0r/2OvwmpKre3bOuOPSRLge7Mo8lDrHp6oKWUyyusQ==
+X-Google-Smtp-Source: ACHHUZ6xYLwn/pNc9ujh4axXDY35Lw8onVjSi5U4YXZtK62qL69GnnzBcK9GOFvfPaq9WkgA4lJVVGMya/Z30STHhJY=
+X-Received: by 2002:a05:600c:ac6:b0:3fb:b3aa:1c88 with SMTP id
+ c6-20020a05600c0ac600b003fbb3aa1c88mr14494911wmr.26.1688593136118; Wed, 05
+ Jul 2023 14:38:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f0e06ce3-034a-44f8-e7f1-08db7d9b00a0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jul 2023 21:01:28.6665 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TSLP2gDD1YKEY/ahSdPCUtYxkel35xW+IIkr4Gz6E8d2FZ+miOhipNO7DzvtiZUuMPRElpi/2vgnEBSJAQ/FCx/aZ0Ddeoo/8tx4Dvk1Hww=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR21MB1432
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/L-bKmzj-i1T5LWkyaBaT8_s86vk>
-Subject: [Bpf] IETF BPF blog
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0931635130572195107=="
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
-X-Original-From: Dave Thaler <dthaler@microsoft.com>
-From: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
+References: <20230629051832.897119-1-andrii@kernel.org> <20230629051832.897119-2-andrii@kernel.org>
+ <20230704-hochverdient-lehne-eeb9eeef785e@brauner> <CAHC9VhTDocBCpNjdz1CoWM2DA76GYZmg31338DHePFGq_-ie-g@mail.gmail.com>
+ <20230705-zyklen-exorbitant-4d54d2f220ad@brauner>
+In-Reply-To: <20230705-zyklen-exorbitant-4d54d2f220ad@brauner>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 5 Jul 2023 14:38:43 -0700
+Message-ID: <CAEf4Bza5mUou8nw1zjqFaCPPvfUNq-jpNp+y4DhMhhcXc5HwGg@mail.gmail.com>
+Subject: Re: [PATCH RESEND v3 bpf-next 01/14] bpf: introduce BPF token object
+To: Christian Brauner <brauner@kernel.org>
+Cc: Paul Moore <paul@paul-moore.com>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, keescook@chromium.org, 
+	lennart@poettering.net, cyphar@cyphar.com, luto@kernel.org, 
+	kernel-team@meta.com, sargun@sargun.me
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
---===============0931635130572195107==
-Content-Language: en-US
-Content-Type: multipart/alternative;
- boundary="_000_PH7PR21MB3878B9CB5354FA71EA90B87EA32FAPH7PR21MB3878namp_"
-
---_000_PH7PR21MB3878B9CB5354FA71EA90B87EA32FAPH7PR21MB3878namp_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-David Vernet and Suresh Krishnan published a blog today
-about the new IETF BPF working group.
-
-Check it out at https://www.ietf.org/blog/bpf/
-
-Dave Thaler
-
---_000_PH7PR21MB3878B9CB5354FA71EA90B87EA32FAPH7PR21MB3878namp_
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
-osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
-//www.w3.org/TR/REC-html40">
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+On Wed, Jul 5, 2023 at 7:42=E2=80=AFAM Christian Brauner <brauner@kernel.or=
+g> wrote:
 >
-<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
-<style><!--
-/* Font Definitions */
-@font-face
-	{font-family:"Cambria Math";
-	panose-1:2 4 5 3 5 4 6 3 2 4;}
-@font-face
-	{font-family:Calibri;
-	panose-1:2 15 5 2 2 2 4 3 2 4;}
-/* Style Definitions */
-p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	font-size:11.0pt;
-	font-family:"Calibri",sans-serif;}
-a:link, span.MsoHyperlink
-	{mso-style-priority:99;
-	color:#0563C1;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:"Calibri",sans-serif;
-	color:windowtext;}
-.MsoChpDefault
-	{mso-style-type:export-only;
-	font-family:"Calibri",sans-serif;
-	mso-ligatures:none;}
-@page WordSection1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.0in 1.0in 1.0in;}
-div.WordSection1
-	{page:WordSection1;}
---></style><!--[if gte mso 9]><xml>
-<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
-</xml><![endif]--><!--[if gte mso 9]><xml>
-<o:shapelayout v:ext=3D"edit">
-<o:idmap v:ext=3D"edit" data=3D"1" />
-</o:shapelayout></xml><![endif]-->
-</head>
-<body lang=3D"EN-US" link=3D"#0563C1" vlink=3D"#954F72" style=3D"word-wrap:=
-break-word">
-<div class=3D"WordSection1">
-<p class=3D"MsoNormal">David Vernet and Suresh Krishnan published a blog to=
-day<br>
-about the new IETF BPF working group.<o:p></o:p></p>
-<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
-<p class=3D"MsoNormal">Check it out at <a href=3D"https://www.ietf.org/blog=
-/bpf/">https://www.ietf.org/blog/bpf/</a><o:p></o:p></p>
-<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
-<p class=3D"MsoNormal">Dave Thaler<o:p></o:p></p>
-</div>
-</body>
-</html>
+> On Wed, Jul 05, 2023 at 10:16:13AM -0400, Paul Moore wrote:
+> > On Tue, Jul 4, 2023 at 8:44=E2=80=AFAM Christian Brauner <brauner@kerne=
+l.org> wrote:
+> > > On Wed, Jun 28, 2023 at 10:18:19PM -0700, Andrii Nakryiko wrote:
+> > > > Add new kind of BPF kernel object, BPF token. BPF token is meant to=
+ to
+> > > > allow delegating privileged BPF functionality, like loading a BPF
+> > > > program or creating a BPF map, from privileged process to a *truste=
+d*
+> > > > unprivileged process, all while have a good amount of control over =
+which
+> > > > privileged operations could be performed using provided BPF token.
+> > > >
+> > > > This patch adds new BPF_TOKEN_CREATE command to bpf() syscall, whic=
+h
+> > > > allows to create a new BPF token object along with a set of allowed
+> > > > commands that such BPF token allows to unprivileged applications.
+> > > > Currently only BPF_TOKEN_CREATE command itself can be
+> > > > delegated, but other patches gradually add ability to delegate
+> > > > BPF_MAP_CREATE, BPF_BTF_LOAD, and BPF_PROG_LOAD commands.
+> > > >
+> > > > The above means that new BPF tokens can be created using existing B=
+PF
+> > > > token, if original privileged creator allowed BPF_TOKEN_CREATE comm=
+and.
+> > > > New derived BPF token cannot be more powerful than the original BPF
+> > > > token.
+> > > >
+> > > > Importantly, BPF token is automatically pinned at the specified loc=
+ation
+> > > > inside an instance of BPF FS and cannot be repinned using BPF_OBJ_P=
+IN
+> > > > command, unlike BPF prog/map/btf/link. This provides more control o=
+ver
+> > > > unintended sharing of BPF tokens through pinning it in another BPF =
+FS
+> > > > instances.
+> > > >
+> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > ---
+> > >
+> > > The main issue I have with the token approach is that it is a complet=
+ely
+> > > separate delegation vector on top of user namespaces. We mentioned th=
+is
+> > > duringthe conf and this was brought up on the thread here again as we=
+ll.
+> > > Imho, that's a problem both security-wise and complexity-wise.
+> > >
+> > > It's not great if each subsystem gets its own custom delegation
+> > > mechanism. This imposes such a taxing complexity on both kernel- and
+> > > userspace that it will quickly become a huge liability. So I would
+> > > really strongly encourage you to explore another direction.
 
---_000_PH7PR21MB3878B9CB5354FA71EA90B87EA32FAPH7PR21MB3878namp_--
+Alright, thanks a lot for elaborating. I did want to keep everything
+contained to bpf() for various reasons, but it seems like I won't be
+able to get away with this. :)
+
+> > >
+> > > I do think the spirit of your proposal is workable and that it can
+> > > mostly be kept in tact.
+
+It's good to know that at least conceptually you support the idea of
+BPF delegation. I have a few more specific questions below and I'd
+appreciate your answers, as I have less familiarity with how exactly
+container managers do stuff at container bootstrapping stage.
+
+But first, let's try to get some tentative agreement on design before
+I go and implement the BPF-token-as-FS idea. I have basically just two
+gripes with exact details of what you are proposing, so let me explain
+which and why, and see if we can find some common ground.
+
+First, the idea of coupling and bundling this "delegation" option with
+BPF FS doesn't feel right. BPF FS is just a container of BPF objects,
+so adding to it a new property of allowing to use privileged BPF
+functionality seems a bit off.
+
+Why not just create a new separate FS, let's code-name it "BPF Token
+FS" for now (naming suggestions are welcome). Such BPF Token FS would
+be dedicated to specifying everything about what's allowable through
+BPF, just like my BPF token implementation. It can then be
+mounted/bind-mounted inside BPF FS (or really, anywhere, it's just a
+FS, right?). User application would open it (I'm guessing with
+open_tree(), right?) and pass it as token_fd to bpf() syscall.
+
+Having it as a separate single-purpose FS seems cleaner, because we
+have use cases where we'd have one BPF FS instance created for a
+container by our container manager, and then exposing a few separate
+tokens with different sets of allowed functionality. E.g., one for
+main intended workload, another for some BPF-based observability
+tools, maybe yet another for more heavy-weight tools like bpftrace for
+extra debugging. In the debugging case our container infrastructure
+will be "evacuating" any other workloads on the same host to avoid
+unnecessary consequences. The point is to not disturb
+workload-under-human-debugging as much as possible, so we'd like to
+keep userns intact, which is why mounting extra (more permissive) BPF
+token inside already running containers is an important consideration.
+
+With such goals, it seems nicer to have a single BPF FS, and few BPF
+token FSs mounted inside it. Yes, we could bundle token functionality
+with BPF FS, but separating those two seems cleaner to me. WDYT?
+
+Second, mount options usage. I'm hearing stories from our production
+folks how some new mount options (on some other FS, not BPF FS) were
+breaking tools unintentionally during kernel/tooling
+upgrades/downgrades, so it makes me a bit hesitant to have these
+complicated sets of mount options to specify parameters of
+BPF-token-as-FS. I've been thinking a bit, and I'm starting to lean
+towards the idea of allowing to set up (and modify as well) all these
+allowed maps/progs/attach types through special auto-created files
+within BPF token FS. Something like below:
+
+# pwd
+/sys/fs/bpf/workload-token
+# ls
+allowed_cmds allowed_map_types allowed_prog_types allowed_attach_types
+# echo "BPF_PROG_LOAD" > allowed_cmds
+# echo "BPF_PROG_TYPE_KPROBE" >> allowed_prog_types
+...
+# cat allowed_prog_types
+BPF_PROG_TYPE_KPROBE,BPF_PROG_TYPE_TRACEPOINT
 
 
---===============0931635130572195107==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The above is fake (I haven't implemented anything yet), but hopefully
+works as a demonstration. We'll also need to make sure that inside
+non-init userns these files are read-only or allow to just further
+restrict the subset of allowed functionality, never extend it.
 
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+Such an approach will actually make it simpler to test and experiment
+with this delegation locally, will make it trivial to observe what's
+allowed from simple shell scripts, etc, etc. With fsmount() and O_PATH
+it will be possible to set everything up from privileged processes
+before ever exposing a BPF Token FS instance through a file system, if
+there are any concerns about racing with user space.
 
---===============0931635130572195107==--
+That's the high-level approach I'm thinking of right now. Would that
+work? How critical is it to reuse BPF FS itself and how important to
+you is to rely on mount options vs special files as described above?
+Hopefully not critical, and I can start working on it, and we'll get
+what you want with using FS as a vehicle for delegation, while
+allowing some of the intended use cases that we have in mind in a bit
+cleaner fashion?
 
+> > >
+> > > As mentioned before, bpffs has all the means to be taught delegation:
+> > >
+> > >         // In container's user namespace
+> > >         fd_fs =3D fsopen("bpffs");
+> > >
+> > >         // Delegating task in host userns (systemd-bpfd whatever you =
+want)
+> > >         ret =3D fsconfig(fd_fs, FSCONFIG_SET_FLAG, "delegate", ...);
+> > >
+> > >         // In container's user namespace
+> > >         fd_mnt =3D fsmount(fd_fs, 0);
+> > >
+> > >         ret =3D move_mount(fd_fs, "", -EBADF, "/my/fav/location", MOV=
+E_MOUNT_F_EMPTY_PATH)
+> > >
+> > > Roughly, this would mean:
+> > >
+> > > (i) raise FS_USERNS_MOUNT on bpffs but guard it behind the "delegate"
+> > >     mount option. IOW, it's only possibly to mount bpffs as an
+> > >     unprivileged user if a delegating process like systemd-bpfd with
+> > >     system-level privileges has marked it as delegatable.
+
+Regarding the FS_USERNS_MOUNT flag and fsopen() happening from inside
+the user namespace. Am I missing something subtle and important here,
+why does it have to happen inside the container's user namespace?
+Can't the container manager both fsopen() and fsconfig() everything in
+host userns, and only then fsmount+move_mount inside the container's
+userns? Just trying to understand if there is some important early
+association of userns happening at early steps here?
+
+Also, in your example above, move_mount() should take fd_mnt, not fd_fs, ri=
+ght?
+
+> > > (ii) add fine-grained delegation options that you want this
+> > >      bpffs instance to allow via new mount options. Idk,
+> > >
+> > >      // allow usage of foo
+> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "foo");
+> > >
+> > >      // also allow usage of bar
+> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "bar");
+> > >
+> > >      // reset allowed options
+> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "");
+> > >
+> > >      // allow usage of schmoo
+> > >      fsconfig(fd_fs, FSCONFIG_SET_STRING, "abilities", "schmoo");
+> > >
+> > > This all seems more intuitive and integrates with user and mount
+> > > namespaces of the container. This can also work for restricting
+> > > non-userns bpf instances fwiw. You can also share instances via
+> > > bind-mount and so on. The userns of the bpffs instance can also be us=
+ed
+> > > for permission checking provided a given functionality has been
+> > > delegated by e.g., systemd-bpfd or whatever.
+> >
+> > I have no arguments against any of the above, and would prefer to see
+> > something like this over a token-based mechanism.  However we do want
+> > to make sure we have the proper LSM control points for either approach
+> > so that admins who rely on LSM-based security policies can manage
+> > delegation via their policies.
+> >
+> > Using the fsconfig() approach described by Christian above, I believe
+> > we should have the necessary hooks already in
+> > security_fs_context_parse_param() and security_sb_mnt_opts() but I'm
+> > basing that on a quick look this morning, some additional checking
+> > would need to be done.
+>
+> I think what I outlined is even unnecessarily complicated. You don't
+> need that pointless "delegate" mount option at all actually. Permission
+> to delegate shouldn't be checked when the mount option is set. The
+> permissions should be checked when the superblock is created. That's the
+> right point in time. So sm like:
+>
+
+I think this gets even more straightforward with BPF Token FS being a
+separate one, right? Given BPF Token FS is all about delegation, it
+has to be a privileged operation to even create it.
+
+> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+> index 4174f76133df..a2eb382f5457 100644
+> --- a/kernel/bpf/inode.c
+> +++ b/kernel/bpf/inode.c
+> @@ -746,6 +746,13 @@ static int bpf_fill_super(struct super_block *sb, st=
+ruct fs_context *fc)
+>         struct inode *inode;
+>         int ret;
+>
+> +       /*
+> +        * If you want to delegate this instance then you need to be
+> +        * privileged and know what you're doing. This isn't trust.
+> +        */
+> +       if ((fc->user_ns !=3D &init_user_ns) && !capable(CAP_SYS_ADMIN))
+> +               return -EPERM;
+> +
+>         ret =3D simple_fill_super(sb, BPF_FS_MAGIC, bpf_rfiles);
+>         if (ret)
+>                 return ret;
+> @@ -800,6 +807,7 @@ static struct file_system_type bpf_fs_type =3D {
+>         .init_fs_context =3D bpf_init_fs_context,
+>         .parameters     =3D bpf_fs_parameters,
+>         .kill_sb        =3D kill_litter_super,
+> +       .fs_flags       =3D FS_USERNS_MOUNT,
+
+Just an aside thought. It doesn't seem like there is any reason why
+BPF FS right now is not created with FS_USERNS_MOUNT, so (separately
+from all this discussion) I suspect we can just make it
+FS_USERNS_MOUNT right now (unless we combine it with BPF-token-FS,
+then yeah, we can't do that unconditionally anymore). Given BPF FS is
+just a container of pinned BPF objects, just mounting BPF FS doesn't
+seem to be dangerous in any way. But that's just an aside thought
+here.
+
+>  };
+>
+>  static int __init bpf_init(void)
+>
+> In fact this is conceptually generalizable but I'd need to think about
+> that.
 
