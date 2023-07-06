@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-4163-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4164-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2CA2749469
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 05:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F5DA74946B
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 05:41:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65283281244
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 03:41:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AE74281175
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 03:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E32DA922;
-	Thu,  6 Jul 2023 03:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9E5CAD54;
+	Thu,  6 Jul 2023 03:35:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E32947D;
-	Thu,  6 Jul 2023 03:35:50 +0000 (UTC)
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332621BEC;
-	Wed,  5 Jul 2023 20:35:43 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1b078b34df5so363765fac.2;
-        Wed, 05 Jul 2023 20:35:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90034A952;
+	Thu,  6 Jul 2023 03:35:55 +0000 (UTC)
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0564C1BD2;
+	Wed,  5 Jul 2023 20:35:47 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a1ebb85f99so343464b6e.2;
+        Wed, 05 Jul 2023 20:35:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688614542; x=1691206542;
+        d=gmail.com; s=20221208; t=1688614546; x=1691206546;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=smMeUc5DmNi2lwy4EGV+uTKZDtjMFbrXIGNYOVUZ5Gs=;
-        b=eJ1M9zYGUcdMJB7lXouxeTk9Ls641bP0IouDn0A9CBSTo3oG6S/NqyLNH9bDknlopZ
-         8+J18JxP/uf+sgh+iyHrUTHkp94UHxbVeeseO4uWUJ5ayHbRT6UrJ8j/OvU5GCHdCa/w
-         +twF9SE57vlPfK7mxv9lDM4BYGVE1Szmo2STs6Bst4dzKP84udssMAWR9E1P5rACeaZb
-         KQKm5I81qqWRtunT991UrGXhCewI0defdMKRSSjrjFq6lqmD5fNsUQtaEZWxLTpkVbLo
-         CvwxN76Tn4uP1gt8K2LO0u6JEkypDwmpNc7DQaSR/Yt90RysZdk96fO2QJTe0CbBfzVt
-         txhA==
+        bh=f0bRuM+0zPcN3qYoxYOiMZ4uRyYlqx6ScAuNZFVccm0=;
+        b=gKl3d8oMUw6/NKNF76YIYaD9bBO8RSyO5PM6Cvw46qzjnMBiNhuaxGxL6CCPqSm8Ph
+         Kdv0J1iQVb5rDbvNokRqHU9Qtu8gXUySAtwJHXkVT/uSDuhVpLbtSgzGG85LGl3nkL71
+         e2N+yJ/d5U3v+P9yvpzefePVJmbPTcUcxH6pg9vUg4nFn7svcM0jpy9iV8bcHzMmY24Q
+         56A5nLRsjyG15Dbt1UUaU8fk5H2XgFVHQvOrC4zkNtnRaStQijhbH16Wmi1tL3vi3iUF
+         k6i7GHsoUdMTFZ27mRt8ZszzzAH6du7QNvccq+3pcNQz3z+5bzO4yIZKXUM2zvqwVRFZ
+         9rig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688614542; x=1691206542;
+        d=1e100.net; s=20221208; t=1688614546; x=1691206546;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=smMeUc5DmNi2lwy4EGV+uTKZDtjMFbrXIGNYOVUZ5Gs=;
-        b=SPe/RWyxmn7Rr5Ix4NnMwLgIuV2tfAyP9mqNR1SYZn2HN+x1FGWKe/lrEUPKApGhzV
-         Zi5PyP8Oqlv9iU3Mlj4V6Qpy26T/KEwmlR7qc5eBSlIx1JEKzyEN4odfZ5eY3G41FryI
-         YfShxCQ+VudqS6heMZJ9yaBJfXiKt+JdoNsnU6oPvlr+T+bS4kJJaQ6QlhdDKSzwu750
-         nBrP5z1rOE5swUzHWnqSC6BUbGCmHIB6EDR0v1fd/G1EyZLWAA9TNG0zq21UqTSQUaIs
-         DYqelmhy7YqB5zqb8OELboPdMNpuHGkgnCbVp6q3RaV+RR/Ir0jfz7iZw7Wek6Kt3q3m
-         agtg==
-X-Gm-Message-State: ABy/qLavJTOWGQKnAGmvts+38lOtEdl0FaNbE9PUhhWHtE5L0spzepfE
-	5ksnTaxTmV6/xoLOfo+34C4=
-X-Google-Smtp-Source: APBJJlFimwDBMQBG/8L9mUiaQHodZaxNwiOKJG+xdULukv56qVDE2yKPt7+nFdfs5Gosd4e3Pn6qnw==
-X-Received: by 2002:a05:6870:a2c7:b0:1b0:151c:9b19 with SMTP id w7-20020a056870a2c700b001b0151c9b19mr1039388oak.18.1688614542468;
-        Wed, 05 Jul 2023 20:35:42 -0700 (PDT)
+        bh=f0bRuM+0zPcN3qYoxYOiMZ4uRyYlqx6ScAuNZFVccm0=;
+        b=ALmhEcmnOm52jxyW+Vh2iNBjOU+dZWLlb0Fvx0v4nqFYv5sy+JJf6o4z0gjy/t0Sc0
+         ALB4mN3nkt7ahhgk5eh7rrlfWLDeIdz4eJECP6zWUMTEMGdqEMGz/JV/DoJqo6+fdxmK
+         Wdfp6heiNnICDI9sZAaU8wvtiKGXL/8O475MRnSIu7CjRZR5xZzlUXT7w4bzrDodsVF8
+         sdUDQTy9qlVssGDhHuqceVf3rX52sfSEo1HbFHc4QcrYqQ0sTh8XfvS1mD1wOT++UWnS
+         CBGkleV+fWXIAUJFMxXj9Qgbx9dJDRBMtLjAnyzKk1Y0Q8tRQ2LKwztLrMryLPEhXLjv
+         hEIQ==
+X-Gm-Message-State: ABy/qLZXQXesEtbH50f0CVe8JF2qycBnz/j521y2dbdAL8vLppuWhRk8
+	RIJS2RCTaJGoxZGVeLFx0CUWhn3KKZo=
+X-Google-Smtp-Source: APBJJlH13nj7856GlvWlvgyF7+YXlmnZ9rkeUgo+KEcrnC/DvOFqbkJ3BjFYflyTflMwfjfxDC6gCQ==
+X-Received: by 2002:a05:6808:1596:b0:3a1:ecdf:5f74 with SMTP id t22-20020a056808159600b003a1ecdf5f74mr646205oiw.43.1688614546277;
+        Wed, 05 Jul 2023 20:35:46 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:400::5:f715])
-        by smtp.gmail.com with ESMTPSA id u2-20020a170902e80200b001ab39cd875csm220092plg.133.2023.07.05.20.35.40
+        by smtp.gmail.com with ESMTPSA id z18-20020aa791d2000000b006829b28b393sm228322pfa.199.2023.07.05.20.35.44
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 05 Jul 2023 20:35:42 -0700 (PDT)
+        Wed, 05 Jul 2023 20:35:45 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: daniel@iogearbox.net,
 	andrii@kernel.org,
@@ -67,9 +67,9 @@ Cc: tj@kernel.org,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH v4 bpf-next 13/14] bpf: Convert bpf_cpumask to bpf_mem_cache_free_rcu.
-Date: Wed,  5 Jul 2023 20:34:46 -0700
-Message-Id: <20230706033447.54696-14-alexei.starovoitov@gmail.com>
+Subject: [PATCH v4 bpf-next 14/14] bpf: Add object leak check.
+Date: Wed,  5 Jul 2023 20:34:47 -0700
+Message-Id: <20230706033447.54696-15-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 In-Reply-To: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
 References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
@@ -87,71 +87,65 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Alexei Starovoitov <ast@kernel.org>
+From: Hou Tao <houtao1@huawei.com>
 
-Convert bpf_cpumask to bpf_mem_cache_free_rcu.
-Note that migrate_disable() in bpf_cpumask_release() is still necessary, since
-bpf_cpumask_release() is a dtor. bpf_obj_free_fields() can be converted to do
-migrate_disable() there in a follow up.
+The object leak check is cheap. Do it unconditionally to spot difficult races
+in bpf_mem_alloc.
 
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: David Vernet <void@manifault.com>
 ---
- kernel/bpf/cpumask.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+ kernel/bpf/memalloc.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-index 938a60ff4295..6983af8e093c 100644
---- a/kernel/bpf/cpumask.c
-+++ b/kernel/bpf/cpumask.c
-@@ -9,7 +9,6 @@
- /**
-  * struct bpf_cpumask - refcounted BPF cpumask wrapper structure
-  * @cpumask:	The actual cpumask embedded in the struct.
-- * @rcu:	The RCU head used to free the cpumask with RCU safety.
-  * @usage:	Object reference counter. When the refcount goes to 0, the
-  *		memory is released back to the BPF allocator, which provides
-  *		RCU safety.
-@@ -25,7 +24,6 @@
-  */
- struct bpf_cpumask {
- 	cpumask_t cpumask;
--	struct rcu_head rcu;
- 	refcount_t usage;
- };
- 
-@@ -82,16 +80,6 @@ __bpf_kfunc struct bpf_cpumask *bpf_cpumask_acquire(struct bpf_cpumask *cpumask)
- 	return cpumask;
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index 17ef2e9b278a..51d6389e5152 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -567,8 +567,43 @@ static void drain_mem_cache(struct bpf_mem_cache *c)
+ 	free_all(llist_del_all(&c->waiting_for_gp), percpu);
  }
  
--static void cpumask_free_cb(struct rcu_head *head)
--{
--	struct bpf_cpumask *cpumask;
--
--	cpumask = container_of(head, struct bpf_cpumask, rcu);
--	migrate_disable();
--	bpf_mem_cache_free(&bpf_cpumask_ma, cpumask);
--	migrate_enable();
--}
--
- /**
-  * bpf_cpumask_release() - Release a previously acquired BPF cpumask.
-  * @cpumask: The cpumask being released.
-@@ -102,8 +90,12 @@ static void cpumask_free_cb(struct rcu_head *head)
-  */
- __bpf_kfunc void bpf_cpumask_release(struct bpf_cpumask *cpumask)
- {
--	if (refcount_dec_and_test(&cpumask->usage))
--		call_rcu(&cpumask->rcu, cpumask_free_cb);
-+	if (!refcount_dec_and_test(&cpumask->usage))
-+		return;
++static void check_mem_cache(struct bpf_mem_cache *c)
++{
++	WARN_ON_ONCE(!llist_empty(&c->free_by_rcu_ttrace));
++	WARN_ON_ONCE(!llist_empty(&c->waiting_for_gp_ttrace));
++	WARN_ON_ONCE(!llist_empty(&c->free_llist));
++	WARN_ON_ONCE(!llist_empty(&c->free_llist_extra));
++	WARN_ON_ONCE(!llist_empty(&c->free_by_rcu));
++	WARN_ON_ONCE(!llist_empty(&c->free_llist_extra_rcu));
++	WARN_ON_ONCE(!llist_empty(&c->waiting_for_gp));
++}
 +
-+	migrate_disable();
-+	bpf_mem_cache_free_rcu(&bpf_cpumask_ma, cpumask);
-+	migrate_enable();
- }
- 
- /**
++static void check_leaked_objs(struct bpf_mem_alloc *ma)
++{
++	struct bpf_mem_caches *cc;
++	struct bpf_mem_cache *c;
++	int cpu, i;
++
++	if (ma->cache) {
++		for_each_possible_cpu(cpu) {
++			c = per_cpu_ptr(ma->cache, cpu);
++			check_mem_cache(c);
++		}
++	}
++	if (ma->caches) {
++		for_each_possible_cpu(cpu) {
++			cc = per_cpu_ptr(ma->caches, cpu);
++			for (i = 0; i < NUM_CACHES; i++) {
++				c = &cc->cache[i];
++				check_mem_cache(c);
++			}
++		}
++	}
++}
++
+ static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
+ {
++	check_leaked_objs(ma);
+ 	free_percpu(ma->cache);
+ 	free_percpu(ma->caches);
+ 	ma->cache = NULL;
 -- 
 2.34.1
 
