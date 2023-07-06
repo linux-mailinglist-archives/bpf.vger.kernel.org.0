@@ -1,58 +1,57 @@
-Return-Path: <bpf+bounces-4347-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4348-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2884C74A75D
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 01:02:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF0874A760
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 01:03:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A063F2814E1
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 23:02:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F1281C20EC6
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 23:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE8616427;
-	Thu,  6 Jul 2023 23:02:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 283CA16429;
+	Thu,  6 Jul 2023 23:03:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D19763BA
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 23:02:37 +0000 (UTC)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B7E1723
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 16:02:35 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbc1218262so13922125e9.3
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 16:02:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E934463BA
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 23:03:36 +0000 (UTC)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F481992
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 16:03:35 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbf1b82de7so10839995e9.1
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 16:03:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688684554; x=1691276554;
+        d=gmail.com; s=20221208; t=1688684614; x=1691276614;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TKCrKIMipyhRuz9DjFfu6bOANmZ9b32jEEZwgzbiQCM=;
-        b=spxFZhJyZ5yGxCdoq/7C/RlSJY2WMUs/08lc+Cci6A1Fu3W3AnvUGTAhKPbKiR4sUv
-         FVlqZEC1s8MtHcrnAXo6PsXoVszLUMDZMyBqJ2jZIHLmm5XfK0Tkmse78LIIJZaEOQGn
-         yiTO0JJQ+qsAMIvNtFca15vhomSmLHXHkGOZwmIJQW9gSgE22QbgjAYHroejHyRmFnfn
-         B2rF2AD2yNcCPHj2bb7lJPpgNpm4tJ6nzMMwgVGlfX67g0kIRS3yi/CVMglKTHRQgss1
-         rZIx1o5XyNwES8A62ZHodsXD2psSLscoKVgu76/gLSgaZNaqVmUldD/1TMuI7/Im8hw8
-         r1uA==
+        bh=vwlJ7R3+FTndgMwFMfoF8vADExfTIhg1xMvDSFste6w=;
+        b=h2CtaO4z5P4FnWJMVYvNV2GhyrPRIXi5whWJacZ6rQ6kUMQE/s40qRzKcf13dkLQXq
+         scssgBQmozIEuHslN4KmHlMp/kB+rZkemjaSKJuOcLYlCQsH5C5YEPIrHTXKQoS3hqBu
+         Eduiatj2HM3pgyH1p5UZSXv6IPBRy1DJGg9Ws2R7vIB6Tx6Z1zOyBnsVf6sZ6ieIw/8B
+         RYIKjxr3p5a+CsurH5oKBGJgPl4x4iumszY+ScsLleyJMRyxJ6PaIF5CPN0B3AOhjcjJ
+         er3d4g4zCUwo+k3dT3AySBtRcmcih6pcxD4ZGe/YNUmfA2PDBA/nkK+GJ+TaU/8zWMK8
+         XgOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688684554; x=1691276554;
+        d=1e100.net; s=20221208; t=1688684614; x=1691276614;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TKCrKIMipyhRuz9DjFfu6bOANmZ9b32jEEZwgzbiQCM=;
-        b=WDixLYoNNgKO5Oo1jQqIfDPSr74xOBr96rM84qtO5snZSmVg6u5cRP4Rpp6VG3yOMk
-         z8QPzipa1UFrV1G47XFQQ0fitObIbWiPAVuW5UzOBakY1y4tJz+EU0yWyIqmF4e4IKMG
-         xnt3AtVcaqiuPg17/VyztWfeJIRCZcxIlFAezDAwOR+QDh/aw/bA9VA/cZqFPzdYmxQu
-         C4sqlvzMruuJI73cVdo/y3UpeUz8LNuL6Ot2AcaCugf2ZiaArNwVu8PM0lPnR9mbVhk5
-         4Tm0uRnb4XT9xXn0C/z8HD78xrtygA4YmdJBy8wwGjYijxD7jlrpUiQs2gsYChboC24C
-         Ap/w==
-X-Gm-Message-State: ABy/qLZrFLvtl0ttPwBrkHf3XgfxFtpFkY18iYWFAQNULzkrUvIxwcps
-	eYNULb6hIdR1PFKf4ahfs+63ssyF+oqwCtUq+BU=
-X-Google-Smtp-Source: APBJJlFhp9lKKYx5phq2NXKtP2xUMjJ/bKmK2cTV1EfXArg6wsrFIaUcNLoFKjDuETz2O5BI17wBzFCTiv4pLns5/Yg=
-X-Received: by 2002:a05:600c:c8:b0:3fa:95c7:e891 with SMTP id
- u8-20020a05600c00c800b003fa95c7e891mr2772866wmm.35.1688684553732; Thu, 06 Jul
- 2023 16:02:33 -0700 (PDT)
+        bh=vwlJ7R3+FTndgMwFMfoF8vADExfTIhg1xMvDSFste6w=;
+        b=XzPr4GyNQCtDtmUKKETiPqPMN8JqeYA0zYglT+/7KQqsFgWwdpZ/cczHJyZLiXMZ3k
+         jBo/VZge88yxpSsB2LA97qIINkEwjZaR3Wk169myay+3S/mNUg6jWUENdLOzbnSMNNK/
+         Ln3QTdkw/Kj/tY9rattpvEcXk0CGYSQknsVhwE6Wu7O427Ewdr/pCzWOMajVUermie+u
+         2H4JYrpn29oCX2INynwLHelwfZoGsHh5JQbxOvqdtkxaytTnJwkrgQTjekx7ceKVHyX5
+         m8q794yrIbLvTmgOI6IaWpCljuF0vMgUUtPEjWOCV3+btoF70bTCXaTdoNltemUI0Der
+         RKWA==
+X-Gm-Message-State: ABy/qLbvhc+lXgkHQSEPh3HqhBjjT0Y4I5+TJoKcoUpw2Q1/iFSHEsoH
+	V0bA4csnaaeRyKpjDgGOjSErvMPoiJssUe61s+c=
+X-Google-Smtp-Source: APBJJlHXDDfP84qMB0mD8QoBIh3dUjghHsQFP2tS8n9QEhlafS4VEK0QOcgiIm8CMaYzXZM62knabLLdtgBAujDeGM4=
+X-Received: by 2002:a7b:c399:0:b0:3f6:d90:3db with SMTP id s25-20020a7bc399000000b003f60d9003dbmr3130984wmj.3.1688684614083;
+ Thu, 06 Jul 2023 16:03:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,8 +61,8 @@ MIME-Version: 1.0
 References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-8-jolsa@kernel.org>
 In-Reply-To: <20230630083344.984305-8-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 6 Jul 2023 16:02:22 -0700
-Message-ID: <CAEf4BzbLDnEyCwEBn2PJCM_756d_C8Pbb+ocvwEkacnd1b8yVQ@mail.gmail.com>
+Date: Thu, 6 Jul 2023 16:03:22 -0700
+Message-ID: <CAEf4BzYa+Mok-Bj2E+9EbWGPtGaMTsZ=1_VkkGzGw3yrdr+G+g@mail.gmail.com>
 Subject: Re: [PATCHv3 bpf-next 07/26] libbpf: Move elf_find_func_offset*
  functions to elf object
 To: Jiri Olsa <jolsa@kernel.org>
@@ -97,34 +96,40 @@ On Fri, Jun 30, 2023 at 1:35=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >  create mode 100644 tools/lib/bpf/elf.c
 >  create mode 100644 tools/lib/bpf/libbpf_elf.h
 >
-
-[...]
-
-> diff --git a/tools/lib/bpf/libbpf_elf.h b/tools/lib/bpf/libbpf_elf.h
+> diff --git a/tools/lib/bpf/Build b/tools/lib/bpf/Build
+> index b8b0a6369363..2d0c282c8588 100644
+> --- a/tools/lib/bpf/Build
+> +++ b/tools/lib/bpf/Build
+> @@ -1,4 +1,4 @@
+>  libbpf-y :=3D libbpf.o bpf.o nlattr.o btf.o libbpf_errno.o str_error.o \
+>             netlink.o bpf_prog_linfo.o libbpf_probes.o hashmap.o \
+>             btf_dump.o ringbuf.o strset.o linker.o gen_loader.o relo_core=
+.o \
+> -           usdt.o zip.o
+> +           usdt.o zip.o elf.o
+> diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
 > new file mode 100644
-> index 000000000000..1b652220fabf
+> index 000000000000..2b62b4af28ce
 > --- /dev/null
-> +++ b/tools/lib/bpf/libbpf_elf.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-> +
-> +#ifndef __LIBBPF_LIBBPF_ELF_H
-> +#define __LIBBPF_LIBBPF_ELF_H
+> +++ b/tools/lib/bpf/elf.c
+> @@ -0,0 +1,198 @@
+> +// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
 > +
 > +#include <libelf.h>
-> +
-> +long elf_find_func_offset(Elf *elf, const char *binary_path, const char =
-*name);
-> +long elf_find_func_offset_from_file(const char *binary_path, const char =
-*name);
-> +
-> +#endif /* *__LIBBPF_LIBBPF_ELF_H */
+> +#include <gelf.h>
+> +#include <fcntl.h>
+> +#include <linux/kernel.h>
 
-we have libbpf_internal.h, let's put all this there for now, it's
-already all the internal stuff together, I don't know if separate
-header with few functions gives us much
+do you know why we need linux/kernel.h include? is it to get __u32 and
+other typedefs?
 
-> --
-> 2.41.0
->
+> +
+> +#include "libbpf_elf.h"
+> +#include "libbpf_internal.h"
+> +#include "str_error.h"
+> +
+> +#define STRERR_BUFSIZE  128
+> +
+
+[...]
 
