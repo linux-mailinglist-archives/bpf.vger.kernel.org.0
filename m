@@ -1,122 +1,154 @@
-Return-Path: <bpf+bounces-4226-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4227-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 967BC749AAE
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 13:33:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8560B749AEE
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 13:40:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5261B281293
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 11:33:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FAC91C20C65
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 11:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A03C68C04;
-	Thu,  6 Jul 2023 11:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407E68C0B;
+	Thu,  6 Jul 2023 11:40:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE751848
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 11:33:01 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B30B1FD6
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 04:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1688643166;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+EHgreaHSArQejpZwUzj9BVjiALWLnZxUNJL9dz55r4=;
-	b=ipGryLgjXX8/Csq0az9lB8E81zy77GrB9dgGnN8ymKF+nFIpGsZ7FNEpxdhc0nat+UIpMJ
-	ldDTNkGgImxth50w3J5m8/ZHBmsVNIM8pCt01HAEa3YE8x5TwluSw/TAg/KoB7Oamj+Qcs
-	0vw+kbVdd47z2KP7WFlDyODnwlsPJxg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-14-Ptt6ivqFPtWU-BG5td62uw-1; Thu, 06 Jul 2023 07:32:45 -0400
-X-MC-Unique: Ptt6ivqFPtWU-BG5td62uw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31429e93f26so307822f8f.2
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 04:32:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688643164; x=1691235164;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+EHgreaHSArQejpZwUzj9BVjiALWLnZxUNJL9dz55r4=;
-        b=fkxlP1dKUEFfOTLDVnz76OmPpE0vE5LqoOy8ZNGh3shm14aVzs6SfZlLiFizZNywiL
-         U+i0sczS4byKg6RJM+dVKvwX33BqXQMwClTetWIrIceP3p2billOMerkHazeXR21eGaH
-         hrr8TOtrxz0ni282wdk7ppkQUnc4QLxX6udnMQxG7j2sUvYExIQvtSHv6DrQTKiZZDlv
-         /AHlVUFeCx0vbEGFhhrCA/JLN3/ciNHmSPeotcy1AhAL8TjTpnGsPj9lh+DadL8srhVJ
-         repd/ITiP/ctU8blJSSnj0xih67pSM+0XwGS+ExKEQW4wU2or1uIcrakV4nppE0maVA3
-         jytQ==
-X-Gm-Message-State: ABy/qLbarCTFft5Vl0AZgtAnSQ6N1FRPkkr9t2n4kSTxyMvHXyVz4SYG
-	YeqAucHvBblpukflUbzunx9HvxmXxlZAkfZrgniSAh6tozx5jwjnBp5Ed0zNUFEL4Ud/3PSJuJs
-	mW9BiEbnNp+v9P54n0ZM0
-X-Received: by 2002:a05:6000:1247:b0:313:eb29:4436 with SMTP id j7-20020a056000124700b00313eb294436mr1217120wrx.67.1688643164257;
-        Thu, 06 Jul 2023 04:32:44 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGwkRaxQNkD99ye545exOl5xhJyn9xK840Txrw0fb8M++KI1XK3XNcHZmk3ooEOtn36Sg1SYA==
-X-Received: by 2002:a05:6000:1247:b0:313:eb29:4436 with SMTP id j7-20020a056000124700b00313eb294436mr1217103wrx.67.1688643163824;
-        Thu, 06 Jul 2023 04:32:43 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id v13-20020a5d43cd000000b00314427091a2sm1620675wrr.98.2023.07.06.04.32.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jul 2023 04:32:43 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 97148C59677; Thu,  6 Jul 2023 13:32:42 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Christian Brauner
- <brauner@kernel.org>
-Cc: Paul Moore <paul@paul-moore.com>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
- keescook@chromium.org, lennart@poettering.net, cyphar@cyphar.com,
- luto@kernel.org, kernel-team@meta.com, sargun@sargun.me
-Subject: Re: [PATCH RESEND v3 bpf-next 01/14] bpf: introduce BPF token object
-In-Reply-To: <CAEf4Bza5mUou8nw1zjqFaCPPvfUNq-jpNp+y4DhMhhcXc5HwGg@mail.gmail.com>
-References: <20230629051832.897119-1-andrii@kernel.org>
- <20230629051832.897119-2-andrii@kernel.org>
- <20230704-hochverdient-lehne-eeb9eeef785e@brauner>
- <CAHC9VhTDocBCpNjdz1CoWM2DA76GYZmg31338DHePFGq_-ie-g@mail.gmail.com>
- <20230705-zyklen-exorbitant-4d54d2f220ad@brauner>
- <CAEf4Bza5mUou8nw1zjqFaCPPvfUNq-jpNp+y4DhMhhcXc5HwGg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Thu, 06 Jul 2023 13:32:42 +0200
-Message-ID: <87a5w9s2at.fsf@toke.dk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5641848
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 11:40:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50F67C433C7;
+	Thu,  6 Jul 2023 11:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688643617;
+	bh=h08GLHzvzPag2+5puOztYp01UnHlh2rRD22/d6waft8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jpkdlCXWe7GWqMfmwmsb2ud2sF5O4+fD2WXQSRpi2ETowI8YWAiKUY2wLjsaVNJpX
+	 +RxS2fLk+ORVul2Nyn0W4KqpCYtF0uwRkzgfC1Th8q/05Gki9oc5hbhpOztdJmf1tc
+	 dK/szrpOsSLV2AWvcUKZ5PIBfWIXCeUiDu8SVmx6qB7nXGA9312BveqiC/GGmrBff3
+	 /YM1im7HcTF7G+laaX0i/fws9kOhYMTb9Wt4fSNCWYw7hFJE8UNr07UVKdCiPRmjj8
+	 VL2y/hVlHIW1hO3bgyapVeY+dyvbFX4rWbKMljPZv2Y3v5ZMX+Y8ojxKKyrKJRxf+1
+	 mwP544/PX36qw==
+Date: Thu, 6 Jul 2023 13:40:14 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+	bpf@vger.kernel.org, x86@kernel.org,
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Juerg Haefliger <juerg.haefliger@canonical.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
+	Chuang Wang <nashuiliang@gmail.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Petr Mladek <pmladek@suse.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+	Julian Pidancet <julian.pidancet@oracle.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH 11/14] context-tracking: Introduce work deferral
+ infrastructure
+Message-ID: <ZKaoHrm0Fejb7kAl@lothringen>
+References: <20230705181256.3539027-1-vschneid@redhat.com>
+ <20230705181256.3539027-12-vschneid@redhat.com>
+ <ZKXtfWZiM66dK5xC@localhost.localdomain>
+ <xhsmhttuhuvix.mognet@vschneid.remote.csb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xhsmhttuhuvix.mognet@vschneid.remote.csb>
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Thu, Jul 06, 2023 at 12:30:46PM +0100, Valentin Schneider wrote:
+> >> +		ret = atomic_try_cmpxchg(&ct->work, &old_work, old_work | work);
+> >> +
+> >> +	preempt_enable();
+> >> +	return ret;
+> >> +}
+> > [...]
+> >> @@ -100,14 +158,19 @@ static noinstr void ct_kernel_exit_state(int offset)
+> >>   */
+> >>  static noinstr void ct_kernel_enter_state(int offset)
+> >>  {
+> >> +	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
+> >>      int seq;
+> >> +	unsigned int work;
+> >>
+> >> +	work = ct_work_fetch(ct);
+> >
+> > So this adds another fully ordered operation on user <-> kernel transition.
+> > How many such IPIs can we expect?
+> >
+> 
+> Despite having spent quite a lot of time on that question, I think I still
+> only have a hunch.
+> 
+> Poking around RHEL systems, I'd say 99% of the problematic IPIs are
+> instruction patching and TLB flushes.
+> 
+> Staring at the code, there's quite a lot of smp_calls for which it's hard
+> to say whether the target CPUs can actually be isolated or not (e.g. the
+> CPU comes from a cpumask shoved in a struct that was built using data from
+> another struct of uncertain origins), but then again some of them don't
+> need to hook into context_tracking.
+> 
+> Long story short: I /think/ we can consider that number to be fairly small,
+> but there could be more lurking in the shadows.
 
-> Having it as a separate single-purpose FS seems cleaner, because we
-> have use cases where we'd have one BPF FS instance created for a
-> container by our container manager, and then exposing a few separate
-> tokens with different sets of allowed functionality. E.g., one for
-> main intended workload, another for some BPF-based observability
-> tools, maybe yet another for more heavy-weight tools like bpftrace for
-> extra debugging. In the debugging case our container infrastructure
-> will be "evacuating" any other workloads on the same host to avoid
-> unnecessary consequences. The point is to not disturb
-> workload-under-human-debugging as much as possible, so we'd like to
-> keep userns intact, which is why mounting extra (more permissive) BPF
-> token inside already running containers is an important consideration.
+I guess it will still be time to reconsider the design if we ever reach such size.
 
-This example (as well as Yafang's in the sibling subthread) makes it
-even more apparent to me that it would be better with a model where the
-userspace policy daemon can just make decisions on each call directly,
-instead of mucking about with different tokens with different embedded
-permissions. Why not go that route (see my other reply for details on
-what I mean)?
+> 
+> > If this is just about a dozen, can we stuff them in the state like in the
+> > following? We can potentially add more of them especially on 64 bits we could
+> > afford 30 different works, this is just shrinking the RCU extended quiescent
+> > state counter space. Worst case that can happen is that RCU misses 65535
+> > idle/user <-> kernel transitions and delays a grace period...
+> >
+> 
+> I'm trying to grok how this impacts RCU, IIUC most of RCU mostly cares about the
+> even/odd-ness of the thing, and rcu_gp_fqs() cares about the actual value
+> but only to check if it has changed over time (rcu_dynticks_in_eqs_since()
+> only does a !=).
+> 
+> I'm rephrasing here to make sure I get it - is it then that the worst case
+> here is 2^(dynticks_counter_size) transitions happen between saving the
+> dynticks snapshot and checking it again, so RCU waits some more?
 
--Toke
+That's my understanding as well but I have to defer on Paul to make sure I'm
+not overlooking something.
 
+Thanks.
 
