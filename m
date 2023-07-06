@@ -1,96 +1,210 @@
-Return-Path: <bpf+bounces-4297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D718974A47F
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 21:43:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BCF374A490
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 21:51:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B57241C20DEB
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 19:43:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E13A6281401
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 19:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9FCC153;
-	Thu,  6 Jul 2023 19:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3AF4C2C8;
+	Thu,  6 Jul 2023 19:51:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBAB91872
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 19:43:20 +0000 (UTC)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6671BD3
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 12:43:19 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3142498c2e3so249835f8f.0
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 12:43:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4FEA947
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 19:51:33 +0000 (UTC)
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B298E1FC4;
+	Thu,  6 Jul 2023 12:51:29 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b703a0453fso17067641fa.3;
+        Thu, 06 Jul 2023 12:51:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688672597; x=1691264597;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nhm/jJrR1NHfK1pGN7EZo6eMVf2ZaHxU5UH60jdxSyw=;
-        b=J7FPWLa6RpMlLOE5RwQYNk7L0ElaT87B3FFxGzrSTfNoLYbmh5D7OTsBd1JHcS3mWl
-         qQFW19Yg6zo6RIsqFzjEI3yOOUPyulybQEVp2/4x8zka/caCLKTUXKxghUx87DaZDDJP
-         tk8/cEVxgeityp8j/OrsFUoVt/xvKiuuOWzO60hb11C1uRYGK5b5ZjLine3roP8JAHKJ
-         68xnFe8waQ9DgBgDZFueue+Sa3V7XDwr9ljNQuQvWjhB70msf6AFKdPUOupTeyQWRrRJ
-         FrHrWSm2TwNQahuEajzeOXgUVBzNCFnv1Mb1UiQ8gOWkVXiYo2rUOZ9bAwBRcsDlgE2n
-         smow==
+        d=gmail.com; s=20221208; t=1688673088; x=1691265088;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qgieecZWTUuXEPx1wGrMdeFVGmlpK0/k5HVeYL3HOg0=;
+        b=rWCcZv1/dLtL/JLJ861MyL5B54iLbDsJBjj0vwGBe118DpBzSrzN+VkRMXQ5xkikZ6
+         gKqJcM3Y27C9QU77OZpea1B6rxI5pN6lsDrJmugBU/rpfEQbSu0lWuvQwzEk5q2ftlaI
+         N21Mz3r0Q7dj0IiiqhY8Jm2ex/6RqHXrfok3DIwcyvFWuW+IH0T7zvlH071VBDxgD7sv
+         CXkEYua5Ly/N35XVy9+jPSa4UGb/eHLppVidwzZXax3KEwsShmFwCtJyjmWMLfBl13yO
+         N1v9PFYVRfYFs+qWn9MFm1TfilmaEUhqNN76zNc2CTcHcpuo7ODva/i/rnAyktxN7VbQ
+         n6Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688672597; x=1691264597;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nhm/jJrR1NHfK1pGN7EZo6eMVf2ZaHxU5UH60jdxSyw=;
-        b=lVGMoiT1diJspen7uR6Y6JYBAEwghVfPPq3sKGNUqqwzv8rmbyV34wCeHj8ppYSb13
-         g9NEyaOAUoSaY91FtFHchKs7BhcKICaEBPivWDSCgjYWBOIfXB6gdk0Dh7cEc8YkD+fI
-         QaF/1duyLhpKxWRr4OotE3Q68CVEBXOsX8CdBGoAnwDJLzJyiZZpnihWUk6D6wR13q+x
-         SjjQ7rux6Y7J0q+b3OPOW1N2Ma5MqgeT58MyjoNXoEheJ388/lxoDgM0YuwOY5GWp132
-         G6WsakLv7LQH27YggR6s4ILmvP2mu1o8oSs3hAjtyWR0PaDM3kAm0OzreVGcEo0Kck5x
-         q/Pw==
-X-Gm-Message-State: ABy/qLZvKA1X2MC8OJ91s0Q5TpCD26BaB+wcCXUi/RG+a2EL+JibzXRy
-	bYhBqHQndxTYxydBHGw7qWw=
-X-Google-Smtp-Source: APBJJlEFW+Gf4pNbVCJS5ndRPmqxjCcienCUY7YNr8CRXubOimUzh/nbMUVzze0tUFBGlgW9yfhOhQ==
-X-Received: by 2002:adf:e706:0:b0:313:df4b:414a with SMTP id c6-20020adfe706000000b00313df4b414amr2219200wrm.5.1688672597403;
-        Thu, 06 Jul 2023 12:43:17 -0700 (PDT)
-Received: from [192.168.10.215] ([141.136.92.16])
-        by smtp.gmail.com with ESMTPSA id d8-20020adff848000000b0031128382ed0sm2590580wrq.83.2023.07.06.12.43.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Jul 2023 12:43:17 -0700 (PDT)
-Message-ID: <4e4a3024-0482-665c-212f-f0084f404239@gmail.com>
-Date: Thu, 6 Jul 2023 23:43:15 +0400
+        d=1e100.net; s=20221208; t=1688673088; x=1691265088;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qgieecZWTUuXEPx1wGrMdeFVGmlpK0/k5HVeYL3HOg0=;
+        b=htzQsngFLv6gOeWEHiOu2ljUL2SebbunKSjqw22zpxS/Z7z/wpkVsawSwsDJw8W0qH
+         TmSCplUda2r+i7dZjigaJaSTaWNxS3GRTz4uXUBJtYdGko6eXTAe6yUEmpz9ZCcKrXKO
+         wCP5KCOgStpLtk6Wl4P1p0RMiQER2wT1jyS019pf5hhQyotaqHz2qxRHRvTKmK+kCLch
+         b0bFgX2oi4wTn1zJGlnx/emY7rYZsunRQp9MXHCDJ0WcU8GC0g3TXkskE7DTMDl40/he
+         hWCYK8pxpDobkQzTRJjKro8N1adSO5ggrArQ7xR87K7hyr2jZzmpfM/FgP66URRqkMUg
+         URsw==
+X-Gm-Message-State: ABy/qLa8ta+lKQY7vt2gc+XFVy4vflH/6p4jzyzILZyzsK+TOzMI3hSU
+	qtTVxOvvHro8czgwQ2rCddM5gQ9+ooCvH1nwmfeUctdslYg=
+X-Google-Smtp-Source: APBJJlEwASUXHveD3DnsS+U8M73zhlC/QfqVRYy6fEn7rTXXfZKa+5+C576cGdN4Ho3+U8K3nli+4gavaEKHGZqL5z4=
+X-Received: by 2002:a2e:380b:0:b0:2b6:fe55:7318 with SMTP id
+ f11-20020a2e380b000000b002b6fe557318mr2761393lja.12.1688673087592; Thu, 06
+ Jul 2023 12:51:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2] samples/bpf: Add more instructions to build
- dependencies and, configuration in README.rst
-Content-Language: en-US
-To: Anh Tuan Phan <tuananhlfc@gmail.com>, bpf@vger.kernel.org,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, linux-kernel-mentees@lists.linuxfoundation.org
-References: <bd1477f2-a51e-a795-4f25-a32d6ab46530@gmail.com>
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-In-Reply-To: <bd1477f2-a51e-a795-4f25-a32d6ab46530@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230703105745.1314475-1-tero.kristo@linux.intel.com>
+ <20230703105745.1314475-2-tero.kristo@linux.intel.com> <CAADnVQL2Tn+2rP0hVB3kdB0At12qVu+vJ_WbJzrkxqOJ5va2vQ@mail.gmail.com>
+ <64a64e46b7d5b_b20ce208de@john.notmuch> <4b874e4c-4ad3-590d-3885-b4a3b894524e@linux.intel.com>
+In-Reply-To: <4b874e4c-4ad3-590d-3885-b4a3b894524e@linux.intel.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 6 Jul 2023 12:51:16 -0700
+Message-ID: <CAADnVQK0rzHWxxx7LMFSTuBx18A+6H6AEkKFHNDkPwbPUbsk4Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] x86/tsc: Add new BPF helper call bpf_rdtsc
+To: Tero Kristo <tero.kristo@linux.intel.com>
+Cc: John Fastabend <john.fastabend@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Ingo Molnar <mingo@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 06.07.2023 20:00, Anh Tuan Phan wrote:
-> Update the Documentation to mention that some samples require pahole
-> v1.16 and kernel built with CONFIG_DEBUG_INFO_BTF=y
-> 
-> Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
-> ---
+On Thu, Jul 6, 2023 at 4:59=E2=80=AFAM Tero Kristo <tero.kristo@linux.intel=
+.com> wrote:
+>
+>
+> On 06/07/2023 08:16, John Fastabend wrote:
+> > Alexei Starovoitov wrote:
+> >> On Mon, Jul 3, 2023 at 3:58=E2=80=AFAM Tero Kristo <tero.kristo@linux.=
+intel.com> wrote:
+> >>> Currently the raw TSC counter can be read within kernel via rdtsc_ord=
+ered()
+> >>> and friends, and additionally even userspace has access to it via the
+> >>> RDTSC assembly instruction. BPF programs on the other hand don't have
+> >>> direct access to the TSC counter, but alternatively must go through t=
+he
+> >>> performance subsystem (bpf_perf_event_read), which only provides rela=
+tive
+> >>> value compared to the start point of the program, and is also much sl=
+ower
+> >>> than the direct read. Add a new BPF helper definition for bpf_rdtsc()=
+ which
+> >>> can be used for any accurate profiling needs.
+> >>>
+> >>> A use-case for the new API is for example wakeup latency tracing via
+> >>> eBPF on Intel architecture, where it is extremely beneficial to be ab=
+le
+> >>> to get raw TSC timestamps and compare these directly to the value
+> >>> programmed to the MSR_IA32_TSC_DEADLINE register. This way a direct
+> >>> latency value from the hardware interrupt to the execution of the
+> >>> interrupt handler can be calculated. Having the functionality within
+> >>> eBPF also has added benefits of allowing to filter any other relevant
+> >>> data like C-state residency values, and also to drop any irrelevant
+> >>> data points directly in the kernel context, without passing all the
+> >>> data to userspace for post-processing.
+> >>>
+> >>> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
+> >>> ---
+> >>>   arch/x86/include/asm/msr.h |  1 +
+> >>>   arch/x86/kernel/tsc.c      | 23 +++++++++++++++++++++++
+> >>>   2 files changed, 24 insertions(+)
+> >>>
+> >>> diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
+> >>> index 65ec1965cd28..3dde673cb563 100644
+> >>> --- a/arch/x86/include/asm/msr.h
+> >>> +++ b/arch/x86/include/asm/msr.h
+> >>> @@ -309,6 +309,7 @@ struct msr *msrs_alloc(void);
+> >>>   void msrs_free(struct msr *msrs);
+> >>>   int msr_set_bit(u32 msr, u8 bit);
+> >>>   int msr_clear_bit(u32 msr, u8 bit);
+> >>> +u64 bpf_rdtsc(void);
+> >>>
+> >>>   #ifdef CONFIG_SMP
+> >>>   int rdmsr_on_cpu(unsigned int cpu, u32 msr_no, u32 *l, u32 *h);
+> >>> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> >>> index 344698852146..ded857abef81 100644
+> >>> --- a/arch/x86/kernel/tsc.c
+> >>> +++ b/arch/x86/kernel/tsc.c
+> >>> @@ -15,6 +15,8 @@
+> >>>   #include <linux/timex.h>
+> >>>   #include <linux/static_key.h>
+> >>>   #include <linux/static_call.h>
+> >>> +#include <linux/btf.h>
+> >>> +#include <linux/btf_ids.h>
+> >>>
+> >>>   #include <asm/hpet.h>
+> >>>   #include <asm/timer.h>
+> >>> @@ -29,6 +31,7 @@
+> >>>   #include <asm/intel-family.h>
+> >>>   #include <asm/i8259.h>
+> >>>   #include <asm/uv/uv.h>
+> >>> +#include <asm/tlbflush.h>
+> >>>
+> >>>   unsigned int __read_mostly cpu_khz;    /* TSC clocks / usec, not us=
+ed here */
+> >>>   EXPORT_SYMBOL(cpu_khz);
+> >>> @@ -1551,6 +1554,24 @@ void __init tsc_early_init(void)
+> >>>          tsc_enable_sched_clock();
+> >>>   }
+> >>>
+> >>> +u64 bpf_rdtsc(void)
+> >>> +{
+> >>> +       /* Check if Time Stamp is enabled only in ring 0 */
+> >>> +       if (cr4_read_shadow() & X86_CR4_TSD)
+> >>> +               return 0;
+> >> Why check this? It's always enabled in the kernel, no?
+>
+> It is always enabled, but there are certain syscalls that can be used to
+> disable the TSC access for oneself. prctl(PR_SET_TSC, ...) and
+> seccomp(SET_MODE_STRICT,...). Not having the check in place would in
+> theory allow a restricted BPF program to circumvent this (if there ever
+> was such a thing.) But yes, I do agree this part is a bit debatable
+> whether it should be there at all.
 
-Minor nit: you should write what changed since the first version of the 
-patch here, otherwise the changes are pretty hard to follow.
+What do you mean 'circumvent' ?
+It's a tracing bpf prog running in the kernel loaded by root
+and reading tsc for the purpose of the kernel.
+There is no unprivileged access to tsc here.
+
+>
+> >>> +
+> >>> +       return rdtsc_ordered();
+> >> Why _ordered? Why not just rdtsc ?
+> >> Especially since you want to trace latency. Extra lfence will ruin
+> >> the measurements.
+> >>
+> > If we used it as a fast way to order events on multiple CPUs I
+> > guess we need the lfence? We use ktime_get_ns() now for things
+> > like this when we just need an order counter. We have also
+> > observed time going backwards with this and have heuristics
+> > to correct it but its rare.
+>
+> Yeah, I think it is better to induce some extra latency instead of
+> having some weird ordering issues with the timestamps.
+
+lfence is not 'some extra latency'.
+I suspect rdtsc_ordered() will be slower than bpf_ktime_get_ns().
+What's the point of using it then?
+
+>
+> Also, things like the ftrace also use rdtsc_ordered() as its underlying
+> clock, if you use x86-tsc as the trace clock (see
+> arch/x86/kernel/trace_clock.c.)
+>
+> -Tero
+>
 
