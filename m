@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-4311-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4312-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49B3074A532
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 22:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80B6A74A534
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 22:51:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D63F1C20E49
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 20:50:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0FF01C20E5F
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 20:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C34116410;
-	Thu,  6 Jul 2023 20:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A301643D;
+	Thu,  6 Jul 2023 20:47:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4554015AEC;
-	Thu,  6 Jul 2023 20:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C5E71642B;
+	Thu,  6 Jul 2023 20:47:41 +0000 (UTC)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD0D1992;
-	Thu,  6 Jul 2023 13:47:38 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0481992;
+	Thu,  6 Jul 2023 13:47:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688676458; x=1720212458;
+  t=1688676460; x=1720212460;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=9sJpfV/k1J08tuH0NN3TKM2o2ABOowPNmLERR7RHyVg=;
-  b=brtIZ4qmxYHmIlhU65V3VuINkxHEicx7DSkh0npdUBo6iVieYKTbuxbN
-   4ZD9Cbs+zk6S0Ovamn7JvUgQXDxWe/O3lO6jZzPiu29Be3ikzKXUAjsq4
-   +lPTX0eDoWWOkgBrJPKPReOWIR8PF0T+PRDXqEm+XITjZUWsO6HMmKnKt
-   6y1fa2lBsluCCk3xeJMchdDCm7d/028we4wd2WJCbay+uIJ5TnPbvb6h7
-   LfcHyQDeo2Rz7aVUD8jkdwLnBeDm3XCFYuSV9za0YfVpstRoRVhL6Tmnp
-   mM6Ou4/A1uMDeau/Zf9nXrsaVPHLZlya6gNPpAcsU8tYn/JKWJZp0DI7i
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10763"; a="361195321"
+  bh=G0yvv6bbrrFDTtRISrfnsatiXi/oYgnIG4pHC6L5r9c=;
+  b=mumlVJ7AXc5cqBOLOhWQKv/Hg6YnZ4m7O3W0VHu6fRIdDPehYpDBzV6r
+   ZAN/NpqSditMqBxPHm6m3r2fIn/4xLh5+JP7ctT0mxQPNq26oOiNOGq6+
+   Zs8J15m1v3TUivIZB0deUd5ZM/GLolWVemR2vqPPUv/x5RSk5IpIggIPe
+   3C25dbYm/sW0tBn8jMGKhw/7hFsjw8bGDzuAipS7dtbKj7A8xJkE4Gkna
+   HfBl22w0MfgZ74V7Buq8n6lXtsc/e9idC73e104kbE3ENluDmgsOBasxc
+   3qh8nO9yA+0TzxR+nZyGfipGR3zrVnvMCMuL3rRhEINMTTMW2HC6ep3Pk
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10763"; a="361195332"
 X-IronPort-AV: E=Sophos;i="6.01,185,1684825200"; 
-   d="scan'208";a="361195321"
+   d="scan'208";a="361195332"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2023 13:47:37 -0700
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2023 13:47:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10763"; a="785059533"
+X-IronPort-AV: E=McAfee;i="6600,9927,10763"; a="785059538"
 X-IronPort-AV: E=Sophos;i="6.01,185,1684825200"; 
-   d="scan'208";a="785059533"
+   d="scan'208";a="785059538"
 Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmsmga008.fm.intel.com with ESMTP; 06 Jul 2023 13:47:34 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 06 Jul 2023 13:47:37 -0700
 From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -57,9 +57,9 @@ Cc: netdev@vger.kernel.org,
 	maciej.fijalkowski@intel.com,
 	simon.horman@corigine.com,
 	toke@kernel.org
-Subject: [PATCH v5 bpf-next 06/24] xsk: introduce wrappers and helpers for supporting multi-buffer in Tx path
-Date: Thu,  6 Jul 2023 22:46:32 +0200
-Message-Id: <20230706204650.469087-7-maciej.fijalkowski@intel.com>
+Subject: [PATCH v5 bpf-next 07/24] xsk: allow core/drivers to test EOP bit
+Date: Thu,  6 Jul 2023 22:46:33 +0200
+Message-Id: <20230706204650.469087-8-maciej.fijalkowski@intel.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230706204650.469087-1-maciej.fijalkowski@intel.com>
 References: <20230706204650.469087-1-maciej.fijalkowski@intel.com>
@@ -77,224 +77,64 @@ X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+Drivers are used to check for EOP bit whereas AF_XDP operates on
+inverted logic - user space indicates that current frag is not the last
+one and packet continues. For AF_XDP core needs, add xp_mb_desc() that
+will simply test XDP_PKT_CONTD from xdp_desc::options, but in order to
+preserve drivers default behavior, introduce an interface for ZC drivers
+that will negate xp_mb_desc() result and therefore make it easier to
+test EOP bit from during production of HW Tx descriptors.
 
-In Tx path, xsk core reserves space for each desc to be transmitted in
-the completion queue and it's address contained in it is stored in the
-skb destructor arg. After successful transmission the skb destructor
-submits the addr marking completion.
-
-To handle multiple descriptors per packet, now along with reserving
-space for each descriptor, the corresponding address is also stored in
-completion queue. The number of pending descriptors are stored in skb
-destructor arg and is used by the skb destructor to update completions.
-
-Introduce 'skb' in xdp_sock to store a partially built packet when
-__xsk_generic_xmit() must return before it sees the EOP descriptor for
-the current packet so that packet building can resume in next call of
-__xsk_generic_xmit().
-
-Helper functions are introduced to set and get the pending descriptors
-in the skb destructor arg. Also, wrappers are introduced for storing
-descriptor addresses, submitting and cancelling (for unsuccessful
-transmissions) the number of completions.
-
-Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 ---
- include/net/xdp_sock.h |  6 ++++
- net/xdp/xsk.c          | 74 ++++++++++++++++++++++++++++++------------
- net/xdp/xsk_queue.h    | 19 ++++-------
- 3 files changed, 67 insertions(+), 32 deletions(-)
+ include/net/xdp_sock_drv.h  | 10 ++++++++++
+ include/net/xsk_buff_pool.h |  5 +++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-index 36b0411a0d1b..1617af380162 100644
---- a/include/net/xdp_sock.h
-+++ b/include/net/xdp_sock.h
-@@ -68,6 +68,12 @@ struct xdp_sock {
- 	u64 rx_dropped;
- 	u64 rx_queue_full;
- 
-+	/* When __xsk_generic_xmit() must return before it sees the EOP descriptor for the current
-+	 * packet, the partially built skb is saved here so that packet building can resume in next
-+	 * call of __xsk_generic_xmit().
-+	 */
-+	struct sk_buff *skb;
-+
- 	struct list_head map_list;
- 	/* Protects map_list */
- 	spinlock_t map_list_lock;
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index ad40e78eaaa6..96b8f8f6f12d 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -480,19 +480,65 @@ static int xsk_wakeup(struct xdp_sock *xs, u8 flags)
- 	return dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
+diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
+index c243f906ebed..0d34cdb5567d 100644
+--- a/include/net/xdp_sock_drv.h
++++ b/include/net/xdp_sock_drv.h
+@@ -89,6 +89,11 @@ static inline struct xdp_buff *xsk_buff_alloc(struct xsk_buff_pool *pool)
+ 	return xp_alloc(pool);
  }
  
--static void xsk_destruct_skb(struct sk_buff *skb)
-+static int xsk_cq_reserve_addr_locked(struct xdp_sock *xs, u64 addr)
++static inline bool xsk_is_eop_desc(struct xdp_desc *desc)
 +{
-+	unsigned long flags;
-+	int ret;
-+
-+	spin_lock_irqsave(&xs->pool->cq_lock, flags);
-+	ret = xskq_prod_reserve_addr(xs->pool->cq, addr);
-+	spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-+
-+	return ret;
++	return !xp_mb_desc(desc);
 +}
 +
-+static void xsk_cq_submit_locked(struct xdp_sock *xs, u32 n)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&xs->pool->cq_lock, flags);
-+	xskq_prod_submit_n(xs->pool->cq, n);
-+	spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-+}
-+
-+static void xsk_cq_cancel_locked(struct xdp_sock *xs, u32 n)
+ /* Returns as many entries as possible up to max. 0 <= N <= max. */
+ static inline u32 xsk_buff_alloc_batch(struct xsk_buff_pool *pool, struct xdp_buff **xdp, u32 max)
  {
--	u64 addr = (u64)(long)skb_shinfo(skb)->destructor_arg;
--	struct xdp_sock *xs = xdp_sk(skb->sk);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&xs->pool->cq_lock, flags);
--	xskq_prod_submit_addr(xs->pool->cq, addr);
-+	xskq_prod_cancel_n(xs->pool->cq, n);
- 	spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-+}
-+
-+static u32 xsk_get_num_desc(struct sk_buff *skb)
-+{
-+	return skb ? (long)skb_shinfo(skb)->destructor_arg : 0;
-+}
- 
-+static void xsk_destruct_skb(struct sk_buff *skb)
-+{
-+	xsk_cq_submit_locked(xdp_sk(skb->sk), xsk_get_num_desc(skb));
- 	sock_wfree(skb);
+@@ -241,6 +246,11 @@ static inline struct xdp_buff *xsk_buff_alloc(struct xsk_buff_pool *pool)
+ 	return NULL;
  }
  
-+static void xsk_set_destructor_arg(struct sk_buff *skb)
++static inline bool xsk_is_eop_desc(struct xdp_desc *desc)
 +{
-+	long num = xsk_get_num_desc(xdp_sk(skb->sk)->skb) + 1;
-+
-+	skb_shinfo(skb)->destructor_arg = (void *)num;
++	return false;
 +}
 +
-+static void xsk_consume_skb(struct sk_buff *skb)
-+{
-+	struct xdp_sock *xs = xdp_sk(skb->sk);
-+
-+	skb->destructor = sock_wfree;
-+	xsk_cq_cancel_locked(xs, xsk_get_num_desc(skb));
-+	/* Free skb without triggering the perf drop trace */
-+	consume_skb(skb);
-+	xs->skb = NULL;
-+}
-+
- static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
- 					      struct xdp_desc *desc)
+ static inline u32 xsk_buff_alloc_batch(struct xsk_buff_pool *pool, struct xdp_buff **xdp, u32 max)
  {
-@@ -578,8 +624,8 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 	skb->dev = dev;
- 	skb->priority = xs->sk.sk_priority;
- 	skb->mark = xs->sk.sk_mark;
--	skb_shinfo(skb)->destructor_arg = (void *)(long)desc->addr;
- 	skb->destructor = xsk_destruct_skb;
-+	xsk_set_destructor_arg(skb);
- 
- 	return skb;
- }
-@@ -591,7 +637,6 @@ static int __xsk_generic_xmit(struct sock *sk)
- 	bool sent_frame = false;
- 	struct xdp_desc desc;
- 	struct sk_buff *skb;
--	unsigned long flags;
- 	int err = 0;
- 
- 	mutex_lock(&xs->mutex);
-@@ -616,31 +661,20 @@ static int __xsk_generic_xmit(struct sock *sk)
- 		 * if there is space in it. This avoids having to implement
- 		 * any buffering in the Tx path.
- 		 */
--		spin_lock_irqsave(&xs->pool->cq_lock, flags);
--		if (xskq_prod_reserve(xs->pool->cq)) {
--			spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-+		if (xsk_cq_reserve_addr_locked(xs, desc.addr))
- 			goto out;
--		}
--		spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
- 
- 		skb = xsk_build_skb(xs, &desc);
- 		if (IS_ERR(skb)) {
- 			err = PTR_ERR(skb);
--			spin_lock_irqsave(&xs->pool->cq_lock, flags);
--			xskq_prod_cancel(xs->pool->cq);
--			spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-+			xsk_cq_cancel_locked(xs, 1);
- 			goto out;
- 		}
- 
- 		err = __dev_direct_xmit(skb, xs->queue_id);
- 		if  (err == NETDEV_TX_BUSY) {
- 			/* Tell user-space to retry the send */
--			skb->destructor = sock_wfree;
--			spin_lock_irqsave(&xs->pool->cq_lock, flags);
--			xskq_prod_cancel(xs->pool->cq);
--			spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
--			/* Free skb without triggering the perf drop trace */
--			consume_skb(skb);
-+			xsk_consume_skb(skb);
- 			err = -EAGAIN;
- 			goto out;
- 		}
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index 2f1aacae81af..423ad7368fa2 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -297,6 +297,11 @@ static inline void xskq_cons_release(struct xsk_queue *q)
- 	q->cached_cons++;
+ 	return 0;
+diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+index a8d7b8a3688a..4dcca163e076 100644
+--- a/include/net/xsk_buff_pool.h
++++ b/include/net/xsk_buff_pool.h
+@@ -184,6 +184,11 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
+ 	       !(pool->dma_pages[addr >> PAGE_SHIFT] & XSK_NEXT_PG_CONTIG_MASK);
  }
  
-+static inline void xskq_cons_cancel_n(struct xsk_queue *q, u32 cnt)
++static inline bool xp_mb_desc(struct xdp_desc *desc)
 +{
-+	q->cached_cons -= cnt;
++	return desc->options & XDP_PKT_CONTD;
 +}
 +
- static inline u32 xskq_cons_present_entries(struct xsk_queue *q)
+ static inline u64 xp_aligned_extract_addr(struct xsk_buff_pool *pool, u64 addr)
  {
- 	/* No barriers needed since data is not accessed */
-@@ -324,9 +329,9 @@ static inline bool xskq_prod_is_full(struct xsk_queue *q)
- 	return xskq_prod_nb_free(q, 1) ? false : true;
- }
- 
--static inline void xskq_prod_cancel(struct xsk_queue *q)
-+static inline void xskq_prod_cancel_n(struct xsk_queue *q, u32 cnt)
- {
--	q->cached_prod--;
-+	q->cached_prod -= cnt;
- }
- 
- static inline int xskq_prod_reserve(struct xsk_queue *q)
-@@ -392,16 +397,6 @@ static inline void xskq_prod_submit(struct xsk_queue *q)
- 	__xskq_prod_submit(q, q->cached_prod);
- }
- 
--static inline void xskq_prod_submit_addr(struct xsk_queue *q, u64 addr)
--{
--	struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
--	u32 idx = q->ring->producer;
--
--	ring->desc[idx++ & q->ring_mask] = addr;
--
--	__xskq_prod_submit(q, idx);
--}
--
- static inline void xskq_prod_submit_n(struct xsk_queue *q, u32 nb_entries)
- {
- 	__xskq_prod_submit(q, q->ring->producer + nb_entries);
+ 	return addr & pool->chunk_mask;
 -- 
 2.34.1
 
