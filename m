@@ -1,51 +1,51 @@
-Return-Path: <bpf+bounces-4195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C47F74973F
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 10:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1CAD749745
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 10:18:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDA2B1C20CFC
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 08:17:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D43A51C20CF8
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 08:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEEF34408;
-	Thu,  6 Jul 2023 08:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA5A2539B;
+	Thu,  6 Jul 2023 08:16:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F82215B8;
-	Thu,  6 Jul 2023 08:16:50 +0000 (UTC)
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2071.outbound.protection.outlook.com [40.107.15.71])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C3E1988;
-	Thu,  6 Jul 2023 01:16:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9664B13064;
+	Thu,  6 Jul 2023 08:16:59 +0000 (UTC)
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2075.outbound.protection.outlook.com [40.107.15.75])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6AF1BEB;
+	Thu,  6 Jul 2023 01:16:57 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JkpUu3JIDEEtnLRr9DVpehXTY1q5yIfyQra+AP3ag27HZoX1bgm8rsOriTTv7Qrv9w0H9kVxsXUeOfB5yT7gvR6gTUf/nwsLx47tM1seTKrQ9eAP09QYC9axIvk2c2Mh+w7TpiOcxh6zlQxWuxHtKgzvbKXWKzucBsp79XLC4VfQHtfdG0ZEKL9klt1nT1KvB0hzqLAxZZTlgJiYA8Hyjl1ai1d52FpfBFGm47HqDzoiZxOchr4yX3zvOZQzZ5JDOIAjsARN2BIOVqHqtQuQU+hviH/6QjQpqRjP2bM9o2Df9n/ql6s4mGwZDYvdQFwaq57bEf83CJSPMMktNfG/xA==
+ b=XdduhFNOoaYdYL4RnnsrUOR2zM2E8hPLvQxc248HsFSj0t5oWx236sGZDhjABALYQThGuU9ZjsXTNBLBqUNjhRlMj1UFO/04m6tElUHlxPQWQXAIfl5etKo+GWhjQDeFn+bTgu+DYL69e+4XDS4kaaplCccafy+YArKWfJCSrRK45Nf4XxtRrPhztWcIc6nAchJQJhqQQd+luGhAEDg5pReqG+xx34NkzP5DUjh1/gZ588DsxSOz/jg0gt9+R3Ckono5wZVKCn6iv48w7B9c9zP/kE1+WlH2GYHyZ4i3RJy7aG/mkkCJAxJZQpEHV9XkFgqyyatPqx7K6xum6vsVJw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fj4R7Y5dbUrxgslYFEgNMVMvIZXmB1XTJV0y1X7ZxOQ=;
- b=c3NRdMTRzfly9AA2rw8A9lR9CSQkYUAN+2HTcTZ8qseMYsPwdL918yXL8/BegI3020YF/dXUXZyG7pa8l3CZGZHskEWGboy2NuPPGDzgG9WDnaiOluIxlcurkx1DsrMQY+c1Qle5zllEcyriHiWwJM5rg+dbeyMR8riqMMBfyUPiAdEjf5qA9JcXeV9jZ760I1vB4Zy64xS3IUacHRZY9fxGQZUZ39RKegbFSCvLXzrwHh15bs8KBDRFHsWLDQKUrMjYjk3DxaumSLbcnOLa2jdLrWLiRwBYMc1h8peG2Dzyjtq76aA/wYr5qLEO2z5ckuT6cCCart+5nLt/zFmcyQ==
+ bh=ALHnrNUVR0r6vkOh6Qg2LeUMUThQ/qrbFVs+hSXhMBQ=;
+ b=A3k/GQETsIXK7WE806RarBYgCCAfx7EpXrwqudlUYvvYfMdI9JfBgatdVnoypoBzPIOlDy/9dSbIRDwX3QPF32NPEI8IRhwYeAuggwPkvCZaQWCDCD3CDOxCOhxbpG8mWegxozTLT7rnxiVcucmQfsLDgeYiQ1lbgRMl3akk0MTLRcPip7/lqplvXJUcMSo87pF+RrKPSC+pgKQoUCG8vG2E0nirqEL6WBjJq5LwPEzG4XQT5qjL5EJZltK8W0rtS1h/2OGx+wB6zsEDqPIpC9GyL8iBmtXOhhHhBl+L6C8zByp7kYG62sQn1vYIOO5A82XYxNWc/hjr+7MqA6yIJQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fj4R7Y5dbUrxgslYFEgNMVMvIZXmB1XTJV0y1X7ZxOQ=;
- b=S18NEYlt3zD1JhPRAam6z+9CmrmV6qkpAejqMvvuaxoZSd+h4beVmFp7sCI6x6KoxTvKV6jQOyyTsMp0qgZNBgHTeEiUWd4faQzfzlTZGyyZbEUoPYDXr0M7kmZGPBoWVdhFTTKTibxTRIvOEUo7h5MxbpiOfjR9IH6Iw2G1iIE=
+ bh=ALHnrNUVR0r6vkOh6Qg2LeUMUThQ/qrbFVs+hSXhMBQ=;
+ b=jPKl58/j0haALTYorvkdBD+JfTs6WBrOW8vx18WeONvFLSHDxnv3wjqp7NJe1kAnxx+SKJE5FuhJAOOmEfBNA7wKparIVo/2ww0fLnkRHD5/asu6Ni9GkkpbIpDOCHMJiwuUF947cqwozX0+Y+KLgcvKYYyvaduNFod4ItEiwRI=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
  by DU2PR04MB9132.eurprd04.prod.outlook.com (2603:10a6:10:2f7::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.17; Thu, 6 Jul
- 2023 08:16:44 +0000
+ 2023 08:16:55 +0000
 Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
  ([fe80::1edd:68cb:85d0:29e0]) by AM5PR04MB3139.eurprd04.prod.outlook.com
  ([fe80::1edd:68cb:85d0:29e0%7]) with mapi id 15.20.6544.024; Thu, 6 Jul 2023
- 08:16:44 +0000
+ 08:16:55 +0000
 From: wei.fang@nxp.com
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -61,9 +61,9 @@ To: davem@davemloft.net,
 Cc: linux-imx@nxp.com,
 	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH V2 net 1/4] net: fec: dynamically set the NETDEV_XDP_ACT_NDO_XMIT feature of XDP
-Date: Thu,  6 Jul 2023 16:10:09 +0800
-Message-Id: <20230706081012.2278063-2-wei.fang@nxp.com>
+Subject: [PATCH V2 net 2/4] net: fec: recycle pages for transmitted XDP frames
+Date: Thu,  6 Jul 2023 16:10:10 +0800
+Message-Id: <20230706081012.2278063-3-wei.fang@nxp.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230706081012.2278063-1-wei.fang@nxp.com>
 References: <20230706081012.2278063-1-wei.fang@nxp.com>
@@ -79,53 +79,53 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM5PR04MB3139:EE_|DU2PR04MB9132:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0c350074-a6a2-4163-7e23-08db7df9559b
+X-MS-Office365-Filtering-Correlation-Id: e8fb4d4f-cf03-4017-5f70-08db7df95c14
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	X3LyRV4Yek7A8Ydjrpj1VowhYWvBuLbu96s3OyVydnhqIs+Z8BbrnsTh86Mxggr/RusrkA9PpOLzDg+scTd70OQX8Ezo1Mwt+Rm7oeqW5hdPd8H3b90W7bLmRz/Ux6/1tjWbsYrg/dgaQQMwdYIg73iGL1fUSu6ml2/KA3EMnmjbO9Xk5sWh4K7JjNxVBaUxgQ0oCueTPzAqxE/E2Bd7GfgGRZucJjvt2UOlSH8wIJEAZtwx7bP34Ij30kcG+P/Q76OisuHkDPlMnUl+7BOnHe/ztc5F1K7aAwNrlV1pq1ytCe8cgzr5CsIfJm0AZo71spvN2NSGN8xSXz/S0260kUx3M6n5tb7qmPkpRUBkznHruzhPacvJ0el8PJ3fu5v86594ZfQ2BvxBmPuk7Ns3Oucop3Jyx7XV6OonS8x4MxnwMjPfXGflPsGm2VJ/ku69UgPIpYWRmPmM8rC0jrspAnqTUMbOS/+qnxbOsfIltklSKO8dyfysatiKBepZRMxYdJDnFUNzJV4COfrA03pDAxSHC3FqacpWKyyoYbnJNaG8m0PismnKGrWyt+LqietIXMPPDexTMMB7fGNX/ii466lrFMQTChyX/3w/eHx2Zsrj4yYzHp+prvGuBiJHutFuDIF3zFEQXSAKmhyzTEj7fQ==
+	4OlyeJtU/PHVKS0waF9+3lF29WXkUH25vH22nhSDc47v5q7A3OX7Fa3IwaCNvZhukxyRdk0ku0hddbLv8boIzYACmxp9E40Zi44XA7v8c+m69nr+0bMW4Q3rJZmOVg/pv3yNet5DmVn8PTfbcW0ld4cadcgTPdssDDWnFT5AjZf1Ig5n9PRmsoRu/TCaxWHBIN+nBxwF4p6PV/UoLCd/CZWNm/2+wgcHz71vrcc0I/KUkJ3ENuK+CsXRc6Eu7LlmD+bVaTZGeR6VfF5jHgeWZmTdiWgE3uMc5V19dzv1W6KAleTz+xQTUk0obZe36cipz83/kZvnT1exWAPP3hPP1jQAEiNzG4oRfYqGGWh51yfz9uUDWmmnv08TGJz+99ESL5G5a/hCgWTxIdjnuezReqrPVuOcxmcm11FHgkCXb/ND91R52ngGtRb6Ai3Klm1+Fme4r9YfyAK1zSXCszaGd18IYZZWDYpqXrYaViZxMIwKtwpmNhMLBQZGBfBTmbUs6SThuHEey+BB1eI+54Vp80ASH1bh+RStHWIRkoT4Err5hnLacKzgajDibicftqPnOTtxxybQs3xR78RL8hs6Gyg9lLhv0XBzMZT5yIodhnPJvCjpBHopjAnH4y2C2oHLWXbFegdRDqy2bxAI3fr/ZQ==
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(396003)(376002)(39860400002)(346002)(451199021)(186003)(8676002)(8936002)(6506007)(26005)(2616005)(2906002)(66946007)(1076003)(5660300002)(7416002)(41300700001)(36756003)(921005)(6486002)(4326008)(316002)(66476007)(83380400001)(6666004)(66556008)(6512007)(478600001)(9686003)(52116002)(38350700002)(86362001)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Sa0/J4gBsm2P3ie+43HQ6vSJkXNx5rCXlJs/y68bt44OIz6V7DRAEBga2UDS?=
- =?us-ascii?Q?nVOhAqeopYCo7OiVaTJwcpU5/cvXzXUWvPCwi6+nkB+no/Qxuepwy3SpHXxh?=
- =?us-ascii?Q?+7tb62c9E8DvRnbpyOaMZ+eOBvcjXeXEEQ/Oc0Mg3fSZ21L3ogrg7/8bFaPa?=
- =?us-ascii?Q?3/beh/uF2O1PXE/udbpLjOFw7MFkAoQun2UK+XFxV2jMSub0WlH1G46wyCrp?=
- =?us-ascii?Q?0b4ZN8Ck+je1TR6jOJ/qfYTo+HzgX6p22xIGxfMJZjeq6ctjTGm9xVns580C?=
- =?us-ascii?Q?UkJeIuEd+ZU0pkI/+5mlBXPe+wxefzR4V71ZPMPIqHS0889NQ+2X1/H1tJ/s?=
- =?us-ascii?Q?K5T/jo8f28YmiLyyfTA9T8iO+edB8G4BhWCAP/118W2FMrwRqaBgWSItGuzv?=
- =?us-ascii?Q?DIbJSjkdUwjxvm7HaLeN5C6EOqmkzt2bP4ZAYy8Zz+hq1BHIETiSd5Ux2LEr?=
- =?us-ascii?Q?Q2KsNNPMQMCvkHjT+sO29kYSa9uja9UrIYaJ6NVwe81VZLoytCGpE72od6tA?=
- =?us-ascii?Q?xVTy/9IXWKmCSTBQWKAzW/h9YkvXL5N/MdQ4ADVo3tiONQYZRWnwSv5x0c32?=
- =?us-ascii?Q?B720WFAmtZnc3CmVWdSddTJefqRWVZ6l000XorflluPjXRb7Okfdm7zoYOX8?=
- =?us-ascii?Q?YslSTQy9Iv4ZTgsX2l0KqawuHlK0APwBuXfB+CzA00L07nuNBZKrSJEFP/YR?=
- =?us-ascii?Q?21WwKvRhwkavGI0ruN4GTyG4XvxS3PeDVfpJRQYGCGvKpVJaj0cJ0369ZDCK?=
- =?us-ascii?Q?7pu2cz2COCVGyIYFlJku6OIIvmtKUSK0zcl9FjxxvEGsHp3xSKCznEbDRuCG?=
- =?us-ascii?Q?p341G75Yb3fDykFveWxCtsKaO2ROy9zaIHIu9cdyEuv8bPxEUZSyWSDIwuXO?=
- =?us-ascii?Q?eHKfsjZ+Qv5aF/nUQn64MR57bfZj1k2spko21091kqKOaSIeU4Tm5klWDlVX?=
- =?us-ascii?Q?pnu3rQJGB5Nt1ewOouPEtgBo6kLQbTrd3uxwJcSotll51R1vb5wuP5tmLQQg?=
- =?us-ascii?Q?6d8RBmhfLBAyB2E5L3wKbGhrACM/UwGqavo0/2U4YmHFS/3OTxySXjAVDIYy?=
- =?us-ascii?Q?H3cxs4pFtypvoYt9bez6cMPCparuSffkB+0M5Z4NovelX3GBCvYCJ+vJ5WQH?=
- =?us-ascii?Q?BxKw5GApBo1XDAEuNEjwjoKhXprisfBpr+eTm0Mim9E/XGwXH4fvJdcp4iJq?=
- =?us-ascii?Q?D7OQcYIOOwlnjsrSaQe42UnzNwsFRbXho+QbBxv7+PEd4y0/r+6+aH/oIz0i?=
- =?us-ascii?Q?qeEvnfqcMkGDtgNG34OChECHNdicBMI0ZiS6kwn/SiTAzLLxilrZImjxNreJ?=
- =?us-ascii?Q?re8YsM7Rtzj/zlFU86Ncpo/idCIl9331T6QN/wh0I1Yp7JyGuj6ARtlMWV3e?=
- =?us-ascii?Q?T1+T6EHmFfHmH/rTZ99Fk9fhP4REy7QvTN2bQJE66TsG+qKASnFtzG/ir0dy?=
- =?us-ascii?Q?j9SUH/u+RkcNYoS2eIOYWIKvjVzLWdC/HvKeaQCBGTL2Qw0FfjzYXuK6vDJn?=
- =?us-ascii?Q?lh0clbREjyZE2I68uX1VYm3tbimkaxj8YhLQ8Cwifw6EomkX8AF48mc9QlKq?=
- =?us-ascii?Q?b5qXQxvkp4VNO43Utu+EmCd9wH7kJ1M0CC5iHV+w?=
+	=?us-ascii?Q?0AC6w4k/JnzsKCYyEG4m16U5620k0zXSha2LaQi2CUTzxwH74ABWTyfhQTK7?=
+ =?us-ascii?Q?qiL4/AAhuDQmxiWmJuuxlIZHGjAhtOw9kWl1CF5jgA4+AK4i6MLkbw6prwCH?=
+ =?us-ascii?Q?/P6o/VG+5xwBg0ltH/HbbzC/Fz2bMbqD714G+NzuczqjSIVj1R3FeqFLZYwp?=
+ =?us-ascii?Q?cFEMbl5nGXsm5cMy9Ky2aVaTO7QmtQvK86Nq+0J0jiJxd3aIl+95Txw+hGf1?=
+ =?us-ascii?Q?YdLQzRZ8gFEoMg1cXwIlYVmxj7YvFwZIM/GHbLc2hD5XrXNPeYDsa63qW+CF?=
+ =?us-ascii?Q?5rjDOE5VPDrjnDfqrAnIfiUpmKidAQdN7LZXVYkTVB+5YnjCpk4aHIAsPSur?=
+ =?us-ascii?Q?wJBXH4ndkkKC8YExDV1XHreNXXfNHKkltZRklZfvNSSWm3gk9j0q+DrlDQAI?=
+ =?us-ascii?Q?TdZQda/XB3x47rMkKEMmhQ4RVrZg+7lX0nKWHfxzSUw/81KFc9x6JExSFoS2?=
+ =?us-ascii?Q?eIScVIgIMF9JUJhYnusIcwtGN1ECuFq9RXIhfqnQ6gFmBqM1we8m4OJ5r5HD?=
+ =?us-ascii?Q?chMwWwgPCllu9GcmHo62rIM+G8DIZo45i0E3dPYsQbajE/VWmPwcbbC+2B4Z?=
+ =?us-ascii?Q?zitA/aI172+4AqDkJ6TrZiYnaPaPHsMeigmHao+NQS5QC/gKMBo/S1onE/v+?=
+ =?us-ascii?Q?USuLVo6WQ7Qe8I5Ks8xCL3k6p45dL69q8kZ6Dk56Ds8PQtbf4XTut+JPaPsT?=
+ =?us-ascii?Q?X1iGXBS0l1Y2cvj60qeswKK9PC48iyD8eNvR/t/hJCZzkyHDB3vC2GtoOYcZ?=
+ =?us-ascii?Q?otj8d1XnKoHXBmnSHBaiSrg9z7Q9TvBxn85VPmZhOb/EvE9RJRa3ud4oKssO?=
+ =?us-ascii?Q?Km8u/0J6Sh9G8OIE09Xj563Ny5s2U+VUjg26AP3rYV+Ptb7V4Tkzs+Mza3OM?=
+ =?us-ascii?Q?4Xq7BhDMvZYfwSFByH4uXHhVBadYaHDBlUK56urPF1wKNYJn5jtu3cZh6uE0?=
+ =?us-ascii?Q?4/6wf/b7NkeqQnu59Ms5AaATB9NwnpZNhxUJq5UM1AKyVPi0WmK0kw8yNwG0?=
+ =?us-ascii?Q?rr4b2KjWgOnDz18yqnBM5pOEpHGXhPt15iOajv6Pbxn1xmki8B2KYl6xDC69?=
+ =?us-ascii?Q?tqvoI1ss+rvsWJAL9XTmeyuayvSAy9tSbNeVILuhCVdyPf5E/6FdFP9/7LUj?=
+ =?us-ascii?Q?p/SZYcZMWN1CQ+ZzLFEDJ7mpzm9Y0QztNrXvlU/3oZmKRg3wuwb4mVx3BYcm?=
+ =?us-ascii?Q?wcIXogm+ngvEnUg/4vc1fxaLscAbB2cAR5jP4J2Yi385llEbWq6PBV1XiuCQ?=
+ =?us-ascii?Q?uhv+x+7sefyireRC6KT9BUC7UDn5oe0hVMmPCVw1H+u/YXQVR/QmlkiT2XdV?=
+ =?us-ascii?Q?XVllD5WR9KVWHjlzPYB+nDbYBO027SzV9KXfGLGVLEF8W6e2dM8KzmhEzuAs?=
+ =?us-ascii?Q?ymfPXAuWkPF4LRYOrhPxfccP8m3YyE9kSKV2GOwV1LvNc5qJjxAYhJLIB8N8?=
+ =?us-ascii?Q?ucEsRt4XfJfTDr20riIxBsnq2ns2hAe51+xs/ldkZMd6Yh7zxcEk90jJ3AQj?=
+ =?us-ascii?Q?AB26RzrodO7acEaRwSYEz2sQJrBRTM2dyN0S7QW6fAfXXpwnF0rfwsQ3y/J+?=
+ =?us-ascii?Q?DGGJbj1NzlgE+ZCkwfhuLyuQbQzg00NcEwjGXB6O?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c350074-a6a2-4163-7e23-08db7df9559b
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8fb4d4f-cf03-4017-5f70-08db7df95c14
 X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2023 08:16:44.1693
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2023 08:16:55.1773
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FHm5gvQexlFtYOjFqmbFTQn3epXxD7rBaIg38h4EvV/5pkSOAThQiljz+5UzjPYsXe1o/4MRXvna5kHTP2IC8g==
+X-MS-Exchange-CrossTenant-UserPrincipalName: fYiU2CuJ2f2Y7j8jxBoUzWxcCj7sESj2wXquN1uAFbiVNtQhqU9w2HZdM1sVuSLJaLk/CAx8xPfx2GwTG0AAKA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9132
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -136,70 +136,292 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Wei Fang <wei.fang@nxp.com>
 
-When a XDP program is installed or uninstalled, fec_restart() will
-be invoked to reset MAC and buffer descriptor rings. It's reasonable
-not to transmit any packet during the process of reset. However, the
-NETDEV_XDP_ACT_NDO_XMIT bit of xdp_features is enabled by default,
-that is to say, it's possible that the fec_enet_xdp_xmit() will be
-invoked even if the process of reset is not finished. In this case,
-the redirected XDP frames might be dropped and available transmit BDs
-may be incorrectly deemed insufficient. So this patch disable the
-NETDEV_XDP_ACT_NDO_XMIT feature by default and dynamically configure
-this feature when the bpf program is installed or uninstalled.
+Once the XDP frames have been successfully transmitted through the
+ndo_xdp_xmit() interface, it's the driver responsibility to free
+the frames so that the page_pool can recycle the pages and reuse
+them. However, this action is not implemented in the fec driver.
+This leads to a user-visible problem that the console will print
+the following warning log.
 
-Fixes: e4ac7cc6e5a4 ("net: fec: turn on XDP features")
+[  157.568851] page_pool_release_retry() stalled pool shutdown 1389 inflight 60 sec
+[  217.983446] page_pool_release_retry() stalled pool shutdown 1389 inflight 120 sec
+[  278.399006] page_pool_release_retry() stalled pool shutdown 1389 inflight 181 sec
+[  338.812885] page_pool_release_retry() stalled pool shutdown 1389 inflight 241 sec
+[  399.226946] page_pool_release_retry() stalled pool shutdown 1389 inflight 302 sec
+
+Therefore, to solve this issue, we free XDP frames via xdp_return_frame()
+while cleaning the tx BD ring.
+
+Fixes: 6d6b39f180b8 ("net: fec: add initial XDP support")
 Signed-off-by: Wei Fang <wei.fang@nxp.com>
 ---
 V2 change:
 No change.
 ---
- drivers/net/ethernet/freescale/fec_main.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/freescale/fec.h      |  15 ++-
+ drivers/net/ethernet/freescale/fec_main.c | 148 +++++++++++++++-------
+ 2 files changed, 115 insertions(+), 48 deletions(-)
 
+diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
+index 9939ccafb556..8c0226d061fe 100644
+--- a/drivers/net/ethernet/freescale/fec.h
++++ b/drivers/net/ethernet/freescale/fec.h
+@@ -544,10 +544,23 @@ enum {
+ 	XDP_STATS_TOTAL,
+ };
+ 
++enum fec_txbuf_type {
++	FEC_TXBUF_T_SKB,
++	FEC_TXBUF_T_XDP_NDO,
++};
++
++struct fec_tx_buffer {
++	union {
++		struct sk_buff *skb;
++		struct xdp_frame *xdp;
++	};
++	enum fec_txbuf_type type;
++};
++
+ struct fec_enet_priv_tx_q {
+ 	struct bufdesc_prop bd;
+ 	unsigned char *tx_bounce[TX_RING_SIZE];
+-	struct  sk_buff *tx_skbuff[TX_RING_SIZE];
++	struct fec_tx_buffer tx_buf[TX_RING_SIZE];
+ 
+ 	unsigned short tx_stop_threshold;
+ 	unsigned short tx_wake_threshold;
 diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index 8fbe47703d47..9ce0319b33c3 100644
+index 9ce0319b33c3..940d3afe1d24 100644
 --- a/drivers/net/ethernet/freescale/fec_main.c
 +++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -3732,12 +3732,18 @@ static int fec_enet_bpf(struct net_device *dev, struct netdev_bpf *bpf)
- 		if (fep->quirks & FEC_QUIRK_SWAP_FRAME)
- 			return -EOPNOTSUPP;
+@@ -397,7 +397,7 @@ static void fec_dump(struct net_device *ndev)
+ 			fec16_to_cpu(bdp->cbd_sc),
+ 			fec32_to_cpu(bdp->cbd_bufaddr),
+ 			fec16_to_cpu(bdp->cbd_datlen),
+-			txq->tx_skbuff[index]);
++			txq->tx_buf[index].skb);
+ 		bdp = fec_enet_get_nextdesc(bdp, &txq->bd);
+ 		index++;
+ 	} while (bdp != txq->bd.base);
+@@ -654,7 +654,7 @@ static int fec_enet_txq_submit_skb(struct fec_enet_priv_tx_q *txq,
  
-+		if (!bpf->prog)
-+			xdp_features_clear_redirect_target(dev);
+ 	index = fec_enet_get_bd_index(last_bdp, &txq->bd);
+ 	/* Save skb pointer */
+-	txq->tx_skbuff[index] = skb;
++	txq->tx_buf[index].skb = skb;
+ 
+ 	/* Make sure the updates to rest of the descriptor are performed before
+ 	 * transferring ownership.
+@@ -672,9 +672,7 @@ static int fec_enet_txq_submit_skb(struct fec_enet_priv_tx_q *txq,
+ 
+ 	skb_tx_timestamp(skb);
+ 
+-	/* Make sure the update to bdp and tx_skbuff are performed before
+-	 * txq->bd.cur.
+-	 */
++	/* Make sure the update to bdp is performed before txq->bd.cur. */
+ 	wmb();
+ 	txq->bd.cur = bdp;
+ 
+@@ -862,7 +860,7 @@ static int fec_enet_txq_submit_tso(struct fec_enet_priv_tx_q *txq,
+ 	}
+ 
+ 	/* Save skb pointer */
+-	txq->tx_skbuff[index] = skb;
++	txq->tx_buf[index].skb = skb;
+ 
+ 	skb_tx_timestamp(skb);
+ 	txq->bd.cur = bdp;
+@@ -952,16 +950,33 @@ static void fec_enet_bd_init(struct net_device *dev)
+ 		for (i = 0; i < txq->bd.ring_size; i++) {
+ 			/* Initialize the BD for every fragment in the page. */
+ 			bdp->cbd_sc = cpu_to_fec16(0);
+-			if (bdp->cbd_bufaddr &&
+-			    !IS_TSO_HEADER(txq, fec32_to_cpu(bdp->cbd_bufaddr)))
+-				dma_unmap_single(&fep->pdev->dev,
+-						 fec32_to_cpu(bdp->cbd_bufaddr),
+-						 fec16_to_cpu(bdp->cbd_datlen),
+-						 DMA_TO_DEVICE);
+-			if (txq->tx_skbuff[i]) {
+-				dev_kfree_skb_any(txq->tx_skbuff[i]);
+-				txq->tx_skbuff[i] = NULL;
++			if (txq->tx_buf[i].type == FEC_TXBUF_T_SKB) {
++				if (bdp->cbd_bufaddr &&
++				    !IS_TSO_HEADER(txq, fec32_to_cpu(bdp->cbd_bufaddr)))
++					dma_unmap_single(&fep->pdev->dev,
++							 fec32_to_cpu(bdp->cbd_bufaddr),
++							 fec16_to_cpu(bdp->cbd_datlen),
++							 DMA_TO_DEVICE);
++				if (txq->tx_buf[i].skb) {
++					dev_kfree_skb_any(txq->tx_buf[i].skb);
++					txq->tx_buf[i].skb = NULL;
++				}
++			} else {
++				if (bdp->cbd_bufaddr)
++					dma_unmap_single(&fep->pdev->dev,
++							 fec32_to_cpu(bdp->cbd_bufaddr),
++							 fec16_to_cpu(bdp->cbd_datlen),
++							 DMA_TO_DEVICE);
 +
- 		if (is_run) {
- 			napi_disable(&fep->napi);
- 			netif_tx_disable(dev);
++				if (txq->tx_buf[i].xdp) {
++					xdp_return_frame(txq->tx_buf[i].xdp);
++					txq->tx_buf[i].xdp = NULL;
++				}
++
++				/* restore default tx buffer type: FEC_TXBUF_T_SKB */
++				txq->tx_buf[i].type = FEC_TXBUF_T_SKB;
+ 			}
++
+ 			bdp->cbd_bufaddr = cpu_to_fec32(0);
+ 			bdp = fec_enet_get_nextdesc(bdp, &txq->bd);
+ 		}
+@@ -1360,6 +1375,7 @@ static void
+ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
+ {
+ 	struct	fec_enet_private *fep;
++	struct xdp_frame *xdpf;
+ 	struct bufdesc *bdp;
+ 	unsigned short status;
+ 	struct	sk_buff	*skb;
+@@ -1387,16 +1403,31 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
+ 
+ 		index = fec_enet_get_bd_index(bdp, &txq->bd);
+ 
+-		skb = txq->tx_skbuff[index];
+-		txq->tx_skbuff[index] = NULL;
+-		if (!IS_TSO_HEADER(txq, fec32_to_cpu(bdp->cbd_bufaddr)))
+-			dma_unmap_single(&fep->pdev->dev,
+-					 fec32_to_cpu(bdp->cbd_bufaddr),
+-					 fec16_to_cpu(bdp->cbd_datlen),
+-					 DMA_TO_DEVICE);
+-		bdp->cbd_bufaddr = cpu_to_fec32(0);
+-		if (!skb)
+-			goto skb_done;
++		if (txq->tx_buf[index].type == FEC_TXBUF_T_SKB) {
++			skb = txq->tx_buf[index].skb;
++			txq->tx_buf[index].skb = NULL;
++			if (bdp->cbd_bufaddr &&
++			    !IS_TSO_HEADER(txq, fec32_to_cpu(bdp->cbd_bufaddr)))
++				dma_unmap_single(&fep->pdev->dev,
++						 fec32_to_cpu(bdp->cbd_bufaddr),
++						 fec16_to_cpu(bdp->cbd_datlen),
++						 DMA_TO_DEVICE);
++			bdp->cbd_bufaddr = cpu_to_fec32(0);
++			if (!skb)
++				goto tx_buf_done;
++		} else {
++			xdpf = txq->tx_buf[index].xdp;
++			if (bdp->cbd_bufaddr)
++				dma_unmap_single(&fep->pdev->dev,
++						 fec32_to_cpu(bdp->cbd_bufaddr),
++						 fec16_to_cpu(bdp->cbd_datlen),
++						 DMA_TO_DEVICE);
++			bdp->cbd_bufaddr = cpu_to_fec32(0);
++			if (!xdpf) {
++				txq->tx_buf[index].type = FEC_TXBUF_T_SKB;
++				goto tx_buf_done;
++			}
++		}
+ 
+ 		/* Check for errors. */
+ 		if (status & (BD_ENET_TX_HB | BD_ENET_TX_LC |
+@@ -1415,21 +1446,11 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
+ 				ndev->stats.tx_carrier_errors++;
+ 		} else {
+ 			ndev->stats.tx_packets++;
+-			ndev->stats.tx_bytes += skb->len;
+-		}
+ 
+-		/* NOTE: SKBTX_IN_PROGRESS being set does not imply it's we who
+-		 * are to time stamp the packet, so we still need to check time
+-		 * stamping enabled flag.
+-		 */
+-		if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS &&
+-			     fep->hwts_tx_en) &&
+-		    fep->bufdesc_ex) {
+-			struct skb_shared_hwtstamps shhwtstamps;
+-			struct bufdesc_ex *ebdp = (struct bufdesc_ex *)bdp;
+-
+-			fec_enet_hwtstamp(fep, fec32_to_cpu(ebdp->ts), &shhwtstamps);
+-			skb_tstamp_tx(skb, &shhwtstamps);
++			if (txq->tx_buf[index].type == FEC_TXBUF_T_SKB)
++				ndev->stats.tx_bytes += skb->len;
++			else
++				ndev->stats.tx_bytes += xdpf->len;
  		}
  
- 		old_prog = xchg(&fep->xdp_prog, bpf->prog);
-+		if (old_prog)
-+			bpf_prog_put(old_prog);
+ 		/* Deferred means some collisions occurred during transmit,
+@@ -1438,10 +1459,32 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
+ 		if (status & BD_ENET_TX_DEF)
+ 			ndev->stats.collisions++;
+ 
+-		/* Free the sk buffer associated with this last transmit */
+-		dev_kfree_skb_any(skb);
+-skb_done:
+-		/* Make sure the update to bdp and tx_skbuff are performed
++		if (txq->tx_buf[index].type == FEC_TXBUF_T_SKB) {
++			/* NOTE: SKBTX_IN_PROGRESS being set does not imply it's we who
++			 * are to time stamp the packet, so we still need to check time
++			 * stamping enabled flag.
++			 */
++			if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS &&
++				     fep->hwts_tx_en) && fep->bufdesc_ex) {
++				struct skb_shared_hwtstamps shhwtstamps;
++				struct bufdesc_ex *ebdp = (struct bufdesc_ex *)bdp;
 +
- 		fec_restart(dev);
- 
- 		if (is_run) {
-@@ -3745,8 +3751,8 @@ static int fec_enet_bpf(struct net_device *dev, struct netdev_bpf *bpf)
- 			netif_tx_start_all_queues(dev);
++				fec_enet_hwtstamp(fep, fec32_to_cpu(ebdp->ts), &shhwtstamps);
++				skb_tstamp_tx(skb, &shhwtstamps);
++			}
++
++			/* Free the sk buffer associated with this last transmit */
++			dev_kfree_skb_any(skb);
++		} else {
++			xdp_return_frame(xdpf);
++
++			txq->tx_buf[index].xdp = NULL;
++			/* restore default tx buffer type: FEC_TXBUF_T_SKB */
++			txq->tx_buf[index].type = FEC_TXBUF_T_SKB;
++		}
++
++tx_buf_done:
++		/* Make sure the update to bdp and tx_buf are performed
+ 		 * before dirty_tx
+ 		 */
+ 		wmb();
+@@ -3249,9 +3292,19 @@ static void fec_enet_free_buffers(struct net_device *ndev)
+ 		for (i = 0; i < txq->bd.ring_size; i++) {
+ 			kfree(txq->tx_bounce[i]);
+ 			txq->tx_bounce[i] = NULL;
+-			skb = txq->tx_skbuff[i];
+-			txq->tx_skbuff[i] = NULL;
+-			dev_kfree_skb(skb);
++
++			if (txq->tx_buf[i].type == FEC_TXBUF_T_SKB) {
++				skb = txq->tx_buf[i].skb;
++				txq->tx_buf[i].skb = NULL;
++				dev_kfree_skb(skb);
++			} else {
++				if (txq->tx_buf[i].xdp) {
++					xdp_return_frame(txq->tx_buf[i].xdp);
++					txq->tx_buf[i].xdp = NULL;
++				}
++
++				txq->tx_buf[i].type = FEC_TXBUF_T_SKB;
++			}
  		}
+ 	}
+ }
+@@ -3817,7 +3870,8 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
+ 		ebdp->cbd_esc = cpu_to_fec32(estatus);
+ 	}
  
--		if (old_prog)
--			bpf_prog_put(old_prog);
-+		if (bpf->prog)
-+			xdp_features_set_redirect_target(dev, false);
+-	txq->tx_skbuff[index] = NULL;
++	txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
++	txq->tx_buf[index].xdp = frame;
  
- 		return 0;
- 
-@@ -4016,8 +4022,7 @@ static int fec_enet_init(struct net_device *ndev)
- 
- 	if (!(fep->quirks & FEC_QUIRK_SWAP_FRAME))
- 		ndev->xdp_features = NETDEV_XDP_ACT_BASIC |
--				     NETDEV_XDP_ACT_REDIRECT |
--				     NETDEV_XDP_ACT_NDO_XMIT;
-+				     NETDEV_XDP_ACT_REDIRECT;
- 
- 	fec_restart(ndev);
- 
+ 	/* Make sure the updates to rest of the descriptor are performed before
+ 	 * transferring ownership.
 -- 
 2.25.1
 
