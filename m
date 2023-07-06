@@ -1,183 +1,262 @@
-Return-Path: <bpf+bounces-4280-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4281-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B48C074A253
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 18:39:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACDB874A25B
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 18:40:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AD46281391
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 16:39:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6848328139F
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 16:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE76A92B;
-	Thu,  6 Jul 2023 16:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1883BAD5D;
+	Thu,  6 Jul 2023 16:40:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E09C8F4B
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 16:39:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD5B4C433C8;
-	Thu,  6 Jul 2023 16:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688661556;
-	bh=h0OgFh+n1mPvFs2BQeBGKqCup9+gz5oIEYrZdP/kZ1I=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=R0xErIoJDEDCPvtj6yutBpmBjH5+sNN2DTcaezc0n9WR9TmEy1Nr2SEjJS8AccSd3
-	 25C6dIotYWq8C5oJ9XdKjIpstBZeJWrrI9E27qO7jpwLOi76bYLKoIyXlH2wfstEMQ
-	 tPDpcvtxi4PytZqu0bwUna2NlsoyPW4LBUJOY/NsN0hai4AjwHDjPZzylD8bgAPtdb
-	 Cwl4u1kw+cVOCyrTxYlUiTtFJt//p8FjGirDXyUgy4nS8jwMLqoMNQN/rB22Oc6zG4
-	 gH6et2pDl9nnxtn2MeaAt2F24E81hxy8q8zy8E74z/IjrpOLVV0NQ5YhU+0Jter5Dd
-	 vcGyaW6m9hrYA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 6BCE5CE3BFC; Thu,  6 Jul 2023 09:39:16 -0700 (PDT)
-Date: Thu, 6 Jul 2023 09:39:16 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
-	x86@kernel.org, Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH 11/14] context-tracking: Introduce work deferral
- infrastructure
-Message-ID: <4c2cb573-168f-4806-b1d9-164e8276e66a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230705181256.3539027-1-vschneid@redhat.com>
- <20230705181256.3539027-12-vschneid@redhat.com>
- <ZKXtfWZiM66dK5xC@localhost.localdomain>
- <xhsmhttuhuvix.mognet@vschneid.remote.csb>
- <ZKaoHrm0Fejb7kAl@lothringen>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62A3AD2F
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 16:40:01 +0000 (UTC)
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB25173F
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 09:39:42 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2657d405ad5so191949a91.1
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 09:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1688661581; x=1691253581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kFy2sjaEwaWlr8ZFbISMj3FN8c+npy3dEaCsuZ+EXi8=;
+        b=Q08SZSmLnQT8bNfn4a7Jr+dSMyW4kVEHqfVTJR50XZZ6bNvmskh0vu72ia8LgZV+dU
+         H0fQS4cPVGg0pLPVJg1A6o8ndN+k9FMnchZkqc4LCMXwLUtJKxoPSQWZLEUj/CR+WSY8
+         ziu92xfwnWLdnt5sBBEQxq34an98jZhI2MwP+UBhN7xNfBNOzfWUJ/U2k8iqUK9iQEAX
+         LFKYkZWRXgv4qdSGYDkCOdd/PZE/qrR6mRSSrkI6IOLsrPLs3d4c1AXWW3nnDfJD9vmu
+         5BKArkME8wRvzUpIiXwlD0gYmS1+fA2NHAEzbm4EM7lXOAhZE/uF4WlWVEkceiv/n5xg
+         JMAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688661581; x=1691253581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kFy2sjaEwaWlr8ZFbISMj3FN8c+npy3dEaCsuZ+EXi8=;
+        b=V0ZE/RLo4CncVuP1mnJb5X4J4nQukuFtOVFWZxdvEiNZYFdr9niYwMtkbLwiyi/LV0
+         pbBSmNS7u2TBfIqz0HtnNMlG5EktQrbosciiFiZdKwa7Imh8W7S+KLiDnyMC4+C2dHU/
+         A8kWesj76xyHO75/dshGlKzfP6P6bzLJ3Y+7Zvx9RwtyesDTABKkafksDpX3ktbZ3l4g
+         pwn45NIUry8vfz11viQPnlTF/hxDXQ8P3dzj4Rh4gYGb1bzBJXk1TEaygdKjOcFOTc8R
+         N/ZqZmcglxLjAj700VhytCUoyHzmxwz6JLkS579R1JtTTVYm9dipKyFyRyW1olC2rr41
+         oE4A==
+X-Gm-Message-State: ABy/qLa5Yd+g1/EknOFDG5yM5JVPXElIUtzXFky4qZi0xJlTGaUjhnQ3
+	uIBFL8yOPF9cW/PB+077H5+yIlE537pMYqw/p1v+Ug==
+X-Google-Smtp-Source: APBJJlGxUyUS0b83U/yKCVVN4bkrkm2QxeNINcqDwjo2nBPGtJQYFu7VEBw7V7z1pmIAPuZ4MzTOhy9w4TRUTU7lcZo=
+X-Received: by 2002:a17:90b:1e0f:b0:263:e804:3988 with SMTP id
+ pg15-20020a17090b1e0f00b00263e8043988mr2342464pjb.1.1688661581507; Thu, 06
+ Jul 2023 09:39:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZKaoHrm0Fejb7kAl@lothringen>
+References: <20230703181226.19380-1-larysa.zaremba@intel.com>
+ <20230703181226.19380-7-larysa.zaremba@intel.com> <ZKWo0BbpLfkZHbyE@google.com>
+ <ZKbOQzj1jtDeaaMp@lincoln>
+In-Reply-To: <ZKbOQzj1jtDeaaMp@lincoln>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Thu, 6 Jul 2023 09:39:29 -0700
+Message-ID: <CAKH8qBvrSJF0HppJ9OVF5wRDP-qV6uVfkWBvPR9=-SpRoyvDJQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 06/20] ice: Support HW timestamp hint
+To: Larysa Zaremba <larysa.zaremba@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
+	jolsa@kernel.org, David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Willem de Bruijn <willemb@google.com>, Jesper Dangaard Brouer <brouer@redhat.com>, 
+	Anatoly Burakov <anatoly.burakov@intel.com>, Alexander Lobakin <alexandr.lobakin@intel.com>, 
+	Magnus Karlsson <magnus.karlsson@gmail.com>, Maryam Tahhan <mtahhan@redhat.com>, 
+	xdp-hints@xdp-project.net, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Thu, Jul 06, 2023 at 01:40:14PM +0200, Frederic Weisbecker wrote:
-> On Thu, Jul 06, 2023 at 12:30:46PM +0100, Valentin Schneider wrote:
-> > >> +		ret = atomic_try_cmpxchg(&ct->work, &old_work, old_work | work);
-> > >> +
-> > >> +	preempt_enable();
-> > >> +	return ret;
-> > >> +}
-> > > [...]
-> > >> @@ -100,14 +158,19 @@ static noinstr void ct_kernel_exit_state(int offset)
-> > >>   */
-> > >>  static noinstr void ct_kernel_enter_state(int offset)
-> > >>  {
-> > >> +	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
-> > >>      int seq;
-> > >> +	unsigned int work;
-> > >>
-> > >> +	work = ct_work_fetch(ct);
+On Thu, Jul 6, 2023 at 7:27=E2=80=AFAM Larysa Zaremba <larysa.zaremba@intel=
+.com> wrote:
+>
+> On Wed, Jul 05, 2023 at 10:30:56AM -0700, Stanislav Fomichev wrote:
+> > On 07/03, Larysa Zaremba wrote:
+> > > Use previously refactored code and create a function
+> > > that allows XDP code to read HW timestamp.
 > > >
-> > > So this adds another fully ordered operation on user <-> kernel transition.
-> > > How many such IPIs can we expect?
+> > > Also, move cached_phctime into packet context, this way this data sti=
+ll
+> > > stays in the ring structure, just at the different address.
 > > >
-> > 
-> > Despite having spent quite a lot of time on that question, I think I still
-> > only have a hunch.
-> > 
-> > Poking around RHEL systems, I'd say 99% of the problematic IPIs are
-> > instruction patching and TLB flushes.
-> > 
-> > Staring at the code, there's quite a lot of smp_calls for which it's hard
-> > to say whether the target CPUs can actually be isolated or not (e.g. the
-> > CPU comes from a cpumask shoved in a struct that was built using data from
-> > another struct of uncertain origins), but then again some of them don't
-> > need to hook into context_tracking.
-> > 
-> > Long story short: I /think/ we can consider that number to be fairly small,
-> > but there could be more lurking in the shadows.
-> 
-> I guess it will still be time to reconsider the design if we ever reach such size.
-> 
-> > > If this is just about a dozen, can we stuff them in the state like in the
-> > > following? We can potentially add more of them especially on 64 bits we could
-> > > afford 30 different works, this is just shrinking the RCU extended quiescent
-> > > state counter space. Worst case that can happen is that RCU misses 65535
-> > > idle/user <-> kernel transitions and delays a grace period...
+> > > HW timestamp is the first supported hint in the driver,
+> > > so also add xdp_metadata_ops.
 > > >
-> > 
-> > I'm trying to grok how this impacts RCU, IIUC most of RCU mostly cares about the
-> > even/odd-ness of the thing, and rcu_gp_fqs() cares about the actual value
-> > but only to check if it has changed over time (rcu_dynticks_in_eqs_since()
-> > only does a !=).
-> > 
-> > I'm rephrasing here to make sure I get it - is it then that the worst case
-> > here is 2^(dynticks_counter_size) transitions happen between saving the
-> > dynticks snapshot and checking it again, so RCU waits some more?
-> 
-> That's my understanding as well but I have to defer on Paul to make sure I'm
-> not overlooking something.
+> > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> > > ---
+> > >  drivers/net/ethernet/intel/ice/ice.h          |  2 ++
+> > >  drivers/net/ethernet/intel/ice/ice_ethtool.c  |  2 +-
+> > >  drivers/net/ethernet/intel/ice/ice_lib.c      |  2 +-
+> > >  drivers/net/ethernet/intel/ice/ice_main.c     |  1 +
+> > >  drivers/net/ethernet/intel/ice/ice_ptp.c      |  2 +-
+> > >  drivers/net/ethernet/intel/ice/ice_txrx.h     |  2 +-
+> > >  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 24 +++++++++++++++++=
+++
+> > >  7 files changed, 31 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ether=
+net/intel/ice/ice.h
+> > > index 4ba3d99439a0..7a973a2229f1 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice.h
+> > > +++ b/drivers/net/ethernet/intel/ice/ice.h
+> > > @@ -943,4 +943,6 @@ static inline void ice_clear_rdma_cap(struct ice_=
+pf *pf)
+> > >     set_bit(ICE_FLAG_UNPLUG_AUX_DEV, pf->flags);
+> > >     clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
+> > >  }
+> > > +
+> > > +extern const struct xdp_metadata_ops ice_xdp_md_ops;
+> > >  #endif /* _ICE_H_ */
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/n=
+et/ethernet/intel/ice/ice_ethtool.c
+> > > index 8d5cbbd0b3d5..3c3b9cbfbcd3 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
+> > > +++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+> > > @@ -2837,7 +2837,7 @@ ice_set_ringparam(struct net_device *netdev, st=
+ruct ethtool_ringparam *ring,
+> > >             /* clone ring and setup updated count */
+> > >             rx_rings[i] =3D *vsi->rx_rings[i];
+> > >             rx_rings[i].count =3D new_rx_cnt;
+> > > -           rx_rings[i].cached_phctime =3D pf->ptp.cached_phc_time;
+> > > +           rx_rings[i].pkt_ctx.cached_phctime =3D pf->ptp.cached_phc=
+_time;
+> > >             rx_rings[i].desc =3D NULL;
+> > >             rx_rings[i].rx_buf =3D NULL;
+> > >             /* this is to allow wr32 to have something to write to
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/e=
+thernet/intel/ice/ice_lib.c
+> > > index 00e3afd507a4..eb69b0ac7956 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice_lib.c
+> > > +++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+> > > @@ -1445,7 +1445,7 @@ static int ice_vsi_alloc_rings(struct ice_vsi *=
+vsi)
+> > >             ring->netdev =3D vsi->netdev;
+> > >             ring->dev =3D dev;
+> > >             ring->count =3D vsi->num_rx_desc;
+> > > -           ring->cached_phctime =3D pf->ptp.cached_phc_time;
+> > > +           ring->pkt_ctx.cached_phctime =3D pf->ptp.cached_phc_time;
+> > >             WRITE_ONCE(vsi->rx_rings[i], ring);
+> > >     }
+> > >
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/=
+ethernet/intel/ice/ice_main.c
+> > > index 93979ab18bc1..f21996b812ea 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice_main.c
+> > > +++ b/drivers/net/ethernet/intel/ice/ice_main.c
+> > > @@ -3384,6 +3384,7 @@ static void ice_set_ops(struct ice_vsi *vsi)
+> > >
+> > >     netdev->netdev_ops =3D &ice_netdev_ops;
+> > >     netdev->udp_tunnel_nic_info =3D &pf->hw.udp_tunnel_nic;
+> > > +   netdev->xdp_metadata_ops =3D &ice_xdp_md_ops;
+> > >     ice_set_ethtool_ops(netdev);
+> > >
+> > >     if (vsi->type !=3D ICE_VSI_PF)
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice_ptp.c b/drivers/net/e=
+thernet/intel/ice/ice_ptp.c
+> > > index a31333972c68..70697e4829dd 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice_ptp.c
+> > > +++ b/drivers/net/ethernet/intel/ice/ice_ptp.c
+> > > @@ -1038,7 +1038,7 @@ static int ice_ptp_update_cached_phctime(struct=
+ ice_pf *pf)
+> > >             ice_for_each_rxq(vsi, j) {
+> > >                     if (!vsi->rx_rings[j])
+> > >                             continue;
+> > > -                   WRITE_ONCE(vsi->rx_rings[j]->cached_phctime, syst=
+ime);
+> > > +                   WRITE_ONCE(vsi->rx_rings[j]->pkt_ctx.cached_phcti=
+me, systime);
+> > >             }
+> > >     }
+> > >     clear_bit(ICE_CFG_BUSY, pf->state);
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/=
+ethernet/intel/ice/ice_txrx.h
+> > > index d0ab2c4c0c91..4237702a58a9 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice_txrx.h
+> > > +++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
+> > > @@ -259,6 +259,7 @@ enum ice_rx_dtype {
+> > >
+> > >  struct ice_pkt_ctx {
+> > >     const union ice_32b_rx_flex_desc *eop_desc;
+> > > +   u64 cached_phctime;
+> > >  };
+> > >
+> > >  struct ice_xdp_buff {
+> > > @@ -354,7 +355,6 @@ struct ice_rx_ring {
+> > >     struct ice_tx_ring *xdp_ring;
+> > >     struct xsk_buff_pool *xsk_pool;
+> > >     dma_addr_t dma;                 /* physical address of ring */
+> > > -   u64 cached_phctime;
+> > >     u16 rx_buf_len;
+> > >     u8 dcb_tc;                      /* Traffic class of ring */
+> > >     u8 ptp_rx;
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/=
+net/ethernet/intel/ice/ice_txrx_lib.c
+> > > index beb1c5bb392a..463d9e5cbe05 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> > > +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> > > @@ -546,3 +546,27 @@ void ice_finalize_xdp_rx(struct ice_tx_ring *xdp=
+_ring, unsigned int xdp_res,
+> > >                     spin_unlock(&xdp_ring->tx_lock);
+> > >     }
+> > >  }
+> > > +
+> > > +/**
+> > > + * ice_xdp_rx_hw_ts - HW timestamp XDP hint handler
+> > > + * @ctx: XDP buff pointer
+> > > + * @ts_ns: destination address
+> > > + *
+> > > + * Copy HW timestamp (if available) to the destination address.
+> > > + */
+> > > +static int ice_xdp_rx_hw_ts(const struct xdp_md *ctx, u64 *ts_ns)
+> > > +{
+> > > +   const struct ice_xdp_buff *xdp_ext =3D (void *)ctx;
+> > > +   u64 cached_time;
+> > > +
+> > > +   cached_time =3D READ_ONCE(xdp_ext->pkt_ctx.cached_phctime);
+> >
+> > I believe we have to have something like the following here:
+> >
+> > if (!ts_ns)
+> >       return -EINVAL;
+> >
+> > IOW, I don't think verifier guarantees that those pointer args are
+> > non-NULL.
+>
+> Oh, that's a shame.
+>
+> > Same for the other ice kfunc you're adding and veth changes.
+> >
+> > Can you also fix it for the existing veth kfuncs? (or lmk if you prefer=
+ me
+> > to fix it).
+>
+> I think I can send fixes for RX hash and timestamp in veth separately, be=
+fore
+> v3 of this patchset, code probably doesn't intersect.
+>
+> But argument checks in kfuncs are a little bit a gray area for me, whethe=
+r they
+> should be sent to stable tree or not?
 
-That does look plausible to me.
-
-And yes, RCU really cares about whether its part of this counter has
-been a multiple of two during a given interval of time, because this
-indicates that the CPU has no pre-existing RCU readers still active.
-One way that this can happen is for that value to be a multiple of two
-at some point in time.  The other way that this can happen is for the
-value to have changed.  No matter what the start and end values, if they
-are different, the counter must necessarily have at least passed through
-multiple of two in the meantime, again guaranteeing that any RCU readers
-that around when the count was first fetched have now finished.
-
-But we should take the machine's opinions much more seriously than we
-take any of our own opinions.  Why not adjust RCU_DYNTICKS_IDX so as
-to crank RCU's portion of this counter down to (say) two or three bits
-and let rcutorture have at it on TREE04 or TREE07, both of which have
-nohz_full CPUs?
-
-Maybe also adjust mkinitrd.sh to make the user/kernel transitions more
-frequent?
-
-Please note that I do -not- recommend production use of a three-bit
-(let alone a two-bit) RCU portion because this has a high probability
-of excessively extending grace periods.  But it might be good to keep
-a tiny counter as a debug option so that we regularly rcutorture it.
-
-							Thanx, Paul
+Add a Fixes tag and they will get into the stable trees automatically I bel=
+ieve?
 
