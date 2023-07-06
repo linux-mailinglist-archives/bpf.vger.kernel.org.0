@@ -1,77 +1,74 @@
-Return-Path: <bpf+bounces-4192-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4194-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E46E7496C5
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 09:49:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83A1E749738
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 10:17:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1854328128D
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 07:49:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 411F1280551
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 08:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412AD15C6;
-	Thu,  6 Jul 2023 07:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3961C11;
+	Thu,  6 Jul 2023 08:16:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055F315B8
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 07:49:01 +0000 (UTC)
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2041.outbound.protection.outlook.com [40.107.105.41])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9380E1BD9
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 00:49:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60CD0185A;
+	Thu,  6 Jul 2023 08:16:30 +0000 (UTC)
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2049.outbound.protection.outlook.com [40.107.15.49])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF451726;
+	Thu,  6 Jul 2023 01:16:23 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f6tOJkCTc/NJf0Jh5IpYpC7A04XObOh5MBaT93Xt3JR+SNbyamJDU6ne9N6hUlEKRaPUYqaI+ABhPaPspXD2GPFlwnBSL9SUUHI94XtYer0VC9FqXEmMmBacb8rHrR2wclpWe26ulwirpdxj0QKzw5v51vu6P9hkqxmd+brMwJ/QvIMsqca14d0tQs7gmvg9SRBNTHfurMMIpNzvPC9pSfSEOi90rO5O/0eoKPzolAFt9GlJEvxTtagEIogEqvWmVT+Q6SVynrEuw4HJ5BSwXLAgvRJ0A0+da8Akz3/DLQbIZQQ6Gdyl5WZOhvrx/+l/kfW3iz7k23tF6ESKXNHYOQ==
+ b=RIC7NENFerZoKnIJNM3Rba6n2J9ZUxIMsqyJhpiwZy2oShsxG5bCIRIvzNdIwwPX/AH5iRwG8grzOV6YVlqrFACf4ZTdB7a/OJ+KZFsxtb9UCPXunE5eLgLFcC1gbiL6B0B1RPM0i1Ho1Z1IlaCznjv0bMb4F+ZwTkYyD+wwjZM2z/nX4kyiLSgG0W9kYuqE26hLz25dOyBG3jcTpIHqVXPdZX5Uhid0dWdVBglnvKDcnEDltUQSPAwL87MXmayQDpb+2I9gaB8gJNDtebeiAOxXmlROCEwkEkF+APk//Bt8hU69jgUS4wqMgEa+6yMy08pCHNhyAgvZWA50N2VcXQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OhTecHCpsKJn/gFD/6EQBh5NMIiNalawFHaXgjAzXvA=;
- b=iQZXTFoMx3J8+V34k/UxEq4YR5TWmooU4MPlqpzOiYMy7MPOm3HqIrd9CC0aIV7vLiC1E4in8gnsvs89DubZJDrbUdN2TI1ctOSA7Ijn3GsSJs1A2n3jmKU5vptElZRR5PImxOQJlpKNdanGKecuUrTKAgAe1y0fJvorDukSSmsmefqVeLtTGhfx31jdwPw6JMthjnMhvUl/kJtTphQBmlNMylJnNSArom90yvybj0Zx8dsheMCqLCHLiMYHnbX6fou5/hVRz2VqAsGX8/hIz9zM0wWIMsimFbT7rSks4n8mxlVooHfubDv63BfkTyJEtvWnEx1nAw7/NSL8L2AI2w==
+ bh=9zSwOI8EilsYcWwuSD/7xGF0BhUHdBbw2kXFWbaacBw=;
+ b=Cm/GsO4qxIGyu0uOasPoh2rVUGlFoFe1PugpvXhRwfINedRLTKIAfw6ZHycSoZc5V1ANqrQ49atGem5aDXygdXiJhfniHzsFwKsWx4LN0+cAe0wQ6n8p40BV8sNaqhCUNGjd9g+E5DxhFiSZnOhQGJT6HdbjwmsvXc9WWXVxJ/9RcB8osQR0s8pOr/hdEl8+yCbD+suBJy4kAAxCUb4nqZtjOGgFxq313PO9JZraMNS7/3s6Kb35cFDl/PNI8gXXKd6vu9bYdrhleolKqCvgnPRC2jAjHqqYSX2JotoyPqpxe4DBTiCI+BLUE3IS+NVtAuCGEjJydDRdbQOoDtky7Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OhTecHCpsKJn/gFD/6EQBh5NMIiNalawFHaXgjAzXvA=;
- b=nKh6lzVCcN75T5qqu0kEsCd0cVBBgItwrcs3rCOlgCsHI/tXNzqAbJFKlDxdkYH7POxkMQ2GFUnXwBztmkrcAjsBI13i7mOmgLdeBWQYCXxBs6kzH+ZDLXPb0z8p1uctFJsW87Tuy3DmmHIag0Uyv+H23N9vbY4Qwb561PNjVRZsG26mIFEnveMqFcR7MVwseusESypjMnSF0I/xJWgf7PYSuOlsktsXdMmaylCbNxm6HoSBDkphRpB3e0LZu9CCH2fUmLQ5lK9Vu5udO+OT3UkceBcY97oYoM4fUY9ZxF/b6TO01Gyah40LXu7oMx89waYnPUSN570bruakWqVhsw==
+ bh=9zSwOI8EilsYcWwuSD/7xGF0BhUHdBbw2kXFWbaacBw=;
+ b=lqPtTwThe3ZNXnW8pmPz3lcmwVIapQS+dww0SIEQl6YLy07s8KMT7EOGkHq6f8UcdKFGpxHp4aGiunazDvITtNjDrQ0ZwPhVpaDW0das4vJPdwGYipvaGGt6FZHf2vvuheblFaArl8tP54E4rU4qpL2BQm4RVkRJkT1IiIrJoTs=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com (2603:10a6:7:83::14)
- by AM9PR04MB8437.eurprd04.prod.outlook.com (2603:10a6:20b:3dd::11) with
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
+ by DU2PR04MB9132.eurprd04.prod.outlook.com (2603:10a6:10:2f7::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.17; Thu, 6 Jul
- 2023 07:48:57 +0000
-Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com
- ([fe80::423a:a30f:5342:9d35]) by HE1PR0402MB3497.eurprd04.prod.outlook.com
- ([fe80::423a:a30f:5342:9d35%6]) with mapi id 15.20.6565.016; Thu, 6 Jul 2023
- 07:48:57 +0000
-From: Geliang Tang <geliang.tang@suse.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: Geliang Tang <geliang.tang@suse.com>,
-	bpf@vger.kernel.org,
-	mptcp@lists.linux.dev
-Subject: [RFC bpf-next v2 8/8] selftests/bpf: Add mptcpify selftest
-Date: Thu,  6 Jul 2023 15:47:32 +0800
-Message-Id: <5c88e528d4be098c2fa73ba49bc1b20615b77a53.1688629124.git.geliang.tang@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <cover.1688629124.git.geliang.tang@suse.com>
-References: <cover.1688629124.git.geliang.tang@suse.com>
+ 2023 08:16:20 +0000
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::1edd:68cb:85d0:29e0]) by AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::1edd:68cb:85d0:29e0%7]) with mapi id 15.20.6544.024; Thu, 6 Jul 2023
+ 08:16:20 +0000
+From: wei.fang@nxp.com
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	shenwei.wang@nxp.com,
+	xiaoning.wang@nxp.com,
+	netdev@vger.kernel.org
+Cc: linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH V2 net 0/4] net: fec: fix some issues of ndo_xdp_xmit()
+Date: Thu,  6 Jul 2023 16:10:08 +0800
+Message-Id: <20230706081012.2278063-1-wei.fang@nxp.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SI1PR02CA0001.apcprd02.prod.outlook.com
- (2603:1096:4:1f7::15) To HE1PR0402MB3497.eurprd04.prod.outlook.com
- (2603:10a6:7:83::14)
+X-ClientProxiedBy: SG2P153CA0018.APCP153.PROD.OUTLOOK.COM (2603:1096::28) To
+ AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,187 +76,96 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HE1PR0402MB3497:EE_|AM9PR04MB8437:EE_
-X-MS-Office365-Filtering-Correlation-Id: 657b821e-a167-404f-fbb0-08db7df57410
+X-MS-TrafficTypeDiagnostic: AM5PR04MB3139:EE_|DU2PR04MB9132:EE_
+X-MS-Office365-Filtering-Correlation-Id: ff6e7787-cb27-4e9d-3250-08db7df94776
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	MI9fGyjVqZVhs3f8PREfr62bV/pbK0coU3p1TX6p3ZCOoIGksXPs3lRQ1MBEj/eVRehBFFfOpnVZ+cY1iGtr+mrlQDpgbmoaofIrI33QCVCjkInCpz2vmhO6cbYj9NvSVueB1+jmuY3Ndi4oHRdzcmo3KkOahtqE1G0jSsNnDfMU9IdWOOJ9PZgtlV8RgxLxqoHXOL5KFUh/SPoLbuPuE12F8/zljS7dpYuSlx9z3oT2S1sFpM1zVbbukYaw/DvryN6H4P6Jaj8hlduAcw9fp2QCaj3ZojTmoDkZGLTQfcr4373zIvgGYrJhTPMI1Cl0vcYSNh/TpXXzBwRMGIypM008Uh8bfa9xVXPuy2k4qW7fkt9kJbgWyJ810oWxNm3iCSreRh9hNEuxigbfCQLIACyxwHAr1Gble4BC4ZKOmvi7S4nIxdfkfDfwhaRpS8p2PXYe836ZgNdiwQgtVcx/ZWhD7psn9IdleseKCbM2jiN9i75qnHI+XOnPeYs7j2AYRRz9uc1RAkakGYW/D1w21w3veSOofaZGH+0iTEwkDn9KXz473TyTy+Wm36BrZ1CCqzzlUAhSUHOUiB9z82rLo9Y8PUfR1KVmXRUQZEoy1DWZ+38NMUIc0zOs+LXdynSr
+	dyBOgHrGb7mli5o4pMDcuMjjr6k4FTHRvCEVaixqQhcdDJ0228tsPsdoGsUOwvN8vzzLmhx19Jt5trZeL7nPYsqRuwt3q/WoAYWexabXviOhf4moSZFniKODW0ko0OvA847iVBhTyRHdyL/saR/3gI3gu9D5SxReDWtkczA76tKJD36QGneiDzXmyvv6yTUIuY+T9n25SSkcpxeDS1M+O1lfuY7GV2VW8w28jDiRfm+PSfH0bPMmtkmHbFevVLc8UuV10FEPQXvId9V56/140R349NzgCeHir/uLeF64Q3do4E+hvRWZNh0G8KEj9bJj1tngPpeKUexHUIZqKJSKcSOA/OoLLl1ZNyEonfk0eBgOV8JpRiFxx0X44OjIy/vVDCEGU9OWg+vqbxIUxJQC1MqcSdjEbJyl0Fkpjjkzw6u5RCS1qvLLAsXdvQrp+LR/qUjA8hEHNT74/26JNoTiXR+vJ1ZF0ftEpt9sI4Y8DwtK4MefFDWcGVTaPXdENGMS0e0mWV1Vc62UDnglM0Xmr802Rfsa2EnUfBHycVSAnnWGsq98D7dU142rs+u+jX0Kfu5ZwJJvcfD2ZZ/q/5ZOe8a08LcfI/yZbKBCTg0a7RiCUtlc64gj4THD+EppwRGS44MkN77c6UpiyPBhAAbZpA==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3497.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(346002)(376002)(39860400002)(366004)(136003)(451199021)(6666004)(41300700001)(7416002)(5660300002)(110136005)(36756003)(2906002)(44832011)(8936002)(316002)(8676002)(6486002)(66476007)(66946007)(4326008)(66556008)(6512007)(478600001)(86362001)(38100700002)(186003)(2616005)(921005)(83380400001)(26005)(6506007)(13296009);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(396003)(376002)(39860400002)(346002)(451199021)(186003)(8676002)(8936002)(6506007)(26005)(2616005)(2906002)(66946007)(1076003)(5660300002)(7416002)(41300700001)(36756003)(921005)(6486002)(4326008)(316002)(66476007)(83380400001)(6666004)(66556008)(6512007)(478600001)(9686003)(52116002)(38350700002)(86362001)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ezdmpZ03wBjy0DZrPajY/ZZycKZkdy6TC0++MEdZhERQX1/sbmYJaH9oIppO?=
- =?us-ascii?Q?KpB+Z9WdpqRga6Py9v9b3ig5zx3g6Occh8s4mF319sd6S9qFc4jvqkDu0uOg?=
- =?us-ascii?Q?wHX0A/IbNLp8HkwZG7QGC9u841qLWos7LQucVp/mWGvazma7bUSj8aH2xig5?=
- =?us-ascii?Q?+oMQuxn9mAoxHgxnyY8nWLlPhN/v6LqqKwKzEkiuL7XgxFpEuKsF3FL/P/zS?=
- =?us-ascii?Q?1hYyHDW+qjUDOdqbtkrWvrFo/fTOEqOV3aV5WnfTARzx3klC1ctQKktSmf+D?=
- =?us-ascii?Q?jJr62JjzKPl6xVZo0Q9fZkw5qafhBEHaajaStaPqnMUbODCaQ1RV/AQ3yTRE?=
- =?us-ascii?Q?9TQsEJ8gN/mu/eiJ9MQxcF+Ln2RUH53dbaq/t2w6coVCcWNsIVUndYgD1GmK?=
- =?us-ascii?Q?mVZXULvSoa9mM+t+M1MgW7FdD0gs2v4P/az6CwS5KoQ/qxI567yySFx0vGVj?=
- =?us-ascii?Q?xmDaUQDPybpe35glqcnDlx7fheCq89HPWGyJhqXCvf/GOoOp00MovrQWmuQH?=
- =?us-ascii?Q?0SAhavIeOy/PWGoFBT7/rnKXYnWNbhxEHwj4xT+DMLWIrxonYlqt8mNSZf+x?=
- =?us-ascii?Q?iCf8EQaVDHMO2mqPJmuVEfcJW5B5NDTlimBjWSjyKqP8neWdkj0CLolyh+1n?=
- =?us-ascii?Q?TBdkyqh3JlhQwmAqlseunrmBzSJyJor2/hZBDNYVpgxkoRRVzNKblMTn/RU+?=
- =?us-ascii?Q?ehJ4gxABmhuJkDROMXBH8CsDRhQdgQXyk8DTmL2FwEDC1Wxvzykqa+Sw5wLo?=
- =?us-ascii?Q?cxdZKZUe/y0tjDepvIY8Ibng122RFAhsneyKbw0+ie/utcnmE6cIADXDQ8M8?=
- =?us-ascii?Q?F1D+nc6yqcOHQNxaBLRb8670vOKtrrMFWCj3aI/D3NQ2F+VgwWNDZC7q0u9l?=
- =?us-ascii?Q?3appB3JH4WR3utoDQ6Rz0sZLm/3/R6kaoCNEA35xFdjibmLa2DSZmXKJal+T?=
- =?us-ascii?Q?62y7/nva5BKGmIb4MnTsazIFy92kIBM6yG2wo7dnJ6l98esRbNBg4+kOG2XE?=
- =?us-ascii?Q?3uk5dKY/Qu0O9cW44f6ojMA2QbZdziSZStd4t7LYO0FdIGHBSf3KK4lSmviF?=
- =?us-ascii?Q?RNfdmufLxdiokQfI/1QZtZvzLz1ISrbaWbMW7mMegTWJRsEOteTdrknovAyl?=
- =?us-ascii?Q?S9KAEMlM/bMVCXYnUwe6U8ndzClWH2fa7Kh0IWPTwUbvc2Qd/HcUBdvGHJg5?=
- =?us-ascii?Q?5P3hG0BdrARHrUbdSW88DOLtUK8lDJ7RyXKhfiuGXsHEMfzK4ZM8m1kuFgcG?=
- =?us-ascii?Q?inzm1Q3zyeLNkI13hTwL05lRyP6X3yr6yQhdVZJuJqwGjc8zPN8BTpBWU9oO?=
- =?us-ascii?Q?/3r5h+96ayLe2Dl7V0/e3Opg4XQSpHkPY81afWxF2vLdy9X7k/eBDGOJcdB5?=
- =?us-ascii?Q?9tXz0tGE7YsNmjmU/hlIti7Rb0ZUAko1/gPQls5hGdeJmx6MKjcmS7H/qMMr?=
- =?us-ascii?Q?FDqealhsaBzYGCNKR6Sr6Cb1DDf9jYJDodiCfRUstIS/ALYwNsuzzXqBPyZw?=
- =?us-ascii?Q?smgPwJf1V72dZSkzJR07eOv2CHj40lW9CrACcWDT4jfVGZLLMPlrhu/WtqjK?=
- =?us-ascii?Q?qpc5U/YFMKbcnHPZlQv5wzAVHKA6ZZswVv2JnYgh?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 657b821e-a167-404f-fbb0-08db7df57410
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3497.eurprd04.prod.outlook.com
+	=?us-ascii?Q?mqdk6IZBU0NdHLCPVpcBy5rCAEkuivdkyfiDbq1Bpqha9/bAGqjBGvL8fULY?=
+ =?us-ascii?Q?Ian5bYYUnq4STHh9XOWDfSHKW5Ddgcxn0uFsWKbEo4t0WXEUS15LJiGkuMk4?=
+ =?us-ascii?Q?sVUY7IK27bYaT4beTVwEit9Xb75ECgOGWQC7/bY7qgy9dTyF3vAuSzw3YuCP?=
+ =?us-ascii?Q?h7FhFkIZsM/cLF/HzdrJyX9UYFb54Kb0eHgTYqeAOqduJQ0dwSPEJzu2iYuv?=
+ =?us-ascii?Q?NpGcGYuRD/nejoZVBLjgo/3lKwXD9vuhfOZyEbUv/95h6/SQFM7lBRE3E24e?=
+ =?us-ascii?Q?u0g1MsbuSRW/nDvE4QYVVZ8UYAEfJGMMfRAQ5j46wBXTfhLWvtXZhDIeq8Wr?=
+ =?us-ascii?Q?z3XJyslN/wtZYSTmiE3G2HMLCIhfoFM4qQiNG2ZK7MxWDH8qsRIqVHemBb5t?=
+ =?us-ascii?Q?oyCi23jfAr/Yt25a2ptOUpWiaDYjLUWRqnegYSJwYWbM6FeL9cmhOXov8qVJ?=
+ =?us-ascii?Q?iy5kT23HOfoKBNLS5/MJdPrNd9owxdFqxmJc94UOC/w0L7s9j6OPlkPDPTt/?=
+ =?us-ascii?Q?xfL2etqDbOGa7154Wmw+Ek7yzJwKSRqBcQSOopQblhIIIZ468OYZwXA8iob1?=
+ =?us-ascii?Q?by+APxnVKkm5wrj1J6pIvm6SkLfRq8PXq2pdVhBuT5OZ27raeI5AgGRubhro?=
+ =?us-ascii?Q?RhC8UOMqJN6REbTIn/OngAgVtrn2Va4Oj2sa8wpUQQdbusHwsOAzP00XlT5o?=
+ =?us-ascii?Q?F0CyBjHq/Ort5l7a2OoZD3/jm34r2A8Okg6QJAfy6SkjpQSxOtELYbycWHS6?=
+ =?us-ascii?Q?JKIcVeqrxKcikJW3lCl9lyxXJNNm0FUWgfY887HvkdxWeH4xQUivxILF69+P?=
+ =?us-ascii?Q?I3Ez55C0S3BOJpbM3BRu/vrloH34uqNp8uDe9lR1zyhbt9e3CkeY0rCz9fGp?=
+ =?us-ascii?Q?mzfEyLYhaAUnDhyRRualq3RExRRtOi+XMUU5NPLsThV0s4JYn1t2L1Pbm4kt?=
+ =?us-ascii?Q?cauZVUfjDh+R9Dz7ezUeIfEyv7mnlnYjI86stmCBvjjhy8PIyeiC1Iw9z1LJ?=
+ =?us-ascii?Q?PnAG4ky+Dhm8Fv7P4Fih/NCwDoC4ZzWZsTEh0R9f6xgG51W0NObkSWQiSLC5?=
+ =?us-ascii?Q?q3147P4WCgkPu9ww0EydUUzVZDBFKwXtsU2u7GDb+C7ig0w1pgMqe/1I68wl?=
+ =?us-ascii?Q?LLK3csyFyVdWrmtiOUPOzpm7l98cUmDH8F0xpTRlKDTRmklk/4ZC2aTh8NCf?=
+ =?us-ascii?Q?08wBJADA+Px6H/MMz4sBitLc7+jasCZ4BGpaeF56BhyK95vONvJouCH1KSso?=
+ =?us-ascii?Q?qyMYyc5ni7L5toiEdwndOPNzOfFbiZJCqGp5fsZCdPBBNRKOQvkUDi1ytiHU?=
+ =?us-ascii?Q?rcIKbnKNY6636StM0VutFby3pFg14xbge0bArepHhdsh6za6BdfeQwXk1afx?=
+ =?us-ascii?Q?Pwquj4FGqXPjKAWoX/C6cyskXvN6gnFfM3TiQ71y4WGNn6j0efTXzOjiA5lP?=
+ =?us-ascii?Q?i2uG0jJUN2n9kGztS/bmqRN6QBLxD82lWwYsjJnZmz0p1yzoy+O7JpfqbvZX?=
+ =?us-ascii?Q?IKRr6kIFqKVY+o+PsIRpPB7fRKmcKsLNT9CjluURaZzRjExlGJLxZ06tJysJ?=
+ =?us-ascii?Q?Co2SUitIYXmD44ly2+Qbqhz1fhZ9xRxKNpwxcBID?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff6e7787-cb27-4e9d-3250-08db7df94776
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2023 07:48:57.3873
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2023 08:16:20.4344
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JpvcaSk4rbwv24KBL/1yujjFGL+RhyRDjxtg05YfQ5rZCLxB82axW9qm3vZnwU2F9qMIq2jV7QjcRnVdzWOyeg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8437
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ev8IBDVksl3ln+tq4HbyZq/vUZ9W62psWc2Ft/qhPzhPVvEm86ckwzlFujNamCECJ/iDCFzO3kh5h0KE+QRVPA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9132
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patch extends the MPTCP test base, add a selftest test_mptcpify()
-for the mptcpify case.
+From: Wei Fang <wei.fang@nxp.com>
 
-Open and load the mptcpify test prog to mptcpify the TCP sockets
-dynamically, then use start_server() and connect_to_fd() to create a
-TCP socket, but actually what's created is an MPTCP socket, which can
-be verified through the output of 'ss' command.
+We encountered some issues when testing the ndo_xdp_xmit() interface
+of the fec driver on i.MX8MP and i.MX93 platforms. These issues are
+easy to reproduce, and the specific reproduction steps are as follows.
 
-Signed-off-by: Geliang Tang <geliang.tang@suse.com>
----
- .../testing/selftests/bpf/prog_tests/mptcp.c  | 91 +++++++++++++++++++
- 1 file changed, 91 insertions(+)
+step1: The ethernet port of a board (board A) is connected to the EQOS
+port of i.MX8MP/i.MX93, and the FEC port of i.MX8MP/i.MX93 is connected
+to another ethernet port, such as a switch port.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-index b2a833a900c2..de05140fe638 100644
---- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-@@ -6,6 +6,7 @@
- #include "cgroup_helpers.h"
- #include "network_helpers.h"
- #include "mptcp_sock.skel.h"
-+#include "mptcpify.skel.h"
- 
- char NS_TEST[32];
- 
-@@ -196,8 +197,98 @@ static void test_base(void)
- 	close(cgroup_fd);
- }
- 
-+static void send_byte(int fd)
-+{
-+	char b = 0x55;
-+
-+	ASSERT_EQ(write(fd, &b, sizeof(b)), 1, "send single byte");
-+}
-+
-+static int verify_mptcpify(void)
-+{
-+	char cmd[128];
-+	int err = 0;
-+
-+	snprintf(cmd, sizeof(cmd),
-+		 "ip netns exec %s ss -tOni | grep -q '%s'",
-+		 NS_TEST, "tcp-ulp-mptcp");
-+	if (!ASSERT_OK(system(cmd), "No tcp-ulp-mptcp found!"))
-+		err++;
-+
-+	snprintf(cmd, sizeof(cmd),
-+		 "ip netns exec %s nstat -asz %s | awk '%s' | grep -q '%s'",
-+		 NS_TEST, "MPTcpExtMPCapableSYNACKRX",
-+		 "NR==1 {next} {print $2}", "1");
-+	if (!ASSERT_OK(system(cmd), "No MPTcpExtMPCapableSYNACKRX found!"))
-+		err++;
-+
-+	return err;
-+}
-+
-+static int run_mptcpify(int cgroup_fd)
-+{
-+	int server_fd, client_fd, err = 0;
-+	struct mptcpify *mptcpify_skel;
-+
-+	mptcpify_skel = mptcpify__open_and_load();
-+	if (!ASSERT_OK_PTR(mptcpify_skel, "mptcpify__open_and_load"))
-+		return -EIO;
-+
-+	mptcpify_skel->links.mptcpify =
-+		bpf_program__attach_cgroup(mptcpify_skel->progs.mptcpify, cgroup_fd);
-+	if (!ASSERT_OK_PTR(mptcpify_skel->links.mptcpify, "bpf_program__attach_cgroup")) {
-+		err = -EIO;
-+		goto out;
-+	}
-+
-+	/* without MPTCP */
-+	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, 0, 0);
-+	if (!ASSERT_GE(server_fd, 0, "start_server")) {
-+		err = -EIO;
-+		goto out;
-+	}
-+
-+	client_fd = connect_to_fd(server_fd, 0);
-+	if (!ASSERT_GE(client_fd, 0, "connect to fd")) {
-+		err = -EIO;
-+		goto close_server;
-+	}
-+
-+	send_byte(client_fd);
-+	err += verify_mptcpify();
-+
-+	close(client_fd);
-+close_server:
-+	close(server_fd);
-+out:
-+	mptcpify__destroy(mptcpify_skel);
-+	return err;
-+}
-+
-+static void test_mptcpify(void)
-+{
-+	struct nstoken *nstoken = NULL;
-+	int cgroup_fd;
-+
-+	cgroup_fd = test__join_cgroup("/mptcpify");
-+	if (!ASSERT_GE(cgroup_fd, 0, "test__join_cgroup"))
-+		return;
-+
-+	nstoken = create_netns();
-+	if (!ASSERT_OK_PTR(nstoken, "create_netns"))
-+		goto fail;
-+
-+	ASSERT_OK(run_mptcpify(cgroup_fd), "run_mptcpify");
-+
-+fail:
-+	cleanup_netns(nstoken);
-+	close(cgroup_fd);
-+}
-+
- void test_mptcp(void)
- {
- 	if (test__start_subtest("base"))
- 		test_base();
-+	if (test__start_subtest("mptcpify"))
-+		test_mptcpify();
- }
+step2: Board A uses the pktgen_sample03_burst_single_flow.sh to generate
+and send packets to i.MX8MP/i.MX93. The command is shown below.
+./pktgen_sample03_burst_single_flow.sh -i eth0 -d 192.168.6.8 -m \
+56:bf:0d:68:b0:9e -s 1500
+
+step3: i.MX8MP/i.MX93 use the xdp_redirect bfp program to redirect the
+XDP frames from EQOS port to FEC port. The command is shown below.
+./xdp_redirect eth1 eth0
+
+After a few moments, the warning or error logs will be printed in the
+console, for more details, please refer to the commit message of each
+patch.
+
+Wei Fang (4):
+  net: fec: dynamically set the NETDEV_XDP_ACT_NDO_XMIT feature of XDP
+  net: fec: recycle pages for transmitted XDP frames
+  net: fec: increase the size of tx ring and update tx_wake_threshold
+  net: fec: use netdev_err_once() instead of netdev_err()
+
+ drivers/net/ethernet/freescale/fec.h      |  17 ++-
+ drivers/net/ethernet/freescale/fec_main.c | 166 +++++++++++++++-------
+ 2 files changed, 127 insertions(+), 56 deletions(-)
+
 -- 
-2.35.3
+2.25.1
 
 
