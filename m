@@ -1,86 +1,158 @@
-Return-Path: <bpf+bounces-4334-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4336-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A34274A676
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 00:00:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDFBC74A679
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 00:00:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A0691C20E61
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 22:00:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82E2F2814A0
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 22:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1223815AE4;
-	Thu,  6 Jul 2023 22:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12FA215AEB;
+	Thu,  6 Jul 2023 22:00:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB0CD1872
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 22:00:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 63171C433C9;
-	Thu,  6 Jul 2023 22:00:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688680822;
-	bh=+22mzQguys2tJacNccyqcjYcqhLDAE6EoLukiGHOT4g=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=FGMAiTXyVnJ59DKWD4YJtHEXCdLPwsuLyA6r8OiOEl77Uyw+lCXO6OBbpRYM+aGhB
-	 na1pWiUqY9mBRQnLr4HkRjChxlWWSriJAZh3MrOyzBRInL4FYYGbsO+zNPEMTEChgc
-	 niZokWEgoH1P3XpOJXq+lsF8saqHV2j+T1zrASp64+uXaI3WY5lEYDoXCTascMkS47
-	 yeOhKia+b4Rm16JyUjCD9ZVo/PVH1xwQgnTXjrG4ZxlO8UscmlIJgE8KfyjuEfC8GX
-	 hhtCXXsRmTobnh95s3ycl53mblocFDA7ft5ERVUnfIWk00gQGQXoJbxgrFVMJ8E3un
-	 pkmXczO/li4kg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 431D0C59A4C;
-	Thu,  6 Jul 2023 22:00:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA901872
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 22:00:37 +0000 (UTC)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B4B1BF0;
+	Thu,  6 Jul 2023 15:00:36 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbef8ad9bbso13908345e9.0;
+        Thu, 06 Jul 2023 15:00:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688680834; x=1691272834;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JTNk28msNnXIhTeY8JE4dqW9N4O9yyFjR9BGrXnP200=;
+        b=qxbUnkkzv6bYgldbUdVSx64dCN+a1fGjMNyoyYxfT6vheyOutcdDzDkvu87T1WFXgh
+         o1hXLuyXOtTPwI3fmvnpS35BNGqOrcN7illBn2gg/vCH6+S8lSZKAb9gaww7Pwab1Hr3
+         QXTpwfojJqroUbO8tW+zEsxRIwDbvCN9BWr9CY3QzAquCcgvwyDcjR/rmMXkuJ3c32mx
+         yhedXe/vVi98JJ+MqwsihN5Ba3EDAVbcqPk6iLfrKxkvHmRjEi4PTzfFtfPXbvxqn36f
+         HgrW+N4tfHXsHnRGwT/weet/useDuQWkDXm1t0/JgmZ1caQgS5WNZFHK2G/DmJG9bLLY
+         S70A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688680834; x=1691272834;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JTNk28msNnXIhTeY8JE4dqW9N4O9yyFjR9BGrXnP200=;
+        b=aIHZtIw/5Pw8RJxU1w018Hdpnk+mhOAfMp/XTOJxwKXqDBbvcc5JBrAfqiJ+jvFwWc
+         gaGb9Lvc8Q7hdqKXhvItgAZOti8yspc7mToAAYsJEYXjPnyKWdb5pDSl8rCcB8vq5Brk
+         6blvZA1JNZGoWX11OSmY6IGoesbA0hgTSkTBx20WBiutyDb4VCa0tEQzIbZCgrz+sSku
+         kcXQsM1dB9hgktWsP10IVFBvhuTWd9NySHdE1pw5xfyXQyhMQw+2unLSBfMgTBuryGRu
+         CASm8Q6K49NHBqBpfVUzpFkNAO1r6PCRLzordMGKQBauVTcBL9CZRa2IVsYc7ZdO5MqN
+         Ooyg==
+X-Gm-Message-State: ABy/qLaCbDDx8IIGCyNBfv8WmgrSxzEQW1TNix6wyB8YHd/9JQtIGVgH
+	hXypiwRPCVAZkdIxIWaLGkagXH4ch7QnA+sKduQ=
+X-Google-Smtp-Source: APBJJlG4lwvNTYTkGbY0TRb3l6im4mSUjRUhOEgAGWRY9n5406M40rOUd95bdN20mH5cQHi4VZboDKZahcVcoPvNqho=
+X-Received: by 2002:a1c:6a03:0:b0:3fb:a576:3212 with SMTP id
+ f3-20020a1c6a03000000b003fba5763212mr2170453wmc.39.1688680834407; Thu, 06 Jul
+ 2023 15:00:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v7 1/2] libbpf: kprobe.multi: cross filter using
- available_filter_functions and kallsyms
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <168868082227.13002.2727986296797379564.git-patchwork-notify@kernel.org>
-Date: Thu, 06 Jul 2023 22:00:22 +0000
-References: <20230705091209.3803873-1-liu.yun@linux.dev>
-In-Reply-To: <20230705091209.3803873-1-liu.yun@linux.dev>
-To: Jackie Liu <liu.yun@linux.dev>
-Cc: olsajiri@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yhs@fb.com, bpf@vger.kernel.org, liuyun01@kylinos.cn,
- daniel@iogearbox.net
+References: <20230628115329.248450-1-laoar.shao@gmail.com> <20230628115329.248450-8-laoar.shao@gmail.com>
+In-Reply-To: <20230628115329.248450-8-laoar.shao@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 6 Jul 2023 15:00:22 -0700
+Message-ID: <CAEf4BzYGVuvZznF+_7cNJ1PRtPsoXop5r4m9WChkfMNnCkj5Nw@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 07/11] bpf: Add a common helper bpf_copy_to_user()
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	quentin@isovalent.com, rostedt@goodmis.org, mhiramat@kernel.org, 
+	bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
+On Wed, Jun 28, 2023 at 4:53=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
+>
+> Add a common helper bpf_copy_to_user(), which will be used at multiple
+> places.
+> No functional change.
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  kernel/bpf/syscall.c | 34 ++++++++++++++++++++--------------
+>  1 file changed, 20 insertions(+), 14 deletions(-)
+>
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Wed,  5 Jul 2023 17:12:08 +0800 you wrote:
-> From: Jackie Liu <liuyun01@kylinos.cn>
-> 
-> When using regular expression matching with "kprobe multi", it scans all
-> the functions under "/proc/kallsyms" that can be matched. However, not all
-> of them can be traced by kprobe.multi. If any one of the functions fails
-> to be traced, it will result in the failure of all functions. The best
-> approach is to filter out the functions that cannot be traced to ensure
-> proper tracking of the functions.
-> 
-> [...]
-
-Here is the summary with links:
-  - [v7,1/2] libbpf: kprobe.multi: cross filter using available_filter_functions and kallsyms
-    https://git.kernel.org/bpf/bpf-next/c/e5852934b647
-  - [v7,2/2] libbpf: kprobe.multi: Filter with available_filter_functions_addrs
-    https://git.kernel.org/bpf/bpf-next/c/0d28e1abb801
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
 
+
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index a2aef900519c..4aa6e5776a04 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3295,6 +3295,25 @@ static void bpf_raw_tp_link_show_fdinfo(const stru=
+ct bpf_link *link,
+>                    raw_tp_link->btp->tp->name);
+>  }
+>
+> +static int bpf_copy_to_user(char __user *ubuf, const char *buf, u32 ulen=
+,
+> +                           u32 len)
+> +{
+> +       if (ulen >=3D len + 1) {
+> +               if (copy_to_user(ubuf, buf, len + 1))
+> +                       return -EFAULT;
+> +       } else {
+> +               char zero =3D '\0';
+> +
+> +               if (copy_to_user(ubuf, buf, ulen - 1))
+> +                       return -EFAULT;
+> +               if (put_user(zero, ubuf + ulen - 1))
+> +                       return -EFAULT;
+> +               return -ENOSPC;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int bpf_raw_tp_link_fill_link_info(const struct bpf_link *link,
+>                                           struct bpf_link_info *info)
+>  {
+> @@ -3313,20 +3332,7 @@ static int bpf_raw_tp_link_fill_link_info(const st=
+ruct bpf_link *link,
+>         if (!ubuf)
+>                 return 0;
+>
+> -       if (ulen >=3D tp_len + 1) {
+> -               if (copy_to_user(ubuf, tp_name, tp_len + 1))
+> -                       return -EFAULT;
+> -       } else {
+> -               char zero =3D '\0';
+> -
+> -               if (copy_to_user(ubuf, tp_name, ulen - 1))
+> -                       return -EFAULT;
+> -               if (put_user(zero, ubuf + ulen - 1))
+> -                       return -EFAULT;
+> -               return -ENOSPC;
+> -       }
+> -
+> -       return 0;
+> +       return bpf_copy_to_user(ubuf, tp_name, ulen, tp_len);
+>  }
+>
+>  static const struct bpf_link_ops bpf_raw_tp_link_lops =3D {
+> --
+> 2.39.3
+>
 
