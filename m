@@ -1,103 +1,54 @@
-Return-Path: <bpf+bounces-4351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4350-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7084574A778
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 01:14:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AB9B74A777
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 01:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AB9B1C20EB0
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 23:14:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 235BD2814B5
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 23:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054AB168A1;
-	Thu,  6 Jul 2023 23:14:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3FA16434;
+	Thu,  6 Jul 2023 23:14:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17C363BA
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 23:14:21 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79E819B2
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 16:14:19 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 929E9C13AE4F
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 16:14:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1688685259; bh=SsbvdhVVOyHZyaWV7h4m2xm+UlNfzLfXi+ssLXe2AbU=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=wt9HYxT5nxuKWl2XhQCEgPJigxJdQsW3Pz5ESBFDjlZuED5ZG3Uf877/T74erfLBL
-	 BjM3N7D7IoJEnbE6Jf+O5JUi5eWueqez/QK+h80c0fguvR2w51ek57IWISsrLpWzk7
-	 lkXbDSYstVZTrrSS2g/9yZbHgs35PAiewPbE7I00=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Thu Jul  6 16:14:19 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 73E55C151525;
-	Thu,  6 Jul 2023 16:14:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1688685259; bh=SsbvdhVVOyHZyaWV7h4m2xm+UlNfzLfXi+ssLXe2AbU=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=wt9HYxT5nxuKWl2XhQCEgPJigxJdQsW3Pz5ESBFDjlZuED5ZG3Uf877/T74erfLBL
-	 BjM3N7D7IoJEnbE6Jf+O5JUi5eWueqez/QK+h80c0fguvR2w51ek57IWISsrLpWzk7
-	 lkXbDSYstVZTrrSS2g/9yZbHgs35PAiewPbE7I00=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id AFC72C151091
- for <bpf@ietfa.amsl.com>; Thu,  6 Jul 2023 16:14:18 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -7.096
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=gmail.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id EQAiqeCrIpY8 for <bpf@ietfa.amsl.com>;
- Thu,  6 Jul 2023 16:14:18 -0700 (PDT)
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com
- [IPv6:2a00:1450:4864:20::22c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 00151C151082
- for <bpf@ietf.org>; Thu,  6 Jul 2023 16:14:17 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id
- 38308e7fff4ca-2b6a16254a4so18822931fa.0
- for <bpf@ietf.org>; Thu, 06 Jul 2023 16:14:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A9C63BA
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 23:14:20 +0000 (UTC)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953FE19BD
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 16:14:17 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so18726491fa.2
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 16:14:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20221208; t=1688685256; x=1691277256;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=VxB9JuP2WVlEJH2kCW8mIXA6VO88USDyMaG1Y1/Q4t0=;
- b=ZTtCgYCNyojtR5MN7KzcFTTTRUw1P/qNmoRXNugD+XCeL1WTgCoaTrZ0R1X3CiTumy
- EXt2OpQIVARrMkkxVYicQO2ulKiRrXdJoyM4eYLjL+3+ZhS/TJij8EA8NCY2NS/5Y7+Q
- tc7yYF2F1hT+58gEt0EW5ZGe+R18tf+7qbD0MXkQ6AO4d6lK1I4o61sA8wLt7uEhOSa5
- oU3aHhUSHnYea5Nz5TV0HS0Wnd1TGhjSqaPOXb5ZrLU2+okyuC50JXHxhgg5FORuDJzl
- 9bKbFdRSOeSmcqyh7dhc9SlBjr6SEhOanGpWRs4J+AO7dViO4UVh83tsyXx8ZiCB/DgZ
- rmTQ==
+        d=gmail.com; s=20221208; t=1688685256; x=1691277256;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VxB9JuP2WVlEJH2kCW8mIXA6VO88USDyMaG1Y1/Q4t0=;
+        b=ZTtCgYCNyojtR5MN7KzcFTTTRUw1P/qNmoRXNugD+XCeL1WTgCoaTrZ0R1X3CiTumy
+         EXt2OpQIVARrMkkxVYicQO2ulKiRrXdJoyM4eYLjL+3+ZhS/TJij8EA8NCY2NS/5Y7+Q
+         tc7yYF2F1hT+58gEt0EW5ZGe+R18tf+7qbD0MXkQ6AO4d6lK1I4o61sA8wLt7uEhOSa5
+         oU3aHhUSHnYea5Nz5TV0HS0Wnd1TGhjSqaPOXb5ZrLU2+okyuC50JXHxhgg5FORuDJzl
+         9bKbFdRSOeSmcqyh7dhc9SlBjr6SEhOanGpWRs4J+AO7dViO4UVh83tsyXx8ZiCB/DgZ
+         rmTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1688685256; x=1691277256;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=VxB9JuP2WVlEJH2kCW8mIXA6VO88USDyMaG1Y1/Q4t0=;
- b=Rbq8FCLvpYQzeqEQdgzO3/ajmbzI4zYbIW0rjhkt5fAJESvQbzx9ACwH1EVsKGmqOK
- AkpVqT5FK1JY29547k3PPp5FzY0Tdyviu0S///H3qdFJGDUKrBmf6M5/cswSq/UNU3HP
- 92V/kgo5xJOUegNw3zjHrtKfeUv5Z7scHg1t2nXN7q/cLUwl3vxT8gyXgvir3GCURMiv
- ztHJ61RSxaut8rT+GEdTJ09MvWkP756AQufTMeJRJOCdRWy0mbW/xQly4tj8vusZgHRq
- L+T63GezyvngwCTfp2wGWShF+0N4zc6tQRKRjFmpoEJQcR+SaAvUOEbbimM6zEgpI7gt
- uAHQ==
-X-Gm-Message-State: ABy/qLaa2JW33CSPmog7/djA0OkZCxrBjvadkt2YRofr+2xgH2M0L8or
- xPQuq14EiGtbDM2NXdLi7tbi6dhf9pAXdQ1T1kE=
+        d=1e100.net; s=20221208; t=1688685256; x=1691277256;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VxB9JuP2WVlEJH2kCW8mIXA6VO88USDyMaG1Y1/Q4t0=;
+        b=PvA1HPQ1VrMyFMrSRlOoArYV3jCSi00KRQVGAQ2J7qcxsST3PSAaxjpsjA6Yws2Qcn
+         0g8KnK8lNAFYLsELs7BJdhaepGr6BTEoe5Mc5qXtj6z2+xLbrI/eFlNlRfFnme2qjGF0
+         cHkrEgGjnbZNZIrle9IcVJ1TqKqbT+qr4VWlAF7Kjm6/AkGn4R/OUl64ep0pw4iw8vHl
+         SWk7ogcWCDte/XYO8uNpACOB1ap2LGYJBZLwmKOINdMdIeIeKAL3uS9BQ719PoMMIJU6
+         BRWEoTJY6l4pu3KVb1XnsbZaX0kE8aK549mZMreHheXBq438/Z7oZDl1ymYy3xjRBLPK
+         Y/aQ==
+X-Gm-Message-State: ABy/qLZwO2Vgn7Daf26sO6EjyJ+fUaws2y9wOj9yq3GgZIwAg9CC+vHY
+	NfbGI4grFmRy1pS/2RZEG+VMShg6cMw/ixUIrRTrKPmJJJ4=
 X-Google-Smtp-Source: APBJJlHfcS/fXyytdaBG/ynEG/P+T19cxdqgrZHur5B4fd47ojEFQUBcT126qdjL0lxRPTW+R9bgTgILOb5ktXJV9gU=
 X-Received: by 2002:a2e:9104:0:b0:2b6:cdfb:d06a with SMTP id
  m4-20020a2e9104000000b002b6cdfbd06amr2426704ljg.22.1688685255508; Thu, 06 Jul
@@ -109,176 +60,238 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20230706160537.1309-1-dthaler1968@googlemail.com>
- <20230706204159.7tzacql7wdk3yszc@macbook-pro-8.dhcp.thefacebook.com>
- <PH7PR21MB3878EA22602A94F1C308CF33A32CA@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <20230706204159.7tzacql7wdk3yszc@macbook-pro-8.dhcp.thefacebook.com> <PH7PR21MB3878EA22602A94F1C308CF33A32CA@PH7PR21MB3878.namprd21.prod.outlook.com>
 In-Reply-To: <PH7PR21MB3878EA22602A94F1C308CF33A32CA@PH7PR21MB3878.namprd21.prod.outlook.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Date: Thu, 6 Jul 2023 16:14:04 -0700
 Message-ID: <CAADnVQ+gLnsOVj9s4zpAP6+U6nFHYm6GVZ1FteRac=ZaJvpfDg@mail.gmail.com>
-To: Dave Thaler <dthaler@microsoft.com>,
- "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc: Dave Thaler <dthaler1968@googlemail.com>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "bpf@ietf.org" <bpf@ietf.org>
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/-NrwjA_6EHQ8y83cMZZGzbT8-wc>
-Subject: Re: [Bpf] [PATCH bpf-next v2] bpf, docs: Improve English readability
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+Subject: Re: [PATCH bpf-next v2] bpf, docs: Improve English readability
+To: Dave Thaler <dthaler@microsoft.com>, "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: Dave Thaler <dthaler1968@googlemail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"bpf@ietf.org" <bpf@ietf.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-T24gVGh1LCBKdWwgNiwgMjAyMyBhdCAzOjA04oCvUE0gRGF2ZSBUaGFsZXIgPGR0aGFsZXJAbWlj
-cm9zb2Z0LmNvbT4gd3JvdGU6Cj4KPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gPiBG
-cm9tOiBBbGV4ZWkgU3Rhcm92b2l0b3YgPGFsZXhlaS5zdGFyb3ZvaXRvdkBnbWFpbC5jb20+Cj4g
-PiBTZW50OiBUaHVyc2RheSwgSnVseSA2LCAyMDIzIDE6NDIgUE0KPiA+IFRvOiBEYXZlIFRoYWxl
-ciA8ZHRoYWxlcjE5NjhAZ29vZ2xlbWFpbC5jb20+Cj4gPiBDYzogYnBmQHZnZXIua2VybmVsLm9y
-ZzsgYnBmQGlldGYub3JnOyBEYXZlIFRoYWxlcgo+ID4gPGR0aGFsZXJAbWljcm9zb2Z0LmNvbT4K
-PiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggYnBmLW5leHQgdjJdIGJwZiwgZG9jczogSW1wcm92ZSBF
-bmdsaXNoIHJlYWRhYmlsaXR5Cj4gPgo+ID4gT24gVGh1LCBKdWwgMDYsIDIwMjMgYXQgMDQ6MDU6
-MzdQTSArMDAwMCwgRGF2ZSBUaGFsZXIgd3JvdGU6Cj4gPiA+IEZyb206IERhdmUgVGhhbGVyIDxk
-dGhhbGVyQG1pY3Jvc29mdC5jb20+Cj4gPiA+Cj4gPiA+IFNpZ25lZC1vZmYtYnk6IERhdmUgVGhh
-bGVyIDxkdGhhbGVyQG1pY3Jvc29mdC5jb20+Cj4gPiA+IC0tCj4gPiA+IFYxIC0+IFYyOiBhZGRy
-ZXNzZWQgY29tbWVudHMgZnJvbSBBbGV4ZWkKPiA+ID4gLS0tCj4gPiA+ICBEb2N1bWVudGF0aW9u
-L2JwZi9pbnN0cnVjdGlvbi1zZXQucnN0IHwgNTkgKysrKysrKysrKysrKysrKysrKystLS0tLS0t
-Cj4gPiA+ICBEb2N1bWVudGF0aW9uL2JwZi9saW51eC1ub3Rlcy5yc3QgICAgIHwgIDUgKysrCj4g
-PiA+ICAyIGZpbGVzIGNoYW5nZWQsIDUwIGluc2VydGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQo+
-ID4gPgo+ID4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9icGYvaW5zdHJ1Y3Rpb24tc2V0
-LnJzdAo+ID4gPiBiL0RvY3VtZW50YXRpb24vYnBmL2luc3RydWN0aW9uLXNldC5yc3QKPiA+ID4g
-aW5kZXggNzUxZTY1Nzk3M2YuLjc0MDk4OWY0YzFlIDEwMDY0NAo+ID4gPiAtLS0gYS9Eb2N1bWVu
-dGF0aW9uL2JwZi9pbnN0cnVjdGlvbi1zZXQucnN0Cj4gPiA+ICsrKyBiL0RvY3VtZW50YXRpb24v
-YnBmL2luc3RydWN0aW9uLXNldC5yc3QKPiA+ID4gQEAgLTcsNiArNyw5IEBAIGVCUEYgSW5zdHJ1
-Y3Rpb24gU2V0IFNwZWNpZmljYXRpb24sIHYxLjAKPiA+ID4KPiA+ID4gIFRoaXMgZG9jdW1lbnQg
-c3BlY2lmaWVzIHZlcnNpb24gMS4wIG9mIHRoZSBlQlBGIGluc3RydWN0aW9uIHNldC4KPiA+ID4K
-PiA+ID4gK1RoZSBlQlBGIGluc3RydWN0aW9uIHNldCBjb25zaXN0cyBvZiBlbGV2ZW4gNjQgYml0
-IHJlZ2lzdGVycywgYQo+ID4gPiArcHJvZ3JhbSBjb3VudGVyLCBhbmQgYW4gaW1wbGVtZW50YXRp
-b24tc3BlY2lmaWMgYW1vdW50IChlLmcuLCA1MTIgYnl0ZXMpCj4gPiBvZiBzdGFjayBzcGFjZS4K
-PiA+ID4gKwo+ID4gPiAgRG9jdW1lbnRhdGlvbiBjb252ZW50aW9ucwo+ID4gPiAgPT09PT09PT09
-PT09PT09PT09PT09PT09PQo+ID4gPgo+ID4gPiBAQCAtMjcsMTIgKzMwLDI0IEBAIFRoZSBlQlBG
-IGNhbGxpbmcgY29udmVudGlvbiBpcyBkZWZpbmVkIGFzOgo+ID4gPiAgKiBSNiAtIFI5OiBjYWxs
-ZWUgc2F2ZWQgcmVnaXN0ZXJzIHRoYXQgZnVuY3Rpb24gY2FsbHMgd2lsbCBwcmVzZXJ2ZQo+ID4g
-PiAgKiBSMTA6IHJlYWQtb25seSBmcmFtZSBwb2ludGVyIHRvIGFjY2VzcyBzdGFjawo+ID4gPgo+
-ID4gPiAtUjAgLSBSNSBhcmUgc2NyYXRjaCByZWdpc3RlcnMgYW5kIGVCUEYgcHJvZ3JhbXMgbmVl
-ZHMgdG8gc3BpbGwvZmlsbAo+ID4gPiB0aGVtIGlmIC1uZWNlc3NhcnkgYWNyb3NzIGNhbGxzLgo+
-ID4gPiArUmVnaXN0ZXJzIFIwIC0gUjUgYXJlIGNhbGxlci1zYXZlZCByZWdpc3RlcnMsIG1lYW5p
-bmcgdGhlIEJQRiBwcm9ncmFtCj4gPiA+ICtuZWVkcyB0byBlaXRoZXIgc3BpbGwgdGhlbSB0byB0
-aGUgQlBGIHN0YWNrIG9yIG1vdmUgdGhlbSB0byBjYWxsZWUKPiA+ID4gK3NhdmVkIHJlZ2lzdGVy
-cyBpZiB0aGVzZSBhcmd1bWVudHMgYXJlIHRvIGJlIHJldXNlZCBhY3Jvc3MgbXVsdGlwbGUKPiA+
-ID4gK2Z1bmN0aW9uIGNhbGxzLiBTcGlsbGluZyBtZWFucyB0aGF0IHRoZSB2YWx1ZSBpbiB0aGUg
-cmVnaXN0ZXIgaXMKPiA+ID4gK21vdmVkIHRvIHRoZSBCUEYgc3RhY2suIFRoZSByZXZlcnNlIG9w
-ZXJhdGlvbiBvZiBtb3ZpbmcgdGhlIHZhcmlhYmxlCj4gPiBmcm9tIHRoZSBCUEYgc3RhY2sgdG8g
-dGhlIHJlZ2lzdGVyIGlzIGNhbGxlZCBmaWxsaW5nLgo+ID4gPiArVGhlIHJlYXNvbiBmb3Igc3Bp
-bGxpbmcvZmlsbGluZyBpcyBkdWUgdG8gdGhlIGxpbWl0ZWQgbnVtYmVyIG9mIHJlZ2lzdGVycy4K
-PiA+Cj4gPiBpbW8gdGhpcyBleHRlbmRlZCBleHBsYW5hdGlvbiBnb2VzIHRvbyBmYXIuCj4gPiBJ
-dCdzIGFsc28gbm90IGVudGlyZWx5IGNvcnJlY3QuIFdlIGNvdWxkIGhhdmUgYW4gSVNBIHdpdGgg
-bGltaXRlZCBudW1iZXIgb2YKPiA+IHJlZ2lzdGVycyB3aGVyZSBldmVyeSByZWdpc3RlciBpcyBj
-YWxsZWUgc2F2ZWQuIEEgYml0IGFic3VyZCwgYnV0IHBvc3NpYmxlLgo+ID4gT3Igd2VudCB3aXRo
-IFNQQVJDIHN0eWxlIHJlZ2lzdGVyIHdpbmRvd3MuCj4KPiBBdCBodHRwczovL2xvcmUua2VybmVs
-Lm9yZy9icGYvMjAyMjA5MzAyMjE2MjQubXFqcnptZHhjNmV0a2FkbUBtYWNib29rLXByby00LmRo
-Y3AudGhlZmFjZWJvb2suY29tLyB5b3Ugc2FpZCBhYm91dCB0aGUgYWJvdmUKPiAiSSBsaWtlIGFi
-b3ZlIGNsYXJpZmljYXRpb24gdGhvdWdoLiIKClRoYXQgd2FzIG9uICIzMCBTZXAgMjAyMiIuCkkg
-bGlrZSB0byBjaGFuZ2UgbXkgbWluZCBvZnRlbiBlbm91Z2ggdG8gY29uZnVzZSBldmVyeW9uZSA6
-KQoKPiBJIHRoaW5rIGl0J3MgaW1wb3J0YW50IGZvciBpbnRlcm9wZXJhYmlsaXR5IHRvIGRlZmlu
-ZSB3aGljaCByZWdpc3RlcnMgYXJlIGNhbGxlci1zYXZlZAo+IGFuZCB3aGljaCBhcmUgbm90LCBz
-byBhIGNvbXBpbGVyIChvciBldmVuIHZlcmlmaWVyKSBjYW4gYmUgdXNlZCBmb3IgbXVsdGlwbGUg
-cnVudGltZXMuCgpidXQgaXQgcmVhbGx5IGRvZXNuJ3QgYmVsb25nIGluIHRoZSBJU0EgZG9jLgpX
-ZSd2ZSBkaXNjdXNzZWQgaXQgYXQgbGVuZ3RoLgpXZSBuZWVkIHRoZSBwc0FCSSBkb2MuCklTQSBk
-b2MgaXMgYSBkZXNjcmlwdGlvbiBvZiBpbnN0cnVjdGlvbnMgYW5kIF9ub3RfIGhvdyB0aGV5IHNo
-YXBlCmludG8gZnVuY3Rpb25zIGFuZCBwcm9ncmFtcy4KTW9yZSBiZWxvdy4KCj4KPiA+ID4gKwo+
-ID4gPiArVXBvbiBlbnRlcmluZyBleGVjdXRpb24gb2YgYW4gZUJQRiBwcm9ncmFtLCByZWdpc3Rl
-cnMgUjEgLSBSNQo+ID4gPiAraW5pdGlhbGx5IGNhbiBjb250YWluIHRoZSBpbnB1dCBhcmd1bWVu
-dHMgZm9yIHRoZSBwcm9ncmFtIChzaW1pbGFyIHRvIHRoZQo+ID4gYXJnYy9hcmd2IHBhaXIgZm9y
-IGEgdHlwaWNhbCBDIHByb2dyYW0pLgo+ID4KPiA+IGFyZ2MvYXJndiBpcyBvbmx5IGZvciBtYWlu
-KCkuIFdlIGRvbid0IGhhdmUgbWFpbigpIGNvbmNlcHQgaW4gQlBGIElTQS4KPiA+IGFyZ2MvYXJn
-diBpcyBhbHNvIG5vdCBhIHByb3BlcnR5IG9mIElTQS4KPgo+IFRoYXQncyB3aHkgaXQncyAic2lt
-aWxhciB0byIuICBJIHRoaW5rIHRoZSBhbmFsb2d5IGhlbHBzIHVuZGVyc3RhbmRpbmcgZm9yIG5l
-dyByZWFkZXJzLgoKYXJnYyBpcyBhIEsmUiBDIHRoaW5nLiBOb3QgZXZlbiBhIGNhbGxpbmcgY29u
-dmVudGlvbi4KVGhhdCBzZW50ZW5jZSBpcyBhIGNvbWJpbmF0aW9uIG9mIGFuYWxvZ2llcyBmcm9t
-IGRpZmZlcmVudCBhcmVhcy4KYXJnYyBjb3VsZCBiZSBpbnRlcnByZXRlZCB0aGF0IHRoZSBmaXJz
-dCBhcmd1bWVudCBpcyBhIGNvdW50CmFuZCBhIHNlY29uZCBhcmd1bWVudCBpcyBhbiBhcnJheS4K
-U2VlIHRoZSBjb25mdXNpb24gaXQgbWlnaHQgY2F1c2U/Cgo+Cj4gPiA+ICtUaGUgYWN0dWFsIG51
-bWJlciBvZiByZWdpc3RlcnMgdXNlZCwgYW5kIHRoZWlyIG1lYW5pbmcsIGlzIGRlZmluZWQgYnkK
-PiA+ID4gK3RoZSBwcm9ncmFtIHR5cGU7IGZvciBleGFtcGxlLCBhIG5ldHdvcmtpbmcgcHJvZ3Jh
-bSBtaWdodCBoYXZlIGFuCj4gPiA+ICthcmd1bWVudCB0aGF0IGluY2x1ZGVzIG5ldHdvcmsgcGFj
-a2V0IGRhdGEgYW5kL29yIG1ldGFkYXRhLgo+ID4KPiA+IHRoYXQgbWFrZXMgdGhpbmdzIGV2ZW4g
-bW9yZSBjb25mdXNpbmcuCj4gPgo+ID4gdGJoIG5vbmUgb2YgdGhlIGFib3ZlIGNoYW5nZXMgbWFr
-ZSB0aGUgZG9jIGVhc2llciB0byByZWFkLgo+Cj4gVGhlIHByb2dyYW0gdHlwZSBkZWZpbmVzIHRo
-ZSBudW1iZXIgYW5kIG1lYW5pbmcgb2YgYW55IGFyZ3VtZW50cyBwYXNzZWQKPiB0byB0aGUgcHJv
-Z3JhbS4gIEluIHRoZSBJU0EgdGhhdCBtZWFucyB0aGUgbnVtYmVyIG9mIHJlZ2lzdGVyZWQgdXNl
-ZCB0bwo+IHBhc3MgaW5wdXRzLCBhbmQgdGhlaXIgY29udGVudHMuCgpOb3QgYXQgYWxsLiBJU0Eg
-aXMgYW4gaW5zdHJ1Y3Rpb24gc2V0IG9ubHkgYW5kIHRoaXMgZG9jIGlzIGZvciBJU0EuCldoYXQg
-ZGlmZmVyZW50IHByb2dyYW0gdHlwZXMgc2hvdWxkIGFjY2VwdCBiZWxvbmdzIGluIGEgZGlmZmVy
-ZW50IGRvYy4KQW5kIGl0J3Mgbm90IGEgcHNBQkkgZG9jLgpNb3JlIGJlbG93LgoKPgo+ID4gPiAg
-SW5zdHJ1Y3Rpb24gZW5jb2RpbmcKPiA+ID4gID09PT09PT09PT09PT09PT09PT09Cj4gPiA+Cj4g
-PiA+ICtBbiBlQlBGIHByb2dyYW0gaXMgYSBzZXF1ZW5jZSBvZiBpbnN0cnVjdGlvbnMuCj4gPgo+
-ID4gS2luZGEgdHJ1ZSwgYnV0IGl0IG9wZW5zIHRoZSBkb29yIGZvciBwbGVudHkgb2YgYmlrZSBz
-aGVkZGluZy4KPiA+IElzIGl0IGNvbnRpZ3VvdXMgc2VxdWVuY2U/IHdoYXQgYWJvdXQgc3VicHJv
-Z3JhbXM/Cj4gPiBJcyBCUEYgcHJvZ3JhbSBhIG9uZSBmdW5jdGlvbiBvciBtdWx0aXBsZSBmdW5j
-dGlvbnM/Cj4KPiBUaGUgdGVybSAic3VicHJvZ3JhbSIgaXMgbm90IGN1cnJlbnRseSBwYXJ0IG9m
-IHRoZQo+IGluc3RydWN0aW9uLXNldC5yc3QgZG9jLiAgICJQcm9ncmFtLWxvY2FsIGZ1bmN0aW9u
-cyIKPiBhcmUsIGFuZCB0aGUgdGV4dCBzYXlzIHRoZXkncmUgcGFydCBvZiB0aGUgc2FtZSBCUEYg
-cHJvZ3JhbS4KPiBIZW5jZSB0aGUgZG9jIGFscmVhZHkgc2F5cyBhIEJQRiBwcm9ncmFtIGNhbiBo
-YXZlIG11bHRpcGxlCj4gZnVuY3Rpb25zLgoKWWVzLiBJdCdzIGEgbWVzcywgYnV0IHdlIG11c3Qg
-bm90IG1ha2UgaXQgd29yc2UuCmluc3RydWN0aW9uLXNldC5yc3QgaXMgZm9yIGluc3RydWN0aW9u
-cy4KRGVmaW5pdGlvbiBvZiBCUEYgcHJvZ3JhbSBiZWxvbmdzIHRvIGEgZGlmZmVyZW50IGRvYy4K
-Cj4gPiBldGMuCj4gPiBKdXN0IG5vdCB3b3J0aCBpdC4KPiA+IFRoaXMgaXMgSVNBIGRvYy4KPiA+
-Cj4gPiA+ICsKPiA+ID4gIGVCUEYgaGFzIHR3byBpbnN0cnVjdGlvbiBlbmNvZGluZ3M6Cj4gPiA+
-Cj4gPiA+ICAqIHRoZSBiYXNpYyBpbnN0cnVjdGlvbiBlbmNvZGluZywgd2hpY2ggdXNlcyA2NCBi
-aXRzIHRvIGVuY29kZSBhbgo+ID4gPiBpbnN0cnVjdGlvbiBAQCAtNzQsNyArODksNyBAQCBGb3Ig
-ZXhhbXBsZTo6Cj4gPiA+ICAgIDA3ICAgICAxICAgICAgIDAgICAgICAgIDAwIDAwICAxMSAyMiAz
-MyA0NCAgcjEgKz0gMHgxMTIyMzM0NCAvLyBiaWcKPiA+ID4KPiA+ID4gIE5vdGUgdGhhdCBtb3N0
-IGluc3RydWN0aW9ucyBkbyBub3QgdXNlIGFsbCBvZiB0aGUgZmllbGRzLgo+ID4gPiAtVW51c2Vk
-IGZpZWxkcyBzaGFsbCBiZSBjbGVhcmVkIHRvIHplcm8uCj4gPiA+ICtVbnVzZWQgZmllbGRzIG11
-c3QgYmUgc2V0IHRvIHplcm8uCj4gPgo+ID4gSG93IGlzIHRoaXMgYmV0dGVyPwo+Cj4gSXQgdXNl
-cyB0aGUgbGFuZ3VhZ2UgY29tbW9uIGluIFJGQ3MuCj4KPiA+ID4gIEFzIGRpc2N1c3NlZCBiZWxv
-dyBpbiBgNjQtYml0IGltbWVkaWF0ZSBpbnN0cnVjdGlvbnNgXywgYSA2NC1iaXQKPiA+ID4gaW1t
-ZWRpYXRlICBpbnN0cnVjdGlvbiB1c2VzIGEgNjQtYml0IGltbWVkaWF0ZSB2YWx1ZSB0aGF0IGlz
-IGNvbnN0cnVjdGVkIGFzCj4gPiBmb2xsb3dzLgo+ID4gPiBAQCAtMTAzLDcgKzExOCw5IEBAIGlu
-c3RydWN0aW9uIGFyZSByZXNlcnZlZCBhbmQgc2hhbGwgYmUgY2xlYXJlZCB0bwo+ID4gemVyby4K
-PiA+ID4gIEluc3RydWN0aW9uIGNsYXNzZXMKPiA+ID4gIC0tLS0tLS0tLS0tLS0tLS0tLS0KPiA+
-ID4KPiA+ID4gLVRoZSB0aHJlZSBMU0IgYml0cyBvZiB0aGUgJ29wY29kZScgZmllbGQgc3RvcmUg
-dGhlIGluc3RydWN0aW9uIGNsYXNzOgo+ID4gPiArVGhlIGVuY29kaW5nIG9mIHRoZSAnb3Bjb2Rl
-JyBmaWVsZCB2YXJpZXMgYW5kIGNhbiBiZSBkZXRlcm1pbmVkIGZyb20KPiA+ID4gK3RoZSB0aHJl
-ZSBsZWFzdCBzaWduaWZpY2FudCBiaXRzIChMU0IpIG9mIHRoZSAnb3Bjb2RlJyBmaWVsZCB3aGlj
-aAo+ID4gPiAraG9sZHMgdGhlICJpbnN0cnVjdGlvbiBjbGFzcyIsIGFzIGZvbGxvd3M6Cj4gPgo+
-ID4gc2FtZSBxdWVzdGlvbi4gRG9uJ3Qgc2VlIGFuIGltcHJvdmVtZW50IGluIHdvcmRpbmcuCj4K
-PiAxLiBUaGUgYWNyb255bSBMU0Igd2FzIG5vdCBkZWZpbmVkIGFuZCBkb2VzIG5vdCBoYXZlIGFu
-IGFzdGVyaXNrIGJ5IGl0IGluCj4gdGhlIGh0dHBzOi8vd3d3LnJmYy1lZGl0b3Iub3JnL21hdGVy
-aWFscy9hYmJyZXYuZXhwYW5zaW9uLnR4dCBsaXN0Lgo+Cj4gMi4gIkxTQiBiaXRzIiBpcyByZWR1
-bmRhbnQuCj4KPiAzLiBQdXR0aW5nICJpbnN0cnVjdGlvbiBjbGFzcyIgaW4gcXVvdGVzIGlzIGNv
-bW1vbiB3aGVuIGRlZmluaW5nIGJ5IHVzZQo+IHRoZSBmaXJzdCB0aW1lLgoKb2suIGZhaXIgZW5v
-dWdoLgoKPgo+IGxpbnV4LW5vdGVzLnJzdCBpcyBub3QgaW4gdGhlIElTQSBkb2MuICAgVGhlIElT
-QSBkb2Mgc2F5cyB0aGUgdmFsdWUgaXMgaW1wbGVtZW50YXRpb24KPiBkZWZpbmVkLiAgbGludXgt
-bm90ZXMucnN0IHNheXMgd2hhdCBMaW51eCBkb2VzIGZvciB0aGluZ3MgdGhlIElTQSBkb2MgbGVh
-dmVzIHVwCj4gdG8gdGhlIGltcGxlbWVudGF0aW9uLgoKSSBzZWUgbm8gdmFsdWUgaW4gIkxpbnV4
-IGN1cnJlbnRseSBzdXBwb3J0cyA1MTIgYnl0ZXMgb2Ygc3RhY2sgc3BhY2UiIHNlbnRlbmNlLgpJ
-dCdzIHRvbyBhbWJpZ3VvdXMgdG8gYmUgdXNlZnVsLgoKaW5zdHJ1Y3Rpb24tc2V0LnJzdCBpcyBh
-IGRlc2NyaXB0aW9uIG9mIElTQS4gV2Ugc2hvdWxkIHJlbW92ZSB0aGluZ3MKZnJvbSBpdCB0aGF0
-IGRvbid0IGJlbG9uZyBpbnN0ZWFkIG9mIGRvdWJsaW5nIGRvd24gb24gdGhlIGN1cnJlbnQgbWVz
-cy4KCndlIG5lZWQgdGhlIHBzQUJJIGRvYyB0aGF0IHdpbGwgbm90IGJlIHN0YW5kYXJkaXplZCBh
-cyBKb3NlIHJlY29tbWVuZGVkLgpUaGF0IGRvYyB3aWxsIGRlc2NyaWJlIHJlY29tbWVuZGVkIGNh
-bGxpbmcgY29udmVudGlvbiwgYXJndW1lbnQKcHJvbW90aW9uLCBzdGFjayB1c2FnZSwgcmVsb2Nh
-dGlvbiwgZnVuY3Rpb24vc3VicHJvZ3JhbSBkZWZpbml0aW9uLCBldGMKcHNBQkkgcHJvYmFibHkg
-c2hvdWxkIGluY2x1ZGUgQlRGLmV4dCBkZXNjcmlwdGlvbiwgYnV0IEknbSBvcGVuIHRvIGFsdGVy
-bmF0aXZlcy4KCkJQRiBwcm9ncmFtIHR5cGVzIHN1cHBvcnRlZCBieSB0aGUga2VybmVsIGlzIGEg
-M3JkIGRvY3VtZW50LgpUaGVyZSB3ZSBjYW4gZXhwbGFpbiB0aGF0IFhEUCBwcm9nIHRha2VzIGEg
-c2luZ2xlIGN0eCBhcmd1bWVudCBhbmQgaXQncwphIHBvaW50ZXIgdG8gLi4uClN1Y2ggaW5mbyBp
-cyBsaW51eCBzcGVjaWZpYy4gQmFzZWQgb24gSVNBIGFuZCBwc0FCSSBvbmUgY2FuIGNvbWUgdXAK
-d2l0aCBkaWZmZXJlbnQgcHJvZ3JhbS9tYXAgdHlwZXMgYW5kIHNlbWFudGljcyBvZiB0aGVpciBh
-cmd1bWVudHMKd2hpbGUgYmVpbmcgZnVsbHkgY29tcGxpYW50IHdpdGggSVNBIGFuZCBwc0FCSSBk
-b2NzLgpTdWNoIGRvYyBjYW4gc3RhcnQgaXRzIGpvdXJuZXkgaW4gbGludXgtbm90ZXMucnN0IGFu
-ZCB0aGVuIHNwbGl0LCBpZiBuZWNlc3NhcnkuCgotLSAKQnBmIG1haWxpbmcgbGlzdApCcGZAaWV0
-Zi5vcmcKaHR0cHM6Ly93d3cuaWV0Zi5vcmcvbWFpbG1hbi9saXN0aW5mby9icGYK
+On Thu, Jul 6, 2023 at 3:04=E2=80=AFPM Dave Thaler <dthaler@microsoft.com> =
+wrote:
+>
+> > -----Original Message-----
+> > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > Sent: Thursday, July 6, 2023 1:42 PM
+> > To: Dave Thaler <dthaler1968@googlemail.com>
+> > Cc: bpf@vger.kernel.org; bpf@ietf.org; Dave Thaler
+> > <dthaler@microsoft.com>
+> > Subject: Re: [PATCH bpf-next v2] bpf, docs: Improve English readability
+> >
+> > On Thu, Jul 06, 2023 at 04:05:37PM +0000, Dave Thaler wrote:
+> > > From: Dave Thaler <dthaler@microsoft.com>
+> > >
+> > > Signed-off-by: Dave Thaler <dthaler@microsoft.com>
+> > > --
+> > > V1 -> V2: addressed comments from Alexei
+> > > ---
+> > >  Documentation/bpf/instruction-set.rst | 59 ++++++++++++++++++++-----=
+--
+> > >  Documentation/bpf/linux-notes.rst     |  5 +++
+> > >  2 files changed, 50 insertions(+), 14 deletions(-)
+> > >
+> > > diff --git a/Documentation/bpf/instruction-set.rst
+> > > b/Documentation/bpf/instruction-set.rst
+> > > index 751e657973f..740989f4c1e 100644
+> > > --- a/Documentation/bpf/instruction-set.rst
+> > > +++ b/Documentation/bpf/instruction-set.rst
+> > > @@ -7,6 +7,9 @@ eBPF Instruction Set Specification, v1.0
+> > >
+> > >  This document specifies version 1.0 of the eBPF instruction set.
+> > >
+> > > +The eBPF instruction set consists of eleven 64 bit registers, a
+> > > +program counter, and an implementation-specific amount (e.g., 512 by=
+tes)
+> > of stack space.
+> > > +
+> > >  Documentation conventions
+> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> > >
+> > > @@ -27,12 +30,24 @@ The eBPF calling convention is defined as:
+> > >  * R6 - R9: callee saved registers that function calls will preserve
+> > >  * R10: read-only frame pointer to access stack
+> > >
+> > > -R0 - R5 are scratch registers and eBPF programs needs to spill/fill
+> > > them if -necessary across calls.
+> > > +Registers R0 - R5 are caller-saved registers, meaning the BPF progra=
+m
+> > > +needs to either spill them to the BPF stack or move them to callee
+> > > +saved registers if these arguments are to be reused across multiple
+> > > +function calls. Spilling means that the value in the register is
+> > > +moved to the BPF stack. The reverse operation of moving the variable
+> > from the BPF stack to the register is called filling.
+> > > +The reason for spilling/filling is due to the limited number of regi=
+sters.
+> >
+> > imo this extended explanation goes too far.
+> > It's also not entirely correct. We could have an ISA with limited numbe=
+r of
+> > registers where every register is callee saved. A bit absurd, but possi=
+ble.
+> > Or went with SPARC style register windows.
+>
+> At https://lore.kernel.org/bpf/20220930221624.mqjrzmdxc6etkadm@macbook-pr=
+o-4.dhcp.thefacebook.com/ you said about the above
+> "I like above clarification though."
+
+That was on "30 Sep 2022".
+I like to change my mind often enough to confuse everyone :)
+
+> I think it's important for interoperability to define which registers are=
+ caller-saved
+> and which are not, so a compiler (or even verifier) can be used for multi=
+ple runtimes.
+
+but it really doesn't belong in the ISA doc.
+We've discussed it at length.
+We need the psABI doc.
+ISA doc is a description of instructions and _not_ how they shape
+into functions and programs.
+More below.
+
+>
+> > > +
+> > > +Upon entering execution of an eBPF program, registers R1 - R5
+> > > +initially can contain the input arguments for the program (similar t=
+o the
+> > argc/argv pair for a typical C program).
+> >
+> > argc/argv is only for main(). We don't have main() concept in BPF ISA.
+> > argc/argv is also not a property of ISA.
+>
+> That's why it's "similar to".  I think the analogy helps understanding fo=
+r new readers.
+
+argc is a K&R C thing. Not even a calling convention.
+That sentence is a combination of analogies from different areas.
+argc could be interpreted that the first argument is a count
+and a second argument is an array.
+See the confusion it might cause?
+
+>
+> > > +The actual number of registers used, and their meaning, is defined b=
+y
+> > > +the program type; for example, a networking program might have an
+> > > +argument that includes network packet data and/or metadata.
+> >
+> > that makes things even more confusing.
+> >
+> > tbh none of the above changes make the doc easier to read.
+>
+> The program type defines the number and meaning of any arguments passed
+> to the program.  In the ISA that means the number of registered used to
+> pass inputs, and their contents.
+
+Not at all. ISA is an instruction set only and this doc is for ISA.
+What different program types should accept belongs in a different doc.
+And it's not a psABI doc.
+More below.
+
+>
+> > >  Instruction encoding
+> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > >
+> > > +An eBPF program is a sequence of instructions.
+> >
+> > Kinda true, but it opens the door for plenty of bike shedding.
+> > Is it contiguous sequence? what about subprograms?
+> > Is BPF program a one function or multiple functions?
+>
+> The term "subprogram" is not currently part of the
+> instruction-set.rst doc.   "Program-local functions"
+> are, and the text says they're part of the same BPF program.
+> Hence the doc already says a BPF program can have multiple
+> functions.
+
+Yes. It's a mess, but we must not make it worse.
+instruction-set.rst is for instructions.
+Definition of BPF program belongs to a different doc.
+
+> > etc.
+> > Just not worth it.
+> > This is ISA doc.
+> >
+> > > +
+> > >  eBPF has two instruction encodings:
+> > >
+> > >  * the basic instruction encoding, which uses 64 bits to encode an
+> > > instruction @@ -74,7 +89,7 @@ For example::
+> > >    07     1       0        00 00  11 22 33 44  r1 +=3D 0x11223344 // =
+big
+> > >
+> > >  Note that most instructions do not use all of the fields.
+> > > -Unused fields shall be cleared to zero.
+> > > +Unused fields must be set to zero.
+> >
+> > How is this better?
+>
+> It uses the language common in RFCs.
+>
+> > >  As discussed below in `64-bit immediate instructions`_, a 64-bit
+> > > immediate  instruction uses a 64-bit immediate value that is construc=
+ted as
+> > follows.
+> > > @@ -103,7 +118,9 @@ instruction are reserved and shall be cleared to
+> > zero.
+> > >  Instruction classes
+> > >  -------------------
+> > >
+> > > -The three LSB bits of the 'opcode' field store the instruction class=
+:
+> > > +The encoding of the 'opcode' field varies and can be determined from
+> > > +the three least significant bits (LSB) of the 'opcode' field which
+> > > +holds the "instruction class", as follows:
+> >
+> > same question. Don't see an improvement in wording.
+>
+> 1. The acronym LSB was not defined and does not have an asterisk by it in
+> the https://www.rfc-editor.org/materials/abbrev.expansion.txt list.
+>
+> 2. "LSB bits" is redundant.
+>
+> 3. Putting "instruction class" in quotes is common when defining by use
+> the first time.
+
+ok. fair enough.
+
+>
+> linux-notes.rst is not in the ISA doc.   The ISA doc says the value is im=
+plementation
+> defined.  linux-notes.rst says what Linux does for things the ISA doc lea=
+ves up
+> to the implementation.
+
+I see no value in "Linux currently supports 512 bytes of stack space" sente=
+nce.
+It's too ambiguous to be useful.
+
+instruction-set.rst is a description of ISA. We should remove things
+from it that don't belong instead of doubling down on the current mess.
+
+we need the psABI doc that will not be standardized as Jose recommended.
+That doc will describe recommended calling convention, argument
+promotion, stack usage, relocation, function/subprogram definition, etc
+psABI probably should include BTF.ext description, but I'm open to alternat=
+ives.
+
+BPF program types supported by the kernel is a 3rd document.
+There we can explain that XDP prog takes a single ctx argument and it's
+a pointer to ...
+Such info is linux specific. Based on ISA and psABI one can come up
+with different program/map types and semantics of their arguments
+while being fully compliant with ISA and psABI docs.
+Such doc can start its journey in linux-notes.rst and then split, if necess=
+ary.
 
