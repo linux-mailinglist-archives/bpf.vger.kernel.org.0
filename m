@@ -1,177 +1,121 @@
-Return-Path: <bpf+bounces-4343-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4344-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 969C374A6AC
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 00:21:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4B1374A709
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 00:29:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46BAA2814B4
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 22:21:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 154E51C20E8B
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 22:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CCCF16406;
-	Thu,  6 Jul 2023 22:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC3C16418;
+	Thu,  6 Jul 2023 22:29:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6272B1872
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 22:20:45 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD1D1725
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 15:20:44 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id EAD41C16950A
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 15:20:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1688682043; bh=3+lNeCz2mbB71IT0dsPfwNxaHKMY3rZJtlr81ZYqOCI=;
-	h=From:To:Cc:Date:In-Reply-To:References:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=fWcdoa3Z1PqzzS9xb+3PSWAQvbg+ibymofoyo5EnR5ymRPDqYMHIy6uAj/ojazFUo
-	 Q3qcVHxT5maqjg5X6WTJJN3nZXDKTQCHJq8lGs+L0yzsGaJrcmR7X3MtPNkdYC14cU
-	 q1G57XljFJ6IWxvUn9hGB4XTUD0hIv+SaXC470Iw=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Thu Jul  6 15:20:43 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id D91BDC1519B2;
-	Thu,  6 Jul 2023 15:20:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1688682043; bh=3+lNeCz2mbB71IT0dsPfwNxaHKMY3rZJtlr81ZYqOCI=;
-	h=From:To:Cc:Date:In-Reply-To:References:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=fWcdoa3Z1PqzzS9xb+3PSWAQvbg+ibymofoyo5EnR5ymRPDqYMHIy6uAj/ojazFUo
-	 Q3qcVHxT5maqjg5X6WTJJN3nZXDKTQCHJq8lGs+L0yzsGaJrcmR7X3MtPNkdYC14cU
-	 q1G57XljFJ6IWxvUn9hGB4XTUD0hIv+SaXC470Iw=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 1C656C15107C
- for <bpf@ietfa.amsl.com>; Thu,  6 Jul 2023 15:20:41 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -1.897
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=obs-cr.20221208.gappssmtp.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id FIcVsGv9FNzp for <bpf@ietfa.amsl.com>;
- Thu,  6 Jul 2023 15:20:36 -0700 (PDT)
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com
- [IPv6:2607:f8b0:4864:20::e29])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id B508EC1519B2
- for <bpf@ietf.org>; Thu,  6 Jul 2023 15:20:36 -0700 (PDT)
-Received: by mail-vs1-xe29.google.com with SMTP id
- ada2fe7eead31-444f9c0b2a4so443874137.1
- for <bpf@ietf.org>; Thu, 06 Jul 2023 15:20:36 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F567AD44
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 22:29:23 +0000 (UTC)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF81510F5
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 15:29:21 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbc54cab6fso13328375e9.0
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 15:29:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=obs-cr.20221208.gappssmtp.com; s=20221208; t=1688682035; x=1691274035;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=kA6mx+9ASzacFRBAUrJfsMB96XaKjntSEu1gRx8IEUQ=;
- b=scV+LUZ/kqtYsdo/47G4UywhPrWKvYR4sT6fvLHxpMPsyREAvLSLEbH0EYrkfeg0tV
- ttNrO1mxiCoe1rW4Winc2vGHWWOpeMBxCti3pPO/r1V42PjrYzjJuk6sEKPaDEt6YZ3p
- 7rvi5E806CuKwXCmekRNEv47OhWs56okkvGzXJpDhBYUS47UzkysO9ODFxIrC031iZtZ
- eJuQ+GFJxZaZZ1X86gqwNlF/DcqVXdenea/vWlrVeN+x3rvM1GhcQyw0hQJIjQwBht3u
- HpCr+bAvOnTzQq86vySZW+3IjPVSFdMhFt+wbUMit8bVteNgOBm8cBRSy/AW4y8fefUk
- Itrw==
+        d=gmail.com; s=20221208; t=1688682560; x=1691274560;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a48OCGW6nrUbhLvghFZCwrojG6ZOgkTfn+EONeie7Fs=;
+        b=BTp0+1WTiDZ4NOLPpmY3c3KYNASZo4GD9XKK7bjBYQA0YOJ8xeZBHvli9hA8krTqE2
+         6QF/jPxovm5SN2KHGAEVnxTzq/3GqK3zVv8mZsYbILPr1eHSJKfFz4f5Yy6gJzYXVNM3
+         aeodLZOhHe2lEFd6FBBxWrXylRH//Ev3kWXyzgrdWfG3CRIwb1Gyq7oowvuwbphNPwpV
+         2hvAD/LA1WeFxLd5U7cCwDaLXfFsipXuseLOBcOjPSbOGAZdp4Grnclz9VwTspv0/OoO
+         j1Qu7l1MKqrR3fJ+QDLQz0LXksaVcj7zPvXPcJ3rMnWc+Vtb9IQe7lQVPWvNf9bK8mrB
+         PyHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1688682035; x=1691274035;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=kA6mx+9ASzacFRBAUrJfsMB96XaKjntSEu1gRx8IEUQ=;
- b=grZwRWDDnN7NaoKWK9HBq0HE70zwHLMFK/LBaI/0WEpx5VP2RjXN+vdU0vDVjfit+p
- yNOUeAm689JalSu7IXXnHzezvlSP5RQc1Kj2UcMIlUp/dRNwp1OZZQX1DJVVwZ6EFWE2
- vI0bCUZiy+QYVAb9LMbuOrbIuUf08+f52KqAf4KLkX88Yf5l6Pq1qK5Pgb62LQb5Pq6d
- dIBj2aaWoZeoyepTHSmLuTxwVUo/QdAbfsOSNX6KPodBKc45AJpOHEe+X9rUjlqJDSoe
- lb1ndSj5qTSfGvDy6PaLD67/WP4KY5JKWwhBAI/EVf+QfFLywQIK6sor3bpnrVLNsLhU
- AOLQ==
-X-Gm-Message-State: ABy/qLZmTG7R1JG4XgCnfiwAIsSZMEE0/RpSmWT2pLQiwiPSihSbjxJV
- AeAs0giGqTL8qGwCZfHEP3WwfgV9jGtIxk1tNlk=
-X-Google-Smtp-Source: APBJJlFmCNjyzVAbwoEtL1bZFMIqIW4nbLFxVvtlm/es37G9ZH6IseOF0gAE/wDWhqE1tIMav0qFVA==
-X-Received: by 2002:a05:6102:25b:b0:443:6212:60a9 with SMTP id
- a27-20020a056102025b00b00443621260a9mr2102859vsq.6.1688682035358; 
- Thu, 06 Jul 2023 15:20:35 -0700 (PDT)
-Received: from borderland.rhod.uc.edu ([129.137.96.2])
- by smtp.gmail.com with ESMTPSA id
- h5-20020a0cf205000000b0061b5dbf1994sm1322717qvk.146.2023.07.06.15.20.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 06 Jul 2023 15:20:35 -0700 (PDT)
-From: Will Hawkins <hawkinsw@obs.cr>
-To: bpf@vger.kernel.org,
-	bpf@ietf.org
-Cc: Will Hawkins <hawkinsw@obs.cr>
-Date: Thu,  6 Jul 2023 18:20:20 -0400
-Message-Id: <20230706222020.268136-2-hawkinsw@obs.cr>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230706222020.268136-1-hawkinsw@obs.cr>
-References: <20230706222020.268136-1-hawkinsw@obs.cr>
+        d=1e100.net; s=20221208; t=1688682560; x=1691274560;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a48OCGW6nrUbhLvghFZCwrojG6ZOgkTfn+EONeie7Fs=;
+        b=C+zJGyyxGBGwAEXw8bWFssDHTv7UzmhDC/IG66ZRI66zlS+FqXwaGwkfpCuOQIPBgl
+         D3ZoAM3A9wJHta4gUyZs2+nff1vW6i46EJaDUeqGU1ZiujK8CZjgkrn7uVT+HKdB7qnd
+         lItjkehz304g+ZeaU9lNNB4MrVv/NUIR5lFVCpBf6sg7VPDq9H1OxQgvr6hWSSj2PL9V
+         yOew2dpNsg5gJFrqDV0It412/UKTvtuHaYzYsoy5e2cVie1EGcSE7AaAMZtciir+aqzV
+         Ug9usFQ85QZ7AoRrTK0F9n8pmw05GTkDY3p1UErIzdm+3vDQdRh+LQI5XS0Aao/zBwu0
+         4d8Q==
+X-Gm-Message-State: ABy/qLZJ7JrFCFFj3gIFkoGQ+A5v8renPwHGAUszfr2SiFIrzxe9cKBC
+	IF67QDHJZpvuRm9NAle3Db/jIBapgYcraTEye7w=
+X-Google-Smtp-Source: APBJJlGKeDvyxu0EVti3KBZmqUKH85MgocTgDMAawZzmz1Nk7xMfJ2bH3mO3Z1DM45MHEzxAdNepT9OeT91s9Lmb5MA=
+X-Received: by 2002:a05:600c:2054:b0:3fb:fea1:affa with SMTP id
+ p20-20020a05600c205400b003fbfea1affamr48237wmg.37.1688682560086; Thu, 06 Jul
+ 2023 15:29:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/mlY4Avz2yP0JBFW4JyM3e_2CxbY>
-Subject: [Bpf] [PATCH 1/1] bpf,
- docs: Describe stack contents of function calls
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-6-jolsa@kernel.org>
+In-Reply-To: <20230630083344.984305-6-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 6 Jul 2023 15:29:08 -0700
+Message-ID: <CAEf4BzZ=xLVkG5eurEuvLU79wAMtwho7ReR+XJAgwhFF4M-7Cg@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 05/26] bpf: Add bpf_get_func_ip helper support
+ for uprobe link
+To: Jiri Olsa <jolsa@kernel.org>, "jordalgo@meta.com" <jordalgo@meta.com>, "ajor@meta.com" <ajor@meta.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The execution of every function proceeds as if it has access to its own
-stack space.
+On Fri, Jun 30, 2023 at 1:34=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Adding support for bpf_get_func_ip helper being called from
+> ebpf program attached by uprobe_multi link.
+>
+> It returns the ip of the uprobe.
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  kernel/trace/bpf_trace.c | 33 ++++++++++++++++++++++++++++++---
+>  1 file changed, 30 insertions(+), 3 deletions(-)
+>
 
-Signed-off-by: Will Hawkins <hawkinsw@obs.cr>
----
- Documentation/bpf/instruction-set.rst | 5 +++++
- 1 file changed, 5 insertions(+)
+A slight aside related to bpf_get_func_ip() support in
+uprobe/uretprobe. We just had a conversation with Alastair and Jordan
+(cc'ed) about bpftrace and using bpf_get_func_ip() there with
+uretprobes, and it seems like it doesn't work.
 
-diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index 751e657973f0..717259767a41 100644
---- a/Documentation/bpf/instruction-set.rst
-+++ b/Documentation/bpf/instruction-set.rst
-@@ -30,6 +30,11 @@ The eBPF calling convention is defined as:
- R0 - R5 are scratch registers and eBPF programs needs to spill/fill them if
- necessary across calls.
- 
-+Every function invocation proceeds as if it has exclusive access to an
-+implementation-defined amount of stack space. R10 is a pointer to the byte of
-+memory with the highest address in that stack space. The contents
-+of a function invocation's stack space do not persist between invocations.
-+
- Instruction encoding
- ====================
- 
--- 
-2.40.1
+Is that intentional or we just missed that bpf_get_func_ip() doesn't
+work with uprobes/uretprobes? Do you think it would be hard to add
+support for them for bpf_get_func_ip()? It's a very useful helper,
+would be nice to have it working in all cases where it has meaningful
+behavior (and I think it does for uprobe and uretprobe).
 
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+Thanks!
+
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 4ef51fd0497f..f5a41c1604b8 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -88,6 +88,7 @@ static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *=
+ctx);
+>  static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx);
+>
+
+[...]
 
