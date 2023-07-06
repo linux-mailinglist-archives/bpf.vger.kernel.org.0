@@ -1,193 +1,189 @@
-Return-Path: <bpf+bounces-4221-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4222-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 521457499C1
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 12:49:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CB52749A99
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 13:30:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D9C628129A
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 10:49:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3B0E1C20D34
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 11:30:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58FC88BE3;
-	Thu,  6 Jul 2023 10:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F62A8C00;
+	Thu,  6 Jul 2023 11:30:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1CE1848
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 10:49:24 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989951FEC
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 03:49:10 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4QxYDd4pDjz4f4687
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 18:49:05 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgBXsRsenKZkjPh3Mg--.36601S2;
-	Thu, 06 Jul 2023 18:49:06 +0800 (CST)
-Subject: Re: [PATCH v4 bpf-next 5/6] selftests/bpf: test map percpu stats
-To: Anton Protopopov <aspsk@isovalent.com>
-References: <20230705160139.19967-1-aspsk@isovalent.com>
- <20230705160139.19967-6-aspsk@isovalent.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-Message-ID: <5efebb7d-138a-5353-2bc2-a2a1ffa66a2d@huaweicloud.com>
-Date: Thu, 6 Jul 2023 18:49:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E48038824
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 11:30:09 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5D6199C
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 04:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1688643007;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LuiRGI269Np92lVN6nJmdyMw4xzKbo2Z74mCs1dTD80=;
+	b=ZIrvz+UT9MvLt9g0Kv5zgzQBjBJ6v+24y8vWughqhuQLE91Z27uJsWgEIccj0LcZfh/bwb
+	+khlTGNcc7Ar0TYIjJ577CBXZhpbgA4N8cBRRy1cCH/H9kpkdt+4gk4rhlZoxZeDKyHnEl
+	PVwmsT9xnR4ItJwZcudSbkpmbtVEYkU=
+Received: from mail-vk1-f198.google.com (mail-vk1-f198.google.com
+ [209.85.221.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-176-4Ae6DBC_MFmayBcbq-rP9g-1; Thu, 06 Jul 2023 07:30:05 -0400
+X-MC-Unique: 4Ae6DBC_MFmayBcbq-rP9g-1
+Received: by mail-vk1-f198.google.com with SMTP id 71dfb90a1353d-47e989378bcso13104e0c.1
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 04:30:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688643005; x=1691235005;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LuiRGI269Np92lVN6nJmdyMw4xzKbo2Z74mCs1dTD80=;
+        b=V3R6D16deG47ABtBPKiywDKziPEdTLY7LL/OhqU/jVetqeF4HnOWh2H8YXDYo+3I4j
+         co2gZMNDFYcqJYnQfQm3e2n/8bKsP5PflOsXGirgG4dCLyxhVCYM5HWey3iYmdzZJws7
+         Pn69rFmAT/akjE7WgjDhLv6uNK6d/zINR/9FKwNVb9FhtMAaFJlG68sjhq5dgKOrnkD7
+         mdf17qjs7VjiZLcWvPXxVLAJ5CwAtx+jFtDj6Fsp3I7TcX91OdOMHC7cevspUrIdTo0k
+         cD+PqEyD01M1UEMIbiPvws41KbsSpS5ycmQXmDMVYph+ONwh+1hcJ15NbHvv5D9hN4Km
+         F17w==
+X-Gm-Message-State: ABy/qLZd3C11XeHAXwc8QUU4iNE9F4a1d44jWO4CGlUqkVk8RWiZUeM7
+	FpGpo8pVBLcpNUnpEAkaBl59rpqXlDNClg5mX5rAAA1wBEYHfZ0b01YvfzH7ds/4F+SSsyIjWtq
+	wjfISE+6Um4t/
+X-Received: by 2002:a67:ead2:0:b0:443:7599:d460 with SMTP id s18-20020a67ead2000000b004437599d460mr514998vso.1.1688643005211;
+        Thu, 06 Jul 2023 04:30:05 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEOiF8Wo8ldpNlkhzPot2vQELEDG+c71tqhQGpmzmO1eN6k2V6nMi6SJLmlPXMGtcsuw7emcA==
+X-Received: by 2002:a67:ead2:0:b0:443:7599:d460 with SMTP id s18-20020a67ead2000000b004437599d460mr514990vso.1.1688643004926;
+        Thu, 06 Jul 2023 04:30:04 -0700 (PDT)
+Received: from vschneid.remote.csb ([154.57.232.159])
+        by smtp.gmail.com with ESMTPSA id a25-20020a0ca999000000b0063645f62bdasm761336qvb.80.2023.07.06.04.29.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jul 2023 04:30:04 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Nadav Amit <namit@vmware.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>, linux-mm
+ <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>, the arch/x86 maintainers
+ <x86@kernel.org>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo
+ Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, Paolo
+ Bonzini <pbonzini@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, Vitaly
+ Kuznetsov <vkuznets@redhat.com>, Andy Lutomirski <luto@kernel.org>, Peter
+ Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Christoph
+ Hellwig <hch@infradead.org>, Lorenzo Stoakes <lstoakes@gmail.com>, Josh
+ Poimboeuf <jpoimboe@kernel.org>, Kees Cook <keescook@chromium.org>, Sami
+ Tolvanen <samitolvanen@google.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Nicholas Piggin <npiggin@gmail.com>, Juerg Haefliger
+ <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
+ <nsaenz@kernel.org>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, Dan Carpenter <error27@gmail.com>,
+ Chuang Wang <nashuiliang@gmail.com>, Yang Jihong <yangjihong1@huawei.com>,
+ Petr Mladek <pmladek@suse.com>, "Jason A.
+ Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>, Julian Pidancet
+ <julian.pidancet@oracle.com>, Tom Lendacky <thomas.lendacky@amd.com>,
+ Dionna
+ Glaze <dionnaglaze@google.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?=
+ <linux@weissschuh.net>,
+ Juri Lelli <juri.lelli@redhat.com>, Daniel Bristot de
+ Oliveira <bristot@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>, Yair
+ Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH 00/14] context_tracking,x86: Defer some IPIs until a
+ user->kernel transition
+In-Reply-To: <57D81DB6-2D96-4A12-9FD5-6F0702AC49F6@vmware.com>
+References: <20230705181256.3539027-1-vschneid@redhat.com>
+ <57D81DB6-2D96-4A12-9FD5-6F0702AC49F6@vmware.com>
+Date: Thu, 06 Jul 2023 12:29:58 +0100
+Message-ID: <xhsmhwmzduvk9.mognet@vschneid.remote.csb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230705160139.19967-6-aspsk@isovalent.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgBXsRsenKZkjPh3Mg--.36601S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWFy7WrWDGw43Gw13CF47twb_yoW5ur18pr
-	W8AFZ7GrW8W3y2v34Fga48WFW2vr1jyr1UZrZ8J345ArsIvr17Zr18G3W2yF1a9Fy2ywnI
-	vw429393Ja97GrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
-
-On 7/6/2023 12:01 AM, Anton Protopopov wrote:
-> Add a new map test, map_percpu_stats.c, which is checking the correctness of
-> map's percpu elements counters.  For supported maps the test upserts a number
-> of elements, checks the correctness of the counters, then deletes all the
-> elements and checks again that the counters sum drops down to zero.
+On 05/07/23 18:48, Nadav Amit wrote:
+>> On Jul 5, 2023, at 11:12 AM, Valentin Schneider <vschneid@redhat.com> wr=
+ote:
+>>
+>> Deferral approach
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>
+>> Storing each and every callback, like a secondary call_single_queue turn=
+ed out
+>> to be a no-go: the whole point of deferral is to keep NOHZ_FULL CPUs in
+>> userspace for as long as possible - no signal of any form would be sent =
+when
+>> deferring an IPI. This means that any form of queuing for deferred callb=
+acks
+>> would end up as a convoluted memory leak.
+>>
+>> Deferred IPIs must thus be coalesced, which this series achieves by assi=
+gning
+>> IPIs a "type" and having a mapping of IPI type to callback, leveraged up=
+on
+>> kernel entry.
 >
-> The following map types are tested:
+> I have some experience with similar an optimization. Overall, it can make
+> sense and as you show, it can reduce the number of interrupts.
 >
->     * BPF_MAP_TYPE_HASH, BPF_F_NO_PREALLOC
->     * BPF_MAP_TYPE_PERCPU_HASH, BPF_F_NO_PREALLOC
->     * BPF_MAP_TYPE_HASH,
->     * BPF_MAP_TYPE_PERCPU_HASH,
->     * BPF_MAP_TYPE_LRU_HASH
->     * BPF_MAP_TYPE_LRU_PERCPU_HASH
->     * BPF_MAP_TYPE_LRU_HASH, BPF_F_NO_COMMON_LRU
->     * BPF_MAP_TYPE_LRU_PERCPU_HASH, BPF_F_NO_COMMON_LRU
->     * BPF_MAP_TYPE_HASH_OF_MAPS
+> The main problem of such an approach might be in cases where a process
+> frequently enters and exits the kernel between deferred-IPIs, or even wor=
+se -
+> the IPI is sent while the remote CPU is inside the kernel. In such cases,=
+ you
+> pay the extra cost of synchronization and cache traffic, and might not ev=
+en
+> get the benefit of reducing the number of IPIs.
 >
-> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> In a sense, it's a more extreme case of the overhead that x86=E2=80=99s l=
+azy-TLB
+> mechanism introduces while tracking whether a process is running or not. =
+But
+> lazy-TLB would change is_lazy much less frequently than context tracking,
+> which means that the deferring the IPIs as done in this patch-set has a
+> greater potential to hurt performance than lazy-TLB.
+>
+> tl;dr - it would be beneficial to show some performance number for both a
+> =E2=80=9Cgood=E2=80=9D case where a process spends most of the time in us=
+erspace, and =E2=80=9Cbad=E2=80=9D
+> one where a process enters and exits the kernel very frequently. Reducing
+> the number of IPIs is good but I don=E2=80=99t think it is a goal by its =
+own.
+>
 
-Acked-by: Hou Tao <houtao1@huawei.com>
+There already is a significant overhead incurred on kernel entry for
+nohz_full CPUs due to all of context_tracking faff; now I *am* making it
+worse with that extra atomic, but I get the feeling it's not going to stay
+:D
 
-With two nits below.
-> +
-> +static const char *map_type_to_s(__u32 type)
-> +{
-> +	switch (type) {
-> +	case BPF_MAP_TYPE_HASH:
-> +		return "HASH";
-> +	case BPF_MAP_TYPE_PERCPU_HASH:
-> +		return "PERCPU_HASH";
-> +	case BPF_MAP_TYPE_LRU_HASH:
-> +		return "LRU_HASH";
-> +	case BPF_MAP_TYPE_LRU_PERCPU_HASH:
-> +		return "LRU_PERCPU_HASH";
-> +	default:
-> +		return "<define-me>";
-> +	}
-Missing BPF_MAP_TYPE_HASH_OF_MAPS ?
-> +}
-> +
-> +static __u32 map_count_elements(__u32 type, int map_fd)
-> +{
-> +	__u32 key = -1;
-> +	int n = 0;
-> +
-> +	while (!bpf_map_get_next_key(map_fd, &key, &key))
-> +		n++;
-> +	return n;
-> +}
-> +
-> +#define BATCH	true
-> +
-> +static void delete_and_lookup_batch(int map_fd, void *keys, __u32 count)
-> +{
-> +	static __u8 values[(8 << 10) * MAX_ENTRIES];
-> +	void *in_batch = NULL, *out_batch;
-> +	__u32 save_count = count;
-> +	int ret;
-> +
-> +	ret = bpf_map_lookup_and_delete_batch(map_fd,
-> +					      &in_batch, &out_batch,
-> +					      keys, values, &count,
-> +					      NULL);
-> +
-> +	/*
-> +	 * Despite what uapi header says, lookup_and_delete_batch will return
-> +	 * -ENOENT in case we successfully have deleted all elements, so check
-> +	 * this separately
-> +	 */
+nohz_full CPUs that do context transitions very frequently are
+unfortunately in the realm of "you shouldn't do that". Due to what's out
+there I have to care about *occasional* transitions, but some folks
+consider even that to be broken usage, so I don't believe getting numbers
+for that to be much relevant.
 
-It seems it is a bug in __htab_map_lookup_and_delete_batch(). I could
-post a patch to fix it if you don't plan to do that by yourself.
-> +	CHECK(ret < 0 && (errno != ENOENT || !count), "bpf_map_lookup_and_delete_batch",
-> +		       "error: %s\n", strerror(errno));
-> +
-> +	CHECK(count != save_count,
-> +			"bpf_map_lookup_and_delete_batch",
-> +			"deleted not all elements: removed=%u expected=%u\n",
-> +			count, save_count);
-> +}
-> +
-SNIP
-> +static __u32 get_cur_elements(int map_id)
-> +{
-> +	LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-> +	union bpf_iter_link_info linfo;
-> +	struct map_percpu_stats *skel;
-> +	struct bpf_link *link;
-> +	__u32 n_elements;
-> +	int iter_fd;
-> +	int ret;
-> +
-> +	opts.link_info = &linfo;
-> +	opts.link_info_len = sizeof(linfo);
-> +
-> +	skel = map_percpu_stats__open();
-> +	CHECK(skel == NULL, "map_percpu_stats__open", "error: %s", strerror(errno));
-> +
-> +	skel->bss->target_id = map_id;
-> +
-> +	ret = map_percpu_stats__load(skel);
-> +	CHECK(ret != 0, "map_percpu_stats__load", "error: %s", strerror(errno));
-> +
-> +	link = bpf_program__attach_iter(skel->progs.dump_bpf_map, &opts);
-
-Instead of passing a uninitialized opts, I think using NULL will be fine
-here because there is no option for bpf map iterator now.
+> [ BTW: I did not go over the patches in detail. Obviously, there are
+>   various delicate points that need to be checked, as avoiding the
+>   deferring of IPIs if page-tables are freed. ]
 
 
