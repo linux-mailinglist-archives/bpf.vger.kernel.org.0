@@ -1,153 +1,135 @@
-Return-Path: <bpf+bounces-4274-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4275-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C6B774A0E3
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 17:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56A7D74A114
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 17:34:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D4B01C20D9E
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 15:26:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E4621C202DC
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 15:34:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F32A953;
-	Thu,  6 Jul 2023 15:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A35AAD29;
+	Thu,  6 Jul 2023 15:33:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F460A934
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 15:26:04 +0000 (UTC)
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9A21BD3
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 08:26:03 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-55b66ce047cso502140a12.0
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 08:26:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05C49453;
+	Thu,  6 Jul 2023 15:33:55 +0000 (UTC)
+Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F346BFF;
+	Thu,  6 Jul 2023 08:33:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688657163; x=1691249163;
-        h=content-transfer-encoding:to:subject:from:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=naq3nXH3JnI0iCRMysYX4z2gUezeFgxv5TLSzOREpHo=;
-        b=hT0Hir0ihbJbkAxVAiZkTCGWQRr1oVvRH8qwo0fc9hcBbCsC9i+bYM2rfu+eoIjDPP
-         2U9IKhnIur5G2BIPFKPrZjX7zFWM4NE6Xvy+ajOoR/p6eYL/zHbsSIyaN/ihgs82eEih
-         bVgkw0Y1kOYdg3VXQMJz/O9fQE9ZWIiDABPBw0KNRVLD9l4RTHrplgPFeAJh4WRXTXKb
-         u56qTayTALvfhbcDvVVQeasp70iAuBgQfEaPEwvfW0YZlMOP9fQBg2VTgRjYd0u6jKUM
-         1/SxoqU8o0ehFCalFirLTcSgZyBsJQ36K7yMsx8Q1K3lS74URqLw5aN2KiTQl91Ag7F7
-         h7+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688657163; x=1691249163;
-        h=content-transfer-encoding:to:subject:from:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=naq3nXH3JnI0iCRMysYX4z2gUezeFgxv5TLSzOREpHo=;
-        b=IR7C6anNFjrjNK9hqHVRO2/oVWhE0LGAopL7Ca2TC76Qt+2rMHdqk7IqA0xcpfjVEx
-         g1VDfm5smpO0oaKjP4gN5GE6XvI7R2CKNCHjHPM4gr/XOe3eO3a/jr9tcFqSOBf0nScg
-         JMUTIr/fEhhLYGfDCWOUowBBp4CWyr377gSUvFyd8WaZxT3/LwYlQXDBsDqakDPiWQWA
-         XitRQxlSdB2Ta/s1ZgkFI06N6fQaFuocHCT4CeZe1rkLoPj7L86iFxNqGQaLQoxRMySI
-         9nhl9LWpnWZKGPtp20N63oM4wy0se42bIioAyOkIyr24HuLBdtmGOPak1GY1uIjXyB70
-         3B7g==
-X-Gm-Message-State: ABy/qLbpRhLmjS+l0GOjn/NrD+bur5DHSV3TFJVQSpWgr4rynRVYIWa2
-	cA/kyJkGxo0bnSTXzGBs3Qzd7PolM3Sdh638
-X-Google-Smtp-Source: APBJJlGv0ZAt5DVFFDjDjatFYonNjvshPg4oV9Pm7JqRungl0a78MrsHHUmiqYRYZOuJ+X8nQXiHjA==
-X-Received: by 2002:a05:6a20:1050:b0:12e:ba2:7283 with SMTP id gt16-20020a056a20105000b0012e0ba27283mr1483332pzc.24.1688657162429;
-        Thu, 06 Jul 2023 08:26:02 -0700 (PDT)
-Received: from [192.168.1.9] ([14.238.228.104])
-        by smtp.gmail.com with ESMTPSA id z15-20020a65610f000000b0052871962579sm1315340pgu.63.2023.07.06.08.26.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Jul 2023 08:26:02 -0700 (PDT)
-Message-ID: <67bec6a9-af59-d6f9-2630-17280479a1f7@gmail.com>
-Date: Thu, 6 Jul 2023 22:25:58 +0700
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1688657635; x=1720193635;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=trA35bhtZS7sC65wm9GfBeAVYdZXIA5psrybUjewGIQ=;
+  b=A0UumUCQtccE+sL4EQW3IA6Wg1hcfLSmRSmI/JZD/sedyT5VYzAKy+fS
+   qjJCBdlLKda+gxGC1/nglq1eFqaJmASSIL1vTr72VH8gF+r8AifyGvAa4
+   QqOoXm+zYDyY8Tu1M2r39/T7cT4zFNhrTsSoccqGOyygiR2iLn3AaIYYA
+   8=;
+X-IronPort-AV: E=Sophos;i="6.01,185,1684800000"; 
+   d="scan'208";a="658357472"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2023 15:33:49 +0000
+Received: from EX19MTAUWC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+	by email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com (Postfix) with ESMTPS id 7CCA88103C;
+	Thu,  6 Jul 2023 15:33:42 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 6 Jul 2023 15:33:40 +0000
+Received: from 88665a182662.ant.amazon.com (10.187.171.32) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 6 Jul 2023 15:33:35 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <lmb@isovalent.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
+	<edumazet@google.com>, <haoluo@google.com>, <hemanthmalla@gmail.com>,
+	<joe@cilium.io>, <joe@wand.net.nz>, <john.fastabend@gmail.com>,
+	<jolsa@kernel.org>, <kpsingh@kernel.org>, <kuba@kernel.org>,
+	<kuniyu@amazon.com>, <linux-kernel@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>, <martin.lau@linux.dev>, <mykolal@fb.com>,
+	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <sdf@google.com>,
+	<shuah@kernel.org>, <song@kernel.org>, <willemdebruijn.kernel@gmail.com>,
+	<yhs@fb.com>
+Subject: Re: [PATCH bpf-next v4 6/7] bpf, net: Support SO_REUSEPORT sockets with bpf_sk_assign
+Date: Thu, 6 Jul 2023 08:33:27 -0700
+Message-ID: <20230706153327.99298-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAN+4W8iRH6kpDmmY8i5r1nKbckaYghmOCqRXe+4bDHE7vzVMMA@mail.gmail.com>
+References: <CAN+4W8iRH6kpDmmY8i5r1nKbckaYghmOCqRXe+4bDHE7vzVMMA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Content-Language: en-US
-From: Anh Tuan Phan <tuananhlfc@gmail.com>
-Subject: [PATCH v1] samples/bpf: Fix build out of source tree
-To: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev,
- linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.187.171.32]
+X-ClientProxiedBy: EX19D043UWA004.ant.amazon.com (10.13.139.41) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This commit fixes a few compilation issues when building out of source
-tree. The command that I used to build samples/bpf:
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Thu, 6 Jul 2023 09:11:15 +0100
+> On Thu, Jul 6, 2023 at 1:41 AM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> >
+> > Sorry for late reply.
+> >
+> > What we know about sk before inet6?_lookup_reuseport() are
+> >
+> >   (1) sk was full socket in bpf_sk_assign()
+> >   (2) sk had SOCK_RCU_FREE in bpf_sk_assign()
+> >   (3) sk was TCP_LISTEN here if TCP
+> 
+> Are we looking at the same bpf_sk_assign? Confusingly there are two
+> very similarly named functions. The one we care about is:
+> 
+> BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
+> {
+>     if (!sk || flags != 0)
+>         return -EINVAL;
+>     if (!skb_at_tc_ingress(skb))
+>         return -EOPNOTSUPP;
+>     if (unlikely(dev_net(skb->dev) != sock_net(sk)))
+>         return -ENETUNREACH;
+>     if (sk_is_refcounted(sk) &&
+>         unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
+>         return -ENOENT;
+> 
+>     skb_orphan(skb);
+>     skb->sk = sk;
+>     skb->destructor = sock_pfree;
+> 
+>     return 0;
+> }
+> 
+> From this we can't tell what state the socket is in or whether it is
+> RCU freed or not.
 
-export KBUILD_OUTPUT=/tmp
-make V=1 M=samples/bpf
+But we can in inet6?_steal_sock() by calling sk_is_refcounted() again
+via skb_steal_sock().
 
-The compilation failed since it tried to find the header files in the
-wrong places between output directory and source tree directory
+In inet6?_steal_sock(), we call inet6?_lookup_reuseport() only for
+sk that was a TCP listener or UDP non-connected socket until just before
+the sk_state checks.  Then, we know *refcounted should be false for such
+sockets even before inet6?_lookup_reuseport().
 
-Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
----
- samples/bpf/Makefile        | 8 ++++----
- samples/bpf/Makefile.target | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 615f24ebc49c..32469aaa82d5 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -341,10 +341,10 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
- # Override includes for xdp_sample_user.o because $(srctree)/usr/include in
- # TPROGS_CFLAGS causes conflicts
- XDP_SAMPLE_CFLAGS += -Wall -O2 \
--		     -I$(src)/../../tools/include \
-+		     -I$(srctree)/tools/include \
- 		     -I$(src)/../../tools/include/uapi \
- 		     -I$(LIBBPF_INCLUDE) \
--		     -I$(src)/../../tools/testing/selftests/bpf
-+		     -I$(srctree)/tools/testing/selftests/bpf
-
- $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
- $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
-@@ -393,7 +393,7 @@ $(obj)/xdp_router_ipv4.bpf.o: $(obj)/xdp_sample.bpf.o
- $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h
-$(src)/xdp_sample_shared.h
- 	@echo "  CLANG-BPF " $@
- 	$(Q)$(CLANG) -g -O2 -target bpf -D__TARGET_ARCH_$(SRCARCH) \
--		-Wno-compare-distinct-pointer-types -I$(srctree)/include \
-+		-Wno-compare-distinct-pointer-types -I$(obj) -I$(srctree)/include \
- 		-I$(srctree)/samples/bpf -I$(srctree)/tools/include \
- 		-I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES) \
- 		-c $(filter %.bpf.c,$^) -o $@
-@@ -412,7 +412,7 @@ xdp_router_ipv4.skel.h-deps := xdp_router_ipv4.bpf.o
-xdp_sample.bpf.o
-
- LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.bpf.c,$(foreach
-skel,$(LINKED_SKELS),$($(skel)-deps)))
-
--BPF_SRCS_LINKED := $(notdir $(wildcard $(src)/*.bpf.c))
-+BPF_SRCS_LINKED := $(notdir $(wildcard $(srctree)/$(src)/*.bpf.c))
- BPF_OBJS_LINKED := $(patsubst %.bpf.c,$(obj)/%.bpf.o, $(BPF_SRCS_LINKED))
- BPF_SKELS_LINKED := $(addprefix $(obj)/,$(LINKED_SKELS))
-
-diff --git a/samples/bpf/Makefile.target b/samples/bpf/Makefile.target
-index 7621f55e2947..86a454cfb080 100644
---- a/samples/bpf/Makefile.target
-+++ b/samples/bpf/Makefile.target
-@@ -41,7 +41,7 @@ _tprogc_flags   = $(TPROGS_CFLAGS) \
-                  $(TPROGCFLAGS_$(basetarget).o)
-
- # $(objtree)/$(obj) for including generated headers from checkin source
-files
--ifeq ($(KBUILD_EXTMOD),)
-+ifneq ($(KBUILD_EXTMOD),)
- ifdef building_out_of_srctree
- _tprogc_flags   += -I $(objtree)/$(obj)
- endif
--- 
-2.34.1
+After the checks, sk might be poped out of the reuseport group before
+inet6?_lookup_reuseport() and reuse_sk might be NULL, but it's not
+related because *refcounted is a value for sk, not for reuse_sk.
 
