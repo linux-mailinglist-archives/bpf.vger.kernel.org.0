@@ -1,228 +1,166 @@
-Return-Path: <bpf+bounces-4210-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4211-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A6C774989E
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 11:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19B1C7498C8
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 11:54:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C52411C20CFE
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 09:36:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 495751C20CD0
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 09:54:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1308C7498;
-	Thu,  6 Jul 2023 09:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C605179D7;
+	Thu,  6 Jul 2023 09:53:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21EC185A;
-	Thu,  6 Jul 2023 09:36:40 +0000 (UTC)
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D639171D;
-	Thu,  6 Jul 2023 02:36:39 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-56352146799so307102eaf.3;
-        Thu, 06 Jul 2023 02:36:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688636198; x=1691228198;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0TR7CywRQO+aq8xLN85+i2ij1DCchNy9h8cDmr7LMVY=;
-        b=n958nsaYsRJ0cV+cDdTPfS/mR4DvFnNL2P6duh7QjfojO67n8rowyY9+n+M3k+MlwT
-         M+n8HlwVBM+aRezimBkj8akqMv+a2kxsTZE2hih2hyv6tryc9vDzVXM9FaxnmgnGJRx2
-         oOhRt+ZFBXYSLKC8Clv9BCAQNo5J2RyiUbuqNGLPyy/ooB2ue6ARmvmc9+USvXvi4a9X
-         3Mpd/uvbDB/VwRiqlIXc4jXb1eqjxjHAY423OUCZUmIVhi2ecbDpm1RKXDfgkTwj6uBX
-         p0M0Nrws7XMO83LhU3u9+BADCgk9cIXyZsW+IwttpzLgxQjBBgbvsRFiG9izSkzjoc09
-         h6qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688636198; x=1691228198;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0TR7CywRQO+aq8xLN85+i2ij1DCchNy9h8cDmr7LMVY=;
-        b=WJJkH/fmptXN5zt6UGrRl+NDoU9yKkEHKgMov/+qL2w4JY2zvn1BIdmXa4tKKkOb4g
-         rEVO47XbNHuQA0PKRcvYMgNQwB8xCwacoh1nvlkz1yZCTN1KUrA+ZN2aF9g17tQer+Sz
-         PShOdUOqMdGmks7B4yIs4/gN0k1/LuyA7ogu63epqTjHNkI8sVUy8aBlTbY/0zRw42hf
-         Xm3uLjG8OgpuHvS35gCADfJ6cqI4HtubgOqbra9TlbgINdeWgvFPX8jujseErZSIxP2n
-         oufNoebszPFDmy3oT1WpP18EYRi2uKWqCX03q4CEvoNbHkYWBV3mkdKab5vFi6lfTHGI
-         m+TQ==
-X-Gm-Message-State: ABy/qLYn7yDyMhDSkcMFO5jmIMKRjny/8qOY8ER7S8kkZZtvRaGGzFbk
-	5Djqtvay3iix3stERtv17YA=
-X-Google-Smtp-Source: APBJJlFgz9v5xjO3Kl70Hs+b7oagVUEpBIbdNA7dz/sx1WFquCj68yhoXxMCn21eqHwderVZZfJ6IA==
-X-Received: by 2002:a05:6358:705:b0:134:f070:d6b8 with SMTP id e5-20020a056358070500b00134f070d6b8mr2261223rwj.4.1688636198238;
-        Thu, 06 Jul 2023 02:36:38 -0700 (PDT)
-Received: from [10.22.68.96] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id j14-20020aa7800e000000b0066875f17266sm893454pfi.135.2023.07.06.02.36.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Jul 2023 02:36:37 -0700 (PDT)
-Message-ID: <a945ff6e-1cd7-ef03-9ab4-3e5ab2a3bfa8@gmail.com>
-Date: Thu, 6 Jul 2023 17:36:32 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD691859
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 09:53:55 +0000 (UTC)
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2093.outbound.protection.outlook.com [40.107.255.93])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AA6199E;
+	Thu,  6 Jul 2023 02:53:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cLBIZmM20nkB5foSi4ApRPB7LOGo0DEdULm+jAgZ1yEAQOd6qGZs+Bbzo12IzJEjs+8y7HjE39C7PId0KjI7Ykb8kcv1B+ZAS98t+yI6EnVfVIScBkH85PYK4Ai5xBHJWGXFEoyuhiUHcPG6G6Y+zC+VExAAI1pr01zQtERALk7gFFMjSoNz+2K1BEzZEsTojgBdydEDU0HVcn8TcTPCw58APtid5Kv5OfIa1ySveiSUBr+FNcCS61Wrghl0pDJVfMCHI7z2mt1WKRTXzKVYwJldso4e1vMU004H/IWSg+dXFHKzMehNZ8aCV6NJvpZlshxDAi6kjCQ6nkybwcPcIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QrSYVg+DOSF4u8ZqpA2pmr2F2vdzVuOLyy4VG83Sw1s=;
+ b=Yh+AC1Lx21VDxhGT089iG6BlCeH5a/aIxc3kS2kW0g15TDiPTn7Y5AI/3Kv3p31y1tbDYA/l05EkIUQfGoKT+b5EId8h1fhB/VHeWycg8KQwPRo6w4nOUsFcpshMKoN3o5lFDdQjAmk7Uzg2ZkblOxaM/WFBQxZIpJtZVQr5PUdpJNoRqzzYILL6kZ2oJXqRb1+aQ00vpLSfd0vBkrXCtcVPnNpKypK3SCJQ2E6KteARoJQ9nbWLsS09vSg3a3ZZZ2IJ5QNRjEUbLqCQTuUdYfTTsWevdNSD0Grse+zKchlSN07VdZIx0H++B00f3shmmRd6+9DVQkpsZjgEZyyKXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QrSYVg+DOSF4u8ZqpA2pmr2F2vdzVuOLyy4VG83Sw1s=;
+ b=KxVryQm9+IufQ2xtzRJF3ET1/9DnTg4OxirCyn1X4t6sGCo4tQeUrjKgUw4yWOOQ73L99d4xNrOVhghh8oSWvvsfZDd3IzikIZu8x4tO4IOADh72Xl7UZ9lU/apf0LO9tY4x1IBH8YvBo8A/1Tidv0FWKzoyFfVWkvf5iSwxfJrqJ6C1vahm7Kgzm+Iu8W/Gj5JOiwttrbCTsviq3tuExj0TXg+TCxQCC4FiGc5adyVf/Qf5ltQrDL8+4RV11Cv9cWL1XaARrL4GRg2drI9wXb2VnqaHBvgqF6xvJJgyPjgLfs3Q3NOqbsgRwtQfN41IB/UGJsF9ZAQmQg4jLXpYfg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from TYZPR06MB6697.apcprd06.prod.outlook.com (2603:1096:400:451::6)
+ by TYZPR06MB5661.apcprd06.prod.outlook.com (2603:1096:400:28e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.17; Thu, 6 Jul
+ 2023 09:53:50 +0000
+Received: from TYZPR06MB6697.apcprd06.prod.outlook.com
+ ([fe80::8586:be41:eaad:7c03]) by TYZPR06MB6697.apcprd06.prod.outlook.com
+ ([fe80::8586:be41:eaad:7c03%7]) with mapi id 15.20.6544.024; Thu, 6 Jul 2023
+ 09:53:50 +0000
+From: Lu Hongfei <luhongfei@vivo.com>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Lu Hongfei <luhongfei@vivo.com>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	Hou Tao <houtao1@huawei.com>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: opensource.kernel@vivo.com
+Subject: [PATCH] tools: testing: Corrected a clerical error
+Date: Thu,  6 Jul 2023 17:53:38 +0800
+Message-Id: <20230706095339.4048-1-luhongfei@vivo.com>
+X-Mailer: git-send-email 2.39.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYAPR04CA0011.apcprd04.prod.outlook.com
+ (2603:1096:404:15::23) To TYZPR06MB6697.apcprd06.prod.outlook.com
+ (2603:1096:400:451::6)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH bpf-next] bpf: Introduce bpf generic log
-To: Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org
-Cc: john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
- tangyeechou@gmail.com, kernel-patches-bot@fb.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <20230705132058.46194-1-hffilwlqm@gmail.com>
- <1a205a85-ebf2-6d90-468d-4fd63ce3dd0f@iogearbox.net>
- <a42c246a-01e1-9e7e-8260-57835c6351ae@gmail.com>
- <688cbc7b-b23e-7edd-4603-b5734eaa9bd7@iogearbox.net>
-Content-Language: en-US
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <688cbc7b-b23e-7edd-4603-b5734eaa9bd7@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYZPR06MB6697:EE_|TYZPR06MB5661:EE_
+X-MS-Office365-Filtering-Correlation-Id: 84326aef-6659-4b2d-89ae-08db7e06e66a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Ye1l1Z7q3O27I+FGlr28qJqVPcf8fKKkj0YQrqqHJDW95u+ApBONlTdm0Z+3xVxxQykcaIJcJjz/PFDi8KCXez28T2EvptTcszc5GLX6N55SayPFnRnWi+XgdFoQ/TRTW1lxRSgA8cS4O4BtPFlQ5k5R9gTj6pBcIh6+tXQoIe7eAOtUknCYd7kK4dpktNBv6XZJj04mKmejNsQbmbXC8+j7UShPK0Zkxyw5swHVc7UXdvTZpyM8RLkFmmz6gnhL/elvdiwgrdHTTvLTRtNgPcC+z0g9uvsBIOzsNui+U8heuqmUVjGiXJRmllQAgYUgq10q4VjB0Vwb+6q1fQrWhYEe1e8UElF3EVL9c291ghwbl17gGuO300veKWX/GbTUuGdPWnwjvfvvZ+knm58JB9+Rq9xT6MPt6qWtTaUWy/cRyptIEF82avy1Cwuz71evk05fvLfwirKM5qeuI4QImWQ7ppYe+4ZPkJ8tJzF+rPyoElY+97Nc9oLB5pzOX5A2owqOMQSkQ09KBkdgRPMtVuRuRUGLgBWQLUasbLCdG2/4hlRDbZYT2pJombz1b1HAeYB3K04YK92bbOvtXroL0KDn4tWsP1sjOW5yzHmELeUXdDRusW+2xEYeFGmNIiuiS44lv4c2fKWbGeaAua6BwA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB6697.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(136003)(376002)(366004)(346002)(451199021)(6486002)(6666004)(478600001)(110136005)(52116002)(38100700002)(83380400001)(86362001)(2616005)(36756003)(4744005)(2906002)(66946007)(6506007)(186003)(1076003)(26005)(6512007)(107886003)(921005)(38350700002)(316002)(41300700001)(4326008)(66556008)(66476007)(8936002)(8676002)(7416002)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?WPCMn1UHeEqovu/v7NQVOJYIuHz+wkeeBU6EKGsZyXQ2O5cx9+Zr5gG/POJl?=
+ =?us-ascii?Q?uZdx2ENxRuVkvcLV1dPu0fjzGg50XZ4ogl7Pi0hkNoCnSBSd2elKE5r7JERQ?=
+ =?us-ascii?Q?ijkSoduw1bmLutocXXdTdGUxLibSy+1fjBdEyFOe7c586oXN3BtYC35h5+3W?=
+ =?us-ascii?Q?pcXPZ82vmkZHXBfCJSjOsBfKfvTFh2LML9qHM4Hzf70+GJDy0h2rT6B4Csa2?=
+ =?us-ascii?Q?LPxpkXtEvkDbAcYFwVv62iXKUVZV5cbE8RHuVqKCrySGEfydQ3xPnoEGb8In?=
+ =?us-ascii?Q?WpRRplN2Q/uOVO3oKV+HOXMIU9SP2xPWkYIHyV5P+R6iWLA+k1WRY3iyta6k?=
+ =?us-ascii?Q?IPJraaCUzB71dO0oLJmr+Wl4Oe4EHl1UX9OIetPGHxYHWZtHEsydRrXzQO51?=
+ =?us-ascii?Q?WTJguYx0diVd5wgVikW93gDC3f/pTiOZ0uSEHPoTLnO76r5A3iW25TYEOazB?=
+ =?us-ascii?Q?K76zHY6MDpZZI2zPfW0KhoOi3EGE4/LAjdPh6eHQl4g595/DoxsW/56PVazE?=
+ =?us-ascii?Q?w7YaKPIhVlah/vcUCP4wfQqA5o8wgv2MtrU/M7WaEtOc1Zv0l3ziVTpIB6FM?=
+ =?us-ascii?Q?xnvqIzLy1ArKxALgSlYlnsurkKaMPuBYOhdHqAjaEZdW9UHsGK93JRaUmPp9?=
+ =?us-ascii?Q?WEF3dslWKTWjtw/wdNV2/yjbjNYc/d3uY/xK7o3jYmvfXlgvJpNYwS7U6Kfp?=
+ =?us-ascii?Q?MzS5D/mCb20eYDWfC0A/pYpmquZ8JnW1kZBRRoiFD0yFJURG+ReGc5lcSfuq?=
+ =?us-ascii?Q?jIHIUJ7mbxaZ3aUlzTqPuf4hNy0N1lSCCKuxeU4oiiQrQNpyQqPVLNhAJEiP?=
+ =?us-ascii?Q?BeTsi8SKDG+HAWDXiA269HT/95mq/0ljXx71J6MEcX1sHw8FeIwcwgswLuos?=
+ =?us-ascii?Q?W7X/TpA9xkI8if3hi694FyDMprkPQ8to/Bd11mASkBDLX4XVrnZU1Nfa/pNe?=
+ =?us-ascii?Q?YEcPel+g83xh0nvGpqvc99vvwm81Mdg/UrxkZL/LO8OKuJiFKDOWSnS+mtmd?=
+ =?us-ascii?Q?py5GAQvxetvvpwHqQPiFDHI3kV5Rr4sUiordUlVMMe1n6p3zHIxQyMVUPldc?=
+ =?us-ascii?Q?RtwPH2I7LYL2BLWrYUs/pbTB4YksKni+/c78NppRZYvx55EMtsdQS7RBI71a?=
+ =?us-ascii?Q?LXvfO9vxFJJJ1+/W5NKLA+UGfuBckz8Knq0ebTq67yRGouISrgWmT8zAJs0x?=
+ =?us-ascii?Q?yZdU2QvhAa9dxqJ2osKgvOlNSqhSXBjVJV0A6gajZY4dlboQMJD8dBpqItSi?=
+ =?us-ascii?Q?n9znxScGVhdxkWO2+95uocLvv6N9CykQfWXYQ7KwQx3sgbN29F1jJOHLJ0sY?=
+ =?us-ascii?Q?2k4r8x7Q2hDutnmo8kFQoNMYyNeQAcadP59A/NsJSeV6hBMrwf+2zV1U6XCC?=
+ =?us-ascii?Q?fF6xnO1gfgiLhkPOQyN9tjkVgqIaygSIgSUOe6qJdlSXD5hTqoBWW2+hVeYq?=
+ =?us-ascii?Q?TcthyjcBgBDcTPtDaXkKax5/QkWdaJWNHj5Hgi2PARGpmrcvD7CPWtQvVpk5?=
+ =?us-ascii?Q?/iCu5a2tui3FOfNRqMXcMBKor3p5mQ2cPPmUnCSfOBCCjMQ/ZSX85hfqdNzD?=
+ =?us-ascii?Q?V75Im6/6uNjTlKCPQNJoQRNhCjxImi9rqp6j9+7G?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84326aef-6659-4b2d-89ae-08db7e06e66a
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB6697.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2023 09:53:50.6141
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DLSSH/M1H9tUfF5Qvnh/a391XZr1lhdYa1VGu69mQ4uTicMGo5+31+LZJ8EHc96KK4bHeoG0gs/rn2cG/TW4LA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5661
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+When wrapping code, use ';' better than using ',' which is more
+in line with the coding habits of most engineers.
 
-On 6/7/23 00:54, Daniel Borkmann wrote:
-> On 7/5/23 6:20 PM, Leon Hwang wrote:
->> On 2023/7/5 22:39, Daniel Borkmann wrote:
->>> On 7/5/23 3:20 PM, Leon Hwang wrote:
->>>> Currently, excluding verifier, users are unable to obtain detailed 
->>>> error
->>>> information when issues occur in BPF syscall.
->>>>
->>>> To overcome this limitation, bpf generic log is introduced to provide
->>>> error details similar to the verifier. This enhancement will enable 
->>>> the
->>>> reporting of error details along with the corresponding errno in BPF
->>>> syscall.
->>>>
->>>> Essentially, bpf generic log functions as a mechanism similar to 
->>>> netlink,
->>>> enabling the transmission of error messages to user space. This
->>>> mechanism greatly enhances the usability of BPF syscall by allowing
->>>> users to access comprehensive error messages instead of relying solely
->>>> on errno.
->>>>
->>>> This patch specifically addresses the error reporting in 
->>>> dev_xdp_attach()
->>>> . With this patch, the error messages will be transferred to user 
->>>> space
->>>> like the netlink approach. Hence, users will be able to check the 
->>>> error
->>>> message along with the errno.
->>>>
->>>> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
->>>> ---
->>>>   include/linux/bpf.h            | 30 ++++++++++++++++++++++++++++++
->>>>   include/uapi/linux/bpf.h       |  6 ++++++
->>>>   kernel/bpf/log.c               | 33 
->>>> +++++++++++++++++++++++++++++++++
->>>>   net/core/dev.c                 | 11 ++++++++++-
->>>>   tools/include/uapi/linux/bpf.h |  6 ++++++
->>>>   5 files changed, 85 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->>>> index f58895830..fd63f4a76 100644
->>>> --- a/include/linux/bpf.h
->>>> +++ b/include/linux/bpf.h
->>>> @@ -3077,4 +3077,34 @@ static inline gfp_t bpf_memcg_flags(gfp_t 
->>>> flags)
->>>>       return flags;
->>>>   }
->>>>   +#define BPF_GENERIC_TMP_LOG_SIZE    256
->>>> +
->>>> +struct bpf_generic_log {
->>>> +    char        kbuf[BPF_GENERIC_TMP_LOG_SIZE];
->>>> +    char __user    *ubuf;
->>>> +    u32        len_used;
->>>> +    u32        len_total;
->>>> +};
->>>> +
->>>> +__printf(2, 3) void bpf_generic_log_write(struct bpf_generic_log 
->>>> *log,
->>>> +            const char *fmt, ...);
->>>> +static inline void bpf_generic_log_init(struct bpf_generic_log *log,
->>>> +            const struct bpf_generic_user_log *ulog)
->>>> +{
->>>> +    log->ubuf = (char __user *) (unsigned long) ulog->log_buf;
->>>> +    log->len_total = ulog->log_size;
->>>> +    log->len_used = 0;
->>>> +}
->>>> +
->>>> +#define BPF_GENERIC_LOG_WRITE(log, ulog, fmt, ...)    do {    \
->>>> +    const char *____fmt = (fmt);                \
->>>> +    bpf_generic_log_init(log, ulog);            \
->>>> +    bpf_generic_log_write(log, ____fmt, ##__VA_ARGS__); \
->>>> +} while (0)
->>>> +
->>>> +#define BPF_GENERIC_ULOG_WRITE(ulog, fmt, ...)    do {            \
->>>> +    struct bpf_generic_log ____log;                    \
->>>> +    BPF_GENERIC_LOG_WRITE(&____log, ulog, fmt, ##__VA_ARGS__);    \
->>>> +} while (0)
->>>> +
->>>
->>> Could we generalize the bpf_verifier_log infra and reuse bpf_log() 
->>> helper
->>> instead of adding something new?
->>
->>
->> Yes. It's possible to reuse the bpf_verifier_log infra and reuse 
->> bpf_log()
->> helper. I'll try this way:
->>
->> #define BPF_LOG_USER  BPF_LOG_LEVEL1     /* user log flag */
->>
->> #define BPF_ULOG_WRITE(log_buf, log_size, fmt, ...) do {               \
->>         const char *____fmt = 
->> (fmt);                                    \
->>         struct bpf_verifier_log 
->> ____vlog;                               \
->>         bpf_vlog_init(&____vlog, BPF_LOG_USER, log_buf, 
->> log_size);      \
->>         bpf_log(&____vlog, ____fmt, 
->> ##__VA_ARGS__);                         \
->> } while (0)
->
-> Could we hide all of this inside bpf_log() or better create a new 
-> bpf_log_once() wrapper,
-> passing in attr so we only need to use the latter w/o the extra macros?
->
-> Essentially what your bpf_xdp_link_log() is doing, just that 
-> bpf_log_once(attr, extack._msg)
-> would be generic and sufficient.
->
-> Thanks,
-> Daniel
+Signed-off-by: Lu Hongfei <luhongfei@vivo.com>
+---
+ tools/testing/selftests/bpf/benchs/bench_ringbufs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I try to use BPF_ULOG_WRITE() successfully, but with a warning:
-
-
-net/core/dev.c: In function 'bpf_xdp_link_log.isra.0':
-net/core/dev.c:9093:1: warning: the frame size of 1056 bytes is larger 
-than 1024 bytes [-Wframe-larger-than=]
-  9093 | }
-       |
-
-
-How should we generalize the bpf_verifier_log infra with a smaller
-
-BPF_VERIFIER_TMP_LOG_SIZE (1024 currently) ?
-
-
-If to use bpf_log_once(attr, extack._msg), I think 
-bpf_ulog_once(&attr->link_create.xdp.log, extack._msg)
-
-is better. attr->link_create.xdp.log is struct bpf_generic_user_log.
-
-Or bpf_xdp_link_log() is better to wrap log details.
+diff --git a/tools/testing/selftests/bpf/benchs/bench_ringbufs.c b/tools/testing/selftests/bpf/benchs/bench_ringbufs.c
+index 3ca14ad36607..e1ee979e6acc 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_ringbufs.c
++++ b/tools/testing/selftests/bpf/benchs/bench_ringbufs.c
+@@ -399,7 +399,7 @@ static void perfbuf_libbpf_setup(void)
+ 	ctx->skel = perfbuf_setup_skeleton();
+ 
+ 	memset(&attr, 0, sizeof(attr));
+-	attr.config = PERF_COUNT_SW_BPF_OUTPUT,
++	attr.config = PERF_COUNT_SW_BPF_OUTPUT;
+ 	attr.type = PERF_TYPE_SOFTWARE;
+ 	attr.sample_type = PERF_SAMPLE_RAW;
+ 	/* notify only every Nth sample */
+-- 
+2.39.0
 
 
