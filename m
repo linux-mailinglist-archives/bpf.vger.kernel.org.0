@@ -1,297 +1,410 @@
-Return-Path: <bpf+bounces-4350-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AB9B74A777
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 01:14:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 723BA74A78A
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 01:25:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 235BD2814B5
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 23:14:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F0721C20EB5
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 23:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3FA16434;
-	Thu,  6 Jul 2023 23:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6D30168A1;
+	Thu,  6 Jul 2023 23:25:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A9C63BA
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 23:14:20 +0000 (UTC)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953FE19BD
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 16:14:17 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so18726491fa.2
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 16:14:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19A563BA
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 23:25:04 +0000 (UTC)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521CA1BC9
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 16:25:02 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fbc5d5746cso14145365e9.2
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 16:25:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688685256; x=1691277256;
+        d=gmail.com; s=20221208; t=1688685901; x=1691277901;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VxB9JuP2WVlEJH2kCW8mIXA6VO88USDyMaG1Y1/Q4t0=;
-        b=ZTtCgYCNyojtR5MN7KzcFTTTRUw1P/qNmoRXNugD+XCeL1WTgCoaTrZ0R1X3CiTumy
-         EXt2OpQIVARrMkkxVYicQO2ulKiRrXdJoyM4eYLjL+3+ZhS/TJij8EA8NCY2NS/5Y7+Q
-         tc7yYF2F1hT+58gEt0EW5ZGe+R18tf+7qbD0MXkQ6AO4d6lK1I4o61sA8wLt7uEhOSa5
-         oU3aHhUSHnYea5Nz5TV0HS0Wnd1TGhjSqaPOXb5ZrLU2+okyuC50JXHxhgg5FORuDJzl
-         9bKbFdRSOeSmcqyh7dhc9SlBjr6SEhOanGpWRs4J+AO7dViO4UVh83tsyXx8ZiCB/DgZ
-         rmTQ==
+        bh=rDieQayRjWDTLBouv2Kea+tZJ6HRN9976SIWKshktZg=;
+        b=D1V/8OWnzRjRRXP1XtT8Nv+hNJpqcAZtnnozbDz2egw0D3W9YYVRVjo4wn2Y6EPCms
+         K59s6NMhOWt4+GFDr6O5rAXTJUhiIJtIa2n/0UCt5aPLo1ZShkIca+kayLR78hWtsECU
+         UyUIW2cWos9nouxqUgE3sEPWwF1p0oQnwKxjdiZx0CIZX0tVvMsbfqqK0nM85xG01Ifp
+         quJJqtyd289I1Jckm7Pp6w5MlCT2nKp+G3DCnRM8ZAoiGUEVdxcyJwAqp69nPfumMxC6
+         lVJ4lBrdwynB8MeB/bpeNfcKSDAKuzLH7kUXe4h7Z9IiW/eDx4vWG8BV1fquqcA3yr6h
+         iTKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688685256; x=1691277256;
+        d=1e100.net; s=20221208; t=1688685901; x=1691277901;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VxB9JuP2WVlEJH2kCW8mIXA6VO88USDyMaG1Y1/Q4t0=;
-        b=PvA1HPQ1VrMyFMrSRlOoArYV3jCSi00KRQVGAQ2J7qcxsST3PSAaxjpsjA6Yws2Qcn
-         0g8KnK8lNAFYLsELs7BJdhaepGr6BTEoe5Mc5qXtj6z2+xLbrI/eFlNlRfFnme2qjGF0
-         cHkrEgGjnbZNZIrle9IcVJ1TqKqbT+qr4VWlAF7Kjm6/AkGn4R/OUl64ep0pw4iw8vHl
-         SWk7ogcWCDte/XYO8uNpACOB1ap2LGYJBZLwmKOINdMdIeIeKAL3uS9BQ719PoMMIJU6
-         BRWEoTJY6l4pu3KVb1XnsbZaX0kE8aK549mZMreHheXBq438/Z7oZDl1ymYy3xjRBLPK
-         Y/aQ==
-X-Gm-Message-State: ABy/qLZwO2Vgn7Daf26sO6EjyJ+fUaws2y9wOj9yq3GgZIwAg9CC+vHY
-	NfbGI4grFmRy1pS/2RZEG+VMShg6cMw/ixUIrRTrKPmJJJ4=
-X-Google-Smtp-Source: APBJJlHfcS/fXyytdaBG/ynEG/P+T19cxdqgrZHur5B4fd47ojEFQUBcT126qdjL0lxRPTW+R9bgTgILOb5ktXJV9gU=
-X-Received: by 2002:a2e:9104:0:b0:2b6:cdfb:d06a with SMTP id
- m4-20020a2e9104000000b002b6cdfbd06amr2426704ljg.22.1688685255508; Thu, 06 Jul
- 2023 16:14:15 -0700 (PDT)
+        bh=rDieQayRjWDTLBouv2Kea+tZJ6HRN9976SIWKshktZg=;
+        b=PjZ74beIzjj1WVD1aByToNjY4uj9pszVhwBsq0MlAv1bzXMZ2NH2yU8m9WgWQCR6fy
+         JZbfEVgnaAa9b4sgtC8c5u64O/OjI9Py/AGtoAlR2wFn0uLnGjuXtBmJlh+Mqz0OMNj5
+         vUrLBu3HK3nJtjzXjhE8/P4KFm+lSso7ek39gSQ4KUcZfZI7zNUGX4RDq9Gjqz3zxWRb
+         wlWKz6yQ5L0ubbPlY5c26S9RT/Pspr6Ovy3rPO+1oCa/umzNvhBSACFuAQaK245m3f6e
+         78VDQ3uuY1/NmmCxWBiUfgNSWJaEfOgbmNi8d8/yGOFNaPJl9FNrWw+vYx8gzLo1ZM71
+         NnHQ==
+X-Gm-Message-State: ABy/qLa3d/J40egdCB9tmFBcjqjm7kkTsZmqRI82tTGEZL2TZqBlak8E
+	NCWAlbgh+czrj5SVphwzOOZc5dMg1/by6eNQ3Zg=
+X-Google-Smtp-Source: APBJJlEmzu7ebXrwK0gfgDgkLHE07bzlIXAy3nvC20qtCwqxqOJOlHdSaNZDvzr+0JsyHnIfWwN4/xyTa6t1hV91KEA=
+X-Received: by 2002:adf:e9d1:0:b0:313:e88d:e6cf with SMTP id
+ l17-20020adfe9d1000000b00313e88de6cfmr2635353wrn.69.1688685900607; Thu, 06
+ Jul 2023 16:25:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230706160537.1309-1-dthaler1968@googlemail.com>
- <20230706204159.7tzacql7wdk3yszc@macbook-pro-8.dhcp.thefacebook.com> <PH7PR21MB3878EA22602A94F1C308CF33A32CA@PH7PR21MB3878.namprd21.prod.outlook.com>
-In-Reply-To: <PH7PR21MB3878EA22602A94F1C308CF33A32CA@PH7PR21MB3878.namprd21.prod.outlook.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 6 Jul 2023 16:14:04 -0700
-Message-ID: <CAADnVQ+gLnsOVj9s4zpAP6+U6nFHYm6GVZ1FteRac=ZaJvpfDg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf, docs: Improve English readability
-To: Dave Thaler <dthaler@microsoft.com>, "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc: Dave Thaler <dthaler1968@googlemail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"bpf@ietf.org" <bpf@ietf.org>
+References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-10-jolsa@kernel.org>
+In-Reply-To: <20230630083344.984305-10-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 6 Jul 2023 16:24:48 -0700
+Message-ID: <CAEf4BzbeyXniXfYoE6e8=3wLJ+ikN+pMrByJqwjjTzkHwebp6w@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 09/26] libbpf: Add elf symbol iterator
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 6, 2023 at 3:04=E2=80=AFPM Dave Thaler <dthaler@microsoft.com> =
-wrote:
+On Fri, Jun 30, 2023 at 1:35=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> > -----Original Message-----
-> > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > Sent: Thursday, July 6, 2023 1:42 PM
-> > To: Dave Thaler <dthaler1968@googlemail.com>
-> > Cc: bpf@vger.kernel.org; bpf@ietf.org; Dave Thaler
-> > <dthaler@microsoft.com>
-> > Subject: Re: [PATCH bpf-next v2] bpf, docs: Improve English readability
-> >
-> > On Thu, Jul 06, 2023 at 04:05:37PM +0000, Dave Thaler wrote:
-> > > From: Dave Thaler <dthaler@microsoft.com>
-> > >
-> > > Signed-off-by: Dave Thaler <dthaler@microsoft.com>
-> > > --
-> > > V1 -> V2: addressed comments from Alexei
-> > > ---
-> > >  Documentation/bpf/instruction-set.rst | 59 ++++++++++++++++++++-----=
---
-> > >  Documentation/bpf/linux-notes.rst     |  5 +++
-> > >  2 files changed, 50 insertions(+), 14 deletions(-)
-> > >
-> > > diff --git a/Documentation/bpf/instruction-set.rst
-> > > b/Documentation/bpf/instruction-set.rst
-> > > index 751e657973f..740989f4c1e 100644
-> > > --- a/Documentation/bpf/instruction-set.rst
-> > > +++ b/Documentation/bpf/instruction-set.rst
-> > > @@ -7,6 +7,9 @@ eBPF Instruction Set Specification, v1.0
-> > >
-> > >  This document specifies version 1.0 of the eBPF instruction set.
-> > >
-> > > +The eBPF instruction set consists of eleven 64 bit registers, a
-> > > +program counter, and an implementation-specific amount (e.g., 512 by=
-tes)
-> > of stack space.
-> > > +
-> > >  Documentation conventions
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> > >
-> > > @@ -27,12 +30,24 @@ The eBPF calling convention is defined as:
-> > >  * R6 - R9: callee saved registers that function calls will preserve
-> > >  * R10: read-only frame pointer to access stack
-> > >
-> > > -R0 - R5 are scratch registers and eBPF programs needs to spill/fill
-> > > them if -necessary across calls.
-> > > +Registers R0 - R5 are caller-saved registers, meaning the BPF progra=
-m
-> > > +needs to either spill them to the BPF stack or move them to callee
-> > > +saved registers if these arguments are to be reused across multiple
-> > > +function calls. Spilling means that the value in the register is
-> > > +moved to the BPF stack. The reverse operation of moving the variable
-> > from the BPF stack to the register is called filling.
-> > > +The reason for spilling/filling is due to the limited number of regi=
-sters.
-> >
-> > imo this extended explanation goes too far.
-> > It's also not entirely correct. We could have an ISA with limited numbe=
-r of
-> > registers where every register is callee saved. A bit absurd, but possi=
-ble.
-> > Or went with SPARC style register windows.
+> Adding elf symbol iterator object (and some functions) that follow
+> open-coded iterator pattern and some functions to ease up iterating
+> elf object symbols.
 >
-> At https://lore.kernel.org/bpf/20220930221624.mqjrzmdxc6etkadm@macbook-pr=
-o-4.dhcp.thefacebook.com/ you said about the above
-> "I like above clarification though."
-
-That was on "30 Sep 2022".
-I like to change my mind often enough to confuse everyone :)
-
-> I think it's important for interoperability to define which registers are=
- caller-saved
-> and which are not, so a compiler (or even verifier) can be used for multi=
-ple runtimes.
-
-but it really doesn't belong in the ISA doc.
-We've discussed it at length.
-We need the psABI doc.
-ISA doc is a description of instructions and _not_ how they shape
-into functions and programs.
-More below.
-
+> The idea is to iterate single symbol section with:
 >
-> > > +
-> > > +Upon entering execution of an eBPF program, registers R1 - R5
-> > > +initially can contain the input arguments for the program (similar t=
-o the
-> > argc/argv pair for a typical C program).
-> >
-> > argc/argv is only for main(). We don't have main() concept in BPF ISA.
-> > argc/argv is also not a property of ISA.
+>   struct elf_sym_iter iter;
+>   struct elf_sym *sym;
 >
-> That's why it's "similar to".  I think the analogy helps understanding fo=
-r new readers.
-
-argc is a K&R C thing. Not even a calling convention.
-That sentence is a combination of analogies from different areas.
-argc could be interpreted that the first argument is a count
-and a second argument is an array.
-See the confusion it might cause?
-
+>   if (elf_sym_iter_new(&iter, elf, binary_path, SHT_DYNSYM))
+>         goto error;
 >
-> > > +The actual number of registers used, and their meaning, is defined b=
+>   while ((sym =3D elf_sym_iter_next(&iter))) {
+>         ...
+>   }
+>
+> I considered opening the elf inside the iterator and iterate all symbol
+> sections, but then it gets more complicated wrt user checks for when
+> the next section is processed.
+>
+> Plus side is the we don't need 'exit' function, because caller/user is
+> in charge of that.
+>
+> The returned iterated symbol object from elf_sym_iter_next function
+> is placed inside the struct elf_sym_iter, so no extra allocation or
+> argument is needed.
+>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/lib/bpf/elf.c | 178 +++++++++++++++++++++++++++++---------------
+>  1 file changed, 117 insertions(+), 61 deletions(-)
+>
+
+A bunch of nits, but overall looks good. Please address nits, and add my ac=
+k
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+> diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
+> index 74e35071d22e..fcce4bd2478f 100644
+> --- a/tools/lib/bpf/elf.c
+> +++ b/tools/lib/bpf/elf.c
+> @@ -59,6 +59,108 @@ static Elf_Scn *elf_find_next_scn_by_type(Elf *elf, i=
+nt sh_type, Elf_Scn *scn)
+>         return NULL;
+>  }
+>
+> +struct elf_sym {
+> +       const char *name;
+> +       GElf_Sym sym;
+> +       GElf_Shdr sh;
+> +};
+> +
+
+if we want to use elf_sym_iter outside of elf.c, this should be in
+libbpf_internal.h?
+
+> +struct elf_sym_iter {
+> +       Elf *elf;
+> +       Elf_Data *syms;
+> +       size_t nr_syms;
+> +       size_t strtabidx;
+> +       size_t next_sym_idx;
+> +       struct elf_sym sym;
+> +       int st_type;
+> +};
+> +
+> +static int elf_sym_iter_new(struct elf_sym_iter *iter,
+> +                           Elf *elf, const char *binary_path,
+> +                           int sh_type, int st_type)
+> +{
+> +       Elf_Scn *scn =3D NULL;
+> +       GElf_Ehdr ehdr;
+> +       GElf_Shdr sh;
+> +
+> +       memset(iter, 0, sizeof(*iter));
+> +
+> +       if (!gelf_getehdr(elf, &ehdr)) {
+> +               pr_warn("elf: failed to get ehdr from %s: %s\n", binary_p=
+ath, elf_errmsg(-1));
+> +               return -EINVAL;
+> +       }
+> +
+> +       scn =3D elf_find_next_scn_by_type(elf, sh_type, NULL);
+> +       if (!scn) {
+> +               pr_debug("elf: failed to find symbol table ELF sections i=
+n '%s'\n",
+> +                        binary_path);
+> +               return -ENOENT;
+> +       }
+> +
+> +       if (!gelf_getshdr(scn, &sh))
+> +               return -EINVAL;
+> +
+> +       iter->strtabidx =3D sh.sh_link;
+> +       iter->syms =3D elf_getdata(scn, 0);
+> +       if (!iter->syms) {
+> +               pr_warn("elf: failed to get symbols for symtab section in=
+ '%s': %s\n",
+> +                       binary_path, elf_errmsg(-1));
+> +               return -EINVAL;
+> +       }
+> +       iter->nr_syms =3D iter->syms->d_size / sh.sh_entsize;
+> +       iter->elf =3D elf;
+> +       iter->st_type =3D st_type;
+> +       return 0;
+> +}
+> +
+> +static struct elf_sym *elf_sym_iter_next(struct elf_sym_iter *iter)
+> +{
+> +       struct elf_sym *ret =3D &iter->sym;
+> +       GElf_Sym *sym =3D &ret->sym;
+> +       const char *name =3D NULL;
+> +       Elf_Scn *sym_scn;
+> +       size_t idx;
+> +
+> +       for (idx =3D iter->next_sym_idx; idx < iter->nr_syms; idx++) {
+> +               if (!gelf_getsym(iter->syms, idx, sym))
+> +                       continue;
+> +               if (GELF_ST_TYPE(sym->st_info) !=3D iter->st_type)
+> +                       continue;
+> +               name =3D elf_strptr(iter->elf, iter->strtabidx, sym->st_n=
+ame);
+> +               if (!name)
+> +                       continue;
+> +
+> +               /* Transform symbol's virtual address (absolute for
+> +                * binaries and relative for shared libs) into file
+> +                * offset, which is what kernel is expecting for
+> +                * uprobe/uretprobe attachment.
+> +                * See Documentation/trace/uprobetracer.rst for more
+> +                * details.
+> +                * This is done by looking up symbol's containing
+> +                * section's header and using iter's virtual address
+> +                * (sh_addr) and corresponding file offset (sh_offset)
+> +                * to transform sym.st_value (virtual address) into
+> +                * desired final file offset.
+> +                */
+
+this comment is misplaced? we don't do the translation here
+
+> +               sym_scn =3D elf_getscn(iter->elf, sym->st_shndx);
+> +               if (!sym_scn)
+> +                       continue;
+> +               if (!gelf_getshdr(sym_scn, &ret->sh))
+> +                       continue;
+> +
+> +               iter->next_sym_idx =3D idx + 1;
+> +               ret->name =3D name;
+> +               return ret;
+> +       }
+> +
+> +       return NULL;
+> +}
+> +
+> +static unsigned long elf_sym_offset(struct elf_sym *sym)
+> +{
+> +       return sym->sym.st_value - sym->sh.sh_addr + sym->sh.sh_offset;
+> +}
+> +
+>  /* Find offset of function name in the provided ELF object. "binary_path=
+" is
+>   * the path to the ELF binary represented by "elf", and only used for er=
+ror
+>   * reporting matters. "name" matches symbol name or name@@LIB for librar=
 y
-> > > +the program type; for example, a networking program might have an
-> > > +argument that includes network packet data and/or metadata.
-> >
-> > that makes things even more confusing.
-> >
-> > tbh none of the above changes make the doc easier to read.
->
-> The program type defines the number and meaning of any arguments passed
-> to the program.  In the ISA that means the number of registered used to
-> pass inputs, and their contents.
+> @@ -90,64 +192,36 @@ long elf_find_func_offset(Elf *elf, const char *bina=
+ry_path, const char *name)
+>          * reported as a warning/error.
+>          */
+>         for (i =3D 0; i < ARRAY_SIZE(sh_types); i++) {
+> -               size_t nr_syms, strtabidx, idx;
+> -               Elf_Data *symbols =3D NULL;
+> -               Elf_Scn *scn =3D NULL;
+> +               struct elf_sym_iter iter;
+> +               struct elf_sym *sym;
+>                 int last_bind =3D -1;
+> -               const char *sname;
+> -               GElf_Shdr sh;
+> +               int curr_bind;
 
-Not at all. ISA is an instruction set only and this doc is for ISA.
-What different program types should accept belongs in a different doc.
-And it's not a psABI doc.
-More below.
+OCD nit:
 
->
-> > >  Instruction encoding
-> > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > >
-> > > +An eBPF program is a sequence of instructions.
-> >
-> > Kinda true, but it opens the door for plenty of bike shedding.
-> > Is it contiguous sequence? what about subprograms?
-> > Is BPF program a one function or multiple functions?
->
-> The term "subprogram" is not currently part of the
-> instruction-set.rst doc.   "Program-local functions"
-> are, and the text says they're part of the same BPF program.
-> Hence the doc already says a BPF program can have multiple
-> functions.
+$ rg 'curr(_|\b)' | wc -l
+8
+$ rg 'cur(_|\b)' | wc -l
+148
 
-Yes. It's a mess, but we must not make it worse.
-instruction-set.rst is for instructions.
-Definition of BPF program belongs to a different doc.
-
-> > etc.
-> > Just not worth it.
-> > This is ISA doc.
-> >
-> > > +
-> > >  eBPF has two instruction encodings:
-> > >
-> > >  * the basic instruction encoding, which uses 64 bits to encode an
-> > > instruction @@ -74,7 +89,7 @@ For example::
-> > >    07     1       0        00 00  11 22 33 44  r1 +=3D 0x11223344 // =
-big
-> > >
-> > >  Note that most instructions do not use all of the fields.
-> > > -Unused fields shall be cleared to zero.
-> > > +Unused fields must be set to zero.
-> >
-> > How is this better?
->
-> It uses the language common in RFCs.
->
-> > >  As discussed below in `64-bit immediate instructions`_, a 64-bit
-> > > immediate  instruction uses a 64-bit immediate value that is construc=
-ted as
-> > follows.
-> > > @@ -103,7 +118,9 @@ instruction are reserved and shall be cleared to
-> > zero.
-> > >  Instruction classes
-> > >  -------------------
-> > >
-> > > -The three LSB bits of the 'opcode' field store the instruction class=
-:
-> > > +The encoding of the 'opcode' field varies and can be determined from
-> > > +the three least significant bits (LSB) of the 'opcode' field which
-> > > +holds the "instruction class", as follows:
-> >
-> > same question. Don't see an improvement in wording.
->
-> 1. The acronym LSB was not defined and does not have an asterisk by it in
-> the https://www.rfc-editor.org/materials/abbrev.expansion.txt list.
->
-> 2. "LSB bits" is redundant.
->
-> 3. Putting "instruction class" in quotes is common when defining by use
-> the first time.
-
-ok. fair enough.
+and those 8 I consider an unfortunate accident ;) let's standardize on
+using "cur" consistently
 
 >
-> linux-notes.rst is not in the ISA doc.   The ISA doc says the value is im=
-plementation
-> defined.  linux-notes.rst says what Linux does for things the ISA doc lea=
-ves up
-> to the implementation.
+> -               scn =3D elf_find_next_scn_by_type(elf, sh_types[i], NULL)=
+;
+> -               if (!scn) {
+> -                       pr_debug("elf: failed to find symbol table ELF se=
+ctions in '%s'\n",
+> -                                binary_path);
+> -                       continue;
+> -               }
+> -               if (!gelf_getshdr(scn, &sh))
+> -                       continue;
+> -               strtabidx =3D sh.sh_link;
+> -               symbols =3D elf_getdata(scn, 0);
+> -               if (!symbols) {
+> -                       pr_warn("elf: failed to get symbols for symtab se=
+ction in '%s': %s\n",
+> -                               binary_path, elf_errmsg(-1));
+> -                       ret =3D -LIBBPF_ERRNO__FORMAT;
+> +               ret =3D elf_sym_iter_new(&iter, elf, binary_path, sh_type=
+s[i], STT_FUNC);
+> +               if (ret) {
+> +                       if (ret =3D=3D -ENOENT)
+> +                               continue;
+>                         goto out;
 
-I see no value in "Linux currently supports 512 bytes of stack space" sente=
-nce.
-It's too ambiguous to be useful.
+another styling nit: let's avoid unnecessary nesting of ifs:
 
-instruction-set.rst is a description of ISA. We should remove things
-from it that don't belong instead of doubling down on the current mess.
+if (ret =3D=3D -ENOENT)
+    continue;
+if (ret)
+    goto out;
 
-we need the psABI doc that will not be standardized as Jose recommended.
-That doc will describe recommended calling convention, argument
-promotion, stack usage, relocation, function/subprogram definition, etc
-psABI probably should include BTF.ext description, but I'm open to alternat=
-ives.
+simple and clean
 
-BPF program types supported by the kernel is a 3rd document.
-There we can explain that XDP prog takes a single ctx argument and it's
-a pointer to ...
-Such info is linux specific. Based on ISA and psABI one can come up
-with different program/map types and semantics of their arguments
-while being fully compliant with ISA and psABI docs.
-Such doc can start its journey in linux-notes.rst and then split, if necess=
-ary.
+
+>                 }
+> -               nr_syms =3D symbols->d_size / sh.sh_entsize;
+> -
+> -               for (idx =3D 0; idx < nr_syms; idx++) {
+> -                       int curr_bind;
+> -                       GElf_Sym sym;
+> -                       Elf_Scn *sym_scn;
+> -                       GElf_Shdr sym_sh;
+> -
+> -                       if (!gelf_getsym(symbols, idx, &sym))
+> -                               continue;
+> -
+> -                       if (GELF_ST_TYPE(sym.st_info) !=3D STT_FUNC)
+> -                               continue;
+> -
+> -                       sname =3D elf_strptr(elf, strtabidx, sym.st_name)=
+;
+> -                       if (!sname)
+> -                               continue;
+> -
+> -                       curr_bind =3D GELF_ST_BIND(sym.st_info);
+>
+> +               while ((sym =3D elf_sym_iter_next(&iter))) {
+>                         /* User can specify func, func@@LIB or func@@LIB_=
+VERSION. */
+> -                       if (strncmp(sname, name, name_len) !=3D 0)
+> +                       if (strncmp(sym->name, name, name_len) !=3D 0)
+>                                 continue;
+>                         /* ...but we don't want a search for "foo" to mat=
+ch 'foo2" also, so any
+>                          * additional characters in sname should be of th=
+e form "@@LIB".
+>                          */
+> -                       if (!is_name_qualified && sname[name_len] !=3D '\=
+0' && sname[name_len] !=3D '@')
+> +                       if (!is_name_qualified && sym->name[name_len] !=
+=3D '\0' && sym->name[name_len] !=3D '@')
+>                                 continue;
+>
+> -                       if (ret >=3D 0) {
+> +                       curr_bind =3D GELF_ST_BIND(sym->sym.st_info);
+> +
+> +                       if (ret > 0) {
+
+used to be >=3D, why the change?
+
+>                                 /* handle multiple matches */
+>                                 if (last_bind !=3D STB_WEAK && curr_bind =
+!=3D STB_WEAK) {
+>                                         /* Only accept one non-weak bind.=
+ */
+>                                         pr_warn("elf: ambiguous match for=
+ '%s', '%s' in '%s'\n",
+> -                                               sname, name, binary_path)=
+;
+> +                                               sym->name, name, binary_p=
+ath);
+>                                         ret =3D -LIBBPF_ERRNO__FORMAT;
+>                                         goto out;
+>                                 } else if (curr_bind =3D=3D STB_WEAK) {
+> @@ -158,25 +232,7 @@ long elf_find_func_offset(Elf *elf, const char *bina=
+ry_path, const char *name)
+>                                 }
+>                         }
+>
+> -                       /* Transform symbol's virtual address (absolute f=
+or
+> -                        * binaries and relative for shared libs) into fi=
+le
+> -                        * offset, which is what kernel is expecting for
+> -                        * uprobe/uretprobe attachment.
+> -                        * See Documentation/trace/uprobetracer.rst for m=
+ore
+> -                        * details.
+> -                        * This is done by looking up symbol's containing
+> -                        * section's header and using it's virtual addres=
+s
+> -                        * (sh_addr) and corresponding file offset (sh_of=
+fset)
+> -                        * to transform sym.st_value (virtual address) in=
+to
+> -                        * desired final file offset.
+> -                        */
+> -                       sym_scn =3D elf_getscn(elf, sym.st_shndx);
+> -                       if (!sym_scn)
+> -                               continue;
+> -                       if (!gelf_getshdr(sym_scn, &sym_sh))
+> -                               continue;
+> -
+> -                       ret =3D sym.st_value - sym_sh.sh_addr + sym_sh.sh=
+_offset;
+> +                       ret =3D elf_sym_offset(sym);
+>                         last_bind =3D curr_bind;
+>                 }
+>                 if (ret > 0)
+> --
+> 2.41.0
+>
 
