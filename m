@@ -1,51 +1,51 @@
-Return-Path: <bpf+bounces-4184-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4185-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E62867496BA
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 09:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 182DD7496BB
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 09:48:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43CA628124D
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 07:47:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C096628122A
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 07:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F2315AF;
-	Thu,  6 Jul 2023 07:47:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC6715B9;
+	Thu,  6 Jul 2023 07:47:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBE8139A
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 07:47:40 +0000 (UTC)
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2068.outbound.protection.outlook.com [40.107.105.68])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BB01BDC
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 00:47:38 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9E215AA
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 07:47:49 +0000 (UTC)
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2042.outbound.protection.outlook.com [40.107.7.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE8610B
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 00:47:48 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gnt6VKD1dmzpObP8JTs/einCDtL91ecFSewF7Gi+yDjd3w/aBQwsAFQtzIZu2RkT6DxLKMWztQpKJZtEOyhQPiZ2Opsw14plWwtMnrE4Af23Im+V+8x6iF85DQdL56q61eDJroThqFhr6xgGsL2GpkbryJJfKRmbhTK/cxjY5iq6u2BtQlzsmelxN3YkbBDyStGRkbaZ6lvwZ+BrLCqtgWVoeYH0KUCohKVevbLMeJXSfXVwGQ66z2nFg+D20uMKUo2G2W4AMVMKyt7NOE2x+644HgODUFl8CWdSMD9TRvP6LOn9+ovkci8HXJB/NKLqO5mKgeLvxLAPufHp1h02Qg==
+ b=E2LqMmKNJW+UOiA0PXpSK1nJRIC6vz2TusNwEDqXw6RzwyvpzH6UqVNC9LNhz+I3uiC8WAl7n711uY+VpsPCecYumabZCL7QTac2HsFHY+gGP0YXwPo+qT5zaS0e7f0gXUyBPAC4apH+gyFXkIsFcHZpgPkJUgRwE6GiaktFvBv2ZaGMlkDmF4Sax5smI76HnRmHTx9REXweyG/grfxB8At8aAyR19X8suwdnJDTu7kBBNilnax0eARERzt4Gl40hksN0ypsEO/ktD2i2yMSFQxDUo8jSWxzE2uoskHychOtgcRMexMrZR53etj3F8BjBY4Ho5n3L8MR00dGnk2hXw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=N9am9MFrskc8XHyAsmHYxGp0omd3hW+Q7MCO/QA9uKE=;
- b=krwIXDrrt0ANeVU822sGLPF+Npl1SXNPmo7nXwqLfAbCTAoBues+nGqikRqOcE9g3/a9EinOEndzsLuiEooGn1+bsiuzGi5OdKzjOuNKoEs0hgtjjhM7oe/NGKyD1izQn6iE8/LlGiFjEnh3VgfyHPzyesCzTzV774bAqx7Zwjhjkg7vd7DmyX1ObXWs8vmJvBY3RGebP0cpl8dfTXLIRdG/79+hYonRoFBdECvLq5dh5EIgVEwZvW4S2KhzEPCb7nlLkbePTa26gqsn4pSW2onr6Lix1/01otxULeUNAsXQE2zFyOEqsBAhesnu+bDzdViXuygBJEz8IIyuSKPLwQ==
+ bh=oWM3md3G+KvRxqHdGU4Y07ll+NwhSVoOjfCi91FN6Zo=;
+ b=Y94uJl6mxjKQjq7qysAKA5azPfEADA/uWX9/NNTWbkVRHkgfqg3lmRA+s7oTQvqi7oZ8+ode9RZGnu0CxUEo9CmOS5N903410iVPGF5Rmt9OIWL2iP6ONLQXnPXbXeQT0/n11ysXz5YiXYxqD0bmHOGZI+vxru0a8JhwIoKD2KpFlDRu0hyb5+uCS8fPI7D8BjklhNMBDc2Ec0sK/gfK2t0Z7qkDUPlT70dlejS12ElGr1T0Kcbg7m6fXRCc+UU75txhRELxuK3n+Zubw7x27okSA5Rx/N6osfuaLzp4+5cRpgZIaJb5FGZc521G27PoPGgjvjGeliJh1M9kFJOZ+g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N9am9MFrskc8XHyAsmHYxGp0omd3hW+Q7MCO/QA9uKE=;
- b=V+jXlzE+fjdTrUKZacKbak6qg74hqIALiK0vM2byp6KJhqY5FWAXabxhM+i6flHSm5bFQi9rYMJONHUrb7qapceKwLFT3C/Q5eA2SpT+P21I/Go0JDZy0uhC+RdATQDzTCzfkUtzGXrQu7UQznU6nhA/1/xKBOgbzhogMpcxqbTKwY1tqnU6VprdSQnyiGQ1Hc4cJEP5sqOZDqBmIqDvmVpAwLrHca/fP5sNYO7A3fnw/DtcR3jaImCdlD0OVBQI1nmcz5Mfmbuaoz/szpU6yI1UXi7cmgaZMcRkxhYj9CEIVVx/O7t0iz2lYYUOVjPvfyiYSMfiVlQ5VAPdqdpFZQ==
+ bh=oWM3md3G+KvRxqHdGU4Y07ll+NwhSVoOjfCi91FN6Zo=;
+ b=Bwx4MX8FRr80gTS/zl9lKi+B7fWsfYQ1+dgft71/CSP9Y3T70ztYSNrzi1P3gD1n1INKpw3sAsxdMUu/iBImRuZ/sPk5CutmX4NWPMTlkyMPXkBqOElGACZLWSCfPiWRK1LJdlM/e6urk1YhuT0f+KHXz40DuLKB5AgaAjuf0Bg/pBfK990OoWO5ulMb0TON/tHwcVfERBxSBDiycKDlN1DJLclhvVICHD3HGgJhf4pRKfohJjcV7zB0Fcz31c+/hIlYBH3ewNUUfresapCczFPcQ3qVKUuTRu8OWL5kuxbMD6stx1k6s5QtvKFT0hl4KjCsxHMOZsOVLJSZPiEJcA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com (2603:10a6:7:83::14)
  by AM9PR04MB8437.eurprd04.prod.outlook.com (2603:10a6:20b:3dd::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.17; Thu, 6 Jul
- 2023 07:47:35 +0000
+ 2023 07:47:45 +0000
 Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com
  ([fe80::423a:a30f:5342:9d35]) by HE1PR0402MB3497.eurprd04.prod.outlook.com
  ([fe80::423a:a30f:5342:9d35%6]) with mapi id 15.20.6565.016; Thu, 6 Jul 2023
- 07:47:34 +0000
+ 07:47:45 +0000
 From: Geliang Tang <geliang.tang@suse.com>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -61,14 +61,16 @@ To: Alexei Starovoitov <ast@kernel.org>,
 Cc: Geliang Tang <geliang.tang@suse.com>,
 	bpf@vger.kernel.org,
 	mptcp@lists.linux.dev
-Subject: [RFC bpf-next v2 0/8] BPF 'force to MPTCP'
-Date: Thu,  6 Jul 2023 15:47:24 +0800
-Message-Id: <cover.1688629124.git.geliang.tang@suse.com>
+Subject: [RFC bpf-next v2 1/8] bpf: Add new prog type sockinit
+Date: Thu,  6 Jul 2023 15:47:25 +0800
+Message-Id: <0880130fe8ba0d721e63f6d37bd8ff6311eed9bf.1688629124.git.geliang.tang@suse.com>
 X-Mailer: git-send-email 2.35.3
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <cover.1688629124.git.geliang.tang@suse.com>
+References: <cover.1688629124.git.geliang.tang@suse.com>
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TYAPR01CA0152.jpnprd01.prod.outlook.com
- (2603:1096:404:7e::20) To HE1PR0402MB3497.eurprd04.prod.outlook.com
+Content-Type: text/plain
+X-ClientProxiedBy: TYAPR01CA0157.jpnprd01.prod.outlook.com
+ (2603:1096:404:7e::25) To HE1PR0402MB3497.eurprd04.prod.outlook.com
  (2603:10a6:7:83::14)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -78,62 +80,53 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: HE1PR0402MB3497:EE_|AM9PR04MB8437:EE_
-X-MS-Office365-Filtering-Correlation-Id: ff45d070-3fb5-4bed-d6d0-08db7df5428a
+X-MS-Office365-Filtering-Correlation-Id: 5a48dfb4-29b7-4940-153d-08db7df54963
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	Uf3Vf5yJY7jaTieBf0WeWm8+FCdOS2Zsz9PhfSwNopE73q0gzN8KFpPUxlGyhy6lDoV8wzYCqaoQ9gW8CbJ494/jmd5Yj3m8HuzEQx6ehel5mXkAB2aPFyevkvar+px9CchjsH9EDvgQXguGNZubJyhiISbEA/npC5Gf+++W3U2+TmrOYKa5bXFiqvsitkYirG3Hya3PetUQGSA1bWpypV6RkL0pap112Vs30x7YXSXzv77Ee+wGOVcB9zCj2X0GgmlA9LRTw1p/NEhB3zwUkSFjKXvaK4ArG+GMGWzGJ0Gd86aUdXpDQwoNjqzLc3z0VhoO8n9ZLJ9j4aq76RqRouZrj6tqDSX3UAbhVqbH80owLnGrbu2T3Df9zrCW25AmWjF37c4pyhgYuqJFRSHrFnt/8uVSw5czlvd9LT+MW5pIJts/JzNZsZOgWAkH3MEMCfU4EU73ly1FEV1x93UqIq9I95RIsIOpGiu+C9MTUt7KWng57Yd+WjD50keS/acemlTPsTDn6/XiUppfXIiymbBXaSQrx+Tb8xshT59hVDH21gWG4BJpbDFTTgsBnNyAQRtDnkdR39AYA8AALdS7pACPh1UkgL/cgRIy4DtxXJyUftd1oRU5X4sWUOL/6r2udpiHXL+4dPfAYeCfqTTFJHc8+S/CzYuXvvtcAXTe8Cs=
+	YKFIMH/QyeSHgJ2DZ7n13ZFltH34RsK42Fwqwz1GyYPovw1JSDeFz5eL2wPIzsYfKPWtcsT+WbqnvuU5Wxy6/PmyreUCXHQ7uzEq7WK5X7xmSDG4iUqLbuklFXxYBnnwSfkvlhGZQqTZBvwi8YwakEZV5ixIqdUUqaXzjY0osSsGxep/VaNqjFmLYNlC955hnu3s+H/f/GwQbo3JvQhIGerSoYhBABkKRXH4VDwWTHZygdKwRBRL6UeV7LNQq6wJHkSX8SweSsEeKIt3MBhoTqDqlz6ArwwL2H9AuZg4mCMb3bUpZhISrgfMzIweSLXc1bxmSRlHpEf4rIZ3ieCHVd1VeR9cTQK9QSMmDFGqhzUC0YDUvTsCZNKQN/Lf9IyIuQ30MUIzYXZLvX0vAYICJLffp1KLQeOgtdheYQQ/1uSVU/SS6QETAUIlZr8CR4X8GNEsVHaSuaRBYp8tDQ+3aOWod81LANWRITRphzsQ1MBy76A+/ovsLCorSSqUQbee/E/GAmlwoIAVmblgmwjn0LytMnEBUkH+Btv6AR74rTEO8RR4gYeLsXzIbHuRHy+ydK1NxT326S/sP6PvmeEW8WfeoyKTgGsZiim3hQYUH09xYYFTMvOoDUB3+6JUKE5t
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3497.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(346002)(376002)(39860400002)(366004)(136003)(451199021)(6666004)(41300700001)(7416002)(5660300002)(110136005)(36756003)(2906002)(44832011)(8936002)(316002)(8676002)(6486002)(66476007)(66946007)(4326008)(66556008)(6512007)(478600001)(86362001)(38100700002)(186003)(2616005)(921005)(83380400001)(966005)(26005)(6506007)(13296009);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3497.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(346002)(376002)(39860400002)(366004)(136003)(451199021)(6666004)(41300700001)(7416002)(5660300002)(110136005)(36756003)(2906002)(44832011)(8936002)(316002)(8676002)(6486002)(66476007)(66946007)(4326008)(66556008)(6512007)(478600001)(86362001)(38100700002)(186003)(2616005)(921005)(83380400001)(26005)(6506007)(13296009);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?d3hJQUhpU3ZiTnRWZFcwOVdMcUlhd3V2dTNOZWpZcTlnckxkYmJqcU52SlVj?=
- =?utf-8?B?QmtvemxYWCtGZ1c1ajArbTV3QnpjQUdYYTVTM0FVNFRrUnN1ckUzT0dRMWl3?=
- =?utf-8?B?T2lPbzZOdCtCR3MvK21yYW8rZ01zdHlwR3BXSWlidVREbVZMSyttNGZnQ1hO?=
- =?utf-8?B?SU43ZWpOazZaeVFoSTNCc2J5ZEl6TllOZHJRYmRmaTY3Tzc4TzlQeWM1cXlT?=
- =?utf-8?B?NTdwalZNYUVKOGJJbEdJbHF3a1JhWk1VdFBxa0dsSHFWQUh1cFhkNmtMQWpM?=
- =?utf-8?B?N3dWem0vVEFXQy94UmwyZWRWK1ZaUGluS05BallsUEMwQSsxbWN6bXkxTTN2?=
- =?utf-8?B?MWFnbDVOanJZMEVybnVqcXhHOE1hUDlHRUxNY2R4bElJSmQ0ODZqWEJxZzFC?=
- =?utf-8?B?NmxybDFwbDdpTUFKQWhBdHFld3AyTW5BY3QxY3kxU2k4TnRoV3VwdmNqcjVk?=
- =?utf-8?B?RVBnNllUN0ZpTFREem1TN2Uvc1dFcEtaQk5DNi9FQzZEdy9iVWV6d3NVa2gv?=
- =?utf-8?B?aGEzTDV3b0g5VXFmcnhOd1BBWUV3a0IzT3ZFaTlWVWwrbE91dGZGQnBoTkVM?=
- =?utf-8?B?RFpDc2w1VDVjTHdxK1ZOV1FxNE94T3VIU1B4dU1DS3RqMmZpbWJXM2Y2RUQx?=
- =?utf-8?B?bEV1MXhzMEpSREVTanUreGwwTzVlSE9mNi9wb0ZDWUZjL0VUOUp2c0lkbGJj?=
- =?utf-8?B?V05KUXBNM3FyM3pKN3ErZHlBWXZSVE5RcEFNQjU2NERTUEdjUnRxSEJaVFZS?=
- =?utf-8?B?Z2xCK1hJcEVFZFFGMmRFNkpLZVJaWU1VTUxpaUdyVkZOWERmODhGT3RvbXkw?=
- =?utf-8?B?ZUMzbVo4Y3F4elBKblNaYmVVK3NVZnRGNzdoK2txbHlhOWg3Vml6RmJKdVN4?=
- =?utf-8?B?clFJRUJZLzhETTFXOVdXK0pCdHp5V1hhZ2dDODZDemgwdnFNV0pKOFFrZjVM?=
- =?utf-8?B?R2hjZm9ybnBxSVNmMWwrSG1tNlk0U1VNYmJUSVAwYSt4ZEkydnhvYW1kWTRJ?=
- =?utf-8?B?aDd1bVhCUk96UUh4NmZGQ3V2bkVZNm1vaHpyUzdKS3lyZ3hwNDBHV05YeTQy?=
- =?utf-8?B?Zmw4NmpOV1JLYW5GNlVCRDVpVU5WaHBhVXY2SENqNHNlOGxaZGpvMjBNd1Z0?=
- =?utf-8?B?Skl0R0JncWNQVjF4ZDJrNG52ZDh1SWVFUzF3Undka3U0VUpzcTdCUFN5VEl2?=
- =?utf-8?B?TkVWSW5pakEvckVHMHRvNlc3UTdjVVVaY09kaEtYU1ZTSVFzTmZZT0pTc252?=
- =?utf-8?B?b0ordTNoRytna0lFbnp5QkUwZmMvTStTMnhnZDlRTlUrbkZRRHR5d0s1M2Rp?=
- =?utf-8?B?bkJvVHZ3T2hQc1lNY3d3KytuditKTWE2MURIZXdhTDBCczBqNGVDd0d3TFRw?=
- =?utf-8?B?MFhLRTl4WGNBRWlsSnk3RElTNlpCdmxZbDZMdXRBWHY4QjlLcitKQzVPdzZi?=
- =?utf-8?B?bFI0bzhtMGpuMVBDZ0FWUUJWQ0ZTUDdsclFLUXE2SUpFK0t2L3BlczFwVkdQ?=
- =?utf-8?B?SFEyK3FDRHNJNnMvb1RJKzJwQWFtS3pWdlIzUWloR09UTVRtTUFGVW5lZHFI?=
- =?utf-8?B?RUszaFFYcUtyYXB0NDloQ0J0WG41VVh2ZDZuWThKektKd3ZVaERWM1pRM3ow?=
- =?utf-8?B?dlFNOEp5ckcxcjVxZVcwZUcvcFhFMXlSYThwSWVMNGpSUzNWcWxJZzJXejBI?=
- =?utf-8?B?ZlhmNU4yM2l1VTJCT3ZOL21tM2JIWWpKRzNaazlRSWJScER2SUc0MXdkQUVU?=
- =?utf-8?B?V2VJbTlEUDFWUWZBRVFEVDJZZW5KcjVhRkw3RklQWWI0ZmI2QjRRaTNRM2Q5?=
- =?utf-8?B?SnBIQVBhK2hxeHIweHNqZ29VVHNaRHRneXNwNTFQNnQ1QlppZk1TM0MrQk1P?=
- =?utf-8?B?Lzh4eWtDWVhicDRPeWJJM08vWFkvQUYvLzZVTVRxbkx4eDF3cmlYYTRRR1p4?=
- =?utf-8?B?ZnZJSmpCaHNJOVZYeDRlVmR3WWw3RGpDVTlDL3JETlRwbVM1YVYycDQzandy?=
- =?utf-8?B?VWxFYWViM3hyQUhBWGFsV1JNSTY2KzZJMEJyeDVBb3BFQzFoNi9kZWRaVmxj?=
- =?utf-8?B?Tm5talFIaWl4aXA1S2huZE1jVk9BSWZ3Mkd3Z3RFZ0I2UGJBc0Nja28ycHRm?=
- =?utf-8?Q?QYx28Upg753Z5mgdqcAxzdRCc?=
+	=?us-ascii?Q?eG5FUmE+i/SbAODvh7VIgQBdB36U8kXJtWIqkyVbZF8yp1AoW4ROyjLY6gSW?=
+ =?us-ascii?Q?na9aB12raVTsWJ8K7Qw3tztfakfm2lGSOcqXlSjksLbLyhZvgALKNaLJ7HhY?=
+ =?us-ascii?Q?jmYgRXaOpxVABG9JI+s+WJ+GZ5Fj5ij57gjtxsAk3baCZ8ksRr0eMpnD/wDk?=
+ =?us-ascii?Q?0hbj/ISJJ+bDEB3a1VZs5fio8pbf7b5semKcRImNZRkHASo3GbLmUtYnP4Lr?=
+ =?us-ascii?Q?Pm438xYIjP641YLMyvTteGh0GjGUQcMXEoRkncWHq2zzbQzZWH6ZjhI2VaiH?=
+ =?us-ascii?Q?Z+caqnKMul/Jih8BiC3MGvrABGVwi7y464PO+s1l5keeHQoqryK8IZDL/ED2?=
+ =?us-ascii?Q?G+4c+xK61rumntgYP/x0X9XgPnLljXAJHZGy+fAIM4j8LlNrut92JwJjZB5p?=
+ =?us-ascii?Q?m+X4KBFcVu2OgyQs+aqaQMM14msomqvJPEF1MT3bdvxziIWpSQgie6ziBkft?=
+ =?us-ascii?Q?T7O7zXMvDVwMHfMTeGl8jbkkJO/RHlG2VSS797LinqpOWS8cHZZ26DCrO48S?=
+ =?us-ascii?Q?TyvMEHp/DoRF08wTnvwBlafuprFvs9dzM2sCEPZdNBIQLZqwuhp8k5ZwFhOO?=
+ =?us-ascii?Q?B6e0Hi1aJaA3bxvtg2YtLq+0DFdNO2YjwR2hnhmms8+wEu57Vxt7PSXYdQjn?=
+ =?us-ascii?Q?3eRg8ybdQxHYyS/PoGyua+DBI5TBcWLYnEVSCegV8hiFOYSJhJjHWxt+dAb5?=
+ =?us-ascii?Q?8sweRwOmm45Jy/3rT/ssGolep8jq0Qj8Nr1ppV4ajGWeyGeI9mD1X9bW1oo7?=
+ =?us-ascii?Q?nK6hZ5clZbwRzYWhDD4Ovvb3MuZ8w6Mt2PpMmmTiF2wwghz3Gek0lLY3a5Rv?=
+ =?us-ascii?Q?+BuEq2UyemstCUjk1h6Lg9whv07zPsamjH37vzLujF+blhzqY5xQr890tq/t?=
+ =?us-ascii?Q?aOQ+UjKpnDtGOT+p9cjomKiGEsSErufSZNKvcd/9kshWm/Mr0jZNGdOjtTRa?=
+ =?us-ascii?Q?BvDWPfAsaAtY+Ml7QhACg810TT3WHvm/WvV+giBj/Ihs5Vl5BLJNVKJHg7AT?=
+ =?us-ascii?Q?2EGSwvA7KbGPqV2V4ymJUswBhLMwuVKa6YbEJLWLxz0G/RP+wr9rl3dpog5c?=
+ =?us-ascii?Q?FoqQAKT9VWbR8hC0mOlqGG0B9IEENy/gjdxxNckbXkbCgNg64xoBTfKq84pJ?=
+ =?us-ascii?Q?2i2aH3uEkc26P+253Zcplp3tTRBxD0yca3TLHpYa4ObzOLszi6ToE10gBzR3?=
+ =?us-ascii?Q?YTtdqYWFD25hNmp+vJ5SYZoTjWf1FifS5H/RZ5XeeopLUYXcpiqhK1H1UiKV?=
+ =?us-ascii?Q?TlLdSAu6eIJneLECB9T/G8pw5EI41zfmYOl4Hvuf8mJ2BxHpIDRMx+lu5Afp?=
+ =?us-ascii?Q?ikFFWfr2ENdLTkucNC17FzvmyUYSlL+KYyDCZ6Flmo3f/x+CnhBj9TP85mJj?=
+ =?us-ascii?Q?3UvxC+/UsUjA/G1gbMSDr2wur2tpWZAGY14rEyQU5AnDSxeYiO/nRfGkaNll?=
+ =?us-ascii?Q?wk3MypPTt3+tLb87VENzs2MaVCuCj+TBDzNipPwKe3SP5f3Jv7V2NlYp/iHf?=
+ =?us-ascii?Q?lpGUtB2YI0MYp4n2Wy7R0dOUtBTKt24+ABNBmm6hC6OWJJTqSTGDElytgknQ?=
+ =?us-ascii?Q?8X4HKmjIrmVeZzDsCvfiitNomNaZ8L7aptOM20PY?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff45d070-3fb5-4bed-d6d0-08db7df5428a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a48dfb4-29b7-4940-153d-08db7df54963
 X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3497.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2023 07:47:34.4783
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2023 07:47:45.8370
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +CbciAkroLyRhcrNcRJ8r0yHMWet4cEgYkl77tjRdRJmlTQwsAHgnspuzV5zvZGEtF8dHQSdfmLZFFf/FSHXqA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: N/mGt0X8KiS+euUyDJePOOiz5yJgNh7csjWGRvGpFJvHDTQwyhylMNUdEMeiCds7kgumqRQRHhLj4upjlKii6Q==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8437
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
@@ -142,265 +135,209 @@ X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-As is described in the "How to use MPTCP?" section in MPTCP wiki [1]:
+The patch introduces new program type BPF_PROG_TYPE_CGROUP_SOCKINIT
+and attach type BPF_CGROUP_SOCKINIT on cgroup basis.
 
-"Your app can create sockets with IPPROTO_MPTCP as the proto:
-( socket(AF_INET, SOCK_STREAM, IPPROTO_MPTCP); ). Legacy apps can be
-forced to create and use MPTCP sockets instead of TCP ones via the
-mptcpize command bundled with the mptcpd daemon."
+Define this program by BPF_PROG_TYPE(), and implement two operations:
+cg_sockinit_prog_ops and cg_sockinit_verifier_ops.
 
-But the mptcpize (LD_PRELOAD technique) command has some limitations
-[2]:
+Signed-off-by: Geliang Tang <geliang.tang@suse.com>
+---
+ include/linux/bpf_types.h |  2 ++
+ include/uapi/linux/bpf.h  |  8 +++++
+ kernel/bpf/cgroup.c       | 66 +++++++++++++++++++++++++++++++++++++++
+ kernel/bpf/syscall.c      |  7 +++++
+ kernel/bpf/verifier.c     |  1 +
+ 5 files changed, 84 insertions(+)
 
- - it doesn't work if the application is not using libc (e.g. GoLang
-apps)
- - in some envs, it might not be easy to set env vars / change the way
-apps are launched, e.g. on Android
- - mptcpize needs to be launched with all apps that want MPTCP: we could
-have more control from BPF to enable MPTCP only for some apps or all the
-ones of a netns or a cgroup, etc.
- - it is not in BPF, we cannot talk about it at netdev conf.
-
-So this patchset attempts to use BPF to implement functions similer to
-mptcpize.
-
-The main idea is add a hook in sys_socket() to change the protocol id
-from IPPROTO_TCP (or 0) to IPPROTO_MPTCP.
-
-1. This first solution [3] is using "cgroup/sock_create":
-
-Implement a new helper bpf_mptcpify() to change the protocol id:
-
-+BPF_CALL_1(bpf_mptcpify, struct sock *, sk)
-+{
-+	if (sk && sk_fullsock(sk) && sk->sk_protocol == IPPROTO_TCP) {
-+		sk->sk_protocol = IPPROTO_MPTCP;
-+		return (unsigned long)sk;
-+	}
-+
-+	return (unsigned long)NULL;
-+}
-+
-+const struct bpf_func_proto bpf_mptcpify_proto = {
-+	.func		= bpf_mptcpify,
-+	.gpl_only	= false,
-+	.ret_type	= RET_PTR_TO_BTF_ID_OR_NULL,
-+	.ret_btf_id	= &btf_sock_ids[BTF_SOCK_TYPE_SOCK],
-+	.arg1_type	= ARG_PTR_TO_CTX,
-+};
-
-Add a hook in "cgroup/sock_create" section, invoking bpf_mptcpify()
-helper in this hook:
-
-+SEC("cgroup/sock_create")
-+int sock(struct bpf_sock *ctx)
-+{
-+	struct sock *sk;
-+
-+	if (ctx->type != SOCK_STREAM)
-+		return 1;
-+
-+	sk = bpf_mptcpify(ctx);
-+	if (!sk)
-+		return 1;
-+
-+	protocol = sk->sk_protocol;
-+	return 1;
-+}
-
-But this solution doesn't work, because the sock_create section is
-hooked at the end of inet_create(). It's too late to change the protocol
-id.
-
-2. The second solution [4] is using "fentry":
-
-Implement a bpf_mptcpify() helper:
-
-+BPF_CALL_1(bpf_mptcpify, struct socket_args *, args)
-+{
-+	if (args->family == AF_INET &&
-+	    args->type == SOCK_STREAM &&
-+	    (!args->protocol || args->protocol == IPPROTO_TCP))
-+		args->protocol = IPPROTO_MPTCP;
-+
-+	return 0;
-+}
-+
-+BTF_ID_LIST(bpf_mptcpify_btf_ids)
-+BTF_ID(struct, socket_args)
-+
-+static const struct bpf_func_proto bpf_mptcpify_proto = {
-+	.func		= bpf_mptcpify,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_BTF_ID,
-+	.arg1_btf_id	= &bpf_mptcpify_btf_ids[0],
-+};
-
-Add a new wrapper socket_create() in sys_socket() path, passing a
-pointer of struct socket_args (int family; int type; int protocol) to
-the wrapper.
-
-+int socket_create(struct socket_args *args, struct socket **res)
-+{
-+	return sock_create(args->family, args->type, args->protocol, res);
-+}
-+EXPORT_SYMBOL(socket_create);
-+
- /**
-  *	sock_create_kern - creates a socket (kernel space)
-  *	@net: net namespace
-@@ -1608,6 +1614,7 @@  EXPORT_SYMBOL(sock_create_kern);
- 
- static struct socket *__sys_socket_create(int family, int type, int protocol)
- {
-+	struct socket_args args = { 0 };
- 	struct socket *sock;
- 	int retval;
- 
-@@ -1621,7 +1628,10 @@  static struct socket *__sys_socket_create(int family, int type, int protocol)
- 		return ERR_PTR(-EINVAL);
- 	type &= SOCK_TYPE_MASK;
- 
--	retval = sock_create(family, type, protocol, &sock);
-+	args.family = family;
-+	args.type = type;
-+	args.protocol = protocol;
-+	retval = socket_create(&args, &sock);
- 	if (retval < 0)
- 		return ERR_PTR(retval);
-
-Add "fentry" hook to the newly added wrapper, invoking bpf_mptcpify()
-in the hook:
-
-+SEC("fentry/socket_create")
-+int BPF_PROG(trace_socket_create, void *args,
-+		struct socket **res)
-+{
-+	bpf_mptcpify(args);
-+	return 0;
-+}
-
-This version works. But it's just a work around version. Since the code
-to add a wrapper to sys_socket() is not very elegant indeed, and it
-shouldn't be accepted by upstream.
-
-3. The last solution is this patchset itself:
-
-Introduce new program type BPF_PROG_TYPE_CGROUP_SOCKINIT and attach type
-BPF_CGROUP_SOCKINIT on cgroup basis.
-
-Define BPF_CGROUP_RUN_PROG_SOCKINIT() helper, and implement
-__cgroup_bpf_run_sockinit() helper to run a sockinit program:
-
-+#define BPF_CGROUP_RUN_PROG_SOCKINIT(family, type, protocol)		       \
-+({									       \
-+	int __ret = 0;							       \
-+	if (cgroup_bpf_enabled(CGROUP_SOCKINIT))			       \
-+		__ret = __cgroup_bpf_run_sockinit(family, type, protocol,      \
-+						  CGROUP_SOCKINIT);	       \
-+	__ret;								       \
-+})
-+
-
-Invoke BPF_CGROUP_RUN_PROG_SOCKINIT() in __socket_create() to change
-the arguments:
-
-@@ -1469,6 +1469,12 @@  int __sock_create(struct net *net, int family, int type, int protocol,
- 	struct socket *sock;
- 	const struct net_proto_family *pf;
- 
-+	if (!kern) {
-+		err = BPF_CGROUP_RUN_PROG_SOCKINIT(&family, &type, &protocol);
-+		if (err)
-+			return err;
-+	}
-+
- 	/*
- 	 *      Check protocol is in range
- 	 */
-
-Define BPF program in this newly added 'sockinit' SEC, so it will be
-hooked in BPF_CGROUP_RUN_PROG_SOCKINIT() in __socket_create().
-
-@@ -158,6 +158,11 @@  static struct sec_name_test tests[] = {
- 		{0, BPF_PROG_TYPE_CGROUP_SOCKOPT, BPF_CGROUP_SETSOCKOPT},
- 		{0, BPF_CGROUP_SETSOCKOPT},
- 	},
-+	{
-+		"cgroup/sockinit",
-+		{0, BPF_PROG_TYPE_CGROUP_SOCKINIT, BPF_CGROUP_SOCKINIT},
-+		{0, BPF_CGROUP_SOCKINIT},
-+	},
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index fc0d6f32c687..07e1f21e82e9 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -56,6 +56,8 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_CGROUP_SYSCTL, cg_sysctl,
+ 	      struct bpf_sysctl, struct bpf_sysctl_kern)
+ BPF_PROG_TYPE(BPF_PROG_TYPE_CGROUP_SOCKOPT, cg_sockopt,
+ 	      struct bpf_sockopt, struct bpf_sockopt_kern)
++BPF_PROG_TYPE(BPF_PROG_TYPE_CGROUP_SOCKINIT, cg_sockinit,
++	      struct bpf_sockinit_ctx, struct bpf_sockinit_ctx)
+ #endif
+ #ifdef CONFIG_BPF_LIRC_MODE2
+ BPF_PROG_TYPE(BPF_PROG_TYPE_LIRC_MODE2, lirc_mode2,
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 60a9d59beeab..cb882ab8065d 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -980,6 +980,7 @@ enum bpf_prog_type {
+ 	BPF_PROG_TYPE_CGROUP_SYSCTL,
+ 	BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE,
+ 	BPF_PROG_TYPE_CGROUP_SOCKOPT,
++	BPF_PROG_TYPE_CGROUP_SOCKINIT,
+ 	BPF_PROG_TYPE_TRACING,
+ 	BPF_PROG_TYPE_STRUCT_OPS,
+ 	BPF_PROG_TYPE_EXT,
+@@ -1013,6 +1014,7 @@ enum bpf_attach_type {
+ 	BPF_CGROUP_UDP6_RECVMSG,
+ 	BPF_CGROUP_GETSOCKOPT,
+ 	BPF_CGROUP_SETSOCKOPT,
++	BPF_CGROUP_SOCKINIT,
+ 	BPF_TRACE_RAW_TP,
+ 	BPF_TRACE_FENTRY,
+ 	BPF_TRACE_FEXIT,
+@@ -6829,6 +6831,12 @@ struct bpf_raw_tracepoint_args {
+ 	__u64 args[0];
  };
-
-+SEC("cgroup/sockinit")
-+int mptcpify(struct bpf_sockinit_ctx *ctx)
+ 
++struct bpf_sockinit_ctx {
++	__u32 family;
++	__u32 type;
++	__u32 protocol;
++};
++
+ /* DIRECT:  Skip the FIB rules and go to FIB table associated with device
+  * OUTPUT:  Do lookup from egress perspective; default is ingress
+  */
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 5b2741aa0d9b..93b9f404a007 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -2505,6 +2505,72 @@ const struct bpf_verifier_ops cg_sockopt_verifier_ops = {
+ const struct bpf_prog_ops cg_sockopt_prog_ops = {
+ };
+ 
++static const struct bpf_func_proto *
++cgroup_sockinit_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
 +{
-+	if ((ctx->family == AF_INET || ctx->family == AF_INET6) &&
-+	    ctx->type == SOCK_STREAM &&
-+	    (!ctx->protocol || ctx->protocol == IPPROTO_TCP)) {
-+		ctx->protocol = IPPROTO_MPTCP;
++	const struct bpf_func_proto *func_proto;
++
++	func_proto = cgroup_common_func_proto(func_id, prog);
++	if (func_proto)
++		return func_proto;
++
++	func_proto = cgroup_current_func_proto(func_id, prog);
++	if (func_proto)
++		return func_proto;
++
++	switch (func_id) {
++	default:
++		return bpf_base_func_proto(func_id);
++	}
++}
++
++static bool cgroup_sockinit_is_valid_access(int off, int size,
++					    enum bpf_access_type type,
++					    const struct bpf_prog *prog,
++					    struct bpf_insn_access_aux *info)
++{
++	const int size_default = sizeof(__u32);
++
++	if (off < 0 || off + size > sizeof(struct bpf_sockinit_ctx))
++		return false;
++
++	if (off % size != 0)
++		return false;
++
++	switch (off) {
++	case bpf_ctx_range(struct bpf_sockinit_ctx, family):
++		bpf_ctx_record_field_size(info, size_default);
++		if (!bpf_ctx_narrow_access_ok(off, size, size_default))
++			return false;
++		break;
++	case bpf_ctx_range(struct bpf_sockinit_ctx, type):
++		bpf_ctx_record_field_size(info, size_default);
++		if (!bpf_ctx_narrow_access_ok(off, size, size_default))
++			return false;
++		break;
++	case bpf_ctx_range(struct bpf_sockinit_ctx, protocol):
++		if (type == BPF_READ) {
++			bpf_ctx_record_field_size(info, size_default);
++			return bpf_ctx_narrow_access_ok(off, size, size_default);
++		} else {
++			return size == size_default;
++		}
++	default:
++		if (size != size_default)
++			return false;
 +	}
 +
-+	return 1;
++	return true;
 +}
-
-This version is the best solution we have found so far.
-
-[1]
-https://github.com/multipath-tcp/mptcp_net-next/wiki
-[2]
-https://github.com/multipath-tcp/mptcp_net-next/issues/79
-[3]
-https://patchwork.kernel.org/project/mptcp/cover/cover.1688215769.git.geliang.tang@suse.com/
-[4]
-https://patchwork.kernel.org/project/mptcp/cover/cover.1688366249.git.geliang.tang@suse.com/
-
-v2:
-
- - Fix build selftests errors reported by CI:
-
-     /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/mptcp.c:218:2: note: ‘snprintf’ output between 102 and 133 bytes into a destination of size 128
-    218 |  snprintf(cmd, sizeof(cmd),
-        |  ^~~~~~~~~~~~~~~~~~~~~~~~~~
-    219 |    "ip netns exec %s nstat -asz MPTcpExtMPCapableSYNACKRX | \
-        |    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    220 |    awk 'NR==1 {next} {print $2}' | \
-        |    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    221 |    grep -q 1", NS_TEST);
-        |    ~~~~~~~~~~~~~~~~~~~~
-
-Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/79
-
-Geliang Tang (8):
-  bpf: Add new prog type sockinit
-  bpf: Run a sockinit program
-  net: socket: run sockinit hooks
-  libbpf: Support sockinit hook
-  selftests/bpf: Add mptcpify program
-  selftests/bpf: use random netns name for mptcp
-  selftests/bpf: add two mptcp netns helpers
-  selftests/bpf: Add mptcpify selftest
-
- include/linux/bpf-cgroup-defs.h               |   1 +
- include/linux/bpf-cgroup.h                    |  14 ++
- include/linux/bpf_types.h                     |   2 +
- include/uapi/linux/bpf.h                      |   8 ++
- kernel/bpf/cgroup.c                           |  90 +++++++++++++
- kernel/bpf/syscall.c                          |   7 +
- kernel/bpf/verifier.c                         |   1 +
- net/socket.c                                  |   6 +
- tools/include/uapi/linux/bpf.h                |   8 ++
- tools/lib/bpf/libbpf.c                        |   3 +
- tools/lib/bpf/libbpf_probes.c                 |   1 +
- .../bpf/cgroup_getset_retval_hooks.h          |   1 +
- .../testing/selftests/bpf/prog_tests/mptcp.c  | 123 ++++++++++++++++--
- .../selftests/bpf/prog_tests/section_names.c  |   5 +
- tools/testing/selftests/bpf/progs/mptcpify.c  |  26 ++++
- 15 files changed, 287 insertions(+), 9 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/mptcpify.c
-
++
++const struct bpf_verifier_ops cg_sockinit_verifier_ops = {
++	.get_func_proto		= cgroup_sockinit_func_proto,
++	.is_valid_access	= cgroup_sockinit_is_valid_access,
++};
++
++const struct bpf_prog_ops cg_sockinit_prog_ops = {
++};
++
+ /* Common helpers for cgroup hooks. */
+ const struct bpf_func_proto *
+ cgroup_common_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index a2aef900519c..2952dd88c614 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2513,6 +2513,7 @@ static bool is_net_admin_prog_type(enum bpf_prog_type prog_type)
+ 	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+ 	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
+ 	case BPF_PROG_TYPE_CGROUP_SYSCTL:
++	case BPF_PROG_TYPE_CGROUP_SOCKINIT:
+ 	case BPF_PROG_TYPE_SOCK_OPS:
+ 	case BPF_PROG_TYPE_EXT: /* extends any prog */
+ 	case BPF_PROG_TYPE_NETFILTER:
+@@ -3574,6 +3575,8 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
+ 	case BPF_CGROUP_GETSOCKOPT:
+ 	case BPF_CGROUP_SETSOCKOPT:
+ 		return BPF_PROG_TYPE_CGROUP_SOCKOPT;
++	case BPF_CGROUP_SOCKINIT:
++		return BPF_PROG_TYPE_CGROUP_SOCKINIT;
+ 	case BPF_TRACE_ITER:
+ 	case BPF_TRACE_RAW_TP:
+ 	case BPF_TRACE_FENTRY:
+@@ -3640,6 +3643,7 @@ static int bpf_prog_attach(const union bpf_attr *attr)
+ 	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+ 	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
+ 	case BPF_PROG_TYPE_CGROUP_SYSCTL:
++	case BPF_PROG_TYPE_CGROUP_SOCKINIT:
+ 	case BPF_PROG_TYPE_SOCK_OPS:
+ 	case BPF_PROG_TYPE_LSM:
+ 		if (ptype == BPF_PROG_TYPE_LSM &&
+@@ -3682,6 +3686,7 @@ static int bpf_prog_detach(const union bpf_attr *attr)
+ 	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+ 	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
+ 	case BPF_PROG_TYPE_CGROUP_SYSCTL:
++	case BPF_PROG_TYPE_CGROUP_SOCKINIT:
+ 	case BPF_PROG_TYPE_SOCK_OPS:
+ 	case BPF_PROG_TYPE_LSM:
+ 		return cgroup_bpf_prog_detach(attr, ptype);
+@@ -3726,6 +3731,7 @@ static int bpf_prog_query(const union bpf_attr *attr,
+ 	case BPF_CGROUP_SYSCTL:
+ 	case BPF_CGROUP_GETSOCKOPT:
+ 	case BPF_CGROUP_SETSOCKOPT:
++	case BPF_CGROUP_SOCKINIT:
+ 	case BPF_LSM_CGROUP:
+ 		return cgroup_bpf_prog_query(attr, uattr);
+ 	case BPF_LIRC_MODE2:
+@@ -4717,6 +4723,7 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+ 	case BPF_PROG_TYPE_CGROUP_DEVICE:
+ 	case BPF_PROG_TYPE_CGROUP_SYSCTL:
+ 	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
++	case BPF_PROG_TYPE_CGROUP_SOCKINIT:
+ 		ret = cgroup_bpf_link_attach(attr, prog);
+ 		break;
+ 	case BPF_PROG_TYPE_EXT:
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 11e54dd8b6dd..d0ade7759123 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -14316,6 +14316,7 @@ static int check_return_code(struct bpf_verifier_env *env)
+ 	case BPF_PROG_TYPE_CGROUP_DEVICE:
+ 	case BPF_PROG_TYPE_CGROUP_SYSCTL:
+ 	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
++	case BPF_PROG_TYPE_CGROUP_SOCKINIT:
+ 		break;
+ 	case BPF_PROG_TYPE_RAW_TRACEPOINT:
+ 		if (!env->prog->aux->attach_btf_id)
 -- 
 2.35.3
 
