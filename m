@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-4152-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4153-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C88174944F
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 05:36:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE8F4749454
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 05:36:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CD4A1C20C9B
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 03:36:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A9B72811A6
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 03:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D1A515AC;
-	Thu,  6 Jul 2023 03:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B0415CE;
+	Thu,  6 Jul 2023 03:35:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB0FA5A;
-	Thu,  6 Jul 2023 03:35:00 +0000 (UTC)
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F261F198E;
-	Wed,  5 Jul 2023 20:34:59 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6b708b97418so233031a34.3;
-        Wed, 05 Jul 2023 20:34:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32952A5A;
+	Thu,  6 Jul 2023 03:35:05 +0000 (UTC)
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E221BCA;
+	Wed,  5 Jul 2023 20:35:03 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b80b343178so625325ad.0;
+        Wed, 05 Jul 2023 20:35:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688614499; x=1691206499;
+        d=gmail.com; s=20221208; t=1688614503; x=1691206503;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nhOq2nzPha5tdwWCWLTN4pqz4R1IbYNeZFnIcmPu3ks=;
-        b=Uj7/BR1Q5MVH1+yL4UGWosf1Y3f0xKVrm1NT5GRNciKarBbr8jDnYRP4/s/FlyMZkl
-         swR73/VNgq4QCXdqjThlOZjRNFQaLkrZQyirSAoxC44D9YVnYTjDJ1D4euhWHLkPpMIj
-         PrAcvdt7weLWbOBtmtevPW8op/IKgFRmuvGj8UPQI+SQAsUU2jcm9sWvasqCKfQ54nhv
-         slNEFSJxRli28N5Cgx9rokQcsPLogF2JQJ3jjhSeNSUr1hKu7aWl29eXgE5b5+FbHp4p
-         GsoXR+GoOCnb3hkom8pBZxuUPpsYEGKatEQkB/HuHMa1q6jIWrA4EvLtl5U4mrdmg6Qj
-         5hBw==
+        bh=JwcmYs5zpVjZuQmezI+xbvaGS8SBxqFvKsz2XGqKKoY=;
+        b=Xh6FFBG8SnsEBV9Bo1mDrlVJg8Yr6pVxMawnKWc4C2kF2KzaYlls5r4US2QZrD9t7l
+         YQrjR4rqzuqPpvYmDHND2WOsG4W0F6SP+sOxbsME9tkIzoi7QpldMUI7Sf58G8JEZ5kk
+         tXALQUfg+4uFGiyTkEs8I7LBBstu8LaH98dacjgLn/vVknKF4ziIFZ/BiclGuelbRmLs
+         wakfAci2kO8vkWEKpmWjeS9JsL1gGjdIwBkg6bikYWhtgpU1AaHe9RHcBFu87tgFThLE
+         LanhBDOGZI+4HZMo1M7svexLo/uMAFODtPeN9//EglfGc9yDUPR+jRFbcU8VtOEha6Ra
+         NEUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688614499; x=1691206499;
+        d=1e100.net; s=20221208; t=1688614503; x=1691206503;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nhOq2nzPha5tdwWCWLTN4pqz4R1IbYNeZFnIcmPu3ks=;
-        b=JR1iRdnAGMJvQPhmi4Ge0VbIOObgFvKBz74FifsacsiOCxT1bRee7+pL9C31PYJ312
-         y3XzieSsNSSWjNEgzAWMt9u7bmdru5ggtiluFm109VeCfepCd1OenIFfHQF3ZEVnyR21
-         +/64iCeR86ZwuqjNKRFutp1qgBFTOTjOw1rbZqRvkpR3CJBgpui1ivmAXT2JF27/6gl+
-         vsNMqCFt9M/J9vXZOh24pX0PsDoXETePati8Din4TE1gNYfAaP0vsDDfqpXZnjPMLeVq
-         gMWDez5c48tssDc48JiP7dnttxa9WDwa9XeQih7QUL8X7x2Zq1zpwySAsCWY/vnTrHBm
-         /9Vg==
-X-Gm-Message-State: ABy/qLYaLck/2oXISXtehZACB1vS6JybIXQaLL6Okjy8QvXjdM3UgmBn
-	LGsPdTP53cFHnI3pmjeLAwo=
-X-Google-Smtp-Source: APBJJlF5gF6mjB+gQ4w/G/XlbPW1bbTtwwRoVCSiuv8ke/BdS5mINXdqW7Fv5FndoeaPv8nvws629A==
-X-Received: by 2002:a05:6870:1f8f:b0:1b0:1e3f:1369 with SMTP id go15-20020a0568701f8f00b001b01e3f1369mr1399435oac.57.1688614499216;
-        Wed, 05 Jul 2023 20:34:59 -0700 (PDT)
+        bh=JwcmYs5zpVjZuQmezI+xbvaGS8SBxqFvKsz2XGqKKoY=;
+        b=Ivrqpu5lwrwBwu7A8PEP7h2ImMJg6Gc6zI391LdwCLSxGOiUJ9zOYwPlSjGawqLOia
+         zotOkXdyXRw45i2eGuPbzFNdm6tYhSmvOJCwBcMQFPYUuOdybr35mMc8X89lxTV5z9Og
+         3yZ60h1H9nPQNrbZZnIJXK25QRp9jOMcSqyJlOQ3iA0j3xQNjoMUnJ5CKY1x5M4UfHwl
+         uTPf6yXMxCRkIAFUwRByP5Z5qo5yFCr36G7qWTXby729Z4eAQ6dgyCY3UTspk9M8IOch
+         rMGVp5xX3oSfGY98hT83+L2aadGuj2C/pYz1pah3FC8CszlGeWxFa7+x1mfe+xvDk4/j
+         1WYA==
+X-Gm-Message-State: ABy/qLa+WfHY69mEPXfqzerGYfrxu2NS2MIZn2xsRzN1cf6f5ZF1ou3h
+	h0oO6QSM81uqvjqprLJKrVaVWrqZUOQ=
+X-Google-Smtp-Source: APBJJlG0lZp8369hXp7zzA3vLEN8NovtvLqT6YlpqDUdUjdLAhuxgGIqC9NS5DfeMKZpml7yiyujUA==
+X-Received: by 2002:a05:6a20:4429:b0:121:7454:be2a with SMTP id ce41-20020a056a20442900b001217454be2amr641953pzb.45.1688614503296;
+        Wed, 05 Jul 2023 20:35:03 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:400::5:f715])
-        by smtp.gmail.com with ESMTPSA id v24-20020a631518000000b0053051d50a48sm268825pgl.79.2023.07.05.20.34.57
+        by smtp.gmail.com with ESMTPSA id b5-20020a170902d50500b001aae625e422sm227108plg.37.2023.07.05.20.35.01
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 05 Jul 2023 20:34:58 -0700 (PDT)
+        Wed, 05 Jul 2023 20:35:02 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: daniel@iogearbox.net,
 	andrii@kernel.org,
@@ -67,9 +67,9 @@ Cc: tj@kernel.org,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH v4 bpf-next 02/14] bpf: Simplify code of destroy_mem_alloc() with kmemdup().
-Date: Wed,  5 Jul 2023 20:34:35 -0700
-Message-Id: <20230706033447.54696-3-alexei.starovoitov@gmail.com>
+Subject: [PATCH v4 bpf-next 03/14] bpf: Let free_all() return the number of freed elements.
+Date: Wed,  5 Jul 2023 20:34:36 -0700
+Message-Id: <20230706033447.54696-4-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 In-Reply-To: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
 References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
@@ -89,39 +89,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Use kmemdup() to simplify the code.
+Let free_all() helper return the number of freed elements.
+It's not used in this patch, but helps in debug/development of bpf_mem_alloc.
+
+For example this diff for __free_rcu():
+-       free_all(llist_del_all(&c->waiting_for_gp_ttrace), !!c->percpu_size);
++       printk("cpu %d freed %d objs after tasks trace\n", raw_smp_processor_id(),
++       	free_all(llist_del_all(&c->waiting_for_gp_ttrace), !!c->percpu_size));
+
+would show how busy RCU tasks trace is.
+In artificial benchmark where one cpu is allocating and different cpu is freeing
+the RCU tasks trace won't be able to keep up and the list of objects
+would keep growing from thousands to millions and eventually OOMing.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Acked-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/memalloc.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ kernel/bpf/memalloc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index cc5b8adb4c83..b0011217be6c 100644
+index b0011217be6c..693651d2648b 100644
 --- a/kernel/bpf/memalloc.c
 +++ b/kernel/bpf/memalloc.c
-@@ -499,7 +499,7 @@ static void destroy_mem_alloc(struct bpf_mem_alloc *ma, int rcu_in_progress)
- 		return;
- 	}
- 
--	copy = kmalloc(sizeof(*ma), GFP_KERNEL);
-+	copy = kmemdup(ma, sizeof(*ma), GFP_KERNEL);
- 	if (!copy) {
- 		/* Slow path with inline barrier-s */
- 		free_mem_alloc(ma);
-@@ -507,10 +507,7 @@ static void destroy_mem_alloc(struct bpf_mem_alloc *ma, int rcu_in_progress)
- 	}
- 
- 	/* Defer barriers into worker to let the rest of map memory to be freed */
--	copy->cache = ma->cache;
--	ma->cache = NULL;
--	copy->caches = ma->caches;
--	ma->caches = NULL;
-+	memset(ma, 0, sizeof(*ma));
- 	INIT_WORK(&copy->work, free_mem_alloc_deferred);
- 	queue_work(system_unbound_wq, &copy->work);
+@@ -223,12 +223,16 @@ static void free_one(void *obj, bool percpu)
+ 	kfree(obj);
  }
+ 
+-static void free_all(struct llist_node *llnode, bool percpu)
++static int free_all(struct llist_node *llnode, bool percpu)
+ {
+ 	struct llist_node *pos, *t;
++	int cnt = 0;
+ 
+-	llist_for_each_safe(pos, t, llnode)
++	llist_for_each_safe(pos, t, llnode) {
+ 		free_one(pos, percpu);
++		cnt++;
++	}
++	return cnt;
+ }
+ 
+ static void __free_rcu(struct rcu_head *head)
 -- 
 2.34.1
 
