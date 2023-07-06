@@ -1,202 +1,199 @@
-Return-Path: <bpf+bounces-4176-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4177-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACB9E7494DE
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 07:10:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE25D7494EF
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 07:17:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D746F1C20C7D
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 05:10:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BD1A1C20CC5
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 05:17:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B6B810EC;
-	Thu,  6 Jul 2023 05:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC1910EC;
+	Thu,  6 Jul 2023 05:16:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77D61EC9
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 05:10:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F034C433C7;
-	Thu,  6 Jul 2023 05:10:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688620215;
-	bh=UmRuzOJt+ryrnFuwX+ytQQxkA5mGM4cYrZAvC81+VW0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=nOiFQFT1HxSRxmkGVv0BKxN1bSNrGkM9k0rrQi/q8xjFFDS+FbE4O7QswwAJPr33l
-	 FONsFjjCfhtmpZYa+ePf2RdY8xMi6aQLoNroCJYDph2EOgj4mQsDEsqFsPZUVKlTOU
-	 Z1CylwK/DH6fzlHN01+ycm9TbCXXv3diLuSAot3AHa4zbdRaXjB5ZmFHMSHMaOJTn3
-	 +hUPxvdYxyOZ01DMH2QkNms8f70Gt+ZlzhYN9vuT+JG70RumgxZoapzWR9ZvqB4Ycp
-	 VOoo8aHVc8sNWtYVUpNYtrecP94vjk8iKcJQX/VjqlbQ3o7tv+HBKzltzGA7aSroqr
-	 HdtdTpL6AKBOw==
-Date: Thu, 6 Jul 2023 14:10:12 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, lkml
- <linux-kernel@vger.kernel.org>, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Subject: Re: [PATCH] fprobe: Ensure running fprobe_exit_handler() finished
- before calling rethook_free()
-Message-Id: <20230706141012.c1a0ae0901e0fdec7b3078c7@kernel.org>
-In-Reply-To: <20230705212657.5968daf7@gandalf.local.home>
-References: <20230628012305.978e34d44f1a53fe20327fde@kernel.org>
-	<168796344232.46347.7947681068822514750.stgit@devnote2>
-	<20230705212657.5968daf7@gandalf.local.home>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE01BA47
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 05:16:59 +0000 (UTC)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA05D131;
+	Wed,  5 Jul 2023 22:16:57 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-666ed230c81so358681b3a.0;
+        Wed, 05 Jul 2023 22:16:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688620617; x=1691212617;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mx7w2Kkc75R0iLRtqLk6J1lR9xFeYMxQMIJBRyYkH78=;
+        b=seCUmcP4lI6wdy0X4XOKpUvypqAO6BqDAiDkndg1lM9nIdWIeidGgqdzoq+cO/sGOL
+         iW+bUDaoevC6dICM5bryXfOJh7QQ0F+GcwjIJWNaAOBwajqOALS4H4qmYKNX6jURSo2H
+         wsIZ7mkjO1DQNyQB3uCP/CIWyNFQmBkm+64G79jKePEPPRH9wvjottZF5aRy/c8VyssW
+         CaiR/VzphbKL7wym3o1uXQJYAynKUItVDnhzOhvs/jpWb58oi/qMrOZRjQVmYMISjqi6
+         hwwqsHFw82ulyDEpQk+/bIaWpzLEIPQm5ICi1IPwJqt0cx4ohtT0e7VKEZaxtxgV4Lj9
+         l8cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688620617; x=1691212617;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mx7w2Kkc75R0iLRtqLk6J1lR9xFeYMxQMIJBRyYkH78=;
+        b=N2wvlFa8UnVJDmQENVpvgTNQOviHw1AeSq5kAUGdGwGNwp5IvERqEXR8kLzPtEXCfu
+         +5GbPeDzs1zNm4TPCnqe0IGCqfle3wUmjelHwDhgSoGXFlOL7/rZ+RzmaoHCCKQhbmxm
+         pMXxbIXSUnRwSZEgEE9cqbTUb/GPSbrUcr+tMffSTxcC8N674lq70ayk0sciWGpol4tI
+         jnPwI5Vo1CoAMYlWSX8NTPGyni8kcaScf3aHer1c4GXEQ4K1elOeOhike8LoZgdJxpA4
+         TSfnmQYiTD+jW4a1h0ESuzeOss1Xu5inw0G9cNWlcAaGwlOM+YPwkhQlDb7J2aFaZhn9
+         F3xw==
+X-Gm-Message-State: ABy/qLZe332+u+u10DvnRkRYZ26SL/+KCsZGH6m09K9aI1oS2xnU9GXG
+	yfiO/uuySTd/JBQgDttdlNU=
+X-Google-Smtp-Source: APBJJlEMMgVkMBr2cG8PfgQ9ELM03LrpG8fUZq7Uv4DlAHcRjZmgHr6VAuqLcEHtNIpfg1xW5HBO/g==
+X-Received: by 2002:a05:6a00:1709:b0:67c:5c21:b430 with SMTP id h9-20020a056a00170900b0067c5c21b430mr1163971pfc.33.1688620616758;
+        Wed, 05 Jul 2023 22:16:56 -0700 (PDT)
+Received: from localhost ([2605:59c8:148:ba10::41f])
+        by smtp.gmail.com with ESMTPSA id 4-20020aa79204000000b00679a4b56e41sm392371pfo.43.2023.07.05.22.16.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Jul 2023 22:16:56 -0700 (PDT)
+Date: Wed, 05 Jul 2023 22:16:54 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+ Tero Kristo <tero.kristo@linux.intel.com>
+Cc: Shuah Khan <shuah@kernel.org>, 
+ Thomas Gleixner <tglx@linutronix.de>, 
+ X86 ML <x86@kernel.org>, 
+ Borislav Petkov <bp@alien8.de>, 
+ Dave Hansen <dave.hansen@linux.intel.com>, 
+ Ingo Molnar <mingo@redhat.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+ LKML <linux-kernel@vger.kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>
+Message-ID: <64a64e46b7d5b_b20ce208de@john.notmuch>
+In-Reply-To: <CAADnVQL2Tn+2rP0hVB3kdB0At12qVu+vJ_WbJzrkxqOJ5va2vQ@mail.gmail.com>
+References: <20230703105745.1314475-1-tero.kristo@linux.intel.com>
+ <20230703105745.1314475-2-tero.kristo@linux.intel.com>
+ <CAADnVQL2Tn+2rP0hVB3kdB0At12qVu+vJ_WbJzrkxqOJ5va2vQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] x86/tsc: Add new BPF helper call bpf_rdtsc
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, 5 Jul 2023 21:26:57 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Alexei Starovoitov wrote:
+> On Mon, Jul 3, 2023 at 3:58=E2=80=AFAM Tero Kristo <tero.kristo@linux.i=
+ntel.com> wrote:
+> >
+> > Currently the raw TSC counter can be read within kernel via rdtsc_ord=
+ered()
+> > and friends, and additionally even userspace has access to it via the=
 
-> On Wed, 28 Jun 2023 23:44:02 +0900
-> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-> 
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Ensure running fprobe_exit_handler() has finished before
-> > calling rethook_free() in the unregister_fprobe() so that caller can free
-> > the fprobe right after unregister_fprobe().
-> > 
-> > unregister_fprobe() ensured that all running fprobe_entry/exit_handler()
-> > have finished by calling unregister_ftrace_function() which synchronizes
-> > RCU. But commit 5f81018753df ("fprobe: Release rethook after the
-> > ftrace_ops is unregistered") changed to call rethook_free() after
-> > unregister_ftrace_function(). So call rethook_stop() to make rethook
-> > disabled before unregister_ftrace_function() and ensure it again.
-> 
-> I'm confused. I still don't understand why it is bad to call
-> unregister_ftrace_function() *before* rethook_free().
-> 
-> Can you show the race condition you are trying to avoid?
+> > RDTSC assembly instruction. BPF programs on the other hand don't have=
 
-Yes. This is ensuring all handlers exit when returning from
-unregister_fprobe() so that the caller can release the data which will be
-accessed from the handlers. The entry handler is safe because
-unregister_ftrace_function() waits for the ftrace handlers. But that is
-not enough for the exit handler.
+> > direct access to the TSC counter, but alternatively must go through t=
+he
+> > performance subsystem (bpf_perf_event_read), which only provides rela=
+tive
+> > value compared to the start point of the program, and is also much sl=
+ower
+> > than the direct read. Add a new BPF helper definition for bpf_rdtsc()=
+ which
+> > can be used for any accurate profiling needs.
+> >
+> > A use-case for the new API is for example wakeup latency tracing via
+> > eBPF on Intel architecture, where it is extremely beneficial to be ab=
+le
+> > to get raw TSC timestamps and compare these directly to the value
+> > programmed to the MSR_IA32_TSC_DEADLINE register. This way a direct
+> > latency value from the hardware interrupt to the execution of the
+> > interrupt handler can be calculated. Having the functionality within
+> > eBPF also has added benefits of allowing to filter any other relevant=
 
-With only Jiri's patch, following flow can happen;
-
-------
- CPU1                              CPU2
- call unregister_fprobe()
- ...
-                                   __fprobe_handler()
-                                   rethook_hook() on probed function
- unregister_ftrace_function()
-                                   return from probed function
-                                   rethook hooks
-                                   find rh->handler == fprobe_exit_handler
-                                   call fprobe_exit_handler()
- rethook_free():
-   set rh->handler = NULL;
- return from unreigster_fprobe;
-                                   call fp->exit_handler() <- (*)
-
-(*) In this point, the exit handler is called after returning from 
-unregister_fprobe().
-------
-
-So, this patch changes it as following;
-------
- CPU1                              CPU2
- call unregister_fprobe()
- ...
- rethook_stop():
-   set rh->handler = NULL;
-                                   __fprobe_handler()
-                                   rethook_hook() on probed function
- unregister_ftrace_function()
-                                   return from probed function
-                                   rethook hooks
-                                   find rh->handler == NULL
-                                   return from rethook
- rethook_free()
- return from unreigster_fprobe;
-------
-
-I can also just put a synchronize_sched_rcu() right after rethook_free()
-to wait for all running fprobe_exit_handler() too.
-
-Thank you,
-
-> 
-> -- Steve
-> 
-> 
-> 
-> > 
-> > Fixes: 5f81018753df ("fprobe: Release rethook after the ftrace_ops is
-> > unregistered") Cc: stable@vger.kernel.org
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > data like C-state residency values, and also to drop any irrelevant
+> > data points directly in the kernel context, without passing all the
+> > data to userspace for post-processing.
+> >
+> > Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
 > > ---
-> >  include/linux/rethook.h |    1 +
-> >  kernel/trace/fprobe.c   |    3 +++
-> >  kernel/trace/rethook.c  |   13 +++++++++++++
-> >  3 files changed, 17 insertions(+)
-> > 
-> > diff --git a/include/linux/rethook.h b/include/linux/rethook.h
-> > index c8ac1e5afcd1..bdbe6717f45a 100644
-> > --- a/include/linux/rethook.h
-> > +++ b/include/linux/rethook.h
-> > @@ -59,6 +59,7 @@ struct rethook_node {
-> >  };
-> >  
-> >  struct rethook *rethook_alloc(void *data, rethook_handler_t handler);
-> > +void rethook_stop(struct rethook *rh);
-> >  void rethook_free(struct rethook *rh);
-> >  void rethook_add_node(struct rethook *rh, struct rethook_node *node);
-> >  struct rethook_node *rethook_try_get(struct rethook *rh);
-> > diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-> > index 0121e8c0d54e..75517667b54f 100644
-> > --- a/kernel/trace/fprobe.c
-> > +++ b/kernel/trace/fprobe.c
-> > @@ -364,6 +364,9 @@ int unregister_fprobe(struct fprobe *fp)
-> >  		    fp->ops.saved_func != fprobe_kprobe_handler))
-> >  		return -EINVAL;
-> >  
-> > +	if (fp->rethook)
-> > +		rethook_stop(fp->rethook);
-> > +
-> >  	ret = unregister_ftrace_function(&fp->ops);
-> >  	if (ret < 0)
-> >  		return ret;
-> > diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
-> > index 60f6cb2b486b..468006cce7ca 100644
-> > --- a/kernel/trace/rethook.c
-> > +++ b/kernel/trace/rethook.c
-> > @@ -53,6 +53,19 @@ static void rethook_free_rcu(struct rcu_head *head)
-> >  		kfree(rh);
+> >  arch/x86/include/asm/msr.h |  1 +
+> >  arch/x86/kernel/tsc.c      | 23 +++++++++++++++++++++++
+> >  2 files changed, 24 insertions(+)
+> >
+> > diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
+> > index 65ec1965cd28..3dde673cb563 100644
+> > --- a/arch/x86/include/asm/msr.h
+> > +++ b/arch/x86/include/asm/msr.h
+> > @@ -309,6 +309,7 @@ struct msr *msrs_alloc(void);
+> >  void msrs_free(struct msr *msrs);
+> >  int msr_set_bit(u32 msr, u8 bit);
+> >  int msr_clear_bit(u32 msr, u8 bit);
+> > +u64 bpf_rdtsc(void);
+> >
+> >  #ifdef CONFIG_SMP
+> >  int rdmsr_on_cpu(unsigned int cpu, u32 msr_no, u32 *l, u32 *h);
+> > diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> > index 344698852146..ded857abef81 100644
+> > --- a/arch/x86/kernel/tsc.c
+> > +++ b/arch/x86/kernel/tsc.c
+> > @@ -15,6 +15,8 @@
+> >  #include <linux/timex.h>
+> >  #include <linux/static_key.h>
+> >  #include <linux/static_call.h>
+> > +#include <linux/btf.h>
+> > +#include <linux/btf_ids.h>
+> >
+> >  #include <asm/hpet.h>
+> >  #include <asm/timer.h>
+> > @@ -29,6 +31,7 @@
+> >  #include <asm/intel-family.h>
+> >  #include <asm/i8259.h>
+> >  #include <asm/uv/uv.h>
+> > +#include <asm/tlbflush.h>
+> >
+> >  unsigned int __read_mostly cpu_khz;    /* TSC clocks / usec, not use=
+d here */
+> >  EXPORT_SYMBOL(cpu_khz);
+> > @@ -1551,6 +1554,24 @@ void __init tsc_early_init(void)
+> >         tsc_enable_sched_clock();
 > >  }
-> >  
-> > +/**
-> > + * rethook_stop() - Stop using a rethook.
-> > + * @rh: the struct rethook to stop.
-> > + *
-> > + * Stop using a rethook to prepare for freeing it. If you want to wait
-> > for
-> > + * all running rethook handler before calling rethook_free(), you need to
-> > + * call this first and wait RCU, and call rethook_free().
-> > + */
-> > +void rethook_stop(struct rethook *rh)
+> >
+> > +u64 bpf_rdtsc(void)
 > > +{
-> > +	WRITE_ONCE(rh->handler, NULL);
-> > +}
+> > +       /* Check if Time Stamp is enabled only in ring 0 */
+> > +       if (cr4_read_shadow() & X86_CR4_TSD)
+> > +               return 0;
+> =
+
+> Why check this? It's always enabled in the kernel, no?
+> =
+
 > > +
-> >  /**
-> >   * rethook_free() - Free struct rethook.
-> >   * @rh: the struct rethook to be freed.
-> 
+> > +       return rdtsc_ordered();
+> =
+
+> Why _ordered? Why not just rdtsc ?
+> Especially since you want to trace latency. Extra lfence will ruin
+> the measurements.
+> =
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+If we used it as a fast way to order events on multiple CPUs I
+guess we need the lfence? We use ktime_get_ns() now for things
+like this when we just need an order counter. We have also
+observed time going backwards with this and have heuristics
+to correct it but its rare.=
 
