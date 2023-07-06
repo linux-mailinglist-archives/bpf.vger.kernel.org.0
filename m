@@ -1,278 +1,228 @@
-Return-Path: <bpf+bounces-4209-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4210-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D29F7497EA
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 11:05:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A6C774989E
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 11:36:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E8FF1C20C61
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 09:05:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C52411C20CFE
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 09:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8CE05380;
-	Thu,  6 Jul 2023 09:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1308C7498;
+	Thu,  6 Jul 2023 09:36:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B86934C61
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 09:04:55 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5DC1BCC
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 02:04:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1688634293;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JRgRsp2FWtM1ajDRcR2lcgfKwwSkmw5MTCctZvf1Vww=;
-	b=FhWXxMFLdH2VHYst23wq/5rDmB553z2kXjS4KfOs9LeDO41PDPNkgpXiy7idVNEQgxpJfS
-	2bKmvCAZoWyf6ijGRtFPfa2ANxL/Lry4ZYvVbAW+AW9duCVLIJ+fMStINFbBd/a+0T/e48
-	W7mXpsDYYgFLPNZlr+Q+lPcSPMMti1U=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-650-fmOTADolMu2O3tKQ0M0Qjg-1; Thu, 06 Jul 2023 05:04:52 -0400
-X-MC-Unique: fmOTADolMu2O3tKQ0M0Qjg-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-94a356c74e0so33982366b.2
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 02:04:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21EC185A;
+	Thu,  6 Jul 2023 09:36:40 +0000 (UTC)
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D639171D;
+	Thu,  6 Jul 2023 02:36:39 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-56352146799so307102eaf.3;
+        Thu, 06 Jul 2023 02:36:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688636198; x=1691228198;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0TR7CywRQO+aq8xLN85+i2ij1DCchNy9h8cDmr7LMVY=;
+        b=n958nsaYsRJ0cV+cDdTPfS/mR4DvFnNL2P6duh7QjfojO67n8rowyY9+n+M3k+MlwT
+         M+n8HlwVBM+aRezimBkj8akqMv+a2kxsTZE2hih2hyv6tryc9vDzVXM9FaxnmgnGJRx2
+         oOhRt+ZFBXYSLKC8Clv9BCAQNo5J2RyiUbuqNGLPyy/ooB2ue6ARmvmc9+USvXvi4a9X
+         3Mpd/uvbDB/VwRiqlIXc4jXb1eqjxjHAY423OUCZUmIVhi2ecbDpm1RKXDfgkTwj6uBX
+         p0M0Nrws7XMO83LhU3u9+BADCgk9cIXyZsW+IwttpzLgxQjBBgbvsRFiG9izSkzjoc09
+         h6qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688634291; x=1691226291;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JRgRsp2FWtM1ajDRcR2lcgfKwwSkmw5MTCctZvf1Vww=;
-        b=KK3nJK7HaRxTF1yorDpxP2odP1gLb1dq+OyMfSqfMlhJEu6z946NEuHcyCL3RVJsda
-         MsvBgkqFSrtE3ePwf1Rl/kCAxXU3POcOYCKnSqY+MVh+bAZ1/4jeSgHod7uJViLW0uok
-         mUHRcrZiNv1viiSekI3VcGtaZv5oVEXjR260VkUqEcv+YmJIrP0shnDJTsZnXgfps0WQ
-         KviQPhMnFBMKO3ehjDJRZdCViQpMUFlgULZJX2OQx05HjcxsWrxRomBzKLHRk93KoC6c
-         gp1Jj1rLlmn8OiNagum7qzr2yToeCKl1Q7FeukVRmSdFjfmYR78GoTwNmHay/ErRyCtb
-         hRZw==
-X-Gm-Message-State: ABy/qLaQpkN7rPUucUJy4fBqqiATeZBtrZYiLLmE7A//8xM5jnqWDMdr
-	2bJFTwrZh9/okFiyTj1uJWuA2bwSBhvG/48ECp0/a9I5VACpgxbpjPowMBypoWosqCyQatt7nbH
-	Ad7kpocOnHGYm
-X-Received: by 2002:a17:906:8f:b0:971:484:6391 with SMTP id 15-20020a170906008f00b0097104846391mr936588ejc.20.1688634291257;
-        Thu, 06 Jul 2023 02:04:51 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlF8QrUyIfcWvQEKTibW2aZLt9dHEJ0HZEw3k4yx3jJ5selC58HHjh6xvrPIEGa3dNa3lU7qBA==
-X-Received: by 2002:a17:906:8f:b0:971:484:6391 with SMTP id 15-20020a170906008f00b0097104846391mr936566ejc.20.1688634290906;
-        Thu, 06 Jul 2023 02:04:50 -0700 (PDT)
-Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id s24-20020a170906169800b0096f7500502csm531220ejd.199.2023.07.06.02.04.49
+        d=1e100.net; s=20221208; t=1688636198; x=1691228198;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0TR7CywRQO+aq8xLN85+i2ij1DCchNy9h8cDmr7LMVY=;
+        b=WJJkH/fmptXN5zt6UGrRl+NDoU9yKkEHKgMov/+qL2w4JY2zvn1BIdmXa4tKKkOb4g
+         rEVO47XbNHuQA0PKRcvYMgNQwB8xCwacoh1nvlkz1yZCTN1KUrA+ZN2aF9g17tQer+Sz
+         PShOdUOqMdGmks7B4yIs4/gN0k1/LuyA7ogu63epqTjHNkI8sVUy8aBlTbY/0zRw42hf
+         Xm3uLjG8OgpuHvS35gCADfJ6cqI4HtubgOqbra9TlbgINdeWgvFPX8jujseErZSIxP2n
+         oufNoebszPFDmy3oT1WpP18EYRi2uKWqCX03q4CEvoNbHkYWBV3mkdKab5vFi6lfTHGI
+         m+TQ==
+X-Gm-Message-State: ABy/qLYn7yDyMhDSkcMFO5jmIMKRjny/8qOY8ER7S8kkZZtvRaGGzFbk
+	5Djqtvay3iix3stERtv17YA=
+X-Google-Smtp-Source: APBJJlFgz9v5xjO3Kl70Hs+b7oagVUEpBIbdNA7dz/sx1WFquCj68yhoXxMCn21eqHwderVZZfJ6IA==
+X-Received: by 2002:a05:6358:705:b0:134:f070:d6b8 with SMTP id e5-20020a056358070500b00134f070d6b8mr2261223rwj.4.1688636198238;
+        Thu, 06 Jul 2023 02:36:38 -0700 (PDT)
+Received: from [10.22.68.96] ([122.11.166.8])
+        by smtp.gmail.com with ESMTPSA id j14-20020aa7800e000000b0066875f17266sm893454pfi.135.2023.07.06.02.36.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Jul 2023 02:04:50 -0700 (PDT)
-From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <3cc1d2ba-e084-8fc4-aa31-856bc532d1a7@redhat.com>
-Date: Thu, 6 Jul 2023 11:04:49 +0200
+        Thu, 06 Jul 2023 02:36:37 -0700 (PDT)
+Message-ID: <a945ff6e-1cd7-ef03-9ab4-3e5ab2a3bfa8@gmail.com>
+Date: Thu, 6 Jul 2023 17:36:32 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Cc: brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH bpf-next] bpf: Introduce bpf generic log
+To: Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org
+Cc: john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
  song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, David Ahern <dsahern@gmail.com>,
- Jakub Kicinski <kuba@kernel.org>, Willem de Bruijn <willemb@google.com>,
- Anatoly Burakov <anatoly.burakov@intel.com>,
- Alexander Lobakin <alexandr.lobakin@intel.com>,
- Magnus Karlsson <magnus.karlsson@gmail.com>,
- Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
- netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- Alexander Duyck <alexander.duyck@gmail.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v2 12/20] xdp: Add checksum level
- hint
+ haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
+ tangyeechou@gmail.com, kernel-patches-bot@fb.com, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <20230705132058.46194-1-hffilwlqm@gmail.com>
+ <1a205a85-ebf2-6d90-468d-4fd63ce3dd0f@iogearbox.net>
+ <a42c246a-01e1-9e7e-8260-57835c6351ae@gmail.com>
+ <688cbc7b-b23e-7edd-4603-b5734eaa9bd7@iogearbox.net>
 Content-Language: en-US
-To: John Fastabend <john.fastabend@gmail.com>,
- Larysa Zaremba <larysa.zaremba@intel.com>,
- Jesper Dangaard Brouer <jbrouer@redhat.com>
-References: <20230703181226.19380-1-larysa.zaremba@intel.com>
- <20230703181226.19380-13-larysa.zaremba@intel.com>
- <64a331c338a5a_628d3208cb@john.notmuch> <ZKPlZ6Z8ni5+ZJCK@lincoln>
- <9cd44759-416c-7274-f805-ee9d756f15b1@redhat.com> <ZKQAPBcIE/iCkiX2@lincoln>
- <64a656273ee15_b20ce2087a@john.notmuch>
-In-Reply-To: <64a656273ee15_b20ce2087a@john.notmuch>
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <688cbc7b-b23e-7edd-4603-b5734eaa9bd7@iogearbox.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 
-
-On 06/07/2023 07.50, John Fastabend wrote:
-> Larysa Zaremba wrote:
->> On Tue, Jul 04, 2023 at 12:39:06PM +0200, Jesper Dangaard Brouer wrote:
->>> Cc. DaveM+Alex Duyck, as I value your insights on checksums.
->>>
->>> On 04/07/2023 11.24, Larysa Zaremba wrote:
->>>> On Mon, Jul 03, 2023 at 01:38:27PM -0700, John Fastabend wrote:
->>>>> Larysa Zaremba wrote:
->>>>>> Implement functionality that enables drivers to expose to XDP code,
->>>>>> whether checksums was checked and on what level.
->>>>>>
->>>>>> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
->>>>>> ---
->>>>>>    Documentation/networking/xdp-rx-metadata.rst |  3 +++
->>>>>>    include/linux/netdevice.h                    |  1 +
->>>>>>    include/net/xdp.h                            |  2 ++
->>>>>>    kernel/bpf/offload.c                         |  2 ++
->>>>>>    net/core/xdp.c                               | 21 ++++++++++++++++++++
->>>>>>    5 files changed, 29 insertions(+)
->>>>>>
->>>>>> diff --git a/Documentation/networking/xdp-rx-metadata.rst b/Documentation/networking/xdp-rx-metadata.rst
->>>>>> index ea6dd79a21d3..4ec6ddfd2a52 100644
->>>>>> --- a/Documentation/networking/xdp-rx-metadata.rst
->>>>>> +++ b/Documentation/networking/xdp-rx-metadata.rst
->>>>>> @@ -26,6 +26,9 @@ metadata is supported, this set will grow:
->>>>>>    .. kernel-doc:: net/core/xdp.c
->>>>>>       :identifiers: bpf_xdp_metadata_rx_vlan_tag
->>>>>> +.. kernel-doc:: net/core/xdp.c
->>>>>> +   :identifiers: bpf_xdp_metadata_rx_csum_lvl
->>>>>> +
->>>>>>    An XDP program can use these kfuncs to read the metadata into stack
->>>>>>    variables for its own consumption. Or, to pass the metadata on to other
->>>>>>    consumers, an XDP program can store it into the metadata area carried
->>>>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
->>>>>> index 4fa4380e6d89..569563687172 100644
->>>>>> --- a/include/linux/netdevice.h
->>>>>> +++ b/include/linux/netdevice.h
->>>>>> @@ -1660,6 +1660,7 @@ struct xdp_metadata_ops {
->>>>>>    			       enum xdp_rss_hash_type *rss_type);
->>>>>>    	int	(*xmo_rx_vlan_tag)(const struct xdp_md *ctx, u16 *vlan_tag,
->>>>>>    				   __be16 *vlan_proto);
->>>>>> +	int	(*xmo_rx_csum_lvl)(const struct xdp_md *ctx, u8 *csum_level);
->>>>>>    };
->>>>>>    /**
->>>>>> diff --git a/include/net/xdp.h b/include/net/xdp.h
->>>>>> index 89c58f56ffc6..61ed38fa79d1 100644
->>>>>> --- a/include/net/xdp.h
->>>>>> +++ b/include/net/xdp.h
->>>>>> @@ -391,6 +391,8 @@ void xdp_attachment_setup(struct xdp_attachment_info *info,
->>>>>>    			   bpf_xdp_metadata_rx_hash) \
->>>>>>    	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_VLAN_TAG, \
->>>>>>    			   bpf_xdp_metadata_rx_vlan_tag) \
->>>>>> +	XDP_METADATA_KFUNC(XDP_METADATA_KFUNC_RX_CSUM_LVL, \
->>>>>> +			   bpf_xdp_metadata_rx_csum_lvl) \
->>>>>>    enum {
->>>>>>    #define XDP_METADATA_KFUNC(name, _) name,
->>>>>> diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
->>>>>> index 986e7becfd42..a133fb775f49 100644
->>>>>> --- a/kernel/bpf/offload.c
->>>>>> +++ b/kernel/bpf/offload.c
->>>>>> @@ -850,6 +850,8 @@ void *bpf_dev_bound_resolve_kfunc(struct bpf_prog *prog, u32 func_id)
->>>>>>    		p = ops->xmo_rx_hash;
->>>>>>    	else if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_VLAN_TAG))
->>>>>>    		p = ops->xmo_rx_vlan_tag;
->>>>>> +	else if (func_id == bpf_xdp_metadata_kfunc_id(XDP_METADATA_KFUNC_RX_CSUM_LVL))
->>>>>> +		p = ops->xmo_rx_csum_lvl;
->>>>>>    out:
->>>>>>    	up_read(&bpf_devs_lock);
->>>>>> diff --git a/net/core/xdp.c b/net/core/xdp.c
->>>>>> index f6262c90e45f..c666d3e0a26c 100644
->>>>>> --- a/net/core/xdp.c
->>>>>> +++ b/net/core/xdp.c
->>>>>> @@ -758,6 +758,27 @@ __bpf_kfunc int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx, u16 *vlan
->>>>>>    	return -EOPNOTSUPP;
->>>>>>    }
->>>>>> +/**
->>>>>> + * bpf_xdp_metadata_rx_csum_lvl - Get depth at which HW has checked the checksum.
->>>>>> + * @ctx: XDP context pointer.
->>>>>> + * @csum_level: Return value pointer.
->>>>>> + *
->>>>>> + * In case of success, csum_level contains depth of the last verified checksum.
->>>>>> + * If only the outermost checksum was verified, csum_level is 0, if both
->>>>>> + * encapsulation and inner transport checksums were verified, csum_level is 1,
->>>>>> + * and so on.
->>>>>> + * For more details, refer to csum_level field in sk_buff.
->>>>>> + *
->>>>>> + * Return:
->>>>>> + * * Returns 0 on success or ``-errno`` on error.
->>>>>> + * * ``-EOPNOTSUPP`` : device driver doesn't implement kfunc
->>>>>> + * * ``-ENODATA``    : Checksum was not validated
->>>>>> + */
->>>>>> +__bpf_kfunc int bpf_xdp_metadata_rx_csum_lvl(const struct xdp_md *ctx, u8 *csum_level)
->>>>>
->>>>> Istead of ENODATA should we return what would be put in the ip_summed field
->>>>> CHECKSUM_{NONE, UNNECESSARY, COMPLETE, PARTIAL}? Then sig would be,
->>>
->>> I was thinking the same, what about checksum "type".
->>>
->>>>>
->>>>>    bpf_xdp_metadata_rx_csum_lvl(const struct xdp_md *ctx, u8 *type, u8 *lvl);
->>>>>
->>>>> or something like that? Or is the thought that its not really necessary?
->>>>> I don't have a strong preference but figured it was worth asking.
->>>>>
+On 6/7/23 00:54, Daniel Borkmann wrote:
+> On 7/5/23 6:20 PM, Leon Hwang wrote:
+>> On 2023/7/5 22:39, Daniel Borkmann wrote:
+>>> On 7/5/23 3:20 PM, Leon Hwang wrote:
+>>>> Currently, excluding verifier, users are unable to obtain detailed 
+>>>> error
+>>>> information when issues occur in BPF syscall.
 >>>>
->>>> I see no value in returning CHECKSUM_COMPLETE without the actual checksum value.
->>>> Same with CHECKSUM_PARTIAL and csum_start. Returning those values too would
->>>> overcomplicate the function signature.
+>>>> To overcome this limitation, bpf generic log is introduced to provide
+>>>> error details similar to the verifier. This enhancement will enable 
+>>>> the
+>>>> reporting of error details along with the corresponding errno in BPF
+>>>> syscall.
+>>>>
+>>>> Essentially, bpf generic log functions as a mechanism similar to 
+>>>> netlink,
+>>>> enabling the transmission of error messages to user space. This
+>>>> mechanism greatly enhances the usability of BPF syscall by allowing
+>>>> users to access comprehensive error messages instead of relying solely
+>>>> on errno.
+>>>>
+>>>> This patch specifically addresses the error reporting in 
+>>>> dev_xdp_attach()
+>>>> . With this patch, the error messages will be transferred to user 
+>>>> space
+>>>> like the netlink approach. Hence, users will be able to check the 
+>>>> error
+>>>> message along with the errno.
+>>>>
+>>>> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+>>>> ---
+>>>>   include/linux/bpf.h            | 30 ++++++++++++++++++++++++++++++
+>>>>   include/uapi/linux/bpf.h       |  6 ++++++
+>>>>   kernel/bpf/log.c               | 33 
+>>>> +++++++++++++++++++++++++++++++++
+>>>>   net/core/dev.c                 | 11 ++++++++++-
+>>>>   tools/include/uapi/linux/bpf.h |  6 ++++++
+>>>>   5 files changed, 85 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>>>> index f58895830..fd63f4a76 100644
+>>>> --- a/include/linux/bpf.h
+>>>> +++ b/include/linux/bpf.h
+>>>> @@ -3077,4 +3077,34 @@ static inline gfp_t bpf_memcg_flags(gfp_t 
+>>>> flags)
+>>>>       return flags;
+>>>>   }
+>>>>   +#define BPF_GENERIC_TMP_LOG_SIZE    256
+>>>> +
+>>>> +struct bpf_generic_log {
+>>>> +    char        kbuf[BPF_GENERIC_TMP_LOG_SIZE];
+>>>> +    char __user    *ubuf;
+>>>> +    u32        len_used;
+>>>> +    u32        len_total;
+>>>> +};
+>>>> +
+>>>> +__printf(2, 3) void bpf_generic_log_write(struct bpf_generic_log 
+>>>> *log,
+>>>> +            const char *fmt, ...);
+>>>> +static inline void bpf_generic_log_init(struct bpf_generic_log *log,
+>>>> +            const struct bpf_generic_user_log *ulog)
+>>>> +{
+>>>> +    log->ubuf = (char __user *) (unsigned long) ulog->log_buf;
+>>>> +    log->len_total = ulog->log_size;
+>>>> +    log->len_used = 0;
+>>>> +}
+>>>> +
+>>>> +#define BPF_GENERIC_LOG_WRITE(log, ulog, fmt, ...)    do {    \
+>>>> +    const char *____fmt = (fmt);                \
+>>>> +    bpf_generic_log_init(log, ulog);            \
+>>>> +    bpf_generic_log_write(log, ____fmt, ##__VA_ARGS__); \
+>>>> +} while (0)
+>>>> +
+>>>> +#define BPF_GENERIC_ULOG_WRITE(ulog, fmt, ...)    do {            \
+>>>> +    struct bpf_generic_log ____log;                    \
+>>>> +    BPF_GENERIC_LOG_WRITE(&____log, ulog, fmt, ##__VA_ARGS__);    \
+>>>> +} while (0)
+>>>> +
 >>>
->>> So, this kfunc bpf_xdp_metadata_rx_csum_lvl() success is it equivilent to
->>> CHECKSUM_UNNECESSARY?
+>>> Could we generalize the bpf_verifier_log infra and reuse bpf_log() 
+>>> helper
+>>> instead of adding something new?
 >>
->> This is 100% true for physical NICs, it's more complicated for veth, bacause it
->> often receives CHECKSUM_PARTIAL, which shouldn't normally apprear on RX, but is
->> treated by the network stack as a validated checksum, because there is no way
->> internally generated packet could be messed up. I would be grateful if you could
->> look at the veth patch and share your opinion about this.
 >>
->>>
->>> Looking at documentation[1] (generated from skbuff.h):
->>>   [1] https://kernel.org/doc/html/latest/networking/skbuff.html#checksumming-of-received-packets-by-device
->>>
->>> Is the idea that we can add another kfunc (new signature) than can deal
->>> with the other types of checksums (in a later kernel release)?
->>>
+>> Yes. It's possible to reuse the bpf_verifier_log infra and reuse 
+>> bpf_log()
+>> helper. I'll try this way:
 >>
->> Yes, that is the idea.
-> 
-> If we think there is a chance we might need another kfunc we should add it
-> in the same kfunc. It would be unfortunate to have to do two kfuncs when
-> one would work. It shouldn't cost much/anything(?) to hardcode the type for
-> most cases? I think if we need it later I would advocate for updating this
-> kfunc to support it. Of course then userspace will have to swivel on the
-> kfunc signature.
-> 
+>> #define BPF_LOG_USER  BPF_LOG_LEVEL1     /* user log flag */
+>>
+>> #define BPF_ULOG_WRITE(log_buf, log_size, fmt, ...) do {               \
+>>         const char *____fmt = 
+>> (fmt);                                    \
+>>         struct bpf_verifier_log 
+>> ____vlog;                               \
+>>         bpf_vlog_init(&____vlog, BPF_LOG_USER, log_buf, 
+>> log_size);      \
+>>         bpf_log(&____vlog, ____fmt, 
+>> ##__VA_ARGS__);                         \
+>> } while (0)
+>
+> Could we hide all of this inside bpf_log() or better create a new 
+> bpf_log_once() wrapper,
+> passing in attr so we only need to use the latter w/o the extra macros?
+>
+> Essentially what your bpf_xdp_link_log() is doing, just that 
+> bpf_log_once(attr, extack._msg)
+> would be generic and sufficient.
+>
+> Thanks,
+> Daniel
 
-I think it might make sense to have 3 kfuncs for checksumming.
-As this would allow BPF-prog to focus on CHECKSUM_UNNECESSARY, and then
-only call additional kfunc for extracting e.g csum_start  + csum_offset
-when type is CHECKSUM_PARTIAL.
+I try to use BPF_ULOG_WRITE() successfully, but with a warning:
 
-We could extend bpf_xdp_metadata_rx_csum_lvl() to give the csum_type
-CHECKSUM_{NONE, UNNECESSARY, COMPLETE, PARTIAL}.
 
-  int bpf_xdp_metadata_rx_csum_lvl(*ctx, u8 *csum_level, u8 *csum_type)
+net/core/dev.c: In function 'bpf_xdp_link_log.isra.0':
+net/core/dev.c:9093:1: warning: the frame size of 1056 bytes is larger 
+than 1024 bytes [-Wframe-larger-than=]
+  9093 | }
+       |
 
-And then add two kfunc e.g.
-  (1) bpf_xdp_metadata_rx_csum_partial(ctx, start, offset)
-  (2) bpf_xdp_metadata_rx_csum_complete(ctx, csum)
 
-Pseudo BPF-prog code:
+How should we generalize the bpf_verifier_log infra with a smaller
 
-  err = bpf_xdp_metadata_rx_csum_lvl(ctx, level, type);
-  if (!err && type != CHECKSUM_UNNECESSARY) {
-      if (type == CHECKSUM_PARTIAL)
-          err = bpf_xdp_metadata_rx_csum_partial(ctx, start, offset);
-      if (type == CHECKSUM_COMPLETE)
-          err = bpf_xdp_metadata_rx_csum_complete(ctx, csum);
-  }
+BPF_VERIFIER_TMP_LOG_SIZE (1024 currently) ?
 
-Looking at code, I feel we could rename [...]_csum_lvl to csum_type.
-E.g. bpf_xdp_metadata_rx_csum_type.
 
-Feel free to disagree,
---Jesper
+If to use bpf_log_once(attr, extack._msg), I think 
+bpf_ulog_once(&attr->link_create.xdp.log, extack._msg)
+
+is better. attr->link_create.xdp.log is struct bpf_generic_user_log.
+
+Or bpf_xdp_link_log() is better to wrap log details.
 
 
