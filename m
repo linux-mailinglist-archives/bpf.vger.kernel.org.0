@@ -1,60 +1,61 @@
-Return-Path: <bpf+bounces-4245-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4246-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AA55749DEC
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 15:38:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F879749DED
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 15:39:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55786281011
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 13:38:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 193DC280FC5
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 13:39:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 565619445;
-	Thu,  6 Jul 2023 13:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9F3944C;
+	Thu,  6 Jul 2023 13:38:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A0828F77
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 13:38:44 +0000 (UTC)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261B71BC2
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 06:38:28 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbc5d5746cso7743635e9.2
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 06:38:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1986F9442
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 13:38:50 +0000 (UTC)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C5B1994
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 06:38:47 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbc244d307so7835505e9.1
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 06:38:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1688650706; x=1691242706;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+p3fh1bulI7uRrakHuVLLqr4fMw88M+mn2ZkU+RTSPE=;
-        b=GiqD2dFyEcnD/1cyCzlF64Mlxq5bvZI4L2eBPBrTQgFmV3OkGuYgGhCE2o0qqs1xyx
-         WxtGnJlXAuvGip/yT9KcTMB9U0oT78cZwZuGf+EQkd074swIiE4SR7ZZzscBfbrJzyA/
-         RewX7ss/qFso6UDAqdqOu0T3ZeY2h1ycr+gRp2jJ3dF0qKw5II0CPt/kjK1phVz6Yt0K
-         Pilu0HunlZdwFbNOkvh3Mwm89n8KzrYz0pwtFNUMQtGNE3hNIgTIlM+RO5YgnQnIxInl
-         ntTs5UqQ+pHX8GzGBq5MW+ZgVaLgwSGErcnFQ++q5y/t8Ult+Qdy+15OGXHoDfMlKa+V
-         Cmzw==
+        d=isovalent.com; s=google; t=1688650725; x=1691242725;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P8KYxGujweYLCYh8YYyQ0jA4DubxHjifs++dZAbkdWU=;
+        b=ObTycPkZBZTv6E0R9obd3mKMLWQFgFRN7hhu49URQH5ZfvqaqxWRfdarYixFnW5s+k
+         U6t57yKHsjwF6D8yInl+dTVCCoVa7cSUusHARe+I+gmGlCuV498vNZDlOpii8OgCaBmH
+         RU3aJQPqBvWVIDnFfuw641wIwIZsbTU/+80cSzT8/ddOiUy0kusoURRi/DQ2os9CeAQM
+         2+wEDecmak+r/7+2zF408Fm29CZvV/U8VxSRKx8cBfsZ3XaFTsLDyKt1A/AyptfI4ciA
+         hg7uX2AC9rG1EkfmpvZJ1RqlzXcdUiKXME4jUgc141roFC57pQmnL5URMm9gkLRe+oq3
+         ATzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688650706; x=1691242706;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+p3fh1bulI7uRrakHuVLLqr4fMw88M+mn2ZkU+RTSPE=;
-        b=Q4BDT+vDzJ/g3Ld/9daJ2AL1PkEGpiH6WyUWXwdaA7uRBxSQJE3McRYplt6iyT2P/w
-         aI+ubr/SGgVecA1q3jS8jJl25+y69eVU64Yms1x2RAaObdyUPdbU+gZiUQNpI5Mxzene
-         pAtYE5NuudAS51bdrrAO0uOlWXiVtWHHjOjQ9OWNEmh8dudu+SVPqauG8l4lnucyoUSa
-         FJ+m47nkgZaECSfw4z5eFtNXMm8kUvq7jFHloqCqcUYnFAIGg+DBUUHCXeIdFdetHst4
-         Fy8yXEeKYgiJnCUv8i1i0/hdo8mQ5gJqB3UNjs6fqFg1R1WkB8+97HXEvl3Y1xl/xkcv
-         08BA==
-X-Gm-Message-State: ABy/qLYvMldCoKeg3vqCwW5DRsZNu8Rwh3CWEcK13eVEa6GJo3+n6d3s
-	swtTeheRgZgfSaPXZR1lwncJjQ==
-X-Google-Smtp-Source: APBJJlF2aW3SU/hJIo48sM/LDF1UJ2OXFqNYt6hkwNAKUwXT8B/pM2HY62fZ8c4myWyy8hOZGZeczw==
-X-Received: by 2002:a1c:4b17:0:b0:3fb:b008:2003 with SMTP id y23-20020a1c4b17000000b003fbb0082003mr1525174wma.38.1688650706596;
-        Thu, 06 Jul 2023 06:38:26 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1688650725; x=1691242725;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P8KYxGujweYLCYh8YYyQ0jA4DubxHjifs++dZAbkdWU=;
+        b=R2xrFbTPLh94hv3rAGCLF6Kw+gWMWyTNk+OvwUOp1CtJAxJ26S8MlWY7S22S9LM7l/
+         4za3TtfQdAcLfmL4ZmbA6nFxwMUxkt9cd0lHTNfepJXIITsBJHLL9TALqN8wQyGne2qF
+         3n386Ng/BV42dOXY6QKkNpM4MW5O8OQH7hsNahu6kDqHDU9ufNcJsFTe0yTlSLVptqXy
+         ggYqFiFE3GDLidooruYMU4FiQrHxJRUJXtvsIupHZHOAwWQPnTubLAXNb6Muf/CfMGCe
+         smomTBO1AgRd7cnDqnEHd6iNCis0h2pRDyVl21MTkakMeBQRzjOqBrpsdGns08dxtHcK
+         hjwQ==
+X-Gm-Message-State: ABy/qLY+xjxUC3HFJ5PWEN3+2X4odjrLM0FUlzqKw0Ygrof7wmHYnfWh
+	gdxQJfrXOw1mRHcdL0CN0PgsOw==
+X-Google-Smtp-Source: APBJJlHARBDlvjKvfkxejD04dz6QRzLO/Yzxxsv6ayKZw4ylcxzE8u33NcfrIIjSI2pj+t5kG/zuag==
+X-Received: by 2002:a7b:cd0e:0:b0:3fb:40ee:5465 with SMTP id f14-20020a7bcd0e000000b003fb40ee5465mr1584159wmj.22.1688650725500;
+        Thu, 06 Jul 2023 06:38:45 -0700 (PDT)
 Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id v10-20020a05600c470a00b003f9b3829269sm6754524wmo.2.2023.07.06.06.38.25
+        by smtp.gmail.com with ESMTPSA id v10-20020a05600c470a00b003f9b3829269sm6754524wmo.2.2023.07.06.06.38.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jul 2023 06:38:26 -0700 (PDT)
+        Thu, 06 Jul 2023 06:38:45 -0700 (PDT)
 From: Anton Protopopov <aspsk@isovalent.com>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -70,10 +71,12 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	Hou Tao <houtao1@huawei.com>,
 	bpf@vger.kernel.org
 Cc: Anton Protopopov <aspsk@isovalent.com>
-Subject: [PATCH v5 bpf-next 0/5] bpf: add percpu stats for bpf_map
-Date: Thu,  6 Jul 2023 13:39:27 +0000
-Message-Id: <20230706133932.45883-1-aspsk@isovalent.com>
+Subject: [PATCH v5 bpf-next 1/5] bpf: add percpu stats for bpf_map elements insertions/deletions
+Date: Thu,  6 Jul 2023 13:39:28 +0000
+Message-Id: <20230706133932.45883-2-aspsk@isovalent.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230706133932.45883-1-aspsk@isovalent.com>
+References: <20230706133932.45883-1-aspsk@isovalent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,68 +91,67 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This series adds a mechanism for maps to populate per-cpu counters on
-insertions/deletions. The sum of these counters can be accessed by a new kfunc
-from map iterator and tracing programs.
+Add a generic percpu stats for bpf_map elements insertions/deletions in order
+to keep track of both, the current (approximate) number of elements in a map
+and per-cpu statistics on update/delete operations.
 
-The following patches are present in the series:
+To expose these stats a particular map implementation should initialize the
+counter and adjust it as needed using the 'bpf_map_*_elem_count' helpers
+provided by this commit.
 
-  * Patch 1 adds a generic per-cpu counter to struct bpf_map
-  * Patch 2 adds a new kfunc to access the sum of per-cpu counters
-  * Patch 3 utilizes this mechanism for hash-based maps
-  * Patch 4 extends the preloaded map iterator to dump the sum
-  * Patch 5 adds a self-test for the change
+Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+---
+ include/linux/bpf.h | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-The reason for adding this functionality in our case (Cilium) is to get signals
-about how full some heavy-used maps are and what the actual dynamic profile of
-map capacity is. In the case of LRU maps this is impossible to get this
-information anyhow else. The original presentation can be found here [1].
-
-  [1] https://lpc.events/event/16/contributions/1368/
-
-v4 -> v5:
-* don't pass useless empty opts when creating a link, pass NULL (Hou)
-* add a debug message (Hou)
-* make code more readable (Alexei)
-* remove the selftest which only checked that elem_count != NULL
-
-v3 -> v4:
-* fix selftests:
-  * added test code for batch map operations
-  * added a test for BPF_MAP_TYPE_HASH_OF_MAPS (Hou)
-  * added tests for BPF_MAP_TYPE_LRU* with BPF_F_NO_COMMON_LRU (Hou)
-  * map_info was called multiple times unnecessarily (Hou)
-  * small fixes + some memory leaks (Hou)
-* fixed wrong error path for freeing a non-prealloc map (Hou)
-* fixed counters for batch delete operations (Hou)
-
-v2 -> v3:
-- split commits to better represent update logic (Alexei)
-- remove filter from kfunc to allow all tracing programs (Alexei)
-- extend selftests (Alexei)
-
-v1 -> v2:
-- make the counters generic part of struct bpf_map (Alexei)
-- don't use map_info and /proc/self/fdinfo in favor of a kfunc (Alexei)
-
-Anton Protopopov (5):
-  bpf: add percpu stats for bpf_map elements insertions/deletions
-  bpf: add a new kfunc to return current bpf_map elements count
-  bpf: populate the per-cpu insertions/deletions counters for hashmaps
-  bpf: make preloaded map iterators to display map elements count
-  selftests/bpf: test map percpu stats
-
- include/linux/bpf.h                           |  30 +
- kernel/bpf/hashtab.c                          |  22 +-
- kernel/bpf/map_iter.c                         |  39 +-
- kernel/bpf/preload/iterators/iterators.bpf.c  |   9 +-
- .../iterators/iterators.lskel-little-endian.h | 526 +++++++++---------
- .../bpf/map_tests/map_percpu_stats.c          | 447 +++++++++++++++
- .../selftests/bpf/progs/map_percpu_stats.c    |  24 +
- 7 files changed, 834 insertions(+), 263 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/map_tests/map_percpu_stats.c
- create mode 100644 tools/testing/selftests/bpf/progs/map_percpu_stats.c
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index f58895830ada..360433f14496 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -275,6 +275,7 @@ struct bpf_map {
+ 	} owner;
+ 	bool bypass_spec_v1;
+ 	bool frozen; /* write-once; write-protected by freeze_mutex */
++	s64 __percpu *elem_count;
+ };
+ 
+ static inline const char *btf_field_type_name(enum btf_field_type type)
+@@ -2040,6 +2041,35 @@ bpf_map_alloc_percpu(const struct bpf_map *map, size_t size, size_t align,
+ }
+ #endif
+ 
++static inline int
++bpf_map_init_elem_count(struct bpf_map *map)
++{
++	size_t size = sizeof(*map->elem_count), align = size;
++	gfp_t flags = GFP_USER | __GFP_NOWARN;
++
++	map->elem_count = bpf_map_alloc_percpu(map, size, align, flags);
++	if (!map->elem_count)
++		return -ENOMEM;
++
++	return 0;
++}
++
++static inline void
++bpf_map_free_elem_count(struct bpf_map *map)
++{
++	free_percpu(map->elem_count);
++}
++
++static inline void bpf_map_inc_elem_count(struct bpf_map *map)
++{
++	this_cpu_inc(*map->elem_count);
++}
++
++static inline void bpf_map_dec_elem_count(struct bpf_map *map)
++{
++	this_cpu_dec(*map->elem_count);
++}
++
+ extern int sysctl_unprivileged_bpf_disabled;
+ 
+ static inline bool bpf_allow_ptr_leaks(void)
 -- 
 2.34.1
 
