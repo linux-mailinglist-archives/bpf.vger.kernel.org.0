@@ -1,130 +1,103 @@
-Return-Path: <bpf+bounces-4296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4292-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C61374A42D
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 21:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 517E174A38D
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 20:05:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61E2C1C20E0D
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 19:06:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 817221C20E01
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 18:05:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFC1BE4E;
-	Thu,  6 Jul 2023 19:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA98C151;
+	Thu,  6 Jul 2023 18:05:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E5F0AD5E
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 19:06:15 +0000 (UTC)
-X-Greylist: delayed 5284 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 06 Jul 2023 12:06:12 PDT
-Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E491BDB;
-	Thu,  6 Jul 2023 12:06:12 -0700 (PDT)
-Received: from in01.mta.xmission.com ([166.70.13.51]:40568)
-	by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1qHQio-00FMgf-7e; Thu, 06 Jul 2023 09:16:42 -0600
-Received: from ip68-110-29-46.om.om.cox.net ([68.110.29.46]:55228 helo=email.froward.int.ebiederm.org.xmission.com)
-	by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1qHQim-00AsXt-Fk; Thu, 06 Jul 2023 09:16:41 -0600
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: jk@ozlabs.org,  arnd@arndb.de,  mpe@ellerman.id.au,  npiggin@gmail.com,
-  christophe.leroy@csgroup.eu,  hca@linux.ibm.com,  gor@linux.ibm.com,
-  agordeev@linux.ibm.com,  borntraeger@linux.ibm.com,  svens@linux.ibm.com,
-  gregkh@linuxfoundation.org,  arve@android.com,  tkjos@android.com,
-  maco@android.com,  joel@joelfernandes.org,  brauner@kernel.org,
-  cmllamas@google.com,  surenb@google.com,
-  dennis.dalessandro@cornelisnetworks.com,  jgg@ziepe.ca,  leon@kernel.org,
-  bwarrum@linux.ibm.com,  rituagar@linux.ibm.com,  ericvh@kernel.org,
-  lucho@ionkov.net,  asmadeus@codewreck.org,  linux_oss@crudebyte.com,
-  dsterba@suse.com,  dhowells@redhat.com,  marc.dionne@auristor.com,
-  viro@zeniv.linux.org.uk,  raven@themaw.net,  luisbg@kernel.org,
-  salah.triki@gmail.com,  aivazian.tigran@gmail.com,
-  keescook@chromium.org,  clm@fb.com,  josef@toxicpanda.com,
-  xiubli@redhat.com,  idryomov@gmail.com,  jaharkes@cs.cmu.edu,
-  coda@cs.cmu.edu,  jlbec@evilplan.org,  hch@lst.de,  nico@fluxnic.net,
-  rafael@kernel.org,  code@tyhicks.com,  ardb@kernel.org,
-  xiang@kernel.org,  chao@kernel.org,  huyue2@coolpad.com,
-  jefflexu@linux.alibaba.com,  linkinjeon@kernel.org,
-  sj1557.seo@samsung.com,  jack@suse.com,  tytso@mit.edu,
-  adilger.kernel@dilger.ca,  jaegeuk@kernel.org,
-  hirofumi@mail.parknet.co.jp,  miklos@szeredi.hu,  rpeterso@redhat.com,
-  agruenba@redhat.com,  richard@nod.at,  anton.ivanov@cambridgegreys.com,
-  johannes@sipsolutions.net,  mikulas@artax.karlin.mff.cuni.cz,
-  mike.kravetz@oracle.com,  muchun.song@linux.dev,  dwmw2@infradead.org,
-  shaggy@kernel.org,  tj@kernel.org,  trond.myklebust@hammerspace.com,
-  anna@kernel.org,  chuck.lever@oracle.com,  neilb@suse.de,
-  kolga@netapp.com,  Dai.Ngo@oracle.com,  tom@talpey.com,
-  konishi.ryusuke@gmail.com,  anton@tuxera.com,
-  almaz.alexandrovich@paragon-software.com,  mark@fasheh.com,
-  joseph.qi@linux.alibaba.com,  me@bobcopeland.com,  hubcap@omnibond.com,
-  martin@omnibond.com,  amir73il@gmail.com,  mcgrof@kernel.org,
-  yzaikin@google.com,  tony.luck@intel.com,  gpiccoli@igalia.com,
-  al@alarsen.net,  sfrench@samba.org,  pc@manguebit.com,
-  lsahlber@redhat.com,  sprasad@microsoft.com,  senozhatsky@chromium.org,
-  phillip@squashfs.org.uk,  rostedt@goodmis.org,  mhiramat@kernel.org,
-  dushistov@mail.ru,  hdegoede@redhat.com,  djwong@kernel.org,
-  dlemoal@kernel.org,  naohiro.aota@wdc.com,  jth@kernel.org,
-  ast@kernel.org,  daniel@iogearbox.net,  andrii@kernel.org,
-  martin.lau@linux.dev,  song@kernel.org,  yhs@fb.com,
-  john.fastabend@gmail.com,  kpsingh@kernel.org,  sdf@google.com,
-  haoluo@google.com,  jolsa@kernel.org,  hughd@google.com,
-  akpm@linux-foundation.org,  davem@davemloft.net,  edumazet@google.com,
-  kuba@kernel.org,  pabeni@redhat.com,  john.johansen@canonical.com,
-  paul@paul-moore.com,  jmorris@namei.org,  serge@hallyn.com,
-  stephen.smalley.work@gmail.com,  eparis@parisplace.org,  jgross@suse.com,
-  stern@rowland.harvard.edu,  lrh2000@pku.edu.cn,
-  sebastian.reichel@collabora.com,  wsa+renesas@sang-engineering.com,
-  quic_ugoswami@quicinc.com,  quic_linyyuan@quicinc.com,
-  john@keeping.me.uk,  error27@gmail.com,  quic_uaggarwa@quicinc.com,
-  hayama@lineo.co.jp,  jomajm@gmail.com,  axboe@kernel.dk,
-  dhavale@google.com,  dchinner@redhat.com,  hannes@cmpxchg.org,
-  zhangpeng362@huawei.com,  slava@dubeyko.com,  gargaditya08@live.com,
-  penguin-kernel@I-love.SAKURA.ne.jp,  yifeliu@cs.stonybrook.edu,
-  madkar@cs.stonybrook.edu,  ezk@cs.stonybrook.edu,  yuzhe@nfschina.com,
-  willy@infradead.org,  okanatov@gmail.com,  jeffxu@chromium.org,
-  linux@treblig.org,  mirimmad17@gmail.com,  yijiangshan@kylinos.cn,
-  yang.yang29@zte.com.cn,  xu.xin16@zte.com.cn,  chengzhihao1@huawei.com,
-  shr@devkernel.io,  Liam.Howlett@Oracle.com,  adobriyan@gmail.com,
-  chi.minghao@zte.com.cn,  roberto.sassu@huawei.com,
-  linuszeng@tencent.com,  bvanassche@acm.org,  zohar@linux.ibm.com,
-  yi.zhang@huawei.com,  trix@redhat.com,  fmdefrancesco@gmail.com,
-  ebiggers@google.com,  princekumarmaurya06@gmail.com,
-  chenzhongjin@huawei.com,  riel@surriel.com,  shaozhengchao@huawei.com,
-  jingyuwang_vip@163.com,  linuxppc-dev@lists.ozlabs.org,
-  linux-kernel@vger.kernel.org,  linux-s390@vger.kernel.org,
-  linux-rdma@vger.kernel.org,  linux-usb@vger.kernel.org,
-  v9fs@lists.linux.dev,  linux-fsdevel@vger.kernel.org,
-  linux-afs@lists.infradead.org,  autofs@vger.kernel.org,
-  linux-mm@kvack.org,  linux-btrfs@vger.kernel.org,
-  ceph-devel@vger.kernel.org,  codalist@coda.cs.cmu.edu,
-  ecryptfs@vger.kernel.org,  linux-efi@vger.kernel.org,
-  linux-erofs@lists.ozlabs.org,  linux-ext4@vger.kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  cluster-devel@redhat.com,
-  linux-um@lists.infradead.org,  linux-mtd@lists.infradead.org,
-  jfs-discussion@lists.sourceforge.net,  linux-nfs@vger.kernel.org,
-  linux-nilfs@vger.kernel.org,  linux-ntfs-dev@lists.sourceforge.net,
-  ntfs3@lists.linux.dev,  ocfs2-devel@lists.linux.dev,
-  linux-karma-devel@lists.sourceforge.net,  devel@lists.orangefs.org,
-  linux-unionfs@vger.kernel.org,  linux-hardening@vger.kernel.org,
-  reiserfs-devel@vger.kernel.org,  linux-cifs@vger.kernel.org,
-  samba-technical@lists.samba.org,  linux-trace-kernel@vger.kernel.org,
-  linux-xfs@vger.kernel.org,  bpf@vger.kernel.org,  netdev@vger.kernel.org,
-  apparmor@lists.ubuntu.com,  linux-security-module@vger.kernel.org,
-  selinux@vger.kernel.org
-References: <20230705185812.579118-1-jlayton@kernel.org>
-	<a4e6cfec345487fc9ac8ab814a817c79a61b123a.camel@kernel.org>
-Date: Thu, 06 Jul 2023 10:16:19 -0500
-In-Reply-To: <a4e6cfec345487fc9ac8ab814a817c79a61b123a.camel@kernel.org> (Jeff
-	Layton's message of "Wed, 05 Jul 2023 17:57:46 -0400")
-Message-ID: <87ilaxgjek.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB578C18
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 18:05:29 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211C719B2
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 11:05:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1688666726;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Mt4cbGq9d8jKpC8J/+jZJ74qgft1NY860RzeCaYTTAU=;
+	b=Xbx9k6wsBCW6d/cNDU3L2sRfZ3uTuxbTeu53m2RyZg86DMdYdv8yHnfENl0GxXAkQ4/N73
+	DQSep05BvJItRkFGcjQgu+9tKe1YnRTPn/IExO/1BL/l7L65QNKj0GH3zWd/oUzt/GuMEO
+	PojAEJSSMWZoRBA6WQ163MlV5b0QvmM=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-583-8L_zqLQMPlO9PGqK8LqaBw-1; Thu, 06 Jul 2023 14:05:25 -0400
+X-MC-Unique: 8L_zqLQMPlO9PGqK8LqaBw-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-5eee6742285so11552446d6.2
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 11:05:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688666724; x=1691258724;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mt4cbGq9d8jKpC8J/+jZJ74qgft1NY860RzeCaYTTAU=;
+        b=J8UCSKzw60awEEg5bb1U5u2bXJuDYkQvZsu44u/QTJhONOuoj0rKhrk3QQYxGyEcaW
+         ys4qovOhZurek4KPjCWKsGWUqpa6L38cNLLs5oEUCdByd+fcrs31FZpJigaN14wUmYXt
+         mpothXEdLNuBQ7BqjLx6wtyZi+Zwvh/gnXacsPn+7GvFXcpq7yw5t4O+tJAoXue9eIjj
+         w8CnDvSfAFtEDrsfgqvc/zJBaif47Gq+tTBqsVd4bSxFoR45Anzkshq/6Q1K1wxdphCP
+         oQSTy7uzgYb7qspcsZ4niaw8t9WZfsb62b6XM6ZNL3wsDQWBAP2bzFbjCfe1d3ytnufy
+         PMPg==
+X-Gm-Message-State: ABy/qLaEeiDPf/1j9QOWQ26x5LjmVgUlhHb1op842oPyU4xmUcmuuqvp
+	FYD6k8ya70BowEYLqvsJdvihuvL9gCszf8MtSfY8YNNi++bgwtVfh1B5KnzH+jed+p56YkAoZuT
+	TsQov3C/GDoQ+
+X-Received: by 2002:a0c:de07:0:b0:632:1da6:986a with SMTP id t7-20020a0cde07000000b006321da6986amr2462916qvk.17.1688666724510;
+        Thu, 06 Jul 2023 11:05:24 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFmb0Wl2yHupEnJvTRYWB02b+IYD3YW7L4gL7H6IsZmD2crA+l9iItFZbkC9he8nK0QEubsug==
+X-Received: by 2002:a0c:de07:0:b0:632:1da6:986a with SMTP id t7-20020a0cde07000000b006321da6986amr2462887qvk.17.1688666724257;
+        Thu, 06 Jul 2023 11:05:24 -0700 (PDT)
+Received: from vschneid.remote.csb ([154.57.232.159])
+        by smtp.gmail.com with ESMTPSA id c12-20020a0ce14c000000b006260c683bf2sm1135942qvl.53.2023.07.06.11.05.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jul 2023 11:05:23 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: paulmck@kernel.org, Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+ bpf@vger.kernel.org, x86@kernel.org, Nicolas Saenz Julienne
+ <nsaenzju@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Thomas
+ Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav
+ Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H.
+ Peter Anvin" <hpa@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>, Wanpeng
+ Li <wanpengli@tencent.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, Andy
+ Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki
+ <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes
+ <lstoakes@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Kees Cook
+ <keescook@chromium.org>, Sami Tolvanen <samitolvanen@google.com>, Ard
+ Biesheuvel <ardb@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Juerg
+ Haefliger <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
+ <nsaenz@kernel.org>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, Nadav Amit <namit@vmware.com>, Dan
+ Carpenter <error27@gmail.com>, Chuang Wang <nashuiliang@gmail.com>, Yang
+ Jihong <yangjihong1@huawei.com>, Petr Mladek <pmladek@suse.com>, "Jason A.
+ Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>, Julian Pidancet
+ <julian.pidancet@oracle.com>, Tom Lendacky <thomas.lendacky@amd.com>,
+ Dionna Glaze <dionnaglaze@google.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?=
+ <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>, Daniel Bristot
+ de Oliveira <bristot@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
+ Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH 11/14] context-tracking: Introduce work deferral
+ infrastructure
+In-Reply-To: <4c2cb573-168f-4806-b1d9-164e8276e66a@paulmck-laptop>
+References: <20230705181256.3539027-1-vschneid@redhat.com>
+ <20230705181256.3539027-12-vschneid@redhat.com>
+ <ZKXtfWZiM66dK5xC@localhost.localdomain>
+ <xhsmhttuhuvix.mognet@vschneid.remote.csb> <ZKaoHrm0Fejb7kAl@lothringen>
+ <4c2cb573-168f-4806-b1d9-164e8276e66a@paulmck-laptop>
+Date: Thu, 06 Jul 2023 19:05:17 +0100
+Message-ID: <xhsmhlefsvrtu.mognet@vschneid.remote.csb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -132,85 +105,67 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-XM-SPF: eid=1qHQim-00AsXt-Fk;;;mid=<87ilaxgjek.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.110.29.46;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX19hfnilZzLMqG1RlF+DuMto1+nqSkCNAbk=
-X-SA-Exim-Connect-IP: 68.110.29.46
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
 	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
 	version=3.4.6
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Jeff Layton <jlayton@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 959 ms - load_scoreonly_sql: 0.04 (0.0%),
-	signal_user_changed: 12 (1.2%), b_tie_ro: 10 (1.1%), parse: 1.62
-	(0.2%), extract_message_metadata: 4.3 (0.4%), get_uri_detail_list:
-	1.88 (0.2%), tests_pri_-2000: 2.4 (0.3%), tests_pri_-1000: 10 (1.1%),
-	tests_pri_-950: 1.27 (0.1%), tests_pri_-900: 1.56 (0.2%),
-	tests_pri_-200: 0.85 (0.1%), tests_pri_-100: 4.3 (0.4%),
-	tests_pri_-90: 283 (29.5%), check_bayes: 278 (29.0%), b_tokenize: 27
-	(2.9%), b_tok_get_all: 20 (2.1%), b_comp_prob: 4.6 (0.5%),
-	b_tok_touch_all: 220 (23.0%), b_finish: 0.94 (0.1%), tests_pri_0: 616
-	(64.3%), check_dkim_signature: 0.56 (0.1%), check_dkim_adsp: 2.8
-	(0.3%), poll_dns_idle: 0.55 (0.1%), tests_pri_10: 2.2 (0.2%),
-	tests_pri_500: 9 (0.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2 00/89] fs: new accessors for inode->i_ctime
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Jeff Layton <jlayton@kernel.org> writes:
+On 06/07/23 09:39, Paul E. McKenney wrote:
+> On Thu, Jul 06, 2023 at 01:40:14PM +0200, Frederic Weisbecker wrote:
+>> On Thu, Jul 06, 2023 at 12:30:46PM +0100, Valentin Schneider wrote:
+>> > I'm trying to grok how this impacts RCU, IIUC most of RCU mostly cares about the
+>> > even/odd-ness of the thing, and rcu_gp_fqs() cares about the actual value
+>> > but only to check if it has changed over time (rcu_dynticks_in_eqs_since()
+>> > only does a !=).
+>> >
+>> > I'm rephrasing here to make sure I get it - is it then that the worst case
+>> > here is 2^(dynticks_counter_size) transitions happen between saving the
+>> > dynticks snapshot and checking it again, so RCU waits some more?
+>>
+>> That's my understanding as well but I have to defer on Paul to make sure I'm
+>> not overlooking something.
+>
+> That does look plausible to me.
+>
+> And yes, RCU really cares about whether its part of this counter has
+> been a multiple of two during a given interval of time, because this
+> indicates that the CPU has no pre-existing RCU readers still active.
+> One way that this can happen is for that value to be a multiple of two
+> at some point in time.  The other way that this can happen is for the
+> value to have changed.  No matter what the start and end values, if they
+> are different, the counter must necessarily have at least passed through
+> multiple of two in the meantime, again guaranteeing that any RCU readers
+> that around when the count was first fetched have now finished.
+>
 
-> On Wed, 2023-07-05 at 14:58 -0400, Jeff Layton wrote:
->> v2:
->> - prepend patches to add missing ctime updates
->> - add simple_rename_timestamp helper function
->> - rename ctime accessor functions as inode_get_ctime/inode_set_ctime_*
->> - drop individual inode_ctime_set_{sec,nsec} helpers
->> 
->> I've been working on a patchset to change how the inode->i_ctime is
->> accessed in order to give us conditional, high-res timestamps for the
->> ctime and mtime. struct timespec64 has unused bits in it that we can use
->> to implement this. In order to do that however, we need to wrap all
->> accesses of inode->i_ctime to ensure that bits used as flags are
->> appropriately handled.
->> 
->> The patchset starts with reposts of some missing ctime updates that I
->> spotted in the tree. It then adds a new helper function for updating the
->> timestamp after a successful rename, and new ctime accessor
->> infrastructure.
->> 
->> The bulk of the patchset is individual conversions of different
->> subsysteme to use the new infrastructure. Finally, the patchset renames
->> the i_ctime field to __i_ctime to help ensure that I didn't miss
->> anything.
->> 
->> This should apply cleanly to linux-next as of this morning.
->> 
->> Most of this conversion was done via 5 different coccinelle scripts, run
->> in succession, with a large swath of by-hand conversions to clean up the
->> remainder.
->> 
->
-> A couple of other things I should note:
->
-> If you sent me an Acked-by or Reviewed-by in the previous set, then I
-> tried to keep it on the patch here, since the respun patches are mostly
-> just renaming stuff from v1. Let me know if I've missed any.
->
-> I've also pushed the pile to my tree as this tag:
->
->     https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git/tag/?h=ctime.20230705
->
-> In case that's easier to work with.
+Thank you for the demystification!
 
-Are there any preliminary patches showing what you want your introduced
-accessors to turn into?  It is hard to judge the sanity of the
-introduction of wrappers without seeing what the wrappers are ultimately
-going to do.
+> But we should take the machine's opinions much more seriously than we
+> take any of our own opinions.
 
-Eric
+Heh :-)
+
+> Why not adjust RCU_DYNTICKS_IDX so as
+> to crank RCU's portion of this counter down to (say) two or three bits
+> and let rcutorture have at it on TREE04 or TREE07, both of which have
+> nohz_full CPUs?
+>
+> Maybe also adjust mkinitrd.sh to make the user/kernel transitions more
+> frequent?
+>
+> Please note that I do -not- recommend production use of a three-bit
+> (let alone a two-bit) RCU portion because this has a high probability
+> of excessively extending grace periods.  But it might be good to keep
+> a tiny counter as a debug option so that we regularly rcutorture it.
+>
+
+Sounds sensible, I'll add that to my v2 todolist.
+
+Thanks!
+
+>                                                       Thanx, Paul
+
 
