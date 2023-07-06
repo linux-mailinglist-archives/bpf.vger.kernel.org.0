@@ -1,220 +1,153 @@
-Return-Path: <bpf+bounces-4273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22C9774A03C
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 16:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C6B774A0E3
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 17:26:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 537AA1C20DC6
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 14:58:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D4B01C20D9E
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 15:26:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F53A940;
-	Thu,  6 Jul 2023 14:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F32A953;
+	Thu,  6 Jul 2023 15:26:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1359453
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 14:58:36 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53D71725;
-	Thu,  6 Jul 2023 07:58:33 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2D30421EFB;
-	Thu,  6 Jul 2023 14:58:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1688655512; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a3WCjuVtP408kA5MLjuqcXtfVFT/xUBAoafKmCX5mTQ=;
-	b=24baoWftvYiGQFO3002Q0+aX8kw5mHmt4Cu1N910tREAGtuxcOaRXmP0pM+lOVAJim6+VD
-	dQX99wfdHC9+7VMIIenAeKOTV3XT6+7YZiyj/RCSzIS+4DKmzNEvO8ziEQ7uku2gaTxrzh
-	E0opuusKVm/bz4GqT0HBn9z2vEqLBRg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1688655512;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a3WCjuVtP408kA5MLjuqcXtfVFT/xUBAoafKmCX5mTQ=;
-	b=N/aHHWlEsq3Q8ok8VkNIK3F/VOqPWCTaj4AqfwvPqV9l0evDoZQtQa232xNNYABuuek3bk
-	kdzAUhIiYKjnxQAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0FDAC1390F;
-	Thu,  6 Jul 2023 14:58:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id YfY7A5jWpmRpBgAAMHmgww
-	(envelope-from <jack@suse.cz>); Thu, 06 Jul 2023 14:58:32 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 818C8A0707; Thu,  6 Jul 2023 16:58:31 +0200 (CEST)
-Date: Thu, 6 Jul 2023 16:58:31 +0200
-From: Jan Kara <jack@suse.cz>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: jk@ozlabs.org, arnd@arndb.de, mpe@ellerman.id.au, npiggin@gmail.com,
-	christophe.leroy@csgroup.eu, hca@linux.ibm.com, gor@linux.ibm.com,
-	agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
-	svens@linux.ibm.com, gregkh@linuxfoundation.org, arve@android.com,
-	tkjos@android.com, maco@android.com, joel@joelfernandes.org,
-	brauner@kernel.org, cmllamas@google.com, surenb@google.com,
-	dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-	leon@kernel.org, bwarrum@linux.ibm.com, rituagar@linux.ibm.com,
-	ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
-	linux_oss@crudebyte.com, dsterba@suse.com, dhowells@redhat.com,
-	marc.dionne@auristor.com, viro@zeniv.linux.org.uk, raven@themaw.net,
-	luisbg@kernel.org, salah.triki@gmail.com, aivazian.tigran@gmail.com,
-	ebiederm@xmission.com, keescook@chromium.org, clm@fb.com,
-	josef@toxicpanda.com, xiubli@redhat.com, idryomov@gmail.com,
-	jaharkes@cs.cmu.edu, coda@cs.cmu.edu, jlbec@evilplan.org,
-	hch@lst.de, nico@fluxnic.net, rafael@kernel.org, code@tyhicks.com,
-	ardb@kernel.org, xiang@kernel.org, chao@kernel.org,
-	huyue2@coolpad.com, jefflexu@linux.alibaba.com,
-	linkinjeon@kernel.org, sj1557.seo@samsung.com, jack@suse.com,
-	tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-	hirofumi@mail.parknet.co.jp, miklos@szeredi.hu, rpeterso@redhat.com,
-	agruenba@redhat.com, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-	mikulas@artax.karlin.mff.cuni.cz, mike.kravetz@oracle.com,
-	muchun.song@linux.dev, dwmw2@infradead.org, shaggy@kernel.org,
-	tj@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org,
-	chuck.lever@oracle.com, neilb@suse.de, kolga@netapp.com,
-	Dai.Ngo@oracle.com, tom@talpey.com, konishi.ryusuke@gmail.com,
-	anton@tuxera.com, almaz.alexandrovich@paragon-software.com,
-	mark@fasheh.com, joseph.qi@linux.alibaba.com, me@bobcopeland.com,
-	hubcap@omnibond.com, martin@omnibond.com, amir73il@gmail.com,
-	mcgrof@kernel.org, yzaikin@google.com, tony.luck@intel.com,
-	gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,
-	pc@manguebit.com, lsahlber@redhat.com, sprasad@microsoft.com,
-	senozhatsky@chromium.org, phillip@squashfs.org.uk,
-	rostedt@goodmis.org, mhiramat@kernel.org, dushistov@mail.ru,
-	hdegoede@redhat.com, djwong@kernel.org, dlemoal@kernel.org,
-	naohiro.aota@wdc.com, jth@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	jolsa@kernel.org, hughd@google.com, akpm@linux-foundation.org,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, john.johansen@canonical.com, paul@paul-moore.com,
-	jmorris@namei.org, serge@hallyn.com, stephen.smalley.work@gmail.com,
-	eparis@parisplace.org, jgross@suse.com, stern@rowland.harvard.edu,
-	lrh2000@pku.edu.cn, sebastian.reichel@collabora.com,
-	wsa+renesas@sang-engineering.com, quic_ugoswami@quicinc.com,
-	quic_linyyuan@quicinc.com, john@keeping.me.uk, error27@gmail.com,
-	quic_uaggarwa@quicinc.com, hayama@lineo.co.jp, jomajm@gmail.com,
-	axboe@kernel.dk, dhavale@google.com, dchinner@redhat.com,
-	hannes@cmpxchg.org, zhangpeng362@huawei.com, slava@dubeyko.com,
-	gargaditya08@live.com, penguin-kernel@I-love.SAKURA.ne.jp,
-	yifeliu@cs.stonybrook.edu, madkar@cs.stonybrook.edu,
-	ezk@cs.stonybrook.edu, yuzhe@nfschina.com, willy@infradead.org,
-	okanatov@gmail.com, jeffxu@chromium.org, linux@treblig.org,
-	mirimmad17@gmail.com, yijiangshan@kylinos.cn,
-	yang.yang29@zte.com.cn, xu.xin16@zte.com.cn,
-	chengzhihao1@huawei.com, shr@devkernel.io, Liam.Howlett@Oracle.com,
-	adobriyan@gmail.com, chi.minghao@zte.com.cn,
-	roberto.sassu@huawei.com, linuszeng@tencent.com, bvanassche@acm.org,
-	zohar@linux.ibm.com, yi.zhang@huawei.com, trix@redhat.com,
-	fmdefrancesco@gmail.com, ebiggers@google.com,
-	princekumarmaurya06@gmail.com, chenzhongjin@huawei.com,
-	riel@surriel.com, shaozhengchao@huawei.com, jingyuwang_vip@163.com,
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-	autofs@vger.kernel.org, linux-mm@kvack.org,
-	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-	linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com, linux-um@lists.infradead.org,
-	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
-	linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
-	linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-	reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, apparmor@lists.ubuntu.com,
-	linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Subject: Re: [PATCH v2 92/92] fs: rename i_ctime field to __i_ctime
-Message-ID: <20230706145831.iwmb7c3jerbkctda@quack3>
-References: <20230705185812.579118-1-jlayton@kernel.org>
- <20230705185812.579118-4-jlayton@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F460A934
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 15:26:04 +0000 (UTC)
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9A21BD3
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 08:26:03 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-55b66ce047cso502140a12.0
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 08:26:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688657163; x=1691249163;
+        h=content-transfer-encoding:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=naq3nXH3JnI0iCRMysYX4z2gUezeFgxv5TLSzOREpHo=;
+        b=hT0Hir0ihbJbkAxVAiZkTCGWQRr1oVvRH8qwo0fc9hcBbCsC9i+bYM2rfu+eoIjDPP
+         2U9IKhnIur5G2BIPFKPrZjX7zFWM4NE6Xvy+ajOoR/p6eYL/zHbsSIyaN/ihgs82eEih
+         bVgkw0Y1kOYdg3VXQMJz/O9fQE9ZWIiDABPBw0KNRVLD9l4RTHrplgPFeAJh4WRXTXKb
+         u56qTayTALvfhbcDvVVQeasp70iAuBgQfEaPEwvfW0YZlMOP9fQBg2VTgRjYd0u6jKUM
+         1/SxoqU8o0ehFCalFirLTcSgZyBsJQ36K7yMsx8Q1K3lS74URqLw5aN2KiTQl91Ag7F7
+         h7+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688657163; x=1691249163;
+        h=content-transfer-encoding:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=naq3nXH3JnI0iCRMysYX4z2gUezeFgxv5TLSzOREpHo=;
+        b=IR7C6anNFjrjNK9hqHVRO2/oVWhE0LGAopL7Ca2TC76Qt+2rMHdqk7IqA0xcpfjVEx
+         g1VDfm5smpO0oaKjP4gN5GE6XvI7R2CKNCHjHPM4gr/XOe3eO3a/jr9tcFqSOBf0nScg
+         JMUTIr/fEhhLYGfDCWOUowBBp4CWyr377gSUvFyd8WaZxT3/LwYlQXDBsDqakDPiWQWA
+         XitRQxlSdB2Ta/s1ZgkFI06N6fQaFuocHCT4CeZe1rkLoPj7L86iFxNqGQaLQoxRMySI
+         9nhl9LWpnWZKGPtp20N63oM4wy0se42bIioAyOkIyr24HuLBdtmGOPak1GY1uIjXyB70
+         3B7g==
+X-Gm-Message-State: ABy/qLbpRhLmjS+l0GOjn/NrD+bur5DHSV3TFJVQSpWgr4rynRVYIWa2
+	cA/kyJkGxo0bnSTXzGBs3Qzd7PolM3Sdh638
+X-Google-Smtp-Source: APBJJlGv0ZAt5DVFFDjDjatFYonNjvshPg4oV9Pm7JqRungl0a78MrsHHUmiqYRYZOuJ+X8nQXiHjA==
+X-Received: by 2002:a05:6a20:1050:b0:12e:ba2:7283 with SMTP id gt16-20020a056a20105000b0012e0ba27283mr1483332pzc.24.1688657162429;
+        Thu, 06 Jul 2023 08:26:02 -0700 (PDT)
+Received: from [192.168.1.9] ([14.238.228.104])
+        by smtp.gmail.com with ESMTPSA id z15-20020a65610f000000b0052871962579sm1315340pgu.63.2023.07.06.08.26.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Jul 2023 08:26:02 -0700 (PDT)
+Message-ID: <67bec6a9-af59-d6f9-2630-17280479a1f7@gmail.com>
+Date: Thu, 6 Jul 2023 22:25:58 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230705185812.579118-4-jlayton@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Content-Language: en-US
+From: Anh Tuan Phan <tuananhlfc@gmail.com>
+Subject: [PATCH v1] samples/bpf: Fix build out of source tree
+To: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev,
+ linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed 05-07-23 14:58:12, Jeff Layton wrote:
-> Now that everything in-tree is converted to use the accessor functions,
-> rename the i_ctime field in the inode to discourage direct access.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+This commit fixes a few compilation issues when building out of source
+tree. The command that I used to build samples/bpf:
 
-Looks good. Feel free to add:
+export KBUILD_OUTPUT=/tmp
+make V=1 M=samples/bpf
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+The compilation failed since it tried to find the header files in the
+wrong places between output directory and source tree directory
 
-								Honza
+Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
+---
+ samples/bpf/Makefile        | 8 ++++----
+ samples/bpf/Makefile.target | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-> ---
->  include/linux/fs.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 14e38bd900f1..b66442f91835 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -642,7 +642,7 @@ struct inode {
->  	loff_t			i_size;
->  	struct timespec64	i_atime;
->  	struct timespec64	i_mtime;
-> -	struct timespec64	i_ctime;
-> +	struct timespec64	__i_ctime; /* use inode_*_ctime accessors! */
->  	spinlock_t		i_lock;	/* i_blocks, i_bytes, maybe i_size */
->  	unsigned short          i_bytes;
->  	u8			i_blkbits;
-> @@ -1485,7 +1485,7 @@ struct timespec64 inode_set_ctime_current(struct inode *inode);
->   */
->  static inline struct timespec64 inode_get_ctime(const struct inode *inode)
->  {
-> -	return inode->i_ctime;
-> +	return inode->__i_ctime;
->  }
->  
->  /**
-> @@ -1498,7 +1498,7 @@ static inline struct timespec64 inode_get_ctime(const struct inode *inode)
->  static inline struct timespec64 inode_set_ctime_to_ts(struct inode *inode,
->  						      struct timespec64 ts)
->  {
-> -	inode->i_ctime = ts;
-> +	inode->__i_ctime = ts;
->  	return ts;
->  }
->  
-> -- 
-> 2.41.0
-> 
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 615f24ebc49c..32469aaa82d5 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -341,10 +341,10 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
+ # Override includes for xdp_sample_user.o because $(srctree)/usr/include in
+ # TPROGS_CFLAGS causes conflicts
+ XDP_SAMPLE_CFLAGS += -Wall -O2 \
+-		     -I$(src)/../../tools/include \
++		     -I$(srctree)/tools/include \
+ 		     -I$(src)/../../tools/include/uapi \
+ 		     -I$(LIBBPF_INCLUDE) \
+-		     -I$(src)/../../tools/testing/selftests/bpf
++		     -I$(srctree)/tools/testing/selftests/bpf
+
+ $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
+ $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
+@@ -393,7 +393,7 @@ $(obj)/xdp_router_ipv4.bpf.o: $(obj)/xdp_sample.bpf.o
+ $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h
+$(src)/xdp_sample_shared.h
+ 	@echo "  CLANG-BPF " $@
+ 	$(Q)$(CLANG) -g -O2 -target bpf -D__TARGET_ARCH_$(SRCARCH) \
+-		-Wno-compare-distinct-pointer-types -I$(srctree)/include \
++		-Wno-compare-distinct-pointer-types -I$(obj) -I$(srctree)/include \
+ 		-I$(srctree)/samples/bpf -I$(srctree)/tools/include \
+ 		-I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES) \
+ 		-c $(filter %.bpf.c,$^) -o $@
+@@ -412,7 +412,7 @@ xdp_router_ipv4.skel.h-deps := xdp_router_ipv4.bpf.o
+xdp_sample.bpf.o
+
+ LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.bpf.c,$(foreach
+skel,$(LINKED_SKELS),$($(skel)-deps)))
+
+-BPF_SRCS_LINKED := $(notdir $(wildcard $(src)/*.bpf.c))
++BPF_SRCS_LINKED := $(notdir $(wildcard $(srctree)/$(src)/*.bpf.c))
+ BPF_OBJS_LINKED := $(patsubst %.bpf.c,$(obj)/%.bpf.o, $(BPF_SRCS_LINKED))
+ BPF_SKELS_LINKED := $(addprefix $(obj)/,$(LINKED_SKELS))
+
+diff --git a/samples/bpf/Makefile.target b/samples/bpf/Makefile.target
+index 7621f55e2947..86a454cfb080 100644
+--- a/samples/bpf/Makefile.target
++++ b/samples/bpf/Makefile.target
+@@ -41,7 +41,7 @@ _tprogc_flags   = $(TPROGS_CFLAGS) \
+                  $(TPROGCFLAGS_$(basetarget).o)
+
+ # $(objtree)/$(obj) for including generated headers from checkin source
+files
+-ifeq ($(KBUILD_EXTMOD),)
++ifneq ($(KBUILD_EXTMOD),)
+ ifdef building_out_of_srctree
+ _tprogc_flags   += -I $(objtree)/$(obj)
+ endif
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.1
 
