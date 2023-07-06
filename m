@@ -1,135 +1,122 @@
-Return-Path: <bpf+bounces-4275-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4276-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56A7D74A114
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 17:34:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A9AA74A1B3
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 18:00:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E4621C202DC
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 15:34:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C716628135C
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 16:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A35AAD29;
-	Thu,  6 Jul 2023 15:33:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABCB1AD41;
+	Thu,  6 Jul 2023 16:00:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05C49453;
-	Thu,  6 Jul 2023 15:33:55 +0000 (UTC)
-Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F346BFF;
-	Thu,  6 Jul 2023 08:33:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B9F8C17
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 16:00:13 +0000 (UTC)
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56661BEA
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 09:00:10 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-51b4ef5378bso675140a12.1
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 09:00:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1688657635; x=1720193635;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=trA35bhtZS7sC65wm9GfBeAVYdZXIA5psrybUjewGIQ=;
-  b=A0UumUCQtccE+sL4EQW3IA6Wg1hcfLSmRSmI/JZD/sedyT5VYzAKy+fS
-   qjJCBdlLKda+gxGC1/nglq1eFqaJmASSIL1vTr72VH8gF+r8AifyGvAa4
-   QqOoXm+zYDyY8Tu1M2r39/T7cT4zFNhrTsSoccqGOyygiR2iLn3AaIYYA
-   8=;
-X-IronPort-AV: E=Sophos;i="6.01,185,1684800000"; 
-   d="scan'208";a="658357472"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2023 15:33:49 +0000
-Received: from EX19MTAUWC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-	by email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com (Postfix) with ESMTPS id 7CCA88103C;
-	Thu,  6 Jul 2023 15:33:42 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 6 Jul 2023 15:33:40 +0000
-Received: from 88665a182662.ant.amazon.com (10.187.171.32) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 6 Jul 2023 15:33:35 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <lmb@isovalent.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <hemanthmalla@gmail.com>,
-	<joe@cilium.io>, <joe@wand.net.nz>, <john.fastabend@gmail.com>,
-	<jolsa@kernel.org>, <kpsingh@kernel.org>, <kuba@kernel.org>,
-	<kuniyu@amazon.com>, <linux-kernel@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>, <martin.lau@linux.dev>, <mykolal@fb.com>,
-	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <sdf@google.com>,
-	<shuah@kernel.org>, <song@kernel.org>, <willemdebruijn.kernel@gmail.com>,
-	<yhs@fb.com>
-Subject: Re: [PATCH bpf-next v4 6/7] bpf, net: Support SO_REUSEPORT sockets with bpf_sk_assign
-Date: Thu, 6 Jul 2023 08:33:27 -0700
-Message-ID: <20230706153327.99298-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAN+4W8iRH6kpDmmY8i5r1nKbckaYghmOCqRXe+4bDHE7vzVMMA@mail.gmail.com>
-References: <CAN+4W8iRH6kpDmmY8i5r1nKbckaYghmOCqRXe+4bDHE7vzVMMA@mail.gmail.com>
+        d=gmail.com; s=20221208; t=1688659210; x=1691251210;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cX9kKxYIJv3ip+bm10ugdsP4ZscSU1mpF0YvzC6xnuo=;
+        b=rQG6cR+PnkCS515HPL1UmtBIv6ie8WEoW01eti3dVLLSFt/0WAOYUmxuyGn0EGpE1C
+         wHBQUjLOE6fKQWD7Lt/z8noWVWXiQs2UDXnRMbxw7LSxX/vWgUSi6ZPp1Hp71UUtkfQ5
+         FErGt1+Tqy8dYNvnAiWLu4uc7NLawBPjl/9GBAIOwYgiX3xaf9GHuV6gU8piNn9FcGpj
+         DDBYvk46oMpkEE+deY9FYAzA1OIL1SB1dwroVCauMxzs9Dnkf5OEwEOeBoDbOeVHEseE
+         mOFWQtial0EFpSX/x6fILrfhhKsXelWEnPO5uTb3n6WwKrwpxOPaSuuH9OyEH2nLe8Iv
+         kTVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688659210; x=1691251210;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cX9kKxYIJv3ip+bm10ugdsP4ZscSU1mpF0YvzC6xnuo=;
+        b=erTVncMTqR7Sz/qcFqBxPYMChpnWnfdCJ1XroQ4HtsyekTEVAS1DkFKJGcXdH6gaJI
+         lyxu0xH/vw7p25OEXvjUlczgRffLuKLZtZ/6q8giYGKx7EQU9L4R9fk0KcJPHF5mox7W
+         D94Es/hZ2CIuF7GcZ1qZEbvwxDRgXOmwULLkiZHLNsOOX1sS4bUFY3K2Pcck51xtRa4F
+         Rh6/IAMOr5OYOwaSGWnERni058uVzgUfoq7ejL7+Tzp5/hcMw8xcAAOWTNYTIe2GBa1U
+         ctwB1980edKu62ZAulHRWVVuJPhU41pNWQSmfBA0Tppr5U2FuBEtzIIT+bouaTBeCOg2
+         DHVg==
+X-Gm-Message-State: ABy/qLa4PuPkl0GRYxkV+rhXYPRjrgULvB8V0fRVcS4++Un6YPAeQ/K6
+	Ob6pfK74Pu7ksrA2pCeoSB8E4sdjEvfTTduS
+X-Google-Smtp-Source: APBJJlGqOX0uDpBiQab5K5TMuWuJwxSg0c7QOS7sIecNBCGIIn7JdIlWhRDfnT/EgC6ONYqoY5LZlg==
+X-Received: by 2002:a05:6a20:244e:b0:130:6b27:729f with SMTP id t14-20020a056a20244e00b001306b27729fmr590616pzc.3.1688659209743;
+        Thu, 06 Jul 2023 09:00:09 -0700 (PDT)
+Received: from [192.168.1.9] ([14.238.228.104])
+        by smtp.gmail.com with ESMTPSA id ey2-20020a056a0038c200b006828a3c259fsm1464537pfb.104.2023.07.06.09.00.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Jul 2023 09:00:09 -0700 (PDT)
+Message-ID: <bd1477f2-a51e-a795-4f25-a32d6ab46530@gmail.com>
+Date: Thu, 6 Jul 2023 23:00:06 +0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.187.171.32]
-X-ClientProxiedBy: EX19D043UWA004.ant.amazon.com (10.13.139.41) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-	version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Content-Language: en-US
+To: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev,
+ linux-kernel-mentees@lists.linuxfoundation.org
+From: Anh Tuan Phan <tuananhlfc@gmail.com>
+Subject: [PATCH v2] samples/bpf: Add more instructions to build dependencies
+ and, configuration in README.rst
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Thu, 6 Jul 2023 09:11:15 +0100
-> On Thu, Jul 6, 2023 at 1:41 AM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
-> >
-> > Sorry for late reply.
-> >
-> > What we know about sk before inet6?_lookup_reuseport() are
-> >
-> >   (1) sk was full socket in bpf_sk_assign()
-> >   (2) sk had SOCK_RCU_FREE in bpf_sk_assign()
-> >   (3) sk was TCP_LISTEN here if TCP
-> 
-> Are we looking at the same bpf_sk_assign? Confusingly there are two
-> very similarly named functions. The one we care about is:
-> 
-> BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64, flags)
-> {
->     if (!sk || flags != 0)
->         return -EINVAL;
->     if (!skb_at_tc_ingress(skb))
->         return -EOPNOTSUPP;
->     if (unlikely(dev_net(skb->dev) != sock_net(sk)))
->         return -ENETUNREACH;
->     if (sk_is_refcounted(sk) &&
->         unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
->         return -ENOENT;
-> 
->     skb_orphan(skb);
->     skb->sk = sk;
->     skb->destructor = sock_pfree;
-> 
->     return 0;
-> }
-> 
-> From this we can't tell what state the socket is in or whether it is
-> RCU freed or not.
+Update the Documentation to mention that some samples require pahole
+v1.16 and kernel built with CONFIG_DEBUG_INFO_BTF=y
 
-But we can in inet6?_steal_sock() by calling sk_is_refcounted() again
-via skb_steal_sock().
+Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
+---
+ samples/bpf/README.rst | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-In inet6?_steal_sock(), we call inet6?_lookup_reuseport() only for
-sk that was a TCP listener or UDP non-connected socket until just before
-the sk_state checks.  Then, we know *refcounted should be false for such
-sockets even before inet6?_lookup_reuseport().
+diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+index 57f93edd1957..631592b83d60 100644
+--- a/samples/bpf/README.rst
++++ b/samples/bpf/README.rst
+@@ -14,6 +14,9 @@ Compiling requires having installed:
+ Note that LLVM's tool 'llc' must support target 'bpf', list version
+ and supported targets with command: ``llc --version``
 
-After the checks, sk might be poped out of the reuseport group before
-inet6?_lookup_reuseport() and reuse_sk might be NULL, but it's not
-related because *refcounted is a value for sk, not for reuse_sk.
++Some samples require pahole version 1.16 as a dependency. See
++https://docs.kernel.org/bpf/bpf_devel_QA.html for reference.
++
+ Clean and configuration
+ -----------------------
+
+@@ -28,6 +31,10 @@ Configure kernel, defconfig for instance::
+
+  make defconfig
+
++Some samples require support for BPF Type Format (BTF). To enable it,
+open the
++generated config file, or use menuconfig (by "make menuconfig") to
+enable the
++following configs: CONFIG_BPF_SYSCALL and CONFIG_DEBUG_INFO_BTF.
++
+ Kernel headers
+ --------------
+
+-- 
+2.34.1
 
