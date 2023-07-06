@@ -1,173 +1,272 @@
-Return-Path: <bpf+bounces-4219-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4220-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD293749958
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 12:25:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A536C749977
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 12:27:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6864728114E
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 10:25:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B2EA28111D
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 10:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F36A48BED;
-	Thu,  6 Jul 2023 10:25:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 858548C01;
+	Thu,  6 Jul 2023 10:27:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B616A6FDF
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 10:25:16 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1F8170C
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 03:25:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1688639114;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 565B98BFA
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 10:27:22 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D1611BFE;
+	Thu,  6 Jul 2023 03:27:09 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EA73A20314;
+	Thu,  6 Jul 2023 10:27:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1688639226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XjvjrVrcchow6hGiOnuuMtRWRueWUenkpTgXIpZAAh8=;
-	b=ZXEAeRGq2JvVSy103LLX9SVjOu0wZIAdK9A+aPMj5c5GKtW0WIMnJSUaqhkNwfxlZthQrg
-	y/uacwhZdpvrPgthyioik6Zeb0222dLZ7XgLXP+LNHRVv9eRdo3CxCCWU3/jedSq6HofhF
-	dLwruUnfrCpFW7oH951jZ8SAWi8gAHM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-541-EaRWzn4NMDi99w-lHFQrbw-1; Thu, 06 Jul 2023 06:25:13 -0400
-X-MC-Unique: EaRWzn4NMDi99w-lHFQrbw-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-513f337d478so440060a12.3
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 03:25:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688639112; x=1691231112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XjvjrVrcchow6hGiOnuuMtRWRueWUenkpTgXIpZAAh8=;
-        b=lMY1D1oPcXlzL0j5sHFnLEcgoxUA8RLIczr+bvWoc4jP2SnNhuuWPDdAnqbWcG5Rcu
-         5nfXRDAMgwKCi9NM7uYWghmn8VUf0O+0efHd9RKI8VvHcA0+MTeYIDbwwTwiPGsZx2eB
-         DbtIxO9Aro6tyvpXzjTH1sdOyEfzo6ML2+GpV3CTfZRal6xWAbrVNbRO3q0EDNxyJfX2
-         fLLAVjOPJA/+8qf1EqV7nU73bsc7jj16f/0q7uNeIzKIBHOOo1j0TPQPXDHlSug0mpjF
-         SzqZwEIM9DtL2Gc6DAd+iCg5YVCPcLMeCS0DjOLt9CWZJGDEFTQ1dRFZBMM2YyRw1yQH
-         8qgg==
-X-Gm-Message-State: ABy/qLZ1Tl1gNTt4aJjXeRX6qqyIBHeB6OgYCaTEGqCSsr6WzwFRB1bK
-	ob1fcSlxzMgWxHtPIi+qkCyETqoEjQciOEpRWGkhXu6phfapdrUkotz4x8Rc0oCg9zkz5lu3SPG
-	r3tUYYhqEmp4M
-X-Received: by 2002:a17:907:3e82:b0:992:4250:545b with SMTP id hs2-20020a1709073e8200b009924250545bmr1377618ejc.47.1688639112073;
-        Thu, 06 Jul 2023 03:25:12 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFr9Hi21IV/P3pz9UBZySRhK0MYxzr2A35i5/1bhE3Uhj9GCjFNrePH9akO1T4VJzL3KX0U0Q==
-X-Received: by 2002:a17:907:3e82:b0:992:4250:545b with SMTP id hs2-20020a1709073e8200b009924250545bmr1377598ejc.47.1688639111809;
-        Thu, 06 Jul 2023 03:25:11 -0700 (PDT)
-Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id jt11-20020a170906dfcb00b009883a3edcfcsm628316ejc.171.2023.07.06.03.25.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Jul 2023 03:25:11 -0700 (PDT)
-From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <cb8f65a9-30ac-ee6e-3368-e653a72dfaaf@redhat.com>
-Date: Thu, 6 Jul 2023 12:25:10 +0200
+	bh=bA8lspzVCI0QkBBZSOZ2NaXyU+WIcRfNoOGE3kPhpJ0=;
+	b=cwJXVYMxjabgJAc1WiPXwEoX0OTfi47rAf4OBX1TAQ+OGmO9dcjviKfq9JaMZbP2e77Zft
+	ZFGj4L7K2Mk/xcezt5kjd+qP2pHojrW25RMENmZ0z2yxrjNTco/s31l/aUs5F51DaCvlcK
+	y6kdxWpKryRTZKsAyjQoNnmkqAh2mzg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1688639226;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bA8lspzVCI0QkBBZSOZ2NaXyU+WIcRfNoOGE3kPhpJ0=;
+	b=NZCT2CDl1JUNY6ijIJLjHssrtsmLEPFUK3ppAhWe46d1TfukNG5xi7VbWtXEv0lhKCq/xt
+	xNVG4YexDp28AbCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B165913A26;
+	Thu,  6 Jul 2023 10:27:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id wFw7KvqWpmTRdAAAMHmgww
+	(envelope-from <jack@suse.cz>); Thu, 06 Jul 2023 10:27:06 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1CB0FA0707; Thu,  6 Jul 2023 12:27:06 +0200 (CEST)
+Date: Thu, 6 Jul 2023 12:27:06 +0200
+From: Jan Kara <jack@suse.cz>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: jk@ozlabs.org, arnd@arndb.de, mpe@ellerman.id.au, npiggin@gmail.com,
+	christophe.leroy@csgroup.eu, hca@linux.ibm.com, gor@linux.ibm.com,
+	agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+	svens@linux.ibm.com, gregkh@linuxfoundation.org, arve@android.com,
+	tkjos@android.com, maco@android.com, joel@joelfernandes.org,
+	brauner@kernel.org, cmllamas@google.com, surenb@google.com,
+	dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
+	leon@kernel.org, bwarrum@linux.ibm.com, rituagar@linux.ibm.com,
+	ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
+	linux_oss@crudebyte.com, dsterba@suse.com, dhowells@redhat.com,
+	marc.dionne@auristor.com, viro@zeniv.linux.org.uk, raven@themaw.net,
+	luisbg@kernel.org, salah.triki@gmail.com, aivazian.tigran@gmail.com,
+	ebiederm@xmission.com, keescook@chromium.org, clm@fb.com,
+	josef@toxicpanda.com, xiubli@redhat.com, idryomov@gmail.com,
+	jaharkes@cs.cmu.edu, coda@cs.cmu.edu, jlbec@evilplan.org,
+	hch@lst.de, nico@fluxnic.net, rafael@kernel.org, code@tyhicks.com,
+	ardb@kernel.org, xiang@kernel.org, chao@kernel.org,
+	huyue2@coolpad.com, jefflexu@linux.alibaba.com,
+	linkinjeon@kernel.org, sj1557.seo@samsung.com, jack@suse.com,
+	tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+	hirofumi@mail.parknet.co.jp, miklos@szeredi.hu, rpeterso@redhat.com,
+	agruenba@redhat.com, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+	mikulas@artax.karlin.mff.cuni.cz, mike.kravetz@oracle.com,
+	muchun.song@linux.dev, dwmw2@infradead.org, shaggy@kernel.org,
+	tj@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org,
+	chuck.lever@oracle.com, neilb@suse.de, kolga@netapp.com,
+	Dai.Ngo@oracle.com, tom@talpey.com, konishi.ryusuke@gmail.com,
+	anton@tuxera.com, almaz.alexandrovich@paragon-software.com,
+	mark@fasheh.com, joseph.qi@linux.alibaba.com, me@bobcopeland.com,
+	hubcap@omnibond.com, martin@omnibond.com, amir73il@gmail.com,
+	mcgrof@kernel.org, yzaikin@google.com, tony.luck@intel.com,
+	gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,
+	pc@manguebit.com, lsahlber@redhat.com, sprasad@microsoft.com,
+	senozhatsky@chromium.org, phillip@squashfs.org.uk,
+	rostedt@goodmis.org, mhiramat@kernel.org, dushistov@mail.ru,
+	hdegoede@redhat.com, djwong@kernel.org, dlemoal@kernel.org,
+	naohiro.aota@wdc.com, jth@kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, hughd@google.com, akpm@linux-foundation.org,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, john.johansen@canonical.com, paul@paul-moore.com,
+	jmorris@namei.org, serge@hallyn.com, stephen.smalley.work@gmail.com,
+	eparis@parisplace.org, jgross@suse.com, stern@rowland.harvard.edu,
+	lrh2000@pku.edu.cn, sebastian.reichel@collabora.com,
+	wsa+renesas@sang-engineering.com, quic_ugoswami@quicinc.com,
+	quic_linyyuan@quicinc.com, john@keeping.me.uk, error27@gmail.com,
+	quic_uaggarwa@quicinc.com, hayama@lineo.co.jp, jomajm@gmail.com,
+	axboe@kernel.dk, dhavale@google.com, dchinner@redhat.com,
+	hannes@cmpxchg.org, zhangpeng362@huawei.com, slava@dubeyko.com,
+	gargaditya08@live.com, penguin-kernel@I-love.SAKURA.ne.jp,
+	yifeliu@cs.stonybrook.edu, madkar@cs.stonybrook.edu,
+	ezk@cs.stonybrook.edu, yuzhe@nfschina.com, willy@infradead.org,
+	okanatov@gmail.com, jeffxu@chromium.org, linux@treblig.org,
+	mirimmad17@gmail.com, yijiangshan@kylinos.cn,
+	yang.yang29@zte.com.cn, xu.xin16@zte.com.cn,
+	chengzhihao1@huawei.com, shr@devkernel.io, Liam.Howlett@Oracle.com,
+	adobriyan@gmail.com, chi.minghao@zte.com.cn,
+	roberto.sassu@huawei.com, linuszeng@tencent.com, bvanassche@acm.org,
+	zohar@linux.ibm.com, yi.zhang@huawei.com, trix@redhat.com,
+	fmdefrancesco@gmail.com, ebiggers@google.com,
+	princekumarmaurya06@gmail.com, chenzhongjin@huawei.com,
+	riel@surriel.com, shaozhengchao@huawei.com, jingyuwang_vip@163.com,
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+	autofs@vger.kernel.org, linux-mm@kvack.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	cluster-devel@redhat.com, linux-um@lists.infradead.org,
+	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
+	linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+	linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev,
+	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+	reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Subject: Re: [PATCH v2 08/92] fs: new helper: simple_rename_timestamp
+Message-ID: <20230706102706.w7udmbmuwp7hhcry@quack3>
+References: <20230705185812.579118-1-jlayton@kernel.org>
+ <20230705185812.579118-3-jlayton@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Cc: brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, David Ahern <dsahern@gmail.com>,
- Jakub Kicinski <kuba@kernel.org>, Willem de Bruijn <willemb@google.com>,
- Anatoly Burakov <anatoly.burakov@intel.com>,
- Alexander Lobakin <alexandr.lobakin@intel.com>,
- Magnus Karlsson <magnus.karlsson@gmail.com>,
- Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
- netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 20/20] selftests/bpf: check checksum level in
- xdp_metadata
-Content-Language: en-US
-To: Larysa Zaremba <larysa.zaremba@intel.com>, bpf@vger.kernel.org
-References: <20230703181226.19380-1-larysa.zaremba@intel.com>
- <20230703181226.19380-21-larysa.zaremba@intel.com>
-In-Reply-To: <20230703181226.19380-21-larysa.zaremba@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230705185812.579118-3-jlayton@kernel.org>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
-
-On 03/07/2023 20.12, Larysa Zaremba wrote:
-> Verify, whether kfunc in xdp_metadata test correctly returns checksum level
-> of zero.
+On Wed 05-07-23 14:58:11, Jeff Layton wrote:
+> A rename potentially involves updating 4 different inode timestamps. Add
+> a function that handles the details sanely, and convert the libfs.c
+> callers to use it.
 > 
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+
+Looks good to me. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->   tools/testing/selftests/bpf/prog_tests/xdp_metadata.c | 3 +++
->   tools/testing/selftests/bpf/progs/xdp_metadata.c      | 7 +++++++
->   2 files changed, 10 insertions(+)
+>  fs/libfs.c         | 36 +++++++++++++++++++++++++++---------
+>  include/linux/fs.h |  2 ++
+>  2 files changed, 29 insertions(+), 9 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> index 50ac9f570bc5..6c71d712932e 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> @@ -228,6 +228,9 @@ static int verify_xsk_metadata(struct xsk *xsk)
->   	if (!ASSERT_EQ(meta->rx_vlan_proto, VLAN_PID, "rx_vlan_proto"))
->   		return -1;
->   
-> +	if (!ASSERT_NEQ(meta->rx_csum_lvl, 0, "rx_csum_lvl"))
-> +		return -1;
-
-Not-equal ("NEQ") to 0 feels weird here.
-Below you set meta->rx_csum_lvl=1 in case meta->rx_csum_lvl==0.
-
-Thus, test can pass if meta->rx_csum_lvl happens to be a random value.
-We could set meta->rx_csum_lvl to 42 in case meta->rx_csum_lvl==0, and
-then use a ASSERT_EQ==42 to be more certain of the case we are testing 
-are fulfilled.
-
-
+> diff --git a/fs/libfs.c b/fs/libfs.c
+> index a7e56baf8bbd..9ee79668c909 100644
+> --- a/fs/libfs.c
+> +++ b/fs/libfs.c
+> @@ -692,6 +692,31 @@ int simple_rmdir(struct inode *dir, struct dentry *dentry)
+>  }
+>  EXPORT_SYMBOL(simple_rmdir);
+>  
+> +/**
+> + * simple_rename_timestamp - update the various inode timestamps for rename
+> + * @old_dir: old parent directory
+> + * @old_dentry: dentry that is being renamed
+> + * @new_dir: new parent directory
+> + * @new_dentry: target for rename
+> + *
+> + * POSIX mandates that the old and new parent directories have their ctime and
+> + * mtime updated, and that inodes of @old_dentry and @new_dentry (if any), have
+> + * their ctime updated.
+> + */
+> +void simple_rename_timestamp(struct inode *old_dir, struct dentry *old_dentry,
+> +			     struct inode *new_dir, struct dentry *new_dentry)
+> +{
+> +	struct inode *newino = d_inode(new_dentry);
 > +
->   	xsk_ring_cons__release(&xsk->rx, 1);
->   	refill_rx(xsk, comp_addr);
->   
-> diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata.c b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-> index 382984a5d1c9..6f7223d581b7 100644
-> --- a/tools/testing/selftests/bpf/progs/xdp_metadata.c
-> +++ b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-> @@ -26,6 +26,8 @@ extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
->   extern int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
->   					__u16 *vlan_tag,
->   					__be16 *vlan_proto) __ksym;
-> +extern int bpf_xdp_metadata_rx_csum_lvl(const struct xdp_md *ctx,
-> +					__u8 *csum_level) __ksym;
->   
->   SEC("xdp")
->   int rx(struct xdp_md *ctx)
-> @@ -62,6 +64,11 @@ int rx(struct xdp_md *ctx)
->   	bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash_type);
->   	bpf_xdp_metadata_rx_vlan_tag(ctx, &meta->rx_vlan_tag, &meta->rx_vlan_proto);
->   
-> +	/* Same as with timestamp, zero is expected */
-> +	ret = bpf_xdp_metadata_rx_csum_lvl(ctx, &meta->rx_csum_lvl);
-> +	if (!ret && meta->rx_csum_lvl == 0)
-> +		meta->rx_csum_lvl = 1;
+> +	old_dir->i_mtime = inode_set_ctime_current(old_dir);
+> +	if (new_dir != old_dir)
+> +		new_dir->i_mtime = inode_set_ctime_current(new_dir);
+> +	inode_set_ctime_current(d_inode(old_dentry));
+> +	if (newino)
+> +		inode_set_ctime_current(newino);
+> +}
+> +EXPORT_SYMBOL_GPL(simple_rename_timestamp);
 > +
-
-IMHO it is more human-readable-code to rename "ret" variable "err".
-
-I know you are just reusing variable "ret", so it's not really your fault.
-
-
-
->   	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
->   }
->   
-
+>  int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
+>  			   struct inode *new_dir, struct dentry *new_dentry)
+>  {
+> @@ -707,11 +732,7 @@ int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
+>  			inc_nlink(old_dir);
+>  		}
+>  	}
+> -	old_dir->i_ctime = old_dir->i_mtime =
+> -	new_dir->i_ctime = new_dir->i_mtime =
+> -	d_inode(old_dentry)->i_ctime =
+> -	d_inode(new_dentry)->i_ctime = current_time(old_dir);
+> -
+> +	simple_rename_timestamp(old_dir, old_dentry, new_dir, new_dentry);
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(simple_rename_exchange);
+> @@ -720,7 +741,6 @@ int simple_rename(struct mnt_idmap *idmap, struct inode *old_dir,
+>  		  struct dentry *old_dentry, struct inode *new_dir,
+>  		  struct dentry *new_dentry, unsigned int flags)
+>  {
+> -	struct inode *inode = d_inode(old_dentry);
+>  	int they_are_dirs = d_is_dir(old_dentry);
+>  
+>  	if (flags & ~(RENAME_NOREPLACE | RENAME_EXCHANGE))
+> @@ -743,9 +763,7 @@ int simple_rename(struct mnt_idmap *idmap, struct inode *old_dir,
+>  		inc_nlink(new_dir);
+>  	}
+>  
+> -	old_dir->i_ctime = old_dir->i_mtime = new_dir->i_ctime =
+> -		new_dir->i_mtime = inode->i_ctime = current_time(old_dir);
+> -
+> +	simple_rename_timestamp(old_dir, old_dentry, new_dir, new_dentry);
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(simple_rename);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index bdfbd11a5811..14e38bd900f1 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2979,6 +2979,8 @@ extern int simple_open(struct inode *inode, struct file *file);
+>  extern int simple_link(struct dentry *, struct inode *, struct dentry *);
+>  extern int simple_unlink(struct inode *, struct dentry *);
+>  extern int simple_rmdir(struct inode *, struct dentry *);
+> +void simple_rename_timestamp(struct inode *old_dir, struct dentry *old_dentry,
+> +			     struct inode *new_dir, struct dentry *new_dentry);
+>  extern int simple_rename_exchange(struct inode *old_dir, struct dentry *old_dentry,
+>  				  struct inode *new_dir, struct dentry *new_dentry);
+>  extern int simple_rename(struct mnt_idmap *, struct inode *,
+> -- 
+> 2.41.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
