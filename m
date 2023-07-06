@@ -1,246 +1,204 @@
-Return-Path: <bpf+bounces-4330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 863E674A577
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 23:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C32874A583
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 23:07:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B7192814BF
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 21:03:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6D5128145D
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 21:07:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 915C214A8A;
-	Thu,  6 Jul 2023 21:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BC213AE5;
+	Thu,  6 Jul 2023 21:07:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3155D63BA;
-	Thu,  6 Jul 2023 21:02:57 +0000 (UTC)
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A8619A7;
-	Thu,  6 Jul 2023 14:02:55 -0700 (PDT)
-Received: from localhost (2.general.sarnold.us.vpn [10.172.64.71])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id EC65D3F31B;
-	Thu,  6 Jul 2023 21:02:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1688677359;
-	bh=wL7I+1AkkXlsdAXc0IgIVs00VMlkDlPzLoO7HtCH8Yo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:In-Reply-To;
-	b=UigHgg1tEN+F2JYmBK+lUOcRBpRtdrNgGbqup1NnaXOwyODWf/TTOdnjSM3EJKV2r
-	 nSVjFudDceCGObMlTU+uma1muY2uaIkS7sazvVomlUh2z4Cx6T6ypWSOKoKTLr1e7n
-	 Ld2z62ONf1z9dg8T10Z72Jl2h0B3vIxrVCycmYrM1jOwV4H0NyvFgu4GNfgDT4ln1d
-	 cD6OBnHOJHdcMdNwqptcYXDLv4IErHsYENHamhLEH+hxLeB02yXRDCQTTC0JuBjK6l
-	 ZNgX1V/W8Fy+2Orhx/aZTqqWjx/zv/bYCRboXEZa1I0V5mrDoaohFkaxDrb57pylVz
-	 OTISOPjT4Hs9A==
-Date: Thu, 6 Jul 2023 21:02:36 +0000
-From: Seth Arnold <seth.arnold@canonical.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Damien Le Moal <dlemoal@kernel.org>, jk@ozlabs.org, arnd@arndb.de,
-	mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-	hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-	borntraeger@linux.ibm.com, svens@linux.ibm.com,
-	gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-	maco@android.com, joel@joelfernandes.org, brauner@kernel.org,
-	cmllamas@google.com, surenb@google.com,
-	dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-	leon@kernel.org, bwarrum@linux.ibm.com, rituagar@linux.ibm.com,
-	ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
-	linux_oss@crudebyte.com, dsterba@suse.com, dhowells@redhat.com,
-	marc.dionne@auristor.com, viro@zeniv.linux.org.uk, raven@themaw.net,
-	luisbg@kernel.org, salah.triki@gmail.com, aivazian.tigran@gmail.com,
-	ebiederm@xmission.com, keescook@chromium.org, clm@fb.com,
-	josef@toxicpanda.com, xiubli@redhat.com, idryomov@gmail.com,
-	jaharkes@cs.cmu.edu, coda@cs.cmu.edu, jlbec@evilplan.org,
-	hch@lst.de, nico@fluxnic.net, rafael@kernel.org, code@tyhicks.com,
-	ardb@kernel.org, xiang@kernel.org, chao@kernel.org,
-	huyue2@coolpad.com, jefflexu@linux.alibaba.com,
-	linkinjeon@kernel.org, sj1557.seo@samsung.com, jack@suse.com,
-	tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-	hirofumi@mail.parknet.co.jp, miklos@szeredi.hu, rpeterso@redhat.com,
-	agruenba@redhat.com, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-	mikulas@artax.karlin.mff.cuni.cz, mike.kravetz@oracle.com,
-	muchun.song@linux.dev, dwmw2@infradead.org, shaggy@kernel.org,
-	tj@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org,
-	chuck.lever@oracle.com, neilb@suse.de, kolga@netapp.com,
-	Dai.Ngo@oracle.com, tom@talpey.com, konishi.ryusuke@gmail.com,
-	anton@tuxera.com, almaz.alexandrovich@paragon-software.com,
-	mark@fasheh.com, joseph.qi@linux.alibaba.com, me@bobcopeland.com,
-	hubcap@omnibond.com, martin@omnibond.com, amir73il@gmail.com,
-	mcgrof@kernel.org, yzaikin@google.com, tony.luck@intel.com,
-	gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,
-	pc@manguebit.com, lsahlber@redhat.com, sprasad@microsoft.com,
-	senozhatsky@chromium.org, phillip@squashfs.org.uk,
-	rostedt@goodmis.org, mhiramat@kernel.org, dushistov@mail.ru,
-	hdegoede@redhat.com, djwong@kernel.org, naohiro.aota@wdc.com,
-	jth@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-	hughd@google.com, akpm@linux-foundation.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	john.johansen@canonical.com, paul@paul-moore.com, jmorris@namei.org,
-	serge@hallyn.com, stephen.smalley.work@gmail.com,
-	eparis@parisplace.org, jgross@suse.com, stern@rowland.harvard.edu,
-	lrh2000@pku.edu.cn, sebastian.reichel@collabora.com,
-	wsa+renesas@sang-engineering.com, quic_ugoswami@quicinc.com,
-	quic_linyyuan@quicinc.com, john@keeping.me.uk, error27@gmail.com,
-	quic_uaggarwa@quicinc.com, hayama@lineo.co.jp, jomajm@gmail.com,
-	axboe@kernel.dk, dhavale@google.com, dchinner@redhat.com,
-	hannes@cmpxchg.org, zhangpeng362@huawei.com, slava@dubeyko.com,
-	gargaditya08@live.com, penguin-kernel@I-love.SAKURA.ne.jp,
-	yifeliu@cs.stonybrook.edu, madkar@cs.stonybrook.edu,
-	ezk@cs.stonybrook.edu, yuzhe@nfschina.com, willy@infradead.org,
-	okanatov@gmail.com, jeffxu@chromium.org, linux@treblig.org,
-	mirimmad17@gmail.com, yijiangshan@kylinos.cn,
-	yang.yang29@zte.com.cn, xu.xin16@zte.com.cn,
-	chengzhihao1@huawei.com, shr@devkernel.io, Liam.Howlett@Oracle.com,
-	adobriyan@gmail.com, chi.minghao@zte.com.cn,
-	roberto.sassu@huawei.com, linuszeng@tencent.com, bvanassche@acm.org,
-	zohar@linux.ibm.com, yi.zhang@huawei.com, trix@redhat.com,
-	fmdefrancesco@gmail.com, ebiggers@google.com,
-	princekumarmaurya06@gmail.com, chenzhongjin@huawei.com,
-	riel@surriel.com, shaozhengchao@huawei.com, jingyuwang_vip@163.com,
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
-	autofs@vger.kernel.org, linux-mm@kvack.org,
-	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-	linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com, linux-um@lists.infradead.org,
-	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
-	linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
-	linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-	reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, apparmor@lists.ubuntu.com,
-	linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Subject: Re: [apparmor] [PATCH v2 08/92] fs: new helper:
- simple_rename_timestamp
-Message-ID: <20230706210236.GB3244704@millbarge>
-References: <20230705185812.579118-1-jlayton@kernel.org>
- <20230705185812.579118-3-jlayton@kernel.org>
- <3b403ef1-22e6-0220-6c9c-435e3444b4d3@kernel.org>
- <7c783969641b67d6ffdfb10e509f382d083c5291.camel@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9041097D
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 21:07:08 +0000 (UTC)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6ECB9
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 14:07:07 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31434226a2eso1237202f8f.1
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 14:07:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688677626; x=1691269626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1EkMEACcvA0KC4s4/sF4awEK8l4NqkOPiH9MJgvskbY=;
+        b=e9VLkbcpSlpI7DXC7jHsm8guBJWBm+SKQZZR7nClITcYXnbBijbSXCY8fa28HHth5O
+         02kre9q6Fx9xwJ5EQoU83WH/3n0fG1A8VYHIDqBUBkKamhM3GC8dos9RG5UyuQkcTofg
+         IjLJaByOtL6N+Xp1XkQ9PhMe8zJ9GorEa4Vdawb8LsdKjkqSeVY1mBRPcINZAwPybbQR
+         f1Hm1JxVI82Jw4cfmcBrMxHBsZyFg6yJGFJrfxi0CQnB6jWskF8/a7/p3e3fnFslU+5d
+         7NpAV6KJlr3u7ggt3kV2o69PWaWSZuTq/fsBAMCMDEq2QKWNWGr70ohdhaThyvhWHvIU
+         GzXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688677626; x=1691269626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1EkMEACcvA0KC4s4/sF4awEK8l4NqkOPiH9MJgvskbY=;
+        b=gCROnT/6vt8lPYYo4pF29CpumlWN8c0A1TOSp13JwpqCjBygd/xyr/APjpQGHUvXyT
+         FEjgU06COlkzPhrENGk3T40B/ISOhsgeOgpKHXBQO6kg1fy3CscVB3sm5umZgrOGe9kU
+         UJgFJGjqMeqNP1zYu/GyRvRR3AxWbox2boUG1C68FnX/lvORBNtooJT4Tel/smYUc4ZM
+         1f/WObb6H/HJ6VkF1hfWt6e51z3gYutndd7pPGLbj9Fh31NDV7tgpmoUJByAGW1rHUIn
+         vxPIT/pXRn3iAOKmIl2gvQowoKedvQ1ivcddz45PDbO5MxNCH05Z8hNw7arIfJ81ig8Q
+         ixuQ==
+X-Gm-Message-State: ABy/qLY4wnBezA+5xTVMx24CszzUARkoRuWEWosuxdabywBE+AOdgQ2J
+	trtUXkkzjfA6NFxG7h0LBKjqH7cUgAiHL/IZFJpzABk+hLA=
+X-Google-Smtp-Source: APBJJlGq5cgvMQpJ8liO8zxjK5ybDr52uSH3OdpTEMYI8JnG4syvuR1+uN09BFTE+BMWbmERI/fOUoBjSbxUPqjTqsI=
+X-Received: by 2002:a5d:53d0:0:b0:311:110d:5573 with SMTP id
+ a16-20020a5d53d0000000b00311110d5573mr2834235wrw.64.1688677625619; Thu, 06
+ Jul 2023 14:07:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="E39vaYmALEf/7YXx"
-Content-Disposition: inline
-In-Reply-To: <7c783969641b67d6ffdfb10e509f382d083c5291.camel@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <CAN+4W8h3yDjkOLJPiuKVKTpj_08pBz8ke6vN=Lf8gcA=iYBM-g@mail.gmail.com>
+ <e9987f16-7328-627d-8c02-c42c130a61a8@meta.com>
+In-Reply-To: <e9987f16-7328-627d-8c02-c42c130a61a8@meta.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 6 Jul 2023 14:06:52 -0700
+Message-ID: <CAEf4BzbSdggvGD=xXZxFa8tjUxGWKrsb5hL9EP_viHqQCG+MYA@mail.gmail.com>
+Subject: Re: bpf_core_type_id_kernel is not consistent with bpf_core_type_id_local
+To: Yonghong Song <yhs@meta.com>
+Cc: Lorenz Bauer <lmb@isovalent.com>, bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>, 
+	Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Wed, Jul 5, 2023 at 9:50=E2=80=AFPM Yonghong Song <yhs@meta.com> wrote:
+>
+>
+>
+> On 7/4/23 6:30 AM, Lorenz Bauer wrote:
+> > Hi,
+> >
+> > I think that CO-RE has inconsistent behaviour wrt. BPF_TYPE_ID_LOCAL
+> > and BPF_TYPE_ID_TARGET when dealing with qualifiers (modifiers?) Given
+> > the following C:
+> >
+> > enum bpf_type_id_kind {
+> >      BPF_TYPE_ID_LOCAL =3D 0,        /* BTF type ID in local program */
+> >      BPF_TYPE_ID_TARGET =3D 1,        /* BTF type ID in target kernel *=
+/
+> > };
+> >
+> > int foo(void) {
+> >      return __builtin_btf_type_id(*(const int *)0, BPF_TYPE_ID_TARGET)
+> > !=3D __builtin_btf_type_id(*(const int *)0, BPF_TYPE_ID_LOCAL);
+> > }
+> >
+> > That line with __builtin_btf_type_id is just the expansion of
+> > bpf_core_type_id_kernel, etc. clang generates the following BPF:
+> >
+> > foo:
+> >   18 01 00 00 02 00 00 00 00 00 00 00 00 00 00 00    r1 =3D 0x2 ll
+> >   79 11 00 00 00 00 00 00    r1 =3D *(u64 *)(r1 + 0x0)
+> >   18 02 00 00 04 00 00 00 00 00 00 00 00 00 00 00    r2 =3D 0x4 ll
+> >   79 22 00 00 00 00 00 00    r2 =3D *(u64 *)(r2 + 0x0)
+> >   b7 03 00 00 00 00 00 00    r3 =3D 0x0
+> >   7b 3a f0 ff 00 00 00 00    *(u64 *)(r10 - 0x10) =3D r3
+> >   b7 03 00 00 01 00 00 00    r3 =3D 0x1
+> >   7b 3a f8 ff 00 00 00 00    *(u64 *)(r10 - 0x8) =3D r3
+> >   5d 21 02 00 00 00 00 00    if r1 !=3D r2 goto +0x2 <LBB0_2>
+> >   79 a1 f0 ff 00 00 00 00    r1 =3D *(u64 *)(r10 - 0x10)
+> >   7b 1a f8 ff 00 00 00 00    *(u64 *)(r10 - 0x8) =3D r1
+> > LBB0_2:
+> >   79 a0 f8 ff 00 00 00 00    r0 =3D *(u64 *)(r10 - 0x8)
+> >   95 00 00 00 00 00 00 00    exit
+> >
+> > Link to godbolt: https://godbolt.org/z/jr63hKz9E  (contains version inf=
+o)
+> >
+> > Note that the first two ldimm64 have distinct type IDs. I added some
+> > debug logging to cilium/ebpf and found that the compiler indeed also
+> > emits distinct CO-RE relocations:
+> >
+> > foo {InsnOff:0 TypeID:2 AccessStrOff:69 Kind:local_type_id}
+> > foo {InsnOff:2 TypeID:4 AccessStrOff:69 Kind:target_type_id}
+> >
+> > It seems that for BPF_TYPE_ID_TARGET the outer const is peeled, while
+> > this doesn't happen for the local variant.
+> >
+> > CORERelocation(local_type_id, Const[0], local_id=3D4) local_type_id=3D4=
+->4
+> > CORERelocation(target_type_id, Int:"int"[0], local_id=3D2) target_type_=
+id=3D2->2
+> >
+> > Similar behaviour exists for BPF_TYPE_EXISTS, probably others.
+> >
+> > The behaviour goes away if I drop the pointer casting magic:
+> >
+> > __builtin_btf_type_id((const int)0, BPF_TYPE_ID_TARGET) !=3D
+> > __builtin_btf_type_id((const int)0, BPF_TYPE_ID_LOCAL)
+> >
+> > Intuitively I'd say that the root cause is that dereferencing the
+> > pointer drops the constness of the type. Why does TARGET behave
+> > differently than LOCAL though?
+>
+> Thanks for reporting. The difference of type w.r.t. 'const' modifier
+> is a deliberate choice in llvm:
+>
+> See
+> https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/BPF/BPFPre=
+serveDIType.cpp#L84-L103
+>
+>      if (FlagValue =3D=3D BPFCoreSharedInfo::BTF_TYPE_ID_LOCAL_RELOC) {
+>        Reloc =3D BPFCoreSharedInfo::BTF_TYPE_ID_LOCAL;
+>      } else {
+>        Reloc =3D BPFCoreSharedInfo::BTF_TYPE_ID_REMOTE;
+>        DIType *Ty =3D cast<DIType>(MD);
+>        while (auto *DTy =3D dyn_cast<DIDerivedType>(Ty)) {
+>          unsigned Tag =3D DTy->getTag();
+>          if (Tag !=3D dwarf::DW_TAG_const_type &&
+>              Tag !=3D dwarf::DW_TAG_volatile_type)
+>            break;
+>          Ty =3D DTy->getBaseType();
+>        }
+>
+>        if (Ty->getName().empty()) {
+>          if (isa<DISubroutineType>(Ty))
+>            report_fatal_error(
+>                "SubroutineType not supported for BTF_TYPE_ID_REMOTE reloc=
+");
+>          else
+>            report_fatal_error("Empty type name for BTF_TYPE_ID_REMOTE
+> reloc");
+>        }
+>        MD =3D Ty;
+>      }
+>
+> Basically, the BTF_TYPE_ID_REMOTE (the kernel term BPF_TYPE_ID_TARGET)
+> needs further checking to prevent some invalid cases.
+> Also for kernel type matching, it would be good to eliminate modifiers
+> otherwise, there could be many instances of 'const' which makes
+> kernel matching is more complicated.
+>
+> But I see your point. Maybe we should preserve the original type
+> for BTF_TYPE_ID_TARGET as well. Will check what libbpf/kernel
+> will handle 'const int *' case and get back to this thread later.
 
---E39vaYmALEf/7YXx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think it's better the other way around: make BTF_TYPE_ID_LOCAL strip
+const/volatile/restrict modifiers. For all other relocations we rely
+on having named types, so const/volatile makes no sense and will fail
+relocation. It's hard to come up with the situation where recording
+const/volatile/restrict in BTF_TYPE_ID_LOCAL would make sense, so I'd
+say that it should behave just like all the other relos.
 
-On Wed, Jul 05, 2023 at 08:04:41PM -0400, Jeff Layton wrote:
->=20
-> I don't believe it's an issue. I've seen nothing in the POSIX spec that
-> mandates that timestamp updates to different inodes involved in an
-> operation be set to the _same_ value. It just says they must be updated.
->=20
-> It's also hard to believe that any software would depend on this either,
-> given that it's very inconsistent across filesystems today. AFAICT, this
-> was mostly done in the past just as a matter of convenience.
-
-I've seen this assumption in several programs:
-
-mutt buffy.c
-https://sources.debian.org/src/mutt/2.2.9-1/buffy.c/?hl=3D625#L625
-
-  if (mailbox->newly_created &&
-      (sb->st_ctime !=3D sb->st_mtime || sb->st_ctime !=3D sb->st_atime))
-    mailbox->newly_created =3D 0;
-
-
-neomutt mbox/mbox.c
-https://sources.debian.org/src/neomutt/20220429+dfsg1-4.1/mbox/mbox.c/?hl=
-=3D1820#L1820
-
-  if (m->newly_created && ((st.st_ctime !=3D st.st_mtime) || (st.st_ctime !=
-=3D st.st_atime)))
-    m->newly_created =3D false;
-
-
-screen logfile.c
-https://sources.debian.org/src/screen/4.9.0-4/logfile.c/?hl=3D130#L130
-
-  if ((!s->st_dev && !s->st_ino) ||             /* stat failed, that's new!=
- */
-      !s->st_nlink ||                           /* red alert: file unlinked=
- */
-      (s->st_size < o.st_size) ||               /*           file truncated=
- */
-      (s->st_mtime !=3D o.st_mtime) ||            /*            file modifi=
-ed */
-      ((s->st_ctime !=3D o.st_ctime) &&           /*     file changed (move=
-d) */
-       !(s->st_mtime =3D=3D s->st_ctime &&          /*  and it was not a ch=
-ange */
-         o.st_ctime < s->st_ctime)))            /* due to delayed nfs write=
- */
-  {
-
-nemo libnemo-private/nemo-vfs-file.c
-https://sources.debian.org/src/nemo/5.6.5-1/libnemo-private/nemo-vfs-file.c=
-/?hl=3D344#L344
-
-		/* mtime is when the contents changed; ctime is when the
-		 * contents or the permissions (inc. owner/group) changed.
-		 * So we can only know when the permissions changed if mtime
-		 * and ctime are different.
-		 */
-		if (file->details->mtime =3D=3D file->details->ctime) {
-			return FALSE;
-		}
-
-
-While looking for more examples, I found a perl test that seems to suggest
-that at least Solaris, AFS, AmigaOS, DragonFly BSD do as you suggest:
-https://sources.debian.org/src/perl/5.36.0-7/t/op/stat.t/?hl=3D158#L140
-
-
-Thanks
-
---E39vaYmALEf/7YXx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEQVAQ8bojyMcg37H18yFyWZ2NLpcFAmSnK+gACgkQ8yFyWZ2N
-Lpd3gQf6AtE8sBL09BSTvT1P5I8tCXnJ4U7VbzQxWTcKAQHRpyZn8IRSdWuxiPEU
-soaBmSx6jov+kkZYX5uP1LSM1INMYpJTJELGas9A7wenNppBGS07LjwAL40wouPm
-UfcVWQqOgM8eoseMKBKePv5TkTJFn/M3cPK9Wy31E+qF1IPMNtxz9JKz109YlDOO
-FxVTwBGGxxKvx3SsUl6hdaqBCK3omZlbWCzqSyqBzzvjgZ01VC5ktw5FuuTABbu8
-TScNnT5GtO5AE8RV0T3TKISm19xD69JHQt/etFeU2yKwiBsn89pY4Xut3CrxbSQm
-prQ7ssP3/fi41WxFFDQzO/oQok/b+A==
-=/KNl
------END PGP SIGNATURE-----
-
---E39vaYmALEf/7YXx--
+>
+> >
+> > Cheers
+> > Lorenz
 
