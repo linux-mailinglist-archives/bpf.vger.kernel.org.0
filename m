@@ -1,129 +1,175 @@
-Return-Path: <bpf+bounces-4136-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4137-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3FAD7492B0
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 02:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B64C7492EA
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 03:10:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FD53281164
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 00:41:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ED3528116D
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 01:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B24C5A35;
-	Thu,  6 Jul 2023 00:41:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07336A2D;
+	Thu,  6 Jul 2023 01:10:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B793628;
-	Thu,  6 Jul 2023 00:41:06 +0000 (UTC)
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE92219A9;
-	Wed,  5 Jul 2023 17:41:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B12837F
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 01:10:47 +0000 (UTC)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B986B1995;
+	Wed,  5 Jul 2023 18:10:45 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b6f943383eso1152661fa.2;
+        Wed, 05 Jul 2023 18:10:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1688604065; x=1720140065;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=v+tsYcKm5P9WlsDhSBE+NcvZuf+VkDCTV0XouTKcUlk=;
-  b=S2l9TwrnnFEUAbIaUDOkTvSDkcp+K2B7GoftUG3YRHsUqQxVrggjjWLg
-   ZzAGz1iz7W6JmlcezonMbT77Jcx/nsqyusjGQn0zDulM7MqaOJVwi7kS0
-   ekx5K20hGZcWijspOt+qBEx8FEO8X6FWCXegDj9yIBXRKCFC3952XqpN3
-   Y=;
-X-IronPort-AV: E=Sophos;i="6.01,184,1684800000"; 
-   d="scan'208";a="591314401"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2023 00:41:01 +0000
-Received: from EX19MTAUWB002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-	by email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com (Postfix) with ESMTPS id 0977F40D9F;
-	Thu,  6 Jul 2023 00:40:58 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 6 Jul 2023 00:40:58 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.187.170.47) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 6 Jul 2023 00:40:53 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <lmb@isovalent.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <hemanthmalla@gmail.com>,
-	<joe@cilium.io>, <joe@wand.net.nz>, <john.fastabend@gmail.com>,
-	<jolsa@kernel.org>, <kpsingh@kernel.org>, <kuba@kernel.org>,
-	<kuniyu@amazon.com>, <linux-kernel@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>, <martin.lau@linux.dev>, <mykolal@fb.com>,
-	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <sdf@google.com>,
-	<shuah@kernel.org>, <song@kernel.org>, <willemdebruijn.kernel@gmail.com>,
-	<yhs@fb.com>
-Subject: Re: [PATCH bpf-next v4 6/7] bpf, net: Support SO_REUSEPORT sockets with bpf_sk_assign
-Date: Wed, 5 Jul 2023 17:40:44 -0700
-Message-ID: <20230706004044.79850-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAN+4W8hLXYZuNFG+=J-FWLXWhbwT5TrHjMg5VzjQhv2NBo5VaA@mail.gmail.com>
-References: <CAN+4W8hLXYZuNFG+=J-FWLXWhbwT5TrHjMg5VzjQhv2NBo5VaA@mail.gmail.com>
+        d=gmail.com; s=20221208; t=1688605844; x=1691197844;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MjwBdXF1omyqPra/29ms0Vi+bZo8i0ip6SKqToNp0PU=;
+        b=LtiEwjeo7A4AxPIu5X1SdLlGwHl6arlOHkl1ovK6lx9cew/YSsxEBzMObSEly4sRd1
+         0HRM/RmsTPW5+uiQ/hiUYda0KGJvGO8EMW4H0O+AGhWoyyrizYB5dAruupp82X+73DlT
+         Xez5SNgqH4fGnYb98Ov8Ca1gAqvDRCqElrxcHPJcKfc/YndH2wpCyjSsPRJ4HlP2Ax/d
+         QvIEdgnvlsEQo5e4tghY7in5tvjsHdAqVFh9QDyHO1YsPU4Xajeaw3IV6+iQ35gFYzib
+         k70MGNZBRlFmGN28Zpv/prbtnbRFj7y5K0Zt2Zc6st7yLyh8O3fN8jlB9jdZ4cWxxFzS
+         wruw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688605844; x=1691197844;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MjwBdXF1omyqPra/29ms0Vi+bZo8i0ip6SKqToNp0PU=;
+        b=P7W5HLW/I9lKV0doy/lz2JQnEJbyloJBWg79BGuQYCMOjv5UGGfHp3FAmpwJ0F+/O/
+         /R0WIr3LAPCSvB3zBZC/mJOQF2jKMU9oRyd0jFeJeDazSPnIKUGOKLeF08kD866YIB8X
+         YrZyT9QUz7RN4wpAGJV0kykz5bYdyrGSynZPK/s2LUYT4lJ7YpkPRvFKaHFEVzdA1zZS
+         2cD/A+B2XTpOHpcpMAJU5fMQzoH+/lq0pMXmH9Z3gXlS5l5X7jdEimCSMgVJ0pHEJ+wc
+         TTabl/5m4hGVao0a8njjXKahWZE/nlrkTRcF7s/4/YKwDiMIwXA7S/0OzplyfLxSKdQm
+         Cesw==
+X-Gm-Message-State: ABy/qLa5BgEugcKyN3BHx9hGzYDiN0CcxNcbRrSKHOc0wqTFOPtLeR6a
+	hR+1Svc0WsygKvOaDykXP2fq+XTW8GHe8+ysyVPL9rlu5qY=
+X-Google-Smtp-Source: APBJJlGpZnNx3Rr5Mhu3UgNSB4U3aY/o++mEbnMSFgvHz5GTZvONS6sD+RjI0haxyxDq5f00Bpfvx8rSylYNYo3W1dc=
+X-Received: by 2002:a2e:9dd5:0:b0:2b6:f8d0:7d3d with SMTP id
+ x21-20020a2e9dd5000000b002b6f8d07d3dmr184173ljj.49.1688605843533; Wed, 05 Jul
+ 2023 18:10:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <c35fbb4cb0a3a9b4653f9a032698469d94ca6e9c.1688123230.git.legion@kernel.org>
+ <babdf7a8-9663-6d71-821a-34da2aff80e2@huaweicloud.com> <20230704-anrollen-beenden-9187c7b1b570@brauner>
+In-Reply-To: <20230704-anrollen-beenden-9187c7b1b570@brauner>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 5 Jul 2023 18:10:32 -0700
+Message-ID: <CAADnVQLAhDepRpbbi_EU6Ca3wnuBtSuAPO9mE6pGoxj8i9=caQ@mail.gmail.com>
+Subject: Re: [PATCH v1] fs: Add kfuncs to handle idmapped mounts
+To: Christian Brauner <brauner@kernel.org>
+Cc: Hou Tao <houtao@huaweicloud.com>, Alexey Gladkov <legion@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.187.170.47]
-X-ClientProxiedBy: EX19D038UWC004.ant.amazon.com (10.13.139.229) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Mon, 3 Jul 2023 10:57:23 +0100
-> On Wed, Jun 28, 2023 at 7:54 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
-> 
-> > > +     reuse_sk = inet6_lookup_reuseport(net, sk, skb, doff,
-> > > +                                       saddr, sport, daddr, ntohs(dport),
-> > > +                                       ehashfn);
-> > > +     if (!reuse_sk || reuse_sk == sk)
-> > > +             return sk;
-> > > +
-> > > +     /* We've chosen a new reuseport sock which is never refcounted. This
-> > > +      * implies that sk also isn't refcounted.
-> > > +      */
-> > > +     WARN_ON_ONCE(*refcounted);
-> >
-> > One more nit.
-> >
-> > WARN_ON_ONCE() should be tested before inet6?_lookup_reuseport() not to
-> > miss the !reuse_sk case.
-> 
-> I was just pondering that as well, but I came to the opposite
-> conclusion. In the !reuse_sk case we don't really know anything about
-> sk, except that it isn't part of a reuseport group. How can we be sure
-> that it's not refcounted?
+On Tue, Jul 4, 2023 at 6:01=E2=80=AFAM Christian Brauner <brauner@kernel.or=
+g> wrote:
+>
+> > > +/**
+> > > + * bpf_is_idmapped_mnt - check whether a mount is idmapped
+> > > + * @mnt: the mount to check
+> > > + *
+> > > + * Return: true if mount is mapped, false if not.
+> > > + */
+> > > +__bpf_kfunc bool bpf_is_idmapped_mnt(struct vfsmount *mnt)
+> > > +{
+> > > +   return is_idmapped_mnt(mnt);
+> > > +}
+...
+>
+> I don't want any of these helpers as kfuncs as they are peeking deeply
+> into implementation details that we reserve to change. Specifically in
+> the light of:
+>
+>     3. kfunc lifecycle expectations part b):
+>
+>     "Unlike with regular kernel symbols, this is expected behavior for BP=
+F
+>      symbols, and out-of-tree BPF programs that use kfuncs should be cons=
+idered
+>      relevant to discussions and decisions around modifying and removing =
+those
+>      kfuncs. The BPF community will take an active role in participating =
+in
+>      upstream discussions when necessary to ensure that the perspectives =
+of such
+>      users are taken into account."
+>
+> That's too much stability for my taste for these helpers. The helpers
+> here exposed have been modified multiple times and once we wean off
+> idmapped mounts from user namespaces completely they will change again.
+> So I'm fine if they're traceable but not as kfuncs with any - even
+> minimal - stability guarantees.
 
-Sorry for late reply.
+Christian,
+That quote is taken out of context.
+In the first place the Documentation/bpf/kfuncs.rst says:
+"
+kfuncs provide a kernel <-> kernel API, and thus are not bound by any of th=
+e
+strict stability restrictions associated with kernel <-> user UAPIs. This m=
+eans
+they can be thought of as similar to EXPORT_SYMBOL_GPL, and can therefore b=
+e
+modified or removed by a maintainer of the subsystem they're defined in whe=
+n
+it's deemed necessary.
+"
 
-What we know about sk before inet6?_lookup_reuseport() are
+bpf_get_file_vfs_ids is vfs related, so you guys decide when and how
+to add/remove them. It's ok that you don't want this particular one
+for whatever reason, but that reason shouldn't be 'stability guarantees'.
+There are really none. The kernel kfuncs can change at any time.
+There are plenty of examples in git log where we added and then
+tweaked/removed kfuncs.
 
-  (1) sk was full socket in bpf_sk_assign()
-  (2) sk had SOCK_RCU_FREE in bpf_sk_assign()
-  (3) sk was TCP_LISTEN here if TCP
+The doc also says:
+"
+As described above, while sometimes a maintainer may find that a kfunc must=
+ be
+changed or removed immediately to accommodate some changes in their subsyst=
+em,
+"
+and git log of such cases proves the point.
 
-After bpf_sk_assign(), reqsk is never converted to fullsock, and UDP
-never clears SOCK_RCU_FREE.  If sk is TCP, now we are in the RCU grace
-period and confirmed sk->sk_state was TCP_LISTEN.  Then, TCP_LISTEN sk
-cannot be reused and SOCK_RCU_FREE is never cleared.
+The quote about out-of-tree bpf progs is necessary today, since
+very few bpf progs are in-tree, so when maintainers of a subsystem
+want to remove kfunc the program authors need something in the doc
+to point to and explain why and how they use the kfunc otherwise
+maintainers will just say 'go away. you're out-of-tree'.
+The users need their voice to be heard. Even if the result is the same.
+In other words the part you quoted is needed to make kfuncs usable.
+Otherwise 'kfunc is 100% unstable and maintainers can rename it
+every release just to make life of bpf prog writers harder'
+becomes a real possibility in the minds of bpf users.
+The kfunc doc makes it 100% clear that there are no stability guarantees.
+So please don't say 'minimal stability'.
 
-So, before/after inet6?_lookup_reuseport(), the fact that sk is not
-refcounted here should not change in spite of that reuse_sk is NULL.
+In your other reply:
 
-What do you think ?
+> we can look at the in-kernel users of is_idmapped_mnt(),
+> convert them and then kill this thing off if we wanted to.
+
+you can absolutely do that even if is_idmapped_mnt() is exposed as a kfunc.
+You'll just delete it with zero notice if you like.
+Just like what you would do with a normal export_symbol.
+The doc is pretty clear about it and there are examples where we did
+such things.
 
