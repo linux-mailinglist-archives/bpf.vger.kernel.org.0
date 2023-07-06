@@ -1,75 +1,77 @@
-Return-Path: <bpf+bounces-4137-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4138-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B64C7492EA
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 03:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5093674930C
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 03:25:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ED3528116D
-	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 01:10:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07E1A28116F
+	for <lists+bpf@lfdr.de>; Thu,  6 Jul 2023 01:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07336A2D;
-	Thu,  6 Jul 2023 01:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAE17A35;
+	Thu,  6 Jul 2023 01:24:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B12837F
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 01:10:47 +0000 (UTC)
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B986B1995;
-	Wed,  5 Jul 2023 18:10:45 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b6f943383eso1152661fa.2;
-        Wed, 05 Jul 2023 18:10:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7337F
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 01:24:59 +0000 (UTC)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4321994
+	for <bpf@vger.kernel.org>; Wed,  5 Jul 2023 18:24:57 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4f9fdb0ef35so94979e87.0
+        for <bpf@vger.kernel.org>; Wed, 05 Jul 2023 18:24:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688605844; x=1691197844;
+        d=gmail.com; s=20221208; t=1688606696; x=1691198696;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MjwBdXF1omyqPra/29ms0Vi+bZo8i0ip6SKqToNp0PU=;
-        b=LtiEwjeo7A4AxPIu5X1SdLlGwHl6arlOHkl1ovK6lx9cew/YSsxEBzMObSEly4sRd1
-         0HRM/RmsTPW5+uiQ/hiUYda0KGJvGO8EMW4H0O+AGhWoyyrizYB5dAruupp82X+73DlT
-         Xez5SNgqH4fGnYb98Ov8Ca1gAqvDRCqElrxcHPJcKfc/YndH2wpCyjSsPRJ4HlP2Ax/d
-         QvIEdgnvlsEQo5e4tghY7in5tvjsHdAqVFh9QDyHO1YsPU4Xajeaw3IV6+iQ35gFYzib
-         k70MGNZBRlFmGN28Zpv/prbtnbRFj7y5K0Zt2Zc6st7yLyh8O3fN8jlB9jdZ4cWxxFzS
-         wruw==
+        bh=1aduXOMIw4gc/1m/GHorhrIWfXAetKkR2Yed066R58g=;
+        b=BBCIzLcd60OMI4574CHrintsbbolczqhr3yh1tP98pqYz2GREdDZUrtLls3KmIm8zc
+         Fx7qeL9BUD5AB/SWp74SoiG3j3xruqR5INYnRXZPJ6xZSo4UZe3DOleUApQZbV+0A4jS
+         BaYVkx2m+OWcGrFosjiLjrBGvHRG01IhQ+mKtv3eweFrG9zXDXc/MdlPS+EHsomK7Znt
+         dq/YoYdrXigBMn+G4hfAV4J8YzfMifZgzl2Scbx4OntJLziUFQvtGPYSBfPecVKBjIvg
+         P03OW0sngLlyxysGusMWdHBzaq9p8H1VDjU35R/1/Ft1VUhbeNE9OuGILC7so2A9jB5P
+         2Dtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688605844; x=1691197844;
+        d=1e100.net; s=20221208; t=1688606696; x=1691198696;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MjwBdXF1omyqPra/29ms0Vi+bZo8i0ip6SKqToNp0PU=;
-        b=P7W5HLW/I9lKV0doy/lz2JQnEJbyloJBWg79BGuQYCMOjv5UGGfHp3FAmpwJ0F+/O/
-         /R0WIr3LAPCSvB3zBZC/mJOQF2jKMU9oRyd0jFeJeDazSPnIKUGOKLeF08kD866YIB8X
-         YrZyT9QUz7RN4wpAGJV0kykz5bYdyrGSynZPK/s2LUYT4lJ7YpkPRvFKaHFEVzdA1zZS
-         2cD/A+B2XTpOHpcpMAJU5fMQzoH+/lq0pMXmH9Z3gXlS5l5X7jdEimCSMgVJ0pHEJ+wc
-         TTabl/5m4hGVao0a8njjXKahWZE/nlrkTRcF7s/4/YKwDiMIwXA7S/0OzplyfLxSKdQm
-         Cesw==
-X-Gm-Message-State: ABy/qLa5BgEugcKyN3BHx9hGzYDiN0CcxNcbRrSKHOc0wqTFOPtLeR6a
-	hR+1Svc0WsygKvOaDykXP2fq+XTW8GHe8+ysyVPL9rlu5qY=
-X-Google-Smtp-Source: APBJJlGpZnNx3Rr5Mhu3UgNSB4U3aY/o++mEbnMSFgvHz5GTZvONS6sD+RjI0haxyxDq5f00Bpfvx8rSylYNYo3W1dc=
-X-Received: by 2002:a2e:9dd5:0:b0:2b6:f8d0:7d3d with SMTP id
- x21-20020a2e9dd5000000b002b6f8d07d3dmr184173ljj.49.1688605843533; Wed, 05 Jul
- 2023 18:10:43 -0700 (PDT)
+        bh=1aduXOMIw4gc/1m/GHorhrIWfXAetKkR2Yed066R58g=;
+        b=jjs2m1qJ7rdLm71z9dzrDIQfAwrSXQsQ2SiJYxYR6oY/O3rQH4tdR71O2Gj01ru8rX
+         8QEX87/ep4u4YxQzkUAYxOg5hfkwp3mgFgghNwKQP7TV/0IiJ0aiBP7l3Gnbf1r/QaIz
+         3S8hNWd0gXxxWIzKZs37vXbQYnG3fZ7SvxtNBkI5lZFTgXl6Po1AhOUUGym0viOe+eDV
+         nHBnwIdQ02e3+Bni2Sp33TOPqZVdfq7MIVr62ZTLHb1U8lYS6eUjXLEqNpPdpERp2eb5
+         dCAf7XeBPMvGej/B7Ict+JY6hvsLaKldV+3fkE2/w+6bN8lgRKIF+1UBMrYaOUPYoFx6
+         IeWQ==
+X-Gm-Message-State: ABy/qLbKOmRg43AJ2Drfp2AK5pOC6W8nbVEjjQRmyku1FQ9uAXtP8kfj
+	G/KURU//B+eGlSQUZpL+VeJKt7feqFrux4Yiz6M=
+X-Google-Smtp-Source: APBJJlGEjIXQWxt1tyK4YvwQp098LtBoh/uzfcBcWy484HEhRgH/IvY1mGmovZYlCgDaFsfleaJYQo0gNbpkGzSpKc0=
+X-Received: by 2002:a05:6512:1ca:b0:4f8:6255:9e78 with SMTP id
+ f10-20020a05651201ca00b004f862559e78mr356606lfp.60.1688606695869; Wed, 05 Jul
+ 2023 18:24:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <c35fbb4cb0a3a9b4653f9a032698469d94ca6e9c.1688123230.git.legion@kernel.org>
- <babdf7a8-9663-6d71-821a-34da2aff80e2@huaweicloud.com> <20230704-anrollen-beenden-9187c7b1b570@brauner>
-In-Reply-To: <20230704-anrollen-beenden-9187c7b1b570@brauner>
+References: <20230705160139.19967-1-aspsk@isovalent.com> <20230705160139.19967-4-aspsk@isovalent.com>
+In-Reply-To: <20230705160139.19967-4-aspsk@isovalent.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 5 Jul 2023 18:10:32 -0700
-Message-ID: <CAADnVQLAhDepRpbbi_EU6Ca3wnuBtSuAPO9mE6pGoxj8i9=caQ@mail.gmail.com>
-Subject: Re: [PATCH v1] fs: Add kfuncs to handle idmapped mounts
-To: Christian Brauner <brauner@kernel.org>
-Cc: Hou Tao <houtao@huaweicloud.com>, Alexey Gladkov <legion@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>
+Date: Wed, 5 Jul 2023 18:24:44 -0700
+Message-ID: <CAADnVQKX5Lu-frv38AAe15UmzRNMztB9vYSZTk986Y_UkPR30Q@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 3/6] bpf: populate the per-cpu
+ insertions/deletions counters for hashmaps
+To: Anton Protopopov <aspsk@isovalent.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,97 +81,64 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 4, 2023 at 6:01=E2=80=AFAM Christian Brauner <brauner@kernel.or=
-g> wrote:
+On Wed, Jul 5, 2023 at 9:00=E2=80=AFAM Anton Protopopov <aspsk@isovalent.co=
+m> wrote:
 >
-> > > +/**
-> > > + * bpf_is_idmapped_mnt - check whether a mount is idmapped
-> > > + * @mnt: the mount to check
-> > > + *
-> > > + * Return: true if mount is mapped, false if not.
-> > > + */
-> > > +__bpf_kfunc bool bpf_is_idmapped_mnt(struct vfsmount *mnt)
-> > > +{
-> > > +   return is_idmapped_mnt(mnt);
-> > > +}
-...
+> Initialize and utilize the per-cpu insertions/deletions counters for hash=
+-based
+> maps. Non-trivial changes apply to preallocated maps for which the
+> {inc,dec}_elem_count functions are not called, as there's no need in coun=
+ting
+> elements to sustain proper map operations.
 >
-> I don't want any of these helpers as kfuncs as they are peeking deeply
-> into implementation details that we reserve to change. Specifically in
-> the light of:
+> To increase/decrease percpu counters for preallocated hash maps we add ra=
+w
+> calls to the bpf_map_{inc,dec}_elem_count functions so that the impact is
+> minimal. For dynamically allocated maps we add corresponding calls to the
+> existing {inc,dec}_elem_count functions.
 >
->     3. kfunc lifecycle expectations part b):
+> For LRU maps bpf_map_{inc,dec}_elem_count added to the lru pop/free helpe=
+rs.
 >
->     "Unlike with regular kernel symbols, this is expected behavior for BP=
-F
->      symbols, and out-of-tree BPF programs that use kfuncs should be cons=
-idered
->      relevant to discussions and decisions around modifying and removing =
-those
->      kfuncs. The BPF community will take an active role in participating =
-in
->      upstream discussions when necessary to ensure that the perspectives =
-of such
->      users are taken into account."
+> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> ---
+>  kernel/bpf/hashtab.c | 23 +++++++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
 >
-> That's too much stability for my taste for these helpers. The helpers
-> here exposed have been modified multiple times and once we wean off
-> idmapped mounts from user namespaces completely they will change again.
-> So I'm fine if they're traceable but not as kfuncs with any - even
-> minimal - stability guarantees.
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index 56d3da7d0bc6..c23557bf9a1a 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -302,6 +302,7 @@ static struct htab_elem *prealloc_lru_pop(struct bpf_=
+htab *htab, void *key,
+>         struct htab_elem *l;
+>
+>         if (node) {
+> +               bpf_map_inc_elem_count(&htab->map);
+>                 l =3D container_of(node, struct htab_elem, lru_node);
+>                 memcpy(l->key, key, htab->map.key_size);
+>                 return l;
+> @@ -581,10 +582,17 @@ static struct bpf_map *htab_map_alloc(union bpf_att=
+r *attr)
+>                 }
+>         }
+>
+> +       err =3D bpf_map_init_elem_count(&htab->map);
+> +       if (err)
+> +               goto free_extra_elements;
+> +
+>         return &htab->map;
+>
+> +free_extra_elements:
+> +       free_percpu(htab->extra_elems);
+>  free_prealloc:
+> -       prealloc_destroy(htab);
+> +       if (prealloc)
+> +               prealloc_destroy(htab);
 
-Christian,
-That quote is taken out of context.
-In the first place the Documentation/bpf/kfuncs.rst says:
-"
-kfuncs provide a kernel <-> kernel API, and thus are not bound by any of th=
-e
-strict stability restrictions associated with kernel <-> user UAPIs. This m=
-eans
-they can be thought of as similar to EXPORT_SYMBOL_GPL, and can therefore b=
-e
-modified or removed by a maintainer of the subsystem they're defined in whe=
-n
-it's deemed necessary.
-"
-
-bpf_get_file_vfs_ids is vfs related, so you guys decide when and how
-to add/remove them. It's ok that you don't want this particular one
-for whatever reason, but that reason shouldn't be 'stability guarantees'.
-There are really none. The kernel kfuncs can change at any time.
-There are plenty of examples in git log where we added and then
-tweaked/removed kfuncs.
-
-The doc also says:
-"
-As described above, while sometimes a maintainer may find that a kfunc must=
- be
-changed or removed immediately to accommodate some changes in their subsyst=
-em,
-"
-and git log of such cases proves the point.
-
-The quote about out-of-tree bpf progs is necessary today, since
-very few bpf progs are in-tree, so when maintainers of a subsystem
-want to remove kfunc the program authors need something in the doc
-to point to and explain why and how they use the kfunc otherwise
-maintainers will just say 'go away. you're out-of-tree'.
-The users need their voice to be heard. Even if the result is the same.
-In other words the part you quoted is needed to make kfuncs usable.
-Otherwise 'kfunc is 100% unstable and maintainers can rename it
-every release just to make life of bpf prog writers harder'
-becomes a real possibility in the minds of bpf users.
-The kfunc doc makes it 100% clear that there are no stability guarantees.
-So please don't say 'minimal stability'.
-
-In your other reply:
-
-> we can look at the in-kernel users of is_idmapped_mnt(),
-> convert them and then kill this thing off if we wanted to.
-
-you can absolutely do that even if is_idmapped_mnt() is exposed as a kfunc.
-You'll just delete it with zero notice if you like.
-Just like what you would do with a normal export_symbol.
-The doc is pretty clear about it and there are examples where we did
-such things.
+This is a bit difficult to read.
+I think the logic would be easier to understand if bpf_map_init_elem_count
+was done right before htab->buckets =3D bpf_map_area_alloc()
+and if (err) goto free_htab
+where you would add bpf_map_free_elem_count.
 
