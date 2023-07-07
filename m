@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-4394-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4395-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8713874A9E0
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 06:21:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2577B74A9E2
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 06:22:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8B371C20F2E
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 04:21:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC9E8281637
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 04:22:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C95C1FAB;
-	Fri,  7 Jul 2023 04:20:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F5E1FAB;
+	Fri,  7 Jul 2023 04:22:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D481876
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 04:20:58 +0000 (UTC)
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1F49E
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 21:20:56 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fba74870abso2108618e87.0
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 21:20:56 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 541271876
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 04:22:45 +0000 (UTC)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D5EE65
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 21:22:43 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fb5bcb9a28so2130432e87.3
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 21:22:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688703655; x=1691295655;
+        d=gmail.com; s=20221208; t=1688703762; x=1691295762;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5SFajTxWzW8aCG8C22wep5wSeWb1fdNZ2/RG8fRVI4g=;
-        b=Y5TqYhsljfNx4Xe/xNyuiJ9crrmTSxCPLdsZTifCqEVEMO+m9p9AkH7ZMnoS+H9XRl
-         zyQumiLWSHXaEJzJld7Y7wX8jmF0n0DrLiGjQ57JXA7uyMqNzoiXwTByjbYQyADji+Z+
-         5W34/z5JsHARTDbFNIg1msCuD8n/kqfw7iPgSQxhQQ/So9m9lxWSGClSYuY3ZGMEl87F
-         ov0G7O7k+iVySmYIUjUrCerS5ao4UhEzcWeJVmky+wRGRggTJS4FQmH0EghLy/YjEZHq
-         jCaZXo2W1qG8hQYMOB55qQ+i3JX7rbpeO1To+p0/LMOnzxEclm8cfddTfuUyLylS6ND0
-         zKVg==
+        bh=sfmggFqmyue1uR61qiDJbG5VAckO0GKKFSXe25pAQ58=;
+        b=U/q+zmG5Y3nuSaxKfHW1H/EL24mYin/MCQuIJ80DFstv3gsnPR7xuGG48zfsYpRcaG
+         RkEiPGcGtN+ZQGivMfZj9CFPiZK/FK9yDSgiGe4bmtSaJiiA45FotOCdoN3yxqT+qGu0
+         /vllwC1zUKeHip/fLh90fDAEGp0dePKHCRkRREFNNjSwTjlJA2IUotgLjNHuupREn2oH
+         42wRuadMchAng85FM1Eo1/JZLQn+viDTJgGB73hyBz78CtewRIl2NNq/j1U6rCTtmpi5
+         U3BxUH9wjgIvToN/4+K5KE7IZeVOPqcuk2TSpb5NPt6KfIbBxPrat8Z8ACNmng6ZNQCO
+         UX2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688703655; x=1691295655;
+        d=1e100.net; s=20221208; t=1688703762; x=1691295762;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5SFajTxWzW8aCG8C22wep5wSeWb1fdNZ2/RG8fRVI4g=;
-        b=I1nQpbu1iwNxOn37QwoUYlEY+V64scWxrYfuUZFfSLCGq/sbwlRuwhnt1qoxaLGo7D
-         ejMFOkOqpRbYPsIwLDMFq15Ufd6HYQLkq8TMLrU5fiGp3MaQEyIxPgN12kDbANkRjusD
-         tv0GjnBduSJPVGfJPdD4nXz33uhElzGYR77KJQKh/xIvtPylogTY3mNuaxGajKZ31fSg
-         58TjvwzxWfhFjiwP7MR9K2jqeZ4MMaZsk+GKQ9tTsK640Qt+uyBs1qJAz7IXpOD2+6F3
-         bYh7cqzFsViokY4gb4cmoBqCkW7pJ7/2JF9RGGpCAaUwh34Ks8ysnj7VZWDhUaWKvof+
-         rwsQ==
-X-Gm-Message-State: ABy/qLaTR5RasHAPWdK8iwxSsOcxkAcSfyTuMx3GUZsa+ud6058Ihb0L
-	lBPNE6zYLksw/fD/JPCAw5ofeGXUMi/As+lrXd0=
-X-Google-Smtp-Source: APBJJlGvt5kCD7tgBecw3DkeXAZF+hcEqc/DpVOKdTqhG3jPpiPJEq3jvtZzlH8nFCYSfGV3CmclyO8laxp1PBJvOrQ=
-X-Received: by 2002:ac2:4c4b:0:b0:4f8:72fd:ed95 with SMTP id
- o11-20020ac24c4b000000b004f872fded95mr3280518lfk.22.1688703654777; Thu, 06
- Jul 2023 21:20:54 -0700 (PDT)
+        bh=sfmggFqmyue1uR61qiDJbG5VAckO0GKKFSXe25pAQ58=;
+        b=kWWan1LHp2pdkfTGUsTweBhOy3/pik7MwjsW0YHMtR7/cKLz2FOE0KlNfblKurnIDf
+         OSslVy0bduJc+EB3JOLazoHrwUQLlro2oZu/kAtPnxgHt7nC8z7afbaN+tKAeiCKMI9j
+         tTy3d20dhFzg2Kz2pJoQXPr9hHKJa5tNgY24SRs4nFYGbvlnyA4VvT5zOphJkjXNLJ/6
+         Fu9gV92mRvoLNxtoNaLuOthAfy5nEqwyzWmVejz92VSYt5wiu5Y41GFfwsCKTHoNwioX
+         4xRFxg37SlyESzicUzAvcAtWbqMFoiFDJyEAVtn0RSvCbbHz+cir5i8McZdC45QpWBV3
+         AVlw==
+X-Gm-Message-State: ABy/qLbHp45WPjxyokREgCmC0zLitEO6iDg7kuuwbOQcuBS+cj2p+Esv
+	bsFxtnVYRxbD+G7PiTZjgnl+nlmvKisw1aKtL2Y=
+X-Google-Smtp-Source: APBJJlGZZjMUa5q0Usn6K/muGAhcnh9zlSF4XKiOMvrQyt7YDgv0FNlj9VIviAzluSttMi2Rwi6zgy4uvk5Zfi0nvoc=
+X-Received: by 2002:a05:6512:70f:b0:4fb:889a:b410 with SMTP id
+ b15-20020a056512070f00b004fb889ab410mr2677632lfs.65.1688703761442; Thu, 06
+ Jul 2023 21:22:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-16-jolsa@kernel.org>
-In-Reply-To: <20230630083344.984305-16-jolsa@kernel.org>
+References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-3-jolsa@kernel.org>
+In-Reply-To: <20230630083344.984305-3-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 6 Jul 2023 21:20:42 -0700
-Message-ID: <CAEf4BzZtmfxFrvvEG+7ZhsSnDGR20u+bjjbQsG5pn0zDQZC9yg@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 15/26] libbpf: Add uprobe multi link detection
+Date: Thu, 6 Jul 2023 21:22:29 -0700
+Message-ID: <CAEf4BzbxuCRmk3fTkpAM0=GPJErKQq-FezqGEf05zueFcWJa6g@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 02/26] bpf: Add multi uprobe link
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
@@ -80,122 +80,100 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 30, 2023 at 1:36=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Fri, Jun 30, 2023 at 1:34=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding uprobe-multi link detection. It will be used later in
-> bpf_program__attach_usdt function to check and use uprobe_multi
-> link over standard uprobe links.
+> Adding new multi uprobe link that allows to attach bpf program
+> to multiple uprobes.
+>
+> Uprobes to attach are specified via new link_create uprobe_multi
+> union:
+>
+>   struct {
+>           __u32           flags;
+>           __u32           cnt;
+>           __aligned_u64   path;
+>           __aligned_u64   offsets;
+>           __aligned_u64   ref_ctr_offsets;
+>   } uprobe_multi;
+>
+> Uprobes are defined for single binary specified in path and multiple
+> calling sites specified in offsets array with optional reference
+> counters specified in ref_ctr_offsets array. All specified arrays
+> have length of 'cnt'.
+>
+> The 'flags' supports single bit for now that marks the uprobe as
+> return probe.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/lib/bpf/libbpf.c          | 35 +++++++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf_internal.h |  2 ++
->  2 files changed, 37 insertions(+)
+>  include/linux/trace_events.h   |   6 +
+>  include/uapi/linux/bpf.h       |  14 ++
+>  kernel/bpf/syscall.c           |  14 +-
+>  kernel/trace/bpf_trace.c       | 237 +++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  14 ++
+>  5 files changed, 282 insertions(+), 3 deletions(-)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 06092b9752f1..4f61f9dc1748 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4817,6 +4817,38 @@ static int probe_perf_link(void)
->         return link_fd < 0 && err =3D=3D -EBADF;
->  }
->
-> +static int probe_uprobe_multi_link(void)
-> +{
-> +       LIBBPF_OPTS(bpf_prog_load_opts, load_opts,
-> +               .expected_attach_type =3D BPF_TRACE_UPROBE_MULTI,
-> +       );
-> +       LIBBPF_OPTS(bpf_link_create_opts, link_opts);
-> +       struct bpf_insn insns[] =3D {
-> +               BPF_MOV64_IMM(BPF_REG_0, 0),
-> +               BPF_EXIT_INSN(),
-> +       };
-> +       unsigned long offset =3D 0;
-> +       int prog_fd, link_fd;
+
+[...]
+
+> +       flags =3D attr->link_create.uprobe_multi.flags;
+> +       if (flags & ~BPF_F_UPROBE_MULTI_RETURN)
+> +               return -EINVAL;
 > +
-> +       prog_fd =3D bpf_prog_load(BPF_PROG_TYPE_KPROBE, NULL, "GPL",
-> +                               insns, ARRAY_SIZE(insns), &load_opts);
-> +       if (prog_fd < 0)
-> +               return -errno;
+> +       /*
+> +        * path, offsets and cnt are mandatory,
+> +        * ref_ctr_offsets is optional
+> +        */
+> +       upath =3D u64_to_user_ptr(attr->link_create.uprobe_multi.path);
+> +       uoffsets =3D u64_to_user_ptr(attr->link_create.uprobe_multi.offse=
+ts);
+> +       cnt =3D attr->link_create.uprobe_multi.cnt;
 > +
-> +       /* create single uprobe on offset 0 in current process */
-> +       link_opts.uprobe_multi.path =3D "/proc/self/exe";
-> +       link_opts.uprobe_multi.offsets =3D &offset;
-> +       link_opts.uprobe_multi.cnt =3D 1;
+> +       if (!upath || !uoffsets || !cnt)
+> +               return -EINVAL;
+
+see below for -EBADF, but we can also, additionally, return -EPROTO
+here, for example?
+
 > +
-> +       link_fd =3D bpf_link_create(prog_fd, -1, BPF_TRACE_UPROBE_MULTI, =
-&link_opts);
+> +       uref_ctr_offsets =3D u64_to_user_ptr(attr->link_create.uprobe_mul=
+ti.ref_ctr_offsets);
+> +
+> +       name =3D strndup_user(upath, PATH_MAX);
+> +       if (IS_ERR(name)) {
+> +               err =3D PTR_ERR(name);
+> +               return err;
+> +       }
+> +
+> +       err =3D kern_path(name, LOOKUP_FOLLOW, &path);
+> +       kfree(name);
+> +       if (err)
+> +               return err;
+> +
+> +       if (!d_is_reg(path.dentry)) {
+> +               err =3D -EINVAL;
+
+as I mentioned in another patch, -EBADF here for feature detection
+(and it makes sense by itself, probably)
+
+> +               goto error_path_put;
+> +       }
+> +
+> +       err =3D -ENOMEM;
+> +
+> +       link =3D kzalloc(sizeof(*link), GFP_KERNEL);
+> +       uprobes =3D kvcalloc(cnt, sizeof(*uprobes), GFP_KERNEL);
+> +
+> +       if (!uprobes || !link)
+> +               goto error_free;
+> +
+> +       if (uref_ctr_offsets) {
+> +               ref_ctr_offsets =3D kvcalloc(cnt, sizeof(*ref_ctr_offsets=
+), GFP_KERNEL);
+> +               if (!ref_ctr_offsets)
+> +                       goto error_free;
+> +       }
 > +
 
-so I'd like us to avoid successfully attaching anything. This might
-have unintended consequences (e.g., unintentionally breaking backing
-huge pages into normal pages, just because we happen to successfully
-attach briefly). So let's work on feature detection that fails to
-create a link, but does it in a way that we know that the feature
-itself is supported by the kernel
-
-Some ideas we could do:
-
-1. Pass invalid file (e.g., just root, "/" as path), but modify
-kernel-side logic to return not -EINVAL, but -EBADF (and I think it
-would be good to do this anyway). Then expect -EBADF as a signal that
-the feature is supported.
-
-2. Also, we can return -EPROTO instead of -EINVAL on invalid
-combination of paramers or something like that
-
-I'd start with -EBADF change.
-
-In general, we should write kernel-side code in such a way that allows
-simple and efficient feature-detection. We shouldn't repeat the
-nightmare of memcg-based mem accounting :(
-
-> +       if (link_fd >=3D 0)
-> +               close(link_fd);
-> +       close(prog_fd);
-> +
-> +       return link_fd >=3D 0;
-> +}
-> +
->  static int probe_kern_bpf_cookie(void)
->  {
->         struct bpf_insn insns[] =3D {
-> @@ -4913,6 +4945,9 @@ static struct kern_feature_desc {
->         [FEAT_SYSCALL_WRAPPER] =3D {
->                 "Kernel using syscall wrapper", probe_kern_syscall_wrappe=
-r,
->         },
-> +       [FEAT_UPROBE_MULTI_LINK] =3D {
-> +               "BPF uprobe multi link support", probe_uprobe_multi_link,
-
-nit: BPF multi-uprobe link support
-
-> +       },
->  };
->
->  bool kernel_supports(const struct bpf_object *obj, enum kern_feature_id =
-feat_id)
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
-nal.h
-> index 7d75b92e531a..9c04b3fe1207 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -354,6 +354,8 @@ enum kern_feature_id {
->         FEAT_BTF_ENUM64,
->         /* Kernel uses syscall wrapper (CONFIG_ARCH_HAS_SYSCALL_WRAPPER) =
-*/
->         FEAT_SYSCALL_WRAPPER,
-> +       /* BPF uprobe_multi link support */
-
-same, multi-uprobe link support
-
-
-
-> +       FEAT_UPROBE_MULTI_LINK,
->         __FEAT_CNT,
->  };
->
-> --
-> 2.41.0
->
+[...]
 
