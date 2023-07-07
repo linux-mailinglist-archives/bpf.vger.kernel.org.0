@@ -1,231 +1,124 @@
-Return-Path: <bpf+bounces-4389-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4390-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81C2874A97B
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 05:52:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6F0374A9A4
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 06:05:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D73F28160B
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 03:52:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7018D281637
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 04:05:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 278E91C37;
-	Fri,  7 Jul 2023 03:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 958BE1FB2;
+	Fri,  7 Jul 2023 04:05:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA59A1876
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 03:52:40 +0000 (UTC)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C541FC9
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 20:52:27 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fbc587febfso14510675e9.2
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 20:52:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688701945; x=1691293945;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g7FEKjZbrpQeS4wm2f+5jvVSkxWn/bUJ/cNzpZ9OEg8=;
-        b=K9HnMIJ4zlSDHHlErNZ+7c2BxywYSPSwkrxvm5lKQ0b8CHW3dX0MyiiPGk+xuvX3lS
-         x+xvjF9kresV/5EQHX4bDzJYWutazUc7vzanl05ac4dD0i0fxvOHGUCexKNFYjvMPx59
-         los3dc7RCrnPgNAgHrJo0ueTgjbP+v5jhnM2M7XtZ9N62guHUI1lQYBzahViNQQad7Lq
-         8hlxGLP2qSL8RcmGkyZ9xaN+IzYqfMwm2DxdhWj6MGVPUvnVD4kv1teCFFF8yDiD9lop
-         /sTDBz7EXP3jYOV+Dr9BnqYTlzhq3UoRnpnhcRexdk9r4Gs3JW9n0p9zyNm8p0oIdvYl
-         uzcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688701945; x=1691293945;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g7FEKjZbrpQeS4wm2f+5jvVSkxWn/bUJ/cNzpZ9OEg8=;
-        b=Cx9/EOJwHMBXmCgNDsxiyijOgPrax68mLVv2B+KEpFQGcwpB4p6Sap+vPrLgy/99ev
-         JLAix3NnvFu3MtyJua9BoqtAB6Ohd9mKZjg1E9cgxSCzoKz3jaFlqeeejTkvDc5MnJN1
-         wqAx5r46QyyTydLI8owBYpuC84Fb8CVSeUjhMwd4S/FVfJwt99BUTIqNRO7xKARtZUsa
-         lZOKAGc4728fdrdrGXtjzIym9grXPhDF1Eb894YmoJUc7BS7yMp02yk5Zdv7wo4KfJ9g
-         qZyOtELw5au653lB0m9WKG/C+H181ImH7faTZlSTHMxIrsGhwd0v+dsJGr5JRTCnleNO
-         thWQ==
-X-Gm-Message-State: ABy/qLYgvdOqFuR6WexK+YHdVKI+/y2h03VZIBJsm5zUNb1LhLNDeUqM
-	X0uXF/2eSgmz/JxUWpIPQYX/U5nU6uHKzKU1UcTjvDs7ujc=
-X-Google-Smtp-Source: APBJJlEJL/OORsHyvAfMgiFcYAOs8fPBFasaBAbiv3vWYqb+BuIctZLYdQC668autMt682579Bp6kKcRwQzC7LLSkCs=
-X-Received: by 2002:a05:600c:22c1:b0:3f7:f45d:5e44 with SMTP id
- 1-20020a05600c22c100b003f7f45d5e44mr2638824wmg.32.1688701945470; Thu, 06 Jul
- 2023 20:52:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43BFA1876;
+	Fri,  7 Jul 2023 04:05:26 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0DB1FD7;
+	Thu,  6 Jul 2023 21:05:25 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qy0DJ5ssxz4f3pGC;
+	Fri,  7 Jul 2023 12:05:20 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgB3CDP+jqdkAuKtMg--.32213S2;
+	Fri, 07 Jul 2023 12:05:21 +0800 (CST)
+Subject: Re: [PATCH v4 bpf-next 12/14] bpf: Introduce bpf_mem_free_rcu()
+ similar to kfree_rcu().
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Tejun Heo <tj@kernel.org>, rcu@vger.kernel.org,
+ Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+ Kernel Team <kernel-team@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, David Vernet <void@manifault.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>
+References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
+ <20230706033447.54696-13-alexei.starovoitov@gmail.com>
+ <2c09b7d7-b91c-c561-3fd6-b8483aab01dc@huaweicloud.com>
+ <CAADnVQKea47Q1WPtmVrHEZijb=Ms8QzufVj8eds5HmNXGxSRug@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <205ac9e9-ef8c-2b39-8d76-a937d6fc72d5@huaweicloud.com>
+Date: Fri, 7 Jul 2023 12:05:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-12-jolsa@kernel.org>
-In-Reply-To: <20230630083344.984305-12-jolsa@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 6 Jul 2023 20:52:13 -0700
-Message-ID: <CAEf4BzZsF5jyVxETLTJ507CMx75HQxEUndoqbAVqakBXkJs5eQ@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 11/26] libbpf: Add elf_resolve_pattern_offsets function
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAADnVQKea47Q1WPtmVrHEZijb=Ms8QzufVj8eds5HmNXGxSRug@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgB3CDP+jqdkAuKtMg--.32213S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tryUXr45Cr18uFyfCFykKrg_yoW8Ar1fpF
+	WxtFyUua1kAr4ft3sFqw4xCFyvvrs2grnxWa90qrW7trsIvr90gF1Ikry5uF93Kwn29342
+	qr4DXr9ayw1kZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+	uYvjxUrR6zUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 30, 2023 at 1:36=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding elf_resolve_pattern_offsets function that looks up
-> offsets for symbols specified by pattern argument.
->
-> The 'pattern' argument allows wildcards (*?' supported).
->
-> Offsets are returned in allocated array together with its
-> size and needs to be released by the caller.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/lib/bpf/elf.c             | 57 +++++++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.c          |  2 +-
->  tools/lib/bpf/libbpf_elf.h      |  3 ++
->  tools/lib/bpf/libbpf_internal.h |  1 +
->  4 files changed, 62 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-> index 7e2f3b2e1fb6..f2d1a8cc2f9d 100644
-> --- a/tools/lib/bpf/elf.c
-> +++ b/tools/lib/bpf/elf.c
-> @@ -376,3 +376,60 @@ int elf_resolve_syms_offsets(const char *binary_path=
-, int cnt,
->         elf_close(&elf_fd);
->         return err;
->  }
-> +
+Hi,
 
-same, leave comment that caller should free offsets on success?
+On 7/7/2023 10:10 AM, Alexei Starovoitov wrote:
+> On Thu, Jul 6, 2023 at 6:45 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>
+>>
+>> On 7/6/2023 11:34 AM, Alexei Starovoitov wrote:
+>>> From: Alexei Starovoitov <ast@kernel.org>
+>>>
+>>> Introduce bpf_mem_[cache_]free_rcu() similar to kfree_rcu().
+>>> Unlike bpf_mem_[cache_]free() that links objects for immediate reuse into
+>>> per-cpu free list the _rcu() flavor waits for RCU grace period and then moves
+>>> objects into free_by_rcu_ttrace list where they are waiting for RCU
+>>> task trace grace period to be freed into slab.
+>>>
+>>> The life cycle of objects:
+>>> alloc: dequeue free_llist
+>>> free: enqeueu free_llist
+>>> free_rcu: enqueue free_by_rcu -> waiting_for_gp
+>>> free_llist above high watermark -> free_by_rcu_ttrace
+>>> after RCU GP waiting_for_gp -> free_by_rcu_ttrace
+>>> free_by_rcu_ttrace -> waiting_for_gp_ttrace -> slab
+>>>
+>>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>> Acked-by: Hou Tao <houtao1@huawei.com>
+> Thank you very much for code reviews and feedback.
 
-> +int elf_resolve_pattern_offsets(const char *binary_path, const char *pat=
-tern,
-> +                               unsigned long **poffsets, size_t *pcnt)
-> +{
-> +       int sh_types[2] =3D { SHT_DYNSYM, SHT_SYMTAB };
-> +       unsigned long *offsets =3D NULL;
-> +       size_t cap =3D 0, cnt =3D 0;
-> +       struct elf_fd elf_fd;
-> +       int err =3D 0, i;
-> +
-> +       err =3D elf_open(binary_path, &elf_fd);
-> +       if (err)
-> +               return err;
-> +
-> +       for (i =3D 0; i < ARRAY_SIZE(sh_types); i++) {
-> +               struct elf_sym_iter iter;
-> +               struct elf_sym *sym;
-> +
-> +               err =3D elf_sym_iter_new(&iter, elf_fd.elf, binary_path, =
-sh_types[i], STT_FUNC);
-> +               if (err) {
-> +                       if (err =3D=3D -ENOENT)
-> +                               continue;
-> +                       goto out;
-> +               }
+You are welcome. I also learn a lot from this great patch set.
 
-ditto, minimize nesting, please
-
-> +
-> +               while ((sym =3D elf_sym_iter_next(&iter))) {
-> +                       if (!glob_match(sym->name, pattern))
-> +                               continue;
-> +
-> +                       err =3D libbpf_ensure_mem((void **) &offsets, &ca=
-p, sizeof(*offsets),
-> +                                               cnt + 1);
-> +                       if (err)
-> +                               goto out;
-> +
-> +                       offsets[cnt++] =3D elf_sym_offset(sym);
-> +               }
-> +
-> +               /* If we found anything in the first symbol section,
-> +                * do not search others to avoid duplicates.
-
-DYNSYM is going to have only exposed symbols, so for this pattern
-matching, maybe it's best to start with SYMTAB and only fallback to
-DYNSYM if we didn't find anything in SYMTAB (more realistically it
-would be that SYMTAB section is missing, so we fallback to DYNSYM;
-otherwise neither DYNSYM nor SYMTAB will have matching symbols, most
-probably, but that's minor)
-
-other than that, LGTM
-
-> +                */
-> +               if (cnt)
-> +                       break;
-> +       }
-> +
-> +       if (cnt) {
-> +               *poffsets =3D offsets;
-> +               *pcnt =3D cnt;
-> +       } else {
-> +               err =3D -ENOENT;
-> +       }
-> +
-> +out:
-> +       if (err)
-> +               free(offsets);
-> +       elf_close(&elf_fd);
-> +       return err;
-> +}
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 093add8124d8..f33ef7cb1adc 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -10509,7 +10509,7 @@ struct bpf_link *bpf_program__attach_ksyscall(con=
-st struct bpf_program *prog,
->  }
 >
->  /* Adapted from perf/util/string.c */
-> -static bool glob_match(const char *str, const char *pat)
-> +bool glob_match(const char *str, const char *pat)
->  {
->         while (*str && *pat && *pat !=3D '*') {
->                 if (*pat =3D=3D '?') {      /* Matches any single charact=
-er */
-> diff --git a/tools/lib/bpf/libbpf_elf.h b/tools/lib/bpf/libbpf_elf.h
-> index 026c7b378727..0c75d3b2398b 100644
-> --- a/tools/lib/bpf/libbpf_elf.h
-> +++ b/tools/lib/bpf/libbpf_elf.h
-> @@ -18,4 +18,7 @@ long elf_find_func_offset_from_file(const char *binary_=
-path, const char *name);
->
->  int elf_resolve_syms_offsets(const char *binary_path, int cnt,
->                              const char **syms, unsigned long **poffsets)=
-;
-> +
-> +int elf_resolve_pattern_offsets(const char *binary_path, const char *pat=
-tern,
-> +                                unsigned long **poffsets, size_t *pcnt);
->  #endif /* *__LIBBPF_LIBBPF_ELF_H */
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
-nal.h
-> index e4d05662a96c..7d75b92e531a 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -577,4 +577,5 @@ static inline bool is_pow_of_2(size_t x)
->  #define PROG_LOAD_ATTEMPTS 5
->  int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attem=
-pts);
->
-> +bool glob_match(const char *str, const char *pat);
->  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
-> --
-> 2.41.0
->
+> btw I still believe that ABA is a non issue and prefer to keep the code as-is,
+> but for the sake of experiment I've converted it to spin_lock
+> (see attached patch which I think uglifies the code)
+> and performance across bench htab-mem and map_perf_test
+> seems to be about the same.
+> Which was a bit surprising to me.
+> Could you please benchmark it on your system?
+
+Will do that later. It seems if there is no cross-CPU allocation and
+free, the only possible contention is between __free_rcu() on CPU x and
+alloc_bulk()/free_bulk() on a different CPU.
+
 
