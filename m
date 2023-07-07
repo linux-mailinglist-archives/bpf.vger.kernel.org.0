@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-4479-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4478-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B5FD74B722
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 21:32:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2438B74B71F
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 21:32:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DFC01C2108E
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 19:32:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3302281899
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 19:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27DD517AD5;
-	Fri,  7 Jul 2023 19:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E1017ABA;
+	Fri,  7 Jul 2023 19:30:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E754E17ACA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4CB17AA8
 	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 19:30:33 +0000 (UTC)
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2039F2D60
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 12:30:15 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-bb0d11a56abso2293471276.2
-        for <bpf@vger.kernel.org>; Fri, 07 Jul 2023 12:30:15 -0700 (PDT)
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD6B2D63
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 12:30:16 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6826902bc8dso4834385b3a.1
+        for <bpf@vger.kernel.org>; Fri, 07 Jul 2023 12:30:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1688758214; x=1691350214;
+        d=google.com; s=20221208; t=1688758216; x=1691350216;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YNeiLsP2ysetsS22wf97er69882nLpLke7h5hg62src=;
-        b=vjhQf7UeZi4iSSl+zjdVwMHpRxZGdJ2WQGb4BNvj+5SC27UI/pcyPbrCOinabSt3qL
-         fZgMHKBtFfuab13GKStIHZaFnRGYvanWYcZt+M8TdEjrwio2Ik6Vtu3CgqhGVHrvUcCH
-         DsUpJ1P9BRgW5vLFJipw1uV5AJe27BEQaN1bx+jG8nmO06NkjNVQwZHujk58Q6p7GBN+
-         8vtckUw5O2u+VZmLVauHNNTOOOQY87Pkx8wUfcaZoeVfqd2YLCzHqzLf0PMUR+F5m105
-         pWq3eblnojGB56h8nslAvnCuGI/Q7NhTNctnsRkJVWco61g8+4u+woXy8wH7v/p/KZyP
-         +ncA==
+        bh=ebCFN4kvmp0fJHVry9ZNXr0b2a76EZGRumAZp4zFQ58=;
+        b=UTMpTn8iS3cYJZuREQ/RjfeUJL0AEEFsGXbeHdKJ0aZMTXxUP51gCT3KpSH9tij1Xo
+         mc4I0KsZqDzFAAAz6vey8Bx/vSWutpFeqUobu32lzNyfhrCGs1BR1Wluw63HhtqQAqHz
+         iF2dNPHymQ5GjNHfVDicksidBurzt1/telo8UnzcJ9fadYmRCy6dqvypfNB3ZKpnbi2S
+         xwqQBqMK7NzUnbeDi9mMxFXTmwaFF8qw8uy/ILQOGT2D20Z6LXa9mazVsv0vsPbzb7MJ
+         OQ8I9R2Y0x0PplW6TgJOGN+u1+WyXQRn8w9HFqxQP9quD8X9AebAE/MOPEncdtJmLljf
+         GFMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688758214; x=1691350214;
+        d=1e100.net; s=20221208; t=1688758216; x=1691350216;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YNeiLsP2ysetsS22wf97er69882nLpLke7h5hg62src=;
-        b=be0t+eUORQ6/L29syVT7ykJN1u+vzw6DUUEnytaIyuaaTduzkDNuqi2G6wyqQRz10b
-         9EQkjTVSK9DVzuVaNWqfecs1xSlxk4mNQyOLXxuRhCguK8GHQrm/BpMozeAmB+Xl71xc
-         WYS9/ninNWG4PXBD7jX7JMWsemGyMyAfQv7zsgP5ZuSrO3Ye9SVWDTY7YiOYvvi435ch
-         6wt08gYVcukS0L434cD3A/NmsEmkiEMql+VlgjE6NM3Td/tPxPz2M65m3qhX1u8i1HLE
-         yyE+HzxsRQrkWoFfyxGLvymrMkS7lLCsBeMUa+Z9+/0gnI7ANcurdLRm0M0wsH2YZOw2
-         P8WA==
-X-Gm-Message-State: ABy/qLY/xrJigNVZNS043IXi4hfeh1GGCzI5BO/klwWnCR3/xnyA7AIr
-	LL+W0k1/9vvQcyJXd6K1Uk0bYNcTTpXdUSSryKAurD307hDg07hSKrIUifuFRwLZGH9HWtxD634
-	TViPlAhuRBgyhkpnQZnNuWt66+uRcqtrlrO645PNXGJ1b+CTa4w==
-X-Google-Smtp-Source: APBJJlGYyTJ0jrYZW5x3PBXckuNrfwyr4DJoJKZK02+MHpTg5wF2qpjK8Pb3aDnMicNV2jhzCPf45ZM=
+        bh=ebCFN4kvmp0fJHVry9ZNXr0b2a76EZGRumAZp4zFQ58=;
+        b=Zf7MpkWe93gZcN0BtpCEwZPKQMjw4RwoHSGKbD8rUqq8PFDAl2vtefyF3wo62gRf2e
+         UDCVBtAP327aMyVfV+4YzUV6eAtVQk6+kWD1LyezDchIkHsNfeW9yI2sCiZwo2jxMPyW
+         pAdDx0h4oNYtSONA0GY6twYIKMyqz2tFg/UCS/c8rNYWypWdrozvw6oX8E2gzBqS8a8o
+         Y1zUgVoLW350gxlLE4I+hfZiGdlisXVQENMsEltdUEXjnXZlPdtrSSH2bDQtKH0wxNY9
+         VT14V4Hxm/xa+kcQQF6l+z0lpdleXUJOb50iFtJEaMKiFmIFyy619ErmzHGGL6dctJUo
+         N7HA==
+X-Gm-Message-State: ABy/qLZCjXMILSmf8FebGyIYH0fYweo+XtsjWdLAS1du/OBXAh3QQxyN
+	OcTubrCetI7lM3fV+C3InSrocMOxXmwOLWKnNdkTJJl+Q/V8EVkz6UFH+LRVfMR2jy9ktcS8CTE
+	xooPcJpo5pZTZQHyfubR2MjpwlsKYIE5/Y16YtwghMPeJYKc2Cw==
+X-Google-Smtp-Source: APBJJlEqPQGVYO2Z4YF3Q3Th6qs2JWFrIG3eZT1fEgx2rigKiKvx51KpsYyHFnhmnc4VLIAwUCvcvBk=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:b193:0:b0:c01:e1c0:3b8f with SMTP id
- h19-20020a25b193000000b00c01e1c03b8fmr27742ybj.6.1688758213863; Fri, 07 Jul
- 2023 12:30:13 -0700 (PDT)
-Date: Fri,  7 Jul 2023 12:29:55 -0700
+ (user=sdf job=sendgmr) by 2002:a05:6a00:14c5:b0:67c:bfb:884f with SMTP id
+ w5-20020a056a0014c500b0067c0bfb884fmr8525475pfu.2.1688758215343; Fri, 07 Jul
+ 2023 12:30:15 -0700 (PDT)
+Date: Fri,  7 Jul 2023 12:29:56 -0700
 In-Reply-To: <20230707193006.1309662-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,8 +63,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230707193006.1309662-1-sdf@google.com>
 X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230707193006.1309662-4-sdf@google.com>
-Subject: [RFC bpf-next v3 03/14] xsk: Support XDP_TX_METADATA_LEN
+Message-ID: <20230707193006.1309662-5-sdf@google.com>
+Subject: [RFC bpf-next v3 04/14] bpf: Implement devtx hook points
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
@@ -81,167 +81,278 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-For zerocopy mode, tx_desc->addr can point to the arbitrary offset
-and carry some TX metadata in the headroom. For copy mode, there
-is no way currently to populate skb metadata.
-
-Introduce new XDP_TX_METADATA_LEN that indicates how many bytes
-to treat as metadata. Metadata bytes come prior to tx_desc address
-(same as in RX case).
+devtx is a lightweight set of hooks before and after packet transmission.
+The hooks are implemented as a tracing program which has access to the
+XDP-metadata-like kfuncs. The initial set of kfuncs is implemented
+in the next patch, but the idea is similar to XDP metadata:
+the kfuncs have netdev-specific implementation, but common
+interface. Upon loading, the kfuncs are resolved to direct
+calls against per-netdev implementation. This can be achieved
+by marking devtx-tracing programs as dev-bound (largely
+reusing xdp-dev-bound program infrastructure).
 
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/net/xdp_sock.h      |  1 +
- include/net/xsk_buff_pool.h |  1 +
- include/uapi/linux/if_xdp.h |  1 +
- net/xdp/xsk.c               | 35 +++++++++++++++++++++++++++++++++--
- net/xdp/xsk_buff_pool.c     |  1 +
- net/xdp/xsk_queue.h         |  7 ++++---
- 6 files changed, 41 insertions(+), 5 deletions(-)
+ MAINTAINERS          |  2 ++
+ include/net/devtx.h  | 66 +++++++++++++++++++++++++++++++++++++
+ kernel/bpf/offload.c | 15 +++++++++
+ net/core/Makefile    |  1 +
+ net/core/dev.c       |  1 +
+ net/core/devtx.c     | 78 ++++++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 163 insertions(+)
+ create mode 100644 include/net/devtx.h
+ create mode 100644 net/core/devtx.c
 
-diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-index e96a1151ec75..30018b3b862d 100644
---- a/include/net/xdp_sock.h
-+++ b/include/net/xdp_sock.h
-@@ -51,6 +51,7 @@ struct xdp_sock {
- 	struct list_head flush_node;
- 	struct xsk_buff_pool *pool;
- 	u16 queue_id;
-+	u8 tx_metadata_len;
- 	bool zc;
- 	enum {
- 		XSK_READY = 0,
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index a8d7b8a3688a..751fea51a6af 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -75,6 +75,7 @@ struct xsk_buff_pool {
- 	u32 chunk_size;
- 	u32 chunk_shift;
- 	u32 frame_len;
-+	u8 tx_metadata_len; /* inherited from xsk_sock */
- 	u8 cached_need_wakeup;
- 	bool uses_need_wakeup;
- 	bool dma_need_sync;
-diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
-index a78a8096f4ce..2374eafff7db 100644
---- a/include/uapi/linux/if_xdp.h
-+++ b/include/uapi/linux/if_xdp.h
-@@ -63,6 +63,7 @@ struct xdp_mmap_offsets {
- #define XDP_UMEM_COMPLETION_RING	6
- #define XDP_STATISTICS			7
- #define XDP_OPTIONS			8
-+#define XDP_TX_METADATA_LEN		9
- 
- struct xdp_umem_reg {
- 	__u64 addr; /* Start of packet data area */
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 5a8c0dd250af..6ef7bc4f514c 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -485,6 +485,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 		int err;
- 
- 		hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
-+		hr = max(hr, L1_CACHE_ALIGN((u32)xs->tx_metadata_len));
- 		tr = dev->needed_tailroom;
- 		len = desc->len;
- 
-@@ -493,14 +494,21 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 			return ERR_PTR(err);
- 
- 		skb_reserve(skb, hr);
--		skb_put(skb, len);
-+		skb_put(skb, len + xs->tx_metadata_len);
- 
- 		buffer = xsk_buff_raw_get_data(xs->pool, desc->addr);
--		err = skb_store_bits(skb, 0, buffer, len);
-+		buffer -= xs->tx_metadata_len;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index acbe54087d1c..de6a2430d49a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -23063,11 +23063,13 @@ L:	bpf@vger.kernel.org
+ S:	Supported
+ F:	drivers/net/ethernet/*/*/*/*/*xdp*
+ F:	drivers/net/ethernet/*/*/*xdp*
++F:	include/net/devtx.h
+ F:	include/net/xdp.h
+ F:	include/net/xdp_priv.h
+ F:	include/trace/events/xdp.h
+ F:	kernel/bpf/cpumap.c
+ F:	kernel/bpf/devmap.c
++F:	net/core/devtx.c
+ F:	net/core/xdp.c
+ F:	samples/bpf/xdp*
+ F:	tools/testing/selftests/bpf/*/*xdp*
+diff --git a/include/net/devtx.h b/include/net/devtx.h
+new file mode 100644
+index 000000000000..88127ca87b9a
+--- /dev/null
++++ b/include/net/devtx.h
+@@ -0,0 +1,66 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef __LINUX_NET_DEVTX_H__
++#define __LINUX_NET_DEVTX_H__
 +
-+		err = skb_store_bits(skb, 0, buffer, len + xs->tx_metadata_len);
- 		if (unlikely(err)) {
- 			kfree_skb(skb);
- 			return ERR_PTR(err);
- 		}
++#include <linux/jump_label.h>
++#include <linux/skbuff.h>
++#include <linux/netdevice.h>
++#include <linux/btf_ids.h>
++#include <net/xdp.h>
 +
-+		if (xs->tx_metadata_len) {
-+			skb_metadata_set(skb, xs->tx_metadata_len);
-+			__skb_pull(skb, xs->tx_metadata_len);
-+		}
- 	}
++struct devtx_ctx {
++	struct net_device *netdev;
++	struct skb_shared_info *sinfo; /* for frags */
++};
++
++#define DECLARE_DEVTX_HOOKS(PREFIX) \
++void PREFIX ## _devtx_submit_skb(struct devtx_ctx *ctx, struct sk_buff *skb); \
++void PREFIX ## _devtx_complete_skb(struct devtx_ctx *ctx, struct sk_buff *skb); \
++void PREFIX ## _devtx_submit_xdp(struct devtx_ctx *ctx, struct xdp_frame *xdpf); \
++void PREFIX ## _devtx_complete_xdp(struct devtx_ctx *ctx, struct xdp_frame *xdpf)
++
++#define DEFINE_DEVTX_HOOKS(PREFIX) \
++__weak noinline void PREFIX ## _devtx_submit_skb(struct devtx_ctx *ctx, \
++						 struct sk_buff *skb) {} \
++__weak noinline void PREFIX ## _devtx_complete_skb(struct devtx_ctx *ctx, \
++						   struct sk_buff *skb) {} \
++__weak noinline void PREFIX ## _devtx_submit_xdp(struct devtx_ctx *ctx, \
++						 struct xdp_frame *xdpf) {} \
++__weak noinline void PREFIX ## _devtx_complete_xdp(struct devtx_ctx *ctx, \
++						   struct xdp_frame *xdpf) {} \
++\
++BTF_SET8_START(PREFIX ## _devtx_hook_ids) \
++BTF_ID_FLAGS(func, PREFIX ## _devtx_submit_skb) \
++BTF_ID_FLAGS(func, PREFIX ## _devtx_complete_skb) \
++BTF_ID_FLAGS(func, PREFIX ## _devtx_submit_xdp) \
++BTF_ID_FLAGS(func, PREFIX ## _devtx_complete_xdp) \
++BTF_SET8_END(PREFIX ## _devtx_hook_ids)
++
++#ifdef CONFIG_NET
++void devtx_hooks_enable(void);
++void devtx_hooks_disable(void);
++bool devtx_hooks_match(u32 attach_btf_id, const struct xdp_metadata_ops *xmo);
++int devtx_hooks_register(struct btf_id_set8 *set, const struct xdp_metadata_ops *xmo);
++void devtx_hooks_unregister(struct btf_id_set8 *set);
++
++DECLARE_STATIC_KEY_FALSE(devtx_enabled_key);
++
++static inline bool devtx_enabled(void)
++{
++	return static_branch_unlikely(&devtx_enabled_key);
++}
++#else
++static inline void devtx_hooks_enable(void) {}
++static inline void devtx_hooks_disable(void) {}
++static inline bool devtx_hooks_match(u32 attach_btf_id, const struct xdp_metadata_ops *xmo) {}
++static inline int devtx_hooks_register(struct btf_id_set8 *set,
++				       const struct xdp_metadata_ops *xmo) {}
++static inline void devtx_hooks_unregister(struct btf_id_set8 *set) {}
++
++static inline bool devtx_enabled(void)
++{
++	return false;
++}
++#endif
++
++#endif /* __LINUX_NET_DEVTX_H__ */
+diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+index cec63c76dce5..a4423803b3dd 100644
+--- a/kernel/bpf/offload.c
++++ b/kernel/bpf/offload.c
+@@ -25,6 +25,7 @@
+ #include <linux/rhashtable.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/rwsem.h>
++#include <net/devtx.h>
  
- 	skb->dev = dev;
-@@ -1137,6 +1145,29 @@ static int xsk_setsockopt(struct socket *sock, int level, int optname,
- 		mutex_unlock(&xs->mutex);
- 		return err;
- 	}
-+	case XDP_TX_METADATA_LEN:
-+	{
-+		int val;
-+
-+		if (optlen < sizeof(val))
-+			return -EINVAL;
-+		if (copy_from_sockptr(&val, optval, sizeof(val)))
-+			return -EFAULT;
-+
-+		if (val >= 256)
-+			return -EINVAL;
-+		if (val % 4)
-+			return -EINVAL;
-+
-+		mutex_lock(&xs->mutex);
-+		if (xs->state != XSK_READY) {
-+			mutex_unlock(&xs->mutex);
-+			return -EBUSY;
-+		}
-+		xs->tx_metadata_len = val;
-+		mutex_unlock(&xs->mutex);
-+		return 0;
+ /* Protects offdevs, members of bpf_offload_netdev and offload members
+  * of all progs.
+@@ -228,6 +229,7 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
+ 	int err;
+ 
+ 	if (attr->prog_type != BPF_PROG_TYPE_SCHED_CLS &&
++	    attr->prog_type != BPF_PROG_TYPE_TRACING &&
+ 	    attr->prog_type != BPF_PROG_TYPE_XDP)
+ 		return -EINVAL;
+ 
+@@ -242,6 +244,15 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
+ 	if (!netdev)
+ 		return -EINVAL;
+ 
++	/* Make sure device-bound tracing programs are being attached
++	 * to the appropriate netdev.
++	 */
++	if (attr->prog_type == BPF_PROG_TYPE_TRACING &&
++	    !devtx_hooks_match(prog->aux->attach_btf_id, netdev->xdp_metadata_ops)) {
++		err = -EINVAL;
++		goto out;
 +	}
- 	default:
- 		break;
++
+ 	err = bpf_dev_offload_check(netdev);
+ 	if (err)
+ 		goto out;
+@@ -252,6 +263,9 @@ int bpf_prog_dev_bound_init(struct bpf_prog *prog, union bpf_attr *attr)
+ 	err = __bpf_prog_dev_bound_init(prog, netdev);
+ 	up_write(&bpf_devs_lock);
+ 
++	if (!err)
++		devtx_hooks_enable();
++
+ out:
+ 	dev_put(netdev);
+ 	return err;
+@@ -384,6 +398,7 @@ void bpf_prog_dev_bound_destroy(struct bpf_prog *prog)
+ 		ondev = bpf_offload_find_netdev(netdev);
+ 		if (!ondev->offdev && list_empty(&ondev->progs))
+ 			__bpf_offload_dev_netdev_unregister(NULL, netdev);
++		devtx_hooks_disable();
  	}
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index 26f6d304451e..66ff9c345a67 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -85,6 +85,7 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
- 		XDP_PACKET_HEADROOM;
- 	pool->umem = umem;
- 	pool->addrs = umem->addrs;
-+	pool->tx_metadata_len = xs->tx_metadata_len;
- 	INIT_LIST_HEAD(&pool->free_list);
- 	INIT_LIST_HEAD(&pool->xsk_tx_list);
- 	spin_lock_init(&pool->xsk_tx_list_lock);
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index 6d40a77fccbe..c8d287c18d64 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -133,12 +133,13 @@ static inline bool xskq_cons_read_addr_unchecked(struct xsk_queue *q, u64 *addr)
- static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
- 					    struct xdp_desc *desc)
- {
--	u64 offset = desc->addr & (pool->chunk_size - 1);
-+	u64 addr = desc->addr - pool->tx_metadata_len;
-+	u64 offset = addr & (pool->chunk_size - 1);
+ 	up_write(&bpf_devs_lock);
+ 	rtnl_unlock();
+diff --git a/net/core/Makefile b/net/core/Makefile
+index 731db2eaa610..97b4d6703a77 100644
+--- a/net/core/Makefile
++++ b/net/core/Makefile
+@@ -39,4 +39,5 @@ obj-$(CONFIG_FAILOVER) += failover.o
+ obj-$(CONFIG_NET_SOCK_MSG) += skmsg.o
+ obj-$(CONFIG_BPF_SYSCALL) += sock_map.o
+ obj-$(CONFIG_BPF_SYSCALL) += bpf_sk_storage.o
++obj-$(CONFIG_BPF_SYSCALL) += devtx.o
+ obj-$(CONFIG_OF)	+= of_net.o
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 69a3e544676c..b9500a722591 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -150,6 +150,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/prandom.h>
+ #include <linux/once_lite.h>
++#include <net/devtx.h>
  
- 	if (offset + desc->len > pool->chunk_size)
- 		return false;
- 
--	if (desc->addr >= pool->addrs_cnt)
-+	if (addr >= pool->addrs_cnt)
- 		return false;
- 
- 	if (desc->options)
-@@ -149,7 +150,7 @@ static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
- static inline bool xp_unaligned_validate_desc(struct xsk_buff_pool *pool,
- 					      struct xdp_desc *desc)
- {
--	u64 addr = xp_unaligned_add_offset_to_addr(desc->addr);
-+	u64 addr = xp_unaligned_add_offset_to_addr(desc->addr) - pool->tx_metadata_len;
- 
- 	if (desc->len > pool->chunk_size)
- 		return false;
+ #include "dev.h"
+ #include "net-sysfs.h"
+diff --git a/net/core/devtx.c b/net/core/devtx.c
+new file mode 100644
+index 000000000000..6ae1aecce2c5
+--- /dev/null
++++ b/net/core/devtx.c
+@@ -0,0 +1,78 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <net/devtx.h>
++#include <linux/filter.h>
++
++DEFINE_STATIC_KEY_FALSE(devtx_enabled_key);
++EXPORT_SYMBOL_GPL(devtx_enabled_key);
++
++struct devtx_hook_entry {
++	struct list_head devtx_hooks;
++	struct btf_id_set8 *set;
++	const struct xdp_metadata_ops *xmo;
++};
++
++static LIST_HEAD(devtx_hooks);
++static DEFINE_MUTEX(devtx_hooks_lock);
++
++void devtx_hooks_enable(void)
++{
++	static_branch_inc(&devtx_enabled_key);
++}
++
++void devtx_hooks_disable(void)
++{
++	static_branch_dec(&devtx_enabled_key);
++}
++
++bool devtx_hooks_match(u32 attach_btf_id, const struct xdp_metadata_ops *xmo)
++{
++	struct devtx_hook_entry *entry, *tmp;
++	bool match = false;
++
++	mutex_lock(&devtx_hooks_lock);
++	list_for_each_entry_safe(entry, tmp, &devtx_hooks, devtx_hooks) {
++		if (btf_id_set8_contains(entry->set, attach_btf_id)) {
++			match = entry->xmo == xmo;
++			break;
++		}
++	}
++	mutex_unlock(&devtx_hooks_lock);
++
++	return match;
++}
++
++int devtx_hooks_register(struct btf_id_set8 *set, const struct xdp_metadata_ops *xmo)
++{
++	struct devtx_hook_entry *entry;
++
++	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
++	if (!entry)
++		return -ENOMEM;
++
++	entry->set = set;
++	entry->xmo = xmo;
++
++	mutex_lock(&devtx_hooks_lock);
++	list_add(&entry->devtx_hooks, &devtx_hooks);
++	mutex_unlock(&devtx_hooks_lock);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(devtx_hooks_register);
++
++void devtx_hooks_unregister(struct btf_id_set8 *set)
++{
++	struct devtx_hook_entry *entry, *tmp;
++
++	mutex_lock(&devtx_hooks_lock);
++	list_for_each_entry_safe(entry, tmp, &devtx_hooks, devtx_hooks) {
++		if (entry->set == set) {
++			list_del(&entry->devtx_hooks);
++			kfree(entry);
++			break;
++		}
++	}
++	mutex_unlock(&devtx_hooks_lock);
++}
++EXPORT_SYMBOL_GPL(devtx_hooks_unregister);
 -- 
 2.41.0.255.g8b1d071c50-goog
 
