@@ -1,217 +1,188 @@
-Return-Path: <bpf+bounces-4442-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4443-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61CBC74B545
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 18:50:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC42274B552
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 18:51:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CFEB2817D4
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:50:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDAB51C20FFA
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC1711181;
-	Fri,  7 Jul 2023 16:49:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED8110970;
+	Fri,  7 Jul 2023 16:51:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 920DC10970
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 16:49:59 +0000 (UTC)
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA947213F
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 09:49:54 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5707177ff8aso22935437b3.2
-        for <bpf@vger.kernel.org>; Fri, 07 Jul 2023 09:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1688748594; x=1691340594;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3lCnKLZ8WnG1mWC3vUm5YK5y7ARdy6Q9MhmfW4z3qkA=;
-        b=0M/DSAFvBjjl75e5gZVjeSpGVXeKEyIVdE7Ii1iPkW1eHDCFsV1fwZoKNxdry0otNw
-         8/0M/QVJdhkGB3GsabSS2Vdf5T0pO+KqI3VhC8KlRg3d3DdDkzTMtTO1y2FA41J+cpRr
-         De0GsIaE7gFDTktkCk1u0JS87b/FulVVqNJsulKuZwEfWpNtTFm0Pr5gYL3CYDHvJhwr
-         MU33BvuNnYrlU072zlXj1anHOgcrvPw35w+Nv7q4X3GUI7h8aYhLCHQFRp5G2AfCIr1e
-         nbznV6p0xU59RAFhSe2AXllr7y16dRKAmBIQwgE4yrAQWaap3Ah/EItPFUoFHI5g+p+x
-         g8Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688748594; x=1691340594;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3lCnKLZ8WnG1mWC3vUm5YK5y7ARdy6Q9MhmfW4z3qkA=;
-        b=Oa0PlLutbCBZFBpvSMUsD6MOHnm8xVw9Af3GGU5m03uDzewGGXp+bnxRYh6N8D+ZvH
-         fsthHmjSOB1LpNCL95eGAMSJU+gzWe/2RqXxod3JzIqZplw6P9Sxq6CTXpeiiCyw6LZy
-         4QeuJRNNf9WZtmuBZUQurIXdmqbGHeqdWOcpd+IfWdcL2NpRdzExh+UlvOiSLD7w0wUY
-         k8hQUUu9DiUgN13IsvTvOcIkbLUAYCsXEYKXT+WqS7HJnEIbfoVbr8NFDACPMS/B59Sq
-         6Y6fvPZG2fBqth4rtrr0KmQUzdo/XkIzr8FBfficmoVwuvPdsALUPO/L9yEFtDpV3dNf
-         waZA==
-X-Gm-Message-State: ABy/qLbfX+R3C9b9gzJMfVa+CWVt2Ovx9lcnrb3soMHQTmW5qNqDDybM
-	aZosbB8wolozAllVBoYLaLAb7tw=
-X-Google-Smtp-Source: APBJJlG2ROezXuZKgHn5LG9SdQVx8FlVOt1BXen3wzVspLsYi47Fw04h9z+NQKq9iiuFwteih3PKNfo=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6902:508:b0:c4b:6ed6:6147 with SMTP id
- x8-20020a056902050800b00c4b6ed66147mr59031ybs.9.1688748593984; Fri, 07 Jul
- 2023 09:49:53 -0700 (PDT)
-Date: Fri, 7 Jul 2023 09:49:51 -0700
-In-Reply-To: <ZKfN0AZ9rLDhxsB3@lincoln>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF8710789;
+	Fri,  7 Jul 2023 16:51:06 +0000 (UTC)
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB74E170C;
+	Fri,  7 Jul 2023 09:51:04 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id C08C032001C6;
+	Fri,  7 Jul 2023 12:51:00 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 07 Jul 2023 12:51:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
+	:subject:to:to; s=fm1; t=1688748660; x=1688835060; bh=KOcsyq3Ero
+	SSljv1cPyOfuV4mOZBwhb9/RtM03S9WTM=; b=iAbvDdN7hBHPy6klAdIAnAmJEe
+	XrZFvpc+tffcuumDrztrSUJQ+cab01UVX+gkLYeiHjM4m+zFTBNRMvNmBqW9/ox3
+	bUFzmAl+tYZt7+zaIgOQAnLhqqTPb9mKEBxvS2UydkzwHO9hxZC3ba7R+WnDCu3c
+	QJfueWe2kA4IA4qYihzTcyzL9BVm+zDyQ1fcn+Gh6ENjICsGuOCmUgOJu08Btxr5
+	jNri6XTRYW+jWZIjqd5sVzzVvo0mEnheMT4S+e1L86Hol72esvSc8XciKgI3q9uu
+	LAX02N4de1VH6qeuEeumhh2Y3tZkL+g3o2OZr2fIgKAZ9BcY1UD855Bm219Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1688748660; x=1688835060; bh=KOcsyq3EroSSl
+	jv1cPyOfuV4mOZBwhb9/RtM03S9WTM=; b=MZRUAlD2lM1QZkPCTnPjTT55jcsOF
+	i4B3jnZM0X9wOZTBgcU29QKkXzpy7CiAhw45E7CoWT1bKQh76svQTDb0n64AaT0b
+	gvMXSsLzPg4UkSBLkcw3WDa75EJL0S9gROPguIfM7CcUgKJ4Fp17Q3H+GvBPDSCR
+	rCNy8G91UL/jC1Uf944M9AUz6YGsVvmIpgp5mM2BNU6N9SH4d7wsIUZcpp50tkpn
+	i9n8XsIljheRwMFeOZuzmxPPt6/BA15lbChHvjcvC9uthxsxq9HkYeqFSbt9CJZ6
+	B8Jsw8Gk9hRaI5pU9SbxjT6m9sR+6jFqFWlIYX+VJ+wc+iGEBr6733Tug==
+X-ME-Sender: <xms:c0KoZHwPbml_t4ypXadhQTYuLSJIfQH61W6_OZpD7l2YbT71e4EZpQ>
+    <xme:c0KoZPQbDNx6aiSeUZMl2Hh8izf80DWFsmtqN_zVBVu63RO2fGgnYCsYQmtA5_IUs
+    DqiNy7htcDK7xHaIw>
+X-ME-Received: <xmr:c0KoZBV3leYcHPXa3yHrgzg4V0t1uwFFMSoRJv-tQA69Crrx7rvZ8XF38m4xZIs7v5HS7VcwLq55tF3CY5SPQxsdPvurzPtG1o9_PzHKCBE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrvddugddutdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefhvf
+    evufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
+    uhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepteeghffhiefgjedtvdetfe
+    ffgfetkeetudeitdekveeluddvjeeugefgtdefgeefnecuffhomhgrihhnpehivghtfhdr
+    ohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:c0KoZBj-37hHaB3ZjawY9B7g4BdfmoZUIF9-LRsL0EBTOBkNkvmhJg>
+    <xmx:c0KoZJCEDEB71lADvVE-xXB1dE60RI6LV0TAxwFvzLKa8H-bywAzlw>
+    <xmx:c0KoZKJtFBr7n5IS3OnPCv2rl5jbyEz40x5Wy6fUwSP4Dhn4ljjR-A>
+    <xmx:dEKoZDCLRBRrDMDof97d1fLaKt9SBsvJvNtaUyH6ZtPmVctXum8ypg>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 7 Jul 2023 12:50:58 -0400 (EDT)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: linux-kselftest@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	coreteam@netfilter.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	fw@strlen.de,
+	daniel@iogearbox.net
+Cc: dsahern@kernel.org
+Subject: [PATCH bpf-next v3 0/6] Support defragmenting IPv(4|6) packets in BPF
+Date: Fri,  7 Jul 2023 10:50:15 -0600
+Message-ID: <cover.1688748455.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20230703181226.19380-1-larysa.zaremba@intel.com>
- <20230703181226.19380-19-larysa.zaremba@intel.com> <ZKWq142tp/tI6NI3@google.com>
- <ZKbLd8brydTvSocG@lincoln> <CAKH8qBv9Mj6xmC9ru7oVAamaT+PLO62m4NAkOg=YS2vGpWntGQ@mail.gmail.com>
- <ZKfN0AZ9rLDhxsB3@lincoln>
-Message-ID: <ZKhCL/YMo8dv4lqd@google.com>
-Subject: Re: [PATCH bpf-next v2 18/20] selftests/bpf: Use AF_INET for TX in xdp_metadata
-From: Stanislav Fomichev <sdf@google.com>
-To: Larysa Zaremba <larysa.zaremba@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Willem de Bruijn <willemb@google.com>, Jesper Dangaard Brouer <brouer@redhat.com>, 
-	Anatoly Burakov <anatoly.burakov@intel.com>, Alexander Lobakin <alexandr.lobakin@intel.com>, 
-	Magnus Karlsson <magnus.karlsson@gmail.com>, Maryam Tahhan <mtahhan@redhat.com>, 
-	xdp-hints@xdp-project.net, netdev@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 07/07, Larysa Zaremba wrote:
-> On Thu, Jul 06, 2023 at 10:27:38AM -0700, Stanislav Fomichev wrote:
-> > On Thu, Jul 6, 2023 at 7:15=E2=80=AFAM Larysa Zaremba <larysa.zaremba@i=
-ntel.com> wrote:
-> > >
-> > > On Wed, Jul 05, 2023 at 10:39:35AM -0700, Stanislav Fomichev wrote:
-> > > > On 07/03, Larysa Zaremba wrote:
-> > > > > The easiest way to simulate stripped VLAN tag in veth is to send =
-a packet
-> > > > > from VLAN interface, attached to veth. Unfortunately, this approa=
-ch is
-> > > > > incompatible with AF_XDP on TX side, because VLAN interfaces do n=
-ot have
-> > > > > such feature.
-> > > > >
-> > > > > Replace AF_XDP packet generation with sending the same datagram v=
-ia
-> > > > > AF_INET socket.
-> > > > >
-> > > > > This does not change the packet contents or hints values with one=
- notable
-> > > > > exception: rx_hash_type, which previously was expected to be 0, n=
-ow is
-> > > > > expected be at least XDP_RSS_TYPE_L4.
-> > > > >
-> > > > > Also, usage of AF_INET requires a little more complicated namespa=
-ce setup,
-> > > > > therefore open_netns() helper function is divided into smaller re=
-usable
-> > > > > pieces.
-> > > >
-> > > > Ack, it's probably OK for now, but, FYI, I'm trying to extend this =
-part
-> > > > with TX metadata:
-> > > > https://lore.kernel.org/bpf/20230621170244.1283336-10-sdf@google.co=
-m/
-> > > >
-> > > > So probably long-term I'll switch it back to AF_XDP but will add
-> > > > support for requesting vlan TX "offload" from the veth.
-> > > >
-> > >
-> > > My bad for not reading your series. Amazing work as always!
-> > >
-> > > So, 'requesting vlan TX "offload"' with new hints capabilities? This =
-would be
-> > > pretty neat.
-> > >
-> > > But you think AF_INET TX is worth keeping for now, until TX hints are=
- mature?
-> > >
-> > > > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> > > > > ---
-> > > > >  tools/testing/selftests/bpf/network_helpers.c |  37 +++-
-> > > > >  tools/testing/selftests/bpf/network_helpers.h |   3 +
-> > > > >  .../selftests/bpf/prog_tests/xdp_metadata.c   | 175 +++++++-----=
-------
-> > > > >  3 files changed, 98 insertions(+), 117 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tool=
-s/testing/selftests/bpf/network_helpers.c
-> > > > > index a105c0cd008a..19463230ece5 100644
-> > > > > --- a/tools/testing/selftests/bpf/network_helpers.c
-> > > > > +++ b/tools/testing/selftests/bpf/network_helpers.c
-> > > > > @@ -386,28 +386,51 @@ char *ping_command(int family)
-> > > > >     return "ping";
-> > > > >  }
-> > > > >
-> > > > > +int get_cur_netns(void)
-> > > > > +{
-> > > > > +   int nsfd;
-> > > > > +
-> > > > > +   nsfd =3D open("/proc/self/ns/net", O_RDONLY);
-> > > > > +   ASSERT_GE(nsfd, 0, "open /proc/self/ns/net");
-> > > > > +   return nsfd;
-> > > > > +}
-> > > > > +
-> > > > > +int get_netns(const char *name)
-> > > > > +{
-> > > > > +   char nspath[PATH_MAX];
-> > > > > +   int nsfd;
-> > > > > +
-> > > > > +   snprintf(nspath, sizeof(nspath), "%s/%s", "/var/run/netns", n=
-ame);
-> > > > > +   nsfd =3D open(nspath, O_RDONLY | O_CLOEXEC);
-> > > > > +   ASSERT_GE(nsfd, 0, "open /proc/self/ns/net");
-> > > > > +   return nsfd;
-> > > > > +}
-> > > > > +
-> > > > > +int set_netns(int netns_fd)
-> > > > > +{
-> > > > > +   return setns(netns_fd, CLONE_NEWNET);
-> > > > > +}
-> > > >
-> > > > We have open_netns/close_netns in network_helpers.h that provide si=
-milar
-> > > > functionality, let's use them instead?
-> > > >
-> > >
-> > > I have divided open_netns() into smaller pieces (see below), because =
-the code I
-> > > have added into xdp_metadata looked better with those smaller pieces =
-(I had to
-> > > switch namespace several times).
-> >=20
-> > Forgot to reply to this part. I missed the fact that you're extending
-> > network_helpers, sorry.
-> > But why do we need extra namespaces at all?
->=20
-> If veths are in the same namespace, AF_INET packets are not sent between =
-them,
-> so XDP is skipped. So we need 2 test namespaces: for RX and TX.
+=== Context ===
 
-Makes sense. But let's maybe use the existing helpers to jump to/from
-namespaces?
+In the context of a middlebox, fragmented packets are tricky to handle.
+The full 5-tuple of a packet is often only available in the first
+fragment which makes enforcing consistent policy difficult. There are
+really only two stateless options, neither of which are very nice:
 
-It might be a bit more verbose, but it makes it easy to annotate namespace
-being/end. (compared to random jumping around with setns)
+1. Enforce policy on first fragment and accept all subsequent fragments.
+   This works but may let in certain attacks or allow data exfiltration.
 
-tok =3D open_netns("tx");
-do_something();
-close_netns(tok);
+2. Enforce policy on first fragment and drop all subsequent fragments.
+   This does not really work b/c some protocols may rely on
+   fragmentation. For example, DNS may rely on oversized UDP packets for
+   large responses.
 
-tok =3D open_netns("rx");
-do_something_else();
-close_netns(tok);
+So stateful tracking is the only sane option. RFC 8900 [0] calls this
+out as well in section 6.3:
 
-Should be doable?
+    Middleboxes [...] should process IP fragments in a manner that is
+    consistent with [RFC0791] and [RFC8200]. In many cases, middleboxes
+    must maintain state in order to achieve this goal.
+
+=== BPF related bits ===
+
+Policy has traditionally been enforced from XDP/TC hooks. Both hooks
+run before kernel reassembly facilities. However, with the new
+BPF_PROG_TYPE_NETFILTER, we can rather easily hook into existing
+netfilter reassembly infra.
+
+The basic idea is we bump a refcnt on the netfilter defrag module and
+then run the bpf prog after the defrag module runs. This allows bpf
+progs to transparently see full, reassembled packets. The nice thing
+about this is that progs don't have to carry around logic to detect
+fragments.
+
+=== Changelog ===
+
+Changes from v2:
+
+* module_put() if ->enable() fails
+* Fix CI build errors
+
+Changes from v1:
+
+* Drop bpf_program__attach_netfilter() patches
+* static -> static const where appropriate
+* Fix callback assignment order during registration
+* Only request_module() if callbacks are missing
+* Fix retval when modprobe fails in userspace
+* Fix v6 defrag module name (nf_defrag_ipv6_hooks -> nf_defrag_ipv6)
+* Simplify priority checking code
+* Add warning if module doesn't assign callbacks in the future
+* Take refcnt on module while defrag link is active
+
+
+[0]: https://datatracker.ietf.org/doc/html/rfc8900
+
+
+Daniel Xu (6):
+  netfilter: defrag: Add glue hooks for enabling/disabling defrag
+  netfilter: bpf: Support BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+  netfilter: bpf: Prevent defrag module unload while link active
+  bpf: selftests: Support not connecting client socket
+  bpf: selftests: Support custom type and proto for client sockets
+  bpf: selftests: Add defrag selftests
+
+ include/linux/netfilter.h                     |  15 +
+ include/uapi/linux/bpf.h                      |   5 +
+ net/ipv4/netfilter/nf_defrag_ipv4.c           |  17 +-
+ net/ipv6/netfilter/nf_defrag_ipv6_hooks.c     |  11 +
+ net/netfilter/core.c                          |   6 +
+ net/netfilter/nf_bpf_link.c                   | 150 +++++++++-
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../selftests/bpf/generate_udp_fragments.py   |  90 ++++++
+ .../selftests/bpf/ip_check_defrag_frags.h     |  57 ++++
+ tools/testing/selftests/bpf/network_helpers.c |  26 +-
+ tools/testing/selftests/bpf/network_helpers.h |   3 +
+ .../bpf/prog_tests/ip_check_defrag.c          | 282 ++++++++++++++++++
+ .../selftests/bpf/progs/ip_check_defrag.c     | 104 +++++++
+ 14 files changed, 753 insertions(+), 22 deletions(-)
+ create mode 100755 tools/testing/selftests/bpf/generate_udp_fragments.py
+ create mode 100644 tools/testing/selftests/bpf/ip_check_defrag_frags.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ip_check_defrag.c
+
+-- 
+2.41.0
+
 
