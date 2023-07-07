@@ -1,178 +1,209 @@
-Return-Path: <bpf+bounces-4450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4452-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D13074B56B
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 18:53:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E159774B575
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 18:54:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47B1B2817CF
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:53:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DF7C1C2102D
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:54:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85ED11196;
-	Fri,  7 Jul 2023 16:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EA81119C;
+	Fri,  7 Jul 2023 16:54:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9849AD511
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 16:53:18 +0000 (UTC)
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0C026A0
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 09:53:11 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-66870a96b89so2750500b3a.3
-        for <bpf@vger.kernel.org>; Fri, 07 Jul 2023 09:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1688748791; x=1691340791;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2q8/qxAfJs780ejd6xqOPrO4yijvMPBYqgkTx/lzTcw=;
-        b=O8UmPecXiXz0zygYzf2d4/8hvCqdldGdkXuYbM71gC+Py+Tj+Q35pHzNuJp2azP8cs
-         PaRokKXR6ETTiMRJh4F2+AcpFS1MWcP4DKxaTEpBZh3uZMonvmR1HUcDgbGXc+F1dxUy
-         sAeMz08iFiVyqOMUgF5Nrf48XPvQ8WXOqanl9levQ43dbkEiG+TlM7zkaYdRAGHzpnXR
-         ZIoo22vTYYwzHiRfAsXtLo0OTrzjxF77mSbP2Oygs8dDQuK1osKusCOdgLVspAfjAsgp
-         Jpm7VhV3LDGXh5YmAW1IfFh4AJ3WUpmXzm8pbphsqeBbFdIGhIz3Yw1dRWhhxL5iEKTZ
-         F11w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688748791; x=1691340791;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2q8/qxAfJs780ejd6xqOPrO4yijvMPBYqgkTx/lzTcw=;
-        b=hWWMAWyTC1x7ztiTmMU1GsmRsgcGmc9ke5dTv9o0i+QTMHLftIRKI/vibb6WSGrJTv
-         bRTQvW7hHwFZe26AtjU4bICbkuoST4hkJ1/67vYWHpqGaQHBikR/lE7WlN0Ew7FjHhgO
-         +JBhgB38ICs2WCANavB6zwTqVNp9fJ7mlZTEF3Q0f9yCxSqJVyskFpx52aocoWFUNw0V
-         bxIKfDDemLNlmx0L+RcqPDCDEdCge5KRHL+ljkhthCGHG+fJCdEXkLJ74sPCGTbhRr/+
-         gKSCrkKZVqe5Q0UnrjAd3EQ8hpQnEzEukJ9Fr552VjoW0eqUsPTidXav0SqHGPfFGOUi
-         O+cg==
-X-Gm-Message-State: ABy/qLa/830xCVhwBLcZvZYOVQqv0T1YYGn/Wkh5EqZ4aVqYKV2Nefhq
-	qTj2hrBYj/HEofIVA52CP1RGdmg=
-X-Google-Smtp-Source: APBJJlGEz+37vt3/DBhesdBi7M9Pd/WaAD/cNAuzlwzM5JkqIEz2y2g0In7UV55sePaDDVS2ZGXg+DM=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:2da0:b0:675:70d7:1eb0 with SMTP id
- fb32-20020a056a002da000b0067570d71eb0mr7563533pfb.6.1688748790731; Fri, 07
- Jul 2023 09:53:10 -0700 (PDT)
-Date: Fri, 7 Jul 2023 09:53:08 -0700
-In-Reply-To: <51aa1dd7-86d0-ed08-1142-f229513ad316@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3E4D511
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 16:54:37 +0000 (UTC)
+Received: from sonic314-26.consmr.mail.ne1.yahoo.com (sonic314-26.consmr.mail.ne1.yahoo.com [66.163.189.152])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CE82736
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 09:54:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1688748848; bh=7dUG/tEyuCsnWvgTF+ykPusSsDtzDF4QTHRG8+l4fWM=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=k33JwQsSTksi1u+D4jg0dnnvzQuJoiIQuMELZK73bYM19E5jrrEVHxkKBATJ3CIQy4agP2hErjjpbFK76q7HdCYIMzMFXwxR7fAl1kg39dx1afZXa8eKMkvl9J4gBbWgVUT9ovyjCxIIgtauM7BidhyVu39YfW4acPysfAEXVYvuZl7B3sCiA131t6GRwKBU0juqrfNQMbtFlzBuWxz/ZEvEaCXXZ9tBx8wxwd4WHAQqDikU1cyFjooBiQyDkM3iMsb9y4e8QOgU6U25gxxleIijzzeJbZiiOKHYfAQxY/f70pXWSBHRz3+yS1xQrsrB+5ZRALrb4aTXkI2a4cwxWw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1688748848; bh=tx9k0TN1T8vin8wdHwO2nG4qX/v/r09tkKCH6Un2w5v=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=emeh3ncUq7JgNSue0N0j/Fgm2DlP2UHlUPyz3SHcLXk7/4WXmnygV/tkPu/tzU5Pdhk1HmJ3HhbQvuf3ujiGDlVD+MSsnbUanpaym0EOWXUuOF7lKHQPZNOEovV8mO3Ptziljka2f9Wa3cs3iITZTrxWwEBmFjqX7z1Pv83lss9PkL6FRrn6OPHVkgyUDIpGowNv3zInoCvxakXnwdq31asOYiQ4u+GsrLPNpjVl7FTpHSfqdgObppaIBzwISsVq7C8fiK9pHUJuR7DF1AKM6EJW7T1L38YCdEPKGq73+BF4nvP9IWUYhp+bKOQlMxOJRPoqEXJ9BSVNBFT0LOVvoA==
+X-YMail-OSG: 3cMWPXEVM1ksAsW6ExbAWo3xHajlrtgcL1H_yMZEUdZajHEEbDWayzDJl9unhFx
+ V2I46457HBKjxa8YP9y9f1u7E2dRKrSawhO23vd.M4HcGojwyiRn6BEPRWf97aLuC1mflAnCm6tM
+ WlczvkiigYXMFAWN3M2lpUd3aqyPu8u1pdBLbQsbWZ_zgEO3JXhcbAoVt0hz4_tuLMXFJZwbS5dq
+ Q3lCh_w3aoC4DEytKBscnH5l_D_U5GAQG.hmNekYBnKtlQZN5V0GxmLcvqFBnmMIOaFl1g9oDXGg
+ nOrtwRP61KHzW2nnxz0PVeW1qfevQ76WEKtjmFLMz8qjipv7oAG25p0iv1yqrnF9lzwyWWT8ycbq
+ zcmilJsaDYje5auB6zVrV4YZcmxW0bEkHhOvupWVMZwvzyZKIMxGfofOVldwWz4yoaC1Hn7u72YR
+ JtTz_aWAB6OFYHfjz8Uho0tT5dN2lLbmlS7t8Djh0kcyEZi.IjLlIsVJAvUfGg.TWWZl_95AyaJZ
+ ObS9vycfzaNh0yNu1S1GeUoBkFQ1ep.bQq.OJscU9mjajdkcKE4kM7ZeiaaGrgH6_93_I_RfFj1I
+ pWZ1mwpcWl0k.00tbVj4LFpBqlXg9ebnsDrSo8isUeecWGnetLsbKhXJT2jI5Hw6XgnAWLqo6mSW
+ TOeKXX5ev0XF23DHQCj6tfN9TqAbmrHOXyEqjicTRaCOhQTztTSv3lvVSIxHH1EV0I8R1Q0tNMgF
+ N1GsjrBW6AY6ds5Kgz_gBzPq8mpz.G3QX_lYEUf5hz5vEpvJ3qSnrUpOas_3Ahnnr5s_CWxLWG9V
+ INjKYK4zVW84Me_kGJGqTp1NHHd_8AMvFCm_SktAmH7MddZnt6J6.jW0g11rjp7DSw_CqHNVdxs.
+ efsQ_I6gtbLE6KLDw1s86Ky8WWT8.I6qQQIoBNT1czh8JumJb_Q9ALfGk2cm4FD2x0FVmmMQXYOy
+ 1vptlrjZjD4A9KFEUDi.a2Sij2cUpwT3dDCvPevmhfwB55fYUXW9oBG9p6KLDXWQbpO._S4N25Mo
+ Pa9dIiWCcSqhNZJlCRUFVCfK8ZNxJl.szRY6aYZfQmIOwmdorJQICm2KyjS0PRUxlfzXGHZZNMfO
+ 4_hNr0d1HaRuprP9dz5rdIs8SO8X4FuAOPFBgKX.AG_6ei9y675CSr1dnhjDUWPWjEzwOSR6E31n
+ eHrQM3hqPVOcMl3ILksF3a9poPzgwHE76Kf44UBZMCUNbZZhX7fcLvudutA25XNmxIx4iU8WUwTV
+ 22mVXAZ3KFkOnNuBybve7TeQ82xSbgsC1qszhx4q2.3ygpDXhGRVeB4cuOC7omxDJJl472esmlLK
+ 6OWWOkksKlawCNnw2ZfdSxnzHLNr6fXZw5Fy3hKPBQHjiegdLrb3vOaQWNFfKxeztI1UOMFqAgb1
+ QveMIRWGYJwnd19GzrCkm20G2QQgzCJ5weBGd7TtxJ.RMAl.9mOnnF8z9GmNkZ8M7.Ql4K1zHxCS
+ 5ILM49RYVmo9mEKRR9bQq5P.g3Hl2OjbCRKj0Rkoi23a0FsdA_enxgTUrwZAwg2VVClPLjU9lWw0
+ eGwf9I9yecWmm.hnZ2Nhqc4Dxh7OisHW.GnBhxV7FbVuRDfqOU6G76wKBu9ElqHb62ZtaX0ati1F
+ rwcGJbxMYgttxxvVOYa1Vf01GtMGZF4SDriwYiGdF2UiKU40GXZqHKHzKCkGXYd8vPEXp4b0twqk
+ jj3TUHl6L.5zYYjjGo6b5UVUEMyyFbNSI.2t5XaRmq57Mo9N8mUbFxYZkMa4_eQvJ5isj4rDayPl
+ W82bKlmpH_K3MXQVIlo6uKVnOrXkJDT1LHHLV75zNiSL_CoKoealpTCQRoX89LWDuemeKSKchEtD
+ Z70z9z6TdKdFBCe7520rZCD_9pfY1EVwWzA28celp3YG.y0WmrysXXF9oXrzwU.M8i6LDKpuqT33
+ .OzOUOLKgLmjD4RHP39pFa5uwWJYDLuGr_55ipZLcVUU9UJ1iE6rly3dbQDqyKVkxGgZ7QArEGQQ
+ 6g5LHA8dDXtRjG4z3B7vGht8zmpVxM_H3nJUCpo4VontlqyNDXnN9b5_WllLCj1Sa3T9CM1rOB2d
+ AtkiisZnRZjay67spOW1b2wib6ERZECTBRS.MNbmxRsLcZQd4rh0BoKAU9Nqy7Lt13.mTIbdExOy
+ M8BtBJofjnnuIv21rHyKUwqDktBEXsv9O6ZfaEVPdWLe2f2hwdVJO0MfV7G5g.QmYeUCUUjQjkCo
+ E5WGcnNmqH9xhqf9z2RMo9YzdRv0R.ccKma_5yP3jm4fOO6u2Cx9zYXrQKXzZIojrsNOSJqa8NhA
+ cN5yEA_XMQQ3W
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 8a7232ca-1467-48de-b49b-55042b582814
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.ne1.yahoo.com with HTTP; Fri, 7 Jul 2023 16:54:08 +0000
+Received: by hermes--production-bf1-5d96b4b9f-2ghnc (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 74f4f2705c6e8c4c65d3815b934ef2a1;
+          Fri, 07 Jul 2023 16:54:02 +0000 (UTC)
+Message-ID: <a28c8fce-741b-e088-af5e-8a83daa7e25d@schaufler-ca.com>
+Date: Fri, 7 Jul 2023 09:53:57 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <67bec6a9-af59-d6f9-2630-17280479a1f7@gmail.com>
- <ZKcDdIYOUQuPP5Px@google.com> <51aa1dd7-86d0-ed08-1142-f229513ad316@gmail.com>
-Message-ID: <ZKhC9G5ouGOviSOG@google.com>
-Subject: Re: [PATCH v1] samples/bpf: Fix build out of source tree
-From: Stanislav Fomichev <sdf@google.com>
-To: Anh Tuan Phan <tuananhlfc@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, 
-	linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-	USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v12 1/4] security: Allow all LSMs to provide xattrs for
+ inode_init_security hook
+Content-Language: en-US
+To: Paul Moore <paul@paul-moore.com>,
+ Roberto Sassu <roberto.sassu@huaweicloud.com>, zohar@linux.ibm.com,
+ dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+ stephen.smalley.work@gmail.com, eparis@parisplace.org
+Cc: linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+ linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+ bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org,
+ nicolas.bouchinet@clip-os.org, Roberto Sassu <roberto.sassu@huawei.com>,
+ Casey Schaufler <casey@schaufler-ca.com>
+References: <20230610075738.3273764-2-roberto.sassu@huaweicloud.com>
+ <1c8c612d99e202a61e6a6ecf50d4cace.paul@paul-moore.com>
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <1c8c612d99e202a61e6a6ecf50d4cace.paul@paul-moore.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21638 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 07/07, Anh Tuan Phan wrote:
-> 
-> 
-> On 7/7/23 01:09, Stanislav Fomichev wrote:
-> > On 07/06, Anh Tuan Phan wrote:
-> >> This commit fixes a few compilation issues when building out of source
-> >> tree. The command that I used to build samples/bpf:
-> >>
-> >> export KBUILD_OUTPUT=/tmp
-> >> make V=1 M=samples/bpf
-> >>
-> >> The compilation failed since it tried to find the header files in the
-> >> wrong places between output directory and source tree directory
-> >>
-> >> Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
-> >> ---
-> >>  samples/bpf/Makefile        | 8 ++++----
-> >>  samples/bpf/Makefile.target | 2 +-
-> >>  2 files changed, 5 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> >> index 615f24ebc49c..32469aaa82d5 100644
-> >> --- a/samples/bpf/Makefile
-> >> +++ b/samples/bpf/Makefile
-> >> @@ -341,10 +341,10 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
-> >>  # Override includes for xdp_sample_user.o because $(srctree)/usr/include in
-> >>  # TPROGS_CFLAGS causes conflicts
-> >>  XDP_SAMPLE_CFLAGS += -Wall -O2 \
-> >> -		     -I$(src)/../../tools/include \
-> >> +		     -I$(srctree)/tools/include \
-> > 
-> > [..]
-> > 
-> >>  		     -I$(src)/../../tools/include/uapi \
-> > 
-> > Does this $(src) need to be changed as well?
-> 
-> I think this line doesn't affect the build. I removed it and it still
-> compiles (after "make -C samples/bpf clean"). I guess xdp_sample_user.c
-> doesn't include any file in tools/include/uapi. Am I missing something
-> or should I remove this line?
+On 7/6/2023 6:43 PM, Paul Moore wrote:
+> On Jun 10, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+>> Currently, the LSM infrastructure supports only one LSM providing an xattr
+>> and EVM calculating the HMAC on that xattr, plus other inode metadata.
+>>
+>> Allow all LSMs to provide one or multiple xattrs, by extending the security
+>> blob reservation mechanism. Introduce the new lbs_xattr_count field of the
+>> lsm_blob_sizes structure, so that each LSM can specify how many xattrs it
+>> needs, and the LSM infrastructure knows how many xattr slots it should
+>> allocate.
+>>
+>> Modify the inode_init_security hook definition, by passing the full
+>> xattr array allocated in security_inode_init_security(), and the current
+>> number of xattr slots in that array filled by LSMs. The first parameter
+>> would allow EVM to access and calculate the HMAC on xattrs supplied by
+>> other LSMs, the second to not leave gaps in the xattr array, when an LSM
+>> requested but did not provide xattrs (e.g. if it is not initialized).
+>>
+>> Introduce lsm_get_xattr_slot(), which LSMs can call as many times as the
+>> number specified in the lbs_xattr_count field of the lsm_blob_sizes
+>> structure. During each call, lsm_get_xattr_slot() increments the number of
+>> filled xattrs, so that at the next invocation it returns the next xattr
+>> slot to fill.
+>>
+>> Cleanup security_inode_init_security(). Unify the !initxattrs and
+>> initxattrs case by simply not allocating the new_xattrs array in the
+>> former. Update the documentation to reflect the changes, and fix the
+>> description of the xattr name, as it is not allocated anymore.
+>>
+>> Adapt both SELinux and Smack to use the new definition of the
+>> inode_init_security hook, and to call lsm_get_xattr_slot() to obtain and
+>> fill the reserved slots in the xattr array.
+>>
+>> Move the xattr->name assignment after the xattr->value one, so that it is
+>> done only in case of successful memory allocation.
+>>
+>> Finally, change the default return value of the inode_init_security hook
+>> from zero to -EOPNOTSUPP, so that BPF LSM correctly follows the hook
+>> conventions.
+>>
+>> Reported-by: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
+>> Link: https://lore.kernel.org/linux-integrity/Y1FTSIo+1x+4X0LS@archlinux/
+>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+>> ---
+>>  include/linux/lsm_hook_defs.h |  6 +--
+>>  include/linux/lsm_hooks.h     | 20 ++++++++++
+>>  security/security.c           | 71 +++++++++++++++++++++++------------
+>>  security/selinux/hooks.c      | 17 +++++----
+>>  security/smack/smack_lsm.c    | 25 ++++++------
+>>  5 files changed, 92 insertions(+), 47 deletions(-)
+> Two *very* small suggestions below, but I can make those during the
+> merge if you are okay with that Roberto?
+>
+> I'm also going to assume that Casey is okay with the Smack portion of
+> this patchset?  It looks fine to me, and considering his ACK on the
+> other Smack patch in this patchset I'm assuming he is okay with this
+> one as well ... ?
 
-You might have these headers installed on your system already if
-it compiles without this part. So I'd keep this part but do
-s/src/srctree/ (and remove ../..).
+Yes, please feel free to add my Acked-by as needed.
 
-> > 
-> > 
-> >>  		     -I$(LIBBPF_INCLUDE) \
-> >> -		     -I$(src)/../../tools/testing/selftests/bpf
-> >> +		     -I$(srctree)/tools/testing/selftests/bpf
-> >>
-> >>  $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
-> >>  $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
-> >> @@ -393,7 +393,7 @@ $(obj)/xdp_router_ipv4.bpf.o: $(obj)/xdp_sample.bpf.o
-> >>  $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h
-> >> $(src)/xdp_sample_shared.h
-> >>  	@echo "  CLANG-BPF " $@
-> >>  	$(Q)$(CLANG) -g -O2 -target bpf -D__TARGET_ARCH_$(SRCARCH) \
-> >> -		-Wno-compare-distinct-pointer-types -I$(srctree)/include \
-> >> +		-Wno-compare-distinct-pointer-types -I$(obj) -I$(srctree)/include \
-> >>  		-I$(srctree)/samples/bpf -I$(srctree)/tools/include \
-> >>  		-I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES) \
-> >>  		-c $(filter %.bpf.c,$^) -o $@
-> >> @@ -412,7 +412,7 @@ xdp_router_ipv4.skel.h-deps := xdp_router_ipv4.bpf.o
-> >> xdp_sample.bpf.o
-> >>
-> >>  LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.bpf.c,$(foreach
-> >> skel,$(LINKED_SKELS),$($(skel)-deps)))
-> >>
-> >> -BPF_SRCS_LINKED := $(notdir $(wildcard $(src)/*.bpf.c))
-> >> +BPF_SRCS_LINKED := $(notdir $(wildcard $(srctree)/$(src)/*.bpf.c))
-> >>  BPF_OBJS_LINKED := $(patsubst %.bpf.c,$(obj)/%.bpf.o, $(BPF_SRCS_LINKED))
-> >>  BPF_SKELS_LINKED := $(addprefix $(obj)/,$(LINKED_SKELS))
-> >>
-> >> diff --git a/samples/bpf/Makefile.target b/samples/bpf/Makefile.target
-> >> index 7621f55e2947..86a454cfb080 100644
-> >> --- a/samples/bpf/Makefile.target
-> >> +++ b/samples/bpf/Makefile.target
-> >> @@ -41,7 +41,7 @@ _tprogc_flags   = $(TPROGS_CFLAGS) \
-> >>                   $(TPROGCFLAGS_$(basetarget).o)
-> >>
-> >>  # $(objtree)/$(obj) for including generated headers from checkin source
-> >> files
-> > 
-> > [..]
-> > 
-> >> -ifeq ($(KBUILD_EXTMOD),)
-> >> +ifneq ($(KBUILD_EXTMOD),)
-> > 
-> > This parts seems to be copy-pasted all over the place in its 'ifeq'
-> > form. What is it doing and why is it needed?
-> > 
-> >>  ifdef building_out_of_srctree
-> >>  _tprogc_flags   += -I $(objtree)/$(obj)
-> >>  endif
-> >> -- 
-> >> 2.34.1
+>
+>> diff --git a/security/security.c b/security/security.c
+>> index ee4f1cc4902..d5ef7df1ce4 100644
+>> --- a/security/security.c
+>> +++ b/security/security.c
+>> @@ -1591,11 +1592,15 @@ EXPORT_SYMBOL(security_dentry_create_files_as);
+>>   * created inode and set up the incore security field for the new inode.  This
+>>   * hook is called by the fs code as part of the inode creation transaction and
+>>   * provides for atomic labeling of the inode, unlike the post_create/mkdir/...
+>> - * hooks called by the VFS.  The hook function is expected to allocate the name
+>> - * and value via kmalloc, with the caller being responsible for calling kfree
+>> - * after using them.  If the security module does not use security attributes
+>> - * or does not wish to put a security attribute on this particular inode, then
+>> - * it should return -EOPNOTSUPP to skip this processing.
+>> + * hooks called by the VFS.  The hook function is expected to populate the
+>> + * @xattrs array, by calling lsm_get_xattr_slot() to retrieve the slots
+> I think we want to change "@xattrs array" to just "xattrs array" as
+> there is no function parameter named "xattrs" in the LSM/security_XXX
+> hook itself, just in the 'inode_init_security' hook implementation.
+>
+> I might also break the new text describing the hook implementation
+> into a new paragraph.
+>
+>> + * reserved by the security module with the lbs_xattr_count field of the
+>> + * lsm_blob_sizes structure.  For each slot, the hook function should set ->name
+>> + * to the attribute name suffix (e.g. selinux), to allocate ->value (will be
+>> + * freed by the caller) and set it to the attribute value, to set ->value_len to
+>> + * the length of the value.  If the security module does not use security
+>> + * attributes or does not wish to put a security attribute on this particular
+>> + * inode, then it should return -EOPNOTSUPP to skip this processing.
+>>   *
+>>   * Return: Returns 0 on success, -EOPNOTSUPP if no security attribute is
+>>   * needed, or -ENOMEM on memory allocation failure.
+>> @@ -1604,33 +1609,51 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
+>>  				 const struct qstr *qstr,
+>>  				 const initxattrs initxattrs, void *fs_data)
+>>  {
+>> -	struct xattr new_xattrs[MAX_LSM_EVM_XATTR + 1];
+>> -	struct xattr *lsm_xattr, *evm_xattr, *xattr;
+>> -	int ret;
+>> +	struct security_hook_list *P;
+> The above comments were nitpicky, this one is even more so ...
+> convention within security/security.c is to call the
+> security_hook_list pointer "hp", not "P" (although I recognize P is
+> used in the macro).
+>
+>> +	struct xattr *new_xattrs = NULL;
+>> +	int ret = -EOPNOTSUPP, xattr_count = 0;
+> --
+> paul-moore.com
 
