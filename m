@@ -1,178 +1,279 @@
-Return-Path: <bpf+bounces-4433-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4434-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 007AB74B321
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:35:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B649974B32F
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:42:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C4272817E8
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 14:35:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E30551C20FE8
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 14:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B8DC2E0;
-	Fri,  7 Jul 2023 14:35:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7B8C8C8;
+	Fri,  7 Jul 2023 14:42:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DEA31FA7
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 14:35:12 +0000 (UTC)
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260841FE5
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 07:35:10 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5703cb4bcb4so24936687b3.3
-        for <bpf@vger.kernel.org>; Fri, 07 Jul 2023 07:35:10 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 128C5C123
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 14:42:44 +0000 (UTC)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAC31FE0;
+	Fri,  7 Jul 2023 07:42:42 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b703d7ed3aso31949611fa.1;
+        Fri, 07 Jul 2023 07:42:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1688740509; x=1691332509;
+        d=gmail.com; s=20221208; t=1688740961; x=1691332961;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i3byNldQYPIXJHmP2gWtnYb97CCpo9o+8rBL4rOGmYI=;
-        b=O+sNIMFB87eFKv59KzF3dXdq0akAoOhXxAYsi4up1srWeaMLB3uPvj4RXV1KolJ7J1
-         SJ8TnlN6tOOt5IxKn6+QSbfvdVUP2pEx0kK+QtCM3hyO948Vq6sgwkHQfwTpwjkHp8OI
-         kTOW/kHq3hukeFIKa8rciOZa7Z1EmENtgr7Z4zERYBUzd/rkYE+S0pgRgQdPolxeZIbI
-         ZHjpsm+KzGotamfgtTJPCujYCr4NajLOq11slLTWRC5Wr6wUjlj/r1pNurMweaD5lahD
-         ScwzDxMszuEdmarj8a/iONZ4WrhqT5HzAq2Q8YKzk0lW25NyBriZB/GkNnOJwPkdfHVF
-         y86g==
+        bh=0gz0zDS9xLELEnZkRE5nA4ZFSmOliq1henpF9telWdQ=;
+        b=YwYyyCeRG4Jz/IHnToTa1SexCRc8DZlFSOKOJlgWoW02knsIyaUqcBPRmTDf+Q6Ij/
+         Vw6vPAcj3K5sQy5LjlZulNdxgCko415o2cvpSfjXHTrS1uT3KD4temrr9XL1ZeEY1HKL
+         xcE628E6gsumnl8eoUjyeEb4cP3kqQ34J83iFt0omHhBPFU/sNUmR7piC/n8t4/e85u/
+         v1uZR6uD2YjylQNtcRFJQkKBl0NaNz7a+V4XUXa8+pew3tVcdqAKq3TpBdOAMOk05cG3
+         wygcSVIGS9WWn5AZGU9VKAuOn1Dr1j9TgHN4htn5wadC+MyclD2C0OWw2J0EESuvXzBi
+         Es/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688740509; x=1691332509;
+        d=1e100.net; s=20221208; t=1688740961; x=1691332961;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i3byNldQYPIXJHmP2gWtnYb97CCpo9o+8rBL4rOGmYI=;
-        b=aLYiNORim4NWHe/2nAOqMwl8STmhIgVzlxYWhqwJwHYqm1oqHbV85wuwkqN4qlRyK9
-         5WxQmIi49LcBAJ7v+8YOYXBa1b3OxqJAc4IT7BDxoTo4Za1/YcLoss1YBrmTn2OYVAU9
-         XzSUFV7ukzxplnTh7c8bGgQhADd2alXW9WKF4uLSMXaTqBA1a1zUCw26amFMcyJJqtn3
-         37usr3sHC3pXREEWlPWJa9Y4TWGkiXmJezGNyU3PYlYueKg3RDWsbsMlXWUpcdMteFzv
-         6n8duZelKfiMPeu3GCeOYYULnb/u8p206XcNX1IBULkXk15GRzSdGrNf8wKcVBFsUFbU
-         4wwQ==
-X-Gm-Message-State: ABy/qLZioKHx69txhy8IdNGOpgqwNssh3/HsigcsOBaxoe/6e9Vy73gS
-	T0WbtgD58tzralYipvjwkOFbmbIMfmCyRXkR1sHc
-X-Google-Smtp-Source: APBJJlECD+Fxdi9BNOzrpj5Usym5F7Y7TYpZF1e7TZ1QWeJ63Ak8CgJ0g21u5oIhLC4SE/PlJ7VT/jXb2Tha32fhQ6Q=
-X-Received: by 2002:a5b:40d:0:b0:c12:29ac:1d3b with SMTP id
- m13-20020a5b040d000000b00c1229ac1d3bmr4758615ybp.11.1688740509290; Fri, 07
- Jul 2023 07:35:09 -0700 (PDT)
+        bh=0gz0zDS9xLELEnZkRE5nA4ZFSmOliq1henpF9telWdQ=;
+        b=ODaohfPzqcVN3LCVlC3wQZZeZdcMj2qTQWpdp9jq99anPBE32sywb3SKVo/QZVKrqD
+         To0m7XTT+whN3jbAO313fNjafxNl/3wjBjOEs+4W5PKQ9iFhPhWwjj1NP1cDMD+NAQFJ
+         4izwj7Qh19MEwAGZxS7OJvNG1fjxT5dTz6sVLK4VGuy6FgiD4sjp2Cdf10A5P8qh/h8y
+         glMNv4KxWKHXLbT6aIwjDk86g925JGlpL48SbiN2L9YcD7LR1e8NZP++q8kTBFOwPGwh
+         8lU69hWYL3Vo1h+fTnEsbIEFG/nBAmcUJyHdE9ikWDgHyCJVUSUX2XmZV0qp8FU1wW95
+         GAPg==
+X-Gm-Message-State: ABy/qLaualSnSaOM8fleVSKgEyvrUTKkttXGLMCJRPxXFw55Z8r8AvtE
+	qYcPfydl8IVMUtmvzk5n07PWf/08wZ+nc148nZGzmvRk4wY=
+X-Google-Smtp-Source: APBJJlH7yc4YkJQaJn32oMDaXxvhFj69UYcvN4XSDSJ1sxykTAef3GhFxBmitZww73g++NclMpJeXZusC0/M/GFV/Uc=
+X-Received: by 2002:a2e:3206:0:b0:2b6:e159:2c3e with SMTP id
+ y6-20020a2e3206000000b002b6e1592c3emr4127764ljy.33.1688740960554; Fri, 07 Jul
+ 2023 07:42:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230610075738.3273764-2-roberto.sassu@huaweicloud.com>
- <1c8c612d99e202a61e6a6ecf50d4cace.paul@paul-moore.com> <8fd08063bc6b4325b9785052d02da9f2@huawei.com>
-In-Reply-To: <8fd08063bc6b4325b9785052d02da9f2@huawei.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 7 Jul 2023 10:34:58 -0400
-Message-ID: <CAHC9VhQGWWQgA9DBpq+q4XQerbN0SXAB8RG94G8uMD0-J968xA@mail.gmail.com>
-Subject: Re: [PATCH v12 1/4] security: Allow all LSMs to provide xattrs for
- inode_init_security hook
-To: Roberto Sassu <roberto.sassu@huawei.com>
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, 
-	"zohar@linux.ibm.com" <zohar@linux.ibm.com>, 
-	"dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>, "jmorris@namei.org" <jmorris@namei.org>, 
-	"serge@hallyn.com" <serge@hallyn.com>, 
-	"stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>, 
-	"eparis@parisplace.org" <eparis@parisplace.org>, "casey@schaufler-ca.com" <casey@schaufler-ca.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>, 
-	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>, 
-	"selinux@vger.kernel.org" <selinux@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"kpsingh@kernel.org" <kpsingh@kernel.org>, "keescook@chromium.org" <keescook@chromium.org>, 
-	"nicolas.bouchinet@clip-os.org" <nicolas.bouchinet@clip-os.org>
+References: <20230703105745.1314475-1-tero.kristo@linux.intel.com>
+ <20230703105745.1314475-2-tero.kristo@linux.intel.com> <CAADnVQL2Tn+2rP0hVB3kdB0At12qVu+vJ_WbJzrkxqOJ5va2vQ@mail.gmail.com>
+ <64a64e46b7d5b_b20ce208de@john.notmuch> <4b874e4c-4ad3-590d-3885-b4a3b894524e@linux.intel.com>
+ <CAADnVQK0rzHWxxx7LMFSTuBx18A+6H6AEkKFHNDkPwbPUbsk4Q@mail.gmail.com>
+ <64a7a597b1e9e_dddea208db@john.notmuch> <6b0c67e9-e806-200c-3af4-cfdd2e5c47d3@linux.intel.com>
+In-Reply-To: <6b0c67e9-e806-200c-3af4-cfdd2e5c47d3@linux.intel.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 7 Jul 2023 07:42:29 -0700
+Message-ID: <CAADnVQ+bsKuio_wNQV-sk-ZHbS-+z686BLs5_5u7Uybbt5GU=Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] x86/tsc: Add new BPF helper call bpf_rdtsc
+To: Tero Kristo <tero.kristo@linux.intel.com>
+Cc: John Fastabend <john.fastabend@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Ingo Molnar <mingo@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jul 7, 2023 at 2:49=E2=80=AFAM Roberto Sassu <roberto.sassu@huawei.=
-com> wrote:
-> > From: Paul Moore [mailto:paul@paul-moore.com]
-> > Sent: Friday, July 7, 2023 3:44 AM
-> > On Jun 10, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
-> > >
-> > > Currently, the LSM infrastructure supports only one LSM providing an =
-xattr
-> > > and EVM calculating the HMAC on that xattr, plus other inode metadata=
-.
-> > >
-> > > Allow all LSMs to provide one or multiple xattrs, by extending the se=
-curity
-> > > blob reservation mechanism. Introduce the new lbs_xattr_count field o=
-f the
-> > > lsm_blob_sizes structure, so that each LSM can specify how many xattr=
-s it
-> > > needs, and the LSM infrastructure knows how many xattr slots it shoul=
-d
-> > > allocate.
-> > >
-> > > Modify the inode_init_security hook definition, by passing the full
-> > > xattr array allocated in security_inode_init_security(), and the curr=
-ent
-> > > number of xattr slots in that array filled by LSMs. The first paramet=
-er
-> > > would allow EVM to access and calculate the HMAC on xattrs supplied b=
-y
-> > > other LSMs, the second to not leave gaps in the xattr array, when an =
-LSM
-> > > requested but did not provide xattrs (e.g. if it is not initialized).
-> > >
-> > > Introduce lsm_get_xattr_slot(), which LSMs can call as many times as =
+On Fri, Jul 7, 2023 at 1:28=E2=80=AFAM Tero Kristo <tero.kristo@linux.intel=
+.com> wrote:
+>
+>
+> On 07/07/2023 08:41, John Fastabend wrote:
+> > Alexei Starovoitov wrote:
+> >> On Thu, Jul 6, 2023 at 4:59=E2=80=AFAM Tero Kristo <tero.kristo@linux.=
+intel.com> wrote:
+> >>>
+> >>> On 06/07/2023 08:16, John Fastabend wrote:
+> >>>> Alexei Starovoitov wrote:
+> >>>>> On Mon, Jul 3, 2023 at 3:58=E2=80=AFAM Tero Kristo <tero.kristo@lin=
+ux.intel.com> wrote:
+> >>>>>> Currently the raw TSC counter can be read within kernel via rdtsc_=
+ordered()
+> >>>>>> and friends, and additionally even userspace has access to it via =
 the
-> > > number specified in the lbs_xattr_count field of the lsm_blob_sizes
-> > > structure. During each call, lsm_get_xattr_slot() increments the numb=
-er of
-> > > filled xattrs, so that at the next invocation it returns the next xat=
-tr
-> > > slot to fill.
-> > >
-> > > Cleanup security_inode_init_security(). Unify the !initxattrs and
-> > > initxattrs case by simply not allocating the new_xattrs array in the
-> > > former. Update the documentation to reflect the changes, and fix the
-> > > description of the xattr name, as it is not allocated anymore.
-> > >
-> > > Adapt both SELinux and Smack to use the new definition of the
-> > > inode_init_security hook, and to call lsm_get_xattr_slot() to obtain =
-and
-> > > fill the reserved slots in the xattr array.
-> > >
-> > > Move the xattr->name assignment after the xattr->value one, so that i=
-t is
-> > > done only in case of successful memory allocation.
-> > >
-> > > Finally, change the default return value of the inode_init_security h=
-ook
-> > > from zero to -EOPNOTSUPP, so that BPF LSM correctly follows the hook
-> > > conventions.
-> > >
-> > > Reported-by: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
-> > > Link: https://lore.kernel.org/linux-integrity/Y1FTSIo+1x+4X0LS@archli=
-nux/
-> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > ---
-> > >  include/linux/lsm_hook_defs.h |  6 +--
-> > >  include/linux/lsm_hooks.h     | 20 ++++++++++
-> > >  security/security.c           | 71 +++++++++++++++++++++++----------=
---
-> > >  security/selinux/hooks.c      | 17 +++++----
-> > >  security/smack/smack_lsm.c    | 25 ++++++------
-> > >  5 files changed, 92 insertions(+), 47 deletions(-)
+> >>>>>> RDTSC assembly instruction. BPF programs on the other hand don't h=
+ave
+> >>>>>> direct access to the TSC counter, but alternatively must go throug=
+h the
+> >>>>>> performance subsystem (bpf_perf_event_read), which only provides r=
+elative
+> >>>>>> value compared to the start point of the program, and is also much=
+ slower
+> >>>>>> than the direct read. Add a new BPF helper definition for bpf_rdts=
+c() which
+> >>>>>> can be used for any accurate profiling needs.
+> >>>>>>
+> >>>>>> A use-case for the new API is for example wakeup latency tracing v=
+ia
+> >>>>>> eBPF on Intel architecture, where it is extremely beneficial to be=
+ able
+> >>>>>> to get raw TSC timestamps and compare these directly to the value
+> >>>>>> programmed to the MSR_IA32_TSC_DEADLINE register. This way a direc=
+t
+> >>>>>> latency value from the hardware interrupt to the execution of the
+> >>>>>> interrupt handler can be calculated. Having the functionality with=
+in
+> >>>>>> eBPF also has added benefits of allowing to filter any other relev=
+ant
+> >>>>>> data like C-state residency values, and also to drop any irrelevan=
+t
+> >>>>>> data points directly in the kernel context, without passing all th=
+e
+> >>>>>> data to userspace for post-processing.
+> >>>>>>
+> >>>>>> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
+> >>>>>> ---
+> >>>>>>    arch/x86/include/asm/msr.h |  1 +
+> >>>>>>    arch/x86/kernel/tsc.c      | 23 +++++++++++++++++++++++
+> >>>>>>    2 files changed, 24 insertions(+)
+> >>>>>>
+> >>>>>> diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr=
+.h
+> >>>>>> index 65ec1965cd28..3dde673cb563 100644
+> >>>>>> --- a/arch/x86/include/asm/msr.h
+> >>>>>> +++ b/arch/x86/include/asm/msr.h
+> >>>>>> @@ -309,6 +309,7 @@ struct msr *msrs_alloc(void);
+> >>>>>>    void msrs_free(struct msr *msrs);
+> >>>>>>    int msr_set_bit(u32 msr, u8 bit);
+> >>>>>>    int msr_clear_bit(u32 msr, u8 bit);
+> >>>>>> +u64 bpf_rdtsc(void);
+> >>>>>>
+> >>>>>>    #ifdef CONFIG_SMP
+> >>>>>>    int rdmsr_on_cpu(unsigned int cpu, u32 msr_no, u32 *l, u32 *h);
+> >>>>>> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> >>>>>> index 344698852146..ded857abef81 100644
+> >>>>>> --- a/arch/x86/kernel/tsc.c
+> >>>>>> +++ b/arch/x86/kernel/tsc.c
+> >>>>>> @@ -15,6 +15,8 @@
+> >>>>>>    #include <linux/timex.h>
+> >>>>>>    #include <linux/static_key.h>
+> >>>>>>    #include <linux/static_call.h>
+> >>>>>> +#include <linux/btf.h>
+> >>>>>> +#include <linux/btf_ids.h>
+> >>>>>>
+> >>>>>>    #include <asm/hpet.h>
+> >>>>>>    #include <asm/timer.h>
+> >>>>>> @@ -29,6 +31,7 @@
+> >>>>>>    #include <asm/intel-family.h>
+> >>>>>>    #include <asm/i8259.h>
+> >>>>>>    #include <asm/uv/uv.h>
+> >>>>>> +#include <asm/tlbflush.h>
+> >>>>>>
+> >>>>>>    unsigned int __read_mostly cpu_khz;    /* TSC clocks / usec, no=
+t used here */
+> >>>>>>    EXPORT_SYMBOL(cpu_khz);
+> >>>>>> @@ -1551,6 +1554,24 @@ void __init tsc_early_init(void)
+> >>>>>>           tsc_enable_sched_clock();
+> >>>>>>    }
+> >>>>>>
+> >>>>>> +u64 bpf_rdtsc(void)
+> >>>>>> +{
+> >>>>>> +       /* Check if Time Stamp is enabled only in ring 0 */
+> >>>>>> +       if (cr4_read_shadow() & X86_CR4_TSD)
+> >>>>>> +               return 0;
+> >>>>> Why check this? It's always enabled in the kernel, no?
+> >>> It is always enabled, but there are certain syscalls that can be used=
+ to
+> >>> disable the TSC access for oneself. prctl(PR_SET_TSC, ...) and
+> >>> seccomp(SET_MODE_STRICT,...). Not having the check in place would in
+> >>> theory allow a restricted BPF program to circumvent this (if there ev=
+er
+> >>> was such a thing.) But yes, I do agree this part is a bit debatable
+> >>> whether it should be there at all.
+> >> What do you mean 'circumvent' ?
+> >> It's a tracing bpf prog running in the kernel loaded by root
+> >> and reading tsc for the purpose of the kernel.
+> >> There is no unprivileged access to tsc here.
+> This was based on some discussions with the security team at Intel, I
+> don't pretend to know anything about security myself. But I can drop the
+> check. It is probably not needed because of the fact that it is already
+> possible to read the TSC counter with the approach I mention in the
+> cover letter; via perf and bpf_core_read().
+> >>
+> >>>>>> +
+> >>>>>> +       return rdtsc_ordered();
+> >>>>> Why _ordered? Why not just rdtsc ?
+> >>>>> Especially since you want to trace latency. Extra lfence will ruin
+> >>>>> the measurements.
+> >>>>>
+> >>>> If we used it as a fast way to order events on multiple CPUs I
+> >>>> guess we need the lfence? We use ktime_get_ns() now for things
+> >>>> like this when we just need an order counter. We have also
+> >>>> observed time going backwards with this and have heuristics
+> >>>> to correct it but its rare.
+> >>> Yeah, I think it is better to induce some extra latency instead of
+> >>> having some weird ordering issues with the timestamps.
+> >> lfence is not 'some extra latency'.
+> >> I suspect rdtsc_ordered() will be slower than bpf_ktime_get_ns().
+> >> What's the point of using it then?
+> > I would only use it if its faster then bpf_ktime_get_ns() and
+> > have already figured out how to handle rare unordered events
+> > so I think its OK to relax somewhat strict ordering.
+>
+> I believe that on x86-arch using bpf_ktime_get_ns() also ends up calling
+> rdtsc_odered() under the hood.
+>
+> I just did some measurements on an Intel(R) Xeon(R) Platinum 8360Y CPU @
+> 2.40GHz, with a simple BPF code:
+>
+>          t1 =3D bpf_ktime_get_ns();
+>
+>          for (i =3D 0; i < NUM_CYC; i++) {
+>                  bpf_rdtsc(); // or bpf_ktime_get_ns() here
+>          }
+>
+>          t2 =3D bpf_ktime_get_ns();
+>
+> The results I got with the CPU locked at 2.4GHz (average execution times
+> per a call within the loop, this with some 10M executions):
+>
+> bpf_rdtsc() ordered : 45ns
+>
+> bpf_rdtsc() un-ordered : 23ns
+>
+> bpf_ktime_get_ns() : 49ns
+
+Thanks for crunching the numbers.
+Based on them it's hard to justify adding the ordered variant.
+We already have ktime_get_ns, ktime_get_boot_ns, ktime_get_coarse_ns,
+ktime_get_tai_ns with pretty close performance and different time
+constraints. rdtsc_ordered doesn't bring anything new to the table.
+bpf_rdtsc() would be justified if it's significantly faster
+than traditional ktime*() helpers.
+
+> Locking the CPU at 800MHz the results are:
+>
+> bpf_rdtsc() ordered : 55ns
+>
+> bpf_rdtsc() un-ordered : 33ns
+>
+> bpf_ktime_get_ns() : 71ns
+>
+> The bpf_rdtsc() in these results contains some extra latency caused by
+> conditional execution, I added a flag to the call to select whether it
+> should use _ordered() or not, and it also still contains the CR4_TSD
+> check in place.
+>
+> -Tero
+>
 > >
-> > Two *very* small suggestions below, but I can make those during the
-> > merge if you are okay with that Roberto?
->
-> Hi Paul
->
-> yes, sure, I'm ok with them. Please make them during the merge.
-
-Great, I'll queue this up for merging once the merge window closes.
-I'll send confirmation once it's done but just a heads-up that things
-might be a little delayed next week.
-
---=20
-paul-moore.com
+> >>> Also, things like the ftrace also use rdtsc_ordered() as its underlyi=
+ng
+> >>> clock, if you use x86-tsc as the trace clock (see
+> >>> arch/x86/kernel/trace_clock.c.)
+> >>>
+> >>> -Tero
+> >>>
+> >
 
