@@ -1,203 +1,163 @@
-Return-Path: <bpf+bounces-4399-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4400-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4227974A9F7
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 06:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD5DC74A9F9
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 06:38:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 730F11C20F46
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 04:35:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED9211C20EAE
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 04:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DBAC1FAB;
-	Fri,  7 Jul 2023 04:35:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF9B1FCA;
+	Fri,  7 Jul 2023 04:37:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF59DEA0
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 04:35:16 +0000 (UTC)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0CF19BD
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 21:35:15 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fbfcc6dae4so4903075e9.0
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 21:35:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688704513; x=1691296513;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tnRGX2uydckPD7cWET5sOosQgY0NC4dhCPwN5CpvWVo=;
-        b=UUL61yCZq9K5L2rsQAOs+IVEiXVabHHSYDNhFyTJpNjdmlMu0UPtM92saggyg2m9DU
-         vEJo6yVrEw+maNDeiU2DhJ+tyRHeV0ayD0BNudqi54ezlr33pGdU7ThRZBjPLN3+p3Hd
-         dd0FLectUVILJAlGsHncki3qWnAhtlPJcxDsAlVqAtRtQdVSPrG47oZFKEg3QtKR4lLr
-         wffj8u+V0f1DADQPLG3m9KiRoVU0vQengXv7bDMRyIvA1ensHVDO2onOwwXrLbOlDlqU
-         GvqSyRtO3N2Y8epXqwELVKyWakgATrnzCuj/2CrZkQv03KPjzxsx80bWJBUkrXsxCzSY
-         0BMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688704513; x=1691296513;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tnRGX2uydckPD7cWET5sOosQgY0NC4dhCPwN5CpvWVo=;
-        b=JTRYxkBTfSztQkoWJb+9LnVyIU8fUTSgNNiwAISlNERH6nMjJPatEonJltmOA0m/U+
-         sqni3Z4p8UbTOkHyAZpd313+8CMPdkEaBxOpKJq8KFrYg2CBtw13AVKh33OsIuVlHYRB
-         pjV3ElVrC8ybNsTyefkhrtTXQFJgOEBLcYTBrouTAc+MMWQYZO20Cw9rwNQFLp4OeqMA
-         sZW4FwbROZxO/Gd6C9YgS4N2rc5l7dYgEuWDcMWj4jqUaIPS8VzTWyRkVXg1WRuLJ05X
-         eqfK+JMSSSUsY0+k2ez6+GL8wZjKpHP/n+lYTDR4phVrfXufE8aIsAa+3+WsP3FWYVaY
-         gzbQ==
-X-Gm-Message-State: ABy/qLZ9+aZXgUjbb9Oql70ndT9LU+tomadZet/Fsb3Rd0axT4moRizA
-	UY1gkQYDiJRSxKco43UEtuSGQYc22dE2lSVs4h4=
-X-Google-Smtp-Source: APBJJlEdHqQu8eDLLkkwuddP3UhZv9djcf1o4y0X46ZoM+JbEMUfqgShlOzw7BU/oHF1NWMdfjty2FWhL6vsBT20pk0=
-X-Received: by 2002:a7b:c3cf:0:b0:3fa:e92e:7a7b with SMTP id
- t15-20020a7bc3cf000000b003fae92e7a7bmr3076490wmj.15.1688704513361; Thu, 06
- Jul 2023 21:35:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27161EA0;
+	Fri,  7 Jul 2023 04:37:45 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124C41BD2;
+	Thu,  6 Jul 2023 21:37:44 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Qy0xZ06Ggz4f3khH;
+	Fri,  7 Jul 2023 12:37:38 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgCH8iyQlqdkl4WvMg--.65529S2;
+	Fri, 07 Jul 2023 12:37:40 +0800 (CST)
+Subject: Re: [PATCH v4 bpf-next 09/14] bpf: Allow reuse from
+ waiting_for_gp_ttrace list.
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Tejun Heo <tj@kernel.org>, rcu@vger.kernel.org,
+ Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+ Kernel Team <kernel-team@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, David Vernet <void@manifault.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>
+References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
+ <20230706033447.54696-10-alexei.starovoitov@gmail.com>
+ <fe733a7b-3775-947a-23c0-0dadacabdca2@huaweicloud.com>
+ <CAADnVQJ3mNnzKEohRhYfAhBtB6R2Gh9dHAyqSJ5BU5ke+NTVuw@mail.gmail.com>
+ <4e0765b7-9054-a33d-8b1e-c986df353848@huaweicloud.com>
+ <CAADnVQJhrbTtuBfexE6NPA6q=cdh1vVxfVQ73ZR2u8ZZWRb+wA@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <224322d6-28d3-f3b7-fcac-463e5329a082@huaweicloud.com>
+Date: Fri, 7 Jul 2023 12:37:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-21-jolsa@kernel.org>
-In-Reply-To: <20230630083344.984305-21-jolsa@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 6 Jul 2023 21:35:01 -0700
-Message-ID: <CAEf4BzZktv97EtRnRGOhPoaJaSwdQjeNAT_BAciKmShWGX5YGg@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 20/26] selftests/bpf: Add uprobe_multi test program
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAADnVQJhrbTtuBfexE6NPA6q=cdh1vVxfVQ73ZR2u8ZZWRb+wA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgCH8iyQlqdkl4WvMg--.65529S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw1UCF4ruF4DurWxAw15twb_yoW5XF15pF
+	WrCF98WF1UAF4Sy3Wvqr48Gws2vrsIy347tay5GFnakr15W3s0qFW7Kry5CFn5Cws7Aasx
+	tryq9a4xJF1Yv3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 30, 2023 at 1:37=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding uprobe_multi test program that defines 50k uprobe_multi_func_*
-> functions and will serve as attach point for uprobe_multi bench test
-> in following patch.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/testing/selftests/bpf/Makefile       |  5 ++
->  tools/testing/selftests/bpf/uprobe_multi.c | 53 ++++++++++++++++++++++
->  2 files changed, 58 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/uprobe_multi.c
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index ad6b585e0d7c..acf7c9a29082 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -567,6 +567,7 @@ TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_read $(OUT=
-PUT)/bpf_testmod.ko      \
->                        $(OUTPUT)/liburandom_read.so                     \
->                        $(OUTPUT)/xdp_synproxy                           \
->                        $(OUTPUT)/sign-file                              \
-> +                      $(OUTPUT)/uprobe_multi                           \
+Hi,
 
-would adding all this to urandom_read be too bad in terms of size and
-performance? I'm just not sure we won't yet more custom binaries and
-rules in Makefile
+On 7/7/2023 12:16 PM, Alexei Starovoitov wrote:
+> On Thu, Jul 6, 2023 at 8:39 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Hi,
+>>
+>> On 7/7/2023 10:12 AM, Alexei Starovoitov wrote:
+>>> On Thu, Jul 6, 2023 at 7:07 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>> Hi,
+>>>>
+>>>> On 7/6/2023 11:34 AM, Alexei Starovoitov wrote:
+>>>>
+SNIP
+>>> and it's not just waiting_for_gp_ttrace. free_by_rcu_ttrace is similar.
+>> I think free_by_rcu_ttrace is different, because the reuse is only
+>> possible after one tasks trace RCU grace period as shown below, and the
+>> concurrent llist_del_first() must have been completed when the head is
+>> reused and re-added into free_by_rcu_ttrace again.
+>>
+>> // c0->free_by_rcu_ttrace
+>> A -> B -> C -> nil
+>>
+>> P1:
+>> alloc_bulk()
+>>     llist_del_first(&c->free_by_rcu_ttrace)
+>>         entry = A
+>>         next = B
+>>
+>> P2:
+>> do_call_rcu_ttrace()
+>>     // c->free_by_rcu_ttrace->first = NULL
+>>     llist_del_all(&c->free_by_rcu_ttrace)
+>>         move to c->waiting_for_gp_ttrace
+>>
+>> P1:
+>> llist_del_first()
+>>     return NULL
+>>
+>> // A is only reusable after one task trace RCU grace
+>> // llist_del_first() must have been completed
+> "must have been completed" ?
+>
+> I guess you're assuming that alloc_bulk() from irq_work
+> is running within rcu_tasks_trace critical section,
+> so __free_rcu_tasks_trace() callback will execute after
+> irq work completed?
+> I don't think that's the case.
 
->                        ima_setup.sh                                     \
->                        verify_sig_setup.sh                              \
->                        $(wildcard progs/btf_dump_test_case_*.c)         \
-> @@ -670,6 +671,10 @@ $(OUTPUT)/veristat: $(OUTPUT)/veristat.o
->         $(call msg,BINARY,,$@)
->         $(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o =
-$@
+Yes. The following is my original thoughts. Correct me if I was wrong:
+
+1. llist_del_first() must be running concurrently with llist_del_all().
+If llist_del_first() runs after llist_del_all(), it will return NULL
+directly.
+2. call_rcu_tasks_trace() must happen after llist_del_all(), else the
+elements in free_by_rcu_ttrace will not be freed back to slab.
+3. call_rcu_tasks_trace() will wait for one tasks trace RCU grace period
+to call __free_rcu_tasks_trace()
+4. llist_del_first() in running in an context with irq-disabled, so the
+tasks trace RCU grace period will wait for the end of llist_del_first()
+
+It seems you thought step 4) is not true, right ?
+> In vCPU P1 is stopped for looong time by host,
+> P2 can execute __free_rcu_tasks_trace (or P3, since
+> tasks trace callbacks execute in a kthread that is not bound
+> to any cpu).
+> __free_rcu_tasks_trace() will free it into slab.
+> Then kmalloc the same obj and eventually put it back into
+> free_by_rcu_ttrace.
 >
-> +$(OUTPUT)/uprobe_multi: uprobe_multi.c
-> +       $(call msg,BINARY,,$@)
-> +       $(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
-> +
->  EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)=
- \
->         prog_tests/tests.h map_tests/tests.h verifier/tests.h           \
->         feature bpftool                                                 \
-> diff --git a/tools/testing/selftests/bpf/uprobe_multi.c b/tools/testing/s=
-elftests/bpf/uprobe_multi.c
-> new file mode 100644
-> index 000000000000..115a7f6cebfa
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/uprobe_multi.c
-> @@ -0,0 +1,53 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <stdio.h>
-> +
-> +#define __PASTE(a, b) a##b
-> +#define PASTE(a, b) __PASTE(a, b)
-> +
-> +#define NAME(name, idx) PASTE(name, idx)
-> +
-> +#define DEF(name, idx)  int NAME(name, idx)(void) { return 0; }
-> +#define CALL(name, idx) NAME(name, idx)();
-> +
-> +#define F(body, name, idx) body(name, idx)
-> +
-> +#define F10(body, name, idx) \
-> +       F(body, PASTE(name, idx), 0) F(body, PASTE(name, idx), 1) F(body,=
- PASTE(name, idx), 2) \
-> +       F(body, PASTE(name, idx), 3) F(body, PASTE(name, idx), 4) F(body,=
- PASTE(name, idx), 5) \
-> +       F(body, PASTE(name, idx), 6) F(body, PASTE(name, idx), 7) F(body,=
- PASTE(name, idx), 8) \
-> +       F(body, PASTE(name, idx), 9)
-> +
-> +#define F100(body, name, idx) \
-> +       F10(body, PASTE(name, idx), 0) F10(body, PASTE(name, idx), 1) F10=
-(body, PASTE(name, idx), 2) \
-> +       F10(body, PASTE(name, idx), 3) F10(body, PASTE(name, idx), 4) F10=
-(body, PASTE(name, idx), 5) \
-> +       F10(body, PASTE(name, idx), 6) F10(body, PASTE(name, idx), 7) F10=
-(body, PASTE(name, idx), 8) \
-> +       F10(body, PASTE(name, idx), 9)
-> +
-> +#define F1000(body, name, idx) \
-> +       F100(body, PASTE(name, idx), 0) F100(body, PASTE(name, idx), 1) F=
-100(body, PASTE(name, idx), 2) \
-> +       F100(body, PASTE(name, idx), 3) F100(body, PASTE(name, idx), 4) F=
-100(body, PASTE(name, idx), 5) \
-> +       F100(body, PASTE(name, idx), 6) F100(body, PASTE(name, idx), 7) F=
-100(body, PASTE(name, idx), 8) \
-> +       F100(body, PASTE(name, idx), 9)
-> +
-> +#define F10000(body, name, idx) \
-> +       F1000(body, PASTE(name, idx), 0) F1000(body, PASTE(name, idx), 1)=
- F1000(body, PASTE(name, idx), 2) \
-> +       F1000(body, PASTE(name, idx), 3) F1000(body, PASTE(name, idx), 4)=
- F1000(body, PASTE(name, idx), 5) \
-> +       F1000(body, PASTE(name, idx), 6) F1000(body, PASTE(name, idx), 7)=
- F1000(body, PASTE(name, idx), 8) \
-> +       F1000(body, PASTE(name, idx), 9)
-> +
-> +F10000(DEF, uprobe_multi_func_, 0)
-> +F10000(DEF, uprobe_multi_func_, 1)
-> +F10000(DEF, uprobe_multi_func_, 2)
-> +F10000(DEF, uprobe_multi_func_, 3)
-> +F10000(DEF, uprobe_multi_func_, 4)
-> +
-> +int main(void)
-> +{
-> +       F10000(CALL, uprobe_multi_func_, 0)
-> +       F10000(CALL, uprobe_multi_func_, 1)
-> +       F10000(CALL, uprobe_multi_func_, 2)
-> +       F10000(CALL, uprobe_multi_func_, 3)
-> +       F10000(CALL, uprobe_multi_func_, 4)
-> +       return 0;
-> +}
-> --
-> 2.41.0
+> Since you believe that waiting_for_gp_ttrace ABA is possible
+> here it's the same probability. imo both lower than a bit flip due
+> to cosmic rays which is actually observable in practice.
 >
+>> __free_rcu_tasks_trace
+>>     free_all(llist_del_all(&c->waiting_for_gp_ttrace))
+>>
+>>
+> .
+
 
