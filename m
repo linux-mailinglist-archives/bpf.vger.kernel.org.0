@@ -1,51 +1,50 @@
-Return-Path: <bpf+bounces-4431-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4432-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3B1B74B2DA
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:12:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5363B74B2F3
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:17:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D279B1C21001
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 14:12:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EF1B2817A3
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 14:17:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE1CD50B;
-	Fri,  7 Jul 2023 14:12:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE9AD518;
+	Fri,  7 Jul 2023 14:17:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB10C135
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 14:12:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E90D7C433C7;
-	Fri,  7 Jul 2023 14:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7473BD2F7
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 14:17:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A61B6C433C7;
+	Fri,  7 Jul 2023 14:17:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688739141;
-	bh=xKI4tJjFwB2inCEEimsopT5TgiFdgHAOO7kacDEX0Zo=;
+	s=k20201202; t=1688739461;
+	bh=74TZJ8DeE44QYRS49fC72fWhJ1prqaoZEaYSRbQGNqs=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=F0IdHISGjGsWRx49yYNiXBaeszm77RxZs94VsAK1AjPyUQt7kYJ43l7l1XQIC6cw4
-	 F/N+9Jt6YLXBOcqaiEIU4wQOhEssDB8HLzOb4TeBD8AZKYDco8m8tDQqwf0tuZj7Ob
-	 aMF6QUip7T+DfTIlrBkQEmIoeArHXnBOhyeT9MH7X2WPPALZLbUR+CW4o07pQg8cYm
-	 YvDQApfh0vMoGCuq3olqv6uKf+EJ69ra5/4uKCpR9WT0SVq20rGQY6UJ6+InHznhZw
-	 jXP1LK2FEqUnT3plEtSo5vEsk8dd797RVC/wypoGsNcgTdoVKAHeZ4HHjdgmomLzSd
-	 UXD4/N60w5IkQ==
-Date: Fri, 7 Jul 2023 23:12:14 +0900
+	b=R/zk6E3JYbftUInhMFoZYTLJTS9Ver38FrAGJYGDLg48/1nqGS/SziwjqaI0uQ8mF
+	 9uLLO7Cp94P6wOdloklj2Y/7wrSRJt7CEE0DXPQ2KSBBrbXG+mYq6wLslX/vTfI+1W
+	 pgq6NN6xNIFIcguJ639U3T/ObwuslPK5zEjXdlTFPNrJMc+jdRCDoMCiT4GP4oMufr
+	 x6Cim/0DLMaOFwwTK3vOt8fmQO3/TnbVISve1eyccMtkGCkMoKGsy5ufum64rvMcyu
+	 0KyIrk7yPq+zWMhYfRTNEs5ovJGutkCRmo8w8bkGnE8D5Q8BUg4Vq2a/jG8QT6c535
+	 LnQlVdhJcw2rA==
+Date: Fri, 7 Jul 2023 23:17:30 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Donglin Peng <pengdonglin@sangfor.com.cn>
-Cc: linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
  Florent Revest <revest@chromium.org>, Mark Rutland <mark.rutland@arm.com>,
  Will Deacon <will@kernel.org>, Mathieu Desnoyers
  <mathieu.desnoyers@efficios.com>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>,
- linux-trace-kernel@vger.kernel.org, Ding Hui <dinghui@sangfor.com.cn>,
- huangcun@sangfor.com.cn
-Subject: Re: [PATCH v13 09/12] tracing/probes: Add BTF retval type support
-Message-Id: <20230707231214.2787a24ac36d41f7edc5e94a@kernel.org>
-In-Reply-To: <cb07ac16-cc0f-7e8d-6271-cde2e02e739d@sangfor.com.cn>
-References: <168507466597.913472.10572827237387849017.stgit@mhiramat.roam.corp.google.com>
-	<168507476195.913472.16290308831790216609.stgit@mhiramat.roam.corp.google.com>
-	<cb07ac16-cc0f-7e8d-6271-cde2e02e739d@sangfor.com.cn>
+ bpf@vger.kernel.org
+Subject: Re: [PATCH v11 02/11] tracing/probes: Add fprobe events for tracing
+ function entry and exit.
+Message-Id: <20230707231730.7e2d176d729718a9ba51255a@kernel.org>
+In-Reply-To: <20230608165234.0c00c146@gandalf.local.home>
+References: <168432112492.1351929.9265172785506392923.stgit@mhiramat.roam.corp.google.com>
+	<168432114441.1351929.4695419422051966931.stgit@mhiramat.roam.corp.google.com>
+	<20230608165234.0c00c146@gandalf.local.home>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -56,185 +55,73 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 12 Jun 2023 15:29:00 +0800
-Donglin Peng <pengdonglin@sangfor.com.cn> wrote:
+On Thu, 8 Jun 2023 16:52:34 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On 2023/5/26 12:19, Masami Hiramatsu (Google) wrote:
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Check the target function has non-void retval type and set the correct
-> > fetch type if user doesn't specify it.
-> > If the function returns void, $retval is rejected as below;
-> > 
-> >   # echo 'f unregister_kprobes%return $retval' >> dynamic_events
-> > sh: write error: No such file or directory
-> >   # cat error_log
-> > [   37.488397] trace_fprobe: error: This function returns 'void' type
-> >    Command: f unregister_kprobes%return $retval
-> >                                         ^
-> > 
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > ---
-> > Changes in v8:
-> >   - Fix wrong indentation.
-> > Changes in v7:
-> >   - Introduce this as a new patch.
-> > ---
-> >   kernel/trace/trace_probe.c |   69 ++++++++++++++++++++++++++++++++++++++++----
-> >   kernel/trace/trace_probe.h |    1 +
-> >   2 files changed, 63 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-> > index 7318642aceb3..dfe3e1823eec 100644
-> > --- a/kernel/trace/trace_probe.c
-> > +++ b/kernel/trace/trace_probe.c
-> > @@ -371,15 +371,13 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
-> >   	return NULL;
-> >   }
-> >   
-> > -static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
-> > -						   bool tracepoint)
-> > +static const struct btf_type *find_btf_func_proto(const char *funcname)
-> >   {
-> >   	struct btf *btf = traceprobe_get_btf();
-> > -	const struct btf_param *param;
-> >   	const struct btf_type *t;
-> >   	s32 id;
-> >   
-> > -	if (!btf || !funcname || !nr)
-> > +	if (!btf || !funcname)
-> >   		return ERR_PTR(-EINVAL);
-> >   
-> >   	id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
-> > @@ -396,6 +394,22 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
-> >   	if (!btf_type_is_func_proto(t))
-> >   		return ERR_PTR(-ENOENT);
-> >   
-> > +	return t;
-> > +}
-> > +
-> > +static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
-> > +						   bool tracepoint)
-> > +{
-> > +	const struct btf_param *param;
-> > +	const struct btf_type *t;
-> > +
-> > +	if (!funcname || !nr)
-> > +		return ERR_PTR(-EINVAL);
-> > +
-> > +	t = find_btf_func_proto(funcname);
-> > +	if (IS_ERR(t))
-> > +		return (const struct btf_param *)t;
-> > +
-> >   	*nr = btf_type_vlen(t);
-> >   	param = (const struct btf_param *)(t + 1);
-> >   
-> > @@ -462,6 +476,32 @@ static const struct fetch_type *parse_btf_arg_type(int arg_idx,
-> >   	return find_fetch_type(typestr, ctx->flags);
-> >   }
-> >   
-> > +static const struct fetch_type *parse_btf_retval_type(
-> > +					struct traceprobe_parse_context *ctx)
-> > +{
+> On Wed, 17 May 2023 19:59:04 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 > 
-> Can we make this a common interface so that the funcgraph-retval can
->   also use it to get the return type?
+> > Add fprobe events for tracing function entry and exit instead of kprobe
+> > events. With this change, we can continue to trace function entry/exit
+> > even if the CONFIG_KPROBES_ON_FTRACE is not available. Since
+> > CONFIG_KPROBES_ON_FTRACE requires the CONFIG_DYNAMIC_FTRACE_WITH_REGS,
+> > it is not available if the architecture only supports
+> > CONFIG_DYNAMIC_FTRACE_WITH_ARGS. And that means kprobe events can not
+> > probe function entry/exit effectively on such architecture.
+> > But this can be solved if the dynamic events supports fprobe events.
+> > 
+> > The fprobe event is a new dynamic events which is only for the function
+> > (symbol) entry and exit. This event accepts non register fetch arguments
+> > so that user can trace the function arguments and return values.
+> > 
+> > The fprobe events syntax is here;
+> > 
+> >  f[:[GRP/][EVENT]] FUNCTION [FETCHARGS]
+> >  f[MAXACTIVE][:[GRP/][EVENT]] FUNCTION%return [FETCHARGS]
+> 
+> I finally got around to look at these (I know you already queued them), but
+> looking at the above, the "%return" is redundant.
+> 
+> > 
+> > E.g.
+> > 
+> >  # echo 'f vfs_read $arg1'  >> dynamic_events
+> >  # echo 'f vfs_read%return $retval'  >> dynamic_events
+> >  # cat dynamic_events
+> >  f:fprobes/vfs_read__entry vfs_read arg1=$arg1
+> >  f:fprobes/vfs_read__exit vfs_read%return arg1=$retval
+> 
+> Can't we just have:
+> 
+>   f:fprobes/vfs_read__entry vfs_read arg1=$arg1
+>   f:fprobes/vfs_read__exit vfs_read arg1=$retval
+> 
+> Where if "$retval" is specified, it automatically becomes a return? If
+> anything else is specified, it errors out. That is, if $retval is
+> specified, it becomes a return probe, as a return probe can only have
+> $retval. If anything else is specified, it errors out if $retval is also
+> specified.
 
-It is possible to expose BTF part as an independent file so that
-other ftrace tracers reuse it.
-But you might need to store the result for each function somewhere
-in the kernel. Would you have any idea?
+Hmm, current implementation design doesn't allow that.
+It parses the 'place' and 'args' sequencially because what 'args' is
+available depends on the place.
+
+> 
+> Now if it's a void function, and you just want to make it a return then we
+> can have your:
+> 
+>   f:fprobes/vfs_read__exit vfs_read%return
+> 
+> Thoughts?
+
+But this sounds useful. Let me try to scan the argument to find $retval.
 
 Thank you,
 
 > 
-> -- Donglin Peng
+> -- Steve
 > 
-> > +	struct btf *btf = traceprobe_get_btf();
-> > +	const char *typestr = NULL;
-> > +	const struct btf_type *t;
-> > +
-> > +	if (btf && ctx->funcname) {
-> > +		t = find_btf_func_proto(ctx->funcname);
-> > +		if (!IS_ERR(t))
-> > +			typestr = type_from_btf_id(btf, t->type);
-> > +	}
-> > +
-> > +	return find_fetch_type(typestr, ctx->flags);
-> > +}
-> > +
-> > +static bool is_btf_retval_void(const char *funcname)
-> > +{
-> > +	const struct btf_type *t;
-> > +
-> > +	t = find_btf_func_proto(funcname);
-> > +	if (IS_ERR(t))
-> > +		return false;
-> > +
-> > +	return t->type == 0;
-> > +}
-> >   #else
-> >   static struct btf *traceprobe_get_btf(void)
-> >   {
-> > @@ -480,8 +520,15 @@ static int parse_btf_arg(const char *varname, struct fetch_insn *code,
-> >   	trace_probe_log_err(ctx->offset, NOSUP_BTFARG);
-> >   	return -EOPNOTSUPP;
-> >   }
-> > +
-> >   #define parse_btf_arg_type(idx, ctx)		\
-> >   	find_fetch_type(NULL, ctx->flags)
-> > +
-> > +#define parse_btf_retval_type(ctx)		\
-> > +	find_fetch_type(NULL, ctx->flags)
-> > +
-> > +#define is_btf_retval_void(funcname)	(false)
-> > +
-> >   #endif
-> >   
-> >   #define PARAM_MAX_STACK (THREAD_SIZE / sizeof(unsigned long))
-> > @@ -512,6 +559,11 @@ static int parse_probe_vars(char *arg, const struct fetch_type *t,
-> >   
-> >   	if (strcmp(arg, "retval") == 0) {
-> >   		if (ctx->flags & TPARG_FL_RETURN) {
-> > +			if ((ctx->flags & TPARG_FL_KERNEL) &&
-> > +			    is_btf_retval_void(ctx->funcname)) {
-> > +				err = TP_ERR_NO_RETVAL;
-> > +				goto inval;
-> > +			}
-> >   			code->op = FETCH_OP_RETVAL;
-> >   			return 0;
-> >   		}
-> > @@ -912,9 +964,12 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
-> >   		goto fail;
-> >   
-> >   	/* Update storing type if BTF is available */
-> > -	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) &&
-> > -	    !t && code->op == FETCH_OP_ARG)
-> > -		parg->type = parse_btf_arg_type(code->param, ctx);
-> > +	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) && !t) {
-> > +		if (code->op == FETCH_OP_ARG)
-> > +			parg->type = parse_btf_arg_type(code->param, ctx);
-> > +		else if (code->op == FETCH_OP_RETVAL)
-> > +			parg->type = parse_btf_retval_type(ctx);
-> > +	}
-> >   
-> >   	ret = -EINVAL;
-> >   	/* Store operation */
-> > diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-> > index c864e6dea10f..eb43bea5c168 100644
-> > --- a/kernel/trace/trace_probe.h
-> > +++ b/kernel/trace/trace_probe.h
-> > @@ -449,6 +449,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
-> >   	C(BAD_EVENT_NAME,	"Event name must follow the same rules as C identifiers"), \
-> >   	C(EVENT_EXIST,		"Given group/event name is already used by another event"), \
-> >   	C(RETVAL_ON_PROBE,	"$retval is not available on probe"),	\
-> > +	C(NO_RETVAL,		"This function returns 'void' type"),	\
-> >   	C(BAD_STACK_NUM,	"Invalid stack number"),		\
-> >   	C(BAD_ARG_NUM,		"Invalid argument number"),		\
-> >   	C(BAD_VAR,		"Invalid $-valiable specified"),	\
-> > 
-> > 
-> > 
+> 
 > 
 
 
