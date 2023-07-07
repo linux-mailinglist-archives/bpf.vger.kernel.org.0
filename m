@@ -1,163 +1,206 @@
-Return-Path: <bpf+bounces-4400-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD5DC74A9F9
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 06:38:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D0D874A9FA
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 06:38:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED9211C20EAE
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 04:38:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43AA8281660
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 04:38:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF9B1FCA;
-	Fri,  7 Jul 2023 04:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A291FB2;
+	Fri,  7 Jul 2023 04:38:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27161EA0;
-	Fri,  7 Jul 2023 04:37:45 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124C41BD2;
-	Thu,  6 Jul 2023 21:37:44 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Qy0xZ06Ggz4f3khH;
-	Fri,  7 Jul 2023 12:37:38 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgCH8iyQlqdkl4WvMg--.65529S2;
-	Fri, 07 Jul 2023 12:37:40 +0800 (CST)
-Subject: Re: [PATCH v4 bpf-next 09/14] bpf: Allow reuse from
- waiting_for_gp_ttrace list.
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, rcu@vger.kernel.org,
- Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- Kernel Team <kernel-team@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, David Vernet <void@manifault.com>,
- "Paul E. McKenney" <paulmck@kernel.org>
-References: <20230706033447.54696-1-alexei.starovoitov@gmail.com>
- <20230706033447.54696-10-alexei.starovoitov@gmail.com>
- <fe733a7b-3775-947a-23c0-0dadacabdca2@huaweicloud.com>
- <CAADnVQJ3mNnzKEohRhYfAhBtB6R2Gh9dHAyqSJ5BU5ke+NTVuw@mail.gmail.com>
- <4e0765b7-9054-a33d-8b1e-c986df353848@huaweicloud.com>
- <CAADnVQJhrbTtuBfexE6NPA6q=cdh1vVxfVQ73ZR2u8ZZWRb+wA@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <224322d6-28d3-f3b7-fcac-463e5329a082@huaweicloud.com>
-Date: Fri, 7 Jul 2023 12:37:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF72E1847
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 04:38:36 +0000 (UTC)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6474B1BD2
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 21:38:34 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso2175011e87.0
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 21:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688704712; x=1691296712;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f882D05rjydvaIuWjMhcG3iPCcr6sZXqYG9o5EUosC0=;
+        b=K4m3CgXgJBEWc4qGGTDgMZ1TllQSBzbz6T18SqWoKm0Lo/Bv1E1k9ZFOliykmKWoIa
+         wcQ4/9YpwzxKdcIUq6e69oICwb/1an1fWQhZwP2H0ymq9VYFC9xziqdLXq+AtVXgzPkz
+         D+8HuFnk3XXcjtC2LmWas+uTEA4eJomvBeXLUF4xqbiaSA1w4k/iUTbbJmgEW7f42sbz
+         oTw7aYt48drmwn9tow3UcKUvW2i+vKZ+thL1NBMsU6598zEk0bdoQfinkLWRFrYhx9AH
+         gB9oCwE8Tg/JyeUOiagGyj6b9PDRql0eDsh9Mn6kSTRsgDpGsM3nL0cT5RXec7SwLSlt
+         6sgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688704712; x=1691296712;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f882D05rjydvaIuWjMhcG3iPCcr6sZXqYG9o5EUosC0=;
+        b=V0sL+lZbruvT+1S8ukm6fWmLMAOGhX3U8rYTYchkXgGAy9IMeU0O8VnzLwkdLK7oS/
+         ztLtM8SarQsmhOQjRD71cW4/D1ouTjzSG5LS/hTeLi+d1QBTNaJ8RsRQQ2MlgozDeWYy
+         AxobLIghdryxZa1xTmMCkAyaYb/5NLb9a+C3oRaKtw95L1Scr79YN4HrBsaea8pgO4E+
+         vLM5g4Ct3N0awGVJazy6wk3ucjZw8EGEnFkxgA8DnLJUP0geHnpCbyuVt+OjbGxNXI7P
+         4REE+/gxMBUUgiievYfYTuyRrN75Nfe8KySWj63MilXDG1NGnNzmQKfvspqJeOC1FcAm
+         Zpwg==
+X-Gm-Message-State: ABy/qLYNEnfHuCz16IOz3Rgf3sAIM7cH47YRZyh8pfRPXZRko7ejg28N
+	16jwObC2qOBcfFDUxB9IutYMQfqlk/3JnApjnvo=
+X-Google-Smtp-Source: APBJJlEcMlFvp/qurCVSS3KUjDyJRT/JdteOOgILDP37zF5gufhIGgm1wSAKxaGW94TwKvNZV8SM69i0Shw4lTcUDYE=
+X-Received: by 2002:a19:e059:0:b0:4fb:8bad:1cdf with SMTP id
+ g25-20020a19e059000000b004fb8bad1cdfmr2815355lfj.42.1688704712485; Thu, 06
+ Jul 2023 21:38:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJhrbTtuBfexE6NPA6q=cdh1vVxfVQ73ZR2u8ZZWRb+wA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgCH8iyQlqdkl4WvMg--.65529S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw1UCF4ruF4DurWxAw15twb_yoW5XF15pF
-	WrCF98WF1UAF4Sy3Wvqr48Gws2vrsIy347tay5GFnakr15W3s0qFW7Kry5CFn5Cws7Aasx
-	tryq9a4xJF1Yv3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-22-jolsa@kernel.org>
+In-Reply-To: <20230630083344.984305-22-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 6 Jul 2023 21:38:20 -0700
+Message-ID: <CAEf4BzYrKXWskLfHY+FOLWjNMvm_ujvmHVB6ai8zrMevFXEg2Q@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 21/26] selftests/bpf: Add uprobe_multi bench test
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
-
-On 7/7/2023 12:16 PM, Alexei Starovoitov wrote:
-> On Thu, Jul 6, 2023 at 8:39 PM Hou Tao <houtao@huaweicloud.com> wrote:
->> Hi,
->>
->> On 7/7/2023 10:12 AM, Alexei Starovoitov wrote:
->>> On Thu, Jul 6, 2023 at 7:07 PM Hou Tao <houtao@huaweicloud.com> wrote:
->>>> Hi,
->>>>
->>>> On 7/6/2023 11:34 AM, Alexei Starovoitov wrote:
->>>>
-SNIP
->>> and it's not just waiting_for_gp_ttrace. free_by_rcu_ttrace is similar.
->> I think free_by_rcu_ttrace is different, because the reuse is only
->> possible after one tasks trace RCU grace period as shown below, and the
->> concurrent llist_del_first() must have been completed when the head is
->> reused and re-added into free_by_rcu_ttrace again.
->>
->> // c0->free_by_rcu_ttrace
->> A -> B -> C -> nil
->>
->> P1:
->> alloc_bulk()
->>     llist_del_first(&c->free_by_rcu_ttrace)
->>         entry = A
->>         next = B
->>
->> P2:
->> do_call_rcu_ttrace()
->>     // c->free_by_rcu_ttrace->first = NULL
->>     llist_del_all(&c->free_by_rcu_ttrace)
->>         move to c->waiting_for_gp_ttrace
->>
->> P1:
->> llist_del_first()
->>     return NULL
->>
->> // A is only reusable after one task trace RCU grace
->> // llist_del_first() must have been completed
-> "must have been completed" ?
+On Fri, Jun 30, 2023 at 1:38=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> I guess you're assuming that alloc_bulk() from irq_work
-> is running within rcu_tasks_trace critical section,
-> so __free_rcu_tasks_trace() callback will execute after
-> irq work completed?
-> I don't think that's the case.
-
-Yes. The following is my original thoughts. Correct me if I was wrong:
-
-1. llist_del_first() must be running concurrently with llist_del_all().
-If llist_del_first() runs after llist_del_all(), it will return NULL
-directly.
-2. call_rcu_tasks_trace() must happen after llist_del_all(), else the
-elements in free_by_rcu_ttrace will not be freed back to slab.
-3. call_rcu_tasks_trace() will wait for one tasks trace RCU grace period
-to call __free_rcu_tasks_trace()
-4. llist_del_first() in running in an context with irq-disabled, so the
-tasks trace RCU grace period will wait for the end of llist_del_first()
-
-It seems you thought step 4) is not true, right ?
-> In vCPU P1 is stopped for looong time by host,
-> P2 can execute __free_rcu_tasks_trace (or P3, since
-> tasks trace callbacks execute in a kthread that is not bound
-> to any cpu).
-> __free_rcu_tasks_trace() will free it into slab.
-> Then kmalloc the same obj and eventually put it back into
-> free_by_rcu_ttrace.
+> Adding test that attaches 50k uprobes in uprobe_multi binary.
 >
-> Since you believe that waiting_for_gp_ttrace ABA is possible
-> here it's the same probability. imo both lower than a bit flip due
-> to cosmic rays which is actually observable in practice.
+> After the attach is done we run the binary and make sure we
+> get proper amount of hits.
 >
->> __free_rcu_tasks_trace
->>     free_all(llist_del_all(&c->waiting_for_gp_ttrace))
->>
->>
-> .
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  .../bpf/prog_tests/uprobe_multi_test.c        | 56 +++++++++++++++++++
+>  .../selftests/bpf/progs/uprobe_multi.c        |  9 +++
+>  2 files changed, 65 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b=
+/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> index fd858636b8b0..547d46965d70 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> @@ -202,6 +202,60 @@ static void test_link_api(void)
+>         free(offsets);
+>  }
+>
+> +static inline __u64 get_time_ns(void)
+> +{
+> +       struct timespec t;
+> +
+> +       clock_gettime(CLOCK_MONOTONIC, &t);
+> +       return (__u64) t.tv_sec * 1000000000 + t.tv_nsec;
+> +}
+> +
 
+hmm.. I would expect we have this helper somewhere in common headers.
+If not, we should probably move all such helpers into one header and
+use it everywhere
+
+> +static void test_bench_attach_uprobe(void)
+> +{
+> +       long attach_start_ns, attach_end_ns;
+> +       long detach_start_ns, detach_end_ns;
+> +       double attach_delta, detach_delta;
+> +       struct uprobe_multi *skel =3D NULL;
+> +       struct bpf_program *prog;
+> +       int err;
+> +
+> +       skel =3D uprobe_multi__open();
+> +       if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
+> +               goto cleanup;
+> +
+> +       bpf_object__for_each_program(prog, skel->obj)
+> +               bpf_program__set_autoload(prog, false);
+> +
+> +       bpf_program__set_autoload(skel->progs.test_uprobe_bench, true);
+
+I don't get why you bothered adding this test_uprobe_bench into
+progs/uprobe_multi and go through this manual auto-load
+setting/resetting, instead of just having test_uprobe_bench in a
+separate skeleton?...
+
+> +
+> +       err =3D uprobe_multi__load(skel);
+> +       if (!ASSERT_EQ(err, 0, "uprobe_multi__load"))
+> +               goto cleanup;
+> +
+> +       attach_start_ns =3D get_time_ns();
+> +
+> +       err =3D uprobe_multi__attach(skel);
+> +       if (!ASSERT_OK(err, "uprobe_multi__attach"))
+> +               goto cleanup;
+> +
+> +       attach_end_ns =3D get_time_ns();
+> +
+> +       system("./uprobe_multi");
+> +
+> +       ASSERT_EQ(skel->bss->count, 50000, "uprobes_count");
+> +
+> +cleanup:
+> +       detach_start_ns =3D get_time_ns();
+> +       uprobe_multi__destroy(skel);
+> +       detach_end_ns =3D get_time_ns();
+> +
+> +       attach_delta =3D (attach_end_ns - attach_start_ns) / 1000000000.0=
+;
+> +       detach_delta =3D (detach_end_ns - detach_start_ns) / 1000000000.0=
+;
+> +
+> +       printf("%s: attached in %7.3lfs\n", __func__, attach_delta);
+> +       printf("%s: detached in %7.3lfs\n", __func__, detach_delta);
+
+and for us lazy folks, what are the numbers you see on your machine?
+
+> +}
+> +
+>  void test_uprobe_multi_test(void)
+>  {
+>         if (test__start_subtest("skel_api"))
+> @@ -212,4 +266,6 @@ void test_uprobe_multi_test(void)
+>                 test_attach_api_syms();
+>         if (test__start_subtest("link_api"))
+>                 test_link_api();
+> +       if (test__start_subtest("bench_uprobe"))
+> +               test_bench_attach_uprobe();
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/tes=
+ting/selftests/bpf/progs/uprobe_multi.c
+> index 1eeb9b7b9cad..cd73139dc881 100644
+> --- a/tools/testing/selftests/bpf/progs/uprobe_multi.c
+> +++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
+> @@ -89,3 +89,12 @@ int test_uretprobe_sleep(struct pt_regs *ctx)
+>         uprobe_multi_check(ctx, true, true);
+>         return 0;
+>  }
+> +
+> +int count;
+> +
+> +SEC("?uprobe.multi/./uprobe_multi:uprobe_multi_func_*")
+> +int test_uprobe_bench(struct pt_regs *ctx)
+> +{
+> +       count++;
+> +       return 0;
+> +}
+> --
+> 2.41.0
+>
 
