@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-4447-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4448-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92FE774B564
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 18:53:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B2F474B567
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 18:53:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C45D81C21015
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:53:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 065602813FC
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD99171C3;
-	Fri,  7 Jul 2023 16:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 934A7171C5;
+	Fri,  7 Jul 2023 16:51:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78EA7171BF
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 16:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670541096D
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 16:51:26 +0000 (UTC)
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF37210C;
-	Fri,  7 Jul 2023 09:51:17 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B220B26A2;
+	Fri,  7 Jul 2023 09:51:21 -0700 (PDT)
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.west.internal (Postfix) with ESMTP id 917CA32001C6;
-	Fri,  7 Jul 2023 12:51:15 -0400 (EDT)
+	by mailout.west.internal (Postfix) with ESMTP id 79831320077A;
+	Fri,  7 Jul 2023 12:51:19 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 07 Jul 2023 12:51:17 -0400
+  by compute4.internal (MEProxy); Fri, 07 Jul 2023 12:51:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm1; t=1688748675; x=
-	1688835075; bh=C5gTyD3ZK69kBeMGtv3ULDgMyW30wlIrQqdN4DdpOCA=; b=5
-	ylpP1mihx5lXocGkIaxYB+bGqJJHwKqe7lrUm0DM3dz0325bRPnGOlrMbrjunV+j
-	kRxmY6oIcKVm7XJxLfpkMDJ4cw3TgLPkRzHA7K7/E+jUUqKVle/1azUQCm/JsW7n
-	ngTwgXCnjMZfBjc/Io1G0s3v7f5fcd4MPB3vfAmc35vTDUGwK4twBynQ7+aanMSn
-	xVG7UfE9hdJjuaTGw0Sqn8WVeslJm+YDJUyORKnh7isop8wMnR0goCL6AZGXZN6n
-	IrAaA9eL5mGgbOeAc7dcjRH3HXrYe+e6kzysFPXz5EJJKreNwjM+d3FGu9Yk1a5h
-	Zg0RmhbsRiouBSozbxt+A==
+	:reply-to:sender:subject:subject:to:to; s=fm1; t=1688748678; x=
+	1688835078; bh=jCzr01pZ2u8uI49LnXSVMw7KSVSfUH7qENNmnpv8K+w=; b=N
+	M9a/fHU+sAtF01f0VlLA1ct1vLKtuK1DtAXRcznpcMttlNBGHix89tgucxwMEMZl
+	EwkiUDo32GzO8cTr9M216skbVJzIu5v7U1UsYFIl256sf+ZnAd18IXArSivKosCa
+	bvCRvByOFSty205mbTCTiwFXYblJH2slsu63diVLvMLaxniEWs1lXtJedz32OKXa
+	PZnivKemQdzBgEqZLde5n1a9ykuTDE946kRpupm68SguuxSEIWXxmeZf3mibXaTT
+	/Fy/yYPRDYC0PvX6gORsiSo+At/vZYH4Bo1TRKXXbzZZqw0J/2EQ2dk+8LkV+GCi
+	3sQx8C1mF2jmA+EYOS7uw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1688748675; x=
-	1688835075; bh=C5gTyD3ZK69kBeMGtv3ULDgMyW30wlIrQqdN4DdpOCA=; b=H
-	nXsQ06F1OlTkwF5knu1BATNQ2EvkjoaKmw7+FWGTZaUl1DqI2ZgN7+pDrAdYYR+u
-	OL1FNP+KwKrFY/s2/s8e+2sfUsWV8HsVllYWRLlTf9BUNyL4jDpOXgG/9uJMZQ/2
-	ZGzbcVhe2CB8Tm0sbkoLQslU5BsdPMiXSxFoU/xXPkcm0rEMYlGiWRnVohFmVBeZ
-	jXiaRkO3B4PJFf0WqmQDZimKae4HSvTKRkqPUVKCo86A+XhR3p4R+QpjNhJ0Hj7g
-	d357PowSsyokFHbgk9gEQDIEz3PetLyQaNcmCdF9gwIQ0B68K4vfYfSeWEmbCdxj
-	kkLZWpsa9yY4HChSAM6Zw==
-X-ME-Sender: <xms:gkKoZEYneUahfLF2Hv90tCSaIEi6ZJCQfvISDpMEd_9WTvoZXhHqCQ>
-    <xme:gkKoZPa4XAt-kxvpdFL4MPi137F_Ct0bnsJYDGfelNU9igRWe7VFJXNmGO2oq-SUd
-    OaJE4NxxUaQIZYJNw>
-X-ME-Received: <xmr:gkKoZO8c0PL85TAB02eBsGG1z7_WeNfdeWxn7B4m4tSQERTT_1pacH_DKofNLS6PhBOPiKKA_KsY-qGs0yifIGSVXWV7zIVknZRdIhV85QI>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1688748678; x=
+	1688835078; bh=jCzr01pZ2u8uI49LnXSVMw7KSVSfUH7qENNmnpv8K+w=; b=f
+	63JbEt1Z/WFGq5pHpihxYFUxsgZ7hYJac912GHOms1yYCPPneN73Jg+BurgeCgJ4
+	lduOjYvznUehElM6s3LKphW0QicrXDNhlT+4vd8O6EzxW0TAJliMpLYqJ8LlDW5K
+	ANiaR5fI+9oirJCiQHA1v8nCiptbVzwJRVW1WNnQ37COxSbvoRHv1KldZiozFWTf
+	XPmQRPRBQtA3lmoQCsY5E12RMtnICWNo5pG/MYwJNSiizWVyPqqPgqvdCLRl7jtv
+	pE/Vm8M+HoyWqUF+duc3NmqG2t/Hk3IDXFXi0rLRfHL8O5qQ7Tej1+mI18ca65c9
+	q57K3SueHvYT7aA+5tonA==
+X-ME-Sender: <xms:hkKoZBb45r_OniO477W0LCfmr-8FLMfYEWhBBYmzN18-2IsyN6kBsQ>
+    <xme:hkKoZIaBeUjLOErAM_LRkxOJ-Kg7oStWlafvjijDTGG4U8ss4ZWWad6bh3isKoCYv
+    WII11cIWX5Qhf35Xg>
+X-ME-Received: <xmr:hkKoZD_iApl63ob_GmRQ_2U16FRcbdXqhy03QaKMb3iCKVPdw-wSaqJUC-LezHyEntOb0B128DW2p_Kddr-xICYMWD0dER1SwMIV97Zi8EQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrvddugddutdehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
@@ -61,13 +61,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrvddugddutdehucetufdoteggod
     ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
     dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
     vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:gkKoZOp30o_3vwohI2ipXWFD9AJbLE16uq8j1IcE0Qc4Er96JeImyA>
-    <xmx:gkKoZPoOVQgS5p0LTf4kVmnFRyROMveLNMQtRTFlyTHZyQnj2y4WBg>
-    <xmx:gkKoZMSYChOZN5IrTM-ZypasrPRcIPQel3IdQ66tqw2AiCrUb725JQ>
-    <xmx:g0KoZG-b0scEH3ZkqhSzgB1MvRqX11YOWK4Z0bXeL4R8TMfhp7HlFw>
+X-ME-Proxy: <xmx:hkKoZPpadjYTn4c_Kqpa0P0QwXxM6ac6ORKotJzVGQ0N0zSBa79csA>
+    <xmx:hkKoZMoc3Wxz_xmdn88E0FLZ1piJaY9h1efrn2ivhchYRB9TPxlJ2w>
+    <xmx:hkKoZFRaITkhoj2_E69LL9l7-F-jBVG4YK_z1rA9re2b0LWBRD3gag>
+    <xmx:hkKoZH80wWUMMsfPC6PzvOw1IQuntLk3yIsj1plV6OQvBEGcLO79cw>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 7 Jul 2023 12:51:13 -0400 (EDT)
+ 7 Jul 2023 12:51:17 -0400 (EDT)
 From: Daniel Xu <dxu@dxuuu.xyz>
 To: andrii@kernel.org,
 	shuah@kernel.org,
@@ -88,9 +88,9 @@ Cc: martin.lau@linux.dev,
 	linux-kernel@vger.kernel.org,
 	netfilter-devel@vger.kernel.org,
 	dsahern@kernel.org
-Subject: [PATCH bpf-next v3 4/6] bpf: selftests: Support not connecting client socket
-Date: Fri,  7 Jul 2023 10:50:19 -0600
-Message-ID: <6d4095f283a6aace70ec325ad62e1dd3fc4a5287.1688748455.git.dxu@dxuuu.xyz>
+Subject: [PATCH bpf-next v3 5/6] bpf: selftests: Support custom type and proto for client sockets
+Date: Fri,  7 Jul 2023 10:50:20 -0600
+Message-ID: <ed9ac0bf0f6fc246609133d47f946091e2366fef.1688748455.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1688748455.git.dxu@dxuuu.xyz>
 References: <cover.1688748455.git.dxu@dxuuu.xyz>
@@ -109,40 +109,60 @@ X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-For connectionless protocols or raw sockets we do not want to actually
-connect() to the server.
+Extend connect_to_fd_opts() to take optional type and protocol
+parameters for the client socket. These parameters are useful when
+opening a raw socket to send IP fragments.
 
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- tools/testing/selftests/bpf/network_helpers.c | 5 +++--
- tools/testing/selftests/bpf/network_helpers.h | 1 +
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/network_helpers.c | 21 +++++++++++++------
+ tools/testing/selftests/bpf/network_helpers.h |  2 ++
+ 2 files changed, 17 insertions(+), 6 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index a105c0cd008a..d5c78c08903b 100644
+index d5c78c08903b..910d5d0470e6 100644
 --- a/tools/testing/selftests/bpf/network_helpers.c
 +++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -301,8 +301,9 @@ int connect_to_fd_opts(int server_fd, const struct network_helper_opts *opts)
- 		       strlen(opts->cc) + 1))
- 		goto error_close;
+@@ -270,14 +270,23 @@ int connect_to_fd_opts(int server_fd, const struct network_helper_opts *opts)
+ 		opts = &default_opts;
  
--	if (connect_fd_to_addr(fd, &addr, addrlen, opts->must_fail))
--		goto error_close;
-+	if (!opts->noconnect)
-+		if (connect_fd_to_addr(fd, &addr, addrlen, opts->must_fail))
-+			goto error_close;
+ 	optlen = sizeof(type);
+-	if (getsockopt(server_fd, SOL_SOCKET, SO_TYPE, &type, &optlen)) {
+-		log_err("getsockopt(SOL_TYPE)");
+-		return -1;
++
++	if (opts->type) {
++		type = opts->type;
++	} else {
++		if (getsockopt(server_fd, SOL_SOCKET, SO_TYPE, &type, &optlen)) {
++			log_err("getsockopt(SOL_TYPE)");
++			return -1;
++		}
+ 	}
  
- 	return fd;
+-	if (getsockopt(server_fd, SOL_SOCKET, SO_PROTOCOL, &protocol, &optlen)) {
+-		log_err("getsockopt(SOL_PROTOCOL)");
+-		return -1;
++	if (opts->proto) {
++		protocol = opts->proto;
++	} else {
++		if (getsockopt(server_fd, SOL_SOCKET, SO_PROTOCOL, &protocol, &optlen)) {
++			log_err("getsockopt(SOL_PROTOCOL)");
++			return -1;
++		}
+ 	}
  
+ 	addrlen = sizeof(addr);
 diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index 694185644da6..87894dc984dd 100644
+index 87894dc984dd..5eccc67d1a99 100644
 --- a/tools/testing/selftests/bpf/network_helpers.h
 +++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -21,6 +21,7 @@ struct network_helper_opts {
- 	const char *cc;
+@@ -22,6 +22,8 @@ struct network_helper_opts {
  	int timeout_ms;
  	bool must_fail;
-+	bool noconnect;
+ 	bool noconnect;
++	int type;
++	int proto;
  };
  
  /* ipv4 test vector */
