@@ -1,181 +1,179 @@
-Return-Path: <bpf+bounces-4372-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4374-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 501AA74A85C
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 03:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 78D7174A864
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 03:20:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8612A1C20EF2
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 01:11:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA4E91C20EE2
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 01:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CAE91106;
-	Fri,  7 Jul 2023 01:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2957110B;
+	Fri,  7 Jul 2023 01:20:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E637F
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 01:11:04 +0000 (UTC)
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DE6173F
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 18:11:03 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3a3eae37625so44848b6e.0
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 18:11:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5AC7F
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 01:20:41 +0000 (UTC)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020D51BDB
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 18:20:39 -0700 (PDT)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 95022C13738C
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 18:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1688692819; bh=Ox9q9RBX1EpcJh/WVfZmbNUGlULwFwc8jeMVtO8EEX0=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=U+Yz4VBHeMfrH0oqmaiD/6I70OHZKcPcAZT8SM6evTiKVSbAQ0Npncmr9Wl5dNb/d
+	 NmjnCDJSXelqE3rlfhxXEIfzN3a9gZScVy24sZeTGgw0OKzBvnju+xETATlAi/MAPW
+	 AWVbv5vQSmUIHdaQwzczU7tWrYXYxsOeJuNsg0nI=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Thu Jul  6 18:20:19 2023
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 6AAB4C1519A6;
+	Thu,  6 Jul 2023 18:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1688692819; bh=Ox9q9RBX1EpcJh/WVfZmbNUGlULwFwc8jeMVtO8EEX0=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=U+Yz4VBHeMfrH0oqmaiD/6I70OHZKcPcAZT8SM6evTiKVSbAQ0Npncmr9Wl5dNb/d
+	 NmjnCDJSXelqE3rlfhxXEIfzN3a9gZScVy24sZeTGgw0OKzBvnju+xETATlAi/MAPW
+	 AWVbv5vQSmUIHdaQwzczU7tWrYXYxsOeJuNsg0nI=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id DBB03C151078
+ for <bpf@ietfa.amsl.com>; Thu,  6 Jul 2023 18:20:17 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -7.095
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id nbIznVSzeI92 for <bpf@ietfa.amsl.com>;
+ Thu,  6 Jul 2023 18:20:14 -0700 (PDT)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com
+ [IPv6:2a00:1450:4864:20::22c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id F3CEAC17EB41
+ for <bpf@ietf.org>; Thu,  6 Jul 2023 18:20:05 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id
+ 38308e7fff4ca-2b70bfc8db5so6296001fa.2
+ for <bpf@ietf.org>; Thu, 06 Jul 2023 18:20:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688692262; x=1691284262;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v1Rzjvwgn5/XEhBOCYb0rbSMaE6vN9vTAoFTgB1e81Q=;
-        b=UFMmAe8uK0CO29DW8rB7qr2OAljKYxNRxfDXTsxcqUmU23kRrfJ/+XU+b4o1pqSj9z
-         HnsM6I9/uMIalHrEkzaATt0oCDm/YkJi7FpFKRI0t7AGwuBq+linl3krAh/p+6WA0JkL
-         ZzpMxMQfvR6gUU9jsiUGtWcQs/rU/krLlrAqP+DnqDBc9xPhwKreaG5KfRwBfrAbEdOK
-         sdnRJ2MpgH0TG2Iy/yxcjUTo3339GQ3lRXLei8VlAp2Kl0XVPNe0NDDLBxaofXjzifDB
-         KcXOXWIFopxh8GWmoc9MWElI39xEESsNUdO0UO0mNQwNOJ1MDmrnYKAz8/eJrqteDXcG
-         CzEA==
+ d=gmail.com; s=20221208; t=1688692804; x=1691284804;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=aPAITjGqmZ7YqQV2/ocNxUrr2tpvL7EtxI2PHwtTtwE=;
+ b=EHqJzrKGvZO0+FSMCbIJfJvFWkvbLtbAW0BXJb66VfzZYa7+vIfql6xlC6VZ3mt7xx
+ jbeooJ+ODGvm7RICD7Y4M0OZvpUYUV/8QXBuS3y5DnNZCGYG3DRfXoRFflW2l4x8+KPg
+ gev7rer44bpJSwMBNoCDKb5IoWLPmVY3ctOnWNmYK1ViAoWuwy7a55wUgvHonxrBcdON
+ VeFV+PAhu8DOipmvswz0Qk6X7QxLUu5olIL30YewMJQvIN+7HnSCoHH7RY6s8B3HZyJV
+ 7PpIHFsvd+EMKWBiKtTPI1DutecVtEpps0Ojkn9511eOhau05CwIoIZJxGtIzo2nkpee
+ FlWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688692262; x=1691284262;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v1Rzjvwgn5/XEhBOCYb0rbSMaE6vN9vTAoFTgB1e81Q=;
-        b=c0BuhJbLIVOAB78WpkqipoTE6aJfHjRqBDPGKbEhb6+5MDP6wj5akr2AWOBCzgCgki
-         FJJLlZ/isfdmEMhv57cyj1gI2BTP0QNKwTKbNg3IJyu6k4vFVczMHfTuohkuoz/bG+Og
-         HSKl6YEhp+a/374YY+zkshvu17l15x8yXKjcY+V+v1ZUMAv/3X7E1t4smMPnl0gCQutF
-         reSWLK8c206oGG/oOdL9caVCyezobbnYMWPT+Bh0k7i3YHoB5//1mfIlzu5z4TyeIJAB
-         f8KWtD1QxfU1e4cqvv4TQk7LooKzDow0IBwIPoALwFBiJVF+HjibOZnQS2PqyVVLlIgB
-         E55w==
-X-Gm-Message-State: ABy/qLbMxcjpFdSRhjGdPU8O79VoogeSWXdCIUKw/CRxuQA9ytn/gZUm
-	urnW4BWY/u/TlMgUtL73YFE=
-X-Google-Smtp-Source: APBJJlEGqLdM5NdTNIs18isCp6cS+qe6U6awx6G6zzyHujXWDdv8J1qbUe5fO6mUmIbT3TITjnhefQ==
-X-Received: by 2002:a05:6808:119:b0:3a3:6950:bb33 with SMTP id b25-20020a056808011900b003a36950bb33mr2873301oie.16.1688692262314;
-        Thu, 06 Jul 2023 18:11:02 -0700 (PDT)
-Received: from [192.168.1.9] ([14.238.228.104])
-        by smtp.gmail.com with ESMTPSA id j13-20020a62b60d000000b006765cb3255asm1808395pff.68.2023.07.06.18.11.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Jul 2023 18:11:01 -0700 (PDT)
-Message-ID: <51aa1dd7-86d0-ed08-1142-f229513ad316@gmail.com>
-Date: Fri, 7 Jul 2023 08:10:59 +0700
+ d=1e100.net; s=20221208; t=1688692804; x=1691284804;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=aPAITjGqmZ7YqQV2/ocNxUrr2tpvL7EtxI2PHwtTtwE=;
+ b=D63jQzN92G9IX8eCwDk88etOB7tiUhlzl9BmD8qMFyP1/kNJ/1xMVk1Vxkdef+AtW6
+ p7m5JTk0PNj7vBea5aNpZHC1WP+zVjJKX8vNlAz2WGE3vf/HBXfWhtbWiTAIM+rBMyqh
+ ix8cyrqJ+5cht94OPk2pSVSxgYDjrwDGAdfnX8uyF/z/h6jE2X0oK+nFtlMHOlUrsFGi
+ 1Y81a4i4FgRbxr8X8RMtzpxr8RWfPIXFwYZZJVjh/kbrmsZzkTELHuL5Z96KnuAPrzx9
+ tV5v73cV1rMle/CJy2IsLxBjklVEMkC7RE8a34rCySRDhppV9o6V5OSOwlczeqimzaGR
+ ChuQ==
+X-Gm-Message-State: ABy/qLbPYoJ/MDa5U88Kof9wT1zLzCBM6QzanB8U/fQu2Ahpg1ymBPbV
+ PXLmOJCWteiA8Uo4GgmzoEIqt1KTHeZciNxWTls=
+X-Google-Smtp-Source: APBJJlGsjuf5OoxN6QW0AzMbWWCa09npGLna6ZYxpcTU+wDG8mVTmhwP5mIkYTwp91cmV5pqVpUIWttkqv6TtmLzlYY=
+X-Received: by 2002:a2e:7e08:0:b0:2b4:94ec:e4 with SMTP id
+ z8-20020a2e7e08000000b002b494ec00e4mr2602318ljc.22.1688692804052; 
+ Thu, 06 Jul 2023 18:20:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v1] samples/bpf: Fix build out of source tree
-To: Stanislav Fomichev <sdf@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev,
- linux-kernel-mentees@lists.linuxfoundation.org
-References: <67bec6a9-af59-d6f9-2630-17280479a1f7@gmail.com>
- <ZKcDdIYOUQuPP5Px@google.com>
-Content-Language: en-US
-From: Anh Tuan Phan <tuananhlfc@gmail.com>
-In-Reply-To: <ZKcDdIYOUQuPP5Px@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <PH7PR21MB387813A79D0094E47914C5A8A32CA@PH7PR21MB3878.namprd21.prod.outlook.com>
+In-Reply-To: <PH7PR21MB387813A79D0094E47914C5A8A32CA@PH7PR21MB3878.namprd21.prod.outlook.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 6 Jul 2023 18:19:52 -0700
+Message-ID: <CAADnVQJhfa+g227BX=3LijoXwgh7h3Z5V_ZF8tMeMWNZguAp5g@mail.gmail.com>
+To: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
+Cc: "bpf@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/1WEHgA0D29KEjeYcFruu0shYDsM>
+Subject: Re: [Bpf] Instruction set extension policy
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
+ <bpf.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
+ <mailto:bpf-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
+ <mailto:bpf-request@ietf.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
-
-On 7/7/23 01:09, Stanislav Fomichev wrote:
-> On 07/06, Anh Tuan Phan wrote:
->> This commit fixes a few compilation issues when building out of source
->> tree. The command that I used to build samples/bpf:
->>
->> export KBUILD_OUTPUT=/tmp
->> make V=1 M=samples/bpf
->>
->> The compilation failed since it tried to find the header files in the
->> wrong places between output directory and source tree directory
->>
->> Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
->> ---
->>  samples/bpf/Makefile        | 8 ++++----
->>  samples/bpf/Makefile.target | 2 +-
->>  2 files changed, 5 insertions(+), 5 deletions(-)
->>
->> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
->> index 615f24ebc49c..32469aaa82d5 100644
->> --- a/samples/bpf/Makefile
->> +++ b/samples/bpf/Makefile
->> @@ -341,10 +341,10 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
->>  # Override includes for xdp_sample_user.o because $(srctree)/usr/include in
->>  # TPROGS_CFLAGS causes conflicts
->>  XDP_SAMPLE_CFLAGS += -Wall -O2 \
->> -		     -I$(src)/../../tools/include \
->> +		     -I$(srctree)/tools/include \
-> 
-> [..]
-> 
->>  		     -I$(src)/../../tools/include/uapi \
-> 
-> Does this $(src) need to be changed as well?
-
-I think this line doesn't affect the build. I removed it and it still
-compiles (after "make -C samples/bpf clean"). I guess xdp_sample_user.c
-doesn't include any file in tools/include/uapi. Am I missing something
-or should I remove this line?
-
-> 
-> 
->>  		     -I$(LIBBPF_INCLUDE) \
->> -		     -I$(src)/../../tools/testing/selftests/bpf
->> +		     -I$(srctree)/tools/testing/selftests/bpf
->>
->>  $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
->>  $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
->> @@ -393,7 +393,7 @@ $(obj)/xdp_router_ipv4.bpf.o: $(obj)/xdp_sample.bpf.o
->>  $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h
->> $(src)/xdp_sample_shared.h
->>  	@echo "  CLANG-BPF " $@
->>  	$(Q)$(CLANG) -g -O2 -target bpf -D__TARGET_ARCH_$(SRCARCH) \
->> -		-Wno-compare-distinct-pointer-types -I$(srctree)/include \
->> +		-Wno-compare-distinct-pointer-types -I$(obj) -I$(srctree)/include \
->>  		-I$(srctree)/samples/bpf -I$(srctree)/tools/include \
->>  		-I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES) \
->>  		-c $(filter %.bpf.c,$^) -o $@
->> @@ -412,7 +412,7 @@ xdp_router_ipv4.skel.h-deps := xdp_router_ipv4.bpf.o
->> xdp_sample.bpf.o
->>
->>  LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.bpf.c,$(foreach
->> skel,$(LINKED_SKELS),$($(skel)-deps)))
->>
->> -BPF_SRCS_LINKED := $(notdir $(wildcard $(src)/*.bpf.c))
->> +BPF_SRCS_LINKED := $(notdir $(wildcard $(srctree)/$(src)/*.bpf.c))
->>  BPF_OBJS_LINKED := $(patsubst %.bpf.c,$(obj)/%.bpf.o, $(BPF_SRCS_LINKED))
->>  BPF_SKELS_LINKED := $(addprefix $(obj)/,$(LINKED_SKELS))
->>
->> diff --git a/samples/bpf/Makefile.target b/samples/bpf/Makefile.target
->> index 7621f55e2947..86a454cfb080 100644
->> --- a/samples/bpf/Makefile.target
->> +++ b/samples/bpf/Makefile.target
->> @@ -41,7 +41,7 @@ _tprogc_flags   = $(TPROGS_CFLAGS) \
->>                   $(TPROGCFLAGS_$(basetarget).o)
->>
->>  # $(objtree)/$(obj) for including generated headers from checkin source
->> files
-> 
-> [..]
-> 
->> -ifeq ($(KBUILD_EXTMOD),)
->> +ifneq ($(KBUILD_EXTMOD),)
-> 
-> This parts seems to be copy-pasted all over the place in its 'ifeq'
-> form. What is it doing and why is it needed?
-> 
->>  ifdef building_out_of_srctree
->>  _tprogc_flags   += -I $(objtree)/$(obj)
->>  endif
->> -- 
->> 2.34.1
+T24gVGh1LCBKdWwgNiwgMjAyMyBhdCAxMDowMOKAr0FNIERhdmUgVGhhbGVyCjxkdGhhbGVyPTQw
+bWljcm9zb2Z0LmNvbUBkbWFyYy5pZXRmLm9yZz4gd3JvdGU6Cj4KPiBUaGUgY2hhcnRlciBmb3Ig
+dGhlIG5ld2x5IGZvcm1lZCBJRVRGIEJQRiBXRyBpbmNsdWRlczoKPgo+IOKAnFRoZSBCUEYgd29y
+a2luZyBncm91cCBpcyBpbml0aWFsbHkgdGFza2VkIHdpdGgg4oCmIGNyZWF0aW5nIGEgY2xlYXIg
+cHJvY2VzcyBmb3IgZXh0ZW5zaW9ucywg4oCm4oCdCj4KPgo+Cj4gSSB3YW50ZWQgdG8ga2ljayBv
+ZmYgYSBkaXNjdXNzaW9uIG9mIHRoaXMgdG9waWMgaW4gcHJlcGFyYXRpb24gZm9yIGRpc2N1c3Np
+b24KPiBhdCBJRVRGIDExNy4KPgo+Cj4KPiBPbmNlIHRoZSBCUEYgSVNBIGlzIHB1Ymxpc2hlZCBp
+biBhbiBSRkMsIHdlIGV4cGVjdCBtb3JlIGluc3RydWN0aW9ucyBtYXkgYmUKPiBhZGRlZCBvdmVy
+IHRpbWUuICBJdCBzZWVtcyB1bmRlc2lyYWJsZSB0byBkZWxheSB1c2Ugc3VjaCBhZGRpdGlvbnMg
+dW50aWwKPgo+IGFub3RoZXIgUkZDIGNhbiBiZSBwdWJsaXNoZWQsIGFsdGhvdWdoIGhhdmluZyB0
+aGVtIGFwcGVhciBpbiBhbiBSRkMKPiB3b3VsZCBiZSBhIGdvb2QgdGhpbmcgaW4gbXkgdmlldy4K
+Pgo+Cj4KPiBQZXJzb25hbGx5LCBJIGVudmlzaW9uIHN1Y2ggYWRkaXRpb25zIHRvIGFwcGVhciBp
+biBhbiBSRkMgcGVyIGV4dGVuc2lvbgo+Cj4gKGkuZS4sIHNldCBvZiBhZGRpdGlvbnMpIHJhdGhl
+ciB0aGFuIG9ic29sZXRpbmcgdGhlIG9yaWdpbmFsIElTQSBSRkMuICBTbwo+IEkgd291bGQgcHJv
+cG9zZSB0aGUgYWJpbGl0eSB0byByZWZlcmVuY2UgYW5vdGhlciBkb2N1bWVudCAoZS5nLiwgb25l
+Cj4gaW4gdGhlIExpbnV4IGtlcm5lbCB0cmVlKSBpbiB0aGUgbWVhbnRpbWUuCj4KPgo+Cj4gRm9y
+IGNvbXBhcmlzb24sIHRoZSBJQU5BIHJlZ2lzdHJ5IGZvciBVUkkgc2NoZW1lcyBhdAo+IGh0dHBz
+Oi8vd3d3LmlhbmEub3JnL2Fzc2lnbm1lbnRzL3VyaS1zY2hlbWVzL3VyaS1zY2hlbWVzLnhodG1s
+Cj4gZGVmaW5lcyBzdGF0dXMgdmFsdWVzIGZvciDigJxQZXJtYW5lbnTigJ0gYW5kIOKAnFByb3Zp
+c2lvbmFs4oCdIHdpdGggZGlmZmVyZW50Cj4gcmVnaXN0cmF0aW9uIHBvbGljaWVzIGZvciBlYWNo
+IG9mIHRob3NlIHR3byBzdGF0dXNlcy4KPgo+Cj4KPiBTaW1pbGFybHksIEkgd291bGQgcHJvcG9z
+ZSBhcyBhIHN0cmF3bWFuIHVzaW5nIGFuIElBTkEgcmVnaXN0cnkgKGFzIG1vc3QKPiBJRVRGIHN0
+YW5kYXJkcyBkbykgdGhhdCByZXF1aXJlcyBzYXkgYW4gSUVURiBTdGFuZGFyZHMgVHJhY2sgUkZD
+IGZvcgo+Cj4g4oCcUGVybWFuZW504oCdIHN0YXR1cywgYW5kIOKAnFNwZWNpZmljYXRpb24gcmVx
+dWlyZWTigJ0gKGEgcHVibGljIHNwZWNpZmljYXRpb24KPiByZXZpZXdlZCBieSBhIGRlc2lnbmF0
+ZWQgZXhwZXJ0KSBmb3Ig4oCcUHJvdmlzaW9uYWzigJ0gcmVnaXN0cmF0aW9ucy4KPiBTbyB1cGRh
+dGluZyBhIGRvY3VtZW50IGluIHNheSB0aGUgTGludXgga2VybmVsIHRyZWUgd291bGQgYmUgc3Vm
+ZmljaWVudAo+IGZvciBQcm92aXNpb25hbCByZWdpc3RyYXRpb24sIGFuZCB0aGUgc3RhdHVzIG9m
+IGFuIGluc3RydWN0aW9uIHdvdWxkIGNoYW5nZQo+IHRvIFBlcm1hbmVudCBvbmNlIGl0IGFwcGVh
+cnMgaW4gYW4gUkZDLgoKVGhlIGRlZmluaXRpb24gb2Ygc3RhdHVzIGFuZCB0aGUgc2VtYW50aWNz
+IG1ha2Ugc2Vuc2UsCmJ1dCBJIHN1c3BlY3QgdG8gaW1wbGVtZW50IHRoZW0gdmlhIGZ1bGwgSUFO
+QSB3b3VsZCByZXF1aXJlCnRvIGxpc3QgZXZlcnkgaW5zdHJ1Y3Rpb24gZW5jb2RpbmcgaW4gdGhl
+IHJlZ2lzdHJ5IGFuZCB0aGF0J3Mgd2hlcmUKSUFOQSBrZXkvdmFsdWUgbWFwcGluZyB3b24ndCB3
+b3JrLgo4LWJpdCBvcGNvZGUgaXMgb2Z0ZW4gbm90IGVub3VnaCB0byBkZW5vdGUgYW4gaW5zdHJ1
+Y3Rpb24uCkFsbCBvZiB2MSx2Mix2Myx2NCBleGlzdGluZyBleHRlbnNpb25zIHRvIEJQRiBJU0Eg
+aGFwcGVuZWQgYnkgYSBjb21iaW5hdGlvbgpvZiBuZXcgOC1iaXQgb3Bjb2RlcyBhbmQgdXNpbmcg
+cmVzZXJ2ZWQgYml0cyBpbiBvdGhlciBwYXJ0cyBvZiA2NC1iaXQgaW5zbi4KTm93IHdlIHByZXR0
+eSBtdWNoIHJhbiBvdXQgb2YgOC1iaXQgb3Bjb2Rlcy4KU28gdGhlcmUgaXMgcmVhbGx5IG5vdGhp
+bmcgdGhlIElBTkEgcmVnaXN0cnkgY2FuIGhlbHAgd2l0aC4KCi0tIApCcGYgbWFpbGluZyBsaXN0
+CkJwZkBpZXRmLm9yZwpodHRwczovL3d3dy5pZXRmLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2JwZgo=
 
