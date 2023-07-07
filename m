@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-4488-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64A1374B738
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 21:37:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79FAD74B73B
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 21:37:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B2EC281925
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 19:37:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 311A6281925
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 19:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D855B18AF5;
-	Fri,  7 Jul 2023 19:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0E718AFF;
+	Fri,  7 Jul 2023 19:30:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F34818AF1
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 19:30:41 +0000 (UTC)
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D34530C1
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 12:30:32 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-262d8c40189so3046547a91.0
-        for <bpf@vger.kernel.org>; Fri, 07 Jul 2023 12:30:32 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADDCB18AF0
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 19:30:43 +0000 (UTC)
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12CC02D66
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 12:30:35 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-573d70da2dcso24756777b3.1
+        for <bpf@vger.kernel.org>; Fri, 07 Jul 2023 12:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1688758232; x=1691350232;
+        d=google.com; s=20221208; t=1688758234; x=1691350234;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VSNQ7+J+mNIfgDLdx4SLa8fNN2Odoru2w9MrO++sRPI=;
-        b=m3zukDchSbEhu2J6VsNB/6sTSUC23C+GibuuPgBsTNw9uxSagSUdguaINNoIwRagk5
-         lDj51RZGIgASliO7oRoD/PfaumRjUrRjHDppJwckNm0g9GTQb1AmX/dJ8RgET0TFEkJn
-         8UquByJ4GsGmhA4YAsfTAnqBLTLystEnCfwiHkYCxFFipxcleJxXgzR9ugzO2OmX8huk
-         O8dhhqDFollRjy5X5RVNrYt7Arwnkmsm6w4osmmMR1cdelv8UHEmisVH+XzNjUO0YSWD
-         nEbFoSfX/s3VRCeB9458a7RZkDtmNuvT0D33e1+71Lzj7g+QKiMfefcb77cZKFAcQZdB
-         k1GA==
+        bh=CQ9AaI5NbcA/oN/ecuTimulSkDUKAiNeCXSYKFyoRpE=;
+        b=pslXxhAl7Db8eW1923SaM9dPTzDYvuWeKvr+XMkN2/fSIGzCIQaX7EojfQQmY3p37L
+         iBcy1ejUEDWx0nH5eChAogJGsfgH9/6u/0Qzcz9G1Bk9OqD0O08KxlS5V09XUJJfSbDg
+         651PYELf0ontFLIypcuyrf0oDvjHdX/LDo7/QxTAgtRju/Zy8fjvM+Tdab8MisY9dSMn
+         tif63CoWcqNVOkrlnz+yOo3rMn7XeXAi4WyA2xmxrbutPrbQWJcp9FhOYm/Vox7QPYXL
+         uewRrYlkq0SmpbixuNV45nSeiRqmOxjuR9J+LFt6EFmrCLjD+eXVSbcFtQIyNR0wb56t
+         DSQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688758232; x=1691350232;
+        d=1e100.net; s=20221208; t=1688758234; x=1691350234;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VSNQ7+J+mNIfgDLdx4SLa8fNN2Odoru2w9MrO++sRPI=;
-        b=FdcGuMucxRgyTDzECaK3M+evj6pR1Ywmn5N6dor8NY7jyp/JH4xBeE9IPWlnJy4Aqd
-         TeS5WsUTO9nuKvXcpAyNtL9NM6gs9T4DsIco5QsgFDmNjyRFv02AMxdZ55h5jTzTcjtO
-         IUdt1/4836dvE89uzDjR4MlTLdPEG2gxq87XmXJ2SpuI9iUDUy8CjnoforCNoNP1S7SV
-         m29gd7iCYmsn8Wz3dhj0zRrzKsyeXx3BZiIGIc0jewbsfnHCFeFKNDg7mSXHGUqP+T17
-         /8sjlg0tyBY3tPkjOgQkhy90O+0N9CjyW1Wr2fDRruY9rkEZ7p6Rvex7xq2JbgqI6Gns
-         hTcQ==
-X-Gm-Message-State: ABy/qLZcIUpUwTemRlpxOIH3vto9DVDeoPDeP7IXtv82y4NSFj5F8fMd
-	iu+gCEqhwN62bsGVDWBAFFCcICkcZhnYEdrIyByZPupyO5ztT6pkGmhhnQi02kNhJNIsQfwE3Je
-	+KnHgRVT+iZ1KB1ul719ugZnkKvr26OMmHVUpz6IaENlXFwynKw==
-X-Google-Smtp-Source: APBJJlH9c0s0kPeYseEwkhoMLTWan9eJdkgZfOa4Dx0Zdb2DT0r3ugUGBHddYck1khGhI7aBggDrYjg=
+        bh=CQ9AaI5NbcA/oN/ecuTimulSkDUKAiNeCXSYKFyoRpE=;
+        b=l5zaxRV4bEv4ALBQ12WXZvMMNbAZuYZqv09u5QuLP5UjU637c6ElQjUvsq/fEL9WIv
+         Ge8Ru3hVDDA5skGjAnV1FSVimXM/tPnFNjFYpBY8N4srRR6jGbRNT9uL+CCi05Zau9ZE
+         1uoXfEq36CcAv13cSRVeLE/x7L1oBX0qa1nF02CHS1ax0IhnkcdnynjvCigUgarFZUhv
+         GGNyCMqwiIc4bES14YD2sCScY9MMfPN1UBsjZMjvJTjDhDYAmhgVz+c+Kt5IhFpuo5gU
+         u9K82QSgsqgcePaXekgj4tuuqwCuaqZWMG72TKa67DqwQLCYIPekAOhQCujSWJPfG5Si
+         iWtw==
+X-Gm-Message-State: ABy/qLYFREtd/RNtCcFbwI8phG5l81NmXwrxS5IW7UROHBRkVwYA3jKS
+	NMM1lREkeY7tSIBT44voKmTCKooDaPzw+t0x3wbBOEFOq3vT2BQuMWToeUm07CpI+jbUgG3+SEY
+	5I19xN9WAJkbfRKvWqwsFWK0nzjc9HFVOWXgW8wakELDyt5AAzA==
+X-Google-Smtp-Source: APBJJlGLjtZ1dAHoOjapPUfeQVnKhDOKJVvr+sIHAeYapEY5d0/pspClotBqzxOvQA7fjJhAoYM1KDw=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:f287:b0:261:2e5:b5af with SMTP id
- fs7-20020a17090af28700b0026102e5b5afmr4907166pjb.1.1688758231701; Fri, 07 Jul
- 2023 12:30:31 -0700 (PDT)
-Date: Fri,  7 Jul 2023 12:30:05 -0700
+ (user=sdf job=sendgmr) by 2002:a81:d305:0:b0:56d:2a88:49e5 with SMTP id
+ y5-20020a81d305000000b0056d2a8849e5mr41186ywi.2.1688758233839; Fri, 07 Jul
+ 2023 12:30:33 -0700 (PDT)
+Date: Fri,  7 Jul 2023 12:30:06 -0700
 In-Reply-To: <20230707193006.1309662-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,8 +63,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230707193006.1309662-1-sdf@google.com>
 X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230707193006.1309662-14-sdf@google.com>
-Subject: [RFC bpf-next v3 13/14] selftests/bpf: Extend xdp_metadata with devtx kfuncs
+Message-ID: <20230707193006.1309662-15-sdf@google.com>
+Subject: [RFC bpf-next v3 14/14] selftests/bpf: Extend xdp_hw_metadata with
+ devtx kfuncs
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
@@ -77,219 +78,94 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Attach kfuncs that request and report TX timestamp via ringbuf.
-Confirm on the userspace side that the program has triggered
-and the timestamp is non-zero.
+When we get packets on port 9091, we swap src/dst and send it out.
+At this point, we also request the timestamp and plumb it back
+to the userspace. The userspace simply prints the timestamp.
 
-Also make sure skb has a sensible pointers and data.
+Also print current UDP checksum, rewrite it with the pseudo-header
+checksum and offload TX checksum calculation to devtx. Upon
+completion, report TX checksum back (mlx5 doesn't put it back, so
+I've used tcpdump to confirm that the checksum is correct).
 
-In addition, calculate pseudo-header checksum and offload
-payload checksum calculation to the kfunc.
+Some other related changes:
+- switched to zerocopy mode by default; new flag can be used to force
+  old behavior
+- request fixed TX_METADAT_LEN headroom
+- some other small fixes (umem size, fill idx+i, etc)
+
+mvbz3:~# ./xdp_hw_metadata eth3 -c mlx5e_devtx_complete_xdp -s mlx5e_devtx_submit_xd
+attach rx bpf program...
+poll: 0 (0) skip=1/0 redir=0 ring_full=0 rx_fail=0 tx_fail=0 l4_csum_fail=0
+...
+xsk_ring_cons__peek: 1
+0xeb4cb8: rx_desc[0]->addr=80100 addr=80100 comp_addr=80100
+rx_hash: 0x6A1A897A with RSS type:0x2A
+rx_timestamp:  1688749963628930772 (sec:1688749963.6289)
+XDP RX-time:   1688749963901850574 (sec:1688749963.9019) delta sec:0.2729 (272919.802 usec)
+AF_XDP time:   1688749963901967812 (sec:1688749963.9020) delta sec:0.0001 (117.238 usec)
+0xeb4cb8: ping_pong with csum=8e3b (want 4b0b)
+0xeb4cb8: complete tx idx=0 addr=8
+got tx sample: tx_err 0 hw_timestamp 1688749963859814790 sw_timestamp 1688749963902297286 csum 8e3b
+0xeb4cb8: complete rx idx=128 addr=80100
+poll: 0 (0) skip=7/0 redir=1 ring_full=0 rx_fail=0 tx_fail=0 l4_csum_fail=0
+
+mvbz4:~# nc  -Nu -q1 ${MVBZ3_LINK_LOCAL_IP}%eth3 9091
+
+mvbz4:~# tcpdump -vvx -i eth3 udp
+tcpdump: listening on eth3, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+10:12:43.901436 IP6 (flowlabel 0x7a5d2, hlim 127, next-header UDP (17) payload length: 11) fe80::1270:fdff:fe48:1087.44339 > fe80::1270:fdff:fe48:1077.9091: [bad udp cksum 0x3b8e -> 0x0b4b!] UDP, length 3
+        0x0000:  6007 a5d2 000b 117f fe80 0000 0000 0000
+        0x0010:  1270 fdff fe48 1087 fe80 0000 0000 0000
+        0x0020:  1270 fdff fe48 1077 ad33 2383 000b 3b8e
+        0x0030:  7864 70
+10:12:43.902125 IP6 (flowlabel 0x7a5d2, hlim 127, next-header UDP (17) payload length: 11) fe80::1270:fdff:fe48:1077.9091 > fe80::1270:fdff:fe48:1087.44339: [udp sum ok] UDP, length 3
+        0x0000:  6007 a5d2 000b 117f fe80 0000 0000 0000
+        0x0010:  1270 fdff fe48 1077 fe80 0000 0000 0000
+        0x0020:  1270 fdff fe48 1087 2383 ad33 000b 0b4b
+        0x0030:  7864 70
 
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- .../selftests/bpf/prog_tests/xdp_metadata.c   |  64 +++++++-
- .../selftests/bpf/progs/xdp_metadata.c        | 141 ++++++++++++++++++
- tools/testing/selftests/bpf/xdp_metadata.h    |  16 ++
- 3 files changed, 217 insertions(+), 4 deletions(-)
+ .../selftests/bpf/progs/xdp_hw_metadata.c     | 173 +++++++++++
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 269 +++++++++++++++++-
+ 2 files changed, 427 insertions(+), 15 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-index 626c461fa34d..ca1442d2c347 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-@@ -42,6 +42,8 @@ struct xsk {
- 	struct xsk_ring_prod tx;
- 	struct xsk_ring_cons rx;
- 	struct xsk_socket *socket;
-+	int tx_completions;
-+	struct devtx_sample last_sample;
- };
- 
- static int open_xsk(int ifindex, struct xsk *xsk)
-@@ -51,6 +53,7 @@ static int open_xsk(int ifindex, struct xsk *xsk)
- 		.rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
- 		.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
- 		.bind_flags = XDP_COPY,
-+		.tx_metadata_len = TX_META_LEN,
- 	};
- 	const struct xsk_umem_config umem_config = {
- 		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-@@ -138,6 +141,7 @@ static void ip_csum(struct iphdr *iph)
- 
- static int generate_packet(struct xsk *xsk, __u16 dst_port)
- {
-+	struct xdp_tx_meta *meta;
- 	struct xdp_desc *tx_desc;
- 	struct udphdr *udph;
- 	struct ethhdr *eth;
-@@ -151,10 +155,13 @@ static int generate_packet(struct xsk *xsk, __u16 dst_port)
- 		return -1;
- 
- 	tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx);
--	tx_desc->addr = idx % (UMEM_NUM / 2) * UMEM_FRAME_SIZE;
-+	tx_desc->addr = idx % (UMEM_NUM / 2) * UMEM_FRAME_SIZE + TX_META_LEN;
- 	printf("%p: tx_desc[%u]->addr=%llx\n", xsk, idx, tx_desc->addr);
- 	data = xsk_umem__get_data(xsk->umem_area, tx_desc->addr);
- 
-+	meta = data - TX_META_LEN;
-+	meta->request_timestamp = 1;
-+
- 	eth = data;
- 	iph = (void *)(eth + 1);
- 	udph = (void *)(iph + 1);
-@@ -178,7 +185,8 @@ static int generate_packet(struct xsk *xsk, __u16 dst_port)
- 	udph->source = htons(AF_XDP_SOURCE_PORT);
- 	udph->dest = htons(dst_port);
- 	udph->len = htons(sizeof(*udph) + UDP_PAYLOAD_BYTES);
--	udph->check = 0;
-+	udph->check = ~csum_tcpudp_magic(iph->saddr, iph->daddr,
-+					 ntohs(udph->len), IPPROTO_UDP, 0);
- 
- 	memset(udph + 1, 0xAA, UDP_PAYLOAD_BYTES);
- 
-@@ -192,7 +200,8 @@ static int generate_packet(struct xsk *xsk, __u16 dst_port)
- 	return 0;
- }
- 
--static void complete_tx(struct xsk *xsk)
-+static void complete_tx(struct xsk *xsk, struct xdp_metadata *bpf_obj,
-+			struct ring_buffer *ringbuf)
- {
- 	__u32 idx;
- 	__u64 addr;
-@@ -202,6 +211,14 @@ static void complete_tx(struct xsk *xsk)
- 
- 		printf("%p: complete tx idx=%u addr=%llx\n", xsk, idx, addr);
- 		xsk_ring_cons__release(&xsk->comp, 1);
-+
-+		ring_buffer__poll(ringbuf, 1000);
-+
-+		ASSERT_EQ(bpf_obj->bss->pkts_fail_tx, 0, "pkts_fail_tx");
-+		ASSERT_GE(xsk->tx_completions, 1, "tx_completions");
-+		ASSERT_EQ(xsk->last_sample.timestamp_retval, 0, "timestamp_retval");
-+		ASSERT_GE(xsk->last_sample.hw_timestamp, 0, "hw_timestamp");
-+		ASSERT_EQ(xsk->last_sample.tx_csum, 0x1c72, "tx_csum");
- 	}
- }
- 
-@@ -276,8 +293,23 @@ static int verify_xsk_metadata(struct xsk *xsk)
- 	return 0;
- }
- 
-+static int process_sample(void *ctx, void *data, size_t len)
-+{
-+	struct devtx_sample *sample = data;
-+	struct xsk *xsk = ctx;
-+
-+	printf("%p: got tx timestamp sample %u %llu\n",
-+	       xsk, sample->timestamp_retval, sample->hw_timestamp);
-+
-+	xsk->tx_completions++;
-+	xsk->last_sample = *sample;
-+
-+	return 0;
-+}
-+
- void test_xdp_metadata(void)
- {
-+	struct ring_buffer *tx_compl_ringbuf = NULL;
- 	struct xdp_metadata2 *bpf_obj2 = NULL;
- 	struct xdp_metadata *bpf_obj = NULL;
- 	struct bpf_program *new_prog, *prog;
-@@ -290,6 +322,7 @@ void test_xdp_metadata(void)
- 	int retries = 10;
- 	int rx_ifindex;
- 	int tx_ifindex;
-+	int syscall_fd;
- 	int sock_fd;
- 	int ret;
- 
-@@ -323,6 +356,14 @@ void test_xdp_metadata(void)
- 	if (!ASSERT_OK_PTR(bpf_obj, "open skeleton"))
- 		goto out;
- 
-+	prog = bpf_object__find_program_by_name(bpf_obj->obj, "tx_submit");
-+	bpf_program__set_ifindex(prog, tx_ifindex);
-+	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
-+
-+	prog = bpf_object__find_program_by_name(bpf_obj->obj, "tx_complete");
-+	bpf_program__set_ifindex(prog, tx_ifindex);
-+	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
-+
- 	prog = bpf_object__find_program_by_name(bpf_obj->obj, "rx");
- 	bpf_program__set_ifindex(prog, rx_ifindex);
- 	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
-@@ -330,6 +371,18 @@ void test_xdp_metadata(void)
- 	if (!ASSERT_OK(xdp_metadata__load(bpf_obj), "load skeleton"))
- 		goto out;
- 
-+	bpf_obj->data->ifindex = tx_ifindex;
-+	bpf_obj->data->net_cookie = get_net_cookie();
-+
-+	ret = xdp_metadata__attach(bpf_obj);
-+	if (!ASSERT_OK(ret, "xdp_metadata__attach"))
-+		goto out;
-+
-+	tx_compl_ringbuf = ring_buffer__new(bpf_map__fd(bpf_obj->maps.tx_compl_buf),
-+					    process_sample, &tx_xsk, NULL);
-+	if (!ASSERT_OK_PTR(tx_compl_ringbuf, "ring_buffer__new"))
-+		goto out;
-+
- 	/* Make sure we can't add dev-bound programs to prog maps. */
- 	prog_arr = bpf_object__find_map_by_name(bpf_obj->obj, "prog_arr");
- 	if (!ASSERT_OK_PTR(prog_arr, "no prog_arr map"))
-@@ -364,7 +417,8 @@ void test_xdp_metadata(void)
- 		       "verify_xsk_metadata"))
- 		goto out;
- 
--	complete_tx(&tx_xsk);
-+	/* Verify AF_XDP TX packet has completion event with a timestamp. */
-+	complete_tx(&tx_xsk, bpf_obj, tx_compl_ringbuf);
- 
- 	/* Make sure freplace correctly picks up original bound device
- 	 * and doesn't crash.
-@@ -402,5 +456,7 @@ void test_xdp_metadata(void)
- 	xdp_metadata__destroy(bpf_obj);
- 	if (tok)
- 		close_netns(tok);
-+	if (tx_compl_ringbuf)
-+		ring_buffer__free(tx_compl_ringbuf);
- 	SYS_NOFAIL("ip netns del xdp_metadata");
- }
-diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata.c b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-index d151d406a123..a5d9229acdf3 100644
---- a/tools/testing/selftests/bpf/progs/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-@@ -4,6 +4,11 @@
+diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+index b2dfd7066c6e..2049bfa70ea9 100644
+--- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+@@ -4,6 +4,7 @@
  #include "xdp_metadata.h"
  #include <bpf/bpf_helpers.h>
  #include <bpf/bpf_endian.h>
 +#include <bpf/bpf_tracing.h>
-+
-+#ifndef ETH_P_IP
-+#define ETH_P_IP 0x0800
-+#endif
  
  struct {
  	__uint(type, BPF_MAP_TYPE_XSKMAP);
-@@ -19,10 +24,24 @@ struct {
+@@ -12,14 +13,30 @@ struct {
  	__type(value, __u32);
- } prog_arr SEC(".maps");
+ } xsk SEC(".maps");
  
 +struct {
 +	__uint(type, BPF_MAP_TYPE_RINGBUF);
 +	__uint(max_entries, 4096);
 +} tx_compl_buf SEC(".maps");
 +
+ __u64 pkts_skip = 0;
++__u64 pkts_tx_skip = 0;
+ __u64 pkts_fail = 0;
+ __u64 pkts_redir = 0;
 +__u64 pkts_fail_tx = 0;
++__u64 pkts_fail_l4_csum = 0;
++__u64 pkts_ringbuf_full = 0;
 +
 +int ifindex = -1;
 +__u64 net_cookie = -1;
-+
+ 
  extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
  					 __u64 *timestamp) __ksym;
  extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
@@ -301,125 +177,147 @@ index d151d406a123..a5d9229acdf3 100644
  
  SEC("xdp")
  int rx(struct xdp_md *ctx)
-@@ -61,4 +80,126 @@ int rx(struct xdp_md *ctx)
+@@ -90,4 +107,160 @@ int rx(struct xdp_md *ctx)
  	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
  }
  
-+static inline int verify_frame(const struct sk_buff *skb, const struct skb_shared_info *sinfo)
++/* This is not strictly required; only to showcase how to access the payload. */
++static __always_inline bool tx_filter(const struct devtx_ctx *devtx,
++				      const void *data, __be16 *proto)
 +{
++	int port_offset = sizeof(struct ethhdr) + offsetof(struct udphdr, source);
 +	struct ethhdr eth = {};
++	struct udphdr udp = {};
 +
-+	/* all the pointers are set up correctly */
-+	if (!skb->data)
-+		return -1;
-+	if (!sinfo)
-+		return -1;
++	bpf_probe_read_kernel(&eth.h_proto, sizeof(eth.h_proto),
++			      data + offsetof(struct ethhdr, h_proto));
 +
-+	/* can get to the frags */
-+	if (sinfo->nr_frags != 0)
-+		return -1;
-+	if (sinfo->frags[0].bv_page != 0)
-+		return -1;
-+	if (sinfo->frags[0].bv_len != 0)
-+		return -1;
-+	if (sinfo->frags[0].bv_offset != 0)
-+		return -1;
++	*proto = eth.h_proto;
++	if (eth.h_proto == bpf_htons(ETH_P_IP)) {
++		port_offset += sizeof(struct iphdr);
++	} else if (eth.h_proto == bpf_htons(ETH_P_IPV6)) {
++		port_offset += sizeof(struct ipv6hdr);
++	} else {
++		__sync_add_and_fetch(&pkts_tx_skip, 1);
++		return false;
++	}
 +
-+	/* the data has something that looks like ethernet */
-+	if (skb->len != 46)
-+		return -1;
-+	bpf_probe_read_kernel(&eth, sizeof(eth), skb->data);
++	bpf_probe_read_kernel(&udp.source, sizeof(udp.source), data + port_offset);
 +
-+	if (eth.h_proto != bpf_htons(ETH_P_IP))
-+		return -1;
++	/* Replies to UDP:9091 */
++	if (udp.source != bpf_htons(9091)) {
++		__sync_add_and_fetch(&pkts_tx_skip, 1);
++		return false;
++	}
 +
-+	return 0;
++	return true;
 +}
 +
-+static inline bool my_netdev(const struct devtx_ctx *ctx)
++static inline bool my_netdev(const struct devtx_ctx *devtx)
 +{
 +	static struct net_device *netdev;
 +
 +	if (netdev)
-+		return netdev == ctx->netdev;
++		return netdev == devtx->netdev;
 +
-+	if (ctx->netdev->ifindex != ifindex)
++	if (devtx->netdev->ifindex != ifindex)
 +		return false;
-+	if (ctx->netdev->nd_net.net->net_cookie != net_cookie)
++	if (devtx->netdev->nd_net.net->net_cookie != net_cookie)
 +		return false;
 +
-+	netdev = ctx->netdev;
++	netdev = devtx->netdev;
 +	return true;
 +}
 +
-+SEC("fentry/veth_devtx_submit_skb")
-+int BPF_PROG(tx_submit, const struct devtx_ctx *devtx, struct sk_buff *skb)
++static inline int udpoff(__be16 proto)
 +{
-+	int udpoff = sizeof(struct ethhdr) + sizeof(struct iphdr);
++	if (proto == bpf_htons(ETH_P_IP))
++		return sizeof(struct ethhdr) + sizeof(struct iphdr);
++	else if (proto == bpf_htons(ETH_P_IPV6))
++		return sizeof(struct ethhdr) + sizeof(struct ipv6hdr);
++	else
++		return 0;
++}
++
++static inline int tx_submit(const struct devtx_ctx *devtx, const void *data, u8 meta_len)
++{
 +	struct xdp_tx_meta meta = {};
-+	int ret;
++	__be16 proto = 0;
++	int off, ret;
 +
 +	if (!my_netdev(devtx))
 +		return 0;
-+	if (devtx->sinfo->meta_len != TX_META_LEN)
++	if (meta_len != TX_META_LEN)
 +		return 0;
 +
-+	bpf_probe_read_kernel(&meta, sizeof(meta), skb->data - TX_META_LEN);
++	bpf_probe_read_kernel(&meta, sizeof(meta), data - TX_META_LEN);
 +	if (!meta.request_timestamp)
 +		return 0;
 +
-+	ret = verify_frame(skb, devtx->sinfo);
-+	if (ret < 0) {
-+		__sync_add_and_fetch(&pkts_fail_tx, 1);
++	if (!tx_filter(devtx, data, &proto))
 +		return 0;
-+	}
 +
 +	ret = bpf_devtx_request_tx_timestamp(devtx);
-+	if (ret < 0) {
++	if (ret < 0)
 +		__sync_add_and_fetch(&pkts_fail_tx, 1);
-+		return 0;
-+	}
 +
-+	ret = bpf_devtx_request_l4_csum(devtx, udpoff, udpoff + offsetof(struct udphdr, check));
-+	if (ret < 0) {
-+		__sync_add_and_fetch(&pkts_fail_tx, 1);
++	off = udpoff(proto);
++	if (!off)
 +		return 0;
-+	}
++
++	ret = bpf_devtx_request_l4_csum(devtx, off, off + offsetof(struct udphdr, check));
++	if (ret < 0)
++		__sync_add_and_fetch(&pkts_fail_l4_csum, 1);
 +
 +	return 0;
 +}
 +
-+SEC("fentry/veth_devtx_complete_skb")
-+int BPF_PROG(tx_complete, const struct devtx_ctx *devtx, struct sk_buff *skb)
++SEC("?fentry")
++int BPF_PROG(tx_submit_xdp, const struct devtx_ctx *devtx, const struct xdp_frame *xdpf)
++{
++	return tx_submit(devtx, xdpf->data, xdpf->metasize);
++}
++
++SEC("?fentry")
++int BPF_PROG(tx_submit_skb, const struct devtx_ctx *devtx, const struct sk_buff *skb)
++{
++	return tx_submit(devtx, skb->data, devtx->sinfo->meta_len);
++}
++
++static inline int tx_complete(const struct devtx_ctx *devtx, const void *data, u8 meta_len)
 +{
 +	struct xdp_tx_meta meta = {};
 +	struct devtx_sample *sample;
 +	struct udphdr udph;
-+	int ret;
++	__be16 proto = 0;
++	int off;
 +
 +	if (!my_netdev(devtx))
 +		return 0;
-+	if (devtx->sinfo->meta_len != TX_META_LEN)
++	if (meta_len != TX_META_LEN)
 +		return 0;
 +
-+	bpf_probe_read_kernel(&meta, sizeof(meta), skb->data - TX_META_LEN);
++	bpf_probe_read_kernel(&meta, sizeof(meta), data - TX_META_LEN);
 +	if (!meta.request_timestamp)
 +		return 0;
 +
-+	ret = verify_frame(skb, devtx->sinfo);
-+	if (ret < 0) {
-+		__sync_add_and_fetch(&pkts_fail_tx, 1);
++	if (!tx_filter(devtx, data, &proto))
++		return 0;
++
++	off = udpoff(proto);
++	if (!off)
++		return 0;
++
++	bpf_probe_read_kernel(&udph, sizeof(udph), data + off);
++
++	sample = bpf_ringbuf_reserve(&tx_compl_buf, sizeof(*sample), 0);
++	if (!sample) {
++		__sync_add_and_fetch(&pkts_ringbuf_full, 1);
 +		return 0;
 +	}
 +
-+	sample = bpf_ringbuf_reserve(&tx_compl_buf, sizeof(*sample), 0);
-+	if (!sample)
-+		return 0;
-+
-+	bpf_probe_read_kernel(&udph, sizeof(udph),
-+			      skb->data + sizeof(struct ethhdr) + sizeof(struct iphdr));
-+
 +	sample->timestamp_retval = bpf_devtx_tx_timestamp(devtx, &sample->hw_timestamp);
++	sample->sw_complete_timestamp = bpf_ktime_get_tai_ns();
 +	sample->tx_csum = udph.check;
 +
 +	bpf_ringbuf_submit(sample, 0);
@@ -427,31 +325,430 @@ index d151d406a123..a5d9229acdf3 100644
 +	return 0;
 +}
 +
++SEC("?fentry")
++int BPF_PROG(tx_complete_xdp, const struct devtx_ctx *devtx, const struct xdp_frame *xdpf)
++{
++	return tx_complete(devtx, xdpf->data, xdpf->metasize);
++}
++
++SEC("?fentry")
++int BPF_PROG(tx_complete_skb, const struct devtx_ctx *devtx, const struct sk_buff *skb)
++{
++	return tx_complete(devtx, skb->data, devtx->sinfo->meta_len);
++}
++
  char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/xdp_metadata.h b/tools/testing/selftests/bpf/xdp_metadata.h
-index 938a729bd307..ecab5404f1d6 100644
---- a/tools/testing/selftests/bpf/xdp_metadata.h
-+++ b/tools/testing/selftests/bpf/xdp_metadata.h
-@@ -18,3 +18,19 @@ struct xdp_meta {
- 		__s32 rx_hash_err;
+diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+index 613321eb84c1..3f9c47ad5cfa 100644
+--- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+@@ -10,7 +10,9 @@
+  *   - rx_hash
+  *
+  * TX:
+- * - TBD
++ * - UDP 9091 packets trigger TX reply
++ * - TX HW timestamp is requested and reported back upon completion
++ * - TX checksum is requested
+  */
+ 
+ #include <test_progs.h>
+@@ -28,10 +30,12 @@
+ #include <net/if.h>
+ #include <poll.h>
+ #include <time.h>
++#include <unistd.h>
++#include <libgen.h>
+ 
+ #include "xdp_metadata.h"
+ 
+-#define UMEM_NUM 16
++#define UMEM_NUM 256
+ #define UMEM_FRAME_SIZE XSK_UMEM__DEFAULT_FRAME_SIZE
+ #define UMEM_SIZE (UMEM_FRAME_SIZE * UMEM_NUM)
+ #define XDP_FLAGS (XDP_FLAGS_DRV_MODE | XDP_FLAGS_REPLACE)
+@@ -49,24 +53,27 @@ struct xsk {
+ struct xdp_hw_metadata *bpf_obj;
+ struct xsk *rx_xsk;
+ const char *ifname;
++char *tx_complete;
++char *tx_submit;
+ int ifindex;
+ int rxq;
+ 
+ void test__fail(void) { /* for network_helpers.c */ }
+ 
+-static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
++static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id, int flags)
+ {
+ 	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
+ 	const struct xsk_socket_config socket_config = {
+ 		.rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+ 		.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+-		.bind_flags = XDP_COPY,
++		.bind_flags = flags,
++		.tx_metadata_len = TX_META_LEN,
  	};
- };
+ 	const struct xsk_umem_config umem_config = {
+ 		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+ 		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
+ 		.frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
+-		.flags = XDP_UMEM_UNALIGNED_CHUNK_FLAG,
++		.flags = XSK_UMEM__DEFAULT_FLAGS,
+ 	};
+ 	__u32 idx;
+ 	u64 addr;
+@@ -108,7 +115,7 @@ static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
+ 	for (i = 0; i < UMEM_NUM / 2; i++) {
+ 		addr = (UMEM_NUM / 2 + i) * UMEM_FRAME_SIZE;
+ 		printf("%p: rx_desc[%d] -> %lx\n", xsk, i, addr);
+-		*xsk_ring_prod__fill_addr(&xsk->fill, i) = addr;
++		*xsk_ring_prod__fill_addr(&xsk->fill, idx + i) = addr;
+ 	}
+ 	xsk_ring_prod__submit(&xsk->fill, ret);
+ 
+@@ -129,12 +136,22 @@ static void refill_rx(struct xsk *xsk, __u64 addr)
+ 	__u32 idx;
+ 
+ 	if (xsk_ring_prod__reserve(&xsk->fill, 1, &idx) == 1) {
+-		printf("%p: complete idx=%u addr=%llx\n", xsk, idx, addr);
++		printf("%p: complete rx idx=%u addr=%llx\n", xsk, idx, addr);
+ 		*xsk_ring_prod__fill_addr(&xsk->fill, idx) = addr;
+ 		xsk_ring_prod__submit(&xsk->fill, 1);
+ 	}
+ }
+ 
++static int kick_tx(struct xsk *xsk)
++{
++	return sendto(xsk_socket__fd(xsk->socket), NULL, 0, MSG_DONTWAIT, NULL, 0);
++}
 +
-+struct devtx_sample {
-+	int timestamp_retval;
-+	__u64 hw_timestamp;
-+	__u64 sw_complete_timestamp;
-+	__u16 tx_csum;
-+};
++static int kick_rx(struct xsk *xsk)
++{
++	return recvfrom(xsk_socket__fd(xsk->socket), NULL, 0, MSG_DONTWAIT, NULL, NULL);
++}
 +
-+#define TX_META_LEN	8
+ #define NANOSEC_PER_SEC 1000000000 /* 10^9 */
+ static __u64 gettime(clockid_t clock_id)
+ {
+@@ -228,7 +245,102 @@ static void verify_skb_metadata(int fd)
+ 	printf("skb hwtstamp is not found!\n");
+ }
+ 
+-static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t clock_id)
++static bool complete_tx(struct xsk *xsk, struct ring_buffer *ringbuf)
++{
++	__u32 idx;
++	__u64 addr;
 +
-+struct xdp_tx_meta {
-+	__u8 request_timestamp;
-+	__u8 padding0;
-+	__u16 padding1;
-+	__u32 padding2;
-+};
++	if (!xsk_ring_cons__peek(&xsk->comp, 1, &idx))
++		return false;
++
++	addr = *xsk_ring_cons__comp_addr(&xsk->comp, idx);
++
++	printf("%p: complete tx idx=%u addr=%llx\n", xsk, idx, addr);
++	xsk_ring_cons__release(&xsk->comp, 1);
++
++	return true;
++}
++
++#define swap(a, b, len) do { \
++	for (int i = 0; i < len; i++) { \
++		__u8 tmp = ((__u8 *)a)[i]; \
++		((__u8 *)a)[i] = ((__u8 *)b)[i]; \
++		((__u8 *)b)[i] = tmp; \
++	} \
++} while (0)
++
++static void ping_pong(struct xsk *xsk, void *rx_packet)
++{
++	struct ipv6hdr *ip6h = NULL;
++	struct iphdr *iph = NULL;
++	struct xdp_tx_meta *meta;
++	struct xdp_desc *tx_desc;
++	struct udphdr *udph;
++	struct ethhdr *eth;
++	__sum16 want_csum;
++	void *data;
++	__u32 idx;
++	int ret;
++	int len;
++
++	ret = xsk_ring_prod__reserve(&xsk->tx, 1, &idx);
++	if (ret != 1) {
++		printf("%p: failed to reserve tx slot\n", xsk);
++		return;
++	}
++
++	tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx);
++	tx_desc->addr = idx % (UMEM_NUM / 2) * UMEM_FRAME_SIZE + TX_META_LEN;
++	data = xsk_umem__get_data(xsk->umem_area, tx_desc->addr);
++
++	meta = data - TX_META_LEN;
++	meta->request_timestamp = 1;
++
++	eth = rx_packet;
++
++	if (eth->h_proto == htons(ETH_P_IP)) {
++		iph = (void *)(eth + 1);
++		udph = (void *)(iph + 1);
++	} else if (eth->h_proto == htons(ETH_P_IPV6)) {
++		ip6h = (void *)(eth + 1);
++		udph = (void *)(ip6h + 1);
++	} else {
++		printf("%p: failed to detect IP version for ping pong %04x\n", xsk, eth->h_proto);
++		xsk_ring_prod__cancel(&xsk->tx, 1);
++		return;
++	}
++
++	len = ETH_HLEN;
++	if (ip6h)
++		len += sizeof(*ip6h) + ntohs(ip6h->payload_len);
++	if (iph)
++		len += ntohs(iph->tot_len);
++
++	swap(eth->h_dest, eth->h_source, ETH_ALEN);
++	if (iph)
++		swap(&iph->saddr, &iph->daddr, 4);
++	else
++		swap(&ip6h->saddr, &ip6h->daddr, 16);
++	swap(&udph->source, &udph->dest, 2);
++
++	want_csum = udph->check;
++	if (iph)
++		udph->check = ~csum_tcpudp_magic(iph->saddr, iph->daddr,
++						 ntohs(udph->len), IPPROTO_UDP, 0);
++	else
++		udph->check = ~csum_ipv6_magic(&ip6h->saddr, &ip6h->daddr,
++					       ntohs(udph->len), IPPROTO_UDP, 0);
++
++	printf("%p: ping-pong with csum=%04x (want %04x)\n", xsk, udph->check, want_csum);
++
++	memcpy(data, rx_packet, len); /* don't share umem chunk for simplicity */
++	tx_desc->len = len;
++
++	xsk_ring_prod__submit(&xsk->tx, 1);
++}
++
++static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t clock_id,
++			   struct ring_buffer *ringbuf)
+ {
+ 	const struct xdp_desc *rx_desc;
+ 	struct pollfd fds[rxq + 1];
+@@ -250,10 +362,22 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
+ 
+ 	while (true) {
+ 		errno = 0;
++
++		for (i = 0; i < rxq; i++) {
++			ret = kick_rx(&rx_xsk[i]);
++			if (ret)
++				printf("kick_rx ret=%d\n", ret);
++		}
++
+ 		ret = poll(fds, rxq + 1, 1000);
+-		printf("poll: %d (%d) skip=%llu fail=%llu redir=%llu\n",
++		printf("poll: %d (%d) skip=%llu/%llu redir=%llu ring_full=%llu rx_fail=%llu tx_fail=%llu l4_csum_fail=%llu\n",
+ 		       ret, errno, bpf_obj->bss->pkts_skip,
+-		       bpf_obj->bss->pkts_fail, bpf_obj->bss->pkts_redir);
++		       bpf_obj->bss->pkts_tx_skip,
++		       bpf_obj->bss->pkts_redir,
++		       bpf_obj->bss->pkts_ringbuf_full,
++		       bpf_obj->bss->pkts_fail,
++		       bpf_obj->bss->pkts_fail_tx,
++		       bpf_obj->bss->pkts_fail_l4_csum);
+ 		if (ret < 0)
+ 			break;
+ 		if (ret == 0)
+@@ -280,6 +404,24 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
+ 			       xsk, idx, rx_desc->addr, addr, comp_addr);
+ 			verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr),
+ 					    clock_id);
++
++			if (tx_submit && tx_complete) {
++				/* mirror the packet back */
++				ping_pong(xsk, xsk_umem__get_data(xsk->umem_area, addr));
++
++				ret = kick_tx(xsk);
++				if (ret)
++					printf("kick_tx ret=%d\n", ret);
++
++				for (int j = 0; j < 500; j++) {
++					if (complete_tx(xsk, ringbuf))
++						break;
++					usleep(10*1000);
++				}
++
++				ring_buffer__poll(ringbuf, 1000);
++			}
++
+ 			xsk_ring_cons__release(&xsk->rx, 1);
+ 			refill_rx(xsk, comp_addr);
+ 		}
+@@ -404,21 +546,69 @@ static void timestamping_enable(int fd, int val)
+ 		error(1, errno, "setsockopt(SO_TIMESTAMPING)");
+ }
+ 
++static int process_sample(void *ctx, void *data, size_t len)
++{
++	struct devtx_sample *sample = data;
++
++	printf("got tx sample: tx_err %u hw_timestamp %llu sw_timestamp %llu csum %04x\n",
++	       sample->timestamp_retval, sample->hw_timestamp,
++	       sample->sw_complete_timestamp,
++	       sample->tx_csum);
++
++	return 0;
++}
++
++static void usage(const char *prog)
++{
++	fprintf(stderr,
++		"usage: %s [OPTS] <ifname>\n"
++		"OPTS:\n"
++		"    -s    symbol name for tx_submit\n"
++		"    -c    symbol name for tx_complete\n"
++		"    -Z    run in copy mode\n",
++		prog);
++}
++
+ int main(int argc, char *argv[])
+ {
++	int bind_flags =  XDP_USE_NEED_WAKEUP | XDP_ZEROCOPY;
++	struct ring_buffer *tx_compl_ringbuf = NULL;
+ 	clockid_t clock_id = CLOCK_TAI;
+ 	int server_fd = -1;
++	int opt;
+ 	int ret;
+ 	int i;
+ 
+ 	struct bpf_program *prog;
+ 
+-	if (argc != 2) {
++	while ((opt = getopt(argc, argv, "s:c:Z")) != -1) {
++		switch (opt) {
++		case 's':
++			tx_submit = optarg;
++			break;
++		case 'c':
++			tx_complete = optarg;
++			break;
++		case 'Z':
++			bind_flags = XDP_USE_NEED_WAKEUP | XDP_COPY;
++			break;
++		default:
++			usage(basename(argv[0]));
++			return 1;
++		}
++	}
++
++	if (argc < 2) {
+ 		fprintf(stderr, "pass device name\n");
+ 		return -1;
+ 	}
+ 
+-	ifname = argv[1];
++	if (optind >= argc) {
++		usage(basename(argv[0]));
++		return 1;
++	}
++
++	ifname = argv[optind];
+ 	ifindex = if_nametoindex(ifname);
+ 	rxq = rxq_num(ifname);
+ 
+@@ -432,7 +622,7 @@ int main(int argc, char *argv[])
+ 
+ 	for (i = 0; i < rxq; i++) {
+ 		printf("open_xsk(%s, %p, %d)\n", ifname, &rx_xsk[i], i);
+-		ret = open_xsk(ifindex, &rx_xsk[i], i);
++		ret = open_xsk(ifindex, &rx_xsk[i], i, bind_flags);
+ 		if (ret)
+ 			error(1, -ret, "open_xsk");
+ 
+@@ -444,15 +634,64 @@ int main(int argc, char *argv[])
+ 	if (libbpf_get_error(bpf_obj))
+ 		error(1, libbpf_get_error(bpf_obj), "xdp_hw_metadata__open");
+ 
++	bpf_obj->data->ifindex = ifindex;
++	bpf_obj->data->net_cookie = get_net_cookie();
++
+ 	prog = bpf_object__find_program_by_name(bpf_obj->obj, "rx");
+ 	bpf_program__set_ifindex(prog, ifindex);
+ 	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
+ 
++	prog = bpf_object__find_program_by_name(bpf_obj->obj,
++						bind_flags & XDP_COPY ?
++						"tx_submit_skb" :
++						"tx_submit_xdp");
++	bpf_program__set_ifindex(prog, ifindex);
++	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
++	if (tx_submit) {
++		printf("attaching devtx submit program to %s\n", tx_submit);
++		ret = bpf_program__set_attach_target(prog, 0, tx_submit);
++		if (ret)
++			printf("failed to attach submit program to %s, ret=%d\n",
++			       tx_submit, ret);
++		bpf_program__set_autoattach(prog, true);
++		bpf_program__set_autoload(prog, true);
++	} else {
++		printf("skipping devtx submit program\n");
++	}
++
++	prog = bpf_object__find_program_by_name(bpf_obj->obj,
++						bind_flags & XDP_COPY ?
++						"tx_complete_skb" :
++						"tx_complete_xdp");
++	bpf_program__set_ifindex(prog, ifindex);
++	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
++	if (tx_complete) {
++		printf("attaching devtx complete program to %s\n", tx_complete);
++		ret = bpf_program__set_attach_target(prog, 0, tx_complete);
++		if (ret)
++			printf("failed to attach complete program to %s, ret=%d\n",
++			       tx_complete, ret);
++		bpf_program__set_autoattach(prog, true);
++		bpf_program__set_autoload(prog, true);
++	} else {
++		printf("skipping devtx complete program\n");
++	}
++
+ 	printf("load bpf program...\n");
+ 	ret = xdp_hw_metadata__load(bpf_obj);
+ 	if (ret)
+ 		error(1, -ret, "xdp_hw_metadata__load");
+ 
++	printf("attach devts bpf programs...\n");
++	ret = xdp_hw_metadata__attach(bpf_obj);
++	if (ret)
++		error(1, -ret, "xdp_hw_metadata__attach");
++
++	tx_compl_ringbuf = ring_buffer__new(bpf_map__fd(bpf_obj->maps.tx_compl_buf),
++					    process_sample, NULL, NULL);
++	if (libbpf_get_error(tx_compl_ringbuf))
++		error(1, -libbpf_get_error(tx_compl_ringbuf), "ring_buffer__new");
++
+ 	printf("prepare skb endpoint...\n");
+ 	server_fd = start_server(AF_INET6, SOCK_DGRAM, NULL, 9092, 1000);
+ 	if (server_fd < 0)
+@@ -472,7 +711,7 @@ int main(int argc, char *argv[])
+ 			error(1, -ret, "bpf_map_update_elem");
+ 	}
+ 
+-	printf("attach bpf program...\n");
++	printf("attach rx bpf program...\n");
+ 	ret = bpf_xdp_attach(ifindex,
+ 			     bpf_program__fd(bpf_obj->progs.rx),
+ 			     XDP_FLAGS, NULL);
+@@ -480,7 +719,7 @@ int main(int argc, char *argv[])
+ 		error(1, -ret, "bpf_xdp_attach");
+ 
+ 	signal(SIGINT, handle_signal);
+-	ret = verify_metadata(rx_xsk, rxq, server_fd, clock_id);
++	ret = verify_metadata(rx_xsk, rxq, server_fd, clock_id, tx_compl_ringbuf);
+ 	close(server_fd);
+ 	cleanup();
+ 	if (ret)
 -- 
 2.41.0.255.g8b1d071c50-goog
 
