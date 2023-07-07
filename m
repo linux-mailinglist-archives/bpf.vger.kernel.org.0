@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-4388-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4389-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 855EF74A972
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 05:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 81C2874A97B
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 05:52:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10F16281608
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 03:48:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D73F28160B
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 03:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942931C37;
-	Fri,  7 Jul 2023 03:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 278E91C37;
+	Fri,  7 Jul 2023 03:52:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69AA61876
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 03:48:29 +0000 (UTC)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A0E71FC9
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 20:48:27 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fba8f2197bso2220855e87.3
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 20:48:27 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA59A1876
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 03:52:40 +0000 (UTC)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C541FC9
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 20:52:27 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fbc587febfso14510675e9.2
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 20:52:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688701706; x=1691293706;
+        d=gmail.com; s=20221208; t=1688701945; x=1691293945;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hRijrwql2x5unikpBsPn1ASMojUB0P1cP9zO4QAmkVA=;
-        b=VkR4rOFkg2zGoajyNd2epnVS7563m6W+O8S3yGNn8E1YNvjRm25Y4UDdM1kydSOr7s
-         7pxczyYANTucRMIVFKy+e9hzNJJh78wKOy5Lo2FXDecehwTZU4nGcwWzLYF1rIH8+Y6c
-         dtjLxOCY+s7G1zfuSSDIHo03EJkSX3tXzYbcMvSivp7AdZEvQCdsKshOWwLEqRKZ5krI
-         8phlhVn/tVm5v3J4XjHw9fZlF32PMPMqhm7XX2eqtkG+EWZlvbQ/kSIwYOdIDGgvbyow
-         YSwnObii0EtMnMtKRyl7YbwSJi9pe8Zjhq0msu5hq9F734xU5RIWgR86agW2WdJoVKtq
-         tCGA==
+        bh=g7FEKjZbrpQeS4wm2f+5jvVSkxWn/bUJ/cNzpZ9OEg8=;
+        b=K9HnMIJ4zlSDHHlErNZ+7c2BxywYSPSwkrxvm5lKQ0b8CHW3dX0MyiiPGk+xuvX3lS
+         x+xvjF9kresV/5EQHX4bDzJYWutazUc7vzanl05ac4dD0i0fxvOHGUCexKNFYjvMPx59
+         los3dc7RCrnPgNAgHrJo0ueTgjbP+v5jhnM2M7XtZ9N62guHUI1lQYBzahViNQQad7Lq
+         8hlxGLP2qSL8RcmGkyZ9xaN+IzYqfMwm2DxdhWj6MGVPUvnVD4kv1teCFFF8yDiD9lop
+         /sTDBz7EXP3jYOV+Dr9BnqYTlzhq3UoRnpnhcRexdk9r4Gs3JW9n0p9zyNm8p0oIdvYl
+         uzcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688701706; x=1691293706;
+        d=1e100.net; s=20221208; t=1688701945; x=1691293945;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hRijrwql2x5unikpBsPn1ASMojUB0P1cP9zO4QAmkVA=;
-        b=Qby7kFBiRXWOnwgU6j1ARiS6xvRlXN8czsJNWtt0sqLwGRCBB/WhRlmS2X6etAGvfq
-         CIr52ZfDZpgXRg5bz8nnp1X6cis7iUMSAsqKUsDvfK6+f5OGVsjOUPcgHal6GdNPTiX4
-         27ktqBqgV+a4hccK/4MVaaQNjuaHO8oeyiiZT2el7eqmIwZLdGM/YAxVTobV+rmNJ3ED
-         vvSX4hUaf8cRqTKTwI4XzLh0fB7r2nZdYJUA1vH9I9MUqWuZ3MU7SEVkzzghrmzWEgiF
-         +rI+JeKHhKDNJvgV3CrwdAadzuEACMVxK3y+hd0haUFbf1O5bDjhIqll0K1nsHqmrxHa
-         23FA==
-X-Gm-Message-State: ABy/qLZ1aD3GSVIbBNgPP2u9A04UPeYNqVrkVu15JAN4AwcLGRGbupIs
-	tDHwiQPEvkvucnXkS9n/1PjfhMlQ1FkfGRqF4/c=
-X-Google-Smtp-Source: APBJJlHQPx2ym6naqDMYlMFwACaCfkvumlwa7pwH3K9hu5P5mXUF971XGCQfyglN+JkhYk6/Y4QO7Liw3TohMI5klVo=
-X-Received: by 2002:ac2:5b1d:0:b0:4f7:6976:2070 with SMTP id
- v29-20020ac25b1d000000b004f769762070mr2776618lfn.40.1688701705390; Thu, 06
- Jul 2023 20:48:25 -0700 (PDT)
+        bh=g7FEKjZbrpQeS4wm2f+5jvVSkxWn/bUJ/cNzpZ9OEg8=;
+        b=Cx9/EOJwHMBXmCgNDsxiyijOgPrax68mLVv2B+KEpFQGcwpB4p6Sap+vPrLgy/99ev
+         JLAix3NnvFu3MtyJua9BoqtAB6Ohd9mKZjg1E9cgxSCzoKz3jaFlqeeejTkvDc5MnJN1
+         wqAx5r46QyyTydLI8owBYpuC84Fb8CVSeUjhMwd4S/FVfJwt99BUTIqNRO7xKARtZUsa
+         lZOKAGc4728fdrdrGXtjzIym9grXPhDF1Eb894YmoJUc7BS7yMp02yk5Zdv7wo4KfJ9g
+         qZyOtELw5au653lB0m9WKG/C+H181ImH7faTZlSTHMxIrsGhwd0v+dsJGr5JRTCnleNO
+         thWQ==
+X-Gm-Message-State: ABy/qLYgvdOqFuR6WexK+YHdVKI+/y2h03VZIBJsm5zUNb1LhLNDeUqM
+	X0uXF/2eSgmz/JxUWpIPQYX/U5nU6uHKzKU1UcTjvDs7ujc=
+X-Google-Smtp-Source: APBJJlEJL/OORsHyvAfMgiFcYAOs8fPBFasaBAbiv3vWYqb+BuIctZLYdQC668autMt682579Bp6kKcRwQzC7LLSkCs=
+X-Received: by 2002:a05:600c:22c1:b0:3f7:f45d:5e44 with SMTP id
+ 1-20020a05600c22c100b003f7f45d5e44mr2638824wmg.32.1688701945470; Thu, 06 Jul
+ 2023 20:52:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-11-jolsa@kernel.org>
-In-Reply-To: <20230630083344.984305-11-jolsa@kernel.org>
+References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-12-jolsa@kernel.org>
+In-Reply-To: <20230630083344.984305-12-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 6 Jul 2023 20:48:13 -0700
-Message-ID: <CAEf4Bza0sDmQgcPMh3S5rRHdw9n3Cx_KwCLvP7y__xkR1vOL8A@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 10/26] libbpf: Add elf_resolve_syms_offsets function
+Date: Thu, 6 Jul 2023 20:52:13 -0700
+Message-ID: <CAEf4BzZsF5jyVxETLTJ507CMx75HQxEUndoqbAVqakBXkJs5eQ@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 11/26] libbpf: Add elf_resolve_pattern_offsets function
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
@@ -80,78 +80,50 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 30, 2023 at 1:35=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Fri, Jun 30, 2023 at 1:36=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding elf_resolve_syms_offsets function that looks up
-> offsets for symbols specified in syms array argument.
+> Adding elf_resolve_pattern_offsets function that looks up
+> offsets for symbols specified by pattern argument.
 >
-> Offsets are returned in allocated array with the 'cnt' size,
-> that needs to be released by the caller.
+> The 'pattern' argument allows wildcards (*?' supported).
+>
+> Offsets are returned in allocated array together with its
+> size and needs to be released by the caller.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/lib/bpf/elf.c        | 105 +++++++++++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf_elf.h |   2 +
->  2 files changed, 107 insertions(+)
+>  tools/lib/bpf/elf.c             | 57 +++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.c          |  2 +-
+>  tools/lib/bpf/libbpf_elf.h      |  3 ++
+>  tools/lib/bpf/libbpf_internal.h |  1 +
+>  4 files changed, 62 insertions(+), 1 deletion(-)
 >
 > diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-> index fcce4bd2478f..7e2f3b2e1fb6 100644
+> index 7e2f3b2e1fb6..f2d1a8cc2f9d 100644
 > --- a/tools/lib/bpf/elf.c
 > +++ b/tools/lib/bpf/elf.c
-> @@ -271,3 +271,108 @@ long elf_find_func_offset_from_file(const char *bin=
-ary_path, const char *name)
+> @@ -376,3 +376,60 @@ int elf_resolve_syms_offsets(const char *binary_path=
+, int cnt,
 >         elf_close(&elf_fd);
->         return ret;
+>         return err;
 >  }
 > +
-> +struct symbol {
-> +       const char *name;
-> +       int bind;
-> +       int idx;
-> +};
-> +
-> +static int symbol_cmp(const void *_a, const void *_b)
-> +{
-> +       const struct symbol *a =3D _a;
-> +       const struct symbol *b =3D _b;
 
-please, let's not (over)use leading underscores, x/y, s1/s2, whatever
+same, leave comment that caller should free offsets on success?
 
-> +
-> +       return strcmp(a->name, b->name);
-> +}
-> +
-
-probably worth leaving a comment that the caller should free offsets on suc=
-cess?
-
-> +int elf_resolve_syms_offsets(const char *binary_path, int cnt,
-> +                            const char **syms, unsigned long **poffsets)
+> +int elf_resolve_pattern_offsets(const char *binary_path, const char *pat=
+tern,
+> +                               unsigned long **poffsets, size_t *pcnt)
 > +{
 > +       int sh_types[2] =3D { SHT_DYNSYM, SHT_SYMTAB };
-> +       int err =3D 0, i, cnt_done =3D 0;
-> +       unsigned long *offsets;
-> +       struct symbol *symbols;
+> +       unsigned long *offsets =3D NULL;
+> +       size_t cap =3D 0, cnt =3D 0;
 > +       struct elf_fd elf_fd;
+> +       int err =3D 0, i;
 > +
 > +       err =3D elf_open(binary_path, &elf_fd);
 > +       if (err)
 > +               return err;
-> +
-> +       offsets =3D calloc(cnt, sizeof(*offsets));
-> +       symbols =3D calloc(cnt, sizeof(*symbols));
-> +
-> +       if (!offsets || !symbols) {
-> +               err =3D -ENOMEM;
-> +               goto out;
-> +       }
-> +
-> +       for (i =3D 0; i < cnt; i++) {
-> +               symbols[i].name =3D syms[i];
-> +               symbols[i].idx =3D i;
-> +       }
-> +
-> +       qsort(symbols, cnt, sizeof(*symbols), symbol_cmp);
 > +
 > +       for (i =3D 0; i < ARRAY_SIZE(sh_types); i++) {
 > +               struct elf_sym_iter iter;
@@ -165,94 +137,94 @@ sh_types[i], STT_FUNC);
 > +                       goto out;
 > +               }
 
-same nit, no need for nested ifs
+ditto, minimize nesting, please
+
 > +
 > +               while ((sym =3D elf_sym_iter_next(&iter))) {
-> +                       int bind =3D GELF_ST_BIND(sym->sym.st_info);
-> +                       struct symbol *found, tmp =3D {
-> +                               .name =3D sym->name,
-> +                       };
-> +                       unsigned long *offset;
-> +
-> +                       found =3D bsearch(&tmp, symbols, cnt, sizeof(*sym=
-bols), symbol_cmp);
-> +                       if (!found)
+> +                       if (!glob_match(sym->name, pattern))
 > +                               continue;
 > +
-> +                       offset =3D &offsets[found->idx];
-> +                       if (*offset > 0) {
-> +                               /* same offset, no problem */
-> +                               if (*offset =3D=3D elf_sym_offset(sym))
-> +                                       continue;
-> +                               /* handle multiple matches */
-> +                               if (found->bind !=3D STB_WEAK && bind !=
-=3D STB_WEAK) {
-> +                                       /* Only accept one non-weak bind.=
- */
-> +                                       pr_warn("elf: ambiguous match fou=
-ndr '%s', '%s' in '%s'\n",
-
-typo: found
-
-but also wouldn't sym->name and found->name be always the same? Maybe
-log sym->name, previous *offset and newly calculated
-elf_sym_offset(sym) instead?
-
-> +                                               sym->name, found->name, b=
-inary_path);
-> +                                       err =3D -LIBBPF_ERRNO__FORMAT;
-
-I'd minimize using those custom libbpf-only errors, why not -ESRCH here?
-
-> +                                       goto out;
-> +                               } else if (bind =3D=3D STB_WEAK) {
-> +                                       /* already have a non-weak bind, =
-and
-> +                                        * this is a weak bind, so ignore=
-.
-> +                                        */
-> +                                       continue;
-> +                               }
-> +                       } else {
-> +                               cnt_done++;
-> +                       }
-> +                       *offset =3D elf_sym_offset(sym);
-
-maybe remember elf_sym_offset() result in a variable? you are using it
-in two (and with my suggestion above it will be three) places already
-
-> +                       found->bind =3D bind;
+> +                       err =3D libbpf_ensure_mem((void **) &offsets, &ca=
+p, sizeof(*offsets),
+> +                                               cnt + 1);
+> +                       if (err)
+> +                               goto out;
+> +
+> +                       offsets[cnt++] =3D elf_sym_offset(sym);
 > +               }
+> +
+> +               /* If we found anything in the first symbol section,
+> +                * do not search others to avoid duplicates.
+
+DYNSYM is going to have only exposed symbols, so for this pattern
+matching, maybe it's best to start with SYMTAB and only fallback to
+DYNSYM if we didn't find anything in SYMTAB (more realistically it
+would be that SYMTAB section is missing, so we fallback to DYNSYM;
+otherwise neither DYNSYM nor SYMTAB will have matching symbols, most
+probably, but that's minor)
+
+other than that, LGTM
+
+> +                */
+> +               if (cnt)
+> +                       break;
 > +       }
 > +
-> +       if (cnt !=3D cnt_done) {
+> +       if (cnt) {
+> +               *poffsets =3D offsets;
+> +               *pcnt =3D cnt;
+> +       } else {
 > +               err =3D -ENOENT;
-> +               goto out;
 > +       }
-> +
-> +       *poffsets =3D offsets;
 > +
 > +out:
-> +       free(symbols);
 > +       if (err)
 > +               free(offsets);
 > +       elf_close(&elf_fd);
 > +       return err;
 > +}
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 093add8124d8..f33ef7cb1adc 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -10509,7 +10509,7 @@ struct bpf_link *bpf_program__attach_ksyscall(con=
+st struct bpf_program *prog,
+>  }
+>
+>  /* Adapted from perf/util/string.c */
+> -static bool glob_match(const char *str, const char *pat)
+> +bool glob_match(const char *str, const char *pat)
+>  {
+>         while (*str && *pat && *pat !=3D '*') {
+>                 if (*pat =3D=3D '?') {      /* Matches any single charact=
+er */
 > diff --git a/tools/lib/bpf/libbpf_elf.h b/tools/lib/bpf/libbpf_elf.h
-> index c763ac35a85e..026c7b378727 100644
+> index 026c7b378727..0c75d3b2398b 100644
 > --- a/tools/lib/bpf/libbpf_elf.h
 > +++ b/tools/lib/bpf/libbpf_elf.h
-> @@ -16,4 +16,6 @@ void elf_close(struct elf_fd *elf_fd);
->  long elf_find_func_offset(Elf *elf, const char *binary_path, const char =
-*name);
->  long elf_find_func_offset_from_file(const char *binary_path, const char =
-*name);
+> @@ -18,4 +18,7 @@ long elf_find_func_offset_from_file(const char *binary_=
+path, const char *name);
 >
-> +int elf_resolve_syms_offsets(const char *binary_path, int cnt,
-> +                            const char **syms, unsigned long **poffsets)=
+>  int elf_resolve_syms_offsets(const char *binary_path, int cnt,
+>                              const char **syms, unsigned long **poffsets)=
 ;
+> +
+> +int elf_resolve_pattern_offsets(const char *binary_path, const char *pat=
+tern,
+> +                                unsigned long **poffsets, size_t *pcnt);
 >  #endif /* *__LIBBPF_LIBBPF_ELF_H */
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
+nal.h
+> index e4d05662a96c..7d75b92e531a 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -577,4 +577,5 @@ static inline bool is_pow_of_2(size_t x)
+>  #define PROG_LOAD_ATTEMPTS 5
+>  int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attem=
+pts);
+>
+> +bool glob_match(const char *str, const char *pat);
+>  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
 > --
 > 2.41.0
 >
