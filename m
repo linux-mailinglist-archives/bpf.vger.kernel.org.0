@@ -1,102 +1,91 @@
-Return-Path: <bpf+bounces-4445-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4446-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E348C74B560
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 18:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2674A74B562
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 18:52:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F939280C7B
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:52:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF8C4281479
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 16:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8778D168C4;
-	Fri,  7 Jul 2023 16:51:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174E6171B3;
+	Fri,  7 Jul 2023 16:51:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D3141095B;
-	Fri,  7 Jul 2023 16:51:13 +0000 (UTC)
-Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61C72119;
-	Fri,  7 Jul 2023 09:51:11 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailnew.west.internal (Postfix) with ESMTP id DC54C2B00067;
-	Fri,  7 Jul 2023 12:51:07 -0400 (EDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5701D50F;
+	Fri,  7 Jul 2023 16:51:14 +0000 (UTC)
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD5D213F;
+	Fri,  7 Jul 2023 09:51:13 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.west.internal (Postfix) with ESMTP id 10E5E3200938;
+	Fri,  7 Jul 2023 12:51:11 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 07 Jul 2023 12:51:10 -0400
+  by compute3.internal (MEProxy); Fri, 07 Jul 2023 12:51:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm1; t=1688748667; x=
-	1688755867; bh=VezMYB4YicTitKIY+TkEFPi41YfCsLE9uPWHuApXvaI=; b=o
-	IXiUHeK5rYHaRz2mqUJCyH3N7bpSNlHaNTW53lDL6vwB2H0bcYaN07Y7226GYkZG
-	CPCGMBOEIFzA2mhPXV9tikdNF21/Q+u8G3ohcfvmJFU1xNpQ3I2KUtoFNhO4kEbc
-	CrH685S3GxYnwQX1QpIS4htQOQnu/gVH6m9GAKlcyh88dGTACsE493tGFcn0hrzf
-	Vbmby9DLnkapCZvsXVwTGR2yxi71CJFxybCulaohdFWraWiZV9og5iEFZtDT/I/2
-	T3IgTjhyw1LZdCnASBYLzNXEoLrVOeA/8EAYsEoE33EE9pVqOk5QwMtU/+/khDUJ
-	L0RullPKDWNZd5QiD3G0Q==
+	:reply-to:sender:subject:subject:to:to; s=fm1; t=1688748671; x=
+	1688835071; bh=FoKm3yKhKCBi4WaMIZuBtdvEh2SuGoVcGT/CE3PLqoA=; b=C
+	pxGoRIpbUCuQHC1kMtptwC/nXVPgw0FdIcUX373heYLLSE+iGY3QDgw8Qog8iUwQ
+	FuOb63921KrskCllt6uThhF8DgKihR0Dgr1/N9/KywDhfNELwfbB8vD/oLNRHstt
+	srYuTzk1cJYOOQ+yMUNlsE+i8028Pg7OUPSiuXw0t+RLVHTTS6idix1IWtuXYGtZ
+	u0WWDg085T8oFNsOsBs5Rrr+L/Rm5NUO42EWxD03GqX4+8fmGC4uxu/yvWmjfJK2
+	CwrXRhRSuqc4QCcqGIsBTPPnwsI3Xzotc3iJEgZ27F7TEpCAvIa4cUctYaqFWDNo
+	VWzPEZL5WeT+JbGIoN0/A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1688748667; x=
-	1688755867; bh=VezMYB4YicTitKIY+TkEFPi41YfCsLE9uPWHuApXvaI=; b=H
-	MuEc9RHecFlhMQYG0dl1lRWw+hZmdNIhXk+e5syBdN8CqQmpONt87rWZ47kt4D4A
-	1VeIfRu/v9ZlGNNleTshTn20cGXe8Cbf2gWdb8keFco3jHmepG3OUTpScCxdWv4T
-	1HU2VTLV6/ixqGj6n4x4gv/3xD3RkB3Ie5nCC5Ar+AgxIlRW94e84Nu0VUh3LWP4
-	c79QtK/S8k2tQ+44e9+OtErD4B3Mb2oAj1bUgmt8nLMh2mCwWbVTXxLWYUWLFfIw
-	xjeHmA3PGCHTOKc9lC6fgheF4Hr3We9jSjJJn7sPMluUrPoSLjW+k7Mfdt6cnfCY
-	tyQsACjwt5ZrAwg93dzmw==
-X-ME-Sender: <xms:e0KoZLSIHVbD2_Wz3gN1XnrY2P5yKe8ufiFB_4zm4bgvkTCn-iAufw>
-    <xme:e0KoZMwIS5nA59AbCYTgBAnSQmqRISHvMkI1o8bG-VxfrPbqcuUHLu44WkmhhyMkQ
-    oPrt8MMvjj5bqbL_g>
-X-ME-Received: <xmr:e0KoZA1fSqr0JFQxsq_RWHAg-mXV5lsoBuV_iXYKrEj-N8AGLvWjSy4gXG-jKp3JwoeWVvzPbL_cM5kEiWfXL0TZYQIxSOrGzZCukCeoXIA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrvddugddutdehucetufdoteggodetrfdotf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1688748671; x=
+	1688835071; bh=FoKm3yKhKCBi4WaMIZuBtdvEh2SuGoVcGT/CE3PLqoA=; b=Q
+	DfYGk3xUcWSyYfR+RC0Us6MfKvC4LXJ1CAQ689aBL9chjm3Tr8sVAL5nva/k11im
+	7qAHuv+ZdnDBsO03LPe/ScxLuir6zTE9B3hmJII1cDHaHbGkedNjm4bfm2edWuqC
+	U39FP9vizPXpWmkEl8QnCJ18mlanbZ+COxb/+1DlRfFQmFxtkpboE9jaGUddznvg
+	fcrvbpxOqBdR83kdwNLPQH8Oi1BsBXBG7NvsYWs/W7vNwVH/suB/R/MwE49bOwB1
+	8hQxz+5zVlwXo64aCWwV6K6Vykx4niTWnDgRWf+zll6UM5lhbEVSFqqGwnrttI9S
+	/HpO5Qx6skqTKnZtYGzJQ==
+X-ME-Sender: <xms:f0KoZLdSiLU_MrpZKNp8HhNLe1w5TV749V5X-FmFuPGYexblamkSgA>
+    <xme:f0KoZBO-BQAB_nv7CjnTqDx0BDwMZqVfLVO7WDh5j2DGxipzHD-SGpFQcy7ZreimY
+    UhHlL7YB5AqZ2lMag>
+X-ME-Received: <xmr:f0KoZEhYG9bspBzXINCX4smns-xtkK7EqjcdzW51Lyig7ph3sc9sykRQcxKnnJMR7Eb95jFaFsvOSr-rYmUVBVGoZ790Pt0EqgNMtCkzljU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrvddugddutdegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
     evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepjeegveeljeehvdevud
-    duffffleelveejueegjedvhedvhedvheethfejgedtieeinecuffhomhgrihhnpehnvght
-    fhhilhhtvghrrdhpfhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:e0KoZLCS730AUGs0HL1gKHIdacfKccuUyq2fksw3H9fjOd1fNhs-IA>
-    <xmx:e0KoZEhZT_NrzXvbz7xd_Pfr_-CWXGAf6NC2y4XsDIa_SHEvVxh0VA>
-    <xmx:e0KoZPpPRiKo7q8Cg8O_2TtscVCWqirZ7xF377NA2jVQvd3WIWMnMA>
-    <xmx:e0KoZPQMKdagBjFDLZJupdVHF3LQPDxSmdyTwg48d7BzhNUD5Uulp3LIT1o>
+    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
+    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:f0KoZM-yONI7pt_XjeVlwaGRoWBWWal2nT-ExAHvDQW7oEHZ8cStHg>
+    <xmx:f0KoZHvg4QfdGuCTqiLwzjZMN7Fmpg0KAovd-l_J7kIgIyPKhGyaJQ>
+    <xmx:f0KoZLGyJWdctpcpaKVSEqJmo2oE6ZnVsEhLuU1FSqOs7rxeYEvIBQ>
+    <xmx:f0KoZAGsrq4lIiKE7lyEcGrlGMc_EY-RXmI-jrLEuz7gV6AI333GYg>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 7 Jul 2023 12:51:05 -0400 (EDT)
+ 7 Jul 2023 12:51:10 -0400 (EDT)
 From: Daniel Xu <dxu@dxuuu.xyz>
-To: ast@kernel.org,
+To: pablo@netfilter.org,
 	kuba@kernel.org,
-	daniel@iogearbox.net,
-	davem@davemloft.net,
 	edumazet@google.com,
+	davem@davemloft.net,
 	kadlec@netfilter.org,
-	andrii@kernel.org,
 	pabeni@redhat.com,
-	pablo@netfilter.org,
-	fw@strlen.de
-Cc: martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
+	dsahern@kernel.org,
+	fw@strlen.de,
+	daniel@iogearbox.net
+Cc: netfilter-devel@vger.kernel.org,
 	coreteam@netfilter.org,
+	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org,
-	dsahern@kernel.org
-Subject: [PATCH bpf-next v3 2/6] netfilter: bpf: Support BPF_F_NETFILTER_IP_DEFRAG in netfilter link
-Date: Fri,  7 Jul 2023 10:50:17 -0600
-Message-ID: <3b1c20ea7eb2f77065c683e21a2a5d457a57011d.1688748455.git.dxu@dxuuu.xyz>
+	bpf@vger.kernel.org
+Subject: [PATCH bpf-next v3 3/6] netfilter: bpf: Prevent defrag module unload while link active
+Date: Fri,  7 Jul 2023 10:50:18 -0600
+Message-ID: <7549d65daa702ba89aa3e43d5a1bbd562d569a99.1688748455.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1688748455.git.dxu@dxuuu.xyz>
 References: <cover.1688748455.git.dxu@dxuuu.xyz>
@@ -108,235 +97,146 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This commit adds support for enabling IP defrag using pre-existing
-netfilter defrag support. Basically all the flag does is bump a refcnt
-while the link the active. Checks are also added to ensure the prog
-requesting defrag support is run _after_ netfilter defrag hooks.
+While in practice we could handle the module being unloaded while a
+netfilter link (that requested defrag) was active, it's a better user
+experience to prevent the defrag module from going away. It would
+violate user expectations if fragmented packets started showing up if
+some other part of the system tried to unload defrag module.
 
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- include/uapi/linux/bpf.h       |   5 ++
- net/netfilter/nf_bpf_link.c    | 129 ++++++++++++++++++++++++++++++---
- tools/include/uapi/linux/bpf.h |   5 ++
- 3 files changed, 128 insertions(+), 11 deletions(-)
+ include/linux/netfilter.h                 |  3 +++
+ net/ipv4/netfilter/nf_defrag_ipv4.c       |  1 +
+ net/ipv6/netfilter/nf_defrag_ipv6_hooks.c |  1 +
+ net/netfilter/nf_bpf_link.c               | 25 +++++++++++++++++++++--
+ 4 files changed, 28 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 60a9d59beeab..04ac77481583 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1170,6 +1170,11 @@ enum bpf_link_type {
-  */
- #define BPF_F_KPROBE_MULTI_RETURN	(1U << 0)
+diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+index 77a637b681f2..a160dc1e23bf 100644
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -11,6 +11,7 @@
+ #include <linux/wait.h>
+ #include <linux/list.h>
+ #include <linux/static_key.h>
++#include <linux/module.h>
+ #include <linux/netfilter_defs.h>
+ #include <linux/netdevice.h>
+ #include <linux/sockptr.h>
+@@ -482,12 +483,14 @@ struct nfnl_ct_hook {
+ extern const struct nfnl_ct_hook __rcu *nfnl_ct_hook;
  
-+/* link_create.netfilter.flags used in LINK_CREATE command for
-+ * BPF_PROG_TYPE_NETFILTER to enable IP packet defragmentation.
-+ */
-+#define BPF_F_NETFILTER_IP_DEFRAG (1U << 0)
-+
- /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
-  * the following extensions:
-  *
+ struct nf_defrag_v4_hook {
++	struct module *owner;
+ 	int (*enable)(struct net *net);
+ 	void (*disable)(struct net *net);
+ };
+ extern const struct nf_defrag_v4_hook __rcu *nf_defrag_v4_hook;
+ 
+ struct nf_defrag_v6_hook {
++	struct module *owner;
+ 	int (*enable)(struct net *net);
+ 	void (*disable)(struct net *net);
+ };
+diff --git a/net/ipv4/netfilter/nf_defrag_ipv4.c b/net/ipv4/netfilter/nf_defrag_ipv4.c
+index 1f3e0e893b7a..fb133bf3131d 100644
+--- a/net/ipv4/netfilter/nf_defrag_ipv4.c
++++ b/net/ipv4/netfilter/nf_defrag_ipv4.c
+@@ -115,6 +115,7 @@ static void __net_exit defrag4_net_exit(struct net *net)
+ }
+ 
+ static const struct nf_defrag_v4_hook defrag_hook = {
++	.owner = THIS_MODULE,
+ 	.enable = nf_defrag_ipv4_enable,
+ 	.disable = nf_defrag_ipv4_disable,
+ };
+diff --git a/net/ipv6/netfilter/nf_defrag_ipv6_hooks.c b/net/ipv6/netfilter/nf_defrag_ipv6_hooks.c
+index f7c7ee31c472..29d31721c9c0 100644
+--- a/net/ipv6/netfilter/nf_defrag_ipv6_hooks.c
++++ b/net/ipv6/netfilter/nf_defrag_ipv6_hooks.c
+@@ -98,6 +98,7 @@ static void __net_exit defrag6_net_exit(struct net *net)
+ }
+ 
+ static const struct nf_defrag_v6_hook defrag_hook = {
++	.owner = THIS_MODULE,
+ 	.enable = nf_defrag_ipv6_enable,
+ 	.disable = nf_defrag_ipv6_disable,
+ };
 diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-index c36da56d756f..5b72aa246577 100644
+index 5b72aa246577..77ffbf26ba3d 100644
 --- a/net/netfilter/nf_bpf_link.c
 +++ b/net/netfilter/nf_bpf_link.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
+@@ -2,6 +2,7 @@
  #include <linux/bpf.h>
  #include <linux/filter.h>
-+#include <linux/kmod.h>
+ #include <linux/kmod.h>
++#include <linux/module.h>
  #include <linux/netfilter.h>
  
  #include <net/netfilter/nf_bpf_link.h>
-@@ -23,8 +24,98 @@ struct bpf_nf_link {
- 	struct nf_hook_ops hook_ops;
- 	struct net *net;
- 	u32 dead;
-+	bool defrag;
- };
+@@ -53,7 +54,15 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
+ 			}
+ 		}
  
-+static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
-+{
-+	const struct nf_defrag_v4_hook __maybe_unused *v4_hook;
-+	const struct nf_defrag_v6_hook __maybe_unused *v6_hook;
-+	int err;
-+
-+	switch (link->hook_ops.pf) {
-+#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4)
-+	case NFPROTO_IPV4:
-+		rcu_read_lock();
-+		v4_hook = rcu_dereference(nf_defrag_v4_hook);
-+		if (!v4_hook) {
-+			rcu_read_unlock();
-+			err = request_module("nf_defrag_ipv4");
-+			if (err)
-+				return err < 0 ? err : -EINVAL;
-+
-+			rcu_read_lock();
-+			v4_hook = rcu_dereference(nf_defrag_v4_hook);
-+			if (!v4_hook) {
-+				WARN_ONCE(1, "nf_defrag_ipv4 bad registration");
-+				err = -ENOENT;
-+				goto out_v4;
-+			}
++		/* Prevent defrag module from going away while in use */
++		if (!try_module_get(v4_hook->owner)) {
++			err = -ENOENT;
++			goto out_v4;
 +		}
 +
-+		err = v4_hook->enable(link->net);
-+out_v4:
-+		rcu_read_unlock();
-+		return err;
-+#endif
-+#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
-+	case NFPROTO_IPV6:
-+		rcu_read_lock();
-+		v6_hook = rcu_dereference(nf_defrag_v6_hook);
-+		if (!v6_hook) {
-+			rcu_read_unlock();
-+			err = request_module("nf_defrag_ipv6");
-+			if (err)
-+				return err < 0 ? err : -EINVAL;
-+
-+			rcu_read_lock();
-+			v6_hook = rcu_dereference(nf_defrag_v6_hook);
-+			if (!v6_hook) {
-+				WARN_ONCE(1, "nf_defrag_ipv6_hooks bad registration");
-+				err = -ENOENT;
-+				goto out_v6;
-+			}
-+		}
-+
-+		err = v6_hook->enable(link->net);
-+out_v6:
-+		rcu_read_unlock();
-+		return err;
-+#endif
-+	default:
-+		return -EAFNOSUPPORT;
-+	}
-+}
-+
-+static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
-+{
-+	const struct nf_defrag_v4_hook __maybe_unused *v4_hook;
-+	const struct nf_defrag_v6_hook __maybe_unused *v6_hook;
-+
-+	switch (link->hook_ops.pf) {
-+#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4)
-+	case NFPROTO_IPV4:
-+		rcu_read_lock();
-+		v4_hook = rcu_dereference(nf_defrag_v4_hook);
-+		if (v4_hook)
-+			v4_hook->disable(link->net);
-+		rcu_read_unlock();
-+
-+		break;
-+#endif
-+#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
-+	case NFPROTO_IPV6:
-+		rcu_read_lock();
-+		v6_hook = rcu_dereference(nf_defrag_v6_hook);
-+		if (v6_hook)
-+			v6_hook->disable(link->net);
-+		rcu_read_unlock();
-+
-+		break;
-+	}
-+#endif
-+}
-+
- static void bpf_nf_link_release(struct bpf_link *link)
- {
- 	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
-@@ -37,6 +128,9 @@ static void bpf_nf_link_release(struct bpf_link *link)
- 	 */
- 	if (!cmpxchg(&nf_link->dead, 0, 1))
- 		nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
-+
-+	if (nf_link->defrag)
-+		bpf_nf_disable_defrag(nf_link);
- }
- 
- static void bpf_nf_link_dealloc(struct bpf_link *link)
-@@ -92,6 +186,8 @@ static const struct bpf_link_ops bpf_nf_link_lops = {
- 
- static int bpf_nf_check_pf_and_hooks(const union bpf_attr *attr)
- {
-+	int prio;
-+
- 	switch (attr->link_create.netfilter.pf) {
- 	case NFPROTO_IPV4:
- 	case NFPROTO_IPV6:
-@@ -102,19 +198,18 @@ static int bpf_nf_check_pf_and_hooks(const union bpf_attr *attr)
- 		return -EAFNOSUPPORT;
- 	}
- 
--	if (attr->link_create.netfilter.flags)
-+	if (attr->link_create.netfilter.flags & ~BPF_F_NETFILTER_IP_DEFRAG)
- 		return -EOPNOTSUPP;
- 
--	/* make sure conntrack confirm is always last.
--	 *
--	 * In the future, if userspace can e.g. request defrag, then
--	 * "defrag_requested && prio before NF_IP_PRI_CONNTRACK_DEFRAG"
--	 * should fail.
--	 */
--	switch (attr->link_create.netfilter.priority) {
--	case NF_IP_PRI_FIRST: return -ERANGE; /* sabotage_in and other warts */
--	case NF_IP_PRI_LAST: return -ERANGE; /* e.g. conntrack confirm */
--	}
-+	/* make sure conntrack confirm is always last */
-+	prio = attr->link_create.netfilter.priority;
-+	if (prio == NF_IP_PRI_FIRST)
-+		return -ERANGE;  /* sabotage_in and other warts */
-+	else if (prio == NF_IP_PRI_LAST)
-+		return -ERANGE;  /* e.g. conntrack confirm */
-+	else if ((attr->link_create.netfilter.flags & BPF_F_NETFILTER_IP_DEFRAG) &&
-+		 prio <= NF_IP_PRI_CONNTRACK_DEFRAG)
-+		return -ERANGE;  /* cannot use defrag if prog runs before nf_defrag */
- 
- 	return 0;
- }
-@@ -156,6 +251,18 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+ 		err = v4_hook->enable(link->net);
++		if (err)
++			module_put(v4_hook->owner);
+ out_v4:
+ 		rcu_read_unlock();
  		return err;
- 	}
+@@ -77,7 +86,15 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
+ 			}
+ 		}
  
-+	if (attr->link_create.netfilter.flags & BPF_F_NETFILTER_IP_DEFRAG) {
-+		err = bpf_nf_enable_defrag(link);
-+		if (err) {
-+			bpf_link_cleanup(&link_primer);
-+			return err;
++		/* Prevent defrag module from going away while in use */
++		if (!try_module_get(v6_hook->owner)) {
++			err = -ENOENT;
++			goto out_v6;
 +		}
-+		/* only mark defrag enabled if enabling succeeds so cleanup path
-+		 * doesn't disable without a corresponding enable
-+		 */
-+		link->defrag = true;
-+	}
 +
- 	err = nf_register_net_hook(net, &link->hook_ops);
- 	if (err) {
- 		bpf_link_cleanup(&link_primer);
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 60a9d59beeab..04ac77481583 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1170,6 +1170,11 @@ enum bpf_link_type {
-  */
- #define BPF_F_KPROBE_MULTI_RETURN	(1U << 0)
+ 		err = v6_hook->enable(link->net);
++		if (err)
++			module_put(v6_hook->owner);
+ out_v6:
+ 		rcu_read_unlock();
+ 		return err;
+@@ -97,8 +114,10 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+ 	case NFPROTO_IPV4:
+ 		rcu_read_lock();
+ 		v4_hook = rcu_dereference(nf_defrag_v4_hook);
+-		if (v4_hook)
++		if (v4_hook) {
+ 			v4_hook->disable(link->net);
++			module_put(v4_hook->owner);
++		}
+ 		rcu_read_unlock();
  
-+/* link_create.netfilter.flags used in LINK_CREATE command for
-+ * BPF_PROG_TYPE_NETFILTER to enable IP packet defragmentation.
-+ */
-+#define BPF_F_NETFILTER_IP_DEFRAG (1U << 0)
-+
- /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
-  * the following extensions:
-  *
+ 		break;
+@@ -107,8 +126,10 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+ 	case NFPROTO_IPV6:
+ 		rcu_read_lock();
+ 		v6_hook = rcu_dereference(nf_defrag_v6_hook);
+-		if (v6_hook)
++		if (v6_hook) {
+ 			v6_hook->disable(link->net);
++			module_put(v6_hook->owner);
++		}
+ 		rcu_read_unlock();
+ 
+ 		break;
 -- 
 2.41.0
 
