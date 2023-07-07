@@ -1,77 +1,95 @@
-Return-Path: <bpf+bounces-4403-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4404-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFF4174AA03
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 06:42:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3529574AAB1
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 07:42:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 968CA1C20F04
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 04:42:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9601228164A
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 05:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 265E31FAB;
-	Fri,  7 Jul 2023 04:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 663F23C34;
+	Fri,  7 Jul 2023 05:41:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF478EA0
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 04:42:20 +0000 (UTC)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098FE1BDB
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 21:42:19 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fbf1b82de7so11978675e9.1
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 21:42:18 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A65920E0
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 05:41:49 +0000 (UTC)
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E631BEE;
+	Thu,  6 Jul 2023 22:41:46 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-666ecf9a081so1181093b3a.2;
+        Thu, 06 Jul 2023 22:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688704937; x=1691296937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1688708506; x=1691300506;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iBlbDVL7PD31dBtmiWDtn75nbruR/5tJjCjtg5iIEYc=;
-        b=pxMapko4aSC+WD2aK4/dcfxW01Ib6WmZ2DMvwtqHvrMX7uHXmY9hCjuOT2jl/UGiwH
-         ELQ88ydz2m+47ymKwURVc6Ek+9B+GXK/ypEPZpGxfq51xioG0JWPYO/RMclswfF1ljaf
-         tOdwOt++jpJ8rIUbHL49cAcfat1ZPRDi2WNtMGg9p8lyUB8Bdd0kBb8fV81FRaL/ig26
-         enggk/9/13oodwNLKLp6WWwwRgHuzSdYr7jUi++ug9ZyuyfoIrn9A6JfusPlim8Rtery
-         kqT2VjHLgSAudNv32ujo1nEMx/FAQakld/wO/QSdYQYYyYd3v1/qzVfBPTHbpO/CP5BY
-         HkoQ==
+        bh=MA6QNDl75tvt5aLRLx9pQj4FIjUYGJr/B33YsnAoOhc=;
+        b=ficYMA01ds8ca77DZ0jaRMOHaBwrPtrqXskXdBmaR+bGEpMNGB766GH85iksaqQLTn
+         bqVurPTJg/Wn4VCfKZYLtEsfmNENLaHAt+4ClUFF+/Xec5moWL8N9rQ8j3UpZMOozVuf
+         ouuZnDvSk4LTQU5NhD+vsJ0QOKNRTJ4UFBoKI80jgHJTThJlg8cnX27oMj+QMIO4jpgg
+         hhP4e1UxcSN5Ud2LYwsOsIppf/LOp/N/IBuOqVRIvGPfip2QeMa0KDSva368FyXgv/h5
+         2D3FIWpRCdfQAqHqMvZPabDUEMnN5NY82kNFakUE8r+Qhvi0TeAOb/XnFxI6lEhB+eJH
+         G8+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688704937; x=1691296937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iBlbDVL7PD31dBtmiWDtn75nbruR/5tJjCjtg5iIEYc=;
-        b=IVucQJDEzS1F/cWyBB9ApAI58SBVz3O7RK3QsHmrvr7YFpRHDug5NQ5EMZroRQC7mx
-         t+cMTKU8b8ux57WcJVdQZhDlYY/JV3zHrXX6UhTDywhMb/ibU92IsAYE7n/2eEXO+ClX
-         kkIh450WGTclETs+EGaly9BVq9SjOAJAZx8R75zUAhL8EGgh0LdS4txHiVB7bVvn9Ln+
-         LOMDXADwi05qSoqww8HwjY7bIaxBPYPunKJGcYDiMMnaeDU906v4OsDcJ5wGLI78bDYE
-         6BysHlao+bLlZPI194wMSf2IG7MhlNkOhCSGQku2q8PSdamh7dJ+Ycg8+DQkasa+HsGv
-         vKig==
-X-Gm-Message-State: ABy/qLZKDmPZN0pnAhVl8nxp51NrowdfHgjwdZvj7sslD365DvTH8qDL
-	wfh+pyaYQlyv+KFvDTCTczs3sBh0Sd1GAssULvo=
-X-Google-Smtp-Source: APBJJlEa3CV4FJPYYzG4NuJOoxhxmXy5Eaup4QWjrG4P/7gNGtywX/YTL7ssL2+qx/yVZZbijQXfEgRF5Hie4ceGVxo=
-X-Received: by 2002:a7b:c8d4:0:b0:3fb:e1d0:6417 with SMTP id
- f20-20020a7bc8d4000000b003fbe1d06417mr6692142wml.19.1688704937186; Thu, 06
- Jul 2023 21:42:17 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1688708506; x=1691300506;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MA6QNDl75tvt5aLRLx9pQj4FIjUYGJr/B33YsnAoOhc=;
+        b=CawePNrjD1x+U2nq+ZhwzhglAh4DX0ZJ0DILbutK/QA7FKc5ayq33U8PJ+C5/51504
+         umnPUhJn5ZlVI5TJlHrBHzxGBfyvUMvHerkUyG+i1d2upJLXwKpVdazVMqB/+Dp90C4Q
+         hvdGy+BD8MyGKEJ1SD3zJU1jacTJY+qPU1ZEN33GhO11+bg54RGRvUgrFBSzjZ7xDz/6
+         ZCy9lCciA/++b0VzcqKp4TN3JqYzzqzzpYW6XevCj1GLusLqPax54rYji+HSyXaaVHHB
+         MZdTck22uIsdKm6XK5ca8g0RYLjPTjpqWttBspwLJzRCxlcsa9wJvpq0JOth3UXDsS6k
+         FvyQ==
+X-Gm-Message-State: ABy/qLYRVg1Tu1x2X/LyTIXUP5C0yAlBi7nXQHK+ExhrccHHrDvWlgZu
+	3OYXOeOMXf+WMjrIsWj0Jj/65nxfRNE=
+X-Google-Smtp-Source: APBJJlEPIvdyuTU4+FFMk01YPukRyyrjieqLh5loz+OzBr8uTY1fCpjvUKj5w1avjMCVmrMpZYb6Mg==
+X-Received: by 2002:a05:6a20:914d:b0:119:be71:1596 with SMTP id x13-20020a056a20914d00b00119be711596mr4236870pzc.13.1688708505830;
+        Thu, 06 Jul 2023 22:41:45 -0700 (PDT)
+Received: from localhost ([2605:59c8:148:ba10::41f])
+        by smtp.gmail.com with ESMTPSA id d2-20020aa78142000000b00662c4ca18ebsm2099825pfn.128.2023.07.06.22.41.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jul 2023 22:41:45 -0700 (PDT)
+Date: Thu, 06 Jul 2023 22:41:43 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+ Tero Kristo <tero.kristo@linux.intel.com>
+Cc: John Fastabend <john.fastabend@gmail.com>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Thomas Gleixner <tglx@linutronix.de>, 
+ X86 ML <x86@kernel.org>, 
+ Borislav Petkov <bp@alien8.de>, 
+ Dave Hansen <dave.hansen@linux.intel.com>, 
+ Ingo Molnar <mingo@redhat.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+ LKML <linux-kernel@vger.kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>
+Message-ID: <64a7a597b1e9e_dddea208db@john.notmuch>
+In-Reply-To: <CAADnVQK0rzHWxxx7LMFSTuBx18A+6H6AEkKFHNDkPwbPUbsk4Q@mail.gmail.com>
+References: <20230703105745.1314475-1-tero.kristo@linux.intel.com>
+ <20230703105745.1314475-2-tero.kristo@linux.intel.com>
+ <CAADnVQL2Tn+2rP0hVB3kdB0At12qVu+vJ_WbJzrkxqOJ5va2vQ@mail.gmail.com>
+ <64a64e46b7d5b_b20ce208de@john.notmuch>
+ <4b874e4c-4ad3-590d-3885-b4a3b894524e@linux.intel.com>
+ <CAADnVQK0rzHWxxx7LMFSTuBx18A+6H6AEkKFHNDkPwbPUbsk4Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] x86/tsc: Add new BPF helper call bpf_rdtsc
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-24-jolsa@kernel.org>
-In-Reply-To: <20230630083344.984305-24-jolsa@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 6 Jul 2023 21:42:05 -0700
-Message-ID: <CAEf4BzYgeoUfwqtnk_FWUo7-=ughWstWy8DDMjQi4sohvmU1Qg@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 23/26] selftests/bpf: Add usdt_multi bench test
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -80,156 +98,157 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jun 30, 2023 at 1:38=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding test that attaches 50k usdt probes in usdt_multi binary.
->
-> After the attach is done we run the binary and make sure we get
-> proper amount of hits.
->
-> With current uprobes:
->
->   # perf stat --null ./test_progs -n 254/6
->   #254/6   uprobe_multi_test/bench_usdt:OK
->   #254     uprobe_multi_test:OK
->   Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
->
->    Performance counter stats for './test_progs -n 254/6':
->
->       1353.659680562 seconds time elapsed
->
+Alexei Starovoitov wrote:
+> On Thu, Jul 6, 2023 at 4:59=E2=80=AFAM Tero Kristo <tero.kristo@linux.i=
+ntel.com> wrote:
+> >
+> >
+> > On 06/07/2023 08:16, John Fastabend wrote:
+> > > Alexei Starovoitov wrote:
+> > >> On Mon, Jul 3, 2023 at 3:58=E2=80=AFAM Tero Kristo <tero.kristo@li=
+nux.intel.com> wrote:
+> > >>> Currently the raw TSC counter can be read within kernel via rdtsc=
+_ordered()
+> > >>> and friends, and additionally even userspace has access to it via=
+ the
+> > >>> RDTSC assembly instruction. BPF programs on the other hand don't =
+have
+> > >>> direct access to the TSC counter, but alternatively must go throu=
+gh the
+> > >>> performance subsystem (bpf_perf_event_read), which only provides =
+relative
+> > >>> value compared to the start point of the program, and is also muc=
+h slower
+> > >>> than the direct read. Add a new BPF helper definition for bpf_rdt=
+sc() which
+> > >>> can be used for any accurate profiling needs.
+> > >>>
+> > >>> A use-case for the new API is for example wakeup latency tracing =
+via
+> > >>> eBPF on Intel architecture, where it is extremely beneficial to b=
+e able
+> > >>> to get raw TSC timestamps and compare these directly to the value=
 
-20 minutes, I commend your patience!
+> > >>> programmed to the MSR_IA32_TSC_DEADLINE register. This way a dire=
+ct
+> > >>> latency value from the hardware interrupt to the execution of the=
 
-> With uprobe_multi link:
->
->   # perf stat --null ./test_progs -n 254/6
->   #254/6   uprobe_multi_test/bench_usdt:OK
->   #254     uprobe_multi_test:OK
->   Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
->
->    Performance counter stats for './test_progs -n 254/6':
->
->          0.322046364 seconds time elapsed
+> > >>> interrupt handler can be calculated. Having the functionality wit=
+hin
+> > >>> eBPF also has added benefits of allowing to filter any other rele=
+vant
+> > >>> data like C-state residency values, and also to drop any irreleva=
+nt
+> > >>> data points directly in the kernel context, without passing all t=
+he
+> > >>> data to userspace for post-processing.
+> > >>>
+> > >>> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
+> > >>> ---
+> > >>>   arch/x86/include/asm/msr.h |  1 +
+> > >>>   arch/x86/kernel/tsc.c      | 23 +++++++++++++++++++++++
+> > >>>   2 files changed, 24 insertions(+)
+> > >>>
+> > >>> diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/ms=
+r.h
+> > >>> index 65ec1965cd28..3dde673cb563 100644
+> > >>> --- a/arch/x86/include/asm/msr.h
+> > >>> +++ b/arch/x86/include/asm/msr.h
+> > >>> @@ -309,6 +309,7 @@ struct msr *msrs_alloc(void);
+> > >>>   void msrs_free(struct msr *msrs);
+> > >>>   int msr_set_bit(u32 msr, u8 bit);
+> > >>>   int msr_clear_bit(u32 msr, u8 bit);
+> > >>> +u64 bpf_rdtsc(void);
+> > >>>
+> > >>>   #ifdef CONFIG_SMP
+> > >>>   int rdmsr_on_cpu(unsigned int cpu, u32 msr_no, u32 *l, u32 *h);=
 
-This is an impressive speed up, especially taking into account that
-there is no batch attachment magic that we had to do for kprobes. Very
-nice!
+> > >>> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> > >>> index 344698852146..ded857abef81 100644
+> > >>> --- a/arch/x86/kernel/tsc.c
+> > >>> +++ b/arch/x86/kernel/tsc.c
+> > >>> @@ -15,6 +15,8 @@
+> > >>>   #include <linux/timex.h>
+> > >>>   #include <linux/static_key.h>
+> > >>>   #include <linux/static_call.h>
+> > >>> +#include <linux/btf.h>
+> > >>> +#include <linux/btf_ids.h>
+> > >>>
+> > >>>   #include <asm/hpet.h>
+> > >>>   #include <asm/timer.h>
+> > >>> @@ -29,6 +31,7 @@
+> > >>>   #include <asm/intel-family.h>
+> > >>>   #include <asm/i8259.h>
+> > >>>   #include <asm/uv/uv.h>
+> > >>> +#include <asm/tlbflush.h>
+> > >>>
+> > >>>   unsigned int __read_mostly cpu_khz;    /* TSC clocks / usec, no=
+t used here */
+> > >>>   EXPORT_SYMBOL(cpu_khz);
+> > >>> @@ -1551,6 +1554,24 @@ void __init tsc_early_init(void)
+> > >>>          tsc_enable_sched_clock();
+> > >>>   }
+> > >>>
+> > >>> +u64 bpf_rdtsc(void)
+> > >>> +{
+> > >>> +       /* Check if Time Stamp is enabled only in ring 0 */
+> > >>> +       if (cr4_read_shadow() & X86_CR4_TSD)
+> > >>> +               return 0;
+> > >> Why check this? It's always enabled in the kernel, no?
+> >
+> > It is always enabled, but there are certain syscalls that can be used=
+ to
+> > disable the TSC access for oneself. prctl(PR_SET_TSC, ...) and
+> > seccomp(SET_MODE_STRICT,...). Not having the check in place would in
+> > theory allow a restricted BPF program to circumvent this (if there ev=
+er
+> > was such a thing.) But yes, I do agree this part is a bit debatable
+> > whether it should be there at all.
+> =
 
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  .../bpf/prog_tests/uprobe_multi_test.c        | 50 +++++++++++++++++++
->  .../selftests/bpf/progs/uprobe_multi_usdt.c   | 16 ++++++
->  2 files changed, 66 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b=
-/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> index 547d46965d70..b12dc1f992e5 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> @@ -4,6 +4,7 @@
->  #include <test_progs.h>
->  #include "uprobe_multi.skel.h"
->  #include "bpf/libbpf_elf.h"
-> +#include "uprobe_multi_usdt.skel.h"
->
->  static char test_data[] =3D "test_data";
->
-> @@ -256,6 +257,53 @@ static void test_bench_attach_uprobe(void)
->         printf("%s: detached in %7.3lfs\n", __func__, detach_delta);
->  }
->
-> +static void test_bench_attach_usdt(void)
-> +{
-> +       struct uprobe_multi_usdt *skel =3D NULL;
-> +       long attach_start_ns, attach_end_ns;
-> +       long detach_start_ns, detach_end_ns;
-> +       double attach_delta, detach_delta;
-> +       struct bpf_program *prog;
-> +       int err;
-> +
-> +       skel =3D uprobe_multi_usdt__open();
-> +       if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
-> +               goto cleanup;
-> +
-> +       bpf_object__for_each_program(prog, skel->obj)
-> +               bpf_program__set_autoload(prog, false);
-> +
-> +       bpf_program__set_autoload(skel->progs.usdt0, true);
+> What do you mean 'circumvent' ?
+> It's a tracing bpf prog running in the kernel loaded by root
+> and reading tsc for the purpose of the kernel.
+> There is no unprivileged access to tsc here.
+> =
 
-there is nothing else in that skeleton, why this set_autoload() business?
+> >
+> > >>> +
+> > >>> +       return rdtsc_ordered();
+> > >> Why _ordered? Why not just rdtsc ?
+> > >> Especially since you want to trace latency. Extra lfence will ruin=
 
-> +
-> +       err =3D uprobe_multi_usdt__load(skel);
-> +       if (!ASSERT_EQ(err, 0, "uprobe_multi_usdt__load"))
-> +               goto cleanup;
-> +
-> +       attach_start_ns =3D get_time_ns();
-> +
-> +       skel->links.usdt0 =3D bpf_program__attach_usdt(skel->progs.usdt0,=
- -1, "./usdt_multi",
-> +                                                    "test", "usdt", NULL=
-);
-> +       if (!ASSERT_OK_PTR(skel->links.usdt0, "bpf_program__attach_usdt")=
-)
-> +               goto cleanup;
-> +
-> +       attach_end_ns =3D get_time_ns();
-> +
-> +       system("./usdt_multi");
-> +
-> +       ASSERT_EQ(skel->bss->count, 50000, "usdt_count");
-> +
-> +cleanup:
-> +       detach_start_ns =3D get_time_ns();
-> +       uprobe_multi_usdt__destroy(skel);
-> +       detach_end_ns =3D get_time_ns();
-> +
-> +       attach_delta =3D (attach_end_ns - attach_start_ns) / 1000000000.0=
-;
-> +       detach_delta =3D (detach_end_ns - detach_start_ns) / 1000000000.0=
-;
-> +
-> +       printf("%s: attached in %7.3lfs\n", __func__, attach_delta);
-> +       printf("%s: detached in %7.3lfs\n", __func__, detach_delta);
-> +}
-> +
->  void test_uprobe_multi_test(void)
->  {
->         if (test__start_subtest("skel_api"))
-> @@ -268,4 +316,6 @@ void test_uprobe_multi_test(void)
->                 test_link_api();
->         if (test__start_subtest("bench_uprobe"))
->                 test_bench_attach_uprobe();
-> +       if (test__start_subtest("bench_usdt"))
-> +               test_bench_attach_usdt();
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c b/tool=
-s/testing/selftests/bpf/progs/uprobe_multi_usdt.c
-> new file mode 100644
-> index 000000000000..9e1c33d0bd2f
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c
-> @@ -0,0 +1,16 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/usdt.bpf.h>
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> +
-> +int count;
-> +
-> +SEC("usdt")
-> +int usdt0(struct pt_regs *ctx)
-> +{
-> +       count++;
-> +       return 0;
-> +}
-> --
-> 2.41.0
->
+> > >> the measurements.
+> > >>
+> > > If we used it as a fast way to order events on multiple CPUs I
+> > > guess we need the lfence? We use ktime_get_ns() now for things
+> > > like this when we just need an order counter. We have also
+> > > observed time going backwards with this and have heuristics
+> > > to correct it but its rare.
+> >
+> > Yeah, I think it is better to induce some extra latency instead of
+> > having some weird ordering issues with the timestamps.
+> =
+
+> lfence is not 'some extra latency'.
+> I suspect rdtsc_ordered() will be slower than bpf_ktime_get_ns().
+> What's the point of using it then?
+
+I would only use it if its faster then bpf_ktime_get_ns() and
+have already figured out how to handle rare unordered events
+so I think its OK to relax somewhat strict ordering. =
+
+
+> =
+
+> >
+> > Also, things like the ftrace also use rdtsc_ordered() as its underlyi=
+ng
+> > clock, if you use x86-tsc as the trace clock (see
+> > arch/x86/kernel/trace_clock.c.)
+> >
+> > -Tero
+> >
+
+
 
