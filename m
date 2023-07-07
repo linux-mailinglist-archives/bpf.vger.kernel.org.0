@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-4401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D0D874A9FA
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 06:38:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A50CD74A9FD
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 06:39:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43AA8281660
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 04:38:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D62231C20F40
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 04:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A291FB2;
-	Fri,  7 Jul 2023 04:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC131FAB;
+	Fri,  7 Jul 2023 04:39:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF72E1847
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 04:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6709EA0
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 04:39:34 +0000 (UTC)
 Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6474B1BD2
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 21:38:34 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso2175011e87.0
-        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 21:38:34 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4C31FC4
+	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 21:39:28 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fb7769f15aso2243645e87.0
+        for <bpf@vger.kernel.org>; Thu, 06 Jul 2023 21:39:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688704712; x=1691296712;
+        d=gmail.com; s=20221208; t=1688704767; x=1691296767;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=f882D05rjydvaIuWjMhcG3iPCcr6sZXqYG9o5EUosC0=;
-        b=K4m3CgXgJBEWc4qGGTDgMZ1TllQSBzbz6T18SqWoKm0Lo/Bv1E1k9ZFOliykmKWoIa
-         wcQ4/9YpwzxKdcIUq6e69oICwb/1an1fWQhZwP2H0ymq9VYFC9xziqdLXq+AtVXgzPkz
-         D+8HuFnk3XXcjtC2LmWas+uTEA4eJomvBeXLUF4xqbiaSA1w4k/iUTbbJmgEW7f42sbz
-         oTw7aYt48drmwn9tow3UcKUvW2i+vKZ+thL1NBMsU6598zEk0bdoQfinkLWRFrYhx9AH
-         gB9oCwE8Tg/JyeUOiagGyj6b9PDRql0eDsh9Mn6kSTRsgDpGsM3nL0cT5RXec7SwLSlt
-         6sgQ==
+        bh=y79vNUtnDfZ2PZ6Si7AJjq8/vZBF5/Gw2x4QrjKyLLk=;
+        b=kn/QZZ8P+Qjqvw6g/YLw76HxFiSot0CTbTSslsy/ivj7nsX/kWgFRtk+Gn4LkKsrPt
+         kcoeJCcxkH6ahGNB8mQ1+WgbgUkbHcj7T+199/ifd4iXwjTSbxXr5sQSXzX9V+Cl/eHs
+         cmLqamdc3EFpd3+a/oOV2XoBfGSTK/kpZ6RhFMcpE1XgkVqR5eBvyuHCfAw96GwiZQuM
+         1BF1NuxQiFeLgzyENCsD8KBG1X+2VxmnJ+2cQv0hhH5jlNCMxvzo2wrem/hhf9pWFfAO
+         JSW40ASTzzQm4BgkaB2+4WTH13pkBuixi6sVUl3teqdK3f3Bo/xx8Mz2IuG2OTGATBds
+         Krew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688704712; x=1691296712;
+        d=1e100.net; s=20221208; t=1688704767; x=1691296767;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=f882D05rjydvaIuWjMhcG3iPCcr6sZXqYG9o5EUosC0=;
-        b=V0sL+lZbruvT+1S8ukm6fWmLMAOGhX3U8rYTYchkXgGAy9IMeU0O8VnzLwkdLK7oS/
-         ztLtM8SarQsmhOQjRD71cW4/D1ouTjzSG5LS/hTeLi+d1QBTNaJ8RsRQQ2MlgozDeWYy
-         AxobLIghdryxZa1xTmMCkAyaYb/5NLb9a+C3oRaKtw95L1Scr79YN4HrBsaea8pgO4E+
-         vLM5g4Ct3N0awGVJazy6wk3ucjZw8EGEnFkxgA8DnLJUP0geHnpCbyuVt+OjbGxNXI7P
-         4REE+/gxMBUUgiievYfYTuyRrN75Nfe8KySWj63MilXDG1NGnNzmQKfvspqJeOC1FcAm
-         Zpwg==
-X-Gm-Message-State: ABy/qLYNEnfHuCz16IOz3Rgf3sAIM7cH47YRZyh8pfRPXZRko7ejg28N
-	16jwObC2qOBcfFDUxB9IutYMQfqlk/3JnApjnvo=
-X-Google-Smtp-Source: APBJJlEcMlFvp/qurCVSS3KUjDyJRT/JdteOOgILDP37zF5gufhIGgm1wSAKxaGW94TwKvNZV8SM69i0Shw4lTcUDYE=
-X-Received: by 2002:a19:e059:0:b0:4fb:8bad:1cdf with SMTP id
- g25-20020a19e059000000b004fb8bad1cdfmr2815355lfj.42.1688704712485; Thu, 06
- Jul 2023 21:38:32 -0700 (PDT)
+        bh=y79vNUtnDfZ2PZ6Si7AJjq8/vZBF5/Gw2x4QrjKyLLk=;
+        b=X+izBbaQdooCOUY1he9Smxt2H9anlI1rIoik4soaWFAWs4jKtuC9nMPb1y18dH8dm6
+         w9G9iWub/PEVXh9PoEIBR5CTpW5Z3CCkyFvVpnYTGVstWlwyb8tRc/miWJEY68CzabhC
+         mUYGKpSRn+/s4XUo2c007NZHOm5EzDm+XIRDPtxOPXj8uftintBIAfwCtAm3S/qe0ZB2
+         P7G/4AfjjUwcufxr/1Mj+F7XNgAHUcwFPpep/uIL6N2qoSGPlnv4S86EizWmuugTbi8y
+         bHdktlCt8Fq6jDi0j+dxiGUdw/52UZuvvkPfkpa5IqopB9A9Rvia1+q5nhkM9an9BZLR
+         eB2g==
+X-Gm-Message-State: ABy/qLaJKryCSHJCCiUcj9zanuwj0R38AxeYchsJWZX5RfAAhVGAqpeV
+	lLpOMxCcFDOqhWgRpbY2Xj3hOx5pKALckCH4rlPe/nophVI=
+X-Google-Smtp-Source: APBJJlEtoZWFZDXQdQj0IXZDWuTWCappDPCipFM7qmFhCKraeFTYQusW87J7F7FSeEV1SkCa8pPkTTfbEdNjxNnFg7U=
+X-Received: by 2002:ac2:5f86:0:b0:4f9:b649:23d2 with SMTP id
+ r6-20020ac25f86000000b004f9b64923d2mr2477423lfe.42.1688704766989; Thu, 06 Jul
+ 2023 21:39:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-22-jolsa@kernel.org>
-In-Reply-To: <20230630083344.984305-22-jolsa@kernel.org>
+References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-23-jolsa@kernel.org>
+In-Reply-To: <20230630083344.984305-23-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 6 Jul 2023 21:38:20 -0700
-Message-ID: <CAEf4BzYrKXWskLfHY+FOLWjNMvm_ujvmHVB6ai8zrMevFXEg2Q@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 21/26] selftests/bpf: Add uprobe_multi bench test
+Date: Thu, 6 Jul 2023 21:39:15 -0700
+Message-ID: <CAEf4BzaWvAAwZmzBZSek=djaQ=2HX-S04sJ91jB98oY86Sq3Cg@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 22/26] selftests/bpf: Add usdt_multi test program
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
@@ -82,122 +82,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 On Fri, Jun 30, 2023 at 1:38=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding test that attaches 50k uprobes in uprobe_multi binary.
->
-> After the attach is done we run the binary and make sure we
-> get proper amount of hits.
+> Adding usdt_multi test program that defines 50k usdts and will
+> serve as attach point for uprobe_multi usdt bench test in
+> following patch.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  .../bpf/prog_tests/uprobe_multi_test.c        | 56 +++++++++++++++++++
->  .../selftests/bpf/progs/uprobe_multi.c        |  9 +++
->  2 files changed, 65 insertions(+)
+>  tools/testing/selftests/bpf/Makefile     |  5 +++++
+>  tools/testing/selftests/bpf/usdt_multi.c | 24 ++++++++++++++++++++++++
+>  2 files changed, 29 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/usdt_multi.c
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b=
-/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> index fd858636b8b0..547d46965d70 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> @@ -202,6 +202,60 @@ static void test_link_api(void)
->         free(offsets);
->  }
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index acf7c9a29082..9762467cf0ba 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -568,6 +568,7 @@ TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_read $(OUT=
+PUT)/bpf_testmod.ko      \
+>                        $(OUTPUT)/xdp_synproxy                           \
+>                        $(OUTPUT)/sign-file                              \
+>                        $(OUTPUT)/uprobe_multi                           \
+> +                      $(OUTPUT)/usdt_multi                             \
+
+that's a bit too much, if you can't put everything into urandom_read,
+let's at least combine uprobe_multi and usdt_multi
+
+>                        ima_setup.sh                                     \
+>                        verify_sig_setup.sh                              \
+>                        $(wildcard progs/btf_dump_test_case_*.c)         \
+> @@ -675,6 +676,10 @@ $(OUTPUT)/uprobe_multi: uprobe_multi.c
+>         $(call msg,BINARY,,$@)
+>         $(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
 >
-> +static inline __u64 get_time_ns(void)
+> +$(OUTPUT)/usdt_multi: usdt_multi.c
+> +       $(call msg,BINARY,,$@)
+> +       $(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
+> +
+>  EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)=
+ \
+>         prog_tests/tests.h map_tests/tests.h verifier/tests.h           \
+>         feature bpftool                                                 \
+> diff --git a/tools/testing/selftests/bpf/usdt_multi.c b/tools/testing/sel=
+ftests/bpf/usdt_multi.c
+> new file mode 100644
+> index 000000000000..fedf856bad2b
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/usdt_multi.c
+> @@ -0,0 +1,24 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <sdt.h>
+> +
+> +#define PROBE STAP_PROBE(test, usdt);
+> +
+> +#define PROBE10    PROBE PROBE PROBE PROBE PROBE \
+> +                  PROBE PROBE PROBE PROBE PROBE
+> +#define PROBE100   PROBE10 PROBE10 PROBE10 PROBE10 PROBE10 \
+> +                  PROBE10 PROBE10 PROBE10 PROBE10 PROBE10
+> +#define PROBE1000  PROBE100 PROBE100 PROBE100 PROBE100 PROBE100 \
+> +                  PROBE100 PROBE100 PROBE100 PROBE100 PROBE100
+> +#define PROBE10000 PROBE1000 PROBE1000 PROBE1000 PROBE1000 PROBE1000 \
+> +                  PROBE1000 PROBE1000 PROBE1000 PROBE1000 PROBE1000
+> +
+> +int main(void)
 > +{
-> +       struct timespec t;
-> +
-> +       clock_gettime(CLOCK_MONOTONIC, &t);
-> +       return (__u64) t.tv_sec * 1000000000 + t.tv_nsec;
-> +}
-> +
-
-hmm.. I would expect we have this helper somewhere in common headers.
-If not, we should probably move all such helpers into one header and
-use it everywhere
-
-> +static void test_bench_attach_uprobe(void)
-> +{
-> +       long attach_start_ns, attach_end_ns;
-> +       long detach_start_ns, detach_end_ns;
-> +       double attach_delta, detach_delta;
-> +       struct uprobe_multi *skel =3D NULL;
-> +       struct bpf_program *prog;
-> +       int err;
-> +
-> +       skel =3D uprobe_multi__open();
-> +       if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
-> +               goto cleanup;
-> +
-> +       bpf_object__for_each_program(prog, skel->obj)
-> +               bpf_program__set_autoload(prog, false);
-> +
-> +       bpf_program__set_autoload(skel->progs.test_uprobe_bench, true);
-
-I don't get why you bothered adding this test_uprobe_bench into
-progs/uprobe_multi and go through this manual auto-load
-setting/resetting, instead of just having test_uprobe_bench in a
-separate skeleton?...
-
-> +
-> +       err =3D uprobe_multi__load(skel);
-> +       if (!ASSERT_EQ(err, 0, "uprobe_multi__load"))
-> +               goto cleanup;
-> +
-> +       attach_start_ns =3D get_time_ns();
-> +
-> +       err =3D uprobe_multi__attach(skel);
-> +       if (!ASSERT_OK(err, "uprobe_multi__attach"))
-> +               goto cleanup;
-> +
-> +       attach_end_ns =3D get_time_ns();
-> +
-> +       system("./uprobe_multi");
-> +
-> +       ASSERT_EQ(skel->bss->count, 50000, "uprobes_count");
-> +
-> +cleanup:
-> +       detach_start_ns =3D get_time_ns();
-> +       uprobe_multi__destroy(skel);
-> +       detach_end_ns =3D get_time_ns();
-> +
-> +       attach_delta =3D (attach_end_ns - attach_start_ns) / 1000000000.0=
-;
-> +       detach_delta =3D (detach_end_ns - detach_start_ns) / 1000000000.0=
-;
-> +
-> +       printf("%s: attached in %7.3lfs\n", __func__, attach_delta);
-> +       printf("%s: detached in %7.3lfs\n", __func__, detach_delta);
-
-and for us lazy folks, what are the numbers you see on your machine?
-
-> +}
-> +
->  void test_uprobe_multi_test(void)
->  {
->         if (test__start_subtest("skel_api"))
-> @@ -212,4 +266,6 @@ void test_uprobe_multi_test(void)
->                 test_attach_api_syms();
->         if (test__start_subtest("link_api"))
->                 test_link_api();
-> +       if (test__start_subtest("bench_uprobe"))
-> +               test_bench_attach_uprobe();
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/tes=
-ting/selftests/bpf/progs/uprobe_multi.c
-> index 1eeb9b7b9cad..cd73139dc881 100644
-> --- a/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> +++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> @@ -89,3 +89,12 @@ int test_uretprobe_sleep(struct pt_regs *ctx)
->         uprobe_multi_check(ctx, true, true);
->         return 0;
->  }
-> +
-> +int count;
-> +
-> +SEC("?uprobe.multi/./uprobe_multi:uprobe_multi_func_*")
-> +int test_uprobe_bench(struct pt_regs *ctx)
-> +{
-> +       count++;
+> +       PROBE10000
+> +       PROBE10000
+> +       PROBE10000
+> +       PROBE10000
+> +       PROBE10000
 > +       return 0;
 > +}
 > --
