@@ -1,206 +1,139 @@
-Return-Path: <bpf+bounces-4414-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4415-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B60C74ADEB
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 11:40:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC3F174AE26
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 11:54:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 414022816F4
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 09:40:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 025A21C20FB7
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 09:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8C1AD33;
-	Fri,  7 Jul 2023 09:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A6DDBA43;
+	Fri,  7 Jul 2023 09:54:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B432107
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 09:40:38 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA482115
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 02:40:35 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Qy7g23pFwz4f3knM
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 17:40:30 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgDn2+mM3adkhXlQNQ--.51673S2;
-	Fri, 07 Jul 2023 17:40:32 +0800 (CST)
-Subject: Re: [PATCH v4 bpf-next 5/6] selftests/bpf: test map percpu stats
-To: Anton Protopopov <aspsk@isovalent.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-References: <20230705160139.19967-1-aspsk@isovalent.com>
- <20230705160139.19967-6-aspsk@isovalent.com>
- <5efebb7d-138a-5353-2bc2-a2a1ffa66a2d@huaweicloud.com>
- <ZKarXOLIEWxxsQvJ@zh-lab-node-5>
- <43425377-667b-ab01-951a-0513ef79a59d@huaweicloud.com>
- <ZKa6LHj295dY7G+q@zh-lab-node-5>
- <6bf45335-67ef-4eb0-0e97-c3b3ee55a451@huaweicloud.com>
- <ZKe+kudf9kSQatjB@zh-lab-node-5>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <25b0dd44-ecd5-989a-63b5-d0156b5e4b34@huaweicloud.com>
-Date: Fri, 7 Jul 2023 17:40:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381D420E0
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 09:53:59 +0000 (UTC)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C5790
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 02:53:58 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbf7fbe722so15741725e9.3
+        for <bpf@vger.kernel.org>; Fri, 07 Jul 2023 02:53:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1688723637; x=1691315637;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WZzIDbJubyJPiHNRpLaVKCet8/bSMK1Lr6hWXR+SUvc=;
+        b=NWTsoTrD+M4qwEA/veiShmrn9OHOcCG+42ppe/xgI+2zPnOn4e96MlqsZPVp67y4IH
+         Gl40GTKx/v1IlkYoMgezrnN2EnxjyNLu199Fnk7cQMYwI7UNOCC93hgB5f4ubncDjLJ8
+         lXF+C58ABDH6kX4D/Jiba3v5RJHsukz3sDFKybBt94c4CKt3zHs4G2u19mjn7z/tiCKL
+         dCND74loNqbo0+FPZzbvwq4mpX87DzTnXpo0xDoD96kNXXP9rHW57s1TzQFLfqnkzNIu
+         jIj4atW+neHBRrBOBVhxEnRtTrOlUMzgza6r+7SOcMWmz3R19MpC5gaEaACh9NSaCeUH
+         Qz3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688723637; x=1691315637;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WZzIDbJubyJPiHNRpLaVKCet8/bSMK1Lr6hWXR+SUvc=;
+        b=Z20oDKgLKhl0R3Q4UwCyU+YR6zfpRhf1j2hWAoons5ItpDL1IJcC80vxcolp97+1df
+         1Dpi0/c6u0nuhlDxv6UxXHRNYoTNxUQWJvfq5m2hqCvtp4iVPyXzHISyJhtdhhS98wc4
+         8PA/kzzRTH/dQpGkhb0ACm5QEANDA0zqx3QogfI0DtfNGV9xoP5koxYoVpyfFxXjvcyt
+         GikdnV3mmPs6TsbVsMMHHnAuzKwYbEc0fVqCLUgBLfexMW5p95JfYufVYXqa+UioEmDL
+         FbC4aTBBNKig2yV9uHPS8NOCBUUzIL/n1oFya098W5Ou+EMkMYD3BPab0iQgW6O33BWq
+         JCig==
+X-Gm-Message-State: ABy/qLbd8JX1jf2gD7rnwSV9mxYHRR0D0DWfrnmR5vpNf42g+B+JAVKa
+	W9J88mX4thX7uHhstCwY3Z/K8/2FWiF9oDjgl8FlCA==
+X-Google-Smtp-Source: APBJJlEtNkkqnlClPXIsNzKyKldxzQWzLR+77ot0Oe3efo9YkV9GLom91aWWdsL5wnaGOeBThGzpuw==
+X-Received: by 2002:a05:600c:247:b0:3fc:65:8dff with SMTP id 7-20020a05600c024700b003fc00658dffmr1108375wmj.4.1688723636889;
+        Fri, 07 Jul 2023 02:53:56 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:9d9e:aaa3:b629:361? ([2a02:8011:e80c:0:9d9e:aaa3:b629:361])
+        by smtp.gmail.com with ESMTPSA id f23-20020a7bcd17000000b003fbb5506e54sm1951377wmj.29.2023.07.07.02.53.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 Jul 2023 02:53:56 -0700 (PDT)
+Message-ID: <47f6bb17-6a18-99b3-bc13-773fbf8a9243@isovalent.com>
+Date: Fri, 7 Jul 2023 10:53:55 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZKe+kudf9kSQatjB@zh-lab-node-5>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgDn2+mM3adkhXlQNQ--.51673S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ww1kXFy8Jr43Ww4DGF13CFg_yoW7GF4fpr
-	WrKF43Kr4kG347Zr12v348XFnIyrn5Ary5XFy5G340yr1vgr1S9r18K3Wj9FyfZr15CFnI
-	vr47K3yfWa4Fy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH bpf-next 4/4] bpftool: use a local bpf_perf_event_value to
+ fix accessing its fields
+Content-Language: en-GB
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, bpf@vger.kernel.org,
+ Alexander Lobakin <aleksander.lobakin@intel.com>,
+ =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
+ Alexander Lobakin <alobakin@pm.me>
+References: <20230512103354.48374-1-quentin@isovalent.com>
+ <20230512103354.48374-5-quentin@isovalent.com> <ZF44Nzzw09x2n88o@krava>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <ZF44Nzzw09x2n88o@krava>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
+2023-05-12 14:59 UTC+0200 ~ Jiri Olsa <olsajiri@gmail.com>
+> On Fri, May 12, 2023 at 11:33:54AM +0100, Quentin Monnet wrote:
+>> From: Alexander Lobakin <alobakin@pm.me>
+>>
+>> Fix the following error when building bpftool:
+>>
+>>   CLANG   profiler.bpf.o
+>>   CLANG   pid_iter.bpf.o
+>> skeleton/profiler.bpf.c:18:21: error: invalid application of 'sizeof' to an incomplete type 'struct bpf_perf_event_value'
+>>         __uint(value_size, sizeof(struct bpf_perf_event_value));
+>>                            ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:13:39: note: expanded from macro '__uint'
+>> tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helper_defs.h:7:8: note: forward declaration of 'struct bpf_perf_event_value'
+>> struct bpf_perf_event_value;
+>>        ^
+>>
+>> struct bpf_perf_event_value is being used in the kernel only when
+>> CONFIG_BPF_EVENTS is enabled, so it misses a BTF entry then.
+> 
+> hi,
+> when I switch off CONFIG_BPF_EVENTS the bpftool build fails for me
+> with missing BTF error:
+> 
+>   GEN     vmlinux.h
+> libbpf: failed to find '.BTF' ELF section in /home/jolsa/kernel/linux-qemu/vmlinux
+> Error: failed to load BTF from /home/jolsa/kernel/linux-qemu/vmlinux: No data available
+> make: *** [Makefile:208: vmlinux.h] Error 195
+> make: *** Deleting file 'vmlinux.h'
+> 
+> so I wonder you need to care about bpf_perf_event_value
+> in that case
+> 
+> jirka
 
-On 7/7/2023 3:28 PM, Anton Protopopov wrote:
-> On Fri, Jul 07, 2023 at 09:41:03AM +0800, Hou Tao wrote:
->> Hi,
->>
->> On 7/6/2023 8:57 PM, Anton Protopopov wrote:
->>> On Thu, Jul 06, 2023 at 08:21:17PM +0800, Hou Tao wrote:
->>>> Hi,
->>>>
->>>> On 7/6/2023 7:54 PM, Anton Protopopov wrote:
->>>>
->> SNIP
->>>>> +static void delete_and_lookup_batch(int map_fd, void *keys, __u32 count)
->>>>> +{
->>>>> +	static __u8 values[(8 << 10) * MAX_ENTRIES];
->>>>> +	void *in_batch = NULL, *out_batch;
->>>>> +	__u32 save_count = count;
->>>>> +	int ret;
->>>>> +
->>>>> +	ret = bpf_map_lookup_and_delete_batch(map_fd,
->>>>> +					      &in_batch, &out_batch,
->>>>> +					      keys, values, &count,
->>>>> +					      NULL);
->>>>> +
->>>>> +	/*
->>>>> +	 * Despite what uapi header says, lookup_and_delete_batch will return
->>>>> +	 * -ENOENT in case we successfully have deleted all elements, so check
->>>>> +	 * this separately
->>>>> +	 */
->>>>>> It seems it is a bug in __htab_map_lookup_and_delete_batch(). I could
->>>>>> post a patch to fix it if you don't plan to do that by yourself.
->>>>> This should be as simple as
->>>>>
->>>>> @@ -1876,7 +1876,8 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
->>>>>         total += bucket_cnt;
->>>>>         batch++;
->>>>>         if (batch >= htab->n_buckets) {
->>>>> -               ret = -ENOENT;
->>>>> +               if (!total)
->>>>> +                       ret = -ENOENT;
->>>>>                 goto after_loop;
->>>>>         }
->>>>>         goto again;
->>>> No. I think changing it to "if (max_count > total) ret = -ENOENT;" will
->>>> be more appropriate, because it means the requested count couldn't been
->>>> fulfilled and it is also consistent with the comments in 
->>>> include/uapi/linux/bpf.h
->>> Say, I have a map of size N and I don't know how many entries there are.
->>> Then I will do
->>>
->>>     count=N
->>>     lookup_and_delete(&count)
->>>
->>> In this case we will walk through the whole map, reach the 'batch >=
->>> htab->n_buckets', and set the count to the number of elements we read.
->>>
->>> (If, in opposite, there's no space to read a whole bucket, then we check this
->>> above and return -ENOSPC.)
->>>
->>>>> However, this might be already utilized by some apps to check that they've read
->>>>> all entries. Two local examples are map_tests/map_in_map_batch_ops.c and
->>>>> map_tests/htab_map_batch_ops.c. Another example I know is from BCC tools:
->>>>> https://github.com/iovisor/bcc/blob/master/libbpf-tools/map_helpers.c#L58
->>>> I think these use cases will be fine. Because when the last element has
->>>> been successfully iterated and returned, the out_batch is also updated,
->>>> so if the batch op is called again, -ENOENT will be returned.
->>>>> Can we update comments in include/uapi/linux/bpf.h?
->>>> I think the comments are correct.
->>> Currently we return -ENOENT as an indicator that (a) 'in_batch' is out of
->>> bounds (b) we reached the end of map. So technically, this is an optimization,
->>> as if we read elements in a loop by passing 'in_batch', 'out_batch', even if we
->>> return 0 in case (b), the next syscall would return -ENOENT, because the new
->>> 'in_batch' would point to out of bounds.
->>>
->>> This also makes sense for a map which is empty: we reached the end of map,
->>> didn't find any elements, so we're returning -ENOENT (in contrast with saying
->>> "all is ok, we read 0 elements").
->>>
->>> So from my point of view -ENOENT makes sense. However, comments say "Returns
->>> zero on success" which doesn't look true to me as I think that reading the
->>> whole map in one syscall is a success :)
->> I get your point. The current implementation of BPF_MAP_LOOKUP_BATCH
->> does the following two things:
->> 1) returns 0 when the whole map has not been iterated but there is no
->> space for current bucket.
-> The algorithm works per bucket. For a bucket number X it checks if there is
-> enough space in the output buffer to store all bucket elements. If there is,
-> ok, go to the next bucket. If not, then it checks if any elements were written
-> already [from previous buckets]. If not, then it returns -ENOSPC, meaning,
-> "you've asked to copy at most N elements, but I can only copy M > N, not less,
-> please provide a bigger buffer."
-Yes.
->
->> 2) doesn't return 0 when the whole map has been iterated successfully
->> (and the requested count is fulfilled)
->>
->> For 1) I prefer to update the comments in uapi. If instead we fix the
->> implementation, we may break the existed users which need to check
->> ENOSPC to continue the batch op.
->> For 2) I don't have a preference. Both updating the comments and
->> implementation are fine to me.
->>
->> WDYT ?
->>
-> I think that (1) is perfectly fine, -ENOSPC is returned only when we can't copy
-> elements, which is an error.
+Coming back to this - I haven't been able to reproduce. I turned
+CONFIG_BPF_EVENTS off but had the vmlinux.h building fine in my case,
+and applying the patchset fixes the build for bpftool. Is there any
+chance your .../vmlinux was not generated correctly?
 
-Maybe I misinterpreted the comments in bpf.h. As said in the comment:
-"On success, *count* elements from the map are copied into the user
-buffer",  I think the count here means the value of count which is used
-as input instead of output.
->
-> The (2) requires updating docs. The API is similar to get_next_key, and docs
-> can be updated in the same way. By updating docs we're not changing any uapi,
-> right?
-I think it is fine.
+I'll re-submit the series after addressing Yonghong's feedback on the
+commit log.
 
+Thanks,
+Quentin
 
