@@ -1,180 +1,421 @@
-Return-Path: <bpf+bounces-4377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F025A74A887
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 03:41:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20B8D74A88D
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 03:43:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 279B51C20EC2
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 01:41:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB119281592
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 01:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 066ED1112;
-	Fri,  7 Jul 2023 01:41:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDC9B1112;
+	Fri,  7 Jul 2023 01:43:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E3A47F
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 01:41:12 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5680F9D
-	for <bpf@vger.kernel.org>; Thu,  6 Jul 2023 18:41:10 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Qxx1t4szWz4f3m6f
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 09:41:06 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgAXxCEvbadktz2nMQ--.18953S2;
-	Fri, 07 Jul 2023 09:41:07 +0800 (CST)
-Subject: Re: [PATCH v4 bpf-next 5/6] selftests/bpf: test map percpu stats
-To: Anton Protopopov <aspsk@isovalent.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-References: <20230705160139.19967-1-aspsk@isovalent.com>
- <20230705160139.19967-6-aspsk@isovalent.com>
- <5efebb7d-138a-5353-2bc2-a2a1ffa66a2d@huaweicloud.com>
- <ZKarXOLIEWxxsQvJ@zh-lab-node-5>
- <43425377-667b-ab01-951a-0513ef79a59d@huaweicloud.com>
- <ZKa6LHj295dY7G+q@zh-lab-node-5>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <6bf45335-67ef-4eb0-0e97-c3b3ee55a451@huaweicloud.com>
-Date: Fri, 7 Jul 2023 09:41:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF887F
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 01:43:35 +0000 (UTC)
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D3C9D;
+	Thu,  6 Jul 2023 18:43:32 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-636801fada1so9634866d6.3;
+        Thu, 06 Jul 2023 18:43:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688694212; x=1691286212;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rYrTXI7gSQCfLyqgnBuCQ501nuZv3jfn0CuxuIfqaAk=;
+        b=FvuKByR8Dv7sHfpkna6Y42alqEv3R3uHVSmtx3kqcq3oP7xlHLUnPsiysLYpwp2G0n
+         u7iIt1sAyZZuicEwS9CnaLS6lQZkDpkmNd/NEk30wAnl7PeRRN3pXAwHZZ35O/eMB4gV
+         ea0YUGVJynfZNzVg1w1VEW2I07uD9ezamtmholNbDjSyAIABnehOALw8/W9jBlQm3GAP
+         to4geWwO10kFIL9FkgUIstylYHlpvcig3j+OYKGul33MH2n8Mtf5FWCZcHxq4ZKp1aGX
+         cxXoW25Q/9c++v81hIV7UzTi/uAD6tS0OcD1xxV5H31kQ27X3yg0sZ0n7kVoGl/Ctndw
+         dG7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688694212; x=1691286212;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rYrTXI7gSQCfLyqgnBuCQ501nuZv3jfn0CuxuIfqaAk=;
+        b=Qa1MHy8NIT7WN2VkOTlCmfuu31wrmzX9K4PgnUqRpmLJM8UDzigu0NPFeCHz+WAZIM
+         UZK32x9bmlST7YsO46UT2aCPyFjLvc+wQpdwq1t7UWoOcXY0ryYAqibFYct9qGwmMlah
+         yVbnWTHgzvjWsV0M7oaICNdQ6KsPIseixXJtcUMi4csnxDW/Z2xTUMQxCuqY7Tc4Ks9a
+         l6GBSRrI/xQ4XQelIgzVfnuMe4KFt+BnIPcm2rtcugW+lNgynvDGTWtGr6jRPefuW1OO
+         266J4usSXlOHkEdp3/Ibpc6ja4YXXdV9FWVQFImeJnX4CYNvZGGx8HZk1pCceBz2u1+o
+         Xvhw==
+X-Gm-Message-State: ABy/qLYesOD4n6Kw1hlaDrTnGby1+LzV/x/M/PGW/pDiRLXJFhfqk4tZ
+	GBLYVaDWohSL/mK8wBzzvpLdeXgqlyYzb5y44yU=
+X-Google-Smtp-Source: APBJJlG8Zi36mJiwHABNj74/7D43qm0Alr9ZlT9tOQz14i68wajwEhm2dUck4ZtJZ68JduWqWnVrf2+2rN/vsKTpmxQ=
+X-Received: by 2002:a0c:8e4f:0:b0:631:fb35:27e1 with SMTP id
+ w15-20020a0c8e4f000000b00631fb3527e1mr2894703qvb.4.1688694211670; Thu, 06 Jul
+ 2023 18:43:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZKa6LHj295dY7G+q@zh-lab-node-5>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgAXxCEvbadktz2nMQ--.18953S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxArW8GF17tryUAw13tF1xAFb_yoWrJw4rpr
-	W5KF43Kw4vkw17Zr17u348XF4avrnYyFy5JFy5K34qyrykWr1S934xK3Wj9Fy3Zr1rC3Wa
-	vr42gFWfXasYy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20230629051832.897119-1-andrii@kernel.org> <CALOAHbBupxQ3RH+SbzUv=W2dRDS-mG1PuRpARrMnMv=o6Ro7Sw@mail.gmail.com>
+ <CAEf4BzbS55xw2Scnid87O5TFQ7To56huPaKg_oH6gLSp+ggpdw@mail.gmail.com>
+ <CALOAHbBBeXSfvVcUYgvPE8j7NAtd6EZfFYkvQxr316ucx37QzA@mail.gmail.com> <CAEf4BzYHY_aqMdDd7vcfDxHgL+geA=Bp71xtDp-U8Ycz7Ggk0g@mail.gmail.com>
+In-Reply-To: <CAEf4BzYHY_aqMdDd7vcfDxHgL+geA=Bp71xtDp-U8Ycz7Ggk0g@mail.gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Fri, 7 Jul 2023 09:42:54 +0800
+Message-ID: <CALOAHbBNnHSJHUWxQceUo0yY_ZaH=-hyVrsz2+jdEqY6103TXQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND v3 bpf-next 00/14] BPF token
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, keescook@chromium.org, 
+	brauner@kernel.org, lennart@poettering.net, cyphar@cyphar.com, 
+	luto@kernel.org, kernel-team@meta.com, sargun@sargun.me
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
+On Fri, Jul 7, 2023 at 4:34=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Jul 5, 2023 at 6:27=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
+ wrote:
+> >
+> > On Thu, Jul 6, 2023 at 4:37=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Fri, Jun 30, 2023 at 7:06=E2=80=AFPM Yafang Shao <laoar.shao@gmail=
+.com> wrote:
+> > > >
+> > > > On Thu, Jun 29, 2023 at 1:18=E2=80=AFPM Andrii Nakryiko <andrii@ker=
+nel.org> wrote:
+> > > > >
+> > > > > This patch set introduces new BPF object, BPF token, which allows=
+ to delegate
+> > > > > a subset of BPF functionality from privileged system-wide daemon =
+(e.g.,
+> > > > > systemd or any other container manager) to a *trusted* unprivileg=
+ed
+> > > > > application. Trust is the key here. This functionality is not abo=
+ut allowing
+> > > > > unconditional unprivileged BPF usage. Establishing trust, though,=
+ is
+> > > > > completely up to the discretion of respective privileged applicat=
+ion that
+> > > > > would create a BPF token, as different production setups can and =
+do achieve it
+> > > > > through a combination of different means (signing, LSM, code revi=
+ews, etc),
+> > > > > and it's undesirable and infeasible for kernel to enforce any par=
+ticular way
+> > > > > of validating trustworthiness of particular process.
+> > > > >
+> > > > > The main motivation for BPF token is a desire to enable container=
+ized
+> > > > > BPF applications to be used together with user namespaces. This i=
+s currently
+> > > > > impossible, as CAP_BPF, required for BPF subsystem usage, cannot =
+be namespaced
+> > > > > or sandboxed, as a general rule. E.g., tracing BPF programs, than=
+ks to BPF
+> > > > > helpers like bpf_probe_read_kernel() and bpf_probe_read_user() ca=
+n safely read
+> > > > > arbitrary memory, and it's impossible to ensure that they only re=
+ad memory of
+> > > > > processes belonging to any given namespace. This means that it's =
+impossible to
+> > > > > have namespace-aware CAP_BPF capability, and as such another mech=
+anism to
+> > > > > allow safe usage of BPF functionality is necessary. BPF token and=
+ delegation
+> > > > > of it to a trusted unprivileged applications is such mechanism. K=
+ernel makes
+> > > > > no assumption about what "trusted" constitutes in any particular =
+case, and
+> > > > > it's up to specific privileged applications and their surrounding
+> > > > > infrastructure to decide that. What kernel provides is a set of A=
+PIs to create
+> > > > > and tune BPF token, and pass it around to privileged BPF commands=
+ that are
+> > > > > creating new BPF objects like BPF programs, BPF maps, etc.
+> > > > >
+> > > > > Previous attempt at addressing this very same problem ([0]) attem=
+pted to
+> > > > > utilize authoritative LSM approach, but was conclusively rejected=
+ by upstream
+> > > > > LSM maintainers. BPF token concept is not changing anything about=
+ LSM
+> > > > > approach, but can be combined with LSM hooks for very fine-graine=
+d security
+> > > > > policy. Some ideas about making BPF token more convenient to use =
+with LSM (in
+> > > > > particular custom BPF LSM programs) was briefly described in rece=
+nt LSF/MM/BPF
+> > > > > 2023 presentation ([1]). E.g., an ability to specify user-provide=
+d data
+> > > > > (context), which in combination with BPF LSM would allow implemen=
+ting a very
+> > > > > dynamic and fine-granular custom security policies on top of BPF =
+token. In the
+> > > > > interest of minimizing API surface area discussions this is going=
+ to be
+> > > > > added in follow up patches, as it's not essential to the fundamen=
+tal concept
+> > > > > of delegatable BPF token.
+> > > > >
+> > > > > It should be noted that BPF token is conceptually quite similar t=
+o the idea of
+> > > > > /dev/bpf device file, proposed by Song a while ago ([2]). The big=
+gest
+> > > > > difference is the idea of using virtual anon_inode file to hold B=
+PF token and
+> > > > > allowing multiple independent instances of them, each with its ow=
+n set of
+> > > > > restrictions. BPF pinning solves the problem of exposing such BPF=
+ token
+> > > > > through file system (BPF FS, in this case) for cases where transf=
+erring FDs
+> > > > > over Unix domain sockets is not convenient. And also, crucially, =
+BPF token
+> > > > > approach is not using any special stateful task-scoped flags. Ins=
+tead, bpf()
+> > > > > syscall accepts token_fd parameters explicitly for each relevant =
+BPF command.
+> > > > > This addresses main concerns brought up during the /dev/bpf discu=
+ssion, and
+> > > > > fits better with overall BPF subsystem design.
+> > > > >
+> > > > > This patch set adds a basic minimum of functionality to make BPF =
+token useful
+> > > > > and to discuss API and functionality. Currently only low-level li=
+bbpf APIs
+> > > > > support passing BPF token around, allowing to test kernel functio=
+nality, but
+> > > > > for the most part is not sufficient for real-world applications, =
+which
+> > > > > typically use high-level libbpf APIs based on `struct bpf_object`=
+ type. This
+> > > > > was done with the intent to limit the size of patch set and conce=
+ntrate on
+> > > > > mostly kernel-side changes. All the necessary plumbing for libbpf=
+ will be sent
+> > > > > as a separate follow up patch set kernel support makes it upstrea=
+m.
+> > > > >
+> > > > > Another part that should happen once kernel-side BPF token is est=
+ablished, is
+> > > > > a set of conventions between applications (e.g., systemd), tools =
+(e.g.,
+> > > > > bpftool), and libraries (e.g., libbpf) about sharing BPF tokens t=
+hrough BPF FS
+> > > > > at well-defined locations to allow applications take advantage of=
+ this in
+> > > > > automatic fashion without explicit code changes on BPF applicatio=
+n's side.
+> > > > > But I'd like to postpone this discussion to after BPF token conce=
+pt lands.
+> > > > >
+> > > > > Once important distinctions from v2 that should be noted is a cha=
+nce in the
+> > > > > semantics of a newly added BPF_TOKEN_CREATE command. Previously,
+> > > > > BPF_TOKEN_CREATE would create BPF token kernel object and return =
+its FD to
+> > > > > user-space, allowing to (optionally) pin it in BPF FS using BPF_O=
+BJ_PIN
+> > > > > command. This v3 version changes this slightly: BPF_TOKEN_CREATE =
+combines BPF
+> > > > > token object creation *and* pinning in BPF FS. Such change ensure=
+s that BPF
+> > > > > token is always associated with a specific instance of BPF FS and=
+ cannot
+> > > > > "escape" it by application re-pinning it somewhere else using ano=
+ther
+> > > > > BPF_OBJ_PIN call. Now, BPF token can only be pinned once during i=
+ts creation,
+> > > > > better containing it inside intended container (under assumption =
+BPF FS is set
+> > > > > up in such a way as to not be shared with other containers on the=
+ system).
+> > > > >
+> > > > >   [0] https://lore.kernel.org/bpf/20230412043300.360803-1-andrii@=
+kernel.org/
+> > > > >   [1] http://vger.kernel.org/bpfconf2023_material/Trusted_unprivi=
+leged_BPF_LSFMM2023.pdf
+> > > > >   [2] https://lore.kernel.org/bpf/20190627201923.2589391-2-songli=
+ubraving@fb.com/
+> > > > >
+> > > > > v3->v3-resend:
+> > > > >   - I started integrating token_fd into bpf_object_open_opts and =
+higher-level
+> > > > >     libbpf bpf_object APIs, but it started going a bit deeper int=
+o bpf_object
+> > > > >     implementation details and how libbpf performs feature detect=
+ion and
+> > > > >     caching, so I decided to keep it separate from this patch set=
+ and not
+> > > > >     distract from the mostly kernel-side changes;
+> > > > > v2->v3:
+> > > > >   - make BPF_TOKEN_CREATE pin created BPF token in BPF FS, and di=
+sallow
+> > > > >     BPF_OBJ_PIN for BPF token;
+> > > > > v1->v2:
+> > > > >   - fix build failures on Kconfig with CONFIG_BPF_SYSCALL unset;
+> > > > >   - drop BPF_F_TOKEN_UNKNOWN_* flags and simplify UAPI (Stanislav=
+).
+> > > > >
+> > > > > Andrii Nakryiko (14):
+> > > > >   bpf: introduce BPF token object
+> > > > >   libbpf: add bpf_token_create() API
+> > > > >   selftests/bpf: add BPF_TOKEN_CREATE test
+> > > > >   bpf: add BPF token support to BPF_MAP_CREATE command
+> > > > >   libbpf: add BPF token support to bpf_map_create() API
+> > > > >   selftests/bpf: add BPF token-enabled test for BPF_MAP_CREATE co=
+mmand
+> > > > >   bpf: add BPF token support to BPF_BTF_LOAD command
+> > > > >   libbpf: add BPF token support to bpf_btf_load() API
+> > > > >   selftests/bpf: add BPF token-enabled BPF_BTF_LOAD selftest
+> > > > >   bpf: add BPF token support to BPF_PROG_LOAD command
+> > > > >   bpf: take into account BPF token when fetching helper protos
+> > > > >   bpf: consistenly use BPF token throughout BPF verifier logic
+> > > > >   libbpf: add BPF token support to bpf_prog_load() API
+> > > > >   selftests/bpf: add BPF token-enabled BPF_PROG_LOAD tests
+> > > > >
+> > > > >  drivers/media/rc/bpf-lirc.c                   |   2 +-
+> > > > >  include/linux/bpf.h                           |  79 ++++-
+> > > > >  include/linux/filter.h                        |   2 +-
+> > > > >  include/uapi/linux/bpf.h                      |  53 ++++
+> > > > >  kernel/bpf/Makefile                           |   2 +-
+> > > > >  kernel/bpf/arraymap.c                         |   2 +-
+> > > > >  kernel/bpf/cgroup.c                           |   6 +-
+> > > > >  kernel/bpf/core.c                             |   3 +-
+> > > > >  kernel/bpf/helpers.c                          |   6 +-
+> > > > >  kernel/bpf/inode.c                            |  46 ++-
+> > > > >  kernel/bpf/syscall.c                          | 183 +++++++++---
+> > > > >  kernel/bpf/token.c                            | 201 ++++++++++++=
++
+> > > > >  kernel/bpf/verifier.c                         |  13 +-
+> > > > >  kernel/trace/bpf_trace.c                      |   2 +-
+> > > > >  net/core/filter.c                             |  36 +--
+> > > > >  net/ipv4/bpf_tcp_ca.c                         |   2 +-
+> > > > >  net/netfilter/nf_bpf_link.c                   |   2 +-
+> > > > >  tools/include/uapi/linux/bpf.h                |  53 ++++
+> > > > >  tools/lib/bpf/bpf.c                           |  35 ++-
+> > > > >  tools/lib/bpf/bpf.h                           |  45 ++-
+> > > > >  tools/lib/bpf/libbpf.map                      |   1 +
+> > > > >  .../selftests/bpf/prog_tests/libbpf_probes.c  |   4 +
+> > > > >  .../selftests/bpf/prog_tests/libbpf_str.c     |   6 +
+> > > > >  .../testing/selftests/bpf/prog_tests/token.c  | 277 ++++++++++++=
+++++++
+> > > > >  24 files changed, 957 insertions(+), 104 deletions(-)
+> > > > >  create mode 100644 kernel/bpf/token.c
+> > > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/token.=
+c
+> > > > >
+> > > > > --
+> > > > > 2.34.1
+> > > > >
+> > > > >
+> > > >
+> > > >
+> > > > Hi Andrii,
+> > > >
+> > > > Thanks for your proposal.
+> > > > That seems to be a useful functionality, and yet I have some questi=
+ons.
+> > >
+> > > I've answered them below. But I don't think either of them have any
+> > > relation to BPF token and the problem I'm trying to solve.
+> > >
+> > > >
+> > > > 1. Why can't we add security_bpf_probe_read_{kernel,user}?
+> > > >     If possible, we can use these LSM hooks to refuse the process t=
+o
+> > > > read other tasks' information. E.g. if the other process is not wit=
+hin
+> > > > the same cgroup or the same namespace, we just refuse the reading. =
+I
+> > > > think it is not hard to identify if the other process is within the
+> > > > same cgroup or the same namespace.
+> > >
+> > > There are probably many reasons. First, performance-wide, LSM hook fo=
+r
+> > > each bpf_probe_read_{kernel,user}() call will be prohibitive. And jus=
+t
+> > > in general, one would need to be very careful with such LSM hooks,
+> > > because bpf_probe_read_{kernel,user}() often happens from NMI context=
+,
+> > > and LSM policy would have to be written and validated very carefully
+> > > with NMI context in mind.
+> > >
+> > > But, more conceptually, for probe_read you get a random address and
+> > > you know the process context you are running in (but you might be
+> > > actually running in softirq and NMI, and that process context is
+> > > irrelevant). How can you efficiently (or at all) tell if that random
+> > > address "belongs" to cgroup or namespace? Just at conceptual level?
+> > >
+> > > >
+> > > > 2. Why can't we extend bpf_cookie?
+> > > >    We're now using bpf_cookie to identify each user or each
+> > > > application, and only the permitted cookies can create new probe
+> > > > links.  However we find the bpf_cookie is only supported by tracing=
+,
+> > > > perf_event and kprobe_multi, so we're planning to extend it to othe=
+r
+> > > > possible link types, then we can use LSM hooks to control all bpf
+> > > > links.  I think that the upstream kernel should also support
+> > > > bpf_cookie for all bpf links. If possible, we will post it to the
+> > > > upstream in the future.
+> > > >    After I have read your BPF token proposal, I just have some othe=
+r
+> > > > ideas. Why can't we just extend bpf_cookie to all other BPF objects=
+?
+> > > > For example, all progs and maps should also have the bpf_cookie.
+> > > >
+> > >
+> > > I'm not exactly clear how you use BPF cookie, but it wasn't intended
+> > > to provide any sort of security or validation policy. It's purely a
+> > > user-provided u64 to help distinguish different attach points when th=
+e
+> > > same BPF program is attached in multiple places (e.g., kprobe tracing
+> > > many different kernel functions and needing to distinguish between
+> > > them at runtime).
+> >
+> > In our container environment, we enable the CAP_BPF, CAP_PERMON and
+> > CAP_NET_ADMIN for the containers which want to run BPF programs
+> > inside. However we don't want them to run whatever BPF programs they
+> > want. We only allow them to run the BPF programs we have permitted for
+> > each of them.  So we are using LSM to audit the BPF behavior such as
+> > prog load, map creation and link attach.  We define different BPF
+> > policies for different containers. In order to identify different
+> > containers efficiently, we assign different bpf_cookies for different
+> > containers. bpf_cookie is a u64, that's enough for our use cases.
+>
+> I can see how you can use BPF cookies for this, but it's certainly not
+> an intended use case :) BPF cookie is most useful on BPF side of
+> things.
 
-On 7/6/2023 8:57 PM, Anton Protopopov wrote:
-> On Thu, Jul 06, 2023 at 08:21:17PM +0800, Hou Tao wrote:
->> Hi,
->>
->> On 7/6/2023 7:54 PM, Anton Protopopov wrote:
->>
-SNIP
->>> +static void delete_and_lookup_batch(int map_fd, void *keys, __u32 count)
->>> +{
->>> +	static __u8 values[(8 << 10) * MAX_ENTRIES];
->>> +	void *in_batch = NULL, *out_batch;
->>> +	__u32 save_count = count;
->>> +	int ret;
->>> +
->>> +	ret = bpf_map_lookup_and_delete_batch(map_fd,
->>> +					      &in_batch, &out_batch,
->>> +					      keys, values, &count,
->>> +					      NULL);
->>> +
->>> +	/*
->>> +	 * Despite what uapi header says, lookup_and_delete_batch will return
->>> +	 * -ENOENT in case we successfully have deleted all elements, so check
->>> +	 * this separately
->>> +	 */
->>>> It seems it is a bug in __htab_map_lookup_and_delete_batch(). I could
->>>> post a patch to fix it if you don't plan to do that by yourself.
->>> This should be as simple as
->>>
->>> @@ -1876,7 +1876,8 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
->>>         total += bucket_cnt;
->>>         batch++;
->>>         if (batch >= htab->n_buckets) {
->>> -               ret = -ENOENT;
->>> +               if (!total)
->>> +                       ret = -ENOENT;
->>>                 goto after_loop;
->>>         }
->>>         goto again;
->> No. I think changing it to "if (max_count > total) ret = -ENOENT;" will
->> be more appropriate, because it means the requested count couldn't been
->> fulfilled and it is also consistent with the comments in 
->> include/uapi/linux/bpf.h
-> Say, I have a map of size N and I don't know how many entries there are.
-> Then I will do
->
->     count=N
->     lookup_and_delete(&count)
->
-> In this case we will walk through the whole map, reach the 'batch >=
-> htab->n_buckets', and set the count to the number of elements we read.
->
-> (If, in opposite, there's no space to read a whole bucket, then we check this
-> above and return -ENOSPC.)
->
->>> However, this might be already utilized by some apps to check that they've read
->>> all entries. Two local examples are map_tests/map_in_map_batch_ops.c and
->>> map_tests/htab_map_batch_ops.c. Another example I know is from BCC tools:
->>> https://github.com/iovisor/bcc/blob/master/libbpf-tools/map_helpers.c#L58
->> I think these use cases will be fine. Because when the last element has
->> been successfully iterated and returned, the out_batch is also updated,
->> so if the batch op is called again, -ENOENT will be returned.
->>> Can we update comments in include/uapi/linux/bpf.h?
->> I think the comments are correct.
-> Currently we return -ENOENT as an indicator that (a) 'in_batch' is out of
-> bounds (b) we reached the end of map. So technically, this is an optimization,
-> as if we read elements in a loop by passing 'in_batch', 'out_batch', even if we
-> return 0 in case (b), the next syscall would return -ENOENT, because the new
-> 'in_batch' would point to out of bounds.
->
-> This also makes sense for a map which is empty: we reached the end of map,
-> didn't find any elements, so we're returning -ENOENT (in contrast with saying
-> "all is ok, we read 0 elements").
->
-> So from my point of view -ENOENT makes sense. However, comments say "Returns
-> zero on success" which doesn't look true to me as I think that reading the
-> whole map in one syscall is a success :)
+The utilization of the bpf_cookie appid in our use case has proven to
+be valuable, thus we continue to rely on its functionality :)
 
-I get your point. The current implementation of BPF_MAP_LOOKUP_BATCH
-does the following two things:
-1) returns 0 when the whole map has not been iterated but there is no
-space for current bucket.
-2) doesn't return 0 when the whole map has been iterated successfully
-(and the requested count is fulfilled)
+>
+> But what you are describing is meant to be doable with BPF token. It's
+> not in first patch set, but I intended to allow user to specify an
+> extra "user context" blog of bytes which would be stored with BPF
+> token. And this data should be accessible from BPF LSM programs to
+> make extra custom policy decisions. But we need to agree on initial
+> BPF token stuff first, and then build out all the rest.
 
-For 1) I prefer to update the comments in uapi. If instead we fix the
-implementation, we may break the existed users which need to check
-ENOSPC to continue the batch op.
-For 2) I don't have a preference. Both updating the comments and
-implementation are fine to me.
+Sounds good. Introducing support for user context within the BPF token
+would enhance its utility and provide even more valuable
+functionality.
 
-WDYT ?
-
+--=20
+Regards
+Yafang
 
