@@ -1,755 +1,202 @@
-Return-Path: <bpf+bounces-4489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79FAD74B73B
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 21:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 65ACB74B790
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 22:02:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 311A6281925
-	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 19:37:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B583A2810A2
+	for <lists+bpf@lfdr.de>; Fri,  7 Jul 2023 20:02:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0E718AFF;
-	Fri,  7 Jul 2023 19:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D392B17725;
+	Fri,  7 Jul 2023 20:01:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADDCB18AF0
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 19:30:43 +0000 (UTC)
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12CC02D66
-	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 12:30:35 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-573d70da2dcso24756777b3.1
-        for <bpf@vger.kernel.org>; Fri, 07 Jul 2023 12:30:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1688758234; x=1691350234;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CQ9AaI5NbcA/oN/ecuTimulSkDUKAiNeCXSYKFyoRpE=;
-        b=pslXxhAl7Db8eW1923SaM9dPTzDYvuWeKvr+XMkN2/fSIGzCIQaX7EojfQQmY3p37L
-         iBcy1ejUEDWx0nH5eChAogJGsfgH9/6u/0Qzcz9G1Bk9OqD0O08KxlS5V09XUJJfSbDg
-         651PYELf0ontFLIypcuyrf0oDvjHdX/LDo7/QxTAgtRju/Zy8fjvM+Tdab8MisY9dSMn
-         tif63CoWcqNVOkrlnz+yOo3rMn7XeXAi4WyA2xmxrbutPrbQWJcp9FhOYm/Vox7QPYXL
-         uewRrYlkq0SmpbixuNV45nSeiRqmOxjuR9J+LFt6EFmrCLjD+eXVSbcFtQIyNR0wb56t
-         DSQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688758234; x=1691350234;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CQ9AaI5NbcA/oN/ecuTimulSkDUKAiNeCXSYKFyoRpE=;
-        b=l5zaxRV4bEv4ALBQ12WXZvMMNbAZuYZqv09u5QuLP5UjU637c6ElQjUvsq/fEL9WIv
-         Ge8Ru3hVDDA5skGjAnV1FSVimXM/tPnFNjFYpBY8N4srRR6jGbRNT9uL+CCi05Zau9ZE
-         1uoXfEq36CcAv13cSRVeLE/x7L1oBX0qa1nF02CHS1ax0IhnkcdnynjvCigUgarFZUhv
-         GGNyCMqwiIc4bES14YD2sCScY9MMfPN1UBsjZMjvJTjDhDYAmhgVz+c+Kt5IhFpuo5gU
-         u9K82QSgsqgcePaXekgj4tuuqwCuaqZWMG72TKa67DqwQLCYIPekAOhQCujSWJPfG5Si
-         iWtw==
-X-Gm-Message-State: ABy/qLYFREtd/RNtCcFbwI8phG5l81NmXwrxS5IW7UROHBRkVwYA3jKS
-	NMM1lREkeY7tSIBT44voKmTCKooDaPzw+t0x3wbBOEFOq3vT2BQuMWToeUm07CpI+jbUgG3+SEY
-	5I19xN9WAJkbfRKvWqwsFWK0nzjc9HFVOWXgW8wakELDyt5AAzA==
-X-Google-Smtp-Source: APBJJlGLjtZ1dAHoOjapPUfeQVnKhDOKJVvr+sIHAeYapEY5d0/pspClotBqzxOvQA7fjJhAoYM1KDw=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a81:d305:0:b0:56d:2a88:49e5 with SMTP id
- y5-20020a81d305000000b0056d2a8849e5mr41186ywi.2.1688758233839; Fri, 07 Jul
- 2023 12:30:33 -0700 (PDT)
-Date: Fri,  7 Jul 2023 12:30:06 -0700
-In-Reply-To: <20230707193006.1309662-1-sdf@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84CDB23C7
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 20:01:52 +0000 (UTC)
+Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021020.outbound.protection.outlook.com [52.101.57.20])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC677FE
+	for <bpf@vger.kernel.org>; Fri,  7 Jul 2023 13:01:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ltYyOv54eW9MFgsZnGclFKuUICw67vzizlX9oGbPs3gCULnuRLwG3zvP3CtKnlXs6Riw3wWTLekwo1TDW3CnXH58rdLHu/vRGjwDU5qu0eKFxBKn5Ny1LChwyYnYrjLakneZ687d5C12h6eB7NkJufhe7JMeRn+XkAf68ocLytixYyaIC558RJyIa54JNSv6oXK8+wADetlX31x3cuVWRWnPe8tSDYcA87JIwpHkvUMoCJiLNKyOx6f6mxsVlcllDWDnk+Ytb+obrCBMuoG48aeFSS4vK1PerrwtVJwx3oJKM6d/XfmQ6EvC4hhD3LFsQ0o5hLC/+HhwmgKDJBzsYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FBt/OlW+f6a7hc0xK8dtqTcr3zm51pYUuGa8qQ0G9rQ=;
+ b=dTl7OUmzm/GeiuOKkq4FODB+bdEcqWl9N79pY/3eDR4JhFIRK7ncKaXAJspTDoGDwxCuenqOLkWfVJjGB++2uc5owBDPh9b+N3kWEMVXGum4DeXk+dZpj5Tj1j1Ivic3F1QKBZqs59UsAyuXqxZAy9QYc8uCnHVCZcKCehj/vx/mMndPEvqEvkLFD4/+FbLGvoc8VgGarbn0HJWaz1boVz4nCnoAZAqCv5/xGVF7YYS5xoZxB5XTNOwlTT3Hv8KsX81fQeZpyJ2YXKOKIUZiLOcmXjDbTfMh6/AJPBs0cv4qmfJs+4lhZzMbvsorWaKCmAgZC+DNWGNowQYf3SqD8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FBt/OlW+f6a7hc0xK8dtqTcr3zm51pYUuGa8qQ0G9rQ=;
+ b=X6BdVSjvWToy3s2WOBfEvx16IVYJj5p9Bv7xbG9yz4ROPH+HpHtqn9YyqK2jeRC79vtkx4NIMpyce2JTJ7Y8E8cELuE2/MsdnkKDM1sRQBmgIb1KLGsdICBn2Mjgj1q/HELwzHKtK5881Kjcj1OmVO1cZnXCfndqDeoBr9bJXsw=
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com (2603:10b6:510:243::22)
+ by MN0PR21MB3484.namprd21.prod.outlook.com (2603:10b6:208:3d3::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.5; Fri, 7 Jul
+ 2023 20:01:47 +0000
+Received: from PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::8708:6828:fb9f:7bd5]) by PH7PR21MB3878.namprd21.prod.outlook.com
+ ([fe80::8708:6828:fb9f:7bd5%4]) with mapi id 15.20.6544.010; Fri, 7 Jul 2023
+ 20:01:47 +0000
+From: Dave Thaler <dthaler@microsoft.com>
+To: Michael Richardson <mcr+ietf@sandelman.ca>, "bpf@ietf.org" <bpf@ietf.org>,
+	bpf <bpf@vger.kernel.org>
+Subject: RE: [Bpf] Instruction set extension policy
+Thread-Topic: [Bpf] Instruction set extension policy
+Thread-Index: AdmwKdCg+G2TzllJT+2ICM2r0nWi5AA0o6YAAAQp+2A=
+Date: Fri, 7 Jul 2023 20:01:47 +0000
+Message-ID:
+ <PH7PR21MB3878059A1DDC86C7DC50F324A32DA@PH7PR21MB3878.namprd21.prod.outlook.com>
+References:
+ <PH7PR21MB387813A79D0094E47914C5A8A32CA@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <23460.1688752596@localhost>
+In-Reply-To: <23460.1688752596@localhost>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c2c5336e-2c45-42c0-a633-f6800a41e29f;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-07T19:55:49Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3878:EE_|MN0PR21MB3484:EE_
+x-ms-office365-filtering-correlation-id: 8b8b86d9-e984-42d8-4953-08db7f24fed8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 39E3ffjtoiTXswQ0xmEOVp/xQHgFN2Ar5UcawYN623whV8CICuw2mTXDb54ujthfFDT3k8xE7NtosFT2xZ1D5WfUDmqatRnfTbodTzkUHgOwp4VHckbaMtMSV+xxYn+izXP6+22t56ydgxIFL7jHhw66+ICN+VpKW1wDglYzRhYySt4cOjH6gtlspH/7hi6zi4v3LtJ+YXZAAl7JuunwhDQ1VgTzvZOQe9v7LMKDE6rs2KECEtbI3kr3CTZQQj/cIhI7yvzkN0OLS1oLlqvGRgSykUdQgxU8Ufx+v5+R+s8ZHBBEd/jpfhhajVftje5c/1wra3ymLaRKomCLfSzH+q9hin9MO+dXhYH91iH1Q2y+oYpitHBTQ9Iatqdny96JEHCiaO1uLxqije9ngSg/P5vt4nmqBDqkRsvFy+rDDimsA7LIA6DwK+r0e4tuCDE5tMnOOE7x/Wvb6WPDps0edzB/hdVqOEhH9eaVic2KJKcKb2Gj2q9+umbpEoOtcs9Ts8x4zHbc5C1iwBgaI3dNxNvIoRfQVm0cZ8lMfC+W4UG4J7HUUErS0F05lP+ShHxDX8bK7oiJPu33PwW0ZlPX7zYwyAiS8xUBfKn0+b8GfCdGYF5Ss65CRgXijIoyZ/1QOJhySm78B/ALp1l6yJfGd4u6h7cp9fcLvZuK8+6kVbE=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3878.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(136003)(346002)(376002)(396003)(451199021)(33656002)(10290500003)(86362001)(7696005)(76116006)(316002)(110136005)(64756008)(66476007)(66556008)(66446008)(66946007)(478600001)(71200400001)(55016003)(5660300002)(2906002)(6506007)(122000001)(8676002)(8936002)(82950400001)(38100700002)(38070700005)(52536014)(82960400001)(41300700001)(8990500004)(9686003)(53546011)(186003)(26005)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?QkJWNlZFVDdmL054c0gxZFFjcjRRRVRLbGthbEN2SXZlVUFrL2F0YzBBblNa?=
+ =?utf-8?B?STh3VzcxNTVyYzVqWDdLRDRxaFlRVERWZEVUTCtyMk54eE53OENEYU5hNEJK?=
+ =?utf-8?B?SFNtODdmazNEc01GK0VKTDNQK0RGZkNuMUY3R1hGdndFc3RUVUNrTmVvSGtI?=
+ =?utf-8?B?R0xnTU1RVG5TSzAxWjhWYkt0S2dYQ1VHa2hpbys3QzRUc1hSQnk3MUxCMi9S?=
+ =?utf-8?B?eC8vendVYW9vSTd1Q2VnWjA5QWJZVGFEVFBCOVpGSitlQmVFdlBOZnpGSGJs?=
+ =?utf-8?B?SGxjOFFEdjJUZmppWkxLNkxIQ2lIeG1RMXZFeW5obnRXK09Yc2VBL1NmUFNK?=
+ =?utf-8?B?Q1lPcXVPeGQ5Wi9jUWlZVkVqT001WXFZYTBGcE5wQlNvdno1RFVtWHNSRVJz?=
+ =?utf-8?B?bUU2dERPeitUSWFTY256TklOSEg5QktiM2J6aUs4cHBtcis0Qll6bFdOOTZ0?=
+ =?utf-8?B?VWZ3Z2pIQzk0LzE3SzROOTQxUmgyUmxIeVROYklPWUlYWmtySHhkNVpaZ1Va?=
+ =?utf-8?B?YWFoOEs1REVOQ3lySElrdDJrUFEzWmFsRnRwM0QvWjJoeU41YUxxb2VyYUVx?=
+ =?utf-8?B?a1hNT2pQbXdyaDBPZGN2N1pFZFBpdkVqOFBOOEoydllKRmE1dWNHTnhpbzc5?=
+ =?utf-8?B?YndQTzFvSFBmb2c5VDcyaXgyUXhwRVZIb2ZhRjcxSFhkZzF6a3ZSUXZkdmkr?=
+ =?utf-8?B?dFZCMFlSazBhLzM3aEpKOEhFdUNYMC9jdlFCTyszZVdVL0V6N0lzN2hYNjBZ?=
+ =?utf-8?B?M1lrdis4NXRXV3R2QXMxbis1YWl0SjAzNjA5RWtiZlhlRzkrMEVCalQyM2ll?=
+ =?utf-8?B?TnZvS0tnVlJPaFFsSEJXQWJYdzlMeVh1QjZKWkZsRXR5REl6d3Y3QmRGU3Rs?=
+ =?utf-8?B?aElqbFRhNEhLWGxPUm5idkRsWDduVnNCVnpGRGFUeFVXZDVaRzZRRkNYZlZn?=
+ =?utf-8?B?bUJ0UjFCM0pEc1g1S1BTTFJKaGZnN3RHYVFNYkx2aHViWWM3SUZHSHhoTEor?=
+ =?utf-8?B?VzNvc1RtcWtQdGhnbUlyRkRhYjZWN1QwWVYyS3lmR3hXR1NKVmtudmhxZnZi?=
+ =?utf-8?B?bVVmaXo4N2dzUThxZ2k3V2JFSXR2OG9GTFQ0c2FjVkJJVk5lMnFCTDc4MmdG?=
+ =?utf-8?B?YkRqM25PTnArWGJDOUJWTGFMdnAyZW1QMENad2JSWmJ4M3N0ZFJCUVF1clhG?=
+ =?utf-8?B?QmRmYU9PUDBNNFRCSVBDWEtkNDJibFMwT2Y0V3JEcmh6Wlp2SkVrZm1zbk0z?=
+ =?utf-8?B?djk3ZytaaTRrZE85eC9DUEtLU0pRTkJ0Ry9ocm10aGhROWRhV2V1bHNEdDF0?=
+ =?utf-8?B?VlZ1dm5RdnJhZlE5Z0xXdXZaeGRrZVlDKzVjU0NFVlFqYnYwRGtTajBuU3NW?=
+ =?utf-8?B?Y0ErQWEvTUVaYU1kZlg4eEE0M2xjMHl4UU5RcU9iR1EzT3p0c0FacHh6ZFVL?=
+ =?utf-8?B?WlArZ1RNQVFOeEpyTFB5WE5qQXNKQWhYTzlDeWJzUklyaVJuWGdoUFhzckFn?=
+ =?utf-8?B?Y3JqeWNaMjZtRm5Tb1FEa2JLTm5YM1ZTUFQySFlhRlIzRWpmNFloZ2JjSkZ4?=
+ =?utf-8?B?bzlaZXdSU2RrcHgrSTc0YllSejc4VmFOcHM0RWdJR3RnS3Aza1E3WHBvVjhY?=
+ =?utf-8?B?T3hIK2lnNm1NQ2dlWWxKQ1hncFpSM2dSL2RaVGFiSVUwYUJDdVczUCtlay9B?=
+ =?utf-8?B?ckVhS01lTVNlWTd4Wkd1RUpKNDUxdTZXYWcramJmbUJBdlpDRFk5UldXeHVG?=
+ =?utf-8?B?dG1XYVIvd0dIUGZzNkR2Z2RLaDJ6SnJXd1A1ZHpFN3FLM0FMWlRENGFoZVJ2?=
+ =?utf-8?B?VUpjWWRmQzREVnFLeDRKb0FxUTFudndycG81OVZYdUJORGdpMjk5aWlRRXFx?=
+ =?utf-8?B?cnVkQkJFREppUTVaaENqOTExTjFUblhtc0hvb2lHNEY0TTFtdGhEeWM0cEQ0?=
+ =?utf-8?B?dlkzU0R0MHNzNmFkL1FVNlF5b29WYmpHTnJWS2hOOUNabjlnbE1BQzZ1V3A0?=
+ =?utf-8?B?QlJHRnNWWjNnUzZjd3IvZ0djUWwzME5sNEVGTktXK0hyT041OWJFSGlxN2Ny?=
+ =?utf-8?B?dXYwc1UralpsNHo5T21nT2VadExPTjdHTUNpQTlFT2pHU0VFQlF2ZmVVekpS?=
+ =?utf-8?B?cWJVSTZDR3JzMmVTdDNBT1pUcTV4ekxRY3gyWWNRci9wNDVIVk5pbER1TFJR?=
+ =?utf-8?B?dXc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20230707193006.1309662-1-sdf@google.com>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230707193006.1309662-15-sdf@google.com>
-Subject: [RFC bpf-next v3 14/14] selftests/bpf: Extend xdp_hw_metadata with
- devtx kfuncs
-From: Stanislav Fomichev <sdf@google.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	kuba@kernel.org, toke@kernel.org, willemb@google.com, dsahern@kernel.org, 
-	magnus.karlsson@intel.com, bjorn@kernel.org, maciej.fijalkowski@intel.com, 
-	hawk@kernel.org, netdev@vger.kernel.org, xdp-hints@xdp-project.net
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3878.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b8b86d9-e984-42d8-4953-08db7f24fed8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jul 2023 20:01:47.3591
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4QoZHbbBy1M/fr8Z8gQtl8VawMl/o+ZcRD4D9Y6nGBytuLpC/HYpIgQNBnIIppd7mXaVnF329u8IpfTcqogu9Mkn2V7LCvKbrKoei32i9mY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR21MB3484
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-When we get packets on port 9091, we swap src/dst and send it out.
-At this point, we also request the timestamp and plumb it back
-to the userspace. The userspace simply prints the timestamp.
-
-Also print current UDP checksum, rewrite it with the pseudo-header
-checksum and offload TX checksum calculation to devtx. Upon
-completion, report TX checksum back (mlx5 doesn't put it back, so
-I've used tcpdump to confirm that the checksum is correct).
-
-Some other related changes:
-- switched to zerocopy mode by default; new flag can be used to force
-  old behavior
-- request fixed TX_METADAT_LEN headroom
-- some other small fixes (umem size, fill idx+i, etc)
-
-mvbz3:~# ./xdp_hw_metadata eth3 -c mlx5e_devtx_complete_xdp -s mlx5e_devtx_submit_xd
-attach rx bpf program...
-poll: 0 (0) skip=1/0 redir=0 ring_full=0 rx_fail=0 tx_fail=0 l4_csum_fail=0
-...
-xsk_ring_cons__peek: 1
-0xeb4cb8: rx_desc[0]->addr=80100 addr=80100 comp_addr=80100
-rx_hash: 0x6A1A897A with RSS type:0x2A
-rx_timestamp:  1688749963628930772 (sec:1688749963.6289)
-XDP RX-time:   1688749963901850574 (sec:1688749963.9019) delta sec:0.2729 (272919.802 usec)
-AF_XDP time:   1688749963901967812 (sec:1688749963.9020) delta sec:0.0001 (117.238 usec)
-0xeb4cb8: ping_pong with csum=8e3b (want 4b0b)
-0xeb4cb8: complete tx idx=0 addr=8
-got tx sample: tx_err 0 hw_timestamp 1688749963859814790 sw_timestamp 1688749963902297286 csum 8e3b
-0xeb4cb8: complete rx idx=128 addr=80100
-poll: 0 (0) skip=7/0 redir=1 ring_full=0 rx_fail=0 tx_fail=0 l4_csum_fail=0
-
-mvbz4:~# nc  -Nu -q1 ${MVBZ3_LINK_LOCAL_IP}%eth3 9091
-
-mvbz4:~# tcpdump -vvx -i eth3 udp
-tcpdump: listening on eth3, link-type EN10MB (Ethernet), snapshot length 262144 bytes
-10:12:43.901436 IP6 (flowlabel 0x7a5d2, hlim 127, next-header UDP (17) payload length: 11) fe80::1270:fdff:fe48:1087.44339 > fe80::1270:fdff:fe48:1077.9091: [bad udp cksum 0x3b8e -> 0x0b4b!] UDP, length 3
-        0x0000:  6007 a5d2 000b 117f fe80 0000 0000 0000
-        0x0010:  1270 fdff fe48 1087 fe80 0000 0000 0000
-        0x0020:  1270 fdff fe48 1077 ad33 2383 000b 3b8e
-        0x0030:  7864 70
-10:12:43.902125 IP6 (flowlabel 0x7a5d2, hlim 127, next-header UDP (17) payload length: 11) fe80::1270:fdff:fe48:1077.9091 > fe80::1270:fdff:fe48:1087.44339: [udp sum ok] UDP, length 3
-        0x0000:  6007 a5d2 000b 117f fe80 0000 0000 0000
-        0x0010:  1270 fdff fe48 1077 fe80 0000 0000 0000
-        0x0020:  1270 fdff fe48 1087 2383 ad33 000b 0b4b
-        0x0030:  7864 70
-
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/progs/xdp_hw_metadata.c     | 173 +++++++++++
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 269 +++++++++++++++++-
- 2 files changed, 427 insertions(+), 15 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-index b2dfd7066c6e..2049bfa70ea9 100644
---- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-@@ -4,6 +4,7 @@
- #include "xdp_metadata.h"
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_XSKMAP);
-@@ -12,14 +13,30 @@ struct {
- 	__type(value, __u32);
- } xsk SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, 4096);
-+} tx_compl_buf SEC(".maps");
-+
- __u64 pkts_skip = 0;
-+__u64 pkts_tx_skip = 0;
- __u64 pkts_fail = 0;
- __u64 pkts_redir = 0;
-+__u64 pkts_fail_tx = 0;
-+__u64 pkts_fail_l4_csum = 0;
-+__u64 pkts_ringbuf_full = 0;
-+
-+int ifindex = -1;
-+__u64 net_cookie = -1;
- 
- extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
- extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
- 				    enum xdp_rss_hash_type *rss_type) __ksym;
-+extern int bpf_devtx_request_tx_timestamp(const struct devtx_ctx *ctx) __ksym;
-+extern int bpf_devtx_tx_timestamp(const struct devtx_ctx *ctx, __u64 *timestamp) __ksym;
-+extern int bpf_devtx_request_l4_csum(const struct devtx_ctx *ctx,
-+				     u16 csum_start, u16 csum_offset) __ksym;
- 
- SEC("xdp")
- int rx(struct xdp_md *ctx)
-@@ -90,4 +107,160 @@ int rx(struct xdp_md *ctx)
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
- }
- 
-+/* This is not strictly required; only to showcase how to access the payload. */
-+static __always_inline bool tx_filter(const struct devtx_ctx *devtx,
-+				      const void *data, __be16 *proto)
-+{
-+	int port_offset = sizeof(struct ethhdr) + offsetof(struct udphdr, source);
-+	struct ethhdr eth = {};
-+	struct udphdr udp = {};
-+
-+	bpf_probe_read_kernel(&eth.h_proto, sizeof(eth.h_proto),
-+			      data + offsetof(struct ethhdr, h_proto));
-+
-+	*proto = eth.h_proto;
-+	if (eth.h_proto == bpf_htons(ETH_P_IP)) {
-+		port_offset += sizeof(struct iphdr);
-+	} else if (eth.h_proto == bpf_htons(ETH_P_IPV6)) {
-+		port_offset += sizeof(struct ipv6hdr);
-+	} else {
-+		__sync_add_and_fetch(&pkts_tx_skip, 1);
-+		return false;
-+	}
-+
-+	bpf_probe_read_kernel(&udp.source, sizeof(udp.source), data + port_offset);
-+
-+	/* Replies to UDP:9091 */
-+	if (udp.source != bpf_htons(9091)) {
-+		__sync_add_and_fetch(&pkts_tx_skip, 1);
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
-+static inline bool my_netdev(const struct devtx_ctx *devtx)
-+{
-+	static struct net_device *netdev;
-+
-+	if (netdev)
-+		return netdev == devtx->netdev;
-+
-+	if (devtx->netdev->ifindex != ifindex)
-+		return false;
-+	if (devtx->netdev->nd_net.net->net_cookie != net_cookie)
-+		return false;
-+
-+	netdev = devtx->netdev;
-+	return true;
-+}
-+
-+static inline int udpoff(__be16 proto)
-+{
-+	if (proto == bpf_htons(ETH_P_IP))
-+		return sizeof(struct ethhdr) + sizeof(struct iphdr);
-+	else if (proto == bpf_htons(ETH_P_IPV6))
-+		return sizeof(struct ethhdr) + sizeof(struct ipv6hdr);
-+	else
-+		return 0;
-+}
-+
-+static inline int tx_submit(const struct devtx_ctx *devtx, const void *data, u8 meta_len)
-+{
-+	struct xdp_tx_meta meta = {};
-+	__be16 proto = 0;
-+	int off, ret;
-+
-+	if (!my_netdev(devtx))
-+		return 0;
-+	if (meta_len != TX_META_LEN)
-+		return 0;
-+
-+	bpf_probe_read_kernel(&meta, sizeof(meta), data - TX_META_LEN);
-+	if (!meta.request_timestamp)
-+		return 0;
-+
-+	if (!tx_filter(devtx, data, &proto))
-+		return 0;
-+
-+	ret = bpf_devtx_request_tx_timestamp(devtx);
-+	if (ret < 0)
-+		__sync_add_and_fetch(&pkts_fail_tx, 1);
-+
-+	off = udpoff(proto);
-+	if (!off)
-+		return 0;
-+
-+	ret = bpf_devtx_request_l4_csum(devtx, off, off + offsetof(struct udphdr, check));
-+	if (ret < 0)
-+		__sync_add_and_fetch(&pkts_fail_l4_csum, 1);
-+
-+	return 0;
-+}
-+
-+SEC("?fentry")
-+int BPF_PROG(tx_submit_xdp, const struct devtx_ctx *devtx, const struct xdp_frame *xdpf)
-+{
-+	return tx_submit(devtx, xdpf->data, xdpf->metasize);
-+}
-+
-+SEC("?fentry")
-+int BPF_PROG(tx_submit_skb, const struct devtx_ctx *devtx, const struct sk_buff *skb)
-+{
-+	return tx_submit(devtx, skb->data, devtx->sinfo->meta_len);
-+}
-+
-+static inline int tx_complete(const struct devtx_ctx *devtx, const void *data, u8 meta_len)
-+{
-+	struct xdp_tx_meta meta = {};
-+	struct devtx_sample *sample;
-+	struct udphdr udph;
-+	__be16 proto = 0;
-+	int off;
-+
-+	if (!my_netdev(devtx))
-+		return 0;
-+	if (meta_len != TX_META_LEN)
-+		return 0;
-+
-+	bpf_probe_read_kernel(&meta, sizeof(meta), data - TX_META_LEN);
-+	if (!meta.request_timestamp)
-+		return 0;
-+
-+	if (!tx_filter(devtx, data, &proto))
-+		return 0;
-+
-+	off = udpoff(proto);
-+	if (!off)
-+		return 0;
-+
-+	bpf_probe_read_kernel(&udph, sizeof(udph), data + off);
-+
-+	sample = bpf_ringbuf_reserve(&tx_compl_buf, sizeof(*sample), 0);
-+	if (!sample) {
-+		__sync_add_and_fetch(&pkts_ringbuf_full, 1);
-+		return 0;
-+	}
-+
-+	sample->timestamp_retval = bpf_devtx_tx_timestamp(devtx, &sample->hw_timestamp);
-+	sample->sw_complete_timestamp = bpf_ktime_get_tai_ns();
-+	sample->tx_csum = udph.check;
-+
-+	bpf_ringbuf_submit(sample, 0);
-+
-+	return 0;
-+}
-+
-+SEC("?fentry")
-+int BPF_PROG(tx_complete_xdp, const struct devtx_ctx *devtx, const struct xdp_frame *xdpf)
-+{
-+	return tx_complete(devtx, xdpf->data, xdpf->metasize);
-+}
-+
-+SEC("?fentry")
-+int BPF_PROG(tx_complete_skb, const struct devtx_ctx *devtx, const struct sk_buff *skb)
-+{
-+	return tx_complete(devtx, skb->data, devtx->sinfo->meta_len);
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 613321eb84c1..3f9c47ad5cfa 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -10,7 +10,9 @@
-  *   - rx_hash
-  *
-  * TX:
-- * - TBD
-+ * - UDP 9091 packets trigger TX reply
-+ * - TX HW timestamp is requested and reported back upon completion
-+ * - TX checksum is requested
-  */
- 
- #include <test_progs.h>
-@@ -28,10 +30,12 @@
- #include <net/if.h>
- #include <poll.h>
- #include <time.h>
-+#include <unistd.h>
-+#include <libgen.h>
- 
- #include "xdp_metadata.h"
- 
--#define UMEM_NUM 16
-+#define UMEM_NUM 256
- #define UMEM_FRAME_SIZE XSK_UMEM__DEFAULT_FRAME_SIZE
- #define UMEM_SIZE (UMEM_FRAME_SIZE * UMEM_NUM)
- #define XDP_FLAGS (XDP_FLAGS_DRV_MODE | XDP_FLAGS_REPLACE)
-@@ -49,24 +53,27 @@ struct xsk {
- struct xdp_hw_metadata *bpf_obj;
- struct xsk *rx_xsk;
- const char *ifname;
-+char *tx_complete;
-+char *tx_submit;
- int ifindex;
- int rxq;
- 
- void test__fail(void) { /* for network_helpers.c */ }
- 
--static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
-+static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id, int flags)
- {
- 	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
- 	const struct xsk_socket_config socket_config = {
- 		.rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
- 		.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
--		.bind_flags = XDP_COPY,
-+		.bind_flags = flags,
-+		.tx_metadata_len = TX_META_LEN,
- 	};
- 	const struct xsk_umem_config umem_config = {
- 		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
- 		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
- 		.frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
--		.flags = XDP_UMEM_UNALIGNED_CHUNK_FLAG,
-+		.flags = XSK_UMEM__DEFAULT_FLAGS,
- 	};
- 	__u32 idx;
- 	u64 addr;
-@@ -108,7 +115,7 @@ static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
- 	for (i = 0; i < UMEM_NUM / 2; i++) {
- 		addr = (UMEM_NUM / 2 + i) * UMEM_FRAME_SIZE;
- 		printf("%p: rx_desc[%d] -> %lx\n", xsk, i, addr);
--		*xsk_ring_prod__fill_addr(&xsk->fill, i) = addr;
-+		*xsk_ring_prod__fill_addr(&xsk->fill, idx + i) = addr;
- 	}
- 	xsk_ring_prod__submit(&xsk->fill, ret);
- 
-@@ -129,12 +136,22 @@ static void refill_rx(struct xsk *xsk, __u64 addr)
- 	__u32 idx;
- 
- 	if (xsk_ring_prod__reserve(&xsk->fill, 1, &idx) == 1) {
--		printf("%p: complete idx=%u addr=%llx\n", xsk, idx, addr);
-+		printf("%p: complete rx idx=%u addr=%llx\n", xsk, idx, addr);
- 		*xsk_ring_prod__fill_addr(&xsk->fill, idx) = addr;
- 		xsk_ring_prod__submit(&xsk->fill, 1);
- 	}
- }
- 
-+static int kick_tx(struct xsk *xsk)
-+{
-+	return sendto(xsk_socket__fd(xsk->socket), NULL, 0, MSG_DONTWAIT, NULL, 0);
-+}
-+
-+static int kick_rx(struct xsk *xsk)
-+{
-+	return recvfrom(xsk_socket__fd(xsk->socket), NULL, 0, MSG_DONTWAIT, NULL, NULL);
-+}
-+
- #define NANOSEC_PER_SEC 1000000000 /* 10^9 */
- static __u64 gettime(clockid_t clock_id)
- {
-@@ -228,7 +245,102 @@ static void verify_skb_metadata(int fd)
- 	printf("skb hwtstamp is not found!\n");
- }
- 
--static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t clock_id)
-+static bool complete_tx(struct xsk *xsk, struct ring_buffer *ringbuf)
-+{
-+	__u32 idx;
-+	__u64 addr;
-+
-+	if (!xsk_ring_cons__peek(&xsk->comp, 1, &idx))
-+		return false;
-+
-+	addr = *xsk_ring_cons__comp_addr(&xsk->comp, idx);
-+
-+	printf("%p: complete tx idx=%u addr=%llx\n", xsk, idx, addr);
-+	xsk_ring_cons__release(&xsk->comp, 1);
-+
-+	return true;
-+}
-+
-+#define swap(a, b, len) do { \
-+	for (int i = 0; i < len; i++) { \
-+		__u8 tmp = ((__u8 *)a)[i]; \
-+		((__u8 *)a)[i] = ((__u8 *)b)[i]; \
-+		((__u8 *)b)[i] = tmp; \
-+	} \
-+} while (0)
-+
-+static void ping_pong(struct xsk *xsk, void *rx_packet)
-+{
-+	struct ipv6hdr *ip6h = NULL;
-+	struct iphdr *iph = NULL;
-+	struct xdp_tx_meta *meta;
-+	struct xdp_desc *tx_desc;
-+	struct udphdr *udph;
-+	struct ethhdr *eth;
-+	__sum16 want_csum;
-+	void *data;
-+	__u32 idx;
-+	int ret;
-+	int len;
-+
-+	ret = xsk_ring_prod__reserve(&xsk->tx, 1, &idx);
-+	if (ret != 1) {
-+		printf("%p: failed to reserve tx slot\n", xsk);
-+		return;
-+	}
-+
-+	tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx);
-+	tx_desc->addr = idx % (UMEM_NUM / 2) * UMEM_FRAME_SIZE + TX_META_LEN;
-+	data = xsk_umem__get_data(xsk->umem_area, tx_desc->addr);
-+
-+	meta = data - TX_META_LEN;
-+	meta->request_timestamp = 1;
-+
-+	eth = rx_packet;
-+
-+	if (eth->h_proto == htons(ETH_P_IP)) {
-+		iph = (void *)(eth + 1);
-+		udph = (void *)(iph + 1);
-+	} else if (eth->h_proto == htons(ETH_P_IPV6)) {
-+		ip6h = (void *)(eth + 1);
-+		udph = (void *)(ip6h + 1);
-+	} else {
-+		printf("%p: failed to detect IP version for ping pong %04x\n", xsk, eth->h_proto);
-+		xsk_ring_prod__cancel(&xsk->tx, 1);
-+		return;
-+	}
-+
-+	len = ETH_HLEN;
-+	if (ip6h)
-+		len += sizeof(*ip6h) + ntohs(ip6h->payload_len);
-+	if (iph)
-+		len += ntohs(iph->tot_len);
-+
-+	swap(eth->h_dest, eth->h_source, ETH_ALEN);
-+	if (iph)
-+		swap(&iph->saddr, &iph->daddr, 4);
-+	else
-+		swap(&ip6h->saddr, &ip6h->daddr, 16);
-+	swap(&udph->source, &udph->dest, 2);
-+
-+	want_csum = udph->check;
-+	if (iph)
-+		udph->check = ~csum_tcpudp_magic(iph->saddr, iph->daddr,
-+						 ntohs(udph->len), IPPROTO_UDP, 0);
-+	else
-+		udph->check = ~csum_ipv6_magic(&ip6h->saddr, &ip6h->daddr,
-+					       ntohs(udph->len), IPPROTO_UDP, 0);
-+
-+	printf("%p: ping-pong with csum=%04x (want %04x)\n", xsk, udph->check, want_csum);
-+
-+	memcpy(data, rx_packet, len); /* don't share umem chunk for simplicity */
-+	tx_desc->len = len;
-+
-+	xsk_ring_prod__submit(&xsk->tx, 1);
-+}
-+
-+static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t clock_id,
-+			   struct ring_buffer *ringbuf)
- {
- 	const struct xdp_desc *rx_desc;
- 	struct pollfd fds[rxq + 1];
-@@ -250,10 +362,22 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
- 
- 	while (true) {
- 		errno = 0;
-+
-+		for (i = 0; i < rxq; i++) {
-+			ret = kick_rx(&rx_xsk[i]);
-+			if (ret)
-+				printf("kick_rx ret=%d\n", ret);
-+		}
-+
- 		ret = poll(fds, rxq + 1, 1000);
--		printf("poll: %d (%d) skip=%llu fail=%llu redir=%llu\n",
-+		printf("poll: %d (%d) skip=%llu/%llu redir=%llu ring_full=%llu rx_fail=%llu tx_fail=%llu l4_csum_fail=%llu\n",
- 		       ret, errno, bpf_obj->bss->pkts_skip,
--		       bpf_obj->bss->pkts_fail, bpf_obj->bss->pkts_redir);
-+		       bpf_obj->bss->pkts_tx_skip,
-+		       bpf_obj->bss->pkts_redir,
-+		       bpf_obj->bss->pkts_ringbuf_full,
-+		       bpf_obj->bss->pkts_fail,
-+		       bpf_obj->bss->pkts_fail_tx,
-+		       bpf_obj->bss->pkts_fail_l4_csum);
- 		if (ret < 0)
- 			break;
- 		if (ret == 0)
-@@ -280,6 +404,24 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
- 			       xsk, idx, rx_desc->addr, addr, comp_addr);
- 			verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr),
- 					    clock_id);
-+
-+			if (tx_submit && tx_complete) {
-+				/* mirror the packet back */
-+				ping_pong(xsk, xsk_umem__get_data(xsk->umem_area, addr));
-+
-+				ret = kick_tx(xsk);
-+				if (ret)
-+					printf("kick_tx ret=%d\n", ret);
-+
-+				for (int j = 0; j < 500; j++) {
-+					if (complete_tx(xsk, ringbuf))
-+						break;
-+					usleep(10*1000);
-+				}
-+
-+				ring_buffer__poll(ringbuf, 1000);
-+			}
-+
- 			xsk_ring_cons__release(&xsk->rx, 1);
- 			refill_rx(xsk, comp_addr);
- 		}
-@@ -404,21 +546,69 @@ static void timestamping_enable(int fd, int val)
- 		error(1, errno, "setsockopt(SO_TIMESTAMPING)");
- }
- 
-+static int process_sample(void *ctx, void *data, size_t len)
-+{
-+	struct devtx_sample *sample = data;
-+
-+	printf("got tx sample: tx_err %u hw_timestamp %llu sw_timestamp %llu csum %04x\n",
-+	       sample->timestamp_retval, sample->hw_timestamp,
-+	       sample->sw_complete_timestamp,
-+	       sample->tx_csum);
-+
-+	return 0;
-+}
-+
-+static void usage(const char *prog)
-+{
-+	fprintf(stderr,
-+		"usage: %s [OPTS] <ifname>\n"
-+		"OPTS:\n"
-+		"    -s    symbol name for tx_submit\n"
-+		"    -c    symbol name for tx_complete\n"
-+		"    -Z    run in copy mode\n",
-+		prog);
-+}
-+
- int main(int argc, char *argv[])
- {
-+	int bind_flags =  XDP_USE_NEED_WAKEUP | XDP_ZEROCOPY;
-+	struct ring_buffer *tx_compl_ringbuf = NULL;
- 	clockid_t clock_id = CLOCK_TAI;
- 	int server_fd = -1;
-+	int opt;
- 	int ret;
- 	int i;
- 
- 	struct bpf_program *prog;
- 
--	if (argc != 2) {
-+	while ((opt = getopt(argc, argv, "s:c:Z")) != -1) {
-+		switch (opt) {
-+		case 's':
-+			tx_submit = optarg;
-+			break;
-+		case 'c':
-+			tx_complete = optarg;
-+			break;
-+		case 'Z':
-+			bind_flags = XDP_USE_NEED_WAKEUP | XDP_COPY;
-+			break;
-+		default:
-+			usage(basename(argv[0]));
-+			return 1;
-+		}
-+	}
-+
-+	if (argc < 2) {
- 		fprintf(stderr, "pass device name\n");
- 		return -1;
- 	}
- 
--	ifname = argv[1];
-+	if (optind >= argc) {
-+		usage(basename(argv[0]));
-+		return 1;
-+	}
-+
-+	ifname = argv[optind];
- 	ifindex = if_nametoindex(ifname);
- 	rxq = rxq_num(ifname);
- 
-@@ -432,7 +622,7 @@ int main(int argc, char *argv[])
- 
- 	for (i = 0; i < rxq; i++) {
- 		printf("open_xsk(%s, %p, %d)\n", ifname, &rx_xsk[i], i);
--		ret = open_xsk(ifindex, &rx_xsk[i], i);
-+		ret = open_xsk(ifindex, &rx_xsk[i], i, bind_flags);
- 		if (ret)
- 			error(1, -ret, "open_xsk");
- 
-@@ -444,15 +634,64 @@ int main(int argc, char *argv[])
- 	if (libbpf_get_error(bpf_obj))
- 		error(1, libbpf_get_error(bpf_obj), "xdp_hw_metadata__open");
- 
-+	bpf_obj->data->ifindex = ifindex;
-+	bpf_obj->data->net_cookie = get_net_cookie();
-+
- 	prog = bpf_object__find_program_by_name(bpf_obj->obj, "rx");
- 	bpf_program__set_ifindex(prog, ifindex);
- 	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
- 
-+	prog = bpf_object__find_program_by_name(bpf_obj->obj,
-+						bind_flags & XDP_COPY ?
-+						"tx_submit_skb" :
-+						"tx_submit_xdp");
-+	bpf_program__set_ifindex(prog, ifindex);
-+	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
-+	if (tx_submit) {
-+		printf("attaching devtx submit program to %s\n", tx_submit);
-+		ret = bpf_program__set_attach_target(prog, 0, tx_submit);
-+		if (ret)
-+			printf("failed to attach submit program to %s, ret=%d\n",
-+			       tx_submit, ret);
-+		bpf_program__set_autoattach(prog, true);
-+		bpf_program__set_autoload(prog, true);
-+	} else {
-+		printf("skipping devtx submit program\n");
-+	}
-+
-+	prog = bpf_object__find_program_by_name(bpf_obj->obj,
-+						bind_flags & XDP_COPY ?
-+						"tx_complete_skb" :
-+						"tx_complete_xdp");
-+	bpf_program__set_ifindex(prog, ifindex);
-+	bpf_program__set_flags(prog, BPF_F_XDP_DEV_BOUND_ONLY);
-+	if (tx_complete) {
-+		printf("attaching devtx complete program to %s\n", tx_complete);
-+		ret = bpf_program__set_attach_target(prog, 0, tx_complete);
-+		if (ret)
-+			printf("failed to attach complete program to %s, ret=%d\n",
-+			       tx_complete, ret);
-+		bpf_program__set_autoattach(prog, true);
-+		bpf_program__set_autoload(prog, true);
-+	} else {
-+		printf("skipping devtx complete program\n");
-+	}
-+
- 	printf("load bpf program...\n");
- 	ret = xdp_hw_metadata__load(bpf_obj);
- 	if (ret)
- 		error(1, -ret, "xdp_hw_metadata__load");
- 
-+	printf("attach devts bpf programs...\n");
-+	ret = xdp_hw_metadata__attach(bpf_obj);
-+	if (ret)
-+		error(1, -ret, "xdp_hw_metadata__attach");
-+
-+	tx_compl_ringbuf = ring_buffer__new(bpf_map__fd(bpf_obj->maps.tx_compl_buf),
-+					    process_sample, NULL, NULL);
-+	if (libbpf_get_error(tx_compl_ringbuf))
-+		error(1, -libbpf_get_error(tx_compl_ringbuf), "ring_buffer__new");
-+
- 	printf("prepare skb endpoint...\n");
- 	server_fd = start_server(AF_INET6, SOCK_DGRAM, NULL, 9092, 1000);
- 	if (server_fd < 0)
-@@ -472,7 +711,7 @@ int main(int argc, char *argv[])
- 			error(1, -ret, "bpf_map_update_elem");
- 	}
- 
--	printf("attach bpf program...\n");
-+	printf("attach rx bpf program...\n");
- 	ret = bpf_xdp_attach(ifindex,
- 			     bpf_program__fd(bpf_obj->progs.rx),
- 			     XDP_FLAGS, NULL);
-@@ -480,7 +719,7 @@ int main(int argc, char *argv[])
- 		error(1, -ret, "bpf_xdp_attach");
- 
- 	signal(SIGINT, handle_signal);
--	ret = verify_metadata(rx_xsk, rxq, server_fd, clock_id);
-+	ret = verify_metadata(rx_xsk, rxq, server_fd, clock_id, tx_compl_ringbuf);
- 	close(server_fd);
- 	cleanup();
- 	if (ret)
--- 
-2.41.0.255.g8b1d071c50-goog
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNaWNoYWVsIFJpY2hhcmRzb24g
+PG1jcitpZXRmQHNhbmRlbG1hbi5jYT4NCj4gU2VudDogRnJpZGF5LCBKdWx5IDcsIDIwMjMgMTA6
+NTcgQU0NCj4gVG86IERhdmUgVGhhbGVyIDxkdGhhbGVyQG1pY3Jvc29mdC5jb20+OyBicGZAaWV0
+Zi5vcmc7IGJwZg0KPiA8YnBmQHZnZXIua2VybmVsLm9yZz4NCj4gU3ViamVjdDogUmU6IFtCcGZd
+IEluc3RydWN0aW9uIHNldCBleHRlbnNpb24gcG9saWN5DQo+IA0KPiBEYXZlIFRoYWxlciA8ZHRo
+YWxlcj00MG1pY3Jvc29mdC5jb21AZG1hcmMuaWV0Zi5vcmc+IHdyb3RlOg0KPiAgICAgPiBPbmNl
+IHRoZSBCUEYgSVNBIGlzIHB1Ymxpc2hlZCBpbiBhbiBSRkMsIHdlIGV4cGVjdCBtb3JlIGluc3Ry
+dWN0aW9ucw0KPiAgICAgPiBtYXkgYmUgYWRkZWQgb3ZlciB0aW1lLiAgSXQgc2VlbXMgdW5kZXNp
+cmFibGUgdG8gZGVsYXkgdXNlIHN1Y2gNCj4gICAgID4gYWRkaXRpb25zIHVudGlsIGFub3RoZXIg
+UkZDIGNhbiBiZSBwdWJsaXNoZWQsIGFsdGhvdWdoIGhhdmluZyB0aGVtDQo+ICAgICA+IGFwcGVh
+ciBpbiBhbiBSRkMgd291bGQgYmUgYSBnb29kIHRoaW5nIGluIG15IHZpZXcuDQo+IA0KPiBhZ3Jl
+ZWQuDQo+IA0KPiAgICAgPiBQZXJzb25hbGx5LCBJIGVudmlzaW9uIHN1Y2ggYWRkaXRpb25zIHRv
+IGFwcGVhciBpbiBhbiBSRkMgcGVyIGV4dGVuc2lvbg0KPiAgICAgPiAoaS5lLiwgc2V0IG9mIGFk
+ZGl0aW9ucykgcmF0aGVyIHRoYW4gb2Jzb2xldGluZyB0aGUgb3JpZ2luYWwgSVNBIFJGQy4NCj4g
+ICAgID4gU28gSSB3b3VsZCBwcm9wb3NlIHRoZSBhYmlsaXR5IHRvIHJlZmVyZW5jZSBhbm90aGVy
+IGRvY3VtZW50IChlLmcuLCBvbmUNCj4gICAgID4gaW4gdGhlIExpbnV4IGtlcm5lbCB0cmVlKSBp
+biB0aGUgbWVhbnRpbWUuDQo+IA0KPiBUaGF0IHNlZW1zIGxpa2UgYSByZWFsbHkgZ29vZCBwbGFu
+Lg0KPiBUaGV5IHdvbid0IGhhdmUgdG8gYmUgbG9uZyBkb2N1bWVudHMgZWl0aGVyLg0KPiBJdCB3
+b3VsZCBiZSBuaWNlIGlmIHRoZXJlIGNvdWxkIGJlIHN1ZmZpY2llbnQgdGVtcGxhdGUgc28gdGhh
+dCB0aGV5IGRvbid0IG5lZWQNCj4gYSBsb3Qgb2YgY3Jvc3MtYXJlYSByZXZpZXcgdG8gcHVibGlz
+aC4NCj4gDQo+IFRoZXJlIGlzIGFsc28gYSB0aG91Z2h0IHRoYXQgdGhlcmUgaXMgc2ltcGx5IGEg
+InllYXJseSIgd3JhcCB1cCBvZiBhbGwNCj4gYWxsb2NhdGlvbnMuDQo+IA0KPiAgICAgPiBTaW1p
+bGFybHksIEkgd291bGQgcHJvcG9zZSBhcyBhIHN0cmF3bWFuIHVzaW5nIGFuIElBTkEgcmVnaXN0
+cnkgKGFzDQo+ICAgICA+IG1vc3QgSUVURiBzdGFuZGFyZHMgZG8pIHRoYXQgcmVxdWlyZXMgc2F5
+IGFuIElFVEYgU3RhbmRhcmRzIFRyYWNrIFJGQw0KPiAgICAgPiBmb3IgIlBlcm1hbmVudCIgc3Rh
+dHVzLCBhbmQgIlNwZWNpZmljYXRpb24gcmVxdWlyZWQiIChhIHB1YmxpYw0KPiAgICAgPiBzcGVj
+aWZpY2F0aW9uIHJldmlld2VkIGJ5IGEgZGVzaWduYXRlZCBleHBlcnQpIGZvciAiUHJvdmlzaW9u
+YWwiDQo+ICAgICA+IHJlZ2lzdHJhdGlvbnMuICBTbyB1cGRhdGluZyBhIGRvY3VtZW50IGluIHNh
+eSB0aGUgTGludXgga2VybmVsIHRyZWUNCj4gICAgID4gd291bGQgYmUgc3VmZmljaWVudCBmb3Ig
+UHJvdmlzaW9uYWwgcmVnaXN0cmF0aW9uLCBhbmQgdGhlIHN0YXR1cyBvZiBhbg0KPiAgICAgPiBp
+bnN0cnVjdGlvbiB3b3VsZCBjaGFuZ2UgdG8gUGVybWFuZW50IG9uY2UgaXQgYXBwZWFycyBpbiBh
+biBSRkMuDQo+IA0KPiAgICAgPiBUaG91Z2h0cz8NCj4gDQo+IEkgdGhpbmsgaXQgaW1wb3J0YW50
+IHRvIGRpc3Rpbmd1aXNoIGZvciB0aGUgZ3JvdXAgYmV0d2Vlbg0KPiBleHBlcmltZW50YWwvcHJp
+dmF0ZS11c2Ugc3BhY2UgYW5kIHByb3Zpc2lvbmFsLg0KDQpZZXMuICBSaWdodCBub3cgSSBkb24n
+dCBzZWUgYSBuZWVkIHRvIGhhdmUgZXhwZXJpbWVudGFsL3ByaXZhdGUtdXNlIHNwYWNlLg0KSWYg
+YW55b25lIGVsc2UgZG9lcywgcGxlYXNlIHNwZWFrIHVwLg0KDQo+IEkgZG9uJ3QgdGhpbmsgeW91
+IHdhbnQgdG8gcmVudW1iZXIgYW4gaW5zdHJ1Y3Rpb24gd2hlbiBpdCBnb2VzIHRvIFBlcm1hbmVu
+dA0KPiBzdGF0dXMuDQoNCkFncmVlLiAgQXMgd2l0aCB0aGUgVVJJIHNjaGVtZSByZWdpc3RyeSwg
+dGhlIGFzc2lnbmVkIHZhbHVlcyBuZWVkIG5vdCBjaGFuZ2UNCndoZW4gc29tZXRoaW5nIGdvZXMg
+ZnJvbSBQcm92aXNpb25hbCB0byBQZXJtYW5lbnQsIG9ubHkgdGhlIHN0YXR1cyBsYWJlbA0KY2hh
+bmdlcy4gIFRoZXJlIGlzIG5vIG51bWJlcmluZyBzcGFjZSBkaXZpc2lvbiBmb3IgUHJvdmlzaW9u
+YWwuDQoNCj4gSSBhbHNvIHRoaW5rIHRoYXQgeW91IHdhbnQgdG8gcnVuIHRoaXMgYXMgRWFybHkg
+QWxsb2NhdGlvbnMsIHNvIHRoYXQgdGhleQ0KPiBoYXZlIGEgc3Vuc2V0IGNsYXVzZSwgYW5kIHRo
+ZSBwcm9jZXNzIGZvciBzdW5zZXR0aW5nIHN1Y2ggYW4gYWxsb2NhdGlvbiBzaG91bGQNCj4gYmUg
+Y2xlYXIuDQoNClRoYXQncyBhIGZpbmUgZGlzY3Vzc2lvbiB0byBoYXZlLiAgUHJvdmlzaW9uYWwg
+VVJJIHNjaGVtZXMgaGF2ZSBubyBzdWNoDQpzdW5zZXQgY2xhdXNlLiAgSSBtaWdodCBhcmd1ZSB0
+aGF0IHN1YnNldCBjbGF1c2VzIGFyZSBvbmx5IHVzZWZ1bCB3aGVuIHNwYWNlDQppcyBzY2FyY2Uu
+ICBSaWdodCBub3csIHRoYXQncyBub3QgdGhlIGNhc2Ugd2hlbiB5b3UgY29uc2lkZXIgb3Bjb2Rl
+K3NyYytpbW0NCmFzIHRoZSBzcGFjZSBhdmFpbGFibGUuDQoNCj4gWW91IG1heSBhbHNvIG5lZWQg
+dG8gd3JpdHRlbiBwb2xpY3kgKGluIHRoZSBMaW51eCBrZXJuZWwgRG9jdW1lbnRhdGlvbikNCj4g
+YWJvdXQgYmFjay1wYXRjaGluZyBvZiBQcm92aXNpb25hbCBudW1iZXJzIGludG8gdmVuZG9yIGJy
+YW5jaGVzIGFuZC9vciBMVFMNCj4gYnJhbmNoZXMuDQo+IA0KPiBDYW4gdGhlcmUgYmUgc3VidGxl
+IHNlbWFudGljIGNoYW5nZXMgdG8gUHJvdmlzaW9uYWwgYWxsb2NhdGlvbnM/DQo+IChTdWNoIGFz
+IHdoYXQgaGFwcGVucyB3aGVuIGludmFsaWQgZGF0YSBvY2N1cnM/ICBUaGUgZGl2aWRlLWJ5LXpl
+cm8NCj4gZXF1aXZhbGVudCkNCg0KSSdkIGV4cGVjdCB0aGUgYW5zd2VyIHRvIGJlIHRoZSBzYW1l
+IGFzIGZvciBQZXJtYW5lbnQgYWxsb2NhdGlvbnMuDQpPZmZoYW5kLCBJIHdvdWxkIHNheSAieWVz
+IiwgdGhvdWdoIG9mIGNvdXJzZSBvbmUgbmVlZHMgYSBwbGFuIGZvcg0KYmFja3dhcmRzIGNvbXBh
+dGliaWxpdHkgaWYgc28uDQoNCkRhdmUNCg==
 
