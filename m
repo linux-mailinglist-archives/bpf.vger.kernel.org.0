@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-4504-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4505-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3692D74BBB1
-	for <lists+bpf@lfdr.de>; Sat,  8 Jul 2023 06:08:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7984674BBB3
+	for <lists+bpf@lfdr.de>; Sat,  8 Jul 2023 06:09:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 671C01C21123
-	for <lists+bpf@lfdr.de>; Sat,  8 Jul 2023 04:08:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 355E9281A06
+	for <lists+bpf@lfdr.de>; Sat,  8 Jul 2023 04:09:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877C91FAD;
-	Sat,  8 Jul 2023 04:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84DBB23D9;
+	Sat,  8 Jul 2023 04:08:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0E91C07;
-	Sat,  8 Jul 2023 04:08:11 +0000 (UTC)
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA17619B2;
-	Fri,  7 Jul 2023 21:08:09 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-666ed230c81so2067628b3a.0;
-        Fri, 07 Jul 2023 21:08:09 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5986715C4;
+	Sat,  8 Jul 2023 04:08:18 +0000 (UTC)
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1234D2115;
+	Fri,  7 Jul 2023 21:08:16 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-579d5d89b41so31190577b3.2;
+        Fri, 07 Jul 2023 21:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688789289; x=1691381289;
+        d=gmail.com; s=20221208; t=1688789295; x=1691381295;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=M+ldNdA6+obO0I/B0GkfPM7nI7kCzFpDBIKc57cG97U=;
-        b=BEXD75AF2J5nYvTpitflqXVlbmQhk7Ptm12ZYmBNfygoKZi64BcA92g/tp5nJC1rm/
-         Cb6IXEfq9JvnFcwWBJ3149071TGsTtbcvJFVpA68K62YnOs+cEmoDWuzXWY5T8flyzH1
-         lnKQrw08KH3FB3dVxvi23VcO8vnjNMTFFeH/a/glgcwIsat4+GK5tacwrg0QHrFnyNz/
-         mC1J6LEOSyPatTBF9l5sjgZWTuQ8SZ5wuvC3MWi5VgtGrTTVYzihJJSEsR0Vmk1X35Wr
-         biQIA6w2oOyk7SZGQiGSFsYU5iiC2Y3cVL+lC7lVmEQTRxPc73+9T5aJksaNgdXWxpZW
-         ltPQ==
+        bh=d/1ppc1+fQOwKtdkvy2jg3fPFdLjpoPEZefNDxsHMnI=;
+        b=amywClrnsUFfS63X28sRzb6/e/tWGVSej8NBmom7ND1us44qjuX7WVF3gstVAg9KXq
+         1xj2zigFAEECUvY6wCTp1tEazUM1x37QbJL1OSPhLUC8YHP1Yx13ZIrtIqU72Owf99K5
+         MMRxRZrn4LJQq5xi16obDfu4L7bAeGJlnPZOcG2vQ19SjiBurmhTf/GFTYdxCGSO5NWL
+         k9lYj0x4hm9pl4m1QmwCd4a3w9NK9G+DxIRFMhDhdyyR0vHaBfx6PVeetIjUkXcHQxrF
+         hHH+eaknzDlKRtLVGXaLmwDddTGgsbAGX2XRcJWrBjcwi+SmiAAH8rMuSIVCSjgb9oMk
+         AavA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688789289; x=1691381289;
+        d=1e100.net; s=20221208; t=1688789295; x=1691381295;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=M+ldNdA6+obO0I/B0GkfPM7nI7kCzFpDBIKc57cG97U=;
-        b=gHZZN2myAOtH+03yu+QDQP95UPP52kMhAe5VKpiVzUHVSwglzEyBFNOH3fN8PAA2IW
-         oci6b4FlM3jEpq8UU5UAlit3J6LxMtO8mgbuftt29SyNQKIxGqy4AUwHss9XzrYjw+w8
-         Fe3ZALRlsApH+8m26Bdj4bg2Wg/8G6Fndl4cUownHe9bZtAGLH09D4SuV2nhMlqR3v1b
-         1IXTLluU2EojIteA1pR9Ox1VXIaEr0ON9Sb9UKYusCxUAJggeQ/nT2j5dmQRZaVbZAnI
-         rSnXNYMYDjS3JiJt8NqxA+H5jKVRxmRbjzszTAuXpTTL9uNhjj476NvCdbI3ZNPxopEZ
-         JQfA==
-X-Gm-Message-State: ABy/qLa6DkPFk0Da5qAf3pxE5OkN7aDxMAt3HGSvzBSKAgq9zX0VZzgY
-	kYWNxJQM9r+Vpm7OecQAXhs=
-X-Google-Smtp-Source: APBJJlFlT+VTUdMBGrqbJg6AhXk08tXb8LCSpOcA6gZ1198dnipYUPWwcjqQYve6mTvTXEAnMogM0w==
-X-Received: by 2002:a05:6a00:1803:b0:666:ae6b:c484 with SMTP id y3-20020a056a00180300b00666ae6bc484mr9067626pfa.13.1688789289202;
-        Fri, 07 Jul 2023 21:08:09 -0700 (PDT)
+        bh=d/1ppc1+fQOwKtdkvy2jg3fPFdLjpoPEZefNDxsHMnI=;
+        b=hZdJwPTwtQnAebVFAv4eAEOLvnHdq2MpblQXkpNErQiLAWYe0oh4QQiVV4Pg39qcad
+         p559Vf+Xg8gLLEUlHqgyPD63oYTE6tb8+ADdaOeFsW+2IBgKUCxDJpCrze++5e9d79ia
+         Kh3/J5XGQ3mY3hFskuVhcY+bcslgoyyfDduWCoYvmIzII7bJ/ZvhyrzXaCeEfG55roVr
+         cFyZ+a53KaKQ3ThcFonZGz2OD/MxvJlaPmOF+ps2wGXW40NTc78uo/gHJcMG+q1jZvvA
+         2XkWXuQFWTDSR6nuV6rPubJl9/4Zd1GtJCk0RNtJ0nmepkG3ZbJ1tpYifTi2RPq2BZNH
+         pW9w==
+X-Gm-Message-State: ABy/qLZkOdh6pO59Gzs9NWrn9ixzJm7DmyQes5fJ7sf1dof+8gTG538F
+	8TCo58IvIV24sHEUvSorLMk=
+X-Google-Smtp-Source: APBJJlHRCVMVxdZ84OZZgUFndYKeVLUHyQhOF0C6yJk1vRxgpNdFz55+HkFGXqBWRuINYt6C1o+Qjg==
+X-Received: by 2002:a0d:d50b:0:b0:56d:1528:c56f with SMTP id x11-20020a0dd50b000000b0056d1528c56fmr6788851ywd.16.1688789295113;
+        Fri, 07 Jul 2023 21:08:15 -0700 (PDT)
 Received: from localhost.localdomain (bb219-74-209-211.singnet.com.sg. [219.74.209.211])
-        by smtp.gmail.com with ESMTPSA id v12-20020a62a50c000000b00640f51801e6sm3507814pfm.159.2023.07.07.21.08.04
+        by smtp.gmail.com with ESMTPSA id v12-20020a62a50c000000b00640f51801e6sm3507814pfm.159.2023.07.07.21.08.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Jul 2023 21:08:08 -0700 (PDT)
+        Fri, 07 Jul 2023 21:08:14 -0700 (PDT)
 From: Leon Hwang <hffilwlqm@gmail.com>
 To: ast@kernel.org
 Cc: daniel@iogearbox.net,
@@ -79,9 +79,9 @@ Cc: daniel@iogearbox.net,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH bpf-next v2 1/2] bpf: Introduce bpf generic log
-Date: Sat,  8 Jul 2023 12:07:49 +0800
-Message-ID: <20230708040750.72570-2-hffilwlqm@gmail.com>
+Subject: [PATCH bpf-next v2 2/2] bpf: Introduce bpf user log
+Date: Sat,  8 Jul 2023 12:07:50 +0800
+Message-ID: <20230708040750.72570-3-hffilwlqm@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230708040750.72570-1-hffilwlqm@gmail.com>
 References: <20230708040750.72570-1-hffilwlqm@gmail.com>
@@ -99,202 +99,217 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Currently, excluding verifier, users are unable to obtain detailed error
-information when issues occur in BPF syscall.
+Commit 42c4e63ef36ea9b5ae50 (bpf: Introduce bpf generic log) is
+introduced to back propagate the error message in dev_xdp_attach() to
+user space when users provide buffer to receive the error message.
+But it breaks uapi and exposes many log details in header file.
 
-To overcome this limitation, bpf generic log is introduced to provide
-error details similar to the verifier. This enhancement will enable the
-reporting of error details along with the corresponding errno in BPF
-syscall.
+To overcome the shortcomings, a) make the struct bpf_generic_user_log
+as one field of the union in link_create of struct bpf_attr, b) hide
+log details in log_ulog_once() and let its declaration in header file.
 
-Essentially, bpf generic log functions as a mechanism similar to netlink,
-enabling the transmission of error messages to user space. This
-mechanism greatly enhances the usability of BPF syscall by allowing
-users to access comprehensive error messages instead of relying solely
-on errno.
+Furthermore, it's not a good idea to reuse bpf_verifier_log infra. Or, a
+warning comes up:
 
-This patch specifically addresses the error reporting in dev_xdp_attach()
-. With this patch, the error messages will be transferred to user space
-like the netlink approach. Hence, users will be able to check the error
-message along with the errno.
+net/core/dev.c: In function 'bpf_xdp_link_log.isra.0':
+net/core/dev.c:9093:1: warning: the frame size of 1056 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+ 9093 | }
+      |
+
+As a result, a small kernel buffer, like 256 bytes, is preferred to
+cache error message, then copy_to_user().
+
+Then, unlike verifier to provide more and more error details, bpf user
+log is only able to provide a simple error message limit 255 chars for
+every time.
 
 Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
 ---
- include/linux/bpf.h            | 30 ++++++++++++++++++++++++++++++
- include/uapi/linux/bpf.h       |  6 ++++++
- kernel/bpf/log.c               | 33 +++++++++++++++++++++++++++++++++
- net/core/dev.c                 | 11 ++++++++++-
- tools/include/uapi/linux/bpf.h |  6 ++++++
- 5 files changed, 85 insertions(+), 1 deletion(-)
+ include/linux/bpf.h            | 31 ++-------------------------
+ include/uapi/linux/bpf.h       |  4 +++-
+ kernel/bpf/log.c               | 39 +++++++++++++++++++++++++---------
+ net/core/dev.c                 |  9 +-------
+ tools/include/uapi/linux/bpf.h |  4 +++-
+ 5 files changed, 38 insertions(+), 49 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 360433f14496a..7d2124a537943 100644
+index 7d2124a537943..36af7cc89cafc 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -3107,4 +3107,34 @@ static inline gfp_t bpf_memcg_flags(gfp_t flags)
+@@ -3107,34 +3107,7 @@ static inline gfp_t bpf_memcg_flags(gfp_t flags)
  	return flags;
  }
  
-+#define BPF_GENERIC_TMP_LOG_SIZE	256
+-#define BPF_GENERIC_TMP_LOG_SIZE	256
+-
+-struct bpf_generic_log {
+-	char		kbuf[BPF_GENERIC_TMP_LOG_SIZE];
+-	char __user	*ubuf;
+-	u32		len_used;
+-	u32		len_total;
+-};
+-
+-__printf(2, 3) void bpf_generic_log_write(struct bpf_generic_log *log,
+-			const char *fmt, ...);
+-static inline void bpf_generic_log_init(struct bpf_generic_log *log,
+-			const struct bpf_generic_user_log *ulog)
+-{
+-	log->ubuf = (char __user *) (unsigned long) ulog->log_buf;
+-	log->len_total = ulog->log_size;
+-	log->len_used = 0;
+-}
+-
+-#define BPF_GENERIC_LOG_WRITE(log, ulog, fmt, ...)	do {	\
+-	const char *____fmt = (fmt);				\
+-	bpf_generic_log_init(log, ulog);			\
+-	bpf_generic_log_write(log, ____fmt, ##__VA_ARGS__);	\
+-} while (0)
+-
+-#define BPF_GENERIC_ULOG_WRITE(ulog, fmt, ...)	do {			\
+-	struct bpf_generic_log ____log;					\
+-	BPF_GENERIC_LOG_WRITE(&____log, ulog, fmt, ##__VA_ARGS__);	\
+-} while (0)
++__printf(2, 3) void bpf_ulog_once(const struct bpf_generic_user_log *ulog,
++				  const char *fmt, ...);
+ 
+ #endif /* _LINUX_BPF_H */
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 34fa334938ba5..8a458cfcd91bd 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1549,7 +1549,6 @@ union bpf_attr {
+ 		};
+ 		__u32		attach_type;	/* attach type */
+ 		__u32		flags;		/* extra flags */
+-		struct bpf_generic_user_log log; /* user log */
+ 		union {
+ 			__u32		target_btf_id;	/* btf_id of target to attach to */
+ 			struct {
+@@ -1585,6 +1584,9 @@ union bpf_attr {
+ 				__s32		priority;
+ 				__u32		flags;
+ 			} netfilter;
++			struct {
++				struct bpf_generic_user_log ulog; /* user log */
++			} xdp;
+ 		};
+ 	} link_create;
+ 
+diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
+index be56b153bbf0b..4d197b52ea207 100644
+--- a/kernel/bpf/log.c
++++ b/kernel/bpf/log.c
+@@ -326,15 +326,32 @@ __printf(2, 3) void bpf_log(struct bpf_verifier_log *log,
+ }
+ EXPORT_SYMBOL_GPL(bpf_log);
+ 
+-static inline void __bpf_generic_log_write(struct bpf_generic_log *log, const char *fmt,
+-				      va_list args)
++#define BPF_USER_TMP_LOG_SIZE	256
 +
-+struct bpf_generic_log {
-+	char		kbuf[BPF_GENERIC_TMP_LOG_SIZE];
++struct bpf_user_log {
++	char		kbuf[BPF_USER_TMP_LOG_SIZE];
 +	char __user	*ubuf;
 +	u32		len_used;
 +	u32		len_total;
 +};
 +
-+__printf(2, 3) void bpf_generic_log_write(struct bpf_generic_log *log,
-+			const char *fmt, ...);
-+static inline void bpf_generic_log_init(struct bpf_generic_log *log,
-+			const struct bpf_generic_user_log *ulog)
++static inline void bpf_ulog_init(struct bpf_user_log *log,
++				 const struct bpf_generic_user_log *ulog)
 +{
 +	log->ubuf = (char __user *) (unsigned long) ulog->log_buf;
 +	log->len_total = ulog->log_size;
 +	log->len_used = 0;
 +}
 +
-+#define BPF_GENERIC_LOG_WRITE(log, ulog, fmt, ...)	do {	\
-+	const char *____fmt = (fmt);				\
-+	bpf_generic_log_init(log, ulog);			\
-+	bpf_generic_log_write(log, ____fmt, ##__VA_ARGS__);	\
-+} while (0)
-+
-+#define BPF_GENERIC_ULOG_WRITE(ulog, fmt, ...)	do {			\
-+	struct bpf_generic_log ____log;					\
-+	BPF_GENERIC_LOG_WRITE(&____log, ulog, fmt, ##__VA_ARGS__);	\
-+} while (0)
-+
- #endif /* _LINUX_BPF_H */
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 60a9d59beeabb..34fa334938ba5 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1318,6 +1318,11 @@ struct bpf_stack_build_id {
- 	};
- };
++static inline void bpf_ulog_write(struct bpf_user_log *log,
++				  const char *fmt, va_list args)
+ {
+ 	unsigned int n;
  
-+struct bpf_generic_user_log {
-+	__aligned_u64	log_buf;    /* user supplied buffer */
-+	__u32		log_size;   /* size of user buffer */
-+};
-+
- #define BPF_OBJ_NAME_LEN 16U
+-	n = vscnprintf(log->kbuf, BPF_GENERIC_TMP_LOG_SIZE, fmt, args);
++	n = vscnprintf(log->kbuf, BPF_USER_TMP_LOG_SIZE, fmt, args);
  
- union bpf_attr {
-@@ -1544,6 +1549,7 @@ union bpf_attr {
- 		};
- 		__u32		attach_type;	/* attach type */
- 		__u32		flags;		/* extra flags */
-+		struct bpf_generic_user_log log; /* user log */
- 		union {
- 			__u32		target_btf_id;	/* btf_id of target to attach to */
- 			struct {
-diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
-index 850494423530e..be56b153bbf0b 100644
---- a/kernel/bpf/log.c
-+++ b/kernel/bpf/log.c
-@@ -325,3 +325,36 @@ __printf(2, 3) void bpf_log(struct bpf_verifier_log *log,
+-	WARN_ONCE(n >= BPF_GENERIC_TMP_LOG_SIZE - 1,
+-		  "bpf generic log truncated - local buffer too short\n");
++	WARN_ONCE(n >= BPF_USER_TMP_LOG_SIZE - 1,
++		  "bpf user log line truncated - local buffer too short\n");
+ 
+ 	n = min(log->len_total - log->len_used - 1, n);
+ 	log->kbuf[n] = '\0';
+@@ -345,16 +362,18 @@ static inline void __bpf_generic_log_write(struct bpf_generic_log *log, const ch
+ 		log->ubuf = NULL;
+ }
+ 
+-__printf(2, 3) void bpf_generic_log_write(struct bpf_generic_log *log,
+-				     const char *fmt, ...)
++__printf(2, 3) void bpf_ulog_once(const struct bpf_generic_user_log *ulog,
++				  const char *fmt, ...)
+ {
++	struct bpf_user_log log;
+ 	va_list args;
+ 
+-	if (!log->ubuf || !log->len_total)
++	if (!ulog->log_buf || !ulog->log_size)
+ 		return;
+ 
++	bpf_ulog_init(&log, ulog);
+ 	va_start(args, fmt);
+-	__bpf_generic_log_write(log, fmt, args);
++	bpf_ulog_write(&log, fmt, args);
  	va_end(args);
  }
- EXPORT_SYMBOL_GPL(bpf_log);
-+
-+static inline void __bpf_generic_log_write(struct bpf_generic_log *log, const char *fmt,
-+				      va_list args)
-+{
-+	unsigned int n;
-+
-+	n = vscnprintf(log->kbuf, BPF_GENERIC_TMP_LOG_SIZE, fmt, args);
-+
-+	WARN_ONCE(n >= BPF_GENERIC_TMP_LOG_SIZE - 1,
-+		  "bpf generic log truncated - local buffer too short\n");
-+
-+	n = min(log->len_total - log->len_used - 1, n);
-+	log->kbuf[n] = '\0';
-+
-+	if (!copy_to_user(log->ubuf + log->len_used, log->kbuf, n + 1))
-+		log->len_used += n;
-+	else
-+		log->ubuf = NULL;
-+}
-+
-+__printf(2, 3) void bpf_generic_log_write(struct bpf_generic_log *log,
-+				     const char *fmt, ...)
-+{
-+	va_list args;
-+
-+	if (!log->ubuf || !log->len_total)
-+		return;
-+
-+	va_start(args, fmt);
-+	__bpf_generic_log_write(log, fmt, args);
-+	va_end(args);
-+}
-+EXPORT_SYMBOL_GPL(bpf_generic_log_write);
+-EXPORT_SYMBOL_GPL(bpf_generic_log_write);
++EXPORT_SYMBOL_GPL(bpf_ulog_once);
 diff --git a/net/core/dev.c b/net/core/dev.c
-index 69a3e544676c4..e933809c0a72f 100644
+index e933809c0a72f..311d3f3bc11b6 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
-@@ -9409,12 +9409,20 @@ static const struct bpf_link_ops bpf_xdp_link_lops = {
+@@ -9409,13 +9409,6 @@ static const struct bpf_link_ops bpf_xdp_link_lops = {
  	.update_prog = bpf_xdp_link_update,
  };
  
-+static inline void bpf_xdp_link_log(const union bpf_attr *attr, struct netlink_ext_ack *extack)
-+{
-+	const struct bpf_generic_user_log *ulog = &attr->link_create.log;
-+
-+	BPF_GENERIC_ULOG_WRITE(ulog, extack->_msg);
-+}
-+
+-static inline void bpf_xdp_link_log(const union bpf_attr *attr, struct netlink_ext_ack *extack)
+-{
+-	const struct bpf_generic_user_log *ulog = &attr->link_create.log;
+-
+-	BPF_GENERIC_ULOG_WRITE(ulog, extack->_msg);
+-}
+-
  int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
  {
  	struct net *net = current->nsproxy->net_ns;
- 	struct bpf_link_primer link_primer;
- 	struct bpf_xdp_link *link;
- 	struct net_device *dev;
-+	struct netlink_ext_ack extack;
- 	int err, fd;
- 
- 	rtnl_lock();
-@@ -9440,12 +9448,13 @@ int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- 		goto unlock;
- 	}
- 
--	err = dev_xdp_attach_link(dev, NULL, link);
-+	err = dev_xdp_attach_link(dev, &extack, link);
- 	rtnl_unlock();
- 
+@@ -9454,7 +9447,7 @@ int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
  	if (err) {
  		link->dev = NULL;
  		bpf_link_cleanup(&link_primer);
-+		bpf_xdp_link_log(attr, &extack);
+-		bpf_xdp_link_log(attr, &extack);
++		bpf_ulog_once(&attr->link_create.xdp.ulog, extack._msg);
  		goto out_put_dev;
  	}
  
 diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 60a9d59beeabb..34fa334938ba5 100644
+index 34fa334938ba5..b81508bf758fa 100644
 --- a/tools/include/uapi/linux/bpf.h
 +++ b/tools/include/uapi/linux/bpf.h
-@@ -1318,6 +1318,11 @@ struct bpf_stack_build_id {
- 	};
- };
- 
-+struct bpf_generic_user_log {
-+	__aligned_u64	log_buf;    /* user supplied buffer */
-+	__u32		log_size;   /* size of user buffer */
-+};
-+
- #define BPF_OBJ_NAME_LEN 16U
- 
- union bpf_attr {
-@@ -1544,6 +1549,7 @@ union bpf_attr {
+@@ -1549,7 +1549,6 @@ union bpf_attr {
  		};
  		__u32		attach_type;	/* attach type */
  		__u32		flags;		/* extra flags */
-+		struct bpf_generic_user_log log; /* user log */
+-		struct bpf_generic_user_log log; /* user log */
  		union {
  			__u32		target_btf_id;	/* btf_id of target to attach to */
  			struct {
+@@ -1585,6 +1584,9 @@ union bpf_attr {
+ 				__s32		priority;
+ 				__u32		flags;
+ 			} netfilter;
++			struct {
++				struct bpf_generic_user_log ulog;  /* user log */
++			} xdp;
+ 		};
+ 	} link_create;
+ 
 -- 
 2.41.0
 
