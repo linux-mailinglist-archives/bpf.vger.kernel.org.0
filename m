@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-4545-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4546-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C1EA74C60F
-	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 17:24:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75B5E74C617
+	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 17:25:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CB661C203C1
-	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 15:24:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22C6D28104F
+	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 15:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D07B12B8A;
-	Sun,  9 Jul 2023 15:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F620134D7;
+	Sun,  9 Jul 2023 15:16:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7929112B7B
-	for <bpf@vger.kernel.org>; Sun,  9 Jul 2023 15:16:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D2DDC433CB;
-	Sun,  9 Jul 2023 15:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D62EBE57D
+	for <bpf@vger.kernel.org>; Sun,  9 Jul 2023 15:16:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87C50C433CD;
+	Sun,  9 Jul 2023 15:16:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688915779;
-	bh=G32y9wtiJylKfj3Jc7ZZh2P6oDf/9hm8lwfNwkfooqQ=;
+	s=k20201202; t=1688915796;
+	bh=9rSVqdKcxx7I835Y7LAo46+7GLpjCTaOzwiFWPXuui4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IKjja67wi1b4zIh9ey7IBFmk0UeQDzlFOPb33I797bPeIPiQC1yf7QP+fJFD5LD6d
-	 ZTOQ61zNQbxdVfPPiBzMeYLRQtHBYDRpteyqHMGWrQPSu8cDry98OdPROtKTV9X87e
-	 l3yIklwRWpWJ/v1wPQC7VPsTo7p8dp+eIzUB7MsUehVfVv/MQe0+4Rr48eemtVIxBh
-	 qPz7+71v3O8aRGUjyON++RB2EP0ifPe09EFl1yCpfZbWXQc+VwxLthaJhgETYGLW+D
-	 tW+fZnY9Ph7Nr0zgPGcUVwBe5DWvfrfxePM8d1/XJ46xEKADI0lNGzcLUpWZJAei4l
-	 MkdpoWjjRuWFQ==
+	b=nrRSfALM0OEcCptNqwbeSdRcJ4M2pMQTnz16RY45ns2jZm6xsms/Aav1/iQK2ZFNd
+	 W2tnlOKibJLTM+r0M094BkmJDvarSaW7TxnC6YJtWMYLJbdfKMO2mcN/wXn4fJtAVC
+	 h5XiEiXuObvjIabpUmOodIjQkwAGGaqtnKd8rv4+CEgXqvB4PYsa4dGdsvKJLP2Kbk
+	 E3+nEr1SwtPmdK3tH61oTrpJpRTUvYoPvHBh5KR0SpPhiin80bQ+g2sBJfoLJiJxDZ
+	 2fIZaBfOmxFcuEs8C0tnqDyrwilzOJ7VfM/yXOjFjM4veU5Mm8PkNn+oZe0lhXF9t7
+	 rWGsjsn60ZjkQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -42,12 +42,12 @@ Cc: Martin KaFai Lau <martin.lau@kernel.org>,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 2/6] bpf: Address KCSAN report on bpf_lru_list
-Date: Sun,  9 Jul 2023 11:16:09 -0400
-Message-Id: <20230709151615.514009-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 2/5] bpf: Address KCSAN report on bpf_lru_list
+Date: Sun,  9 Jul 2023 11:16:27 -0400
+Message-Id: <20230709151632.514098-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230709151615.514009-1-sashal@kernel.org>
-References: <20230709151615.514009-1-sashal@kernel.org>
+In-Reply-To: <20230709151632.514098-1-sashal@kernel.org>
+References: <20230709151632.514098-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.249
+X-stable-base: Linux 4.19.288
 Content-Transfer-Encoding: 8bit
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
@@ -130,10 +130,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 15 insertions(+), 13 deletions(-)
 
 diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-index d99e89f113c43..3dabdd137d102 100644
+index 9b5eeff72fd37..39a0e768adc39 100644
 --- a/kernel/bpf/bpf_lru_list.c
 +++ b/kernel/bpf/bpf_lru_list.c
-@@ -41,7 +41,12 @@ static struct list_head *local_pending_list(struct bpf_lru_locallist *loc_l)
+@@ -44,7 +44,12 @@ static struct list_head *local_pending_list(struct bpf_lru_locallist *loc_l)
  /* bpf_lru_node helpers */
  static bool bpf_lru_node_is_ref(const struct bpf_lru_node *node)
  {
@@ -147,7 +147,7 @@ index d99e89f113c43..3dabdd137d102 100644
  }
  
  static void bpf_lru_list_count_inc(struct bpf_lru_list *l,
-@@ -89,7 +94,7 @@ static void __bpf_lru_node_move_in(struct bpf_lru_list *l,
+@@ -92,7 +97,7 @@ static void __bpf_lru_node_move_in(struct bpf_lru_list *l,
  
  	bpf_lru_list_count_inc(l, tgt_type);
  	node->type = tgt_type;
@@ -156,7 +156,7 @@ index d99e89f113c43..3dabdd137d102 100644
  	list_move(&node->list, &l->lists[tgt_type]);
  }
  
-@@ -110,7 +115,7 @@ static void __bpf_lru_node_move(struct bpf_lru_list *l,
+@@ -113,7 +118,7 @@ static void __bpf_lru_node_move(struct bpf_lru_list *l,
  		bpf_lru_list_count_inc(l, tgt_type);
  		node->type = tgt_type;
  	}
@@ -165,7 +165,7 @@ index d99e89f113c43..3dabdd137d102 100644
  
  	/* If the moving node is the next_inactive_rotation candidate,
  	 * move the next_inactive_rotation pointer also.
-@@ -353,7 +358,7 @@ static void __local_list_add_pending(struct bpf_lru *lru,
+@@ -356,7 +361,7 @@ static void __local_list_add_pending(struct bpf_lru *lru,
  	*(u32 *)((void *)node + lru->hash_offset) = hash;
  	node->cpu = cpu;
  	node->type = BPF_LRU_LOCAL_LIST_T_PENDING;
@@ -174,7 +174,7 @@ index d99e89f113c43..3dabdd137d102 100644
  	list_add(&node->list, local_pending_list(loc_l));
  }
  
-@@ -419,7 +424,7 @@ static struct bpf_lru_node *bpf_percpu_lru_pop_free(struct bpf_lru *lru,
+@@ -422,7 +427,7 @@ static struct bpf_lru_node *bpf_percpu_lru_pop_free(struct bpf_lru *lru,
  	if (!list_empty(free_list)) {
  		node = list_first_entry(free_list, struct bpf_lru_node, list);
  		*(u32 *)((void *)node + lru->hash_offset) = hash;
@@ -183,7 +183,7 @@ index d99e89f113c43..3dabdd137d102 100644
  		__bpf_lru_node_move(l, node, BPF_LRU_LIST_T_INACTIVE);
  	}
  
-@@ -522,7 +527,7 @@ static void bpf_common_lru_push_free(struct bpf_lru *lru,
+@@ -525,7 +530,7 @@ static void bpf_common_lru_push_free(struct bpf_lru *lru,
  		}
  
  		node->type = BPF_LRU_LOCAL_LIST_T_FREE;
@@ -192,7 +192,7 @@ index d99e89f113c43..3dabdd137d102 100644
  		list_move(&node->list, local_free_list(loc_l));
  
  		raw_spin_unlock_irqrestore(&loc_l->lock, flags);
-@@ -568,7 +573,7 @@ static void bpf_common_lru_populate(struct bpf_lru *lru, void *buf,
+@@ -571,7 +576,7 @@ static void bpf_common_lru_populate(struct bpf_lru *lru, void *buf,
  
  		node = (struct bpf_lru_node *)(buf + node_offset);
  		node->type = BPF_LRU_LIST_T_FREE;
@@ -201,7 +201,7 @@ index d99e89f113c43..3dabdd137d102 100644
  		list_add(&node->list, &l->lists[BPF_LRU_LIST_T_FREE]);
  		buf += elem_size;
  	}
-@@ -594,7 +599,7 @@ static void bpf_percpu_lru_populate(struct bpf_lru *lru, void *buf,
+@@ -597,7 +602,7 @@ static void bpf_percpu_lru_populate(struct bpf_lru *lru, void *buf,
  		node = (struct bpf_lru_node *)(buf + node_offset);
  		node->cpu = cpu;
  		node->type = BPF_LRU_LIST_T_FREE;
@@ -211,10 +211,10 @@ index d99e89f113c43..3dabdd137d102 100644
  		i++;
  		buf += elem_size;
 diff --git a/kernel/bpf/bpf_lru_list.h b/kernel/bpf/bpf_lru_list.h
-index f02504640e185..41f8fea530c8d 100644
+index 7d4f89b7cb841..08da78b59f0b9 100644
 --- a/kernel/bpf/bpf_lru_list.h
 +++ b/kernel/bpf/bpf_lru_list.h
-@@ -63,11 +63,8 @@ struct bpf_lru {
+@@ -66,11 +66,8 @@ struct bpf_lru {
  
  static inline void bpf_lru_node_set_ref(struct bpf_lru_node *node)
  {
