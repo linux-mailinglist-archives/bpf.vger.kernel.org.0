@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-4523-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4524-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8D074C085
-	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 04:59:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 198A374C086
+	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 04:59:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 514361C2090D
-	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 02:59:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7A872811AB
+	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 02:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54CDA1842;
-	Sun,  9 Jul 2023 02:59:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F87187E;
+	Sun,  9 Jul 2023 02:59:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D7F317C6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E116185D
 	for <bpf@vger.kernel.org>; Sun,  9 Jul 2023 02:59:28 +0000 (UTC)
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80FEE45
-	for <bpf@vger.kernel.org>; Sat,  8 Jul 2023 19:59:26 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-55ae51a45deso1630296a12.3
-        for <bpf@vger.kernel.org>; Sat, 08 Jul 2023 19:59:26 -0700 (PDT)
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21F8E48
+	for <bpf@vger.kernel.org>; Sat,  8 Jul 2023 19:59:27 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-262e89a3ee2so1652118a91.1
+        for <bpf@vger.kernel.org>; Sat, 08 Jul 2023 19:59:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688871566; x=1691463566;
+        d=gmail.com; s=20221208; t=1688871567; x=1691463567;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Fb4Q5082Tgrw2hcUXrT55P3pFjx3xVG0YEjEsl93YPA=;
-        b=bSDaiZzfWw5/Wu/Y9y83KnLJglne1CyblWKlXkwTyuDiov58zbN/qhRnYsScptaF/C
-         b9/3mXjZ0z437jl4lDMm491+PWMUOH3oQ6GLWf92lKuryZkcXrL9bniROkafnnHh4bCv
-         xGLQx7S21KAfYWd/3z3pXh0QWa8H4lOiGbWJoRqvE9XjXswg8qLMXEp60LPk5Tm14by3
-         Lk2FTaKeodVBB0deufbbopUbaZr27NO0kalYJ1zhuHXt5M1cI+Clu5cv/ffCfMRbOdgu
-         tYVAcwVGW5wJZ7LS5M5oT8Jcjda37rLeWhfmglnYFKWSAsxOWzUoO8bAhURIlZBTyf0F
-         JIWw==
+        bh=/qKQNmDgEbsmo5qrDDGhDZO25ZZ7r2Gtzsmn/56tImQ=;
+        b=Hcwc1olL/i08BfZbNG09dq6a8skklHMpD9uRtAxu5TI+V0y5r4GPrTBI6vuLGG9ZZM
+         0QQIwdXaEIacRGiqC4fqhSrT7Uk0T+YTDt68iTxRmztrr/3Q1jxbRa3a7Xq7UZm9jGg5
+         UAzEnqfTgna9g+6RF4eEKCoqA8J0XqCw1Oi6Fmco9vXBcWZ33SSrKCabN6xAzKVVjF0X
+         glHOUoatwTwQ4s2dmhfIWw8byID+5MGomZy3ZwSt0P7T+pnBhBb90/zR4wJe/Gip75ca
+         Up2/cf+JOMbX76bLSNIkF4YsejxDb4veSmuFBFjqX6STOhOMhAnRawWLUbpm/ooVIDJV
+         ZNsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688871566; x=1691463566;
+        d=1e100.net; s=20221208; t=1688871567; x=1691463567;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Fb4Q5082Tgrw2hcUXrT55P3pFjx3xVG0YEjEsl93YPA=;
-        b=fPxPfuqK5EZ5//pM2CINUuelf+beLSGWIpKphXY7TMKb1kjn1TxUUaLwL4gLafcw4s
-         8wlZRgDOzuhbjhKJfg96TPuj7Imc8lyMOYMFOaag6QcC8QzKq3HvAn+3G21fBCdszmvF
-         tRxDkm0Hvd8r4A/E4daKb5YaViUM0PSeVdokGDsRoQSBvo1j09kT7FAgZRMBMOSZqnfb
-         ++qu4bCxNJ8UZdNlq4AWiel1Wr5iDoWhFlVXVF4AcFYcbvj4GEGU91ueM6OqFd/NN6cW
-         bF7KWNZ7djykXSkGVwi4/VauD6wBDie44p+hztVlYjsvrIJOcsy7/hc4yko5LXUATSGV
-         wvpQ==
-X-Gm-Message-State: ABy/qLbUIbvm0/68T82KJ7tsF/dmP47baob65jc6IzrbcxuCzoK7vj2x
-	mub/rCc0btvwn7Mr782DisE=
-X-Google-Smtp-Source: APBJJlEEBp748nO2V+WBCHqEQUBReP6mcNzfSkmnQZcB4QD6NWoI9TnkS+itbiEOxnmY9oUhyOkfRg==
-X-Received: by 2002:a17:90a:f407:b0:265:7719:b849 with SMTP id ch7-20020a17090af40700b002657719b849mr4659538pjb.41.1688871566121;
-        Sat, 08 Jul 2023 19:59:26 -0700 (PDT)
+        bh=/qKQNmDgEbsmo5qrDDGhDZO25ZZ7r2Gtzsmn/56tImQ=;
+        b=KQw7NIyZID3y4TEihX45xeRK4Od9bQTF1thgq4y2MFM7ro7MXaNeHqTrqiejgTHors
+         jVs3FuphKDGUzD/9/yGt20YlGHgvuYd2s7djxTyhyXzli1GJdqBuNzQK91zQ+N1yDqnQ
+         6J9EgUWWTMVm1H7rerfKV85L8akk+70VrybcPBwmZQaP8rYy8P1X8wHX+JsmbgaIOCc9
+         NLDj8OpYGZEXpQ9lugg3dj19OHj7BAiao3kIFrEiPrA/eqamirP1fjJT4qRC7uQjGmJU
+         Dip63RDY2Wv6njYIdyLiNKTvCfnlVvuDJRDebdiHjeDrtO/IPR+0pAKn8wXDqSEgqJb5
+         lPQA==
+X-Gm-Message-State: ABy/qLYwBrRhasolVcevOIeTiTtfYzbBvveNJA0AQx4/WhfWCc00ARm+
+	G6Yb6gzeAUVti8uLk5iieoo=
+X-Google-Smtp-Source: APBJJlEzqrQD4AFg5nbAczXSXLN6EIin+sMM19P1aRT0nSn22t4oIfN402ibt9nFL0RTIN430I7IUw==
+X-Received: by 2002:a17:90a:5b0e:b0:263:4e41:bdb4 with SMTP id o14-20020a17090a5b0e00b002634e41bdb4mr6787757pji.33.1688871567389;
+        Sat, 08 Jul 2023 19:59:27 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac01:14bb:5400:4ff:fe80:41df])
-        by smtp.gmail.com with ESMTPSA id q9-20020a17090a68c900b0024e4f169931sm3670659pjj.2.2023.07.08.19.59.24
+        by smtp.gmail.com with ESMTPSA id q9-20020a17090a68c900b0024e4f169931sm3670659pjj.2.2023.07.08.19.59.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Jul 2023 19:59:25 -0700 (PDT)
+        Sat, 08 Jul 2023 19:59:27 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -70,9 +70,9 @@ To: ast@kernel.org,
 	jolsa@kernel.org
 Cc: bpf@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 1/3] bpf: Introduce BTF_TYPE_SAFE_TRUSTED_UNION
-Date: Sun,  9 Jul 2023 02:59:10 +0000
-Message-Id: <20230709025912.3837-2-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next 2/3] selftests/bpf: Add selftests for BTF_TYPE_SAFE_TRUSTED_UNION
+Date: Sun,  9 Jul 2023 02:59:11 +0000
+Message-Id: <20230709025912.3837-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230709025912.3837-1-laoar.shao@gmail.com>
 References: <20230709025912.3837-1-laoar.shao@gmail.com>
@@ -90,123 +90,82 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-When we are verifying a field in a union, we may unexpectedly verify
-another field which has the same offset in this union. So in such case,
-we should annotate that field as PTR_UNTRUSTED. However, in some cases
-we are sure some fields in a union is safe and then we can add them into
-BTF_TYPE_SAFE_TRUSTED_UNION allow list.
+Add selftests for BTF_TYPE_SAFE_TRUSTED_UNION, the result as follows:
+
+ #141/1   nested_trust/test_read_cpumask:OK
+ #141/2   nested_trust/test_skb_field:OK                    <<<<
+ #141/3   nested_trust/test_invalid_nested_user_cpus:OK
+ #141/4   nested_trust/test_invalid_nested_offset:OK
+ #141/5   nested_trust/test_invalid_skb_field:OK            <<<<
+ #141     nested_trust:OK
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/bpf/btf.c      | 20 +++++++++-----------
- kernel/bpf/verifier.c | 21 +++++++++++++++++++++
- 2 files changed, 30 insertions(+), 11 deletions(-)
+ .../selftests/bpf/progs/nested_trust_failure.c   | 16 ++++++++++++++++
+ .../selftests/bpf/progs/nested_trust_success.c   | 15 +++++++++++++++
+ 2 files changed, 31 insertions(+)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 3dd47451f097..fae6fc24a845 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6133,7 +6133,6 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 	const char *tname, *mname, *tag_value;
- 	u32 vlen, elem_id, mid;
+diff --git a/tools/testing/selftests/bpf/progs/nested_trust_failure.c b/tools/testing/selftests/bpf/progs/nested_trust_failure.c
+index 0d1aa6bbace4..ea39497f11ed 100644
+--- a/tools/testing/selftests/bpf/progs/nested_trust_failure.c
++++ b/tools/testing/selftests/bpf/progs/nested_trust_failure.c
+@@ -10,6 +10,13 @@
  
--	*flag = 0;
- again:
- 	if (btf_type_is_modifier(t))
- 		t = btf_type_skip_modifiers(btf, t->type, NULL);
-@@ -6144,6 +6143,14 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 	}
+ char _license[] SEC("license") = "GPL";
  
- 	vlen = btf_type_vlen(t);
-+	if (BTF_INFO_KIND(t->info) == BTF_KIND_UNION && vlen != 1 && !(*flag & PTR_UNTRUSTED))
-+		/*
-+		 * walking unions yields untrusted pointers
-+		 * with exception of __bpf_md_ptr and other
-+		 * unions with a single member
-+		 */
-+		*flag |= PTR_UNTRUSTED;
++struct {
++	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, u64);
++} sk_storage_map SEC(".maps");
 +
- 	if (off + size > t->size) {
- 		/* If the last element is a variable size array, we may
- 		 * need to relax the rule.
-@@ -6304,15 +6311,6 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 		 * of this field or inside of this struct
- 		 */
- 		if (btf_type_is_struct(mtype)) {
--			if (BTF_INFO_KIND(mtype->info) == BTF_KIND_UNION &&
--			    btf_type_vlen(mtype) != 1)
--				/*
--				 * walking unions yields untrusted pointers
--				 * with exception of __bpf_md_ptr and other
--				 * unions with a single member
--				 */
--				*flag |= PTR_UNTRUSTED;
--
- 			/* our field must be inside that union or struct */
- 			t = mtype;
- 
-@@ -6478,7 +6476,7 @@ bool btf_struct_ids_match(struct bpf_verifier_log *log,
- 			  bool strict)
- {
- 	const struct btf_type *type;
--	enum bpf_type_flag flag;
-+	enum bpf_type_flag flag = 0;
- 	int err;
- 
- 	/* Are we already done? */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 11e54dd8b6dd..1fb0a64f5bce 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5847,6 +5847,7 @@ static int bpf_map_direct_read(struct bpf_map *map, int off, int size, u64 *val)
- #define BTF_TYPE_SAFE_RCU(__type)  __PASTE(__type, __safe_rcu)
- #define BTF_TYPE_SAFE_RCU_OR_NULL(__type)  __PASTE(__type, __safe_rcu_or_null)
- #define BTF_TYPE_SAFE_TRUSTED(__type)  __PASTE(__type, __safe_trusted)
-+#define BTF_TYPE_SAFE_TRUSTED_UNION(__type)  __PASTE(__type, __safe_trusted_union)
- 
- /*
-  * Allow list few fields as RCU trusted or full trusted.
-@@ -5914,6 +5915,11 @@ BTF_TYPE_SAFE_TRUSTED(struct socket) {
- 	struct sock *sk;
- };
- 
-+/* union trusted: these fields are trusted even in a uion */
-+BTF_TYPE_SAFE_TRUSTED_UNION(struct sk_buff) {
-+	struct sock *sk;
-+};
-+
- static bool type_is_rcu(struct bpf_verifier_env *env,
- 			struct bpf_reg_state *reg,
- 			const char *field_name, u32 btf_id)
-@@ -5950,6 +5956,17 @@ static bool type_is_trusted(struct bpf_verifier_env *env,
- 	return btf_nested_type_is_trusted(&env->log, reg, field_name, btf_id, "__safe_trusted");
+ /* Prototype for all of the program trace events below:
+  *
+  * TRACE_EVENT(task_newtask,
+@@ -31,3 +38,12 @@ int BPF_PROG(test_invalid_nested_offset, struct task_struct *task, u64 clone_fla
+ 	bpf_cpumask_first_zero(&task->cpus_mask);
+ 	return 0;
  }
- 
 +
-+static bool type_is_trusted_union(struct bpf_verifier_env *env,
-+			    struct bpf_reg_state *reg,
-+			    const char *field_name, u32 btf_id)
++/* Although R2 is of type sk_buff but sock_common is expected, we will hit untrusted ptr first. */
++SEC("tp_btf/tcp_probe")
++__failure __msg("R2 type=untrusted_ptr_ expected=ptr_, trusted_ptr_, rcu_ptr_")
++int BPF_PROG(test_invalid_skb_field, struct sock *sk, struct sk_buff *skb)
 +{
-+	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_UNION(struct sk_buff));
-+
-+	return btf_nested_type_is_trusted(&env->log, reg, field_name, btf_id,
-+					  "__safe_trusted_union");
++	bpf_sk_storage_get(&sk_storage_map, skb->next, 0, 0);
++	return 0;
 +}
-+
- static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
- 				   struct bpf_reg_state *regs,
- 				   int regno, int off, int size,
-@@ -6087,6 +6104,10 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
- 		clear_trusted_flags(&flag);
- 	}
+diff --git a/tools/testing/selftests/bpf/progs/nested_trust_success.c b/tools/testing/selftests/bpf/progs/nested_trust_success.c
+index 886ade4aa99d..833840bffd3b 100644
+--- a/tools/testing/selftests/bpf/progs/nested_trust_success.c
++++ b/tools/testing/selftests/bpf/progs/nested_trust_success.c
+@@ -10,6 +10,13 @@
  
-+	/* Clear the PTR_UNTRUSTED for the fields which are in the allow list */
-+	if (type_is_trusted_union(env, reg, field_name, btf_id))
-+		flag &= ~PTR_UNTRUSTED;
-+
- 	if (atype == BPF_READ && value_regno >= 0)
- 		mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, btf_id, flag);
+ char _license[] SEC("license") = "GPL";
  
++struct {
++	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, u64);
++} sk_storage_map SEC(".maps");
++
+ SEC("tp_btf/task_newtask")
+ __success
+ int BPF_PROG(test_read_cpumask, struct task_struct *task, u64 clone_flags)
+@@ -17,3 +24,11 @@ int BPF_PROG(test_read_cpumask, struct task_struct *task, u64 clone_flags)
+ 	bpf_cpumask_test_cpu(0, task->cpus_ptr);
+ 	return 0;
+ }
++
++SEC("tp_btf/tcp_probe")
++__success
++int BPF_PROG(test_skb_field, struct sock *sk, struct sk_buff *skb)
++{
++	bpf_sk_storage_get(&sk_storage_map, skb->sk, 0, 0);
++	return 0;
++}
 -- 
 2.30.1 (Apple Git-130)
 
