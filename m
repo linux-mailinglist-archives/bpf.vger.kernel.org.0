@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-4544-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4545-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F3BE74C60B
-	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 17:23:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C1EA74C60F
+	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 17:24:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30E03281058
-	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 15:23:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CB661C203C1
+	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 15:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5389312B64;
-	Sun,  9 Jul 2023 15:16:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D07B12B8A;
+	Sun,  9 Jul 2023 15:16:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53C51FCE
-	for <bpf@vger.kernel.org>; Sun,  9 Jul 2023 15:16:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C30CC433CB;
-	Sun,  9 Jul 2023 15:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7929112B7B
+	for <bpf@vger.kernel.org>; Sun,  9 Jul 2023 15:16:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D2DDC433CB;
+	Sun,  9 Jul 2023 15:16:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688915762;
-	bh=8IWUj6y3H6Ha2yGWyqLs1YGPvD5wgjSl19LTfDQUppo=;
+	s=k20201202; t=1688915779;
+	bh=G32y9wtiJylKfj3Jc7ZZh2P6oDf/9hm8lwfNwkfooqQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Qj/jSfs1iDEAkWOMLxWt/Ru3fcZSc7l526qJX9N12eLtIIxqdQ3qwd3X8c1W/4ynk
-	 EnldhwAWmMorIF2+xNQ9SaoTQw6MSZ46DODo111FVoUQfod1BRDQgEau9hTCbu7b30
-	 AB4mMWDb7quH7vu95+oT7vqTH0uIkVkgu3PkJOhNm37qvt1GTnZNxlEfS2b3zrk9TD
-	 ljFGmeejp3WEiAp771AqVHyeeqYBJeP7KYXqpjG4gUOFejv0Nv4+COqfpc61ZF3BEm
-	 nIUfoxciXxxCqUInpg8BB0FGvWmrJxc7POutg3uCbxp5SvVTEUDo+ytJc1YtW8Vd/V
-	 Dxr3AJe9jxlug==
+	b=IKjja67wi1b4zIh9ey7IBFmk0UeQDzlFOPb33I797bPeIPiQC1yf7QP+fJFD5LD6d
+	 ZTOQ61zNQbxdVfPPiBzMeYLRQtHBYDRpteyqHMGWrQPSu8cDry98OdPROtKTV9X87e
+	 l3yIklwRWpWJ/v1wPQC7VPsTo7p8dp+eIzUB7MsUehVfVv/MQe0+4Rr48eemtVIxBh
+	 qPz7+71v3O8aRGUjyON++RB2EP0ifPe09EFl1yCpfZbWXQc+VwxLthaJhgETYGLW+D
+	 tW+fZnY9Ph7Nr0zgPGcUVwBe5DWvfrfxePM8d1/XJ46xEKADI0lNGzcLUpWZJAei4l
+	 MkdpoWjjRuWFQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -42,12 +42,12 @@ Cc: Martin KaFai Lau <martin.lau@kernel.org>,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 3/7] bpf: Address KCSAN report on bpf_lru_list
-Date: Sun,  9 Jul 2023 11:15:51 -0400
-Message-Id: <20230709151555.513910-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 2/6] bpf: Address KCSAN report on bpf_lru_list
+Date: Sun,  9 Jul 2023 11:16:09 -0400
+Message-Id: <20230709151615.514009-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230709151555.513910-1-sashal@kernel.org>
-References: <20230709151555.513910-1-sashal@kernel.org>
+In-Reply-To: <20230709151615.514009-1-sashal@kernel.org>
+References: <20230709151615.514009-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.186
+X-stable-base: Linux 5.4.249
 Content-Transfer-Encoding: 8bit
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
@@ -211,7 +211,7 @@ index d99e89f113c43..3dabdd137d102 100644
  		i++;
  		buf += elem_size;
 diff --git a/kernel/bpf/bpf_lru_list.h b/kernel/bpf/bpf_lru_list.h
-index 6b12f06ee18c3..9c12ee453c616 100644
+index f02504640e185..41f8fea530c8d 100644
 --- a/kernel/bpf/bpf_lru_list.h
 +++ b/kernel/bpf/bpf_lru_list.h
 @@ -63,11 +63,8 @@ struct bpf_lru {
