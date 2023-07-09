@@ -1,234 +1,230 @@
-Return-Path: <bpf+bounces-4547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33A4374C61A
-	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 17:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B28A474C61D
+	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 17:27:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55B0A1C209C8
-	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 15:26:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E03C91C20749
+	for <lists+bpf@lfdr.de>; Sun,  9 Jul 2023 15:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3018D13AEC;
-	Sun,  9 Jul 2023 15:16:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C176A941;
+	Sun,  9 Jul 2023 15:22:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4048613AE9
-	for <bpf@vger.kernel.org>; Sun,  9 Jul 2023 15:16:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6D98C433CA;
-	Sun,  9 Jul 2023 15:16:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688915810;
-	bh=9rSVqdKcxx7I835Y7LAo46+7GLpjCTaOzwiFWPXuui4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K1vk0B57ZaZkN4KDw1o7UN7+vja22uqgqpOYJfwVWlWOu+xWQ7Ayc7do/LvEvryRc
-	 vLpXnRjAuy48WzagH3tHN9VHKHRqMFPYkOMrHUeQtcFwperJU+/Q5qAHm60Y9x8CmS
-	 ldFB3pZdE6Dp+pyDmzGXMD2wYebQLOZo2QDDog/ybW8PbIIawAmvjyfTs0zJ6CsoiK
-	 /qZFIy8xQeYPtciESmsf07EMr9HBoLWm22s4EOmHFAawe0yIwwt4U1AFJpbjAnzooP
-	 jyz9HVwk1B36Y+Zju9jVdtmkTNmgn2zJp6WOqU23LpYgOogE2qmZAkGI4CrpW33YTN
-	 0ojf4ze2pI9xQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@kernel.org>,
-	syzbot+ebe648a84e8784763f82@syzkaller.appspotmail.com,
-	Yonghong Song <yhs@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	martin.lau@linux.dev,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 2/4] bpf: Address KCSAN report on bpf_lru_list
-Date: Sun,  9 Jul 2023 11:16:42 -0400
-Message-Id: <20230709151645.514172-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230709151645.514172-1-sashal@kernel.org>
-References: <20230709151645.514172-1-sashal@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442158834
+	for <bpf@vger.kernel.org>; Sun,  9 Jul 2023 15:22:52 +0000 (UTC)
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10AE4203
+	for <bpf@vger.kernel.org>; Sun,  9 Jul 2023 08:22:32 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-6348a8045a2so24183946d6.1
+        for <bpf@vger.kernel.org>; Sun, 09 Jul 2023 08:22:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688916087; x=1691508087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wXze9nUKh3L/uVH6x+jXJ18GdHQRruzVjV/78O4GZMY=;
+        b=ohY/WFfA/sRGBA4R0KgzTo2+nxeftQxpFjbVxRLgXp18495Iww7oORay5zcJDyJUkn
+         yU+c5Tyh8yOSCRHTmO89Go1wwVrV4rmVhWosQpjkXXxAbivjK0it2vLuOTw/Xg4MmHgu
+         j1s1XS7HlzfJp1mEYexrp9VE9zsWA6tj01QJkiujCFvUrGoZ4UTFDts76qt6OQcRfXA4
+         h6QabV0O1bjSGNeEhh1yMdtDVRXv+gXZYdo9e1+S59jeXundJdCReVswuhn1lRhzewoq
+         GAp2ldJKB9qZQHqgxC5/mGMCTzU2q/xIhPPlxPkLGhBPeHIqchiI7eaaGwDgqPa8q6b9
+         Iv0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688916087; x=1691508087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wXze9nUKh3L/uVH6x+jXJ18GdHQRruzVjV/78O4GZMY=;
+        b=J8RwGXK7oeCGxKq9Cvwb0R4MdvqPXXBzs36Tg8+6zJNj2TBt+Uk6kDN41wzM145gov
+         u0fBXKbgElm2iPnC93cJ/GxI4Wqn/1EjPPUVdgpL9ziM+gEp+2AViJJJi5KY6R3dBCap
+         YxkaG0jYbkhAPH54vIEpaKh6NW0JOY6vNvUOL5zhK65vUXbpEyI6DwWdSQfQQyhISPLn
+         y4LBWvJ8aCZNs9GiVml2tjAD98IMWF16WTQ1St66lDGTIxzhpyzw1FGnww7RwqDr5QDl
+         FsmL+w/60C6a/lEC2Tjm/KOPcZPGk3Hh5LXICCHAHIDrtrocjh2PBHxstJWpvnhifq/I
+         4hng==
+X-Gm-Message-State: ABy/qLarq9m5c+RDC7GUWYAifiSjRgAsi14DLZTehBpRTLSbFSjzkY+1
+	RtOXx0RXgg0msMLSSr07KDvgGOseqq0w08Ny06w=
+X-Google-Smtp-Source: APBJJlEdq7rukVPmHWotJgyxWCHBi8Gz8rPkQHIFxIih/GG2D1LXUCqjvJoErcr42R7byp5T1pln5k3+OPMf3IluIDc=
+X-Received: by 2002:a0c:f393:0:b0:636:14d4:4481 with SMTP id
+ i19-20020a0cf393000000b0063614d44481mr9636969qvk.1.1688916086836; Sun, 09 Jul
+ 2023 08:21:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.320
-Content-Transfer-Encoding: 8bit
+References: <bd1477f2-a51e-a795-4f25-a32d6ab46530@gmail.com>
+ <ZKcE+wMWGdVFSBX2@google.com> <32d67707-b831-9a98-4cb9-fcb27c8806ef@gmail.com>
+ <ZKhEEJfzCyYI7BfH@google.com> <5d336a9a-8ae5-2b1f-7af3-a94818867b40@gmail.com>
+In-Reply-To: <5d336a9a-8ae5-2b1f-7af3-a94818867b40@gmail.com>
+From: Khalid Masum <khalid.masum.92@gmail.com>
+Date: Sun, 9 Jul 2023 21:21:15 +0600
+Message-ID: <CAABMjtHc4Vu=_L4rOhy1a-m0nQ-ptHe68qXJd__mSQAgO+t_iw@mail.gmail.com>
+Subject: Re: [PATCH v2] samples/bpf: Add more instructions to build
+ dependencies and, configuration in README.rst
+To: Anh Tuan Phan <tuananhlfc@gmail.com>
+Cc: Stanislav Fomichev <sdf@google.com>, daniel@iogearbox.net, martin.lau@linux.dev, 
+	ast@kernel.org, andrii@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+Hi,
 
-[ Upstream commit ee9fd0ac3017c4313be91a220a9ac4c99dde7ad4 ]
+On Sun, Jul 9, 2023 at 8:38=E2=80=AFPM Anh Tuan Phan <tuananhlfc@gmail.com>=
+ wrote:
+>
+> Hi Stanislav,
+>
+> I have updated the Documentation according to your suggestion. Please
+> see it in the below patch. Thanks!
+>
+> On 7/7/23 23:57, Stanislav Fomichev wrote:
+> > On 07/07, Anh Tuan Phan wrote:
+> >>
+> >>
+> >> On 7/7/23 01:16, Stanislav Fomichev wrote:
+> >>> On 07/06, Anh Tuan Phan wrote:
+> >>>> Update the Documentation to mention that some samples require pahole
+> >>>> v1.16 and kernel built with CONFIG_DEBUG_INFO_BTF=3Dy
+> >>>>
+> >>>> Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
+> >>>> ---
+> >>>>  samples/bpf/README.rst | 7 +++++++
+> >>>>  1 file changed, 7 insertions(+)
+> >>>>
+> >>>> diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+> >>>> index 57f93edd1957..631592b83d60 100644
+> >>>> --- a/samples/bpf/README.rst
+> >>>> +++ b/samples/bpf/README.rst
+> >>>> @@ -14,6 +14,9 @@ Compiling requires having installed:
+> >>>>  Note that LLVM's tool 'llc' must support target 'bpf', list version
+> >>>>  and supported targets with command: ``llc --version``
+> >>>>
+> >>>> +Some samples require pahole version 1.16 as a dependency. See
+> >>>> +https://docs.kernel.org/bpf/bpf_devel_QA.html for reference.
+> >>>> +
+> >>>
+> >>> Any reason no to add pahole 1.16 to this section above?
+> >>>> Compiling requires having installed:
+> >>>  * clang >=3D version 3.4.0
+> >>>  * llvm >=3D version 3.7.1
+> >>>  * pahole >=3D version 1.16
+> >>>
+> >>> Although clang 3.4 probably won't get you anywhere these days. The
+> >>> whole README seems a bit outdated :-)
+> >>>
+> >>
+> >> Put pahole requirement as your idea is better, thanks for suggestion.
+> >> Will update it and clang version as well. For clang version, I think I
+> >> can update min version as 11.0.0 (reference from
+> >> https://www.kernel.org/doc/html/next/process/changes.html). Do you see
+> >> any other potential outdated things in this document? I follow the abo=
+ve
+> >> steps and it help me compile the sample code successfully.
+> >
+> > Maybe we can reference that doc instead here? Otherwise that copy-paste=
+d
+> > 11.0.0 will also get old. Just mention here that we need
+> > clang/llvm/pahole to compile the samples and for specific versions
+> > put a link to process/changes.rst
+> >
+> >>>>  Clean and configuration
+> >>>>  -----------------------
+> >>>>
+> >>>> @@ -28,6 +31,10 @@ Configure kernel, defconfig for instance::
+> >>>>
+> >>>>   make defconfig
+> >>>>
+> >>>> +Some samples require support for BPF Type Format (BTF). To enable i=
+t,
+> >>>> open the
+> >>>> +generated config file, or use menuconfig (by "make menuconfig") to
+> >>>> enable the
+> >>>> +following configs: CONFIG_BPF_SYSCALL and CONFIG_DEBUG_INFO_BTF.
+> >>>> +
+> >>>
+> >>> This is usually enabled by default, so why special case it here?
+> >>> Maybe, if you want some hints about the config, we should add
+> >>> a reference to tools/testing/selftests/bpf/config ?
+> >>>
+> >>
+> >> The config CONFIG_DEBUG_INFO_BTF is disabled for some distros at least
+> >> for mine. I ran "make defconfig" and it's not enabled by default so I
+> >> think it worth to mention it here to help novice get started. I'll
+> >> update it to reference to tools/testing/selftests/bpf/config .
+> >>
+> >>>>  Kernel headers
+> >>>>  --------------
+> >>>>
+> >>>> --
+> >>>> 2.34.1
+>
+> Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
+> ---
+>
+> Change from the original patch:
+>
+> - Move pahole to the list installed requirements
+> - Remove minimal version and link the related doc
+> - Add a reference of kernel configuration
+>
+>  samples/bpf/README.rst | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+> index 57f93edd1957..e18500753ba5 100644
+> --- a/samples/bpf/README.rst
+> +++ b/samples/bpf/README.rst
+> @@ -8,9 +8,12 @@ Build dependencies
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>  Compiling requires having installed:
+> - * clang >=3D version 3.4.0
+> - * llvm >=3D version 3.7.1
+> + * clang
+> + * llvm
+> + * pahole
+>
+> +The minimal version of the above software is referenced in
+> +https://www.kernel.org/doc/html/next/process/changes.html.
 
-KCSAN reported a data-race when accessing node->ref.
-Although node->ref does not have to be accurate,
-take this chance to use a more common READ_ONCE() and WRITE_ONCE()
-pattern instead of data_race().
+I think it is better to not use docs from linux-next as it keeps changing
+too frequently. How about using the latest documentation's link instead? :)
 
-There is an existing bpf_lru_node_is_ref() and bpf_lru_node_set_ref().
-This patch also adds bpf_lru_node_clear_ref() to do the
-WRITE_ONCE(node->ref, 0) also.
+https://www.kernel.org/doc/html/latest/process/changes.html
 
-==================================================================
-BUG: KCSAN: data-race in __bpf_lru_list_rotate / __htab_lru_percpu_map_update_elem
+However, something to think about is: If future versions of clang, llvm etc
+do not support compiling our code as it is now, it may become misleading.
 
-write to 0xffff888137038deb of 1 bytes by task 11240 on cpu 1:
-__bpf_lru_node_move kernel/bpf/bpf_lru_list.c:113 [inline]
-__bpf_lru_list_rotate_active kernel/bpf/bpf_lru_list.c:149 [inline]
-__bpf_lru_list_rotate+0x1bf/0x750 kernel/bpf/bpf_lru_list.c:240
-bpf_lru_list_pop_free_to_local kernel/bpf/bpf_lru_list.c:329 [inline]
-bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:447 [inline]
-bpf_lru_pop_free+0x638/0xe20 kernel/bpf/bpf_lru_list.c:499
-prealloc_lru_pop kernel/bpf/hashtab.c:290 [inline]
-__htab_lru_percpu_map_update_elem+0xe7/0x820 kernel/bpf/hashtab.c:1316
-bpf_percpu_hash_update+0x5e/0x90 kernel/bpf/hashtab.c:2313
-bpf_map_update_value+0x2a9/0x370 kernel/bpf/syscall.c:200
-generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1687
-bpf_map_do_batch+0x2d9/0x3d0 kernel/bpf/syscall.c:4534
-__sys_bpf+0x338/0x810
-__do_sys_bpf kernel/bpf/syscall.c:5096 [inline]
-__se_sys_bpf kernel/bpf/syscall.c:5094 [inline]
-__x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5094
-do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-read to 0xffff888137038deb of 1 bytes by task 11241 on cpu 0:
-bpf_lru_node_set_ref kernel/bpf/bpf_lru_list.h:70 [inline]
-__htab_lru_percpu_map_update_elem+0x2f1/0x820 kernel/bpf/hashtab.c:1332
-bpf_percpu_hash_update+0x5e/0x90 kernel/bpf/hashtab.c:2313
-bpf_map_update_value+0x2a9/0x370 kernel/bpf/syscall.c:200
-generic_map_update_batch+0x3ae/0x4f0 kernel/bpf/syscall.c:1687
-bpf_map_do_batch+0x2d9/0x3d0 kernel/bpf/syscall.c:4534
-__sys_bpf+0x338/0x810
-__do_sys_bpf kernel/bpf/syscall.c:5096 [inline]
-__se_sys_bpf kernel/bpf/syscall.c:5094 [inline]
-__x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5094
-do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>  Note that LLVM's tool 'llc' must support target 'bpf', list version
+>  and supported targets with command: ``llc --version``
+>
+> @@ -24,7 +27,8 @@ after some changes (on demand)::
+>   make -C samples/bpf clean
+>   make clean
+>
+> -Configure kernel, defconfig for instance::
+> +Configure kernel, defconfig for instance
+> +(see "tools/testing/selftests/bpf/config" for a reference config)::
+>
+>   make defconfig
+>
+> --
 
-value changed: 0x01 -> 0x00
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 11241 Comm: syz-executor.3 Not tainted 6.3.0-rc7-syzkaller-00136-g6a66fdd29ea1 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/30/2023
-==================================================================
-
-Reported-by: syzbot+ebe648a84e8784763f82@syzkaller.appspotmail.com
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/r/20230511043748.1384166-1-martin.lau@linux.dev
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/bpf/bpf_lru_list.c | 21 +++++++++++++--------
- kernel/bpf/bpf_lru_list.h |  7 ++-----
- 2 files changed, 15 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-index 9b5eeff72fd37..39a0e768adc39 100644
---- a/kernel/bpf/bpf_lru_list.c
-+++ b/kernel/bpf/bpf_lru_list.c
-@@ -44,7 +44,12 @@ static struct list_head *local_pending_list(struct bpf_lru_locallist *loc_l)
- /* bpf_lru_node helpers */
- static bool bpf_lru_node_is_ref(const struct bpf_lru_node *node)
- {
--	return node->ref;
-+	return READ_ONCE(node->ref);
-+}
-+
-+static void bpf_lru_node_clear_ref(struct bpf_lru_node *node)
-+{
-+	WRITE_ONCE(node->ref, 0);
- }
- 
- static void bpf_lru_list_count_inc(struct bpf_lru_list *l,
-@@ -92,7 +97,7 @@ static void __bpf_lru_node_move_in(struct bpf_lru_list *l,
- 
- 	bpf_lru_list_count_inc(l, tgt_type);
- 	node->type = tgt_type;
--	node->ref = 0;
-+	bpf_lru_node_clear_ref(node);
- 	list_move(&node->list, &l->lists[tgt_type]);
- }
- 
-@@ -113,7 +118,7 @@ static void __bpf_lru_node_move(struct bpf_lru_list *l,
- 		bpf_lru_list_count_inc(l, tgt_type);
- 		node->type = tgt_type;
- 	}
--	node->ref = 0;
-+	bpf_lru_node_clear_ref(node);
- 
- 	/* If the moving node is the next_inactive_rotation candidate,
- 	 * move the next_inactive_rotation pointer also.
-@@ -356,7 +361,7 @@ static void __local_list_add_pending(struct bpf_lru *lru,
- 	*(u32 *)((void *)node + lru->hash_offset) = hash;
- 	node->cpu = cpu;
- 	node->type = BPF_LRU_LOCAL_LIST_T_PENDING;
--	node->ref = 0;
-+	bpf_lru_node_clear_ref(node);
- 	list_add(&node->list, local_pending_list(loc_l));
- }
- 
-@@ -422,7 +427,7 @@ static struct bpf_lru_node *bpf_percpu_lru_pop_free(struct bpf_lru *lru,
- 	if (!list_empty(free_list)) {
- 		node = list_first_entry(free_list, struct bpf_lru_node, list);
- 		*(u32 *)((void *)node + lru->hash_offset) = hash;
--		node->ref = 0;
-+		bpf_lru_node_clear_ref(node);
- 		__bpf_lru_node_move(l, node, BPF_LRU_LIST_T_INACTIVE);
- 	}
- 
-@@ -525,7 +530,7 @@ static void bpf_common_lru_push_free(struct bpf_lru *lru,
- 		}
- 
- 		node->type = BPF_LRU_LOCAL_LIST_T_FREE;
--		node->ref = 0;
-+		bpf_lru_node_clear_ref(node);
- 		list_move(&node->list, local_free_list(loc_l));
- 
- 		raw_spin_unlock_irqrestore(&loc_l->lock, flags);
-@@ -571,7 +576,7 @@ static void bpf_common_lru_populate(struct bpf_lru *lru, void *buf,
- 
- 		node = (struct bpf_lru_node *)(buf + node_offset);
- 		node->type = BPF_LRU_LIST_T_FREE;
--		node->ref = 0;
-+		bpf_lru_node_clear_ref(node);
- 		list_add(&node->list, &l->lists[BPF_LRU_LIST_T_FREE]);
- 		buf += elem_size;
- 	}
-@@ -597,7 +602,7 @@ static void bpf_percpu_lru_populate(struct bpf_lru *lru, void *buf,
- 		node = (struct bpf_lru_node *)(buf + node_offset);
- 		node->cpu = cpu;
- 		node->type = BPF_LRU_LIST_T_FREE;
--		node->ref = 0;
-+		bpf_lru_node_clear_ref(node);
- 		list_add(&node->list, &l->lists[BPF_LRU_LIST_T_FREE]);
- 		i++;
- 		buf += elem_size;
-diff --git a/kernel/bpf/bpf_lru_list.h b/kernel/bpf/bpf_lru_list.h
-index 7d4f89b7cb841..08da78b59f0b9 100644
---- a/kernel/bpf/bpf_lru_list.h
-+++ b/kernel/bpf/bpf_lru_list.h
-@@ -66,11 +66,8 @@ struct bpf_lru {
- 
- static inline void bpf_lru_node_set_ref(struct bpf_lru_node *node)
- {
--	/* ref is an approximation on access frequency.  It does not
--	 * have to be very accurate.  Hence, no protection is used.
--	 */
--	if (!node->ref)
--		node->ref = 1;
-+	if (!READ_ONCE(node->ref))
-+		WRITE_ONCE(node->ref, 1);
- }
- 
- int bpf_lru_init(struct bpf_lru *lru, bool percpu, u32 hash_offset,
--- 
-2.39.2
-
+thanks,
+  -- Khalid Masum
 
