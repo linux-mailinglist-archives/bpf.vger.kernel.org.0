@@ -1,76 +1,81 @@
-Return-Path: <bpf+bounces-4614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4615-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1967974DC19
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 19:18:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA03674DC34
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 19:21:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49D5E1C20B28
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 17:18:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C78D28132F
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 17:21:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDAED13AFC;
-	Mon, 10 Jul 2023 17:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3167D13AFE;
+	Mon, 10 Jul 2023 17:21:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4DA0107B4
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 17:18:25 +0000 (UTC)
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E5F120
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 10:18:24 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b89f6463deso78241815ad.1
-        for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 10:18:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E7E107B4
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 17:21:27 +0000 (UTC)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BC01719
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 10:21:05 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-55c475c6da6so1583171a12.2
+        for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 10:21:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689009503; x=1691601503;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fd/jFas9/ddzumuFsCZwyFQrGgcdAN+2PgNZn7yYwbs=;
-        b=HZHn1KNnwtlwZlFd6Ii4kJHwRN+NGBxoXT1n1dT81haL6YarEviPWZbKtjhzZSnjN7
-         erHlPXj+HCaoPSzrPsj9vsQMctRr4jEIpDf1CjgVEwXsX5fwNiH2UBQohG3NM8PEZBqh
-         EHEJMv9zTh0sOz9A7pTORVZx/Alp3jGIFoH22wRA33EKvfXSlBWCWxL5RIR4el5h/PFV
-         l3C+nQO67xAIUmEj9H4JuCm4LRw284EI70aORw3vvNVoQZmRSGjIZkkWXCsQ2HyZyZRn
-         bpO+jJxinv3Ud4CMSG4Dc90Prq4l81iqk1l5SNrtNghxI2KD8ORmcWFHjBUB/pKToEwM
-         XfFA==
+        d=google.com; s=20221208; t=1689009664; x=1691601664;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DmU2+5hRWoL+pZqKJ05G+ZLf8jgBoRxUhLoRim7iXdw=;
+        b=XjWiHEqfCseEhn60v58akWR+Kii8fw3IX+mzVKNFqTiWNWIYad5u2m6pGwvg9spU3G
+         cjRxM+zHzYzkwHW6TpyOlXuRwaOk/G8QzYvIvPx8P6xPkDp454Gk72qwGmtGXL/VaWla
+         Q0gLvoCdBGoqyNi4IBJCa/vixwkY7XJWvnXyNj4MvxwHYPJGQ4kWkLckRsYYamjy02Ow
+         yOEnUknN0Hk4kVl7+lAFs/YFZ6jMp9BoTee0ZGO3QxxmYJiE1s6yFeqZEjXbHjHISBCN
+         lbkYMXuEG4lqiGLjoeTYwOe0+JmCkQ9CreA9CafCg0a7w/FdLusJTGW2rXro0A73QqTB
+         QKAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689009503; x=1691601503;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fd/jFas9/ddzumuFsCZwyFQrGgcdAN+2PgNZn7yYwbs=;
-        b=hOhnh2QQLV7FVypJV4uxyCUqxQqRfRaSDz0MjjO0GtnysOahNT0PJIV+YaOprYiEF/
-         jWTKAGtFE7wpQ4GHEtelhkKUGwqq/EUjSzYLviDvvkgHlBnu3G2hRzBIxeuDSb1EEFpd
-         w3OIi/GOdzpR55kF/N1HkhSUUMIEelNmAWgr6nuE/F+q43R9K1loKzqNHuSNIdLPk7nn
-         x4GYhSaFJrdcfrc2dFk47TRdu1lEZMOx+Awp/FtnrtA6AjFUy1cWk7NjrKJDtqdQm+vi
-         zM2imZVZZ6d7NfVXtKw+HZFcn4z44zTMRGUP8uMlhPLpBvt8r1iaa34V4Eun5OL/t+Ji
-         UK5Q==
-X-Gm-Message-State: ABy/qLaFfXge6VVwvi4iLBHNp69px4ojRaCa7fXtcrT0vDtbLa12+57p
-	nX3B7sCNk+TMLkC95iwvcq2kuaA=
-X-Google-Smtp-Source: APBJJlHvVrDz1g2oRDm9FKijVnJKD+Wp8/adNeEDp2lT19t1t4+ySQ4RmAmWW2rMUH0hpqVW5eLRl4Y=
+        d=1e100.net; s=20221208; t=1689009664; x=1691601664;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DmU2+5hRWoL+pZqKJ05G+ZLf8jgBoRxUhLoRim7iXdw=;
+        b=E4+/0Zs1zZ1UKLJ9fCBPgkJiWdwWjfJbuiDWuRn9JHVMu0lCEx6uUPcD2pvaM08PBE
+         qcAYf8PnsgG03XdHxKgRUashTw9NDomRuAX/TK8f3rvID+pVBAsFQ+rOsVsGjRNbX4yP
+         /4wtkKntwRosykH6J/Ym1S2PEgIPotryr0tHRgH76NhTYX/86Lwq+gPOevqRy+9jCT14
+         p+GoJdYQ4YwC0nOdYacCsps09JMLhSL6tmJM65kSO2CGMnIkI1T8AFeHMqtIm4PqjJuS
+         Plx/P6uVbDZ9xIktoZytoKY9Ay4bQb6MkhGArNZ0cWYRhpPqrlN/jG5mqM3zfr71qaFQ
+         Y3bw==
+X-Gm-Message-State: ABy/qLYi7/DWStioFcSwS4SfRkBPuG8UZk6kZvckJSb3Yfh65snvkVE/
+	8jaBcpKkOmcnWgWSgFc2ukWCvhQ=
+X-Google-Smtp-Source: APBJJlESkUSQK49CxEg85CDws6p3+OE/VlXKu5fJXfbxk71EWAjEUZqTOiuIpSgS9EKNVNwvsGND5XQ=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:902:e9d4:b0:1a2:3436:4119 with SMTP id
- 20-20020a170902e9d400b001a234364119mr12697223plk.8.1689009503485; Mon, 10 Jul
- 2023 10:18:23 -0700 (PDT)
-Date: Mon, 10 Jul 2023 10:18:21 -0700
-In-Reply-To: <2b48be65-5f63-4658-38cb-03c00c10fdf3@gmail.com>
+ (user=sdf job=sendgmr) by 2002:a63:9316:0:b0:55a:e71b:45b9 with SMTP id
+ b22-20020a639316000000b0055ae71b45b9mr8945120pge.2.1689009664229; Mon, 10 Jul
+ 2023 10:21:04 -0700 (PDT)
+Date: Mon, 10 Jul 2023 10:21:02 -0700
+In-Reply-To: <CAABMjtHc4Vu=_L4rOhy1a-m0nQ-ptHe68qXJd__mSQAgO+t_iw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <67bec6a9-af59-d6f9-2630-17280479a1f7@gmail.com>
- <ZKcDdIYOUQuPP5Px@google.com> <51aa1dd7-86d0-ed08-1142-f229513ad316@gmail.com>
- <ZKhC9G5ouGOviSOG@google.com> <2b48be65-5f63-4658-38cb-03c00c10fdf3@gmail.com>
-Message-ID: <ZKw9XQGOza6qGDLf@google.com>
-Subject: Re: [PATCH v1] samples/bpf: Fix build out of source tree
+References: <bd1477f2-a51e-a795-4f25-a32d6ab46530@gmail.com>
+ <ZKcE+wMWGdVFSBX2@google.com> <32d67707-b831-9a98-4cb9-fcb27c8806ef@gmail.com>
+ <ZKhEEJfzCyYI7BfH@google.com> <5d336a9a-8ae5-2b1f-7af3-a94818867b40@gmail.com>
+ <CAABMjtHc4Vu=_L4rOhy1a-m0nQ-ptHe68qXJd__mSQAgO+t_iw@mail.gmail.com>
+Message-ID: <ZKw9/jIZs73jT190@google.com>
+Subject: Re: [PATCH v2] samples/bpf: Add more instructions to build
+ dependencies and, configuration in README.rst
 From: Stanislav Fomichev <sdf@google.com>
-To: Anh Tuan Phan <tuananhlfc@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, 
+To: Khalid Masum <khalid.masum.92@gmail.com>
+Cc: Anh Tuan Phan <tuananhlfc@gmail.com>, daniel@iogearbox.net, martin.lau@linux.dev, 
+	ast@kernel.org, andrii@kernel.org, bpf@vger.kernel.org, 
 	linux-kernel-mentees@lists.linuxfoundation.org
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -78,182 +83,144 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 07/09, Anh Tuan Phan wrote:
-> I updated the patch to reflect your suggestion. Thank you!
+On 07/09, Khalid Masum wrote:
+> Hi,
+>=20
+> On Sun, Jul 9, 2023 at 8:38=E2=80=AFPM Anh Tuan Phan <tuananhlfc@gmail.co=
+m> wrote:
+> >
+> > Hi Stanislav,
+> >
+> > I have updated the Documentation according to your suggestion. Please
+> > see it in the below patch. Thanks!
+> >
+> > On 7/7/23 23:57, Stanislav Fomichev wrote:
+> > > On 07/07, Anh Tuan Phan wrote:
+> > >>
+> > >>
+> > >> On 7/7/23 01:16, Stanislav Fomichev wrote:
+> > >>> On 07/06, Anh Tuan Phan wrote:
+> > >>>> Update the Documentation to mention that some samples require paho=
+le
+> > >>>> v1.16 and kernel built with CONFIG_DEBUG_INFO_BTF=3Dy
+> > >>>>
+> > >>>> Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
+> > >>>> ---
+> > >>>>  samples/bpf/README.rst | 7 +++++++
+> > >>>>  1 file changed, 7 insertions(+)
+> > >>>>
+> > >>>> diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+> > >>>> index 57f93edd1957..631592b83d60 100644
+> > >>>> --- a/samples/bpf/README.rst
+> > >>>> +++ b/samples/bpf/README.rst
+> > >>>> @@ -14,6 +14,9 @@ Compiling requires having installed:
+> > >>>>  Note that LLVM's tool 'llc' must support target 'bpf', list versi=
+on
+> > >>>>  and supported targets with command: ``llc --version``
+> > >>>>
+> > >>>> +Some samples require pahole version 1.16 as a dependency. See
+> > >>>> +https://docs.kernel.org/bpf/bpf_devel_QA.html for reference.
+> > >>>> +
+> > >>>
+> > >>> Any reason no to add pahole 1.16 to this section above?
+> > >>>> Compiling requires having installed:
+> > >>>  * clang >=3D version 3.4.0
+> > >>>  * llvm >=3D version 3.7.1
+> > >>>  * pahole >=3D version 1.16
+> > >>>
+> > >>> Although clang 3.4 probably won't get you anywhere these days. The
+> > >>> whole README seems a bit outdated :-)
+> > >>>
+> > >>
+> > >> Put pahole requirement as your idea is better, thanks for suggestion=
+.
+> > >> Will update it and clang version as well. For clang version, I think=
+ I
+> > >> can update min version as 11.0.0 (reference from
+> > >> https://www.kernel.org/doc/html/next/process/changes.html). Do you s=
+ee
+> > >> any other potential outdated things in this document? I follow the a=
+bove
+> > >> steps and it help me compile the sample code successfully.
+> > >
+> > > Maybe we can reference that doc instead here? Otherwise that copy-pas=
+ted
+> > > 11.0.0 will also get old. Just mention here that we need
+> > > clang/llvm/pahole to compile the samples and for specific versions
+> > > put a link to process/changes.rst
+> > >
+> > >>>>  Clean and configuration
+> > >>>>  -----------------------
+> > >>>>
+> > >>>> @@ -28,6 +31,10 @@ Configure kernel, defconfig for instance::
+> > >>>>
+> > >>>>   make defconfig
+> > >>>>
+> > >>>> +Some samples require support for BPF Type Format (BTF). To enable=
+ it,
+> > >>>> open the
+> > >>>> +generated config file, or use menuconfig (by "make menuconfig") t=
+o
+> > >>>> enable the
+> > >>>> +following configs: CONFIG_BPF_SYSCALL and CONFIG_DEBUG_INFO_BTF.
+> > >>>> +
+> > >>>
+> > >>> This is usually enabled by default, so why special case it here?
+> > >>> Maybe, if you want some hints about the config, we should add
+> > >>> a reference to tools/testing/selftests/bpf/config ?
+> > >>>
+> > >>
+> > >> The config CONFIG_DEBUG_INFO_BTF is disabled for some distros at lea=
+st
+> > >> for mine. I ran "make defconfig" and it's not enabled by default so =
+I
+> > >> think it worth to mention it here to help novice get started. I'll
+> > >> update it to reference to tools/testing/selftests/bpf/config .
+> > >>
+> > >>>>  Kernel headers
+> > >>>>  --------------
+> > >>>>
+> > >>>> --
+> > >>>> 2.34.1
+> >
+> > Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
+> > ---
+> >
+> > Change from the original patch:
+> >
+> > - Move pahole to the list installed requirements
+> > - Remove minimal version and link the related doc
+> > - Add a reference of kernel configuration
+> >
+> >  samples/bpf/README.rst | 10 +++++++---
+> >  1 file changed, 7 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+> > index 57f93edd1957..e18500753ba5 100644
+> > --- a/samples/bpf/README.rst
+> > +++ b/samples/bpf/README.rst
+> > @@ -8,9 +8,12 @@ Build dependencies
+> >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> >  Compiling requires having installed:
+> > - * clang >=3D version 3.4.0
+> > - * llvm >=3D version 3.7.1
+> > + * clang
+> > + * llvm
+> > + * pahole
+> >
+> > +The minimal version of the above software is referenced in
+> > +https://www.kernel.org/doc/html/next/process/changes.html.
+>=20
+> I think it is better to not use docs from linux-next as it keeps changing
+> too frequently. How about using the latest documentation's link instead? =
+:)
+>=20
+> https://www.kernel.org/doc/html/latest/process/changes.html
 
-In the future, can you please post a new one with v+1 instead of replying
-to the old one? Thx!
++1
 
-> On 7/7/23 23:53, Stanislav Fomichev wrote:
-> > On 07/07, Anh Tuan Phan wrote:
-> >>
-> >>
-> >> On 7/7/23 01:09, Stanislav Fomichev wrote:
-> >>> On 07/06, Anh Tuan Phan wrote:
-> >>>> This commit fixes a few compilation issues when building out of source
-> >>>> tree. The command that I used to build samples/bpf:
-> >>>>
-> >>>> export KBUILD_OUTPUT=/tmp
-> >>>> make V=1 M=samples/bpf
-> >>>>
-> >>>> The compilation failed since it tried to find the header files in the
-> >>>> wrong places between output directory and source tree directory
-> >>>>
-> >>>> Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
-> >>>> ---
-> >>>>  samples/bpf/Makefile        | 8 ++++----
-> >>>>  samples/bpf/Makefile.target | 2 +-
-> >>>>  2 files changed, 5 insertions(+), 5 deletions(-)
-> >>>>
-> >>>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> >>>> index 615f24ebc49c..32469aaa82d5 100644
-> >>>> --- a/samples/bpf/Makefile
-> >>>> +++ b/samples/bpf/Makefile
-> >>>> @@ -341,10 +341,10 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
-> >>>>  # Override includes for xdp_sample_user.o because $(srctree)/usr/include in
-> >>>>  # TPROGS_CFLAGS causes conflicts
-> >>>>  XDP_SAMPLE_CFLAGS += -Wall -O2 \
-> >>>> -		     -I$(src)/../../tools/include \
-> >>>> +		     -I$(srctree)/tools/include \
-> >>>
-> >>> [..]
-> >>>
-> >>>>  		     -I$(src)/../../tools/include/uapi \
-> >>>
-> >>> Does this $(src) need to be changed as well?
-> >>
-> >> I think this line doesn't affect the build. I removed it and it still
-> >> compiles (after "make -C samples/bpf clean"). I guess xdp_sample_user.c
-> >> doesn't include any file in tools/include/uapi. Am I missing something
-> >> or should I remove this line?
-> > 
-> > You might have these headers installed on your system already if
-> > it compiles without this part. So I'd keep this part but do
-> > s/src/srctree/ (and remove ../..).
-> > 
-> >>>
-> >>>
-> >>>>  		     -I$(LIBBPF_INCLUDE) \
-> >>>> -		     -I$(src)/../../tools/testing/selftests/bpf
-> >>>> +		     -I$(srctree)/tools/testing/selftests/bpf
-> >>>>
-> >>>>  $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
-> >>>>  $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
-> >>>> @@ -393,7 +393,7 @@ $(obj)/xdp_router_ipv4.bpf.o: $(obj)/xdp_sample.bpf.o
-> >>>>  $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h
-> >>>> $(src)/xdp_sample_shared.h
-> >>>>  	@echo "  CLANG-BPF " $@
-> >>>>  	$(Q)$(CLANG) -g -O2 -target bpf -D__TARGET_ARCH_$(SRCARCH) \
-> >>>> -		-Wno-compare-distinct-pointer-types -I$(srctree)/include \
-> >>>> +		-Wno-compare-distinct-pointer-types -I$(obj) -I$(srctree)/include \
-> >>>>  		-I$(srctree)/samples/bpf -I$(srctree)/tools/include \
-> >>>>  		-I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES) \
-> >>>>  		-c $(filter %.bpf.c,$^) -o $@
-> >>>> @@ -412,7 +412,7 @@ xdp_router_ipv4.skel.h-deps := xdp_router_ipv4.bpf.o
-> >>>> xdp_sample.bpf.o
-> >>>>
-> >>>>  LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.bpf.c,$(foreach
-> >>>> skel,$(LINKED_SKELS),$($(skel)-deps)))
-> >>>>
-> >>>> -BPF_SRCS_LINKED := $(notdir $(wildcard $(src)/*.bpf.c))
-> >>>> +BPF_SRCS_LINKED := $(notdir $(wildcard $(srctree)/$(src)/*.bpf.c))
-> >>>>  BPF_OBJS_LINKED := $(patsubst %.bpf.c,$(obj)/%.bpf.o, $(BPF_SRCS_LINKED))
-> >>>>  BPF_SKELS_LINKED := $(addprefix $(obj)/,$(LINKED_SKELS))
-> >>>>
-> >>>> diff --git a/samples/bpf/Makefile.target b/samples/bpf/Makefile.target
-> >>>> index 7621f55e2947..86a454cfb080 100644
-> >>>> --- a/samples/bpf/Makefile.target
-> >>>> +++ b/samples/bpf/Makefile.target
-> >>>> @@ -41,7 +41,7 @@ _tprogc_flags   = $(TPROGS_CFLAGS) \
-> >>>>                   $(TPROGCFLAGS_$(basetarget).o)
-> >>>>
-> >>>>  # $(objtree)/$(obj) for including generated headers from checkin source
-> >>>> files
-> >>>
-> >>> [..]
-> >>>
-> >>>> -ifeq ($(KBUILD_EXTMOD),)
-> >>>> +ifneq ($(KBUILD_EXTMOD),)
-> >>>
-> >>> This parts seems to be copy-pasted all over the place in its 'ifeq'
-> >>> form. What is it doing and why is it needed?
-> >>>
-> >>>>  ifdef building_out_of_srctree
-> >>>>  _tprogc_flags   += -I $(objtree)/$(obj)
-> >>>>  endif
-> >>>> -- 
-> >>>> 2.34.1
-> 
-> Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
-> ---
-> 
-> Change from the original patch
-> 
-> - Change "-I$(src)/../../tools/include/uapi" to
-> "-I$(srctree)/tools/include/uapi"
-> 
->  samples/bpf/Makefile        | 10 +++++-----
->  samples/bpf/Makefile.target |  2 +-
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> index 615f24ebc49c..cfc960b3713a 100644
-> --- a/samples/bpf/Makefile
-> +++ b/samples/bpf/Makefile
-> @@ -341,10 +341,10 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
->  # Override includes for xdp_sample_user.o because $(srctree)/usr/include in
->  # TPROGS_CFLAGS causes conflicts
->  XDP_SAMPLE_CFLAGS += -Wall -O2 \
-> -		     -I$(src)/../../tools/include \
-> -		     -I$(src)/../../tools/include/uapi \
-> +		     -I$(srctree)/tools/include \
-> +		     -I$(srctree)/tools/include/uapi \
->  		     -I$(LIBBPF_INCLUDE) \
-> -		     -I$(src)/../../tools/testing/selftests/bpf
-> +		     -I$(srctree)/tools/testing/selftests/bpf
-> 
->  $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
->  $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
-> @@ -393,7 +393,7 @@ $(obj)/xdp_router_ipv4.bpf.o: $(obj)/xdp_sample.bpf.o
->  $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h
-> $(src)/xdp_sample_shared.h
->  	@echo "  CLANG-BPF " $@
->  	$(Q)$(CLANG) -g -O2 -target bpf -D__TARGET_ARCH_$(SRCARCH) \
-> -		-Wno-compare-distinct-pointer-types -I$(srctree)/include \
-> +		-Wno-compare-distinct-pointer-types -I$(obj) -I$(srctree)/include \
->  		-I$(srctree)/samples/bpf -I$(srctree)/tools/include \
->  		-I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES) \
->  		-c $(filter %.bpf.c,$^) -o $@
-> @@ -412,7 +412,7 @@ xdp_router_ipv4.skel.h-deps := xdp_router_ipv4.bpf.o
-> xdp_sample.bpf.o
-> 
->  LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.bpf.c,$(foreach
-> skel,$(LINKED_SKELS),$($(skel)-deps)))
-> 
-> -BPF_SRCS_LINKED := $(notdir $(wildcard $(src)/*.bpf.c))
-> +BPF_SRCS_LINKED := $(notdir $(wildcard $(srctree)/$(src)/*.bpf.c))
->  BPF_OBJS_LINKED := $(patsubst %.bpf.c,$(obj)/%.bpf.o, $(BPF_SRCS_LINKED))
->  BPF_SKELS_LINKED := $(addprefix $(obj)/,$(LINKED_SKELS))
-> 
-> diff --git a/samples/bpf/Makefile.target b/samples/bpf/Makefile.target
-> index 7621f55e2947..86a454cfb080 100644
-> --- a/samples/bpf/Makefile.target
-> +++ b/samples/bpf/Makefile.target
-> @@ -41,7 +41,7 @@ _tprogc_flags   = $(TPROGS_CFLAGS) \
->                   $(TPROGCFLAGS_$(basetarget).o)
-> 
->  # $(objtree)/$(obj) for including generated headers from checkin source
-> files
-
-[..]
-
-> -ifeq ($(KBUILD_EXTMOD),)
-> +ifneq ($(KBUILD_EXTMOD),)
->  ifdef building_out_of_srctree
->  _tprogc_flags   += -I $(objtree)/$(obj)
->  endif
-
-This question left undressed. Can you share more on why this change
-is needed? Because it looks like it's actually needed for M='' case.
-IOW, maybe we should add $(objtree)/$(obj) somewhere else?
+We should put Documentation/process/changes.rst here (or whatever
+the correct path). The tooling that generates html from rst will
+put a proper link.
 
