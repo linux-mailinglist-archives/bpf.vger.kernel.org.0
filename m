@@ -1,198 +1,196 @@
-Return-Path: <bpf+bounces-4606-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB24774D736
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 15:16:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 433DC74D7AC
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 15:33:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 278FA1C20AB1
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 13:16:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EF5C1C20AB0
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 13:33:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EB1F11CA0;
-	Mon, 10 Jul 2023 13:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468A8125BB;
+	Mon, 10 Jul 2023 13:32:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9B2C8F9
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 13:16:00 +0000 (UTC)
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254E1E7;
-	Mon, 10 Jul 2023 06:15:59 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fbc0314a7bso6961571e87.2;
-        Mon, 10 Jul 2023 06:15:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688994957; x=1691586957;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=r+L2gG891GPh66M0eDCMQ9aRXVxlZ1KRKtbZ7it2tCU=;
-        b=eWO0wziAXWJVXyVgrtJ/WXvnL1i9c0XR37cedncp/7gjGQR4+Qv/jaCEQuY1avf/zg
-         JAqgH9/0Aqp0RAS+pE2QQM6QuxBkhk4ReH3Eff6SMFay5KZusft5UShfuUy93tP+TkWA
-         yxJjC+IescEurMzYNRASleuxPC0Y7PIiAEX0u8J+eL2NjDvp6GR2LCpzWPAjJM883SCp
-         iICcpB4ZcOyGN0YWzVJKjRQCH5waAvKwIV3dcgQVqBV2cljirSttA4drN1K5porSJM9B
-         CJjzM58rfoNga3CbQFVInoAkEBF9cRkoFIxCYvhY0sM+tQKhwqnxKYUBSREp9q4ExHSQ
-         vwrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688994957; x=1691586957;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=r+L2gG891GPh66M0eDCMQ9aRXVxlZ1KRKtbZ7it2tCU=;
-        b=UfgPEwGoS+O/ZdX6K21kTTeQ73JN7En5otVcdyyMOtbUapVs9xv6qjx5mw5yEjt+ag
-         yBv8GM2tU8xrW0O6SaKOcb9OwYfUarIcfWGjwkOc2CyIYnDVzVViB6JygyLXp+K9qoVT
-         pqE8gGUs5/OulLWoIZUAWZRYCwgV03EwZ5EXrnHZ4pyCd1YTFoZTVf9xa9+2JnbVJkAR
-         QP43rP1MLXa0693BUfIlhwpPKZ5vFnwmEz2FeFyQIIyIyToFOnQq3V0DkXnLBWlZEaTA
-         perXvisQ/+swkWKSq99QxBB6yT4mgdZw1CoCY1Bh67l4MVy8U6SUCmrsLddimdQ0hkzo
-         OtqQ==
-X-Gm-Message-State: ABy/qLYXAIE9130Rfu5dSuzCM0S9eJbrTheukwwD/vAeSXKTBRFq04WH
-	Ct4TALPuwiMP4SHGy9e2OgM=
-X-Google-Smtp-Source: APBJJlH2p4Y9PIwGdr2rfQCKwmGmMwrQoDASOLTGFwsXesE1S98uBFZp3qce8qMPoeqWLa5eZsF52w==
-X-Received: by 2002:ac2:5f6a:0:b0:4f9:5426:6622 with SMTP id c10-20020ac25f6a000000b004f954266622mr9710319lfc.69.1688994956129;
-        Mon, 10 Jul 2023 06:15:56 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id ep14-20020a056512484e00b004fbdf1c85b5sm480650lfb.116.2023.07.10.06.15.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jul 2023 06:15:55 -0700 (PDT)
-Message-ID: <9250ec6c6a446cda93f9042d9868a8b36643c5f9.camel@gmail.com>
-Subject: Re: [PATCH dwarves] pahole: avoid adding same struct structure to
- two rb trees
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com, 
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
- mykolal@fb.com
-Date: Mon, 10 Jul 2023 16:15:54 +0300
-In-Reply-To: <ZKwEEd1Ercz8kkId@kernel.org>
-References: <20230525235949.2978377-1-eddyz87@gmail.com>
-	 <ZHnxsyjDaPQ7gGUP@kernel.org>
-	 <a15b83ebc750df7edd84b76d30a72c50e016e80f.camel@gmail.com>
-	 <ZHovRW1G0QZwBSOW@kernel.org>
-	 <c9c1e04b10f0a13a3af9e980d04ce08d3304ac3a.camel@gmail.com>
-	 <ZH3nalodXmup6pEF@kernel.org>
-	 <2b4372428cd1e56de3b79791160cdd3afdc7df6a.camel@gmail.com>
-	 <ZH4vZjaQnCGOzY/w@kernel.org> <ZKwEEd1Ercz8kkId@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646C411C93;
+	Mon, 10 Jul 2023 13:32:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7E3BC433C9;
+	Mon, 10 Jul 2023 13:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688995962;
+	bh=ypo6EEC/a10vTp0LME1omXwBE1UiKK/mReyAl6l5UHQ=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=J7Z7W1QfjLNRfgVQcSdKnYFRxtD+3fk+fVeHY9xuci1TKV61DCMVSYVvDG9kwuCBX
+	 g+QpzC0XDkSjeL9nV9+lGdPbp68Q96EXBiPlDNXBynN9HrAz4Y+E89ZYAnFm4gMFob
+	 SGwQAd+JWX6wsLqjr9V4UXCKsBkrO6/s1MT1FJcjDjR0RhV1HnH8M/padgIYfYI3iT
+	 50AKfuQ1Ba3eH+A3TeCdkft2SWR53hIVATzxttJnSld1dtaOLY6XNcMPkiIrdtp3w+
+	 UMgZy7XJf81pa8iQgs3v7vGfymFo80jGgmK2T6kIjmEHcqRaAvCUmLi8QnIHmVmDpT
+	 pZFJemBst7t+w==
+Message-ID: <c4eaff9389fe63ec4e29404ec0d1181b74935426.camel@kernel.org>
+Subject: Re: [PATCH v2 00/89] fs: new accessors for inode->i_ctime
+From: Jeff Layton <jlayton@kernel.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: jk@ozlabs.org, arnd@arndb.de, mpe@ellerman.id.au, npiggin@gmail.com, 
+ christophe.leroy@csgroup.eu, hca@linux.ibm.com, gor@linux.ibm.com, 
+ agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, 
+ gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+ maco@android.com,  joel@joelfernandes.org, cmllamas@google.com,
+ surenb@google.com,  dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
+ leon@kernel.org,  bwarrum@linux.ibm.com, rituagar@linux.ibm.com,
+ ericvh@kernel.org, lucho@ionkov.net,  asmadeus@codewreck.org,
+ linux_oss@crudebyte.com, dsterba@suse.com,  dhowells@redhat.com,
+ marc.dionne@auristor.com, viro@zeniv.linux.org.uk,  raven@themaw.net,
+ luisbg@kernel.org, salah.triki@gmail.com,  aivazian.tigran@gmail.com,
+ ebiederm@xmission.com, keescook@chromium.org,  clm@fb.com,
+ josef@toxicpanda.com, xiubli@redhat.com, idryomov@gmail.com, 
+ jaharkes@cs.cmu.edu, coda@cs.cmu.edu, jlbec@evilplan.org, hch@lst.de, 
+ nico@fluxnic.net, rafael@kernel.org, code@tyhicks.com, ardb@kernel.org, 
+ xiang@kernel.org, chao@kernel.org, huyue2@coolpad.com,
+ jefflexu@linux.alibaba.com,  linkinjeon@kernel.org, sj1557.seo@samsung.com,
+ jack@suse.com, tytso@mit.edu,  adilger.kernel@dilger.ca,
+ jaegeuk@kernel.org, hirofumi@mail.parknet.co.jp,  miklos@szeredi.hu,
+ rpeterso@redhat.com, agruenba@redhat.com, richard@nod.at, 
+ anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, 
+ mikulas@artax.karlin.mff.cuni.cz, mike.kravetz@oracle.com,
+ muchun.song@linux.dev,  dwmw2@infradead.org, shaggy@kernel.org,
+ tj@kernel.org,  trond.myklebust@hammerspace.com, anna@kernel.org,
+ chuck.lever@oracle.com,  neilb@suse.de, kolga@netapp.com,
+ Dai.Ngo@oracle.com, tom@talpey.com,  konishi.ryusuke@gmail.com,
+ anton@tuxera.com,  almaz.alexandrovich@paragon-software.com,
+ mark@fasheh.com,  joseph.qi@linux.alibaba.com, me@bobcopeland.com,
+ hubcap@omnibond.com,  martin@omnibond.com, amir73il@gmail.com,
+ mcgrof@kernel.org, yzaikin@google.com,  tony.luck@intel.com,
+ gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,  pc@manguebit.com,
+ lsahlber@redhat.com, sprasad@microsoft.com,  senozhatsky@chromium.org,
+ phillip@squashfs.org.uk, rostedt@goodmis.org,  mhiramat@kernel.org,
+ dushistov@mail.ru, hdegoede@redhat.com, djwong@kernel.org, 
+ dlemoal@kernel.org, naohiro.aota@wdc.com, jth@kernel.org, ast@kernel.org, 
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org,  yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com,  haoluo@google.com, jolsa@kernel.org, hughd@google.com,
+ akpm@linux-foundation.org,  davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com,  john.johansen@canonical.com,
+ paul@paul-moore.com, jmorris@namei.org,  serge@hallyn.com,
+ stephen.smalley.work@gmail.com, eparis@parisplace.org,  jgross@suse.com,
+ stern@rowland.harvard.edu, lrh2000@pku.edu.cn, 
+ sebastian.reichel@collabora.com, wsa+renesas@sang-engineering.com, 
+ quic_ugoswami@quicinc.com, quic_linyyuan@quicinc.com, john@keeping.me.uk, 
+ error27@gmail.com, quic_uaggarwa@quicinc.com, hayama@lineo.co.jp,
+ jomajm@gmail.com,  axboe@kernel.dk, dhavale@google.com,
+ dchinner@redhat.com, hannes@cmpxchg.org,  zhangpeng362@huawei.com,
+ slava@dubeyko.com, gargaditya08@live.com, 
+ penguin-kernel@I-love.SAKURA.ne.jp, yifeliu@cs.stonybrook.edu, 
+ madkar@cs.stonybrook.edu, ezk@cs.stonybrook.edu, yuzhe@nfschina.com, 
+ willy@infradead.org, okanatov@gmail.com, jeffxu@chromium.org,
+ linux@treblig.org,  mirimmad17@gmail.com, yijiangshan@kylinos.cn,
+ yang.yang29@zte.com.cn,  xu.xin16@zte.com.cn, chengzhihao1@huawei.com,
+ shr@devkernel.io,  Liam.Howlett@Oracle.com, adobriyan@gmail.com,
+ chi.minghao@zte.com.cn,  roberto.sassu@huawei.com, linuszeng@tencent.com,
+ bvanassche@acm.org,  zohar@linux.ibm.com, yi.zhang@huawei.com,
+ trix@redhat.com, fmdefrancesco@gmail.com,  ebiggers@google.com,
+ princekumarmaurya06@gmail.com, chenzhongjin@huawei.com,  riel@surriel.com,
+ shaozhengchao@huawei.com, jingyuwang_vip@163.com, 
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, 
+ linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org,  linux-afs@lists.infradead.org,
+ autofs@vger.kernel.org, linux-mm@kvack.org,  linux-btrfs@vger.kernel.org,
+ ceph-devel@vger.kernel.org,  codalist@coda.cs.cmu.edu,
+ ecryptfs@vger.kernel.org, linux-efi@vger.kernel.org, 
+ linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
+ linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com, 
+ linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, 
+ jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, 
+ linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net, 
+ ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
+ linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, 
+ linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org, 
+ reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org, 
+ samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org, 
+ linux-xfs@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+ apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
+ selinux@vger.kernel.org
+Date: Mon, 10 Jul 2023 09:32:23 -0400
+In-Reply-To: <20230710-zudem-entkam-bb508cbd8c78@brauner>
+References: <20230705185812.579118-1-jlayton@kernel.org>
+	 <5e40891f6423feb5b68f025e31f26e9a50ae9390.camel@kernel.org>
+	 <20230710-zudem-entkam-bb508cbd8c78@brauner>
+Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Mon, 2023-07-10 at 10:13 -0300, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Jun 05, 2023 at 03:54:30PM -0300, Arnaldo Carvalho de Melo escrev=
-eu:
-> > Em Mon, Jun 05, 2023 at 05:39:19PM +0300, Eduard Zingerman escreveu:
-> > > On Mon, 2023-06-05 at 10:47 -0300, Arnaldo Carvalho de Melo wrote:
-> > > > Em Fri, Jun 02, 2023 at 09:08:51PM +0300, Eduard Zingerman escreveu=
-:
-> > > > > On Fri, 2023-06-02 at 15:04 -0300, Arnaldo Carvalho de Melo wrote=
-:
-> > > > > > Em Fri, Jun 02, 2023 at 04:52:40PM +0300, Eduard Zingerman escr=
-eveu:
-> > > > > > > Right, you are correct.
-> > > > > > > The 'structures__tree =3D RB_ROOT' part is still necessary, t=
-hough.
-> > > > > > > If you are ok with overall structure of the patch I can resen=
-d it w/o bzero().
-> > > >=20
-> > > > > > Humm, so basically this boils down to the following patch?
-> > > >=20
-> > > > > > +++ b/pahole.c
-> > > > > > @@ -674,7 +674,12 @@ static void print_ordered_classes(void)
-> > > > > >  		__print_ordered_classes(&structures__tree);
-> > > > > >  	} else {
-> > > > > >  		struct rb_root resorted =3D RB_ROOT;
-> > > > > > -
-> > > > > > +#ifdef DEBUG_CHECK_LEAKS
-> > > > > > +		// We'll delete structures from structures__tree, since we'r=
-e
-> > > > > > +		// adding them to ther resorted list, better not keep
-> > > > > > +		// references there.
-> > > > > > +		structures__tree =3D RB_ROOT;
-> > > > > > +#endif
-> > > > =20
-> > > > > But __structures__delete iterates over structures__tree,
-> > > > > so it won't delete anything if code like this, right?
-> > > > =20
-> > > > > >  		resort_classes(&resorted, &structures__list);
-> > > > > >  		__print_ordered_classes(&resorted);
-> > > > > >  	}
-> > > >=20
-> > > > Yeah, I tried to be minimalistic, my version avoids the crash, but
-> > > > defeats the DEBUG_CHECK_LEAKS purpose :-\
-> > > >=20
-> > > > How about:
-> > > >=20
-> > > > diff --git a/pahole.c b/pahole.c
-> > > > index 6fc4ed6a721b97ab..e843999fde2a8a37 100644
-> > > > --- a/pahole.c
-> > > > +++ b/pahole.c
-> > > > @@ -673,10 +673,10 @@ static void print_ordered_classes(void)
-> > > >  	if (!need_resort) {
-> > > >  		__print_ordered_classes(&structures__tree);
-> > > >  	} else {
-> > > > -		struct rb_root resorted =3D RB_ROOT;
-> > > > +		structures__tree =3D RB_ROOT;
-> > > > =20
-> > > > -		resort_classes(&resorted, &structures__list);
-> > > > -		__print_ordered_classes(&resorted);
-> > > > +		resort_classes(&structures__tree, &structures__list);
-> > > > +		__print_ordered_classes(&structures__tree);
-> > > >  	}
-> > > >  }
-> > > > =20
+On Mon, 2023-07-10 at 14:35 +0200, Christian Brauner wrote:
+> On Fri, Jul 07, 2023 at 08:42:31AM -0400, Jeff Layton wrote:
+> > On Wed, 2023-07-05 at 14:58 -0400, Jeff Layton wrote:
+> > > v2:
+> > > - prepend patches to add missing ctime updates
+> > > - add simple_rename_timestamp helper function
+> > > - rename ctime accessor functions as inode_get_ctime/inode_set_ctime_=
+*
+> > > - drop individual inode_ctime_set_{sec,nsec} helpers
 > > >=20
-> > > That would work, but I still think that there is no need to replicate=
- call
->=20
-> I'm going thru the pile of stuff from before my vacations, can I take
-> the above as an Acked-by in addition to your Reported-by?
-
-Hi Arnaldo,
-
-Sure, no problem.
-
->=20
-> - Arnaldo
->=20
-> > > to __print_ordered_classes, as long as the same list is passed as an =
-argument,
-> > > e.g.:
-> > >=20
-> > > @@ -670,14 +671,11 @@ static void resort_classes(struct rb_root *reso=
-rted, struct list_head *head)
-> > > =20
-> > >  static void print_ordered_classes(void)
-> > >  {
-> > > -       if (!need_resort) {
-> > > -               __print_ordered_classes(&structures__tree);
-> > > -       } else {
-> > > -               struct rb_root resorted =3D RB_ROOT;
-> > > -
-> > > -               resort_classes(&resorted, &structures__list);
-> > > -               __print_ordered_classes(&resorted);
-> > > +       if (need_resort) {
-> > > +               structures__tree =3D RB_ROOT;
-> > > +               resort_classes(&structures__tree, &structures__list);
-> > >         }
-> > > +       __print_ordered_classes(&structures__tree);
-> > >  }
 > >=20
-> > Right, that can be done as a follow up patch, further simplifying the
-> > code.
+> > After review by Jan and others, and Jan's ext4 rework, the diff on top
+> > of the series I posted a couple of days ago is below. I don't really
+> > want to spam everyone with another ~100 patch v3 series, but I can if
+> > you think that's best.
 > >=20
-> > I'm just trying to have each patch as small as possible.
+> > Christian, what would you like me to do here?
+>=20
+> I picked up the series from the list and folded the fixups you posted
+> here into the respective fs conversion patches. I hope that helps you
+> avoid a resend. You should have received a separate "thank you" mail for
+> all of this.
+>=20
+> To each patch that I folded one of the fixlets from below into I added a
+> git note that records a link to your mail here and the respective patch
+> hunk from this mail that I folded into the patch. git.kernel.org will
+> show notes by default. For example,
+> https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=3Dv=
+fs.ctime&id=3D8b0e3c2e99004609a16ba145bcbdfdddb78e220e
+> should show you the note I added. You can also fetch them via
+> git fetch $remote refs/notes/*:refs/notes/*
+> (You probably know that ofc but jic.) if you're interested.
+>=20
+> Based on v6.5-rc1 as of today.
+>=20
 
+Many thanks!!! I'll get to work rebasing the multigrain timestamp series
+on top of that.
+
+> Btw, both b4 and patchwork somehow treat the series in weird was.
+> IOW, based on the message id of the cover letter I was able to pull most
+> messages except for:
+>=20
+> [07/92] fs: add ctime accessors infrastructure
+> [08/92] fs: new helper: simple_rename_timestamp
+> [92/92] fs: rename i_ctime field to __i_ctime
+>=20
+> which I pulled in separately. Not sure what the cause of=A0
+>=20
+> this is.
+
+Good to know.
+
+I ended up doing the send in two phases: one for the cover letter and
+infrastructure patches that went to everyone, and one for the per-
+subsystem patches that went do individual maintainers and lists.
+
+I suspect that screwed up the message IDs somehow. Hopefully I won't
+need to do a posting like that again soon, but I'll pay closer attention
+to the message id handling next time.
+
+Thanks again!
+--=20
+Jeff Layton <jlayton@kernel.org>
 
