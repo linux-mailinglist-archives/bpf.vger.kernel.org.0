@@ -1,73 +1,75 @@
-Return-Path: <bpf+bounces-4613-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4614-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED34174DBD2
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 19:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1967974DC19
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 19:18:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 293831C20B20
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 17:00:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49D5E1C20B28
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 17:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9537C13AD7;
-	Mon, 10 Jul 2023 16:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDAED13AFC;
+	Mon, 10 Jul 2023 17:18:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B4C107B4
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 16:59:57 +0000 (UTC)
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBED6BB
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 09:59:55 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c850943cf9aso1440711276.1
-        for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 09:59:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4DA0107B4
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 17:18:25 +0000 (UTC)
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E5F120
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 10:18:24 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b89f6463deso78241815ad.1
+        for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 10:18:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689008395; x=1691600395;
+        d=google.com; s=20221208; t=1689009503; x=1691601503;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8IXAb3iaaLismNCSvGaug+VhwaghR+0TR8PTy1djqGg=;
-        b=5MprCN+26L/J5fITpFQKx78/NUJRTqonZMU37iNDKshPesJ+QNzukYoAK+iYlQKLzm
-         MF4Ek3KtXWyI5ZDB6Ka5AQ0drhW+in1sRizb+aP//3x1Nejs7cAkdYFXpoY1X9SqknI3
-         fDXlRwKWEZWKrHinViSBD/NPqNb0JX2QhZjwYS/VY/vdYA7uslXEHTZO2knRHnZjAoAe
-         paVClNmS2g11XxCyGyMUShNuDMrPf1FLABOAs5JzuKyCzhienA0uQ5vFHEuDI4l3qvgb
-         /tHJO7WB4QcfynapRn4Ah3zaJV2uYQ+HQLbWGYwldByjiFUe7j5sOE/W0zW7jkTSLOQ0
-         Zpgg==
+        bh=fd/jFas9/ddzumuFsCZwyFQrGgcdAN+2PgNZn7yYwbs=;
+        b=HZHn1KNnwtlwZlFd6Ii4kJHwRN+NGBxoXT1n1dT81haL6YarEviPWZbKtjhzZSnjN7
+         erHlPXj+HCaoPSzrPsj9vsQMctRr4jEIpDf1CjgVEwXsX5fwNiH2UBQohG3NM8PEZBqh
+         EHEJMv9zTh0sOz9A7pTORVZx/Alp3jGIFoH22wRA33EKvfXSlBWCWxL5RIR4el5h/PFV
+         l3C+nQO67xAIUmEj9H4JuCm4LRw284EI70aORw3vvNVoQZmRSGjIZkkWXCsQ2HyZyZRn
+         bpO+jJxinv3Ud4CMSG4Dc90Prq4l81iqk1l5SNrtNghxI2KD8ORmcWFHjBUB/pKToEwM
+         XfFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689008395; x=1691600395;
+        d=1e100.net; s=20221208; t=1689009503; x=1691601503;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8IXAb3iaaLismNCSvGaug+VhwaghR+0TR8PTy1djqGg=;
-        b=JlE4IZjvHWwSjskT1VElYzt1CYYcTNkafDZ3X9kNVUVZQYnVt8/g7+IkHzym1nx7dL
-         t7I9o1hbBut1q10pytGde0UhAhgos+VUc4lB4wVGlcQRsYKF8V5XjYuljjhbwJwZcMTP
-         450MNn90A9tu4MEr387Jo8GPtKbjja4nsG+JvHYbMecJbf3Eg+oAPoNgGeTorlyz0CcQ
-         cJ8buUj91cHh9++IIUOUcXJU8J//VYUjXfjWBPY5TZfWKTTI7pw9JfW0oaD6wATtL7Y+
-         a44WRhJzCPH8VKMyyuqCWpsmFzddQ9vl4QYm3GBRzF4BbDVX6w7C9s36+lCgHQLuMZQN
-         eAzA==
-X-Gm-Message-State: ABy/qLZEXF7RLZWTUbfrFdYQeHQAeYc3yhRLRuYkrKRGGRie7NtH3Edv
-	akgaxLGvhk0i9Ml2QgFOovbC+5I=
-X-Google-Smtp-Source: APBJJlEZ2bQH4ZmyLLMvXPXDe3CW48r+mNOmyL0ouNcy2GZBNv44m5kvp56ifCTi24fD1u92bFUJp34=
+        bh=fd/jFas9/ddzumuFsCZwyFQrGgcdAN+2PgNZn7yYwbs=;
+        b=hOhnh2QQLV7FVypJV4uxyCUqxQqRfRaSDz0MjjO0GtnysOahNT0PJIV+YaOprYiEF/
+         jWTKAGtFE7wpQ4GHEtelhkKUGwqq/EUjSzYLviDvvkgHlBnu3G2hRzBIxeuDSb1EEFpd
+         w3OIi/GOdzpR55kF/N1HkhSUUMIEelNmAWgr6nuE/F+q43R9K1loKzqNHuSNIdLPk7nn
+         x4GYhSaFJrdcfrc2dFk47TRdu1lEZMOx+Awp/FtnrtA6AjFUy1cWk7NjrKJDtqdQm+vi
+         zM2imZVZZ6d7NfVXtKw+HZFcn4z44zTMRGUP8uMlhPLpBvt8r1iaa34V4Eun5OL/t+Ji
+         UK5Q==
+X-Gm-Message-State: ABy/qLaFfXge6VVwvi4iLBHNp69px4ojRaCa7fXtcrT0vDtbLa12+57p
+	nX3B7sCNk+TMLkC95iwvcq2kuaA=
+X-Google-Smtp-Source: APBJJlHvVrDz1g2oRDm9FKijVnJKD+Wp8/adNeEDp2lT19t1t4+ySQ4RmAmWW2rMUH0hpqVW5eLRl4Y=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a5b:749:0:b0:c11:d5a9:d25f with SMTP id
- s9-20020a5b0749000000b00c11d5a9d25fmr75899ybq.0.1689008394977; Mon, 10 Jul
- 2023 09:59:54 -0700 (PDT)
-Date: Mon, 10 Jul 2023 09:59:53 -0700
-In-Reply-To: <20230709025912.3837-2-laoar.shao@gmail.com>
+ (user=sdf job=sendgmr) by 2002:a17:902:e9d4:b0:1a2:3436:4119 with SMTP id
+ 20-20020a170902e9d400b001a234364119mr12697223plk.8.1689009503485; Mon, 10 Jul
+ 2023 10:18:23 -0700 (PDT)
+Date: Mon, 10 Jul 2023 10:18:21 -0700
+In-Reply-To: <2b48be65-5f63-4658-38cb-03c00c10fdf3@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20230709025912.3837-1-laoar.shao@gmail.com> <20230709025912.3837-2-laoar.shao@gmail.com>
-Message-ID: <ZKw5CdD/TMnPHFQC@google.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Introduce BTF_TYPE_SAFE_TRUSTED_UNION
+References: <67bec6a9-af59-d6f9-2630-17280479a1f7@gmail.com>
+ <ZKcDdIYOUQuPP5Px@google.com> <51aa1dd7-86d0-ed08-1142-f229513ad316@gmail.com>
+ <ZKhC9G5ouGOviSOG@google.com> <2b48be65-5f63-4658-38cb-03c00c10fdf3@gmail.com>
+Message-ID: <ZKw9XQGOza6qGDLf@google.com>
+Subject: Re: [PATCH v1] samples/bpf: Fix build out of source tree
 From: Stanislav Fomichev <sdf@google.com>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
+To: Anh Tuan Phan <tuananhlfc@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, 
+	linux-kernel-mentees@lists.linuxfoundation.org
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -76,98 +78,182 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 07/09, Yafang Shao wrote:
-> When we are verifying a field in a union, we may unexpectedly verify
-> another field which has the same offset in this union. So in such case,
-> we should annotate that field as PTR_UNTRUSTED. However, in some cases
-> we are sure some fields in a union is safe and then we can add them into
-> BTF_TYPE_SAFE_TRUSTED_UNION allow list.
-> 
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  kernel/bpf/btf.c      | 20 +++++++++-----------
->  kernel/bpf/verifier.c | 21 +++++++++++++++++++++
->  2 files changed, 30 insertions(+), 11 deletions(-)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 3dd47451f097..fae6fc24a845 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6133,7 +6133,6 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
->  	const char *tname, *mname, *tag_value;
->  	u32 vlen, elem_id, mid;
->  
-> -	*flag = 0;
->  again:
->  	if (btf_type_is_modifier(t))
->  		t = btf_type_skip_modifiers(btf, t->type, NULL);
-> @@ -6144,6 +6143,14 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
->  	}
->  
->  	vlen = btf_type_vlen(t);
-> +	if (BTF_INFO_KIND(t->info) == BTF_KIND_UNION && vlen != 1 && !(*flag & PTR_UNTRUSTED))
-> +		/*
-> +		 * walking unions yields untrusted pointers
-> +		 * with exception of __bpf_md_ptr and other
-> +		 * unions with a single member
-> +		 */
-> +		*flag |= PTR_UNTRUSTED;
-> +
->  	if (off + size > t->size) {
->  		/* If the last element is a variable size array, we may
->  		 * need to relax the rule.
-> @@ -6304,15 +6311,6 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
->  		 * of this field or inside of this struct
->  		 */
->  		if (btf_type_is_struct(mtype)) {
-> -			if (BTF_INFO_KIND(mtype->info) == BTF_KIND_UNION &&
-> -			    btf_type_vlen(mtype) != 1)
-> -				/*
-> -				 * walking unions yields untrusted pointers
-> -				 * with exception of __bpf_md_ptr and other
-> -				 * unions with a single member
-> -				 */
-> -				*flag |= PTR_UNTRUSTED;
-> -
->  			/* our field must be inside that union or struct */
->  			t = mtype;
->  
-> @@ -6478,7 +6476,7 @@ bool btf_struct_ids_match(struct bpf_verifier_log *log,
->  			  bool strict)
->  {
->  	const struct btf_type *type;
-> -	enum bpf_type_flag flag;
-> +	enum bpf_type_flag flag = 0;
->  	int err;
->  
->  	/* Are we already done? */
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 11e54dd8b6dd..1fb0a64f5bce 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5847,6 +5847,7 @@ static int bpf_map_direct_read(struct bpf_map *map, int off, int size, u64 *val)
->  #define BTF_TYPE_SAFE_RCU(__type)  __PASTE(__type, __safe_rcu)
->  #define BTF_TYPE_SAFE_RCU_OR_NULL(__type)  __PASTE(__type, __safe_rcu_or_null)
->  #define BTF_TYPE_SAFE_TRUSTED(__type)  __PASTE(__type, __safe_trusted)
-> +#define BTF_TYPE_SAFE_TRUSTED_UNION(__type)  __PASTE(__type, __safe_trusted_union)
->  
->  /*
->   * Allow list few fields as RCU trusted or full trusted.
-> @@ -5914,6 +5915,11 @@ BTF_TYPE_SAFE_TRUSTED(struct socket) {
->  	struct sock *sk;
->  };
->  
+On 07/09, Anh Tuan Phan wrote:
+> I updated the patch to reflect your suggestion. Thank you!
 
+In the future, can you please post a new one with v+1 instead of replying
+to the old one? Thx!
+
+> On 7/7/23 23:53, Stanislav Fomichev wrote:
+> > On 07/07, Anh Tuan Phan wrote:
+> >>
+> >>
+> >> On 7/7/23 01:09, Stanislav Fomichev wrote:
+> >>> On 07/06, Anh Tuan Phan wrote:
+> >>>> This commit fixes a few compilation issues when building out of source
+> >>>> tree. The command that I used to build samples/bpf:
+> >>>>
+> >>>> export KBUILD_OUTPUT=/tmp
+> >>>> make V=1 M=samples/bpf
+> >>>>
+> >>>> The compilation failed since it tried to find the header files in the
+> >>>> wrong places between output directory and source tree directory
+> >>>>
+> >>>> Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
+> >>>> ---
+> >>>>  samples/bpf/Makefile        | 8 ++++----
+> >>>>  samples/bpf/Makefile.target | 2 +-
+> >>>>  2 files changed, 5 insertions(+), 5 deletions(-)
+> >>>>
+> >>>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> >>>> index 615f24ebc49c..32469aaa82d5 100644
+> >>>> --- a/samples/bpf/Makefile
+> >>>> +++ b/samples/bpf/Makefile
+> >>>> @@ -341,10 +341,10 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
+> >>>>  # Override includes for xdp_sample_user.o because $(srctree)/usr/include in
+> >>>>  # TPROGS_CFLAGS causes conflicts
+> >>>>  XDP_SAMPLE_CFLAGS += -Wall -O2 \
+> >>>> -		     -I$(src)/../../tools/include \
+> >>>> +		     -I$(srctree)/tools/include \
+> >>>
+> >>> [..]
+> >>>
+> >>>>  		     -I$(src)/../../tools/include/uapi \
+> >>>
+> >>> Does this $(src) need to be changed as well?
+> >>
+> >> I think this line doesn't affect the build. I removed it and it still
+> >> compiles (after "make -C samples/bpf clean"). I guess xdp_sample_user.c
+> >> doesn't include any file in tools/include/uapi. Am I missing something
+> >> or should I remove this line?
+> > 
+> > You might have these headers installed on your system already if
+> > it compiles without this part. So I'd keep this part but do
+> > s/src/srctree/ (and remove ../..).
+> > 
+> >>>
+> >>>
+> >>>>  		     -I$(LIBBPF_INCLUDE) \
+> >>>> -		     -I$(src)/../../tools/testing/selftests/bpf
+> >>>> +		     -I$(srctree)/tools/testing/selftests/bpf
+> >>>>
+> >>>>  $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
+> >>>>  $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
+> >>>> @@ -393,7 +393,7 @@ $(obj)/xdp_router_ipv4.bpf.o: $(obj)/xdp_sample.bpf.o
+> >>>>  $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h
+> >>>> $(src)/xdp_sample_shared.h
+> >>>>  	@echo "  CLANG-BPF " $@
+> >>>>  	$(Q)$(CLANG) -g -O2 -target bpf -D__TARGET_ARCH_$(SRCARCH) \
+> >>>> -		-Wno-compare-distinct-pointer-types -I$(srctree)/include \
+> >>>> +		-Wno-compare-distinct-pointer-types -I$(obj) -I$(srctree)/include \
+> >>>>  		-I$(srctree)/samples/bpf -I$(srctree)/tools/include \
+> >>>>  		-I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES) \
+> >>>>  		-c $(filter %.bpf.c,$^) -o $@
+> >>>> @@ -412,7 +412,7 @@ xdp_router_ipv4.skel.h-deps := xdp_router_ipv4.bpf.o
+> >>>> xdp_sample.bpf.o
+> >>>>
+> >>>>  LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.bpf.c,$(foreach
+> >>>> skel,$(LINKED_SKELS),$($(skel)-deps)))
+> >>>>
+> >>>> -BPF_SRCS_LINKED := $(notdir $(wildcard $(src)/*.bpf.c))
+> >>>> +BPF_SRCS_LINKED := $(notdir $(wildcard $(srctree)/$(src)/*.bpf.c))
+> >>>>  BPF_OBJS_LINKED := $(patsubst %.bpf.c,$(obj)/%.bpf.o, $(BPF_SRCS_LINKED))
+> >>>>  BPF_SKELS_LINKED := $(addprefix $(obj)/,$(LINKED_SKELS))
+> >>>>
+> >>>> diff --git a/samples/bpf/Makefile.target b/samples/bpf/Makefile.target
+> >>>> index 7621f55e2947..86a454cfb080 100644
+> >>>> --- a/samples/bpf/Makefile.target
+> >>>> +++ b/samples/bpf/Makefile.target
+> >>>> @@ -41,7 +41,7 @@ _tprogc_flags   = $(TPROGS_CFLAGS) \
+> >>>>                   $(TPROGCFLAGS_$(basetarget).o)
+> >>>>
+> >>>>  # $(objtree)/$(obj) for including generated headers from checkin source
+> >>>> files
+> >>>
+> >>> [..]
+> >>>
+> >>>> -ifeq ($(KBUILD_EXTMOD),)
+> >>>> +ifneq ($(KBUILD_EXTMOD),)
+> >>>
+> >>> This parts seems to be copy-pasted all over the place in its 'ifeq'
+> >>> form. What is it doing and why is it needed?
+> >>>
+> >>>>  ifdef building_out_of_srctree
+> >>>>  _tprogc_flags   += -I $(objtree)/$(obj)
+> >>>>  endif
+> >>>> -- 
+> >>>> 2.34.1
+> 
+> Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
+> ---
+> 
+> Change from the original patch
+> 
+> - Change "-I$(src)/../../tools/include/uapi" to
+> "-I$(srctree)/tools/include/uapi"
+> 
+>  samples/bpf/Makefile        | 10 +++++-----
+>  samples/bpf/Makefile.target |  2 +-
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> index 615f24ebc49c..cfc960b3713a 100644
+> --- a/samples/bpf/Makefile
+> +++ b/samples/bpf/Makefile
+> @@ -341,10 +341,10 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
+>  # Override includes for xdp_sample_user.o because $(srctree)/usr/include in
+>  # TPROGS_CFLAGS causes conflicts
+>  XDP_SAMPLE_CFLAGS += -Wall -O2 \
+> -		     -I$(src)/../../tools/include \
+> -		     -I$(src)/../../tools/include/uapi \
+> +		     -I$(srctree)/tools/include \
+> +		     -I$(srctree)/tools/include/uapi \
+>  		     -I$(LIBBPF_INCLUDE) \
+> -		     -I$(src)/../../tools/testing/selftests/bpf
+> +		     -I$(srctree)/tools/testing/selftests/bpf
+> 
+>  $(obj)/$(XDP_SAMPLE): TPROGS_CFLAGS = $(XDP_SAMPLE_CFLAGS)
+>  $(obj)/$(XDP_SAMPLE): $(src)/xdp_sample_user.h $(src)/xdp_sample_shared.h
+> @@ -393,7 +393,7 @@ $(obj)/xdp_router_ipv4.bpf.o: $(obj)/xdp_sample.bpf.o
+>  $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h
+> $(src)/xdp_sample_shared.h
+>  	@echo "  CLANG-BPF " $@
+>  	$(Q)$(CLANG) -g -O2 -target bpf -D__TARGET_ARCH_$(SRCARCH) \
+> -		-Wno-compare-distinct-pointer-types -I$(srctree)/include \
+> +		-Wno-compare-distinct-pointer-types -I$(obj) -I$(srctree)/include \
+>  		-I$(srctree)/samples/bpf -I$(srctree)/tools/include \
+>  		-I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES) \
+>  		-c $(filter %.bpf.c,$^) -o $@
+> @@ -412,7 +412,7 @@ xdp_router_ipv4.skel.h-deps := xdp_router_ipv4.bpf.o
+> xdp_sample.bpf.o
+> 
+>  LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.bpf.c,$(foreach
+> skel,$(LINKED_SKELS),$($(skel)-deps)))
+> 
+> -BPF_SRCS_LINKED := $(notdir $(wildcard $(src)/*.bpf.c))
+> +BPF_SRCS_LINKED := $(notdir $(wildcard $(srctree)/$(src)/*.bpf.c))
+>  BPF_OBJS_LINKED := $(patsubst %.bpf.c,$(obj)/%.bpf.o, $(BPF_SRCS_LINKED))
+>  BPF_SKELS_LINKED := $(addprefix $(obj)/,$(LINKED_SKELS))
+> 
+> diff --git a/samples/bpf/Makefile.target b/samples/bpf/Makefile.target
+> index 7621f55e2947..86a454cfb080 100644
+> --- a/samples/bpf/Makefile.target
+> +++ b/samples/bpf/Makefile.target
+> @@ -41,7 +41,7 @@ _tprogc_flags   = $(TPROGS_CFLAGS) \
+>                   $(TPROGCFLAGS_$(basetarget).o)
+> 
+>  # $(objtree)/$(obj) for including generated headers from checkin source
+> files
 
 [..]
 
-> +/* union trusted: these fields are trusted even in a uion */
-> +BTF_TYPE_SAFE_TRUSTED_UNION(struct sk_buff) {
-> +	struct sock *sk;
-> +};
+> -ifeq ($(KBUILD_EXTMOD),)
+> +ifneq ($(KBUILD_EXTMOD),)
+>  ifdef building_out_of_srctree
+>  _tprogc_flags   += -I $(objtree)/$(obj)
+>  endif
 
-Does it say that sk member of sk_buff is always dereferencable?
-Why is it universally safe?
-In general, I don't really understand why it's safe to statically
-mark the members this way. Shouldn't it depend on the context?
+This question left undressed. Can you share more on why this change
+is needed? Because it looks like it's actually needed for M='' case.
+IOW, maybe we should add $(objtree)/$(obj) somewhere else?
 
