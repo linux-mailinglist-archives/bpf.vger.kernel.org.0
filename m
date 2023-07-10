@@ -1,156 +1,543 @@
-Return-Path: <bpf+bounces-4588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4589-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880C174D297
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 12:02:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B77F74D38B
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 12:31:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B90391C209FF
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 10:02:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E0521C20749
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 10:31:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C59C111BB;
-	Mon, 10 Jul 2023 10:00:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59361125A1;
+	Mon, 10 Jul 2023 10:30:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399EA11198;
-	Mon, 10 Jul 2023 10:00:15 +0000 (UTC)
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2062e.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5a::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB901738;
-	Mon, 10 Jul 2023 02:59:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mcy9u7UJpcw1Wcc8AYztjwbq04at+4bQFWdfcJTa1IYukGAV8pEhVSgNVD9iW19u54h+zXO0z1VeO/tmQ7ZNehwJhCqkSrJapVBPyzCY1CiTVtuDlgsAT0dH/hVFMHf7TLMiV/0/TZd+VoMfeG0Qlqt1q3S5xFziNX/U6saj6e1vtRKz1IXj6h7Q27eUqcmbVNPLDiRrd9VQRTHISh8kCP07qNAMEhobfQ2o/tDQGGnEbu6DCkQzGsDO2K68nAkrc2MhO21Y/l+gaBpY4HkGL/l1D2RLL30yh5+3DFNSrWheiH1F4Lo8/Ut/tlfuJ+KIt7Y3gmf5uILzrB64Oigi2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d0oHsOuXgvTMjpbxKtqjrGPAMf2I/9i3elpw5czoUwE=;
- b=YHkUWHC82zNvHxVBG/0IMvfr+Y5lmf6gAg/A3japYniUF/b+wXHPX01KDxgDYeRQQvQNC9mkairnBi+6mq5Gwm7vY2ElzL6R6CbCc5YGq6dqPTws8uL5mPpy4hBOOb+O00s67g3l5E4ae7Mx/iws5rA/9O5DoClayCbltjQTokV/dRNbfL/WmPc9FFOPNG54yl/TZdE39viUknIA55IWoG4ooQfAaEuCkPJqBXKsWpZ5/OOCs1pC8Ty0OLAgrxjq2hFpwBx1XhLwijnq+AvX89zKI+ul5FFqCZXl8PyrzUQ3j+JD/gK/fjawkuo/2LChTV1KFrPgzO0C9LtXWN2gzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d0oHsOuXgvTMjpbxKtqjrGPAMf2I/9i3elpw5czoUwE=;
- b=nBF++mE5KTaUyulgXHjJ3gfyrnm8Xzr4309190Dv/bTtV3aCrKaeUNeFmiwdXtBzELbvof/87EgQExxsR8LOqJPS1uTAR5dRjoq/dzPqcJag89hMpVzr0yXvM4ZA87ojB/z69exyfoZqXdJTy+QyPKJs9ubA3bdfYuP7cFNVphmZUAU6SKLT1k8KnDX0uCdjsXRaeD0Z3K6FnByp7cfdzYtQhICxNE2gBDrWVVnBhnWPDFsks+ZCdjOSko8Mij0v+3o1yg04ioJichkQDJ29nsaKdVGWEjjDjEKdgyjrnCsNLhkoDtHGAMAsKXSNY5ZkQWO2fkHd5U42T7l/xSVdOw==
-Received: from DM6PR02CA0113.namprd02.prod.outlook.com (2603:10b6:5:1b4::15)
- by CH3PR12MB7764.namprd12.prod.outlook.com (2603:10b6:610:14e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.31; Mon, 10 Jul
- 2023 09:59:41 +0000
-Received: from DM6NAM11FT090.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:1b4:cafe::9f) by DM6PR02CA0113.outlook.office365.com
- (2603:10b6:5:1b4::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.31 via Frontend
- Transport; Mon, 10 Jul 2023 09:59:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- DM6NAM11FT090.mail.protection.outlook.com (10.13.172.184) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.18 via Frontend Transport; Mon, 10 Jul 2023 09:59:40 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 10 Jul 2023
- 02:59:28 -0700
-Received: from nvidia.com (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Mon, 10 Jul
- 2023 02:59:24 -0700
-From: Gavin Li <gavinl@nvidia.com>
-To: <mst@redhat.com>, <jasowang@redhat.com>, <xuanzhuo@linux.alibaba.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<hawk@kernel.org>, <john.fastabend@gmail.com>, <jiri@nvidia.com>,
-	<dtatulea@nvidia.com>
-CC: <virtualization@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: [RESEND PATCH net-next-mlx5 V1 4/4] virtio_net: enable per queue interrupt coalesce feature
-Date: Mon, 10 Jul 2023 12:58:50 +0300
-Message-ID: <20230710095850.2853-5-gavinl@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230710095850.2853-1-gavinl@nvidia.com>
-References: <20230710095850.2853-1-gavinl@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB07E111BD;
+	Mon, 10 Jul 2023 10:30:07 +0000 (UTC)
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9E510D4;
+	Mon, 10 Jul 2023 03:29:38 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vn1bm.w_1688984957;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vn1bm.w_1688984957)
+          by smtp.aliyun-inc.com;
+          Mon, 10 Jul 2023 18:29:18 +0800
+Message-ID: <1688984310.480753-2-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v11 10/10] virtio_net: merge dma operation for one page
+Date: Mon, 10 Jul 2023 18:18:30 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux-foundation.org,
+ Jason Wang <jasowang@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ netdev@vger.kernel.org,
+ bpf@vger.kernel.org,
+ Christoph Hellwig <hch@infradead.org>
+References: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
+ <20230710034237.12391-11-xuanzhuo@linux.alibaba.com>
+ <20230710051818-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20230710051818-mutt-send-email-mst@kernel.org>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT090:EE_|CH3PR12MB7764:EE_
-X-MS-Office365-Filtering-Correlation-Id: d53efa6a-d020-429a-f737-08db812c6110
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	JbT08VsOq4mFyX9jfxHQ25yNawu71OEfVbEXK6WbjFJRoOdTyr3tahV5ES8B9tKI4wtBwXynC27usQDGWZZsnxQYiDorIDeS+78wcAe5WZqGa7VSw2vf+Wi5IFEJEiMBOnCtpV9lz4pcn8wxf0S4faNgnEfUVZPJdPJ9W88YWL1CIGuUHgnO6Or7shE2NXrt6ZdhfHNG9YFu1CDNPhT7JmPPk+SEKJ+8a3iI7Fmz1OfP72V0uK7ftutONw7vJu+b/rpBEKkcAPnD9+pDRTqjYrUJvHRnJtvjUwn3mMcRPhVfUikicmCdEQifUw1A0I2JF4/CCfLPJdQt6RX+VARTwXx4ATNm4WCrw7r4g0TDN+0ixz6fGY0wngcUVDDha1ow80x9/cxHTWwKEAZ8oiFj2L1zmMV6ytsdLYRYW/IMEzV8XjwyW8Ng+090YUG17Ah32anGlog264KCW7g3z03FJjq47H+du3XCI4S/J69eNEEk58ad9nIEmNsGZfrMFrYMwUVVWgfAZ3uaoLFinKma+n2rt+v/Q3r/VqsuyzxGmffPEtuJrlVBAXnftpk9zzkcHkC4fkHfnEr0UnMo0h2n5MwNx8OVXxGNgJwWAgkJ8r9ps7AJ4XnUXeWAytC0+TUzXtJG6JgmPvLRguZB12ZJd25iDy5E1l7O9Ee8rtYEGy8JfLKDtl76wV30noMW4GfZz6dT/GYT9QIfRJCYh03zDpd1tYnQMHJT2akDgLYonjVvajWwZu2dcS42xxQQd5g/Um6nyMDak1yLumygzeaeQ520KeRHpVoiAFabywSNB6Yp0BshHiA5wvUXHAd4ejci
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(376002)(136003)(346002)(451199021)(46966006)(40470700004)(36840700001)(7416002)(5660300002)(8676002)(70586007)(70206006)(8936002)(2906002)(316002)(6636002)(4326008)(54906003)(6666004)(7696005)(1076003)(26005)(47076005)(186003)(16526019)(83380400001)(6286002)(41300700001)(2616005)(336012)(426003)(36860700001)(40460700003)(478600001)(110136005)(82740400003)(921005)(356005)(7636003)(82310400005)(36756003)(55016003)(86362001)(40480700001)(83996005)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2023 09:59:40.8540
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d53efa6a-d020-429a-f737-08db812c6110
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DM6NAM11FT090.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7764
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-Enable per queue interrupt coalesce feature bit in driver and validate its
-dependency with control queue.
+On Mon, 10 Jul 2023 05:40:21 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> On Mon, Jul 10, 2023 at 11:42:37AM +0800, Xuan Zhuo wrote:
+> > Currently, the virtio core will perform a dma operation for each
+> > operation. Although, the same page may be operated multiple times.
+> >
+> > The driver does the dma operation and manages the dma address based the
+> > feature premapped of virtio core.
+> >
+> > This way, we can perform only one dma operation for the same page. In
+> > the case of mtu 1500, this can reduce a lot of dma operations.
+> >
+> > Tested on Aliyun g7.4large machine, in the case of a cpu 100%, pps
+> > increased from 1893766 to 1901105. An increase of 0.4%.
+>
+> what kind of dma was there? an IOMMU? which vendors? in which mode
+> of operation?
 
-Signed-off-by: Gavin Li <gavinl@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
----
- drivers/net/virtio_net.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 333a38e1941f..81bac3597a2b 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -4060,6 +4060,8 @@ static bool virtnet_validate_features(struct virtio_device *vdev)
- 	     VIRTNET_FAIL_ON(vdev, VIRTIO_NET_F_HASH_REPORT,
- 			     "VIRTIO_NET_F_CTRL_VQ") ||
- 	     VIRTNET_FAIL_ON(vdev, VIRTIO_NET_F_NOTF_COAL,
-+			     "VIRTIO_NET_F_CTRL_VQ") ||
-+	     VIRTNET_FAIL_ON(vdev, VIRTIO_NET_F_VQ_NOTF_COAL,
- 			     "VIRTIO_NET_F_CTRL_VQ"))) {
- 		return false;
- 	}
-@@ -4484,6 +4486,7 @@ static struct virtio_device_id id_table[] = {
- 	VIRTIO_NET_F_MTU, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS, \
- 	VIRTIO_NET_F_SPEED_DUPLEX, VIRTIO_NET_F_STANDBY, \
- 	VIRTIO_NET_F_RSS, VIRTIO_NET_F_HASH_REPORT, VIRTIO_NET_F_NOTF_COAL, \
-+	VIRTIO_NET_F_VQ_NOTF_COAL, \
- 	VIRTIO_NET_F_GUEST_HDRLEN
- 
- static unsigned int features[] = {
--- 
-2.39.1
+Do you mean this:
 
+[    0.470816] iommu: Default domain type: Passthrough
+
+
+>
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+>
+> This kind of difference is likely in the noise.
+
+It's really not high, but this is because the proportion of DMA under perf top
+is not high. Probably that much.
+
+>
+>
+> > ---
+> >  drivers/net/virtio_net.c | 283 ++++++++++++++++++++++++++++++++++++---
+> >  1 file changed, 267 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index 486b5849033d..4de845d35bed 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -126,6 +126,27 @@ static const struct virtnet_stat_desc virtnet_rq_stats_desc[] = {
+> >  #define VIRTNET_SQ_STATS_LEN	ARRAY_SIZE(virtnet_sq_stats_desc)
+> >  #define VIRTNET_RQ_STATS_LEN	ARRAY_SIZE(virtnet_rq_stats_desc)
+> >
+> > +/* The bufs on the same page may share this struct. */
+> > +struct virtnet_rq_dma {
+> > +	struct virtnet_rq_dma *next;
+> > +
+> > +	dma_addr_t addr;
+> > +
+> > +	void *buf;
+> > +	u32 len;
+> > +
+> > +	u32 ref;
+> > +};
+> > +
+> > +/* Record the dma and buf. */
+>
+> I guess I see that. But why?
+> And these two comments are the extent of the available
+> documentation, that's not enough I feel.
+>
+>
+> > +struct virtnet_rq_data {
+> > +	struct virtnet_rq_data *next;
+>
+> Is manually reimplementing a linked list the best
+> we can do?
+
+Yes, we can use llist.
+
+>
+> > +
+> > +	void *buf;
+> > +
+> > +	struct virtnet_rq_dma *dma;
+> > +};
+> > +
+> >  /* Internal representation of a send virtqueue */
+> >  struct send_queue {
+> >  	/* Virtqueue associated with this send _queue */
+> > @@ -175,6 +196,13 @@ struct receive_queue {
+> >  	char name[16];
+> >
+> >  	struct xdp_rxq_info xdp_rxq;
+> > +
+> > +	struct virtnet_rq_data *data_array;
+> > +	struct virtnet_rq_data *data_free;
+> > +
+> > +	struct virtnet_rq_dma *dma_array;
+> > +	struct virtnet_rq_dma *dma_free;
+> > +	struct virtnet_rq_dma *last_dma;
+> >  };
+> >
+> >  /* This structure can contain rss message with maximum settings for indirection table and keysize
+> > @@ -549,6 +577,176 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+> >  	return skb;
+> >  }
+> >
+> > +static void virtnet_rq_unmap(struct receive_queue *rq, struct virtnet_rq_dma *dma)
+> > +{
+> > +	struct device *dev;
+> > +
+> > +	--dma->ref;
+> > +
+> > +	if (dma->ref)
+> > +		return;
+> > +
+>
+> If you don't unmap there is no guarantee valid data will be
+> there in the buffer.
+>
+> > +	dev = virtqueue_dma_dev(rq->vq);
+> > +
+> > +	dma_unmap_page(dev, dma->addr, dma->len, DMA_FROM_DEVICE);
+>
+>
+>
+>
+>
+> > +
+> > +	dma->next = rq->dma_free;
+> > +	rq->dma_free = dma;
+> > +}
+> > +
+> > +static void *virtnet_rq_recycle_data(struct receive_queue *rq,
+> > +				     struct virtnet_rq_data *data)
+> > +{
+> > +	void *buf;
+> > +
+> > +	buf = data->buf;
+> > +
+> > +	data->next = rq->data_free;
+> > +	rq->data_free = data;
+> > +
+> > +	return buf;
+> > +}
+> > +
+> > +static struct virtnet_rq_data *virtnet_rq_get_data(struct receive_queue *rq,
+> > +						   void *buf,
+> > +						   struct virtnet_rq_dma *dma)
+> > +{
+> > +	struct virtnet_rq_data *data;
+> > +
+> > +	data = rq->data_free;
+> > +	rq->data_free = data->next;
+> > +
+> > +	data->buf = buf;
+> > +	data->dma = dma;
+> > +
+> > +	return data;
+> > +}
+> > +
+> > +static void *virtnet_rq_get_buf(struct receive_queue *rq, u32 *len, void **ctx)
+> > +{
+> > +	struct virtnet_rq_data *data;
+> > +	void *buf;
+> > +
+> > +	buf = virtqueue_get_buf_ctx(rq->vq, len, ctx);
+> > +	if (!buf || !rq->data_array)
+> > +		return buf;
+> > +
+> > +	data = buf;
+> > +
+> > +	virtnet_rq_unmap(rq, data->dma);
+> > +
+> > +	return virtnet_rq_recycle_data(rq, data);
+> > +}
+> > +
+> > +static void *virtnet_rq_detach_unused_buf(struct receive_queue *rq)
+> > +{
+> > +	struct virtnet_rq_data *data;
+> > +	void *buf;
+> > +
+> > +	buf = virtqueue_detach_unused_buf(rq->vq);
+> > +	if (!buf || !rq->data_array)
+> > +		return buf;
+> > +
+> > +	data = buf;
+> > +
+> > +	virtnet_rq_unmap(rq, data->dma);
+> > +
+> > +	return virtnet_rq_recycle_data(rq, data);
+> > +}
+> > +
+> > +static int virtnet_rq_map_sg(struct receive_queue *rq, void *buf, u32 len)
+> > +{
+> > +	struct virtnet_rq_dma *dma = rq->last_dma;
+> > +	struct device *dev;
+> > +	u32 off, map_len;
+> > +	dma_addr_t addr;
+> > +	void *end;
+> > +
+> > +	if (likely(dma) && buf >= dma->buf && (buf + len <= dma->buf + dma->len)) {
+> > +		++dma->ref;
+> > +		addr = dma->addr + (buf - dma->buf);
+> > +		goto ok;
+> > +	}
+>
+> So this is the meat of the proposed optimization. I guess that
+> if the last buffer we allocated happens to be in the same page
+> as this one then they can both be mapped for DMA together.
+
+Since we use page_frag, the buffers we allocated are all continuous.
+
+> Why last one specifically? Whether next one happens to
+> be close depends on luck. If you want to try optimizing this
+> the right thing to do is likely by using a page pool.
+> There's actually work upstream on page pool, look it up.
+
+As we discussed in another thread, the page pool is first used for xdp. Let's
+transform it step by step.
+
+Thanks.
+
+>
+> > +
+> > +	end = buf + len - 1;
+> > +	off = offset_in_page(end);
+> > +	map_len = len + PAGE_SIZE - off;
+> > +
+> > +	dev = virtqueue_dma_dev(rq->vq);
+> > +
+> > +	addr = dma_map_page_attrs(dev, virt_to_page(buf), offset_in_page(buf),
+> > +				  map_len, DMA_FROM_DEVICE, 0);
+> > +	if (addr == DMA_MAPPING_ERROR)
+> > +		return -ENOMEM;
+> > +
+> > +	dma = rq->dma_free;
+> > +	rq->dma_free = dma->next;
+> > +
+> > +	dma->ref = 1;
+> > +	dma->buf = buf;
+> > +	dma->addr = addr;
+> > +	dma->len = map_len;
+> > +
+> > +	rq->last_dma = dma;
+> > +
+> > +ok:
+> > +	sg_init_table(rq->sg, 1);
+> > +	rq->sg[0].dma_address = addr;
+> > +	rq->sg[0].length = len;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int virtnet_rq_merge_map_init(struct virtnet_info *vi)
+> > +{
+> > +	struct receive_queue *rq;
+> > +	int i, err, j, num;
+> > +
+> > +	/* disable for big mode */
+> > +	if (!vi->mergeable_rx_bufs && vi->big_packets)
+> > +		return 0;
+> > +
+> > +	for (i = 0; i < vi->max_queue_pairs; i++) {
+> > +		err = virtqueue_set_premapped(vi->rq[i].vq);
+> > +		if (err)
+> > +			continue;
+> > +
+> > +		rq = &vi->rq[i];
+> > +
+> > +		num = virtqueue_get_vring_size(rq->vq);
+> > +
+> > +		rq->data_array = kmalloc_array(num, sizeof(*rq->data_array), GFP_KERNEL);
+> > +		if (!rq->data_array)
+> > +			goto err;
+> > +
+> > +		rq->dma_array = kmalloc_array(num, sizeof(*rq->dma_array), GFP_KERNEL);
+> > +		if (!rq->dma_array)
+> > +			goto err;
+> > +
+> > +		for (j = 0; j < num; ++j) {
+> > +			rq->data_array[j].next = rq->data_free;
+> > +			rq->data_free = &rq->data_array[j];
+> > +
+> > +			rq->dma_array[j].next = rq->dma_free;
+> > +			rq->dma_free = &rq->dma_array[j];
+> > +		}
+> > +	}
+> > +
+> > +	return 0;
+> > +
+> > +err:
+> > +	for (i = 0; i < vi->max_queue_pairs; i++) {
+> > +		struct receive_queue *rq;
+> > +
+> > +		rq = &vi->rq[i];
+> > +
+> > +		kfree(rq->dma_array);
+> > +		kfree(rq->data_array);
+> > +	}
+> > +
+> > +	return -ENOMEM;
+> > +}
+> > +
+> >  static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
+> >  {
+> >  	unsigned int len;
+> > @@ -835,7 +1033,7 @@ static struct page *xdp_linearize_page(struct receive_queue *rq,
+> >  		void *buf;
+> >  		int off;
+> >
+> > -		buf = virtqueue_get_buf(rq->vq, &buflen);
+> > +		buf = virtnet_rq_get_buf(rq, &buflen, NULL);
+> >  		if (unlikely(!buf))
+> >  			goto err_buf;
+> >
+> > @@ -1126,7 +1324,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+> >  		return -EINVAL;
+> >
+> >  	while (--*num_buf > 0) {
+> > -		buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
+> > +		buf = virtnet_rq_get_buf(rq, &len, &ctx);
+> >  		if (unlikely(!buf)) {
+> >  			pr_debug("%s: rx error: %d buffers out of %d missing\n",
+> >  				 dev->name, *num_buf,
+> > @@ -1351,7 +1549,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+> >  	while (--num_buf) {
+> >  		int num_skb_frags;
+> >
+> > -		buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
+> > +		buf = virtnet_rq_get_buf(rq, &len, &ctx);
+> >  		if (unlikely(!buf)) {
+> >  			pr_debug("%s: rx error: %d buffers out of %d missing\n",
+> >  				 dev->name, num_buf,
+> > @@ -1414,7 +1612,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+> >  err_skb:
+> >  	put_page(page);
+> >  	while (num_buf-- > 1) {
+> > -		buf = virtqueue_get_buf(rq->vq, &len);
+> > +		buf = virtnet_rq_get_buf(rq, &len, NULL);
+> >  		if (unlikely(!buf)) {
+> >  			pr_debug("%s: rx error: %d buffers missing\n",
+> >  				 dev->name, num_buf);
+> > @@ -1529,6 +1727,7 @@ static int add_recvbuf_small(struct virtnet_info *vi, struct receive_queue *rq,
+> >  	unsigned int xdp_headroom = virtnet_get_headroom(vi);
+> >  	void *ctx = (void *)(unsigned long)xdp_headroom;
+> >  	int len = vi->hdr_len + VIRTNET_RX_PAD + GOOD_PACKET_LEN + xdp_headroom;
+> > +	struct virtnet_rq_data *data;
+> >  	int err;
+> >
+> >  	len = SKB_DATA_ALIGN(len) +
+> > @@ -1539,11 +1738,34 @@ static int add_recvbuf_small(struct virtnet_info *vi, struct receive_queue *rq,
+> >  	buf = (char *)page_address(alloc_frag->page) + alloc_frag->offset;
+> >  	get_page(alloc_frag->page);
+> >  	alloc_frag->offset += len;
+> > -	sg_init_one(rq->sg, buf + VIRTNET_RX_PAD + xdp_headroom,
+> > -		    vi->hdr_len + GOOD_PACKET_LEN);
+> > -	err = virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, gfp);
+> > +
+> > +	if (rq->data_array) {
+> > +		err = virtnet_rq_map_sg(rq, buf + VIRTNET_RX_PAD + xdp_headroom,
+> > +					vi->hdr_len + GOOD_PACKET_LEN);
+> > +		if (err)
+> > +			goto map_err;
+> > +
+> > +		data = virtnet_rq_get_data(rq, buf, rq->last_dma);
+> > +	} else {
+> > +		sg_init_one(rq->sg, buf + VIRTNET_RX_PAD + xdp_headroom,
+> > +			    vi->hdr_len + GOOD_PACKET_LEN);
+> > +		data = (void *)buf;
+> > +	}
+> > +
+> > +	err = virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, data, ctx, gfp);
+> >  	if (err < 0)
+> > -		put_page(virt_to_head_page(buf));
+> > +		goto add_err;
+> > +
+> > +	return err;
+> > +
+> > +add_err:
+> > +	if (rq->data_array) {
+> > +		virtnet_rq_unmap(rq, data->dma);
+> > +		virtnet_rq_recycle_data(rq, data);
+> > +	}
+> > +
+> > +map_err:
+> > +	put_page(virt_to_head_page(buf));
+> >  	return err;
+> >  }
+> >
+> > @@ -1620,6 +1842,7 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
+> >  	unsigned int headroom = virtnet_get_headroom(vi);
+> >  	unsigned int tailroom = headroom ? sizeof(struct skb_shared_info) : 0;
+> >  	unsigned int room = SKB_DATA_ALIGN(headroom + tailroom);
+> > +	struct virtnet_rq_data *data;
+> >  	char *buf;
+> >  	void *ctx;
+> >  	int err;
+> > @@ -1650,12 +1873,32 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
+> >  		alloc_frag->offset += hole;
+> >  	}
+> >
+> > -	sg_init_one(rq->sg, buf, len);
+> > +	if (rq->data_array) {
+> > +		err = virtnet_rq_map_sg(rq, buf, len);
+> > +		if (err)
+> > +			goto map_err;
+> > +
+> > +		data = virtnet_rq_get_data(rq, buf, rq->last_dma);
+> > +	} else {
+> > +		sg_init_one(rq->sg, buf, len);
+> > +		data = (void *)buf;
+> > +	}
+> > +
+> >  	ctx = mergeable_len_to_ctx(len + room, headroom);
+> > -	err = virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, gfp);
+> > +	err = virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, data, ctx, gfp);
+> >  	if (err < 0)
+> > -		put_page(virt_to_head_page(buf));
+> > +		goto add_err;
+> > +
+> > +	return 0;
+> > +
+> > +add_err:
+> > +	if (rq->data_array) {
+> > +		virtnet_rq_unmap(rq, data->dma);
+> > +		virtnet_rq_recycle_data(rq, data);
+> > +	}
+> >
+> > +map_err:
+> > +	put_page(virt_to_head_page(buf));
+> >  	return err;
+> >  }
+> >
+> > @@ -1775,13 +2018,13 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
+> >  		void *ctx;
+> >
+> >  		while (stats.packets < budget &&
+> > -		       (buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx))) {
+> > +		       (buf = virtnet_rq_get_buf(rq, &len, &ctx))) {
+> >  			receive_buf(vi, rq, buf, len, ctx, xdp_xmit, &stats);
+> >  			stats.packets++;
+> >  		}
+> >  	} else {
+> >  		while (stats.packets < budget &&
+> > -		       (buf = virtqueue_get_buf(rq->vq, &len)) != NULL) {
+> > +		       (buf = virtnet_rq_get_buf(rq, &len, NULL)) != NULL) {
+> >  			receive_buf(vi, rq, buf, len, NULL, xdp_xmit, &stats);
+> >  			stats.packets++;
+> >  		}
+> > @@ -3514,6 +3757,9 @@ static void virtnet_free_queues(struct virtnet_info *vi)
+> >  	for (i = 0; i < vi->max_queue_pairs; i++) {
+> >  		__netif_napi_del(&vi->rq[i].napi);
+> >  		__netif_napi_del(&vi->sq[i].napi);
+> > +
+> > +		kfree(vi->rq[i].data_array);
+> > +		kfree(vi->rq[i].dma_array);
+> >  	}
+> >
+> >  	/* We called __netif_napi_del(),
+> > @@ -3591,9 +3837,10 @@ static void free_unused_bufs(struct virtnet_info *vi)
+> >  	}
+> >
+> >  	for (i = 0; i < vi->max_queue_pairs; i++) {
+> > -		struct virtqueue *vq = vi->rq[i].vq;
+> > -		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL)
+> > -			virtnet_rq_free_unused_buf(vq, buf);
+> > +		struct receive_queue *rq = &vi->rq[i];
+> > +
+> > +		while ((buf = virtnet_rq_detach_unused_buf(rq)) != NULL)
+> > +			virtnet_rq_free_unused_buf(rq->vq, buf);
+> >  		cond_resched();
+> >  	}
+> >  }
+> > @@ -3767,6 +4014,10 @@ static int init_vqs(struct virtnet_info *vi)
+> >  	if (ret)
+> >  		goto err_free;
+> >
+> > +	ret = virtnet_rq_merge_map_init(vi);
+> > +	if (ret)
+> > +		goto err_free;
+> > +
+> >  	cpus_read_lock();
+> >  	virtnet_set_affinity(vi);
+> >  	cpus_read_unlock();
+> > --
+> > 2.32.0.3.g01195cf9f
+>
 
