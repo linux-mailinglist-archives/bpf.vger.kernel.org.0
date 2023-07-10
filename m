@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-4591-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4592-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 671FC74D3E1
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 12:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E2CC74D3E3
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 12:52:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62C1C1C209FD
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 10:51:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 816ED1C20993
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 10:52:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766C7D2EE;
-	Mon, 10 Jul 2023 10:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E7FC8EF;
+	Mon, 10 Jul 2023 10:51:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A935BE76
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 10:51:44 +0000 (UTC)
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B23C3;
-	Mon, 10 Jul 2023 03:51:43 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id e9e14a558f8ab-3459baa237bso22912685ab.3;
-        Mon, 10 Jul 2023 03:51:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6728BE76
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 10:51:50 +0000 (UTC)
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB63CC;
+	Mon, 10 Jul 2023 03:51:47 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 41be03b00d2f7-53fa455cd94so2241711a12.2;
+        Mon, 10 Jul 2023 03:51:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688986302; x=1691578302;
+        d=gmail.com; s=20221208; t=1688986307; x=1691578307;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n9OF5rBDxNaq2DXKTbLZbdXHNFefw4Fd6mHFek0g5ew=;
-        b=Pj6bEUk7bbrQ24jt74tpb/KwzjGwHGC6+/a+Et1mMEMCBH0GNMyRv+2Ac542F/BtX8
-         xxRmAH9ZQQd60SczD2HfTkKH6xgs3zPKdPzLoRyiTlsD78+4QaIb4Ag1Xr81uif1Xiry
-         FywA3Fl+evLMrngvcATXuoZjsGiomLn6ovriVqjzQqwB4e0T8oEILkU2rREjLdbGhVn4
-         PBr4x3vlSbLCZpwQRT+O7yZ//l6/Yt5WAsx3J7cpS8ZPhCLeYtYJcElhtFwXV6x6FOVg
-         /KgSa+/YLuxH3q7H99oUJpWB9LTAwjjp928OT7sGDZTwfwEKFnSvmuRZeMrDTC5JIQZy
-         l6RA==
+        bh=yub0qq7gQcoTrdJVvkuSVKBKxTzmHme5hkDeDJ6yYxs=;
+        b=IQkcBYz5K4gK1HcmaDwyfCw8PS9Xk6ZU3U0VLJ3NS/huug2znOWgEwtFj+HyecRxx5
+         jedppQXCafakyJtZzOw3TmIUWIGWSbp7mR0ZW67PX7AfQoaSIJfXmR+xYSgzMxMdND+v
+         ORJkNiJQgMarl2CXIrqeLV6JF2ZZ/FoWX89hIwxzpd+CiqqBp/yro5EHKqr1SeVUpGq6
+         zcTuJ1k5SLOScGlYFHUM3I2FjRQNR5gaK7LZ3af0j7gqXVESfhoC/9aWhs/xKww7U5/j
+         BSxYLBg7GtQ+QZarbkVk3V9j9CW/hr0Zsb1AKxESzZqlgTgZtkAZokzPwXsd9dstKgIY
+         yJPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688986302; x=1691578302;
+        d=1e100.net; s=20221208; t=1688986307; x=1691578307;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n9OF5rBDxNaq2DXKTbLZbdXHNFefw4Fd6mHFek0g5ew=;
-        b=aR4S9u+u0jmoBrLSSb79THXvN8pOK1pxC+RJU8k8k+1DtWq2JKMAwtABquK5L0Ib8e
-         mAtKShU7Lo10491W4LWgjwAn1E5fhgHr7EJEYEgHoJUePQBBPeira4iQrWmdGwEr9cze
-         xhKdhRvYTZRsW4MJDbTKzXqg1iwQWYGLu4kvLQmvlAhVGVgz86Cq/8BOthXnK/aJtYwJ
-         vl3oZ7zk9YpWZy6zwfobWxs732PSOzLJk0T2mH5Pl0fxSjaiHwlE/QZuOTJ0W2BaV+lk
-         NuUb6ntbX8DamIe4LS+uvFx+ojX+tqkf9tmslvj//cLn3QxIQQ3WiLIeZIuvKJ3oVtO3
-         ijWg==
-X-Gm-Message-State: ABy/qLYqtX8kFvvU6xcJ2qLWlQc72mBUNu5ZtM4FhH9pEcquGTbAHivJ
-	Bs5Ioosze7GSozhFV6qpAWQ=
-X-Google-Smtp-Source: APBJJlEqjFnrvKb9nACwwOX7jpspg56BTIFmgbdx1btyclRuFS3qHPuQ7rREV2KdztzJWAl2JUL9uw==
-X-Received: by 2002:a92:c846:0:b0:346:579f:408 with SMTP id b6-20020a92c846000000b00346579f0408mr4751365ilq.1.1688986302281;
-        Mon, 10 Jul 2023 03:51:42 -0700 (PDT)
+        bh=yub0qq7gQcoTrdJVvkuSVKBKxTzmHme5hkDeDJ6yYxs=;
+        b=QbO9FTN+u+4gT7Z/Fs4QqLfb3DsP3dQ3gxRYGdmCfq/9nN0SprTfzccpB/XcPJ33K7
+         lTxRoVk98UOSuQgk/l1pU2fnQAO8o80dLzcBS2ZdMs11a198CTFzjteY2BeepOSatqEF
+         0a3Ox7KqIyVMUHUwuHhe5jaPinR/hC/2ZUGirZS5drZyB4Xm1g22QzhzY8oMIacMOC5u
+         ExOeaCAa1Oib5+ismSvYEQt53bYIuyGryWDT2arj/qVr8QWFJj22AKyaxQjdWHSgroTu
+         ni9UjNkH3UV0I8g9SVATq3EANX3K15LF2eo9EnhMOlcLw8v7s5rySVYt05M9k40E1YBs
+         rRGA==
+X-Gm-Message-State: ABy/qLZyaNqXO2YI725zuab92b8/sGz+wmBsqP0N9IyBln+dp58UU5sJ
+	Yp03IIYX2RD0Z4UXJ6OEl/jHJtO2VtLUlxKN
+X-Google-Smtp-Source: APBJJlHneMWUvEheIvAupGU3hZl66RO+byMF29liWv8v32iLvfk4qrkMtxZ2c5wNQB/BJkmX4VHEgA==
+X-Received: by 2002:a17:90b:484:b0:263:560a:e794 with SMTP id bh4-20020a17090b048400b00263560ae794mr10042832pjb.21.1688986306726;
+        Mon, 10 Jul 2023 03:51:46 -0700 (PDT)
 Received: from localhost.localdomain ([43.132.98.106])
-        by smtp.gmail.com with ESMTPSA id 17-20020a17090a191100b00263eb5054ebsm6475036pjg.27.2023.07.10.03.51.38
+        by smtp.gmail.com with ESMTPSA id 17-20020a17090a191100b00263eb5054ebsm6475036pjg.27.2023.07.10.03.51.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jul 2023 03:51:41 -0700 (PDT)
+        Mon, 10 Jul 2023 03:51:46 -0700 (PDT)
 From: menglong8.dong@gmail.com
 X-Google-Original-From: imagedong@tencent.com
 To: yhs@meta.com,
@@ -77,9 +77,9 @@ Cc: ast@kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	Menglong Dong <imagedong@tencent.com>
-Subject: [PATCH RESEND bpf-next v8 1/3] bpf, x86: save/restore regs with BPF_DW size
-Date: Mon, 10 Jul 2023 18:48:32 +0800
-Message-Id: <20230710104834.947884-2-imagedong@tencent.com>
+Subject: [PATCH RESEND bpf-next v8 2/3] bpf, x86: allow function arguments up to 12 for TRACING
+Date: Mon, 10 Jul 2023 18:48:33 +0800
+Message-Id: <20230710104834.947884-3-imagedong@tencent.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230710104834.947884-1-imagedong@tencent.com>
 References: <20230710104834.947884-1-imagedong@tencent.com>
@@ -99,87 +99,451 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Menglong Dong <imagedong@tencent.com>
 
-As we already reserve 8 byte in the stack for each reg, it is ok to
-store/restore the regs in BPF_DW size. This will make the code in
-save_regs()/restore_regs() simpler.
+For now, the BPF program of type BPF_PROG_TYPE_TRACING can only be used
+on the kernel functions whose arguments count less than or equal to 6, if
+not considering '> 8 bytes' struct argument. This is not friendly at all,
+as too many functions have arguments count more than 6.
+
+According to the current kernel version, below is a statistics of the
+function arguments count:
+
+argument count | function count
+7              | 704
+8              | 270
+9              | 84
+10             | 47
+11             | 47
+12             | 27
+13             | 22
+14             | 5
+15             | 0
+16             | 1
+
+Therefore, let's enhance it by increasing the function arguments count
+allowed in arch_prepare_bpf_trampoline(), for now, only x86_64.
+
+For the case that we don't need to call origin function, which means
+without BPF_TRAMP_F_CALL_ORIG, we need only copy the function arguments
+that stored in the frame of the caller to current frame. The 7th and later
+arguments are stored in "$rbp + 0x18", and they will be copied to the
+stack area following where register values are saved.
+
+For the case with BPF_TRAMP_F_CALL_ORIG, we need prepare the arguments
+in stack before call origin function, which means we need alloc extra
+"8 * (arg_count - 6)" memory in the top of the stack. Note, there should
+not be any data be pushed to the stack before calling the origin function.
+So 'rbx' value will be stored on a stack position higher than where stack
+arguments are stored for BPF_TRAMP_F_CALL_ORIG.
+
+According to the research of Yonghong, struct members should be all in
+register or all on the stack. Meanwhile, the compiler will pass the
+argument on regs if the remaining regs can hold the argument. Therefore,
+we need save the arguments in order. Otherwise, disorder of the args can
+happen. For example:
+
+  struct foo_struct {
+      long a;
+      int b;
+  };
+  int foo(char, char, char, char, char, struct foo_struct,
+          char);
+
+the arg1-5,arg7 will be passed by regs, and arg6 will by stack. Therefore,
+we should save/restore the arguments in the same order with the
+declaration of foo(). And the args used as ctx in stack will be like this:
+
+  reg_arg6   -- copy from regs
+  stack_arg2 -- copy from stack
+  stack_arg1
+  reg_arg5   -- copy from regs
+  reg_arg4
+  reg_arg3
+  reg_arg2
+  reg_arg1
+
+We use EMIT3_off32() or EMIT4() for "lea" and "sub". The range of the
+imm in "lea" and "sub" is [-128, 127] if EMIT4() is used. Therefore,
+we use EMIT3_off32() instead if the imm out of the range.
+
+It works well for the FENTRY/FEXIT/MODIFY_RETURN.
 
 Signed-off-by: Menglong Dong <imagedong@tencent.com>
 Acked-by: Yonghong Song <yhs@fb.com>
 ---
+v7:
+- somit nits from commit message and comment
+- remove the inline in get_nr_regs()
+- rename some function and various
 v6:
-- adjust the commit log
+- introduce get_nr_regs() to get the space that used to pass args on
+  stack correct
+- rename some args and fix some spelling mistake
+v5:
+- consider the case of the struct in arguments can't be hold by regs
+v4:
+- make the stack 16-byte aligned if passing args on-stack is needed
+- add the function arguments statistics to the commit log
+v3:
+- use EMIT3_off32() for "lea" and "sub" only on necessary
+- make 12 as the maximum arguments count
+v2:
+- instead EMIT4 with EMIT3_off32 for "lea" to prevent overflow
+- make MAX_BPF_FUNC_ARGS as the maximum argument count
 ---
- arch/x86/net/bpf_jit_comp.c | 35 ++++++-----------------------------
- 1 file changed, 6 insertions(+), 29 deletions(-)
+ arch/x86/net/bpf_jit_comp.c | 235 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 209 insertions(+), 26 deletions(-)
 
 diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 438adb695daa..fcbd3b7123a4 100644
+index fcbd3b7123a4..5ab531be56ac 100644
 --- a/arch/x86/net/bpf_jit_comp.c
 +++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1860,57 +1860,34 @@ st:			if (is_imm8(insn->off))
- static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
- 		      int stack_size)
+@@ -1857,37 +1857,178 @@ st:			if (is_imm8(insn->off))
+ 	return proglen;
+ }
+ 
+-static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
+-		      int stack_size)
++static void clean_stack_garbage(const struct btf_func_model *m,
++				u8 **pprog, int nr_stack_slots,
++				int stack_size)
  {
--	int i, j, arg_size;
--	bool next_same_struct = false;
-+	int i;
+-	int i;
++	int arg_size, off;
++	u8 *prog;
++
++	/* Generally speaking, the compiler will pass the arguments
++	 * on-stack with "push" instruction, which will take 8-byte
++	 * on the stack. In this case, there won't be garbage values
++	 * while we copy the arguments from origin stack frame to current
++	 * in BPF_DW.
++	 *
++	 * However, sometimes the compiler will only allocate 4-byte on
++	 * the stack for the arguments. For now, this case will only
++	 * happen if there is only one argument on-stack and its size
++	 * not more than 4 byte. In this case, there will be garbage
++	 * values on the upper 4-byte where we store the argument on
++	 * current stack frame.
++	 *
++	 * arguments on origin stack:
++	 *
++	 * stack_arg_1(4-byte) xxx(4-byte)
++	 *
++	 * what we copy:
++	 *
++	 * stack_arg_1(8-byte): stack_arg_1(origin) xxx
++	 *
++	 * and the xxx is the garbage values which we should clean here.
++	 */
++	if (nr_stack_slots != 1)
++		return;
++
++	/* the size of the last argument */
++	arg_size = m->arg_size[m->nr_args - 1];
++	if (arg_size <= 4) {
++		off = -(stack_size - 4);
++		prog = *pprog;
++		/* mov DWORD PTR [rbp + off], 0 */
++		if (!is_imm8(off))
++			EMIT2_off32(0xC7, 0x85, off);
++		else
++			EMIT3(0xC7, 0x45, off);
++		EMIT(0, 4);
++		*pprog = prog;
++	}
++}
++
++/* get the count of the regs that are used to pass arguments */
++static int get_nr_used_regs(const struct btf_func_model *m)
++{
++	int i, arg_regs, nr_used_regs = 0;
++
++	for (i = 0; i < min_t(int, m->nr_args, MAX_BPF_FUNC_ARGS); i++) {
++		arg_regs = (m->arg_size[i] + 7) / 8;
++		if (nr_used_regs + arg_regs <= 6)
++			nr_used_regs += arg_regs;
++
++		if (nr_used_regs >= 6)
++			break;
++	}
++
++	return nr_used_regs;
++}
++
++static void save_args(const struct btf_func_model *m, u8 **prog,
++		      int stack_size, bool for_call_origin)
++{
++	int arg_regs, first_off, nr_regs = 0, nr_stack_slots = 0;
++	int i, j;
  
  	/* Store function arguments to stack.
  	 * For a function that accepts two pointers the sequence will be:
  	 * mov QWORD PTR [rbp-0x10],rdi
  	 * mov QWORD PTR [rbp-0x8],rsi
  	 */
--	for (i = 0, j = 0; i < min(nr_regs, 6); i++) {
--		/* The arg_size is at most 16 bytes, enforced by the verifier. */
--		arg_size = m->arg_size[j];
--		if (arg_size > 8) {
--			arg_size = 8;
--			next_same_struct = !next_same_struct;
--		}
--
--		emit_stx(prog, bytes_to_bpf_size(arg_size),
--			 BPF_REG_FP,
-+	for (i = 0; i < min(nr_regs, 6); i++)
-+		emit_stx(prog, BPF_DW, BPF_REG_FP,
- 			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
- 			 -(stack_size - i * 8));
--
--		j = next_same_struct ? j : j + 1;
--	}
+-	for (i = 0; i < min(nr_regs, 6); i++)
+-		emit_stx(prog, BPF_DW, BPF_REG_FP,
+-			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
+-			 -(stack_size - i * 8));
++	for (i = 0; i < min_t(int, m->nr_args, MAX_BPF_FUNC_ARGS); i++) {
++		arg_regs = (m->arg_size[i] + 7) / 8;
++
++		/* According to the research of Yonghong, struct members
++		 * should be all in register or all on the stack.
++		 * Meanwhile, the compiler will pass the argument on regs
++		 * if the remaining regs can hold the argument.
++		 *
++		 * Disorder of the args can happen. For example:
++		 *
++		 * struct foo_struct {
++		 *     long a;
++		 *     int b;
++		 * };
++		 * int foo(char, char, char, char, char, struct foo_struct,
++		 *         char);
++		 *
++		 * the arg1-5,arg7 will be passed by regs, and arg6 will
++		 * by stack.
++		 */
++		if (nr_regs + arg_regs > 6) {
++			/* copy function arguments from origin stack frame
++			 * into current stack frame.
++			 *
++			 * The starting address of the arguments on-stack
++			 * is:
++			 *   rbp + 8(push rbp) +
++			 *   8(return addr of origin call) +
++			 *   8(return addr of the caller)
++			 * which means: rbp + 24
++			 */
++			for (j = 0; j < arg_regs; j++) {
++				emit_ldx(prog, BPF_DW, BPF_REG_0, BPF_REG_FP,
++					 nr_stack_slots * 8 + 0x18);
++				emit_stx(prog, BPF_DW, BPF_REG_FP, BPF_REG_0,
++					 -stack_size);
++
++				if (!nr_stack_slots)
++					first_off = stack_size;
++				stack_size -= 8;
++				nr_stack_slots++;
++			}
++		} else {
++			/* Only copy the arguments on-stack to current
++			 * 'stack_size' and ignore the regs, used to
++			 * prepare the arguments on-stack for orign call.
++			 */
++			if (for_call_origin) {
++				nr_regs += arg_regs;
++				continue;
++			}
++
++			/* copy the arguments from regs into stack */
++			for (j = 0; j < arg_regs; j++) {
++				emit_stx(prog, BPF_DW, BPF_REG_FP,
++					 nr_regs == 5 ? X86_REG_R9 : BPF_REG_1 + nr_regs,
++					 -stack_size);
++				stack_size -= 8;
++				nr_regs++;
++			}
++		}
++	}
++
++	clean_stack_garbage(m, prog, nr_stack_slots, first_off);
  }
  
- static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
+-static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
++static void restore_regs(const struct btf_func_model *m, u8 **prog,
  			 int stack_size)
  {
--	int i, j, arg_size;
--	bool next_same_struct = false;
-+	int i;
+-	int i;
++	int i, j, arg_regs, nr_regs = 0;
  
  	/* Restore function arguments from stack.
  	 * For a function that accepts two pointers the sequence will be:
  	 * EMIT4(0x48, 0x8B, 0x7D, 0xF0); mov rdi,QWORD PTR [rbp-0x10]
  	 * EMIT4(0x48, 0x8B, 0x75, 0xF8); mov rsi,QWORD PTR [rbp-0x8]
++	 *
++	 * The logic here is similar to what we do in save_args()
  	 */
--	for (i = 0, j = 0; i < min(nr_regs, 6); i++) {
--		/* The arg_size is at most 16 bytes, enforced by the verifier. */
--		arg_size = m->arg_size[j];
--		if (arg_size > 8) {
--			arg_size = 8;
--			next_same_struct = !next_same_struct;
--		}
--
--		emit_ldx(prog, bytes_to_bpf_size(arg_size),
-+	for (i = 0; i < min(nr_regs, 6); i++)
-+		emit_ldx(prog, BPF_DW,
- 			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
- 			 BPF_REG_FP,
- 			 -(stack_size - i * 8));
--
--		j = next_same_struct ? j : j + 1;
--	}
+-	for (i = 0; i < min(nr_regs, 6); i++)
+-		emit_ldx(prog, BPF_DW,
+-			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
+-			 BPF_REG_FP,
+-			 -(stack_size - i * 8));
++	for (i = 0; i < min_t(int, m->nr_args, MAX_BPF_FUNC_ARGS); i++) {
++		arg_regs = (m->arg_size[i] + 7) / 8;
++		if (nr_regs + arg_regs <= 6) {
++			for (j = 0; j < arg_regs; j++) {
++				emit_ldx(prog, BPF_DW,
++					 nr_regs == 5 ? X86_REG_R9 : BPF_REG_1 + nr_regs,
++					 BPF_REG_FP,
++					 -stack_size);
++				stack_size -= 8;
++				nr_regs++;
++			}
++		} else {
++			stack_size -= 8 * arg_regs;
++		}
++
++		if (nr_regs >= 6)
++			break;
++	}
  }
  
  static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+@@ -1915,7 +2056,10 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+ 	/* arg1: mov rdi, progs[i] */
+ 	emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
+ 	/* arg2: lea rsi, [rbp - ctx_cookie_off] */
+-	EMIT4(0x48, 0x8D, 0x75, -run_ctx_off);
++	if (!is_imm8(-run_ctx_off))
++		EMIT3_off32(0x48, 0x8D, 0xB5, -run_ctx_off);
++	else
++		EMIT4(0x48, 0x8D, 0x75, -run_ctx_off);
+ 
+ 	if (emit_rsb_call(&prog, bpf_trampoline_enter(p), prog))
+ 		return -EINVAL;
+@@ -1931,7 +2075,10 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+ 	emit_nops(&prog, 2);
+ 
+ 	/* arg1: lea rdi, [rbp - stack_size] */
+-	EMIT4(0x48, 0x8D, 0x7D, -stack_size);
++	if (!is_imm8(-stack_size))
++		EMIT3_off32(0x48, 0x8D, 0xBD, -stack_size);
++	else
++		EMIT4(0x48, 0x8D, 0x7D, -stack_size);
+ 	/* arg2: progs[i]->insnsi for interpreter */
+ 	if (!p->jited)
+ 		emit_mov_imm64(&prog, BPF_REG_2,
+@@ -1961,7 +2108,10 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+ 	/* arg2: mov rsi, rbx <- start time in nsec */
+ 	emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
+ 	/* arg3: lea rdx, [rbp - run_ctx_off] */
+-	EMIT4(0x48, 0x8D, 0x55, -run_ctx_off);
++	if (!is_imm8(-run_ctx_off))
++		EMIT3_off32(0x48, 0x8D, 0x95, -run_ctx_off);
++	else
++		EMIT4(0x48, 0x8D, 0x55, -run_ctx_off);
+ 	if (emit_rsb_call(&prog, bpf_trampoline_exit(p), prog))
+ 		return -EINVAL;
+ 
+@@ -2113,7 +2263,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 				void *func_addr)
+ {
+ 	int i, ret, nr_regs = m->nr_args, stack_size = 0;
+-	int regs_off, nregs_off, ip_off, run_ctx_off;
++	int regs_off, nregs_off, ip_off, run_ctx_off, arg_stack_off, rbx_off;
+ 	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
+ 	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
+ 	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
+@@ -2127,8 +2277,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
+ 			nr_regs += (m->arg_size[i] + 7) / 8 - 1;
+ 
+-	/* x86-64 supports up to 6 arguments. 7+ can be added in the future */
+-	if (nr_regs > 6)
++	/* x86-64 supports up to MAX_BPF_FUNC_ARGS arguments. 1-6
++	 * are passed through regs, the remains are through stack.
++	 */
++	if (nr_regs > MAX_BPF_FUNC_ARGS)
+ 		return -ENOTSUPP;
+ 
+ 	/* Generated trampoline stack layout:
+@@ -2147,7 +2299,14 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	 *
+ 	 * RBP - ip_off    [ traced function ]  BPF_TRAMP_F_IP_ARG flag
+ 	 *
++	 * RBP - rbx_off   [ rbx value       ]  always
++	 *
+ 	 * RBP - run_ctx_off [ bpf_tramp_run_ctx ]
++	 *
++	 *                     [ stack_argN ]  BPF_TRAMP_F_CALL_ORIG
++	 *                     [ ...        ]
++	 *                     [ stack_arg2 ]
++	 * RBP - arg_stack_off [ stack_arg1 ]
+ 	 */
+ 
+ 	/* room for return value of orig_call or fentry prog */
+@@ -2167,9 +2326,26 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 
+ 	ip_off = stack_size;
+ 
++	stack_size += 8;
++	rbx_off = stack_size;
++
+ 	stack_size += (sizeof(struct bpf_tramp_run_ctx) + 7) & ~0x7;
+ 	run_ctx_off = stack_size;
+ 
++	if (nr_regs > 6 && (flags & BPF_TRAMP_F_CALL_ORIG)) {
++		/* the space that used to pass arguments on-stack */
++		stack_size += (nr_regs - get_nr_used_regs(m)) * 8;
++		/* make sure the stack pointer is 16-byte aligned if we
++		 * need pass arguments on stack, which means
++		 *  [stack_size + 8(rbp) + 8(rip) + 8(origin rip)]
++		 * should be 16-byte aligned. Following code depend on
++		 * that stack_size is already 8-byte aligned.
++		 */
++		stack_size += (stack_size % 16) ? 0 : 8;
++	}
++
++	arg_stack_off = stack_size;
++
+ 	if (flags & BPF_TRAMP_F_SKIP_FRAME) {
+ 		/* skip patched call instruction and point orig_call to actual
+ 		 * body of the kernel function.
+@@ -2189,8 +2365,14 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	x86_call_depth_emit_accounting(&prog, NULL);
+ 	EMIT1(0x55);		 /* push rbp */
+ 	EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp */
+-	EMIT4(0x48, 0x83, 0xEC, stack_size); /* sub rsp, stack_size */
+-	EMIT1(0x53);		 /* push rbx */
++	if (!is_imm8(stack_size))
++		/* sub rsp, stack_size */
++		EMIT3_off32(0x48, 0x81, 0xEC, stack_size);
++	else
++		/* sub rsp, stack_size */
++		EMIT4(0x48, 0x83, 0xEC, stack_size);
++	/* mov QWORD PTR [rbp - rbx_off], rbx */
++	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_6, -rbx_off);
+ 
+ 	/* Store number of argument registers of the traced function:
+ 	 *   mov rax, nr_regs
+@@ -2208,7 +2390,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ip_off);
+ 	}
+ 
+-	save_regs(m, &prog, nr_regs, regs_off);
++	save_args(m, &prog, regs_off, false);
+ 
+ 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+ 		/* arg1: mov rdi, im */
+@@ -2238,7 +2420,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	}
+ 
+ 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+-		restore_regs(m, &prog, nr_regs, regs_off);
++		restore_regs(m, &prog, regs_off);
++		save_args(m, &prog, arg_stack_off, true);
+ 
+ 		if (flags & BPF_TRAMP_F_ORIG_STACK) {
+ 			emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
+@@ -2279,7 +2462,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 		}
+ 
+ 	if (flags & BPF_TRAMP_F_RESTORE_REGS)
+-		restore_regs(m, &prog, nr_regs, regs_off);
++		restore_regs(m, &prog, regs_off);
+ 
+ 	/* This needs to be done regardless. If there were fmod_ret programs,
+ 	 * the return value is only updated on the stack and still needs to be
+@@ -2298,7 +2481,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	if (save_ret)
+ 		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
+ 
+-	EMIT1(0x5B); /* pop rbx */
++	emit_ldx(&prog, BPF_DW, BPF_REG_6, BPF_REG_FP, -rbx_off);
+ 	EMIT1(0xC9); /* leave */
+ 	if (flags & BPF_TRAMP_F_SKIP_FRAME)
+ 		/* skip our return address and return to parent */
 -- 
 2.40.1
 
