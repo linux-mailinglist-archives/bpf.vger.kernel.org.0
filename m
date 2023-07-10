@@ -1,130 +1,180 @@
-Return-Path: <bpf+bounces-4552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1EB074C9C0
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 03:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8424174CABC
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 05:43:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60960280F64
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 01:57:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 436BF280E37
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 03:43:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A0FF17D2;
-	Mon, 10 Jul 2023 01:57:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5401FAF;
+	Mon, 10 Jul 2023 03:42:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DEF17C8
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 01:57:10 +0000 (UTC)
-Received: from mailgw.kylinos.cn (unknown [124.126.103.232])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C842BEE;
-	Sun,  9 Jul 2023 18:57:08 -0700 (PDT)
-X-UUID: 06188fefb575434da11446c1d3861c80-20230710
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.27,REQID:809c74b7-40f3-4e1c-85dc-7d90e1d84bb3,IP:15,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:0
-X-CID-INFO: VERSION:1.1.27,REQID:809c74b7-40f3-4e1c-85dc-7d90e1d84bb3,IP:15,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:0
-X-CID-META: VersionHash:01c9525,CLOUDID:ba820968-314d-4083-81b6-6a74159151eb,B
-	ulkID:230710095658WWG00CKR,BulkQuantity:0,Recheck:0,SF:44|24|17|19|102,TC:
-	nil,Content:0,EDM:-3,IP:-2,URL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OS
-	I:0,OSA:0,AV:0,LES:1,SPR:NO
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,
-	TF_CID_SPAM_FSI
-X-UUID: 06188fefb575434da11446c1d3861c80-20230710
-X-User: jianghaoran@kylinos.cn
-Received: from localhost.localdomain [(39.156.73.12)] by mailgw
-	(envelope-from <jianghaoran@kylinos.cn>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 128/128)
-	with ESMTP id 1691520724; Mon, 10 Jul 2023 09:56:57 +0800
-From: Haoran Jiang <jianghaoran@kylinos.cn>
-To: linux-kernel@vger.kernel.org
-Cc: loongarch@lists.linux.dev,
-	llvm@lists.linux.dev,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34AA217F2;
+	Mon, 10 Jul 2023 03:42:43 +0000 (UTC)
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277B4C2;
+	Sun,  9 Jul 2023 20:42:41 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VmxH3ZP_1688960557;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VmxH3ZP_1688960557)
+          by smtp.aliyun-inc.com;
+          Mon, 10 Jul 2023 11:42:38 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: virtualization@lists.linux-foundation.org
+Cc: "Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
-	chenhuacai@kernel.org,
-	trix@redhat.com,
-	ndesaulniers@google.com,
-	nathan@kernel.org,
-	jolsa@kernel.org,
-	haoluo@google.com,
-	sdf@google.com,
-	kpsingh@kernel.org,
-	john.fastabend@gmail.com,
-	yhs@fb.com,
-	song@kernel.org,
-	martin.lau@linux.dev,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	kernel@xen0n.name,
-	yangtiezhu@loongson.cn
-Subject: [PATCH] samples/bpf: Fix compilation failure for samples/bpf on Loongarch Fedora
-Date: Mon, 10 Jul 2023 09:51:20 +0800
-Message-Id: <20230710015120.44818-1-jianghaoran@kylinos.cn>
-X-Mailer: git-send-email 2.27.0
+	Christoph Hellwig <hch@infradead.org>
+Subject: [PATCH vhost v11 00/10] virtio core prepares for AF_XDP
+Date: Mon, 10 Jul 2023 11:42:27 +0800
+Message-Id: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Git-Hash: 39991abed41c
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-When building the latest samples/bpf on Loongarch Fedora
+## About DMA APIs
 
-     make M=samples/bpf
+Now, virtio may can not work with DMA APIs when virtio features do not have
+VIRTIO_F_ACCESS_PLATFORM.
 
-There are compilation errors as follows:
+1. I tried to let DMA APIs return phy address by virtio-device. But DMA APIs just
+   work with the "real" devices.
+2. I tried to let xsk support callballs to get phy address from virtio-net
+   driver as the dma address. But the maintainers of xsk may want to use dma-buf
+   to replace the DMA APIs. I think that may be a larger effort. We will wait
+   too long.
 
-In file included from ./linux/samples/bpf/sockex2_kern.c:2:
-In file included from ./include/uapi/linux/in.h:25:
-In file included from ./include/linux/socket.h:8:
-In file included from ./include/linux/uio.h:9:
-In file included from ./include/linux/thread_info.h:60:
-In file included from ./arch/loongarch/include/asm/thread_info.h:15:
-In file included from ./arch/loongarch/include/asm/processor.h:13:
-In file included from ./arch/loongarch/include/asm/cpu-info.h:11:
-./arch/loongarch/include/asm/loongarch.h:13:10: fatal error: 'larchintrin.h' file not found
-         ^~~~~~~~~~~~~~~
-1 error generated.
+So rethinking this, firstly, we can support premapped-dma only for devices with
+VIRTIO_F_ACCESS_PLATFORM. In the case of af-xdp, if the users want to use it,
+they have to update the device to support VIRTIO_F_RING_RESET, and they can also
+enable the device's VIRTIO_F_ACCESS_PLATFORM feature.
 
-larchintrin.h is included in /usr/lib64/clang/14.0.6/include,
-and the header file location is specified at compile time.
+Thanks for the help from Christoph.
 
-Test on Loongarch Fedora:
-https://github.com/fedora-remix-loongarch/releases-info
+=================
 
-Signed-off-by: Haoran Jiang <jianghaoran@kylinos.cn>
----
- samples/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
+copy feature of xsk (XDP socket) needs to be supported by the driver. The
+performance of zero copy is very good.
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 615f24ebc49c..b301796a3862 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -434,7 +434,7 @@ $(obj)/%.o: $(src)/%.c
- 	@echo "  CLANG-bpf " $@
- 	$(Q)$(CLANG) $(NOSTDINC_FLAGS) $(LINUXINCLUDE) $(BPF_EXTRA_CFLAGS) \
- 		-I$(obj) -I$(srctree)/tools/testing/selftests/bpf/ \
--		-I$(LIBBPF_INCLUDE) \
-+		-I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES) \
- 		-D__KERNEL__ -D__BPF_TRACING__ -Wno-unused-value -Wno-pointer-sign \
- 		-D__TARGET_ARCH_$(SRCARCH) -Wno-compare-distinct-pointer-types \
- 		-Wno-gnu-variable-sized-type-not-at-end \
--- 
-2.27.0
+ENV: Qemu with vhost.
+
+                   vhost cpu | Guest APP CPU |Guest Softirq CPU | PPS
+-----------------------------|---------------|------------------|------------
+xmit by sockperf:     90%    |   100%        |                  |  318967
+xmit by xsk:          100%   |   30%         |   33%            | 1192064
+recv by sockperf:     100%   |   68%         |   100%           |  692288
+recv by xsk:          100%   |   33%         |   43%            |  771670
+
+Before achieving the function of Virtio-Net, we also have to let virtio core
+support these features:
+
+1. virtio core support premapped
+2. virtio core support reset per-queue
+
+=================
+
+After introducing premapping, I added an example to virtio-net. virtio-net can
+merge dma mappings through this feature. @Jason
+
+
+Please review.
+
+Thanks.
+
+v11
+ 1. virtio-net merges dma operates based on the feature premapped
+ 2. A better way to handle the map error with the premapped
+
+v10:
+ 1. support to set vq to premapped mode, then the vq just handles the premapped request.
+ 2. virtio-net support to do dma mapping in advance
+
+v9:
+ 1. use flag to distinguish the premapped operations. no do judgment by sg.
+
+v8:
+ 1. vring_sg_address: check by sg_page(sg) not dma_address. Because 0 is a valid dma address
+ 2. remove unused code from vring_map_one_sg()
+
+v7:
+ 1. virtqueue_dma_dev() return NULL when virtio is without DMA API.
+
+v6:
+ 1. change the size of the flags to u32.
+
+v5:
+ 1. fix for error handler
+ 2. add flags to record internal dma mapping
+
+v4:
+ 1. rename map_inter to dma_map_internal
+ 2. fix: Excess function parameter 'vq' description in 'virtqueue_dma_dev'
+
+v3:
+ 1. add map_inter to struct desc state to reocrd whether virtio core do dma map
+
+v2:
+ 1. based on sgs[0]->dma_address to judgment is premapped
+ 2. based on extra.addr to judgment to do unmap for no-indirect desc
+ 3. based on indir_desc to judgment to do unmap for indirect desc
+ 4. rename virtqueue_get_dma_dev to virtqueue_dma_dev
+
+v1:
+ 1. expose dma device. NO introduce the api for dma and sync
+ 2. split some commit for review.
+
+
+
+
+
+Xuan Zhuo (10):
+  virtio_ring: check use_dma_api before unmap desc for indirect
+  virtio_ring: put mapping error check in vring_map_one_sg
+  virtio_ring: introduce virtqueue_set_premapped()
+  virtio_ring: support add premapped buf
+  virtio_ring: introduce virtqueue_dma_dev()
+  virtio_ring: skip unmap for premapped
+  virtio_ring: correct the expression of the description of
+    virtqueue_resize()
+  virtio_ring: separate the logic of reset/enable from virtqueue_resize
+  virtio_ring: introduce virtqueue_reset()
+  virtio_net: merge dma operation for one page
+
+ drivers/net/virtio_net.c     | 283 +++++++++++++++++++++++++++++++++--
+ drivers/virtio/virtio_ring.c | 257 ++++++++++++++++++++++++-------
+ include/linux/virtio.h       |   6 +
+ 3 files changed, 478 insertions(+), 68 deletions(-)
+
+--
+2.32.0.3.g01195cf9f
 
 
