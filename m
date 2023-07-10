@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-4634-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4636-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66D3074DEED
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 22:14:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E125974DEF2
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 22:15:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 228CB2813F8
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 20:14:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF6341C20B13
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 20:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F6121640C;
-	Mon, 10 Jul 2023 20:12:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A93A1642C;
+	Mon, 10 Jul 2023 20:12:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68886156DB;
-	Mon, 10 Jul 2023 20:12:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 444AF1642D;
+	Mon, 10 Jul 2023 20:12:32 +0000 (UTC)
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19ECDBB;
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACB612F;
 	Mon, 10 Jul 2023 13:12:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=h7U7dig1T0neKDxwyLo1oyopN7YqmyEEZZoBQ26zUKA=; b=LvvG31PRj7DeXO8hRPKNEh/Jw6
-	FxKRuaNN0uyavqiK9T6eAAWrXc3w4TLtQ32tGrk0ZHiL61RfiyQpx+9YiNxHi2T+2FWBk1Z7W7c7p
-	DRDmikohJ6lm/1HUu7rjcT+fJbIijdp9f7dqVqZo4hqrbwxM90Qw5kkg2S3/+NgJDNCQCP0nM1IPQ
-	WtjBW92Fekfqt0QNAY5ESzO+nlQMOysoF+Mu6HcpNW6Oa33I6tboSd7D9qI38POP4OamzmW0Ugdho
-	l2fnNO/bHUCEiWuK50jB13zhqnXWgcbvNDatMYKjM9OMuU3Un6GFdIzZ5Br/asE/U/D32gRoH2nyP
-	dr6sNcBQ==;
+	bh=kdrjvTcbnVTCNlBeJF7MeDpQfsAEniQEdj+sxfb9ALA=; b=nbKB2a66kQYQpV7YWXe0gEk3EU
+	JIwTy4t5OrlLmjOXKDsfPVtO3A5eE7dFxL1/sPW/sRy1ThcOfRqupEV4+vx4vcWRPqqhuRHso4dqJ
+	7Ldd9F4yyMHSbGJb0w099Z6Et1hKyLj4/wRdHOq4H5KuQsldxgqs32qtlwB6pvWbzAY1QiAI7lfdE
+	crQ0ltdvPlJaawzP/+xBEBykkvqnxeKmF0gstiszGfDmfP9S+KI206i6H0sMMilcpQuzfn+b4+edF
+	M0PGoyXHnvfx/zybUGUhg5eQisZbS/lPZduv0eF19d4L8pqOEVx18YFgrwoXgJNsOltjgTwZXAdhU
+	x1eu/rHA==;
 Received: from 12.248.197.178.dynamic.dsl-lte-bonding.zhbmb00p-msn.res.cust.swisscom.ch ([178.197.248.12] helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1qIxFE-000E5F-B7; Mon, 10 Jul 2023 22:12:28 +0200
+	id 1qIxFF-000E5f-5e; Mon, 10 Jul 2023 22:12:29 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: ast@kernel.org
 Cc: andrii@kernel.org,
@@ -52,9 +52,9 @@ Cc: andrii@kernel.org,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next v4 5/8] libbpf: Add helper macro to clear opts structs
-Date: Mon, 10 Jul 2023 22:12:15 +0200
-Message-Id: <20230710201218.19460-6-daniel@iogearbox.net>
+Subject: [PATCH bpf-next v4 6/8] bpftool: Extend net dump with tcx progs
+Date: Mon, 10 Jul 2023 22:12:16 +0200
+Message-Id: <20230710201218.19460-7-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230710201218.19460-1-daniel@iogearbox.net>
 References: <20230710201218.19460-1-daniel@iogearbox.net>
@@ -75,37 +75,152 @@ X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add a small and generic LIBBPF_OPTS_CLEAR() helper macros which clears
-an opts structure and reinitializes its .sz member to place the structure
-size. I found this very useful when developing selftests, but it is also
-generic enough as a macro next to the existing LIBBPF_OPTS() which hides
-the .sz initialization, too.
+Add support to dump fd-based attach types via bpftool. This includes both
+the tc BPF link and attach ops programs. Dumped information contain the
+attach location, function entry name, program ID and link ID when applicable.
+
+Example with tc BPF link:
+
+  # ./bpftool net
+  xdp:
+
+  tc:
+  bond0(4) tcx/ingress cil_from_netdev prog id 784 link id 10
+  bond0(4) tcx/egress cil_to_netdev prog id 804 link id 11
+
+  flow_dissector:
+
+  netfilter:
+
+Example with tc BPF attach ops:
+
+  # ./bpftool net
+  xdp:
+
+  tc:
+  bond0(4) tcx/ingress cil_from_netdev prog id 654
+  bond0(4) tcx/egress cil_to_netdev prog id 672
+
+  flow_dissector:
+
+  netfilter:
 
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 ---
- tools/lib/bpf/libbpf_common.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ tools/bpf/bpftool/net.c | 86 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 82 insertions(+), 4 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
-index 9a7937f339df..eb180023aa97 100644
---- a/tools/lib/bpf/libbpf_common.h
-+++ b/tools/lib/bpf/libbpf_common.h
-@@ -70,4 +70,15 @@
- 		};							    \
- 	})
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index 26a49965bf71..22af0a81458c 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -76,6 +76,11 @@ static const char * const attach_type_strings[] = {
+ 	[NET_ATTACH_TYPE_XDP_OFFLOAD]	= "xdpoffload",
+ };
  
-+/* Helper macro to clear a libbpf options struct
-+ *
-+ * Small helper macro to reset all fields and to reinitialize the common
-+ * structure size member.
-+ */
-+#define LIBBPF_OPTS_CLEAR(NAME)						    \
-+	do {								    \
-+		memset(&NAME, 0, sizeof(NAME));				    \
-+		NAME.sz = sizeof(NAME);					    \
-+	} while (0)
++static const char * const attach_loc_strings[] = {
++	[BPF_TCX_INGRESS]		= "tcx/ingress",
++	[BPF_TCX_EGRESS]		= "tcx/egress",
++};
 +
- #endif /* __LIBBPF_LIBBPF_COMMON_H */
+ const size_t net_attach_type_size = ARRAY_SIZE(attach_type_strings);
+ 
+ static enum net_attach_type parse_attach_type(const char *str)
+@@ -422,8 +427,80 @@ static int dump_filter_nlmsg(void *cookie, void *msg, struct nlattr **tb)
+ 			      filter_info->devname, filter_info->ifindex);
+ }
+ 
+-static int show_dev_tc_bpf(int sock, unsigned int nl_pid,
+-			   struct ip_devname_ifindex *dev)
++static const char *flags_strings(__u32 flags)
++{
++	return json_output ? "none" : "";
++}
++
++static int __show_dev_tc_bpf_name(__u32 id, char *name, size_t len)
++{
++	struct bpf_prog_info info = {};
++	__u32 ilen = sizeof(info);
++	int fd, ret;
++
++	fd = bpf_prog_get_fd_by_id(id);
++	if (fd < 0)
++		return fd;
++	ret = bpf_obj_get_info_by_fd(fd, &info, &ilen);
++	if (ret < 0)
++		goto out;
++	ret = -ENOENT;
++	if (info.name[0]) {
++		get_prog_full_name(&info, fd, name, len);
++		ret = 0;
++	}
++out:
++	close(fd);
++	return ret;
++}
++
++static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
++			      const enum bpf_attach_type loc)
++{
++	__u32 prog_flags[64] = {}, link_flags[64] = {}, i;
++	__u32 prog_ids[64] = {}, link_ids[64] = {};
++	LIBBPF_OPTS(bpf_prog_query_opts, optq);
++	char prog_name[MAX_PROG_FULL_NAME];
++	int ret;
++
++	optq.prog_ids = prog_ids;
++	optq.prog_attach_flags = prog_flags;
++	optq.link_ids = link_ids;
++	optq.link_attach_flags = link_flags;
++	optq.count = ARRAY_SIZE(prog_ids);
++
++	ret = bpf_prog_query_opts(dev->ifindex, loc, &optq);
++	if (ret)
++		return;
++	for (i = 0; i < optq.count; i++) {
++		NET_START_OBJECT;
++		NET_DUMP_STR("devname", "%s", dev->devname);
++		NET_DUMP_UINT("ifindex", "(%u)", dev->ifindex);
++		NET_DUMP_STR("kind", " %s", attach_loc_strings[loc]);
++		ret = __show_dev_tc_bpf_name(prog_ids[i], prog_name,
++					     sizeof(prog_name));
++		if (!ret)
++			NET_DUMP_STR("name", " %s", prog_name);
++		NET_DUMP_UINT("prog_id", " prog id %u", prog_ids[i]);
++		if (prog_flags[i])
++			NET_DUMP_STR("prog_flags", "%s", flags_strings(prog_flags[i]));
++		if (link_ids[i])
++			NET_DUMP_UINT("link_id", " link id %u",
++				      link_ids[i]);
++		if (link_flags[i])
++			NET_DUMP_STR("link_flags", "%s", flags_strings(link_flags[i]));
++		NET_END_OBJECT_FINAL;
++	}
++}
++
++static void show_dev_tc_bpf(struct ip_devname_ifindex *dev)
++{
++	__show_dev_tc_bpf(dev, BPF_TCX_INGRESS);
++	__show_dev_tc_bpf(dev, BPF_TCX_EGRESS);
++}
++
++static int show_dev_tc_bpf_classic(int sock, unsigned int nl_pid,
++				   struct ip_devname_ifindex *dev)
+ {
+ 	struct bpf_filter_t filter_info;
+ 	struct bpf_tcinfo_t tcinfo;
+@@ -790,8 +867,9 @@ static int do_show(int argc, char **argv)
+ 	if (!ret) {
+ 		NET_START_ARRAY("tc", "%s:\n");
+ 		for (i = 0; i < dev_array.used_len; i++) {
+-			ret = show_dev_tc_bpf(sock, nl_pid,
+-					      &dev_array.devices[i]);
++			show_dev_tc_bpf(&dev_array.devices[i]);
++			ret = show_dev_tc_bpf_classic(sock, nl_pid,
++						      &dev_array.devices[i]);
+ 			if (ret)
+ 				break;
+ 		}
 -- 
 2.34.1
 
