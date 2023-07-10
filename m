@@ -1,245 +1,259 @@
-Return-Path: <bpf+bounces-4624-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 562F874DD58
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 20:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83A0674DD5D
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 20:32:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCFE42812DA
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 18:30:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39360280A1C
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 18:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2790B14AAB;
-	Mon, 10 Jul 2023 18:29:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE5A14A9B;
+	Mon, 10 Jul 2023 18:31:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC78C13AF9;
-	Mon, 10 Jul 2023 18:29:51 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B08180;
-	Mon, 10 Jul 2023 11:29:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=a8+MiCiJThwksTeBz4oIft3DmVmR2gr+UYVJcopCf9Y=; b=Lc/5iBFt5aaHXrrRF317JwYkKJ
-	lxYnjY93C3H4+EZX+l+jmc6SxcX2i/rQs7JukSAZiv1k7JR7TlytbCkX8EmlbEoVnAsccU1iMoc6r
-	XFhqVYE7rdIBjpuT4Pa62vZAkudXN9SYkxJJ3cirXztEXODvjYhdkOOAUbKJhmuad06fFMQNa4F09
-	o61u50iXzK249Zp073P9r53zPmZNGJlgNyfDZBtdGTR29TsjfPS8h1iPvNk8yN8AJQmikuCLXMOfy
-	B3HxxT9NxB/PBadYP2sRnf4EveZYd5yElV8KpgNoVzgkVzFGvhSvBNkDAyT4v1+AeeDKTu9gUCFbP
-	L6L8E10Q==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qIvdc-0004l9-Of; Mon, 10 Jul 2023 20:29:32 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qIvdc-000GfY-9Y; Mon, 10 Jul 2023 20:29:32 +0200
-Subject: Re: [PATCH bpf-next v3 1/8] bpf: Add generic attach/detach/query API
- for multi-progs
-To: Stanislav Fomichev <sdf@google.com>
-Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
- razor@blackwall.org, john.fastabend@gmail.com, kuba@kernel.org,
- dxu@dxuuu.xyz, joe@cilium.io, toke@kernel.org, davem@davemloft.net,
- bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20230707172455.7634-1-daniel@iogearbox.net>
- <20230707172455.7634-2-daniel@iogearbox.net> <ZKiDKuoovyikz8Mm@google.com>
- <d67ca0f4-4753-e86f-f8ca-dd515f941ea5@iogearbox.net>
- <ZKxLY3onuOHepOxt@google.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ba8221bc-f3e4-8841-850f-743cec6670fb@iogearbox.net>
-Date: Mon, 10 Jul 2023 20:29:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C4BF16428
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 18:31:54 +0000 (UTC)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E0BC3
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 11:31:53 -0700 (PDT)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 5D479C16B5AE
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 11:31:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1689013913; bh=uzq1TBOaR54PUAY+kQMzPg/RwXrX30NmNmoFdL3sLaY=;
+	h=From:To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe;
+	b=RRGm6vio9QZmoURr+HcJwadGw2L2w0tKuSZ1uwUgeluzhNHKmOumlwJrHmrvQa90d
+	 9A2NZ6DzLB652AjJ+CluDP8EWGLV++MTmesfHF07Cp+DKyWbkfmZCK3EoPlKG64gUp
+	 eIg1Ji4MZV/qbOiJibU/rxFHI5D1InxicqWt/bsg=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Mon Jul 10 11:31:53 2023
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 0F15FC169510;
+	Mon, 10 Jul 2023 11:31:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1689013913; bh=uzq1TBOaR54PUAY+kQMzPg/RwXrX30NmNmoFdL3sLaY=;
+	h=From:To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe;
+	b=RRGm6vio9QZmoURr+HcJwadGw2L2w0tKuSZ1uwUgeluzhNHKmOumlwJrHmrvQa90d
+	 9A2NZ6DzLB652AjJ+CluDP8EWGLV++MTmesfHF07Cp+DKyWbkfmZCK3EoPlKG64gUp
+	 eIg1Ji4MZV/qbOiJibU/rxFHI5D1InxicqWt/bsg=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 18280C169510
+ for <bpf@ietfa.amsl.com>; Mon, 10 Jul 2023 11:31:52 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -6.547
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 1hr0TNJNaTKY for <bpf@ietfa.amsl.com>;
+ Mon, 10 Jul 2023 11:31:48 -0700 (PDT)
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com
+ [209.85.160.178])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 4F1FCC151094
+ for <bpf@ietf.org>; Mon, 10 Jul 2023 11:31:48 -0700 (PDT)
+Received: by mail-qt1-f178.google.com with SMTP id
+ d75a77b69052e-403a85eb723so20375861cf.1
+ for <bpf@ietf.org>; Mon, 10 Jul 2023 11:31:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1689013907; x=1691605907;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=FFg6es6MnkESIGeku/OXeP7kXEnpRz2XkgXfhzN59IQ=;
+ b=Vu7mDQN2vOocgmDkQbFJMA98TVOiguWhPSb/Mhh/O35XuG4cogzX3AytuegPd/GIkU
+ YSwFs//PJhRyP1w0+DAunmziZbsQRSNown1rafohw21/y8SPwJGdO/r2p1aiajGSf00C
+ CDYoIUPeth07YvTd4X+8IDp7mvSNkGQtSyNwdKxJKVGWCRvyKHs23Am7P4sf5WnyQFVh
+ w625KaUs0H4Iv3hlnKX9ynrKMClcKTXP2Fj2vZtiFzIwMOwMUrpaWWjuoAZmjYgLXI3R
+ Dwsb5D3Btw0bIG/sl6dH18uVl3uQWYlwTeNz2sxkXfCGkX3loIv2lh1BS31W87W1bU1d
+ /skQ==
+X-Gm-Message-State: ABy/qLZjuihbCFf2vesIg/+PYogFK7FWQa/7D0fRM0uA4/2cWrlLufyN
+ jGNtbLfiBRoiv7vhP8dk4v0=
+X-Google-Smtp-Source: APBJJlFnJy56MSvI7hBVrDADp6aJ5NB+E7GR4tyisl4jvg/ekNRgWT9+E1wpViPcJoyO6CTGRqMzyA==
+X-Received: by 2002:ac8:7d43:0:b0:403:a7de:ae36 with SMTP id
+ h3-20020ac87d43000000b00403a7deae36mr8725658qtb.67.1689013906996; 
+ Mon, 10 Jul 2023 11:31:46 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:4850])
+ by smtp.gmail.com with ESMTPSA id
+ z4-20020ac87f84000000b00403a2e88d01sm180690qtj.40.2023.07.10.11.31.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 10 Jul 2023 11:31:46 -0700 (PDT)
+From: David Vernet <void@manifault.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+ kernel-team@meta.com, bpf@ietf.org
+Date: Mon, 10 Jul 2023 13:30:27 -0500
+Message-Id: <20230710183027.15132-1-void@manifault.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZKxLY3onuOHepOxt@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/Jqf7RKUggFbwjzwBdMm_eKB41eU>
+Subject: [Bpf] [PATCH bpf-next] bpf,
+ docs: Create new standardization subdirectory
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
+ <bpf.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
+ <mailto:bpf-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
+ <mailto:bpf-request@ietf.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26965/Mon Jul 10 09:29:40 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 7/10/23 8:18 PM, Stanislav Fomichev wrote:
-> On 07/10, Daniel Borkmann wrote:
->> On 7/7/23 11:27 PM, Stanislav Fomichev wrote:
-[...]
->>>> +static int bpf_mprog_prog(struct bpf_tuple *tuple,
->>>> +			  u32 object, u32 flags,
->>>> +			  enum bpf_prog_type type)
->>>> +{
->>>> +	bool id = flags & BPF_F_ID;
->>>> +	struct bpf_prog *prog;
->>>> +
->>>> +	if (id)
->>>> +		prog = bpf_prog_by_id(object);
->>>> +	else
->>>> +		prog = bpf_prog_get(object);
->>>> +	if (IS_ERR(prog)) {
->>>
->>> [..]
->>>
->>>> +		if (!object && !id)
->>>> +			return 0;
->>>
->>> What's the reason behind this?
->>
->> If an fd was passed which is 0 and this was not a program fd, then we don't error
->> out and treat it as if no fd was passed.
->   
-> Is this new api an opportunity to fix that fd==0? And always treat it as
-> valid. Or we have some other constrains elsewhere?
+The BPF standardization effort is actively underway with the IETF. As
+described in the BPF Working Group (WG) charter in [0], there are a
+number of proposed documents, some informational and some proposed
+standards, that will be drafted as part of the standardization effort.
 
-Not that I'm aware of, it should work fine in the new API.
+[0]: https://datatracker.ietf.org/wg/bpf/about/
 
->>>> +		return PTR_ERR(prog);
->>>> +	}
->>>> +	if (type && prog->type != type) {
->>>> +		bpf_prog_put(prog);
->>>> +		return -EINVAL;
->>>> +	}
->>>> +
->>>> +	tuple->link = NULL;
->>>> +	tuple->prog = prog;
->>>> +	return 0;
->>>> +}
->> [...]
->>>> +static int bpf_mprog_pos_before(struct bpf_mprog_entry *entry,
->>>> +				struct bpf_tuple *tuple)
->>>> +{
->>>> +	struct bpf_mprog_fp *fp;
->>>> +	struct bpf_mprog_cp *cp;
->>>> +	int i;
->>>> +
->>>> +	for (i = 0; i < bpf_mprog_total(entry); i++) {
->>>> +		bpf_mprog_read(entry, i, &fp, &cp);
->>>> +		if (tuple->prog == READ_ONCE(fp->prog) &&
->>>
->>> Both attach/detach happen under rtnl, why do need READ_ONCE? I'm assuming
->>> even going forwrad, attach/detach from non-tcx places will happen
->>> under lock?
->>>
->>> (same for bpf_mprog_pos_before/bpf_mprog_pos_after)
->>>
->>> Feels like the only place where we need WRITE_ONCE is the replace (in-place)
->>> and READ_ONCE during fast-path. Why do we need the rest?
->>
->> Yes, the replace case is via WRITE_ONCE, hence the READ_ONCE annotations. You
->> are saying that for the cases where we are under lock we should just drop the
->> READ_ONCE annotations? I can do that ofc, I thought the general convention was
->> to do the {READ,WRITE}_ONCE consistently for the purpose of documenting fp->prog
->> access.
-> 
-> I see, then maybe let's keep them. I was a bit confused because those
-> READ_ONCE are within a locked section so I wasn't sure whether I'm
-> missing something or it's working as intended :-)
+Though the specific documents that will formally be standardized will
+exist as Internet Drafts (I-D) and WG documents in the BPF WG
+datatracker page, the source of truth from where those documents will be
+generated will reside in the kernel documentation tree (originating in
+the bpf-next tree).
 
-Okay. I added the explanation around locking in the big comment I sent in the
-other thread to Alexei.
+Because these documents will be used to generate the I-D and WG
+documents which will be standardized with the IETF, they are a bit
+special as far as kernel-tree documentation goes:
 
->>>> +		    (!tuple->link || tuple->link == cp->link))
->>>> +			return i - 1;
->>>> +	}
->>>> +	return tuple->prog ? -ENOENT : -1;
->>>> +}
->>>> +
->>>> +static int bpf_mprog_pos_after(struct bpf_mprog_entry *entry,
->>>> +			       struct bpf_tuple *tuple)
->>>> +{
->>>> +	struct bpf_mprog_fp *fp;
->>>> +	struct bpf_mprog_cp *cp;
->>>> +	int i;
->>>> +
->>>> +	for (i = 0; i < bpf_mprog_total(entry); i++) {
->>>> +		bpf_mprog_read(entry, i, &fp, &cp);
->>>> +		if (tuple->prog == READ_ONCE(fp->prog) &&
->>>> +		    (!tuple->link || tuple->link == cp->link))
->>>> +			return i + 1;
->>>> +	}
->>>> +	return tuple->prog ? -ENOENT : bpf_mprog_total(entry);
->>>> +}
->>>> +
->>>> +int bpf_mprog_attach(struct bpf_mprog_entry *entry, struct bpf_prog *prog_new,
->>>> +		     struct bpf_link *link, struct bpf_prog *prog_old,
->>>> +		     u32 flags, u32 object, u64 revision)
->>>> +{
->>>> +	struct bpf_tuple rtuple, ntuple = {
->>>> +		.prog = prog_new,
->>>> +		.link = link,
->>>> +	}, otuple = {
->>>> +		.prog = prog_old,
->>>> +		.link = link,
->>>> +	};
->>>> +	int ret, idx = -2, tidx;
->>>> +
->>>> +	if (revision && revision != bpf_mprog_revision(entry))
->>>> +		return -ESTALE;
->>>> +	if (bpf_mprog_exists(entry, prog_new))
->>>> +		return -EEXIST;
->>>> +	ret = bpf_mprog_tuple_relative(&rtuple, object,
->>>> +				       flags & ~BPF_F_REPLACE,
->>>> +				       prog_new->type);
->>>> +	if (ret)
->>>> +		return ret;
->>>> +	if (flags & BPF_F_REPLACE) {
->>>> +		tidx = bpf_mprog_pos_exact(entry, &otuple);
->>>> +		if (tidx < 0) {
->>>> +			ret = tidx;
->>>> +			goto out;
->>>> +		}
->>>> +		idx = tidx;
->>>> +	}
->>>
->>> [..]
->>>
->>>> +	if (flags & BPF_F_BEFORE) {
->>>> +		tidx = bpf_mprog_pos_before(entry, &rtuple);
->>>> +		if (tidx < -1 || (idx >= -1 && tidx != idx)) {
->>>> +			ret = tidx < -1 ? tidx : -EDOM;
->>>> +			goto out;
->>>> +		}
->>>> +		idx = tidx;
->>>> +	}
->>>> +	if (flags & BPF_F_AFTER) {
->>>> +		tidx = bpf_mprog_pos_after(entry, &rtuple);
->>>> +		if (tidx < 0 || (idx >= -1 && tidx != idx)) {
->>>> +			ret = tidx < 0 ? tidx : -EDOM;
->>>> +			goto out;
->>>> +		}
->>>> +		idx = tidx;
->>>> +	}
->>>
->>> There still seems to be some inter-dependency between F_BEFORE and F_AFTER?
->>> IOW, looks like I can pass F_BEFORE|F_AFTER|F_REPLACE. Do we need that?
->>> Why not exclusive cases?
->>
->> I reworked this as per Andrii's suggestion/preference from v2 [0], iow, to calculate
->> target index and bail out if the request cannot be resolved into a common index.
->>
->>    [0] https://lore.kernel.org/bpf/CAEf4BzbsUMnP7WMm3OmJznvD2b03B1qASFRNiDoVAU6XvvTZNA@mail.gmail.com/
-> 
-> SG! Let's maybe put a summary in the header of what the expectation is when
-> combining them?
+- They will be dual licensed with LGPL-2.1 OR BSD-2-Clause
+- IETF I-D and WG documents (the documents which will actually be
+  standardized) will be auto-generated from these documents.
 
-Yes, will add a comment sounds good.
+In order to keep things clearly organized in the BPF documentation tree,
+and to make it abundantly clear where standards-related documentation
+needs to go, we should move standards-relevant documents into a separate
+standardization/ subdirectory.
 
-Thanks,
-Daniel
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ Documentation/bpf/index.rst                    |  3 +--
+ Documentation/bpf/standardization/index.rst    | 18 ++++++++++++++++++
+ .../{ => standardization}/instruction-set.rst  |  0
+ .../bpf/{ => standardization}/linux-notes.rst  |  3 ++-
+ MAINTAINERS                                    |  2 +-
+ 5 files changed, 22 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/bpf/standardization/index.rst
+ rename Documentation/bpf/{ => standardization}/instruction-set.rst (100%)
+ rename Documentation/bpf/{ => standardization}/linux-notes.rst (96%)
+
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index dbb39e8f9889..1ff177b89d66 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -12,9 +12,9 @@ that goes into great technical depth about the BPF Architecture.
+ .. toctree::
+    :maxdepth: 1
+ 
+-   instruction-set
+    verifier
+    libbpf/index
++   standardization/index
+    btf
+    faq
+    syscall_api
+@@ -29,7 +29,6 @@ that goes into great technical depth about the BPF Architecture.
+    bpf_licensing
+    test_debug
+    clang-notes
+-   linux-notes
+    other
+    redirect
+ 
+diff --git a/Documentation/bpf/standardization/index.rst b/Documentation/bpf/standardization/index.rst
+new file mode 100644
+index 000000000000..09c6ba055fd7
+--- /dev/null
++++ b/Documentation/bpf/standardization/index.rst
+@@ -0,0 +1,18 @@
++.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
++
++===================
++BPF Standardization
++===================
++
++This directory contains documents that are being iterated on as part of the BPF
++standardization effort with the IETF. See the `IETF BPF Working Group`_ page
++for the working group charter, documents, and more.
++
++.. toctree::
++   :maxdepth: 1
++
++   instruction-set
++   linux-notes
++
++.. Links:
++.. _IETF BPF Working Group: https://datatracker.ietf.org/wg/bpf/about/
+diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
+similarity index 100%
+rename from Documentation/bpf/instruction-set.rst
+rename to Documentation/bpf/standardization/instruction-set.rst
+diff --git a/Documentation/bpf/linux-notes.rst b/Documentation/bpf/standardization/linux-notes.rst
+similarity index 96%
+rename from Documentation/bpf/linux-notes.rst
+rename to Documentation/bpf/standardization/linux-notes.rst
+index 508d009d3bed..00d2693de025 100644
+--- a/Documentation/bpf/linux-notes.rst
++++ b/Documentation/bpf/standardization/linux-notes.rst
+@@ -45,7 +45,8 @@ On Linux, this integer is a BTF ID.
+ Legacy BPF Packet access instructions
+ =====================================
+ 
+-As mentioned in the `ISA standard documentation <instruction-set.rst#legacy-bpf-packet-access-instructions>`_,
++As mentioned in the `ISA standard documentation
++<instruction-set.html#legacy-bpf-packet-access-instructions>`_,
+ Linux has special eBPF instructions for access to packet data that have been
+ carried over from classic BPF to retain the performance of legacy socket
+ filters running in the eBPF interpreter.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index acbe54087d1c..99d8dc9b2850 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3746,7 +3746,7 @@ R:	David Vernet <void@manifault.com>
+ L:	bpf@vger.kernel.org
+ L:	bpf@ietf.org
+ S:	Maintained
+-F:	Documentation/bpf/instruction-set.rst
++F:	Documentation/bpf/standardization/
+ 
+ BPF [GENERAL] (Safe Dynamic Programs and Tools)
+ M:	Alexei Starovoitov <ast@kernel.org>
+-- 
+2.40.1
+
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
