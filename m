@@ -1,119 +1,177 @@
-Return-Path: <bpf+bounces-4598-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4599-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D24174D55A
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 14:26:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1294E74D5B6
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 14:36:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DB3A1C20A61
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 12:26:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D0081C20AAE
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 12:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF5D011C8F;
-	Mon, 10 Jul 2023 12:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC49111BC;
+	Mon, 10 Jul 2023 12:36:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEB111C87
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 12:26:25 +0000 (UTC)
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BF8B1;
-	Mon, 10 Jul 2023 05:26:22 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vn44hfE_1688991975;
-Received: from 30.240.113.134(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vn44hfE_1688991975)
-          by smtp.aliyun-inc.com;
-          Mon, 10 Jul 2023 20:26:17 +0800
-Message-ID: <40c4b292-e396-3a1b-f26f-ebbea93c02a8@linux.alibaba.com>
-Date: Mon, 10 Jul 2023 20:26:14 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3456010796;
+	Mon, 10 Jul 2023 12:36:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A3A7C433CB;
+	Mon, 10 Jul 2023 12:35:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688992570;
+	bh=H2xgbjqXpjCIL1YrRX5e2Lm0dCE6nhNpxkhLzNT5ua0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GYBFwi445q0lt0ZphYZpLmOt5wR+meJbqPSRhxet7P0iiPRYgnHSi9LobGg38wRHk
+	 YRw3H+QXcyvvByqsJ+4wCmkCN6cf2UfzMYa1sqxLulNzp2UeGTyc0ij28Jne5oQ1T1
+	 3RwWXPXG0ww5I/wkFqIbXj1fKOk/tlA6pnousvcLf4fNGPnso9ohJABAD43u0T4XNZ
+	 4qx5bhLf1Dg7cYvF3ikt77ixrICUwaQpwn/PA/WiTF+kWZvjsjd1ey6AFXxc5U5x4u
+	 9w1gOuNArxobHqFss0Ukd6pKRPqY5GTMTdaOCIUwXl2G+JmZTqpL3AJhz3XT+Fb/gm
+	 tN6yuNjSBVu7g==
+Date: Mon, 10 Jul 2023 14:35:28 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: jk@ozlabs.org, arnd@arndb.de, mpe@ellerman.id.au, npiggin@gmail.com,
+	christophe.leroy@csgroup.eu, hca@linux.ibm.com, gor@linux.ibm.com,
+	agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+	svens@linux.ibm.com, gregkh@linuxfoundation.org, arve@android.com,
+	tkjos@android.com, maco@android.com, joel@joelfernandes.org,
+	cmllamas@google.com, surenb@google.com,
+	dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
+	leon@kernel.org, bwarrum@linux.ibm.com, rituagar@linux.ibm.com,
+	ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
+	linux_oss@crudebyte.com, dsterba@suse.com, dhowells@redhat.com,
+	marc.dionne@auristor.com, viro@zeniv.linux.org.uk, raven@themaw.net,
+	luisbg@kernel.org, salah.triki@gmail.com, aivazian.tigran@gmail.com,
+	ebiederm@xmission.com, keescook@chromium.org, clm@fb.com,
+	josef@toxicpanda.com, xiubli@redhat.com, idryomov@gmail.com,
+	jaharkes@cs.cmu.edu, coda@cs.cmu.edu, jlbec@evilplan.org,
+	hch@lst.de, nico@fluxnic.net, rafael@kernel.org, code@tyhicks.com,
+	ardb@kernel.org, xiang@kernel.org, chao@kernel.org,
+	huyue2@coolpad.com, jefflexu@linux.alibaba.com,
+	linkinjeon@kernel.org, sj1557.seo@samsung.com, jack@suse.com,
+	tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+	hirofumi@mail.parknet.co.jp, miklos@szeredi.hu, rpeterso@redhat.com,
+	agruenba@redhat.com, richard@nod.at,
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+	mikulas@artax.karlin.mff.cuni.cz, mike.kravetz@oracle.com,
+	muchun.song@linux.dev, dwmw2@infradead.org, shaggy@kernel.org,
+	tj@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org,
+	chuck.lever@oracle.com, neilb@suse.de, kolga@netapp.com,
+	Dai.Ngo@oracle.com, tom@talpey.com, konishi.ryusuke@gmail.com,
+	anton@tuxera.com, almaz.alexandrovich@paragon-software.com,
+	mark@fasheh.com, joseph.qi@linux.alibaba.com, me@bobcopeland.com,
+	hubcap@omnibond.com, martin@omnibond.com, amir73il@gmail.com,
+	mcgrof@kernel.org, yzaikin@google.com, tony.luck@intel.com,
+	gpiccoli@igalia.com, al@alarsen.net, sfrench@samba.org,
+	pc@manguebit.com, lsahlber@redhat.com, sprasad@microsoft.com,
+	senozhatsky@chromium.org, phillip@squashfs.org.uk,
+	rostedt@goodmis.org, mhiramat@kernel.org, dushistov@mail.ru,
+	hdegoede@redhat.com, djwong@kernel.org, dlemoal@kernel.org,
+	naohiro.aota@wdc.com, jth@kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, hughd@google.com, akpm@linux-foundation.org,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, john.johansen@canonical.com, paul@paul-moore.com,
+	jmorris@namei.org, serge@hallyn.com, stephen.smalley.work@gmail.com,
+	eparis@parisplace.org, jgross@suse.com, stern@rowland.harvard.edu,
+	lrh2000@pku.edu.cn, sebastian.reichel@collabora.com,
+	wsa+renesas@sang-engineering.com, quic_ugoswami@quicinc.com,
+	quic_linyyuan@quicinc.com, john@keeping.me.uk, error27@gmail.com,
+	quic_uaggarwa@quicinc.com, hayama@lineo.co.jp, jomajm@gmail.com,
+	axboe@kernel.dk, dhavale@google.com, dchinner@redhat.com,
+	hannes@cmpxchg.org, zhangpeng362@huawei.com, slava@dubeyko.com,
+	gargaditya08@live.com, penguin-kernel@I-love.SAKURA.ne.jp,
+	yifeliu@cs.stonybrook.edu, madkar@cs.stonybrook.edu,
+	ezk@cs.stonybrook.edu, yuzhe@nfschina.com, willy@infradead.org,
+	okanatov@gmail.com, jeffxu@chromium.org, linux@treblig.org,
+	mirimmad17@gmail.com, yijiangshan@kylinos.cn,
+	yang.yang29@zte.com.cn, xu.xin16@zte.com.cn,
+	chengzhihao1@huawei.com, shr@devkernel.io, Liam.Howlett@Oracle.com,
+	adobriyan@gmail.com, chi.minghao@zte.com.cn,
+	roberto.sassu@huawei.com, linuszeng@tencent.com, bvanassche@acm.org,
+	zohar@linux.ibm.com, yi.zhang@huawei.com, trix@redhat.com,
+	fmdefrancesco@gmail.com, ebiggers@google.com,
+	princekumarmaurya06@gmail.com, chenzhongjin@huawei.com,
+	riel@surriel.com, shaozhengchao@huawei.com, jingyuwang_vip@163.com,
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org,
+	autofs@vger.kernel.org, linux-mm@kvack.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-efi@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	cluster-devel@redhat.com, linux-um@lists.infradead.org,
+	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
+	linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+	linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev,
+	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+	reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-trace-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Subject: Re: [PATCH v2 00/89] fs: new accessors for inode->i_ctime
+Message-ID: <20230710-zudem-entkam-bb508cbd8c78@brauner>
+References: <20230705185812.579118-1-jlayton@kernel.org>
+ <5e40891f6423feb5b68f025e31f26e9a50ae9390.camel@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [Patch v2] perf/core: Bail out early if the request AUX area is
- out of bound
-Content-Language: en-US
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: alexander.shishkin@linux.intel.com, james.clark@arm.com,
- leo.yan@linaro.org, mingo@redhat.com, baolin.wang@linux.alibaba.com,
- acme@kernel.org, mark.rutland@arm.com, jolsa@kernel.org,
- namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20230613123211.58393-1-xueshuai@linux.alibaba.com>
- <20230710120026.GA3034907@hirez.programming.kicks-ass.net>
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20230710120026.GA3034907@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5e40891f6423feb5b68f025e31f26e9a50ae9390.camel@kernel.org>
 
+On Fri, Jul 07, 2023 at 08:42:31AM -0400, Jeff Layton wrote:
+> On Wed, 2023-07-05 at 14:58 -0400, Jeff Layton wrote:
+> > v2:
+> > - prepend patches to add missing ctime updates
+> > - add simple_rename_timestamp helper function
+> > - rename ctime accessor functions as inode_get_ctime/inode_set_ctime_*
+> > - drop individual inode_ctime_set_{sec,nsec} helpers
+> > 
+> 
+> After review by Jan and others, and Jan's ext4 rework, the diff on top
+> of the series I posted a couple of days ago is below. I don't really
+> want to spam everyone with another ~100 patch v3 series, but I can if
+> you think that's best.
+> 
+> Christian, what would you like me to do here?
 
+I picked up the series from the list and folded the fixups you posted
+here into the respective fs conversion patches. I hope that helps you
+avoid a resend. You should have received a separate "thank you" mail for
+all of this.
 
-On 2023/7/10 20:00, Peter Zijlstra wrote:
-> On Tue, Jun 13, 2023 at 08:32:11PM +0800, Shuai Xue wrote:
-> 
->>  kernel/events/ring_buffer.c              | 13 +++++++++++++
->>  tools/perf/Documentation/perf-record.txt |  3 ++-
->>  2 files changed, 15 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
->> index a0433f37b024..e514aaba9d42 100644
->> --- a/kernel/events/ring_buffer.c
->> +++ b/kernel/events/ring_buffer.c
->> @@ -673,6 +673,7 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
->>  	bool overwrite = !(flags & RING_BUFFER_WRITABLE);
->>  	int node = (event->cpu == -1) ? -1 : cpu_to_node(event->cpu);
->>  	int ret = -ENOMEM, max_order;
->> +	size_t bytes;
->>  
->>  	if (!has_aux(event))
->>  		return -EOPNOTSUPP;
->> @@ -699,6 +700,18 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
->>  		watermark = 0;
->>  	}
->>  
->> +	/*
->> +	 * 'rb->aux_pages' allocated by kcalloc() is a pointer array which is
->> +	 * used to maintains AUX trace pages. The allocated page for this array
->> +	 * is physically contiguous (and virtually contiguous) with an order of
->> +	 * 0..MAX_ORDER. If the size of pointer array crosses the limitation set
->> +	 * by MAX_ORDER, it reveals a WARNING.
->> +	 *
->> +	 * So bail out early if the request AUX area is out of bound.
->> +	 */
->> +	if (check_mul_overflow(nr_pages, sizeof(void *), &bytes) ||
->> +	    get_order(bytes) > MAX_ORDER)
->> +		return -EINVAL;
-> 
-> This is all quite horrific :/ What's wrong with something simple:
-> 
-> 	/* Can't allocate more than MAX_ORDER  */
-> 	if (get_order((unsigned long)nr_pages * sizeof(void*)) > MAX_ORDER)
-> 		return -EINVAL;
-> 
-> If you're on 32bit then nr_pages should never be big enough to overflow,
-> fundamentally you'll only have 32-PAGE_SHIFT bits in nr_pages.
+To each patch that I folded one of the fixlets from below into I added a
+git note that records a link to your mail here and the respective patch
+hunk from this mail that I folded into the patch. git.kernel.org will
+show notes by default. For example,
+https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs.ctime&id=8b0e3c2e99004609a16ba145bcbdfdddb78e220e
+should show you the note I added. You can also fetch them via
+git fetch $remote refs/notes/*:refs/notes/*
+(You probably know that ofc but jic.) if you're interested.
 
-Well, you are right. Thank you for pointing it out.
-I will send a new version with your simplified code :)
+Based on v6.5-rc1 as of today.
 
-Best Regards,
-Shuai
+Btw, both b4 and patchwork somehow treat the series in weird was.
+IOW, based on the message id of the cover letter I was able to pull most
+messages except for:
 
-> 
-> 
->>  	rb->aux_pages = kcalloc_node(nr_pages, sizeof(void *), GFP_KERNEL,
->>  				     node);
-> 
+[07/92] fs: add ctime accessors infrastructure
+[08/92] fs: new helper: simple_rename_timestamp
+[92/92] fs: rename i_ctime field to __i_ctime
+
+which I pulled in separately. Not sure what the cause of this is.
 
