@@ -1,121 +1,152 @@
-Return-Path: <bpf+bounces-4603-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4604-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 850F174D6D4
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 15:04:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E67B74D728
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 15:14:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61B181C20AC1
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 13:04:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EE061C203BE
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 13:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1F111C8B;
-	Mon, 10 Jul 2023 13:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD4211C93;
+	Mon, 10 Jul 2023 13:13:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5791101C6
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 13:04:07 +0000 (UTC)
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8294619B6
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 06:03:44 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-666e97fcc60so2749084b3a.3
-        for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 06:03:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688994208; x=1691586208;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sAy2c0os0GmfNuU+dP0Ym0b6T3GH3G+Bfmw/OZdFCgA=;
-        b=FCXvc+q7Ckt/Vm7rCBLYwtu0LzCUVodERKRMLt1iNehEnwPhXk7B7YdwRBZguFQQZU
-         uCsN3B9prfW4KSe6tzCLwuCU8pLw+MJJQ4asbzpSB3GI+ttYOXOgIOkvbjTzdQDcIJz3
-         rv0xT4r5ZxVziOwUBCIBfCrYvt6SXuNBdmK21NbnIE+1dEd8CTzEep5GURTbqfqPXFKW
-         kWYMm5u73PVzTOHJq9bmoUerEGfaMmhfVsX75K22i/PxXrp+4VqdvIi+zESX5Pb5WcQb
-         kd3whsdyuOt8JRHeqI0Yzw6qF1mWIhP/1iL1ztH/16xR+IKwAVvrtnqoJnMyw37lNzN1
-         3lUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688994208; x=1691586208;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sAy2c0os0GmfNuU+dP0Ym0b6T3GH3G+Bfmw/OZdFCgA=;
-        b=RriN8UmlHqdObtLRqZMApjxSiPF0R6DntWino4f0g3pyqAC90w2FHLdHNtNEew/LC7
-         gXfBf9qDEMJo6aT9vNY0D56g3CyxQ2cHJPwluRIYPZhQvdFQIaQ9N8pQrf+TrSSp3aZu
-         gP63bgnnOoKKI0/uhx60N9mLDCmh3YcxSUVCQ6o5H29CblsMNvVjGHBQMHaWKhi0KM4x
-         IJgsz9e29HJtMeTqWXnEI+Fnc2JsupT1kvPVqF/8+dG0zvCpuEvzR++zEg4D8JmWNicB
-         NufR3WuX28jYqajGuJFXnVV7hQMaETbxD0tR4rqkp/U6A9jeP+AGmErJ1KYteEOyl2Go
-         IQiQ==
-X-Gm-Message-State: ABy/qLbIr4+X0m1wAuH9Mz1xiQk7Bsmksc6BU75t95tO9jfPzZPot8S+
-	/CkjM0W8TG79F7F83LbAJoI=
-X-Google-Smtp-Source: APBJJlGKb+QmQtzOeC8zSxJUy+5B2v3C4XCt6WZ+bphJfsuHYCeRR/Jy5UJdbRBMMo0S218d/ywsyg==
-X-Received: by 2002:a05:6a20:728e:b0:131:bcaf:9b with SMTP id o14-20020a056a20728e00b00131bcaf009bmr2333454pzk.30.1688994207687;
-        Mon, 10 Jul 2023 06:03:27 -0700 (PDT)
-Received: from [192.168.1.9] ([14.238.228.104])
-        by smtp.gmail.com with ESMTPSA id s2-20020a639242000000b00553c09cc795sm7446422pgn.50.2023.07.10.06.03.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Jul 2023 06:03:27 -0700 (PDT)
-Message-ID: <4bf6475b-6688-1b6d-0db1-b0f15d2e1b3d@gmail.com>
-Date: Mon, 10 Jul 2023 20:03:23 +0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35F0A10975
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 13:13:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84296C433C8;
+	Mon, 10 Jul 2023 13:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688994836;
+	bh=Aq5NTYUAm+GogYfTUt9zhLH9os56FOgEi5F1VAGReu4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bB5Lt+64qLrNU5bbE25iJAKgGKuCgLkDTPPnfD+KqZsrhYSoORfIrtcOzMQq9A8jL
+	 enmC+gWK1rjDBb1EkJvhgouqcpcgWuCc78dXEGBS1hfoDkny5pUWGVYH5npxzb8vnI
+	 GNCMCqkUHJsFNNNMitKBUlqUp9aOMKFFPvr+Py0XFaL946Bnx2sEVtj3K6x81s09mZ
+	 496lKWQtDmvyxbKT7OhhcmaaGmkHVqr+q9AkrUpkyOSPxAQID3jHVK0UUiWumyES4V
+	 f2DLWXdQClUcBjUzU1DO5wNARDn/X+WC+aljtun+GYcdWW7oimeb5EBZqHj9g5XnrF
+	 EMqrD4UqkimgA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id DFB3A40516; Mon, 10 Jul 2023 10:13:53 -0300 (-03)
+Date: Mon, 10 Jul 2023 10:13:53 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+	dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
+	mykolal@fb.com
+Subject: Re: [PATCH dwarves] pahole: avoid adding same struct structure to
+ two rb trees
+Message-ID: <ZKwEEd1Ercz8kkId@kernel.org>
+References: <20230525235949.2978377-1-eddyz87@gmail.com>
+ <ZHnxsyjDaPQ7gGUP@kernel.org>
+ <a15b83ebc750df7edd84b76d30a72c50e016e80f.camel@gmail.com>
+ <ZHovRW1G0QZwBSOW@kernel.org>
+ <c9c1e04b10f0a13a3af9e980d04ce08d3304ac3a.camel@gmail.com>
+ <ZH3nalodXmup6pEF@kernel.org>
+ <2b4372428cd1e56de3b79791160cdd3afdc7df6a.camel@gmail.com>
+ <ZH4vZjaQnCGOzY/w@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] samples/bpf: Add more instructions to build
- dependencies and, configuration in README.rst
-Content-Language: en-US
-To: Siddh Raman Pant <sanganaka@siddh.me>,
- Khalid Masum <khalid.masum.92@gmail.com>
-Cc: daniel <daniel@iogearbox.net>,
- linux-kernel-mentees <linux-kernel-mentees@lists.linuxfoundation.org>,
- andrii <andrii@kernel.org>, ast <ast@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
- "martin.lau" <martin.lau@linux.dev>
-References: <bd1477f2-a51e-a795-4f25-a32d6ab46530@gmail.com>
- <ZKcE+wMWGdVFSBX2@google.com>
- <32d67707-b831-9a98-4cb9-fcb27c8806ef@gmail.com>
- <ZKhEEJfzCyYI7BfH@google.com>
- <5d336a9a-8ae5-2b1f-7af3-a94818867b40@gmail.com>
- <CAABMjtHc4Vu=_L4rOhy1a-m0nQ-ptHe68qXJd__mSQAgO+t_iw@mail.gmail.com>
- <1893b4bf70a.2c44c261262941.883099013045252156@siddh.me>
-From: Anh Tuan Phan <tuananhlfc@gmail.com>
-In-Reply-To: <1893b4bf70a.2c44c261262941.883099013045252156@siddh.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZH4vZjaQnCGOzY/w@kernel.org>
+X-Url: http://acmel.wordpress.com
 
+Em Mon, Jun 05, 2023 at 03:54:30PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Mon, Jun 05, 2023 at 05:39:19PM +0300, Eduard Zingerman escreveu:
+> > On Mon, 2023-06-05 at 10:47 -0300, Arnaldo Carvalho de Melo wrote:
+> > > Em Fri, Jun 02, 2023 at 09:08:51PM +0300, Eduard Zingerman escreveu:
+> > > > On Fri, 2023-06-02 at 15:04 -0300, Arnaldo Carvalho de Melo wrote:
+> > > > > Em Fri, Jun 02, 2023 at 04:52:40PM +0300, Eduard Zingerman escreveu:
+> > > > > > Right, you are correct.
+> > > > > > The 'structures__tree = RB_ROOT' part is still necessary, though.
+> > > > > > If you are ok with overall structure of the patch I can resend it w/o bzero().
+> > > 
+> > > > > Humm, so basically this boils down to the following patch?
+> > > 
+> > > > > +++ b/pahole.c
+> > > > > @@ -674,7 +674,12 @@ static void print_ordered_classes(void)
+> > > > >  		__print_ordered_classes(&structures__tree);
+> > > > >  	} else {
+> > > > >  		struct rb_root resorted = RB_ROOT;
+> > > > > -
+> > > > > +#ifdef DEBUG_CHECK_LEAKS
+> > > > > +		// We'll delete structures from structures__tree, since we're
+> > > > > +		// adding them to ther resorted list, better not keep
+> > > > > +		// references there.
+> > > > > +		structures__tree = RB_ROOT;
+> > > > > +#endif
+> > >  
+> > > > But __structures__delete iterates over structures__tree,
+> > > > so it won't delete anything if code like this, right?
+> > >  
+> > > > >  		resort_classes(&resorted, &structures__list);
+> > > > >  		__print_ordered_classes(&resorted);
+> > > > >  	}
+> > > 
+> > > Yeah, I tried to be minimalistic, my version avoids the crash, but
+> > > defeats the DEBUG_CHECK_LEAKS purpose :-\
+> > > 
+> > > How about:
+> > > 
+> > > diff --git a/pahole.c b/pahole.c
+> > > index 6fc4ed6a721b97ab..e843999fde2a8a37 100644
+> > > --- a/pahole.c
+> > > +++ b/pahole.c
+> > > @@ -673,10 +673,10 @@ static void print_ordered_classes(void)
+> > >  	if (!need_resort) {
+> > >  		__print_ordered_classes(&structures__tree);
+> > >  	} else {
+> > > -		struct rb_root resorted = RB_ROOT;
+> > > +		structures__tree = RB_ROOT;
+> > >  
+> > > -		resort_classes(&resorted, &structures__list);
+> > > -		__print_ordered_classes(&resorted);
+> > > +		resort_classes(&structures__tree, &structures__list);
+> > > +		__print_ordered_classes(&structures__tree);
+> > >  	}
+> > >  }
+> > >  
+> > 
+> > That would work, but I still think that there is no need to replicate call
 
+I'm going thru the pile of stuff from before my vacations, can I take
+the above as an Acked-by in addition to your Reported-by?
 
-On 7/9/23 22:36, Siddh Raman Pant wrote:
-> On Sun, 09 Jul 2023 20:51:15 +0530, Khalid Masum wrote:
->> However, something to think about is: If future versions of clang, llvm etc
->> do not support compiling our code as it is now, it may become misleading.
-> 
-> When that happens, the max version can be added in.
-> 
-> Though, it would be an indicator to problems in the code IMO,
-> which would need some updates and fixes.
-> 
-> So nothing to worry about now.
-> 
-> Anh should send v3 instead of replying though. I would also suggest
-> to shorten the commit title if possible.
-> 
-> Thanks,
-> Siddh
-> 
+- Arnaldo
 
-Thank you! Will send a new version accordingly. But I'd like to admit
-that the v2 in this patch's title is a mistake. This should be v1 so
-I'll send a v2 patch for this discussion.
+> > to __print_ordered_classes, as long as the same list is passed as an argument,
+> > e.g.:
+> > 
+> > @@ -670,14 +671,11 @@ static void resort_classes(struct rb_root *resorted, struct list_head *head)
+> >  
+> >  static void print_ordered_classes(void)
+> >  {
+> > -       if (!need_resort) {
+> > -               __print_ordered_classes(&structures__tree);
+> > -       } else {
+> > -               struct rb_root resorted = RB_ROOT;
+> > -
+> > -               resort_classes(&resorted, &structures__list);
+> > -               __print_ordered_classes(&resorted);
+> > +       if (need_resort) {
+> > +               structures__tree = RB_ROOT;
+> > +               resort_classes(&structures__tree, &structures__list);
+> >         }
+> > +       __print_ordered_classes(&structures__tree);
+> >  }
+> 
+> Right, that can be done as a follow up patch, further simplifying the
+> code.
+> 
+> I'm just trying to have each patch as small as possible.
 
