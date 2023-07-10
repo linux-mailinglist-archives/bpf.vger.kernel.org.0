@@ -1,74 +1,77 @@
-Return-Path: <bpf+bounces-4566-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4567-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8693874CC33
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 07:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1E4F74CC3A
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 07:34:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67F0E1C20823
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 05:31:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F0EE1C20846
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 05:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02ADA23CD;
-	Mon, 10 Jul 2023 05:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E7D723CC;
+	Mon, 10 Jul 2023 05:33:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFC7823B3
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 05:31:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AFD823B7
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 05:33:57 +0000 (UTC)
 Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24D8B3;
-	Sun,  9 Jul 2023 22:31:41 -0700 (PDT)
-X-UUID: 4f69eea4840d47d3bc77a966cd03ef59-20230710
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A57EB3;
+	Sun,  9 Jul 2023 22:33:55 -0700 (PDT)
+X-UUID: fe22782b6d154cc5ac9c2e0da43990b4-20230710
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.27,REQID:5c384c4a-e133-4528-85f8-091747c15c1e,IP:15,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:0
-X-CID-INFO: VERSION:1.1.27,REQID:5c384c4a-e133-4528-85f8-091747c15c1e,IP:15,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:0
-X-CID-META: VersionHash:01c9525,CLOUDID:8426d0da-b4fa-43c8-9c3e-0d3fabd03ec0,B
-	ulkID:230710133120G82S8ADA,BulkQuantity:0,Recheck:0,SF:24|17|19|44|102,TC:
-	nil,Content:0,EDM:-3,IP:-2,URL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OS
-	I:0,OSA:0,AV:0,LES:1,SPR:NO
+X-CID-O-INFO: VERSION:1.1.27,REQID:89717b82-668f-4e85-85c5-8e906053f2e7,IP:15,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:6
+X-CID-INFO: VERSION:1.1.27,REQID:89717b82-668f-4e85-85c5-8e906053f2e7,IP:15,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:6
+X-CID-META: VersionHash:01c9525,CLOUDID:1f2cd0da-b4fa-43c8-9c3e-0d3fabd03ec0,B
+	ulkID:230710133120G82S8ADA,BulkQuantity:4,Recheck:0,SF:24|17|19|42|102,TC:
+	nil,Content:0,EDM:-3,IP:-2,URL:1,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI
+	:0,OSA:0,AV:0,LES:1,SPR:NO
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
 X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
 	TF_CID_SPAM_ULS
-X-UUID: 4f69eea4840d47d3bc77a966cd03ef59-20230710
+X-UUID: fe22782b6d154cc5ac9c2e0da43990b4-20230710
 X-User: jianghaoran@kylinos.cn
 Received: from localhost.localdomain [(39.156.73.12)] by mailgw
 	(envelope-from <jianghaoran@kylinos.cn>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256 128/128)
-	with ESMTP id 898977102; Mon, 10 Jul 2023 13:31:18 +0800
+	with ESMTP id 1249612017; Mon, 10 Jul 2023 13:33:26 +0800
 From: Haoran Jiang <jianghaoran@kylinos.cn>
-To: linux-kernel@vger.kernel.org
-Cc: loongarch@lists.linux.dev,
-	llvm@lists.linux.dev,
-	bpf@vger.kernel.org,
-	chenhuacai@kernel.org,
-	trix@redhat.com,
-	ndesaulniers@google.com,
-	nathan@kernel.org,
-	jolsa@kernel.org,
-	haoluo@google.com,
-	sdf@google.com,
-	kpsingh@kernel.org,
-	john.fastabend@gmail.com,
-	yhs@fb.com,
-	song@kernel.org,
-	martin.lau@linux.dev,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
+To: chenhuacai@kernel.org
+Cc: andrii@kernel.org,
 	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	haoluo@google.com,
+	jianghaoran@kylinos.cn,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
 	kernel@xen0n.name,
-	yangtiezhu@loongson.cn
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev,
+	loongarch@lists.linux.dev,
+	martin.lau@linux.dev,
+	nathan@kernel.org,
+	ndesaulniers@google.com,
+	sdf@google.com,
+	song@kernel.org,
+	trix@redhat.com,
+	yangtiezhu@loongson.cn,
+	yhs@fb.com
 Subject: [PATCH v2] samples/bpf: Fix compilation failure for samples/bpf on LoongArch Fedora
-Date: Mon, 10 Jul 2023 13:25:42 +0800
-Message-Id: <20230710052542.257444-1-jianghaoran@kylinos.cn>
+Date: Mon, 10 Jul 2023 13:27:50 +0800
+Message-Id: <20230710052750.259595-1-jianghaoran@kylinos.cn>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <CAAhV-H6s3N=-brDz24PfrtEKNFjvnLjbDR2NpOVDF_fN7rA53A@mail.gmail.com>
+References: <CAAhV-H6s3N=-brDz24PfrtEKNFjvnLjbDR2NpOVDF_fN7rA53A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
