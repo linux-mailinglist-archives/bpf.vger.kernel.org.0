@@ -1,286 +1,259 @@
-Return-Path: <bpf+bounces-4627-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4629-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BC4874DD6F
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 20:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7743A74DDAD
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 21:00:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30AA628135A
-	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 18:37:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0311D2811F8
+	for <lists+bpf@lfdr.de>; Mon, 10 Jul 2023 19:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C68714266;
-	Mon, 10 Jul 2023 18:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96EB314AA3;
+	Mon, 10 Jul 2023 19:00:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43ACA12B9E
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 18:37:17 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A711BC
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 11:36:49 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id B28BAC169538
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 11:36:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1689014195; bh=/UHmnkU1B7LFkPmzNlbwutUa4PdnrFbX1KUihyncDXY=;
-	h=To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=QvB433xW9OXz5h/n46j9wVD7wFVvlkqtHTqALQSQhpGElWEbeCFfy/ighyAeqwket
-	 b3Q0RbX048p67wlm8FKWfPCC4LeVOJAqF5ndtL/PrDWCDMGi5l4OcG3GAFUUYuZN0S
-	 TMKsdiO7YQMqUNh48Vfpz0B8mW9OIz030VFxeC7E=
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
- by ietfa.amsl.com (Postfix) with ESMTP id A264AC169527;
- Mon, 10 Jul 2023 11:36:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
- t=1689014195; bh=/UHmnkU1B7LFkPmzNlbwutUa4PdnrFbX1KUihyncDXY=;
- h=From:To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
- List-Post:List-Help:List-Subscribe;
- b=c6gys/q7qNJLZ6+hvZdzyqKyM9rGAOzU++AX1lHDyoWvXKWLBWFIKrTlJk+/+x1aO
- nf06sVf/hLlAfpsv9xEluU2/wd9vL67aEbnJKIEQXHEWraf4tjiev1a10QL2DunTPU
- niy4JZf8ZxZ6+ekrxT73E7Wu3AqYfPVg3ohIis8g=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id E5BBAC16950E
- for <bpf@ietfa.amsl.com>; Mon, 10 Jul 2023 11:36:33 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -6.845
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,MAILING_LIST_MULTI,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=googlemail.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id pj8gWgme5A3s for <bpf@ietfa.amsl.com>;
- Mon, 10 Jul 2023 11:36:29 -0700 (PDT)
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com
- [IPv6:2607:f8b0:4864:20::431])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 61918C169527
- for <bpf@ietf.org>; Mon, 10 Jul 2023 11:36:29 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id
- d2e1a72fcca58-668711086f4so3078154b3a.1
- for <bpf@ietf.org>; Mon, 10 Jul 2023 11:36:29 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4732A2581
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 19:00:37 +0000 (UTC)
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64454106
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 12:00:36 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1b45fe36cd9so1786042fac.2
+        for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 12:00:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=googlemail.com; s=20221208; t=1689014188; x=1691606188;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=XVA1uSFinkIrDQM5y/4V1pT0CBrG8xSRD0wqPRcdPVg=;
- b=kcQjgxmgDSE4oExxyiKqAm8buGiio2rwdfWOmmV2Kp6gtJ6LNfG6mxw1qvSk/ZLnl1
- gGAkQi0P5B70BLznW10sIgs+IF3x54WlLh8abEcGhn29rF1dhvEiAmeTfbuGFQLYTeqc
- YI0UU/Oird3UgdOjKNR/XO8vOYmAzNyWnm7DUiJWDtfNdQsvks9KRqXa1zde6FPd/pIB
- Pz811fnNITFPhhKM6DzPvba6oKbaRZKHqxwl4JVm2DWFChNNM6R2FEIzfGNCXya2qrxX
- R0fq9k/mQAF31fc8lfMU8DSygoo+0taSTB4oBuq6w56IfVqce0ZLFSY5UOxQlM16EBS3
- K8SQ==
+        d=google.com; s=20221208; t=1689015635; x=1691607635;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TP1Pt7xLF1NYrpaGiym97ld/dynAERwS9xR4/tU34p4=;
+        b=HrNzTPAskJ+57S0Pqv13ODdFQmUofWOMFo2m4pdaV72INUkLGgYZQnHRYn8GxpUrxk
+         66+jVIWFfBUzw7wkfoL2gVBv9PwOUHvaHue6CeXqxA+C2ay8LZ898hSAgdjAjJeZZT7x
+         j4HEB1nllgGOCzVM/r7Eo+rYaxQU7amEtrNbHk/2kaGI2qGQhWY7aDA1r7EO3724EDZ5
+         yPOwE2SRgMo02qY5M4wZqSog9jYCPShdA3126aESLB2BeODeaI+xYqkAtWiqwcwfyCix
+         P1FtsU9DHa8EIg9MN30cLKqIKWPQHpKCE3eoiys4hPN6VR3R8xjSJuO8gq5dh/pW5yFg
+         XW4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1689014188; x=1691606188;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=XVA1uSFinkIrDQM5y/4V1pT0CBrG8xSRD0wqPRcdPVg=;
- b=cuaEdqeEWtH3JSv8R1begminZgm5xJ8wMgAEEkK/r6YCL6i4Fga9RPELjc51+BITqB
- hQ/Jt+prduS6lBBI9Zmmc281CagM/R4s9BeyCh/1921ZQ/0KYuiytlvTj70UmP29pr78
- N5zzzv6j8YdQem/lzx0ShowkTm9ft/ajZfL7FzKpsa6dlEUxSchnNxgsfmo+IPNbO400
- XdLu3kBWHQ/f0IUX4R4lL9KRIcTbPLIcC0Q5vulDryGDJqjE0HB3vRJEOBIy56snVrDu
- 2ICUZnTs7pWSv+mzKzeuMnqZbw3NZKDruvndkT/0yF+MCkryiKOnvZBUxep6v7pgT60E
- 8TPA==
-X-Gm-Message-State: ABy/qLb1hsc+dXWQSrEBsUsfizLtVq0xAZgS+jiCSYf5PNKvDrJ4smfN
- WO15CYHVg3XdTkJ/sqE76/Oim1k2dHY=
-X-Google-Smtp-Source: APBJJlHb725uW0TZZ1aLxhAk4SH0vKO6bLp5ur7xXBm2kcNMXnBLQMbzKZ9TjfLIGJJqstEd7exy+Q==
-X-Received: by 2002:a05:6a00:3a0a:b0:678:7744:31fd with SMTP id
- fj10-20020a056a003a0a00b00678774431fdmr26427913pfb.0.1689014188502; 
- Mon, 10 Jul 2023 11:36:28 -0700 (PDT)
-Received: from mariner-vm.. (c-71-197-160-159.hsd1.wa.comcast.net.
- [71.197.160.159]) by smtp.gmail.com with ESMTPSA id
- u18-20020aa78392000000b006827c26f147sm101778pfm.138.2023.07.10.11.36.27
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 10 Jul 2023 11:36:28 -0700 (PDT)
-To: bpf@vger.kernel.org
-Cc: bpf@ietf.org,
-	Dave Thaler <dthaler@microsoft.com>
-Date: Mon, 10 Jul 2023 18:36:22 +0000
-Message-Id: <20230710183622.1401-1-dthaler1968@googlemail.com>
-X-Mailer: git-send-email 2.33.4
+        d=1e100.net; s=20221208; t=1689015635; x=1691607635;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TP1Pt7xLF1NYrpaGiym97ld/dynAERwS9xR4/tU34p4=;
+        b=ITWG+FMKrLkWpZHuaf/68NuxST0jRNnht4BV5BmPx+MXYANyUeb5druOTIuEQuApHA
+         G+U4TW9Tp4T0NWZiLYc+eVqA58TwfZdHl4H6SdHrgSPuYUsRUGegCSkHs3CbDBH9d4tW
+         +IHd9a6/idWSGVcUdlbjhCHeqbashCf6reLxYCoCNOqEyjjYxpQbSVwW89NJuogPcK6H
+         wBadsNQkyXt6cbaUNfdTBkINyXP9kgH9zWYH00zIFK20L4oVRyIyNkvyFDLTUEAw+jOr
+         OTYfKrsVuCNvUwZeQfqnxfUZmPUiBi3ZK8a8gEHa9xvSIGNrxRjzoHm6rkCwTvvV9Cub
+         yfsg==
+X-Gm-Message-State: ABy/qLZ3cOQHLgKTyf3GYkHPc0Syony4hHaVNTGwg82LygjKYvI9J28c
+	DxfwcBGPNOL64gRTg3hepKIBeB6vdsKXHKYSJwymzQ==
+X-Google-Smtp-Source: APBJJlHjRnfsHGciTDAvECvUR19M7H2X6q3Rjv1M3SkvVU/ucXr6vAbEj4gDAPNdXG0kcr3zSYpIzsXcLwOJGcSvOKs=
+X-Received: by 2002:a05:6870:4253:b0:19d:e05b:8738 with SMTP id
+ v19-20020a056870425300b0019de05b8738mr11120320oac.28.1689015635584; Mon, 10
+ Jul 2023 12:00:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/UgswQbSeud23Htz1crgybulLl50>
-Subject: [Bpf] [PATCH bpf-next v3] bpf, docs: Improve English readability
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
-X-Original-From: Dave Thaler <dthaler1968@googlemail.com>
-From: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
+References: <20230707172455.7634-1-daniel@iogearbox.net> <20230707172455.7634-2-daniel@iogearbox.net>
+ <ZKiDKuoovyikz8Mm@google.com> <d67ca0f4-4753-e86f-f8ca-dd515f941ea5@iogearbox.net>
+ <ZKxLY3onuOHepOxt@google.com> <CAADnVQ+2KUg2mgK6f+4L8gL_DJgx2fV3tbF2kX=yjxorLGQ6SA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+2KUg2mgK6f+4L8gL_DJgx2fV3tbF2kX=yjxorLGQ6SA@mail.gmail.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Mon, 10 Jul 2023 12:00:24 -0700
+Message-ID: <CAKH8qBs8gX-K9dzXku9aa4GfB4CGVjsfx05FvDXFuNFPxq+OXQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/8] bpf: Add generic attach/detach/query API
+ for multi-progs
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Nikolay Aleksandrov <razor@blackwall.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, Joe Stringer <joe@cilium.io>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, bpf <bpf@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Dave Thaler <dthaler@microsoft.com>
+On Mon, Jul 10, 2023 at 11:27=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jul 10, 2023 at 11:18=E2=80=AFAM Stanislav Fomichev <sdf@google.c=
+om> wrote:
+> >
+> > On 07/10, Daniel Borkmann wrote:
+> > > On 7/7/23 11:27 PM, Stanislav Fomichev wrote:
+> > > > On 07/07, Daniel Borkmann wrote:
+> > > [...]
+> > > > > +static inline struct bpf_mprog_entry *
+> > > > > +bpf_mprog_create(const size_t size, const off_t off)
+> > > > > +{
+> > > > > + struct bpf_mprog_bundle *bundle;
+> > > > > + void *ptr;
+> > > > > +
+> > > > > + BUILD_BUG_ON(size < sizeof(*bundle) + off);
+> > > > > + BUILD_BUG_ON(sizeof(bundle->a.fp_items[0]) > sizeof(u64));
+> > > > > + BUILD_BUG_ON(ARRAY_SIZE(bundle->a.fp_items) !=3D
+> > > > > +              ARRAY_SIZE(bundle->cp_items));
+> > > > > +
+> > > > > + ptr =3D kzalloc(size, GFP_KERNEL);
+> > > > > + if (ptr) {
+> > > > > +         bundle =3D ptr + off;
+> > > > > +         atomic64_set(&bundle->revision, 1);
+> > > > > +         bundle->off =3D off;
+> > > > > +         bundle->a.parent =3D bundle;
+> > > > > +         bundle->b.parent =3D bundle;
+> > > > > +         return &bundle->a;
+> > > > > + }
+> > > > > + return NULL;
+> > > > > +}
+> > > > > +
+> > > > > +void bpf_mprog_free_rcu(struct rcu_head *rcu);
+> > > > > +
+> > > > > +static inline void bpf_mprog_free(struct bpf_mprog_entry *entry)
+> > > > > +{
+> > > > > + struct bpf_mprog_bundle *bundle =3D entry->parent;
+> > > > > +
+> > > > > + call_rcu(&bundle->rcu, bpf_mprog_free_rcu);
+> > > > > +}
+> > > >
+> > > > Any reason we're doing allocation here? Why not do
+> > > > bpf_mprog_init(struct bpf_mprog_bundle *) instead that simply initi=
+alizes
+> > > > the fields? Then we can move allocation/free part to the caller (tc=
+x) along
+> > > > with rcu_head.
+> > > > Feels like it would be a bit more conventional/readable? bpf_mprog_=
+free{,_rcu}
+> > > > will also become tcx_free{,_rcu}..
+> > > >
+> > > > I guess current approach works, but it took me awhile to figure it =
+out..
+> > > > (maybe it's just me)
+> > >
+> > > I found this approach quite useful for tcx case since we only fetch t=
+he
+> > > bpf_mprog_entry for tcx_link_prog_attach et al, but I can take a look=
+ to
+> > > see if this looks better and if it does I'll include it.
+> > >
+> > > > > +static inline void bpf_mprog_mark_ref(struct bpf_mprog_entry *en=
+try,
+> > > > > +                               struct bpf_tuple *tuple)
+> > > > > +{
+> > > > > + WARN_ON_ONCE(entry->parent->ref);
+> > > > > + if (!tuple->link)
+> > > > > +         entry->parent->ref =3D tuple->prog;
+> > > > > +}
+> > > > > +
+> > > > > +static inline void bpf_mprog_inc(struct bpf_mprog_entry *entry)
+> > > > > +{
+> > > > > + entry->parent->count++;
+> > > > > +}
+> > > > > +
+> > > > > +static inline void bpf_mprog_dec(struct bpf_mprog_entry *entry)
+> > > > > +{
+> > > > > + entry->parent->count--;
+> > > > > +}
+> > > > > +
+> > > > > +static inline int bpf_mprog_max(void)
+> > > > > +{
+> > > > > + return ARRAY_SIZE(((struct bpf_mprog_entry *)NULL)->fp_items) -=
+ 1;
+> > > > > +}
+> > > > > +
+> > > > > +static inline int bpf_mprog_total(struct bpf_mprog_entry *entry)
+> > > > > +{
+> > > > > + int total =3D entry->parent->count;
+> > > > > +
+> > > > > + WARN_ON_ONCE(total > bpf_mprog_max());
+> > > > > + return total;
+> > > > > +}
+> > > > > +
+> > > > > +static inline bool bpf_mprog_exists(struct bpf_mprog_entry *entr=
+y,
+> > > > > +                             struct bpf_prog *prog)
+> > > > > +{
+> > > > > + const struct bpf_mprog_fp *fp;
+> > > > > + const struct bpf_prog *tmp;
+> > > > > +
+> > > > > + bpf_mprog_foreach_prog(entry, fp, tmp) {
+> > > > > +         if (tmp =3D=3D prog)
+> > > > > +                 return true;
+> > > > > + }
+> > > > > + return false;
+> > > > > +}
+> > > > > +
+> > > > > +static inline bool bpf_mprog_swap_entries(const int code)
+> > > > > +{
+> > > > > + return code =3D=3D BPF_MPROG_SWAP ||
+> > > > > +        code =3D=3D BPF_MPROG_FREE;
+> > > > > +}
+> > > > > +
+> > > > > +static inline void bpf_mprog_commit(struct bpf_mprog_entry *entr=
+y)
+> > > > > +{
+> > > > > + atomic64_inc(&entry->parent->revision);
+> > > > > + synchronize_rcu();
+> > > >
+> > > > Maybe add a comment on why we need to synchronize_rcu here? In gene=
+ral,
+> > > > I don't think I have a good grasp of that ->ref member.
+> > >
+> > > Yeap, will add a comment. For the case where we delete the prog, we m=
+ark
+> > > it in bpf_mprog_detach, but we can only drop the reference once the u=
+ser
+> > > swapped the bpf_mprog_entry and ensured that there are no in-flight u=
+sers
+> > > hence both in bpf_mprog_commit.
+> > >
+> > > [...]
+> > > > > +static int bpf_mprog_prog(struct bpf_tuple *tuple,
+> > > > > +                   u32 object, u32 flags,
+> > > > > +                   enum bpf_prog_type type)
+> > > > > +{
+> > > > > + bool id =3D flags & BPF_F_ID;
+> > > > > + struct bpf_prog *prog;
+> > > > > +
+> > > > > + if (id)
+> > > > > +         prog =3D bpf_prog_by_id(object);
+> > > > > + else
+> > > > > +         prog =3D bpf_prog_get(object);
+> > > > > + if (IS_ERR(prog)) {
+> > > >
+> > > > [..]
+> > > >
+> > > > > +         if (!object && !id)
+> > > > > +                 return 0;
+> > > >
+> > > > What's the reason behind this?
+> > >
+> > > If an fd was passed which is 0 and this was not a program fd, then we=
+ don't error
+> > > out and treat it as if no fd was passed.
+> >
+> > Is this new api an opportunity to fix that fd=3D=3D0? And always treat =
+it as
+> > valid. Or we have some other constrains elsewhere?
+>
+> No. There is nothing to fix.
 
-Minor changes to improve English readability. For example:
-
-* Use "must be set to zero" phrasing as typical in IETF RFCs.
-* Expand LSB on first use, per RFC editor requirements.
-* Define htole and htobe
-* Define PC
-
---
-V1 -> V2: addressed comments from Alexei
-V2 -> V3: removed changeds Alexei didn't like
-
-Signed-off-by: Dave Thaler <dthaler@microsoft.com>
----
- Documentation/bpf/instruction-set.rst | 37 +++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 11 deletions(-)
-
-diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index 751e657973f..17edf268ed8 100644
---- a/Documentation/bpf/instruction-set.rst
-+++ b/Documentation/bpf/instruction-set.rst
-@@ -74,7 +74,7 @@ For example::
-   07     1       0        00 00  11 22 33 44  r1 += 0x11223344 // big
- 
- Note that most instructions do not use all of the fields.
--Unused fields shall be cleared to zero.
-+Unused fields must be set to zero.
- 
- As discussed below in `64-bit immediate instructions`_, a 64-bit immediate
- instruction uses a 64-bit immediate value that is constructed as follows.
-@@ -103,7 +103,9 @@ instruction are reserved and shall be cleared to zero.
- Instruction classes
- -------------------
- 
--The three LSB bits of the 'opcode' field store the instruction class:
-+The encoding of the 'opcode' field varies and can be determined 
-+from the three least significant bits (LSB) of the 'opcode' field 
-+which holds the "instruction class", as follows:
- 
- =========  =====  ===============================  ===================================
- class      value  description                      reference
-@@ -216,8 +218,9 @@ The byte swap instructions use an instruction class of ``BPF_ALU`` and a 4-bit
- The byte swap instructions operate on the destination register
- only and do not use a separate source register or immediate value.
- 
--The 1-bit source operand field in the opcode is used to select what byte
--order the operation convert from or to:
-+Byte swap instructions use the 1-bit 'source' field in the 'opcode' 
-+field as follows.  Instead of indicating the source operator, it is 
-+instead used to select what byte order the operation converts from or to:
- 
- =========  =====  =================================================
- source     value  description
-@@ -235,16 +238,21 @@ Examples:
- 
-   dst = htole16(dst)
- 
-+where 'htole16()' indicates converting a 16-bit value from host byte order to little-endian byte order.
-+
- ``BPF_ALU | BPF_TO_BE | BPF_END`` with imm = 64 means::
- 
-   dst = htobe64(dst)
- 
-+where 'htobe64()' indicates converting a 64-bit value from host byte order to big-endian byte order.
-+
- Jump instructions
- -----------------
- 
--``BPF_JMP32`` uses 32-bit wide operands while ``BPF_JMP`` uses 64-bit wide operands for
-+Instruction class ``BPF_JMP32`` uses 32-bit wide operands while ``BPF_JMP`` uses 64-bit wide operands for
- otherwise identical operations.
--The 'code' field encodes the operation as below:
-+
-+The 4-bit 'code' field encodes the operation as below, where PC is the program counter:
- 
- ========  =====  ===  ===========================================  =========================================
- code      value  src  description                                  notes
-@@ -311,7 +319,8 @@ For load and store instructions (``BPF_LD``, ``BPF_LDX``, ``BPF_ST``, and ``BPF_
- mode          size    instruction class
- ============  ======  =================
- 
--The mode modifier is one of:
-+mode
-+  one of:
- 
-   =============  =====  ====================================  =============
-   mode modifier  value  description                           reference
-@@ -323,7 +332,8 @@ The mode modifier is one of:
-   BPF_ATOMIC     0xc0   atomic operations                     `Atomic operations`_
-   =============  =====  ====================================  =============
- 
--The size modifier is one of:
-+size
-+  one of:
- 
-   =============  =====  =====================
-   size modifier  value  description
-@@ -334,6 +344,9 @@ The size modifier is one of:
-   BPF_DW         0x18   double word (8 bytes)
-   =============  =====  =====================
- 
-+instruction class
-+  the instruction class (see `Instruction classes`_)
-+
- Regular load and store operations
- ---------------------------------
- 
-@@ -352,7 +365,7 @@ instructions that transfer data between a register and memory.
- 
-   dst = *(size *) (src + offset)
- 
--Where size is one of: ``BPF_B``, ``BPF_H``, ``BPF_W``, or ``BPF_DW``.
-+where size is one of: ``BPF_B``, ``BPF_H``, ``BPF_W``, or ``BPF_DW``.
- 
- Atomic operations
- -----------------
-@@ -366,7 +379,9 @@ that use the ``BPF_ATOMIC`` mode modifier as follows:
- 
- * ``BPF_ATOMIC | BPF_W | BPF_STX`` for 32-bit operations
- * ``BPF_ATOMIC | BPF_DW | BPF_STX`` for 64-bit operations
--* 8-bit and 16-bit wide atomic operations are not supported.
-+
-+Note that 8-bit (``BPF_B``) and 16-bit (``BPF_H``) wide atomic 
-+operations are not currently supported, nor is ``BPF_ATOMIC | <size> | BPF_ST``.
- 
- The 'imm' field is used to encode the actual atomic operation.
- Simple atomic operation use a subset of the values defined to encode
-@@ -390,7 +405,7 @@ BPF_XOR   0xa0   atomic xor
- 
-   *(u64 *)(dst + offset) += src
- 
--In addition to the simple atomic operations, there also is a modifier and
-+In addition to the simple atomic operations above, there also is a modifier and
- two complex atomic operations:
- 
- ===========  ================  ===========================
--- 
-2.33.4
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+Care to elaborate? Do we want to preserve it for consistency? Or is
+there some concern with asking people to put relative_fd=3D-1 when doing
+the call?
+I'm fine either way; trying to understand where it's coming from. I
+remember it was discussed briefly at lsfmmbpf, but don't remember the
+details..
 
