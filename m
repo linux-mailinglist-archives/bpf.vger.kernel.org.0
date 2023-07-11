@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-4682-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4683-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C689674E34D
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 03:17:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFBC774E34E
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 03:17:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E812C1C20CF6
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 01:17:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E1871C20CD8
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 01:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19EF2907;
-	Tue, 11 Jul 2023 01:15:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63363322A;
+	Tue, 11 Jul 2023 01:15:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75D8128EC
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 01:15:49 +0000 (UTC)
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1826B10FB;
-	Mon, 10 Jul 2023 18:15:22 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-668704a5b5bso4523843b3a.0;
-        Mon, 10 Jul 2023 18:15:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E70628EC
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 01:15:53 +0000 (UTC)
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF88CE58;
+	Mon, 10 Jul 2023 18:15:25 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b9e8e5b12dso7514715ad.3;
+        Mon, 10 Jul 2023 18:15:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689038095; x=1691630095;
+        d=gmail.com; s=20221208; t=1689038096; x=1691630096;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OR6WuT6qxDsiJGc69gtxzd2kfKgRFY10It5FwH8lr8Q=;
-        b=WlBNrxi44z+xZGOoCRXo6Rnvacf3HqerKkCv6eA4/zqAu/Ef9uyjM0EoMWqd8YmRpy
-         IbQw/u/Yy19JS46X/od5fnsvf/56FUU71KzIMiD/gzMaaqBba5bhkjkpA9tXZNdySMXm
-         /KswPdtzicAcTr8SC6e+Z7v1PYzJjP/M5q3BQIMYm3Hcu/AMdG/3N9/tHL9M3HNurSjr
-         2dXijgXuQnCyFDbFVfHcQXK9aD0zSlYK2IOh0UzbwJwLDhnF79DW3E7FyJFKibXceDyn
-         oVo8g5+WIb0kR0zYPjM2biTy/K+Sm0jTHWG+OTXc7L2FUWGeCd9pR43id/G4Wahf55At
-         1ecw==
+        bh=13hxfRv8XtxpRnNvWAWpRa+TQaiIpqIrlB/2A7e8Lxw=;
+        b=rrSgMSg9Kpk0ghvvYoTiNAusyGLItLZ0uyFsqFsp0drd2mM09nlHq7Bp78UrjcS2vK
+         AM52gujpa0My00ZGvW7/dOkrK57uroMryP0mQLPwYt9S5ENjYZLZpwM3ruTIwbMvV+4x
+         CDJW9t0HkwXXHSJyMm7xhAM1qYwT/nCvGZb5w+Vbf0uXPDksnlp5K7NQXX5AnwudXvUn
+         2f9ZMCZgvpflcFiN73NVvBtcf+aytAzJFILZKMEklPC32UFAU0BXA2aVt4gitfgKNORB
+         lRd8WJqcEeDwdlfXIwDi3QIv8YPBFgyIMLYExd9s6GsyXnSZOqB2PODbIVhIyMAXAyZf
+         TPTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689038095; x=1691630095;
+        d=1e100.net; s=20221208; t=1689038096; x=1691630096;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=OR6WuT6qxDsiJGc69gtxzd2kfKgRFY10It5FwH8lr8Q=;
-        b=P10sPdMKsFVGUoWf0dWGnrOCFiVB2Vbwa4p86EZ1upyM3oEZqqVfa4yT6bDz00C3sH
-         hFccYzZ+XiU98IXPp2haZg9uD+Xk/1BsKB/aKkE52bukx1CWDCor1EmAbJ0t0SBH1qgp
-         P0WDJNBCtt2mDnmsGgWzEi0wMwpvpwtrX195Fzd71kw/4VgouuFswNofCOBnXRCBCvsN
-         1BX4MnSOTn2LFjM82q767h8TxJ8bhBj+MbPGqsAbg5f0Vszga7OpeZdtDFqv9e8qcYSd
-         x6RzkHYQNnxwzew7BQejRwbksNJszMTodG5uDrBuQ7hHUxGHRT6KZod27mBd4sk0ezlu
-         FtLQ==
-X-Gm-Message-State: ABy/qLZVQ8TrjaKid48GhqTzfwcYwTKyFlZCQxk8QfQ6gBJWLUdhknRS
-	wz+rzV7S+WRNiA6NkOeb7Ww=
-X-Google-Smtp-Source: APBJJlGP0SHk1MWffl5xLDeoSMGtK6cafQYxFMP/he4MoY4B5DFgpNTRRgA7hJwEV+FRCqPzZ8xZEg==
-X-Received: by 2002:a05:6a20:8414:b0:130:d8dd:f75e with SMTP id c20-20020a056a20841400b00130d8ddf75emr10153157pzd.27.1689038094445;
-        Mon, 10 Jul 2023 18:14:54 -0700 (PDT)
+        bh=13hxfRv8XtxpRnNvWAWpRa+TQaiIpqIrlB/2A7e8Lxw=;
+        b=CvCYUPkXfz+x4S0TwJuXye9kP01Oi5escj7OjRA8yFn/BnqLxV4mCWFmX7GjmtwZQO
+         RdHpyi7Yfz1A4pt+kuGhM1QgIB35madQrAWtN4cxDDmRuFc5uTidpJmzsWLijYqZ6ZG8
+         osraLg0ikzbkweNK+sAtOE4kJdkgq0/SdNiew1DTMM4QeMyi0kbX+nOL2RPlvwGkIcWM
+         b0l1zrp5W57pIxiDN3rJO+TIAChItBJwsUSmkn+moG6SUcqrl9AlFQLDvhGXitBlXWTR
+         qEuT2Mer7FUy39YIxp4Q8SSLZvDysW2xMR/65gPPaMnL7/q2OIEBDvqbmY10PM1147pD
+         afkQ==
+X-Gm-Message-State: ABy/qLZ+VshipeehBbkpjpIvRggHIRLwpmnRks9qIAO8rIh1IJDysTa1
+	yxnnYNIK0/sXUtiWv/cOB1Q=
+X-Google-Smtp-Source: APBJJlFt5iHiJorQmt7upQG910T0ZSR6MR1YNp7VWJdmAlmFAVcDCAJ27pqJvePLdOKC2mQaidadXw==
+X-Received: by 2002:a17:902:db0a:b0:1b8:a19e:a3d3 with SMTP id m10-20020a170902db0a00b001b8a19ea3d3mr19702067plx.52.1689038096353;
+        Mon, 10 Jul 2023 18:14:56 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:e2fe])
-        by smtp.gmail.com with ESMTPSA id j9-20020a63b609000000b005572d796b9esm247904pgf.88.2023.07.10.18.14.53
+        by smtp.gmail.com with ESMTPSA id j13-20020a170902da8d00b001ac95be5081sm488891plx.307.2023.07.10.18.14.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jul 2023 18:14:54 -0700 (PDT)
+        Mon, 10 Jul 2023 18:14:55 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
 From: Tejun Heo <tj@kernel.org>
 To: torvalds@linux-foundation.org,
@@ -85,11 +85,10 @@ To: torvalds@linux-foundation.org,
 Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	kernel-team@meta.com,
-	Tejun Heo <tj@kernel.org>,
-	Julia Lawall <julia.lawall@inria.fr>
-Subject: [PATCH 19/34] sched_ext: Add a central scheduler which makes all scheduling decisions on one CPU
-Date: Mon, 10 Jul 2023 15:13:37 -1000
-Message-ID: <20230711011412.100319-20-tj@kernel.org>
+	Tejun Heo <tj@kernel.org>
+Subject: [PATCH 20/34] sched_ext: Make watchdog handle ops.dispatch() looping stall
+Date: Mon, 10 Jul 2023 15:13:38 -1000
+Message-ID: <20230711011412.100319-21-tj@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230711011412.100319-1-tj@kernel.org>
 References: <20230711011412.100319-1-tj@kernel.org>
@@ -108,402 +107,157 @@ X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patch adds a new example scheduler, scx_central, which demonstrates
-central scheduling where one CPU is responsible for making all scheduling
-decisions in the system using scx_bpf_kick_cpu(). The central CPU makes
-scheduling decisions for all CPUs in the system, queues tasks on the
-appropriate local dsq's and preempts the worker CPUs. The worker CPUs in
-turn preempt the central CPU when it needs tasks to run.
+The dispatch path retries if the local DSQ is still empty after
+ops.dispatch() either dispatched or consumed a task. This is both out of
+necessity and for convenience. It has to retry because the dispatch path
+might lose the tasks to dequeue while the rq lock is released while trying
+to migrate tasks across CPUs, and the retry mechanism makes ops.dispatch()
+implementation easier as it only needs to make some forward progress each
+iteration.
 
-Currently, every CPU depends on its own tick to expire the current task. A
-follow-up patch implementing tickless support for sched_ext will allow the
-worker CPUs to go full tickless so that they can run completely undisturbed.
+However, this makes it possible for ops.dispatch() to stall CPUs by
+repeatedly dispatching ineligible tasks. If all CPUs are stalled that way,
+the watchdog or sysrq handler can't run and the system can't be saved. Let's
+address the issue by breaking out of the dispatch loop after 32 iterations.
+
+It is unlikely but not impossible for ops.dispatch() to legitimately go over
+the iteration limit. We want to come back to the dispatch path in such cases
+as not doing so risks stalling the CPU by idling with runnable tasks
+pending. As the previous task is still current in balance_scx(),
+resched_curr() doesn't do anything - it will just get cleared. Let's instead
+use scx_kick_bpf() which will trigger reschedule after switching to the next
+task which will likely be the idle task.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
-Acked-by: Josh Don <joshdon@google.com>
-Acked-by: Hao Luo <haoluo@google.com>
-Acked-by: Barret Rhoden <brho@google.com>
-Cc: Julia Lawall <julia.lawall@inria.fr>
 ---
- tools/sched_ext/.gitignore        |   1 +
- tools/sched_ext/Makefile          |   8 +-
- tools/sched_ext/scx_central.bpf.c | 225 ++++++++++++++++++++++++++++++
- tools/sched_ext/scx_central.c     |  93 ++++++++++++
- 4 files changed, 325 insertions(+), 2 deletions(-)
- create mode 100644 tools/sched_ext/scx_central.bpf.c
- create mode 100644 tools/sched_ext/scx_central.c
+ kernel/sched/ext.c             | 17 +++++++++++++++++
+ tools/sched_ext/scx_qmap.bpf.c | 17 +++++++++++++++++
+ tools/sched_ext/scx_qmap.c     |  8 ++++++--
+ 3 files changed, 40 insertions(+), 2 deletions(-)
 
-diff --git a/tools/sched_ext/.gitignore b/tools/sched_ext/.gitignore
-index b1dd7580a5b4..7e5dec30a87e 100644
---- a/tools/sched_ext/.gitignore
-+++ b/tools/sched_ext/.gitignore
-@@ -1,5 +1,6 @@
- scx_simple
- scx_qmap
-+scx_central
- *.skel.h
- *.subskel.h
- /tools/
-diff --git a/tools/sched_ext/Makefile b/tools/sched_ext/Makefile
-index f2723a0cde8b..be0445e071ef 100644
---- a/tools/sched_ext/Makefile
-+++ b/tools/sched_ext/Makefile
-@@ -115,7 +115,7 @@ BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH)					\
- 	     -Wall -Wno-compare-distinct-pointer-types				\
- 	     -O2 -mcpu=v3
+diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+index 9e8f9f9fcb3d..48e27d59e621 100644
+--- a/kernel/sched/ext.c
++++ b/kernel/sched/ext.c
+@@ -9,6 +9,7 @@
+ enum scx_internal_consts {
+ 	SCX_NR_ONLINE_OPS	= SCX_OP_IDX(init),
+ 	SCX_DSP_DFL_MAX_BATCH	= 32,
++	SCX_DSP_MAX_LOOPS	= 32,
+ 	SCX_WATCHDOG_MAX_TIMEOUT = 30 * HZ,
+ };
  
--all: scx_simple scx_qmap
-+all: scx_simple scx_qmap scx_central
+@@ -167,6 +168,7 @@ static DEFINE_PER_CPU(struct scx_dsp_ctx, scx_dsp_ctx);
  
- # sort removes libbpf duplicates when not cross-building
- MAKE_DIRS := $(sort $(BUILD_DIR)/libbpf $(HOST_BUILD_DIR)/libbpf		\
-@@ -174,10 +174,14 @@ scx_qmap: scx_qmap.c scx_qmap.skel.h user_exit_info.h
- 	$(CC) $(CFLAGS) -c $< -o $@.o
- 	$(CC) -o $@ $@.o $(HOST_BPFOBJ) $(LDFLAGS)
+ void scx_bpf_dispatch(struct task_struct *p, u64 dsq_id, u64 slice,
+ 		      u64 enq_flags);
++void scx_bpf_kick_cpu(s32 cpu, u64 flags);
  
-+scx_central: scx_central.c scx_central.skel.h user_exit_info.h
-+	$(CC) $(CFLAGS) -c $< -o $@.o
-+	$(CC) -o $@ $@.o $(HOST_BPFOBJ) $(LDFLAGS)
-+
- clean:
- 	rm -rf $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)
- 	rm -f *.o *.bpf.o *.skel.h *.subskel.h
--	rm -f scx_simple scx_qmap
-+	rm -f scx_simple scx_qmap scx_central
+ struct scx_task_iter {
+ 	struct sched_ext_entity		cursor;
+@@ -1286,6 +1288,7 @@ static int balance_scx(struct rq *rq, struct task_struct *prev,
+ 	struct scx_rq *scx_rq = &rq->scx;
+ 	struct scx_dsp_ctx *dspc = this_cpu_ptr(&scx_dsp_ctx);
+ 	bool prev_on_scx = prev->sched_class == &ext_sched_class;
++	int nr_loops = SCX_DSP_MAX_LOOPS;
  
- .PHONY: all clean
+ 	lockdep_assert_rq_held(rq);
  
-diff --git a/tools/sched_ext/scx_central.bpf.c b/tools/sched_ext/scx_central.bpf.c
-new file mode 100644
-index 000000000000..094e089300a2
---- /dev/null
-+++ b/tools/sched_ext/scx_central.bpf.c
-@@ -0,0 +1,225 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * A central FIFO sched_ext scheduler which demonstrates the followings:
-+ *
-+ * a. Making all scheduling decisions from one CPU:
-+ *
-+ *    The central CPU is the only one making scheduling decisions. All other
-+ *    CPUs kick the central CPU when they run out of tasks to run.
-+ *
-+ *    There is one global BPF queue and the central CPU schedules all CPUs by
-+ *    dispatching from the global queue to each CPU's local dsq from dispatch().
-+ *    This isn't the most straightforward. e.g. It'd be easier to bounce
-+ *    through per-CPU BPF queues. The current design is chosen to maximally
-+ *    utilize and verify various SCX mechanisms such as LOCAL_ON dispatching.
-+ *
-+ * b. Preemption
-+ *
-+ *    SCX_KICK_PREEMPT is used to trigger scheduling and CPUs to move to the
-+ *    next tasks.
-+ *
-+ * This scheduler is designed to maximize usage of various SCX mechanisms. A
-+ * more practical implementation would likely put the scheduling loop outside
-+ * the central CPU's dispatch() path and add some form of priority mechanism.
-+ *
-+ * Copyright (c) 2022 Meta Platforms, Inc. and affiliates.
-+ * Copyright (c) 2022 Tejun Heo <tj@kernel.org>
-+ * Copyright (c) 2022 David Vernet <dvernet@meta.com>
-+ */
-+#include "scx_common.bpf.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+enum {
-+	FALLBACK_DSQ_ID		= 0,
-+	MAX_CPUS		= 4096,
-+	MS_TO_NS		= 1000LLU * 1000,
-+	TIMER_INTERVAL_NS	= 1 * MS_TO_NS,
-+};
-+
-+const volatile bool switch_partial;
-+const volatile s32 central_cpu;
-+const volatile u32 nr_cpu_ids = 64;	/* !0 for veristat, set during init */
-+
-+u64 nr_total, nr_locals, nr_queued, nr_lost_pids;
-+u64 nr_dispatches, nr_mismatches, nr_retries;
-+u64 nr_overflows;
-+
-+struct user_exit_info uei;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_QUEUE);
-+	__uint(max_entries, 4096);
-+	__type(value, s32);
-+} central_q SEC(".maps");
-+
-+/* can't use percpu map due to bad lookups */
-+static bool cpu_gimme_task[MAX_CPUS];
-+
-+struct central_timer {
-+	struct bpf_timer timer;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, u32);
-+	__type(value, struct central_timer);
-+} central_timer SEC(".maps");
-+
-+s32 BPF_STRUCT_OPS(central_select_cpu, struct task_struct *p,
-+		   s32 prev_cpu, u64 wake_flags)
-+{
-+	/*
-+	 * Steer wakeups to the central CPU as much as possible to avoid
-+	 * disturbing other CPUs. It's safe to blindly return the central cpu as
-+	 * select_cpu() is a hint and if @p can't be on it, the kernel will
-+	 * automatically pick a fallback CPU.
-+	 */
-+	return central_cpu;
-+}
-+
-+void BPF_STRUCT_OPS(central_enqueue, struct task_struct *p, u64 enq_flags)
-+{
-+	s32 pid = p->pid;
-+
-+	__sync_fetch_and_add(&nr_total, 1);
-+
-+	if (bpf_map_push_elem(&central_q, &pid, 0)) {
-+		__sync_fetch_and_add(&nr_overflows, 1);
-+		scx_bpf_dispatch(p, FALLBACK_DSQ_ID, SCX_SLICE_DFL, enq_flags);
-+		return;
-+	}
-+
-+	__sync_fetch_and_add(&nr_queued, 1);
-+
-+	if (!scx_bpf_task_running(p))
-+		scx_bpf_kick_cpu(central_cpu, SCX_KICK_PREEMPT);
-+}
-+
-+static bool dispatch_to_cpu(s32 cpu)
-+{
-+	struct task_struct *p;
-+	s32 pid;
-+
-+	bpf_repeat(BPF_MAX_LOOPS) {
-+		if (bpf_map_pop_elem(&central_q, &pid))
-+			break;
-+
-+		__sync_fetch_and_sub(&nr_queued, 1);
-+
-+		p = bpf_task_from_pid(pid);
-+		if (!p) {
-+			__sync_fetch_and_add(&nr_lost_pids, 1);
-+			continue;
-+		}
+@@ -1340,6 +1343,20 @@ static int balance_scx(struct rq *rq, struct task_struct *prev,
+ 			return 1;
+ 		if (consume_dispatch_q(rq, rf, &scx_dsq_global))
+ 			return 1;
 +
 +		/*
-+		 * If we can't run the task at the top, do the dumb thing and
-+		 * bounce it to the fallback dsq.
++		 * ops.dispatch() can trap us in this loop by repeatedly
++		 * dispatching ineligible tasks. Break out once in a while to
++		 * allow the watchdog to run. As IRQ can't be enabled in
++		 * balance(), we want to complete this scheduling cycle and then
++		 * start a new one. IOW, we want to call resched_curr() on the
++		 * next, most likely idle, task, not the current one. Use
++		 * scx_bpf_kick_cpu() for deferred kicking.
 +		 */
-+		if (!bpf_cpumask_test_cpu(cpu, p->cpus_ptr)) {
-+			__sync_fetch_and_add(&nr_mismatches, 1);
-+			scx_bpf_dispatch(p, FALLBACK_DSQ_ID, SCX_SLICE_DFL, 0);
++		if (unlikely(!--nr_loops)) {
++			scx_bpf_kick_cpu(cpu_of(rq), 0);
++			break;
++		}
+ 	} while (dspc->nr_tasks);
+ 
+ 	return 0;
+diff --git a/tools/sched_ext/scx_qmap.bpf.c b/tools/sched_ext/scx_qmap.bpf.c
+index da43f962ab4e..1c3a7d050e32 100644
+--- a/tools/sched_ext/scx_qmap.bpf.c
++++ b/tools/sched_ext/scx_qmap.bpf.c
+@@ -28,6 +28,7 @@ const volatile u64 slice_ns = SCX_SLICE_DFL;
+ const volatile bool switch_partial;
+ const volatile u32 stall_user_nth;
+ const volatile u32 stall_kernel_nth;
++const volatile u32 dsp_inf_loop_after;
+ const volatile s32 disallow_tgid;
+ 
+ u32 test_error_cnt;
+@@ -187,6 +188,22 @@ void BPF_STRUCT_OPS(qmap_dispatch, s32 cpu, struct task_struct *prev)
+ 	s32 pid;
+ 	int i;
+ 
++	if (dsp_inf_loop_after && nr_dispatched > dsp_inf_loop_after) {
++		struct task_struct *p;
++
++		/*
++		 * PID 2 should be kthreadd which should mostly be idle and off
++		 * the scheduler. Let's keep dispatching it to force the kernel
++		 * to call this function over and over again.
++		 */
++		p = bpf_task_from_pid(2);
++		if (p) {
++			scx_bpf_dispatch(p, SCX_DSQ_GLOBAL, slice_ns, 0);
 +			bpf_task_release(p);
-+			continue;
++			return;
 +		}
-+
-+		/* dispatch to local and mark that @cpu doesn't need more */
-+		scx_bpf_dispatch(p, SCX_DSQ_LOCAL_ON | cpu, SCX_SLICE_DFL, 0);
-+
-+		if (cpu != central_cpu)
-+			scx_bpf_kick_cpu(cpu, 0);
-+
-+		bpf_task_release(p);
-+		return true;
 +	}
 +
-+	return false;
-+}
-+
-+void BPF_STRUCT_OPS(central_dispatch, s32 cpu, struct task_struct *prev)
-+{
-+	if (cpu == central_cpu) {
-+		/* dispatch for all other CPUs first */
-+		__sync_fetch_and_add(&nr_dispatches, 1);
-+
-+		bpf_for(cpu, 0, nr_cpu_ids) {
-+			bool *gimme;
-+
-+			if (!scx_bpf_dispatch_nr_slots())
-+				break;
-+
-+			/* central's gimme is never set */
-+			gimme = MEMBER_VPTR(cpu_gimme_task, [cpu]);
-+			if (gimme && !*gimme)
-+				continue;
-+
-+			if (dispatch_to_cpu(cpu))
-+				*gimme = false;
-+		}
-+
-+		/*
-+		 * Retry if we ran out of dispatch buffer slots as we might have
-+		 * skipped some CPUs and also need to dispatch for self. The ext
-+		 * core automatically retries if the local dsq is empty but we
-+		 * can't rely on that as we're dispatching for other CPUs too.
-+		 * Kick self explicitly to retry.
-+		 */
-+		if (!scx_bpf_dispatch_nr_slots()) {
-+			__sync_fetch_and_add(&nr_retries, 1);
-+			scx_bpf_kick_cpu(central_cpu, SCX_KICK_PREEMPT);
-+			return;
-+		}
-+
-+		/* look for a task to run on the central CPU */
-+		if (scx_bpf_consume(FALLBACK_DSQ_ID))
-+			return;
-+		dispatch_to_cpu(central_cpu);
-+	} else {
-+		bool *gimme;
-+
-+		if (scx_bpf_consume(FALLBACK_DSQ_ID))
-+			return;
-+
-+		gimme = MEMBER_VPTR(cpu_gimme_task, [cpu]);
-+		if (gimme)
-+			*gimme = true;
-+
-+		/*
-+		 * Force dispatch on the scheduling CPU so that it finds a task
-+		 * to run for us.
-+		 */
-+		scx_bpf_kick_cpu(central_cpu, SCX_KICK_PREEMPT);
-+	}
-+}
-+
-+int BPF_STRUCT_OPS_SLEEPABLE(central_init)
-+{
-+	if (!switch_partial)
-+		scx_bpf_switch_all();
-+
-+	return scx_bpf_create_dsq(FALLBACK_DSQ_ID, -1);
-+}
-+
-+void BPF_STRUCT_OPS(central_exit, struct scx_exit_info *ei)
-+{
-+	uei_record(&uei, ei);
-+}
-+
-+SEC(".struct_ops.link")
-+struct sched_ext_ops central_ops = {
-+	/*
-+	 * We are offloading all scheduling decisions to the central CPU and
-+	 * thus being the last task on a given CPU doesn't mean anything
-+	 * special. Enqueue the last tasks like any other tasks.
-+	 */
-+	.flags			= SCX_OPS_ENQ_LAST,
-+
-+	.select_cpu		= (void *)central_select_cpu,
-+	.enqueue		= (void *)central_enqueue,
-+	.dispatch		= (void *)central_dispatch,
-+	.init			= (void *)central_init,
-+	.exit			= (void *)central_exit,
-+	.name			= "central",
-+};
-diff --git a/tools/sched_ext/scx_central.c b/tools/sched_ext/scx_central.c
-new file mode 100644
-index 000000000000..09cb759984a6
---- /dev/null
-+++ b/tools/sched_ext/scx_central.c
-@@ -0,0 +1,93 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (c) 2022 Meta Platforms, Inc. and affiliates.
-+ * Copyright (c) 2022 Tejun Heo <tj@kernel.org>
-+ * Copyright (c) 2022 David Vernet <dvernet@meta.com>
-+ */
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <assert.h>
-+#include <libgen.h>
-+#include <bpf/bpf.h>
-+#include "user_exit_info.h"
-+#include "scx_central.skel.h"
-+
-+const char help_fmt[] =
-+"A central FIFO sched_ext scheduler.\n"
-+"\n"
-+"See the top-level comment in .bpf.c for more details.\n"
-+"\n"
-+"Usage: %s [-c CPU] [-p]\n"
-+"\n"
-+"  -c CPU        Override the central CPU (default: 0)\n"
-+"  -p            Switch only tasks on SCHED_EXT policy intead of all\n"
-+"  -h            Display this help and exit\n";
-+
-+static volatile int exit_req;
-+
-+static void sigint_handler(int dummy)
-+{
-+	exit_req = 1;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	struct scx_central *skel;
-+	struct bpf_link *link;
-+	u64 seq = 0;
-+	s32 opt;
-+
-+	signal(SIGINT, sigint_handler);
-+	signal(SIGTERM, sigint_handler);
-+
-+	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-+
-+	skel = scx_central__open();
-+	assert(skel);
-+
-+	skel->rodata->central_cpu = 0;
-+	skel->rodata->nr_cpu_ids = libbpf_num_possible_cpus();
-+
-+	while ((opt = getopt(argc, argv, "c:ph")) != -1) {
-+		switch (opt) {
-+		case 'c':
-+			skel->rodata->central_cpu = strtoul(optarg, NULL, 0);
+ 	if (!idx || !cnt) {
+ 		scx_bpf_error("failed to lookup idx[%p], cnt[%p]", idx, cnt);
+ 		return;
+diff --git a/tools/sched_ext/scx_qmap.c b/tools/sched_ext/scx_qmap.c
+index 3444e3597b19..805ac453698f 100644
+--- a/tools/sched_ext/scx_qmap.c
++++ b/tools/sched_ext/scx_qmap.c
+@@ -20,12 +20,13 @@ const char help_fmt[] =
+ "\n"
+ "See the top-level comment in .bpf.c for more details.\n"
+ "\n"
+-"Usage: %s [-s SLICE_US] [-e COUNT] [-t COUNT] [-T COUNT] [-d PID] [-p]\n"
++"Usage: %s [-s SLICE_US] [-e COUNT] [-t COUNT] [-T COUNT] [-l COUNT] [-d PID] [-p]\n"
+ "\n"
+ "  -s SLICE_US   Override slice duration\n"
+ "  -e COUNT      Trigger scx_bpf_error() after COUNT enqueues\n"
+ "  -t COUNT      Stall every COUNT'th user thread\n"
+ "  -T COUNT      Stall every COUNT'th kernel thread\n"
++"  -l COUNT      Trigger dispatch infinite looping after COUNT dispatches\n"
+ "  -d PID        Disallow a process from switching into SCHED_EXT (-1 for self)\n"
+ "  -p            Switch only tasks on SCHED_EXT policy intead of all\n"
+ "  -h            Display this help and exit\n";
+@@ -51,7 +52,7 @@ int main(int argc, char **argv)
+ 	skel = scx_qmap__open();
+ 	assert(skel);
+ 
+-	while ((opt = getopt(argc, argv, "s:e:t:T:d:ph")) != -1) {
++	while ((opt = getopt(argc, argv, "s:e:t:T:l:d:ph")) != -1) {
+ 		switch (opt) {
+ 		case 's':
+ 			skel->rodata->slice_ns = strtoull(optarg, NULL, 0) * 1000;
+@@ -65,6 +66,9 @@ int main(int argc, char **argv)
+ 		case 'T':
+ 			skel->rodata->stall_kernel_nth = strtoul(optarg, NULL, 0);
+ 			break;
++		case 'l':
++			skel->rodata->dsp_inf_loop_after = strtoul(optarg, NULL, 0);
 +			break;
-+		case 'p':
-+			skel->rodata->switch_partial = true;
-+			break;
-+		default:
-+			fprintf(stderr, help_fmt, basename(argv[0]));
-+			return opt != 'h';
-+		}
-+	}
-+
-+	assert(!scx_central__load(skel));
-+
-+	link = bpf_map__attach_struct_ops(skel->maps.central_ops);
-+	assert(link);
-+
-+	while (!exit_req && !uei_exited(&skel->bss->uei)) {
-+		printf("[SEQ %lu]\n", seq++);
-+		printf("total   :%10lu    local:%10lu   queued:%10lu  lost:%10lu\n",
-+		       skel->bss->nr_total,
-+		       skel->bss->nr_locals,
-+		       skel->bss->nr_queued,
-+		       skel->bss->nr_lost_pids);
-+		printf("                    dispatch:%10lu mismatch:%10lu retry:%10lu\n",
-+		       skel->bss->nr_dispatches,
-+		       skel->bss->nr_mismatches,
-+		       skel->bss->nr_retries);
-+		printf("overflow:%10lu\n",
-+		       skel->bss->nr_overflows);
-+		fflush(stdout);
-+		sleep(1);
-+	}
-+
-+	bpf_link__destroy(link);
-+	uei_print(&skel->bss->uei);
-+	scx_central__destroy(skel);
-+	return 0;
-+}
+ 		case 'd':
+ 			skel->rodata->disallow_tgid = strtol(optarg, NULL, 0);
+ 			if (skel->rodata->disallow_tgid < 0)
 -- 
 2.41.0
 
