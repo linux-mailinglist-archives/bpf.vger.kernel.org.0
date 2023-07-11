@@ -1,327 +1,143 @@
-Return-Path: <bpf+bounces-4781-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE95574F63D
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 18:59:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B00EE74F64F
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 19:01:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 036BE1C20D98
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 16:59:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6ADE22818E6
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 17:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31DFC1DDD9;
-	Tue, 11 Jul 2023 16:59:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 221EC1DDE3;
+	Tue, 11 Jul 2023 17:00:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E978B18C1C
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 16:59:18 +0000 (UTC)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C666BE75
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:59:16 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fba1288bbdso8818940e87.1
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:59:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE0EB1DDD9
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 17:00:55 +0000 (UTC)
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8306F10D8
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 10:00:53 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-55adfa61199so4357186a12.2
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 10:00:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689094755; x=1691686755;
+        d=google.com; s=20221208; t=1689094853; x=1691686853;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1pm189Uq4EMkI5c/6hUa5iOyQiMbSDcgOBOK054VHgw=;
-        b=m4Lr7XR1C9W8Mq1KDGU6SjOQaqO0B5+uL1WK7iBd8RqG9R8EEHwQLhwyCcuiMBZ2wT
-         3knRNXUcecfSduGZUDyfxo4yGbIgojtquLHK/oHjX1HumYOqIoRAu6EvomAVSzUGo9Qr
-         G28GOSgx9bPR/mVTaC6ANBY+Ws3NZlf4UxYPzutDyyiDNrGpWM7SHdnXyb2SJvWAsTKY
-         HqJ3bOPW1AntpKiE7j8XCltDP95Claulob54mav8HeUAOre6oBTFwqk0ta9uJglrYpKv
-         cyoq9vasA51a+nf3aWpAbKup+70bvTEYIDQX0YVVY8YfBdd85QI7WMo6yJp/MzvKtVQh
-         J8mg==
+        bh=NjdBm9r4v+Ai8dx8XOLGpj/M16ExfA2ti1QWcSGJBEM=;
+        b=D3eHX6mW8sRVZwL/LbZFwwUi4C6QNMl0EkyDqnWGMqIQVkll2TcyX3LLXdCUqLR1vp
+         doNX6SB3xadoUNV7DvpW09dMeTFuWs8nzjCDf24V5DD5OTqOpkYLtGGy3fJt/YJhSTsE
+         +P6I85DPmZGbZCnYUGXILkK7kaK6CTmYJDbag8jyPHWLkJst8NXJGZQmFBJ6NvfVy1wX
+         Kqx5A/7Ts7vaWP93YOYfHxEBPTpWt8H9iUy0hvuzw8v35PuLie6mEYPsVgXE9saFUb16
+         b9L+octD/weCgoaGamRF/oW28PCuLBTjHTMCYt8jUmoyg+hxIZAiI8Pd2DldLX4eY8/+
+         CkXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689094755; x=1691686755;
+        d=1e100.net; s=20221208; t=1689094853; x=1691686853;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1pm189Uq4EMkI5c/6hUa5iOyQiMbSDcgOBOK054VHgw=;
-        b=Ex9/jrzHAif6tG4TpGDZLv+aFUIRE9y87HzIXiHt0wcvSMESGyYUFtLpFQbOCVvm42
-         lJrs9st3eXqYCcja39vhYOy7XCBcMmyru6st2m49z1VrBbQHJ61qzXDj8lSYMgqkwSY6
-         fonZoFQIFLjeig8v0H43oc4/1KPEBgxLG+pSQgTvMxKIdZ48pd5RB68fC5uZb1rjeHlt
-         BNGoE4hbc9twgEIXy6U73YgqqTtqjWQgp2vYpxrt8GT9IXUvwxt94xlFvpNHPHcyBk8O
-         SJTFi3saUw18+GwKjtcJCxd9oQivpbrzYib5HPtfda4LrWGYn9C1zknEjaaxjToPs2FS
-         t6fA==
-X-Gm-Message-State: ABy/qLYakNnrSMKldvvyrCpcptijyH4NTNGRrhgkHu1sliU04wRj9M/M
-	i25y9BgdjCEDAoKUzdsBr6q+MEtJNxm/Cps3LvUvSpzt
-X-Google-Smtp-Source: APBJJlG1pBeIyp9vBr5aZ5vIROAsJUkcfFrJxpKfaHGfKD/19RWcmucDIr3xbi8aARGFD68ZxUlJzkvqcpAkrKCyPF8=
-X-Received: by 2002:a05:6512:33ce:b0:4f9:596d:c803 with SMTP id
- d14-20020a05651233ce00b004f9596dc803mr17721197lfg.53.1689094754614; Tue, 11
- Jul 2023 09:59:14 -0700 (PDT)
+        bh=NjdBm9r4v+Ai8dx8XOLGpj/M16ExfA2ti1QWcSGJBEM=;
+        b=Ddyjm87VQFN6AvSl/Jc7rvg9A0bNu60Vp7t05Ttd3gF2QrZ/Xjyl6ff+vYoDVo218B
+         +OCB8QErNkPWvnQwefQ0c8euAeHYRoW5hBG0UoPl3DaAwGSPAkfmoQixhiOuaT5VRtpf
+         Ro6+X6RXMWswDHvz/ToMtfAP7PaFb7wpTz/uaS3L34UUAcAN66nsVsOEK0FFSixOIiwe
+         OKTkmNiCOUYs2MAbItdjdcR/IisIhNaci++DlJWRJB6/drpySKzLL3lABWrsnNevKXiP
+         1OuhEEiPMTQ2i2jtt2FmvTGO4G2eZTI+eeHE3Bt2SWWXrIf9vMt2n6LQ01YPOD4ZbEQw
+         Ucyg==
+X-Gm-Message-State: ABy/qLa43iApt9yR4/hCeEJ2Df6WIYRzEUNkACNk2O76f5bJZDYZuPqM
+	iQB5i2VQz1IyAApkHXXCChf+j1h1bweteSJBfYVOlUjyW+/GJ3biJTRb8w==
+X-Google-Smtp-Source: APBJJlElzBUqt9brN3WkdBYspoLN+ugvRwtHICbp2dyC6rSR+4Ol09QVGlmB5Ih44ZkXB+um4Wsu8SVymGBguo4iDvg=
+X-Received: by 2002:a17:90a:d586:b0:263:4815:cb9a with SMTP id
+ v6-20020a17090ad58600b002634815cb9amr15695007pju.41.1689094852746; Tue, 11
+ Jul 2023 10:00:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230630083344.984305-1-jolsa@kernel.org> <20230630083344.984305-10-jolsa@kernel.org>
- <CAEf4BzbeyXniXfYoE6e8=3wLJ+ikN+pMrByJqwjjTzkHwebp6w@mail.gmail.com> <ZK0azis5l/m+drtd@krava>
-In-Reply-To: <ZK0azis5l/m+drtd@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 11 Jul 2023 09:59:02 -0700
-Message-ID: <CAEf4Bza=nOMBMXVS0fyn2rXJYK7i=90cj2eQ3JxeBeNpZ68H6Q@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 09/26] libbpf: Add elf symbol iterator
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+References: <20230711105930.29170-1-larysa.zaremba@intel.com> <a05a4ac2-40c8-da67-6727-b9844930386e@redhat.com>
+In-Reply-To: <a05a4ac2-40c8-da67-6727-b9844930386e@redhat.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Tue, 11 Jul 2023 10:00:42 -0700
+Message-ID: <CAKH8qBtBHD=1bXQyPUczLRUSNagNTKC6DNhO1rqHmrGE5kLHWQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] xdp: use trusted arguments in XDP hints kfuncs
+To: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc: Larysa Zaremba <larysa.zaremba@intel.com>, bpf@vger.kernel.org, brouer@redhat.com, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 11, 2023 at 2:03=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
+On Tue, Jul 11, 2023 at 7:21=E2=80=AFAM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
 >
-> On Thu, Jul 06, 2023 at 04:24:48PM -0700, Andrii Nakryiko wrote:
 >
-> SNIP
->
-> > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/lib/bpf/elf.c | 178 +++++++++++++++++++++++++++++-------------=
---
-> > >  1 file changed, 117 insertions(+), 61 deletions(-)
-> > >
+> On 11/07/2023 12.59, Larysa Zaremba wrote:
+> > Currently, verifier does not reject XDP programs that pass NULL pointer=
+ to
+> > hints functions. At the same time, this case is not handled in any driv=
+er
+> > implementation (including veth). For example, changing
 > >
-> > A bunch of nits, but overall looks good. Please address nits, and add m=
-y ack
+> > bpf_xdp_metadata_rx_timestamp(ctx, &timestamp);
 > >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > to
 > >
-> > > diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-> > > index 74e35071d22e..fcce4bd2478f 100644
-> > > --- a/tools/lib/bpf/elf.c
-> > > +++ b/tools/lib/bpf/elf.c
-> > > @@ -59,6 +59,108 @@ static Elf_Scn *elf_find_next_scn_by_type(Elf *el=
-f, int sh_type, Elf_Scn *scn)
-> > >         return NULL;
-> > >  }
-> > >
-> > > +struct elf_sym {
-> > > +       const char *name;
-> > > +       GElf_Sym sym;
-> > > +       GElf_Shdr sh;
-> > > +};
-> > > +
+> > bpf_xdp_metadata_rx_timestamp(ctx, NULL);
 > >
-> > if we want to use elf_sym_iter outside of elf.c, this should be in
-> > libbpf_internal.h?
+> > in xdp_metadata test successfully crashes the system.
+> >
+> > Add KF_TRUSTED_ARGS flag to hints kfunc definitions, so driver code
+> > does not have to worry about getting invalid pointers.
+> >
 >
-> yes eventually, but all the helper functions using elf_sym_iter that
-> I added later are in elf.c, so there's no need atm
+> Looks good to me, assuming this means verifier will reject BPF-prog's
+> supplying NULL.
 >
-> SNIP
+> Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
 >
-> > > +
-> > > +static struct elf_sym *elf_sym_iter_next(struct elf_sym_iter *iter)
-> > > +{
-> > > +       struct elf_sym *ret =3D &iter->sym;
-> > > +       GElf_Sym *sym =3D &ret->sym;
-> > > +       const char *name =3D NULL;
-> > > +       Elf_Scn *sym_scn;
-> > > +       size_t idx;
-> > > +
-> > > +       for (idx =3D iter->next_sym_idx; idx < iter->nr_syms; idx++) =
-{
-> > > +               if (!gelf_getsym(iter->syms, idx, sym))
-> > > +                       continue;
-> > > +               if (GELF_ST_TYPE(sym->st_info) !=3D iter->st_type)
-> > > +                       continue;
-> > > +               name =3D elf_strptr(iter->elf, iter->strtabidx, sym->=
-st_name);
-> > > +               if (!name)
-> > > +                       continue;
-> > > +
-> > > +               /* Transform symbol's virtual address (absolute for
-> > > +                * binaries and relative for shared libs) into file
-> > > +                * offset, which is what kernel is expecting for
-> > > +                * uprobe/uretprobe attachment.
-> > > +                * See Documentation/trace/uprobetracer.rst for more
-> > > +                * details.
-> > > +                * This is done by looking up symbol's containing
-> > > +                * section's header and using iter's virtual address
-> > > +                * (sh_addr) and corresponding file offset (sh_offset=
-)
-> > > +                * to transform sym.st_value (virtual address) into
-> > > +                * desired final file offset.
-> > > +                */
-> >
-> > this comment is misplaced? we don't do the translation here
->
-> right, should be placed at the elf_sym_offset function
->
-> >
-> > > +               sym_scn =3D elf_getscn(iter->elf, sym->st_shndx);
-> > > +               if (!sym_scn)
-> > > +                       continue;
-> > > +               if (!gelf_getshdr(sym_scn, &ret->sh))
-> > > +                       continue;
-> > > +
-> > > +               iter->next_sym_idx =3D idx + 1;
-> > > +               ret->name =3D name;
-> > > +               return ret;
-> > > +       }
-> > > +
-> > > +       return NULL;
-> > > +}
-> > > +
-> > > +static unsigned long elf_sym_offset(struct elf_sym *sym)
-> > > +{
-> > > +       return sym->sym.st_value - sym->sh.sh_addr + sym->sh.sh_offse=
-t;
-> > > +}
-> > > +
-> > >  /* Find offset of function name in the provided ELF object. "binary_=
-path" is
-> > >   * the path to the ELF binary represented by "elf", and only used fo=
-r error
-> > >   * reporting matters. "name" matches symbol name or name@@LIB for li=
-brary
-> > > @@ -90,64 +192,36 @@ long elf_find_func_offset(Elf *elf, const char *=
-binary_path, const char *name)
-> > >          * reported as a warning/error.
-> > >          */
-> > >         for (i =3D 0; i < ARRAY_SIZE(sh_types); i++) {
-> > > -               size_t nr_syms, strtabidx, idx;
-> > > -               Elf_Data *symbols =3D NULL;
-> > > -               Elf_Scn *scn =3D NULL;
-> > > +               struct elf_sym_iter iter;
-> > > +               struct elf_sym *sym;
-> > >                 int last_bind =3D -1;
-> > > -               const char *sname;
-> > > -               GElf_Shdr sh;
-> > > +               int curr_bind;
-> >
-> > OCD nit:
-> >
-> > $ rg 'curr(_|\b)' | wc -l
-> > 8
-> > $ rg 'cur(_|\b)' | wc -l
-> > 148
-> >
-> > and those 8 I consider an unfortunate accident ;) let's standardize on
-> > using "cur" consistently
->
-> ok.. probably easier to make that change than treat ocd ;-)
->
+> > Fixes: 3d76a4d3d4e5 ("bpf: XDP metadata RX kfuncs")
+> > Reported-by: Stanislav Fomichev <sdf@google.com>
+> > Closes: https://lore.kernel.org/bpf/ZKWo0BbpLfkZHbyE@google.com/
+> > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 
-thanks :)
+Acked-by: Stanislav Fomichev <sdf@google.com>
 
+Thank you for the fix!
 
+> > ---
+> >   net/core/xdp.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
 > >
-> > >
-> > > -               scn =3D elf_find_next_scn_by_type(elf, sh_types[i], N=
-ULL);
-> > > -               if (!scn) {
-> > > -                       pr_debug("elf: failed to find symbol table EL=
-F sections in '%s'\n",
-> > > -                                binary_path);
-> > > -                       continue;
-> > > -               }
-> > > -               if (!gelf_getshdr(scn, &sh))
-> > > -                       continue;
-> > > -               strtabidx =3D sh.sh_link;
-> > > -               symbols =3D elf_getdata(scn, 0);
-> > > -               if (!symbols) {
-> > > -                       pr_warn("elf: failed to get symbols for symta=
-b section in '%s': %s\n",
-> > > -                               binary_path, elf_errmsg(-1));
-> > > -                       ret =3D -LIBBPF_ERRNO__FORMAT;
-> > > +               ret =3D elf_sym_iter_new(&iter, elf, binary_path, sh_=
-types[i], STT_FUNC);
-> > > +               if (ret) {
-> > > +                       if (ret =3D=3D -ENOENT)
-> > > +                               continue;
-> > >                         goto out;
+> > diff --git a/net/core/xdp.c b/net/core/xdp.c
+> > index 41e5ca8643ec..8362130bf085 100644
+> > --- a/net/core/xdp.c
+> > +++ b/net/core/xdp.c
+> > @@ -741,7 +741,7 @@ __bpf_kfunc int bpf_xdp_metadata_rx_hash(const stru=
+ct xdp_md *ctx, u32 *hash,
+> >   __diag_pop();
 > >
-> > another styling nit: let's avoid unnecessary nesting of ifs:
-> >
-> > if (ret =3D=3D -ENOENT)
-> >     continue;
-> > if (ret)
-> >     goto out;
-> >
-> > simple and clean
+> >   BTF_SET8_START(xdp_metadata_kfunc_ids)
+> > -#define XDP_METADATA_KFUNC(_, name) BTF_ID_FLAGS(func, name, 0)
+> > +#define XDP_METADATA_KFUNC(_, name) BTF_ID_FLAGS(func, name, KF_TRUSTE=
+D_ARGS)
+> >   XDP_METADATA_KFUNC_xxx
+> >   #undef XDP_METADATA_KFUNC
+> >   BTF_SET8_END(xdp_metadata_kfunc_ids)
 >
-> ok
->
-> >
-> >
-> > >                 }
-> > > -               nr_syms =3D symbols->d_size / sh.sh_entsize;
-> > > -
-> > > -               for (idx =3D 0; idx < nr_syms; idx++) {
-> > > -                       int curr_bind;
-> > > -                       GElf_Sym sym;
-> > > -                       Elf_Scn *sym_scn;
-> > > -                       GElf_Shdr sym_sh;
-> > > -
-> > > -                       if (!gelf_getsym(symbols, idx, &sym))
-> > > -                               continue;
-> > > -
-> > > -                       if (GELF_ST_TYPE(sym.st_info) !=3D STT_FUNC)
-> > > -                               continue;
-> > > -
-> > > -                       sname =3D elf_strptr(elf, strtabidx, sym.st_n=
-ame);
-> > > -                       if (!sname)
-> > > -                               continue;
-> > > -
-> > > -                       curr_bind =3D GELF_ST_BIND(sym.st_info);
-> > >
-> > > +               while ((sym =3D elf_sym_iter_next(&iter))) {
-> > >                         /* User can specify func, func@@LIB or func@@=
-LIB_VERSION. */
-> > > -                       if (strncmp(sname, name, name_len) !=3D 0)
-> > > +                       if (strncmp(sym->name, name, name_len) !=3D 0=
-)
-> > >                                 continue;
-> > >                         /* ...but we don't want a search for "foo" to=
- match 'foo2" also, so any
-> > >                          * additional characters in sname should be o=
-f the form "@@LIB".
-> > >                          */
-> > > -                       if (!is_name_qualified && sname[name_len] !=
-=3D '\0' && sname[name_len] !=3D '@')
-> > > +                       if (!is_name_qualified && sym->name[name_len]=
- !=3D '\0' && sym->name[name_len] !=3D '@')
-> > >                                 continue;
-> > >
-> > > -                       if (ret >=3D 0) {
-> > > +                       curr_bind =3D GELF_ST_BIND(sym->sym.st_info);
-> > > +
-> > > +                       if (ret > 0) {
-> >
-> > used to be >=3D, why the change?
->
-> the original code initialized ret with -ENOENT and did not change
-> its value till this point, so the condition never triggered for
-> the first loop, but it did for the new code because we now use ret
-> earlier in:
->
->         ret =3D elf_sym_iter_new(&iter, elf, binary_path, sh_types[i], ST=
-T_FUNC);
->
-> also the check makes sense to me only if ret > 0 .. when we find
-> a duplicate value for symbol
-
-there is a subtle difference if we have some unresolved func with addr
-0 or something. But you are right, it's probably not very sensical, we
-can keep it as > 0.
-
->
-> jirka
 
