@@ -1,177 +1,184 @@
-Return-Path: <bpf+bounces-4725-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4636C74E65E
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 07:34:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97E3374E778
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 08:40:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F22542814AE
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 05:34:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F549281052
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 06:40:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA96125BA;
-	Tue, 11 Jul 2023 05:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DAA41643E;
+	Tue, 11 Jul 2023 06:40:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E003C28
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 05:34:42 +0000 (UTC)
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65121134
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 22:34:40 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-403470df1d0so29258211cf.0
-        for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 22:34:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=obs-cr.20221208.gappssmtp.com; s=20221208; t=1689053679; x=1691645679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XIwf0DRgkjpa7bcOHOBgKi+H0CPdK3A9qZcBSfK3zR8=;
-        b=wHXXXmxYs9YQOrj5t2WFFpthbnwHrAg5bjwSzUd0yy0WBvNnFLSPpvY1R49+kkMk2f
-         WQXQsnCSqvaVnMKwq2GMDmQk0CJ7Q4GV0lo4gkhgioqKDx84GolDiISnsgH1qkdUjuFW
-         Uuhh4mH6EEDWf5Mn+qQeckcxXwd5h6a5P43Z/Q8qdN78mczYQPx2V1C5fCShwHKM6ss3
-         uZw2n2J7SrDDMjQYUoKLqALxUxtYFjk5lfx0rFb5b2oBYe/Euh8VLcrMkekNZb8KaZEV
-         XPwABjTxHiKlf1CRn3xV1pjDouLn2n057ldQpfzTZFbPwiWeG3viObLB9jwsFs93wF4k
-         +R+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689053679; x=1691645679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XIwf0DRgkjpa7bcOHOBgKi+H0CPdK3A9qZcBSfK3zR8=;
-        b=JAub9UANYLawe4hOgOtsINZ73iBnk/2652gcdwJFveSeGAJzwu6CWZrLLgS2l7t1gV
-         8I0EoE5HLphaBZvdnQdnydk8Nj5Mxjzylvz3toCbse2QSKFnmtp4Pxka8yYRSx8SxH8X
-         BSImMyyTE1RtJ/5YB6Y4SVBjMdhe3soF9szmJKJJ5v8A3f4FgO3C9PIdpgsB0hYJKPKJ
-         mhKhcNV8IhNB7Xvb2Hjvf3Oa2LtB9V/y2noUn1fEstvtuviFdWy200N/zrU5rHO4rIax
-         wnB+E5wkJ4NxPAtDtE/Nk833mdybdyKjdRHxaO/RHLG6gODNCRPRxTQJwbV29ouLjMAn
-         V6lg==
-X-Gm-Message-State: ABy/qLbwqET0aGflPWNjS5RqUvxQLm6VjKUlOolmTd3kwYtuSRat6O1G
-	21vYUKtXh1zfKEBmeN1tBxeePiz35Rqi0WEcan9wyNeQDFXgloe6
-X-Google-Smtp-Source: APBJJlF3wh2QWP0CsAV7NDrBJUr0sKjUL5tXnd6F7okH8IvlrI9vOLpYlcnuBeAsxImNm6786Y2VhnP2+oUURT+PpAQ=
-X-Received: by 2002:a0c:e107:0:b0:635:ddc7:a0fe with SMTP id
- w7-20020a0ce107000000b00635ddc7a0femr16279668qvk.9.1689053679469; Mon, 10 Jul
- 2023 22:34:39 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2AF0211F
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 06:40:47 +0000 (UTC)
+Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA64793;
+	Mon, 10 Jul 2023 23:40:45 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4R0WF02hWlz9v7Yk;
+	Tue, 11 Jul 2023 14:29:40 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwB3IjlH+axkNk5bBA--.35225S2;
+	Tue, 11 Jul 2023 07:40:19 +0100 (CET)
+Message-ID: <badbc85145959e90cb9cbf9d21e0a43ea112776e.camel@huaweicloud.com>
+Subject: Re: [PATCH v12 1/4] security: Allow all LSMs to provide xattrs for
+ inode_init_security hook
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Paul Moore <paul@paul-moore.com>
+Cc: Casey Schaufler <casey@schaufler-ca.com>, zohar@linux.ibm.com, 
+	dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com, 
+	stephen.smalley.work@gmail.com, eparis@parisplace.org, 
+	linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, 
+	bpf@vger.kernel.org, kpsingh@kernel.org, keescook@chromium.org, 
+	nicolas.bouchinet@clip-os.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date: Tue, 11 Jul 2023 08:40:03 +0200
+In-Reply-To: <CAHC9VhSFy6wf+7DXrG=6CXZC4RrpTeP2sQezX0BPc95fxGAWxQ@mail.gmail.com>
+References: <20230610075738.3273764-2-roberto.sassu@huaweicloud.com>
+	 <1c8c612d99e202a61e6a6ecf50d4cace.paul@paul-moore.com>
+	 <a28c8fce-741b-e088-af5e-8a83daa7e25d@schaufler-ca.com>
+	 <CAHC9VhSNqzVpHcDw59a2CznaME1078SJWuEcqJx=R5PQgSjTDg@mail.gmail.com>
+	 <CAHC9VhSFy6wf+7DXrG=6CXZC4RrpTeP2sQezX0BPc95fxGAWxQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230710215819.723550-1-hawkinsw@obs.cr> <20230710215819.723550-2-hawkinsw@obs.cr>
- <CAADnVQ+F5VT72LzONEo79ksqaRj=c7mJDd_Ebb87767v01Nosw@mail.gmail.com>
- <CADx9qWgmYu_LVVFtR0R7pcqM_270kQFzvmiSZ-2Umn2pE6qn=g@mail.gmail.com> <CAADnVQJR7YFcjqgiGABX-_jJEK7rQTrO8cGFJiZ16oOtpbmVNA@mail.gmail.com>
-In-Reply-To: <CAADnVQJR7YFcjqgiGABX-_jJEK7rQTrO8cGFJiZ16oOtpbmVNA@mail.gmail.com>
-From: Will Hawkins <hawkinsw@obs.cr>
-Date: Tue, 11 Jul 2023 01:34:29 -0400
-Message-ID: <CADx9qWiBxoe6RAvfXq4xRHTshv8YNOtvG6THEx18jVOJ8WFDow@mail.gmail.com>
-Subject: Re: [PATCH 1/1] bpf, docs: Specify twos complement as format for
- signed integers
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, bpf@ietf.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+X-CM-TRANSID:GxC2BwB3IjlH+axkNk5bBA--.35225S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuF48uF48Aw1fuFW7GFy8Krg_yoWrGry7pF
+	Wft3Wjkrs5JF1fAr9ayw48W3Wak3yrGr4UWr9xtr1UZas09r1xJr1jkr4ruFyUZrWkGFn0
+	qF1UXr9xurn8A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAPBF1jj4wlKwADs5
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+	RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 11, 2023 at 12:47=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Jul 10, 2023 at 8:19=E2=80=AFPM Will Hawkins <hawkinsw@obs.cr> wr=
-ote:
-> >
-> > On Mon, Jul 10, 2023 at 11:00=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Jul 10, 2023 at 2:58=E2=80=AFPM Will Hawkins <hawkinsw@obs.cr=
-> wrote:
-> > > >
-> > > > In the documentation of the eBPF ISA it is unspecified how integers=
- are
-> > > > represented. Specify that twos complement is used.
-> > > >
-> > > > Signed-off-by: Will Hawkins <hawkinsw@obs.cr>
-> > > > ---
-> > > >  Documentation/bpf/instruction-set.rst | 5 +++++
-> > > >  1 file changed, 5 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/=
-bpf/instruction-set.rst
-> > > > index 751e657973f0..63dfcba5eb9a 100644
-> > > > --- a/Documentation/bpf/instruction-set.rst
-> > > > +++ b/Documentation/bpf/instruction-set.rst
-> > > > @@ -173,6 +173,11 @@ BPF_ARSH  0xc0   sign extending dst >>=3D (src=
- & mask)
-> > > >  BPF_END   0xd0   byte swap operations (see `Byte swap instructions=
-`_ below)
-> > > >  =3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> > > >
-> > > > +eBPF supports 32- and 64-bit signed and unsigned integers. It does
-> > > > +not support floating-point data types. All signed integers are rep=
-resented in
-> > > > +twos-complement format where the sign bit is stored in the most-si=
-gnificant
-> > > > +bit.
-> > >
-> > > Could you point to another ISA document (like x86, arm, ...) that
-> > > talks about signed and unsigned integers?
-> >
-> > Thank you for the reply. I hope that this change is useful. I proposed
-> > this change to mimic the documentation of "Numeric Data Types" in
-> > Volume 1, Chapter 4 of "Intel=C2=AE 64 and IA-32 Architectures Software
-> > Developer=E2=80=99s Manual" [1].
-> >
-> > [1] https://www.intel.com/content/www/us/en/developer/articles/technica=
-l/intel-sdm.html
->
-> I see where you got the inspiration from.
-> It's a "software developer's manual". Not an ISA spec.
-> But, say, we adopt this form and proceed to create all 500 pages of it.
+On Mon, 2023-07-10 at 14:04 -0400, Paul Moore wrote:
+> On Fri, Jul 7, 2023 at 5:44=E2=80=AFPM Paul Moore <paul@paul-moore.com> w=
+rote:
+> > On Fri, Jul 7, 2023 at 12:54=E2=80=AFPM Casey Schaufler <casey@schaufle=
+r-ca.com> wrote:
+> > > On 7/6/2023 6:43 PM, Paul Moore wrote:
+> > > > On Jun 10, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote=
+:
+> > > > > Currently, the LSM infrastructure supports only one LSM providing=
+ an xattr
+> > > > > and EVM calculating the HMAC on that xattr, plus other inode meta=
+data.
+> > > > >=20
+> > > > > Allow all LSMs to provide one or multiple xattrs, by extending th=
+e security
+> > > > > blob reservation mechanism. Introduce the new lbs_xattr_count fie=
+ld of the
+> > > > > lsm_blob_sizes structure, so that each LSM can specify how many x=
+attrs it
+> > > > > needs, and the LSM infrastructure knows how many xattr slots it s=
+hould
+> > > > > allocate.
+> > > > >=20
+> > > > > Modify the inode_init_security hook definition, by passing the fu=
+ll
+> > > > > xattr array allocated in security_inode_init_security(), and the =
+current
+> > > > > number of xattr slots in that array filled by LSMs. The first par=
+ameter
+> > > > > would allow EVM to access and calculate the HMAC on xattrs suppli=
+ed by
+> > > > > other LSMs, the second to not leave gaps in the xattr array, when=
+ an LSM
+> > > > > requested but did not provide xattrs (e.g. if it is not initializ=
+ed).
+> > > > >=20
+> > > > > Introduce lsm_get_xattr_slot(), which LSMs can call as many times=
+ as the
+> > > > > number specified in the lbs_xattr_count field of the lsm_blob_siz=
+es
+> > > > > structure. During each call, lsm_get_xattr_slot() increments the =
+number of
+> > > > > filled xattrs, so that at the next invocation it returns the next=
+ xattr
+> > > > > slot to fill.
+> > > > >=20
+> > > > > Cleanup security_inode_init_security(). Unify the !initxattrs and
+> > > > > initxattrs case by simply not allocating the new_xattrs array in =
+the
+> > > > > former. Update the documentation to reflect the changes, and fix =
+the
+> > > > > description of the xattr name, as it is not allocated anymore.
+> > > > >=20
+> > > > > Adapt both SELinux and Smack to use the new definition of the
+> > > > > inode_init_security hook, and to call lsm_get_xattr_slot() to obt=
+ain and
+> > > > > fill the reserved slots in the xattr array.
+> > > > >=20
+> > > > > Move the xattr->name assignment after the xattr->value one, so th=
+at it is
+> > > > > done only in case of successful memory allocation.
+> > > > >=20
+> > > > > Finally, change the default return value of the inode_init_securi=
+ty hook
+> > > > > from zero to -EOPNOTSUPP, so that BPF LSM correctly follows the h=
+ook
+> > > > > conventions.
+> > > > >=20
+> > > > > Reported-by: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
+> > > > > Link: https://lore.kernel.org/linux-integrity/Y1FTSIo+1x+4X0LS@ar=
+chlinux/
+> > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > > ---
+> > > > >  include/linux/lsm_hook_defs.h |  6 +--
+> > > > >  include/linux/lsm_hooks.h     | 20 ++++++++++
+> > > > >  security/security.c           | 71 +++++++++++++++++++++++------=
+------
+> > > > >  security/selinux/hooks.c      | 17 +++++----
+> > > > >  security/smack/smack_lsm.c    | 25 ++++++------
+> > > > >  5 files changed, 92 insertions(+), 47 deletions(-)
+> > > > Two *very* small suggestions below, but I can make those during the
+> > > > merge if you are okay with that Roberto?
+> > > >=20
+> > > > I'm also going to assume that Casey is okay with the Smack portion =
+of
+> > > > this patchset?  It looks fine to me, and considering his ACK on the
+> > > > other Smack patch in this patchset I'm assuming he is okay with thi=
+s
+> > > > one as well ... ?
+> > >=20
+> > > Yes, please feel free to add my Acked-by as needed.
+> >=20
+> > Done.  Thanks Casey.
+>=20
+> I'm merging the full patchset into lsm/next right now.  Thanks for all
+> your work on this Roberto, and a thank you for everyone else who
+> helped with reviews, testing, etc.
 
-Though the RISC-V ISA does include information about the integer
-representation, your point is well taken.
+Thanks Paul, also for making the patch set better!
 
-As I said in a previous message, I am working on setting up the
-skeleton for a strawman for a psABI. I will devote my efforts there
-where I hope that they can be more useful.
+Roberto
 
-Will
-
->
-> SDM has this to say about pointers:
-> "Pointers are addresses of locations in memory.
-> In non-64-bit modes, the architecture defines two types of pointers: a
-> near pointer and a far pointer. A near pointer is a 32-bit (or 16-bit)
-> offset (also called an effective address) within a segment. Near
-> pointers are used
-> for all memory references in a flat memory model or for references in
-> a segmented model where the identity of the segment being accessed is
-> implied."
->
-> BPF runs on 32-bit and 64-bit CPUs, so if we document signed vs unsigned
-> integers we'd have to say a few words about pointers, bitfields and strin=
-gs
-> (just like Intel SDM). Pointers in BPF are clearly lacking docs.
->
-> Beyond Vol 1, Chapter 4 there are plenty of other chapters.
-> Should we have an equivalent for all of them?
-> I think it would be great to have something for all that,
-> but dropping a patch or two won't get us there.
-> It needs to be a full time commitment with SOW, roadmap, etc.
-> I doubt the kernel and/or IETF process can accommodate that.
->
-> Saying it differently. What is missing in instruction-set.rst
-> from making an IETF standard out of it?
-> Does it need a signed vs unsigned SDM-like paragraph?
->
-> Let's focus on converting instruction-set.rst into a standard
-> as fast as possible and tackle all nice-to-have later.
 
