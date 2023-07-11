@@ -1,132 +1,118 @@
-Return-Path: <bpf+bounces-4803-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4804-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEBBA74F95B
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 22:52:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C47AC74F9F8
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 23:45:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB34E1C20E21
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 20:52:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 292FE2816A0
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 21:45:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426CB1EA6E;
-	Tue, 11 Jul 2023 20:52:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0A41ED35;
+	Tue, 11 Jul 2023 21:45:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6E3171D9
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 20:52:05 +0000 (UTC)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1BF1AE
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 13:52:00 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b701e41cd3so102071581fa.3
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 13:52:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA62A1DDEE
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 21:45:06 +0000 (UTC)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2856C10C7;
+	Tue, 11 Jul 2023 14:45:05 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b8ad356fe4so34065335ad.2;
+        Tue, 11 Jul 2023 14:45:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689108719; x=1691700719;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VcPcOsaH39p0NQAtc5LelPrHysKQuq9AyQ3tZrzLiP4=;
-        b=RgHasEk3OSZ5kgIU3jkEHSSVRxpe90mAN+NHJP07Jtlvqeox1Ixc+qWwVk0Ut9RNIb
-         UDrt4XBrMpLcMREfLHlTpBNa0LgCBG1tnMTaUsd9gtg8QorNa67i38Qd8O9Gwd3/dgkv
-         VMXR3iE/Ay0OkudJZ1xEw0aO9IRaf4d8CnrCNlE2xMJ7A72NeXEVfOo/gs4CWqBsktXD
-         7UdWD1OAfFhA0Gd/oIe3LaCIv/rZlLhgdXxfFddRdOeeQnPRHmoqZoKTCxKdQFXa/8z9
-         xWzS5+2CmXuEvO9DYTyK5wB8w8DNzLYY9wz7+Rr2piJn0zDgOtUDyurkBHyXJo5AMBXo
-         r7cA==
+        d=gmail.com; s=20221208; t=1689111904; x=1691703904;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FgtYI22NCwe9dx+Of1T/iE4i1/7dLMof/+iCsFkq1rs=;
+        b=O7nGdWt5CZLCDIWmoNlNzyBNO2oiXqA+AoYOgty59JgmhaLp+WI7FZmqDrqOYrsPno
+         wUkDh7CZ2gsrxvq+wDP8Tl9j3RPftB6TBpkpLiWUECFlJeV+qnKFDtrepyOk8ms28Jv2
+         puqa8CMEbbdsL7sgzT2PYIX+m0KTnDiQ4Jk+Q7XaYnP6ST2p79x25yLIxyy43moyP/zr
+         7rAgOAdwrSp1qs6zUj7vthz3IV42KdN8S/UNGyTt/QvQIhi2brWchIPL3cOc4aavKkcZ
+         h005FkNhxVMx8XSZTlzhbXk0GZtM/LGFNUdeCOENv+G/J7V7nG1J3CLqqK47R0/UAoaj
+         WSyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689108719; x=1691700719;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689111904; x=1691703904;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VcPcOsaH39p0NQAtc5LelPrHysKQuq9AyQ3tZrzLiP4=;
-        b=YHAsYhRMm3nabEjiS40iWKJs3UZLrcTT6Y+KBpMYP/15XIgUQUroxoO0E/16mLTbE6
-         K7YaLHwBlcQASGUvRU88ke0GFib4THzjVqoqFsr1Nv6Kj8xdgt3G9lyoQmw6XCcU9vd4
-         o4DIAFkgneHwrcl92CWGLAjnBLyEflfDrkyBP/ujEvVxofK9X1gm+vCazLKmRZEjtyp5
-         vwZmVqrxapVu0tQsLUW5Gpt05oeQSGA9Fo2aZEn/6R0P3hzgw/Nv9+bE8mi3BK2ERbdo
-         +joXOS531Ck+ZwFPPX7J+CabGb2lAlGYg9mURFvYC71n5DUvLo9Y6ClXe1JyaKbZXscN
-         Jx/A==
-X-Gm-Message-State: ABy/qLbzJegoOe07yjlclNHf3LBHAtEjKfPm2zXtrNb1YX4faOJsgcf5
-	paMkpoDxEtv9fG+27YvmT4FqV4yJMDGpOLZFoxR6/YyYMrY=
-X-Google-Smtp-Source: APBJJlHPNrEKEgt+6CNSsqbZV67GyEiYfBnkOwJA/dHA0Q/MeIx3nLZ0n4wByvBMTWYBq1sk5zkAnhFdTXHaZcbQXw8=
-X-Received: by 2002:a2e:979a:0:b0:2b6:f21c:2c46 with SMTP id
- y26-20020a2e979a000000b002b6f21c2c46mr12907800lji.53.1689108718752; Tue, 11
- Jul 2023 13:51:58 -0700 (PDT)
+        bh=FgtYI22NCwe9dx+Of1T/iE4i1/7dLMof/+iCsFkq1rs=;
+        b=dMwxAYWvtwVvS4VTJgVo0A2hex8Em+EC6RYEuhbUZ3fH33jRRIN9bS00mr6ctU7CEW
+         4fzSqccYUhw+3VIeQIRYH2J9U/pGYfKX05lAJQsGFoW+JIci5uxVV5XujuwsMwRjkDdk
+         pw0XDPFHPxIsPm7VwXPgAdTSAAUW777tMkpTxCRUsX8dvmpXmIhKe3cY5yl87BkDIyFP
+         B71zaf/DD82N2bEmJ2RZtVYEpdOP0dLMMGlOitaJntBxb4Pnxp4tN2UQRsAuQ0e+UB2v
+         I0/jyZ3Hqov61dz+vNpUdtmuwSI+kWfO0M3o6BHkFJcioS4lATshKbumUl9w7SSUfNCC
+         cOKw==
+X-Gm-Message-State: ABy/qLYDYbjiHPXt6ozXIaXlp+7L4eJ1+u52txIcbwak/rv5N6buWfn6
+	XJpY9XuDKt3bZpxUzkgnnfs=
+X-Google-Smtp-Source: APBJJlEDpmEKUfT11rMvOXkdzqveqwgVWu1FyToCJCqX4+ayDvDmicIYt53U0JjbmgG4PbVbvN3tZg==
+X-Received: by 2002:a17:902:a60f:b0:1b9:cca6:551b with SMTP id u15-20020a170902a60f00b001b9cca6551bmr8700837plq.7.1689111904384;
+        Tue, 11 Jul 2023 14:45:04 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:9374])
+        by smtp.gmail.com with ESMTPSA id jm23-20020a17090304d700b001b9de2b905asm2397378plb.231.2023.07.11.14.45.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jul 2023 14:45:03 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 11 Jul 2023 11:45:02 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Andrea Righi <andrea.righi@canonical.com>
+Cc: torvalds@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@kernel.org, joshdon@google.com, brho@google.com,
+	pjt@google.com, derkling@google.com, haoluo@google.com,
+	dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+	riel@surriel.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH 12/34] sched_ext: Implement BPF extensible scheduler class
+Message-ID: <ZK3NXp02NbnWe61q@slm.duckdns.org>
+References: <20230711011412.100319-1-tj@kernel.org>
+ <20230711011412.100319-13-tj@kernel.org>
+ <ZK0fLAnJrdJm5TUJ@righiandr-XPS-13-7390>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230711175945.3298231-1-davemarchevsky@fb.com> <20230711175945.3298231-3-davemarchevsky@fb.com>
-In-Reply-To: <20230711175945.3298231-3-davemarchevsky@fb.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 11 Jul 2023 13:51:47 -0700
-Message-ID: <CAADnVQJ0YOn4UwOy3svSnE7gwWxRZ2kB3urktsVC5GpYhn9pxA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/6] bpf: Introduce internal definitions for
- UAPI-opaque bpf_{rb,list}_node
-To: Dave Marchevsky <davemarchevsky@fb.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZK0fLAnJrdJm5TUJ@righiandr-XPS-13-7390>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 11, 2023 at 11:00=E2=80=AFAM Dave Marchevsky <davemarchevsky@fb=
-.com> wrote:
->
-> Structs bpf_rb_node and bpf_list_node are opaquely defined in
-> uapi/linux/bpf.h, as BPF program writers are not expected to touch their
-> fields - nor does the verifier allow them to do so.
->
-> Currently these structs are simple wrappers around structs rb_node and
-> list_head and linked_list / rbtree implementation just casts and passes
-> to library functions for those data structures. Later patches in this
-> series, though, will add an "owner" field to bpf_{rb,list}_node, such
-> that they're not just wrapping an underlying node type. Moreover, the
-> bpf linked_list and rbtree implementations will deal with these owner
-> pointers directly in a few different places.
->
-> To avoid having to do
->
->   void *owner =3D (void*)bpf_list_node + sizeof(struct list_head)
->
-> with opaque UAPI node types, add bpf_{list,rb}_node_internal struct
-> definitions to internal headers and modify linked_list and rbtree to use
-> the internal types where appropriate.
->
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->  include/linux/bpf.h  | 10 ++++++++++
->  kernel/bpf/helpers.c | 23 +++++++++++++----------
->  2 files changed, 23 insertions(+), 10 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 360433f14496..d5841059fd2f 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -228,6 +228,16 @@ struct btf_record {
->         struct btf_field fields[];
->  };
->
-> +/* Non-opaque version of bpf_rb_node in uapi/linux/bpf.h */
-> +struct bpf_rb_node_internal {
-> +       struct rb_node rb_node;
-> +} __attribute__((aligned(8)));
-> +
-> +/* Non-opaque version of bpf_list_node in uapi/linux/bpf.h */
-> +struct bpf_list_node_internal {
-> +       struct list_head list_head;
-> +} __attribute__((aligned(8)));
+On Tue, Jul 11, 2023 at 11:21:48AM +0200, Andrea Righi wrote:
+> On Mon, Jul 10, 2023 at 03:13:30PM -1000, Tejun Heo wrote:
+> ...
+> > +static void free_dsq_irq_workfn(struct irq_work *irq_work)
+> > +{
+> > +	struct llist_node *to_free = llist_del_all(&dsqs_to_free);
+> > +	struct scx_dispatch_q *dsq, *tmp_dsq;
+> > +
+> > +	llist_for_each_entry_safe(dsq, tmp_dsq, to_free, free_node)
+> > +		kfree_rcu(dsq);
+> 
+> Maybe kfree_rcu(dsq, rcu)?
+> 
+> With 7e3f926bf453 ("rcu/kvfree: Eliminate k[v]free_rcu() single argument macro")
+> we don't allow single argument kfree_rcu() anymore and I don't think we
+> want to use kfree_rcu_mightsleep() here...
 
-We typically use _kern suffix for data structs that
-mirror bpf.h structs.
-Let's use it here as well instead of _internal.
+Oh, thanks for pointing that out. I'll update.
+
+Thanks.
+
+-- 
+tejun
 
