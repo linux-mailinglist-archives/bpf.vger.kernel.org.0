@@ -1,85 +1,78 @@
-Return-Path: <bpf+bounces-4659-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4660-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0F5D74E2AC
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 02:41:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8943D74E30B
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 03:10:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A731281440
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 00:41:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 920AF1C20C0C
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 01:10:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A780C38C;
-	Tue, 11 Jul 2023 00:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D899621;
+	Tue, 11 Jul 2023 01:10:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE1137E;
-	Tue, 11 Jul 2023 00:41:24 +0000 (UTC)
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47F71AC;
-	Mon, 10 Jul 2023 17:41:22 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b6ff1ada5dso80498691fa.2;
-        Mon, 10 Jul 2023 17:41:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A653382;
+	Tue, 11 Jul 2023 01:10:26 +0000 (UTC)
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0D810C1;
+	Mon, 10 Jul 2023 18:10:09 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b6f9edac8dso77615991fa.3;
+        Mon, 10 Jul 2023 18:10:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689036081; x=1691628081;
+        d=gmail.com; s=20221208; t=1689037780; x=1691629780;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=efOAgxEmmwfXTjqPB7I0Z2dgqV2TvYCNGg5OCjQJVI4=;
-        b=B+3OS09MuotFOVY1dDveToEz2WoT5xkcB3LzHb6Z+2tOWZQ84ha0XpAoqRFu8tNIgl
-         7Uj90GnG4Yml9Bj40WCMsC01xMMal/sHbREfSoKFrIXtt7X241sCWPXGb+M9WdE/BGz/
-         4Joe6k93ob75Inpyix+DVPJ/OHbqPjLg3kLRTbZt3d4dxR0m+C1tUqMfl3kQ+Ouoitgi
-         5sC0r3tQL8mS4qQqOBlSPt1QNPL/6Whceai7ALHec3LXf0+HW5N/01JZ0Kr5PfFoTVcR
-         wqT5pvQ+Adwa0szw82oz1/mBXkHeDak7VxrAHoWqQ6Cvppb7ibPCzHuYpNKUSvxvTZ5c
-         fjqA==
+        bh=ynUCCAwIsl1Knhawj6TPxHdOw1pZmTll5Cp5Uex+0IE=;
+        b=Wspu0Rw0rq4G+yiT/xcrDqPKF9DuPIpcT4Hwu09vhMoNJ/sUP8l3WPmRhgomBLSpG9
+         HeLd27oJKMV/ySIqjmqs3GQQUh6XwGit8BR640LihItLdaMOTxTwnK7zCfbogQQpr5Zj
+         /hoLmqgsW+3mJPBXI4CmDSSv44w/FlGBq+WC0zMpcp+hO8b03SBrK7gUrrgWB9PUlgFQ
+         +eLAKHoA/DzgiBh/GNTyrGMRWeoJNo4o4gA2Fc1NI1q3ccV8RXuybgpUjYeY5ap3T1E0
+         4NNJ69pDBB5nRbw2xtHOFpN9StfXLEMqhN84/dnozhdxJbre4JcDH7yUhP0c5xPIgICz
+         ChKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689036081; x=1691628081;
+        d=1e100.net; s=20221208; t=1689037780; x=1691629780;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=efOAgxEmmwfXTjqPB7I0Z2dgqV2TvYCNGg5OCjQJVI4=;
-        b=frVijC4tNI+4JD7u6aV1/HByf163CJw2gBrECSg16/BScF/106EEYTNKplr1yU0Mq1
-         cr9Mrx/OmgoM70+mPszAcB9s0wXjb3zW9UlhnBuzsnCwZHwII3M2WkNPDw2aqvYfIMti
-         bLai9OLzbphEVkKRjCdPWDRmEnOqQu9K1s9Pmj+MRZbr6G3o3TXaElVRJixaaiwE19F/
-         Ne/dD8oQi35sS3R4C1YexQLuchuNbVoGxwFHfhyqfe+UUaDi/RwcpCLiGQbzJ+SE3yCR
-         H8gPPTf7YTNsDzkdfYhQrf/3atODAABub/HfrTldpuiFCBIRKwrGuEsbvbu88ChiuxqS
-         8a3Q==
-X-Gm-Message-State: ABy/qLbI159XA/s3wXOC2FlOLBpopGwdUWnNnPomFcF8sq8Kl+JKJv4y
-	9+Vt4kcmNw1760akZH8PJFAycfAXSg9cVzyfGpM=
-X-Google-Smtp-Source: APBJJlE0xkzS08RMt8yd7eqeNOa+sfpj/or0uIsa7m/WeT7ybK4WWGVR/nd2iSYTODdqjMCKQeeVPXXhFVq9VpATKiI=
-X-Received: by 2002:a2e:8883:0:b0:2b6:e2c2:d234 with SMTP id
- k3-20020a2e8883000000b002b6e2c2d234mr11356614lji.33.1689036080823; Mon, 10
- Jul 2023 17:41:20 -0700 (PDT)
+        bh=ynUCCAwIsl1Knhawj6TPxHdOw1pZmTll5Cp5Uex+0IE=;
+        b=VyGFKF/QHJbTU1kBTGFgA6WTYnqS+Q6efKgcCTPz55cv1ilMudpHJiz/MnfHkMeay5
+         oGcLffmQ/AMBI8VIJhpvS1q1OU2EYoy9L1i1Cm8SNvopHaBVXPjxDCbo+D91M6YWKko1
+         YCQXidI9H/CtNXB9lP9XnVp5Lb+z/Aphe8UREolwGJrXYrj+6XqdewZ5BVjqr3yuk+3u
+         RxXOdd2f4dLEeblLxXqWrKlWBlkpvhk29TJ5ugedwL+41bvKi8tfVxBqrw5dy9giBBXe
+         2hPvaLbHK6gPTseDaR6opTgqWRzbNDOzW7yl7k8sMUrtx9IpY3L1qXNd97HV6XbxX6g2
+         NNaw==
+X-Gm-Message-State: ABy/qLaEGosR2vGpjL+4uQ89B7J4f0XC+ZMqbSIbaAHidc449b079jIb
+	xF3Qy46nXmn/APwJwHaOG0+ZZKRst/7EyML4z6DD6isL
+X-Google-Smtp-Source: APBJJlGfk/0uBNhDBcz+njgSqPxjFnfVmGtc7ljfQQOeW1XdVcK06I65ylABsXv4uRC0EJKZFcqzd9sATTq3icIHxLw=
+X-Received: by 2002:a2e:9d16:0:b0:2b6:e958:5700 with SMTP id
+ t22-20020a2e9d16000000b002b6e9585700mr5857244lji.4.1689037779714; Mon, 10 Jul
+ 2023 18:09:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAN+4W8iRH6kpDmmY8i5r1nKbckaYghmOCqRXe+4bDHE7vzVMMA@mail.gmail.com>
- <20230706153327.99298-1-kuniyu@amazon.com>
-In-Reply-To: <20230706153327.99298-1-kuniyu@amazon.com>
+References: <20230706204650.469087-1-maciej.fijalkowski@intel.com> <20230706204650.469087-11-maciej.fijalkowski@intel.com>
+In-Reply-To: <20230706204650.469087-11-maciej.fijalkowski@intel.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 10 Jul 2023 17:41:09 -0700
-Message-ID: <CAADnVQK5gorOuM+GTANJjrwTNSfVcEO-cL_ESqXOjUBdpJLvGQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 6/7] bpf, net: Support SO_REUSEPORT sockets
- with bpf_sk_assign
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: Lorenz Bauer <lmb@isovalent.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, Hao Luo <haoluo@google.com>, 
-	Hemanth Malla <hemanthmalla@gmail.com>, Joe Stringer <joe@cilium.io>, Joe Stringer <joe@wand.net.nz>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Mykola Lysenko <mykolal@fb.com>, Network Development <netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Stanislav Fomichev <sdf@google.com>, Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Yonghong Song <yhs@fb.com>
+Date: Mon, 10 Jul 2023 18:09:28 -0700
+Message-ID: <CAADnVQLKDratBrgvwHzXZBW9chH9SBXPhnXpExYwu0BbRVFPjQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 10/24] xsk: add new netlink attribute
+ dedicated for ZC max frags
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, "Karlsson, Magnus" <magnus.karlsson@intel.com>, 
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	"Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>, Simon Horman <simon.horman@corigine.com>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -89,61 +82,21 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 6, 2023 at 8:33=E2=80=AFAM Kuniyuki Iwashima <kuniyu@amazon.com=
-> wrote:
+On Thu, Jul 6, 2023 at 1:47=E2=80=AFPM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
 >
-> From: Lorenz Bauer <lmb@isovalent.com>
-> Date: Thu, 6 Jul 2023 09:11:15 +0100
-> > On Thu, Jul 6, 2023 at 1:41=E2=80=AFAM Kuniyuki Iwashima <kuniyu@amazon=
-.com> wrote:
-> > >
-> > > Sorry for late reply.
-> > >
-> > > What we know about sk before inet6?_lookup_reuseport() are
-> > >
-> > >   (1) sk was full socket in bpf_sk_assign()
-> > >   (2) sk had SOCK_RCU_FREE in bpf_sk_assign()
-> > >   (3) sk was TCP_LISTEN here if TCP
-> >
-> > Are we looking at the same bpf_sk_assign? Confusingly there are two
-> > very similarly named functions. The one we care about is:
-> >
-> > BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64=
-, flags)
-> > {
-> >     if (!sk || flags !=3D 0)
-> >         return -EINVAL;
-> >     if (!skb_at_tc_ingress(skb))
-> >         return -EOPNOTSUPP;
-> >     if (unlikely(dev_net(skb->dev) !=3D sock_net(sk)))
-> >         return -ENETUNREACH;
-> >     if (sk_is_refcounted(sk) &&
-> >         unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
-> >         return -ENOENT;
-> >
-> >     skb_orphan(skb);
-> >     skb->sk =3D sk;
-> >     skb->destructor =3D sock_pfree;
-> >
-> >     return 0;
-> > }
-> >
-> > From this we can't tell what state the socket is in or whether it is
-> > RCU freed or not.
+> Introduce new netlink attribute NETDEV_A_DEV_XDP_ZC_MAX_SEGS that will
+> carry maximum fragments that underlying ZC driver is able to handle on
+> TX side. It is going to be included in netlink response only when driver
+> supports ZC. Any value higher than 1 implies multi-buffer ZC support on
+> underlying device.
 >
-> But we can in inet6?_steal_sock() by calling sk_is_refcounted() again
-> via skb_steal_sock().
->
-> In inet6?_steal_sock(), we call inet6?_lookup_reuseport() only for
-> sk that was a TCP listener or UDP non-connected socket until just before
-> the sk_state checks.  Then, we know *refcounted should be false for such
-> sockets even before inet6?_lookup_reuseport().
->
-> After the checks, sk might be poped out of the reuseport group before
-> inet6?_lookup_reuseport() and reuse_sk might be NULL, but it's not
-> related because *refcounted is a value for sk, not for reuse_sk.
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-I was about to apply v5 before I noticed this discussion on v4.
-Sounds like v6 will be needed.
-Next time please continue discussion in the latest version.
+I suspect something in this patch makes XDP bonding test fail.
+See BPF CI.
+
+I can reproduce the failure locally as well.
+test_progs -t bond
+works without the series and fails with them.
 
