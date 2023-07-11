@@ -1,73 +1,84 @@
-Return-Path: <bpf+bounces-4765-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4766-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A17F74F13B
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 16:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D246174F1B4
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 16:20:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AE912816A6
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 14:09:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64CB0281861
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 14:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418EF19BB2;
-	Tue, 11 Jul 2023 14:08:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E2C19BB7;
+	Tue, 11 Jul 2023 14:19:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F130914AB5;
-	Tue, 11 Jul 2023 14:08:55 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6828A1718;
-	Tue, 11 Jul 2023 07:08:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=KvskEr1+W018J0txnL09dpVdxdmlYOmO19RB1YOkiX4=; b=QzzxCCWiGG/VQxMp0cx8ETfcYe
-	ee9q511MvrIs6KEeFeXKl9Q2Ab8xIVQIj9sxOsDxAeWwx1OBTvYuGPgtlZpa8ID81ZlSN+SHcev4i
-	kxUk6BU6T25lL1ujp3sz2yPkbm19g6v7qtrfT9SxTfcWgd5PC0XFXhBJdn476WJzoUPPi5H9Dsz6c
-	nl6/xsvq367h3aRnl51pfqKmZv0js4zblg88EMKBfOyCp4tAoXQF4f3ZV5TnZazAOX34Ft5IRpDw2
-	MapqoAOPu0wn0Kt4tk5APqsOrr3v2UefrmXVHTBQdBZbqJvhthK/4IgdGh3E7gKKTcaWNuQuMYSip
-	BkRX6wKQ==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qJE2G-0000Zl-8q; Tue, 11 Jul 2023 16:08:12 +0200
-Received: from [81.6.34.132] (helo=localhost.localdomain)
-	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qJE2F-000FCG-PN; Tue, 11 Jul 2023 16:08:11 +0200
-Subject: Re: [PATCH bpf-next v4 4/8] libbpf: Add link-based API for tcx
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
- razor@blackwall.org, sdf@google.com, john.fastabend@gmail.com,
- kuba@kernel.org, dxu@dxuuu.xyz, joe@cilium.io, toke@kernel.org,
- davem@davemloft.net, bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20230710201218.19460-1-daniel@iogearbox.net>
- <20230710201218.19460-5-daniel@iogearbox.net>
- <CAEf4Bzb_qyd9KbNU6=vs=H3Nbqt6QNNo++JVRCUrQ9aFW4psMA@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a98f7531-b8a9-909b-0eb3-38bf26d79115@iogearbox.net>
-Date: Tue, 11 Jul 2023 16:08:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 779FE19BAF
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 14:19:49 +0000 (UTC)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238B51994
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 07:19:28 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso32392725e9.1
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 07:19:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1689085166; x=1691677166;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+8+AYxhOC9+QFLEcw26kNzr9G5hqgdDEzPKb+UZOi+g=;
+        b=h04+Ct45Yx5uJfpduFKD34QBpkW/G4NLQZe4KtT54CDtHleK1ake11F1rwqWisgC//
+         UQCn3lS5/7rNckTT4cm/OupRX2fCzuHEG6xX0hBpdGeoHdVZxTqLZ5c+3/hSEnrwcPg5
+         hUUlNsR4+FFcyyMzW52jOzGGf4grcJYYMJrk7JiYpvjdms1g88n4O6LldWt4OcapVLz5
+         BJeth4EEUeWIN/RrWxOHCnyxnLQGToOqBpBXfTBbPjqFxE/1MS4G+/VcdATJNoest9lw
+         qSAnYiflxZZbtWaBDDEUMXEiha0R6r1jTgENNmyUFqa3RvCyTc0oF7W7T9cq8ogOiihI
+         k9gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689085166; x=1691677166;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+8+AYxhOC9+QFLEcw26kNzr9G5hqgdDEzPKb+UZOi+g=;
+        b=VOKXXqR5AZN+NGvF3YB2WCbePsu3RXM7yoGvQeBj470AOZ8EdDlkRZT1KfaLdUQECg
+         nfJW7yjNR6lCFwbbp8Xt3ceSV3DwiC2kNiaqPCVqvYkhzDeYkVBr2YPO0JBlkBeTp75k
+         iU2qqzCAjmEOFs1LE5SXwU6faK5HLLX4Fem1y54KIYobCe9C2wajqXgVhY561WGv+Re+
+         ZULtPB0EPI/kEgf5MShWUKLYjsTkTYg9DupqEbCcvc9hRrbbmCjZ555Q8+dAzlwdYpjf
+         IGHTGA3i4kfYMXa4BjBg7Fp/dInFoVYNcObKe8r4mv4MWv6iauGgmjlAQfIAyTVCzbMR
+         nqiQ==
+X-Gm-Message-State: ABy/qLar6XSuG6Z/JnRvG5/DwuFGE8iXdfSuTdBDNyftzEF6cy7I9l7+
+	j0rFPEoFlq+CeM1kvrcZU8KDNA==
+X-Google-Smtp-Source: APBJJlGgPvMCyU1sS9b/7oa8vwMRWreVGkPlrPT/JhwbMIqTfCN7GmuhAjh8z60EtPozGKrQuj6wrg==
+X-Received: by 2002:a1c:6a03:0:b0:3fb:a576:3212 with SMTP id f3-20020a1c6a03000000b003fba5763212mr16266211wmc.39.1689085166489;
+        Tue, 11 Jul 2023 07:19:26 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:cdfe:66c0:7817:c4f5? ([2a02:8011:e80c:0:cdfe:66c0:7817:c4f5])
+        by smtp.gmail.com with ESMTPSA id z22-20020a7bc7d6000000b003fbcdba1a63sm2671791wmk.12.2023.07.11.07.19.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Jul 2023 07:19:26 -0700 (PDT)
+Message-ID: <f7dd8bef-87c0-123b-c14e-d278fbc7dbe3@isovalent.com>
+Date: Tue, 11 Jul 2023 15:19:25 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4Bzb_qyd9KbNU6=vs=H3Nbqt6QNNo++JVRCUrQ9aFW4psMA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26966/Tue Jul 11 09:28:31 2023)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH bpf-next v4 6/8] bpftool: Extend net dump with tcx progs
+Content-Language: en-GB
+To: Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org
+Cc: andrii@kernel.org, martin.lau@linux.dev, razor@blackwall.org,
+ sdf@google.com, john.fastabend@gmail.com, kuba@kernel.org, dxu@dxuuu.xyz,
+ joe@cilium.io, toke@kernel.org, davem@davemloft.net, bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20230710201218.19460-1-daniel@iogearbox.net>
+ <20230710201218.19460-7-daniel@iogearbox.net>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20230710201218.19460-7-daniel@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -75,221 +86,169 @@ X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 7/11/23 6:00 AM, Andrii Nakryiko wrote:
-> On Mon, Jul 10, 2023 at 1:12 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> Implement tcx BPF link support for libbpf.
->>
->> The bpf_program__attach_fd() API has been refactored slightly in order to pass
->> bpf_link_create_opts pointer as input.
->>
->> A new bpf_program__attach_tcx() has been added on top of this which allows for
->> passing all relevant data via extensible struct bpf_tcx_opts.
->>
->> The program sections tcx/ingress and tcx/egress correspond to the hook locations
->> for tc ingress and egress, respectively.
->>
->> For concrete usage examples, see the extensive selftests that have been
->> developed as part of this series.
->>
->> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->> ---
->>   tools/lib/bpf/bpf.c      | 19 ++++++++++--
->>   tools/lib/bpf/bpf.h      |  5 ++++
->>   tools/lib/bpf/libbpf.c   | 62 ++++++++++++++++++++++++++++++++++------
->>   tools/lib/bpf/libbpf.h   | 16 +++++++++++
->>   tools/lib/bpf/libbpf.map |  1 +
->>   5 files changed, 92 insertions(+), 11 deletions(-)
->>
+2023-07-10 22:12 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
+> Add support to dump fd-based attach types via bpftool. This includes both
+> the tc BPF link and attach ops programs. Dumped information contain the
+> attach location, function entry name, program ID and link ID when applicable.
 > 
-> Pretty minor nits, I think ifindex move to be mandatory argument is
-> the most consequential, as it's an API. With that addressed, please
-> add my ack for next rev
+> Example with tc BPF link:
 > 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>   # ./bpftool net
+>   xdp:
 > 
->> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
->> index 3dfc43b477c3..d513c226b9aa 100644
->> --- a/tools/lib/bpf/bpf.c
->> +++ b/tools/lib/bpf/bpf.c
->> @@ -717,9 +717,9 @@ int bpf_link_create(int prog_fd, int target_fd,
->>                      const struct bpf_link_create_opts *opts)
->>   {
->>          const size_t attr_sz = offsetofend(union bpf_attr, link_create);
->> -       __u32 target_btf_id, iter_info_len;
->> +       __u32 target_btf_id, iter_info_len, relative_id;
->> +       int fd, err, relative;
+>   tc:
+>   bond0(4) tcx/ingress cil_from_netdev prog id 784 link id 10
+>   bond0(4) tcx/egress cil_to_netdev prog id 804 link id 11
 > 
-> nit: maybe make these new vars local to the TCX cases branch below?
+>   flow_dissector:
 > 
->>          union bpf_attr attr;
->> -       int fd, err;
->>
->>          if (!OPTS_VALID(opts, bpf_link_create_opts))
->>                  return libbpf_err(-EINVAL);
->> @@ -781,6 +781,21 @@ int bpf_link_create(int prog_fd, int target_fd,
->>                  if (!OPTS_ZEROED(opts, netfilter))
->>                          return libbpf_err(-EINVAL);
->>                  break;
->> +       case BPF_TCX_INGRESS:
->> +       case BPF_TCX_EGRESS:
->> +               relative = OPTS_GET(opts, tcx.relative_fd, 0);
->> +               relative_id = OPTS_GET(opts, tcx.relative_id, 0);
->> +               if (relative > 0 && relative_id)
->> +                       return libbpf_err(-EINVAL);
->> +               if (relative_id) {
->> +                       relative = relative_id;
->> +                       attr.link_create.flags |= BPF_F_ID;
->> +               }
+>   netfilter:
 > 
-> Well, I have the same nit as in the previous patch, this "relative =
-> relative_id" is both confusing because of naming asymmetry (no
-> relative_fd throws me off), and also unnecessary updating of the
-> state. link_create.flags |= BPF_F_ID is inevitable, but the rest can
-> be more straightforward, IMO
+> Example with tc BPF attach ops:
 > 
->> +               attr.link_create.tcx.relative_fd = relative;
->> +               attr.link_create.tcx.expected_revision = OPTS_GET(opts, tcx.expected_revision, 0);
->> +               if (!OPTS_ZEROED(opts, tcx))
->> +                       return libbpf_err(-EINVAL);
->> +               break;
->>          default:
->>                  if (!OPTS_ZEROED(opts, flags))
->>                          return libbpf_err(-EINVAL);
+>   # ./bpftool net
+>   xdp:
 > 
-> [...]
+>   tc:
+>   bond0(4) tcx/ingress cil_from_netdev prog id 654
+>   bond0(4) tcx/egress cil_to_netdev prog id 672
 > 
->> +struct bpf_link *
->> +bpf_program__attach_tcx(const struct bpf_program *prog,
->> +                       const struct bpf_tcx_opts *opts)
->> +{
->> +       LIBBPF_OPTS(bpf_link_create_opts, link_create_opts);
->> +       __u32 relative_id, flags;
->> +       int ifindex, relative_fd;
->> +
->> +       if (!OPTS_VALID(opts, bpf_tcx_opts))
->> +               return libbpf_err_ptr(-EINVAL);
->> +
->> +       relative_id = OPTS_GET(opts, relative_id, 0);
->> +       relative_fd = OPTS_GET(opts, relative_fd, 0);
->> +       flags = OPTS_GET(opts, flags, 0);
->> +       ifindex = OPTS_GET(opts, ifindex, 0);
->> +
->> +       /* validate we don't have unexpected combinations of non-zero fields */
->> +       if (!ifindex) {
->> +               pr_warn("prog '%s': target netdevice ifindex cannot be zero\n",
->> +                       prog->name);
->> +               return libbpf_err_ptr(-EINVAL);
->> +       }
+>   flow_dissector:
 > 
-> given ifindex is non-optional, then it makes more sense to have it as
-> a mandatory argument between prog and opts in
-> bpf_program__attach_tcx(), instead of as a field of an opts struct
+>   netfilter:
+> 
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 
-Agree, and it will also be more in line with bpf_program__attach_xdp() one
-which has ifindex as 2nd param too.
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
-I also implemented the rest of the suggestions in here for v5, thanks!
+Thank you!
 
->> +       if (relative_fd > 0 && relative_id) {
+If you respin, would you mind updating the docs please
+(Documentation/bpftool-net.rst), I realise it says that "bpftool net"
+only dumps for tc and XDP, but that's not true any more since we have
+the flow dissector, netfilter programs, and now tcx. The examples are
+out-of-date too, but updating them doesn't have to be part of this PR.
+
+> ---
+>  tools/bpf/bpftool/net.c | 86 +++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 82 insertions(+), 4 deletions(-)
 > 
-> this asymmetrical check is a bit distracting. And also, if someone
-> specifies negative FD and positive ID, that's also a bad combo and we
-> shouldn't just ignore invalid FD, right? So I'd have a nice and clean
-> 
-> if (relative_fd && relative_id) { /* bad */ }
-> 
->> +               pr_warn("prog '%s': relative_fd and relative_id cannot be set at the same time\n",
->> +                       prog->name);
->> +               return libbpf_err_ptr(-EINVAL);
->> +       }
->> +       if (relative_id)
->> +               flags |= BPF_F_ID;
-> 
-> I think bpf_link_create() will add this flag anyways, so can drop this
-> adjustment logic here?
-> 
->> +
->> +       link_create_opts.tcx.expected_revision = OPTS_GET(opts, expected_revision, 0);
->> +       link_create_opts.tcx.relative_fd = relative_fd;
->> +       link_create_opts.tcx.relative_id = relative_id;
->> +       link_create_opts.flags = flags;
->> +
->> +       /* target_fd/target_ifindex use the same field in LINK_CREATE */
->> +       return bpf_program_attach_fd(prog, ifindex, "tc", &link_create_opts);
-> 
-> s/tc/tcx/ ?
-> 
->>   }
->>
->>   struct bpf_link *bpf_program__attach_freplace(const struct bpf_program *prog,
->> @@ -11917,11 +11956,16 @@ struct bpf_link *bpf_program__attach_freplace(const struct bpf_program *prog,
->>          }
->>
->>          if (target_fd) {
->> +               LIBBPF_OPTS(bpf_link_create_opts, target_opts);
->> +
->>                  btf_id = libbpf_find_prog_btf_id(attach_func_name, target_fd);
->>                  if (btf_id < 0)
->>                          return libbpf_err_ptr(btf_id);
->>
->> -               return bpf_program__attach_fd(prog, target_fd, btf_id, "freplace");
->> +               target_opts.target_btf_id = btf_id;
->> +
->> +               return bpf_program_attach_fd(prog, target_fd, "freplace",
->> +                                            &target_opts);
->>          } else {
->>                  /* no target, so use raw_tracepoint_open for compatibility
->>                   * with old kernels
->> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
->> index 10642ad69d76..33f60a318e81 100644
->> --- a/tools/lib/bpf/libbpf.h
->> +++ b/tools/lib/bpf/libbpf.h
->> @@ -733,6 +733,22 @@ LIBBPF_API struct bpf_link *
->>   bpf_program__attach_netfilter(const struct bpf_program *prog,
->>                                const struct bpf_netfilter_opts *opts);
->>
->> +struct bpf_tcx_opts {
->> +       /* size of this struct, for forward/backward compatibility */
->> +       size_t sz;
->> +       int ifindex;
-> 
-> is ifindex optional or it's expected to always be specified? If the
-> latter, then I'd move ifindex out of opts and make it second arg of
-> bpf_program__attach_tcx, between prog and opts
-> 
->> +       __u32 flags;
->> +       __u32 relative_fd;
->> +       __u32 relative_id;
->> +       __u64 expected_revision;
->> +       size_t :0;
->> +};
->> +#define bpf_tcx_opts__last_field expected_revision
->> +
->> +LIBBPF_API struct bpf_link *
->> +bpf_program__attach_tcx(const struct bpf_program *prog,
->> +                       const struct bpf_tcx_opts *opts);
->> +
->>   struct bpf_map;
->>
->>   LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map);
->> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
->> index a95d39bbef90..2a2db5c78048 100644
->> --- a/tools/lib/bpf/libbpf.map
->> +++ b/tools/lib/bpf/libbpf.map
->> @@ -397,4 +397,5 @@ LIBBPF_1.3.0 {
->>                  bpf_obj_pin_opts;
->>                  bpf_program__attach_netfilter;
->>                  bpf_prog_detach_opts;
->> +               bpf_program__attach_tcx;
-> 
-> heh, now we definitely screwed up sorting ;)
-> 
->>   } LIBBPF_1.2.0;
-> 
->> --
->> 2.34.1
->>
-> 
+> diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+> index 26a49965bf71..22af0a81458c 100644
+> --- a/tools/bpf/bpftool/net.c
+> +++ b/tools/bpf/bpftool/net.c
+> @@ -76,6 +76,11 @@ static const char * const attach_type_strings[] = {
+>  	[NET_ATTACH_TYPE_XDP_OFFLOAD]	= "xdpoffload",
+>  };
+>  
+> +static const char * const attach_loc_strings[] = {
+> +	[BPF_TCX_INGRESS]		= "tcx/ingress",
+> +	[BPF_TCX_EGRESS]		= "tcx/egress",
+> +};
+> +
+>  const size_t net_attach_type_size = ARRAY_SIZE(attach_type_strings);
+>  
+>  static enum net_attach_type parse_attach_type(const char *str)
+> @@ -422,8 +427,80 @@ static int dump_filter_nlmsg(void *cookie, void *msg, struct nlattr **tb)
+>  			      filter_info->devname, filter_info->ifindex);
+>  }
+>  
+> -static int show_dev_tc_bpf(int sock, unsigned int nl_pid,
+> -			   struct ip_devname_ifindex *dev)
+> +static const char *flags_strings(__u32 flags)
+> +{
+> +	return json_output ? "none" : "";
+> +}
+> +
+> +static int __show_dev_tc_bpf_name(__u32 id, char *name, size_t len)
+> +{
+> +	struct bpf_prog_info info = {};
+> +	__u32 ilen = sizeof(info);
+> +	int fd, ret;
+> +
+> +	fd = bpf_prog_get_fd_by_id(id);
+> +	if (fd < 0)
+> +		return fd;
+> +	ret = bpf_obj_get_info_by_fd(fd, &info, &ilen);
+> +	if (ret < 0)
+> +		goto out;
+> +	ret = -ENOENT;
+> +	if (info.name[0]) {
+> +		get_prog_full_name(&info, fd, name, len);
+> +		ret = 0;
+> +	}
+> +out:
+> +	close(fd);
+> +	return ret;
+> +}
+> +
+> +static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
+> +			      const enum bpf_attach_type loc)
+> +{
+> +	__u32 prog_flags[64] = {}, link_flags[64] = {}, i;
+> +	__u32 prog_ids[64] = {}, link_ids[64] = {};
+> +	LIBBPF_OPTS(bpf_prog_query_opts, optq);
+> +	char prog_name[MAX_PROG_FULL_NAME];
+> +	int ret;
+> +
+> +	optq.prog_ids = prog_ids;
+> +	optq.prog_attach_flags = prog_flags;
+> +	optq.link_ids = link_ids;
+> +	optq.link_attach_flags = link_flags;
+> +	optq.count = ARRAY_SIZE(prog_ids);
+> +
+> +	ret = bpf_prog_query_opts(dev->ifindex, loc, &optq);
+> +	if (ret)
+> +		return;
+> +	for (i = 0; i < optq.count; i++) {
+> +		NET_START_OBJECT;
+> +		NET_DUMP_STR("devname", "%s", dev->devname);
+> +		NET_DUMP_UINT("ifindex", "(%u)", dev->ifindex);
+> +		NET_DUMP_STR("kind", " %s", attach_loc_strings[loc]);
+> +		ret = __show_dev_tc_bpf_name(prog_ids[i], prog_name,
+> +					     sizeof(prog_name));
+> +		if (!ret)
+> +			NET_DUMP_STR("name", " %s", prog_name);
+> +		NET_DUMP_UINT("prog_id", " prog id %u", prog_ids[i]);
+
+I was unsure at first about having two words for "prog id", or "link id"
+below (we use "prog_id" for netfilter, for example), but I see it leaves
+you the opportunity to append the flags, if any, without additional
+keywords so... why not.
+
+> +		if (prog_flags[i])
+> +			NET_DUMP_STR("prog_flags", "%s", flags_strings(prog_flags[i]));
+> +		if (link_ids[i])
+> +			NET_DUMP_UINT("link_id", " link id %u",
+> +				      link_ids[i]);
+> +		if (link_flags[i])
+> +			NET_DUMP_STR("link_flags", "%s", flags_strings(link_flags[i]));
+> +		NET_END_OBJECT_FINAL;
+> +	}
+> +}
+> +
+> +static void show_dev_tc_bpf(struct ip_devname_ifindex *dev)
+> +{
+> +	__show_dev_tc_bpf(dev, BPF_TCX_INGRESS);
+> +	__show_dev_tc_bpf(dev, BPF_TCX_EGRESS);
+> +}
+> +
+> +static int show_dev_tc_bpf_classic(int sock, unsigned int nl_pid,
+> +				   struct ip_devname_ifindex *dev)
+>  {
+>  	struct bpf_filter_t filter_info;
+>  	struct bpf_tcinfo_t tcinfo;
+> @@ -790,8 +867,9 @@ static int do_show(int argc, char **argv)
+>  	if (!ret) {
+>  		NET_START_ARRAY("tc", "%s:\n");
+>  		for (i = 0; i < dev_array.used_len; i++) {
+> -			ret = show_dev_tc_bpf(sock, nl_pid,
+> -					      &dev_array.devices[i]);
+> +			show_dev_tc_bpf(&dev_array.devices[i]);
+> +			ret = show_dev_tc_bpf_classic(sock, nl_pid,
+> +						      &dev_array.devices[i]);
+>  			if (ret)
+>  				break;
+>  		}
 
 
