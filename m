@@ -1,77 +1,86 @@
-Return-Path: <bpf+bounces-4748-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4749-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72B7F74E9D9
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 11:07:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A69B74EA36
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 11:22:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C91B280F55
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 09:07:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C829A28123C
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 09:22:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2448C17752;
-	Tue, 11 Jul 2023 09:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B64981775F;
+	Tue, 11 Jul 2023 09:21:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E499C17738
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:07:25 +0000 (UTC)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091E193
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:07:24 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51e526e0fe4so3948680a12.3
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689066442; x=1691658442;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yUZUJ6S3GFGsGsi9SsNVIKj5ZwOUg0Wh4Bdxeu03r9k=;
-        b=r3yClfQRePZdoA2THWQryVnS3oNv7Dq3xhkpcuR8NELBzXK1uQs8SoAhEfXoaaHVUc
-         q1wVdV4i4OfsvMN1psWFAoHKBzvDZzYjbeQfCkHNRMOseqVIyL6iIvujlcHR2+eb6217
-         g0b7YBZV/2/uS4438FPmiNL4eLJAN+dHk2w8gv2d9M/LlxdOuOEfso6THwvowdWeBpIX
-         xDlCOMXScaXOWSoKmasQ1l1EFbXhSfKiad+zdmWJ117GHeqB+KbM3iozWyANnUUmrPAW
-         Whf4Yg+64TviI01vQ719HIlNipLWFyQTI/9TE8nAx+5yP8Z/JaMEFEaD3slxxuX107+B
-         17gw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 874A217FE0
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:21:54 +0000 (UTC)
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34E01FEC
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:21:52 -0700 (PDT)
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B1DF53F737
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:21:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1689067310;
+	bh=OJ/UfvjsgxXJVj9cI8O8ORaFeewJGYP94m+QX22LbOU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To;
+	b=BbEE/AZBh6K1akTHp9yqgV5tCvgyzQJZknWoOu2u+FuGPIXk5BYixNjpiqfeSURO9
+	 iRXuPinIWZBcC21EGGpdYEnUV9K2ZfvHSUjlThK2qM0we9zh6CtAeWKWjkMsirTB5b
+	 hFikvpZJAISs9uj8/hSdfHYnm5Tbqv192K5MrGZzsC4DJ2ppdkN2h3qDjxCNvPTevM
+	 E1q5HUtOAZtCKkfw+Dr1CrXpaIoT9UrJ2XIZ94EXIC+SmMwEs6Epq0j++NVP2W0xsI
+	 o9L3pwQzvwt+fi9WAjgMQiHx8mBBVgDmSgtC3qZLm65cvb+OzQOyuYbM2BBc5P+y0T
+	 O3+P3PjzPVh7A==
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-97542592eb9so318955466b.2
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:21:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689066442; x=1691658442;
+        d=1e100.net; s=20221208; t=1689067309; x=1691659309;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yUZUJ6S3GFGsGsi9SsNVIKj5ZwOUg0Wh4Bdxeu03r9k=;
-        b=HRKIywc9lsGjshHXCxm3sb3p7BgvRCwtvYmliA68rU+yNu0Es4Q0jDIGO3mv8u+vpe
-         F0duw5XbRTBd6GPxSLOXt332RWT1TU8MWBBT3MGsFLHTNPJAf0bvdFaQ6qDqBg6y4aio
-         Z1lD5ocE/7AireVCd8ajSPEMIdwVZpeM8L8T0ke7aFpSX++C2PrGK6PT4ascgbcHIa4p
-         j2qYUSFJe8Gb6jRRJ1XwzuxU4CjLtozpEDh4dSd2EZh4xxqBC12v1q50M4xHw0J/6CeZ
-         r7VOp9L4zTx7MinFITwvFNJ5559ONFv4dh8RZGb+B7pmPwR5viIJwKe6baNTh3iNDGue
-         iWtA==
-X-Gm-Message-State: ABy/qLY4+Gw3R/lRkif0cGelc3jC9XENepgDvNyPaaC5Hn0dWAkEyOC2
-	J6TKEGdMmkX+vatDaQbqOt/PDEg0A7+mJw==
-X-Google-Smtp-Source: APBJJlEyDp3j9vnOYxmBYNuiEfT6/Ig7qfJF3ICZDnFBMFOWEOQRdT36vfbK54AnmS/VIBWZ1OFHFQ==
-X-Received: by 2002:aa7:d741:0:b0:51d:f37c:e3b8 with SMTP id a1-20020aa7d741000000b0051df37ce3b8mr15207311eds.13.1689066442084;
-        Tue, 11 Jul 2023 02:07:22 -0700 (PDT)
-Received: from krava (net-109-116-206-239.cust.vodafonedsl.it. [109.116.206.239])
-        by smtp.gmail.com with ESMTPSA id b1-20020a05640202c100b0051beb873d98sm942288edx.27.2023.07.11.02.07.20
+        bh=OJ/UfvjsgxXJVj9cI8O8ORaFeewJGYP94m+QX22LbOU=;
+        b=jsqX4sYh01mejdKsqrhYCDsLS52fQdLxxks9o7tWE7FoXEDals2LS6+GrIARl+rtha
+         ABx882miHOpCiHBOYeNEAwT9EIVZY0tqs8Wm6itpEqtPOGSPz9lOPHTZLww9AhJi5uQv
+         AtmvqWPKccGuop5Rc3f/y6w8iRS2oyog3F0Tn9f6GEEfLlxZfjQRwCd1w7sM6Kkjf0+l
+         Fz5NU3sQcdGASwTTRTLXKeBFlYM3SGvVkYApONy+wtyupJytVpHedIJh9Dtqud5ugpTr
+         dGsDKjaYbFAjcAcA0EWaEx1Ipu/TtjFTIB0UWLZjSsJDxMK8WTppr3dHO5a2VGN+C9DL
+         QS2w==
+X-Gm-Message-State: ABy/qLYFjm25ihEzu6333fpelLLFrnHe4SpRa0h2oJHXRJZfpv4loytb
+	QW8H/hOTbBT+A5uxRb/W5TpPBrmdbrf+W1m7sy8W/JiOlLcIt61JV6Cg/f+iXYqlUf+/z5TG/LW
+	miFkyrRXBI+4nt615qzuz/ixH6mSw+w==
+X-Received: by 2002:a17:906:914c:b0:992:13c7:563 with SMTP id y12-20020a170906914c00b0099213c70563mr16737353ejw.75.1689067309612;
+        Tue, 11 Jul 2023 02:21:49 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGpMr0HuT9jbNM4jFYWwm/n67RIaIchwui/AhY3jPzD6rrXDz3TR9tPvLS84M605b1mpWVltA==
+X-Received: by 2002:a17:906:914c:b0:992:13c7:563 with SMTP id y12-20020a170906914c00b0099213c70563mr16737307ejw.75.1689067309194;
+        Tue, 11 Jul 2023 02:21:49 -0700 (PDT)
+Received: from localhost (host-95-234-206-203.retail.telecomitalia.it. [95.234.206.203])
+        by smtp.gmail.com with ESMTPSA id x8-20020a170906298800b0098df7d0e096sm907161eje.54.2023.07.11.02.21.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jul 2023 02:07:21 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 11 Jul 2023 11:07:18 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCHv3 bpf-next 23/26] selftests/bpf: Add usdt_multi bench test
-Message-ID: <ZK0bxo+eppeUE1zK@krava>
-References: <20230630083344.984305-1-jolsa@kernel.org>
- <20230630083344.984305-24-jolsa@kernel.org>
- <CAEf4BzYgeoUfwqtnk_FWUo7-=ughWstWy8DDMjQi4sohvmU1Qg@mail.gmail.com>
+        Tue, 11 Jul 2023 02:21:48 -0700 (PDT)
+Date: Tue, 11 Jul 2023 11:21:48 +0200
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@kernel.org, joshdon@google.com, brho@google.com,
+	pjt@google.com, derkling@google.com, haoluo@google.com,
+	dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+	riel@surriel.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH 12/34] sched_ext: Implement BPF extensible scheduler class
+Message-ID: <ZK0fLAnJrdJm5TUJ@righiandr-XPS-13-7390>
+References: <20230711011412.100319-1-tj@kernel.org>
+ <20230711011412.100319-13-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -80,41 +89,29 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzYgeoUfwqtnk_FWUo7-=ughWstWy8DDMjQi4sohvmU1Qg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230711011412.100319-13-tj@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 06, 2023 at 09:42:05PM -0700, Andrii Nakryiko wrote:
+On Mon, Jul 10, 2023 at 03:13:30PM -1000, Tejun Heo wrote:
+...
+> +static void free_dsq_irq_workfn(struct irq_work *irq_work)
+> +{
+> +	struct llist_node *to_free = llist_del_all(&dsqs_to_free);
+> +	struct scx_dispatch_q *dsq, *tmp_dsq;
+> +
+> +	llist_for_each_entry_safe(dsq, tmp_dsq, to_free, free_node)
+> +		kfree_rcu(dsq);
 
-SNIP
+Maybe kfree_rcu(dsq, rcu)?
 
-> > +static void test_bench_attach_usdt(void)
-> > +{
-> > +       struct uprobe_multi_usdt *skel = NULL;
-> > +       long attach_start_ns, attach_end_ns;
-> > +       long detach_start_ns, detach_end_ns;
-> > +       double attach_delta, detach_delta;
-> > +       struct bpf_program *prog;
-> > +       int err;
-> > +
-> > +       skel = uprobe_multi_usdt__open();
-> > +       if (!ASSERT_OK_PTR(skel, "uprobe_multi__open"))
-> > +               goto cleanup;
-> > +
-> > +       bpf_object__for_each_program(prog, skel->obj)
-> > +               bpf_program__set_autoload(prog, false);
-> > +
-> > +       bpf_program__set_autoload(skel->progs.usdt0, true);
-> 
-> there is nothing else in that skeleton, why this set_autoload() business?
+With 7e3f926bf453 ("rcu/kvfree: Eliminate k[v]free_rcu() single argument macro")
+we don't allow single argument kfree_rcu() anymore and I don't think we
+want to use kfree_rcu_mightsleep() here...
 
-nah copy&paste error from the uprobe bench test.. will change ;-)
-
-jirka
-
-SNIP
+-Andrea
 
