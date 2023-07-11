@@ -1,163 +1,127 @@
-Return-Path: <bpf+bounces-4772-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4773-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3BC874F32D
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 17:18:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E72174F467
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 18:06:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D9A21C20D39
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 15:18:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5E92281813
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 16:06:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B051219BAB;
-	Tue, 11 Jul 2023 15:18:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E075319BD4;
+	Tue, 11 Jul 2023 16:06:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C82218AFE
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 15:18:16 +0000 (UTC)
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDB110F2
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 08:18:14 -0700 (PDT)
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 29BD23F371
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 15:18:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1689088689;
-	bh=zBS1kUVYnl4zbNq8VpIr8q1zCpc4ruBaI0DcQqmBCzU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:In-Reply-To;
-	b=FTAwV1cvwS6sg0EXKFhDUBYS65rw+UH4Blhj9A0XgqmSms3YQ3Qolxs89At0eF7eJ
-	 uPnHNIj2kHA2Woi6ec9HWuMY+SUNUO9ZzwAUiMHdul7FAFXtYqn2kLuACpDnDFoSMM
-	 bf8qBHB1XyR4r0xkJzZmkg7zqijVnV164uMp8v0m4VBsepW7sHEWpfyvaYoCOv5HVz
-	 JOrJgVaajKqXAq2Jg0iwq/XebMLlmwTEW10MoAUZ3RjzAfingcJgyruhC5MAgl95Kl
-	 wDSZsDgfggM8LDBDbH7X+Ykz/MsgPU/QRaBBhQYrNkDPvAO/x+ds9FkI0pFTXL+ykh
-	 al7Ou1YjHzHRw==
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-51e5a6bae66so1301188a12.0
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 08:18:09 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B6519BBA
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 16:06:40 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AB411D
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:06:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1689091598;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IHgmi2wwFrPjMP5Rxs8KSVDqK1J+qf75UCdExpa0HJo=;
+	b=ENDaHJ/Vv8mI7uMgKK3FkLa7QEI3A5wQWLon3XqttdV42wVrb9YeO4sR8fMctVSW7c0a+o
+	EqnawonnmLC4jJMKMohvtw9kw8v9BBCivORrOJlQ1nuVPNQ48PByZwdKG6k7CPxKAu99GK
+	GBgTgMokpS/khyRLq6nF70NNf/YffWs=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-414-qeawWiX3Pkekwt3G_-MsmQ-1; Tue, 11 Jul 2023 12:06:37 -0400
+X-MC-Unique: qeawWiX3Pkekwt3G_-MsmQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-993d5006993so292041266b.3
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:06:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689088688; x=1691680688;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zBS1kUVYnl4zbNq8VpIr8q1zCpc4ruBaI0DcQqmBCzU=;
-        b=aUOxySYVHTvUxOE1wvBwiwpwATOfx7s/ArYfF7xsHhU8+6PqgPH8DFEUu9vY37B73D
-         zeeHBt4JXOOo1AA4K/IV0Ysqz1YEmk6UW5V+bUxlgRfmHCsYqN4+R3/n7VVMxZhaF1cB
-         kioJvJig6Rlv4YQaADY5CDApaQuhOpUBkxJ1Yu1qyKKF9xPrYJVZk6Y3mlh0YyFZFVDU
-         aD6qt+5wULxrCr5BQqQuL+JJA11H73riDbgmb5F2ePuydUXw1EjxS9sqKZC1wKnaBnAa
-         bGcB1ef8L8vhQayTzVKvYNgP5EI99JFpgng/69yA3DqRBusMWVSPGa/a3VKEn1mu13HA
-         YPZQ==
-X-Gm-Message-State: ABy/qLZeByKQTu0VmuaomHKrLmhQRDqUMoUYY0pg3anqnOvR4bVw3E0b
-	/nFxeFnIs4ajdL/3OMbp5ahlLny2qHVZaK13KTnGulyCr2K05so1L3/K9m8u7yL8EqRvnrUrqzm
-	Fk9rg0Ejh1fcY13jBBPXFvN0DZQbLEg==
-X-Received: by 2002:a05:6402:6cf:b0:51d:d37f:ab49 with SMTP id n15-20020a05640206cf00b0051dd37fab49mr13026175edy.6.1689088688227;
-        Tue, 11 Jul 2023 08:18:08 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFrzVDe3+LYEvMRbxBjBYXswRZCflXQSVNYVfPRk1Q58g/TNPggflnSjsvw6h4y21B4GQhANg==
-X-Received: by 2002:a05:6402:6cf:b0:51d:d37f:ab49 with SMTP id n15-20020a05640206cf00b0051dd37fab49mr13026148edy.6.1689088687917;
-        Tue, 11 Jul 2023 08:18:07 -0700 (PDT)
-Received: from localhost (host-95-234-206-203.retail.telecomitalia.it. [95.234.206.203])
-        by smtp.gmail.com with ESMTPSA id o4-20020a056402038400b0051dd1c10c13sm1400778edv.29.2023.07.11.08.18.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jul 2023 08:18:07 -0700 (PDT)
-Date: Tue, 11 Jul 2023 17:18:06 +0200
-From: Andrea Righi <andrea.righi@canonical.com>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, llvm@lists.linux.dev,
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH] btf, scripts: rust: drop is_rust_module.sh
-Message-ID: <ZK1yrqmOPjS8grso@righiandr-XPS-13-7390>
-References: <20230704052136.155445-1-andrea.righi@canonical.com>
- <CANiq72k6um58AAydgkzhkmAdd8t1quzeGaPsR7-pS_ZXYf0-YQ@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1689091596; x=1691683596;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IHgmi2wwFrPjMP5Rxs8KSVDqK1J+qf75UCdExpa0HJo=;
+        b=SmHhnBV7IFfWFXC4FaJeC/CH8Ecp3f2VK7ODnrtUg5VvOajlg/37v7IsOn1kMdORQG
+         hbpzKgsdY10ga/UHP3f1j3zczsm0ZnFnFZoLAmcvauadMiHHQT6xieh6b1l149arEp3O
+         ucjQ7jyu+IKpYSvvwiFto4+dgg4eekIivCxDwXQAFSTdIkyMBUP03yiRXqdwXM0UD9/0
+         aCsxZaIWSke9xOJXoq2sYSuRIaIaHd/eTMFotsXJNTeyQtpVenNv4PBF+YlY97aaDw2a
+         O2TXdUetYwurmZwL2pql6BD1HcrOMugh5kqWItrnFDNufwOKKMfUwHLR0N5fOJJfzF/F
+         P2oA==
+X-Gm-Message-State: ABy/qLZqJKvOfxiZVL0Deo/0rBEW7PLaMnGS5JEtwg6yXUWMTZCgUGbJ
+	MJ82Qy2tMLt1h3pvdtSpkN/GfFb4uOrVuwXmCnBoEyWgYZu4vY5rMzQ6jukkx/IlwjmSm8zxkCO
+	qVxSrTMqGhul3
+X-Received: by 2002:a17:906:73d5:b0:994:577:f9df with SMTP id n21-20020a17090673d500b009940577f9dfmr7195367ejl.4.1689091596089;
+        Tue, 11 Jul 2023 09:06:36 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFVb+VnLW+A+oRRKhUDHDJ2ge75t79bT8wF0gNCeIcmMzqWP9QSikucwVt4UtqYjBbKUKQ5GA==
+X-Received: by 2002:a17:906:73d5:b0:994:577:f9df with SMTP id n21-20020a17090673d500b009940577f9dfmr7195342ejl.4.1689091595649;
+        Tue, 11 Jul 2023 09:06:35 -0700 (PDT)
+Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id z19-20020a1709060ad300b009934b1eb577sm1340404ejf.77.2023.07.11.09.06.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Jul 2023 09:06:35 -0700 (PDT)
+From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <da7ac0a1-5f62-bc0e-8954-d3d1e846fb52@redhat.com>
+Date: Tue, 11 Jul 2023 18:06:34 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiq72k6um58AAydgkzhkmAdd8t1quzeGaPsR7-pS_ZXYf0-YQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Cc: brouer@redhat.com, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Xu Kuohai <xukuohai@huawei.com>,
+ Pu Lehui <pulehui@huawei.com>
+Subject: Re: [PATCH bpf] bpf: cpumap: Fix memory leak in cpu_map_update_elem
+Content-Language: en-US
+To: Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230711115848.2701559-1-pulehui@huaweicloud.com>
+In-Reply-To: <20230711115848.2701559-1-pulehui@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 11, 2023 at 04:39:27PM +0200, Miguel Ojeda wrote:
-> On Tue, Jul 4, 2023 at 7:21 AM Andrea Righi <andrea.righi@canonical.com> wrote:
-> >
-> > With commit c1177979af9c ("btf, scripts: Exclude Rust CUs with pahole")
-> > we are now able to use pahole directly to identify Rust compilation
-> > units (CUs) and exclude them from generating BTF debugging information
-> > (when DEBUG_INFO_BTF is enabled).
-> >
-> > And if pahole doesn't support the --lang-exclude flag, we can't enable
-> > both RUST and DEBUG_INFO_BTF at the same time.
-> >
-> > So, in any case, the script is_rust_module.sh is just redundant and we
-> > can drop it.
-> >
-> > NOTE: we may also be able to drop the "Rust loadable module" mark
-> > inside Rust modules, but it seems safer to keep it for now to make sure
-> > we are not breaking any external tool that may potentially rely on it.
-> 
-> Just to recall the history of these changes:
-> 
->   - The script got added in order to skip the BTF generation in the
-> `BTF [M]` step (under `DEBUG_INFO_BTF_MODULES`, which depends on
-> `DEBUG_INFO_BTF`).
-> 
->   - A few months later, it was noticed that C modules couldn't be
-> loaded if Rust was enabled, due to the base BTF info in `vmlinux`.
-> That triggered the eventual addition of `--lang_exclude=` to `pahole`,
-> but meanwhile, we made `DEBUG_INFO_BTF` and `RUST` exclusive.
-> 
->   - Now, this patch removes the script because having a newer `pahole`
-> also correctly skips the Rust CUs in the `BTF [M]` steps (i.e. and not
-> just the `vmlinux` one), since we pass `--lang_exclude=` to both cases
-> (`link-vmlinux.sh` and `Makefile.modfinal`), if I understand correctly
-> (the script could, in principle, have been removed even before
-> `pahole` got the new feature, given the exclusivity of the options).
 
-The history looks correct to me.
-
-Also, note that, if pahole doesn't support the new `--lang-exclude=`, we
-have `RUST` depending on `!DEBUG_INFO_BTF`, so we fallback the old
-"exclusivity" mode between BTF and Rust and, again, the script is not
-needed.
-
-As you correctly say, in principle, we could have removed the script
-even before the new `pahole`.
-
+On 11/07/2023 13.58, Pu Lehui wrote:
+> From: Pu Lehui <pulehui@huawei.com>
 > 
-> If this is all correct, then the patch looks good to me. I am Cc'ing
-> Arnaldo, Martin and the BPF list.
+> Syzkaller reported a memory leak as follows:
 > 
-> If this goes through the Rust tree, I will also pick the older `Reviewed-by`s.
+[...]>
+> In the cpu_map_update_elem flow, when kthread_stop is called before
+> calling the threadfn of rcpu->kthread, since the KTHREAD_SHOULD_STOP bit
+> of kthread has been set by kthread_stop, the threadfn of rcpu->kthread
+> will never be executed, and rcpu->refcnt will never be 0, which will
+> lead to the allocated rcpu, rcpu->queue and rcpu->queue->queue cannot be
+> released.
 > 
-> Thanks!
+> Calling kthread_stop before executing kthread's threadfn will return
+> -EINTR. We can complete the release of memory resources in this state.
 > 
-> Cheers,
-> Miguel
+> Fixes: 6710e1126934 ("bpf: introduce new bpf cpu map type BPF_MAP_TYPE_CPUMAP")
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
 
-Thanks,
--Andrea
+LGTM, thanks for fixing this.
+
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+
 
