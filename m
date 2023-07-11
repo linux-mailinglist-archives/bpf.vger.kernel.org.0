@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-4740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECB2974E9CD
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 11:04:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23E2E74E9CE
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 11:05:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BD201C20D1A
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 09:04:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D41A3281591
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 09:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5317317743;
-	Tue, 11 Jul 2023 09:04:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F971774D;
+	Tue, 11 Jul 2023 09:04:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2630117738
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:04:32 +0000 (UTC)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E5EE56
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:04:30 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b6fbf0c0e2so83851841fa.2
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:04:30 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6311F17723
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:04:46 +0000 (UTC)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C2D83
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:04:45 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-992b66e5affso686982866b.3
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:04:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689066268; x=1691658268;
+        d=gmail.com; s=20221208; t=1689066283; x=1691658283;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=UNiwvwWuhDMorw95SuybhpbJNn2iWK1iwWfSfmi+mu4=;
-        b=R5c1FdLhIwmXrtfQilOgTHPHuzCcGCjMuFun7fqYs8TgG86KPybgJ7Ki0zgNs13Nqy
-         yZNQrxo008U30Nid8QVCGqHvk+UUX34PL9kBk172Be1uW8jE6qlkZbiHYTMwgkXaPoPZ
-         NVBRN+JB/dmz1P2KjpnQe273LKVdyDI3dAt9MWPjih4RwbfMSUeUdwlDae5fYK0FOtkB
-         mAdN2y6sSUuYjohQDeq+mSQFNY6G8t9OJZIkzwLGzOU2J7wlokyw7dIznxAJ5Coja1ZY
-         oTlVasPmMquymiQimOGrbebhVNR8KXdCB+lZJJuwFuDCK2XdNqytRedrivS8vBCHW7ya
-         mAew==
+        bh=Xl9SOWGP8ddrOP0rQisqKTntp669ykt/pgKZ9RJ0p+c=;
+        b=hNHIlSOHdhqWK+OHQggA+Ieg9+VkcW+Fh2hVTQmHD2AjseQ4hhajmnEFhPDT2FvEOW
+         0WadnCaNfovw3UqxKuOKX96ei/ZPNk/9kWHDnNhoOe2/BIxb7n2vOkytZn1fOW2yK/nv
+         /cYXrnVJE2JCHjKn3HJQSLCNi6nw7LUR/DunkhhaWUQTCGfb+VRVux3tpccZa4KaR9to
+         kvABSpYC2xyUpO5k0VaRGKPeOzmz3E1IEOJD5rg93OU/QSV90ULn+5wGKh6XmGlnphAg
+         DTDv3bDi8JcOCAQhNZcJRgYQzEHZ0CSpzPtPbvaYaOg448Vj04FO3xpXyYlWZFX+uMaS
+         g/Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689066268; x=1691658268;
+        d=1e100.net; s=20221208; t=1689066283; x=1691658283;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UNiwvwWuhDMorw95SuybhpbJNn2iWK1iwWfSfmi+mu4=;
-        b=LiJEF7knJc4qBHmeCp1hq2pZpfuihXWw2Qrhro9t/W9RnESxS2R6GG/MrmvAYHoCUC
-         jMDGwDl1yPJcRtJkjMqzYjbGPOPDP10uHhxVWA/OLGKMeLch+Vdzr+4nacFPZm9HZxMW
-         wBoLrwknApP/5PWndJvGSEwACZX7fg7ZHTcvjds7aaK5feTHB/YCw4biSGFURGcnVZiX
-         cr+tE58hEUw62J0kqOVyqYNBqupQslsa1/FWBhDXucMv18OIWFhDZTYO9itbNu6ta//R
-         5vbkN1/zLXk+HvLDXDcqfyPbdDnD5hFq/r16NSG7IcdCYf5KwaYt8QSmr9j5rei9X4L+
-         9aZQ==
-X-Gm-Message-State: ABy/qLbNgMfUj2T4pKDWcD+GkM7VIHYCFyr6/ROT25aFIJ9tz1vVBSXx
-	7caIcso943+RmSH4EGwKuGE=
-X-Google-Smtp-Source: APBJJlE8GdfAVWTf1LFDjvWV7ukiUz3Qy7EkgwagY/kKhFuK16FjGR92+NvS7XkciuYVkcmrRDw/Bw==
-X-Received: by 2002:a2e:969a:0:b0:2b6:dcde:b77f with SMTP id q26-20020a2e969a000000b002b6dcdeb77fmr13331346lji.35.1689066268451;
-        Tue, 11 Jul 2023 02:04:28 -0700 (PDT)
+        bh=Xl9SOWGP8ddrOP0rQisqKTntp669ykt/pgKZ9RJ0p+c=;
+        b=NaZ+RYiyVTU2WZjk82fJpQmjcN8nXKSkacPiBqOsr03oNCoSGi2mlVCiq73lFU/Jsy
+         tBgLv19GCJb5qXMZFOst5V/3oc59oq5yC5bbreFMqh4JVVtBBoJwT7NWR0mXYuwuj/eX
+         wmiK5ivuZ2rs20hDuDEfV+kJxcZxsi+WpeQIjH5M2e5GdkMYEMO7Rukzr4IAGlqsKiKN
+         J0h+6p6zakDnLqVizdIOmovSpqpvgwy9YykjY9i2GyXertkVG1pdsoIW1VNdeH0tUqvH
+         jGHdG9zUgej7p9OGRS7yMqLpqaMYV9TGUDImoj7bmnyPpYLdNB4ya8x1ub1IHRmRbJVN
+         IO9g==
+X-Gm-Message-State: ABy/qLaLl9JvEAc4vkstxV3ysVu6ZfmOfqFrl2FfqO/wME0XA8vNzNKq
+	qGeltRsnecATRSHiVrvGqJ0=
+X-Google-Smtp-Source: APBJJlGm4nNPZZK/EcLwRuX7TXMKWYuLUo6XPzMZdPNClrQfk7gJHElyjVZ041hIAZb95UTChzHYXA==
+X-Received: by 2002:a17:906:cf83:b0:992:bc8:58d9 with SMTP id um3-20020a170906cf8300b009920bc858d9mr13897639ejb.70.1689066283235;
+        Tue, 11 Jul 2023 02:04:43 -0700 (PDT)
 Received: from krava (net-109-116-206-239.cust.vodafonedsl.it. [109.116.206.239])
-        by smtp.gmail.com with ESMTPSA id gs4-20020a170906f18400b00992b66e54e9sm859975ejb.214.2023.07.11.02.04.26
+        by smtp.gmail.com with ESMTPSA id gs4-20020a170906f18400b00992b66e54e9sm860262ejb.214.2023.07.11.02.04.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jul 2023 02:04:28 -0700 (PDT)
+        Tue, 11 Jul 2023 02:04:42 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 11 Jul 2023 11:04:24 +0200
+Date: Tue, 11 Jul 2023 11:04:39 +0200
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,12 +68,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCHv3 bpf-next 10/26] libbpf: Add elf_resolve_syms_offsets
+Subject: Re: [PATCHv3 bpf-next 11/26] libbpf: Add elf_resolve_pattern_offsets
  function
-Message-ID: <ZK0bGPFTJUSW/jza@krava>
+Message-ID: <ZK0bJ2ovPJSO0wO3@krava>
 References: <20230630083344.984305-1-jolsa@kernel.org>
- <20230630083344.984305-11-jolsa@kernel.org>
- <CAEf4Bza0sDmQgcPMh3S5rRHdw9n3Cx_KwCLvP7y__xkR1vOL8A@mail.gmail.com>
+ <20230630083344.984305-12-jolsa@kernel.org>
+ <CAEf4BzZsF5jyVxETLTJ507CMx75HQxEUndoqbAVqakBXkJs5eQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,7 +83,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bza0sDmQgcPMh3S5rRHdw9n3Cx_KwCLvP7y__xkR1vOL8A@mail.gmail.com>
+In-Reply-To: <CAEf4BzZsF5jyVxETLTJ507CMx75HQxEUndoqbAVqakBXkJs5eQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -91,83 +91,52 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 06, 2023 at 08:48:13PM -0700, Andrii Nakryiko wrote:
-> On Fri, Jun 30, 2023 at 1:35 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Jul 06, 2023 at 08:52:13PM -0700, Andrii Nakryiko wrote:
+> On Fri, Jun 30, 2023 at 1:36 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > Adding elf_resolve_syms_offsets function that looks up
-> > offsets for symbols specified in syms array argument.
+> > Adding elf_resolve_pattern_offsets function that looks up
+> > offsets for symbols specified by pattern argument.
 > >
-> > Offsets are returned in allocated array with the 'cnt' size,
-> > that needs to be released by the caller.
+> > The 'pattern' argument allows wildcards (*?' supported).
+> >
+> > Offsets are returned in allocated array together with its
+> > size and needs to be released by the caller.
 > >
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  tools/lib/bpf/elf.c        | 105 +++++++++++++++++++++++++++++++++++++
-> >  tools/lib/bpf/libbpf_elf.h |   2 +
-> >  2 files changed, 107 insertions(+)
+> >  tools/lib/bpf/elf.c             | 57 +++++++++++++++++++++++++++++++++
+> >  tools/lib/bpf/libbpf.c          |  2 +-
+> >  tools/lib/bpf/libbpf_elf.h      |  3 ++
+> >  tools/lib/bpf/libbpf_internal.h |  1 +
+> >  4 files changed, 62 insertions(+), 1 deletion(-)
 > >
 > > diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-> > index fcce4bd2478f..7e2f3b2e1fb6 100644
+> > index 7e2f3b2e1fb6..f2d1a8cc2f9d 100644
 > > --- a/tools/lib/bpf/elf.c
 > > +++ b/tools/lib/bpf/elf.c
-> > @@ -271,3 +271,108 @@ long elf_find_func_offset_from_file(const char *binary_path, const char *name)
+> > @@ -376,3 +376,60 @@ int elf_resolve_syms_offsets(const char *binary_path, int cnt,
 > >         elf_close(&elf_fd);
-> >         return ret;
+> >         return err;
 > >  }
 > > +
-> > +struct symbol {
-> > +       const char *name;
-> > +       int bind;
-> > +       int idx;
-> > +};
-> > +
-> > +static int symbol_cmp(const void *_a, const void *_b)
-> > +{
-> > +       const struct symbol *a = _a;
-> > +       const struct symbol *b = _b;
 > 
-> please, let's not (over)use leading underscores, x/y, s1/s2, whatever
+> same, leave comment that caller should free offsets on success?
 
-ok
+yes, will add
 
 > 
-> > +
-> > +       return strcmp(a->name, b->name);
-> > +}
-> > +
-> 
-> probably worth leaving a comment that the caller should free offsets on success?
-
-ook
-
-> 
-> > +int elf_resolve_syms_offsets(const char *binary_path, int cnt,
-> > +                            const char **syms, unsigned long **poffsets)
+> > +int elf_resolve_pattern_offsets(const char *binary_path, const char *pattern,
+> > +                               unsigned long **poffsets, size_t *pcnt)
 > > +{
 > > +       int sh_types[2] = { SHT_DYNSYM, SHT_SYMTAB };
-> > +       int err = 0, i, cnt_done = 0;
-> > +       unsigned long *offsets;
-> > +       struct symbol *symbols;
+> > +       unsigned long *offsets = NULL;
+> > +       size_t cap = 0, cnt = 0;
 > > +       struct elf_fd elf_fd;
+> > +       int err = 0, i;
 > > +
 > > +       err = elf_open(binary_path, &elf_fd);
 > > +       if (err)
 > > +               return err;
-> > +
-> > +       offsets = calloc(cnt, sizeof(*offsets));
-> > +       symbols = calloc(cnt, sizeof(*symbols));
-> > +
-> > +       if (!offsets || !symbols) {
-> > +               err = -ENOMEM;
-> > +               goto out;
-> > +       }
-> > +
-> > +       for (i = 0; i < cnt; i++) {
-> > +               symbols[i].name = syms[i];
-> > +               symbols[i].idx = i;
-> > +       }
-> > +
-> > +       qsort(symbols, cnt, sizeof(*symbols), symbol_cmp);
 > > +
 > > +       for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
 > > +               struct elf_sym_iter iter;
@@ -180,66 +149,39 @@ ook
 > > +                       goto out;
 > > +               }
 > 
-> same nit, no need for nested ifs
+> ditto, minimize nesting, please
 
 ok
 
+> 
 > > +
 > > +               while ((sym = elf_sym_iter_next(&iter))) {
-> > +                       int bind = GELF_ST_BIND(sym->sym.st_info);
-> > +                       struct symbol *found, tmp = {
-> > +                               .name = sym->name,
-> > +                       };
-> > +                       unsigned long *offset;
-> > +
-> > +                       found = bsearch(&tmp, symbols, cnt, sizeof(*symbols), symbol_cmp);
-> > +                       if (!found)
+> > +                       if (!glob_match(sym->name, pattern))
 > > +                               continue;
 > > +
-> > +                       offset = &offsets[found->idx];
-> > +                       if (*offset > 0) {
-> > +                               /* same offset, no problem */
-> > +                               if (*offset == elf_sym_offset(sym))
-> > +                                       continue;
-> > +                               /* handle multiple matches */
-> > +                               if (found->bind != STB_WEAK && bind != STB_WEAK) {
-> > +                                       /* Only accept one non-weak bind. */
-> > +                                       pr_warn("elf: ambiguous match foundr '%s', '%s' in '%s'\n",
+> > +                       err = libbpf_ensure_mem((void **) &offsets, &cap, sizeof(*offsets),
+> > +                                               cnt + 1);
+> > +                       if (err)
+> > +                               goto out;
+> > +
+> > +                       offsets[cnt++] = elf_sym_offset(sym);
+> > +               }
+> > +
+> > +               /* If we found anything in the first symbol section,
+> > +                * do not search others to avoid duplicates.
 > 
-> typo: found
-> 
-> but also wouldn't sym->name and found->name be always the same? Maybe
-> log sym->name, previous *offset and newly calculated
-> elf_sym_offset(sym) instead?
+> DYNSYM is going to have only exposed symbols, so for this pattern
+> matching, maybe it's best to start with SYMTAB and only fallback to
+> DYNSYM if we didn't find anything in SYMTAB (more realistically it
+> would be that SYMTAB section is missing, so we fallback to DYNSYM;
+> otherwise neither DYNSYM nor SYMTAB will have matching symbols, most
+> probably, but that's minor)
 
-ok
-
-> 
-> > +                                               sym->name, found->name, binary_path);
-> > +                                       err = -LIBBPF_ERRNO__FORMAT;
-> 
-> I'd minimize using those custom libbpf-only errors, why not -ESRCH here?
-
-ok
+makes sense, will switch
 
 > 
-> > +                                       goto out;
-> > +                               } else if (bind == STB_WEAK) {
-> > +                                       /* already have a non-weak bind, and
-> > +                                        * this is a weak bind, so ignore.
-> > +                                        */
-> > +                                       continue;
-> > +                               }
-> > +                       } else {
-> > +                               cnt_done++;
-> > +                       }
-> > +                       *offset = elf_sym_offset(sym);
-> 
-> maybe remember elf_sym_offset() result in a variable? you are using it
-> in two (and with my suggestion above it will be three) places already
+> other than that, LGTM
 
-ok
-
-
+thanks,
 jirka
 
