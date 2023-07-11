@@ -1,64 +1,63 @@
-Return-Path: <bpf+bounces-4741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23E2E74E9CE
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 11:05:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7684674E9D0
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 11:05:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D41A3281591
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 09:05:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6E4F1C20CEF
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 09:05:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F971774D;
-	Tue, 11 Jul 2023 09:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B306917745;
+	Tue, 11 Jul 2023 09:05:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6311F17723
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:04:46 +0000 (UTC)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C2D83
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:04:45 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-992b66e5affso686982866b.3
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:04:44 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E8317723
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:05:14 +0000 (UTC)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC97F93
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:05:12 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e278e344bso6606511a12.0
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689066283; x=1691658283;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Xl9SOWGP8ddrOP0rQisqKTntp669ykt/pgKZ9RJ0p+c=;
-        b=hNHIlSOHdhqWK+OHQggA+Ieg9+VkcW+Fh2hVTQmHD2AjseQ4hhajmnEFhPDT2FvEOW
-         0WadnCaNfovw3UqxKuOKX96ei/ZPNk/9kWHDnNhoOe2/BIxb7n2vOkytZn1fOW2yK/nv
-         /cYXrnVJE2JCHjKn3HJQSLCNi6nw7LUR/DunkhhaWUQTCGfb+VRVux3tpccZa4KaR9to
-         kvABSpYC2xyUpO5k0VaRGKPeOzmz3E1IEOJD5rg93OU/QSV90ULn+5wGKh6XmGlnphAg
-         DTDv3bDi8JcOCAQhNZcJRgYQzEHZ0CSpzPtPbvaYaOg448Vj04FO3xpXyYlWZFX+uMaS
-         g/Og==
+        d=gmail.com; s=20221208; t=1689066311; x=1691658311;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lx0Yjuk2FbTQ4UZLGPgsX41sHECQCuOSOliIJwwK+U0=;
+        b=f8GXLGEAxal36qQM6sunFVQexBNIDQjmh9E0YTUFo9+s7Pxx5CBJzHAye+FB+vFoFk
+         7a+yWQ+x2uqQSvGoM2KuZisEIu2evlgC1FN3oupABSHp0Wd9OkbCUAWI9zJqXQSa49xi
+         h3c3Lemwr2L8nvY6pdzL1N5PXEkHAh1pJifiQQk8YSukMYR13NKWcvarlVOJHFjkUkl5
+         GkQsrAQbOn8FnkN4aDeI9BOGP5E5SF734F6bKBuzMVt2gztiInPY3qy4fiRwA8VcYHTa
+         xjYMWLr7ninOkdgeRhkXFhR2258qZGYZONdYGvQg1BjAkjg8miuT7vofwFfLb4zIt0uc
+         OXbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689066283; x=1691658283;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xl9SOWGP8ddrOP0rQisqKTntp669ykt/pgKZ9RJ0p+c=;
-        b=NaZ+RYiyVTU2WZjk82fJpQmjcN8nXKSkacPiBqOsr03oNCoSGi2mlVCiq73lFU/Jsy
-         tBgLv19GCJb5qXMZFOst5V/3oc59oq5yC5bbreFMqh4JVVtBBoJwT7NWR0mXYuwuj/eX
-         wmiK5ivuZ2rs20hDuDEfV+kJxcZxsi+WpeQIjH5M2e5GdkMYEMO7Rukzr4IAGlqsKiKN
-         J0h+6p6zakDnLqVizdIOmovSpqpvgwy9YykjY9i2GyXertkVG1pdsoIW1VNdeH0tUqvH
-         jGHdG9zUgej7p9OGRS7yMqLpqaMYV9TGUDImoj7bmnyPpYLdNB4ya8x1ub1IHRmRbJVN
-         IO9g==
-X-Gm-Message-State: ABy/qLaLl9JvEAc4vkstxV3ysVu6ZfmOfqFrl2FfqO/wME0XA8vNzNKq
-	qGeltRsnecATRSHiVrvGqJ0=
-X-Google-Smtp-Source: APBJJlGm4nNPZZK/EcLwRuX7TXMKWYuLUo6XPzMZdPNClrQfk7gJHElyjVZ041hIAZb95UTChzHYXA==
-X-Received: by 2002:a17:906:cf83:b0:992:bc8:58d9 with SMTP id um3-20020a170906cf8300b009920bc858d9mr13897639ejb.70.1689066283235;
-        Tue, 11 Jul 2023 02:04:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689066311; x=1691658311;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lx0Yjuk2FbTQ4UZLGPgsX41sHECQCuOSOliIJwwK+U0=;
+        b=d4++SFi49VTD7YfbRDqBXUg73YZmF0G6GUZwlmEyZ27b2FxmJTgQgnKCqBl0PkJFhq
+         ZiVdNmaKBhvvFWVt/BUAehY0wKwapTYtn7xkTMSTa30PYdVIL1ccejFwuVWjma0ZRdwH
+         ljAgzqnnz73iaU2z7mwnT4mactjmWCdliZ8D2eIWNsdi9TUMS3PJvo/T/Qwc2Vm0RQW0
+         VdRGjEWATE1pJGoyzp1/POu/0ExtfsQ0cXSipX3UfkTcSSIujkNi8CvsQmWjuQfEBxWM
+         7S6vw40f+ReFJPiawxgQmbctpvWrjFw416eUx57EnQ3JZrkfBcUYJy4TMltfd6ltgox6
+         xueg==
+X-Gm-Message-State: ABy/qLb9dwVUF76LCDTtsd22XIknd+77y2cHPDVh882lHsO/zRP6IbeQ
+	2Qz2eNYhy3pL6s0zon6g3cg=
+X-Google-Smtp-Source: APBJJlHvDGkZXOEkNoV71/p5qGvlOQ25XSRP6oupjY4SY5a0Y0Y6Vz8GVW3pMu+RDWPsCRsuT3Fjiw==
+X-Received: by 2002:aa7:ca4f:0:b0:51d:d615:19af with SMTP id j15-20020aa7ca4f000000b0051dd61519afmr12536018edt.28.1689066311129;
+        Tue, 11 Jul 2023 02:05:11 -0700 (PDT)
 Received: from krava (net-109-116-206-239.cust.vodafonedsl.it. [109.116.206.239])
-        by smtp.gmail.com with ESMTPSA id gs4-20020a170906f18400b00992b66e54e9sm860262ejb.214.2023.07.11.02.04.41
+        by smtp.gmail.com with ESMTPSA id s11-20020aa7c54b000000b0050cc4461fc5sm921238edr.92.2023.07.11.02.05.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jul 2023 02:04:42 -0700 (PDT)
+        Tue, 11 Jul 2023 02:05:10 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 11 Jul 2023 11:04:39 +0200
+Date: Tue, 11 Jul 2023 11:05:07 +0200
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,119 +67,241 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCHv3 bpf-next 11/26] libbpf: Add elf_resolve_pattern_offsets
- function
-Message-ID: <ZK0bJ2ovPJSO0wO3@krava>
+Subject: Re: [PATCHv3 bpf-next 13/26] libbpf: Add
+ bpf_program__attach_uprobe_multi function
+Message-ID: <ZK0bQ5pqKeaAxEUQ@krava>
 References: <20230630083344.984305-1-jolsa@kernel.org>
- <20230630083344.984305-12-jolsa@kernel.org>
- <CAEf4BzZsF5jyVxETLTJ507CMx75HQxEUndoqbAVqakBXkJs5eQ@mail.gmail.com>
+ <20230630083344.984305-14-jolsa@kernel.org>
+ <CAEf4Bza16nwKNkktW+r-5OoCsAtPhMkRLedWdrQo+2WDvOR8xA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZsF5jyVxETLTJ507CMx75HQxEUndoqbAVqakBXkJs5eQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bza16nwKNkktW+r-5OoCsAtPhMkRLedWdrQo+2WDvOR8xA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 06, 2023 at 08:52:13PM -0700, Andrii Nakryiko wrote:
-> On Fri, Jun 30, 2023 at 1:36 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding elf_resolve_pattern_offsets function that looks up
-> > offsets for symbols specified by pattern argument.
-> >
-> > The 'pattern' argument allows wildcards (*?' supported).
-> >
-> > Offsets are returned in allocated array together with its
-> > size and needs to be released by the caller.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/lib/bpf/elf.c             | 57 +++++++++++++++++++++++++++++++++
-> >  tools/lib/bpf/libbpf.c          |  2 +-
-> >  tools/lib/bpf/libbpf_elf.h      |  3 ++
-> >  tools/lib/bpf/libbpf_internal.h |  1 +
-> >  4 files changed, 62 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-> > index 7e2f3b2e1fb6..f2d1a8cc2f9d 100644
-> > --- a/tools/lib/bpf/elf.c
-> > +++ b/tools/lib/bpf/elf.c
-> > @@ -376,3 +376,60 @@ int elf_resolve_syms_offsets(const char *binary_path, int cnt,
-> >         elf_close(&elf_fd);
-> >         return err;
-> >  }
-> > +
-> 
-> same, leave comment that caller should free offsets on success?
+On Thu, Jul 06, 2023 at 09:05:23PM -0700, Andrii Nakryiko wrote:
 
-yes, will add
+SNIP
+
+> > +       if (!OPTS_VALID(opts, bpf_uprobe_multi_opts))
+> > +               return libbpf_err_ptr(-EINVAL);
+> > +
+> > +       syms = OPTS_GET(opts, syms, NULL);
+> > +       offsets = OPTS_GET(opts, offsets, NULL);
+> > +       ref_ctr_offsets = OPTS_GET(opts, ref_ctr_offsets, NULL);
+> > +       cookies = OPTS_GET(opts, cookies, NULL);
+> > +       cnt = OPTS_GET(opts, cnt, 0);
+> > +
+> > +       /*
+> > +        * User can specify 2 mutually exclusive set of inputs:
+> > +        *
+> > +        * 1) use only path/func_pattern/pid arguments
+> > +        *
+> > +        * 2) use path/pid with allowed combinations of:
+> > +        *    syms/offsets/ref_ctr_offsets/cookies/cnt
+> > +        *
+> > +        *    - syms and offsets are mutually exclusive
+> > +        *    - ref_ctr_offsets and cookies are optional
+> > +        *
+> > +        * Any other usage results in error.
+> > +        */
+> > +
+> > +       if (!path && !func_pattern && !cnt)
+> 
+> weird, I'd expect separate if (!path) return error (already bad,
+> regardless of func_pattern or cnt)
+> 
+> then if (!func_pattern && cnt == 0) return error
+> 
+> > +               return libbpf_err_ptr(-EINVAL);
+> > +       if (func_pattern && !path)
+> > +               return libbpf_err_ptr(-EINVAL);
+> > +
+> > +       has_pattern = path && func_pattern;
+> 
+> this and above check must be some leftovers from previous version.
+> path should always be present. and so you don't need has_pattern
+> variable, just use "func_pattern" check
+
+hum, right, previous version had 2 paths, now there's just one,
+I'll change that together with the suggested change above
 
 > 
-> > +int elf_resolve_pattern_offsets(const char *binary_path, const char *pattern,
-> > +                               unsigned long **poffsets, size_t *pcnt)
-> > +{
-> > +       int sh_types[2] = { SHT_DYNSYM, SHT_SYMTAB };
-> > +       unsigned long *offsets = NULL;
-> > +       size_t cap = 0, cnt = 0;
-> > +       struct elf_fd elf_fd;
-> > +       int err = 0, i;
 > > +
-> > +       err = elf_open(binary_path, &elf_fd);
-> > +       if (err)
-> > +               return err;
+> > +       if (has_pattern) {
+> > +               if (syms || offsets || ref_ctr_offsets || cookies || cnt)
+> > +                       return libbpf_err_ptr(-EINVAL);
+> > +       } else {
+> > +               if (!cnt)
+> > +                       return libbpf_err_ptr(-EINVAL);
+> > +               if (!!syms == !!offsets)
+> > +                       return libbpf_err_ptr(-EINVAL);
+> > +       }
 > > +
-> > +       for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
-> > +               struct elf_sym_iter iter;
-> > +               struct elf_sym *sym;
-> > +
-> > +               err = elf_sym_iter_new(&iter, elf_fd.elf, binary_path, sh_types[i], STT_FUNC);
-> > +               if (err) {
-> > +                       if (err == -ENOENT)
-> > +                               continue;
-> > +                       goto out;
+> > +       if (has_pattern) {
+> > +               if (!strchr(path, '/')) {
+> > +                       err = resolve_full_path(path, full_path, sizeof(full_path));
+> > +                       if (err) {
+> > +                               pr_warn("prog '%s': failed to resolve full path for '%s': %d\n",
+> > +                                       prog->name, path, err);
+> > +                               return libbpf_err_ptr(err);
+> > +                       }
+> > +                       path = full_path;
 > > +               }
+> > +
+> > +               err = elf_resolve_pattern_offsets(path, func_pattern,
+> > +                                                 &resolved_offsets, &cnt);
+> > +               if (err < 0)
+> > +                       return libbpf_err_ptr(err);
+> > +               offsets = resolved_offsets;
+> > +       } else if (syms) {
+> > +               err = elf_resolve_syms_offsets(path, cnt, syms, &resolved_offsets);
+> > +               if (err < 0)
+> > +                       return libbpf_err_ptr(err);
+> > +               offsets = resolved_offsets;
 > 
-> ditto, minimize nesting, please
+> you can extract this common error checking and `offsets =
+> resolved_offsets;` to after if, it's common for both branches
+
+not sure what you mean in here, offsets can be also provided
+by OPTS_GET(opts, offsets, NULL) earlier
+
+> > +       }
+> > +
+> > +       retprobe = OPTS_GET(opts, retprobe, false);
+> > +
+> > +       lopts.uprobe_multi.path = path;
+> > +       lopts.uprobe_multi.offsets = offsets;
+> > +       lopts.uprobe_multi.ref_ctr_offsets = ref_ctr_offsets;
+> > +       lopts.uprobe_multi.cookies = cookies;
+> > +       lopts.uprobe_multi.cnt = cnt;
+> > +       lopts.uprobe_multi.flags = retprobe ? BPF_F_UPROBE_MULTI_RETURN : 0;
+> 
+> retprobe is another unnecessary var, just inline check here to keep it simpler
 
 ok
 
 > 
 > > +
-> > +               while ((sym = elf_sym_iter_next(&iter))) {
-> > +                       if (!glob_match(sym->name, pattern))
-> > +                               continue;
+> > +       if (pid == 0)
+> > +               pid = getpid();
+> > +       if (pid > 0)
+> > +               lopts.uprobe_multi.pid = pid;
 > > +
-> > +                       err = libbpf_ensure_mem((void **) &offsets, &cap, sizeof(*offsets),
-> > +                                               cnt + 1);
-> > +                       if (err)
-> > +                               goto out;
+> > +       link = calloc(1, sizeof(*link));
+> > +       if (!link) {
+> > +               err = -ENOMEM;
+> > +               goto error;
+> > +       }
+> > +       link->detach = &bpf_link__detach_fd;
 > > +
-> > +                       offsets[cnt++] = elf_sym_offset(sym);
-> > +               }
-> > +
-> > +               /* If we found anything in the first symbol section,
-> > +                * do not search others to avoid duplicates.
+> > +       prog_fd = bpf_program__fd(prog);
+> > +       link_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &lopts);
+> > +       if (link_fd < 0) {
+> > +               err = -errno;
+> > +               pr_warn("prog '%s': failed to attach: %s\n",
 > 
-> DYNSYM is going to have only exposed symbols, so for this pattern
-> matching, maybe it's best to start with SYMTAB and only fallback to
-> DYNSYM if we didn't find anything in SYMTAB (more realistically it
-> would be that SYMTAB section is missing, so we fallback to DYNSYM;
-> otherwise neither DYNSYM nor SYMTAB will have matching symbols, most
-> probably, but that's minor)
+> "failed to attach multi-uprobe"? We probably should have added "failed
+> to attach multi-kprobe" in bpf_program__attach_kprobe_multi_opts as
+> well?
 
-makes sense, will switch
+ook, will add
 
 > 
-> other than that, LGTM
+> > +                       prog->name, libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> > +               goto error;
+> > +       }
+> > +       link->fd = link_fd;
+> > +       free(resolved_offsets);
+> > +       return link;
+> > +
+> > +error:
+> > +       free(resolved_offsets);
+> > +       free(link);
+> > +       return libbpf_err_ptr(err);
+> > +}
+> > +
+> >  LIBBPF_API struct bpf_link *
+> >  bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+> >                                 const char *binary_path, size_t func_offset,
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index 754da73c643b..7c218f610210 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -529,6 +529,33 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+> >                                       const char *pattern,
+> >                                       const struct bpf_kprobe_multi_opts *opts);
+> >
+> > +struct bpf_uprobe_multi_opts {
+> > +       /* size of this struct, for forward/backward compatibility */
+> > +       size_t sz;
+> > +       /* array of function symbols to attach */
+> 
+> attach to?
+
+ok
+
+> 
+> > +       const char **syms;
+> > +       /* array of function addresses to attach */
+> 
+> attach to?
+
+ook
+
+> 
+> > +       const unsigned long *offsets;
+> > +       /* array of refctr offsets to attach */
+> 
+> we don't really attach to ref counters, so maybe "optional, array of
+> associated ref counter offsets" or something along those lines ?
+
+ok
+
+> 
+> > +       const unsigned long *ref_ctr_offsets;
+> > +       /* array of user-provided values fetchable through bpf_get_attach_cookie */
+> 
+> "array of associated BPF cookies"? we can't keep explaining what BPF
+> cookie is in every possible API :)
+
+ook
+
+> 
+> > +       const __u64 *cookies;
+> > +       /* number of elements in syms/addrs/cookies arrays */
+> > +       size_t cnt;
+> > +       /* create return uprobes */
+> > +       bool retprobe;
+> > +       size_t :0;
+> > +};
+> > +
+> > +#define bpf_uprobe_multi_opts__last_field retprobe
+> > +
+> > +LIBBPF_API struct bpf_link *
+> > +bpf_program__attach_uprobe_multi(const struct bpf_program *prog,
+> > +                                pid_t pid,
+> > +                                const char *binary_path,
+> > +                                const char *func_pattern,
+> > +                                const struct bpf_uprobe_multi_opts *opts);
+> > +
+> 
+> ok, let's be good citizens and add documentation for this new API.
+> Those comments about valid combinations belong here as well. Please
+> take a look at existing doccomments for the format and conventions.
+> Thanks!
+
+ok, will add
 
 thanks,
 jirka
