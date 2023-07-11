@@ -1,165 +1,203 @@
-Return-Path: <bpf+bounces-4699-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4700-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D49274E39D
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 03:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 382AC74E3C7
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 03:54:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 328801C20CC2
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 01:41:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 684B21C20D34
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 01:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 136C017F7;
-	Tue, 11 Jul 2023 01:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0366A20FF;
+	Tue, 11 Jul 2023 01:53:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CE617C9
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 01:41:30 +0000 (UTC)
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C82A4;
-	Mon, 10 Jul 2023 18:41:28 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R801e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vn6IAgc_1689039682;
-Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vn6IAgc_1689039682)
-          by smtp.aliyun-inc.com;
-          Tue, 11 Jul 2023 09:41:25 +0800
-From: Shuai Xue <xueshuai@linux.alibaba.com>
-To: alexander.shishkin@linux.intel.com,
-	peterz@infradead.org,
-	james.clark@arm.com,
-	leo.yan@linaro.org
-Cc: mingo@redhat.com,
-	baolin.wang@linux.alibaba.com,
-	acme@kernel.org,
-	mark.rutland@arm.com,
-	jolsa@kernel.org,
-	namhyung@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH v3] perf/core: Bail out early if the request AUX area is out of bound
-Date: Tue, 11 Jul 2023 09:41:20 +0800
-Message-Id: <20230711014120.53461-1-xueshuai@linux.alibaba.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C61581C01
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 01:53:49 +0000 (UTC)
+Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1AE98
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 18:53:47 -0700 (PDT)
+Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1b9de6e6dceso26947085ad.1
+        for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 18:53:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689040426; x=1691632426;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MgFPXQ8D4Hg7lbUv1V/6m4r7uD/Fzh2LAEZUXUXNtBk=;
+        b=DdE/BURCGhekRWllRTMgAPdw8sVtmtzWHh2SZoMUkaFai68UVmW7X/4/+a87+O9r33
+         HjJoai6UhxsmBh2re74o2lp0AdliLhN95R9z/D3vZALufuGKTCbI9cP1Jg/48h4T+qQC
+         +tx10MdxBL1h5cINQV6DyauGlgw/Hplv8Hgo+PcGouUG+IUaIRPMOPtBG/Uh7iX8DVLU
+         zd2xT61u4QZ2u4AZjpf7oiQMfCtI5N6yNWmGqRc4g97fMePn0ZYsvN6Xj7d6/dht0NqK
+         TtNLTh3BSBx7j3LaH9inI98jNXtEoFvwPsvY9KQjvUR2uEuRBHhIZVlAxesPcIA/SmiS
+         JhQw==
+X-Gm-Message-State: ABy/qLYsvzeGojpQXqQ4V55PbhZcglr7r0OiWjdotuAt17CTtkpV0mId
+	O8+O8XROjkNCIeQggIKNTSqQ2ByGaFSVkeTYpp9xTDLUuhhw
+X-Google-Smtp-Source: APBJJlENDWFc0+lL6ohczLjG5T+JNrFBua6b/Jrk5GfKVdt7O3MLJ2njSpp6SMyhG04IdPCd4ztN+pxqXN71CC6BPnoc6qF2TK7+
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:ab81:b0:1b9:e97b:99e9 with SMTP id
+ f1-20020a170902ab8100b001b9e97b99e9mr1701115plr.3.1689040426671; Mon, 10 Jul
+ 2023 18:53:46 -0700 (PDT)
+Date: Mon, 10 Jul 2023 18:53:46 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a4a46106002c5e42@google.com>
+Subject: [syzbot] [bpf?] [reiserfs?] WARNING: locking bug in corrupted (2)
+From: syzbot <syzbot+3779764ddb7a3e19437f@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com, hawk@kernel.org, 
+	jack@suse.cz, john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	kuba@kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	luto@kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	peterz@infradead.org, reiserfs-devel@vger.kernel.org, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, 
+	yhs@fb.com, yukuai3@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-When perf-record with a large AUX area, e.g 4GB, it fails with:
+Hello,
 
-    #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
-    failed to mmap with 12 (Cannot allocate memory)
+syzbot found the following issue on:
 
-and it reveals a WARNING with __alloc_pages():
+HEAD commit:    c17414a273b8 Merge tag 'sh-for-v6.5-tag1' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13cc4baca80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7ad417033279f15a
+dashboard link: https://syzkaller.appspot.com/bug?extid=3779764ddb7a3e19437f
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12bbd544a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13fd50b0a80000
 
-[   66.595604] ------------[ cut here ]------------
-[   66.600206] WARNING: CPU: 44 PID: 17573 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
-[   66.608375] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) aes_ce_blk(E) vfat(E) fat(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
-[   66.657719] CPU: 44 PID: 17573 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #58
-[   66.666749] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
-[   66.674650] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-[   66.681597] pc : __alloc_pages+0x1ec/0x248
-[   66.685680] lr : __kmalloc_large_node+0xc0/0x1f8
-[   66.690285] sp : ffff800020523980
-[   66.693585] pmr_save: 000000e0
-[   66.696624] x29: ffff800020523980 x28: ffff000832975800 x27: 0000000000000000
-[   66.703746] x26: 0000000000100000 x25: 0000000000100000 x24: ffff8000083615d0
-[   66.710866] x23: 0000000000040dc0 x22: ffff000823d6d140 x21: 000000000000000b
-[   66.717987] x20: 000000000000000b x19: 0000000000000000 x18: 0000000000000030
-[   66.725108] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff000823d6d6d0
-[   66.732229] x14: 0000000000000000 x13: 343373656761705f x12: 726e202c30206574
-[   66.739350] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff8000083af570
-[   66.746471] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 000000000005fff4
-[   66.753592] x5 : 0000000000000000 x4 : ffff000823d6d8d8 x3 : 0000000000000000
-[   66.760713] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000040dc0
-[   66.767834] Call trace:
-[   66.770267]  __alloc_pages+0x1ec/0x248
-[   66.774003]  __kmalloc_large_node+0xc0/0x1f8
-[   66.778259]  __kmalloc_node+0x134/0x1e8
-[   66.782081]  rb_alloc_aux+0xe0/0x298
-[   66.785643]  perf_mmap+0x440/0x660
-[   66.789031]  mmap_region+0x308/0x8a8
-[   66.792593]  do_mmap+0x3c0/0x528
-[   66.795807]  vm_mmap_pgoff+0xf4/0x1b8
-[   66.799456]  ksys_mmap_pgoff+0x18c/0x218
-[   66.803365]  __arm64_sys_mmap+0x38/0x58
-[   66.807187]  invoke_syscall+0x50/0x128
-[   66.810922]  el0_svc_common.constprop.0+0x58/0x188
-[   66.815698]  do_el0_svc+0x34/0x50
-[   66.818999]  el0_svc+0x34/0x108
-[   66.822127]  el0t_64_sync_handler+0xb8/0xc0
-[   66.826296]  el0t_64_sync+0x1a4/0x1a8
-[   66.829946] ---[ end trace 0000000000000000 ]---
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ea495e93586c/disk-c17414a2.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/bdb03e817e47/vmlinux-c17414a2.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/20ba23616f1f/bzImage-c17414a2.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/98d086ce1a87/mount_0.gz
 
-'rb->aux_pages' allocated by kcalloc() is a pointer array which is used to
-maintain AUX trace pages. The allocated page for this array is physically
-contiguous (and virtually contiguous) with an order of 0..MAX_ORDER. If the
-size of pointer array crosses the limitation set by MAX_ORDER, it reveals a
-WARNING.
+The issue was bisected to:
 
-So bail out early with -EINVAL if the request AUX area is out of bound,
-e.g.:
+commit 2acf15b94d5b8ea8392c4b6753a6ffac3135cd78
+Author: Yu Kuai <yukuai3@huawei.com>
+Date:   Fri Jul 2 04:07:43 2021 +0000
 
-    #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
-    failed to mmap with 22 (Invalid argument)
+    reiserfs: add check for root_inode in reiserfs_fill_super
 
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=143b663ca80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=163b663ca80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=123b663ca80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3779764ddb7a3e19437f@syzkaller.appspotmail.com
+Fixes: 2acf15b94d5b ("reiserfs: add check for root_inode in reiserfs_fill_super")
+
+------------[ cut here ]------------
+DEBUG_LOCKS_WARN_ON(depth >= MAX_LOCK_DEPTH)
+WARNING: CPU: 0 PID: 0 at kernel/locking/lockdep.c:5045 __lock_acquire+0x164b/0x5e20 kernel/locking/lockdep.c:5045
+Modules linked in:
+CPU: 0 PID: 0 Comm:  Not tainted 6.4.0-syzkaller-12069-gc17414a273b8 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:__lock_acquire+0x164b/0x5e20 kernel/locking/lockdep.c:5045
+Code: d2 0f 85 be 47 00 00 44 8b 3d 0d b3 44 0d 45 85 ff 0f 85 40 f8 ff ff 48 c7 c6 40 9f 6c 8a 48 c7 c7 e0 6e 6c 8a e8 b5 46 e6 ff <0f> 0b e9 29 f8 ff ff 48 8d 7d f8 48 b8 00 00 00 00 00 fc ff df 48
+RSP: 0018:ffffc90000007ca8 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 1ffff92000000fc7 RCX: 0000000000000000
+RDX: ffff8880779d5940 RSI: ffffffff814c34f7 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880779d5940
+R13: ffff8880b982b898 R14: 0000000000000000 R15: 0000000000000000
+FS:  00005555573b8300(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffde3197000 CR3: 00000000173e2000 CR4: 0000000000350ef0
+Call Trace:
+ <IRQ>
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 0 at kernel/rcu/tree_plugin.h:431 arch_local_irq_enable arch/x86/include/asm/irqflags.h:78 [inline]
+WARNING: CPU: 0 PID: 0 at kernel/rcu/tree_plugin.h:431 arch_local_irq_restore arch/x86/include/asm/irqflags.h:135 [inline]
+WARNING: CPU: 0 PID: 0 at kernel/rcu/tree_plugin.h:431 rcu_read_unlock_special kernel/rcu/tree_plugin.h:678 [inline]
+WARNING: CPU: 0 PID: 0 at kernel/rcu/tree_plugin.h:431 __rcu_read_unlock+0x24b/0x570 kernel/rcu/tree_plugin.h:426
+Modules linked in:
+CPU: 0 PID: 0 Comm:  Not tainted 6.4.0-syzkaller-12069-gc17414a273b8 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+RIP: 0010:__rcu_read_unlock+0x24b/0x570 kernel/rcu/tree_plugin.h:431
+Code: 00 e8 49 4f df ff 4d 85 f6 74 05 e8 cf c3 1c 00 9c 58 f6 c4 02 0f 85 78 02 00 00 4d 85 f6 0f 84 83 fe ff ff fb e9 7d fe ff ff <0f> 0b 5b 5d 41 5c 41 5d 41 5e c3 e8 25 50 69 00 e9 2a fe ff ff e8
+RSP: 0018:ffffc900000079d8 EFLAGS: 00010096
+RAX: 00000000ffff8880 RBX: ffff8880779d5940 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff8192bb90 RDI: ffff8880779d5d7c
+RBP: ffff8880779d5940 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880779d5940
+R13: ffffc90000007bf8 R14: 0000000000000000 R15: ffffc90000007a98
+FS:  00005555573b8300(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffde3197000 CR3: 00000000173e2000 CR4: 0000000000350ef0
+Call Trace:
+ <IRQ>
+ rcu_read_unlock include/linux/rcupdate.h:781 [inline]
+ is_bpf_text_address+0x85/0x1b0 kernel/bpf/core.c:721
+ kernel_text_address kernel/extable.c:125 [inline]
+ kernel_text_address+0x3d/0x80 kernel/extable.c:94
+ __kernel_text_address+0xd/0x30 kernel/extable.c:79
+ show_trace_log_lvl+0x1c7/0x390 arch/x86/kernel/dumpstack.c:259
+ __warn+0xe6/0x390 kernel/panic.c:671
+ __report_bug lib/bug.c:199 [inline]
+ report_bug+0x2da/0x500 lib/bug.c:219
+ handle_bug+0x3c/0x70 arch/x86/kernel/traps.c:324
+ exc_invalid_op+0x18/0x50 arch/x86/kernel/traps.c:345
+ asm_exc_invalid_op+0x1a/0x20 arch/x86/include/asm/idtentry.h:568
+RIP: 0010:__lock_acquire+0x164b/0x5e20 kernel/locking/lockdep.c:5045
+Code: d2 0f 85 be 47 00 00 44 8b 3d 0d b3 44 0d 45 85 ff 0f 85 40 f8 ff ff 48 c7 c6 40 9f 6c 8a 48 c7 c7 e0 6e 6c 8a e8 b5 46 e6 ff <0f> 0b e9 29 f8 ff ff 48 8d 7d f8 48 b8 00 00 00 00 00 fc ff df 48
+RSP: 0018:ffffc90000007ca8 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 1ffff92000000fc7 RCX: 0000000000000000
+RDX: ffff8880779d5940 RSI: ffffffff814c34f7 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880779d5940
+R13: ffff8880b982b898 R14: 0000000000000000 R15: 0000000000000000
+ lock_acquire kernel/locking/lockdep.c:5761 [inline]
+ lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5726
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
+ hrtimer_interrupt+0x107/0x7b0 kernel/time/hrtimer.c:1795
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1098 [inline]
+ __sysvec_apic_timer_interrupt+0x14a/0x430 arch/x86/kernel/apic/apic.c:1115
+ sysvec_apic_timer_interrupt+0x92/0xc0 arch/x86/kernel/apic/apic.c:1109
+ </IRQ>
+
+
 ---
-changes since v2:
-- remove unnecessary overflow check (per Peter)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-changes since v1:
-- drop out patch2 because it has been fixed on upstream (Thanks James for reminding)
-- move sanity check into rb_alloc_aux (per Leo)
-- add overflow check (per James)
----
- kernel/events/ring_buffer.c              | 3 +++
- tools/perf/Documentation/perf-record.txt | 3 ++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
-index a0433f37b024..5933ce45c68a 100644
---- a/kernel/events/ring_buffer.c
-+++ b/kernel/events/ring_buffer.c
-@@ -699,6 +699,9 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
- 		watermark = 0;
- 	}
- 
-+	/* Can't allocate more than MAX_ORDER */
-+	if (get_order((unsigned long)nr_pages * sizeof(void *)) > MAX_ORDER)
-+		return -EINVAL;
- 	rb->aux_pages = kcalloc_node(nr_pages, sizeof(void *), GFP_KERNEL,
- 				     node);
- 	if (!rb->aux_pages)
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index 680396c56bd1..5d8d3ad084ed 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -290,7 +290,8 @@ OPTIONS
- 	specification with appended unit character - B/K/M/G. The
- 	size is rounded up to have nearest pages power of two value.
- 	Also, by adding a comma, the number of mmap pages for AUX
--	area tracing can be specified.
-+	area tracing can be specified. With MAX_ORDER set as 10 on
-+	arm64 platform , the maximum AUX area is limited to 2GiB.
- 
- -g::
- 	Enables call-graph (stack chain/backtrace) recording for both
--- 
-2.39.3
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
