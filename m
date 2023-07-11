@@ -1,149 +1,197 @@
-Return-Path: <bpf+bounces-4706-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4707-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44FF774E47D
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 04:56:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 748AE74E47E
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 04:56:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75A5E1C20CFA
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 02:55:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5E8E1C20CD3
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 02:56:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A802116;
-	Tue, 11 Jul 2023 02:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E1D210B;
+	Tue, 11 Jul 2023 02:56:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1DCD7F;
-	Tue, 11 Jul 2023 02:55:46 +0000 (UTC)
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB5210D;
-	Mon, 10 Jul 2023 19:55:45 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-262ef07be72so2462624a91.1;
-        Mon, 10 Jul 2023 19:55:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81DBA7F
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:56:06 +0000 (UTC)
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C85A120
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 19:56:02 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b708e49059so79532411fa.3
+        for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 19:56:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689044145; x=1691636145;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Rz2Z9uqGBu5n7dLxdjRn3DUHrI1c1OAJnAS4Abt85fE=;
-        b=endMdthOppBOwx2i6IgP0RGFV4c4vlhf4/1XIHyi++9rZ9OurjbQsSmg/GdSnsUOqR
-         /J3B2sQEfKDE0vjZVofernbv7j7JdCiYc0rNrgxzN0GrrBoO4ePWFrhlI9CG/CRHfBqD
-         aoUf/fFNmUdkoWwpfRPW91OJt/ML9PjfDTC8PVR3gsBRUt/HNpgUyjrCr+vINjcpeaOf
-         2m7q6z+L2bpl8+qO0mAdv0fGRBZdtSv6T/wRTbZVCOZES72ow8KerSa2NU/m5CmRkYeb
-         95Nx0sneUXojQv+SmR6oIWZ3FZ4NjEZMF7Kj/rjETxLosbo7VJMArRt9sAzIDlETUpty
-         e9kA==
+        d=gmail.com; s=20221208; t=1689044160; x=1691636160;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1S90A21sshKardGr2EX9EvB+0vf3RHIDrUVXGwEQJTY=;
+        b=dqkDAk8ILq6fZtvjiRtWrn3nLUPncti3vLIJAC7D6byjeOSQQxmp1Gneqw3RR5zCl5
+         6Jj4t5Lv6EOQU4ff9aTzpDcYr1dIOilp7166455KO8T8+qVdSE82FAZcqBiZyOBBmLsL
+         MC+wYPsHqhKwHUvv4EKHd1D3UNh0iF8SwTIVnibom07ELgu+ofEN+BdgLrRaOCvMJPrE
+         Zio9c3mqrBYzLPY6BJr/eayIu8u7tAOyWA1+V+qaBiMx/kdu9gEsM9/iXTlQmQctomOa
+         EsmapjdazcvO88FeBM58Mre0fByGo1vXKo0bEjgeZRxKgqwtBHCBgv2+cSXUtLueKH6B
+         cCgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689044145; x=1691636145;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rz2Z9uqGBu5n7dLxdjRn3DUHrI1c1OAJnAS4Abt85fE=;
-        b=JUMaf0qK0NaUnuRr/rewMx+nqmwKi9fpLs+h62Pj3RE7izQNW8jjSFE5Q7gWlM4FyE
-         mEBT3drSHRrv3lQvOjy7n3ZJ/qfy0fvpssXyysRBxHV37saOK0jC59DguTfZJG3x4KgQ
-         8lN+oe3khGN2aJgXhIRt0MxQPrD7zVuipInu+JIB5zXm4HvOPTs1eU6qzISyksh6hMLA
-         sXOTHu2Z/MJQL4zfS+yHm8aLQfncnLAPN0sA8/FriP51FTUzNPd9kQIRjy0yHouS/Rtu
-         TAHVrrRhHgyaMiyCA0RI/0/QyH+ufo8rdEu5kSnA464WgS/aCqOsko7fBz9dRXIYPtd0
-         43tw==
-X-Gm-Message-State: ABy/qLYMPuMTrXVcyoInZbzIdQFUhIrvC13Qw5i9oRn197KausEp0D3I
-	jfa2yxf6ybSenbup5do6no4=
-X-Google-Smtp-Source: APBJJlGefJaLDQ/qu9dj4CMlypbzscGGz+zUgXdw8Kd4Fm3x1UinASvZDF+IPR97JY0klBG1CT/Ziw==
-X-Received: by 2002:a17:90a:2a87:b0:262:d029:69fc with SMTP id j7-20020a17090a2a8700b00262d02969fcmr11103174pjd.34.1689044144557;
-        Mon, 10 Jul 2023 19:55:44 -0700 (PDT)
-Received: from [10.22.68.146] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id qe4-20020a17090b4f8400b0025c2c398d33sm600736pjb.39.2023.07.10.19.55.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Jul 2023 19:55:44 -0700 (PDT)
-Message-ID: <115c6eac-ab28-7220-e1e4-5747bf641bbe@gmail.com>
-Date: Tue, 11 Jul 2023 10:55:38 +0800
+        d=1e100.net; s=20221208; t=1689044160; x=1691636160;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1S90A21sshKardGr2EX9EvB+0vf3RHIDrUVXGwEQJTY=;
+        b=Nx9H/ILNyTxpJqgoKXVEzPEMtn0OHL2J36ejWAZOmpnKG/ENXiEAaqc62dPcHH3cWn
+         XGpNJe7RRxZjTJYs4NGamXqpJPUAFGLAJXWT1Dt96KWkjXnvpWv/eng/RCOwcbw2PnkR
+         loHRiCmxCZfCAkt+BrhjMSzNIQlDrMlUDLizgaw3XV2+eLLe0xQPUGzzFaYryqfnSSAs
+         xqBJ2OLXKKg0PyM2S7/LMKQoftENkVhM2P9f3j24q9enO6ue7/RuYU0oVlevU5rPTxJ9
+         QzUPa4qu+f/uy2/t0rVFC8X3EeNou6hNgg2p9n194abi5VFIjihDYgoeq2CpKFYET0e6
+         dANg==
+X-Gm-Message-State: ABy/qLbRiSotU9jUPNddXl3M49Rsub/Q24fhSvy0B2hDoyNZPJHjStoH
+	YiuKsyy2e0VrF9AVk6kpfoAKyL2ag7M3/2l78w4=
+X-Google-Smtp-Source: APBJJlEIWlxwntmTtapghMqiFYc/5nFkGtDNGCVC7fpW2Hhyf4NdFc5Byaa/W42Uu54LTDG7fBOHYZK4ofRtlcivVZ8=
+X-Received: by 2002:a2e:7a16:0:b0:2b5:7a87:a85a with SMTP id
+ v22-20020a2e7a16000000b002b57a87a85amr3890490ljc.13.1689044160229; Mon, 10
+ Jul 2023 19:56:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH bpf-next v2 2/2] bpf: Introduce bpf user log
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Yizhou Tang <tangyeechou@gmail.com>, kernel-patches-bot@fb.com,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Network Development <netdev@vger.kernel.org>
-References: <20230708040750.72570-1-hffilwlqm@gmail.com>
- <20230708040750.72570-3-hffilwlqm@gmail.com>
- <CAADnVQK5RLqVhc9AxaCSuQxFRDAb8wohmUDNrYEViXLf5mEMNQ@mail.gmail.com>
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <CAADnVQK5RLqVhc9AxaCSuQxFRDAb8wohmUDNrYEViXLf5mEMNQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+References: <20230709025912.3837-1-laoar.shao@gmail.com> <20230709025912.3837-2-laoar.shao@gmail.com>
+In-Reply-To: <20230709025912.3837-2-laoar.shao@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 10 Jul 2023 19:55:48 -0700
+Message-ID: <CAADnVQKQzxUGz3Mhr5kQi2Zao7CKryCPG2JWj2dGn07UDM=oeA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Introduce BTF_TYPE_SAFE_TRUSTED_UNION
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Sat, Jul 8, 2023 at 7:59=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> w=
+rote:
+>
+> When we are verifying a field in a union, we may unexpectedly verify
+> another field which has the same offset in this union. So in such case,
+> we should annotate that field as PTR_UNTRUSTED. However, in some cases
+> we are sure some fields in a union is safe and then we can add them into
+> BTF_TYPE_SAFE_TRUSTED_UNION allow list.
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  kernel/bpf/btf.c      | 20 +++++++++-----------
+>  kernel/bpf/verifier.c | 21 +++++++++++++++++++++
+>  2 files changed, 30 insertions(+), 11 deletions(-)
+>
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 3dd47451f097..fae6fc24a845 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6133,7 +6133,6 @@ static int btf_struct_walk(struct bpf_verifier_log =
+*log, const struct btf *btf,
+>         const char *tname, *mname, *tag_value;
+>         u32 vlen, elem_id, mid;
+>
+> -       *flag =3D 0;
+>  again:
+>         if (btf_type_is_modifier(t))
+>                 t =3D btf_type_skip_modifiers(btf, t->type, NULL);
+> @@ -6144,6 +6143,14 @@ static int btf_struct_walk(struct bpf_verifier_log=
+ *log, const struct btf *btf,
+>         }
+>
+>         vlen =3D btf_type_vlen(t);
+> +       if (BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_UNION && vlen !=3D 1 &=
+& !(*flag & PTR_UNTRUSTED))
+> +               /*
+> +                * walking unions yields untrusted pointers
+> +                * with exception of __bpf_md_ptr and other
+> +                * unions with a single member
+> +                */
+> +               *flag |=3D PTR_UNTRUSTED;
+> +
+>         if (off + size > t->size) {
+>                 /* If the last element is a variable size array, we may
+>                  * need to relax the rule.
+> @@ -6304,15 +6311,6 @@ static int btf_struct_walk(struct bpf_verifier_log=
+ *log, const struct btf *btf,
+>                  * of this field or inside of this struct
+>                  */
+>                 if (btf_type_is_struct(mtype)) {
+> -                       if (BTF_INFO_KIND(mtype->info) =3D=3D BTF_KIND_UN=
+ION &&
+> -                           btf_type_vlen(mtype) !=3D 1)
+> -                               /*
+> -                                * walking unions yields untrusted pointe=
+rs
+> -                                * with exception of __bpf_md_ptr and oth=
+er
+> -                                * unions with a single member
+> -                                */
+> -                               *flag |=3D PTR_UNTRUSTED;
+> -
+>                         /* our field must be inside that union or struct =
+*/
+>                         t =3D mtype;
+>
+> @@ -6478,7 +6476,7 @@ bool btf_struct_ids_match(struct bpf_verifier_log *=
+log,
+>                           bool strict)
+>  {
+>         const struct btf_type *type;
+> -       enum bpf_type_flag flag;
+> +       enum bpf_type_flag flag =3D 0;
+>         int err;
+>
+>         /* Are we already done? */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 11e54dd8b6dd..1fb0a64f5bce 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5847,6 +5847,7 @@ static int bpf_map_direct_read(struct bpf_map *map,=
+ int off, int size, u64 *val)
+>  #define BTF_TYPE_SAFE_RCU(__type)  __PASTE(__type, __safe_rcu)
+>  #define BTF_TYPE_SAFE_RCU_OR_NULL(__type)  __PASTE(__type, __safe_rcu_or=
+_null)
+>  #define BTF_TYPE_SAFE_TRUSTED(__type)  __PASTE(__type, __safe_trusted)
+> +#define BTF_TYPE_SAFE_TRUSTED_UNION(__type)  __PASTE(__type, __safe_trus=
+ted_union)
+>
+>  /*
+>   * Allow list few fields as RCU trusted or full trusted.
+> @@ -5914,6 +5915,11 @@ BTF_TYPE_SAFE_TRUSTED(struct socket) {
+>         struct sock *sk;
+>  };
+>
+> +/* union trusted: these fields are trusted even in a uion */
+> +BTF_TYPE_SAFE_TRUSTED_UNION(struct sk_buff) {
+> +       struct sock *sk;
+> +};
 
+Why is this needed?
+We already have:
+BTF_TYPE_SAFE_RCU_OR_NULL(struct sk_buff) {
+        struct sock *sk;
+};
 
-On 11/7/23 07:45, Alexei Starovoitov wrote:
-> On Fri, Jul 7, 2023 at 9:08 PM Leon Hwang <hffilwlqm@gmail.com> wrote:
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 34fa334938ba5..8a458cfcd91bd 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -1549,7 +1549,6 @@ union bpf_attr {
->>                 };
->>                 __u32           attach_type;    /* attach type */
->>                 __u32           flags;          /* extra flags */
->> -               struct bpf_generic_user_log log; /* user log */
->>                 union {
->>                         __u32           target_btf_id;  /* btf_id of target to attach to */
->>                         struct {
->> @@ -1585,6 +1584,9 @@ union bpf_attr {
->>                                 __s32           priority;
->>                                 __u32           flags;
->>                         } netfilter;
->> +                       struct {
->> +                               struct bpf_generic_user_log ulog; /* user log */
->> +                       } xdp;
-> 
-> 1.
-> You cannot break api in patch 1 and fix it in patch 2.
-> 
-> 2.
-> libbpf side is missing.
-> 
-> 3.
-> selftest is missing.
-> 
-> 4.
-> bpf_vlog_finalize() should be used and error propagated back through
-> link_create.
-> Same api must be used: log_level, log_size, log_buf, log_true_size.
-> 
-> But considering all that I agree with Daniel Xu that
-> tracepoint would be better here.
+> +       /* Clear the PTR_UNTRUSTED for the fields which are in the allow =
+list */
+> +       if (type_is_trusted_union(env, reg, field_name, btf_id))
+> +               flag &=3D ~PTR_UNTRUSTED;
 
-Sorry for missing 2&3.
-
-Tracepoint is considered. I'll change it from user log to a tracepoint.
-
-I'll submit tracepoint patch with libbpf&selftest patches later.
-
-Thanks,
-Leon
+we cannot do this unconditionally.
+The type_is_rcu_or_null() check applies only after
+ in_rcu_cs(env) && !type_may_be_null(reg->type)).
 
