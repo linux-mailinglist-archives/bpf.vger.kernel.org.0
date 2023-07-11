@@ -1,159 +1,132 @@
-Return-Path: <bpf+bounces-4802-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4803-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 527C274F8DE
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 22:15:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEBBA74F95B
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 22:52:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 835FF1C20F37
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 20:15:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB34E1C20E21
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 20:52:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ECB31EA90;
-	Tue, 11 Jul 2023 20:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426CB1EA6E;
+	Tue, 11 Jul 2023 20:52:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B50F1EA7E
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 20:15:42 +0000 (UTC)
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C96212F
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 13:15:40 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id 27CA25C013A;
-	Tue, 11 Jul 2023 16:15:37 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 11 Jul 2023 16:15:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-	1689106537; x=1689192937; bh=4LrhlDXHj8aYOeV+b8X57to8+rDOSenPZGA
-	Uczp8uv4=; b=HbVhw6WYECenrLXQbmtCr67vkd6+50mbXWIxuf8OBq2nJ+VJjP6
-	CZrB6RMzL/uxrMJ2Erk8G8PHTD+vTUskcAYxcbgI/EKAWFtdDm4oDne2PNx5xZZB
-	sI2lytT+7QrQhxjzwjudFG5iFP6BsVO5neCVfm4EpPWdEz0aUuakGdSO0IGJwBwD
-	oPy817txgOIpb+SVCC1fEKS2z8ttM3Q9/X2HZW92EEIz9Q7ourkVUp+FBEpffqDM
-	lCTcBejDOpNwFjTpAB7u6vNRoT+9WoH/rLee+//diKWOjruymJhJHFo1nyFlcbiu
-	xigBTuiEe1IMRn6+IIRyyZV5P42khd7mIrw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1689106537; x=1689192937; bh=4LrhlDXHj8aYOeV+b8X57to8+rDOSenPZGA
-	Uczp8uv4=; b=K550uV4o9fBPg0MZpkqX77yP7TX5dX47uatMNNxUiiBemB6F1qG
-	aOwavWYC3nQihtPWMX4zfkEPQHNgesGxAkdBGs9CMB+CsGiDzitB6lgkpFLdZE6I
-	Wx1JZ97NJGa7iUn9KIHsbihXm+H/mvdZWeNea83O0v1uKNxxRsaIvs+CXMiQMupe
-	x2idQNe/usyqgBAPWfbPBwW9hghNJDwGzgYYFWk+ROlh2MYezfOFx/kwbVhwQ3Zh
-	Sdy0ld+AfHsjbcBrL9nyptUTiz2d9IpaIo0ibPlyZ2oapLe5PXEm51TNb2+Ag6fN
-	KJyb8VauSAlMbxeHXn39hWlzKcRnsNi7jzg==
-X-ME-Sender: <xms:aLitZPsiIDQmGsdOYjv96m3tfbkHf6l9Z80MjO8-C75DGEWd34iwOA>
-    <xme:aLitZAeDdkIsFqpElRcA3FAY5SgboXi0R6VXIDJLhPN8TmfXXJzwqravaCwnx625y
-    4_ZNVaEfXh6nOlfWA>
-X-ME-Received: <xmr:aLitZCxsApqIUgHMXWbYr8b4JUFnaXH3JA3B61Jz1awaEsPZuGMkzA5oyEfpVyBNjIGdeasCrsXyg1iCz7jgGYGCU0KGeH7oN_Ft>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfedtgddugeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
-    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:abitZOMCq-UcHM7BrSfnt2_Fo7ccdH75-PYMDR6I-5nNUefBLn71uQ>
-    <xmx:abitZP_w7y0XZ6Nwf2pNqRwap5aThmMGOo74Yz1vJfm3ZnFEMXuTSQ>
-    <xmx:abitZOVSqe8j7eLKTvHPrL5kimOdQUzsgsR-ptC7N2rI2NezOb2fnw>
-    <xmx:abitZBJ_QuVehRxDp-HESnkM9JOt5ZFpP5aIIkorzEtNq8Ksw2MVXQ>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 11 Jul 2023 16:15:36 -0400 (EDT)
-Date: Tue, 11 Jul 2023 14:15:35 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, andrii@kernel.org, 
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf, vmtest: Build test_progs and friends as
- statically linked
-Message-ID: <dm7i55664qqp64gogp2gbfljivgiexckw5pnvljoldtxbk7or2@n6kjeviz23wn>
-References: <05b5dd79465be41ff8cf8b56b694118a0aa7ae12.1685140942.git.daniel@iogearbox.net>
- <CAEf4BzYZBC_518wLTEXVo4+QyJ=Lsx0BYuVsL38xYdPfGOKHEg@mail.gmail.com>
- <8005de2d-5e10-9eef-2a0d-6f15aa681c05@iogearbox.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6E3171D9
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 20:52:05 +0000 (UTC)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1BF1AE
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 13:52:00 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b701e41cd3so102071581fa.3
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 13:52:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689108719; x=1691700719;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VcPcOsaH39p0NQAtc5LelPrHysKQuq9AyQ3tZrzLiP4=;
+        b=RgHasEk3OSZ5kgIU3jkEHSSVRxpe90mAN+NHJP07Jtlvqeox1Ixc+qWwVk0Ut9RNIb
+         UDrt4XBrMpLcMREfLHlTpBNa0LgCBG1tnMTaUsd9gtg8QorNa67i38Qd8O9Gwd3/dgkv
+         VMXR3iE/Ay0OkudJZ1xEw0aO9IRaf4d8CnrCNlE2xMJ7A72NeXEVfOo/gs4CWqBsktXD
+         7UdWD1OAfFhA0Gd/oIe3LaCIv/rZlLhgdXxfFddRdOeeQnPRHmoqZoKTCxKdQFXa/8z9
+         xWzS5+2CmXuEvO9DYTyK5wB8w8DNzLYY9wz7+Rr2piJn0zDgOtUDyurkBHyXJo5AMBXo
+         r7cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689108719; x=1691700719;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VcPcOsaH39p0NQAtc5LelPrHysKQuq9AyQ3tZrzLiP4=;
+        b=YHAsYhRMm3nabEjiS40iWKJs3UZLrcTT6Y+KBpMYP/15XIgUQUroxoO0E/16mLTbE6
+         K7YaLHwBlcQASGUvRU88ke0GFib4THzjVqoqFsr1Nv6Kj8xdgt3G9lyoQmw6XCcU9vd4
+         o4DIAFkgneHwrcl92CWGLAjnBLyEflfDrkyBP/ujEvVxofK9X1gm+vCazLKmRZEjtyp5
+         vwZmVqrxapVu0tQsLUW5Gpt05oeQSGA9Fo2aZEn/6R0P3hzgw/Nv9+bE8mi3BK2ERbdo
+         +joXOS531Ck+ZwFPPX7J+CabGb2lAlGYg9mURFvYC71n5DUvLo9Y6ClXe1JyaKbZXscN
+         Jx/A==
+X-Gm-Message-State: ABy/qLbzJegoOe07yjlclNHf3LBHAtEjKfPm2zXtrNb1YX4faOJsgcf5
+	paMkpoDxEtv9fG+27YvmT4FqV4yJMDGpOLZFoxR6/YyYMrY=
+X-Google-Smtp-Source: APBJJlHPNrEKEgt+6CNSsqbZV67GyEiYfBnkOwJA/dHA0Q/MeIx3nLZ0n4wByvBMTWYBq1sk5zkAnhFdTXHaZcbQXw8=
+X-Received: by 2002:a2e:979a:0:b0:2b6:f21c:2c46 with SMTP id
+ y26-20020a2e979a000000b002b6f21c2c46mr12907800lji.53.1689108718752; Tue, 11
+ Jul 2023 13:51:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8005de2d-5e10-9eef-2a0d-6f15aa681c05@iogearbox.net>
+References: <20230711175945.3298231-1-davemarchevsky@fb.com> <20230711175945.3298231-3-davemarchevsky@fb.com>
+In-Reply-To: <20230711175945.3298231-3-davemarchevsky@fb.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 11 Jul 2023 13:51:47 -0700
+Message-ID: <CAADnVQJ0YOn4UwOy3svSnE7gwWxRZ2kB3urktsVC5GpYhn9pxA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/6] bpf: Introduce internal definitions for
+ UAPI-opaque bpf_{rb,list}_node
+To: Dave Marchevsky <davemarchevsky@fb.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
+On Tue, Jul 11, 2023 at 11:00=E2=80=AFAM Dave Marchevsky <davemarchevsky@fb=
+.com> wrote:
+>
+> Structs bpf_rb_node and bpf_list_node are opaquely defined in
+> uapi/linux/bpf.h, as BPF program writers are not expected to touch their
+> fields - nor does the verifier allow them to do so.
+>
+> Currently these structs are simple wrappers around structs rb_node and
+> list_head and linked_list / rbtree implementation just casts and passes
+> to library functions for those data structures. Later patches in this
+> series, though, will add an "owner" field to bpf_{rb,list}_node, such
+> that they're not just wrapping an underlying node type. Moreover, the
+> bpf linked_list and rbtree implementations will deal with these owner
+> pointers directly in a few different places.
+>
+> To avoid having to do
+>
+>   void *owner =3D (void*)bpf_list_node + sizeof(struct list_head)
+>
+> with opaque UAPI node types, add bpf_{list,rb}_node_internal struct
+> definitions to internal headers and modify linked_list and rbtree to use
+> the internal types where appropriate.
+>
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> ---
+>  include/linux/bpf.h  | 10 ++++++++++
+>  kernel/bpf/helpers.c | 23 +++++++++++++----------
+>  2 files changed, 23 insertions(+), 10 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 360433f14496..d5841059fd2f 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -228,6 +228,16 @@ struct btf_record {
+>         struct btf_field fields[];
+>  };
+>
+> +/* Non-opaque version of bpf_rb_node in uapi/linux/bpf.h */
+> +struct bpf_rb_node_internal {
+> +       struct rb_node rb_node;
+> +} __attribute__((aligned(8)));
+> +
+> +/* Non-opaque version of bpf_list_node in uapi/linux/bpf.h */
+> +struct bpf_list_node_internal {
+> +       struct list_head list_head;
+> +} __attribute__((aligned(8)));
 
-On Wed, May 31, 2023 at 09:53:57PM +0200, Daniel Borkmann wrote:
-> On 5/31/23 9:02 PM, Andrii Nakryiko wrote:
-> > On Fri, May 26, 2023 at 3:47 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > > 
-> > > Small fix for vmtest.sh that I've been carrying locally for quite a while
-> > > now in order to work around the following linker issue:
-> > > 
-> > >    # ./vmtest.sh -- ./test_progs -t lsm
-> > >    [...]
-> > >    + ip link set lo up
-> > >    + [ -x /etc/rcS.d/S50-startup ]
-> > >    + /etc/rcS.d/S50-startup
-> > >    ./test_progs -t lsm
-> > >    ./test_progs: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by ./test_progs)
-> > >    ./test_progs: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by ./test_progs)
-> > >    [    1.356497] ACPI: PM: Preparing to enter system sleep state S5
-> > >    [    1.358950] reboot: Power down
-> > >    [...]
-> > > 
-> > > With the specified TRUNNER_LDFLAGS out of vmtest to force static linking
-> > > runners like test_progs/test_maps/etc work just fine.
-> > 
-> > Should we make this a command line option to the vmtest.sh script
-> > instead? I, for one, can't even successfully build on my machine with
-> > this, probably due to missing some -static library package (though I
-> > did install libzstd-static). I'm getting:
-> 
-> Interesting, in my case it's the other way round, but yeah that could work
-> as well.
-> 
-> Thanks,
-> Daniel
-> 
-
-I had the same zstd linker error. This hacky change fixes it:
-
-```
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 9706e7e5e698..c0d8809fd002 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -31,7 +31,7 @@ CFLAGS += -g -O0 -rdynamic -Wall -Werror $(GENFLAGS) $(SAN_CFLAGS)    \
-          -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)          \
-          -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
- LDFLAGS += $(SAN_LDFLAGS)
--LDLIBS += -lelf -lz -lrt -lpthread
-+LDLIBS += -lelf -lz -lrt -lpthread -lzstd
-
- # Silence some warnings when compiled with clang
- ifneq ($(LLVM),)
-```
-
-Would be good to get some variant of this patch in.
-
-Thanks,
-Daniel
+We typically use _kern suffix for data structs that
+mirror bpf.h structs.
+Let's use it here as well instead of _internal.
 
