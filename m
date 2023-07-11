@@ -1,162 +1,149 @@
-Return-Path: <bpf+bounces-4704-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4706-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D05C74E464
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 04:42:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44FF774E47D
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 04:56:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00D852815C8
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 02:42:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75A5E1C20CFA
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 02:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10541C01;
-	Tue, 11 Jul 2023 02:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A802116;
+	Tue, 11 Jul 2023 02:55:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96DDA7F
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:42:11 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D82B1A7
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 19:42:10 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36AKnHmc011276
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 19:42:09 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rq746hf54-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 19:42:09 -0700
-Received: from twshared40933.03.prn6.facebook.com (2620:10d:c0a8:1c::1b) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Mon, 10 Jul 2023 19:42:08 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id C99CA3454BB11; Mon, 10 Jul 2023 19:41:51 -0700 (PDT)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next] libbpf: fix realloc API handling in zero-sized edge cases
-Date: Mon, 10 Jul 2023 19:41:50 -0700
-Message-ID: <20230711024150.1566433-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1DCD7F;
+	Tue, 11 Jul 2023 02:55:46 +0000 (UTC)
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB5210D;
+	Mon, 10 Jul 2023 19:55:45 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-262ef07be72so2462624a91.1;
+        Mon, 10 Jul 2023 19:55:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689044145; x=1691636145;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Rz2Z9uqGBu5n7dLxdjRn3DUHrI1c1OAJnAS4Abt85fE=;
+        b=endMdthOppBOwx2i6IgP0RGFV4c4vlhf4/1XIHyi++9rZ9OurjbQsSmg/GdSnsUOqR
+         /J3B2sQEfKDE0vjZVofernbv7j7JdCiYc0rNrgxzN0GrrBoO4ePWFrhlI9CG/CRHfBqD
+         aoUf/fFNmUdkoWwpfRPW91OJt/ML9PjfDTC8PVR3gsBRUt/HNpgUyjrCr+vINjcpeaOf
+         2m7q6z+L2bpl8+qO0mAdv0fGRBZdtSv6T/wRTbZVCOZES72ow8KerSa2NU/m5CmRkYeb
+         95Nx0sneUXojQv+SmR6oIWZ3FZ4NjEZMF7Kj/rjETxLosbo7VJMArRt9sAzIDlETUpty
+         e9kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689044145; x=1691636145;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rz2Z9uqGBu5n7dLxdjRn3DUHrI1c1OAJnAS4Abt85fE=;
+        b=JUMaf0qK0NaUnuRr/rewMx+nqmwKi9fpLs+h62Pj3RE7izQNW8jjSFE5Q7gWlM4FyE
+         mEBT3drSHRrv3lQvOjy7n3ZJ/qfy0fvpssXyysRBxHV37saOK0jC59DguTfZJG3x4KgQ
+         8lN+oe3khGN2aJgXhIRt0MxQPrD7zVuipInu+JIB5zXm4HvOPTs1eU6qzISyksh6hMLA
+         sXOTHu2Z/MJQL4zfS+yHm8aLQfncnLAPN0sA8/FriP51FTUzNPd9kQIRjy0yHouS/Rtu
+         TAHVrrRhHgyaMiyCA0RI/0/QyH+ufo8rdEu5kSnA464WgS/aCqOsko7fBz9dRXIYPtd0
+         43tw==
+X-Gm-Message-State: ABy/qLYMPuMTrXVcyoInZbzIdQFUhIrvC13Qw5i9oRn197KausEp0D3I
+	jfa2yxf6ybSenbup5do6no4=
+X-Google-Smtp-Source: APBJJlGefJaLDQ/qu9dj4CMlypbzscGGz+zUgXdw8Kd4Fm3x1UinASvZDF+IPR97JY0klBG1CT/Ziw==
+X-Received: by 2002:a17:90a:2a87:b0:262:d029:69fc with SMTP id j7-20020a17090a2a8700b00262d02969fcmr11103174pjd.34.1689044144557;
+        Mon, 10 Jul 2023 19:55:44 -0700 (PDT)
+Received: from [10.22.68.146] ([122.11.166.8])
+        by smtp.gmail.com with ESMTPSA id qe4-20020a17090b4f8400b0025c2c398d33sm600736pjb.39.2023.07.10.19.55.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 Jul 2023 19:55:44 -0700 (PDT)
+Message-ID: <115c6eac-ab28-7220-e1e4-5747bf641bbe@gmail.com>
+Date: Tue, 11 Jul 2023 10:55:38 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: S875nfdGwZAgo962PJbUR0nSw-VPoTB_
-X-Proofpoint-GUID: S875nfdGwZAgo962PJbUR0nSw-VPoTB_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-10_18,2023-07-06_02,2023-05-22_02
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: Introduce bpf user log
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Yizhou Tang <tangyeechou@gmail.com>, kernel-patches-bot@fb.com,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>
+References: <20230708040750.72570-1-hffilwlqm@gmail.com>
+ <20230708040750.72570-3-hffilwlqm@gmail.com>
+ <CAADnVQK5RLqVhc9AxaCSuQxFRDAb8wohmUDNrYEViXLf5mEMNQ@mail.gmail.com>
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <CAADnVQK5RLqVhc9AxaCSuQxFRDAb8wohmUDNrYEViXLf5mEMNQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-realloc() and reallocarray() can either return NULL or a special
-non-NULL pointer, if their size argument is zero. This requires a bit
-more care to handle NULL-as-valid-result situation differently from
-NULL-as-error case. This has caused real issues before ([0]), and just
-recently bit again in production when performing bpf_program__attach_usdt=
-().
 
-This patch fixes 4 places that do or potentially could suffer from this
-mishandling of NULL, including the reported USDT-related one.
 
-There are many other places where realloc()/reallocarray() is used and
-NULL is always treated as an error value, but all those have guarantees
-that their size is always non-zero, so those spot don't need any extra
-handling.
+On 11/7/23 07:45, Alexei Starovoitov wrote:
+> On Fri, Jul 7, 2023 at 9:08 PM Leon Hwang <hffilwlqm@gmail.com> wrote:
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index 34fa334938ba5..8a458cfcd91bd 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -1549,7 +1549,6 @@ union bpf_attr {
+>>                 };
+>>                 __u32           attach_type;    /* attach type */
+>>                 __u32           flags;          /* extra flags */
+>> -               struct bpf_generic_user_log log; /* user log */
+>>                 union {
+>>                         __u32           target_btf_id;  /* btf_id of target to attach to */
+>>                         struct {
+>> @@ -1585,6 +1584,9 @@ union bpf_attr {
+>>                                 __s32           priority;
+>>                                 __u32           flags;
+>>                         } netfilter;
+>> +                       struct {
+>> +                               struct bpf_generic_user_log ulog; /* user log */
+>> +                       } xdp;
+> 
+> 1.
+> You cannot break api in patch 1 and fix it in patch 2.
+> 
+> 2.
+> libbpf side is missing.
+> 
+> 3.
+> selftest is missing.
+> 
+> 4.
+> bpf_vlog_finalize() should be used and error propagated back through
+> link_create.
+> Same api must be used: log_level, log_size, log_buf, log_true_size.
+> 
+> But considering all that I agree with Daniel Xu that
+> tracepoint would be better here.
 
-  [0] d08ab82f59d5 ("libbpf: Fix double-free when linker processes empty =
-sections")
+Sorry for missing 2&3.
 
-Fixes: 999783c8bbda ("libbpf: Wire up spec management and other arch-inde=
-pendent USDT logic")
-Fixes: b63b3c490eee ("libbpf: Add bpf_program__set_insns function")
-Fixes: 697f104db8a6 ("libbpf: Support custom SEC() handlers")
-Fixes: b12688267280 ("libbpf: Change the order of data and text relocatio=
-ns.")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.c | 15 ++++++++++++---
- tools/lib/bpf/usdt.c   |  5 ++++-
- 2 files changed, 16 insertions(+), 4 deletions(-)
+Tracepoint is considered. I'll change it from user log to a tracepoint.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 78635feb1946..63311a73c16d 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -6161,7 +6161,11 @@ static int append_subprog_relos(struct bpf_program=
- *main_prog, struct bpf_progra
- 	if (main_prog =3D=3D subprog)
- 		return 0;
- 	relos =3D libbpf_reallocarray(main_prog->reloc_desc, new_cnt, sizeof(*r=
-elos));
--	if (!relos)
-+	/* if new count is zero, reallocarray can return a valid NULL result;
-+	 * in this case the previous pointer will be freed, so we *have to*
-+	 * reassign old pointer to the new value (even if it's NULL)
-+	 */
-+	if (!relos && new_cnt)
- 		return -ENOMEM;
- 	if (subprog->nr_reloc)
- 		memcpy(relos + main_prog->nr_reloc, subprog->reloc_desc,
-@@ -8532,7 +8536,8 @@ int bpf_program__set_insns(struct bpf_program *prog=
-,
- 		return -EBUSY;
-=20
- 	insns =3D libbpf_reallocarray(prog->insns, new_insn_cnt, sizeof(*insns)=
-);
--	if (!insns) {
-+	/* NULL is a valid return from reallocarray if the new count is zero */
-+	if (!insns && new_insn_cnt) {
- 		pr_warn("prog '%s': failed to realloc prog code\n", prog->name);
- 		return -ENOMEM;
- 	}
-@@ -8841,7 +8846,11 @@ int libbpf_unregister_prog_handler(int handler_id)
-=20
- 	/* try to shrink the array, but it's ok if we couldn't */
- 	sec_defs =3D libbpf_reallocarray(custom_sec_defs, custom_sec_def_cnt, s=
-izeof(*sec_defs));
--	if (sec_defs)
-+	/* if new count is zero, reallocarray can return a valid NULL result;
-+	 * in this case the previous pointer will be freed, so we *have to*
-+	 * reassign old pointer to the new value (even if it's NULL)
-+	 */
-+	if (sec_defs || custom_sec_def_cnt =3D=3D 0)
- 		custom_sec_defs =3D sec_defs;
-=20
- 	return 0;
-diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index f1a141555f08..37455d00b239 100644
---- a/tools/lib/bpf/usdt.c
-+++ b/tools/lib/bpf/usdt.c
-@@ -852,8 +852,11 @@ static int bpf_link_usdt_detach(struct bpf_link *lin=
-k)
- 		 * system is so exhausted on memory, it's the least of user's
- 		 * concerns, probably.
- 		 * So just do our best here to return those IDs to usdt_manager.
-+		 * Another edge case when we can legitimately get NULL is when
-+		 * new_cnt is zero, which can happen in some edge cases, so we
-+		 * need to be careful about that.
- 		 */
--		if (new_free_ids) {
-+		if (new_free_ids || new_cnt =3D=3D 0) {
- 			memcpy(new_free_ids + man->free_spec_cnt, usdt_link->spec_ids,
- 			       usdt_link->spec_cnt * sizeof(*usdt_link->spec_ids));
- 			man->free_spec_ids =3D new_free_ids;
---=20
-2.34.1
+I'll submit tracepoint patch with libbpf&selftest patches later.
 
+Thanks,
+Leon
 
