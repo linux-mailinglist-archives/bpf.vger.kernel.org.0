@@ -1,127 +1,163 @@
-Return-Path: <bpf+bounces-4773-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4774-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E72174F467
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 18:06:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EFEA74F4A3
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 18:15:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5E92281813
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 16:06:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 637FB1C20F4E
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 16:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E075319BD4;
-	Tue, 11 Jul 2023 16:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD3919BD7;
+	Tue, 11 Jul 2023 16:15:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B6519BBA
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 16:06:40 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AB411D
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1689091598;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IHgmi2wwFrPjMP5Rxs8KSVDqK1J+qf75UCdExpa0HJo=;
-	b=ENDaHJ/Vv8mI7uMgKK3FkLa7QEI3A5wQWLon3XqttdV42wVrb9YeO4sR8fMctVSW7c0a+o
-	EqnawonnmLC4jJMKMohvtw9kw8v9BBCivORrOJlQ1nuVPNQ48PByZwdKG6k7CPxKAu99GK
-	GBgTgMokpS/khyRLq6nF70NNf/YffWs=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-414-qeawWiX3Pkekwt3G_-MsmQ-1; Tue, 11 Jul 2023 12:06:37 -0400
-X-MC-Unique: qeawWiX3Pkekwt3G_-MsmQ-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-993d5006993so292041266b.3
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:06:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC2818AFE
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 16:15:22 +0000 (UTC)
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094871709
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:15:19 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9923833737eso685741166b.3
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:15:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1689092117; x=1691684117;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b0cPI8Zq0PeegUi44hkwFDNWJ9aJ3HVoZc/kLcQkpf4=;
+        b=UuD8b+Afj9oDvXQEwsLdh6bNZbU5rx8jYmvqtU7VORiVL9R/oX7NzGZJhYCqpd7LRU
+         RMZ4psdDy39BM26u+YM9UyVJUIITTEdeBE2HshuXlY/5/T7uCwIReB1KUeS0+OUTdO3f
+         XJS6BuPYccXg3zKRC0EW8rvRtEyUPmRDMuuZ4FYziBxY3OqPYakIwzuSvT/lx1n+yr+0
+         AAuLAY2175VPPwnLh1YxdFYVZ1aqt83GSGkH33DBYkTMFSaj47/Ij13OsDIo2rh3q6K2
+         rM3xeYRk7MzMvAt33Kd+/8lYusal4Y05a0KOr4nfVX2fDwQFBhkaR7RoNFSyyEoZZxXF
+         owKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689091596; x=1691683596;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IHgmi2wwFrPjMP5Rxs8KSVDqK1J+qf75UCdExpa0HJo=;
-        b=SmHhnBV7IFfWFXC4FaJeC/CH8Ecp3f2VK7ODnrtUg5VvOajlg/37v7IsOn1kMdORQG
-         hbpzKgsdY10ga/UHP3f1j3zczsm0ZnFnFZoLAmcvauadMiHHQT6xieh6b1l149arEp3O
-         ucjQ7jyu+IKpYSvvwiFto4+dgg4eekIivCxDwXQAFSTdIkyMBUP03yiRXqdwXM0UD9/0
-         aCsxZaIWSke9xOJXoq2sYSuRIaIaHd/eTMFotsXJNTeyQtpVenNv4PBF+YlY97aaDw2a
-         O2TXdUetYwurmZwL2pql6BD1HcrOMugh5kqWItrnFDNufwOKKMfUwHLR0N5fOJJfzF/F
-         P2oA==
-X-Gm-Message-State: ABy/qLZqJKvOfxiZVL0Deo/0rBEW7PLaMnGS5JEtwg6yXUWMTZCgUGbJ
-	MJ82Qy2tMLt1h3pvdtSpkN/GfFb4uOrVuwXmCnBoEyWgYZu4vY5rMzQ6jukkx/IlwjmSm8zxkCO
-	qVxSrTMqGhul3
-X-Received: by 2002:a17:906:73d5:b0:994:577:f9df with SMTP id n21-20020a17090673d500b009940577f9dfmr7195367ejl.4.1689091596089;
-        Tue, 11 Jul 2023 09:06:36 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFVb+VnLW+A+oRRKhUDHDJ2ge75t79bT8wF0gNCeIcmMzqWP9QSikucwVt4UtqYjBbKUKQ5GA==
-X-Received: by 2002:a17:906:73d5:b0:994:577:f9df with SMTP id n21-20020a17090673d500b009940577f9dfmr7195342ejl.4.1689091595649;
-        Tue, 11 Jul 2023 09:06:35 -0700 (PDT)
-Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id z19-20020a1709060ad300b009934b1eb577sm1340404ejf.77.2023.07.11.09.06.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Jul 2023 09:06:35 -0700 (PDT)
-From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <da7ac0a1-5f62-bc0e-8954-d3d1e846fb52@redhat.com>
-Date: Tue, 11 Jul 2023 18:06:34 +0200
+        d=1e100.net; s=20221208; t=1689092117; x=1691684117;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b0cPI8Zq0PeegUi44hkwFDNWJ9aJ3HVoZc/kLcQkpf4=;
+        b=kgWcB2mZoNUlGy0wILdhrtJScfLIfmpwF8RZf2uWan/5Y83mG5nNqsW/KmiMJqfWPC
+         43zX5uaEuQRbbG200qT2Bv2keYAf7ox/CrvYgyQYyLtRLQAVuUs0h5IZ/z5vSWxHVDEl
+         ZL0t5TUcki3eW9nBxrL7y+KNn7Bw4BLJlDwtiZNIqNGUuy0a1HvqIgr9AZh1dnTIRvm+
+         Bit1xSXMwY8xA6w7uZ1zvj1Fm7XKmSYVBbIscAEbX61EjG9BlPdu+UOZDFll/+fry/jW
+         +lRMpWkVM5WlRE3MMbwrxM5wi3usp99Ud0ZbCgh8x7Hw84CE25l7SJOsndkmDuzsfXLZ
+         H0Eg==
+X-Gm-Message-State: ABy/qLaFaDqAVLowDoirezsR3zSziI6ICUILf9nB9eXIDqTrsmGxoq04
+	zU0hE5gYABFgMJ4vke+4EHG2+SkRiO92pUcVhvtowQ==
+X-Google-Smtp-Source: APBJJlGXOjWPnshsxM3cflnDdAoKzmU0dGcvL7PnEhcWaR8Lg6sC3dcHMdy6YJfU/8Us0J91zcM6RceD9a9eOwGczcY=
+X-Received: by 2002:a17:906:21a:b0:994:1ef9:91dc with SMTP id
+ 26-20020a170906021a00b009941ef991dcmr1792295ejd.15.1689092117275; Tue, 11 Jul
+ 2023 09:15:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Cc: brouer@redhat.com, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Xu Kuohai <xukuohai@huawei.com>,
- Pu Lehui <pulehui@huawei.com>
-Subject: Re: [PATCH bpf] bpf: cpumap: Fix memory leak in cpu_map_update_elem
-Content-Language: en-US
-To: Pu Lehui <pulehui@huaweicloud.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230711115848.2701559-1-pulehui@huaweicloud.com>
-In-Reply-To: <20230711115848.2701559-1-pulehui@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20230613-so-reuseport-v5-0-f6686a0dbce0@isovalent.com> <20230613-so-reuseport-v5-6-f6686a0dbce0@isovalent.com>
+In-Reply-To: <20230613-so-reuseport-v5-6-f6686a0dbce0@isovalent.com>
+From: Lorenz Bauer <lmb@isovalent.com>
+Date: Tue, 11 Jul 2023 17:15:06 +0100
+Message-ID: <CAN+4W8gs84r+PVWgMbic29Opj2EviNMh7AzcP=BR3CLvYHiQWg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 6/7] bpf, net: Support SO_REUSEPORT sockets
+ with bpf_sk_assign
+To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Joe Stringer <joe@wand.net.nz>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: Hemanth Malla <hemanthmalla@gmail.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, Joe Stringer <joe@cilium.io>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Tue, Jul 4, 2023 at 2:46=E2=80=AFPM Lorenz Bauer <lmb@isovalent.com> wro=
+te:
+>
+> +static inline
+> +struct sock *inet6_steal_sock(struct net *net, struct sk_buff *skb, int =
+doff,
+> +                             const struct in6_addr *saddr, const __be16 =
+sport,
+> +                             const struct in6_addr *daddr, const __be16 =
+dport,
+> +                             bool *refcounted, inet6_ehashfn_t *ehashfn)
+> +{
+> +       struct sock *sk, *reuse_sk;
+> +       bool prefetched;
+> +
+> +       sk =3D skb_steal_sock(skb, refcounted, &prefetched);
+> +       if (!sk)
+> +               return NULL;
+> +
+> +       if (!prefetched)
+> +               return sk;
+> +
+> +       if (sk->sk_protocol =3D=3D IPPROTO_TCP) {
+> +               if (sk->sk_state !=3D TCP_LISTEN)
+> +                       return sk;
+> +       } else if (sk->sk_protocol =3D=3D IPPROTO_UDP) {
+> +               if (sk->sk_state !=3D TCP_CLOSE)
+> +                       return sk;
+> +       } else {
+> +               return sk;
+> +       }
+> +
+> +       reuse_sk =3D inet6_lookup_reuseport(net, sk, skb, doff,
+> +                                         saddr, sport, daddr, ntohs(dpor=
+t),
+> +                                         ehashfn);
+> +       if (!reuse_sk)
+> +               return sk;
+> +
+> +       /* We've chosen a new reuseport sock which is never refcounted. T=
+his
+> +        * implies that sk also isn't refcounted.
+> +        */
+> +       WARN_ON_ONCE(*refcounted);
+> +
+> +       return reuse_sk;
+> +}
 
-On 11/07/2023 13.58, Pu Lehui wrote:
-> From: Pu Lehui <pulehui@huawei.com>
-> 
-> Syzkaller reported a memory leak as follows:
-> 
-[...]>
-> In the cpu_map_update_elem flow, when kthread_stop is called before
-> calling the threadfn of rcpu->kthread, since the KTHREAD_SHOULD_STOP bit
-> of kthread has been set by kthread_stop, the threadfn of rcpu->kthread
-> will never be executed, and rcpu->refcnt will never be 0, which will
-> lead to the allocated rcpu, rcpu->queue and rcpu->queue->queue cannot be
-> released.
-> 
-> Calling kthread_stop before executing kthread's threadfn will return
-> -EINTR. We can complete the release of memory resources in this state.
-> 
-> Fixes: 6710e1126934 ("bpf: introduce new bpf cpu map type BPF_MAP_TYPE_CPUMAP")
-> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+Hi Kuniyuki,
 
-LGTM, thanks for fixing this.
+Continuing the conversation from v5 of the patch set, you wrote:
 
-Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+In inet6?_steal_sock(), we call inet6?_lookup_reuseport() only for
+sk that was a TCP listener or UDP non-connected socket until just before
+the sk_state checks.  Then, we know *refcounted should be false for such
+sockets even before inet6?_lookup_reuseport().
 
+This makes sense for me in the TCP listener case. I understand UDP
+less, so I'll have to rely on your input. I tried to convince myself
+that all UDP sockets in TCP_CLOSE have SOCK_RCU_FREE set. However, the
+only place I see sock_set_flag(sk, SOCK_RCU_FREE) in the UDP case is
+in udp_lib_get_port(). That in turn seems to be called during bind.
+So, what if BPF does bpf_sk_assign() of an unbound and unconnected
+socket? Wouldn't that trigger the warning?
+
+To maybe sidestep this question: do you think the location of the
+WARN_ON_ONCE has to prevent this patch set from going in? I've been
+noodling at it for quite a while already and it would be good to see
+it land.
+
+Thanks
+
+Lorenz
 
