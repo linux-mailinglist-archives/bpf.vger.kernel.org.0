@@ -1,152 +1,161 @@
-Return-Path: <bpf+bounces-4722-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4723-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 293C374E5A7
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 06:02:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBDE674E60A
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 06:47:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 625531C20CEA
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 04:02:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85E0428115C
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 04:47:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39B34436;
-	Tue, 11 Jul 2023 04:02:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C31523A;
+	Tue, 11 Jul 2023 04:47:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86FE33C28;
-	Tue, 11 Jul 2023 04:02:26 +0000 (UTC)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0D1E42;
-	Mon, 10 Jul 2023 21:02:19 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4f4b2bc1565so8175071e87.2;
-        Mon, 10 Jul 2023 21:02:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234372104
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 04:47:03 +0000 (UTC)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4DD90
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 21:47:01 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b5c2433134so65623861fa.0
+        for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 21:47:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689048138; x=1691640138;
+        d=gmail.com; s=20221208; t=1689050820; x=1691642820;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c/bqIvBWP0Vc31nnjqB0//tzgjYO0px2TJafgW9vm5w=;
-        b=GkRcWJs+DiK6fWtziTeO4u3Kbwd4mWCi2N1c+O4kMrH32zvAnoRzj5kxG6UwA1Qlay
-         +mo8pMsgNY0yazf1c4MQvSK+7xx9oq4PdBNasVssCtAsHvNeQVoV2CJi1M6K2Bf5hNDR
-         swwsnOblY9bwy4DbwyanYzd9MUtQsNcGq1A6iSCLgNGp2mQUVwoS2/N7EyYpTc+BEd+7
-         h6aMfbQYZ8mcsUW4QnXBE8Ph4zjbYRPqi/LVIIFsqocOlSAWb+wmsfUaCLeRJpYHm7Uo
-         WytWftqbvIZ09xMSFwAJ/wLTD0oJExUlSU3fCaCKzoDAEHlEXFxJUMO75nmzUPiJZJP8
-         6ebQ==
+        bh=9WtPqk+6efPvU9PidMZCkDRjbOAk0RVLnoir7RR0hoE=;
+        b=ZLDb61qbQBSAy/NOC/5lD+sZ21YgRIb/og1ZzwDTexzY0O1zxAjDC0omOkVzfqNTbG
+         c3vmW5aeC7KkAQ4cY/gzSrf87sG5hr68gywOn9jRKrWo/ZPd8ZY2sBjFxcg5wxdk/9eS
+         t7TRlKBk1Xr4pfoK1+zvMFq/r3CVSUrl0UiGrQjtWvKeuFbGQWtbXKba64KVS4LcyR36
+         AYT0lwAKLLAUv+Bi09ofxfKc5tiEnkbVtiod9tfcqm4NYTYmZHeSHabl3XRv7Vwz+awf
+         ba25B+LtfPh6K+kOGiNwUkZ8q5QQf0h9aDqThClU1SHONa4vGOtmW8oNgslOJHXy1HL4
+         GUgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689048138; x=1691640138;
+        d=1e100.net; s=20221208; t=1689050820; x=1691642820;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c/bqIvBWP0Vc31nnjqB0//tzgjYO0px2TJafgW9vm5w=;
-        b=CMZTbx0LSFWLpL+knfiVU8Oi/Ge+dFqGINiCUSnomXFI3tQ6cEkvjYGQsVP1o1CitT
-         L2EKvF1Q2tvbvQkbsC9PlwZIBUyg4H8Ppi/uOOTu+Y6JWDAPkE+GVSNA7Je5TREhVTuI
-         tZGzfwKYAiDmKZiyhTSOA7az2l4MT0ffTYwoe5Z79CyVB+2TbIjbl9078NqUZzFp4Qj/
-         e1RNc1kWccVjxPhe0T6MKzYKVmvsqz2tsrGKxiStDPZxP6GeLDMu3SjBfn2R4ht2Hqz+
-         H8wDEYGwmisOr+3h99O/c+SoXPAPaV08HcUC5SMUqf9WF5/UP+HkOhay2hpRMP/AJ5aP
-         lyBQ==
-X-Gm-Message-State: ABy/qLZzVShUOjqWFru+X4e6lWFPmWmfqRsYsAf8Gbk8hZQjgK6XKwAQ
-	oj3c79ag0sgfnbYyqS+APckmVqQWBETalyOy8YA=
-X-Google-Smtp-Source: APBJJlFe4nkrNFIrhStPNzTSn/NrxTnQnj4Q8af+lJNpHH4V3pQvF3BXg1txpWkpf5bbscZsUyo3fhPn8HKjTeLwtzk=
-X-Received: by 2002:a05:6512:5ce:b0:4f9:5ca5:f1a6 with SMTP id
- o14-20020a05651205ce00b004f95ca5f1a6mr11293431lfo.17.1689048137493; Mon, 10
- Jul 2023 21:02:17 -0700 (PDT)
+        bh=9WtPqk+6efPvU9PidMZCkDRjbOAk0RVLnoir7RR0hoE=;
+        b=B1VgMIMjzezsthLWxY+uPS+1Ea0bE5INfwh/VwjLStWEttAkiQMrxqAMUTJAPA1Ypx
+         Rq2BorAmXJL2jVEK9i+l0n6D1OPG6537fG5pvepbvD8p03oXrgorS3eWiv4gSZqa6tme
+         VRSn/zU/pnwQvxLmKmXc5iGVB4fyXBObq7W9nm4VX9LxKEtkeLp6tDRxaMo7hes8iljG
+         zAn+muI/4xjtN/4Gc57uV0KZ7R/axSsjfNANHUIs16pfPrChwGxxLoM2DWUlymVmB5ga
+         enoj2AqMJmGSU2mAah0y8NgC9z/F+YaYoeNy/H3TlNLHvScXRf909BOngfgwAkfCHk/u
+         Mf9g==
+X-Gm-Message-State: ABy/qLZr2yNAmT496/9geV1FXjwja02T3jjIxzNNaQCw69yiBf6G9b21
+	OnpCZj9w+IKJqyk37hLvlOxkrj5Zhf1LLIDq4ACbz3Zrs5c=
+X-Google-Smtp-Source: APBJJlFTgw2KDx4ae2+/8cEbMybK19AfRSMlbeWfU9BNuPOKAOhDBJLsk4sTbjqWWAmJObD/5NXYL7hvY3fbaaggSCE=
+X-Received: by 2002:a2e:3c04:0:b0:2b6:98c2:635f with SMTP id
+ j4-20020a2e3c04000000b002b698c2635fmr5990631lja.11.1689050819712; Mon, 10 Jul
+ 2023 21:46:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230710201218.19460-1-daniel@iogearbox.net> <20230710201218.19460-6-daniel@iogearbox.net>
-In-Reply-To: <20230710201218.19460-6-daniel@iogearbox.net>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 10 Jul 2023 21:02:05 -0700
-Message-ID: <CAEf4BzYBCHp6x_4mwjduHidJDfQ94-p2gnGSS+V3oAtqg9xsMQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 5/8] libbpf: Add helper macro to clear opts structs
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, 
-	razor@blackwall.org, sdf@google.com, john.fastabend@gmail.com, 
-	kuba@kernel.org, dxu@dxuuu.xyz, joe@cilium.io, toke@kernel.org, 
-	davem@davemloft.net, bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20230710215819.723550-1-hawkinsw@obs.cr> <20230710215819.723550-2-hawkinsw@obs.cr>
+ <CAADnVQ+F5VT72LzONEo79ksqaRj=c7mJDd_Ebb87767v01Nosw@mail.gmail.com> <CADx9qWgmYu_LVVFtR0R7pcqM_270kQFzvmiSZ-2Umn2pE6qn=g@mail.gmail.com>
+In-Reply-To: <CADx9qWgmYu_LVVFtR0R7pcqM_270kQFzvmiSZ-2Umn2pE6qn=g@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 10 Jul 2023 21:46:48 -0700
+Message-ID: <CAADnVQJR7YFcjqgiGABX-_jJEK7rQTrO8cGFJiZ16oOtpbmVNA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] bpf, docs: Specify twos complement as format for
+ signed integers
+To: Will Hawkins <hawkinsw@obs.cr>
+Cc: bpf <bpf@vger.kernel.org>, bpf@ietf.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jul 10, 2023 at 1:12=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
-et> wrote:
+On Mon, Jul 10, 2023 at 8:19=E2=80=AFPM Will Hawkins <hawkinsw@obs.cr> wrot=
+e:
 >
-> Add a small and generic LIBBPF_OPTS_CLEAR() helper macros which clears
-> an opts structure and reinitializes its .sz member to place the structure
-> size. I found this very useful when developing selftests, but it is also
-> generic enough as a macro next to the existing LIBBPF_OPTS() which hides
-> the .sz initialization, too.
+> On Mon, Jul 10, 2023 at 11:00=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Jul 10, 2023 at 2:58=E2=80=AFPM Will Hawkins <hawkinsw@obs.cr> =
+wrote:
+> > >
+> > > In the documentation of the eBPF ISA it is unspecified how integers a=
+re
+> > > represented. Specify that twos complement is used.
+> > >
+> > > Signed-off-by: Will Hawkins <hawkinsw@obs.cr>
+> > > ---
+> > >  Documentation/bpf/instruction-set.rst | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > >
+> > > diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bp=
+f/instruction-set.rst
+> > > index 751e657973f0..63dfcba5eb9a 100644
+> > > --- a/Documentation/bpf/instruction-set.rst
+> > > +++ b/Documentation/bpf/instruction-set.rst
+> > > @@ -173,6 +173,11 @@ BPF_ARSH  0xc0   sign extending dst >>=3D (src &=
+ mask)
+> > >  BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_=
+ below)
+> > >  =3D=3D=3D=3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > >
+> > > +eBPF supports 32- and 64-bit signed and unsigned integers. It does
+> > > +not support floating-point data types. All signed integers are repre=
+sented in
+> > > +twos-complement format where the sign bit is stored in the most-sign=
+ificant
+> > > +bit.
+> >
+> > Could you point to another ISA document (like x86, arm, ...) that
+> > talks about signed and unsigned integers?
 >
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> ---
->  tools/lib/bpf/libbpf_common.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+> Thank you for the reply. I hope that this change is useful. I proposed
+> this change to mimic the documentation of "Numeric Data Types" in
+> Volume 1, Chapter 4 of "Intel=C2=AE 64 and IA-32 Architectures Software
+> Developer=E2=80=99s Manual" [1].
 >
-> diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.=
-h
-> index 9a7937f339df..eb180023aa97 100644
-> --- a/tools/lib/bpf/libbpf_common.h
-> +++ b/tools/lib/bpf/libbpf_common.h
-> @@ -70,4 +70,15 @@
->                 };                                                       =
-   \
->         })
->
-> +/* Helper macro to clear a libbpf options struct
-> + *
-> + * Small helper macro to reset all fields and to reinitialize the common
-> + * structure size member.
-> + */
-> +#define LIBBPF_OPTS_CLEAR(NAME)                                         =
-           \
-> +       do {                                                             =
-   \
-> +               memset(&NAME, 0, sizeof(NAME));                          =
-   \
-> +               NAME.sz =3D sizeof(NAME);                                =
-     \
-> +       } while (0)
-> +
+> [1] https://www.intel.com/content/www/us/en/developer/articles/technical/=
+intel-sdm.html
 
-This is fine, but I think you can go a half-step further and have
-something even more universal and useful. Something like this:
+I see where you got the inspiration from.
+It's a "software developer's manual". Not an ISA spec.
+But, say, we adopt this form and proceed to create all 500 pages of it.
 
+SDM has this to say about pointers:
+"Pointers are addresses of locations in memory.
+In non-64-bit modes, the architecture defines two types of pointers: a
+near pointer and a far pointer. A near pointer is a 32-bit (or 16-bit)
+offset (also called an effective address) within a segment. Near
+pointers are used
+for all memory references in a flat memory model or for references in
+a segmented model where the identity of the segment being accessed is
+implied."
 
-#define LIBBPF_OPTS_RESET(NAME, ...)
-    do {
-        memset(&NAME, 0, sizeof(NAME));
-        NAME =3D (typeof(NAME)) {
-            .sz =3D sizeof(struct TYPE),
-            __VA_ARGS__
-        };
-     while (0);
+BPF runs on 32-bit and 64-bit CPUs, so if we document signed vs unsigned
+integers we'd have to say a few words about pointers, bitfields and strings
+(just like Intel SDM). Pointers in BPF are clearly lacking docs.
 
-I actually haven't tried if that typeof() trick works, but I hope it does :=
-)
+Beyond Vol 1, Chapter 4 there are plenty of other chapters.
+Should we have an equivalent for all of them?
+I think it would be great to have something for all that,
+but dropping a patch or two won't get us there.
+It needs to be a full time commitment with SOW, roadmap, etc.
+I doubt the kernel and/or IETF process can accommodate that.
 
+Saying it differently. What is missing in instruction-set.rst
+from making an IETF standard out of it?
+Does it need a signed vs unsigned SDM-like paragraph?
 
-Then your LIBBPF_OPTS_CLEAR() is just LIBBPF_OPTS_RESET(x). But you
-can also re-initialize:
-
-LIBBPF_OPTS_RESET(x, .flags =3D 123, .prog_fd =3D 456);
-
-It's more in line with LIBBPF_OPTS() itself in capabilities, except it
-works on existing variable.
-
-
->  #endif /* __LIBBPF_LIBBPF_COMMON_H */
-> --
-> 2.34.1
->
+Let's focus on converting instruction-set.rst into a standard
+as fast as possible and tackle all nice-to-have later.
 
