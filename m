@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-4769-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4770-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79C0D74F1F8
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 16:23:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3228A74F1FB
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 16:23:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AABB91C20ED3
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 14:23:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF01B281868
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 14:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D98619BBB;
-	Tue, 11 Jul 2023 14:23:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9880A19BBD;
+	Tue, 11 Jul 2023 14:23:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD1A14AB5
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 14:23:02 +0000 (UTC)
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B414171B
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 07:22:44 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-76731802203so528233585a.3
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 07:22:44 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6100114AB5
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 14:23:22 +0000 (UTC)
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BE82D44
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 07:23:00 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7943be26e84so1867127241.2
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 07:23:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689085352; x=1691677352;
+        d=gmail.com; s=20221208; t=1689085373; x=1691677373;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ic9pAOzgYf8SN+nFTcTDWvREDTXklpxiB+zl6dn5evY=;
-        b=p5YIPuAexYvKVb1aLcxtWz3UTZetIhZKoVgoxhCv6G+zCjIl+fEyJwhmWmXF5OxBPW
-         mWxzEVoi8wLShGCJaW3XC5hnBobuBRjUBNiB9jm01ddsvPq3/7Z///ksxwnUkP82IuAg
-         njpnFNPN3/qLS9KNPboLAa60fWuxHtVmWRp7uA7cs6wh2tHDGy5fbgPpb7efSU2cYw/6
-         alarJ7b3xk/YmHWTpNHdc9WaMMolJX3aGzChESNwkhlUaTwkL9/xDsVEOCP3cwqhhsWO
-         WAnJvz8r4gdc+SE6FKih2Sg2W0gH3NyONQHEnyVwb9Z4tgAxMU6gItwrM8yDeEfIm8rk
-         ItPA==
+        bh=V+9v0i0ABTlKcuWoa6BJktNCo4AcOokPMS8xtG1hMqg=;
+        b=r+HSkccS6HZmjTijGZD091hiregQegtSkhYPj//x8/PXY5mwGsEYCAHZS/1Syi0yXO
+         B8MbtGzbBKoaaGrtCREbEBEpRkGiqHI4VdTFwqb4Iub2tL0FIu2HssE40E5CPcXFHBtF
+         a0PmQG7NRUFMcx/lJ4V+bCtESdfKebljDCecxHUmhvMRvFtpGRyajNiTMFnpyJ6FDwzb
+         rcQ4f+az5dpIK0XDH6JZ2khrw4N5LPO7WznavWixpHQFgI4scVmIJmzf8h8IVSTpSigp
+         xKPEMcZ4bIXEaJ212wGNzJozTOt0JkmZ9Zl98kX8foBaMqYFa8FvcIxKNAL4jZfKC/p+
+         CApA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689085352; x=1691677352;
+        d=1e100.net; s=20221208; t=1689085373; x=1691677373;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ic9pAOzgYf8SN+nFTcTDWvREDTXklpxiB+zl6dn5evY=;
-        b=kTZr4aQfewEvdkRNfuAEMfGlyGjHelYqz3JORXN370/fjeRCiRfDTsoHjN+aLFCZTD
-         MDfqfgYL2Wsqajyhi/Ub28Z9RJGzCx+E7EtlczEf+ubwbzzfOaxqlmlgV7YOjnOS/msG
-         X0CPCzVxrNwoxwV+zDxjwlmgW8tapjLCzex8mw2EYmo5arsQiwrTC8oYjbeR04jcedM7
-         i0uOYM2YcfCVcHP2u/l+hHdVQfqcbmM7dWuVVSe+wkkDTxZCnX+8likXYaJ71OfWkAnc
-         fx08T6pQQWJ0kos4epTVBk85ISECyvjCRF1E9R7k4VfHr36whZTrEt+EYaogj/j/jvKD
-         r4tw==
-X-Gm-Message-State: ABy/qLbTblpFDT/2qKwfwG5Z1bVIBTD27DlvBnEqF/yV9DRda8nf7OlY
-	JI++Ryd2fsIVCUkq4pKrN/29eLKsIFwqsVrgN/ShrQbKD18=
-X-Google-Smtp-Source: APBJJlGZkVfOxDedex8lTwsb+v03NtUhJrmErcuDtuuqHDpaUawU3pBOuUJZhKoRmkfFb2qkXeEVGHeGAdb7WmnNVVw=
-X-Received: by 2002:a0c:e345:0:b0:636:64e8:a3a6 with SMTP id
- a5-20020a0ce345000000b0063664e8a3a6mr14098365qvm.62.1689085352141; Tue, 11
- Jul 2023 07:22:32 -0700 (PDT)
+        bh=V+9v0i0ABTlKcuWoa6BJktNCo4AcOokPMS8xtG1hMqg=;
+        b=FdrfrM/HPrsO6B4f6tC+kKiw3UlDHY4d04dLxMzQglmuPRdgrLyMNNvzw//8KctLFz
+         QczXnTckVVRhK5+rY/HJmLw+eXHbOQRAXzCau/oOGgLr4v/IcJ7SH1kYmItadTA68JwT
+         WD4XhrQPBwtI4fLrolY/SKiPrhz44JiiWInmCGKrUNJhVfkNOywSHc6pIJ9ZHbMBMPxZ
+         7vaobdliEPRREAraH/fUuaeIvZ6HSiJHo+nX4yenFx9+/JjJ7X3obvk9EqvgEyaR0FPE
+         IbAlHEq+o3+dhc/XMJiooiv6/WxJEX8HdOV7tzc/cqEUiyL0XeR/rMsg3/c84b/IpiS8
+         sP+g==
+X-Gm-Message-State: ABy/qLb1Kp8p1PFq6jP9V0WCJEXr3Ms/GTwVbtyoWD4U2cJyAfKY9pE0
+	BoPfSBLLoP6gkRKNC8+Nk5rLwfY78cOJO7Po6q4=
+X-Google-Smtp-Source: APBJJlFYXbjHFqsTGFky++ZeeyH4ON8myZiOeG7fz9S1zF63dVWGr5U3jXHVmLN4zmch3zC2qjrBMY/SPH6KRVY6Lo4=
+X-Received: by 2002:a67:ee53:0:b0:443:5ff0:bab2 with SMTP id
+ g19-20020a67ee53000000b004435ff0bab2mr2950752vsp.22.1689085373412; Tue, 11
+ Jul 2023 07:22:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230709025912.3837-1-laoar.shao@gmail.com> <20230709025912.3837-2-laoar.shao@gmail.com>
- <CAADnVQKQzxUGz3Mhr5kQi2Zao7CKryCPG2JWj2dGn07UDM=oeA@mail.gmail.com>
-In-Reply-To: <CAADnVQKQzxUGz3Mhr5kQi2Zao7CKryCPG2JWj2dGn07UDM=oeA@mail.gmail.com>
+References: <20230709025912.3837-1-laoar.shao@gmail.com> <20230709025912.3837-4-laoar.shao@gmail.com>
+ <CAADnVQLUY4tb2s-tzSuxO5_8g3PAqnq_a-LwswPqxNL7=qLHBA@mail.gmail.com>
+In-Reply-To: <CAADnVQLUY4tb2s-tzSuxO5_8g3PAqnq_a-LwswPqxNL7=qLHBA@mail.gmail.com>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 11 Jul 2023 22:21:56 +0800
-Message-ID: <CALOAHbDoLzC5OtnQM3pRDMewo4yApLTTqppb2VDgR4043r2V8Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Introduce BTF_TYPE_SAFE_TRUSTED_UNION
+Date: Tue, 11 Jul 2023 22:22:17 +0800
+Message-ID: <CALOAHbBAD_nvfti0iHKFv-T+jPVgixQXyjLqprLP5U2X38jLoQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] bpf: Fix an error in verifying a field in a union
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
@@ -87,123 +87,77 @@ On Tue, Jul 11, 2023 at 10:56=E2=80=AFAM Alexei Starovoitov
 > On Sat, Jul 8, 2023 at 7:59=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
  wrote:
 > >
-> > When we are verifying a field in a union, we may unexpectedly verify
-> > another field which has the same offset in this union. So in such case,
-> > we should annotate that field as PTR_UNTRUSTED. However, in some cases
-> > we are sure some fields in a union is safe and then we can add them int=
-o
-> > BTF_TYPE_SAFE_TRUSTED_UNION allow list.
+> > We are utilizing BPF LSM to monitor BPF operations within our container
+> > environment. When we add support for raw_tracepoint, it hits below
+> > error.
 > >
+> > ; (const void *)attr->raw_tracepoint.name);
+> > 27: (79) r3 =3D *(u64 *)(r2 +0)
+> > access beyond the end of member map_type (mend:4) in struct (anon) with=
+ off 0 size 8
+> >
+> > It can be reproduced with below BPF prog.
+> >
+> > SEC("lsm/bpf")
+> > int BPF_PROG(bpf_audit, int cmd, union bpf_attr *attr, unsigned int siz=
+e)
+> > {
+> >         switch (cmd) {
+> >         case BPF_RAW_TRACEPOINT_OPEN:
+> >                 bpf_printk("raw_tracepoint is %s", attr->raw_tracepoint=
+.name);
+> >                 break;
+> >         default:
+> >                 break;
+> >         }
+> >         return 0;
+> > }
+> >
+> > The reason is that when accessing a field in a union, such as bpf_attr,
+> > if the field is located within a nested struct that is not the first
+> > member of the union, it can result in incorrect field verification.
+> >
+> >   union bpf_attr {
+> >       struct {
+> >           __u32 map_type; <<<< Actually it will find that field.
+> >           __u32 key_size;
+> >           __u32 value_size;
+> >          ...
+> >       };
+> >       ...
+> >       struct {
+> >           __u64 name;    <<<< We want to verify this field.
+> >           __u32 prog_fd;
+> >       } raw_tracepoint;
+> >   };
+> >
+> > Considering the potential deep nesting levels, finding a perfect
+> > solution to address this issue has proven challenging. Therefore, I
+> > propose a solution where we simply skip the verification process if the
+> > field in question is located within a union.
+> >
+> > Fixes: 7e3617a72df3 ("bpf: Add array support to btf_struct_access")
 > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > > ---
-> >  kernel/bpf/btf.c      | 20 +++++++++-----------
-> >  kernel/bpf/verifier.c | 21 +++++++++++++++++++++
-> >  2 files changed, 30 insertions(+), 11 deletions(-)
+> >  kernel/bpf/btf.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > >
 > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 3dd47451f097..fae6fc24a845 100644
+> > index fae6fc24a845..a542760c807a 100644
 > > --- a/kernel/bpf/btf.c
 > > +++ b/kernel/bpf/btf.c
-> > @@ -6133,7 +6133,6 @@ static int btf_struct_walk(struct bpf_verifier_lo=
+> > @@ -6368,7 +6368,7 @@ static int btf_struct_walk(struct bpf_verifier_lo=
 g *log, const struct btf *btf,
-> >         const char *tname, *mname, *tag_value;
-> >         u32 vlen, elem_id, mid;
-> >
-> > -       *flag =3D 0;
-> >  again:
-> >         if (btf_type_is_modifier(t))
-> >                 t =3D btf_type_skip_modifiers(btf, t->type, NULL);
-> > @@ -6144,6 +6143,14 @@ static int btf_struct_walk(struct bpf_verifier_l=
-og *log, const struct btf *btf,
-> >         }
-> >
-> >         vlen =3D btf_type_vlen(t);
-> > +       if (BTF_INFO_KIND(t->info) =3D=3D BTF_KIND_UNION && vlen !=3D 1=
- && !(*flag & PTR_UNTRUSTED))
-> > +               /*
-> > +                * walking unions yields untrusted pointers
-> > +                * with exception of __bpf_md_ptr and other
-> > +                * unions with a single member
-> > +                */
-> > +               *flag |=3D PTR_UNTRUSTED;
-> > +
-> >         if (off + size > t->size) {
-> >                 /* If the last element is a variable size array, we may
-> >                  * need to relax the rule.
-> > @@ -6304,15 +6311,6 @@ static int btf_struct_walk(struct bpf_verifier_l=
-og *log, const struct btf *btf,
-> >                  * of this field or inside of this struct
+> >                  * that also allows using an array of int as a scratch
+> >                  * space. e.g. skb->cb[].
 > >                  */
-> >                 if (btf_type_is_struct(mtype)) {
-> > -                       if (BTF_INFO_KIND(mtype->info) =3D=3D BTF_KIND_=
-UNION &&
-> > -                           btf_type_vlen(mtype) !=3D 1)
-> > -                               /*
-> > -                                * walking unions yields untrusted poin=
-ters
-> > -                                * with exception of __bpf_md_ptr and o=
-ther
-> > -                                * unions with a single member
-> > -                                */
-> > -                               *flag |=3D PTR_UNTRUSTED;
-> > -
-> >                         /* our field must be inside that union or struc=
-t */
-> >                         t =3D mtype;
-> >
-> > @@ -6478,7 +6476,7 @@ bool btf_struct_ids_match(struct bpf_verifier_log=
- *log,
-> >                           bool strict)
-> >  {
-> >         const struct btf_type *type;
-> > -       enum bpf_type_flag flag;
-> > +       enum bpf_type_flag flag =3D 0;
-> >         int err;
-> >
-> >         /* Are we already done? */
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 11e54dd8b6dd..1fb0a64f5bce 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -5847,6 +5847,7 @@ static int bpf_map_direct_read(struct bpf_map *ma=
-p, int off, int size, u64 *val)
-> >  #define BTF_TYPE_SAFE_RCU(__type)  __PASTE(__type, __safe_rcu)
-> >  #define BTF_TYPE_SAFE_RCU_OR_NULL(__type)  __PASTE(__type, __safe_rcu_=
-or_null)
-> >  #define BTF_TYPE_SAFE_TRUSTED(__type)  __PASTE(__type, __safe_trusted)
-> > +#define BTF_TYPE_SAFE_TRUSTED_UNION(__type)  __PASTE(__type, __safe_tr=
-usted_union)
-> >
-> >  /*
-> >   * Allow list few fields as RCU trusted or full trusted.
-> > @@ -5914,6 +5915,11 @@ BTF_TYPE_SAFE_TRUSTED(struct socket) {
-> >         struct sock *sk;
-> >  };
-> >
-> > +/* union trusted: these fields are trusted even in a uion */
-> > +BTF_TYPE_SAFE_TRUSTED_UNION(struct sk_buff) {
-> > +       struct sock *sk;
-> > +};
+> > -               if (off + size > mtrue_end) {
+> > +               if (off + size > mtrue_end && !(*flag & PTR_UNTRUSTED))=
+ {
 >
-> Why is this needed?
+> The selftest for this condition is missing.
 
-Will discard it.
-
-> We already have:
-> BTF_TYPE_SAFE_RCU_OR_NULL(struct sk_buff) {
->         struct sock *sk;
-> };
->
-> > +       /* Clear the PTR_UNTRUSTED for the fields which are in the allo=
-w list */
-> > +       if (type_is_trusted_union(env, reg, field_name, btf_id))
-> > +               flag &=3D ~PTR_UNTRUSTED;
->
-> we cannot do this unconditionally.
-> The type_is_rcu_or_null() check applies only after
->  in_rcu_cs(env) && !type_may_be_null(reg->type)).
-
-Thanks for the explanation. Will change it.
+Will add it.
 
 --=20
 Regards
