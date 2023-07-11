@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-4744-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4745-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3FBD74E9D2
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 11:06:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA6D974E9D3
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 11:06:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4D2A1C20C49
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 09:06:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 757A1281612
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 09:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43CB1774C;
-	Tue, 11 Jul 2023 09:05:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1B81774D;
+	Tue, 11 Jul 2023 09:06:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 659EC17723
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:05:55 +0000 (UTC)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE71094
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:05:53 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-992f15c36fcso713988266b.3
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:05:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6162F17723
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:06:37 +0000 (UTC)
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A411F93
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:06:35 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b701dee4bfso88608191fa.0
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:06:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689066352; x=1691658352;
+        d=gmail.com; s=20221208; t=1689066394; x=1691658394;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=tOwJqqcL3h//feAVyfKZnaXYULeVHhWKYN6enE9C2Kk=;
-        b=GiV7Kk+FXjaM4CtcVKna+x+eEQPJwLUM/Z5R6H/8ZGMsGKsizcuYpccOBe9hKgZdoS
-         stAhrvnFb8pfrzdEbULR11r42hb8b7tFAVmKkaGVTN0rix2aw1IHUYYLytzsmhFylMBE
-         jfbncklJRFluplxm93eaoKHpCvuGGpaptQ0ypF47Sq1aZgv4V3IkZEzUwRBRY1C7P/4I
-         xNMtZxesEw8pN/w/ofq+FS/73jrOI4uMNm9Kaeg29TdRLfyXCwc+X8x+fI63aJroMY2h
-         EqVuTXkBhHf9QeSwNMfzIPSXX6jug7Vk72qSqj5uKwpg6FH5YjzQVl1Lbyj2HdvjlYUL
-         zBCA==
+        bh=x2FtHrdYVj2vdwuwBawKo32v0hRP4mFZ0EhnEv1gZ78=;
+        b=COx5aoS8TO+UcdrAk2aGm7gWoi8LCGIVaY4srFf1kTyw+RGHh8DNhnSg73csbPgL+q
+         ZvEuLDJDSNhWsgGZaauV0P31fz+FCJa4ngyKp9FtSob8frzzV7mn7POPvTlg98P7jsJq
+         vS98ybOY7Cs+oW3Mr5NK72nzOKktA8FGWhAu24VSW4RP85C5iRF9Zyxf/fY9R6aDDFQN
+         NSRvSNZUhVl1zqtnCVi7GmE4B9tTDr9lSJY3c4doFp8oWb0qQIzISaDwf2Raid9mbK0A
+         WxUGUViz0+3eFvl3zpJBj1f/jn67aR0fj6D9Cr2WHW7Wm0EKA1X3ebdhHy3WL310KzkZ
+         u+NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689066352; x=1691658352;
+        d=1e100.net; s=20221208; t=1689066394; x=1691658394;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tOwJqqcL3h//feAVyfKZnaXYULeVHhWKYN6enE9C2Kk=;
-        b=Q4Tuzc5I9SpGcH58x0UBQy2oB+lk7mAy7EzCm9u8HgWNBnAhoc6d31uEVIdyfj+0SR
-         kHzEEn6J2ukr18Jp5KjLJCnhPD3BbRLchuTKhbzw3DzykGPeS5u3TQpLlLunw3eByEsY
-         uyGcUgh7OZlDQeTCo+huqqkHVP9tzQBVKIDZezMUaDzy0/U3SZmcRHEFbaGBy7sL442y
-         xa3oKbbIqc7g37jFCD+kxmYRe/i/w5PpRcB6u1ChgXhp/gbPR4vu8RFWtvEAgWphtVij
-         XnlH6yT6FtqOzVwfvljlrpnePsq/9MaRgxFw9qW527WDE+EU+BuH1tZLKe0Yd/FTmFzw
-         UoaA==
-X-Gm-Message-State: ABy/qLbrOp+oW6uqiurOuNmK2aRCWJwrd6jJFdlISgSPGiZLt++R6iTA
-	Lb/XLZ1yzZO45zVRHv8ZRe4=
-X-Google-Smtp-Source: APBJJlHAuhydGR4W/K4uS8C5oSjZNtyQkm3rIARFe8vw2RfKFU0vZwaBM/dsBXXJsTghpFk4Zz1KJw==
-X-Received: by 2002:a17:906:7046:b0:992:ba2c:2e0c with SMTP id r6-20020a170906704600b00992ba2c2e0cmr12849433ejj.36.1689066352141;
-        Tue, 11 Jul 2023 02:05:52 -0700 (PDT)
+        bh=x2FtHrdYVj2vdwuwBawKo32v0hRP4mFZ0EhnEv1gZ78=;
+        b=UQVqSQtEUvyFA7xe06wqvtwkzFt7pdHfdzUx/7inLfNny0d54LIuCr+F2RmjzKfBvI
+         BhSf1BjPAhoJhM94ClsoRLPsHmZdgCRF+U/8gSConv9D+7i44bzEFEvYM5bA4nOKGLrO
+         8nWaWHcX6mHrSbnYtoc1r3F2nhMAW9U0WE/HXT3jigjYpaPOQj7dzWQw7SaLcucNkoea
+         5y7UmE2hbsWhK3ntW+eRAoQUcgBPy/qyD+5/8AKsKDlookrDqRoN1cBqaa7ds7harkYJ
+         u0iuE6n9WzE9J7KjAC5ph53VniCJOd4L9xT8MgXCoHL+AF2/k9CXRxAfnBEF6YNfXViL
+         LnbA==
+X-Gm-Message-State: ABy/qLaMLL9GLJBzIKqEHmxq6Xae0FWkjMRizqw68Mj8AxN2pTnzYv2e
+	ihP4BKnINB+b3FniqCHBXgA=
+X-Google-Smtp-Source: APBJJlEEch68uEs0K00fUmFetRsqpj4idW2wQv8/F0w32U9iqTFvgxGKB92XGz/MFUmFi1fMJKHRIA==
+X-Received: by 2002:a2e:8782:0:b0:2b7:243e:a2 with SMTP id n2-20020a2e8782000000b002b7243e00a2mr3064611lji.48.1689066393687;
+        Tue, 11 Jul 2023 02:06:33 -0700 (PDT)
 Received: from krava (net-109-116-206-239.cust.vodafonedsl.it. [109.116.206.239])
-        by smtp.gmail.com with ESMTPSA id c3-20020a17090603c300b009931baa0d44sm891912eja.140.2023.07.11.02.05.50
+        by smtp.gmail.com with ESMTPSA id w25-20020a170906481900b00992ddf46e65sm883469ejq.46.2023.07.11.02.06.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jul 2023 02:05:51 -0700 (PDT)
+        Tue, 11 Jul 2023 02:06:33 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 11 Jul 2023 11:05:47 +0200
+Date: Tue, 11 Jul 2023 11:06:27 +0200
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,12 +68,11 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCHv3 bpf-next 07/26] libbpf: Move elf_find_func_offset*
- functions to elf object
-Message-ID: <ZK0ba6m98n3pHAcO@krava>
+Subject: Re: [PATCHv3 bpf-next 18/26] selftests/bpf: Add uprobe_multi api test
+Message-ID: <ZK0bk5+oZ22WKtZ8@krava>
 References: <20230630083344.984305-1-jolsa@kernel.org>
- <20230630083344.984305-8-jolsa@kernel.org>
- <CAEf4BzYa+Mok-Bj2E+9EbWGPtGaMTsZ=1_VkkGzGw3yrdr+G+g@mail.gmail.com>
+ <20230630083344.984305-19-jolsa@kernel.org>
+ <CAEf4BzYhfSZgWSRSn4QUm+k0JMzqUd0R_ud5-DVL0Lm1GmvOWA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,7 +82,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYa+Mok-Bj2E+9EbWGPtGaMTsZ=1_VkkGzGw3yrdr+G+g@mail.gmail.com>
+In-Reply-To: <CAEf4BzYhfSZgWSRSn4QUm+k0JMzqUd0R_ud5-DVL0Lm1GmvOWA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -91,60 +90,98 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 06, 2023 at 04:03:22PM -0700, Andrii Nakryiko wrote:
-> On Fri, Jun 30, 2023 at 1:35 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Jul 06, 2023 at 09:32:15PM -0700, Andrii Nakryiko wrote:
+> On Fri, Jun 30, 2023 at 1:37 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > Adding new elf object that will contain elf related functions.
-> > There's no functional change.
+> > Adding uprobe_multi test for bpf_program__attach_uprobe_multi
+> > attach function.
 > >
-> > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> > Testing attachment using glob patterns and via bpf_uprobe_multi_opts
+> > paths/syms fields.
+> >
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  tools/lib/bpf/Build        |   2 +-
-> >  tools/lib/bpf/elf.c        | 198 +++++++++++++++++++++++++++++++++++++
-> >  tools/lib/bpf/libbpf.c     | 186 +---------------------------------
-> >  tools/lib/bpf/libbpf_elf.h |  11 +++
-> >  4 files changed, 211 insertions(+), 186 deletions(-)
-> >  create mode 100644 tools/lib/bpf/elf.c
-> >  create mode 100644 tools/lib/bpf/libbpf_elf.h
+> >  .../bpf/prog_tests/uprobe_multi_test.c        | 71 +++++++++++++++++++
+> >  1 file changed, 71 insertions(+)
 > >
-> > diff --git a/tools/lib/bpf/Build b/tools/lib/bpf/Build
-> > index b8b0a6369363..2d0c282c8588 100644
-> > --- a/tools/lib/bpf/Build
-> > +++ b/tools/lib/bpf/Build
-> > @@ -1,4 +1,4 @@
-> >  libbpf-y := libbpf.o bpf.o nlattr.o btf.o libbpf_errno.o str_error.o \
-> >             netlink.o bpf_prog_linfo.o libbpf_probes.o hashmap.o \
-> >             btf_dump.o ringbuf.o strset.o linker.o gen_loader.o relo_core.o \
-> > -           usdt.o zip.o
-> > +           usdt.o zip.o elf.o
-> > diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-> > new file mode 100644
-> > index 000000000000..2b62b4af28ce
-> > --- /dev/null
-> > +++ b/tools/lib/bpf/elf.c
-> > @@ -0,0 +1,198 @@
-> > +// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> > index 5cd1116bbb62..f97a68871e73 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> > @@ -69,8 +69,79 @@ static void test_skel_api(void)
+> >         uprobe_multi__destroy(skel);
+> >  }
+> >
+> > +static void
+> > +test_attach_api(const char *binary, const char *pattern, struct bpf_uprobe_multi_opts *opts)
+> > +{
+> > +       struct bpf_link *link1 = NULL, *link2 = NULL;
+> > +       struct bpf_link *link3 = NULL, *link4 = NULL;
+> > +       struct uprobe_multi *skel = NULL;
 > > +
-> > +#include <libelf.h>
-> > +#include <gelf.h>
-> > +#include <fcntl.h>
-> > +#include <linux/kernel.h>
+> > +       skel = uprobe_multi__open_and_load();
+> > +       if (!ASSERT_OK_PTR(skel, "uprobe_multi__open_and_load"))
+> > +               goto cleanup;
+> > +
+> > +       opts->retprobe = false;
+> > +       link1 = bpf_program__attach_uprobe_multi(skel->progs.test_uprobe, -1,
+> > +                                                     binary, pattern, opts);
+> > +       if (!ASSERT_OK_PTR(link1, "bpf_program__attach_uprobe_multi"))
+> > +               goto cleanup;
+> > +
+> > +       opts->retprobe = true;
+> > +       link2 = bpf_program__attach_uprobe_multi(skel->progs.test_uretprobe, -1,
+> > +                                                     binary, pattern, opts);
+> > +       if (!ASSERT_OK_PTR(link2, "bpf_program__attach_uprobe_multi_retprobe"))
+> > +               goto cleanup;
+> > +
+> > +       opts->retprobe = false;
+> > +       link3 = bpf_program__attach_uprobe_multi(skel->progs.test_uprobe_sleep, -1,
+> > +                                                     binary, pattern, opts);
+> > +       if (!ASSERT_OK_PTR(link1, "bpf_program__attach_uprobe_multi"))
 > 
-> do you know why we need linux/kernel.h include? is it to get __u32 and
-> other typedefs?
+> link3
+> 
+> > +               goto cleanup;
+> > +
+> > +       opts->retprobe = true;
+> > +       link4 = bpf_program__attach_uprobe_multi(skel->progs.test_uretprobe_sleep, -1,
+> > +                                                     binary, pattern, opts);
+> > +       if (!ASSERT_OK_PTR(link2, "bpf_program__attach_uprobe_multi_retprobe"))
+> 
+> link4
+> 
+> > +               goto cleanup;
+> > +
+> > +       uprobe_multi_test_run(skel);
+> > +
+> > +cleanup:
+> > +       bpf_link__destroy(link4);
+> > +       bpf_link__destroy(link3);
+> > +       bpf_link__destroy(link2);
+> > +       bpf_link__destroy(link1);
+> 
+> you could have used
+> skel->links.{test_uprobe,test_uretprobe,test_uprobe_sleep,test_uretprobe_sleep}
+> "containers" to not manage destruction of these links manually
 
-it's for the ARRAY_SIZE macro
+ah right, I keep forgetting we have those variables ready in there :-\
+will change
 
+thanks,
 jirka
 
 > 
+> > +       uprobe_multi__destroy(skel);
+> > +}
 > > +
-> > +#include "libbpf_elf.h"
-> > +#include "libbpf_internal.h"
-> > +#include "str_error.h"
+> > +static void test_attach_api_pattern(void)
+> > +{
+> > +       LIBBPF_OPTS(bpf_uprobe_multi_opts, opts);
 > > +
-> > +#define STRERR_BUFSIZE  128
+> > +       test_attach_api("/proc/self/exe", "uprobe_multi_func_*", &opts);
+> > +       test_attach_api("/proc/self/exe", "uprobe_multi_func_?", &opts);
+> > +}
 > > +
 > 
 > [...]
