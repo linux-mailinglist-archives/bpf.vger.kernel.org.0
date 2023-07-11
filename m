@@ -1,82 +1,153 @@
-Return-Path: <bpf+bounces-4785-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4786-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E56C74F69C
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 19:10:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4417E74F722
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 19:23:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEFF51C20CFE
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 17:10:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F32EA2818E6
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 17:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6EF31DDEB;
-	Tue, 11 Jul 2023 17:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31CDF1E516;
+	Tue, 11 Jul 2023 17:23:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C322C168CE
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 17:10:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 36AD4C433C9;
-	Tue, 11 Jul 2023 17:10:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689095421;
-	bh=KuzTMEs7J5RjDnJEbEDpEyUV5/7ysZRwvN6afL+U5LE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=PdQqXKZnuWXKDD3Fe1sfJ9v66Kri9C2SwsolQ7rwWYc7M4TE02pWeVr2cIqqqrXyn
-	 J0uOkzpb6nw6X0pbGp4A1ejtIwa8uJ4w6I5IrswPjPxWb+NGus274rBb6n4XK5Dj4h
-	 tAHFp/wReRruVOcJgsLnlbxSb/Ge6Dcn8HegE1ESWZQDgddvngdTDELODdgmPWQomj
-	 S/5JxCjTTheLwq6xTuHaiIqv+4exsPV1vZSqekhaMEiIXSVG2AFe5tZzR2QQzYlTbP
-	 F7smMHBF910quRsYb0lIibpeWceMjAnsPcto6eafUwXmxc3aN1CxKeyUOnvkbSfXqU
-	 zYRfOmXlAMGOw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1187CE5381F;
-	Tue, 11 Jul 2023 17:10:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F157A17FE0
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 17:23:07 +0000 (UTC)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED095170A;
+	Tue, 11 Jul 2023 10:22:42 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.nyi.internal (Postfix) with ESMTP id 0EA415C007D;
+	Tue, 11 Jul 2023 13:22:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 11 Jul 2023 13:22:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+	1689096142; x=1689182542; bh=WVuQD8F16q+8KpkRXUZfCZXz1Vbx2RrVytD
+	1O4kCmYE=; b=Z9nqXzX77m6gQD3BPliH5EP/1qdo75FV8gW/EU/f13H7zNT7JQt
+	8PZC0CZLyIlDTCrBj/Smo0OqcndyK1K5JHlzClVY+s1Mplvu16IIMUE6rITaxtMV
+	8oJ3mevxtINrvAKzDZtBfNeebRLgkKXZH4gK1QaKyqxVeclkFAHA86cC+E7haWyf
+	UDLUjZx0zDEzgPlAjiHGn8Bk0a8sWLe8SmeAgngNQbjSIV0N56edv9V8lzpugg21
+	EMOuIDwxx2rSwNVQtiBHP6B4SOBRetiLS0Qwu4jK7+ggLy16q7BuzKycbWEnZjdd
+	M/+PcitRiR4Nb9jxg9tRbcupdu+1k2jWiDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1689096142; x=1689182542; bh=WVuQD8F16q+8KpkRXUZfCZXz1Vbx2RrVytD
+	1O4kCmYE=; b=jCe2kUA8fhmQT2/vhwHddfoBVjVRMZXXCVH35gCyMesgcvm3T4u
+	295KaMluRX/o4yOuK1rhOqcpZCPsohH+VJMgAXV1ISHl/BAZ2o83dmmKr76H53az
+	wKExqr6xxi3C1sXTn+6v7QoBmqTaruZwf+verZsvBs03ShG0CnlhYR7PZUbR9XXT
+	etxxz0ySlDmc6b7VrEiPV2I1vlzGxIi/e2sU2HctVSIsCl9d+49CoBA0ogijWAu8
+	yB0Nb8trWqr1vvJAafhQ/SeZsfLDk2+DDC1FZwmQeJzhxYFTPeJmCDoGgvpWbabJ
+	uWDTQnoFgaRiWWSXINj16+76u1wLEBQfLHg==
+X-ME-Sender: <xms:y4-tZPpEVFpxwk6dps3xmwBpPlKEtHdoeOXivrQAoKI4509t3cUtHg>
+    <xme:y4-tZJoWSNYc2yfQPtf0NtEFc1t3P7UydMvfizEOpktXJoAI-RBpy73dUFXTxNLuU
+    Q2GbFAYnadUHMO57Q>
+X-ME-Received: <xmr:y4-tZMNTWFrU_jXup6FkAOI9wterJxzWU5y6iMp0Tw4TA66lygeO4THXJwvd0RI_2VybHBmpIcZNVFfQoIz8JhEOKrSnwmMPhP8e>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfedtgdduudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
+    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
+    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:y4-tZC5IhGm4l5cfzU-3zK9rCyuReZsZpGXIZ6836n1PbDDl_EFjTg>
+    <xmx:y4-tZO7T13BUjKnijF_OmGDSrJm1UsEaYBDMb_rHp3oSqnKPHJaX1g>
+    <xmx:y4-tZKismzi8TrVmXw2jUjgQvq37iNG_n8gvx9BejqR2GU7JxLU1dg>
+    <xmx:zo-tZMvPZYVb-B14YtJrcub1W-VeXz_BJF9tgIaq4eiidV6u-kv5Qg>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 11 Jul 2023 13:22:18 -0400 (EDT)
+Date: Tue, 11 Jul 2023 11:22:17 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Andrea Righi <andrea.righi@canonical.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
+	Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	llvm@lists.linux.dev, bpf <bpf@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH] btf, scripts: rust: drop is_rust_module.sh
+Message-ID: <56yvbhhiij3t5tsvnjcrrpbpvnezi2bm2w5c5xkrvwgix2arq2@ku3curqk7b5u>
+References: <20230704052136.155445-1-andrea.righi@canonical.com>
+ <CANiq72k6um58AAydgkzhkmAdd8t1quzeGaPsR7-pS_ZXYf0-YQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] samples/bpf: syscall_tp: aarch64 no open syscall
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <168909542106.17152.8261497932587649159.git-patchwork-notify@kernel.org>
-Date: Tue, 11 Jul 2023 17:10:21 +0000
-References: <tencent_C6AD4AD72BEFE813228FC188905F96C6A506@qq.com>
-In-Reply-To: <tencent_C6AD4AD72BEFE813228FC188905F96C6A506@qq.com>
-To: Rong Tao <rtoax@foxmail.com>
-Cc: ast@kernel.org, rongtao@cestc.cn, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <CANiq72k6um58AAydgkzhkmAdd8t1quzeGaPsR7-pS_ZXYf0-YQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
+Hi Miguel, Andrea,
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Tue, 11 Jul 2023 19:14:59 +0800 you wrote:
-> From: Rong Tao <rongtao@cestc.cn>
+On Tue, Jul 11, 2023 at 04:39:27PM +0200, Miguel Ojeda wrote:
+> On Tue, Jul 4, 2023 at 7:21 AM Andrea Righi <andrea.righi@canonical.com> wrote:
+> >
+> > With commit c1177979af9c ("btf, scripts: Exclude Rust CUs with pahole")
+> > we are now able to use pahole directly to identify Rust compilation
+> > units (CUs) and exclude them from generating BTF debugging information
+> > (when DEBUG_INFO_BTF is enabled).
+> >
+> > And if pahole doesn't support the --lang-exclude flag, we can't enable
+> > both RUST and DEBUG_INFO_BTF at the same time.
+> >
+> > So, in any case, the script is_rust_module.sh is just redundant and we
+> > can drop it.
+> >
+> > NOTE: we may also be able to drop the "Rust loadable module" mark
+> > inside Rust modules, but it seems safer to keep it for now to make sure
+> > we are not breaking any external tool that may potentially rely on it.
 > 
-> __NR_open never exist on AArch64.
+> Just to recall the history of these changes:
 > 
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
->  samples/bpf/syscall_tp_kern.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>   - The script got added in order to skip the BTF generation in the
+> `BTF [M]` step (under `DEBUG_INFO_BTF_MODULES`, which depends on
+> `DEBUG_INFO_BTF`).
+> 
+>   - A few months later, it was noticed that C modules couldn't be
+> loaded if Rust was enabled, due to the base BTF info in `vmlinux`.
+> That triggered the eventual addition of `--lang_exclude=` to `pahole`,
+> but meanwhile, we made `DEBUG_INFO_BTF` and `RUST` exclusive.
+> 
+>   - Now, this patch removes the script because having a newer `pahole`
+> also correctly skips the Rust CUs in the `BTF [M]` steps (i.e. and not
+> just the `vmlinux` one), since we pass `--lang_exclude=` to both cases
+> (`link-vmlinux.sh` and `Makefile.modfinal`), if I understand correctly
+> (the script could, in principle, have been removed even before
+> `pahole` got the new feature, given the exclusivity of the options).
+> 
+> If this is all correct, then the patch looks good to me. I am Cc'ing
+> Arnaldo, Martin and the BPF list.
 
-Here is the summary with links:
-  - [bpf-next] samples/bpf: syscall_tp: aarch64 no open syscall
-    https://git.kernel.org/bpf/bpf-next/c/07018b57066e
+I believe I authored the original script. This all sounds right to me.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Acked-by: Daniel Xu <dxu@dxuuu.xyz>
 
-
+Thanks,
+Daniel
 
