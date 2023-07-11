@@ -1,184 +1,219 @@
-Return-Path: <bpf+bounces-4809-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4810-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA16274FBD4
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 01:25:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3177074FBD5
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 01:25:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18B301C20E4C
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 23:25:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87CD82817FD
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 23:25:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73C8B1ED52;
-	Tue, 11 Jul 2023 23:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8471ED49;
+	Tue, 11 Jul 2023 23:25:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EDD1ED4D
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 23:25:11 +0000 (UTC)
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5865E7A
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 16:25:07 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-262cc036fa4so3119431a91.3
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 16:25:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018891ED32
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 23:25:28 +0000 (UTC)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BA1E7A;
+	Tue, 11 Jul 2023 16:25:27 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-66f3fc56ef4so100402b3a.0;
+        Tue, 11 Jul 2023 16:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689117907; x=1691709907;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vjl/p6TfEuAEGTGhoCvTJev9/k2QieEkED5ztCWsQvw=;
-        b=eeSYzPYXng3ALfv56WXNa7sBb5UZb+g2FuutmlZDYec75/hK07M4fMAR6badnB+c4Z
-         xqOaPnHDsH2re48KWzUNGaeLvdZZ6RqjhnOyFyR90CW7MPbGIlqgpiZ2rLYZ+QXZouDP
-         T6bBZghjTl+a6bOZhz8uR8lLEzhcra8hFQgKUXQ4T6/RkCMQxTYdbfEhuj3bQLafR/xP
-         Rju8eWKzOibbZPQkBE+sKMBFfOVK/OEdXKmmBMd9nHSOUex4o/8r1L7nLGLg/qCcpETF
-         DDTcTUogK6YVLwZv8UgS/+gWsr0ru8eYN2zcKl934TKbDhstc9pto9mJE7GtEfCYj+7c
-         vxMw==
+        d=gmail.com; s=20221208; t=1689117927; x=1691709927;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hdleDO2lGPE6ba8t/zdX0KO9d2+dLQJATvHIoa7Lxd4=;
+        b=rwLJgd8R/3kKp0BUqh3W2oAr9amN+1A9VTuiPjK+xPcWQoYF2Jw1HMlkQxfPJEynd3
+         sl2cl16QanqVVxWflxMxEFupw45KsuT9Ylk7w27qU9j8UUvnpqikwcy1xmmxGuJZ1jS0
+         1FAaZQdAegU9ckvqHj8LNFjk2md37xhBC7I6Y4+8CZlSpad3PLuqolVeBHfQ+1+x5lNv
+         J1M4jhIctGYb1rr0STCqvAg9hBbG3hZe+dDcOokV+TcnNHCjpbDoTl7AbhHo4ThtZ/Jw
+         digQYlyILNcLfqTlaOlSe0lSoQIDidWvYWpCpJe96y11yt9G/QzK6VYUm+ER9JeEHl1p
+         JFVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689117907; x=1691709907;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vjl/p6TfEuAEGTGhoCvTJev9/k2QieEkED5ztCWsQvw=;
-        b=RfP4AtjuVqCcDv7Ahy4HFejt71P+faUzau3oLo7uLlz1kbi11tTSIsMUPolWyeVKte
-         FvbB/2qFApZlyqsSMMHSMAqpnsu/NPyUY3yCsUWiKXS1iVHXme8xlHYEhMXmldfSjliC
-         eUChDYvFqenjNjWU++MWLVXWV1mdPpGsjAP7kjEOyd/J/YOntYNXHgOrTtgNLtTjxJDN
-         QmIjnLXV2w6bIrmHngCUpqY+jxY5CzCuwidwbfAYEirMK7LT859FV/G/NxQcPHvBdg2Z
-         ad48oJrxfwH+taaO/G1Dq07zNrw2/OORzU2gX5XP+/9MxQMoBlXl2Um/5CXc9aKyk/XK
-         VvMA==
-X-Gm-Message-State: ABy/qLamZUWFDsdjqh2V7B3dZNAan4ZLaJccnVRVA5wEkV7GoIwjPuAu
-	TwVa0NYaLAzw+Ee4hlMpgRlPRin95m/V21hg3ngqLA==
-X-Google-Smtp-Source: APBJJlFbOGo5te+kAJKnSNfpGTq/05Y/zj9ffclbvX7sqta/MhhloEK0KgQmWnotVpW76yAMJHFd1tpddN6ypahu/50=
-X-Received: by 2002:a17:90b:906:b0:263:71f0:1569 with SMTP id
- bo6-20020a17090b090600b0026371f01569mr12562030pjb.3.1689117907240; Tue, 11
- Jul 2023 16:25:07 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689117927; x=1691709927;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hdleDO2lGPE6ba8t/zdX0KO9d2+dLQJATvHIoa7Lxd4=;
+        b=A9H9jXmJbHOxMp9mCjo/slXz18pU9r8cKye6tdYeLuOQXNvPmgpFISq1zADs2ZwvR2
+         9ddFPYrd2I67X91Cv9mwbQMMbPs9jRwD34llqZHhe96hTg3dTcA5AotByCshZeUftozD
+         e6PenHsNJz8+Olc0ibHAv07YcFjHzs1S5hU9GkyL192q8Pdb4dzBEPawyR5DRXi+a6nJ
+         xc/OxdZrZQVlfykc1aDdX4b7uxhBfOFqq5I1D3NMBLNuR8SVkuRhp3gC37SRX2mX7PhD
+         +gua64zjGyDosbM9SXJBHjHUSyjzu4TrHc/RFcx3uC13wcSq2GcUw7lqtNXKpFaOOb0B
+         Ur8g==
+X-Gm-Message-State: ABy/qLYulJBwr8QTlVbjlP1arCMkZDoru7G6D98bC7sQvuNxdwGF87h9
+	AQBg0IPjaNfWKa++brDSUX8=
+X-Google-Smtp-Source: APBJJlGpQXjSLE0Jyq+lKWjQYjZqbz505VPDnZm5nDbz0n7hDJ3Jqg0y7OjpZYQiPGhUH38E5bk9Tg==
+X-Received: by 2002:a17:902:f546:b0:1b9:c61c:4c01 with SMTP id h6-20020a170902f54600b001b9c61c4c01mr336209plf.9.1689117926782;
+        Tue, 11 Jul 2023 16:25:26 -0700 (PDT)
+Received: from macbook-pro-8.dhcp.thefacebook.com ([2620:10d:c090:400::5:f81])
+        by smtp.gmail.com with ESMTPSA id t7-20020a1709028c8700b001b51b3e84cesm2486527plo.166.2023.07.11.16.25.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jul 2023 16:25:26 -0700 (PDT)
+Date: Tue, 11 Jul 2023 16:25:22 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: menglong8.dong@gmail.com
+Cc: yhs@meta.com, daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, dsahern@kernel.org, jolsa@kernel.org,
+	x86@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Menglong Dong <imagedong@tencent.com>
+Subject: Re: [PATCH RESEND bpf-next v8 3/3] selftests/bpf: add testcase for
+ TRACING with 6+ arguments
+Message-ID: <20230711232522.54dbqdxkfbjvbvgi@macbook-pro-8.dhcp.thefacebook.com>
+References: <20230710104834.947884-1-imagedong@tencent.com>
+ <20230710104834.947884-4-imagedong@tencent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230707193006.1309662-1-sdf@google.com> <20230707193006.1309662-10-sdf@google.com>
- <20230711225657.kuvkil776fajonl5@MacBook-Pro-8.local>
-In-Reply-To: <20230711225657.kuvkil776fajonl5@MacBook-Pro-8.local>
-From: Stanislav Fomichev <sdf@google.com>
-Date: Tue, 11 Jul 2023 16:24:54 -0700
-Message-ID: <CAKH8qBtawUTjFQ=hhTzXa2zTBwOpxurjhduxZV+eUg8rnJUJVw@mail.gmail.com>
-Subject: Re: [RFC bpf-next v3 09/14] net/mlx5e: Implement devtx kfuncs
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, willemb@google.com, 
-	dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org, 
-	maciej.fijalkowski@intel.com, hawk@kernel.org, netdev@vger.kernel.org, 
-	xdp-hints@xdp-project.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230710104834.947884-4-imagedong@tencent.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 11, 2023 at 3:57=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Jul 07, 2023 at 12:30:01PM -0700, Stanislav Fomichev wrote:
-> > +
-> > +static int mlx5e_devtx_request_l4_checksum(const struct devtx_ctx *_ct=
-x,
-> > +                                        u16 csum_start, u16 csum_offse=
-t)
-> > +{
-> > +     const struct mlx5e_devtx_ctx *ctx =3D (void *)_ctx;
-> > +     struct mlx5_wqe_eth_seg *eseg;
-> > +
-> > +     if (unlikely(!ctx->wqe))
-> > +             return -ENODATA;
-> > +
-> > +     eseg =3D &ctx->wqe->eth;
-> > +
-> > +     switch (csum_offset) {
-> > +     case sizeof(struct ethhdr) + sizeof(struct iphdr) + offsetof(stru=
-ct udphdr, check):
-> > +     case sizeof(struct ethhdr) + sizeof(struct ipv6hdr) + offsetof(st=
-ruct udphdr, check):
-> > +             /* Looks like HW/FW is doing parsing, so offsets are larg=
-ely ignored. */
-> > +             eseg->cs_flags =3D MLX5_ETH_WQE_L3_CSUM | MLX5_ETH_WQE_L4=
-_CSUM;
-> > +             break;
-> > +     default:
-> > +             return -EINVAL;
-> > +     }
->
-> I think this proves my point: csum is not generalizable even across veth =
-and mlx5.
-> Above is a square peg that tries to fit csum_start/offset api (that makes=
- sense from SW pov)
-> into HW that has different ideas about csum-ing.
->
-> Here is what mlx5 does:
-> mlx5e_txwqe_build_eseg_csum(struct mlx5e_txqsq *sq, struct sk_buff *skb,
->                             struct mlx5e_accel_tx_state *accel,
->                             struct mlx5_wqe_eth_seg *eseg)
-> {
->         if (unlikely(mlx5e_ipsec_txwqe_build_eseg_csum(sq, skb, eseg)))
->                 return;
->
->         if (likely(skb->ip_summed =3D=3D CHECKSUM_PARTIAL)) {
->                 eseg->cs_flags =3D MLX5_ETH_WQE_L3_CSUM;
->                 if (skb->encapsulation) {
->                         eseg->cs_flags |=3D MLX5_ETH_WQE_L3_INNER_CSUM |
->                                           MLX5_ETH_WQE_L4_INNER_CSUM;
->                         sq->stats->csum_partial_inner++;
->                 } else {
->                         eseg->cs_flags |=3D MLX5_ETH_WQE_L4_CSUM;
->                         sq->stats->csum_partial++;
->                 }
->
-> How would you generalize that into csum api that will work across NICs ?
->
-> My answer stands: you cannot.
->
-> My proposal again:
-> add driver specifc kfuncs and hooks for things like csum.
+On Mon, Jul 10, 2023 at 06:48:34PM +0800, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <imagedong@tencent.com>
+> 
+> Add fentry_many_args.c and fexit_many_args.c to test the fentry/fexit
+> with 7/11 arguments. As this feature is not supported by arm64 yet, we
+> disable these testcases for arm64 in DENYLIST.aarch64. We can combine
+> them with fentry_test.c/fexit_test.c when arm64 is supported too.
+> 
+> Correspondingly, add bpf_testmod_fentry_test7() and
+> bpf_testmod_fentry_test11() to bpf_testmod.c
+> 
+> Meanwhile, add bpf_modify_return_test2() to test_run.c to test the
+> MODIFY_RETURN with 7 arguments.
+> 
+> Add bpf_testmod_test_struct_arg_7/bpf_testmod_test_struct_arg_7 in
+> bpf_testmod.c to test the struct in the arguments.
+> 
+> And the testcases passed on x86_64:
+> 
+> ./test_progs -t fexit
+> Summary: 5/14 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> ./test_progs -t fentry
+> Summary: 3/2 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> ./test_progs -t modify_return
+> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> ./test_progs -t tracing_struct
+> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
+> ---
+> v8:
+> - split the testcases, and add fentry_many_args/fexit_many_args to
+>   DENYLIST.aarch64
+> v6:
+> - add testcases to tracing_struct.c instead of fentry_test.c and
+>   fexit_test.c
+> v5:
+> - add testcases for MODIFY_RETURN
+> v4:
+> - use different type for args in bpf_testmod_fentry_test{7,12}
+> - add testcase for grabage values in ctx
+> v3:
+> - move bpf_fentry_test{7,12} to bpf_testmod.c and rename them to
+>   bpf_testmod_fentry_test{7,12} meanwhile
+> - get return value by bpf_get_func_ret() in
+>   "fexit/bpf_testmod_fentry_test12", as we don't change ___bpf_ctx_cast()
+>   in this version
+> ---
+>  net/bpf/test_run.c                            | 23 ++++++--
+>  tools/testing/selftests/bpf/DENYLIST.aarch64  |  2 +
+>  .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 49 ++++++++++++++++-
+>  .../selftests/bpf/prog_tests/fentry_test.c    | 43 +++++++++++++--
+>  .../selftests/bpf/prog_tests/fexit_test.c     | 43 +++++++++++++--
+>  .../selftests/bpf/prog_tests/modify_return.c  | 20 ++++++-
+>  .../selftests/bpf/prog_tests/tracing_struct.c | 19 +++++++
+>  .../selftests/bpf/progs/fentry_many_args.c    | 39 ++++++++++++++
+>  .../selftests/bpf/progs/fexit_many_args.c     | 40 ++++++++++++++
+>  .../selftests/bpf/progs/modify_return.c       | 40 ++++++++++++++
+>  .../selftests/bpf/progs/tracing_struct.c      | 54 +++++++++++++++++++
+>  11 files changed, 358 insertions(+), 14 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/fentry_many_args.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/fexit_many_args.c
+> 
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index 63b11f7a5392..1c59fa60077b 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -565,6 +565,13 @@ __bpf_kfunc int bpf_modify_return_test(int a, int *b)
+>  	return a + *b;
+>  }
+>  
+> +__bpf_kfunc int bpf_modify_return_test2(int a, int *b, short c, int d,
+> +					void *e, char f, int g)
+> +{
+> +	*b += 1;
+> +	return a + *b + c + d + (long)e + f + g;
+> +}
+> +
+>  int noinline bpf_fentry_shadow_test(int a)
+>  {
+>  	return a + 1;
+> @@ -600,9 +607,13 @@ __diag_pop();
+>  
+>  BTF_SET8_START(bpf_test_modify_return_ids)
+>  BTF_ID_FLAGS(func, bpf_modify_return_test)
+> +BTF_ID_FLAGS(func, bpf_modify_return_test2)
+>  BTF_ID_FLAGS(func, bpf_fentry_test1, KF_SLEEPABLE)
+>  BTF_SET8_END(bpf_test_modify_return_ids)
+>  
+> +BTF_ID_LIST(bpf_modify_return_test_id)
+> +BTF_ID(func, bpf_modify_return_test)
+> +
+>  static const struct btf_kfunc_id_set bpf_test_modify_return_set = {
+>  	.owner = THIS_MODULE,
+>  	.set   = &bpf_test_modify_return_ids,
+> @@ -665,9 +676,15 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
+>  			goto out;
+>  		break;
+>  	case BPF_MODIFY_RETURN:
+> -		ret = bpf_modify_return_test(1, &b);
+> -		if (b != 2)
+> -			side_effect = 1;
+> +		if (prog->aux->attach_btf_id == *bpf_modify_return_test_id) {
+> +			ret = bpf_modify_return_test(1, &b);
+> +			if (b != 2)
+> +				side_effect = 1;
+> +		} else {
+> +			ret = bpf_modify_return_test2(1, &b, 3, 4, (void *)5, 6, 7);
+> +			if (b != 2)
+> +				side_effect = 1;
 
-I do see your point, but to also give you my perspective: I have no
-clue what those _CSUM tx bits do (as a non-mlx employee). And what
-kind of packets they support (initial patch doesn't give any info).
-We can definitely expose mlx5 specific request_l4_checksum(bool encap)
-which does things similar to mlx5e_txwqe_build_eseg_csum, but then,
-what does it _actually_ do? It obviously can't checksum arbitrary
-packet formats (because it has this inner/outer selection bit), so
-there is really no way for me to provide a per-driver kfunc api. Maybe
-the vendors can?
+Patches 1 and 2 look good, but I don't like where this check will lead us:
+attach_btf_id == *bpf_modify_return_test_id...
 
-So having csum_start/csum_offset abstraction which works with fixed
-offsets seems like at least it correctly sets the expectation for BPF
-program writers.
-The vendors are already supposed to conform to this start/offset API for sk=
-b.
+When Jiri did a conversion of all test func into bpf_testmod.ko I forgot
+why we couldn't move fmod_ret tests as well.
+Whatever it was the extra attach_btf_id check will make it worse.
 
-But back to your point: should we maybe try to meet somewhere in the middle=
-?
-1. We try to provide "generic" offload kfuncs; for mlx5, we'll have
-this mlx5e_devtx_request_l4_checksum which works for fixed offsets
-2. We also let vendors do device-specific "extensions" where devices
-deviate too much: bpf_request_RAW_mlx5e_l4_checksum(bool encap)
-This can give BPF authors opportunity to write somewhat portable
-programs and also use vendor specific apis when/if needed.
-
-I think we had a similar idea for rx side: have generic kfuncs, but
-also let vendors experiment with custom kfuncs if they want to
-differentiate.
-WDYT? Can it give us the best things from both sides?
-
-> Kuba,
-> since you nacked driver specific stuff please suggest a way to unblock th=
-is stalemate.
+For now please think of a way to test fmod_ret when bpf_prog_test_run_tracing()
+does something unconditional like:
+	ret = bpf_modify_return_test(1, &b);
+	if (b != 2)
+		side_effect++;
+	ret = bpf_modify_return_test2(1, &b, 3, 4, (void *)5, 6, 7);
+	if (b != 2)
+		side_effect++;
 
