@@ -1,63 +1,64 @@
-Return-Path: <bpf+bounces-4737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EB8274E9C3
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 11:03:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EBC474E9C6
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 11:03:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD7612814A1
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 09:03:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47E401C20C49
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 09:03:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9A817745;
-	Tue, 11 Jul 2023 09:03:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA91E17741;
+	Tue, 11 Jul 2023 09:03:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 636D017733
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:03:17 +0000 (UTC)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B749794
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:03:15 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-991ef0b464cso1314667266b.0
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:03:15 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED2217731
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 09:03:38 +0000 (UTC)
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0AE83
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:03:36 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-992acf67388so627562666b.1
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:03:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689066194; x=1691658194;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ma2e/RCUYr5EiszcCzu46eQ5bR8ctgfsc6lXBqOaPN8=;
-        b=Cd4S8RkrI+pY7p4Z6s2RhrRgTB6XatYLosSbW9sutfshKWfk58SMUhTSYTrpoYXSqV
-         BD602100o++582XCVp5+ahf30UIMc946c//M/+ULaqKfKp/i8S95XY84D9Bt8nV/OrpL
-         PCc52QnAwS4pG+iRVlW8HQ8ae0gE+T5HqCgPHRGHUqXxpmseEagnfujRDK6TDiYf/yIR
-         DHOojGUrp+bQIeN5KiuqzwtEmFOwu3JfWMyG4lWSh774E/eXKx/pdJWqUVIifrQj3SPV
-         HCxNhA9GPch4aYHKwjSW2CtZWLuZFv5omPsjZyPJ0mI9XyijhbpKfTQrTkEpxj4rT3j9
-         bYlQ==
+        d=gmail.com; s=20221208; t=1689066215; x=1691658215;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=A6BNMWHnghYazT7P+ILrQmUp5DK6NMw3ZlVB9TutqRc=;
+        b=MLmyaf+3jpO7uugakS+f+ngFf0uEfwfx1Z5+ASCx+upJzZfz7yWWotbcRj9nyRvcwI
+         mL049oGh1Ypfk5pBGMqbuVbzXhHgon8NCbgustoVV85ggIrAHqFl3ZRiYWVXzw6OJeF+
+         Vw2kmdYkzZ3M1YnWVOHLYky0QW8KOHlWeTXuLM3l+1e3kzu9sXQLXMEY0TYPlFppScAd
+         IoS11yMrqQXN+eaYW0R8zOx9RP3is94WcPwVAohgzM27fNjSMdZzkY7ZyHaRrdZx8+0g
+         z3lmzGRfNHe9BmkdDDIcN3Q16tLnWt7RKsOYX259+L5NGPRggQ3q/X3shMIYl5SgkLB3
+         Zu3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689066194; x=1691658194;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ma2e/RCUYr5EiszcCzu46eQ5bR8ctgfsc6lXBqOaPN8=;
-        b=Kr5m/5EvsXyJstm85K0ijhr3R1FIV26oRJiyTvXnkr3wk/Zhg4pdyb7SIyEV/FvvYE
-         eF5NLG6JWjywmDcKfeMO+J3kkSpz7OLi3PgXteg2jqJpI6y7C02uNKJPbYeOodQwc+NM
-         ZO0cqU4Jh8+rrTM2xlMPUZmivlsEHSSY93um0ub/gW6BZnque3ehq9/P8AkAqcS9EL2L
-         mxKIPmgK44OB0AOVHDvBoCuKuEs7Le+VAud8XFnym+zWWr/YZyl0kb/f14+grJlTE3VX
-         izSZ03Y5WxtDwbcGkQWWF0tZYsnj6YdnBXw/Y+TpSl9XrjfeDeJQ/xRKOIlFgiRu0gqB
-         xFdw==
-X-Gm-Message-State: ABy/qLY5JNwhSNrxrLsh++fUT4TbqdC5gCi1fdcwDPxh1Jy/7+uLkqEW
-	RI1N4QCT30cARSXIym5GJqA=
-X-Google-Smtp-Source: APBJJlEPesscJq6yYhS0VMVJALjZcx4avypVKUFxVX2XN/0xr1BGduOAUvdruRgiPKrQKkgp1mLqzA==
-X-Received: by 2002:a17:906:6a1b:b0:98f:450e:fc20 with SMTP id qw27-20020a1709066a1b00b0098f450efc20mr22632823ejc.17.1689066194033;
-        Tue, 11 Jul 2023 02:03:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689066215; x=1691658215;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A6BNMWHnghYazT7P+ILrQmUp5DK6NMw3ZlVB9TutqRc=;
+        b=eLrU+1+qikmzDDT5xiO/sl+DQt8m9n8OvR71+CZLcW+GsqtBfZNJQG15VHuwPdMN+f
+         XpHBJhxsY2HyZ0CehIt6qy7cjCTi+CwS8gJqLFUe0Bdq89IGhiMI48WgpCpdTbc1oYMW
+         OY+QsKJjjzo9MXQxOX7+4vNwFD/iPObmMTn+rUBQCb8uBvjTy65QCZRI6Y687aiKZhtF
+         FFxYz3k4pN3Alc+Sgw3Gg/06dpcrL5Ds0F3ZPWsttHBYv7TwWxH8qFi0n9GOSFSAPhA2
+         iiNVL6/kCHta+5fv1RLsZLbz1t5fRAaQ431Y+6cXHYn8D0gF5Xs2HMxwas9UI8gQLHOZ
+         9KEg==
+X-Gm-Message-State: ABy/qLbh/SmxNZQ+dXUs21cpNV3p+tO9KUqk3OkV4zezqKHKMctiHeoF
+	cRliWAn7ZNGQqzbOxhJhKB8=
+X-Google-Smtp-Source: APBJJlG8O56ouZGALAPFqyoV0MaKJ/TpAaI79lAF6k4a9bcEjYJsqnFs38rJKJatt34qnCyU1QB2bw==
+X-Received: by 2002:a17:906:7a59:b0:993:eddd:6df0 with SMTP id i25-20020a1709067a5900b00993eddd6df0mr9842699ejo.28.1689066215135;
+        Tue, 11 Jul 2023 02:03:35 -0700 (PDT)
 Received: from krava (net-109-116-206-239.cust.vodafonedsl.it. [109.116.206.239])
-        by smtp.gmail.com with ESMTPSA id z3-20020a1709064e0300b00992afee724bsm873465eju.76.2023.07.11.02.03.12
+        by smtp.gmail.com with ESMTPSA id h19-20020a170906719300b00993cc1242d4sm865606ejk.151.2023.07.11.02.03.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jul 2023 02:03:13 -0700 (PDT)
+        Tue, 11 Jul 2023 02:03:34 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 11 Jul 2023 11:03:10 +0200
+Date: Tue, 11 Jul 2023 11:03:31 +0200
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -67,233 +68,150 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCHv3 bpf-next 09/26] libbpf: Add elf symbol iterator
-Message-ID: <ZK0azis5l/m+drtd@krava>
+Subject: Re: [PATCHv3 bpf-next 15/26] libbpf: Add uprobe multi link detection
+Message-ID: <ZK0a4xXtL1oPQ37s@krava>
 References: <20230630083344.984305-1-jolsa@kernel.org>
- <20230630083344.984305-10-jolsa@kernel.org>
- <CAEf4BzbeyXniXfYoE6e8=3wLJ+ikN+pMrByJqwjjTzkHwebp6w@mail.gmail.com>
+ <20230630083344.984305-16-jolsa@kernel.org>
+ <CAEf4BzZtmfxFrvvEG+7ZhsSnDGR20u+bjjbQsG5pn0zDQZC9yg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbeyXniXfYoE6e8=3wLJ+ikN+pMrByJqwjjTzkHwebp6w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZtmfxFrvvEG+7ZhsSnDGR20u+bjjbQsG5pn0zDQZC9yg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 06, 2023 at 04:24:48PM -0700, Andrii Nakryiko wrote:
-
-SNIP
-
-> > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+On Thu, Jul 06, 2023 at 09:20:42PM -0700, Andrii Nakryiko wrote:
+> On Fri, Jun 30, 2023 at 1:36 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Adding uprobe-multi link detection. It will be used later in
+> > bpf_program__attach_usdt function to check and use uprobe_multi
+> > link over standard uprobe links.
+> >
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  tools/lib/bpf/elf.c | 178 +++++++++++++++++++++++++++++---------------
-> >  1 file changed, 117 insertions(+), 61 deletions(-)
+> >  tools/lib/bpf/libbpf.c          | 35 +++++++++++++++++++++++++++++++++
+> >  tools/lib/bpf/libbpf_internal.h |  2 ++
+> >  2 files changed, 37 insertions(+)
 > >
-> 
-> A bunch of nits, but overall looks good. Please address nits, and add my ack
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> 
-> > diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-> > index 74e35071d22e..fcce4bd2478f 100644
-> > --- a/tools/lib/bpf/elf.c
-> > +++ b/tools/lib/bpf/elf.c
-> > @@ -59,6 +59,108 @@ static Elf_Scn *elf_find_next_scn_by_type(Elf *elf, int sh_type, Elf_Scn *scn)
-> >         return NULL;
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 06092b9752f1..4f61f9dc1748 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -4817,6 +4817,38 @@ static int probe_perf_link(void)
+> >         return link_fd < 0 && err == -EBADF;
 > >  }
 > >
-> > +struct elf_sym {
-> > +       const char *name;
-> > +       GElf_Sym sym;
-> > +       GElf_Shdr sh;
-> > +};
-> > +
-> 
-> if we want to use elf_sym_iter outside of elf.c, this should be in
-> libbpf_internal.h?
-
-yes eventually, but all the helper functions using elf_sym_iter that
-I added later are in elf.c, so there's no need atm
-
-SNIP
-
-> > +
-> > +static struct elf_sym *elf_sym_iter_next(struct elf_sym_iter *iter)
+> > +static int probe_uprobe_multi_link(void)
 > > +{
-> > +       struct elf_sym *ret = &iter->sym;
-> > +       GElf_Sym *sym = &ret->sym;
-> > +       const char *name = NULL;
-> > +       Elf_Scn *sym_scn;
-> > +       size_t idx;
+> > +       LIBBPF_OPTS(bpf_prog_load_opts, load_opts,
+> > +               .expected_attach_type = BPF_TRACE_UPROBE_MULTI,
+> > +       );
+> > +       LIBBPF_OPTS(bpf_link_create_opts, link_opts);
+> > +       struct bpf_insn insns[] = {
+> > +               BPF_MOV64_IMM(BPF_REG_0, 0),
+> > +               BPF_EXIT_INSN(),
+> > +       };
+> > +       unsigned long offset = 0;
+> > +       int prog_fd, link_fd;
 > > +
-> > +       for (idx = iter->next_sym_idx; idx < iter->nr_syms; idx++) {
-> > +               if (!gelf_getsym(iter->syms, idx, sym))
-> > +                       continue;
-> > +               if (GELF_ST_TYPE(sym->st_info) != iter->st_type)
-> > +                       continue;
-> > +               name = elf_strptr(iter->elf, iter->strtabidx, sym->st_name);
-> > +               if (!name)
-> > +                       continue;
+> > +       prog_fd = bpf_prog_load(BPF_PROG_TYPE_KPROBE, NULL, "GPL",
+> > +                               insns, ARRAY_SIZE(insns), &load_opts);
+> > +       if (prog_fd < 0)
+> > +               return -errno;
 > > +
-> > +               /* Transform symbol's virtual address (absolute for
-> > +                * binaries and relative for shared libs) into file
-> > +                * offset, which is what kernel is expecting for
-> > +                * uprobe/uretprobe attachment.
-> > +                * See Documentation/trace/uprobetracer.rst for more
-> > +                * details.
-> > +                * This is done by looking up symbol's containing
-> > +                * section's header and using iter's virtual address
-> > +                * (sh_addr) and corresponding file offset (sh_offset)
-> > +                * to transform sym.st_value (virtual address) into
-> > +                * desired final file offset.
-> > +                */
+> > +       /* create single uprobe on offset 0 in current process */
+> > +       link_opts.uprobe_multi.path = "/proc/self/exe";
+> > +       link_opts.uprobe_multi.offsets = &offset;
+> > +       link_opts.uprobe_multi.cnt = 1;
+> > +
+> > +       link_fd = bpf_link_create(prog_fd, -1, BPF_TRACE_UPROBE_MULTI, &link_opts);
+> > +
 > 
-> this comment is misplaced? we don't do the translation here
+> so I'd like us to avoid successfully attaching anything. This might
+> have unintended consequences (e.g., unintentionally breaking backing
+> huge pages into normal pages, just because we happen to successfully
+> attach briefly). So let's work on feature detection that fails to
+> create a link, but does it in a way that we know that the feature
+> itself is supported by the kernel
+> 
+> Some ideas we could do:
+> 
+> 1. Pass invalid file (e.g., just root, "/" as path), but modify
+> kernel-side logic to return not -EINVAL, but -EBADF (and I think it
+> would be good to do this anyway). Then expect -EBADF as a signal that
+> the feature is supported.
 
-right, should be placed at the elf_sym_offset function
+ah ok, so -EBADF from inside uprobe_multi link setup code would mean
+it's supported, anything else means it's not.. should work also for
+old kernels, I don't think we have -EBADF in related paths, will check
 
 > 
-> > +               sym_scn = elf_getscn(iter->elf, sym->st_shndx);
-> > +               if (!sym_scn)
-> > +                       continue;
-> > +               if (!gelf_getshdr(sym_scn, &ret->sh))
-> > +                       continue;
+> 2. Also, we can return -EPROTO instead of -EINVAL on invalid
+> combination of paramers or something like that
+> 
+> I'd start with -EBADF change.
+> 
+> In general, we should write kernel-side code in such a way that allows
+> simple and efficient feature-detection. We shouldn't repeat the
+> nightmare of memcg-based mem accounting :(
+> 
+> > +       if (link_fd >= 0)
+> > +               close(link_fd);
+> > +       close(prog_fd);
 > > +
-> > +               iter->next_sym_idx = idx + 1;
-> > +               ret->name = name;
-> > +               return ret;
-> > +       }
-> > +
-> > +       return NULL;
+> > +       return link_fd >= 0;
 > > +}
 > > +
-> > +static unsigned long elf_sym_offset(struct elf_sym *sym)
-> > +{
-> > +       return sym->sym.st_value - sym->sh.sh_addr + sym->sh.sh_offset;
-> > +}
-> > +
-> >  /* Find offset of function name in the provided ELF object. "binary_path" is
-> >   * the path to the ELF binary represented by "elf", and only used for error
-> >   * reporting matters. "name" matches symbol name or name@@LIB for library
-> > @@ -90,64 +192,36 @@ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
-> >          * reported as a warning/error.
-> >          */
-> >         for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
-> > -               size_t nr_syms, strtabidx, idx;
-> > -               Elf_Data *symbols = NULL;
-> > -               Elf_Scn *scn = NULL;
-> > +               struct elf_sym_iter iter;
-> > +               struct elf_sym *sym;
-> >                 int last_bind = -1;
-> > -               const char *sname;
-> > -               GElf_Shdr sh;
-> > +               int curr_bind;
+> >  static int probe_kern_bpf_cookie(void)
+> >  {
+> >         struct bpf_insn insns[] = {
+> > @@ -4913,6 +4945,9 @@ static struct kern_feature_desc {
+> >         [FEAT_SYSCALL_WRAPPER] = {
+> >                 "Kernel using syscall wrapper", probe_kern_syscall_wrapper,
+> >         },
+> > +       [FEAT_UPROBE_MULTI_LINK] = {
+> > +               "BPF uprobe multi link support", probe_uprobe_multi_link,
 > 
-> OCD nit:
+> nit: BPF multi-uprobe link support
 > 
-> $ rg 'curr(_|\b)' | wc -l
-> 8
-> $ rg 'cur(_|\b)' | wc -l
-> 148
-> 
-> and those 8 I consider an unfortunate accident ;) let's standardize on
-> using "cur" consistently
-
-ok.. probably easier to make that change than treat ocd ;-)
-
-> 
+> > +       },
+> >  };
 > >
-> > -               scn = elf_find_next_scn_by_type(elf, sh_types[i], NULL);
-> > -               if (!scn) {
-> > -                       pr_debug("elf: failed to find symbol table ELF sections in '%s'\n",
-> > -                                binary_path);
-> > -                       continue;
-> > -               }
-> > -               if (!gelf_getshdr(scn, &sh))
-> > -                       continue;
-> > -               strtabidx = sh.sh_link;
-> > -               symbols = elf_getdata(scn, 0);
-> > -               if (!symbols) {
-> > -                       pr_warn("elf: failed to get symbols for symtab section in '%s': %s\n",
-> > -                               binary_path, elf_errmsg(-1));
-> > -                       ret = -LIBBPF_ERRNO__FORMAT;
-> > +               ret = elf_sym_iter_new(&iter, elf, binary_path, sh_types[i], STT_FUNC);
-> > +               if (ret) {
-> > +                       if (ret == -ENOENT)
-> > +                               continue;
-> >                         goto out;
+> >  bool kernel_supports(const struct bpf_object *obj, enum kern_feature_id feat_id)
+> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> > index 7d75b92e531a..9c04b3fe1207 100644
+> > --- a/tools/lib/bpf/libbpf_internal.h
+> > +++ b/tools/lib/bpf/libbpf_internal.h
+> > @@ -354,6 +354,8 @@ enum kern_feature_id {
+> >         FEAT_BTF_ENUM64,
+> >         /* Kernel uses syscall wrapper (CONFIG_ARCH_HAS_SYSCALL_WRAPPER) */
+> >         FEAT_SYSCALL_WRAPPER,
+> > +       /* BPF uprobe_multi link support */
 > 
-> another styling nit: let's avoid unnecessary nesting of ifs:
-> 
-> if (ret == -ENOENT)
->     continue;
-> if (ret)
->     goto out;
-> 
-> simple and clean
+> same, multi-uprobe link support
 
-ok
-
-> 
-> 
-> >                 }
-> > -               nr_syms = symbols->d_size / sh.sh_entsize;
-> > -
-> > -               for (idx = 0; idx < nr_syms; idx++) {
-> > -                       int curr_bind;
-> > -                       GElf_Sym sym;
-> > -                       Elf_Scn *sym_scn;
-> > -                       GElf_Shdr sym_sh;
-> > -
-> > -                       if (!gelf_getsym(symbols, idx, &sym))
-> > -                               continue;
-> > -
-> > -                       if (GELF_ST_TYPE(sym.st_info) != STT_FUNC)
-> > -                               continue;
-> > -
-> > -                       sname = elf_strptr(elf, strtabidx, sym.st_name);
-> > -                       if (!sname)
-> > -                               continue;
-> > -
-> > -                       curr_bind = GELF_ST_BIND(sym.st_info);
-> >
-> > +               while ((sym = elf_sym_iter_next(&iter))) {
-> >                         /* User can specify func, func@@LIB or func@@LIB_VERSION. */
-> > -                       if (strncmp(sname, name, name_len) != 0)
-> > +                       if (strncmp(sym->name, name, name_len) != 0)
-> >                                 continue;
-> >                         /* ...but we don't want a search for "foo" to match 'foo2" also, so any
-> >                          * additional characters in sname should be of the form "@@LIB".
-> >                          */
-> > -                       if (!is_name_qualified && sname[name_len] != '\0' && sname[name_len] != '@')
-> > +                       if (!is_name_qualified && sym->name[name_len] != '\0' && sym->name[name_len] != '@')
-> >                                 continue;
-> >
-> > -                       if (ret >= 0) {
-> > +                       curr_bind = GELF_ST_BIND(sym->sym.st_info);
-> > +
-> > +                       if (ret > 0) {
-> 
-> used to be >=, why the change?
-
-the original code initialized ret with -ENOENT and did not change
-its value till this point, so the condition never triggered for
-the first loop, but it did for the new code because we now use ret
-earlier in:
-
-	ret = elf_sym_iter_new(&iter, elf, binary_path, sh_types[i], STT_FUNC);
-
-also the check makes sense to me only if ret > 0 .. when we find
-a duplicate value for symbol
+ok, thanks
 
 jirka
+
+> 
+> 
+> 
+> > +       FEAT_UPROBE_MULTI_LINK,
+> >         __FEAT_CNT,
+> >  };
+> >
+> > --
+> > 2.41.0
+> >
 
