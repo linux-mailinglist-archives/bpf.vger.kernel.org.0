@@ -1,227 +1,670 @@
-Return-Path: <bpf+bounces-4702-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4703-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3667374E44E
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 04:35:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B4ED74E451
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 04:36:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73643281634
-	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 02:35:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CAD81C20D52
+	for <lists+bpf@lfdr.de>; Tue, 11 Jul 2023 02:36:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9621843;
-	Tue, 11 Jul 2023 02:34:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5DA52106;
+	Tue, 11 Jul 2023 02:36:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB017F;
-	Tue, 11 Jul 2023 02:34:53 +0000 (UTC)
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on20621.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eb2::621])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95AC7BE;
-	Mon, 10 Jul 2023 19:34:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EzjJc278DmVe7JIyQIHLxRrY0Vxla6xB9WXxBLDaiKeZ/N30EnSHjSYXxdylE5yzcbPGzKFT93xczESS1DFnvy3cqFkC4gu1VAgbMPY5IwW9NdAlz3O9Bm8wVTyl7ZNI8V0dyP1zk78zs2PNt4+z0enWmkUeUVLQTvr+R8Xl4EkVhl8ELJA/eypTUzA2W4Ey4ui233ybLydfymeXsT29robYvrBJuwkJcsKEP+iQCnzwMfOJzey1oY0y8DCbrIAvqelpOxXSbyp4Pi5IbBhllcXN25hISS8wKE9qcRcalMDRpY34N96ZskZ3kbsUeG2SrrhO0XsD+9B2mAdPzqKttw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AiwqzGjrYK1eVA/VdDiUIrh5CU2vd9hqAOrFiZQcElM=;
- b=FlT2YZ5n8+4iCfxl/VXZ9Z2oJpyvMrVsBvANF5PqA6kCOr3Ndp98ImHtg4QM6kjOYfBqM3zuI8HDF3z8LbsMx2XUXeJm1PVUYaZXSvqKNqhLacuDAdJJ3ZACLL43ncBblV9KL2S8MacPQlF4LIjuQ81ZvvB+FdH/C5WHUjZ/8AbhE69o8OLiTdMY3HU02WF+rPG4UeqoUxvjuBCv1La6u6LH4hgWK/EFcDOigIIpn58Y0JAxD+ZU5DGygBZpEDEECRZkVivXMS6ehgHn4ElWGsI6dKk7BBcUc9bixGE6gIFouzWzSKM8yvmpcjUZ5bBQBiU91dB/7ZtwlCBMcNy23w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AiwqzGjrYK1eVA/VdDiUIrh5CU2vd9hqAOrFiZQcElM=;
- b=jQFzMUSO3lFIBCAUaIVL8YGi0MIbd3bO+BrAMvM4PDLtGZaai4WRCvg5f7nDo7r1T7Uunf1esS/kDnh27omWWnXBIJvdtegTYZu2E8XHEDfZqFU50PZQv7ZREF5hZVnOJU2P+QZGr9j5fEiQbMXpXt5+opMu5XINqT9gP8qnp6Cz9nXwExsdHUHdBYlp8D0vmcLUmlSXesAVUz30NM+i3Uczt8Yr9+lyZ0ED5NW0MxVUbUjy0Xn/4HZyWvcUM990bBC8kFGqCR5EG6CMfBVxmp/e7El+1DNjttGCWdhXLVamNSZ7b0o9FuXGKEG1/52AspN72Vsk+Elz53RMwVjpNQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY5PR12MB6036.namprd12.prod.outlook.com (2603:10b6:930:2c::10)
- by SN7PR12MB7420.namprd12.prod.outlook.com (2603:10b6:806:2a7::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.31; Tue, 11 Jul
- 2023 02:34:49 +0000
-Received: from CY5PR12MB6036.namprd12.prod.outlook.com
- ([fe80::69ec:e7ff:85d:8121]) by CY5PR12MB6036.namprd12.prod.outlook.com
- ([fe80::69ec:e7ff:85d:8121%6]) with mapi id 15.20.6565.028; Tue, 11 Jul 2023
- 02:34:49 +0000
-Message-ID: <ea32a1cf-3a77-d63b-034f-0f80d2dd80ea@nvidia.com>
-Date: Tue, 11 Jul 2023 10:34:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH net-next V1 0/4] virtio_net: add per queue interrupt
- coalescing support
-Content-Language: en-US
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, mst@redhat.com,
- jasowang@redhat.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
- hawk@kernel.org, john.fastabend@gmail.com, jiri@nvidia.com,
- dtatulea@nvidia.com, Heng Qi <hengqi@linux.alibaba.com>
-References: <20230710092005.5062-1-gavinl@nvidia.com>
- <1688981109.6377137-1-xuanzhuo@linux.alibaba.com>
-From: Gavin Li <gavinl@nvidia.com>
-In-Reply-To: <1688981109.6377137-1-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR04CA0202.apcprd04.prod.outlook.com
- (2603:1096:4:187::20) To CY5PR12MB6036.namprd12.prod.outlook.com
- (2603:10b6:930:2c::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C39919E
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 02:36:35 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07A5BE
+	for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 19:36:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1689042992;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z0jeq9FZM2tNLtGRKT3LhnHcrNSQmAW9/WwKmU+IPfw=;
+	b=aRIGKjm/kUb2dEJNnSCL51/3RCl1uKrKP0cfxqJzVeumurnC9hzLDvmX5HNZTsBATSV+gD
+	wSDHOKdEjXbifFL1bpeDDLIFCNxJRCDfAh8l+plk0qabp9M8NmGqMrNmUS7sKlNBWA0OaQ
+	ICH5RS1be41wu0G5rX4ciaU1It5rQHI=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-228-3m0PhN9EPX25P86qkF9wAw-1; Mon, 10 Jul 2023 22:36:30 -0400
+X-MC-Unique: 3m0PhN9EPX25P86qkF9wAw-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b6e73c6da6so49463591fa.0
+        for <bpf@vger.kernel.org>; Mon, 10 Jul 2023 19:36:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689042989; x=1691634989;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z0jeq9FZM2tNLtGRKT3LhnHcrNSQmAW9/WwKmU+IPfw=;
+        b=jRx6qAOkdiaS/b3/TwG27cIfiFK5d0RkI5+mvzdovaP3uO2w3fZQ8Exrv0BUnPBZhr
+         OY1M0x57uSEb06aRdHD1Y64CQvaFUrDEyf7RfQeVK7NV/J7YFy+l/Cn1TM3bRf7s/xiK
+         oZXBEqNGZV2dM605Ye7MnpPpCjV4a+VOo+8ayhsga5FPSLbQvT7PE2Ee7D6XborjIfu0
+         4jcotO9wmVNo31AdQXkhfBPxB/9cpzGxO+4X8osX9KJ7DmaxefSupMIKsgqIxfbU/XF9
+         HZzw4/3vW4abR+ShAADAoQn1j+7p/l0jIaba3OkQb38uuGKGGrIacLI81+nYXSGiA88w
+         W1CA==
+X-Gm-Message-State: ABy/qLYsZQEhpX27dXfwFueDn8y98g1yoADbtYhxd5KukTzQH98pJQyV
+	Au7sCpyPAP4Ixka/2vQ3wSY0b6bvDCiEwjMcfHH9ClBqhTp4h94oE6B+PsaTJHs7Aa3saDOO692
+	n46gwqnor0xUIR1xAdECo4N/QaOti
+X-Received: by 2002:a2e:94c3:0:b0:2b6:dc84:b93e with SMTP id r3-20020a2e94c3000000b002b6dc84b93emr11503815ljh.21.1689042988999;
+        Mon, 10 Jul 2023 19:36:28 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlF/avPpNiz4Yeqf3hwdwqyHygIktXzHZtZIacj1CqfaZ7tESJ0fcoiZlM4/fMqaRROiYCEBssj1dAUTcWziT5E=
+X-Received: by 2002:a2e:94c3:0:b0:2b6:dc84:b93e with SMTP id
+ r3-20020a2e94c3000000b002b6dc84b93emr11503809ljh.21.1689042988732; Mon, 10
+ Jul 2023 19:36:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6036:EE_|SN7PR12MB7420:EE_
-X-MS-Office365-Filtering-Correlation-Id: 191e98eb-f2d1-4955-5f85-08db81b7659d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	8tH+ydAlC70gCCvy6Tm/lHaIPYnPaUf8pltNEvHrNjOKK6vSixSrN//aHJilOvfnbfEGyzj6wE0kGppsIPx8KD2NluQo9nMf7h+VqXPmve5dpqivvtDMQ5O5A6ShuVxVnp9unw6ZdVIC5V8nDiz4DO+RmdYxQnYbmbHH6G9tCjfIt8N+TcN339bdeayKK5P/bv1y4nzrcXrdJa9n80D9RVfxz1ocKpXoLgpfntIEvDAFB6eogwWBbi0mo0+5ZxX9IYWGL5Ajvr485o1ABzCeHKY2gIN0n9SzdZJNDhsj/8N8Wf8e2hE8Ck9NgA42tH9niF1O3m6PxjLurMoaw+HQdFBSVlhB+avtRsu5p6qzFqZuCADFpjr7+4DDY4o6pkKwdpfgKqS4X45hFUG8HSyW5IfQ1O4e4UsLFVeA74GrLPVM1diBrr5UM9b7fZIZhFYvPQdPCxJyC4AQPG5tIFsy/B0rwKiHcjIssBaL4NsXHccdAYbq0D+hJ3s0I4x3n5SyY6OIrLHqYbNKhMVXzGnYRm2UIU03RqM7fT/GrDM84yA2vCG07NbDIG10Le6V/ZGcNX6xW40+jA2liws/ptavG+bxiEkMYMT80kb7YxunOqEnQzkPxOSwlirTjR6guqsD1iBputpmP0X/g284yvooV+JXF+umi56nyKcrLG5Ja0ozhSG+V2OxgrcjsUpB9hy7
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6036.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(39860400002)(136003)(376002)(396003)(451199021)(7416002)(5660300002)(8676002)(8936002)(66556008)(66476007)(66946007)(2906002)(4326008)(6916009)(316002)(31686004)(41300700001)(6666004)(6486002)(6512007)(966005)(53546011)(6506007)(26005)(186003)(83380400001)(2616005)(38100700002)(478600001)(36756003)(86362001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WmdXS3FiV3FXbk9JTW1TblUvYS9LZ1NoNWY1dE1meW9YOWFFbmlESy9kdkpL?=
- =?utf-8?B?SkNNbUU0bnhDTFlsSEZQLzJqMzVEci9CeFVIdjhVV3NBMUU4L2c4YUtBbTls?=
- =?utf-8?B?eXgyRU9PcXQrT0FCN3ZjSU5LZk85MzFZZVpnVTkvN1ZkdTZ3dFp6TTJOcUJ0?=
- =?utf-8?B?VzFyVTZ1bkNSTmdla1QrRkcxZEpFQmpiNG1VWk1RMEFXWWVFaXQvYkR3cTN0?=
- =?utf-8?B?TFhKWVp0OEYrVnVWdUpnU1V0YXg0K1B4NjNQVGlPUitkODIwYk92S0VETmpu?=
- =?utf-8?B?VllWcnNmVjYyZmFMZG1laXU1N2svUWhIOGFDVHJmZHIrRDdUK1hWMlA0RkIr?=
- =?utf-8?B?OUdDaDF0b2tuejNLOWNwbWtyeVByRUJ5VzBGenFxVVFlYXVIT3U5Y3VOUVFV?=
- =?utf-8?B?cFpaQ2g5S1NDclE4UjIrdmZrcTdYdDRsajFkSVBSYnNqUXhFbDU5QkN6Y205?=
- =?utf-8?B?RzBUaWpDK1dqZWMybE01OGN6L3VuNHhHckY2aXp1QkRkVG1OL2orbVNtK2Zr?=
- =?utf-8?B?bFdVQVBPcFBzek5FYzJpTm11bWcvWEJEUTV0UlNGay9CWVFKK01MQjE1ZWZm?=
- =?utf-8?B?WFo3d0p4SHF6WGJ0QmtHdGlhSDhVVFZ5cmJheGtYbThVeTV4clVUMVZuNWpl?=
- =?utf-8?B?My84SXFVWFV1c3VjaEVjV0lFTGhyZmJxZTNCRzRLS1VtNnpoOE9aMXZjRVVJ?=
- =?utf-8?B?R3ZOcGNWcDArai9ycTFYdTZ1a1BtNGlHbnM1NDRPa1d2dGlMM2t4K1d2akVU?=
- =?utf-8?B?eU9XcFQ2czRrOEs3dU9OVnRpeTJKL0ZUU2JJYy9vVm1oNzkrNkpFb0dTOVVq?=
- =?utf-8?B?enYyc1V2Y1VsUyswNWRhbUxlcVFPa1VaVHlEUWFhRjM4djlLcUk5bmJrNkRv?=
- =?utf-8?B?ZVcyaENWSTlERDV3TXZGTmJUWno0NzNIRSs4RTdzdXM4MEhZTzI4SzlNYXNP?=
- =?utf-8?B?eG93UzJRZit2d0xHODh4aTFDRjEyVmZBY0Q2U1pVSUt0MWIwWnFKTnM3bnJG?=
- =?utf-8?B?cmdzY09idTRNOG1NN2psV2dTMVBrMTBTemNFUDJnUFBzblN3MXBhdzl6dlRU?=
- =?utf-8?B?U3cwNnRzbHFPaU5SRmlkbGREMjI3WVRmU3d0Rno4ekpUdWU1VmkzVkZNSEVN?=
- =?utf-8?B?L3pubnhwM3FIeG9zUmJjODJHeC8xUVJ5Tm9UZlZ1ZUIxV2tqRlJpNUNqeFN1?=
- =?utf-8?B?N2k3Q244RDl1YVpTWWRzejE1Nk1MNkxtSjV1M2NQOUhZa2NZcjdkMTFVMWxz?=
- =?utf-8?B?NWpFWFhTU2NiUHRJT1JaQjhtbGoyZzBmZXl2Wk5vZjZUcm1zM1ZtaUpyNjdJ?=
- =?utf-8?B?MFJZV21NdWtyVnNOcGpBYzBxa3RGR0hxZElSTkJkZUpaTjY2NTg3M2MwTEJv?=
- =?utf-8?B?bm5aRytzZXdDTTNFZjJoZ2hZZ1BzMW9vNkc2QTVUdE9OazN0V1JuK0V4RkZ3?=
- =?utf-8?B?bWtGOUpHL2Rzc1hwZ3QwZVpMVEJjRHdRVmdvQ2h0M1hTc1djSWh6N0h6a2J6?=
- =?utf-8?B?eHdPakxJYlNEZDY4S1VpcjkvdHlTNDgvZjN6ei9HSzBWd0wraDVEQityeVVh?=
- =?utf-8?B?NlpVNTM2RzN2bk5vdkdVUG5BeWJhVjVua1hJb2dCZk9UaXBlSEtSZVNHd0Rl?=
- =?utf-8?B?UHlZcURLd3pLNXJvRUJubCtpUVRTYkFtRElZVFp1S2E1VHl5eGhJVW1MZ1JF?=
- =?utf-8?B?TWMzVHEya0xyZy9IVGRXQ3VBRW43S2VrYTBWeFhVUjBwSGFYMmNSZG9EWkFU?=
- =?utf-8?B?VFFDWnhCNHBoQ0xHS1JMQi8wUUJyZUk5YmFZOUkvajI1ZzkyZ3JlM1RiRlNk?=
- =?utf-8?B?N0E2STJ6aCtrV1Q3US9VWmFxQ2QyZWVzTHFvWXlmUFpDK0RZUFRFMWRWN1ll?=
- =?utf-8?B?R0NSUDhIdmxUaitrTEtCT3FlbHRBSWJPcklXUXI0cktUZmdoL0pHVUNMamNJ?=
- =?utf-8?B?MjdQWER3Y0ljZjJRcmZUQnlEKzdZZG5EdVhQeW9nN1oxQlMyTFlZQUFPeHE4?=
- =?utf-8?B?dUhmTUpUUkw2WklhNVFOeWpoMG1rd2g5SHllaEtTakxmcDJDTnd3OHkxVkor?=
- =?utf-8?B?UUw5a3FRUUw0UkxTRWRNOXpOWVpNNXJ1RlNqWlU3dzVrbWxjMlBSZE9VMWcy?=
- =?utf-8?Q?Yr71CGKjVbZVqDAwT9bCfVGe2?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 191e98eb-f2d1-4955-5f85-08db81b7659d
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6036.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2023 02:34:49.4651
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qFabHfntQIg0uduGE3Wo1E0eE824E8RQH0dVmt+ZundliFGz+mtSXVFt+zgs9vY3vCe0xCV2qHhjLeEqtjT7Kg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7420
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-	NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.6
+References: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
+ <20230710034237.12391-11-xuanzhuo@linux.alibaba.com> <20230710051818-mutt-send-email-mst@kernel.org>
+ <1688984310.480753-2-xuanzhuo@linux.alibaba.com> <20230710075534-mutt-send-email-mst@kernel.org>
+ <1688992712.1534917-3-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1688992712.1534917-3-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Tue, 11 Jul 2023 10:36:17 +0800
+Message-ID: <CACGkMEsp0S2APzXENcK-SY8KZwu-1=w3xXNxh5kXT36EsiwaNQ@mail.gmail.com>
+Subject: Re: [PATCH vhost v11 10/10] virtio_net: merge dma operation for one page
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, virtualization@lists.linux-foundation.org, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Mon, Jul 10, 2023 at 8:41=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+om> wrote:
+>
+> On Mon, 10 Jul 2023 07:59:03 -0400, "Michael S. Tsirkin" <mst@redhat.com>=
+ wrote:
+> > On Mon, Jul 10, 2023 at 06:18:30PM +0800, Xuan Zhuo wrote:
+> > > On Mon, 10 Jul 2023 05:40:21 -0400, "Michael S. Tsirkin" <mst@redhat.=
+com> wrote:
+> > > > On Mon, Jul 10, 2023 at 11:42:37AM +0800, Xuan Zhuo wrote:
+> > > > > Currently, the virtio core will perform a dma operation for each
+> > > > > operation. Although, the same page may be operated multiple times=
+.
+> > > > >
+> > > > > The driver does the dma operation and manages the dma address bas=
+ed the
+> > > > > feature premapped of virtio core.
+> > > > >
+> > > > > This way, we can perform only one dma operation for the same page=
+. In
+> > > > > the case of mtu 1500, this can reduce a lot of dma operations.
+> > > > >
+> > > > > Tested on Aliyun g7.4large machine, in the case of a cpu 100%, pp=
+s
+> > > > > increased from 1893766 to 1901105. An increase of 0.4%.
+> > > >
+> > > > what kind of dma was there? an IOMMU? which vendors? in which mode
+> > > > of operation?
+> > >
+> > >
+> > > Do you mean this:
+> > >
+> > > [    0.470816] iommu: Default domain type: Passthrough
+> > >
+> >
+> > With passthrough, dma API is just some indirect function calls, they do
+> > not affect the performance a lot.
+>
+>
+> Yes, this benefit is worthless. I seem to have done a meaningless thing. =
+The
+> overhead of DMA I observed is indeed not too high.
 
-On 7/10/2023 5:25 PM, Xuan Zhuo wrote:
-> External email: Use caution opening links or attachments
->
->
-> On Mon, 10 Jul 2023 12:20:01 +0300, Gavin Li <gavinl@nvidia.com> wrote:
->
-> As far as I know, Heng Qi does that. I'm not sure, it's the same piece.
->
-> cc @Heng Qi
+Have you measured with iommu=3Dstrict?
+
+Thanks
+
 >
 > Thanks.
-Do you mean the one below?
-
-https://lists.oasis-open.org/archives/virtio-dev/202303/msg00415.html
-
-The code is to implement what it described and I don't have better 
-words. So, I copied the text from Heng Qi's.
-
 >
 >
->> Currently, coalescing parameters are grouped for all transmit and receive
->> virtqueues. This patch series add support to set or get the parameters for
->> a specified virtqueue.
->>
->> When the traffic between virtqueues is unbalanced, for example, one virtqueue
->> is busy and another virtqueue is idle, then it will be very useful to
->> control coalescing parameters at the virtqueue granularity.
->>
->> Example command:
->> $ ethtool -Q eth5 queue_mask 0x1 --coalesce tx-packets 10
->> Would set max_packets=10 to VQ 1.
->> $ ethtool -Q eth5 queue_mask 0x1 --coalesce rx-packets 10
->> Would set max_packets=10 to VQ 0.
->> $ ethtool -Q eth5 queue_mask 0x1 --show-coalesce
->>   Queue: 0
->>   Adaptive RX: off  TX: off
->>   stats-block-usecs: 0
->>   sample-interval: 0
->>   pkt-rate-low: 0
->>   pkt-rate-high: 0
->>
->>   rx-usecs: 222
->>   rx-frames: 0
->>   rx-usecs-irq: 0
->>   rx-frames-irq: 256
->>
->>   tx-usecs: 222
->>   tx-frames: 0
->>   tx-usecs-irq: 0
->>   tx-frames-irq: 256
->>
->>   rx-usecs-low: 0
->>   rx-frame-low: 0
->>   tx-usecs-low: 0
->>   tx-frame-low: 0
->>
->>   rx-usecs-high: 0
->>   rx-frame-high: 0
->>   tx-usecs-high: 0
->>   tx-frame-high: 0
->>
->> In this patch series:
->> Patch-1: Extract interrupt coalescing settings to a structure.
->> Patch-2: Extract get/set interrupt coalesce to a function.
->> Patch-3: Support per queue interrupt coalesce command.
->> Patch-4: Enable per queue interrupt coalesce feature.
->>
->> Gavin Li (4):
->>    virtio_net: extract interrupt coalescing settings to a structure
->>    virtio_net: extract get/set interrupt coalesce to a function
->>    virtio_net: support per queue interrupt coalesce command
->>    virtio_net: enable per queue interrupt coalesce feature
->>
->>   drivers/net/virtio_net.c        | 169 ++++++++++++++++++++++++++------
->>   include/uapi/linux/virtio_net.h |  14 +++
->>   2 files changed, 154 insertions(+), 29 deletions(-)
->>
->> --
->> 2.39.1
->>
+> >
+> > Try e.g. bounce buffer. Which is where you will see a problem: your
+> > patches won't work.
+> >
+> >
+> > > >
+> > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > >
+> > > > This kind of difference is likely in the noise.
+> > >
+> > > It's really not high, but this is because the proportion of DMA under=
+ perf top
+> > > is not high. Probably that much.
+> >
+> > So maybe not worth the complexity.
+> >
+> > > >
+> > > >
+> > > > > ---
+> > > > >  drivers/net/virtio_net.c | 283 +++++++++++++++++++++++++++++++++=
++++---
+> > > > >  1 file changed, 267 insertions(+), 16 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > > > index 486b5849033d..4de845d35bed 100644
+> > > > > --- a/drivers/net/virtio_net.c
+> > > > > +++ b/drivers/net/virtio_net.c
+> > > > > @@ -126,6 +126,27 @@ static const struct virtnet_stat_desc virtne=
+t_rq_stats_desc[] =3D {
+> > > > >  #define VIRTNET_SQ_STATS_LEN   ARRAY_SIZE(virtnet_sq_stats_desc)
+> > > > >  #define VIRTNET_RQ_STATS_LEN   ARRAY_SIZE(virtnet_rq_stats_desc)
+> > > > >
+> > > > > +/* The bufs on the same page may share this struct. */
+> > > > > +struct virtnet_rq_dma {
+> > > > > +       struct virtnet_rq_dma *next;
+> > > > > +
+> > > > > +       dma_addr_t addr;
+> > > > > +
+> > > > > +       void *buf;
+> > > > > +       u32 len;
+> > > > > +
+> > > > > +       u32 ref;
+> > > > > +};
+> > > > > +
+> > > > > +/* Record the dma and buf. */
+> > > >
+> > > > I guess I see that. But why?
+> > > > And these two comments are the extent of the available
+> > > > documentation, that's not enough I feel.
+> > > >
+> > > >
+> > > > > +struct virtnet_rq_data {
+> > > > > +       struct virtnet_rq_data *next;
+> > > >
+> > > > Is manually reimplementing a linked list the best
+> > > > we can do?
+> > >
+> > > Yes, we can use llist.
+> > >
+> > > >
+> > > > > +
+> > > > > +       void *buf;
+> > > > > +
+> > > > > +       struct virtnet_rq_dma *dma;
+> > > > > +};
+> > > > > +
+> > > > >  /* Internal representation of a send virtqueue */
+> > > > >  struct send_queue {
+> > > > >         /* Virtqueue associated with this send _queue */
+> > > > > @@ -175,6 +196,13 @@ struct receive_queue {
+> > > > >         char name[16];
+> > > > >
+> > > > >         struct xdp_rxq_info xdp_rxq;
+> > > > > +
+> > > > > +       struct virtnet_rq_data *data_array;
+> > > > > +       struct virtnet_rq_data *data_free;
+> > > > > +
+> > > > > +       struct virtnet_rq_dma *dma_array;
+> > > > > +       struct virtnet_rq_dma *dma_free;
+> > > > > +       struct virtnet_rq_dma *last_dma;
+> > > > >  };
+> > > > >
+> > > > >  /* This structure can contain rss message with maximum settings =
+for indirection table and keysize
+> > > > > @@ -549,6 +577,176 @@ static struct sk_buff *page_to_skb(struct v=
+irtnet_info *vi,
+> > > > >         return skb;
+> > > > >  }
+> > > > >
+> > > > > +static void virtnet_rq_unmap(struct receive_queue *rq, struct vi=
+rtnet_rq_dma *dma)
+> > > > > +{
+> > > > > +       struct device *dev;
+> > > > > +
+> > > > > +       --dma->ref;
+> > > > > +
+> > > > > +       if (dma->ref)
+> > > > > +               return;
+> > > > > +
+> > > >
+> > > > If you don't unmap there is no guarantee valid data will be
+> > > > there in the buffer.
+> > > >
+> > > > > +       dev =3D virtqueue_dma_dev(rq->vq);
+> > > > > +
+> > > > > +       dma_unmap_page(dev, dma->addr, dma->len, DMA_FROM_DEVICE)=
+;
+> > > >
+> > > >
+> > > >
+> > > >
+> > > >
+> > > > > +
+> > > > > +       dma->next =3D rq->dma_free;
+> > > > > +       rq->dma_free =3D dma;
+> > > > > +}
+> > > > > +
+> > > > > +static void *virtnet_rq_recycle_data(struct receive_queue *rq,
+> > > > > +                                    struct virtnet_rq_data *data=
+)
+> > > > > +{
+> > > > > +       void *buf;
+> > > > > +
+> > > > > +       buf =3D data->buf;
+> > > > > +
+> > > > > +       data->next =3D rq->data_free;
+> > > > > +       rq->data_free =3D data;
+> > > > > +
+> > > > > +       return buf;
+> > > > > +}
+> > > > > +
+> > > > > +static struct virtnet_rq_data *virtnet_rq_get_data(struct receiv=
+e_queue *rq,
+> > > > > +                                                  void *buf,
+> > > > > +                                                  struct virtnet=
+_rq_dma *dma)
+> > > > > +{
+> > > > > +       struct virtnet_rq_data *data;
+> > > > > +
+> > > > > +       data =3D rq->data_free;
+> > > > > +       rq->data_free =3D data->next;
+> > > > > +
+> > > > > +       data->buf =3D buf;
+> > > > > +       data->dma =3D dma;
+> > > > > +
+> > > > > +       return data;
+> > > > > +}
+> > > > > +
+> > > > > +static void *virtnet_rq_get_buf(struct receive_queue *rq, u32 *l=
+en, void **ctx)
+> > > > > +{
+> > > > > +       struct virtnet_rq_data *data;
+> > > > > +       void *buf;
+> > > > > +
+> > > > > +       buf =3D virtqueue_get_buf_ctx(rq->vq, len, ctx);
+> > > > > +       if (!buf || !rq->data_array)
+> > > > > +               return buf;
+> > > > > +
+> > > > > +       data =3D buf;
+> > > > > +
+> > > > > +       virtnet_rq_unmap(rq, data->dma);
+> > > > > +
+> > > > > +       return virtnet_rq_recycle_data(rq, data);
+> > > > > +}
+> > > > > +
+> > > > > +static void *virtnet_rq_detach_unused_buf(struct receive_queue *=
+rq)
+> > > > > +{
+> > > > > +       struct virtnet_rq_data *data;
+> > > > > +       void *buf;
+> > > > > +
+> > > > > +       buf =3D virtqueue_detach_unused_buf(rq->vq);
+> > > > > +       if (!buf || !rq->data_array)
+> > > > > +               return buf;
+> > > > > +
+> > > > > +       data =3D buf;
+> > > > > +
+> > > > > +       virtnet_rq_unmap(rq, data->dma);
+> > > > > +
+> > > > > +       return virtnet_rq_recycle_data(rq, data);
+> > > > > +}
+> > > > > +
+> > > > > +static int virtnet_rq_map_sg(struct receive_queue *rq, void *buf=
+, u32 len)
+> > > > > +{
+> > > > > +       struct virtnet_rq_dma *dma =3D rq->last_dma;
+> > > > > +       struct device *dev;
+> > > > > +       u32 off, map_len;
+> > > > > +       dma_addr_t addr;
+> > > > > +       void *end;
+> > > > > +
+> > > > > +       if (likely(dma) && buf >=3D dma->buf && (buf + len <=3D d=
+ma->buf + dma->len)) {
+> > > > > +               ++dma->ref;
+> > > > > +               addr =3D dma->addr + (buf - dma->buf);
+> > > > > +               goto ok;
+> > > > > +       }
+> > > >
+> > > > So this is the meat of the proposed optimization. I guess that
+> > > > if the last buffer we allocated happens to be in the same page
+> > > > as this one then they can both be mapped for DMA together.
+> > >
+> > > Since we use page_frag, the buffers we allocated are all continuous.
+> > >
+> > > > Why last one specifically? Whether next one happens to
+> > > > be close depends on luck. If you want to try optimizing this
+> > > > the right thing to do is likely by using a page pool.
+> > > > There's actually work upstream on page pool, look it up.
+> > >
+> > > As we discussed in another thread, the page pool is first used for xd=
+p. Let's
+> > > transform it step by step.
+> > >
+> > > Thanks.
+> >
+> > ok so this should wait then?
+> >
+> > > >
+> > > > > +
+> > > > > +       end =3D buf + len - 1;
+> > > > > +       off =3D offset_in_page(end);
+> > > > > +       map_len =3D len + PAGE_SIZE - off;
+> > > > > +
+> > > > > +       dev =3D virtqueue_dma_dev(rq->vq);
+> > > > > +
+> > > > > +       addr =3D dma_map_page_attrs(dev, virt_to_page(buf), offse=
+t_in_page(buf),
+> > > > > +                                 map_len, DMA_FROM_DEVICE, 0);
+> > > > > +       if (addr =3D=3D DMA_MAPPING_ERROR)
+> > > > > +               return -ENOMEM;
+> > > > > +
+> > > > > +       dma =3D rq->dma_free;
+> > > > > +       rq->dma_free =3D dma->next;
+> > > > > +
+> > > > > +       dma->ref =3D 1;
+> > > > > +       dma->buf =3D buf;
+> > > > > +       dma->addr =3D addr;
+> > > > > +       dma->len =3D map_len;
+> > > > > +
+> > > > > +       rq->last_dma =3D dma;
+> > > > > +
+> > > > > +ok:
+> > > > > +       sg_init_table(rq->sg, 1);
+> > > > > +       rq->sg[0].dma_address =3D addr;
+> > > > > +       rq->sg[0].length =3D len;
+> > > > > +
+> > > > > +       return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static int virtnet_rq_merge_map_init(struct virtnet_info *vi)
+> > > > > +{
+> > > > > +       struct receive_queue *rq;
+> > > > > +       int i, err, j, num;
+> > > > > +
+> > > > > +       /* disable for big mode */
+> > > > > +       if (!vi->mergeable_rx_bufs && vi->big_packets)
+> > > > > +               return 0;
+> > > > > +
+> > > > > +       for (i =3D 0; i < vi->max_queue_pairs; i++) {
+> > > > > +               err =3D virtqueue_set_premapped(vi->rq[i].vq);
+> > > > > +               if (err)
+> > > > > +                       continue;
+> > > > > +
+> > > > > +               rq =3D &vi->rq[i];
+> > > > > +
+> > > > > +               num =3D virtqueue_get_vring_size(rq->vq);
+> > > > > +
+> > > > > +               rq->data_array =3D kmalloc_array(num, sizeof(*rq-=
+>data_array), GFP_KERNEL);
+> > > > > +               if (!rq->data_array)
+> > > > > +                       goto err;
+> > > > > +
+> > > > > +               rq->dma_array =3D kmalloc_array(num, sizeof(*rq->=
+dma_array), GFP_KERNEL);
+> > > > > +               if (!rq->dma_array)
+> > > > > +                       goto err;
+> > > > > +
+> > > > > +               for (j =3D 0; j < num; ++j) {
+> > > > > +                       rq->data_array[j].next =3D rq->data_free;
+> > > > > +                       rq->data_free =3D &rq->data_array[j];
+> > > > > +
+> > > > > +                       rq->dma_array[j].next =3D rq->dma_free;
+> > > > > +                       rq->dma_free =3D &rq->dma_array[j];
+> > > > > +               }
+> > > > > +       }
+> > > > > +
+> > > > > +       return 0;
+> > > > > +
+> > > > > +err:
+> > > > > +       for (i =3D 0; i < vi->max_queue_pairs; i++) {
+> > > > > +               struct receive_queue *rq;
+> > > > > +
+> > > > > +               rq =3D &vi->rq[i];
+> > > > > +
+> > > > > +               kfree(rq->dma_array);
+> > > > > +               kfree(rq->data_array);
+> > > > > +       }
+> > > > > +
+> > > > > +       return -ENOMEM;
+> > > > > +}
+> > > > > +
+> > > > >  static void free_old_xmit_skbs(struct send_queue *sq, bool in_na=
+pi)
+> > > > >  {
+> > > > >         unsigned int len;
+> > > > > @@ -835,7 +1033,7 @@ static struct page *xdp_linearize_page(struc=
+t receive_queue *rq,
+> > > > >                 void *buf;
+> > > > >                 int off;
+> > > > >
+> > > > > -               buf =3D virtqueue_get_buf(rq->vq, &buflen);
+> > > > > +               buf =3D virtnet_rq_get_buf(rq, &buflen, NULL);
+> > > > >                 if (unlikely(!buf))
+> > > > >                         goto err_buf;
+> > > > >
+> > > > > @@ -1126,7 +1324,7 @@ static int virtnet_build_xdp_buff_mrg(struc=
+t net_device *dev,
+> > > > >                 return -EINVAL;
+> > > > >
+> > > > >         while (--*num_buf > 0) {
+> > > > > -               buf =3D virtqueue_get_buf_ctx(rq->vq, &len, &ctx)=
+;
+> > > > > +               buf =3D virtnet_rq_get_buf(rq, &len, &ctx);
+> > > > >                 if (unlikely(!buf)) {
+> > > > >                         pr_debug("%s: rx error: %d buffers out of=
+ %d missing\n",
+> > > > >                                  dev->name, *num_buf,
+> > > > > @@ -1351,7 +1549,7 @@ static struct sk_buff *receive_mergeable(st=
+ruct net_device *dev,
+> > > > >         while (--num_buf) {
+> > > > >                 int num_skb_frags;
+> > > > >
+> > > > > -               buf =3D virtqueue_get_buf_ctx(rq->vq, &len, &ctx)=
+;
+> > > > > +               buf =3D virtnet_rq_get_buf(rq, &len, &ctx);
+> > > > >                 if (unlikely(!buf)) {
+> > > > >                         pr_debug("%s: rx error: %d buffers out of=
+ %d missing\n",
+> > > > >                                  dev->name, num_buf,
+> > > > > @@ -1414,7 +1612,7 @@ static struct sk_buff *receive_mergeable(st=
+ruct net_device *dev,
+> > > > >  err_skb:
+> > > > >         put_page(page);
+> > > > >         while (num_buf-- > 1) {
+> > > > > -               buf =3D virtqueue_get_buf(rq->vq, &len);
+> > > > > +               buf =3D virtnet_rq_get_buf(rq, &len, NULL);
+> > > > >                 if (unlikely(!buf)) {
+> > > > >                         pr_debug("%s: rx error: %d buffers missin=
+g\n",
+> > > > >                                  dev->name, num_buf);
+> > > > > @@ -1529,6 +1727,7 @@ static int add_recvbuf_small(struct virtnet=
+_info *vi, struct receive_queue *rq,
+> > > > >         unsigned int xdp_headroom =3D virtnet_get_headroom(vi);
+> > > > >         void *ctx =3D (void *)(unsigned long)xdp_headroom;
+> > > > >         int len =3D vi->hdr_len + VIRTNET_RX_PAD + GOOD_PACKET_LE=
+N + xdp_headroom;
+> > > > > +       struct virtnet_rq_data *data;
+> > > > >         int err;
+> > > > >
+> > > > >         len =3D SKB_DATA_ALIGN(len) +
+> > > > > @@ -1539,11 +1738,34 @@ static int add_recvbuf_small(struct virtn=
+et_info *vi, struct receive_queue *rq,
+> > > > >         buf =3D (char *)page_address(alloc_frag->page) + alloc_fr=
+ag->offset;
+> > > > >         get_page(alloc_frag->page);
+> > > > >         alloc_frag->offset +=3D len;
+> > > > > -       sg_init_one(rq->sg, buf + VIRTNET_RX_PAD + xdp_headroom,
+> > > > > -                   vi->hdr_len + GOOD_PACKET_LEN);
+> > > > > -       err =3D virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, c=
+tx, gfp);
+> > > > > +
+> > > > > +       if (rq->data_array) {
+> > > > > +               err =3D virtnet_rq_map_sg(rq, buf + VIRTNET_RX_PA=
+D + xdp_headroom,
+> > > > > +                                       vi->hdr_len + GOOD_PACKET=
+_LEN);
+> > > > > +               if (err)
+> > > > > +                       goto map_err;
+> > > > > +
+> > > > > +               data =3D virtnet_rq_get_data(rq, buf, rq->last_dm=
+a);
+> > > > > +       } else {
+> > > > > +               sg_init_one(rq->sg, buf + VIRTNET_RX_PAD + xdp_he=
+adroom,
+> > > > > +                           vi->hdr_len + GOOD_PACKET_LEN);
+> > > > > +               data =3D (void *)buf;
+> > > > > +       }
+> > > > > +
+> > > > > +       err =3D virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, data, =
+ctx, gfp);
+> > > > >         if (err < 0)
+> > > > > -               put_page(virt_to_head_page(buf));
+> > > > > +               goto add_err;
+> > > > > +
+> > > > > +       return err;
+> > > > > +
+> > > > > +add_err:
+> > > > > +       if (rq->data_array) {
+> > > > > +               virtnet_rq_unmap(rq, data->dma);
+> > > > > +               virtnet_rq_recycle_data(rq, data);
+> > > > > +       }
+> > > > > +
+> > > > > +map_err:
+> > > > > +       put_page(virt_to_head_page(buf));
+> > > > >         return err;
+> > > > >  }
+> > > > >
+> > > > > @@ -1620,6 +1842,7 @@ static int add_recvbuf_mergeable(struct vir=
+tnet_info *vi,
+> > > > >         unsigned int headroom =3D virtnet_get_headroom(vi);
+> > > > >         unsigned int tailroom =3D headroom ? sizeof(struct skb_sh=
+ared_info) : 0;
+> > > > >         unsigned int room =3D SKB_DATA_ALIGN(headroom + tailroom)=
+;
+> > > > > +       struct virtnet_rq_data *data;
+> > > > >         char *buf;
+> > > > >         void *ctx;
+> > > > >         int err;
+> > > > > @@ -1650,12 +1873,32 @@ static int add_recvbuf_mergeable(struct v=
+irtnet_info *vi,
+> > > > >                 alloc_frag->offset +=3D hole;
+> > > > >         }
+> > > > >
+> > > > > -       sg_init_one(rq->sg, buf, len);
+> > > > > +       if (rq->data_array) {
+> > > > > +               err =3D virtnet_rq_map_sg(rq, buf, len);
+> > > > > +               if (err)
+> > > > > +                       goto map_err;
+> > > > > +
+> > > > > +               data =3D virtnet_rq_get_data(rq, buf, rq->last_dm=
+a);
+> > > > > +       } else {
+> > > > > +               sg_init_one(rq->sg, buf, len);
+> > > > > +               data =3D (void *)buf;
+> > > > > +       }
+> > > > > +
+> > > > >         ctx =3D mergeable_len_to_ctx(len + room, headroom);
+> > > > > -       err =3D virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, c=
+tx, gfp);
+> > > > > +       err =3D virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, data, =
+ctx, gfp);
+> > > > >         if (err < 0)
+> > > > > -               put_page(virt_to_head_page(buf));
+> > > > > +               goto add_err;
+> > > > > +
+> > > > > +       return 0;
+> > > > > +
+> > > > > +add_err:
+> > > > > +       if (rq->data_array) {
+> > > > > +               virtnet_rq_unmap(rq, data->dma);
+> > > > > +               virtnet_rq_recycle_data(rq, data);
+> > > > > +       }
+> > > > >
+> > > > > +map_err:
+> > > > > +       put_page(virt_to_head_page(buf));
+> > > > >         return err;
+> > > > >  }
+> > > > >
+> > > > > @@ -1775,13 +2018,13 @@ static int virtnet_receive(struct receive=
+_queue *rq, int budget,
+> > > > >                 void *ctx;
+> > > > >
+> > > > >                 while (stats.packets < budget &&
+> > > > > -                      (buf =3D virtqueue_get_buf_ctx(rq->vq, &le=
+n, &ctx))) {
+> > > > > +                      (buf =3D virtnet_rq_get_buf(rq, &len, &ctx=
+))) {
+> > > > >                         receive_buf(vi, rq, buf, len, ctx, xdp_xm=
+it, &stats);
+> > > > >                         stats.packets++;
+> > > > >                 }
+> > > > >         } else {
+> > > > >                 while (stats.packets < budget &&
+> > > > > -                      (buf =3D virtqueue_get_buf(rq->vq, &len)) =
+!=3D NULL) {
+> > > > > +                      (buf =3D virtnet_rq_get_buf(rq, &len, NULL=
+)) !=3D NULL) {
+> > > > >                         receive_buf(vi, rq, buf, len, NULL, xdp_x=
+mit, &stats);
+> > > > >                         stats.packets++;
+> > > > >                 }
+> > > > > @@ -3514,6 +3757,9 @@ static void virtnet_free_queues(struct virt=
+net_info *vi)
+> > > > >         for (i =3D 0; i < vi->max_queue_pairs; i++) {
+> > > > >                 __netif_napi_del(&vi->rq[i].napi);
+> > > > >                 __netif_napi_del(&vi->sq[i].napi);
+> > > > > +
+> > > > > +               kfree(vi->rq[i].data_array);
+> > > > > +               kfree(vi->rq[i].dma_array);
+> > > > >         }
+> > > > >
+> > > > >         /* We called __netif_napi_del(),
+> > > > > @@ -3591,9 +3837,10 @@ static void free_unused_bufs(struct virtne=
+t_info *vi)
+> > > > >         }
+> > > > >
+> > > > >         for (i =3D 0; i < vi->max_queue_pairs; i++) {
+> > > > > -               struct virtqueue *vq =3D vi->rq[i].vq;
+> > > > > -               while ((buf =3D virtqueue_detach_unused_buf(vq)) =
+!=3D NULL)
+> > > > > -                       virtnet_rq_free_unused_buf(vq, buf);
+> > > > > +               struct receive_queue *rq =3D &vi->rq[i];
+> > > > > +
+> > > > > +               while ((buf =3D virtnet_rq_detach_unused_buf(rq))=
+ !=3D NULL)
+> > > > > +                       virtnet_rq_free_unused_buf(rq->vq, buf);
+> > > > >                 cond_resched();
+> > > > >         }
+> > > > >  }
+> > > > > @@ -3767,6 +4014,10 @@ static int init_vqs(struct virtnet_info *v=
+i)
+> > > > >         if (ret)
+> > > > >                 goto err_free;
+> > > > >
+> > > > > +       ret =3D virtnet_rq_merge_map_init(vi);
+> > > > > +       if (ret)
+> > > > > +               goto err_free;
+> > > > > +
+> > > > >         cpus_read_lock();
+> > > > >         virtnet_set_affinity(vi);
+> > > > >         cpus_read_unlock();
+> > > > > --
+> > > > > 2.32.0.3.g01195cf9f
+> > > >
+> >
+>
+
 
