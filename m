@@ -1,160 +1,92 @@
-Return-Path: <bpf+bounces-4868-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4869-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A08AA751078
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 20:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7940C7510CC
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 20:55:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26B6A281A33
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 18:26:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34214281A33
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 18:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02CC120FB9;
-	Wed, 12 Jul 2023 18:26:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F69920FBD;
+	Wed, 12 Jul 2023 18:54:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9F620FB2
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 18:26:13 +0000 (UTC)
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68EE1BE3
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 11:26:10 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-668704a5b5bso6528811b3a.0
-        for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 11:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689186370; x=1691778370;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=swX/Btqe9SwlapTlO/DIwSPMFx8s3wfg5niuyYAHqCU=;
-        b=t+rGeMqK4FQu3U7IWvo5hWBuuEiCmmtx6poL/uG/sChia7xNUk3OjXe/eY0quvdn3z
-         J123/5f5oYO/dxIPHh21icK7IG4SZCsW7TDCaFEh6ePd5h+7zV6VrHLvNvZ6HjgB0Rfk
-         pHOSJxec/EaLIYDDUUx2eomAS7CkrSFMGdSkIaQ/NARpCUrZ3kyuLxWk8C4gSvBGzf5e
-         jdQbwdsup+JK10w1xzMP8CDroJIDpy439nDIwXhUfaTYVLJE2wO4xW8/mjUDID4cmm4+
-         gSpw7xE+Mm/fQD0dLPdLrV1xLGdywWVEpYLaWqapHsrYVpGo2y6iBuQFoGOgRilvg6Q3
-         WylQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8C620FB8
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 18:54:35 +0000 (UTC)
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3E21BFA
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 11:54:34 -0700 (PDT)
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6b86d2075f0so8425328a34.0
+        for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 11:54:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689186370; x=1691778370;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=swX/Btqe9SwlapTlO/DIwSPMFx8s3wfg5niuyYAHqCU=;
-        b=dzJd/WRnpDFWGi1l0Tp0cHim4grHYCPmVQyGkTZ7ZTFbb1tJa5lWkrDwNVFhNcaf6C
-         LruZGpmfD0rj4EwvhhXjS0rcULuSAL0e9BMs4BRWXx/+WzFO3DzEqnMbHiFx9hFETUhZ
-         nRDguKnNEyopgh/sLIjeVlIwO7U8WuHeHoUOwRXadR8vc+2yGh2HjCs7ewq1New8NCVv
-         n3VO+q408AUK0goQejtuE9829uI1otBKjdhpTrKbITMMUO3XNnI/yXeDZQFUIIdICu45
-         BMhuGI+ZYwcL96AGLLgS1gAYHYiM8TfqyvLaMuOtTP63Xz9V2lzAXYQSMJTd7b3rp4og
-         uBfw==
-X-Gm-Message-State: ABy/qLZ3DSnEZOG4PrBB7v61okZKBxhdsd4UXpAdkDTi4ovnBI0xfFgH
-	HNxMkwYZpB8qK15u0Vj+SiXUxA==
-X-Google-Smtp-Source: APBJJlHAxMXSUIbZXiuDm3AUa5MRO5PMewMy62zRT6aZ+RDrwQLncLwIngEG+ozHai+hqvZIUWsP4Q==
-X-Received: by 2002:a17:902:ce81:b0:1b8:3e15:40e8 with SMTP id f1-20020a170902ce8100b001b83e1540e8mr5333784plg.56.1689186370368;
-        Wed, 12 Jul 2023 11:26:10 -0700 (PDT)
-Received: from localhost ([50.38.6.230])
-        by smtp.gmail.com with ESMTPSA id q15-20020a170902b10f00b001b9da7ae98bsm4291752plr.122.2023.07.12.11.26.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 11:26:09 -0700 (PDT)
-Date: Wed, 12 Jul 2023 11:26:09 -0700 (PDT)
-X-Google-Original-Date: Wed, 12 Jul 2023 11:25:23 PDT (-0700)
-Subject:     Re: [PATCH V11 0/5] riscv: Optimize function trace
-In-Reply-To: <87jzv5q9tv.fsf@all.your.base.are.belong.to.us>
-CC: suagrfillet@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
-  aou@eecs.berkeley.edu, rostedt@goodmis.org, mhiramat@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-  guoren@kernel.org, suagrfillet@gmail.com, Bjorn Topel <bjorn@rivosinc.com>, jszhang@kernel.org,
-  Conor Dooley <conor.dooley@microchip.com>, pulehui@huawei.com, linux-riscv@lists.infradead.org,
-  linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, songshuaishuai@tinylab.org,
-  bpf@vger.kernel.org
-From: Palmer Dabbelt <palmer@rivosinc.com>
-To: bjorn@kernel.org
-Message-ID: <mhng-a2c88f43-3cf7-4caa-8e4a-b0fc9d7e4628@palmer-ri-x1c9a>
+        d=1e100.net; s=20221208; t=1689188073; x=1691780073;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iZMH+f/qQs35ft7PcSxeJWZ8yv3i3Olk8Bn6x6Aux/0=;
+        b=iGSta4XHyNw7oiebyZYL+t3ynCPEHtw0b8ZcLevXDeowSBKKypMSzG5+JUFVqJHHC/
+         eAm9y0+gyp6xdPwNxlzj/t+3L0oLqpBqj4UgHYJpuwnP/Toh0k0tGFJexHsKMEEySmDx
+         QwENSOIsOkNpFPGTpDjkRvuEWGeEcC4IkFgBYzrApDLz/q3jYNyr9MwfbhU6JATcPX+E
+         zUm5nSgmKplBgt1mLs3FZfA+3Ra9SmdsQhgHunW1EBiiyb24DvvX77QGvxKf3DdeJeVg
+         lsNwMWhjPCF3xYv4Pf1lbTdzPepx18+Nx+ThWIzAttOXoYzx56FWDAjzmsfDHz5+hn69
+         sc5Q==
+X-Gm-Message-State: ABy/qLbpf3t7k7JIFGNyUNdrT755wcC610gTjZbmatKPyThvukefUzx5
+	u4GYBm05NQRDqyH/IJARUuT/F4ASbstpY+f1auqfITY+62+p0Pw=
+X-Google-Smtp-Source: APBJJlFsJIcb0rdx4JjgRS1wq5NhoTjU9MPmFzmv1EP3Vle1AIKr62xgl7dheKEiVE6GkXdOnIQBkcJkfp2R0puLgy6N5pzwWkeT
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+MIME-Version: 1.0
+X-Received: by 2002:a05:6830:2056:b0:6af:a3de:5d26 with SMTP id
+ f22-20020a056830205600b006afa3de5d26mr6113119otp.7.1689188073476; Wed, 12 Jul
+ 2023 11:54:33 -0700 (PDT)
+Date: Wed, 12 Jul 2023 11:54:33 -0700
+In-Reply-To: <000000000000881d0606004541d1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001416bb06004ebf53@google.com>
+Subject: Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
+From: syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>
+To: bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net, 
+	dhowells@redhat.com, dsahern@kernel.org, edumazet@google.com, kuba@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
+	viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, 12 Jul 2023 11:11:08 PDT (-0700), bjorn@kernel.org wrote:
-> Song Shuai <suagrfillet@gmail.com> writes:
->
-> [...]
->
->> Add WITH_DIRECT_CALLS support [3] (patch 3, 4)
->> ==============================================
->
-> We've had some offlist discussions, so here's some input for a wider
-> audience! Most importantly, this is for Palmer, so that this series is
-> not merged until a proper BPF trampoline fix is in place.
->
-> Note that what's currently usable from BPF trampoline *works*. It's
-> when this series is added that it breaks.
->
-> TL;DR This series adds DYNAMIC_FTRACE_WITH_DIRECT_CALLS, which enables
-> fentry/fexit BPF trampoline support. Unfortunately the
-> fexit/BPF_TRAMP_F_SKIP_FRAME parts of the RV BPF trampoline breaks
-> with this addition, and need to be addressed *prior* merging this
-> series. An easy way to reproduce, is just calling any of the kselftest
-> tests that uses fexit patching.
->
-> The issue is around the nop seld, and how a call is done; The nop sled
-> (patchable-function-entry) size changed from 16B to 8B in commit
-> 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to half"), but
-> BPF code still uses the old 16B. So it'll work for BPF programs, but not
-> for regular kernel functions.
->
-> An example:
->
->   | ffffffff80fa4150 <bpf_fentry_test1>:
->   | ffffffff80fa4150:       0001                    nop
->   | ffffffff80fa4152:       0001                    nop
->   | ffffffff80fa4154:       0001                    nop
->   | ffffffff80fa4156:       0001                    nop
->   | ffffffff80fa4158:       1141                    add     sp,sp,-16
->   | ffffffff80fa415a:       e422                    sd      s0,8(sp)
->   | ffffffff80fa415c:       0800                    add     s0,sp,16
->   | ffffffff80fa415e:       6422                    ld      s0,8(sp)
->   | ffffffff80fa4160:       2505                    addw    a0,a0,1
->   | ffffffff80fa4162:       0141                    add     sp,sp,16
->   | ffffffff80fa4164:       8082                    ret
->
-> is patched to:
->
->   | ffffffff80fa4150:  f70c0297                     auipc   t0,-150208512
->   | ffffffff80fa4154:  eb0282e7                     jalr    t0,t0,-336
->
-> The return address to bpf_fentry_test1 is stored in t0 at BPF
-> trampoline entry. Return to the *parent* is in ra. The trampline has
-> to deal with this.
->
-> For BPF_TRAMP_F_SKIP_FRAME/CALL_ORIG, the BPF trampoline will skip too
-> many bytes, and not correctly handle parent calls.
->
-> Further; The BPF trampoline currently has a different way of patching
-> the nops for BPF programs, than what ftrace does. That should be changed
-> to match what ftrace does (auipc/jalr t0).
->
-> To summarize:
->  * Align BPF nop sled with patchable-function-entry: 8B.
->  * Adapt BPF trampoline for 8B nop sleds.
->  * Adapt BPF trampoline t0 return, ra parent scheme.
+syzbot has bisected this issue to:
 
-Thanks for digging into this one, I agree we need to sort out the BPF 
-breakages before we merge this.  Sounds like there's a rabbit hole here, 
-but hopefully we can get it sorted out.
+commit 7ac7c987850c3ec617c778f7bd871804dc1c648d
+Author: David Howells <dhowells@redhat.com>
+Date:   Mon May 22 12:11:22 2023 +0000
 
-I've dropped this from patchwork and such, as we'll need at least 
-another spin.
+    udp: Convert udp_sendpage() to use MSG_SPLICE_PAGES
 
-> Cheers,
-> Björn
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15853bcaa80000
+start commit:   3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17853bcaa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13853bcaa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=150188feee7071a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=f527b971b4bdc8e79f9e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a86682a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1520ab6ca80000
+
+Reported-by: syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com
+Fixes: 7ac7c987850c ("udp: Convert udp_sendpage() to use MSG_SPLICE_PAGES")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
