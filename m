@@ -1,79 +1,86 @@
-Return-Path: <bpf+bounces-4829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B74C574FE8B
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 07:01:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AC9F74FEBD
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 07:36:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 740E5281673
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 05:01:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94F4F1C20D6E
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 05:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F4C81C2F;
-	Wed, 12 Jul 2023 05:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CFDE211F;
+	Wed, 12 Jul 2023 05:36:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BFDE644
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 05:01:21 +0000 (UTC)
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB89110CF
-	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 22:01:19 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-4036bd4fff1so119331cf.0
-        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 22:01:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E837FD
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 05:36:21 +0000 (UTC)
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F751712
+	for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 22:36:20 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1b05d63080cso5991964fac.2
+        for <bpf@vger.kernel.org>; Tue, 11 Jul 2023 22:36:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689138079; x=1691730079;
+        d=google.com; s=20221208; t=1689140180; x=1691732180;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kq6HoCSWjJULrdBpQtK0v2hxm5oXIHwNlZA0C4uPeBU=;
-        b=ID+pt3M5dxPQ0dOTdaZzCnWtxvadEc68M8WuUOiQvrp6cqAgLMyWMHflQRO+NuFWTp
-         hMf7AePC3v3q7yCgEe2+YH+6OJIQ2TDkaklLIA0/ZsB1Y4qp9jbfDu0Vwzftck/3LIqK
-         9VrdP97s/QFE6azV3dtvUXIJPqHxir/c/lJJRdbr46ebfeAp3TUugVjZs5pEi/RCePab
-         rAy/DOvW1GlqN01UrTG4z8PyCnLNZHit9b08lF3A+sVIYkN8gQD3QdiDsa9kbWIrko7f
-         go8nnGaajCo+Ipsm4CbWGiv0Ww8JSwwbxT6/vaNApc2J3MOLGuN/CIW7BSOFR6NtKsVd
-         ahrw==
+        bh=vnidGm4u+nJnZIlJckPEwTKF95jsTNlFO/U0vG4SnH4=;
+        b=xY+6hGjCcCcyOfBX5GtuaDdGYczloCXcdZ/qw6ngGMl4SlD1U1KljeaA6WSxFe/tkw
+         e79CyoBBrHq0Dk1imnjFjqQjdKj9pXHHRfg3laa1+9kAHuXsF15Cd6PQcVGoz4hxAXgf
+         Wt0AIel3aOb1Y5HFFR6SvLo+CCkPlaByGlTvc+liAipflw4tsKP6s1z+fVeXjVhgiI2w
+         dXKPQWIl1KSYhbf49b1PTvewHs/trbIwiDbI7Rskrho8Wi+WP0jMXxxWBOK6KEwWiZ6P
+         Xlga2btiZW5Z7Y7KvwbJsRD32aMVQ6a2fkIDGjQU6Bepc1BGg/LR1ED6GiqWZDir5scx
+         3vbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689138079; x=1691730079;
+        d=1e100.net; s=20221208; t=1689140180; x=1691732180;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kq6HoCSWjJULrdBpQtK0v2hxm5oXIHwNlZA0C4uPeBU=;
-        b=XJrPXIMMOfGPp1cwirvAEiCq/0Kl0vtn2mY7xieNrChkVuYBrMyPZxDa+IPi3mx4fZ
-         jbgsf5z68E7mILMfRyVs1kdJHugV7eEKuQ/fTjEETVkr6XkWlPMQhGSCoq6V1CgxQ8BM
-         Y2HyT2SNwck0g8OtzdvJfFk9tl4lOmx0trGiZlxO9riSrYdxUG2CllO5XgHdgHl+rS4D
-         /wtbrDMalR/cTyaUyka5J2jmTOnzBYpd0d/Zftjc+Klhx6yKdxHiqYrwhcsLz5Tt6pJZ
-         sbWoUWXscRM5XM1cNvKEdbjUH/2uDWltqM4vm1qIbGBsqHPZgW7i6YHoKypGJuhnO2Xg
-         gfiA==
-X-Gm-Message-State: ABy/qLbviGw8GYQ5bHssCl4mqQ1M8st4f1EkiSHAKniSaq4Y1eWBDFL6
-	45b8hSwod5fDfEe6Ax0/DzORdgUe5F65AjImBaPSpA==
-X-Google-Smtp-Source: APBJJlGU6Nukf5As48WPLawiQMYSbuwj91pmIJglX7Sb8ujG53kmMMf17tXAWc4imyJbkR4zsit8jCHHoRgMWidjL0I=
-X-Received: by 2002:a05:622a:241:b0:403:a43d:be41 with SMTP id
- c1-20020a05622a024100b00403a43dbe41mr164760qtx.20.1689138078630; Tue, 11 Jul
- 2023 22:01:18 -0700 (PDT)
+        bh=vnidGm4u+nJnZIlJckPEwTKF95jsTNlFO/U0vG4SnH4=;
+        b=Uhjh0j4YUqy/rnti3cj0tPLAvIyUAg/HqyH3Zs6MJDbghCxuik2U91BPRZb12U/Ig5
+         jN/PbUwKiaEtbB6yiTfqY+bYxT9SUrSBIeLGfs7a9H0diN01U6cInM1apo7LagaIUDfJ
+         UaW9OzrbqclMk3miGiv4M9dvsNwPrn+4MGGPPYKG3kyRH2L4nM0qhNMVlM3C3GY1qQhL
+         YvWzqmZ8WTWiGtBwlePDwB1yNmz+K8HG/rUQ7CLRYxGNEgNgpYIpWVTGVvFmVanYfmz1
+         +Vuem+x967ceez87wYB6evWFkv8Rf1hog1KBgUgSqYPrDNbkcA5O/KI+wRInsWgFQNVE
+         SFEw==
+X-Gm-Message-State: ABy/qLYSeBrLasO9jGCFeupW6RgIVAbcvwfEv5INDd4YXhw3R42FEhKJ
+	q7GAlPzn7eISu4VIT8qDCSkOKbu+mXmWVwmJRU1yTwFuSHufjufclbL1fgB1
+X-Google-Smtp-Source: APBJJlGAGBzXt27mT9kxQcqGuRRrF5r9n/oPwjmju5K2TDj52bB2UdXsZbXYwWDeCZUKXtCgJ5ykqMtqnT2pEHUkzIw=
+X-Received: by 2002:a05:6870:638d:b0:1b0:291c:9272 with SMTP id
+ t13-20020a056870638d00b001b0291c9272mr22177928oap.28.1689140179849; Tue, 11
+ Jul 2023 22:36:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230627181030.95608-1-irogers@google.com> <20230627181030.95608-14-irogers@google.com>
- <CAM9d7cjxrNTOUGxmTAycko_Gn_uY5aX8cBWTa-jrhLoc-Bur1g@mail.gmail.com>
- <CAP-5=fWdOQR0MvpJM2aW5Cc=GS86h2Kmh9zD2k5--K=8BNyVgw@mail.gmail.com> <CAM9d7ciBPUiM0QhfP=_EJXqZ=SgEkHii0Jc2J-MBkZr7k1wKUA@mail.gmail.com>
-In-Reply-To: <CAM9d7ciBPUiM0QhfP=_EJXqZ=SgEkHii0Jc2J-MBkZr7k1wKUA@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 11 Jul 2023 22:01:07 -0700
-Message-ID: <CAP-5=fWMKjfDYOjDzDZgaNdujz-eMCpXiBvp1=EYfeHzKoiWTw@mail.gmail.com>
-Subject: Re: [PATCH v2 13/13] perf parse-events: Remove ABORT_ON
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20230707193006.1309662-1-sdf@google.com> <20230707193006.1309662-10-sdf@google.com>
+ <20230711225657.kuvkil776fajonl5@MacBook-Pro-8.local> <CAKH8qBtawUTjFQ=hhTzXa2zTBwOpxurjhduxZV+eUg8rnJUJVw@mail.gmail.com>
+ <CAADnVQKnWCYjOQA-=61pDP4TQ-LKC7S-tOSX9Lm6tB3vJcf4dw@mail.gmail.com>
+ <CAKH8qBvnMd2JgobQf1bvc=x7uEn1RPVHcuu3F7gB6vS627g-Xg@mail.gmail.com>
+ <CAADnVQLCRrPtQMPBuYiKv44SLDiYwz69KZ=0e0HxJdPQz4x2HQ@mail.gmail.com>
+ <ZK4eFox0DwbpyIJv@google.com> <CAADnVQJnf=KJ17MJWujkj+oSxp7kNNK1k08PvH+Wx617yAtZ8Q@mail.gmail.com>
+In-Reply-To: <CAADnVQJnf=KJ17MJWujkj+oSxp7kNNK1k08PvH+Wx617yAtZ8Q@mail.gmail.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Tue, 11 Jul 2023 22:36:08 -0700
+Message-ID: <CAKH8qBvGbJhAeNQ0zZxFFf_V_Oq=85xwx7KgsL1xA7GK+qcFnw@mail.gmail.com>
+Subject: Re: [RFC bpf-next v3 09/14] net/mlx5e: Implement devtx kfuncs
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
+	Willem de Bruijn <willemb@google.com>, David Ahern <dsahern@kernel.org>, 
+	"Karlsson, Magnus" <magnus.karlsson@intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, xdp-hints@xdp-project.net
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -84,104 +91,39 @@ X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Jul 1, 2023 at 11:43=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
-wrote:
+On Tue, Jul 11, 2023 at 9:59=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Fri, Jun 30, 2023 at 8:14=E2=80=AFAM Ian Rogers <irogers@google.com> w=
-rote:
+> On Tue, Jul 11, 2023 at 8:29=E2=80=AFPM Stanislav Fomichev <sdf@google.co=
+m> wrote:
 > >
-> > On Thu, Jun 29, 2023 at 2:49=E2=80=AFPM Namhyung Kim <namhyung@kernel.o=
-rg> wrote:
-> > >
-> > > On Tue, Jun 27, 2023 at 11:11=E2=80=AFAM Ian Rogers <irogers@google.c=
-om> wrote:
-> > > >
-> > > > Prefer informative messages rather than none with ABORT_ON. Documen=
-t
-> > > > one failure mode and add an error message for another.
-> > > >
-> > > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > > ---
-> > > >  tools/perf/util/parse-events.y | 22 ++++++++++++++--------
-> > > >  1 file changed, 14 insertions(+), 8 deletions(-)
-> > > >
-> > > > diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse=
--events.y
-> > > > index 844646752462..454577f7aff6 100644
-> > > > --- a/tools/perf/util/parse-events.y
-> > > > +++ b/tools/perf/util/parse-events.y
-> > > > @@ -22,12 +22,6 @@
-> > > >
-> > > >  void parse_events_error(YYLTYPE *loc, void *parse_state, void *sca=
-nner, char const *msg);
-> > > >
-> > > > -#define ABORT_ON(val) \
-> > > > -do { \
-> > > > -       if (val) \
-> > > > -               YYABORT; \
-> > > > -} while (0)
-> > > > -
-> > > >  #define PE_ABORT(val) \
-> > > >  do { \
-> > > >         if (val =3D=3D -ENOMEM) \
-> > > > @@ -618,7 +612,9 @@ PE_RAW opt_event_config
-> > > >                 YYNOMEM;
-> > > >         errno =3D 0;
-> > > >         num =3D strtoull($1 + 1, NULL, 16);
-> > > > -       ABORT_ON(errno);
-> > > > +       /* Given the lexer will only give [a-fA-F0-9]+ a failure he=
-re should be impossible. */
-> > > > +       if (errno)
-> > > > +               YYABORT;
-> > > >         free($1);
-> > > >         err =3D parse_events_add_numeric(_parse_state, list, PERF_T=
-YPE_RAW, num, $2,
-> > > >                                        /*wildcard=3D*/false);
-> > > > @@ -978,7 +974,17 @@ PE_VALUE PE_ARRAY_RANGE PE_VALUE
-> > > >  {
-> > > >         struct parse_events_array array;
-> > > >
-> > > > -       ABORT_ON($3 < $1);
-> > > > +       if ($3 < $1) {
-> > > > +               struct parse_events_state *parse_state =3D _parse_s=
-tate;
-> > > > +               struct parse_events_error *error =3D parse_state->e=
-rror;
-> > > > +               char *err_str;
-> > > > +
-> > > > +               if (asprintf(&err_str, "Expected '%ld' to be less-t=
-han '%ld'", $3, $1) < 0)
-> > >
-> > > Isn't it to be "greater-than or equal" ?
 > >
-> > I think the order is right. From the man page:
-> >
-> >        When  successful,  these  functions return the number of bytes p=
-rinted,
-> >        just like sprintf(3).  If memory allocation wasn't  possible,  o=
-r  some
-> >        other error occurs, these functions will return -1, and the cont=
-ents of
-> >        strp are undefined.
-> >
-> > So here we need to catch -1 and ensure strp (&err_str) is NULL before
-> > passing it to parse_events_error__handle.
+> > This will slow things down, but not to the point where it's on par
+> > with doing sw checksum. At least in theory.
+> > We can't stay at skb when using AF_XDP. AF_XDP would benefit from havin=
+g
+> > the offloads.
 >
-> Oh, I meant the message not the condition in the if statement.
-> It seems it aborts if $3 < $1, then it expects $3 >=3D $1 in the
-> normal condition, right?
+> To clarify: yes, AF_XDP needs generalized HW offloads.
 
-In the old code with the macro expanded it did:
-if ($3 < $1) YYABORT
+Great! To reiterate, I'm mostly interested in af_xdp wrt tx
+timestamps. So if the consensus is not to mix xdp-tx and af_xdp-tx,
+I'm fine with switching to adding some fixed af_xdp descriptor format
+to enable offloads on tx.
 
-in the new code it fills in parse_state->error if the same error
-condition applies. The change is to get rid of the macro and add an
-error message. The asprintf is just added to make the error message
-more informative.
+> I just don't see how xdp tx offloads are moving a needle in that directio=
+n.
 
-Thanks,
-Ian
-
-> Thanks,
-> Namhyung
+Let me try to explain how both might be similar, maybe I wasn't clear
+enough on that.
+For af_xdp tx packet, the userspace puts something in the af_xdp frame
+metadata area (headrom) which then gets executed/interpreted by the
+bpf program at devtx (which calls kfuncs to enable particular
+offloads).
+IOW, instead of defining some fixed layout for the tx offloads, the
+userspace and bpf program have some agreement on the layout (and bpf
+program "applies" the offloads by calling the kfuncs).
+Also (in theory) the same hooks can be used for xdp-tx.
+Does it make sense? But, again, happy to scratch that whole idea if
+we're fine with a fixed layout for af_xdp.
 
