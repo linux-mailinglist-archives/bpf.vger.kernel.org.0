@@ -1,737 +1,318 @@
-Return-Path: <bpf+bounces-4846-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4847-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EEAB750207
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 10:51:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF773750373
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 11:42:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9A3C281940
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 08:51:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0A071C20DE9
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 09:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E995E100B8;
-	Wed, 12 Jul 2023 08:50:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 528811F95B;
+	Wed, 12 Jul 2023 09:42:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9097E20E4
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 08:50:50 +0000 (UTC)
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2332AFB;
-	Wed, 12 Jul 2023 01:50:43 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d2e1a72fcca58-666e6541c98so6069546b3a.2;
-        Wed, 12 Jul 2023 01:50:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689151843; x=1691743843;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2mQDpD37vd+HTNvfDcUBr8r9HS+qHzJgD9/v2YUHJBc=;
-        b=L1Fe0l2pbQoSUobZeYgvQIyIVcYQHS3ptQWt3+w7s9gcSdLyMqNpQdKM6zwWXzPqiQ
-         Bo9Y5wnGI69tO5aV+vP0a9aksmb6weQ8VTCmShnEl8/GB1HDbaXtn/ko6tXSTlrqf2Yz
-         6QKve7MxHiwFjo9XC4tvLV4+P9CcsNBozUtQ7PBJ6bR7qv/SpBk0CfnbjacGFKYR411z
-         qcrRVCuf6YCJ1ORmIwlu7h8r4WfELr+JgkKIIoNBTdp8R2t0eEeDeFlw/LJl1CAuoP7k
-         LjghB1377RwJtKpNifFriHSpSA0fzMWhgaylnDEfRqsJjU1dBj5jt+jUllprfGFnN4IQ
-         4rqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689151843; x=1691743843;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2mQDpD37vd+HTNvfDcUBr8r9HS+qHzJgD9/v2YUHJBc=;
-        b=Dd1gbvs+iM2t0W5agnAMjlSjTRRpzJLBc7LUSx7FfMuCg8ohBnHwrtHBC/42yL/OqE
-         9EbCI5ePAiBBnSqFjJTdh8gZ+sglx0Zno3Lt28siuujMuCMhm7T+KJ1opBhUqAULdrVE
-         vmFlWNKex8PDAVLAxsSOYYcvoMdHyx6M8I7DXk6nEOoEYB4ginXpavd6jBRCTA8u+JNW
-         GB1qS0qHD6qYo+mdHNJE6cKUFFDvye7Vj4cSZpvuSaUIC8h3W+jKWRQ36RYv3EmyNUvA
-         0F12apKssT1chXgEu47m5Y0ZQ/rKcJtbXWZjKCPbWPdB5dyzExGQUPgx3dwWs61/sMhB
-         dRDw==
-X-Gm-Message-State: ABy/qLZLLNFcpFrMs4cKWT2diVyAoatvoaQWIRu6Xmjg6Ip9u2FvbiTG
-	4twoOvyjwhh2yvczFrrQOCw=
-X-Google-Smtp-Source: APBJJlETextykBfkTT0sTb0iDjMWBugpQ/hcmSKzMF5Fk2mmrL2XzvHqxMc7+8B0MfIcII9N0v1f2A==
-X-Received: by 2002:a05:6a00:3920:b0:682:4edf:b9c7 with SMTP id fh32-20020a056a00392000b006824edfb9c7mr23750650pfb.2.1689151842760;
-        Wed, 12 Jul 2023 01:50:42 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.11])
-        by smtp.gmail.com with ESMTPSA id e26-20020a62aa1a000000b006749c22d079sm3037066pff.167.2023.07.12.01.50.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 01:50:42 -0700 (PDT)
-From: menglong8.dong@gmail.com
-X-Google-Original-From: imagedong@tencent.com
-To: yhs@meta.com,
-	daniel@iogearbox.net,
-	alexei.starovoitov@gmail.com
-Cc: ast@kernel.org,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	dsahern@kernel.org,
-	jolsa@kernel.org,
-	x86@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Menglong Dong <imagedong@tencent.com>
-Subject: [PATCH bpf-next v9 3/3] selftests/bpf: add testcase for TRACING with 6+ arguments
-Date: Wed, 12 Jul 2023 16:47:46 +0800
-Message-Id: <20230712084746.833965-4-imagedong@tencent.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230712084746.833965-1-imagedong@tencent.com>
-References: <20230712084746.833965-1-imagedong@tencent.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B67614433;
+	Wed, 12 Jul 2023 09:42:08 +0000 (UTC)
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9E310EF;
+	Wed, 12 Jul 2023 02:42:03 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0VnCXL6R_1689154918;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VnCXL6R_1689154918)
+          by smtp.aliyun-inc.com;
+          Wed, 12 Jul 2023 17:41:59 +0800
+Message-ID: <1689154785.322522-2-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next V1 3/4] virtio_net: support per queue interrupt coalesce command
+Date: Wed, 12 Jul 2023 17:39:45 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Gavin Li <gavinl@nvidia.com>
+Cc: <virtualization@lists.linux-foundation.org>,
+ <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>,
+ <bpf@vger.kernel.org>,
+ <mst@redhat.com>,
+ <jasowang@redhat.com>,
+ <xuanzhuo@linux.alibaba.com>,
+ <davem@davemloft.net>,
+ <edumazet@google.com>,
+ <kuba@kernel.org>,
+ <pabeni@redhat.com>,
+ <ast@kernel.org>,
+ <daniel@iogearbox.net>,
+ <hawk@kernel.org>,
+ <john.fastabend@gmail.com>,
+ <jiri@nvidia.com>,
+ <dtatulea@nvidia.com>
+References: <20230710092005.5062-1-gavinl@nvidia.com>
+ <20230710092005.5062-4-gavinl@nvidia.com>
+In-Reply-To: <20230710092005.5062-4-gavinl@nvidia.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-From: Menglong Dong <imagedong@tencent.com>
+On Mon, 10 Jul 2023 12:20:04 +0300, Gavin Li <gavinl@nvidia.com> wrote:
+> Add interrupt_coalesce config in send_queue and receive_queue to cache user
+> config.
+>
+> Send per virtqueue interrupt moderation config to underline device in order
+> to have more efficient interrupt moderation and cpu utilization of guest
+> VM.
+>
+> Signed-off-by: Gavin Li <gavinl@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> ---
+>  drivers/net/virtio_net.c        | 117 ++++++++++++++++++++++++++++----
+>  include/uapi/linux/virtio_net.h |  14 ++++
+>  2 files changed, 119 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 802ed21453f5..333a38e1941f 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -144,6 +144,8 @@ struct send_queue {
+>
+>  	struct virtnet_sq_stats stats;
+>
+> +	struct virtnet_interrupt_coalesce intr_coal;
+> +
+>  	struct napi_struct napi;
+>
+>  	/* Record whether sq is in reset state. */
+> @@ -161,6 +163,8 @@ struct receive_queue {
+>
+>  	struct virtnet_rq_stats stats;
+>
+> +	struct virtnet_interrupt_coalesce intr_coal;
+> +
+>  	/* Chain pages by the private ptr. */
+>  	struct page *pages;
+>
+> @@ -3078,6 +3082,56 @@ static int virtnet_send_notf_coal_cmds(struct virtnet_info *vi,
+>  	return 0;
+>  }
+>
+> +static int virtnet_send_ctrl_coal_vq_cmd(struct virtnet_info *vi,
+> +					 u16 vqn, u32 max_usecs, u32 max_packets)
+> +{
+> +	struct virtio_net_ctrl_coal_vq coal_vq = {};
 
-Add fentry_many_args.c and fexit_many_args.c to test the fentry/fexit
-with 7/11 arguments. As this feature is not supported by arm64 yet, we
-disable these testcases for arm64 in DENYLIST.aarch64. We can combine
-them with fentry_test.c/fexit_test.c when arm64 is supported too.
+We should alloc this on the heap.
 
-Correspondingly, add bpf_testmod_fentry_test7() and
-bpf_testmod_fentry_test11() to bpf_testmod.c
+Thanks.
 
-Meanwhile, add bpf_modify_return_test2() to test_run.c to test the
-MODIFY_RETURN with 7 arguments.
 
-Add bpf_testmod_test_struct_arg_7/bpf_testmod_test_struct_arg_7 in
-bpf_testmod.c to test the struct in the arguments.
-
-And the testcases passed on x86_64:
-
-./test_progs -t fexit
-Summary: 5/14 PASSED, 0 SKIPPED, 0 FAILED
-
-./test_progs -t fentry
-Summary: 3/2 PASSED, 0 SKIPPED, 0 FAILED
-
-./test_progs -t modify_return
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-./test_progs -t tracing_struct
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Menglong Dong <imagedong@tencent.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
-v9:
-- change the way to test fmod_ret
-v8:
-- split the testcases, and add fentry_many_args/fexit_many_args to
-  DENYLIST.aarch64
-v6:
-- add testcases to tracing_struct.c instead of fentry_test.c and
-  fexit_test.c
-v5:
-- add testcases for MODIFY_RETURN
-v4:
-- use different type for args in bpf_testmod_fentry_test{7,12}
-- add testcase for grabage values in ctx
-v3:
-- move bpf_fentry_test{7,12} to bpf_testmod.c and rename them to
-  bpf_testmod_fentry_test{7,12} meanwhile
-- get return value by bpf_get_func_ret() in
-  "fexit/bpf_testmod_fentry_test12", as we don't change ___bpf_ctx_cast()
-  in this version
----
- net/bpf/test_run.c                            | 14 ++++-
- tools/testing/selftests/bpf/DENYLIST.aarch64  |  2 +
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 49 ++++++++++++++++-
- .../selftests/bpf/prog_tests/fentry_test.c    | 43 +++++++++++++--
- .../selftests/bpf/prog_tests/fexit_test.c     | 43 +++++++++++++--
- .../selftests/bpf/prog_tests/modify_return.c  | 10 ++--
- .../selftests/bpf/prog_tests/tracing_struct.c | 19 +++++++
- .../selftests/bpf/progs/fentry_many_args.c    | 39 ++++++++++++++
- .../selftests/bpf/progs/fexit_many_args.c     | 40 ++++++++++++++
- .../selftests/bpf/progs/modify_return.c       | 40 ++++++++++++++
- .../selftests/bpf/progs/tracing_struct.c      | 54 +++++++++++++++++++
- 11 files changed, 340 insertions(+), 13 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/fentry_many_args.c
- create mode 100644 tools/testing/selftests/bpf/progs/fexit_many_args.c
-
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 63b11f7a5392..7d47f53f20c1 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -565,6 +565,13 @@ __bpf_kfunc int bpf_modify_return_test(int a, int *b)
- 	return a + *b;
- }
- 
-+__bpf_kfunc int bpf_modify_return_test2(int a, int *b, short c, int d,
-+					void *e, char f, int g)
-+{
-+	*b += 1;
-+	return a + *b + c + d + (long)e + f + g;
-+}
-+
- int noinline bpf_fentry_shadow_test(int a)
- {
- 	return a + 1;
-@@ -600,6 +607,7 @@ __diag_pop();
- 
- BTF_SET8_START(bpf_test_modify_return_ids)
- BTF_ID_FLAGS(func, bpf_modify_return_test)
-+BTF_ID_FLAGS(func, bpf_modify_return_test2)
- BTF_ID_FLAGS(func, bpf_fentry_test1, KF_SLEEPABLE)
- BTF_SET8_END(bpf_test_modify_return_ids)
- 
-@@ -667,7 +675,11 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
- 	case BPF_MODIFY_RETURN:
- 		ret = bpf_modify_return_test(1, &b);
- 		if (b != 2)
--			side_effect = 1;
-+			side_effect++;
-+		b = 2;
-+		ret += bpf_modify_return_test2(1, &b, 3, 4, (void *)5, 6, 7);
-+		if (b != 2)
-+			side_effect++;
- 		break;
- 	default:
- 		goto out;
-diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
-index 08adc805878b..3b61e8b35d62 100644
---- a/tools/testing/selftests/bpf/DENYLIST.aarch64
-+++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
-@@ -10,3 +10,5 @@ kprobe_multi_test/link_api_addrs                 # link_fd unexpected link_fd: a
- kprobe_multi_test/link_api_syms                  # link_fd unexpected link_fd: actual -95 < expected 0
- kprobe_multi_test/skel_api                       # libbpf: failed to load BPF skeleton 'kprobe_multi': -3
- module_attach                                    # prog 'kprobe_multi': failed to auto-attach: -95
-+fentry_test/fentry_many_args                     # fentry_many_args:FAIL:fentry_many_args_attach unexpected error: -524
-+fexit_test/fexit_many_args                       # fexit_many_args:FAIL:fexit_many_args_attach unexpected error: -524
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index aaf6ef1201c7..a6f991b56345 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -34,6 +34,11 @@ struct bpf_testmod_struct_arg_3 {
- 	int b[];
- };
- 
-+struct bpf_testmod_struct_arg_4 {
-+	u64 a;
-+	int b;
-+};
-+
- __diag_push();
- __diag_ignore_all("-Wmissing-prototypes",
- 		  "Global functions as their definitions will be in bpf_testmod.ko BTF");
-@@ -75,6 +80,24 @@ bpf_testmod_test_struct_arg_6(struct bpf_testmod_struct_arg_3 *a) {
- 	return bpf_testmod_test_struct_arg_result;
- }
- 
-+noinline int
-+bpf_testmod_test_struct_arg_7(u64 a, void *b, short c, int d, void *e,
-+			      struct bpf_testmod_struct_arg_4 f)
-+{
-+	bpf_testmod_test_struct_arg_result = a + (long)b + c + d +
-+		(long)e + f.a + f.b;
-+	return bpf_testmod_test_struct_arg_result;
-+}
-+
-+noinline int
-+bpf_testmod_test_struct_arg_8(u64 a, void *b, short c, int d, void *e,
-+			      struct bpf_testmod_struct_arg_4 f, int g)
-+{
-+	bpf_testmod_test_struct_arg_result = a + (long)b + c + d +
-+		(long)e + f.a + f.b + g;
-+	return bpf_testmod_test_struct_arg_result;
-+}
-+
- __bpf_kfunc void
- bpf_testmod_test_mod_kfunc(int i)
- {
-@@ -191,6 +214,20 @@ noinline int bpf_testmod_fentry_test3(char a, int b, u64 c)
- 	return a + b + c;
- }
- 
-+noinline int bpf_testmod_fentry_test7(u64 a, void *b, short c, int d,
-+				      void *e, char f, int g)
-+{
-+	return a + (long)b + c + d + (long)e + f + g;
-+}
-+
-+noinline int bpf_testmod_fentry_test11(u64 a, void *b, short c, int d,
-+				       void *e, char f, int g,
-+				       unsigned int h, long i, __u64 j,
-+				       unsigned long k)
-+{
-+	return a + (long)b + c + d + (long)e + f + g + h + i + j + k;
-+}
-+
- int bpf_testmod_fentry_ok;
- 
- noinline ssize_t
-@@ -206,6 +243,7 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
- 	struct bpf_testmod_struct_arg_1 struct_arg1 = {10};
- 	struct bpf_testmod_struct_arg_2 struct_arg2 = {2, 3};
- 	struct bpf_testmod_struct_arg_3 *struct_arg3;
-+	struct bpf_testmod_struct_arg_4 struct_arg4 = {21, 22};
- 	int i = 1;
- 
- 	while (bpf_testmod_return_ptr(i))
-@@ -216,6 +254,11 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
- 	(void)bpf_testmod_test_struct_arg_3(1, 4, struct_arg2);
- 	(void)bpf_testmod_test_struct_arg_4(struct_arg1, 1, 2, 3, struct_arg2);
- 	(void)bpf_testmod_test_struct_arg_5();
-+	(void)bpf_testmod_test_struct_arg_7(16, (void *)17, 18, 19,
-+					    (void *)20, struct_arg4);
-+	(void)bpf_testmod_test_struct_arg_8(16, (void *)17, 18, 19,
-+					    (void *)20, struct_arg4, 23);
-+
- 
- 	struct_arg3 = kmalloc((sizeof(struct bpf_testmod_struct_arg_3) +
- 				sizeof(int)), GFP_KERNEL);
-@@ -243,7 +286,11 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
- 
- 	if (bpf_testmod_fentry_test1(1) != 2 ||
- 	    bpf_testmod_fentry_test2(2, 3) != 5 ||
--	    bpf_testmod_fentry_test3(4, 5, 6) != 15)
-+	    bpf_testmod_fentry_test3(4, 5, 6) != 15 ||
-+	    bpf_testmod_fentry_test7(16, (void *)17, 18, 19, (void *)20,
-+			21, 22) != 133 ||
-+	    bpf_testmod_fentry_test11(16, (void *)17, 18, 19, (void *)20,
-+			21, 22, 23, 24, 25, 26) != 231)
- 		goto out;
- 
- 	bpf_testmod_fentry_ok = 1;
-diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_test.c b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-index c0d1d61d5f66..aee1bc77a17f 100644
---- a/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-@@ -2,8 +2,9 @@
- /* Copyright (c) 2019 Facebook */
- #include <test_progs.h>
- #include "fentry_test.lskel.h"
-+#include "fentry_many_args.skel.h"
- 
--static int fentry_test(struct fentry_test_lskel *fentry_skel)
-+static int fentry_test_common(struct fentry_test_lskel *fentry_skel)
- {
- 	int err, prog_fd, i;
- 	int link_fd;
-@@ -37,7 +38,7 @@ static int fentry_test(struct fentry_test_lskel *fentry_skel)
- 	return 0;
- }
- 
--void test_fentry_test(void)
-+static void fentry_test(void)
- {
- 	struct fentry_test_lskel *fentry_skel = NULL;
- 	int err;
-@@ -46,13 +47,47 @@ void test_fentry_test(void)
- 	if (!ASSERT_OK_PTR(fentry_skel, "fentry_skel_load"))
- 		goto cleanup;
- 
--	err = fentry_test(fentry_skel);
-+	err = fentry_test_common(fentry_skel);
- 	if (!ASSERT_OK(err, "fentry_first_attach"))
- 		goto cleanup;
- 
--	err = fentry_test(fentry_skel);
-+	err = fentry_test_common(fentry_skel);
- 	ASSERT_OK(err, "fentry_second_attach");
- 
- cleanup:
- 	fentry_test_lskel__destroy(fentry_skel);
- }
-+
-+static void fentry_many_args(void)
-+{
-+	struct fentry_many_args *fentry_skel = NULL;
-+	int err;
-+
-+	fentry_skel = fentry_many_args__open_and_load();
-+	if (!ASSERT_OK_PTR(fentry_skel, "fentry_many_args_skel_load"))
-+		goto cleanup;
-+
-+	err = fentry_many_args__attach(fentry_skel);
-+	if (!ASSERT_OK(err, "fentry_many_args_attach"))
-+		goto cleanup;
-+
-+	ASSERT_OK(trigger_module_test_read(1), "trigger_read");
-+
-+	ASSERT_EQ(fentry_skel->bss->test1_result, 1,
-+		  "fentry_many_args_result1");
-+	ASSERT_EQ(fentry_skel->bss->test2_result, 1,
-+		  "fentry_many_args_result2");
-+	ASSERT_EQ(fentry_skel->bss->test3_result, 1,
-+		  "fentry_many_args_result3");
-+
-+cleanup:
-+	fentry_many_args__destroy(fentry_skel);
-+}
-+
-+void test_fentry_test(void)
-+{
-+	if (test__start_subtest("fentry"))
-+		fentry_test();
-+	if (test__start_subtest("fentry_many_args"))
-+		fentry_many_args();
-+}
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_test.c b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-index 101b7343036b..1c13007e37dd 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-@@ -2,8 +2,9 @@
- /* Copyright (c) 2019 Facebook */
- #include <test_progs.h>
- #include "fexit_test.lskel.h"
-+#include "fexit_many_args.skel.h"
- 
--static int fexit_test(struct fexit_test_lskel *fexit_skel)
-+static int fexit_test_common(struct fexit_test_lskel *fexit_skel)
- {
- 	int err, prog_fd, i;
- 	int link_fd;
-@@ -37,7 +38,7 @@ static int fexit_test(struct fexit_test_lskel *fexit_skel)
- 	return 0;
- }
- 
--void test_fexit_test(void)
-+static void fexit_test(void)
- {
- 	struct fexit_test_lskel *fexit_skel = NULL;
- 	int err;
-@@ -46,13 +47,47 @@ void test_fexit_test(void)
- 	if (!ASSERT_OK_PTR(fexit_skel, "fexit_skel_load"))
- 		goto cleanup;
- 
--	err = fexit_test(fexit_skel);
-+	err = fexit_test_common(fexit_skel);
- 	if (!ASSERT_OK(err, "fexit_first_attach"))
- 		goto cleanup;
- 
--	err = fexit_test(fexit_skel);
-+	err = fexit_test_common(fexit_skel);
- 	ASSERT_OK(err, "fexit_second_attach");
- 
- cleanup:
- 	fexit_test_lskel__destroy(fexit_skel);
- }
-+
-+static void fexit_many_args(void)
-+{
-+	struct fexit_many_args *fexit_skel = NULL;
-+	int err;
-+
-+	fexit_skel = fexit_many_args__open_and_load();
-+	if (!ASSERT_OK_PTR(fexit_skel, "fexit_many_args_skel_load"))
-+		goto cleanup;
-+
-+	err = fexit_many_args__attach(fexit_skel);
-+	if (!ASSERT_OK(err, "fexit_many_args_attach"))
-+		goto cleanup;
-+
-+	ASSERT_OK(trigger_module_test_read(1), "trigger_read");
-+
-+	ASSERT_EQ(fexit_skel->bss->test1_result, 1,
-+		  "fexit_many_args_result1");
-+	ASSERT_EQ(fexit_skel->bss->test2_result, 1,
-+		  "fexit_many_args_result2");
-+	ASSERT_EQ(fexit_skel->bss->test3_result, 1,
-+		  "fexit_many_args_result3");
-+
-+cleanup:
-+	fexit_many_args__destroy(fexit_skel);
-+}
-+
-+void test_fexit_test(void)
-+{
-+	if (test__start_subtest("fexit"))
-+		fexit_test();
-+	if (test__start_subtest("fexit_many_args"))
-+		fexit_many_args();
-+}
-diff --git a/tools/testing/selftests/bpf/prog_tests/modify_return.c b/tools/testing/selftests/bpf/prog_tests/modify_return.c
-index 5d9955af6247..a70c99c2f8c8 100644
---- a/tools/testing/selftests/bpf/prog_tests/modify_return.c
-+++ b/tools/testing/selftests/bpf/prog_tests/modify_return.c
-@@ -41,6 +41,10 @@ static void run_test(__u32 input_retval, __u16 want_side_effect, __s16 want_ret)
- 	ASSERT_EQ(skel->bss->fexit_result, 1, "modify_return fexit_result");
- 	ASSERT_EQ(skel->bss->fmod_ret_result, 1, "modify_return fmod_ret_result");
- 
-+	ASSERT_EQ(skel->bss->fentry_result2, 1, "modify_return fentry_result2");
-+	ASSERT_EQ(skel->bss->fexit_result2, 1, "modify_return fexit_result2");
-+	ASSERT_EQ(skel->bss->fmod_ret_result2, 1, "modify_return fmod_ret_result2");
-+
- cleanup:
- 	modify_return__destroy(skel);
- }
-@@ -49,9 +53,9 @@ static void run_test(__u32 input_retval, __u16 want_side_effect, __s16 want_ret)
- void serial_test_modify_return(void)
- {
- 	run_test(0 /* input_retval */,
--		 1 /* want_side_effect */,
--		 4 /* want_ret */);
-+		 2 /* want_side_effect */,
-+		 33 /* want_ret */);
- 	run_test(-EINVAL /* input_retval */,
- 		 0 /* want_side_effect */,
--		 -EINVAL /* want_ret */);
-+		 -EINVAL * 2 /* want_ret */);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/tracing_struct.c b/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
-index 1c75a32186d6..fe0fb0c9849a 100644
---- a/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
-@@ -55,6 +55,25 @@ static void test_fentry(void)
- 
- 	ASSERT_EQ(skel->bss->t6, 1, "t6 ret");
- 
-+	ASSERT_EQ(skel->bss->t7_a, 16, "t7:a");
-+	ASSERT_EQ(skel->bss->t7_b, 17, "t7:b");
-+	ASSERT_EQ(skel->bss->t7_c, 18, "t7:c");
-+	ASSERT_EQ(skel->bss->t7_d, 19, "t7:d");
-+	ASSERT_EQ(skel->bss->t7_e, 20, "t7:e");
-+	ASSERT_EQ(skel->bss->t7_f_a, 21, "t7:f.a");
-+	ASSERT_EQ(skel->bss->t7_f_b, 22, "t7:f.b");
-+	ASSERT_EQ(skel->bss->t7_ret, 133, "t7 ret");
-+
-+	ASSERT_EQ(skel->bss->t8_a, 16, "t8:a");
-+	ASSERT_EQ(skel->bss->t8_b, 17, "t8:b");
-+	ASSERT_EQ(skel->bss->t8_c, 18, "t8:c");
-+	ASSERT_EQ(skel->bss->t8_d, 19, "t8:d");
-+	ASSERT_EQ(skel->bss->t8_e, 20, "t8:e");
-+	ASSERT_EQ(skel->bss->t8_f_a, 21, "t8:f.a");
-+	ASSERT_EQ(skel->bss->t8_f_b, 22, "t8:f.b");
-+	ASSERT_EQ(skel->bss->t8_g, 23, "t8:g");
-+	ASSERT_EQ(skel->bss->t8_ret, 156, "t8 ret");
-+
- 	tracing_struct__detach(skel);
- destroy_skel:
- 	tracing_struct__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/progs/fentry_many_args.c b/tools/testing/selftests/bpf/progs/fentry_many_args.c
-new file mode 100644
-index 000000000000..b61bb92fee2c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fentry_many_args.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Tencent */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u64 test1_result = 0;
-+SEC("fentry/bpf_testmod_fentry_test7")
-+int BPF_PROG(test1, __u64 a, void *b, short c, int d, void *e, char f,
-+	     int g)
-+{
-+	test1_result = a == 16 && b == (void *)17 && c == 18 && d == 19 &&
-+		e == (void *)20 && f == 21 && g == 22;
-+	return 0;
-+}
-+
-+__u64 test2_result = 0;
-+SEC("fentry/bpf_testmod_fentry_test11")
-+int BPF_PROG(test2, __u64 a, void *b, short c, int d, void *e, char f,
-+	     int g, unsigned int h, long i, __u64 j, unsigned long k)
-+{
-+	test2_result = a == 16 && b == (void *)17 && c == 18 && d == 19 &&
-+		e == (void *)20 && f == 21 && g == 22 && h == 23 &&
-+		i == 24 && j == 25 && k == 26;
-+	return 0;
-+}
-+
-+__u64 test3_result = 0;
-+SEC("fentry/bpf_testmod_fentry_test11")
-+int BPF_PROG(test3, __u64 a, __u64 b, __u64 c, __u64 d, __u64 e, __u64 f,
-+	     __u64 g, __u64 h, __u64 i, __u64 j, __u64 k)
-+{
-+	test3_result = a == 16 && b == 17 && c == 18 && d == 19 &&
-+		e == 20 && f == 21 && g == 22 && h == 23 &&
-+		i == 24 && j == 25 && k == 26;
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/fexit_many_args.c b/tools/testing/selftests/bpf/progs/fexit_many_args.c
-new file mode 100644
-index 000000000000..53b335c2dafb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fexit_many_args.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Tencent */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u64 test1_result = 0;
-+SEC("fexit/bpf_testmod_fentry_test7")
-+int BPF_PROG(test1, __u64 a, void *b, short c, int d, void *e, char f,
-+	     int g, int ret)
-+{
-+	test1_result = a == 16 && b == (void *)17 && c == 18 && d == 19 &&
-+		e == (void *)20 && f == 21 && g == 22 && ret == 133;
-+	return 0;
-+}
-+
-+__u64 test2_result = 0;
-+SEC("fexit/bpf_testmod_fentry_test11")
-+int BPF_PROG(test2, __u64 a, void *b, short c, int d, void *e, char f,
-+	     int g, unsigned int h, long i, __u64 j, unsigned long k,
-+	     int ret)
-+{
-+	test2_result = a == 16 && b == (void *)17 && c == 18 && d == 19 &&
-+		e == (void *)20 && f == 21 && g == 22 && h == 23 &&
-+		i == 24 && j == 25 && k == 26 && ret == 231;
-+	return 0;
-+}
-+
-+__u64 test3_result = 0;
-+SEC("fexit/bpf_testmod_fentry_test11")
-+int BPF_PROG(test3, __u64 a, __u64 b, __u64 c, __u64 d, __u64 e, __u64 f,
-+	     __u64 g, __u64 h, __u64 i, __u64 j, __u64 k, __u64 ret)
-+{
-+	test3_result = a == 16 && b == 17 && c == 18 && d == 19 &&
-+		e == 20 && f == 21 && g == 22 && h == 23 &&
-+		i == 24 && j == 25 && k == 26 && ret == 231;
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/modify_return.c b/tools/testing/selftests/bpf/progs/modify_return.c
-index 8b7466a15c6b..3376d4849f58 100644
---- a/tools/testing/selftests/bpf/progs/modify_return.c
-+++ b/tools/testing/selftests/bpf/progs/modify_return.c
-@@ -47,3 +47,43 @@ int BPF_PROG(fexit_test, int a, __u64 b, int ret)
- 
- 	return 0;
- }
-+
-+static int sequence2;
-+
-+__u64 fentry_result2 = 0;
-+SEC("fentry/bpf_modify_return_test2")
-+int BPF_PROG(fentry_test2, int a, int *b, short c, int d, void *e, char f,
-+	     int g)
-+{
-+	sequence2++;
-+	fentry_result2 = (sequence2 == 1);
-+	return 0;
-+}
-+
-+__u64 fmod_ret_result2 = 0;
-+SEC("fmod_ret/bpf_modify_return_test2")
-+int BPF_PROG(fmod_ret_test2, int a, int *b, short c, int d, void *e, char f,
-+	     int g, int ret)
-+{
-+	sequence2++;
-+	/* This is the first fmod_ret program, the ret passed should be 0 */
-+	fmod_ret_result2 = (sequence2 == 2 && ret == 0);
-+	return input_retval;
-+}
-+
-+__u64 fexit_result2 = 0;
-+SEC("fexit/bpf_modify_return_test2")
-+int BPF_PROG(fexit_test2, int a, int *b, short c, int d, void *e, char f,
-+	     int g, int ret)
-+{
-+	sequence2++;
-+	/* If the input_reval is non-zero a successful modification should have
-+	 * occurred.
-+	 */
-+	if (input_retval)
-+		fexit_result2 = (sequence2 == 3 && ret == input_retval);
-+	else
-+		fexit_result2 = (sequence2 == 3 && ret == 29);
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/tracing_struct.c b/tools/testing/selftests/bpf/progs/tracing_struct.c
-index c435a3a8328a..515daef3c84b 100644
---- a/tools/testing/selftests/bpf/progs/tracing_struct.c
-+++ b/tools/testing/selftests/bpf/progs/tracing_struct.c
-@@ -18,6 +18,11 @@ struct bpf_testmod_struct_arg_3 {
- 	int b[];
- };
- 
-+struct bpf_testmod_struct_arg_4 {
-+	u64 a;
-+	int b;
-+};
-+
- long t1_a_a, t1_a_b, t1_b, t1_c, t1_ret, t1_nregs;
- __u64 t1_reg0, t1_reg1, t1_reg2, t1_reg3;
- long t2_a, t2_b_a, t2_b_b, t2_c, t2_ret;
-@@ -25,6 +30,9 @@ long t3_a, t3_b, t3_c_a, t3_c_b, t3_ret;
- long t4_a_a, t4_b, t4_c, t4_d, t4_e_a, t4_e_b, t4_ret;
- long t5_ret;
- int t6;
-+long t7_a, t7_b, t7_c, t7_d, t7_e, t7_f_a, t7_f_b, t7_ret;
-+long t8_a, t8_b, t8_c, t8_d, t8_e, t8_f_a, t8_f_b, t8_g, t8_ret;
-+
- 
- SEC("fentry/bpf_testmod_test_struct_arg_1")
- int BPF_PROG2(test_struct_arg_1, struct bpf_testmod_struct_arg_2, a, int, b, int, c)
-@@ -130,4 +138,50 @@ int BPF_PROG2(test_struct_arg_11, struct bpf_testmod_struct_arg_3 *, a)
- 	return 0;
- }
- 
-+SEC("fentry/bpf_testmod_test_struct_arg_7")
-+int BPF_PROG2(test_struct_arg_12, __u64, a, void *, b, short, c, int, d,
-+	      void *, e, struct bpf_testmod_struct_arg_4, f)
-+{
-+	t7_a = a;
-+	t7_b = (long)b;
-+	t7_c = c;
-+	t7_d = d;
-+	t7_e = (long)e;
-+	t7_f_a = f.a;
-+	t7_f_b = f.b;
-+	return 0;
-+}
-+
-+SEC("fexit/bpf_testmod_test_struct_arg_7")
-+int BPF_PROG2(test_struct_arg_13, __u64, a, void *, b, short, c, int, d,
-+	      void *, e, struct bpf_testmod_struct_arg_4, f, int, ret)
-+{
-+	t7_ret = ret;
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_testmod_test_struct_arg_8")
-+int BPF_PROG2(test_struct_arg_14, __u64, a, void *, b, short, c, int, d,
-+	      void *, e, struct bpf_testmod_struct_arg_4, f, int, g)
-+{
-+	t8_a = a;
-+	t8_b = (long)b;
-+	t8_c = c;
-+	t8_d = d;
-+	t8_e = (long)e;
-+	t8_f_a = f.a;
-+	t8_f_b = f.b;
-+	t8_g = g;
-+	return 0;
-+}
-+
-+SEC("fexit/bpf_testmod_test_struct_arg_8")
-+int BPF_PROG2(test_struct_arg_15, __u64, a, void *, b, short, c, int, d,
-+	      void *, e, struct bpf_testmod_struct_arg_4, f, int, g,
-+	      int, ret)
-+{
-+	t8_ret = ret;
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.40.1
-
+> +	struct scatterlist sgs;
+> +
+> +	coal_vq.vqn = cpu_to_le16(vqn);
+> +	coal_vq.coal.max_usecs = cpu_to_le32(max_usecs);
+> +	coal_vq.coal.max_packets = cpu_to_le32(max_packets);
+> +	sg_init_one(&sgs, &coal_vq, sizeof(coal_vq));
+> +
+> +	if (!virtnet_send_command(vi, VIRTIO_NET_CTRL_NOTF_COAL,
+> +				  VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET,
+> +				  &sgs))
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +static int virtnet_send_notf_coal_vq_cmds(struct virtnet_info *vi,
+> +					  struct ethtool_coalesce *ec,
+> +					  u16 queue)
+> +{
+> +	int err;
+> +
+> +	if (ec->rx_coalesce_usecs || ec->rx_max_coalesced_frames) {
+> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, rxq2vq(queue),
+> +						    ec->rx_coalesce_usecs,
+> +						    ec->rx_max_coalesced_frames);
+> +		if (err)
+> +			return err;
+> +		/* Save parameters */
+> +		vi->rq[queue].intr_coal.max_usecs = ec->rx_coalesce_usecs;
+> +		vi->rq[queue].intr_coal.max_packets = ec->rx_max_coalesced_frames;
+> +	}
+> +
+> +	if (ec->tx_coalesce_usecs || ec->tx_max_coalesced_frames) {
+> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, txq2vq(queue),
+> +						    ec->tx_coalesce_usecs,
+> +						    ec->tx_max_coalesced_frames);
+> +		if (err)
+> +			return err;
+> +		/* Save parameters */
+> +		vi->sq[queue].intr_coal.max_usecs = ec->tx_coalesce_usecs;
+> +		vi->sq[queue].intr_coal.max_packets = ec->tx_max_coalesced_frames;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
+>  {
+>  	/* usecs coalescing is supported only if VIRTIO_NET_F_NOTF_COAL
+> @@ -3094,23 +3148,36 @@ static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
+>  }
+>
+>  static int virtnet_set_coalesce_one(struct net_device *dev,
+> -				    struct ethtool_coalesce *ec)
+> +				    struct ethtool_coalesce *ec,
+> +				    bool per_queue,
+> +				    u32 queue)
+>  {
+>  	struct virtnet_info *vi = netdev_priv(dev);
+> -	int ret, i, napi_weight;
+> +	int queue_count = per_queue ? 1 : vi->max_queue_pairs;
+> +	int queue_number = per_queue ? queue : 0;
+>  	bool update_napi = false;
+> +	int ret, i, napi_weight;
+> +
+> +	if (queue >= vi->max_queue_pairs)
+> +		return -EINVAL;
+>
+>  	/* Can't change NAPI weight if the link is up */
+>  	napi_weight = ec->tx_max_coalesced_frames ? NAPI_POLL_WEIGHT : 0;
+> -	if (napi_weight ^ vi->sq[0].napi.weight) {
+> -		if (dev->flags & IFF_UP)
+> -			return -EBUSY;
+> -		else
+> +	for (i = queue_number; i < queue_count; i++) {
+> +		if (napi_weight ^ vi->sq[i].napi.weight) {
+> +			if (dev->flags & IFF_UP)
+> +				return -EBUSY;
+> +
+>  			update_napi = true;
+> +			queue_number = i;
+> +			break;
+> +		}
+>  	}
+>
+> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
+> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
+>  		ret = virtnet_send_notf_coal_cmds(vi, ec);
+> +	else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL))
+> +		ret = virtnet_send_notf_coal_vq_cmds(vi, ec, queue);
+>  	else
+>  		ret = virtnet_coal_params_supported(ec);
+>
+> @@ -3118,7 +3185,7 @@ static int virtnet_set_coalesce_one(struct net_device *dev,
+>  		return ret;
+>
+>  	if (update_napi) {
+> -		for (i = 0; i < vi->max_queue_pairs; i++)
+> +		for (i = queue_number; i < queue_count; i++)
+>  			vi->sq[i].napi.weight = napi_weight;
+>  	}
+>
+> @@ -3130,19 +3197,29 @@ static int virtnet_set_coalesce(struct net_device *dev,
+>  				struct kernel_ethtool_coalesce *kernel_coal,
+>  				struct netlink_ext_ack *extack)
+>  {
+> -	return virtnet_set_coalesce_one(dev, ec);
+> +	return virtnet_set_coalesce_one(dev, ec, false, 0);
+>  }
+>
+>  static int virtnet_get_coalesce_one(struct net_device *dev,
+> -				    struct ethtool_coalesce *ec)
+> +				    struct ethtool_coalesce *ec,
+> +				    bool per_queue,
+> +				    u32 queue)
+>  {
+>  	struct virtnet_info *vi = netdev_priv(dev);
+>
+> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
+> +	if (queue >= vi->max_queue_pairs)
+> +		return -EINVAL;
+> +
+> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
+>  		ec->rx_coalesce_usecs = vi->intr_coal_rx.max_usecs;
+>  		ec->tx_coalesce_usecs = vi->intr_coal_tx.max_usecs;
+>  		ec->tx_max_coalesced_frames = vi->intr_coal_tx.max_packets;
+>  		ec->rx_max_coalesced_frames = vi->intr_coal_rx.max_packets;
+> +	} else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL)) {
+> +		ec->rx_coalesce_usecs = vi->rq[queue].intr_coal.max_usecs;
+> +		ec->tx_coalesce_usecs = vi->sq[queue].intr_coal.max_usecs;
+> +		ec->tx_max_coalesced_frames = vi->sq[queue].intr_coal.max_packets;
+> +		ec->rx_max_coalesced_frames = vi->rq[queue].intr_coal.max_packets;
+>  	} else {
+>  		ec->rx_max_coalesced_frames = 1;
+>
+> @@ -3158,7 +3235,21 @@ static int virtnet_get_coalesce(struct net_device *dev,
+>  				struct kernel_ethtool_coalesce *kernel_coal,
+>  				struct netlink_ext_ack *extack)
+>  {
+> -	return virtnet_get_coalesce_one(dev, ec);
+> +	return virtnet_get_coalesce_one(dev, ec, false, 0);
+> +}
+> +
+> +static int virtnet_set_per_queue_coalesce(struct net_device *dev,
+> +					  u32 queue,
+> +					  struct ethtool_coalesce *ec)
+> +{
+> +	return virtnet_set_coalesce_one(dev, ec, true, queue);
+> +}
+> +
+> +static int virtnet_get_per_queue_coalesce(struct net_device *dev,
+> +					  u32 queue,
+> +					  struct ethtool_coalesce *ec)
+> +{
+> +	return virtnet_get_coalesce_one(dev, ec, true, queue);
+>  }
+>
+>  static void virtnet_init_settings(struct net_device *dev)
+> @@ -3291,6 +3382,8 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
+>  	.set_link_ksettings = virtnet_set_link_ksettings,
+>  	.set_coalesce = virtnet_set_coalesce,
+>  	.get_coalesce = virtnet_get_coalesce,
+> +	.set_per_queue_coalesce = virtnet_set_per_queue_coalesce,
+> +	.get_per_queue_coalesce = virtnet_get_per_queue_coalesce,
+>  	.get_rxfh_key_size = virtnet_get_rxfh_key_size,
+>  	.get_rxfh_indir_size = virtnet_get_rxfh_indir_size,
+>  	.get_rxfh = virtnet_get_rxfh,
+> diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
+> index 12c1c9699935..cc65ef0f3c3e 100644
+> --- a/include/uapi/linux/virtio_net.h
+> +++ b/include/uapi/linux/virtio_net.h
+> @@ -56,6 +56,7 @@
+>  #define VIRTIO_NET_F_MQ	22	/* Device supports Receive Flow
+>  					 * Steering */
+>  #define VIRTIO_NET_F_CTRL_MAC_ADDR 23	/* Set MAC address */
+> +#define VIRTIO_NET_F_VQ_NOTF_COAL 52	/* Device supports virtqueue notification coalescing */
+>  #define VIRTIO_NET_F_NOTF_COAL	53	/* Device supports notifications coalescing */
+>  #define VIRTIO_NET_F_GUEST_USO4	54	/* Guest can handle USOv4 in. */
+>  #define VIRTIO_NET_F_GUEST_USO6	55	/* Guest can handle USOv6 in. */
+> @@ -391,5 +392,18 @@ struct virtio_net_ctrl_coal_rx {
+>  };
+>
+>  #define VIRTIO_NET_CTRL_NOTF_COAL_RX_SET		1
+> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET		2
+> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_GET		3
+> +
+> +struct virtio_net_ctrl_coal {
+> +	__le32 max_packets;
+> +	__le32 max_usecs;
+> +};
+> +
+> +struct  virtio_net_ctrl_coal_vq {
+> +	__le16 vqn;
+> +	__le16 reserved;
+> +	struct virtio_net_ctrl_coal coal;
+> +};
+>
+>  #endif /* _UAPI_LINUX_VIRTIO_NET_H */
+> --
+> 2.39.1
+>
 
