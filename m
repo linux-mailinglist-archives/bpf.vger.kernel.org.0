@@ -1,93 +1,144 @@
-Return-Path: <bpf+bounces-4863-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4864-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41648750DCF
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 18:16:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2E3750E92
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 18:29:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 711581C21173
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 16:16:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB85D1C20D6F
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 16:29:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65AA021507;
-	Wed, 12 Jul 2023 16:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD70214F8E;
+	Wed, 12 Jul 2023 16:29:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39DE8214E1
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 16:16:24 +0000 (UTC)
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852FAE4D;
-	Wed, 12 Jul 2023 09:16:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
- s=s29768273; t=1689178574; x=1689783374; i=markus.elfring@web.de;
- bh=hAvjQeCs1XdLs9B1cYNcTRKKEbCVLUNw3SE220eXZ/I=;
- h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:In-Reply-To;
- b=kJLMfiTE2hXNp7LpFf7npVB5c9y1u8wAnRPoc8aBaltVPfcvGtN7A9vh+w5AteJVGfKtIzb
- TzrkumqDlWjI2sXi6KOLttUt0hI/fMd5YXVl6ZtlQD9ANE3JTUaf5G4ny1hdc5C5uNDxTHGmp
- aiExf0gp+Wr6Zk0VRnbPE4VASJSjxJSabgbMqaMDPyj+SlFxf977zfX44XSDMb5yX2WEKjezX
- SV6FODWBc3tj8XyjdCH1gPYwgy5uvLXcuHDK5bBPxr5UkBha86zej9t12wIcSpBUdR578P/Qx
- VRsx7lF/QqKuPyG+d262zhtGNq4aOxXAc9TeavY34UqZ1XbHkggA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.90.83]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M91Pe-1qMMKu15rq-006YwV; Wed, 12
- Jul 2023 18:16:14 +0200
-Message-ID: <8dd0bb16-0089-dff1-928e-ec30e61be45c@web.de>
-Date: Wed, 12 Jul 2023 18:16:12 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E06C14F74;
+	Wed, 12 Jul 2023 16:29:14 +0000 (UTC)
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE55F1FE1;
+	Wed, 12 Jul 2023 09:29:12 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-4814299c981so224164e0c.0;
+        Wed, 12 Jul 2023 09:29:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689179352; x=1691771352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SCWIxbKtlOhtInuz1uYnTQB5l4QrkHYBBkblWGqAp6I=;
+        b=T/YdCKa4t5s7idf/xPmv18zSSnVBmjtwNHB+1JA7+UquLP6PW8eEWJSd4ikNoONqCZ
+         6dq7FS0CzMwochyeA+sbyVOL1mLzRQcGm+hzFLuBHTPa4cYgrX45Sj9hiieojd+XMKDp
+         7seK0b3TGrrKRfYxHj3504ERITOHwsvBq3SUwIt27RfNRxJ1X8TasplxcXOMMfZG4MSF
+         sPOZpHf0uqWmw/UEdtSyb73HMRjPmrxcZeN/C8Ax3tYiMfMiaNc1f0kZeLMEyMbphy3A
+         rZBXL5TY7pDYxnzPwJFYmvzIpve/Fny7cQJeabQyEj9Klar9Y3otRhjUO1ZeNoi17s2H
+         dNzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689179352; x=1691771352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SCWIxbKtlOhtInuz1uYnTQB5l4QrkHYBBkblWGqAp6I=;
+        b=ZxWt7tGsRYS7fuxKdUOIe3GgFT+4YR7nYWyEPxJN2Y4Hv9CX2eI8leGlzuqJgGBLor
+         iBze71Ev3w9VeTYvaNDrRSciv9/3/8NPF5SQpyPiMT0GDJOnBc7RIsmBXUflAiocf2pK
+         LT2k+H8gYQxQULFn7d7Q9chZZS58bhbwxqh4QkChrHAHQ4O/FqdyEKY8U5lFAutgdzYd
+         ITIqQfNVKNdnd+QdfzwXlXUUPaWuNBXPeVfov6AqXz/jgG1j2ZLNWV0LaaZL1b7GlTPx
+         Mg5zMLrhcLT62gARpB54kBkQgVi5MFcEK/3Uu1eQtP8gGGml6W7dXxFlCpPwKW+mDexL
+         KIzQ==
+X-Gm-Message-State: ABy/qLbIOvXdfF4zPrrzFkuGZXcuSz0AQuVXa9tvCujpa/Xqs7klj7+9
+	AY9SxQF9dvgqBy3UWBG4ZYrjn0N/wBmVNvsAxTM=
+X-Google-Smtp-Source: APBJJlHh9tgQIUo78AXSalDVsI5ZWlEnnfddyQTtkdcY0CyVJeUVF6NjDJXp9x40yiafPedt3keoZT1EJJw8q8Khfm8=
+X-Received: by 2002:a1f:5842:0:b0:476:3544:773 with SMTP id
+ m63-20020a1f5842000000b0047635440773mr9870855vkb.11.1689179351780; Wed, 12
+ Jul 2023 09:29:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-To: Minjie Du <duminjie@vivo.com>, bpf@vger.kernel.org,
- kernel-janitors@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: opensource.kernel@vivo.com, LKML <linux-kernel@vger.kernel.org>
-References: <20230712131630.16552-1-duminjie@vivo.com>
-Subject: Re: [PATCH] lib: fix two parameters check in ei_debugfs_init()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20230712131630.16552-1-duminjie@vivo.com>
-Content-Type: text/plain; charset=UTF-8
+References: <20230707193006.1309662-1-sdf@google.com> <20230707193006.1309662-10-sdf@google.com>
+ <20230711225657.kuvkil776fajonl5@MacBook-Pro-8.local> <CAKH8qBtawUTjFQ=hhTzXa2zTBwOpxurjhduxZV+eUg8rnJUJVw@mail.gmail.com>
+ <CAADnVQKnWCYjOQA-=61pDP4TQ-LKC7S-tOSX9Lm6tB3vJcf4dw@mail.gmail.com>
+ <CAKH8qBvnMd2JgobQf1bvc=x7uEn1RPVHcuu3F7gB6vS627g-Xg@mail.gmail.com>
+ <CAADnVQLCRrPtQMPBuYiKv44SLDiYwz69KZ=0e0HxJdPQz4x2HQ@mail.gmail.com>
+ <ZK4eFox0DwbpyIJv@google.com> <CAADnVQJnf=KJ17MJWujkj+oSxp7kNNK1k08PvH+Wx617yAtZ8Q@mail.gmail.com>
+ <CAKH8qBvGbJhAeNQ0zZxFFf_V_Oq=85xwx7KgsL1xA7GK+qcFnw@mail.gmail.com> <CAF=yD-LO=LDWhKM--r9F119-J_9v-Znm4saxFrhhxhMV6nnmJQ@mail.gmail.com>
+In-Reply-To: <CAF=yD-LO=LDWhKM--r9F119-J_9v-Znm4saxFrhhxhMV6nnmJQ@mail.gmail.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Wed, 12 Jul 2023 12:28:34 -0400
+Message-ID: <CAF=yD-JMq=6MJGbpyf0knR+k9zfs4b1k7NqutM49WYqHmeH2nQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next v3 09/14] net/mlx5e: Implement devtx kfuncs
+To: Stanislav Fomichev <sdf@google.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
+	Willem de Bruijn <willemb@google.com>, David Ahern <dsahern@kernel.org>, 
+	"Karlsson, Magnus" <magnus.karlsson@intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, xdp-hints@xdp-project.net
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dEnq21uZWjqUUF/m2gm01WDb8jWSvqeg25ebgxN6RdJhQ88DqTO
- AlzEC7Jkuajr6ZwCJP2K6Q5tJ3R/+90D8HtG5JOh2iMA0gg8KfSV07OEkmUQKc1kPgTRbms
- B5s5OGYFyeoiSEVMPar9OhQWKf7EBOSmLRDTklKOGGpMVO29mKZpv3GTlwBxKzoV1AC2+Vd
- QKnZxh9s4aKBzuz+WB8pw==
-UI-OutboundReport: notjunk:1;M01:P0:+GN9spQddJg=;yuUEYs1gEC46YeA9FN6ICJOOpOF
- JuGcm78WyYGURIXMHc9XUVh4kZUxMc9d/HFxfS/qaKEojCyCw0kNL7Y22jKuHXfZ4jbxUu/2h
- 78BpkPiqxLnGJGpmx/1gXZWhbpj/tjdh+QeCtE9lHFdBBcU9k+YAbHwOXQmcISeYYP05KU1g8
- 9nYo5hPUePOE2R1IQioD1N5RFhGogbkANp1iSsl9+Gv1cS7p9fUL6T2kceI9f2+AG1s2w2Su5
- bWv5FB+Lo6v0OxZsTDqhFVR5iQhoM0E2fnEmuu3nHE3cJQde0YAAXV0XdZ4tqyQ3VTY8hrKrU
- 1b9UAyKZMPQ7UJOtyt8Y+Qhtk6T9PmnHqA2QxqBTzvjaLF0iDvaJz8Moh+Kwqr2vIfQ6ZqDMA
- voDkGHiAUBKo//riGcAWooaLZj8Oc1MeTleCbLd6iotWNbTDjnCKf4x+6uDHHymBsjyhBx1Ee
- m3hnLdsElP65v+tNgUyhjGP6abjdusdXgQV4RctR20mnZtuYKauEVedB1IcMxxRHxcVW/ScHL
- 8G+YoNazYtNUVdmVh5d+Zw/u6lkNSXvkjIPI/KCw+0JucyVgafRhz/WNeRkkWWVEQrUoOUgnA
- 3o1lOrRCvGkTF7W08cnq1FjCiZOwx1qmX/2r+9RcioLNi5xXXiDkfTOkKHSB7Dx8L70V8UOZZ
- 2ZBYzimEBU8nOrwr1plHxswokyqKKmxJTWqpWIZWtaqEHW/nN3kxOD4o4vM8P1atNcV8EooKy
- 6Pp47I7liHux3eq23Y4x5QR2PeUcsBG9Gbn/t9JsPszXpX0YSfy0nAOAQNVupCpg9Nso8+W1/
- d7We4H6MpjL7ZoKyLLk7bi/9d4q8fgWjXG2mzDdt0GCgc7fRZlNgZnRmjM8ZQ7okJGIIFQekV
- 82N9iDuIInRRLaIVc3RNT5RMYMBI+MiABg+j123SmSciUKu9UahcdVgDyD+yqCqMEjlU5CHk0
- cX+Vl0IaKkn7M7JJunyVYbkq++I=
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-> Make IS_ERR() judge the debugfs_create_dir() function return
-> in ei_debugfs_init().
+On Wed, Jul 12, 2023 at 11:16=E2=80=AFAM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> On Wed, Jul 12, 2023 at 1:36=E2=80=AFAM Stanislav Fomichev <sdf@google.co=
+m> wrote:
+> >
+> > On Tue, Jul 11, 2023 at 9:59=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Jul 11, 2023 at 8:29=E2=80=AFPM Stanislav Fomichev <sdf@googl=
+e.com> wrote:
+> > > >
+> > > >
+> > > > This will slow things down, but not to the point where it's on par
+> > > > with doing sw checksum. At least in theory.
+> > > > We can't stay at skb when using AF_XDP. AF_XDP would benefit from h=
+aving
+> > > > the offloads.
+> > >
+> > > To clarify: yes, AF_XDP needs generalized HW offloads.
+> >
+> > Great! To reiterate, I'm mostly interested in af_xdp wrt tx
+> > timestamps. So if the consensus is not to mix xdp-tx and af_xdp-tx,
+> > I'm fine with switching to adding some fixed af_xdp descriptor format
+> > to enable offloads on tx.
+> >
+> > > I just don't see how xdp tx offloads are moving a needle in that dire=
+ction.
+> >
+> > Let me try to explain how both might be similar, maybe I wasn't clear
+> > enough on that.
+> > For af_xdp tx packet, the userspace puts something in the af_xdp frame
+> > metadata area (headrom) which then gets executed/interpreted by the
+> > bpf program at devtx (which calls kfuncs to enable particular
+> > offloads).
+> > IOW, instead of defining some fixed layout for the tx offloads, the
+> > userspace and bpf program have some agreement on the layout (and bpf
+> > program "applies" the offloads by calling the kfuncs).
+> > Also (in theory) the same hooks can be used for xdp-tx.
+> > Does it make sense? But, again, happy to scratch that whole idea if
+> > we're fine with a fixed layout for af_xdp.
+>
+> Checksum offload is an important demonstrator too.
+>
+> It is admittedly a non-trivial one. Checksum offload has often been
+> discussed as a pain point ("protocol ossification").
+>
+> In general, drivers can accept every CHECKSUM_COMPLETE skb that
 
-Would a subject like =E2=80=9C[PATCH v2] lib/error-inject: Fix checks for =
-two variables in ei_debugfs_init()=E2=80=9D
-be more appropriate?
-
-Regards,
-Markus
+Erm.. CHECKSUM_PARTIAL
 
