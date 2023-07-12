@@ -1,158 +1,191 @@
-Return-Path: <bpf+bounces-4877-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4878-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BD9175138F
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 00:31:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 903B87514A4
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 01:44:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E738281A18
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 22:31:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C9221C21050
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 23:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E34AFBFB;
-	Wed, 12 Jul 2023 22:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C53C81D304;
+	Wed, 12 Jul 2023 23:44:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D6314F8C;
-	Wed, 12 Jul 2023 22:30:51 +0000 (UTC)
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8641BF9;
-	Wed, 12 Jul 2023 15:30:50 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6b5d7e60015so26910a34.0;
-        Wed, 12 Jul 2023 15:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689201049; x=1691793049;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kiCtA/22/EFm5piD1C3kb16M+b7jXxq1GCQ/ove9Xq0=;
-        b=E6Wp19MqbiLa2w7w8XBEoyRhEcfcSxvTvj2OkSTX3vp6LRYcYoZiMzggqAGNwlx5Iz
-         QX0n4wA+Ke0Jt6PAMil195jlchqfWxTW/CZGRXZ3iHGaNjrJG1lfmEOSiQMujagfN8ft
-         dkpA8+tObItaUlZAUFA/k35Cu5CRMRGIKFSrckM89xjNXopjLGMe836Bqu1ONCbcOD7Y
-         Jyb0HD8IQ5xOixDntnw+21DCZaJrNjA32NyeKBQK4eP2dooEu1IHi9Home9BiWH1IOrx
-         KWumjonVVr8FvJebrZ3EopygegOb5rMNJtTUXeHqf82x2djD0ZGhnqaMSqcmWB+zwp/M
-         xyZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689201049; x=1691793049;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kiCtA/22/EFm5piD1C3kb16M+b7jXxq1GCQ/ove9Xq0=;
-        b=ClZW0kAbrJ0SI37QjUrhhqqmvXVY4LgBXPdh1vdyYZDJsROOQhjCZjP7zdIRA7W1Wd
-         JdHKaBDJLYl37HV39grgVDh/pCLCO6vCPqRLgm+y9Hj2I0aKfCf6QMdEIIyHtKjJ2N9t
-         KrZdhvn9B4x1IqRUCx5TFiU7c1HSmd1zRXpKkTBTWzq263PjTpaiVL32e98UQpFEpk/2
-         lIy266CwfXBflID7AkXeVCayAgdkPdOcZakhJQAtoR23vhjIk5QOEch+8Xt/n09jfPfp
-         X9LLVAZ48b1X/63dwF8KR+I//0I+HLn8EQDfm+0I5D2YRqsHoYaK62SHHcm8uwQvhn+r
-         cMPA==
-X-Gm-Message-State: ABy/qLYTfE5h9/Mlgw/yECz78TdfwwtTxEz/wSx/fXr0MsIBwkl5tfci
-	jHuMFk3wWJVMwtELxvhsJHw=
-X-Google-Smtp-Source: APBJJlE/TrK+/bVBSaKKfwmTCH2roaa04EPD0bWHMKadQ45qsGluYb662stQWtWVrmHVvWnKupUpzw==
-X-Received: by 2002:a05:6830:e05:b0:6b8:9705:5035 with SMTP id do5-20020a0568300e0500b006b897055035mr18929269otb.33.1689201049336;
-        Wed, 12 Jul 2023 15:30:49 -0700 (PDT)
-Received: from localhost.localdomain ([2620:10d:c090:400::5:3399])
-        by smtp.gmail.com with ESMTPSA id i11-20020a17090a2acb00b00265b0268382sm4431105pjg.37.2023.07.12.15.30.47
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 12 Jul 2023 15:30:48 -0700 (PDT)
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: davem@davemloft.net
-Cc: kuba@kernel.org,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	netdev@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D3D81D2E9;
+	Wed, 12 Jul 2023 23:44:28 +0000 (UTC)
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE11EA;
+	Wed, 12 Jul 2023 16:44:24 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id 7191F3200951;
+	Wed, 12 Jul 2023 19:44:23 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 12 Jul 2023 19:44:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
+	:subject:to:to; s=fm1; t=1689205462; x=1689291862; bh=32DhVpjlB5
+	qv2RGsaSG2S3DxCzE7pSAz5Ol3v4ZOloA=; b=Q+6YFmiE/uWOUcwnG5JjGTGP9a
+	DfZaL1JEplHBINYyebNSzg4lgY7AW9vHXwo1ZdL+NnfcO2S6wWoqMw0pMXG0brRV
+	nd0UIYW3nFTcLOqR3QFD/T8gfsZ4BjnWCEEyR0TDDKTTM1OZNs4qCIM0OIdtfPBN
+	oMVgJ8L4ZJoqa8lZ8L6tfmOXxXXJI6GASPJ6xwLHInTRE8GSLmwU1n4BjbmXU58x
+	oxpXoU5RYsXXOU3BeNudpYtAI4jAnAiBoN6cxcNeTqPkn8ZFJjy+NMNeJ6hDlYZr
+	N5BfwsKKOWQFPzE7GJOpsbLo5Pu9CPkwg+L0WjcvF8Day37kpx83w9Iqbkug==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1689205462; x=1689291862; bh=32DhVpjlB5qv2
+	RGsaSG2S3DxCzE7pSAz5Ol3v4ZOloA=; b=Lx/iwIed1H8kiK2S5PTiWd7pYxiKo
+	6yzN4bomecJ8insQJaL/uCXVH3aehCCXmDnMxA+xs0RCtQsGZ8yxBtTr3kex8Uj8
+	7AUtDOhJ2Pe3UTF5wc/12Hk9AF3pnjjKhRpHd1I6rFM95gx0O0S/lvM/mP/n8GNS
+	0eLJeOxlRXQ2T5boTwFXnkOuXd7Ho5qTGg2SxXVAPgxY9iu2Eb6hzg6WK0lBISzo
+	2E47KIHo8uZnUMdvLFYfAtZBb5CB+1bAJAm0rlUOWztaiupBxE1TelQFJ5qpuy0s
+	zF1uDIMsKZCsN0nv4m7eoYQ/mUdYckC9BdPTm+9Gb9kVVIrxyNiTwhKaA==
+X-ME-Sender: <xms:1jqvZOozHou81WdtgXLUfY9lJ52l4zIe2vRTza4mA9Pme5H9xm4_gQ>
+    <xme:1jqvZMpyLm4IghaNnFnqSeul6Zv9TfaLbGx7IbOPEo__u5yPjr_h3sI7JkKBLpaxa
+    hBKMkomF394Ca86vQ>
+X-ME-Received: <xmr:1jqvZDO0gJrilWd9YDPAb0LGjjqBq4hhQYXgzsNGj6PsBw36uLif5gdPxNIzPhGKbjtl_9woyJQ8_HzXIFepUt2iYdJHfgmTdPFGKYVlbmk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeefgddvgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephffvve
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeetgefhhfeigfejtddvteefff
+    fgteekteduiedtkeevleduvdejueeggfdtfeegfeenucffohhmrghinhepihgvthhfrdho
+    rhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepug
+    iguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:1jqvZN73mQjvozEWfF4-BHrk0AA8nQxhoy8vkl_-6aFiHQdMGH86Og>
+    <xmx:1jqvZN7BKz_LGhpqVcWj8hZFuiwJeXlyzP80eAwsTLw_ZXuOwE79tg>
+    <xmx:1jqvZNibXfOKLiBPs7yKP35wI3A9TvqJayLiNsF2jaZELMj06tUojw>
+    <xmx:1jqvZHsP4Trw8WbzxrHouJNbZHsc4panCNpegQJhMOofCIy3OsXMug>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 12 Jul 2023 19:44:21 -0400 (EDT)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
-	kernel-team@fb.com
-Subject: pull-request: bpf 2023-07-12
-Date: Wed, 12 Jul 2023 15:30:45 -0700
-Message-Id: <20230712223045.40182-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
+	coreteam@netfilter.org,
+	netfilter-devel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	fw@strlen.de,
+	daniel@iogearbox.net
+Cc: dsahern@kernel.org
+Subject: [PATCH bpf-next v4 0/6] Support defragmenting IPv(4|6) packets in BPF
+Date: Wed, 12 Jul 2023 17:43:55 -0600
+Message-ID: <cover.1689203090.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+=== Context ===
 
-The following pull-request contains BPF updates for your *net* tree.
+In the context of a middlebox, fragmented packets are tricky to handle.
+The full 5-tuple of a packet is often only available in the first
+fragment which makes enforcing consistent policy difficult. There are
+really only two stateless options, neither of which are very nice:
 
-We've added 5 non-merge commits during the last 7 day(s) which contain
-a total of 7 files changed, 93 insertions(+), 28 deletions(-).
+1. Enforce policy on first fragment and accept all subsequent fragments.
+   This works but may let in certain attacks or allow data exfiltration.
 
-The main changes are:
+2. Enforce policy on first fragment and drop all subsequent fragments.
+   This does not really work b/c some protocols may rely on
+   fragmentation. For example, DNS may rely on oversized UDP packets for
+   large responses.
 
-1) Fix max stack depth check for async callbacks, from Kumar.
+So stateful tracking is the only sane option. RFC 8900 [0] calls this
+out as well in section 6.3:
 
-2) Fix inconsistent JIT image generation, from Björn.
+    Middleboxes [...] should process IP fragments in a manner that is
+    consistent with [RFC0791] and [RFC8200]. In many cases, middleboxes
+    must maintain state in order to achieve this goal.
 
-3) Use trusted arguments in XDP hints kfuncs, from Larysa.
+=== BPF related bits ===
 
-4) Fix memory leak in cpu_map_update_elem, from Pu.
+Policy has traditionally been enforced from XDP/TC hooks. Both hooks
+run before kernel reassembly facilities. However, with the new
+BPF_PROG_TYPE_NETFILTER, we can rather easily hook into existing
+netfilter reassembly infra.
 
-Please consider pulling these changes from:
+The basic idea is we bump a refcnt on the netfilter defrag module and
+then run the bpf prog after the defrag module runs. This allows bpf
+progs to transparently see full, reassembled packets. The nice thing
+about this is that progs don't have to carry around logic to detect
+fragments.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+=== Changelog ===
 
-Thanks a lot!
+Changes from v3:
+* Correctly initialize `addrlen` stack var for recvmsg()
 
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
+Changes from v2:
 
-Hou Tao, Jesper Dangaard Brouer, Stanislav Fomichev
+* module_put() if ->enable() fails
+* Fix CI build errors
 
-----------------------------------------------------------------
+Changes from v1:
 
-The following changes since commit 6843306689aff3aea608e4d2630b2a5a0137f827:
+* Drop bpf_program__attach_netfilter() patches
+* static -> static const where appropriate
+* Fix callback assignment order during registration
+* Only request_module() if callbacks are missing
+* Fix retval when modprobe fails in userspace
+* Fix v6 defrag module name (nf_defrag_ipv6_hooks -> nf_defrag_ipv6)
+* Simplify priority checking code
+* Add warning if module doesn't assign callbacks in the future
+* Take refcnt on module while defrag link is active
 
-  Merge tag 'net-6.5-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-07-05 15:44:45 -0700)
 
-are available in the Git repository at:
+[0]: https://datatracker.ietf.org/doc/html/rfc8900
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
 
-for you to fetch changes up to 2e06c57d66d3f6c26faa5f5b479fb3add34ce85a:
+Daniel Xu (6):
+  netfilter: defrag: Add glue hooks for enabling/disabling defrag
+  netfilter: bpf: Support BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+  netfilter: bpf: Prevent defrag module unload while link active
+  bpf: selftests: Support not connecting client socket
+  bpf: selftests: Support custom type and proto for client sockets
+  bpf: selftests: Add defrag selftests
 
-  xdp: use trusted arguments in XDP hints kfuncs (2023-07-11 20:04:50 -0700)
+ include/linux/netfilter.h                     |  15 +
+ include/uapi/linux/bpf.h                      |   5 +
+ net/ipv4/netfilter/nf_defrag_ipv4.c           |  17 +-
+ net/ipv6/netfilter/nf_defrag_ipv6_hooks.c     |  11 +
+ net/netfilter/core.c                          |   6 +
+ net/netfilter/nf_bpf_link.c                   | 150 +++++++++-
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../selftests/bpf/generate_udp_fragments.py   |  90 ++++++
+ .../selftests/bpf/ip_check_defrag_frags.h     |  57 ++++
+ tools/testing/selftests/bpf/network_helpers.c |  26 +-
+ tools/testing/selftests/bpf/network_helpers.h |   3 +
+ .../bpf/prog_tests/ip_check_defrag.c          | 283 ++++++++++++++++++
+ .../selftests/bpf/progs/ip_check_defrag.c     | 104 +++++++
+ 14 files changed, 754 insertions(+), 22 deletions(-)
+ create mode 100755 tools/testing/selftests/bpf/generate_udp_fragments.py
+ create mode 100644 tools/testing/selftests/bpf/ip_check_defrag_frags.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ip_check_defrag.c
 
-----------------------------------------------------------------
-for-netdev
+-- 
+2.41.0
 
-----------------------------------------------------------------
-Alexei Starovoitov (1):
-      Merge branch 'Fix for check_max_stack_depth'
-
-Björn Töpel (1):
-      riscv, bpf: Fix inconsistent JIT image generation
-
-Kumar Kartikeya Dwivedi (2):
-      bpf: Fix max stack depth check for async callbacks
-      selftests/bpf: Add selftest for check_stack_max_depth bug
-
-Larysa Zaremba (1):
-      xdp: use trusted arguments in XDP hints kfuncs
-
-Pu Lehui (1):
-      bpf: cpumap: Fix memory leak in cpu_map_update_elem
-
- arch/riscv/net/bpf_jit.h                           |  6 ++--
- arch/riscv/net/bpf_jit_core.c                      | 19 ++++++----
- kernel/bpf/cpumap.c                                | 40 +++++++++++++---------
- kernel/bpf/verifier.c                              |  5 +--
- net/core/xdp.c                                     |  2 +-
- .../selftests/bpf/prog_tests/async_stack_depth.c   |  9 +++++
- .../selftests/bpf/progs/async_stack_depth.c        | 40 ++++++++++++++++++++++
- 7 files changed, 93 insertions(+), 28 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/async_stack_depth.c
- create mode 100644 tools/testing/selftests/bpf/progs/async_stack_depth.c
 
