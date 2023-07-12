@@ -1,126 +1,104 @@
-Return-Path: <bpf+bounces-4866-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4867-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50535751055
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 20:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11D63751068
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 20:20:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C259281A17
-	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 18:11:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA897281A31
+	for <lists+bpf@lfdr.de>; Wed, 12 Jul 2023 18:20:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0EA20FB2;
-	Wed, 12 Jul 2023 18:11:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1FD20FB4;
+	Wed, 12 Jul 2023 18:20:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA891F95D
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 18:11:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8820C433CC;
-	Wed, 12 Jul 2023 18:11:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689185471;
-	bh=md16UXiz1GpqNsTJoRJ0ef7Vy1yKmHuNjtAKI4WEaXA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=mhFFHJgPREKia8kCFwCEiKafU251CX5GYE5LqijBDg+dm+e72t5vAmLdYnHsl9XKc
-	 SFQlLgzU8RWnx/4PoEjdq6iSLFjYHHDR3SLRXQ/stR2bVu4CihWqET20bWwiVb4alP
-	 rKZfvOdQMmDyEiSqEaVSAewxP93NSMZ4Dr4DAXd8mZrYMpgSf38vtiQwgNj3g/5LGD
-	 Rb8OgSZvyJr7yreNyql42EjQ9YqGu+zEAjUtvdlSfdBPGgRzLrXNnyOX5M/s86l6W7
-	 5w8yW3OeqXI8FaD1ZEx6sgthc2drs4aS7AWR5gtTAe8S525qiMVA071l/kXAh3ng1x
-	 gkbtcsPXVyMFw==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Song Shuai <suagrfillet@gmail.com>, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, rostedt@goodmis.org,
- mhiramat@kernel.org, mark.rutland@arm.com, guoren@kernel.org,
- suagrfillet@gmail.com, bjorn@rivosinc.com, jszhang@kernel.org,
- conor.dooley@microchip.com, Pu Lehui <pulehui@huawei.com>,
- palmer@rivosinc.com
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, songshuaishuai@tinylab.org,
- bpf@vger.kernel.org
-Subject: Re: [PATCH V11 0/5] riscv: Optimize function trace
-In-Reply-To: <20230627111612.761164-1-suagrfillet@gmail.com>
-References: <20230627111612.761164-1-suagrfillet@gmail.com>
-Date: Wed, 12 Jul 2023 20:11:08 +0200
-Message-ID: <87jzv5q9tv.fsf@all.your.base.are.belong.to.us>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087CA14F7D
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 18:20:42 +0000 (UTC)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F22173C;
+	Wed, 12 Jul 2023 11:20:41 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b6b98ac328so114756791fa.0;
+        Wed, 12 Jul 2023 11:20:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689186040; x=1691778040;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lmzL+tJfYuaQRi+b/kypiwix9rmrgj487gAoOBBglmI=;
+        b=JaMy/SVWGsojNIYOvqf0+SBKdpKdC/kVMQvKUoBHCsw3nkbEvV8xSWQL5/WrCQ0FwZ
+         NZP7oGRPbxhmlBu2SA29QvGojJLFaBAuoaFRc+hcNBHZ1/OxYN9o/ReWNbVTZ4uLxuxa
+         B4p1F7V2hgXH5qyP4kkPAo0HPn9bCa347FTHdWoLLwOH9h1Xhq2Daj0KN1L/V4tX/Yex
+         U+MvT4okzCZ9Sc3d9TS+JLcIfSulleaKhPqwtEBYhRzwc3zgTsllC0MWIR1kLRwBeBtO
+         Sf2kve5Fegw1RC5rOYCM2xeh+ddD8KTbCroWTxFUcP1DE+TOiImpXPQ/E17eZjynhC8O
+         Xn/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689186040; x=1691778040;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lmzL+tJfYuaQRi+b/kypiwix9rmrgj487gAoOBBglmI=;
+        b=X06MWZEYG6P0jJ49IY3skA7BAewN2N0EPpWa8SkZf820/hRHjPiV8uqyV7SndI6oQQ
+         MqNpjd150HLIjb+buUu1IKf8gy54GKn/tDz64d0p+fAdDDp/E4otBdLz4Vzn5yoJjuci
+         FFnmnZmV/0OpVFM1FnIYMyXA1PRmnmr81oefwsPu/l1tJ+Akd2MirieRDqzfLcZzKvve
+         6GCg7zOYT2zmSd04ZKBbOyFkFxDPkHE2G55UuEReBNwUArSEijCfvQNo8YqkXXaWGIEK
+         ceZKoMqISQNLKns+4pvV+YSQFwPbiox8beqK7Ki6WneN2QVvPSj2ssjaZu+N/yHWDXPt
+         yS4Q==
+X-Gm-Message-State: ABy/qLbWgHU+uFemTL2smlufk5QQKxhIrGgtkPwA0mZae4UxwMayPe3L
+	sGQPzNExHLAOsoWJbZ7vFw+897sTRfoRhP792Cw=
+X-Google-Smtp-Source: APBJJlG1bJV6A2TAHRmW5wfhHWdt28HxYb8FlRr8dKOcN3MRPEdg2agk5OadUa6eF7fjc5hBfe0J1rOSoBzXfUvyyAE=
+X-Received: by 2002:a2e:b0d1:0:b0:2b5:7f93:b3b0 with SMTP id
+ g17-20020a2eb0d1000000b002b57f93b3b0mr16089265ljl.17.1689186039531; Wed, 12
+ Jul 2023 11:20:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <ab865e6d-06c5-078e-e404-7f90686db50d@amd.com> <CAEf4BzZK=zm9PkUwzJRgeQ=KXjKOK9TENUMTz+_FmU6kPjab7Q@mail.gmail.com>
+ <78044efc-98d7-cd49-d2b5-4c2abb16d6c9@amd.com> <CAEf4BzZCrDftNdNicuMS7NoF+hNiQEQwsH_-RMBh3Xxg+AQwiw@mail.gmail.com>
+ <146e00be-98c8-873d-081f-252647b71b12@amd.com> <ZK7JMjN9LXTFEOvT@kernel.org>
+In-Reply-To: <ZK7JMjN9LXTFEOvT@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 12 Jul 2023 11:20:27 -0700
+Message-ID: <CAADnVQLpfmJ7yg-QtwfOFATJb=JcSDDxo11JG32KOQ6K=sNp4Q@mail.gmail.com>
+Subject: Re: [BUG] perf test: Regression because of d6e6286a12e7
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ravi Bangoria <ravi.bangoria@amd.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Ian Rogers <irogers@google.com>, linux-perf-users <linux-perf-users@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Manu Bretelle <chantra@meta.com>, 
+	=?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>, 
+	Mykola Lysenko <mykolal@meta.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Song Shuai <suagrfillet@gmail.com> writes:
-
-[...]
-
-> Add WITH_DIRECT_CALLS support [3] (patch 3, 4)
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-We've had some offlist discussions, so here's some input for a wider
-audience! Most importantly, this is for Palmer, so that this series is
-not merged until a proper BPF trampoline fix is in place.
-
-Note that what's currently usable from BPF trampoline *works*. It's
-when this series is added that it breaks.
-
-TL;DR This series adds DYNAMIC_FTRACE_WITH_DIRECT_CALLS, which enables
-fentry/fexit BPF trampoline support. Unfortunately the
-fexit/BPF_TRAMP_F_SKIP_FRAME parts of the RV BPF trampoline breaks
-with this addition, and need to be addressed *prior* merging this
-series. An easy way to reproduce, is just calling any of the kselftest
-tests that uses fexit patching.
-
-The issue is around the nop seld, and how a call is done; The nop sled
-(patchable-function-entry) size changed from 16B to 8B in commit
-6724a76cff85 ("riscv: ftrace: Reduce the detour code size to half"), but
-BPF code still uses the old 16B. So it'll work for BPF programs, but not
-for regular kernel functions.
-
-An example:
-
-  | ffffffff80fa4150 <bpf_fentry_test1>:
-  | ffffffff80fa4150:       0001                    nop
-  | ffffffff80fa4152:       0001                    nop
-  | ffffffff80fa4154:       0001                    nop
-  | ffffffff80fa4156:       0001                    nop
-  | ffffffff80fa4158:       1141                    add     sp,sp,-16
-  | ffffffff80fa415a:       e422                    sd      s0,8(sp)
-  | ffffffff80fa415c:       0800                    add     s0,sp,16
-  | ffffffff80fa415e:       6422                    ld      s0,8(sp)
-  | ffffffff80fa4160:       2505                    addw    a0,a0,1
-  | ffffffff80fa4162:       0141                    add     sp,sp,16
-  | ffffffff80fa4164:       8082                    ret
-
-is patched to:
-
-  | ffffffff80fa4150:  f70c0297                     auipc   t0,-150208512
-  | ffffffff80fa4154:  eb0282e7                     jalr    t0,t0,-336
-
-The return address to bpf_fentry_test1 is stored in t0 at BPF
-trampoline entry. Return to the *parent* is in ra. The trampline has
-to deal with this.
-
-For BPF_TRAMP_F_SKIP_FRAME/CALL_ORIG, the BPF trampoline will skip too
-many bytes, and not correctly handle parent calls.
-
-Further; The BPF trampoline currently has a different way of patching
-the nops for BPF programs, than what ftrace does. That should be changed
-to match what ftrace does (auipc/jalr t0).
-
-To summarize:
- * Align BPF nop sled with patchable-function-entry: 8B.
- * Adapt BPF trampoline for 8B nop sleds.
- * Adapt BPF trampoline t0 return, ra parent scheme.
-=20
-
-Cheers,
-Bj=C3=B6rn
+On Wed, Jul 12, 2023 at 8:39=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Right, perhaps the libbpf CI could try building perf, preferably with
+> BUILD_BPF_SKEL=3D1, to enable these tools:
 
 
+That would be great.
+perf experts probably should do pull-req to bpf CI to enable that.
+See slides:
+http://vger.kernel.org/bpfconf2022_material/lsfmmbpf2022-bpf-ci.pdf
+
+"How to contribute?
+Depending on what part of CI you are changing, you can create a pull reques=
+t to
+https://github.com/kernel-patches/vmtest/
+https://github.com/libbpf/ci
+"
 
