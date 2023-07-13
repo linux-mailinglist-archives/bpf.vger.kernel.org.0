@@ -1,54 +1,58 @@
-Return-Path: <bpf+bounces-4940-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4933-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB40E7518A5
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 08:11:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D234751897
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 08:09:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC5281C212BF
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:11:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08CA5281AF5
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02E95685;
-	Thu, 13 Jul 2023 06:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832935690;
+	Thu, 13 Jul 2023 06:08:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815595679
-	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 06:11:14 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EEC19B9
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:11:13 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 36CMvQUo028524
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:11:12 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 559B85681
+	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 06:08:26 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBC51BF6
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:24 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36CMvWrG011838
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:24 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=f//xTpd/MTYsvqc8K85TbzOvhQ7e1ytJWokN+D88dVY=;
- b=D2I9QMvne5X/XDpsWbWdOgd5Gv2AyVpZGlcq8mHLJLlEshApdQpc8+NeewJQU4Gj7O0P
- lXHDJmzA6yrwb4/VOt/F8P+NZOCUH6fbg+hHo/KVQsydqYNruhwqpa6YS1ePYhIG8J9O
- aUJhQ9ATqVe8C6jejRyj7DHUAZuzQXHd610= 
+ bh=vsDYhRf2Mj4yiIBoF3rkUyB5AzCf78obvnWjrJVwGB4=;
+ b=I23rOw4Hzixhev+3gacpFMlKAqsfS8VdPKg3yUcUVED0bDVN5zmV0TMcEM5/0Sh+2lcY
+ 930vJqnMBgn0oOT/EGwjKkkxofCWzfaSKJ4GuMq7sFvtBzCy/K7WP/aZJA+a7yToSRH9
+ ClBlv3zSYY24X00PCYFK68+LNw090Km7fqM= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-	by m0089730.ppops.net (PPS) with ESMTPS id 3rsg5djx5e-1
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rsg3h30aw-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:11:12 -0700
-Received: from twshared35445.38.frc1.facebook.com (2620:10d:c0a8:1c::11) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:24 -0700
+Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
+ ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 12 Jul 2023 23:11:11 -0700
+ 15.1.2507.23; Wed, 12 Jul 2023 23:08:20 -0700
+Received: from twshared29562.14.frc2.facebook.com (2620:10d:c0a8:1c::1b) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 12 Jul 2023 23:08:20 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 3C46522EFA32D; Wed, 12 Jul 2023 23:08:00 -0700 (PDT)
+	id 6CBA122EFA3AE; Wed, 12 Jul 2023 23:08:05 -0700 (PDT)
 From: Yonghong Song <yhs@fb.com>
 To: <bpf@vger.kernel.org>
 CC: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Fangrui Song <maskray@google.com>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v2 08/15] selftests/bpf: Add a cpuv4 test runner for cpu=v4 testing
-Date: Wed, 12 Jul 2023 23:08:00 -0700
-Message-ID: <20230713060800.392500-1-yhs@fb.com>
+Subject: [PATCH bpf-next v2 09/15] selftests/bpf: Add unit tests for new sign-extension load insns
+Date: Wed, 12 Jul 2023 23:08:05 -0700
+Message-ID: <20230713060805.393133-1-yhs@fb.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230713060718.388258-1-yhs@fb.com>
 References: <20230713060718.388258-1-yhs@fb.com>
@@ -61,8 +65,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: jyO4ZEtpiBwurNKqIF_A9ZZwx_uDlyz1
-X-Proofpoint-ORIG-GUID: jyO4ZEtpiBwurNKqIF_A9ZZwx_uDlyz1
+X-Proofpoint-GUID: D5K0kX_AzMxb0BSCXcERnavXOYf_POkq
+X-Proofpoint-ORIG-GUID: D5K0kX_AzMxb0BSCXcERnavXOYf_POkq
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-13_02,2023-07-11_01,2023-05-22_02
@@ -74,136 +78,162 @@ X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Similar to no-alu32 runner, a cpuv4 runner is created to test
-bpf programs compiled with -mcpu=3Dv4.
-
-The following are some num-of-insn statistics for each newer
-instructions, excluding naked asm (verifier_*) tests:
-   insn pattern                # of instructions
-   reg =3D (s8)reg               4
-   reg =3D (s16)reg              2
-   reg =3D (s32)reg              26
-   reg =3D *(s8 *)(reg + off)    11
-   reg =3D *(s16 *)(reg + off)   14
-   reg =3D *(s32 *)(reg + off)   15214
-   reg =3D bswap16 reg           133
-   reg =3D bswap32 reg           38
-   reg =3D bswap64 reg           14
-   reg s/=3D reg                 0
-   reg s%=3D reg                 0
-   gotol <offset>              58
-
-Note that in llvm -mcpu=3Dv4 implementation, the compiler is a little
-bit conservative about generating 'gotol' insn (32-bit branch offset)
-as it didn't precise count the number of insns (e.g., some insns are
-debug insns, etc.). Compared to old 'goto' insn, newer 'gotol' insn
-should have comparable verification states to 'goto' insn.
-
-I did not collect verifier stats now since I have not really
-started to do proper range bound estimation with these
-instructions.
-
-With current patch set, all selftests passed with -mcpu=3Dv4
-when running test_progs-cpuv4 binary.
+Add unit tests for new ldsx insns. The test includes sign-extension
+with a single value or with a value range.
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- tools/testing/selftests/bpf/.gitignore |  2 ++
- tools/testing/selftests/bpf/Makefile   | 18 ++++++++++++++----
- 2 files changed, 16 insertions(+), 4 deletions(-)
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/verifier_ldsx.c       | 115 ++++++++++++++++++
+ 2 files changed, 117 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_ldsx.c
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
-ests/bpf/.gitignore
-index 116fecf80ca1..110518ba4804 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -13,6 +13,7 @@ test_dev_cgroup
- /test_progs
- /test_progs-no_alu32
- /test_progs-bpf_gcc
-+/test_progs-cpuv4
- test_verifier_log
- feature
- test_sock
-@@ -36,6 +37,7 @@ test_cpp
- *.lskel.h
- /no_alu32
- /bpf_gcc
-+/cpuv4
- /host-tools
- /tools
- /runqslower
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-index 882be03b179f..4b2cf5d40120 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -44,7 +44,7 @@ TEST_GEN_PROGS =3D test_verifier test_tag test_maps tes=
-t_lru_map test_lpm_map test
- 	test_sock test_sockmap get_cgroup_id_user \
- 	test_cgroup_storage \
- 	test_tcpnotify_user test_sysctl \
--	test_progs-no_alu32
-+	test_progs-no_alu32 test_progs-cpuv4
-=20
- # Also test bpf-gcc, if present
- ifneq ($(BPF_GCC),)
-@@ -383,6 +383,11 @@ define CLANG_NOALU32_BPF_BUILD_RULE
- 	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
- 	$(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv2 -o $2
- endef
-+# Similar to CLANG_BPF_BUILD_RULE, but with cpu-v4
-+define CLANG_CPUV4_BPF_BUILD_RULE
-+	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
-+	$(Q)$(CLANG) $3 -O2 -target bpf -c $1 -mcpu=3Dv4 -o $2
-+endef
- # Build BPF object using GCC
- define GCC_BPF_BUILD_RULE
- 	$(call msg,GCC-BPF,$(TRUNNER_BINARY),$2)
-@@ -425,7 +430,7 @@ LINKED_BPF_SRCS :=3D $(patsubst %.bpf.o,%.c,$(foreach=
- skel,$(LINKED_SKELS),$($(ske
- # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
- # Parameters:
- # $1 - test runner base binary name (e.g., test_progs)
--# $2 - test runner extra "flavor" (e.g., no_alu32, gcc-bpf, etc)
-+# $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, gcc-bpf, etc)
- define DEFINE_TEST_RUNNER
-=20
- TRUNNER_OUTPUT :=3D $(OUTPUT)$(if $2,/)$2
-@@ -453,7 +458,7 @@ endef
- # Using TRUNNER_XXX variables, provided by callers of DEFINE_TEST_RUNNER=
- and
- # set up by DEFINE_TEST_RUNNER itself, create test runner build rules wi=
-th:
- # $1 - test runner base binary name (e.g., test_progs)
--# $2 - test runner extra "flavor" (e.g., no_alu32, gcc-bpf, etc)
-+# $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, gcc-bpf, etc)
- define DEFINE_TEST_RUNNER_RULES
-=20
- ifeq ($($(TRUNNER_OUTPUT)-dir),)
-@@ -584,6 +589,11 @@ TRUNNER_BPF_BUILD_RULE :=3D CLANG_NOALU32_BPF_BUILD_=
-RULE
- TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS)
- $(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
-=20
-+# Define test_progs-cpuv4 test runner.
-+TRUNNER_BPF_BUILD_RULE :=3D CLANG_CPUV4_BPF_BUILD_RULE
-+TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS)
-+$(eval $(call DEFINE_TEST_RUNNER,test_progs,cpuv4))
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
+sting/selftests/bpf/prog_tests/verifier.c
+index c375e59ff28d..6eec6a9463c8 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -31,6 +31,7 @@
+ #include "verifier_int_ptr.skel.h"
+ #include "verifier_jeq_infer_not_null.skel.h"
+ #include "verifier_ld_ind.skel.h"
++#include "verifier_ldsx.skel.h"
+ #include "verifier_leak_ptr.skel.h"
+ #include "verifier_loops1.skel.h"
+ #include "verifier_lwt.skel.h"
+@@ -133,6 +134,7 @@ void test_verifier_helper_value_access(void)  { RUN(v=
+erifier_helper_value_access
+ void test_verifier_int_ptr(void)              { RUN(verifier_int_ptr); }
+ void test_verifier_jeq_infer_not_null(void)   { RUN(verifier_jeq_infer_n=
+ot_null); }
+ void test_verifier_ld_ind(void)               { RUN(verifier_ld_ind); }
++void test_verifier_ldsx(void)                  { RUN(verifier_ldsx); }
+ void test_verifier_leak_ptr(void)             { RUN(verifier_leak_ptr); =
+}
+ void test_verifier_loops1(void)               { RUN(verifier_loops1); }
+ void test_verifier_lwt(void)                  { RUN(verifier_lwt); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_ldsx.c b/tools/te=
+sting/selftests/bpf/progs/verifier_ldsx.c
+new file mode 100644
+index 000000000000..cd90913583b9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_ldsx.c
+@@ -0,0 +1,115 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- # Define test_progs BPF-GCC-flavored test runner.
- ifneq ($(BPF_GCC),)
- TRUNNER_BPF_BUILD_RULE :=3D GCC_BPF_BUILD_RULE
-@@ -681,7 +691,7 @@ EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) =
-$(HOST_SCRATCH_DIR)	\
- 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
- 	feature bpftool							\
- 	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h *.subskel.h	\
--			       no_alu32 bpf_gcc bpf_testmod.ko		\
-+			       no_alu32 cpuv4 bpf_gcc bpf_testmod.ko	\
- 			       liburandom_read.so)
-=20
- .PHONY: docs docs-clean
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++SEC("socket")
++__description("LDSX, S8")
++__success __success_unpriv __retval(-2)
++__naked void ldsx_s8(void)
++{
++	asm volatile ("					\
++	r1 =3D 0x3fe;					\
++	*(u64 *)(r10 - 8) =3D r1;				\
++	r0 =3D *(s8 *)(r10 - 8);				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("socket")
++__description("LDSX, S16")
++__success __success_unpriv __retval(-2)
++__naked void ldsx_s16(void)
++{
++	asm volatile ("					\
++	r1 =3D 0x3fffe;					\
++	*(u64 *)(r10 - 8) =3D r1;				\
++	r0 =3D *(s16 *)(r10 - 8);				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("socket")
++__description("LDSX, S32")
++__success __success_unpriv __retval(-2)
++__naked void ldsx_s32(void)
++{
++	asm volatile ("					\
++	r1 =3D 0xfffffffe;				\
++	*(u64 *)(r10 - 8) =3D r1;				\
++	r0 =3D *(s32 *)(r10 - 8);				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("socket")
++__description("LDSX, S8 range checking")
++__success __success_unpriv __retval(1)
++__naked void ldsx_s8_range(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	*(u64 *)(r10 - 8) =3D r0;				\
++	r1 =3D *(s8 *)(r10 - 8);				\
++	/* r1 with s8 range */				\
++	if r1 s> 0x7f goto l0_%=3D;			\
++	if r1 s< -0x80 goto l0_%=3D;			\
++	r0 =3D 1;						\
++l1_%=3D:							\
++	exit;						\
++l0_%=3D:							\
++	r0 =3D 2;						\
++	goto l1_%=3D;					\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("LDSX, S16 range checking")
++__success __success_unpriv __retval(1)
++__naked void ldsx_s16_range(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	*(u64 *)(r10 - 8) =3D r0;				\
++	r1 =3D *(s16 *)(r10 - 8);				\
++	/* r1 with s16 range */				\
++	if r1 s> 0x7fff goto l0_%=3D;			\
++	if r1 s< -0x8000 goto l0_%=3D;			\
++	r0 =3D 1;						\
++l1_%=3D:							\
++	exit;						\
++l0_%=3D:							\
++	r0 =3D 2;						\
++	goto l1_%=3D;					\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("LDSX, S32 range checking")
++__success __success_unpriv __retval(1)
++__naked void ldsx_s32_range(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	*(u64 *)(r10 - 8) =3D r0;				\
++	r1 =3D *(s32 *)(r10 - 8);				\
++	/* r1 with s16 range */				\
++	if r1 s> 0x7fffFFFF goto l0_%=3D;			\
++	if r1 s< -0x80000000 goto l0_%=3D;		\
++	r0 =3D 1;						\
++l1_%=3D:							\
++	exit;						\
++l0_%=3D:							\
++	r0 =3D 2;						\
++	goto l1_%=3D;					\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++char _license[] SEC("license") =3D "GPL";
 --=20
 2.34.1
 
