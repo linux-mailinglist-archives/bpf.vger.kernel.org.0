@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-4937-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4938-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB37C75189D
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 08:09:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B16A75189E
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 08:10:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F32381C21266
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:09:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3BCC281ADF
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FBF6118;
-	Thu, 13 Jul 2023 06:08:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38166104;
+	Thu, 13 Jul 2023 06:09:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472BB6112
-	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 06:08:44 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB492212E
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:40 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36CMvdvu027189
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:40 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C88075679
+	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 06:09:05 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0D72115
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:56 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36D4bTho015088
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:55 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=txDEwgegHeiAN04McoM/wyxhAYcvhGp9QbbyR7Ij3mw=;
- b=hqaFu284TVzmqITL+2qc1lrBPAxiIcosq9PzQL1T1+nvnfgtVrB28glcFkEZtjBmC6NB
- b6ceH8ZvcAXob46Pwn30Qz4JWSWN8RpZxHCJe8JkItmtGCuf9OTtWCR/YTGRxwIZC7Jy
- /ARgSz5wYKObg6OoeD7tXVfjR2NRVMPRv5c= 
+ bh=y3SNw5TDjd9JLMxPJmOz/8qnOgMYZzIsDfXO6/lwOOo=;
+ b=MQQj4NofiKHZKsGeKVWmIsUw5b/b6DCaVQEn5sw34lNVW1RoMnNYnl5mdcFE9WCC8+Pa
+ lQic0XTAvB6Y3OOSe9W8qDNkeRAGbrEMipTZmfKuXLRi/Y7yJ/kb4H/DycitHbz+k4RG
+ GTYHLOfQcWnj5pJpkKNintJ5qmchwoPDLtY= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rsfwkk2eh-4
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rtad8ghfc-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:39 -0700
-Received: from twshared34392.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:55 -0700
+Received: from twshared52565.14.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 12 Jul 2023 23:08:38 -0700
+ 15.1.2507.23; Wed, 12 Jul 2023 23:08:54 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id CF7D122EFA49E; Wed, 12 Jul 2023 23:08:36 -0700 (PDT)
+	id 45C9F22EFA4B9; Wed, 12 Jul 2023 23:08:41 -0700 (PDT)
 From: Yonghong Song <yhs@fb.com>
 To: <bpf@vger.kernel.org>
 CC: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Fangrui Song <maskray@google.com>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v2 13/15] selftests/bpf: Add unit tests for new gotol insn
-Date: Wed, 12 Jul 2023 23:08:36 -0700
-Message-ID: <20230713060836.396990-1-yhs@fb.com>
+Subject: [PATCH bpf-next v2 14/15] selftests/bpf: Test ldsx with more complex cases
+Date: Wed, 12 Jul 2023 23:08:41 -0700
+Message-ID: <20230713060841.397183-1-yhs@fb.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230713060718.388258-1-yhs@fb.com>
 References: <20230713060718.388258-1-yhs@fb.com>
@@ -61,8 +61,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: rrvcbaVSgxKUpML9PpD9viQrgXRHbHDE
-X-Proofpoint-ORIG-GUID: rrvcbaVSgxKUpML9PpD9viQrgXRHbHDE
+X-Proofpoint-GUID: HnoCPRFOlYEDH1Bi80ltSni-ds4iB_4C
+X-Proofpoint-ORIG-GUID: HnoCPRFOlYEDH1Bi80ltSni-ds4iB_4C
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-13_03,2023-07-11_01,2023-05-22_02
@@ -74,76 +74,233 @@ X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add unit tests for gotol insn.
+Test reading signed rdonly map value, read/write map value,
+probed memory and ctx field. Without proper verifier/git handling,
+the test will fail.
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- .../selftests/bpf/prog_tests/verifier.c       |  2 ++
- .../selftests/bpf/progs/verifier_gotol.c      | 30 +++++++++++++++++++
- 2 files changed, 32 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_gotol.c
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  9 +-
+ .../selftests/bpf/prog_tests/test_ldsx_insn.c | 88 +++++++++++++++++++
+ .../selftests/bpf/progs/test_ldsx_insn.c      | 75 ++++++++++++++++
+ 3 files changed, 171 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_ldsx_insn=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ldsx_insn.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
-sting/selftests/bpf/prog_tests/verifier.c
-index a591d7b673f1..e3e68c97b40c 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -25,6 +25,7 @@
- #include "verifier_direct_stack_access_wraparound.skel.h"
- #include "verifier_div0.skel.h"
- #include "verifier_div_overflow.skel.h"
-+#include "verifier_gotol.skel.h"
- #include "verifier_helper_access_var_len.skel.h"
- #include "verifier_helper_packet_access.skel.h"
- #include "verifier_helper_restricted.skel.h"
-@@ -131,6 +132,7 @@ void test_verifier_direct_packet_access(void) { RUN(v=
-erifier_direct_packet_acces
- void test_verifier_direct_stack_access_wraparound(void) { RUN(verifier_d=
-irect_stack_access_wraparound); }
- void test_verifier_div0(void)                 { RUN(verifier_div0); }
- void test_verifier_div_overflow(void)         { RUN(verifier_div_overflo=
-w); }
-+void test_verifier_gotol(void)                { RUN(verifier_gotol); }
- void test_verifier_helper_access_var_len(void) { RUN(verifier_helper_acc=
-ess_var_len); }
- void test_verifier_helper_packet_access(void) { RUN(verifier_helper_pack=
-et_access); }
- void test_verifier_helper_restricted(void)    { RUN(verifier_helper_rest=
-ricted); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_gotol.c b/tools/t=
-esting/selftests/bpf/progs/verifier_gotol.c
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tool=
+s/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index aaf6ef1201c7..e14c9c6f69eb 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -75,6 +75,12 @@ bpf_testmod_test_struct_arg_6(struct bpf_testmod_struc=
+t_arg_3 *a) {
+ 	return bpf_testmod_test_struct_arg_result;
+ }
+=20
++noinline int
++bpf_testmod_test_arg_ptr_to_struct(struct bpf_testmod_struct_arg_1 *a) {
++	bpf_testmod_test_struct_arg_result =3D a->a;
++	return bpf_testmod_test_struct_arg_result;
++}
++
+ __bpf_kfunc void
+ bpf_testmod_test_mod_kfunc(int i)
+ {
+@@ -203,7 +209,7 @@ bpf_testmod_test_read(struct file *file, struct kobje=
+ct *kobj,
+ 		.off =3D off,
+ 		.len =3D len,
+ 	};
+-	struct bpf_testmod_struct_arg_1 struct_arg1 =3D {10};
++	struct bpf_testmod_struct_arg_1 struct_arg1 =3D {10}, struct_arg1_2 =3D=
+ {-1};
+ 	struct bpf_testmod_struct_arg_2 struct_arg2 =3D {2, 3};
+ 	struct bpf_testmod_struct_arg_3 *struct_arg3;
+ 	int i =3D 1;
+@@ -216,6 +222,7 @@ bpf_testmod_test_read(struct file *file, struct kobje=
+ct *kobj,
+ 	(void)bpf_testmod_test_struct_arg_3(1, 4, struct_arg2);
+ 	(void)bpf_testmod_test_struct_arg_4(struct_arg1, 1, 2, 3, struct_arg2);
+ 	(void)bpf_testmod_test_struct_arg_5();
++	(void)bpf_testmod_test_arg_ptr_to_struct(&struct_arg1_2);
+=20
+ 	struct_arg3 =3D kmalloc((sizeof(struct bpf_testmod_struct_arg_3) +
+ 				sizeof(int)), GFP_KERNEL);
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_ldsx_insn.c b/to=
+ols/testing/selftests/bpf/prog_tests/test_ldsx_insn.c
 new file mode 100644
-index 000000000000..78870ea4d468
+index 000000000000..d18138ebd8f0
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_gotol.c
-@@ -0,0 +1,30 @@
++++ b/tools/testing/selftests/bpf/prog_tests/test_ldsx_insn.c
+@@ -0,0 +1,88 @@
 +// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates.*/
 +
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
++#include <test_progs.h>
++#include "test_ldsx_insn.skel.h"
 +
-+SEC("socket")
-+__description("gotol, small_imm")
-+__success __success_unpriv __retval(1)
-+__naked void gotol_small_imm(void)
++static void test_map_val_and_probed_memory(void)
 +{
-+	asm volatile ("					\
-+	call %[bpf_ktime_get_ns];			\
-+	if r0 =3D=3D 0 goto l0_%=3D;				\
-+	gotol l1_%=3D;					\
-+l2_%=3D:							\
-+	gotol l3_%=3D;					\
-+l1_%=3D:							\
-+	r0 =3D 1;						\
-+	gotol l2_%=3D;					\
-+l0_%=3D:							\
-+	r0 =3D 2;						\
-+l3_%=3D:							\
-+	exit;						\
-+"	:
-+	: __imm(bpf_ktime_get_ns)
-+	: __clobber_all);
++	struct test_ldsx_insn *skel;
++	int err;
++
++	skel =3D test_ldsx_insn__open();
++	if (!ASSERT_OK_PTR(skel, "test_ldsx_insn__open"))
++		return;
++
++	bpf_program__set_autoload(skel->progs.rdonly_map_prog, true);
++	bpf_program__set_autoload(skel->progs.map_val_prog, true);
++	bpf_program__set_autoload(skel->progs.test_ptr_struct_arg, true);
++
++	err =3D test_ldsx_insn__load(skel);
++	if (!ASSERT_OK(err, "test_ldsx_insn__load"))
++		goto out;
++
++	err =3D test_ldsx_insn__attach(skel);
++	if (!ASSERT_OK(err, "test_ldsx_insn__attach"))
++		goto out;
++
++	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
++
++	ASSERT_EQ(skel->bss->done1, 1, "done1");
++	ASSERT_EQ(skel->bss->ret1, 1, "ret1");
++	ASSERT_EQ(skel->bss->done2, 1, "done2");
++	ASSERT_EQ(skel->bss->ret2, 1, "ret2");
++	ASSERT_EQ(skel->bss->int_member, -1, "int_member");
++out:
++	test_ldsx_insn__destroy(skel);
++}
++
++static void test_ctx_member(void)
++{
++	struct test_ldsx_insn *skel;
++	int err, fd, cgroup_fd;
++	char buf[16] =3D {0};
++	socklen_t optlen;
++
++	cgroup_fd =3D test__join_cgroup("/ldsx_test");
++	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup /ldsx_test"))
++		return;
++
++	skel =3D test_ldsx_insn__open();
++	if (!ASSERT_OK_PTR(skel, "test_ldsx_insn__open"))
++		goto close_cgroup_fd;
++
++	bpf_program__set_autoload(skel->progs._getsockopt, true);
++
++	err =3D test_ldsx_insn__load(skel);
++	if (!ASSERT_OK(err, "test_ldsx_insn__load"))
++		goto destroy_skel;
++
++	skel->links._getsockopt =3D
++		bpf_program__attach_cgroup(skel->progs._getsockopt, cgroup_fd);
++	if (!ASSERT_OK_PTR(skel->links._getsockopt, "getsockopt_link"))
++		goto destroy_skel;
++
++	fd =3D socket(AF_INET, SOCK_STREAM, 0);
++	if (!ASSERT_GE(fd, 0, "socket"))
++		goto destroy_skel;
++
++	optlen =3D sizeof(buf);
++	(void)getsockopt(fd, SOL_IP, IP_TTL, buf, &optlen);
++
++	ASSERT_EQ(skel->bss->set_optlen, -1, "optlen");
++	ASSERT_EQ(skel->bss->set_retval, -1, "retval");
++
++	close(fd);
++destroy_skel:
++	test_ldsx_insn__destroy(skel);
++close_cgroup_fd:
++	close(cgroup_fd);
++}
++
++void test_ldsx_insn(void)
++{
++	if (test__start_subtest("map_val and probed_memory"))
++		test_map_val_and_probed_memory();
++	if (test__start_subtest("ctx_member"))
++		test_ctx_member();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_ldsx_insn.c b/tools/t=
+esting/selftests/bpf/progs/test_ldsx_insn.c
+new file mode 100644
+index 000000000000..22befbfb02b9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
+@@ -0,0 +1,75 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++volatile const short val1 =3D -1;
++volatile const int val2 =3D -1;
++short val3 =3D -1;
++int val4 =3D -1;
++int done1, done2, ret1, ret2;
++
++SEC("?raw_tp/sys_enter")
++int rdonly_map_prog(const void *ctx)
++{
++	if (done1)
++		return 0;
++
++	done1 =3D 1;
++	if (val1 =3D=3D val2)
++		ret1 =3D 1;
++	return 0;
++
++}
++
++SEC("?raw_tp/sys_enter")
++int map_val_prog(const void *ctx)
++{
++	if (done2)
++		return 0;
++
++	done2 =3D 1;
++	if (val3 =3D=3D val4)
++		ret2 =3D 1;
++	return 0;
++
++}
++
++struct bpf_testmod_struct_arg_1 {
++	int a;
++};
++
++long long int_member;
++
++SEC("?fentry/bpf_testmod_test_arg_ptr_to_struct")
++int BPF_PROG2(test_ptr_struct_arg, struct bpf_testmod_struct_arg_1 *, p)
++{
++	int_member =3D p->a;
++        return 0;
++}
++
++long long set_optlen, set_retval;
++
++SEC("?cgroup/getsockopt")
++int _getsockopt(volatile struct bpf_sockopt *ctx)
++{
++	int old_optlen, old_retval;
++
++	old_optlen =3D ctx->optlen;
++	old_retval =3D ctx->retval;
++
++	ctx->optlen =3D -1;
++	ctx->retval =3D -1;
++
++	set_optlen =3D ctx->optlen;
++	set_retval =3D ctx->retval;
++
++	ctx->optlen =3D old_optlen;
++	ctx->retval =3D old_retval;
++
++	return 0;
 +}
 +
 +char _license[] SEC("license") =3D "GPL";
