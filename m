@@ -1,342 +1,247 @@
-Return-Path: <bpf+bounces-4919-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4920-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A044A75175C
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:22:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 105BB751783
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:33:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 580E228194C
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 04:22:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB1CF281BAD
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 04:33:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C3B5394;
-	Thu, 13 Jul 2023 04:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44BE9ECB;
+	Thu, 13 Jul 2023 04:33:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED9A5258
-	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 04:22:10 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C145A30E0
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 21:21:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1689222102;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dLo1vx1xabIYqsJH8uPqcvgVoarGRmWsq9sDIdaBh7c=;
-	b=bo/AUOaWVw/g67lNaA5EbUpJcAxydzXH0xMd9+5/Bzo2mmakDmTIG+ujRMesUxhR05i6E0
-	POelhzjGUWvNXIP34lb3+6N725nXns2QQ03QQCQR3bD/p9j4J+U81Gg3KaD6UciR5zJ0+s
-	zgZEZnoXOdVdjNdYwAZOz9PjtJpYXVI=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-323-PTLW4TOBNt-ZrGd4TWXM4A-1; Thu, 13 Jul 2023 00:21:39 -0400
-X-MC-Unique: PTLW4TOBNt-ZrGd4TWXM4A-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6238c3bf768so2782456d6.0
-        for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 21:21:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689222099; x=1691814099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dLo1vx1xabIYqsJH8uPqcvgVoarGRmWsq9sDIdaBh7c=;
-        b=HXAwNuhP+DaOJxOr+dIu/QoeJL54oERh/ZlCPpgi5wfO9w4j6IQdARvVD9TgVfJm9I
-         QeWGTDiSmgoJTGRntBlbqBb8xwtTtB5drUhk8zZGPd4ZXiQl02GUl5HhYRA23bqQtBs6
-         E7jYzNmeNylE9v7eSe73GzrPlO8AvpKGwNDTLghDaqP7u3+Uj9pEfjpjsDVKuTATz794
-         XkTvbyfO6kN6opmnsAm9JxQpPry6RzNc8OU5yF+w3DavcUrjCMQyTh2bANsBv3Bp84l5
-         G3/HIP9MflnV8UaaQc4eJHo12vvnvsuO5uFKAa3qZqweDvGwsI4lK02F+YoK/mrhvrSE
-         vMfg==
-X-Gm-Message-State: ABy/qLaxZkPnNS58K+fEfKSD5vcX32mXRKwti7HqJDH2XL6mvR4GSP+F
-	5m+ywvrdOG5qn2dGQl1pJ5XpVO8VYO831ye41RCwVMZlDMvTUeTYMSNZPqDkTuNRjXlqBjGi4un
-	VhpbgeoDsWNQKflYZmzhXuMmwLU1b
-X-Received: by 2002:a0c:f5ca:0:b0:636:f84f:f0c5 with SMTP id q10-20020a0cf5ca000000b00636f84ff0c5mr397775qvm.38.1689222098931;
-        Wed, 12 Jul 2023 21:21:38 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHhoFtBDWp73vtxIEnB9+oewiDO1sXWeNw2L429Ed5m4sBifl86rd/0M3TxSS2QP/e9pgbIDSg9yH+KxpSO7SY=
-X-Received: by 2002:a0c:f5ca:0:b0:636:f84f:f0c5 with SMTP id
- q10-20020a0cf5ca000000b00636f84ff0c5mr397768qvm.38.1689222098615; Wed, 12 Jul
- 2023 21:21:38 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06F66629;
+	Thu, 13 Jul 2023 04:33:25 +0000 (UTC)
+Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A70912F;
+	Wed, 12 Jul 2023 21:33:24 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailnew.nyi.internal (Postfix) with ESMTP id A651158014A;
+	Thu, 13 Jul 2023 00:33:20 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 13 Jul 2023 00:33:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+	1689222800; x=1689230000; bh=v+lGBq+GJvpo2kNvySw6OJjRn6Dau/dhBqQ
+	PgKVw2CQ=; b=Ydxif1r282/SQPhrzrY2GmsMajEwfmQ8a79fOmJp2JCCyCO1H5e
+	EPewr9Zx+Us62Lyk0Uq67G9wzmJ4CGJldD2IU4Y0QlAki+1RznNT1RUL4ppEW468
+	a4zFolkEu8Jd+YOYrLHwzkIX3geDGNQvTaKCRGh3jtv20ZK8sgbzN8UOr4rxTadu
+	xpKwmfmDF8Rhkna2/u7+B5pkOrg7Nh5f1iStoZGT9S/2h12q5BrjLd9FmMvW/mou
+	4FexsgaHFbDOupyzvCR3NCa7Ko/8w00K+IcUVjWgCxtNX1klziRCDEQQP3SQFY8i
+	IvTl24b4Y5X4GDzULEUY/sRyWvZSs7ufpqA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1689222800; x=1689230000; bh=v+lGBq+GJvpo2kNvySw6OJjRn6Dau/dhBqQ
+	PgKVw2CQ=; b=fgeaCodm8HH0aE7shD+BHhQYqHpMXe9BsL9VSsSN/WJWSEeBrEC
+	BTk7kBvJrQLLHaQYyNb7zrDFBKLB2THEbzyMh9+9L/Yc5KOv49G46KVti8zYVa46
+	GaKpMMFfWXSmNTraqwyzR7FRS2Ag7G0BGX+XD8Ha1hSJZOWrZglRWBqqOeIqH6bh
+	i5OT0a9PzcDvxVqOExTrfgqW57QvhX2IBLR+7ev+zBf2j2igL9FeujM/Dx+oFQ7I
+	JFNLhQgUonkgeRqvJn2i7UcpcQ2EPY/AST+v8wW7TF5kFYE9Jhv8JTFWVBDbdcsO
+	U7Omy3Fhtv1h8GcVR2+hgUWu/89F4Vvj70g==
+X-ME-Sender: <xms:kH6vZCNvEuQFvMAjH-eqZdA5Z6iqj2kWh2GCbX9JTLDgB7G3kYd1Qg>
+    <xme:kH6vZA_g7MGZi1EGlBsUW_9alzrF2TWPmqvsL7cbHI9yDxizyAG8NSxyI1fEVuCZ1
+    JsQQo6UlHzfyoaMkQ>
+X-ME-Received: <xmr:kH6vZJQ4Xep3pgUvzJa2NYPw0HCQ9lUnWNACwK_oCo_a1lE7gnxhrjgF3gfhrdd5hy0Z3T3GHqZLRuraZbih0MxWyS3FRCH_I-Bt>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeefgdekvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefstddt
+    tdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepieektdefhffhjeejgeejhfekkeejgfegvdeuhfeitdeiueeh
+    hffgvedthedviefgnecuffhomhgrihhnpehqvghmuhdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:kH6vZCt72U-FBVX6tLrqaPeaPoUfUH9z-P6Nj1hqnigQJ_pjsvGDmA>
+    <xmx:kH6vZKfXKXYQo42k5IQHOLv_7RzDdWkSNJgYftSK6yp142O-PgxGzQ>
+    <xmx:kH6vZG14awhZMY8fhJ3e837cipMAXfutZEyzNfuLpCfYkYs8asLuqg>
+    <xmx:kH6vZIcDhoL_pWLsJEg5zCMGqqwT0nqZgobChfCa9hCQiPXfbh_9sA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 13 Jul 2023 00:33:18 -0400 (EDT)
+Date: Wed, 12 Jul 2023 22:33:17 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Florian Westphal <fw@strlen.de>, 
+	"David S. Miller" <davem@davemloft.net>, Pablo Neira Ayuso <pablo@netfilter.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Jozsef Kadlecsik <kadlec@netfilter.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	netfilter-devel <netfilter-devel@vger.kernel.org>, coreteam@netfilter.org, 
+	Network Development <netdev@vger.kernel.org>, David Ahern <dsahern@kernel.org>
+Subject: Re: [PATCH bpf-next v4 2/6] netfilter: bpf: Support
+ BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+Message-ID: <wltfmammaf5g4gumsbna4kmwo6dtd24g472o7kgkug42dhwcy2@32fmd7q6kvg4>
+References: <cover.1689203090.git.dxu@dxuuu.xyz>
+ <d3b0ff95c58356192ea3b50824f8cdbf02c354e3.1689203090.git.dxu@dxuuu.xyz>
+ <CAADnVQKKfEtZYZxihxvG3aQ34E1m95qTZ=jTD7yd0qvOASpAjQ@mail.gmail.com>
+ <kwiwaeaijj6sxwz5fhtxyoquhz2kpujbsbeajysufgmdjgyx5c@f6lqrd23xr5f>
+ <CAADnVQLcAoN5z+HD_44UKgJJc6t5TPW8+Ai9We0qJpau4NtEzA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
- <20230710034237.12391-7-xuanzhuo@linux.alibaba.com> <CACGkMEtb_wYyXLU6kAaC2Ju2d4K=J+YbytUCMvKcNtPF+BvpJw@mail.gmail.com>
- <1689220976.8908284-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1689220976.8908284-1-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Thu, 13 Jul 2023 12:21:26 +0800
-Message-ID: <CACGkMEtt8Po5saxdEQDK_RkML3UK4LKRp3B4owyoLQQYXHt+oA@mail.gmail.com>
-Subject: Re: [PATCH vhost v11 06/10] virtio_ring: skip unmap for premapped
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: virtualization@lists.linux-foundation.org, 
-	"Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLcAoN5z+HD_44UKgJJc6t5TPW8+Ai9We0qJpau4NtEzA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 13, 2023 at 12:06=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.=
-com> wrote:
->
-> On Thu, 13 Jul 2023 11:50:57 +0800, Jason Wang <jasowang@redhat.com> wrot=
-e:
-> > On Mon, Jul 10, 2023 at 11:42=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alib=
-aba.com> wrote:
-> > >
-> > > Now we add a case where we skip dma unmap, the vq->premapped is true.
-> > >
-> > > We can't just rely on use_dma_api to determine whether to skip the dm=
-a
-> > > operation. For convenience, I introduced the "do_unmap". By default, =
-it
-> > > is the same as use_dma_api. If the driver is configured with premappe=
-d,
-> > > then do_unmap is false.
-> > >
-> > > So as long as do_unmap is false, for addr of desc, we should skip dma
-> > > unmap operation.
-> > >
-> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > ---
-> > >  drivers/virtio/virtio_ring.c | 42 ++++++++++++++++++++++++----------=
---
-> > >  1 file changed, 28 insertions(+), 14 deletions(-)
-> > >
-> > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_rin=
-g.c
-> > > index 1fb2c6dca9ea..10ee3b7ce571 100644
-> > > --- a/drivers/virtio/virtio_ring.c
-> > > +++ b/drivers/virtio/virtio_ring.c
-> > > @@ -175,6 +175,11 @@ struct vring_virtqueue {
-> > >         /* Do DMA mapping by driver */
-> > >         bool premapped;
-> > >
-> > > +       /* Do unmap or not for desc. Just when premapped is False and
-> > > +        * use_dma_api is true, this is true.
-> > > +        */
-> > > +       bool do_unmap;
-> > > +
-> > >         /* Head of free buffer list. */
-> > >         unsigned int free_head;
-> > >         /* Number we've added since last sync. */
-> > > @@ -440,7 +445,7 @@ static void vring_unmap_one_split_indirect(const =
-struct vring_virtqueue *vq,
-> > >  {
-> > >         u16 flags;
-> > >
-> > > -       if (!vq->use_dma_api)
-> > > +       if (!vq->do_unmap)
-> > >                 return;
-> > >
-> > >         flags =3D virtio16_to_cpu(vq->vq.vdev, desc->flags);
-> > > @@ -458,18 +463,21 @@ static unsigned int vring_unmap_one_split(const=
- struct vring_virtqueue *vq,
-> > >         struct vring_desc_extra *extra =3D vq->split.desc_extra;
-> > >         u16 flags;
-> > >
-> > > -       if (!vq->use_dma_api)
-> > > -               goto out;
-> > > -
-> > >         flags =3D extra[i].flags;
-> > >
-> > >         if (flags & VRING_DESC_F_INDIRECT) {
-> > > +               if (!vq->use_dma_api)
-> > > +                       goto out;
-> > > +
-> > >                 dma_unmap_single(vring_dma_dev(vq),
-> > >                                  extra[i].addr,
-> > >                                  extra[i].len,
-> > >                                  (flags & VRING_DESC_F_WRITE) ?
-> > >                                  DMA_FROM_DEVICE : DMA_TO_DEVICE);
-> > >         } else {
-> > > +               if (!vq->do_unmap)
-> > > +                       goto out;
-> > > +
-> > >                 dma_unmap_page(vring_dma_dev(vq),
-> > >                                extra[i].addr,
-> > >                                extra[i].len,
-> > > @@ -635,7 +643,7 @@ static inline int virtqueue_add_split(struct virt=
-queue *_vq,
-> > >         }
-> > >         /* Last one doesn't continue. */
-> > >         desc[prev].flags &=3D cpu_to_virtio16(_vq->vdev, ~VRING_DESC_=
-F_NEXT);
-> > > -       if (!indirect && vq->use_dma_api)
-> > > +       if (!indirect && vq->do_unmap)
-> > >                 vq->split.desc_extra[prev & (vq->split.vring.num - 1)=
-].flags &=3D
-> > >                         ~VRING_DESC_F_NEXT;
-> > >
-> > > @@ -794,7 +802,7 @@ static void detach_buf_split(struct vring_virtque=
-ue *vq, unsigned int head,
-> > >                                 VRING_DESC_F_INDIRECT));
-> > >                 BUG_ON(len =3D=3D 0 || len % sizeof(struct vring_desc=
-));
-> > >
-> > > -               if (vq->use_dma_api) {
-> > > +               if (vq->do_unmap) {
-> > >                         for (j =3D 0; j < len / sizeof(struct vring_d=
-esc); j++)
-> > >                                 vring_unmap_one_split_indirect(vq, &i=
-ndir_desc[j]);
-> > >                 }
-> > > @@ -1217,17 +1225,20 @@ static void vring_unmap_extra_packed(const st=
-ruct vring_virtqueue *vq,
-> > >  {
-> > >         u16 flags;
-> > >
-> > > -       if (!vq->use_dma_api)
-> > > -               return;
-> > > -
-> > >         flags =3D extra->flags;
-> > >
-> > >         if (flags & VRING_DESC_F_INDIRECT) {
-> > > +               if (!vq->use_dma_api)
-> > > +                       return;
-> > > +
-> > >                 dma_unmap_single(vring_dma_dev(vq),
-> > >                                  extra->addr, extra->len,
-> > >                                  (flags & VRING_DESC_F_WRITE) ?
-> > >                                  DMA_FROM_DEVICE : DMA_TO_DEVICE);
-> > >         } else {
-> > > +               if (!vq->do_unmap)
-> > > +                       return;
+On Wed, Jul 12, 2023 at 06:26:13PM -0700, Alexei Starovoitov wrote:
+> On Wed, Jul 12, 2023 at 6:22 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
 > >
-> > This seems not straightforward than:
+> > Hi Alexei,
 > >
-> > if (!vq->use_dma_api)
-> >     return;
+> > On Wed, Jul 12, 2023 at 05:43:49PM -0700, Alexei Starovoitov wrote:
+> > > On Wed, Jul 12, 2023 at 4:44 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > > > +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+> > > > +       case NFPROTO_IPV6:
+> > > > +               rcu_read_lock();
+> > > > +               v6_hook = rcu_dereference(nf_defrag_v6_hook);
+> > > > +               if (!v6_hook) {
+> > > > +                       rcu_read_unlock();
+> > > > +                       err = request_module("nf_defrag_ipv6");
+> > > > +                       if (err)
+> > > > +                               return err < 0 ? err : -EINVAL;
+> > > > +
+> > > > +                       rcu_read_lock();
+> > > > +                       v6_hook = rcu_dereference(nf_defrag_v6_hook);
+> > > > +                       if (!v6_hook) {
+> > > > +                               WARN_ONCE(1, "nf_defrag_ipv6_hooks bad registration");
+> > > > +                               err = -ENOENT;
+> > > > +                               goto out_v6;
+> > > > +                       }
+> > > > +               }
+> > > > +
+> > > > +               err = v6_hook->enable(link->net);
+> > >
+> > > I was about to apply, but luckily caught this issue in my local test:
+> > >
+> > > [   18.462448] BUG: sleeping function called from invalid context at
+> > > kernel/locking/mutex.c:283
+> > > [   18.463238] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid:
+> > > 2042, name: test_progs
+> > > [   18.463927] preempt_count: 0, expected: 0
+> > > [   18.464249] RCU nest depth: 1, expected: 0
+> > > [   18.464631] CPU: 15 PID: 2042 Comm: test_progs Tainted: G
+> > > O       6.4.0-04319-g6f6ec4fa00dc #4896
+> > > [   18.465480] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > > BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > > [   18.466531] Call Trace:
+> > > [   18.466767]  <TASK>
+> > > [   18.466975]  dump_stack_lvl+0x32/0x40
+> > > [   18.467325]  __might_resched+0x129/0x180
+> > > [   18.467691]  mutex_lock+0x1a/0x40
+> > > [   18.468057]  nf_defrag_ipv4_enable+0x16/0x70
+> > > [   18.468467]  bpf_nf_link_attach+0x141/0x300
+> > > [   18.468856]  __sys_bpf+0x133e/0x26d0
+> > >
+> > > You cannot call mutex under rcu_read_lock.
 > >
-> > if (INDIRECT) {
-> > } else if (!vq->premapped) {
-> > }
+> > Whoops, my bad. I think this patch should fix it:
 > >
-> > ?
->
->
-> My logic here is that for the real buffer, we use do_unmap to judge unifo=
-rmly.
-> And indirect still use use_dma_api to judge.
->
-> From this point of view, how do you feel?
+> > ```
+> > From 7e8927c44452db07ddd7cf0e30bb49215fc044ed Mon Sep 17 00:00:00 2001
+> > Message-ID: <7e8927c44452db07ddd7cf0e30bb49215fc044ed.1689211250.git.dxu@dxuuu.xyz>
+> > From: Daniel Xu <dxu@dxuuu.xyz>
+> > Date: Wed, 12 Jul 2023 19:17:35 -0600
+> > Subject: [PATCH] netfilter: bpf: Don't hold rcu_read_lock during
+> >  enable/disable
+> >
+> > ->enable()/->disable() takes a mutex which can sleep. You can't sleep
+> > during RCU read side critical section.
+> >
+> > Our refcnt on the module will protect us from ->enable()/->disable()
+> > from going away while we call it.
+> >
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> >  net/netfilter/nf_bpf_link.c | 10 ++++++++--
+> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+> > index 77ffbf26ba3d..79704cc596aa 100644
+> > --- a/net/netfilter/nf_bpf_link.c
+> > +++ b/net/netfilter/nf_bpf_link.c
+> > @@ -60,9 +60,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
+> >                         goto out_v4;
+> >                 }
+> >
+> > +               rcu_read_unlock();
+> >                 err = v4_hook->enable(link->net);
+> >                 if (err)
+> >                         module_put(v4_hook->owner);
+> > +
+> > +               return err;
+> >  out_v4:
+> >                 rcu_read_unlock();
+> >                 return err;
+> > @@ -92,9 +95,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
+> >                         goto out_v6;
+> >                 }
+> >
+> > +               rcu_read_unlock();
+> >                 err = v6_hook->enable(link->net);
+> >                 if (err)
+> >                         module_put(v6_hook->owner);
+> > +
+> > +               return err;
+> >  out_v6:
+> >                 rcu_read_unlock();
+> >                 return err;
+> > @@ -114,11 +120,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+> >         case NFPROTO_IPV4:
+> >                 rcu_read_lock();
+> >                 v4_hook = rcu_dereference(nf_defrag_v4_hook);
+> > +               rcu_read_unlock();
+> >                 if (v4_hook) {
+> >                         v4_hook->disable(link->net);
+> >                         module_put(v4_hook->owner);
+> >                 }
+> > -               rcu_read_unlock();
+> >
+> >                 break;
+> >  #endif
+> > @@ -126,11 +132,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+> >         case NFPROTO_IPV6:
+> >                 rcu_read_lock();
+> >                 v6_hook = rcu_dereference(nf_defrag_v6_hook);
+> > +               rcu_read_unlock();
+> 
+> No. v6_hook is gone as soon as you unlock it.
 
-We can hear from others but a state machine with three booleans seems
-not easy for me to read.
+I think we're protected here by the try_module_get() on the enable path.
+And we only disable defrag if enabling succeeds. The module shouldn't
+be able to deregister its hooks until we call the module_put() later.
 
-Thanks
+I think READ_ONCE() would've been more appropriate but I wasn't sure if
+that was ok given nf_defrag_v(4|6)_hook is written to by
+rcu_assign_pointer() and I was assuming symmetry is necessary.
 
->
-> Thanks.
->
->
-> >
-> > Thanks
-> >
-> > > +
-> > >                 dma_unmap_page(vring_dma_dev(vq),
-> > >                                extra->addr, extra->len,
-> > >                                (flags & VRING_DESC_F_WRITE) ?
-> > > @@ -1240,7 +1251,7 @@ static void vring_unmap_desc_packed(const struc=
-t vring_virtqueue *vq,
-> > >  {
-> > >         u16 flags;
-> > >
-> > > -       if (!vq->use_dma_api)
-> > > +       if (!vq->do_unmap)
-> > >                 return;
-> > >
-> > >         flags =3D le16_to_cpu(desc->flags);
-> > > @@ -1329,7 +1340,7 @@ static int virtqueue_add_indirect_packed(struct=
- vring_virtqueue *vq,
-> > >                                 sizeof(struct vring_packed_desc));
-> > >         vq->packed.vring.desc[head].id =3D cpu_to_le16(id);
-> > >
-> > > -       if (vq->use_dma_api) {
-> > > +       if (vq->do_unmap) {
-> > >                 vq->packed.desc_extra[id].addr =3D addr;
-> > >                 vq->packed.desc_extra[id].len =3D total_sg *
-> > >                                 sizeof(struct vring_packed_desc);
-> > > @@ -1470,7 +1481,7 @@ static inline int virtqueue_add_packed(struct v=
-irtqueue *_vq,
-> > >                         desc[i].len =3D cpu_to_le32(sg->length);
-> > >                         desc[i].id =3D cpu_to_le16(id);
-> > >
-> > > -                       if (unlikely(vq->use_dma_api)) {
-> > > +                       if (unlikely(vq->do_unmap)) {
-> > >                                 vq->packed.desc_extra[curr].addr =3D =
-addr;
-> > >                                 vq->packed.desc_extra[curr].len =3D s=
-g->length;
-> > >                                 vq->packed.desc_extra[curr].flags =3D
-> > > @@ -1604,7 +1615,7 @@ static void detach_buf_packed(struct vring_virt=
-queue *vq,
-> > >         vq->free_head =3D id;
-> > >         vq->vq.num_free +=3D state->num;
-> > >
-> > > -       if (unlikely(vq->use_dma_api)) {
-> > > +       if (unlikely(vq->do_unmap)) {
-> > >                 curr =3D id;
-> > >                 for (i =3D 0; i < state->num; i++) {
-> > >                         vring_unmap_extra_packed(vq,
-> > > @@ -1621,7 +1632,7 @@ static void detach_buf_packed(struct vring_virt=
-queue *vq,
-> > >                 if (!desc)
-> > >                         return;
-> > >
-> > > -               if (vq->use_dma_api) {
-> > > +               if (vq->do_unmap) {
-> > >                         len =3D vq->packed.desc_extra[id].len;
-> > >                         for (i =3D 0; i < len / sizeof(struct vring_p=
-acked_desc);
-> > >                                         i++)
-> > > @@ -2080,6 +2091,7 @@ static struct virtqueue *vring_create_virtqueue=
-_packed(
-> > >         vq->dma_dev =3D dma_dev;
-> > >         vq->use_dma_api =3D vring_use_dma_api(vdev);
-> > >         vq->premapped =3D false;
-> > > +       vq->do_unmap =3D vq->use_dma_api;
-> > >
-> > >         vq->indirect =3D virtio_has_feature(vdev, VIRTIO_RING_F_INDIR=
-ECT_DESC) &&
-> > >                 !context;
-> > > @@ -2587,6 +2599,7 @@ static struct virtqueue *__vring_new_virtqueue(=
-unsigned int index,
-> > >         vq->dma_dev =3D dma_dev;
-> > >         vq->use_dma_api =3D vring_use_dma_api(vdev);
-> > >         vq->premapped =3D false;
-> > > +       vq->do_unmap =3D vq->use_dma_api;
-> > >
-> > >         vq->indirect =3D virtio_has_feature(vdev, VIRTIO_RING_F_INDIR=
-ECT_DESC) &&
-> > >                 !context;
-> > > @@ -2765,6 +2778,7 @@ int virtqueue_set_premapped(struct virtqueue *_=
-vq)
-> > >                 return -EINVAL;
-> > >
-> > >         vq->premapped =3D true;
-> > > +       vq->do_unmap =3D false;
-> > >
-> > >         return 0;
-> > >  }
-> > > --
-> > > 2.32.0.3.g01195cf9f
-> > >
-> >
->
+Does that sound right?
 
+Thanks,
+Daniel
 
