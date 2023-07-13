@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-4899-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4900-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1B7C751657
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 04:33:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5ACC751658
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 04:33:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87FC0281B69
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 02:33:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE8801C21247
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 02:33:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACBD5EBC;
-	Thu, 13 Jul 2023 02:32:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75904EC4;
+	Thu, 13 Jul 2023 02:32:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 767F47C
-	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 02:32:55 +0000 (UTC)
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3847E172C
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 19:32:53 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-1b89114266dso2295375ad.0
-        for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 19:32:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515987C
+	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 02:32:58 +0000 (UTC)
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C389E
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 19:32:57 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id d9443c01a7336-1b9d80e33fbso1770115ad.0
+        for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 19:32:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689215572; x=1691807572;
+        d=gmail.com; s=20221208; t=1689215576; x=1691807576;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6OK5DwAJDi0WeJ1STGjJlEFL99F9NpE9t2dxL/AuL2A=;
-        b=qqBbwS4w7uhtA9joWYu2IS7fhSuPb/D0BqvOn/sQM9TsjcXqWH30TVOi3su+AjnIDy
-         oTwA27j45vlWTdVxvZbhNzoJfI2HpxxRAABJMYF6K/HyWB7RLA3T19+6IywU5V1roW2n
-         Ulas9mYMR4BD0/sCx+wPp6swoBihzbejBx/zmbJFQIQzbZiNN53cBx/o1gopAXwkUXsE
-         Iiw8wqoOEpcIVtr7kur598rmTVMJZDLH3E2KLOrXDsPTI4dPzeRipOhxaqPgBpc94i/k
-         oj4zOqk8gm1XvoCJpX9jxe0sqalSssIYQwNFC+Vb5c3c7rlCH7LL07wLURXPKQ1KiiLI
-         gJ2g==
+        bh=JY7lUvZfaRDtuXJ10+Y5Ag203FYD7K70sHWae4tiFEw=;
+        b=phINwnN/NbLSkOQcHpLXZVRHTl7FbyMj/fdXybnmZF6KV3YUrl/t2MmRqNuBHKOZKk
+         hHb9SmrfHfoUoXODGxIlQz7lbj0a1aMh/CRFs6wf/lo/frFs3G10+BzVwP2hcDfr2VGe
+         4poueWKTu6eA6GE5mp/TjImLofLKQlXUVRikuqxUyQILyRS6f9sbmjM47DR6MRFnUwtu
+         UaGfsJuZblcr9QElYQWkh8PuW2+1JupMOka3blEq1ZwNBjxohokn7lHwCXwHnnYvj4mk
+         RRVbjEenXuRZVObLGX0f70q3HP6RrkzkOd7oZREt3f5XBvGxicMJ4vOdXpP0+d1HUi5S
+         6Aeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689215572; x=1691807572;
+        d=1e100.net; s=20221208; t=1689215576; x=1691807576;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6OK5DwAJDi0WeJ1STGjJlEFL99F9NpE9t2dxL/AuL2A=;
-        b=bAmOHt7Amf+WEd9/Mo7sJoIK33Ot5ndt8/J+W+5DQ8DYBsE96h1jfd2wZbSHtz8wzl
-         BWPVkciqiggszYLPeVlBKXt2l+jw5PXlI8C+ylABoauouhEo4r4vNeSDndFYiSizJVX6
-         Ruf5elhn3gS1pN8NE1oYDTDgpCFLxQLB1SyefMZTkNix3E7cB+N5oMy69L2agl8HvPAe
-         gaT5J2HSNxoP48LfKGcO/NqAP7ArLbafBvWKX5MKYMqwt/kZOS2U/3jfGBIYJ4Ub2mQG
-         SyhAaZp1XOvhlxBXrRvg5n5C/HNMUcxDu8xhh2M7fz+E0aRygdK3pvaQmysx9gEDIacn
-         RhAA==
-X-Gm-Message-State: ABy/qLY3WPvwvI8pW3xEtYK/HWoklZWGlHugzkHmfguRlLixrnxlAP1c
-	vude9XaCicT/Nn60lpbYMgEiX8/x8RBDlw==
-X-Google-Smtp-Source: APBJJlEUr+RZoQS5FNs9e17ZJ9ggxUUx22DnkBISbKd6XQsgA2KdON4Vqr66BGCktqhyeaQcBUVsYg==
-X-Received: by 2002:a17:903:2345:b0:1b5:5fd2:4d6e with SMTP id c5-20020a170903234500b001b55fd24d6emr413704plh.58.1689215571882;
-        Wed, 12 Jul 2023 19:32:51 -0700 (PDT)
+        bh=JY7lUvZfaRDtuXJ10+Y5Ag203FYD7K70sHWae4tiFEw=;
+        b=gjrqPIxoHIoLST8f0Xn9EHLnUF7sx4p0LALLoSRtLvCOKX1BnmcR10iExIOJaxU1rX
+         Ba4A7qKNCCx2/TB4M4jM2qB90kh3p5xdi38fiq9v0IZyb+M6yv+qgpUaLxXkrfc25D1y
+         Ky9AwQFLGEIM/iGcCyOOEnQ+TCr8EJ3oLTdq5CL7HF+aoGSTmEaSgI9gyQ7SVBRK+wfL
+         vF1q7on64TApC96mo2IbRgSZbabeDTUHkRp5XNRIXJDC8MZefVNa0x2pdDRsKOiez7ge
+         shrv9p3xmVBPVFxqVx5tbZkikenVHBLNucS/KyfZEKdH6ca4ojArThQZKtI07uo0hVxy
+         H6LA==
+X-Gm-Message-State: ABy/qLZHkjqMKXx60CZYnOTdM3Qz5px7nM8Tr5YlTnDWxwF4FxVSnhj9
+	B9V5iqquP2hUni1BpS9ePpMoPrXX9WPH1Q==
+X-Google-Smtp-Source: APBJJlGA+lRmbi6jgTZM5w0ivRxRsut6HqOD2L0XaEat/sE5LpLbU5oRPdYFRjuFxF+HwJZfv1nOWA==
+X-Received: by 2002:a17:902:b286:b0:1b8:6b17:9093 with SMTP id u6-20020a170902b28600b001b86b179093mr273627plr.1.1689215575965;
+        Wed, 12 Jul 2023 19:32:55 -0700 (PDT)
 Received: from localhost ([49.36.211.37])
-        by smtp.gmail.com with ESMTPSA id c1-20020a170902848100b001b89b7e208fsm4673469plo.88.2023.07.12.19.32.50
+        by smtp.gmail.com with ESMTPSA id e12-20020a170902d38c00b001b9d335223csm4677911pld.26.2023.07.12.19.32.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 19:32:51 -0700 (PDT)
+        Wed, 12 Jul 2023 19:32:55 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -63,9 +63,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	David Vernet <void@manifault.com>
-Subject: [PATCH bpf-next v1 04/10] bpf: Add support for inserting new subprogs
-Date: Thu, 13 Jul 2023 08:02:26 +0530
-Message-Id: <20230713023232.1411523-5-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 05/10] arch/x86: Implement arch_bpf_stack_walk
+Date: Thu, 13 Jul 2023 08:02:27 +0530
+Message-Id: <20230713023232.1411523-6-memxor@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230713023232.1411523-1-memxor@gmail.com>
 References: <20230713023232.1411523-1-memxor@gmail.com>
@@ -75,7 +75,7 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8621; i=memxor@gmail.com; h=from:subject; bh=cVIqR22tKoTIF4sEUogLkHcJYgzg898L8XXJ1zEC0No=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBkr2HHpXDNFJvOLbPA/wALcXYCdUo/M0CedDKaY ZRKcmlBeC2JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZK9hxwAKCRBM4MiGSL8R yiPcEACt+YxNt6fdUecRYwjFtJveAOr2J0ity46SA/N5OxOtNaZO3C9VqOitA0CRpizExJmcZMk D7c4ymy9luEi+nIyWiU4CdBPrg2rw2gCrnOIUewYE2qf+r4oBc3WFzPbkMOQ9SoqgrDW3LN3vAS 5S3iSMXZCr8RAToBTgSZzjd+kN73i0sQTQorIJYffV3vwpwGhZ9A642KEkeLq2p51QcVIS8nj6Z 4RycqwLKoB5e85zBzQTF+LZdXeBo5DzS9fdduDaQMUn8HYrlbTE8Ay80ZixODfFSTc387qcY4Y3 tOk3XZheDrZuqYDGY6ZGdK7V/rmT1qpsUuMNID0/PRrdMYe5fn71JH5bqWeNEb5BkwyFpqlj+AC kywUJPZsy+n/whzKPx48gW/CDa8I3qVnMrk0SSZdp3LOhgBinmb+Ywu0+Fv6osb+qbljdQy99x7 fdj/BT3Yuv+IeJBWR0mil54zfb3GhVwUJtF8u+3/3IsRmcBVuY7TIxRp/kNI/pGxm4Tbe/n8b/E u7bSZ3WiCeFORrd33jg/KkqnQ97zcC7HuhgiVIJOcNJV6qDPdvlRgDF61mk9aIw2yXKVw8AJkOr hh+PPjT5MikIAxAO1vQRmx86L3j9FA1QGkq39BosM+yDHb9nToz/JS5xcKDl+dgHP3rUZ4RJ1X6 fD8BcqyEWZXExSw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3278; i=memxor@gmail.com; h=from:subject; bh=VQRkAequmejclqTBjBYFceDyxm5b49BZNtvPyADp8Z4=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBkr2HHHhg73JaWPy6I3dqWEctAFf/S2Njo8RgVN IuHAA9ku+KJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZK9hxwAKCRBM4MiGSL8R yto1D/40QYxEos/ZxESSSmhKtXqUXsTeJaS0oGCLEqGilQlZyFdHel0/Noq/bc3jYrZtwNG4UNi ufAJlnzPkP9SuIMFa19VWZWPtHJoMiFHdWDHqmGkA6h9buqF6XN43c1I5YpYSNyVhRnRIN3iKMO w+BjZ7xUZg1/xOZIpwryfEWembTJ7E4tYlqSFF3P/f27oR8ZPP65szF73qPGfgseWCOkp0LAEns qRQzkTUtpp2sbMP2MfnCzUtKS8AKNgcWtaKcWip9/0DXeMDt93JyqPMOeq/GbBgMHJ44R/gw7Gd TAfCWWtUmZyBb+mpGMdCAnv53+wyvftbCthT5VC8v8EfH9R6uLVksIkssk8+deuIojEQrN5SIJe mvjAurrrBtDms7eaFlZXYz2uDL7bXp96io8Xp+p85Ozz4BNDP2f3wD0cYUUoVu0tz6osN62f1VB o3hrD9WIMJZI4S061eVtcVhPEBoGQi2lq3SiWLpJrANrvDAquAd1yR/sJHa40J9VDMtlCfVCBDp SwMP3Dhak2NcssqRc9NllV1mYGP6QMykfjFo5X/SNx7QSMTnC06OpbEqubj0Ra3dD08BWovoeRf a4lAcz5zSOjupmg+zaZrKmkfTYD0+N74jL/Xf77ulmUWeWgrtqGqzuvU5bNQPsZLDOIHO0hugS5 gOH1pfCm1/UNwXQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -85,228 +85,97 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Introduce support in the verifier for generating a subprogram and
-include it as part of a BPF program dynamically after the do_check
-phase is complete. The appropriate place of invocation would be
-do_misc_fixups.
+The plumbing for offline unwinding when we throw an exception in
+programs would require walking the stack, hence introduce a new
+arch_bpf_stack_walk function. This is provided when the JIT supports
+exceptions, i.e. bpf_jit_supports_exceptions is true. The arch-specific
+code is really minimal, hence it should straightforward to extend this
+support to other architectures as well, as it reuses the logic of
+arch_stack_walk, but allowing access to unwind_state data.
 
-Since they are always appended to the end of the instruction sequence of
-the program, it becomes relatively inexpensive to do the related
-adjustments to the subprog_info of the program. Only the fake exit
-subprogram is shifted forward by 1, making room for our invented subprog.
+Once the stack pointer and frame pointer are known for the main subprog
+during the unwinding, we know the stack layout and location of any
+callee-saved registers which must be restored before we return back to
+the kernel.
 
-This is useful to insert a new subprogram and obtain its function
-pointer. The next patch will use this functionality to insert a default
-exception callback which will be invoked after unwinding the stack.
-
-Note that these invented subprograms are invisible to userspace, and
-never reported in BPF_OBJ_GET_INFO_BY_ID etc. For now, only a single
-invented program is supported, but more can be easily supported in the
-future.
+This handling will be added in the next patch.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h          |  1 +
- include/linux/bpf_verifier.h |  4 +++-
- kernel/bpf/core.c            |  4 ++--
- kernel/bpf/syscall.c         | 19 ++++++++++++++++++-
- kernel/bpf/verifier.c        | 29 ++++++++++++++++++++++++++++-
- 5 files changed, 52 insertions(+), 5 deletions(-)
+ arch/x86/net/bpf_jit_comp.c | 21 +++++++++++++++++++++
+ include/linux/filter.h      |  2 ++
+ kernel/bpf/core.c           |  9 +++++++++
+ 3 files changed, 32 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 360433f14496..70f212dddfbf 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1385,6 +1385,7 @@ struct bpf_prog_aux {
- 	bool sleepable;
- 	bool tail_call_reachable;
- 	bool xdp_has_frags;
-+	bool invented_prog;
- 	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
- 	const struct btf_type *attach_func_proto;
- 	/* function name for valid attach_btf_id */
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index f70f9ac884d2..360aa304ec09 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -540,6 +540,7 @@ struct bpf_subprog_info {
- 	bool has_tail_call;
- 	bool tail_call_reachable;
- 	bool has_ld_abs;
-+	bool invented_prog;
- 	bool is_async_cb;
- };
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 438adb695daa..d326503ce242 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -16,6 +16,7 @@
+ #include <asm/set_memory.h>
+ #include <asm/nospec-branch.h>
+ #include <asm/text-patching.h>
++#include <asm/unwind.h>
  
-@@ -594,10 +595,11 @@ struct bpf_verifier_env {
- 	bool bypass_spec_v1;
- 	bool bypass_spec_v4;
- 	bool seen_direct_write;
-+	bool invented_prog;
- 	struct bpf_insn_aux_data *insn_aux_data; /* array of per-insn state */
- 	const struct bpf_line_info *prev_linfo;
- 	struct bpf_verifier_log log;
--	struct bpf_subprog_info subprog_info[BPF_MAX_SUBPROGS + 1];
-+	struct bpf_subprog_info subprog_info[BPF_MAX_SUBPROGS + 2]; /* max + 2 for the fake and exception subprogs */
- 	union {
- 		struct bpf_idmap idmap_scratch;
- 		struct bpf_idset idset_scratch;
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index dc85240a0134..5c484b2bc3d6 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -211,7 +211,7 @@ void bpf_prog_fill_jited_linfo(struct bpf_prog *prog,
- 	const struct bpf_line_info *linfo;
- 	void **jited_linfo;
+ static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
+ {
+@@ -2660,3 +2661,23 @@ void bpf_jit_free(struct bpf_prog *prog)
  
--	if (!prog->aux->jited_linfo)
-+	if (!prog->aux->jited_linfo || prog->aux->invented_prog)
- 		/* Userspace did not provide linfo */
- 		return;
- 
-@@ -579,7 +579,7 @@ bpf_prog_ksym_set_name(struct bpf_prog *prog)
- 	sym  = bin2hex(sym, prog->tag, sizeof(prog->tag));
- 
- 	/* prog->aux->name will be ignored if full btf name is available */
--	if (prog->aux->func_info_cnt) {
-+	if (prog->aux->func_info_cnt && !prog->aux->invented_prog) {
- 		type = btf_type_by_id(prog->aux->btf,
- 				      prog->aux->func_info[prog->aux->func_idx].type_id);
- 		func_name = btf_name_by_offset(prog->aux->btf, type->name_off);
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index ee8cb1a174aa..769550287bed 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -4291,8 +4291,11 @@ static int bpf_prog_get_info_by_fd(struct file *file,
- 		u32 i;
- 
- 		info.jited_prog_len = 0;
--		for (i = 0; i < prog->aux->func_cnt; i++)
-+		for (i = 0; i < prog->aux->func_cnt; i++) {
-+			if (prog->aux->func[i]->aux->invented_prog)
-+				break;
- 			info.jited_prog_len += prog->aux->func[i]->jited_len;
-+		}
- 	} else {
- 		info.jited_prog_len = prog->jited_len;
- 	}
-@@ -4311,6 +4314,8 @@ static int bpf_prog_get_info_by_fd(struct file *file,
- 
- 				free = ulen;
- 				for (i = 0; i < prog->aux->func_cnt; i++) {
-+					if (prog->aux->func[i]->aux->invented_prog)
-+						break;
- 					len = prog->aux->func[i]->jited_len;
- 					len = min_t(u32, len, free);
- 					img = (u8 *) prog->aux->func[i]->bpf_func;
-@@ -4332,6 +4337,8 @@ static int bpf_prog_get_info_by_fd(struct file *file,
- 
- 	ulen = info.nr_jited_ksyms;
- 	info.nr_jited_ksyms = prog->aux->func_cnt ? : 1;
-+	if (prog->aux->func_cnt && prog->aux->func[prog->aux->func_cnt - 1]->aux->invented_prog)
-+		info.nr_jited_ksyms--;
- 	if (ulen) {
- 		if (bpf_dump_raw_ok(file->f_cred)) {
- 			unsigned long ksym_addr;
-@@ -4345,6 +4352,8 @@ static int bpf_prog_get_info_by_fd(struct file *file,
- 			user_ksyms = u64_to_user_ptr(info.jited_ksyms);
- 			if (prog->aux->func_cnt) {
- 				for (i = 0; i < ulen; i++) {
-+					if (prog->aux->func[i]->aux->invented_prog)
-+						break;
- 					ksym_addr = (unsigned long)
- 						prog->aux->func[i]->bpf_func;
- 					if (put_user((u64) ksym_addr,
-@@ -4363,6 +4372,8 @@ static int bpf_prog_get_info_by_fd(struct file *file,
- 
- 	ulen = info.nr_jited_func_lens;
- 	info.nr_jited_func_lens = prog->aux->func_cnt ? : 1;
-+	if (prog->aux->func_cnt && prog->aux->func[prog->aux->func_cnt - 1]->aux->invented_prog)
-+		info.nr_jited_func_lens--;
- 	if (ulen) {
- 		if (bpf_dump_raw_ok(file->f_cred)) {
- 			u32 __user *user_lens;
-@@ -4373,6 +4384,8 @@ static int bpf_prog_get_info_by_fd(struct file *file,
- 			user_lens = u64_to_user_ptr(info.jited_func_lens);
- 			if (prog->aux->func_cnt) {
- 				for (i = 0; i < ulen; i++) {
-+					if (prog->aux->func[i]->aux->invented_prog)
-+						break;
- 					func_len =
- 						prog->aux->func[i]->jited_len;
- 					if (put_user(func_len, &user_lens[i]))
-@@ -4443,6 +4456,8 @@ static int bpf_prog_get_info_by_fd(struct file *file,
- 
- 	ulen = info.nr_prog_tags;
- 	info.nr_prog_tags = prog->aux->func_cnt ? : 1;
-+	if (prog->aux->func_cnt && prog->aux->func[prog->aux->func_cnt - 1]->aux->invented_prog)
-+		info.nr_prog_tags--;
- 	if (ulen) {
- 		__u8 __user (*user_prog_tags)[BPF_TAG_SIZE];
- 		u32 i;
-@@ -4451,6 +4466,8 @@ static int bpf_prog_get_info_by_fd(struct file *file,
- 		ulen = min_t(u32, info.nr_prog_tags, ulen);
- 		if (prog->aux->func_cnt) {
- 			for (i = 0; i < ulen; i++) {
-+				if (prog->aux->func[i]->aux->invented_prog)
-+					break;
- 				if (copy_to_user(user_prog_tags[i],
- 						 prog->aux->func[i]->tag,
- 						 BPF_TAG_SIZE))
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5d432df5df06..8ce72a7b4758 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14891,8 +14891,11 @@ static void adjust_btf_func(struct bpf_verifier_env *env)
- 	if (!aux->func_info)
- 		return;
- 
--	for (i = 0; i < env->subprog_cnt; i++)
-+	for (i = 0; i < env->subprog_cnt; i++) {
-+		if (env->subprog_info[i].invented_prog)
-+			break;
- 		aux->func_info[i].insn_off = env->subprog_info[i].start;
-+	}
+ 	bpf_prog_unlock_free(prog);
  }
- 
- #define MIN_BPF_LINEINFO_SIZE	offsetofend(struct bpf_line_info, line_col)
-@@ -17778,6 +17781,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
- 		}
- 		func[i]->aux->num_exentries = num_exentries;
- 		func[i]->aux->tail_call_reachable = env->subprog_info[i].tail_call_reachable;
-+		func[i]->aux->invented_prog = env->subprog_info[i].invented_prog;
- 		func[i] = bpf_int_jit_compile(func[i]);
- 		if (!func[i]->jited) {
- 			err = -ENOTSUPP;
-@@ -18071,6 +18075,29 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 	return 0;
- }
- 
-+/* The function requires that first instruction in 'patch' is insnsi[prog->len - 1] */
-+static int invent_subprog(struct bpf_verifier_env *env, struct bpf_insn *patch, int len)
-+{
-+	struct bpf_subprog_info *info = env->subprog_info;
-+	int cnt = env->subprog_cnt;
-+	struct bpf_prog *prog;
 +
-+	if (env->invented_prog) {
-+		verbose(env, "verifier internal error: only one invented prog supported\n");
-+		return -EFAULT;
-+	}
-+	prog = bpf_patch_insn_data(env, env->prog->len - 1, patch, len);
-+	if (!prog)
-+		return -ENOMEM;
-+	env->prog = prog;
-+	info[cnt + 1].start = info[cnt].start;
-+	info[cnt].start = prog->len - len + 1;
-+	info[cnt].invented_prog = true;
-+	env->subprog_cnt++;
-+	env->invented_prog = true;
-+	return 0;
++bool bpf_jit_supports_exceptions(void)
++{
++	return IS_ENABLED(CONFIG_UNWINDER_ORC) || IS_ENABLED(CONFIG_UNWINDER_FRAME_POINTER);
 +}
 +
- /* Do various post-verification rewrites in a single program pass.
-  * These rewrites simplify JIT and interpreter implementations.
-  */
++void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
++{
++#if defined(CONFIG_UNWINDER_ORC) || defined(CONFIG_UNWINDER_FRAME_POINTER)
++	struct unwind_state state;
++	unsigned long addr;
++
++	for (unwind_start(&state, current, NULL, NULL); !unwind_done(&state);
++	     unwind_next_frame(&state)) {
++		addr = unwind_get_return_address(&state);
++		if (!addr || !consume_fn(cookie, (u64)addr, (u64)state.sp, (u64)state.bp))
++			break;
++	}
++#endif
++}
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index f69114083ec7..21ac801330bb 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -920,6 +920,8 @@ bool bpf_jit_needs_zext(void);
+ bool bpf_jit_supports_subprog_tailcalls(void);
+ bool bpf_jit_supports_kfunc_call(void);
+ bool bpf_jit_supports_far_kfunc_call(void);
++bool bpf_jit_supports_exceptions(void);
++void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
+ bool bpf_helper_changes_pkt_data(void *func);
+ 
+ static inline bool bpf_dump_raw_ok(const struct cred *cred)
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 5c484b2bc3d6..5e224cf0ec27 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2770,6 +2770,15 @@ int __weak bpf_arch_text_invalidate(void *dst, size_t len)
+ 	return -ENOTSUPP;
+ }
+ 
++bool __weak bpf_jit_supports_exceptions(void)
++{
++	return false;
++}
++
++void __weak arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
++{
++}
++
+ #ifdef CONFIG_BPF_SYSCALL
+ static int __init bpf_global_ma_init(void)
+ {
 -- 
 2.40.1
 
