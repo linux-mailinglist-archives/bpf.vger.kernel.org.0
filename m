@@ -1,67 +1,67 @@
-Return-Path: <bpf+bounces-4961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FEE7752591
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 16:52:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5821A7525A3
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 16:53:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A22E281BAB
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 14:52:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89BB91C213AA
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 14:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9F118AE9;
-	Thu, 13 Jul 2023 14:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C812E18B12;
+	Thu, 13 Jul 2023 14:52:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CA817754
-	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 14:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943AD14F9D
+	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 14:52:52 +0000 (UTC)
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C542D47
-	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 07:52:07 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F42106
+	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 07:52:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1689259927;
+	s=mimecast20190719; t=1689259970;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5E6F9ats4BLmlQpCisZt6wT8CnApvl7BR9/00bgFE+o=;
-	b=LJaL6GD549bXVdn+u3oS8xk3v5iJMb7zUvHcy1iUowkCAFN01Ejp2Q5v1f8KtRSOJQtKgQ
-	O+XdssDYyMXeWN3vNrLIfDcZts8hRs+Z5YC25qN0lwYLBQ9k5cla+Yggl1W5dHZ0+KRopw
-	BD3f5YeEZ/7Pd5/2dc3lXTg5DnQl4kE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=a2zCtBlVMSfdNhn49F5fvGTfds6ip8Yk0SLr5SlzCTc=;
+	b=eHhh/62oyZ9Cq1yF8HZ5oVvgfZBvCNDoahRA747699M2Ay91ucg/Tqj1GeOywzirfnsuzR
+	xRL41Z1vCHf74655tGzV8Vrr0dwHJAjv3dclO1f08JMp3BCR9BsGBVPY+267mQQXcSLaTt
+	/cJ1pCd3h8+b7kvTpjPtqfgXD4k+L/s=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-668-bsR4Ibi4PdifpmPeKauIhg-1; Thu, 13 Jul 2023 10:52:05 -0400
-X-MC-Unique: bsR4Ibi4PdifpmPeKauIhg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3142665f122so470884f8f.0
-        for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 07:52:05 -0700 (PDT)
+ us-mta-662--6TNhdfBN5-ySFb3SfwQEA-1; Thu, 13 Jul 2023 10:52:49 -0400
+X-MC-Unique: -6TNhdfBN5-ySFb3SfwQEA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31429e93f26so585022f8f.2
+        for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 07:52:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689259924; x=1691851924;
+        d=1e100.net; s=20221208; t=1689259968; x=1691851968;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5E6F9ats4BLmlQpCisZt6wT8CnApvl7BR9/00bgFE+o=;
-        b=cv1eIjKcOcU6AH/cSDqBzB968P7tkceVfQcR+c3C4RrE161b2G54dIHCXl0skd+NVX
-         k5QjFyWYeUzzCXHJ6bUwv8N09zC5jsqoT7pJktBVSrpsY02j80mNE8c5gdP5GsERjXRF
-         PcG5CoOTbc5gICnbmoNa2JZBqTxrlDpJiejI+pjux+58PIcGKbACq7PtYAvXvd2mG2pu
-         SotJOcxwDAY077J5xBvGEMQn7RnMshN2C1WCovpnsLrhEq7EVV4zxiS5Qlisi2UgS0av
-         uTs4NCytp/YZ2SltCX3eV4dLJNQlXJ/iyQqKnBiGlekh3jZLswkU0gvG+o9g0o38SbK5
-         GW5Q==
-X-Gm-Message-State: ABy/qLbYp+tk4Ax2YrnGV3UvTMvBsBeR0G4W1/x06/YdzBO3h+vsnD6B
-	/F0VkKSsb9DICsYq9u+XWeLOI2mm2PN9xUeNq9MFpXAgjO4+fPc+BRYRcyw+TsyiMixg82al+BO
-	mD28d/AHyMYLB
-X-Received: by 2002:a5d:4e8d:0:b0:314:ca7:f30b with SMTP id e13-20020a5d4e8d000000b003140ca7f30bmr1958300wru.54.1689259924770;
-        Thu, 13 Jul 2023 07:52:04 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFRuSHTNPf9qN+kahsoUR/nmIalfm3YfEdwlFil6U+7gTdTpuIDAdjWTT/+bCM2yDuYWb+3kQ==
-X-Received: by 2002:a5d:4e8d:0:b0:314:ca7:f30b with SMTP id e13-20020a5d4e8d000000b003140ca7f30bmr1958277wru.54.1689259924514;
-        Thu, 13 Jul 2023 07:52:04 -0700 (PDT)
+        bh=a2zCtBlVMSfdNhn49F5fvGTfds6ip8Yk0SLr5SlzCTc=;
+        b=Zf3u2QscOoBZz3od3Ylsd+7zbXbX1f6zv85qKc7QnwdVakzvlCxzxMl5f39WRytOvh
+         qsWr5bcsLX7y4IsWYXETUcrLzRun90m2YqMUVD27An4PSRiW6bzY3I/m8lPhqyF80Wsz
+         YtvPwt5YkK8ZUXlJC2/zeHrqWRjeeGXnAZkhQXlgkWGLZ19dIUOUV/zBTicIiq9JGsB0
+         unf73U38bgAjrHI6Fo/pIdnUWNcNr5/M+lOHcgAjryfk6ut9mY7AXnpNmKbRIb4j7FGF
+         abYequxG83k74b1dQhPdWR01Y3+IAADs0B6Yx1lXOnKhVFhziEFNh95U7CrjqR1EW2JZ
+         J/Rg==
+X-Gm-Message-State: ABy/qLbCc5zxa13mLnZPnL51JX547BENO6VkIWA33roOFu6dLoHH78rR
+	ZglG+hqOdvUIcy/wKwQlPDNq/x1jbDiHEmGQID6XgnvAeb7ClhgQI2C/HpI15fN+7dN4QEP4yQp
+	jWRcgOsltVlVU
+X-Received: by 2002:adf:f802:0:b0:314:3503:15ac with SMTP id s2-20020adff802000000b00314350315acmr1739350wrp.10.1689259968668;
+        Thu, 13 Jul 2023 07:52:48 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHIe9bIwU8uwonGb/X776+z7KNCl4G7bhOiTrPif1cQEJqDIP/Vb7HU5xOiBtQ+0jRV7Mj+VA==
+X-Received: by 2002:adf:f802:0:b0:314:3503:15ac with SMTP id s2-20020adff802000000b00314350315acmr1739345wrp.10.1689259968500;
+        Thu, 13 Jul 2023 07:52:48 -0700 (PDT)
 Received: from redhat.com ([2.52.158.233])
-        by smtp.gmail.com with ESMTPSA id s15-20020adff80f000000b00313f9a0c521sm8253520wrp.107.2023.07.13.07.52.02
+        by smtp.gmail.com with ESMTPSA id s14-20020adfea8e000000b00301a351a8d6sm8230571wrm.84.2023.07.13.07.52.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 07:52:04 -0700 (PDT)
-Date: Thu, 13 Jul 2023 10:51:59 -0400
+        Thu, 13 Jul 2023 07:52:48 -0700 (PDT)
+Date: Thu, 13 Jul 2023 10:52:44 -0400
 From: "Michael S. Tsirkin" <mst@redhat.com>
 To: Christoph Hellwig <hch@infradead.org>
 Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
@@ -75,12 +75,12 @@ Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: Re: [PATCH vhost v11 05/10] virtio_ring: introduce
- virtqueue_dma_dev()
-Message-ID: <20230713104805-mutt-send-email-mst@kernel.org>
+Subject: Re: [PATCH vhost v11 03/10] virtio_ring: introduce
+ virtqueue_set_premapped()
+Message-ID: <20230713105230-mutt-send-email-mst@kernel.org>
 References: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
- <20230710034237.12391-6-xuanzhuo@linux.alibaba.com>
- <ZK/cxNHzI23I6efc@infradead.org>
+ <20230710034237.12391-4-xuanzhuo@linux.alibaba.com>
+ <ZK/cpSceLMovhmfR@infradead.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,7 +89,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZK/cxNHzI23I6efc@infradead.org>
+In-Reply-To: <ZK/cpSceLMovhmfR@infradead.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -97,15 +97,19 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 13, 2023 at 04:15:16AM -0700, Christoph Hellwig wrote:
-> On Mon, Jul 10, 2023 at 11:42:32AM +0800, Xuan Zhuo wrote:
-> > Added virtqueue_dma_dev() to get DMA device for virtio. Then the
-> > caller can do dma operation in advance. The purpose is to keep memory
-> > mapped across multiple add/get buf operations.
+On Thu, Jul 13, 2023 at 04:14:45AM -0700, Christoph Hellwig wrote:
+> On Mon, Jul 10, 2023 at 11:42:30AM +0800, Xuan Zhuo wrote:
+> > This helper allows the driver change the dma mode to premapped mode.
+> > Under the premapped mode, the virtio core do not do dma mapping
+> > internally.
+> > 
+> > This just work when the use_dma_api is true. If the use_dma_api is false,
+> > the dma options is not through the DMA APIs, that is not the standard
+> > way of the linux kernel.
 > 
-> This is just poking holes into the abstraction..
+> I have a hard time parsing this.
 
-More specifically?
+Me too unfortunately.
 
 -- 
 MST
