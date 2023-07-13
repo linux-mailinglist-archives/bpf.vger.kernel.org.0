@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-4915-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4916-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6301475172D
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:09:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF6A9751730
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:09:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8576A1C21225
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 04:09:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A2961C2126E
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 04:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9F65256;
-	Thu, 13 Jul 2023 04:08:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70321525F;
+	Thu, 13 Jul 2023 04:09:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8EC46BC
-	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 04:08:56 +0000 (UTC)
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4483F213E;
-	Wed, 12 Jul 2023 21:08:54 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id 41be03b00d2f7-55b1238a024so311978a12.0;
-        Wed, 12 Jul 2023 21:08:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB7B525B
+	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 04:09:06 +0000 (UTC)
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EAD26A0;
+	Wed, 12 Jul 2023 21:08:58 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d2e1a72fcca58-666e64e97e2so148120b3a.1;
+        Wed, 12 Jul 2023 21:08:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689221333; x=1691813333;
+        d=gmail.com; s=20221208; t=1689221338; x=1691813338;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yub0qq7gQcoTrdJVvkuSVKBKxTzmHme5hkDeDJ6yYxs=;
-        b=P+OVpOnIJm/KfhA79+V53RzQUg9vAOVcbaPTK8Tr1e60P5dY0u7ykgze+JKdSXtjUY
-         +edQ4xuJ91z3q0pYFyAWmVjmt+QvZ18WzLzghyk2QKzeXwZY3p/LtL/ErTsjTlMizhGP
-         9ZFaEkT+WNmmiWH/JLPrGrSd9fz1kIzQ7447KaQ6kTI4UIEw/gvt6+QXMiYYbIjlO2TX
-         M/QGTlqFhXvUZDEeMmNnDtk+t/gVgOXne3/UYnI9vAdmvu2bNiPkoJ0HDUyg/L3a7o9H
-         Q9NkG9lHo/3mJEEwdIbPYbSIe7oF7B/m4K15P8OkQ87RcP7Kjvqh+nNd2CSkQx6nJn1U
-         w52A==
+        bh=8OjOaQ4N2P1vOa7SIPcBYDDT70Jy/LwX1Sa9/h9lE1M=;
+        b=DByfjyMzbLvFACAqCFdz4yPgGGC41UVSt4B4Vp9J5Bqmm0HmJ1o8Un6PZpVFHUPEbq
+         Demf+dNImhsAwR/dg3V50ilhTMItkFmQonEr2UvtUa40x2esyVU8wxj7Ewj3BtNsPFvH
+         TFdZHwp1vgQED638QnHw2jwMD+RLxXKrdbXd0x5Gg+EI0R3QgrUAnD+hLom0pTfhZOlz
+         RvOIwuaXr+gYjgZus3wEXrpWOCpm9iUI73yzBGf1NVK7V+TfAsSizcw7p7bE84B03Phe
+         yMfmK9JJNzjja3NZ3uyngf+TQ6eQ28LCha6VT+4XtGMMO6m0gj6Ki/RS5aRB2ta0xDct
+         E33Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689221334; x=1691813334;
+        d=1e100.net; s=20221208; t=1689221338; x=1691813338;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yub0qq7gQcoTrdJVvkuSVKBKxTzmHme5hkDeDJ6yYxs=;
-        b=MUQ6zEjZsiFXp61e3imrHHyVtUxIG2dc0f6jwjpFEsRZyXXag235NVasxlCTf8BaEm
-         4EbVzW821kZbM6EBc6Aw0syrmkoSgtNLZf9P3NF+Am4eF6jAkeUI8mxGwcsXoYoi5P+Q
-         qs9IeZmK0xEISmpGNDIAxtFdoy8pEtOx1Dckd/Goboy7yUrs/rveHHwQu/+z9lcq3Cnv
-         xZ4Gbpd4VWvC98Fejz5G7DtBfIktsXQeOX5uSlnpqGGBXBWjyqOKoti0v+nlvF9+oSAR
-         FmVOlvj9E5+Av/ySwa/ljyl0WsTQw3nuS85WA8xPDwXho56ARnBrRSZUW4qjeVkPmm8Y
-         qTPw==
-X-Gm-Message-State: ABy/qLaibi0txhv8PMfdcvTV9fOnl2XPBcvAD7wcZy0Py4vnGF5C2zRD
-	lTS2cY/8FsVsjC7/sbtH77hrdw6uoUTB+EAg
-X-Google-Smtp-Source: APBJJlFwZSPGHQW4pbucKTyzX+iQd8BcFoWSMe0PNPCsbWPh1vgVbrBWUH5jzWFKusqIr7fzXb+AKA==
-X-Received: by 2002:a17:902:a409:b0:1b9:be2e:2b40 with SMTP id p9-20020a170902a40900b001b9be2e2b40mr443690plq.50.1689221333543;
-        Wed, 12 Jul 2023 21:08:53 -0700 (PDT)
+        bh=8OjOaQ4N2P1vOa7SIPcBYDDT70Jy/LwX1Sa9/h9lE1M=;
+        b=FpbzGv28RycW686gS2jp9kNtJ0Km7eCr9xtYJ1WAe7EMf+9hwJjnKJATQeJQwPsIM5
+         fTWTjxd4PNE0tyonacvvgadE0FX5j2M7i03ok7JtaudnYyPrXC3t8aaxfaYRVASrKncx
+         HaDvCiA0WSvLWLFlem1pv2MLsKmINmG8xE0rvddbaIhvFzUBcKkSywRyHrnM6bjROm8H
+         gKSoNMybwcsv/UQVXaVTX3eJMhMzrh3p/lLcLHBlqKJ5HEVwlXbsNGc0RxBsW/2Z0Mma
+         ZU6Jo/9ymzcgldqS9QfNJRCvAS7pLlBdE/s+7c1DRwN74rxd7+QVYanu/aZ0TpDyhpGj
+         WYxA==
+X-Gm-Message-State: ABy/qLZHEXUtYxfp7XJsNHi6GWNn1l67HljTOm5BWXP/UxWvpTSzP4wF
+	7LI4BxKMrc6lz7JlntVvGfY=
+X-Google-Smtp-Source: APBJJlHihuchurNq88rkHmbj8Xz19WdFlUg2XrVsIOngIK187DuDJhQGM3y1Las1+bT43Usq9Nvlpg==
+X-Received: by 2002:a05:6a20:160a:b0:130:1563:7502 with SMTP id l10-20020a056a20160a00b0013015637502mr99467pzj.7.1689221338134;
+        Wed, 12 Jul 2023 21:08:58 -0700 (PDT)
 Received: from localhost.localdomain ([43.132.98.100])
-        by smtp.gmail.com with ESMTPSA id c7-20020a170902d48700b001bb04755212sm483217plg.228.2023.07.12.21.08.49
+        by smtp.gmail.com with ESMTPSA id c7-20020a170902d48700b001bb04755212sm483217plg.228.2023.07.12.21.08.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 21:08:53 -0700 (PDT)
+        Wed, 12 Jul 2023 21:08:57 -0700 (PDT)
 From: menglong8.dong@gmail.com
 X-Google-Original-From: imagedong@tencent.com
 To: yhs@meta.com,
@@ -77,9 +77,9 @@ Cc: ast@kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	Menglong Dong <imagedong@tencent.com>
-Subject: [PATCH bpf-next v10 2/3] bpf, x86: allow function arguments up to 12 for TRACING
-Date: Thu, 13 Jul 2023 12:07:37 +0800
-Message-Id: <20230713040738.1789742-3-imagedong@tencent.com>
+Subject: [PATCH bpf-next v10 3/3] selftests/bpf: add testcase for TRACING with 6+ arguments
+Date: Thu, 13 Jul 2023 12:07:38 +0800
+Message-Id: <20230713040738.1789742-4-imagedong@tencent.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230713040738.1789742-1-imagedong@tencent.com>
 References: <20230713040738.1789742-1-imagedong@tencent.com>
@@ -99,451 +99,672 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Menglong Dong <imagedong@tencent.com>
 
-For now, the BPF program of type BPF_PROG_TYPE_TRACING can only be used
-on the kernel functions whose arguments count less than or equal to 6, if
-not considering '> 8 bytes' struct argument. This is not friendly at all,
-as too many functions have arguments count more than 6.
+Add fentry_many_args.c and fexit_many_args.c to test the fentry/fexit
+with 7/11 arguments. As this feature is not supported by arm64 yet, we
+disable these testcases for arm64 in DENYLIST.aarch64. We can combine
+them with fentry_test.c/fexit_test.c when arm64 is supported too.
 
-According to the current kernel version, below is a statistics of the
-function arguments count:
+Correspondingly, add bpf_testmod_fentry_test7() and
+bpf_testmod_fentry_test11() to bpf_testmod.c
 
-argument count | function count
-7              | 704
-8              | 270
-9              | 84
-10             | 47
-11             | 47
-12             | 27
-13             | 22
-14             | 5
-15             | 0
-16             | 1
+Meanwhile, add bpf_modify_return_test2() to test_run.c to test the
+MODIFY_RETURN with 7 arguments.
 
-Therefore, let's enhance it by increasing the function arguments count
-allowed in arch_prepare_bpf_trampoline(), for now, only x86_64.
+Add bpf_testmod_test_struct_arg_7/bpf_testmod_test_struct_arg_7 in
+bpf_testmod.c to test the struct in the arguments.
 
-For the case that we don't need to call origin function, which means
-without BPF_TRAMP_F_CALL_ORIG, we need only copy the function arguments
-that stored in the frame of the caller to current frame. The 7th and later
-arguments are stored in "$rbp + 0x18", and they will be copied to the
-stack area following where register values are saved.
+And the testcases passed on x86_64:
 
-For the case with BPF_TRAMP_F_CALL_ORIG, we need prepare the arguments
-in stack before call origin function, which means we need alloc extra
-"8 * (arg_count - 6)" memory in the top of the stack. Note, there should
-not be any data be pushed to the stack before calling the origin function.
-So 'rbx' value will be stored on a stack position higher than where stack
-arguments are stored for BPF_TRAMP_F_CALL_ORIG.
+./test_progs -t fexit
+Summary: 5/14 PASSED, 0 SKIPPED, 0 FAILED
 
-According to the research of Yonghong, struct members should be all in
-register or all on the stack. Meanwhile, the compiler will pass the
-argument on regs if the remaining regs can hold the argument. Therefore,
-we need save the arguments in order. Otherwise, disorder of the args can
-happen. For example:
+./test_progs -t fentry
+Summary: 3/2 PASSED, 0 SKIPPED, 0 FAILED
 
-  struct foo_struct {
-      long a;
-      int b;
-  };
-  int foo(char, char, char, char, char, struct foo_struct,
-          char);
+./test_progs -t modify_return
+Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
 
-the arg1-5,arg7 will be passed by regs, and arg6 will by stack. Therefore,
-we should save/restore the arguments in the same order with the
-declaration of foo(). And the args used as ctx in stack will be like this:
-
-  reg_arg6   -- copy from regs
-  stack_arg2 -- copy from stack
-  stack_arg1
-  reg_arg5   -- copy from regs
-  reg_arg4
-  reg_arg3
-  reg_arg2
-  reg_arg1
-
-We use EMIT3_off32() or EMIT4() for "lea" and "sub". The range of the
-imm in "lea" and "sub" is [-128, 127] if EMIT4() is used. Therefore,
-we use EMIT3_off32() instead if the imm out of the range.
-
-It works well for the FENTRY/FEXIT/MODIFY_RETURN.
+./test_progs -t tracing_struct
+Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
 
 Signed-off-by: Menglong Dong <imagedong@tencent.com>
 Acked-by: Yonghong Song <yhs@fb.com>
 ---
-v7:
-- somit nits from commit message and comment
-- remove the inline in get_nr_regs()
-- rename some function and various
+v10:
+- fix the failed test cases of trampoline_count and get_func_args_test
+v9:
+- change the way to test fmod_ret
+v8:
+- split the testcases, and add fentry_many_args/fexit_many_args to
+  DENYLIST.aarch64
 v6:
-- introduce get_nr_regs() to get the space that used to pass args on
-  stack correct
-- rename some args and fix some spelling mistake
+- add testcases to tracing_struct.c instead of fentry_test.c and
+  fexit_test.c
 v5:
-- consider the case of the struct in arguments can't be hold by regs
+- add testcases for MODIFY_RETURN
 v4:
-- make the stack 16-byte aligned if passing args on-stack is needed
-- add the function arguments statistics to the commit log
+- use different type for args in bpf_testmod_fentry_test{7,12}
+- add testcase for grabage values in ctx
 v3:
-- use EMIT3_off32() for "lea" and "sub" only on necessary
-- make 12 as the maximum arguments count
-v2:
-- instead EMIT4 with EMIT3_off32 for "lea" to prevent overflow
-- make MAX_BPF_FUNC_ARGS as the maximum argument count
+- move bpf_fentry_test{7,12} to bpf_testmod.c and rename them to
+  bpf_testmod_fentry_test{7,12} meanwhile
+- get return value by bpf_get_func_ret() in
+  "fexit/bpf_testmod_fentry_test12", as we don't change ___bpf_ctx_cast()
+  in this version
 ---
- arch/x86/net/bpf_jit_comp.c | 235 ++++++++++++++++++++++++++++++++----
- 1 file changed, 209 insertions(+), 26 deletions(-)
+ net/bpf/test_run.c                            | 14 ++++-
+ tools/testing/selftests/bpf/DENYLIST.aarch64  |  2 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 49 ++++++++++++++++-
+ .../selftests/bpf/prog_tests/fentry_test.c    | 43 +++++++++++++--
+ .../selftests/bpf/prog_tests/fexit_test.c     | 43 +++++++++++++--
+ .../bpf/prog_tests/get_func_args_test.c       |  4 +-
+ .../selftests/bpf/prog_tests/modify_return.c  | 10 ++--
+ .../selftests/bpf/prog_tests/tracing_struct.c | 19 +++++++
+ .../bpf/prog_tests/trampoline_count.c         |  4 +-
+ .../selftests/bpf/progs/fentry_many_args.c    | 39 ++++++++++++++
+ .../selftests/bpf/progs/fexit_many_args.c     | 40 ++++++++++++++
+ .../selftests/bpf/progs/modify_return.c       | 40 ++++++++++++++
+ .../selftests/bpf/progs/tracing_struct.c      | 54 +++++++++++++++++++
+ 13 files changed, 345 insertions(+), 16 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/fentry_many_args.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fexit_many_args.c
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index fcbd3b7123a4..5ab531be56ac 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1857,37 +1857,178 @@ st:			if (is_imm8(insn->off))
- 	return proglen;
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 63b11f7a5392..7d47f53f20c1 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -565,6 +565,13 @@ __bpf_kfunc int bpf_modify_return_test(int a, int *b)
+ 	return a + *b;
  }
  
--static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
--		      int stack_size)
-+static void clean_stack_garbage(const struct btf_func_model *m,
-+				u8 **pprog, int nr_stack_slots,
-+				int stack_size)
- {
--	int i;
-+	int arg_size, off;
-+	u8 *prog;
-+
-+	/* Generally speaking, the compiler will pass the arguments
-+	 * on-stack with "push" instruction, which will take 8-byte
-+	 * on the stack. In this case, there won't be garbage values
-+	 * while we copy the arguments from origin stack frame to current
-+	 * in BPF_DW.
-+	 *
-+	 * However, sometimes the compiler will only allocate 4-byte on
-+	 * the stack for the arguments. For now, this case will only
-+	 * happen if there is only one argument on-stack and its size
-+	 * not more than 4 byte. In this case, there will be garbage
-+	 * values on the upper 4-byte where we store the argument on
-+	 * current stack frame.
-+	 *
-+	 * arguments on origin stack:
-+	 *
-+	 * stack_arg_1(4-byte) xxx(4-byte)
-+	 *
-+	 * what we copy:
-+	 *
-+	 * stack_arg_1(8-byte): stack_arg_1(origin) xxx
-+	 *
-+	 * and the xxx is the garbage values which we should clean here.
-+	 */
-+	if (nr_stack_slots != 1)
-+		return;
-+
-+	/* the size of the last argument */
-+	arg_size = m->arg_size[m->nr_args - 1];
-+	if (arg_size <= 4) {
-+		off = -(stack_size - 4);
-+		prog = *pprog;
-+		/* mov DWORD PTR [rbp + off], 0 */
-+		if (!is_imm8(off))
-+			EMIT2_off32(0xC7, 0x85, off);
-+		else
-+			EMIT3(0xC7, 0x45, off);
-+		EMIT(0, 4);
-+		*pprog = prog;
-+	}
++__bpf_kfunc int bpf_modify_return_test2(int a, int *b, short c, int d,
++					void *e, char f, int g)
++{
++	*b += 1;
++	return a + *b + c + d + (long)e + f + g;
 +}
 +
-+/* get the count of the regs that are used to pass arguments */
-+static int get_nr_used_regs(const struct btf_func_model *m)
+ int noinline bpf_fentry_shadow_test(int a)
+ {
+ 	return a + 1;
+@@ -600,6 +607,7 @@ __diag_pop();
+ 
+ BTF_SET8_START(bpf_test_modify_return_ids)
+ BTF_ID_FLAGS(func, bpf_modify_return_test)
++BTF_ID_FLAGS(func, bpf_modify_return_test2)
+ BTF_ID_FLAGS(func, bpf_fentry_test1, KF_SLEEPABLE)
+ BTF_SET8_END(bpf_test_modify_return_ids)
+ 
+@@ -667,7 +675,11 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
+ 	case BPF_MODIFY_RETURN:
+ 		ret = bpf_modify_return_test(1, &b);
+ 		if (b != 2)
+-			side_effect = 1;
++			side_effect++;
++		b = 2;
++		ret += bpf_modify_return_test2(1, &b, 3, 4, (void *)5, 6, 7);
++		if (b != 2)
++			side_effect++;
+ 		break;
+ 	default:
+ 		goto out;
+diff --git a/tools/testing/selftests/bpf/DENYLIST.aarch64 b/tools/testing/selftests/bpf/DENYLIST.aarch64
+index 08adc805878b..3b61e8b35d62 100644
+--- a/tools/testing/selftests/bpf/DENYLIST.aarch64
++++ b/tools/testing/selftests/bpf/DENYLIST.aarch64
+@@ -10,3 +10,5 @@ kprobe_multi_test/link_api_addrs                 # link_fd unexpected link_fd: a
+ kprobe_multi_test/link_api_syms                  # link_fd unexpected link_fd: actual -95 < expected 0
+ kprobe_multi_test/skel_api                       # libbpf: failed to load BPF skeleton 'kprobe_multi': -3
+ module_attach                                    # prog 'kprobe_multi': failed to auto-attach: -95
++fentry_test/fentry_many_args                     # fentry_many_args:FAIL:fentry_many_args_attach unexpected error: -524
++fexit_test/fexit_many_args                       # fexit_many_args:FAIL:fexit_many_args_attach unexpected error: -524
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index aaf6ef1201c7..a6f991b56345 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -34,6 +34,11 @@ struct bpf_testmod_struct_arg_3 {
+ 	int b[];
+ };
+ 
++struct bpf_testmod_struct_arg_4 {
++	u64 a;
++	int b;
++};
++
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in bpf_testmod.ko BTF");
+@@ -75,6 +80,24 @@ bpf_testmod_test_struct_arg_6(struct bpf_testmod_struct_arg_3 *a) {
+ 	return bpf_testmod_test_struct_arg_result;
+ }
+ 
++noinline int
++bpf_testmod_test_struct_arg_7(u64 a, void *b, short c, int d, void *e,
++			      struct bpf_testmod_struct_arg_4 f)
 +{
-+	int i, arg_regs, nr_used_regs = 0;
-+
-+	for (i = 0; i < min_t(int, m->nr_args, MAX_BPF_FUNC_ARGS); i++) {
-+		arg_regs = (m->arg_size[i] + 7) / 8;
-+		if (nr_used_regs + arg_regs <= 6)
-+			nr_used_regs += arg_regs;
-+
-+		if (nr_used_regs >= 6)
-+			break;
-+	}
-+
-+	return nr_used_regs;
++	bpf_testmod_test_struct_arg_result = a + (long)b + c + d +
++		(long)e + f.a + f.b;
++	return bpf_testmod_test_struct_arg_result;
 +}
 +
-+static void save_args(const struct btf_func_model *m, u8 **prog,
-+		      int stack_size, bool for_call_origin)
++noinline int
++bpf_testmod_test_struct_arg_8(u64 a, void *b, short c, int d, void *e,
++			      struct bpf_testmod_struct_arg_4 f, int g)
 +{
-+	int arg_regs, first_off, nr_regs = 0, nr_stack_slots = 0;
-+	int i, j;
- 
- 	/* Store function arguments to stack.
- 	 * For a function that accepts two pointers the sequence will be:
- 	 * mov QWORD PTR [rbp-0x10],rdi
- 	 * mov QWORD PTR [rbp-0x8],rsi
- 	 */
--	for (i = 0; i < min(nr_regs, 6); i++)
--		emit_stx(prog, BPF_DW, BPF_REG_FP,
--			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
--			 -(stack_size - i * 8));
-+	for (i = 0; i < min_t(int, m->nr_args, MAX_BPF_FUNC_ARGS); i++) {
-+		arg_regs = (m->arg_size[i] + 7) / 8;
++	bpf_testmod_test_struct_arg_result = a + (long)b + c + d +
++		(long)e + f.a + f.b + g;
++	return bpf_testmod_test_struct_arg_result;
++}
 +
-+		/* According to the research of Yonghong, struct members
-+		 * should be all in register or all on the stack.
-+		 * Meanwhile, the compiler will pass the argument on regs
-+		 * if the remaining regs can hold the argument.
-+		 *
-+		 * Disorder of the args can happen. For example:
-+		 *
-+		 * struct foo_struct {
-+		 *     long a;
-+		 *     int b;
-+		 * };
-+		 * int foo(char, char, char, char, char, struct foo_struct,
-+		 *         char);
-+		 *
-+		 * the arg1-5,arg7 will be passed by regs, and arg6 will
-+		 * by stack.
-+		 */
-+		if (nr_regs + arg_regs > 6) {
-+			/* copy function arguments from origin stack frame
-+			 * into current stack frame.
-+			 *
-+			 * The starting address of the arguments on-stack
-+			 * is:
-+			 *   rbp + 8(push rbp) +
-+			 *   8(return addr of origin call) +
-+			 *   8(return addr of the caller)
-+			 * which means: rbp + 24
-+			 */
-+			for (j = 0; j < arg_regs; j++) {
-+				emit_ldx(prog, BPF_DW, BPF_REG_0, BPF_REG_FP,
-+					 nr_stack_slots * 8 + 0x18);
-+				emit_stx(prog, BPF_DW, BPF_REG_FP, BPF_REG_0,
-+					 -stack_size);
-+
-+				if (!nr_stack_slots)
-+					first_off = stack_size;
-+				stack_size -= 8;
-+				nr_stack_slots++;
-+			}
-+		} else {
-+			/* Only copy the arguments on-stack to current
-+			 * 'stack_size' and ignore the regs, used to
-+			 * prepare the arguments on-stack for orign call.
-+			 */
-+			if (for_call_origin) {
-+				nr_regs += arg_regs;
-+				continue;
-+			}
-+
-+			/* copy the arguments from regs into stack */
-+			for (j = 0; j < arg_regs; j++) {
-+				emit_stx(prog, BPF_DW, BPF_REG_FP,
-+					 nr_regs == 5 ? X86_REG_R9 : BPF_REG_1 + nr_regs,
-+					 -stack_size);
-+				stack_size -= 8;
-+				nr_regs++;
-+			}
-+		}
-+	}
-+
-+	clean_stack_garbage(m, prog, nr_stack_slots, first_off);
+ __bpf_kfunc void
+ bpf_testmod_test_mod_kfunc(int i)
+ {
+@@ -191,6 +214,20 @@ noinline int bpf_testmod_fentry_test3(char a, int b, u64 c)
+ 	return a + b + c;
  }
  
--static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
-+static void restore_regs(const struct btf_func_model *m, u8 **prog,
- 			 int stack_size)
- {
--	int i;
-+	int i, j, arg_regs, nr_regs = 0;
- 
- 	/* Restore function arguments from stack.
- 	 * For a function that accepts two pointers the sequence will be:
- 	 * EMIT4(0x48, 0x8B, 0x7D, 0xF0); mov rdi,QWORD PTR [rbp-0x10]
- 	 * EMIT4(0x48, 0x8B, 0x75, 0xF8); mov rsi,QWORD PTR [rbp-0x8]
-+	 *
-+	 * The logic here is similar to what we do in save_args()
- 	 */
--	for (i = 0; i < min(nr_regs, 6); i++)
--		emit_ldx(prog, BPF_DW,
--			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
--			 BPF_REG_FP,
--			 -(stack_size - i * 8));
-+	for (i = 0; i < min_t(int, m->nr_args, MAX_BPF_FUNC_ARGS); i++) {
-+		arg_regs = (m->arg_size[i] + 7) / 8;
-+		if (nr_regs + arg_regs <= 6) {
-+			for (j = 0; j < arg_regs; j++) {
-+				emit_ldx(prog, BPF_DW,
-+					 nr_regs == 5 ? X86_REG_R9 : BPF_REG_1 + nr_regs,
-+					 BPF_REG_FP,
-+					 -stack_size);
-+				stack_size -= 8;
-+				nr_regs++;
-+			}
-+		} else {
-+			stack_size -= 8 * arg_regs;
-+		}
++noinline int bpf_testmod_fentry_test7(u64 a, void *b, short c, int d,
++				      void *e, char f, int g)
++{
++	return a + (long)b + c + d + (long)e + f + g;
++}
 +
-+		if (nr_regs >= 6)
-+			break;
-+	}
++noinline int bpf_testmod_fentry_test11(u64 a, void *b, short c, int d,
++				       void *e, char f, int g,
++				       unsigned int h, long i, __u64 j,
++				       unsigned long k)
++{
++	return a + (long)b + c + d + (long)e + f + g + h + i + j + k;
++}
++
+ int bpf_testmod_fentry_ok;
+ 
+ noinline ssize_t
+@@ -206,6 +243,7 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+ 	struct bpf_testmod_struct_arg_1 struct_arg1 = {10};
+ 	struct bpf_testmod_struct_arg_2 struct_arg2 = {2, 3};
+ 	struct bpf_testmod_struct_arg_3 *struct_arg3;
++	struct bpf_testmod_struct_arg_4 struct_arg4 = {21, 22};
+ 	int i = 1;
+ 
+ 	while (bpf_testmod_return_ptr(i))
+@@ -216,6 +254,11 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+ 	(void)bpf_testmod_test_struct_arg_3(1, 4, struct_arg2);
+ 	(void)bpf_testmod_test_struct_arg_4(struct_arg1, 1, 2, 3, struct_arg2);
+ 	(void)bpf_testmod_test_struct_arg_5();
++	(void)bpf_testmod_test_struct_arg_7(16, (void *)17, 18, 19,
++					    (void *)20, struct_arg4);
++	(void)bpf_testmod_test_struct_arg_8(16, (void *)17, 18, 19,
++					    (void *)20, struct_arg4, 23);
++
+ 
+ 	struct_arg3 = kmalloc((sizeof(struct bpf_testmod_struct_arg_3) +
+ 				sizeof(int)), GFP_KERNEL);
+@@ -243,7 +286,11 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+ 
+ 	if (bpf_testmod_fentry_test1(1) != 2 ||
+ 	    bpf_testmod_fentry_test2(2, 3) != 5 ||
+-	    bpf_testmod_fentry_test3(4, 5, 6) != 15)
++	    bpf_testmod_fentry_test3(4, 5, 6) != 15 ||
++	    bpf_testmod_fentry_test7(16, (void *)17, 18, 19, (void *)20,
++			21, 22) != 133 ||
++	    bpf_testmod_fentry_test11(16, (void *)17, 18, 19, (void *)20,
++			21, 22, 23, 24, 25, 26) != 231)
+ 		goto out;
+ 
+ 	bpf_testmod_fentry_ok = 1;
+diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_test.c b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
+index c0d1d61d5f66..aee1bc77a17f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fentry_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
+@@ -2,8 +2,9 @@
+ /* Copyright (c) 2019 Facebook */
+ #include <test_progs.h>
+ #include "fentry_test.lskel.h"
++#include "fentry_many_args.skel.h"
+ 
+-static int fentry_test(struct fentry_test_lskel *fentry_skel)
++static int fentry_test_common(struct fentry_test_lskel *fentry_skel)
+ {
+ 	int err, prog_fd, i;
+ 	int link_fd;
+@@ -37,7 +38,7 @@ static int fentry_test(struct fentry_test_lskel *fentry_skel)
+ 	return 0;
  }
  
- static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
-@@ -1915,7 +2056,10 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
- 	/* arg1: mov rdi, progs[i] */
- 	emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
- 	/* arg2: lea rsi, [rbp - ctx_cookie_off] */
--	EMIT4(0x48, 0x8D, 0x75, -run_ctx_off);
-+	if (!is_imm8(-run_ctx_off))
-+		EMIT3_off32(0x48, 0x8D, 0xB5, -run_ctx_off);
-+	else
-+		EMIT4(0x48, 0x8D, 0x75, -run_ctx_off);
- 
- 	if (emit_rsb_call(&prog, bpf_trampoline_enter(p), prog))
- 		return -EINVAL;
-@@ -1931,7 +2075,10 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
- 	emit_nops(&prog, 2);
- 
- 	/* arg1: lea rdi, [rbp - stack_size] */
--	EMIT4(0x48, 0x8D, 0x7D, -stack_size);
-+	if (!is_imm8(-stack_size))
-+		EMIT3_off32(0x48, 0x8D, 0xBD, -stack_size);
-+	else
-+		EMIT4(0x48, 0x8D, 0x7D, -stack_size);
- 	/* arg2: progs[i]->insnsi for interpreter */
- 	if (!p->jited)
- 		emit_mov_imm64(&prog, BPF_REG_2,
-@@ -1961,7 +2108,10 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
- 	/* arg2: mov rsi, rbx <- start time in nsec */
- 	emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
- 	/* arg3: lea rdx, [rbp - run_ctx_off] */
--	EMIT4(0x48, 0x8D, 0x55, -run_ctx_off);
-+	if (!is_imm8(-run_ctx_off))
-+		EMIT3_off32(0x48, 0x8D, 0x95, -run_ctx_off);
-+	else
-+		EMIT4(0x48, 0x8D, 0x55, -run_ctx_off);
- 	if (emit_rsb_call(&prog, bpf_trampoline_exit(p), prog))
- 		return -EINVAL;
- 
-@@ -2113,7 +2263,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 				void *func_addr)
+-void test_fentry_test(void)
++static void fentry_test(void)
  {
- 	int i, ret, nr_regs = m->nr_args, stack_size = 0;
--	int regs_off, nregs_off, ip_off, run_ctx_off;
-+	int regs_off, nregs_off, ip_off, run_ctx_off, arg_stack_off, rbx_off;
- 	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
- 	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
- 	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
-@@ -2127,8 +2277,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
- 			nr_regs += (m->arg_size[i] + 7) / 8 - 1;
+ 	struct fentry_test_lskel *fentry_skel = NULL;
+ 	int err;
+@@ -46,13 +47,47 @@ void test_fentry_test(void)
+ 	if (!ASSERT_OK_PTR(fentry_skel, "fentry_skel_load"))
+ 		goto cleanup;
  
--	/* x86-64 supports up to 6 arguments. 7+ can be added in the future */
--	if (nr_regs > 6)
-+	/* x86-64 supports up to MAX_BPF_FUNC_ARGS arguments. 1-6
-+	 * are passed through regs, the remains are through stack.
+-	err = fentry_test(fentry_skel);
++	err = fentry_test_common(fentry_skel);
+ 	if (!ASSERT_OK(err, "fentry_first_attach"))
+ 		goto cleanup;
+ 
+-	err = fentry_test(fentry_skel);
++	err = fentry_test_common(fentry_skel);
+ 	ASSERT_OK(err, "fentry_second_attach");
+ 
+ cleanup:
+ 	fentry_test_lskel__destroy(fentry_skel);
+ }
++
++static void fentry_many_args(void)
++{
++	struct fentry_many_args *fentry_skel = NULL;
++	int err;
++
++	fentry_skel = fentry_many_args__open_and_load();
++	if (!ASSERT_OK_PTR(fentry_skel, "fentry_many_args_skel_load"))
++		goto cleanup;
++
++	err = fentry_many_args__attach(fentry_skel);
++	if (!ASSERT_OK(err, "fentry_many_args_attach"))
++		goto cleanup;
++
++	ASSERT_OK(trigger_module_test_read(1), "trigger_read");
++
++	ASSERT_EQ(fentry_skel->bss->test1_result, 1,
++		  "fentry_many_args_result1");
++	ASSERT_EQ(fentry_skel->bss->test2_result, 1,
++		  "fentry_many_args_result2");
++	ASSERT_EQ(fentry_skel->bss->test3_result, 1,
++		  "fentry_many_args_result3");
++
++cleanup:
++	fentry_many_args__destroy(fentry_skel);
++}
++
++void test_fentry_test(void)
++{
++	if (test__start_subtest("fentry"))
++		fentry_test();
++	if (test__start_subtest("fentry_many_args"))
++		fentry_many_args();
++}
+diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_test.c b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
+index 101b7343036b..1c13007e37dd 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fexit_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
+@@ -2,8 +2,9 @@
+ /* Copyright (c) 2019 Facebook */
+ #include <test_progs.h>
+ #include "fexit_test.lskel.h"
++#include "fexit_many_args.skel.h"
+ 
+-static int fexit_test(struct fexit_test_lskel *fexit_skel)
++static int fexit_test_common(struct fexit_test_lskel *fexit_skel)
+ {
+ 	int err, prog_fd, i;
+ 	int link_fd;
+@@ -37,7 +38,7 @@ static int fexit_test(struct fexit_test_lskel *fexit_skel)
+ 	return 0;
+ }
+ 
+-void test_fexit_test(void)
++static void fexit_test(void)
+ {
+ 	struct fexit_test_lskel *fexit_skel = NULL;
+ 	int err;
+@@ -46,13 +47,47 @@ void test_fexit_test(void)
+ 	if (!ASSERT_OK_PTR(fexit_skel, "fexit_skel_load"))
+ 		goto cleanup;
+ 
+-	err = fexit_test(fexit_skel);
++	err = fexit_test_common(fexit_skel);
+ 	if (!ASSERT_OK(err, "fexit_first_attach"))
+ 		goto cleanup;
+ 
+-	err = fexit_test(fexit_skel);
++	err = fexit_test_common(fexit_skel);
+ 	ASSERT_OK(err, "fexit_second_attach");
+ 
+ cleanup:
+ 	fexit_test_lskel__destroy(fexit_skel);
+ }
++
++static void fexit_many_args(void)
++{
++	struct fexit_many_args *fexit_skel = NULL;
++	int err;
++
++	fexit_skel = fexit_many_args__open_and_load();
++	if (!ASSERT_OK_PTR(fexit_skel, "fexit_many_args_skel_load"))
++		goto cleanup;
++
++	err = fexit_many_args__attach(fexit_skel);
++	if (!ASSERT_OK(err, "fexit_many_args_attach"))
++		goto cleanup;
++
++	ASSERT_OK(trigger_module_test_read(1), "trigger_read");
++
++	ASSERT_EQ(fexit_skel->bss->test1_result, 1,
++		  "fexit_many_args_result1");
++	ASSERT_EQ(fexit_skel->bss->test2_result, 1,
++		  "fexit_many_args_result2");
++	ASSERT_EQ(fexit_skel->bss->test3_result, 1,
++		  "fexit_many_args_result3");
++
++cleanup:
++	fexit_many_args__destroy(fexit_skel);
++}
++
++void test_fexit_test(void)
++{
++	if (test__start_subtest("fexit"))
++		fexit_test();
++	if (test__start_subtest("fexit_many_args"))
++		fexit_many_args();
++}
+diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
+index 28cf63963cb7..64a9c95d4acf 100644
+--- a/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/get_func_args_test.c
+@@ -30,7 +30,9 @@ void test_get_func_args_test(void)
+ 	prog_fd = bpf_program__fd(skel->progs.fmod_ret_test);
+ 	err = bpf_prog_test_run_opts(prog_fd, &topts);
+ 	ASSERT_OK(err, "test_run");
+-	ASSERT_EQ(topts.retval, 1234, "test_run");
++
++	ASSERT_EQ(topts.retval >> 16, 1, "test_run");
++	ASSERT_EQ(topts.retval & 0xffff, 1234 + 29, "test_run");
+ 
+ 	ASSERT_EQ(skel->bss->test1_result, 1, "test1_result");
+ 	ASSERT_EQ(skel->bss->test2_result, 1, "test2_result");
+diff --git a/tools/testing/selftests/bpf/prog_tests/modify_return.c b/tools/testing/selftests/bpf/prog_tests/modify_return.c
+index 5d9955af6247..a70c99c2f8c8 100644
+--- a/tools/testing/selftests/bpf/prog_tests/modify_return.c
++++ b/tools/testing/selftests/bpf/prog_tests/modify_return.c
+@@ -41,6 +41,10 @@ static void run_test(__u32 input_retval, __u16 want_side_effect, __s16 want_ret)
+ 	ASSERT_EQ(skel->bss->fexit_result, 1, "modify_return fexit_result");
+ 	ASSERT_EQ(skel->bss->fmod_ret_result, 1, "modify_return fmod_ret_result");
+ 
++	ASSERT_EQ(skel->bss->fentry_result2, 1, "modify_return fentry_result2");
++	ASSERT_EQ(skel->bss->fexit_result2, 1, "modify_return fexit_result2");
++	ASSERT_EQ(skel->bss->fmod_ret_result2, 1, "modify_return fmod_ret_result2");
++
+ cleanup:
+ 	modify_return__destroy(skel);
+ }
+@@ -49,9 +53,9 @@ static void run_test(__u32 input_retval, __u16 want_side_effect, __s16 want_ret)
+ void serial_test_modify_return(void)
+ {
+ 	run_test(0 /* input_retval */,
+-		 1 /* want_side_effect */,
+-		 4 /* want_ret */);
++		 2 /* want_side_effect */,
++		 33 /* want_ret */);
+ 	run_test(-EINVAL /* input_retval */,
+ 		 0 /* want_side_effect */,
+-		 -EINVAL /* want_ret */);
++		 -EINVAL * 2 /* want_ret */);
+ }
+diff --git a/tools/testing/selftests/bpf/prog_tests/tracing_struct.c b/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
+index 1c75a32186d6..fe0fb0c9849a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
++++ b/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
+@@ -55,6 +55,25 @@ static void test_fentry(void)
+ 
+ 	ASSERT_EQ(skel->bss->t6, 1, "t6 ret");
+ 
++	ASSERT_EQ(skel->bss->t7_a, 16, "t7:a");
++	ASSERT_EQ(skel->bss->t7_b, 17, "t7:b");
++	ASSERT_EQ(skel->bss->t7_c, 18, "t7:c");
++	ASSERT_EQ(skel->bss->t7_d, 19, "t7:d");
++	ASSERT_EQ(skel->bss->t7_e, 20, "t7:e");
++	ASSERT_EQ(skel->bss->t7_f_a, 21, "t7:f.a");
++	ASSERT_EQ(skel->bss->t7_f_b, 22, "t7:f.b");
++	ASSERT_EQ(skel->bss->t7_ret, 133, "t7 ret");
++
++	ASSERT_EQ(skel->bss->t8_a, 16, "t8:a");
++	ASSERT_EQ(skel->bss->t8_b, 17, "t8:b");
++	ASSERT_EQ(skel->bss->t8_c, 18, "t8:c");
++	ASSERT_EQ(skel->bss->t8_d, 19, "t8:d");
++	ASSERT_EQ(skel->bss->t8_e, 20, "t8:e");
++	ASSERT_EQ(skel->bss->t8_f_a, 21, "t8:f.a");
++	ASSERT_EQ(skel->bss->t8_f_b, 22, "t8:f.b");
++	ASSERT_EQ(skel->bss->t8_g, 23, "t8:g");
++	ASSERT_EQ(skel->bss->t8_ret, 156, "t8 ret");
++
+ 	tracing_struct__detach(skel);
+ destroy_skel:
+ 	tracing_struct__destroy(skel);
+diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
+index e91d0d1769f1..6cd7349d4a2b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
++++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
+@@ -88,8 +88,8 @@ void serial_test_trampoline_count(void)
+ 	if (!ASSERT_OK(err, "bpf_prog_test_run_opts"))
+ 		goto cleanup;
+ 
+-	ASSERT_EQ(opts.retval & 0xffff, 4, "bpf_modify_return_test.result");
+-	ASSERT_EQ(opts.retval >> 16, 1, "bpf_modify_return_test.side_effect");
++	ASSERT_EQ(opts.retval & 0xffff, 33, "bpf_modify_return_test.result");
++	ASSERT_EQ(opts.retval >> 16, 2, "bpf_modify_return_test.side_effect");
+ 
+ cleanup:
+ 	for (; i >= 0; i--) {
+diff --git a/tools/testing/selftests/bpf/progs/fentry_many_args.c b/tools/testing/selftests/bpf/progs/fentry_many_args.c
+new file mode 100644
+index 000000000000..b61bb92fee2c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/fentry_many_args.c
+@@ -0,0 +1,39 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Tencent */
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++__u64 test1_result = 0;
++SEC("fentry/bpf_testmod_fentry_test7")
++int BPF_PROG(test1, __u64 a, void *b, short c, int d, void *e, char f,
++	     int g)
++{
++	test1_result = a == 16 && b == (void *)17 && c == 18 && d == 19 &&
++		e == (void *)20 && f == 21 && g == 22;
++	return 0;
++}
++
++__u64 test2_result = 0;
++SEC("fentry/bpf_testmod_fentry_test11")
++int BPF_PROG(test2, __u64 a, void *b, short c, int d, void *e, char f,
++	     int g, unsigned int h, long i, __u64 j, unsigned long k)
++{
++	test2_result = a == 16 && b == (void *)17 && c == 18 && d == 19 &&
++		e == (void *)20 && f == 21 && g == 22 && h == 23 &&
++		i == 24 && j == 25 && k == 26;
++	return 0;
++}
++
++__u64 test3_result = 0;
++SEC("fentry/bpf_testmod_fentry_test11")
++int BPF_PROG(test3, __u64 a, __u64 b, __u64 c, __u64 d, __u64 e, __u64 f,
++	     __u64 g, __u64 h, __u64 i, __u64 j, __u64 k)
++{
++	test3_result = a == 16 && b == 17 && c == 18 && d == 19 &&
++		e == 20 && f == 21 && g == 22 && h == 23 &&
++		i == 24 && j == 25 && k == 26;
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/fexit_many_args.c b/tools/testing/selftests/bpf/progs/fexit_many_args.c
+new file mode 100644
+index 000000000000..53b335c2dafb
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/fexit_many_args.c
+@@ -0,0 +1,40 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Tencent */
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++__u64 test1_result = 0;
++SEC("fexit/bpf_testmod_fentry_test7")
++int BPF_PROG(test1, __u64 a, void *b, short c, int d, void *e, char f,
++	     int g, int ret)
++{
++	test1_result = a == 16 && b == (void *)17 && c == 18 && d == 19 &&
++		e == (void *)20 && f == 21 && g == 22 && ret == 133;
++	return 0;
++}
++
++__u64 test2_result = 0;
++SEC("fexit/bpf_testmod_fentry_test11")
++int BPF_PROG(test2, __u64 a, void *b, short c, int d, void *e, char f,
++	     int g, unsigned int h, long i, __u64 j, unsigned long k,
++	     int ret)
++{
++	test2_result = a == 16 && b == (void *)17 && c == 18 && d == 19 &&
++		e == (void *)20 && f == 21 && g == 22 && h == 23 &&
++		i == 24 && j == 25 && k == 26 && ret == 231;
++	return 0;
++}
++
++__u64 test3_result = 0;
++SEC("fexit/bpf_testmod_fentry_test11")
++int BPF_PROG(test3, __u64 a, __u64 b, __u64 c, __u64 d, __u64 e, __u64 f,
++	     __u64 g, __u64 h, __u64 i, __u64 j, __u64 k, __u64 ret)
++{
++	test3_result = a == 16 && b == 17 && c == 18 && d == 19 &&
++		e == 20 && f == 21 && g == 22 && h == 23 &&
++		i == 24 && j == 25 && k == 26 && ret == 231;
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/modify_return.c b/tools/testing/selftests/bpf/progs/modify_return.c
+index 8b7466a15c6b..3376d4849f58 100644
+--- a/tools/testing/selftests/bpf/progs/modify_return.c
++++ b/tools/testing/selftests/bpf/progs/modify_return.c
+@@ -47,3 +47,43 @@ int BPF_PROG(fexit_test, int a, __u64 b, int ret)
+ 
+ 	return 0;
+ }
++
++static int sequence2;
++
++__u64 fentry_result2 = 0;
++SEC("fentry/bpf_modify_return_test2")
++int BPF_PROG(fentry_test2, int a, int *b, short c, int d, void *e, char f,
++	     int g)
++{
++	sequence2++;
++	fentry_result2 = (sequence2 == 1);
++	return 0;
++}
++
++__u64 fmod_ret_result2 = 0;
++SEC("fmod_ret/bpf_modify_return_test2")
++int BPF_PROG(fmod_ret_test2, int a, int *b, short c, int d, void *e, char f,
++	     int g, int ret)
++{
++	sequence2++;
++	/* This is the first fmod_ret program, the ret passed should be 0 */
++	fmod_ret_result2 = (sequence2 == 2 && ret == 0);
++	return input_retval;
++}
++
++__u64 fexit_result2 = 0;
++SEC("fexit/bpf_modify_return_test2")
++int BPF_PROG(fexit_test2, int a, int *b, short c, int d, void *e, char f,
++	     int g, int ret)
++{
++	sequence2++;
++	/* If the input_reval is non-zero a successful modification should have
++	 * occurred.
 +	 */
-+	if (nr_regs > MAX_BPF_FUNC_ARGS)
- 		return -ENOTSUPP;
- 
- 	/* Generated trampoline stack layout:
-@@ -2147,7 +2299,14 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	 *
- 	 * RBP - ip_off    [ traced function ]  BPF_TRAMP_F_IP_ARG flag
- 	 *
-+	 * RBP - rbx_off   [ rbx value       ]  always
-+	 *
- 	 * RBP - run_ctx_off [ bpf_tramp_run_ctx ]
-+	 *
-+	 *                     [ stack_argN ]  BPF_TRAMP_F_CALL_ORIG
-+	 *                     [ ...        ]
-+	 *                     [ stack_arg2 ]
-+	 * RBP - arg_stack_off [ stack_arg1 ]
- 	 */
- 
- 	/* room for return value of orig_call or fentry prog */
-@@ -2167,9 +2326,26 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 
- 	ip_off = stack_size;
- 
-+	stack_size += 8;
-+	rbx_off = stack_size;
-+
- 	stack_size += (sizeof(struct bpf_tramp_run_ctx) + 7) & ~0x7;
- 	run_ctx_off = stack_size;
- 
-+	if (nr_regs > 6 && (flags & BPF_TRAMP_F_CALL_ORIG)) {
-+		/* the space that used to pass arguments on-stack */
-+		stack_size += (nr_regs - get_nr_used_regs(m)) * 8;
-+		/* make sure the stack pointer is 16-byte aligned if we
-+		 * need pass arguments on stack, which means
-+		 *  [stack_size + 8(rbp) + 8(rip) + 8(origin rip)]
-+		 * should be 16-byte aligned. Following code depend on
-+		 * that stack_size is already 8-byte aligned.
-+		 */
-+		stack_size += (stack_size % 16) ? 0 : 8;
-+	}
-+
-+	arg_stack_off = stack_size;
-+
- 	if (flags & BPF_TRAMP_F_SKIP_FRAME) {
- 		/* skip patched call instruction and point orig_call to actual
- 		 * body of the kernel function.
-@@ -2189,8 +2365,14 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	x86_call_depth_emit_accounting(&prog, NULL);
- 	EMIT1(0x55);		 /* push rbp */
- 	EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp */
--	EMIT4(0x48, 0x83, 0xEC, stack_size); /* sub rsp, stack_size */
--	EMIT1(0x53);		 /* push rbx */
-+	if (!is_imm8(stack_size))
-+		/* sub rsp, stack_size */
-+		EMIT3_off32(0x48, 0x81, 0xEC, stack_size);
++	if (input_retval)
++		fexit_result2 = (sequence2 == 3 && ret == input_retval);
 +	else
-+		/* sub rsp, stack_size */
-+		EMIT4(0x48, 0x83, 0xEC, stack_size);
-+	/* mov QWORD PTR [rbp - rbx_off], rbx */
-+	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_6, -rbx_off);
++		fexit_result2 = (sequence2 == 3 && ret == 29);
++
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/tracing_struct.c b/tools/testing/selftests/bpf/progs/tracing_struct.c
+index c435a3a8328a..515daef3c84b 100644
+--- a/tools/testing/selftests/bpf/progs/tracing_struct.c
++++ b/tools/testing/selftests/bpf/progs/tracing_struct.c
+@@ -18,6 +18,11 @@ struct bpf_testmod_struct_arg_3 {
+ 	int b[];
+ };
  
- 	/* Store number of argument registers of the traced function:
- 	 *   mov rax, nr_regs
-@@ -2208,7 +2390,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ip_off);
- 	}
++struct bpf_testmod_struct_arg_4 {
++	u64 a;
++	int b;
++};
++
+ long t1_a_a, t1_a_b, t1_b, t1_c, t1_ret, t1_nregs;
+ __u64 t1_reg0, t1_reg1, t1_reg2, t1_reg3;
+ long t2_a, t2_b_a, t2_b_b, t2_c, t2_ret;
+@@ -25,6 +30,9 @@ long t3_a, t3_b, t3_c_a, t3_c_b, t3_ret;
+ long t4_a_a, t4_b, t4_c, t4_d, t4_e_a, t4_e_b, t4_ret;
+ long t5_ret;
+ int t6;
++long t7_a, t7_b, t7_c, t7_d, t7_e, t7_f_a, t7_f_b, t7_ret;
++long t8_a, t8_b, t8_c, t8_d, t8_e, t8_f_a, t8_f_b, t8_g, t8_ret;
++
  
--	save_regs(m, &prog, nr_regs, regs_off);
-+	save_args(m, &prog, regs_off, false);
+ SEC("fentry/bpf_testmod_test_struct_arg_1")
+ int BPF_PROG2(test_struct_arg_1, struct bpf_testmod_struct_arg_2, a, int, b, int, c)
+@@ -130,4 +138,50 @@ int BPF_PROG2(test_struct_arg_11, struct bpf_testmod_struct_arg_3 *, a)
+ 	return 0;
+ }
  
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
- 		/* arg1: mov rdi, im */
-@@ -2238,7 +2420,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	}
- 
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
--		restore_regs(m, &prog, nr_regs, regs_off);
-+		restore_regs(m, &prog, regs_off);
-+		save_args(m, &prog, arg_stack_off, true);
- 
- 		if (flags & BPF_TRAMP_F_ORIG_STACK) {
- 			emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
-@@ -2279,7 +2462,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 		}
- 
- 	if (flags & BPF_TRAMP_F_RESTORE_REGS)
--		restore_regs(m, &prog, nr_regs, regs_off);
-+		restore_regs(m, &prog, regs_off);
- 
- 	/* This needs to be done regardless. If there were fmod_ret programs,
- 	 * the return value is only updated on the stack and still needs to be
-@@ -2298,7 +2481,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	if (save_ret)
- 		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
- 
--	EMIT1(0x5B); /* pop rbx */
-+	emit_ldx(&prog, BPF_DW, BPF_REG_6, BPF_REG_FP, -rbx_off);
- 	EMIT1(0xC9); /* leave */
- 	if (flags & BPF_TRAMP_F_SKIP_FRAME)
- 		/* skip our return address and return to parent */
++SEC("fentry/bpf_testmod_test_struct_arg_7")
++int BPF_PROG2(test_struct_arg_12, __u64, a, void *, b, short, c, int, d,
++	      void *, e, struct bpf_testmod_struct_arg_4, f)
++{
++	t7_a = a;
++	t7_b = (long)b;
++	t7_c = c;
++	t7_d = d;
++	t7_e = (long)e;
++	t7_f_a = f.a;
++	t7_f_b = f.b;
++	return 0;
++}
++
++SEC("fexit/bpf_testmod_test_struct_arg_7")
++int BPF_PROG2(test_struct_arg_13, __u64, a, void *, b, short, c, int, d,
++	      void *, e, struct bpf_testmod_struct_arg_4, f, int, ret)
++{
++	t7_ret = ret;
++	return 0;
++}
++
++SEC("fentry/bpf_testmod_test_struct_arg_8")
++int BPF_PROG2(test_struct_arg_14, __u64, a, void *, b, short, c, int, d,
++	      void *, e, struct bpf_testmod_struct_arg_4, f, int, g)
++{
++	t8_a = a;
++	t8_b = (long)b;
++	t8_c = c;
++	t8_d = d;
++	t8_e = (long)e;
++	t8_f_a = f.a;
++	t8_f_b = f.b;
++	t8_g = g;
++	return 0;
++}
++
++SEC("fexit/bpf_testmod_test_struct_arg_8")
++int BPF_PROG2(test_struct_arg_15, __u64, a, void *, b, short, c, int, d,
++	      void *, e, struct bpf_testmod_struct_arg_4, f, int, g,
++	      int, ret)
++{
++	t8_ret = ret;
++	return 0;
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.40.1
 
