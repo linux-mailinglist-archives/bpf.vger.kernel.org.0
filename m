@@ -1,60 +1,61 @@
-Return-Path: <bpf+bounces-4913-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4914-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE114751728
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:08:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19BF275172C
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:09:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 693D5281A3A
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 04:08:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4501B1C21237
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 04:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80B2B5254;
-	Thu, 13 Jul 2023 04:08:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16717525F;
+	Thu, 13 Jul 2023 04:08:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD3A468C
-	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 04:08:46 +0000 (UTC)
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166241FFD;
-	Wed, 12 Jul 2023 21:08:45 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d2e1a72fcca58-666e3b15370so192113b3a.0;
-        Wed, 12 Jul 2023 21:08:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8C95258
+	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 04:08:50 +0000 (UTC)
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746112101;
+	Wed, 12 Jul 2023 21:08:49 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-1b8a462e0b0so1670545ad.3;
+        Wed, 12 Jul 2023 21:08:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689221324; x=1691813324;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TEwq2+q6JfV3n+3skv2W0fszZRn1aic7BmEleaUX5Kc=;
-        b=nNdyIXRuVkdtNEzIvkMJtTHSa6vpvQ/sTY/wCj2NMRWBwH2Fgp/OuUYYWCH684LDPb
-         ySrMpM4gk6l6YTrkm+caTpOniU+xQLqgkguxAW50cNJjITRg9VE+yuijAoT3Yu9pA79N
-         WU107GHPlyZ/DatTrght5v1IQ+jnhMUAGR4TJjZ12nkPYYALBinp41CtJjdL9iPjdapg
-         qBA4kXnnW/hsH+4b4yUgcw1n/yQmOFDX/3HntIQ+1OlcXBgeueNG8aiEzSXCcuVTTYXw
-         EGk8GFG9twio4lO2xYMFg1j80O0fXgd6C6fe84OyNwJppPunRoASzReGFCmYZginXJ5y
-         qRyQ==
+        d=gmail.com; s=20221208; t=1689221329; x=1691813329;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n9OF5rBDxNaq2DXKTbLZbdXHNFefw4Fd6mHFek0g5ew=;
+        b=gQDPPIRke8xv7MGRPOrZSHURDZKqnZkO53gb9cH+7Y/jvQOts6gi8i65cr0dU1chx2
+         AYpY2ZNKtS0gG7MYcIjJp0NKRJK5ZA8XrjWRf6ldMBd3Fw4/YPIP5S/Um2FtKEVhI4RY
+         tGJHmFgq3QvmNpzggV57mkKSW6tBmBOT01BcHRO+0UH7yykdQVoSEQuaUZW4Z0Kr/w23
+         s9LmSPcotzRWfERA2/qbJ63F9oaMsgS/RsZSzjr98XC7mHc02xDjSVXKZ1SiN7LJ/pq6
+         FMQQ/dtdvdmZTwsRfvNdYFecH8km7Sbap+GL+ijbQZAjtQhog+fB95atq3eiBMdbVage
+         B24A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689221324; x=1691813324;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TEwq2+q6JfV3n+3skv2W0fszZRn1aic7BmEleaUX5Kc=;
-        b=dhOWm2l2RWMuJUSWJi8Wj+AnGfbyy5LMdfGeUdsyHOgsaOzOmUkIiZLn0N4xQBDquT
-         T+ZYAj4duCeP2Ept3sfwTi/BvMhloYtmt9ogEgw1GO7kRrG7zfMlQzrNC6c+sDTqWQAc
-         XjU8DKUfv0z836MbO1+dVj7oTHYlFFQ3PW8k3MkMRPE2ZWNXaTfezeFRlXFvmN+gv9ho
-         nqrPhRxIdM4OyKhAXLh0Sgf+TP3v4WVfjLTooQxWjkdrsX0UDr0yuzYhzoi32SRwLFXL
-         FSqUD4s0CF/MijF5RH3sTee1Y8/pOV33yK04mfMZD7i7lIvummOrlV0zqbmRtQQ1yQN+
-         ajxw==
-X-Gm-Message-State: ABy/qLZ3G/+9OzLBOnoF/k+V4PaKSoGObug11ySNyxWd3uFULBwMmlk8
-	0w80X1hnY9gMlmEmb6i3R1iTZDq6iFuMFFWP
-X-Google-Smtp-Source: APBJJlEY120b734X5cPoDPB8G/pM26FDSWMSFId7fSoN6Yds/YcWb238LnW8kFYGhoM1BpAkdhHdpQ==
-X-Received: by 2002:a05:6a20:144d:b0:125:f3d8:e65b with SMTP id a13-20020a056a20144d00b00125f3d8e65bmr145540pzi.18.1689221324400;
-        Wed, 12 Jul 2023 21:08:44 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689221329; x=1691813329;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n9OF5rBDxNaq2DXKTbLZbdXHNFefw4Fd6mHFek0g5ew=;
+        b=kq1nmmo4Db/ZEHVVrkrkx2Uh+CY9QrF8x72mREqRE8qupAtn4xwUzhXXAKj0LHdAJU
+         mlravSaygDKahokaneKmzBK2Gb3elS3AYh1ADlW/t4ZVVT0DmZE/lbu59IpAuSvFIxph
+         b3Ft32Ww+VQplRcZQBXYUYoh/pdHloM143gGylqR656Q9/edpzO88cCJKzHvsMjkX9mr
+         9K9FhYUE0lKOyABwGBuREAXff/L7ABIH5zyfWVN9tjASKjbHq4B+2FP5polKB0h7P2FK
+         D57orYCX7Gi+g65caZGyYV7ir23N3VmoljI4T8ar/+1099mwg4s57incJy8MrigH/BDs
+         0WRQ==
+X-Gm-Message-State: ABy/qLYAdZeazfw5e8azC4q2up78CM7ihTulvE0/IXhVI0sRbtwEf9ts
+	gjUUnqiLSdwAVrbF/UgbLQU=
+X-Google-Smtp-Source: APBJJlHFvs0MjJxSYwj7luS3cl4wrUlaftbIjKcO6a1HpxozZWfPkoSuLx816zm263ERbgsik8reqQ==
+X-Received: by 2002:a17:902:db08:b0:1b9:d3a2:f596 with SMTP id m8-20020a170902db0800b001b9d3a2f596mr253219plx.52.1689221328884;
+        Wed, 12 Jul 2023 21:08:48 -0700 (PDT)
 Received: from localhost.localdomain ([43.132.98.100])
-        by smtp.gmail.com with ESMTPSA id c7-20020a170902d48700b001bb04755212sm483217plg.228.2023.07.12.21.08.39
+        by smtp.gmail.com with ESMTPSA id c7-20020a170902d48700b001bb04755212sm483217plg.228.2023.07.12.21.08.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 21:08:43 -0700 (PDT)
+        Wed, 12 Jul 2023 21:08:48 -0700 (PDT)
 From: menglong8.dong@gmail.com
 X-Google-Original-From: imagedong@tencent.com
 To: yhs@meta.com,
@@ -76,10 +77,12 @@ Cc: ast@kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	Menglong Dong <imagedong@tencent.com>
-Subject: [PATCH bpf-next v10 0/3] bpf, x86: allow function arguments up to 12 for TRACING
-Date: Thu, 13 Jul 2023 12:07:35 +0800
-Message-Id: <20230713040738.1789742-1-imagedong@tencent.com>
+Subject: [PATCH bpf-next v10 1/3] bpf, x86: save/restore regs with BPF_DW size
+Date: Thu, 13 Jul 2023 12:07:36 +0800
+Message-Id: <20230713040738.1789742-2-imagedong@tencent.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230713040738.1789742-1-imagedong@tencent.com>
+References: <20230713040738.1789742-1-imagedong@tencent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -96,109 +99,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Menglong Dong <imagedong@tencent.com>
 
-For now, the BPF program of type BPF_PROG_TYPE_TRACING can only be used
-on the kernel functions whose arguments count less than or equal to 6, if
-not considering '> 8 bytes' struct argument. This is not friendly at all,
-as too many functions have arguments count more than 6. According to the
-current kernel version, below is a statistics of the function arguments
-count:
+As we already reserve 8 byte in the stack for each reg, it is ok to
+store/restore the regs in BPF_DW size. This will make the code in
+save_regs()/restore_regs() simpler.
 
-argument count | function count
-7              | 704
-8              | 270
-9              | 84
-10             | 47
-11             | 47
-12             | 27
-13             | 22
-14             | 5
-15             | 0
-16             | 1
+Signed-off-by: Menglong Dong <imagedong@tencent.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+v6:
+- adjust the commit log
+---
+ arch/x86/net/bpf_jit_comp.c | 35 ++++++-----------------------------
+ 1 file changed, 6 insertions(+), 29 deletions(-)
 
-Therefore, let's enhance it by increasing the function arguments count
-allowed in arch_prepare_bpf_trampoline(), for now, only x86_64.
-
-In the 1st patch, we save/restore regs with BPF_DW size to make the code
-in save_regs()/restore_regs() simpler.
-
-In the 2nd patch, we make arch_prepare_bpf_trampoline() support to copy
-function arguments in stack for x86 arch. Therefore, the maximum
-arguments can be up to MAX_BPF_FUNC_ARGS for FENTRY, FEXIT and
-MODIFY_RETURN. Meanwhile, we clean the potential garbage value when we
-copy the arguments on-stack.
-
-And the 3rd patch is for the testcases of the this series.
-
-Changes since v9:
-- fix the failed test cases of trampoline_count and get_func_args_test
-  in the 3rd patch
-
-Changes since v8:
-- change the way to test fmod_ret in the 3rd patch
-
-Changes since v7:
-- split the testcases, and add fentry_many_args/fexit_many_args to
-  DENYLIST.aarch64 in 3rd patch
-
-Changes since v6:
-- somit nits from commit message and comment in the 1st patch
-- remove the inline in get_nr_regs() in the 1st patch
-- rename some function and various in the 1st patch
-
-Changes since v5:
-- adjust the commit log of the 1st patch, avoiding confusing people that
-  bugs exist in current code
-- introduce get_nr_regs() to get the space that used to pass args on
-  stack correct in the 2nd patch
-- add testcases to tracing_struct.c instead of fentry_test.c and
-  fexit_test.c
-
-Changes since v4:
-- consider the case of the struct in arguments can't be hold by regs
-- add comment for some code
-- add testcases for MODIFY_RETURN
-- rebase to the latest
-
-Changes since v3:
-- try make the stack pointer 16-byte aligned. Not sure if I'm right :)
-- introduce clean_garbage() to clean the grabage when argument count is 7
-- use different data type in bpf_testmod_fentry_test{7,12}
-- add testcase for grabage values in ctx
-
-Changes since v2:
-- keep MAX_BPF_FUNC_ARGS still
-- clean garbage value in upper bytes in the 2nd patch
-- move bpf_fentry_test{7,12} to bpf_testmod.c and rename them to
-  bpf_testmod_fentry_test{7,12} meanwhile in the 3rd patch
-
-Changes since v1:
-- change the maximun function arguments to 14 from 12
-- add testcases (Jiri Olsa)
-- instead EMIT4 with EMIT3_off32 for "lea" to prevent overflow
-
-Menglong Dong (3):
-  bpf, x86: save/restore regs with BPF_DW size
-  bpf, x86: allow function arguments up to 12 for TRACING
-  selftests/bpf: add testcase for TRACING with 6+ arguments
-
- arch/x86/net/bpf_jit_comp.c                   | 246 +++++++++++++++---
- net/bpf/test_run.c                            |  14 +-
- tools/testing/selftests/bpf/DENYLIST.aarch64  |   2 +
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  49 +++-
- .../selftests/bpf/prog_tests/fentry_test.c    |  43 ++-
- .../selftests/bpf/prog_tests/fexit_test.c     |  43 ++-
- .../bpf/prog_tests/get_func_args_test.c       |   4 +-
- .../selftests/bpf/prog_tests/modify_return.c  |  10 +-
- .../selftests/bpf/prog_tests/tracing_struct.c |  19 ++
- .../bpf/prog_tests/trampoline_count.c         |   4 +-
- .../selftests/bpf/progs/fentry_many_args.c    |  39 +++
- .../selftests/bpf/progs/fexit_many_args.c     |  40 +++
- .../selftests/bpf/progs/modify_return.c       |  40 +++
- .../selftests/bpf/progs/tracing_struct.c      |  54 ++++
- 14 files changed, 548 insertions(+), 59 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/fentry_many_args.c
- create mode 100644 tools/testing/selftests/bpf/progs/fexit_many_args.c
-
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 438adb695daa..fcbd3b7123a4 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1860,57 +1860,34 @@ st:			if (is_imm8(insn->off))
+ static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
+ 		      int stack_size)
+ {
+-	int i, j, arg_size;
+-	bool next_same_struct = false;
++	int i;
+ 
+ 	/* Store function arguments to stack.
+ 	 * For a function that accepts two pointers the sequence will be:
+ 	 * mov QWORD PTR [rbp-0x10],rdi
+ 	 * mov QWORD PTR [rbp-0x8],rsi
+ 	 */
+-	for (i = 0, j = 0; i < min(nr_regs, 6); i++) {
+-		/* The arg_size is at most 16 bytes, enforced by the verifier. */
+-		arg_size = m->arg_size[j];
+-		if (arg_size > 8) {
+-			arg_size = 8;
+-			next_same_struct = !next_same_struct;
+-		}
+-
+-		emit_stx(prog, bytes_to_bpf_size(arg_size),
+-			 BPF_REG_FP,
++	for (i = 0; i < min(nr_regs, 6); i++)
++		emit_stx(prog, BPF_DW, BPF_REG_FP,
+ 			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
+ 			 -(stack_size - i * 8));
+-
+-		j = next_same_struct ? j : j + 1;
+-	}
+ }
+ 
+ static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_regs,
+ 			 int stack_size)
+ {
+-	int i, j, arg_size;
+-	bool next_same_struct = false;
++	int i;
+ 
+ 	/* Restore function arguments from stack.
+ 	 * For a function that accepts two pointers the sequence will be:
+ 	 * EMIT4(0x48, 0x8B, 0x7D, 0xF0); mov rdi,QWORD PTR [rbp-0x10]
+ 	 * EMIT4(0x48, 0x8B, 0x75, 0xF8); mov rsi,QWORD PTR [rbp-0x8]
+ 	 */
+-	for (i = 0, j = 0; i < min(nr_regs, 6); i++) {
+-		/* The arg_size is at most 16 bytes, enforced by the verifier. */
+-		arg_size = m->arg_size[j];
+-		if (arg_size > 8) {
+-			arg_size = 8;
+-			next_same_struct = !next_same_struct;
+-		}
+-
+-		emit_ldx(prog, bytes_to_bpf_size(arg_size),
++	for (i = 0; i < min(nr_regs, 6); i++)
++		emit_ldx(prog, BPF_DW,
+ 			 i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
+ 			 BPF_REG_FP,
+ 			 -(stack_size - i * 8));
+-
+-		j = next_same_struct ? j : j + 1;
+-	}
+ }
+ 
+ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
 -- 
 2.40.1
 
