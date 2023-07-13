@@ -1,33 +1,33 @@
-Return-Path: <bpf+bounces-4944-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4945-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 847BF751922
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 08:54:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8D4751945
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 09:03:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3D1A1C212C1
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:54:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0DF21C212AD
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 07:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A295695;
-	Thu, 13 Jul 2023 06:54:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977FA569D;
+	Thu, 13 Jul 2023 07:02:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30EBF469F;
-	Thu, 13 Jul 2023 06:54:33 +0000 (UTC)
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AFB212D;
-	Wed, 12 Jul 2023 23:54:23 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VnG-fTQ_1689231258;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VnG-fTQ_1689231258)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C550366;
+	Thu, 13 Jul 2023 07:02:55 +0000 (UTC)
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF094199D;
+	Thu, 13 Jul 2023 00:02:51 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VnG1N6O_1689231767;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VnG1N6O_1689231767)
           by smtp.aliyun-inc.com;
-          Thu, 13 Jul 2023 14:54:19 +0800
-Message-ID: <1689231087.0744615-2-xuanzhuo@linux.alibaba.com>
+          Thu, 13 Jul 2023 15:02:48 +0800
+Message-ID: <1689231604.0892205-3-xuanzhuo@linux.alibaba.com>
 Subject: Re: [PATCH vhost v11 10/10] virtio_net: merge dma operation for one page
-Date: Thu, 13 Jul 2023 14:51:27 +0800
+Date: Thu, 13 Jul 2023 15:00:04 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: Jason Wang <jasowang@redhat.com>
 Cc: virtualization@lists.linux-foundation.org,
@@ -410,13 +410,11 @@ p_headroom,
 > dma address and refcnt. Then we don't need extra stuff for tracking
 > any other thing?
 
-I didn't use page->private because if part of the page is used by one skb t=
-hen
-the driver is not the only owner. Can we still use page->private?
+Maybe we can try alloc one small buffer from the page_frag to store the dma=
+ info
+when page_frag.offset =3D=3D 0.
 
 Thanks.
-
-
 
 
 >
