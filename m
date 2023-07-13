@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-4932-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4940-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83505751896
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 08:08:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB40E7518A5
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 08:11:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D2C0281BCB
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:08:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC5281C212BF
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 06:11:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA4C6110;
-	Thu, 13 Jul 2023 06:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02E95685;
+	Thu, 13 Jul 2023 06:11:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E38676108
-	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 06:08:03 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1FE1BC6
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:02 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36CMvdcU003868
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:02 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815595679
+	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 06:11:14 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EEC19B9
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:11:13 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 36CMvQUo028524
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:11:12 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=1vfettzJXXh38SoYiG0VY7eOIldd2I2jluJJiWL3RXg=;
- b=MUjAPgqE0w5OI1x8dMZP3QhK+Z6vg8NjbUQA8gbVND/1Uf+eQfMjF+xI/ypjNBjXQAt+
- RvzEheez90IGdO/lxKd6JgFbGhXn3GEvOirMWAPM82BpUqnTQ9RC7FjjcPZyeyfu+I7x
- 9Ft4LJZ9jgVMvuUuctgFtpjFFxOwkWs/+FQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rsgc92vfk-2
+ bh=f//xTpd/MTYsvqc8K85TbzOvhQ7e1ytJWokN+D88dVY=;
+ b=D2I9QMvne5X/XDpsWbWdOgd5Gv2AyVpZGlcq8mHLJLlEshApdQpc8+NeewJQU4Gj7O0P
+ lXHDJmzA6yrwb4/VOt/F8P+NZOCUH6fbg+hHo/KVQsydqYNruhwqpa6YS1ePYhIG8J9O
+ aUJhQ9ATqVe8C6jejRyj7DHUAZuzQXHd610= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by m0089730.ppops.net (PPS) with ESMTPS id 3rsg5djx5e-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:08:02 -0700
-Received: from twshared35445.38.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Wed, 12 Jul 2023 23:11:12 -0700
+Received: from twshared35445.38.frc1.facebook.com (2620:10d:c0a8:1c::11) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 12 Jul 2023 23:08:01 -0700
+ 15.1.2507.23; Wed, 12 Jul 2023 23:11:11 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 0E2DD22EFA2FC; Wed, 12 Jul 2023 23:07:55 -0700 (PDT)
+	id 3C46522EFA32D; Wed, 12 Jul 2023 23:08:00 -0700 (PDT)
 From: Yonghong Song <yhs@fb.com>
 To: <bpf@vger.kernel.org>
 CC: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Fangrui Song <maskray@google.com>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v2 07/15] bpf: Support new 32bit offset jmp instruction
-Date: Wed, 12 Jul 2023 23:07:55 -0700
-Message-ID: <20230713060755.391362-1-yhs@fb.com>
+Subject: [PATCH bpf-next v2 08/15] selftests/bpf: Add a cpuv4 test runner for cpu=v4 testing
+Date: Wed, 12 Jul 2023 23:08:00 -0700
+Message-ID: <20230713060800.392500-1-yhs@fb.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230713060718.388258-1-yhs@fb.com>
 References: <20230713060718.388258-1-yhs@fb.com>
@@ -61,11 +61,11 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: Ms62D0Ee3NbwZlAUtBMyR3XvyWwJj1se
-X-Proofpoint-ORIG-GUID: Ms62D0Ee3NbwZlAUtBMyR3XvyWwJj1se
+X-Proofpoint-GUID: jyO4ZEtpiBwurNKqIF_A9ZZwx_uDlyz1
+X-Proofpoint-ORIG-GUID: jyO4ZEtpiBwurNKqIF_A9ZZwx_uDlyz1
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-13_03,2023-07-11_01,2023-05-22_02
+ definitions=2023-07-13_02,2023-07-11_01,2023-05-22_02
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
 	RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
@@ -74,209 +74,136 @@ X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add interpreter/jit/verifier support for 32bit offset jmp instruction.
-If a conditional jmp instruction needs more than 16bit offset,
-it can be simulated with a conditional jmp + a 32bit jmp insn.
+Similar to no-alu32 runner, a cpuv4 runner is created to test
+bpf programs compiled with -mcpu=3Dv4.
+
+The following are some num-of-insn statistics for each newer
+instructions, excluding naked asm (verifier_*) tests:
+   insn pattern                # of instructions
+   reg =3D (s8)reg               4
+   reg =3D (s16)reg              2
+   reg =3D (s32)reg              26
+   reg =3D *(s8 *)(reg + off)    11
+   reg =3D *(s16 *)(reg + off)   14
+   reg =3D *(s32 *)(reg + off)   15214
+   reg =3D bswap16 reg           133
+   reg =3D bswap32 reg           38
+   reg =3D bswap64 reg           14
+   reg s/=3D reg                 0
+   reg s%=3D reg                 0
+   gotol <offset>              58
+
+Note that in llvm -mcpu=3Dv4 implementation, the compiler is a little
+bit conservative about generating 'gotol' insn (32-bit branch offset)
+as it didn't precise count the number of insns (e.g., some insns are
+debug insns, etc.). Compared to old 'goto' insn, newer 'gotol' insn
+should have comparable verification states to 'goto' insn.
+
+I did not collect verifier stats now since I have not really
+started to do proper range bound estimation with these
+instructions.
+
+With current patch set, all selftests passed with -mcpu=3Dv4
+when running test_progs-cpuv4 binary.
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- arch/x86/net/bpf_jit_comp.c | 28 ++++++++++++++++++----------
- kernel/bpf/core.c           | 19 ++++++++++++++++---
- kernel/bpf/verifier.c       | 32 ++++++++++++++++++++++----------
- 3 files changed, 56 insertions(+), 23 deletions(-)
+ tools/testing/selftests/bpf/.gitignore |  2 ++
+ tools/testing/selftests/bpf/Makefile   | 18 ++++++++++++++----
+ 2 files changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 3176b60d25c7..db2791f3b003 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1809,16 +1809,24 @@ st:			if (is_imm8(insn->off))
- 			break;
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
+ests/bpf/.gitignore
+index 116fecf80ca1..110518ba4804 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -13,6 +13,7 @@ test_dev_cgroup
+ /test_progs
+ /test_progs-no_alu32
+ /test_progs-bpf_gcc
++/test_progs-cpuv4
+ test_verifier_log
+ feature
+ test_sock
+@@ -36,6 +37,7 @@ test_cpp
+ *.lskel.h
+ /no_alu32
+ /bpf_gcc
++/cpuv4
+ /host-tools
+ /tools
+ /runqslower
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+index 882be03b179f..4b2cf5d40120 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -44,7 +44,7 @@ TEST_GEN_PROGS =3D test_verifier test_tag test_maps tes=
+t_lru_map test_lpm_map test
+ 	test_sock test_sockmap get_cgroup_id_user \
+ 	test_cgroup_storage \
+ 	test_tcpnotify_user test_sysctl \
+-	test_progs-no_alu32
++	test_progs-no_alu32 test_progs-cpuv4
 =20
- 		case BPF_JMP | BPF_JA:
--			if (insn->off =3D=3D -1)
--				/* -1 jmp instructions will always jump
--				 * backwards two bytes. Explicitly handling
--				 * this case avoids wasting too many passes
--				 * when there are long sequences of replaced
--				 * dead code.
--				 */
--				jmp_offset =3D -2;
--			else
--				jmp_offset =3D addrs[i + insn->off] - addrs[i];
-+		case BPF_JMP32 | BPF_JA:
-+			if (BPF_CLASS(insn->code) =3D=3D BPF_JMP) {
-+				if (insn->off =3D=3D -1)
-+					/* -1 jmp instructions will always jump
-+					 * backwards two bytes. Explicitly handling
-+					 * this case avoids wasting too many passes
-+					 * when there are long sequences of replaced
-+					 * dead code.
-+					 */
-+					jmp_offset =3D -2;
-+				else
-+					jmp_offset =3D addrs[i + insn->off] - addrs[i];
-+			} else {
-+				if (insn->imm =3D=3D -1)
-+					jmp_offset =3D -2;
-+				else
-+					jmp_offset =3D addrs[i + insn->imm] - addrs[i];
-+			}
+ # Also test bpf-gcc, if present
+ ifneq ($(BPF_GCC),)
+@@ -383,6 +383,11 @@ define CLANG_NOALU32_BPF_BUILD_RULE
+ 	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
+ 	$(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv2 -o $2
+ endef
++# Similar to CLANG_BPF_BUILD_RULE, but with cpu-v4
++define CLANG_CPUV4_BPF_BUILD_RULE
++	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
++	$(Q)$(CLANG) $3 -O2 -target bpf -c $1 -mcpu=3Dv4 -o $2
++endef
+ # Build BPF object using GCC
+ define GCC_BPF_BUILD_RULE
+ 	$(call msg,GCC-BPF,$(TRUNNER_BINARY),$2)
+@@ -425,7 +430,7 @@ LINKED_BPF_SRCS :=3D $(patsubst %.bpf.o,%.c,$(foreach=
+ skel,$(LINKED_SKELS),$($(ske
+ # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
+ # Parameters:
+ # $1 - test runner base binary name (e.g., test_progs)
+-# $2 - test runner extra "flavor" (e.g., no_alu32, gcc-bpf, etc)
++# $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, gcc-bpf, etc)
+ define DEFINE_TEST_RUNNER
 =20
- 			if (!jmp_offset) {
- 				/*
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index c75391ac575e..019d186ab206 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -373,7 +373,12 @@ static int bpf_adj_delta_to_off(struct bpf_insn *ins=
-n, u32 pos, s32 end_old,
- {
- 	const s32 off_min =3D S16_MIN, off_max =3D S16_MAX;
- 	s32 delta =3D end_new - end_old;
--	s32 off =3D insn->off;
-+	s32 off;
+ TRUNNER_OUTPUT :=3D $(OUTPUT)$(if $2,/)$2
+@@ -453,7 +458,7 @@ endef
+ # Using TRUNNER_XXX variables, provided by callers of DEFINE_TEST_RUNNER=
+ and
+ # set up by DEFINE_TEST_RUNNER itself, create test runner build rules wi=
+th:
+ # $1 - test runner base binary name (e.g., test_progs)
+-# $2 - test runner extra "flavor" (e.g., no_alu32, gcc-bpf, etc)
++# $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, gcc-bpf, etc)
+ define DEFINE_TEST_RUNNER_RULES
+=20
+ ifeq ($($(TRUNNER_OUTPUT)-dir),)
+@@ -584,6 +589,11 @@ TRUNNER_BPF_BUILD_RULE :=3D CLANG_NOALU32_BPF_BUILD_=
+RULE
+ TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS)
+ $(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
+=20
++# Define test_progs-cpuv4 test runner.
++TRUNNER_BPF_BUILD_RULE :=3D CLANG_CPUV4_BPF_BUILD_RULE
++TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS)
++$(eval $(call DEFINE_TEST_RUNNER,test_progs,cpuv4))
 +
-+	if (insn->code =3D=3D (BPF_JMP32 | BPF_JA))
-+		off =3D insn->imm;
-+	else
-+		off =3D insn->off;
+ # Define test_progs BPF-GCC-flavored test runner.
+ ifneq ($(BPF_GCC),)
+ TRUNNER_BPF_BUILD_RULE :=3D GCC_BPF_BUILD_RULE
+@@ -681,7 +691,7 @@ EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) =
+$(HOST_SCRATCH_DIR)	\
+ 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
+ 	feature bpftool							\
+ 	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h *.subskel.h	\
+-			       no_alu32 bpf_gcc bpf_testmod.ko		\
++			       no_alu32 cpuv4 bpf_gcc bpf_testmod.ko	\
+ 			       liburandom_read.so)
 =20
- 	if (curr < pos && curr + off + 1 >=3D end_old)
- 		off +=3D delta;
-@@ -381,8 +386,12 @@ static int bpf_adj_delta_to_off(struct bpf_insn *ins=
-n, u32 pos, s32 end_old,
- 		off -=3D delta;
- 	if (off < off_min || off > off_max)
- 		return -ERANGE;
--	if (!probe_pass)
--		insn->off =3D off;
-+	if (!probe_pass) {
-+		if (insn->code =3D=3D (BPF_JMP32 | BPF_JA))
-+			insn->imm =3D off;
-+		else
-+			insn->off =3D off;
-+	}
- 	return 0;
- }
-=20
-@@ -1593,6 +1602,7 @@ EXPORT_SYMBOL_GPL(__bpf_call_base);
- 	INSN_3(JMP, JSLE, K),			\
- 	INSN_3(JMP, JSET, K),			\
- 	INSN_2(JMP, JA),			\
-+	INSN_2(JMP32, JA),			\
- 	/* Store instructions. */		\
- 	/*   Register based. */			\
- 	INSN_3(STX, MEM,  B),			\
-@@ -1972,6 +1982,9 @@ static u64 ___bpf_prog_run(u64 *regs, const struct =
-bpf_insn *insn)
- 	JMP_JA:
- 		insn +=3D insn->off;
- 		CONT;
-+	JMP32_JA:
-+		insn +=3D insn->imm;
-+		CONT;
- 	JMP_EXIT:
- 		return BPF_R0;
- 	/* JMP */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b606c8ed5470..eaf95dfad80a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2855,7 +2855,10 @@ static int check_subprogs(struct bpf_verifier_env =
-*env)
- 			goto next;
- 		if (BPF_OP(code) =3D=3D BPF_EXIT || BPF_OP(code) =3D=3D BPF_CALL)
- 			goto next;
--		off =3D i + insn[i].off + 1;
-+		if (code =3D=3D (BPF_JMP32 | BPF_JA))
-+			off =3D i + insn[i].imm + 1;
-+		else
-+			off =3D i + insn[i].off + 1;
- 		if (off < subprog_start || off >=3D subprog_end) {
- 			verbose(env, "jump out of range from insn %d to %d\n", i, off);
- 			return -EINVAL;
-@@ -2867,6 +2870,7 @@ static int check_subprogs(struct bpf_verifier_env *=
-env)
- 			 * or unconditional jump back
- 			 */
- 			if (code !=3D (BPF_JMP | BPF_EXIT) &&
-+			    code !=3D (BPF_JMP32 | BPF_JA) &&
- 			    code !=3D (BPF_JMP | BPF_JA)) {
- 				verbose(env, "last insn is not an exit or jmp\n");
- 				return -EINVAL;
-@@ -14747,7 +14751,7 @@ static int visit_func_call_insn(int t, struct bpf=
-_insn *insns,
- static int visit_insn(int t, struct bpf_verifier_env *env)
- {
- 	struct bpf_insn *insns =3D env->prog->insnsi, *insn =3D &insns[t];
--	int ret;
-+	int ret, off;
-=20
- 	if (bpf_pseudo_func(insn))
- 		return visit_func_call_insn(t, insns, env, true);
-@@ -14795,14 +14799,19 @@ static int visit_insn(int t, struct bpf_verifie=
-r_env *env)
- 		if (BPF_SRC(insn->code) !=3D BPF_K)
- 			return -EINVAL;
-=20
-+		if (BPF_CLASS(insn->code) =3D=3D BPF_JMP)
-+			off =3D insn->off;
-+		else
-+			off =3D insn->imm;
-+
- 		/* unconditional jump with single edge */
--		ret =3D push_insn(t, t + insn->off + 1, FALLTHROUGH, env,
-+		ret =3D push_insn(t, t + off + 1, FALLTHROUGH, env,
- 				true);
- 		if (ret)
- 			return ret;
-=20
--		mark_prune_point(env, t + insn->off + 1);
--		mark_jmp_point(env, t + insn->off + 1);
-+		mark_prune_point(env, t + off + 1);
-+		mark_jmp_point(env, t + off + 1);
-=20
- 		return ret;
-=20
-@@ -16598,15 +16607,18 @@ static int do_check(struct bpf_verifier_env *en=
-v)
- 				mark_reg_scratched(env, BPF_REG_0);
- 			} else if (opcode =3D=3D BPF_JA) {
- 				if (BPF_SRC(insn->code) !=3D BPF_K ||
--				    insn->imm !=3D 0 ||
- 				    insn->src_reg !=3D BPF_REG_0 ||
- 				    insn->dst_reg !=3D BPF_REG_0 ||
--				    class =3D=3D BPF_JMP32) {
-+				    (class =3D=3D BPF_JMP && insn->imm !=3D 0) ||
-+				    (class =3D=3D BPF_JMP32 && insn->off !=3D 0)) {
- 					verbose(env, "BPF_JA uses reserved fields\n");
- 					return -EINVAL;
- 				}
-=20
--				env->insn_idx +=3D insn->off + 1;
-+				if (class =3D=3D BPF_JMP)
-+					env->insn_idx +=3D insn->off + 1;
-+				else
-+					env->insn_idx +=3D insn->imm + 1;
- 				continue;
-=20
- 			} else if (opcode =3D=3D BPF_EXIT) {
-@@ -17453,13 +17465,13 @@ static bool insn_is_cond_jump(u8 code)
- {
- 	u8 op;
-=20
-+	op =3D BPF_OP(code);
- 	if (BPF_CLASS(code) =3D=3D BPF_JMP32)
--		return true;
-+		return op !=3D BPF_JA;
-=20
- 	if (BPF_CLASS(code) !=3D BPF_JMP)
- 		return false;
-=20
--	op =3D BPF_OP(code);
- 	return op !=3D BPF_JA && op !=3D BPF_EXIT && op !=3D BPF_CALL;
- }
-=20
+ .PHONY: docs docs-clean
 --=20
 2.34.1
 
