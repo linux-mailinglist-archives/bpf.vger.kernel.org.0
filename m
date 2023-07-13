@@ -1,141 +1,181 @@
-Return-Path: <bpf+bounces-4969-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4970-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC278752B2E
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 21:48:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DB89752BAE
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 22:32:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78BF0281F0A
-	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 19:48:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6BE428159B
+	for <lists+bpf@lfdr.de>; Thu, 13 Jul 2023 20:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDD45200B8;
-	Thu, 13 Jul 2023 19:48:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57251F929;
+	Thu, 13 Jul 2023 20:31:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CED11ED53
-	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 19:48:08 +0000 (UTC)
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5668E2724;
-	Thu, 13 Jul 2023 12:48:07 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7837329a00aso39929139f.2;
-        Thu, 13 Jul 2023 12:48:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 832076120
+	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 20:31:52 +0000 (UTC)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397502715
+	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 13:31:50 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fc02a92dcfso11043255e9.0
+        for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 13:31:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689277686; x=1691869686;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TQKDTkoWZPUpNGxKDSJ4dzeo/1BxtJ5U/WdKrNfLRH8=;
-        b=dUz9qPmFSv1nBpZjQIWVenvDX71b7rzbJPcijCEUBYXxozGAYtVnGeZXnzNXMKenT/
-         R6kUxUmYqeEs2AiXZhAzy3eb3CltElJdC1vpFRz1aXdND4q6kK/ivO2BYwfU2ambpj9Q
-         K0xjD0ySvtl9MpAVeI8eN4+tW2DCcMssKUJUHwq5ODW0XjVBgJgC5NwnmC52SJTq+GfT
-         +vrWLIt2qEncRbOHY/VFJ4tS1ShzbxeoVi9KRpHcNi665QYbyxuIWgzPD5yk2iVe8d81
-         4FLPOOQZ/yPvb5RTQAvM9rKJ5ghTKWO7La+xrsF0mcuXJ46Zq+vJEYKwm8TosZ2br1T7
-         jMzA==
+        d=gmail.com; s=20221208; t=1689280309; x=1691872309;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VPciF0EVeOAxtc9apUd6YJTK65RmMx7elq3AOSzgMcI=;
+        b=OKwThkzQ0+E08mpEsnxyhT3XTXFu1LChRVAAsv5WeEc38RbbSeW4IcJTWwatlG0kB2
+         IkpqK5XEmk0CNBEPzo7awkCDIcuIAd/ciK921tNTeownJMbKalVRqbqKLkS56fNnUef2
+         NPsIkhiRS9gMJW5JW8qf/uDaT3+y1efBdq1H9HBpisMOmCZymdWgtGEzbZg0+WkYFOeL
+         cUL63zc/qIylL16nkv7BHdS/q1dLgrU0xm7FB7/EhszlT+TpYZ/ByVGcUO5Dl+dAgKbg
+         7wjp/ugLWA81cuanWxa3mAKDwSGXftQxrThnP3VHn9Jxhh/OTJyRMdMF88TAOqodqOgt
+         vhUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689277686; x=1691869686;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689280309; x=1691872309;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TQKDTkoWZPUpNGxKDSJ4dzeo/1BxtJ5U/WdKrNfLRH8=;
-        b=H7EPTbt1wBiKyk/WTKvNX++4m5161tMC0USZNlwHx+1dsG/XUmtAFSTSBoY2TRTUPo
-         hqNRVtKQeDTv7JoJurC2+0FokFC6/0xCue2Rpi8Hsx5D4h5zOzM9FV4aGVbKYIpXjTKf
-         d6o0efIGMnntp0WqnnglMyng2N7Vl+m5RzXNay75mAe/sS2RbKnPoP/l97Hrs8hIkkAB
-         7M44Ogw5aBWqTQYrKePGCECyMt3wMxbX8nCde+zU7NeusUACOGzpWaSu3S6vxgj9o/n0
-         9+36xzf29q8sm4RmIwnPXDkVk2VhHpotavxh1tSGy1bZa/Sfnch0wzu8r6NM3oUCKDXV
-         zbxQ==
-X-Gm-Message-State: ABy/qLagmHgumYNwUzN4cQ58AHxZ7q6ado01XkiWUN71jTbZc4bd1pGm
-	hSU7NB1GSz4GgPV+D4tLFNY=
-X-Google-Smtp-Source: APBJJlGro/zqjnuY9gy47z2GPd38MalaLr8oHlhnQr67G6DOTwls4bQrnQ20nlXK3urtEgaJxCJ6Rw==
-X-Received: by 2002:a5e:a519:0:b0:786:e0d0:78b4 with SMTP id 25-20020a5ea519000000b00786e0d078b4mr2881191iog.9.1689277686393;
-        Thu, 13 Jul 2023 12:48:06 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id s22-20020a02cc96000000b0041d859c5721sm2094051jap.64.2023.07.13.12.48.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 12:48:05 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 13 Jul 2023 09:48:04 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrea Righi <andrea.righi@canonical.com>, mingo@redhat.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH 27/34] sched_ext: Implement SCX_KICK_WAIT
-Message-ID: <ZLBU9O-f9vHcSmNP@slm.duckdns.org>
-References: <20230711011412.100319-1-tj@kernel.org>
- <20230711011412.100319-28-tj@kernel.org>
- <ZLAAEnd2HOinKrA+@righiandr-XPS-13-7390>
- <CAHk-=wiT-nr-kRON8vToQSbMhijztp8LV=Y0PgjLJhgDPckxPA@mail.gmail.com>
+        bh=VPciF0EVeOAxtc9apUd6YJTK65RmMx7elq3AOSzgMcI=;
+        b=E5pA2cprNCizcBCvSWrdEoKRYUrYx0Q714G2+if+WzWclTugRkDO++6sAgfVQyMKR1
+         iiZSP5lMTTD0qQee5kmWFwiixldAgpmSxK36gZaMMMY94l+c+VYGV5f6SIHHceApK2zV
+         LCWqmVGPjj7F2AfzBDsuA2MtYMpxohCW9jU3nIpTqI75+RE/g79xI4puxlC+8TpLF6sP
+         pRMRY/gnaHTpyS+wOalYIOpJS/YddBKH3kxtnf++SNf/1BQWilWmKom9bQykzn7+CntB
+         dQQ26yKCCab0zc2QcJTf1sAE3MsR9RnrVjwEDPFWMfVhhUj9pnrCQweQmUIMsEeGtICX
+         6I3Q==
+X-Gm-Message-State: ABy/qLa3SHtkrHN1VM5KUV2rTfmzykVZicdyNh1+Q+/yJ7KKfafGYI4D
+	aybwiCua9mZ3HSHKawYNaO8iInTT6pX6ceiD894=
+X-Google-Smtp-Source: APBJJlHl3Vtoy7fBv4jfZlJ3ggHoainV8W3wltPMg1jwvjvgMpX/RoZnFigPf8uRD/71K5zlUiRaGjmTrtKpBvqStWU=
+X-Received: by 2002:a5d:5944:0:b0:313:fce9:c568 with SMTP id
+ e4-20020a5d5944000000b00313fce9c568mr2248623wri.31.1689280308471; Thu, 13 Jul
+ 2023 13:31:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiT-nr-kRON8vToQSbMhijztp8LV=Y0PgjLJhgDPckxPA@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-	version=3.4.6
+References: <20230712010504.818008-1-liu.yun@linux.dev> <CAEf4Bzay5QC_pbH-Km-oqL8MzzyUCtKU3Xc2Jie5bbRc=PBi5A@mail.gmail.com>
+ <CAADnVQ+KwbRo0QsNOZPVW2Xpn1x5=N6pNL1MwKGrNnbbtTX3Lg@mail.gmail.com>
+ <CAEf4BzYyH1+_6_LCro9AYnWknrv7ZFW03+cqqkthyCdf7qQ10g@mail.gmail.com> <xzhh4o27vtnstev3i64wqwd4jkuatvqrgoev3fv4igequpjiye@wpsfpb4p4hr7>
+In-Reply-To: <xzhh4o27vtnstev3i64wqwd4jkuatvqrgoev3fv4igequpjiye@wpsfpb4p4hr7>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 13 Jul 2023 13:31:35 -0700
+Message-ID: <CAEf4Bza-GXp9TO4gBZ=m6vSszHLW4uQvACKyoOaWMD985k-4tg@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Support POSIX regular expressions for multi kprobe
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Jackie Liu <liu.yun@linux.dev>, 
+	Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	liuyun01@kylinos.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
-
-On Thu, Jul 13, 2023 at 11:32:37AM -0700, Linus Torvalds wrote:
-> On Thu, 13 Jul 2023 at 06:46, Andrea Righi <andrea.righi@canonical.com> wrote:
+On Wed, Jul 12, 2023 at 9:56=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> On Wed, Jul 12, 2023 at 09:13:04PM -0700, Andrii Nakryiko wrote:
+> > On Wed, Jul 12, 2023 at 8:05=E2=80=AFAM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Jul 11, 2023 at 10:42=E2=80=AFPM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Tue, Jul 11, 2023 at 6:05=E2=80=AFPM Jackie Liu <liu.yun@linux.d=
+ev> wrote:
+> > > > >
+> > > > > From: Jackie Liu <liuyun01@kylinos.cn>
+> > > > >
+> > > > > Now multi kprobe uses glob_match for function matching, it's not =
+enough,
+> > > > > and sometimes we need more powerful regular expressions to suppor=
+t fuzzy
+> > > > > matching, and now provides a use_regex in bpf_kprobe_multi_opts t=
+o support
+> > > > > POSIX regular expressions.
+> > > > >
+> > > > > This is useful, similar to `funccount.py -r '^vfs.*'` in BCC, and=
+ can also
+> > > > > be implemented with libbpf.
+> > > > >
+> > > > > Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+> > > > > ---
+> > > > >  tools/lib/bpf/libbpf.c | 52 ++++++++++++++++++++++++++++++++++++=
+++----
+> > > > >  tools/lib/bpf/libbpf.h |  4 +++-
+> > > > >  2 files changed, 51 insertions(+), 5 deletions(-)
+> > > > >
+> > > >
+> > > > Let's hold off on adding regex support assumptions into libbpf API.
+> > > > Globs are pretty flexible already for most cases, and for some more
+> > > > advanced use cases users can provide an exact list of function name=
+s
+> > > > through opts argument.
+> > > >
+> > > > We can revisit this decision down the road, but right now it seems
+> > > > premature to sign up for such relatively heavy-weight API dependenc=
+y.
+> > >
+> > > regexec() is part of glibc and we cannot link it statically,
+> > > so no change in libbpf.a/so size.
 > >
-> > I'm not sure if we already have an equivalent of
-> > smp_store_release_u64/smp_load_acquire_u64(). Otherwise, it may be worth
-> > to add them to a more generic place.
-> 
-> Yeah, a 64-bit atomic load/store is not necessarily even possible on
-> 32-bit architectures.
-> 
-> And when it *is* possible, it might be very very expensive indeed (eg
-> on 32-bit x86, the way to do a 64-bit load would be with "cmpxchg8b",
-> which is ridiculously slow)
+> > right, I wasn't worried about the code size increase of libbpf itself
+> >
+> > > Are you worried about ulibc-like environment?
+> >
+> > This is one part. musl, uclibc, and other alternative implementations
+> > of glibc: do they support same functionality with all the same options
+> > and syntax. I'd feel more comfortable if we understood well all the
+> > implications of relying on this regex API: which glibc versions
+> > support it, same for musl. Are there any extra library dependencies
+> > that we might need to add (like -lm for some math functions). I'm not
+> > very familiar also with what regex flavor is implemented by POSIX
+> > regex, is it the commonly-expected Perl-compatible one, or something
+> > else?
+> >
+> > Also, we should have a good story on how this regex syntax is
+> > supported in SEC() definitions for both kprobe.multi and uprobe.multi.
+> >
+> > Stuff like this.
+> >
+> > But also, looking at bpftrace, I don't think it supports regex-based
+> > probe matching (e.g., I tried 'kprobe:.*sys_bpf' and it matched
+> > nothing; maybe there is some other syntax, but my Google-fu failed
+> > me). So assuming I didn't miss anything obvious with bpftrace, the
+> > fact that it's been around for so long with so many users and lack of
+> > regex doesn't seem to be the problem,
+>
+> bpftrace only supports wildcard (`*`) operator like in globs. One thing
+> that might help bpftrace get away with that is being able to specify mult=
+iple
+> attachpoints for a single probe. Eg.
 
-There are two places where sched_ext is depending on atomic load/store.
-One's this pnt_seq which is using smp_store_release/load_acquire(). The
-other is task_struct->scx.ops_state which uses atomic64_read_acquire() and
-atomic64_store_release(). atomic64's are implemented with spinlocks on
-32bits by default which is probably why Andrea didn't hit it.
+Right, and you can do the same with libbpf. Call
+bpf_program__attach_kprobe_multi() multiple times with different globs
+and/or define multiple SEC("kprobe.multi/xxx") entry functions that
+just call into a common logic-handling subprog.
 
-pnt_seq is a per-cpu counter for successful pick_next_task's from sched_ext
-and used to tell "has at least one pick_next_task() succeeded after my
-kicking that CPU".
+I find, in practice, that regexes are often completely unnecessary for
+selecting subsets of functions, if one has globs already.
 
-p->scx_ops.state has embedded qseq counter (2bits for state flags, the rest
-for the counter. I gotta change the masks to macros too.) which is used to
-detect whether the task has been dequeued and re-enqueued between while a
-CPU is trying to double lock rq's for task migration.
 
-As both are used to detect races in very short and immediate time windows,
-using, respectively, 32bit and 30bit, should be safe practically. e.g. while
-it's theoretically possible for the task to be dequeued and re-enqueued
-exactly 2^30 times while the CPU is trying to switch rq locks, I don't think
-that's practically possible without something going very wrong with the
-machine (e.g. NMI / SMI).
-
-I'll note the above and change both to unsigned longs.
-
-Thanks.
-
--- 
-tejun
+>
+> ```
+> tracepoint:foo:bar,
+> tracepoint:baz:something
+> {
+>         print("hi")
+> }
+> ```
+>
+> Thanks,
+> Daniel
 
