@@ -1,199 +1,199 @@
-Return-Path: <bpf+bounces-5039-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5040-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC1D075426A
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 20:15:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97F85754289
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 20:28:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B53D1C213B6
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 18:15:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA7B51C213F6
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 18:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C4315AD3;
-	Fri, 14 Jul 2023 18:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6224415AD6;
+	Fri, 14 Jul 2023 18:28:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD1313715
-	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 18:15:43 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062A91BEB;
-	Fri, 14 Jul 2023 11:15:20 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36EHJSM5013761;
-	Fri, 14 Jul 2023 11:15:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-id :
- content-type : content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=MoYHXpDdzRLVNeLGGlYEJnLQX2M4iY1NJBUbQTOJ7mc=;
- b=BAr1nXU/81mCLifudvXFK1zDqm3kBY/QjrXr07DiXsJXYqp6v7ThqtJMUz4aldQY357f
- n1Tiv23qf7QFYZMV18x/jyovKnEBzeE8HebOy0+dP6QnGJVNM1RoXH8qYLv+t2oToulL
- XdsAbzYHxlCO/MdED3kCMmx8iYxSAJAguPC5GBlK9U5zhyNbVCQOBQkj7d4wsHSdpn7d
- 83icWkrUwgulV6tqAwcHaps3IT4NAs2RDoFIW0MQmpVBf6mCBFMnVSnjKVrOLXS4pPDe
- IXs/f0Ovog+0m8Ji6xck99y4QfGnpStk4Lqjh6WJ74UZj5m2M3Njbaf7uYgVfwgtWN+p hg== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rtpwe1v77-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 14 Jul 2023 11:15:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mCfQkTuaHH5fyaQDbzBwZFBPHHwreet7f6SjLJWIaOlqo52/EediQhaHaLJs91Cmi1WSTwCTaawOpEzdEb6O3bXSnFDEGFv/EegYUUIWfHgwZQFc8wJ9S5Cw8RR4uovTEkqzhjaMEnGB54a0/jAs0AnzYEHmFlr0PPsOVZQP7skUf871IL3N49X1QEzixqJMjq7mRnn34l0l1dXU8Gx28P0rnnHhhHJxjvLZcn8bd12KFpxTPOp6ScB03deMuzJGYnMlWn3aXgIPW2RAFbMIxYmwRRh3hhmwelh1p0ZpVgF2ep7dUoFmXL4THCAgu19BlMcJ8561whZ5p1TF/3frog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MoYHXpDdzRLVNeLGGlYEJnLQX2M4iY1NJBUbQTOJ7mc=;
- b=RBlM8zbG0shbWdzpx3vbNEEhTv8gTmHh8C8TQ2JHaPn2Xf6BIFZbHXMEGbFaNbyr9hMuO/HGGEDhGpmnmbD55Evsxsv3EP3c46gkiroNjJpEjrk34Q4xR0gZ7NfD0rLOHsJMOavCLW2FfDegaZKZXe31g0MOGx/2mUzN0gWsN+b7zJOTXgjn1dqOpkitpsmpfVfx0gJ5g75NM7n189gBOEMNw3y0rQFq+7XL7fB4AOnII3FdUWmjmD+XQ6IX53TCCEwIDGjPV6ubAktnf+QpY5oCIj14ICs1wZCZwB5IsWCao8thyZPeWuwy3S7z+U5zm5mitCllgyU7buxJtWZPgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (2603:10b6:208:3d::12)
- by CH3PR15MB6118.namprd15.prod.outlook.com (2603:10b6:610:158::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
- 2023 18:15:17 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::1565:1074:4ef5:8459]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::1565:1074:4ef5:8459%6]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
- 18:15:17 +0000
-From: Mykola Lysenko <mykolal@meta.com>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-CC: Mykola Lysenko <mykolal@meta.com>,
-        Alexei Starovoitov
-	<alexei.starovoitov@gmail.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Andrii
- Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>, Ian Rogers
-	<irogers@google.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Manu Bretelle <chantra@meta.com>,
-        =?utf-8?B?RGFuaWVsIE3DvGxsZXI=?= <deso@posteo.net>,
-        Mykola Lysenko
-	<mykolal@meta.com>
-Subject: Re: [BUG] perf test: Regression because of d6e6286a12e7
-Thread-Topic: [BUG] perf test: Regression because of d6e6286a12e7
-Thread-Index: AQHZs3arpdpnw6RNzU2DOcVUZrzzQq+2Ld8AgAAZTACAACz4gIABvlGAgAFk2gA=
-Date: Fri, 14 Jul 2023 18:15:17 +0000
-Message-ID: <87FAA9FD-C64E-4199-9F77-8671FF19EEE1@fb.com>
-References: <ab865e6d-06c5-078e-e404-7f90686db50d@amd.com>
- <CAEf4BzZK=zm9PkUwzJRgeQ=KXjKOK9TENUMTz+_FmU6kPjab7Q@mail.gmail.com>
- <78044efc-98d7-cd49-d2b5-4c2abb16d6c9@amd.com>
- <CAEf4BzZCrDftNdNicuMS7NoF+hNiQEQwsH_-RMBh3Xxg+AQwiw@mail.gmail.com>
- <146e00be-98c8-873d-081f-252647b71b12@amd.com> <ZK7JMjN9LXTFEOvT@kernel.org>
- <CAADnVQLpfmJ7yg-QtwfOFATJb=JcSDDxo11JG32KOQ6K=sNp4Q@mail.gmail.com>
- <ZLBlUXDxRqzNRup3@kernel.org>
-In-Reply-To: <ZLBlUXDxRqzNRup3@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN2PR15MB3213:EE_|CH3PR15MB6118:EE_
-x-ms-office365-filtering-correlation-id: 074c15ed-d673-4df5-61d5-08db84964706
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- V7yTDx9sm5duJUha3LvX3kvSBh/Nqqtv003VcqqGsRM6bgnZDj5ommgdulzjmPalnBnqOfUdtixZDr7hG1iuBEqSY2T6GTOS6hanQ9Zv0HdUOS6jEe03ObC+Elb9VFdFIBzF+HYhygbvU6HykS1Hoh1j4lAMb9QftKg8ynqmrr+F9gba0Bag9R5/3oxNsQPr4fBX0Ytk34kgKEXuU2mVqZPBkW9F9TCB/vY2zoT606bhzsuioKJ7lrRkYQvrVbkdcjThvCu1x2a85/izMMhipQFjG2i2oVGfe8EMpDkc4G65IFDjuMIxJndLtXlrEO/o14RCV2tEXD6+g5vwdIY5vufTvs/aBD8guGMNhI8JYXNz4YMDOZLdtClpME2Xl6XFX+M1WsNZpF5kklaCLd63e8i9MMizLvR1I87D5uQ64X0GQ/QO8hLmc6JhEFY3AmoBWXn7mTG2RJpGrzdncnNsa6VP7bxqLTQ56CEcridJQk8SJIpOv7IkMX+iFVISVuPN7IIGaalbUtzi3DZHkn/tfdCouV6JCbH/y+BTIj8oTm3hKG9AeYWpURaU6JoxEf0SFtzAi5osMwDysXt0VbaW70qy2k/ghOvULAqYh9vB9MY=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR15MB3213.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(376002)(346002)(396003)(136003)(39860400002)(451199021)(66476007)(66556008)(64756008)(66446008)(38100700002)(4326008)(7416002)(6916009)(478600001)(316002)(76116006)(66946007)(91956017)(54906003)(122000001)(41300700001)(83380400001)(8936002)(6512007)(966005)(9686003)(107886003)(186003)(33656002)(8676002)(5660300002)(36756003)(6486002)(38070700005)(71200400001)(2906002)(6506007)(53546011)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?THJadkVrdkFIdG94OE52M1FBR0ExRG1pcXlCN3RYYnE0dm4vU1RoRXYvU2xQ?=
- =?utf-8?B?Qm1tRjF3c1I1SGdLbUJqMlVVUHZZWDZMdFRqZjRubUNNYU4xWmdGR1QyK2FO?=
- =?utf-8?B?ZFZZWitTZlZxWnpSeVlHaHRqWGFJbGNhSHAwY21oRVErYjF5NDM4QXlmWnQw?=
- =?utf-8?B?UHJSS0pvV08yZGtDd0RrV1A3NVhjaWU1R01oU0NuNGw0MWpmOTQyK1JrUFlW?=
- =?utf-8?B?ZFZyN1ZSVWVTenRjYTZkNXVJdkRGbmpFbnFVWGJyU21Fai82VUNpVGRTTTRY?=
- =?utf-8?B?Q1JuckdURUROaUY3aS9pRGlNSXVEdERva1pBMm56ZEhTMkM5TjA1Wms3L1V0?=
- =?utf-8?B?NVQveGN5TzNZUWRnbGpqdXR0N1hzaUZxTTd3Yzd1S2FjNWdVUTR3UnRsT081?=
- =?utf-8?B?OHhEZ05ZMWRzcHlSL1g5MlhXMExHbDNZWm5VWXVIL29pa1hNVXoxYlZ5RCtE?=
- =?utf-8?B?Z3lvYUpZWjZML1V5d1U3eXFqejlsTmdVV2lCRUdCcXB5LzdKZTR1aFl5SEJZ?=
- =?utf-8?B?M293cGU2RnFmdTRxYW0xT0x0YmFJbWFaNHdXRm1MZVM5MENSM283RFpzYy9h?=
- =?utf-8?B?eWNISGNacFgvY3hoUGdtYlpBVFZXS1ZBS1NONnZPL2FaWVZ4b2daU3J5K2ti?=
- =?utf-8?B?TStGbXRKZ0ZsakM3U1pwbG5HNXpKLy9PT2M2S0pVVFlhcWdGOFRxTmVaZHdK?=
- =?utf-8?B?QmJxUzdzQzNtSkFnNkNzQ3ppeU8wUmxqTEFnV1JzZzNVaXlLUlJWQVRDZGdm?=
- =?utf-8?B?N0JpeU5mdnlBVk1MaVJ5RUUyQjltMTRXNUF3WTdKME01OFA1b1lxbFQyYzVN?=
- =?utf-8?B?bG85bHRsSk12L2FCamVVVDBVSGdWS2p2OTVlQ0t0MTY4ZHJ4MGdVdXhvWDZL?=
- =?utf-8?B?TmRPL3BwaHRWRXhjNlJjdWRYc0VWbWJ1SnowQS90NU1RLzUzNHJwamtMdzVo?=
- =?utf-8?B?M2VJaVZCMUUwaE1iMjJXb3AzMHUrN1dkVVNVb2tJdCtOWXkrazFnbHhSZkVl?=
- =?utf-8?B?ZkNGWUp0aEpycEFyQloyZkpKcFo5N3RHWTdEMjBwSEpuRGptVVR2Ym4xR0VF?=
- =?utf-8?B?emNhRStXNXBsemN0YTVHSEhXM2RKSExDZGk2Tm52Tytub3VRZ0NoWkRqOHN3?=
- =?utf-8?B?a2J0YUxjKzhXUXpXZ2xBS3pjdDlpQlFYdG5JUjhacWdaRUp3R2RhUldtSFFa?=
- =?utf-8?B?MUNPRUpPU3hVbVFLTEdReGNweVFoUmFQSEYyYjdaV3FIVzJLQlZyK1BvdHBz?=
- =?utf-8?B?UUFBQUxoRHlHanMxV21xc1NjSnJJSFZiRHBHSjZpMlNRSE1DRVpudUJiTmVy?=
- =?utf-8?B?T2NhRDF6M0wvdkUzanBrQ0c3N05WaURnMDRqV2xEWU9uUmRhQlZYYUpEcGV1?=
- =?utf-8?B?SExzcmpOUWFFY0tCb25nYWhnQjNFN1pSTXFJKzR6WHVuNXVrbWdyZnk2TGZP?=
- =?utf-8?B?cjJSeFppMFAzaVRva01KWWIycE5yN0c2V2hQVlE4OVZXSDIrVWtsdmU0YUFU?=
- =?utf-8?B?L0JaZnJMenlWU1hBSzNTR2VzWXg1UVdrZEY0bE8zVW9JbWxqbzZQMGtWV0RV?=
- =?utf-8?B?WFhPNzhlNWd1M0k1MkNFUC9rZzVMQUpJZGRpSjc0bWtsR2doblJDTVkxN2o4?=
- =?utf-8?B?NXBTUE50WWRkM29uWkVhSDBZUSs2dUN5T0VsVEpFcjhXWUlyRjFSbWRacWtY?=
- =?utf-8?B?TjBDS3Vna2g2V21BN1YrdHBVbHVqWUFoWU9VVnVNNnJ1TTFrMGs2bFZLenZO?=
- =?utf-8?B?Mm8vLzE0MVdCT0lWZWZwTmNrMHJNdHIyWW1mY1VYSUVXVExHSGY1TDFodjBZ?=
- =?utf-8?B?UE5iZ1JDd2dPek1vSmFTdU1saUlSQ2t6ZVF4M3dma0l0WEhCTkZtOWd6QXk3?=
- =?utf-8?B?TGJMemJYRUNKcEJKcTlxOHVCN0owZzZrSEUzWUQ2RGtWSEhEb2NndHcyNU93?=
- =?utf-8?B?SHhPNkQ5c21ybW9RWFZBeVVLVkNRaEJwcmFuaWVCdkdNYjFieVhRL2pSOVdD?=
- =?utf-8?B?QUhCU2VONDk3cWVBUU5ibXNlYjRjNU1tVnlLMXlNcFlJcW5aZUduZU9OK0dP?=
- =?utf-8?B?TDBOVi9zRnE2N2lZTWtZaVh6TWJhZ2UwWnIxUGdNT2VId3lIalNBeDQwSGdR?=
- =?utf-8?B?MWE4Yjc4bUxSS2tZN2xVK1Rmb0RCdHRZMW9XaFRHYkk1R1k1V28xMzRONmNG?=
- =?utf-8?Q?r2DH9kxtGDP5ZXnQl827g/unOjw/tSLyXnPiv+9Pw38y?=
-Content-ID: <31A4C13ED1DD784FA33D0B0FA00F0423@namprd15.prod.outlook.com>
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR15MB3213.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 074c15ed-d673-4df5-61d5-08db84964706
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jul 2023 18:15:17.4067
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RyukqMRxoHQ2lm58eXK1UKaVes4xNO5NMmT0NqCRDJOYnj4ZSue8ay6PGM6tESZEcPfUL2w15yZDb7pJBTyqGg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR15MB6118
-X-Proofpoint-GUID: nrCXBDB_IrpK5dJXqw43dE4H9rGZhwxj
-X-Proofpoint-ORIG-GUID: nrCXBDB_IrpK5dJXqw43dE4H9rGZhwxj
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 352CA13715
+	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 18:28:09 +0000 (UTC)
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7912D1BEB
+	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 11:28:08 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-262dc1ced40so1462451a91.3
+        for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 11:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689359288; x=1691951288;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vNv0iCHepgqIW/JetOdH2vpprmQTsYdghliqOFxlxfQ=;
+        b=QZPDS5MGZNBJpD9mGU/tenJagX8+KFrd/DopAPwqLphn+cinz+akV8+kojHi2lue4T
+         CQ/AH9iH98d7rnxK7Nj6j/eTj/AUoSLtZVLBQ6yJ8sXppAegAQ4iZWQU0zdGGhNAQzZ5
+         KqSM1BSs41tlSYPqBJBdh9yzFxXwL9G6CnG+Pzeo6iBBZo4YZ+vQNn/g+PDpsJp03HTH
+         h43yzqwm2DJYPFVZUetox2IxIGZ4AKXErpX6KTyrjrUyE7s2eoygXiJWm2ZNb9IETtby
+         T+qlCH2UyHgPuVN+4754YlyLhqlyNXhglOkEXh8jlZbUDpAdrJ0Kn4HpfaxoKc9Gcfqi
+         M+pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689359288; x=1691951288;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vNv0iCHepgqIW/JetOdH2vpprmQTsYdghliqOFxlxfQ=;
+        b=cbgsIje1jMYDKPzZPDFXV5MCWLNmxzMV8+/tcYxFjOjbzDVc6x/F5vhrJJMN0fVzYW
+         4sAQizY/UXe9nXmT92XAB0DinGUCeW79g/RzqjqYa9c8EDhH4iAmG3dcvZZEDGO7GAIf
+         thTzl5W1cuYn+MOHC5OXsYnBDWPfkKD4EgCF78dvhHYWlFYOS2iENC/8kZajDCrksYK5
+         NQ4bw+M4vKImqXUROVQmeIEGxDctb1gumVIoC9oy0/HqQ1bfT7hoxqwag76NtsBV/5Rf
+         PA42lf5vfmklFChwmntIKhVAmecCae6kPP+az8y49xAl1DBttG6f+Kx7H/gkWY5peeDM
+         8xqw==
+X-Gm-Message-State: ABy/qLb0Yz7C0EZedzmM8ZhNHP4g8tp0mrKEiUONv0Y04sHHzX+1T9Cm
+	GFmMWK+YRXYk01AsKvWqBVE=
+X-Google-Smtp-Source: APBJJlEXlxN959i4mA/URI9FtQJ0rhuhgUxYh/qu41NFLckADC8uqIga6n7X4fB65lkQvStMwoQZFA==
+X-Received: by 2002:a17:90a:c582:b0:263:2495:c27f with SMTP id l2-20020a17090ac58200b002632495c27fmr4709018pjt.15.1689359287770;
+        Fri, 14 Jul 2023 11:28:07 -0700 (PDT)
+Received: from MacBook-Pro-8.local ([2620:10d:c090:400::5:2ff4])
+        by smtp.gmail.com with ESMTPSA id s13-20020a17090aba0d00b00263d15f0e87sm1374461pjr.42.2023.07.14.11.28.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 11:28:07 -0700 (PDT)
+Date: Fri, 14 Jul 2023 11:28:05 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Fangrui Song <maskray@google.com>, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v2 15/15] docs/bpf: Add documentation for new
+ instructions
+Message-ID: <20230714182805.rvfrf4y4ctmrqbav@MacBook-Pro-8.local>
+References: <20230713060718.388258-1-yhs@fb.com>
+ <20230713060847.397969-1-yhs@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-14_09,2023-07-13_01,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713060847.397969-1-yhs@fb.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-SGV5IEFybmFsZG8sDQoNCj4gT24gSnVsIDEzLCAyMDIzLCBhdCAxOjU3IFBNLCBBcm5hbGRvIENh
-cnZhbGhvIGRlIE1lbG8gPGFjbWVAa2VybmVsLm9yZz4gd3JvdGU6DQo+IA0KPiAhLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LXwNCj4gIFRoaXMgTWVzc2FnZSBJcyBGcm9tIGFuIEV4dGVybmFsIFNlbmRlcg0KPiANCj4gfC0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0hDQo+IA0KPiBFbSBXZWQsIEp1bCAxMiwgMjAyMyBhdCAxMToyMDoyN0FNIC0wNzAw
-LCBBbGV4ZWkgU3Rhcm92b2l0b3YgZXNjcmV2ZXU6DQo+PiBPbiBXZWQsIEp1bCAxMiwgMjAyMyBh
-dCA4OjM54oCvQU0gQXJuYWxkbyBDYXJ2YWxobyBkZSBNZWxvDQo+PiA8YWNtZUBrZXJuZWwub3Jn
-PiB3cm90ZToNCj4+PiANCj4+PiBSaWdodCwgcGVyaGFwcyB0aGUgbGliYnBmIENJIGNvdWxkIHRy
-eSBidWlsZGluZyBwZXJmLCBwcmVmZXJhYmx5IHdpdGgNCj4+PiBCVUlMRF9CUEZfU0tFTD0xLCB0
-byBlbmFibGUgdGhlc2UgdG9vbHM6DQo+PiANCj4+IA0KPj4gVGhhdCB3b3VsZCBiZSBncmVhdC4N
-Cj4+IHBlcmYgZXhwZXJ0cyBwcm9iYWJseSBzaG91bGQgZG8gcHVsbC1yZXEgdG8gYnBmIENJIHRv
-IGVuYWJsZSB0aGF0Lg0KPj4gU2VlIHNsaWRlczoNCj4+IGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcv
-YnBmY29uZjIwMjJfbWF0ZXJpYWwvbHNmbW1icGYyMDIyLWJwZi1jaS5wZGYNCj4+IA0KPj4gIkhv
-dyB0byBjb250cmlidXRlPw0KPj4gRGVwZW5kaW5nIG9uIHdoYXQgcGFydCBvZiBDSSB5b3UgYXJl
-IGNoYW5naW5nLCB5b3UgY2FuIGNyZWF0ZSBhIHB1bGwgcmVxdWVzdCB0bw0KPj4gaHR0cHM6Ly9n
-aXRodWIuY29tL2tlcm5lbC1wYXRjaGVzL3ZtdGVzdC8NCj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9s
-aWJicGYvY2kNCj4+ICINCj4gDQo+IFN1cmUsIEkgc3RpbGwgcmVjYWxsIFF1ZW50aW4ncyB0YWxr
-IGFib3V0IENJLCBldGMgaW4gRHVibGluLCB3aWxsIGNvbWUNCj4gdXAgd2l0aCBzb21ldGhpbmcg
-YW5kIHN1Ym1pdC4NCg0KVGhhbmtzIGZvciBsb29raW5nIGF0IHRoaXMhDQoNCklmIHlvdSB3aWxs
-IGhhdmUgYW55IHF1ZXN0aW9ucyBvbiBob3cgQ0kgd29ya3MsIGRvIG5vdCBoZXNpdGF0ZSB0byBq
-b2luIEJQRiBvZmZpY2UgaG91cnMgYW5kIHdlIHdpbGwgZG8gb3VyIGJlc3QgdG8gYW5zd2VyLg0K
-DQpNeWtvbGENCg0KPiANCj4gLSBBcm5hbGRvDQoNCg0K
+On Wed, Jul 12, 2023 at 11:08:47PM -0700, Yonghong Song wrote:
+> diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
+> index 751e657973f0..367f426d09a1 100644
+> --- a/Documentation/bpf/standardization/instruction-set.rst
+> +++ b/Documentation/bpf/standardization/instruction-set.rst
+> @@ -154,24 +154,27 @@ otherwise identical operations.
+>  The 'code' field encodes the operation as below, where 'src' and 'dst' refer
+>  to the values of the source and destination registers, respectively.
+>  
+> -========  =====  ==========================================================
+> -code      value  description
+> -========  =====  ==========================================================
+> -BPF_ADD   0x00   dst += src
+> -BPF_SUB   0x10   dst -= src
+> -BPF_MUL   0x20   dst \*= src
+> -BPF_DIV   0x30   dst = (src != 0) ? (dst / src) : 0
+> -BPF_OR    0x40   dst \|= src
+> -BPF_AND   0x50   dst &= src
+> -BPF_LSH   0x60   dst <<= (src & mask)
+> -BPF_RSH   0x70   dst >>= (src & mask)
+> -BPF_NEG   0x80   dst = -src
+> -BPF_MOD   0x90   dst = (src != 0) ? (dst % src) : dst
+> -BPF_XOR   0xa0   dst ^= src
+> -BPF_MOV   0xb0   dst = src
+> -BPF_ARSH  0xc0   sign extending dst >>= (src & mask)
+> -BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
+> -========  =====  ==========================================================
+> +========  =====  ============  ==========================================================
+> +code      value  offset value  description
+
+How about just 'offset' ?
+
+> +========  =====  ============  ==========================================================
+> +BPF_ADD   0x00   0             dst += src
+> +BPF_SUB   0x10   0             dst -= src
+> +BPF_MUL   0x20   0             dst \*= src
+> +BPF_DIV   0x30   0             dst = (src != 0) ? (dst / src) : 0
+> +BPF_SDIV  0x30   1             dst = (src != 0) ? (dst s/ src) : 0
+> +BPF_OR    0x40   0             dst \|= src
+> +BPF_AND   0x50   0             dst &= src
+> +BPF_LSH   0x60   0             dst <<= (src & mask)
+> +BPF_RSH   0x70   0             dst >>= (src & mask)
+> +BPF_NEG   0x80   0             dst = -src
+> +BPF_MOD   0x90   0             dst = (src != 0) ? (dst % src) : dst
+> +BPF_SMOD  0x90   1             dst = (src != 0) ? (dst s% src) : dst
+> +BPF_XOR   0xa0   0             dst ^= src
+> +BPF_MOV   0xb0   0             dst = src
+> +BPF_MOVSX 0xb0   8/16/32       dst = (s8,16,s32)src
+> +BPF_ARSH  0xc0   0             sign extending dst >>= (src & mask)
+> +BPF_END   0xd0   0             byte swap operations (see `Byte swap instructions`_ below)
+> +========  =====  ============  ==========================================================
+>  
+>  Underflow and overflow are allowed during arithmetic operations, meaning
+>  the 64-bit or 32-bit value will wrap. If eBPF program execution would
+> @@ -198,11 +201,19 @@ where '(u32)' indicates that the upper 32 bits are zeroed.
+>  
+>    dst = dst ^ imm32
+>  
+> -Also note that the division and modulo operations are unsigned. Thus, for
+> -``BPF_ALU``, 'imm' is first interpreted as an unsigned 32-bit value, whereas
+> -for ``BPF_ALU64``, 'imm' is first sign extended to 64 bits and the result
+> -interpreted as an unsigned 64-bit value. There are no instructions for
+> -signed division or modulo.
+> +Note that most instructions have instruction offset of 0. But three instructions
+> +(BPF_SDIV, BPF_SMOD, BPF_MOVSX) have non-zero offset.
+> +
+> +The devision and modulo operations support both unsigned and signed flavors.
+> +For unsigned operation (BPF_DIV and BPF_MOD), for ``BPF_ALU``, 'imm' is first
+> +interpreted as an unsigned 32-bit value, whereas for ``BPF_ALU64``, 'imm' is
+> +first sign extended to 64 bits and the result interpreted as an unsigned 64-bit
+> +value.  For signed operation (BPF_SDIV and BPF_SMOD), for both ``BPF_ALU`` and
+> +``BPF_ALU64``, 'imm' is interpreted as a signed value.
+
+Probably worth clarifying that in case of S[DIV|MOD] | ALU64 the imm is sign
+extended from 32 to 64 and interpreted as signed 64-bit.
+
+> +
+> +Instruction BPF_MOVSX does move operation with sign extension. For ``BPF_ALU``
+> +mode, 8-bit and 16-bit sign extensions to 32-bit are supported. For ``BPF_ALU64``,
+> +8-bit, 16-bit and 32-bit sign extenstions to 64-bit are supported.
+
+How about:
+
+Instruction BPF_MOVSX does move operation with sign extension. 
+BPF_ALU | MOVSX sign extendes 8-bit and 16-bit into 32-bit and upper 32-bit are zeroed.
+BPF_ALU64 | MOVSX sign extends 8-bit, 16-bit and 32-bit into 64-bit.
+
+>  
+> +``BPF_ALU64 | BPF_TO_LE | BPF_END`` with imm = 16 means::
+> +
+> +  dst = bswap16(dst)
+
+Worth spelling out imm 32 and 64 too ?
+
+>  
+> +The ``BPF_MEMSX`` mode modifier is used to encode sign-extension load
+> +instructions that transfer data between a register and memory.
+> +
+> +``BPF_MEMSX | <size> | BPF_LDX`` means::
+> +
+> +  dst = *(sign-extension size *) (src + offset)
+> +
+
+How about:
+
+``BPF_MEM | <size> | BPF_LDX`` means::
+
+  dst = *(unsigned size *) (src + offset)
+
+``BPF_MEMSX | <size> | BPF_LDX`` means::
+
+  dst = *(signed size *) (src + offset)
+
 
