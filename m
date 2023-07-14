@@ -1,164 +1,179 @@
-Return-Path: <bpf+bounces-5042-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5043-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E7D3754382
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 21:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 81413754473
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 23:49:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A27F41C21639
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 19:56:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E0E21C208F6
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 21:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40699200D4;
-	Fri, 14 Jul 2023 19:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50A6915AD5;
+	Fri, 14 Jul 2023 21:48:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF76134CB
-	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 19:56:36 +0000 (UTC)
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057753AB8;
-	Fri, 14 Jul 2023 12:56:29 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id DEDF05C009D;
-	Fri, 14 Jul 2023 15:56:25 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Fri, 14 Jul 2023 15:56:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-	1689364585; x=1689450985; bh=bIDbQfxsNuvf3d9r/rOpxa+WmMoPtn+8jD3
-	nk1eOuRM=; b=SGMembvX6/sAHfuOugqH9axbat/QoJ0k31uIq0vHq0+0ZRq9/bm
-	OXE4fsjATB99uYFbcAOqgiYTHo/G6oDsB/CtG/4tOHM+S4lOaCWbNGhHggOsAJTg
-	R9x3L8nKHjrq8GlGVIJ3q52beg3LfkH49h4safD8f3/9/UWoGrvEiu/G8GQeWhsj
-	QBINygCvMVi3GocH49248OkLx/g7BcAV1u7sIyM14bQ44Jjn/2m2h0UISKDEyaOz
-	LiZL8ngaiTLV0m38ocWnY5LlNGr8kj6VSMgo6BbX4AuPvRR9+inBIg2TDeq3EBVa
-	XU1pvnDy1aQqp4RoKfvE7UAdu5l/KSmdn0g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1689364585; x=1689450985; bh=bIDbQfxsNuvf3d9r/rOpxa+WmMoPtn+8jD3
-	nk1eOuRM=; b=OQUfHU85i/3qDShDvTCgfTD7feljdTJdTsnuo5ejQBoyPs0P2uv
-	Z8yhnO9uqNgQP4P4ilW2vOODiZuuT114HqvMR+jVhEzUGMPzGFNZb9y/2mM11JH3
-	iSO1XktS3kXfIxO1sn/yYGVQonR1mWZCYIIOrqoVRNzaSTphNKiVsgzIBPIScgWb
-	Z9v0Zo8pgQ6o2JVPgvhPnhBB/uIl9i84xc840h50R0HRvBf8iSsayfWcg5bT1Eec
-	vVXCtmEw6o+6btBP99+xmA290mk9/QTtkdDPF9AJWxPcVzskgP+PvHPr+w/oRip3
-	0GmREp6JTbBoHvyZLHHMGxmDM7Lx70sI4ew==
-X-ME-Sender: <xms:aKixZINAaHZB2npjlr6kbwwcGSVaR5zGuNyYmH16wvpA4A1Iul-Z-A>
-    <xme:aKixZO9FE28zzxsHMXwW1FYewcFTJPhJbLC0HpzLgAg6Gu9oCDArV6KFkUHtSfJNl
-    EUoJjSEoSDY6FTMNnw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeeigddugeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpefgkeeuleegieeghfduudeltdekfeffjeeuleehleefudettddtgfevueef
-    feeigeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:aKixZPTYvU0vcmCP_r2Hf20okR3zUmuZi9AmprKDUWqxyEYbhddrMw>
-    <xmx:aKixZAsElIgnNOVEibh3rfmvgRbV4aiLiBiVdTJDz0occUAMdxRP6Q>
-    <xmx:aKixZAdfD6MDZtpCirPQ9q2-7iBk7Zcv9Ts7-dfZxNFt69I6d2fbWA>
-    <xmx:aaixZHzmJD_NpvGaWn6kqZWRXRbs2qeuuJsh2383wclZmbiiFdiBMw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 66359B60086; Fri, 14 Jul 2023 15:56:24 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C93A53AF
+	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 21:48:57 +0000 (UTC)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1A535A5
+	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 14:48:56 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-666edfc50deso1517544b3a.0
+        for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 14:48:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689371335; x=1691963335;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YNAjAzXiy9B8yfRFpP64QxJGo/FpPrkOHCQJ7KqROZg=;
+        b=FrKFuhMbIUTnL1TrH2TsNea2kHk5uHKHBoVMWmw14AfZ1SQY79xsHbBwJGKDTt0us3
+         JpuTNCWcRg0MWARWefEFslX/6wNLMO2n+XkaUWky42Jc4O+8Ti71cjnivJEX1R4EoLsv
+         /FFONmgcn9GQ041TGxmntI8l3xYlryHUmwON/nbl9HCvZEqDiOR5/WNCSD5x2J1eC77G
+         6pXO/nbQTRZmbvadbDcIjmX+s3k8piCDq75rGpjnA+0f0dIgo7GtAzhkF+XHaFKXnwOl
+         GqxduXR3TmUiDaeHN8XTOWxWDL7T97U9Yt7SRapIrbo0qnXw5ja36QmKwNFhMQ1YdH76
+         c2iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689371335; x=1691963335;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YNAjAzXiy9B8yfRFpP64QxJGo/FpPrkOHCQJ7KqROZg=;
+        b=MwJOuRR4kTtlCvqjiA6r2US4DuH8oiy/90FCSZilET6OiMRPb9VDnd8Zaupncr82E8
+         016WxVAmfTfUD9YtweVoXVb9HeF5pdkWuaWsV7MrmYO/fJIJWpl8OoyX491ByqYadNOU
+         WG0HJ1IkrjZ5HcnjxlCiWb4ZlPcpa4pdzY6qtxRdV/wQvqsgV4StdIjjExY3LcX5GrX9
+         AYvRXRwc1X59VUQovl9C48IyZFzoUjKl4DKivbwnGmTu+v9k6oF+qQwCZChNg2Rr34GU
+         xdKwe5tSeETk4g7J39e5gshdX2rs9l2G6X+R+LD11K30Xyt2Xls6WKQRa9vJt3aTMoiC
+         zm0g==
+X-Gm-Message-State: ABy/qLb4caRyDtM9zK4Co2EbbA44c225+UA8ZHHHmPQI0xAz2hnobMJy
+	O+56a2uGEDFLvr8V6sB5vKTAi+WkWOI=
+X-Google-Smtp-Source: APBJJlGLJOEE59NVyHaVls4bLPUZ52r9bGc/aHjXU3rxr6yY+Ryn3cB2A20uCMIxWPXoeUSG5bcjsA==
+X-Received: by 2002:a05:6a20:9189:b0:12f:d350:8a12 with SMTP id v9-20020a056a20918900b0012fd3508a12mr4902164pzd.21.1689371335038;
+        Fri, 14 Jul 2023 14:48:55 -0700 (PDT)
+Received: from MacBook-Pro-8.local ([2620:10d:c090:400::5:2ff4])
+        by smtp.gmail.com with ESMTPSA id c3-20020aa781c3000000b0067978a01246sm7869276pfn.14.2023.07.14.14.48.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 14:48:54 -0700 (PDT)
+Date: Fri, 14 Jul 2023 14:48:51 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>
+Subject: Re: [PATCH bpf v1 2/3] bpf: Repeat check_max_stack_depth for async
+ callbacks
+Message-ID: <20230714214851.cfadshwpijm6z2vg@MacBook-Pro-8.local>
+References: <20230713003118.1327943-1-memxor@gmail.com>
+ <20230713003118.1327943-3-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <bf997965-71d1-4949-8cbc-de46ac6a1283@app.fastmail.com>
-In-Reply-To: 
- <CAP-5=fWmPQ9vtH1t9pSPCPBiOFxQQe43C7Bk4amLS08ASAnwGg@mail.gmail.com>
-References: <1687443219-11946-1-git-send-email-yangtiezhu@loongson.cn>
- <1412dbaf-56f4-418b-85ea-681b1c44cc26@app.fastmail.com>
- <CAP-5=fWmPQ9vtH1t9pSPCPBiOFxQQe43C7Bk4amLS08ASAnwGg@mail.gmail.com>
-Date: Fri, 14 Jul 2023 21:56:04 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Ian Rogers" <irogers@google.com>, "Tiezhu Yang" <yangtiezhu@loongson.cn>
-Cc: linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org,
- loongarch@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>,
- bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH v3 0/2] Unify uapi bitsperlong.h
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713003118.1327943-3-memxor@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jul 14, 2023, at 20:34, Ian Rogers wrote:
-> On Thu, Jun 22, 2023 at 8:10=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> =
-wrote:
->>
->> On Thu, Jun 22, 2023, at 16:13, Tiezhu Yang wrote:
->> > v3:
->> >   -- Check the definition of __BITS_PER_LONG first at
->> >      the beginning of uapi/asm-generic/bitsperlong.h
->> >
->
-> Thanks for doing this cleanup! I just wanted to report an issue I ran
-> into with building the Linux perf tool. The header guard in:
-> tools/include/asm-generic/bitsperlong.h
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tre=
-e/tools/include/asm-generic/bitsperlong.h
->
-> Caused an issue with building:
-> tools/perf/util/cs-etm.c
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tre=
-e/tools/perf/util/cs-etm.c
->
-> The issue was that cs-etm.c would #include a system header, which
-> would transitively include a header with the same header guard. This
-> led to the tools/include/asm-generic/bitsperlong.h being ignored and
-> the compilation of tools/perf/util/cs-etm.c failing due to a missing
-> define. My local workaround is:
->
-> ```
-> diff --git a/tools/include/asm-generic/bitsperlong.h
-> b/tools/include/asm-generic/bitsperlong.h
-> index 2093d56ddd11..88508a35cb45 100644
-> --- a/tools/include/asm-generic/bitsperlong.h
-> +++ b/tools/include/asm-generic/bitsperlong.h
-> @@ -1,6 +1,6 @@
-> /* SPDX-License-Identifier: GPL-2.0 */
-> -#ifndef __ASM_GENERIC_BITS_PER_LONG
-> -#define __ASM_GENERIC_BITS_PER_LONG
-> +#ifndef __LINUX_TOOLS_ASM_GENERIC_BITS_PER_LONG
-> +#define __LINUX_TOOLS_ASM_GENERIC_BITS_PER_LONG
-> #include <uapi/asm-generic/bitsperlong.h>
-> @@ -21,4 +21,4 @@
-> #define small_const_nbits(nbits) \
-> (__builtin_constant_p(nbits) && (nbits) <=3D BITS_PER_LONG && (nbits) =
-> 0)
-> -#endif /* __ASM_GENERIC_BITS_PER_LONG */
-> +#endif /* __LINUX_TOOLS_ASM_GENERIC_BITS_PER_LONG */
-> ```
->
-> I'm not sure if a wider fix is necessary for this, but I thought it
-> worthwhile to report that there are potential issues. I don't think we
-> can use #pragma once, as an alternative to header guards, to avoid
-> this kind of name collision.
+On Thu, Jul 13, 2023 at 06:01:17AM +0530, Kumar Kartikeya Dwivedi wrote:
+> While the check_max_stack_depth function explores call chains emanating
+> from the main prog, which is typically enough to cover all possible call
+> chains, it doesn't explore those rooted at async callbacks unless the
+> async callback will have been directly called, since unlike non-async
+> callbacks it skips their instruction exploration as they don't
+> contribute to stack depth.
+> 
+> It could be the case that the async callback leads to a callchain which
+> exceeds the stack depth, but this is never reachable while only
+> exploring the entry point from main subprog. Hence, repeat the check for
+> the main subprog *and* all async callbacks marked by the symbolic
+> execution pass of the verifier, as execution of the program may begin at
+> any of them.
+> 
+> Consider a function with following stack depths:
+> main : 256
+> async : 256
+> foo: 256
+> 
+> main:
+>     rX = async
+>     bpf_timer_set_callback(...)
+> 
+> async:
+>     foo()
+> 
+> Here, async is never seen to contribute to the stack depth of main, so
+> it is not descended, but when async is invoked asynchronously when the
+> timer fires, it will end up breaching MAX_BPF_STACK limit imposed by the
+> verifier.
 
-Thanks for the report! I think the correct fix is to update
-the tools/include/ headers to have the same change as the kernel
-itself. I don't know why we end up including both, that sounds
-like a separate issue but should normally be harmless as long
-as the contents are the same.
+The fix is correct, but the above paragraph is misleading.
+async doesn't and shouldn't contribute to the stack depth of main prog.
+Could you rephrase it?
 
-      Arnd
+> 
+> Fixes: 7ddc80a476c2 ("bpf: Teach stack depth check about async callbacks.")
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 21 +++++++++++++++++++--
+>  1 file changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index e682056dd144..02a021c524ab 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5573,16 +5573,17 @@ static int update_stack_depth(struct bpf_verifier_env *env,
+>   * Since recursion is prevented by check_cfg() this algorithm
+>   * only needs a local stack of MAX_CALL_FRAMES to remember callsites
+>   */
+> -static int check_max_stack_depth(struct bpf_verifier_env *env)
+> +static int check_max_stack_depth_subprog(struct bpf_verifier_env *env, int idx)
+>  {
+> -	int depth = 0, frame = 0, idx = 0, i = 0, subprog_end;
+>  	struct bpf_subprog_info *subprog = env->subprog_info;
+>  	struct bpf_insn *insn = env->prog->insnsi;
+> +	int depth = 0, frame = 0, i, subprog_end;
+>  	bool tail_call_reachable = false;
+>  	int ret_insn[MAX_CALL_FRAMES];
+>  	int ret_prog[MAX_CALL_FRAMES];
+>  	int j;
+>  
+> +	i = subprog[idx].start;
+>  process_func:
+>  	/* protect against potential stack overflow that might happen when
+>  	 * bpf2bpf calls get combined with tailcalls. Limit the caller's stack
+> @@ -5683,6 +5684,22 @@ static int check_max_stack_depth(struct bpf_verifier_env *env)
+>  	goto continue_func;
+>  }
+>  
+> +static int check_max_stack_depth(struct bpf_verifier_env *env)
+> +{
+> +	struct bpf_subprog_info *si = env->subprog_info;
+> +	int ret;
+> +
+> +	for (int i = 0; i < env->subprog_cnt; i++) {
+> +		if (!i || si[i].is_async_cb) {
+> +			ret = check_max_stack_depth_subprog(env, i);
+> +			if (ret < 0)
+> +				return ret;
+> +		}
+> +		continue;
+> +	}
+> +	return 0;
+> +}
+> +
+>  #ifndef CONFIG_BPF_JIT_ALWAYS_ON
+>  static int get_callee_stack_depth(struct bpf_verifier_env *env,
+>  				  const struct bpf_insn *insn, int idx)
+> -- 
+> 2.40.1
+> 
 
