@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-5009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96F267539F1
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 13:45:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4C9E7539F6
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 13:45:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C80321C21656
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 11:45:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 800AB282327
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 11:45:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 662492773D;
-	Fri, 14 Jul 2023 11:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 898A32AB4B;
+	Fri, 14 Jul 2023 11:37:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAE6FBED;
-	Fri, 14 Jul 2023 11:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2692AB30;
+	Fri, 14 Jul 2023 11:37:39 +0000 (UTC)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07EAE210A;
-	Fri, 14 Jul 2023 04:37:35 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98B3210A;
+	Fri, 14 Jul 2023 04:37:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689334655; x=1720870655;
+  t=1689334657; x=1720870657;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=9jPj1tlSPDvoa8YzPnRzOInKiDR1izQPHyzBSOi990k=;
-  b=Y71sVY+FswLVzCXS4sMLxgJpVsvijyTM5jgkmo1qyim8V4HAnIfRtasg
-   7G0hMJhVIHhRsIdkYWknPU4p6GIlvXHVW3ClvCypH0igWQm8P7yhMTZFv
-   c4pBysi3TQEMaI1ZhbAjt26au/iI0/3qilDZmySvOO5SITkaMP1V9mfYY
-   Hgzzb8cdJSfus9WGRVKdu8ciTSqd+gpI9isAZa52pdjOZFDLxvsmZrjjj
-   4wr71bdebaTDh2Twze9wCOP1YcNOjNBELAjGnRWbqeZiIggd3lziD7ppA
-   fBKAoBHjfKBqfNg3QbjW4GKsYS71uc/4fUmsbpJI5XuusRPKF+mcv8C1L
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="345048284"
+  bh=+WFKgb5AzswkxhGKUB0vMwZF/3arvglZ7d5qB13kyBk=;
+  b=cbHDKQNOMqJUMk8LxfQtY2WF3cIHMMmM8cUwYvCnZH/SF09uExtEWIsT
+   OWhIGY2m+RG1ykC3rRpU8Zf1knGGl4I5tefvcSLyIvz55KI357BxxBGqp
+   cGDKvUL+Z62E6LKlI2z+THCbAwlJp72G2zsBGnLkvDmBRlYSNkLpdc1YF
+   HHKIyhrisHEZaG1Q7xUWuzVnR7Aj3XstF/pGLD4TxEP5SViQr9z0obils
+   cVwrdtwhI2hnFqXD94EazI4r6G474KGAIY+cwC4vvVA8lq4gNT4Agkdh3
+   kepJWQuBif9v6f4zit4IVuevrDSiNXYzIyp1YCVIcxGpWuK67hIX5xj6j
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="345048295"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="345048284"
+   d="scan'208";a="345048295"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 04:37:34 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 04:37:37 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="846425218"
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="846425229"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="846425218"
+   d="scan'208";a="846425229"
 Received: from boxer.igk.intel.com ([10.102.20.173])
-  by orsmga004.jf.intel.com with ESMTP; 14 Jul 2023 04:37:31 -0700
+  by orsmga004.jf.intel.com with ESMTP; 14 Jul 2023 04:37:34 -0700
 From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -57,9 +57,9 @@ Cc: netdev@vger.kernel.org,
 	toke@kernel.org,
 	kuba@kernel.org,
 	horms@kernel.org
-Subject: [PATCH v6 bpf-next 16/24] i40e: xsk: add TX multi-buffer support
-Date: Fri, 14 Jul 2023 13:36:32 +0200
-Message-Id: <20230714113640.556893-17-maciej.fijalkowski@intel.com>
+Subject: [PATCH v6 bpf-next 17/24] xsk: add multi-buffer documentation
+Date: Fri, 14 Jul 2023 13:36:33 +0200
+Message-Id: <20230714113640.556893-18-maciej.fijalkowski@intel.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230714113640.556893-1-maciej.fijalkowski@intel.com>
 References: <20230714113640.556893-1-maciej.fijalkowski@intel.com>
@@ -77,69 +77,246 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Set eop bit in TX desc command only for the last descriptor of the
-packet and do not set for all preceding descriptors.
+Add AF_XDP multi-buffer support documentation including two
+pseudo-code samples.
 
-Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c |  1 +
- drivers/net/ethernet/intel/i40e/i40e_xsk.c  | 10 +++++-----
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ Documentation/networking/af_xdp.rst | 211 +++++++++++++++++++++++++++-
+ 1 file changed, 210 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 1bd72cdedc8a..982ae70c51e8 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -13817,6 +13817,7 @@ static int i40e_config_netdev(struct i40e_vsi *vsi)
- 				       NETDEV_XDP_ACT_REDIRECT |
- 				       NETDEV_XDP_ACT_XSK_ZEROCOPY |
- 				       NETDEV_XDP_ACT_RX_SG;
-+		netdev->xdp_zc_max_segs = I40E_MAX_BUFFER_TXD;
- 	} else {
- 		/* Relate the VSI_VMDQ name to the VSI_MAIN name. Note that we
- 		 * are still limited by IFNAMSIZ, but we're adding 'v%d\0' to
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-index 89a8aca1153e..37f41c8a682f 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-@@ -535,6 +535,7 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
- static void i40e_xmit_pkt(struct i40e_ring *xdp_ring, struct xdp_desc *desc,
- 			  unsigned int *total_bytes)
- {
-+	u32 cmd = I40E_TX_DESC_CMD_ICRC | xsk_is_eop_desc(desc);
- 	struct i40e_tx_desc *tx_desc;
- 	dma_addr_t dma;
+diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
+index 247c6c4127e9..ce6fcda3d409 100644
+--- a/Documentation/networking/af_xdp.rst
++++ b/Documentation/networking/af_xdp.rst
+@@ -453,8 +453,92 @@ XDP_OPTIONS getsockopt
+ Gets options from an XDP socket. The only one supported so far is
+ XDP_OPTIONS_ZEROCOPY which tells you if zero-copy is on or not.
  
-@@ -543,8 +544,7 @@ static void i40e_xmit_pkt(struct i40e_ring *xdp_ring, struct xdp_desc *desc,
- 
- 	tx_desc = I40E_TX_DESC(xdp_ring, xdp_ring->next_to_use++);
- 	tx_desc->buffer_addr = cpu_to_le64(dma);
--	tx_desc->cmd_type_offset_bsz = build_ctob(I40E_TX_DESC_CMD_ICRC | I40E_TX_DESC_CMD_EOP,
--						  0, desc->len, 0);
-+	tx_desc->cmd_type_offset_bsz = build_ctob(cmd, 0, desc->len, 0);
- 
- 	*total_bytes += desc->len;
- }
-@@ -558,14 +558,14 @@ static void i40e_xmit_pkt_batch(struct i40e_ring *xdp_ring, struct xdp_desc *des
- 	u32 i;
- 
- 	loop_unrolled_for(i = 0; i < PKTS_PER_BATCH; i++) {
-+		u32 cmd = I40E_TX_DESC_CMD_ICRC | xsk_is_eop_desc(&desc[i]);
++Multi-Buffer Support
++====================
 +
- 		dma = xsk_buff_raw_get_dma(xdp_ring->xsk_pool, desc[i].addr);
- 		xsk_buff_raw_dma_sync_for_device(xdp_ring->xsk_pool, dma, desc[i].len);
++With multi-buffer support, programs using AF_XDP sockets can receive
++and transmit packets consisting of multiple buffers both in copy and
++zero-copy mode. For example, a packet can consist of two
++frames/buffers, one with the header and the other one with the data,
++or a 9K Ethernet jumbo frame can be constructed by chaining together
++three 4K frames.
++
++Some definitions:
++
++* A packet consists of one or more frames
++
++* A descriptor in one of the AF_XDP rings always refers to a single
++  frame. In the case the packet consists of a single frame, the
++  descriptor refers to the whole packet.
++
++To enable multi-buffer support for an AF_XDP socket, use the new bind
++flag XDP_USE_SG. If this is not provided, all multi-buffer packets
++will be dropped just as before. Note that the XDP program loaded also
++needs to be in multi-buffer mode. This can be accomplished by using
++"xdp.frags" as the section name of the XDP program used.
++
++To represent a packet consisting of multiple frames, a new flag called
++XDP_PKT_CONTD is introduced in the options field of the Rx and Tx
++descriptors. If it is true (1) the packet continues with the next
++descriptor and if it is false (0) it means this is the last descriptor
++of the packet. Why the reverse logic of end-of-packet (eop) flag found
++in many NICs? Just to preserve compatibility with non-multi-buffer
++applications that have this bit set to false for all packets on Rx,
++and the apps set the options field to zero for Tx, as anything else
++will be treated as an invalid descriptor.
++
++These are the semantics for producing packets onto AF_XDP Tx ring
++consisting of multiple frames:
++
++* When an invalid descriptor is found, all the other
++  descriptors/frames of this packet are marked as invalid and not
++  completed. The next descriptor is treated as the start of a new
++  packet, even if this was not the intent (because we cannot guess
++  the intent). As before, if your program is producing invalid
++  descriptors you have a bug that must be fixed.
++
++* Zero length descriptors are treated as invalid descriptors.
++
++* For copy mode, the maximum supported number of frames in a packet is
++  equal to CONFIG_MAX_SKB_FRAGS + 1. If it is exceeded, all
++  descriptors accumulated so far are dropped and treated as
++  invalid. To produce an application that will work on any system
++  regardless of this config setting, limit the number of frags to 18,
++  as the minimum value of the config is 17.
++
++* For zero-copy mode, the limit is up to what the NIC HW
++  supports. Usually at least five on the NICs we have checked. We
++  consciously chose to not enforce a rigid limit (such as
++  CONFIG_MAX_SKB_FRAGS + 1) for zero-copy mode, as it would have
++  resulted in copy actions under the hood to fit into what limit the
++  NIC supports. Kind of defeats the purpose of zero-copy mode. How to
++  probe for this limit is explained in the "probe for multi-buffer
++  support" section.
++
++On the Rx path in copy-mode, the xsk core copies the XDP data into
++multiple descriptors, if needed, and sets the XDP_PKT_CONTD flag as
++detailed before. Zero-copy mode works the same, though the data is not
++copied. When the application gets a descriptor with the XDP_PKT_CONTD
++flag set to one, it means that the packet consists of multiple buffers
++and it continues with the next buffer in the following
++descriptor. When a descriptor with XDP_PKT_CONTD == 0 is received, it
++means that this is the last buffer of the packet. AF_XDP guarantees
++that only a complete packet (all frames in the packet) is sent to the
++application. If there is not enough space in the AF_XDP Rx ring, all
++frames of the packet will be dropped.
++
++If application reads a batch of descriptors, using for example the libxdp
++interfaces, it is not guaranteed that the batch will end with a full
++packet. It might end in the middle of a packet and the rest of the
++buffers of that packet will arrive at the beginning of the next batch,
++since the libxdp interface does not read the whole ring (unless you
++have an enormous batch size or a very small ring size).
++
++An example program each for Rx and Tx multi-buffer support can be found
++later in this document.
++
+ Usage
+-=====
++-----
  
- 		tx_desc = I40E_TX_DESC(xdp_ring, ntu++);
- 		tx_desc->buffer_addr = cpu_to_le64(dma);
--		tx_desc->cmd_type_offset_bsz = build_ctob(I40E_TX_DESC_CMD_ICRC |
--							  I40E_TX_DESC_CMD_EOP,
--							  0, desc[i].len, 0);
-+		tx_desc->cmd_type_offset_bsz = build_ctob(cmd, 0, desc[i].len, 0);
+ In order to use AF_XDP sockets two parts are needed. The
+ user-space application and the XDP program. For a complete setup and
+@@ -532,6 +616,131 @@ like this:
+ But please use the libbpf functions as they are optimized and ready to
+ use. Will make your life easier.
  
- 		*total_bytes += desc[i].len;
- 	}
++Usage Multi-Buffer Rx
++---------------------
++
++Here is a simple Rx path pseudo-code example (using libxdp interfaces
++for simplicity). Error paths have been excluded to keep it short:
++
++.. code-block:: c
++
++    void rx_packets(struct xsk_socket_info *xsk)
++    {
++        static bool new_packet = true;
++        u32 idx_rx = 0, idx_fq = 0;
++        static char *pkt;
++
++        int rcvd = xsk_ring_cons__peek(&xsk->rx, opt_batch_size, &idx_rx);
++
++        xsk_ring_prod__reserve(&xsk->umem->fq, rcvd, &idx_fq);
++
++        for (int i = 0; i < rcvd; i++) {
++            struct xdp_desc *desc = xsk_ring_cons__rx_desc(&xsk->rx, idx_rx++);
++            char *frag = xsk_umem__get_data(xsk->umem->buffer, desc->addr);
++            bool eop = !(desc->options & XDP_PKT_CONTD);
++
++            if (new_packet)
++                pkt = frag;
++            else
++                add_frag_to_pkt(pkt, frag);
++
++            if (eop)
++                process_pkt(pkt);
++
++            new_packet = eop;
++
++            *xsk_ring_prod__fill_addr(&xsk->umem->fq, idx_fq++) = desc->addr;
++        }
++
++        xsk_ring_prod__submit(&xsk->umem->fq, rcvd);
++        xsk_ring_cons__release(&xsk->rx, rcvd);
++    }
++
++Usage Multi-Buffer Tx
++---------------------
++
++Here is an example Tx path pseudo-code (using libxdp interfaces for
++simplicity) ignoring that the umem is finite in size, and that we
++eventually will run out of packets to send. Also assumes pkts.addr
++points to a valid location in the umem.
++
++.. code-block:: c
++
++    void tx_packets(struct xsk_socket_info *xsk, struct pkt *pkts,
++                    int batch_size)
++    {
++        u32 idx, i, pkt_nb = 0;
++
++        xsk_ring_prod__reserve(&xsk->tx, batch_size, &idx);
++
++        for (i = 0; i < batch_size;) {
++            u64 addr = pkts[pkt_nb].addr;
++            u32 len = pkts[pkt_nb].size;
++
++            do {
++                struct xdp_desc *tx_desc;
++
++                tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx + i++);
++                tx_desc->addr = addr;
++
++                if (len > xsk_frame_size) {
++                    tx_desc->len = xsk_frame_size;
++                    tx_desc->options = XDP_PKT_CONTD;
++                } else {
++                    tx_desc->len = len;
++                    tx_desc->options = 0;
++                    pkt_nb++;
++                }
++                len -= tx_desc->len;
++                addr += xsk_frame_size;
++
++                if (i == batch_size) {
++                    /* Remember len, addr, pkt_nb for next iteration.
++                     * Skipped for simplicity.
++                     */
++                    break;
++                }
++            } while (len);
++        }
++
++        xsk_ring_prod__submit(&xsk->tx, i);
++    }
++
++Probing for Multi-Buffer Support
++--------------------------------
++
++To discover if a driver supports multi-buffer AF_XDP in SKB or DRV
++mode, use the XDP_FEATURES feature of netlink in linux/netdev.h to
++query for NETDEV_XDP_ACT_RX_SG support. This is the same flag as for
++querying for XDP multi-buffer support. If XDP supports multi-buffer in
++a driver, then AF_XDP will also support that in SKB and DRV mode.
++
++To discover if a driver supports multi-buffer AF_XDP in zero-copy
++mode, use XDP_FEATURES and first check the NETDEV_XDP_ACT_XSK_ZEROCOPY
++flag. If it is set, it means that at least zero-copy is supported and
++you should go and check the netlink attribute
++NETDEV_A_DEV_XDP_ZC_MAX_SEGS in linux/netdev.h. An unsigned integer
++value will be returned stating the max number of frags that are
++supported by this device in zero-copy mode. These are the possible
++return values:
++
++1: Multi-buffer for zero-copy is not supported by this device, as max
++   one fragment supported means that multi-buffer is not possible.
++
++>=2: Multi-buffer is supported in zero-copy mode for this device. The
++     returned number signifies the max number of frags supported.
++
++For an example on how these are used through libbpf, please take a
++look at tools/testing/selftests/bpf/xskxceiver.c.
++
++Multi-Buffer Support for Zero-Copy Drivers
++------------------------------------------
++
++Zero-copy drivers usually use the batched APIs for Rx and Tx
++processing. Note that the Tx batch API guarantees that it will provide
++a batch of Tx descriptors that ends with full packet at the end. This
++to facilitate extending a zero-copy driver with multi-buffer support.
++
+ Sample application
+ ==================
+ 
 -- 
 2.34.1
 
