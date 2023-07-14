@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-4984-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-4985-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6DA475303B
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 05:57:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6C9275303E
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 05:57:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15AD61C21307
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 03:57:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 750F5280A79
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 03:57:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E453246B1;
-	Fri, 14 Jul 2023 03:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E230E46B1;
+	Fri, 14 Jul 2023 03:57:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF6A3D71
-	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 03:56:54 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56F326B6
-	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 20:56:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9011C46A0
+	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 03:57:23 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A77119BA
+	for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 20:57:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1689307011;
+	s=mimecast20190719; t=1689307040;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fS0DLdt0Xd2ojsz/vs0rf1X2ufwyZfYLmfsEEjlow1M=;
-	b=H/TuPDW0F/94EdScTEN1Gc+Zpnqnc3H/uu41inhWnwIMUGy9OaEccDplp4atb+KPNg4CJ3
-	DphF9Af84HB/Djc/bJ9KMnG1sVqq7JqvYsT/W8qlbIfnsvsU6hSNgz8JBO1RPlDcuY8rcR
-	R2AgSkLaFv7SQkPeefQ3hoGHwt2Zlls=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=2sZBYf+Ezhfge2P6gZNIrU2dJvT5Q53czrU8s6koK2o=;
+	b=YF6RqtZCC58n/eUwakPHgnimUppOgrY2dMwp79ki+1g9KMVNLEZ0wQpDPKenkN57Ust2Ey
+	I+FuNM9m5jim3P6MwVWxQvra0wA6+uW8I6rnuoE/i+z8fjbDfyPS7f7E5EphXVGYmxXfK5
+	HQujb8de+jy9+g5csAn5MgXPv3Eg3/g=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-505-u7khnY03Oqa0tzMK5G-PGg-1; Thu, 13 Jul 2023 23:56:49 -0400
-X-MC-Unique: u7khnY03Oqa0tzMK5G-PGg-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b707829eb9so12570951fa.3
-        for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 20:56:49 -0700 (PDT)
+ us-mta-364-Ixm6FPFCMIGggek6obXEGg-1; Thu, 13 Jul 2023 23:57:19 -0400
+X-MC-Unique: Ixm6FPFCMIGggek6obXEGg-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b70cabc656so14484341fa.0
+        for <bpf@vger.kernel.org>; Thu, 13 Jul 2023 20:57:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689307008; x=1691899008;
+        d=1e100.net; s=20221208; t=1689307037; x=1691899037;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fS0DLdt0Xd2ojsz/vs0rf1X2ufwyZfYLmfsEEjlow1M=;
-        b=fR5TUq+KnAQzISCHLShYAX2KnInFYu0tAHYu6kkwDcXS1eGH4VJ7CJ0INNTJsbMOsD
-         wsnV3Xpif9V8OIAHBbzWc/gR1XnFRic5GmOUr2m+gV0okgLmWky32+mG1Qfh4RpOu/qm
-         PnEZl0NYvgwYzCpQwBlQnBKsLu8mzMeUhNo2b+DIc82d7SkPH13p4pmoGHz81i6j7MfO
-         rVgNNJk/HVbx/NzGv4sXky1MKhkU2YS4WOriabMTVcBwGxpOJvYBfL4SEQZ/zTFO5TGv
-         eweEISBc57geXp6V+y223QuulDf+awXRULCEZk+LaSGcadK44pRNKAMovYG1Irc2e+6r
-         ku+Q==
-X-Gm-Message-State: ABy/qLYOoEEMczh6NPKVq2cRwMWxfMK27LraAhyPEibR1ROQ2xq89AQC
-	XEkiHHGM9R7aT+SKK8ZvqwYLO3hwo0+Mc/GhmmG0Zr3LzEI1Q5IdV5sP1u5a4RUJ3dAMKlcoA4r
-	7l0VLP2cIU8TnK1CLRAaP8b6Dh0o/
-X-Received: by 2002:a2e:8947:0:b0:2b6:c4be:8397 with SMTP id b7-20020a2e8947000000b002b6c4be8397mr3716465ljk.20.1689307007814;
-        Thu, 13 Jul 2023 20:56:47 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHBFsBp351hUD1JnBg1hd8iUDUgxkw6MBaarOcvDjvEmyirmUwvW+R9k0dTqyiOiLCxFSajJbp2Djvv7qNZiZc=
-X-Received: by 2002:a2e:8947:0:b0:2b6:c4be:8397 with SMTP id
- b7-20020a2e8947000000b002b6c4be8397mr3716449ljk.20.1689307007419; Thu, 13 Jul
- 2023 20:56:47 -0700 (PDT)
+        bh=2sZBYf+Ezhfge2P6gZNIrU2dJvT5Q53czrU8s6koK2o=;
+        b=DzO2VfRl+/gwWFVw39SHPWKQuj5Z6K+CrdKOelen+Mp6WVVTVa6xd5YzY8U2zQCOLP
+         dlm4VCokCaC1syFBP4wpQp6NJJrPbn8GKZIlG/7+SbY9c54dzf9XC5hGBwY8KxJqzxLF
+         BtMzGV0N8Cqs08AthWrG9u6PDPnS2G0nkWt3nFwbIvyK6mOF6jzm7yf9aLFZ7Z0iA+ne
+         KxNP5zgQrVG/ZY0uYlazoEprvFJaglkEmoTl5OzucHS9NF51txKppwGS+adDKdrFvGQA
+         M2W4tPPAl6aItKXcxfaPfredqWR1rjt7dUHRNWYdjLzYZpKxctlVbAiig+itCLeSUCus
+         UgfA==
+X-Gm-Message-State: ABy/qLbRCX9J6IOC5j3mhP4eppmUahW0/whchHTAP7m2jQKVXR+/clrz
+	SlW4zYe2U4u5QDVLlOVynR9DTaMFOFGSQ4EXEU925qCK4qtb71jo40UsdJj65BhNu17QG8651GE
+	r7HXOe5EImHTzopzuJ4kad2zBN07t
+X-Received: by 2002:a2e:8916:0:b0:2b6:e2c1:6cda with SMTP id d22-20020a2e8916000000b002b6e2c16cdamr2937449lji.46.1689307036905;
+        Thu, 13 Jul 2023 20:57:16 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGIC+Ah+rzRC3Z1bmrSJTmbu2wRo1Dv5ij5jCYe7qJzxEkF2jwDCGQoS6OFI4QAX8sToSL0D+txm4cb2tpB+Lo=
+X-Received: by 2002:a2e:8916:0:b0:2b6:e2c1:6cda with SMTP id
+ d22-20020a2e8916000000b002b6e2c16cdamr2937439lji.46.1689307036647; Thu, 13
+ Jul 2023 20:57:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,11 +67,11 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
  <20230710034237.12391-11-xuanzhuo@linux.alibaba.com> <CACGkMEtoiHXese1sNJELeidmFc6nFR8rE1aA8MooaEKKUSw_eg@mail.gmail.com>
- <1689231087.0744615-2-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1689231087.0744615-2-xuanzhuo@linux.alibaba.com>
+ <1689231604.0892205-3-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1689231604.0892205-3-xuanzhuo@linux.alibaba.com>
 From: Jason Wang <jasowang@redhat.com>
-Date: Fri, 14 Jul 2023 11:56:36 +0800
-Message-ID: <CACGkMEsf4+56veqem1HMWiqYhiW5LVw-1CbWX-cQSN6Z0zYMRQ@mail.gmail.com>
+Date: Fri, 14 Jul 2023 11:57:05 +0800
+Message-ID: <CACGkMEsGY=1wpT_AjyuEbE-4HDJkH5_5wmaP5H30O0B16o3a5Q@mail.gmail.com>
 Subject: Re: [PATCH vhost v11 10/10] virtio_net: merge dma operation for one page
 To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Cc: virtualization@lists.linux-foundation.org, 
@@ -90,7 +90,7 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 13, 2023 at 2:54=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+On Thu, Jul 13, 2023 at 3:02=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
 om> wrote:
 >
 > On Thu, 13 Jul 2023 12:20:01 +0800, Jason Wang <jasowang@redhat.com> wrot=
@@ -447,19 +447,16 @@ xdp_headroom,
 > > dma address and refcnt. Then we don't need extra stuff for tracking
 > > any other thing?
 >
-> I didn't use page->private because if part of the page is used by one skb=
- then
-> the driver is not the only owner. Can we still use page->private?
+> Maybe we can try alloc one small buffer from the page_frag to store the d=
+ma info
+> when page_frag.offset =3D=3D 0.
 
-You are right, we can't since there's no guarantee that a skb will
-occupy a full page.
+And store it in the ctx? I think it should work.
 
 Thanks
 
 >
 > Thanks.
->
->
 >
 >
 > >
