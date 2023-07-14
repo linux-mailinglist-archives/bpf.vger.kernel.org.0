@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-5048-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B222475451F
-	for <lists+bpf@lfdr.de>; Sat, 15 Jul 2023 00:48:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E143A754524
+	for <lists+bpf@lfdr.de>; Sat, 15 Jul 2023 00:52:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E26C51C2163F
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 22:48:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43CA82812E2
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 22:52:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F4024196;
-	Fri, 14 Jul 2023 22:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4AB82772D;
+	Fri, 14 Jul 2023 22:51:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265332C80
-	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 22:47:55 +0000 (UTC)
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7C235BB
-	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 15:47:53 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6686708c986so2400802b3a.0
-        for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 15:47:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA6F2C80
+	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 22:51:53 +0000 (UTC)
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250F21989
+	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 15:51:52 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-53482b44007so1551628a12.2
+        for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 15:51:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689374873; x=1691966873;
+        d=gmail.com; s=20221208; t=1689375111; x=1691967111;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tihl5RahKQS2sbqq9hnuz1FJOgpQZsgLVwdEVrTDxvc=;
-        b=XbfQtS4+GtEGxjEa/UTYIWulirfogItX+B656tu6nTJZ9GYOli8/7Q8kLAI2jOMWJz
-         Iv+eGepKXlt4+UPCgmDU8bgntOFy/O4cCo2BQyt1dcf8v28vMw4GoXA5tn/zyXbb8j8w
-         5bQcqq5NtLmG9LEb2CnYllGX0I5WUt7qxONhvS9jMJETKUS3Zy+d7YZBwO8mkbV+uFSs
-         zyOgjICWOOTTzKTWsCQF6CENwroNuMun6m341fmqvYxPuftCBO3ttGVM8zhBYSsl9Tk2
-         7qtXtZHfUwaj5t0YrvmmuX1uqixB9hIcBNpxPyZs1NfN6aKRrlq89VNZnLoHrxY9DGuS
-         bgtA==
+        bh=iPv7Xy98zfV90+bKc2zAmbRl2PoOgtmF33HF8qz//gk=;
+        b=OtEIneHlUodjDBrXLAGpDzRYG3+Id5xBdugzB9prJ/LqBxHQXB4yswHY45UpqEFxuR
+         K7GUKylsLPuldQ4b+lTSKiYHT+kZQpxBJi4lSs5DG8RNxF9DdVWHj6mAkqvFd7KvHwHy
+         4cLeBY8hPo4JEhXSOWWNIRINqOpCZP/QLLFTxHOfcllTbsYIpEZ/3guPbhWdWHAB6GCI
+         rB86eRwR5t3pMNUNNhi5eZlc8KdY9ORU8wygfEYhpD98Xt/qJQgsjWw+MhcjbL8xuiTX
+         cy/M3imHNksdaCJgpESAQ4MUFCKBDHUvlXkozct1X+Tl4msslTVeX7R9LFDeXmedJ7YU
+         RiLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689374873; x=1691966873;
+        d=1e100.net; s=20221208; t=1689375111; x=1691967111;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Tihl5RahKQS2sbqq9hnuz1FJOgpQZsgLVwdEVrTDxvc=;
-        b=kKuCFHozbd+X57f5k2Z2s1gcsSemVj40RwRH0hlBmTLVoqNfc2w938/LynBqoYWQq3
-         CzK9LkUi339s0sxEY925jcMUTBomUwNpGs96W//19RNugKHgB3TgBuLMWk61LTDkEqin
-         6LeoLYPdjRDfHYbDsGublmxDqJoowLT2tXyNHqFxf6KQbmDyOOGMQNgnAPVbu54Us9sB
-         O+cLbUEz0/JRHwQaTOKDt79L7Q6OHJ6PEnCkuXBdsq/XW2qOgxLJbARJDANKxzpiqdH0
-         BLyPr+gkydh5kDwYLmBQfYmFt/RRJf1N0hAUAakDw1nMMoFlH0wy07tuuoF26lq2oW48
-         Ws8g==
-X-Gm-Message-State: ABy/qLZQWClO6t73cS2bPa42J8LMUZ7K7hDAYGuwN+uoTvvH9HmAaRRF
-	4sUTjwz1CttykNRQ6y34XuY=
-X-Google-Smtp-Source: APBJJlGrqaEmIhyFyy9iUJ5k1ooqjrB4jLb4ju8BFcvYs0zrPdpf1aGkINNnhOY/BqcGWVK4lCPqVg==
-X-Received: by 2002:a05:6a00:1941:b0:682:713e:e510 with SMTP id s1-20020a056a00194100b00682713ee510mr6067660pfk.27.1689374872783;
-        Fri, 14 Jul 2023 15:47:52 -0700 (PDT)
+        bh=iPv7Xy98zfV90+bKc2zAmbRl2PoOgtmF33HF8qz//gk=;
+        b=W3Wy94o2rjm6f436BfnwWZ1nj0Ubfh0k4Dllw6CLAzNvMtGRs3bwx3FZGL2nb//mx9
+         mfDmI21ZEyfovHZG9Cyc0QT0o25eZGitGOyROlSCr8OABgZr3F8rWrGsWnCKPN5tFpZp
+         AIQM9Fn1Yywt+HYSCUrDwW+qklWRhnn/b2D5oecqH3VuJ+CcLe7KGM2/+AbEymXSp81N
+         M+jTz7whK3jcTqqAVEvyxrUGTPkuMrHAriDfXdLAa09iodP9UKChZtz66WS3lJlMpczl
+         Ne9oktZ9tFNwd9WX9DEvJwiH43AEiZtqOotx8Y2K8Bp1iY6Ev0ndBVREpt1AvNDWMqfu
+         tXGw==
+X-Gm-Message-State: ABy/qLajPTguePK2KpeXzHmMpOtrOM2kK0EJWTw/yUlxNUeya66Ncwur
+	CDt1ehZoIKrPPJ2UJkqhoYki+8o+HXM=
+X-Google-Smtp-Source: APBJJlFkQdNnHlK0vGxIS+dvUfGQwcileMYP9RpbBsragW6ei09rDzAfr/iISdFvjizhmqU+3Ik+SQ==
+X-Received: by 2002:a17:90a:7781:b0:263:f648:e6e1 with SMTP id v1-20020a17090a778100b00263f648e6e1mr4058073pjk.14.1689375111530;
+        Fri, 14 Jul 2023 15:51:51 -0700 (PDT)
 Received: from MacBook-Pro-8.local ([2620:10d:c090:400::5:2ff4])
-        by smtp.gmail.com with ESMTPSA id i13-20020aa787cd000000b00674364577dasm7620431pfo.203.2023.07.14.15.47.51
+        by smtp.gmail.com with ESMTPSA id i34-20020a17090a3da500b002676e973275sm1486521pjc.1.2023.07.14.15.51.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 15:47:52 -0700 (PDT)
-Date: Fri, 14 Jul 2023 15:47:50 -0700
+        Fri, 14 Jul 2023 15:51:51 -0700 (PDT)
+Date: Fri, 14 Jul 2023 15:51:49 -0700
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -63,11 +63,10 @@ Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	David Vernet <void@manifault.com>
-Subject: Re: [PATCH bpf-next v1 08/10] bpf: Introduce
- bpf_set_exception_callback
-Message-ID: <20230714224750.27ufbap5guvkqayk@MacBook-Pro-8.local>
+Subject: Re: [PATCH bpf-next v1 06/10] bpf: Implement bpf_throw kfunc
+Message-ID: <20230714225149.f3uy4oimdi6a5etu@MacBook-Pro-8.local>
 References: <20230713023232.1411523-1-memxor@gmail.com>
- <20230713023232.1411523-9-memxor@gmail.com>
+ <20230713023232.1411523-7-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,7 +75,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230713023232.1411523-9-memxor@gmail.com>
+In-Reply-To: <20230713023232.1411523-7-memxor@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,53 +83,21 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 13, 2023 at 08:02:30AM +0530, Kumar Kartikeya Dwivedi wrote:
-> By default, the subprog generated by the verifier to handle a thrown
-> exception hardcodes a return value of 0. To allow user-defined logic
-> and modification of the return value when an exception is thrown,
-> introduce the bpf_set_exception_callback kfunc, which installs a
-> callback as the default exception handler for the program.
-> 
-> Compared to runtime kfuncs, this kfunc acts a built-in, i.e. it only
-> takes semantic effect during verification, and is erased from the
-> program at runtime.
-> 
-> This kfunc can only be called once within a program, and always sets the
-> global exception handler, regardless of whether it was invoked in all
-> paths of the program or not. The kfunc is idempotent, and the default
-> exception callback cannot be modified at runtime.
-> 
-> Allowing modification of the callback for the current program execution
-> at runtime leads to issues when the programs begin to nest, as any
-> per-CPU state maintaing this information will have to be saved and
-> restored. We don't want it to stay in bpf_prog_aux as this takes a
-> global effect for all programs. An alternative solution is spilling
-> the callback pointer at a known location on the program stack on entry,
-> and then passing this location to bpf_throw as a parameter.
-> 
-> However, since exceptions are geared more towards a use case where they
-> are ideally never invoked, optimizing for this use case and adding to
-> the complexity has diminishing returns.
+On Thu, Jul 13, 2023 at 08:02:28AM +0530, Kumar Kartikeya Dwivedi wrote:
+> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+> index 209811b1993a..f1d7de1349bc 100644
+> --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> @@ -131,4 +131,10 @@ extern int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_node *nod
+>   */
+>  extern struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root) __ksym;
+>  
+> +__attribute__((noreturn))
+> +extern void bpf_throw(u64 cookie) __ksym;
+> +
+> +#define throw bpf_throw(0)
+> +#define throw_value(cookie) bpf_throw(cookie)
 
-Right. No run-time changes pls.
-
-Instead of bpf_set_exception_callback() how about adding a
-btf_tag("exception_handler") or better name
-and check that such global func is a single func in a program and
-it's argument is a single u64.
-
-> In the future, a variant of bpf_throw which allows supplying a callback
-> can also be introduced, to modify the callback for a certain throw
-> statement. For now, bpf_set_exception_callback is meant to serve as a
-> way to set statically set a subprog as the exception handler of a BPF
-> program.
-> 
-> TODO: Should we change default behavior to just return whatever cookie
-> value was passed to bpf_throw? That might allow people to avoid
-> installing a callback in case they just want to manipulate the return
-> value.
-
-and the verifier would check that u64 matches allowed return values?
-ex: call check_return_code() on argument of bpf_throw?
-I guess that makes sense.
+Reading the patch 10 I think the add-on value of these two macros is negative.
+If it was open coded as bpf_throw(0); everywhere it would be easier to read imo.
 
