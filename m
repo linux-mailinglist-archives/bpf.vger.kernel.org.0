@@ -1,60 +1,62 @@
-Return-Path: <bpf+bounces-5035-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5036-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 153B0753F6B
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 18:00:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C85A753F7F
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 18:06:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A9341C211D7
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 16:00:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E69AA282087
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 16:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F94715485;
-	Fri, 14 Jul 2023 16:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8EC1548D;
+	Fri, 14 Jul 2023 16:06:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF340D521;
-	Fri, 14 Jul 2023 16:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBCB13AFD;
+	Fri, 14 Jul 2023 16:06:19 +0000 (UTC)
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016193595;
-	Fri, 14 Jul 2023 09:00:22 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070DB35A2;
+	Fri, 14 Jul 2023 09:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
 	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=+FNaOd6NP6sRs5MR4ZTc3WcaeTlFWfdAKhZ/NS4utD0=; b=I8BdlEDtqlPPXDPV6hu9L/z7ff
-	R4wYUXvPQxW1Y90DfUqdwFAeRYhUmhTFS2h9O63lmODo5Zl7qXFQdPiDx3YDxKkvzCrhMDCWFOUir
-	JdbGYpaoSkuBuynRbAfZeMX7WAqP44ymUt7x+OHrr/ao+3h5eVBCYVqAK/dTdnVXPo1ze/Xh65AQJ
-	3wcg0shsiR1u0j1v1jwfsNkSpeeGSpeNpKHGGowF7mQ8/Qs7J/07sMCa6WQ74x/Tc21tBz/XIiu1f
-	TwQyCeB5lh0nswdPI4dyOKVks4SXTV0hvItrfqgHDwYItGr7KrEfAPDf2t4euuU3ERiON1AFMvBak
-	wpe/KuAA==;
+	bh=l2PxSpRMDs4SDhTszSS5GoCIUOZljs7VX1ueKZbYOmU=; b=nIPCgtct2lEpor0sY99RsVyHra
+	m4CFUD5DF0IhlZ6krb0KjAk1pEpuahk5r3jduzzggkHa0dui0YtHBgMYt7p5URHSpUDnbxOYgOqG0
+	TssLhTFhs7nFTYE1UmVW10RaXrtUMoyYvPtyzqZ5AoF/izsWoxJNy1JJmiQxy0cpPCZMYifvL5qGs
+	7eE5dPLru5QRJCkEeLpqaqMjzoR/zSVxr6J5voZWqIiEl3WSa7EdkT641VOeDo2AUNtBXPNfrbRew
+	2KaQ7zsVIlYqVhIqDZzfhkfX14c+BecLH4R6x9GNR2bZSsEl9AqkDHrRq2zzB7LPD4FWguKkRbTqB
+	KHUgdC7A==;
 Received: from sslproxy02.your-server.de ([78.47.166.47])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1qKLDJ-000MGo-Cc; Fri, 14 Jul 2023 18:00:13 +0200
+	id 1qKLJ3-000MuY-Pw; Fri, 14 Jul 2023 18:06:09 +0200
 Received: from [85.1.206.226] (helo=linux.home)
 	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1qKLDI-000Nv0-R9; Fri, 14 Jul 2023 18:00:12 +0200
+	id 1qKLJ3-000U4C-5b; Fri, 14 Jul 2023 18:06:09 +0200
 Subject: Re: [PATCH bpf-next v4 1/8] bpf: Add generic attach/detach/query API
  for multi-progs
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
  razor@blackwall.org, sdf@google.com, john.fastabend@gmail.com,
  kuba@kernel.org, dxu@dxuuu.xyz, joe@cilium.io, toke@kernel.org,
  davem@davemloft.net, bpf@vger.kernel.org, netdev@vger.kernel.org
 References: <20230710201218.19460-1-daniel@iogearbox.net>
  <20230710201218.19460-2-daniel@iogearbox.net>
- <CAEf4Bza_X30yLPm0Lhy2c-u1Qw1Ci9AVoy5jo_XXCaT9zz+3jg@mail.gmail.com>
+ <20230711002320.bp4mlb4at45vkrqt@MacBook-Pro-8.local>
+ <CAEf4BzYYE=ekrkcdM3JY=G1RvDZaUoj1qE2vBcrBfbr8OvmVvw@mail.gmail.com>
 From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <db172178-f030-5f9f-928e-40e9ec2ab4cb@iogearbox.net>
-Date: Fri, 14 Jul 2023 18:00:10 +0200
+Message-ID: <5f8d6a17-5755-06f7-b754-33238359883e@iogearbox.net>
+Date: Fri, 14 Jul 2023 18:06:08 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 Precedence: bulk
@@ -63,7 +65,7 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4Bza_X30yLPm0Lhy2c-u1Qw1Ci9AVoy5jo_XXCaT9zz+3jg@mail.gmail.com>
+In-Reply-To: <CAEf4BzYYE=ekrkcdM3JY=G1RvDZaUoj1qE2vBcrBfbr8OvmVvw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -76,223 +78,135 @@ X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 7/11/23 8:48 PM, Andrii Nakryiko wrote:
-> On Mon, Jul 10, 2023 at 1:12 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-[...]
->> +static inline int bpf_mprog_max(void)
->> +{
->> +       return ARRAY_SIZE(((struct bpf_mprog_entry *)NULL)->fp_items) - 1;
->> +}
-> 
-> so we can only add BPF_MPROG_MAX - 1 progs, right? I presume the last
-> entry is presumed to be always NULL, right?
+On 7/11/23 8:51 PM, Andrii Nakryiko wrote:
+> On Mon, Jul 10, 2023 at 5:23 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Mon, Jul 10, 2023 at 10:12:11PM +0200, Daniel Borkmann wrote:
+>>> + *
+>>> + *   struct bpf_mprog_entry *entry, *peer;
+>>> + *   int ret;
+>>> + *
+>>> + *   // bpf_mprog user-side lock
+>>> + *   // fetch active @entry from attach location
+>>> + *   [...]
+>>> + *   ret = bpf_mprog_attach(entry, [...]);
+>>> + *   if (ret >= 0) {
+>>> + *       peer = bpf_mprog_peer(entry);
+>>> + *       if (bpf_mprog_swap_entries(ret))
+>>> + *           // swap @entry to @peer at attach location
+>>> + *       bpf_mprog_commit(entry);
+>>> + *       ret = 0;
+>>> + *   } else {
+>>> + *       // error path, bail out, propagate @ret
+>>> + *   }
+>>> + *   // bpf_mprog user-side unlock
+>>> + *
+>>> + *  Detach case:
+>>> + *
+>>> + *   struct bpf_mprog_entry *entry, *peer;
+>>> + *   bool release;
+>>> + *   int ret;
+>>> + *
+>>> + *   // bpf_mprog user-side lock
+>>> + *   // fetch active @entry from attach location
+>>> + *   [...]
+>>> + *   ret = bpf_mprog_detach(entry, [...]);
+>>> + *   if (ret >= 0) {
+>>> + *       release = ret == BPF_MPROG_FREE;
+>>> + *       peer = release ? NULL : bpf_mprog_peer(entry);
+>>> + *       if (bpf_mprog_swap_entries(ret))
+>>> + *           // swap @entry to @peer at attach location
+>>> + *       bpf_mprog_commit(entry);
+>>> + *       if (release)
+>>> + *           // free bpf_mprog_bundle
+>>> + *       ret = 0;
+>>> + *   } else {
+>>> + *       // error path, bail out, propagate @ret
+>>> + *   }
+>>> + *   // bpf_mprog user-side unlock
+>>
+>> Thanks for the doc. It helped a lot.
+>> And when it's contained like this it's easier to discuss api.
+>> It seems bpf_mprog_swap_entries() is trying to abstract the error code
+>> away, but BPF_MPROG_FREE leaks out and tcx_entry_needs_release()
+>> captures it with extra miniq_active twist, which I don't understand yet.
+>> bpf_mprog_peer() is also leaking a bit of implementation detail.
+>> Can we abstract it further, like:
+>>
+>> ret = bpf_mprog_detach(entry, [...], &new_entry);
+>> if (ret >= 0) {
+>>     if (entry != new_entry)
+>>       // swap @entry to @new_entry at attach location
+>>     bpf_mprog_commit(entry);
+>>     if (!new_entry)
+>>       // free bpf_mprog_bundle
+>> }
+>> and make bpf_mprog_peer internal to mprog. It will also allow removing
+>> BPF_MPROG_FREE vs SWAP distinction. peer is hidden.
+>>     if (entry != new_entry)
+>>        // update
+>> also will be easier to read inside tcx code without looking into mprog details.
 
-Correct.
++1, agree, and I implemented this suggestion in the v5.
 
->> +static inline int bpf_mprog_total(struct bpf_mprog_entry *entry)
->> +{
->> +       int total = entry->parent->count;
->> +
->> +       WARN_ON_ONCE(total > bpf_mprog_max());
->> +       return total;
->> +}
->> +
-> 
-> [...]
-> 
->> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
->> index 1d3892168d32..1bea2eb912cd 100644
->> --- a/kernel/bpf/Makefile
->> +++ b/kernel/bpf/Makefile
->> @@ -12,7 +12,7 @@ obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list
->>   obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
->>   obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
->>   obj-${CONFIG_BPF_LSM}    += bpf_inode_storage.o
->> -obj-$(CONFIG_BPF_SYSCALL) += disasm.o
->> +obj-$(CONFIG_BPF_SYSCALL) += disasm.o mprog.o
->>   obj-$(CONFIG_BPF_JIT) += trampoline.o
->>   obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o
->>   obj-$(CONFIG_BPF_JIT) += dispatcher.o
->> diff --git a/kernel/bpf/mprog.c b/kernel/bpf/mprog.c
->> new file mode 100644
->> index 000000000000..1c4fcde74969
->> --- /dev/null
->> +++ b/kernel/bpf/mprog.c
->> @@ -0,0 +1,427 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright (c) 2023 Isovalent */
->> +
->> +#include <linux/bpf.h>
->> +#include <linux/bpf_mprog.h>
->> +
->> +static int bpf_mprog_link(struct bpf_tuple *tuple,
->> +                         u32 object, u32 flags,
-> 
-> so I tried to get used to this "object" notation, but I think it's
-> still awkwards and keeps me asking "what is this really" every single
-> time I read this. I wonder if something like "fd_or_id" as a name
-> would make it more obvious?
+> I'm actually thinking if it's possible to simplify it even further.
+> For example, do we even need a separate bpf_mprog_{attach,detach} and
+> bpf_mprog_commit()? So far it seems like bpf_mprog_commit() is
+> inevitable in case of success of attach/detach, so we might as well
+> just do it as the last step of attach/detach operation.
 
-Ok, fixed it in the v5.
+It needs to be done after the pointers have been swapped by the mprog user.
 
-[...]
->> +       struct bpf_mprog_fp *fp, *fpp;
->> +       struct bpf_mprog_entry *peer;
->> +
->> +       peer = bpf_mprog_peer(entry);
->> +       bpf_mprog_entry_clear(peer);
->> +       if (idx < 0) {
->> +               bpf_mprog_read_fp(peer, j, &fpp);
->> +               bpf_mprog_write_fp(fpp, ntuple);
->> +               bpf_mprog_write_cp(&cpp[j], ntuple);
->> +               j++;
->> +       }
->> +       for (i = 0; i <= total; i++) {
->> +               bpf_mprog_read_fp(peer, j, &fpp);
->> +               if (idx == i && (flags & BPF_F_AFTER)) {
->> +                       bpf_mprog_write(fpp, &cpp[j], ntuple);
->> +                       j++;
->> +                       bpf_mprog_read_fp(peer, j, &fpp);
->> +               }
->> +               if (i < total) {
->> +                       bpf_mprog_read(entry, i, &fp, &cp);
->> +                       bpf_mprog_copy(fpp, &cpp[j], fp, cp);
->> +                       j++;
->> +               }
->> +               if (idx == i && (flags & BPF_F_BEFORE)) {
->> +                       bpf_mprog_read_fp(peer, j, &fpp);
->> +                       bpf_mprog_write(fpp, &cpp[j], ntuple);
->> +                       j++;
->> +               }
->> +       }
-> 
-> sorry if I miss some subtle point, but I wonder why this is so
-> complicated? I think this choice of idx == -1 meaning prepend is
-> leading to this complication. It's not also clear why there is this
-> BPF_F_AFTER vs BPF_F_BEFORE distinction when we already determined a
-> position where new program has to be inserted (so after or before
-> should be irrelevant).
-> 
-> Please let me know why the below doesn't work.
-> 
-> Let's define that idx is the position where new prog/link tuple has to
-> be inserted. It can be in the range [0, N], where N is number of
-> programs currently in the mprog_peer. Note that N is inclusive above.
-> 
-> The algorithm for insertion is simple: everything currently at
-> entry->fp_items[idx] and after gets shifted. And we can do it with a
-> simple memmove:
-> 
-> memmove(peer->fp_items + idx + 1, peer->fp_iters + idx,
-> (bpf_mprog_total(entry) - idx) * sizeof(struct bpf_mprof_fp));
-> /* similar memmove for cp_items/cpp array, of course */
-> /* now set new prog at peer->fp_items[idx] */
-> 
-> The above should replace entire above for loop and that extra if
-> before the loop. And it should work for corner cases:
-> 
->    - idx == 0 (prepend), will shift everything to the right, and put
-> new prog at position 0. Exactly what we wanted.
->    - idx == N (append), will shift nothing (that memmov should be a
-> no-op because size is zero, total == idx == N)
-> 
-> We just need to make sure that the above shift won't overwrite the
-> very last NULL. So bpf_mprog_total() should be < BPF_MPROG_MAX - 2
-> before all this.
-> 
-> Seems as simple as that, is there any complication I skimmed over?
-[...]
+> The only problem seems to be due to bpf_mprog interface doing this
+> optimization of replacing stuff in place, if possible, and allowing
+> the caller to not do the swap. How important is it to avoid that swap
+> of a bpf_mprog_fp (pointer)? Seems pretty cheap (and relatively rare
+> operation), so I wouldn't bother optimizing this.
 
->> +static int bpf_mprog_delete(struct bpf_mprog_entry *entry,
->> +                           struct bpf_tuple *dtuple, int idx)
->> +{
->> +       int i = 0, j, ret, total = bpf_mprog_total(entry);
->> +       struct bpf_mprog_cp *cp, cpp[BPF_MPROG_MAX] = {};
->> +       struct bpf_mprog_fp *fp, *fpp;
->> +       struct bpf_mprog_entry *peer;
->> +
->> +       ret = bpf_mprog_tuple_confirm(entry, dtuple, idx);
->> +       if (ret)
->> +               return ret;
->> +       peer = bpf_mprog_peer(entry);
->> +       bpf_mprog_entry_clear(peer);
->> +       if (idx < 0)
->> +               i++;
->> +       if (idx == total)
->> +               total--;
->> +       for (j = 0; i < total; i++) {
->> +               if (idx == i)
->> +                       continue;
->> +               bpf_mprog_read_fp(peer, j, &fpp);
->> +               bpf_mprog_read(entry, i, &fp, &cp);
->> +               bpf_mprog_copy(fpp, &cpp[j], fp, cp);
->> +               j++;
->> +       }
->> +       bpf_mprog_commit_cp(peer, cpp);
->> +       bpf_mprog_dec(peer);
->> +       bpf_mprog_mark_ref(peer, dtuple);
->> +       return bpf_mprog_total(peer) ?
->> +              BPF_MPROG_SWAP : BPF_MPROG_FREE;
-> 
-> for delete it's also a bit unclear to me. We are deleting some
-> specific spot, so idx should be a valid [0, N) value, no? Then why the
-> bpf_mprog_tuple_confirm() has this special <= first and idx >= last
-> handling?
-> 
-> Deletion should be similar to instertion, just the shift is in the
-> other direction. And then setting NULLs at N-1 position to ensure
-> proper NULL termination of fp array.
+I would like to keep it given e.g. when application comes up, fetches links
+from bpffs and updates all its programs in place, then this is the replace
+situation.
 
-Agree, the naming was suboptimal and I adapted this slightly in v5.
-It's picking the elements when no deletion fd was selected, but rather
-delete from front/back or relative to some element, so it needs to
-fetch the prog.
-
-[...]
+> So how about we just say that there is always a swap. Internally in
+> bpf_mprog_bundle current entry is determined based on revision&1. We
+> can have bpf_mprog_cur_entry() to return a proper pointer after
+> commit. Or bpf_mprog_attach() can return proper new entry as output
+> parameter, whichever is preferable.
 > 
-> and then here just have special casing for -ERANGE, and otherwise
-> treat anything else negative as error
+> As for BPF_MPROG_FREE. That seems like an unnecessary complication as
+> well. Caller can just check bpf_mprog_total() quickly, and if it
+> dropped to zero assume FREE. Unless there is something more subtle
+> there?
+
+Agree, some may want to keep an empty bpf_mprog, others may want to
+free it. I implemented it this way. I removed all the BPF_MPROG_*
+return codes.
+
+> With the above, the interface will be much simpler, IMO. You just do
+> bpf_mprog_attach/detach, and then swap pointer to new bpf_mprog_entry.
+> Then you can check bpf_mprog_total() for zero, and clean up further,
+> if necessary.
 > 
-> tidx = bpf_mprog_pos_exact(entry, &rtuple);
-> /* and adjust +1 for BPF_F_AFTER */
-> if (tidx >= 0)
->      tidx += 1;
-> if (idx != -ERANGE && tidx != idx) {
->      ret = tidx < 0 ? tidx : -EDOM;
->      goto out;
-> }
-> idx = tidx;
-
-This looks much less intuitive to me given replace and delete case need
-exact position, just not the relative insertion. I reworked this also with
-the memmove in v5, but kept the more obvious _exact/before/after ones.
-
-Thanks a lot for the feedback!
-
->> +       }
->> +       if (idx < -1) {
->> +               if (rtuple.prog || flags) {
->> +                       ret = -EINVAL;
->> +                       goto out;
->> +               }
->> +               idx = bpf_mprog_total(entry);
->> +               flags = BPF_F_AFTER;
->> +       }
->> +       if (idx >= bpf_mprog_max()) {
->> +               ret = -EDOM;
->> +               goto out;
->> +       }
->> +       if (flags & BPF_F_REPLACE)
->> +               ret = bpf_mprog_replace(entry, &ntuple, idx);
->> +       else
->> +               ret = bpf_mprog_insert(entry, &ntuple, idx, flags);
->> +out:
->> +       bpf_mprog_tuple_put(&rtuple);
->> +       return ret;
->> +}
->> +
+> We assume the caller has a proper locking, so all the above should be non-racy.
 > 
-> [...]
+> BTW, combining commit with attach allows us to avoid that relatively
+> big bpf_mprog_cp array on the stack as well, because we will be able
+> to update bundle->cp_items in-place.
 > 
+> The only (I believe :) ) big assumption I'm making in all of the above
+> is that commit is inevitable and we won't have a situation where we
+> start attach, update fp/cpp, and then decide to abort instead of going
+> for commit. Is this possible? Can we avoid it by careful checks
+> upfront and doing attach as last step that cannot be undone?
+> 
+> P.S. I guess one bit that I might have simplified is that
+> synchronize_rcu() + bpf_prog_put(), but I'm not sure exactly why we
+> put prog after sync_rcu. But if it's really necessary (and I assume it
 
+It is because users can still be inflight on the old mprog_entry so it
+must come after the sync rcu where we drop ref for the delete case.
+
+Thanks again,
+Daniel
 
