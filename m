@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-5044-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5045-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B06D75447B
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 23:58:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D41E7544CB
+	for <lists+bpf@lfdr.de>; Sat, 15 Jul 2023 00:05:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D36E62822E5
-	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 21:58:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C29A1C20E42
+	for <lists+bpf@lfdr.de>; Fri, 14 Jul 2023 22:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE85118AE8;
-	Fri, 14 Jul 2023 21:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D1A200C5;
+	Fri, 14 Jul 2023 22:05:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E40953AF
-	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 21:58:19 +0000 (UTC)
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A794B2127
-	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 14:58:17 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-668711086f4so1516096b3a.1
-        for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 14:58:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C2153AF
+	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 22:05:27 +0000 (UTC)
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F77D1BF3
+	for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 15:05:26 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6831e80080dso1685246b3a.0
+        for <bpf@vger.kernel.org>; Fri, 14 Jul 2023 15:05:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689371897; x=1691963897;
+        d=gmail.com; s=20221208; t=1689372325; x=1691964325;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qnCKwgwAuq9Sn6zrdvI5tfYOVZ7A2Era/YBHiJVaQMg=;
-        b=HEIAJAtnfzkEZ8eI66h0+iltBSmOBst6Jc4/HEZjhGKbmHL1Czmf5azmusOCGGKIym
-         vPwYzEXkGqeKnGl+d1M/EdVFl0lDk1g2rhGXWc79OnYCMY+dcWi2vCwzqRVueT6mtrsH
-         TcA0ukBAEq3+8iE3YK0JQ+ZYkjWCiKSZ627lpY/0rTiIVFRd+0y4/+SMP6uHooZCo/dX
-         ecKFrZ79mx0IzccvIJKoqu+2LwtI35qlwpXpCxKzW0bPO87GGjA1rQb6uVd8pY0hk0qn
-         qK2gAblRjwPbbvTd5qm4Rf+lm2j08CYyirH0qVQ9xxU34yhqxE6aAhu+pVMs6ZUjO+XD
-         busQ==
+        bh=HSK8hiSlq+I3EV/RTgFlyY+RJO0KD6oZIQu1DfKsr04=;
+        b=oPdQMaE5nNl84GdOHOPtxvdzbjoaDkPKjYL0BW8QG76hrcv1GpeXyf6QrpNZDnuF/d
+         FWP5vAyAjIIu+APrpjsSEqe+Vek/+32xupdefyMx3NhCrfuQUlSjtSMS6iQREb7PM1Y8
+         RcsVZP1JMm3Z8MlXWP/6Ueb0O9qDrTd3eBNkN5tg7GkXkJcnRBX2WeNvKzN4DOS8Ka+z
+         ZeNT5+s9FAoT39O+DFQYPk5Fhl0O4PCEtZiciseB94ZgifIciYl4taLiRyg8Qq9CTLNz
+         os6H1GdDbURyexJrBayGMiEyKVn2l124pn5991IpGQ6dr/LS/zGs3HRaasaB7fy8b5g3
+         d9cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689371897; x=1691963897;
+        d=1e100.net; s=20221208; t=1689372325; x=1691964325;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qnCKwgwAuq9Sn6zrdvI5tfYOVZ7A2Era/YBHiJVaQMg=;
-        b=TJUj/DG1wAi/DrBrFDDeds7YQp7An7XZYf/wuS4TAXB8HMYEJ3MdpQy/Y3q97572zH
-         H8OyXQBoN5iUHjBO2+QrA+TyfKeXeP6jEOMXO1eN+n4w4n0H2/5M34G5a3aA0DNh/mTX
-         vks9QLraGv2InfwAVQ927n8uiG4C/u1DOrLZ/jBhqOaPxeUizH0IbOl9pxCXNquAib0a
-         c7RGSnHwgPceXo3ZbsSDiHbPoUMpziFo/b6v3pm28xp5+AmCaqSf3NcvD5XIBSHBvYlf
-         93NGxjYrNCiXoM99c5TKWWY2H/IK7LYVvGx/LqdK26+6UrQ1YjYr+8LXukRCx7KMLmN8
-         hTVw==
-X-Gm-Message-State: ABy/qLYD2uRBJ0JTmk5puskqLWybAV75C02sfcXpLc0heQMN4DGipXVX
-	ya7/IJ7X+as/IOCKUV0/8wu1lqfwDu4=
-X-Google-Smtp-Source: APBJJlHj4PIaH9Lh9eUZtxY8GgvsHBk9nzwKM0yR7zx4YIxaGW1YypZM/I3kFHI2ZCXSj+YhK9cISw==
-X-Received: by 2002:a05:6a00:1988:b0:682:edbe:4cbd with SMTP id d8-20020a056a00198800b00682edbe4cbdmr3936975pfl.15.1689371896927;
-        Fri, 14 Jul 2023 14:58:16 -0700 (PDT)
+        bh=HSK8hiSlq+I3EV/RTgFlyY+RJO0KD6oZIQu1DfKsr04=;
+        b=ChepOXaybpywU676MMJoF/9IcSCdbbsaRZ+jGmqxOiUZH2GltzG8TVzf3UAx8tt2qL
+         hgpnrb6FQ+MzsWJ9mF3ugQ/PAIM2qIGnx5VNktp+bPhhuuorF915DNZk6OQ6dF2E599S
+         I00HLdG3u1COg9f8GFIkU9xQGTmQ2Q/J2X2KKDOCJZvVxAZqpV6fG2lmHEo/DbFNgmdH
+         QOo3ENu1VnqaK68QrUVS+dc04ZYWYW2p1I466M03b64kRu/K5dpYDCRxIBZ8SaiAULHS
+         L+4Z/2FLYleVxOYDAN+q1HZq2jnOsCBoE0buD59nPCSNFvRERwiqa+oe4x1+QZmRaGjw
+         109w==
+X-Gm-Message-State: ABy/qLbnk0pJ93X+1ijpivhxZPXtVVZMnfB4KdxbiIc5uK40ZbAR4p4z
+	NYLO0htqDRjVLqZiTBjYi+o=
+X-Google-Smtp-Source: APBJJlFKW20P2fV0PmVmaH1R7qGao9RWCZxgg5MlCS86NEI4rb3eo3YHXBcucCEUamPZGj5+2N5d5g==
+X-Received: by 2002:a05:6a20:be08:b0:133:fcb0:abcd with SMTP id ge8-20020a056a20be0800b00133fcb0abcdmr1179724pzb.44.1689372325509;
+        Fri, 14 Jul 2023 15:05:25 -0700 (PDT)
 Received: from MacBook-Pro-8.local ([2620:10d:c090:400::5:2ff4])
-        by smtp.gmail.com with ESMTPSA id e13-20020a62ee0d000000b0064d74808738sm7525125pfi.214.2023.07.14.14.58.15
+        by smtp.gmail.com with ESMTPSA id x14-20020a63aa4e000000b00553d27ab0e0sm7934154pgo.69.2023.07.14.15.05.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 14:58:16 -0700 (PDT)
-Date: Fri, 14 Jul 2023 14:58:14 -0700
+        Fri, 14 Jul 2023 15:05:25 -0700 (PDT)
+Date: Fri, 14 Jul 2023 15:05:22 -0700
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -63,11 +63,10 @@ Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	David Vernet <void@manifault.com>
-Subject: Re: [PATCH bpf-next v1 04/10] bpf: Add support for inserting new
- subprogs
-Message-ID: <20230714215814.fqv5aypobicomszr@MacBook-Pro-8.local>
+Subject: Re: [PATCH bpf-next v1 05/10] arch/x86: Implement arch_bpf_stack_walk
+Message-ID: <20230714220522.r4w256kkjtqhdued@MacBook-Pro-8.local>
 References: <20230713023232.1411523-1-memxor@gmail.com>
- <20230713023232.1411523-5-memxor@gmail.com>
+ <20230713023232.1411523-6-memxor@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,7 +75,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230713023232.1411523-5-memxor@gmail.com>
+In-Reply-To: <20230713023232.1411523-6-memxor@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,98 +83,102 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 13, 2023 at 08:02:26AM +0530, Kumar Kartikeya Dwivedi wrote:
-> Introduce support in the verifier for generating a subprogram and
-> include it as part of a BPF program dynamically after the do_check
-> phase is complete. The appropriate place of invocation would be
-> do_misc_fixups.
+On Thu, Jul 13, 2023 at 08:02:27AM +0530, Kumar Kartikeya Dwivedi wrote:
+> The plumbing for offline unwinding when we throw an exception in
+> programs would require walking the stack, hence introduce a new
+> arch_bpf_stack_walk function. This is provided when the JIT supports
+> exceptions, i.e. bpf_jit_supports_exceptions is true. The arch-specific
+> code is really minimal, hence it should straightforward to extend this
+> support to other architectures as well, as it reuses the logic of
+> arch_stack_walk, but allowing access to unwind_state data.
 > 
-> Since they are always appended to the end of the instruction sequence of
-> the program, it becomes relatively inexpensive to do the related
-> adjustments to the subprog_info of the program. Only the fake exit
-> subprogram is shifted forward by 1, making room for our invented subprog.
+> Once the stack pointer and frame pointer are known for the main subprog
+> during the unwinding, we know the stack layout and location of any
+> callee-saved registers which must be restored before we return back to
+> the kernel.
 > 
-> This is useful to insert a new subprogram and obtain its function
-> pointer. The next patch will use this functionality to insert a default
-> exception callback which will be invoked after unwinding the stack.
-> 
-> Note that these invented subprograms are invisible to userspace, and
-> never reported in BPF_OBJ_GET_INFO_BY_ID etc. For now, only a single
-> invented program is supported, but more can be easily supported in the
-> future.
+> This handling will be added in the next patch.
 > 
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  include/linux/bpf.h          |  1 +
->  include/linux/bpf_verifier.h |  4 +++-
->  kernel/bpf/core.c            |  4 ++--
->  kernel/bpf/syscall.c         | 19 ++++++++++++++++++-
->  kernel/bpf/verifier.c        | 29 ++++++++++++++++++++++++++++-
->  5 files changed, 52 insertions(+), 5 deletions(-)
+>  arch/x86/net/bpf_jit_comp.c | 21 +++++++++++++++++++++
+>  include/linux/filter.h      |  2 ++
+>  kernel/bpf/core.c           |  9 +++++++++
+>  3 files changed, 32 insertions(+)
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 360433f14496..70f212dddfbf 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1385,6 +1385,7 @@ struct bpf_prog_aux {
->  	bool sleepable;
->  	bool tail_call_reachable;
->  	bool xdp_has_frags;
-> +	bool invented_prog;
->  	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
->  	const struct btf_type *attach_func_proto;
->  	/* function name for valid attach_btf_id */
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index f70f9ac884d2..360aa304ec09 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -540,6 +540,7 @@ struct bpf_subprog_info {
->  	bool has_tail_call;
->  	bool tail_call_reachable;
->  	bool has_ld_abs;
-> +	bool invented_prog;
->  	bool is_async_cb;
->  };
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 438adb695daa..d326503ce242 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -16,6 +16,7 @@
+>  #include <asm/set_memory.h>
+>  #include <asm/nospec-branch.h>
+>  #include <asm/text-patching.h>
+> +#include <asm/unwind.h>
 >  
-> @@ -594,10 +595,11 @@ struct bpf_verifier_env {
->  	bool bypass_spec_v1;
->  	bool bypass_spec_v4;
->  	bool seen_direct_write;
-> +	bool invented_prog;
-
-Instead of a flag in two places how about adding aux->func_cnt_real
-and use it in JITing and free-ing while get_info*() keep using aux->func_cnt.
-
-> +/* The function requires that first instruction in 'patch' is insnsi[prog->len - 1] */
-> +static int invent_subprog(struct bpf_verifier_env *env, struct bpf_insn *patch, int len)
-> +{
-> +	struct bpf_subprog_info *info = env->subprog_info;
-> +	int cnt = env->subprog_cnt;
-> +	struct bpf_prog *prog;
+>  static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
+>  {
+> @@ -2660,3 +2661,23 @@ void bpf_jit_free(struct bpf_prog *prog)
+>  
+>  	bpf_prog_unlock_free(prog);
+>  }
 > +
-> +	if (env->invented_prog) {
-> +		verbose(env, "verifier internal error: only one invented prog supported\n");
-> +		return -EFAULT;
-> +	}
-> +	prog = bpf_patch_insn_data(env, env->prog->len - 1, patch, len);
-
-The actual patching is not necessary.
-bpf_prog_realloc() and memcpy would be enough, no?
-
-> +	if (!prog)
-> +		return -ENOMEM;
-> +	env->prog = prog;
-> +	info[cnt + 1].start = info[cnt].start;
-> +	info[cnt].start = prog->len - len + 1;
-> +	info[cnt].invented_prog = true;
-> +	env->subprog_cnt++;
-> +	env->invented_prog = true;
-> +	return 0;
+> +bool bpf_jit_supports_exceptions(void)
+> +{
+> +	return IS_ENABLED(CONFIG_UNWINDER_ORC) || IS_ENABLED(CONFIG_UNWINDER_FRAME_POINTER);
 > +}
 > +
->  /* Do various post-verification rewrites in a single program pass.
->   * These rewrites simplify JIT and interpreter implementations.
->   */
+> +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
+> +{
+> +#if defined(CONFIG_UNWINDER_ORC) || defined(CONFIG_UNWINDER_FRAME_POINTER)
+> +	struct unwind_state state;
+> +	unsigned long addr;
+> +
+> +	for (unwind_start(&state, current, NULL, NULL); !unwind_done(&state);
+> +	     unwind_next_frame(&state)) {
+> +		addr = unwind_get_return_address(&state);
+
+I think these steps will work even with UNWINDER_GUESS.
+What is the reason for #ifdef ?
+
+> +		if (!addr || !consume_fn(cookie, (u64)addr, (u64)state.sp, (u64)state.bp))
+> +			break;
+> +	}
+> +#endif
+> +}
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index f69114083ec7..21ac801330bb 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -920,6 +920,8 @@ bool bpf_jit_needs_zext(void);
+>  bool bpf_jit_supports_subprog_tailcalls(void);
+>  bool bpf_jit_supports_kfunc_call(void);
+>  bool bpf_jit_supports_far_kfunc_call(void);
+> +bool bpf_jit_supports_exceptions(void);
+> +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
+>  bool bpf_helper_changes_pkt_data(void *func);
+>  
+>  static inline bool bpf_dump_raw_ok(const struct cred *cred)
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 5c484b2bc3d6..5e224cf0ec27 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2770,6 +2770,15 @@ int __weak bpf_arch_text_invalidate(void *dst, size_t len)
+>  	return -ENOTSUPP;
+>  }
+>  
+> +bool __weak bpf_jit_supports_exceptions(void)
+> +{
+> +	return false;
+> +}
+> +
+> +void __weak arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
+> +{
+> +}
+> +
+>  #ifdef CONFIG_BPF_SYSCALL
+>  static int __init bpf_global_ma_init(void)
+>  {
 > -- 
 > 2.40.1
 > 
