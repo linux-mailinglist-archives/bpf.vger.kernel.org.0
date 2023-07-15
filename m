@@ -1,124 +1,145 @@
-Return-Path: <bpf+bounces-5060-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5061-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C6B875479F
-	for <lists+bpf@lfdr.de>; Sat, 15 Jul 2023 11:04:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AC957547A5
+	for <lists+bpf@lfdr.de>; Sat, 15 Jul 2023 11:10:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CD3B1C208E5
-	for <lists+bpf@lfdr.de>; Sat, 15 Jul 2023 09:04:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B40282142
+	for <lists+bpf@lfdr.de>; Sat, 15 Jul 2023 09:10:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208E615CD;
-	Sat, 15 Jul 2023 09:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9170F15CD;
+	Sat, 15 Jul 2023 09:10:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E499F7FA
-	for <bpf@vger.kernel.org>; Sat, 15 Jul 2023 09:03:51 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FFDE65;
-	Sat, 15 Jul 2023 02:03:49 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4R32St5Fy5z4f3mK3;
-	Sat, 15 Jul 2023 17:03:42 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP4 (Coremail) with SMTP id gCh0CgCHN6vwYLJk0+YROA--.24593S2;
-	Sat, 15 Jul 2023 17:03:45 +0800 (CST)
-Message-ID: <ce15b171-897f-bf2e-2897-c0b2b912e709@huaweicloud.com>
-Date: Sat, 15 Jul 2023 17:03:44 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB427FA
+	for <bpf@vger.kernel.org>; Sat, 15 Jul 2023 09:10:33 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A0D268B;
+	Sat, 15 Jul 2023 02:10:31 -0700 (PDT)
+Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.54])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R32Y96HpxztR8t;
+	Sat, 15 Jul 2023 17:07:25 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sat, 15 Jul 2023 17:10:27 +0800
+Message-ID: <56a6a35c-7320-4569-71e3-c4daffee78f3@huawei.com>
+Date: Sat, 15 Jul 2023 17:10:26 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf] bpf, arm64: Fix BTI type used for freplace attached
- functions
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH V11 0/5] riscv: Optimize function trace
 Content-Language: en-US
-To: Alexander Duyck <alexander.duyck@gmail.com>, bpf@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <168926677665.316237.9953845318337455525.stgit@ahduyck-xeon-server.home.arpa>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <168926677665.316237.9953845318337455525.stgit@ahduyck-xeon-server.home.arpa>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgCHN6vwYLJk0+YROA--.24593S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww1xZFW7tF4xGryxJFy3XFb_yoW8CF1rpa
-	18CrZ0krs2qFn7WFWkJan7tr4rKw4vqFsxKw15XrWYyFyYqa4xKFn8K34Ykrs8ArW5Gw4r
-	Zry2krnYkF1DZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-	k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Song Shuai
+	<suagrfillet@gmail.com>, <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+	<aou@eecs.berkeley.edu>, <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+	<mark.rutland@arm.com>, <guoren@kernel.org>, <bjorn@rivosinc.com>,
+	<jszhang@kernel.org>, <conor.dooley@microchip.com>, <palmer@rivosinc.com>
+CC: <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>, <songshuaishuai@tinylab.org>,
+	<bpf@vger.kernel.org>
+References: <20230627111612.761164-1-suagrfillet@gmail.com>
+ <87jzv5q9tv.fsf@all.your.base.are.belong.to.us>
+From: Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <87jzv5q9tv.fsf@all.your.base.are.belong.to.us>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500020.china.huawei.com (7.221.188.8)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-	NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 7/14/2023 12:49 AM, Alexander Duyck wrote:
-> From: Alexander Duyck <alexanderduyck@fb.com>
-> 
-> When running an freplace attached bpf program on an arm64 system w were
-> seeing the following issue:
->    Unhandled 64-bit el1h sync exception on CPU47, ESR 0x0000000036000003 -- BTI
-> 
-> After a bit of work to track it down I determined that what appeared to be
-> happening is that the 'bti c' at the start of the program was somehow being
-> reached after a 'br' instruction. Further digging pointed me toward the
-> fact that the function was attached via freplace. This in turn led me to
-> build_plt which I believe is invoking the long jump which is triggering
-> this error.
-> 
-> To resolve it we can replace the 'bti c' with 'bti jc' and add a comment
-> explaining why this has to be modified as such.
-> 
-> Fixes: b2ad54e1533e ("bpf, arm64: Implement bpf_arch_text_poke() for arm64")
-> Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
-> ---
->   arch/arm64/net/bpf_jit_comp.c |    8 +++++++-
->   1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> index 145b540ec34f..ec2174838f2a 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -322,7 +322,13 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
->   	 *
->   	 */
->   
-> -	emit_bti(A64_BTI_C, ctx);
-> +	/* bpf function may be invoked by 3 instruction types:
-> +	 * 1. bl, attached via freplace to bpf prog via short jump
-> +	 * 2. br, attached via freplace to bpf prog via long jump
-> +	 * 3. blr, working as a function pointer, used by emit_call.
-> +	 * So BTI_JC should used here to support both br and blr.
-> +	 */
-> +	emit_bti(A64_BTI_JC, ctx);
 
-LGTM. Thanks for the fixes.
 
-Acked-by: Xu Kuohai <xukuohai@huawei.com>
+On 2023/7/13 2:11, Björn Töpel wrote:
+> Song Shuai <suagrfillet@gmail.com> writes:
+> 
+> [...]
+> 
+>> Add WITH_DIRECT_CALLS support [3] (patch 3, 4)
+>> ==============================================
+> 
+> We've had some offlist discussions, so here's some input for a wider
+> audience! Most importantly, this is for Palmer, so that this series is
+> not merged until a proper BPF trampoline fix is in place.
+> 
+> Note that what's currently usable from BPF trampoline *works*. It's
+> when this series is added that it breaks.
+> 
+> TL;DR This series adds DYNAMIC_FTRACE_WITH_DIRECT_CALLS, which enables
+> fentry/fexit BPF trampoline support. Unfortunately the
+> fexit/BPF_TRAMP_F_SKIP_FRAME parts of the RV BPF trampoline breaks
+> with this addition, and need to be addressed *prior* merging this
+> series. An easy way to reproduce, is just calling any of the kselftest
+> tests that uses fexit patching.
+> 
+> The issue is around the nop seld, and how a call is done; The nop sled
+> (patchable-function-entry) size changed from 16B to 8B in commit
+> 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to half"), but
+> BPF code still uses the old 16B. So it'll work for BPF programs, but not
+> for regular kernel functions.
+> 
+> An example:
+> 
+>    | ffffffff80fa4150 <bpf_fentry_test1>:
+>    | ffffffff80fa4150:       0001                    nop
+>    | ffffffff80fa4152:       0001                    nop
+>    | ffffffff80fa4154:       0001                    nop
+>    | ffffffff80fa4156:       0001                    nop
+>    | ffffffff80fa4158:       1141                    add     sp,sp,-16
+>    | ffffffff80fa415a:       e422                    sd      s0,8(sp)
+>    | ffffffff80fa415c:       0800                    add     s0,sp,16
+>    | ffffffff80fa415e:       6422                    ld      s0,8(sp)
+>    | ffffffff80fa4160:       2505                    addw    a0,a0,1
+>    | ffffffff80fa4162:       0141                    add     sp,sp,16
+>    | ffffffff80fa4164:       8082                    ret
+> 
+> is patched to:
+> 
+>    | ffffffff80fa4150:  f70c0297                     auipc   t0,-150208512
+>    | ffffffff80fa4154:  eb0282e7                     jalr    t0,t0,-336
+> 
+> The return address to bpf_fentry_test1 is stored in t0 at BPF
+> trampoline entry. Return to the *parent* is in ra. The trampline has
+> to deal with this.
+> 
+> For BPF_TRAMP_F_SKIP_FRAME/CALL_ORIG, the BPF trampoline will skip too
+> many bytes, and not correctly handle parent calls.
+> 
+> Further; The BPF trampoline currently has a different way of patching
+> the nops for BPF programs, than what ftrace does. That should be changed
+> to match what ftrace does (auipc/jalr t0).
+> 
+> To summarize:
+>   * Align BPF nop sled with patchable-function-entry: 8B.
+>   * Adapt BPF trampoline for 8B nop sleds.
+>   * Adapt BPF trampoline t0 return, ra parent scheme.
+> 
 
->   
->   	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
->   	emit(A64_NOP, ctx);
+Thanks Björn, I make a adaptation as follows, looking forward to your 
+review.
+
+https://lore.kernel.org/bpf/20230715090137.2141358-1-pulehui@huaweicloud.com/
+
+> 
+> Cheers,
+> Björn
 > 
 > 
-
 
