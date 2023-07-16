@@ -1,195 +1,183 @@
-Return-Path: <bpf+bounces-5062-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5063-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B2FB7547E3
-	for <lists+bpf@lfdr.de>; Sat, 15 Jul 2023 11:23:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A85FE754DBA
+	for <lists+bpf@lfdr.de>; Sun, 16 Jul 2023 09:49:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA87D281F87
-	for <lists+bpf@lfdr.de>; Sat, 15 Jul 2023 09:23:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEBB71C2094C
+	for <lists+bpf@lfdr.de>; Sun, 16 Jul 2023 07:49:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08BB1859;
-	Sat, 15 Jul 2023 09:23:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165F523C5;
+	Sun, 16 Jul 2023 07:49:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFB387FA;
-	Sat, 15 Jul 2023 09:23:39 +0000 (UTC)
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2099.outbound.protection.outlook.com [40.107.244.99])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FC230E2;
-	Sat, 15 Jul 2023 02:23:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OF9cBB/zY9f2iD1iJWUB2A78B85wXI3b2bvBjYaXTNB7DKPo0dXPgUeAA1TYcOlJylQfvLxAKLoP63duTCcdM4DUjekq3xRkeC7o9aLem0/7/iPOt8R9o2/KTZ+0Au/MimDM06Y8CE2pJh71tSD6V+fkhseNZY4pgv9JF6XMsVvPVLyetL5X3z/OLn/VEQYwXZv/8zGY1UIamKk81XvK4Vkz32J1QwrP0hkf7AP0xVRRXPwbaWlEAblYehLmJ227JPTSxBcNG1N1cqc+AMBML2EJgAQj1ivLXWsqu3OcuGpTmZdpdEG9quZ54cv96QJcF7BL8OXjzqpPn/uU27mdTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tML3w4lQHK99aBqFhpR9hjq3M2/d25Qp44gde55MH+g=;
- b=O0CmLfTx6Nz5+EtmN6Jj7ptY/xHbzaWvNg2S95CjuOcV1GJEopF6ygI9OySxm90tjjPiI6gr/UTus3uXofdGpuzxFx8qLl1phTqHLt/+NRiE4ZLDZgSTgkBhCwrsd8NwrTde9KzxA3hgv24gFDdySZ49u6xiu8AE/nv2fHmXXLqulzJsqFmK86lqE3y1jS7cC8tt75ry25GjYf24M6fQtIkC2aKOWJSXMCS9vQkeMZbYjikJ/eF0uLSrBSASVTA+CkYU6WjjtbBwi2XvkEX6b6bZlU/pwUm0iSW4TBtp/1E9HpSsxtkrEi2MDo0RUCrFLJxDhmeGHzUu+x81/Gtwjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF025EA4
+	for <bpf@vger.kernel.org>; Sun, 16 Jul 2023 07:49:04 +0000 (UTC)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED01E47
+	for <bpf@vger.kernel.org>; Sun, 16 Jul 2023 00:49:02 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fc02a92dcfso30285335e9.0
+        for <bpf@vger.kernel.org>; Sun, 16 Jul 2023 00:49:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tML3w4lQHK99aBqFhpR9hjq3M2/d25Qp44gde55MH+g=;
- b=Gq9JT/MA/hjjXu1RsZtMuOfVtro8Yr0LqlhpaJHZUb/TpYmsm8yCA7ilVYB/IIbb5AViO7lyWILD+axT3/YA9o1CoAXtacUMNHeIKFZ7oobBBPlM1JS2LpH3h7BAhV/Q/kYraSuYLg57Csz3WGZpEM+R3mgQzkl6yak3xa3nQH8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by CH0PR13MB5154.namprd13.prod.outlook.com (2603:10b6:610:ff::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.28; Sat, 15 Jul
- 2023 09:23:33 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::d23a:8c12:d561:470]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::d23a:8c12:d561:470%6]) with mapi id 15.20.6588.028; Sat, 15 Jul 2023
- 09:23:32 +0000
-Date: Sat, 15 Jul 2023 10:23:25 +0100
-From: Simon Horman <simon.horman@corigine.com>
-To: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
-Cc: intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        d=isovalent.com; s=google; t=1689493741; x=1692085741;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=bxPvz8cMswTTAWRzifMWMC21fRi3cQcESIrQBlKCw1E=;
+        b=abLxdzFHoEflYGrY949ZeA1zKxAU5gyMFSG5PNf+O78DPaTYBMsuPv61KaJd2XwxEP
+         NK++3V4bs6+MaGINrv7wG8cV/btv+ihU6vA9/ex8xdkGS1NH6CXWS73IvVAPXRt6s0Eh
+         2JrVcicR7qRhVPMCnrmGyyQdPF0lbHlRVA8xrcxiPLe29WvDuKx59OgogIlb9HfsLYfM
+         fiIYkO1LThA/kYYQFl5yk9daBv05bQAxSDnRuOmugvIc4SgMN/0c9P7z8klOWyuUfWDP
+         iOVF7fcC0gWtfkbMNxAZlYYcVEROxr7wVFuPlxv0ESqnsnw5KI70b1S6nW+BNAUydu0z
+         G2qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689493741; x=1692085741;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bxPvz8cMswTTAWRzifMWMC21fRi3cQcESIrQBlKCw1E=;
+        b=eYAcW3kg0XgkxU4+WxSR/Cw48rJEynmYjzw5UpfITsPAXYYe1IAeo7AZ+lCS3yy2iw
+         bvM3zTEsdlFLxoI1dFCW/gbZeVrbhfCjmeouS+y73NXIiapE7uxro8cXBa7h2SMD0u68
+         LcncP1p6P0vWX/tNceW8jMVugcuXLATirzBqSfGf5oRbaDRFI7/oBk6+ekZkjgSjXzJr
+         IkHFXX/mIHCjKDO8xJcrSPgkUQIzil/UG1aGpuI3XwPVvIS+1OvLPfFPIGwrtGIUgJBP
+         CVCPpFuYb4Vf/zSTQrSzaIGvqAtiUCbQdB2Vb4/6juuKwFrHFAimGte316MMJWObsGaL
+         d4cg==
+X-Gm-Message-State: ABy/qLbBXOBdPB/wWrmKRYlceeAtV7tckZtzN1RD/e8SJxAzo9nzVFnj
+	fKiyx83LvPgBMlf0xOjleQ7W6Q==
+X-Google-Smtp-Source: APBJJlFLUp12727mVwnd5MY2IOu6lNOcUA55USqhYdE6mHTm3sENZgCDk8CTh51otCxV6LINvVk4wA==
+X-Received: by 2002:a1c:ed1a:0:b0:3fc:5a3:367c with SMTP id l26-20020a1ced1a000000b003fc05a3367cmr7388693wmh.32.1689493740389;
+        Sun, 16 Jul 2023 00:49:00 -0700 (PDT)
+Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id v7-20020a05600c214700b003fbc681c8d1sm5142870wml.36.2023.07.16.00.48.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Jul 2023 00:48:59 -0700 (PDT)
+Date: Sun, 16 Jul 2023 07:50:08 +0000
+From: Anton Protopopov <aspsk@isovalent.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
 	John Fastabend <john.fastabend@gmail.com>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>
-Subject: Re: [PATCH iwl-next v3 3/4] igb: add AF_XDP zero-copy Rx support
-Message-ID: <ZLJljUETnhH92kIV@corigine.com>
-References: <20230713104717.29475-1-sriram.yagnaraman@est.tech>
- <20230713104717.29475-4-sriram.yagnaraman@est.tech>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713104717.29475-4-sriram.yagnaraman@est.tech>
-X-ClientProxiedBy: LO4P123CA0294.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:196::11) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/3] bpf: consider CONST_PTR_TO_MAP as trusted
+ pointer to struct bpf_map
+Message-ID: <ZLOhMDZIjikWdWf5@zh-lab-node-5>
+References: <20230714141747.41560-1-aspsk@isovalent.com>
+ <20230714142100.42265-1-aspsk@isovalent.com>
+ <20230714142100.42265-2-aspsk@isovalent.com>
+ <CAADnVQJztACtOx8UEyWJqTXd95DBDWsNEAG284Ci4N7Ma8Fqgw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|CH0PR13MB5154:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2cfa5621-ea21-4768-2c0d-08db85152879
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	K+si+sIePr02Xlb9jmtlOtf5gSnIbHvtarQmyZCfyvWS7LXsScP3vdBN/FKbpi9H2ccT0MXB//7msaZsfsT8iivMx57Xfkq9JQI/jgPQry+qA5B4K4klwTw+pvOAmm7BWqdIKA7QbRaUTgXEs0L+7v10jxf6g0Q/mw5Q9K6J9dAXUBenC8+iYs02uYB18tM7WTiPkbids17HcR5Axv3TQdNPbLhNJPpTZB7JrQzsGQloDYMY7Hcjw8ysUTT2ZMzFs1TjO18Jv3jjRRyz5xj9CSuFJbTYjFX6J2aak2QUT7kHEZVAQQk1oeexeRUeF20ay9rxCpk4YDmTzidNQheQ2jpf+/t6AwDRVcocv90r4X7W7KqK0d4MVVOUtvI9sY/5BLN1USS7Y+Zde/1q4I8OeOvxmaYX6z2X0jiYnah1PT95lap329SWDk4bxw6a/wv+4P+13QrgxQrWFwuCVTKoev483W0+2W69B5HTcqYmz3K0nQPm0/F733u/4qsgL7nTYGdITC/bh8MiLDJtyv3FfMWOWd8tqmaxoRs+JwsQPdIMEMm4QkbMIze0fW98F5tA1K4z3mvx2WDEANjYVEKDjWB4HbMeLfZUOe42J/mV9iQ=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(136003)(396003)(39830400003)(366004)(451199021)(8676002)(5660300002)(8936002)(316002)(41300700001)(6916009)(4326008)(54906003)(44832011)(66946007)(2906002)(478600001)(6666004)(6486002)(6512007)(26005)(6506007)(186003)(7416002)(66556008)(66476007)(2616005)(38100700002)(36756003)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?42Dpm4jAPNHMaSe1eShn/hdUzcZ12QuthktoiZHdyMD2dLjUAEd65GmZN6hM?=
- =?us-ascii?Q?MvBr0dxXZ9Iq2MEO/iTjhrrQh+PK7ZS1LjcJh4ais4EZvHCHPUoje8Q03DjK?=
- =?us-ascii?Q?pPVlumrgxS8vOgkqfpt4mvrhEkiKl3NppF2s8cuX4x/9UyRbQ7C7NU8vkjwW?=
- =?us-ascii?Q?CXg7B+aQhHFm2NPbGnguPvRyzKFksp105+xocbnQ2Lg/ygY505XZuUD+aiIg?=
- =?us-ascii?Q?PkkT5ai2ubviN4i3yE+ihwOUtkI9pQsWKZpZwK9pYEurhJbpUnAW5eqeIKQD?=
- =?us-ascii?Q?wB87wyiS1LP3o6TqyK79cZG3FwbjcXbnxsInevsz69mtWpPI1zmNu1//5MSo?=
- =?us-ascii?Q?jH1Y+lfDTNbTG/NNwvk0i6tCARyXFeNtccCBe9iLfgKxPEpBYzK8/4MvaU6W?=
- =?us-ascii?Q?Axb+eGZgnQ98jebP425EJRyNcSp4qInl6YSLbwJUujM5pUtsw8+mckOeMQjw?=
- =?us-ascii?Q?9jG/ZNhpss1STWXn4qPzKfVWhrPENZjlNL7CGB6RBTzwikXbKkJjpVXx2naO?=
- =?us-ascii?Q?Ub54qr0vZMDX7QvPBRkixyxvYVgQGUj3N/dvDAyLEJMcik9okNjY2vDLHJaC?=
- =?us-ascii?Q?YSF/QiPvU6XWICFI2aCY2nENhyQF4EfiXSuDQL4mAzFm/WG7d2aJhD5IM4YL?=
- =?us-ascii?Q?FvxmczccrI69YPXhbaAgdWa2uuPw1A8jDKpcG8U442Q9+grZPg8T7TgGlDjd?=
- =?us-ascii?Q?8lFQlBRHBgElH7ooYipFyem7CFS+6+zYqefRmr1al+xsdE0sL16QkbI+jCYD?=
- =?us-ascii?Q?7GXu3GfupirF402fr3sKfdEbEcDWfYuA6BmFDYQvibTFsAr2dOTseVncVuhC?=
- =?us-ascii?Q?N6ZsKyJF5j54hsQ8BGl/oJdEXES9bWr1z+x4m4Meucdfeh5L3apqdxRGRE6J?=
- =?us-ascii?Q?XJ6thJX8tatgpfNWHvcIKsBdKZ2D59Q6S7dZ+BxwWZmFIbRg3/X4+x7460Bz?=
- =?us-ascii?Q?hzsXXWNPWHHh92RG487UbpF3pIttP5f2AD6qxcJ7VpKtPdLh+TV57R/GyDLP?=
- =?us-ascii?Q?M9BwRvf2FUbK2FAytKWIwULN5jFGuWIjj+uBWOQuEiRs7a/lLWkOBASucHRS?=
- =?us-ascii?Q?Vv4oa0fm9HwFUeUWvyqUsIWKcgAWyu3zyBdoYpjjoYFr0pY9LxfYR6eQQyCi?=
- =?us-ascii?Q?XbqL03PbYbm/Ai8QjnbDk+q2ZFrb5GcVyO3snE1mJsbYDeulb1aPo8V6FmOy?=
- =?us-ascii?Q?XI8jOV866i2jJ/0lL5KZRbfd32YTSg+7i5PqldNpIqKj7HivEAQX1to2ZZbw?=
- =?us-ascii?Q?05yIaIfAsJoJ6+XLcm2Rr6u/RZliGzgaubm1TnPbCIJSQkW4kGQvJaLAmoD+?=
- =?us-ascii?Q?uBiaxm1xrZz9TljX1KRVy0QuVEpCH9FwvqyzD9f5XxDpW4GjuTQjTYK0kEld?=
- =?us-ascii?Q?wOCUqdLYGQWaTB5YedBoWEehti+HX1q1XDjwUQ7PH3d1nL8t/WtnEXrbAMi3?=
- =?us-ascii?Q?IWjDUdyTy/ChOWjQ0m40JAjjkWhmBa09f9J2FN2YOAfopVE0wra46jIrkbUH?=
- =?us-ascii?Q?whYflvAMIj/7Lkzl4yQdYUONMjDo+Uab9BDws118nlLVBXGjlwionvnhlRXd?=
- =?us-ascii?Q?O9/7oDDC4/BnO4wCDkBQBrBhxW5irLgxYkNuyFydZGs0GRi5uPXKE0kKwPcc?=
- =?us-ascii?Q?Bw=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cfa5621-ea21-4768-2c0d-08db85152879
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2023 09:23:32.6530
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n8epTenpRGs6mbs9Za8HlcG6DU/MliiWf/6TGdl4W4fnKtY0l7oUcnkwykD/X5aWPO6bukosYV5ug4HKrpuzPEQ+PDKyvlHp8IARf5pKjC0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR13MB5154
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJztACtOx8UEyWJqTXd95DBDWsNEAG284Ci4N7Ma8Fqgw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 13, 2023 at 12:47:16PM +0200, Sriram Yagnaraman wrote:
-> Add support for AF_XDP zero-copy receive path.
+On Fri, Jul 14, 2023 at 10:56:00AM -0700, Alexei Starovoitov wrote:
+> On Fri, Jul 14, 2023 at 7:20 AM Anton Protopopov <aspsk@isovalent.com> wrote:
+> >
+> > Patch verifier to regard values of type CONST_PTR_TO_MAP as trusted
+> > pointers to struct bpf_map. This allows kfuncs to work with `struct
+> > bpf_map *` arguments.
+> >
+> > Save some bytes by defining btf_bpf_map_id as BTF_ID_LIST_GLOBAL_SINGLE
+> > (which is u32[1]), not as BTF_ID_LIST (which is u32[64]).
+> >
+> > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> > ---
+> >  include/linux/btf_ids.h | 1 +
+> >  kernel/bpf/map_iter.c   | 3 +--
+> >  kernel/bpf/verifier.c   | 5 ++++-
+> >  3 files changed, 6 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> > index 00950cc03bff..a3462a9b8e18 100644
+> > --- a/include/linux/btf_ids.h
+> > +++ b/include/linux/btf_ids.h
+> > @@ -267,5 +267,6 @@ MAX_BTF_TRACING_TYPE,
+> >  extern u32 btf_tracing_ids[];
+> >  extern u32 bpf_cgroup_btf_id[];
+> >  extern u32 bpf_local_storage_map_btf_id[];
+> > +extern u32 btf_bpf_map_id[];
+> >
+> >  #endif
+> > diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
+> > index d06d3b7150e5..b67996147895 100644
+> > --- a/kernel/bpf/map_iter.c
+> > +++ b/kernel/bpf/map_iter.c
+> > @@ -78,8 +78,7 @@ static const struct seq_operations bpf_map_seq_ops = {
+> >         .show   = bpf_map_seq_show,
+> >  };
+> >
+> > -BTF_ID_LIST(btf_bpf_map_id)
+> > -BTF_ID(struct, bpf_map)
+> > +BTF_ID_LIST_GLOBAL_SINGLE(btf_bpf_map_id, struct, bpf_map)
+> >
+> >  static const struct bpf_iter_seq_info bpf_map_seq_info = {
+> >         .seq_ops                = &bpf_map_seq_ops,
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 0b9da95331d7..5663f97ef292 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -5419,6 +5419,9 @@ static bool is_trusted_reg(const struct bpf_reg_state *reg)
+> >         if (reg->ref_obj_id)
+> >                 return true;
+> >
+> > +       if (reg->type == CONST_PTR_TO_MAP)
+> > +               return true;
+> > +
 > 
-> When AF_XDP zero-copy is enabled, the rx buffers are allocated from the
-> xsk buff pool using igb_alloc_rx_buffers_zc.
+> Overall it looks great.
+> Instead of above, how about the following instead:
 > 
-> Use xsk_pool_get_rx_frame_size to set SRRCTL rx buf size when zero-copy
-> is enabled.
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 0b9da95331d7..cd08167dc347 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -10775,7 +10775,7 @@ static int check_kfunc_args(struct
+> bpf_verifier_env *env, struct bpf_kfunc_call_
+>                         if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
+>                                 break;
 > 
-> Signed-off-by: Sriram Yagnaraman <sriram.yagnaraman@est.tech>
+> -                       if (!is_trusted_reg(reg)) {
+> +                       if (!is_trusted_reg(reg) &&
+> !reg2btf_ids[base_type(reg->type)]) {
+> 
+> 
+> This way we won't need to list every convertible type in is_trusted_reg.
+> 
+> I'm a bit hesitant to put reg2btf_ids[] check directly into is_trusted_reg().
+> Maybe it's ok, but it needs more analysis.
 
-...
+I am not sure I see a difference in adding a check you proposed above and
+adding the reg2btf_ids[] check directly into the is_trusted_reg() function.
+Basically, we say "if type is in reg2btf_ids[], then consider it trusted" in
+both cases. AFAIS, currently the reg2btf_ids[] contains only trusted types,
+however, could it happen that we add a non-trusted type there?
 
-> diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-> index 2c1e1d70bcf9..8eed3d0ab4fc 100644
-> --- a/drivers/net/ethernet/intel/igb/igb_main.c
-> +++ b/drivers/net/ethernet/intel/igb/igb_main.c
-> @@ -502,12 +502,14 @@ static void igb_dump(struct igb_adapter *adapter)
->  
->  		for (i = 0; i < rx_ring->count; i++) {
->  			const char *next_desc;
-> -			struct igb_rx_buffer *buffer_info;
-> -			buffer_info = &rx_ring->rx_buffer_info[i];
-> +			struct igb_rx_buffer *buffer_info = NULL;
->  			rx_desc = IGB_RX_DESC(rx_ring, i);
->  			u0 = (struct my_u0 *)rx_desc;
->  			staterr = le32_to_cpu(rx_desc->wb.upper.status_error);
->  
-> +			if (!rx_ring->xsk_pool)
-> +				buffer_info = &rx_ring->rx_buffer_info[i];
-> +
->  			if (i == rx_ring->next_to_use)
->  				next_desc = " NTU";
->  			else if (i == rx_ring->next_to_clean)
-> @@ -530,7 +532,7 @@ static void igb_dump(struct igb_adapter *adapter)
->  					(u64)buffer_info->dma,
-
-Hi Sriram,
-
-Here buffer_info is dereferenced...
-
->  					next_desc);
->  
-> -				if (netif_msg_pktdata(adapter) &&
-> +				if (netif_msg_pktdata(adapter) && buffer_info &&
-
-And here buffer_info is checked against NULL.
-
-This combination doesn't seem quite right.
-
->  				    buffer_info->dma && buffer_info->page) {
->  					print_hex_dump(KERN_INFO, "",
->  					  DUMP_PREFIX_ADDRESS,
+So, I would leave the patch as is (which also makes sense because the
+const-ptr-to-map is a special case), or add the "reg2btf_ids[] check" 
+directly into the is_trusted_reg() function.
 
