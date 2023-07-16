@@ -1,60 +1,61 @@
-Return-Path: <bpf+bounces-5065-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B958754E8F
-	for <lists+bpf@lfdr.de>; Sun, 16 Jul 2023 14:11:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB4E6754E90
+	for <lists+bpf@lfdr.de>; Sun, 16 Jul 2023 14:11:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F2FD28149B
-	for <lists+bpf@lfdr.de>; Sun, 16 Jul 2023 12:11:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0E671C20974
+	for <lists+bpf@lfdr.de>; Sun, 16 Jul 2023 12:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E261747F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DCE8748C;
 	Sun, 16 Jul 2023 12:11:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9C66D1B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103D26FDF
 	for <bpf@vger.kernel.org>; Sun, 16 Jul 2023 12:11:00 +0000 (UTC)
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7811910E
-	for <bpf@vger.kernel.org>; Sun, 16 Jul 2023 05:10:57 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-66c729f5618so3655910b3a.1
-        for <bpf@vger.kernel.org>; Sun, 16 Jul 2023 05:10:57 -0700 (PDT)
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA85C1B1
+	for <bpf@vger.kernel.org>; Sun, 16 Jul 2023 05:10:58 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-668709767b1so2545241b3a.2
+        for <bpf@vger.kernel.org>; Sun, 16 Jul 2023 05:10:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689509457; x=1692101457;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6PmtlXi/yV+45PIt1tlnROYiXpWnFQIPBm/FQLM51mo=;
-        b=LBGAr28Anaar8p8dvqeon6FqAuEm/BbSA2fPe9te21zaydQubsn9BzStgzUs/QB5K+
-         tMnJM9T07URFUwq4m0QzpmMCTQZEL/J4OIodmQLV6dX3KLvSo/lZJX6Ss9AxBhliRYfY
-         nRzaOTdOn9gLvpgx12RxmddOmXCWsAg8i/ubnthJBfFO16N/6u8wrhpg/cyIx5adKU8z
-         5mbTjeSHYbnzQ1l6GEHdxNLvPRuptOwyd1yDWhZwA9MIZtCWhmz+KOficaC4heKIa0Q3
-         nSMMlt0Ubj1DrEvsody+rdojs8Os8+7wmgmBv/rX0Rt4OnO+gmoDqTL09Kt//vfrthms
-         /CQg==
+        d=gmail.com; s=20221208; t=1689509458; x=1692101458;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cVcrh+W1YEVuCLWLeHuOrfFeTxRRYwnxDB44DTk9zfc=;
+        b=NXtxtBfLx9y09g83zaZYri1t/KBXF599BjSV6585puzfuHgcDQQz/6G6D+tsV09LO1
+         8AhF9OdSchqNHtEH5a6S9ekSqZj1IGvW5/NamfqZaGFTtpm2IMEMRRyZ/AFV3v764cwK
+         xmA11CKymuqWJuWgJndM2DGIae9noz5ia2iEAV4Ne8ytCGlgtK/J+9MY27rkWmSi8UvO
+         Oi9aBE4LCHlUCXg64DLQ4u9y8BXh6Qjpc9Ygek3iNVS31u6JAWnnZmY93aVJvRFsiMN+
+         H2B4dZge8/EzHeFmq0mC84RADa+ohV3ORQskazqzyY4KQn/HBYqhilfrYmOX+YQ/InUg
+         ru8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689509457; x=1692101457;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6PmtlXi/yV+45PIt1tlnROYiXpWnFQIPBm/FQLM51mo=;
-        b=dg9Rp5Xx++f0mjlVgo78kOU1xHbZXEadduMP7HE1abii2KWt7YunaetBZ9e1ppE3TR
-         qHnI8NjY9jfT8lI+XwHF38/JPC20zdA+m2gY5ii9YtqCPQj0tkrLUsVlHW2BQ+TNm+nH
-         S6xU8I6TVmG5oL188zTK03H13aw2+/bY3xi/2B1Mm0AnIGUlqFgEsrWU2Rbf+oECx69Y
-         v9odbSrwRKw/qjC+Vv1GIx0LsZsOCf7VdXfttUUqMPhOJ45ODvCGcyF4ENUcC5DduUB5
-         RNmG//1LS00xVmT/BB9DXqHaTmPBAE5sqVDnQ44EArHbR+Ur9Wc4DTvfqtWo3E605vDL
-         jRyg==
-X-Gm-Message-State: ABy/qLYQJjoadRm14xrh9zEZLFYqhILgG8YL9s6aeZHSNoYousbsa4At
-	gDsmaKcvOPYtZ/ToWT8NrGo=
-X-Google-Smtp-Source: APBJJlFxRubbz3hX7C1Rdu7JJ2lOdd364oZrC8JtaSTNBAsgfQskmnuRnHZabPOVAzpFsCAhZJQOKQ==
-X-Received: by 2002:a05:6a00:2e0f:b0:66c:6678:3776 with SMTP id fc15-20020a056a002e0f00b0066c66783776mr14343289pfb.7.1689509456815;
-        Sun, 16 Jul 2023 05:10:56 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689509458; x=1692101458;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cVcrh+W1YEVuCLWLeHuOrfFeTxRRYwnxDB44DTk9zfc=;
+        b=ayI/82vVCIk5s+dnEMinuWzhGcSeuY+V3Gf+2W7pfVoDhp2+16Hmmj3YN4KWV8RWNo
+         v/1hFcCxcY3OidgiPi4LLIuxr8eOIrdGTUFbGPOUO47P1yez9iU9IQiN9/xn4Y7ZCX4k
+         HmLDQbYE/M2r37yV4/CehHYBa9g2Ut9NMUiXk7i5Yf19svHv24cAl6jKRiJWCS1WyhKn
+         Np1v4KDKBscBpRpbkESWQxGG0tp3ml1tKmK5b1LEKtFW/62p6VmiLI3nPHZGuISjrKMI
+         L5KtbmhfI+BkGEcF8y8Cvzjt348b+qnvS5yYTRFHYakjXc5BMVWaAylo/Qw4CHGgZcbW
+         VJUA==
+X-Gm-Message-State: ABy/qLY4173XywMMM8AZjNPsr9RYKNMmpjYYR0UvVWgrHZKdGRzdkGKH
+	b6FesZZvMj9eZENwK/hspyE=
+X-Google-Smtp-Source: APBJJlEwikrUkIg79BOxZyhgRtJQZf+j5XPDAhWYbUjkQidjED5wW7VG80XWMFGosgIkVY+DOU0UMQ==
+X-Received: by 2002:a05:6a00:1787:b0:675:8f71:28f1 with SMTP id s7-20020a056a00178700b006758f7128f1mr11263820pfg.30.1689509458179;
+        Sun, 16 Jul 2023 05:10:58 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac01:697:5400:4ff:fe82:495b])
-        by smtp.gmail.com with ESMTPSA id u8-20020a62ed08000000b0062cf75a9e6bsm10128730pfh.131.2023.07.16.05.10.55
+        by smtp.gmail.com with ESMTPSA id u8-20020a62ed08000000b0062cf75a9e6bsm10128730pfh.131.2023.07.16.05.10.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Jul 2023 05:10:56 -0700 (PDT)
+        Sun, 16 Jul 2023 05:10:57 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -70,10 +71,12 @@ To: ast@kernel.org,
 	quentin@isovalent.com
 Cc: bpf@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 0/4] bpf: Introduce cgroup_task iter 
-Date: Sun, 16 Jul 2023 12:10:42 +0000
-Message-Id: <20230716121046.17110-1-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 1/4] bpf: Add __bpf_iter_attach_cgroup()
+Date: Sun, 16 Jul 2023 12:10:43 +0000
+Message-Id: <20230716121046.17110-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230716121046.17110-1-laoar.shao@gmail.com>
+References: <20230716121046.17110-1-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,62 +86,74 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patch introduces cgroup_task iter, which allows for efficient
-iteration of tasks within a specific cgroup. For example, we can effiently
-get the nr_{running,blocked} of a container with this new feature.
+This is a preparation for the followup patch. No functional change.
 
-The cgroup_task iteration serves as an alternative to task_iter in
-container environments due to certain limitations associated with
-task_iter.
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+---
+ kernel/bpf/cgroup_iter.c | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
-- Firstly, task_iter only supports the 'current' pidns.
-  However, since our data collector operates on the host, we may need to
-  collect information from multiple containers simultaneously. Using
-  task_iter would require us to fork the collector for each container,
-  which is not ideal.
-
-- Additionally, task_iter is unable to collect task information from
-containers running in the host pidns.
-  In our container environment, we have containers running in the host
-  pidns, and we would like to collect task information from them as well.
-
-- Lastly, task_iter does not support multiple-container pods.
-  In a Kubernetes environment, a single pod may contain multiple
-  containers, all sharing the same pidns. However, we are only interested
-  in iterating tasks within the main container, which is not possible with
-  task_iter.
-
-To address the first issue, we could potentially extend task_iter to
-support specifying a pidns other than the current one. However, for the
-other two issues, extending task_iter would not provide a solution.
-Therefore, we believe it is preferable to introduce the cgroup_task iter to
-handle these scenarios effectively.
-
-Patch #1: Preparation
-Patch #2: Add cgroup_task iter
-Patch #3: Add support for cgroup_task iter in bpftool
-Patch #4: Selftests for cgroup_task iter
-
-Yafang Shao (4):
-  bpf: Add __bpf_iter_attach_cgroup()
-  bpf: Add cgroup_task iter
-  bpftool: Add support for cgroup_task
-  selftests/bpf: Add selftest for cgroup_task iter
-
- include/linux/btf_ids.h                       |  14 ++
- kernel/bpf/cgroup_iter.c                      | 181 ++++++++++++++--
- tools/bpf/bpftool/link.c                      |   3 +-
- .../bpf/prog_tests/cgroup_task_iter.c         | 197 ++++++++++++++++++
- .../selftests/bpf/progs/cgroup_task_iter.c    |  39 ++++
- 5 files changed, 419 insertions(+), 15 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_task_iter.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_task_iter.c
-
+diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+index 810378f04fbc..619c13c30e87 100644
+--- a/kernel/bpf/cgroup_iter.c
++++ b/kernel/bpf/cgroup_iter.c
+@@ -191,21 +191,14 @@ static const struct bpf_iter_seq_info cgroup_iter_seq_info = {
+ 	.seq_priv_size		= sizeof(struct cgroup_iter_priv),
+ };
+ 
+-static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
+-				  union bpf_iter_link_info *linfo,
+-				  struct bpf_iter_aux_info *aux)
++static int __bpf_iter_attach_cgroup(struct bpf_prog *prog,
++				    union bpf_iter_link_info *linfo,
++				    struct bpf_iter_aux_info *aux)
+ {
+ 	int fd = linfo->cgroup.cgroup_fd;
+ 	u64 id = linfo->cgroup.cgroup_id;
+-	int order = linfo->cgroup.order;
+ 	struct cgroup *cgrp;
+ 
+-	if (order != BPF_CGROUP_ITER_DESCENDANTS_PRE &&
+-	    order != BPF_CGROUP_ITER_DESCENDANTS_POST &&
+-	    order != BPF_CGROUP_ITER_ANCESTORS_UP &&
+-	    order != BPF_CGROUP_ITER_SELF_ONLY)
+-		return -EINVAL;
+-
+ 	if (fd && id)
+ 		return -EINVAL;
+ 
+@@ -220,10 +213,25 @@ static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
+ 		return PTR_ERR(cgrp);
+ 
+ 	aux->cgroup.start = cgrp;
+-	aux->cgroup.order = order;
+ 	return 0;
+ }
+ 
++static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
++				  union bpf_iter_link_info *linfo,
++				  struct bpf_iter_aux_info *aux)
++{
++	int order = linfo->cgroup.order;
++
++	if (order != BPF_CGROUP_ITER_DESCENDANTS_PRE &&
++	    order != BPF_CGROUP_ITER_DESCENDANTS_POST &&
++	    order != BPF_CGROUP_ITER_ANCESTORS_UP &&
++	    order != BPF_CGROUP_ITER_SELF_ONLY)
++		return -EINVAL;
++
++	aux->cgroup.order = order;
++	return __bpf_iter_attach_cgroup(prog, linfo, aux);
++}
++
+ static void bpf_iter_detach_cgroup(struct bpf_iter_aux_info *aux)
+ {
+ 	cgroup_put(aux->cgroup.start);
 -- 
 2.39.3
 
