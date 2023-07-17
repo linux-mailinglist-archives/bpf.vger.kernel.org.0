@@ -1,159 +1,199 @@
-Return-Path: <bpf+bounces-5126-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5127-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51B81756A26
-	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 19:24:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F06F756A38
+	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 19:25:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0841B28119E
-	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 17:24:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16DAD1C20B37
+	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 17:25:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F51BA24;
-	Mon, 17 Jul 2023 17:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0CBAD5A;
+	Mon, 17 Jul 2023 17:25:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9361FD7
-	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 17:24:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2885EC433CA;
-	Mon, 17 Jul 2023 17:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689614665;
-	bh=o+WgjDKzf9AD9b+kUzQGRClRYLlDB82OkTDYfv6a3Yk=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=U55TcGyi7YmJyhzLOTZnjrFVWw0H3+af918Yjk8mPHfHD/clSDnn9R44JznF10IRH
-	 Z8KK+n6r0jSrVIOFXY3K9zEUwgWJJmDl6U+xcWuKBgzWtStxy8DJ8vdgvW6lkDoW7B
-	 HjBUxuU9UxtzkC9l5ApN5DKkzBCr1VsqK7wmYWuXqa2OawFE6M2Oq9WP6fcTzeqAS1
-	 oQr1aLD/6waYS1NoUdY5C7XFt1xXn2X7vRDexou/Ye3pmNVTURfyjeGdd/9YrFIH9l
-	 MqvAuz5uF3yGQhNR2S/bV8TY4Zn4vPj0wIo0nVHW6MMTPN4UGDgaMVOo3Hl1Lknk4t
-	 QarZtUu8s3ucw==
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 0594A27C0054;
-	Mon, 17 Jul 2023 13:24:22 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute3.internal (MEProxy); Mon, 17 Jul 2023 13:24:23 -0400
-X-ME-Sender: <xms:RXm1ZG1tVKd235OTAKjb7YgspTMPR-qImOZNagZiOwv_r996Wpl_EA>
-    <xme:RXm1ZJGhtMeEyJx0NHmpmxK7orhG2xuLUV7eaWrGF_5mvemHNiGzAxoeoH8wHPKOx
-    Be-_jfsguKQ7NGLhQY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrgedvgdduuddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpeduveffvdegvdefhfegjeejlefgtdffueekudfgkeduvdetvddu
-    ieeluefgjeeggfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
-    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
-    hugidrlhhuthhordhush
-X-ME-Proxy: <xmx:RXm1ZO5oHfgOl5d-JsrWsEmT0wZ8c7lpn-wGY1Pk1MKOwuxnVn3prQ>
-    <xmx:RXm1ZH3tFnXsbSmPTR9ONplP-mkjz9Tn9-KQt1DQXW36vSF4M5jnmA>
-    <xmx:RXm1ZJEwoQUXW2HC-hvtBktlwQpPz6VjPtqSmOfmC010d9JGpLVfQw>
-    <xmx:Rnm1ZFKtTGUhG1K7QB02N33IARC_1h22efMRZVMJvVFaIkzEJg1UPw>
-Feedback-ID: ieff94742:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id D060531A0064; Mon, 17 Jul 2023 13:24:21 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 708311FD7
+	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 17:25:41 +0000 (UTC)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF7A170A
+	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 10:25:16 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b70404a5a0so76441981fa.2
+        for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 10:25:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689614709; x=1692206709;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S5YF+nlCOe3O1kBGIFVaMKzFvIcHGZB8RvnMAPyaULs=;
+        b=isOF0N3yymp+nS1nB6OB7d7829jnt3PD9Sht3wCZ3/iv9U8LiIJSUnZ349Hg/sw9CM
+         Y3XUYkBqc//2iD2/CbVWv83eEUr0Re0ghKtbYSrZQVJ6m8rEMgq1emiv+9OS9urL31st
+         d4V1afysMtX8CL21hGN/CRSo5FxlQY4nys7ImeREEy+Z+WLbGidA9w00vRfPu1Bt46oM
+         w5qSrkkRCzQEEW29DpCasdZ9MrtwxfQB5EJwiHu8VgWuyC7IFTITCmnksjAHZ+GzMRd0
+         HShnpOLLREfRJl3Vrc0nsEPKVPKN1Ueiv1Tglhs/NCm7PBPLdL6Qy8FDPUG5r7NMALWk
+         d6yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689614709; x=1692206709;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S5YF+nlCOe3O1kBGIFVaMKzFvIcHGZB8RvnMAPyaULs=;
+        b=f83CBTXLXyAsJUSCnFU6t6ZyqWQlBclzumgWgdkAFU9AReOA92r6/kh/QBSME+WAIP
+         Ow+OvAw+XMmRQkMn0YhCGvPbddZ1PVruxY1x4yBe96zpfEdF+7+ZfwkcRBoRc3K2fglu
+         7Xn0D2Isv6anlzsZJg835Mm2uLFP9v+fgg0xLU7lSWeavwiK5Ic9+zxv1p1VlsERyEuy
+         ne5K1i17u4gR48KE6JjuEcW2JW9NpluW/8kY8cWjzOg/2TDCWOX61k8sZvRZhe+SFaMC
+         VrKBIkyve/MfeUAyHU4d1NOfu1bhHS+eRqJ1DGAvUtQn98KDJfiQvJf7jcb8ve7QxiXj
+         GPSA==
+X-Gm-Message-State: ABy/qLb4BZ1jLR1So2eXhpMAchqClvL5C2vy3DBtCQNXJmyeE+GqqAkb
+	MHajtz6V+zrAH2956dU8vUbncqI7fONl2nhmofk=
+X-Google-Smtp-Source: APBJJlHudR+r+uwgC5kUy4C99ZW2LrZWnNJH9Pj6ySylSbTX1ELPMJ/3wmLJobkt4OEoud8mLjOnzuWRa9gTnsbfq8w=
+X-Received: by 2002:a2e:3309:0:b0:2b7:3656:c594 with SMTP id
+ d9-20020a2e3309000000b002b73656c594mr12705874ljc.3.1689614708703; Mon, 17 Jul
+ 2023 10:25:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <d305b437-9eef-42da-821e-67365aad520b@app.fastmail.com>
-In-Reply-To: 
- <CAPhsuW4pDkd7rCWRM6938ve36rfhGxyu=8t1-GjcKnNajofpQA@mail.gmail.com>
-References: <20230616085038.4121892-1-rppt@kernel.org>
- <20230616085038.4121892-3-rppt@kernel.org>
- <f9a7eebe-d36e-4587-b99d-35d4edefdd14@app.fastmail.com>
- <20230618080027.GA52412@kernel.org>
- <a17c65c6-863f-4026-9c6f-a04b659e9ab4@app.fastmail.com>
- <20230625161417.GK52412@kernel.org> <ZJmFFmexl_1GUhIL@FVFF77S0Q05N>
- <CAPhsuW4pDkd7rCWRM6938ve36rfhGxyu=8t1-GjcKnNajofpQA@mail.gmail.com>
-Date: Mon, 17 Jul 2023 10:23:56 -0700
-From: "Andy Lutomirski" <luto@kernel.org>
-To: "Song Liu" <song@kernel.org>, "Mark Rutland" <mark.rutland@arm.com>
-Cc: "Mike Rapoport" <rppt@kernel.org>, "Kees Cook" <keescook@chromium.org>,
- "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "David S. Miller" <davem@davemloft.net>,
- "Dinh Nguyen" <dinguyen@kernel.org>,
- "Heiko Carstens" <hca@linux.ibm.com>, "Helge Deller" <deller@gmx.de>,
- "Huacai Chen" <chenhuacai@kernel.org>,
- "Kent Overstreet" <kent.overstreet@linux.dev>,
- "Luis Chamberlain" <mcgrof@kernel.org>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nadav Amit" <nadav.amit@gmail.com>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Puranjay Mohan" <puranjay12@gmail.com>,
- "Rick P Edgecombe" <rick.p.edgecombe@intel.com>,
- "Russell King (Oracle)" <linux@armlinux.org.uk>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Thomas Gleixner" <tglx@linutronix.de>, "Will Deacon" <will@kernel.org>,
- bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mips@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- loongarch@lists.linux.dev, netdev@vger.kernel.org,
- sparclinux@vger.kernel.org, "the arch/x86 maintainers" <x86@kernel.org>
-Subject: Re: [PATCH v2 02/12] mm: introduce execmem_text_alloc() and jit_text_alloc()
-Content-Type: text/plain;charset=utf-8
+MIME-Version: 1.0
+References: <20230713023232.1411523-1-memxor@gmail.com> <20230713023232.1411523-5-memxor@gmail.com>
+ <20230714215814.fqv5aypobicomszr@MacBook-Pro-8.local> <CAP01T74c7qcjDeAvav064ZTixCCznnyC4SMRB0YK=iN=hkwA8A@mail.gmail.com>
+In-Reply-To: <CAP01T74c7qcjDeAvav064ZTixCCznnyC4SMRB0YK=iN=hkwA8A@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 17 Jul 2023 10:24:57 -0700
+Message-ID: <CAADnVQLz5VtDSXwiK-gL4WFuHHJo7m41DAks8Y79ZaQc242iqg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 04/10] bpf: Add support for inserting new subprogs
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, David Vernet <void@manifault.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-
-
-On Mon, Jun 26, 2023, at 10:48 AM, Song Liu wrote:
-> On Mon, Jun 26, 2023 at 5:31=E2=80=AFAM Mark Rutland <mark.rutland@arm=
-.com> wrote:
->>
-> [...]
->> >
->> > So the idea was that jit_text_alloc() will have a cache of large pa=
-ges
->> > mapped ROX, will allocate memory from those caches and there will be
->> > jit_update() that uses text poking for writing to that memory.
->> >
->> > Upon allocation of a large page to increase the cache, that large p=
-age will
->> > be "invalidated" by filling it with breakpoint instructions (e.g in=
-t3 on
->> > x86)
->>
->> Does that work on x86?
->>
->> That is in no way gauranteed for other architectures; on arm64 you ne=
-ed
->> explicit cache maintenance (with I-cache maintenance at the VA to be =
-executed
->> from) followed by context-synchronization-events (e.g. via ISB instru=
-ctions, or
->> IPIs).
+On Mon, Jul 17, 2023 at 9:22=E2=80=AFAM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> I guess we need:
-> 1) Invalidate unused part of the huge ROX pages;
-> 2) Do not put two jit users (including module text, bpf, etc.) in the
-> same cache line;
-> 3) Explicit cache maintenance;
-> 4) context-synchronization-events.
+> On Sat, 15 Jul 2023 at 03:28, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Thu, Jul 13, 2023 at 08:02:26AM +0530, Kumar Kartikeya Dwivedi wrote=
+:
+> > > Introduce support in the verifier for generating a subprogram and
+> > > include it as part of a BPF program dynamically after the do_check
+> > > phase is complete. The appropriate place of invocation would be
+> > > do_misc_fixups.
+> > >
+> > > Since they are always appended to the end of the instruction sequence=
+ of
+> > > the program, it becomes relatively inexpensive to do the related
+> > > adjustments to the subprog_info of the program. Only the fake exit
+> > > subprogram is shifted forward by 1, making room for our invented subp=
+rog.
+> > >
+> > > This is useful to insert a new subprogram and obtain its function
+> > > pointer. The next patch will use this functionality to insert a defau=
+lt
+> > > exception callback which will be invoked after unwinding the stack.
+> > >
+> > > Note that these invented subprograms are invisible to userspace, and
+> > > never reported in BPF_OBJ_GET_INFO_BY_ID etc. For now, only a single
+> > > invented program is supported, but more can be easily supported in th=
+e
+> > > future.
+> > >
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
+> > >  include/linux/bpf.h          |  1 +
+> > >  include/linux/bpf_verifier.h |  4 +++-
+> > >  kernel/bpf/core.c            |  4 ++--
+> > >  kernel/bpf/syscall.c         | 19 ++++++++++++++++++-
+> > >  kernel/bpf/verifier.c        | 29 ++++++++++++++++++++++++++++-
+> > >  5 files changed, 52 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 360433f14496..70f212dddfbf 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -1385,6 +1385,7 @@ struct bpf_prog_aux {
+> > >       bool sleepable;
+> > >       bool tail_call_reachable;
+> > >       bool xdp_has_frags;
+> > > +     bool invented_prog;
+> > >       /* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
+> > >       const struct btf_type *attach_func_proto;
+> > >       /* function name for valid attach_btf_id */
+> > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifie=
+r.h
+> > > index f70f9ac884d2..360aa304ec09 100644
+> > > --- a/include/linux/bpf_verifier.h
+> > > +++ b/include/linux/bpf_verifier.h
+> > > @@ -540,6 +540,7 @@ struct bpf_subprog_info {
+> > >       bool has_tail_call;
+> > >       bool tail_call_reachable;
+> > >       bool has_ld_abs;
+> > > +     bool invented_prog;
+> > >       bool is_async_cb;
+> > >  };
+> > >
+> > > @@ -594,10 +595,11 @@ struct bpf_verifier_env {
+> > >       bool bypass_spec_v1;
+> > >       bool bypass_spec_v4;
+> > >       bool seen_direct_write;
+> > > +     bool invented_prog;
+> >
+> > Instead of a flag in two places how about adding aux->func_cnt_real
+> > and use it in JITing and free-ing while get_info*() keep using aux->fun=
+c_cnt.
+> >
 >
-> Would these (or a subset of them) be sufficient to protect us from tor=
-n read?
-
-Maybe?  #4 is sufficiently vague that I can't really interpret it.
-
-I have a half-drafted email asking for official clarification on the rul=
-es that might help shed light on this.  I find that this type of request=
- works best when it's really well written :)
-
+> That does seem better, thanks. I'll make the change in v2.
 >
-> Thanks,
-> Song
+> > > +/* The function requires that first instruction in 'patch' is insnsi=
+[prog->len - 1] */
+> > > +static int invent_subprog(struct bpf_verifier_env *env, struct bpf_i=
+nsn *patch, int len)
+> > > +{
+> > > +     struct bpf_subprog_info *info =3D env->subprog_info;
+> > > +     int cnt =3D env->subprog_cnt;
+> > > +     struct bpf_prog *prog;
+> > > +
+> > > +     if (env->invented_prog) {
+> > > +             verbose(env, "verifier internal error: only one invente=
+d prog supported\n");
+> > > +             return -EFAULT;
+> > > +     }
+> > > +     prog =3D bpf_patch_insn_data(env, env->prog->len - 1, patch, le=
+n);
+> >
+> > The actual patching is not necessary.
+> > bpf_prog_realloc() and memcpy would be enough, no?
+> >
+>
+> Yes, it should be fine. But I didn't want to special case things here
+> just to make sure assumptions elsewhere don't break.
+> E.g. code readily assumes every insn has its own insn_aux_data which
+> might be broken if we don't expand it.
+> I think bpf_patch_insn_single is already doing a realloc (and reusing
+> trailing space in current allocation if available), so it didn't seem
+> worth it to me.
+>
+> If you still feel it's better I can analyze if anything might break
+> and make the change.
+
+bpf_patch_insn_data() is a known performance bottleneck.
+Folks have been trying to optimize it in the past.
+It's certainly delicate code.
+I guess since this extra subprog will only be added once
+we can live with unnecessary overhead of bpf_patch_insn_data().
+Just add the comment that we're not patching existing insn and
+all of adjust* ops are nop.
 
