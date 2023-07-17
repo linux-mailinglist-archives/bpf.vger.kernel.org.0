@@ -1,70 +1,71 @@
-Return-Path: <bpf+bounces-5117-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5118-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3479D756923
-	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 18:30:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E0C975694F
+	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 18:37:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8DEB2811AB
-	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 16:30:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A1AC280EC2
+	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 16:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88F90BE56;
-	Mon, 17 Jul 2023 16:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB99817EE;
+	Mon, 17 Jul 2023 16:37:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F6AAD46
-	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 16:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C9B10E7
+	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 16:37:07 +0000 (UTC)
 Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320DE170C
-	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 09:29:56 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-51e566b1774so6151570a12.1
-        for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 09:29:55 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAFBD10E4
+	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 09:36:56 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-51e590a8ab5so6346600a12.2
+        for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 09:36:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689611394; x=1692203394;
+        d=gmail.com; s=20221208; t=1689611815; x=1692203815;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dBuDQLYc/otGeZr/lPetFMOpPtdW108y+vIZ6ipemLo=;
-        b=RqP3WK8SHOCYfeEk/xjOORpenyc1GghUuxT5FLM61vbnl/sIYSTNYLeYcilYdXKjqT
-         qQ4pynZxQd5+FbUvdN/PhpjA5N6zuxz0JsxR6qIbfaqVaC0xSrDQDhUoBBdFTKEkqxXP
-         6uppYqMsmWDjPvQV8N+d+rl1iE1jmb2YVo76WetJWmChaVEqYD3VXbLplLONLrGNerTh
-         4W4LP/wqIgE6DR/xPc7ZwBYR0ElVwEb+oA3P+7tIq2W2FIvALnx0oAmLFPCoqftwEQjF
-         KJyiahqujFYIbR5Av/XZ6oywHzJalKKSAiNkRi5+BKFog9Rvsr8uf/XkU3s9gnPmsahf
-         woog==
+        bh=G8TgGbr621gZzM/ZT0mn12VwZ32pslu3DbRmhhVFWpM=;
+        b=drYes1DTT4C+dh/2eE6mqrN0W7kKJVXpBsFJv5o/TfgKu+3kwRJ31Li1eU5csa7vOf
+         BWifkhacQiBj+TtvtPu1JcRSWOIM9iV9rbCn7wdnRgQFDigrScAS9JDRRdWAlcQYfo5H
+         KSrClykpqn0/erl/nk4AvI1wgeAIlEwAkpYfaPk41eaXfg+41TZOfhq3MG7KUAhbcimf
+         XI2E/yi4Y06RXEtMlHpG5qyZkXdKWUfU/31V4NVavTT82t768dzONPFDWUJoHmk4pich
+         IU78pMRe0AADn2z+ojq3qiqEmhRKSwzBx97KH0jr6rswzCjcNvP1Yqpb/jSi+GRMix/o
+         MGMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689611394; x=1692203394;
+        d=1e100.net; s=20221208; t=1689611815; x=1692203815;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dBuDQLYc/otGeZr/lPetFMOpPtdW108y+vIZ6ipemLo=;
-        b=NlqCFqtUsKNFKia2XT5F5bI2c8OFaVREdktfEEAr2L5kOcFC4RR2Y+fV/92sHCiW0F
-         ffEmU7gU0GRjRf6Gm5Kr29dXB57aCG+VXrrCidtZsx8nUAKlMix1pTmjiL/XfDzATMLW
-         kDOWzbj8qbQbo70F/Wd4pyU+g6/G4TOlDdCnnseIGkd0/Fj3WJlfe/KQARQKmc/uIRPq
-         WJIz9MieNMtzWu1Z3gwE3kzalF66fTBrWRE8l4673O8EOylqpTJ9wh6v3d0O+HB3Y1jb
-         hv5CzZKLsb4lRHXs9ZNXxlEklW1CyfnWljIxuRrfUPVcq3Nb4m/KBLJ61SVkxjifVFrS
-         vhuw==
-X-Gm-Message-State: ABy/qLbEKyY2gPvS0WLuq85jo2Log0f0D/xuiqS379DVIdcDzPUSUOqc
-	ekKG8Z5RAAaczqQuo35qbPdTYGyx0GnC06MeZog=
-X-Google-Smtp-Source: APBJJlGaUfwAeD15e7NzxN6+qWVXYe2y+drZmzAfv3NYkZDg/eGjvtLv71EeygAYMz45pGY+dzeZ8mFUkpF+5wiFFms=
-X-Received: by 2002:a05:6402:7c4:b0:51e:5cab:feb9 with SMTP id
- u4-20020a05640207c400b0051e5cabfeb9mr11486767edy.33.1689611393972; Mon, 17
- Jul 2023 09:29:53 -0700 (PDT)
+        bh=G8TgGbr621gZzM/ZT0mn12VwZ32pslu3DbRmhhVFWpM=;
+        b=QzChQHKWzY7DBpFZ6VZ8+KoNLFTkXnGnRANFZWCUZhpi6EGhO0HGOpn4z5PkoWIROc
+         3fAMh/Gt6bwfez2sB3GEXQQUlTquIgi+3z1caV7a7CwYl4Z0rnVjQ6kY+tYij9tjl85q
+         rtzVoH1HymsIFuseA06VPLXvZZQTPjBQaS1dFpBC6xtLED46+79/cpG0FB9Sv8o42L0c
+         qQb+bg9vH3TSuGIqS3Wy3xoIgUkvlama2Md7quIen9PDMi8ln4ZSUpNsFX7MEV7ELH6Z
+         vpsEIhDCM9EUiVKu5Eyg4DBD8PAOUJUJ03j/9OwgCtk6tk5rVB68j2fjcK83CuK54h3t
+         XxEA==
+X-Gm-Message-State: ABy/qLYhehiK+tvoll7UO/d6VecyWii/DLwsKZE1vgGdYBOb5EHs6zqW
+	8R+EWRDJZisVhrAUHP3eT9dgh//UORXqxvPOxbIS3b8LEVw=
+X-Google-Smtp-Source: APBJJlGgZxSpOPlNp9vlSFB/81l5u80T1Vy13/wQQZw6dyXePZQPxCUiKRYE62MdjZXa/+UwtzvxBsuqRjybsP+RULw=
+X-Received: by 2002:aa7:c60d:0:b0:51d:9195:400f with SMTP id
+ h13-20020aa7c60d000000b0051d9195400fmr12160844edq.17.1689611815229; Mon, 17
+ Jul 2023 09:36:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230713023232.1411523-1-memxor@gmail.com> <20230713023232.1411523-6-memxor@gmail.com>
- <20230714220522.r4w256kkjtqhdued@MacBook-Pro-8.local>
-In-Reply-To: <20230714220522.r4w256kkjtqhdued@MacBook-Pro-8.local>
+References: <20230713023232.1411523-1-memxor@gmail.com> <20230713023232.1411523-8-memxor@gmail.com>
+ <20230714223929.eu2ijg6t3kvgtl6b@MacBook-Pro-8.local>
+In-Reply-To: <20230714223929.eu2ijg6t3kvgtl6b@MacBook-Pro-8.local>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Mon, 17 Jul 2023 21:59:13 +0530
-Message-ID: <CAP01T76T32mfMmfYSMvVQqKNvtp1MjZQoTRfbi1=vs0VcT3LqQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 05/10] arch/x86: Implement arch_bpf_stack_walk
+Date: Mon, 17 Jul 2023 22:06:15 +0530
+Message-ID: <CAP01T76AacE8OGbeo07RyL9ipd4G7OZUgUvqsuf45hpZJrT7zQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 07/10] bpf: Ensure IP is within
+ prog->jited_length for bpf_throw calls
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
@@ -77,119 +78,76 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, 15 Jul 2023 at 03:35, Alexei Starovoitov
+On Sat, 15 Jul 2023 at 04:09, Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Thu, Jul 13, 2023 at 08:02:27AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > The plumbing for offline unwinding when we throw an exception in
-> > programs would require walking the stack, hence introduce a new
-> > arch_bpf_stack_walk function. This is provided when the JIT supports
-> > exceptions, i.e. bpf_jit_supports_exceptions is true. The arch-specific
-> > code is really minimal, hence it should straightforward to extend this
-> > support to other architectures as well, as it reuses the logic of
-> > arch_stack_walk, but allowing access to unwind_state data.
+> On Thu, Jul 13, 2023 at 08:02:29AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > Now that we allow exception throwing using bpf_throw kfunc, it can
+> > appear as the final instruction in a prog. When this happens, and we
+> > begin to unwind the stack using arch_bpf_stack_walk, the instruction
+> > pointer (IP) may appear to lie outside the JITed instructions. This
+> > happens because the return address is the instruction following the
+> > call, but the bpf_throw never returns to the program, so the JIT
+> > considers instruction ending at the bpf_throw call as the final JITed
+> > instruction and end of the jited_length for the program.
 > >
-> > Once the stack pointer and frame pointer are known for the main subprog
-> > during the unwinding, we know the stack layout and location of any
-> > callee-saved registers which must be restored before we return back to
-> > the kernel.
+> > This becomes a problem when we search the IP using is_bpf_text_address
+> > and bpf_prog_ksym_find, both of which use bpf_ksym_find under the hood,
+> > and it rightfully considers addr == ksym.end to be outside the program's
+> > boundaries.
 > >
-> > This handling will be added in the next patch.
+> > Insert a dummy 'int3' instruction which will never be hit to bump the
+> > jited_length and allow us to handle programs with their final
+> > isntruction being a call to bpf_throw.
 > >
 > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > > ---
-> >  arch/x86/net/bpf_jit_comp.c | 21 +++++++++++++++++++++
-> >  include/linux/filter.h      |  2 ++
-> >  kernel/bpf/core.c           |  9 +++++++++
-> >  3 files changed, 32 insertions(+)
+> >  arch/x86/net/bpf_jit_comp.c | 11 +++++++++++
+> >  include/linux/bpf.h         |  2 ++
+> >  2 files changed, 13 insertions(+)
 > >
 > > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > index 438adb695daa..d326503ce242 100644
+> > index 8d97c6a60f9a..052230cc7f50 100644
 > > --- a/arch/x86/net/bpf_jit_comp.c
 > > +++ b/arch/x86/net/bpf_jit_comp.c
-> > @@ -16,6 +16,7 @@
-> >  #include <asm/set_memory.h>
-> >  #include <asm/nospec-branch.h>
-> >  #include <asm/text-patching.h>
-> > +#include <asm/unwind.h>
-> >
-> >  static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
-> >  {
-> > @@ -2660,3 +2661,23 @@ void bpf_jit_free(struct bpf_prog *prog)
-> >
-> >       bpf_prog_unlock_free(prog);
-> >  }
-> > +
-> > +bool bpf_jit_supports_exceptions(void)
-> > +{
-> > +     return IS_ENABLED(CONFIG_UNWINDER_ORC) || IS_ENABLED(CONFIG_UNWINDER_FRAME_POINTER);
-> > +}
-> > +
-> > +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
-> > +{
-> > +#if defined(CONFIG_UNWINDER_ORC) || defined(CONFIG_UNWINDER_FRAME_POINTER)
-> > +     struct unwind_state state;
-> > +     unsigned long addr;
-> > +
-> > +     for (unwind_start(&state, current, NULL, NULL); !unwind_done(&state);
-> > +          unwind_next_frame(&state)) {
-> > +             addr = unwind_get_return_address(&state);
+> > @@ -1579,6 +1579,17 @@ st:                    if (is_imm8(insn->off))
+> >                       }
+> >                       if (emit_call(&prog, func, image + addrs[i - 1] + offs))
+> >                               return -EINVAL;
+> > +                     /* Similar to BPF_EXIT_INSN, call for bpf_throw may be
+> > +                      * the final instruction in the program. Insert an int3
+> > +                      * following the call instruction so that we can still
+> > +                      * detect pc to be part of the bpf_prog in
+> > +                      * bpf_ksym_find, otherwise when this is the last
+> > +                      * instruction (as allowed by verifier, similar to exit
+> > +                      * and jump instructions), pc will be == ksym.end,
+> > +                      * leading to bpf_throw failing to unwind the stack.
+> > +                      */
+> > +                     if (func == (u8 *)&bpf_throw)
+> > +                             EMIT1(0xCC); /* int3 */
 >
-> I think these steps will work even with UNWINDER_GUESS.
-> What is the reason for #ifdef ?
+> Probably worth explaining that this happens because bpf_throw is marked
+> __attribute__((noreturn)) and compiler can emit it last without BPF_EXIT insn.
+> Meaing the program might not have BPF_EXIT at all.
 
-I think we require both unwind_state::sp and unwind_state::bp, but
-arch/x86/include/asm/unwind.h does not include unwind_state::bp when
-both UNWINDER_ORC and UNWINDER_FRAME_POINTER are unset.
-
-Although it might be possible to calculate and save bp offset during
-JIT in bpf_prog_aux (by adding roundup(stack_depth) + 8 (push rax if
-tail call reachable) + callee_regs_saved) for the subprog
-corresponding to a frame. Then we can make it work everywhere.
-The JIT will abstract get_prog_bp(sp) using an arch specific helper.
-
-Let me know if I misunderstood something.
+Yes, sorry about omitting that. I will add it to the commit message in v2.
 
 >
-> > +             if (!addr || !consume_fn(cookie, (u64)addr, (u64)state.sp, (u64)state.bp))
-> > +                     break;
-> > +     }
-> > +#endif
-> > +}
-> > diff --git a/include/linux/filter.h b/include/linux/filter.h
-> > index f69114083ec7..21ac801330bb 100644
-> > --- a/include/linux/filter.h
-> > +++ b/include/linux/filter.h
-> > @@ -920,6 +920,8 @@ bool bpf_jit_needs_zext(void);
-> >  bool bpf_jit_supports_subprog_tailcalls(void);
-> >  bool bpf_jit_supports_kfunc_call(void);
-> >  bool bpf_jit_supports_far_kfunc_call(void);
-> > +bool bpf_jit_supports_exceptions(void);
-> > +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
-> >  bool bpf_helper_changes_pkt_data(void *func);
-> >
-> >  static inline bool bpf_dump_raw_ok(const struct cred *cred)
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index 5c484b2bc3d6..5e224cf0ec27 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -2770,6 +2770,15 @@ int __weak bpf_arch_text_invalidate(void *dst, size_t len)
-> >       return -ENOTSUPP;
-> >  }
-> >
-> > +bool __weak bpf_jit_supports_exceptions(void)
-> > +{
-> > +     return false;
-> > +}
-> > +
-> > +void __weak arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
-> > +{
-> > +}
-> > +
-> >  #ifdef CONFIG_BPF_SYSCALL
-> >  static int __init bpf_global_ma_init(void)
-> >  {
-> > --
-> > 2.40.1
-> >
+> I wonder though whether this self-inflicted pain is worth it.
+> May be it shouldn't be marked as noreturn.
+> What do we gain by marking?
+
+It felt like the obvious thing to do to me. The cost on the kernel
+side is negligible (atleast in my opinion), we just have to allow it
+as final instruction in the program. If it's heavily used it allows
+the compiler to better optimize the code (marking anything after it
+unreachable, no need to save registers etc., although this may not be
+a persuasive point for you).
+
+Regardless of this noreturn attribute, I was thinking whether we
+should always emit an extra instruction so that any IP (say one past
+last instruction) we get for a BPF prog can always be seen as
+belonging to it. It probably is only a problem surfaced by this
+bpf_throw call at the end, but I was wondering whether doing it
+unconditionally makes sense.
 
