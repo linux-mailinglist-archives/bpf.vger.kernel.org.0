@@ -1,199 +1,399 @@
-Return-Path: <bpf+bounces-5099-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5101-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A134756751
-	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 17:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4CE97567BF
+	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 17:23:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F8BD2812F1
-	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 15:15:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69B812811D4
+	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 15:23:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF4E2AD26;
-	Mon, 17 Jul 2023 15:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98A2253DE;
+	Mon, 17 Jul 2023 15:23:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9A3A253BB;
-	Mon, 17 Jul 2023 15:15:24 +0000 (UTC)
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2069.outbound.protection.outlook.com [40.107.94.69])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0DE10EB;
-	Mon, 17 Jul 2023 08:15:22 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988FEAD26;
+	Mon, 17 Jul 2023 15:23:32 +0000 (UTC)
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2061a.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e89::61a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1828810D;
+	Mon, 17 Jul 2023 08:23:10 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jE3Ji0YY5L+nvdl5YhWofPHUidDv6/JdlJcnXOP6znSN9Eip47qn48abadtOcQ6d1C43SZFZuKfgfgE82zeKNUpn8CBz4hp21Na9J9bbLYR4g5ThhgFBNg/qc0V9ak3Ma4HDIh+wGp2kudHJR0y1bIMCPMv2iyo3lyxc4h6akjY9xlygU6n0oKL1uc9DtI5QtXxb9evRF/aTBWKOssHJZnu2qFZxHAzIyQ2VDaywZqxCFzxz2Y0EeZiX44e/hBUiEzOCTjiSvki4nKs/kE4/2XuvTTSzKf6EtiGM4IRvYPXFSVriOMxU+zfvl9T0uQHdngjyrMD3mfZT5wgyPJHGQg==
+ b=hwoKfsuH/8K70uH+X4hP6N8dNglP1XsWxJtow53PZvtF7jbZVoNOMA7JN7cVcAaZNG+AwJdikW8WqrN+HR47nAkekhtd74W1uoKIB46n9aay6N/2EMb/5JHUXbgBK81S2gte2POG7Fcn+t/FkIucTIhg/25izZB6GxPcJH1rEaRapqZtPibbOHR7DR+GlNUQH00i+vXXEaSmsO3S7qVYijrpy/YKsMNWmeqBTUfeFkIEZ1SlfmNABCcPD6VfsbdfmWmBYgAcPIzAZYSwBRpWWP+uRDxXaoWI7kwEUYiKQfnq4uZRl9OzHcfPp0Ea+cdOtoFjSfU2WVv+uBDf5R1XCA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=S8JaixuHez+RTHh0urYG2cCx3W242Ve63iwkdfU1jc8=;
- b=bfbLwaSZNM8WbQmEboryNan3/bJkNHcTgYt52k+ONd01w0vFRQHG+ct4N7wSSTY9Yrn1tZpq55e7BFpuFcXrHaR780NiIQTrEONVV6tW/PtuAln9M4VbJisCka4DE45TJy43OniiD9C3nazY/z5X4XVMADXMhl1tB7Etu+nrqu1Bcwz3cSGF8/h3cEfEzjcHxpJHMWenuTuhTYfTiHzQXN2PN9BIRIqtG7fHSnkIrqVpweMOU2PDuIQaPTxBYUIM0cMzlLX7f+G6quIzID1KP+REjjY1P1b/0QMNvyX4Y6N3EVT+M277A34qFLpLu4ymntBQYCuZDKQXc1JRnto8vg==
+ bh=YffSdHPPtHX6fJft/wRe7+lnMsAexH2qhAj2RNtGaIM=;
+ b=ZwlCUFw1daJmX70nhE4USabb5YiLxQCJBlzR9jSPJs9vw/sjk9VykYbotkudnplvuBcSwQAd65cCODXDTP4dmt2J/tA3oaL0NgsrY8giXttzs0FntFmMNJlPGSOwQuj0TlGvyvaV6tBlqfAakmbjz4wSQE/HxQN0O7P/0KwGe+WYDW/EWnuSuVXNHL/zykXLv/w3yfA11K7eaTlBLCVAhGAMnC3jwG74e71jSAdAZxComi9zgACVT1fqSha7yC6CekEPw6KSIpDeDZjtzkXtCBrztfFx3bMbe3eFDcTTjOkpRwWBbBqiZobkjqZWkcZwd3R76N+9uSC3AokBcDrIIw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S8JaixuHez+RTHh0urYG2cCx3W242Ve63iwkdfU1jc8=;
- b=hUn1Ej2xZylgGLsmTzR3OOajNMwHfh57u14E1TCrbKmYQZNB9dJDf+gFxEjbFaQAzmLrUzRFeqhJONytJazLAWRFn2YUNDsAJDEY/+rFH1eFjoGolIT+mRtxnTfyjsdSwjyLS+PvhgRSQ0/GxHsfqnmRZ6cj98BTLAzRWeXNBffgYHQzBt9Mn3pcCKH7ZPio+PyCymw0Sc4BsvF3oB3YdO2MTtRo2s2C8YsSUkaZSb2TS+GOc+2qO07GHp5Z7u0NGu2gfgg5K0RHBe9rjFGiN/5TKwhwEbqLEwgev+Wk1sQZuO6RGmiX01xYAjqvNlBoWLCqXlscSKowA7BZNftpow==
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13)
- by BL3PR12MB6476.namprd12.prod.outlook.com (2603:10b6:208:3bc::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Mon, 17 Jul
- 2023 15:15:14 +0000
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::e9ca:72a9:17b1:f859]) by DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::e9ca:72a9:17b1:f859%3]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
- 15:15:13 +0000
-From: Dragos Tatulea <dtatulea@nvidia.com>
-To: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC: "atzin@redhat.com" <atzin@redhat.com>, "linyunsheng@huawei.com"
-	<linyunsheng@huawei.com>, "saeed@kernel.org" <saeed@kernel.org>,
-	"ttoukan.linux@gmail.com" <ttoukan.linux@gmail.com>, "maxtram95@gmail.com"
-	<maxtram95@gmail.com>, "jbrouer@redhat.com" <jbrouer@redhat.com>,
-	"kheib@redhat.com" <kheib@redhat.com>, "brouer@redhat.com"
-	<brouer@redhat.com>, "jbenc@redhat.com" <jbenc@redhat.com>,
-	"alexander.duyck@gmail.com" <alexander.duyck@gmail.com>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "ilias.apalodimas@linaro.org"
-	<ilias.apalodimas@linaro.org>, Saeed Mahameed <saeedm@nvidia.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "fmaurer@redhat.com"
-	<fmaurer@redhat.com>, "mkabat@redhat.com" <mkabat@redhat.com>, Tariq Toukan
-	<tariqt@nvidia.com>, "lorenzo@kernel.org" <lorenzo@kernel.org>
-Subject: Re: mlx5 XDP redirect leaking memory on kernel 6.3
-Thread-Topic: mlx5 XDP redirect leaking memory on kernel 6.3
-Thread-Index:
- AQHZjY743nR7ST598kifD6Q1M3DiL69oDfyAgE+tU4CAAA45gIAAUDMAgAAJPICABjpogIAAATIAgAAJRwA=
-Date: Mon, 17 Jul 2023 15:15:13 +0000
-Message-ID: <99774260e7e0f5f21215d6f4b00c5d8a7102f4ce.camel@nvidia.com>
-References: <d862a131-5e31-bd26-84f7-fd8764ca9d48@redhat.com>
-	 <00ca7beb7fe054a3ba1a36c61c1e3b1314369f11.camel@nvidia.com>
-	 <6d47e22e-f128-ec8f-bbdc-c030483a8783@redhat.com>
-	 <cc918a244723bffe17f528fc1b9a82c0808a22be.camel@nvidia.com>
-	 <324a5a08-3053-6ab6-d47e-7413d9f2f443@redhat.com>
-	 <2023071357-unscrew-customary-fbae@gregkh>
-	 <32726772de5996305d0cfd4b6948933c47cb7927.camel@nvidia.com>
-	 <2023071705-senorita-unafraid-25b8@gregkh>
-In-Reply-To: <2023071705-senorita-unafraid-25b8@gregkh>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
+ bh=YffSdHPPtHX6fJft/wRe7+lnMsAexH2qhAj2RNtGaIM=;
+ b=NI7SVulEyjTHCdhRMfT+GolEoixfK2bFZR1X79DjSbCpJwA2jvXJQz7VkL6YVs1WmwYgt5HkJbURXqrNkbboZSV14/V/MXDg5GMGq/7EKrdktYBNebUNCJ0U+7eK8hnK9uOyFig7RILLvbUOaU/S5sKOwjFJSCPckQ48J3yxQfLgrY8GRuCbgwM+UINkMCc2fi4/3M452H1YUwXmyno2bBk60GXfpI0rkn/LUWuuf4kqg9T8w7sRvHg+X3bjI2fT+zOKY/26fJCjgaKrwMR/S6UD+WsfIgzO/lsxU3HqKNCeafRBX+RL0h32NqpGAD31kDQx5+SDX/8lKLP4kc6ebg==
+Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR12MB5565:EE_|BL3PR12MB6476:EE_
-x-ms-office365-filtering-correlation-id: 8f9755ef-3775-41f6-18f3-08db86d89ea0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- V7j2GywMq9KEcXG9bcwFpYgURahYiGlZQ2e3Q4IA1rJY7rTJGaU66uKp/oIVCy2a/G8n+zhAMhpVHOFIT+UrnFycWbY32n7lTS+E8nxSrWmJCW9qS5cII8mmwAwPymDKVydFcpjTlwPL+r2t/5JvbQ3kE/Oa1DaskQIkzBpi02XgzOJr7F/KmTnt3GDtTO5tWMW4jByQBbR69dVCOM2K7MXuC3GJGDeD1Hjogiuz4Sf81+2nBkqi5HLXljgnQKcDYGOqdDAbP9oEc3HqSpb3Bo4F0GuyYuTLK7D1pkBi7DNC6WFpNBi/Rqny/FygEy14+08pUrzVRs68QvrQPZL52NrvzvZXg32272JTGOeuGOa5km7Bm0wJ1+oDK18hDbHgjZJgBpQC6d+AMn7WN9dR9KTkU55p9A9Y3TW/Y28K6boF7urPSqg1HgNDg9FlQATy+EW4+zXD9m01AfstzdVjQRGt1Ru2iJqflStN4CNw46R3HDM+/ojPTb4lFwsSiKYvsTF7U8bAi/TmYxTlC6Zc85oQc6iRi5lZJOSUqix++Ixi8ejkOR2frx6pkyX72TiOg4qxKoLjElXSfUPtChlrzx5AqbEWwuAkL5KSrMu18pyizqymywaVwewVG3Ed67omN+otyfi8Yybmt4EIG97jxW60wzEQ6G1mOixmZRI3ATLCKl4luRmLgd7epPESDPto
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5565.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(376002)(366004)(396003)(136003)(451199021)(186003)(54906003)(478600001)(6506007)(71200400001)(966005)(6486002)(6512007)(2616005)(86362001)(5660300002)(38100700002)(7416002)(8676002)(8936002)(41300700001)(316002)(6916009)(4326008)(2906002)(38070700005)(36756003)(122000001)(66556008)(76116006)(91956017)(64756008)(66946007)(66446008)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?MkZmdkV3Y2M4bHpkS25zLzZPOGF4b3EweTV5TE5ZK29hNmQxMFN2cW1zcVVQ?=
- =?utf-8?B?NWs5TmFyTWNFM0p1UE8zWFdrTENxUVJyZ0Y1Mlo3NHUxSlNmajJzSVdLR3k2?=
- =?utf-8?B?dSt3dng1aG1UMkJ5OHJ6dFpuRzJtSmw0dFkvTkRNaVlPVmhQZVZBTEpUSVBZ?=
- =?utf-8?B?S1lNRkJpSGp4Y056QzJFOEg0S2d6U2dkcFpkSEwrQktWL1R5aUxiU2pXWUt1?=
- =?utf-8?B?UjVMekdUMitQSHJHeC9SWFRlNzYvMVdJd2dvWVZnUHBoZElETHZ3Z2hoekVE?=
- =?utf-8?B?eXR1dFY2L1AvQUo2aDJReWI3ajRyQyttUHJLckRTYXNMUlZPb2tNbGVTZzNI?=
- =?utf-8?B?NzVQcmlRTEhNZXVXK0ZjMFBCdlJJekt2TVoweHhDU3U4ZmE0ZlIvWTJLQzNu?=
- =?utf-8?B?bnhJZFAwY0hpclR4cStjdUErQjFlV2VpRWtIK283QTlaQ2lhOTIrK25zTm8w?=
- =?utf-8?B?emN5TS9OTHQ3a0RJQnNyWG93U1UwaW1DdjM2NFZRZFVWSkcyWnAwa01nSFIz?=
- =?utf-8?B?eEhZUElwZW9XMk9sVVhJbkRGZ0hhZEEwME1vVFpyNDdnaWJCRXpiQ0p5bHVj?=
- =?utf-8?B?Q0FXTkR2Ym1pOSs1cDNtaThvbkpoaVRCYlZkVS93bUovemp2elAyNys0dUFh?=
- =?utf-8?B?TVl5T1F4diszaFlOUnVyR3FmRTlHYmZwQTI5VHBqbnAyNkxyYjkvMFNocVlM?=
- =?utf-8?B?cS85NWdJSDVvZ1FCa3JMMHRNL2RIWFFiTEtqNXpNb0Zrb09yN2VXM2FTbUVw?=
- =?utf-8?B?b01jUmZ6c2pnNlRVUTRhTXVVelRxNGJsYXM3dWg5VGRKbVl4dWFIdXdmbk5K?=
- =?utf-8?B?Z0poZ1diRXNrVjJsMXJMaG5ZZTAwTGlTL1FUaDlTcmtaUFN5RTBZQzJBM3E2?=
- =?utf-8?B?U2t2MkQyUXVwM1JoWUlLSld1c2svYjF6UHZ1TVFkeDRoWW9DQU1yUzNjb3NJ?=
- =?utf-8?B?NWRzQzFJTDNRem01bkU3a2xqZERoSk5OY05aUTMzWDU2aktpL2hoYXVUMVpI?=
- =?utf-8?B?TGtXTGZDQ0VzRXZJSHVGcHNxcnlaMks2dVUrMGNYMlFSNVlaRS9nSE9ITVR1?=
- =?utf-8?B?enVQWmoyOEExVVM2cnN4ckhsNXg2d3RDQTBUdW1YaGhNLzJ4VnJ5K3lyeG1u?=
- =?utf-8?B?elcvQnJwTUZyc1kvUWNsNVhUb1RLQU9TK0EzcUFuYmpGYjkzcTdvdlF3MU11?=
- =?utf-8?B?enAxWFlqY0lRWUxXNzhoWnNxNTdJYjBETFQ3Vk9DY3d4WmZ4S2xzelp3RmJR?=
- =?utf-8?B?SUsxN1lFUnQ2Uk9XYWswQ2dOdmVuODBUdml2Qm1zeGVMaGFDOGllU0t2ZVVz?=
- =?utf-8?B?UU9CSlphOWE4eWdUbjJLK0lxUk5rczhPd0NQSkNCdFNvK2JpalF5NFM4Ump5?=
- =?utf-8?B?RFZTTkJnODRDQ3djbkczalVVR3dDMFh1VDhlVmhpUU5OS3JBVEgvR3VQQ2E3?=
- =?utf-8?B?VWFjTk9LM3V5S0grQzltUGp6M01sejZqMVErRXhrb1YxYkYyNnh6K3R4UVU0?=
- =?utf-8?B?dlltNmVyYjFRTFNGbU1rSFFXQjZmd25wMmpWd0xLN1Uya0ZGQlplNkk4UTRX?=
- =?utf-8?B?cVZsU1VPcDM2K3ZVQnQ1U29JNE5WV0ptMVBOdG5wOE44ZnI0b0NWa0dvYWIr?=
- =?utf-8?B?NkZwTTA2SWpYM1pYdVpId3RzcVdVYmhRb3pWSjZCYnEzL2tsdlA2QWEwZGhI?=
- =?utf-8?B?M3h0M250Zkl1Q2Y3RWQ4U0lCZWdWdHI2Y0pGYVk5QjZ6SDViaUYzZUViOHVa?=
- =?utf-8?B?dFVBSXhPUHdRaDV0ajlqS3RjM0Q0d0NyQjd1YXVQZzRBNTVkdExhbkhsclJt?=
- =?utf-8?B?aGpXazhSM3NqV3liY21UUmN6OVRZTVhWQTQ1aFZJMm5UbUtxTG1wd2xvY2Vh?=
- =?utf-8?B?L1YyL0svY3JreTdzVng0UUxxV3lRekxyWW5PV04rV0l0OHdRaEhiSDhWWm95?=
- =?utf-8?B?anRWeG5qTnBhc1E5N2JKRWZ4RDdSN2FncmcvZ2VlYnNyN3JVbndwTWU2ZU9D?=
- =?utf-8?B?NXd3RWMyQmZkcHpQcmtid2RTTEErMHdlampGa3k2TUE1bFlQV1ZGaVgxMDIw?=
- =?utf-8?B?bXBkOGpOSDRybWVLL0l3eXdEZ1MzUHMwbUREdW9xTVZpOE9kMTg2Z05YZHdv?=
- =?utf-8?B?bzlGZ0lLWU16Z3psZHAvU2gvbHczTUdTdU53Yjl4NnAvei9Eb1BYL05heUlS?=
- =?utf-8?Q?NO1/Ni0W9VcFFGbKR/Cw49sgTMW9M8I5LUGcY9j8ddIn?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B89F5954DB389847B6C3EED5E87A5B4B@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Received: from IA1PR12MB6019.namprd12.prod.outlook.com (2603:10b6:208:3d5::16)
+ by DS7PR12MB6005.namprd12.prod.outlook.com (2603:10b6:8:7c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33; Mon, 17 Jul
+ 2023 15:22:33 +0000
+Received: from IA1PR12MB6019.namprd12.prod.outlook.com
+ ([fe80::7185:fb6e:af4:4ecd]) by IA1PR12MB6019.namprd12.prod.outlook.com
+ ([fe80::7185:fb6e:af4:4ecd%4]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
+ 15:22:32 +0000
+Message-ID: <7815848e-e524-dcbe-448b-d464353435f8@nvidia.com>
+Date: Mon, 17 Jul 2023 23:22:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH net-next V2 3/4] virtio_net: support per queue interrupt
+ coalesce command
+From: Gavin Li <gavinl@nvidia.com>
+To: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, jiri@nvidia.com, dtatulea@nvidia.com
+Cc: gavi@nvidia.com, virtualization@lists.linux-foundation.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20230717143037.21858-1-gavinl@nvidia.com>
+ <20230717143037.21858-4-gavinl@nvidia.com>
+Content-Language: en-US
+In-Reply-To: <20230717143037.21858-4-gavinl@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR01CA0145.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::25) To IA1PR12MB6019.namprd12.prod.outlook.com
+ (2603:10b6:208:3d5::16)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6019:EE_|DS7PR12MB6005:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9206df65-f219-452d-30c5-08db86d9a40a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	U9ysDutT6rskFDkhv2uYbpznXOVfo1ltCuzWVbjMyyEkh4GIYKuSt080/MNPIwbV70L0pF6ArsHfSt9BeSF7/aHnSG3Dz0MBlIGHXAFlXBVPK482Zs2iT2M3m4ZluExCcCRdM+KcPU4AByVjmffFLv628ce1I4i7o8gc3GE1FOzQS7mV7KJfBAtrk+G/sC8ezt3F4MBtpKCAKVv/ENvHYrJ6gugGZbYK4GCbOceN/mc6W3oj5ICyivu3Qc7MUy4dOrKhTqyI1FjHnb8RrFDlHPXzBLNot8RqZkQ2lZeNmcDV0CWdPq0RrZu8q//2YHhZq69gqKsjDy7rt7dXtVRfCMErZY0J08292lQeKU/Mz2wO+ZFSVqeTRHF3s1wgCgP3uChnJUUWS6fxfLV5zWyRdiwfGnLHTMUa6e9qwM8ArY2Z9wt3JNE5fp9DygsPqUNrYXBeuPB0rx5E+1VbewTCj0M0MOUX15w2bWXe1/GFE/14uqFqqZicfMSAvcp6aHf4RouoPUq2DedtYGVfFhujLcMDy0dns8Vv+TKVpPkBbkNvGG8ZcrNzXYdlgjV7neYQUiri+Eum9qWI83YNcKSY8SIgj8iNNg3GaVeHelnl53+r1Pgj7DvVtCX0uudyRFbzYLwFvFIYPHH0QwZaY5x7Do8SUWwLl3vLe5CpyRhvswA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6019.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(376002)(346002)(39860400002)(396003)(136003)(451199021)(921005)(36756003)(31696002)(83380400001)(38100700002)(86362001)(7416002)(8936002)(8676002)(5660300002)(2616005)(6666004)(6486002)(6512007)(6636002)(66946007)(316002)(4326008)(66476007)(66556008)(478600001)(41300700001)(26005)(186003)(31686004)(53546011)(2906002)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UnM1MlJJZk41Y1BiQUVzdlhaU01PQms1TktHTlhPOU90REtuVUtkZXEzYTFH?=
+ =?utf-8?B?Qy9DWGtWN0Rxd3pLYVRVcGJVbHZCUWJnUGFKMm9LaDhPTVdhbEdVa1NZVENw?=
+ =?utf-8?B?TnZZV3dqL2xObkIzMDkwNVQ1bjF6Sk44QUU0MEcrL2owS1dSM3AyVkpjcVdz?=
+ =?utf-8?B?bUxRQUtyZUp1SUxaaXpQUS92WWV1cW4rblVIOGx5QTlDZ1dUbDhWdXRrMHpp?=
+ =?utf-8?B?bHRQQ2VUWXpGSGJSdVBnVVdTcG1uTkdxUlBTUUptQWFrdHkySGMrMDBxSmNj?=
+ =?utf-8?B?SEF4OXV6ZitsTjd0TnVEYWFNK2hyWWVGNnNHWUpwQnQySEdWN1dsTEliaThJ?=
+ =?utf-8?B?aHpoNUtGTWo2RGw4bDEyUEErQkpuZWcxUm5MaXRWb2pIQy85czArZE5GTUFD?=
+ =?utf-8?B?RjFBL2cwcmY1Skluc3dSTFQ0ZkM0cEhwQ1V1em8wWWVxY0RXY1NQYndNZFhQ?=
+ =?utf-8?B?N2dQcXkwNjNjRG5YY0ZQcGszYkN6YlhycjA1bklNclkrYnJrU1puRkpwdlA5?=
+ =?utf-8?B?Wk9QcVRjYVd0alMwc1dFcGNrSktkVkNxSXdjeDlMVGUzR0FPeXVRSndXRzUr?=
+ =?utf-8?B?cWV5VmhreGhjM3RVbCtpOG1oUnJLeDMxYU5CbGVaTTBJdWhRbkJtZURBc2ZG?=
+ =?utf-8?B?SkVkazJLa2wxR2RwVFNpREFLbStoT2dQb21XU0lXNjlyVzgxUUx5VHRwRkNs?=
+ =?utf-8?B?WUhWbUxsREk4Z1QzSzMwU1dXMnlWL0o0Z0ZjUVNXRWswZ1ZVY3ZoMHFraFRO?=
+ =?utf-8?B?dU1FUUN0UXU1MWs0RnpTSXhKSTZpWE1uZVgvdUZEUjJlbUFvVnM1elRESzFN?=
+ =?utf-8?B?b21tOXdDK0ZHcFRXNTJmSnpRbVlQeVFJaENzckNPYzFTbktuMktHcWV2L09u?=
+ =?utf-8?B?T0NvRVdhR0UvTlRoUkRqQis2ZzVFR2Y2V1FkR093SUNWUHZCVnhUcVluZXdP?=
+ =?utf-8?B?S25LZE1UdldHdkdqQjdkUWFHNWJGZzBHaXYveWVsYmtmMU1zVXNlMm42R3By?=
+ =?utf-8?B?MVJUbGdGaE1rcldHbWQ3NUlJcEliMVUzNGNtdGhnRVh6bm0xaVJwVzBQMXpv?=
+ =?utf-8?B?VkpyM04xQTBpN21pRGxYVkZBUXMyY01jTUR3QnV6dDlFV3p6a0U2UFg4a1BM?=
+ =?utf-8?B?RXcwZHVEbFIyRXJxRnNML3JKRFVhYldqMVNmUTJ6ZGpTeWtlVm9LdGs4Z2F2?=
+ =?utf-8?B?ZEZRN0VRM3dZMzJzY00wU21mUXhOcjdzT0hDOGxjdFN1Y1ZRTDRWZGJjdXhh?=
+ =?utf-8?B?cjdQb0NBSGwvWFQwTXh0S3NyRzNCQ2UzTk9iZUsxcFVFTFpneFRtTCtQMExJ?=
+ =?utf-8?B?ZzFFcUNRTDAzYzFLcG4wV2VFc1FBTTM5djkxZG9YQ3ByVUVDaU1QTkEwK0dY?=
+ =?utf-8?B?YlBUZGFBOVErY2pyeG9zc1JMNzRXY2JPanFQejBIY29WNVY0bWNVVTVwMWZx?=
+ =?utf-8?B?cTFnOXltdnd6RUs1dC9kUEdMWDRLQ28wU3JMOEptOVJQR2xnVlptYmd2bDBJ?=
+ =?utf-8?B?Z2JKTEkvQk1pQUF5V1dRU3VKenZ4SEw0VldYaitQYkJlelRodisyek5LL3Z2?=
+ =?utf-8?B?d0JoODJWRGd2MllmZUlQRVNxYUI2Tkpkc2ZPV1NZWGlKZzFOMXRydFZsWStG?=
+ =?utf-8?B?dTVwRlFFVlY1cnNMVDhUbmdac0IyRXZkOTZORmRIdndRd3U5M0ZKRlFiMDF6?=
+ =?utf-8?B?QkVBeXpqVnRJMnhhZGZRODhsOXBJU0FiV0o3dmJWbG9kNldUcWkvNkN1RWF3?=
+ =?utf-8?B?TUpIQXEvbFN0ZUtHVWUyYnl0SWxmSWVYSFNrMEcvRkt0djY1TmliWjZHYlJV?=
+ =?utf-8?B?N2lTd0pCRVVXTWYyRWRwaU1ObDhaOXU3ZGdLdWxNeGZDT2hsblRQb1dRcmZp?=
+ =?utf-8?B?TlVOTWNxTXJpZ042L0JHVmc3RlVGRFd1UWtMSkFRSnR2TFdsd1ZHV1VXd3Fx?=
+ =?utf-8?B?SW8vUTNxNmI3b3hxdXBUVlRyZFM5WThKaHBjVWd3MTRoZG95ajJmV2tOQmkz?=
+ =?utf-8?B?Nm9vSkF4MEpYaE8yQURXN3NXSjdHN1U3TEoxWUxySEdIZElKOFJSbW9UTkFw?=
+ =?utf-8?B?d09OaU5KSEpvK2c3RWh2VDF1MzNjL05HellzT1FCY2QxeVhXUGw3VVpUODdr?=
+ =?utf-8?Q?3+UnUq4IYckxjgrlL6qgpmi7L?=
 X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9206df65-f219-452d-30c5-08db86d9a40a
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6019.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5565.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f9755ef-3775-41f6-18f3-08db86d89ea0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2023 15:15:13.4968
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 15:22:32.4586
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Lq2eHIjBE3uyAWvMBaf2DneKm+ag62FrWNykwTns9ayC3qZ6s6C6MEUD+L4m0T6phKssuy2/mxMHjQsXgpIdmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6476
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W2H7FQHd1FALM6FG7iBoAnYz4CGXVUl7+yfsgNzQv23GJjqUnFBUdX+CP2+soGqfcx/bhuul8LdGV/auYg6Lbg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6005
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+	NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,
 	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-T24gTW9uLCAyMDIzLTA3LTE3IGF0IDE2OjQyICswMjAwLCBncmVna2hAbGludXhmb3VuZGF0aW9u
-Lm9yZyB3cm90ZToNCj4gT24gTW9uLCBKdWwgMTcsIDIwMjMgYXQgMDI6Mzc6NDRQTSArMDAwMCwg
-RHJhZ29zIFRhdHVsZWEgd3JvdGU6DQo+ID4gT24gVGh1LCAyMDIzLTA3LTEzIGF0IDE3OjMxICsw
-MjAwLCBHcmVnIEtIIHdyb3RlOg0KPiA+ID4gT24gVGh1LCBKdWwgMTMsIDIwMjMgYXQgMDQ6NTg6
-MDRQTSArMDIwMCwgSmVzcGVyIERhbmdhYXJkIEJyb3VlciB3cm90ZToNCj4gPiA+ID4gDQo+ID4g
-PiA+IA0KPiA+ID4gPiBPbiAxMy8wNy8yMDIzIDEyLjExLCBEcmFnb3MgVGF0dWxlYSB3cm90ZToN
-Cj4gPiA+ID4gPiBHaSBKZXNwZXIsDQo+ID4gPiA+ID4gT24gVGh1LCAyMDIzLTA3LTEzIGF0IDEx
-OjIwICswMjAwLCBKZXNwZXIgRGFuZ2FhcmQgQnJvdWVyIHdyb3RlOg0KPiA+ID4gPiA+ID4gSGkg
-RHJhZ29zLA0KPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiBCZWxvdyB5b3UgcHJvbWlzZWQgdG8g
-d29yayBvbiBhIGZpeCBmb3IgWERQIHJlZGlyZWN0IG1lbW9yeSBsZWFrLi4uDQo+ID4gPiA+ID4g
-PiBXaGF0IGlzIHRoZSBzdGF0dXM/DQo+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiBUaGUgZml4IGdv
-dCBtZXJnZWQgaW50byBuZXQgYSB3ZWVrIGFnbzoNCj4gPiA+ID4gPiBodHRwczovL2dpdC5rZXJu
-ZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9uZXRkZXYvbmV0LmdpdC9jb21taXQvZHJp
-dmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlP2lkPTdhYmQ5NTVhNThmYjBmY2Q0
-ZTc1NmZhMjA2NWMwM2FlNDg4ZmNmYTcNCj4gPiA+ID4gPiANCj4gPiA+ID4gPiBKdXN0IGZvcmdv
-dCB0byBmb2xsb3cgdXAgb24gdGhpcyB0aHJlYWQuIFNvcnJ5IGFib3V0IHRoYXQuLi4NCj4gPiA+
-ID4gPiANCj4gPiA+ID4gDQo+ID4gPiA+IEdvb2QgdG8gc2VlIGl0IGJlaW5nIGZpeGVkIGluIG5l
-dC5naXQgY29tbWl0Og0KPiA+ID4gPiDCoDdhYmQ5NTVhNThmYiAoIm5ldC9tbHg1ZTogUlgsIEZp
-eCBwYWdlX3Bvb2wgcGFnZSBmcmFnbWVudCB0cmFja2luZyBmb3INCj4gPiA+ID4gWERQIikNCj4g
-PiA+ID4gDQo+ID4gPiA+IFRoaXMgbmVlZCB0byBiZSBiYWNrcG9ydGVkIGludG8gc3RhYmxlIHRy
-ZWUgNi4zLCBidXQgSSBjYW4gc2VlIDYuMy4xMyBpcw0KPiA+ID4gPiBtYXJrZWQgRU9MIChFbmQt
-b2YtTGlmZSkuDQo+ID4gPiA+IENhbiB3ZSBzdGlsbCBnZXQgdGhpcyBmaXggYXBwbGllZD8gKENj
-LiBHcmVnS0gpDQo+ID4gPiANCj4gPiA+IDxmb3JtbGV0dGVyPg0KPiA+ID4gDQo+ID4gPiBUaGlz
-IGlzIG5vdCB0aGUgY29ycmVjdCB3YXkgdG8gc3VibWl0IHBhdGNoZXMgZm9yIGluY2x1c2lvbiBp
-biB0aGUNCj4gPiA+IHN0YWJsZSBrZXJuZWwgdHJlZS7CoCBQbGVhc2UgcmVhZDoNCj4gPiA+IMKg
-wqDCoA0KPiA+ID4gaHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvaHRtbC9sYXRlc3QvcHJvY2Vz
-cy9zdGFibGUta2VybmVsLXJ1bGVzLmh0bWwNCj4gPiA+IGZvciBob3cgdG8gZG8gdGhpcyBwcm9w
-ZXJseS4NCj4gPiA+IA0KPiA+ID4gPC9mb3JtbGV0dGVyPg0KPiA+IFNvLi4uSSBhbSBhIGJpdCBj
-b25mdXNlZDogc2hvdWxkIEkgc2VuZCB0aGUgcGF0Y2ggdG8gc3RhYmxlIGZvciA2LjEzDQo+ID4g
-YWNjb3JkaW5nDQo+ID4gdG8gdGhlIHN0YWJsZSBzdWJtaXNzaW9uIHJ1bGVzIG9yIGlzIGl0IHRv
-byBsYXRlPw0KPiANCj4gVGhlcmUgaXMgbm8gIjYuMTMiIGtlcm5lbCB2ZXJzaW9uIHlldCwgdGhh
-dCBzaG91bGQgbm90IGhhcHBlbiBmb3INCj4gYW5vdGhlciB5ZWFyIG9yIHNvLg0KPiANClNvcnJ5
-IGZvciB0aGUgdHlwby4uLg0KDQo+IElmIHlvdSBtZWFuIHRoZSAiNi4zLnkiIHRyZWUsIHllcywg
-dGhlcmUgaXMgbm90aGluZyB0byBkbyBoZXJlIGFzIHRoYXQNCj4gdHJlZSBpcyBlbmQtb2YtbGlm
-ZSBhbmQgeW91IHNob3VsZCBoYXZlIG1vdmVkIHRvIHRoZSA2LjQueSBrZXJuZWwgdHJlZQ0KPiBh
-dCB0aGlzIHBvaW50IGluIHRpbWUuDQo+IA0KPiBXaGF0IGlzIHByZXZlbnRpbmcgeW91IGZyb20g
-bW92aW5nPw0KPiANCkkgYW0gZmluZSB3aXRoIHRoZSBzdGF0ZSBvZiB0aGluZ3MuIEJ1dCBKZXNw
-ZXIgd2FzIGFza2luZy4gSSBzdXBwb3NlIHRoZSBhbnN3ZXINCnRvIGhpcyBxdWVzdGlvbiBpcyAi
-aXQncyB0b28gbGF0ZSIuDQoNClRoYW5rcywNCkRyYWdvcw0K
+
+
+On 7/17/2023 10:30 PM, Gavin Li wrote:
+> Add interrupt_coalesce config in send_queue and receive_queue to cache user
+> config.
+> 
+> Send per virtqueue interrupt moderation config to underline device in order
+> to have more efficient interrupt moderation and cpu utilization of guest
+> VM.
+> 
+> Signed-off-by: Gavin Li <gavinl@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>   drivers/net/virtio_net.c        | 123 ++++++++++++++++++++++++++++----
+>   include/uapi/linux/virtio_net.h |  14 ++++
+>   2 files changed, 125 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 802ed21453f5..1566c7de9436 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -144,6 +144,8 @@ struct send_queue {
+>   
+>   	struct virtnet_sq_stats stats;
+>   
+> +	struct virtnet_interrupt_coalesce intr_coal;
+> +
+>   	struct napi_struct napi;
+>   
+>   	/* Record whether sq is in reset state. */
+> @@ -161,6 +163,8 @@ struct receive_queue {
+>   
+>   	struct virtnet_rq_stats stats;
+>   
+> +	struct virtnet_interrupt_coalesce intr_coal;
+> +
+>   	/* Chain pages by the private ptr. */
+>   	struct page *pages;
+>   
+> @@ -3078,6 +3082,59 @@ static int virtnet_send_notf_coal_cmds(struct virtnet_info *vi,
+>   	return 0;
+>   }
+>   
+> +static int virtnet_send_ctrl_coal_vq_cmd(struct virtnet_info *vi,
+> +					 u16 vqn, u32 max_usecs, u32 max_packets)
+> +{
+> +	struct virtio_net_ctrl_coal_vq *coal_vq;
+> +	struct scatterlist sgs;
+> +
+> +	coal_vq = kzalloc(sizeof(*coal_vq), GFP_KERNEL);
+> +	if (!coal_vq)
+> +		return -ENOMEM;
+> +	coal_vq->vqn = cpu_to_le16(vqn);
+> +	coal_vq->coal.max_usecs = cpu_to_le32(max_usecs);
+> +	coal_vq->coal.max_packets = cpu_to_le32(max_packets);
+> +	sg_init_one(&sgs, coal_vq, sizeof(*coal_vq));
+> +
+> +	if (!virtnet_send_command(vi, VIRTIO_NET_CTRL_NOTF_COAL,
+> +				  VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET,
+> +				  &sgs))
+> +		return -EINVAL;
+Sorry, introduced mem leak here, ie. coal_vq. May I re-send the patch 
+series or fix it in V3?
+> +
+> +	return 0;
+> +}
+> +
+> +static int virtnet_send_notf_coal_vq_cmds(struct virtnet_info *vi,
+> +					  struct ethtool_coalesce *ec,
+> +					  u16 queue)
+> +{
+> +	int err;
+> +
+> +	if (ec->rx_coalesce_usecs || ec->rx_max_coalesced_frames) {
+> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, rxq2vq(queue),
+> +						    ec->rx_coalesce_usecs,
+> +						    ec->rx_max_coalesced_frames);
+> +		if (err)
+> +			return err;
+> +		/* Save parameters */
+> +		vi->rq[queue].intr_coal.max_usecs = ec->rx_coalesce_usecs;
+> +		vi->rq[queue].intr_coal.max_packets = ec->rx_max_coalesced_frames;
+> +	}
+> +
+> +	if (ec->tx_coalesce_usecs || ec->tx_max_coalesced_frames) {
+> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, txq2vq(queue),
+> +						    ec->tx_coalesce_usecs,
+> +						    ec->tx_max_coalesced_frames);
+> +		if (err)
+> +			return err;
+> +		/* Save parameters */
+> +		vi->sq[queue].intr_coal.max_usecs = ec->tx_coalesce_usecs;
+> +		vi->sq[queue].intr_coal.max_packets = ec->tx_max_coalesced_frames;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
+>   {
+>   	/* usecs coalescing is supported only if VIRTIO_NET_F_NOTF_COAL
+> @@ -3094,23 +3151,39 @@ static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
+>   }
+>   
+>   static int virtnet_set_coalesce_one(struct net_device *dev,
+> -				    struct ethtool_coalesce *ec)
+> +				    struct ethtool_coalesce *ec,
+> +				    bool per_queue,
+> +				    u32 queue)
+>   {
+>   	struct virtnet_info *vi = netdev_priv(dev);
+> -	int ret, i, napi_weight;
+> +	int queue_count = per_queue ? 1 : vi->max_queue_pairs;
+> +	int queue_number = per_queue ? queue : 0;
+>   	bool update_napi = false;
+> +	int ret, i, napi_weight;
+> +
+> +	if (queue >= vi->max_queue_pairs)
+> +		return -EINVAL;
+>   
+>   	/* Can't change NAPI weight if the link is up */
+>   	napi_weight = ec->tx_max_coalesced_frames ? NAPI_POLL_WEIGHT : 0;
+> -	if (napi_weight ^ vi->sq[0].napi.weight) {
+> -		if (dev->flags & IFF_UP)
+> -			return -EBUSY;
+> -		else
+> +	for (i = queue_number; i < queue_count; i++) {
+> +		if (napi_weight ^ vi->sq[i].napi.weight) {
+> +			if (dev->flags & IFF_UP)
+> +				return -EBUSY;
+> +
+>   			update_napi = true;
+> +			/* All queues that belong to [queue_number, queue_count] will be
+> +			 * updated for the sake of simplicity, which might not be necessary
+> +			 */
+> +			queue_number = i;
+> +			break;
+> +		}
+>   	}
+>   
+> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
+> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
+>   		ret = virtnet_send_notf_coal_cmds(vi, ec);
+> +	else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL))
+> +		ret = virtnet_send_notf_coal_vq_cmds(vi, ec, queue);
+>   	else
+>   		ret = virtnet_coal_params_supported(ec);
+>   
+> @@ -3118,7 +3191,7 @@ static int virtnet_set_coalesce_one(struct net_device *dev,
+>   		return ret;
+>   
+>   	if (update_napi) {
+> -		for (i = 0; i < vi->max_queue_pairs; i++)
+> +		for (i = queue_number; i < queue_count; i++)
+>   			vi->sq[i].napi.weight = napi_weight;
+>   	}
+>   
+> @@ -3130,19 +3203,29 @@ static int virtnet_set_coalesce(struct net_device *dev,
+>   				struct kernel_ethtool_coalesce *kernel_coal,
+>   				struct netlink_ext_ack *extack)
+>   {
+> -	return virtnet_set_coalesce_one(dev, ec);
+> +	return virtnet_set_coalesce_one(dev, ec, false, 0);
+>   }
+>   
+>   static int virtnet_get_coalesce_one(struct net_device *dev,
+> -				    struct ethtool_coalesce *ec)
+> +				    struct ethtool_coalesce *ec,
+> +				    bool per_queue,
+> +				    u32 queue)
+>   {
+>   	struct virtnet_info *vi = netdev_priv(dev);
+>   
+> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
+> +	if (queue >= vi->max_queue_pairs)
+> +		return -EINVAL;
+> +
+> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
+>   		ec->rx_coalesce_usecs = vi->intr_coal_rx.max_usecs;
+>   		ec->tx_coalesce_usecs = vi->intr_coal_tx.max_usecs;
+>   		ec->tx_max_coalesced_frames = vi->intr_coal_tx.max_packets;
+>   		ec->rx_max_coalesced_frames = vi->intr_coal_rx.max_packets;
+> +	} else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL)) {
+> +		ec->rx_coalesce_usecs = vi->rq[queue].intr_coal.max_usecs;
+> +		ec->tx_coalesce_usecs = vi->sq[queue].intr_coal.max_usecs;
+> +		ec->tx_max_coalesced_frames = vi->sq[queue].intr_coal.max_packets;
+> +		ec->rx_max_coalesced_frames = vi->rq[queue].intr_coal.max_packets;
+>   	} else {
+>   		ec->rx_max_coalesced_frames = 1;
+>   
+> @@ -3158,7 +3241,21 @@ static int virtnet_get_coalesce(struct net_device *dev,
+>   				struct kernel_ethtool_coalesce *kernel_coal,
+>   				struct netlink_ext_ack *extack)
+>   {
+> -	return virtnet_get_coalesce_one(dev, ec);
+> +	return virtnet_get_coalesce_one(dev, ec, false, 0);
+> +}
+> +
+> +static int virtnet_set_per_queue_coalesce(struct net_device *dev,
+> +					  u32 queue,
+> +					  struct ethtool_coalesce *ec)
+> +{
+> +	return virtnet_set_coalesce_one(dev, ec, true, queue);
+> +}
+> +
+> +static int virtnet_get_per_queue_coalesce(struct net_device *dev,
+> +					  u32 queue,
+> +					  struct ethtool_coalesce *ec)
+> +{
+> +	return virtnet_get_coalesce_one(dev, ec, true, queue);
+>   }
+>   
+>   static void virtnet_init_settings(struct net_device *dev)
+> @@ -3291,6 +3388,8 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
+>   	.set_link_ksettings = virtnet_set_link_ksettings,
+>   	.set_coalesce = virtnet_set_coalesce,
+>   	.get_coalesce = virtnet_get_coalesce,
+> +	.set_per_queue_coalesce = virtnet_set_per_queue_coalesce,
+> +	.get_per_queue_coalesce = virtnet_get_per_queue_coalesce,
+>   	.get_rxfh_key_size = virtnet_get_rxfh_key_size,
+>   	.get_rxfh_indir_size = virtnet_get_rxfh_indir_size,
+>   	.get_rxfh = virtnet_get_rxfh,
+> diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
+> index 12c1c9699935..cc65ef0f3c3e 100644
+> --- a/include/uapi/linux/virtio_net.h
+> +++ b/include/uapi/linux/virtio_net.h
+> @@ -56,6 +56,7 @@
+>   #define VIRTIO_NET_F_MQ	22	/* Device supports Receive Flow
+>   					 * Steering */
+>   #define VIRTIO_NET_F_CTRL_MAC_ADDR 23	/* Set MAC address */
+> +#define VIRTIO_NET_F_VQ_NOTF_COAL 52	/* Device supports virtqueue notification coalescing */
+>   #define VIRTIO_NET_F_NOTF_COAL	53	/* Device supports notifications coalescing */
+>   #define VIRTIO_NET_F_GUEST_USO4	54	/* Guest can handle USOv4 in. */
+>   #define VIRTIO_NET_F_GUEST_USO6	55	/* Guest can handle USOv6 in. */
+> @@ -391,5 +392,18 @@ struct virtio_net_ctrl_coal_rx {
+>   };
+>   
+>   #define VIRTIO_NET_CTRL_NOTF_COAL_RX_SET		1
+> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET		2
+> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_GET		3
+> +
+> +struct virtio_net_ctrl_coal {
+> +	__le32 max_packets;
+> +	__le32 max_usecs;
+> +};
+> +
+> +struct  virtio_net_ctrl_coal_vq {
+> +	__le16 vqn;
+> +	__le16 reserved;
+> +	struct virtio_net_ctrl_coal coal;
+> +};
+>   
+>   #endif /* _UAPI_LINUX_VIRTIO_NET_H */
 
