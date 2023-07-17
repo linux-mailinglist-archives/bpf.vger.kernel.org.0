@@ -1,216 +1,264 @@
-Return-Path: <bpf+bounces-5144-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5145-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9938757089
-	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 01:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BDEE17570A4
+	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 01:46:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22F991C203FF
-	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 23:34:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF16E1C20BF7
+	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 23:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C9E12B9C;
-	Mon, 17 Jul 2023 23:34:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94508134BD;
+	Mon, 17 Jul 2023 23:46:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9B9010977
-	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 23:34:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64371C433C8;
-	Mon, 17 Jul 2023 23:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18A212B66
+	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 23:46:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F048C433C7;
+	Mon, 17 Jul 2023 23:46:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689636846;
-	bh=17/yjLZ3CC6qr1+a8RPDoq6A25uTlcZUJcXhF1nvdQU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=km0YiWnzR6UnEJIm144zn1VhRozOklrcATG2EUO14RSBZz9B3pF2tRcSB2/HblsYV
-	 rh6dLQhc1ZQnChiJVTWXBOAGjUdna6jxCjrP53V/Gp9lIv0HAvD+lZ+FuiWGK32UwY
-	 sY1I7nAxH53qA854sZPVecuqipCVGzCRceZOCDvJfW3ufvJkXxRHXheFNi1B/lSiCf
-	 ClYVLYMTbB7H9cvAK/IQoJje5IUciwZFwPNCz+uTzwAeVXXfYzStLuO9sXlYwklP7L
-	 IuvxHManrnYPOclvYIZQstWtzBgkuRHYgxzy5UayRYoez2kCmkMr88/BjTVhSAQrhY
-	 oVzldZH5rrt+A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id ECDD8CE0367; Mon, 17 Jul 2023 16:34:05 -0700 (PDT)
-Date: Mon, 17 Jul 2023 16:34:05 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joe Perches <joe@perches.com>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Andy Whitcroft <apw@canonical.com>,
-	Dwaipayan Ray <dwaipayanray1@gmail.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of
- RCU Tasks Trace
-Message-ID: <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
- <20230717180454.1097714-5-paulmck@kernel.org>
- <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
+	s=k20201202; t=1689637598;
+	bh=REIKK+GYTqurzTzbZxP05tzFxdn6X/x0balz5jGPgPI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fJCnQBhmxmIQUzEYcTjYMxHrWY0iPO5UB7ZBb0oM2hWvK370DNSbOpznYz8GqCbAr
+	 /zSw9h2iJMphVpWH6ILSBBTbhPO85ardV+Fl4HtAv3uZtH7aVhZXU+7tB8nX2RkTK8
+	 ipr031XuxYUFjermtn1Fa2zwbNgKwimrgaFK/K8T2kqI5PFBA0H0QV5/jhT/aGzvj0
+	 t7fDAJbdqXwpy1Ije0PudcXP8r+1zxwhXzQPbOqhOZ4DB0L/U0M8RGbEzJ7XGNr1c+
+	 9vxWzWaIDw5EeB3k/KyTz71ZuafX3Oy04m6MgMH5TWmo00/UVVLwwZY3cQrD7FaT70
+	 lmNymzHn21gAw==
+Date: Tue, 18 Jul 2023 08:46:34 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, Martin
+ KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org, Sven Schnelle
+ <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH v2 2/9] bpf/btf: tracing: Move finding func-proto API
+ and getting func-param API to BTF
+Message-Id: <20230718084634.7746b16b470f5fa1b0d99521@kernel.org>
+In-Reply-To: <20230717143914.5399a8e4@gandalf.local.home>
+References: <168960739768.34107.15145201749042174448.stgit@devnote2>
+	<168960741686.34107.6330273416064011062.stgit@devnote2>
+	<20230717143914.5399a8e4@gandalf.local.home>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jul 17, 2023 at 03:34:14PM -0700, Joe Perches wrote:
-> On Mon, 2023-07-17 at 11:04 -0700, Paul E. McKenney wrote:
-> > RCU Tasks Trace is quite specialized, having been created specifically
-> > for sleepable BPF programs.  Because it allows general blocking within
-> > readers, any new use of RCU Tasks Trace must take current use cases into
-> > account.  Therefore, update checkpatch.pl to complain about use of any of
-> > the RCU Tasks Trace API members outside of BPF and outside of RCU itself.
+On Mon, 17 Jul 2023 14:39:14 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Tue, 18 Jul 2023 00:23:37 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> 
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > > 
-> > Cc: Andy Whitcroft <apw@canonical.com> (maintainer:CHECKPATCH)
-> > Cc: Joe Perches <joe@perches.com> (maintainer:CHECKPATCH)
-> > Cc: Dwaipayan Ray <dwaipayanray1@gmail.com> (reviewer:CHECKPATCH)
-> > Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: <bpf@vger.kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Move generic function-proto find API and getting function parameter API
+> > to BTF library code from trace_probe.c. This will avoid redundant efforts
+> > on different feature.
+> 
+>  "different features."
+
+Thanks!
+
+> 
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > > ---
-> >  scripts/checkpatch.pl | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
+> >  include/linux/btf.h        |    4 ++++
+> >  kernel/bpf/btf.c           |   45 ++++++++++++++++++++++++++++++++++++++++
+> >  kernel/trace/trace_probe.c |   50 +++++++++++++-------------------------------
+> >  3 files changed, 64 insertions(+), 35 deletions(-)
 > > 
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
-> > @@ -7457,6 +7457,24 @@ sub process {
-> >  			}
-> >  		}
+> > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > index cac9f304e27a..98fbbcdd72ec 100644
+> > --- a/include/linux/btf.h
+> > +++ b/include/linux/btf.h
+> > @@ -221,6 +221,10 @@ const struct btf_type *
+> >  btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+> >  		 u32 *type_size);
+> >  const char *btf_type_str(const struct btf_type *t);
+> > +const struct btf_type *btf_find_func_proto(struct btf *btf,
+> > +					   const char *func_name);
+> > +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
+> > +					   s32 *nr);
 > >  
-> > +# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> > +		if ($line =~ /\brcu_read_lock_trace\s*\(/ ||
-> > +		    $line =~ /\brcu_read_lock_trace_held\s*\(/ ||
-> > +		    $line =~ /\brcu_read_unlock_trace\s*\(/ ||
-> > +		    $line =~ /\bcall_rcu_tasks_trace\s*\(/ ||
-> > +		    $line =~ /\bsynchronize_rcu_tasks_trace\s*\(/ ||
-> > +		    $line =~ /\brcu_barrier_tasks_trace\s*\(/ ||
-> > +		    $line =~ /\brcu_request_urgent_qs_task\s*\(/) {
-> > +			if ($realfile !~ m@^kernel/bpf@ &&
-> > +			    $realfile !~ m@^include/linux/bpf@ &&
-> > +			    $realfile !~ m@^net/bpf@ &&
-> > +			    $realfile !~ m@^kernel/rcu@ &&
-> > +			    $realfile !~ m@^include/linux/rcu@) {
+> >  #define for_each_member(i, struct_type, member)			\
+> >  	for (i = 0, member = btf_type_member(struct_type);	\
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 817204d53372..e015b52956cb 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -1947,6 +1947,51 @@ btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+> >  	return __btf_resolve_size(btf, type, type_size, NULL, NULL, NULL, NULL);
+> >  }
+> >  
+> > +/*
+> > + * Find a functio proto type by name, and return it.
 > 
-> Functions and paths like these tend to be accreted.
+>   "function"
+
+Oops.
+
 > 
-> Please use a variable or 2 like:
+> > + * Return NULL if not found, or return -EINVAL if parameter is invalid.
+> > + */
+> > +const struct btf_type *btf_find_func_proto(struct btf *btf, const char *func_name)
+> > +{
+> > +	const struct btf_type *t;
+> > +	s32 id;
+> > +
+> > +	if (!btf || !func_name)
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	id = btf_find_by_name_kind(btf, func_name, BTF_KIND_FUNC);
+> > +	if (id <= 0)
+> > +		return NULL;
+> > +
+> > +	/* Get BTF_KIND_FUNC type */
+> > +	t = btf_type_by_id(btf, id);
+> > +	if (!t || !btf_type_is_func(t))
+> > +		return NULL;
+> > +
+> > +	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+> > +	t = btf_type_by_id(btf, t->type);
+> > +	if (!t || !btf_type_is_func_proto(t))
+> > +		return NULL;
+> > +
+> > +	return t;
+> > +}
+> > +
+> > +/*
+> > + * Get function parameter with the number of parameters.
+> > + * This can return NULL if the function has no parameters.
 > 
-> our $rcu_trace_funcs = qr{(?x:
-> 	rcu_read_lock_trace |
-> 	rcu_read_lock_trace_held |
-> 	rcu_read_unlock_trace |
-> 	call_rcu_tasks_trace |
-> 	synchronize_rcu_tasks_trace |
-> 	rcu_barrier_tasks_trace |
-> 	rcu_request_urgent_qs_task
-> )};
-> our $rcu_trace_paths = qr{(?x:
-> 	kernel/bfp/ |
-> 	include/linux/bpf |
-> 	net/bpf/ |
-> 	kernel/rcu/ |
-> 	include/linux/rcu
-> )};
+>   " It can return EINVAL if this function's parameters are NULL."
 
-Like this?
+No, as you can see the code, if btf_type_vlen(func_proto) returns 0 (means
+the function proto type has no parameters), btf_get_func_param() returns
+NULL. This is important point because user needs to use IS_ERR_OR_NULL(ret)
+instead of IS_ERR(ret).
 
-# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-		our $rcu_trace_funcs = qr{(?x:
-			rcu_read_lock_trace |
-			rcu_read_lock_trace_held |
-			rcu_read_unlock_trace |
-			call_rcu_tasks_trace |
-			synchronize_rcu_tasks_trace |
-			rcu_barrier_tasks_trace |
-			rcu_request_urgent_qs_task
-		)};
-		our $rcu_trace_paths = qr{(?x:
-			kernel/bfp/ |
-			include/linux/bpf |
-			net/bpf/ |
-			kernel/rcu/ |
-			include/linux/rcu
-		)};
-		if ($line =~ /$rcu_trace_funcs/) {
-			if ($realfile !~ m@^$rcu_trace_paths@) {
-				WARN("RCU_TASKS_TRACE",
-				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-			}
-		}
+Thank you,
 
-No, that is definitely wrong.  It has lost track of the list of pathnames,
-thus complaining about uses of those functions in files where their use
-is permitted.
+> 
+> -- Steve
+> 
+> 
+> > + */
+> > +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
+> > +{
+> > +	if (!func_proto || !nr)
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	*nr = btf_type_vlen(func_proto);
+> > +	if (*nr > 0)
+> > +		return (const struct btf_param *)(func_proto + 1);
+> > +	else
+> > +		return NULL;
+> > +}
+> > +
+> >  static u32 btf_resolved_type_id(const struct btf *btf, u32 type_id)
+> >  {
+> >  	while (type_id < btf->start_id)
+> > diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> > index c68a72707852..cd89fc1ebb42 100644
+> > --- a/kernel/trace/trace_probe.c
+> > +++ b/kernel/trace/trace_probe.c
+> > @@ -371,47 +371,23 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
+> >  	return NULL;
+> >  }
+> >  
+> > -static const struct btf_type *find_btf_func_proto(const char *funcname)
+> > -{
+> > -	struct btf *btf = traceprobe_get_btf();
+> > -	const struct btf_type *t;
+> > -	s32 id;
+> > -
+> > -	if (!btf || !funcname)
+> > -		return ERR_PTR(-EINVAL);
+> > -
+> > -	id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
+> > -	if (id <= 0)
+> > -		return ERR_PTR(-ENOENT);
+> > -
+> > -	/* Get BTF_KIND_FUNC type */
+> > -	t = btf_type_by_id(btf, id);
+> > -	if (!t || !btf_type_is_func(t))
+> > -		return ERR_PTR(-ENOENT);
+> > -
+> > -	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+> > -	t = btf_type_by_id(btf, t->type);
+> > -	if (!t || !btf_type_is_func_proto(t))
+> > -		return ERR_PTR(-ENOENT);
+> > -
+> > -	return t;
+> > -}
+> > -
+> >  static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
+> >  						   bool tracepoint)
+> >  {
+> > +	struct btf *btf = traceprobe_get_btf();
+> >  	const struct btf_param *param;
+> >  	const struct btf_type *t;
+> >  
+> > -	if (!funcname || !nr)
+> > +	if (!funcname || !nr || !btf)
+> >  		return ERR_PTR(-EINVAL);
+> >  
+> > -	t = find_btf_func_proto(funcname);
+> > -	if (IS_ERR(t))
+> > +	t = btf_find_func_proto(btf, funcname);
+> > +	if (IS_ERR_OR_NULL(t))
+> >  		return (const struct btf_param *)t;
+> >  
+> > -	*nr = btf_type_vlen(t);
+> > -	param = (const struct btf_param *)(t + 1);
+> > +	param = btf_get_func_param(t, nr);
+> > +	if (IS_ERR_OR_NULL(param))
+> > +		return param;
+> >  
+> >  	/* Hide the first 'data' argument of tracepoint */
+> >  	if (tracepoint) {
+> > @@ -490,8 +466,8 @@ static const struct fetch_type *parse_btf_retval_type(
+> >  	const struct btf_type *t;
+> >  
+> >  	if (btf && ctx->funcname) {
+> > -		t = find_btf_func_proto(ctx->funcname);
+> > -		if (!IS_ERR(t))
+> > +		t = btf_find_func_proto(btf, ctx->funcname);
+> > +		if (!IS_ERR_OR_NULL(t))
+> >  			typestr = type_from_btf_id(btf, t->type);
+> >  	}
+> >  
+> > @@ -500,10 +476,14 @@ static const struct fetch_type *parse_btf_retval_type(
+> >  
+> >  static bool is_btf_retval_void(const char *funcname)
+> >  {
+> > +	struct btf *btf = traceprobe_get_btf();
+> >  	const struct btf_type *t;
+> >  
+> > -	t = find_btf_func_proto(funcname);
+> > -	if (IS_ERR(t))
+> > +	if (!btf)
+> > +		return false;
+> > +
+> > +	t = btf_find_func_proto(btf, funcname);
+> > +	if (IS_ERR_OR_NULL(t))
+> >  		return false;
+> >  
+> >  	return t->type == 0;
+> 
 
-But this seems to work:
 
-# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-		our $rcu_trace_funcs = qr{(?x:
-			rcu_read_lock_trace |
-			rcu_read_lock_trace_held |
-			rcu_read_unlock_trace |
-			call_rcu_tasks_trace |
-			synchronize_rcu_tasks_trace |
-			rcu_barrier_tasks_trace |
-			rcu_request_urgent_qs_task
-		)};
-		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
-			if ($realfile !~ m@^kernel/bpf@ &&
-			    $realfile !~ m@^include/linux/bpf@ &&
-			    $realfile !~ m@^net/bpf@ &&
-			    $realfile !~ m@^kernel/rcu@ &&
-			    $realfile !~ m@^include/linux/rcu@) {
-				WARN("RCU_TASKS_TRACE",
-				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-			}
-		}
-
-Maybe the "^" needs to be distributed into $rcu_trace_paths?
-
-# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-		our $rcu_trace_funcs = qr{(?x:
-			rcu_read_lock_trace |
-			rcu_read_lock_trace_held |
-			rcu_read_unlock_trace |
-			call_rcu_tasks_trace |
-			synchronize_rcu_tasks_trace |
-			rcu_barrier_tasks_trace |
-			rcu_request_urgent_qs_task
-		)};
-		our $rcu_trace_paths = qr{(?x:
-			^kernel/bfp/ |
-			^include/linux/bpf |
-			^net/bpf/ |
-			^kernel/rcu/ |
-			^include/linux/rcu
-		)};
-		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
-			if ($realfile !~ m@$rcu_trace_paths@) {
-				WARN("RCU_TASKS_TRACE",
-				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-			}
-		}
-
-But no joy here, either.  Which is no surprise, given that perl is
-happy to distribute the "\b" and the "\s*\(" across the elements of
-$rcu_trace_funcs.  I tried a number of other variations, including
-inverting the "if" condition "(!(... =~ ...))", inverting the "if"
-condition via an empty "then" clause, replacing the "m@" with "/",
-replacing the "|" in the "qr{}" with "&", and a few others.
-
-Again, listing the pathnames explicitly in the second "if" condition
-works just fine.
-
-Help?
-
-							Thanx, Paul
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
