@@ -1,142 +1,155 @@
-Return-Path: <bpf+bounces-5131-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5132-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE19D756AF3
-	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 19:47:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98E26756B2A
+	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 20:01:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB5B21C20A68
-	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 17:47:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 560112812EF
+	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 18:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0664ABA5D;
-	Mon, 17 Jul 2023 17:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26C8BE56;
+	Mon, 17 Jul 2023 18:00:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D4DBA3A
-	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 17:47:45 +0000 (UTC)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F620191
-	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 10:47:44 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b73564e98dso71700051fa.3
-        for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 10:47:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689616062; x=1692208062;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HXHuNKx8F0F2eR3CCsdvxLHSd5uasejSjtbl4SkgFU0=;
-        b=QUaUrvDRyDIhvUGTTiH1WzOLcIwFJqN9hVTli9IiPCDTNp9RlNMgHPKPdnVCWsx8q+
-         SBqfWD0bkeyHF+KaUg1/bIaKNZB3fmvlRotRzRCLnRf+CwMre1EJm3MBGtjOko+hBz7b
-         KMRwPkAe6EyLqwRYx+pR/7cC/u6mJ/ZKrDHbQKlPFu4Qb+V7S04p6bXQO4nFaKLPZYE8
-         Teo3ZtnfcAi6axVj6rtXzDi/x9gAgqS8QoPRPu5FNhMGFiI5JApK1eH/WRd1H/Hxrcsn
-         gH1l2hTOTqnYJDYEaMMseAv2V26Ed0CUA7oqbVaFXHAb9peqyoNdbX1itilXqn3aWNo5
-         9e2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689616062; x=1692208062;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HXHuNKx8F0F2eR3CCsdvxLHSd5uasejSjtbl4SkgFU0=;
-        b=OskhFHTo7T4ZbiAbYy6ciXeh/u06oduloKuFFBjkfET0UZiKbG7BeeZ96HVsPw6LSZ
-         jGsmtNXmn23gAEnZwFbo7x1lrmTDR+eH7ikQtptS8bflEoTHJ4K7vzUAsgXOlwLXakJy
-         1f6NMDHLFF4gNGjlhNGNWzy2itePqVXMNA4tE/z+ci4bU8LdomEsdbheRfBNDUJFej8j
-         Jp6BxctmC++pnCMjMW1CR3mRwe9tMXEJcDYoiYGNWNLZWay1ffZ0gvNOSMvV59RJi0fb
-         fJo0dUMsRUeQR6s+iHeS3BjLyZu1ko4R55krRaFkH7+o6ZBc/31whBdLmDvhNSDZWFEM
-         82Gw==
-X-Gm-Message-State: ABy/qLY0AB8IYpIGm/sSHn6TreI3bM0u+U284k8/eCLQH71u8OfpMYzh
-	5hRuWWdGEN4ftfkXOva0kTIrlxcZOhsWtBE8CCs=
-X-Google-Smtp-Source: APBJJlHjQ9NHq9MomlPQnAFioc51/OjGQ/az0DnCair6gXT2hrNgjBKRZ732sMyqKf1tKE0mV1oh1MH2diappNJe15Q=
-X-Received: by 2002:a2e:98ca:0:b0:2b9:48f1:b193 with SMTP id
- s10-20020a2e98ca000000b002b948f1b193mr944698ljj.46.1689616062233; Mon, 17 Jul
- 2023 10:47:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898211878;
+	Mon, 17 Jul 2023 18:00:56 +0000 (UTC)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E50115;
+	Mon, 17 Jul 2023 11:00:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689616855; x=1721152855;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RjQve+ajtq6zDTbE381g1mmA3qfKB2Tvgtd16TWYHZ0=;
+  b=mH+gW55SP8imbiRu03MbvrY1WYfkDl0bskU20CcStSnHB2RDr8Qd6kdq
+   gjeE00dd9P0UZQvS1YYAKVcCx72k06cLi0wXxTRlQA/ySYaA3+TFErGAM
+   QXrFJ7L/F7/+kzQRrziqrMjw56nDeLRPx5335UeLMqv7z8rex3/3fdIKz
+   mHl+iCuo85Ylh50tP4P6IIJ6mTtQ+7R6GsBR/VeU+rxUnodP9NsUB5jrP
+   pZTGLngJBZ9zc783f/jSaWwTYgPfsKsiXNgBNDexPT42GbPIzPjdoUTIp
+   4+KSICAoNWZLcICQOUSARZQLVdw6EeTs5w9SJhyJQAZnW2mfSGxt9i/Fh
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="432173503"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="432173503"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 11:00:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="793329326"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="793329326"
+Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Jul 2023 11:00:52 -0700
+From: Tony Nguyen <anthony.l.nguyen@intel.com>
+To: davem@davemloft.net,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	netdev@vger.kernel.org
+Cc: Florian Kauer <florian.kauer@linutronix.de>,
+	anthony.l.nguyen@intel.com,
+	maciej.fijalkowski@intel.com,
+	magnus.karlsson@intel.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	sasha.neftin@intel.com,
+	Kurt Kanzenbach <kurt@linutronix.de>,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+	Simon Horman <simon.horman@corigine.com>,
+	Naama Meir <naamax.meir@linux.intel.com>
+Subject: [PATCH net] igc: Prevent garbled TX queue with XDP ZEROCOPY
+Date: Mon, 17 Jul 2023 10:54:44 -0700
+Message-Id: <20230717175444.3217831-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230713023232.1411523-1-memxor@gmail.com> <20230713023232.1411523-9-memxor@gmail.com>
- <20230714224750.27ufbap5guvkqayk@MacBook-Pro-8.local> <CAP01T77dBfMrBsQiEK7TY05oCXnD8zndBTPygb9_b+R0nL3n5A@mail.gmail.com>
-In-Reply-To: <CAP01T77dBfMrBsQiEK7TY05oCXnD8zndBTPygb9_b+R0nL3n5A@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 17 Jul 2023 10:47:31 -0700
-Message-ID: <CAADnVQKSGosH5SwLCxTmPNdbOE+OvtaAgX_xgZOLT4v-viFF9w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 08/10] bpf: Introduce bpf_set_exception_callback
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, David Vernet <void@manifault.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jul 17, 2023 at 9:47=E2=80=AFAM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Sat, 15 Jul 2023 at 04:17, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Jul 13, 2023 at 08:02:30AM +0530, Kumar Kartikeya Dwivedi wrote=
-:
-> > > By default, the subprog generated by the verifier to handle a thrown
-> > > exception hardcodes a return value of 0. To allow user-defined logic
-> > > and modification of the return value when an exception is thrown,
-> > > introduce the bpf_set_exception_callback kfunc, which installs a
-> > > callback as the default exception handler for the program.
-> > >
-> > > Compared to runtime kfuncs, this kfunc acts a built-in, i.e. it only
-> > > takes semantic effect during verification, and is erased from the
-> > > program at runtime.
-> > >
-> > > This kfunc can only be called once within a program, and always sets =
-the
-> > > global exception handler, regardless of whether it was invoked in all
-> > > paths of the program or not. The kfunc is idempotent, and the default
-> > > exception callback cannot be modified at runtime.
-> > >
-> > > Allowing modification of the callback for the current program executi=
-on
-> > > at runtime leads to issues when the programs begin to nest, as any
-> > > per-CPU state maintaing this information will have to be saved and
-> > > restored. We don't want it to stay in bpf_prog_aux as this takes a
-> > > global effect for all programs. An alternative solution is spilling
-> > > the callback pointer at a known location on the program stack on entr=
-y,
-> > > and then passing this location to bpf_throw as a parameter.
-> > >
-> > > However, since exceptions are geared more towards a use case where th=
-ey
-> > > are ideally never invoked, optimizing for this use case and adding to
-> > > the complexity has diminishing returns.
-> >
-> > Right. No run-time changes pls.
-> >
->
-> +1
->
-> > Instead of bpf_set_exception_callback() how about adding a
-> > btf_tag("exception_handler") or better name
-> > and check that such global func is a single func in a program and
-> > it's argument is a single u64.
-> >
->
-> That does seem better. Also, a conditional bpf_set_exception_callback
-> taking effect globally may be confusing for users.
-> I will switch to the BTF tag.
->
-> Any specific reason it has to be a global func and cannot have static lin=
-kage?
+From: Florian Kauer <florian.kauer@linutronix.de>
 
-The compiler will warn about the unused static function.
-Even if we silence the warn somehow the verifier will not verify that
-static unused subprog.
+In normal operation, each populated queue item has
+next_to_watch pointing to the last TX desc of the packet,
+while each cleaned item has it set to 0. In particular,
+next_to_use that points to the next (necessarily clean)
+item to use has next_to_watch set to 0.
+
+When the TX queue is used both by an application using
+AF_XDP with ZEROCOPY as well as a second non-XDP application
+generating high traffic, the queue pointers can get in
+an invalid state where next_to_use points to an item
+where next_to_watch is NOT set to 0.
+
+However, the implementation assumes at several places
+that this is never the case, so if it does hold,
+bad things happen. In particular, within the loop inside
+of igc_clean_tx_irq(), next_to_clean can overtake next_to_use.
+Finally, this prevents any further transmission via
+this queue and it never gets unblocked or signaled.
+Secondly, if the queue is in this garbled state,
+the inner loop of igc_clean_tx_ring() will never terminate,
+completely hogging a CPU core.
+
+The reason is that igc_xdp_xmit_zc() reads next_to_use
+before acquiring the lock, and writing it back
+(potentially unmodified) later. If it got modified
+before locking, the outdated next_to_use is written
+pointing to an item that was already used elsewhere
+(and thus next_to_watch got written).
+
+Fixes: 9acf59a752d4 ("igc: Enable TX via AF_XDP zero-copy")
+Signed-off-by: Florian Kauer <florian.kauer@linutronix.de>
+Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
+Tested-by: Kurt Kanzenbach <kurt@linutronix.de>
+Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
+Tested-by: Naama Meir <naamax.meir@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+---
+ drivers/net/ethernet/intel/igc/igc_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 9f93f0f4f752..f36bc2a1849a 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -2828,9 +2828,8 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
+ 	struct netdev_queue *nq = txring_txq(ring);
+ 	union igc_adv_tx_desc *tx_desc = NULL;
+ 	int cpu = smp_processor_id();
+-	u16 ntu = ring->next_to_use;
+ 	struct xdp_desc xdp_desc;
+-	u16 budget;
++	u16 budget, ntu;
+ 
+ 	if (!netif_carrier_ok(ring->netdev))
+ 		return;
+@@ -2840,6 +2839,7 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
+ 	/* Avoid transmit queue timeout since we share it with the slow path */
+ 	txq_trans_cond_update(nq);
+ 
++	ntu = ring->next_to_use;
+ 	budget = igc_desc_unused(ring);
+ 
+ 	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget--) {
+-- 
+2.38.1
+
 
