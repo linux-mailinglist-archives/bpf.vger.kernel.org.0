@@ -1,178 +1,167 @@
-Return-Path: <bpf+bounces-5076-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5077-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D38E75591C
-	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 03:42:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 009D2755AA8
+	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 06:37:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EDA21C2095F
-	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 01:42:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 961A328140A
+	for <lists+bpf@lfdr.de>; Mon, 17 Jul 2023 04:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFA5111F;
-	Mon, 17 Jul 2023 01:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6905384;
+	Mon, 17 Jul 2023 04:37:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7554A49
-	for <bpf@vger.kernel.org>; Mon, 17 Jul 2023 01:42:08 +0000 (UTC)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01C3DD
-	for <bpf@vger.kernel.org>; Sun, 16 Jul 2023 18:42:06 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fbc5d5746cso40740555e9.2
-        for <bpf@vger.kernel.org>; Sun, 16 Jul 2023 18:42:06 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F40C1380;
+	Mon, 17 Jul 2023 04:37:35 +0000 (UTC)
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B669E48;
+	Sun, 16 Jul 2023 21:37:32 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6b9d562f776so264815a34.2;
+        Sun, 16 Jul 2023 21:37:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689558125; x=1692150125;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=E27woSRv7CvLDQSTqXQBPjAm5Jv4YMnlqK9UjvyYd3s=;
-        b=NAmKYEUPBd2ES0DzMY+XagTriluknTKX8w+Bs0KSeKJ8wdf2B9FBJrq3nLNfeJZXyQ
-         o3VPgwePODOIxMafgo0gSNTwrz7tm/wn1MpmCmQzC/ZqfM3r78v4nyLldLHCnyWjp0yd
-         sp8g93exlvABy7noxsx14EIWw6CfqoJ7vaOd9WqSx7o/wQgUiYW+dNWsPJ5gRMDRh641
-         h7UlM3u0JxwLxnP7U8GARClry8VuiAmd2WHEx3nsjNFxYO+whgrq8MY+09pnYnQ6OfKT
-         Kz8gmTOcMDVU2anZxab4doRBIu8ulnNImL7UN8+yyQRw/+iRUD36yQK/V2CZKLtBnfiB
-         iyDw==
+        d=gmail.com; s=20221208; t=1689568652; x=1692160652;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A2chrSz8FPLD5T84OtSz+zScqalUZiR8JbB8TgFbdpQ=;
+        b=IrtS8sCasTQPHwhYZdq4xAmG4XIPWGYwGPd7ZRzwo9PhdKEl4YmQFi0khCj/YTwWgt
+         nqHXPrY7DzUd1yoGOu6mZ2xJirygjqPXiyn3giQaSpkBJaLh0lu7c1wi3zsX+PA2mTsb
+         yasKrVRRdNvqxFADzV+KbH/xV7aXTkrod2ZRV++XaGjhHkE77m9UhVRpWPjJjXrGEe5y
+         3gnJhDTnJh8FqJ2i6WDWMzDJ/stOH9Ik07IEjhhWprnmmkKCOQZFDChRgNIUc5b6nyQm
+         pLPAQFsQmJYip6X2r88LnUHmfVnPsCAQnkZPFzWFBa5nb9qc+RwnzLGRn2d64RH+5N4p
+         b3Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689558125; x=1692150125;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E27woSRv7CvLDQSTqXQBPjAm5Jv4YMnlqK9UjvyYd3s=;
-        b=h9ZY4A9vvU/1a+eNftpDDEYrzK4D5rdjipGfoCZbELnBd5lh9nd7kcjjs+TRkL5ke9
-         GYmxCUEWFPwYNCry6Or7rOzkwltaNEgvR7mDdHMQPHiNQJHg7BqZwPqCWzwiq4zO7xqi
-         Vwtd0O4IHtcVZNPwXw9WZrWx45SXc0ott7mcUDn6mwiU+ujHgL+akl4+YTgF7mhrT7PX
-         BsTSN6fkzxmTKkFS71Ecepl+cP3WamuHw+AUu2aTFHKq1WbG2Oc3NcM053wJwjdbumEg
-         Gq0bLe+vgSTm0fmt2oBsnY1Jt1gZgSV3Gp+TcJzeR2XPFINqfQlQtVNhOyRqodEwIG9G
-         VAbg==
-X-Gm-Message-State: ABy/qLb/t1uPMd7ZIrHp3TFA/I8Hb/hDm7FBTyjvTjq3lamOVd8xdDDZ
-	FFHLTyUXWJ6drl9psm098Rk=
-X-Google-Smtp-Source: APBJJlGPUjrCZpdRURM+DeSTquPjhALiwsgzX+hXBd8pUrOY3Zbk49xNJF6fvygWdx61zL7we4YaOQ==
-X-Received: by 2002:a7b:cd0a:0:b0:3fb:b5c0:a079 with SMTP id f10-20020a7bcd0a000000b003fbb5c0a079mr9210255wmj.21.1689558125179;
-        Sun, 16 Jul 2023 18:42:05 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id y13-20020a05600c364d00b003f819faff24sm6633407wmq.40.2023.07.16.18.42.04
+        d=1e100.net; s=20221208; t=1689568652; x=1692160652;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=A2chrSz8FPLD5T84OtSz+zScqalUZiR8JbB8TgFbdpQ=;
+        b=CepzVJxOASH79BME/uRvbGTnod/wkPepvJ+aLeg+NyHF12S2w8cL7BbVlkx7cDEAO8
+         mJRkwax+u75RkdES/0JgS+DCMdMvfVXwqsknfXiFysJDEEomMf/T4pO11gedEk1OlU5B
+         TXyOriFsN6iiT4ZUScX9BzCO/gM2hW/Igdr2lz7gzxYKbCGKC+wlD98BGyOXFqNI/Db3
+         Z7H2uf0L+7Co7pEHxtyWOu/bHFlBCLMIpQUGaIKm+asPiFmc1AM7Q1BhCjfHMOG9VRsL
+         qV9scXacdq957+pOgm8K+wqybS4WdA14rdpqpRSx5ybq8NLap4fwxBlAAnDVEBEsRGm4
+         YWaw==
+X-Gm-Message-State: ABy/qLYc30UFIdmJo7PGvTP+4ktziKrgbaxvyIsIdgjZ9b7273py9hmF
+	VyTspxcVkNhcylhGzHmcWlY=
+X-Google-Smtp-Source: APBJJlGhfbvJdSH9mK+U+1WGuHNqvKMRICwzSWRvyRJU9doa5qcE5OCJJYVW5rmqoR1HQPyrd7ekRQ==
+X-Received: by 2002:a05:6358:4196:b0:135:ae78:56c9 with SMTP id w22-20020a056358419600b00135ae7856c9mr177588rwc.6.1689568651523;
+        Sun, 16 Jul 2023 21:37:31 -0700 (PDT)
+Received: from localhost ([2605:59c8:148:ba10:74ce:be18:a39c:74])
+        by smtp.gmail.com with ESMTPSA id n2-20020aa79042000000b0067eb174cb9asm10938761pfo.136.2023.07.16.21.37.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Jul 2023 18:42:04 -0700 (PDT)
-Message-ID: <cb9ba725b54fb02a5a552d46043a8e90c6f7b85a.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 04/15] bpf: Support new unconditional bswap
- instruction
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Fangrui Song
- <maskray@google.com>, kernel-team@fb.com
-Date: Mon, 17 Jul 2023 04:42:03 +0300
-In-Reply-To: <20230713060739.390659-1-yhs@fb.com>
-References: <20230713060718.388258-1-yhs@fb.com>
-	 <20230713060739.390659-1-yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Sun, 16 Jul 2023 21:37:30 -0700 (PDT)
+Date: Sun, 16 Jul 2023 21:37:29 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+ john fastabend <john.fastabend@gmail.com>, 
+ bpf <bpf@vger.kernel.org>, 
+ Networking <netdev@vger.kernel.org>
+Cc: "davidhwei@meta.com" <davidhwei@meta.com>
+Message-ID: <64b4c5891096b_2b67208f@john.notmuch>
+In-Reply-To: <CAEf4BzYMAAhwscTWWTenvyr-PQ7E5tMg_iqXsPj_dyZEMVCrKg@mail.gmail.com>
+References: <CAEf4BzYMAAhwscTWWTenvyr-PQ7E5tMg_iqXsPj_dyZEMVCrKg@mail.gmail.com>
+Subject: RE: Sockmap's parser/verdict programs and epoll notifications
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, 2023-07-12 at 23:07 -0700, Yonghong Song wrote:
-> > The existing 'be' and 'le' insns will do conditional bswap
-> > depends on host endianness. This patch implements
-> > unconditional bswap insns.
-> >=20
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
+Andrii Nakryiko wrote:
+> Hey John,
 
-Note sure if this is important, but here is an observation:
-function is_reg64() has the following code:
+Sorry missed this while I was on PTO that week.
 
- ...
- if (class =3D=3D BPF_ALU64 || class =3D=3D BPF_JMP ||
- /* BPF_END always use BPF_ALU class. */
- (class =3D=3D BPF_ALU && op =3D=3D BPF_END && insn->imm =3D=3D 64))
- return true;
- ...
+> 
+> We've been recently experimenting with using BPF_SK_SKB_STREAM_PARSER
+> and BPF_SK_SKB_STREAM_VERDICT with sockmap/sockhash to perform
+> in-kernel parsing of RSocket frames. A very simple format ([0]) where
+> the first 3 bytes specify the size of the frame payload. The idea was
+> to collect the entire frame in the kernel before notifying user-space
+> that data is available. This is meant to minimize unnecessary wakeups
+> due to incomplete logical frames, saving CPU.
 
-It probably has to be updated but I'm not sure how:
-- either check insn->imm =3D=3D 64 for ALU64 as well;
-- or just update the comment, given that instruction always sets all 64-bit=
-s.
+Nice.
 
-> > ---
-> >  arch/x86/net/bpf_jit_comp.c |  1 +
-> >  kernel/bpf/core.c           | 14 ++++++++++++++
-> >  kernel/bpf/verifier.c       |  2 +-
-> >  3 files changed, 16 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > index a740a1a6e71d..adda5e7626b4 100644
-> > --- a/arch/x86/net/bpf_jit_comp.c
-> > +++ b/arch/x86/net/bpf_jit_comp.c
-> > @@ -1322,6 +1322,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int =
-*addrs, u8 *image, u8 *rw_image
-> >  			break;
-> > =20
-> >  		case BPF_ALU | BPF_END | BPF_FROM_BE:
-> > +		case BPF_ALU64 | BPF_END | BPF_FROM_LE:
-> >  			switch (imm32) {
-> >  			case 16:
-> >  				/* Emit 'ror %ax, 8' to swap lower 2 bytes */
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index fe648a158c9e..86bb412fee39 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -1524,6 +1524,7 @@ EXPORT_SYMBOL_GPL(__bpf_call_base);
-> >  	INSN_3(ALU64, DIV,  X),			\
-> >  	INSN_3(ALU64, MOD,  X),			\
-> >  	INSN_2(ALU64, NEG),			\
-> > +	INSN_3(ALU64, END, TO_LE),		\
-> >  	/*   Immediate based. */		\
-> >  	INSN_3(ALU64, ADD,  K),			\
-> >  	INSN_3(ALU64, SUB,  K),			\
-> > @@ -1845,6 +1846,19 @@ static u64 ___bpf_prog_run(u64 *regs, const stru=
-ct bpf_insn *insn)
-> >  			break;
-> >  		}
-> >  		CONT;
-> > +	ALU64_END_TO_LE:
-> > +		switch (IMM) {
-> > +		case 16:
-> > +			DST =3D (__force u16) __swab16(DST);
-> > +			break;
-> > +		case 32:
-> > +			DST =3D (__force u32) __swab32(DST);
-> > +			break;
-> > +		case 64:
-> > +			DST =3D (__force u64) __swab64(DST);
-> > +			break;
-> > +		}
-> > +		CONT;
-> > =20
-> >  	/* CALL */
-> >  	JMP_CALL:
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 5fee9f24cb5e..22ba0744547b 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -13036,7 +13036,7 @@ static int check_alu_op(struct bpf_verifier_env=
- *env, struct bpf_insn *insn)
-> >  		} else {
-> >  			if (insn->src_reg !=3D BPF_REG_0 || insn->off !=3D 0 ||
-> >  			    (insn->imm !=3D 16 && insn->imm !=3D 32 && insn->imm !=3D 64) |=
-|
-> > -			    BPF_CLASS(insn->code) =3D=3D BPF_ALU64) {
-> > +			    (BPF_CLASS(insn->code) =3D=3D BPF_ALU64 && BPF_SRC(insn->code) =
-!=3D BPF_K)) {
-> >  				verbose(env, "BPF_END uses reserved fields\n");
-> >  				return -EINVAL;
-> >  			}
+> 
+> You can find the BPF source code I've used at [1], it has lots of
+> extra logging and stuff, but the idea is to read the first 3 bytes of
+> each logical frame, and return the expected full frame size from the
+> parser program. The verdict program always just returns SK_PASS.
+> 
+> This seems to work exactly as expected in manual simulations of
+> various packet size distributions, and even for a bunch of
+> ping/pong-like benchmark (which are very sensitive to correct frame
+> length determination, so I'm reasonably confident we don't screw that
+> up much). And yet, when benchmarking sending multiple logical RPC
+> streams over the same single socket (so many interleaving RSocket
+> frames on single socket, but in terms of logical frames nothing should
+> change), we often see that while full frame hasn't been accumulated in
+> socket receive buffer yet, epoll_wait() for that socket would return
+> with success notifying user space that there is data on socket.
+> Subsequent recvfrom() call would immediately return -EAGAIN and no
+> data, and our benchmark would go on this loop of useless
+> epoll_wait()+recvfrom() calls back to back, many times over.
 
+Aha yes this sounds bad.
+
+> 
+> So I have a few questions:
+>   - is the above use case something that was meant to be handled by
+> sockmap+parser/verdict?
+
+We shouldn't wake up user space if there is nothing to read. So
+yes this seems like a valid use case to me.
+
+>   - is it correct to assume that epoll won't wake up until amount of
+> bytes requested by parser program is accumulated (this seems to be the
+> case from manually experimenting with various "packet delays");
+
+Seems there is some bug that races and causes it to wake up
+user space. I'm aware of a couple bugs in the stream parser
+that I wanted to fix. Not sure I can get to them this week
+but should have time next week. We have a couple more fixes
+to resolve a few HTTPS server compliance tests as well.
+
+>   - is there some known bug or race in how sockmap and strparser
+> framework interacts with epoll subsystem that could cause this weird
+> epoll_wait() behavior?
+
+Yes I know of some races in strparser. I'll elaborate later
+probably with patches as I don't recall them readily at the
+moment.
+
+> 
+> It does seem like some sort of timing issue, but I couldn't pin down
+> exactly what are the conditions that this happens in. But it's quite
+> reproducible with a pretty high frequency using our internal benchmark
+> when multiple logical streams are involved.
+> 
+> Any thoughts or suggestions?
+
+Seems like a bug we should fix it. I'm aware of a couple
+issues with the stream parser that we plan to fix so could
+be one of those or a new one I'm not aware of. I'll take
+a look more closely next week.
+
+>   [0] https://rsocket.io/about/protocol/#framing-format
+>   [1] https://github.com/anakryiko/libbpf-bootstrap/blob/thrift-coalesce-rcvlowat/examples/c/bootstrap.bpf.c
+> 
+> -- Andrii
 
