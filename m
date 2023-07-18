@@ -1,55 +1,50 @@
-Return-Path: <bpf+bounces-5149-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5150-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B12C5757126
-	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 03:01:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9DDF75712D
+	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 03:03:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DDA81C20922
-	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 01:01:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B04728141A
+	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 01:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2AD15B1;
-	Tue, 18 Jul 2023 01:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14CE15B1;
+	Tue, 18 Jul 2023 01:02:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 892C3EDE
-	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 01:01:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 446A2C433C7;
-	Tue, 18 Jul 2023 01:01:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29C18EDE
+	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 01:02:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9BBFC433C8;
+	Tue, 18 Jul 2023 01:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689642080;
-	bh=sYoB8EsYHp3bPyDDl82q/NWRIoZwpXBQ2TK6HH5fWxE=;
+	s=k20201202; t=1689642170;
+	bh=X2pd9jY6qyeLWCbJd7xCd01gpGFD2mp11sP4+x3BZGc=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=h+bztgsYFyCfwn61V/O/SSstG4emcnkd0rwEz3blGoOfaPLw//fwTx2kINkVanA0Z
-	 S9vdvl5X5WKhhrI/Nkqnj6PaybZZ0tmAHYJtt3aFNEvzuoqKuRWjeXVK7waOuYpBWj
-	 6DiJD1FVcy8t7Lme8Fh+iPYILfgmE18VRQdB3dbTJSFJYYCyKyPed9N/wQw1wp72py
-	 sYyn01wXYbvUtgS0jgxlOqvTh1TQvrrWLHc7j9c/g2xDGENKnOZzKZ4wGfgoMuKwiJ
-	 r7dVLPstrM5Q4tdfxoRgoHW7+rBztor6eCp9xiPnCAckGaCW335Hcyt6OlIDHYv5lh
-	 zphcDbo8Zuntg==
-Date: Tue, 18 Jul 2023 10:01:15 +0900
+	b=m9qljdco6PnTkw9XeV+F/Ypq+kMkntbgVo3WSlNkGo7xfXdBsG/vLRPOYQrsObi5d
+	 8SyKU5dYA7C7Jqiq0L3iRhOtN5oWgLPlsBkJWt/T6BRXCP5OhilVPSjZG6qwiIsrtm
+	 fwiJ5FuNsq4tKhpNf6V6O4owwPrH0EbRvKQ8E51DzGpAnB7Dv+1viRwmGcJv1pXjm2
+	 JUqCUc3kHuXuO8GNtxLUzFRBosGcz1TxKwQLnzzLBQaE+u9+FpW0ab9BWMBRXxg2E2
+	 LAVWfKBztNJ42Asd7lM0Q6QljtwFEd8oLWYS3tq8NyPKHY9CYBcWph33qXoTRnGsLE
+	 dkCwVRjf03+MA==
+Date: Tue, 18 Jul 2023 10:02:46 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Alessandro Carminati
- <alessandro.carminati@gmail.com>, Masahiro Yamada <masahiroy@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
- <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, Masami
- Hiramatsu <mhiramat@kernel.org>, Daniel Bristot de Oliveira
- <bristot@kernel.org>, Viktor Malik <vmalik@redhat.com>,
- linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Nick Alcock <nick.alcock@oracle.com>,
- eugene.loh@oracle.com, kris.van.hees@oracle.com,
- live-patching@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2] scripts/link-vmlinux.sh: Add alias to duplicate
- symbols for kallsyms
-Message-Id: <20230718100115.ac5038d243105a46d279b664@kernel.org>
-In-Reply-To: <ZLVxUQiC5iF+xTPQ@bombadil.infradead.org>
-References: <20230714150326.1152359-1-alessandro.carminati@gmail.com>
-	<20230717105240.3d986331@gandalf.local.home>
-	<ZLVxUQiC5iF+xTPQ@bombadil.infradead.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, Martin
+ KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org, Sven Schnelle
+ <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH v2 2/9] bpf/btf: tracing: Move finding func-proto API
+ and getting func-param API to BTF
+Message-Id: <20230718100246.87e2ad49bfd8fa056b3db2ef@kernel.org>
+In-Reply-To: <20230717195129.14759151@gandalf.local.home>
+References: <168960739768.34107.15145201749042174448.stgit@devnote2>
+	<168960741686.34107.6330273416064011062.stgit@devnote2>
+	<20230717143914.5399a8e4@gandalf.local.home>
+	<20230718084634.7746b16b470f5fa1b0d99521@kernel.org>
+	<20230717195129.14759151@gandalf.local.home>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -60,37 +55,39 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 17 Jul 2023 09:50:25 -0700
-Luis Chamberlain <mcgrof@kernel.org> wrote:
+On Mon, 17 Jul 2023 19:51:29 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On Mon, Jul 17, 2023 at 10:52:40AM -0400, Steven Rostedt wrote:
-> > Honestly, I think the "_alias_<some-random-number>" is useless. It doesn't
-> > give you any clue to what function you are actually attaching to. 
+> On Tue, 18 Jul 2023 08:46:34 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 > 
-> Agreed.
-
-+1 :)
-
-> > There's
-> > been other approaches that show module and/or file names. I know there's
-> > still some issues with getting those accepted, but I much rather have them
-> > than this!
+> > > > + * Get function parameter with the number of parameters.
+> > > > + * This can return NULL if the function has no parameters.  
+> > > 
+> > >   " It can return EINVAL if this function's parameters are NULL."  
 > > 
-> > See: https://lore.kernel.org/all/20221205163157.269335-1-nick.alcock@oracle.com/
+> > No, as you can see the code, if btf_type_vlen(func_proto) returns 0 (means
+> > the function proto type has no parameters), btf_get_func_param() returns
+> > NULL. This is important point because user needs to use IS_ERR_OR_NULL(ret)
+> > instead of IS_ERR(ret).
 > 
-> Yes, please coordinate with Nick and review each other's work, now we
-> have two separate efforts with different reasons but hopefully we'll
-> come back with one unified solution.
+> I didn't mean to replace what you had, I meant you left that part out. In
+> other words, you have to check for IS_ERR_OR_NULL(ret), not just "!ret".
+
+Ah, got it! Let me update it.
+
+Thank you!
+
 > 
-> Please Cc live-patching also, as they had suggested before just to
-> provide the file filename + line number, that'll make it even more
-> valuable.
-
-I want to involve BTF, that is currently only support looking up function
-by name. This alias is currently decouple from the BTF, but BTF name is
-also need to be updated so that we can lookup BTF from the alias name.
-
-Thank you,
+> -- Steve
+> 
+> > >   
+> > > > + */
+> > > > +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
+> > > > +{
+> > > > +	if (!func_proto || !nr)
+> > > > +		return ERR_PTR(-EINVAL);
+> > > > +
 
 
 -- 
