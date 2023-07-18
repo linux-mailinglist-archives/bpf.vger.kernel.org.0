@@ -1,107 +1,146 @@
-Return-Path: <bpf+bounces-5201-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5202-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76033758909
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 01:23:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE17B75891B
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 01:40:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31E3F2817D2
-	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 23:23:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33C5A1C20E8F
+	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 23:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECD817ACE;
-	Tue, 18 Jul 2023 23:22:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D53B17ADF;
+	Tue, 18 Jul 2023 23:40:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157EEF51D
-	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 23:22:52 +0000 (UTC)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20C0EC;
-	Tue, 18 Jul 2023 16:22:51 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b933bbd3eeso62163061fa.1;
-        Tue, 18 Jul 2023 16:22:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 641BA17AAD;
+	Tue, 18 Jul 2023 23:40:27 +0000 (UTC)
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4E7EC;
+	Tue, 18 Jul 2023 16:40:25 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6b9b427b4fcso4399252a34.3;
+        Tue, 18 Jul 2023 16:40:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689722570; x=1692314570;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2owPjOsknzvkS4L5ZSPonWRfNu9HLT/sQNV5ahQc2RA=;
-        b=Q82+ha22FbALhLDWrrhpK9q5yMPG07MW8A2B5DYAvE9QNdMmkNHG8ZCQ2QNjwGPOYq
-         4iwCYgaYSz0Sjpr/BrsOlMBV7Xo99Yh5FDSS4s/xj/cCCKV3U1D2vdzm6g6DfwwgSRCu
-         6LnpYWW9mHhSN1CIErqmBNlS0g90YJIy7Z/UEUxNgSVzJXxyPvCnhtLWV2LjHTpf/rHi
-         4oXiNRRLNecG9RNKDzM9wl+6iqQb+U1DkAt99x7ANLE8t64/LH06O5309AXv8OV8DuNa
-         4en/Vq/3weqoGCge6bhdXi/LdWOA1zcDnKmpwHp7M9Zu3XM0M0uE3v0QAJm6OmoqV2sT
-         XyHg==
+        d=gmail.com; s=20221208; t=1689723625; x=1692315625;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=skEsIwBhAgXoALBlSSMqAp81nCwKF7Rh+zIuXQcHpVA=;
+        b=g9q1jFGnkyM8hyKVbh+8h7bHVZA2EQ7Ybkv3KrVuaue1fbWoGJjr8I2cE+OcOis9SM
+         hJVC9q6sPb9TsTpNLFkRnDByi9CcEcYcSycV03PXeE9c8WDmx6wXgOvB52DU8jYkm6Tz
+         GbxYQyS1hQlPhcNtqpYd5nbfgEBaCI9AxiN51Npw5A+FaUs5sv7Abdo0XivxCBSx5zos
+         OCg37BsTkXUgIG8yMUwRP5oxqZsuMN+nAwbpHR3RoHCO+nr415IV0gav9rydoPFzrBG3
+         cnSvB6yTVhXYBgliAQC4EpT6A1rmjjE2FTcUNwZNMk+SqklAVUxPf32ZtkUUCxH5rpF5
+         zc2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689722570; x=1692314570;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2owPjOsknzvkS4L5ZSPonWRfNu9HLT/sQNV5ahQc2RA=;
-        b=V3eHn3LiaXiZRZoD6ZQXGnD8KNhjXKAO2A4QWNDA6O0khP4jl/hxkMrEO1vDkHuopX
-         N1CyqbteQ4yeB7wrVq1L4o1vjS6pxtH3E7Ku2tsUzanFOSGNmtZ0g9JabwWaH66R5X5J
-         pZ/TzoRJO/pKSMMCOYjNQSgFGxCMz8ArDNzqrfJC04urAYjFietGOF6qRDV7c8C6xc3h
-         irimVrjubBfCmoxN9nsgUJlQpJVl/5/Jdm6karK4nLqN6ds5GA+JMbZH6dBnKUOpbLGU
-         omQ+/4Xxv2eJeLQ8+H7xlIO/gc16d34W89GKBTxO9a1Ek/9JUfsYPuKnAx/nbW4OmKi/
-         HNAw==
-X-Gm-Message-State: ABy/qLYD59CKGAa/Ys8++oWLthPW5YIl7GAdfUGY+JBo6G6JkA+2Sab1
-	jTo4HCPePuDAe+RPAWaH0s/9IPajZOP+/z6wsyk=
-X-Google-Smtp-Source: APBJJlGpzSgPClsd2m+CYvKqmu/ee+SbsjKc1wf/vDbxh3cDC5D1so2fh0hZrPZfcx1svTrzHWUgIayRTAbGxwzhdoc=
-X-Received: by 2002:a2e:80ca:0:b0:2b4:6eb0:2a27 with SMTP id
- r10-20020a2e80ca000000b002b46eb02a27mr15608676ljg.17.1689722569556; Tue, 18
- Jul 2023 16:22:49 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689723625; x=1692315625;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=skEsIwBhAgXoALBlSSMqAp81nCwKF7Rh+zIuXQcHpVA=;
+        b=YvrkBwqTXFqtdHtKfVnFzd7RMw2uBp8D9NN8A5n+EhCuNZpt5r0xuGPwI3nNOejAoU
+         vIuB8e2X4fPdUvrJy6l1TRipwNEal9OhZIHn7n7h5IwKu6YWH/1uZDICINN6teaXwgGQ
+         kCr30mTJZM/2z27O/zMbomt2fcqIFv02hDP0K8tYfh4/0NsHlXmGeDascnjMF+2ZIZ5t
+         HSKHeuKceQghNu9VzLCgZyW4jEDbsdGbs+aCV+qOmLdkSwiYKNia667ePFbGJBCqCbps
+         VIlxWuhALstSkaGJIZRl/CUUe2MQrwI+tEksA+az72Vepzn29woiH8BjER7NzTin+zWj
+         NYIw==
+X-Gm-Message-State: ABy/qLaReeutaRjeTLd0+NeqwDr8JBCqqxQHi9XGnTs1Nl3Pxb0ZZRk/
+	nWEu6h4+R9a61i6dIU0yM/zLmYdDn/4=
+X-Google-Smtp-Source: APBJJlFGpwFw+uZ+vMiib+sCW5y0EsncXSHxk4U7XExM37pJOP884RhmZhFLJs1KeRB3BOhvwzPsNQ==
+X-Received: by 2002:a05:6358:2904:b0:134:f28f:aa47 with SMTP id y4-20020a056358290400b00134f28faa47mr5198928rwb.23.1689723625038;
+        Tue, 18 Jul 2023 16:40:25 -0700 (PDT)
+Received: from localhost.localdomain ([2620:10d:c090:400::5:3b4d])
+        by smtp.gmail.com with ESMTPSA id l20-20020a639854000000b00553ad4ae5e5sm25285pgo.22.2023.07.18.16.40.23
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 18 Jul 2023 16:40:24 -0700 (PDT)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: davem@davemloft.net
+Cc: kuba@kernel.org,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH bpf-next] bpf, net: Introduce skb_pointer_if_linear().
+Date: Tue, 18 Jul 2023 16:40:21 -0700
+Message-Id: <20230718234021.43640-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230502005218.3627530-1-drosen@google.com> <20230718082615.08448806@kernel.org>
- <CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com>
- <20230718090632.4590bae3@kernel.org> <CAADnVQ+4aehGYPJ2qT_HWWXmOSo4WXf69N=N9-dpzERKfzuSzQ@mail.gmail.com>
- <20230718101841.146efae0@kernel.org> <CAADnVQ+jAo4V-Pa9_LhJEwG0QquL-Ld5S99v3LNUtgkiiYwfzw@mail.gmail.com>
- <20230718111101.57b1d411@kernel.org> <CAADnVQLJBiB7pWDTDNgQW_an+YoB61xkNEsa5g8p6zTy-mAG7Q@mail.gmail.com>
- <20230718160612.71f09752@kernel.org> <CAADnVQ+3Bmm0DgGBgh_zkA1JeK7uApo_nnJ+=Sgf4ojGX2KrHQ@mail.gmail.com>
- <20230718162138.24329391@kernel.org>
-In-Reply-To: <20230718162138.24329391@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 18 Jul 2023 16:22:38 -0700
-Message-ID: <CAADnVQKD6T2AL1xgJgmXfyXqeTWQwNV0KBNd4Apiyfqg0aQ1vQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 18, 2023 at 4:21=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Tue, 18 Jul 2023 16:17:24 -0700 Alexei Starovoitov wrote:
-> > Which would encourage bnxt-like hacks.
-> > I don't like it tbh.
-> > At least skb_pointer_if_linear() has a clear meaning.
-> > It's more run-time overhead, since buffer__opt is checked early,
-> > but that's ok.
->
-> Alright, your version fine by me, too. Thanks!
+From: Alexei Starovoitov <ast@kernel.org>
 
-ok. will send it officially soon.
+Network drivers always call skb_header_pointer() with non-null buffer.
+Remove !buffer check to prevent accidental misuse of skb_header_pointer().
+Introduce skb_pointer_if_linear() instead.
+
+Reported-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ include/linux/skbuff.h | 10 +++++++++-
+ kernel/bpf/helpers.c   |  5 ++++-
+ 2 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 91ed66952580..f276d0e9816f 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -4023,7 +4023,7 @@ __skb_header_pointer(const struct sk_buff *skb, int offset, int len,
+ 	if (likely(hlen - offset >= len))
+ 		return (void *)data + offset;
+ 
+-	if (!skb || !buffer || unlikely(skb_copy_bits(skb, offset, buffer, len) < 0))
++	if (!skb || unlikely(skb_copy_bits(skb, offset, buffer, len) < 0))
+ 		return NULL;
+ 
+ 	return buffer;
+@@ -4036,6 +4036,14 @@ skb_header_pointer(const struct sk_buff *skb, int offset, int len, void *buffer)
+ 				    skb_headlen(skb), buffer);
+ }
+ 
++static inline void * __must_check
++skb_pointer_if_linear(const struct sk_buff *skb, int offset, int len)
++{
++	if (likely(skb_headlen(skb) - offset >= len))
++		return skb->data + offset;
++	return NULL;
++}
++
+ /**
+  *	skb_needs_linearize - check if we need to linearize a given skb
+  *			      depending on the given device features.
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 9e80efa59a5d..b8ab3bea71b7 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2239,7 +2239,10 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset
+ 	case BPF_DYNPTR_TYPE_RINGBUF:
+ 		return ptr->data + ptr->offset + offset;
+ 	case BPF_DYNPTR_TYPE_SKB:
+-		return skb_header_pointer(ptr->data, ptr->offset + offset, len, buffer__opt);
++		if (buffer__opt)
++			return skb_header_pointer(ptr->data, ptr->offset + offset, len, buffer__opt);
++		else
++			return skb_pointer_if_linear(ptr->data, ptr->offset + offset, len);
+ 	case BPF_DYNPTR_TYPE_XDP:
+ 	{
+ 		void *xdp_ptr = bpf_xdp_pointer(ptr->data, ptr->offset + offset, len);
+-- 
+2.34.1
+
 
