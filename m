@@ -1,112 +1,139 @@
-Return-Path: <bpf+bounces-5175-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 791CE7581DB
-	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 18:15:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14C0D758289
+	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 18:52:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3495F2813D4
-	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 16:15:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 477421C20D6A
+	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 16:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 566BB13AD1;
-	Tue, 18 Jul 2023 16:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1E1FC16;
+	Tue, 18 Jul 2023 16:52:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2B7101C2
-	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 16:15:16 +0000 (UTC)
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2ABE43
-	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 09:15:13 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-635d9e0aa6dso36398756d6.1
-        for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 09:15:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95F6CC2C4
+	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 16:52:39 +0000 (UTC)
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC88199;
+	Tue, 18 Jul 2023 09:52:38 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b6f0508f54so89948591fa.3;
+        Tue, 18 Jul 2023 09:52:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689696912; x=1690301712;
-        h=content-transfer-encoding:subject:from:content-language:to
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1689699156; x=1692291156;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bL80Hh0hgHPYF+ScY5cReDWH1ysqjAt3uvCwW1/IBsE=;
-        b=UpKtYFdSIlEnOrCZBagoAYUeHPKub4b7KEfH5NdnZ546tz5bIW8agGjVEXqy0zmboW
-         gjpG/hRTgqsWB00GpPQDLDQY7FONSNyzZAkQUf//p1jw3Jbsm9zH4WY4HwnVh9gxIQ93
-         d8uwIu8F+CEOVGndDI50vkN/SF5C0a8ngYLfDdHRYrATr8OxPywwvbIOvKtS/OHF1VAw
-         0XnVPmuS2sOSL26Snltq5W01Dg30wJoiZzgOT01gyyb2JF5wBxmLLLpDY11o/wo6SmlJ
-         xImM1Uwbu0xzl/i7c9g8kav2xtqfDVl7m80uj2rm5kA/4OhlZlvFN3scTEhCPM7XoIuT
-         CUfQ==
+        bh=iemggp/0h14cLCAAyDHhcCwLJhah9OyvESFo1Hs7/uQ=;
+        b=qyylx3cIYmzIoE2RyMD9SETNHrJE31G33ejnX8oLxbM2rt3B07VYRuOv9KZqIwDU1z
+         5ufm52bqxsWSUYkOJJFcf+njn9TrbFDP/ehFquKoMP3eLdJfd4u8YxMhQup/AsXMz8rA
+         3A50PGhJDKIWDWHUA8kwuYlri3feKEgHSgzozIVG+5DtPyHn3+lBTPTfl3GrPhzbpzyd
+         a+ftHoP0S0lX/ldtvRuHojqpnJjmpV7UdraTZxPkX3CGY/r44prbquB0+Orp3tR4xnmH
+         xlt7x/07FJH5a/GlMVWIy84tt+ZmysSzPfXHvFjH6Vuc2X9wLGMB0NpNlJh1wcGEfnUR
+         egGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689696912; x=1690301712;
-        h=content-transfer-encoding:subject:from:content-language:to
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bL80Hh0hgHPYF+ScY5cReDWH1ysqjAt3uvCwW1/IBsE=;
-        b=HH+6j5U/jgmbfqTpWZ3GNFXD9ma9c+5UoONPimcu8UOWBRoQ0u8GPjL05ERtuurrRE
-         X4B28drE4z5vHcHwtfMOKPimVBoEsomwFuilBueUJxk0hAEwmn3xGOg42YLlhBpQlhyR
-         pWpyEllqb2jCZ0KBQR3xUQyJGo1iy4HwLcdRcotjVhZyaIGxOeFn1FFAvKeHW3WrOGEv
-         3yvtpGfK93uOe8jXlhut6g3PQieO9mmKmAttJq7s6d/kkcHtxpl9Ur6AuPplcKeUJMvE
-         QNf0yygpzfLx8M3gAsRBP05tPeQA0GZgqj9dzxFTw4hbH6xW7C6FkIw4j0MA2GRXPf4b
-         S6qw==
-X-Gm-Message-State: ABy/qLa5fy4tBXSwFjuMQiFE26Q8fjl+YpcUqOjPKR5uLdkkPIsVQmoK
-	rfuNNtoFDwwgrQRCrGeaI3+5wSRyaNWTDM97oPx9Pw==
-X-Google-Smtp-Source: APBJJlHeL6F0fsQdBYSytEPSBN8Au/lxigPrUH69zpHuJqXldXkF7EiP7RbI8WaZebcgGlAI3epPFg==
-X-Received: by 2002:a0c:da0d:0:b0:637:398f:83be with SMTP id x13-20020a0cda0d000000b00637398f83bemr103778qvj.14.1689696911895;
-        Tue, 18 Jul 2023 09:15:11 -0700 (PDT)
-Received: from [192.168.1.31] (d-65-175-157-166.nh.cpe.atlanticbb.net. [65.175.157.166])
-        by smtp.gmail.com with ESMTPSA id f22-20020a05620a15b600b00767dcf6f4adsm686774qkk.51.2023.07.18.09.15.11
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 09:15:11 -0700 (PDT)
-Message-ID: <1d6b05aa-f7c1-84ca-645a-f872813ca76f@google.com>
-Date: Tue, 18 Jul 2023 12:15:10 -0400
+        d=1e100.net; s=20221208; t=1689699156; x=1692291156;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iemggp/0h14cLCAAyDHhcCwLJhah9OyvESFo1Hs7/uQ=;
+        b=IuMPoLgcN/ENKZg+r/LgEJ3e7BZK/JdVVgV7qe5qPwY3lbhuipAoIVp6RU3CVwJNfH
+         o6XukKr/0T3yr4Y+Hag2cOBz+ARGLiDKWAt6H+hP9dqOxtYvZzbosLA45oj1SjLNHcHg
+         P4gqTIPsh/0b01ZCukKNcRixZeY/8RY4uRS7YOa1yD9ddx6cHV/xoDnzXsK1URkIj4FN
+         se4cusiUz2xOqSpWvO00rcXP3M51B0+sy8YD5iQ7jOJsi3TNKXftX1U2hc387aujUaZ7
+         +0egXSvcYrYSrKlehgFPeHCblsWbru9Zf4ymqVt2wjMaYEkljtguxvGRWHyUGPtp/Csm
+         L2/Q==
+X-Gm-Message-State: ABy/qLZgCHQskNXIMhJUR9IDCXJrqScmyl+ndk3dtp11pQcAFGot6qxR
+	YWWF0wblIDyUcZV9iJXPhqp0YNvMpgJN7dK0hB0=
+X-Google-Smtp-Source: APBJJlGtfIRvoWydC+CLLzgbS6S6yDVAym+kj9+77hjHEG4LTDQ34Jx3Fn5D0r59saL3Fo8htdGPQLd+4iTCW/2q8vs=
+X-Received: by 2002:a2e:84d7:0:b0:2b6:cca1:975f with SMTP id
+ q23-20020a2e84d7000000b002b6cca1975fmr11532284ljh.13.1689699156163; Tue, 18
+ Jul 2023 09:52:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.12.0
-To: bpf <bpf@vger.kernel.org>
-Content-Language: en-US
-From: Barret Rhoden <brho@google.com>
-Subject: Repo for tips / tricks / common code?
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+References: <20230502005218.3627530-1-drosen@google.com> <20230718082615.08448806@kernel.org>
+ <CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com> <20230718090632.4590bae3@kernel.org>
+In-Reply-To: <20230718090632.4590bae3@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 18 Jul 2023 09:52:24 -0700
+Message-ID: <CAADnVQ+4aehGYPJ2qT_HWWXmOSo4WXf69N=N9-dpzERKfzuSzQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi -
+On Tue, Jul 18, 2023 at 9:06=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Tue, 18 Jul 2023 08:52:55 -0700 Alexei Starovoitov wrote:
+> > On Tue, Jul 18, 2023 at 8:26=E2=80=AFAM Jakub Kicinski <kuba@kernel.org=
+> wrote:
+> > > On Mon,  1 May 2023 17:52:16 -0700 Daniel Rosenberg wrote:
+> > > > --- a/include/linux/skbuff.h
+> > > > +++ b/include/linux/skbuff.h
+> > > > @@ -4033,7 +4033,7 @@ __skb_header_pointer(const struct sk_buff *sk=
+b, int offset, int len,
+> > > >       if (likely(hlen - offset >=3D len))
+> > > >               return (void *)data + offset;
+> > > >
+> > > > -     if (!skb || unlikely(skb_copy_bits(skb, offset, buffer, len) =
+< 0))
+> > > > +     if (!skb || !buffer || unlikely(skb_copy_bits(skb, offset, bu=
+ffer, len) < 0))
+> > > >               return NULL;
+> > >
+> > > First off - please make sure you CC netdev on changes to networking!
+> > >
+> > > Please do not add stupid error checks to core code for BPF safety.
+> > > Wrap the call if you can't guarantee that value is sane, this is
+> > > a very bad precedent.
+> >
+> > This is NOT for safety. You misread the code.
+>
+> Doesn't matter, safety or optionality. skb_header_pointer() is used
+> on the fast paths of the networking stack, adding heavy handed input
+> validation to it is not okay. No sane code should be passing NULL
+> buffer to skb_header_pointer(). Please move the NULL check to the BPF
+> code so the rest of the networking stack does not have to pay the cost.
+>
+> This should be common sense. If one caller is doing something..
+> "special" the extra code should live in the caller, not the callee.
+> That's basic code hygiene.
 
-Is there any interest in a repo or something for reusable BPF code bits? 
-  I've got some stuff that I do in my programs that might be useful to 
-others, but not to the level of a full bpf helper.
+you're still missing the point. Pls read the whole patch series.
+It is _not_ input validation.
+skb_copy_bits is a slow path. One extra check doesn't affect
+performance at all. So 'fast paths' isn't a valid argument here.
+The code is reusing
+        if (likely(hlen - offset >=3D len))
+                return (void *)data + offset;
+which _is_ the fast path.
 
-For instance, one technique I've developed is to have list-like data 
-structures for *mmappable* data that are e.g. per-cpu and per-task. 
-Internally, it's an Array map, and each element is identified by its 
-index in the array instead of by point.  And the linked-list is built 
-with index integers instead of pointers.
-
-Anyway, that's just an example, and I imagine other people have their 
-own techniques.  I've got the code sitting in an open-source repo 
-elsewhere, and had a couple people off-list ask me about it.  I could 
-email it to the list, but it'd get lost in the noise.
-
-If you're curious about specifics, the linked list code is here [1], and 
-I briefly mentioned the data structures in my LPC 22 talk [2].  I've got 
-an AVL tree that works with this stuff too.
-
-Thanks,
-Barret
-
-
-[1] https://github.com/google/ghost-userspace/blob/main/lib/queue.bpf.h
-[2] 
-https://lpc.events/event/16/contributions/1365/attachments/986/1912/lpc22-ebpf-kernel-scheduling-with-ghost.pdf
+What you're requesting is to copy paste
+the whole __skb_header_pointer into __skb_header_pointer2.
+Makes no sense.
 
