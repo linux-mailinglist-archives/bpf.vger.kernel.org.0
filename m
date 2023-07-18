@@ -1,97 +1,136 @@
-Return-Path: <bpf+bounces-5193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5194-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D94557588D6
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 01:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA39A7588DD
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 01:06:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93309281741
-	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 23:03:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 956B9281765
+	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 23:06:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9639117AB3;
-	Tue, 18 Jul 2023 23:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3608017AB9;
+	Tue, 18 Jul 2023 23:06:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282AE15AC4
-	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 23:03:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27746C433C7;
-	Tue, 18 Jul 2023 23:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B808915AC4
+	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 23:06:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 680D9C433C8;
+	Tue, 18 Jul 2023 23:06:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689721422;
-	bh=KLWairXWjM3wHL7cN2BqH6MgbWz4n9bm+Sod/qxn6hE=;
+	s=k20201202; t=1689721574;
+	bh=FRBVwYwMTH6DRU2yrJWUYe8eJeOEgS3bml4SVg7PNv0=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=GgemyIa0/KWxtZey2iWTFwkaoLD00Lvvy0CR1AjwmRSuHgnEzAZDkT9UymjBk57mB
-	 msJIyUULvpB+VIDOynw92BBgGJFCyEwMZIeHXaJy37ZRfwxH9hKw6DNdzjQhx0/gtd
-	 WNNr4s5RTMGVYXRCAMSWh4nj/kGuMxlN58iULiG7TbrY15XbkGdQeKa+JeA8+pksil
-	 E3zQGiZZYymzO4oUuXt6C4+kAMp07mp/HgiaWlGGrF2mHBDYqG/ksBH/TBOWX/GOw3
-	 +yr4DmeAYk8CGNxQaD3LkBmEnXSPVlImV6Gqa6SPv9NrPeX2CrHQw35oe5A+Skjfmm
-	 y+JgSBNeVqrRA==
-Date: Wed, 19 Jul 2023 08:03:37 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+	b=iXOJgUVurChgFDetfjkgCXYdQd4Ql0w1h3kC+ujYEntHyJs5s179RrLIz2Cq0PguO
+	 2CmYdNomq/OQ/IXK/IzTrWWIpu3uvoWIBnCbjn92elYM6UPygsk6nRRyypBDXwq5Zw
+	 ovtjZoq0XnD2Agg+fywfoE2rj++jUuRuVfS7H5sPXkUjDH78IHM+z5fS5VJYNG39bR
+	 zq15evNi+lGQsKIk0OYwl/YYHm1nn9Npx+tOoMd2R23YGCsdsBJQtL80jQVA4nl7Mf
+	 pWMRuQtPcfmMAjYfggWpjAsxuaZo7H8UnfMueznFvpfpMYxC7iNoGfPYdSGdw9jLV/
+	 YZBccR8Vl3FJw==
+Date: Tue, 18 Jul 2023 16:06:12 -0700
+From: Jakub Kicinski <kuba@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Donglin Peng <dolinux.peng@gmail.com>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Steven Rostedt <rostedt@goodmis.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven Schnelle
- <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH v2 2/9] bpf/btf: tracing: Move finding func-proto API
- and getting func-param API to BTF
-Message-Id: <20230719080337.0955a6e77d799daad4c44350@kernel.org>
-In-Reply-To: <CAADnVQ+8PuT5tC4q1spefzzCZG9r1UszFv0jenK5+Ed+QNqtsw@mail.gmail.com>
-References: <168960739768.34107.15145201749042174448.stgit@devnote2>
-	<168960741686.34107.6330273416064011062.stgit@devnote2>
-	<CAErzpmuvhrj0HhTpH2m-C-=pFV=Q_mxYC59Hw=dm0pqUvtPm0g@mail.gmail.com>
-	<20230718194431.5653b1e89841e6abd9742ede@kernel.org>
-	<20230718225606.926222723cdd8c2c37294e41@kernel.org>
-	<CAADnVQ+8PuT5tC4q1spefzzCZG9r1UszFv0jenK5+Ed+QNqtsw@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Cc: Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John
+ Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet
+ <corbet@lwn.net>, Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko
+ <mykolal@fb.com>, LKML <linux-kernel@vger.kernel.org>, "open list:KERNEL
+ SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Android Kernel Team
+ <kernel-team@android.com>
+Subject: Re: [PATCH v2 1/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
+Message-ID: <20230718160612.71f09752@kernel.org>
+In-Reply-To: <CAADnVQLJBiB7pWDTDNgQW_an+YoB61xkNEsa5g8p6zTy-mAG7Q@mail.gmail.com>
+References: <20230502005218.3627530-1-drosen@google.com>
+	<20230718082615.08448806@kernel.org>
+	<CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com>
+	<20230718090632.4590bae3@kernel.org>
+	<CAADnVQ+4aehGYPJ2qT_HWWXmOSo4WXf69N=N9-dpzERKfzuSzQ@mail.gmail.com>
+	<20230718101841.146efae0@kernel.org>
+	<CAADnVQ+jAo4V-Pa9_LhJEwG0QquL-Ld5S99v3LNUtgkiiYwfzw@mail.gmail.com>
+	<20230718111101.57b1d411@kernel.org>
+	<CAADnVQLJBiB7pWDTDNgQW_an+YoB61xkNEsa5g8p6zTy-mAG7Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 18 Jul 2023 10:11:01 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+On Tue, 18 Jul 2023 13:34:06 -0700 Alexei Starovoitov wrote:
+> > Direct packet access via skb->data is there for those who want high
+> > speed =F0=9F=A4=B7=EF=B8=8F =20
+>=20
+> skb->data/data_end approach unfortunately doesn't work that well.
+> Too much verifier fighting. That's why dynptr was introduced.
 
-> On Tue, Jul 18, 2023 at 6:56 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Tue, 18 Jul 2023 19:44:31 +0900
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> >
-> > > > >  static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
-> > > > >                                                    bool tracepoint)
-> > > > >  {
-> > > > > +       struct btf *btf = traceprobe_get_btf();
-> > > >
-> > > > I found that traceprobe_get_btf() only returns the vmlinux's btf. But
-> > > > if the function is
-> > > > defined in a kernel module, we should get the module's btf.
-> > > >
-> > >
-> > > Good catch! That should be a separated fix (or improvement?)
-> > > I think it's better to use btf_get() and btf_put(), and pass btf via
-> > > traceprobe_parse_context.
-> >
-> > Hmm, it seems that there is no exposed API to get the module's btf.
-> > Should I use btf_idr and btf_idr_lock directly to find the corresponding
-> > btf? If there isn't yet, I will add it too.
-> 
-> There is bpf_find_btf_id.
-> Probably drop 'static' from it and use it.
+I wish Daniel told us more about the use case.
 
-Thanks! BTW, that API seems to search BTF type info by name. If user want to
-specify a module name, do we need a new API? (Or expand the function to parse
-a module name in given name?)
+> > My worry is that people will think that whether the buffer is needed or
+> > not depends on _their program_, rather than on the underlying platform.
+> > So if it works in testing without the buffer - the buffer must not be
+> > required for their use case. =20
+>=20
+> Are you concerned about bpf progs breaking this way?
 
-Thank you,
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Both, BPF progs breaking and netdev code doing things which don't make
+sense. But I won't argue too hard about the former, i.e. the BPF API.
+
+> I thought you're worried about the driver misusing
+> skb_header_pointer() with buffer=3D=3DNULL.
+>=20
+> We can remove !buffer check as in the attached patch,
+> but I don't quite see how it would improve driver quality.
+
+The drivers may not be pretty but they aren't buggy AFAICT.
+
+> [0001-bpf-net-Introduce-skb_pointer_if_linear.patch  application/octet-st=
+ream (2873 bytes)]=20
+
+Or we can simply pretend we don't have the skb:
+
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 91ed66952580..217447f01d56 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -4023,7 +4023,7 @@ __skb_header_pointer(const struct sk_buff *skb, int o=
+ffset, int len,
+ 	if (likely(hlen - offset >=3D len))
+ 		return (void *)data + offset;
+=20
+-	if (!skb || !buffer || unlikely(skb_copy_bits(skb, offset, buffer, len) <=
+ 0))
++	if (!skb || unlikely(skb_copy_bits(skb, offset, buffer, len) < 0))
+ 		return NULL;
+=20
+ 	return buffer;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 9e80efa59a5d..8bc4622cc1df 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2239,7 +2239,13 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_=
+dynptr_kern *ptr, u32 offset
+ 	case BPF_DYNPTR_TYPE_RINGBUF:
+ 		return ptr->data + ptr->offset + offset;
+ 	case BPF_DYNPTR_TYPE_SKB:
+-		return skb_header_pointer(ptr->data, ptr->offset + offset, len, buffer__=
+opt);
++	{
++		const struct sk_buff *skb =3D ptr->data;
++
++		return __skb_header_pointer(NULL, ptr->offset + offset, len,
++					    skb->data, skb_headlen(skb),
++					    buffer__opt);
++	}
+ 	case BPF_DYNPTR_TYPE_XDP:
+ 	{
+ 		void *xdp_ptr =3D bpf_xdp_pointer(ptr->data, ptr->offset + offset, len);
 
