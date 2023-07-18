@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-5190-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5191-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7324775886E
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 00:29:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B01ED75886F
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 00:29:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE6C7281188
-	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 22:29:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E18B01C20E50
+	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 22:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAAFA17AAB;
-	Tue, 18 Jul 2023 22:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDCB717AAC;
+	Tue, 18 Jul 2023 22:29:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82FD61772E
-	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 22:29:04 +0000 (UTC)
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C79B1992;
-	Tue, 18 Jul 2023 15:29:01 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b741cf99f8so96538271fa.0;
-        Tue, 18 Jul 2023 15:29:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C601772E
+	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 22:29:30 +0000 (UTC)
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336B91998
+	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 15:29:23 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b74209fb60so94120431fa.0
+        for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 15:29:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689719340; x=1692311340;
+        d=gmail.com; s=20221208; t=1689719361; x=1692311361;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qNw+miDO+/vr2NteE7yqKqsKfjVHHAqT8sK5QSW7byk=;
-        b=a2pYDJsFUytmjoOLHzZ3DLS49W/e3L2DLHxvs19CPUjUXpJGPXa1kBPo9kbCok3E2N
-         rleryHy3KrwhRqfZfuMCFFA0CwpSm9SoD9EftpqygB90ifNsixKTV28ce8pZArirwEO7
-         45fx7Sunj4GM22bsLBHa6g/vljqN5bHzR52W0CCXsFYMNvlSyLih4Y/zmsDc6i2LR9nd
-         IUDwqYwbYbsHzszrtkn4gMm7g5SWt2b+G8s5KyQV5iRXv/OYbN5dYl/UV3Zc/yXtBII/
-         5GM00/htoFgEP1lnUEQbH3CqyXSt7e2ZaZIyAjSuFi9bpm4gGqwhmzvuYNKRYVOwHyK2
-         6BmA==
+        bh=h0me5IkvGW37WaQfqqfhV8YpOrg1Oc3bcDBcpwbCz9E=;
+        b=ZU58NWFZoMeTqb18TgXFqCFVMM83gi0H+6AP+HwLT9YPkDiu1HyLRpK8Crc1SbBiWf
+         wJaNeJl1oY4ogn6alpPuXOJ8QjYWR9qpjQKmGlStDEmS3zpT9HTRlBQu5j3NmH1TSeAb
+         grOBjSqGxHyImy26E7up5bUFIogXYs1VPu+pDH/pu42vuuwqzOrtJairKZiaHuvZ2P2M
+         iHjZ42NqU4qLb8EyYUYnw+ahs218glD8dWP7XNW354F2+2UwlIB5vrM3tFtKYlxJAlYg
+         75ZoDW5GstFlPIjRuZSlRPN2cq3KDkmfnETrSZuXbulAe8cYQe0awt2UeFcpoaJ0mL7B
+         pBtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689719340; x=1692311340;
+        d=1e100.net; s=20221208; t=1689719361; x=1692311361;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qNw+miDO+/vr2NteE7yqKqsKfjVHHAqT8sK5QSW7byk=;
-        b=CEqSs9Z2cty0tgBwTxILDvHfaMq9v28s7wFoInYGvGs588LevWBjFo5W+12L26+8GH
-         ZDcNDBXc0I2Pt44RB39D3RNKjCcQ3nBvSjBZ+UFYr0ywl1upEMfjmzceqh6/ckqaAJOf
-         etwhhzLp7cIjWgQbaXPcYkH4UeB4jvvrup5uxWorpjKpOnzBFw84StlJhG3YQpwW0VrH
-         g5/9liUZHauluHgzTT44FR+wyxxZyF2AsOTfaxUoqUDPQ1sjzEq4sKQsNbQzI5D7Padd
-         hpvzeNWNCbynsUQFiHHio53Ul53dRcbRK/JV8X9pTwzLakUF85d7qujWzRAul7Lmkm5J
-         LY1A==
-X-Gm-Message-State: ABy/qLadviuv1KT799yTWKlLrdUC2+YOEnzJ1AL7jcEQhxkIyplKF8HF
-	Mk4pWEJjsYKoS57YOuGaVV/MeSc9ZVHsXh6LeJ0=
-X-Google-Smtp-Source: APBJJlH4etfU3dbNOp+Zve/q7ONO5kOmWFyi1Rdgcn0iBh8HYYbXtTuVVyfCGgwEE65eHBq0Fz2kzddf7rIaR5oqS00=
-X-Received: by 2002:a2e:9b82:0:b0:2b6:a827:164f with SMTP id
- z2-20020a2e9b82000000b002b6a827164fmr450914lji.10.1689719339348; Tue, 18 Jul
- 2023 15:28:59 -0700 (PDT)
+        bh=h0me5IkvGW37WaQfqqfhV8YpOrg1Oc3bcDBcpwbCz9E=;
+        b=ZfkH4xLwPAVh4y2gSbQGJqupLoiPsNthZuwGVgEA/2yEyUipnR+Okw6hvScEJn0Lm1
+         Getxc07ZfD/ic0JkG1V/KCdeyMFDw2p0yEJJZV1CErXEp+z+1z+Jf3ewFEIfYhPw25BP
+         2MbyT15lxgXo7vv+pzjpC8fuJlywKYGvhpGd3/MPUhRq/xcTzfB8lWW/zDw8lvRj4PFn
+         Us1KQBsXmLLO7VPt/406ff7IbK8gngMm52cnPCQM8uuwzUBQf7qBBmFbzp4NjVV1M0tp
+         gJEgPl9RF/J6dXaEux0gSfCXpTQKDgWals95IA5g6kF02N9zHzICS9pc17GzZfwn9oDE
+         WeqQ==
+X-Gm-Message-State: ABy/qLbAAl2+NMgtiWWrhGHTLXa9rF5ISXtZTwHE+MgStI5ZCfd2Zel+
+	MqDtGJWE303DnlEQfY7EOzbSHnxyexSBSnjMxSA=
+X-Google-Smtp-Source: APBJJlHi/RHjD2atG0e+J1PMf1IgQhOE7UnfjRkkLZBahHoWpPT6vZ9o7NTsFwAheucaAzzX1V4P+Mc6szy6xZD6bn8=
+X-Received: by 2002:a2e:8013:0:b0:2b9:563b:7e3a with SMTP id
+ j19-20020a2e8013000000b002b9563b7e3amr492258ljg.32.1689719361168; Tue, 18 Jul
+ 2023 15:29:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <168926677665.316237.9953845318337455525.stgit@ahduyck-xeon-server.home.arpa>
- <ce15b171-897f-bf2e-2897-c0b2b912e709@huaweicloud.com>
-In-Reply-To: <ce15b171-897f-bf2e-2897-c0b2b912e709@huaweicloud.com>
+References: <20230717161530.1238-1-memxor@gmail.com> <20230717161530.1238-3-memxor@gmail.com>
+In-Reply-To: <20230717161530.1238-3-memxor@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 18 Jul 2023 15:28:48 -0700
-Message-ID: <CAADnVQK7+cUi2BvwNc+zdYj1SN1iMMe7Vgc5TkE+_MCATAuzUQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf, arm64: Fix BTI type used for freplace attached functions
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: Alexander Duyck <alexander.duyck@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Date: Tue, 18 Jul 2023 15:29:09 -0700
+Message-ID: <CAADnVQLwz2uo-OfwJ1S8BLUG2RPM47RDuoGxw5Wmo1bPHtvE-g@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 2/3] bpf: Repeat check_max_stack_depth for async callbacks
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,60 +78,46 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Jul 15, 2023 at 2:03=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com=
-> wrote:
+On Mon, Jul 17, 2023 at 9:15=E2=80=AFAM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> On 7/14/2023 12:49 AM, Alexander Duyck wrote:
-> > From: Alexander Duyck <alexanderduyck@fb.com>
-> >
-> > When running an freplace attached bpf program on an arm64 system w were
-> > seeing the following issue:
-> >    Unhandled 64-bit el1h sync exception on CPU47, ESR 0x000000003600000=
-3 -- BTI
-> >
-> > After a bit of work to track it down I determined that what appeared to=
- be
-> > happening is that the 'bti c' at the start of the program was somehow b=
-eing
-> > reached after a 'br' instruction. Further digging pointed me toward the
-> > fact that the function was attached via freplace. This in turn led me t=
-o
-> > build_plt which I believe is invoking the long jump which is triggering
-> > this error.
-> >
-> > To resolve it we can replace the 'bti c' with 'bti jc' and add a commen=
-t
-> > explaining why this has to be modified as such.
-> >
-> > Fixes: b2ad54e1533e ("bpf, arm64: Implement bpf_arch_text_poke() for ar=
-m64")
-> > Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
-> > ---
-> >   arch/arm64/net/bpf_jit_comp.c |    8 +++++++-
-> >   1 file changed, 7 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_com=
-p.c
-> > index 145b540ec34f..ec2174838f2a 100644
-> > --- a/arch/arm64/net/bpf_jit_comp.c
-> > +++ b/arch/arm64/net/bpf_jit_comp.c
-> > @@ -322,7 +322,13 @@ static int build_prologue(struct jit_ctx *ctx, boo=
-l ebpf_from_cbpf)
-> >        *
-> >        */
-> >
-> > -     emit_bti(A64_BTI_C, ctx);
-> > +     /* bpf function may be invoked by 3 instruction types:
-> > +      * 1. bl, attached via freplace to bpf prog via short jump
-> > +      * 2. br, attached via freplace to bpf prog via long jump
-> > +      * 3. blr, working as a function pointer, used by emit_call.
-> > +      * So BTI_JC should used here to support both br and blr.
-> > +      */
-> > +     emit_bti(A64_BTI_JC, ctx);
+> While the check_max_stack_depth function explores call chains emanating
+> from the main prog, which is typically enough to cover all possible call
+> chains, it doesn't explore those rooted at async callbacks unless the
+> async callback will have been directly called, since unlike non-async
+> callbacks it skips their instruction exploration as they don't
+> contribute to stack depth.
 >
-> LGTM. Thanks for the fixes.
+> It could be the case that the async callback leads to a callchain which
+> exceeds the stack depth, but this is never reachable while only
+> exploring the entry point from main subprog. Hence, repeat the check for
+> the main subprog *and* all async callbacks marked by the symbolic
+> execution pass of the verifier, as execution of the program may begin at
+> any of them.
 >
-> Acked-by: Xu Kuohai <xukuohai@huawei.com>
+> Consider functions with following stack depths:
+> main: 256
+> async: 256
+> foo: 256
+>
+> main:
+>     rX =3D async
+>     bpf_timer_set_callback(...)
+>
+> async:
+>     foo()
+>
+> Here, async is not descended as it does not contribute to stack depth of
+> main (since it is referenced using bpf_pseudo_func and not
+> bpf_pseudo_call). However, when async is invoked asynchronously, it will
+> end up breaching the MAX_BPF_STACK limit by calling foo.
+>
+> Hence, in addition to main, we also need to explore call chains
+> beginning at all async callback subprogs in a program.
+>
+> Fixes: 7ddc80a476c2 ("bpf: Teach stack depth check about async callbacks.=
+")
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
 Applied. Thanks
 
