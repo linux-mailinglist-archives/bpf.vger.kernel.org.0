@@ -1,146 +1,239 @@
-Return-Path: <bpf+bounces-5184-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5185-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECA2F758611
-	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 22:29:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D628E758621
+	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 22:34:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7F7A281719
-	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 20:29:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13D3C1C20E32
+	for <lists+bpf@lfdr.de>; Tue, 18 Jul 2023 20:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52FF6174EC;
-	Tue, 18 Jul 2023 20:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8407915AF2;
+	Tue, 18 Jul 2023 20:34:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198A2174CB
-	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 20:29:09 +0000 (UTC)
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D70519A3
-	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 13:29:02 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-262d9e75438so4248813a91.2
-        for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 13:29:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A55C168A2
+	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 20:34:22 +0000 (UTC)
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741C9BD;
+	Tue, 18 Jul 2023 13:34:20 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b6f0508f54so93616581fa.3;
+        Tue, 18 Jul 2023 13:34:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689712141; x=1692304141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=deZ6/MphDLbE3b6/WAb1wk5PSC/mFgjmOYT8mAVc0cs=;
-        b=dJzYkf6oBwKs5q7adrr0Rogf0Jdj4MhtsOveJaxzWOgKkZTJvVSZYo0ycLFknMfojH
-         KSW00cbrsGgMmL4AfjFQEoHwQLSZjOH3HdGYgTSW2iLhvn+YvztBK0F8Ju9QrXZq0ooG
-         zpA/sx1h+WGZ/GpdvmgLsAgOh6V0iApcv0iUGsL4yoblgHFantFH8RqhVTibKiE6omK2
-         KBzYiFu5OokHgDzSUz2yAUUqnOdJ+KowQYFMqwiMLS6HvGJe//FUG/R07OcbTbOo1vqp
-         OTUWFeQLtThSTCgkWd5ecj4ca+VjSo3MmV4zqjdassdWYr+xLcTfc9hdvf9PknqCCDO7
-         hhoA==
+        d=gmail.com; s=20221208; t=1689712459; x=1692304459;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6uIhwmFyPqgKxliIJt//d2T340hpaSfqqaiFESvOnJ4=;
+        b=V84qZpRKUFedgVV6NSIfUrcUQzjvlHCJ5Q6qzpT0f7lwMxTTPDtVBY6zEkslNsCOgM
+         MehMK4K4cljq/GW0G/e0D8lGv6AhbRitlKqo+ySUrDThDBGcSsmzuFUqOR5sKGVn/L7G
+         MNq8B82sGdFiuQWRF73NjIACxzyhJMl+Jizx/gzNqPgt/ljgXM6pngtfZM//9ojOQpQ1
+         0BnePEl0DIUvYDrguMVPs6iZl3yvlhQO8u/k3zE1Oru/ZJl53djukY5YvVm8/0VXY+Kj
+         Y3/orLTWlSBHp8AKhYpiayCAx00KOif0WZsDw1bZOAWWLAUboOl2vVjDe90HZRpg9pv2
+         ytUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689712141; x=1692304141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=deZ6/MphDLbE3b6/WAb1wk5PSC/mFgjmOYT8mAVc0cs=;
-        b=ALy3k092BqD7gNGjQqgQREmptyp6G48Yg17dVCiMvMIfrcu1BW6RXXt9jDROBN1rtq
-         aJRBx5V/OdjOcnZdgkAhtb1GYSH/dfGxO3tj+pJECUwr2dfIHvV6ZW6/XAIDuXxpUL6t
-         A2yysAMb4yL1YPk7UtxBXx0cVKSYabKTrNusxe4yAPUepsrOaXCFDKtbg5NPC5uhZYMK
-         qoc+ragrknRy/9kE6yZZZX6CabWV/o1ZBPiswp9Hg91I2lYZjVIfI6pnx+v5Jl25J/es
-         eMTsAgg4ckPOSDyIO5g5x6ru7le/3SPFd5n7g/kHW3CsTLhwieMDCNwekJ8IjrKCd7uF
-         I0RA==
-X-Gm-Message-State: ABy/qLbaZDA5ix7ywsIgWIPmiJtNy8FaGDBFt2Z+hFWbEMR/SA7CMwB7
-	u4j3/velsFyfuqFkXGe5hRrYUAj/rNAQUEK81IXqxw==
-X-Google-Smtp-Source: APBJJlEJrixphIFDrx3BZ1Bc05t/6tjoIoX3sCRCf1S64A+HNuLyrFbFua63sUi0wrFA818kiCyV6E16Z1RrXPp6RpU=
-X-Received: by 2002:a17:90a:4d8e:b0:263:4815:cb9a with SMTP id
- m14-20020a17090a4d8e00b002634815cb9amr197219pjh.41.1689712141202; Tue, 18 Jul
- 2023 13:29:01 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689712459; x=1692304459;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6uIhwmFyPqgKxliIJt//d2T340hpaSfqqaiFESvOnJ4=;
+        b=emIiICL2rnvv67vM2SDdxRCgaBVqUwzjIOQx32lKhWLIDW5rcEEuClcLH/l2hMdvDr
+         3iHjMmTfauxHka8YrBgFtFbAXPQB7719WwCvA2ajR9eQzZjSti9w5Ozd7xpRX/Qr9nPb
+         CtjZqDkuopZtpVjLZUkld+8/RbszvcIe6ks7/aIb2/dPWApHdFVQ9pkENyREIb3J7Shb
+         sbZlQvBZaQjdRJtD8dAB8ahC4VyxEPCPtRguiV0f61a+wtME4GDFKkwPgwyxPmGkFNE6
+         G+p+pTc20G+jaHfBatVidvSs4WBUF9RCdvC+rOlPDgEtseyFtg3sF0Kc/E/iYC1NRJAY
+         b/gw==
+X-Gm-Message-State: ABy/qLYL/xHQDnog/mfvW8OQONMBXLrxLLnw+PDE56FhHsBIDIOygY80
+	gNbi4L/P/mJeG9Ch086IOVitnmXSa5WsZgSC5m4=
+X-Google-Smtp-Source: APBJJlFAzUmlSYMknfGdgDNc4OKhK+B1hNbXYuatV+BAmsrsmx3KCKRyIw3g2mRNAgzWq0FSSYVd0+QUQyuFzIrGugw=
+X-Received: by 2002:a05:651c:106:b0:2b6:c236:b040 with SMTP id
+ a6-20020a05651c010600b002b6c236b040mr10893461ljb.12.1689712458314; Tue, 18
+ Jul 2023 13:34:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZLbYdpWC8zt9EJtq@debian.debian>
-In-Reply-To: <ZLbYdpWC8zt9EJtq@debian.debian>
-From: Stanislav Fomichev <sdf@google.com>
-Date: Tue, 18 Jul 2023 13:28:49 -0700
-Message-ID: <CAKH8qBsZeqchfcYm-pNKjafYwFzGnwzcXDgHfj3Omkm0yWd31A@mail.gmail.com>
-Subject: Re: [PATCH] bpf: lwt: do not return NET_XMIT_xxx values on bpf_redirect
-To: Yan Zhai <yan@cloudflare.com>
-Cc: "open list:BPF [NETWORKING] (tc BPF, sock_addr)" <bpf@vger.kernel.org>, kernel-team@cloudflare.com, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"open list:BPF [NETWORKING] (tc BPF, sock_addr)" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	Jordan Griege <jgriege@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230502005218.3627530-1-drosen@google.com> <20230718082615.08448806@kernel.org>
+ <CAADnVQJEEF=nqxo6jHKK=Tn3M_NVXHQjhY=_sry=tE8X4ss25A@mail.gmail.com>
+ <20230718090632.4590bae3@kernel.org> <CAADnVQ+4aehGYPJ2qT_HWWXmOSo4WXf69N=N9-dpzERKfzuSzQ@mail.gmail.com>
+ <20230718101841.146efae0@kernel.org> <CAADnVQ+jAo4V-Pa9_LhJEwG0QquL-Ld5S99v3LNUtgkiiYwfzw@mail.gmail.com>
+ <20230718111101.57b1d411@kernel.org>
+In-Reply-To: <20230718111101.57b1d411@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 18 Jul 2023 13:34:06 -0700
+Message-ID: <CAADnVQLJBiB7pWDTDNgQW_an+YoB61xkNEsa5g8p6zTy-mAG7Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] bpf: Allow NULL buffers in bpf_dynptr_slice(_rw)
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Daniel Rosenberg <drosen@google.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Joanne Koong <joannelkoong@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	Android Kernel Team <kernel-team@android.com>
+Content-Type: multipart/mixed; boundary="000000000000d9ce8c0600c8d6c1"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 18, 2023 at 11:22=E2=80=AFAM Yan Zhai <yan@cloudflare.com> wrot=
-e:
->
-> skb_do_redirect handles returns error code from both rx and tx path.
-> The tx path codes are special, e.g. NET_XMIT_CN: they are
-> non-negative, and can conflict with LWTUNNEL_XMIT_xxx values. Directly
-> returning such code can cause unexpected behavior. We found at least
-> one bug that will panic the kernel through KASAN report when we
-> accidentally redirect packets to a down or carrier-down device at lwt
-> xmit hook:
->
-> https://gist.github.com/zhaiyan920/8fbac245b261fe316a7ef04c9b1eba48
->
-> Above bug is hit because NET_XMIT_CN is returned by noop_qdisc of the
-> down device, and it propagates from dev_queue_xmit all way to the lwt
-> logic. Although skb has been freed by the qdisc, it still continues to
-> neighbor subsystem and triggers the bug.
->
-> This change converts the tx code to proper errors that lwt can consume.
->
-> Reported-by: Jordan Griege <jgriege@cloudflare.com>
-> Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> ---
->  net/core/filter.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 06ba0e56e369..c9cc501ecdc0 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2129,6 +2129,11 @@ static inline int __bpf_tx_skb(struct net_device *=
-dev, struct sk_buff *skb)
->         ret =3D dev_queue_xmit(skb);
->         dev_xmit_recursion_dec();
->
-> +       // We should not return NET_XMIT_xxx here since it will conflict =
-with
-> +       // LWTUNNEL_XMIT_xxx values. Convert the return value to errno in=
-stead.
+--000000000000d9ce8c0600c8d6c1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-C++ comments; should be /* */. But, also, maybe they are not really needed?
-
-ret =3D dev_queue_xmit(skb);
-if (ret)
-        ret =3D net_xmit_errno(ret);
-
-We have a bunch of places with the pattern like this, so probably can
-do the same here?
-
-> +       if (unlikely(ret !=3D NET_XMIT_SUCCESS))
-> +               ret =3D net_xmit_errno(ret);
-> +
->         return ret;
->  }
+On Tue, Jul 18, 2023 at 11:11=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
+rote:
 >
-> --
-> 2.30.2
+> On Tue, 18 Jul 2023 10:50:14 -0700 Alexei Starovoitov wrote:
+> > On Tue, Jul 18, 2023 at 10:18=E2=80=AFAM Jakub Kicinski <kuba@kernel.or=
+g> wrote:
+> > > > you're still missing the point. Pls read the whole patch series.
+> > >
+> > > Could you just tell me what the point is then? The "series" is one
+> > > patch plus some tiny selftests. I don't see any documentation for
+> > > how dynptrs are supposed to work either.
+> > >
+> > > As far as I can grasp this makes the "copy buffer" optional from
+> > > the kfunc-API perspective (of bpf_dynptr_slice()).
+> > >
+> > > > It is _not_ input validation.
+> > > > skb_copy_bits is a slow path. One extra check doesn't affect
+> > > > performance at all. So 'fast paths' isn't a valid argument here.
+> > > > The code is reusing
+> > > >         if (likely(hlen - offset >=3D len))
+> > > >                 return (void *)data + offset;
+> > > > which _is_ the fast path.
+> > > >
+> > > > What you're requesting is to copy paste
+> > > > the whole __skb_header_pointer into __skb_header_pointer2.
+> > > > Makes no sense.
+> > >
+> > > No, Alexei, the whole point of skb_header_pointer() is to pass
+> > > the secondary buffer, to make header parsing dependable.
+> >
+> > of course. No one argues about that.
+> >
+> > > Passing NULL buffer to skb_header_pointer() is absolutely nonsensical=
+.
+> >
+> > Quick grep through the code proves you wrong:
+> > drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> > __skb_header_pointer(NULL, start, sizeof(*hp), skb->data,
+> >                      skb_headlen(skb), NULL);
+> >
+> > was done before this patch. It's using __ variant on purpose
+> > and explicitly passing skb=3D=3DNULL to exactly trigger that line
+> > to deliberately avoid the slow path.
+> >
+> > Another example:
+> > drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+> > skb_header_pointer(skb, 0, 0, NULL);
+> >
+> > This one I'm not sure about. Looks buggy.
 >
+> These are both Tx path for setting up offloads, Linux doesn't request
+> offloads for headers outside of the linear part. The ixgbevf code is
+> completely pointless, as you say.
+>
+> In general drivers are rarely a source of high quality code examples.
+> Having been directly involved in the bugs that lead to the bnxt code
+> being written - I was so happy that the driver started parsing Tx
+> packets *at all*, so I wasn't too fussed by the minor problems :(
+>
+> > > It should *not* be supported. We had enough prod problems with people
+> > > thinking that the entire header will be in the linear portion.
+> > > Then either the NIC can't parse the header, someone enables jumbo,
+> > > disables GRO, adds new HW, adds encap, etc etc and things implode.
+> >
+> > I don't see how this is related.
+> > NULL buffer allows to get a linear pointer and explicitly avoids
+> > slow path when it's not linear.
+>
+> Direct packet access via skb->data is there for those who want high
+> speed =F0=9F=A4=B7=EF=B8=8F
+
+skb->data/data_end approach unfortunately doesn't work that well.
+Too much verifier fighting. That's why dynptr was introduced.
+
+>
+> > > If you want to support it in BPF that's up to you, but I think it's
+> > > entirely reasonable for me to request that you don't do such things
+> > > in general networking code. The function is 5 LoC, so a local BPF
+> > > copy seems fine. Although I'd suggest skb_header_pointer_misguided()
+> > > rather than __skb_header_pointer2() as the name :)
+> >
+> > If you insist we can, but bnxt is an example that buffer=3D=3DNULL is
+> > a useful concept for networking and not bpf specific.
+> > It also doesn't make "people think the header is linear" any worse.
+>
+> My worry is that people will think that whether the buffer is needed or
+> not depends on _their program_, rather than on the underlying platform.
+> So if it works in testing without the buffer - the buffer must not be
+> required for their use case.
+
+Are you concerned about bpf progs breaking this way?
+I thought you're worried about the driver misusing
+skb_header_pointer() with buffer=3D=3DNULL.
+
+We can remove !buffer check as in the attached patch,
+but I don't quite see how it would improve driver quality.
+
+--000000000000d9ce8c0600c8d6c1
+Content-Type: application/octet-stream; 
+	name="0001-bpf-net-Introduce-skb_pointer_if_linear.patch"
+Content-Disposition: attachment; 
+	filename="0001-bpf-net-Introduce-skb_pointer_if_linear.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lk8r2ex50>
+X-Attachment-Id: f_lk8r2ex50
+
+RnJvbSBjN2IwZTQ2YmMyMjQ4NjQzZWI4YTdjNWY1MjZjMWE3ODA2OWY5NjhjIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBBbGV4ZWkgU3Rhcm92b2l0b3YgPGFzdEBrZXJuZWwub3JnPgpE
+YXRlOiBUdWUsIDE4IEp1bCAyMDIzIDEzOjI5OjEyIC0wNzAwClN1YmplY3Q6IFtQQVRDSCBicGYt
+bmV4dF0gYnBmLCBuZXQ6IEludHJvZHVjZSBza2JfcG9pbnRlcl9pZl9saW5lYXIuCgpTaWduZWQt
+b2ZmLWJ5OiBBbGV4ZWkgU3Rhcm92b2l0b3YgPGFzdEBrZXJuZWwub3JnPgotLS0KIGluY2x1ZGUv
+bGludXgvc2tidWZmLmggfCAxMCArKysrKysrKystCiBrZXJuZWwvYnBmL2hlbHBlcnMuYyAgIHwg
+IDUgKysrKy0KIDIgZmlsZXMgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMo
+LSkKCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3NrYnVmZi5oIGIvaW5jbHVkZS9saW51eC9z
+a2J1ZmYuaAppbmRleCA5MWVkNjY5NTI1ODAuLmYyNzZkMGU5ODE2ZiAxMDA2NDQKLS0tIGEvaW5j
+bHVkZS9saW51eC9za2J1ZmYuaAorKysgYi9pbmNsdWRlL2xpbnV4L3NrYnVmZi5oCkBAIC00MDIz
+LDcgKzQwMjMsNyBAQCBfX3NrYl9oZWFkZXJfcG9pbnRlcihjb25zdCBzdHJ1Y3Qgc2tfYnVmZiAq
+c2tiLCBpbnQgb2Zmc2V0LCBpbnQgbGVuLAogCWlmIChsaWtlbHkoaGxlbiAtIG9mZnNldCA+PSBs
+ZW4pKQogCQlyZXR1cm4gKHZvaWQgKilkYXRhICsgb2Zmc2V0OwogCi0JaWYgKCFza2IgfHwgIWJ1
+ZmZlciB8fCB1bmxpa2VseShza2JfY29weV9iaXRzKHNrYiwgb2Zmc2V0LCBidWZmZXIsIGxlbikg
+PCAwKSkKKwlpZiAoIXNrYiB8fCB1bmxpa2VseShza2JfY29weV9iaXRzKHNrYiwgb2Zmc2V0LCBi
+dWZmZXIsIGxlbikgPCAwKSkKIAkJcmV0dXJuIE5VTEw7CiAKIAlyZXR1cm4gYnVmZmVyOwpAQCAt
+NDAzNiw2ICs0MDM2LDE0IEBAIHNrYl9oZWFkZXJfcG9pbnRlcihjb25zdCBzdHJ1Y3Qgc2tfYnVm
+ZiAqc2tiLCBpbnQgb2Zmc2V0LCBpbnQgbGVuLCB2b2lkICpidWZmZXIpCiAJCQkJICAgIHNrYl9o
+ZWFkbGVuKHNrYiksIGJ1ZmZlcik7CiB9CiAKK3N0YXRpYyBpbmxpbmUgdm9pZCAqIF9fbXVzdF9j
+aGVjaworc2tiX3BvaW50ZXJfaWZfbGluZWFyKGNvbnN0IHN0cnVjdCBza19idWZmICpza2IsIGlu
+dCBvZmZzZXQsIGludCBsZW4pCit7CisJaWYgKGxpa2VseShza2JfaGVhZGxlbihza2IpIC0gb2Zm
+c2V0ID49IGxlbikpCisJCXJldHVybiBza2ItPmRhdGEgKyBvZmZzZXQ7CisJcmV0dXJuIE5VTEw7
+Cit9CisKIC8qKgogICoJc2tiX25lZWRzX2xpbmVhcml6ZSAtIGNoZWNrIGlmIHdlIG5lZWQgdG8g
+bGluZWFyaXplIGEgZ2l2ZW4gc2tiCiAgKgkJCSAgICAgIGRlcGVuZGluZyBvbiB0aGUgZ2l2ZW4g
+ZGV2aWNlIGZlYXR1cmVzLgpkaWZmIC0tZ2l0IGEva2VybmVsL2JwZi9oZWxwZXJzLmMgYi9rZXJu
+ZWwvYnBmL2hlbHBlcnMuYwppbmRleCA5ZTgwZWZhNTlhNWQuLmI4YWIzYmVhNzFiNyAxMDA2NDQK
+LS0tIGEva2VybmVsL2JwZi9oZWxwZXJzLmMKKysrIGIva2VybmVsL2JwZi9oZWxwZXJzLmMKQEAg
+LTIyMzksNyArMjIzOSwxMCBAQCBfX2JwZl9rZnVuYyB2b2lkICpicGZfZHlucHRyX3NsaWNlKGNv
+bnN0IHN0cnVjdCBicGZfZHlucHRyX2tlcm4gKnB0ciwgdTMyIG9mZnNldAogCWNhc2UgQlBGX0RZ
+TlBUUl9UWVBFX1JJTkdCVUY6CiAJCXJldHVybiBwdHItPmRhdGEgKyBwdHItPm9mZnNldCArIG9m
+ZnNldDsKIAljYXNlIEJQRl9EWU5QVFJfVFlQRV9TS0I6Ci0JCXJldHVybiBza2JfaGVhZGVyX3Bv
+aW50ZXIocHRyLT5kYXRhLCBwdHItPm9mZnNldCArIG9mZnNldCwgbGVuLCBidWZmZXJfX29wdCk7
+CisJCWlmIChidWZmZXJfX29wdCkKKwkJCXJldHVybiBza2JfaGVhZGVyX3BvaW50ZXIocHRyLT5k
+YXRhLCBwdHItPm9mZnNldCArIG9mZnNldCwgbGVuLCBidWZmZXJfX29wdCk7CisJCWVsc2UKKwkJ
+CXJldHVybiBza2JfcG9pbnRlcl9pZl9saW5lYXIocHRyLT5kYXRhLCBwdHItPm9mZnNldCArIG9m
+ZnNldCwgbGVuKTsKIAljYXNlIEJQRl9EWU5QVFJfVFlQRV9YRFA6CiAJewogCQl2b2lkICp4ZHBf
+cHRyID0gYnBmX3hkcF9wb2ludGVyKHB0ci0+ZGF0YSwgcHRyLT5vZmZzZXQgKyBvZmZzZXQsIGxl
+bik7Ci0tIAoyLjM0LjEKCg==
+--000000000000d9ce8c0600c8d6c1--
 
