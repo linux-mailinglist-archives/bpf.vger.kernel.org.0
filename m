@@ -1,352 +1,373 @@
-Return-Path: <bpf+bounces-5278-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5279-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38BBD759503
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 14:20:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A3DB7595E3
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 14:49:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC4FD28180B
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 12:20:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD4551C20FE9
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 12:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86DA014A84;
-	Wed, 19 Jul 2023 12:19:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFA614288;
+	Wed, 19 Jul 2023 12:48:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E79114280;
-	Wed, 19 Jul 2023 12:19:55 +0000 (UTC)
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6071FD8;
-	Wed, 19 Jul 2023 05:19:36 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0Vnlwnp3_1689769171;
-Received: from 30.221.150.22(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0Vnlwnp3_1689769171)
-          by smtp.aliyun-inc.com;
-          Wed, 19 Jul 2023 20:19:32 +0800
-Message-ID: <291a6897-d706-688d-ca4a-832ee12eb402@linux.alibaba.com>
-Date: Wed, 19 Jul 2023 20:19:27 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76007107B6
+	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 12:48:57 +0000 (UTC)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955231986;
+	Wed, 19 Jul 2023 05:48:43 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36JBj6ij018633;
+	Wed, 19 Jul 2023 12:48:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=cYuXfjalpb0wA9Fhyt4f5qq9Tl02quM3q0RmgxC4sio=;
+ b=ZOWRfSifaTKvzYfPZ+rPSdiBNTzaIMoob4O7FBznSo8Mfj3v5t9v83y04mji3jc0witB
+ CyS1tjhaocQbkeU35GhP9Jgi8cHjG0hVicE2bnaFwCmEemOAStB0mSJOSsAxUS3pRVak
+ yBTB13QczxuCoLhXi8/g1O93Wr84c4zNCzcl1BWOklQqB50lbrnMx9CuSPoQVh50ZuP4
+ BFaLjBcyeZRz+5Q6JAyEWXyfE/EEaj3a4T3B0LqxRMhDnJtJ2ryNcusNsgJIe5JaUonv
+ ft0NVqT0f4MYRURU08+zykSN+xYhbMzVB0NtRuAnOxgsWKn371x1aMCf3SbYy1hUwzwe Uw== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run77ycj8-4
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 19 Jul 2023 12:48:34 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36JB6YDn038185;
+	Wed, 19 Jul 2023 12:36:55 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw6s7sw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 19 Jul 2023 12:36:55 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Qqmo7SLgQbrF2GJsAH7HS0FYh9zCcLxjgoprWF4zefsBQkcj7AX4ch9eBIKmAKOzWQzWVfU2ShQ7t2d8y6KPO/jdwoefXTy+BrEFmfJOFcnXlMbmmS1z6f/yPWF9/mQZP+aIT71Ua2fcWalzPN7Sm4JEmiATFWwhtVv3HM0ecx+3uq0+E4iFxRpvLSlIDFv4f5h/HDhDK3JOdCwMDJbdLUIXJCcptF7x9jpZ9ltgTEtQ6ax8txxACXl6nb7i3+qV8SQAbnnWUgFHiR3nB0fVtFRAU6Be26RiYXeJU1Tu8LXamhXI+TzQZVgRjj2dsg15TRCABSgl61hrhwNyZBzd5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cYuXfjalpb0wA9Fhyt4f5qq9Tl02quM3q0RmgxC4sio=;
+ b=nklfE9w7DGlPjn60zlo9Jluu0fn2S/qJES9zq5bSgCDwboD2I2pKCx9yTdrSYsUX2HT4s6m0a59fKGU/46+zlOU85tCMkq034dZKUTQslMESdcQbuhYDmqofXbbJOixsRTAG9o6Kh9lVwkyc7YPE2y2Gd1o2yUt1RR3tRoka5QmjEUUyjYVVkP0niyeURqwaqaUdlbkwJqRfPrxNMsZbQM3i/Lq49NBJp6fNWuF1rJsVhoCVNgOfrhUa8ZaL4sAnZMIujPxQm6srJdnbjXj8sWqV9BIogcTvRk4qD5a2MXY0lYQ5k64nzDWTPY3L0hDzR5rDt4H143FV212jsOrXgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cYuXfjalpb0wA9Fhyt4f5qq9Tl02quM3q0RmgxC4sio=;
+ b=nFlR9i7hwibIeDsldtNQD9TGCiL/kC2ZP6v9i/2zgi4+F4nVn7nf4GNQq/VQQv2iy//rLbBfCrIlCRX+5WxA8tgytf/+dggfjGlUM7rVcaMVFdWb9lluQHw9gigvCLBWQwkbX8Gwj8Fn7brRiP46ZP6WgWcVfljh0tdSRkocvNI=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by SA1PR10MB7829.namprd10.prod.outlook.com (2603:10b6:806:3ab::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Wed, 19 Jul
+ 2023 12:36:53 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::97e0:4c4b:17bb:a90f]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::97e0:4c4b:17bb:a90f%4]) with mapi id 15.20.6609.024; Wed, 19 Jul 2023
+ 12:36:53 +0000
+Message-ID: <13926373-1beb-16f4-180e-f529a8c9b0a7@oracle.com>
+Date: Wed, 19 Jul 2023 13:36:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/9] bpf/btf: tracing: Move finding func-proto API and
+ getting func-param API to BTF
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+References: <168960739768.34107.15145201749042174448.stgit@devnote2>
+ <168960741686.34107.6330273416064011062.stgit@devnote2>
+Content-Language: en-GB
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <168960741686.34107.6330273416064011062.stgit@devnote2>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO2P265CA0475.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a2::31) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH net-next V2 3/4] virtio_net: support per queue interrupt
- coalesce command
-To: Gavin Li <gavinl@nvidia.com>
-Cc: gavi@nvidia.com, virtualization@lists.linux-foundation.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, jiri@nvidia.com, dtatulea@nvidia.com
-References: <20230717143037.21858-1-gavinl@nvidia.com>
- <20230717143037.21858-4-gavinl@nvidia.com>
- <f88ad438-fb63-beeb-b999-94fb3a75d93d@linux.alibaba.com>
- <a2cd512a-245e-4c8a-633d-126c6fc135ba@nvidia.com>
-From: Heng Qi <hengqi@linux.alibaba.com>
-In-Reply-To: <a2cd512a-245e-4c8a-633d-126c6fc135ba@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|SA1PR10MB7829:EE_
+X-MS-Office365-Filtering-Correlation-Id: f4dbd366-b31c-473a-b378-08db8854d49f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	acllR9G9RrND2SuiiWjl2Q/9OQ1MK2AFAXRxLnDXNmDj6QMbzEtqn4KS4dWmeMroHOK06SXw7M+V7U+nVENppfz88RQOpK9K4TJgZ7lHHT+A09cntkc2XV9DBmD6dAH70pySNaPzgtKWni/yywWgZKSwBJgk3PmH3sb2qPdDu0qrs1BbbUZxoEWSSyeabK79n8IAN5PLxVE8VMO2N5lHuZaN/rYie0+VAcpRAAnGdK4dhB1+18UcthyRfIDRKTRKX+pIv8cVXN8mXSw2V9687510VbYEtZnIwv1LXKWPye22UmgkOcHxoGrPm3pF9ZQ1y/FY8eVQ0dvCA0MysL0g5wkO660xzosKJR/kV82iT2Asuduw9V0NwnjTNxTNNAtT1hr/F/LsO8x2cl6vxVUpCHLrfPmxKND3D5phHlIWYIuAwmsLjr7jibl8J36jR6xIqvzJSbHX8zQoB/VosJHnU+C5s7bHGGHhOC11qTWzQYd55BRcW1c9YrfN1HJDykmwSnrHWl6xhVB46ERAbj/vHNOwUqcXu3lrKc3IHWLE8sZ69hoSyR9JWROBkOmoAQDYDfG45VyboiYeq+emneJiERNN9frncYdSyEGVo7/e5KGO9jVMs0YZmTIEWVKSimD8LmHn+IF4IRS7SUn17ttv6w==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(366004)(346002)(136003)(39860400002)(396003)(451199021)(66946007)(44832011)(6512007)(66556008)(6666004)(6486002)(66476007)(2906002)(316002)(53546011)(8676002)(8936002)(4326008)(36756003)(5660300002)(6506007)(2616005)(38100700002)(186003)(41300700001)(86362001)(478600001)(83380400001)(31686004)(54906003)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?QjU4R3R1aEQvS0dnSTlYUGdxRlIvNUprMGNRRDR4K2N0OXNmYzZBR0UyQUdR?=
+ =?utf-8?B?Q1lvR256VlRkUEc0VXQ3bzlmUitscHA3UUFKak5hblZjWjEyT0YrVCtydTM0?=
+ =?utf-8?B?cFlINXB1Z21hM0lBYS9GcUJUQUxra1c4MUlZWXhVenVDVkFoR0xFODdhOHdn?=
+ =?utf-8?B?UkRCUmh1YzN3L05VSktuR1gxWDBlcldmV1M3RU4vblBBUXI2eVhuSjFEb0M2?=
+ =?utf-8?B?ZFBVd2J3WXFULzBWRUJHNWJiRTYwbnp3di83cVdwYW00VWRueXRMc1Y2cG5R?=
+ =?utf-8?B?akVITFc3SzdScXpyZURDNTJFZnNENXpORDFMMlBrSld2VnhsUkgzRnFJTGRO?=
+ =?utf-8?B?Y3FtMzhzM2NoSC9JdkRLelRzenNONk13TGNZNWFDN1hGMlZFb1JjVnRGdTBL?=
+ =?utf-8?B?Wk1ISmRTcGJPYUJaZllDL1NMTWZTWkgrRzVrQmVyNWRwbW9xeERKMUtzM3pP?=
+ =?utf-8?B?Nm4wblQ2UmtDVmdqbE43clZHNER0VVJ0QkZTOFZ3SjJkR1pZUEh6bC9EVWVC?=
+ =?utf-8?B?Sms5T29FdVBLK3hjQnRSaURvWHlIUDdqWnRhbkhkdzhZeUYweklXeGhnNjdi?=
+ =?utf-8?B?RHVSVUNFMUtBWWFlZFpqR3RXbWJuWTVEcVZpem5KM1JLSkdDc2dkYXlyeWhF?=
+ =?utf-8?B?SDBzcW5uOGUvT0ZFL0ZGZDdRQkJFZE5heWtoTE55OHhYNVdVQzhHaGFtZmVI?=
+ =?utf-8?B?NmpaemtheEM4YjJGZThtSlc3aFN5bnM5RzdhSllVZys1bmxSa3hoekM3VEY1?=
+ =?utf-8?B?Y1gxN3BXSU9VWEZXWW9BU2JxZlMxdUFXUEtadmxWeHByWkY4WURXMEhZem8w?=
+ =?utf-8?B?OCthRks4OWVoQ3dWOU9YcEpUb2lReFBHQ3BBeFVwTmZmQ0pCY0FPQXp1ZE12?=
+ =?utf-8?B?RWRVeW5yK1VaN3RmMFVERVZnMlVaZ0cyUzFPaHZFdHAwU1pxdC9EQ2NlM0xI?=
+ =?utf-8?B?dzNOWllaVXhWN2x1Z0QxWVcrY2JnTVBZZFVONGN0TVkwRVNoV21qeFVTN1dM?=
+ =?utf-8?B?OEZUVDNIeWpmK2lwZ2FGT2ZrbGhEbkhJUW9CaXRYeDFzbC9kTjQ3Wjd4V0h4?=
+ =?utf-8?B?bkpHWlcvZzN0SUJiQlgwNGI4ME1WYlJHU250dUoycFBGeXJXRHN5NG5ud1Ax?=
+ =?utf-8?B?YzhaTzZwR3FpeU5DU0prUTJtQytHQmhoNXY5aC9zM2dqZkhjcGRNbUpPLzdW?=
+ =?utf-8?B?Z0YxdlhDY01iOXJla2k3TmhJbHlxaVZzUHJRbHRYd25HRFNyR0crZjZhMTRG?=
+ =?utf-8?B?dGlmSjUxaVc1RS9YZlI4bHdiaGU2SkxaZ1ptb3hTazhYSnBCS0U4VUYwUktv?=
+ =?utf-8?B?bkJUMkU5aTBZNWd1SnVsalBOUlFEZHRDQnUyQ1pHTFVJK08yTTBWeFRhSlR6?=
+ =?utf-8?B?b2dEOGQxWnVLYzVSNklwQ05SMTEwVnRsbUl3d0Zzazk1cDRKVUFKdHMxdG5E?=
+ =?utf-8?B?QVJqaFVVcmN2elVIb2ltRmUxWGZJM0EwMUhWblNISFVTTllPdnRRb1hxSHI4?=
+ =?utf-8?B?bkF3SDRkYllVVXVIRlcrN2gyV3d3UFY5L3pDeWdhS0lKcW5BbGVoRi9sMWRH?=
+ =?utf-8?B?NEx1Y2Jxa3RQZ0g4OGEzcmEwNVp1QnRLN2VnMXdCMTQyZm5lWkxkZjZJNkxm?=
+ =?utf-8?B?ZWlsUzRHWGJkUUhUeERqUzdCRVhJZFc5eVQxN2txb00veE40UWNGUWIzN0F6?=
+ =?utf-8?B?Y2o1b1BFT1c3UmxwamlqWUZ2TTJMNCtTek9RSGhMUnZYRW9hOTNjVXNsZG90?=
+ =?utf-8?B?aU5HYlpNWksyNEZwNk5BRkRieHVJeWpONHpFRmQ2ejIwZlZYenQzbmpobmtK?=
+ =?utf-8?B?M3hnQURHSEYveWxaZUpiMk9aS1hGWDdwWDVwbXExcHFDNXg4UXd4SXBHRU5p?=
+ =?utf-8?B?MzU5RExPRmVraStLNzBRV2c1OTBQZDRRekNBNE84Q0NjTjRLMVRUcWNoa3Bo?=
+ =?utf-8?B?M3paSUY5SmxyV01sRk1Rb20vTkRMbGpJRENkSSswUEd1MmFyaUt1RWE0czl4?=
+ =?utf-8?B?bURZelExbHRMUWZ2NkQwTTU0bDhqTklKUlZjOGE3VVFvajFMakUzNGhocEt5?=
+ =?utf-8?B?aDE4OStMVmpqa21idWhhQy9XeURQTmdMYTZ1WjNuVkJvQzhEbDBrUTgvdVlY?=
+ =?utf-8?B?Y2lWRzFkRURDU1VZTVgxbkF1aUpYMWZzczhLdzFDYXpVbkRIdno0bkhSS1R2?=
+ =?utf-8?Q?R+YfvnYvFRQLn3RjrC54fYQ=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	n70VPr7ANNv0k9JWYaR2/OkDyn+V2pDQMacXS5NTkaVvIv5hzZ8k4ogFqlB5YTSedjxfkR81nnGleN8unvNyPDiamXYQLdcEYeF8iajD+HRKifh+axv/MHCqLdGu772J/3STrBe3ju6YfBPNDDdEBTPwbNVdEd5mcUWEwQGEsbkgWLMXLAYfeVLlIKqx3KM+pTVwOY/TB9h7SrJDtYqEKvqQTBNaOqwe05amuSqraNHX0AVR0E7henaBdlSXn7QLgnlkD7/wVCdxrPA60/62FFRkiMgguVN4cM4VZdgL6euv5SEzuiMpKD4tot6+yjnm3aVJQY+gSixxBr41T+r/rmk2s+iS0YjTf8Geks+IbeujNoVKriq616O6lEgfRsLvmuLUAtQPflSY+Up++Tt/9ivFy/LZcG/m6krZZOYiavMk+Y3+5Rb7WHQ7NmJSnZIZFg8DjBVm/t5Im9GorcdQW0DY/j94qBjvTnCRfNh4t1LtvYCFjvQakpT624bxqsNJUqAW72baw1ke7QAg1we8mz71WiMVJuFtQdLGdvjAjqIX2ufgyhe+tDF4uu1eC0gXCyGI+NWzLcxRWJs+EupCm31dF4h+XVu2MSbLnuut00HOUDynFvyIbPMmLQHWJYY0ha8j/zVBmQgVSz4qRZgpHZtd+slYNC79VkOn64LfIEEH7+jfOmr72S613v4APBxOqWI4oaJ7wV7+T6V1nU/09Ojvk1iy8Ya3xSGV9FAf6q/hj9d68g1o0KmFC+uI73EJ+kRcyn7mG/8jzoHmOLb4HBs7kDjHnN5FobLOimzw/8PbJpuBVLSNbJCEQe9JbWHkHpFCarMFJPpsByxNN/O/vuqfaKLregbPQdFqBpzfbVF2OWufTgxNIunaUlCJa7G0AxZm1imqvW/jwooOUDvIKw==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4dbd366-b31c-473a-b378-08db8854d49f
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 12:36:53.1497
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1/84/uji7hebHHfPwIRF/ucHiHzlMlkE6qv/cOhzxuUTv96aw2V9NxIAJRop+bkt9JyYjOLXANO7dsePUSQCow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB7829
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-19_08,2023-07-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ adultscore=0 spamscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307190113
+X-Proofpoint-GUID: FAHtEU5Grg_ct5zGxRJRvVDCvMDtewg4
+X-Proofpoint-ORIG-GUID: FAHtEU5Grg_ct5zGxRJRvVDCvMDtewg4
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On 17/07/2023 16:23, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Move generic function-proto find API and getting function parameter API
+> to BTF library code from trace_probe.c. This will avoid redundant efforts
+> on different feature.
+> 
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  include/linux/btf.h        |    4 ++++
+>  kernel/bpf/btf.c           |   45 ++++++++++++++++++++++++++++++++++++++++
+>  kernel/trace/trace_probe.c |   50 +++++++++++++-------------------------------
+>  3 files changed, 64 insertions(+), 35 deletions(-)
+> 
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index cac9f304e27a..98fbbcdd72ec 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -221,6 +221,10 @@ const struct btf_type *
+>  btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+>  		 u32 *type_size);
+>  const char *btf_type_str(const struct btf_type *t);
+> +const struct btf_type *btf_find_func_proto(struct btf *btf,
+> +					   const char *func_name);
+> +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
+> +					   s32 *nr);
+>  
+>  #define for_each_member(i, struct_type, member)			\
+>  	for (i = 0, member = btf_type_member(struct_type);	\
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 817204d53372..e015b52956cb 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -1947,6 +1947,51 @@ btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+>  	return __btf_resolve_size(btf, type, type_size, NULL, NULL, NULL, NULL);
+>  }
+>  
+> +/*
+> + * Find a functio proto type by name, and return it.
+> + * Return NULL if not found, or return -EINVAL if parameter is invalid.
+> + */
+> +const struct btf_type *btf_find_func_proto(struct btf *btf, const char *func_name)
+> +{
+> +	const struct btf_type *t;
+> +	s32 id;
+> +
+> +	if (!btf || !func_name)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	id = btf_find_by_name_kind(btf, func_name, BTF_KIND_FUNC);
 
+as mentioned in my other mail, there are cases where the function name
+may have a .isra.0 suffix, but the BTF representation will not. I looked
+at this and it seems like symbol names are validated via
+traceprobe_parse_event_name() - will this validation allow a "."-suffix
+name? I tried the following (with pahole v1.25 that emits BTF for
+schedule_work.isra.0):
 
-在 2023/7/18 下午2:45, Gavin Li 写道:
->
->
-> On 7/18/2023 11:37 AM, Heng Qi wrote:
->>
->>
->> 在 2023/7/17 下午10:30, Gavin Li 写道:
->>> Add interrupt_coalesce config in send_queue and receive_queue to 
->>> cache user
->>> config.
->>>
->>> Send per virtqueue interrupt moderation config to underline device 
->>> in order
->>> to have more efficient interrupt moderation and cpu utilization of 
->>> guest
->>> VM.
->>>
->>> Signed-off-by: Gavin Li <gavinl@nvidia.com>
->>> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
->>> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
->>> Acked-by: Michael S. Tsirkin <mst@redhat.com>
->>> ---
->>>   drivers/net/virtio_net.c        | 123 
->>> ++++++++++++++++++++++++++++----
->>>   include/uapi/linux/virtio_net.h |  14 ++++
->>>   2 files changed, 125 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->>> index 802ed21453f5..1566c7de9436 100644
->>> --- a/drivers/net/virtio_net.c
->>> +++ b/drivers/net/virtio_net.c
->>> @@ -144,6 +144,8 @@ struct send_queue {
->>>       struct virtnet_sq_stats stats;
->>> +    struct virtnet_interrupt_coalesce intr_coal;
->>> +
->>>       struct napi_struct napi;
->>>       /* Record whether sq is in reset state. */
->>> @@ -161,6 +163,8 @@ struct receive_queue {
->>>       struct virtnet_rq_stats stats;
->>> +    struct virtnet_interrupt_coalesce intr_coal;
->>> +
->>>       /* Chain pages by the private ptr. */
->>>       struct page *pages;
->>> @@ -3078,6 +3082,59 @@ static int virtnet_send_notf_coal_cmds(struct 
->>> virtnet_info *vi,
->>>       return 0;
->>>   }
->>> +static int virtnet_send_ctrl_coal_vq_cmd(struct virtnet_info *vi,
->>> +                     u16 vqn, u32 max_usecs, u32 max_packets)
->>> +{
->>> +    struct virtio_net_ctrl_coal_vq *coal_vq;
->>> +    struct scatterlist sgs;
->>> +
->>> +    coal_vq = kzalloc(sizeof(*coal_vq), GFP_KERNEL);
->>> +    if (!coal_vq)
->>> +        return -ENOMEM;
->>> +    coal_vq->vqn = cpu_to_le16(vqn);
->>> +    coal_vq->coal.max_usecs = cpu_to_le32(max_usecs);
->>> +    coal_vq->coal.max_packets = cpu_to_le32(max_packets);
->>> +    sg_init_one(&sgs, coal_vq, sizeof(*coal_vq));
->>> +
->>> +    if (!virtnet_send_command(vi, VIRTIO_NET_CTRL_NOTF_COAL,
->>> +                  VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET,
->>> +                  &sgs))
->>> +        return -EINVAL;
->>> +
->>> +    return 0;
->>> +}
->>> +
->>> +static int virtnet_send_notf_coal_vq_cmds(struct virtnet_info *vi,
->>> +                      struct ethtool_coalesce *ec,
->>> +                      u16 queue)
->>> +{
->>> +    int err;
->>> +
->>> +    if (ec->rx_coalesce_usecs || ec->rx_max_coalesced_frames) {
->>> +        err = virtnet_send_ctrl_coal_vq_cmd(vi, rxq2vq(queue),
->>> +                            ec->rx_coalesce_usecs,
->>> +                            ec->rx_max_coalesced_frames);
->>> +        if (err)
->>> +            return err;
->>> +        /* Save parameters */
->>> +        vi->rq[queue].intr_coal.max_usecs = ec->rx_coalesce_usecs;
->>> +        vi->rq[queue].intr_coal.max_packets = 
->>> ec->rx_max_coalesced_frames;
->>> +    }
->>> +
->>> +    if (ec->tx_coalesce_usecs || ec->tx_max_coalesced_frames) {
->>> +        err = virtnet_send_ctrl_coal_vq_cmd(vi, txq2vq(queue),
->>> +                            ec->tx_coalesce_usecs,
->>> +                            ec->tx_max_coalesced_frames);
->>> +        if (err)
->>> +            return err;
->>> +        /* Save parameters */
->>> +        vi->sq[queue].intr_coal.max_usecs = ec->tx_coalesce_usecs;
->>> +        vi->sq[queue].intr_coal.max_packets = 
->>> ec->tx_max_coalesced_frames;
->>> +    }
->>> +
->>> +    return 0;
->>> +}
->>> +
->>>   static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
->>>   {
->>>       /* usecs coalescing is supported only if VIRTIO_NET_F_NOTF_COAL
->>> @@ -3094,23 +3151,39 @@ static int 
->>> virtnet_coal_params_supported(struct ethtool_coalesce *ec)
->>>   }
->>>   static int virtnet_set_coalesce_one(struct net_device *dev,
->>> -                    struct ethtool_coalesce *ec)
->>> +                    struct ethtool_coalesce *ec,
->>> +                    bool per_queue,
->>> +                    u32 queue)
->>>   {
->>>       struct virtnet_info *vi = netdev_priv(dev);
->>> -    int ret, i, napi_weight;
->>> +    int queue_count = per_queue ? 1 : vi->max_queue_pairs;
->>> +    int queue_number = per_queue ? queue : 0;
->>>       bool update_napi = false;
->>> +    int ret, i, napi_weight;
->>> +
->>> +    if (queue >= vi->max_queue_pairs)
->>> +        return -EINVAL;
->>>       /* Can't change NAPI weight if the link is up */
->>>       napi_weight = ec->tx_max_coalesced_frames ? NAPI_POLL_WEIGHT : 0;
->>> -    if (napi_weight ^ vi->sq[0].napi.weight) {
->>> -        if (dev->flags & IFF_UP)
->>> -            return -EBUSY;
->>> -        else
->>> +    for (i = queue_number; i < queue_count; i++) {
->>> +        if (napi_weight ^ vi->sq[i].napi.weight) {
->>> +            if (dev->flags & IFF_UP)
->>> +                return -EBUSY;
->>> +
->>>               update_napi = true;
->>> +            /* All queues that belong to [queue_number, 
->>> queue_count] will be
->>> +             * updated for the sake of simplicity, which might not 
->>> be necessary
->>> +             */
->>> +            queue_number = i;
->>> +            break;
->>> +        }
->>>       }
->>> -    if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
->>> +    if (!per_queue && virtio_has_feature(vi->vdev, 
->>> VIRTIO_NET_F_NOTF_COAL))
->>>           ret = virtnet_send_notf_coal_cmds(vi, ec);
->>> +    else if (per_queue && virtio_has_feature(vi->vdev, 
->>> VIRTIO_NET_F_VQ_NOTF_COAL))
->>> +        ret = virtnet_send_notf_coal_vq_cmds(vi, ec, queue);
->>>       else
->>>           ret = virtnet_coal_params_supported(ec);
->>> @@ -3118,7 +3191,7 @@ static int virtnet_set_coalesce_one(struct 
->>> net_device *dev,
->>>           return ret;
->>>       if (update_napi) {
->>> -        for (i = 0; i < vi->max_queue_pairs; i++)
->>> +        for (i = queue_number; i < queue_count; i++)
->>>               vi->sq[i].napi.weight = napi_weight;
->>>       }
->>> @@ -3130,19 +3203,29 @@ static int virtnet_set_coalesce(struct 
->>> net_device *dev,
->>>                   struct kernel_ethtool_coalesce *kernel_coal,
->>>                   struct netlink_ext_ack *extack)
->>>   {
->>> -    return virtnet_set_coalesce_one(dev, ec);
->>> +    return virtnet_set_coalesce_one(dev, ec, false, 0);
->>>   }
->>>   static int virtnet_get_coalesce_one(struct net_device *dev,
->>> -                    struct ethtool_coalesce *ec)
->>> +                    struct ethtool_coalesce *ec,
->>> +                    bool per_queue,
->>> +                    u32 queue)
->>>   {
->>>       struct virtnet_info *vi = netdev_priv(dev);
->>> -    if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
->>> +    if (queue >= vi->max_queue_pairs)
->>> +        return -EINVAL;
->>> +
->>> +    if (!per_queue && virtio_has_feature(vi->vdev, 
->>> VIRTIO_NET_F_NOTF_COAL)) {
->>>           ec->rx_coalesce_usecs = vi->intr_coal_rx.max_usecs;
->>>           ec->tx_coalesce_usecs = vi->intr_coal_tx.max_usecs;
->>>           ec->tx_max_coalesced_frames = vi->intr_coal_tx.max_packets;
->>>           ec->rx_max_coalesced_frames = vi->intr_coal_rx.max_packets;
->>> +    } else if (per_queue && virtio_has_feature(vi->vdev, 
->>> VIRTIO_NET_F_VQ_NOTF_COAL)) {
->>> +        ec->rx_coalesce_usecs = vi->rq[queue].intr_coal.max_usecs;
->>> +        ec->tx_coalesce_usecs = vi->sq[queue].intr_coal.max_usecs;
->>> +        ec->tx_max_coalesced_frames = 
->>> vi->sq[queue].intr_coal.max_packets;
->>> +        ec->rx_max_coalesced_frames = 
->>> vi->rq[queue].intr_coal.max_packets;
->>>       } else {
->>>           ec->rx_max_coalesced_frames = 1;
->>> @@ -3158,7 +3241,21 @@ static int virtnet_get_coalesce(struct 
->>> net_device *dev,
->>>                   struct kernel_ethtool_coalesce *kernel_coal,
->>>                   struct netlink_ext_ack *extack)
->>>   {
->>> -    return virtnet_get_coalesce_one(dev, ec);
->>> +    return virtnet_get_coalesce_one(dev, ec, false, 0);
->>> +}
->>> +
->>> +static int virtnet_set_per_queue_coalesce(struct net_device *dev,
->>> +                      u32 queue,
->>> +                      struct ethtool_coalesce *ec)
->>
->> When \field{max_virtqueue_pairs} is the maximum value, and the user 
->> does not carry the queue_mask for 'ethtool -Q',
->> we will send same command for all vqs, and the device will receive a 
->> large number of the same VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET commands at 
->> this time.
->> Do we want to alleviate this situation?
->>
->> Thanks.
->>
->
-> May it be better to handle this senario in ethtool user space and call 
-> set_coalesce instead of set_per_queue_coalesce? I'm not sure.
+[45454] FUNC 'schedule_work' type_id=45453 linkage=static
 
-Maybe we need to force 'ethtool -Q' to carry queue_mask in userspace or 
-instead call set_coalesce() interface when not carrying queue_mask
-(this does not hinder this work and should be in another thread, please 
-move on). But this I'm not sure either, since other NICs don't seem to
-care much about this. Simply check that all drivers that implement the 
-set_per_queue_coalesce() interface have implemented set_coalesce().
+$ echo 'f schedule_work.isra.0 $arg*' >> dynamic_events
+bash: echo: write error: No such file or directory
 
-Thanks.
+So presuming that such "."-suffixed names are allowed, would it make
+sense to fall back to search BTF for the prefix ("schedule_work")
+instead of the full name ("schedule_work.isra.0"), as the former is what
+makes it into the BTF representation? Thanks!
 
->>> +{
->>> +    return virtnet_set_coalesce_one(dev, ec, true, queue);
->>> +}
->>> +
->>> +static int virtnet_get_per_queue_coalesce(struct net_device *dev,
->>> +                      u32 queue,
->>> +                      struct ethtool_coalesce *ec)
->>> +{
->>> +    return virtnet_get_coalesce_one(dev, ec, true, queue);
->>>   }
->>>   static void virtnet_init_settings(struct net_device *dev)
->>> @@ -3291,6 +3388,8 @@ static const struct ethtool_ops 
->>> virtnet_ethtool_ops = {
->>>       .set_link_ksettings = virtnet_set_link_ksettings,
->>>       .set_coalesce = virtnet_set_coalesce,
->>>       .get_coalesce = virtnet_get_coalesce,
->>> +    .set_per_queue_coalesce = virtnet_set_per_queue_coalesce,
->>> +    .get_per_queue_coalesce = virtnet_get_per_queue_coalesce,
->>>       .get_rxfh_key_size = virtnet_get_rxfh_key_size,
->>>       .get_rxfh_indir_size = virtnet_get_rxfh_indir_size,
->>>       .get_rxfh = virtnet_get_rxfh,
->>> diff --git a/include/uapi/linux/virtio_net.h 
->>> b/include/uapi/linux/virtio_net.h
->>> index 12c1c9699935..cc65ef0f3c3e 100644
->>> --- a/include/uapi/linux/virtio_net.h
->>> +++ b/include/uapi/linux/virtio_net.h
->>> @@ -56,6 +56,7 @@
->>>   #define VIRTIO_NET_F_MQ    22    /* Device supports Receive Flow
->>>                        * Steering */
->>>   #define VIRTIO_NET_F_CTRL_MAC_ADDR 23    /* Set MAC address */
->>> +#define VIRTIO_NET_F_VQ_NOTF_COAL 52    /* Device supports 
->>> virtqueue notification coalescing */
->>>   #define VIRTIO_NET_F_NOTF_COAL    53    /* Device supports 
->>> notifications coalescing */
->>>   #define VIRTIO_NET_F_GUEST_USO4    54    /* Guest can handle USOv4 
->>> in. */
->>>   #define VIRTIO_NET_F_GUEST_USO6    55    /* Guest can handle USOv6 
->>> in. */
->>> @@ -391,5 +392,18 @@ struct virtio_net_ctrl_coal_rx {
->>>   };
->>>   #define VIRTIO_NET_CTRL_NOTF_COAL_RX_SET        1
->>> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET        2
->>> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_GET        3
->>> +
->>> +struct virtio_net_ctrl_coal {
->>> +    __le32 max_packets;
->>> +    __le32 max_usecs;
->>> +};
->>> +
->>> +struct  virtio_net_ctrl_coal_vq {
->>> +    __le16 vqn;
->>> +    __le16 reserved;
->>> +    struct virtio_net_ctrl_coal coal;
->>> +};
->>>   #endif /* _UAPI_LINUX_VIRTIO_NET_H */
->>
+Alan
 
+> +	if (id <= 0)
+> +		return NULL;
+> +
+> +	/* Get BTF_KIND_FUNC type */
+> +	t = btf_type_by_id(btf, id);
+> +	if (!t || !btf_type_is_func(t))
+> +		return NULL;
+> +
+> +	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+> +	t = btf_type_by_id(btf, t->type);
+> +	if (!t || !btf_type_is_func_proto(t))
+> +		return NULL;
+> +
+> +	return t;
+> +}
+> +
+> +/*
+> + * Get function parameter with the number of parameters.
+> + * This can return NULL if the function has no parameters.
+> + */
+> +const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
+> +{
+> +	if (!func_proto || !nr)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	*nr = btf_type_vlen(func_proto);
+> +	if (*nr > 0)
+> +		return (const struct btf_param *)(func_proto + 1);
+> +	else
+> +		return NULL;
+> +}
+> +
+>  static u32 btf_resolved_type_id(const struct btf *btf, u32 type_id)
+>  {
+>  	while (type_id < btf->start_id)
+> diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> index c68a72707852..cd89fc1ebb42 100644
+> --- a/kernel/trace/trace_probe.c
+> +++ b/kernel/trace/trace_probe.c
+> @@ -371,47 +371,23 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
+>  	return NULL;
+>  }
+>  
+> -static const struct btf_type *find_btf_func_proto(const char *funcname)
+> -{
+> -	struct btf *btf = traceprobe_get_btf();
+> -	const struct btf_type *t;
+> -	s32 id;
+> -
+> -	if (!btf || !funcname)
+> -		return ERR_PTR(-EINVAL);
+> -
+> -	id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
+> -	if (id <= 0)
+> -		return ERR_PTR(-ENOENT);
+> -
+> -	/* Get BTF_KIND_FUNC type */
+> -	t = btf_type_by_id(btf, id);
+> -	if (!t || !btf_type_is_func(t))
+> -		return ERR_PTR(-ENOENT);
+> -
+> -	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+> -	t = btf_type_by_id(btf, t->type);
+> -	if (!t || !btf_type_is_func_proto(t))
+> -		return ERR_PTR(-ENOENT);
+> -
+> -	return t;
+> -}
+> -
+>  static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
+>  						   bool tracepoint)
+>  {
+> +	struct btf *btf = traceprobe_get_btf();
+>  	const struct btf_param *param;
+>  	const struct btf_type *t;
+>  
+> -	if (!funcname || !nr)
+> +	if (!funcname || !nr || !btf)
+>  		return ERR_PTR(-EINVAL);
+>  
+> -	t = find_btf_func_proto(funcname);
+> -	if (IS_ERR(t))
+> +	t = btf_find_func_proto(btf, funcname);
+> +	if (IS_ERR_OR_NULL(t))
+>  		return (const struct btf_param *)t;
+>  
+> -	*nr = btf_type_vlen(t);
+> -	param = (const struct btf_param *)(t + 1);
+> +	param = btf_get_func_param(t, nr);
+> +	if (IS_ERR_OR_NULL(param))
+> +		return param;
+>  
+>  	/* Hide the first 'data' argument of tracepoint */
+>  	if (tracepoint) {
+> @@ -490,8 +466,8 @@ static const struct fetch_type *parse_btf_retval_type(
+>  	const struct btf_type *t;
+>  
+>  	if (btf && ctx->funcname) {
+> -		t = find_btf_func_proto(ctx->funcname);
+> -		if (!IS_ERR(t))
+> +		t = btf_find_func_proto(btf, ctx->funcname);
+> +		if (!IS_ERR_OR_NULL(t))
+>  			typestr = type_from_btf_id(btf, t->type);
+>  	}
+>  
+> @@ -500,10 +476,14 @@ static const struct fetch_type *parse_btf_retval_type(
+>  
+>  static bool is_btf_retval_void(const char *funcname)
+>  {
+> +	struct btf *btf = traceprobe_get_btf();
+>  	const struct btf_type *t;
+>  
+> -	t = find_btf_func_proto(funcname);
+> -	if (IS_ERR(t))
+> +	if (!btf)
+> +		return false;
+> +
+> +	t = btf_find_func_proto(btf, funcname);
+> +	if (IS_ERR_OR_NULL(t))
+>  		return false;
+>  
+>  	return t->type == 0;
+> 
+> 
 
