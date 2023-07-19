@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-5313-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5314-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DEF37597C3
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 16:10:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C67BA7597C6
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 16:11:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B09F41C2102C
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 14:10:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB0551C21097
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 14:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1381A14AB4;
-	Wed, 19 Jul 2023 14:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C86C156D2;
+	Wed, 19 Jul 2023 14:09:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF5C13FE1;
-	Wed, 19 Jul 2023 14:09:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB055154BD;
+	Wed, 19 Jul 2023 14:09:50 +0000 (UTC)
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309D8E53;
-	Wed, 19 Jul 2023 07:09:27 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1EDE69;
+	Wed, 19 Jul 2023 07:09:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=71b0xLhAvhFUYwZVD0/qU3O2XZwVMldTCbNGK+MA6t0=; b=kqcb4kri5v7+F+KxiiEIxCCMZ9
-	X93KntveVwwejRMyZzY2iNs8XbhygTjaV1Hc0on+Bzxk20tnHKBieC7NBPDlBrI2Zgl3zx3zxQDyg
-	sJDUWsO2YvYG8CdmRuJulL6McQLL+joQS1ku60fnl4ZcnLHdMYH8suMqR7bYBmNV4V3nAhRdTAgP+
-	K65/MbHTTaKYoONnsuYe6K2EWdGyOPYBjX5sXNHOE0OMppGGtacHziFGfyVjHylPQJd7bwTagELTy
-	aTk8TV2DXKsOEnlaIW+Qqxnr5hbiWIQ9lWAExD5Pj6DLF0NSHcg7mSvM+MNJ0fy38Wjlq0hstc0Op
-	Rzcr+dDA==;
+	bh=IvUVa9N+iSIgDnvBjb3ZV7VpMegB6uDwtt3fgbCltJw=; b=B7At2NT7KsLabNMTnaVeuYyyNV
+	7T0eR5UELw5UYIkGh4HKNCpButUYUko9K1zVBQUB/RguI40iloxyjeKqn4d1HQ08sAnBStT0ADBi2
+	ZbBbqL/2zz5Txxr4gpZ/UywDScH0nD+8NyTq5lVUM7eK2kwvj76injbY5/PsSqOXIx9RJJlKdPvVZ
+	MFNAGMTTamheI9eaMumrgcygoc/MijAx4TZIjf0MZ4dhcRzMqhVf409T+rxExrk85H33iukq2CkBL
+	LaLWbks7/nzif4oXQpEKmAmpNFeVpI6SDudHGDajOKv22m3RXpcV0mmLm6GVFrctXfJqbYX5zQoS+
+	uFCmbKLA==;
 Received: from [124.148.184.141] (helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1qM7rm-0007m4-Su; Wed, 19 Jul 2023 16:09:25 +0200
+	id 1qM7ry-0007qh-EI; Wed, 19 Jul 2023 16:09:37 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: ast@kernel.org
 Cc: andrii@kernel.org,
@@ -52,9 +52,9 @@ Cc: andrii@kernel.org,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next v6 1/8] bpf: Add generic attach/detach/query API for multi-progs
-Date: Wed, 19 Jul 2023 16:08:51 +0200
-Message-Id: <20230719140858.13224-2-daniel@iogearbox.net>
+Subject: [PATCH bpf-next v6 2/8] bpf: Add fd-based tcx multi-prog infra with link support
+Date: Wed, 19 Jul 2023 16:08:52 +0200
+Message-Id: <20230719140858.13224-3-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230719140858.13224-1-daniel@iogearbox.net>
 References: <20230719140858.13224-1-daniel@iogearbox.net>
@@ -74,1048 +74,1727 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This adds a generic layer called bpf_mprog which can be reused by different
-attachment layers to enable multi-program attachment and dependency resolution.
-In-kernel users of the bpf_mprog don't need to care about the dependency
-resolution internals, they can just consume it with few API calls.
+This work refactors and adds a lightweight extension ("tcx") to the tc BPF
+ingress and egress data path side for allowing BPF program management based
+on fds via bpf() syscall through the newly added generic multi-prog API.
+The main goal behind this work which we also presented at LPC [0] last year
+and a recent update at LSF/MM/BPF this year [3] is to support long-awaited
+BPF link functionality for tc BPF programs, which allows for a model of safe
+ownership and program detachment.
 
-The initial idea of having a generic API sparked out of discussion [0] from an
-earlier revision of this work where tc's priority was reused and exposed via
-BPF uapi as a way to coordinate dependencies among tc BPF programs, similar
-as-is for classic tc BPF. The feedback was that priority provides a bad user
-experience and is hard to use [1], e.g.:
+Given the rise in tc BPF users in cloud native environments, this becomes
+necessary to avoid hard to debug incidents either through stale leftover
+programs or 3rd party applications accidentally stepping on each others toes.
+As a recap, a BPF link represents the attachment of a BPF program to a BPF
+hook point. The BPF link holds a single reference to keep BPF program alive.
+Moreover, hook points do not reference a BPF link, only the application's
+fd or pinning does. A BPF link holds meta-data specific to attachment and
+implements operations for link creation, (atomic) BPF program update,
+detachment and introspection. The motivation for BPF links for tc BPF programs
+is multi-fold, for example:
 
-  I cannot help but feel that priority logic copy-paste from old tc, netfilter
-  and friends is done because "that's how things were done in the past". [...]
-  Priority gets exposed everywhere in uapi all the way to bpftool when it's
-  right there for users to understand. And that's the main problem with it.
+  - From Meta: "It's especially important for applications that are deployed
+    fleet-wide and that don't "control" hosts they are deployed to. If such
+    application crashes and no one notices and does anything about that, BPF
+    program will keep running draining resources or even just, say, dropping
+    packets. We at FB had outages due to such permanent BPF attachment
+    semantics. With fd-based BPF link we are getting a framework, which allows
+    safe, auto-detachable behavior by default, unless application explicitly
+    opts in by pinning the BPF link." [1]
 
-  The user don't want to and don't need to be aware of it, but uapi forces them
-  to pick the priority. [...] Your cover letter [0] example proves that in
-  real life different service pick the same priority. They simply don't know
-  any better. Priority is an unnecessary magic that apps _have_ to pick, so
-  they just copy-paste and everyone ends up using the same.
+  - From Cilium-side the tc BPF programs we attach to host-facing veth devices
+    and phys devices build the core datapath for Kubernetes Pods, and they
+    implement forwarding, load-balancing, policy, EDT-management, etc, within
+    BPF. Currently there is no concept of 'safe' ownership, e.g. we've recently
+    experienced hard-to-debug issues in a user's staging environment where
+    another Kubernetes application using tc BPF attached to the same prio/handle
+    of cls_bpf, accidentally wiping all Cilium-based BPF programs from underneath
+    it. The goal is to establish a clear/safe ownership model via links which
+    cannot accidentally be overridden. [0,2]
 
-The course of the discussion showed more and more the need for a generic,
-reusable API where the "same look and feel" can be applied for various other
-program types beyond just tc BPF, for example XDP today does not have multi-
-program support in kernel, but also there was interest around this API for
-improving management of cgroup program types. Such common multi-program
-management concept is useful for BPF management daemons or user space BPF
-applications coordinating internally about their attachments.
+BPF links for tc can co-exist with non-link attachments, and the semantics are
+in line also with XDP links: BPF links cannot replace other BPF links, BPF
+links cannot replace non-BPF links, non-BPF links cannot replace BPF links and
+lastly only non-BPF links can replace non-BPF links. In case of Cilium, this
+would solve mentioned issue of safe ownership model as 3rd party applications
+would not be able to accidentally wipe Cilium programs, even if they are not
+BPF link aware.
 
-Both from Cilium and Meta side [2], we've collected the following requirements
-for a generic attach/detach/query API for multi-progs which has been implemented
-as part of this work:
+Earlier attempts [4] have tried to integrate BPF links into core tc machinery
+to solve cls_bpf, which has been intrusive to the generic tc kernel API with
+extensions only specific to cls_bpf and suboptimal/complex since cls_bpf could
+be wiped from the qdisc also. Locking a tc BPF program in place this way, is
+getting into layering hacks given the two object models are vastly different.
 
-  - Support prog-based attach/detach and link API
-  - Dependency directives (can also be combined):
-    - BPF_F_{BEFORE,AFTER} with relative_{fd,id} which can be {prog,link,none}
-      - BPF_F_ID flag as {fd,id} toggle; the rationale for id is so that user
-        space application does not need CAP_SYS_ADMIN to retrieve foreign fds
-        via bpf_*_get_fd_by_id()
-      - BPF_F_LINK flag as {prog,link} toggle
-      - If relative_{fd,id} is none, then BPF_F_BEFORE will just prepend, and
-        BPF_F_AFTER will just append for attaching
-      - Enforced only at attach time
-    - BPF_F_REPLACE with replace_bpf_fd which can be prog, links have their
-      own infra for replacing their internal prog
-    - If no flags are set, then it's default append behavior for attaching
-  - Internal revision counter and optionally being able to pass expected_revision
-  - User space application can query current state with revision, and pass it
-    along for attachment to assert current state before doing updates
-  - Query also gets extension for link_ids array and link_attach_flags:
-    - prog_ids are always filled with program IDs
-    - link_ids are filled with link IDs when link was used, otherwise 0
-    - {prog,link}_attach_flags for holding {prog,link}-specific flags
-  - Must be easy to integrate/reuse for in-kernel users
+We instead implemented the tcx (tc 'express') layer which is an fd-based tc BPF
+attach API, so that the BPF link implementation blends in naturally similar to
+other link types which are fd-based and without the need for changing core tc
+internal APIs. BPF programs for tc can then be successively migrated from classic
+cls_bpf to the new tc BPF link without needing to change the program's source
+code, just the BPF loader mechanics for attaching is sufficient.
 
-The uapi-side changes needed for supporting bpf_mprog are rather minimal,
-consisting of the additions of the attachment flags, revision counter, and
-expanding existing union with relative_{fd,id} member.
+For the current tc framework, there is no change in behavior with this change
+and neither does this change touch on tc core kernel APIs. The gist of this
+patch is that the ingress and egress hook have a lightweight, qdisc-less
+extension for BPF to attach its tc BPF programs, in other words, a minimal
+entry point for tc BPF. The name tcx has been suggested from discussion of
+earlier revisions of this work as a good fit, and to more easily differ between
+the classic cls_bpf attachment and the fd-based one.
 
-The bpf_mprog framework consists of an bpf_mprog_entry object which holds
-an array of bpf_mprog_fp (fast-path structure). The bpf_mprog_cp (control-path
-structure) is part of bpf_mprog_bundle. Both have been separated, so that
-fast-path gets efficient packing of bpf_prog pointers for maximum cache
-efficiency. Also, array has been chosen instead of linked list or other
-structures to remove unnecessary indirections for a fast point-to-entry in
-tc for BPF.
+For the ingress and egress tcx points, the device holds a cache-friendly array
+with program pointers which is separated from control plane (slow-path) data.
+Earlier versions of this work used priority to determine ordering and expression
+of dependencies similar as with classic tc, but it was challenged that for
+something more future-proof a better user experience is required. Hence this
+resulted in the design and development of the generic attach/detach/query API
+for multi-progs. See prior patch with its discussion on the API design. tcx is
+the first user and later we plan to integrate also others, for example, one
+candidate is multi-prog support for XDP which would benefit and have the same
+'look and feel' from API perspective.
 
-The bpf_mprog_entry comes as a pair via bpf_mprog_bundle so that in case of
-updates the peer bpf_mprog_entry is populated and then just swapped which
-avoids additional allocations that could otherwise fail, for example, in
-detach case. bpf_mprog_{fp,cp} arrays are currently static, but they could
-be converted to dynamic allocation if necessary at a point in future.
-Locking is deferred to the in-kernel user of bpf_mprog, for example, in case
-of tcx which uses this API in the next patch, it piggybacks on rtnl.
+The goal with tcx is to have maximum compatibility to existing tc BPF programs,
+so they don't need to be rewritten specifically. Compatibility to call into
+classic tcf_classify() is also provided in order to allow successive migration
+or both to cleanly co-exist where needed given its all one logical tc layer and
+the tcx plus classic tc cls/act build one logical overall processing pipeline.
 
-An extensive test suite for checking all aspects of this API for prog-based
-attach/detach and link API comes as BPF selftests in this series.
+tcx supports the simplified return codes TCX_NEXT which is non-terminating (go
+to next program) and terminating ones with TCX_PASS, TCX_DROP, TCX_REDIRECT.
+The fd-based API is behind a static key, so that when unused the code is also
+not entered. The struct tcx_entry's program array is currently static, but
+could be made dynamic if necessary at a point in future. The a/b pair swap
+design has been chosen so that for detachment there are no allocations which
+otherwise could fail.
 
-Thanks also to Andrii Nakryiko for early API discussions wrt Meta's BPF prog
-management.
+The work has been tested with tc-testing selftest suite which all passes, as
+well as the tc BPF tests from the BPF CI, and also with Cilium's L4LB.
 
-  [0] https://lore.kernel.org/bpf/20221004231143.19190-1-daniel@iogearbox.net
-  [1] https://lore.kernel.org/bpf/CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com
-  [2] http://vger.kernel.org/bpfconf2023_material/tcx_meta_netdev_borkmann.pdf
+Thanks also to Nikolay Aleksandrov and Martin Lau for in-depth early reviews
+of this work.
+
+  [0] https://lpc.events/event/16/contributions/1353/
+  [1] https://lore.kernel.org/bpf/CAEf4BzbokCJN33Nw_kg82sO=xppXnKWEncGTWCTB9vGCmLB6pw@mail.gmail.com
+  [2] https://colocatedeventseu2023.sched.com/event/1Jo6O/tales-from-an-ebpf-programs-murder-mystery-hemanth-malla-guillaume-fournier-datadog
+  [3] http://vger.kernel.org/bpfconf2023_material/tcx_meta_netdev_borkmann.pdf
+  [4] https://lore.kernel.org/bpf/20210604063116.234316-1-memxor@gmail.com
 
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Jakub Kicinski <kuba@kernel.org>
 ---
- MAINTAINERS                    |   1 +
- include/linux/bpf_mprog.h      | 318 +++++++++++++++++++++++
- include/uapi/linux/bpf.h       |  36 ++-
- kernel/bpf/Makefile            |   2 +-
- kernel/bpf/mprog.c             | 445 +++++++++++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h |  36 ++-
- 6 files changed, 821 insertions(+), 17 deletions(-)
- create mode 100644 include/linux/bpf_mprog.h
- create mode 100644 kernel/bpf/mprog.c
+ MAINTAINERS                    |   4 +-
+ include/linux/bpf_mprog.h      |   9 +
+ include/linux/netdevice.h      |  15 +-
+ include/linux/skbuff.h         |   4 +-
+ include/net/sch_generic.h      |   2 +-
+ include/net/tcx.h              | 206 +++++++++++++++++++
+ include/uapi/linux/bpf.h       |  34 +++-
+ kernel/bpf/Kconfig             |   1 +
+ kernel/bpf/Makefile            |   1 +
+ kernel/bpf/syscall.c           |  82 ++++++--
+ kernel/bpf/tcx.c               | 348 +++++++++++++++++++++++++++++++++
+ net/Kconfig                    |   5 +
+ net/core/dev.c                 | 265 +++++++++++++++----------
+ net/core/filter.c              |   4 +-
+ net/sched/Kconfig              |   4 +-
+ net/sched/sch_ingress.c        |  61 +++++-
+ tools/include/uapi/linux/bpf.h |  34 +++-
+ 17 files changed, 935 insertions(+), 144 deletions(-)
+ create mode 100644 include/net/tcx.h
+ create mode 100644 kernel/bpf/tcx.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 9a5863f1b016..678bef9f60b4 100644
+index 678bef9f60b4..990e3fce753c 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -3684,6 +3684,7 @@ F:	include/linux/filter.h
- F:	include/linux/tnum.h
- F:	kernel/bpf/core.c
- F:	kernel/bpf/dispatcher.c
-+F:	kernel/bpf/mprog.c
- F:	kernel/bpf/syscall.c
- F:	kernel/bpf/tnum.c
- F:	kernel/bpf/trampoline.c
+@@ -3778,13 +3778,15 @@ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	kernel/bpf/bpf_struct*
+ 
+-BPF [NETWORKING] (tc BPF, sock_addr)
++BPF [NETWORKING] (tcx & tc BPF, sock_addr)
+ M:	Martin KaFai Lau <martin.lau@linux.dev>
+ M:	Daniel Borkmann <daniel@iogearbox.net>
+ R:	John Fastabend <john.fastabend@gmail.com>
+ L:	bpf@vger.kernel.org
+ L:	netdev@vger.kernel.org
+ S:	Maintained
++F:	include/net/tcx.h
++F:	kernel/bpf/tcx.c
+ F:	net/core/filter.c
+ F:	net/sched/act_bpf.c
+ F:	net/sched/cls_bpf.c
 diff --git a/include/linux/bpf_mprog.h b/include/linux/bpf_mprog.h
-new file mode 100644
-index 000000000000..6feefec43422
---- /dev/null
+index 6feefec43422..2b429488f840 100644
+--- a/include/linux/bpf_mprog.h
 +++ b/include/linux/bpf_mprog.h
-@@ -0,0 +1,318 @@
+@@ -315,4 +315,13 @@ int bpf_mprog_detach(struct bpf_mprog_entry *entry,
+ int bpf_mprog_query(const union bpf_attr *attr, union bpf_attr __user *uattr,
+ 		    struct bpf_mprog_entry *entry);
+ 
++static inline bool bpf_mprog_supported(enum bpf_prog_type type)
++{
++	switch (type) {
++	case BPF_PROG_TYPE_SCHED_CLS:
++		return true;
++	default:
++		return false;
++	}
++}
+ #endif /* __BPF_MPROG_H */
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index b828c7a75be2..024314c68bc8 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1930,8 +1930,7 @@ enum netdev_ml_priv_type {
+  *
+  *	@rx_handler:		handler for received packets
+  *	@rx_handler_data: 	XXX: need comments on this one
+- *	@miniq_ingress:		ingress/clsact qdisc specific data for
+- *				ingress processing
++ *	@tcx_ingress:		BPF & clsact qdisc specific data for ingress processing
+  *	@ingress_queue:		XXX: need comments on this one
+  *	@nf_hooks_ingress:	netfilter hooks executed for ingress packets
+  *	@broadcast:		hw bcast address
+@@ -1952,8 +1951,7 @@ enum netdev_ml_priv_type {
+  *	@xps_maps:		all CPUs/RXQs maps for XPS device
+  *
+  *	@xps_maps:	XXX: need comments on this one
+- *	@miniq_egress:		clsact qdisc specific data for
+- *				egress processing
++ *	@tcx_egress:		BPF & clsact qdisc specific data for egress processing
+  *	@nf_hooks_egress:	netfilter hooks executed for egress packets
+  *	@qdisc_hash:		qdisc hash table
+  *	@watchdog_timeo:	Represents the timeout that is used by
+@@ -2252,9 +2250,8 @@ struct net_device {
+ 	unsigned int		gro_ipv4_max_size;
+ 	rx_handler_func_t __rcu	*rx_handler;
+ 	void __rcu		*rx_handler_data;
+-
+-#ifdef CONFIG_NET_CLS_ACT
+-	struct mini_Qdisc __rcu	*miniq_ingress;
++#ifdef CONFIG_NET_XGRESS
++	struct bpf_mprog_entry __rcu *tcx_ingress;
+ #endif
+ 	struct netdev_queue __rcu *ingress_queue;
+ #ifdef CONFIG_NETFILTER_INGRESS
+@@ -2282,8 +2279,8 @@ struct net_device {
+ #ifdef CONFIG_XPS
+ 	struct xps_dev_maps __rcu *xps_maps[XPS_MAPS_MAX];
+ #endif
+-#ifdef CONFIG_NET_CLS_ACT
+-	struct mini_Qdisc __rcu	*miniq_egress;
++#ifdef CONFIG_NET_XGRESS
++	struct bpf_mprog_entry __rcu *tcx_egress;
+ #endif
+ #ifdef CONFIG_NETFILTER_EGRESS
+ 	struct nf_hook_entries __rcu *nf_hooks_egress;
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 91ed66952580..ed83f1c5fc1f 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -944,7 +944,7 @@ struct sk_buff {
+ 	__u8			__mono_tc_offset[0];
+ 	/* public: */
+ 	__u8			mono_delivery_time:1;	/* See SKB_MONO_DELIVERY_TIME_MASK */
+-#ifdef CONFIG_NET_CLS_ACT
++#ifdef CONFIG_NET_XGRESS
+ 	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
+ 	__u8			tc_skip_classify:1;
+ #endif
+@@ -993,7 +993,7 @@ struct sk_buff {
+ 	__u8			csum_not_inet:1;
+ #endif
+ 
+-#ifdef CONFIG_NET_SCHED
++#if defined(CONFIG_NET_SCHED) || defined(CONFIG_NET_XGRESS)
+ 	__u16			tc_index;	/* traffic control index */
+ #endif
+ 
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index e92f73bb3198..15be2d96b06d 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -703,7 +703,7 @@ int skb_do_redirect(struct sk_buff *);
+ 
+ static inline bool skb_at_tc_ingress(const struct sk_buff *skb)
+ {
+-#ifdef CONFIG_NET_CLS_ACT
++#ifdef CONFIG_NET_XGRESS
+ 	return skb->tc_at_ingress;
+ #else
+ 	return false;
+diff --git a/include/net/tcx.h b/include/net/tcx.h
+new file mode 100644
+index 000000000000..264f147953ba
+--- /dev/null
++++ b/include/net/tcx.h
+@@ -0,0 +1,206 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/* Copyright (c) 2023 Isovalent */
-+#ifndef __BPF_MPROG_H
-+#define __BPF_MPROG_H
++#ifndef __NET_TCX_H
++#define __NET_TCX_H
 +
 +#include <linux/bpf.h>
++#include <linux/bpf_mprog.h>
 +
-+/* bpf_mprog framework:
-+ *
-+ * bpf_mprog is a generic layer for multi-program attachment. In-kernel users
-+ * of the bpf_mprog don't need to care about the dependency resolution
-+ * internals, they can just consume it with few API calls. Currently available
-+ * dependency directives are BPF_F_{BEFORE,AFTER} which enable insertion of
-+ * a BPF program or BPF link relative to an existing BPF program or BPF link
-+ * inside the multi-program array as well as prepend and append behavior if
-+ * no relative object was specified, see corresponding selftests for concrete
-+ * examples (e.g. tc_links and tc_opts test cases of test_progs).
-+ *
-+ * Usage of bpf_mprog_{attach,detach,query}() core APIs with pseudo code:
-+ *
-+ *  Attach case:
-+ *
-+ *   struct bpf_mprog_entry *entry, *entry_new;
-+ *   int ret;
-+ *
-+ *   // bpf_mprog user-side lock
-+ *   // fetch active @entry from attach location
-+ *   [...]
-+ *   ret = bpf_mprog_attach(entry, &entry_new, [...]);
-+ *   if (!ret) {
-+ *       if (entry != entry_new) {
-+ *           // swap @entry to @entry_new at attach location
-+ *           // ensure there are no inflight users of @entry:
-+ *           synchronize_rcu();
-+ *       }
-+ *       bpf_mprog_commit(entry);
-+ *   } else {
-+ *       // error path, bail out, propagate @ret
-+ *   }
-+ *   // bpf_mprog user-side unlock
-+ *
-+ *  Detach case:
-+ *
-+ *   struct bpf_mprog_entry *entry, *entry_new;
-+ *   int ret;
-+ *
-+ *   // bpf_mprog user-side lock
-+ *   // fetch active @entry from attach location
-+ *   [...]
-+ *   ret = bpf_mprog_detach(entry, &entry_new, [...]);
-+ *   if (!ret) {
-+ *       // all (*) marked is optional and depends on the use-case
-+ *       // whether bpf_mprog_bundle should be freed or not
-+ *       if (!bpf_mprog_total(entry_new))     (*)
-+ *           entry_new = NULL                 (*)
-+ *       // swap @entry to @entry_new at attach location
-+ *       // ensure there are no inflight users of @entry:
-+ *       synchronize_rcu();
-+ *       bpf_mprog_commit(entry);
-+ *       if (!entry_new)                      (*)
-+ *           // free bpf_mprog_bundle         (*)
-+ *   } else {
-+ *       // error path, bail out, propagate @ret
-+ *   }
-+ *   // bpf_mprog user-side unlock
-+ *
-+ *  Query case:
-+ *
-+ *   struct bpf_mprog_entry *entry;
-+ *   int ret;
-+ *
-+ *   // bpf_mprog user-side lock
-+ *   // fetch active @entry from attach location
-+ *   [...]
-+ *   ret = bpf_mprog_query(attr, uattr, entry);
-+ *   // bpf_mprog user-side unlock
-+ *
-+ *  Data/fast path:
-+ *
-+ *   struct bpf_mprog_entry *entry;
-+ *   struct bpf_mprog_fp *fp;
-+ *   struct bpf_prog *prog;
-+ *   int ret = [...];
-+ *
-+ *   rcu_read_lock();
-+ *   // fetch active @entry from attach location
-+ *   [...]
-+ *   bpf_mprog_foreach_prog(entry, fp, prog) {
-+ *       ret = bpf_prog_run(prog, [...]);
-+ *       // process @ret from program
-+ *   }
-+ *   [...]
-+ *   rcu_read_unlock();
-+ *
-+ * bpf_mprog locking considerations:
-+ *
-+ * bpf_mprog_{attach,detach,query}() must be protected by an external lock
-+ * (like RTNL in case of tcx).
-+ *
-+ * bpf_mprog_entry pointer can be an __rcu annotated pointer (in case of tcx
-+ * the netdevice has tcx_ingress and tcx_egress __rcu pointer) which gets
-+ * updated via rcu_assign_pointer() pointing to the active bpf_mprog_entry of
-+ * the bpf_mprog_bundle.
-+ *
-+ * Fast path accesses the active bpf_mprog_entry within RCU critical section
-+ * (in case of tcx it runs in NAPI which provides RCU protection there,
-+ * other users might need explicit rcu_read_lock()). The bpf_mprog_commit()
-+ * assumes that for the old bpf_mprog_entry there are no inflight users
-+ * anymore.
-+ *
-+ * The READ_ONCE()/WRITE_ONCE() pairing for bpf_mprog_fp's prog access is for
-+ * the replacement case where we don't swap the bpf_mprog_entry.
-+ */
++#include <net/sch_generic.h>
 +
-+#define bpf_mprog_foreach_tuple(entry, fp, cp, t)			\
-+	for (fp = &entry->fp_items[0], cp = &entry->parent->cp_items[0];\
-+	     ({								\
-+		t.prog = READ_ONCE(fp->prog);				\
-+		t.link = cp->link;					\
-+		t.prog;							\
-+	      });							\
-+	     fp++, cp++)
++struct mini_Qdisc;
 +
-+#define bpf_mprog_foreach_prog(entry, fp, p)				\
-+	for (fp = &entry->fp_items[0];					\
-+	     (p = READ_ONCE(fp->prog));					\
-+	     fp++)
-+
-+#define BPF_MPROG_MAX 64
-+
-+struct bpf_mprog_fp {
-+	struct bpf_prog *prog;
++struct tcx_entry {
++	struct mini_Qdisc __rcu *miniq;
++	struct bpf_mprog_bundle bundle;
++	bool miniq_active;
++	struct rcu_head rcu;
 +};
 +
-+struct bpf_mprog_cp {
-+	struct bpf_link *link;
++struct tcx_link {
++	struct bpf_link link;
++	struct net_device *dev;
++	u32 location;
 +};
 +
-+struct bpf_mprog_entry {
-+	struct bpf_mprog_fp fp_items[BPF_MPROG_MAX];
-+	struct bpf_mprog_bundle *parent;
-+};
++static inline void tcx_set_ingress(struct sk_buff *skb, bool ingress)
++{
++#ifdef CONFIG_NET_XGRESS
++	skb->tc_at_ingress = ingress;
++#endif
++}
 +
-+struct bpf_mprog_bundle {
-+	struct bpf_mprog_entry a;
-+	struct bpf_mprog_entry b;
-+	struct bpf_mprog_cp cp_items[BPF_MPROG_MAX];
-+	struct bpf_prog *ref;
-+	atomic64_t revision;
-+	u32 count;
-+};
++#ifdef CONFIG_NET_XGRESS
++static inline struct tcx_entry *tcx_entry(struct bpf_mprog_entry *entry)
++{
++	struct bpf_mprog_bundle *bundle = entry->parent;
 +
-+struct bpf_tuple {
-+	struct bpf_prog *prog;
-+	struct bpf_link *link;
-+};
++	return container_of(bundle, struct tcx_entry, bundle);
++}
++
++static inline struct tcx_link *tcx_link(struct bpf_link *link)
++{
++	return container_of(link, struct tcx_link, link);
++}
++
++static inline const struct tcx_link *tcx_link_const(const struct bpf_link *link)
++{
++	return tcx_link((struct bpf_link *)link);
++}
++
++void tcx_inc(void);
++void tcx_dec(void);
++
++static inline void tcx_entry_sync(void)
++{
++	/* bpf_mprog_entry got a/b swapped, therefore ensure that
++	 * there are no inflight users on the old one anymore.
++	 */
++	synchronize_rcu();
++}
++
++static inline void
++tcx_entry_update(struct net_device *dev, struct bpf_mprog_entry *entry,
++		 bool ingress)
++{
++	ASSERT_RTNL();
++	if (ingress)
++		rcu_assign_pointer(dev->tcx_ingress, entry);
++	else
++		rcu_assign_pointer(dev->tcx_egress, entry);
++}
 +
 +static inline struct bpf_mprog_entry *
-+bpf_mprog_peer(const struct bpf_mprog_entry *entry)
++tcx_entry_fetch(struct net_device *dev, bool ingress)
 +{
-+	if (entry == &entry->parent->a)
-+		return &entry->parent->b;
++	ASSERT_RTNL();
++	if (ingress)
++		return rcu_dereference_rtnl(dev->tcx_ingress);
 +	else
-+		return &entry->parent->a;
++		return rcu_dereference_rtnl(dev->tcx_egress);
 +}
 +
-+static inline void bpf_mprog_bundle_init(struct bpf_mprog_bundle *bundle)
++static inline struct bpf_mprog_entry *tcx_entry_create(void)
 +{
-+	BUILD_BUG_ON(sizeof(bundle->a.fp_items[0]) > sizeof(u64));
-+	BUILD_BUG_ON(ARRAY_SIZE(bundle->a.fp_items) !=
-+		     ARRAY_SIZE(bundle->cp_items));
++	struct tcx_entry *tcx = kzalloc(sizeof(*tcx), GFP_KERNEL);
 +
-+	memset(bundle, 0, sizeof(*bundle));
-+	atomic64_set(&bundle->revision, 1);
-+	bundle->a.parent = bundle;
-+	bundle->b.parent = bundle;
-+}
-+
-+static inline void bpf_mprog_inc(struct bpf_mprog_entry *entry)
-+{
-+	entry->parent->count++;
-+}
-+
-+static inline void bpf_mprog_dec(struct bpf_mprog_entry *entry)
-+{
-+	entry->parent->count--;
-+}
-+
-+static inline int bpf_mprog_max(void)
-+{
-+	return ARRAY_SIZE(((struct bpf_mprog_entry *)NULL)->fp_items) - 1;
-+}
-+
-+static inline int bpf_mprog_total(struct bpf_mprog_entry *entry)
-+{
-+	int total = entry->parent->count;
-+
-+	WARN_ON_ONCE(total > bpf_mprog_max());
-+	return total;
-+}
-+
-+static inline bool bpf_mprog_exists(struct bpf_mprog_entry *entry,
-+				    struct bpf_prog *prog)
-+{
-+	const struct bpf_mprog_fp *fp;
-+	const struct bpf_prog *tmp;
-+
-+	bpf_mprog_foreach_prog(entry, fp, tmp) {
-+		if (tmp == prog)
-+			return true;
++	if (tcx) {
++		bpf_mprog_bundle_init(&tcx->bundle);
++		return &tcx->bundle.a;
 +	}
-+	return false;
++	return NULL;
 +}
 +
-+static inline void bpf_mprog_mark_for_release(struct bpf_mprog_entry *entry,
-+					      struct bpf_tuple *tuple)
++static inline void tcx_entry_free(struct bpf_mprog_entry *entry)
 +{
-+	WARN_ON_ONCE(entry->parent->ref);
-+	if (!tuple->link)
-+		entry->parent->ref = tuple->prog;
++	kfree_rcu(tcx_entry(entry), rcu);
 +}
 +
-+static inline void bpf_mprog_complete_release(struct bpf_mprog_entry *entry)
++static inline struct bpf_mprog_entry *
++tcx_entry_fetch_or_create(struct net_device *dev, bool ingress, bool *created)
 +{
-+	/* In the non-link case prog deletions can only drop the reference
-+	 * to the prog after the bpf_mprog_entry got swapped and the
-+	 * bpf_mprog ensured that there are no inflight users anymore.
-+	 *
-+	 * Paired with bpf_mprog_mark_for_release().
-+	 */
-+	if (entry->parent->ref) {
-+		bpf_prog_put(entry->parent->ref);
-+		entry->parent->ref = NULL;
++	struct bpf_mprog_entry *entry = tcx_entry_fetch(dev, ingress);
++
++	*created = false;
++	if (!entry) {
++		entry = tcx_entry_create();
++		if (!entry)
++			return NULL;
++		*created = true;
++	}
++	return entry;
++}
++
++static inline void tcx_skeys_inc(bool ingress)
++{
++	tcx_inc();
++	if (ingress)
++		net_inc_ingress_queue();
++	else
++		net_inc_egress_queue();
++}
++
++static inline void tcx_skeys_dec(bool ingress)
++{
++	if (ingress)
++		net_dec_ingress_queue();
++	else
++		net_dec_egress_queue();
++	tcx_dec();
++}
++
++static inline void tcx_miniq_set_active(struct bpf_mprog_entry *entry,
++					const bool active)
++{
++	ASSERT_RTNL();
++	tcx_entry(entry)->miniq_active = active;
++}
++
++static inline bool tcx_entry_is_active(struct bpf_mprog_entry *entry)
++{
++	ASSERT_RTNL();
++	return bpf_mprog_total(entry) || tcx_entry(entry)->miniq_active;
++}
++
++static inline enum tcx_action_base tcx_action_code(struct sk_buff *skb,
++						   int code)
++{
++	switch (code) {
++	case TCX_PASS:
++		skb->tc_index = qdisc_skb_cb(skb)->tc_classid;
++		fallthrough;
++	case TCX_DROP:
++	case TCX_REDIRECT:
++		return code;
++	case TCX_NEXT:
++	default:
++		return TCX_NEXT;
 +	}
 +}
++#endif /* CONFIG_NET_XGRESS */
 +
-+static inline void bpf_mprog_revision_new(struct bpf_mprog_entry *entry)
++#if defined(CONFIG_NET_XGRESS) && defined(CONFIG_BPF_SYSCALL)
++int tcx_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog);
++int tcx_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
++int tcx_prog_detach(const union bpf_attr *attr, struct bpf_prog *prog);
++void tcx_uninstall(struct net_device *dev, bool ingress);
++
++int tcx_prog_query(const union bpf_attr *attr,
++		   union bpf_attr __user *uattr);
++
++static inline void dev_tcx_uninstall(struct net_device *dev)
 +{
-+	atomic64_inc(&entry->parent->revision);
++	ASSERT_RTNL();
++	tcx_uninstall(dev, true);
++	tcx_uninstall(dev, false);
++}
++#else
++static inline int tcx_prog_attach(const union bpf_attr *attr,
++				  struct bpf_prog *prog)
++{
++	return -EINVAL;
 +}
 +
-+static inline void bpf_mprog_commit(struct bpf_mprog_entry *entry)
++static inline int tcx_link_attach(const union bpf_attr *attr,
++				  struct bpf_prog *prog)
 +{
-+	bpf_mprog_complete_release(entry);
-+	bpf_mprog_revision_new(entry);
++	return -EINVAL;
 +}
 +
-+static inline u64 bpf_mprog_revision(struct bpf_mprog_entry *entry)
++static inline int tcx_prog_detach(const union bpf_attr *attr,
++				  struct bpf_prog *prog)
 +{
-+	return atomic64_read(&entry->parent->revision);
++	return -EINVAL;
 +}
 +
-+static inline void bpf_mprog_entry_copy(struct bpf_mprog_entry *dst,
-+					struct bpf_mprog_entry *src)
++static inline int tcx_prog_query(const union bpf_attr *attr,
++				 union bpf_attr __user *uattr)
 +{
-+	memcpy(dst->fp_items, src->fp_items, sizeof(src->fp_items));
++	return -EINVAL;
 +}
 +
-+static inline void bpf_mprog_entry_grow(struct bpf_mprog_entry *entry, int idx)
++static inline void dev_tcx_uninstall(struct net_device *dev)
 +{
-+	int total = bpf_mprog_total(entry);
-+
-+	memmove(entry->fp_items + idx + 1,
-+		entry->fp_items + idx,
-+		(total - idx) * sizeof(struct bpf_mprog_fp));
-+
-+	memmove(entry->parent->cp_items + idx + 1,
-+		entry->parent->cp_items + idx,
-+		(total - idx) * sizeof(struct bpf_mprog_cp));
 +}
-+
-+static inline void bpf_mprog_entry_shrink(struct bpf_mprog_entry *entry, int idx)
-+{
-+	/* Total array size is needed in this case to enure the NULL
-+	 * entry is copied at the end.
-+	 */
-+	int total = ARRAY_SIZE(entry->fp_items);
-+
-+	memmove(entry->fp_items + idx,
-+		entry->fp_items + idx + 1,
-+		(total - idx - 1) * sizeof(struct bpf_mprog_fp));
-+
-+	memmove(entry->parent->cp_items + idx,
-+		entry->parent->cp_items + idx + 1,
-+		(total - idx - 1) * sizeof(struct bpf_mprog_cp));
-+}
-+
-+static inline void bpf_mprog_read(struct bpf_mprog_entry *entry, u32 idx,
-+				  struct bpf_mprog_fp **fp,
-+				  struct bpf_mprog_cp **cp)
-+{
-+	*fp = &entry->fp_items[idx];
-+	*cp = &entry->parent->cp_items[idx];
-+}
-+
-+static inline void bpf_mprog_write(struct bpf_mprog_fp *fp,
-+				   struct bpf_mprog_cp *cp,
-+				   struct bpf_tuple *tuple)
-+{
-+	WRITE_ONCE(fp->prog, tuple->prog);
-+	cp->link = tuple->link;
-+}
-+
-+int bpf_mprog_attach(struct bpf_mprog_entry *entry,
-+		     struct bpf_mprog_entry **entry_new,
-+		     struct bpf_prog *prog_new, struct bpf_link *link,
-+		     struct bpf_prog *prog_old,
-+		     u32 flags, u32 id_or_fd, u64 revision);
-+
-+int bpf_mprog_detach(struct bpf_mprog_entry *entry,
-+		     struct bpf_mprog_entry **entry_new,
-+		     struct bpf_prog *prog, struct bpf_link *link,
-+		     u32 flags, u32 id_or_fd, u64 revision);
-+
-+int bpf_mprog_query(const union bpf_attr *attr, union bpf_attr __user *uattr,
-+		    struct bpf_mprog_entry *entry);
-+
-+#endif /* __BPF_MPROG_H */
++#endif /* CONFIG_NET_XGRESS && CONFIG_BPF_SYSCALL */
++#endif /* __NET_TCX_H */
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 9ed59896ebc5..d4c07e435336 100644
+index d4c07e435336..739c15906a65 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -1113,7 +1113,12 @@ enum bpf_perf_event_type {
-  */
- #define BPF_F_ALLOW_OVERRIDE	(1U << 0)
- #define BPF_F_ALLOW_MULTI	(1U << 1)
-+/* Generic attachment flags. */
- #define BPF_F_REPLACE		(1U << 2)
-+#define BPF_F_BEFORE		(1U << 3)
-+#define BPF_F_AFTER		(1U << 4)
-+#define BPF_F_ID		(1U << 5)
-+#define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
+@@ -1036,6 +1036,8 @@ enum bpf_attach_type {
+ 	BPF_LSM_CGROUP,
+ 	BPF_STRUCT_OPS,
+ 	BPF_NETFILTER,
++	BPF_TCX_INGRESS,
++	BPF_TCX_EGRESS,
+ 	__MAX_BPF_ATTACH_TYPE
+ };
  
- /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
-  * verifier will perform strict alignment checking as if the kernel
-@@ -1444,14 +1449,19 @@ union bpf_attr {
- 	};
+@@ -1053,7 +1055,7 @@ enum bpf_link_type {
+ 	BPF_LINK_TYPE_KPROBE_MULTI = 8,
+ 	BPF_LINK_TYPE_STRUCT_OPS = 9,
+ 	BPF_LINK_TYPE_NETFILTER = 10,
+-
++	BPF_LINK_TYPE_TCX = 11,
+ 	MAX_BPF_LINK_TYPE,
+ };
  
- 	struct { /* anonymous struct used by BPF_PROG_ATTACH/DETACH commands */
--		__u32		target_fd;	/* container object to attach to */
--		__u32		attach_bpf_fd;	/* eBPF program to attach */
-+		union {
+@@ -1569,13 +1571,13 @@ union bpf_attr {
+ 			__u32		map_fd;		/* struct_ops to attach */
+ 		};
+ 		union {
+-			__u32		target_fd;	/* object to attach to */
+-			__u32		target_ifindex; /* target ifindex */
 +			__u32	target_fd;	/* target object to attach to or ... */
-+			__u32	target_ifindex;	/* target ifindex */
-+		};
-+		__u32		attach_bpf_fd;
- 		__u32		attach_type;
- 		__u32		attach_flags;
--		__u32		replace_bpf_fd;	/* previously attached eBPF
--						 * program to replace if
--						 * BPF_F_REPLACE is used
--						 */
-+		__u32		replace_bpf_fd;
-+		union {
-+			__u32	relative_fd;
-+			__u32	relative_id;
-+		};
-+		__u64		expected_revision;
++			__u32	target_ifindex; /* target ifindex */
+ 		};
+ 		__u32		attach_type;	/* attach type */
+ 		__u32		flags;		/* extra flags */
+ 		union {
+-			__u32		target_btf_id;	/* btf_id of target to attach to */
++			__u32	target_btf_id;	/* btf_id of target to attach to */
+ 			struct {
+ 				__aligned_u64	iter_info;	/* extra bpf_iter_link_info */
+ 				__u32		iter_info_len;	/* iter_info length */
+@@ -1609,6 +1611,13 @@ union bpf_attr {
+ 				__s32		priority;
+ 				__u32		flags;
+ 			} netfilter;
++			struct {
++				union {
++					__u32	relative_fd;
++					__u32	relative_id;
++				};
++				__u64		expected_revision;
++			} tcx;
+ 		};
+ 	} link_create;
+ 
+@@ -6217,6 +6226,19 @@ struct bpf_sock_tuple {
  	};
+ };
  
- 	struct { /* anonymous struct used by BPF_PROG_TEST_RUN command */
-@@ -1497,16 +1507,26 @@ union bpf_attr {
- 	} info;
++/* (Simplified) user return codes for tcx prog type.
++ * A valid tcx program must return one of these defined values. All other
++ * return codes are reserved for future use. Must remain compatible with
++ * their TC_ACT_* counter-parts. For compatibility in behavior, unknown
++ * return codes are mapped to TCX_NEXT.
++ */
++enum tcx_action_base {
++	TCX_NEXT	= -1,
++	TCX_PASS	= 0,
++	TCX_DROP	= 2,
++	TCX_REDIRECT	= 7,
++};
++
+ struct bpf_xdp_sock {
+ 	__u32 queue_id;
+ };
+@@ -6499,6 +6521,10 @@ struct bpf_link_info {
+ 				} event; /* BPF_PERF_EVENT_EVENT */
+ 			};
+ 		} perf_event;
++		struct {
++			__u32 ifindex;
++			__u32 attach_type;
++		} tcx;
+ 	};
+ } __attribute__((aligned(8)));
  
- 	struct { /* anonymous struct used by BPF_PROG_QUERY command */
--		__u32		target_fd;	/* container object to query */
-+		union {
-+			__u32	target_fd;	/* target object to query or ... */
-+			__u32	target_ifindex;	/* target ifindex */
-+		};
- 		__u32		attach_type;
- 		__u32		query_flags;
- 		__u32		attach_flags;
- 		__aligned_u64	prog_ids;
--		__u32		prog_cnt;
-+		union {
-+			__u32	prog_cnt;
-+			__u32	count;
-+		};
-+		__u32		:32;
- 		/* output: per-program attach_flags.
- 		 * not allowed to be set during effective query.
- 		 */
- 		__aligned_u64	prog_attach_flags;
-+		__aligned_u64	link_ids;
-+		__aligned_u64	link_attach_flags;
-+		__u64		revision;
- 	} query;
- 
- 	struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN command */
+diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
+index 2dfe1079f772..6a906ff93006 100644
+--- a/kernel/bpf/Kconfig
++++ b/kernel/bpf/Kconfig
+@@ -31,6 +31,7 @@ config BPF_SYSCALL
+ 	select TASKS_TRACE_RCU
+ 	select BINARY_PRINTF
+ 	select NET_SOCK_MSG if NET
++	select NET_XGRESS if NET
+ 	select PAGE_POOL if NET
+ 	default n
+ 	help
 diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 1d3892168d32..1bea2eb912cd 100644
+index 1bea2eb912cd..f526b7573e97 100644
 --- a/kernel/bpf/Makefile
 +++ b/kernel/bpf/Makefile
-@@ -12,7 +12,7 @@ obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list
- obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
- obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
- obj-${CONFIG_BPF_LSM}	  += bpf_inode_storage.o
--obj-$(CONFIG_BPF_SYSCALL) += disasm.o
-+obj-$(CONFIG_BPF_SYSCALL) += disasm.o mprog.o
- obj-$(CONFIG_BPF_JIT) += trampoline.o
- obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o
- obj-$(CONFIG_BPF_JIT) += dispatcher.o
-diff --git a/kernel/bpf/mprog.c b/kernel/bpf/mprog.c
+@@ -21,6 +21,7 @@ obj-$(CONFIG_BPF_SYSCALL) += devmap.o
+ obj-$(CONFIG_BPF_SYSCALL) += cpumap.o
+ obj-$(CONFIG_BPF_SYSCALL) += offload.o
+ obj-$(CONFIG_BPF_SYSCALL) += net_namespace.o
++obj-$(CONFIG_BPF_SYSCALL) += tcx.o
+ endif
+ ifeq ($(CONFIG_PERF_EVENTS),y)
+ obj-$(CONFIG_BPF_SYSCALL) += stackmap.o
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index ee8cb1a174aa..7f4e8c357a6a 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -37,6 +37,8 @@
+ #include <linux/trace_events.h>
+ #include <net/netfilter/nf_bpf_link.h>
+ 
++#include <net/tcx.h>
++
+ #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+ 			  (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
+ 			  (map)->map_type == BPF_MAP_TYPE_ARRAY_OF_MAPS)
+@@ -3740,31 +3742,45 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
+ 		return BPF_PROG_TYPE_XDP;
+ 	case BPF_LSM_CGROUP:
+ 		return BPF_PROG_TYPE_LSM;
++	case BPF_TCX_INGRESS:
++	case BPF_TCX_EGRESS:
++		return BPF_PROG_TYPE_SCHED_CLS;
+ 	default:
+ 		return BPF_PROG_TYPE_UNSPEC;
+ 	}
+ }
+ 
+-#define BPF_PROG_ATTACH_LAST_FIELD replace_bpf_fd
++#define BPF_PROG_ATTACH_LAST_FIELD expected_revision
++
++#define BPF_F_ATTACH_MASK_BASE	\
++	(BPF_F_ALLOW_OVERRIDE |	\
++	 BPF_F_ALLOW_MULTI |	\
++	 BPF_F_REPLACE)
+ 
+-#define BPF_F_ATTACH_MASK \
+-	(BPF_F_ALLOW_OVERRIDE | BPF_F_ALLOW_MULTI | BPF_F_REPLACE)
++#define BPF_F_ATTACH_MASK_MPROG	\
++	(BPF_F_REPLACE |	\
++	 BPF_F_BEFORE |		\
++	 BPF_F_AFTER |		\
++	 BPF_F_ID |		\
++	 BPF_F_LINK)
+ 
+ static int bpf_prog_attach(const union bpf_attr *attr)
+ {
+ 	enum bpf_prog_type ptype;
+ 	struct bpf_prog *prog;
++	u32 mask;
+ 	int ret;
+ 
+ 	if (CHECK_ATTR(BPF_PROG_ATTACH))
+ 		return -EINVAL;
+ 
+-	if (attr->attach_flags & ~BPF_F_ATTACH_MASK)
+-		return -EINVAL;
+-
+ 	ptype = attach_type_to_prog_type(attr->attach_type);
+ 	if (ptype == BPF_PROG_TYPE_UNSPEC)
+ 		return -EINVAL;
++	mask = bpf_mprog_supported(ptype) ?
++	       BPF_F_ATTACH_MASK_MPROG : BPF_F_ATTACH_MASK_BASE;
++	if (attr->attach_flags & ~mask)
++		return -EINVAL;
+ 
+ 	prog = bpf_prog_get_type(attr->attach_bpf_fd, ptype);
+ 	if (IS_ERR(prog))
+@@ -3800,6 +3816,9 @@ static int bpf_prog_attach(const union bpf_attr *attr)
+ 		else
+ 			ret = cgroup_bpf_prog_attach(attr, ptype, prog);
+ 		break;
++	case BPF_PROG_TYPE_SCHED_CLS:
++		ret = tcx_prog_attach(attr, prog);
++		break;
+ 	default:
+ 		ret = -EINVAL;
+ 	}
+@@ -3809,25 +3828,41 @@ static int bpf_prog_attach(const union bpf_attr *attr)
+ 	return ret;
+ }
+ 
+-#define BPF_PROG_DETACH_LAST_FIELD attach_type
++#define BPF_PROG_DETACH_LAST_FIELD expected_revision
+ 
+ static int bpf_prog_detach(const union bpf_attr *attr)
+ {
++	struct bpf_prog *prog = NULL;
+ 	enum bpf_prog_type ptype;
++	int ret;
+ 
+ 	if (CHECK_ATTR(BPF_PROG_DETACH))
+ 		return -EINVAL;
+ 
+ 	ptype = attach_type_to_prog_type(attr->attach_type);
++	if (bpf_mprog_supported(ptype)) {
++		if (ptype == BPF_PROG_TYPE_UNSPEC)
++			return -EINVAL;
++		if (attr->attach_flags & ~BPF_F_ATTACH_MASK_MPROG)
++			return -EINVAL;
++		if (attr->attach_bpf_fd) {
++			prog = bpf_prog_get_type(attr->attach_bpf_fd, ptype);
++			if (IS_ERR(prog))
++				return PTR_ERR(prog);
++		}
++	}
+ 
+ 	switch (ptype) {
+ 	case BPF_PROG_TYPE_SK_MSG:
+ 	case BPF_PROG_TYPE_SK_SKB:
+-		return sock_map_prog_detach(attr, ptype);
++		ret = sock_map_prog_detach(attr, ptype);
++		break;
+ 	case BPF_PROG_TYPE_LIRC_MODE2:
+-		return lirc_prog_detach(attr);
++		ret = lirc_prog_detach(attr);
++		break;
+ 	case BPF_PROG_TYPE_FLOW_DISSECTOR:
+-		return netns_bpf_prog_detach(attr, ptype);
++		ret = netns_bpf_prog_detach(attr, ptype);
++		break;
+ 	case BPF_PROG_TYPE_CGROUP_DEVICE:
+ 	case BPF_PROG_TYPE_CGROUP_SKB:
+ 	case BPF_PROG_TYPE_CGROUP_SOCK:
+@@ -3836,13 +3871,21 @@ static int bpf_prog_detach(const union bpf_attr *attr)
+ 	case BPF_PROG_TYPE_CGROUP_SYSCTL:
+ 	case BPF_PROG_TYPE_SOCK_OPS:
+ 	case BPF_PROG_TYPE_LSM:
+-		return cgroup_bpf_prog_detach(attr, ptype);
++		ret = cgroup_bpf_prog_detach(attr, ptype);
++		break;
++	case BPF_PROG_TYPE_SCHED_CLS:
++		ret = tcx_prog_detach(attr, prog);
++		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
++
++	if (prog)
++		bpf_prog_put(prog);
++	return ret;
+ }
+ 
+-#define BPF_PROG_QUERY_LAST_FIELD query.prog_attach_flags
++#define BPF_PROG_QUERY_LAST_FIELD query.link_attach_flags
+ 
+ static int bpf_prog_query(const union bpf_attr *attr,
+ 			  union bpf_attr __user *uattr)
+@@ -3890,6 +3933,9 @@ static int bpf_prog_query(const union bpf_attr *attr,
+ 	case BPF_SK_MSG_VERDICT:
+ 	case BPF_SK_SKB_VERDICT:
+ 		return sock_map_bpf_prog_query(attr, uattr);
++	case BPF_TCX_INGRESS:
++	case BPF_TCX_EGRESS:
++		return tcx_prog_query(attr, uattr);
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -4852,6 +4898,13 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+ 			goto out;
+ 		}
+ 		break;
++	case BPF_PROG_TYPE_SCHED_CLS:
++		if (attr->link_create.attach_type != BPF_TCX_INGRESS &&
++		    attr->link_create.attach_type != BPF_TCX_EGRESS) {
++			ret = -EINVAL;
++			goto out;
++		}
++		break;
+ 	default:
+ 		ptype = attach_type_to_prog_type(attr->link_create.attach_type);
+ 		if (ptype == BPF_PROG_TYPE_UNSPEC || ptype != prog->type) {
+@@ -4903,6 +4956,9 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+ 	case BPF_PROG_TYPE_XDP:
+ 		ret = bpf_xdp_link_attach(attr, prog);
+ 		break;
++	case BPF_PROG_TYPE_SCHED_CLS:
++		ret = tcx_link_attach(attr, prog);
++		break;
+ 	case BPF_PROG_TYPE_NETFILTER:
+ 		ret = bpf_nf_link_attach(attr, prog);
+ 		break;
+diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
 new file mode 100644
-index 000000000000..f7816d2bc3e4
+index 000000000000..69a272712b29
 --- /dev/null
-+++ b/kernel/bpf/mprog.c
-@@ -0,0 +1,445 @@
++++ b/kernel/bpf/tcx.c
+@@ -0,0 +1,348 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* Copyright (c) 2023 Isovalent */
 +
 +#include <linux/bpf.h>
 +#include <linux/bpf_mprog.h>
++#include <linux/netdevice.h>
 +
-+static int bpf_mprog_link(struct bpf_tuple *tuple,
-+			  u32 id_or_fd, u32 flags,
-+			  enum bpf_prog_type type)
++#include <net/tcx.h>
++
++int tcx_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
 +{
-+	struct bpf_link *link = ERR_PTR(-EINVAL);
-+	bool id = flags & BPF_F_ID;
++	bool created, ingress = attr->attach_type == BPF_TCX_INGRESS;
++	struct net *net = current->nsproxy->net_ns;
++	struct bpf_mprog_entry *entry, *entry_new;
++	struct bpf_prog *replace_prog = NULL;
++	struct net_device *dev;
++	int ret;
 +
-+	if (id)
-+		link = bpf_link_by_id(id_or_fd);
-+	else if (id_or_fd)
-+		link = bpf_link_get_from_fd(id_or_fd);
-+	if (IS_ERR(link))
-+		return PTR_ERR(link);
-+	if (type && link->prog->type != type) {
-+		bpf_link_put(link);
-+		return -EINVAL;
++	rtnl_lock();
++	dev = __dev_get_by_index(net, attr->target_ifindex);
++	if (!dev) {
++		ret = -ENODEV;
++		goto out;
 +	}
-+
-+	tuple->link = link;
-+	tuple->prog = link->prog;
-+	return 0;
-+}
-+
-+static int bpf_mprog_prog(struct bpf_tuple *tuple,
-+			  u32 id_or_fd, u32 flags,
-+			  enum bpf_prog_type type)
-+{
-+	struct bpf_prog *prog = ERR_PTR(-EINVAL);
-+	bool id = flags & BPF_F_ID;
-+
-+	if (id)
-+		prog = bpf_prog_by_id(id_or_fd);
-+	else if (id_or_fd)
-+		prog = bpf_prog_get(id_or_fd);
-+	if (IS_ERR(prog))
-+		return PTR_ERR(prog);
-+	if (type && prog->type != type) {
-+		bpf_prog_put(prog);
-+		return -EINVAL;
++	if (attr->attach_flags & BPF_F_REPLACE) {
++		replace_prog = bpf_prog_get_type(attr->replace_bpf_fd,
++						 prog->type);
++		if (IS_ERR(replace_prog)) {
++			ret = PTR_ERR(replace_prog);
++			replace_prog = NULL;
++			goto out;
++		}
 +	}
-+
-+	tuple->link = NULL;
-+	tuple->prog = prog;
-+	return 0;
++	entry = tcx_entry_fetch_or_create(dev, ingress, &created);
++	if (!entry) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	ret = bpf_mprog_attach(entry, &entry_new, prog, NULL, replace_prog,
++			       attr->attach_flags, attr->relative_fd,
++			       attr->expected_revision);
++	if (!ret) {
++		if (entry != entry_new) {
++			tcx_entry_update(dev, entry_new, ingress);
++			tcx_entry_sync();
++			tcx_skeys_inc(ingress);
++		}
++		bpf_mprog_commit(entry);
++	} else if (created) {
++		tcx_entry_free(entry);
++	}
++out:
++	if (replace_prog)
++		bpf_prog_put(replace_prog);
++	rtnl_unlock();
++	return ret;
 +}
 +
-+static int bpf_mprog_tuple_relative(struct bpf_tuple *tuple,
-+				    u32 id_or_fd, u32 flags,
-+				    enum bpf_prog_type type)
++int tcx_prog_detach(const union bpf_attr *attr, struct bpf_prog *prog)
 +{
-+	bool link = flags & BPF_F_LINK;
-+	bool id = flags & BPF_F_ID;
++	bool ingress = attr->attach_type == BPF_TCX_INGRESS;
++	struct net *net = current->nsproxy->net_ns;
++	struct bpf_mprog_entry *entry, *entry_new;
++	struct net_device *dev;
++	int ret;
 +
-+	memset(tuple, 0, sizeof(*tuple));
-+	if (link)
-+		return bpf_mprog_link(tuple, id_or_fd, flags, type);
-+	/* If no relevant flag is set and no id_or_fd was passed, then
-+	 * tuple link/prog is just NULLed. This is the case when before/
-+	 * after selects first/last position without passing fd.
-+	 */
-+	if (!id && !id_or_fd)
-+		return 0;
-+	return bpf_mprog_prog(tuple, id_or_fd, flags, type);
++	rtnl_lock();
++	dev = __dev_get_by_index(net, attr->target_ifindex);
++	if (!dev) {
++		ret = -ENODEV;
++		goto out;
++	}
++	entry = tcx_entry_fetch(dev, ingress);
++	if (!entry) {
++		ret = -ENOENT;
++		goto out;
++	}
++	ret = bpf_mprog_detach(entry, &entry_new, prog, NULL, attr->attach_flags,
++			       attr->relative_fd, attr->expected_revision);
++	if (!ret) {
++		if (!tcx_entry_is_active(entry_new))
++			entry_new = NULL;
++		tcx_entry_update(dev, entry_new, ingress);
++		tcx_entry_sync();
++		tcx_skeys_dec(ingress);
++		bpf_mprog_commit(entry);
++		if (!entry_new)
++			tcx_entry_free(entry);
++	}
++out:
++	rtnl_unlock();
++	return ret;
 +}
 +
-+static void bpf_mprog_tuple_put(struct bpf_tuple *tuple)
++void tcx_uninstall(struct net_device *dev, bool ingress)
 +{
-+	if (tuple->link)
-+		bpf_link_put(tuple->link);
-+	else if (tuple->prog)
-+		bpf_prog_put(tuple->prog);
-+}
-+
-+/* The bpf_mprog_{replace,delete}() operate on exact idx position with the
-+ * one exception that for deletion we support delete from front/back. In
-+ * case of front idx is -1, in case of back idx is bpf_mprog_total(entry).
-+ * Adjustment to first and last entry is trivial. The bpf_mprog_insert()
-+ * we have to deal with the following cases:
-+ *
-+ * idx + before:
-+ *
-+ * Insert P4 before P3: idx for old array is 1, idx for new array is 2,
-+ * hence we adjust target idx for the new array, so that memmove copies
-+ * P1 and P2 to the new entry, and we insert P4 into idx 2. Inserting
-+ * before P1 would have old idx -1 and new idx 0.
-+ *
-+ * +--+--+--+     +--+--+--+--+     +--+--+--+--+
-+ * |P1|P2|P3| ==> |P1|P2|  |P3| ==> |P1|P2|P4|P3|
-+ * +--+--+--+     +--+--+--+--+     +--+--+--+--+
-+ *
-+ * idx + after:
-+ *
-+ * Insert P4 after P2: idx for old array is 2, idx for new array is 2.
-+ * Again, memmove copies P1 and P2 to the new entry, and we insert P4
-+ * into idx 2. Inserting after P3 would have both old/new idx at 4 aka
-+ * bpf_mprog_total(entry).
-+ *
-+ * +--+--+--+     +--+--+--+--+     +--+--+--+--+
-+ * |P1|P2|P3| ==> |P1|P2|  |P3| ==> |P1|P2|P4|P3|
-+ * +--+--+--+     +--+--+--+--+     +--+--+--+--+
-+ */
-+static int bpf_mprog_replace(struct bpf_mprog_entry *entry,
-+			     struct bpf_mprog_entry **entry_new,
-+			     struct bpf_tuple *ntuple, int idx)
-+{
++	struct bpf_tuple tuple = {};
++	struct bpf_mprog_entry *entry;
 +	struct bpf_mprog_fp *fp;
 +	struct bpf_mprog_cp *cp;
-+	struct bpf_prog *oprog;
 +
-+	bpf_mprog_read(entry, idx, &fp, &cp);
-+	oprog = READ_ONCE(fp->prog);
-+	bpf_mprog_write(fp, cp, ntuple);
-+	if (!ntuple->link) {
-+		WARN_ON_ONCE(cp->link);
++	entry = tcx_entry_fetch(dev, ingress);
++	if (!entry)
++		return;
++	tcx_entry_update(dev, NULL, ingress);
++	tcx_entry_sync();
++	bpf_mprog_foreach_tuple(entry, fp, cp, tuple) {
++		if (tuple.link)
++			tcx_link(tuple.link)->dev = NULL;
++		else
++			bpf_prog_put(tuple.prog);
++		tcx_skeys_dec(ingress);
++	}
++	WARN_ON_ONCE(tcx_entry(entry)->miniq_active);
++	tcx_entry_free(entry);
++}
++
++int tcx_prog_query(const union bpf_attr *attr, union bpf_attr __user *uattr)
++{
++	bool ingress = attr->query.attach_type == BPF_TCX_INGRESS;
++	struct net *net = current->nsproxy->net_ns;
++	struct bpf_mprog_entry *entry;
++	struct net_device *dev;
++	int ret;
++
++	rtnl_lock();
++	dev = __dev_get_by_index(net, attr->query.target_ifindex);
++	if (!dev) {
++		ret = -ENODEV;
++		goto out;
++	}
++	entry = tcx_entry_fetch(dev, ingress);
++	if (!entry) {
++		ret = -ENOENT;
++		goto out;
++	}
++	ret = bpf_mprog_query(attr, uattr, entry);
++out:
++	rtnl_unlock();
++	return ret;
++}
++
++static int tcx_link_prog_attach(struct bpf_link *link, u32 flags, u32 id_or_fd,
++				u64 revision)
++{
++	struct tcx_link *tcx = tcx_link(link);
++	bool created, ingress = tcx->location == BPF_TCX_INGRESS;
++	struct bpf_mprog_entry *entry, *entry_new;
++	struct net_device *dev = tcx->dev;
++	int ret;
++
++	ASSERT_RTNL();
++	entry = tcx_entry_fetch_or_create(dev, ingress, &created);
++	if (!entry)
++		return -ENOMEM;
++	ret = bpf_mprog_attach(entry, &entry_new, link->prog, link, NULL, flags,
++			       id_or_fd, revision);
++	if (!ret) {
++		if (entry != entry_new) {
++			tcx_entry_update(dev, entry_new, ingress);
++			tcx_entry_sync();
++			tcx_skeys_inc(ingress);
++		}
++		bpf_mprog_commit(entry);
++	} else if (created) {
++		tcx_entry_free(entry);
++	}
++	return ret;
++}
++
++static void tcx_link_release(struct bpf_link *link)
++{
++	struct tcx_link *tcx = tcx_link(link);
++	bool ingress = tcx->location == BPF_TCX_INGRESS;
++	struct bpf_mprog_entry *entry, *entry_new;
++	struct net_device *dev;
++	int ret = 0;
++
++	rtnl_lock();
++	dev = tcx->dev;
++	if (!dev)
++		goto out;
++	entry = tcx_entry_fetch(dev, ingress);
++	if (!entry) {
++		ret = -ENOENT;
++		goto out;
++	}
++	ret = bpf_mprog_detach(entry, &entry_new, link->prog, link, 0, 0, 0);
++	if (!ret) {
++		if (!tcx_entry_is_active(entry_new))
++			entry_new = NULL;
++		tcx_entry_update(dev, entry_new, ingress);
++		tcx_entry_sync();
++		tcx_skeys_dec(ingress);
++		bpf_mprog_commit(entry);
++		if (!entry_new)
++			tcx_entry_free(entry);
++		tcx->dev = NULL;
++	}
++out:
++	WARN_ON_ONCE(ret);
++	rtnl_unlock();
++}
++
++static int tcx_link_update(struct bpf_link *link, struct bpf_prog *nprog,
++			   struct bpf_prog *oprog)
++{
++	struct tcx_link *tcx = tcx_link(link);
++	bool ingress = tcx->location == BPF_TCX_INGRESS;
++	struct bpf_mprog_entry *entry, *entry_new;
++	struct net_device *dev;
++	int ret = 0;
++
++	rtnl_lock();
++	dev = tcx->dev;
++	if (!dev) {
++		ret = -ENOLINK;
++		goto out;
++	}
++	if (oprog && link->prog != oprog) {
++		ret = -EPERM;
++		goto out;
++	}
++	oprog = link->prog;
++	if (oprog == nprog) {
++		bpf_prog_put(nprog);
++		goto out;
++	}
++	entry = tcx_entry_fetch(dev, ingress);
++	if (!entry) {
++		ret = -ENOENT;
++		goto out;
++	}
++	ret = bpf_mprog_attach(entry, &entry_new, nprog, link, oprog,
++			       BPF_F_REPLACE | BPF_F_ID,
++			       link->prog->aux->id, 0);
++	if (!ret) {
++		WARN_ON_ONCE(entry != entry_new);
++		oprog = xchg(&link->prog, nprog);
 +		bpf_prog_put(oprog);
++		bpf_mprog_commit(entry);
 +	}
-+	*entry_new = entry;
-+	return 0;
-+}
-+
-+static int bpf_mprog_insert(struct bpf_mprog_entry *entry,
-+			    struct bpf_mprog_entry **entry_new,
-+			    struct bpf_tuple *ntuple, int idx, u32 flags)
-+{
-+	int total = bpf_mprog_total(entry);
-+	struct bpf_mprog_entry *peer;
-+	struct bpf_mprog_fp *fp;
-+	struct bpf_mprog_cp *cp;
-+
-+	peer = bpf_mprog_peer(entry);
-+	bpf_mprog_entry_copy(peer, entry);
-+	if (idx == total)
-+		goto insert;
-+	else if (flags & BPF_F_BEFORE)
-+		idx += 1;
-+	bpf_mprog_entry_grow(peer, idx);
-+insert:
-+	bpf_mprog_read(peer, idx, &fp, &cp);
-+	bpf_mprog_write(fp, cp, ntuple);
-+	bpf_mprog_inc(peer);
-+	*entry_new = peer;
-+	return 0;
-+}
-+
-+static int bpf_mprog_delete(struct bpf_mprog_entry *entry,
-+			    struct bpf_mprog_entry **entry_new,
-+			    struct bpf_tuple *dtuple, int idx)
-+{
-+	int total = bpf_mprog_total(entry);
-+	struct bpf_mprog_entry *peer;
-+
-+	peer = bpf_mprog_peer(entry);
-+	bpf_mprog_entry_copy(peer, entry);
-+	if (idx == -1)
-+		idx = 0;
-+	else if (idx == total)
-+		idx = total - 1;
-+	bpf_mprog_entry_shrink(peer, idx);
-+	bpf_mprog_dec(peer);
-+	bpf_mprog_mark_for_release(peer, dtuple);
-+	*entry_new = peer;
-+	return 0;
-+}
-+
-+/* In bpf_mprog_pos_*() we evaluate the target position for the BPF
-+ * program/link that needs to be replaced, inserted or deleted for
-+ * each "rule" independently. If all rules agree on that position
-+ * or existing element, then enact replacement, addition or deletion.
-+ * If this is not the case, then the request cannot be satisfied and
-+ * we bail out with an error.
-+ */
-+static int bpf_mprog_pos_exact(struct bpf_mprog_entry *entry,
-+			       struct bpf_tuple *tuple)
-+{
-+	struct bpf_mprog_fp *fp;
-+	struct bpf_mprog_cp *cp;
-+	int i;
-+
-+	for (i = 0; i < bpf_mprog_total(entry); i++) {
-+		bpf_mprog_read(entry, i, &fp, &cp);
-+		if (tuple->prog == READ_ONCE(fp->prog))
-+			return tuple->link == cp->link ? i : -EBUSY;
-+	}
-+	return -ENOENT;
-+}
-+
-+static int bpf_mprog_pos_before(struct bpf_mprog_entry *entry,
-+				struct bpf_tuple *tuple)
-+{
-+	struct bpf_mprog_fp *fp;
-+	struct bpf_mprog_cp *cp;
-+	int i;
-+
-+	for (i = 0; i < bpf_mprog_total(entry); i++) {
-+		bpf_mprog_read(entry, i, &fp, &cp);
-+		if (tuple->prog == READ_ONCE(fp->prog) &&
-+		    (!tuple->link || tuple->link == cp->link))
-+			return i - 1;
-+	}
-+	return tuple->prog ? -ENOENT : -1;
-+}
-+
-+static int bpf_mprog_pos_after(struct bpf_mprog_entry *entry,
-+			       struct bpf_tuple *tuple)
-+{
-+	struct bpf_mprog_fp *fp;
-+	struct bpf_mprog_cp *cp;
-+	int i;
-+
-+	for (i = 0; i < bpf_mprog_total(entry); i++) {
-+		bpf_mprog_read(entry, i, &fp, &cp);
-+		if (tuple->prog == READ_ONCE(fp->prog) &&
-+		    (!tuple->link || tuple->link == cp->link))
-+			return i + 1;
-+	}
-+	return tuple->prog ? -ENOENT : bpf_mprog_total(entry);
-+}
-+
-+int bpf_mprog_attach(struct bpf_mprog_entry *entry,
-+		     struct bpf_mprog_entry **entry_new,
-+		     struct bpf_prog *prog_new, struct bpf_link *link,
-+		     struct bpf_prog *prog_old,
-+		     u32 flags, u32 id_or_fd, u64 revision)
-+{
-+	struct bpf_tuple rtuple, ntuple = {
-+		.prog = prog_new,
-+		.link = link,
-+	}, otuple = {
-+		.prog = prog_old,
-+		.link = link,
-+	};
-+	int ret, idx = -ERANGE, tidx;
-+
-+	if (revision && revision != bpf_mprog_revision(entry))
-+		return -ESTALE;
-+	if (bpf_mprog_exists(entry, prog_new))
-+		return -EEXIST;
-+	ret = bpf_mprog_tuple_relative(&rtuple, id_or_fd,
-+				       flags & ~BPF_F_REPLACE,
-+				       prog_new->type);
-+	if (ret)
-+		return ret;
-+	if (flags & BPF_F_REPLACE) {
-+		tidx = bpf_mprog_pos_exact(entry, &otuple);
-+		if (tidx < 0) {
-+			ret = tidx;
-+			goto out;
-+		}
-+		idx = tidx;
-+	}
-+	if (flags & BPF_F_BEFORE) {
-+		tidx = bpf_mprog_pos_before(entry, &rtuple);
-+		if (tidx < -1 || (idx >= -1 && tidx != idx)) {
-+			ret = tidx < -1 ? tidx : -ERANGE;
-+			goto out;
-+		}
-+		idx = tidx;
-+	}
-+	if (flags & BPF_F_AFTER) {
-+		tidx = bpf_mprog_pos_after(entry, &rtuple);
-+		if (tidx < -1 || (idx >= -1 && tidx != idx)) {
-+			ret = tidx < 0 ? tidx : -ERANGE;
-+			goto out;
-+		}
-+		idx = tidx;
-+	}
-+	if (idx < -1) {
-+		if (rtuple.prog || flags) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+		idx = bpf_mprog_total(entry);
-+		flags = BPF_F_AFTER;
-+	}
-+	if (idx >= bpf_mprog_max()) {
-+		ret = -ERANGE;
-+		goto out;
-+	}
-+	if (flags & BPF_F_REPLACE)
-+		ret = bpf_mprog_replace(entry, entry_new, &ntuple, idx);
-+	else
-+		ret = bpf_mprog_insert(entry, entry_new, &ntuple, idx, flags);
 +out:
-+	bpf_mprog_tuple_put(&rtuple);
++	rtnl_unlock();
 +	return ret;
 +}
 +
-+static int bpf_mprog_fetch(struct bpf_mprog_entry *entry,
-+			   struct bpf_tuple *tuple, int idx)
++static void tcx_link_dealloc(struct bpf_link *link)
 +{
-+	int total = bpf_mprog_total(entry);
-+	struct bpf_mprog_cp *cp;
-+	struct bpf_mprog_fp *fp;
-+	struct bpf_prog *prog;
-+	struct bpf_link *link;
++	kfree(tcx_link(link));
++}
 +
-+	if (idx == -1)
-+		idx = 0;
-+	else if (idx == total)
-+		idx = total - 1;
-+	bpf_mprog_read(entry, idx, &fp, &cp);
-+	prog = READ_ONCE(fp->prog);
-+	link = cp->link;
-+	/* The deletion request can either be without filled tuple in which
-+	 * case it gets populated here based on idx, or with filled tuple
-+	 * where the only thing we end up doing is the WARN_ON_ONCE() assert.
-+	 * If we hit a BPF link at the given index, it must not be removed
-+	 * from opts path.
++static void tcx_link_fdinfo(const struct bpf_link *link, struct seq_file *seq)
++{
++	const struct tcx_link *tcx = tcx_link_const(link);
++	u32 ifindex = 0;
++
++	rtnl_lock();
++	if (tcx->dev)
++		ifindex = tcx->dev->ifindex;
++	rtnl_unlock();
++
++	seq_printf(seq, "ifindex:\t%u\n", ifindex);
++	seq_printf(seq, "attach_type:\t%u (%s)\n",
++		   tcx->location,
++		   tcx->location == BPF_TCX_INGRESS ? "ingress" : "egress");
++}
++
++static int tcx_link_fill_info(const struct bpf_link *link,
++			      struct bpf_link_info *info)
++{
++	const struct tcx_link *tcx = tcx_link_const(link);
++	u32 ifindex = 0;
++
++	rtnl_lock();
++	if (tcx->dev)
++		ifindex = tcx->dev->ifindex;
++	rtnl_unlock();
++
++	info->tcx.ifindex = ifindex;
++	info->tcx.attach_type = tcx->location;
++	return 0;
++}
++
++static int tcx_link_detach(struct bpf_link *link)
++{
++	tcx_link_release(link);
++	return 0;
++}
++
++static const struct bpf_link_ops tcx_link_lops = {
++	.release	= tcx_link_release,
++	.detach		= tcx_link_detach,
++	.dealloc	= tcx_link_dealloc,
++	.update_prog	= tcx_link_update,
++	.show_fdinfo	= tcx_link_fdinfo,
++	.fill_link_info	= tcx_link_fill_info,
++};
++
++static int tcx_link_init(struct tcx_link *tcx,
++			 struct bpf_link_primer *link_primer,
++			 const union bpf_attr *attr,
++			 struct net_device *dev,
++			 struct bpf_prog *prog)
++{
++	bpf_link_init(&tcx->link, BPF_LINK_TYPE_TCX, &tcx_link_lops, prog);
++	tcx->location = attr->link_create.attach_type;
++	tcx->dev = dev;
++	return bpf_link_prime(&tcx->link, link_primer);
++}
++
++int tcx_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
++{
++	struct net *net = current->nsproxy->net_ns;
++	struct bpf_link_primer link_primer;
++	struct net_device *dev;
++	struct tcx_link *tcx;
++	int ret;
++
++	rtnl_lock();
++	dev = __dev_get_by_index(net, attr->link_create.target_ifindex);
++	if (!dev) {
++		ret = -ENODEV;
++		goto out;
++	}
++	tcx = kzalloc(sizeof(*tcx), GFP_USER);
++	if (!tcx) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	ret = tcx_link_init(tcx, &link_primer, attr, dev, prog);
++	if (ret) {
++		kfree(tcx);
++		goto out;
++	}
++	ret = tcx_link_prog_attach(&tcx->link, attr->link_create.flags,
++				   attr->link_create.tcx.relative_fd,
++				   attr->link_create.tcx.expected_revision);
++	if (ret) {
++		tcx->dev = NULL;
++		bpf_link_cleanup(&link_primer);
++		goto out;
++	}
++	ret = bpf_link_settle(&link_primer);
++out:
++	rtnl_unlock();
++	return ret;
++}
+diff --git a/net/Kconfig b/net/Kconfig
+index 2fb25b534df5..d532ec33f1fe 100644
+--- a/net/Kconfig
++++ b/net/Kconfig
+@@ -52,6 +52,11 @@ config NET_INGRESS
+ config NET_EGRESS
+ 	bool
+ 
++config NET_XGRESS
++	select NET_INGRESS
++	select NET_EGRESS
++	bool
++
+ config NET_REDIRECT
+ 	bool
+ 
+diff --git a/net/core/dev.c b/net/core/dev.c
+index d6e1b786c5c5..c4b826024978 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -107,6 +107,7 @@
+ #include <net/pkt_cls.h>
+ #include <net/checksum.h>
+ #include <net/xfrm.h>
++#include <net/tcx.h>
+ #include <linux/highmem.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+@@ -154,7 +155,6 @@
+ #include "dev.h"
+ #include "net-sysfs.h"
+ 
+-
+ static DEFINE_SPINLOCK(ptype_lock);
+ struct list_head ptype_base[PTYPE_HASH_SIZE] __read_mostly;
+ struct list_head ptype_all __read_mostly;	/* Taps */
+@@ -3882,69 +3882,198 @@ int dev_loopback_xmit(struct net *net, struct sock *sk, struct sk_buff *skb)
+ EXPORT_SYMBOL(dev_loopback_xmit);
+ 
+ #ifdef CONFIG_NET_EGRESS
+-static struct sk_buff *
+-sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
++static struct netdev_queue *
++netdev_tx_queue_mapping(struct net_device *dev, struct sk_buff *skb)
++{
++	int qm = skb_get_queue_mapping(skb);
++
++	return netdev_get_tx_queue(dev, netdev_cap_txqueue(dev, qm));
++}
++
++static bool netdev_xmit_txqueue_skipped(void)
+ {
++	return __this_cpu_read(softnet_data.xmit.skip_txqueue);
++}
++
++void netdev_xmit_skip_txqueue(bool skip)
++{
++	__this_cpu_write(softnet_data.xmit.skip_txqueue, skip);
++}
++EXPORT_SYMBOL_GPL(netdev_xmit_skip_txqueue);
++#endif /* CONFIG_NET_EGRESS */
++
++#ifdef CONFIG_NET_XGRESS
++static int tc_run(struct tcx_entry *entry, struct sk_buff *skb)
++{
++	int ret = TC_ACT_UNSPEC;
+ #ifdef CONFIG_NET_CLS_ACT
+-	struct mini_Qdisc *miniq = rcu_dereference_bh(dev->miniq_egress);
+-	struct tcf_result cl_res;
++	struct mini_Qdisc *miniq = rcu_dereference_bh(entry->miniq);
++	struct tcf_result res;
+ 
+ 	if (!miniq)
+-		return skb;
++		return ret;
+ 
+-	/* qdisc_skb_cb(skb)->pkt_len was already set by the caller. */
+ 	tc_skb_cb(skb)->mru = 0;
+ 	tc_skb_cb(skb)->post_ct = false;
+-	mini_qdisc_bstats_cpu_update(miniq, skb);
+ 
+-	switch (tcf_classify(skb, miniq->block, miniq->filter_list, &cl_res, false)) {
++	mini_qdisc_bstats_cpu_update(miniq, skb);
++	ret = tcf_classify(skb, miniq->block, miniq->filter_list, &res, false);
++	/* Only tcf related quirks below. */
++	switch (ret) {
++	case TC_ACT_SHOT:
++		mini_qdisc_qstats_cpu_drop(miniq);
++		break;
+ 	case TC_ACT_OK:
+ 	case TC_ACT_RECLASSIFY:
+-		skb->tc_index = TC_H_MIN(cl_res.classid);
++		skb->tc_index = TC_H_MIN(res.classid);
+ 		break;
++	}
++#endif /* CONFIG_NET_CLS_ACT */
++	return ret;
++}
++
++static DEFINE_STATIC_KEY_FALSE(tcx_needed_key);
++
++void tcx_inc(void)
++{
++	static_branch_inc(&tcx_needed_key);
++}
++
++void tcx_dec(void)
++{
++	static_branch_dec(&tcx_needed_key);
++}
++
++static __always_inline enum tcx_action_base
++tcx_run(const struct bpf_mprog_entry *entry, struct sk_buff *skb,
++	const bool needs_mac)
++{
++	const struct bpf_mprog_fp *fp;
++	const struct bpf_prog *prog;
++	int ret = TCX_NEXT;
++
++	if (needs_mac)
++		__skb_push(skb, skb->mac_len);
++	bpf_mprog_foreach_prog(entry, fp, prog) {
++		bpf_compute_data_pointers(skb);
++		ret = bpf_prog_run(prog, skb);
++		if (ret != TCX_NEXT)
++			break;
++	}
++	if (needs_mac)
++		__skb_pull(skb, skb->mac_len);
++	return tcx_action_code(skb, ret);
++}
++
++static __always_inline struct sk_buff *
++sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
++		   struct net_device *orig_dev, bool *another)
++{
++	struct bpf_mprog_entry *entry = rcu_dereference_bh(skb->dev->tcx_ingress);
++	int sch_ret;
++
++	if (!entry)
++		return skb;
++	if (*pt_prev) {
++		*ret = deliver_skb(skb, *pt_prev, orig_dev);
++		*pt_prev = NULL;
++	}
++
++	qdisc_skb_cb(skb)->pkt_len = skb->len;
++	tcx_set_ingress(skb, true);
++
++	if (static_branch_unlikely(&tcx_needed_key)) {
++		sch_ret = tcx_run(entry, skb, true);
++		if (sch_ret != TC_ACT_UNSPEC)
++			goto ingress_verdict;
++	}
++	sch_ret = tc_run(tcx_entry(entry), skb);
++ingress_verdict:
++	switch (sch_ret) {
++	case TC_ACT_REDIRECT:
++		/* skb_mac_header check was done by BPF, so we can safely
++		 * push the L2 header back before redirecting to another
++		 * netdev.
++		 */
++		__skb_push(skb, skb->mac_len);
++		if (skb_do_redirect(skb) == -EAGAIN) {
++			__skb_pull(skb, skb->mac_len);
++			*another = true;
++			break;
++		}
++		*ret = NET_RX_SUCCESS;
++		return NULL;
+ 	case TC_ACT_SHOT:
+-		mini_qdisc_qstats_cpu_drop(miniq);
+-		*ret = NET_XMIT_DROP;
+-		kfree_skb_reason(skb, SKB_DROP_REASON_TC_EGRESS);
++		kfree_skb_reason(skb, SKB_DROP_REASON_TC_INGRESS);
++		*ret = NET_RX_DROP;
+ 		return NULL;
++	/* used by tc_run */
+ 	case TC_ACT_STOLEN:
+ 	case TC_ACT_QUEUED:
+ 	case TC_ACT_TRAP:
+-		*ret = NET_XMIT_SUCCESS;
+ 		consume_skb(skb);
++		fallthrough;
++	case TC_ACT_CONSUMED:
++		*ret = NET_RX_SUCCESS;
+ 		return NULL;
++	}
++
++	return skb;
++}
++
++static __always_inline struct sk_buff *
++sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
++{
++	struct bpf_mprog_entry *entry = rcu_dereference_bh(dev->tcx_egress);
++	int sch_ret;
++
++	if (!entry)
++		return skb;
++
++	/* qdisc_skb_cb(skb)->pkt_len & tcx_set_ingress() was
++	 * already set by the caller.
 +	 */
-+	if (link && !tuple->link)
-+		return -EBUSY;
-+	WARN_ON_ONCE(tuple->prog && tuple->prog != prog);
-+	WARN_ON_ONCE(tuple->link && tuple->link != link);
-+	tuple->prog = prog;
-+	tuple->link = link;
-+	return 0;
-+}
++	if (static_branch_unlikely(&tcx_needed_key)) {
++		sch_ret = tcx_run(entry, skb, false);
++		if (sch_ret != TC_ACT_UNSPEC)
++			goto egress_verdict;
++	}
++	sch_ret = tc_run(tcx_entry(entry), skb);
++egress_verdict:
++	switch (sch_ret) {
+ 	case TC_ACT_REDIRECT:
+ 		/* No need to push/pop skb's mac_header here on egress! */
+ 		skb_do_redirect(skb);
+ 		*ret = NET_XMIT_SUCCESS;
+ 		return NULL;
+-	default:
+-		break;
++	case TC_ACT_SHOT:
++		kfree_skb_reason(skb, SKB_DROP_REASON_TC_EGRESS);
++		*ret = NET_XMIT_DROP;
++		return NULL;
++	/* used by tc_run */
++	case TC_ACT_STOLEN:
++	case TC_ACT_QUEUED:
++	case TC_ACT_TRAP:
++		*ret = NET_XMIT_SUCCESS;
++		return NULL;
+ 	}
+-#endif /* CONFIG_NET_CLS_ACT */
+ 
+ 	return skb;
+ }
+-
+-static struct netdev_queue *
+-netdev_tx_queue_mapping(struct net_device *dev, struct sk_buff *skb)
+-{
+-	int qm = skb_get_queue_mapping(skb);
+-
+-	return netdev_get_tx_queue(dev, netdev_cap_txqueue(dev, qm));
+-}
+-
+-static bool netdev_xmit_txqueue_skipped(void)
++#else
++static __always_inline struct sk_buff *
++sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
++		   struct net_device *orig_dev, bool *another)
+ {
+-	return __this_cpu_read(softnet_data.xmit.skip_txqueue);
++	return skb;
+ }
+ 
+-void netdev_xmit_skip_txqueue(bool skip)
++static __always_inline struct sk_buff *
++sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
+ {
+-	__this_cpu_write(softnet_data.xmit.skip_txqueue, skip);
++	return skb;
+ }
+-EXPORT_SYMBOL_GPL(netdev_xmit_skip_txqueue);
+-#endif /* CONFIG_NET_EGRESS */
++#endif /* CONFIG_NET_XGRESS */
+ 
+ #ifdef CONFIG_XPS
+ static int __get_xps_queue_idx(struct net_device *dev, struct sk_buff *skb,
+@@ -4128,9 +4257,7 @@ int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+ 	skb_update_prio(skb);
+ 
+ 	qdisc_pkt_len_init(skb);
+-#ifdef CONFIG_NET_CLS_ACT
+-	skb->tc_at_ingress = 0;
+-#endif
++	tcx_set_ingress(skb, false);
+ #ifdef CONFIG_NET_EGRESS
+ 	if (static_branch_unlikely(&egress_needed_key)) {
+ 		if (nf_hook_egress_active()) {
+@@ -5064,72 +5191,6 @@ int (*br_fdb_test_addr_hook)(struct net_device *dev,
+ EXPORT_SYMBOL_GPL(br_fdb_test_addr_hook);
+ #endif
+ 
+-static inline struct sk_buff *
+-sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
+-		   struct net_device *orig_dev, bool *another)
+-{
+-#ifdef CONFIG_NET_CLS_ACT
+-	struct mini_Qdisc *miniq = rcu_dereference_bh(skb->dev->miniq_ingress);
+-	struct tcf_result cl_res;
+-
+-	/* If there's at least one ingress present somewhere (so
+-	 * we get here via enabled static key), remaining devices
+-	 * that are not configured with an ingress qdisc will bail
+-	 * out here.
+-	 */
+-	if (!miniq)
+-		return skb;
+-
+-	if (*pt_prev) {
+-		*ret = deliver_skb(skb, *pt_prev, orig_dev);
+-		*pt_prev = NULL;
+-	}
+-
+-	qdisc_skb_cb(skb)->pkt_len = skb->len;
+-	tc_skb_cb(skb)->mru = 0;
+-	tc_skb_cb(skb)->post_ct = false;
+-	skb->tc_at_ingress = 1;
+-	mini_qdisc_bstats_cpu_update(miniq, skb);
+-
+-	switch (tcf_classify(skb, miniq->block, miniq->filter_list, &cl_res, false)) {
+-	case TC_ACT_OK:
+-	case TC_ACT_RECLASSIFY:
+-		skb->tc_index = TC_H_MIN(cl_res.classid);
+-		break;
+-	case TC_ACT_SHOT:
+-		mini_qdisc_qstats_cpu_drop(miniq);
+-		kfree_skb_reason(skb, SKB_DROP_REASON_TC_INGRESS);
+-		*ret = NET_RX_DROP;
+-		return NULL;
+-	case TC_ACT_STOLEN:
+-	case TC_ACT_QUEUED:
+-	case TC_ACT_TRAP:
+-		consume_skb(skb);
+-		*ret = NET_RX_SUCCESS;
+-		return NULL;
+-	case TC_ACT_REDIRECT:
+-		/* skb_mac_header check was done by cls/act_bpf, so
+-		 * we can safely push the L2 header back before
+-		 * redirecting to another netdev
+-		 */
+-		__skb_push(skb, skb->mac_len);
+-		if (skb_do_redirect(skb) == -EAGAIN) {
+-			__skb_pull(skb, skb->mac_len);
+-			*another = true;
+-			break;
+-		}
+-		*ret = NET_RX_SUCCESS;
+-		return NULL;
+-	case TC_ACT_CONSUMED:
+-		*ret = NET_RX_SUCCESS;
+-		return NULL;
+-	default:
+-		break;
+-	}
+-#endif /* CONFIG_NET_CLS_ACT */
+-	return skb;
+-}
+-
+ /**
+  *	netdev_is_rx_handler_busy - check if receive handler is registered
+  *	@dev: device to check
+@@ -10834,7 +10895,7 @@ void unregister_netdevice_many_notify(struct list_head *head,
+ 
+ 		/* Shutdown queueing discipline. */
+ 		dev_shutdown(dev);
+-
++		dev_tcx_uninstall(dev);
+ 		dev_xdp_uninstall(dev);
+ 		bpf_dev_bound_netdev_unregister(dev);
+ 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 06ba0e56e369..e39a8a20dd10 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -9312,7 +9312,7 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
+ 	__u8 value_reg = si->dst_reg;
+ 	__u8 skb_reg = si->src_reg;
+ 
+-#ifdef CONFIG_NET_CLS_ACT
++#ifdef CONFIG_NET_XGRESS
+ 	/* If the tstamp_type is read,
+ 	 * the bpf prog is aware the tstamp could have delivery time.
+ 	 * Thus, read skb->tstamp as is if tstamp_type_access is true.
+@@ -9346,7 +9346,7 @@ static struct bpf_insn *bpf_convert_tstamp_write(const struct bpf_prog *prog,
+ 	__u8 value_reg = si->src_reg;
+ 	__u8 skb_reg = si->dst_reg;
+ 
+-#ifdef CONFIG_NET_CLS_ACT
++#ifdef CONFIG_NET_XGRESS
+ 	/* If the tstamp_type is read,
+ 	 * the bpf prog is aware the tstamp could have delivery time.
+ 	 * Thus, write skb->tstamp as is if tstamp_type_access is true.
+diff --git a/net/sched/Kconfig b/net/sched/Kconfig
+index 4b95cb1ac435..470c70deffe2 100644
+--- a/net/sched/Kconfig
++++ b/net/sched/Kconfig
+@@ -347,8 +347,7 @@ config NET_SCH_FQ_PIE
+ config NET_SCH_INGRESS
+ 	tristate "Ingress/classifier-action Qdisc"
+ 	depends on NET_CLS_ACT
+-	select NET_INGRESS
+-	select NET_EGRESS
++	select NET_XGRESS
+ 	help
+ 	  Say Y here if you want to use classifiers for incoming and/or outgoing
+ 	  packets. This qdisc doesn't do anything else besides running classifiers,
+@@ -679,6 +678,7 @@ config NET_EMATCH_IPT
+ config NET_CLS_ACT
+ 	bool "Actions"
+ 	select NET_CLS
++	select NET_XGRESS
+ 	help
+ 	  Say Y here if you want to use traffic control actions. Actions
+ 	  get attached to classifiers and are invoked after a successful
+diff --git a/net/sched/sch_ingress.c b/net/sched/sch_ingress.c
+index e43a45499372..04e886f6cee4 100644
+--- a/net/sched/sch_ingress.c
++++ b/net/sched/sch_ingress.c
+@@ -13,6 +13,7 @@
+ #include <net/netlink.h>
+ #include <net/pkt_sched.h>
+ #include <net/pkt_cls.h>
++#include <net/tcx.h>
+ 
+ struct ingress_sched_data {
+ 	struct tcf_block *block;
+@@ -78,6 +79,8 @@ static int ingress_init(struct Qdisc *sch, struct nlattr *opt,
+ {
+ 	struct ingress_sched_data *q = qdisc_priv(sch);
+ 	struct net_device *dev = qdisc_dev(sch);
++	struct bpf_mprog_entry *entry;
++	bool created;
+ 	int err;
+ 
+ 	if (sch->parent != TC_H_INGRESS)
+@@ -85,7 +88,13 @@ static int ingress_init(struct Qdisc *sch, struct nlattr *opt,
+ 
+ 	net_inc_ingress_queue();
+ 
+-	mini_qdisc_pair_init(&q->miniqp, sch, &dev->miniq_ingress);
++	entry = tcx_entry_fetch_or_create(dev, true, &created);
++	if (!entry)
++		return -ENOMEM;
++	tcx_miniq_set_active(entry, true);
++	mini_qdisc_pair_init(&q->miniqp, sch, &tcx_entry(entry)->miniq);
++	if (created)
++		tcx_entry_update(dev, entry, true);
+ 
+ 	q->block_info.binder_type = FLOW_BLOCK_BINDER_TYPE_CLSACT_INGRESS;
+ 	q->block_info.chain_head_change = clsact_chain_head_change;
+@@ -103,11 +112,22 @@ static int ingress_init(struct Qdisc *sch, struct nlattr *opt,
+ static void ingress_destroy(struct Qdisc *sch)
+ {
+ 	struct ingress_sched_data *q = qdisc_priv(sch);
++	struct net_device *dev = qdisc_dev(sch);
++	struct bpf_mprog_entry *entry = rtnl_dereference(dev->tcx_ingress);
+ 
+ 	if (sch->parent != TC_H_INGRESS)
+ 		return;
+ 
+ 	tcf_block_put_ext(q->block, sch, &q->block_info);
 +
-+int bpf_mprog_detach(struct bpf_mprog_entry *entry,
-+		     struct bpf_mprog_entry **entry_new,
-+		     struct bpf_prog *prog, struct bpf_link *link,
-+		     u32 flags, u32 id_or_fd, u64 revision)
-+{
-+	struct bpf_tuple rtuple, dtuple = {
-+		.prog = prog,
-+		.link = link,
-+	};
-+	int ret, idx = -ERANGE, tidx;
++	if (entry) {
++		tcx_miniq_set_active(entry, false);
++		if (!tcx_entry_is_active(entry)) {
++			tcx_entry_update(dev, NULL, false);
++			tcx_entry_free(entry);
++		}
++	}
 +
-+	if (flags & BPF_F_REPLACE)
-+		return -EINVAL;
-+	if (revision && revision != bpf_mprog_revision(entry))
-+		return -ESTALE;
-+	ret = bpf_mprog_tuple_relative(&rtuple, id_or_fd, flags,
-+				       prog ? prog->type :
-+				       BPF_PROG_TYPE_UNSPEC);
-+	if (ret)
-+		return ret;
-+	if (dtuple.prog) {
-+		tidx = bpf_mprog_pos_exact(entry, &dtuple);
-+		if (tidx < 0) {
-+			ret = tidx;
-+			goto out;
-+		}
-+		idx = tidx;
-+	}
-+	if (flags & BPF_F_BEFORE) {
-+		tidx = bpf_mprog_pos_before(entry, &rtuple);
-+		if (tidx < -1 || (idx >= -1 && tidx != idx)) {
-+			ret = tidx < -1 ? tidx : -ERANGE;
-+			goto out;
-+		}
-+		idx = tidx;
-+	}
-+	if (flags & BPF_F_AFTER) {
-+		tidx = bpf_mprog_pos_after(entry, &rtuple);
-+		if (tidx < -1 || (idx >= -1 && tidx != idx)) {
-+			ret = tidx < 0 ? tidx : -ERANGE;
-+			goto out;
-+		}
-+		idx = tidx;
-+	}
-+	if (idx < -1) {
-+		if (rtuple.prog || flags) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+		idx = bpf_mprog_total(entry);
-+		flags = BPF_F_AFTER;
-+	}
-+	if (idx >= bpf_mprog_max()) {
-+		ret = -ERANGE;
-+		goto out;
-+	}
-+	ret = bpf_mprog_fetch(entry, &dtuple, idx);
-+	if (ret)
-+		goto out;
-+	ret = bpf_mprog_delete(entry, entry_new, &dtuple, idx);
-+out:
-+	bpf_mprog_tuple_put(&rtuple);
-+	return ret;
-+}
+ 	net_dec_ingress_queue();
+ }
+ 
+@@ -223,6 +243,8 @@ static int clsact_init(struct Qdisc *sch, struct nlattr *opt,
+ {
+ 	struct clsact_sched_data *q = qdisc_priv(sch);
+ 	struct net_device *dev = qdisc_dev(sch);
++	struct bpf_mprog_entry *entry;
++	bool created;
+ 	int err;
+ 
+ 	if (sch->parent != TC_H_CLSACT)
+@@ -231,7 +253,13 @@ static int clsact_init(struct Qdisc *sch, struct nlattr *opt,
+ 	net_inc_ingress_queue();
+ 	net_inc_egress_queue();
+ 
+-	mini_qdisc_pair_init(&q->miniqp_ingress, sch, &dev->miniq_ingress);
++	entry = tcx_entry_fetch_or_create(dev, true, &created);
++	if (!entry)
++		return -ENOMEM;
++	tcx_miniq_set_active(entry, true);
++	mini_qdisc_pair_init(&q->miniqp_ingress, sch, &tcx_entry(entry)->miniq);
++	if (created)
++		tcx_entry_update(dev, entry, true);
+ 
+ 	q->ingress_block_info.binder_type = FLOW_BLOCK_BINDER_TYPE_CLSACT_INGRESS;
+ 	q->ingress_block_info.chain_head_change = clsact_chain_head_change;
+@@ -244,7 +272,13 @@ static int clsact_init(struct Qdisc *sch, struct nlattr *opt,
+ 
+ 	mini_qdisc_pair_block_init(&q->miniqp_ingress, q->ingress_block);
+ 
+-	mini_qdisc_pair_init(&q->miniqp_egress, sch, &dev->miniq_egress);
++	entry = tcx_entry_fetch_or_create(dev, false, &created);
++	if (!entry)
++		return -ENOMEM;
++	tcx_miniq_set_active(entry, true);
++	mini_qdisc_pair_init(&q->miniqp_egress, sch, &tcx_entry(entry)->miniq);
++	if (created)
++		tcx_entry_update(dev, entry, false);
+ 
+ 	q->egress_block_info.binder_type = FLOW_BLOCK_BINDER_TYPE_CLSACT_EGRESS;
+ 	q->egress_block_info.chain_head_change = clsact_chain_head_change;
+@@ -256,12 +290,31 @@ static int clsact_init(struct Qdisc *sch, struct nlattr *opt,
+ static void clsact_destroy(struct Qdisc *sch)
+ {
+ 	struct clsact_sched_data *q = qdisc_priv(sch);
++	struct net_device *dev = qdisc_dev(sch);
++	struct bpf_mprog_entry *ingress_entry = rtnl_dereference(dev->tcx_ingress);
++	struct bpf_mprog_entry *egress_entry = rtnl_dereference(dev->tcx_egress);
+ 
+ 	if (sch->parent != TC_H_CLSACT)
+ 		return;
+ 
+-	tcf_block_put_ext(q->egress_block, sch, &q->egress_block_info);
+ 	tcf_block_put_ext(q->ingress_block, sch, &q->ingress_block_info);
++	tcf_block_put_ext(q->egress_block, sch, &q->egress_block_info);
 +
-+int bpf_mprog_query(const union bpf_attr *attr, union bpf_attr __user *uattr,
-+		    struct bpf_mprog_entry *entry)
-+{
-+	u32 __user *uprog_flags, *ulink_flags;
-+	u32 __user *uprog_id, *ulink_id;
-+	struct bpf_mprog_fp *fp;
-+	struct bpf_mprog_cp *cp;
-+	struct bpf_prog *prog;
-+	const u32 flags = 0;
-+	int i, ret = 0;
-+	u32 id, count;
-+	u64 revision;
++	if (ingress_entry) {
++		tcx_miniq_set_active(ingress_entry, false);
++		if (!tcx_entry_is_active(ingress_entry)) {
++			tcx_entry_update(dev, NULL, true);
++			tcx_entry_free(ingress_entry);
++		}
++	}
 +
-+	if (attr->query.query_flags || attr->query.attach_flags)
-+		return -EINVAL;
-+	revision = bpf_mprog_revision(entry);
-+	count = bpf_mprog_total(entry);
-+	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
-+		return -EFAULT;
-+	if (copy_to_user(&uattr->query.revision, &revision, sizeof(revision)))
-+		return -EFAULT;
-+	if (copy_to_user(&uattr->query.count, &count, sizeof(count)))
-+		return -EFAULT;
-+	uprog_id = u64_to_user_ptr(attr->query.prog_ids);
-+	uprog_flags = u64_to_user_ptr(attr->query.prog_attach_flags);
-+	ulink_id = u64_to_user_ptr(attr->query.link_ids);
-+	ulink_flags = u64_to_user_ptr(attr->query.link_attach_flags);
-+	if (attr->query.count == 0 || !uprog_id || !count)
-+		return 0;
-+	if (attr->query.count < count) {
-+		count = attr->query.count;
-+		ret = -ENOSPC;
++	if (egress_entry) {
++		tcx_miniq_set_active(egress_entry, false);
++		if (!tcx_entry_is_active(egress_entry)) {
++			tcx_entry_update(dev, NULL, false);
++			tcx_entry_free(egress_entry);
++		}
 +	}
-+	for (i = 0; i < bpf_mprog_max(); i++) {
-+		bpf_mprog_read(entry, i, &fp, &cp);
-+		prog = READ_ONCE(fp->prog);
-+		if (!prog)
-+			break;
-+		id = prog->aux->id;
-+		if (copy_to_user(uprog_id + i, &id, sizeof(id)))
-+			return -EFAULT;
-+		if (uprog_flags &&
-+		    copy_to_user(uprog_flags + i, &flags, sizeof(flags)))
-+			return -EFAULT;
-+		id = cp->link ? cp->link->id : 0;
-+		if (ulink_id &&
-+		    copy_to_user(ulink_id + i, &id, sizeof(id)))
-+			return -EFAULT;
-+		if (ulink_flags &&
-+		    copy_to_user(ulink_flags + i, &flags, sizeof(flags)))
-+			return -EFAULT;
-+		if (i + 1 == count)
-+			break;
-+	}
-+	return ret;
-+}
+ 
+ 	net_dec_ingress_queue();
+ 	net_dec_egress_queue();
 diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 600d0caebbd8..1c166870cdf3 100644
+index 1c166870cdf3..47b76925189f 100644
 --- a/tools/include/uapi/linux/bpf.h
 +++ b/tools/include/uapi/linux/bpf.h
-@@ -1113,7 +1113,12 @@ enum bpf_perf_event_type {
-  */
- #define BPF_F_ALLOW_OVERRIDE	(1U << 0)
- #define BPF_F_ALLOW_MULTI	(1U << 1)
-+/* Generic attachment flags. */
- #define BPF_F_REPLACE		(1U << 2)
-+#define BPF_F_BEFORE		(1U << 3)
-+#define BPF_F_AFTER		(1U << 4)
-+#define BPF_F_ID		(1U << 5)
-+#define BPF_F_LINK		BPF_F_LINK /* 1 << 13 */
+@@ -1036,6 +1036,8 @@ enum bpf_attach_type {
+ 	BPF_LSM_CGROUP,
+ 	BPF_STRUCT_OPS,
+ 	BPF_NETFILTER,
++	BPF_TCX_INGRESS,
++	BPF_TCX_EGRESS,
+ 	__MAX_BPF_ATTACH_TYPE
+ };
  
- /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
-  * verifier will perform strict alignment checking as if the kernel
-@@ -1444,14 +1449,19 @@ union bpf_attr {
- 	};
+@@ -1053,7 +1055,7 @@ enum bpf_link_type {
+ 	BPF_LINK_TYPE_KPROBE_MULTI = 8,
+ 	BPF_LINK_TYPE_STRUCT_OPS = 9,
+ 	BPF_LINK_TYPE_NETFILTER = 10,
+-
++	BPF_LINK_TYPE_TCX = 11,
+ 	MAX_BPF_LINK_TYPE,
+ };
  
- 	struct { /* anonymous struct used by BPF_PROG_ATTACH/DETACH commands */
--		__u32		target_fd;	/* container object to attach to */
--		__u32		attach_bpf_fd;	/* eBPF program to attach */
-+		union {
+@@ -1569,13 +1571,13 @@ union bpf_attr {
+ 			__u32		map_fd;		/* struct_ops to attach */
+ 		};
+ 		union {
+-			__u32		target_fd;	/* object to attach to */
+-			__u32		target_ifindex; /* target ifindex */
 +			__u32	target_fd;	/* target object to attach to or ... */
-+			__u32	target_ifindex;	/* target ifindex */
-+		};
-+		__u32		attach_bpf_fd;
- 		__u32		attach_type;
- 		__u32		attach_flags;
--		__u32		replace_bpf_fd;	/* previously attached eBPF
--						 * program to replace if
--						 * BPF_F_REPLACE is used
--						 */
-+		__u32		replace_bpf_fd;
-+		union {
-+			__u32	relative_fd;
-+			__u32	relative_id;
-+		};
-+		__u64		expected_revision;
++			__u32	target_ifindex; /* target ifindex */
+ 		};
+ 		__u32		attach_type;	/* attach type */
+ 		__u32		flags;		/* extra flags */
+ 		union {
+-			__u32		target_btf_id;	/* btf_id of target to attach to */
++			__u32	target_btf_id;	/* btf_id of target to attach to */
+ 			struct {
+ 				__aligned_u64	iter_info;	/* extra bpf_iter_link_info */
+ 				__u32		iter_info_len;	/* iter_info length */
+@@ -1609,6 +1611,13 @@ union bpf_attr {
+ 				__s32		priority;
+ 				__u32		flags;
+ 			} netfilter;
++			struct {
++				union {
++					__u32	relative_fd;
++					__u32	relative_id;
++				};
++				__u64		expected_revision;
++			} tcx;
+ 		};
+ 	} link_create;
+ 
+@@ -6217,6 +6226,19 @@ struct bpf_sock_tuple {
  	};
+ };
  
- 	struct { /* anonymous struct used by BPF_PROG_TEST_RUN command */
-@@ -1497,16 +1507,26 @@ union bpf_attr {
- 	} info;
++/* (Simplified) user return codes for tcx prog type.
++ * A valid tcx program must return one of these defined values. All other
++ * return codes are reserved for future use. Must remain compatible with
++ * their TC_ACT_* counter-parts. For compatibility in behavior, unknown
++ * return codes are mapped to TCX_NEXT.
++ */
++enum tcx_action_base {
++	TCX_NEXT	= -1,
++	TCX_PASS	= 0,
++	TCX_DROP	= 2,
++	TCX_REDIRECT	= 7,
++};
++
+ struct bpf_xdp_sock {
+ 	__u32 queue_id;
+ };
+@@ -6499,6 +6521,10 @@ struct bpf_link_info {
+ 				} event; /* BPF_PERF_EVENT_EVENT */
+ 			};
+ 		} perf_event;
++		struct {
++			__u32 ifindex;
++			__u32 attach_type;
++		} tcx;
+ 	};
+ } __attribute__((aligned(8)));
  
- 	struct { /* anonymous struct used by BPF_PROG_QUERY command */
--		__u32		target_fd;	/* container object to query */
-+		union {
-+			__u32	target_fd;	/* target object to query or ... */
-+			__u32	target_ifindex;	/* target ifindex */
-+		};
- 		__u32		attach_type;
- 		__u32		query_flags;
- 		__u32		attach_flags;
- 		__aligned_u64	prog_ids;
--		__u32		prog_cnt;
-+		union {
-+			__u32	prog_cnt;
-+			__u32	count;
-+		};
-+		__u32		:32;
- 		/* output: per-program attach_flags.
- 		 * not allowed to be set during effective query.
- 		 */
- 		__aligned_u64	prog_attach_flags;
-+		__aligned_u64	link_ids;
-+		__aligned_u64	link_attach_flags;
-+		__u64		revision;
- 	} query;
- 
- 	struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN command */
 -- 
 2.34.1
 
