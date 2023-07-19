@@ -1,79 +1,59 @@
-Return-Path: <bpf+bounces-5379-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5380-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52378759E0C
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 20:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A9CE4759E35
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 21:07:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B62C281AC2
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 18:59:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 651F6281045
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 19:07:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93C46111A9;
-	Wed, 19 Jul 2023 18:59:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ACCF111A9;
+	Wed, 19 Jul 2023 19:02:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF42275BD;
-	Wed, 19 Jul 2023 18:59:39 +0000 (UTC)
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E35199A;
-	Wed, 19 Jul 2023 11:59:38 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bb119be881so50713615ad.3;
-        Wed, 19 Jul 2023 11:59:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689793177; x=1692385177;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ke2+UctC+DoOwplZHrK3x2BR06F4065MTKEWhT518s=;
-        b=CbsznE8dvx8wKJEQAxpORbIXdmli5Zh/FPlmQ4MIyqQYlQlNjsA5dP40FCBBYE+eQY
-         4/+4JI9nwSc9KoqplrIaeDxJ0dydcLJ2b5q9tzkzky9Sd40Y5guMJY70lstH44YvnLGr
-         U1KlW4zL7ZqqCi5Q05CgPJEwjYxGbfvMMRPaxxJQGYEPTF3ljzUWl1nmZyuzp1FZNJKB
-         LVl3xkYBzyK+8E1mHV8Bx+M+Cdj9c8VF2zzhhajhxy7BeAmrZQMBZcv6p++uDIAj67PP
-         jnO/iqLE891qEavXM+s5x9i9CNqWRTlgOMfgUrE7TPggt3g0e/mFo+tACWmH+drqStJA
-         Yprw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689793177; x=1692385177;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5ke2+UctC+DoOwplZHrK3x2BR06F4065MTKEWhT518s=;
-        b=ROIAX41pkiwhFTyaAPKAZrrMaweAGiD6bWjNzaJwj38rSPO4rcPbwx8ce1P1rp+Lsg
-         RtWXxqkwdfwWBWs5/bRmHyKvtdGsWB4s7pn/zNctpHtVFXs7sKqYt7QKafaiWNMfCdhV
-         3bHFmPqOHRZZrKPrIM6XH4tO8RML5tu03+WPAnB4jSFL8eDUAIO6bWeGtAWagbVzy4/a
-         0/UG0v3nx4426N5JqjcKpPagvsJYkF8c26ePurQounvV+odDjjT47aoPkOYerpw8mc6y
-         dZRZBMcE3Swcak6Wt6D/6HSgGRybbCCwUYsnYs5EBW4/+EYpRQinyTq6jQJu0mW43t6e
-         cW6w==
-X-Gm-Message-State: ABy/qLZH+7M5wjHtXHvp+KZvGy0W/yfIpJbUMxo4HqJ36JGrShps2g26
-	ZlvdvXFzH/KETrzn70WGXs4=
-X-Google-Smtp-Source: APBJJlFFs6ZPqDq5j/f2gL+3ynFPPHBUrnM/pdVxNM3ZzTJGDgYheYOnkkODQvN1NPk3F+2i0jkrtQ==
-X-Received: by 2002:a17:902:cec3:b0:1b8:971c:b7b7 with SMTP id d3-20020a170902cec300b001b8971cb7b7mr23731180plg.56.1689793177405;
-        Wed, 19 Jul 2023 11:59:37 -0700 (PDT)
-Received: from macbook-pro-8.dhcp.thefacebook.com ([2620:10d:c090:500::4:8907])
-        by smtp.gmail.com with ESMTPSA id l8-20020a170902f68800b001b892aac5c9sm4305624plg.298.2023.07.19.11.59.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 11:59:37 -0700 (PDT)
-Date: Wed, 19 Jul 2023 11:59:30 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Larysa Zaremba <larysa.zaremba@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-	David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	Jesper Dangaard Brouer <brouer@redhat.com>,
-	Anatoly Burakov <anatoly.burakov@intel.com>,
-	Alexander Lobakin <alexandr.lobakin@intel.com>,
-	Magnus Karlsson <magnus.karlsson@gmail.com>,
-	Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 13/21] ice: Implement checksum hint
-Message-ID: <20230719185930.6adapqctxfdsfmye@macbook-pro-8.dhcp.thefacebook.com>
-References: <20230719183734.21681-1-larysa.zaremba@intel.com>
- <20230719183734.21681-14-larysa.zaremba@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4049275D7
+	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 19:02:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39A56C433C7;
+	Wed, 19 Jul 2023 19:02:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689793357;
+	bh=er8PxxiNwe2IP17ixZnzil4chz2FvKc+APjSl+8TXDs=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=pWUtnTPNmsjwXTpPaBC0Z9/mOjq3LuTqKWfMBJoM6L1xaQ/6DutWUE7UihQWvrjOM
+	 Tlt/m2+k34AvI+OnS8IVwJYDIT7Wg1QUyb8RXm0qEZQclUPe4SquIXD/uYu1ECgdn2
+	 bWmah2eD6OzU11aRhHlX3HGADw5lqciv64BEL1LHHAXotNmJ+/B9NtXUYIGjDZmHFd
+	 VOZAQpM0VR9NqrwxtX4Ckh4Pk9aoqpQeKxog5vfZZcWFibfzbU7HmN/TJAzEKDyjOV
+	 LLFsk7yj+JYGrSCieAhp2GnCjBIk3OOOtrQvBED3x7PT6YjFpq0jz8/cpUWT/7Z8fg
+	 adGUALgXDVrAg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C6164CE092F; Wed, 19 Jul 2023 12:02:36 -0700 (PDT)
+Date: Wed, 19 Jul 2023 12:02:36 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joe Perches <joe@perches.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Andy Whitcroft <apw@canonical.com>,
+	Dwaipayan Ray <dwaipayanray1@gmail.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of
+ RCU Tasks Trace
+Message-ID: <de2c81f5-70c6-4e81-88b4-d412c58d033e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
+ <20230717180454.1097714-5-paulmck@kernel.org>
+ <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
+ <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
+ <a0f6e131-a649-1731-b096-46313a0460a9@joelfernandes.org>
+ <351d0261-210a-44a3-ade6-59289f407db2@paulmck-laptop>
+ <67766eb5a995634e001b842fe988a423cf3d0eab.camel@perches.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,59 +62,29 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230719183734.21681-14-larysa.zaremba@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+In-Reply-To: <67766eb5a995634e001b842fe988a423cf3d0eab.camel@perches.com>
 
-On Wed, Jul 19, 2023 at 08:37:26PM +0200, Larysa Zaremba wrote:
-> Implement .xmo_rx_csum callback to allow XDP code to determine,
-> whether HW has validated any checksums.
+On Wed, Jul 19, 2023 at 11:44:17AM -0700, Joe Perches wrote:
+> On Wed, 2023-07-19 at 11:27 -0700, Paul E. McKenney wrote:
+> []
+> > > > > 
+> > Given perl's tendency to have corner cases in its corner cases, I
+> > am guessing that the "^" character combined with the "/" character is
+> > causing trouble here.  Especially given that I don't see any use of such
+> > a pattern anywhere in checkpatch.pl except directly in a "~" expression,
+> > and there are a lot of those.
+> > 
+> > So I will keep it as is unless I hear otherwise from Joe Perches.
 > 
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 29 +++++++++++++++++++
->  1 file changed, 29 insertions(+)
+> I played with it a bit and can't think of anything better.
 > 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> index 54685d0747aa..6647a7e55ac8 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> @@ -660,8 +660,37 @@ static int ice_xdp_rx_vlan_tag(const struct xdp_md *ctx, u16 *vlan_tci,
->  	return 0;
->  }
->  
-> +/**
-> + * ice_xdp_rx_csum_lvl - Get level, at which HW has checked the checksum
-> + * @ctx: XDP buff pointer
-> + * @csum_status: destination address
-> + * @csum_info: destination address
-> + *
-> + * Copy HW checksum level (if was checked) to the destination address.
-> + */
-> +static int ice_xdp_rx_csum(const struct xdp_md *ctx,
-> +			   enum xdp_csum_status *csum_status,
-> +			   union xdp_csum_info *csum_info)
-> +{
-> +	const struct ice_xdp_buff *xdp_ext = (void *)ctx;
-> +	const union ice_32b_rx_flex_desc *eop_desc;
-> +	enum ice_rx_csum_status status;
-> +	u16 ptype;
-> +
-> +	eop_desc = xdp_ext->pkt_ctx.eop_desc;
-> +	ptype = ice_get_ptype(eop_desc);
-> +
-> +	status = ice_get_rx_csum_status(eop_desc, ptype);
-> +	if (status & ICE_RX_CSUM_NONE)
-> +		return -ENODATA;
-> +
-> +	*csum_status = ice_rx_csum_lvl(status) + 1;
-> +	return 0;
-> +}
+> Code is always something that can be improved later so the
+> way Paul has it now is fine with me.
 
-and xdp_csum_info from previous patch left uninitialized?
-What was the point adding it then?
+Then I don't feel so bad not finding anything better myself.
+
+Thank you, and if nothing else this exercise refreshed a few of my
+perl neurons.  ;-)
+
+							Thanx, Paul
 
