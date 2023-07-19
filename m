@@ -1,65 +1,65 @@
-Return-Path: <bpf+bounces-5217-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5218-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0C12758A6C
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 02:54:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66148758A71
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 02:54:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B4502815E0
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 00:54:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 974A91C20F27
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 00:54:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 116CD525A;
-	Wed, 19 Jul 2023 00:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4725C9D;
+	Wed, 19 Jul 2023 00:50:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62865239
-	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 00:50:19 +0000 (UTC)
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1DE19B0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B78EF5669
+	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 00:50:20 +0000 (UTC)
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B9C18D
 	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 17:50:16 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-765942d497fso575185385a.1
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-76754b9eac0so591017085a.0
         for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 17:50:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1689727815; x=1692319815;
+        d=bytedance.com; s=google; t=1689727816; x=1692319816;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=obFj4SuWwNEDydCXYPra7zizeyW2jR3T9h3NMhd9EHc=;
-        b=NUyO+OfSBwygJujqqAlusnhc8WL36GpDGlOSMNLrUMALVwy9C+eLf/gmADp5e2Cvdl
-         RoxYMjnlm9to1SPFtrXu1eRiaDKIaHRn7U5Gw43KRFon2ohnUGIbnHrzI+y6hPywKwij
-         PiwDJMc0PYE43Lp01hG48NJP7F9ojPjgzzPHD3GdMUhU4sCPOclubU6J2xW3pyzue4rk
-         7dMq/WYhfHxufcyjzThwQER4VlREp4hqAwyKaHW090tW2j8ZZ0/TwaXZNxzIJ7uHUpR8
-         wDT/venpG53iqv+C/PcE08F+s25Nk5YqUK+0bFTbp2Zw7AX18c2/2bHEiJ+3+x2r4T3m
-         iRbA==
+        bh=2jDdPbzH4onHNW5mQ+nHZzIsBXIDVnlx9OcaE5Mwsjc=;
+        b=eepobj0Vc1efSCz7ybajZtwpgJ5AghKHP5/txHgJFHHyY4FHoRmuQTm5LGfIesiqT/
+         PD2ZTDjYtuPJ8w+SRAsKlf9SW1Ib1pYpdFc84jBiO4Y0y16uLALHKiYXgvuGWkyfqOw2
+         oljI0n/oJhPluX28Ya2d//kILPfh1ZUF/MMYgawk3dKZjJ9oe5nOBGUQyNi8SIIIm7c0
+         DTD5w9IYzqxsaAfBozvvoYSNWWlOsx0KjrDpjNiA32/Tivs28ml9xEjAwGuMBfpc3bKv
+         z6IhJoR+YcKaXykod/FSL6o2Y+i/IWqmY0UulvwuRxY56EXpN3w9sHfLd323IuK7M8Tu
+         AOgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689727815; x=1692319815;
+        d=1e100.net; s=20221208; t=1689727816; x=1692319816;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=obFj4SuWwNEDydCXYPra7zizeyW2jR3T9h3NMhd9EHc=;
-        b=L2N/0A5E07jPpZZoqWyXMvl7erZKROftMfLMtoogWXhWObFkk9uUQUcvhcC5wr+sFo
-         G6bQEc+J8wrwCu1P2MUz9gp+MsDdTCaldHMb1ZRUz46yR6meWKpfKGUTLe7qpbnSUe3q
-         brtKmaDE4PjIqwcKFhqxHTzZiJOfH7w6IW4ysZ3orxhES4Gf5Dz8/qZlYCuTOQ5Wv5CY
-         eDTcnDw2DmJ99dOdjOTV0yb23Fh4KByQVPJ5sJPO2sgFXnihaaTG+fuEu2UogSjuPRha
-         6WobprNQQFsRVuC9yGk72vh1rBQNPitiRfHMuCPqJarquGIc86NvkeD/oIWO1IFmhaWS
-         0Tfw==
-X-Gm-Message-State: ABy/qLYQyNlTq3rqoILOvubU9p/IYXBhwEW7lzamlCUaL/HyLEWmz4d2
-	XsLdldj3xbdpbbl8wFbxqtazNg==
-X-Google-Smtp-Source: APBJJlH2qBZQH1qWGCaN+VQmrmpisuAoTXdqGyO0+X8WfXFZcOKKbLFZjpv8WQo8vDTHZeos5kgd6A==
-X-Received: by 2002:a05:620a:2686:b0:767:32cd:5fe8 with SMTP id c6-20020a05620a268600b0076732cd5fe8mr19266292qkp.14.1689727815276;
-        Tue, 18 Jul 2023 17:50:15 -0700 (PDT)
+        bh=2jDdPbzH4onHNW5mQ+nHZzIsBXIDVnlx9OcaE5Mwsjc=;
+        b=RO0K4eUNAVKARZq4dMkNUQZnGxnUwF6w8Hq5TYteeEJitdo9BJzewvib0kiOYrY8Rn
+         aU/Fltvm7Bvm5FqwSoJkvjpT3DMpwEoFBh85KlAqvRSMI8XtBfggS38gZxWF4RWPhuFV
+         /o6v5+7z48EQmDau0quFpN9BAXtw5+FGdE3Sdh9iJKFdE5XEwAvIvfhXe3SjO7xwqa1a
+         BFoCQ6s6wHiL7EjjfcjGeOJb8JgcxuL0b6Cfe4oMuyq64wISQ6FPtDj963NxxRwq2PDh
+         x+NJ+PbNh7xZBi3DgoiTaAtokWCHejW6jX75In8jFLWdgOTBdK/OPGoC9O23bAIKTo5s
+         5lrA==
+X-Gm-Message-State: ABy/qLb1mvYJAsTI5hoEsqN+23y1/E9+qBzK9ud7mRFsn/3JekU7Z/N/
+	TtymU9W3+U4lNkgt8oxOztnPOw==
+X-Google-Smtp-Source: APBJJlFK4k8p+Ccs+dRT+RZiQ+t53CIizMdNsu9Q4x5KgBks0HqA9n612FswA/1ba47aAoZuL7DUyA==
+X-Received: by 2002:a05:620a:3998:b0:767:2f4a:e07a with SMTP id ro24-20020a05620a399800b007672f4ae07amr1182364qkn.68.1689727816119;
+        Tue, 18 Jul 2023 17:50:16 -0700 (PDT)
 Received: from [172.17.0.7] ([130.44.212.112])
-        by smtp.gmail.com with ESMTPSA id c5-20020a05620a11a500b0076738337cd1sm968696qkk.1.2023.07.18.17.50.14
+        by smtp.gmail.com with ESMTPSA id c5-20020a05620a11a500b0076738337cd1sm968696qkk.1.2023.07.18.17.50.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 17:50:14 -0700 (PDT)
+        Tue, 18 Jul 2023 17:50:15 -0700 (PDT)
 From: Bobby Eshleman <bobby.eshleman@bytedance.com>
-Date: Wed, 19 Jul 2023 00:50:11 +0000
-Subject: [PATCH RFC net-next v5 07/14] virtio/vsock: add common datagram
- send path
+Date: Wed, 19 Jul 2023 00:50:12 +0000
+Subject: [PATCH RFC net-next v5 08/14] af_vsock: add
+ vsock_find_bound_dgram_socket()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,7 +68,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230413-b4-vsock-dgram-v5-7-581bd37fdb26@bytedance.com>
+Message-Id: <20230413-b4-vsock-dgram-v5-8-581bd37fdb26@bytedance.com>
 References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
 In-Reply-To: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
 To: Stefan Hajnoczi <stefanha@redhat.com>, 
@@ -90,108 +90,62 @@ Cc: Dan Carpenter <dan.carpenter@linaro.org>,
  bpf@vger.kernel.org, Bobby Eshleman <bobby.eshleman@bytedance.com>
 X-Mailer: b4 0.12.2
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This commit implements the common function
-virtio_transport_dgram_enqueue for enqueueing datagrams. It does not add
-usage in either vhost or virtio yet.
+This commit adds vsock_find_bound_dgram_socket() which allows transports
+to find bound dgram sockets in the global dgram bind table. It is
+intended to be used for "routing" incoming packets to the correct
+sockets if the transport uses the global bind table.
 
 Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
 ---
- net/vmw_vsock/virtio_transport_common.c | 76 ++++++++++++++++++++++++++++++++-
- 1 file changed, 75 insertions(+), 1 deletion(-)
+ include/net/af_vsock.h   |  1 +
+ net/vmw_vsock/af_vsock.c | 16 ++++++++++++++++
+ 2 files changed, 17 insertions(+)
 
-diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-index ffcbdd77feaa..3bfaff758433 100644
---- a/net/vmw_vsock/virtio_transport_common.c
-+++ b/net/vmw_vsock/virtio_transport_common.c
-@@ -819,7 +819,81 @@ virtio_transport_dgram_enqueue(struct vsock_sock *vsk,
- 			       struct msghdr *msg,
- 			       size_t dgram_len)
- {
--	return -EOPNOTSUPP;
-+	/* Here we are only using the info struct to retain style uniformity
-+	 * and to ease future refactoring and merging.
-+	 */
-+	struct virtio_vsock_pkt_info info_stack = {
-+		.op = VIRTIO_VSOCK_OP_RW,
-+		.msg = msg,
-+		.vsk = vsk,
-+		.type = VIRTIO_VSOCK_TYPE_DGRAM,
-+	};
-+	const struct virtio_transport *t_ops;
-+	struct virtio_vsock_pkt_info *info;
-+	struct sock *sk = sk_vsock(vsk);
-+	struct virtio_vsock_hdr *hdr;
-+	u32 src_cid, src_port;
-+	struct sk_buff *skb;
-+	void *payload;
-+	int noblock;
-+	int err;
-+
-+	info = &info_stack;
-+
-+	if (dgram_len > VIRTIO_VSOCK_MAX_PKT_BUF_SIZE)
-+		return -EMSGSIZE;
-+
-+	t_ops = virtio_transport_get_ops(vsk);
-+	if (unlikely(!t_ops))
-+		return -EFAULT;
-+
-+	/* Unlike some of our other sending functions, this function is not
-+	 * intended for use without a msghdr.
-+	 */
-+	if (WARN_ONCE(!msg, "vsock dgram bug: no msghdr found for dgram enqueue\n"))
-+		return -EFAULT;
-+
-+	noblock = msg->msg_flags & MSG_DONTWAIT;
-+
-+	/* Use sock_alloc_send_skb to throttle by sk_sndbuf. This helps avoid
-+	 * triggering the OOM.
-+	 */
-+	skb = sock_alloc_send_skb(sk, dgram_len + VIRTIO_VSOCK_SKB_HEADROOM,
-+				  noblock, &err);
-+	if (!skb)
-+		return err;
-+
-+	skb_reserve(skb, VIRTIO_VSOCK_SKB_HEADROOM);
-+
-+	src_cid = t_ops->transport.get_local_cid();
-+	src_port = vsk->local_addr.svm_port;
-+
-+	hdr = virtio_vsock_hdr(skb);
-+	hdr->type	= cpu_to_le16(info->type);
-+	hdr->op		= cpu_to_le16(info->op);
-+	hdr->src_cid	= cpu_to_le64(src_cid);
-+	hdr->dst_cid	= cpu_to_le64(remote_addr->svm_cid);
-+	hdr->src_port	= cpu_to_le32(src_port);
-+	hdr->dst_port	= cpu_to_le32(remote_addr->svm_port);
-+	hdr->flags	= cpu_to_le32(info->flags);
-+	hdr->len	= cpu_to_le32(dgram_len);
-+
-+	skb_set_owner_w(skb, sk);
-+
-+	payload = skb_put(skb, dgram_len);
-+	err = memcpy_from_msg(payload, msg, dgram_len);
-+	if (err)
-+		return err;
-+
-+	trace_virtio_transport_alloc_pkt(src_cid, src_port,
-+					 remote_addr->svm_cid,
-+					 remote_addr->svm_port,
-+					 dgram_len,
-+					 info->type,
-+					 info->op,
-+					 0);
-+
-+	return t_ops->send_pkt(skb);
- }
- EXPORT_SYMBOL_GPL(virtio_transport_dgram_enqueue);
+diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+index f6a0ca9d7c3e..ae6b6cdf6a4d 100644
+--- a/include/net/af_vsock.h
++++ b/include/net/af_vsock.h
+@@ -215,6 +215,7 @@ void vsock_for_each_connected_socket(struct vsock_transport *transport,
+ 				     void (*fn)(struct sock *sk));
+ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk);
+ bool vsock_find_cid(unsigned int cid);
++struct sock *vsock_find_bound_dgram_socket(struct sockaddr_vm *addr);
  
+ /**** TAP ****/
+ 
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index 0895f4c1d340..e73f3b2c52f1 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -264,6 +264,22 @@ static struct sock *vsock_find_bound_socket_common(struct sockaddr_vm *addr,
+ 	return NULL;
+ }
+ 
++struct sock *
++vsock_find_bound_dgram_socket(struct sockaddr_vm *addr)
++{
++	struct sock *sk;
++
++	spin_lock_bh(&vsock_dgram_table_lock);
++	sk = vsock_find_bound_socket_common(addr, vsock_bound_dgram_sockets(addr));
++	if (sk)
++		sock_hold(sk);
++
++	spin_unlock_bh(&vsock_dgram_table_lock);
++
++	return sk;
++}
++EXPORT_SYMBOL_GPL(vsock_find_bound_dgram_socket);
++
+ static struct sock *__vsock_find_bound_socket(struct sockaddr_vm *addr)
+ {
+ 	return vsock_find_bound_socket_common(addr, vsock_bound_sockets(addr));
 
 -- 
 2.30.2
