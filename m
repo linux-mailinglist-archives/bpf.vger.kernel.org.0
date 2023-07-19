@@ -1,655 +1,352 @@
-Return-Path: <bpf+bounces-5277-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5278-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3AD17594E2
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 14:16:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38BBD759503
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 14:20:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8424F2815AF
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 12:16:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC4FD28180B
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 12:20:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEBC14280;
-	Wed, 19 Jul 2023 12:16:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86DA014A84;
+	Wed, 19 Jul 2023 12:19:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF8612B87;
-	Wed, 19 Jul 2023 12:16:28 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7786E5;
-	Wed, 19 Jul 2023 05:16:23 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R5ZTR4qyCzNmFW;
-	Wed, 19 Jul 2023 20:12:59 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 19 Jul 2023 20:16:19 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Eric Dumazet <edumazet@google.com>, Wei Fang <wei.fang@nxp.com>, Shenwei Wang
-	<shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, NXP Linux Team
-	<linux-imx@nxp.com>, Sunil Goutham <sgoutham@marvell.com>, Geetha sowjanya
-	<gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, hariprasad
-	<hkelam@marvell.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
-	<leon@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne
- Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle
- Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Ilias
- Apalodimas <ilias.apalodimas@linaro.org>, <linux-rdma@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH net-next] page_pool: split types and declarations from page_pool.h
-Date: Wed, 19 Jul 2023 20:13:37 +0800
-Message-ID: <20230719121339.63331-1-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E79114280;
+	Wed, 19 Jul 2023 12:19:55 +0000 (UTC)
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6071FD8;
+	Wed, 19 Jul 2023 05:19:36 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0Vnlwnp3_1689769171;
+Received: from 30.221.150.22(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0Vnlwnp3_1689769171)
+          by smtp.aliyun-inc.com;
+          Wed, 19 Jul 2023 20:19:32 +0800
+Message-ID: <291a6897-d706-688d-ca4a-832ee12eb402@linux.alibaba.com>
+Date: Wed, 19 Jul 2023 20:19:27 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH net-next V2 3/4] virtio_net: support per queue interrupt
+ coalesce command
+To: Gavin Li <gavinl@nvidia.com>
+Cc: gavi@nvidia.com, virtualization@lists.linux-foundation.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, jiri@nvidia.com, dtatulea@nvidia.com
+References: <20230717143037.21858-1-gavinl@nvidia.com>
+ <20230717143037.21858-4-gavinl@nvidia.com>
+ <f88ad438-fb63-beeb-b999-94fb3a75d93d@linux.alibaba.com>
+ <a2cd512a-245e-4c8a-633d-126c6fc135ba@nvidia.com>
+From: Heng Qi <hengqi@linux.alibaba.com>
+In-Reply-To: <a2cd512a-245e-4c8a-633d-126c6fc135ba@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Split types and pure function declarations from page_pool.h
-and add them in page_page_types.h, so that C sources can
-include page_pool.h and headers should generally only include
-page_pool_types.h as suggested by jakub.
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-CC: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- MAINTAINERS                                   |   1 +
- drivers/net/ethernet/engleder/tsnep_main.c    |   1 +
- drivers/net/ethernet/freescale/fec_main.c     |   1 +
- .../marvell/octeontx2/nic/otx2_common.c       |   1 +
- .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |   1 +
- .../ethernet/mellanox/mlx5/core/en/params.c   |   1 +
- .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |   1 +
- drivers/net/wireless/mediatek/mt76/mt76.h     |   1 +
- include/linux/skbuff.h                        |   2 +-
- include/net/page_pool.h                       | 193 +-----------------
- include/net/page_pool_types.h                 | 193 ++++++++++++++++++
- 11 files changed, 206 insertions(+), 190 deletions(-)
- create mode 100644 include/net/page_pool_types.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9a5863f1b016..2888d63e6e03 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16003,6 +16003,7 @@ L:	netdev@vger.kernel.org
- S:	Supported
- F:	Documentation/networking/page_pool.rst
- F:	include/net/page_pool.h
-+F:	include/net/page_pool_types.h
- F:	include/trace/events/page_pool.h
- F:	net/core/page_pool.c
- 
-diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ethernet/engleder/tsnep_main.c
-index 84751bb303a6..6222aaa5157f 100644
---- a/drivers/net/ethernet/engleder/tsnep_main.c
-+++ b/drivers/net/ethernet/engleder/tsnep_main.c
-@@ -28,6 +28,7 @@
- #include <linux/iopoll.h>
- #include <linux/bpf.h>
- #include <linux/bpf_trace.h>
-+#include <net/page_pool.h>
- #include <net/xdp_sock_drv.h>
- 
- #define TSNEP_RX_OFFSET (max(NET_SKB_PAD, XDP_PACKET_HEADROOM) + NET_IP_ALIGN)
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index 1b990a486059..cfc07f012254 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -38,6 +38,7 @@
- #include <linux/in.h>
- #include <linux/ip.h>
- #include <net/ip.h>
-+#include <net/page_pool.h>
- #include <net/selftests.h>
- #include <net/tso.h>
- #include <linux/tcp.h>
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 77c8f650f7ac..b5385ae65dcb 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -7,6 +7,7 @@
- 
- #include <linux/interrupt.h>
- #include <linux/pci.h>
-+#include <net/page_pool.h>
- #include <net/tso.h>
- #include <linux/bitfield.h>
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index fe8ea4e531b7..7eca434a0550 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -16,6 +16,7 @@
- #include <linux/bpf.h>
- #include <linux/bpf_trace.h>
- #include <linux/bitfield.h>
-+#include <net/page_pool.h>
- 
- #include "otx2_reg.h"
- #include "otx2_common.h"
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
-index 5ce28ff7685f..0f152f14165b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
-@@ -6,6 +6,7 @@
- #include "en/port.h"
- #include "en_accel/en_accel.h"
- #include "en_accel/ipsec.h"
-+#include <net/page_pool.h>
- #include <net/xdp_sock_drv.h>
- 
- static u8 mlx5e_mpwrq_min_page_shift(struct mlx5_core_dev *mdev)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 40589cebb773..16038c23b7d8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -35,6 +35,7 @@
- #include "en/xdp.h"
- #include "en/params.h"
- #include <linux/bitfield.h>
-+#include <net/page_pool.h>
- 
- int mlx5e_xdp_max_mtu(struct mlx5e_params *params, struct mlx5e_xsk_param *xsk)
- {
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
-index 6b07b8fafec2..95c16f11d156 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt76.h
-@@ -15,6 +15,7 @@
- #include <linux/average.h>
- #include <linux/soc/mediatek/mtk_wed.h>
- #include <net/mac80211.h>
-+#include <net/page_pool.h>
- #include "util.h"
- #include "testmode.h"
- 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 91ed66952580..bc4a7d45365b 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -32,7 +32,7 @@
- #include <linux/if_packet.h>
- #include <linux/llist.h>
- #include <net/flow.h>
--#include <net/page_pool.h>
-+#include <net/page_pool_types.h>
- #if IS_ENABLED(CONFIG_NF_CONNTRACK)
- #include <linux/netfilter/nf_conntrack_common.h>
- #endif
-diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-index 126f9e294389..bee12295d729 100644
---- a/include/net/page_pool.h
-+++ b/include/net/page_pool.h
-@@ -30,107 +30,9 @@
- #ifndef _NET_PAGE_POOL_H
- #define _NET_PAGE_POOL_H
- 
--#include <linux/mm.h> /* Needed by ptr_ring */
--#include <linux/ptr_ring.h>
--#include <linux/dma-direction.h>
--
--#define PP_FLAG_DMA_MAP		BIT(0) /* Should page_pool do the DMA
--					* map/unmap
--					*/
--#define PP_FLAG_DMA_SYNC_DEV	BIT(1) /* If set all pages that the driver gets
--					* from page_pool will be
--					* DMA-synced-for-device according to
--					* the length provided by the device
--					* driver.
--					* Please note DMA-sync-for-CPU is still
--					* device driver responsibility
--					*/
--#define PP_FLAG_PAGE_FRAG	BIT(2) /* for page frag feature */
--#define PP_FLAG_ALL		(PP_FLAG_DMA_MAP |\
--				 PP_FLAG_DMA_SYNC_DEV |\
--				 PP_FLAG_PAGE_FRAG)
--
--/*
-- * Fast allocation side cache array/stack
-- *
-- * The cache size and refill watermark is related to the network
-- * use-case.  The NAPI budget is 64 packets.  After a NAPI poll the RX
-- * ring is usually refilled and the max consumed elements will be 64,
-- * thus a natural max size of objects needed in the cache.
-- *
-- * Keeping room for more objects, is due to XDP_DROP use-case.  As
-- * XDP_DROP allows the opportunity to recycle objects directly into
-- * this array, as it shares the same softirq/NAPI protection.  If
-- * cache is already full (or partly full) then the XDP_DROP recycles
-- * would have to take a slower code path.
-- */
--#define PP_ALLOC_CACHE_SIZE	128
--#define PP_ALLOC_CACHE_REFILL	64
--struct pp_alloc_cache {
--	u32 count;
--	struct page *cache[PP_ALLOC_CACHE_SIZE];
--};
--
--struct page_pool_params {
--	unsigned int	flags;
--	unsigned int	order;
--	unsigned int	pool_size;
--	int		nid;  /* Numa node id to allocate from pages from */
--	struct device	*dev; /* device, for DMA pre-mapping purposes */
--	struct napi_struct *napi; /* Sole consumer of pages, otherwise NULL */
--	enum dma_data_direction dma_dir; /* DMA mapping direction */
--	unsigned int	max_len; /* max DMA sync memory size */
--	unsigned int	offset;  /* DMA addr offset */
--	void (*init_callback)(struct page *page, void *arg);
--	void *init_arg;
--};
--
--#ifdef CONFIG_PAGE_POOL_STATS
--struct page_pool_alloc_stats {
--	u64 fast; /* fast path allocations */
--	u64 slow; /* slow-path order 0 allocations */
--	u64 slow_high_order; /* slow-path high order allocations */
--	u64 empty; /* failed refills due to empty ptr ring, forcing
--		    * slow path allocation
--		    */
--	u64 refill; /* allocations via successful refill */
--	u64 waive;  /* failed refills due to numa zone mismatch */
--};
--
--struct page_pool_recycle_stats {
--	u64 cached;	/* recycling placed page in the cache. */
--	u64 cache_full; /* cache was full */
--	u64 ring;	/* recycling placed page back into ptr ring */
--	u64 ring_full;	/* page was released from page-pool because
--			 * PTR ring was full.
--			 */
--	u64 released_refcnt; /* page released because of elevated
--			      * refcnt
--			      */
--};
--
--/* This struct wraps the above stats structs so users of the
-- * page_pool_get_stats API can pass a single argument when requesting the
-- * stats for the page pool.
-- */
--struct page_pool_stats {
--	struct page_pool_alloc_stats alloc_stats;
--	struct page_pool_recycle_stats recycle_stats;
--};
--
--int page_pool_ethtool_stats_get_count(void);
--u8 *page_pool_ethtool_stats_get_strings(u8 *data);
--u64 *page_pool_ethtool_stats_get(u64 *data, void *stats);
--
--/*
-- * Drivers that wish to harvest page pool stats and report them to users
-- * (perhaps via ethtool, debugfs, or another mechanism) can allocate a
-- * struct page_pool_stats call page_pool_get_stats to get stats for the specified pool.
-- */
--bool page_pool_get_stats(struct page_pool *pool,
--			 struct page_pool_stats *stats);
--#else
-+#include <net/page_pool_types.h>
- 
-+#ifndef CONFIG_PAGE_POOL_STATS
- static inline int page_pool_ethtool_stats_get_count(void)
- {
- 	return 0;
-@@ -145,72 +47,7 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *data, void *stats)
- {
- 	return data;
- }
--
--#endif
--
--struct page_pool {
--	struct page_pool_params p;
--
--	struct delayed_work release_dw;
--	void (*disconnect)(void *);
--	unsigned long defer_start;
--	unsigned long defer_warn;
--
--	u32 pages_state_hold_cnt;
--	unsigned int frag_offset;
--	struct page *frag_page;
--	long frag_users;
--
--#ifdef CONFIG_PAGE_POOL_STATS
--	/* these stats are incremented while in softirq context */
--	struct page_pool_alloc_stats alloc_stats;
--#endif
--	u32 xdp_mem_id;
--
--	/*
--	 * Data structure for allocation side
--	 *
--	 * Drivers allocation side usually already perform some kind
--	 * of resource protection.  Piggyback on this protection, and
--	 * require driver to protect allocation side.
--	 *
--	 * For NIC drivers this means, allocate a page_pool per
--	 * RX-queue. As the RX-queue is already protected by
--	 * Softirq/BH scheduling and napi_schedule. NAPI schedule
--	 * guarantee that a single napi_struct will only be scheduled
--	 * on a single CPU (see napi_schedule).
--	 */
--	struct pp_alloc_cache alloc ____cacheline_aligned_in_smp;
--
--	/* Data structure for storing recycled pages.
--	 *
--	 * Returning/freeing pages is more complicated synchronization
--	 * wise, because free's can happen on remote CPUs, with no
--	 * association with allocation resource.
--	 *
--	 * Use ptr_ring, as it separates consumer and producer
--	 * effeciently, it a way that doesn't bounce cache-lines.
--	 *
--	 * TODO: Implement bulk return pages into this structure.
--	 */
--	struct ptr_ring ring;
--
--#ifdef CONFIG_PAGE_POOL_STATS
--	/* recycle stats are per-cpu to avoid locking */
--	struct page_pool_recycle_stats __percpu *recycle_stats;
- #endif
--	atomic_t pages_state_release_cnt;
--
--	/* A page_pool is strictly tied to a single RX-queue being
--	 * protected by NAPI, due to above pp_alloc_cache. This
--	 * refcnt serves purpose is to simplify drivers error handling.
--	 */
--	refcount_t user_cnt;
--
--	u64 destroy_cnt;
--};
--
--struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
- 
- static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
- {
-@@ -219,9 +56,6 @@ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
- 	return page_pool_alloc_pages(pool, gfp);
- }
- 
--struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
--				  unsigned int size, gfp_t gfp);
--
- static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
- 						    unsigned int *offset,
- 						    unsigned int size)
-@@ -240,21 +74,7 @@ inline enum dma_data_direction page_pool_get_dma_dir(struct page_pool *pool)
- 	return pool->p.dma_dir;
- }
- 
--bool page_pool_return_skb_page(struct page *page, bool napi_safe);
--
--struct page_pool *page_pool_create(const struct page_pool_params *params);
--
--struct xdp_mem_info;
--
--#ifdef CONFIG_PAGE_POOL
--void page_pool_unlink_napi(struct page_pool *pool);
--void page_pool_destroy(struct page_pool *pool);
--void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
--			   struct xdp_mem_info *mem);
--void page_pool_release_page(struct page_pool *pool, struct page *page);
--void page_pool_put_page_bulk(struct page_pool *pool, void **data,
--			     int count);
--#else
-+#ifndef CONFIG_PAGE_POOL
- static inline void page_pool_unlink_napi(struct page_pool *pool)
- {
- }
-@@ -263,6 +83,7 @@ static inline void page_pool_destroy(struct page_pool *pool)
- {
- }
- 
-+struct xdp_mem_info;
- static inline void page_pool_use_xdp_mem(struct page_pool *pool,
- 					 void (*disconnect)(void *),
- 					 struct xdp_mem_info *mem)
-@@ -279,10 +100,6 @@ static inline void page_pool_put_page_bulk(struct page_pool *pool, void **data,
- }
- #endif
- 
--void page_pool_put_defragged_page(struct page_pool *pool, struct page *page,
--				  unsigned int dma_sync_size,
--				  bool allow_direct);
--
- /* pp_frag_count represents the number of writers who can update the page
-  * either by updating skb->data or via DMA mappings for the device.
-  * We can't rely on the page refcnt for that as we don't know who might be
-@@ -391,8 +208,6 @@ static inline bool page_pool_put(struct page_pool *pool)
- 	return refcount_dec_and_test(&pool->user_cnt);
- }
- 
--/* Caller must provide appropriate safe context, e.g. NAPI. */
--void page_pool_update_nid(struct page_pool *pool, int new_nid);
- static inline void page_pool_nid_changed(struct page_pool *pool, int new_nid)
- {
- 	if (unlikely(pool->p.nid != new_nid))
-diff --git a/include/net/page_pool_types.h b/include/net/page_pool_types.h
-new file mode 100644
-index 000000000000..9dc189082e20
---- /dev/null
-+++ b/include/net/page_pool_types.h
-@@ -0,0 +1,193 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef _NET_PAGE_POOL_TYPES_H
-+#define _NET_PAGE_POOL_TYPES_H
-+
-+#include <linux/ptr_ring.h>
-+#include <linux/dma-direction.h>
-+
-+#define PP_FLAG_DMA_MAP		BIT(0) /* Should page_pool do the DMA
-+					* map/unmap
-+					*/
-+#define PP_FLAG_DMA_SYNC_DEV	BIT(1) /* If set all pages that the driver gets
-+					* from page_pool will be
-+					* DMA-synced-for-device according to
-+					* the length provided by the device
-+					* driver.
-+					* Please note DMA-sync-for-CPU is still
-+					* device driver responsibility
-+					*/
-+#define PP_FLAG_PAGE_FRAG	BIT(2) /* for page frag feature */
-+#define PP_FLAG_ALL		(PP_FLAG_DMA_MAP |\
-+				 PP_FLAG_DMA_SYNC_DEV |\
-+				 PP_FLAG_PAGE_FRAG)
-+
-+/*
-+ * Fast allocation side cache array/stack
-+ *
-+ * The cache size and refill watermark is related to the network
-+ * use-case.  The NAPI budget is 64 packets.  After a NAPI poll the RX
-+ * ring is usually refilled and the max consumed elements will be 64,
-+ * thus a natural max size of objects needed in the cache.
-+ *
-+ * Keeping room for more objects, is due to XDP_DROP use-case.  As
-+ * XDP_DROP allows the opportunity to recycle objects directly into
-+ * this array, as it shares the same softirq/NAPI protection.  If
-+ * cache is already full (or partly full) then the XDP_DROP recycles
-+ * would have to take a slower code path.
-+ */
-+#define PP_ALLOC_CACHE_SIZE	128
-+#define PP_ALLOC_CACHE_REFILL	64
-+struct pp_alloc_cache {
-+	u32 count;
-+	struct page *cache[PP_ALLOC_CACHE_SIZE];
-+};
-+
-+struct page_pool_params {
-+	unsigned int	flags;
-+	unsigned int	order;
-+	unsigned int	pool_size;
-+	int		nid;  /* Numa node id to allocate from pages from */
-+	struct device	*dev; /* device, for DMA pre-mapping purposes */
-+	struct napi_struct *napi; /* Sole consumer of pages, otherwise NULL */
-+	enum dma_data_direction dma_dir; /* DMA mapping direction */
-+	unsigned int	max_len; /* max DMA sync memory size */
-+	unsigned int	offset;  /* DMA addr offset */
-+	void (*init_callback)(struct page *page, void *arg);
-+	void *init_arg;
-+};
-+
-+#ifdef CONFIG_PAGE_POOL_STATS
-+struct page_pool_alloc_stats {
-+	u64 fast; /* fast path allocations */
-+	u64 slow; /* slow-path order 0 allocations */
-+	u64 slow_high_order; /* slow-path high order allocations */
-+	u64 empty; /* failed refills due to empty ptr ring, forcing
-+		    * slow path allocation
-+		    */
-+	u64 refill; /* allocations via successful refill */
-+	u64 waive;  /* failed refills due to numa zone mismatch */
-+};
-+
-+struct page_pool_recycle_stats {
-+	u64 cached;	/* recycling placed page in the cache. */
-+	u64 cache_full; /* cache was full */
-+	u64 ring;	/* recycling placed page back into ptr ring */
-+	u64 ring_full;	/* page was released from page-pool because
-+			 * PTR ring was full.
-+			 */
-+	u64 released_refcnt; /* page released because of elevated
-+			      * refcnt
-+			      */
-+};
-+
-+/* This struct wraps the above stats structs so users of the
-+ * page_pool_get_stats API can pass a single argument when requesting the
-+ * stats for the page pool.
-+ */
-+struct page_pool_stats {
-+	struct page_pool_alloc_stats alloc_stats;
-+	struct page_pool_recycle_stats recycle_stats;
-+};
-+
-+int page_pool_ethtool_stats_get_count(void);
-+u8 *page_pool_ethtool_stats_get_strings(u8 *data);
-+u64 *page_pool_ethtool_stats_get(u64 *data, void *stats);
-+
-+/*
-+ * Drivers that wish to harvest page pool stats and report them to users
-+ * (perhaps via ethtool, debugfs, or another mechanism) can allocate a
-+ * struct page_pool_stats call page_pool_get_stats to get stats for the specified pool.
-+ */
-+bool page_pool_get_stats(struct page_pool *pool,
-+			 struct page_pool_stats *stats);
-+#endif
-+
-+struct page_pool {
-+	struct page_pool_params p;
-+
-+	struct delayed_work release_dw;
-+	void (*disconnect)(void *);
-+	unsigned long defer_start;
-+	unsigned long defer_warn;
-+
-+	u32 pages_state_hold_cnt;
-+	unsigned int frag_offset;
-+	struct page *frag_page;
-+	long frag_users;
-+
-+#ifdef CONFIG_PAGE_POOL_STATS
-+	/* these stats are incremented while in softirq context */
-+	struct page_pool_alloc_stats alloc_stats;
-+#endif
-+	u32 xdp_mem_id;
-+
-+	/*
-+	 * Data structure for allocation side
-+	 *
-+	 * Drivers allocation side usually already perform some kind
-+	 * of resource protection.  Piggyback on this protection, and
-+	 * require driver to protect allocation side.
-+	 *
-+	 * For NIC drivers this means, allocate a page_pool per
-+	 * RX-queue. As the RX-queue is already protected by
-+	 * Softirq/BH scheduling and napi_schedule. NAPI schedule
-+	 * guarantee that a single napi_struct will only be scheduled
-+	 * on a single CPU (see napi_schedule).
-+	 */
-+	struct pp_alloc_cache alloc ____cacheline_aligned_in_smp;
-+
-+	/* Data structure for storing recycled pages.
-+	 *
-+	 * Returning/freeing pages is more complicated synchronization
-+	 * wise, because free's can happen on remote CPUs, with no
-+	 * association with allocation resource.
-+	 *
-+	 * Use ptr_ring, as it separates consumer and producer
-+	 * effeciently, it a way that doesn't bounce cache-lines.
-+	 *
-+	 * TODO: Implement bulk return pages into this structure.
-+	 */
-+	struct ptr_ring ring;
-+
-+#ifdef CONFIG_PAGE_POOL_STATS
-+	/* recycle stats are per-cpu to avoid locking */
-+	struct page_pool_recycle_stats __percpu *recycle_stats;
-+#endif
-+	atomic_t pages_state_release_cnt;
-+
-+	/* A page_pool is strictly tied to a single RX-queue being
-+	 * protected by NAPI, due to above pp_alloc_cache. This
-+	 * refcnt serves purpose is to simplify drivers error handling.
-+	 */
-+	refcount_t user_cnt;
-+
-+	u64 destroy_cnt;
-+};
-+
-+struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
-+struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
-+				  unsigned int size, gfp_t gfp);
-+bool page_pool_return_skb_page(struct page *page, bool napi_safe);
-+struct page_pool *page_pool_create(const struct page_pool_params *params);
-+
-+#ifdef CONFIG_PAGE_POOL
-+void page_pool_unlink_napi(struct page_pool *pool);
-+void page_pool_destroy(struct page_pool *pool);
-+
-+struct xdp_mem_info;
-+void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *),
-+			   struct xdp_mem_info *mem);
-+void page_pool_release_page(struct page_pool *pool, struct page *page);
-+void page_pool_put_page_bulk(struct page_pool *pool, void **data,
-+			     int count);
-+#endif
-+
-+void page_pool_put_defragged_page(struct page_pool *pool, struct page *page,
-+				  unsigned int dma_sync_size,
-+				  bool allow_direct);
-+
-+/* Caller must provide appropriate safe context, e.g. NAPI. */
-+void page_pool_update_nid(struct page_pool *pool, int new_nid);
-+
-+#endif /* _NET_PAGE_POOL_H */
--- 
-2.33.0
+在 2023/7/18 下午2:45, Gavin Li 写道:
+>
+>
+> On 7/18/2023 11:37 AM, Heng Qi wrote:
+>>
+>>
+>> 在 2023/7/17 下午10:30, Gavin Li 写道:
+>>> Add interrupt_coalesce config in send_queue and receive_queue to 
+>>> cache user
+>>> config.
+>>>
+>>> Send per virtqueue interrupt moderation config to underline device 
+>>> in order
+>>> to have more efficient interrupt moderation and cpu utilization of 
+>>> guest
+>>> VM.
+>>>
+>>> Signed-off-by: Gavin Li <gavinl@nvidia.com>
+>>> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+>>> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+>>> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+>>> ---
+>>>   drivers/net/virtio_net.c        | 123 
+>>> ++++++++++++++++++++++++++++----
+>>>   include/uapi/linux/virtio_net.h |  14 ++++
+>>>   2 files changed, 125 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>>> index 802ed21453f5..1566c7de9436 100644
+>>> --- a/drivers/net/virtio_net.c
+>>> +++ b/drivers/net/virtio_net.c
+>>> @@ -144,6 +144,8 @@ struct send_queue {
+>>>       struct virtnet_sq_stats stats;
+>>> +    struct virtnet_interrupt_coalesce intr_coal;
+>>> +
+>>>       struct napi_struct napi;
+>>>       /* Record whether sq is in reset state. */
+>>> @@ -161,6 +163,8 @@ struct receive_queue {
+>>>       struct virtnet_rq_stats stats;
+>>> +    struct virtnet_interrupt_coalesce intr_coal;
+>>> +
+>>>       /* Chain pages by the private ptr. */
+>>>       struct page *pages;
+>>> @@ -3078,6 +3082,59 @@ static int virtnet_send_notf_coal_cmds(struct 
+>>> virtnet_info *vi,
+>>>       return 0;
+>>>   }
+>>> +static int virtnet_send_ctrl_coal_vq_cmd(struct virtnet_info *vi,
+>>> +                     u16 vqn, u32 max_usecs, u32 max_packets)
+>>> +{
+>>> +    struct virtio_net_ctrl_coal_vq *coal_vq;
+>>> +    struct scatterlist sgs;
+>>> +
+>>> +    coal_vq = kzalloc(sizeof(*coal_vq), GFP_KERNEL);
+>>> +    if (!coal_vq)
+>>> +        return -ENOMEM;
+>>> +    coal_vq->vqn = cpu_to_le16(vqn);
+>>> +    coal_vq->coal.max_usecs = cpu_to_le32(max_usecs);
+>>> +    coal_vq->coal.max_packets = cpu_to_le32(max_packets);
+>>> +    sg_init_one(&sgs, coal_vq, sizeof(*coal_vq));
+>>> +
+>>> +    if (!virtnet_send_command(vi, VIRTIO_NET_CTRL_NOTF_COAL,
+>>> +                  VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET,
+>>> +                  &sgs))
+>>> +        return -EINVAL;
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static int virtnet_send_notf_coal_vq_cmds(struct virtnet_info *vi,
+>>> +                      struct ethtool_coalesce *ec,
+>>> +                      u16 queue)
+>>> +{
+>>> +    int err;
+>>> +
+>>> +    if (ec->rx_coalesce_usecs || ec->rx_max_coalesced_frames) {
+>>> +        err = virtnet_send_ctrl_coal_vq_cmd(vi, rxq2vq(queue),
+>>> +                            ec->rx_coalesce_usecs,
+>>> +                            ec->rx_max_coalesced_frames);
+>>> +        if (err)
+>>> +            return err;
+>>> +        /* Save parameters */
+>>> +        vi->rq[queue].intr_coal.max_usecs = ec->rx_coalesce_usecs;
+>>> +        vi->rq[queue].intr_coal.max_packets = 
+>>> ec->rx_max_coalesced_frames;
+>>> +    }
+>>> +
+>>> +    if (ec->tx_coalesce_usecs || ec->tx_max_coalesced_frames) {
+>>> +        err = virtnet_send_ctrl_coal_vq_cmd(vi, txq2vq(queue),
+>>> +                            ec->tx_coalesce_usecs,
+>>> +                            ec->tx_max_coalesced_frames);
+>>> +        if (err)
+>>> +            return err;
+>>> +        /* Save parameters */
+>>> +        vi->sq[queue].intr_coal.max_usecs = ec->tx_coalesce_usecs;
+>>> +        vi->sq[queue].intr_coal.max_packets = 
+>>> ec->tx_max_coalesced_frames;
+>>> +    }
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>>   static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
+>>>   {
+>>>       /* usecs coalescing is supported only if VIRTIO_NET_F_NOTF_COAL
+>>> @@ -3094,23 +3151,39 @@ static int 
+>>> virtnet_coal_params_supported(struct ethtool_coalesce *ec)
+>>>   }
+>>>   static int virtnet_set_coalesce_one(struct net_device *dev,
+>>> -                    struct ethtool_coalesce *ec)
+>>> +                    struct ethtool_coalesce *ec,
+>>> +                    bool per_queue,
+>>> +                    u32 queue)
+>>>   {
+>>>       struct virtnet_info *vi = netdev_priv(dev);
+>>> -    int ret, i, napi_weight;
+>>> +    int queue_count = per_queue ? 1 : vi->max_queue_pairs;
+>>> +    int queue_number = per_queue ? queue : 0;
+>>>       bool update_napi = false;
+>>> +    int ret, i, napi_weight;
+>>> +
+>>> +    if (queue >= vi->max_queue_pairs)
+>>> +        return -EINVAL;
+>>>       /* Can't change NAPI weight if the link is up */
+>>>       napi_weight = ec->tx_max_coalesced_frames ? NAPI_POLL_WEIGHT : 0;
+>>> -    if (napi_weight ^ vi->sq[0].napi.weight) {
+>>> -        if (dev->flags & IFF_UP)
+>>> -            return -EBUSY;
+>>> -        else
+>>> +    for (i = queue_number; i < queue_count; i++) {
+>>> +        if (napi_weight ^ vi->sq[i].napi.weight) {
+>>> +            if (dev->flags & IFF_UP)
+>>> +                return -EBUSY;
+>>> +
+>>>               update_napi = true;
+>>> +            /* All queues that belong to [queue_number, 
+>>> queue_count] will be
+>>> +             * updated for the sake of simplicity, which might not 
+>>> be necessary
+>>> +             */
+>>> +            queue_number = i;
+>>> +            break;
+>>> +        }
+>>>       }
+>>> -    if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
+>>> +    if (!per_queue && virtio_has_feature(vi->vdev, 
+>>> VIRTIO_NET_F_NOTF_COAL))
+>>>           ret = virtnet_send_notf_coal_cmds(vi, ec);
+>>> +    else if (per_queue && virtio_has_feature(vi->vdev, 
+>>> VIRTIO_NET_F_VQ_NOTF_COAL))
+>>> +        ret = virtnet_send_notf_coal_vq_cmds(vi, ec, queue);
+>>>       else
+>>>           ret = virtnet_coal_params_supported(ec);
+>>> @@ -3118,7 +3191,7 @@ static int virtnet_set_coalesce_one(struct 
+>>> net_device *dev,
+>>>           return ret;
+>>>       if (update_napi) {
+>>> -        for (i = 0; i < vi->max_queue_pairs; i++)
+>>> +        for (i = queue_number; i < queue_count; i++)
+>>>               vi->sq[i].napi.weight = napi_weight;
+>>>       }
+>>> @@ -3130,19 +3203,29 @@ static int virtnet_set_coalesce(struct 
+>>> net_device *dev,
+>>>                   struct kernel_ethtool_coalesce *kernel_coal,
+>>>                   struct netlink_ext_ack *extack)
+>>>   {
+>>> -    return virtnet_set_coalesce_one(dev, ec);
+>>> +    return virtnet_set_coalesce_one(dev, ec, false, 0);
+>>>   }
+>>>   static int virtnet_get_coalesce_one(struct net_device *dev,
+>>> -                    struct ethtool_coalesce *ec)
+>>> +                    struct ethtool_coalesce *ec,
+>>> +                    bool per_queue,
+>>> +                    u32 queue)
+>>>   {
+>>>       struct virtnet_info *vi = netdev_priv(dev);
+>>> -    if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
+>>> +    if (queue >= vi->max_queue_pairs)
+>>> +        return -EINVAL;
+>>> +
+>>> +    if (!per_queue && virtio_has_feature(vi->vdev, 
+>>> VIRTIO_NET_F_NOTF_COAL)) {
+>>>           ec->rx_coalesce_usecs = vi->intr_coal_rx.max_usecs;
+>>>           ec->tx_coalesce_usecs = vi->intr_coal_tx.max_usecs;
+>>>           ec->tx_max_coalesced_frames = vi->intr_coal_tx.max_packets;
+>>>           ec->rx_max_coalesced_frames = vi->intr_coal_rx.max_packets;
+>>> +    } else if (per_queue && virtio_has_feature(vi->vdev, 
+>>> VIRTIO_NET_F_VQ_NOTF_COAL)) {
+>>> +        ec->rx_coalesce_usecs = vi->rq[queue].intr_coal.max_usecs;
+>>> +        ec->tx_coalesce_usecs = vi->sq[queue].intr_coal.max_usecs;
+>>> +        ec->tx_max_coalesced_frames = 
+>>> vi->sq[queue].intr_coal.max_packets;
+>>> +        ec->rx_max_coalesced_frames = 
+>>> vi->rq[queue].intr_coal.max_packets;
+>>>       } else {
+>>>           ec->rx_max_coalesced_frames = 1;
+>>> @@ -3158,7 +3241,21 @@ static int virtnet_get_coalesce(struct 
+>>> net_device *dev,
+>>>                   struct kernel_ethtool_coalesce *kernel_coal,
+>>>                   struct netlink_ext_ack *extack)
+>>>   {
+>>> -    return virtnet_get_coalesce_one(dev, ec);
+>>> +    return virtnet_get_coalesce_one(dev, ec, false, 0);
+>>> +}
+>>> +
+>>> +static int virtnet_set_per_queue_coalesce(struct net_device *dev,
+>>> +                      u32 queue,
+>>> +                      struct ethtool_coalesce *ec)
+>>
+>> When \field{max_virtqueue_pairs} is the maximum value, and the user 
+>> does not carry the queue_mask for 'ethtool -Q',
+>> we will send same command for all vqs, and the device will receive a 
+>> large number of the same VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET commands at 
+>> this time.
+>> Do we want to alleviate this situation?
+>>
+>> Thanks.
+>>
+>
+> May it be better to handle this senario in ethtool user space and call 
+> set_coalesce instead of set_per_queue_coalesce? I'm not sure.
+
+Maybe we need to force 'ethtool -Q' to carry queue_mask in userspace or 
+instead call set_coalesce() interface when not carrying queue_mask
+(this does not hinder this work and should be in another thread, please 
+move on). But this I'm not sure either, since other NICs don't seem to
+care much about this. Simply check that all drivers that implement the 
+set_per_queue_coalesce() interface have implemented set_coalesce().
+
+Thanks.
+
+>>> +{
+>>> +    return virtnet_set_coalesce_one(dev, ec, true, queue);
+>>> +}
+>>> +
+>>> +static int virtnet_get_per_queue_coalesce(struct net_device *dev,
+>>> +                      u32 queue,
+>>> +                      struct ethtool_coalesce *ec)
+>>> +{
+>>> +    return virtnet_get_coalesce_one(dev, ec, true, queue);
+>>>   }
+>>>   static void virtnet_init_settings(struct net_device *dev)
+>>> @@ -3291,6 +3388,8 @@ static const struct ethtool_ops 
+>>> virtnet_ethtool_ops = {
+>>>       .set_link_ksettings = virtnet_set_link_ksettings,
+>>>       .set_coalesce = virtnet_set_coalesce,
+>>>       .get_coalesce = virtnet_get_coalesce,
+>>> +    .set_per_queue_coalesce = virtnet_set_per_queue_coalesce,
+>>> +    .get_per_queue_coalesce = virtnet_get_per_queue_coalesce,
+>>>       .get_rxfh_key_size = virtnet_get_rxfh_key_size,
+>>>       .get_rxfh_indir_size = virtnet_get_rxfh_indir_size,
+>>>       .get_rxfh = virtnet_get_rxfh,
+>>> diff --git a/include/uapi/linux/virtio_net.h 
+>>> b/include/uapi/linux/virtio_net.h
+>>> index 12c1c9699935..cc65ef0f3c3e 100644
+>>> --- a/include/uapi/linux/virtio_net.h
+>>> +++ b/include/uapi/linux/virtio_net.h
+>>> @@ -56,6 +56,7 @@
+>>>   #define VIRTIO_NET_F_MQ    22    /* Device supports Receive Flow
+>>>                        * Steering */
+>>>   #define VIRTIO_NET_F_CTRL_MAC_ADDR 23    /* Set MAC address */
+>>> +#define VIRTIO_NET_F_VQ_NOTF_COAL 52    /* Device supports 
+>>> virtqueue notification coalescing */
+>>>   #define VIRTIO_NET_F_NOTF_COAL    53    /* Device supports 
+>>> notifications coalescing */
+>>>   #define VIRTIO_NET_F_GUEST_USO4    54    /* Guest can handle USOv4 
+>>> in. */
+>>>   #define VIRTIO_NET_F_GUEST_USO6    55    /* Guest can handle USOv6 
+>>> in. */
+>>> @@ -391,5 +392,18 @@ struct virtio_net_ctrl_coal_rx {
+>>>   };
+>>>   #define VIRTIO_NET_CTRL_NOTF_COAL_RX_SET        1
+>>> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET        2
+>>> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_GET        3
+>>> +
+>>> +struct virtio_net_ctrl_coal {
+>>> +    __le32 max_packets;
+>>> +    __le32 max_usecs;
+>>> +};
+>>> +
+>>> +struct  virtio_net_ctrl_coal_vq {
+>>> +    __le16 vqn;
+>>> +    __le16 reserved;
+>>> +    struct virtio_net_ctrl_coal coal;
+>>> +};
+>>>   #endif /* _UAPI_LINUX_VIRTIO_NET_H */
+>>
 
 
