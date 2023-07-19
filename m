@@ -1,154 +1,813 @@
-Return-Path: <bpf+bounces-5238-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5243-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99C2F758B75
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 04:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 87A8D758C2B
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 05:32:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 554B428188E
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 02:44:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F9A328181C
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 03:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E490D17F9;
-	Wed, 19 Jul 2023 02:44:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ADB63D90;
+	Wed, 19 Jul 2023 03:32:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD75518E
-	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 02:44:26 +0000 (UTC)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD3C1BC3
-	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 19:44:25 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b701dee4bfso100929211fa.0
-        for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 19:44:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689734663; x=1692326663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hGybBNtaN90OXDNavf/2NzzTFkKAYuYOkz8qJob9tGM=;
-        b=A8WhcfBbEkYcM1S+yJ9Lt1W90LmWDPHra4IprZPjS8wo7Q/0WlpN1b+zY2Y3PXHSkB
-         Ugcu081gyf3tbnIvJ4yDDmm2X5vBRnvuwkvT2F9MwAOp6zO6QSzEKiJOUNqhUxb+3FrU
-         USDFuFKdkINYqqdU9rqWTSWWFnzkldpj5DReQEIfk0PKaCI4K/owEgu/Rn5v/0OKaYaL
-         RHHr2jfiliCXdu5VYCroaGhZxjID5lddM1b/GRYcL6KmbQElBq+PhjavQJ+AF86jDF6w
-         /moQVNmCKm7RwebepvgFs+50Oq09LCJHcGR8dH+oxaGJ2yWyzVhMhOSotQ+SUuvLOdVZ
-         27NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689734663; x=1692326663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hGybBNtaN90OXDNavf/2NzzTFkKAYuYOkz8qJob9tGM=;
-        b=JvOKfFK5a0/nl/5U2olqutNKcnIfihoU2LBXyleT8y5+W73WHHI9yTaIEpdTsW2899
-         mzvR8nJjBQCMdZOlAZMFZ2S7/ct7n8V9FdzeE8cOT7T9c8AR4fuWfzdb9tFeVu4wLwLF
-         qIkad2YE64aZVcceHTXw73ENZATUs75gyBRnUF2ABBnfZXjeaiQFpNb4Z5G71tyObjRK
-         vbIHHfTCGoIH1SOpzsEiaxsF2UE1Ito/rBRISM6wYuca1ZTLsVgx0+9T1Mvxfi2QLZOL
-         rrT1kcq52dbnMQU8GnHGbWNoZASDANv09lJuVFGza/8Rfhv9xkjuZk1tdIVvFUAFiECA
-         TVUQ==
-X-Gm-Message-State: ABy/qLaqzE6y4ejpu6bs5r7rAxOm+PjzA3Pdg6VdnHWR/uwQ7ffazn1l
-	W5X9W7WYpF/x7rhpBFEJ70ZFfsc8fayNLvdjGoE=
-X-Google-Smtp-Source: APBJJlE6PE72hAB5r3TGyXU21BJWLqCPjt1S+w/45IQmqBbLGkV5ZswhM+WlNPsYxzPdptMA0YSK9/EC0cPjnXLVY64=
-X-Received: by 2002:a2e:700b:0:b0:2b6:cff1:cd1c with SMTP id
- l11-20020a2e700b000000b002b6cff1cd1cmr11748235ljc.34.1689734663165; Tue, 18
- Jul 2023 19:44:23 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDDFC1C06;
+	Wed, 19 Jul 2023 03:32:19 +0000 (UTC)
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E93269E;
+	Tue, 18 Jul 2023 20:32:02 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vnk1ArE_1689737518;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vnk1ArE_1689737518)
+          by smtp.aliyun-inc.com;
+          Wed, 19 Jul 2023 11:31:59 +0800
+Message-ID: <1689736867.7075129-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v11 10/10] virtio_net: merge dma operation for one page
+Date: Wed, 19 Jul 2023 11:21:07 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>,
+ virtualization@lists.linux-foundation.org,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ netdev@vger.kernel.org,
+ bpf@vger.kernel.org,
+ Christoph Hellwig <hch@infradead.org>
+References: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
+ <20230710034237.12391-11-xuanzhuo@linux.alibaba.com>
+ <20230710051818-mutt-send-email-mst@kernel.org>
+ <1688984310.480753-2-xuanzhuo@linux.alibaba.com>
+ <20230710075534-mutt-send-email-mst@kernel.org>
+ <1688992712.1534917-3-xuanzhuo@linux.alibaba.com>
+ <CACGkMEsp0S2APzXENcK-SY8KZwu-1=w3xXNxh5kXT36EsiwaNQ@mail.gmail.com>
+ <1689043238.4362252-1-xuanzhuo@linux.alibaba.com>
+ <CACGkMEvT+o4kHSMY5_8PXFMGP3YEJkmLe3fuZ2GuektTmtLE5A@mail.gmail.com>
+ <1689148498.6023948-1-xuanzhuo@linux.alibaba.com>
+ <1689150730.075546-2-xuanzhuo@linux.alibaba.com>
+ <CACGkMEu3MmM7uVToP5+gUtCKHhyn8kkSLeM-k8Fo7hLQESn8hw@mail.gmail.com>
+ <1689151104.6567523-5-xuanzhuo@linux.alibaba.com>
+ <20230714063606-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20230714063606-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230713060718.388258-1-yhs@fb.com> <20230713060744.390929-1-yhs@fb.com>
- <b8a16850c0482bf64f30b41c7dcb8b33ea6a6f61.camel@gmail.com> <5cdd79d3-d4c7-b119-ebcb-b8b143c79a01@meta.com>
-In-Reply-To: <5cdd79d3-d4c7-b119-ebcb-b8b143c79a01@meta.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 18 Jul 2023 19:44:11 -0700
-Message-ID: <CAADnVQJr+PWxBJSima_wJY1iqWaA51DRo32ct07W9BzOh1HoHw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 05/15] bpf: Support new signed div/mod instructions.
-To: Yonghong Song <yhs@meta.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Fangrui Song <maskray@google.com>, 
-	Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On Tue, Jul 18, 2023 at 7:31=E2=80=AFPM Yonghong Song <yhs@meta.com> wrote:
->
->
->
-> On 7/18/23 4:00 PM, Eduard Zingerman wrote:
-> > On Wed, 2023-07-12 at 23:07 -0700, Yonghong Song wrote:
-> >> Add interpreter/jit support for new signed div/mod insns.
-> >> The new signed div/mod instructions are encoded with
-> >> unsigned div/mod instructions plus insn->off =3D=3D 1.
-> >> Also add basic verifier support to ensure new insns get
-> >> accepted.
-> >>
-> >> Signed-off-by: Yonghong Song <yhs@fb.com>
-> >> ---
-> >>   arch/x86/net/bpf_jit_comp.c | 27 +++++++----
-> >>   kernel/bpf/core.c           | 96 ++++++++++++++++++++++++++++++-----=
---
-> >>   kernel/bpf/verifier.c       |  6 ++-
-> >>   3 files changed, 103 insertions(+), 26 deletions(-)
-> >>
-> >> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> >> index adda5e7626b4..3176b60d25c7 100644
-> >> --- a/arch/x86/net/bpf_jit_comp.c
-> >> +++ b/arch/x86/net/bpf_jit_comp.c
-> >> @@ -1194,15 +1194,26 @@ static int do_jit(struct bpf_prog *bpf_prog, i=
-nt *addrs, u8 *image, u8 *rw_image
-> >>                              /* mov rax, dst_reg */
-> >>                              emit_mov_reg(&prog, is64, BPF_REG_0, dst_=
-reg);
-> >>
-> >> -                    /*
-> >> -                     * xor edx, edx
-> >> -                     * equivalent to 'xor rdx, rdx', but one byte les=
-s
-> >> -                     */
-> >> -                    EMIT2(0x31, 0xd2);
-> >> +                    if (insn->off =3D=3D 0) {
-> >> +                            /*
-> >> +                             * xor edx, edx
-> >> +                             * equivalent to 'xor rdx, rdx', but one =
-byte less
-> >> +                             */
-> >> +                            EMIT2(0x31, 0xd2);
-> >>
-> >> -                    /* div src_reg */
-> >> -                    maybe_emit_1mod(&prog, src_reg, is64);
-> >> -                    EMIT2(0xF7, add_1reg(0xF0, src_reg));
-> >> +                            /* div src_reg */
-> >> +                            maybe_emit_1mod(&prog, src_reg, is64);
-> >> +                            EMIT2(0xF7, add_1reg(0xF0, src_reg));
-> >> +                    } else {
-> >> +                            if (BPF_CLASS(insn->code) =3D=3D BPF_ALU)
-> >> +                                    EMIT1(0x99); /* cltd */
-> >> +                            else
-> >> +                                    EMIT2(0x48, 0x99); /* cqto */
+On Fri, 14 Jul 2023 06:37:10 -0400, "Michael S. Tsirkin" <mst@redhat.com> w=
+rote:
+> On Wed, Jul 12, 2023 at 04:38:24PM +0800, Xuan Zhuo wrote:
+> > On Wed, 12 Jul 2023 16:37:43 +0800, Jason Wang <jasowang@redhat.com> wr=
+ote:
+> > > On Wed, Jul 12, 2023 at 4:33=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.ali=
+baba.com> wrote:
+> > > >
+> > > > On Wed, 12 Jul 2023 15:54:58 +0800, Xuan Zhuo <xuanzhuo@linux.aliba=
+ba.com> wrote:
+> > > > > On Tue, 11 Jul 2023 10:58:51 +0800, Jason Wang <jasowang@redhat.c=
+om> wrote:
+> > > > > > On Tue, Jul 11, 2023 at 10:42=E2=80=AFAM Xuan Zhuo <xuanzhuo@li=
+nux.alibaba.com> wrote:
+> > > > > > >
+> > > > > > > On Tue, 11 Jul 2023 10:36:17 +0800, Jason Wang <jasowang@redh=
+at.com> wrote:
+> > > > > > > > On Mon, Jul 10, 2023 at 8:41=E2=80=AFPM Xuan Zhuo <xuanzhuo=
+@linux.alibaba.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Mon, 10 Jul 2023 07:59:03 -0400, "Michael S. Tsirkin" =
+<mst@redhat.com> wrote:
+> > > > > > > > > > On Mon, Jul 10, 2023 at 06:18:30PM +0800, Xuan Zhuo wro=
+te:
+> > > > > > > > > > > On Mon, 10 Jul 2023 05:40:21 -0400, "Michael S. Tsirk=
+in" <mst@redhat.com> wrote:
+> > > > > > > > > > > > On Mon, Jul 10, 2023 at 11:42:37AM +0800, Xuan Zhuo=
+ wrote:
+> > > > > > > > > > > > > Currently, the virtio core will perform a dma ope=
+ration for each
+> > > > > > > > > > > > > operation. Although, the same page may be operate=
+d multiple times.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > The driver does the dma operation and manages the=
+ dma address based the
+> > > > > > > > > > > > > feature premapped of virtio core.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > This way, we can perform only one dma operation f=
+or the same page. In
+> > > > > > > > > > > > > the case of mtu 1500, this can reduce a lot of dm=
+a operations.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Tested on Aliyun g7.4large machine, in the case o=
+f a cpu 100%, pps
+> > > > > > > > > > > > > increased from 1893766 to 1901105. An increase of=
+ 0.4%.
+> > > > > > > > > > > >
+> > > > > > > > > > > > what kind of dma was there? an IOMMU? which vendors=
+? in which mode
+> > > > > > > > > > > > of operation?
+> > > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > Do you mean this:
+> > > > > > > > > > >
+> > > > > > > > > > > [    0.470816] iommu: Default domain type: Passthrough
+> > > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > With passthrough, dma API is just some indirect functio=
+n calls, they do
+> > > > > > > > > > not affect the performance a lot.
+> > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > Yes, this benefit is worthless. I seem to have done a mea=
+ningless thing. The
+> > > > > > > > > overhead of DMA I observed is indeed not too high.
+> > > > > > > >
+> > > > > > > > Have you measured with iommu=3Dstrict?
+> > > > > > >
+> > > > > > > I have not tested this way, our environment is pt, I wonder i=
+f strict is a
+> > > > > > > common scenario. I can test it.
+> > > > > >
+> > > > > > It's not a common setup, but it's a way to stress DMA layer to =
+see the overhead.
+> > > > >
+> > > > > kernel command line: intel_iommu=3Don iommu.strict=3D1 iommu.pass=
+through=3D0
+> > > > >
+> > > > > virtio-net without merge dma 428614.00 pps
+> > > > >
+> > > > > virtio-net with merge dma    742853.00 pps
+> > > >
+> > > >
+> > > > kernel command line: intel_iommu=3Don iommu.strict=3D0 iommu.passth=
+rough=3D0
+> > > >
+> > > > virtio-net without merge dma 775496.00 pps
+> > > >
+> > > > virtio-net with merge dma    1010514.00 pps
+> > > >
+> > > >
+> > >
+> > > Great, let's add those numbers to the changelog.
 > >
-> > Nitpick: I can't find names cltd/cqto in the Intel instruction manual,
-> >           instead it uses names cdq/cqo for these instructions.
-> >           (See Vol. 2A pages 3-315 and 3-497)
+> >
+> > Yes, I will do it in next version.
+> >
+> >
+> > Thanks.
+> >
 >
-> I got these asm names from
->    https://defuse.ca/online-x86-assembler.htm
-> I will check the Intel insn manual and make the change
-> accordingly.
+> You should also test without iommu but with swiotlb=3Dforce
 
-Heh. I've been using the same.
-Most of the comments in the x86 JIT code are from there :)
 
-and it actually returns 99 -> cdq, 4899 -> cqo
+For swiotlb, merge DMA has no benefit, because we still need to copy data f=
+rom
+swiotlb buffer to the origin buffer.
 
-cltd/cqto must be aliases ?
+The benefit of the merge DMA is to reduce the operate to the iommu device.
+
+I did some test for this. The result is same.
+
+Thanks.
+
+
+>
+> But first fix the use of DMA API to actually be correct,
+> otherwise you are cheating by avoiding synchronization.
+>
+>
+>
+> > >
+> > > Thanks
+> > >
+> > > > Thanks.
+> > > >
+> > > > >
+> > > > >
+> > > > > Thanks.
+> > > > >
+> > > > >
+> > > > >
+> > > > >
+> > > > > >
+> > > > > > Thanks
+> > > > > >
+> > > > > > >
+> > > > > > > Thanks.
+> > > > > > >
+> > > > > > >
+> > > > > > > >
+> > > > > > > > Thanks
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > Thanks.
+> > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > Try e.g. bounce buffer. Which is where you will see a p=
+roblem: your
+> > > > > > > > > > patches won't work.
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.=
+com>
+> > > > > > > > > > > >
+> > > > > > > > > > > > This kind of difference is likely in the noise.
+> > > > > > > > > > >
+> > > > > > > > > > > It's really not high, but this is because the proport=
+ion of DMA under perf top
+> > > > > > > > > > > is not high. Probably that much.
+> > > > > > > > > >
+> > > > > > > > > > So maybe not worth the complexity.
+> > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > > > ---
+> > > > > > > > > > > > >  drivers/net/virtio_net.c | 283 +++++++++++++++++=
++++++++++++++++++++---
+> > > > > > > > > > > > >  1 file changed, 267 insertions(+), 16 deletions(=
+-)
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > diff --git a/drivers/net/virtio_net.c b/drivers/n=
+et/virtio_net.c
+> > > > > > > > > > > > > index 486b5849033d..4de845d35bed 100644
+> > > > > > > > > > > > > --- a/drivers/net/virtio_net.c
+> > > > > > > > > > > > > +++ b/drivers/net/virtio_net.c
+> > > > > > > > > > > > > @@ -126,6 +126,27 @@ static const struct virtnet_=
+stat_desc virtnet_rq_stats_desc[] =3D {
+> > > > > > > > > > > > >  #define VIRTNET_SQ_STATS_LEN   ARRAY_SIZE(virtne=
+t_sq_stats_desc)
+> > > > > > > > > > > > >  #define VIRTNET_RQ_STATS_LEN   ARRAY_SIZE(virtne=
+t_rq_stats_desc)
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > +/* The bufs on the same page may share this stru=
+ct. */
+> > > > > > > > > > > > > +struct virtnet_rq_dma {
+> > > > > > > > > > > > > +       struct virtnet_rq_dma *next;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       dma_addr_t addr;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       void *buf;
+> > > > > > > > > > > > > +       u32 len;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       u32 ref;
+> > > > > > > > > > > > > +};
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +/* Record the dma and buf. */
+> > > > > > > > > > > >
+> > > > > > > > > > > > I guess I see that. But why?
+> > > > > > > > > > > > And these two comments are the extent of the availa=
+ble
+> > > > > > > > > > > > documentation, that's not enough I feel.
+> > > > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > > > +struct virtnet_rq_data {
+> > > > > > > > > > > > > +       struct virtnet_rq_data *next;
+> > > > > > > > > > > >
+> > > > > > > > > > > > Is manually reimplementing a linked list the best
+> > > > > > > > > > > > we can do?
+> > > > > > > > > > >
+> > > > > > > > > > > Yes, we can use llist.
+> > > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       void *buf;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       struct virtnet_rq_dma *dma;
+> > > > > > > > > > > > > +};
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > >  /* Internal representation of a send virtqueue */
+> > > > > > > > > > > > >  struct send_queue {
+> > > > > > > > > > > > >         /* Virtqueue associated with this send _q=
+ueue */
+> > > > > > > > > > > > > @@ -175,6 +196,13 @@ struct receive_queue {
+> > > > > > > > > > > > >         char name[16];
+> > > > > > > > > > > > >
+> > > > > > > > > > > > >         struct xdp_rxq_info xdp_rxq;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       struct virtnet_rq_data *data_array;
+> > > > > > > > > > > > > +       struct virtnet_rq_data *data_free;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       struct virtnet_rq_dma *dma_array;
+> > > > > > > > > > > > > +       struct virtnet_rq_dma *dma_free;
+> > > > > > > > > > > > > +       struct virtnet_rq_dma *last_dma;
+> > > > > > > > > > > > >  };
+> > > > > > > > > > > > >
+> > > > > > > > > > > > >  /* This structure can contain rss message with m=
+aximum settings for indirection table and keysize
+> > > > > > > > > > > > > @@ -549,6 +577,176 @@ static struct sk_buff *page=
+_to_skb(struct virtnet_info *vi,
+> > > > > > > > > > > > >         return skb;
+> > > > > > > > > > > > >  }
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > +static void virtnet_rq_unmap(struct receive_queu=
+e *rq, struct virtnet_rq_dma *dma)
+> > > > > > > > > > > > > +{
+> > > > > > > > > > > > > +       struct device *dev;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       --dma->ref;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       if (dma->ref)
+> > > > > > > > > > > > > +               return;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > >
+> > > > > > > > > > > > If you don't unmap there is no guarantee valid data=
+ will be
+> > > > > > > > > > > > there in the buffer.
+> > > > > > > > > > > >
+> > > > > > > > > > > > > +       dev =3D virtqueue_dma_dev(rq->vq);
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       dma_unmap_page(dev, dma->addr, dma->len, =
+DMA_FROM_DEVICE);
+> > > > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       dma->next =3D rq->dma_free;
+> > > > > > > > > > > > > +       rq->dma_free =3D dma;
+> > > > > > > > > > > > > +}
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +static void *virtnet_rq_recycle_data(struct rece=
+ive_queue *rq,
+> > > > > > > > > > > > > +                                    struct virtn=
+et_rq_data *data)
+> > > > > > > > > > > > > +{
+> > > > > > > > > > > > > +       void *buf;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       buf =3D data->buf;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       data->next =3D rq->data_free;
+> > > > > > > > > > > > > +       rq->data_free =3D data;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       return buf;
+> > > > > > > > > > > > > +}
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +static struct virtnet_rq_data *virtnet_rq_get_da=
+ta(struct receive_queue *rq,
+> > > > > > > > > > > > > +                                                =
+  void *buf,
+> > > > > > > > > > > > > +                                                =
+  struct virtnet_rq_dma *dma)
+> > > > > > > > > > > > > +{
+> > > > > > > > > > > > > +       struct virtnet_rq_data *data;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       data =3D rq->data_free;
+> > > > > > > > > > > > > +       rq->data_free =3D data->next;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       data->buf =3D buf;
+> > > > > > > > > > > > > +       data->dma =3D dma;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       return data;
+> > > > > > > > > > > > > +}
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +static void *virtnet_rq_get_buf(struct receive_q=
+ueue *rq, u32 *len, void **ctx)
+> > > > > > > > > > > > > +{
+> > > > > > > > > > > > > +       struct virtnet_rq_data *data;
+> > > > > > > > > > > > > +       void *buf;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       buf =3D virtqueue_get_buf_ctx(rq->vq, len=
+, ctx);
+> > > > > > > > > > > > > +       if (!buf || !rq->data_array)
+> > > > > > > > > > > > > +               return buf;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       data =3D buf;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       virtnet_rq_unmap(rq, data->dma);
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       return virtnet_rq_recycle_data(rq, data);
+> > > > > > > > > > > > > +}
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +static void *virtnet_rq_detach_unused_buf(struct=
+ receive_queue *rq)
+> > > > > > > > > > > > > +{
+> > > > > > > > > > > > > +       struct virtnet_rq_data *data;
+> > > > > > > > > > > > > +       void *buf;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       buf =3D virtqueue_detach_unused_buf(rq->v=
+q);
+> > > > > > > > > > > > > +       if (!buf || !rq->data_array)
+> > > > > > > > > > > > > +               return buf;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       data =3D buf;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       virtnet_rq_unmap(rq, data->dma);
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       return virtnet_rq_recycle_data(rq, data);
+> > > > > > > > > > > > > +}
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +static int virtnet_rq_map_sg(struct receive_queu=
+e *rq, void *buf, u32 len)
+> > > > > > > > > > > > > +{
+> > > > > > > > > > > > > +       struct virtnet_rq_dma *dma =3D rq->last_d=
+ma;
+> > > > > > > > > > > > > +       struct device *dev;
+> > > > > > > > > > > > > +       u32 off, map_len;
+> > > > > > > > > > > > > +       dma_addr_t addr;
+> > > > > > > > > > > > > +       void *end;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       if (likely(dma) && buf >=3D dma->buf && (=
+buf + len <=3D dma->buf + dma->len)) {
+> > > > > > > > > > > > > +               ++dma->ref;
+> > > > > > > > > > > > > +               addr =3D dma->addr + (buf - dma->=
+buf);
+> > > > > > > > > > > > > +               goto ok;
+> > > > > > > > > > > > > +       }
+> > > > > > > > > > > >
+> > > > > > > > > > > > So this is the meat of the proposed optimization. I=
+ guess that
+> > > > > > > > > > > > if the last buffer we allocated happens to be in th=
+e same page
+> > > > > > > > > > > > as this one then they can both be mapped for DMA to=
+gether.
+> > > > > > > > > > >
+> > > > > > > > > > > Since we use page_frag, the buffers we allocated are =
+all continuous.
+> > > > > > > > > > >
+> > > > > > > > > > > > Why last one specifically? Whether next one happens=
+ to
+> > > > > > > > > > > > be close depends on luck. If you want to try optimi=
+zing this
+> > > > > > > > > > > > the right thing to do is likely by using a page poo=
+l.
+> > > > > > > > > > > > There's actually work upstream on page pool, look i=
+t up.
+> > > > > > > > > > >
+> > > > > > > > > > > As we discussed in another thread, the page pool is f=
+irst used for xdp. Let's
+> > > > > > > > > > > transform it step by step.
+> > > > > > > > > > >
+> > > > > > > > > > > Thanks.
+> > > > > > > > > >
+> > > > > > > > > > ok so this should wait then?
+> > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       end =3D buf + len - 1;
+> > > > > > > > > > > > > +       off =3D offset_in_page(end);
+> > > > > > > > > > > > > +       map_len =3D len + PAGE_SIZE - off;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       dev =3D virtqueue_dma_dev(rq->vq);
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       addr =3D dma_map_page_attrs(dev, virt_to_=
+page(buf), offset_in_page(buf),
+> > > > > > > > > > > > > +                                 map_len, DMA_FR=
+OM_DEVICE, 0);
+> > > > > > > > > > > > > +       if (addr =3D=3D DMA_MAPPING_ERROR)
+> > > > > > > > > > > > > +               return -ENOMEM;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       dma =3D rq->dma_free;
+> > > > > > > > > > > > > +       rq->dma_free =3D dma->next;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       dma->ref =3D 1;
+> > > > > > > > > > > > > +       dma->buf =3D buf;
+> > > > > > > > > > > > > +       dma->addr =3D addr;
+> > > > > > > > > > > > > +       dma->len =3D map_len;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       rq->last_dma =3D dma;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +ok:
+> > > > > > > > > > > > > +       sg_init_table(rq->sg, 1);
+> > > > > > > > > > > > > +       rq->sg[0].dma_address =3D addr;
+> > > > > > > > > > > > > +       rq->sg[0].length =3D len;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       return 0;
+> > > > > > > > > > > > > +}
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +static int virtnet_rq_merge_map_init(struct virt=
+net_info *vi)
+> > > > > > > > > > > > > +{
+> > > > > > > > > > > > > +       struct receive_queue *rq;
+> > > > > > > > > > > > > +       int i, err, j, num;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       /* disable for big mode */
+> > > > > > > > > > > > > +       if (!vi->mergeable_rx_bufs && vi->big_pac=
+kets)
+> > > > > > > > > > > > > +               return 0;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       for (i =3D 0; i < vi->max_queue_pairs; i+=
++) {
+> > > > > > > > > > > > > +               err =3D virtqueue_set_premapped(v=
+i->rq[i].vq);
+> > > > > > > > > > > > > +               if (err)
+> > > > > > > > > > > > > +                       continue;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +               rq =3D &vi->rq[i];
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +               num =3D virtqueue_get_vring_size(=
+rq->vq);
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +               rq->data_array =3D kmalloc_array(=
+num, sizeof(*rq->data_array), GFP_KERNEL);
+> > > > > > > > > > > > > +               if (!rq->data_array)
+> > > > > > > > > > > > > +                       goto err;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +               rq->dma_array =3D kmalloc_array(n=
+um, sizeof(*rq->dma_array), GFP_KERNEL);
+> > > > > > > > > > > > > +               if (!rq->dma_array)
+> > > > > > > > > > > > > +                       goto err;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +               for (j =3D 0; j < num; ++j) {
+> > > > > > > > > > > > > +                       rq->data_array[j].next =
+=3D rq->data_free;
+> > > > > > > > > > > > > +                       rq->data_free =3D &rq->da=
+ta_array[j];
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +                       rq->dma_array[j].next =3D=
+ rq->dma_free;
+> > > > > > > > > > > > > +                       rq->dma_free =3D &rq->dma=
+_array[j];
+> > > > > > > > > > > > > +               }
+> > > > > > > > > > > > > +       }
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       return 0;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +err:
+> > > > > > > > > > > > > +       for (i =3D 0; i < vi->max_queue_pairs; i+=
++) {
+> > > > > > > > > > > > > +               struct receive_queue *rq;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +               rq =3D &vi->rq[i];
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +               kfree(rq->dma_array);
+> > > > > > > > > > > > > +               kfree(rq->data_array);
+> > > > > > > > > > > > > +       }
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       return -ENOMEM;
+> > > > > > > > > > > > > +}
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > >  static void free_old_xmit_skbs(struct send_queue=
+ *sq, bool in_napi)
+> > > > > > > > > > > > >  {
+> > > > > > > > > > > > >         unsigned int len;
+> > > > > > > > > > > > > @@ -835,7 +1033,7 @@ static struct page *xdp_line=
+arize_page(struct receive_queue *rq,
+> > > > > > > > > > > > >                 void *buf;
+> > > > > > > > > > > > >                 int off;
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > -               buf =3D virtqueue_get_buf(rq->vq,=
+ &buflen);
+> > > > > > > > > > > > > +               buf =3D virtnet_rq_get_buf(rq, &b=
+uflen, NULL);
+> > > > > > > > > > > > >                 if (unlikely(!buf))
+> > > > > > > > > > > > >                         goto err_buf;
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > @@ -1126,7 +1324,7 @@ static int virtnet_build_xd=
+p_buff_mrg(struct net_device *dev,
+> > > > > > > > > > > > >                 return -EINVAL;
+> > > > > > > > > > > > >
+> > > > > > > > > > > > >         while (--*num_buf > 0) {
+> > > > > > > > > > > > > -               buf =3D virtqueue_get_buf_ctx(rq-=
+>vq, &len, &ctx);
+> > > > > > > > > > > > > +               buf =3D virtnet_rq_get_buf(rq, &l=
+en, &ctx);
+> > > > > > > > > > > > >                 if (unlikely(!buf)) {
+> > > > > > > > > > > > >                         pr_debug("%s: rx error: %=
+d buffers out of %d missing\n",
+> > > > > > > > > > > > >                                  dev->name, *num_=
+buf,
+> > > > > > > > > > > > > @@ -1351,7 +1549,7 @@ static struct sk_buff *rece=
+ive_mergeable(struct net_device *dev,
+> > > > > > > > > > > > >         while (--num_buf) {
+> > > > > > > > > > > > >                 int num_skb_frags;
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > -               buf =3D virtqueue_get_buf_ctx(rq-=
+>vq, &len, &ctx);
+> > > > > > > > > > > > > +               buf =3D virtnet_rq_get_buf(rq, &l=
+en, &ctx);
+> > > > > > > > > > > > >                 if (unlikely(!buf)) {
+> > > > > > > > > > > > >                         pr_debug("%s: rx error: %=
+d buffers out of %d missing\n",
+> > > > > > > > > > > > >                                  dev->name, num_b=
+uf,
+> > > > > > > > > > > > > @@ -1414,7 +1612,7 @@ static struct sk_buff *rece=
+ive_mergeable(struct net_device *dev,
+> > > > > > > > > > > > >  err_skb:
+> > > > > > > > > > > > >         put_page(page);
+> > > > > > > > > > > > >         while (num_buf-- > 1) {
+> > > > > > > > > > > > > -               buf =3D virtqueue_get_buf(rq->vq,=
+ &len);
+> > > > > > > > > > > > > +               buf =3D virtnet_rq_get_buf(rq, &l=
+en, NULL);
+> > > > > > > > > > > > >                 if (unlikely(!buf)) {
+> > > > > > > > > > > > >                         pr_debug("%s: rx error: %=
+d buffers missing\n",
+> > > > > > > > > > > > >                                  dev->name, num_b=
+uf);
+> > > > > > > > > > > > > @@ -1529,6 +1727,7 @@ static int add_recvbuf_smal=
+l(struct virtnet_info *vi, struct receive_queue *rq,
+> > > > > > > > > > > > >         unsigned int xdp_headroom =3D virtnet_get=
+_headroom(vi);
+> > > > > > > > > > > > >         void *ctx =3D (void *)(unsigned long)xdp_=
+headroom;
+> > > > > > > > > > > > >         int len =3D vi->hdr_len + VIRTNET_RX_PAD =
++ GOOD_PACKET_LEN + xdp_headroom;
+> > > > > > > > > > > > > +       struct virtnet_rq_data *data;
+> > > > > > > > > > > > >         int err;
+> > > > > > > > > > > > >
+> > > > > > > > > > > > >         len =3D SKB_DATA_ALIGN(len) +
+> > > > > > > > > > > > > @@ -1539,11 +1738,34 @@ static int add_recvbuf_sm=
+all(struct virtnet_info *vi, struct receive_queue *rq,
+> > > > > > > > > > > > >         buf =3D (char *)page_address(alloc_frag->=
+page) + alloc_frag->offset;
+> > > > > > > > > > > > >         get_page(alloc_frag->page);
+> > > > > > > > > > > > >         alloc_frag->offset +=3D len;
+> > > > > > > > > > > > > -       sg_init_one(rq->sg, buf + VIRTNET_RX_PAD =
++ xdp_headroom,
+> > > > > > > > > > > > > -                   vi->hdr_len + GOOD_PACKET_LEN=
+);
+> > > > > > > > > > > > > -       err =3D virtqueue_add_inbuf_ctx(rq->vq, r=
+q->sg, 1, buf, ctx, gfp);
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       if (rq->data_array) {
+> > > > > > > > > > > > > +               err =3D virtnet_rq_map_sg(rq, buf=
+ + VIRTNET_RX_PAD + xdp_headroom,
+> > > > > > > > > > > > > +                                       vi->hdr_l=
+en + GOOD_PACKET_LEN);
+> > > > > > > > > > > > > +               if (err)
+> > > > > > > > > > > > > +                       goto map_err;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +               data =3D virtnet_rq_get_data(rq, =
+buf, rq->last_dma);
+> > > > > > > > > > > > > +       } else {
+> > > > > > > > > > > > > +               sg_init_one(rq->sg, buf + VIRTNET=
+_RX_PAD + xdp_headroom,
+> > > > > > > > > > > > > +                           vi->hdr_len + GOOD_PA=
+CKET_LEN);
+> > > > > > > > > > > > > +               data =3D (void *)buf;
+> > > > > > > > > > > > > +       }
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       err =3D virtqueue_add_inbuf_ctx(rq->vq, r=
+q->sg, 1, data, ctx, gfp);
+> > > > > > > > > > > > >         if (err < 0)
+> > > > > > > > > > > > > -               put_page(virt_to_head_page(buf));
+> > > > > > > > > > > > > +               goto add_err;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       return err;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +add_err:
+> > > > > > > > > > > > > +       if (rq->data_array) {
+> > > > > > > > > > > > > +               virtnet_rq_unmap(rq, data->dma);
+> > > > > > > > > > > > > +               virtnet_rq_recycle_data(rq, data);
+> > > > > > > > > > > > > +       }
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +map_err:
+> > > > > > > > > > > > > +       put_page(virt_to_head_page(buf));
+> > > > > > > > > > > > >         return err;
+> > > > > > > > > > > > >  }
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > @@ -1620,6 +1842,7 @@ static int add_recvbuf_merg=
+eable(struct virtnet_info *vi,
+> > > > > > > > > > > > >         unsigned int headroom =3D virtnet_get_hea=
+droom(vi);
+> > > > > > > > > > > > >         unsigned int tailroom =3D headroom ? size=
+of(struct skb_shared_info) : 0;
+> > > > > > > > > > > > >         unsigned int room =3D SKB_DATA_ALIGN(head=
+room + tailroom);
+> > > > > > > > > > > > > +       struct virtnet_rq_data *data;
+> > > > > > > > > > > > >         char *buf;
+> > > > > > > > > > > > >         void *ctx;
+> > > > > > > > > > > > >         int err;
+> > > > > > > > > > > > > @@ -1650,12 +1873,32 @@ static int add_recvbuf_me=
+rgeable(struct virtnet_info *vi,
+> > > > > > > > > > > > >                 alloc_frag->offset +=3D hole;
+> > > > > > > > > > > > >         }
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > -       sg_init_one(rq->sg, buf, len);
+> > > > > > > > > > > > > +       if (rq->data_array) {
+> > > > > > > > > > > > > +               err =3D virtnet_rq_map_sg(rq, buf=
+, len);
+> > > > > > > > > > > > > +               if (err)
+> > > > > > > > > > > > > +                       goto map_err;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +               data =3D virtnet_rq_get_data(rq, =
+buf, rq->last_dma);
+> > > > > > > > > > > > > +       } else {
+> > > > > > > > > > > > > +               sg_init_one(rq->sg, buf, len);
+> > > > > > > > > > > > > +               data =3D (void *)buf;
+> > > > > > > > > > > > > +       }
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > >         ctx =3D mergeable_len_to_ctx(len + room, =
+headroom);
+> > > > > > > > > > > > > -       err =3D virtqueue_add_inbuf_ctx(rq->vq, r=
+q->sg, 1, buf, ctx, gfp);
+> > > > > > > > > > > > > +       err =3D virtqueue_add_inbuf_ctx(rq->vq, r=
+q->sg, 1, data, ctx, gfp);
+> > > > > > > > > > > > >         if (err < 0)
+> > > > > > > > > > > > > -               put_page(virt_to_head_page(buf));
+> > > > > > > > > > > > > +               goto add_err;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +       return 0;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +add_err:
+> > > > > > > > > > > > > +       if (rq->data_array) {
+> > > > > > > > > > > > > +               virtnet_rq_unmap(rq, data->dma);
+> > > > > > > > > > > > > +               virtnet_rq_recycle_data(rq, data);
+> > > > > > > > > > > > > +       }
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > +map_err:
+> > > > > > > > > > > > > +       put_page(virt_to_head_page(buf));
+> > > > > > > > > > > > >         return err;
+> > > > > > > > > > > > >  }
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > @@ -1775,13 +2018,13 @@ static int virtnet_receiv=
+e(struct receive_queue *rq, int budget,
+> > > > > > > > > > > > >                 void *ctx;
+> > > > > > > > > > > > >
+> > > > > > > > > > > > >                 while (stats.packets < budget &&
+> > > > > > > > > > > > > -                      (buf =3D virtqueue_get_buf=
+_ctx(rq->vq, &len, &ctx))) {
+> > > > > > > > > > > > > +                      (buf =3D virtnet_rq_get_bu=
+f(rq, &len, &ctx))) {
+> > > > > > > > > > > > >                         receive_buf(vi, rq, buf, =
+len, ctx, xdp_xmit, &stats);
+> > > > > > > > > > > > >                         stats.packets++;
+> > > > > > > > > > > > >                 }
+> > > > > > > > > > > > >         } else {
+> > > > > > > > > > > > >                 while (stats.packets < budget &&
+> > > > > > > > > > > > > -                      (buf =3D virtqueue_get_buf=
+(rq->vq, &len)) !=3D NULL) {
+> > > > > > > > > > > > > +                      (buf =3D virtnet_rq_get_bu=
+f(rq, &len, NULL)) !=3D NULL) {
+> > > > > > > > > > > > >                         receive_buf(vi, rq, buf, =
+len, NULL, xdp_xmit, &stats);
+> > > > > > > > > > > > >                         stats.packets++;
+> > > > > > > > > > > > >                 }
+> > > > > > > > > > > > > @@ -3514,6 +3757,9 @@ static void virtnet_free_qu=
+eues(struct virtnet_info *vi)
+> > > > > > > > > > > > >         for (i =3D 0; i < vi->max_queue_pairs; i+=
++) {
+> > > > > > > > > > > > >                 __netif_napi_del(&vi->rq[i].napi);
+> > > > > > > > > > > > >                 __netif_napi_del(&vi->sq[i].napi);
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +               kfree(vi->rq[i].data_array);
+> > > > > > > > > > > > > +               kfree(vi->rq[i].dma_array);
+> > > > > > > > > > > > >         }
+> > > > > > > > > > > > >
+> > > > > > > > > > > > >         /* We called __netif_napi_del(),
+> > > > > > > > > > > > > @@ -3591,9 +3837,10 @@ static void free_unused_bu=
+fs(struct virtnet_info *vi)
+> > > > > > > > > > > > >         }
+> > > > > > > > > > > > >
+> > > > > > > > > > > > >         for (i =3D 0; i < vi->max_queue_pairs; i+=
++) {
+> > > > > > > > > > > > > -               struct virtqueue *vq =3D vi->rq[i=
+].vq;
+> > > > > > > > > > > > > -               while ((buf =3D virtqueue_detach_=
+unused_buf(vq)) !=3D NULL)
+> > > > > > > > > > > > > -                       virtnet_rq_free_unused_bu=
+f(vq, buf);
+> > > > > > > > > > > > > +               struct receive_queue *rq =3D &vi-=
+>rq[i];
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +               while ((buf =3D virtnet_rq_detach=
+_unused_buf(rq)) !=3D NULL)
+> > > > > > > > > > > > > +                       virtnet_rq_free_unused_bu=
+f(rq->vq, buf);
+> > > > > > > > > > > > >                 cond_resched();
+> > > > > > > > > > > > >         }
+> > > > > > > > > > > > >  }
+> > > > > > > > > > > > > @@ -3767,6 +4014,10 @@ static int init_vqs(struct=
+ virtnet_info *vi)
+> > > > > > > > > > > > >         if (ret)
+> > > > > > > > > > > > >                 goto err_free;
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > +       ret =3D virtnet_rq_merge_map_init(vi);
+> > > > > > > > > > > > > +       if (ret)
+> > > > > > > > > > > > > +               goto err_free;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > >         cpus_read_lock();
+> > > > > > > > > > > > >         virtnet_set_affinity(vi);
+> > > > > > > > > > > > >         cpus_read_unlock();
+> > > > > > > > > > > > > --
+> > > > > > > > > > > > > 2.32.0.3.g01195cf9f
+> > > > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > >
+> > > > > > >
+> > > > > >
+> > > > >
+> > > >
+> > >
+>
 
