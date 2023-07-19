@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-5317-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5318-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50E0B7597D1
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 16:12:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E52FD7597D7
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 16:13:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BDE5281723
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 14:12:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21DA61C20FED
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 14:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059A91641F;
-	Wed, 19 Jul 2023 14:10:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60016168AB;
+	Wed, 19 Jul 2023 14:10:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81161401B;
-	Wed, 19 Jul 2023 14:10:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F8314016;
+	Wed, 19 Jul 2023 14:10:32 +0000 (UTC)
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C6EF7;
-	Wed, 19 Jul 2023 07:10:17 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D37E10B;
+	Wed, 19 Jul 2023 07:10:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=z4dwNKJkH2a5CkXpaJ0QuiUi1NgLn8MRUyYIYVLInw4=; b=MCAL+8Ag1Yj0TUIbOhPRegFTWm
-	D4CjGIuOhqalJZNcOhXIToYl6jdXYQkhw+jGIzQS3teHX+7IURzJzWTuFKNQ71fGUPM6xyIxHsGMi
-	6vYjyiJGtZipvqYJ6V33AmmzaEJytsE7fH8wcKtvbuHXuBa8+Vs2K9D5AzC96u0ixJFnzcBSwhj9S
-	5M3iHnAdUi9a7Rych4d557f3xi8X5MM8j5s123tTypyKKCvJV6/L1YtimOWUPQbMP4zBQnNcsxC1j
-	y3C3gFscCIbe6iUSXzsJzXYjfrITk3WWweN8TOebHqzEX6GWjSQmHb/GwEhrKJLVHRyeEvQwNLldS
-	9HqeePkg==;
+	bh=JI5f5p9OWdA5zEAtGiPkDSI0Of9ph0t5gpFxBAcpqLE=; b=rky88cOLDCRYpxlPwCjg/HtJy9
+	EpU37BejY4G/RTzndYnwhv4668rv70F8L6E8lDLZhS2Q53uVqr8KncvrBzXx+eYe/hmFpgeFTOZTA
+	RuBLJCzS9O9Bl3AMqSwEd+iOpQPZwjoPMKkVSjcs+mSA20e9mp1P1UczsXHnw10GsMuBkqmQMsfFq
+	eoy1zNxIqBCi5CHZxNX8qUHyMLlfzYCgRzQjlw/XmKzCAZQtyth9Lndps3u+aPvrLAI4Tk0JHNQXn
+	44VBqPbsX8hksKEY/iRr2NYtkkLbHR7tYofE3UOiJbzFa7wr1JMNj4n5x9XaqL1GXppZfsaeBRgbs
+	8OMqit9A==;
 Received: from [124.148.184.141] (helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1qM7sb-00086K-EI; Wed, 19 Jul 2023 16:10:15 +0200
+	id 1qM7so-0008Bm-QZ; Wed, 19 Jul 2023 16:10:29 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: ast@kernel.org
 Cc: andrii@kernel.org,
@@ -51,10 +51,11 @@ Cc: andrii@kernel.org,
 	davem@davemloft.net,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next v6 5/8] libbpf: Add helper macro to clear opts structs
-Date: Wed, 19 Jul 2023 16:08:55 +0200
-Message-Id: <20230719140858.13224-6-daniel@iogearbox.net>
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next v6 6/8] bpftool: Extend net dump with tcx progs
+Date: Wed, 19 Jul 2023 16:08:56 +0200
+Message-Id: <20230719140858.13224-7-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230719140858.13224-1-daniel@iogearbox.net>
 References: <20230719140858.13224-1-daniel@iogearbox.net>
@@ -74,45 +75,248 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add a small and generic LIBBPF_OPTS_RESET() helper macros which clears an
-opts structure and reinitializes its .sz member to place the structure
-size. Additionally, the user can pass option-specific data to reinitialize
-via varargs.
+Add support to dump fd-based attach types via bpftool. This includes both
+the tc BPF link and attach ops programs. Dumped information contain the
+attach location, function entry name, program ID and link ID when applicable.
 
-I found this very useful when developing selftests, but it is also generic
-enough as a macro next to the existing LIBBPF_OPTS() which hides the .sz
-initialization, too.
+Example with tc BPF link:
+
+  # ./bpftool net
+  xdp:
+
+  tc:
+  bond0(4) tcx/ingress cil_from_netdev prog_id 784 link_id 10
+  bond0(4) tcx/egress cil_to_netdev prog_id 804 link_id 11
+
+  flow_dissector:
+
+  netfilter:
+
+Example with tc BPF attach ops:
+
+  # ./bpftool net
+  xdp:
+
+  tc:
+  bond0(4) tcx/ingress cil_from_netdev prog_id 654
+  bond0(4) tcx/egress cil_to_netdev prog_id 672
+
+  flow_dissector:
+
+  netfilter:
+
+Currently, permanent flags are not yet supported, so 'unknown' ones are dumped
+via NET_DUMP_UINT_ONLY() and once we do have permanent ones, we dump them as
+human readable string.
 
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 ---
- tools/lib/bpf/libbpf_common.h | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ .../bpf/bpftool/Documentation/bpftool-net.rst | 26 ++---
+ tools/bpf/bpftool/net.c                       | 98 ++++++++++++++++++-
+ tools/bpf/bpftool/netlink_dumper.h            |  8 ++
+ 3 files changed, 116 insertions(+), 16 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
-index 9a7937f339df..b7060f254486 100644
---- a/tools/lib/bpf/libbpf_common.h
-+++ b/tools/lib/bpf/libbpf_common.h
-@@ -70,4 +70,20 @@
- 		};							    \
- 	})
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-net.rst b/tools/bpf/bpftool/Documentation/bpftool-net.rst
+index f4e0a516335a..5e2abd3de5ab 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-net.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-net.rst
+@@ -4,7 +4,7 @@
+ bpftool-net
+ ================
+ -------------------------------------------------------------------------------
+-tool for inspection of netdev/tc related bpf prog attachments
++tool for inspection of networking related bpf prog attachments
+ -------------------------------------------------------------------------------
  
-+/* Helper macro to clear and optionally reinitialize libbpf options struct
-+ *
-+ * Small helper macro to reset all fields and to reinitialize the common
-+ * structure size member. Values provided by users in struct initializer-
-+ * syntax as varargs can be provided as well to reinitialize options struct
-+ * specific members.
-+ */
-+#define LIBBPF_OPTS_RESET(NAME, ...)					    \
-+	do {								    \
-+		memset(&NAME, 0, sizeof(NAME));				    \
-+		NAME = (typeof(NAME)) {					    \
-+			.sz = sizeof(NAME),				    \
-+			__VA_ARGS__					    \
-+		};							    \
-+	} while (0)
+ :Manual section: 8
+@@ -37,10 +37,13 @@ DESCRIPTION
+ 	**bpftool net { show | list }** [ **dev** *NAME* ]
+ 		  List bpf program attachments in the kernel networking subsystem.
+ 
+-		  Currently, only device driver xdp attachments and tc filter
+-		  classification/action attachments are implemented, i.e., for
+-		  program types **BPF_PROG_TYPE_SCHED_CLS**,
+-		  **BPF_PROG_TYPE_SCHED_ACT** and **BPF_PROG_TYPE_XDP**.
++		  Currently, device driver xdp attachments, tcx and old-style tc
++		  classifier/action attachments, flow_dissector as well as netfilter
++		  attachments are implemented, i.e., for
++		  program types **BPF_PROG_TYPE_XDP**, **BPF_PROG_TYPE_SCHED_CLS**,
++		  **BPF_PROG_TYPE_SCHED_ACT**, **BPF_PROG_TYPE_FLOW_DISSECTOR**,
++		  **BPF_PROG_TYPE_NETFILTER**.
 +
- #endif /* __LIBBPF_LIBBPF_COMMON_H */
+ 		  For programs attached to a particular cgroup, e.g.,
+ 		  **BPF_PROG_TYPE_CGROUP_SKB**, **BPF_PROG_TYPE_CGROUP_SOCK**,
+ 		  **BPF_PROG_TYPE_SOCK_OPS** and **BPF_PROG_TYPE_CGROUP_SOCK_ADDR**,
+@@ -49,12 +52,13 @@ DESCRIPTION
+ 		  bpf programs, users should consult other tools, e.g., iproute2.
+ 
+ 		  The current output will start with all xdp program attachments, followed by
+-		  all tc class/qdisc bpf program attachments. Both xdp programs and
+-		  tc programs are ordered based on ifindex number. If multiple bpf
+-		  programs attached to the same networking device through **tc filter**,
+-		  the order will be first all bpf programs attached to tc classes, then
+-		  all bpf programs attached to non clsact qdiscs, and finally all
+-		  bpf programs attached to root and clsact qdisc.
++		  all tcx, then tc class/qdisc bpf program attachments, then flow_dissector
++		  and finally netfilter programs. Both xdp programs and tcx/tc programs are
++		  ordered based on ifindex number. If multiple bpf programs attached
++		  to the same networking device through **tc**, the order will be first
++		  all bpf programs attached to tcx, then tc classes, then all bpf programs
++		  attached to non clsact qdiscs, and finally all bpf programs attached
++		  to root and clsact qdisc.
+ 
+ 	**bpftool** **net attach** *ATTACH_TYPE* *PROG* **dev** *NAME* [ **overwrite** ]
+ 		  Attach bpf program *PROG* to network interface *NAME* with
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index 26a49965bf71..66a8ce8ae012 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -76,6 +76,11 @@ static const char * const attach_type_strings[] = {
+ 	[NET_ATTACH_TYPE_XDP_OFFLOAD]	= "xdpoffload",
+ };
+ 
++static const char * const attach_loc_strings[] = {
++	[BPF_TCX_INGRESS]		= "tcx/ingress",
++	[BPF_TCX_EGRESS]		= "tcx/egress",
++};
++
+ const size_t net_attach_type_size = ARRAY_SIZE(attach_type_strings);
+ 
+ static enum net_attach_type parse_attach_type(const char *str)
+@@ -422,8 +427,89 @@ static int dump_filter_nlmsg(void *cookie, void *msg, struct nlattr **tb)
+ 			      filter_info->devname, filter_info->ifindex);
+ }
+ 
+-static int show_dev_tc_bpf(int sock, unsigned int nl_pid,
+-			   struct ip_devname_ifindex *dev)
++static int __show_dev_tc_bpf_name(__u32 id, char *name, size_t len)
++{
++	struct bpf_prog_info info = {};
++	__u32 ilen = sizeof(info);
++	int fd, ret;
++
++	fd = bpf_prog_get_fd_by_id(id);
++	if (fd < 0)
++		return fd;
++	ret = bpf_obj_get_info_by_fd(fd, &info, &ilen);
++	if (ret < 0)
++		goto out;
++	ret = -ENOENT;
++	if (info.name[0]) {
++		get_prog_full_name(&info, fd, name, len);
++		ret = 0;
++	}
++out:
++	close(fd);
++	return ret;
++}
++
++static void __show_dev_tc_bpf(const struct ip_devname_ifindex *dev,
++			      const enum bpf_attach_type loc)
++{
++	__u32 prog_flags[64] = {}, link_flags[64] = {}, i, j;
++	__u32 prog_ids[64] = {}, link_ids[64] = {};
++	LIBBPF_OPTS(bpf_prog_query_opts, optq);
++	char prog_name[MAX_PROG_FULL_NAME];
++	int ret;
++
++	optq.prog_ids = prog_ids;
++	optq.prog_attach_flags = prog_flags;
++	optq.link_ids = link_ids;
++	optq.link_attach_flags = link_flags;
++	optq.count = ARRAY_SIZE(prog_ids);
++
++	ret = bpf_prog_query_opts(dev->ifindex, loc, &optq);
++	if (ret)
++		return;
++	for (i = 0; i < optq.count; i++) {
++		NET_START_OBJECT;
++		NET_DUMP_STR("devname", "%s", dev->devname);
++		NET_DUMP_UINT("ifindex", "(%u)", dev->ifindex);
++		NET_DUMP_STR("kind", " %s", attach_loc_strings[loc]);
++		ret = __show_dev_tc_bpf_name(prog_ids[i], prog_name,
++					     sizeof(prog_name));
++		if (!ret)
++			NET_DUMP_STR("name", " %s", prog_name);
++		NET_DUMP_UINT("prog_id", " prog_id %u ", prog_ids[i]);
++		if (prog_flags[i] || json_output) {
++			NET_START_ARRAY("prog_flags", "%s ");
++			for (j = 0; prog_flags[i] && j < 32; j++) {
++				if (!(prog_flags[i] & (1 << j)))
++					continue;
++				NET_DUMP_UINT_ONLY(1 << j);
++			}
++			NET_END_ARRAY("");
++		}
++		if (link_ids[i] || json_output) {
++			NET_DUMP_UINT("link_id", "link_id %u ", link_ids[i]);
++			if (link_flags[i] || json_output) {
++				NET_START_ARRAY("link_flags", "%s ");
++				for (j = 0; link_flags[i] && j < 32; j++) {
++					if (!(link_flags[i] & (1 << j)))
++						continue;
++					NET_DUMP_UINT_ONLY(1 << j);
++				}
++				NET_END_ARRAY("");
++			}
++		}
++		NET_END_OBJECT_FINAL;
++	}
++}
++
++static void show_dev_tc_bpf(struct ip_devname_ifindex *dev)
++{
++	__show_dev_tc_bpf(dev, BPF_TCX_INGRESS);
++	__show_dev_tc_bpf(dev, BPF_TCX_EGRESS);
++}
++
++static int show_dev_tc_bpf_classic(int sock, unsigned int nl_pid,
++				   struct ip_devname_ifindex *dev)
+ {
+ 	struct bpf_filter_t filter_info;
+ 	struct bpf_tcinfo_t tcinfo;
+@@ -790,8 +876,9 @@ static int do_show(int argc, char **argv)
+ 	if (!ret) {
+ 		NET_START_ARRAY("tc", "%s:\n");
+ 		for (i = 0; i < dev_array.used_len; i++) {
+-			ret = show_dev_tc_bpf(sock, nl_pid,
+-					      &dev_array.devices[i]);
++			show_dev_tc_bpf(&dev_array.devices[i]);
++			ret = show_dev_tc_bpf_classic(sock, nl_pid,
++						      &dev_array.devices[i]);
+ 			if (ret)
+ 				break;
+ 		}
+@@ -839,7 +926,8 @@ static int do_help(int argc, char **argv)
+ 		"       ATTACH_TYPE := { xdp | xdpgeneric | xdpdrv | xdpoffload }\n"
+ 		"       " HELP_SPEC_OPTIONS " }\n"
+ 		"\n"
+-		"Note: Only xdp and tc attachments are supported now.\n"
++		"Note: Only xdp, tcx, tc, flow_dissector and netfilter attachments\n"
++		"      are currently supported.\n"
+ 		"      For progs attached to cgroups, use \"bpftool cgroup\"\n"
+ 		"      to dump program attachments. For program types\n"
+ 		"      sk_{filter,skb,msg,reuseport} and lwt/seg6, please\n"
+diff --git a/tools/bpf/bpftool/netlink_dumper.h b/tools/bpf/bpftool/netlink_dumper.h
+index 774af6c62ef5..96318106fb49 100644
+--- a/tools/bpf/bpftool/netlink_dumper.h
++++ b/tools/bpf/bpftool/netlink_dumper.h
+@@ -76,6 +76,14 @@
+ 		fprintf(stdout, fmt_str, val);		\
+ }
+ 
++#define NET_DUMP_UINT_ONLY(str)				\
++{							\
++	if (json_output)				\
++		jsonw_uint(json_wtr, str);		\
++	else						\
++		fprintf(stdout, "%u ", str);		\
++}
++
+ #define NET_DUMP_STR(name, fmt_str, str)		\
+ {							\
+ 	if (json_output)				\
 -- 
 2.34.1
 
