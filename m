@@ -1,447 +1,253 @@
-Return-Path: <bpf+bounces-5255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE830758C69
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 06:09:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 541FE758E33
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 08:57:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C2E21C204F0
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 04:09:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A12E2815F1
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 06:57:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 854FF107AA;
-	Wed, 19 Jul 2023 04:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606C1AD45;
+	Wed, 19 Jul 2023 06:57:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54A77522E;
-	Wed, 19 Jul 2023 04:04:44 +0000 (UTC)
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE80186;
-	Tue, 18 Jul 2023 21:04:42 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vnk0JDX_1689739475;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vnk0JDX_1689739475)
-          by smtp.aliyun-inc.com;
-          Wed, 19 Jul 2023 12:04:36 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: virtualization@lists.linux-foundation.org
-Cc: "Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH vhost v12 10/10] virtio_net: merge dma operations when filling mergeable buffers
-Date: Wed, 19 Jul 2023 12:04:22 +0800
-Message-Id: <20230719040422.126357-11-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20230719040422.126357-1-xuanzhuo@linux.alibaba.com>
-References: <20230719040422.126357-1-xuanzhuo@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C7A3D8B
+	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 06:57:29 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721961FD6
+	for <bpf@vger.kernel.org>; Tue, 18 Jul 2023 23:57:27 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36J3GHY0003377;
+	Tue, 18 Jul 2023 23:57:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=BgQXJWWXHJhMaC8r/xmS+F63SKylrTKtni2L3+vIkms=;
+ b=jQP/K2h7beU6t/U0TS+B8VAekPdVAuiUYjbDo0j+FZuz7RTpi6nS7R2SKXgZPRc4r3mJ
+ 6wAmCzPYlib1ODYE5+XlQ9PW1zcVyP/KHjnRfEGEr8PBlcd8xIcVJWT0KwRZ1+yUpkAV
+ 9SYJRTDU3qTTRFGPtfEHgeccHu4CdvRs20bOBmzbPNt5I25b8FXseFGUL0M0yfe1ilI7
+ tJ0DVPgZVEjm41+r+9tLvp/AEv3bvvsVvYYKBuplFalSc5Iv6/NWE7PjhVJmIN8frd7n
+ fJpPRX8lfjt1DNMR0QX9wQuPOjYqMh1VaDDcvQOQ2O37qDWuOBecf2KJTT6cKF8qNWWS NA== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3rx7s3hfgb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 18 Jul 2023 23:57:10 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BjEzPnWuBL5q7w7Hsao2A/22Ym1REC8Z/47mx1UblacJk8kMtm2NHLj8RGB/403a9BcQ++IwPUhqHE00wqS/iAYSnA5cR4g2eNMOHSSmNhraXq/C0hQWn+2HaOfswTa/flXyDIPQiEguMa6ZRGX3WzdMRpgyZMaHUQgKkQ94ZDoIxlOKD1DqXBWbpv76gvc6COIFu51PcOClRkkR9NngvxRSfhi2giT7Nydt/16mvtxqZ5YSUHeLXaa/4Ftnwb9FH/DtLcL2++OqnGjoESakgpQWyaoxiMBGrIReX5xqWpTGT1JQVqeaZ9lmzAWQRgKDkmMs6yCW/aPI7P0szNT1+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N3tfuE/9I9YxtC3hmbHc3yJLcJi2ofYBCwaqwedFYO4=;
+ b=eUFagiYzBWh3D83C+bbXboKsMkELcHC/s6HfGCscz2Y8F/SThHej46jiccUcWVymKHE4skU9RaJ07DbPW7YVPBPHoT7wjK7OkRRT1Kq7LlZJV/WdJgQmgLyB01sFX1yOf9NSn1cJoPL2EFSKYaMFvHlaTfCAvQrgN7Iywo/46ckzxjGqMT1jl3/izg2/NXy47cKrxpursXTqigzNIUscBIyYTyhnB3FALF5BAIZ72an2sl1LlH7kuy6VakjLLg6rBGvRXIA7EYN5OjB0dR56h5t3NTemPJ4rIiYiHd3qkHV0iCbMim4j8zSNFnGm9j30dEcxM5JyrSZi0P7AhbB2dw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by BLAPR15MB3780.namprd15.prod.outlook.com (2603:10b6:208:278::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Wed, 19 Jul
+ 2023 06:57:07 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::5b9d:9c90:8ac5:6785]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::5b9d:9c90:8ac5:6785%6]) with mapi id 15.20.6588.031; Wed, 19 Jul 2023
+ 06:57:07 +0000
+Message-ID: <061d1f94-f617-7061-c500-2ee01d526927@meta.com>
+Date: Tue, 18 Jul 2023 23:57:02 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH bpf-next v2 05/15] bpf: Support new signed div/mod
+ instructions.
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Fangrui Song <maskray@google.com>, Kernel Team <kernel-team@fb.com>
+References: <20230713060718.388258-1-yhs@fb.com>
+ <20230713060744.390929-1-yhs@fb.com>
+ <b8a16850c0482bf64f30b41c7dcb8b33ea6a6f61.camel@gmail.com>
+ <5cdd79d3-d4c7-b119-ebcb-b8b143c79a01@meta.com>
+ <CAADnVQJr+PWxBJSima_wJY1iqWaA51DRo32ct07W9BzOh1HoHw@mail.gmail.com>
+From: Yonghong Song <yhs@meta.com>
+In-Reply-To: <CAADnVQJr+PWxBJSima_wJY1iqWaA51DRo32ct07W9BzOh1HoHw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: SJ0PR03CA0001.namprd03.prod.outlook.com
+ (2603:10b6:a03:33a::6) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|BLAPR15MB3780:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5aab7172-b02d-40a3-21a1-08db88255d94
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	JGoKszQvQkfGTXKVg64mj4XbsEIUn6tnAyIukjcb2ExnxMADskz6p5yS/ufZaeMgKBBB0Uh25mw9MDRsumi9H0VD4AEiFb9tSvw8tdOOKUvOnztNZLdJr/6K4sJnet81nAY6wF6g4G8Yrub3n3cUFXjXLFYT0p5dVtgSD5CPPOCzWSeHAHAYwoVGQ+ZVopU0A8o765dyTASYAq2VF+RMcWe9Bstic52k1E0IDnZrdSAPYMWkGTRz6gEUR+1gSU9D0q2zQvr9q4zj8QtzUbrVnyh5ip/AdUPw4q3ev2H+IRxjZJVO+25Qj0YLsXeShhLqsTYJQK4boCxnhrEEglLmUHw+0oecSwJdYGVqpUFriGBwn2T1mGohvySDRIj3Sh8EOwURhaVy99IZ4fTlQtHwY86a4oIT1VBd1CQCi83Hd3Gyw5BVSOC0QY0X2L3W5l6rPANm+0s9cR0TaZhwBECwfrg/Q+YgSRLKvyBgz7Gxl5/nNo5loFcd9SS5DSB0t3wxi9odENQQM1DPL2xHkd927sBw3JJWzK1B6UMcWPJAPZTq0Gw3XJmlDLh1dPffXuWZ8rbWzrJVliMTxzfI6Ji1jAxS2nsIt9EsMJE/rj1Xvl6RdV0ewvhMpxM8MwyJdnhZ
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(346002)(136003)(396003)(366004)(451199021)(6666004)(6512007)(6486002)(966005)(54906003)(478600001)(2616005)(53546011)(6506007)(186003)(2906002)(66946007)(66556008)(66476007)(6916009)(316002)(4326008)(8936002)(8676002)(5660300002)(41300700001)(38100700002)(36756003)(86362001)(31696002)(83380400001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?TkowaFRPVDd5VXNmYzRIb2FBUlpvcng4WUxFZU02NFRIWlhmS0FRc2JxMDd0?=
+ =?utf-8?B?OEhUZnpJTkdnUzJiYnpKb3AzalFvNkVtV3UxNnY5M2xFNTBnaXFqNTV0c1Yy?=
+ =?utf-8?B?OStWaEVSeEc5aWtmK3l5QkgvYTNzNC9idjdrSGd0cmJQYTNqS1ZPalF1akRX?=
+ =?utf-8?B?MVBxc1BMYnF3Qnh2T0hiZ2tiL3BjL25RTFdCM1A3NFByRWkrbVBDM1k4Snd3?=
+ =?utf-8?B?Y0NiRXN3eGlTUFB2N1FQYUxWUjd6dzlFemFKRmcyVmhza1JqTmw2NUFxQ0hY?=
+ =?utf-8?B?RnF3OEkva1M0enpldEE2OWVRZVgwL0QyK0VMUmpPeG9HVXRzbEQ1ekxBUk1j?=
+ =?utf-8?B?ME5pRVdsZzUvWHFBVE9rZVZreUJGck9FVGdFR0FTZ0xLVFN3SExLdVJBZDVR?=
+ =?utf-8?B?enhjdjNqdkxWc3FyWnBrWkVtWVVNQ3p3dnk5NjEvRFY0T0FnSmFnWG45YjlL?=
+ =?utf-8?B?eVAxMXk5MDRuVXh3SFNOLy9nWGZjWXgyNmFYN1Aya05CWEFVaVQvb0FBZFdk?=
+ =?utf-8?B?aENEYUJOYWJwU3ljYVMyc24wdEtRL3NVYlN6VU16WkZ6ME00SjdZTVFUZG42?=
+ =?utf-8?B?aVZyTVRYUDdxbXI5cjlBN20xSlFoeDdHWWxtczIrdzNpWGxFSWJmVlJoZi9x?=
+ =?utf-8?B?Rkc3VE50ZTRUTlB5NHNjUlFIM1VNcm9KYXpYVHppV01RczRzaHM1MnVTak1s?=
+ =?utf-8?B?cTBuTDFMRDNvNEVhNlJYY3BuellnVjQ4N1R0ZFhWT1lOclpHSi9QaC96ZXFH?=
+ =?utf-8?B?ZXJjK3BLOWxxKzBWVEFyNFgwN2RDQ0FJeENGeWg4cTNTY0g2MzMwMWpINGNz?=
+ =?utf-8?B?NGZ0aXpNY2t4cVVsODJTRlZlbkpLb2x2QUw3K1NmTjRFaUdLUEsxQi9EcktJ?=
+ =?utf-8?B?dS9BR2V2amZDRTZ2MmZiR2N5VjRRS2xLS3RFdGQyUEdncE11RnkrTnR0c1NO?=
+ =?utf-8?B?bEZ1NGtTNzgzbVlWak1tWHN2dDJ5ZkMyUFZFRDdDcE5kT3RoUVBvNkpJL1ZS?=
+ =?utf-8?B?dytNMk92VVFkblkrSXltTGtxV0hEcGtxYk5vY3hpV1lxc3Z5eXBwZ3c3ampx?=
+ =?utf-8?B?WHlDSTBIRkkrWVJFVklkR0VRRTlpWkt6ZE9LcUlGUjcvWjhINUVoc0lEVldm?=
+ =?utf-8?B?dW85ZWExV2VyQm1mcEdZalczWGFqQ3dLZ3cwY3hHc1ZVWVF2bVEvTnVzeXNh?=
+ =?utf-8?B?L1F2bXZzU1V1Sk9HL1Q0SWlRL3BPbTJqcVV1a0htMnp0QW54TGcxRE81VXJl?=
+ =?utf-8?B?cFZTMlJrcFgvT21oUHZPMjFrRDlsVGVoQ0JTY3JFanMzbGdpRUZjL1FhN2lO?=
+ =?utf-8?B?OGVnU3RZYjU1RTdlYmhTNnRwOXZHbFNud0phZG1JZHkrL3BmQkVqbEoyck4v?=
+ =?utf-8?B?bjhqUGZURWhPOE51OHprWFJmN2JBSVZyMHI4ZlNiV1IzODZTdWJ4bU1yeGZP?=
+ =?utf-8?B?bDJVZ1JMOUNIUHZhNTRIcUd2YW4zKzdCZktUYlZZZmpTdjA2UVUvNWhVZjJS?=
+ =?utf-8?B?N1BNRGVzVm9TalhJS0JsK3o2Y3FwUlhEdHN5N3lMb0NYK3JGZEZUcVdML3dS?=
+ =?utf-8?B?bTdCSjRBSTFSK2UvMGV2eDZaeXdkdk53UzJLVThPcGxIMWNCNGFWUEJUa0dx?=
+ =?utf-8?B?VlFVbGxJSkdTRk5hcFQwc3FlQmE0V1puL2pIejAreURMYVlPb2tEYitFaW5v?=
+ =?utf-8?B?Vis0SWJiM0VtTnhDQkFiNmoyc0hZNW1jbWlXMW5zSFlVMU15dUQ4MEJrcUJM?=
+ =?utf-8?B?dktzekZXT2ExbmRYU2hEUXhHWW5obkNWUnc1V2ZxZ2FZanl6MUljcHk0Szd4?=
+ =?utf-8?B?cG16TUxtZE8yc0lUZTF2Q2dhNklDVmhwdzAvUnNLRWQwQjBMelRDdzVySUto?=
+ =?utf-8?B?bWFrdXk1MGJqMXRCK2E4eG9HanBuSTVKQm5ZdlI5ai9pYUdUSlIrQ0VzVGN0?=
+ =?utf-8?B?Sm5UUzBLNWx3S0gvVnZiNy9ERWozV0ttY09BVlBOWGVFNThoRTIxNi8yakJE?=
+ =?utf-8?B?cXE2WjNZQzFueEZRMkRhN21VbW1oeFVsK3FjOUNmV201V1B3QVkzbVF2b282?=
+ =?utf-8?B?NHhUYzVsMzZIL0tGVE03YjZpdnRibFVyKzV4YUpad3p6cXBzU2xsYjQ4THJM?=
+ =?utf-8?B?Z3cveUgvT2FpaUFpemthYndBd0h3THZhR2c2c1A5TjNhZlhjQlovZWNtV2k4?=
+ =?utf-8?B?a3c9PQ==?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5aab7172-b02d-40a3-21a1-08db88255d94
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2023 06:57:07.0643
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: re9qvqY1ptpYtQnzJNSwMEylkAjWKuEYkgDn7oJoUWexfbhaMnkSv9lV6CWLNxZr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR15MB3780
+X-Proofpoint-GUID: wlcwdAMbUqFfrR01Lohll0V8-_BkA1CX
+X-Proofpoint-ORIG-GUID: wlcwdAMbUqFfrR01Lohll0V8-_BkA1CX
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Git-Hash: fc7afa711e97
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-19_03,2023-07-18_01,2023-05-22_02
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Currently, the virtio core will perform a dma operation for each
-buffer. Although, the same page may be operated multiple times.
 
-This patch, the driver does the dma operation and manages the dma
-address based the feature premapped of virtio core.
 
-This way, we can perform only one dma operation for the pages of the
-alloc frag. This is beneficial for the iommu device.
+On 7/18/23 7:44 PM, Alexei Starovoitov wrote:
+> On Tue, Jul 18, 2023 at 7:31 PM Yonghong Song <yhs@meta.com> wrote:
+>>
+>>
+>>
+>> On 7/18/23 4:00 PM, Eduard Zingerman wrote:
+>>> On Wed, 2023-07-12 at 23:07 -0700, Yonghong Song wrote:
+>>>> Add interpreter/jit support for new signed div/mod insns.
+>>>> The new signed div/mod instructions are encoded with
+>>>> unsigned div/mod instructions plus insn->off == 1.
+>>>> Also add basic verifier support to ensure new insns get
+>>>> accepted.
+>>>>
+>>>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>>>> ---
+>>>>    arch/x86/net/bpf_jit_comp.c | 27 +++++++----
+>>>>    kernel/bpf/core.c           | 96 ++++++++++++++++++++++++++++++-------
+>>>>    kernel/bpf/verifier.c       |  6 ++-
+>>>>    3 files changed, 103 insertions(+), 26 deletions(-)
+>>>>
+>>>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>>>> index adda5e7626b4..3176b60d25c7 100644
+>>>> --- a/arch/x86/net/bpf_jit_comp.c
+>>>> +++ b/arch/x86/net/bpf_jit_comp.c
+>>>> @@ -1194,15 +1194,26 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
+>>>>                               /* mov rax, dst_reg */
+>>>>                               emit_mov_reg(&prog, is64, BPF_REG_0, dst_reg);
+>>>>
+>>>> -                    /*
+>>>> -                     * xor edx, edx
+>>>> -                     * equivalent to 'xor rdx, rdx', but one byte less
+>>>> -                     */
+>>>> -                    EMIT2(0x31, 0xd2);
+>>>> +                    if (insn->off == 0) {
+>>>> +                            /*
+>>>> +                             * xor edx, edx
+>>>> +                             * equivalent to 'xor rdx, rdx', but one byte less
+>>>> +                             */
+>>>> +                            EMIT2(0x31, 0xd2);
+>>>>
+>>>> -                    /* div src_reg */
+>>>> -                    maybe_emit_1mod(&prog, src_reg, is64);
+>>>> -                    EMIT2(0xF7, add_1reg(0xF0, src_reg));
+>>>> +                            /* div src_reg */
+>>>> +                            maybe_emit_1mod(&prog, src_reg, is64);
+>>>> +                            EMIT2(0xF7, add_1reg(0xF0, src_reg));
+>>>> +                    } else {
+>>>> +                            if (BPF_CLASS(insn->code) == BPF_ALU)
+>>>> +                                    EMIT1(0x99); /* cltd */
+>>>> +                            else
+>>>> +                                    EMIT2(0x48, 0x99); /* cqto */
+>>>
+>>> Nitpick: I can't find names cltd/cqto in the Intel instruction manual,
+>>>            instead it uses names cdq/cqo for these instructions.
+>>>            (See Vol. 2A pages 3-315 and 3-497)
+>>
+>> I got these asm names from
+>>     https://defuse.ca/online-x86-assembler.htm
+>> I will check the Intel insn manual and make the change
+>> accordingly.
+> 
+> Heh. I've been using the same.
+> Most of the comments in the x86 JIT code are from there :)
+> 
+> and it actually returns 99 -> cdq, 4899 -> cqo
+> 
+> cltd/cqto must be aliases ?
 
-kernel command line: intel_iommu=on iommu.passthrough=0
+Yes, cltd/cqto are aliases.
 
-       |  strict=0  | strict=1
-Before |  775496pps | 428614pps
-After  | 1109316pps | 742853pps
+ From llvm-project repo:
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 225 ++++++++++++++++++++++++++++++++++-----
- 1 file changed, 199 insertions(+), 26 deletions(-)
+[~/work/llvm-project/llvm/lib/Target/X86 (ni23)]$ egrep -r cltd
+egrep: warning: egrep is obsolescent; using grep -E
+README.txt:        cltd
+X86InstrAsmAlias.td:def : MnemonicAlias<"cdq",  "cltd", "att">;
+X86InstrExtension.td:              "{cltd|cdq}", []>, OpSize32, 
+Sched<[WriteALU]>;
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 486b5849033d..496344468e7c 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -126,6 +126,14 @@ static const struct virtnet_stat_desc virtnet_rq_stats_desc[] = {
- #define VIRTNET_SQ_STATS_LEN	ARRAY_SIZE(virtnet_sq_stats_desc)
- #define VIRTNET_RQ_STATS_LEN	ARRAY_SIZE(virtnet_rq_stats_desc)
- 
-+/* The dma information of pages allocated at a time. */
-+struct virtnet_rq_dma {
-+	dma_addr_t addr;
-+	u32 ref;
-+	u16 len;
-+	u16 need_sync;
-+};
-+
- /* Internal representation of a send virtqueue */
- struct send_queue {
- 	/* Virtqueue associated with this send _queue */
-@@ -175,6 +183,12 @@ struct receive_queue {
- 	char name[16];
- 
- 	struct xdp_rxq_info xdp_rxq;
-+
-+	/* Record the last dma info to free after new pages is allocated. */
-+	struct virtnet_rq_dma *last_dma;
-+
-+	/* Do dma by self */
-+	bool do_dma;
- };
- 
- /* This structure can contain rss message with maximum settings for indirection table and keysize
-@@ -549,6 +563,151 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
- 	return skb;
- }
- 
-+static void virtnet_rq_unmap(struct receive_queue *rq, void *buf, u32 len)
-+{
-+	struct page *page = virt_to_head_page(buf);
-+	struct virtnet_rq_dma *dma;
-+	struct device *dev;
-+	void *head;
-+	int offset;
-+
-+	head = page_address(page);
-+
-+	dma = head;
-+
-+	--dma->ref;
-+
-+	if (dma->ref) {
-+		if (dma->need_sync && len) {
-+			dev = virtqueue_dma_dev(rq->vq);
-+
-+			offset = buf - (head + sizeof(*dma));
-+
-+			dma_sync_single_range_for_cpu(dev, dma->addr, offset, len, DMA_FROM_DEVICE);
-+		}
-+
-+		return;
-+	}
-+
-+	dev = virtqueue_dma_dev(rq->vq);
-+
-+	dma_unmap_single(dev, dma->addr, dma->len, DMA_FROM_DEVICE);
-+	put_page(page);
-+}
-+
-+static void *virtnet_rq_get_buf(struct receive_queue *rq, u32 *len, void **ctx)
-+{
-+	void *buf;
-+
-+	buf = virtqueue_get_buf_ctx(rq->vq, len, ctx);
-+	if (buf && rq->do_dma)
-+		virtnet_rq_unmap(rq, buf, *len);
-+
-+	return buf;
-+}
-+
-+static void *virtnet_rq_detach_unused_buf(struct receive_queue *rq)
-+{
-+	void *buf;
-+
-+	buf = virtqueue_detach_unused_buf(rq->vq);
-+	if (buf && rq->do_dma)
-+		virtnet_rq_unmap(rq, buf, 0);
-+
-+	return buf;
-+}
-+
-+static void virtnet_rq_init_one_sg(struct receive_queue *rq, void *addr, u32 len)
-+{
-+	if (rq->do_dma) {
-+		sg_init_table(rq->sg, 1);
-+		rq->sg[0].dma_address = (dma_addr_t)addr;
-+		rq->sg[0].length = len;
-+	} else {
-+		sg_init_one(rq->sg, addr, len);
-+	}
-+}
-+
-+static void *virtnet_rq_alloc(struct receive_queue *rq, u32 size,
-+			      void **sg_addr, gfp_t gfp)
-+{
-+	struct page_frag *alloc_frag = &rq->alloc_frag;
-+	struct virtnet_rq_dma *dma;
-+	struct device *dev;
-+	void *buf, *head;
-+	dma_addr_t addr;
-+
-+	if (unlikely(!skb_page_frag_refill(size, alloc_frag, gfp)))
-+		return NULL;
-+
-+	head = (char *)page_address(alloc_frag->page);
-+
-+	if (rq->do_dma) {
-+		dma = head;
-+
-+		/* new pages */
-+		if (!alloc_frag->offset) {
-+			if (rq->last_dma) {
-+				/* Now, the new page is allocated, the last dma
-+				 * will not be used. So the dma can be unmapped
-+				 * if the ref is 0.
-+				 */
-+				virtnet_rq_unmap(rq, rq->last_dma, 0);
-+				rq->last_dma = NULL;
-+			}
-+
-+			dev = virtqueue_dma_dev(rq->vq);
-+
-+			dma->len = alloc_frag->size - sizeof(*dma);
-+
-+			addr = dma_map_single_attrs(dev, dma + 1, dma->len, DMA_FROM_DEVICE, 0);
-+			if (addr == DMA_MAPPING_ERROR)
-+				return NULL;
-+
-+			dma->addr = addr;
-+			dma->need_sync = dma_need_sync(dev, addr);
-+
-+			/* Add a reference to dma to prevent the entire dma from
-+			 * being released during error handling. This reference
-+			 * will be freed after the pages are no longer used.
-+			 */
-+			get_page(alloc_frag->page);
-+			dma->ref = 1;
-+			alloc_frag->offset = sizeof(*dma);
-+
-+			rq->last_dma = dma;
-+		}
-+
-+		++dma->ref;
-+		*sg_addr = (void *)(dma->addr + alloc_frag->offset - sizeof(*dma));
-+	} else {
-+		*sg_addr = head + alloc_frag->offset;
-+	}
-+
-+	buf = head + alloc_frag->offset;
-+
-+	get_page(alloc_frag->page);
-+	alloc_frag->offset += size;
-+
-+	return buf;
-+}
-+
-+static void virtnet_rq_set_premapped(struct virtnet_info *vi)
-+{
-+	int i;
-+
-+	/* disable for big mode */
-+	if (!vi->mergeable_rx_bufs && vi->big_packets)
-+		return;
-+
-+	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		if (virtqueue_set_dma_premapped(vi->rq[i].vq))
-+			continue;
-+
-+		vi->rq[i].do_dma = true;
-+	}
-+}
-+
- static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
- {
- 	unsigned int len;
-@@ -835,7 +994,7 @@ static struct page *xdp_linearize_page(struct receive_queue *rq,
- 		void *buf;
- 		int off;
- 
--		buf = virtqueue_get_buf(rq->vq, &buflen);
-+		buf = virtnet_rq_get_buf(rq, &buflen, NULL);
- 		if (unlikely(!buf))
- 			goto err_buf;
- 
-@@ -1126,7 +1285,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
- 		return -EINVAL;
- 
- 	while (--*num_buf > 0) {
--		buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
-+		buf = virtnet_rq_get_buf(rq, &len, &ctx);
- 		if (unlikely(!buf)) {
- 			pr_debug("%s: rx error: %d buffers out of %d missing\n",
- 				 dev->name, *num_buf,
-@@ -1351,7 +1510,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 	while (--num_buf) {
- 		int num_skb_frags;
- 
--		buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx);
-+		buf = virtnet_rq_get_buf(rq, &len, &ctx);
- 		if (unlikely(!buf)) {
- 			pr_debug("%s: rx error: %d buffers out of %d missing\n",
- 				 dev->name, num_buf,
-@@ -1414,7 +1573,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- err_skb:
- 	put_page(page);
- 	while (num_buf-- > 1) {
--		buf = virtqueue_get_buf(rq->vq, &len);
-+		buf = virtnet_rq_get_buf(rq, &len, NULL);
- 		if (unlikely(!buf)) {
- 			pr_debug("%s: rx error: %d buffers missing\n",
- 				 dev->name, num_buf);
-@@ -1524,26 +1683,30 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
- static int add_recvbuf_small(struct virtnet_info *vi, struct receive_queue *rq,
- 			     gfp_t gfp)
- {
--	struct page_frag *alloc_frag = &rq->alloc_frag;
- 	char *buf;
- 	unsigned int xdp_headroom = virtnet_get_headroom(vi);
- 	void *ctx = (void *)(unsigned long)xdp_headroom;
- 	int len = vi->hdr_len + VIRTNET_RX_PAD + GOOD_PACKET_LEN + xdp_headroom;
-+	void *sg_addr;
- 	int err;
- 
- 	len = SKB_DATA_ALIGN(len) +
- 	      SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
--	if (unlikely(!skb_page_frag_refill(len, alloc_frag, gfp)))
-+
-+	buf = virtnet_rq_alloc(rq, len, &sg_addr, gfp);
-+	if (unlikely(!buf))
- 		return -ENOMEM;
- 
--	buf = (char *)page_address(alloc_frag->page) + alloc_frag->offset;
--	get_page(alloc_frag->page);
--	alloc_frag->offset += len;
--	sg_init_one(rq->sg, buf + VIRTNET_RX_PAD + xdp_headroom,
--		    vi->hdr_len + GOOD_PACKET_LEN);
-+	virtnet_rq_init_one_sg(rq, sg_addr + VIRTNET_RX_PAD + xdp_headroom,
-+			       vi->hdr_len + GOOD_PACKET_LEN);
-+
- 	err = virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, gfp);
--	if (err < 0)
-+	if (err < 0) {
-+		if (rq->do_dma)
-+			virtnet_rq_unmap(rq, buf, 0);
- 		put_page(virt_to_head_page(buf));
-+	}
-+
- 	return err;
- }
- 
-@@ -1620,23 +1783,23 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
- 	unsigned int headroom = virtnet_get_headroom(vi);
- 	unsigned int tailroom = headroom ? sizeof(struct skb_shared_info) : 0;
- 	unsigned int room = SKB_DATA_ALIGN(headroom + tailroom);
--	char *buf;
-+	unsigned int len, hole;
-+	void *sg_addr;
- 	void *ctx;
-+	char *buf;
- 	int err;
--	unsigned int len, hole;
- 
- 	/* Extra tailroom is needed to satisfy XDP's assumption. This
- 	 * means rx frags coalescing won't work, but consider we've
- 	 * disabled GSO for XDP, it won't be a big issue.
- 	 */
- 	len = get_mergeable_buf_len(rq, &rq->mrg_avg_pkt_len, room);
--	if (unlikely(!skb_page_frag_refill(len + room, alloc_frag, gfp)))
-+
-+	buf = virtnet_rq_alloc(rq, len + room, &sg_addr, gfp);
-+	if (unlikely(!buf))
- 		return -ENOMEM;
- 
--	buf = (char *)page_address(alloc_frag->page) + alloc_frag->offset;
- 	buf += headroom; /* advance address leaving hole at front of pkt */
--	get_page(alloc_frag->page);
--	alloc_frag->offset += len + room;
- 	hole = alloc_frag->size - alloc_frag->offset;
- 	if (hole < len + room) {
- 		/* To avoid internal fragmentation, if there is very likely not
-@@ -1650,11 +1813,15 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
- 		alloc_frag->offset += hole;
- 	}
- 
--	sg_init_one(rq->sg, buf, len);
-+	virtnet_rq_init_one_sg(rq, sg_addr + headroom, len);
-+
- 	ctx = mergeable_len_to_ctx(len + room, headroom);
- 	err = virtqueue_add_inbuf_ctx(rq->vq, rq->sg, 1, buf, ctx, gfp);
--	if (err < 0)
-+	if (err < 0) {
-+		if (rq->do_dma)
-+			virtnet_rq_unmap(rq, buf, 0);
- 		put_page(virt_to_head_page(buf));
-+	}
- 
- 	return err;
- }
-@@ -1775,13 +1942,13 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
- 		void *ctx;
- 
- 		while (stats.packets < budget &&
--		       (buf = virtqueue_get_buf_ctx(rq->vq, &len, &ctx))) {
-+		       (buf = virtnet_rq_get_buf(rq, &len, &ctx))) {
- 			receive_buf(vi, rq, buf, len, ctx, xdp_xmit, &stats);
- 			stats.packets++;
- 		}
- 	} else {
- 		while (stats.packets < budget &&
--		       (buf = virtqueue_get_buf(rq->vq, &len)) != NULL) {
-+		       (buf = virtnet_rq_get_buf(rq, &len, NULL)) != NULL) {
- 			receive_buf(vi, rq, buf, len, NULL, xdp_xmit, &stats);
- 			stats.packets++;
- 		}
-@@ -3553,8 +3720,11 @@ static void free_receive_page_frags(struct virtnet_info *vi)
- {
- 	int i;
- 	for (i = 0; i < vi->max_queue_pairs; i++)
--		if (vi->rq[i].alloc_frag.page)
-+		if (vi->rq[i].alloc_frag.page) {
-+			if (vi->rq[i].do_dma && vi->rq[i].last_dma)
-+				virtnet_rq_unmap(&vi->rq[i], vi->rq[i].last_dma, 0);
- 			put_page(vi->rq[i].alloc_frag.page);
-+		}
- }
- 
- static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
-@@ -3591,9 +3761,10 @@ static void free_unused_bufs(struct virtnet_info *vi)
- 	}
- 
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
--		struct virtqueue *vq = vi->rq[i].vq;
--		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL)
--			virtnet_rq_free_unused_buf(vq, buf);
-+		struct receive_queue *rq = &vi->rq[i];
-+
-+		while ((buf = virtnet_rq_detach_unused_buf(rq)) != NULL)
-+			virtnet_rq_free_unused_buf(rq->vq, buf);
- 		cond_resched();
- 	}
- }
-@@ -3767,6 +3938,8 @@ static int init_vqs(struct virtnet_info *vi)
- 	if (ret)
- 		goto err_free;
- 
-+	virtnet_rq_set_premapped(vi);
-+
- 	cpus_read_lock();
- 	virtnet_set_affinity(vi);
- 	cpus_read_unlock();
--- 
-2.32.0.3.g01195cf9f
+[~/work/llvm-project/llvm/lib/Target/X86 (ni23)]$ egrep -r cqto
+egrep: warning: egrep is obsolescent; using grep -E
+X86InstrAsmAlias.td:def : MnemonicAlias<"cqo",  "cqto", "att">;
+X86InstrExtension.td:                "{cqto|cqo}", []>, 
+Sched<[WriteALU]>, Requires<[In64BitMode]>;
 
+I will change to use cdq and cgo.
 
