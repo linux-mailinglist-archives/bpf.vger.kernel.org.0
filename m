@@ -1,194 +1,200 @@
-Return-Path: <bpf+bounces-5331-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5332-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6313759A5B
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 18:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E5163759A61
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 18:02:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECAE228194C
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 16:00:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A62728194E
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 16:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB5963D3A4;
-	Wed, 19 Jul 2023 16:00:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7BE23D3A7;
+	Wed, 19 Jul 2023 16:01:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 799933D394
-	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 16:00:11 +0000 (UTC)
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D69810D4
-	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 09:00:09 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40371070eb7so660201cf.1
-        for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 09:00:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689782408; x=1692374408;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W8fQrip6ZCQv+crVqK+Ca0JlBUmMKK8X4eJLkIDZxl8=;
-        b=z5GUJtPBpKab/cl5zzrDdHaULMUlNdQZJYmrK3ElAD+YjK5NeZmjB/JXBD1FeDngbN
-         9hB71uuBL/MEqCzFu8h3XX/xqbMlpgmjxZTznLrq1JVsTk+JPg94AWoOzF7FCYq5PT1v
-         a2PhE0ncQBS9RlpG/ovt2WgyOAGyVok6FwSFFBhZ212rEtsP7thqmuNsQe8QDYb4pjGx
-         FuZmfxxvKUliP9m7o2BYNZ3nKHrPpHXP9741SoqtAfSbLbvQY3NNMT0TF4075MqUqhGR
-         I5q9NEYlGnUX3yD+pMddQQvkNWfKpfDV+3L2LylqqODg34miiyb33H0ssVQDQWDiPfX8
-         cK/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689782408; x=1692374408;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W8fQrip6ZCQv+crVqK+Ca0JlBUmMKK8X4eJLkIDZxl8=;
-        b=RZ0/bSUN5/MtwOSGB6nF1T3FMB1TUMkjEiidXnbB/NwFozVtIV7mCqeOkc2c7MuzoB
-         9/fROfIjNuCbwahY2yJOeR/cJjilkG/q79fNhZnwEqGeiekkYlkuroqEj8QeKWXHmvrr
-         lSCqyYoWTrXLBJjhIxNM9OlWKsVatSpCJAyzVMPV/edg4yvJxt5y/5yzJrY29k1FPP1h
-         PtECugTzn68LI+VJtXrc7r2Nk6yq2RcMnMXKI7VpBkPoOj2cbquwdtVKOawH5Mh+xl9D
-         o8DNHWSYwL1bXeuOq7/eVDEnUh5Q65D3OizmxVcskGpoZavkhn64jlkkEhLn7cQmA6xw
-         htEQ==
-X-Gm-Message-State: ABy/qLaeG3Y7+cf1QFCyqtgYTMWyekBuzi5L2F+Io+bQ/sarLIZS9tML
-	ZCKehTDaIVEaUFMXCgJ2CVPGjstVGQLFI6+LB7xVKA==
-X-Google-Smtp-Source: APBJJlHMBJVJIOyQBjKsutmdRF6axfEBtZ/ZjI+ba46V1yiKxIDlpkIqpSGuPKxOfpOwJKPdA428uQzGLJYPOoUWxRY=
-X-Received: by 2002:a05:622a:289:b0:3f8:5b2:aef5 with SMTP id
- z9-20020a05622a028900b003f805b2aef5mr555276qtw.29.1689782408465; Wed, 19 Jul
- 2023 09:00:08 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B5B20F96
+	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 16:01:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DCBEC433C8;
+	Wed, 19 Jul 2023 16:01:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689782509;
+	bh=FaWWJpUjc/tTpmXUJCgAeEWVusJ8GV+cXlCBePLxu78=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=uogWx1Ag+l1S4/Lwm+Z3N0aKUC3iImduHwHK5PaNwVxqKUKjqRkwP2IWXoblAa/Ok
+	 J1VwthfEwnWhgzFJkZcK6BhPbHMzLbTsMS2ZkuBXhse1T1BsxmGwnQyMGsSB/UnPGa
+	 DItkC+JRLMFcDyy2wO+XUPYrZgCXC3GkKuGVeQpAC+5g5+SKFl1ja3FH7Fb9ecRIFN
+	 G0TpD7uFX8IqnDUAz4zcr/Wdgtjr9b5hbzz9fCoJRHj+pmC5slJCfLyLW2IYWJx7C0
+	 +48Te2TtDd+UKgpCCAqpuR1iuVSyXPXthqdTAfsbakPqlyX1qf7OtUkV9HWgYYFSS/
+	 vmM/LIWSLMNbQ==
+Date: Thu, 20 Jul 2023 01:01:44 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, Steven
+ Rostedt <rostedt@goodmis.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH v2 0/9] tracing: Improbe BTF support on probe events
+Message-Id: <20230720010144.a2a70b1db0f636401e96909a@kernel.org>
+In-Reply-To: <e002b414-0e12-0ee8-08a9-2a2b2f21c7bc@oracle.com>
+References: <168960739768.34107.15145201749042174448.stgit@devnote2>
+	<e002b414-0e12-0ee8-08a9-2a2b2f21c7bc@oracle.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230713060718.388258-1-yhs@fb.com> <20230713060734.390551-1-yhs@fb.com>
- <5b1f7cd2a995882a05fcfdef78bb1390794c2603.camel@gmail.com>
- <356fc6bf-77cb-abbc-f7cf-3d2678ffa83b@meta.com> <40a3d3842ee4fc3323bca7112dd832486b7bed4f.camel@gmail.com>
-In-Reply-To: <40a3d3842ee4fc3323bca7112dd832486b7bed4f.camel@gmail.com>
-From: Fangrui Song <maskray@google.com>
-Date: Wed, 19 Jul 2023 08:59:54 -0700
-Message-ID: <CAFP8O3+2dTqatr_of4faH2a9r2dm3e3MatFfXT2-JsYMJqOQ=A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 03/15] bpf: Support new sign-extension mov insns
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Yonghong Song <yhs@meta.com>, Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-	USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jul 19, 2023 at 5:53=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Tue, 2023-07-18 at 18:17 -0700, Yonghong Song wrote:
-> [...]
-> > > > > +static void emit_movsx_reg(u8 **pprog, int num_bits, bool is64, =
-u32 dst_reg,
-> > > > > +                          u32 src_reg)
-> > > > > +{
-> > > > > +       u8 *prog =3D *pprog;
-> > > > > +
-> > > > > +       if (is64) {
-> > > > > +               /* movs[b,w,l]q dst, src */
-> > > > > +               if (num_bits =3D=3D 8)
-> > > > > +                       EMIT4(add_2mod(0x48, src_reg, dst_reg), 0=
-x0f, 0xbe,
-> > > > > +                             add_2reg(0xC0, src_reg, dst_reg));
-> > > > > +               else if (num_bits =3D=3D 16)
-> > > > > +                       EMIT4(add_2mod(0x48, src_reg, dst_reg), 0=
-x0f, 0xbf,
-> > > > > +                             add_2reg(0xC0, src_reg, dst_reg));
-> > > > > +               else if (num_bits =3D=3D 32)
-> > > > > +                       EMIT3(add_2mod(0x48, src_reg, dst_reg), 0=
-x63,
-> > > > > +                             add_2reg(0xC0, src_reg, dst_reg));
-> > > > > +       } else {
-> > > > > +               /* movs[b,w]l dst, src */
-> > > > > +               if (num_bits =3D=3D 8) {
-> > > > > +                       EMIT4(add_2mod(0x40, src_reg, dst_reg), 0=
-x0f, 0xbe,
-> > > > > +                             add_2reg(0xC0, src_reg, dst_reg));
-> > >
-> > > Nit: As far as I understand 4-126 Vol. 2B of [1]
-> > >       the 0x40 prefix (REX prefix) is optional here
-> > >       (same as implemented below for num_bits =3D=3D 16).
-> >
-> > I think 0x40 prefix at least neededif register is from R8 - R15?
->
-> Yes, please see below.
->
-> > I use this website to do asm/disasm experiments and did
-> > try various combinations with first 8 and later 8 registers
-> > and it seems correct results are generated.
->
-> It seems all roads lead to that web-site, I used it as well :)
-> Today I learned that the following could be used:
->
->   echo 'movsx rax,ax' | as -o /dev/null -aln -msyntax=3Dintel -mnaked-reg
->
-> Which opens a road to scripting experiments.
+On Wed, 19 Jul 2023 10:02:06 +0100
+Alan Maguire <alan.maguire@oracle.com> wrote:
 
-This internal tool from llvm-project may also be useful:)
+> On 17/07/2023 16:23, Masami Hiramatsu (Google) wrote:
+> > Hi,
+> > 
+> > Here is the 2nd version of series to improve the BTF support on probe events.
+> > The previous series is here:
+> > 
+> > https://lore.kernel.org/linux-trace-kernel/168699521817.528797.13179901018528120324.stgit@mhiramat.roam.corp.google.com/
+> > 
+> > In this version, I added a NULL check fix patch [1/9] (which will go to
+> > fixes branch) and move BTF related API to kernel/bpf/btf.c [2/9] and add
+> > a new BTF API [3/9] so that anyone can reuse it.
+> > Also I decided to use '$retval' directly instead of 'retval' pseudo BTF
+> > variable for field access at [5/9] because I introduced an idea to choose
+> > function 'exit' event automatically if '$retval' is used [7/9]. With that
+> > change, we can not use 'retval' because if a function has 'retval'
+> > argument, we can not decide 'f func retval' is function exit or entry.
+> 
+> this is fantastic work! (FWIW I ran into the retval argument issue with
+> ksnoop as well; I got around it by using "return" to signify the return
+> value since as a reserved word it won't clash with a variable name.
+> However in the trace subsystem context retval is used extensively so
+> makes sense to stick with that).
 
-llvm-mc -triple=3Dx86_64 -show-inst -x86-asm-syntax=3Dintel
--output-asm-variant=3D1 <<< 'movsx rax, ax'
+Thanks!
 
-> > >
-> > > [1] https://cdrdv2.intel.com/v1/dl/getContent/671200
-> > >
-> > >
-> > > > > +               } else if (num_bits =3D=3D 16) {
-> > > > > +                       if (is_ereg(dst_reg) || is_ereg(src_reg))
-> > > > > +                               EMIT1(add_2mod(0x40, src_reg, dst=
-_reg));
-> > > > > +                       EMIT3(add_2mod(0x0f, src_reg, dst_reg), 0=
-xbf,
-> > >
-> > > Nit: Basing on the same manual I don't understand why
-> > >       add_2mod(0x0f, src_reg, dst_reg) is used, '0xf' should suffice
-> > >       (but I tried it both ways and it works...).
-> >
-> >  From the above online assembler website.
-> >
-> > But I will check the doc to see whether it can be simplified.
->
-> I tried all combinations of r0..r9 for 64/32-bit destinations,
-> 32/16/8 sources [1]:
-> - 0x40 based prefix is generated if any of the following is true:
->   - dst is 64 bit
->   - dst is ereg
->   - src is ereg
->   - dst is 32-bit and src is 'sil' (part of 'rsi', used for r2)
->     (!) This one is surprising and web-site shows the same results.
->         For example `movsx eax,sil` is encoded as `40 0F BE C6`,
->         disassembling `0F BE C6` (w/o prefix) gives `movsx eax,dh`.
-> - opcodes:
->   - 63      64-bit dst, 32-bit src
->   - 0F BF   64-bit dst, 16-bit src
->   - 0F BE   64-bit dst,  8-bit src
->   - 0F BF   32-bit dst, 16-bit src (same as 64-bit dst)
->   - 0F BE   32-bit dst,  8-bit src (same as 64-bit dst)
->
-> Script is at [2] (it is not particularly interesting, but in case if
-> you want to tweak it).
->
-> [1] https://gist.github.com/eddyz87/94b35fd89f023c43dd2480e196b28ea1
-> [2] https://gist.github.com/eddyz87/60991379c547df11d30fa91901862227
->
-> > > > > +                             add_2reg(0xC0, src_reg, dst_reg));
-> > > > > +               }
-> > > > > +       }
-> > > > > +
-> > > > > +       *pprog =3D prog;
-> > > > > +}
-> [...]
+> 
+> One thing we should probably figure out is a common approach to handling
+> ambiguous static functions that will work across ftrace and BPF.  A few
+> edge cases that are worth figuring out:
+> 
+> 1. a static function with the same name exists in multiple modules,
+> either with different or identical function signatures
+> 2. a static function has .isra.0 and other gcc suffixes applied to
+> static functions during optimization
+> 
+> As Alexei mentioned, we're still working on 1, so it would be good
+> to figure out a naming scheme that works well in both ftrace and BPF
+> contexts. There are a few hundred of these ambiguous functions. My
+> reading of the fprobe docs seems to suggest that there is no mechanism
+> to specify a specific module for a given symbol (as in ftrace filters),
+> is that right?
+
+Yes, it doesn't have module specificaiton at this moment. I'll considering
+to fix this. BTW, for the same-name functions, we are discussing another
+approach. We also need to sync this with BTF. 
+
+https://lore.kernel.org/all/20230714150326.1152359-1-alessandro.carminati@gmail.com/
+
+> 
+> Jiri led a session on this topic at LSF/MM/BPF ; perhaps we should
+> carve out some time at Plumbers to discuss this?
+
+Yeah, good idea.
+
+> 
+> With respect to 2, pahole v1.25 will generate representations for these
+> "."-suffixed functions in BTF via --btf_gen_optimized [1]. (BTF
+> representation is skipped if the optimizations impact on the registers
+> used for function arguments; if these don't match calling conventions
+> due to optimized-out params, we don't represent the function in BTF,
+> as the tracing expectations are violated).
+
+Correct. But can't we know which argument is skipped by the optimization
+from the DWARF? At least the function parameters will be changed.
+
+> However the BTF function name - in line with DWARF representation -
+> will not have the .isra suffix. So the thing to bear in mind is if
+> you use the function name with suffix as the fprobe function name,
+> a BTF lookup of that exact ("foo.isra.0") name will not find anything,
+> while a lookup of "foo" will succeed. I'll add some specifics in your
+> patch doing the lookups, but just wanted to highlight the issue at
+> the top-level.
+
+So, what about adding an index sorted list of the address and BTF entry
+index as an expansion of the BTF? It allowed us to easily map the suffixed
+symbol address (we can get it from kallsyms) to BTF quickly.
+So the module will have
+
+[BTF data][array length][BTF index array]
+
+Index array member will be like this.
+
+struct btf_index {
+	u32	offset;	// offset from the start text
+	u32	id:		// BTF type id
+};
+
+We can do binary search the function type id from the symbol address.
+
+Thank you,
+
+> 
+> Thanks!
+> 
+> Alan
+> 
+> [1]
+> https://lore.kernel.org/bpf/1675790102-23037-1-git-send-email-alan.maguire@oracle.com/
+> 
+> > Selftest test case [8/9] and document [9/9] are also updated according to
+> > those changes.
+> > 
+> > This series can be applied on top of "v6.5-rc2" kernel.
+> > 
+> > You can also get this series from:
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git topic/fprobe-event-ext
+> > 
+> > 
+> > Thank you,
+> > 
+> > ---
+> > 
+> > Masami Hiramatsu (Google) (9):
+> >       tracing/probes: Fix to add NULL check for BTF APIs
+> >       bpf/btf: tracing: Move finding func-proto API and getting func-param API to BTF
+> >       bpf/btf: Add a function to search a member of a struct/union
+> >       tracing/probes: Support BTF based data structure field access
+> >       tracing/probes: Support BTF field access from $retval
+> >       tracing/probes: Add string type check with BTF
+> >       tracing/fprobe-event: Assume fprobe is a return event by $retval
+> >       selftests/ftrace: Add BTF fields access testcases
+> >       Documentation: tracing: Update fprobe event example with BTF field
+> > 
+> > 
+> >  Documentation/trace/fprobetrace.rst                |   50 ++
+> >  include/linux/btf.h                                |    7 
+> >  kernel/bpf/btf.c                                   |   83 ++++
+> >  kernel/trace/trace_fprobe.c                        |   58 ++-
+> >  kernel/trace/trace_probe.c                         |  402 +++++++++++++++-----
+> >  kernel/trace/trace_probe.h                         |   12 +
+> >  .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   11 +
+> >  .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    6 
+> >  8 files changed, 503 insertions(+), 126 deletions(-)
+> > 
+> > --
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
 
 
-
---=20
-=E5=AE=8B=E6=96=B9=E7=9D=BF
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
