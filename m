@@ -1,79 +1,82 @@
-Return-Path: <bpf+bounces-5228-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5225-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54A5B758AA0
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 03:06:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 998A9758A87
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 02:58:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01C7C281852
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 01:06:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53ADE2818C4
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 00:58:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDDF517C8;
-	Wed, 19 Jul 2023 01:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C3E817F9;
+	Wed, 19 Jul 2023 00:55:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FD4ECA
-	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 01:06:49 +0000 (UTC)
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F688D3;
-	Tue, 18 Jul 2023 18:06:48 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-992acf67388so776680066b.1;
-        Tue, 18 Jul 2023 18:06:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0027815A9
+	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 00:55:30 +0000 (UTC)
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11071FC0;
+	Tue, 18 Jul 2023 17:55:06 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so94163291fa.2;
+        Tue, 18 Jul 2023 17:55:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689728806; x=1692320806;
+        d=gmail.com; s=20221208; t=1689728079; x=1692320079;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=d8u7qKAdqwD7fHpj4HQs/xiT+M2w6vdr9GqBR0wyKXo=;
-        b=OSoXJiwlFr+GaKd6/X7c/kR4088HJA3tI9hI6gvRxz7In4mcnM6TpPm6+HxfDQpkAp
-         OVDFEI023pMEnDuqZpG0oePYEV1rc4J7Heqnqno7pc+96vNksq6U/+u9jzMvQNRpYfP8
-         4Cjg2yP1bAPLkYoTWTpfL3xeW5m2AUyGzKyA4GtMUbUtoKJePzKFQKVPKppca6yRIlG5
-         SyLTwdsrfhprIS5fzbRcyDYB0gi61IUvtFrcttW1frd7OSArfIpoA8290VkuDrJv7wGk
-         TKAqeIKClSyMmBrtEWGaSV1ywZrddmrbqMnayy2KU3OMNLyeUhrvb6MKL+aFSD2VmQJy
-         q9FA==
+        bh=X1lgrdv/MLekx6tS4/WHkEIbIxXWLWmPvwLqshtCQQU=;
+        b=o2ufsUKkT9w5RrRpHixndQ55WkKfEtvgXPMOxiSRb1W8AApe0zLM0mnlYZvqk+DgzW
+         TUeYcI/tN8/xTDmfbwoln714sZ0ErkiF5/rLtuJwLD2cP3a74Dylfdx1UAew9oOHb62p
+         MvYvm3R/Hf0QPAuwqUltbBWaHlX9HSM2F4l4Uihtg/gljlCAJc+Wkt6WJcK3PJ5Kj2LV
+         zbInNKg7ViUsXPR/TrArzxQT1p9HGccjeCZUhlYkn5w1jjIdTP/6lmRNUA1UZyqX8iQU
+         yQgxZ1qQPFLSnvrT9QIO+enMP1TSwmbax51N+WkLB++hQrkD6HOVgEqtQEjwDCtiMQ0q
+         +FGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689728806; x=1692320806;
+        d=1e100.net; s=20221208; t=1689728079; x=1692320079;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=d8u7qKAdqwD7fHpj4HQs/xiT+M2w6vdr9GqBR0wyKXo=;
-        b=IBLIMkFV/Mbk7wMEgoANTfMHDoVLzXwehiUOs4XujcyDpn14wBSvO1EhjWBAj4rTTP
-         NVxoQ6LWI3cNAaC3ojt+7qalpytoyxEPr35nt1QmBvOwMzvBrkmKn+dJtrU0DMLBtwQN
-         aZuIih+w1JCmwKf1v+fhY2z8jGDv3xubr0NVTB72xz3PkLj9EiyX8xrR4Gbb5YQ6JVpH
-         P0g1Wov+ObL584NK6riuBqObCWJ9DxImDkomn34bQi3n+kUf95FJpIYVmib9vGZptPma
-         7GAG5lI5QCOuhdUYCCIc358fS4gEKLQLXzZuBpjJXAUpnyjSQbzCu5SO0avDbsU/CP5U
-         9T8A==
-X-Gm-Message-State: ABy/qLYM8Tg8A1v2WyCIsysqms2rQSFOKRxQMQh3Ye0mmHV0XFO7iIun
-	cjcBH5wC3GZAx997NIr0Unyoalh6k3A2tFqnThEOLxDV
-X-Google-Smtp-Source: APBJJlF9yvihjqdUCdb+BdkyWtI2HH22+SvtWMhg5IM/3or3AmaOItneADAFBD0nguzDKfoVoJ1hXhvUAYAkicxR3cQ=
-X-Received: by 2002:a2e:8085:0:b0:2b6:e2c1:980f with SMTP id
- i5-20020a2e8085000000b002b6e2c1980fmr11323434ljg.36.1689727969511; Tue, 18
- Jul 2023 17:52:49 -0700 (PDT)
+        bh=X1lgrdv/MLekx6tS4/WHkEIbIxXWLWmPvwLqshtCQQU=;
+        b=e/jKbie2MjEMhX34LOD5BQXN5dlTewNyXWTeQqkLH8gr0zKjWzbuXfwrlKYd2tDyoF
+         KxmhhQmK3/iQMfS55fQHMh4O2MYficaFT8mtLNWYslrfUUvv8t65MtKvXpObwvGHIVvT
+         zr4/oe3VJgTu8yWDCrFx3tA+je8Qffagjag/HC8PRiz2XnUqYjBTOUvdJGkUuCafW1Ss
+         Tli/66eMjQ/8IH2Ewvou5xU5eeAGYMOscXjyeFguirLcWQra3GllNT1YfSnYpAZ/TDBz
+         yjyS3cZt6sD59cLHVtAddO1ikMMGf6GZK/ektOVGkdU5gRfnqJqkjW/iVg9i6edyQCT/
+         JhKA==
+X-Gm-Message-State: ABy/qLbvzgNjuYfZxpcE/pq2mKOQEYrk+JSBMnpN3UrZj+inWzb71xUn
+	vEo9IbgkTADXBNqq6gstgVVjGCz0Ux5Lj/TSewI=
+X-Google-Smtp-Source: APBJJlEor4PxN+Pt7ws7HRCcZfxHIDALiZXwrqL6AsyfBhCGVtArPpUuMJUZDnXtAFitPbhb4HuEY4/91Majm3G6r7Y=
+X-Received: by 2002:a2e:94c7:0:b0:2b6:e2aa:8fc2 with SMTP id
+ r7-20020a2e94c7000000b002b6e2aa8fc2mr10302597ljh.46.1689728079063; Tue, 18
+ Jul 2023 17:54:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230717114307.46124-1-aspsk@isovalent.com> <20230717114307.46124-2-aspsk@isovalent.com>
-In-Reply-To: <20230717114307.46124-2-aspsk@isovalent.com>
+References: <20230714141747.41560-1-aspsk@isovalent.com> <20230714142100.42265-1-aspsk@isovalent.com>
+ <20230714142100.42265-2-aspsk@isovalent.com> <CAADnVQJztACtOx8UEyWJqTXd95DBDWsNEAG284Ci4N7Ma8Fqgw@mail.gmail.com>
+ <ZLOhMDZIjikWdWf5@zh-lab-node-5>
+In-Reply-To: <ZLOhMDZIjikWdWf5@zh-lab-node-5>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 18 Jul 2023 17:52:38 -0700
-Message-ID: <CAADnVQKutS8fYLkNz-rhdmFJ3cTWS6JD9PmwjK7ZZ8N3u7nUYA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: fix setting return values for htab
- batch ops
+Date: Tue, 18 Jul 2023 17:54:27 -0700
+Message-ID: <CAADnVQLt=k6T0s3cRZRB26D+7TXcvR5CRk-q4SbKK6FQKuyjhg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: consider CONST_PTR_TO_MAP as trusted
+ pointer to struct bpf_map
 To: Anton Protopopov <aspsk@isovalent.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
 	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Brian Vazquez <brianvv@google.com>, Hou Tao <houtao1@huawei.com>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Hou Tao <houtao1@huawei.com>, 
 	Joe Stringer <joe@isovalent.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,59 +86,104 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jul 17, 2023 at 4:42=E2=80=AFAM Anton Protopopov <aspsk@isovalent.c=
-om> wrote:
+On Sun, Jul 16, 2023 at 12:49=E2=80=AFAM Anton Protopopov <aspsk@isovalent.=
+com> wrote:
 >
-> The map_lookup{,_and_delete}_batch operations are expected to set the
-> output parameter, counter, to the number of elements successfully copied
-> to the user space. This is also expected to be true if an error is
-> returned and the errno is set to a value other than EFAULT. The current
-> implementation can return -EINVAL without setting the counter to zero, so
-> some userspace programs may confuse this with a [partially] successful
-> operation. Move code which sets the counter to zero to the top of the
-> function so that we always return a correct value.
+> On Fri, Jul 14, 2023 at 10:56:00AM -0700, Alexei Starovoitov wrote:
+> > On Fri, Jul 14, 2023 at 7:20=E2=80=AFAM Anton Protopopov <aspsk@isovale=
+nt.com> wrote:
+> > >
+> > > Patch verifier to regard values of type CONST_PTR_TO_MAP as trusted
+> > > pointers to struct bpf_map. This allows kfuncs to work with `struct
+> > > bpf_map *` arguments.
+> > >
+> > > Save some bytes by defining btf_bpf_map_id as BTF_ID_LIST_GLOBAL_SING=
+LE
+> > > (which is u32[1]), not as BTF_ID_LIST (which is u32[64]).
+> > >
+> > > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+> > > ---
+> > >  include/linux/btf_ids.h | 1 +
+> > >  kernel/bpf/map_iter.c   | 3 +--
+> > >  kernel/bpf/verifier.c   | 5 ++++-
+> > >  3 files changed, 6 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> > > index 00950cc03bff..a3462a9b8e18 100644
+> > > --- a/include/linux/btf_ids.h
+> > > +++ b/include/linux/btf_ids.h
+> > > @@ -267,5 +267,6 @@ MAX_BTF_TRACING_TYPE,
+> > >  extern u32 btf_tracing_ids[];
+> > >  extern u32 bpf_cgroup_btf_id[];
+> > >  extern u32 bpf_local_storage_map_btf_id[];
+> > > +extern u32 btf_bpf_map_id[];
+> > >
+> > >  #endif
+> > > diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
+> > > index d06d3b7150e5..b67996147895 100644
+> > > --- a/kernel/bpf/map_iter.c
+> > > +++ b/kernel/bpf/map_iter.c
+> > > @@ -78,8 +78,7 @@ static const struct seq_operations bpf_map_seq_ops =
+=3D {
+> > >         .show   =3D bpf_map_seq_show,
+> > >  };
+> > >
+> > > -BTF_ID_LIST(btf_bpf_map_id)
+> > > -BTF_ID(struct, bpf_map)
+> > > +BTF_ID_LIST_GLOBAL_SINGLE(btf_bpf_map_id, struct, bpf_map)
+> > >
+> > >  static const struct bpf_iter_seq_info bpf_map_seq_info =3D {
+> > >         .seq_ops                =3D &bpf_map_seq_ops,
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 0b9da95331d7..5663f97ef292 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -5419,6 +5419,9 @@ static bool is_trusted_reg(const struct bpf_reg=
+_state *reg)
+> > >         if (reg->ref_obj_id)
+> > >                 return true;
+> > >
+> > > +       if (reg->type =3D=3D CONST_PTR_TO_MAP)
+> > > +               return true;
+> > > +
+> >
+> > Overall it looks great.
+> > Instead of above, how about the following instead:
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 0b9da95331d7..cd08167dc347 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -10775,7 +10775,7 @@ static int check_kfunc_args(struct
+> > bpf_verifier_env *env, struct bpf_kfunc_call_
+> >                         if (!is_kfunc_trusted_args(meta) && !is_kfunc_r=
+cu(meta))
+> >                                 break;
+> >
+> > -                       if (!is_trusted_reg(reg)) {
+> > +                       if (!is_trusted_reg(reg) &&
+> > !reg2btf_ids[base_type(reg->type)]) {
+> >
+> >
+> > This way we won't need to list every convertible type in is_trusted_reg=
+.
+> >
+> > I'm a bit hesitant to put reg2btf_ids[] check directly into is_trusted_=
+reg().
+> > Maybe it's ok, but it needs more analysis.
 >
-> Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
-> Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> ---
->  kernel/bpf/hashtab.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+> I am not sure I see a difference in adding a check you proposed above and
+> adding the reg2btf_ids[] check directly into the is_trusted_reg() functio=
+n.
+> Basically, we say "if type is in reg2btf_ids[], then consider it trusted"=
+ in
+> both cases. AFAIS, currently the reg2btf_ids[] contains only trusted type=
+s,
+> however, could it happen that we add a non-trusted type there?
 >
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index a8c7e1c5abfa..fa8e3f1e1724 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -1692,6 +1692,13 @@ __htab_map_lookup_and_delete_batch(struct bpf_map =
-*map,
->         struct bucket *b;
->         int ret =3D 0;
->
-> +       max_count =3D attr->batch.count;
-> +       if (!max_count)
-> +               return 0;
-> +
-> +       if (put_user(0, &uattr->batch.count))
-> +               return -EFAULT;
-> +
->         elem_map_flags =3D attr->batch.elem_flags;
->         if ((elem_map_flags & ~BPF_F_LOCK) ||
->             ((elem_map_flags & BPF_F_LOCK) && !btf_record_has_field(map->=
-record, BPF_SPIN_LOCK)))
-> @@ -1701,13 +1708,6 @@ __htab_map_lookup_and_delete_batch(struct bpf_map =
-*map,
->         if (map_flags)
->                 return -EINVAL;
->
-> -       max_count =3D attr->batch.count;
-> -       if (!max_count)
-> -               return 0;
-> -
-> -       if (put_user(0, &uattr->batch.count))
-> -               return -EFAULT;
-> -
+> So, I would leave the patch as is (which also makes sense because the
+> const-ptr-to-map is a special case), or add the "reg2btf_ids[] check"
+> directly into the is_trusted_reg() function.
 
-I hear your concern, but I don't think it's a good idea
-to return 0 when flags were incorrect.
-That will cause more suprises to user space.
-I think the code is fine as-is.
+Fair enough. Let's add reg2btf_ids[] to is_trusted_reg() directly.
 
