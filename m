@@ -1,144 +1,190 @@
-Return-Path: <bpf+bounces-5244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F298B758C34
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 05:42:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D08EF758C50
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 06:04:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3841B1C20F81
-	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 03:42:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62F8E2818ED
+	for <lists+bpf@lfdr.de>; Wed, 19 Jul 2023 04:04:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71FE63FDD;
-	Wed, 19 Jul 2023 03:42:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2370F523B;
+	Wed, 19 Jul 2023 04:04:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A9FE17F9;
-	Wed, 19 Jul 2023 03:42:39 +0000 (UTC)
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D88710E;
-	Tue, 18 Jul 2023 20:42:37 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b71ae5fa2fso95842101fa.0;
-        Tue, 18 Jul 2023 20:42:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689738155; x=1692330155;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=42DLWrQppHmezzGkUVHbOkS8MWrbz9UmK6GWcAskQbY=;
-        b=pGNJirjjUor1iHDIdtX43LQqsqXmmJIicVS0DXbusW97GAGRv2EBmqUcVYGf42aEJI
-         93y0RZA1OMsYqvxUMdepBt9UesQgfakc7UisfOnTkyBdIMFqfWY0gBKJqiHfGwHO5gBC
-         QJdm5EZVet+u4Q3KcbECQOvxwLfWzDVlLLj44x8Cynj+tsMZeMvprcR66TXxqEX5eLYS
-         TLqonofq77GFJiXYCw156UWnAUUgVQnXBoDfqGSn5zCdzhk+DD84MxEuKQnxYjUXJmJt
-         s6JhQSkjMYTgK52sn2V9twt/XSi4DLImvsRiLOS5vt9VgEuGx3pQscvpFS5Vu5SLpk9A
-         ItLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689738155; x=1692330155;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=42DLWrQppHmezzGkUVHbOkS8MWrbz9UmK6GWcAskQbY=;
-        b=G+aUtIIN4Pqax5IibQJ54+vovqrxx9XhtNLjmcue8o3IdbSM2S22ZwL/uudkEV0Oy8
-         1b8GK56zjyP/QE6WcqgBhbAdeFoBUaZdE1aF+VY/5qneR5DbMYhWO3uLJiU1637XRbAc
-         GhCfX55ThHA2wt5vp5MLs4V/1tHf+Z9kWQ2hg+BY6h7ImTfzv8lvRRcPWUpemjlu48Cg
-         xo3pUzi7uugwOfe5tbqej7Q1joQH3doKaYAcMvnbSSd7aaBw2L027Yu39p66jZfUfRcK
-         3fZhYSy32Km8A8S5JUvbQKZKi7MzIAql72ny5O2Uz92Z/2XNHaGq3LeERAC1rbUvUbqT
-         49Eg==
-X-Gm-Message-State: ABy/qLZXx9hU0BwZoPM4QokwGZL5aw9/YZ/HFChmISut34qdDq2l7y7G
-	emDs7+cIHAE+sDcb8JSp11ErGnHlZi3DRyoocdw=
-X-Google-Smtp-Source: APBJJlFN6bAz8PyruK95IZJJHNj1qeE2qEzAEy07bdpprkkqLhUV7yUi7UovNXI9r/emv1jkgtz+NrKHKOaF9pILxyA=
-X-Received: by 2002:a2e:3315:0:b0:2b6:fa8d:ff91 with SMTP id
- d21-20020a2e3315000000b002b6fa8dff91mr12026176ljc.3.1689738155043; Tue, 18
- Jul 2023 20:42:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA00417F9;
+	Wed, 19 Jul 2023 04:04:28 +0000 (UTC)
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F74127;
+	Tue, 18 Jul 2023 21:04:26 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vnk1le9_1689739462;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vnk1le9_1689739462)
+          by smtp.aliyun-inc.com;
+          Wed, 19 Jul 2023 12:04:23 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: virtualization@lists.linux-foundation.org
+Cc: "Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Christoph Hellwig <hch@infradead.org>
+Subject: [PATCH vhost v12 00/10] virtio core prepares for AF_XDP
+Date: Wed, 19 Jul 2023 12:04:12 +0800
+Message-Id: <20230719040422.126357-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZLdY6JkWRccunvu0@debian.debian>
-In-Reply-To: <ZLdY6JkWRccunvu0@debian.debian>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 18 Jul 2023 20:42:23 -0700
-Message-ID: <CAADnVQJNCEntFEh6pNY2HHwxoua0_2mRky2g2U5tj6XU2eoZog@mail.gmail.com>
-Subject: Re: [PATCH v2 net] bpf: do not return NET_XMIT_xxx values on bpf_redirect
-To: Yan Zhai <yan@cloudflare.com>
-Cc: Network Development <netdev@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Jordan Griege <jgriege@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Git-Hash: fc7afa711e97
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 18, 2023 at 8:30=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote=
-:
->
-> skb_do_redirect handles returns error code from both rx and tx path. The
-> tx path codes are special, e.g. NET_XMIT_CN: they are non-negative, and
-> can conflict with LWTUNNEL_XMIT_xxx values. Directly returning such code
-> can cause unexpected behavior. We found at least one bug that will panic
-> the kernel through KASAN report when we are redirecting packets to a
-> down or carrier-down device at lwt xmit hook:
->
-> https://gist.github.com/zhaiyan920/8fbac245b261fe316a7ef04c9b1eba48
->
-> Above bug is hit because NET_XMIT_CN is returned by noop_qdisc of the
-> down device, and it propagates from dev_queue_xmit all way to the lwt
-> logic. The result is skb that has been freed by the qdisc continues to
-> neighbor subsystem and triggers the bug.
+## About DMA APIs
 
-I'm struggling to parse the above paragraph.
-Where bpf prog is installed?
-Is this lwt bpf prog that returns BPF_REDIRECT ?
-that redirects to netdev with noop_qdisc ?
-What is the topology?
+Now, virtio may can not work with DMA APIs when virtio features do not have
+VIRTIO_F_ACCESS_PLATFORM.
 
-Please add a selftest to make sure we don't regress.
+1. I tried to let DMA APIs return phy address by virtio-device. But DMA APIs just
+   work with the "real" devices.
+2. I tried to let xsk support callballs to get phy address from virtio-net
+   driver as the dma address. But the maintainers of xsk may want to use dma-buf
+   to replace the DMA APIs. I think that may be a larger effort. We will wait
+   too long.
 
-Also pls mark your patch as [PATCH v3 bpf] when you respin.
+So rethinking this, firstly, we can support premapped-dma only for devices with
+VIRTIO_F_ACCESS_PLATFORM. In the case of af-xdp, if the users want to use it,
+they have to update the device to support VIRTIO_F_RING_RESET, and they can also
+enable the device's VIRTIO_F_ACCESS_PLATFORM feature.
 
-> This change converts the tx code to proper errors that lwt can consume.
->
-> Suggested-by: Stanislav Fomichev <sdf@google.com>
-> Reported-by: Jordan Griege <jgriege@cloudflare.com>
-> Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> ---
-> v2: coding style fix; sent to netdev instead of bpf for bug fixing.
->
-> ---
->  net/core/filter.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 06ba0e56e369..8738c7a4701d 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2129,6 +2129,9 @@ static inline int __bpf_tx_skb(struct net_device *d=
-ev, struct sk_buff *skb)
->         ret =3D dev_queue_xmit(skb);
->         dev_xmit_recursion_dec();
->
-> +       if (unlikely(ret > 0))
-> +               ret =3D net_xmit_errno(ret);
-> +
->         return ret;
->  }
->
-> --
-> 2.30.2
->
+Thanks for the help from Christoph.
+
+## For AF_XDP
+
+XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
+copy feature of xsk (XDP socket) needs to be supported by the driver. The
+performance of zero copy is very good.
+
+ENV: Qemu with vhost.
+
+                   vhost cpu | Guest APP CPU |Guest Softirq CPU | PPS
+-----------------------------|---------------|------------------|------------
+xmit by sockperf:     90%    |   100%        |                  |  318967
+xmit by xsk:          100%   |   30%         |   33%            | 1192064
+recv by sockperf:     100%   |   68%         |   100%           |  692288
+recv by xsk:          100%   |   33%         |   43%            |  771670
+
+Before achieving the function of Virtio-Net, we also have to let virtio core
+support these features:
+
+1. virtio core support premapped
+2. virtio core support reset per-queue
+
+## VirtioNET rx dma merge
+
+After introducing premapping, I added an example to virtio-net. virtio-net can
+merge dma mappings through this feature. @Jason
+
+kernel command line: intel_iommu=on iommu.passthrough=0
+
+           |  strict=0  | strict=1
+    Before |  775496pps | 428614pps
+    After  | 1109316pps | 742853pps
+
+Please review.
+
+Thanks.
+
+v12:
+ 1. Alloc dma info from the alloc frag. Avoid alloc array to store the dma info.
+ 2. rename virtqueue_set_premapped() to virtqueue_set_dma_premapped()
+
+v11
+ 1. virtio-net merges dma operates based on the feature premapped
+ 2. A better way to handle the map error with the premapped
+
+v10:
+ 1. support to set vq to premapped mode, then the vq just handles the premapped request.
+ 2. virtio-net support to do dma mapping in advance
+
+v9:
+ 1. use flag to distinguish the premapped operations. no do judgment by sg.
+
+v8:
+ 1. vring_sg_address: check by sg_page(sg) not dma_address. Because 0 is a valid dma address
+ 2. remove unused code from vring_map_one_sg()
+
+v7:
+ 1. virtqueue_dma_dev() return NULL when virtio is without DMA API.
+
+v6:
+ 1. change the size of the flags to u32.
+
+v5:
+ 1. fix for error handler
+ 2. add flags to record internal dma mapping
+
+v4:
+ 1. rename map_inter to dma_map_internal
+ 2. fix: Excess function parameter 'vq' description in 'virtqueue_dma_dev'
+
+v3:
+ 1. add map_inter to struct desc state to reocrd whether virtio core do dma map
+
+v2:
+ 1. based on sgs[0]->dma_address to judgment is premapped
+ 2. based on extra.addr to judgment to do unmap for no-indirect desc
+ 3. based on indir_desc to judgment to do unmap for indirect desc
+ 4. rename virtqueue_get_dma_dev to virtqueue_dma_dev
+
+v1:
+ 1. expose dma device. NO introduce the api for dma and sync
+ 2. split some commit for review.
+
+
+
+
+
+
+Xuan Zhuo (10):
+  virtio_ring: check use_dma_api before unmap desc for indirect
+  virtio_ring: put mapping error check in vring_map_one_sg
+  virtio_ring: introduce virtqueue_set_dma_premapped()
+  virtio_ring: support add premapped buf
+  virtio_ring: introduce virtqueue_dma_dev()
+  virtio_ring: skip unmap for premapped
+  virtio_ring: correct the expression of the description of
+    virtqueue_resize()
+  virtio_ring: separate the logic of reset/enable from virtqueue_resize
+  virtio_ring: introduce virtqueue_reset()
+  virtio_net: merge dma operations when filling mergeable buffers
+
+ drivers/net/virtio_net.c     | 225 +++++++++++++++++++++++++----
+ drivers/virtio/virtio_ring.c | 265 ++++++++++++++++++++++++++++-------
+ include/linux/virtio.h       |   6 +
+ 3 files changed, 418 insertions(+), 78 deletions(-)
+
+--
+2.32.0.3.g01195cf9f
+
 
