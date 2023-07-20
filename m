@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-5450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5451-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FDB175AD1D
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 13:37:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9071875AD1E
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 13:37:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 115CF281DFF
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 11:37:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69FF01C213B6
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 11:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11ED17AD8;
-	Thu, 20 Jul 2023 11:37:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B4D17AD4;
+	Thu, 20 Jul 2023 11:37:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BFEB174E9
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 11:37:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11D81C433C7;
-	Thu, 20 Jul 2023 11:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981DA174E9
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 11:37:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D75CC433C7;
+	Thu, 20 Jul 2023 11:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689853048;
-	bh=cVpXUOUa44HCMe2aXpOuG9UNn1fqrMdKWU3G3AeFE2o=;
+	s=k20201202; t=1689853058;
+	bh=nWABmTYAaW1iin4pc2IXwBpaMyBNOk+m8/amficAyYE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EqSt10Au4/K4H0lL1mA5P7jcjeHxW1XCXf7oGiXchRvFWlVQwY794peTBb3VDPX2y
-	 F62sv8bcB3oPVcBB/8cO/R8/EHG+NXlPLFpGWkbxZrkjk0spi3CWvBMzojVT6VQnKG
-	 hFdNoY00A8ZT0Mhk3Aea8NW9RiboJqyRWpgqO57csRURkcWNLKgXRu9oNzOw82mkwU
-	 WgHTZmzsyFkRHLzjZz2ubSljXhozrwWDqrykHuW2L4ysxHz/5tgTz2pFrzEQC+uRKy
-	 vLjjcWtNoubWJzTzBpgvENV4OiHdqxTUQJQbIc3ZX7fKOOW17xhLoQ9BL7sB9pyKD1
-	 TmMQis5wr+ofw==
+	b=DCpYQCoOuE8vlhicp7P8S9QOt97xkWYymejLcHtOJ/fXlxFgzgyNVKOPGOt7zOzHR
+	 rxbbgcgM35Vtz49ThEXSXQ2e66BWFDIeyEJq0U9nSiq8QiSRWIkNjKWzp46TtemuYC
+	 5afbvKSUPyu2WD8vtJ1ZgD5o2EomygVg6W1v1oUm0viqQDAsgpYmUoEFUscHqF0Dwy
+	 +EsPszTBdCxpaUPfPQ+wBm7S4/8QM6n8BQyNLyeKruFwxtopkFIChJRiLrT9M0CWp5
+	 cZqOtIJy0F5lEyDc5I81SNny9OUWBX+3cltn3EJmg9zB4lISv0Aj2hENePJjzIZj0N
+	 3g4CVIXwK3l5w==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -42,9 +42,9 @@ Cc: bpf@vger.kernel.org,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>
-Subject: [PATCHv4 bpf-next 09/28] libbpf: Add elf_open/elf_close functions
-Date: Thu, 20 Jul 2023 13:35:31 +0200
-Message-ID: <20230720113550.369257-10-jolsa@kernel.org>
+Subject: [PATCHv4 bpf-next 10/28] libbpf: Add elf symbol iterator
+Date: Thu, 20 Jul 2023 13:35:32 +0200
+Message-ID: <20230720113550.369257-11-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230720113550.369257-1-jolsa@kernel.org>
 References: <20230720113550.369257-1-jolsa@kernel.org>
@@ -56,189 +56,261 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding elf_open/elf_close functions and using it in
-elf_find_func_offset_from_file function. It will be
-used in following changes to save some common code.
+Adding elf symbol iterator object (and some functions) that follow
+open-coded iterator pattern and some functions to ease up iterating
+elf object symbols.
 
+The idea is to iterate single symbol section with:
+
+  struct elf_sym_iter iter;
+  struct elf_sym *sym;
+
+  if (elf_sym_iter_new(&iter, elf, binary_path, SHT_DYNSYM))
+        goto error;
+
+  while ((sym = elf_sym_iter_next(&iter))) {
+        ...
+  }
+
+I considered opening the elf inside the iterator and iterate all symbol
+sections, but then it gets more complicated wrt user checks for when
+the next section is processed.
+
+Plus side is the we don't need 'exit' function, because caller/user is
+in charge of that.
+
+The returned iterated symbol object from elf_sym_iter_next function
+is placed inside the struct elf_sym_iter, so no extra allocation or
+argument is needed.
+
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/elf.c             | 61 ++++++++++++++++++++++-----------
- tools/lib/bpf/libbpf_internal.h |  8 +++++
- tools/lib/bpf/usdt.c            | 30 +++++-----------
- 3 files changed, 57 insertions(+), 42 deletions(-)
+ tools/lib/bpf/elf.c | 179 ++++++++++++++++++++++++++++----------------
+ 1 file changed, 115 insertions(+), 64 deletions(-)
 
 diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-index 735ef10093ac..71363acdeb67 100644
+index 71363acdeb67..8a3f8a725981 100644
 --- a/tools/lib/bpf/elf.c
 +++ b/tools/lib/bpf/elf.c
-@@ -10,6 +10,42 @@
+@@ -60,6 +60,104 @@ static Elf_Scn *elf_find_next_scn_by_type(Elf *elf, int sh_type, Elf_Scn *scn)
+ 	return NULL;
+ }
  
- #define STRERR_BUFSIZE  128
- 
-+int elf_open(const char *binary_path, struct elf_fd *elf_fd)
-+{
-+	char errmsg[STRERR_BUFSIZE];
-+	int fd, ret;
-+	Elf *elf;
++struct elf_sym {
++	const char *name;
++	GElf_Sym sym;
++	GElf_Shdr sh;
++};
 +
-+	if (elf_version(EV_CURRENT) == EV_NONE) {
-+		pr_warn("elf: failed to init libelf for %s\n", binary_path);
-+		return -LIBBPF_ERRNO__LIBELF;
++struct elf_sym_iter {
++	Elf *elf;
++	Elf_Data *syms;
++	size_t nr_syms;
++	size_t strtabidx;
++	size_t next_sym_idx;
++	struct elf_sym sym;
++	int st_type;
++};
++
++static int elf_sym_iter_new(struct elf_sym_iter *iter,
++			    Elf *elf, const char *binary_path,
++			    int sh_type, int st_type)
++{
++	Elf_Scn *scn = NULL;
++	GElf_Ehdr ehdr;
++	GElf_Shdr sh;
++
++	memset(iter, 0, sizeof(*iter));
++
++	if (!gelf_getehdr(elf, &ehdr)) {
++		pr_warn("elf: failed to get ehdr from %s: %s\n", binary_path, elf_errmsg(-1));
++		return -EINVAL;
 +	}
-+	fd = open(binary_path, O_RDONLY | O_CLOEXEC);
-+	if (fd < 0) {
-+		ret = -errno;
-+		pr_warn("elf: failed to open %s: %s\n", binary_path,
-+			libbpf_strerror_r(ret, errmsg, sizeof(errmsg)));
-+		return ret;
++
++	scn = elf_find_next_scn_by_type(elf, sh_type, NULL);
++	if (!scn) {
++		pr_debug("elf: failed to find symbol table ELF sections in '%s'\n",
++			 binary_path);
++		return -ENOENT;
 +	}
-+	elf = elf_begin(fd, ELF_C_READ_MMAP, NULL);
-+	if (!elf) {
-+		pr_warn("elf: could not read elf from %s: %s\n", binary_path, elf_errmsg(-1));
-+		close(fd);
-+		return -LIBBPF_ERRNO__FORMAT;
++
++	if (!gelf_getshdr(scn, &sh))
++		return -EINVAL;
++
++	iter->strtabidx = sh.sh_link;
++	iter->syms = elf_getdata(scn, 0);
++	if (!iter->syms) {
++		pr_warn("elf: failed to get symbols for symtab section in '%s': %s\n",
++			binary_path, elf_errmsg(-1));
++		return -EINVAL;
 +	}
-+	elf_fd->fd = fd;
-+	elf_fd->elf = elf;
++	iter->nr_syms = iter->syms->d_size / sh.sh_entsize;
++	iter->elf = elf;
++	iter->st_type = st_type;
 +	return 0;
 +}
 +
-+void elf_close(struct elf_fd *elf_fd)
++static struct elf_sym *elf_sym_iter_next(struct elf_sym_iter *iter)
 +{
-+	if (!elf_fd)
-+		return;
-+	elf_end(elf_fd->elf);
-+	close(elf_fd->fd);
++	struct elf_sym *ret = &iter->sym;
++	GElf_Sym *sym = &ret->sym;
++	const char *name = NULL;
++	Elf_Scn *sym_scn;
++	size_t idx;
++
++	for (idx = iter->next_sym_idx; idx < iter->nr_syms; idx++) {
++		if (!gelf_getsym(iter->syms, idx, sym))
++			continue;
++		if (GELF_ST_TYPE(sym->st_info) != iter->st_type)
++			continue;
++		name = elf_strptr(iter->elf, iter->strtabidx, sym->st_name);
++		if (!name)
++			continue;
++		sym_scn = elf_getscn(iter->elf, sym->st_shndx);
++		if (!sym_scn)
++			continue;
++		if (!gelf_getshdr(sym_scn, &ret->sh))
++			continue;
++
++		iter->next_sym_idx = idx + 1;
++		ret->name = name;
++		return ret;
++	}
++
++	return NULL;
 +}
 +
- /* Return next ELF section of sh_type after scn, or first of that type if scn is NULL. */
- static Elf_Scn *elf_find_next_scn_by_type(Elf *elf, int sh_type, Elf_Scn *scn)
- {
-@@ -170,28 +206,13 @@ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
-  */
- long elf_find_func_offset_from_file(const char *binary_path, const char *name)
- {
--	char errmsg[STRERR_BUFSIZE];
-+	struct elf_fd elf_fd;
- 	long ret = -ENOENT;
--	Elf *elf;
--	int fd;
- 
--	fd = open(binary_path, O_RDONLY | O_CLOEXEC);
--	if (fd < 0) {
--		ret = -errno;
--		pr_warn("failed to open %s: %s\n", binary_path,
--			libbpf_strerror_r(ret, errmsg, sizeof(errmsg)));
-+	ret = elf_open(binary_path, &elf_fd);
-+	if (ret)
- 		return ret;
--	}
--	elf = elf_begin(fd, ELF_C_READ_MMAP, NULL);
--	if (!elf) {
--		pr_warn("elf: could not read elf from %s: %s\n", binary_path, elf_errmsg(-1));
--		close(fd);
--		return -LIBBPF_ERRNO__FORMAT;
--	}
--
--	ret = elf_find_func_offset(elf, binary_path, name);
--	elf_end(elf);
--	close(fd);
-+	ret = elf_find_func_offset(elf_fd.elf, binary_path, name);
-+	elf_close(&elf_fd);
- 	return ret;
- }
--
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 44eb63541507..0bbcd8e6fdc5 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -581,4 +581,12 @@ int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
- long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name);
- long elf_find_func_offset_from_file(const char *binary_path, const char *name);
- 
-+struct elf_fd {
-+	Elf *elf;
-+	int fd;
-+};
 +
-+int elf_open(const char *binary_path, struct elf_fd *elf_fd);
-+void elf_close(struct elf_fd *elf_fd);
++/* Transform symbol's virtual address (absolute for binaries and relative
++ * for shared libs) into file offset, which is what kernel is expecting
++ * for uprobe/uretprobe attachment.
++ * See Documentation/trace/uprobetracer.rst for more details. This is done
++ * by looking up symbol's containing section's header and using iter's virtual
++ * address (sh_addr) and corresponding file offset (sh_offset) to transform
++ * sym.st_value (virtual address) into desired final file offset.
++ */
++static unsigned long elf_sym_offset(struct elf_sym *sym)
++{
++	return sym->sym.st_value - sym->sh.sh_addr + sym->sh.sh_offset;
++}
 +
- #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
-diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index 37455d00b239..8322337ab65b 100644
---- a/tools/lib/bpf/usdt.c
-+++ b/tools/lib/bpf/usdt.c
-@@ -946,32 +946,22 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
- 					  const char *usdt_provider, const char *usdt_name,
- 					  __u64 usdt_cookie)
- {
--	int i, fd, err, spec_map_fd, ip_map_fd;
-+	int i, err, spec_map_fd, ip_map_fd;
- 	LIBBPF_OPTS(bpf_uprobe_opts, opts);
- 	struct hashmap *specs_hash = NULL;
- 	struct bpf_link_usdt *link = NULL;
- 	struct usdt_target *targets = NULL;
-+	struct elf_fd elf_fd;
- 	size_t target_cnt;
--	Elf *elf;
- 
- 	spec_map_fd = bpf_map__fd(man->specs_map);
- 	ip_map_fd = bpf_map__fd(man->ip_to_spec_id_map);
- 
--	fd = open(path, O_RDONLY | O_CLOEXEC);
--	if (fd < 0) {
--		err = -errno;
--		pr_warn("usdt: failed to open ELF binary '%s': %d\n", path, err);
-+	err = elf_open(path, &elf_fd);
-+	if (err)
- 		return libbpf_err_ptr(err);
--	}
- 
--	elf = elf_begin(fd, ELF_C_READ_MMAP, NULL);
--	if (!elf) {
--		err = -EBADF;
--		pr_warn("usdt: failed to parse ELF binary '%s': %s\n", path, elf_errmsg(-1));
--		goto err_out;
--	}
--
--	err = sanity_check_usdt_elf(elf, path);
-+	err = sanity_check_usdt_elf(elf_fd.elf, path);
- 	if (err)
- 		goto err_out;
- 
-@@ -984,7 +974,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
- 	/* discover USDT in given binary, optionally limiting
- 	 * activations to a given PID, if pid > 0
+ /* Find offset of function name in the provided ELF object. "binary_path" is
+  * the path to the ELF binary represented by "elf", and only used for error
+  * reporting matters. "name" matches symbol name or name@@LIB for library
+@@ -91,67 +189,38 @@ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
+ 	 * reported as a warning/error.
  	 */
--	err = collect_usdt_targets(man, elf, path, pid, usdt_provider, usdt_name,
-+	err = collect_usdt_targets(man, elf_fd.elf, path, pid, usdt_provider, usdt_name,
- 				   usdt_cookie, &targets, &target_cnt);
- 	if (err <= 0) {
- 		err = (err == 0) ? -ENOENT : err;
-@@ -1069,9 +1059,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
+ 	for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
+-		size_t nr_syms, strtabidx, idx;
+-		Elf_Data *symbols = NULL;
+-		Elf_Scn *scn = NULL;
++		struct elf_sym_iter iter;
++		struct elf_sym *sym;
+ 		int last_bind = -1;
+-		const char *sname;
+-		GElf_Shdr sh;
++		int cur_bind;
  
- 	free(targets);
- 	hashmap__free(specs_hash);
--	elf_end(elf);
--	close(fd);
+-		scn = elf_find_next_scn_by_type(elf, sh_types[i], NULL);
+-		if (!scn) {
+-			pr_debug("elf: failed to find symbol table ELF sections in '%s'\n",
+-				 binary_path);
++		ret = elf_sym_iter_new(&iter, elf, binary_path, sh_types[i], STT_FUNC);
++		if (ret == -ENOENT)
+ 			continue;
+-		}
+-		if (!gelf_getshdr(scn, &sh))
+-			continue;
+-		strtabidx = sh.sh_link;
+-		symbols = elf_getdata(scn, 0);
+-		if (!symbols) {
+-			pr_warn("elf: failed to get symbols for symtab section in '%s': %s\n",
+-				binary_path, elf_errmsg(-1));
+-			ret = -LIBBPF_ERRNO__FORMAT;
++		if (ret)
+ 			goto out;
+-		}
+-		nr_syms = symbols->d_size / sh.sh_entsize;
 -
-+	elf_close(&elf_fd);
- 	return &link->link;
+-		for (idx = 0; idx < nr_syms; idx++) {
+-			int curr_bind;
+-			GElf_Sym sym;
+-			Elf_Scn *sym_scn;
+-			GElf_Shdr sym_sh;
+-
+-			if (!gelf_getsym(symbols, idx, &sym))
+-				continue;
+-
+-			if (GELF_ST_TYPE(sym.st_info) != STT_FUNC)
+-				continue;
+-
+-			sname = elf_strptr(elf, strtabidx, sym.st_name);
+-			if (!sname)
+-				continue;
+-
+-			curr_bind = GELF_ST_BIND(sym.st_info);
  
- err_out:
-@@ -1079,9 +1067,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
- 		bpf_link__destroy(&link->link);
- 	free(targets);
- 	hashmap__free(specs_hash);
--	if (elf)
--		elf_end(elf);
--	close(fd);
-+	elf_close(&elf_fd);
- 	return libbpf_err_ptr(err);
- }
++		while ((sym = elf_sym_iter_next(&iter))) {
+ 			/* User can specify func, func@@LIB or func@@LIB_VERSION. */
+-			if (strncmp(sname, name, name_len) != 0)
++			if (strncmp(sym->name, name, name_len) != 0)
+ 				continue;
+ 			/* ...but we don't want a search for "foo" to match 'foo2" also, so any
+ 			 * additional characters in sname should be of the form "@@LIB".
+ 			 */
+-			if (!is_name_qualified && sname[name_len] != '\0' && sname[name_len] != '@')
++			if (!is_name_qualified && sym->name[name_len] != '\0' && sym->name[name_len] != '@')
+ 				continue;
  
+-			if (ret >= 0) {
++			cur_bind = GELF_ST_BIND(sym->sym.st_info);
++
++			if (ret > 0) {
+ 				/* handle multiple matches */
+-				if (last_bind != STB_WEAK && curr_bind != STB_WEAK) {
++				if (last_bind != STB_WEAK && cur_bind != STB_WEAK) {
+ 					/* Only accept one non-weak bind. */
+ 					pr_warn("elf: ambiguous match for '%s', '%s' in '%s'\n",
+-						sname, name, binary_path);
++						sym->name, name, binary_path);
+ 					ret = -LIBBPF_ERRNO__FORMAT;
+ 					goto out;
+-				} else if (curr_bind == STB_WEAK) {
++				} else if (cur_bind == STB_WEAK) {
+ 					/* already have a non-weak bind, and
+ 					 * this is a weak bind, so ignore.
+ 					 */
+@@ -159,26 +228,8 @@ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name)
+ 				}
+ 			}
+ 
+-			/* Transform symbol's virtual address (absolute for
+-			 * binaries and relative for shared libs) into file
+-			 * offset, which is what kernel is expecting for
+-			 * uprobe/uretprobe attachment.
+-			 * See Documentation/trace/uprobetracer.rst for more
+-			 * details.
+-			 * This is done by looking up symbol's containing
+-			 * section's header and using it's virtual address
+-			 * (sh_addr) and corresponding file offset (sh_offset)
+-			 * to transform sym.st_value (virtual address) into
+-			 * desired final file offset.
+-			 */
+-			sym_scn = elf_getscn(elf, sym.st_shndx);
+-			if (!sym_scn)
+-				continue;
+-			if (!gelf_getshdr(sym_scn, &sym_sh))
+-				continue;
+-
+-			ret = sym.st_value - sym_sh.sh_addr + sym_sh.sh_offset;
+-			last_bind = curr_bind;
++			ret = elf_sym_offset(sym);
++			last_bind = cur_bind;
+ 		}
+ 		if (ret > 0)
+ 			break;
 -- 
 2.41.0
 
