@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-5510-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5511-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D4F275B480
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 18:35:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 738B775B481
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 18:35:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F593281DBC
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 16:35:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A48C91C2150E
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 16:35:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53E4B1E502;
-	Thu, 20 Jul 2023 16:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870122B197;
+	Thu, 20 Jul 2023 16:33:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DAA918C3E
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 16:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DAFF2B18F
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 16:33:44 +0000 (UTC)
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB1E198A
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 09:33:23 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1682D42
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 09:33:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1689870802;
+	s=mimecast20190719; t=1689870815;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=G5HBHaVT0pfIJAbbI8C24iwVVdenu59ApFnKMQXGGMQ=;
-	b=aV3mV1lHwwlMzR6aaEDCnpOfob9J0NixECFA0gvFzQDMx3YIHU0LuNXgjIzkX5HtZWy2sr
-	vzjjPEbKlu5f6jpqzr2QlKbrHmI+AW0Thf4ynnT0x6LhvUqrfm0RvPgAZxS2nLTaIsBI9N
-	7RP8+Y5aVWEqLiE/z1OpWPjN8gFpIT8=
+	bh=gxt5b+dw2J3MlRZgV6DoONRBYEDjEJLqkxMRP/UHfXc=;
+	b=PjdDvollX/T2Ii4kkuzEzolBa4e1MRaE6LhHS576QWUkyRb7AF7Xyr6sX5Iqy6bHw0SkB+
+	HSORfS0HYkDX740iXXc3ZdZVfSa8dbXpvgUvI67KK3ZskX+zOVCImNKNZRKCPZV172lGfr
+	c5fhW5zw3B797mZMAlrhN6w2773dwZI=
 Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-543-hhF8YKTPPJa4Xr8UF_kvXw-1; Thu, 20 Jul 2023 12:33:21 -0400
-X-MC-Unique: hhF8YKTPPJa4Xr8UF_kvXw-1
+ us-mta-637-bk8eKh1PMsKjdr3SYosUIQ-1; Thu, 20 Jul 2023 12:33:32 -0400
+X-MC-Unique: bk8eKh1PMsKjdr3SYosUIQ-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 679323815EF2;
-	Thu, 20 Jul 2023 16:33:18 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 902321C05EAA;
+	Thu, 20 Jul 2023 16:33:25 +0000 (UTC)
 Received: from vschneid.remote.csb (unknown [10.42.28.48])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id E3F8940C206F;
-	Thu, 20 Jul 2023 16:33:10 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id C6B9240C2070;
+	Thu, 20 Jul 2023 16:33:18 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
@@ -54,8 +54,7 @@ To: linux-kernel@vger.kernel.org,
 	x86@kernel.org,
 	rcu@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
+Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Jonathan Corbet <corbet@lwn.net>,
 	Thomas Gleixner <tglx@linutronix.de>,
@@ -67,6 +66,7 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Wanpeng Li <wanpengli@tencent.com>,
 	Vitaly Kuznetsov <vkuznets@redhat.com>,
 	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
@@ -104,9 +104,9 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Daniel Bristot de Oliveira <bristot@redhat.com>,
 	Marcelo Tosatti <mtosatti@redhat.com>,
 	Yair Podemsky <ypodemsk@redhat.com>
-Subject: [RFC PATCH v2 10/20] jump_label,module: Don't alloc static_key_mod for __ro_after_init keys
-Date: Thu, 20 Jul 2023 17:30:46 +0100
-Message-Id: <20230720163056.2564824-11-vschneid@redhat.com>
+Subject: [RFC PATCH v2 11/20] objtool: Flesh out warning related to pv_ops[] calls
+Date: Thu, 20 Jul 2023 17:30:47 +0100
+Message-Id: <20230720163056.2564824-12-vschneid@redhat.com>
 In-Reply-To: <20230720163056.2564824-1-vschneid@redhat.com>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
 Precedence: bulk
@@ -120,149 +120,31 @@ X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Peter Zijlstra <peterz@infradead.org>
+I had to look into objtool itself to understand what this warning was
+about; make it more explicit.
 
-When a static_key is marked ro_after_init, its state will never change
-(after init), therefore jump_label_update() will never need to iterate
-the entries, and thus module load won't actually need to track this --
-avoiding the static_key::next write.
-
-Therefore, mark these keys such that jump_label_add_module() might
-recognise them and avoid the modification.
-
-Use the special state: 'static_key_linked(key) && !static_key_mod(key)'
-to denote such keys.
-
-Link: http://lore.kernel.org/r/20230705204142.GB2813335@hirez.programming.kicks-ass.net
-NOT-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
-@Peter: I've barely touched this patch, it's just been writing a comment
-and fixing benign compilation issues, so credit's all yours really!
----
- include/asm-generic/sections.h |  5 ++++
- include/linux/jump_label.h     |  1 +
- init/main.c                    |  1 +
- kernel/jump_label.c            | 49 ++++++++++++++++++++++++++++++++++
- 4 files changed, 56 insertions(+)
+ tools/objtool/check.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
-index db13bb620f527..c768de6f19a9a 100644
---- a/include/asm-generic/sections.h
-+++ b/include/asm-generic/sections.h
-@@ -180,6 +180,11 @@ static inline bool is_kernel_rodata(unsigned long addr)
- 	       addr < (unsigned long)__end_rodata;
- }
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 8936a05f0e5ac..d308330f2910e 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -3360,7 +3360,7 @@ static bool pv_call_dest(struct objtool_file *file, struct instruction *insn)
  
-+static inline bool is_kernel_ro_after_init(unsigned long addr)
-+{
-+	return addr >= (unsigned long)__start_ro_after_init &&
-+	       addr < (unsigned long)__end_ro_after_init;
-+}
- /**
-  * is_kernel_inittext - checks if the pointer address is located in the
-  *                      .init.text section
-diff --git a/include/linux/jump_label.h b/include/linux/jump_label.h
-index f0a949b7c9733..88ef9e776af8d 100644
---- a/include/linux/jump_label.h
-+++ b/include/linux/jump_label.h
-@@ -216,6 +216,7 @@ extern struct jump_entry __start___jump_table[];
- extern struct jump_entry __stop___jump_table[];
- 
- extern void jump_label_init(void);
-+extern void jump_label_ro(void);
- extern void jump_label_lock(void);
- extern void jump_label_unlock(void);
- extern void arch_jump_label_transform(struct jump_entry *entry,
-diff --git a/init/main.c b/init/main.c
-index ad920fac325c3..cb5304ca18f4d 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1403,6 +1403,7 @@ static void mark_readonly(void)
- 		 * insecure pages which are W+X.
- 		 */
- 		rcu_barrier();
-+		jump_label_ro();
- 		mark_rodata_ro();
- 		rodata_test();
- 	} else
-diff --git a/kernel/jump_label.c b/kernel/jump_label.c
-index d9c822bbffb8d..661ef74dee9b7 100644
---- a/kernel/jump_label.c
-+++ b/kernel/jump_label.c
-@@ -530,6 +530,45 @@ void __init jump_label_init(void)
- 	cpus_read_unlock();
- }
- 
-+static inline bool static_key_sealed(struct static_key *key)
-+{
-+	return (key->type & JUMP_TYPE_LINKED) && !(key->type & ~JUMP_TYPE_MASK);
-+}
-+
-+static inline void static_key_seal(struct static_key *key)
-+{
-+	unsigned long type = key->type & JUMP_TYPE_TRUE;
-+	key->type = JUMP_TYPE_LINKED | type;
-+}
-+
-+void jump_label_ro(void)
-+{
-+	struct jump_entry *iter_start = __start___jump_table;
-+	struct jump_entry *iter_stop = __stop___jump_table;
-+	struct jump_entry *iter;
-+
-+	if (WARN_ON_ONCE(!static_key_initialized))
-+		return;
-+
-+	cpus_read_lock();
-+	jump_label_lock();
-+
-+	for (iter = iter_start; iter < iter_stop; iter++) {
-+		struct static_key *iterk = jump_entry_key(iter);
-+
-+		if (!is_kernel_ro_after_init((unsigned long)iterk))
-+			continue;
-+
-+		if (static_key_sealed(iterk))
-+			continue;
-+
-+		static_key_seal(iterk);
-+	}
-+
-+	jump_label_unlock();
-+	cpus_read_unlock();
-+}
-+
- #ifdef CONFIG_MODULES
- 
- enum jump_label_type jump_label_init_type(struct jump_entry *entry)
-@@ -650,6 +689,15 @@ static int jump_label_add_module(struct module *mod)
- 			static_key_set_entries(key, iter);
- 			continue;
+ 	list_for_each_entry(target, &file->pv_ops[idx].targets, pv_target) {
+ 		if (!target->sec->noinstr) {
+-			WARN("pv_ops[%d]: %s", idx, target->name);
++			WARN("pv_ops[%d]: indirect call to %s() leaves .noinstr.text section", idx, target->name);
+ 			file->pv_ops[idx].clean = false;
  		}
-+
-+		/*
-+		 * If the key was sealed at init, then there's no need to keep a
-+		 * a reference to its module entries - just patch them now and
-+		 * be done with it.
-+		 */
-+		if (static_key_sealed(key))
-+			goto do_poke;
-+
- 		jlm = kzalloc(sizeof(struct static_key_mod), GFP_KERNEL);
- 		if (!jlm)
- 			return -ENOMEM;
-@@ -675,6 +723,7 @@ static int jump_label_add_module(struct module *mod)
- 		static_key_set_linked(key);
- 
- 		/* Only update if we've changed from our initial state */
-+do_poke:
- 		if (jump_label_type(iter) != jump_label_init_type(iter))
- 			__jump_label_update(key, iter, iter_stop, true);
  	}
 -- 
 2.31.1
