@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-5514-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5513-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDBE475B492
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 18:36:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05EA475B48E
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 18:36:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF4A71C21522
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 16:36:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B506C2820A6
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 16:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 984EB1BE7B;
-	Thu, 20 Jul 2023 16:34:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5C11BE6F;
+	Thu, 20 Jul 2023 16:34:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C88518C1D
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 16:34:59 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A690C30EF
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 09:34:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B8FD18C1D
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 16:34:46 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DD02D56
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 09:34:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1689870839;
+	s=mimecast20190719; t=1689870836;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=B/1vdVWCM4YknPYZ5ppPG1wK5UcqdOcCaaYb4tQPZDs=;
-	b=SWBLVso7GVePBWXtH0EwrkOOPsDSjWxRtYCE8NjadWsql25/xVzhpwEjYCGhGqN8NSE8VV
-	8Q1o4hQSFNTKQduyxtA2qmIuMwvuvgmsVgmGyHqcFwjLdFNZMiRbDTD2S2nWsOk9chJ5BE
-	JjbxRDazilyaz2peu3Sh9x0MzbjoO+4=
+	bh=izi9UHkrSeZ4AHa49u6aA8W9HneeYs8L2V/Y70LmMpM=;
+	b=W1Ycz3X1hQ96d5djOyZDpzZFKgX6MrM+ZD9WZ7UPaFJu+cGHVql1gvSO/IFt5PwVmCsEMS
+	CAjx71COGWs4UJ2o346Pstqgb1gjGAcMKKZG6Pz53qtAu+vBG7qAJnt4LlfOuyhPhxlzse
+	eFwchMSlvNeJtQWcJaNQu9qGpXJvfrA=
 Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-504-yTDAMrF4N--Bk_WMn9tLGw-1; Thu, 20 Jul 2023 12:33:50 -0400
-X-MC-Unique: yTDAMrF4N--Bk_WMn9tLGw-1
+ us-mta-267-UUYzhPw5OJ2eJI-qriS1tw-1; Thu, 20 Jul 2023 12:33:54 -0400
+X-MC-Unique: UUYzhPw5OJ2eJI-qriS1tw-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5A2A62812951;
-	Thu, 20 Jul 2023 16:33:42 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CEF671C05EB9;
+	Thu, 20 Jul 2023 16:33:50 +0000 (UTC)
 Received: from vschneid.remote.csb (unknown [10.42.28.48])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 5C73540C206F;
-	Thu, 20 Jul 2023 16:33:34 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id BCF3340C2070;
+	Thu, 20 Jul 2023 16:33:42 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
@@ -104,9 +104,9 @@ Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Daniel Bristot de Oliveira <bristot@redhat.com>,
 	Marcelo Tosatti <mtosatti@redhat.com>,
 	Yair Podemsky <ypodemsk@redhat.com>
-Subject: [RFC PATCH v2 13/20] context_tracking: Make context_tracking_key __ro_after_init
-Date: Thu, 20 Jul 2023 17:30:49 +0100
-Message-Id: <20230720163056.2564824-14-vschneid@redhat.com>
+Subject: [RFC PATCH v2 14/20] x86/kvm: Make kvm_async_pf_enabled __ro_after_init
+Date: Thu, 20 Jul 2023 17:30:50 +0100
+Message-Id: <20230720163056.2564824-15-vschneid@redhat.com>
 In-Reply-To: <20230720163056.2564824-1-vschneid@redhat.com>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
 Precedence: bulk
@@ -127,33 +127,29 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 objtool now warns about it:
 
-  vmlinux.o: warning: objtool: enter_from_user_mode+0x4e: Non __ro_after_init static key "context_tracking_key" in .noinstr section
-  vmlinux.o: warning: objtool: enter_from_user_mode+0x50: Non __ro_after_init static key "context_tracking_key" in .noinstr section
-  vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x60: Non __ro_after_init static key "context_tracking_key" in .noinstr section
-  vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x62: Non __ro_after_init static key "context_tracking_key" in .noinstr section
-  [...]
+  vmlinux.o: warning: objtool: exc_page_fault+0x2a: Non __ro_after_init static key "kvm_async_pf_enabled" in .noinstr section
 
 The key can only be enabled (and not disabled) in the __init function
-ct_cpu_tracker_user(), so mark it as __ro_after_init.
+kvm_guest_init(), so mark it as __ro_after_init.
 
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- kernel/context_tracking.c | 2 +-
+ arch/x86/kernel/kvm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-index 6ef0b35fc28c5..cc4f3a57f848c 100644
---- a/kernel/context_tracking.c
-+++ b/kernel/context_tracking.c
-@@ -432,7 +432,7 @@ static __always_inline void ct_kernel_enter(bool user, int offset) { }
- #define CREATE_TRACE_POINTS
- #include <trace/events/context_tracking.h>
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index 1cceac5984daa..319460090a836 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -44,7 +44,7 @@
+ #include <asm/svm.h>
+ #include <asm/e820/api.h>
  
--DEFINE_STATIC_KEY_FALSE(context_tracking_key);
-+DEFINE_STATIC_KEY_FALSE_RO(context_tracking_key);
- EXPORT_SYMBOL_GPL(context_tracking_key);
+-DEFINE_STATIC_KEY_FALSE(kvm_async_pf_enabled);
++DEFINE_STATIC_KEY_FALSE_RO(kvm_async_pf_enabled);
  
- static noinstr bool context_tracking_recursion_enter(void)
+ static int kvmapf = 1;
+ 
 -- 
 2.31.1
 
