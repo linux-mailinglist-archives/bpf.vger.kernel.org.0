@@ -1,179 +1,245 @@
-Return-Path: <bpf+bounces-5557-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5558-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CA6775BA54
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 00:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA7A975BA92
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 00:24:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECD3B2820A2
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 22:14:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1C0A282087
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 22:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962681DDE1;
-	Thu, 20 Jul 2023 22:14:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D2421DDF4;
+	Thu, 20 Jul 2023 22:24:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70326168C3
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 22:14:38 +0000 (UTC)
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E50171E
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 15:14:37 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55be4f03661so972961a12.1
-        for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 15:14:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404A61DDDE;
+	Thu, 20 Jul 2023 22:24:33 +0000 (UTC)
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997CE110;
+	Thu, 20 Jul 2023 15:24:32 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-7672073e7b9so113909085a.0;
+        Thu, 20 Jul 2023 15:24:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689891277; x=1690496077;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ntAPyIcMbj4x2RdnE4QWJ5FnaEQOtZId8qQ+eDe+suw=;
-        b=2+e4wlpBPGsDpkyw9CWHUhUURlWwywpD9mLf9/RBs1kZ8I0EHM8GFP0kqUHjLBcgnz
-         GFnq5AWj7J7LoL/lcihBMgvlTppJkp978bgwidS+pSzERqqVPAmvnYZ1OOqW6B53PHI2
-         a4PqOh82SNuR6MmQUuG7pjquwvMJYeyp2xYQ2/Z1XjWtTEwbz4n/SOBasMM4oQvuOxF8
-         L706QxaAyVlF9w+Ey+PMmd5QG7b5M4ASTxtsrm335ulibPXAOXznvyKyPxnj9GXEw0P8
-         w+Fxp4fl8CEj2VR+2GsBGpU5KuYDPb11xZ475wFcZTzvOGhKFSqmxcWJpsZVhmQy8EDI
-         Sd9A==
+        d=gmail.com; s=20221208; t=1689891871; x=1690496671;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mbN75j8y8eFg2bbOR60vga2vIDgL+4CQKTZqLo7f94w=;
+        b=pNYm1IKRTPdaXOKZv7W0MUTVZqwuqU1gkOYDfGeKR+aoLqjNBC1slosDkX9HvZHSYu
+         HWluSic8xeCopahNgt+r3m7CLUXE5LtHQYtreUhDlqVmgk8Zjw06Bui+RkESmhrqGc2A
+         c+16xYbBjfuFXag8ayOYKQYXALu4icVK1d5FlmpV8B3Pu4aopDuC2tYVBpqFKnVUmjj3
+         qi+A2D1ytVxejQom+i2cIrTUoNcsURdcjQNZdIt1TwtdTXeCdQ1fsm/GxkXIVOdttsMr
+         KGX6dH7YSe2GSCsqDYD5O8kAfzSUwWtwtvyZV4qvmxu5hAqvrbg8NWiuShRAstvJh9h7
+         w/xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689891277; x=1690496077;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ntAPyIcMbj4x2RdnE4QWJ5FnaEQOtZId8qQ+eDe+suw=;
-        b=FMd5XYxaAjM9jEX7cUAYIIkpvJNDNON1IjUliVDL1ucQwgGfPJgIOGzyQQoWVPr2gC
-         yNEcTl9VXzUdSdDrb/Ukd4E6b1o+E5T1cMwv05Q4g8yFsCQzIRTbZ6q4xfKy3t26/IP6
-         91M8wtCjFQi14w4CzyGMwSqckjG7qj5Qy+S9XcNOzv+ijmRat6ecvduE4P7VdI7aoiFc
-         vpk0cc5hOYoTtE/7xO4sPutZVQWZrzC/cp4YvlgIMYOJVNqqYhK/VAuItOgOQb0OxRwP
-         KkW4DQqJD+2TXIwLr+HlupoPWhm5KpW/Yu/n2cltM7m8NkrKT5AvflE++B1FyKiDywOj
-         cBuw==
-X-Gm-Message-State: ABy/qLZkYNgu3nEGkmcEI5+vK0h0EHBZcoAMr71XkjzGe1wZla8P5ZJl
-	Mekx3VZq9DtUzlcFdy8p6gBWD64=
-X-Google-Smtp-Source: APBJJlEMcGX2ZkdXhS334WMXGI7SezRrsjD1b1FT17XrD7DpNm7fvdr043HoswPQetYExgcds8n3skw=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:7448:0:b0:557:531e:34c7 with SMTP id
- e8-20020a637448000000b00557531e34c7mr27pgn.11.1689891276612; Thu, 20 Jul 2023
- 15:14:36 -0700 (PDT)
-Date: Thu, 20 Jul 2023 15:14:34 -0700
-In-Reply-To: <20230719183734.21681-22-larysa.zaremba@intel.com>
+        d=1e100.net; s=20221208; t=1689891871; x=1690496671;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mbN75j8y8eFg2bbOR60vga2vIDgL+4CQKTZqLo7f94w=;
+        b=HOHU9TxPtJLC5KP6UGZr5HMpbrGOhafEnYBa/KjNgEIniRF3TRouxIAvadiRvI6MOv
+         L5YIvVPCy/NPrWVX9/Wo6dUAFexXIzq1hio36Tzicoq+dLecQN1gNXbFgwTvjz/mVTkQ
+         HcTeOxPi3EyA6pum3LUmEfN+WrJDzSY6F5GseZgpQGsHqK8WkSiB6rPoP7KQ3BXd9YRt
+         3sKhSdXhes7hzU39S0ghb+stqCkx7Y+aPMjlMeixEkxw+ieRgcJJuggpE0sL6uHrx+cY
+         JAMMJDvg14cM9v8jzkzl9KO+DkMm1mPhjrI+N3Hucw3pkjlX/kfGiIOsdYkDFj0NSNQ7
+         AlCA==
+X-Gm-Message-State: ABy/qLavhOIGPx39AMRoHuAP5diixTry0PMpH20/WpQnjLfTwvJuEkgs
+	u8Knv7OLE5ids8P7JT02SUQ=
+X-Google-Smtp-Source: APBJJlEoHWHnn4n3QMGReuVNwzEGNfUOe4J1EvjlU6RyB78kDh/eXyd/85vwmkh1GTYOIKioBbAOHA==
+X-Received: by 2002:a0c:aa18:0:b0:637:49c7:28e4 with SMTP id d24-20020a0caa18000000b0063749c728e4mr326501qvb.5.1689891871613;
+        Thu, 20 Jul 2023 15:24:31 -0700 (PDT)
+Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
+        by smtp.gmail.com with ESMTPSA id a26-20020a0cb35a000000b006166d870243sm791277qvf.43.2023.07.20.15.24.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 15:24:31 -0700 (PDT)
+Date: Thu, 20 Jul 2023 18:24:30 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Stanislav Fomichev <sdf@google.com>, 
+ larysa.zaremba@intel.com
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+ "ast@kernel.org" <ast@kernel.org>, 
+ "daniel@iogearbox.net" <daniel@iogearbox.net>, 
+ "andrii@kernel.org" <andrii@kernel.org>, 
+ "martin.lau@linux.dev" <martin.lau@linux.dev>, 
+ "song@kernel.org" <song@kernel.org>, 
+ "yhs@fb.com" <yhs@fb.com>, 
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>, 
+ "kpsingh@kernel.org" <kpsingh@kernel.org>, 
+ "haoluo@google.com" <haoluo@google.com>, 
+ "jolsa@kernel.org" <jolsa@kernel.org>, 
+ David Ahern <dsahern@gmail.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Willem de Bruijn <willemb@google.com>, 
+ brouer@redhat.com, 
+ anatoly.burakov@intel.com, 
+ aleksander.lobakin@intel.com, 
+ Magnus Karlsson <magnus.karlsson@gmail.com>, 
+ mtahhan@redhat.com, 
+ "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>, 
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Message-ID: <64b9b41eea18b_2c3d5029438@willemb.c.googlers.com.notmuch>
+In-Reply-To: <ZLmstKiYO7LH9mXt@google.com>
+References: <20230719183734.21681-1-larysa.zaremba@intel.com>
+ <20230719183734.21681-14-larysa.zaremba@intel.com>
+ <20230719185930.6adapqctxfdsfmye@macbook-pro-8.dhcp.thefacebook.com>
+ <64b85ad52d012_2849c1294df@willemb.c.googlers.com.notmuch>
+ <ZLkBrfex1ENbVDwF@lincoln>
+ <CAADnVQKF3j-_qLM4MWkJKK=ZyPuWrLnmGfgf9BC4zm-4=1qSfw@mail.gmail.com>
+ <ZLlUyJdj50UqFM0m@lincoln>
+ <ZLmstKiYO7LH9mXt@google.com>
+Subject: Re: [PATCH bpf-next v3 13/21] ice: Implement checksum hint
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20230719183734.21681-1-larysa.zaremba@intel.com> <20230719183734.21681-22-larysa.zaremba@intel.com>
-Message-ID: <ZLmxyqiAuLHUzztt@google.com>
-Subject: Re: [PATCH bpf-next v3 21/21] selftests/bpf: check checksum state in xdp_metadata
-From: Stanislav Fomichev <sdf@google.com>
-To: Larysa Zaremba <larysa.zaremba@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Willem de Bruijn <willemb@google.com>, Jesper Dangaard Brouer <brouer@redhat.com>, 
-	Anatoly Burakov <anatoly.burakov@intel.com>, Alexander Lobakin <alexandr.lobakin@intel.com>, 
-	Magnus Karlsson <magnus.karlsson@gmail.com>, Maryam Tahhan <mtahhan@redhat.com>, 
-	xdp-hints@xdp-project.net, netdev@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 07/19, Larysa Zaremba wrote:
-> Verify, whether kfunc in xdp_metadata test correctly returns partial
-> checksum status and offsets.
-> 
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+Stanislav Fomichev wrote:
+> On 07/20, Zaremba, Larysa wrote:
+> > On Thu, Jul 20, 2023 at 08:14:52AM -0700, Alexei Starovoitov wrote:
+> > > On Thu, Jul 20, 2023 at 2:47=E2=80=AFAM Zaremba, Larysa
+> > > <larysa.zaremba@intel.com> wrote:
+> > > >
+> > > > On Wed, Jul 19, 2023 at 05:51:17PM -0400, Willem de Bruijn wrote:=
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
+> > > > > Alexei Starovoitov wrote:
+> > > > > > On Wed, Jul 19, 2023 at 08:37:26PM +0200, Larysa Zaremba wrot=
+e:
+> > > > > > > Implement .xmo_rx_csum callback to allow XDP code to determ=
+ine,
+> > > > > > > whether HW has validated any checksums.
+> > > > > > >
+> > > > > > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> > > > > > > ---
+> > > > > > >  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 29 +++++++=
+++++++++++++
+> > > > > > >  1 file changed, 29 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c =
+b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> > > > > > > index 54685d0747aa..6647a7e55ac8 100644
+> > > > > > > --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> > > > > > > +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> > > > > > > @@ -660,8 +660,37 @@ static int ice_xdp_rx_vlan_tag(const s=
+truct xdp_md *ctx, u16 *vlan_tci,
+> > > > > > >   return 0;
+> > > > > > >  }
+> > > > > > >
+> > > > > > > +/**
+> > > > > > > + * ice_xdp_rx_csum_lvl - Get level, at which HW has checke=
+d the checksum
+> > > > > > > + * @ctx: XDP buff pointer
+> > > > > > > + * @csum_status: destination address
+> > > > > > > + * @csum_info: destination address
+> > > > > > > + *
+> > > > > > > + * Copy HW checksum level (if was checked) to the destinat=
+ion address.
+> > > > > > > + */
+> > > > > > > +static int ice_xdp_rx_csum(const struct xdp_md *ctx,
+> > > > > > > +                    enum xdp_csum_status *csum_status,
+> > > > > > > +                    union xdp_csum_info *csum_info)
+> > > > > > > +{
+> > > > > > > + const struct ice_xdp_buff *xdp_ext =3D (void *)ctx;
+> > > > > > > + const union ice_32b_rx_flex_desc *eop_desc;
+> > > > > > > + enum ice_rx_csum_status status;
+> > > > > > > + u16 ptype;
+> > > > > > > +
+> > > > > > > + eop_desc =3D xdp_ext->pkt_ctx.eop_desc;
+> > > > > > > + ptype =3D ice_get_ptype(eop_desc);
+> > > > > > > +
+> > > > > > > + status =3D ice_get_rx_csum_status(eop_desc, ptype);
+> > > > > > > + if (status & ICE_RX_CSUM_NONE)
+> > > > > > > +         return -ENODATA;
+> > > > > > > +
+> > > > > > > + *csum_status =3D ice_rx_csum_lvl(status) + 1;
+> > =
 
-> ---
->  .../selftests/bpf/prog_tests/xdp_metadata.c   | 30 +++++++++++++++++++
->  .../selftests/bpf/progs/xdp_metadata.c        |  6 ++++
->  2 files changed, 36 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> index 6665cf0c59cc..c0ce66703696 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-> @@ -47,6 +47,7 @@
->  
->  #define XDP_RSS_TYPE_L4 BIT(3)
->  #define VLAN_VID_MASK 0xfff
-> +#define XDP_CHECKSUM_PARTIAL BIT(3)
->  
->  struct xsk {
->  	void *umem_area;
-> @@ -168,6 +169,32 @@ static void refill_rx(struct xsk *xsk, __u64 addr)
->  	}
->  }
->  
-> +struct partial_csum_info {
-> +	__u16 csum_start;
-> +	__u16 csum_offset;
-> +};
-> +
-> +static bool assert_checksum_ok(struct xdp_meta *meta)
-> +{
-> +	struct partial_csum_info *info;
-> +	u32 csum_start, csum_offset;
-> +
-> +	if (!ASSERT_EQ(meta->rx_csum_status, XDP_CHECKSUM_PARTIAL,
-> +		       "rx_csum_status"))
-> +		return false;
-> +
-> +	csum_start = sizeof(struct ethhdr) + sizeof(struct iphdr);
-> +	csum_offset = offsetof(struct udphdr, check);
-> +	info = (void *)&meta->rx_csum_info;
-> +
-> +	if (!ASSERT_EQ(info->csum_start, csum_start, "rx csum_start"))
-> +		return false;
-> +	if (!ASSERT_EQ(info->csum_offset, csum_offset, "rx csum_offset"))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  static int verify_xsk_metadata(struct xsk *xsk)
->  {
->  	const struct xdp_desc *rx_desc;
-> @@ -229,6 +256,9 @@ static int verify_xsk_metadata(struct xsk *xsk)
->  	if (!ASSERT_EQ(meta->rx_vlan_proto, VLAN_PID, "rx_vlan_proto"))
->  		return -1;
->  
-> +	if (!assert_checksum_ok(meta))
-> +		return -1;
-> +
->  	xsk_ring_cons__release(&xsk->rx, 1);
->  	refill_rx(xsk, comp_addr);
->  
-> diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata.c b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-> index d3111649170e..e79667a0726e 100644
-> --- a/tools/testing/selftests/bpf/progs/xdp_metadata.c
-> +++ b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-> @@ -26,6 +26,9 @@ extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
->  extern int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
->  					__u16 *vlan_tci,
->  					__be16 *vlan_proto) __ksym;
-> +extern int bpf_xdp_metadata_rx_csum(const struct xdp_md *ctx,
-> +				    enum xdp_csum_status *csum_status,
-> +				    union xdp_csum_info *csum_info) __ksym;
->  
->  SEC("xdp")
->  int rx(struct xdp_md *ctx)
-> @@ -62,6 +65,9 @@ int rx(struct xdp_md *ctx)
->  	bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash_type);
->  	bpf_xdp_metadata_rx_vlan_tag(ctx, &meta->rx_vlan_tci, &meta->rx_vlan_proto);
->  
-> +	bpf_xdp_metadata_rx_csum(ctx, &meta->rx_csum_status,
-> +				 (void *)&meta->rx_csum_info);
-> +
->  	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
->  }
->  
-> -- 
-> 2.41.0
-> 
+> > I'll duplicate an improved version of this line from another thread i=
+n case it =
+
+> > could help with the comprehension during review:
+> > =
+
+> > *csum_status =3D XDP_CHECKSUM_VALID_LVL0 + ice_rx_csum_lvl(status);
+> > =
+
+> > > > > > > + return 0;
+> > > > > > > +}
+> > > > > >
+> > > > > > and xdp_csum_info from previous patch left uninitialized?
+> > > > > > What was the point adding it then?
+> > > > >
+> > > > > I suppose this driver only returns CHECKSUM_NONE or
+> > > > > CHECKSUM_UNNECESSARY? Also based on a grep of the driver dir.
+> > > > >
+> > > >
+> > > > Yes, correct, current ice HW cannot produce complete checksum,
+> > > > so only CHECKSUM_UNNECESSARY for known protocols, CHECKSUM_NONE o=
+therwise,
+> > > > nothing to initialize csum_info with in either case.
+> > > >
+> > > > xdp_csum_info is initialized in veth implementation though, but o=
+nly
+> > > > csum_start/offset, so complete XDP checksum has no users in this =
+patchset.
+> > > > Is this a problem?
+> > > >
+> > > > In previous version I had CHECKSUM_UNNECESSARY-only kfunc, but I =
+think everyone
+> > > > has agreed, csum hint kfunc should give more comprehensive output=
+.
+> > > =
+
+> > > csum kfunc supposed to be generic.
+> > > If for ICE it fills in one argument and for veth another then the w=
+hole
+> > > idea of generic api is not working.
+> > =
+
+> > Both ice and veth fill in the csum_status, the need to fill in the cs=
+um_info is =
+
+> > determined by the status. I don not see a problem with that.
+> > =
+
+> > Maybe you have an issue with putting a valid checksum number into a s=
+tatus =
+
+> > instead of info? Please clarify.
+> =
+
+> +1, that seems to match skb interface
+> =
+
+> Regarding 'generic api not working' in general: I think we've discussed=
+
+> that with this 'flexible' kfunc format we can allow non-generic kfuncs =
+for
+> specific devices if we think that it makes sense to
+> differentiate/experiment/etc. Do you think it makes sense to go
+> non-generic route here?
+
+I think we should expose the standard CHECKSUM_* behavior.
+
+The current encoding captures all four types. Which type is returned
+is not necessarily defined only by the device. Some devices can
+return CHECKSUM_NONE for some packets, CHECKSUM_PARTIAL for others
+and CHECKSUM_UNNECESSARY for a third set (e.g., mlx4). Specializing
+the return type to the device would not simplify the struct.
 
