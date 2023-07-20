@@ -1,116 +1,164 @@
-Return-Path: <bpf+bounces-5440-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5441-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A84F575ACEF
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 13:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F6B975AD12
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 13:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D93451C2131E
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 11:26:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 891831C211B8
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 11:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E3F17756;
-	Thu, 20 Jul 2023 11:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1540A17755;
+	Thu, 20 Jul 2023 11:35:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8DE17747
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 11:26:11 +0000 (UTC)
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEC7269A
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 04:26:09 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40540a8a3bbso228361cf.1
-        for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 04:26:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689852368; x=1690457168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F2MQuw8Dxgx9roDvjU2BN2mY103293qsRDuml6/qqIQ=;
-        b=jPMEoPysjbHqWgLXcHDSEXQDIHkF3VfRD39krR/lmEk++0stlV4zN6H59jOpxWKYXq
-         ep+EmnY7Zk3cJ9WWk6KK/0qoqYMgEFmQ9XykC1MXjUmASsKFGt3HxLrkyjnxMJdgOwo0
-         MjIsZPKBmt+2DPErkXmHMrvyuN10vEq38bL0MBxs4N/+RAGkAQ/Ql74UJveZXkWyWG2U
-         pb/TlntTA5NGxU2CBq/+KsFnhyvMwVzFU28aDTEAZEmkgo2asB0Dttt/AJz55BW2YFkU
-         tceAq3Mfi5GMB8umambkr/CVoAAYVj09j72gPiz840JFJVGLTG4RGBaBVFOWBSearRwV
-         79Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689852368; x=1690457168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F2MQuw8Dxgx9roDvjU2BN2mY103293qsRDuml6/qqIQ=;
-        b=AwO9aQYM4jTnAcTwIyxcP8nHn12PuVB7d77m7MtSIvpdMXvJZLjzyLCxN8YI9gLdTK
-         9ioXTFlO+LZFCVfR2SlPVcgUQFHZhker7yDmOSV+XravhIvOB4FPUn3zoReIvONCEp2K
-         WO8bjlIHG8wSQTTiyqwgguBMX8kAAai2hy/v04ArkzeAx9elx2o8/4RE6a7ngD4fPpIi
-         8IJ8tkvdOA//lktswlYY3DzOt6APoA5ieIurUbNR/dDSEyELGCSkzyPPpaoZ3M5bsomF
-         cq3p5PEtG0RytOdL0SR9FkxomNKyhcgDLkf42Q89glOPKcOuwuX9VfbL2anZsXzhXjS8
-         ahKQ==
-X-Gm-Message-State: ABy/qLZPsB9y9PoCA1JzJeEsA+aO7DonlMgPPzypaQ3z2ZFQmdHHkPmP
-	dp3frRW/wrXzkFADB76Zfz9KZXp9fVuVS4SfQ3+euw==
-X-Google-Smtp-Source: APBJJlFUUUF0CJwIRK7aVYOKXyc90+vnfOJ/rVwe6i4oWGffAtXVNtER7F4inW8FsyhFjYPXpQBHZR2EWwqFfA6aIiM=
-X-Received: by 2002:a05:622a:1756:b0:403:eb3c:37af with SMTP id
- l22-20020a05622a175600b00403eb3c37afmr274138qtk.26.1689852368426; Thu, 20 Jul
- 2023 04:26:08 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F9E17749
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 11:35:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 241F6C433C7;
+	Thu, 20 Jul 2023 11:35:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689852955;
+	bh=8alHatLbTQn5XvjLsDlDwyLYvoxDTur9fyb+q5c3YiI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=P0bve2x78A1GtP+9sY321IofzaRn6PZng82U5hQDU6BhNBPe7NJ36AozhXd/j4OIv
+	 8U00vaFezrzJ7j8fI7bB7l32eYh0491NAUtJAFiz+UsXOLxlWiFBOB+Gzsxfd6GnZ7
+	 mRo+M8GjE460UL1BzHoCJ38i7Hy6Zg5TMlcQ9dMw35g1MGyvYwKuVo719LOaICAwCR
+	 mLT2ASeAooZP8KQlzWqsZiRUcW/VoYHJmlMFrl6YRFK7yqix2UaT5xFZJHTCOnTxgD
+	 3LBK8XMQIFCNxI3FYBK9hUp77sXvO+usqhSCHPLwE//WI4BsCFf1lDybqZD+iw5Qkm
+	 oAhjiX3AsgcMQ==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>
+Subject: [PATCHv4 bpf-next 00/28] bpf: Add multi uprobe link
+Date: Thu, 20 Jul 2023 13:35:22 +0200
+Message-ID: <20230720113550.369257-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230719175424.75717-1-alexei.starovoitov@gmail.com> <168981062676.16059.265161693073743539.git-patchwork-notify@kernel.org>
-In-Reply-To: <168981062676.16059.265161693073743539.git-patchwork-notify@kernel.org>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 20 Jul 2023 13:25:57 +0200
-Message-ID: <CANn89iKLtOcYyqytxH6zrR4P7MJ-t0FwSKL=Wt7UwYWdQeJ1KA@mail.gmail.com>
-Subject: Re: pull-request: bpf-next 2023-07-19
-To: patchwork-bot+netdevbpf@kernel.org
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, davem@davemloft.net, kuba@kernel.org, 
-	pabeni@redhat.com, daniel@iogearbox.net, andrii@kernel.org, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jul 20, 2023 at 1:50=E2=80=AFAM <patchwork-bot+netdevbpf@kernel.org=
-> wrote:
->
-> Hello:
->
-> This pull request was applied to netdev/net-next.git (main)
-> by Jakub Kicinski <kuba@kernel.org>:
->
-> On Wed, 19 Jul 2023 10:54:24 -0700 you wrote:
-> > Hi David, hi Jakub, hi Paolo, hi Eric,
-> >
-> > The following pull-request contains BPF updates for your *net-next* tre=
-e.
-> >
-> > We've added 45 non-merge commits during the last 3 day(s) which contain
-> > a total of 71 files changed, 7808 insertions(+), 592 deletions(-).
-> >
-> > [...]
->
-> Here is the summary with links:
->   - pull-request: bpf-next 2023-07-19
->     https://git.kernel.org/netdev/net-next/c/e93165d5e75d
->
-> You are awesome, thank you!
-> --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
->
->
+hi,
+this patchset is adding support to attach multiple uprobes and usdt probes
+through new uprobe_multi link.
 
-"bpf: Add fd-based tcx multi-prog infra with link support" seems to
-cause a bunch of syzbot reports.
+The current uprobe is attached through the perf event and attaching many
+uprobes takes a lot of time because of that.
 
-I am waiting a bit for more entropy before releasing them to the public.
+The main reason is that we need to install perf event for each probed function
+and profile shows perf event installation (perf_install_in_context) as culprit.
+
+The new uprobe_multi link just creates raw uprobes and attaches the bpf
+program to them without perf event being involved.
+
+In addition to being faster we also save file descriptors. For the current
+uprobe attach we use extra perf event fd for each probed function. The new
+link just need one fd that covers all the functions we are attaching to.
+
+v4 changes:
+  - fixed path leak in bpf_uprobe_multi_link_attach error path [Andrii]
+  - move libbpf_elf.h to libbpf_internal.h [Andrii]
+  - many fixes for new elf helpers [Andrii]
+  - fixes in bpf_program__attach_uprobe_multi [Andrii]
+  - changed uprobe multi link detection [Andrii]
+  - changed uprobe multi link detection in usdt code [Andrii]
+  - moved get_time_ns to testing_helpers.h [Andrii]
+  - moved bench/usdt test code just to uprobe_multi [Andrii]
+  - added special progs object for uprobe bench program [Andrii]
+  - moved BPF_F_KPROBE_MULTI_RETURN macro to enum [Andrii]
+  - fixed error found by CI [David]
+  - several minor changes [Andrii]
+  - added acks
+
+There's support for bpftrace [2] and tetragon [1].
+
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  uprobe_multi
+
+thanks,
+jirka
+
+
+[1] https://github.com/cilium/tetragon/pull/936
+[2] https://github.com/iovisor/bpftrace/compare/master...olsajiri:bpftrace:uprobe_multi
+[3] https://lore.kernel.org/bpf/20230628115329.248450-1-laoar.shao@gmail.com/
+---
+Jiri Olsa (28):
+      bpf: Switch BPF_F_KPROBE_MULTI_RETURN macro to enum
+      bpf: Add attach_type checks under bpf_prog_attach_check_attach_type
+      bpf: Add multi uprobe link
+      bpf: Add cookies support for uprobe_multi link
+      bpf: Add pid filter support for uprobe_multi link
+      bpf: Add bpf_get_func_ip helper support for uprobe link
+      libbpf: Add uprobe_multi attach type and link names
+      libbpf: Move elf_find_func_offset* functions to elf object
+      libbpf: Add elf_open/elf_close functions
+      libbpf: Add elf symbol iterator
+      libbpf: Add elf_resolve_syms_offsets function
+      libbpf: Add elf_resolve_pattern_offsets function
+      libbpf: Add bpf_link_create support for multi uprobes
+      libbpf: Add bpf_program__attach_uprobe_multi function
+      libbpf: Add support for u[ret]probe.multi[.s] program sections
+      libbpf: Add uprobe multi link detection
+      libbpf: Add uprobe multi link support to bpf_program__attach_usdt
+      selftests/bpf: Move get_time_ns to testing_helpers.h
+      selftests/bpf: Add uprobe_multi skel test
+      selftests/bpf: Add uprobe_multi api test
+      selftests/bpf: Add uprobe_multi link test
+      selftests/bpf: Add uprobe_multi test program
+      selftests/bpf: Add uprobe_multi bench test
+      selftests/bpf: Add uprobe_multi usdt test code
+      selftests/bpf: Add uprobe_multi usdt bench test
+      selftests/bpf: Add uprobe_multi cookie test
+      selftests/bpf: Add uprobe_multi pid filter tests
+      selftests/bpf: Add extra link to uprobe_multi tests
+
+ include/linux/trace_events.h                               |   6 ++
+ include/uapi/linux/bpf.h                                   |  22 ++++-
+ kernel/bpf/syscall.c                                       | 122 ++++++++++++--------------
+ kernel/trace/bpf_trace.c                                   | 346 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ tools/include/uapi/linux/bpf.h                             |  22 ++++-
+ tools/lib/bpf/Build                                        |   2 +-
+ tools/lib/bpf/bpf.c                                        |  11 +++
+ tools/lib/bpf/bpf.h                                        |  11 ++-
+ tools/lib/bpf/elf.c                                        | 440 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/lib/bpf/libbpf.c                                     | 388 ++++++++++++++++++++++++++++++++++++++++++---------------------------------------
+ tools/lib/bpf/libbpf.h                                     |  51 +++++++++++
+ tools/lib/bpf/libbpf.map                                   |   1 +
+ tools/lib/bpf/libbpf_internal.h                            |  21 +++++
+ tools/lib/bpf/usdt.c                                       | 116 ++++++++++++++++--------
+ tools/testing/selftests/bpf/Makefile                       |   5 ++
+ tools/testing/selftests/bpf/bench.h                        |   9 --
+ tools/testing/selftests/bpf/prog_tests/bpf_cookie.c        |  78 +++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c |   8 --
+ tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c | 414 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/uprobe_multi.c           | 101 +++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/uprobe_multi_bench.c     |  15 ++++
+ tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c      |  16 ++++
+ tools/testing/selftests/bpf/testing_helpers.h              |  10 +++
+ tools/testing/selftests/bpf/uprobe_multi.c                 |  91 +++++++++++++++++++
+ 24 files changed, 1990 insertions(+), 316 deletions(-)
+ create mode 100644 tools/lib/bpf/elf.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_bench.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi_usdt.c
+ create mode 100644 tools/testing/selftests/bpf/uprobe_multi.c
 
