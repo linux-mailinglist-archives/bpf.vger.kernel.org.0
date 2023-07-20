@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-5520-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5519-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BAFC75B4BC
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 18:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B40B375B4A5
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 18:39:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B46501C21454
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 16:42:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E456E1C214E2
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 16:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35F32FA2D;
-	Thu, 20 Jul 2023 16:42:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD9B2FA2B;
+	Thu, 20 Jul 2023 16:39:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A51312FA20
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 16:42:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D552FA20
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 16:39:12 +0000 (UTC)
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39277173A
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 09:41:51 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C4C10F5
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 09:38:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1689871310;
+	s=mimecast20190719; t=1689871082;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gPdSzcTTJlOeO2aEdgyECLhQy37txJLWdi6TDmez9kY=;
-	b=dDQ9jRel6c+3ynZZwrrqt0rMUiGVYheKJzLJNdP9P+OU52V1AaOoLcIVJPILTzonZ3SZ1b
-	1vxqyWFh6mIQKhRoSe3zMvq85wyO4JzczgqFcLO73DTB4WtJ3I+rhqIDGkV5ZUMsj4niSO
-	pL4yerGoKa8BuYfFwf067Vwsc6h5rzY=
+	bh=D+WoXJvLSOgt+Kve5Q+fkVLRoN9HdK3x6VSzpxIN5vU=;
+	b=N0N3S4BrI6ewibq0g7IofA8z40aKKra/Je/vl2HFEGe0r3FBnOwwhDcE+8xtiae+vPEpjM
+	t4gtBKW8eLdYyo1Z/0FVoTDkpmiY7eW8ZdHOnlDP6LDsBabPrMJ549WdgSgSJJRk9KONZJ
+	naP6dCbk1rK9ad7+vvc0w2ceGbiO1kg=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-230-kFK-c7oyNgC289gF1X8KZw-1; Thu, 20 Jul 2023 12:34:11 -0400
-X-MC-Unique: kFK-c7oyNgC289gF1X8KZw-1
+ us-mta-225-n6Pvv7lTMfCgsmkY3ui-qw-1; Thu, 20 Jul 2023 12:34:19 -0400
+X-MC-Unique: n6Pvv7lTMfCgsmkY3ui-qw-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4FA07101A54E;
-	Thu, 20 Jul 2023 16:34:08 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5937B185A78F;
+	Thu, 20 Jul 2023 16:34:16 +0000 (UTC)
 Received: from vschneid.remote.csb (unknown [10.42.28.48])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 29A9240C206F;
-	Thu, 20 Jul 2023 16:33:59 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 8D32A40C2070;
+	Thu, 20 Jul 2023 16:34:08 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
@@ -104,9 +104,9 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Daniel Bristot de Oliveira <bristot@redhat.com>,
 	Marcelo Tosatti <mtosatti@redhat.com>,
 	Yair Podemsky <ypodemsk@redhat.com>
-Subject: [RFC PATCH v2 16/20] rcu: Make RCU dynticks counter size configurable
-Date: Thu, 20 Jul 2023 17:30:52 +0100
-Message-Id: <20230720163056.2564824-17-vschneid@redhat.com>
+Subject: [RFC PATCH v2 17/20] rcutorture: Add a test config to torture test low RCU_DYNTICKS width
+Date: Thu, 20 Jul 2023 17:30:53 +0100
+Message-Id: <20230720163056.2564824-18-vschneid@redhat.com>
 In-Reply-To: <20230720163056.2564824-1-vschneid@redhat.com>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
 Precedence: bulk
@@ -125,93 +125,54 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-CONTEXT_TRACKING_WORK reduces the size of the dynticks counter to free up
-some bits for work deferral. Paul suggested making the actual counter size
-configurable for rcutorture to poke at, so do that.
+We now have an RCU_EXPORT knob for configuring the size of the dynticks
+counter: CONFIG_RCU_DYNTICKS_BITS.
 
-Make it only configurable under RCU_EXPERT. Previous commits have added
-build-time checks that ensure a kernel with problematic dynticks counter
-width can't be built.
+Add a torture config for a ridiculously small counter (2 bits). This is ac
+opy of TREE4 with the added counter size restriction.
 
 Link: http://lore.kernel.org/r/4c2cb573-168f-4806-b1d9-164e8276e66a@paulmck-laptop
 Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- include/linux/context_tracking.h       |  3 ++-
- include/linux/context_tracking_state.h |  3 +--
- kernel/rcu/Kconfig                     | 33 ++++++++++++++++++++++++++
- 3 files changed, 36 insertions(+), 3 deletions(-)
+ .../selftests/rcutorture/configs/rcu/TREE11   | 19 +++++++++++++++++++
+ .../rcutorture/configs/rcu/TREE11.boot        |  1 +
+ 2 files changed, 20 insertions(+)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
 
-diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
-index 8aee086d0a25f..9c0c622bc27bb 100644
---- a/include/linux/context_tracking.h
-+++ b/include/linux/context_tracking.h
-@@ -12,7 +12,8 @@
- 
- #ifdef CONFIG_CONTEXT_TRACKING_WORK
- static_assert(CONTEXT_WORK_MAX_OFFSET <= CONTEXT_WORK_END + 1 - CONTEXT_WORK_START,
--	      "Not enough bits for CONTEXT_WORK");
-+	      "Not enough bits for CONTEXT_WORK, "
-+	      "CONFIG_RCU_DYNTICKS_BITS might be too high");
- #endif
- 
- #ifdef CONFIG_CONTEXT_TRACKING_USER
-diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
-index 828fcdb801f73..292a0b7c06948 100644
---- a/include/linux/context_tracking_state.h
-+++ b/include/linux/context_tracking_state.h
-@@ -58,8 +58,7 @@ enum ctx_state {
- #define CONTEXT_STATE_START 0
- #define CONTEXT_STATE_END   (bits_per(CONTEXT_MAX - 1) - 1)
- 
--#define RCU_DYNTICKS_BITS  (IS_ENABLED(CONFIG_CONTEXT_TRACKING_WORK) ? 16 : 31)
--#define RCU_DYNTICKS_START (CT_STATE_SIZE - RCU_DYNTICKS_BITS)
-+#define RCU_DYNTICKS_START (CT_STATE_SIZE - CONFIG_RCU_DYNTICKS_BITS)
- #define RCU_DYNTICKS_END   (CT_STATE_SIZE - 1)
- #define RCU_DYNTICKS_IDX   BIT(RCU_DYNTICKS_START)
- 
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index bdd7eadb33d8f..1ff2aab24e964 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -332,4 +332,37 @@ config RCU_DOUBLE_CHECK_CB_TIME
- 	  Say Y here if you need tighter callback-limit enforcement.
- 	  Say N here if you are unsure.
- 
-+config RCU_DYNTICKS_RANGE_BEGIN
-+	int
-+	depends on !RCU_EXPERT
-+	default 31 if !CONTEXT_TRACKING_WORK
-+	default 16 if CONTEXT_TRACKING_WORK
-+
-+config RCU_DYNTICKS_RANGE_BEGIN
-+	int
-+	depends on RCU_EXPERT
-+	default 2
-+
-+config RCU_DYNTICKS_RANGE_END
-+	int
-+	default 31 if !CONTEXT_TRACKING_WORK
-+	default 16 if CONTEXT_TRACKING_WORK
-+
-+config RCU_DYNTICKS_BITS_DEFAULT
-+       int
-+       default 31 if !CONTEXT_TRACKING_WORK
-+       default 16 if CONTEXT_TRACKING_WORK
-+
-+config RCU_DYNTICKS_BITS
-+	int "Dynticks counter width" if CONTEXT_TRACKING_WORK
-+	range RCU_DYNTICKS_RANGE_BEGIN RCU_DYNTICKS_RANGE_END
-+	default RCU_DYNTICKS_BITS_DEFAULT
-+	help
-+	  This option controls the width of the dynticks counter.
-+
-+	  Lower values will make overflows more frequent, which will increase
-+	  the likelihood of extending grace-periods.
-+
-+	  Don't touch this unless you are running some tests.
-+
- endmenu # "RCU Subsystem"
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11 b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+new file mode 100644
+index 0000000000000..aa7274efd9819
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+@@ -0,0 +1,19 @@
++CONFIG_SMP=y
++CONFIG_NR_CPUS=8
++CONFIG_PREEMPT_NONE=n
++CONFIG_PREEMPT_VOLUNTARY=y
++CONFIG_PREEMPT=n
++CONFIG_PREEMPT_DYNAMIC=n
++#CHECK#CONFIG_TREE_RCU=y
++CONFIG_HZ_PERIODIC=n
++CONFIG_NO_HZ_IDLE=n
++CONFIG_NO_HZ_FULL=y
++CONFIG_RCU_TRACE=y
++CONFIG_RCU_FANOUT=4
++CONFIG_RCU_FANOUT_LEAF=3
++CONFIG_DEBUG_LOCK_ALLOC=n
++CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
++CONFIG_RCU_EXPERT=y
++CONFIG_RCU_EQS_DEBUG=y
++CONFIG_RCU_LAZY=y
++CONFIG_RCU_DYNTICKS_BITS=2
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
+new file mode 100644
+index 0000000000000..a8d94caf7d2fd
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11.boot
+@@ -0,0 +1 @@
++rcutree.rcu_fanout_leaf=4 nohz_full=1-N
 -- 
 2.31.1
 
