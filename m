@@ -1,103 +1,116 @@
-Return-Path: <bpf+bounces-5439-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5440-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 569AB75AC92
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 13:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A84F575ACEF
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 13:26:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6444F1C2138F
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 11:07:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D93451C2131E
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 11:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 568D41773E;
-	Thu, 20 Jul 2023 11:07:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E3F17756;
+	Thu, 20 Jul 2023 11:26:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12EEB14A9C;
-	Thu, 20 Jul 2023 11:07:35 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EAB268F;
-	Thu, 20 Jul 2023 04:07:34 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R68vq66JMztRZQ;
-	Thu, 20 Jul 2023 19:04:23 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 20 Jul
- 2023 19:07:31 +0800
-Subject: Re: [PATCH net-next] page_pool: split types and declarations from
- page_pool.h
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Eric Dumazet
-	<edumazet@google.com>, Wei Fang <wei.fang@nxp.com>, Shenwei Wang
-	<shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, NXP Linux Team
-	<linux-imx@nxp.com>, Sunil Goutham <sgoutham@marvell.com>, Geetha sowjanya
-	<gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, hariprasad
-	<hkelam@marvell.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
-	<leon@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne
- Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle
- Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Ilias
- Apalodimas <ilias.apalodimas@linaro.org>, <linux-rdma@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-References: <20230719121339.63331-1-linyunsheng@huawei.com>
- <0838ed9e-8b5c-cc93-0175-9d6cbf695dda@intel.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <7e9c1276-9996-d9dd-c061-b1e66361c48b@huawei.com>
-Date: Thu, 20 Jul 2023 19:07:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8DE17747
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 11:26:11 +0000 (UTC)
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEC7269A
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 04:26:09 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40540a8a3bbso228361cf.1
+        for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 04:26:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689852368; x=1690457168;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F2MQuw8Dxgx9roDvjU2BN2mY103293qsRDuml6/qqIQ=;
+        b=jPMEoPysjbHqWgLXcHDSEXQDIHkF3VfRD39krR/lmEk++0stlV4zN6H59jOpxWKYXq
+         ep+EmnY7Zk3cJ9WWk6KK/0qoqYMgEFmQ9XykC1MXjUmASsKFGt3HxLrkyjnxMJdgOwo0
+         MjIsZPKBmt+2DPErkXmHMrvyuN10vEq38bL0MBxs4N/+RAGkAQ/Ql74UJveZXkWyWG2U
+         pb/TlntTA5NGxU2CBq/+KsFnhyvMwVzFU28aDTEAZEmkgo2asB0Dttt/AJz55BW2YFkU
+         tceAq3Mfi5GMB8umambkr/CVoAAYVj09j72gPiz840JFJVGLTG4RGBaBVFOWBSearRwV
+         79Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689852368; x=1690457168;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=F2MQuw8Dxgx9roDvjU2BN2mY103293qsRDuml6/qqIQ=;
+        b=AwO9aQYM4jTnAcTwIyxcP8nHn12PuVB7d77m7MtSIvpdMXvJZLjzyLCxN8YI9gLdTK
+         9ioXTFlO+LZFCVfR2SlPVcgUQFHZhker7yDmOSV+XravhIvOB4FPUn3zoReIvONCEp2K
+         WO8bjlIHG8wSQTTiyqwgguBMX8kAAai2hy/v04ArkzeAx9elx2o8/4RE6a7ngD4fPpIi
+         8IJ8tkvdOA//lktswlYY3DzOt6APoA5ieIurUbNR/dDSEyELGCSkzyPPpaoZ3M5bsomF
+         cq3p5PEtG0RytOdL0SR9FkxomNKyhcgDLkf42Q89glOPKcOuwuX9VfbL2anZsXzhXjS8
+         ahKQ==
+X-Gm-Message-State: ABy/qLZPsB9y9PoCA1JzJeEsA+aO7DonlMgPPzypaQ3z2ZFQmdHHkPmP
+	dp3frRW/wrXzkFADB76Zfz9KZXp9fVuVS4SfQ3+euw==
+X-Google-Smtp-Source: APBJJlFUUUF0CJwIRK7aVYOKXyc90+vnfOJ/rVwe6i4oWGffAtXVNtER7F4inW8FsyhFjYPXpQBHZR2EWwqFfA6aIiM=
+X-Received: by 2002:a05:622a:1756:b0:403:eb3c:37af with SMTP id
+ l22-20020a05622a175600b00403eb3c37afmr274138qtk.26.1689852368426; Thu, 20 Jul
+ 2023 04:26:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <0838ed9e-8b5c-cc93-0175-9d6cbf695dda@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20230719175424.75717-1-alexei.starovoitov@gmail.com> <168981062676.16059.265161693073743539.git-patchwork-notify@kernel.org>
+In-Reply-To: <168981062676.16059.265161693073743539.git-patchwork-notify@kernel.org>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 20 Jul 2023 13:25:57 +0200
+Message-ID: <CANn89iKLtOcYyqytxH6zrR4P7MJ-t0FwSKL=Wt7UwYWdQeJ1KA@mail.gmail.com>
+Subject: Re: pull-request: bpf-next 2023-07-19
+To: patchwork-bot+netdevbpf@kernel.org
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, davem@davemloft.net, kuba@kernel.org, 
+	pabeni@redhat.com, daniel@iogearbox.net, andrii@kernel.org, 
+	netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 2023/7/20 0:42, Alexander Lobakin wrote:
-> 
-> BTW, what do you think: is it better to have those two includes in the
-> root include/net/ folder or do something like
-> 
-> include/net/page_pool/
->   * types.h
->   * <some meaningful name>.h (let's say driver.h)
-> 
-> like it's done e.g. for GPIO (see include/linux/gpio/)?
+On Thu, Jul 20, 2023 at 1:50=E2=80=AFAM <patchwork-bot+netdevbpf@kernel.org=
+> wrote:
+>
+> Hello:
+>
+> This pull request was applied to netdev/net-next.git (main)
+> by Jakub Kicinski <kuba@kernel.org>:
+>
+> On Wed, 19 Jul 2023 10:54:24 -0700 you wrote:
+> > Hi David, hi Jakub, hi Paolo, hi Eric,
+> >
+> > The following pull-request contains BPF updates for your *net-next* tre=
+e.
+> >
+> > We've added 45 non-merge commits during the last 3 day(s) which contain
+> > a total of 71 files changed, 7808 insertions(+), 592 deletions(-).
+> >
+> > [...]
+>
+> Here is the summary with links:
+>   - pull-request: bpf-next 2023-07-19
+>     https://git.kernel.org/netdev/net-next/c/e93165d5e75d
+>
+> You are awesome, thank you!
+> --
+> Deet-doot-dot, I am a bot.
+> https://korg.docs.kernel.org/patchwork/pwbot.html
+>
+>
 
-It make more sense to add a new dir for page pool if there are
-more new headers added. As we are still keeping the page_pool.h
-mirroring include/linux/gpio.h, adding a new dir for only one
-header file only add another level of dir without abvious benefit.
-We can add a new dir for it if we turn out to be needing more header
-file for page pool in the future, does it make sense?
+"bpf: Add fd-based tcx multi-prog infra with link support" seems to
+cause a bunch of syzbot reports.
 
-> 
-> Thanks,
-> Olek
-> 
-> .
-> 
+I am waiting a bit for more entropy before releasing them to the public.
 
