@@ -1,495 +1,259 @@
-Return-Path: <bpf+bounces-5489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D45EA75B2E1
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 17:35:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9790E75B337
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 17:42:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 033401C213ED
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 15:35:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 474ED281F0F
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 15:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2E71DDDB;
-	Thu, 20 Jul 2023 15:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 149DA18C2E;
+	Thu, 20 Jul 2023 15:42:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E9E81DDCE
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 15:31:14 +0000 (UTC)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FFD2727
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 08:30:55 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4f9fdb0ef35so1512487e87.0
-        for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 08:30:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1689867054; x=1690471854;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j9vM5wwa750nRnPWEJb6XAJ919lw+QT8F9GWIwMy1Kw=;
-        b=XbKtG0IrHJHpsbf4p0uTeVQb0rwrbxmiIb8bh876jlF/hsXQItKLwAi045rVm/kxMo
-         6ZtKHuvClG0OsbGsq9kAiLyhlGpqBNuPrM9pk1OqpKII5cqxeeipDIu0XG2BAOpnfqbP
-         a0Xo3kteqeyiUNOWTGHORPNbpvdF3lQNC9lyIr8kazM3/9kRSQa56km4eYfCgoJHseLO
-         zeU4xGyfpKErG4/c41BY8YfZMzo32AZRavXhY20BXbBsSFudZTK0F5QQo3ePFaNvc6Yd
-         7dDT4RfQLTYs2pzy8EBdHFDS4jFCSvIMb8Muj+QSTHieNwp4e3ls7KJrUFRYTVosfYVA
-         VEIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689867054; x=1690471854;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j9vM5wwa750nRnPWEJb6XAJ919lw+QT8F9GWIwMy1Kw=;
-        b=B8THsRp4gqkRWc+YVFND9HXSunZ6HQSsL4P3Gi9k5BcjtngtawZ69d45eB+zVCrK9+
-         iy+dnrIkjkYYARya1Mg+rabtWheARTvkeSBdw5y0Sp9no3UrT2X9I8/IwXie65GANsv5
-         xlZMd07nViKTd2D695Ua+CHXPfDtwYO4uKBLxkohh95z5ETATb1Ua1O3GpuevXjXkZP1
-         M/lOrnUcd8Eme9mq1bcxUdRnXzJ4kxPk+/uSsdUwqbQ8/LLpyQLATBrDU9DCkz22E2KP
-         lEVUMcH143shP/vG0P04CDzoKeRj2jMQJBNrLbOJBf00pEMbpM9kwPo+juSKxGRDd3H1
-         g05w==
-X-Gm-Message-State: ABy/qLa9oIi7GROFJv5ctLELbJB7I3fB6lTvFAnceJNcKAZJYJdikZXR
-	qUAk3s9rKDCwaDc1omSg50rDEg==
-X-Google-Smtp-Source: APBJJlE4HlovfIP4NvH5BEUjtVQ8HqIc0ypdCqhndVMnkY0YkTDj9bSGsVbk2zsTtBVjD5xYk1nMEA==
-X-Received: by 2002:a19:4f02:0:b0:4fb:73d1:58e5 with SMTP id d2-20020a194f02000000b004fb73d158e5mr1563717lfb.53.1689867053782;
-        Thu, 20 Jul 2023 08:30:53 -0700 (PDT)
-Received: from [192.168.188.151] (p200300c1c7176000b788d2ebe49c4b82.dip0.t-ipconnect.de. [2003:c1:c717:6000:b788:d2eb:e49c:4b82])
-        by smtp.gmail.com with ESMTPSA id x10-20020a170906804a00b009893b06e9e3sm851007ejw.225.2023.07.20.08.30.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 08:30:53 -0700 (PDT)
-From: Lorenz Bauer <lmb@isovalent.com>
-Date: Thu, 20 Jul 2023 17:30:12 +0200
-Subject: [PATCH bpf-next v6 8/8] selftests/bpf: Test that SO_REUSEPORT can
- be used with sk_assign helper
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 951EB18C1A;
+	Thu, 20 Jul 2023 15:42:03 +0000 (UTC)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245C610A;
+	Thu, 20 Jul 2023 08:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689867721; x=1721403721;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=wxy3v9HN0QnPXpCwwFTM3y5Wl2dJtCVWSWyA/sHy7vc=;
+  b=Ijf++cSlSZuO0IPlvPoUhLkhVK0aKrQlDT4m/SvC2a/UAGAcACQmE1Wz
+   X/Mv4lcG+a5sbTJcqPriW4QBC8NZnFoDiBbnJl0/0xs9qaNxy5448Sjk/
+   3Jo/HX5zxbXl+6u3JnaZ316QwfNxh958nLfTG6qRtHVDtPyaXOXAbO02t
+   47hbGx41ec/0cHswXiNhvp18ZEsSmULtVPdaqJK20Fuet11CemZUhbf9K
+   VM800ZtlU8jgVl/5B2cho7jm44s8ALWNCebYn1nDbwNfq7TtHaeSpLVUW
+   POon/XY41ZbV5SBymCfZYtwZflo7WiAsKFbUmZ5uGRdjMbTjcdh5hqClr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="397660345"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="397660345"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 08:42:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="759605356"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="759605356"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga001.jf.intel.com with ESMTP; 20 Jul 2023 08:42:00 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 20 Jul 2023 08:41:59 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 20 Jul 2023 08:41:59 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.171)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 20 Jul 2023 08:41:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FyQIlvq0X9hXeXuuyhjMewRrY1nN/mAMi5i9mqNOIxb6lL4oOa/APC5iNELspFMDgdj5SKz6Xz40tgMzA6kG7Y7+0IwsX2duZsWvFwR18eRFusuv/ULJ3KtlLSPoVbSf5W2o9egvQNPQgd5EEUPs6yuF8qXXC+J4izgDBIthYzVui41FV53f+i/7YKp1gDE+51MN3bQedwjrf0DYg+wuVyDTQn6wWnPrKTilxWeho1+LwvXlTH82xx2Lxz6DosugJ5UMuvheeI50NtdMsMnWywMcmFLsVKr+FrB1xS1hcE9oWbMYx57wFacmkkk2+DbwKR0GmWdGN071XiBYhyNQDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wxy3v9HN0QnPXpCwwFTM3y5Wl2dJtCVWSWyA/sHy7vc=;
+ b=MsesLcMcgLc2Wa11Dq0lOia4hPa73orxHDlcxs4lcWr/FQ4ubHaVa5OOiEnKVuBaM4SKGJDIVFS1jqaY+c+yCiCS8UH5eWdnZQrN5EFKXYVgBaPR/1z5hhJ7Qch3XAgCZx4hA1yc225JIzCSSJRWdht3fn4AVzPRGORp5JHIMXR+d6qSXZADNXB5Sh7LiO7UbbJLdn2HFAhTooxWVArlqfor6oE1i7GSWX5Ng0i/jvsIpskYgMDuxqYKrbNT+ggE+HPb6na8h/tns8MA/u9QJ5rqMt/QngAPhLrsoT2BhAc3Hz3sNxO45JzipW2ygGY0OUBdNupoQKLHrlSPW1K+2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
+ by MN0PR11MB6088.namprd11.prod.outlook.com (2603:10b6:208:3cc::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Thu, 20 Jul
+ 2023 15:41:56 +0000
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::2e3b:2384:e6ce:698a]) by SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::2e3b:2384:e6ce:698a%7]) with mapi id 15.20.6609.022; Thu, 20 Jul 2023
+ 15:41:54 +0000
+From: "Zaremba, Larysa" <larysa.zaremba@intel.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "andrii@kernel.org"
+	<andrii@kernel.org>, "martin.lau@linux.dev" <martin.lau@linux.dev>,
+	"song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "kpsingh@kernel.org"
+	<kpsingh@kernel.org>, "sdf@google.com" <sdf@google.com>, "haoluo@google.com"
+	<haoluo@google.com>, "jolsa@kernel.org" <jolsa@kernel.org>, David Ahern
+	<dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>, Willem de Bruijn
+	<willemb@google.com>, "Brouer, Jesper" <brouer@redhat.com>, "Burakov,
+ Anatoly" <anatoly.burakov@intel.com>, "Lobakin, Aleksander"
+	<aleksander.lobakin@intel.com>, Magnus Karlsson <magnus.karlsson@gmail.com>,
+	"Tahhan, Maryam" <mtahhan@redhat.com>, "xdp-hints@xdp-project.net"
+	<xdp-hints@xdp-project.net>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v3 13/21] ice: Implement checksum hint
+Thread-Topic: [PATCH bpf-next v3 13/21] ice: Implement checksum hint
+Thread-Index: Adm7ILVRye3hpYV/LECafuH/T/xGdA==
+Date: Thu, 20 Jul 2023 15:41:53 +0000
+Message-ID: <ZLlUyJdj50UqFM0m@lincoln>
+References: <20230719183734.21681-1-larysa.zaremba@intel.com>
+ <20230719183734.21681-14-larysa.zaremba@intel.com>
+ <20230719185930.6adapqctxfdsfmye@macbook-pro-8.dhcp.thefacebook.com>
+ <64b85ad52d012_2849c1294df@willemb.c.googlers.com.notmuch>
+ <ZLkBrfex1ENbVDwF@lincoln>
+ <CAADnVQKF3j-_qLM4MWkJKK=ZyPuWrLnmGfgf9BC4zm-4=1qSfw@mail.gmail.com>
+In-Reply-To: <CAADnVQKF3j-_qLM4MWkJKK=ZyPuWrLnmGfgf9BC4zm-4=1qSfw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-clientproxiedby: FR0P281CA0204.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:ad::13) To SN7PR11MB7540.namprd11.prod.outlook.com
+ (2603:10b6:806:340::7)
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN7PR11MB7540:EE_|MN0PR11MB6088:EE_
+x-ms-office365-filtering-correlation-id: 8409154a-f6ab-4430-8eac-08db8937d7cc
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: amt2ica77qguEoGiFyhZf7fc2pORZCAgzAEjx21ts+ym97cxJ+/DEWPWbkTGpzCP+2xuHMn6sefZ6/Ju924muesbq2qE5XDeJ4pwUP4/1EVIzus125aZQ/2FXFQcDC1rjTdVxBPb8nXq0mlEkaX3pqSniZkwdZuklXXvH0pcUj1Ali6+YBfnbn8ZPDGCtdeS8N/gePQypswoUmLlAA9RQUQYVsSj0xhH5zmgnZJgawBX4LMrZoyc1QseiVOlvGS4l/5Aj3UVA/Qchr3KhrQo/vvkkKstvRl3zYrXrA5gGz5gEfV/gq2/RO8LD7HBrY1nMHkKBf7Ietwi3dEvvNrsNI8/Kkop+fkOJ79I1aXpJ60vbo+CMOWDghkZHtgj+0YPBaGK4rH4j/sYLyEeC/hlm6xNimLx5xtfhHIHWyoljXZmxb54OLfHWoUUOsPFTvakN4+fGzPy3q0v+yGAJc9NaQ0AHJi7k8wLyfHDiZx1vyQaoX42ETnUiJNokRq3mi0XiqOc2ufjNOui3JW4vHhwp9jlP2gRUQJIMTNGDDx+GPAX0V5u1dSmrnNiXNT/Dki5
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(396003)(39860400002)(136003)(366004)(346002)(376002)(451199021)(83380400001)(2906002)(38100700002)(82960400001)(122000001)(26005)(6916009)(66446008)(66556008)(66946007)(64756008)(66476007)(4326008)(316002)(186003)(5660300002)(53546011)(6506007)(6486002)(6512007)(41300700001)(9686003)(54906003)(478600001)(71200400001)(33716001)(86362001)(8936002)(8676002)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZmhnZWNZVHdvZU5zTUk0LzI4Y1lkeCtGTHRoWlFnOG1QdnBlQ2M1ajVXZlo3?=
+ =?utf-8?B?TDhyVTJmbFBURGo2Rm55OTNoMnUrb1dhOVN2UU41MW4xVjhkVVNBRWRmN1Y0?=
+ =?utf-8?B?TmFjMENGYlRycVNvM0Qvdk1sYjA3U2ZzSnlRNkF2ZFgyVVdTd3ZOWE9ydlpL?=
+ =?utf-8?B?S2VwZUNXRktzcXplRkdWWGlJYUNjeUFCa0FsK0xHTnJ2QmJvbG9xZkRKZS9C?=
+ =?utf-8?B?VHhlK01CNzNLK3FlbkNLVHJpczJJSTloRFdLanBuZU1hYURieURVeGtUTlFP?=
+ =?utf-8?B?dW5YM0szeVg0TG04bjVZVk1HZ1Y3YUFnTXZxdFpkZlRTUG9IclJ4ZW12Ulhu?=
+ =?utf-8?B?TTJhL2NGMzUyL1E1dnJtWFY2K0Y2MnNVYVp0bFExeG5MV1piY0dhT2ltUXQw?=
+ =?utf-8?B?VXRTWG9EMng4L2lxVXpZc3d4VnNPamNDL2FuNFVEZ2pUZ3YxWitpaXdVOHU5?=
+ =?utf-8?B?ZTYrdzlBWERiV2p4UFRabThUMkRiL3lYaUlEVThrTU5iaWRONFZSM1Z3ZERS?=
+ =?utf-8?B?U21Xc0F4cmxXWTdWZWpiVWU4Y2JrSGJPUWlCR2tNWjNXNi9NTU1qRTIySzQ0?=
+ =?utf-8?B?VDRlK2hRUFUvVjNsbGprNGsyeUJDSXFTSVBDMkpmeHBZR3hIcXNKY2NQVWVv?=
+ =?utf-8?B?cVhhdXlOc2xxWlVJOS8zeGJQeEtiZlM0QkRBd2htRklDZHpxOWRTdENpREl6?=
+ =?utf-8?B?ZFJxSzBScEN5bnAweVVpMzFMK1RjTE5ML0MxV0V3em1mZ0VpQTJPWnZaM0Vs?=
+ =?utf-8?B?S3J4T05qWEc1UEFsbUpYTitNVEhIM1FwNEJySUwrU0J5eEZBQnBpNWhwWHVu?=
+ =?utf-8?B?YktsZ3FMSkJGVDVlN2pvY2hYaVZ5bzlLVk5GTGZTWUUySmJFTmp5YnFDY3RK?=
+ =?utf-8?B?TG0yMkZtM05RYmFCUEp0ZFMweXR5bFl6VStzamVTZ2NJSll2ZnVyeU1LWkU0?=
+ =?utf-8?B?RlNQVEdLR2JWZ2ZXT2ZuMmxUd2p2WDRWZkFIUW1DdVJNSTU3OGxubGxTb1Zl?=
+ =?utf-8?B?TGtsWmE0MDJJeUw2VTVudlpXbk5yZ2NCellVT1RMQ3F1bldUcEFPdXo2MXFN?=
+ =?utf-8?B?RWdnM1ZIZWpOZkN1OHR2RnB0K1ovMXNNQmc4RXpSWGNNVHkrelRFcHFFS2Zn?=
+ =?utf-8?B?MWxnS2YyWFZ2dk0ycHZNMWcyRjlTNGdZQUpnWUgzR2RWcEs3Wk1PK2hBWkZ6?=
+ =?utf-8?B?NlRXQ0F0NnZTNVFGdGRSMGdZeTZMcU9wSTRGQ2FCUVFoUmVhWE1CUW0yd1dq?=
+ =?utf-8?B?R0Y3WE5VKytKSFVmamhxZG9Ob01SaHN2c01DcXJiY1JURkpGd052Z0xGUGdr?=
+ =?utf-8?B?UGhScHNvdmpqajBYZGhrQ3A0aFR4YU5yT3RiMXdVY0VCMjQ2enVDdElMU1ho?=
+ =?utf-8?B?ZGM2S3lWVWYwNWx5eFMzVDd5UE13NVo2K01qcytOdk5aaTBCWWNBZlhXbEZX?=
+ =?utf-8?B?ZVBoUURIOUZOVGVOSFprTFlyQUNKRG1iV2tlYVRmajhEYkJaSFJOdjRDdUVW?=
+ =?utf-8?B?dTV2TmF0WWg2dmhOTTdWamxVWjFTYm9LRnRkUmxkV0tqN3NKN3BWekVKdUJ1?=
+ =?utf-8?B?dVUwcDdGZytOZFdKMXVWTG9LK0ZJd3FxTWlEb0xnOC9JWFV5MFhmMjdiNGkx?=
+ =?utf-8?B?TkF6czFPZ09qczB0K2ZPZmM3ZWdFR1JRdnh2RFZzckFLWHBRTjQ3RTZ2TG9B?=
+ =?utf-8?B?ekxDZVlWaDZQVVNtckJxbS9rdGdzdmk5enJDemFBMUtQNk4zdHI4UkRxbVMy?=
+ =?utf-8?B?WnY1dWdCUFo2OWZtU3JzMGpUdGZrY2VFMDJHaUlHNi82bXR2M2RFb2p3ejdK?=
+ =?utf-8?B?MGRvQjhVSXNNWnhTd0JvR3o0b1VidndSenRmS0xqK01MVG1LY3ppYVA3ZGlP?=
+ =?utf-8?B?bmdwQnI0cThBb2cyTGxXUlp5TXE5ZnpOL0JxTXUxRUg3LzlCYzNtUW4rWDY0?=
+ =?utf-8?B?Q1g0T2xpQ3F2UVFLdTUxVGFoYTZwRkJEZmRCVnNpWURoTFM3alF6WGtOKy9o?=
+ =?utf-8?B?dEd1UzVRc3pySldoN0t6VEJNUG5GUW1MTWdFdzZ1MlBRem1iaVJtYVVlU0xw?=
+ =?utf-8?B?akFEWTBIaUhXbDY4QUpic3N0SVN6dVNXV01HUzJobEIrNHlQay94WEw4UXpw?=
+ =?utf-8?B?d2NCaHY3cTI5N1RmRmU1REY1QjNvOHNBSjJhK1hjQ2tENFFiMm5sRldELzNi?=
+ =?utf-8?B?clE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F92729876B61434D9B3A7DF93FD2EF69@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230720-so-reuseport-v6-8-7021b683cdae@isovalent.com>
-References: <20230720-so-reuseport-v6-0-7021b683cdae@isovalent.com>
-In-Reply-To: <20230720-so-reuseport-v6-0-7021b683cdae@isovalent.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
- Joe Stringer <joe@wand.net.nz>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: Hemanth Malla <hemanthmalla@gmail.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Lorenz Bauer <lmb@isovalent.com>, 
- Joe Stringer <joe@cilium.io>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8409154a-f6ab-4430-8eac-08db8937d7cc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2023 15:41:53.9658
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: miA6P4/kaMFidsOopXB0fBZGUgLBWPxR8cyljDglKKCygzkJgqAYXFa9vPVBxd+B4CbqBylx1+EVpHUVseD5wGeT/ZWmbLGCtpwXjR9vKLs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6088
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Daniel Borkmann <daniel@iogearbox.net>
-
-We use two programs to check that the new reuseport logic is executed
-appropriately.
-
-The first is a TC clsact program which bpf_sk_assigns
-the skb to a UDP or TCP socket created by user space. Since the test
-communicates via lo we see both directions of packets in the eBPF.
-Traffic ingressing to the reuseport socket is identified by looking
-at the destination port. For TCP, we additionally need to make sure
-that we only assign the initial SYN packets towards our listening
-socket. The network stack then creates a request socket which
-transitions to ESTABLISHED after the 3WHS.
-
-The second is a reuseport program which shares the fact that
-it has been executed with user space. This tells us that the delayed
-lookup mechanism is working.
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Co-developed-by: Lorenz Bauer <lmb@isovalent.com>
-Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
-Cc: Joe Stringer <joe@cilium.io>
----
- tools/testing/selftests/bpf/network_helpers.c      |   3 +
- .../selftests/bpf/prog_tests/assign_reuse.c        | 197 +++++++++++++++++++++
- .../selftests/bpf/progs/test_assign_reuse.c        | 142 +++++++++++++++
- 3 files changed, 342 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index a105c0cd008a..8a33bcea97de 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -423,6 +423,9 @@ struct nstoken *open_netns(const char *name)
- 
- void close_netns(struct nstoken *token)
- {
-+	if (!token)
-+		return;
-+
- 	ASSERT_OK(setns(token->orig_netns_fd, CLONE_NEWNET), "setns");
- 	close(token->orig_netns_fd);
- 	free(token);
-diff --git a/tools/testing/selftests/bpf/prog_tests/assign_reuse.c b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-new file mode 100644
-index 000000000000..622f123410f4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/assign_reuse.c
-@@ -0,0 +1,197 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Isovalent */
-+#include <uapi/linux/if_link.h>
-+#include <test_progs.h>
-+
-+#include <netinet/tcp.h>
-+#include <netinet/udp.h>
-+
-+#include "network_helpers.h"
-+#include "test_assign_reuse.skel.h"
-+
-+#define NS_TEST "assign_reuse"
-+#define LOOPBACK 1
-+#define PORT 4443
-+
-+static int attach_reuseport(int sock_fd, int prog_fd)
-+{
-+	return setsockopt(sock_fd, SOL_SOCKET, SO_ATTACH_REUSEPORT_EBPF,
-+			  &prog_fd, sizeof(prog_fd));
-+}
-+
-+static __u64 cookie(int fd)
-+{
-+	__u64 cookie = 0;
-+	socklen_t cookie_len = sizeof(cookie);
-+	int ret;
-+
-+	ret = getsockopt(fd, SOL_SOCKET, SO_COOKIE, &cookie, &cookie_len);
-+	ASSERT_OK(ret, "cookie");
-+	ASSERT_GT(cookie, 0, "cookie_invalid");
-+
-+	return cookie;
-+}
-+
-+static int echo_test_udp(int fd_sv)
-+{
-+	struct sockaddr_storage addr = {};
-+	socklen_t len = sizeof(addr);
-+	char buff[1] = {};
-+	int fd_cl = -1, ret;
-+
-+	fd_cl = connect_to_fd(fd_sv, 100);
-+	ASSERT_GT(fd_cl, 0, "create_client");
-+	ASSERT_EQ(getsockname(fd_cl, (void *)&addr, &len), 0, "getsockname");
-+
-+	ASSERT_EQ(send(fd_cl, buff, sizeof(buff), 0), 1, "send_client");
-+
-+	ret = recv(fd_sv, buff, sizeof(buff), 0);
-+	if (ret < 0)
-+		return errno;
-+
-+	ASSERT_EQ(ret, 1, "recv_server");
-+	ASSERT_EQ(sendto(fd_sv, buff, sizeof(buff), 0, (void *)&addr, len), 1, "send_server");
-+	ASSERT_EQ(recv(fd_cl, buff, sizeof(buff), 0), 1, "recv_client");
-+	close(fd_cl);
-+	return 0;
-+}
-+
-+static int echo_test_tcp(int fd_sv)
-+{
-+	char buff[1] = {};
-+	int fd_cl = -1, fd_sv_cl = -1;
-+
-+	fd_cl = connect_to_fd(fd_sv, 100);
-+	if (fd_cl < 0)
-+		return errno;
-+
-+	fd_sv_cl = accept(fd_sv, NULL, NULL);
-+	ASSERT_GE(fd_sv_cl, 0, "accept_fd");
-+
-+	ASSERT_EQ(send(fd_cl, buff, sizeof(buff), 0), 1, "send_client");
-+	ASSERT_EQ(recv(fd_sv_cl, buff, sizeof(buff), 0), 1, "recv_server");
-+	ASSERT_EQ(send(fd_sv_cl, buff, sizeof(buff), 0), 1, "send_server");
-+	ASSERT_EQ(recv(fd_cl, buff, sizeof(buff), 0), 1, "recv_client");
-+	close(fd_sv_cl);
-+	close(fd_cl);
-+	return 0;
-+}
-+
-+void run_assign_reuse(int family, int sotype, const char *ip, __u16 port)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-+		.ifindex = LOOPBACK,
-+		.attach_point = BPF_TC_INGRESS,
-+	);
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, tc_opts,
-+		.handle = 1,
-+		.priority = 1,
-+	);
-+	bool hook_created = false, tc_attached = false;
-+	int ret, fd_tc, fd_accept, fd_drop, fd_map;
-+	int *fd_sv = NULL;
-+	__u64 fd_val;
-+	struct test_assign_reuse *skel;
-+	const int zero = 0;
-+
-+	skel = test_assign_reuse__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+
-+	skel->rodata->dest_port = port;
-+
-+	ret = test_assign_reuse__load(skel);
-+	if (!ASSERT_OK(ret, "skel_load"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->sk_cookie_seen, 0, "cookie_init");
-+
-+	fd_tc = bpf_program__fd(skel->progs.tc_main);
-+	fd_accept = bpf_program__fd(skel->progs.reuse_accept);
-+	fd_drop = bpf_program__fd(skel->progs.reuse_drop);
-+	fd_map = bpf_map__fd(skel->maps.sk_map);
-+
-+	fd_sv = start_reuseport_server(family, sotype, ip, port, 100, 1);
-+	if (!ASSERT_NEQ(fd_sv, NULL, "start_reuseport_server"))
-+		goto cleanup;
-+
-+	ret = attach_reuseport(*fd_sv, fd_drop);
-+	if (!ASSERT_OK(ret, "attach_reuseport"))
-+		goto cleanup;
-+
-+	fd_val = *fd_sv;
-+	ret = bpf_map_update_elem(fd_map, &zero, &fd_val, BPF_NOEXIST);
-+	if (!ASSERT_OK(ret, "bpf_sk_map"))
-+		goto cleanup;
-+
-+	ret = bpf_tc_hook_create(&tc_hook);
-+	if (ret == 0)
-+		hook_created = true;
-+	ret = ret == -EEXIST ? 0 : ret;
-+	if (!ASSERT_OK(ret, "bpf_tc_hook_create"))
-+		goto cleanup;
-+
-+	tc_opts.prog_fd = fd_tc;
-+	ret = bpf_tc_attach(&tc_hook, &tc_opts);
-+	if (!ASSERT_OK(ret, "bpf_tc_attach"))
-+		goto cleanup;
-+	tc_attached = true;
-+
-+	if (sotype == SOCK_STREAM)
-+		ASSERT_EQ(echo_test_tcp(*fd_sv), ECONNREFUSED, "drop_tcp");
-+	else
-+		ASSERT_EQ(echo_test_udp(*fd_sv), EAGAIN, "drop_udp");
-+	ASSERT_EQ(skel->bss->reuseport_executed, 1, "program executed once");
-+
-+	skel->bss->sk_cookie_seen = 0;
-+	skel->bss->reuseport_executed = 0;
-+	ASSERT_OK(attach_reuseport(*fd_sv, fd_accept), "attach_reuseport(accept)");
-+
-+	if (sotype == SOCK_STREAM)
-+		ASSERT_EQ(echo_test_tcp(*fd_sv), 0, "echo_tcp");
-+	else
-+		ASSERT_EQ(echo_test_udp(*fd_sv), 0, "echo_udp");
-+
-+	ASSERT_EQ(skel->bss->sk_cookie_seen, cookie(*fd_sv),
-+		  "cookie_mismatch");
-+	ASSERT_EQ(skel->bss->reuseport_executed, 1, "program executed once");
-+cleanup:
-+	if (tc_attached) {
-+		tc_opts.flags = tc_opts.prog_fd = tc_opts.prog_id = 0;
-+		ret = bpf_tc_detach(&tc_hook, &tc_opts);
-+		ASSERT_OK(ret, "bpf_tc_detach");
-+	}
-+	if (hook_created) {
-+		tc_hook.attach_point = BPF_TC_INGRESS | BPF_TC_EGRESS;
-+		bpf_tc_hook_destroy(&tc_hook);
-+	}
-+	test_assign_reuse__destroy(skel);
-+	free_fds(fd_sv, 1);
-+}
-+
-+void test_assign_reuse(void)
-+{
-+	struct nstoken *tok = NULL;
-+
-+	SYS(out, "ip netns add %s", NS_TEST);
-+	SYS(cleanup, "ip -net %s link set dev lo up", NS_TEST);
-+
-+	tok = open_netns(NS_TEST);
-+	if (!ASSERT_OK_PTR(tok, "netns token"))
-+		return;
-+
-+	if (test__start_subtest("tcpv4"))
-+		run_assign_reuse(AF_INET, SOCK_STREAM, "127.0.0.1", PORT);
-+	if (test__start_subtest("tcpv6"))
-+		run_assign_reuse(AF_INET6, SOCK_STREAM, "::1", PORT);
-+	if (test__start_subtest("udpv4"))
-+		run_assign_reuse(AF_INET, SOCK_DGRAM, "127.0.0.1", PORT);
-+	if (test__start_subtest("udpv6"))
-+		run_assign_reuse(AF_INET6, SOCK_DGRAM, "::1", PORT);
-+
-+cleanup:
-+	close_netns(tok);
-+	SYS_NOFAIL("ip netns delete %s", NS_TEST);
-+out:
-+	return;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_assign_reuse.c b/tools/testing/selftests/bpf/progs/test_assign_reuse.c
-new file mode 100644
-index 000000000000..4f2e2321ea06
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_assign_reuse.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Isovalent */
-+#include <stdbool.h>
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <linux/in.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/tcp.h>
-+#include <linux/udp.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+#include <linux/pkt_cls.h>
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+__u64 sk_cookie_seen;
-+__u64 reuseport_executed;
-+union {
-+	struct tcphdr tcp;
-+	struct udphdr udp;
-+} headers;
-+
-+const volatile __u16 dest_port;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sk_map SEC(".maps");
-+
-+SEC("sk_reuseport")
-+int reuse_accept(struct sk_reuseport_md *ctx)
-+{
-+	reuseport_executed++;
-+
-+	if (ctx->ip_protocol == IPPROTO_TCP) {
-+		if (ctx->data + sizeof(headers.tcp) > ctx->data_end)
-+			return SK_DROP;
-+
-+		if (__builtin_memcmp(&headers.tcp, ctx->data, sizeof(headers.tcp)) != 0)
-+			return SK_DROP;
-+	} else if (ctx->ip_protocol == IPPROTO_UDP) {
-+		if (ctx->data + sizeof(headers.udp) > ctx->data_end)
-+			return SK_DROP;
-+
-+		if (__builtin_memcmp(&headers.udp, ctx->data, sizeof(headers.udp)) != 0)
-+			return SK_DROP;
-+	} else {
-+		return SK_DROP;
-+	}
-+
-+	sk_cookie_seen = bpf_get_socket_cookie(ctx->sk);
-+	return SK_PASS;
-+}
-+
-+SEC("sk_reuseport")
-+int reuse_drop(struct sk_reuseport_md *ctx)
-+{
-+	reuseport_executed++;
-+	sk_cookie_seen = 0;
-+	return SK_DROP;
-+}
-+
-+static int
-+assign_sk(struct __sk_buff *skb)
-+{
-+	int zero = 0, ret = 0;
-+	struct bpf_sock *sk;
-+
-+	sk = bpf_map_lookup_elem(&sk_map, &zero);
-+	if (!sk)
-+		return TC_ACT_SHOT;
-+	ret = bpf_sk_assign(skb, sk, 0);
-+	bpf_sk_release(sk);
-+	return ret ? TC_ACT_SHOT : TC_ACT_OK;
-+}
-+
-+static bool
-+maybe_assign_tcp(struct __sk_buff *skb, struct tcphdr *th)
-+{
-+	if (th + 1 > (void *)(long)(skb->data_end))
-+		return TC_ACT_SHOT;
-+
-+	if (!th->syn || th->ack || th->dest != bpf_htons(dest_port))
-+		return TC_ACT_OK;
-+
-+	__builtin_memcpy(&headers.tcp, th, sizeof(headers.tcp));
-+	return assign_sk(skb);
-+}
-+
-+static bool
-+maybe_assign_udp(struct __sk_buff *skb, struct udphdr *uh)
-+{
-+	if (uh + 1 > (void *)(long)(skb->data_end))
-+		return TC_ACT_SHOT;
-+
-+	if (uh->dest != bpf_htons(dest_port))
-+		return TC_ACT_OK;
-+
-+	__builtin_memcpy(&headers.udp, uh, sizeof(headers.udp));
-+	return assign_sk(skb);
-+}
-+
-+SEC("tc")
-+int tc_main(struct __sk_buff *skb)
-+{
-+	void *data_end = (void *)(long)skb->data_end;
-+	void *data = (void *)(long)skb->data;
-+	struct ethhdr *eth;
-+
-+	eth = (struct ethhdr *)(data);
-+	if (eth + 1 > data_end)
-+		return TC_ACT_SHOT;
-+
-+	if (eth->h_proto == bpf_htons(ETH_P_IP)) {
-+		struct iphdr *iph = (struct iphdr *)(data + sizeof(*eth));
-+
-+		if (iph + 1 > data_end)
-+			return TC_ACT_SHOT;
-+
-+		if (iph->protocol == IPPROTO_TCP)
-+			return maybe_assign_tcp(skb, (struct tcphdr *)(iph + 1));
-+		else if (iph->protocol == IPPROTO_UDP)
-+			return maybe_assign_udp(skb, (struct udphdr *)(iph + 1));
-+		else
-+			return TC_ACT_SHOT;
-+	} else {
-+		struct ipv6hdr *ip6h = (struct ipv6hdr *)(data + sizeof(*eth));
-+
-+		if (ip6h + 1 > data_end)
-+			return TC_ACT_SHOT;
-+
-+		if (ip6h->nexthdr == IPPROTO_TCP)
-+			return maybe_assign_tcp(skb, (struct tcphdr *)(ip6h + 1));
-+		else if (ip6h->nexthdr == IPPROTO_UDP)
-+			return maybe_assign_udp(skb, (struct udphdr *)(ip6h + 1));
-+		else
-+			return TC_ACT_SHOT;
-+	}
-+}
-
--- 
-2.41.0
-
+T24gVGh1LCBKdWwgMjAsIDIwMjMgYXQgMDg6MTQ6NTJBTSAtMDcwMCwgQWxleGVpIFN0YXJvdm9p
+dG92IHdyb3RlOg0KPiBPbiBUaHUsIEp1bCAyMCwgMjAyMyBhdCAyOjQ34oCvQU0gWmFyZW1iYSwg
+TGFyeXNhDQo+IDxsYXJ5c2EuemFyZW1iYUBpbnRlbC5jb20+IHdyb3RlOg0KPiA+DQo+ID4gT24g
+V2VkLCBKdWwgMTksIDIwMjMgYXQgMDU6NTE6MTdQTSAtMDQwMCwgV2lsbGVtIGRlIEJydWlqbiB3
+cm90ZToNCj4gPiA+IEFsZXhlaSBTdGFyb3ZvaXRvdiB3cm90ZToNCj4gPiA+ID4gT24gV2VkLCBK
+dWwgMTksIDIwMjMgYXQgMDg6Mzc6MjZQTSArMDIwMCwgTGFyeXNhIFphcmVtYmEgd3JvdGU6DQo+
+ID4gPiA+ID4gSW1wbGVtZW50IC54bW9fcnhfY3N1bSBjYWxsYmFjayB0byBhbGxvdyBYRFAgY29k
+ZSB0byBkZXRlcm1pbmUsDQo+ID4gPiA+ID4gd2hldGhlciBIVyBoYXMgdmFsaWRhdGVkIGFueSBj
+aGVja3N1bXMuDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBMYXJ5c2EgWmFy
+ZW1iYSA8bGFyeXNhLnphcmVtYmFAaW50ZWwuY29tPg0KPiA+ID4gPiA+IC0tLQ0KPiA+ID4gPiA+
+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pY2UvaWNlX3R4cnhfbGliLmMgfCAyOSArKysr
+KysrKysrKysrKysrKysrDQo+ID4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyOSBpbnNlcnRpb25z
+KCspDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRoZXJu
+ZXQvaW50ZWwvaWNlL2ljZV90eHJ4X2xpYi5jIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwv
+aWNlL2ljZV90eHJ4X2xpYi5jDQo+ID4gPiA+ID4gaW5kZXggNTQ2ODVkMDc0N2FhLi42NjQ3YTdl
+NTVhYzggMTAwNjQ0DQo+ID4gPiA+ID4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwv
+aWNlL2ljZV90eHJ4X2xpYi5jDQo+ID4gPiA+ID4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQv
+aW50ZWwvaWNlL2ljZV90eHJ4X2xpYi5jDQo+ID4gPiA+ID4gQEAgLTY2MCw4ICs2NjAsMzcgQEAg
+c3RhdGljIGludCBpY2VfeGRwX3J4X3ZsYW5fdGFnKGNvbnN0IHN0cnVjdCB4ZHBfbWQgKmN0eCwg
+dTE2ICp2bGFuX3RjaSwNCj4gPiA+ID4gPiAgIHJldHVybiAwOw0KPiA+ID4gPiA+ICB9DQo+ID4g
+PiA+ID4NCj4gPiA+ID4gPiArLyoqDQo+ID4gPiA+ID4gKyAqIGljZV94ZHBfcnhfY3N1bV9sdmwg
+LSBHZXQgbGV2ZWwsIGF0IHdoaWNoIEhXIGhhcyBjaGVja2VkIHRoZSBjaGVja3N1bQ0KPiA+ID4g
+PiA+ICsgKiBAY3R4OiBYRFAgYnVmZiBwb2ludGVyDQo+ID4gPiA+ID4gKyAqIEBjc3VtX3N0YXR1
+czogZGVzdGluYXRpb24gYWRkcmVzcw0KPiA+ID4gPiA+ICsgKiBAY3N1bV9pbmZvOiBkZXN0aW5h
+dGlvbiBhZGRyZXNzDQo+ID4gPiA+ID4gKyAqDQo+ID4gPiA+ID4gKyAqIENvcHkgSFcgY2hlY2tz
+dW0gbGV2ZWwgKGlmIHdhcyBjaGVja2VkKSB0byB0aGUgZGVzdGluYXRpb24gYWRkcmVzcy4NCj4g
+PiA+ID4gPiArICovDQo+ID4gPiA+ID4gK3N0YXRpYyBpbnQgaWNlX3hkcF9yeF9jc3VtKGNvbnN0
+IHN0cnVjdCB4ZHBfbWQgKmN0eCwNCj4gPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICBlbnVt
+IHhkcF9jc3VtX3N0YXR1cyAqY3N1bV9zdGF0dXMsDQo+ID4gPiA+ID4gKyAgICAgICAgICAgICAg
+ICAgICAgdW5pb24geGRwX2NzdW1faW5mbyAqY3N1bV9pbmZvKQ0KPiA+ID4gPiA+ICt7DQo+ID4g
+PiA+ID4gKyBjb25zdCBzdHJ1Y3QgaWNlX3hkcF9idWZmICp4ZHBfZXh0ID0gKHZvaWQgKiljdHg7
+DQo+ID4gPiA+ID4gKyBjb25zdCB1bmlvbiBpY2VfMzJiX3J4X2ZsZXhfZGVzYyAqZW9wX2Rlc2M7
+DQo+ID4gPiA+ID4gKyBlbnVtIGljZV9yeF9jc3VtX3N0YXR1cyBzdGF0dXM7DQo+ID4gPiA+ID4g
+KyB1MTYgcHR5cGU7DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICsgZW9wX2Rlc2MgPSB4ZHBfZXh0
+LT5wa3RfY3R4LmVvcF9kZXNjOw0KPiA+ID4gPiA+ICsgcHR5cGUgPSBpY2VfZ2V0X3B0eXBlKGVv
+cF9kZXNjKTsNCj4gPiA+ID4gPiArDQo+ID4gPiA+ID4gKyBzdGF0dXMgPSBpY2VfZ2V0X3J4X2Nz
+dW1fc3RhdHVzKGVvcF9kZXNjLCBwdHlwZSk7DQo+ID4gPiA+ID4gKyBpZiAoc3RhdHVzICYgSUNF
+X1JYX0NTVU1fTk9ORSkNCj4gPiA+ID4gPiArICAgICAgICAgcmV0dXJuIC1FTk9EQVRBOw0KPiA+
+ID4gPiA+ICsNCj4gPiA+ID4gPiArICpjc3VtX3N0YXR1cyA9IGljZV9yeF9jc3VtX2x2bChzdGF0
+dXMpICsgMTsNCg0KSSdsbCBkdXBsaWNhdGUgYW4gaW1wcm92ZWQgdmVyc2lvbiBvZiB0aGlzIGxp
+bmUgZnJvbSBhbm90aGVyIHRocmVhZCBpbiBjYXNlIGl0IA0KY291bGQgaGVscCB3aXRoIHRoZSBj
+b21wcmVoZW5zaW9uIGR1cmluZyByZXZpZXc6DQoNCipjc3VtX3N0YXR1cyA9IFhEUF9DSEVDS1NV
+TV9WQUxJRF9MVkwwICsgaWNlX3J4X2NzdW1fbHZsKHN0YXR1cyk7DQoNCj4gPiA+ID4gPiArIHJl
+dHVybiAwOw0KPiA+ID4gPiA+ICt9DQo+ID4gPiA+DQo+ID4gPiA+IGFuZCB4ZHBfY3N1bV9pbmZv
+IGZyb20gcHJldmlvdXMgcGF0Y2ggbGVmdCB1bmluaXRpYWxpemVkPw0KPiA+ID4gPiBXaGF0IHdh
+cyB0aGUgcG9pbnQgYWRkaW5nIGl0IHRoZW4/DQo+ID4gPg0KPiA+ID4gSSBzdXBwb3NlIHRoaXMg
+ZHJpdmVyIG9ubHkgcmV0dXJucyBDSEVDS1NVTV9OT05FIG9yDQo+ID4gPiBDSEVDS1NVTV9VTk5F
+Q0VTU0FSWT8gQWxzbyBiYXNlZCBvbiBhIGdyZXAgb2YgdGhlIGRyaXZlciBkaXIuDQo+ID4gPg0K
+PiA+DQo+ID4gWWVzLCBjb3JyZWN0LCBjdXJyZW50IGljZSBIVyBjYW5ub3QgcHJvZHVjZSBjb21w
+bGV0ZSBjaGVja3N1bSwNCj4gPiBzbyBvbmx5IENIRUNLU1VNX1VOTkVDRVNTQVJZIGZvciBrbm93
+biBwcm90b2NvbHMsIENIRUNLU1VNX05PTkUgb3RoZXJ3aXNlLA0KPiA+IG5vdGhpbmcgdG8gaW5p
+dGlhbGl6ZSBjc3VtX2luZm8gd2l0aCBpbiBlaXRoZXIgY2FzZS4NCj4gPg0KPiA+IHhkcF9jc3Vt
+X2luZm8gaXMgaW5pdGlhbGl6ZWQgaW4gdmV0aCBpbXBsZW1lbnRhdGlvbiB0aG91Z2gsIGJ1dCBv
+bmx5DQo+ID4gY3N1bV9zdGFydC9vZmZzZXQsIHNvIGNvbXBsZXRlIFhEUCBjaGVja3N1bSBoYXMg
+bm8gdXNlcnMgaW4gdGhpcyBwYXRjaHNldC4NCj4gPiBJcyB0aGlzIGEgcHJvYmxlbT8NCj4gPg0K
+PiA+IEluIHByZXZpb3VzIHZlcnNpb24gSSBoYWQgQ0hFQ0tTVU1fVU5ORUNFU1NBUlktb25seSBr
+ZnVuYywgYnV0IEkgdGhpbmsgZXZlcnlvbmUNCj4gPiBoYXMgYWdyZWVkLCBjc3VtIGhpbnQga2Z1
+bmMgc2hvdWxkIGdpdmUgbW9yZSBjb21wcmVoZW5zaXZlIG91dHB1dC4NCj4gDQo+IGNzdW0ga2Z1
+bmMgc3VwcG9zZWQgdG8gYmUgZ2VuZXJpYy4NCj4gSWYgZm9yIElDRSBpdCBmaWxscyBpbiBvbmUg
+YXJndW1lbnQgYW5kIGZvciB2ZXRoIGFub3RoZXIgdGhlbiB0aGUgd2hvbGUNCj4gaWRlYSBvZiBn
+ZW5lcmljIGFwaSBpcyBub3Qgd29ya2luZy4NCg0KQm90aCBpY2UgYW5kIHZldGggZmlsbCBpbiB0
+aGUgY3N1bV9zdGF0dXMsIHRoZSBuZWVkIHRvIGZpbGwgaW4gdGhlIGNzdW1faW5mbyBpcyANCmRl
+dGVybWluZWQgYnkgdGhlIHN0YXR1cy4gSSBkb24gbm90IHNlZSBhIHByb2JsZW0gd2l0aCB0aGF0
+Lg0KDQpNYXliZSB5b3UgaGF2ZSBhbiBpc3N1ZSB3aXRoIHB1dHRpbmcgYSB2YWxpZCBjaGVja3N1
+bSBudW1iZXIgaW50byBhIHN0YXR1cyANCmluc3RlYWQgb2YgaW5mbz8gUGxlYXNlIGNsYXJpZnku
+DQo=
 
