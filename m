@@ -1,110 +1,88 @@
-Return-Path: <bpf+bounces-5415-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5416-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB78875A51C
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 06:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C538475A63D
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 08:22:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67AF5281C43
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 04:29:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EF672811AE
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 06:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051283D60;
-	Thu, 20 Jul 2023 04:29:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AD3523A;
+	Thu, 20 Jul 2023 06:22:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A520A1FB0;
-	Thu, 20 Jul 2023 04:29:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1284CC433C7;
-	Thu, 20 Jul 2023 04:29:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689827381;
-	bh=00793e+DVIX+KzxECbpJoJSmHqRjPxWfvFAIRLmu5OA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lGl4yoxCXG41iA0WBnzxDW4JqpYchqiEsKe/VNW6L/qU6UGFO0ogtp3fuAC4r1um7
-	 iYQh1T6+hImHQQNvTaKBU+rDhBSD67g4nEKwJi8l2B2r7u2KvoquSSDlSAP2q0q8Ui
-	 A3EfdWFfkVs8HdRr8NxhJfeDc21tt9TQe0Fsg9/UlXEBOyWrMlkaR562Of//eGyWsn
-	 Ib5OkPFx65BMxlypb9N0lzKSx+e3ifn8i726AdE/2j7vuVqsdJ1zBOAG8+EHX+PY0T
-	 kSmfESVk0CyowibqH1c4ilI1Gnk74Lk1NoKUu/v7hjTvpXsUh7/S5Gv5oT8hHDAG9b
-	 6c3/HW/ju95xA==
-Date: Wed, 19 Jul 2023 21:29:39 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Dexuan Cui
- <decui@microsoft.com>, KY Srinivasan <kys@microsoft.com>, Paul Rosswurm
- <paulros@microsoft.com>, "olaf@aepfle.de" <olaf@aepfle.de>,
- "vkuznets@redhat.com" <vkuznets@redhat.com>, "davem@davemloft.net"
- <davem@davemloft.net>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
- "edumazet@google.com" <edumazet@google.com>, "pabeni@redhat.com"
- <pabeni@redhat.com>, "leon@kernel.org" <leon@kernel.org>, Long Li
- <longli@microsoft.com>, "ssengar@linux.microsoft.com"
- <ssengar@linux.microsoft.com>, "linux-rdma@vger.kernel.org"
- <linux-rdma@vger.kernel.org>, "daniel@iogearbox.net"
- <daniel@iogearbox.net>, "john.fastabend@gmail.com"
- <john.fastabend@gmail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "ast@kernel.org" <ast@kernel.org>, Ajay Sharma <sharmaajay@microsoft.com>,
- "hawk@kernel.org" <hawk@kernel.org>, "tglx@linutronix.de"
- <tglx@linutronix.de>, "shradhagupta@linux.microsoft.com"
- <shradhagupta@linux.microsoft.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2,net-next] net: mana: Add page pool for RX buffers
-Message-ID: <20230719212939.6da38bc0@kernel.org>
-In-Reply-To: <1689716837-22859-1-git-send-email-haiyangz@microsoft.com>
-References: <1689716837-22859-1-git-send-email-haiyangz@microsoft.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E123D99;
+	Thu, 20 Jul 2023 06:22:26 +0000 (UTC)
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FD4211B;
+	Wed, 19 Jul 2023 23:22:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=kMyO5VD0QAGAGdxVmS5onT7pkpxirlZJoxTfWvPS+OI=; b=sKkUTSTAGrySRXrA7yJnSEeKU7
+	pwTIPGGAM1fhU3lfi24JND0R05d6AoG9FkgOvASImWO3PiCLUKCsYdeRst/q3uzkblGx7dfPvF8GG
+	mxtrpUrzJ9Hqxvp2KVT38+vOXonST6DJ+/o58XnKEDq4UHwfGK9XsHL9GB3HryJdFzxtVwjzy9Q6W
+	uh5Fyu96H8RIuNcwpRN1yWf6ywBSNpTC26cezL6zyHH2/G6Ok12ySrRbe2AaXFxgc88i+S3X8/yCx
+	E8lq0exbezp9I8NCl4nGEOBWTMGOFqtBTKAjLJeYwbFCbBlHbD76rCXYZJt8GqDkGg/9Zr1Zy4Ovp
+	TFH1a/Xg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1qMN39-009vKi-0L;
+	Thu, 20 Jul 2023 06:22:07 +0000
+Date: Wed, 19 Jul 2023 23:22:07 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	virtualization@lists.linux-foundation.org,
+	Jason Wang <jasowang@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH vhost v11 03/10] virtio_ring: introduce
+ virtqueue_set_premapped()
+Message-ID: <ZLjSj4uSr+pIKSui@infradead.org>
+References: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
+ <20230710034237.12391-4-xuanzhuo@linux.alibaba.com>
+ <ZK/cpSceLMovhmfR@infradead.org>
+ <20230713104542-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713104542-mutt-send-email-mst@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Tue, 18 Jul 2023 21:48:01 +0000 Haiyang Zhang wrote:
-> Add page pool for RX buffers for faster buffer cycle and reduce CPU
-> usage.
-> 
-> The standard page pool API is used.
+On Thu, Jul 13, 2023 at 10:47:23AM -0400, Michael S. Tsirkin wrote:
+> There are a gazillion virtio drivers and most of them just use the
+> virtio API, without bothering with these micro-optimizations.  virtio
+> already tracks addresses so mapping/unmapping them for DMA is easier
+> done in the core.  It's only networking and only with XDP where the
+> difference becomes measureable.
 
-> @@ -1437,8 +1437,12 @@ static void mana_rx_skb(void *buf_va, struct mana_rxcomp_oob *cqe,
->  
->  	act = mana_run_xdp(ndev, rxq, &xdp, buf_va, pkt_len);
->  
-> -	if (act == XDP_REDIRECT && !rxq->xdp_rc)
-> +	if (act == XDP_REDIRECT && !rxq->xdp_rc) {
-> +		if (from_pool)
-> +			page_pool_release_page(rxq->page_pool,
-> +					       virt_to_head_page(buf_va));
+Yes, but now you two differing code paths (which then branch into
+another two with the fake DMA mappings).  I'm really worried about
+the madness that follows like the USB dma mapping code that is a
+constant soure of trouble.
 
-
-IIUC you should pass the page_pool as the last argument to 
-xdp_rxq_info_reg_mem_model() and then the page will be recycled
-by the core, you shouldn't release it.
-
-Not to mention the potential race in releasing the page _after_
-giving its ownership to someone else.
-
-> -		page = dev_alloc_page();
-> +		if (is_napi) {
-> +			page = page_pool_dev_alloc_pages(rxq->page_pool);
-> +			*from_pool = true;
-> +		} else {
-> +			page = dev_alloc_page();
-
-FWIW if you're only calling this outside NAPI during init, when NAPI
-can't yet run, I _think_ it's okay to use page_pool_dev_alloc..
-
-> +	pprm.pool_size = RX_BUFFERS_PER_QUEUE;
-> +	pprm.napi = &cq->napi;
-> +	pprm.dev = gc->dev;
-> +	pprm.dma_dir = DMA_FROM_DEVICE;
-
-If you're not setting PP_FLAG_DMA_MAP you don't have to fill in .dev
-and .dma_dir
--- 
-pw-bot: cr
 
