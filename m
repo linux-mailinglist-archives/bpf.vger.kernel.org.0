@@ -1,40 +1,41 @@
-Return-Path: <bpf+bounces-5432-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5433-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AAE875A9D4
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 10:57:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7737575A9EA
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 10:57:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A7341C2130F
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 08:57:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 330862815CF
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 08:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A398199F8;
-	Thu, 20 Jul 2023 08:57:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 999FD4424;
+	Thu, 20 Jul 2023 08:57:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9460361
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 08:57:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D049C433CA;
-	Thu, 20 Jul 2023 08:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451D6199F5
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 08:57:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C20A4C433C8;
+	Thu, 20 Jul 2023 08:57:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689843430;
-	bh=YL1e7v2HP4BwGnsG+0Zk2G15FXU6urpRqNayGxRGcI4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=u+tT5kF/nzGCfU7jFLPf0FOOLHtsSPc4VCyJglLWhBWd8JxGUNZvBMKrZjbNepnOW
-	 z2b/H1mcqRvfuFeOFSRABMVUbVqtMQfnu58wdQFYyLMMvSIWb0/qa+mFiJHJkgXl1H
-	 9cItdBPLZWA7+NHsiHO3b1C/GyCMogIA0f8QilxhKV5rfz569DqNTZUZMyhYAnwapL
-	 3irGrSYOYSl+fIB5Xjnz7EnVjencZUmUPjutuGahdFy4LqWj2/LOOEnmTEpucTCaxC
-	 BbDwNt4hsZf1dg/fc98F8YuqsHnbSLIF3XIlfQia0epyeZWpBriaN+79uJSoRngxRL
-	 jjE8o0QYuuBIQ==
+	s=k20201202; t=1689843440;
+	bh=CQqZ7QJgc6PvbYM17c0xVDIeGgS08fvdUg+FQ8jo3/Q=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=hc1DMi9NdE1NYlDUOiUVLlCBwnETJRh4Qb+NN8nAgsfz6hdaZBKCNez7Bvo1HHgVL
+	 5ttHv1K/+GBqt3m0jmZuOqMEbbvufHk5U1jY2B2Zyu22F58H4s2HkHZIHjjwjUES8p
+	 DduPMvfKKBX5GGYqnaNxPh97W7s6nDefvRTEBUGOh40IjXRBqvk74HS1qG4o47QHLb
+	 ML/Gh3FfvxhDQDUVonQ6/Jhtp2huNz0w9x9zgjZJrlj927aRdYJaRFuJg7MZUyS7M6
+	 Cu1pIMdxHmK4Vw8vN0RfiW6Ob+mBNYvoiIi+UgLSUtlUeveH1yYkv+zr4p/RpPlN81
+	 MFBRNkbIixIEQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
+Cc: stable@vger.kernel.org,
+	bpf@vger.kernel.org,
 	Martin KaFai Lau <kafai@fb.com>,
 	Song Liu <songliubraving@fb.com>,
 	Yonghong Song <yhs@fb.com>,
@@ -42,10 +43,12 @@ Cc: bpf@vger.kernel.org,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>
-Subject: [PATCHv2 bpf 0/2] bpf: Disable preemption in perf_event_output helpers code
-Date: Thu, 20 Jul 2023 10:57:02 +0200
-Message-ID: <20230720085704.190592-1-jolsa@kernel.org>
+Subject: [PATCHv2 bpf 1/2] bpf: Disable preemption in bpf_perf_event_output
+Date: Thu, 20 Jul 2023 10:57:03 +0200
+Message-ID: <20230720085704.190592-2-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230720085704.190592-1-jolsa@kernel.org>
+References: <20230720085704.190592-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -54,63 +57,83 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-hi,
-we got report of kernel crash [1][3] within bpf_event_output helper.
+The nesting protection in bpf_perf_event_output relies on disabled
+preemption, which is guaranteed for kprobes and tracepoints.
 
-The reason is the nesting protection code in bpf_event_output that expects
-disabled preemption, which is not guaranteed for programs executed by
-bpf_prog_run_array_cg.
+However bpf_perf_event_output can be also called from uprobes context
+through bpf_prog_run_array_sleepable function which disables migration,
+but keeps preemption enabled.
 
-I managed to reproduce on tracing side where we have the same problem
-in bpf_perf_event_output. The reproducer [2] just creates busy uprobe
-and call bpf_perf_event_output helper a lot.
+This can cause task to be preempted by another one inside the nesting
+protection and lead eventually to two tasks using same perf_sample_data
+buffer and cause crashes like:
 
-v2 changes:
-  - I changed 'Fixes' commits to where I saw we switched from preempt_disable
-    to migrate_disable, but I'm not completely sure about the patch 2, because
-    it was tricky to find, would be nice if somebody could check on that
+  kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
+  BUG: unable to handle page fault for address: ffffffff82be3eea
+  ...
+  Call Trace:
+   ? __die+0x1f/0x70
+   ? page_fault_oops+0x176/0x4d0
+   ? exc_page_fault+0x132/0x230
+   ? asm_exc_page_fault+0x22/0x30
+   ? perf_output_sample+0x12b/0x910
+   ? perf_event_output+0xd0/0x1d0
+   ? bpf_perf_event_output+0x162/0x1d0
+   ? bpf_prog_c6271286d9a4c938_krava1+0x76/0x87
+   ? __uprobe_perf_func+0x12b/0x540
+   ? uprobe_dispatcher+0x2c4/0x430
+   ? uprobe_notify_resume+0x2da/0xce0
+   ? atomic_notifier_call_chain+0x7b/0x110
+   ? exit_to_user_mode_prepare+0x13e/0x290
+   ? irqentry_exit_to_user_mode+0x5/0x30
+   ? asm_exc_int3+0x35/0x40
 
-thanks,
-jirka
+Fixing this by disabling preemption in bpf_perf_event_output.
 
-
-[1] https://github.com/cilium/cilium/issues/26756
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/commit/?h=bpf_output_fix_reproducer&id=8054dcc634121b884c7c331329d61d93351d03b5
-[3] slack:
-    [66194.378161] BUG: kernel NULL pointer dereference, address: 0000000000000001
-    [66194.378324] #PF: supervisor instruction fetch in kernel mode
-    [66194.378447] #PF: error_code(0x0010) - not-present page
-    ...
-    [66194.378692] Oops: 0010 [#1] PREEMPT SMP NOPTI
-    ...
-    [66194.380666]  <TASK>
-    [66194.380775]  ? perf_output_sample+0x12a/0x9a0
-    [66194.380902]  ? finish_task_switch.isra.0+0x81/0x280
-    [66194.381024]  ? perf_event_output+0x66/0xa0
-    [66194.381148]  ? bpf_event_output+0x13a/0x190
-    [66194.381270]  ? bpf_event_output_data+0x22/0x40
-    [66194.381391]  ? bpf_prog_dfc84bbde731b257_cil_sock4_connect+0x40a/0xacb
-    [66194.381519]  ? xa_load+0x87/0xe0
-    [66194.381635]  ? __cgroup_bpf_run_filter_sock_addr+0xc1/0x1a0
-    [66194.381759]  ? release_sock+0x3e/0x90
-    [66194.381876]  ? sk_setsockopt+0x1a1/0x12f0
-    [66194.381996]  ? udp_pre_connect+0x36/0x50
-    [66194.382114]  ? inet_dgram_connect+0x93/0xa0
-    [66194.382233]  ? __sys_connect+0xb4/0xe0
-    [66194.382353]  ? udp_setsockopt+0x27/0x40
-    [66194.382470]  ? __pfx_udp_push_pending_frames+0x10/0x10
-    [66194.382593]  ? __sys_setsockopt+0xdf/0x1a0
-    [66194.382713]  ? __x64_sys_connect+0xf/0x20
-    [66194.382832]  ? do_syscall_64+0x3a/0x90
-    [66194.382949]  ? entry_SYSCALL_64_after_hwframe+0x72/0xdc
-    [66194.383077]  </TASK>
-
-
+Cc: stable@vger.kernel.org
+Fixes: 8c7dcb84e3b7 ("bpf: implement sleepable uprobes by chaining gps")
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
-Jiri Olsa (2):
-      bpf: Disable preemption in bpf_perf_event_output
-      bpf: Disable preemption in bpf_event_output
+ kernel/trace/bpf_trace.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
- kernel/trace/bpf_trace.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 5f2dcabad202..14c9a1a548c9 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -661,8 +661,7 @@ static DEFINE_PER_CPU(int, bpf_trace_nest_level);
+ BPF_CALL_5(bpf_perf_event_output, struct pt_regs *, regs, struct bpf_map *, map,
+ 	   u64, flags, void *, data, u64, size)
+ {
+-	struct bpf_trace_sample_data *sds = this_cpu_ptr(&bpf_trace_sds);
+-	int nest_level = this_cpu_inc_return(bpf_trace_nest_level);
++	struct bpf_trace_sample_data *sds;
+ 	struct perf_raw_record raw = {
+ 		.frag = {
+ 			.size = size,
+@@ -670,7 +669,12 @@ BPF_CALL_5(bpf_perf_event_output, struct pt_regs *, regs, struct bpf_map *, map,
+ 		},
+ 	};
+ 	struct perf_sample_data *sd;
+-	int err;
++	int nest_level, err;
++
++	preempt_disable();
++
++	sds = this_cpu_ptr(&bpf_trace_sds);
++	nest_level = this_cpu_inc_return(bpf_trace_nest_level);
+ 
+ 	if (WARN_ON_ONCE(nest_level > ARRAY_SIZE(sds->sds))) {
+ 		err = -EBUSY;
+@@ -691,6 +695,7 @@ BPF_CALL_5(bpf_perf_event_output, struct pt_regs *, regs, struct bpf_map *, map,
+ 
+ out:
+ 	this_cpu_dec(bpf_trace_nest_level);
++	preempt_enable();
+ 	return err;
+ }
+ 
+-- 
+2.41.0
+
 
