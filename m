@@ -1,160 +1,266 @@
-Return-Path: <bpf+bounces-5412-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5413-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0652575A483
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 04:49:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5106E75A49E
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 05:05:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2CC61C2114F
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 02:49:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07C68281C1F
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 03:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F0A610F7;
-	Thu, 20 Jul 2023 02:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA89515A2;
+	Thu, 20 Jul 2023 03:04:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32967381
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 02:48:54 +0000 (UTC)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1792F1BFC
-	for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 19:48:52 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-51f7fb9a944so321744a12.3
-        for <bpf@vger.kernel.org>; Wed, 19 Jul 2023 19:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1689821330; x=1690426130;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H6WYVWYrbXb8iJtFoUKTJHuArrTvnYpoCUNdm9ArDBU=;
-        b=vcpSq5efiWfRoeEuQ8DIpdemJ/kEyExu1pg4fGvQDP9AqI6EHLqRkrkvQ3LzqedoQ8
-         +5eOgLm5sUSffZnSTGRjU1uQV80HONokEyIl5FocvTQvle3W0Ef6LmGvKPf1DRuqce6q
-         NB/h5wq2mOhw1TW6bGfFARGLwoTv1d1x9oE90=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689821330; x=1690426130;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H6WYVWYrbXb8iJtFoUKTJHuArrTvnYpoCUNdm9ArDBU=;
-        b=E7M2TXfVzciB2Rd/EIje2NUOFnTCib3++115PUrmb3JobYO4KIcKWiYeYFFNrcf+s+
-         DEykr4VA/5Le7VB+XjQri1GRh5EAuLFM3gTs3QLI9CuW3q3D+3zBgL/lSqPvyT2ZZ62z
-         1SFV0ANYcrzWGBrfORdn+2lxqthOsAsIYORldzHRDKaR4tsgc5DNodjWkH2DHGbuVpqI
-         rn+mmxHpJBIXyWMM6AWUIOnPW5FiBb9BBoBHK6EXgSx/c5/ex2T0BPTZns4BOglrTV4P
-         EC50vCYqkIQtPvJ+mk0xtoESdqeQnQI5lOamyN2qcBWdKfEx/cuZc3hQVRkTih1z93SE
-         3bfw==
-X-Gm-Message-State: ABy/qLb0Ij6OFkRwFkHnEynofSzFNnS1ZaqQECyN58tjtkHaPgt9nRRU
-	7YRoaSqPaPqoGzBoBE66EoE9SXVIGb7OYbIDuLsMfg==
-X-Google-Smtp-Source: APBJJlE4lJbEWuicmvx7rTLzbS0AdQfZ0xYO09uqtILx/IgDEyJpnJ/Zj1jfL9NtM7jOdCNdJ9odgbHvUeY3HhKVqr4=
-X-Received: by 2002:a05:6402:1295:b0:51a:3159:53c7 with SMTP id
- w21-20020a056402129500b0051a315953c7mr3643380edv.30.1689821330554; Wed, 19
- Jul 2023 19:48:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF718A5C;
+	Thu, 20 Jul 2023 03:04:53 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A1A1739;
+	Wed, 19 Jul 2023 20:04:50 -0700 (PDT)
+Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.56])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R5yDJ4fxLzVjhp;
+	Thu, 20 Jul 2023 11:02:56 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 20 Jul 2023 11:04:20 +0800
+Message-ID: <b5977c5d-c434-7b4c-89f3-d575ee5d04e8@huawei.com>
+Date: Thu, 20 Jul 2023 11:04:19 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZLdY6JkWRccunvu0@debian.debian> <CAADnVQJNCEntFEh6pNY2HHwxoua0_2mRky2g2U5tj6XU2eoZog@mail.gmail.com>
-In-Reply-To: <CAADnVQJNCEntFEh6pNY2HHwxoua0_2mRky2g2U5tj6XU2eoZog@mail.gmail.com>
-From: Yan Zhai <yan@cloudflare.com>
-Date: Wed, 19 Jul 2023 21:48:39 -0500
-Message-ID: <CAO3-Pbr_S_1RYk0x4kHbnna=qcYVJ7u9zx9O-TGNcJz3oUQ0FQ@mail.gmail.com>
-Subject: Re: [PATCH v2 net] bpf: do not return NET_XMIT_xxx values on bpf_redirect
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Network Development <netdev@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Jordan Griege <jgriege@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH bpf] riscv, bpf: Adapt bpf trampoline to optimized riscv
+ ftrace framework
+Content-Language: en-US
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Pu Lehui
+	<pulehui@huaweicloud.com>, <bpf@vger.kernel.org>,
+	<linux-riscv@lists.infradead.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+	<martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+	<yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Palmer Dabbelt
+	<palmer@dabbelt.com>, Guo Ren <guoren@kernel.org>, Song Shuai
+	<suagrfillet@gmail.com>
+References: <20230715090137.2141358-1-pulehui@huaweicloud.com>
+ <87lefdougi.fsf@all.your.base.are.belong.to.us>
+ <63986ef9-10a4-bcef-369d-0bad28b192d1@huawei.com>
+ <87o7k8udzj.fsf@all.your.base.are.belong.to.us>
+From: Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <87o7k8udzj.fsf@all.your.base.are.belong.to.us>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500020.china.huawei.com (7.221.188.8)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 18, 2023 at 10:42=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Jul 18, 2023 at 8:30=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wro=
-te:
-> >
-> > skb_do_redirect handles returns error code from both rx and tx path. Th=
-e
-> > tx path codes are special, e.g. NET_XMIT_CN: they are non-negative, and
-> > can conflict with LWTUNNEL_XMIT_xxx values. Directly returning such cod=
-e
-> > can cause unexpected behavior. We found at least one bug that will pani=
-c
-> > the kernel through KASAN report when we are redirecting packets to a
-> > down or carrier-down device at lwt xmit hook:
-> >
-> > https://gist.github.com/zhaiyan920/8fbac245b261fe316a7ef04c9b1eba48
-> >
-> > Above bug is hit because NET_XMIT_CN is returned by noop_qdisc of the
-> > down device, and it propagates from dev_queue_xmit all way to the lwt
-> > logic. The result is skb that has been freed by the qdisc continues to
-> > neighbor subsystem and triggers the bug.
->
-> I'm struggling to parse the above paragraph.
-> Where bpf prog is installed?
-> Is this lwt bpf prog that returns BPF_REDIRECT ?
-> that redirects to netdev with noop_qdisc ?
-> What is the topology?
->
-Sorry for the confusion. Mentioning noop_qdisc is an explanation of
-what happened. The actual trigger is simple: install a bpf program on
-lwt route at xmit hook. It bpf_redirect packets to a device FOO. If
-FOO is down or carrier-down, redirected packets will crash the kernel.
-
-> Please add a selftest to make sure we don't regress.
->
-> Also pls mark your patch as [PATCH v3 bpf] when you respin.
->
-Ack
-
-> > This change converts the tx code to proper errors that lwt can consume.
-> >
-> > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > Reported-by: Jordan Griege <jgriege@cloudflare.com>
-> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> > ---
-> > v2: coding style fix; sent to netdev instead of bpf for bug fixing.
-> >
-> > ---
-> >  net/core/filter.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 06ba0e56e369..8738c7a4701d 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -2129,6 +2129,9 @@ static inline int __bpf_tx_skb(struct net_device =
-*dev, struct sk_buff *skb)
-> >         ret =3D dev_queue_xmit(skb);
-> >         dev_xmit_recursion_dec();
-> >
-> > +       if (unlikely(ret > 0))
-> > +               ret =3D net_xmit_errno(ret);
-> > +
-> >         return ret;
-> >  }
-> >
-> > --
-> > 2.30.2
-> >
 
 
+On 2023/7/19 23:18, Björn Töpel wrote:
+> Pu Lehui <pulehui@huawei.com> writes:
+> 
+>> On 2023/7/19 4:06, Björn Töpel wrote:
+>>> Pu Lehui <pulehui@huaweicloud.com> writes:
+>>>
+>>>> From: Pu Lehui <pulehui@huawei.com>
+>>>>
+>>>> Commit 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to
+>>>> half") optimizes the detour code size of kernel functions to half with
+>>>> T0 register and the upcoming DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv
+>>>> is based on this optimization, we need to adapt riscv bpf trampoline
+>>>> based on this. One thing to do is to reduce detour code size of bpf
+>>>> programs, and the second is to deal with the return address after the
+>>>> execution of bpf trampoline. Meanwhile, add more comments and rename
+>>>> some variables to make more sense. The related tests have passed.
+>>>>
+>>>> This adaptation needs to be merged before the upcoming
+>>>> DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv, otherwise it will crash due
+>>>> to a mismatch in the return address. So we target this modification to
+>>>> bpf tree and add fixes tag for locating.
+>>>
+>>> Thank you for working on this!
+>>>
+>>>> Fixes: 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to half")
+>>>
+>>> This is not a fix. Nothing is broken. Only that this patch much come
+>>> before or as part of the ftrace series.
+>>
+>> Yep, it's really not a fix. I have no idea whether this patch target to
+>> bpf-next tree can be ahead of the ftrace series of riscv tree?
+> 
+> For this patch, I'd say it's easier to take it via the RISC-V tree, IFF
+> the ftrace series is in for-next.
+> 
 
---=20
+alright, so let's make it target to riscv-tree to avoid that cracsh.
 
-Yan
+> [...]
+> 
+>>>> +#define DETOUR_NINSNS	2
+>>>
+>>> Better name? Maybe call this patchable function entry something? Also,
+>>
+>> How about RV_FENTRY_NINSNS?
+> 
+> Sure. And more importantly that it's actually used in the places where
+> nops/skips are done.
+
+the new one is suited up.
+
+> 
+>>> to catch future breaks like this -- would it make sense to have a
+>>> static_assert() combined with something tied to
+>>> -fpatchable-function-entry= from arch/riscv/Makefile?
+>>
+>> It is very necessary, but it doesn't seem to be easy. I try to find GCC
+>> related functions, something like __builtin_xxx, but I can't find it so
+>> far. Also try to make it as a CONFIG_PATCHABLE_FUNCTION_ENTRY=4 in
+>> Makefile and then static_assert, but obviously it shouldn't be done.
+>> Maybe we can deal with this later when we have a solution?
+> 
+> Ok!
+> 
+> [...]
+> 
+>>>> @@ -787,20 +762,19 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
+>>>>    	int i, ret, offset;
+>>>>    	int *branches_off = NULL;
+>>>>    	int stack_size = 0, nregs = m->nr_args;
+>>>> -	int retaddr_off, fp_off, retval_off, args_off;
+>>>> -	int nregs_off, ip_off, run_ctx_off, sreg_off;
+>>>> +	int fp_off, retval_off, args_off, nregs_off, ip_off, run_ctx_off, sreg_off;
+>>>>    	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
+>>>>    	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
+>>>>    	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
+>>>>    	void *orig_call = func_addr;
+>>>> -	bool save_ret;
+>>>> +	bool save_retval, traced_ret;
+>>>>    	u32 insn;
+>>>>    
+>>>>    	/* Generated trampoline stack layout:
+>>>>    	 *
+>>>>    	 * FP - 8	    [ RA of parent func	] return address of parent
+>>>>    	 *					  function
+>>>> -	 * FP - retaddr_off [ RA of traced func	] return address of traced
+>>>> +	 * FP - 16	    [ RA of traced func	] return address of
+>>>>    	traced
+>>>
+>>> BPF code uses frame pointers. Shouldn't the trampoline frame look like a
+>>> regular frame [1], i.e. start with return address followed by previous
+>>> frame pointer?
+>>>
+>>
+>> oops, will fix it. Also we need to consider two types of trampoline
+>> stack layout, that is:
+>>
+>> * 1. trampoline called from function entry
+>> * --------------------------------------
+>> * FP + 8           [ RA of parent func ] return address of parent
+>> *                                        function
+>> * FP + 0           [ FP                ]
+>> *
+>> * FP - 8           [ RA of traced func ] return address of traced
+>> *                                        function
+>> * FP - 16          [ FP                ]
+>> * --------------------------------------
+>> *
+>> * 2. trampoline called directly
+>> * --------------------------------------
+>> * FP - 8           [ RA of caller func ] return address of caller
+>> *                                        function
+>> * FP - 16          [ FP                ]
+>> * --------------------------------------
+> 
+> Hmm, could you expand a bit on this? The stack frame top 16B (8+8)
+> should follow what the psabi suggests, regardless of the call site?
+> 
+
+Maybe I've missed something important! Or maybe I'm misunderstanding 
+what you mean. But anyway there is something to show. In my perspective, 
+we should construct a complete stack frame, otherwise one layer of stack 
+will be lost in calltrace when enable CONFIG_FRAME_POINTER.
+
+We can verify it by `echo 1 > 
+/sys/kernel/debug/tracing/options/stacktrace`, and the results as show 
+below:
+
+1. complete stack frame
+* --------------------------------------
+* FP + 8           [ RA of parent func ] return address of parent
+*                                        function
+* FP + 0           [ FP                ]
+*
+* FP - 8           [ RA of traced func ] return address of traced
+*                                        function
+* FP - 16          [ FP                ]
+* --------------------------------------
+the stacktrace is:
+
+  => trace_event_raw_event_bpf_trace_printk
+  => bpf_trace_printk
+  => bpf_prog_ad7f62a5e7675635_bpf_prog
+  => bpf_trampoline_6442536643
+  => do_empty
+  => meminfo_proc_show
+  => seq_read_iter
+  => proc_reg_read_iter
+  => copy_splice_read
+  => vfs_splice_read
+  => splice_direct_to_actor
+  => do_splice_direct
+  => do_sendfile
+  => sys_sendfile64
+  => do_trap_ecall_u
+  => ret_from_exception
+
+2. omit one FP
+* --------------------------------------
+* FP + 0           [ RA of parent func ] return address of parent
+*                                        function
+* FP - 8           [ RA of traced func ] return address of traced
+*                                        function
+* FP - 16          [ FP                ]
+* --------------------------------------
+the stacktrace is:
+
+  => trace_event_raw_event_bpf_trace_printk
+  => bpf_trace_printk
+  => bpf_prog_ad7f62a5e7675635_bpf_prog
+  => bpf_trampoline_6442491529
+  => do_empty
+  => seq_read_iter
+  => proc_reg_read_iter
+  => copy_splice_read
+  => vfs_splice_read
+  => splice_direct_to_actor
+  => do_splice_direct
+  => do_sendfile
+  => sys_sendfile64
+  => do_trap_ecall_u
+  => ret_from_exception
+
+it lost the layer of 'meminfo_proc_show'.
+
+> Maybe it's me that's not following -- please explain a bit more!
+> 
+> 
+> Björn
 
