@@ -1,712 +1,209 @@
-Return-Path: <bpf+bounces-5543-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5544-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 513D475B922
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 23:00:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5889475B94D
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 23:08:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CEE11C21498
-	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 21:00:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 134B5282025
+	for <lists+bpf@lfdr.de>; Thu, 20 Jul 2023 21:08:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20D601BE9D;
-	Thu, 20 Jul 2023 20:58:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F19168BA;
+	Thu, 20 Jul 2023 21:08:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA373154B1
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 20:58:42 +0000 (UTC)
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760DF2D7D;
-	Thu, 20 Jul 2023 13:58:31 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.west.internal (Postfix) with ESMTP id D75DD3202ABC;
-	Thu, 20 Jul 2023 16:58:28 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 20 Jul 2023 16:58:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm2; t=1689886708; x=
-	1689973108; bh=pHJ3WM/f5mvNC37sOGI/E//Q68KS1biWJ3itF/VHnw8=; b=z
-	pCsrJw3QHrSH2RLw0cT9dHkf6Qyeb4RQ+J36LJHTIjPSNP+dhF9q5qjVX1aZTX3X
-	BkrNMTpQE1sRgcGDNLGhivimx+c2ZeQNWpyzq6OQOvZXh2YMT+cKuSWAL4BTAnNu
-	AlzXCZkhEjPg4EF8+wx9/0ZxNAHHaXkJzEUBqgWeO6y8kAx+ES6zr2xvs6jGb9eI
-	E23+816SY6apoQ+jmvzniUPefNkCCX2yUzhzx2cd7Z0DVh8xjm7bA8eY0wMsIx7Q
-	aByRufyXREt5qIsaOp3qUfw30P8j8W56jCeAHN8tE8kYXbEBPeGuwgNbDlzS7Wrb
-	MCXE+AyqoYp/qu9UFabjQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1689886708; x=
-	1689973108; bh=pHJ3WM/f5mvNC37sOGI/E//Q68KS1biWJ3itF/VHnw8=; b=k
-	Os70ooQAY772Gvha0IDndxjCJQyGB0rx+yZ+OvR4v6WOLnXUH9YHdbHx4v9B+Otg
-	QAfOFUlhKJsA0KB48wTwr6zmYhwLRRxy8Ira2ZFIy+P3rARjND3odFDF4dVoiCYw
-	Nyz/pFZYGn6bj0pySt3jUB0miHZYQUio/hw+akhWX+wMQHhZ8+qHIwIyjvedVG3+
-	JVG8Wri0ATy5aVk/h+MTCiXoYqzSMGrSzwTgOxXtQCIJFoq/oN8Llpj9MYcx9xS5
-	mFGL0XygnuF3lu+mHMkRHivMlr1glo3jbnxfGXh6ATLeUWnuFkG8+PbipqWu/y4p
-	9z/33cU7Aj4BDN86UlIBA==
-X-ME-Sender: <xms:9J-5ZPcVqRm5PNtHxjzvbmAMP5hx9sQmukEUKUg3b5ervOVKKtgMSw>
-    <xme:9J-5ZFNgZJBnxYyvMaOHrJaTs_aTLsncK05q2hjrEfivnYtdZ21NZgOuLlDZweaMd
-    jQbvSww7hB7sRHnMA>
-X-ME-Received: <xmr:9J-5ZIjtK2dM-bPlaa1DyHUEOe8v7YT4OiS9IXA4Dcx1NPamEQmU1buZrA_0UvVY7Gos5n2LxCPuvTRFWSdgZiBvsBVU6V12CMJulf-D9iM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedtgdduheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
-    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:9J-5ZA-_X5MNJWVBqpxmNcmmOiVnOURkksxz3wHmUrXJppsFNsNCHA>
-    <xmx:9J-5ZLuXgyUOquvB3_RuHOlRrpOYsQUZBBR1nU1LgBNzEsyPTunRHQ>
-    <xmx:9J-5ZPE4pL4EPCa6A5KouJWtTW92wHo7-ghYhyJT2FvhFrWYkPUD5w>
-    <xmx:9J-5ZGkwri5HOw-E6-8IU5hD17LHBaART1nNuW5P9dY6pDOrdmDpuQ>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 20 Jul 2023 16:58:26 -0400 (EDT)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: ast@kernel.org,
-	andrii@kernel.org,
-	shuah@kernel.org,
-	daniel@iogearbox.net,
-	alexei.starovoitov@gmail.com,
-	fw@strlen.de
-Cc: mykolal@fb.com,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	dsahern@kernel.org
-Subject: [PATCH bpf-next v5 5/5] bpf: selftests: Add defrag selftests
-Date: Thu, 20 Jul 2023 14:57:39 -0600
-Message-ID: <1c9470633a57991f9c14bd6ac5a7c8f00039e93e.1689884827.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1689884827.git.dxu@dxuuu.xyz>
-References: <cover.1689884827.git.dxu@dxuuu.xyz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C72EA168A9
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 21:08:32 +0000 (UTC)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D04271D
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 14:08:29 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51f7fb9a944so1726799a12.3
+        for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 14:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1689887307; x=1690492107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WoHtNL4PXhr0FtPz2N1fQmAbvE6jz3lcgIuE82ALLYE=;
+        b=i5AAKTwkXLW0Dv7WigTSfpVDoGA19TtgXik3VrT9egUtK2C9gV1vrZtHGBPIa9Q+6c
+         l4l+7WHIOhSiIlUfFjaovIE0l3T9hilGcuBEyXLq2jfOB3Lv2Q5BFDoqtVwgW2jup8nQ
+         WZP9FWtV3VqEg1TvGYrbprFU0GW0cCl3TL/6A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689887307; x=1690492107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WoHtNL4PXhr0FtPz2N1fQmAbvE6jz3lcgIuE82ALLYE=;
+        b=axNskPDqHyBqejZ2yBoWoKPC/e/kDF3BEElEER5skIDAyrSfn7yDNphVBCBzKHO2Y/
+         K7NsSDdXnU0nvWTlyzjry3iqlNVQH81UPyE8j58vmfgr9gwAlb57QUZE+kptCiEDFsJB
+         Nozu9YFyRchhnOh7bOu4+hR1tD4kWCUGreql8mUGIp45sF8MqcXSXsFGgLG+qsB0ZnMq
+         rRg+fh9sExWjOjtImb8MKiGk3k8pta1Ss/mYUeU0Rm6a0KaPerZf/kkSpYUryXrvekmO
+         GM42f20XG/Orcxkrm3qkyC0+r+6hhHkZYJSKKZAAr9yQgbUrJ1/Is9VBeQpTsRRUJOVg
+         5GLw==
+X-Gm-Message-State: ABy/qLaWSG20R6Fs0lHrdo77SBS/CMHkPPpmLYinz4iMdrBNrOMFO5Bu
+	FX2E9q7aXvfypqvNL+yEdOCs2bjUmhEpDD02RU9viA==
+X-Google-Smtp-Source: APBJJlF59GKvvggJx+Z+NiV3vfiHFC863z4aZJyNTGrHiP0+uGJnNY8jUw/pTHec/vQg/JLZYmr66ZDSJkh1ZrrjpPc=
+X-Received: by 2002:a05:6402:344f:b0:521:d967:ef83 with SMTP id
+ l15-20020a056402344f00b00521d967ef83mr45456edc.5.1689887307415; Thu, 20 Jul
+ 2023 14:08:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <CABWYdi3iyagrnN=2uMbq_K0c4FzporQ1pbUmkUZKsiQ22srP3A@mail.gmail.com>
+ <c61496fc-9ed4-9e65-1844-10d4e862e07f@oracle.com>
+In-Reply-To: <c61496fc-9ed4-9e65-1844-10d4e862e07f@oracle.com>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Thu, 20 Jul 2023 16:08:16 -0500
+Message-ID: <CAO3-PbrZ5W0KOZ5Rydc=bmhQ1ngn5rjkOuCZ9BAMYp6WNbMmEg@mail.gmail.com>
+Subject: Re: CAP_SYS_ADMIN required for BTF in modules
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Ivan Babrou <ivan@cloudflare.com>, bpf <bpf@vger.kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-These selftests tests 2 major scenarios: the BPF based defragmentation
-can successfully be done and that packet pointers are invalidated after
-calls to the kfunc. The logic is similar for both ipv4 and ipv6.
+On Thu, Jul 20, 2023 at 12:59=E2=80=AFPM Alan Maguire <alan.maguire@oracle.=
+com> wrote:
+>
+> On 20/07/2023 18:40, Ivan Babrou wrote:
+> > Hello,
+> >
+> > I noticed that CAP_SYS_ADMIN is required to attach BTF enabled probes
+> > for modules. Attaching them for compiled-in points works just fine
+> > without it.
+> >
+> > The reason is that libbpf calls into bpf_obj_get_next_id:
+> >
+> > #0  bpf_obj_get_next_id (start_id=3Dstart_id@entry=3D0,
+> > next_id=3Dnext_id@entry=3D0x7fffcbffe578, cmd=3Dcmd@entry=3D23) at bpf.=
+c:908
+> > #1  0x00000000008bc08a in bpf_btf_get_next_id
+> > (start_id=3Dstart_id@entry=3D0, next_id=3Dnext_id@entry=3D0x7fffcbffe57=
+8) at
+> > bpf.c:930
+> > #2  0x00000000008ca252 in load_module_btfs
+> > (obj=3Dobj@entry=3D0x7fffc4004a40) at libbpf.c:5365
+> > #3  0x00000000008ca508 in find_kernel_btf_id
+> > (btf_type_id=3D0x7fffcbffe73c, btf_obj_fd=3D0x7fffcbffe738,
+> > attach_type=3DBPF_TRACE_FENTRY, attach_name=3D0xf8b647
+> > "nfnetlink_rcv_msg", obj=3D0x7fffc4004a40) at libbpf.c:9057
+> > #4  find_kernel_btf_id (obj=3D0x7fffc4004a40, attach_name=3D0xf8b647
+> > "nfnetlink_rcv_msg", attach_type=3DBPF_TRACE_FENTRY,
+> > btf_obj_fd=3D0x7fffcbffe738, btf_type_id=3D0x7fffcbffe73c) at
+> > libbpf.c:9042
+> > #5  0x00000000008ca755 in libbpf_find_attach_btf_id
+> > (btf_type_id=3D0x7fffcbffe73c, btf_obj_fd=3D0x7fffcbffe738,
+> > attach_name=3D0xf8b647 "nfnetlink_rcv_msg", prog=3D0x7fffc401d5b0) at
+> > libbpf.c:9109
+> > #6  libbpf_prepare_prog_load (prog=3D0x7fffc401d5b0,
+> > opts=3D0x7fffcbffe7c0, cookie=3D<optimized out>) at libbpf.c:6668
+> > #7  0x00000000008c3eb5 in bpf_object_load_prog
+> > (obj=3Dobj@entry=3D0x7fffc4004a40, prog=3Dprog@entry=3D0x7fffc401d5b0,
+> > insns=3D0x7fffc400ccc0, insns_cnt=3D87,
+> > license=3Dlicense@entry=3D0x7fffc4004a50 "GPL",
+> >     kern_version=3D<optimized out>, prog_fd=3D0x7fffc401d628) at libbpf=
+.c:6741
+> > #8  0x00000000008d0294 in bpf_object__load_progs (log_level=3D<optimize=
+d
+> > out>, obj=3D<optimized out>) at libbpf.c:7085
+> > #9  bpf_object_load (extra_log_level=3D0, target_btf_path=3D0x0,
+> > obj=3D<optimized out>) at libbpf.c:7656
+> > #10 bpf_object__load (obj=3D<optimized out>) at libbpf.c:7703
+> > #11 0x00000000008b90e7 in _cgo_58a414c63447_Cfunc_bpf_object__load
+> > (v=3D0xc000237bd8) at cgo-gcc-prolog:1232
+> > #12 0x000000000046c224 in runtime.asmcgocall () at
+> > /usr/local/go/src/runtime/asm_amd64.s:848
+> > #13 0x00007fffcbfff260 in ?? ()
+> > #14 0x000000000041020e in runtime.persistentalloc.func1 () at
+> > /usr/local/go/src/runtime/malloc.go:1393
+> > #15 0x000000000046a3a9 in runtime.systemstack () at
+> > /usr/local/go/src/runtime/asm_amd64.s:496
+> > #16 0x00007fffffffdf6f in ?? ()
+> > #17 0x0100000000000000 in ?? ()
+> > #18 0x0000000000800000 in
+> > github.com/golang/protobuf/ptypes/timestamp.file_github_com_golang_prot=
+obuf_ptypes_timestamp_timestamp_proto_init
+> > ()
+> >     at /home/builder/go/pkg/mod/github.com/golang/protobuf@v1.5.2/ptype=
+s/timestamp/timestamp.pb.go:57
+> > #19 0x0000000000000000 in ?? ()
+> >
+> > Here it is in code, where it happens after vmlinux does not find the
+> > requested id:
+> >
+> > * https://github.com/libbpf/libbpf/blob/v1.2.0/src/libbpf.c#L9219
+> >
+> > And in turn bpf_obj_get_next_id requires CAP_SYS_ADMIN here:
+> >
+> > * https://elixir.bootlin.com/linux/v6.5-rc1/source/kernel/bpf/syscall.c=
+#L3790
+> >
+> > The requirement comes from commit 34ad558 ("bpf: Add
+> > BPF_(PROG|MAP)_GET_NEXT_ID command") from v4.13:
+> >
+> > * https://github.com/torvalds/linux/commit/34ad558
+> >
+> > There's also this in the commit message: It is currently limited to
+> > CAP_SYS_ADMIN which we can consider to lift it in followup patches.
+> >
+> > Later in v5.4 commit 341dfcf ("btf: expose BTF info through sysfs")
+> > exposed BTF info via sysfs:
+> >
+> > * https://github.com/torvalds/linux/commit/341dfcf
+> >
+> > This info is world readable and it doesn't require any special capabili=
+ties:
+> >
+> > static struct bin_attribute bin_attr_btf_vmlinux __ro_after_init =3D {
+> >   .attr =3D { .name =3D "vmlinux", .mode =3D 0444, },
+> >   .read =3D btf_vmlinux_read,
+> > };
+> >
+> > $ ls -l /sys/kernel/btf/vmlinux
+> > -r--r--r-- 1 root root 4438336 Jul 13 06:33 /sys/kernel/btf/vmlinux
+> >
+> > My question is then: do we still need CAP_SYS_ADMIN? Should it be
+> > CAP_BPF / CAP_PERFMON (available since v5.8) or should we drop the
+> > requirement completely, since we expose vmlinux btf without any
+> > restrictions?
+> >
+> > I'm happy to submit a patch.
+> >
+>
+> I think it would be possible to gather module BTF data via
+> /sys/kernel/btf instead of via iterating through the BTF objects, which
+> is where lack of CAP_SYS_ADMIN trips up. The only problem is you won't
+> have the BTF id of the module (which you get from the object), but I
+> don't currently see that being used anywhere in libbpf. I might be
+> missing something though.
+>
+sysfs does not have BTF exported if required modules have not been
+loaded into the kernel. Loading modules would require SYS_ADMIN. Will
+that be a problem?
 
-In the first scenario, we create a UDP client and UDP echo server. The
-the server side is fairly straightforward: we attach the prog and simply
-echo back the message.
 
-The on the client side, we send fragmented packets to and expect the
-reassembled message back from the server.
+> Alan
+>
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/testing/selftests/bpf/Makefile          |   4 +-
- .../selftests/bpf/generate_udp_fragments.py   |  90 ++++++
- .../selftests/bpf/ip_check_defrag_frags.h     |  57 ++++
- .../bpf/prog_tests/ip_check_defrag.c          | 283 ++++++++++++++++++
- .../selftests/bpf/progs/ip_check_defrag.c     | 104 +++++++
- 5 files changed, 536 insertions(+), 2 deletions(-)
- create mode 100755 tools/testing/selftests/bpf/generate_udp_fragments.py
- create mode 100644 tools/testing/selftests/bpf/ip_check_defrag_frags.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
- create mode 100644 tools/testing/selftests/bpf/progs/ip_check_defrag.c
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 882be03b179f..619df497fce5 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -565,8 +565,8 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
- 			 network_helpers.c testing_helpers.c		\
- 			 btf_helpers.c flow_dissector_load.h		\
- 			 cap_helpers.c test_loader.c xsk.c disasm.c	\
--			 json_writer.c unpriv_helpers.c
--
-+			 json_writer.c unpriv_helpers.c 		\
-+			 ip_check_defrag_frags.h
- TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
- 		       $(OUTPUT)/liburandom_read.so			\
- 		       $(OUTPUT)/xdp_synproxy				\
-diff --git a/tools/testing/selftests/bpf/generate_udp_fragments.py b/tools/testing/selftests/bpf/generate_udp_fragments.py
-new file mode 100755
-index 000000000000..2b8a1187991c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/generate_udp_fragments.py
-@@ -0,0 +1,90 @@
-+#!/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+"""
-+This script helps generate fragmented UDP packets.
-+
-+While it is technically possible to dynamically generate
-+fragmented packets in C, it is much harder to read and write
-+said code. `scapy` is relatively industry standard and really
-+easy to read / write.
-+
-+So we choose to write this script that generates a valid C
-+header. Rerun script and commit generated file after any
-+modifications.
-+"""
-+
-+import argparse
-+import os
-+
-+from scapy.all import *
-+
-+
-+# These constants must stay in sync with `ip_check_defrag.c`
-+VETH1_ADDR = "172.16.1.200"
-+VETH0_ADDR6 = "fc00::100"
-+VETH1_ADDR6 = "fc00::200"
-+CLIENT_PORT = 48878
-+SERVER_PORT = 48879
-+MAGIC_MESSAGE = "THIS IS THE ORIGINAL MESSAGE, PLEASE REASSEMBLE ME"
-+
-+
-+def print_header(f):
-+    f.write("// SPDX-License-Identifier: GPL-2.0\n")
-+    f.write("/* DO NOT EDIT -- this file is generated */\n")
-+    f.write("\n")
-+    f.write("#ifndef _IP_CHECK_DEFRAG_FRAGS_H\n")
-+    f.write("#define _IP_CHECK_DEFRAG_FRAGS_H\n")
-+    f.write("\n")
-+    f.write("#include <stdint.h>\n")
-+    f.write("\n")
-+
-+
-+def print_frags(f, frags, v6):
-+    for idx, frag in enumerate(frags):
-+        # 10 bytes per line to keep width in check
-+        chunks = [frag[i : i + 10] for i in range(0, len(frag), 10)]
-+        chunks_fmted = [", ".join([str(hex(b)) for b in chunk]) for chunk in chunks]
-+        suffix = "6" if v6 else ""
-+
-+        f.write(f"static uint8_t frag{suffix}_{idx}[] = {{\n")
-+        for chunk in chunks_fmted:
-+            f.write(f"\t{chunk},\n")
-+        f.write(f"}};\n")
-+
-+
-+def print_trailer(f):
-+    f.write("\n")
-+    f.write("#endif /* _IP_CHECK_DEFRAG_FRAGS_H */\n")
-+
-+
-+def main(f):
-+    # srcip of 0 is filled in by IP_HDRINCL
-+    sip = "0.0.0.0"
-+    sip6 = VETH0_ADDR6
-+    dip = VETH1_ADDR
-+    dip6 = VETH1_ADDR6
-+    sport = CLIENT_PORT
-+    dport = SERVER_PORT
-+    payload = MAGIC_MESSAGE.encode()
-+
-+    # Disable UDPv4 checksums to keep code simpler
-+    pkt = IP(src=sip,dst=dip) / UDP(sport=sport,dport=dport,chksum=0) / Raw(load=payload)
-+    # UDPv6 requires a checksum
-+    # Also pin the ipv6 fragment header ID, otherwise it's a random value
-+    pkt6 = IPv6(src=sip6,dst=dip6) / IPv6ExtHdrFragment(id=0xBEEF) / UDP(sport=sport,dport=dport) / Raw(load=payload)
-+
-+    frags = [f.build() for f in pkt.fragment(24)]
-+    frags6 = [f.build() for f in fragment6(pkt6, 72)]
-+
-+    print_header(f)
-+    print_frags(f, frags, False)
-+    print_frags(f, frags6, True)
-+    print_trailer(f)
-+
-+
-+if __name__ == "__main__":
-+    dir = os.path.dirname(os.path.realpath(__file__))
-+    header = f"{dir}/ip_check_defrag_frags.h"
-+    with open(header, "w") as f:
-+        main(f)
-diff --git a/tools/testing/selftests/bpf/ip_check_defrag_frags.h b/tools/testing/selftests/bpf/ip_check_defrag_frags.h
-new file mode 100644
-index 000000000000..70ab7e9fa22b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/ip_check_defrag_frags.h
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* DO NOT EDIT -- this file is generated */
-+
-+#ifndef _IP_CHECK_DEFRAG_FRAGS_H
-+#define _IP_CHECK_DEFRAG_FRAGS_H
-+
-+#include <stdint.h>
-+
-+static uint8_t frag_0[] = {
-+	0x45, 0x0, 0x0, 0x2c, 0x0, 0x1, 0x20, 0x0, 0x40, 0x11,
-+	0xac, 0xe8, 0x0, 0x0, 0x0, 0x0, 0xac, 0x10, 0x1, 0xc8,
-+	0xbe, 0xee, 0xbe, 0xef, 0x0, 0x3a, 0x0, 0x0, 0x54, 0x48,
-+	0x49, 0x53, 0x20, 0x49, 0x53, 0x20, 0x54, 0x48, 0x45, 0x20,
-+	0x4f, 0x52, 0x49, 0x47,
-+};
-+static uint8_t frag_1[] = {
-+	0x45, 0x0, 0x0, 0x2c, 0x0, 0x1, 0x20, 0x3, 0x40, 0x11,
-+	0xac, 0xe5, 0x0, 0x0, 0x0, 0x0, 0xac, 0x10, 0x1, 0xc8,
-+	0x49, 0x4e, 0x41, 0x4c, 0x20, 0x4d, 0x45, 0x53, 0x53, 0x41,
-+	0x47, 0x45, 0x2c, 0x20, 0x50, 0x4c, 0x45, 0x41, 0x53, 0x45,
-+	0x20, 0x52, 0x45, 0x41,
-+};
-+static uint8_t frag_2[] = {
-+	0x45, 0x0, 0x0, 0x1e, 0x0, 0x1, 0x0, 0x6, 0x40, 0x11,
-+	0xcc, 0xf0, 0x0, 0x0, 0x0, 0x0, 0xac, 0x10, 0x1, 0xc8,
-+	0x53, 0x53, 0x45, 0x4d, 0x42, 0x4c, 0x45, 0x20, 0x4d, 0x45,
-+};
-+static uint8_t frag6_0[] = {
-+	0x60, 0x0, 0x0, 0x0, 0x0, 0x20, 0x2c, 0x40, 0xfc, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x1, 0x0, 0xfc, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0,
-+	0x11, 0x0, 0x0, 0x1, 0x0, 0x0, 0xbe, 0xef, 0xbe, 0xee,
-+	0xbe, 0xef, 0x0, 0x3a, 0xd0, 0xf8, 0x54, 0x48, 0x49, 0x53,
-+	0x20, 0x49, 0x53, 0x20, 0x54, 0x48, 0x45, 0x20, 0x4f, 0x52,
-+	0x49, 0x47,
-+};
-+static uint8_t frag6_1[] = {
-+	0x60, 0x0, 0x0, 0x0, 0x0, 0x20, 0x2c, 0x40, 0xfc, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x1, 0x0, 0xfc, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0,
-+	0x11, 0x0, 0x0, 0x19, 0x0, 0x0, 0xbe, 0xef, 0x49, 0x4e,
-+	0x41, 0x4c, 0x20, 0x4d, 0x45, 0x53, 0x53, 0x41, 0x47, 0x45,
-+	0x2c, 0x20, 0x50, 0x4c, 0x45, 0x41, 0x53, 0x45, 0x20, 0x52,
-+	0x45, 0x41,
-+};
-+static uint8_t frag6_2[] = {
-+	0x60, 0x0, 0x0, 0x0, 0x0, 0x12, 0x2c, 0x40, 0xfc, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x1, 0x0, 0xfc, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0,
-+	0x11, 0x0, 0x0, 0x30, 0x0, 0x0, 0xbe, 0xef, 0x53, 0x53,
-+	0x45, 0x4d, 0x42, 0x4c, 0x45, 0x20, 0x4d, 0x45,
-+};
-+
-+#endif /* _IP_CHECK_DEFRAG_FRAGS_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c b/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
-new file mode 100644
-index 000000000000..57c814f5f6a7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
-@@ -0,0 +1,283 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <net/if.h>
-+#include <linux/netfilter.h>
-+#include <network_helpers.h>
-+#include "ip_check_defrag.skel.h"
-+#include "ip_check_defrag_frags.h"
-+
-+/*
-+ * This selftest spins up a client and an echo server, each in their own
-+ * network namespace. The client will send a fragmented message to the server.
-+ * The prog attached to the server will shoot down any fragments. Thus, if
-+ * the server is able to correctly echo back the message to the client, we will
-+ * have verified that netfilter is reassembling packets for us.
-+ *
-+ * Topology:
-+ * =========
-+ *           NS0         |         NS1
-+ *                       |
-+ *         client        |       server
-+ *       ----------      |     ----------
-+ *       |  veth0  | --------- |  veth1  |
-+ *       ----------    peer    ----------
-+ *                       |
-+ *                       |       with bpf
-+ */
-+
-+#define NS0		"defrag_ns0"
-+#define NS1		"defrag_ns1"
-+#define VETH0		"veth0"
-+#define VETH1		"veth1"
-+#define VETH0_ADDR	"172.16.1.100"
-+#define VETH0_ADDR6	"fc00::100"
-+/* The following constants must stay in sync with `generate_udp_fragments.py` */
-+#define VETH1_ADDR	"172.16.1.200"
-+#define VETH1_ADDR6	"fc00::200"
-+#define CLIENT_PORT	48878
-+#define SERVER_PORT	48879
-+#define MAGIC_MESSAGE	"THIS IS THE ORIGINAL MESSAGE, PLEASE REASSEMBLE ME"
-+
-+static int setup_topology(bool ipv6)
-+{
-+	bool up;
-+	int i;
-+
-+	SYS(fail, "ip netns add " NS0);
-+	SYS(fail, "ip netns add " NS1);
-+	SYS(fail, "ip link add " VETH0 " netns " NS0 " type veth peer name " VETH1 " netns " NS1);
-+	if (ipv6) {
-+		SYS(fail, "ip -6 -net " NS0 " addr add " VETH0_ADDR6 "/64 dev " VETH0 " nodad");
-+		SYS(fail, "ip -6 -net " NS1 " addr add " VETH1_ADDR6 "/64 dev " VETH1 " nodad");
-+	} else {
-+		SYS(fail, "ip -net " NS0 " addr add " VETH0_ADDR "/24 dev " VETH0);
-+		SYS(fail, "ip -net " NS1 " addr add " VETH1_ADDR "/24 dev " VETH1);
-+	}
-+	SYS(fail, "ip -net " NS0 " link set dev " VETH0 " up");
-+	SYS(fail, "ip -net " NS1 " link set dev " VETH1 " up");
-+
-+	/* Wait for up to 5s for links to come up */
-+	for (i = 0; i < 5; ++i) {
-+		if (ipv6)
-+			up = !system("ip netns exec " NS0 " ping -6 -c 1 -W 1 " VETH1_ADDR6 " &>/dev/null");
-+		else
-+			up = !system("ip netns exec " NS0 " ping -c 1 -W 1 " VETH1_ADDR " &>/dev/null");
-+
-+		if (up)
-+			break;
-+	}
-+
-+	return 0;
-+fail:
-+	return -1;
-+}
-+
-+static void cleanup_topology(void)
-+{
-+	SYS_NOFAIL("test -f /var/run/netns/" NS0 " && ip netns delete " NS0);
-+	SYS_NOFAIL("test -f /var/run/netns/" NS1 " && ip netns delete " NS1);
-+}
-+
-+static int attach(struct ip_check_defrag *skel, bool ipv6)
-+{
-+	LIBBPF_OPTS(bpf_netfilter_opts, opts,
-+		    .pf = ipv6 ? NFPROTO_IPV6 : NFPROTO_IPV4,
-+		    .priority = 42,
-+		    .flags = BPF_F_NETFILTER_IP_DEFRAG);
-+	struct nstoken *nstoken;
-+	int err = -1;
-+
-+	nstoken = open_netns(NS1);
-+
-+	skel->links.defrag = bpf_program__attach_netfilter(skel->progs.defrag, &opts);
-+	if (!ASSERT_OK_PTR(skel->links.defrag, "program attach"))
-+		goto out;
-+
-+	err = 0;
-+out:
-+	close_netns(nstoken);
-+	return err;
-+}
-+
-+static int send_frags(int client)
-+{
-+	struct sockaddr_storage saddr;
-+	struct sockaddr *saddr_p;
-+	socklen_t saddr_len;
-+	int err;
-+
-+	saddr_p = (struct sockaddr *)&saddr;
-+	err = make_sockaddr(AF_INET, VETH1_ADDR, SERVER_PORT, &saddr, &saddr_len);
-+	if (!ASSERT_OK(err, "make_sockaddr"))
-+		return -1;
-+
-+	err = sendto(client, frag_0, sizeof(frag_0), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag_0"))
-+		return -1;
-+
-+	err = sendto(client, frag_1, sizeof(frag_1), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag_1"))
-+		return -1;
-+
-+	err = sendto(client, frag_2, sizeof(frag_2), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag_2"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int send_frags6(int client)
-+{
-+	struct sockaddr_storage saddr;
-+	struct sockaddr *saddr_p;
-+	socklen_t saddr_len;
-+	int err;
-+
-+	saddr_p = (struct sockaddr *)&saddr;
-+	/* Port needs to be set to 0 for raw ipv6 socket for some reason */
-+	err = make_sockaddr(AF_INET6, VETH1_ADDR6, 0, &saddr, &saddr_len);
-+	if (!ASSERT_OK(err, "make_sockaddr"))
-+		return -1;
-+
-+	err = sendto(client, frag6_0, sizeof(frag6_0), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag6_0"))
-+		return -1;
-+
-+	err = sendto(client, frag6_1, sizeof(frag6_1), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag6_1"))
-+		return -1;
-+
-+	err = sendto(client, frag6_2, sizeof(frag6_2), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag6_2"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+void test_bpf_ip_check_defrag_ok(bool ipv6)
-+{
-+	struct network_helper_opts rx_opts = {
-+		.timeout_ms = 1000,
-+		.noconnect = true,
-+	};
-+	struct network_helper_opts tx_ops = {
-+		.timeout_ms = 1000,
-+		.type = SOCK_RAW,
-+		.proto = IPPROTO_RAW,
-+		.noconnect = true,
-+	};
-+	struct sockaddr_storage caddr;
-+	struct ip_check_defrag *skel;
-+	struct nstoken *nstoken;
-+	int client_tx_fd = -1;
-+	int client_rx_fd = -1;
-+	socklen_t caddr_len;
-+	int srv_fd = -1;
-+	char buf[1024];
-+	int len, err;
-+
-+	skel = ip_check_defrag__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	if (!ASSERT_OK(setup_topology(ipv6), "setup_topology"))
-+		goto out;
-+
-+	if (!ASSERT_OK(attach(skel, ipv6), "attach"))
-+		goto out;
-+
-+	/* Start server in ns1 */
-+	nstoken = open_netns(NS1);
-+	if (!ASSERT_OK_PTR(nstoken, "setns ns1"))
-+		goto out;
-+	srv_fd = start_server(ipv6 ? AF_INET6 : AF_INET, SOCK_DGRAM, NULL, SERVER_PORT, 0);
-+	close_netns(nstoken);
-+	if (!ASSERT_GE(srv_fd, 0, "start_server"))
-+		goto out;
-+
-+	/* Open tx raw socket in ns0 */
-+	nstoken = open_netns(NS0);
-+	if (!ASSERT_OK_PTR(nstoken, "setns ns0"))
-+		goto out;
-+	client_tx_fd = connect_to_fd_opts(srv_fd, &tx_ops);
-+	close_netns(nstoken);
-+	if (!ASSERT_GE(client_tx_fd, 0, "connect_to_fd_opts"))
-+		goto out;
-+
-+	/* Open rx socket in ns0 */
-+	nstoken = open_netns(NS0);
-+	if (!ASSERT_OK_PTR(nstoken, "setns ns0"))
-+		goto out;
-+	client_rx_fd = connect_to_fd_opts(srv_fd, &rx_opts);
-+	close_netns(nstoken);
-+	if (!ASSERT_GE(client_rx_fd, 0, "connect_to_fd_opts"))
-+		goto out;
-+
-+	/* Bind rx socket to a premeditated port */
-+	memset(&caddr, 0, sizeof(caddr));
-+	nstoken = open_netns(NS0);
-+	if (!ASSERT_OK_PTR(nstoken, "setns ns0"))
-+		goto out;
-+	if (ipv6) {
-+		struct sockaddr_in6 *c = (struct sockaddr_in6 *)&caddr;
-+
-+		c->sin6_family = AF_INET6;
-+		inet_pton(AF_INET6, VETH0_ADDR6, &c->sin6_addr);
-+		c->sin6_port = htons(CLIENT_PORT);
-+		err = bind(client_rx_fd, (struct sockaddr *)c, sizeof(*c));
-+	} else {
-+		struct sockaddr_in *c = (struct sockaddr_in *)&caddr;
-+
-+		c->sin_family = AF_INET;
-+		inet_pton(AF_INET, VETH0_ADDR, &c->sin_addr);
-+		c->sin_port = htons(CLIENT_PORT);
-+		err = bind(client_rx_fd, (struct sockaddr *)c, sizeof(*c));
-+	}
-+	close_netns(nstoken);
-+	if (!ASSERT_OK(err, "bind"))
-+		goto out;
-+
-+	/* Send message in fragments */
-+	if (ipv6) {
-+		if (!ASSERT_OK(send_frags6(client_tx_fd), "send_frags6"))
-+			goto out;
-+	} else {
-+		if (!ASSERT_OK(send_frags(client_tx_fd), "send_frags"))
-+			goto out;
-+	}
-+
-+	if (!ASSERT_EQ(skel->bss->shootdowns, 0, "shootdowns"))
-+		goto out;
-+
-+	/* Receive reassembled msg on server and echo back to client */
-+	caddr_len = sizeof(caddr);
-+	len = recvfrom(srv_fd, buf, sizeof(buf), 0, (struct sockaddr *)&caddr, &caddr_len);
-+	if (!ASSERT_GE(len, 0, "server recvfrom"))
-+		goto out;
-+	len = sendto(srv_fd, buf, len, 0, (struct sockaddr *)&caddr, caddr_len);
-+	if (!ASSERT_GE(len, 0, "server sendto"))
-+		goto out;
-+
-+	/* Expect reassembed message to be echoed back */
-+	len = recvfrom(client_rx_fd, buf, sizeof(buf), 0, NULL, NULL);
-+	if (!ASSERT_EQ(len, sizeof(MAGIC_MESSAGE) - 1, "client short read"))
-+		goto out;
-+
-+out:
-+	if (client_rx_fd != -1)
-+		close(client_rx_fd);
-+	if (client_tx_fd != -1)
-+		close(client_tx_fd);
-+	if (srv_fd != -1)
-+		close(srv_fd);
-+	cleanup_topology();
-+	ip_check_defrag__destroy(skel);
-+}
-+
-+void test_bpf_ip_check_defrag(void)
-+{
-+	if (test__start_subtest("v4"))
-+		test_bpf_ip_check_defrag_ok(false);
-+	if (test__start_subtest("v6"))
-+		test_bpf_ip_check_defrag_ok(true);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/ip_check_defrag.c b/tools/testing/selftests/bpf/progs/ip_check_defrag.c
-new file mode 100644
-index 000000000000..1c2b6c1616b0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/ip_check_defrag.c
-@@ -0,0 +1,104 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+#include "bpf_tracing_net.h"
-+
-+#define NF_DROP			0
-+#define NF_ACCEPT		1
-+#define ETH_P_IP		0x0800
-+#define ETH_P_IPV6		0x86DD
-+#define IP_MF			0x2000
-+#define IP_OFFSET		0x1FFF
-+#define NEXTHDR_FRAGMENT	44
-+
-+extern int bpf_dynptr_from_skb(struct sk_buff *skb, __u64 flags,
-+			      struct bpf_dynptr *ptr__uninit) __ksym;
-+extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, uint32_t offset,
-+			      void *buffer, uint32_t buffer__sz) __ksym;
-+
-+volatile int shootdowns = 0;
-+
-+static bool is_frag_v4(struct iphdr *iph)
-+{
-+	int offset;
-+	int flags;
-+
-+	offset = bpf_ntohs(iph->frag_off);
-+	flags = offset & ~IP_OFFSET;
-+	offset &= IP_OFFSET;
-+	offset <<= 3;
-+
-+	return (flags & IP_MF) || offset;
-+}
-+
-+static bool is_frag_v6(struct ipv6hdr *ip6h)
-+{
-+	/* Simplifying assumption that there are no extension headers
-+	 * between fixed header and fragmentation header. This assumption
-+	 * is only valid in this test case. It saves us the hassle of
-+	 * searching all potential extension headers.
-+	 */
-+	return ip6h->nexthdr == NEXTHDR_FRAGMENT;
-+}
-+
-+static int handle_v4(struct sk_buff *skb)
-+{
-+	struct bpf_dynptr ptr;
-+	u8 iph_buf[20] = {};
-+	struct iphdr *iph;
-+
-+	if (bpf_dynptr_from_skb(skb, 0, &ptr))
-+		return NF_DROP;
-+
-+	iph = bpf_dynptr_slice(&ptr, 0, iph_buf, sizeof(iph_buf));
-+	if (!iph)
-+		return NF_DROP;
-+
-+	/* Shootdown any frags */
-+	if (is_frag_v4(iph)) {
-+		shootdowns++;
-+		return NF_DROP;
-+	}
-+
-+	return NF_ACCEPT;
-+}
-+
-+static int handle_v6(struct sk_buff *skb)
-+{
-+	struct bpf_dynptr ptr;
-+	struct ipv6hdr *ip6h;
-+	u8 ip6h_buf[40] = {};
-+
-+	if (bpf_dynptr_from_skb(skb, 0, &ptr))
-+		return NF_DROP;
-+
-+	ip6h = bpf_dynptr_slice(&ptr, 0, ip6h_buf, sizeof(ip6h_buf));
-+	if (!ip6h)
-+		return NF_DROP;
-+
-+	/* Shootdown any frags */
-+	if (is_frag_v6(ip6h)) {
-+		shootdowns++;
-+		return NF_DROP;
-+	}
-+
-+	return NF_ACCEPT;
-+}
-+
-+SEC("netfilter")
-+int defrag(struct bpf_nf_ctx *ctx)
-+{
-+	struct sk_buff *skb = ctx->skb;
-+
-+	switch (bpf_ntohs(skb->protocol)) {
-+	case ETH_P_IP:
-+		return handle_v4(skb);
-+	case ETH_P_IPV6:
-+		return handle_v6(skb);
-+	default:
-+		return NF_ACCEPT;
-+	}
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.41.0
+--=20
 
+Yan
 
