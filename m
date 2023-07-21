@@ -1,60 +1,61 @@
-Return-Path: <bpf+bounces-5597-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5598-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57CD775C306
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 11:27:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 591AB75C307
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 11:27:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 879391C21658
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 09:27:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AA91281B5D
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 09:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24B1B14F99;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4E8C168CA;
 	Fri, 21 Jul 2023 09:27:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E772B14F8D
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 09:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A742B14F8D
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 09:27:40 +0000 (UTC)
 Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA932D7F
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 02:27:37 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b89114266dso13207095ad.0
-        for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 02:27:37 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B19B30C0
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 02:27:39 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b8b4749013so12943665ad.2
+        for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 02:27:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689931657; x=1690536457;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7CnfO3rFMWxUzDFhqcplRljhCu5iMPxBpyDhU2kdczY=;
-        b=i/+xMVjLNDjnoq5IN0OwlrMGv8eVyUyKl6gyhEFikgDU3JHDAz4HHWDLUHaRDZivlz
-         z+GW5vMSvKkyZrnlTzG57/MRsY2Z1QQoK1Zb1W6g0cHG96glBYefy4jgXdgALUw4dNhS
-         JBOrwIugiVjij9VdxS7sjIr+fIdOkqaTM1rLcT3P6U3O0jeZNO3MZcVI6V4vy7LdvbL1
-         P1PTohXVkfGSnXFkz6G5IPAz/CG84jt+/WWNXpIG05DYs95CJSa7D5BQWfYSYjrSoys4
-         9ANUoAl4o+PfDddJ+aolvG5EX0h3/tFlYvDThw22/8YADsJySEJNYvnTojZdV6/CHqtm
-         +9KA==
+        d=gmail.com; s=20221208; t=1689931659; x=1690536459;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/SzaVf3iIkXgT8Et6pffHRJVL/6iJNQI7JYg7ZnqEBQ=;
+        b=mvi5teERVDolf5p3bnm438xtUsUMb+w1mfdir+k2KSwoy+8Mn9c88u26jNISEyYc8D
+         dwlNqlD64D3d4YJPPor+eJoyzfq2uQhRCSZ1zbCLsEv1FnGRhEY7d4z1tpRrqTvX7P0S
+         RPHAm33eMRvh9GqssYADLUhNAtsgWqy1aAS8k0wryu/xhkZIH+j1tCU9bpgMX+uPvWsS
+         LcKC8htljno/X2au2EOpgWGCB/CCEVAGqHO8sd45gl52BSjASQF4duPXT8XkkIGD6MAJ
+         zngFQyGWRcH1H8zFZX4bwGumeAekMkt88yNZIYReKb5371L3L9JCjrdNj7A+/UStd/oF
+         g7ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689931657; x=1690536457;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7CnfO3rFMWxUzDFhqcplRljhCu5iMPxBpyDhU2kdczY=;
-        b=K2guBtDZDWX7bTMiUoBO7O4Ani+0GYgM+N1lHa/SHYlo5xRZPyvXBPQegZPAQuwlEq
-         yu7EvIIyCt1A2YsLSaZHeyqJrT4IdEAOzE7qbGv2BvGTpHhb6UgzkZZZloYP+ZOHxcKs
-         Eyt09FY7oYmhLeeayaWNtuniCUX+zsaOmIe+9Kl1g8Kyd/X1hmkD398b+1GH51nQIAqn
-         HySjWQ9B25C5bD/PSxzyD7NT7u0XH4grc74e6jD5BycTnd47E2Rg64ZBrW07kZIQUbux
-         WG2kR/IRIqMCJtPpmD0V7xyRFx8BzHYxGaQAzUTkwOMqHzcC8t56IoQLVuzkIcyqjkDl
-         cvKQ==
-X-Gm-Message-State: ABy/qLY8crAqC4IiiaTHT7E/ipPG1lx/8+SBo5IidYOZcE7FsWUH1yC9
-	2apqBKLx6WJ6AjwA1ph7O5BH5Lm7frnyWg63XlI=
-X-Google-Smtp-Source: APBJJlFz3gdLV46BV+f6Ob53Oua+krO07yTL2qTXTu0Cp/jC3z45Hygk9NwNHiPi2bsgNbdGAlOxBg==
-X-Received: by 2002:a17:902:ec83:b0:1b8:b41e:66b4 with SMTP id x3-20020a170902ec8300b001b8b41e66b4mr1623647plg.67.1689931657386;
-        Fri, 21 Jul 2023 02:27:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689931659; x=1690536459;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/SzaVf3iIkXgT8Et6pffHRJVL/6iJNQI7JYg7ZnqEBQ=;
+        b=GSB/6Puf9fcSwtYuEDrhWdFwP3j11CBOPIYCHh9uA3fetYZxMY4iPZ/e9U8ZhepPoP
+         PUKL7FDn8ohpEhGqYcyAUTot6qHcarzljoRgq4G9c8ML9xRxcGWCHAyYffbNONAMLZvw
+         XzQLn82xm8Ds+zS+Fy4cTriA/6TiMj2WO9MVLqLuaqLeWiOb9t0XSqQQe6hs2coJzcxL
+         QmtyZBULr1DDskt19Y53FOS4lDApUKt9EfFk8vmmHec8uFic7A2FAOkX4r8U8U1/qegW
+         UqHfOZN9YaYoes68sxpYYLi6//tZQRCOQ0D13AEHEMfhApOAlL9KcNVd0EmbdUxHv009
+         GMYg==
+X-Gm-Message-State: ABy/qLaoU4ZFG5XmxR5Pxkmk4n03xqLS1hDpdmbqyr1+V8e25+AOI6QU
+	MjuN1KqLGnqnHoudJBY8c+M=
+X-Google-Smtp-Source: APBJJlFkuwRH5jyRc1+wu5iH4H/FH69yn+7D3qaqVuQxtlLqX0qom4Cn+rfpYqKYKZuU8ahX0Z1SLw==
+X-Received: by 2002:a17:902:ff02:b0:1b8:5a49:a290 with SMTP id f2-20020a170902ff0200b001b85a49a290mr1297154plj.43.1689931658645;
+        Fri, 21 Jul 2023 02:27:38 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac01:1303:5400:4ff:fe83:cf8a])
-        by smtp.gmail.com with ESMTPSA id o10-20020a170902bcca00b001b850c9af71sm2911072pls.285.2023.07.21.02.27.36
+        by smtp.gmail.com with ESMTPSA id o10-20020a170902bcca00b001b850c9af71sm2911072pls.285.2023.07.21.02.27.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 02:27:36 -0700 (PDT)
+        Fri, 21 Jul 2023 02:27:38 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -68,11 +69,14 @@ To: ast@kernel.org,
 	haoluo@google.com,
 	jolsa@kernel.org
 Cc: bpf@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 0/2] bpf: Fix fill_link_info and add selftest 
-Date: Fri, 21 Jul 2023 09:27:23 +0000
-Message-Id: <20230721092725.3795-1-laoar.shao@gmail.com>
+	Yafang Shao <laoar.shao@gmail.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH bpf-next 1/2] bpf: Fix uninitialized symbol in bpf_perf_link_fill_kprobe()
+Date: Fri, 21 Jul 2023 09:27:24 +0000
+Message-Id: <20230721092725.3795-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230721092725.3795-1-laoar.shao@gmail.com>
+References: <20230721092725.3795-1-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,20 +91,49 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Patch #1: Fix an error in fill_link_info reported by Dan
-Patch #2: Add selftest for #1
+The patch 1b715e1b0ec5: "bpf: Support ->fill_link_info for
+perf_event" from Jul 9, 2023, leads to the following Smatch static
+checker warning:
 
-Yafang Shao (2):
-  bpf: Fix uninitialized symbol in bpf_perf_link_fill_kprobe()
-  selftests/bpf: Add selftest for fill_link_info
+    kernel/bpf/syscall.c:3416 bpf_perf_link_fill_kprobe()
+    error: uninitialized symbol 'type'.
 
- kernel/bpf/syscall.c                               |  10 +-
- .../selftests/bpf/prog_tests/fill_link_info.c      | 232 +++++++++++++++++++++
- .../selftests/bpf/progs/test_fill_link_info.c      |  25 +++
- 3 files changed, 262 insertions(+), 5 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/fill_link_info.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_fill_link_info.c
+That can happens when uname is NULL. So fix it by verifying the uname
+when we really need to fill it.
 
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/bpf/85697a7e-f897-4f74-8b43-82721bebc462@kili.mountain/
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+---
+ kernel/bpf/syscall.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 7f4e8c3..ad9360d 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3376,16 +3376,16 @@ static int bpf_perf_link_fill_common(const struct perf_event *event,
+ 	size_t len;
+ 	int err;
+ 
+-	if (!ulen ^ !uname)
+-		return -EINVAL;
+-	if (!uname)
+-		return 0;
+-
+ 	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+ 				      probe_offset, probe_addr);
+ 	if (err)
+ 		return err;
+ 
++	if (!ulen ^ !uname)
++		return -EINVAL;
++	if (!uname)
++		return 0;
++
+ 	if (buf) {
+ 		len = strlen(buf);
+ 		err = bpf_copy_to_user(uname, buf, ulen, len);
 -- 
 1.8.3.1
 
