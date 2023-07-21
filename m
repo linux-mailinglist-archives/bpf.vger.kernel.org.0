@@ -1,40 +1,47 @@
-Return-Path: <bpf+bounces-5611-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5612-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 544C575C736
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 14:57:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6221375C80E
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 15:43:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F66B1C216A1
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 12:57:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A60F281EA2
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 13:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5A5D1BE68;
-	Fri, 21 Jul 2023 12:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DE21DDFE;
+	Fri, 21 Jul 2023 13:43:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5991D2E8
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 12:57:24 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D0B10CB
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 05:57:22 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4R6qMb5GBpz4f3jMF
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 20:57:15 +0800 (CST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10ED41DDDD
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 13:43:03 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179351722
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 06:43:02 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R6rNJ4wMyz4f3lXH
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 21:42:56 +0800 (CST)
 Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgDXyxmqgLpkT_XNNQ--.29737S2;
-	Fri, 21 Jul 2023 20:57:18 +0800 (CST)
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: improve ringbuf benchmark
- output
-To: Andrew Werner <awerner32@gmail.com>, bpf@vger.kernel.org
-Cc: kernel-team@dataexmachina.dev, alexei.starovoitov@gmail.com
-References: <20230719201533.176702-1-awerner32@gmail.com>
+	by APP4 (Coremail) with SMTP id gCh0CgAXf7Jdi7pkrrDtOQ--.30212S2;
+	Fri, 21 Jul 2023 21:42:57 +0800 (CST)
+Subject: Re: [PATCHv2 bpf 0/2] bpf: Disable preemption in perf_event_output
+ helpers code
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+ Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+References: <20230720085704.190592-1-jolsa@kernel.org>
+ <cefba62b-eb52-6955-86c5-a1ccff918b72@huaweicloud.com>
+ <ZLp9tyAuawEWcCay@krava>
 From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <1499e329-8132-3233-e3ed-79ef0bcb591c@huaweicloud.com>
-Date: Fri, 21 Jul 2023 20:57:14 +0800
+Message-ID: <c5b2b3be-d68a-6966-94be-56d73f16acc1@huaweicloud.com>
+Date: Fri, 21 Jul 2023 21:42:53 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 Precedence: bulk
@@ -43,26 +50,27 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230719201533.176702-1-awerner32@gmail.com>
+In-Reply-To: <ZLp9tyAuawEWcCay@krava>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-CM-TRANSID:_Ch0CgDXyxmqgLpkT_XNNQ--.29737S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw1kCrWfKFW8Cr1kury8Zrb_yoWDAFg_J3
-	Z2vF48ua1jqw1SvrZrKF4DZFy2kF1UAryjy3y7Cw47tFyFywsYva1jqr4I9w1Fqan2kF9I
-	gwnxXrn7Jw17KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb78YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+X-CM-TRANSID:gCh0CgAXf7Jdi7pkrrDtOQ--.30212S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw13Kr4fGrWrCw4fGF1UAwb_yoW8uw47pF
+	WkGayavr4DtF1Iqw12v348C3WFyr47XryFqr1DJryrC3y5WrWF9F1Fga1F9asIgrs7A3yS
+	9ayqqa97ZFWDCa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
 	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
 	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI
+	1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU1zuWJUUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
@@ -71,36 +79,60 @@ X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+Hi,
 
+On 7/21/2023 8:44 PM, Jiri Olsa wrote:
+> On Fri, Jul 21, 2023 at 08:12:41PM +0800, Hou Tao wrote:
+>>
+>> On 7/20/2023 4:57 PM, Jiri Olsa wrote:
+>>> hi,
+>>> we got report of kernel crash [1][3] within bpf_event_output helper.
+>>>
+>>> The reason is the nesting protection code in bpf_event_output that expects
+>>> disabled preemption, which is not guaranteed for programs executed by
+>>> bpf_prog_run_array_cg.
+>>>
+>>> I managed to reproduce on tracing side where we have the same problem
+>>> in bpf_perf_event_output. The reproducer [2] just creates busy uprobe
+>>> and call bpf_perf_event_output helper a lot.
+>> It is a little strange that I can not reproduce the same problem on my
+>> local VM by using the same reproducer from [2]. I have already enabled
+>> both CONFIG_PREEMPT=y and CONFIG_PREEMPT_RCU=y.
+> I have 4 cpu VM and I run '# ./test_progs -t krava -v' together with test
+> instance for each of cpu, like:
+>
+>    # ./test & ./test & ./test & ./test &
+>
+> and it's hit within 15 minutes
+>
+> attaching my config so you can compare, but can't think of another
+> option you need
 
-On 7/20/2023 4:15 AM, Andrew Werner wrote:
-> The ringbuf benchmarks print headers for each section of benchmarks.
-> The naming conventions lead a user of the benchmarks to some confusion.
-> This change is a cosmetic update to the output of that benchmark; no
-> changes were made to what the script actually executes.
+By using my .config, the reproduce just cost about 2 hours. I will try
+your .config to see whether or not there is any difference.
 >
-> The back-to-back exploration of sample rates for Perfbuf and Ringbuf
-> have been combined into a single section.
 >
-> Some of the variables in the script were renamed for clarity; b is
-> always a benchmark name, s is a sampling rate, n is a number of
-> producers. Before the change, b was the only variable.
->
-> After:
-> ```
-> Parallel producer
-> =================
-> rb-libbpf            43.072 ± 0.165M/s (drops 0.940 ± 0.016M/s)
-> rb-custom            20.274 ± 0.442M/s (drops 0.000 ± 0.000M/s)
-> pb-libbpf            1.480 ± 0.015M/s (drops 0.000 ± 0.000M/s)
-> pb-custom            1.492 ± 0.023M/s (drops 0.000 ± 0.000M/s)
->
-......
->
-> ```
->
-> Signed-off-by: Andrew Werner <awerner32@gmail.com>
+>>> v2 changes:
+>>>   - I changed 'Fixes' commits to where I saw we switched from preempt_disable
+>>>     to migrate_disable, but I'm not completely sure about the patch 2, because
+>>>     it was tricky to find, would be nice if somebody could check on that
+>> After digging into the change log, I think the fix tag is correct. In
+>> commit 2a916f2f546c, preempt_disable() is changed to migrate_disable()
+>> in the macro BPF_PROG_RUN_ARRAY(), and in commit 772412176fb9,
+>> BPF_PROG_RUN_ARRAY_FLAGS() was added for
+>> __cgroup_bpf_run_filter_sock_addr() and the implementation of
+>> BPF_PROG_RUN_ARRAY_FLAGS() was basically copied from
+>> BPF_PROG_RUN_ARRAY(). And afterwards, BPF_PROG_RUN_ARRAY_FLAGS was
+>> rename to BPF_PROG_RUN_ARRAY_CG_FLAGS, then
+>> bpf_prog_run_array_cg_flags(), and was renamed to
+>> bpf_prog_run_array_cg() in the final.
+> thanks for checking on that
+You are welcome. Hope it is helpful.
 
-Acked-by: Hou Tao <houtao1@huawei.com>
+Regards,
+Hou
+>
+> jirka
+>
 
 
