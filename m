@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-5629-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5632-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 650D875CF7B
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 18:35:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B59CC75CF9F
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 18:36:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B4161C217F4
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 16:35:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70DE6282403
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 16:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DB61E532;
-	Fri, 21 Jul 2023 16:35:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2380620F86;
+	Fri, 21 Jul 2023 16:35:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24FA0200A6
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 16:35:43 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109893AB2;
-	Fri, 21 Jul 2023 09:35:20 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4R6vxG6K9Qz9xFQR;
-	Sat, 22 Jul 2023 00:23:14 +0800 (CST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD26021500
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 16:35:49 +0000 (UTC)
+Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D0B3C07;
+	Fri, 21 Jul 2023 09:35:32 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4R6vxS4qdqz9xFfZ;
+	Sat, 22 Jul 2023 00:23:24 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwC3hl1bs7pkcDDSBA--.22409S6;
-	Fri, 21 Jul 2023 17:34:09 +0100 (CET)
+	by APP2 (Coremail) with SMTP id GxC2BwC3hl1bs7pkcDDSBA--.22409S7;
+	Fri, 21 Jul 2023 17:34:17 +0100 (CET)
 From: Roberto Sassu <roberto.sassu@huaweicloud.com>
 To: zohar@linux.ibm.com,
 	dmitry.kasatkin@gmail.com,
@@ -43,9 +43,9 @@ Cc: linux-kernel@vger.kernel.org,
 	hch@lst.de,
 	mjg59@srcf.ucam.org,
 	Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH 04/12] integrity/digest_cache: Iterate over digest lists in same dir
-Date: Fri, 21 Jul 2023 18:33:18 +0200
-Message-Id: <20230721163326.4106089-5-roberto.sassu@huaweicloud.com>
+Subject: [RFC][PATCH 05/12] integrity/digest_cache: Parse tlv digest lists
+Date: Fri, 21 Jul 2023 18:33:19 +0200
+Message-Id: <20230721163326.4106089-6-roberto.sassu@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230721163326.4106089-1-roberto.sassu@huaweicloud.com>
 References: <20230721163326.4106089-1-roberto.sassu@huaweicloud.com>
@@ -56,10 +56,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:GxC2BwC3hl1bs7pkcDDSBA--.22409S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxKF1UZFyUuF45JFW7XF15CFg_yoWxKF15pa
-	9Ik3W5Kr48Z34fCws7AF4akF4Fg39YgF47Gw45uw15Aw4DZr1qv3WxCryUZry5Jr4Uua47
-	tF4Ygr45Cr4DXaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:GxC2BwC3hl1bs7pkcDDSBA--.22409S7
+X-Coremail-Antispam: 1UD129KBjvJXoWfGr47Jr17tFWDGw4xJFWkZwb_yoWDCry5pa
+	sxKF18KrW7GF1fCw4xAF17Cr4fKrZ09rW7KFWruw1ayrWDZr1qk3Z2kFy8Zry5tr4DW3W7
+	Jw4agF909r4DXaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPlb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -74,243 +74,361 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxKF1UZFyUuF45JFW7XF15CFg_yoWxKF15pa
 	c7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aV
 	AFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZF
 	pf9x07j7GYLUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAFBF1jj4zMlQAAsn
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAFBF1jj5DJQgAAsq
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-	autolearn_force=no version=3.4.6
+	RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-One advantage of the digest cache is the ability of skipping measurements
-of cached digests. That would allow to accumulate integrity measurements
-on a PCR in a predictable way, since only the digest lists would be
-measured.
+Add a parser for TLV-formatted (Type Length Value) digest lists. Their
+structure is:
 
-However, since digest lists are accessed on demand, when a file belonging
-to that repo is measured/appraised, it could happen due to parallel
-execution that also digest lists are measured not in the same order.
+[header: DIGEST_LIST_FILE, num fields, total len]
+[field: DIGEST_LIST_ALGO, length, value]
+[field: DIGEST_LIST_ENTRY#1, length, value (below)]
+ |- [header: DIGEST_LIST_FILE, num fields, total len]
+ |- [ENTRY#1_DIGEST, length, file digest]
+ |- [ENTRY#1_PATH, length, file path]
+[field: DIGEST_LIST_ENTRY#N, length, value (below)]
+ |- [header: DIGEST_LIST_FILE, num fields, total len]
+ |- [ENTRY#N_DIGEST, length, file digest]
+ |- [ENTRY#N_PATH, length, file path]
 
-Thus, eliminate this possibility by iterating over the directory containing
-the digest lists and by reading all of them, to trigger a measurement.
+Defined fields are sufficient for measurement/appraisal of file content.
+More fields can be introduced later (e.g. for appraisal of file metadata).
 
-Read digest lists are not parsed, to avoid too much memory pressure.
+This patch defines only the callbacks (handlers) for the defined fields.
+The parsing logic is already introduced in lib/tlv_parser.c.
 
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- security/integrity/Makefile            |   3 +-
- security/integrity/digest_cache.h      |   5 +
- security/integrity/digest_cache_iter.c | 163 +++++++++++++++++++++++++
- 3 files changed, 170 insertions(+), 1 deletion(-)
- create mode 100644 security/integrity/digest_cache_iter.c
+ include/uapi/linux/tlv_digest_list.h          |  59 ++++++
+ security/integrity/Makefile                   |   3 +-
+ security/integrity/digest_cache.c             |   4 +
+ .../integrity/digest_list_parsers/parsers.h   |  13 ++
+ security/integrity/digest_list_parsers/tlv.c  | 188 ++++++++++++++++++
+ 5 files changed, 266 insertions(+), 1 deletion(-)
+ create mode 100644 include/uapi/linux/tlv_digest_list.h
+ create mode 100644 security/integrity/digest_list_parsers/parsers.h
+ create mode 100644 security/integrity/digest_list_parsers/tlv.c
 
+diff --git a/include/uapi/linux/tlv_digest_list.h b/include/uapi/linux/tlv_digest_list.h
+new file mode 100644
+index 00000000000..52987b63877
+--- /dev/null
++++ b/include/uapi/linux/tlv_digest_list.h
+@@ -0,0 +1,59 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Copyright (C) 2017-2023 Huawei Technologies Duesseldorf GmbH
++ *
++ * Author: Roberto Sassu <roberto.sassu@huawei.com>
++ *
++ * Export definitions of the tlv digest list.
++ */
++
++#ifndef _UAPI_LINUX_TLV_DIGEST_LIST_H
++#define _UAPI_LINUX_TLV_DIGEST_LIST_H
++
++#include <linux/types.h>
++
++#define FOR_EACH_DIGEST_LIST_TYPE(DIGEST_LIST_TYPE) \
++	DIGEST_LIST_TYPE(DIGEST_LIST_FILE) \
++	DIGEST_LIST_TYPE(DIGEST_LIST__LAST)
++
++#define FOR_EACH_FIELD(FIELD) \
++	FIELD(DIGEST_LIST_ALGO) \
++	FIELD(DIGEST_LIST_ENTRY) \
++	FIELD(FIELD__LAST)
++
++#define FOR_EACH_ENTRY_FIELD(ENTRY_FIELD) \
++	ENTRY_FIELD(ENTRY_DIGEST) \
++	ENTRY_FIELD(ENTRY_PATH) \
++	ENTRY_FIELD(ENTRY__LAST)
++
++#define GENERATE_ENUM(ENUM) ENUM,
++#define GENERATE_STRING(STRING) #STRING,
++
++/**
++ * enum digest_list_types - Type of digest list
++ *
++ * Enumerates the types of digest lists to parse.
++ */
++enum digest_list_types {
++	FOR_EACH_DIGEST_LIST_TYPE(GENERATE_ENUM)
++};
++
++/**
++ * enum fields - Digest list fields
++ *
++ * Enumerates the digest list fields.
++ */
++enum digest_list_fields {
++	FOR_EACH_FIELD(GENERATE_ENUM)
++};
++
++/**
++ * enum entry_fields - Entry-specific fields
++ *
++ * Enumerates the digest list entry-specific fields.
++ */
++enum entry_fields {
++	FOR_EACH_ENTRY_FIELD(GENERATE_ENUM)
++};
++
++#endif /* _UAPI_LINUX_TLV_DIGEST_LIST_H */
 diff --git a/security/integrity/Makefile b/security/integrity/Makefile
-index 0c175a567ac..c856ed10fba 100644
+index c856ed10fba..3765b004e66 100644
 --- a/security/integrity/Makefile
 +++ b/security/integrity/Makefile
-@@ -11,7 +11,8 @@ integrity-$(CONFIG_INTEGRITY_SIGNATURE) += digsig.o
- integrity-$(CONFIG_INTEGRITY_ASYMMETRIC_KEYS) += digsig_asymmetric.o
+@@ -12,7 +12,8 @@ integrity-$(CONFIG_INTEGRITY_ASYMMETRIC_KEYS) += digsig_asymmetric.o
  integrity-$(CONFIG_INTEGRITY_PLATFORM_KEYRING) += platform_certs/platform_keyring.o
  integrity-$(CONFIG_INTEGRITY_MACHINE_KEYRING) += platform_certs/machine_keyring.o
--integrity-$(CONFIG_INTEGRITY_DIGEST_CACHE) += digest_cache.o
-+integrity-$(CONFIG_INTEGRITY_DIGEST_CACHE) += digest_cache.o \
-+					      digest_cache_iter.o
+ integrity-$(CONFIG_INTEGRITY_DIGEST_CACHE) += digest_cache.o \
+-					      digest_cache_iter.o
++					      digest_cache_iter.o \
++					      digest_list_parsers/tlv.o
  integrity-$(CONFIG_LOAD_UEFI_KEYS) += platform_certs/efi_parser.o \
  				      platform_certs/load_uefi.o \
  				      platform_certs/keyring_handler.o
-diff --git a/security/integrity/digest_cache.h b/security/integrity/digest_cache.h
-index 5e3997b2723..d8fd5ce47a7 100644
---- a/security/integrity/digest_cache.h
-+++ b/security/integrity/digest_cache.h
-@@ -69,6 +69,7 @@ int digest_cache_init_htable(struct digest_cache *digest_cache,
- int digest_cache_add(struct digest_cache *digest_cache, u8 *digest);
- int digest_cache_lookup(struct digest_cache *digest_cache, u8 *digest,
- 			enum hash_algo algo, const char *pathname);
-+void digest_cache_iter_dir(struct dentry *repo_dentry);
- #else
- static inline void digest_cache_free(struct digest_cache *digest_cache)
- {
-@@ -104,5 +105,9 @@ static inline int digest_cache_lookup(struct digest_cache *digest_cache,
- 	return -ENOENT;
+diff --git a/security/integrity/digest_cache.c b/security/integrity/digest_cache.c
+index 7537c7232db..a486dc1ff50 100644
+--- a/security/integrity/digest_cache.c
++++ b/security/integrity/digest_cache.c
+@@ -18,6 +18,7 @@
+ #include <linux/module_signature.h>
+ 
+ #include "integrity.h"
++#include "digest_list_parsers/parsers.h"
+ 
+ #ifdef pr_fmt
+ #undef pr_fmt
+@@ -126,6 +127,9 @@ static int digest_cache_parse_digest_list(struct digest_cache *digest_cache,
+ parse:
+ 	pr_debug("Parsing %s, size: %ld\n", digest_cache->path_str, data_len);
+ 
++	if (!strncmp(digest_list_path->dentry->d_name.name, "tlv-", 4))
++		ret = digest_list_parse_tlv(digest_cache, data, data_len);
++
+ 	return ret;
  }
  
-+static inline void digest_cache_iter_dir(struct dentry *repo_dentry)
-+{
-+}
-+
- #endif /* CONFIG_INTEGRITY_DIGEST_CACHE */
- #endif /* _DIGEST_CACHE_H */
-diff --git a/security/integrity/digest_cache_iter.c b/security/integrity/digest_cache_iter.c
+diff --git a/security/integrity/digest_list_parsers/parsers.h b/security/integrity/digest_list_parsers/parsers.h
 new file mode 100644
-index 00000000000..f9c4675d383
+index 00000000000..e8fff2374d8
 --- /dev/null
-+++ b/security/integrity/digest_cache_iter.c
-@@ -0,0 +1,163 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/security/integrity/digest_list_parsers/parsers.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * Copyright (C) 2019  IBM Corporation
 + * Copyright (C) 2023 Huawei Technologies Duesseldorf GmbH
 + *
 + * Author: Roberto Sassu <roberto.sassu@huawei.com>
 + *
-+ * Implement a digest list iterator.
++ * Digest list parsers.
 + */
 +
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/init_task.h>
++#include "../digest_cache.h"
++
++int digest_list_parse_tlv(struct digest_cache *digest_cache, const u8 *data,
++			  size_t data_len);
+diff --git a/security/integrity/digest_list_parsers/tlv.c b/security/integrity/digest_list_parsers/tlv.c
+new file mode 100644
+index 00000000000..239400f5786
+--- /dev/null
++++ b/security/integrity/digest_list_parsers/tlv.c
+@@ -0,0 +1,188 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2017-2023 Huawei Technologies Duesseldorf GmbH
++ *
++ * Author: Roberto Sassu <roberto.sassu@huawei.com>
++ *
++ * Parse a tlv digest list.
++ */
++
++#define pr_fmt(fmt) "TLV DIGEST LIST: "fmt
 +#include <linux/fs.h>
-+#include <linux/namei.h>
-+#include <linux/xattr.h>
-+#include <linux/kernel_read_file.h>
-+#include <linux/module_signature.h>
++#include <linux/hash_info.h>
++#include <linux/tlv_parser.h>
++#include <uapi/linux/tlv_digest_list.h>
 +
-+#include "integrity.h"
++#include "parsers.h"
 +
-+#ifdef pr_fmt
-+#undef pr_fmt
-+#endif
-+#define pr_fmt(fmt) "DIGEST CACHE ITER: "fmt
++#define kenter(FMT, ...) \
++	pr_debug("==> %s("FMT")\n", __func__, ##__VA_ARGS__)
++#define kleave(FMT, ...) \
++	pr_debug("<== %s()"FMT"\n", __func__, ##__VA_ARGS__)
 +
-+static bool iterated;
-+/* Ensure there is only one iteration over digest lists, make others wait. */
-+DEFINE_MUTEX(iterate_mutex);
-+
-+struct dir_entry {
-+	struct list_head list;
-+	char name[];
-+} __packed;
-+
-+struct readdir_callback {
-+	struct dir_context ctx;
-+	struct list_head *head;
++const char *digest_list_types_str[] = {
++	FOR_EACH_DIGEST_LIST_TYPE(GENERATE_STRING)
 +};
 +
-+/**
-+ * digest_cache_iter_digest_list - Callback func to get digest lists in a dir
-+ * @__ctx: iterate_dir() context
-+ * @name: Name of file in the accessed dir
-+ * @namelen: String length of @name
-+ * @offset: Current position in the directory stream (see man readdir)
-+ * @ino: Inode number
-+ * @d_type: File type
-+ *
-+ * This function stores the names of the files in the containing directory in
-+ * a linked list. Those files will be opened to trigger a measurement.
-+ *
-+ * Return: True to continue processing, false to stop.
-+ */
-+static bool digest_cache_iter_digest_list(struct dir_context *__ctx,
-+					  const char *name, int namelen,
-+					  loff_t offset, u64 ino,
-+					  unsigned int d_type)
++const char *digest_list_fields_str[] = {
++	FOR_EACH_FIELD(GENERATE_STRING)
++};
++
++const char *entry_fields_str[] = {
++	FOR_EACH_ENTRY_FIELD(GENERATE_STRING)
++};
++
++static int parse_digest_list_algo(struct digest_cache *digest_cache,
++				  enum digest_list_fields field,
++				  const u8 *field_data, u64 field_data_len)
 +{
-+	struct readdir_callback *ctx = container_of(__ctx, typeof(*ctx), ctx);
-+	struct dir_entry *new_entry;
++	u8 algo;
++	int ret = 0;
 +
-+	if (!strcmp(name, ".") || !strcmp(name, ".."))
-+		return true;
++	kenter(",%u,%llu", field, field_data_len);
 +
-+	if (d_type != DT_REG)
-+		return true;
++	if (digest_cache->algo != HASH_ALGO__LAST) {
++		pr_debug("Digest algorithm already set to %s\n",
++			 hash_algo_name[digest_cache->algo]);
++		ret = -EBADMSG;
++		goto out;
++	}
 +
-+	new_entry = kmalloc(sizeof(*new_entry) + namelen + 1, GFP_KERNEL);
-+	if (!new_entry)
-+		return true;
++	if (field_data_len != sizeof(u8)) {
++		pr_debug("Unexpected data length %llu, expected %lu\n",
++			 field_data_len, sizeof(u8));
++		ret = -EBADMSG;
++		goto out;
++	}
 +
-+	memcpy(new_entry->name, name, namelen);
-+	new_entry->name[namelen] = '\0';
-+	list_add(&new_entry->list, ctx->head);
-+	return true;
++	algo = *field_data;
++
++	if (algo >= HASH_ALGO__LAST) {
++		pr_debug("Unexpected digest algo %u\n", algo);
++		ret = -EBADMSG;
++		goto out;
++	}
++
++	digest_cache->algo = algo;
++	pr_debug("Digest algo: %s\n", hash_algo_name[algo]);
++out:
++	kleave(" = %d", ret);
++	return ret;
 +}
 +
-+/**
-+ * digest_cache_iter_dir - Iterate over all files in the same digest list dir
-+ * @digest_list_dentry: Digest list dentry
-+ *
-+ * This function iterates over all files in the directory containing the digest
-+ * list provided as argument. It helps to measure digest lists in a
-+ * deterministic order and make a TPM PCR predictable.
-+ */
-+void digest_cache_iter_dir(struct dentry *digest_list_dentry)
++static int parse_entry_digest(struct digest_cache *digest_cache,
++			      enum entry_fields field, const u8 *field_data,
++			      u64 field_data_len)
 +{
-+	struct file *dir_file;
-+	struct readdir_callback buf = {
-+		.ctx.actor = digest_cache_iter_digest_list,
-+	};
-+	struct dir_entry *p, *q;
-+	struct file *file;
-+	char *path_str = NULL;
-+	void *data;
-+	LIST_HEAD(head);
-+	char *ptr;
++	int ret = 0;
++
++	kenter(",%u,%llu", field, field_data_len);
++
++	if (field_data_len != hash_digest_size[digest_cache->algo]) {
++		pr_debug("Unexpected data length %llu, expected %d\n",
++			 field_data_len, hash_digest_size[digest_cache->algo]);
++		ret = -EBADMSG;
++		goto out;
++	}
++
++	digest_cache_add(digest_cache, (u8 *)field_data);
++out:
++	kleave(" = %d", ret);
++	return ret;
++}
++
++static int entry_callback(void *callback_data, u64 field, const u8 *field_data,
++			  u64 field_data_len)
++{
++	struct digest_cache *digest_cache;
 +	int ret;
 +
-+	if (iterated)
-+		return;
++	digest_cache = (struct digest_cache *)callback_data;
 +
-+	mutex_lock(&iterate_mutex);
-+	if (iterated)
-+		goto out;
-+
-+	iterated = true;
-+
-+	ret = vfs_getxattr_alloc(&nop_mnt_idmap, digest_list_dentry,
-+				 XATTR_NAME_DIGEST_LIST, &path_str, 0,
-+				 GFP_NOFS);
-+	if (ret <= 0) {
-+		pr_debug("%s xattr not found in %s\n", XATTR_NAME_DIGEST_LIST,
-+			 digest_list_dentry->d_name.name);
-+		goto out;
++	switch (field) {
++	case ENTRY_DIGEST:
++		ret = parse_entry_digest(digest_cache, field, field_data,
++					 field_data_len);
++		break;
++	case ENTRY_PATH:
++		ret = 0;
++		break;
++	default:
++		pr_debug("Unhandled field %s\n", entry_fields_str[field]);
++		/* Just ignore non-relevant fields. */
++		ret = 0;
++		break;
 +	}
 +
-+	pr_debug("Found %s xattr in %s, digest list: %s\n",
-+		 XATTR_NAME_DIGEST_LIST, digest_list_dentry->d_name.name,
-+		 path_str);
++	return ret;
++}
 +
-+	ptr = strrchr(path_str, '/');
-+	if (!ptr)
-+		goto out;
++static int parse_digest_list_entry(struct digest_cache *digest_cache,
++				   enum digest_list_fields field,
++				   const u8 *field_data, u64 field_data_len)
++{
++	int ret;
 +
-+	*ptr = '\0';
-+	dir_file = filp_open(path_str, O_RDONLY, 0);
-+	*ptr = '/';
++	kenter(",%u,%llu", field, field_data_len);
 +
-+	if (IS_ERR(dir_file)) {
-+		pr_debug("Cannot access parent directory of repo %s\n",
-+			 path_str);
-+		goto out;
++	ret = tlv_parse(DIGEST_LIST_FILE, entry_callback, digest_cache,
++			field_data, field_data_len, digest_list_types_str,
++			DIGEST_LIST__LAST, entry_fields_str, ENTRY__LAST);
++
++	kleave(" = %d", ret);
++	return ret;
++}
++
++static int digest_list_callback(void *callback_data, u64 field,
++				const u8 *field_data, u64 field_data_len)
++{
++	struct digest_cache *digest_cache;
++	int ret;
++
++	digest_cache = (struct digest_cache *)callback_data;
++
++	switch (field) {
++	case DIGEST_LIST_ALGO:
++		ret = parse_digest_list_algo(digest_cache, field, field_data,
++					     field_data_len);
++		break;
++	case DIGEST_LIST_ENTRY:
++		ret = parse_digest_list_entry(digest_cache, field, field_data,
++					      field_data_len);
++		break;
++	default:
++		pr_debug("Unhandled field %s\n",
++			 digest_list_fields_str[field]);
++		/* Just ignore non-relevant fields. */
++		ret = 0;
++		break;
 +	}
 +
-+	buf.head = &head;
-+	iterate_dir(dir_file, &buf.ctx);
-+	list_for_each_entry_safe(p, q, &head, list) {
-+		pr_debug("Prereading digest list %s in %s\n", p->name,
-+			 path_str);
++	return ret;
++}
 +
-+		file = file_open_root(&dir_file->f_path, p->name, O_RDONLY, 0);
-+		if (IS_ERR(file))
-+			continue;
++int digest_list_parse_tlv(struct digest_cache *digest_cache, const u8 *data,
++			  size_t data_len)
++{
++	u64 parsed_data_type;
++	u64 parsed_num_fields;
++	u64 parsed_total_len;
++	int ret;
 +
-+		data = NULL;
++	ret = tlv_parse_hdr(&data, &data_len, &parsed_data_type,
++			    &parsed_num_fields, &parsed_total_len,
++			    digest_list_types_str, DIGEST_LIST__LAST);
++	if (ret < 0)
++		return ret;
 +
-+		ret = kernel_read_file(file, 0, &data, INT_MAX, NULL,
-+				       READING_DIGEST_LIST);
-+		if (ret >= 0)
-+			vfree(data);
++	if (parsed_data_type != DIGEST_LIST_FILE)
++		return 0;
 +
-+		fput(file);
-+		list_del(&p->list);
-+		kfree(p);
-+	}
++	ret = digest_cache_init_htable(digest_cache, parsed_num_fields);
++	if (ret < 0)
++		return ret;
 +
-+	fput(dir_file);
-+out:
-+	mutex_unlock(&iterate_mutex);
-+	kfree(path_str);
++	return tlv_parse_data(digest_list_callback, digest_cache,
++			      parsed_num_fields, data, data_len,
++			      digest_list_fields_str, FIELD__LAST);
 +}
 -- 
 2.34.1
