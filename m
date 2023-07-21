@@ -1,119 +1,151 @@
-Return-Path: <bpf+bounces-5569-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5568-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 315C375BBE8
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 03:44:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC3A75BBE5
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 03:42:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3ABE2820EF
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 01:44:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 267F51C21593
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 01:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E18391;
-	Fri, 21 Jul 2023 01:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59671391;
+	Fri, 21 Jul 2023 01:42:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D33B363
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 01:44:07 +0000 (UTC)
-Received: from bjm7-spam01.kuaishou.com (smtpcn03.kuaishou.com [103.107.217.217])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45B8186;
-	Thu, 20 Jul 2023 18:44:05 -0700 (PDT)
-Received: from bjm7-pm-mail12.kuaishou.com ([172.28.1.94])
-	by bjm7-spam01.kuaishou.com with ESMTPS id 36L1hd8D011485
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 21 Jul 2023 09:43:39 +0800 (GMT-8)
-	(envelope-from yangyifei03@kuaishou.com)
-DKIM-Signature: v=1; a=rsa-sha256; d=kuaishou.com; s=dkim; c=relaxed/relaxed;
-	t=1689903819; h=from:subject:to:date:message-id;
-	bh=WfBeYmQN+HAjcDnQhJBJiepaQUpxGJpfp8LGbLzGAuw=;
-	b=Uaujp7JrVr1HhJ67/IKB8PC6lCzPwguABUa/mYbRzCJlEzSqAEHPT0u5lEaBUcmfYhVglsuMskD
-	zNAu9f2cVSHPRTkK2DKpir1lJq754dPe/xWT7D0VITqwOEDznIdlwlwb4C36JHtvxa6y3QNe7yz8J
-	QjoFX/q8VCAyp35S4jU=
-Received: from public-bjmt-d51.idcyz.hb1.kwaidc.com (172.28.1.32) by
- bjm7-pm-mail12.kuaishou.com (172.28.1.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.20; Fri, 21 Jul 2023 09:43:38 +0800
-From: Efly Young <yangyifei03@kuaishou.com>
-To: <hannes@cmpxchg.org>
-CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <mhocko@suse.com>, <shakeelb@google.com>, <yosryahmed@google.com>,
-        <yangyifei03@kuaishou.com>
-Subject: [PATCH] mm:vmscan: fix inaccurate reclaim during proactive reclaim
-Date: Fri, 21 Jul 2023 09:41:16 +0800
-Message-ID: <20230721014116.3388-1-yangyifei03@kuaishou.com>
-X-Mailer: git-send-email 2.35.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14AF8363
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 01:42:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 458C4C433C9;
+	Fri, 21 Jul 2023 01:42:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689903725;
+	bh=dw1xMty5sUx55lKWIHCKf4qU6fRTTDgNxFDurgYRD1o=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LTGUIWNwZCt1pvkrukTY07XnEQ3xswAAwgdRew4atcUyeBGtLAvFf5Umec9wZj+AI
+	 JdPeGtUCroBGjn0H/wVOegulnEJOYmNBACd1LCKdDO3sf8z+Ag/79dQhp2bt194Qvk
+	 g2G2A+JNUE6yNltck6xY/Dj2RORG584hKY3IghbWUoThzBjUtzjLGR00BCLycUD42Z
+	 jm4lqjPX5e3D+SiQMc5RQTWLhvt/3gDo2q8LbHYqgFt6nOkEdESWgRV7AFga1HufWR
+	 6vhlgA/YSc959/OcEykI0a6cgsJ4/rKmb68/tS+knEIwFuRXjH56we7ZwINrbxJdNS
+	 ++IxAlVxujtGQ==
+Date: Fri, 21 Jul 2023 10:42:00 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, Steven
+ Rostedt <rostedt@goodmis.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH v2 8/9] selftests/ftrace: Add BTF fields access
+ testcases
+Message-Id: <20230721104200.92655ae661532475134cf004@kernel.org>
+In-Reply-To: <18605821-d4f1-c8e2-74eb-a91fc06d53b7@oracle.com>
+References: <168960739768.34107.15145201749042174448.stgit@devnote2>
+	<168960747750.34107.6104527579648222887.stgit@devnote2>
+	<18605821-d4f1-c8e2-74eb-a91fc06d53b7@oracle.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.28.1.32]
-X-ClientProxiedBy: bjxm-pm-mail01.kuaishou.com (172.28.128.1) To
- bjm7-pm-mail12.kuaishou.com (172.28.1.94)
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:bjm7-spam01.kuaishou.com 36L1hd8D011485
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Before commit f53af4285d77 ("mm: vmscan: fix extreme overreclaim and
-swap floods"), proactive reclaim will extreme overreclaim sometimes.
-But proactive reclaim still inaccurate and some extent overreclaim.
+On Fri, 21 Jul 2023 00:00:32 +0100
+Alan Maguire <alan.maguire@oracle.com> wrote:
 
-Problematic case is easy to construct. Allocate lots of anonymous
-memory (e.g., 20G) in a memcg, then swapping by writing memory.recalim
-and there is a certain probability of overreclaim. For example, request
-1G by writing memory.reclaim will eventually reclaim 1.7G or other
-values more than 1G.
+> 
+> On 17/07/2023 16:24, Masami Hiramatsu (Google) wrote:
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Add test cases for accessing the data structure fields using BTF info.
+> > This includes the field access from parameters and retval, and accessing
+> > string information.
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> One suggestion below, but
+> 
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 
-The reason is that reclaimer may have already reclaimed part of requested
-memory in one loop, but before adjust sc->nr_to_reclaim in outer loop,
-call shrink_lruvec() again will still follow the current sc->nr_to_reclaim
-to work. It will eventually lead to overreclaim. In theory, the amount
-of reclaimed would be in [request, 2 * request).
+Thanks
 
-Reclaimer usually tends to reclaim more than request. But either direct
-or kswapd reclaim have much smaller nr_to_reclaim targets, so it is
-less noticeable and not have much impact.
+> 
+> > ---
+> > Changes in v2:
+> >  - Use '$retval' instead of 'retval'.
+> >  - Add a test that use both '$retval' and '$arg1' for fprobe.
+> > ---
+> >  .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   11 +++++++++++
+> >  .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 ++++
+> >  2 files changed, 15 insertions(+)
+> > 
+> > diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
+> > index b89de1771655..93b94468967b 100644
+> > --- a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
+> > +++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
+> > @@ -21,6 +21,8 @@ echo 0 > events/enable
+> >  echo > dynamic_events
+> >  
+> >  TP=kfree
+> > +TP2=kmem_cache_alloc
+> > +TP3=getname_flags
+> >  
+> >  if [ "$FPROBES" ] ; then
+> >  echo "f:fpevent $TP object" >> dynamic_events
+> > @@ -33,6 +35,7 @@ echo > dynamic_events
+> >  
+> >  echo "f:fpevent $TP "'$arg1' >> dynamic_events
+> >  grep -q "fpevent.*object=object" dynamic_events
+> > +
+> >  echo > dynamic_events
+> >  
+> >  echo "f:fpevent $TP "'$arg*' >> dynamic_events
+> > @@ -45,6 +48,14 @@ fi
+> >  
+> >  echo > dynamic_events
+> >  
+> > +echo "t:tpevent $TP2 name=s->name:string" >> dynamic_events
+> > +echo "f:fpevent ${TP3}%return path=\$retval->name:string" >> dynamic_events
+> > +
+> 
+> could we test a numeric value like kmem_cache_alloc object size?
+> also if combos of -> and . are allowed, would be good to test one of
+> those too.
 
-Proactive reclaim can usually come in with a larger value, so the error
-is difficult to ignore. Considering proactive reclaim is usually low
-frequency, handle the batching into smaller chunks is a better approach.
+OK, that's a good point! I'll add it.
 
-Signed-off-by: Efly Young <yangyifei03@kuaishou.com>
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/memcontrol.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> > +grep -q "tpevent.*name=s->name:string" dynamic_events
+> > +grep -q "fpevent.*path=\$retval->name:string" dynamic_events
+> > +
+> > +echo > dynamic_events
+> > +
+> >  if [ "$KPROBES" ] ; then
+> >  echo "p:kpevent $TP object" >> dynamic_events
+> >  grep -q "kpevent.*object=object" dynamic_events
+> > diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
+> > index 72563b2e0812..49758f77c923 100644
+> > --- a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
+> > +++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
+> > @@ -103,6 +103,10 @@ check_error 'f vfs_read%return ^$arg*'		# NOFENTRY_ARGS
+> >  check_error 'f vfs_read ^hoge'			# NO_BTFARG
+> >  check_error 'f kfree ^$arg10'			# NO_BTFARG (exceed the number of parameters)
+> >  check_error 'f kfree%return ^$retval'		# NO_RETVAL
+> > +check_error 'f vfs_read%return $retval->^foo'	# NO_PTR_STRCT
+> > +check_error 'f vfs_read file->^foo'		# NO_BTF_FIELD
+> > +check_error 'f vfs_read file^-.foo'		# BAD_HYPHEN
+> > +check_error 'f vfs_read ^file:string'		# BAD_TYPE4STR
+> >  else
+> >  check_error 'f vfs_read ^$arg*'			# NOSUP_BTFARG
+> >  check_error 't kfree ^$arg*'			# NOSUP_BTFARG
+> > 
+> > 
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 4b27e24..d36cf88 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6741,8 +6741,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 			lru_add_drain_all();
- 
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg,
--						nr_to_reclaim - nr_reclaimed,
--						GFP_KERNEL, reclaim_options);
-+					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
-+					GFP_KERNEL, reclaim_options);
- 
- 		if (!reclaimed && !nr_retries--)
- 			return -EAGAIN;
+
 -- 
-1.8.3.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
