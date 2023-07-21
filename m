@@ -1,82 +1,43 @@
-Return-Path: <bpf+bounces-5602-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5603-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E9B075C4D3
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 12:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5F0775C567
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 13:05:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CF781C21675
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 10:41:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 035A61C21692
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 11:05:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5EA1642A;
-	Fri, 21 Jul 2023 10:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86DB01D2E5;
+	Fri, 21 Jul 2023 11:05:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB083D78
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 10:41:36 +0000 (UTC)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF00B10FE
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 03:41:34 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-992b66e5affso278185866b.3
-        for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 03:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689936093; x=1690540893;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=e4a0cnKG/CeDFsVf5NeSWnDBoxk71F8HSwNwajIO9rg=;
-        b=sG8xSJuHhEqBI83eEivKPSc2HSDyp9OSwZ0c0CRomeSERXkbd1Qc+C73C7nMRT6/3b
-         sv0CRE5Adlho9fRo36J/KmAM/L2/YQw1eEI34iWBygH7ddWYHPvnHMHIlQWjDv9sYrie
-         7FhL3TyDVJf1XwojLKrYls8gDmVQsgapAIXIHgF+I8jzqzLOoLcQLEMwX3POypV/yIUi
-         7e47liGN0DWS6wvHLa4FWj/bLWm/SrFRNjM70+s1AMIaQwjlXLUq8KvafN9ZgDenjX9v
-         7pM6ouLuWZWSU56FpBoSwQbMGUyey13XIqPl0Xqr44LmhpCtZzZGYYDlzppwSP5Nroqy
-         koOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689936093; x=1690540893;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e4a0cnKG/CeDFsVf5NeSWnDBoxk71F8HSwNwajIO9rg=;
-        b=VlY0N9GQ9fHxmMMJt6smqOxKC/7Yci32vZw+FhCyF7HYsTSfXkSPgJNW0JJsS+2sWf
-         g7sH/A8p4xIpoVM0cCF+8h8ZKuc+zL7Le1XybAyXdpcgPo/cyy7eDEMN9Fv5coCT/R31
-         ala7xCkUoRw6clb+EIqNi3dCVljz/jwAIlRbC8F+bctFVqx6DxTtTx8LrOrjyctB3/VL
-         Rc6h7ctiaQsokYzHZur6rgi25m+nzoBSKcOOcHz4DRuvJNh9zN1jix3aPOhpEII6Nfr3
-         wnvQEumyg0HUolBUrMBTD3o/puMKc+qYV/5wqCydceVMVl7TC2UE9q1ZiLty2Fo48g/8
-         EDGw==
-X-Gm-Message-State: ABy/qLag9dsiWBNaDYZ7EvsMVeT0xW5MbyIgS4lWItKtKAXlRfzJ8VNF
-	kIEhHvO98PggMNYyStT/afs=
-X-Google-Smtp-Source: APBJJlEdDMx2mT59jWxQ5kwjPEcm4YmvFuN9gnmhgmHrUM8GPJazEQLLQlChRelA2fhjhESezg3nyQ==
-X-Received: by 2002:a17:906:5356:b0:991:f28c:54ea with SMTP id j22-20020a170906535600b00991f28c54eamr1208436ejo.41.1689936093132;
-        Fri, 21 Jul 2023 03:41:33 -0700 (PDT)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id q11-20020a170906388b00b00988dbbd1f7esm1953212ejd.213.2023.07.21.03.41.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 03:41:32 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 21 Jul 2023 12:41:31 +0200
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCHv4 bpf-next 05/28] bpf: Add pid filter support for
- uprobe_multi link
-Message-ID: <ZLpg2/ayTvN9JoMF@krava>
-References: <20230720113550.369257-1-jolsa@kernel.org>
- <20230720113550.369257-6-jolsa@kernel.org>
- <CALOAHbB3_qTzi+2_0=pFjyDXFUh_MGMJt6gz7eh0Z=He4guPow@mail.gmail.com>
- <20230721083140.GA10521@redhat.com>
- <20230721085426.GA10987@redhat.com>
- <CALOAHbA==q_6i4t1E+zKSSgkZ3ALTcGYcwa7ghidOXDi2n8mqg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EF3B1D2E0
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 11:05:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8CB4C433C8;
+	Fri, 21 Jul 2023 11:05:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1689937528;
+	bh=brpYjN67pi8vb1CUOrN2PHPx/mEamwOtSETypKPcc3g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y0u1ilGD1ky32ubAL1uuECjAQzvl0vKiwN6U1V9XRTa484M4MLATg2/WUSqMhPVSq
+	 lLlVfbIaHbrtPmMl7OJ34QFWVgGXxe0J8vpR6h0f2TTSvn057aWvxjmbxxOdgip3l4
+	 04Bj/7MLsnwklxAVEZyruTKZRh5C/hMMBw1K+Wzs=
+Date: Fri, 21 Jul 2023 13:05:26 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Eric Yan <eric.yan@oppo.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, sdf@google.com,
+	nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
+	keescook@chromium.org, samitolvanen@google.com, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] CFI: fix panic in kernel bpf map traversal
+Message-ID: <2023072113-sanding-able-e4a2@gregkh>
+References: <20230721103411.19535-1-eric.yan@oppo.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,40 +47,21 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALOAHbA==q_6i4t1E+zKSSgkZ3ALTcGYcwa7ghidOXDi2n8mqg@mail.gmail.com>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+In-Reply-To: <20230721103411.19535-1-eric.yan@oppo.com>
 
-On Fri, Jul 21, 2023 at 05:05:08PM +0800, Yafang Shao wrote:
-> On Fri, Jul 21, 2023 at 4:55 PM Oleg Nesterov <oleg@redhat.com> wrote:
-> >
-> > Sorry for noise, apparently I haven't woken up yet,
-> >
-> > On 07/21, Oleg Nesterov wrote:
-> > >
-> > > Or. We can simply kill uprobe_multi_link_filter(). In this case uprobe_register()
-> > > can touch CLONE_VM'ed mm's we are not interested in, but everything should work
-> > > correctly.
-> >
-> > please ignore CLONE_VM'ed above, I have no idea why did I say this...
-> >
-> > Yes, everything should work "correctly", but if you add a probe into (say) libc.so,
-> > every task will be penalized, so I don't think this is a good option.
-> >
+On Fri, Jul 21, 2023 at 06:34:11PM +0800, Eric Yan wrote:
+> ________________________________
+> OPPO
 > 
-> Thanks  for your explanation.
-> Currently we can filter out the tgid in bpf prog, but if we could
-> filter out it earlier, the prog won't be triggered, that would take
-> less overhead.
-> However, it is fine by me if tgid won't be supported.
+> 本电子邮件及其附件含有OPPO公司的保密信息，仅限于邮件指明的收件人（包含个人及群组）使用。禁止任何人在未经授权的情况下以任何形式使用。如果您错收了本邮件，切勿传播、分发、复制、印刷或使用本邮件之任何部分或其所载之任何内容，并请立即以电子邮件通知发件人并删除本邮件及其附件。
+> 网络通讯固有缺陷可能导致邮件被截留、修改、丢失、破坏或包含计算机病毒等不安全情况，OPPO对此类错误或遗漏而引致之任何损失概不承担责任并保留与本邮件相关之一切权利。
+> 除非明确说明，本邮件及其附件无意作为在任何国家或地区之要约、招揽或承诺，亦无意作为任何交易或合同之正式确认。 发件人、其所属机构或所属机构之关联机构或任何上述机构之股东、董事、高级管理人员、员工或其他任何人（以下称“发件人”或“OPPO”）不因本邮件之误送而放弃其所享之任何权利，亦不对因故意或过失使用该等信息而引发或可能引发的损失承担任何责任。
+> 文化差异披露：因全球文化差异影响，单纯以YES\OK或其他简单词汇的回复并不构成发件人对任何交易或合同之正式确认或接受，请与发件人再次确认以获得明确书面意见。发件人不对任何受文化差异影响而导致故意或错误使用该等信息所造成的任何直接或间接损害承担责任。
+> This e-mail and its attachments contain confidential information from OPPO, which is intended only for the person or entity whose address is listed above. Any use of the information contained herein in any way (including, but not limited to, total or partial disclosure, reproduction, or dissemination) by persons other than the intended recipient(s) is prohibited. If you are not the intended recipient, please do not read, copy, distribute, or use this information. If you have received this transmission in error, please notify the sender immediately by reply e-mail and then delete this message.
+> Electronic communications may contain computer viruses or other defects inherently, may not be accurately and/or timely transmitted to other systems, or may be intercepted, modified ,delayed, deleted or interfered. OPPO shall not be liable for any damages that arise or may arise from such matter and reserves all rights in connection with the email.
+> Unless expressly stated, this e-mail and its attachments are provided without any warranty, acceptance or promise of any kind in any country or region, nor constitute a formal confirmation or acceptance of any transaction or contract. The sender, together with its affiliates or any shareholder, director, officer, employee or any other person of any such institution (hereinafter referred to as "sender" or "OPPO") does not waive any rights and shall not be liable for any damages that arise or may arise from the intentional or negligent use of such information.
+> Cultural Differences Disclosure: Due to global cultural differences, any reply with only YES\OK or other simple words does not constitute any confirmation or acceptance of any transaction or contract, please confirm with the sender again to ensure clear opinion in written form. The sender shall not be responsible for any direct or indirect damages resulting from the intentional or misuse of such information.
+> 
 
-right, I'll check on this.. I think we can add this later and have it
-enabled by new bit in attr->link_create.uprobe_multi.flags
-
-jirka
+Now deleted.
 
