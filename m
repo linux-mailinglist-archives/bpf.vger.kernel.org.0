@@ -1,98 +1,116 @@
-Return-Path: <bpf+bounces-5658-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5659-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 784E175D7E6
-	for <lists+bpf@lfdr.de>; Sat, 22 Jul 2023 01:33:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A728B75D7EC
+	for <lists+bpf@lfdr.de>; Sat, 22 Jul 2023 01:44:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A56C01C21715
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 23:33:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8CA21C2180C
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 23:44:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5AB23BCD;
-	Fri, 21 Jul 2023 23:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1F523BE4;
+	Fri, 21 Jul 2023 23:44:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7429FDF6D;
-	Fri, 21 Jul 2023 23:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B914ADF42;
+	Fri, 21 Jul 2023 23:44:02 +0000 (UTC)
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8211FE1;
-	Fri, 21 Jul 2023 16:33:41 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5576430DD;
+	Fri, 21 Jul 2023 16:44:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=tftwJrvxrIPluSStl59nZKh2VAaqKkanzBE/of2CS7I=; b=fdhOuATLhAY+E6H8Db7XXMih5+
-	PKMzyOWhy3BAdJT7Se/sl8Z6zU4PC+xVvFSbFaALCzSL6fHR4B4Pn75JWmO6UwOARC9B17pQLvoZ1
-	dVWinqHZR+Nc3LaABbGwMclQPevSpQGhSFaQhnjTgT4gL53qUPascxb8ARtuLVaxDss0iVIhNesJ/
-	JVB1e4PbLfUlyGwJIwngURpET84wZLAFHpGTfA7JuevM2ljEjerob+cVgyIZKMmgYvRZ8mJNMRGUr
-	aopKv71iHcJXOt46fU9ghYlDqsIDReVx5MqGTpdWE0cJOuXqaWkbemtIuG1/BWSc4LCjbtbayOVx5
-	JLwyWhcg==;
-Received: from 123-243-13-99.tpgi.com.au ([123.243.13.99] helo=localhost)
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=tXQPvQtAOFCki8Nheq98+voSt9DzGq/F75IlnqbdHpU=; b=qIKCz+OaTusHCvVhTZgc8HgWsD
+	LrmhWnyN/dXafnCgi2c9CxvPS11QN9C3u+wuvhyRWEdqeyeJHy1AUjudqIgoQ9s4OP3BuI68uFDsw
+	ahonlTwSVA0pJCn67o+XZbHNnfZbgkFgqMHsa0wqI3dhuwm0Gzns5U+zSMUFw79FkXrY5bMqYmz2u
+	2ilvCld9hLjXYiT9z5GL7J1OXU74QlAfFKSVHpiRMqJL4zKADGNoK8KrFXzCjYSBFOVSci4/hOvMw
+	n4a0D3ZKpLYd1l+1drObvjbl/fImqlvmfcbF9p5N2fhwuqyM5TT2lug49iB6LCrKRMNzBQIMo2yzi
+	mcn/HRFQ==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1qMzcv-000Lhp-M7; Sat, 22 Jul 2023 01:33:38 +0200
+	id 1qMzmn-0004rf-VF; Sat, 22 Jul 2023 01:43:49 +0200
+Received: from [123.243.13.99] (helo=192-168-1-114.tpgi.com.au)
+	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qMzmn-000U0P-2A; Sat, 22 Jul 2023 01:43:49 +0200
+Subject: Re: [PATCH bpf-next v6 2/8] bpf: Add fd-based tcx multi-prog infra
+ with link support
+To: Petr Machata <petrm@nvidia.com>
+Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+ razor@blackwall.org, sdf@google.com, john.fastabend@gmail.com,
+ kuba@kernel.org, dxu@dxuuu.xyz, joe@cilium.io, toke@kernel.org,
+ davem@davemloft.net, bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20230719140858.13224-1-daniel@iogearbox.net>
+ <20230719140858.13224-3-daniel@iogearbox.net> <87a5vp6vrv.fsf@nvidia.com>
 From: Daniel Borkmann <daniel@iogearbox.net>
-To: kuba@kernel.org
-Cc: ast@kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	syzbot+bdcf141f362ef83335cf@syzkaller.appspotmail.com,
-	syzbot+b202b7208664142954fa@syzkaller.appspotmail.com,
-	syzbot+14736e249bce46091c18@syzkaller.appspotmail.com
-Subject: [PATCH net-next] tcx: Fix splat in ingress_destroy upon tcx_entry_free
-Date: Sat, 22 Jul 2023 01:33:30 +0200
-Message-Id: <20230721233330.5678-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+Message-ID: <aaed850b-0c30-ab8f-09f6-9245f1af4e46@iogearbox.net>
+Date: Sat, 22 Jul 2023 01:43:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87a5vp6vrv.fsf@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.8/26976/Fri Jul 21 09:28:26 2023)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On qdisc destruction, the ingress_destroy() needs to update the correct
-entry, that is, tcx_entry_update must NULL the dev->tcx_ingress pointer.
-Therefore, fix the typo.
+On 7/21/23 4:57 PM, Petr Machata wrote:
+> As of this patch (commit e420bed02507), TC qdisc installation and/or
+> removal cause memory access issues in the system.
+> 
+> A semi-minimal reproducer is:
+> 
+>      bash-5.2# ip l a name v1 type veth peer name v2
+>      bash-5.2# ip l s dev v1 up
+>      bash-5.2# ip l s dev v2 up
+>      bash-5.2# tc q a dev v1 ingress
+>      bash-5.2# tc q d dev v1 ingress
+>      bash-5.2# tc q a dev v1 ingress
+>      bash-5.2# tc q d dev v1 ingress
+> 
+> It's a bit finnicky, but only a little. For me, the first two "tc q"
+> operations never triggered a splat. Then it could take a few "tc q a"
+> "tc q d" iterations to get it to splat. So it looks like maybe the first
+> "tc q d" is the problematic bit? And then there's some likelihood of
+> failing on any following "tc q" operation. The above in particular
+> produced three warning splats for me (attached as decoded.txt,
+> decoded2.txt and decoded3.txt). Probing further:
+> 
+>      bash-5.2# tc q a dev v1 ingress
+> 
+> Produced two more splats from KASAN (decoded4.txt and decoded5.txt),
+> which look more serious.
+> 
+> Further attempts to prod the system deadlock it, I guess because RTNL
+> was left locked.
+> 
+> Reverting e420bed02507, and fe20ce3a5126 + 55cc3768473e that fail to
+> build without it, makes net-next/main work again.
 
-Fixes: e420bed02507 ("bpf: Add fd-based tcx multi-prog infra with link support")
-Reported-by: syzbot+bdcf141f362ef83335cf@syzkaller.appspotmail.com
-Reported-by: syzbot+b202b7208664142954fa@syzkaller.appspotmail.com
-Reported-by: syzbot+14736e249bce46091c18@syzkaller.appspotmail.com
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- net/sched/sch_ingress.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sorry about that, fix should be here:
+https://lore.kernel.org/netdev/20230721233330.5678-1-daniel@iogearbox.net/
 
-diff --git a/net/sched/sch_ingress.c b/net/sched/sch_ingress.c
-index 04e886f6cee4..a463a63192c3 100644
---- a/net/sched/sch_ingress.c
-+++ b/net/sched/sch_ingress.c
-@@ -123,7 +123,7 @@ static void ingress_destroy(struct Qdisc *sch)
- 	if (entry) {
- 		tcx_miniq_set_active(entry, false);
- 		if (!tcx_entry_is_active(entry)) {
--			tcx_entry_update(dev, NULL, false);
-+			tcx_entry_update(dev, NULL, true);
- 			tcx_entry_free(entry);
- 		}
- 	}
--- 
-2.34.1
-
+Thanks,
+Daniel
 
