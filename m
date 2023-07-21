@@ -1,99 +1,106 @@
-Return-Path: <bpf+bounces-5610-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5611-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B14975C72C
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 14:53:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 544C575C736
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 14:57:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 257BD2821F3
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 12:53:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F66B1C216A1
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 12:57:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61AE01BE81;
-	Fri, 21 Jul 2023 12:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5A5D1BE68;
+	Fri, 21 Jul 2023 12:57:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA6429AB;
-	Fri, 21 Jul 2023 12:53:34 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD59310D2;
-	Fri, 21 Jul 2023 05:53:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=QkSZ3ez9IisjJg5TePm+J3YGJ6BKRfWqNu7wLrk3vlw=; b=JjCdhYduWJTh/T00+mW7grTevI
-	7nu8EQp6yUpQ5GABqQco25qPps5FIc+AQ/Rvnto8FwkRALSKKVlJR1SfYvgFyNv7A4jKSN/Doyg0W
-	EZi4Z94Xol410gJ5hgHF4q3fSJTYIVFS+JpmR3O9tO8xUQchdCEqiW7ISiLF7GaEfg5hNGC0freCp
-	WTDrqbZFZgIryAiNUNF6GYN+CdO/P6B1A9/eqEXEeUTy3GaHWiW6nRk8g3/Qk2TMNaBvpqFEHdzKN
-	09miZLGPiclFSzVa/jvQhoExkPzg2haqXglm366QlfRH2MveLCYn8LV0lKhTD7+L7np1v08dCR06J
-	Bk4GMSHg==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qMpdE-000BeS-0m; Fri, 21 Jul 2023 14:53:16 +0200
-Received: from [123.243.13.99] (helo=192-168-1-114.tpgi.com.au)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qMpdD-000X0s-4n; Fri, 21 Jul 2023 14:53:15 +0200
-Subject: Re: [PATCH bpf-next v6 2/8] bpf: Add fd-based tcx multi-prog infra
- with link support
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
- razor@blackwall.org, sdf@google.com, john.fastabend@gmail.com,
- kuba@kernel.org, dxu@dxuuu.xyz, joe@cilium.io, toke@kernel.org,
- davem@davemloft.net, bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20230719140858.13224-1-daniel@iogearbox.net>
- <20230719140858.13224-3-daniel@iogearbox.net>
- <CALOAHbAWXNRW4oz+AfUE7h5KJ_6DkRyYn5RWWSvjC5=oNm87QQ@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9f218f1d-3610-9112-2844-334399944164@iogearbox.net>
-Date: Fri, 21 Jul 2023 14:53:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5991D2E8
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 12:57:24 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D0B10CB
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 05:57:22 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4R6qMb5GBpz4f3jMF
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 20:57:15 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgDXyxmqgLpkT_XNNQ--.29737S2;
+	Fri, 21 Jul 2023 20:57:18 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: improve ringbuf benchmark
+ output
+To: Andrew Werner <awerner32@gmail.com>, bpf@vger.kernel.org
+Cc: kernel-team@dataexmachina.dev, alexei.starovoitov@gmail.com
+References: <20230719201533.176702-1-awerner32@gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <1499e329-8132-3233-e3ed-79ef0bcb591c@huaweicloud.com>
+Date: Fri, 21 Jul 2023 20:57:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALOAHbAWXNRW4oz+AfUE7h5KJ_6DkRyYn5RWWSvjC5=oNm87QQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20230719201533.176702-1-awerner32@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26976/Fri Jul 21 09:28:26 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgDXyxmqgLpkT_XNNQ--.29737S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZw1kCrWfKFW8Cr1kury8Zrb_yoWDAFg_J3
+	Z2vF48ua1jqw1SvrZrKF4DZFy2kF1UAryjy3y7Cw47tFyFywsYva1jqr4I9w1Fqan2kF9I
+	gwnxXrn7Jw17KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb78YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+	NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 7/20/23 4:13 AM, Yafang Shao wrote:
-> On Wed, Jul 19, 2023 at 10:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-[...]
->> +static const struct bpf_link_ops tcx_link_lops = {
->> +       .release        = tcx_link_release,
->> +       .detach         = tcx_link_detach,
->> +       .dealloc        = tcx_link_dealloc,
->> +       .update_prog    = tcx_link_update,
->> +       .show_fdinfo    = tcx_link_fdinfo,
->> +       .fill_link_info = tcx_link_fill_info,
-> 
-> Should we show the tc link info in `bpftool link show` as well? I
-> believe that `bpftool link show` is the appropriate command to display
-> comprehensive information about all links.
 
-Yep, good idea. I'll add this to my todo list to tackle for once I'm back
-from travel.
 
-Thanks,
-Daniel
+On 7/20/2023 4:15 AM, Andrew Werner wrote:
+> The ringbuf benchmarks print headers for each section of benchmarks.
+> The naming conventions lead a user of the benchmarks to some confusion.
+> This change is a cosmetic update to the output of that benchmark; no
+> changes were made to what the script actually executes.
+>
+> The back-to-back exploration of sample rates for Perfbuf and Ringbuf
+> have been combined into a single section.
+>
+> Some of the variables in the script were renamed for clarity; b is
+> always a benchmark name, s is a sampling rate, n is a number of
+> producers. Before the change, b was the only variable.
+>
+> After:
+> ```
+> Parallel producer
+> =================
+> rb-libbpf            43.072 ± 0.165M/s (drops 0.940 ± 0.016M/s)
+> rb-custom            20.274 ± 0.442M/s (drops 0.000 ± 0.000M/s)
+> pb-libbpf            1.480 ± 0.015M/s (drops 0.000 ± 0.000M/s)
+> pb-custom            1.492 ± 0.023M/s (drops 0.000 ± 0.000M/s)
+>
+......
+>
+> ```
+>
+> Signed-off-by: Andrew Werner <awerner32@gmail.com>
+
+Acked-by: Hou Tao <houtao1@huawei.com>
+
 
