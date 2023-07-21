@@ -1,254 +1,180 @@
-Return-Path: <bpf+bounces-5572-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5573-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52B8C75BC3F
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 04:24:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D88075BC4B
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 04:29:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 831831C215B8
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 02:24:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D1E61C21465
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 02:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE03762E;
-	Fri, 21 Jul 2023 02:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8945A639;
+	Fri, 21 Jul 2023 02:29:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8845F38F
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 02:24:33 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36F3211B
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 19:24:30 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R6YKQ0Yn8z4f3k6P
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 10:24:26 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgDXvgxX7LlkP6atNQ--.33671S2;
-	Fri, 21 Jul 2023 10:24:26 +0800 (CST)
-Subject: Re: [PATCH bpf 2/2] bpf/memalloc: Schedule highprio wq for non-atomic
- alloc when atomic fails
-To: YiFei Zhu <zhuyifei@google.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Stanislav Fomichev <sdf@google.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>
-References: <cover.1689885610.git.zhuyifei@google.com>
- <3516fa9cc4bdbaeb90f208f5c970e622ba76be3e.1689885610.git.zhuyifei@google.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <87874222-1d01-b08b-87e5-a94d90167e94@huaweicloud.com>
-Date: Fri, 21 Jul 2023 10:24:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 501A638F;
+	Fri, 21 Jul 2023 02:29:36 +0000 (UTC)
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2070.outbound.protection.outlook.com [40.107.104.70])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D292211B;
+	Thu, 20 Jul 2023 19:29:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RqoTofNi/pHtiFfAzL9XObcDJw1RKRLq0IHdiCdOAuGdNLLlLP7JxXStlZjDJfXTdpe/DaC4znLkxkdrEBLj7g6UNmBbajL0DjraNdmVBZ38P2UzezwPnIVRnYuXuEq7i1ephmsJmhzdA9aCv1YEr5zg8TE3ES+xE148/9ftdTnxGmPv+fMYxS0GO24EehKBvq1eKtcoyTEed/xiwakNaQPQlMnSovSPKLGoPWx54wgMbqL8ssTPYIXFSxh4yfk74JX8ZMxFQqFNowrtg3LaigdC5i+XM4UiWte110263k5udfXvsUc3Skxy+lYe7IVNHGfbAHop03dwd/VZAtUt7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s3PAz9W7TXU2dbhrLwoQgOy0XNaU2+950N5P25J8VBI=;
+ b=nt0WDvpK3hw8RNie5mJ38c8X7KF0pc1aEmcuUXhFlfaTsoZ/pJX1VCma7V9up0IIjdz2HqX+91vr2Flazs0GqSN7QYwEKJyGn8RoYVUgkQNVELlivSMV3SKMYInJwYppRmusCTnclS+6J4/s8FENDdi3vkTNHNX+MwZcb73jj00j0DJRWZnFAm8rXnD8IKHqT++MPZEYcB3mCjw8xu9IGspdvY7fxlvsl+Tl9JJIukcaG+uhf9pPl9v/ybxbYLFlL88ldRQ0ediHAm8D8nDL1gp7IMpT0ouc+OQj7gB0kb1wJwXvkJ0nl0C7qSTOhcVWljMPr7NH+cSwRPXjBlgq6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s3PAz9W7TXU2dbhrLwoQgOy0XNaU2+950N5P25J8VBI=;
+ b=eL3MsWr5TrEtwb5PDOiiQPd7lnpWruRiZdFd0i6rF4DdImK3YevX380hQy1DuAcf9w5k72Y07YWgBIDBjZyQx3m9kxcoJVqbZORb14kNUctF6wyPeQI26rqodCsxNoMc3wmt0oZxQfCYkPMEU/ctZKmwd7kHDtOxtMeJmRbqQr4=
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
+ by AS8PR04MB7928.eurprd04.prod.outlook.com (2603:10a6:20b:2af::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Fri, 21 Jul
+ 2023 02:29:31 +0000
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6588.031; Fri, 21 Jul 2023
+ 02:29:31 +0000
+From: Wei Fang <wei.fang@nxp.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: "davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com"
+	<edumazet@google.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
+	<daniel@iogearbox.net>, "hawk@kernel.org" <hawk@kernel.org>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, Clark Wang
+	<xiaoning.wang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, dl-linux-imx
+	<linux-imx@nxp.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH net-next] net: fec: add XDP_TX feature support
+Thread-Topic: [PATCH net-next] net: fec: add XDP_TX feature support
+Thread-Index: AQHZuJuObnt/EH25Q0eb312+ucAGVK/CCCaAgAAiAvCAAKEwgIAArLsg
+Date: Fri, 21 Jul 2023 02:29:30 +0000
+Message-ID:
+ <AM5PR04MB313958BDA681DA11B5A9FC0B883FA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+References: <20230717103709.2629372-1-wei.fang@nxp.com>
+	<20230719204553.46856b29@kernel.org>
+	<AM5PR04MB3139D4C0F26B5768784B9CAF883EA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <20230720082431.5428050e@kernel.org>
+In-Reply-To: <20230720082431.5428050e@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM5PR04MB3139:EE_|AS8PR04MB7928:EE_
+x-ms-office365-filtering-correlation-id: 0a51745d-0dd6-41ae-096d-08db89925060
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ X+VEgtApIzABHpY3Hxn/BoR0GGvHYx4+gxnYDqOICgoe8Uqa9Ta+VZqa8KgvjrdQxfiZwezJSQBqe3On8rP/syrt1rzwENjS1StIdmd8W9VWBe5zsApDfFRHgn5JznUKC4FKbNlc5Pq9CmxTJeKAiNqn+4BaWE+H4nCpF9FRP/SCAtEOoi0fWIV6l6ZeMPaGGaPpc66nsZrtLykOaCTOCRdp5hMsTjkzc6OcFRQE3Z/krg0HCDdz6k5PZTkj27uctBAeeRMbfHg1WJbLI1so8vUx0kne6/NQ42aFw3J29pTp/Rd18HTD30lMCS5z1e0LiSZUrodl+s8GqBagvTX89iUUaqmGJN1E2k66L///8+2dV3gvtcjNfB5/cXe8nDnYFnigcMTJ6I18fmmvSnzh83a0l+lBYtU4N87PrNWpJGlcunkewODVAD9dTHPpqTwwfBu2ybPSvTl9Cp87q3hwY31dgZu/wi5aSIDuVDKSW3Qhnu0hRAUANvjcLMuIVHfLSqIumMQR6T4/OZl0jz/AOpFSOb/ij8o8SDCT9YijeMECpSRl6NpPJMOXOGlQSnmdCybqMG+DaO2r3NkYCi5FNIB6wK6YuzVxTnPTSUFOAJQ=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(136003)(39860400002)(366004)(451199021)(2906002)(83380400001)(38070700005)(86362001)(33656002)(122000001)(38100700002)(55016003)(41300700001)(6506007)(53546011)(9686003)(966005)(66446008)(66476007)(76116006)(66556008)(66946007)(6916009)(316002)(71200400001)(4326008)(64756008)(7696005)(186003)(26005)(7416002)(8936002)(8676002)(478600001)(54906003)(5660300002)(44832011)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?gb2312?B?MUNmcWZhVFM2Y29vSmdvRnA4UEVMTiswRm5ZQ1pYQ0V6dURTZVFjSmlCeXls?=
+ =?gb2312?B?bDJSQlArYU5XNzhHTXNvWE12a280ZlRkbGhpK1lqV0dIQnVMYmdKZmE0YmFW?=
+ =?gb2312?B?VHd5MEY3d2dZdW56YjJtZlhxYVdHTFJuUWxEMGs4Qmh3VDJCZG1pcmg1VVBu?=
+ =?gb2312?B?a2FmM3V0Y3RnYy92azhzV0JYK0dNb2ZQOTJqaXVGKzJNWHRlQ2lzQlM0bDZP?=
+ =?gb2312?B?b1Rna2lCN2ppR1BlaXVYRjR4UHRkZjU0d3VTUm84NnZlS2xWdFgyQ1J3YS92?=
+ =?gb2312?B?eUkweUZ0MGVTVDNjRXJYRWpXczVYekw3b29kYTRMVE9EdkMyVW5ybVpnNHQ5?=
+ =?gb2312?B?V0cvRjZDRUtkb1o5VVhJSzIvYkJHMFQxdTZTN1RhTzJKQllwZGYrSFpQbmZS?=
+ =?gb2312?B?aENzeGU0UlhYTDJiV0NycnNERUszY0hiY0xPMytxeXlqS0VnUm9ZSmdoc0Ja?=
+ =?gb2312?B?RDJFQ1d0YjFXTW5SanV0ODl2ZXZNYzBYU01WN0hHaWtuL2I1UzRWZjI5UW5T?=
+ =?gb2312?B?UjRkL1ErMGpwTWNLVXdmR0NuV2kyblJSaUs4MDlxTVdDRnAyL1ZRZTQvOTA2?=
+ =?gb2312?B?bGRNU1hmWXpDckVmWUptYWk4ekZGNTFlMWNQVjRmQm5IbExmK2NDd0JrT3c4?=
+ =?gb2312?B?cFlTZEFxdmZNU2FDTHRhcGZ2d3pDcjNBNi9aUTZtZHJWQys1QlVVTXg5Smtq?=
+ =?gb2312?B?ZnBoMmhNNmdDTWVYYVZUWlQwSVVVRUE1VUVwVHowcXhSSHBic1lWYXpVbU84?=
+ =?gb2312?B?c3lkZGVRZkk2TUVBMXlMTXp4eng2TkFaa1VKdks4YmkwdGZWbGI2NHM2dFA5?=
+ =?gb2312?B?ODFCSkZYSDJPeGFwMjFweFNlb0phNlUvUXhpaHl4L3orb0NWZ1k2OXE2UFpq?=
+ =?gb2312?B?OUh5UEhHZm83ZHBBWlE0ekRjSzZCQ0hjUldFVjhLbmxzcVNzQjEzSTBLWUhY?=
+ =?gb2312?B?VkFyRGFPb2ppL3QvWGdIeTZiNVdmRUkwcG92a3pzd05aY1Q4UjAwQVJud1R0?=
+ =?gb2312?B?eGkyMndCVU1OZFNFT2JlMGp3c0xuTG1RMTdGMWdjMW9HbzMzTElXcmNtZ1Z6?=
+ =?gb2312?B?TVhDWTZnQmcxamRKK21KVkxlNllEeGsxd1ZqVDRPTE13aFRUejZhNll6RFJI?=
+ =?gb2312?B?cHIrSWFEMkxEcFJoQzdIbWJjUENqMTF6L2Y5SzFObVZSVzFUcWZhdXJDVm9V?=
+ =?gb2312?B?N1hqUlVlaXUyVWZPZ1FvRFd1TWh3UzM3ZDFuaGxPMSs2dkdwM0gwelkxWUtk?=
+ =?gb2312?B?MnYrN2V6YXBkVzQxbktDd0hhaXRHTEFqTTl4dU9hbEZGQ2VyeC9pRk9CS1J2?=
+ =?gb2312?B?VVU0TnFxblNPZnlYTUh6cERFWml2TUVXN0tJWFBFOTdFMm9HUkdFRmxiSnNX?=
+ =?gb2312?B?dXBYclZxQUFqZ0p5dnVpSU1FRjZtaG5rTEZ4dm5hbUo0SVkwUzN2MUlNZng0?=
+ =?gb2312?B?Rm1jaFV4bEdSUmxJclBGenNEOHc4NTdnRlFXcVZUSHlKNkliOHc3WURFRk41?=
+ =?gb2312?B?ejVOMW9tWDVoRFNFYjFxdEJQRHR2ejVLQUhHUFFGd0Q5Mi9UVzRVVThtTnF6?=
+ =?gb2312?B?MlhRZjRtcC9qcmhUZDBvV1llWW5BQUVGOFBrOFJRRWxRWDJxZzRCdEgrWHo0?=
+ =?gb2312?B?Rm1XSFFROTY5c2F1amFFOVR6eXhGaHNreEM2Tk92ekNuRk8rYkhwd1BqMm90?=
+ =?gb2312?B?a1hqS2puUWMzTGJwYWV5V2MzeGpFYldyaDhOUmpvaXoyVXplTVIvVGtmZG50?=
+ =?gb2312?B?WUplRTE1NUVuMFU4RUpqR0U3L3RvaWs3VlZtYkRuSFc4bXN5N3RDaHVmMUtl?=
+ =?gb2312?B?Z1FObEdadEhBUnRncEFTZTlWekZZMFE2UWt1czVEM1ZiV3hpZi9aZmI4S2lT?=
+ =?gb2312?B?ZVFSblV6c1dWbkN6QUJ1YS9SSmxseG8yMnJ1RnVraEdJSDdPYW85RHdDUHZB?=
+ =?gb2312?B?RkNFK2l4ZlZxSnhVbjcrc3BiSXFkRy9DWFZvWE84V3VPN0JZVWlvNXRVSklQ?=
+ =?gb2312?B?OXZmZlZJeFJmZkhGeWRZajJnTzIzMUExMnhNeUJuKzgvM1lYTWE4VVd4cnFJ?=
+ =?gb2312?B?d1dWL3JWdXpvN2V2REVPbmt4cmp5Y1NjMjdzN3F1OFVBT2pWQkhrSWJVeGNK?=
+ =?gb2312?Q?ud2o=3D?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <3516fa9cc4bdbaeb90f208f5c970e622ba76be3e.1689885610.git.zhuyifei@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgDXvgxX7LlkP6atNQ--.33671S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3XrWUGr1UZrWDJFWrGrW7Jwb_yoWxuF1DpF
-	4ftF1rArs5ZF47Ww4xW3WxAasakr18t3W7G3y8W34S9rWFgr1DKa1qkry2qFy5urZrGa13
-	Ar4DKryxGF4UZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a51745d-0dd6-41ae-096d-08db89925060
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2023 02:29:30.9484
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: d5fonZRMkp6fPC3RxmreVsPf+o0mPjSYkrxuuTny4+4EhInfj08MXViR5LfSww1eEDwallgjIkpYemK/JE6RNQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7928
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
-
-On 7/21/2023 4:44 AM, YiFei Zhu wrote:
-> Atomic refill can fail, such as when all percpu chunks are full,
-> and when that happens there's no guarantee when more space will be
-> available for atomic allocations.
->
-> Instead of having the caller wait for memory to be available by
-> retrying until the related BPF API no longer gives -ENOMEM, we can
-> kick off a non-atomic GFP_KERNEL allocation with highprio workqueue.
-> This should make it much less likely for those APIs to return
-> -ENOMEM.
->
-> Because alloc_bulk can now be called from the workqueue,
-> non-atomic calls now also calls local_irq_save/restore to reduce
-> the chance of races.
->
-> Fixes: 7c8199e24fa0 ("bpf: Introduce any context BPF specific memory allocator.")
-> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
-> ---
->  kernel/bpf/memalloc.c | 47 ++++++++++++++++++++++++++++++-------------
->  1 file changed, 33 insertions(+), 14 deletions(-)
->
-> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> index 016249672b43..2915639a5e16 100644
-> --- a/kernel/bpf/memalloc.c
-> +++ b/kernel/bpf/memalloc.c
-> @@ -84,14 +84,15 @@ struct bpf_mem_cache {
->  	struct llist_head free_llist;
->  	local_t active;
->  
-> -	/* Operations on the free_list from unit_alloc/unit_free/bpf_mem_refill
-> +	/* Operations on the free_list from unit_alloc/unit_free/bpf_mem_refill_*
->  	 * are sequenced by per-cpu 'active' counter. But unit_free() cannot
->  	 * fail. When 'active' is busy the unit_free() will add an object to
->  	 * free_llist_extra.
->  	 */
->  	struct llist_head free_llist_extra;
->  
-> -	struct irq_work refill_work;
-> +	struct irq_work refill_work_irq;
-> +	struct work_struct refill_work_wq;
->  	struct obj_cgroup *objcg;
->  	int unit_size;
->  	/* count of objects in free_llist */
-> @@ -153,7 +154,7 @@ static struct mem_cgroup *get_memcg(const struct bpf_mem_cache *c)
->  #endif
->  }
->  
-> -/* Mostly runs from irq_work except __init phase. */
-> +/* Mostly runs from irq_work except workqueue and __init phase. */
->  static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node, bool atomic)
->  {
->  	struct mem_cgroup *memcg = NULL, *old_memcg;
-> @@ -188,10 +189,18 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node, bool atomic)
->  			 * want here.
->  			 */
->  			obj = __alloc(c, node, gfp);
-> -			if (!obj)
-> +			if (!obj) {
-> +				/* We might have exhausted the percpu chunks, schedule
-> +				 * non-atomic allocation so hopefully caller can get
-> +				 * a free unit upon next invocation.
-> +				 */
-> +				if (atomic)
-> +					queue_work_on(smp_processor_id(),
-> +						      system_highpri_wq, &c->refill_work_wq);
-
-I am not a MM expert. But according to the code in
-pcpu_balance_workfn(), it will try to do pcpu_create_chunk() when
-pcpu_atomic_alloc_failed is true, so the reason for introducing
-refill_work_wq is that pcpu_balance_workfn is too slow to fulfill the
-allocation request from bpf memory allocator ?
->  				break;
-> +			}
->  		}
-> -		if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> +		if (IS_ENABLED(CONFIG_PREEMPT_RT) || !atomic)
->  			/* In RT irq_work runs in per-cpu kthread, so disable
->  			 * interrupts to avoid preemption and interrupts and
->  			 * reduce the chance of bpf prog executing on this cpu
-> @@ -208,7 +217,7 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node, bool atomic)
->  		__llist_add(obj, &c->free_llist);
->  		c->free_cnt++;
->  		local_dec(&c->active);
-> -		if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> +		if (IS_ENABLED(CONFIG_PREEMPT_RT) || !atomic)
->  			local_irq_restore(flags);
->  	}
->  	set_active_memcg(old_memcg);
-> @@ -314,9 +323,9 @@ static void free_bulk(struct bpf_mem_cache *c)
->  	do_call_rcu(c);
->  }
->  
-> -static void bpf_mem_refill(struct irq_work *work)
-> +static void bpf_mem_refill_irq(struct irq_work *work)
->  {
-> -	struct bpf_mem_cache *c = container_of(work, struct bpf_mem_cache, refill_work);
-> +	struct bpf_mem_cache *c = container_of(work, struct bpf_mem_cache, refill_work_irq);
->  	int cnt;
->  
->  	/* Racy access to free_cnt. It doesn't need to be 100% accurate */
-> @@ -332,7 +341,14 @@ static void bpf_mem_refill(struct irq_work *work)
->  
->  static void notrace irq_work_raise(struct bpf_mem_cache *c)
->  {
-> -	irq_work_queue(&c->refill_work);
-> +	irq_work_queue(&c->refill_work_irq);
-> +}
-> +
-> +static void bpf_mem_refill_wq(struct work_struct *work)
-> +{
-> +	struct bpf_mem_cache *c = container_of(work, struct bpf_mem_cache, refill_work_wq);
-> +
-> +	alloc_bulk(c, c->batch, NUMA_NO_NODE, false);
-
-Considering that the kworker may be interrupted by irq work, so there
-will be concurrent __llist_del_first() operations on free_by_rcu, andI
-think it is not safe to call alloc_bulk directly here. Maybe we can just
-skip __llist_del_first() for !atomic context.
-
->  }
->  
->  /* For typical bpf map case that uses bpf_mem_cache_alloc and single bucket
-> @@ -352,7 +368,8 @@ static void notrace irq_work_raise(struct bpf_mem_cache *c)
->  
->  static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
->  {
-> -	init_irq_work(&c->refill_work, bpf_mem_refill);
-> +	init_irq_work(&c->refill_work_irq, bpf_mem_refill_irq);
-> +	INIT_WORK(&c->refill_work_wq, bpf_mem_refill_wq);
->  	if (c->unit_size <= 256) {
->  		c->low_watermark = 32;
->  		c->high_watermark = 96;
-> @@ -529,7 +546,7 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
->  		for_each_possible_cpu(cpu) {
->  			c = per_cpu_ptr(ma->cache, cpu);
->  			/*
-> -			 * refill_work may be unfinished for PREEMPT_RT kernel
-> +			 * refill_work_irq may be unfinished for PREEMPT_RT kernel
->  			 * in which irq work is invoked in a per-CPU RT thread.
->  			 * It is also possible for kernel with
->  			 * arch_irq_work_has_interrupt() being false and irq
-> @@ -537,7 +554,8 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
->  			 * the completion of irq work to ease the handling of
->  			 * concurrency.
->  			 */
-> -			irq_work_sync(&c->refill_work);
-> +			irq_work_sync(&c->refill_work_irq);
-> +			cancel_work_sync(&c->refill_work_wq);
-
-cancel_work_sync() may be time-consuming. We may need to move it to
-free_mem_alloc_deferred() to prevent blocking the destroy of bpf memory
-allocator.
->  			drain_mem_cache(c);
->  			rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
->  		}
-> @@ -552,7 +570,8 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
->  			cc = per_cpu_ptr(ma->caches, cpu);
->  			for (i = 0; i < NUM_CACHES; i++) {
->  				c = &cc->cache[i];
-> -				irq_work_sync(&c->refill_work);
-> +				irq_work_sync(&c->refill_work_irq);
-> +				cancel_work_sync(&c->refill_work_wq);
->  				drain_mem_cache(c);
->  				rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
->  			}
-> @@ -580,7 +599,7 @@ static void notrace *unit_alloc(struct bpf_mem_cache *c)
->  	 *
->  	 * but prog_B could be a perf_event NMI prog.
->  	 * Use per-cpu 'active' counter to order free_list access between
-> -	 * unit_alloc/unit_free/bpf_mem_refill.
-> +	 * unit_alloc/unit_free/bpf_mem_refill_*.
->  	 */
->  	local_irq_save(flags);
->  	if (local_inc_return(&c->active) == 1) {
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKYWt1YiBLaWNpbnNraSA8a3Vi
+YUBrZXJuZWwub3JnPg0KPiBTZW50OiAyMDIzxOo31MIyMMjVIDIzOjI1DQo+IFRvOiBXZWkgRmFu
+ZyA8d2VpLmZhbmdAbnhwLmNvbT4NCj4gQ2M6IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IGVkdW1hemV0
+QGdvb2dsZS5jb207IHBhYmVuaUByZWRoYXQuY29tOw0KPiBhc3RAa2VybmVsLm9yZzsgZGFuaWVs
+QGlvZ2VhcmJveC5uZXQ7IGhhd2tAa2VybmVsLm9yZzsNCj4gam9obi5mYXN0YWJlbmRAZ21haWwu
+Y29tOyBDbGFyayBXYW5nIDx4aWFvbmluZy53YW5nQG54cC5jb20+OyBTaGVud2VpDQo+IFdhbmcg
+PHNoZW53ZWkud2FuZ0BueHAuY29tPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgZGwtbGludXgt
+aW14DQo+IDxsaW51eC1pbXhAbnhwLmNvbT47IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7
+IGJwZkB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCBuZXQtbmV4dF0gbmV0
+OiBmZWM6IGFkZCBYRFBfVFggZmVhdHVyZSBzdXBwb3J0DQo+IA0KPiBPbiBUaHUsIDIwIEp1bCAy
+MDIzIDA3OjA2OjA1ICswMDAwIFdlaSBGYW5nIHdyb3RlOg0KPiA+ID4gQXJlIHlvdSB0YWtpbmcg
+YnVkZ2V0IGludG8gYWNjb3VudD8gV2hlbiBOQVBJIGlzIGNhbGxlZCB3aXRoIGJ1ZGdldA0KPiA+
+ID4gb2YgMCB3ZSBhcmUgKm5vdCogaW4gbmFwaSAvIHNvZnRpcnEgY29udGV4dC4gWW91IGNhbid0
+IGJlIHByb2Nlc3NpbmcNCj4gPiA+IGFueSBYRFAgdHggdW5kZXIgc3VjaCBjb25kaXRpb25zIChp
+dCBtYXkgYmUgYSBuZXRwb2xsIGNhbGwgZnJvbSBJUlENCj4gY29udGV4dCkuDQo+ID4NCj4gPiBB
+Y3R1YWxseSwgdGhlIGZlYyBkcml2ZXIgbmV2ZXIgdGFrZXMgdGhlIGJ1ZGdldCBpbnRvIGFjY291
+bnQgZm9yDQo+ID4gY2xlYW5pbmcgdXAgdHggQkQgcmluZy4gVGhlIGJ1ZGdldCBpcyBvbmx5IHZh
+bGlkIGZvciByeC4NCj4gDQo+IEkga25vdywgdGhhdCdzIHdoYXQgSSdtIGNvbXBsYWluaW5nIGFi
+b3V0LiBYRFAgY2FuIG9ubHkgcnVuIGluIG5vcm1hbCBOQVBJDQo+IGNvbnRleHQsIGkuZS4gd2hl
+biBOQVBJIGlzIGNhbGxlZCB3aXRoIGJ1ZGdldCAhPSAwLiBUaGF0IHdvcmtzIG91dCB3aXRob3V0
+IGFueQ0KPiBjaGFuZ2VzIG9uIFJ4LCBpZiBidWRnZXQgaXMgemVybyBkcml2ZXJzIGFscmVhZHkg
+ZG9uJ3QgcHJvY2VzcyBSeC4gQnV0IHNpbWlsYXINCj4gY2hhbmdlIG11c3QgYmUgZG9uZSBvbiBU
+eCB3aGVuIGFkZGluZyBYRFAgc3VwcG9ydC4gWW91IGNhbiBzdGlsbCBwcm9jZXNzIGFsbA0KPiBu
+b3JtYWwgc2tiIHBhY2tldHMgb24gVHggd2hlbiBidWRnZXQgaXMgMCAoaW4gZmFjdCB5b3Ugc2hv
+dWxkKSwgYnV0IHlvdQ0KPiBfY2FuJ3RfIHByb2Nlc3MgYW55IFhEUCBUeCBmcmFtZS4NClNvcnJ5
+LCBJIGRpZCBub3QgcmVhbGl6ZSB0aGF0IHdlIGNhbiBub3QgcHJvY2VzcyBhbnkgdHggWERQIHBh
+Y2tldCBpZiB0aGUgImJ1ZGdldCINCmlzIDAuIEkgbm90aWNlZCB5b3VyIGxhdGVzdCBjbGFyaWZp
+Y2F0aW9uIFsxXSBpbiBuYXBpLnJzdCwgSSBiZWxpZXZlIGl0IHdpbGwgaGVscCBtYW55DQpwZW9w
+bGUgYXZvaWQgdGhpcyBwcm9ibGVtIGxpa2UgbWUuIFRoYW5rIHlvdSB2ZXJ5IG11Y2guDQpbMV06
+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL25ldGRldi8yMDIzMDcyMDE2MTMyMy4yMDI1Mzc5LTEt
+a3ViYUBrZXJuZWwub3JnL1QvDQoNCg==
 
