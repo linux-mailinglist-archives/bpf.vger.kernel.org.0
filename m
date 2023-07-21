@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-5638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5633-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBD9A75CFBB
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 18:38:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28C6675CFA3
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 18:37:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F1EC2823F8
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 16:38:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 445301C217D5
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 16:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1738C24164;
-	Fri, 21 Jul 2023 16:36:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28251ED3F;
+	Fri, 21 Jul 2023 16:35:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C303F2770A
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 16:36:20 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29E73AA5;
-	Fri, 21 Jul 2023 09:35:56 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4R6vxj2gZ1z9xFQS;
-	Sat, 22 Jul 2023 00:23:37 +0800 (CST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A80124191
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 16:35:58 +0000 (UTC)
+Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6042E30F0;
+	Fri, 21 Jul 2023 09:35:40 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4R6vvj014Nz9xFZY;
+	Sat, 22 Jul 2023 00:21:52 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwC3hl1bs7pkcDDSBA--.22409S9;
-	Fri, 21 Jul 2023 17:34:32 +0100 (CET)
+	by APP2 (Coremail) with SMTP id GxC2BwC3hl1bs7pkcDDSBA--.22409S10;
+	Fri, 21 Jul 2023 17:34:39 +0100 (CET)
 From: Roberto Sassu <roberto.sassu@huaweicloud.com>
 To: zohar@linux.ibm.com,
 	dmitry.kasatkin@gmail.com,
@@ -43,9 +43,9 @@ Cc: linux-kernel@vger.kernel.org,
 	hch@lst.de,
 	mjg59@srcf.ucam.org,
 	Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH 07/12] ima: Add digest_cache policy keyword
-Date: Fri, 21 Jul 2023 18:33:21 +0200
-Message-Id: <20230721163326.4106089-8-roberto.sassu@huaweicloud.com>
+Subject: [RFC][PATCH 08/12] ima: Use digest cache for measurement
+Date: Fri, 21 Jul 2023 18:33:22 +0200
+Message-Id: <20230721163326.4106089-9-roberto.sassu@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230721163326.4106089-1-roberto.sassu@huaweicloud.com>
 References: <20230721163326.4106089-1-roberto.sassu@huaweicloud.com>
@@ -56,10 +56,10 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:GxC2BwC3hl1bs7pkcDDSBA--.22409S9
-X-Coremail-Antispam: 1UD129KBjvJXoW3CrWruw17JF4DAFyxCw15Jwb_yoWkXFykpa
-	yvg3WUCr48XryS9r1xAa4q9r4FgrWIqa1UA395X342y3ZxXr10v3WfJr13CFy3ArW5Cr92
-	yF1Ygr4Dua1jvaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:GxC2BwC3hl1bs7pkcDDSBA--.22409S10
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gr1rtw1UXFWkKF1fZrWUJwb_yoWxXr1fpa
+	9xuF15Kr4ruFyfCrn3A3W7Aa1S9ryktF4UGws8Xw1Skay3Xr1jva1rAw129Fy5Jry5Xa4x
+	ta1jgr4Uuw4jvaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPlb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
 	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -74,7 +74,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3CrWruw17JF4DAFyxCw15Jwb_yoWkXFykpa
 	c7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aV
 	AFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZF
 	pf9x07j7GYLUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAFBF1jj5DJQwAAsr
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAFBF1jj4zMlwAAsl
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
 	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
@@ -85,275 +85,154 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Add the digest_cache policy keyword, to enable the use of the digest cache
-for specific IMA actions and purpose. At the moment, the digest cache can
-be used for measurement and appraisal of file content. They are reflected
-respectively with the new flags DIGEST_CACHE_MEASURE and
-DIGEST_CACHE_APPRAISE_CONTENT.
+If a measure rule contains 'digest_cache=content', get the digest cache (if
+available) associated to the file being measured.
 
-Depending on the IMA action of the parsed rule, the new flags are set in
-the digest_cache_mask variable and passed back to process_measurement(), so
-that the latter can determine whether or not it can use the digest cache.
+AND the digest list mask from the IMA policy with the digest list mask of
+the digest cache (set depending on the actions done on the digest lists),
+to determine if the digest cache can be used for the measurement action.
 
-The digest cache cannot be used for measurement on the default PCR. It
-cannot also be used for appraisal together with the other appraisal methods
-(imasig, sigv3, modsig).
+If the digest cache is enabled, lookup the calculated digest of the file
+being accessed and if found, pass the ANDed masks to
+ima_store_measurement(). Otherwise, reset the mask to zero.
+
+Finally, if the DIGEST_CACHE_MEASURE flag is set in the mask, mark the file
+as measured for the supplied PCR (which cannot be the default one).
+
+At the first digest list accessed, iterate over all digest lists in the
+same directory, and measure them to make the PCR predictable. However,
+don't parse those digest lists except the requested one, to avoid too much
+memory pressure.
+
+Skipping the measurement of cached digests causes less information to be
+available to remote verifiers. In particular, they would know that a subset
+or all files in the measured digest list could have been accessed, but they
+won't know if and when.
 
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- Documentation/ABI/testing/ima_policy  |  5 ++-
- security/integrity/ima/ima.h          |  6 ++--
- security/integrity/ima/ima_api.c      |  6 ++--
- security/integrity/ima/ima_appraise.c |  2 +-
- security/integrity/ima/ima_main.c     |  8 ++---
- security/integrity/ima/ima_policy.c   | 51 +++++++++++++++++++++++++--
- 6 files changed, 66 insertions(+), 12 deletions(-)
+ security/integrity/ima/ima.h      |  3 ++-
+ security/integrity/ima/ima_api.c  | 16 +++++++++++++++-
+ security/integrity/ima/ima_main.c | 27 +++++++++++++++++++++++++--
+ 3 files changed, 42 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-index 14d92c687ef..7792e65b35c 100644
---- a/Documentation/ABI/testing/ima_policy
-+++ b/Documentation/ABI/testing/ima_policy
-@@ -29,7 +29,7 @@ Description:
- 				 [obj_user=] [obj_role=] [obj_type=]]
- 			option:	[digest_type=] [template=] [permit_directio]
- 				[appraise_type=] [appraise_flag=]
--				[appraise_algos=] [keyrings=]
-+				[appraise_algos=] [keyrings=] [digest_cache=]
- 		  base:
- 			func:= [BPRM_CHECK][MMAP_CHECK][CREDS_CHECK][FILE_CHECK][MODULE_CHECK]
- 				[FIRMWARE_CHECK]
-@@ -77,6 +77,9 @@ Description:
- 			For example, "sha256,sha512" to only accept to appraise
- 			files where the security.ima xattr was hashed with one
- 			of these two algorithms.
-+			digest_cache:= [content]
-+			"content" means that the digest cache is used only
-+			for file content measurement and/or appraisal.
- 
- 		  default policy:
- 			# PROC_SUPER_MAGIC
 diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index 859a94bcecb..bdf03525e15 100644
+index bdf03525e15..4f40e07954d 100644
 --- a/security/integrity/ima/ima.h
 +++ b/security/integrity/ima/ima.h
-@@ -260,7 +260,8 @@ int ima_get_action(struct mnt_idmap *idmap, struct inode *inode,
- 		   const struct cred *cred, u32 secid, int mask,
- 		   enum ima_hooks func, int *pcr,
- 		   struct ima_template_desc **template_desc,
--		   const char *func_data, unsigned int *allowed_algos);
-+		   const char *func_data, unsigned int *allowed_algos,
-+		   u8 *digest_cache_mask);
- int ima_must_measure(struct inode *inode, int mask, enum ima_hooks func);
- int ima_collect_measurement(struct integrity_iint_cache *iint,
- 			    struct file *file, void *buf, loff_t size,
-@@ -291,7 +292,8 @@ int ima_match_policy(struct mnt_idmap *idmap, struct inode *inode,
- 		     const struct cred *cred, u32 secid, enum ima_hooks func,
- 		     int mask, int flags, int *pcr,
- 		     struct ima_template_desc **template_desc,
--		     const char *func_data, unsigned int *allowed_algos);
-+		     const char *func_data, unsigned int *allowed_algos,
-+		     u8 *digest_cache_mask);
- void ima_init_policy(void);
- void ima_update_policy(void);
- void ima_update_policy_flags(void);
+@@ -270,7 +270,8 @@ void ima_store_measurement(struct integrity_iint_cache *iint, struct file *file,
+ 			   const unsigned char *filename,
+ 			   struct evm_ima_xattr_data *xattr_value,
+ 			   int xattr_len, const struct modsig *modsig, int pcr,
+-			   struct ima_template_desc *template_desc);
++			   struct ima_template_desc *template_desc,
++			   unsigned int digest_cache_mask);
+ int process_buffer_measurement(struct mnt_idmap *idmap,
+ 			       struct inode *inode, const void *buf, int size,
+ 			       const char *eventname, enum ima_hooks func,
 diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
-index 452e80b541e..bc25675264c 100644
+index bc25675264c..591d388158b 100644
 --- a/security/integrity/ima/ima_api.c
 +++ b/security/integrity/ima/ima_api.c
-@@ -173,6 +173,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
-  * @template_desc: pointer filled in if matched measure policy sets template=
-  * @func_data: func specific data, may be NULL
-  * @allowed_algos: allowlist of hash algorithms for the IMA xattr
-+ * @digest_cache_mask: For which actions and purpose the digest cache is usable
-  *
-  * The policy is defined in terms of keypairs:
-  *		subj=, obj=, type=, func=, mask=, fsmagic=
-@@ -190,7 +191,8 @@ int ima_get_action(struct mnt_idmap *idmap, struct inode *inode,
- 		   const struct cred *cred, u32 secid, int mask,
- 		   enum ima_hooks func, int *pcr,
- 		   struct ima_template_desc **template_desc,
--		   const char *func_data, unsigned int *allowed_algos)
-+		   const char *func_data, unsigned int *allowed_algos,
-+		   u8 *digest_cache_mask)
+@@ -339,7 +339,8 @@ void ima_store_measurement(struct integrity_iint_cache *iint,
+ 			   struct file *file, const unsigned char *filename,
+ 			   struct evm_ima_xattr_data *xattr_value,
+ 			   int xattr_len, const struct modsig *modsig, int pcr,
+-			   struct ima_template_desc *template_desc)
++			   struct ima_template_desc *template_desc,
++			   unsigned int digest_cache_mask)
  {
- 	int flags = IMA_MEASURE | IMA_AUDIT | IMA_APPRAISE | IMA_HASH;
+ 	static const char op[] = "add_template_measure";
+ 	static const char audit_cause[] = "ENOMEM";
+@@ -363,6 +364,19 @@ void ima_store_measurement(struct integrity_iint_cache *iint,
+ 	if (iint->measured_pcrs & (0x1 << pcr) && !modsig)
+ 		return;
  
-@@ -198,7 +200,7 @@ int ima_get_action(struct mnt_idmap *idmap, struct inode *inode,
- 
- 	return ima_match_policy(idmap, inode, cred, secid, func, mask,
- 				flags, pcr, template_desc, func_data,
--				allowed_algos);
-+				allowed_algos, digest_cache_mask);
- }
- 
- static bool ima_get_verity_digest(struct integrity_iint_cache *iint,
-diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-index 491c1aca0b1..10dbafdae3d 100644
---- a/security/integrity/ima/ima_appraise.c
-+++ b/security/integrity/ima/ima_appraise.c
-@@ -81,7 +81,7 @@ int ima_must_appraise(struct mnt_idmap *idmap, struct inode *inode,
- 	security_current_getsecid_subj(&secid);
- 	return ima_match_policy(idmap, inode, current_cred(), secid,
- 				func, mask, IMA_APPRAISE | IMA_HASH, NULL,
--				NULL, NULL, NULL);
-+				NULL, NULL, NULL, NULL);
- }
- 
- static int ima_fix_xattr(struct dentry *dentry,
++	/*
++	 * If the file digest was found in the digest cache, the digest cache
++	 * is enabled for measurement, and the digest list was measured, mark
++	 * the file as measured, so that it does not appear in the measurement
++	 * list (known digest), and the same action is not repeated at the next
++	 * access.
++	 */
++	if (digest_cache_mask & DIGEST_CACHE_MEASURE) {
++		iint->flags |= IMA_MEASURED;
++		iint->measured_pcrs |= (0x1 << pcr);
++		return;
++	}
++
+ 	result = ima_alloc_init_template(&event_data, &entry, template_desc);
+ 	if (result < 0) {
+ 		integrity_audit_msg(AUDIT_INTEGRITY_PCR, inode, filename,
 diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 81abdc8b233..4fdfc399fa6 100644
+index 4fdfc399fa6..7a5148ac3af 100644
 --- a/security/integrity/ima/ima_main.c
 +++ b/security/integrity/ima/ima_main.c
-@@ -231,7 +231,7 @@ static int process_measurement(struct file *file, const struct cred *cred,
+@@ -221,6 +221,9 @@ static int process_measurement(struct file *file, const struct cred *cred,
+ 	bool violation_check;
+ 	enum hash_algo hash_algo;
+ 	unsigned int allowed_algos = 0;
++	u8 digest_cache_mask = 0;
++	struct digest_cache *digest_cache = NULL;
++	struct path digest_list_path;
+ 
+ 	if (!ima_policy_flag || !S_ISREG(inode->i_mode))
+ 		return 0;
+@@ -231,7 +234,7 @@ static int process_measurement(struct file *file, const struct cred *cred,
  	 */
  	action = ima_get_action(file_mnt_idmap(file), inode, cred, secid,
  				mask, func, &pcr, &template_desc, NULL,
--				&allowed_algos);
-+				&allowed_algos, NULL);
+-				&allowed_algos, NULL);
++				&allowed_algos, &digest_cache_mask);
  	violation_check = ((func == FILE_CHECK || func == MMAP_CHECK ||
  			    func == MMAP_CHECK_REQPROT) &&
  			   (ima_policy_flag & IMA_MEASURE));
-@@ -473,11 +473,11 @@ int ima_file_mprotect(struct vm_area_struct *vma, unsigned long prot)
- 	inode = file_inode(vma->vm_file);
- 	action = ima_get_action(file_mnt_idmap(vma->vm_file), inode,
- 				current_cred(), secid, MAY_EXEC, MMAP_CHECK,
--				&pcr, &template, NULL, NULL);
-+				&pcr, &template, NULL, NULL, NULL);
- 	action |= ima_get_action(file_mnt_idmap(vma->vm_file), inode,
- 				 current_cred(), secid, MAY_EXEC,
- 				 MMAP_CHECK_REQPROT, &pcr, &template, NULL,
--				 NULL);
-+				 NULL, NULL);
+@@ -263,6 +266,18 @@ static int process_measurement(struct file *file, const struct cred *cred,
+ 	if (!action)
+ 		goto out;
  
- 	/* Is the mmap'ed file in policy? */
- 	if (!(action & (IMA_MEASURE | IMA_APPRAISE_SUBMASK)))
-@@ -958,7 +958,7 @@ int process_buffer_measurement(struct mnt_idmap *idmap,
- 		security_current_getsecid_subj(&secid);
- 		action = ima_get_action(idmap, inode, current_cred(),
- 					secid, 0, func, &pcr, &template,
--					func_data, NULL);
-+					func_data, NULL, NULL);
- 		if (!(action & IMA_MEASURE) && !digest)
- 			return -ENOENT;
- 	}
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index b32c83d8a72..701c4f21158 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -122,6 +122,7 @@ struct ima_rule_entry {
- 	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
- 	struct ima_rule_opt_list *label; /* Measure data grouped under this label */
- 	struct ima_template_desc *template;
-+	u8 digest_cache_mask;	/* For which actions and purpose the digest cache is usable */
- };
- 
- /*
-@@ -726,6 +727,7 @@ static int get_subaction(struct ima_rule_entry *rule, enum ima_hooks func)
-  * @template_desc: the template that should be used for this rule
-  * @func_data: func specific data, may be NULL
-  * @allowed_algos: allowlist of hash algorithms for the IMA xattr
-+ * @digest_cache_mask: For which actions and purpose the digest cache is usable
-  *
-  * Measure decision based on func/mask/fsmagic and LSM(subj/obj/type)
-  * conditions.
-@@ -738,7 +740,8 @@ int ima_match_policy(struct mnt_idmap *idmap, struct inode *inode,
- 		     const struct cred *cred, u32 secid, enum ima_hooks func,
- 		     int mask, int flags, int *pcr,
- 		     struct ima_template_desc **template_desc,
--		     const char *func_data, unsigned int *allowed_algos)
-+		     const char *func_data, unsigned int *allowed_algos,
-+		     u8 *digest_cache_mask)
- {
- 	struct ima_rule_entry *entry;
- 	int action = 0, actmask = flags | (flags << 1);
-@@ -783,6 +786,9 @@ int ima_match_policy(struct mnt_idmap *idmap, struct inode *inode,
- 		if (template_desc && entry->template)
- 			*template_desc = entry->template;
- 
-+		if (digest_cache_mask)
-+			*digest_cache_mask |= entry->digest_cache_mask;
++	if (digest_cache_mask) {
++		if (digest_cache_mask & DIGEST_CACHE_MEASURE)
++			digest_cache_iter_dir(file_dentry(file));
 +
- 		if (!actmask)
- 			break;
- 	}
-@@ -1073,7 +1079,7 @@ enum policy_opt {
- 	Opt_digest_type,
- 	Opt_appraise_type, Opt_appraise_flag, Opt_appraise_algos,
- 	Opt_permit_directio, Opt_pcr, Opt_template, Opt_keyrings,
--	Opt_label, Opt_err
-+	Opt_label, Opt_digest_cache, Opt_err
- };
- 
- static const match_table_t policy_tokens = {
-@@ -1122,6 +1128,7 @@ static const match_table_t policy_tokens = {
- 	{Opt_template, "template=%s"},
- 	{Opt_keyrings, "keyrings=%s"},
- 	{Opt_label, "label=%s"},
-+	{Opt_digest_cache, "digest_cache=%s"},
- 	{Opt_err, NULL}
- };
- 
-@@ -1886,6 +1893,26 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
- 						 &(template_desc->num_fields));
- 			entry->template = template_desc;
- 			break;
-+		case Opt_digest_cache:
-+			ima_log_string(ab, "template", args[0].from);
-+
-+			result = -EINVAL;
-+
-+			if (!strcmp(args[0].from, "content")) {
-+				switch (entry->action) {
-+				case MEASURE:
-+					entry->digest_cache_mask |= DIGEST_CACHE_MEASURE;
-+					result = 0;
-+					break;
-+				case APPRAISE:
-+					entry->digest_cache_mask |= DIGEST_CACHE_APPRAISE_CONTENT;
-+					result = 0;
-+					break;
-+				default:
-+					break;
-+				}
-+			}
-+			break;
- 		case Opt_err:
- 			ima_log_string(ab, "UNKNOWN", p);
- 			result = -EINVAL;
-@@ -1912,6 +1939,23 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
- 				     "verity rules should include d-ngv2");
- 	}
- 
-+	/* New-style measurements with digest cache cannot be on default PCR. */
-+	if (entry->action == MEASURE &&
-+	    (entry->digest_cache_mask & DIGEST_CACHE_MEASURE)) {
-+		if (!(entry->flags & IMA_PCR) ||
-+		    entry->pcr == CONFIG_IMA_MEASURE_PCR_IDX)
-+			result = -EINVAL;
++		digest_cache = digest_cache_get(file_dentry(file),
++						&digest_list_path);
++		if (digest_cache)
++			digest_cache_mask &= digest_cache->mask;
++		else
++			digest_cache_mask = 0;
 +	}
 +
-+	/* Digest cache should not conflict with other appraisal methods. */
-+	if (entry->action == APPRAISE &&
-+	    (entry->digest_cache_mask & DIGEST_CACHE_APPRAISE_CONTENT)) {
-+		if ((entry->flags & IMA_DIGSIG_REQUIRED) ||
-+		    (entry->flags & IMA_VERITY_REQUIRED) ||
-+		    (entry->flags & IMA_MODSIG_ALLOWED))
-+			result = -EINVAL;
+ 	mutex_lock(&iint->mutex);
+ 
+ 	if (test_and_clear_bit(IMA_CHANGE_ATTR, &iint->atomic_flags))
+@@ -349,10 +364,17 @@ static int process_measurement(struct file *file, const struct cred *cred,
+ 	if (!pathbuf)	/* ima_rdwr_violation possibly pre-fetched */
+ 		pathname = ima_d_path(&file->f_path, &pathbuf, filename);
+ 
++	if (rc == 0 && digest_cache_mask) {
++		if (digest_cache_lookup(digest_cache, iint->ima_hash->digest,
++					iint->ima_hash->algo, pathname))
++			/* Reset the mask, the file digest was not found. */
++			digest_cache_mask = 0;
 +	}
 +
- 	audit_log_format(ab, "res=%d", !result);
- 	audit_log_end(ab);
- 	return result;
-@@ -2278,6 +2322,9 @@ int ima_policy_show(struct seq_file *m, void *v)
- 		seq_puts(m, "appraise_flag=check_blacklist ");
- 	if (entry->flags & IMA_PERMIT_DIRECTIO)
- 		seq_puts(m, "permit_directio ");
-+	if ((entry->digest_cache_mask & DIGEST_CACHE_MEASURE) ||
-+	    (entry->digest_cache_mask & DIGEST_CACHE_APPRAISE_CONTENT))
-+		seq_puts(m, "digest_cache=content ");
- 	rcu_read_unlock();
- 	seq_puts(m, "\n");
- 	return 0;
+ 	if (action & IMA_MEASURE)
+ 		ima_store_measurement(iint, file, pathname,
+ 				      xattr_value, xattr_len, modsig, pcr,
+-				      template_desc);
++				      template_desc, digest_cache_mask);
+ 	if (rc == 0 && (action & IMA_APPRAISE_SUBMASK)) {
+ 		rc = ima_check_blacklist(iint, modsig, pcr);
+ 		if (rc != -EPERM) {
+@@ -391,6 +413,7 @@ static int process_measurement(struct file *file, const struct cred *cred,
+ out:
+ 	if (pathbuf)
+ 		__putname(pathbuf);
++	digest_cache_put(digest_cache, &digest_list_path);
+ 	if (must_appraise) {
+ 		if (rc && (ima_appraise & IMA_APPRAISE_ENFORCE))
+ 			return -EACCES;
 -- 
 2.34.1
 
