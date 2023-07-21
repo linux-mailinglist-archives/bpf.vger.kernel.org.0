@@ -1,156 +1,173 @@
-Return-Path: <bpf+bounces-5627-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5628-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BDF375CD40
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 18:09:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E085675CE4E
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 18:19:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC4301C21703
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 16:09:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3636282301
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 16:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648101F946;
-	Fri, 21 Jul 2023 16:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99991F94D;
+	Fri, 21 Jul 2023 16:19:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A41481F93E
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 16:09:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64200C433C7;
-	Fri, 21 Jul 2023 16:09:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689955754;
-	bh=BlEi7p0BDMKhiEwXg1jOq/zD4Xedk5tjgloH9k5cDxI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=OFTQ6DuOnqrG6CVGHgozLdOfqNJoDAb4DdM10deIzFIcuAksLBrn/okq4ws1Ur9lw
-	 vnsF0PAylGPOwrvzqd8MD7OI6RQvWiDFcruohc1T27dsQlVcsq24OAk01Uc8ndiK4V
-	 53gusbrsSeE7IS4F3aXX11DrNumr93rNPkzbgk6BqkWkpecmtxIc1RCSwyiRuReBW/
-	 IcFeyllltS2xScVQstI79rpDOfa4H6ZPHQWUsAuDPJvk1Dq9LsQE2p69D0x+BcaX1W
-	 VlHj29+EmuuFk1Q1AOo/Ojy8Ijv1Fva0Kmm6Sj3z4ngf26Cy0NypimaJ5plEn9OvV7
-	 JbudTDJwiSXEQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 0571ACE092F; Fri, 21 Jul 2023 09:09:14 -0700 (PDT)
-Date: Fri, 21 Jul 2023 09:09:13 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-	bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 16/20] rcu: Make RCU dynticks counter size
- configurable
-Message-ID: <ac2ec330-191e-43e6-817d-ca4a22207d98@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-17-vschneid@redhat.com>
- <xhsmhjzutu18u.mognet@vschneid.remote.csb>
- <28d4abb7-8496-45ec-b270-ea2b6164537b@paulmck-laptop>
- <xhsmhbkg5ti91.mognet@vschneid.remote.csb>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808A51F941
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 16:19:39 +0000 (UTC)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEBE468B
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 09:19:26 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LEGDZC011951;
+	Fri, 21 Jul 2023 16:19:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2023-03-30; bh=ADhsh02yOX5rOlKXrBPObY2T+eurcAi4k3QOSVU8J50=;
+ b=confrn7RoiauR2IhhP26RwhQDl+SJ2zTV/GncpQY8zshTL2OaiNlHfQnxo04xS7jOZy3
+ 3IGNrD20dQCc3HTin7w4bv+jeLu6gqNzaXovA8BZNSnhyYgTo7uhZeqWqFauKmKbhMUb
+ I36twfgKTmwk8CIh/qN+rfFKfCKDG8LWgCaWUtDvv6WMjG8qRtpi8AzeiiuAVYDdgZTk
+ KHK6t2hJQ3kVLYLeuw6iNcFHDd00LZSILf1COuz1w9xPV/f793lLUUd0gM9Mz3ow6CqJ
+ daaY+PlumNWCjnidL0r6C/KDFy6W7nHAnoIK7TCMcmX6BA3H2bFFHuw/YQdstujpTM65 Kg== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run78480q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 21 Jul 2023 16:19:25 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36LF66VA023985;
+	Fri, 21 Jul 2023 16:19:23 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhwaerq0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 21 Jul 2023 16:19:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D9aZsyP94MhGAfhYlpqF63WvTAtwOAzF6pGhznweXUgXb/hhTPY8+lqgytFYAKfclhrOHgoMOYtqQtJpfws+E6hNQ5S2f/9bBFCaYT91NXOXtviP9fHacor7tK6HsG+Y3LPwSd0Xzy/dslQwaQvtZMNarHJEN91lZH+Ab5atIdHptlIbpy4j/MMbKaN5l0OT6kkLFsB3q+mLjsmQWPebJQSU5A8zg3/LpFri18O+h2YhyvMeCl+/HEl2Wmj1AXoVHESbxq42WI+yylfH0QdVw8Um24LhIfUtk2K8ECPDPxV/9ad1pl2YrAygQor3Sk4A9JqyfnGc39i+H21XbCakPA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ADhsh02yOX5rOlKXrBPObY2T+eurcAi4k3QOSVU8J50=;
+ b=OcUU3p/jZiq0Jh7Iqg7mh/G4FrEJcp//ldoqn/YaGEWEgtvH3ZGy7mUwQnhJp8HAqxe8wYTir6k4Ljmkc5OhzeMHBVyj27AHCPWz1QZwnuFWn04p2bGBfRJnVsF/QbfjYrRlptZgRwN5FMviX+ngFuB6Yr0R/xSrlYGyPDA4MOSuiaMDxaJNXUc/D1BKUGJ/skpEDSpuDr5wxj3xoUviM8hJDK8itS+sNeU2v1PMe1qEHwhXBS3qv3D7XCRIoloW2a/OmTmi8H1pd/r4+dpL/rfBsvt9erVzmj/9A6C8svKu9czG505LKupT0FbQAURgtNVpogXQ7vbwcpbMPFiNvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ADhsh02yOX5rOlKXrBPObY2T+eurcAi4k3QOSVU8J50=;
+ b=ey4TdLUtpjfjdogVHctEub0LEyQnOB/nDh01GWFwCBXEEU5uHkO3jpoFSqhUoQ3vvkTGR0K6ycJ3i4s2NHDtL6IxzM7AcAmIZ6lCRlmuoOaT3FtGBGDjEqBxdbrp66xzGHU4t3xFATRD5RzUpHo7t+tkwRfwtZ4M7A9oyGFvSMU=
+Received: from BYAPR10MB2888.namprd10.prod.outlook.com (2603:10b6:a03:88::32)
+ by DM4PR10MB6184.namprd10.prod.outlook.com (2603:10b6:8:8c::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Fri, 21 Jul
+ 2023 16:19:21 +0000
+Received: from BYAPR10MB2888.namprd10.prod.outlook.com
+ ([fe80::4d0c:9857:9b42:2f6c]) by BYAPR10MB2888.namprd10.prod.outlook.com
+ ([fe80::4d0c:9857:9b42:2f6c%4]) with mapi id 15.20.6609.026; Fri, 21 Jul 2023
+ 16:19:21 +0000
+From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+To: Yonghong Song <yhs@meta.com>
+Cc: bpf@vger.kernel.org
+Subject: Encoding of V4 32-bit JA
+Date: Fri, 21 Jul 2023 18:19:10 +0200
+Message-ID: <87a5vp6xvl.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+Content-Type: text/plain
+X-ClientProxiedBy: LO4P123CA0546.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:319::17) To BYAPR10MB2888.namprd10.prod.outlook.com
+ (2603:10b6:a03:88::32)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xhsmhbkg5ti91.mognet@vschneid.remote.csb>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2888:EE_|DM4PR10MB6184:EE_
+X-MS-Office365-Filtering-Correlation-Id: 92e4b8be-ea2a-4b46-1df3-08db8a063dc2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	eUsttmw/QzQPSF7nchTsXe7j5vhLCpUKppgP0iKBge9Xdos3D0Ib9Gyzh8r42sKsjwQlHDVlPfy175q7GSPfjIferXC3gKjprYwvlL6n6r0aOaXQeH2wmbFj1S5IW8ZJcdoKp340NjSVI/JnJBpEaAPmJYbJTsmIe8LuqBfIRnErQJ7//Gb57s3q2mJ7t+JKC8fVqxFXY08cfGB98LCHhJo5bz3bSYPi0KLSWWnCNoH5aAoQAKbDOKgCiHCFegB+DmUl+VxlEcDf7C7RWseZHeSDhQHyla25X0tQmUUqmoU6QVCUUeR4ZneMqURg/qN4svyr5JwIqlWt7g4g49Z3A/sIoqbqt+JIUd/cV/cQ9NnNlQ1huzysazm0s2itq6RTsdu1evqGN+c3Ljv/KZrVKL0MsG0scMhsF0hq2twJBiUohAqg83zYqW5pyUd50pMP7C1nb1xqNug36U9bK6FWwLuwGD6/jae0YNNDWWuzjwIP5vqRt7Rd7qr5dBi5XBeUiydHmZQet3AGhpgZSDeN9RqZeJJhxXvY2S7NoWbTtCNHc3IdCD1JeU/8sHymo3A6mLjCYQ9PIICX2tTmsoPgz0KtWhPpJQmUuLhCaWwnkeI=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2888.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(39860400002)(136003)(366004)(396003)(451199021)(26005)(186003)(36756003)(6506007)(38100700002)(6512007)(6666004)(6486002)(2616005)(4744005)(5660300002)(478600001)(4326008)(66556008)(66476007)(6916009)(66946007)(316002)(86362001)(41300700001)(8936002)(8676002)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?JokAqa/pKyDEEZpWcRNFC6y9QX1oLHzE20fhYmko2oA3W4e9fojxwGqqAsGF?=
+ =?us-ascii?Q?F1OkSkD94mk8ngavecqyRlFkIMUkYpar5Mz9kqlbRRDzOZQNAXGflH0/e9Lb?=
+ =?us-ascii?Q?eN0kvw8wyYhYd6Sc7YalfPgIkiexdEGo5DKGFfXjmgawhcgFtv3MDXGfOxEk?=
+ =?us-ascii?Q?pP1GcgTX2GUQim9BZHkopnq3uniDmc6c5XGJzUQXV8d8eIm5RqrQSZxxuL3a?=
+ =?us-ascii?Q?AoQHh1ihPl6pbdR8PmgcDoHJzRfTXqHdanwfUJxsPtRnKjODSeZ1dRzk3g06?=
+ =?us-ascii?Q?chU0hWx2jHjDPNuMnzAohCQAalltHT1tcdlDz61H9eN399z7LOCAkBqAg9jW?=
+ =?us-ascii?Q?8I6sxGwcAftyR/6G+BHFpHpOT/xmmqzQtA5yD6zrYkMaU3Rp4egzdf9MR85g?=
+ =?us-ascii?Q?rJ3JirE6/BiJMOvtxFraAccJSA8tjN/bib0bvCfeJzOD63kP9b7mUM331gWF?=
+ =?us-ascii?Q?L80zehhz/nCSe0JVYRNYsTPbsF0kTPLredKeoJJfmKFqSiubANnJ3nQM76wR?=
+ =?us-ascii?Q?PTfSSOkSLe9mWJ4QrSntrkF6Yr76fMVLy3jMjRhRTkWg1Ylc4MVuEKHu/AOp?=
+ =?us-ascii?Q?VwHzIuBThL+7uQn/OsDh9mefPbpDWHqNs6mo0+MN2brl2VTfJaLIMvfME8ib?=
+ =?us-ascii?Q?C3tRxH3p5QvbkYwP7E8Y5VGhsH0+L3TxSR8Co/QryZEXTBDHFL8jnUfwj4nh?=
+ =?us-ascii?Q?mKxouK0YdrowvfK/d2arDhNDvPuBfrnp0TwW0Z4zchuwjv/JDImGBqEJjcoQ?=
+ =?us-ascii?Q?gIuEIepm77+MdrCCiZAf3lYPjy4dfzNvR/rmdLdEHtWqCn7dAexElcmjpGH9?=
+ =?us-ascii?Q?Zseajc3WV+4Fyzy4HKi2znh4qv3kcT/FAO2Ig4EQCw48pfH/BJL03CCPzapR?=
+ =?us-ascii?Q?7i2W2qhPod/6RwM7OakGd2JL1bI28gVFRVfP4028oaO0pwBhM4gZt2uE1sEo?=
+ =?us-ascii?Q?k0sj+4m0ipiY0y1/i4Lg904aTZZDoEOGNJZLCvRCzI3LPUGu5blxD9EcY+ER?=
+ =?us-ascii?Q?myyKXrxQhHdh0ZWAHjnLWCQl7mn5aOGAEOsoa5yzzCVBbcEVk6ImhDeFg7RU?=
+ =?us-ascii?Q?tZs4cfI/PflSXWx+VF2qI35BcWA6r7f405gMMpmP0/eVyfeSgjGtPc6wxyok?=
+ =?us-ascii?Q?QdYOgcNgRFnDTWdvJvOlmmut4CFzHj+opRkPWyUqJaEbP22N/P+OE6H1YdWE?=
+ =?us-ascii?Q?mdW3CEQsHW3Mpz4acCQYI75v3TcImAlLBP30g8/gQa7iId2bs8X756dFV5su?=
+ =?us-ascii?Q?aZT52ANNhH20Sm4DZ2pG/ya1HdBals0bCh3+TvI1PYeMS4EwS8wqq024bUpY?=
+ =?us-ascii?Q?/ywOgtU/ek0FGfWAyfj5FFBhpX77QFdRgXEqKKVsWuT4D2aWgEECu0Lg+Xyv?=
+ =?us-ascii?Q?n+Uo8cY8WSbc7V8TtBychHXhhpI3e8+RNpyXgEv5n50lH7ICQ8+kdYE+pWpD?=
+ =?us-ascii?Q?zZNBeJ/SljJM2awgsp3SiqLLU3i1m1IiwJWqogzLgeOIwS9VsTIGeS3+L9Ct?=
+ =?us-ascii?Q?ZtFwWoCJyDCEslTdUmjCHqnwhBX9gaz65sd275HMw72/t3erAelE9XDRmmcd?=
+ =?us-ascii?Q?NDN6U2ewpz0oFGAnziZWZ2D81WSH4k+lqrFAzkPXzYBc2ZEK6qO5brBL+QFl?=
+ =?us-ascii?Q?BA=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	x4Y+kBZiH4BXqwD9AkdsyLV7c2jeGugg8it8tbpu3qsCEmLWwPQ23+H1Xy2VtQo6V4XOSoqlGTKEHSFcdyHoOeDtrCXGfZWEv77/z8xzPDIVcfbOkthw9TQrMBvOH3WyhTYHPJiHR7P/D+rCzMfmrzoS7VjkDqmNtTeTuNKUW1GCQc0oX8ZushK0BvsBF1YvvHQs5CcHHDhjDg+UfDj+UjM4+0IV92rKYYEqXc05ywX7KHBwbtO/upepYN/8JMsTjxd+ZcT3d7mc2PrUEPLvJE0P7B2YLteURlIdEck0URL7thSLnwQPxMvLcNhSydJ790TmEv1FN7wOWQiFYB94fNbdIKfh8N13vGsUssRWRQsFcY8awOlrpXrriDZ9nE/qyvq/nKRgQE7oQUGcYYly/RgOiS5Vy56JFkmIlqbEsmqWDTaw40t1Aqf0gQdQCtvj6JfKeBN5UPEdIhUxNs2lgwOA1YX8qZp6moL/AdiKWAe0URYSi2gS0Bro9rL40eC64/67rCzdw44pn+AOigA8ckziyPZP7WkelDprV65RdV87lGugFu/GRbaenkB71hONI9p+BeuAt/E3qf10asxwVYNenpbWSY5QU1GxT5oRkGe9GMzviTdGXI7kMAW/ALRX9QpnfQrBffdaO5P+uIgn7LedfQL5Hq5MWvn0TGAApqlU3aNeC519TfFxnB4cVY8H2QFGWZBf2nGQY5VuWfQgVKqd6DrXaAhx51RM6/8YOcGiF/T2qmtX7M5WhGbQYNoWekxCqLKY79PjPFR+Xf9avjA4yjgx0NxyexYYkpZJgrw=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92e4b8be-ea2a-4b46-1df3-08db8a063dc2
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2888.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 16:19:21.4633
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ot7B3n+MHaXSe5xqeiR999M2otRBH2xOxGtQcgXsvDI0YjyebDkHA2neJkXI6ljhKYiY7f2RzQrYNfGFzzb5UtqzlvNihTp/cwtf20hOudo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6184
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-21_10,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 mlxscore=0
+ bulkscore=0 spamscore=0 malwarescore=0 mlxlogscore=648 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307210143
+X-Proofpoint-GUID: j0bHGai8S_twD5biEy1aSOY1yJQdpjjh
+X-Proofpoint-ORIG-GUID: j0bHGai8S_twD5biEy1aSOY1yJQdpjjh
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, Jul 21, 2023 at 04:08:10PM +0100, Valentin Schneider wrote:
-> On 21/07/23 07:10, Paul E. McKenney wrote:
-> > On Fri, Jul 21, 2023 at 09:17:53AM +0100, Valentin Schneider wrote:
-> >> On 20/07/23 17:30, Valentin Schneider wrote:
-> >> > index bdd7eadb33d8f..1ff2aab24e964 100644
-> >> > --- a/kernel/rcu/Kconfig
-> >> > +++ b/kernel/rcu/Kconfig
-> >> > @@ -332,4 +332,37 @@ config RCU_DOUBLE_CHECK_CB_TIME
-> >> >         Say Y here if you need tighter callback-limit enforcement.
-> >> >         Say N here if you are unsure.
-> >> >
-> >> > +config RCU_DYNTICKS_RANGE_BEGIN
-> >> > +	int
-> >> > +	depends on !RCU_EXPERT
-> >> > +	default 31 if !CONTEXT_TRACKING_WORK
-> >>
-> >> You'll note that this should be 30 really, because the lower *2* bits are
-> >> taken by the context state (CONTEXT_GUEST has a value of 3).
-> >>
-> >> This highlights the fragile part of this: the Kconfig values are hardcoded,
-> >> but they depend on CT_STATE_SIZE, CONTEXT_MASK and CONTEXT_WORK_MAX. The
-> >> static_assert() will at least capture any misconfiguration, but having that
-> >> enforced by the actual Kconfig ranges would be less awkward.
-> >>
-> >> Do we currently have a way of e.g. making a Kconfig file depend on and use
-> >> values generated by a C header?
-> >
-> > Why not just have something like a boolean RCU_DYNTICKS_TORTURE Kconfig
-> > option and let the C code work out what the number of bits should be?
-> >
-> > I suppose that there might be a failure whose frequency depended on
-> > the number of bits, which might be an argument for keeping something
-> > like RCU_DYNTICKS_RANGE_BEGIN for fault isolation.  But still using
-> > RCU_DYNTICKS_TORTURE for normal testing.
-> >
-> > Thoughts?
-> >
-> 
-> AFAICT if we run tests with the minimum possible width, then intermediate
-> values shouldn't have much value.
-> 
-> Your RCU_DYNTICKS_TORTURE suggestion sounds like a saner option than what I
-> came up with, as we can let the context tracking code figure out the widths
-> itself and not expose any of that to Kconfig.
 
-Agreed.  If a need for variable numbers of bits ever does arise, we can
-worry about it at that time.  And then we would have more information
-on what a variable-bit facility should look like.
+Hi Yonghong.
 
-							Thanx, Paul
+This is from the v4 instructions proposal:
+
+    ========  =====  =========================  ============
+    code      value  description                notes
+    ========  =====  =========================  ============
+    BPF_JA    0x00   PC += imm                  BPF_JMP32 only
+
+Is this instruction using source 1 instead of 0?  Otherwise, it would
+have exactly the same encoding than the V3< JA instruction.  Is that
+what is intended?
+
+TIA.
+
 
