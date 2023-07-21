@@ -1,144 +1,191 @@
-Return-Path: <bpf+bounces-5613-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5614-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D319D75C818
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 15:45:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA12175C8BC
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 15:58:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E62B282152
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 13:45:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBA6A1C216E4
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 13:58:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830E51E507;
-	Fri, 21 Jul 2023 13:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF8011E524;
+	Fri, 21 Jul 2023 13:58:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C6319A1F
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 13:45:33 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791BE1731;
-	Fri, 21 Jul 2023 06:45:32 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R6rRC068Xz4f3nb1;
-	Fri, 21 Jul 2023 21:45:27 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgA33uv1i7pkOZShOQ--.31261S2;
-	Fri, 21 Jul 2023 21:45:27 +0800 (CST)
-Subject: Re: [PATCHv2 bpf 2/2] bpf: Disable preemption in bpf_event_output
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- stable@vger.kernel.org, bpf@vger.kernel.org, Martin KaFai Lau
- <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song
- <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@chromium.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>
-References: <20230720085704.190592-1-jolsa@kernel.org>
- <20230720085704.190592-3-jolsa@kernel.org>
- <0b963b18-4933-3b70-3dc6-6c7150bcf7bb@huaweicloud.com>
- <ZLp91s9kuOp7kEEA@krava>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <0c33b549-724f-2293-39d8-5b8cdc4d4e10@huaweicloud.com>
-Date: Fri, 21 Jul 2023 21:45:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F491EA65
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 13:58:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BFBCC433C7;
+	Fri, 21 Jul 2023 13:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689947916;
+	bh=/Ny6wQsPLHbvQBx9Z780jGJkDgPWxZ4onIIakHRTQ58=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Enzj7hi6ah4uCh7NE2wgsDDV+bjVwN49+kTQ11lmdGrCTFo0WY6IBWY8ckLZIwIP+
+	 HWXzp3BPubMNT6s2dCSCLwjVEcxhsjKCiK2JobxicsdemZhkVja3DF8rSa7rLO3siK
+	 4HuxYlNXLgQQmTFRBaPbsAZHH5R5iPmEGPfXYX/KGtroeWja0ztRV2MXofzfrTr82E
+	 gNNmm8QoXTKf3n2ZRLgzZOH10hyOoi/ZXOiETSuBM5/9asJntuzT/WTtjgEhIpojRG
+	 fHch4bTv9QrwwvftIoomfJWMhLmlTTIl9rSuGmku4A0s6ApEUuEDwf6hYhuLMxm5df
+	 ENNrr1z2lWdAw==
+Date: Fri, 21 Jul 2023 22:58:32 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org, Steven
+ Rostedt <rostedt@goodmis.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH v2 9/9] Documentation: tracing: Update fprobe event
+ example with BTF field
+Message-Id: <20230721225832.f4e47d8169840e63ebdc6561@kernel.org>
+In-Reply-To: <b65f6a0f-772c-162c-6669-ff1d545f375c@oracle.com>
+References: <168960739768.34107.15145201749042174448.stgit@devnote2>
+	<168960748753.34107.1941635032108706544.stgit@devnote2>
+	<b65f6a0f-772c-162c-6669-ff1d545f375c@oracle.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <ZLp91s9kuOp7kEEA@krava>
-Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgA33uv1i7pkOZShOQ--.31261S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr4UuryrGFWrCrWfGw15urg_yoW8KryUpr
-	93GayxKr48Jr4jva1Dtrn5WF10yFsxZrZxWr4kWrW5Z39xW3ZYyFyIyrs09F98ur4UZFyY
-	qayUt39Fv34Fya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-	xUOyCJDUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-	NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+
+On Thu, 20 Jul 2023 23:53:43 +0100
+Alan Maguire <alan.maguire@oracle.com> wrote:
+
+> On 17/07/2023 16:24, Masami Hiramatsu (Google) wrote:
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Update fprobe event example with BTF data structure field specification.
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> One suggestion below, but
+> 
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+
+Thanks,
+
+> 
+> > ---
+> >  Changes in v2:
+> >   - Remove 'retval' and use '$retval'.
+> > ---
+> >  Documentation/trace/fprobetrace.rst |   50 ++++++++++++++++++++++-------------
+> >  1 file changed, 32 insertions(+), 18 deletions(-)
+> > 
+> > diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
+> > index 7297f9478459..e9e764fadf14 100644
+> > --- a/Documentation/trace/fprobetrace.rst
+> > +++ b/Documentation/trace/fprobetrace.rst
+> > @@ -79,9 +79,9 @@ automatically set by the given name. ::
+> >   f:fprobes/myprobe vfs_read count=count pos=pos
+> >  
+> >  It also chooses the fetch type from BTF information. For example, in the above
+> > -example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus, both
+> > -are converted to 64bit unsigned long, but only ``pos`` has "%Lx" print-format as
+> > -below ::
+> > +example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus,
+> > +both are converted to 64bit unsigned long, but only ``pos`` has "%Lx"
+> > +print-format as below ::
+> >  
+> >   # cat events/fprobes/myprobe/format
+> >   name: myprobe
+> > @@ -105,9 +105,33 @@ is expanded to all function arguments of the function or the tracepoint. ::
+> >   # cat dynamic_events
+> >   f:fprobes/myprobe vfs_read file=file buf=buf count=count pos=pos
+> >  
+> > -BTF also affects the ``$retval``. If user doesn't set any type, the retval type is
+> > -automatically picked from the BTF. If the function returns ``void``, ``$retval``
+> > -is rejected.
+> > +BTF also affects the ``$retval``. If user doesn't set any type, the retval
+> > +type is automatically picked from the BTF. If the function returns ``void``,
+> > +``$retval`` is rejected.
+> > +
+> > +You can access the data fields of a data structure using allow operator ``->``
+> > +(for pointer type) and dot operator ``.`` (for data structure type.)::
+> > +
+> > +# echo 't sched_switch preempt prev_pid=prev->pid next_pid=next->pid' >> dynamic_events
+> > +
+> 
+> Could you describe what field access combinations are supported here;
+> i.e. foo->bar[.baz]?
+
+OK, I'll add below.
+
+The field access operators, ``->`` and ``.`` can be combined for accessing deeper
+members and other stucture members pointed by the member. e.g. ``foo->bar.baz->qux``
+If there is non-name union member, you can directly access it as C does. For example::
+
+ struct {
+ 	union {
+ 	int a;
+ 	int b;
+ 	};
+ } *foo;
+
+To access ``a`` and ``b``, use ``foo->a`` and ``foo->b`` in this case.
+
+Thank you,
 
 
+> 
+> > +This data field access is available for the return value via ``$retval``,
+> > +e.g. ``$retval->name``.
+> > +
+> > +For these BTF arguments and fields, ``:string`` and ``:ustring`` change the
+> > +behavior. If these are used for BTF argument or field, it checks whether
+> > +the BTF type of the argument or the data field is ``char *`` or ``char []``,
+> > +or not.  If not, it rejects applying the string types. Also, with the BTF
+> > +support, you don't need a memory dereference operator (``+0(PTR)``) for
+> > +accessing the string pointed by a ``PTR``. It automatically adds the memory
+> > +dereference operator according to the BTF type. e.g. ::
+> > +
+> > +# echo 't sched_switch prev->comm:string' >> dynamic_events
+> > +# echo 'f getname_flags%return $retval->name:string' >> dynamic_events
+> > +
+> > +The ``prev->comm`` is an embedded char array in the data structure, and
+> > +``$retval->name`` is a char pointer in the data structure. But in both
+> > +cases, you can use ``:string`` type to get the string.
+> > +
+> >  
+> >  Usage examples
+> >  --------------
+> > @@ -161,10 +185,10 @@ parameters. This means you can access any field values in the task
+> >  structure pointed by the ``prev`` and ``next`` arguments.
+> >  
+> >  For example, usually ``task_struct::start_time`` is not traced, but with this
+> > -traceprobe event, you can trace it as below.
+> > +traceprobe event, you can trace that field as below.
+> >  ::
+> >  
+> > -  # echo 't sched_switch comm=+1896(next):string start_time=+1728(next):u64' > dynamic_events
+> > +  # echo 't sched_switch comm=next->comm:string next->start_time' > dynamic_events
+> >    # head -n 20 trace | tail
+> >   #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+> >   #              | |         |   |||||     |         |
+> > @@ -176,13 +200,3 @@ traceprobe event, you can trace it as below.
+> >             <idle>-0       [000] d..3.  5606.690317: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
+> >        kworker/0:1-14      [000] d..3.  5606.690339: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="swapper/0" usage=2 start_time=0
+> >             <idle>-0       [000] d..3.  5606.692368: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
+> > -
+> > -Currently, to find the offset of a specific field in the data structure,
+> > -you need to build kernel with debuginfo and run `perf probe` command with
+> > -`-D` option. e.g.
+> > -::
+> > -
+> > - # perf probe -D "__probestub_sched_switch next->comm:string next->start_time"
+> > - p:probe/__probestub_sched_switch __probestub_sched_switch+0 comm=+1896(%cx):string start_time=+1728(%cx):u64
+> > -
+> > -And replace the ``%cx`` with the ``next``.
+> > 
+> > 
 
-On 7/21/2023 8:45 PM, Jiri Olsa wrote:
-> On Fri, Jul 21, 2023 at 08:16:14PM +0800, Hou Tao wrote:
->>
->> On 7/20/2023 4:57 PM, Jiri Olsa wrote:
->>> We received report [1] of kernel crash, which is caused by
->>> using nesting protection without disabled preemption.
->>>
->>> The bpf_event_output can be called by programs executed by
->>> bpf_prog_run_array_cg function that disabled migration but
->>> keeps preemption enabled.
->>>
->>> This can cause task to be preempted by another one inside the
->>> nesting protection and lead eventually to two tasks using same
->>> perf_sample_data buffer and cause crashes like:
->>>
->>>   BUG: kernel NULL pointer dereference, address: 0000000000000001
->>>   #PF: supervisor instruction fetch in kernel mode
->>>   #PF: error_code(0x0010) - not-present page
->>>   ...
->>>   ? perf_output_sample+0x12a/0x9a0
->>>   ? finish_task_switch.isra.0+0x81/0x280
->>>   ? perf_event_output+0x66/0xa0
->>>   ? bpf_event_output+0x13a/0x190
->>>   ? bpf_event_output_data+0x22/0x40
->>>   ? bpf_prog_dfc84bbde731b257_cil_sock4_connect+0x40a/0xacb
->>>   ? xa_load+0x87/0xe0
->>>   ? __cgroup_bpf_run_filter_sock_addr+0xc1/0x1a0
->>>   ? release_sock+0x3e/0x90
->>>   ? sk_setsockopt+0x1a1/0x12f0
->>>   ? udp_pre_connect+0x36/0x50
->>>   ? inet_dgram_connect+0x93/0xa0
->>>   ? __sys_connect+0xb4/0xe0
->>>   ? udp_setsockopt+0x27/0x40
->>>   ? __pfx_udp_push_pending_frames+0x10/0x10
->>>   ? __sys_setsockopt+0xdf/0x1a0
->>>   ? __x64_sys_connect+0xf/0x20
->>>   ? do_syscall_64+0x3a/0x90
->>>   ? entry_SYSCALL_64_after_hwframe+0x72/0xdc
->>>
->>> Fixing this by disabling preemption in bpf_event_output.
->>>
->>> [1] https://github.com/cilium/cilium/issues/26756
->>> Cc: stable@vger.kernel.org
->>> Reported-by:  Oleg "livelace" Popov <o.popov@livelace.ru>
->>> Fixes: 2a916f2f546c bpf: Use migrate_disable/enable in array macros and cgroup/lirc code.
->>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
->> Acked-by: Hou Tao <houtao1@huawei.com>
->>
->> With one nit above. The format of the Fixes tags should be 2a916f2f546c
->> ("bpf: Use migrate_disable/enable in array macros and cgroup/lirc code.")
->>
-> right, sorry about that.. should I resend?
 
-We can wait for the comments from Alexei. Maybe the maintainer can fix
-it for you.
->
-> thanks,
-> jirka
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
