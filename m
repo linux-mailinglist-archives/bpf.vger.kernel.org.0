@@ -1,280 +1,335 @@
-Return-Path: <bpf+bounces-5575-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5576-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1075375BC98
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 04:56:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2025575BCA0
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 05:02:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D90C28211B
-	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 02:56:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 423F71C2156C
+	for <lists+bpf@lfdr.de>; Fri, 21 Jul 2023 03:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CF1639;
-	Fri, 21 Jul 2023 02:56:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F94644;
+	Fri, 21 Jul 2023 03:02:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B624D7F
-	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 02:56:36 +0000 (UTC)
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDE21998
-	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 19:56:34 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-634f59e7d47so11673696d6.2
-        for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 19:56:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF317F
+	for <bpf@vger.kernel.org>; Fri, 21 Jul 2023 03:02:46 +0000 (UTC)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37CAE4C
+	for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 20:02:43 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc6ab5ff5so12194185e9.1
+        for <bpf@vger.kernel.org>; Thu, 20 Jul 2023 20:02:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689908193; x=1690512993;
+        d=google.com; s=20221208; t=1689908562; x=1690513362;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g4l3FcwZQwNRo78mDXcfGJMvzY5mnCBfbM8Ay44arfM=;
-        b=icEi7qbcIjQ+AEhvgDlycu1qyLQ3vHXtQtGatMj7moQdjgg3Ta9uTFwDkOv9panmtY
-         v4IbC4W/zatz80Zotn04m26SEfZjaQ+JJSxnfplS0FYdKBXXijZjwgUgM4QUxt7QzW2u
-         gfJtyR8JTb5DlN19M4o7m/Zu6GyhTOBlQ1vHyzDPyfm6Bwj07K1kIS3+bn9SS7zM1Wsl
-         IAbgVvFLm7bosPxJ9bNZmFHRqMicvqFL5uv1zSYXCphZliqXK0EmH0VpR1yAp4HyDYAS
-         YnxZ7kHNbg/qXlO9OhQZJFIwImZsl4OEgAYlQY5lK3SbZmSOWOfLDPj7vj7lsAmS2mgO
-         WFgg==
+        bh=H66ZeQCkleoaJLDrwcxhC7Oe56iVMrHjVjCO/PNd9CQ=;
+        b=URoSjjmcnyyh9YTWUC8lm8ar2dq2zAQm/Ocjl6utrENHZSHsWwfwVJQWfL2ZoTj8qe
+         9p9ea4MVUgcRwqOxJK27fb6WCg9dJSxJShlyDOu2aZvyDfpXL8VI7EZym8jZCQScGMFY
+         LpbxUUtihh6FJun4kcrMOG+8WYgea6ohNkUP/+SdsZdF5sFklbF5AFdKtUICugQGQo/O
+         172maAJ38SVQSIv4kzQNW1yks9yAloDxdE2hZro5PqqVqFzxjsWku72ve/wVOdbmmYEF
+         DK7nEC9MAeeJh0rk7JRg2Y4ZB2/dh8nuYnMJJOAi03+wLZnEJsCnUEYy2OS/GCavp8jP
+         xVMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689908193; x=1690512993;
+        d=1e100.net; s=20221208; t=1689908562; x=1690513362;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=g4l3FcwZQwNRo78mDXcfGJMvzY5mnCBfbM8Ay44arfM=;
-        b=bFkuKWYWVyYXJiEH/OpGp89XLbu64wzFf62KzFhRD7gm5fV21LD1PfBa3uHWEA0GwS
-         d2E3Jk8FSV/DhhIQxbzIeK2nIZ7qI4uCsfAgWXgDqtVR8vZxvKAqJ7ZAc+wOT3lnTF8y
-         7ypBY0vRchP/PI76qXt5VsOvdHSiw1qaT8CjOIY0aDi8HAGWk49yP+njwjj/4425XYZs
-         qql2I4uJYaovtNJqr4o5yA3bdqq0a3wImOw+MiRpw5jRCrsAZAIC6uxMR+G0oHKr9+rm
-         0j7x26z7oB0EZix64KbvTfr4e8VH9IYE25SREFAQCxTFy3awkUf7mrJarz3DIkvUeIte
-         MWpw==
-X-Gm-Message-State: ABy/qLbHrVSf41k7Hd2JgCgpm16r7nBsBGCGlw5ST+hJG4QgII0GT7Dv
-	95Dza4YSoyyYg7djEuokBDkxTtqLRaVhj4CIYEY=
-X-Google-Smtp-Source: APBJJlE14NGbRkYMaPJOGVbNMRxCnMFsmu0GazyYkfJ5ISfH6Ed2jcK+y65Q5N9mse4ME+5Pdtpu+sEJSEM4iV1P0nM=
-X-Received: by 2002:a0c:ee8a:0:b0:63c:639c:4184 with SMTP id
- u10-20020a0cee8a000000b0063c639c4184mr760749qvr.21.1689908193635; Thu, 20 Jul
- 2023 19:56:33 -0700 (PDT)
+        bh=H66ZeQCkleoaJLDrwcxhC7Oe56iVMrHjVjCO/PNd9CQ=;
+        b=IvGebySiFIt7EdlQmA5XoemlAZgCOYZlwcVNRU91YH0EshpaAJV02TRUPIqdKqdNIH
+         gDaNGfli7Ov/P+nl4UwPsmRyW0Q0Z88De/WkmNbqT6pnJoNP07Adldqo4jXrIVDF7tL3
+         w8hz72uFG0x2lm3b49jU1+hQALhMOk9G5ZX8+xucXB+0xtn1Nr9uUb0d8XbemVVBrrAt
+         GNlTbrRD4G7myRCcSQZnn01X94nCujc46Ql9sUPv2y2HA43DImeo5hZswpJPWivNzUUS
+         nthkv96wz1XHKa/+PAAvnc/F4N7qruTqShloxVH3OXRmE/6TdyfWX/tKRbDiDmBpojRj
+         Z+fw==
+X-Gm-Message-State: ABy/qLZuqHhmo58dYf15v/cldZghnRuhylt43H+WkM8w0mnsBzf7AjMO
+	f+7wWoXqz7SVTTnT3rSAXOn5LSc2wmvcRD2itIdrakn0euRbwCEVieHPFA==
+X-Google-Smtp-Source: APBJJlEazW2kcnixvI1H9UGV3QYy+WaQjRD0r0tT0JiRL5EAWkXIDYqVTb3/EuzvjHrRMbTGQwtK0fcog7G8OCAJMYM=
+X-Received: by 2002:a5d:5541:0:b0:314:14be:1004 with SMTP id
+ g1-20020a5d5541000000b0031414be1004mr440108wrw.63.1689908558373; Thu, 20 Jul
+ 2023 20:02:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230720113550.369257-1-jolsa@kernel.org> <20230720113550.369257-6-jolsa@kernel.org>
-In-Reply-To: <20230720113550.369257-6-jolsa@kernel.org>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 21 Jul 2023 10:55:57 +0800
-Message-ID: <CALOAHbB3_qTzi+2_0=pFjyDXFUh_MGMJt6gz7eh0Z=He4guPow@mail.gmail.com>
-Subject: Re: [PATCHv4 bpf-next 05/28] bpf: Add pid filter support for
- uprobe_multi link
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Oleg Nesterov <oleg@redhat.com>, bpf@vger.kernel.org, 
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+References: <cover.1689885610.git.zhuyifei@google.com> <3516fa9cc4bdbaeb90f208f5c970e622ba76be3e.1689885610.git.zhuyifei@google.com>
+ <87874222-1d01-b08b-87e5-a94d90167e94@huaweicloud.com>
+In-Reply-To: <87874222-1d01-b08b-87e5-a94d90167e94@huaweicloud.com>
+From: YiFei Zhu <zhuyifei@google.com>
+Date: Thu, 20 Jul 2023 20:02:27 -0700
+Message-ID: <CAA-VZPnVE7MSnXn-5pMun2D_naMSU9Q6XFost7ZgncyJDtnnAg@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] bpf/memalloc: Schedule highprio wq for non-atomic
+ alloc when atomic fails
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Stanislav Fomichev <sdf@google.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 20, 2023 at 7:36=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Jul 20, 2023 at 7:24=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
+> Hi,
 >
-> Adding support to specify pid for uprobe_multi link and the uprobes
-> are created only for task with given pid value.
+> On 7/21/2023 4:44 AM, YiFei Zhu wrote:
+> > Atomic refill can fail, such as when all percpu chunks are full,
+> > and when that happens there's no guarantee when more space will be
+> > available for atomic allocations.
+> >
+> > Instead of having the caller wait for memory to be available by
+> > retrying until the related BPF API no longer gives -ENOMEM, we can
+> > kick off a non-atomic GFP_KERNEL allocation with highprio workqueue.
+> > This should make it much less likely for those APIs to return
+> > -ENOMEM.
+> >
+> > Because alloc_bulk can now be called from the workqueue,
+> > non-atomic calls now also calls local_irq_save/restore to reduce
+> > the chance of races.
+> >
+> > Fixes: 7c8199e24fa0 ("bpf: Introduce any context BPF specific memory al=
+locator.")
+> > Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+> > ---
+> >  kernel/bpf/memalloc.c | 47 ++++++++++++++++++++++++++++++-------------
+> >  1 file changed, 33 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> > index 016249672b43..2915639a5e16 100644
+> > --- a/kernel/bpf/memalloc.c
+> > +++ b/kernel/bpf/memalloc.c
+> > @@ -84,14 +84,15 @@ struct bpf_mem_cache {
+> >       struct llist_head free_llist;
+> >       local_t active;
+> >
+> > -     /* Operations on the free_list from unit_alloc/unit_free/bpf_mem_=
+refill
+> > +     /* Operations on the free_list from unit_alloc/unit_free/bpf_mem_=
+refill_*
+> >        * are sequenced by per-cpu 'active' counter. But unit_free() can=
+not
+> >        * fail. When 'active' is busy the unit_free() will add an object=
+ to
+> >        * free_llist_extra.
+> >        */
+> >       struct llist_head free_llist_extra;
+> >
+> > -     struct irq_work refill_work;
+> > +     struct irq_work refill_work_irq;
+> > +     struct work_struct refill_work_wq;
+> >       struct obj_cgroup *objcg;
+> >       int unit_size;
+> >       /* count of objects in free_llist */
+> > @@ -153,7 +154,7 @@ static struct mem_cgroup *get_memcg(const struct bp=
+f_mem_cache *c)
+> >  #endif
+> >  }
+> >
+> > -/* Mostly runs from irq_work except __init phase. */
+> > +/* Mostly runs from irq_work except workqueue and __init phase. */
+> >  static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node, boo=
+l atomic)
+> >  {
+> >       struct mem_cgroup *memcg =3D NULL, *old_memcg;
+> > @@ -188,10 +189,18 @@ static void alloc_bulk(struct bpf_mem_cache *c, i=
+nt cnt, int node, bool atomic)
+> >                        * want here.
+> >                        */
+> >                       obj =3D __alloc(c, node, gfp);
+> > -                     if (!obj)
+> > +                     if (!obj) {
+> > +                             /* We might have exhausted the percpu chu=
+nks, schedule
+> > +                              * non-atomic allocation so hopefully cal=
+ler can get
+> > +                              * a free unit upon next invocation.
+> > +                              */
+> > +                             if (atomic)
+> > +                                     queue_work_on(smp_processor_id(),
+> > +                                                   system_highpri_wq, =
+&c->refill_work_wq);
+>
+> I am not a MM expert. But according to the code in
+> pcpu_balance_workfn(), it will try to do pcpu_create_chunk() when
+> pcpu_atomic_alloc_failed is true, so the reason for introducing
+> refill_work_wq is that pcpu_balance_workfn is too slow to fulfill the
+> allocation request from bpf memory allocator ?
 
-Is it possible to use tgid as the filter?
-It would be helpful when we uprobe a library file but want to filter
-out a multi-threaded task only.
-There's an inherit attr in perf_event_open, but it can only apply to
-newly created children, so we can't filter the tgid in uprobe.
-If we can support it in uprobe_multi, that would be more useful.
+Oh I missed that part of the code. In one of my tests I had the
+previous patch applied, and I had a lot of assertions around the code
+(for debugging-by-kdumping), and I was able to get some crashes that
+suggested I needed to add more, so I wrote this. However I wasn't able
+to reproduce that again. Though, after giving it another thought, this
+sequence of events could still happen:
 
->
-> Using the consumer.filter filter callback for that, so the task gets
-> filtered during the uprobe installation.
->
-> We still need to check the task during runtime in the uprobe handler,
-> because the handler could get executed if there's another system
-> wide consumer on the same uprobe (thanks Oleg for the insight).
->
-> Cc: Oleg Nesterov <oleg@redhat.com>
-> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/uapi/linux/bpf.h       |  1 +
->  kernel/bpf/syscall.c           |  2 +-
->  kernel/trace/bpf_trace.c       | 33 +++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h |  1 +
->  4 files changed, 36 insertions(+), 1 deletion(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index c6fbb0f948f4..7b6badd4c166 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1607,6 +1607,7 @@ union bpf_attr {
->                                 __aligned_u64   cookies;
->                                 __u32           cnt;
->                                 __u32           flags;
-> +                               __u32           pid;
->                         } uprobe_multi;
->                 };
->         } link_create;
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 840b622b7db1..2bf986c86f2f 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -4832,7 +4832,7 @@ static int bpf_map_do_batch(const union bpf_attr *a=
-ttr,
->         return err;
->  }
->
-> -#define BPF_LINK_CREATE_LAST_FIELD link_create.uprobe_multi.cookies
-> +#define BPF_LINK_CREATE_LAST_FIELD link_create.uprobe_multi.pid
->  static int link_create(union bpf_attr *attr, bpfptr_t uattr)
->  {
->         struct bpf_prog *prog;
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index d73a47bd2bbd..d5f30747378a 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -2998,6 +2998,7 @@ struct bpf_uprobe_multi_link {
->         struct bpf_link link;
->         u32 cnt;
->         struct bpf_uprobe *uprobes;
-> +       struct task_struct *task;
->  };
->
->  struct bpf_uprobe_multi_run_ctx {
-> @@ -3023,6 +3024,8 @@ static void bpf_uprobe_multi_link_release(struct bp=
-f_link *link)
->
->         umulti_link =3D container_of(link, struct bpf_uprobe_multi_link, =
-link);
->         bpf_uprobe_unregister(&umulti_link->path, umulti_link->uprobes, u=
-multi_link->cnt);
-> +       if (umulti_link->task)
-> +               put_task_struct(umulti_link->task);
->  }
->
->  static void bpf_uprobe_multi_link_dealloc(struct bpf_link *link)
-> @@ -3054,6 +3057,9 @@ static int uprobe_prog_run(struct bpf_uprobe *uprob=
-e,
->         struct bpf_run_ctx *old_run_ctx;
->         int err =3D 0;
->
-> +       if (link->task && current !=3D link->task)
-> +               return 0;
-> +
->         might_fault();
->
->         migrate_disable();
-> @@ -3076,6 +3082,16 @@ static int uprobe_prog_run(struct bpf_uprobe *upro=
-be,
->         return err;
->  }
->
-> +static bool
-> +uprobe_multi_link_filter(struct uprobe_consumer *con, enum uprobe_filter=
-_ctx ctx,
-> +                        struct mm_struct *mm)
-> +{
-> +       struct bpf_uprobe *uprobe;
-> +
-> +       uprobe =3D container_of(con, struct bpf_uprobe, consumer);
-> +       return uprobe->link->task->mm =3D=3D mm;
-> +}
-> +
->  static int
->  uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *r=
-egs)
->  {
-> @@ -3109,12 +3125,14 @@ int bpf_uprobe_multi_link_attach(const union bpf_=
-attr *attr, struct bpf_prog *pr
->         unsigned long *ref_ctr_offsets =3D NULL;
->         struct bpf_link_primer link_primer;
->         struct bpf_uprobe *uprobes =3D NULL;
-> +       struct task_struct *task =3D NULL;
->         unsigned long __user *uoffsets;
->         u64 __user *ucookies;
->         void __user *upath;
->         u32 flags, cnt, i;
->         struct path path;
->         char *name;
-> +       pid_t pid;
->         int err;
->
->         /* no support for 32bit archs yet */
-> @@ -3158,6 +3176,15 @@ int bpf_uprobe_multi_link_attach(const union bpf_a=
-ttr *attr, struct bpf_prog *pr
->                 goto error_path_put;
->         }
->
-> +       pid =3D attr->link_create.uprobe_multi.pid;
-> +       if (pid) {
-> +               rcu_read_lock();
-> +               task =3D get_pid_task(find_vpid(pid), PIDTYPE_PID);
-> +               rcu_read_unlock();
-> +               if (!task)
-> +                       goto error_path_put;
-> +       }
-> +
->         err =3D -ENOMEM;
->
->         link =3D kzalloc(sizeof(*link), GFP_KERNEL);
-> @@ -3192,11 +3219,15 @@ int bpf_uprobe_multi_link_attach(const union bpf_=
-attr *attr, struct bpf_prog *pr
->                         uprobes[i].consumer.ret_handler =3D uprobe_multi_=
-link_ret_handler;
->                 else
->                         uprobes[i].consumer.handler =3D uprobe_multi_link=
-_handler;
-> +
-> +               if (pid)
-> +                       uprobes[i].consumer.filter =3D uprobe_multi_link_=
-filter;
->         }
->
->         link->cnt =3D cnt;
->         link->uprobes =3D uprobes;
->         link->path =3D path;
-> +       link->task =3D task;
->
->         bpf_link_init(&link->link, BPF_LINK_TYPE_UPROBE_MULTI,
->                       &bpf_uprobe_multi_link_lops, prog);
-> @@ -3225,6 +3256,8 @@ int bpf_uprobe_multi_link_attach(const union bpf_at=
-tr *attr, struct bpf_prog *pr
->         kvfree(ref_ctr_offsets);
->         kvfree(uprobes);
->         kfree(link);
-> +       if (task)
-> +               put_task_struct(task);
->  error_path_put:
->         path_put(&path);
->         return err;
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-> index 492072ef5029..8e163ed0be9a 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -1607,6 +1607,7 @@ union bpf_attr {
->                                 __aligned_u64   cookies;
->                                 __u32           cnt;
->                                 __u32           flags;
-> +                               __u32           pid;
->                         } uprobe_multi;
->                 };
->         } link_create;
-> --
-> 2.41.0
->
->
+  initial condition: free_cnt =3D 1, low_watermark =3D 1
+  unit_alloc()
+    sets free_cnt =3D 0
+    free_cnt < low_watermark
+      irq_work_raise()
+  irq work: bpf_mem_refill()
+    alloc_bulk()
+      __alloc()
+        __alloc_percpu_gfp()
+          fails
+          pcpu_schedule_balance_work()
+          return NULL
+  pcpu_balance_workfn()
+    succeeds, next __alloc_percpu_gfp will succeed
+  unit_alloc()
+    free_cnt is still 0
+    return NULL
 
+The thing here is that, even if pcpu_balance_workfn is fast enough to
+run before the next unit_alloc, unit_alloc will still return NULL. I'm
+not sure if this is desired, but this should be a very rare condition
+requiring 8k unit_size. I'm not exactly sure what happened in that
+dump. And since I'm unable to reproduce this again, and if we are okay
+with the rare case above, I'm happy to drop this patch until I have a
+better idea of what happened (or it was just my bad assertions, which
+could very well be what happened).
 
---=20
-Regards
-Yafang
+> >                               break;
+> > +                     }
+> >               }
+> > -             if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> > +             if (IS_ENABLED(CONFIG_PREEMPT_RT) || !atomic)
+> >                       /* In RT irq_work runs in per-cpu kthread, so dis=
+able
+> >                        * interrupts to avoid preemption and interrupts =
+and
+> >                        * reduce the chance of bpf prog executing on thi=
+s cpu
+> > @@ -208,7 +217,7 @@ static void alloc_bulk(struct bpf_mem_cache *c, int=
+ cnt, int node, bool atomic)
+> >               __llist_add(obj, &c->free_llist);
+> >               c->free_cnt++;
+> >               local_dec(&c->active);
+> > -             if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> > +             if (IS_ENABLED(CONFIG_PREEMPT_RT) || !atomic)
+> >                       local_irq_restore(flags);
+> >       }
+> >       set_active_memcg(old_memcg);
+> > @@ -314,9 +323,9 @@ static void free_bulk(struct bpf_mem_cache *c)
+> >       do_call_rcu(c);
+> >  }
+> >
+> > -static void bpf_mem_refill(struct irq_work *work)
+> > +static void bpf_mem_refill_irq(struct irq_work *work)
+> >  {
+> > -     struct bpf_mem_cache *c =3D container_of(work, struct bpf_mem_cac=
+he, refill_work);
+> > +     struct bpf_mem_cache *c =3D container_of(work, struct bpf_mem_cac=
+he, refill_work_irq);
+> >       int cnt;
+> >
+> >       /* Racy access to free_cnt. It doesn't need to be 100% accurate *=
+/
+> > @@ -332,7 +341,14 @@ static void bpf_mem_refill(struct irq_work *work)
+> >
+> >  static void notrace irq_work_raise(struct bpf_mem_cache *c)
+> >  {
+> > -     irq_work_queue(&c->refill_work);
+> > +     irq_work_queue(&c->refill_work_irq);
+> > +}
+> > +
+> > +static void bpf_mem_refill_wq(struct work_struct *work)
+> > +{
+> > +     struct bpf_mem_cache *c =3D container_of(work, struct bpf_mem_cac=
+he, refill_work_wq);
+> > +
+> > +     alloc_bulk(c, c->batch, NUMA_NO_NODE, false);
+>
+> Considering that the kworker may be interrupted by irq work, so there
+> will be concurrent __llist_del_first() operations on free_by_rcu, andI
+> think it is not safe to call alloc_bulk directly here. Maybe we can just
+> skip __llist_del_first() for !atomic context.
+
+Ack.
+
+> >  }
+> >
+> >  /* For typical bpf map case that uses bpf_mem_cache_alloc and single b=
+ucket
+> > @@ -352,7 +368,8 @@ static void notrace irq_work_raise(struct bpf_mem_c=
+ache *c)
+> >
+> >  static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
+> >  {
+> > -     init_irq_work(&c->refill_work, bpf_mem_refill);
+> > +     init_irq_work(&c->refill_work_irq, bpf_mem_refill_irq);
+> > +     INIT_WORK(&c->refill_work_wq, bpf_mem_refill_wq);
+> >       if (c->unit_size <=3D 256) {
+> >               c->low_watermark =3D 32;
+> >               c->high_watermark =3D 96;
+> > @@ -529,7 +546,7 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma=
+)
+> >               for_each_possible_cpu(cpu) {
+> >                       c =3D per_cpu_ptr(ma->cache, cpu);
+> >                       /*
+> > -                      * refill_work may be unfinished for PREEMPT_RT k=
+ernel
+> > +                      * refill_work_irq may be unfinished for PREEMPT_=
+RT kernel
+> >                        * in which irq work is invoked in a per-CPU RT t=
+hread.
+> >                        * It is also possible for kernel with
+> >                        * arch_irq_work_has_interrupt() being false and =
+irq
+> > @@ -537,7 +554,8 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma=
+)
+> >                        * the completion of irq work to ease the handlin=
+g of
+> >                        * concurrency.
+> >                        */
+> > -                     irq_work_sync(&c->refill_work);
+> > +                     irq_work_sync(&c->refill_work_irq);
+> > +                     cancel_work_sync(&c->refill_work_wq);
+>
+> cancel_work_sync() may be time-consuming. We may need to move it to
+> free_mem_alloc_deferred() to prevent blocking the destroy of bpf memory
+> allocator.
+
+Ack.
+
+> >                       drain_mem_cache(c);
+> >                       rcu_in_progress +=3D atomic_read(&c->call_rcu_in_=
+progress);
+> >               }
+> > @@ -552,7 +570,8 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma=
+)
+> >                       cc =3D per_cpu_ptr(ma->caches, cpu);
+> >                       for (i =3D 0; i < NUM_CACHES; i++) {
+> >                               c =3D &cc->cache[i];
+> > -                             irq_work_sync(&c->refill_work);
+> > +                             irq_work_sync(&c->refill_work_irq);
+> > +                             cancel_work_sync(&c->refill_work_wq);
+> >                               drain_mem_cache(c);
+> >                               rcu_in_progress +=3D atomic_read(&c->call=
+_rcu_in_progress);
+> >                       }
+> > @@ -580,7 +599,7 @@ static void notrace *unit_alloc(struct bpf_mem_cach=
+e *c)
+> >        *
+> >        * but prog_B could be a perf_event NMI prog.
+> >        * Use per-cpu 'active' counter to order free_list access between
+> > -      * unit_alloc/unit_free/bpf_mem_refill.
+> > +      * unit_alloc/unit_free/bpf_mem_refill_*.
+> >        */
+> >       local_irq_save(flags);
+> >       if (local_inc_return(&c->active) =3D=3D 1) {
+>
 
