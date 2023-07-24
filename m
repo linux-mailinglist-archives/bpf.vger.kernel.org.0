@@ -1,77 +1,30 @@
-Return-Path: <bpf+bounces-5701-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5702-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB0775EA52
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 06:04:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9AF475EA53
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 06:04:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0366281491
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 04:04:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37DCC281490
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 04:04:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B1001109;
-	Mon, 24 Jul 2023 04:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F251111;
+	Mon, 24 Jul 2023 04:04:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A15AEC2
-	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 04:04:08 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1B8E3
-	for <bpf@vger.kernel.org>; Sun, 23 Jul 2023 21:04:03 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 96C68C151554
-	for <bpf@vger.kernel.org>; Sun, 23 Jul 2023 21:04:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1690171443; bh=Ayh5yh+3009t4zu12UErgICKkBl0+Eqez6+46FeH8Is=;
-	h=Date:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=LEuxdSNOCDq7l6teE9DaWscmGnVZhL+sXy/Yk7npzSa1/+zgn6r7ESlz22jaNr7Te
-	 G/h90IJ7rhcycfJsF8XxxOlkLGC+bomrLJkHzM4G6F89zSvwmGalVkSKSW4+SZQxaC
-	 u+aW4E6Y+d1erc8JpDmLaW9AEZNY/TKShzwoMIQw=
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
- by ietfa.amsl.com (Postfix) with ESMTP id 85404C15109A;
- Sun, 23 Jul 2023 21:04:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
- t=1690171443; bh=Ayh5yh+3009t4zu12UErgICKkBl0+Eqez6+46FeH8Is=;
- h=Date:To:Cc:References:From:In-Reply-To:Subject:List-Id:
- List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
- b=hgCM71IxbMHFk+6CQ+PPcoUkR1t72Dg3D10bd7CkeZEueGuu6L02QBpHUZ42iFC02
- qv3H1h1eqvEd+XwfQMWZcejXX6BVSwpsnzXrT+m4KzPbZla5dnhj5efX/aW/awSeIj
- PJDGyxbXckkZgUGdtvW8Wqd46Cry4U7dDeidA13c=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 9F8F4C15109A
- for <bpf@ietfa.amsl.com>; Sun, 23 Jul 2023 21:04:02 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -7.096
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,MAILING_LIST_MULTI,NICE_REPLY_A,
-	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=meta.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id DZy8uHYGm-95 for <bpf@ietfa.amsl.com>;
- Sun, 23 Jul 2023 21:03:58 -0700 (PDT)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com
- [67.231.145.42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id B09E7C151080
- for <bpf@ietf.org>; Sun, 23 Jul 2023 21:03:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4BDF10EC
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 04:04:14 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99C1F2
+	for <bpf@vger.kernel.org>; Sun, 23 Jul 2023 21:04:12 -0700 (PDT)
 Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
- by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 36NEiQSQ008808; Sun, 23 Jul 2023 21:03:55 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com;
- h=message-id : date :
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36NEiQSQ008808;
+	Sun, 23 Jul 2023 21:03:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=s2048-2021-q4;
  bh=qeJdHVh55jK29yVp27NPiF5H5YRrvmVFkHvJtd2n6TM=;
@@ -80,14 +33,13 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com;
  wGKW6Y1CnXOGf7nVVEt1DSjZLgs769ysJuc7fVA0uqUoHsHtnqyJ79g43tYc4lFtz4FY
  VeraT4mscC1Et3omQB/Ej4Vx36Ti3vSgaiJvMk7E+ErjKsMdPNwrUXEFwEuBFJp6vQsp
  7WkbutyFuBza4RUKgd4BumfD65uS5hCzJ3kjtSoLggNI4PKJ5l3NILWRYXZgJHF7K3kw Sw== 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com
- (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
- by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3s0c7yt3na-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sun, 23 Jul 2023 21:03:54 -0700
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3s0c7yt3na-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 23 Jul 2023 21:03:54 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
  b=glZTcbm/Ctyte+78670S7NPXl7xyxJtOwDaFuKbY/ZVGltd7jLMnX5dZc7FsyPJkotaefL+ht3XvmZ0YZR2a93b+qXpNJ9Mz/fjHgf2YWJHCyVc8GEUa0vx+GsV3h5ZJagh+MU+3L9V35sPC8ajQux6mHXxut84FnUqL0NphbwmqPfpiv7a20t28CVjSu+QjMFG5km9XIG90nU0prtt4ckBVmdBDAXIhMgEwAhg2N1zsLH83iDxvsVVdyvf7oQOppgPmhUExENPcH5IjggjkuLuiQgn0r8mx+NSLsxbhKMP1YsBrSUNaK0YSJ4LHQUOmi1ecH8FM4XRl2tsb0OaQkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
  bh=qeJdHVh55jK29yVp27NPiF5H5YRrvmVFkHvJtd2n6TM=;
@@ -96,8 +48,8 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
  dkim=pass header.d=meta.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA0PR15MB3808.namprd15.prod.outlook.com (2603:10b6:806:89::14)
- with Microsoft SMTP Server (version=TLS1_2,
+ by SA0PR15MB3808.namprd15.prod.outlook.com (2603:10b6:806:89::14) with
+ Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Mon, 24 Jul
  2023 04:03:52 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
@@ -108,16 +60,21 @@ Message-ID: <694b67de-702e-eca5-aa03-ef84cf1a0d2a@meta.com>
 Date: Sun, 23 Jul 2023 21:03:49 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH bpf-next v3 01/17] bpf: Support new sign-extension load
+ insns
 Content-Language: en-US
 To: Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yhs@fb.com>,
- bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- bpf@ietf.org, Daniel Borkmann <daniel@iogearbox.net>,
- Fangrui Song <maskray@google.com>, kernel-team@fb.com
+        bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        bpf@ietf.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Fangrui Song <maskray@google.com>, kernel-team@fb.com
 References: <20230720000103.99949-1-yhs@fb.com>
  <20230720000109.101613-1-yhs@fb.com>
  <c3156f3e7769f779e9fb0dd09edf0e8cd00a5b42.camel@gmail.com>
+From: Yonghong Song <yhs@meta.com>
 In-Reply-To: <c3156f3e7769f779e9fb0dd09edf0e8cd00a5b42.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: BY5PR16CA0008.namprd16.prod.outlook.com
  (2603:10b6:a03:1a0::21) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
@@ -134,14 +91,13 @@ X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QL0gELTDjN05QH2eJpYboqNz92fmgnHf03sCpjbD1ZqBnaeRBUIB31bICs2mvmTQJQAvDo0Lx4dpLRNwsAlXybsSVoyJlP7gKMkxMhEjYnzx3ZTwuBSRrslvHbDYKbT+0ATGmY1MbbSTSapM7g06kJzueaojRgRj0hiNj5+qEJOyRTAhx/smVZdjkbEKYbUPI/CoHM4h2ep9fVO7JZvGTAPFaIPWEAUbxqBnQXljS2XGha4pKCp/T3bav3k21NOZ2IzD4KBwWw11KxRsorLKtKFBOxmFaD7FPV24RWAYOEDaF7l0UgBrTkJSacOq8CsyECFf6PR/OAi6DnNj4VGpXIDi3jmzrtkdEOaSku0v+YClsQrPcBuvQwfjEXlr2ANUmXn7Nvaom7PsgM9Faz55iz8HvcEtdReYsGSdF3mySuCxtCZyl14v4zzIxF/lVUDhMPhgTbq85K/qsG4rh7wxuXg1Nodzwkc6ZZ6cgbgV5nsPjFyJHMmAMDEA4gNaEG6rDtX/rxSgXUHwHeUoegEff7tthRFS4c0hQOwCjx2Jae7tCPffuk4CyMw5ScL9wQyBnu1/ufW4Wp5w4T4NqKrlfNcOVnga+waLVlcTecjodX9dn57o4HlFapoldQ/488KIrTDLhwQCIIFigOEao2h2pQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
- IPV:NLI; SFV:NSPM;
- H:SN6PR1501MB2064.namprd15.prod.outlook.com; PTR:; CAT:NONE; 
- SFS:(13230028)(4636009)(346002)(136003)(376002)(366004)(396003)(39860400002)(451199021)(38100700002)(53546011)(2616005)(36756003)(83380400001)(8676002)(110136005)(8936002)(5660300002)(478600001)(54906003)(66556008)(66476007)(316002)(66946007)(4326008)(41300700001)(186003)(6506007)(6512007)(6486002)(6666004)(2906002)(31696002)(31686004)(86362001)(45980500001)(43740500002);
- DIR:OUT; SFP:1102; 
+X-Microsoft-Antispam-Message-Info: 
+	QL0gELTDjN05QH2eJpYboqNz92fmgnHf03sCpjbD1ZqBnaeRBUIB31bICs2mvmTQJQAvDo0Lx4dpLRNwsAlXybsSVoyJlP7gKMkxMhEjYnzx3ZTwuBSRrslvHbDYKbT+0ATGmY1MbbSTSapM7g06kJzueaojRgRj0hiNj5+qEJOyRTAhx/smVZdjkbEKYbUPI/CoHM4h2ep9fVO7JZvGTAPFaIPWEAUbxqBnQXljS2XGha4pKCp/T3bav3k21NOZ2IzD4KBwWw11KxRsorLKtKFBOxmFaD7FPV24RWAYOEDaF7l0UgBrTkJSacOq8CsyECFf6PR/OAi6DnNj4VGpXIDi3jmzrtkdEOaSku0v+YClsQrPcBuvQwfjEXlr2ANUmXn7Nvaom7PsgM9Faz55iz8HvcEtdReYsGSdF3mySuCxtCZyl14v4zzIxF/lVUDhMPhgTbq85K/qsG4rh7wxuXg1Nodzwkc6ZZ6cgbgV5nsPjFyJHMmAMDEA4gNaEG6rDtX/rxSgXUHwHeUoegEff7tthRFS4c0hQOwCjx2Jae7tCPffuk4CyMw5ScL9wQyBnu1/ufW4Wp5w4T4NqKrlfNcOVnga+waLVlcTecjodX9dn57o4HlFapoldQ/488KIrTDLhwQCIIFigOEao2h2pQ==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(376002)(366004)(396003)(39860400002)(451199021)(38100700002)(53546011)(2616005)(36756003)(83380400001)(8676002)(110136005)(8936002)(5660300002)(478600001)(54906003)(66556008)(66476007)(316002)(66946007)(4326008)(41300700001)(186003)(6506007)(6512007)(6486002)(6666004)(2906002)(31696002)(31686004)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WHgzSzVHM2V2MmhJc2ZrQ2FhWmlKZDhQSWMwN2NoNm16VGJWckM4UnpGOUlk?=
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?WHgzSzVHM2V2MmhJc2ZrQ2FhWmlKZDhQSWMwN2NoNm16VGJWckM4UnpGOUlk?=
  =?utf-8?B?NmRpakZsSGZrbXlsNTVYeGRleU1STjQ1dnRYRW83OUVKcno5V0RvOU1XbFlE?=
  =?utf-8?B?NnhwRm1ZZWtDSnhka2tJbnQ4WHkrVHpPUnVRTm8xMTdiNmFxcGZicXZjb1ZD?=
  =?utf-8?B?Y0xEUVNSTGlndW05R3hwVXZ0L0t0eUJBalE2a1RvaURrN1k4N0ExdkNobE1s?=
@@ -182,7 +138,8 @@ X-OriginatorOrg: meta.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 8ad84699-70ac-4c9d-0df9-08db8bfafe2c
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 04:03:52.7310 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 04:03:52.7310
+ (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
@@ -193,27 +150,11 @@ X-Proofpoint-ORIG-GUID: qWzE-pvt6tiNEhmiRdJqVwpGklbOpjhZ
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-24_02,2023-07-20_01,2023-05-22_02
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/dNX4wZCghWDjPzGEgidjgy6ppcw>
-Subject: Re: [Bpf] [PATCH bpf-next v3 01/17] bpf: Support new sign-extension
- load insns
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
-X-Original-From: Yonghong Song <yhs@meta.com>
-From: Yonghong Song <yhs=40meta.com@dmarc.ietf.org>
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
@@ -483,9 +424,4 @@ Thanks. Will change in the next revision.
 >> +}
 >> +
 [...]
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
 
