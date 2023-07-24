@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-5748-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5747-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD2AB760021
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 21:56:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED1D676001F
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 21:56:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67FDE281416
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 19:56:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29E1C1C20BA9
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 19:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414611094E;
-	Mon, 24 Jul 2023 19:56:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F292A10945;
+	Mon, 24 Jul 2023 19:56:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ABAA101F7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39D2101F7
 	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 19:56:35 +0000 (UTC)
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6A7171E
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299B510F8
 	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 12:56:34 -0700 (PDT)
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6b9c744df27so7447393a34.2
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6b9cf208fb5so9264127a34.3
         for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 12:56:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1690228593; x=1690833393;
         h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bqy++k90y41wMJfzlow3b+lCJ8ynuiD7DIqIylcfRDo=;
-        b=JgoydNUEWYAo+vtvXbUuos4QMB5S85hUksPbvdEK4sbga+Tv16hlZZKpl2/nToj9cu
-         o0362pFCv3IxiEffvjU8rzfBGUUwM46BJjP4uP8S89P2CMyvHw9kOk/Iyxgj6fBb6iD9
-         lWZXtIm+CwwLMNlMVM1otK/3f8yie3TX2ZB5zNvpqP3BH3sQlwwyE4cTEBytpwnu/NH5
-         0bVj+I0gaE8VHQlXbhSubTNW+qFm2kaBgcFMDyhupYeVASqdnj3nn3aBQSTPanHQPcX0
-         d29AzTOWBtDZmhCrHbd3Oy9zZemkklLhbgMe+JIVEH7SY40RaBteZ8QYzJKm1dqRPsO3
-         OHxw==
-X-Gm-Message-State: ABy/qLZBCgR863V0+ZbQqBzhvRoJB0E3yJl1J4bi3ctIAp34ZLeiBUTG
-	5mK4ZC7DwfoG8o63FyrMaCZrvnLNtYjxtAcSf0KyDz9auACFrS0=
-X-Google-Smtp-Source: APBJJlHlWs+LFB7k3NIuMhWUm8QZfovlY8FvMe8cw31aYRNPGdP4kGfjP2cedYFiR+mvcbKKTWKUqWkzzDN0Hlb3tS+kAExpxT+o
+        bh=g0HbIfON9h7OtlOqGplVgAJ/Ron1dfOFrue7VmqDYzg=;
+        b=gAcnle+RRbmV+mqRncOqXS3w7Z9rgnZt1S8E0I87EH3VEYbhN2h4PTcaYZKdkaA9dD
+         iaZnAGxVEC7QQtDcCWalR2S+4Lgu3GTyMfsKX+SkzActO/A97ulrU7qJqXCWTgU9SBA0
+         GBfdseLaeujS4vup74tDgKRVbgYh76yOHmdEgRZD6/dlVZt0ohzQDIO9mEzUJwWCRxy8
+         goB4a7FNo9GVYmkwTRAC+B8QVytTWt49e2BFtihyJFqimlo5eFN1FLdqgIAEbaPHHcab
+         gacsi2cozD/Z5G3rjL825v32KiR6N8SnXed23CHmiQvKTXcqp+zEPapEDyyVWFgOj7GS
+         9CCQ==
+X-Gm-Message-State: ABy/qLZOGoFcgTQIe+DEtJ/PCf1S7jvRjG2Nex5pNpb2LCJbMabPn9ZH
+	am7KLAvufUdlxd+P8FLegcbgZbjquuZupIifzxg7xIRQqgglo4o=
+X-Google-Smtp-Source: APBJJlGy8FHZDVrssAfEDgGHScfjKPZjYZWznrOxt65Wocsqqyr5rTphmuoPNIEOMBE7bKR1W0V4AWAMQMX5N468FTXqgMvgSHHN
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:76b3:b0:1bb:4279:4be9 with SMTP id
- dx51-20020a05687076b300b001bb42794be9mr7995398oab.3.1690228593707; Mon, 24
- Jul 2023 12:56:33 -0700 (PDT)
+X-Received: by 2002:a05:6870:955e:b0:1bb:51ab:a7bc with SMTP id
+ v30-20020a056870955e00b001bb51aba7bcmr7056676oal.1.1690228593534; Mon, 24 Jul
+ 2023 12:56:33 -0700 (PDT)
 Date: Mon, 24 Jul 2023 12:56:33 -0700
-In-Reply-To: <ZL7U/V3SFaJndkhW@bombadil.infradead.org>
+In-Reply-To: <ZL7Una9vhJpX+dkb@bombadil.infradead.org>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ead1d006014102dc@google.com>
-Subject: Re: [syzbot] [modules?] general protection fault in sys_finit_module
-From: syzbot <syzbot+9e4e94a2689427009d35@syzkaller.appspotmail.com>
+Message-ID: <000000000000e82d5806014102a7@google.com>
+Subject: Re: [syzbot] [modules?] KASAN: invalid-access Read in init_module_from_file
+From: syzbot <syzbot+e3705186451a87fd93b8@syzkaller.appspotmail.com>
 To: bpf@vger.kernel.org, chris@chrisdown.name, linux-kernel@vger.kernel.org, 
 	linux-modules@vger.kernel.org, llvm@lists.linux.dev, mcgrof@kernel.org, 
 	nathan@kernel.org, ndesaulniers@google.com, syzkaller-bugs@googlegroups.com, 
@@ -78,7 +78,7 @@ Tested on:
 
 commit:         [unknown 
 git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 910e230d5f1bb72c54532e94fbb1705095c7bab6
-dashboard link: https://syzkaller.appspot.com/bug?extid=9e4e94a2689427009d35
+dashboard link: https://syzkaller.appspot.com/bug?extid=e3705186451a87fd93b8
 compiler:       
 
 Note: no patches were applied.
