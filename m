@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-5774-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5775-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEA3F76036F
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 02:01:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 577F8760374
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 02:01:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9957B2814A6
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 00:01:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A2041C20CCA
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 00:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2AC613ADD;
-	Tue, 25 Jul 2023 00:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FAA14A80;
+	Tue, 25 Jul 2023 00:00:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911EB13AE8
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 00:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5E614260
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 00:00:07 +0000 (UTC)
 Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B4A1729
-	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 17:00:02 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55c04f5827eso2466101a12.1
-        for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 17:00:02 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB651729
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 17:00:04 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5637a108d02so1786444a12.2
+        for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 17:00:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690243202; x=1690848002;
+        d=google.com; s=20221208; t=1690243204; x=1690848004;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ymr8o17vJSUQpypwAQoDIcs9nAf632/dWN/6S7ClCgA=;
-        b=x8wyqgnxkPI1R47kOF7czeBcKbDo19Us6Wz2B+3EQjxMRjz/uaWz6WAYn5ZJUNHtPT
-         9sP62arZNoaFQyl0mjxQsDq7Oz/dRRsp8t7sV43IiivWynxk7PTIL1GmxBk/szFMeNmI
-         R/0ltnSXbLG0uBwJ3XVgn1+mbNHla5VaPC6DsuCex4+CX08iR5XzcirtSxdhjxc2EEMG
-         5ooxcFl7mH7951dX68I0fZr+uAyGNk7QAZ/yqzneYO+drbO7PHkASHIfU1xZKOe/HIoK
-         gyyO3uuNynRf8xW+hGj9KjM50kVPQaaG4newQPYl+Jmbdef6Z5yjkl3HH4wZADoC0XT6
-         j7zA==
+        bh=LZitIKEGHOUJcKGa5imxxibILXWHECIO3+E2QgXBYx4=;
+        b=fCEApc3K/Gk9sLGq0Edwz4wQJ/ExAzVaf/I7mHAaozgnLNkBIjytyamCWbD9+FAWTR
+         yRmBeGFiKiT/v7GgAvX/0TJfOJoroOkjS1e9NoyT76+u3xnjXKklXvY5/LTuRnUoZlqI
+         AwTyOXS5XhQPIgPMKeUhvHnmHqZyV2poeZ08dCs/fwPtqHROTsYar+T0fteVhEgfQOFM
+         ePIjcxqjomFoWubbr4pOX3JHdAeYCqcQp+9jyY6S3PFZkNu8Ye7j5NIUVYmIy/yEF6p+
+         HBBT/5NuBua8MlJIrv81FKTmHQPiAcYfH3rA50rIBOvarAUS8ar1qbz3xx3/HGZIOPaI
+         LC1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690243202; x=1690848002;
+        d=1e100.net; s=20221208; t=1690243204; x=1690848004;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ymr8o17vJSUQpypwAQoDIcs9nAf632/dWN/6S7ClCgA=;
-        b=Zb5wQIE5qd7vJUxvHgxpDRAlKF2d9QqWtYW7DftFHfOaZfKRkbMnIY8VtmSxDtgoLb
-         32q+G9fXsQt2FNpAobAk+NM2W4/erM+4FISkUuLUAjdVAWw7An8+cDCATIWFMYzPEyHi
-         LeBtRvCX+feNCkxEOKJqnojrV+O5t0w64ScRhwXJzv28tQSWr0yLO6tmecgV03fgz4HU
-         1MyBRdkFXjpIEDo30ywnU4tBnsfM1xF1tRrlYzwk9sPCqq5PUEgUxLhncLtdTA7SkxB2
-         NbPK9J3TgY1O0meFoVce9GYBumx9zc4e5O6pg//bu4TquG4u6YKD2oGXT7Qc0DeMJE/E
-         In6Q==
-X-Gm-Message-State: ABy/qLYqDMKXLKqVJDD1GcMwgbAD+XtDviNWlyGEnP2yKo6GXVPdjQNd
-	2TCFjzg2NC8zDvTG8kqqyi99XPnIOE0QQtjumci7iA8q4LPsdUAbZDBUwEwGEpbXyfQvJo3gYOa
-	sEqN6Jjls676gUlGfeUv5S6uN379uqqJU6QeMUnHIvD8Qx9WN7A==
-X-Google-Smtp-Source: APBJJlErUfwmrS0d2RvZugBgVb6ZaXP+fW/wxDQ4lV9RPiRCVOmKdMSFH2IMrq5vkOJhND2554kTdcc=
+        bh=LZitIKEGHOUJcKGa5imxxibILXWHECIO3+E2QgXBYx4=;
+        b=doj8SYGni1+vA9NN5OdbFRmtlKURaZE7wH43dz468Xpzd8p3pz86ckF+4RvlcaDVQU
+         hH815koF7fInZtRVA9t7MrclZF5vpw8LGdxJ2K6/RhSLczEtrwnd/73jqfdUp67ic7Dd
+         uA+yr6CIrM3Mv5KhanjNbdkxHeK643bnTTHdLCVWsaZYNbjiPbA8Xb+q5zswhrKfJMnT
+         6F+KNCfMGiEB9kvtGCOqmAiWcV9gnl/NnvJIwJ0sKtJFAQMVPMPuOxfCAXBnjmehuTqW
+         wtYm3gKIkAomVxilDnRnx8v0Z1lfgKtc/1yaMnMWxPKlpDb8T5IBp766iS8QFZyZ/mEL
+         9IKw==
+X-Gm-Message-State: ABy/qLbajX4rOgH6iJle9lxDPn0TRNoJWHJLERGrT9qvejM44KuR3XH9
+	IrKUcWkoZAjjqIU8W1DADdGV4cC0q2bJOcNWq99hRNOWke+lG/6G9qwBia5MWFk/OMAR1Vh290W
+	Aj5dg4o4GOTIsJ6ljXcaFVLrvtUZ6u9iKWM61Da5AVuZJfc7grA==
+X-Google-Smtp-Source: APBJJlGy3Nz+k5GT9X9wvFeUyrorRpVRZGHJ8SWTchnCCXPJPV9E7z9nZOCSwkMYcnQqi6yJsobvfEY=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:da18:0:b0:563:4869:f54d with SMTP id
- c24-20020a63da18000000b005634869f54dmr43774pgh.11.1690243201202; Mon, 24 Jul
- 2023 17:00:01 -0700 (PDT)
-Date: Mon, 24 Jul 2023 16:59:50 -0700
+ (user=sdf job=sendgmr) by 2002:a63:330b:0:b0:563:3c98:cdae with SMTP id
+ z11-20020a63330b000000b005633c98cdaemr43542pgz.4.1690243203028; Mon, 24 Jul
+ 2023 17:00:03 -0700 (PDT)
+Date: Mon, 24 Jul 2023 16:59:51 -0700
 In-Reply-To: <20230724235957.1953861-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,8 +63,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20230724235957.1953861-1-sdf@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230724235957.1953861-2-sdf@google.com>
-Subject: [RFC net-next v4 1/8] xsk: Support XDP_TX_METADATA_LEN
+Message-ID: <20230724235957.1953861-3-sdf@google.com>
+Subject: [RFC net-next v4 2/8] xsk: add TX timestamp and TX checksum offload support
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
@@ -81,59 +81,485 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-For zerocopy mode, tx_desc->addr can point to the arbitrary offset
-and carry some TX metadata in the headroom. For copy mode, there
-is no way currently to populate skb metadata.
+This change actually defines the (initial) metadata layout
+that should be used by AF_XDP userspace (xsk_tx_metadata).
+The first field is flags which requests appropriate offloads,
+followed by the offload-specific fields. The supported per-device
+offloads are exported via netlink (new xsk-flags).
 
-Introduce new XDP_TX_METADATA_LEN that indicates how many bytes
-to treat as metadata. Metadata bytes come prior to tx_desc address
-(same as in RX case).
+The offloads themselves are still implemented in a bit of a
+framework-y fashion that's left from my initial kfunc attempt.
+I'm introducing new xsk_tx_metadata_ops which drivers are
+supposed to implement. The drivers are also supposed
+to call xsk_tx_metadata_request/xsk_tx_metadata_complete in
+the right places. Since xsk_tx_metadata_{request,_complete}
+are static inline, we don't incur any extra overhead doing
+indirect calls.
 
-The size of the metadata has the same constraints as XDP:
-- less than 256 bytes
-- 4-byte aligned
-- non-zero
+The benefit of this scheme is as follows:
+- keeps all metadata layout parsing away from driver code
+- makes it easy to grep and see which drivers implement what
+- don't need any extra flags to maintain to keep track of that
+  offloads are implemented; if the callback is implemented - the offload
+  is supported (used by netlink reporting code)
 
-This data is not interpreted in any way right now.
+Two offloads are defined right now:
+1. XDP_TX_METADATA_CHECKSUM: skb-style csum_start+csum_offset
+2. XDP_TX_METADATA_TIMESTAMP: writes TX timestamp back into metadata
+   area upon completion (tx_timestamp field)
+
+The offloads are also implemented for copy mode:
+1. Extra XDP_TX_METADATA_CHECKSUM_SW to trigger skb_checksum_help; this
+   might be useful as a reference implementation and for testing
+2. XDP_TX_METADATA_TIMESTAMP writes SW timestamp from the skb
+   destructor (note I'm reusing hwtstamps to pass metadata pointer)
+
+The struct is forward-compatible and can be extended in the future
+by appending more fields.
 
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/net/xdp_sock.h      |  1 +
- include/net/xsk_buff_pool.h |  1 +
- include/uapi/linux/if_xdp.h |  1 +
- net/xdp/xsk.c               | 20 ++++++++++++++++++++
- net/xdp/xsk_buff_pool.c     |  1 +
- net/xdp/xsk_queue.h         | 17 ++++++++++-------
- 6 files changed, 34 insertions(+), 7 deletions(-)
+ Documentation/netlink/specs/netdev.yaml | 19 ++++++++
+ include/linux/netdevice.h               | 27 +++++++++++
+ include/linux/skbuff.h                  |  5 ++-
+ include/net/xdp_sock.h                  | 60 +++++++++++++++++++++++++
+ include/net/xdp_sock_drv.h              | 13 ++++++
+ include/uapi/linux/if_xdp.h             | 35 +++++++++++++++
+ include/uapi/linux/netdev.h             | 15 +++++++
+ net/core/netdev-genl.c                  | 12 ++++-
+ net/xdp/xsk.c                           | 38 ++++++++++++++++
+ net/xdp/xsk_queue.h                     |  2 +-
+ tools/include/uapi/linux/if_xdp.h       | 50 ++++++++++++++++++---
+ 11 files changed, 268 insertions(+), 8 deletions(-)
 
+diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
+index e41015310a6e..bf9c1cc32614 100644
+--- a/Documentation/netlink/specs/netdev.yaml
++++ b/Documentation/netlink/specs/netdev.yaml
+@@ -42,6 +42,19 @@ name: netdev
+         doc:
+           This feature informs if netdev implements non-linear XDP buffer
+           support in ndo_xdp_xmit callback.
++  -
++    type: flags
++    name: xsk-flags
++    render-max: true
++    entries:
++      -
++        name: tx-timestamp
++        doc:
++          HW timestamping egress packets is supported by the driver.
++      -
++        name: tx-checksum
++        doc:
++          L3 checksum HW offload is supported by the driver.
+ 
+ attribute-sets:
+   -
+@@ -68,6 +81,12 @@ name: netdev
+         type: u32
+         checks:
+           min: 1
++      -
++        name: xsk-features
++        doc: Bitmask of enabled AF_XDP features.
++        type: u64
++        enum: xsk-flags
++        enum-as-flags: true
+ 
+ operations:
+   list:
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 11652e464f5d..8b40c80557aa 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1660,6 +1660,31 @@ struct xdp_metadata_ops {
+ 			       enum xdp_rss_hash_type *rss_type);
+ };
+ 
++/*
++ * This structure defines the AF_XDP TX metadata hooks for network devices.
++ * The following hooks can be defined; unless noted otherwise, they are
++ * optional and can be filled with a null pointer.
++ *
++ * int (*tmo_request_timestamp)(void *priv)
++ *     This function is called when AF_XDP frame requested egress timestamp.
++ *
++ * int (*tmo_fill_timestamp)(void *priv)
++ *     This function is called when AF_XDP frame, that had requested
++ *     egress timestamp, received a completion. The hook needs to return
++ *     the actual HW timestamp.
++ *
++ * int (*tmo_request_timestamp)(u16 csum_start, u16 csum_offset, void *priv)
++ *     This function is called when AF_XDP frame requested HW checksum
++ *     offload. csum_start indicates position where checksumming should start.
++ *     csum_offset indicates position where checksum should be stored.
++ *
++ */
++struct xsk_tx_metadata_ops {
++	void	(*tmo_request_timestamp)(void *priv);
++	u64	(*tmo_fill_timestamp)(void *priv);
++	void	(*tmo_request_checksum)(u16 csum_start, u16 csum_offset, void *priv);
++};
++
+ /**
+  * enum netdev_priv_flags - &struct net_device priv_flags
+  *
+@@ -1844,6 +1869,7 @@ enum netdev_ml_priv_type {
+  *	@netdev_ops:	Includes several pointers to callbacks,
+  *			if one wants to override the ndo_*() functions
+  *	@xdp_metadata_ops:	Includes pointers to XDP metadata callbacks.
++ *	@xsk_tx_metadata_ops:	Includes pointers to AF_XDP TX metadata callbacks.
+  *	@ethtool_ops:	Management operations
+  *	@l3mdev_ops:	Layer 3 master device operations
+  *	@ndisc_ops:	Includes callbacks for different IPv6 neighbour
+@@ -2100,6 +2126,7 @@ struct net_device {
+ 	unsigned long long	priv_flags;
+ 	const struct net_device_ops *netdev_ops;
+ 	const struct xdp_metadata_ops *xdp_metadata_ops;
++	const struct xsk_tx_metadata_ops *xsk_tx_metadata_ops;
+ 	int			ifindex;
+ 	unsigned short		gflags;
+ 	unsigned short		hard_header_len;
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index faaba050f843..5febc1a5131e 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -581,7 +581,10 @@ struct skb_shared_info {
+ 	/* Warning: this field is not always filled in (UFO)! */
+ 	unsigned short	gso_segs;
+ 	struct sk_buff	*frag_list;
+-	struct skb_shared_hwtstamps hwtstamps;
++	union {
++		struct skb_shared_hwtstamps hwtstamps;
++		struct xsk_tx_metadata *xsk_meta;
++	};
+ 	unsigned int	gso_type;
+ 	u32		tskey;
+ 
 diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-index 1617af380162..467b9fb56827 100644
+index 467b9fb56827..288fa58c4665 100644
 --- a/include/net/xdp_sock.h
 +++ b/include/net/xdp_sock.h
-@@ -51,6 +51,7 @@ struct xdp_sock {
- 	struct list_head flush_node;
- 	struct xsk_buff_pool *pool;
- 	u16 queue_id;
-+	u8 tx_metadata_len;
- 	bool zc;
- 	bool sg;
- 	enum {
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index b0bdff26fc88..9c31e8d1e198 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -77,6 +77,7 @@ struct xsk_buff_pool {
- 	u32 chunk_size;
- 	u32 chunk_shift;
- 	u32 frame_len;
-+	u8 tx_metadata_len; /* inherited from xsk_sock */
- 	u8 cached_need_wakeup;
- 	bool uses_need_wakeup;
- 	bool dma_need_sync;
+@@ -90,6 +90,54 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp);
+ int __xsk_map_redirect(struct xdp_sock *xs, struct xdp_buff *xdp);
+ void __xsk_map_flush(void);
+ 
++/**
++ *  xsk_tx_metadata_request - Evaluate AF_XDP TX metadata at submission
++ *  and call appropriate xsk_tx_metadata_ops operation.
++ *  @meta: pointer to AF_XDP metadata area
++ *  @ops: pointer to struct xsk_tx_metadata_ops
++ *  @priv: pointer to driver-private aread
++ *
++ *  This function should be called by the networking device when
++ *  it prepares AF_XDP egress packet.
++ */
++static inline void xsk_tx_metadata_request(const struct xsk_tx_metadata *meta,
++					   const struct xsk_tx_metadata_ops *ops,
++					   void *priv)
++{
++	if (!meta)
++		return;
++
++	if (ops->tmo_request_timestamp)
++		if (meta->flags & XDP_TX_METADATA_TIMESTAMP)
++			ops->tmo_request_timestamp(priv);
++
++	if (ops->tmo_request_checksum)
++		if (meta->flags & XDP_TX_METADATA_CHECKSUM)
++			ops->tmo_request_checksum(meta->csum_start, meta->csum_offset, priv);
++}
++
++/**
++ *  xsk_tx_metadata_complete - Evaluate AF_XDP TX metadata at completion
++ *  and call appropriate xsk_tx_metadata_ops operation.
++ *  @meta: pointer to AF_XDP metadata area
++ *  @ops: pointer to struct xsk_tx_metadata_ops
++ *  @priv: pointer to driver-private aread
++ *
++ *  This function should be called by the networking device upon
++ *  AF_XDP egress completion.
++ */
++static inline void xsk_tx_metadata_complete(struct xsk_tx_metadata *meta,
++					    const struct xsk_tx_metadata_ops *ops,
++					    void *priv)
++{
++	if (!meta)
++		return;
++
++	if (ops->tmo_fill_timestamp)
++		if (meta->flags & XDP_TX_METADATA_TIMESTAMP)
++			meta->tx_timestamp = ops->tmo_fill_timestamp(priv);
++}
++
+ #else
+ 
+ static inline int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
+@@ -106,6 +154,18 @@ static inline void __xsk_map_flush(void)
+ {
+ }
+ 
++static inline void xsk_tx_metadata_request(struct xsk_tx_metadata *meta,
++					   const struct xsk_tx_metadata_ops *ops,
++					   void *priv)
++{
++}
++
++static inline void xsk_tx_metadata_complete(struct xsk_tx_metadata *meta,
++					    const struct xsk_tx_metadata_ops *ops,
++					    void *priv)
++{
++}
++
+ #endif /* CONFIG_XDP_SOCKETS */
+ 
+ #endif /* _LINUX_XDP_SOCK_H */
+diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
+index 1f6fc8c7a84c..e2558ac3e195 100644
+--- a/include/net/xdp_sock_drv.h
++++ b/include/net/xdp_sock_drv.h
+@@ -165,6 +165,14 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
+ 	return xp_raw_get_data(pool, addr);
+ }
+ 
++static inline struct xsk_tx_metadata *xsk_buff_get_metadata(struct xsk_buff_pool *pool, u64 addr)
++{
++	if (!pool->tx_metadata_len)
++		return NULL;
++
++	return xp_raw_get_data(pool, addr) - pool->tx_metadata_len;
++}
++
+ static inline void xsk_buff_dma_sync_for_cpu(struct xdp_buff *xdp, struct xsk_buff_pool *pool)
+ {
+ 	struct xdp_buff_xsk *xskb = container_of(xdp, struct xdp_buff_xsk, xdp);
+@@ -324,6 +332,11 @@ static inline void *xsk_buff_raw_get_data(struct xsk_buff_pool *pool, u64 addr)
+ 	return NULL;
+ }
+ 
++static inline struct xsk_tx_metadata *xsk_buff_get_metadata(struct xsk_buff_pool *pool, u64 addr)
++{
++	return NULL;
++}
++
+ static inline void xsk_buff_dma_sync_for_cpu(struct xdp_buff *xdp, struct xsk_buff_pool *pool)
+ {
+ }
 diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
-index 8d48863472b9..b37b50102e1c 100644
+index b37b50102e1c..b9b1b2c4108a 100644
 --- a/include/uapi/linux/if_xdp.h
 +++ b/include/uapi/linux/if_xdp.h
+@@ -106,6 +106,38 @@ struct xdp_options {
+ #define XSK_UNALIGNED_BUF_ADDR_MASK \
+ 	((1ULL << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1)
+ 
++/* Request transmit timestamp. Upon completion, put it into tx_timestamp
++ * field of struct xsk_tx_metadata.
++ */
++#define XDP_TX_METADATA_TIMESTAMP		(1 << 0)
++
++/* Request transmit checksum offload. Checksum start position and offset
++ * are communicated via csum_start and csum_offset fields of struct
++ * xsk_tx_metadata.
++ */
++#define XDP_TX_METADATA_CHECKSUM		(1 << 1)
++
++/* Force checksum calculation in software. Can be used for testing or
++ * working around potential HW issues. This option causes performance
++ * degradation and only works in XDP_COPY mode.
++ */
++#define XDP_TX_METADATA_CHECKSUM_SW		(1 << 2)
++
++struct xsk_tx_metadata {
++	__u32 flags;
++
++	/* XDP_TX_METADATA_CHECKSUM */
++
++	/* Offset from desc->addr where checksumming should start. */
++	__u16 csum_start;
++	/* Offset from csum_start where checksum should be stored. */
++	__u16 csum_offset;
++
++	/* XDP_TX_METADATA_TIMESTAMP */
++
++	__u64 tx_timestamp;
++};
++
+ /* Rx/Tx descriptor */
+ struct xdp_desc {
+ 	__u64 addr;
+@@ -122,4 +154,7 @@ struct xdp_desc {
+  */
+ #define XDP_PKT_CONTD (1 << 0)
+ 
++/* TX packet carries valid metadata. */
++#define XDP_TX_METADATA (1 << 1)
++
+ #endif /* _LINUX_IF_XDP_H */
+diff --git a/include/uapi/linux/netdev.h b/include/uapi/linux/netdev.h
+index bf71698a1e82..cf1e11c76339 100644
+--- a/include/uapi/linux/netdev.h
++++ b/include/uapi/linux/netdev.h
+@@ -37,11 +37,26 @@ enum netdev_xdp_act {
+ 	NETDEV_XDP_ACT_MASK = 127,
+ };
+ 
++/**
++ * enum netdev_xsk_flags
++ * @NETDEV_XSK_FLAGS_TX_TIMESTAMP: HW timestamping egress packets is supported
++ *   by the driver.
++ * @NETDEV_XSK_FLAGS_TX_CHECKSUM: L3 checksum HW offload is supported by the
++ *   driver.
++ */
++enum netdev_xsk_flags {
++	NETDEV_XSK_FLAGS_TX_TIMESTAMP = 1,
++	NETDEV_XSK_FLAGS_TX_CHECKSUM = 2,
++
++	NETDEV_XSK_FLAGS_MASK = 3,
++};
++
+ enum {
+ 	NETDEV_A_DEV_IFINDEX = 1,
+ 	NETDEV_A_DEV_PAD,
+ 	NETDEV_A_DEV_XDP_FEATURES,
+ 	NETDEV_A_DEV_XDP_ZC_MAX_SEGS,
++	NETDEV_A_DEV_XSK_FEATURES,
+ 
+ 	__NETDEV_A_DEV_MAX,
+ 	NETDEV_A_DEV_MAX = (__NETDEV_A_DEV_MAX - 1)
+diff --git a/net/core/netdev-genl.c b/net/core/netdev-genl.c
+index 65ef4867fc49..9e8c1f3caf36 100644
+--- a/net/core/netdev-genl.c
++++ b/net/core/netdev-genl.c
+@@ -12,15 +12,25 @@ static int
+ netdev_nl_dev_fill(struct net_device *netdev, struct sk_buff *rsp,
+ 		   u32 portid, u32 seq, int flags, u32 cmd)
+ {
++	u64 xsk_flags = 0;
+ 	void *hdr;
+ 
+ 	hdr = genlmsg_put(rsp, portid, seq, &netdev_nl_family, flags, cmd);
+ 	if (!hdr)
+ 		return -EMSGSIZE;
+ 
++	if (netdev->xsk_tx_metadata_ops) {
++		if (netdev->xsk_tx_metadata_ops->tmo_fill_timestamp)
++			xsk_flags |= NETDEV_XSK_FLAGS_TX_TIMESTAMP;
++		if (netdev->xsk_tx_metadata_ops->tmo_request_checksum)
++			xsk_flags |= NETDEV_XSK_FLAGS_TX_CHECKSUM;
++	}
++
+ 	if (nla_put_u32(rsp, NETDEV_A_DEV_IFINDEX, netdev->ifindex) ||
+ 	    nla_put_u64_64bit(rsp, NETDEV_A_DEV_XDP_FEATURES,
+-			      netdev->xdp_features, NETDEV_A_DEV_PAD)) {
++			      netdev->xdp_features, NETDEV_A_DEV_PAD) ||
++	    nla_put_u64_64bit(rsp, NETDEV_A_DEV_XSK_FEATURES,
++			      xsk_flags, NETDEV_A_DEV_PAD)) {
+ 		genlmsg_cancel(rsp, hdr);
+ 		return -EINVAL;
+ 	}
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 81106e4d6e0f..9a5c4e63898d 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -542,6 +542,15 @@ static u32 xsk_get_num_desc(struct sk_buff *skb)
+ 
+ static void xsk_destruct_skb(struct sk_buff *skb)
+ {
++	struct xsk_tx_metadata *meta = skb_shinfo(skb)->xsk_meta;
++
++	if (meta) {
++		if (meta->flags & XDP_TX_METADATA_TIMESTAMP) {
++			/* sw completion timestamp, not a real one */
++			meta->tx_timestamp = ktime_get_tai_fast_ns();
++		}
++	}
++
+ 	xsk_cq_submit_locked(xdp_sk(skb->sk), xsk_get_num_desc(skb));
+ 	sock_wfree(skb);
+ }
+@@ -626,6 +635,7 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 				     struct xdp_desc *desc)
+ {
++	struct xsk_tx_metadata *meta = NULL;
+ 	struct net_device *dev = xs->dev;
+ 	struct sk_buff *skb = xs->skb;
+ 	int err;
+@@ -678,12 +688,40 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 
+ 			skb_add_rx_frag(skb, nr_frags, page, 0, len, 0);
+ 		}
++
++		if (desc->options & XDP_TX_METADATA) {
++			if (unlikely(xs->tx_metadata_len == 0)) {
++				err = -EINVAL;
++				goto free_err;
++			}
++
++			meta = buffer - xs->tx_metadata_len;
++
++			if (meta->flags & XDP_TX_METADATA_CHECKSUM) {
++				if (unlikely(meta->csum_start + meta->csum_offset +
++					     sizeof(__sum16) > len)) {
++					err = -EINVAL;
++					goto free_err;
++				}
++
++				skb->csum_start = hr + meta->csum_start;
++				skb->csum_offset = meta->csum_offset;
++				skb->ip_summed = CHECKSUM_PARTIAL;
++
++				if (unlikely(meta->flags & XDP_TX_METADATA_CHECKSUM_SW)) {
++					err = skb_checksum_help(skb);
++					if (err)
++						goto free_err;
++				}
++			}
++		}
+ 	}
+ 
+ 	skb->dev = dev;
+ 	skb->priority = xs->sk.sk_priority;
+ 	skb->mark = xs->sk.sk_mark;
+ 	skb->destructor = xsk_destruct_skb;
++	skb_shinfo(skb)->xsk_meta = meta;
+ 	xsk_set_destructor_arg(skb);
+ 
+ 	return skb;
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index c74a1372bcb9..6f2d1621c992 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -137,7 +137,7 @@ static inline bool xskq_cons_read_addr_unchecked(struct xsk_queue *q, u64 *addr)
+ 
+ static inline bool xp_unused_options_set(u32 options)
+ {
+-	return options & ~XDP_PKT_CONTD;
++	return options & ~(XDP_PKT_CONTD | XDP_TX_METADATA);
+ }
+ 
+ static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
+diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/linux/if_xdp.h
+index 73a47da885dc..b9b1b2c4108a 100644
+--- a/tools/include/uapi/linux/if_xdp.h
++++ b/tools/include/uapi/linux/if_xdp.h
+@@ -26,11 +26,11 @@
+  */
+ #define XDP_USE_NEED_WAKEUP (1 << 3)
+ /* By setting this option, userspace application indicates that it can
+- * handle multiple descriptors per packet thus enabling xsk core to split
++ * handle multiple descriptors per packet thus enabling AF_XDP to split
+  * multi-buffer XDP frames into multiple Rx descriptors. Without this set
+- * such frames will be dropped by xsk.
++ * such frames will be dropped.
+  */
+-#define XDP_USE_SG     (1 << 4)
++#define XDP_USE_SG	(1 << 4)
+ 
+ /* Flags for xsk_umem_config flags */
+ #define XDP_UMEM_UNALIGNED_CHUNK_FLAG (1 << 0)
 @@ -69,6 +69,7 @@ struct xdp_mmap_offsets {
  #define XDP_UMEM_COMPLETION_RING	6
  #define XDP_STATISTICS			7
@@ -142,96 +568,64 @@ index 8d48863472b9..b37b50102e1c 100644
  
  struct xdp_umem_reg {
  	__u64 addr; /* Start of packet data area */
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 4f1e0599146e..81106e4d6e0f 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -1337,6 +1337,26 @@ static int xsk_setsockopt(struct socket *sock, int level, int optname,
- 		mutex_unlock(&xs->mutex);
- 		return err;
- 	}
-+	case XDP_TX_METADATA_LEN:
-+	{
-+		int val;
+@@ -105,6 +106,38 @@ struct xdp_options {
+ #define XSK_UNALIGNED_BUF_ADDR_MASK \
+ 	((1ULL << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1)
+ 
++/* Request transmit timestamp. Upon completion, put it into tx_timestamp
++ * field of struct xsk_tx_metadata.
++ */
++#define XDP_TX_METADATA_TIMESTAMP		(1 << 0)
 +
-+		if (optlen < sizeof(val))
-+			return -EINVAL;
-+		if (copy_from_sockptr(&val, optval, sizeof(val)))
-+			return -EFAULT;
-+		if (!val || val > 256 || val % 4)
-+			return -EINVAL;
++/* Request transmit checksum offload. Checksum start position and offset
++ * are communicated via csum_start and csum_offset fields of struct
++ * xsk_tx_metadata.
++ */
++#define XDP_TX_METADATA_CHECKSUM		(1 << 1)
 +
-+		mutex_lock(&xs->mutex);
-+		if (xs->state != XSK_READY) {
-+			mutex_unlock(&xs->mutex);
-+			return -EBUSY;
-+		}
-+		xs->tx_metadata_len = val;
-+		mutex_unlock(&xs->mutex);
-+		return 0;
-+	}
- 	default:
- 		break;
- 	}
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index b3f7b310811e..b351732f1032 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -85,6 +85,7 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
- 		XDP_PACKET_HEADROOM;
- 	pool->umem = umem;
- 	pool->addrs = umem->addrs;
-+	pool->tx_metadata_len = xs->tx_metadata_len;
- 	INIT_LIST_HEAD(&pool->free_list);
- 	INIT_LIST_HEAD(&pool->xskb_list);
- 	INIT_LIST_HEAD(&pool->xsk_tx_list);
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index 13354a1e4280..c74a1372bcb9 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -143,15 +143,17 @@ static inline bool xp_unused_options_set(u32 options)
- static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
- 					    struct xdp_desc *desc)
- {
--	u64 offset = desc->addr & (pool->chunk_size - 1);
-+	u64 addr = desc->addr - pool->tx_metadata_len;
-+	u64 len = desc->len + pool->tx_metadata_len;
-+	u64 offset = addr & (pool->chunk_size - 1);
++/* Force checksum calculation in software. Can be used for testing or
++ * working around potential HW issues. This option causes performance
++ * degradation and only works in XDP_COPY mode.
++ */
++#define XDP_TX_METADATA_CHECKSUM_SW		(1 << 2)
++
++struct xsk_tx_metadata {
++	__u32 flags;
++
++	/* XDP_TX_METADATA_CHECKSUM */
++
++	/* Offset from desc->addr where checksumming should start. */
++	__u16 csum_start;
++	/* Offset from csum_start where checksum should be stored. */
++	__u16 csum_offset;
++
++	/* XDP_TX_METADATA_TIMESTAMP */
++
++	__u64 tx_timestamp;
++};
++
+ /* Rx/Tx descriptor */
+ struct xdp_desc {
+ 	__u64 addr;
+@@ -112,9 +145,16 @@ struct xdp_desc {
+ 	__u32 options;
+ };
  
- 	if (!desc->len)
- 		return false;
+-/* Flag indicating packet constitutes of multiple buffers*/
++/* UMEM descriptor is __u64 */
++
++/* Flag indicating that the packet continues with the buffer pointed out by the
++ * next frame in the ring. The end of the packet is signalled by setting this
++ * bit to zero. For single buffer packets, every descriptor has 'options' set
++ * to 0 and this maintains backward compatibility.
++ */
+ #define XDP_PKT_CONTD (1 << 0)
  
--	if (offset + desc->len > pool->chunk_size)
-+	if (offset + len > pool->chunk_size)
- 		return false;
+-/* UMEM descriptor is __u64 */
++/* TX packet carries valid metadata. */
++#define XDP_TX_METADATA (1 << 1)
  
--	if (desc->addr >= pool->addrs_cnt)
-+	if (addr >= pool->addrs_cnt)
- 		return false;
- 
- 	if (xp_unused_options_set(desc->options))
-@@ -162,16 +164,17 @@ static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
- static inline bool xp_unaligned_validate_desc(struct xsk_buff_pool *pool,
- 					      struct xdp_desc *desc)
- {
--	u64 addr = xp_unaligned_add_offset_to_addr(desc->addr);
-+	u64 addr = xp_unaligned_add_offset_to_addr(desc->addr) - pool->tx_metadata_len;
-+	u64 len = desc->len + pool->tx_metadata_len;
- 
- 	if (!desc->len)
- 		return false;
- 
--	if (desc->len > pool->chunk_size)
-+	if (len > pool->chunk_size)
- 		return false;
- 
--	if (addr >= pool->addrs_cnt || addr + desc->len > pool->addrs_cnt ||
--	    xp_desc_crosses_non_contig_pg(pool, addr, desc->len))
-+	if (addr >= pool->addrs_cnt || addr + len > pool->addrs_cnt ||
-+	    xp_desc_crosses_non_contig_pg(pool, addr, len))
- 		return false;
- 
- 	if (xp_unused_options_set(desc->options))
+ #endif /* _LINUX_IF_XDP_H */
 -- 
 2.41.0.487.g6d72f3e995-goog
 
