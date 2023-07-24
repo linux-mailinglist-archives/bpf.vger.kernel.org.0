@@ -1,111 +1,142 @@
-Return-Path: <bpf+bounces-5715-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5716-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B70C375F80C
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 15:17:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED34375F82A
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 15:24:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E846A1C20AD6
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 13:17:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 296861C20AFC
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 13:24:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC5D8BF9;
-	Mon, 24 Jul 2023 13:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3538C0F;
+	Mon, 24 Jul 2023 13:24:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF7A78476
-	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 13:17:20 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8DADF
-	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 06:17:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690204639;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f4KQ/tLol2JTMF9SoFlYCSkzvClZr/k6u6hh/oPakP4=;
-	b=EIRl0irn2r472I5s4Vl36A+er73gZBAi6jKOTwADujh4K6ROV7fE4Fr8S1z57mImnitu9h
-	iksGhIkZAriHacEaW8Kcpy095KLKc/s4WGOK0KPWL1grVqSsDhIxdF6wYsMlDxlOlSXxC5
-	iEF8QIoTTD1aM2rszf2o+OM8dl2pOyI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-526-F2Wq1qF6PVuCC9PMRtj6hg-1; Mon, 24 Jul 2023 09:17:11 -0400
-X-MC-Unique: F2Wq1qF6PVuCC9PMRtj6hg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 73D201010427;
-	Mon, 24 Jul 2023 13:17:10 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.116])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id D8ECA200BA63;
-	Mon, 24 Jul 2023 13:17:08 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <0000000000001416bb06004ebf53@google.com>
-References: <0000000000001416bb06004ebf53@google.com>
-To: syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>
-Cc: dhowells@redhat.com, bpf@vger.kernel.org, brauner@kernel.org,
-    davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-    kuba@kernel.org, linux-fsdevel@vger.kernel.org,
-    linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-    pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
-    viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9878F8BF2
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 13:24:20 +0000 (UTC)
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292F6E4F
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 06:24:08 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-799a451ca9cso1320880241.2
+        for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 06:24:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690205046; x=1690809846;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aP2Yq5QQUBbNBzJrjrdiY4LsqQDXdcr9afv5HtmLNso=;
+        b=X4ZSD3mc3EloWWwrwZ/55KYKVBa1lbnfXdYgRrrlcAIr97TG6DsoL9+2uEg1tP+7Z4
+         buuqOQmqZzDJxXfADHzZbQyVlBppj+qzvDX4trcUPj2f2QVhXg1lsDEZ5fG/4Z2rNQBH
+         YamkUD3ZT4n3y7SPCgwvFsAsAwfQXtP05bCcaLitJqSDZ+8NisQqQ/JROX6kZMjXjHdw
+         ZZlp7zGkOfDHcChnVddKSAFFEhvpQ2PleJMdIGvXgZFDWETQa/yRjFHksrBV4htKqvZG
+         zeNIK92gfuSj99v8dQ0eNlsJtJZcAKCNJhAAKcBsy0DFvHGlKMQic0MQ+ayDByAMmSLz
+         IM4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690205046; x=1690809846;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aP2Yq5QQUBbNBzJrjrdiY4LsqQDXdcr9afv5HtmLNso=;
+        b=Tai7rtmtfxeJFPO/DHq2VQ7mAeYwkDTikYHYCvmm8+mb6KnQ+BVgCRhzUAcWj2wDJJ
+         C/5ppLD4Q1Jh4avLKW9+WfSTI9ZaQu/2uS/Gz8pfqgyeC8E4d7i/fyCqmkGgCq2VxGCJ
+         BJbq+KJftFIHATnWTYDBwF+/XmixYh4oYN97M7dCxo1n/93ByOQXuv32ZdYwd9nlSn/Y
+         pWRVm3ERzt9D0M8AK/GBqzB9FkHxWqQKRJWTDEs6jCKG2HVK0H8ZdrueYBiwqwEBAKlm
+         SpZ7jdn3VZiuaIYatONgCvDixN/5PQEEUiMRm1mM/5Qu5xk/UEsPlN68Uh0Bu62ehY9z
+         JPfA==
+X-Gm-Message-State: ABy/qLZfzBQK5+XtODSweH2bWzJsT0IvDAcsKkV4qnh1qxgdc2bKwVmP
+	t0ivJPqecwBqzX3h/YLJUS/qb9xgSiJIag==
+X-Google-Smtp-Source: APBJJlGtkPqyfiWgzNMn4YWaGF94m9uRdrh2JJxrM/xcejywkFTmS3MT+/yWGqpIU0yP0qjzJGYJxg==
+X-Received: by 2002:a67:e910:0:b0:445:20ba:fb2a with SMTP id c16-20020a67e910000000b0044520bafb2amr2475588vso.16.1690205046109;
+        Mon, 24 Jul 2023 06:24:06 -0700 (PDT)
+Received: from pc.tail5bae4.ts.net ([71.125.252.241])
+        by smtp.gmail.com with ESMTPSA id s17-20020a05620a031100b00767f5c70b3dsm2971501qkm.96.2023.07.24.06.24.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 06:24:05 -0700 (PDT)
+From: Andrew Werner <awerner32@gmail.com>
+To: bpf@vger.kernel.org
+Cc: kernel-team@dataexmachina.dev,
+	Andrew Werner <awerner32@gmail.com>
+Subject: [PATCH] libbpf: handle producer position overflow
+Date: Mon, 24 Jul 2023 09:24:04 -0400
+Message-Id: <20230724132404.1280848-1-awerner32@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <145369.1690204627.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 24 Jul 2023 14:17:07 +0100
-Message-ID: <145370.1690204627@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Note that the test program is dodgy:
+Before this patch, the producer position could overflow `unsigned
+long`, in which case libbpf would forever stop processing new writes to
+the ringbuf. This patch addresses that bug by avoiding ordered
+comparison between the consumer and producer position. If the consumer
+position is greater than the producer position, the assumption is that
+the producer has overflowed.
 
-    pipe(&(0x7f0000000100)=3D{<r0=3D>0xffffffffffffffff, <r1=3D>0xffffffff=
-ffffffff})
-    r2 =3D socket$inet_udp(0x2, 0x2, 0x0)
+A more defensive check could be to ensure that the delta is within
+the allowed range, but such defensive checks are neither present in
+the kernel side code nor in libbpf. The overflow that this patch
+handles can occur while the producer and consumer follow a correct
+protocol.
 
-r2 is closed here:
+A selftest was written to demonstrate the bug, and indeed this patch
+allows the test to continue to make progress past the overflow.
+However, the author was unable to create a testing environment on a
+32-bit machine, and the test requires substantial memory and over 4
+hours to hit the overflow point on a 64-bit machine. Thus, the test
+is not included in this patch because of the impracticality of running
+it.
 
-    close(r2)
-    r3 =3D socket$inet_udp(0x2, 0x2, 0x0)
-    setsockopt$sock_int(r3, 0x1, 0x6, &(0x7f0000000140)=3D0x32, 0x4)
-    bind$inet(r3, &(0x7f0000000000)=3D{0x2, 0x0, @dev=3D{0xac, 0x14, 0x14,=
- 0x15}}, 0x10)
-    connect$inet(r3, &(0x7f0000000200)=3D{0x2, 0x0, @broadcast}, 0x10)
-    sendmmsg(r3, &(0x7f0000000180)=3D[{{0x0, 0x0, 0x0}}, {{0x0, 0xffffffff=
-fffffed3, &(0x7f0000000940)=3D[{&(0x7f00000006c0)=3D'O', 0x57e}], 0x1}}], =
-0x4000000000003bd, 0x8800)
-    write$binfmt_misc(r1, &(0x7f0000000440)=3DANY=3D[], 0x8)
+Additionally, this patch adds commentary around a separate point to note
+that the modular arithmetic is valid in the face of overflows, as that
+fact may not be obvious to future readers.
 
-but then used here:
+Signed-off-by: Andrew Werner <awerner32@gmail.com>
+---
+ tools/lib/bpf/ringbuf.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-    splice(r0, 0x0, r2, 0x0, 0x4ffe0, 0x0)
-
-As it happens, r3 will probably end up referring to the same fd as r2 did,=
- but
-that's not guaranteed.
-
-David
+diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+index 02199364db13..6271757bc3d2 100644
+--- a/tools/lib/bpf/ringbuf.c
++++ b/tools/lib/bpf/ringbuf.c
+@@ -237,7 +237,11 @@ static int64_t ringbuf_process_ring(struct ring *r)
+ 	do {
+ 		got_new_data = false;
+ 		prod_pos = smp_load_acquire(r->producer_pos);
+-		while (cons_pos < prod_pos) {
++
++		/* Avoid signed comparisons between the positions; the producer
++		 * position can overflow before the consumer position.
++		 */
++		while (cons_pos != prod_pos) {
+ 			len_ptr = r->data + (cons_pos & r->mask);
+ 			len = smp_load_acquire(len_ptr);
+ 
+@@ -498,6 +502,11 @@ void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size)
+ 	prod_pos = smp_load_acquire(rb->producer_pos);
+ 
+ 	max_size = rb->mask + 1;
++
++	/* Note that this formulation in the face of overflow of prod_pos
++	 * so long as the delta between prod_pos and cons_pos remains no
++	 * greater than max_size.
++	 */
+ 	avail_size = max_size - (prod_pos - cons_pos);
+ 	/* Round up total size to a multiple of 8. */
+ 	total_size = (size + BPF_RINGBUF_HDR_SZ + 7) / 8 * 8;
+-- 
+2.39.2
 
 
