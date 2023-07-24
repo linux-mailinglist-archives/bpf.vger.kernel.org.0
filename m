@@ -1,184 +1,162 @@
-Return-Path: <bpf+bounces-5720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A03B775FA67
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 17:05:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 202D475FA76
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 17:11:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C7842811C3
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 15:05:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 390331C20BA9
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 15:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18AA4D515;
-	Mon, 24 Jul 2023 15:04:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B8BFD530;
+	Mon, 24 Jul 2023 15:11:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2F5DDA3
-	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 15:04:56 +0000 (UTC)
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B89AE73
-	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 08:04:55 -0700 (PDT)
-Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-48137f8b118so3787571e0c.0
-        for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 08:04:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584CCD505
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 15:11:16 +0000 (UTC)
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F712E7E
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 08:11:14 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-76ae5b44426so193985285a.2
+        for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 08:11:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690211094; x=1690815894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tHqIG05NkrccDXJAf8XbSXjmXmn2uQaX/nG1JkN2ZQ4=;
-        b=rHvVEBAR04v4zkCIM9x/6ysbPN4+cOs6SbN3rIMINLLg0x+sDuZfw2BqPor1/IUIN8
-         ALSQxb8q5eqRYWUlJfLhl6IOxbB5N/PBOpktXBprHnEBFZCDc2Tb27CiyMLywa2o56CJ
-         eJ//Trf+64HEm3uqZFXu22fs8wIo92ugIwJbUXmsDvSlepLpBTJQhgR/xZLggJshgFF2
-         4oxkB7rx7chZN20ZnTaoNqEb8ZSgQLVV8XdL/U//Q8hSEfq+XwApKvzretRKAFz9XEqM
-         y+SGPqK7u0GgtJAN0SgQhn4TqNLjUqPFQccj2M3hUDsi3APWIIq2p0yDcAYLEWV8/Vs2
-         gYrw==
+        d=google.com; s=20221208; t=1690211473; x=1690816273;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9jHLHGvMvxYr4nt1BaNxAR/8eH1fxSS05ogGAzD554c=;
+        b=5H5qoia/YCAThHL4tL1FBWzptpsIAsUlPFP+JsHr2dIKRN1bZ3X8b5hbmiozX3Hjp7
+         L1O/Z3NDSEeCNdcnjIfiaHtRGuseUTrpR1ipIRSWO0N7Ta7nYAGbsIT0SFmaSyumT8jG
+         JqxEdAk6WIvVBfbR02BWAU1k/wjOj3cOUfUgRWeugwFNY0qDl+W2Tvl8pA1P10g4ssbj
+         WEtzD2s0fxkzmh3deWnnvupfgH1AhuckGrbpAJw4rlAGZlWgKFGTQnOkuySSo4s6jOF+
+         2Jn4QddvJMA0fgJUs7lBnJ4EMoyL92unDt/bFMlUBu4zRno7Uanh/L8s1L/VMRuD2itn
+         RMDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690211094; x=1690815894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tHqIG05NkrccDXJAf8XbSXjmXmn2uQaX/nG1JkN2ZQ4=;
-        b=foqQgGivcT9bUQWr0aqRh4qgI7HDW+hRIuq5E2wgTKoIkjiwlRrshm8ra7eG2omnn9
-         GPErj39WvJaqLeRVVFmorzbz/87mZ/8ztEFepoDezXDR7Piz1WWH3GmAlajud0zgwEci
-         zG7lWx8kTSi/YBCQmtZOMLHA6R+HAbr5aNqtZ/oNQMR6aq0o/2nBYjHZFBivq5SLNryM
-         gqQslFz2h0DFp031wbx54SO/dJP+YNq/hD1685WWc0Rj5FP4YRCkQEnUvZcJR3t6d7iX
-         6PUxX98N8kdZE0zuWJJTtiCn9j1wFrqeuttgtI844/yWqcQT9Vv7SqYwUOqD35bxTvmA
-         1lrQ==
-X-Gm-Message-State: ABy/qLa/RZqg+miYIHP+P9IoXCTz63cr9SZHMSgwyCTK1AiHlL0WynK4
-	xJVhvRHjXt5Ey/qfTfBityJecTH4WNTyJMlyo/434QEhDGc=
-X-Google-Smtp-Source: APBJJlEV03X8EXPg2+YL+/MvfIsUzRACx0EuuApez+Zu6wzEIT8lcNJNnENWD8Chl5ND6A8tSTVD9KJ6pVgAUKMC3CQ=
-X-Received: by 2002:a05:6102:32c5:b0:445:4a0c:3afb with SMTP id
- o5-20020a05610232c500b004454a0c3afbmr2814071vss.8.1690211094071; Mon, 24 Jul
- 2023 08:04:54 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690211473; x=1690816273;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9jHLHGvMvxYr4nt1BaNxAR/8eH1fxSS05ogGAzD554c=;
+        b=AEbI0jugLSEbHn4W6DUuLSpEcExY1nvgknzu8/G5MGyNJCm6W1B0/SEFNytR127zdD
+         H0DmurE/bd8LCA0Ga16/LUttmiCdttdI8zimXmYzSeIiCzRmH6l0YEEH8GHUDEQtv1QF
+         1ttKqoY+WiAtD2CO5/TpHOOPPazon1+cj6QppRrCnNVYNTS1Ie55s2MEtEcFhrDxK5yg
+         Yzbh+VA6xMU5DaZn/6Mfw0tmjxc939mrzU7WF5McMfnhDunzIw/4hGDbAD8tpMCr2e/P
+         /TporTXabcfJo/zsZ9eKUAT0ZmT8HQBKzm2q/1ITUobzud1RwUIg9is8dmrU0TPe4A09
+         Cijg==
+X-Gm-Message-State: ABy/qLaxZ37n9rLCP0Ac3WLtdGpvbcWxl8DBqLNxwhqw76FdNZSlOmVa
+	OW7u8fHQIpd+RasTvoWGJgTTVw==
+X-Google-Smtp-Source: APBJJlFFHXH/+LGEPJpqtFuaBMrabrPuHbxjrUl8Ip7uKk3unQpUdzH/+9V33TtYVrX78fV2kYevBg==
+X-Received: by 2002:a05:620a:1724:b0:768:1e00:76c4 with SMTP id az36-20020a05620a172400b007681e0076c4mr13167qkb.51.1690211473332;
+        Mon, 24 Jul 2023 08:11:13 -0700 (PDT)
+Received: from [192.168.1.31] (d-65-175-157-166.nh.cpe.atlanticbb.net. [65.175.157.166])
+        by smtp.gmail.com with ESMTPSA id y24-20020a37e318000000b00767d7fa3d05sm2993144qki.136.2023.07.24.08.11.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 08:11:12 -0700 (PDT)
+Message-ID: <2bef1006-3798-3fbe-87ad-4adfaee08cc0@google.com>
+Date: Mon, 24 Jul 2023 11:11:10 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAChPKzs_QBghSBfxMtTZoAsaRgwBK9dRXuXZg+tg2=wz=AuGgg@mail.gmail.com>
- <3d26842f-86a4-e897-44c2-00c55fadb64a@oracle.com>
-In-Reply-To: <3d26842f-86a4-e897-44c2-00c55fadb64a@oracle.com>
-From: Timofei Pushkin <pushkin.td@gmail.com>
-Date: Mon, 24 Jul 2023 18:04:43 +0300
-Message-ID: <CAChPKztZ9kaNw-PkhEq4UKidjVgKNnwLPKzYvLc6BcOOUtvEkQ@mail.gmail.com>
-Subject: Re: Question: CO-RE-enabled PT_REGS macros give strange results
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.12.0
+Subject: Re: [PATCHSET v4] sched: Implement BPF extensible scheduler class
+Content-Language: en-US
+To: Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
+ juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+ bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+ joshdon@google.com, pjt@google.com, derkling@google.com, haoluo@google.com,
+ dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+ riel@surriel.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ kernel-team@meta.com
+References: <20230711011412.100319-1-tj@kernel.org>
+ <ZLrQdTvzbmi5XFeq@slm.duckdns.org>
+From: Barret Rhoden <brho@google.com>
+In-Reply-To: <ZLrQdTvzbmi5XFeq@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.7 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jul 24, 2023 at 3:36=E2=80=AFPM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
->
-> On 24/07/2023 11:32, Timofei Pushkin wrote:
-> > Dear BPF community,
-> >
-> > I'm developing a perf_event BPF program which reads some register
-> > values (frame and instruction pointers in particular) from the context
-> > provided to it. I found that CO-RE-enabled PT_REGS macros give results
-> > different from the results of the usual PT_REGS  macros. I run the
-> > program on the same system I compiled it on, and so I cannot
-> > understand why the results differ and which ones should I use?
-> >
-> > From my tests, the results of the usual macros are the correct ones
-> > (e.g. I can symbolize the instruction pointers I get this way), but
-> > since I try to follow the CO-RE principle, it seems like I should be
-> > using the CO-RE-enabled variants instead.
-> >
-> > I did some experiments and found out that it is the
-> > bpf_probe_read_kernel part of the CO-RE-enabled PT_REGS macros that
-> > change the results and not __builtin_preserve_access_index. But I
-> > still don't get why exactly it changes the results.
-> >
->
-> Can you provide the exact usage of the BPF CO-RE macros that isn't
-> working, and the equivalent non-CO-RE version that is? Also if you
+Hi -
 
-As a minimal example, I wrote the following little BPF program which
-prints instruction pointers obtained with non-CO-RE and CO-RE macros:
+On 7/21/23 14:37, Tejun Heo wrote:
+> Hello,
+> 
+> It's been more than half a year since the initial posting of the patchset
+> and we are now at the fourth iteration. There have been some reviews around
+> specifics (should be all addressed now except for the ones Andrea raised on
+> this iteration) but none at high level. There also were some in-person and
+> off-list discussions. Some, I believe, are addressed by the cover letter but
+> it'd be nonetheless useful to delve into them on-list.
+> 
+> On our side, we've been diligently experimenting. 
 
-volatile const pid_t target_pid;
+On the google side, we're still experimenting and developing schedulers 
+based on ghost, which we think we can port over to sched_ext.
 
-SEC("perf_event")
-int do_test(struct bpf_perf_event_data *ctx) {
-    pid_t pid =3D bpf_get_current_pid_tgid();
-    if (pid !=3D target_pid) return 0;
+Specifically, I've been working on a framework to write multicore 
+schedulers in BPF called 'Flux'.  The idea in brief is to compose a 
+scheduler as a hierarchy of "subschedulers", where cpus allocations go 
+up and down the tree.
 
-    unsigned long p =3D PT_REGS_IP(&ctx->regs);
-    unsigned long p_core =3D PT_REGS_IP_CORE(&ctx->regs);
-    bpf_printk("non-CO-RE: %lx, CO-RE: %lx", p, p_core);
+Flux is open-source, but it needs the ghost kernel and our BPF 
+extensions currently (which are also open source, but harder to use for 
+people).  I'll send a proposal to talk about it at LPC in case people 
+are interested - if not the scheduler framework itself, then as a "this 
+is some crazy stuff people can do with BPF".
 
-    return 0;
-}
+As far as results go, I wrote a custom scheduler with Flux for our 
+Search app and have been testing it on our single-leaf loadtester.  The 
+initial results out of the box were pretty great: 17% QPS increase, 43% 
+p99 decrease (default settings for the loadtester).  But the loadtester 
+varies a bit, so it's hard to get reliable numbers out of it for an A/B 
+comparison of schedulers.  Overall, we run equal or better than CFS.  I 
+did a sweep across various offered loads, and we got 5% better QPS on 
+average, 30% better p99 latency, 6% lower utilization.  The better 
+numbers come under higher load, as you'd expect, when there are more 
+threads competing for the cpu.
 
-From user space, I set the target PID and attach the program to CPU
-clock perf events (error checking and cleanup omitted for brevity):
+The big caveat to those numbers is the single-leaf loadtester isn't a 
+representative test.  It's more of a microbenchmark.  Our next step is 
+to run a full cluster load test, which will give us a better signal.
 
-int main(int argc, char *argv[]) {
-    // Load the program also setting the target PID
-    struct test_program_bpf *skel =3D test_program_bpf__open();
-    skel->rodata->target_pid =3D (pid_t) strtol(argv[1], NULL, 10);
-    test_program_bpf__load(skel);
+Anyway, this scheduler is highly specific to our app, including shared 
+memory regions where the app's threads can tell us stuff like RPC 
+deadlines.  It's the sort of thing you could only reasonably do with a 
+pluggable scheduler like sched_ext or ghost.
 
-    // Attach to perf events
-    struct perf_event_attr attr =3D {
-        .type =3D PERF_TYPE_SOFTWARE,
-        .size =3D sizeof(struct perf_event_attr),
-        .config =3D PERF_COUNT_SW_CPU_CLOCK,
-        .sample_freq =3D 1,
-        .freq =3D true
-    };
-    for (int cpu_i =3D 0; cpu_i < libbpf_num_possible_cpus(); cpu_i++) {
-        int perf_fd =3D syscall(SYS_perf_event_open, &attr, -1, cpu_i, -1, =
-0);
-        bpf_program__attach_perf_event(skel->progs.do_test, perf_fd);
-    }
 
-    // Wait for Ctrl-C
-    pause();
-    return 0;
-}
+> We are comfortable with the current API. Everything we tried fit pretty
+> well. It will continue to evolve but sched_ext now seems mature enough for
+> initial inclusion. I suppose lack of response doesn't indicate tacit
+> agreement from everyone, so what are you guys all thinking?
 
-As an experiment, I launched a simple C program with an endless loop
-in main and started the BPF program above with its target PID set to
-the PID of this simple C program. Then by checking the virtual memory
-mapped for the C program (with "cat /proc/<PID>/maps"), I found out
-that its .text section got mapped into 55ca2577b000-55ca2577c000
-address space. When I checked the output of the BPF program, I got
-"non-CO-RE: 55ca2577b131, CO-RE: ffffa58810527e48". As you can see,
-the non-CO-RE result maps into the .text section of the launched C
-program (as it should since this is the value of the instruction
-pointer), while the CO-RE result does not.
-
-Alternatively, if I replace PT_REGS_IP and PT_REGS_IP_CORE with the
-equivalents for the stack pointer (PT_REGS_SP and PT_REGS_SP_CORE), I
-get results that correspond to the stack address space from the
-non-CO-RE macro, but I always get 0 from the CO-RE macro.
-
-> can provide details on the platform you're running on that will
-> help narrow down the issue. Thanks!
-
-Sure. I'm running Ubuntu 22.04.1, kernel version 5.19.0-46-generic,
-the architecture is x86_64, clang 14.0.0 is used to compile BPF
-programs with flags -g -O2 -D__TARGET_ARCH_x86.
+Btw, I backported your patchset to our "franken-kernel".  I was able to 
+boot it on one of our nodes, and run the search loadtest on CFS. 
+Nothing broke, performance was the same, etc.  Not a huge surprise, 
+since I didn't turn on sched_ext.  I haven't been able to get a 
+sched_ext scheduler to work yet with our kernel - there's more patch 
+backporting needed for your schedulers themselves (the bpf_for iterators 
+and whatnot).  I'll report back if/when I can get it running.
 
 Thanks,
-Timofei
 
->
-> Alan
->
-> > Thank you in advance,
-> > Timofei
-> >
+Barret
+
+
 
