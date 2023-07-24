@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-5761-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5762-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B33607600E4
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 23:09:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4124F7600F6
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 23:15:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62E18281369
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 21:09:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7183D1C20C75
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 21:15:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB2210971;
-	Mon, 24 Jul 2023 21:09:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5674310978;
+	Mon, 24 Jul 2023 21:15:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C91107B7
-	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 21:09:32 +0000 (UTC)
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FAA010FA
-	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 14:09:31 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-63d10da0f26so2868986d6.3
-        for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 14:09:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2390EDDC8
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 21:15:24 +0000 (UTC)
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09078E56
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 14:15:20 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-63cebd0a7c5so9953096d6.3
+        for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 14:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690232970; x=1690837770;
+        d=google.com; s=20221208; t=1690233319; x=1690838119;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=F4R7OXxyA6++6H908qvwT/4xVlAoInx/mRJrgLvZp3I=;
-        b=7VPLC3FM4ARsMPpxFByktScwoRDHY1+O3k6ji1oMHXcyc6BWzJO2kc65fqEz/njpKS
-         1e7OlV2JEjMDqg5/b/8JhzaVftGznHjCljWM27BrP56UMgo4L8DdTIELZGyd7UD9rWPk
-         qQbnqI5NpI7yY40RMK0+86Sbiiv6BJBD6PmxYo61TZv00unQD3dW63wIjlZ4uU5YLag4
-         6T0PNkCCqQKY3fRRiocbDQLEC+UAeiYQ8kf5hL3Z5wM+rOMs1zhoGu6GcqpFEj1KU9Dh
-         YSpeA+8GtomB9U/LAI/r00dP87tOUdSYkkqZmSXVpqurgoIAKEF3A5KjksJiib/fhSTg
-         muAA==
+        bh=w4rysK55oB8iprX5PsN92lskw7NnrBKRNpCCq0EizyQ=;
+        b=1BXELcHUXg/+rCkwfBoa14IfiR2Q6aqU9PgFbw47oz0uC3np3HFNCaFz7ScGSD5/Mq
+         DQ2deQyYa6L8MreNAP/kbkznCiJ5lVuxnhfnrHFfd7TilrEZNfgf05J4hKAWXPiFXCKp
+         w2saThXCYP65xSFqvvNKuNizMsmiRJkbU1CrPzPT6jgiRpEfH5PpOv1qTdGsIVNhCvAe
+         Gntw2xb1FeAwbgsih7FPFGkyqFi3TaKSwJrgCjzW3MJ1FEezE8GysHleA1+80rYFJBqh
+         nI1ugr89BQt/oT26XVioNDLE/paobBJMMPO2VpTFOpV8yTf+D95fnySZsTO0RH7SoWAV
+         YxUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690232970; x=1690837770;
+        d=1e100.net; s=20221208; t=1690233319; x=1690838119;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=F4R7OXxyA6++6H908qvwT/4xVlAoInx/mRJrgLvZp3I=;
-        b=K0ucWrGlHIwb6WAXzYhv03ODGFwwxIdyaKfA385lUWbLAjxgvPcUc49atvmWTfI9nm
-         6XagDnIEqCIUDF2WsyZSofDsZrlGKgSFoigH1QHhNjq4FDfMF8E/pyo/RjqPeIku6IG6
-         lx/qG6ePSESopaHQGheMcEaII4+OJF3su6g6m/Owds8ZNyrhyMC8gWrqh21ph40yhSTv
-         hKv06qsqAgRYaAGw6K2nhicXFCzOinf5cg4fmRTjKcejDe9DpYTA+I0WhQKO4WMRSCTO
-         7tEf6KEWGqGUDe2eUQ50ft04UY94oGkD46zghej9FW4C28/QH5zrwZLLqf7FkEcCwv75
-         kLSA==
-X-Gm-Message-State: ABy/qLZWXH5vOhjoXHrmxuB1n6S3iybYuo/k2VqocfeWssfy+TLInv9m
-	PR9rbWhVsKSi1VA++VBB9sxciw6x/OIAPsjlGg7vrw==
-X-Google-Smtp-Source: APBJJlEVIiJyEgN+QVsm2PLjyvD1Ou20SgK8rwynWuqyeHMek9W1M6VLm3dl9IiVVE8IhJUcTcukic+uVZi3kHIPE+c=
-X-Received: by 2002:a05:6214:11b0:b0:63c:fac8:ec0b with SMTP id
- u16-20020a05621411b000b0063cfac8ec0bmr786313qvv.39.1690232970451; Mon, 24 Jul
- 2023 14:09:30 -0700 (PDT)
+        bh=w4rysK55oB8iprX5PsN92lskw7NnrBKRNpCCq0EizyQ=;
+        b=UxMDX/BtSjkqEb0b6DGjtuutZjF6wWbKSKYdufSYT2GMm2LRetG+1CTa3O7cBRChrv
+         pW+6zFclWDh3VhJdV//4GbTYMuaQtGlIpXjJMFLJ47I3CvNBhaRxTbfWU78MoTEgCMqH
+         kiJA/a/MvkxaLjWy7UtwIDu5JveTN17lI1037wocgfViCS/fYpB0VXolE0KLEHnO8YXz
+         W8ufhzpYFKkxQxof0OgjBlPgLgG4/Th/zbQsfu/75t0YfUTL2SbTyhCncd6bIHrPOZ/w
+         apAMPVBhVj+Aq05df8PJOta3n/FmwHho1sBiZdoqvDCcuT4abt9YGUfVL7pqF684SZEO
+         9kJg==
+X-Gm-Message-State: ABy/qLZ65qEFcfMr7yjylBNJnZlMlGwJsfFkExlZqzf2bFH2JwdPngL7
+	DS1rUOkDzsbZ6cLDSeuT3Ph0v26uhh3mAGQOrKgDOA==
+X-Google-Smtp-Source: APBJJlGzkKPEZS/cCDJEywZijBo4Ycb4UpPFNxCPqzb5sG8S3hNQy1Vf6sw4+I8SpcgyjWOXfG3YKaJb/rNkKkoJIKU=
+X-Received: by 2002:a0c:facf:0:b0:635:e4ed:b6c9 with SMTP id
+ p15-20020a0cfacf000000b00635e4edb6c9mr949080qvo.24.1690233319030; Mon, 24 Jul
+ 2023 14:15:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230724201247.748146-1-irogers@google.com> <20230724201247.748146-2-irogers@google.com>
-In-Reply-To: <20230724201247.748146-2-irogers@google.com>
+References: <20230724201247.748146-1-irogers@google.com>
+In-Reply-To: <20230724201247.748146-1-irogers@google.com>
 From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Mon, 24 Jul 2023 14:09:19 -0700
-Message-ID: <CAKwvOdnNgd9QgvrR5H2rL8eb1Qc--ELCcOie8Bv=xTFqg9Zh-A@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] perf stat: Avoid uninitialized use of perf_stat_config
+Date: Mon, 24 Jul 2023 14:15:07 -0700
+Message-ID: <CAKwvOd=12eSPyc5ZRgm8NPMJYjj13QOxcnHtv_Y7Ws-zffyUrA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/4] Perf tool LTO support
 To: Ian Rogers <irogers@google.com>
 Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
@@ -89,65 +89,18 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 On Mon, Jul 24, 2023 at 1:12=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
 te:
 >
-> perf_event__read_stat_config will assign values based on number of
-> tags and tag values. Initialize the structs to zero before they are
-> assigned so that no uninitialized values can be seen.
->
-> This potential error was reported by GCC with LTO enabled.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/tests/stat.c | 2 +-
->  tools/perf/util/stat.c  | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/tests/stat.c b/tools/perf/tests/stat.c
-> index 500974040fe3..706780fb5695 100644
-> --- a/tools/perf/tests/stat.c
-> +++ b/tools/perf/tests/stat.c
-> @@ -27,7 +27,7 @@ static int process_stat_config_event(struct perf_tool *=
-tool __maybe_unused,
->                                      struct machine *machine __maybe_unus=
-ed)
->  {
->         struct perf_record_stat_config *config =3D &event->stat_config;
-> -       struct perf_stat_config stat_config;
-> +       struct perf_stat_config stat_config =3D {};
+> Add a build flag, LTO=3D1, so that perf is built with the -flto
+> flag. Address some build errors this configuration throws up.
 
-^ how did this code ever work?
+Hi Ian,
+Thanks for the performance numbers. Any sense of what the build time
+numbers might look like for building perf with LTO?
 
-1. stat_config is not initialized
-2. perf_event__read_stat_config maybe assigns to &stat_config->__val
-3. process_stat_config_event() tests other members of stat_config
-
-I hope I've missed something obvious.
-
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
->
->  #define HAS(term, val) \
->         has_term(config, PERF_STAT_CONFIG_TERM__##term, val)
-> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
-> index 967e583392c7..ec3506042217 100644
-> --- a/tools/perf/util/stat.c
-> +++ b/tools/perf/util/stat.c
-> @@ -729,7 +729,7 @@ size_t perf_event__fprintf_stat_round(union perf_even=
-t *event, FILE *fp)
->
->  size_t perf_event__fprintf_stat_config(union perf_event *event, FILE *fp=
-)
->  {
-> -       struct perf_stat_config sc;
-> +       struct perf_stat_config sc =3D {};
->         size_t ret;
->
->         perf_event__read_stat_config(&sc, &event->stat_config);
-> --
-> 2.41.0.487.g6d72f3e995-goog
->
-
-
+Does `-flto=3Dthin` in clang's case make a meaningful difference of
+`-flto`? I'd recommend that over "full LTO" `-flto` when the
+performance difference of the result isn't too meaningful.  ThinLTO
+should be faster to build, but I don't know that I've ever built perf,
+so IDK what to expect.
 --=20
 Thanks,
 ~Nick Desaulniers
