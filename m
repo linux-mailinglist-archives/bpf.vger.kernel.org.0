@@ -1,258 +1,198 @@
-Return-Path: <bpf+bounces-5724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79DEA75FB17
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 17:46:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A704775FBB8
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 18:18:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37B502814D2
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 15:46:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 629BC281555
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 16:18:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F205DF59;
-	Mon, 24 Jul 2023 15:46:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77DEF4F7;
+	Mon, 24 Jul 2023 16:18:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F687D507;
-	Mon, 24 Jul 2023 15:46:06 +0000 (UTC)
-Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020025.outbound.protection.outlook.com [52.101.56.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7EFE61;
-	Mon, 24 Jul 2023 08:46:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cNRfKRFZX1dLAZ+4RjYX1hw5tqsUL+9wrh8MHJox52JoDbp5MfeLjBB1oZf+6ucTMRIXKOtWdCSzZCNfVCSMlru+aGDFHkiyiQYXUdACbvkg30aGYZYInhhI/mvDZQUG+/50E0TFw3/mHmzvFf4KBT5wdrNidoFvV/DzVjeVFqmoGaIeCKK63CrYT9WNJnd85d/zl1ivT9OINzbZisusPG6O/zZS7wamZPNfmlkelX9JNcopg/vFXqDjDmTdZaFycUMAei5vVQ1lKaHStbFOrIpzZXfFHrfxosuY/FyjP+10uILe91sMnDlR/Y1xyTOdFt1/e55Xnr+x7dEshz2VNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pu75WyEQiSdPQx4qbpSOAMTnmeBGNkFYSert3oNa2TE=;
- b=H6hoT9mGFJEpna0BmIRCE8gXxbtIxPSsurghue19Y6kyxUiDxzCrrZLsMCDrqR6lEcEmibbv8W0UiAxGNLOuSoLFmkue7BJLRG1+fUe1Wm/6srDt4QxP1NK+PWjLF5dVu61lxSfh4WBJ4kmmIKgEctkmsBqGGCjFc2XCLFHLcCaMZAm9wCdPom6CysZU2noLFuH8qlNy6ugvZxgZg7Uo+zjgF5We00UgRd5agJlrr3xMiqOK7rO+ZwJI35rlC3KOI1s1EQLSybe9bQFFb6yNo7ZA1IJlB0gR5RlqLqDApmkAZ1fGEqmzh52fQBiHSWXTK5FRwVydC2FOO4neZkKNIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pu75WyEQiSdPQx4qbpSOAMTnmeBGNkFYSert3oNa2TE=;
- b=If1drKKy8/tm7Hs+ZdUu4DKe5Ojs3NPUYk4JZk4sVIcK+QwVw0XCa1WfBUn9wEMTQUGxMqDJXkjiW5vTKSa0gN2Vd96NUVTqO/TNsP5upyOlkU0tcqIxJzTGX0jW/aLIlZ4JT5IrT9s5dno22pq3eQQyqqU0aSmzxX1nCICcm2o=
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
- by BY5PR21MB1425.namprd21.prod.outlook.com (2603:10b6:a03:237::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.3; Mon, 24 Jul
- 2023 15:46:01 +0000
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::d2:cad1:318e:224b]) by PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::d2:cad1:318e:224b%7]) with mapi id 15.20.6652.002; Mon, 24 Jul 2023
- 15:46:01 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: Jesper Dangaard Brouer <jbrouer@redhat.com>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC: "brouer@redhat.com" <brouer@redhat.com>, Dexuan Cui <decui@microsoft.com>,
-	KY Srinivasan <kys@microsoft.com>, Paul Rosswurm <paulros@microsoft.com>,
-	"olaf@aepfle.de" <olaf@aepfle.de>, "vkuznets@redhat.com"
-	<vkuznets@redhat.com>, "davem@davemloft.net" <davem@davemloft.net>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>, "edumazet@google.com"
-	<edumazet@google.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, "leon@kernel.org" <leon@kernel.org>,
-	Long Li <longli@microsoft.com>, "ssengar@linux.microsoft.com"
-	<ssengar@linux.microsoft.com>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, Ajay Sharma
-	<sharmaajay@microsoft.com>, "hawk@kernel.org" <hawk@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "shradhagupta@linux.microsoft.com"
-	<shradhagupta@linux.microsoft.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Ilias Apalodimas
-	<ilias.apalodimas@linaro.org>, Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: RE: [PATCH V3,net-next] net: mana: Add page pool for RX buffers
-Thread-Topic: [PATCH V3,net-next] net: mana: Add page pool for RX buffers
-Thread-Index: AQHZvAZSl8pOb40fXE2pDlV9gZuDN6/IzCkAgABE5NA=
-Date: Mon, 24 Jul 2023 15:46:01 +0000
-Message-ID:
- <PH7PR21MB3116F8A97F3626AB04915B96CA02A@PH7PR21MB3116.namprd21.prod.outlook.com>
-References: <1689966321-17337-1-git-send-email-haiyangz@microsoft.com>
- <1af55bbb-7aff-e575-8dc1-8ba64b924580@redhat.com>
-In-Reply-To: <1af55bbb-7aff-e575-8dc1-8ba64b924580@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c6d1dca0-82a5-4594-bb8b-68dcecd3c549;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-24T15:36:01Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|BY5PR21MB1425:EE_
-x-ms-office365-filtering-correlation-id: 1f71a066-3da6-48b7-54db-08db8c5d1522
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- zdRAyB4+tAUOsO2Q/Wdtm0dpa5nlpeD45xZ/grD3WWCNA3JJPMtl/13jeTZiyrQbLbemrXcaXKsCpz7f0il28cgKX1MThIkAGUvxRDZjJw0i8IpZHAES81oQTjbkpIaPpsGlfJSWUyJTnm29J3CrTo/Bh3TxRUdhJ7CdOremFOlUS1oGpEUysFSVbFZjkBYiqfl5SN29XvzyDLyuWvJiDFYQ73ElOY+4GjbnRyA/Q1wgftD15Fb3ne4IaNu0Wrt8DBsqm8ibO2324pM5tv8J/QCRfczwSnWFbKhKDro2N8qNXnEB370e/CVy03fwa/1CHBrPLwGXBjiZ/2g2zdety71r30ZSKuUKAB739yzJanrK3Q7TEibD0y0SPpTynedltHgbQaRRKypMCXQTJJh4rZnbUaDC/kjC18UXoVgkr2dVvPclWL7vMquwUb3A816FNQhERIIjpwmSAvbEuvIZDvdTr9wU7e50IrTlonXMwfB3ZVtXTLPtcpv19N+q070wRMdztjK9FuiJT05KboN4qmUSKtBMjJh70qY2RPkuAK2KY3TP2tL04YNVOVRLiC7QUq+PQFY+kwExGICCv53iaD3fGgysZnUgYrFCi+0t3RAXoLjJH8m8jxYmoIzpZj8QrC0J07cQREdgleURSojlLK+0CnYbS/xUJKJukb2VTVs=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(39860400002)(396003)(346002)(376002)(451199021)(122000001)(38100700002)(71200400001)(9686003)(55016003)(41300700001)(8676002)(8936002)(82960400001)(82950400001)(478600001)(10290500003)(110136005)(54906003)(66476007)(4326008)(66946007)(66446008)(66556008)(64756008)(76116006)(8990500004)(316002)(7696005)(38070700005)(83380400001)(86362001)(2906002)(6506007)(5660300002)(7416002)(53546011)(52536014)(33656002)(186003)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?BFZHFiou+iCCVFaD9FU08Dsd1CnuZNYPQrW7u6LwJiUqeAWwPzmS8eZig86u?=
- =?us-ascii?Q?B0PLpOEDD4yETc/pkhztZNn+uFg4NCGSZLm942ND4Bj5vdkHXD2mxicsu2Lk?=
- =?us-ascii?Q?YP3FUl0U4CKrZn+BxqyYEhH5Iaf4NVEiIWL5OpaFzGGADcug7dy43sgLDam4?=
- =?us-ascii?Q?Gm8/4kL7U0cn+TQGxAbff1niSd3OO6wsn/UTTEh9JVd6YZO1N8xqhTB4acjl?=
- =?us-ascii?Q?VQFqtpTZhkFmQLPhWRop4HuQKc/mSbJjCLP2K1ELbRgTedPZJazAObuYohTq?=
- =?us-ascii?Q?/fjWuWVhDqHDDl4BcN53fyuAObiGmc1yY9Vx0ToReS+l2QfCbtLoGM41/GlD?=
- =?us-ascii?Q?YMtWGaESxi3uVoCltL42v6kP9RNgXCozXyVyOJ+OriquyZDDDa76XFli5nHJ?=
- =?us-ascii?Q?m1YP5y3mJVmunwGzlp9n2jsYN1t+tj8BMD5HTPc9vRl6OYifqzrfMHr+Tam3?=
- =?us-ascii?Q?cBk7zIRXGsDGMH3r7gN72CJ2eTOTbDgOQHksTFvt40PYwNogjralSuQwfGjo?=
- =?us-ascii?Q?lqiuXB8ZNPp6uP87FqGuCGWsqEBCxLBPcaexj80iXZBp1K17BlPcLqWJM7ya?=
- =?us-ascii?Q?xDjU0vgRzLFUhs4rVuMUt3XKG4ZxtK20g3GZZGs76GzBVyd1C6EakEDf6TJu?=
- =?us-ascii?Q?LKy5cHbnDbC4OIqSRXePSF6L8s6VHvJkFYfZIg57sW1VPaMZAsVVmrKdOxt0?=
- =?us-ascii?Q?BpAUCGiFRk+EsnjZarlw/i15ZkpGUP8dOGjLd0VvPN1rqaEXLB9BSbIJcc2I?=
- =?us-ascii?Q?fcrEyH2GVL6Mh6g8AM0Wws5TW/faqUvaexLcXEl0jd0QwQgvDhJJlBEoKLSI?=
- =?us-ascii?Q?952+GPc7KpRBx1bWTckqLFXlDwFjPFjDis1CYuoF0K3gjuZe+KG2Y+I+nsup?=
- =?us-ascii?Q?kws1Bv0d5OYkwWJjPK63eYkQobbx4/dP5if2+cY3x5mXMWeuyev+gPjf/PUB?=
- =?us-ascii?Q?s/zTqvryzkldt2w1cQtAqbidDJ4DT54Rc+t9XwIEvm2qgUFwcjlfbXqxayjQ?=
- =?us-ascii?Q?9bUHgxIGRZsLFduZGH6hSXJoxSW5P5e8Un3FfEyC14YhBUVW4wkT25PAkefv?=
- =?us-ascii?Q?D+s6m259Yj5FxnqVsNtA+YIMNQmxcAbek41Ug7EWFLDuPUlBdXJnBZyxAY+i?=
- =?us-ascii?Q?pngQO51W0HIjN4UazUUnedG0AJXZmPZt3XnopaKGd5MbD7/PvQYGyrLkQ9m3?=
- =?us-ascii?Q?kLAbBUaj0bt7Kxz8DfMyCDkJTZ3iWnop0mkC0YMnrRu5xSFIHD1DQuiioOtj?=
- =?us-ascii?Q?sQeQlUJ5v0aBbxwoLiRlXBD0IMQYSPkCmeQHasGOBiWbw59zIHdg5VC+s1ar?=
- =?us-ascii?Q?ZxVXD8/irHe0lLU1Fhe4MCILYnmL/q0ZfWVhZUM+/esyAgTRcWmr2rvOQ/Ee?=
- =?us-ascii?Q?inBjwOZMjgDuvfmXJajs9TeGSJaJCxn0D2dBnOHm/B2Qb4dKBXAdY5f+0AJp?=
- =?us-ascii?Q?dENiW3Zgcjvj1o0Sr0EkOnkM97g72kUmVqgQEXPJJMY3PnGlz9p2SalOJJ1y?=
- =?us-ascii?Q?gYSgI4EwO0ZKHe8EsJf/Sn3DtQ62XbNkEIzp1NG/K01Qf6w878EWgVH0npsV?=
- =?us-ascii?Q?ek924Tzqkiba2p/gpWbLvxCJe+nD33RPsPl3Tu/e?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942BFDF6D
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 16:18:08 +0000 (UTC)
+Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C94110C7
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 09:18:05 -0700 (PDT)
+Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6b9c82fe107so8473790a34.2
+        for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 09:18:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690215485; x=1690820285;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2E7xmX0eU0Mn68aP8lciI8pTH72hkvKmFi2359KdEhI=;
+        b=TmyCJcqDf+6DsepDeF9Yg4qNIW2nhDUADiYolbhP2Y61fVZYcycYBzcC7wl9HjXHtZ
+         2DGrw3P2wfb3koK6aZdIMD6nHqybU4REQkd1PwcKowdNsdVm031f3DjX2Q+sU/FAhlyF
+         Afj3pAvhHLUQmXZRax2IZiJjkI4US6xEHpeJH0dQYD43IE6ULatjziECpqopayoFjfE4
+         14bE9OEsuvXm5n7FMhXlA1bABbHjrMdEJ5PpvB2P5lRyMvwzvniFqMUdTkOw69ee+M+q
+         Jpm+aMx5CjKkEvT0ndYVvUaqfgC0/TZYi6F9+13RGwWMa6ABPMtK4TzK/7S0iSraM0Vy
+         ndOg==
+X-Gm-Message-State: ABy/qLZzpzh1+h7ScpTYOADevPWYB4+XJkN7TEsVR7VbqtDXinpXTYb8
+	hkW1vbJiUshykNB37JT51e/i3NU+vmwcGf48qzZ3gjPeSEzyhILFQg==
+X-Google-Smtp-Source: APBJJlEOAlcJyPfi9I5YEj+pZ5mwDeDVBF5Ciuk0lLGH+F2DH1MTPhqdZmoTnwFnLBoeVhAcUNIUqD75L5zlUK3+H1oySAATXCMO
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f71a066-3da6-48b7-54db-08db8c5d1522
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jul 2023 15:46:01.7183
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xIL+y0jUG5MlouwZJsj+P0mIY0FFUAN9YnqeODMreuhQl7q1pm1ab5eTwwHORdYu81Egz+1UYAV3DrKpoaIvLQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR21MB1425
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6830:1145:b0:6bb:2e2c:c6c7 with SMTP id
+ x5-20020a056830114500b006bb2e2cc6c7mr3811289otq.4.1690215484868; Mon, 24 Jul
+ 2023 09:18:04 -0700 (PDT)
+Date: Mon, 24 Jul 2023 09:18:04 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000091ce6f06013df598@google.com>
+Subject: [syzbot] [net?] [reiserfs?] [fat?] stack segment fault in __stack_depot_save
+From: syzbot <syzbot+1f564413055af2023f17@syzkaller.appspotmail.com>
+To: bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	reiserfs-devel@vger.kernel.org, sj1557.seo@samsung.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    d192f5382581 Merge tag 'arm64-fixes' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11ddd9baa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=77b9a3cf8f44c6da
+dashboard link: https://syzkaller.appspot.com/bug?extid=1f564413055af2023f17
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154f89d6a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=135c4f9aa80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/80468c74d86a/disk-d192f538.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/36cbfe6495ed/vmlinux-d192f538.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6c7dc916e910/bzImage-d192f538.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/16e268b0a8de/mount_1.gz
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16737b76a80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15737b76a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11737b76a80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1f564413055af2023f17@syzkaller.appspotmail.com
+
+stack segment: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 5023 Comm: syz-executor354 Not tainted 6.5.0-rc2-syzkaller-00307-gd192f5382581 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+RIP: 0010:find_stack lib/stackdepot.c:350 [inline]
+RIP: 0010:__stack_depot_save+0x15e/0x510 lib/stackdepot.c:390
+Code: 29 c0 89 c3 48 8b 05 49 07 f0 0d 89 d9 23 0d 39 07 f0 0d 48 8d 0c c8 48 8b 29 48 85 ed 75 0b eb 70 48 8b 6d 00 48 85 ed 74 67 <39> 5d 08 75 f2 44 3b 7d 0c 75 ec 31 c0 48 8b 74 c5 18 49 39 34 c6
+RSP: 0018:ffffc90003d2f4b0 EFLAGS: 00010206
+
+RAX: ffff88823b400000 RBX: 0000000051095974 RCX: ffff88823b8acba0
+RDX: 000000000000000e RSI: 0000000000000001 RDI: 000000002f730f6d
+RBP: 4c8b480000441f0f R08: 00000000a4fca10e R09: fffffbfff1d56faa
+R10: ffffffff8eab7d57 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000cc0 R14: ffffc90003d2f518 R15: 000000000000000e
+FS:  000055555739b480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8d752ba000 CR3: 00000000760e2000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ kasan_save_stack+0x43/0x50 mm/kasan/common.c:46
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ __kasan_slab_alloc+0x81/0x90 mm/kasan/common.c:328
+ kasan_slab_alloc include/linux/kasan.h:186 [inline]
+ slab_post_alloc_hook mm/slab.h:762 [inline]
+ slab_alloc_node mm/slub.c:3470 [inline]
+ kmem_cache_alloc_node+0x185/0x3f0 mm/slub.c:3515
+ __alloc_skb+0x287/0x330 net/core/skbuff.c:634
+ alloc_skb include/linux/skbuff.h:1289 [inline]
+ nlmsg_new include/net/netlink.h:1003 [inline]
+ netlink_ack+0x305/0x1370 net/netlink/af_netlink.c:2486
+ netlink_rcv_skb+0x345/0x440 net/netlink/af_netlink.c:2555
+ netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
+ netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
+ netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
+ sock_sendmsg_nosec net/socket.c:725 [inline]
+ sock_sendmsg+0xd9/0x180 net/socket.c:748
+ __sys_sendto+0x255/0x340 net/socket.c:2134
+ __do_sys_sendto net/socket.c:2146 [inline]
+ __se_sys_sendto net/socket.c:2142 [inline]
+ __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2142
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f8d7d324613
+Code: 64 89 02 48 c7 c0 ff ff ff ff eb b7 66 2e 0f 1f 84 00 00 00 00 00 90 80 3d b1 5a 08 00 00 41 89 ca 74 14 b8 2c 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 75 c3 0f 1f 40 00 55 48 83 ec 30 44 89 4c 24
+RSP: 002b:00007ffd7dc7abf8 EFLAGS: 00000202
+ ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 00007f8d7d3ac840 RCX: 00007f8d7d324613
+RDX: 0000000000000028 RSI: 00007f8d7d3ac890 RDI: 0000000000000003
+RBP: 0000000000000003 R08: 00007ffd7dc7ac14 R09: 000000000000000c
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000001
+R13: 0000000000000000 R14: 00007f8d7d3ac890 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+----------------
+Code disassembly (best guess):
+   0:	29 c0                	sub    %eax,%eax
+   2:	89 c3                	mov    %eax,%ebx
+   4:	48 8b 05 49 07 f0 0d 	mov    0xdf00749(%rip),%rax        # 0xdf00754
+   b:	89 d9                	mov    %ebx,%ecx
+   d:	23 0d 39 07 f0 0d    	and    0xdf00739(%rip),%ecx        # 0xdf0074c
+  13:	48 8d 0c c8          	lea    (%rax,%rcx,8),%rcx
+  17:	48 8b 29             	mov    (%rcx),%rbp
+  1a:	48 85 ed             	test   %rbp,%rbp
+  1d:	75 0b                	jne    0x2a
+  1f:	eb 70                	jmp    0x91
+  21:	48 8b 6d 00          	mov    0x0(%rbp),%rbp
+  25:	48 85 ed             	test   %rbp,%rbp
+  28:	74 67                	je     0x91
+* 2a:	39 5d 08             	cmp    %ebx,0x8(%rbp) <-- trapping instruction
+  2d:	75 f2                	jne    0x21
+  2f:	44 3b 7d 0c          	cmp    0xc(%rbp),%r15d
+  33:	75 ec                	jne    0x21
+  35:	31 c0                	xor    %eax,%eax
+  37:	48 8b 74 c5 18       	mov    0x18(%rbp,%rax,8),%rsi
+  3c:	49 39 34 c6          	cmp    %rsi,(%r14,%rax,8)
 
 
-> -----Original Message-----
-> From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-> Sent: Monday, July 24, 2023 7:29 AM
-> To: Haiyang Zhang <haiyangz@microsoft.com>; linux-hyperv@vger.kernel.org;
-> netdev@vger.kernel.org
-> Cc: brouer@redhat.com; Dexuan Cui <decui@microsoft.com>; KY Srinivasan
-> <kys@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>;
-> olaf@aepfle.de; vkuznets@redhat.com; davem@davemloft.net;
-> wei.liu@kernel.org; edumazet@google.com; kuba@kernel.org;
-> pabeni@redhat.com; leon@kernel.org; Long Li <longli@microsoft.com>;
-> ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
-> daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
-> ast@kernel.org; Ajay Sharma <sharmaajay@microsoft.com>; hawk@kernel.org;
-> tglx@linutronix.de; shradhagupta@linux.microsoft.com; linux-
-> kernel@vger.kernel.org; Ilias Apalodimas <ilias.apalodimas@linaro.org>; J=
-esper
-> Dangaard Brouer <hawk@kernel.org>
-> Subject: Re: [PATCH V3,net-next] net: mana: Add page pool for RX buffers
->=20
->=20
->=20
-> On 21/07/2023 21.05, Haiyang Zhang wrote:
-> > Add page pool for RX buffers for faster buffer cycle and reduce CPU
-> > usage.
-> >
-> > The standard page pool API is used.
-> >
-> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > ---
-> > V3:
-> > Update xdp mem model, pool param, alloc as suggested by Jakub Kicinski
-> > V2:
-> > Use the standard page pool API as suggested by Jesper Dangaard Brouer
-> >
-> > ---
-> >   drivers/net/ethernet/microsoft/mana/mana_en.c | 91 +++++++++++++++---=
--
-> >   include/net/mana/mana.h                       |  3 +
-> >   2 files changed, 78 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > index a499e460594b..4307f25f8c7a 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> [...]
-> > @@ -1659,6 +1679,8 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
-> >
-> >   	if (rxq->xdp_flush)
-> >   		xdp_do_flush();
-> > +
-> > +	page_pool_nid_changed(rxq->page_pool, numa_mem_id());
->=20
-> I don't think this page_pool_nid_changed() called is needed, if you do
-> as I suggest below (nid =3D NUMA_NO_NODE).
->=20
->=20
-> >   }
-> >
-> >   static int mana_cq_handler(void *context, struct gdma_queue
-> *gdma_queue)
-> [...]
->=20
-> > @@ -2008,6 +2041,25 @@ static int mana_push_wqe(struct mana_rxq *rxq)
-> >   	return 0;
-> >   }
-> >
-> > +static int mana_create_page_pool(struct mana_rxq *rxq)
-> > +{
-> > +	struct page_pool_params pprm =3D {};
->=20
-> You are implicitly assigning NUMA node id zero.
->=20
-> > +	int ret;
-> > +
-> > +	pprm.pool_size =3D RX_BUFFERS_PER_QUEUE;
-> > +	pprm.napi =3D &rxq->rx_cq.napi;
->=20
-> You likely want to assign pprm.nid to NUMA_NO_NODE
->=20
->   pprm.nid =3D NUMA_NO_NODE;
->=20
-> For most drivers it is recommended to assign ``NUMA_NO_NODE`` (value -1)
-> as the NUMA ID to ``pp_params.nid``. When ``CONFIG_NUMA`` is enabled
-> this setting will automatically select the (preferred) NUMA node (via
-> ``numa_mem_id()``) based on where NAPI RX-processing is currently
-> running. The effect is that page_pool will only use recycled memory when
-> NUMA node match running CPU. This assumes CPU refilling driver RX-ring
-> will also run RX-NAPI.
->=20
-> If a driver want more control over the NUMA node memory selection,
-> drivers can assign (``pp_params.nid``) something else than
-> `NUMA_NO_NODE`` and runtime adjust via function
-> ``page_pool_nid_changed()``.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Our driver is using NUMA 0 by default, so I implicitly assign NUMA node id=
-=20
-to zero during pool init.=20
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-And, if the IRQ/CPU affinity is changed, the page_pool_nid_changed()
-will update the nid for the pool. Does this sound good?
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Thanks,
--Haiyang
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
