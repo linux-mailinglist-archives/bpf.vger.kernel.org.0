@@ -1,80 +1,78 @@
-Return-Path: <bpf+bounces-5731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA68375FEAC
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 20:00:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 238A475FEAF
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 20:01:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FAE2281555
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 18:00:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53AFB1C20BE5
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 18:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E925100A7;
-	Mon, 24 Jul 2023 18:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178E6100AA;
+	Mon, 24 Jul 2023 18:01:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CD4F9E5
-	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 18:00:26 +0000 (UTC)
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86590172D;
-	Mon, 24 Jul 2023 11:00:25 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b72161c6e9so71276461fa.0;
-        Mon, 24 Jul 2023 11:00:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5B7F4E9
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 18:01:22 +0000 (UTC)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18001E49;
+	Mon, 24 Jul 2023 11:01:21 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b93fba1f62so66251981fa.1;
+        Mon, 24 Jul 2023 11:01:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690221624; x=1690826424;
+        d=gmail.com; s=20221208; t=1690221679; x=1690826479;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KKpNqY8f0mYa5U7e/O0Zjuwp+qRiTKpk1WGgmDNW+UA=;
-        b=FbvwyX+AsInXMX78Myxy7I9+awMLOiQcB/aIRdDKHB9IxVBEg5p4aQTqtWhvcdzmGC
-         gXuEePJrW9qJYWN2iqHS/bM8pm0aOQNRmXoodpJH3ZzBmy7Ulp4agyjRXtE08EDcZFu0
-         CEe3zGmNRTnLu9IMtDrJO2EIyO0W3v5PiBZB0I6XIwAhtoegGRf53vnjzXEM9VxpDpWg
-         UR9Qw7n4eDCPAo25RkrP0X5oWad3qMwXFocs41TsLg2HRV7zQPEehY6Tm/9ZCbUF9TCm
-         FOlh2I0gfiOYfSPtO8xkcsvmFrltHWVlfPeHfS4T9zJYDgPWGMuTvDAhE4ndd6ifITj3
-         iDNg==
+        bh=THEbzcx3xoXEvYlAjRKvBcVanBYYoQVNYXaib1QFZgY=;
+        b=S4ZsDsooAfiVuW6SIhRmX6Jzg5me/hpoTYcowI1a+YOD1gLtEYSNv+WQvJJR3kRMkh
+         lk/L2fUU7hqas8A7mcOuWvAhME5SUxFL5qcAvXNff3ovTKJHoBrPjmy2Vrx7H2xoRmb2
+         wu5NgQyU7RlmjUOa5R8m2FujkkIdUe8SHiRPZ5F1/aYTesU3yaGYZ3NLAdOHGuEX8c1G
+         Pe2vK0kIdbVWFJONQvKMeFX34yxSBwow68wTs43iKeCVDGk1WZP85EJpspKQG+z00nlJ
+         1hZbNpB914WkQbwtL7C8Vp8kWyMFEn1EqX2HGHKCckOzeN2/BGtQfvf29qOnoHyhvD9F
+         YkMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690221624; x=1690826424;
+        d=1e100.net; s=20221208; t=1690221679; x=1690826479;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KKpNqY8f0mYa5U7e/O0Zjuwp+qRiTKpk1WGgmDNW+UA=;
-        b=Y/mK3ynXEpSIWcy2Pf7WF/oahX3OGk6mj5+Tg0ICED1JIzSQzYN/f2FEFFiR3FLM1C
-         yN0eie9WKx09GyNTCsG/LFbLe+ko6qkVMAxLBXz1qX+EHW6+X7ozDj5Ws7clyohveOaq
-         up02gOnFWOAoS+oJ7LW0g3t+pkXEKdC5JR9uOQg93sp2I7TvMwcPJxb+rO+AEe8wPLpV
-         MSnfiPt380/e8NGdY7UwdSWPQSF1son2v3SJ+aIMhzskAfpXprYC+qWxW5hu594eEjoE
-         XcKQb9Xxxt4EV4RV2qP09ORzJ3Ce0LrGBPnJVSUsgkBdReYXUC4CAX9ztiPBiYFNeiBA
-         QfnA==
-X-Gm-Message-State: ABy/qLZ8bMPgDBoxjwdCkL3bBEDtT+Wbr9Va47TA0w38dzgrWp+BvRKh
-	FKblwJkqx9lFf3uLjO4WlKtpwIUSjgUfvFEu+wfy/CYbKOg=
-X-Google-Smtp-Source: APBJJlGG8Y8e6dULSlz63EvXQGy4YB1ETqEmsIT8QVfD3RSr2wLtndkuG+l5yepNg2/InFB0JX9CpteBKIcDVBvar00=
-X-Received: by 2002:a2e:b54a:0:b0:2b8:3974:60fb with SMTP id
- a10-20020a2eb54a000000b002b8397460fbmr5269655ljn.3.1690221623453; Mon, 24 Jul
- 2023 11:00:23 -0700 (PDT)
+        bh=THEbzcx3xoXEvYlAjRKvBcVanBYYoQVNYXaib1QFZgY=;
+        b=XRxgq8xOXjCVHrdn9q5qlw/KT25O/vIKnVOGdyDr2rB3ohAPLrQ6Hhl32CEiKk2+7A
+         tos7+1GAO+e3CulG+YEVkApOhCio0SmDagnas3+HVuYHQeZWS9zAGZoEUzOLvQtgAw77
+         nXbZJodTdV7I6R7j9eGn2389gTTl+buBmYQI+rVZ4vSqE/VgiFqUxibP9ODeENlSP9FV
+         4Wo6VUM8FrvYeLpyJozDD0+7RgHy4u27IxsacqqJBtDU/zmqwlRDSKMjOCNiB8Lqi0qa
+         3+8A9F1zJv2FGjiRjXfIrfUJmzqAyIZBg374lY6/s93Cl7jcPKay3ENF+/SXrVzJguzG
+         5ozQ==
+X-Gm-Message-State: ABy/qLboR+AMb2Tplj9on1/ytKCEOMC1QedVjod1GTkBRttLZRysPdh1
+	DUPxdh7K8g88PIV8kBC9XGvXTRGokfk0TvQDfJDA2g/0
+X-Google-Smtp-Source: APBJJlFBD2oS1VJ5Yf0e+3TmKZzycugLFJ3BZomqEu/aJqn6J6keVWXnXu1FQ36IMm4aLPXpSnfo8szHcxSRSVyvrVE=
+X-Received: by 2002:a2e:9e88:0:b0:2b6:dc55:c3c7 with SMTP id
+ f8-20020a2e9e88000000b002b6dc55c3c7mr6471944ljk.20.1690221679073; Mon, 24 Jul
+ 2023 11:01:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230722074753.568696-1-arnd@kernel.org> <CALOAHbCV2v3X7g1TD42yve0juhRD2vhq=DMtDz9P6+mX8Dae_w@mail.gmail.com>
- <CAADnVQKGe8DN+Zs387UVwpij3ROGqNEnc5r940h5ueqQYHTYCA@mail.gmail.com> <fa5e9098-d6f9-48a2-bb77-2620b6bb6556@app.fastmail.com>
-In-Reply-To: <fa5e9098-d6f9-48a2-bb77-2620b6bb6556@app.fastmail.com>
+References: <20230720085704.190592-1-jolsa@kernel.org> <20230720085704.190592-3-jolsa@kernel.org>
+ <0b963b18-4933-3b70-3dc6-6c7150bcf7bb@huaweicloud.com> <ZLp91s9kuOp7kEEA@krava>
+In-Reply-To: <ZLp91s9kuOp7kEEA@krava>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 24 Jul 2023 11:00:11 -0700
-Message-ID: <CAADnVQ+p4wpd=tKJAiwB34O1y5vv4mibtkt9D-F7sG=rQapcew@mail.gmail.com>
-Subject: Re: [PATCH] bpf: force inc_active()/dec_active() to be inline functions
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Yafang Shao <laoar.shao@gmail.com>, Arnd Bergmann <arnd@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Hou Tao <houtao1@huawei.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
+Date: Mon, 24 Jul 2023 11:01:07 -0700
+Message-ID: <CAADnVQ+sBYgDCBUsj8ShBQNYe39ZU=G8+f2XQP8M0fYx7Y34gQ@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf 2/2] bpf: Disable preemption in bpf_event_output
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Hou Tao <houtao@huaweicloud.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	stable <stable@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,39 +82,65 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sun, Jul 23, 2023 at 11:32=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrot=
+On Fri, Jul 21, 2023 at 5:45=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
 e:
 >
-> >> If so, why can't we improve the compiler ?
+> On Fri, Jul 21, 2023 at 08:16:14PM +0800, Hou Tao wrote:
 > >
-> > Agree.
-> > Sounds like a compiler bug.
->
-> I don't know what you might want to change in the compiler
-> to avoid this. Compilers are free to decide which functions to
-> inline in the absence of noinline or always_inline flags.
-
-Clearly a compiler bug.
-Compilers should not produce false positive warnings regardless
-how inlining went and optimizations performed.
-
-
-> One difference between gcc and clang is that gcc tries to
-> be smart about warnings by using information from inlining
-> to produce better warnings, while clang never uses information
-> across function boundaries for generated warnings, so it won't
-> find this one, but also would ignore an unconditional use
-> of the uninitialized variable.
->
-> >> If we have to change the kernel, what about the change below?
 > >
-> > To workaround the compiler bug we can simply init flag=3D0 to silence
-> > the warn, but even that is silly. Passing flag=3D0 into irqrestore is b=
-uggy.
+> > On 7/20/2023 4:57 PM, Jiri Olsa wrote:
+> > > We received report [1] of kernel crash, which is caused by
+> > > using nesting protection without disabled preemption.
+> > >
+> > > The bpf_event_output can be called by programs executed by
+> > > bpf_prog_run_array_cg function that disabled migration but
+> > > keeps preemption enabled.
+> > >
+> > > This can cause task to be preempted by another one inside the
+> > > nesting protection and lead eventually to two tasks using same
+> > > perf_sample_data buffer and cause crashes like:
+> > >
+> > >   BUG: kernel NULL pointer dereference, address: 0000000000000001
+> > >   #PF: supervisor instruction fetch in kernel mode
+> > >   #PF: error_code(0x0010) - not-present page
+> > >   ...
+> > >   ? perf_output_sample+0x12a/0x9a0
+> > >   ? finish_task_switch.isra.0+0x81/0x280
+> > >   ? perf_event_output+0x66/0xa0
+> > >   ? bpf_event_output+0x13a/0x190
+> > >   ? bpf_event_output_data+0x22/0x40
+> > >   ? bpf_prog_dfc84bbde731b257_cil_sock4_connect+0x40a/0xacb
+> > >   ? xa_load+0x87/0xe0
+> > >   ? __cgroup_bpf_run_filter_sock_addr+0xc1/0x1a0
+> > >   ? release_sock+0x3e/0x90
+> > >   ? sk_setsockopt+0x1a1/0x12f0
+> > >   ? udp_pre_connect+0x36/0x50
+> > >   ? inet_dgram_connect+0x93/0xa0
+> > >   ? __sys_connect+0xb4/0xe0
+> > >   ? udp_setsockopt+0x27/0x40
+> > >   ? __pfx_udp_push_pending_frames+0x10/0x10
+> > >   ? __sys_setsockopt+0xdf/0x1a0
+> > >   ? __x64_sys_connect+0xf/0x20
+> > >   ? do_syscall_64+0x3a/0x90
+> > >   ? entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> > >
+> > > Fixing this by disabling preemption in bpf_event_output.
+> > >
+> > > [1] https://github.com/cilium/cilium/issues/26756
+> > > Cc: stable@vger.kernel.org
+> > > Reported-by:  Oleg "livelace" Popov <o.popov@livelace.ru>
+> > > Fixes: 2a916f2f546c bpf: Use migrate_disable/enable in array macros a=
+nd cgroup/lirc code.
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> >
+> > Acked-by: Hou Tao <houtao1@huawei.com>
+> >
+> > With one nit above. The format of the Fixes tags should be 2a916f2f546c
+> > ("bpf: Use migrate_disable/enable in array macros and cgroup/lirc code.=
+")
+> >
 >
-> Maybe inc_active() could return the flags instead of modifying
-> the stack variable? that would also result in slightly better
-> code when it's not inlined.
+> right, sorry about that.. should I resend?
 
-Which gcc are we talking about here that is so buggy?
+Please resend with fixes and acks.
 
