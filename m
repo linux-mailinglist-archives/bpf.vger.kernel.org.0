@@ -1,248 +1,184 @@
-Return-Path: <bpf+bounces-5719-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5720-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A593275FA33
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 16:52:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A03B775FA67
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 17:05:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D68B01C20B36
-	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 14:52:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C7842811C3
+	for <lists+bpf@lfdr.de>; Mon, 24 Jul 2023 15:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F04D310;
-	Mon, 24 Jul 2023 14:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18AA4D515;
+	Mon, 24 Jul 2023 15:04:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0068A20F3
-	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 14:52:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA815C433C8;
-	Mon, 24 Jul 2023 14:52:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690210353;
-	bh=Io85B1vzGj1NiepBNP1CXkgl9j43eYMLYiUZyMtHevU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CJj9nVWeVnJDFBR0XVDtKFcRx4DdPvYzBxJs7NdyqhCdkyJSi7ns/QunyuF5T7ps6
-	 XU2A2MDFy7UQQzJsIx/xDqLe0FliBY/Oeg0aB/OquAS8cepo48SytLWwhoRHBnqAgE
-	 wTZhFOxngaubHLo/KhuNmg/icDkWf3KABmSQcw7hRGodIB5PblbvuCT6kpl36W6FZr
-	 hIH+s80Togjk4lAfltww4D/tmAcJlqIFj1q84XSHWsxVyk2brxNcyWdq/AUnuQb02p
-	 QLpBDuBflcJsU3fMXLT8vIMOo2OPS1Po+gVqEtzb2kBqqlYChJ+9nWv8THywbJoX77
-	 fSGCA/VpqlDFg==
-Date: Mon, 24 Jul 2023 16:52:19 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-	bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 15/20] context-tracking: Introduce work deferral
- infrastructure
-Message-ID: <ZL6QI4mV-NKlh4Ox@localhost.localdomain>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-16-vschneid@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2F5DDA3
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 15:04:56 +0000 (UTC)
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B89AE73
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 08:04:55 -0700 (PDT)
+Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-48137f8b118so3787571e0c.0
+        for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 08:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690211094; x=1690815894;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tHqIG05NkrccDXJAf8XbSXjmXmn2uQaX/nG1JkN2ZQ4=;
+        b=rHvVEBAR04v4zkCIM9x/6ysbPN4+cOs6SbN3rIMINLLg0x+sDuZfw2BqPor1/IUIN8
+         ALSQxb8q5eqRYWUlJfLhl6IOxbB5N/PBOpktXBprHnEBFZCDc2Tb27CiyMLywa2o56CJ
+         eJ//Trf+64HEm3uqZFXu22fs8wIo92ugIwJbUXmsDvSlepLpBTJQhgR/xZLggJshgFF2
+         4oxkB7rx7chZN20ZnTaoNqEb8ZSgQLVV8XdL/U//Q8hSEfq+XwApKvzretRKAFz9XEqM
+         y+SGPqK7u0GgtJAN0SgQhn4TqNLjUqPFQccj2M3hUDsi3APWIIq2p0yDcAYLEWV8/Vs2
+         gYrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690211094; x=1690815894;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tHqIG05NkrccDXJAf8XbSXjmXmn2uQaX/nG1JkN2ZQ4=;
+        b=foqQgGivcT9bUQWr0aqRh4qgI7HDW+hRIuq5E2wgTKoIkjiwlRrshm8ra7eG2omnn9
+         GPErj39WvJaqLeRVVFmorzbz/87mZ/8ztEFepoDezXDR7Piz1WWH3GmAlajud0zgwEci
+         zG7lWx8kTSi/YBCQmtZOMLHA6R+HAbr5aNqtZ/oNQMR6aq0o/2nBYjHZFBivq5SLNryM
+         gqQslFz2h0DFp031wbx54SO/dJP+YNq/hD1685WWc0Rj5FP4YRCkQEnUvZcJR3t6d7iX
+         6PUxX98N8kdZE0zuWJJTtiCn9j1wFrqeuttgtI844/yWqcQT9Vv7SqYwUOqD35bxTvmA
+         1lrQ==
+X-Gm-Message-State: ABy/qLa/RZqg+miYIHP+P9IoXCTz63cr9SZHMSgwyCTK1AiHlL0WynK4
+	xJVhvRHjXt5Ey/qfTfBityJecTH4WNTyJMlyo/434QEhDGc=
+X-Google-Smtp-Source: APBJJlEV03X8EXPg2+YL+/MvfIsUzRACx0EuuApez+Zu6wzEIT8lcNJNnENWD8Chl5ND6A8tSTVD9KJ6pVgAUKMC3CQ=
+X-Received: by 2002:a05:6102:32c5:b0:445:4a0c:3afb with SMTP id
+ o5-20020a05610232c500b004454a0c3afbmr2814071vss.8.1690211094071; Mon, 24 Jul
+ 2023 08:04:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230720163056.2564824-16-vschneid@redhat.com>
+References: <CAChPKzs_QBghSBfxMtTZoAsaRgwBK9dRXuXZg+tg2=wz=AuGgg@mail.gmail.com>
+ <3d26842f-86a4-e897-44c2-00c55fadb64a@oracle.com>
+In-Reply-To: <3d26842f-86a4-e897-44c2-00c55fadb64a@oracle.com>
+From: Timofei Pushkin <pushkin.td@gmail.com>
+Date: Mon, 24 Jul 2023 18:04:43 +0300
+Message-ID: <CAChPKztZ9kaNw-PkhEq4UKidjVgKNnwLPKzYvLc6BcOOUtvEkQ@mail.gmail.com>
+Subject: Re: Question: CO-RE-enabled PT_REGS macros give strange results
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Le Thu, Jul 20, 2023 at 05:30:51PM +0100, Valentin Schneider a écrit :
-> +enum ctx_state {
-> +	/* Following are values */
-> +	CONTEXT_DISABLED	= -1,	/* returned by ct_state() if unknown */
-> +	CONTEXT_KERNEL		= 0,
-> +	CONTEXT_IDLE		= 1,
-> +	CONTEXT_USER		= 2,
-> +	CONTEXT_GUEST		= 3,
-> +	CONTEXT_MAX             = 4,
-> +};
-> +
-> +/*
-> + * We cram three different things within the same atomic variable:
-> + *
-> + *                CONTEXT_STATE_END                        RCU_DYNTICKS_END
-> + *                         |       CONTEXT_WORK_END                |
-> + *                         |               |                       |
-> + *                         v               v                       v
-> + *         [ context_state ][ context work ][ RCU dynticks counter ]
-> + *         ^                ^               ^
-> + *         |                |               |
-> + *         |        CONTEXT_WORK_START      |
-> + * CONTEXT_STATE_START              RCU_DYNTICKS_START
+On Mon, Jul 24, 2023 at 3:36=E2=80=AFPM Alan Maguire <alan.maguire@oracle.c=
+om> wrote:
+>
+> On 24/07/2023 11:32, Timofei Pushkin wrote:
+> > Dear BPF community,
+> >
+> > I'm developing a perf_event BPF program which reads some register
+> > values (frame and instruction pointers in particular) from the context
+> > provided to it. I found that CO-RE-enabled PT_REGS macros give results
+> > different from the results of the usual PT_REGS  macros. I run the
+> > program on the same system I compiled it on, and so I cannot
+> > understand why the results differ and which ones should I use?
+> >
+> > From my tests, the results of the usual macros are the correct ones
+> > (e.g. I can symbolize the instruction pointers I get this way), but
+> > since I try to follow the CO-RE principle, it seems like I should be
+> > using the CO-RE-enabled variants instead.
+> >
+> > I did some experiments and found out that it is the
+> > bpf_probe_read_kernel part of the CO-RE-enabled PT_REGS macros that
+> > change the results and not __builtin_preserve_access_index. But I
+> > still don't get why exactly it changes the results.
+> >
+>
+> Can you provide the exact usage of the BPF CO-RE macros that isn't
+> working, and the equivalent non-CO-RE version that is? Also if you
 
-Should the layout be displayed in reverse? Well at least I always picture
-bitmaps in reverse, that's probably due to the direction of the shift arrows.
-Not sure what is the usual way to picture it though...
+As a minimal example, I wrote the following little BPF program which
+prints instruction pointers obtained with non-CO-RE and CO-RE macros:
 
-> + */
-> +
-> +#define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
-> +
-> +#define CONTEXT_STATE_START 0
-> +#define CONTEXT_STATE_END   (bits_per(CONTEXT_MAX - 1) - 1)
+volatile const pid_t target_pid;
 
-Since you have non overlapping *_START symbols, perhaps the *_END
-are superfluous?
+SEC("perf_event")
+int do_test(struct bpf_perf_event_data *ctx) {
+    pid_t pid =3D bpf_get_current_pid_tgid();
+    if (pid !=3D target_pid) return 0;
 
-> +
-> +#define RCU_DYNTICKS_BITS  (IS_ENABLED(CONFIG_CONTEXT_TRACKING_WORK) ? 16 : 31)
-> +#define RCU_DYNTICKS_START (CT_STATE_SIZE - RCU_DYNTICKS_BITS)
-> +#define RCU_DYNTICKS_END   (CT_STATE_SIZE - 1)
-> +#define RCU_DYNTICKS_IDX   BIT(RCU_DYNTICKS_START)
+    unsigned long p =3D PT_REGS_IP(&ctx->regs);
+    unsigned long p_core =3D PT_REGS_IP_CORE(&ctx->regs);
+    bpf_printk("non-CO-RE: %lx, CO-RE: %lx", p, p_core);
 
-Might be the right time to standardize and fix our naming:
+    return 0;
+}
 
-CT_STATE_START,
-CT_STATE_KERNEL,
-CT_STATE_USER,
-...
-CT_WORK_START,
-CT_WORK_*,
-...
-CT_RCU_DYNTICKS_START,
-CT_RCU_DYNTICKS_IDX
+From user space, I set the target PID and attach the program to CPU
+clock perf events (error checking and cleanup omitted for brevity):
 
-> +bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
-> +{
-> +	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
-> +	unsigned int old;
-> +	bool ret = false;
-> +
-> +	preempt_disable();
-> +
-> +	old = atomic_read(&ct->state);
-> +	/*
-> +	 * Try setting the work until either
-> +	 * - the target CPU no longer accepts any more deferred work
-> +	 * - the work has been set
-> +	 *
-> +	 * NOTE: CONTEXT_GUEST intersects with CONTEXT_USER and CONTEXT_IDLE
-> +	 * as they are regular integers rather than bits, but that doesn't
-> +	 * matter here: if any of the context state bit is set, the CPU isn't
-> +	 * in kernel context.
-> +	 */
-> +	while ((old & (CONTEXT_GUEST | CONTEXT_USER | CONTEXT_IDLE)) && !ret)
+int main(int argc, char *argv[]) {
+    // Load the program also setting the target PID
+    struct test_program_bpf *skel =3D test_program_bpf__open();
+    skel->rodata->target_pid =3D (pid_t) strtol(argv[1], NULL, 10);
+    test_program_bpf__load(skel);
 
-That may still miss a recent entry to userspace due to the first plain read, ending
-with an undesired interrupt.
+    // Attach to perf events
+    struct perf_event_attr attr =3D {
+        .type =3D PERF_TYPE_SOFTWARE,
+        .size =3D sizeof(struct perf_event_attr),
+        .config =3D PERF_COUNT_SW_CPU_CLOCK,
+        .sample_freq =3D 1,
+        .freq =3D true
+    };
+    for (int cpu_i =3D 0; cpu_i < libbpf_num_possible_cpus(); cpu_i++) {
+        int perf_fd =3D syscall(SYS_perf_event_open, &attr, -1, cpu_i, -1, =
+0);
+        bpf_program__attach_perf_event(skel->progs.do_test, perf_fd);
+    }
 
-You need at least one cmpxchg. Well, of course that stays racy by nature because
-between the cmpxchg() returning CONTEXT_KERNEL and the actual IPI raised and
-received, the remote CPU may have gone to userspace already. But still it limits
-a little the window.
+    // Wait for Ctrl-C
+    pause();
+    return 0;
+}
 
-Thanks.
+As an experiment, I launched a simple C program with an endless loop
+in main and started the BPF program above with its target PID set to
+the PID of this simple C program. Then by checking the virtual memory
+mapped for the C program (with "cat /proc/<PID>/maps"), I found out
+that its .text section got mapped into 55ca2577b000-55ca2577c000
+address space. When I checked the output of the BPF program, I got
+"non-CO-RE: 55ca2577b131, CO-RE: ffffa58810527e48". As you can see,
+the non-CO-RE result maps into the .text section of the launched C
+program (as it should since this is the value of the instruction
+pointer), while the CO-RE result does not.
 
-> +		ret = atomic_try_cmpxchg(&ct->state, &old, old | (work << CONTEXT_WORK_START));
-> +
-> +	preempt_enable();
-> +	return ret;
-> +}
-> +#else
-> +static __always_inline void ct_work_flush(unsigned long work) { }
-> +static __always_inline void ct_work_clear(struct context_tracking *ct) { }
-> +#endif
-> +
->  /*
->   * Record entry into an extended quiescent state.  This is only to be
->   * called when not already in an extended quiescent state, that is,
-> @@ -88,7 +133,8 @@ static noinstr void ct_kernel_exit_state(int offset)
->  	 * next idle sojourn.
->  	 */
->  	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
-> -	seq = ct_state_inc(offset);
-> +	seq = ct_state_inc_clear_work(offset);
-> +
->  	// RCU is no longer watching.  Better be in extended quiescent state!
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && (seq & RCU_DYNTICKS_IDX));
->  }
-> @@ -100,7 +146,7 @@ static noinstr void ct_kernel_exit_state(int offset)
->   */
->  static noinstr void ct_kernel_enter_state(int offset)
->  {
-> -	int seq;
-> +	unsigned long seq;
->  
->  	/*
->  	 * CPUs seeing atomic_add_return() must see prior idle sojourns,
-> @@ -108,6 +154,7 @@ static noinstr void ct_kernel_enter_state(int offset)
->  	 * critical section.
->  	 */
->  	seq = ct_state_inc(offset);
-> +	ct_work_flush(seq);
->  	// RCU is now watching.  Better not be in an extended quiescent state!
->  	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & RCU_DYNTICKS_IDX));
-> diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-> index bae8f11070bef..fdb266f2d774b 100644
-> --- a/kernel/time/Kconfig
-> +++ b/kernel/time/Kconfig
-> @@ -181,6 +181,11 @@ config CONTEXT_TRACKING_USER_FORCE
->  	  Say N otherwise, this option brings an overhead that you
->  	  don't want in production.
->  
-> +config CONTEXT_TRACKING_WORK
-> +	bool
-> +	depends on HAVE_CONTEXT_TRACKING_WORK && CONTEXT_TRACKING_USER
-> +	default y
-> +
->  config NO_HZ
->  	bool "Old Idle dynticks config"
->  	help
-> -- 
-> 2.31.1
-> 
+Alternatively, if I replace PT_REGS_IP and PT_REGS_IP_CORE with the
+equivalents for the stack pointer (PT_REGS_SP and PT_REGS_SP_CORE), I
+get results that correspond to the stack address space from the
+non-CO-RE macro, but I always get 0 from the CO-RE macro.
+
+> can provide details on the platform you're running on that will
+> help narrow down the issue. Thanks!
+
+Sure. I'm running Ubuntu 22.04.1, kernel version 5.19.0-46-generic,
+the architecture is x86_64, clang 14.0.0 is used to compile BPF
+programs with flags -g -O2 -D__TARGET_ARCH_x86.
+
+Thanks,
+Timofei
+
+>
+> Alan
+>
+> > Thank you in advance,
+> > Timofei
+> >
 
