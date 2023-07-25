@@ -1,180 +1,163 @@
-Return-Path: <bpf+bounces-5838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C369761E01
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 18:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 470AF761E3A
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 18:16:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D504428184D
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 16:05:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1ECB28109A
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 16:16:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C021424171;
-	Tue, 25 Jul 2023 16:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9B52417B;
+	Tue, 25 Jul 2023 16:16:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940FA23BF1
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 16:05:23 +0000 (UTC)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BFC2126
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 09:05:21 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51ff0e3d8c1so8178529a12.0
-        for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 09:05:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E411221D5D
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 16:16:22 +0000 (UTC)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A1BD213B
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 09:16:04 -0700 (PDT)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id EC303C15C524
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 09:15:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1690301737; bh=Lu/DvHwrXqzKtt97kolflQ+ybTsH3gLM8Kk+s58HWgU=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=DvkMQTPtVb8tzO3yHCjm1D2rbE/SBIGwm7bntQIe38/AWWNXkD53xLtc5gEQLO4sg
+	 AqL4n7j6rRiA799ALKQg+ZvQHeUOVAGz69eibJuUZecRTn6PMbXXhFR8G+TVlbx4M7
+	 lc0nvenLZBEOUhb4h2TPiAwEny/+k3yceCg2kuEU=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Tue Jul 25 09:15:37 2023
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id BE6EBC151AE5;
+	Tue, 25 Jul 2023 09:15:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1690301737; bh=Lu/DvHwrXqzKtt97kolflQ+ybTsH3gLM8Kk+s58HWgU=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=DvkMQTPtVb8tzO3yHCjm1D2rbE/SBIGwm7bntQIe38/AWWNXkD53xLtc5gEQLO4sg
+	 AqL4n7j6rRiA799ALKQg+ZvQHeUOVAGz69eibJuUZecRTn6PMbXXhFR8G+TVlbx4M7
+	 lc0nvenLZBEOUhb4h2TPiAwEny/+k3yceCg2kuEU=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id D7EDEC1526F4
+ for <bpf@ietfa.amsl.com>; Tue, 25 Jul 2023 09:15:36 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -2.098
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 1Ls55E_l0mXg for <bpf@ietfa.amsl.com>;
+ Tue, 25 Jul 2023 09:15:36 -0700 (PDT)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com
+ [IPv6:2a00:1450:4864:20::22c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 8461AC151AE5
+ for <bpf@ietf.org>; Tue, 25 Jul 2023 09:15:36 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id
+ 38308e7fff4ca-2b7441bfa9eso245761fa.0
+ for <bpf@ietf.org>; Tue, 25 Jul 2023 09:15:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1690301120; x=1690905920;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gH0UOML51M3rzwv+c9agQ57fZhEB1eqJ8k22Sw4zh88=;
-        b=fvwGsJ4deZaSdRS0WEEc/DU17C9RupWojGXZqRKAIegkk3FEDs/vKLpa1le3heKqJg
-         D0SdBtn155BDQcrjvLU1hniWPy0xji9H7b3z1e3YeKjxSrPN2B1MNE1prqJ6NuWjWhNj
-         YbKgKEFnwxKwnlkdd+4HiQ9r2jbWFM94vNVvk=
+ d=gmail.com; s=20221208; t=1690301734; x=1690906534;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=952/tqDCHq+lq2SmoX7TIsxaFEfjApJfJTF5tci0Ky8=;
+ b=qVy+2guYcjVPiCqP994Q8btqOeLyhCg/KzahnroWYY4Dnk7DZZ8Akzoi57LGvVfwqL
+ Ee+Pzad+6cd1o/G9UZDuMh/+mWgTXyKtZoY46YEDtfXQ2lRCkigS0lNSUxN5Weyn3yyi
+ z90I0FTcpSkie6YaZv+qadKufbBhGAaoC7OM8dYyqhfoERpc/tQh3RtBdUjpoqjwD0Mb
+ I8rg83jyZSd+Ao5yJ1An+4egEamz7qR5O5o6sZdOSlLBc7m9hyN1Kxcdqiom92xSwzUo
+ Sq9WONyND2lJznUinhp4YzGaTCyxCbjuCSCl441qJ0EkG03tnTj3Y2dzyRDQ+1kjAQzJ
+ yWcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690301120; x=1690905920;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gH0UOML51M3rzwv+c9agQ57fZhEB1eqJ8k22Sw4zh88=;
-        b=E0MPzo5pcbH7qgTS3FjIphAhdGXc5H7UlNCCd9raclPnM4fsZQFWjpPfvc6CNB8MAg
-         soBN2AzYuSWS2N6tKyG84FfC3SlWBzhZl/cENcudwNRJezkQjyFm9hznCklES6dUpA3d
-         KeiPh7dT5KLjDetIxoozX2P9Um6c6i4OT2Lbf81pWImZ4hnhqT1Wd5w9erltvwu/7zUv
-         A37WbUaTuZtqT6Q0nQZzckzL7x6FCxicoC9P2vrFiL1JoZyf1BnhzTB1cfTyKkQOU3NT
-         JEeZmHP9E/YQ+ZwZQ5o4Ld2S1I9+4vKanM69a6LSoYruXRuFgH1tpKqMWvCN5Wtx+pHa
-         NRhA==
-X-Gm-Message-State: ABy/qLbGVRqxoByz51yfuoGtCExujH1IlVBAE6osL7Ze5NpO95SXh4uC
-	XleNPI9bBOt7J1A/LfasYLFcMd/rZgUthtoUGnHAzw==
-X-Google-Smtp-Source: APBJJlEWZ7FthedJ/K8TlghQ+twETLA0S14CEzVsK8NOJaM+n2EP98O8bZPM+8WHddigaspFbbCuGd95A37WDSbWNNk=
-X-Received: by 2002:a17:906:105d:b0:991:eb77:74e with SMTP id
- j29-20020a170906105d00b00991eb77074emr11339234ejj.76.1690301120091; Tue, 25
- Jul 2023 09:05:20 -0700 (PDT)
+ d=1e100.net; s=20221208; t=1690301734; x=1690906534;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=952/tqDCHq+lq2SmoX7TIsxaFEfjApJfJTF5tci0Ky8=;
+ b=dwjtHnZK2p/KVUb0Jshta+QFr98ll/CSa/wzxfFkiM4w7eZMcN3uq/kghLchkKV48O
+ KXZ/fkIkzWbSIhYkQLvipFQWun2S4+NOtRwX0/gHbW+3C82MGYpCFykZ2ZuPJZb2AzwU
+ KlpU3MEVp1WnIbQadN3IJxgWYTCwXw8lokhJH5hd6u7zJj/uiIxp4X6nyMLQJJpFtYQZ
+ RY/ECqeFMR8l4hPWp5GtRYEnzC/vWr/OMgqC5XuoTjpNnPsNXMz94xSF+xpAQhoc7oSb
+ OLp2EShD2oDKmlPznNbEgC68O7YiAmXmqF0zP0KxGJSWNUug2ZbZoDc9noO29wXO0BvB
+ DFpQ==
+X-Gm-Message-State: ABy/qLZ0JnKDePXBOS9sU0I55MmQOmg5HVmsmChOj+8jCFi7hxurTY84
+ SMZfoMkuc+Ox1xK29cXm+x5o/guUWrqcztpq3XU=
+X-Google-Smtp-Source: APBJJlFwFr/5oSBdAWwa25/cm0LEOFI3VjAVGGF0SGRkvWLTgm5/KfKD4tODLO6AZwFEyNS/FNyC+v2emfsHEmRoGCE=
+X-Received: by 2002:a05:651c:48c:b0:2b7:34c4:f98f with SMTP id
+ s12-20020a05651c048c00b002b734c4f98fmr1055009ljc.11.1690301733790; Tue, 25
+ Jul 2023 09:15:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1690255889.git.yan@cloudflare.com> <cdbbc9df16044b568448ed9cd828d406f0851bfb.1690255889.git.yan@cloudflare.com>
- <87v8e8xsih.fsf@cloudflare.com>
-In-Reply-To: <87v8e8xsih.fsf@cloudflare.com>
-From: Yan Zhai <yan@cloudflare.com>
-Date: Tue, 25 Jul 2023 11:05:09 -0500
-Message-ID: <CAO3-Pbp=VsQVZxvX3MZGhjLsG93r7CPyhe8jBJ-Bt1bJOEtqTQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf 1/2] bpf: fix skb_do_redirect return values
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Jordan Griege <jgriege@cloudflare.com>, 
-	kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+References: <CACsn0ckZO+b5bRgMZhOvx+Jn-sa0g8cBD+ug1CJEdtYxSm_hgA@mail.gmail.com>
+ <PH7PR21MB3878D8DCEF24A5F8E52BA59DA303A@PH7PR21MB3878.namprd21.prod.outlook.com>
+In-Reply-To: <PH7PR21MB3878D8DCEF24A5F8E52BA59DA303A@PH7PR21MB3878.namprd21.prod.outlook.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 25 Jul 2023 09:15:22 -0700
+Message-ID: <CAADnVQJ1fKXcsTXdCijwQzf0OVF0md-ATN5RbB3g10geyofNzA@mail.gmail.com>
+To: Dave Thaler <dthaler@microsoft.com>
+Cc: Watson Ladd <watsonbladd@gmail.com>, "bpf@ietf.org" <bpf@ietf.org>,
+ bpf <bpf@vger.kernel.org>
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/k_bu6vZlbfMAbKyUtCtLIunc9tM>
+Subject: Re: [Bpf] Review of draft-thaler-bpf-isa-01
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
+ <bpf.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
+ <mailto:bpf-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
+ <mailto:bpf-request@ietf.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Jul 25, 2023 at 4:14=E2=80=AFAM Jakub Sitnicki <jakub@cloudflare.co=
-m> wrote:
->
-> On Mon, Jul 24, 2023 at 09:13 PM -07, Yan Zhai wrote:
-> > skb_do_redirect returns various of values: error code (negative), 0
-> > (success), and some positive status code, e.g. NET_XMIT_CN, NET_RX_DROP=
-.
-> > Such code are not handled at lwt xmit hook in function ip_finish_output=
-2
-> > and ip6_finish_output, which can cause unexpected problems. This change
-> > converts the positive status code to proper error code.
-> >
-> > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > Reported-by: Jordan Griege <jgriege@cloudflare.com>
-> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> >
-> > ---
-> > v3: converts also RX side return value in addition to TX values
-> > v2: code style change suggested by Stanislav Fomichev
-> > ---
-> >  net/core/filter.c | 12 +++++++++++-
-> >  1 file changed, 11 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 06ba0e56e369..3e232ce11ca0 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -2095,7 +2095,12 @@ static const struct bpf_func_proto bpf_csum_leve=
-l_proto =3D {
-> >
-> >  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff =
-*skb)
-> >  {
-> > -     return dev_forward_skb_nomtu(dev, skb);
-> > +     int ret =3D dev_forward_skb_nomtu(dev, skb);
-> > +
-> > +     if (unlikely(ret > 0))
-> > +             return -ENETDOWN;
-> > +
-> > +     return 0;
-> >  }
-> >
-> >  static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
-> > @@ -2106,6 +2111,8 @@ static inline int __bpf_rx_skb_no_mac(struct net_=
-device *dev,
-> >       if (likely(!ret)) {
-> >               skb->dev =3D dev;
-> >               ret =3D netif_rx(skb);
-> > +     } else if (ret > 0) {
-> > +             return -ENETDOWN;
-> >       }
-> >
-> >       return ret;
-> > @@ -2129,6 +2136,9 @@ static inline int __bpf_tx_skb(struct net_device =
-*dev, struct sk_buff *skb)
-> >       ret =3D dev_queue_xmit(skb);
-> >       dev_xmit_recursion_dec();
-> >
-> > +     if (unlikely(ret > 0))
-> > +             ret =3D net_xmit_errno(ret);
-> > +
-> >       return ret;
-> >  }
->
-> net_xmit_errno maps NET_XMIT_DROP to -ENOBUFS. It would make sense to me
-> to map NET_RX_DROP to -ENOBUFS as well, instead of -ENETDOWN, to be
-> consistent.
->
-In fact I looked at all those errno, but found none actually covers
-this situation completely. For the redirect ingress case, there are
-three reasons to fail: backlog full, dev down, and MTU issue. This
-won't be a problem for typical RX paths, since the error code is
-usually discarded by call sites of deliver_skb. But redirect ingress
-opens a call chain that would propagate this error to local sendmsg,
-which may be very confusing to troubleshoot in a complex environment
-(especially when backlog fills).
-
-That said I agree ENOBUF covers the most likely reason to fail
-(backlog). Let me change to that one in the next version if there are
-no new suggestions.
-
-> It looks like the Fixes tag for this should point to the change that
-> introduced BPF for LWT:
->
-> Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
->
-Thanks for finding the tag. I was debating if it should be LWT commit
-or bpf_redirect commit: the error is not handled at LWT, but it seems
-actually innocent. The actual fix is the return value from the bpf
-redirect code. Let me incorporate both in the next one to justify
-better.
-
---
-Yan
+T24gVHVlLCBKdWwgMjUsIDIwMjMgYXQgNzowM+KAr0FNIERhdmUgVGhhbGVyIDxkdGhhbGVyQG1p
+Y3Jvc29mdC5jb20+IHdyb3RlOgo+Cj4gSSBhbSBmb3J3YXJkaW5nIHRoZSBlbWFpbCBiZWxvdyAo
+YWZ0ZXIgY29udmVydGluZyBIVE1MIHRvIHBsYWluIHRleHQpCj4gdG8gdGhlIG1haWx0bzpicGZA
+dmdlci5rZXJuZWwub3JnIGxpc3Qgc28gcmVwbGllcyBjYW4gZ28gdG8gYm90aCBsaXN0cy4KPgo+
+IFBsZWFzZSB1c2UgdGhpcyBvbmUgZm9yIGFueSByZXBsaWVzLgo+Cj4gVGhhbmtzLAo+IERhdmUK
+Pgo+ID4gRnJvbTogQnBmIDxicGYtYm91bmNlc0BpZXRmLm9yZz4gT24gQmVoYWxmIE9mIFdhdHNv
+biBMYWRkCj4gPiBTZW50OiBNb25kYXksIEp1bHkgMjQsIDIwMjMgMTA6MDUgUE0KPiA+IFRvOiBi
+cGZAaWV0Zi5vcmcKPiA+IFN1YmplY3Q6IFtCcGZdIFJldmlldyBvZiBkcmFmdC10aGFsZXItYnBm
+LWlzYS0wMQo+ID4KPiA+IERlYXIgQlBGIHdnLAo+ID4KPiA+IEkgdG9vayBhIGxvb2sgYXQgdGhl
+IGRyYWZ0IGFuZCB0aGluayBpdCBoYXMgc29tZSBpc3N1ZXMsIHVuc3VycHJpc2luZ2x5IGF0IHRo
+aXMgc3RhZ2UuIE9uZSBpcwo+ID4gdGhlIHNwZWNpZmljYXRpb24gc2VlbXMgdG8gdXNlIGFuIHVu
+ZGVyc3BlY2lmaWVkIEMgcHNldWRvIGNvZGUgZm9yIG9wZXJhdGlvbnMgdnMKPiA+IGRlZmluaW5n
+IHRoZW0gbWF0aGVtYXRpY2FsbHkuCgpIaSBXYXRzb24sCgpUaGlzIGlzIG5vdCAidW5kZXJzcGVj
+aWZpZWQgQyIgcHNldWRvIGNvZGUuClRoaXMgaXMgYXNzZW1ibHkgc3ludGF4IHBhcnNlZCBhbmQg
+ZW1pdHRlZCBieSBHQ0MsIExMVk0sIGdhcywgTGludXggS2VybmVsLCBldGMuCgo+ID4gVGhlIGdv
+b2QgbmV3cyBpcyBJIHRoaW5rIHRoaXMgaXMgdmVyeSBmaXhhYmxlIGFsdGhvdWdoIHRlZGlvdXMu
+Cj4gPgo+ID4gVGhlIG90aGVyIHRob3JuaWVyIGlzc3VlcyBhcmUgbWVtb3J5IG1vZGVsIGV0Yy4g
+QnV0IHRoZSBvdmVyYWxsIHN0cnVjdHVyZSBzZWVtcyBnb29kCj4gPiBhbmQgdGhlIGRvY3VtZW50
+IG92ZXJhbGwgbWFrZXMgc2Vuc2UuCgpXaGF0IGRvIHlvdSBtZWFuIGJ5ICJtZW1vcnkgbW9kZWwi
+ID8KRG8geW91IHNlZSBhIHJlZmVyZW5jZSB0byBpdCA/IFBsZWFzZSBiZSBzcGVjaWZpYy4KCi0t
+IApCcGYgbWFpbGluZyBsaXN0CkJwZkBpZXRmLm9yZwpodHRwczovL3d3dy5pZXRmLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2JwZgo=
 
