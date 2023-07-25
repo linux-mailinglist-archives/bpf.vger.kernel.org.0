@@ -1,88 +1,89 @@
-Return-Path: <bpf+bounces-5798-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5799-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2C417609BB
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 07:49:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A1C97609DF
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 07:54:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3DDF1C20D90
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 05:49:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DE052817D0
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 05:54:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 858848C08;
-	Tue, 25 Jul 2023 05:49:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900628C1F;
+	Tue, 25 Jul 2023 05:54:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5928BE5
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 05:49:18 +0000 (UTC)
-X-Greylist: delayed 446 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 Jul 2023 22:49:16 PDT
-Received: from out-63.mta0.migadu.com (out-63.mta0.migadu.com [91.218.175.63])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5839B6
-	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 22:49:16 -0700 (PDT)
-Message-ID: <f93c110f-33d4-6991-0708-1602afe5a7d1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1690263706; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q9iw6D2Emyp2lJwPspPM34X+HGJqZ6D4YOHn1dUUa3Q=;
-	b=q++KtbCSx740QBKosRxtlUuYgAS7m46IZAuwLpC8zFAzyCOJr4fuc0UM3DjLaGZwx/VLV0
-	KvlH2yDyL/fZSDaaAR3DMnWGrlGcL7YowISNTktPLIP7C8OvRriEiQh93SWI9qt6KDCPfu
-	0UypHItmx35E5C83VWSF45W2cS9bu0Q=
-Date: Mon, 24 Jul 2023 22:41:38 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0AA848C;
+	Tue, 25 Jul 2023 05:54:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91B69C433C8;
+	Tue, 25 Jul 2023 05:54:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690264479;
+	bh=aOySNSCJEoaRaJl24Sk+OTpPeYecm1osaIYiLeFOqSo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YRx0OBU1SEI1SJ4LSmLkEPob1QuK5WFkuUqdVeYph9ed/UsG2IwyOFk7Kxeh+D7xA
+	 LawFmu2khRnM9557VkZ83V2GFmQQu/DXj2xET+YiR4qIOIVkir7lORnqdQBDi+c/4c
+	 m40Effm/hR8qO96KDgp7YURxsFrLShrUciFeYS6BMeTQUrr0SSDHg+EhkBPdwoEDsq
+	 VgSHNlvNLX1Qem3CDFHb5fCdKlTQlOVlNtWuP6iteR1YMcSBbbTBFrhUb36StgyciG
+	 2b04uwx98ow9qLqZYrVsbQQcAz2E4cao6cEXLDuGqzOIQqqGSSx2IgOkRBTv/jVN7E
+	 YWW79NAqNUNbw==
+Date: Tue, 25 Jul 2023 08:54:34 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Lin Ma <linma@zju.edu.cn>
+Cc: kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
+	pabeni@redhat.com, ast@kernel.org, martin.lau@kernel.org,
+	yhs@fb.com, void@manifault.com, andrii@kernel.org,
+	houtao1@huawei.com, inwardvessel@gmail.com, kuniyu@amazon.com,
+	songliubraving@fb.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2] bpf: Add length check for
+ SK_DIAG_BPF_STORAGE_REQ_MAP_FD parsing
+Message-ID: <20230725055434.GM11388@unreal>
+References: <20230725023330.422856-1-linma@zju.edu.cn>
+ <20230725044409.GF11388@unreal>
+ <15dc24fc.e7c38.1898b81ac08.Coremail.linma@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v2] MAINTAINERS: Replace my email address
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- Yonghong Song <yhs@fb.com>
-References: <20230725044348.648808-1-yonghong.song@linux.dev>
- <CAADnVQLrH4V6UxBcT9QSbrS7Zi0EhnG-fpFZStu1QuWoz7oUhA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQLrH4V6UxBcT9QSbrS7Zi0EhnG-fpFZStu1QuWoz7oUhA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <15dc24fc.e7c38.1898b81ac08.Coremail.linma@zju.edu.cn>
 
-
-
-On 7/24/23 9:51 PM, Alexei Starovoitov wrote:
-> On Mon, Jul 24, 2023 at 9:44 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->> From: Yonghong Song <yhs@fb.com>
->>
->> Switch from corporate email address to linux.dev address.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   MAINTAINERS | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> Changelog:
->>    v1 -> v2:
->>     - Use new address as the Signed-off-by address.
+On Tue, Jul 25, 2023 at 01:24:38PM +0800, Lin Ma wrote:
+> Hello Leon,
 > 
->  From and SOB should match otherwise various scripts will complain.
+> > 
+> > Jakub, it seems like Lin adds this check to all nla_for_each_nested() loops.
+> > IMHO, the better change will be to change nla_for_each_nested() skip empty/not valid NLAs.
+> > 
+> > Thanks
+> 
+> I guess you just get these fixes misunderstood. I do not add the nla_len check
+> to  **all nla_for_each_nested** :(. I only add checks to those who do not access 
+> the attributes without verifying the length, which is buggy.
+> 
+> The others, either do a similar nla_len check already or just do nla_validate
+> somewhere else. That is to say, they **validate** the relevant attributes.
+> 
+> In short, nla_for_each_nested is just a loop macro that iterates the nlattrs,
+> like nla_for_each macro. It is weird for them to do nlattr validation as there
+> could have already been a call to nla_validate to ensure those attributes are
+> correct. That is, for those who do not, a simple nla_len check is the simplest
+> and most efficient choice.
 
-Thanks! Just fixed in v3.
+My concern is related to maintainability in long run. Your check adds
+another layer of cabal knowledge which will be copied/pasted in other
+places.
 
+Thanks
+
+> 
+> Regards
+> Lin
 
