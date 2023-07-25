@@ -1,190 +1,265 @@
-Return-Path: <bpf+bounces-5844-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5846-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECDDB761FCA
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 19:08:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 948EE761FE3
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 19:12:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6F252817AC
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 17:08:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4F281C20F1B
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 17:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89C552517C;
-	Tue, 25 Jul 2023 17:07:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6070D25178;
+	Tue, 25 Jul 2023 17:12:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB0A3C23
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 17:07:42 +0000 (UTC)
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD78BE70
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 10:07:39 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-55ac8fcc887so2654477a12.0
-        for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 10:07:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690304859; x=1690909659;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d/ZEADyM1ncmAQFJhw94R2+f8llXdPd8DQBrvQQGiqM=;
-        b=YYBgqqNMeO+qTKuQPbqUC7IDLnv4u0Q6/fZRrhVzRrD1vQJLdYUBl9fwaXsv2osqhb
-         mUL26l3vMZXHCIiWM5kdv45k+KqE2mtH+HToDMZ/s9V1G6hRsLM1vZ/2z8h/J0aStSJZ
-         AYbrJqXwvQr21fQWicMEugqbDDiQFNg/ErYyvJvdVca4ig7YnXp+IMFCtssrcA1TXfa3
-         Hb6ImsLjF0aw8W3BUIm19fhfKWZpKyw2OoUI2AX4jWXMIjhYF0NQvfGbWrGkuBkd2qWs
-         JWoLs5i5tIz2eq33yKup8BRZY/HiSg/1fpQzARS/pO2cQVqwVWtUBJG7oV3kD44W2Ufl
-         F21g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690304859; x=1690909659;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=d/ZEADyM1ncmAQFJhw94R2+f8llXdPd8DQBrvQQGiqM=;
-        b=Ouxv2HwezNK4qGnmjT07llUnnG4IIIHy0mAjGdEJhRf5Neijgy9wD+SMNlDu2n1QUi
-         yTGeJG5C6pgvmRz8spHEkIvKPm0HsvIu6l2hiShuhmKXayU7PQZTGuVMQmaCZFUsCmUC
-         wFl6eRyF+sA6UCdy2rc25FAnHWd9+79JDA1v3rYwx5VRt9cR/0wDcqdwOCzv12VDQklU
-         nrW3Njpb4DYdtQ/L/Wp4UBC7Lcm3xfuCXYf5Ro2hJsNgh8FOIaou6sgNoQDT1nyA/Hoc
-         fsDUtnzzvwtTpxP9FzhR4D7Jtha/XwP9BIsR4mzR+aczhlxrGzAsnsRmMDu2FuZKyecl
-         N0oA==
-X-Gm-Message-State: ABy/qLaZd5FKqnnl1uZBoZltXo6Y8JHsM11VVlVSxSFOX/OSDfRlB3zr
-	gx97cNkaVZ4K72xlNgKvLahKkqY=
-X-Google-Smtp-Source: APBJJlF8ZssWRYSd7JTzlSp3mXs+ZIaAfSkYXZUzHMiFu7ahRQCi+Z+0gx3cYs8KCZ5sHVO59ZX5gy8=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a65:67d8:0:b0:55a:f882:137 with SMTP id
- b24-20020a6567d8000000b0055af8820137mr53902pgs.5.1690304859273; Tue, 25 Jul
- 2023 10:07:39 -0700 (PDT)
-Date: Tue, 25 Jul 2023 10:07:37 -0700
-In-Reply-To: <CAO3-Pbp=VsQVZxvX3MZGhjLsG93r7CPyhe8jBJ-Bt1bJOEtqTQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1533E3C23
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 17:12:38 +0000 (UTC)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E721FFA
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 10:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690305157; x=1721841157;
+  h=date:from:to:cc:subject:message-id;
+  bh=Gio7G6txIcv1KOAc9HzqKHYvWme+5T9Bml8x7x4n4CY=;
+  b=HsJswv6iDCd92OHQD4icNiTpcgEffyyBWsBWKy8UA4CN7CPYcNSR+OK0
+   pvhErUVoAYE5OAMylh3/E4QuFbq18jz3/CbjgeopwkEqvi1mnIzJ0Eesa
+   VXvX0d12pVVDWSMnLwB50xxwWPbNtJjTPBnVjxReG3GPcQhl/vUOhudOz
+   lB7c/6ahWx0Egmxrj4utwqOgB54lkgSRR01LbvuPDozMdfpepi8tA9vEK
+   cSID5b02TqRPyBvt23GdA2buttgWZhcWSG51VWFMhaRREFOrFBSy8V8YW
+   nUKoh3pQBYUSR6Y/i5UZw8W9MBorbCl1H2fiKH+ZNCLRv/0/bRV9X4uKC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="454174576"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="454174576"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 10:12:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="839923058"
+X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
+   d="scan'208";a="839923058"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 25 Jul 2023 10:12:34 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qOLZK-0000Aj-0O;
+	Tue, 25 Jul 2023 17:11:37 +0000
+Date: Wed, 26 Jul 2023 01:10:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ bpf@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [linux-next:master] BUILD REGRESSION
+ 1e25dd7772483f477f79986d956028e9f47f990a
+Message-ID: <202307260133.BBVuOymN-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1690255889.git.yan@cloudflare.com> <cdbbc9df16044b568448ed9cd828d406f0851bfb.1690255889.git.yan@cloudflare.com>
- <87v8e8xsih.fsf@cloudflare.com> <CAO3-Pbp=VsQVZxvX3MZGhjLsG93r7CPyhe8jBJ-Bt1bJOEtqTQ@mail.gmail.com>
-Message-ID: <ZMABWdaR5/JbBld3@google.com>
-Subject: Re: [PATCH v3 bpf 1/2] bpf: fix skb_do_redirect return values
-From: Stanislav Fomichev <sdf@google.com>
-To: Yan Zhai <yan@cloudflare.com>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Jordan Griege <jgriege@cloudflare.com>, 
-	kernel-team@cloudflare.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-On 07/25, Yan Zhai wrote:
-> On Tue, Jul 25, 2023 at 4:14=E2=80=AFAM Jakub Sitnicki <jakub@cloudflare.=
-com> wrote:
-> >
-> > On Mon, Jul 24, 2023 at 09:13 PM -07, Yan Zhai wrote:
-> > > skb_do_redirect returns various of values: error code (negative), 0
-> > > (success), and some positive status code, e.g. NET_XMIT_CN, NET_RX_DR=
-OP.
-> > > Such code are not handled at lwt xmit hook in function ip_finish_outp=
-ut2
-> > > and ip6_finish_output, which can cause unexpected problems. This chan=
-ge
-> > > converts the positive status code to proper error code.
-> > >
-> > > Suggested-by: Stanislav Fomichev <sdf@google.com>
-> > > Reported-by: Jordan Griege <jgriege@cloudflare.com>
-> > > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> > >
-> > > ---
-> > > v3: converts also RX side return value in addition to TX values
-> > > v2: code style change suggested by Stanislav Fomichev
-> > > ---
-> > >  net/core/filter.c | 12 +++++++++++-
-> > >  1 file changed, 11 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > index 06ba0e56e369..3e232ce11ca0 100644
-> > > --- a/net/core/filter.c
-> > > +++ b/net/core/filter.c
-> > > @@ -2095,7 +2095,12 @@ static const struct bpf_func_proto bpf_csum_le=
-vel_proto =3D {
-> > >
-> > >  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buf=
-f *skb)
-> > >  {
-> > > -     return dev_forward_skb_nomtu(dev, skb);
-> > > +     int ret =3D dev_forward_skb_nomtu(dev, skb);
-> > > +
-> > > +     if (unlikely(ret > 0))
-> > > +             return -ENETDOWN;
-> > > +
-> > > +     return 0;
-> > >  }
-> > >
-> > >  static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
-> > > @@ -2106,6 +2111,8 @@ static inline int __bpf_rx_skb_no_mac(struct ne=
-t_device *dev,
-> > >       if (likely(!ret)) {
-> > >               skb->dev =3D dev;
-> > >               ret =3D netif_rx(skb);
-> > > +     } else if (ret > 0) {
-> > > +             return -ENETDOWN;
-> > >       }
-> > >
-> > >       return ret;
-> > > @@ -2129,6 +2136,9 @@ static inline int __bpf_tx_skb(struct net_devic=
-e *dev, struct sk_buff *skb)
-> > >       ret =3D dev_queue_xmit(skb);
-> > >       dev_xmit_recursion_dec();
-> > >
-> > > +     if (unlikely(ret > 0))
-> > > +             ret =3D net_xmit_errno(ret);
-> > > +
-> > >       return ret;
-> > >  }
-> >
-> > net_xmit_errno maps NET_XMIT_DROP to -ENOBUFS. It would make sense to m=
-e
-> > to map NET_RX_DROP to -ENOBUFS as well, instead of -ENETDOWN, to be
-> > consistent.
-> >
-> In fact I looked at all those errno, but found none actually covers
-> this situation completely. For the redirect ingress case, there are
-> three reasons to fail: backlog full, dev down, and MTU issue. This
-> won't be a problem for typical RX paths, since the error code is
-> usually discarded by call sites of deliver_skb. But redirect ingress
-> opens a call chain that would propagate this error to local sendmsg,
-> which may be very confusing to troubleshoot in a complex environment
-> (especially when backlog fills).
->=20
-> That said I agree ENOBUF covers the most likely reason to fail
-> (backlog). Let me change to that one in the next version if there are
-> no new suggestions.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 1e25dd7772483f477f79986d956028e9f47f990a  Add linux-next specific files for 20230725
 
-nit: also maybe wrap these rx paths into some new net_rx_errno ?
-To mirror the tx side.
-=20
-> > It looks like the Fixes tag for this should point to the change that
-> > introduced BPF for LWT:
-> >
-> > Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
-> >
-> Thanks for finding the tag. I was debating if it should be LWT commit
-> or bpf_redirect commit: the error is not handled at LWT, but it seems
-> actually innocent. The actual fix is the return value from the bpf
-> redirect code. Let me incorporate both in the next one to justify
-> better.
->=20
-> --
-> Yan
+Error/Warning reports:
+
+https://lore.kernel.org/oe-kbuild-all/202306260401.qZlYQpV2-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202307181450.sfbuvMf5-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202307201439.A9MArfeq-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202307251531.p8ZLFTMZ-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202307251703.AgPdzkAe-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202307260047.7VI2QNNG-lkp@intel.com
+
+Error/Warning: (recently discovered and may have been fixed)
+
+../lib/gcc/loongarch64-linux/12.3.0/plugin/include/config/loongarch/loongarch-opts.h:31:10: fatal error: loongarch-def.h: No such file or directory
+drivers/mfd/max77541.c:176:18: warning: cast to smaller integer type 'enum max7754x_ids' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+drivers/regulator/max77857-regulator.c:312:16: error: initializer element is not a compile-time constant
+samples/hw_breakpoint/data_breakpoint.c:73:2: error: call to undeclared function '__symbol_put'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+kernel/bpf/memalloc.c:200 add_obj_to_free_list() error: uninitialized symbol 'flags'.
+kernel/bpf/memalloc.c:347 free_bulk() error: uninitialized symbol 'flags'.
+kernel/bpf/memalloc.c:387 check_free_by_rcu() error: uninitialized symbol 'flags'.
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- i386-randconfig-m021-20230725
+|   |-- kernel-bpf-memalloc.c-add_obj_to_free_list()-error:uninitialized-symbol-flags-.
+|   |-- kernel-bpf-memalloc.c-check_free_by_rcu()-error:uninitialized-symbol-flags-.
+|   `-- kernel-bpf-memalloc.c-free_bulk()-error:uninitialized-symbol-flags-.
+|-- loongarch-allmodconfig
+|   `-- lib-gcc-loongarch64-linux-..-plugin-include-config-loongarch-loongarch-opts.h:fatal-error:loongarch-def.h:No-such-file-or-directory
+|-- loongarch-allyesconfig
+|   `-- lib-gcc-loongarch64-linux-..-plugin-include-config-loongarch-loongarch-opts.h:fatal-error:loongarch-def.h:No-such-file-or-directory
+|-- loongarch-randconfig-m041-20230725
+|   `-- lib-gcc-loongarch64-linux-..-plugin-include-config-loongarch-loongarch-opts.h:fatal-error:loongarch-def.h:No-such-file-or-directory
+`-- sparc64-randconfig-r091-20230725
+    |-- drivers-gpu-drm-loongson-lsdc_benchmark.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-volatile-noderef-__iomem-src-got-void-kptr
+    `-- drivers-gpu-drm-loongson-lsdc_benchmark.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-volatile-noderef-__iomem-dst-got-void-kptr
+clang_recent_errors
+|-- arm-randconfig-r024-20230725
+|   `-- drivers-regulator-max77857-regulator.c:error:initializer-element-is-not-a-compile-time-constant
+|-- i386-buildonly-randconfig-r004-20230725
+|   `-- samples-hw_breakpoint-data_breakpoint.c:error:call-to-undeclared-function-__symbol_put-ISO-C99-and-later-do-not-support-implicit-function-declarations-Werror-Wimplicit-function-declaration
+|-- x86_64-buildonly-randconfig-r002-20230725
+|   `-- drivers-mfd-max77541.c:warning:cast-to-smaller-integer-type-enum-max7754x_ids-from-const-void
+|-- x86_64-buildonly-randconfig-r003-20230725
+|   `-- drivers-mfd-max77541.c:warning:cast-to-smaller-integer-type-enum-max7754x_ids-from-const-void
+|-- x86_64-randconfig-x012-20230725
+|   `-- drivers-mfd-max77541.c:warning:cast-to-smaller-integer-type-enum-max7754x_ids-from-const-void
+`-- x86_64-randconfig-x013-20230725
+    `-- drivers-mfd-max77541.c:warning:cast-to-smaller-integer-type-enum-max7754x_ids-from-const-void
+
+elapsed time: 727m
+
+configs tested: 128
+configs skipped: 4
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r012-20230725   gcc  
+alpha                randconfig-r021-20230725   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r025-20230725   gcc  
+arc                  randconfig-r036-20230725   gcc  
+arc                  randconfig-r043-20230725   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                     davinci_all_defconfig   clang
+arm                                 defconfig   gcc  
+arm                           imxrt_defconfig   gcc  
+arm                       multi_v4t_defconfig   gcc  
+arm                        mvebu_v5_defconfig   clang
+arm                  randconfig-r024-20230725   clang
+arm                  randconfig-r046-20230725   clang
+arm                        shmobile_defconfig   gcc  
+arm                           stm32_defconfig   gcc  
+arm                         wpcm450_defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r015-20230725   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r002-20230725   gcc  
+hexagon              randconfig-r041-20230725   clang
+hexagon              randconfig-r045-20230725   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230725   clang
+i386         buildonly-randconfig-r005-20230725   clang
+i386         buildonly-randconfig-r006-20230725   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230725   clang
+i386                 randconfig-i002-20230725   clang
+i386                 randconfig-i003-20230725   clang
+i386                 randconfig-i004-20230725   clang
+i386                 randconfig-i005-20230725   clang
+i386                 randconfig-i006-20230725   clang
+i386                 randconfig-i011-20230725   gcc  
+i386                 randconfig-i012-20230725   gcc  
+i386                 randconfig-i013-20230725   gcc  
+i386                 randconfig-i014-20230725   gcc  
+i386                 randconfig-i015-20230725   gcc  
+i386                 randconfig-i016-20230725   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r011-20230725   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                     cu1830-neo_defconfig   clang
+mips                     decstation_defconfig   gcc  
+mips                           ip22_defconfig   clang
+mips                 randconfig-r005-20230725   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r032-20230725   gcc  
+nios2                randconfig-r035-20230725   gcc  
+openrisc                       virt_defconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r033-20230725   gcc  
+parisc               randconfig-r034-20230725   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                     mpc512x_defconfig   clang
+powerpc                 mpc832x_rdb_defconfig   clang
+powerpc                      pcm030_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                    nommu_k210_defconfig   gcc  
+riscv                randconfig-r006-20230725   clang
+riscv                randconfig-r022-20230725   gcc  
+riscv                randconfig-r042-20230725   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r003-20230725   clang
+s390                 randconfig-r013-20230725   gcc  
+s390                 randconfig-r014-20230725   gcc  
+s390                 randconfig-r044-20230725   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r023-20230725   gcc  
+sh                           se7619_defconfig   gcc  
+sh                           se7722_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r016-20230725   gcc  
+sparc                randconfig-r026-20230725   gcc  
+sparc                       sparc64_defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           alldefconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230725   clang
+x86_64       buildonly-randconfig-r002-20230725   clang
+x86_64       buildonly-randconfig-r003-20230725   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230725   gcc  
+x86_64               randconfig-x002-20230725   gcc  
+x86_64               randconfig-x003-20230725   gcc  
+x86_64               randconfig-x004-20230725   gcc  
+x86_64               randconfig-x005-20230725   gcc  
+x86_64               randconfig-x006-20230725   gcc  
+x86_64               randconfig-x011-20230725   clang
+x86_64               randconfig-x012-20230725   clang
+x86_64               randconfig-x013-20230725   clang
+x86_64               randconfig-x014-20230725   clang
+x86_64               randconfig-x015-20230725   clang
+x86_64               randconfig-x016-20230725   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r001-20230725   gcc  
+xtensa                         virt_defconfig   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
