@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-5850-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5851-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B143762060
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 19:41:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56D4E76206F
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 19:47:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64D971C20F6D
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 17:41:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39CF81C20F6D
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 17:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D661C2591F;
-	Tue, 25 Jul 2023 17:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D3925924;
+	Tue, 25 Jul 2023 17:47:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3CB625140
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 17:41:39 +0000 (UTC)
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AC9193
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 10:41:36 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-403a3df88a8so44378781cf.3
-        for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 10:41:36 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7986C25140
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 17:47:15 +0000 (UTC)
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B07197
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 10:47:12 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-78f36f37e36so1868872241.3
+        for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 10:47:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690306895; x=1690911695;
+        d=joelfernandes.org; s=google; t=1690307232; x=1690912032;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WJvVodEb8nnJEl20cUTyJdImyktiXScfem+69qgqo3Q=;
-        b=e5ID1UqXliZ+Zyl9RyCsKE4cEfBV1Yk3CrsZNrSv5V3zn6E8LT99TL1D17Nwe6Lqiv
-         nW/9bnXAFTLNnHj1mEGcktsTtyeTL09GQF65dj1XCRs8uhbyeGqbtPrqeu2zjjCtPw6E
-         CGqFZ4KvpaNSKdpjWcT/8chMGtdRtPBD4m7d8=
+        bh=tjxGQ97jdZy+msttaE6/InGye12w/eRXu8aDXNaXRhA=;
+        b=mJItfjJo0J8vq8ZI7eQRqgBugJTE/Qjls8F9j5zJT4/6drjQg4QRDl54H4s/m4+/B6
+         OdBZ9Wq1QAC//eamW92We5bVMlBhbiRysXzmrEde6b6WilxsOOxfPGb41E5gLvLxIRQd
+         mG8WW9RKwkhn1rvhmTvmgDcKKzEniO9bQreDA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690306895; x=1690911695;
+        d=1e100.net; s=20221208; t=1690307232; x=1690912032;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WJvVodEb8nnJEl20cUTyJdImyktiXScfem+69qgqo3Q=;
-        b=DGosxs/diVmpqVGcvmv0ub1+x4bBKqZU3Yrx41wfLHR3vyUjXf7AbU2I3cQNBLMnr7
-         M9zD41tuNpZfb5hyAFLKvsyF2c/ljLO3JgEtcTkkkd0OWTfA7TkSvBQ4pvTPx68vLv2z
-         R7Na1tOzzZ4v7PAHsgOv0pvw2rPw/HFn0M4S76KOnWXinfhI22MJ2DRLfbDKYTLB/ers
-         VMPKIcAeLPWwHBMo3EJ9P+/tPH7/3POf1rhOl2jr4n+QQ8ZA/FaoVwXmxqrMWT7kRJEF
-         7Xn5k2MKBg9PERknlNG+Mv5sYuAgtMWw7aPUdpD6OpsBYPCG0HMNSXmk+y+XAw/wQz9b
-         vHYw==
-X-Gm-Message-State: ABy/qLaqyJBME/cF6owyMnCb5M7rY5wIA31qTISv7Ub1OwGV6ufNQXuw
-	Bf7c937tw/rhTpTBQo3e0VL1pA==
-X-Google-Smtp-Source: APBJJlHBHpNnHoYZv15+3LbjPWhNhvppPgE8W+pmrg9pYJauopPMXA+KIqGV321IR1oTEDcTpImI2Q==
-X-Received: by 2002:a05:622a:1742:b0:403:b6a9:b8f9 with SMTP id l2-20020a05622a174200b00403b6a9b8f9mr3981171qtk.36.1690306895263;
-        Tue, 25 Jul 2023 10:41:35 -0700 (PDT)
+        bh=tjxGQ97jdZy+msttaE6/InGye12w/eRXu8aDXNaXRhA=;
+        b=bDrmMmUTuNKuZkRSxTW7XXcxEn8lRsRjBGQwobLP9EAJMAjw81F8U0pyFt3dp5fFkm
+         zyP7dZDOWXXp3O+n/zazQ+kIzzP1Hg75vVEx1Ql3nGY6rCxVTY8Nb15aMgtltHNDU5ci
+         L4gKo/Nt+BD2lJbKT0xNKXhTML+WR9pF6RiVGvAT0yRHHR89m6cShpGT0KHPvNLU8f9e
+         wqabAwGZQ5796N0gj1Y/2mGsJuOwHekn/ESp2M9tfLYeWM+h+jR7PUhl4SlaQMRPmMkD
+         fDaWyymOvaO/htwS5yW5+AMmcaVXzBdRxdospvNwjBGriXwF+uGoRI+abMMy3wJc1+lE
+         Odiw==
+X-Gm-Message-State: ABy/qLaSG3e7Q8jtha1+Bf50Y1vGcLtGdOgVhl4OST4IORrRBX0hNc5S
+	huC6LGRp4a7MiuK7R0/EgX5rhg==
+X-Google-Smtp-Source: APBJJlFxF234D/M5tS2Q+/KCUeJ8ymhGYnmYBO9RSoGjcR24zk88rZomSukAB6JnjgPjlb4vStmdHw==
+X-Received: by 2002:a67:b106:0:b0:443:60d7:3925 with SMTP id w6-20020a67b106000000b0044360d73925mr5444114vsl.20.1690307231746;
+        Tue, 25 Jul 2023 10:47:11 -0700 (PDT)
 Received: from [192.168.0.198] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id z4-20020a05622a124400b004054b7cc490sm3480130qtx.73.2023.07.25.10.41.33
+        by smtp.gmail.com with ESMTPSA id c11-20020a0cf2cb000000b0063d1f967268sm404045qvm.111.2023.07.25.10.47.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jul 2023 10:41:34 -0700 (PDT)
-Message-ID: <1e254a35-d0c2-8d41-f020-21694945911a@joelfernandes.org>
-Date: Tue, 25 Jul 2023 13:41:32 -0400
+        Tue, 25 Jul 2023 10:47:11 -0700 (PDT)
+Message-ID: <c72c1089-f5ac-9ed2-3412-cdb310cf5b51@joelfernandes.org>
+Date: Tue, 25 Jul 2023 13:47:09 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,11 +66,11 @@ User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
 Subject: Re: [RFC PATCH v2 18/20] context_tracking,x86: Defer kernel text
  patching IPIs
 Content-Language: en-US
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
- bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+ x86@kernel.org, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
  Nicolas Saenz Julienne <nsaenzju@redhat.com>,
  Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
  <mhiramat@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
@@ -104,9 +104,9 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
  Marcelo Tosatti <mtosatti@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>
 References: <20230720163056.2564824-19-vschneid@redhat.com>
  <6EBAEEED-6F38-472D-BA31-9C61179EFA2F@joelfernandes.org>
- <xhsmhtttsru2s.mognet@vschneid.remote.csb>
+ <20230725133936.GM3765278@hirez.programming.kicks-ass.net>
 From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <xhsmhtttsru2s.mognet@vschneid.remote.csb>
+In-Reply-To: <20230725133936.GM3765278@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -118,8 +118,8 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 
 
-On 7/25/23 09:36, Valentin Schneider wrote:
-> On 25/07/23 06:49, Joel Fernandes wrote:
+On 7/25/23 09:39, Peter Zijlstra wrote:
+> On Tue, Jul 25, 2023 at 06:49:45AM -0400, Joel Fernandes wrote:
 >> Interesting series Valentin. Some high-level question/comments on this one:
 >>
 >>> On Jul 20, 2023, at 12:34 PM, Valentin Schneider <vschneid@redhat.com> wrote:
@@ -129,20 +129,22 @@ On 7/25/23 09:36, Valentin Schneider wrote:
 >>> do not need this synchronization to happen immediately, and this is
 >>> actually harmful interference for NOHZ_FULL CPUs.
 >>
->> Does the amount of harm not correspond to practical frequency of text_poke?
+>> Does the amount of harm not correspond to practical frequency of text_poke? 
 >> How often does instruction patching really happen? If it is very infrequent
 >> then I am not sure if it is that harmful.
->>
 > 
-> Being pushed over a latency threshold *once* is enough to impact the
-> latency evaluation of your given system/application.
+> Well, it can happen quite a bit, also from things people would not
+> typically 'expect' it.
 > 
-> It's mainly about shielding the isolated, NOHZ_FULL CPUs from whatever the
-> housekeeping CPUs may be up to (flipping static keys, loading kprobes,
-> using ftrace...) - frequency of the interference isn't such a big part of
-> the reasoning.
+> For instance, the moment you create the first per-task perf event we
+> frob some jump-labels (and again some second after the last one goes
+> away).
+> 
+> The same for a bunch of runtime network configurations.
 
-Makes sense.
+Ok cool. I guess I still have memories of that old ARM device I had
+where modifications to kernel text was forbidden by hardware (was a
+security feature). That was making kprobes unusable...
 
 >>> As the synchronization IPIs are sent using a blocking call, returning from
 >>> text_poke_bp_batch() implies all CPUs will observe the patched
@@ -155,17 +157,13 @@ Makes sense.
 >> spends multiple seconds before entering the kernel, and all this while
 >> the blocking call waits? Perhaps in such situation you want the real IPI
 >> to be sent out instead of the deferred one?
->>
 > 
-> The blocking call only waits for CPUs for which it queued a CSD. Deferred
-> calls do not queue a CSD thus do not impact the waiting at all. See
-> smp_call_function_many_cond().
+> Please re-read what Valentin wrote -- nobody is waiting on anything.
 
-Ah I see you are using on_each_cpu_cond(). I should have gone through
-the other patch before making noise.
-
-thanks,
+Makes sense. To be fair I received his email 3 minutes before yours ;-).
+But thank you both for clarifying!
 
  - Joel
+
 
 
