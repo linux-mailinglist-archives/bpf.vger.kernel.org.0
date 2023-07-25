@@ -1,173 +1,104 @@
-Return-Path: <bpf+bounces-5842-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5843-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39C2A761EB1
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 18:38:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8512761FB7
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 19:03:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A8D01C20F57
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 16:38:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61B0A2816DF
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 17:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28687200D0;
-	Tue, 25 Jul 2023 16:38:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5991525174;
+	Tue, 25 Jul 2023 17:02:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09043C23
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 16:38:08 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE341BDB
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 09:38:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690303087;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jLj18oLOp3KH/CAHpxuqfsfjyo2yWkCl10MaSaKRkoU=;
-	b=EQP3p1cHkEIRiB+y27l5gynle4EIDi6jzweIHfU2USDyWokUAhR1r7OKXTKG+icGw8yPHB
-	vx96iXXCf2+7kV1j70maWpDCUGZv1FoDtoni+GO5kL8UftH/+GPGIvO7CHqGNJqyPqJzdU
-	ayBHDHfEZcn1XYu7rYdhn0myLOV/7/o=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-500-LzR5megnNuaWxeZbStK90g-1; Tue, 25 Jul 2023 12:38:04 -0400
-X-MC-Unique: LzR5megnNuaWxeZbStK90g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 20F571C07542;
-	Tue, 25 Jul 2023 16:38:02 +0000 (UTC)
-Received: from tpad.localdomain (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 5D55E1121330;
-	Tue, 25 Jul 2023 16:37:59 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id B479B4018E672; Tue, 25 Jul 2023 13:37:32 -0300 (-03)
-Date: Tue, 25 Jul 2023 13:37:32 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Valentin Schneider <vschneid@redhat.com>, Nadav Amit <namit@vmware.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
-	the arch/x86 maintainers <x86@kernel.org>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 20/20] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-Message-ID: <ZL/6THDvmC5mVyBI@tpad>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-21-vschneid@redhat.com>
- <188AEA79-10E6-4DFF-86F4-FE624FD1880F@vmware.com>
- <xhsmh8rb5tui1.mognet@vschneid.remote.csb>
- <2284d0db-f94a-e059-7bd0-bab4f112ed35@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2511A3C23
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 17:02:44 +0000 (UTC)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E926BE9
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 10:02:42 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-55c04f5827eso2951064a12.1
+        for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 10:02:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690304562; x=1690909362;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aEq9wvoOmb79sxPImc43/8dWbsrHxgBnwc9vx2sbv8Q=;
+        b=VWIQdXO6C9fKgtTrf5l5sGCGnOSCXxT0RK4teBxBlWjA45NvBd2W2NUCMBvJqd1LuQ
+         +Ddme/UZOrkRccSEBHud08r7Hp2GlWNzroFWlyPl9a0XN1yaKOt47BItrQIH7itgaZ8L
+         7CtNgDjtQGmkhgbXcJKsSXADLMCaG9OXG3B/pCyg44pBrE8DUcsdx625AOB1ywFHFJWk
+         EVZCqM+29RfY09tnPa6AzfJ6TqZ3OX1xIi7nA+XQvQYYGtNtozEioR+Cj1IXxlTSyzX8
+         ydYByI9q5vC/t0bcAbs5zfmRgTZcIcMmZSWRvoBzoDE3/5ywsADDG9JPeOFXHIcXarLI
+         u7JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690304562; x=1690909362;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aEq9wvoOmb79sxPImc43/8dWbsrHxgBnwc9vx2sbv8Q=;
+        b=QYYJS0IZ+DxrRRa5GFGhOJ/z2aqlS0zuAmhIoM/QD1c2fXHMAIdXtM+yT3xX1IcEpQ
+         tvpWzDucg4so0de9SKVjMZwsPjxq1lHEm3fPG/YDCS6qw7m2lK0fzg9+5vEu0pAHEz/y
+         j+Jh1nYsRYSnJqJr3iDVnjNKIe14Sc0I01lkxmUmW1lLhN7n2+0YpbWDTBqaVAShKan9
+         IwHeKvHyGmHs85cshQu2GVh1AaK1skJi7dA3sN5g5DE+TffP4jhCBOscOgVrapzgKLc0
+         fK2q0RvI36QhqWCJKQsD7wrzB1x169N/BXF5BdGPEt592RkBW1pW2lUFlHCzY9aJ7SX3
+         4chg==
+X-Gm-Message-State: ABy/qLbWnPUPGQhObgPiG5Pki1/fYnaNSPZqGAh+hK8iiH6ANO/8dbws
+	duSiHya/oUDgpP8IRC4P4IehjQA=
+X-Google-Smtp-Source: APBJJlG+EQC6OFCeDlua8rQI6GRdjTdr0NTozio16Zq//4slIvlC7h02qvfKRrly0F7zWE7386X2IpM=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:7d12:0:b0:55a:12cf:3660 with SMTP id
+ y18-20020a637d12000000b0055a12cf3660mr52472pgc.1.1690304562245; Tue, 25 Jul
+ 2023 10:02:42 -0700 (PDT)
+Date: Tue, 25 Jul 2023 10:02:40 -0700
+In-Reply-To: <ZL+VfRiJQqrrLe/9@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2284d0db-f94a-e059-7bd0-bab4f112ed35@intel.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Mime-Version: 1.0
+References: <20230724142237.358769-1-leitao@debian.org> <20230724142237.358769-3-leitao@debian.org>
+ <ZL61cIrQuo92Xzbu@google.com> <ZL+VfRiJQqrrLe/9@gmail.com>
+Message-ID: <ZMAAMKTaKSIKi1RW@google.com>
+Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+From: Stanislav Fomichev <sdf@google.com>
+To: Breno Leitao <leitao@debian.org>
+Cc: asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org, 
+	netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org, 
+	edumazet@google.com, pabeni@redhat.com, linux-kernel@vger.kernel.org, 
+	leit@meta.com, bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jul 24, 2023 at 10:40:04AM -0700, Dave Hansen wrote:
-> On 7/24/23 04:32, Valentin Schneider wrote:
-> > AFAICT the only reasonable way to go about the deferral is to prove that no
-> > such access happens before the deferred @operation is done. We got to prove
-> > that for sync_core() deferral, cf. PATCH 18.
+On 07/25, Breno Leitao wrote:
+> On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
+> > On 07/24, Breno Leitao wrote:
+> > > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+> > > level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
+> > > where a sockptr_t is either userspace or kernel space, and handled as
+> > > such.
+> > > 
+> > > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
 > > 
-> > I'd like to reason about it for deferring vunmap TLB flushes:
-> > 
-> > What addresses in VMAP range, other than the stack, can early entry code
-> > access? Yes, the ranges can be checked at runtime, but is there any chance
-> > of figuring this out e.g. at build-time?
+> > We probably need to also have bpf bits in the new
+> > io_uring_cmd_getsockopt?
 > 
-> Nadav was touching on a very important point: TLB flushes for addresses
-> are relatively easy to defer.  You just need to ensure that the CPU
-> deferring the flush does an actual flush before it might architecturally
-> consume the contents of the flushed entry.
-> 
-> TLB flushes for freed page tables are another game entirely.  The CPU is
-> free to cache any part of the paging hierarchy it wants at any time.
+> It might be interesting to have the BPF hook for this function as
+> well, but I would like to do it in a following patch, so, I can
+> experiment with it better, if that is OK.
 
-Depend on CONFIG_PAGE_TABLE_ISOLATION=y, which flushes TLB (and page
-table caches) on user->kernel and kernel->user context switches ?
+We are not using io_uring, so fine with me. However, having a way to bypass
+get/setsockopt bpf might be problematic for some other heavy io_uring
+users.
 
-So freeing a kernel pagetable page does not require interrupting a CPU 
-which is in userspace (therefore does not have visibility into kernel
-pagetables).
-
-> It's also free to set accessed and dirty bits at any time, even for
-> instructions that may never execute architecturally.
-> 
-> That basically means that if you have *ANY* freed page table page
-> *ANYWHERE* in the page table hierarchy of any CPU at any time ... you're
-> screwed.
-> 
-> There's no reasoning about accesses or ordering.  As soon as the CPU
-> does *anything*, it's out to get you.
-> 
-> You're going to need to do something a lot more radical to deal with
-> free page table pages.
-
-
-
+Lemme CC a bunch of Meta folks explicitly. I'm not sure what that state
+of bpf support in io_uring.
 
