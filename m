@@ -1,157 +1,189 @@
-Return-Path: <bpf+bounces-5817-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5818-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ACAB761940
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 15:06:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D996761957
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 15:08:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4088B1C20E63
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 13:06:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCC382816E5
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 13:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228541F186;
-	Tue, 25 Jul 2023 13:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795AF1F186;
+	Tue, 25 Jul 2023 13:07:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5AD61F16C
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 13:05:57 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093C7173B
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 06:05:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690290354;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sjst0ANUHPkhmyS9EMxljg+0hKTtA2LkvoCccenEaWc=;
-	b=F7+xFVN/UTPtioUDXmny4WuOauzeqiMr3GZY7z4ZN3NSNic3rnB+YM9YlvrM4oJIRcpCBR
-	EUZkTCN/IFwszgRPwQqPwmuiuHakAykTSIQ66vIQqAu2TWbA+DLVAG6WUkHPt+sDmTvotf
-	yFAjlzdpsTNHhc69ehl4uvxwy8/lHq0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-JFDeF6WTMoyCsX_Om3I0Mw-1; Tue, 25 Jul 2023 09:05:52 -0400
-X-MC-Unique: JFDeF6WTMoyCsX_Om3I0Mw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3176c4de5bbso291546f8f.0
-        for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 06:05:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690290352; x=1690895152;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sjst0ANUHPkhmyS9EMxljg+0hKTtA2LkvoCccenEaWc=;
-        b=aHduKTl5d9TRGJpC91uvUQPfwrDdAdw+8sJ6EBUTY/46ZeG0MAPKcLT25RpBvP7phn
-         Whh05MAdAiPWaIsE7GJ7kWUCXoWQe4ogmNcrvkYflTRVm3dd0ebGXuTzpL9ZWPZiJPrJ
-         +NxhHV98jkFrrzDdP+lDwGXWyizbE/lu53JHUtxWXlNCnQDxXRAt1+AZ9z0OEOoQHTN1
-         5XUbp/do9vEi/taDTJ8VE77KEk9wiUlrqHSs8wyJ0fK2Swml9tpuwJCEV80cOEshITfP
-         9k9bx841OjTwoFk4E8fJSoAc40pd52kZglxCqc4shsgIiqGt+SP0ADMaEFtOsW9/mDT6
-         +wrw==
-X-Gm-Message-State: ABy/qLa/fQOu+K3Uo0Wdqazr1TU9LkMPgMxaQ2cGkmC1YqYMYVya5nT/
-	OALN6EkIyXqd7Tc93GcYejH6NmXP3venozbUG9iV+a3BMGoyOO+JKqlHeCA9OdlGwATURl9tPuc
-	S2CvTdjqtsIW8
-X-Received: by 2002:a05:6000:4c3:b0:314:3f98:a788 with SMTP id h3-20020a05600004c300b003143f98a788mr9662106wri.7.1690290351824;
-        Tue, 25 Jul 2023 06:05:51 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlF3IfiPQXJmTRIbnVDIkRhO1QGeOmJQGB2V7Ax+LFUYp7XQ/uOSm8c19TiPQx/PfreNkIV1Uw==
-X-Received: by 2002:a05:6000:4c3:b0:314:3f98:a788 with SMTP id h3-20020a05600004c300b003143f98a788mr9662062wri.7.1690290351507;
-        Tue, 25 Jul 2023 06:05:51 -0700 (PDT)
-Received: from vschneid.remote.csb ([149.12.7.81])
-        by smtp.gmail.com with ESMTPSA id a15-20020adfeecf000000b00311d8c2561bsm16238717wrp.60.2023.07.25.06.05.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 06:05:51 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
- bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Nicolas Saenz Julienne
- <nsaenzju@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Thomas
- Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav
- Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H.
- Peter Anvin" <hpa@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>, Wanpeng
- Li <wanpengli@tencent.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, Andy
- Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, "Paul
- E. McKenney" <paulmck@kernel.org>, Neeraj Upadhyay
- <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, Josh
- Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, Andrew
- Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>,
- Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes
- <lstoakes@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Jason Baron
- <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>, Sami Tolvanen
- <samitolvanen@google.com>, Ard Biesheuvel <ardb@kernel.org>, Nicholas
- Piggin <npiggin@gmail.com>, Juerg Haefliger
- <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
- <nsaenz@kernel.org>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, Nadav Amit <namit@vmware.com>, Dan
- Carpenter <error27@gmail.com>, Chuang Wang <nashuiliang@gmail.com>, Yang
- Jihong <yangjihong1@huawei.com>, Petr Mladek <pmladek@suse.com>, "Jason A.
- Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>, Julian Pidancet
- <julian.pidancet@oracle.com>, Tom Lendacky <thomas.lendacky@amd.com>,
- Dionna Glaze <dionnaglaze@google.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?=
- <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>, Daniel Bristot
- de Oliveira <bristot@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
- Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 15/20] context-tracking: Introduce work deferral
- infrastructure
-In-Reply-To: <ZL+wgn76H1em9hZU@lothringen>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-16-vschneid@redhat.com>
- <ZL6QI4mV-NKlh4Ox@localhost.localdomain>
- <xhsmh351dtfjj.mognet@vschneid.remote.csb> <ZL7OoUMLZwfUttjV@lothringen>
- <xhsmhzg3ks3mw.mognet@vschneid.remote.csb> <ZL+wgn76H1em9hZU@lothringen>
-Date: Tue, 25 Jul 2023 14:05:47 +0100
-Message-ID: <xhsmhwmyorvis.mognet@vschneid.remote.csb>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0C41ED3E;
+	Tue, 25 Jul 2023 13:07:47 +0000 (UTC)
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2068.outbound.protection.outlook.com [40.107.92.68])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1E6173F;
+	Tue, 25 Jul 2023 06:07:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mPV3T2fVcW5UTSV74ow3vRcx2wt8PRU3JMqju3fTkoO8aHc1nWAu52pEajCpFOgyI4RvzgZnXPHgnfGd+fP6dNssqYCV0ZnN6lmpy+9633udWLW4gV5HjYHwYkqpP7vL3Sd7DIgHb6FESsvWWwzPHygItO2v2Gxs4/6b4Ylsq5tI4StbkaoOfl0/XqtwAylYK+yEm7HoONlMm00w3fedakyjWpnJRGEs2ZJW9OzdzA4yOZl7+M6e1cPYqox94KkIPvGY8xFf/DbkxRLXhFGIL0MCvQ+BZq/blafGyVGxENsVICQeCdSKCWveHlCBCX5UyLPJ57ZF4EXsR/uR1BATog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aK+8ALn189/VYcZZfobTNdm4LjWO8rr/qianUzVIx50=;
+ b=QAy2swkwMTphrCcrr5ihhBJLNSqspu++X1xfsklOg+eiLWMUsbK6zXbNzKD5EYGZ39goRnuUzABDIBoSLMJCqqrX9xK/xfUgntN5Huo0Nq63XrrCZrzoEIR3Qp1CJ43lLfjxBNn/pmB1z7v5AH/ZAtk15lTfd3bwFg3CeoiukvCk9XadsXnO6F2EqCxxNRNx4j5riAn9I3cwDZLwATIM6qxEL4hzXwBvAE9v82HUFKfVX2zg1B6xLh6/zqSqquKbk+/wj7WzkRi6cFB1VvlkpwG2WeW82xvz4d29paAbaehmCUL/BM2LQ2UbhdGMq2sOIAcJCMgwXbkGbvcF2dBkVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aK+8ALn189/VYcZZfobTNdm4LjWO8rr/qianUzVIx50=;
+ b=TxZQPLWKSlCevg1ua7hOpsCTz031DtNCepE1Y504auhNyipoRQLrwn+Jb7rkTzKHwhSe/UTtvhNXWkTR0m8zkBYYVziOoqBd6ZmyTfCizDrS/Ow5FHah7YzznMciFkjbMq2Oe4N5+jdWkc2q3V9RUSYV9xi0VwXaGBHPQ9t7+cZLAFdUygr6JD7XaYzyQtkOivR18Pg7frax4K0TtzwKN9gXWF68Y+uj7JuLMx7YJsAYWOYA8r7YxXgZo649KZkobc8khMJ0BKmRWUdAFgMBkA4n+XJQFYg0ENO5uo2Jvee/bVyALjnbmqNWWtnih9bbo6LMF3StaUbgLCM5qKSAbg==
+Received: from BN7PR02CA0018.namprd02.prod.outlook.com (2603:10b6:408:20::31)
+ by BL0PR12MB4915.namprd12.prod.outlook.com (2603:10b6:208:1c9::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Tue, 25 Jul
+ 2023 13:07:42 +0000
+Received: from BN8NAM11FT033.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:20:cafe::2) by BN7PR02CA0018.outlook.office365.com
+ (2603:10b6:408:20::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33 via Frontend
+ Transport; Tue, 25 Jul 2023 13:07:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BN8NAM11FT033.mail.protection.outlook.com (10.13.177.149) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.25 via Frontend Transport; Tue, 25 Jul 2023 13:07:42 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 25 Jul 2023
+ 06:07:30 -0700
+Received: from nvidia.com (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Tue, 25 Jul
+ 2023 06:07:25 -0700
+From: Gavin Li <gavinl@nvidia.com>
+To: <mst@redhat.com>, <jasowang@redhat.com>, <xuanzhuo@linux.alibaba.com>,
+	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<hawk@kernel.org>, <john.fastabend@gmail.com>, <jiri@nvidia.com>,
+	<dtatulea@nvidia.com>
+CC: <gavi@nvidia.com>, <virtualization@lists.linux-foundation.org>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>
+Subject: [PATCH net-next V4 0/3] virtio_net: add per queue interrupt coalescing support
+Date: Tue, 25 Jul 2023 16:07:06 +0300
+Message-ID: <20230725130709.58207-1-gavinl@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT033:EE_|BL0PR12MB4915:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8987c99c-59db-45ea-c4f4-08db8d102187
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	SKfLTiMKVgRqU/Wl6/sod3mmxpVs8Z619Uo+MCquKVxT45037wzQudYP09+YBvxGRpd645GJeF0y6wpSWlorp7U+qT2zqZUXskeFu2m6b25N+H88UOJiUW1dL37DAU+APo3jm+BTUWwyEnJuTWdxsIsuLElYRrOZAKWE7adPyGoac2Hn2lQfwMneObnWvyrrqmgGBjRYg5NIC+GRJqfGW9sAl2I5kYUaqKKvmGo06+O0GyWmqjsSyNrXjZBUtmPvAQqykxQVmhApoo3kGBaJiFxfdO6UE8xAVnEYnw7gM4OgjJym19px+5NbWw6zHE6qbPlNBi7NPZDyh33AgXcnE3498a7mjNVzF7QB8HlpQPmg7dZf0hxlmdvjjaXPo1iEXr/u/NjBtjtf/C0B61mWjPx2WYfB1hHv7Np7eOB+gD+hYNMBHZzBEekqlIEPCKPaMquPPZl9l2aIHsjjg9HtgY07FCsKY85P4J0yeNyEfz3HMVu2VU6HJ0J9nBp7KRTDfmkZgSQlsv319EQmaKci6IqaeNNdyZq7Hm5UR4f+kvHFeb+a46DPJFpD0d5wTvYu49CDw+mtjhLGAQz+9Ahr0L6mYM2L3S8bV70yVUIMH11xYEFkFmSLchm06cd3uirS8irzjHqb8a06zSUWMEtFW6z8wVguQLFlNpGRmdr5KYzaf4hxl3z8Odnxb51hoCDNR/Kfbz8Juvs4yCY6aYk/rcZBIXEGTOs4qxRb7QbGoax2rPlttwyCORl3MMGJBqwNcViF7i/63Ad8EV5hOT2BHpIacUxGtBa2cGT8i3zAXs9cWSa9xs2edub1pmZpuG6/
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(136003)(376002)(396003)(451199021)(82310400008)(36840700001)(46966006)(40470700004)(6286002)(16526019)(26005)(1076003)(40460700003)(336012)(186003)(36756003)(36860700001)(5660300002)(356005)(7636003)(8936002)(8676002)(7416002)(921005)(2906002)(55016003)(40480700001)(82740400003)(86362001)(7696005)(6666004)(70206006)(70586007)(83380400001)(54906003)(478600001)(110136005)(41300700001)(426003)(316002)(2616005)(4326008)(6636002)(47076005)(83996005)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2023 13:07:42.2721
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8987c99c-59db-45ea-c4f4-08db8d102187
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN8NAM11FT033.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4915
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 25/07/23 13:22, Frederic Weisbecker wrote:
-> On Tue, Jul 25, 2023 at 11:10:31AM +0100, Valentin Schneider wrote:
->> I have reasons! I just swept them under the rug and didn't mention them :D
->> Also looking at the config dependencies again I got it wrong, but
->> nevertheless that means I get to ramble about it.
->>
->> With NO_HZ_IDLE, we get CONTEXT_TRACKING_IDLE, so we get these
->> transitions:
->>
->>   ct_idle_enter()
->>     ct_kernel_exit()
->>       ct_state_inc_clear_work()
->>
->>   ct_idle_exit()
->>     ct_kernel_enter()
->>       ct_work_flush()
->>
->> Now, if we just make CONTEXT_TRACKING_WORK depend on CONTEXT_TRACKING_IDLE
->> rather than CONTEXT_TRACKING_USER, we get to leverage the IPI deferral for
->> NO_HZ_IDLE kernels - in other words, we get to keep idle CPUs idle longer.
->>
->> It's a completely different argument than reducing interference for
->> NOHZ_FULL userspace applications and I should have at the very least
->> mentioned it in the cover letter, but it's the exact same backing
->> mechanism.
->>
->> Looking at it again, I'll probably make the CONTEXT_IDLE thing a separate
->> patch with a proper changelog.
->
-> Ok should that be a seperate Kconfig? This indeed can bring power improvement
-> but at the cost of more overhead from the sender. A balance to be measured...
+Currently, coalescing parameters are grouped for all transmit and receive
+virtqueues. This patch series add support to set or get the parameters for
+a specified virtqueue.
 
-Yep agreed, I'll make that an optional config.
+When the traffic between virtqueues is unbalanced, for example, one virtqueue
+is busy and another virtqueue is idle, then it will be very useful to
+control coalescing parameters at the virtqueue granularity.
+
+Example command:
+$ ethtool -Q eth5 queue_mask 0x1 --coalesce tx-packets 10
+Would set max_packets=10 to VQ 1.
+$ ethtool -Q eth5 queue_mask 0x1 --coalesce rx-packets 10
+Would set max_packets=10 to VQ 0.
+$ ethtool -Q eth5 queue_mask 0x1 --show-coalesce
+ Queue: 0
+ Adaptive RX: off  TX: off
+ stats-block-usecs: 0
+ sample-interval: 0
+ pkt-rate-low: 0
+ pkt-rate-high: 0
+
+ rx-usecs: 222
+ rx-frames: 0
+ rx-usecs-irq: 0
+ rx-frames-irq: 256
+
+ tx-usecs: 222
+ tx-frames: 0
+ tx-usecs-irq: 0
+ tx-frames-irq: 256
+
+ rx-usecs-low: 0
+ rx-frame-low: 0
+ tx-usecs-low: 0
+ tx-frame-low: 0
+
+ rx-usecs-high: 0
+ rx-frame-high: 0
+ tx-usecs-high: 0
+ tx-frame-high: 0
+
+Gavin Li (3):
+  virtio_net: extract interrupt coalescing settings to a structure
+  virtio_net: support per queue interrupt coalesce command
+---
+changelog:
+v1->v2
+- Addressed the comment from Xuan Zhuo
+- Allocate memory from heap instead of using stack memory for control vq
+	messages
+v2->v3
+- Addressed the comment from Heng Qi
+- Use control_buf for control vq messages
+v3->v4
+- Addressed the comment from Michael S. Tsirkin
+- Refactor set_coalesce of both per queue and global config that were
+	littered with if/else branches
+---
+  virtio_net: enable per queue interrupt coalesce feature
+
+ drivers/net/virtio_net.c        | 187 ++++++++++++++++++++++++++++----
+ include/uapi/linux/virtio_net.h |  14 +++
+ 2 files changed, 177 insertions(+), 24 deletions(-)
+
+-- 
+2.39.1
 
 
