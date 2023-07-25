@@ -1,103 +1,98 @@
-Return-Path: <bpf+bounces-5792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E38BB7608D3
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 06:44:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4667608E6
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 06:51:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CB9D2816DB
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 04:44:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42D4A281404
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 04:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84DA27486;
-	Tue, 25 Jul 2023 04:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 091234C9F;
+	Tue, 25 Jul 2023 04:51:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E69186F;
-	Tue, 25 Jul 2023 04:44:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C42BC433C7;
-	Tue, 25 Jul 2023 04:44:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690260254;
-	bh=+ACqNdes4jmCi8Obnif4i7hbEQJMXGCeCk+pRu6qhsg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hOgwA36ZJTCd8ep9foyK0Ml6RVutpQV8FWOfYn7vpM+S6O0aWLUKjFZoTDm3u8Y+3
-	 jWWWu6hOO00usmnVc/wGuEbZzZPEU+i/cSm9N+l1uUXJuZxV4w3P2VDzq1Kmf8tHyo
-	 yXf8qsQwLVFfEN8rE39M9L8iCe/FQkzOUAtzuUNwe/cDH4lUNlPCbzjEiOumg+WgNu
-	 jVDPn8W+a3poZOXFm/5eQgf+iAD1JmZyuMbnhIGf+OqKlbb+LANjw6lxOVUWFU/yRB
-	 nBnE73BheMbhgboucKa9fjeYxDfvkbwhVJeo23Pmj1EzCgbxVinfshWVOw8bGU0Bf3
-	 8xrmZxrTB2KTA==
-Date: Tue, 25 Jul 2023 07:44:09 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Lin Ma <linma@zju.edu.cn>, kuba@kernel.org
-Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	ast@kernel.org, martin.lau@kernel.org, yhs@fb.com,
-	void@manifault.com, andrii@kernel.org, houtao1@huawei.com,
-	inwardvessel@gmail.com, kuniyu@amazon.com, songliubraving@fb.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v2] bpf: Add length check for
- SK_DIAG_BPF_STORAGE_REQ_MAP_FD parsing
-Message-ID: <20230725044409.GF11388@unreal>
-References: <20230725023330.422856-1-linma@zju.edu.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC67D110F
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 04:51:24 +0000 (UTC)
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233F910E5
+	for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 21:51:23 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fba03becc6so7739435e87.0
+        for <bpf@vger.kernel.org>; Mon, 24 Jul 2023 21:51:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690260681; x=1690865481;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=abEzMlR8Miho0eF9yl+eRKvXF+WMtFnXDQYkD/vBC48=;
+        b=WIIux40R3vQWnrZAPfytjmb8E1WZf1/2M/5mrSHX7ioxn2vmcITPlE+Trx4ydY9OJ1
+         d048B6mTkXPf/pOywhjhZm9HaSewfWMauq0d8fP4o9az2+Dr55iW1Iv+3e6On5C8zunS
+         owAbQiQzoqvbaVgSJi/SRJsPNMwAE80p+KZmf39HlLqyr6t87oME6+CLo4PpdHpGrLy2
+         irw19G4QqlDc4JrdTJfRl+zFdRX2cWX9U6hiqeazLcFHvn7ZvOZVXfd2vTmKWGfLkf4Y
+         6mrk5Y4zHzjFKN28cAX2iPVis/SCKS7MvNnSMJalmLKk5/bu4mlIj6zIKmpWPSQn0hAq
+         qBXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690260681; x=1690865481;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=abEzMlR8Miho0eF9yl+eRKvXF+WMtFnXDQYkD/vBC48=;
+        b=b8oVQ0J/VA+RLOVOONYSmFx2Xv1wb4TJ7BEgdPB1Ers4L3UVdlrHRn91KPU7o54vOt
+         VrQw8hBcHp80yzD/AKu0jrQ7rfuHUla5fWU+QrklL+deRsAsgx7CcU2oBWP7r4VKa8ve
+         udVYGJg5Ua0h2AxcYGAXjtami8PuIs2h4/6m6QJWv2O+lZ/jsQWywkCakmKiJNvwAlnK
+         cEZyl8aTmqx4tZafJMIiDyO4fa0bPsIMjzQfDa75sLIKazMI9jJA/vVnz+pgZAY+iIbB
+         Pp7BOqdRSKY3vwQyondE8H1MKPed0wHsBt2CQKVHyF5+bbTv1ksBZtvKcjvBSZlAgR/0
+         cAPA==
+X-Gm-Message-State: ABy/qLY6f8UJSSygkkHJ36R0swpU+d8eQWvvYGUYtTbGJ7Mo3SS5RGzU
+	7W7mHm520w+PFMOaUx0ZpT6BnHo1N4dN8I9AHPg=
+X-Google-Smtp-Source: APBJJlFp9zumitUB2oErNKA1PDlk6weCRd3JwpnV5qVAOnBZhKd73afU/qolCCepMJeCTG1Jlz5dzA3PfoHJBRfiTy8=
+X-Received: by 2002:a05:6512:3da0:b0:4f6:2cf9:f57d with SMTP id
+ k32-20020a0565123da000b004f62cf9f57dmr556558lfv.2.1690260681074; Mon, 24 Jul
+ 2023 21:51:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725023330.422856-1-linma@zju.edu.cn>
+References: <20230725044348.648808-1-yonghong.song@linux.dev>
+In-Reply-To: <20230725044348.648808-1-yonghong.song@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 24 Jul 2023 21:51:09 -0700
+Message-ID: <CAADnVQLrH4V6UxBcT9QSbrS7Zi0EhnG-fpFZStu1QuWoz7oUhA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] MAINTAINERS: Replace my email address
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Tue, Jul 25, 2023 at 10:33:30AM +0800, Lin Ma wrote:
-> The nla_for_each_nested parsing in function bpf_sk_storage_diag_alloc
-> does not check the length of the nested attribute. This can lead to an
-> out-of-attribute read and allow a malformed nlattr (e.g., length 0) to
-> be viewed as a 4 byte integer.
-> 
-> This patch adds an additional check when the nlattr is getting counted.
-> This makes sure the latter nla_get_u32 can access the attributes with
-> the correct length.
-> 
-> Fixes: 1ed4d92458a9 ("bpf: INET_DIAG support in bpf_sk_storage")
-> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Lin Ma <linma@zju.edu.cn>
+On Mon, Jul 24, 2023 at 9:44=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+> From: Yonghong Song <yhs@fb.com>
+>
+> Switch from corporate email address to linux.dev address.
+>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 > ---
-> V1 -> V2: moves the check to the counting loop as Jakub suggested,
->           alters the commit message accordingly.
-> 
->  net/core/bpf_sk_storage.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-> index d4172534dfa8..cca7594be92e 100644
-> --- a/net/core/bpf_sk_storage.c
-> +++ b/net/core/bpf_sk_storage.c
-> @@ -496,8 +496,11 @@ bpf_sk_storage_diag_alloc(const struct nlattr *nla_stgs)
->  		return ERR_PTR(-EPERM);
->  
->  	nla_for_each_nested(nla, nla_stgs, rem) {
-> -		if (nla_type(nla) == SK_DIAG_BPF_STORAGE_REQ_MAP_FD)
-> +		if (nla_type(nla) == SK_DIAG_BPF_STORAGE_REQ_MAP_FD) {
-> +			if (nla_len(nla) != sizeof(u32))
+>  MAINTAINERS | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> Changelog:
+>   v1 -> v2:
+>    - Use new address as the Signed-off-by address.
 
-Jakub, it seems like Lin adds this check to all nla_for_each_nested() loops.
-IMHO, the better change will be to change nla_for_each_nested() skip empty/not valid NLAs.
-
-Thanks
-
-> +				return ERR_PTR(-EINVAL);
->  			nr_maps++;
-> +		}
->  	}
->  
->  	diag = kzalloc(struct_size(diag, maps, nr_maps), GFP_KERNEL);
-> -- 
-> 2.17.1
-> 
-> 
+From and SOB should match otherwise various scripts will complain.
 
