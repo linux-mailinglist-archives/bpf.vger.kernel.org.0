@@ -1,74 +1,81 @@
-Return-Path: <bpf+bounces-5879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27BDF762467
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 23:28:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC5C37624CF
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 23:50:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 594271C20F98
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 21:28:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED19C1C20FA1
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 21:50:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B49A26B93;
-	Tue, 25 Jul 2023 21:28:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66282275DB;
+	Tue, 25 Jul 2023 21:50:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CB21F188;
-	Tue, 25 Jul 2023 21:28:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB03C433C7;
-	Tue, 25 Jul 2023 21:28:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F5026B83;
+	Tue, 25 Jul 2023 21:50:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 21672C433C9;
+	Tue, 25 Jul 2023 21:50:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690320493;
-	bh=MlVasKHUR67c8YAUaXJTiStk2sj8JIq65rkbxf8GQDs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YVe5VQBtbrwoSD8W5d5GkTH5OY7Q+4U285lD7Wx+E/a93wFdw9JV6cnK4RW2XskfX
-	 kubj3MFPvztw8G3FMQf7GwZ9Fdzsdyw3fei7b3L2vccVXaXAShDHm4JpUkn3bTY4pd
-	 iTMetUQ0PvpsK+u3Zt3rMI/9sZV7VsnaGVy/leWmr7VsduoPNIM/0hj8Ro2NUhhOpC
-	 SdL8EKXw/ZB9kRB3sDlOCtA97HP1gCG+JVeQF0rbR5OWtclUbk7HgN3+Gwg/oAsP9C
-	 75vdOsOlU3pJZrCLFI/qfNF4Gj+QfI18G2pfTM7L8nnb0fHYRIoHKxnSfBJ5334G2b
-	 3NloLyLtZP+UQ==
-Date: Tue, 25 Jul 2023 14:28:11 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Stanislav Fomichev <sdf@google.com>
-Cc: Simon Horman <simon.horman@corigine.com>, bpf@vger.kernel.org,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
- jolsa@kernel.org, toke@kernel.org, willemb@google.com, dsahern@kernel.org,
- magnus.karlsson@intel.com, bjorn@kernel.org, maciej.fijalkowski@intel.com,
- hawk@kernel.org, netdev@vger.kernel.org, xdp-hints@xdp-project.net
-Subject: Re: [RFC net-next v4 2/8] xsk: add TX timestamp and TX checksum
- offload support
-Message-ID: <20230725142811.07f4faa2@kernel.org>
-In-Reply-To: <ZMAxAmg187DgPCAr@google.com>
-References: <20230724235957.1953861-1-sdf@google.com>
-	<20230724235957.1953861-3-sdf@google.com>
-	<ZMAiYibjYzVTBjEF@corigine.com>
-	<ZMAxAmg187DgPCAr@google.com>
+	s=k20201202; t=1690321820;
+	bh=C3N78LdzzkhdNILLsvGYjZB2EMY9TDfg329d9jBl8Ho=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=czy0i+JPIIi3JSvDWzDUjezXc599XnsFAQdGdlXx+D4+98e+tmYq6opJQNxXQr8c9
+	 dnNhjM9bNbTUm3ZBR9d0csYALAIVJyaXpevris3sOg3mmZeuuIc8fm3HdRsHSpCR5B
+	 h0fJnVQPY9wFzDSTInEWvBgNXL9lRcRYNqzzB6OobOmPESXRJQr6wwrD+c7hk0E2pm
+	 j0bR4ANHQX+AeaYTuLaVZERIKR8x1Sgx1kwLOks9ywwDbatyqt8MktdZArB8+8DdUM
+	 2gpbpMOaeBYf5IGu3xygU9SegVQpjYc162AQzMfti9q/acfIwRkcbmnk4qym6G+/FX
+	 gOPJVDOHSAJIQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0522BC59A4C;
+	Tue, 25 Jul 2023 21:50:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH][next] selftests/xsk: Fix spelling mistake "querrying" ->
+ "querying"
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169032182001.22369.1559368522725545561.git-patchwork-notify@kernel.org>
+Date: Tue, 25 Jul 2023 21:50:20 +0000
+References: <20230720104815.123146-1-colin.i.king@gmail.com>
+In-Reply-To: <20230720104815.123146-1-colin.i.king@gmail.com>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+ jonathan.lemon@gmail.com, shuah@kernel.org, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 13:30:58 -0700 Stanislav Fomichev wrote:
-> > I know that it isn't the practice in this file.
-> > but adding the following makes kernel-doc happier
-> > about NETDEV_XSK_FLAGS_MASK not being documented.
-> > 
-> > 	/* private: */  
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
+
+On Thu, 20 Jul 2023 11:48:15 +0100 you wrote:
+> There is a spelling mistake in an error message. Fix it.
 > 
-> This is autogenerated file :-( But I guess I can try to extend ynl
-> scripts to put this comment before the mask. Let me look into that...
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/xskxceiver.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes, please! I think I even wrote a patch for it at some point...
-but then we realized that enums didn't support /* private: */.
-Commit e27cb89a22ada4 has added the support, so we can get back
-to getting the YNL changes in place.
+Here is the summary with links:
+  - [next] selftests/xsk: Fix spelling mistake "querrying" -> "querying"
+    https://git.kernel.org/bpf/bpf-next/c/13fd5e14afa5
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
