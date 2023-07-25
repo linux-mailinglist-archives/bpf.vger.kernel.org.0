@@ -1,265 +1,152 @@
-Return-Path: <bpf+bounces-5846-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5845-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 948EE761FE3
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 19:12:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBE32761FDE
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 19:12:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4F281C20F1B
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 17:12:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8688D2810B6
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 17:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6070D25178;
-	Tue, 25 Jul 2023 17:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5C525177;
+	Tue, 25 Jul 2023 17:12:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1533E3C23
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 17:12:38 +0000 (UTC)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E721FFA
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 10:12:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E6E3C23
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 17:12:26 +0000 (UTC)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A558C1718;
+	Tue, 25 Jul 2023 10:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690305157; x=1721841157;
-  h=date:from:to:cc:subject:message-id;
-  bh=Gio7G6txIcv1KOAc9HzqKHYvWme+5T9Bml8x7x4n4CY=;
-  b=HsJswv6iDCd92OHQD4icNiTpcgEffyyBWsBWKy8UA4CN7CPYcNSR+OK0
-   pvhErUVoAYE5OAMylh3/E4QuFbq18jz3/CbjgeopwkEqvi1mnIzJ0Eesa
-   VXvX0d12pVVDWSMnLwB50xxwWPbNtJjTPBnVjxReG3GPcQhl/vUOhudOz
-   lB7c/6ahWx0Egmxrj4utwqOgB54lkgSRR01LbvuPDozMdfpepi8tA9vEK
-   cSID5b02TqRPyBvt23GdA2buttgWZhcWSG51VWFMhaRREFOrFBSy8V8YW
-   nUKoh3pQBYUSR6Y/i5UZw8W9MBorbCl1H2fiKH+ZNCLRv/0/bRV9X4uKC
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="454174576"
+  t=1690305145; x=1721841145;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=fq0MiyGtfdmEy3j11xkXHlesEoaC2GKhOtTrGN15RYs=;
+  b=QAHjsUaHOriLvxDau9WpfAXbQoPdZr6Ws3ztbkKz3v/ju1OVCccak5YO
+   APcUwkkbVNmqp1onD9nPZ88T9kcgWtadBX/BJxfp106jyJDFVZaYFRMHy
+   SE1VbAQvR1knQCRxgYaD/2Yf3Z8OHh8ycI+Cfranw6K6/wYXlk2ryFtbg
+   Y13JQvkOyKvhPxz0GZfxhRxJN3QzUy6mVSFBmyAli2Upl5iUp4fYiCDoT
+   6t+j1VMvLUwTwu5R1DToj8gLuXZLezld/HSR+BV47mnlrjeX7L1cOyeC9
+   koo8mFRmbYtoZEJi5Kj7/VCg3dcQaY6SxhndKcgyZ7F3IiZiFgKGVhJg9
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="366675112"
 X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="454174576"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 10:12:36 -0700
+   d="scan'208";a="366675112"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 10:12:24 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="839923058"
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="720114234"
 X-IronPort-AV: E=Sophos;i="6.01,230,1684825200"; 
-   d="scan'208";a="839923058"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 25 Jul 2023 10:12:34 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qOLZK-0000Aj-0O;
-	Tue, 25 Jul 2023 17:11:37 +0000
-Date: Wed, 26 Jul 2023 01:10:39 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
- bpf@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [linux-next:master] BUILD REGRESSION
- 1e25dd7772483f477f79986d956028e9f47f990a
-Message-ID: <202307260133.BBVuOymN-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+   d="scan'208";a="720114234"
+Received: from chrisper-mobl.amr.corp.intel.com (HELO [10.209.69.88]) ([10.209.69.88])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 10:12:22 -0700
+Message-ID: <abdc2626-d776-e3be-81b5-eca669b6becc@intel.com>
+Date: Tue, 25 Jul 2023 10:12:21 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH v2 20/20] x86/mm, mm/vmalloc: Defer
+ flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
+Content-Language: en-US
+To: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Valentin Schneider <vschneid@redhat.com>, Nadav Amit <namit@vmware.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+ bpf <bpf@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>,
+ "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Wanpeng Li <wanpengli@tencent.com>, Vitaly Kuznetsov <vkuznets@redhat.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>,
+ Lorenzo Stoakes <lstoakes@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
+ Sami Tolvanen <samitolvanen@google.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Juerg Haefliger <juerg.haefliger@canonical.com>,
+ Nicolas Saenz Julienne <nsaenz@kernel.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Dan Carpenter <error27@gmail.com>, Chuang Wang <nashuiliang@gmail.com>,
+ Yang Jihong <yangjihong1@huawei.com>, Petr Mladek <pmladek@suse.com>,
+ "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+ Julian Pidancet <julian.pidancet@oracle.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze
+ <dionnaglaze@google.com>, =?UTF-8?Q?Thomas_Wei=c3=9fschuh?=
+ <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Yair Podemsky <ypodemsk@redhat.com>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-21-vschneid@redhat.com>
+ <188AEA79-10E6-4DFF-86F4-FE624FD1880F@vmware.com>
+ <xhsmh8rb5tui1.mognet@vschneid.remote.csb>
+ <2284d0db-f94a-e059-7bd0-bab4f112ed35@intel.com> <ZL/6THDvmC5mVyBI@tpad>
+From: Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <ZL/6THDvmC5mVyBI@tpad>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 1e25dd7772483f477f79986d956028e9f47f990a  Add linux-next specific files for 20230725
+On 7/25/23 09:37, Marcelo Tosatti wrote:
+>> TLB flushes for freed page tables are another game entirely.  The CPU is
+>> free to cache any part of the paging hierarchy it wants at any time.
+> Depend on CONFIG_PAGE_TABLE_ISOLATION=y, which flushes TLB (and page
+> table caches) on user->kernel and kernel->user context switches ?
 
-Error/Warning reports:
+Well, first of all, CONFIG_PAGE_TABLE_ISOLATION doesn't flush the TLB at
+all on user<->kernel switches when PCIDs are enabled.
 
-https://lore.kernel.org/oe-kbuild-all/202306260401.qZlYQpV2-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202307181450.sfbuvMf5-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202307201439.A9MArfeq-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202307251531.p8ZLFTMZ-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202307251703.AgPdzkAe-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202307260047.7VI2QNNG-lkp@intel.com
+Second, even if it did, the CPU is still free to cache any portion of
+the paging hierarchy at any time.  Without LASS[1], userspace can even
+_compel_ walks of the kernel portion of the address space, and we don't
+have any infrastructure to tell if a freed kernel page is exposed in the
+user copy of the page tables with PTI.
 
-Error/Warning: (recently discovered and may have been fixed)
+Third, (also ignoring PCIDs) there are plenty of instructions between
+kernel entry and the MOV-to-CR3 that can flush the TLB.  All those
+instructions architecturally permitted to speculatively set Accessed or
+Dirty bits in any part of the address space.  If they run into a free
+page table page, things get ugly.
 
-../lib/gcc/loongarch64-linux/12.3.0/plugin/include/config/loongarch/loongarch-opts.h:31:10: fatal error: loongarch-def.h: No such file or directory
-drivers/mfd/max77541.c:176:18: warning: cast to smaller integer type 'enum max7754x_ids' from 'const void *' [-Wvoid-pointer-to-enum-cast]
-drivers/regulator/max77857-regulator.c:312:16: error: initializer element is not a compile-time constant
-samples/hw_breakpoint/data_breakpoint.c:73:2: error: call to undeclared function '__symbol_put'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+These accesses are not _likely_.  There probably isn't a predictor out
+there that's going to see a:
 
-Unverified Error/Warning (likely false positive, please contact us if interested):
+	movq    %rsp, PER_CPU_VAR(cpu_tss_rw + TSS_sp2)
 
-kernel/bpf/memalloc.c:200 add_obj_to_free_list() error: uninitialized symbol 'flags'.
-kernel/bpf/memalloc.c:347 free_bulk() error: uninitialized symbol 'flags'.
-kernel/bpf/memalloc.c:387 check_free_by_rcu() error: uninitialized symbol 'flags'.
+and go off trying to dirty memory in the vmalloc() area.  But we'd need
+some backward *and* forward-looking guarantees from our intrepid CPU
+designers to promise that this kind of thing is safe yesterday, today
+and tomorrow.  I suspect such a guarantee is going to be hard to obtain.
 
-Error/Warning ids grouped by kconfigs:
+1. https://lkml.kernel.org/r/20230110055204.3227669-1-yian.chen@intel.com
 
-gcc_recent_errors
-|-- i386-randconfig-m021-20230725
-|   |-- kernel-bpf-memalloc.c-add_obj_to_free_list()-error:uninitialized-symbol-flags-.
-|   |-- kernel-bpf-memalloc.c-check_free_by_rcu()-error:uninitialized-symbol-flags-.
-|   `-- kernel-bpf-memalloc.c-free_bulk()-error:uninitialized-symbol-flags-.
-|-- loongarch-allmodconfig
-|   `-- lib-gcc-loongarch64-linux-..-plugin-include-config-loongarch-loongarch-opts.h:fatal-error:loongarch-def.h:No-such-file-or-directory
-|-- loongarch-allyesconfig
-|   `-- lib-gcc-loongarch64-linux-..-plugin-include-config-loongarch-loongarch-opts.h:fatal-error:loongarch-def.h:No-such-file-or-directory
-|-- loongarch-randconfig-m041-20230725
-|   `-- lib-gcc-loongarch64-linux-..-plugin-include-config-loongarch-loongarch-opts.h:fatal-error:loongarch-def.h:No-such-file-or-directory
-`-- sparc64-randconfig-r091-20230725
-    |-- drivers-gpu-drm-loongson-lsdc_benchmark.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-volatile-noderef-__iomem-src-got-void-kptr
-    `-- drivers-gpu-drm-loongson-lsdc_benchmark.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-volatile-noderef-__iomem-dst-got-void-kptr
-clang_recent_errors
-|-- arm-randconfig-r024-20230725
-|   `-- drivers-regulator-max77857-regulator.c:error:initializer-element-is-not-a-compile-time-constant
-|-- i386-buildonly-randconfig-r004-20230725
-|   `-- samples-hw_breakpoint-data_breakpoint.c:error:call-to-undeclared-function-__symbol_put-ISO-C99-and-later-do-not-support-implicit-function-declarations-Werror-Wimplicit-function-declaration
-|-- x86_64-buildonly-randconfig-r002-20230725
-|   `-- drivers-mfd-max77541.c:warning:cast-to-smaller-integer-type-enum-max7754x_ids-from-const-void
-|-- x86_64-buildonly-randconfig-r003-20230725
-|   `-- drivers-mfd-max77541.c:warning:cast-to-smaller-integer-type-enum-max7754x_ids-from-const-void
-|-- x86_64-randconfig-x012-20230725
-|   `-- drivers-mfd-max77541.c:warning:cast-to-smaller-integer-type-enum-max7754x_ids-from-const-void
-`-- x86_64-randconfig-x013-20230725
-    `-- drivers-mfd-max77541.c:warning:cast-to-smaller-integer-type-enum-max7754x_ids-from-const-void
 
-elapsed time: 727m
-
-configs tested: 128
-configs skipped: 4
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r012-20230725   gcc  
-alpha                randconfig-r021-20230725   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r025-20230725   gcc  
-arc                  randconfig-r036-20230725   gcc  
-arc                  randconfig-r043-20230725   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                     davinci_all_defconfig   clang
-arm                                 defconfig   gcc  
-arm                           imxrt_defconfig   gcc  
-arm                       multi_v4t_defconfig   gcc  
-arm                        mvebu_v5_defconfig   clang
-arm                  randconfig-r024-20230725   clang
-arm                  randconfig-r046-20230725   clang
-arm                        shmobile_defconfig   gcc  
-arm                           stm32_defconfig   gcc  
-arm                         wpcm450_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r015-20230725   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r002-20230725   gcc  
-hexagon              randconfig-r041-20230725   clang
-hexagon              randconfig-r045-20230725   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230725   clang
-i386         buildonly-randconfig-r005-20230725   clang
-i386         buildonly-randconfig-r006-20230725   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230725   clang
-i386                 randconfig-i002-20230725   clang
-i386                 randconfig-i003-20230725   clang
-i386                 randconfig-i004-20230725   clang
-i386                 randconfig-i005-20230725   clang
-i386                 randconfig-i006-20230725   clang
-i386                 randconfig-i011-20230725   gcc  
-i386                 randconfig-i012-20230725   gcc  
-i386                 randconfig-i013-20230725   gcc  
-i386                 randconfig-i014-20230725   gcc  
-i386                 randconfig-i015-20230725   gcc  
-i386                 randconfig-i016-20230725   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r011-20230725   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     cu1830-neo_defconfig   clang
-mips                     decstation_defconfig   gcc  
-mips                           ip22_defconfig   clang
-mips                 randconfig-r005-20230725   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r032-20230725   gcc  
-nios2                randconfig-r035-20230725   gcc  
-openrisc                       virt_defconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r033-20230725   gcc  
-parisc               randconfig-r034-20230725   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                     mpc512x_defconfig   clang
-powerpc                 mpc832x_rdb_defconfig   clang
-powerpc                      pcm030_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                    nommu_k210_defconfig   gcc  
-riscv                randconfig-r006-20230725   clang
-riscv                randconfig-r022-20230725   gcc  
-riscv                randconfig-r042-20230725   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r003-20230725   clang
-s390                 randconfig-r013-20230725   gcc  
-s390                 randconfig-r014-20230725   gcc  
-s390                 randconfig-r044-20230725   gcc  
-sh                               allmodconfig   gcc  
-sh                   randconfig-r023-20230725   gcc  
-sh                           se7619_defconfig   gcc  
-sh                           se7722_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r016-20230725   gcc  
-sparc                randconfig-r026-20230725   gcc  
-sparc                       sparc64_defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           alldefconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230725   clang
-x86_64       buildonly-randconfig-r002-20230725   clang
-x86_64       buildonly-randconfig-r003-20230725   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230725   gcc  
-x86_64               randconfig-x002-20230725   gcc  
-x86_64               randconfig-x003-20230725   gcc  
-x86_64               randconfig-x004-20230725   gcc  
-x86_64               randconfig-x005-20230725   gcc  
-x86_64               randconfig-x006-20230725   gcc  
-x86_64               randconfig-x011-20230725   clang
-x86_64               randconfig-x012-20230725   clang
-x86_64               randconfig-x013-20230725   clang
-x86_64               randconfig-x014-20230725   clang
-x86_64               randconfig-x015-20230725   clang
-x86_64               randconfig-x016-20230725   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r001-20230725   gcc  
-xtensa                         virt_defconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
