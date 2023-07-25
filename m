@@ -1,146 +1,154 @@
-Return-Path: <bpf+bounces-5808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6052E760D58
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 10:42:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72721760E21
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 11:14:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A53A1C20E23
-	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 08:42:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DCA5281465
+	for <lists+bpf@lfdr.de>; Tue, 25 Jul 2023 09:14:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5865B12B99;
-	Tue, 25 Jul 2023 08:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0287F14F8B;
+	Tue, 25 Jul 2023 09:14:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A94944B
-	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 08:42:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 419D6C433C9;
-	Tue, 25 Jul 2023 08:42:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690274552;
-	bh=CfzvKDVXWTS8dnPa71hZUPcNTCwtCco402I43HGTchE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O/D6L2z4hXz/W6q0XjaXNjSH1LPXNrKVZvK8R/TIC13Jl02+k8qT9C0mSEJ0FitBx
-	 LZ9wqW5UVCOfcHQawUvu5vIU6+5lURCzI2Z8nGyq0GCmfqmd+Z5rpCGFXTfuk7ghZc
-	 2oQlZqbj8aR09OHFQlAPRNhg2HGvoZSLG5Bfe5GxNxvHG5JmZBmnIO17AES28NkjXL
-	 3jKCoICsmTkHNERZP9ZHVO53bjdWBxTESl6leRy4ulUCIouTWHX4GIH253uBaozIvr
-	 UFGS1HStYPu0hYgAygp/kpxo+ZuI1ve25qj3gXE8E49b7jBO3YjoZ2JeP0bYRFxHwp
-	 1GjcTYrpdKJJw==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: stable@vger.kernel.org,
-	Hou Tao <houtao1@huawei.com>,
-	bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>
-Subject: [PATCHv3 bpf 2/2] bpf: Disable preemption in bpf_event_output
-Date: Tue, 25 Jul 2023 10:42:06 +0200
-Message-ID: <20230725084206.580930-3-jolsa@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230725084206.580930-1-jolsa@kernel.org>
-References: <20230725084206.580930-1-jolsa@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56A514ABC
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 09:14:21 +0000 (UTC)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CA5171E
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 02:14:17 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-991ef0b464cso1350731366b.0
+        for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 02:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1690276456; x=1690881256;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=90N1opdApkJ6sofZeZLN2gsjrZklninJ72RskdGs+7M=;
+        b=UPDLtLnhvE37z3PFQELXEQVb8YquW5JpuvtoFr9iv0obwYIY+gIrdJFeRZNXzVJYYp
+         l0iHf/qqttV965ifMacfBlMTrUEasWcc9uULu1gCzbdYdm2gWlQ6C3ep1USnbjP0hy/q
+         yIwpDDy41gNXW6+BJPKvEyEYtSGnsWTawtIqQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690276456; x=1690881256;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=90N1opdApkJ6sofZeZLN2gsjrZklninJ72RskdGs+7M=;
+        b=h+Mh/94T0A1ax3cxL4tzrNNxFJcBezqNyPtggIz/09BoN3l4rUp/+ns2iGkERknTD2
+         f9Zg005vkZyJHsvLclMX/l7ncMeLj7Og7IsDJ7jCt1mxI7j5T7UyAKauHC03/xdc91+I
+         rBNn/KEXlzqzLlsyv/67WHdD3RsAPWeYTYCQCvecv/uiEr+BhWVz/0mcpFf7ppEOYPhT
+         faY+0tP1k35Y0el/ffkq5gqtKPlwn0w2itVpm+bygRwEeC1Zo6rdq0Q/wwBihksezPoG
+         wBY+t51/PgXRn1wuYnpjpjG2uAWY/+XIffVewIxiQxNqkxcWhLDHqmLkbm5CXEW2mZOl
+         KXsg==
+X-Gm-Message-State: ABy/qLa1vjx0Yc/2dRoPjnVmIWrW+58EqWbkkl5dSEM1UfjVNDgeq2Ls
+	IDORu1W9ifweQtR7txTqjlw05A==
+X-Google-Smtp-Source: APBJJlE0BXPyh3d6xZ70mVilCUjvGA2mpPz33nUwaLBBcFccwg8UktLJu68ohKn6RQ3Y2pDbdKDTDA==
+X-Received: by 2002:a17:907:7744:b0:994:1805:1fad with SMTP id kx4-20020a170907774400b0099418051fadmr1555473ejc.10.1690276456161;
+        Tue, 25 Jul 2023 02:14:16 -0700 (PDT)
+Received: from cloudflare.com (79.184.214.102.ipv4.supernova.orange.pl. [79.184.214.102])
+        by smtp.gmail.com with ESMTPSA id f22-20020a1709067f9600b009920f18a5f0sm7764654ejr.185.2023.07.25.02.14.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 02:14:15 -0700 (PDT)
+References: <cover.1690255889.git.yan@cloudflare.com>
+ <cdbbc9df16044b568448ed9cd828d406f0851bfb.1690255889.git.yan@cloudflare.com>
+User-agent: mu4e 1.6.10; emacs 28.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Yan Zhai <yan@cloudflare.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko
+ <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Jordan Griege <jgriege@cloudflare.com>,
+ kernel-team@cloudflare.com
+Subject: Re: [PATCH v3 bpf 1/2] bpf: fix skb_do_redirect return values
+Date: Tue, 25 Jul 2023 11:08:15 +0200
+In-reply-to: <cdbbc9df16044b568448ed9cd828d406f0851bfb.1690255889.git.yan@cloudflare.com>
+Message-ID: <87v8e8xsih.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-We received report [1] of kernel crash, which is caused by
-using nesting protection without disabled preemption.
+On Mon, Jul 24, 2023 at 09:13 PM -07, Yan Zhai wrote:
+> skb_do_redirect returns various of values: error code (negative), 0
+> (success), and some positive status code, e.g. NET_XMIT_CN, NET_RX_DROP.
+> Such code are not handled at lwt xmit hook in function ip_finish_output2
+> and ip6_finish_output, which can cause unexpected problems. This change
+> converts the positive status code to proper error code.
+>
+> Suggested-by: Stanislav Fomichev <sdf@google.com>
+> Reported-by: Jordan Griege <jgriege@cloudflare.com>
+> Signed-off-by: Yan Zhai <yan@cloudflare.com>
+>
+> ---
+> v3: converts also RX side return value in addition to TX values
+> v2: code style change suggested by Stanislav Fomichev
+> ---
+>  net/core/filter.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 06ba0e56e369..3e232ce11ca0 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -2095,7 +2095,12 @@ static const struct bpf_func_proto bpf_csum_level_proto = {
+>  
+>  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff *skb)
+>  {
+> -	return dev_forward_skb_nomtu(dev, skb);
+> +	int ret = dev_forward_skb_nomtu(dev, skb);
+> +
+> +	if (unlikely(ret > 0))
+> +		return -ENETDOWN;
+> +
+> +	return 0;
+>  }
+>  
+>  static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
+> @@ -2106,6 +2111,8 @@ static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
+>  	if (likely(!ret)) {
+>  		skb->dev = dev;
+>  		ret = netif_rx(skb);
+> +	} else if (ret > 0) {
+> +		return -ENETDOWN;
+>  	}
+>  
+>  	return ret;
+> @@ -2129,6 +2136,9 @@ static inline int __bpf_tx_skb(struct net_device *dev, struct sk_buff *skb)
+>  	ret = dev_queue_xmit(skb);
+>  	dev_xmit_recursion_dec();
+>  
+> +	if (unlikely(ret > 0))
+> +		ret = net_xmit_errno(ret);
+> +
+>  	return ret;
+>  }
 
-The bpf_event_output can be called by programs executed by
-bpf_prog_run_array_cg function that disabled migration but
-keeps preemption enabled.
+net_xmit_errno maps NET_XMIT_DROP to -ENOBUFS. It would make sense to me
+to map NET_RX_DROP to -ENOBUFS as well, instead of -ENETDOWN, to be
+consistent.
 
-This can cause task to be preempted by another one inside the
-nesting protection and lead eventually to two tasks using same
-perf_sample_data buffer and cause crashes like:
+It looks like the Fixes tag for this should point to the change that
+introduced BPF for LWT:
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000001
-  #PF: supervisor instruction fetch in kernel mode
-  #PF: error_code(0x0010) - not-present page
-  ...
-  ? perf_output_sample+0x12a/0x9a0
-  ? finish_task_switch.isra.0+0x81/0x280
-  ? perf_event_output+0x66/0xa0
-  ? bpf_event_output+0x13a/0x190
-  ? bpf_event_output_data+0x22/0x40
-  ? bpf_prog_dfc84bbde731b257_cil_sock4_connect+0x40a/0xacb
-  ? xa_load+0x87/0xe0
-  ? __cgroup_bpf_run_filter_sock_addr+0xc1/0x1a0
-  ? release_sock+0x3e/0x90
-  ? sk_setsockopt+0x1a1/0x12f0
-  ? udp_pre_connect+0x36/0x50
-  ? inet_dgram_connect+0x93/0xa0
-  ? __sys_connect+0xb4/0xe0
-  ? udp_setsockopt+0x27/0x40
-  ? __pfx_udp_push_pending_frames+0x10/0x10
-  ? __sys_setsockopt+0xdf/0x1a0
-  ? __x64_sys_connect+0xf/0x20
-  ? do_syscall_64+0x3a/0x90
-  ? entry_SYSCALL_64_after_hwframe+0x72/0xdc
-
-Fixing this by disabling preemption in bpf_event_output.
-
-[1] https://github.com/cilium/cilium/issues/26756
-Cc: stable@vger.kernel.org
-Reported-by: Oleg "livelace" Popov <o.popov@livelace.ru>
-Closes: https://github.com/cilium/cilium/issues/26756
-Fixes: 2a916f2f546c ("bpf: Use migrate_disable/enable in array macros and cgroup/lirc code.")
-Acked-by: Hou Tao <houtao1@huawei.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- kernel/trace/bpf_trace.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 14c9a1a548c9..6826ebf750b0 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -720,7 +720,6 @@ static DEFINE_PER_CPU(struct bpf_trace_sample_data, bpf_misc_sds);
- u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
- 		     void *ctx, u64 ctx_size, bpf_ctx_copy_t ctx_copy)
- {
--	int nest_level = this_cpu_inc_return(bpf_event_output_nest_level);
- 	struct perf_raw_frag frag = {
- 		.copy		= ctx_copy,
- 		.size		= ctx_size,
-@@ -737,8 +736,13 @@ u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
- 	};
- 	struct perf_sample_data *sd;
- 	struct pt_regs *regs;
-+	int nest_level;
- 	u64 ret;
- 
-+	preempt_disable();
-+
-+	nest_level = this_cpu_inc_return(bpf_event_output_nest_level);
-+
- 	if (WARN_ON_ONCE(nest_level > ARRAY_SIZE(bpf_misc_sds.sds))) {
- 		ret = -EBUSY;
- 		goto out;
-@@ -753,6 +757,7 @@ u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
- 	ret = __bpf_perf_event_output(regs, map, flags, sd);
- out:
- 	this_cpu_dec(bpf_event_output_nest_level);
-+	preempt_enable();
- 	return ret;
- }
- 
--- 
-2.41.0
+Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
 
 
