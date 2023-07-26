@@ -1,189 +1,232 @@
-Return-Path: <bpf+bounces-5978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F10D763BA4
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 17:51:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69A7B763C0A
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 18:11:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEA121C2135E
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 15:51:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21569281E92
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 16:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B88A62770A;
-	Wed, 26 Jul 2023 15:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4FD9379AA;
+	Wed, 26 Jul 2023 16:10:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD05253BC;
-	Wed, 26 Jul 2023 15:51:38 +0000 (UTC)
-Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021020.outbound.protection.outlook.com [52.101.57.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71E52738;
-	Wed, 26 Jul 2023 08:51:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dSfbmjz91fjid65wdq6MCab49N2VkteNQ5yR/XLZBixu/SBwR+AmkLOLTchi+IHp5Ii9IaUlswX01hWi4cYfEwFJXP//M6axCGfjzRXBa9D62Y0ORoQfV8Lja/KZZ9FZghJ3NRwl13CyjFhRUeqmmVBAkE1EMe4bLwUEmrdiPY6028SofFWommL9rqHNkjbSkbTsVu3S1zgIIRJEiy8GBOdi4LGdvINk/DIK9Yjll10SATeB3k6im13bWjhjBbf7VB3KX9+ooLB4M/wDG7Gwmyo1I/TsrJbp8uqpsx3ew7qqgwKt4c34AL75kQRSZzyeYA0XLFTMZpyUy8JQ1dGc+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7LrhnSaQDG9XB05b+Jv6Q3P5ig58JYg/dd2N40gM0Q0=;
- b=Is+XNVyB1lBHFo6lXKWzClsrYrgYYk0/d5DYsEQ9yCQcYNBN065On1p1cXKpI2z3ltmE2uNYwIPYtTD2lB34kd28DashUJPVvwTcqRlzgA9vULffkO/Te1Aij5c/d8KY53quGi36xRcd3hqDLFDHqYv3uJJd9tORlAP9ejbPwdBtFRz3PcaW3c9eHHO6QBD3taTJu0mEvNBTBtN+HMd6lGjfdp+QyGhV3JhVGa6OxyO/KXpRt9jujg5bu23GCR6x+N4Q5R0UfFDkRpQl37UIpdJDDLLz7i98adUWFhDxqohPF31oqiQ8mrxom9NM88x6gV9HVgUfaAK2YIE3hXxBfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7LrhnSaQDG9XB05b+Jv6Q3P5ig58JYg/dd2N40gM0Q0=;
- b=TdcO6Y0dFyJ9Mnv1kyfIbGI/aXkj5J5S02oCkdG+ErCKCbCfGTYMwEYmXun4NA6Bd5u38I+MUJPV9Uz+IrS1PmbGZQH1cu76uMRgPeireAlc7xQcr5evHuD7bZ3BA4+gBovpRvFMHY9zRlhk8ncMXc3i1AhqJSiCNT85OVqSmXg=
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
- by BL0PR2101MB1346.namprd21.prod.outlook.com (2603:10b6:208:92::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.3; Wed, 26 Jul
- 2023 15:51:32 +0000
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::d2:cad1:318e:224b]) by PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::d2:cad1:318e:224b%7]) with mapi id 15.20.6652.002; Wed, 26 Jul 2023
- 15:51:32 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: Jesper Dangaard Brouer <jbrouer@redhat.com>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC: "brouer@redhat.com" <brouer@redhat.com>, Dexuan Cui <decui@microsoft.com>,
-	KY Srinivasan <kys@microsoft.com>, Paul Rosswurm <paulros@microsoft.com>,
-	"olaf@aepfle.de" <olaf@aepfle.de>, "vkuznets@redhat.com"
-	<vkuznets@redhat.com>, "davem@davemloft.net" <davem@davemloft.net>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>, "edumazet@google.com"
-	<edumazet@google.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, "leon@kernel.org" <leon@kernel.org>,
-	Long Li <longli@microsoft.com>, "ssengar@linux.microsoft.com"
-	<ssengar@linux.microsoft.com>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>, Ajay Sharma
-	<sharmaajay@microsoft.com>, "hawk@kernel.org" <hawk@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "shradhagupta@linux.microsoft.com"
-	<shradhagupta@linux.microsoft.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Ilias Apalodimas
-	<ilias.apalodimas@linaro.org>
-Subject: RE: [PATCH V3,net-next] net: mana: Add page pool for RX buffers
-Thread-Topic: [PATCH V3,net-next] net: mana: Add page pool for RX buffers
-Thread-Index:
- AQHZvAZSl8pOb40fXE2pDlV9gZuDN6/IzCkAgABE5NCAADEEcIABidWAgAANWGCAAPQoAIAAavKQ
-Date: Wed, 26 Jul 2023 15:51:32 +0000
-Message-ID:
- <PH7PR21MB3116C4C749C4E915CADEE273CA00A@PH7PR21MB3116.namprd21.prod.outlook.com>
-References: <1689966321-17337-1-git-send-email-haiyangz@microsoft.com>
- <1af55bbb-7aff-e575-8dc1-8ba64b924580@redhat.com>
- <PH7PR21MB3116F8A97F3626AB04915B96CA02A@PH7PR21MB3116.namprd21.prod.outlook.com>
- <PH7PR21MB311675E57B81B49577ADE98FCA02A@PH7PR21MB3116.namprd21.prod.outlook.com>
- <729b360c-4d79-1025-f5be-384b17f132d3@redhat.com>
- <PH7PR21MB3116F5612AA8303512EEBA4CCA03A@PH7PR21MB3116.namprd21.prod.outlook.com>
- <6396223c-6008-0e1b-e6ed-79c04c87a5e0@redhat.com>
-In-Reply-To: <6396223c-6008-0e1b-e6ed-79c04c87a5e0@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=779a0386-fc46-47d6-8bab-1fba97ac898a;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-26T15:45:26Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|BL0PR2101MB1346:EE_
-x-ms-office365-filtering-correlation-id: c3f956af-1f82-41fa-8136-08db8df02f2e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 8HPRak+jDLiKgYyhvH9a8C5bYbB1XHX+lv/iLZXhZjUEFr4KmbPrbjNhzdixrQKSS7y45fK4wVBGNm3A31VEsZaf+x09X3bvrgoxkNDaPWVFlMmkCAt5KUTI4So/u2t3QMKYLz+ZsQ+xr+mus88RwLt16lyzlLSAQocCzDDhU/NXViG8PuBFsv3vhybADjPSdDkq+SkxG5TiKb106HHly78pHkXz0yzLi4yzRjwyL7rG8YZgFZxr2Q3Oz/ksUf6ZYdDlaRieRWFr8eMMxu2W/twqeD+GKcb+SADGaVLH3AoKn/H5q6AUIVg0amKhMHGWA9FrPlmPp2RPkalHX5jluIQuo2+TWRSfkzI4/h2D+80v/O7kWxXb4tDD9MEt95tL10rddlUgMITAhQg4+VAuTUrQRBL4M0yu8Yciq0XWdj/bDKmoa/x3MtauedbohAWX546VjcJwp4xepDja0gRDLZMu2xsFbBIRZHzR2SsHPfk0M7v8mH88/ua+KFOjc40Epd3E/pkJRxuETrfGLaNpJfXuev70EO3MnCPNqd/5LO1rEbnV7OlncVGZSptVi1XR97ZPzavFgiJbmg+VaaQ4xTdq3sXzpFjxn46sECD+UploawSvuQtddLbkwfRMP1lsMfouLpN47KVmwDhfGTMJ/zZ1yYRsOaIukb+N4hwci+Q=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(396003)(346002)(376002)(366004)(451199021)(55016003)(110136005)(122000001)(38100700002)(9686003)(54906003)(7696005)(66946007)(71200400001)(478600001)(82960400001)(52536014)(66556008)(41300700001)(10290500003)(82950400001)(5660300002)(316002)(66476007)(8676002)(4326008)(76116006)(8936002)(64756008)(66446008)(83380400001)(186003)(26005)(6506007)(86362001)(8990500004)(33656002)(38070700005)(2906002)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?MzJlWHRLKzl5SDhmbml1anBxck5XYXpQM2xGZ25KWHZpOUt3TFI1bmMvTGVG?=
- =?utf-8?B?bTVuWGFzeWI4SXJ0aVBvSHVxV3ZSUFJaUTZURUFTUFh0L0lSMGN0YTJIWUJ5?=
- =?utf-8?B?U2o2YnR4aklKVk5FMHVRamNRZDFMbnE0TUFnN0k5V29tUksrUGVONlZNQjc0?=
- =?utf-8?B?Zll5YUJwZEdWeGRKbTEwSVM0ZEdvYys2V00yUTZDZUdTWDZUYktITmtyekgz?=
- =?utf-8?B?QWJtRmQ0MU5oNUZFZTVZa2FEZGJmRTNTTnBZRVRGTEw5TUxaZkRKZlFPNFhD?=
- =?utf-8?B?KzZ3RWJjako4SkN2WnhUSTQwZFoyaUxseGE5bWxVcDRCMVdxVzV2N203d1Vo?=
- =?utf-8?B?ejhtb0E4amQ5TmZ1eVBINmFtdWF4QTg3Y01tOTh2T0RhYnQySnNoMS82U0VU?=
- =?utf-8?B?cGpkaHdOK3lnR25lSlFxYmFQTUwwSkl3bGRzNGF2SjhYanZDTER5QjFVRTlQ?=
- =?utf-8?B?SGNFakJpemhzODJ2STJrWlV1SS9tWUtmRHFHMFdaTE5kUlZWZjByWWx6Wjdm?=
- =?utf-8?B?QTcvMnE5VmlJOVhLNkhhd0dnQkZtcUtlN0Eya3dMcnAySU1lVzJueVdwVVE2?=
- =?utf-8?B?cjlkZjd2RmhxWWtTVEtxd2N0TzJsTklOVVBhN3B6OXZ3OHFWRm8zT2E3THp0?=
- =?utf-8?B?WXFSMHZ6WmR0Uy9laHZicUQzMEwzak9zOGcwbWcvYlRFQTM4L1pSa01uemlK?=
- =?utf-8?B?R3lONlRaRG8wMlNzMDhueXpKN2ZwSlo2TXg0Rm1CUTIyWUZtblFjRkZoU3Zk?=
- =?utf-8?B?dms1UTRscjdkNFIzbjVOaEJ3QVJCODFjYnN2TTV6Q2ljOVN2aHFwbnpjTmRW?=
- =?utf-8?B?c09NTFZ5dVpVTmhEcFFqMmRZTW4ySHIweDJvUGluS1N2MkF1WkVEeGJMam5N?=
- =?utf-8?B?WENVMXpheHhrMTA0UksveUg3eVhzVXFkeEU2OGx0TW1QSmoxRDk5QzdSNnFz?=
- =?utf-8?B?MTlGOUprRHlFZjNNVThtMEUzS1YzOHMyWmI5VWw1RzZONWtTeFVrOVNpWHN4?=
- =?utf-8?B?SDRKVFFodnJrWUs1VWw4Zm8yU0s0YW16bC95SDdNRjRXa2w3MklWTFY5RTVk?=
- =?utf-8?B?Qlh0N0FjMHU2cHZLNFlnL3lEMjY5MUZpV29DVDVoYmlMdW5oY3poelB6NzlT?=
- =?utf-8?B?VkFtc3dSdGxOVUo4T2FaWkNlNmlBRDVaR0tOaEdaa0Q3MWR6a0xpdVNtUTl2?=
- =?utf-8?B?QitCSDU5aGlzUlpXTUNaaDNsTFpsanphbGZhVXk1dDNDRHJoOTV2WS9weDJo?=
- =?utf-8?B?TWpjRUIxbmdzb0FVQUZOVG5jM0FIcnRraWpuVnB6VWVlazNHR2d3YUszdC9K?=
- =?utf-8?B?WUpKUy9UQVJQNTNJSDNLd1Q5aXhDb3dRTmFBMlRwY2lwM3ZMbVFQcW9VQlZ5?=
- =?utf-8?B?L3had3czdnlIKys2NVRmQlJKbFZ5L1ZRTmJXdVNIMXdrVTBnRkdReUREQmZr?=
- =?utf-8?B?L1htN3pGbHFSSGQyS1NVTEdKTjhidWlPMXMrVVBYd3FNUitaSWpjRWtIdmx3?=
- =?utf-8?B?US9jT2U2akczbGdqWHhoa0Zybm1XWUxwcFlUMGNYUU8vMDlHNWI5b0xLaE1S?=
- =?utf-8?B?RTRsdFJzUGczVFRXWFZKUkRRbEJMakxibzJOTWJpakNrREM0NlFVZ0plTlFu?=
- =?utf-8?B?MWNJSFhOeDkvNXAxaW9GRHZJSnhZdWgwL1VrazhFZkNHa1ltL1hIZnpUNm14?=
- =?utf-8?B?eldmUi9XK1ZIRGF1c3RYalVnckZsZjB1azRKVlF6Um90VWZidFEremxJNG0x?=
- =?utf-8?B?ak50ZnF5SmIreHlEL09oSkVFQndyV0VQNEdIcUVtRW5DdWZzeGFPOXZ0RVJt?=
- =?utf-8?B?b0lLM25vUFlLQnpEQkJZbGxsc0pyUy9YRjFxZ0lqdCtiMThpU0xxVnEwaytS?=
- =?utf-8?B?ajlQUW9NVm83THBKQXozaVdPU25XU3lBZ25zZnZRMWFQTVFVWUxKU3BnTkwr?=
- =?utf-8?B?RFFkZkUzZEVFdy9UUm5UNy90ejhybWR1OGVzbkFZbFExMDR3aHFjZkVUR3JN?=
- =?utf-8?B?Ly8vZ1Zpelp4cW1SZGQwSFZGMktFbEEyL3RoRTJIWlREMDJSdGQxOXVJQ0po?=
- =?utf-8?B?bVU5elZENjlJWkphbkFEQ2MvdWZQcnY2Wk04YmNPcldUbml4dDRQeTB6Y2RZ?=
- =?utf-8?Q?HsS5X0qkQOg1TaQClgRpqHssC?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C8AE57F
+	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 16:10:27 +0000 (UTC)
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E96A1BC1
+	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 09:10:24 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-403a840dc64so49854481cf.1
+        for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 09:10:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1690387823; x=1690992623;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=K7viDi95/DtqS7YumhA/QRcfR2/DcATgamUSnc6vM2A=;
+        b=sxj07bNcg5678Si4gdEEp+WW40Oh8OI/eqiNU57JICAoq/E0Moh1ql4Pa0rJCD5mXQ
+         owdUb7eyP+YcKFu9dUnu4PnUQ1PmNYO06AVBi6/Nq1AJjmy0x9dpbxtZCwdMGx8tDzkR
+         u9NWYslhaCMLBzgQIrcdD92wnxlUg+s93/lZY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690387823; x=1690992623;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K7viDi95/DtqS7YumhA/QRcfR2/DcATgamUSnc6vM2A=;
+        b=Ao2wySZi5kEl7s98NylMEA6AWkFi60DIZkzEqdpPa0lGuLqrtopTBOgvTt8IjKXsrm
+         uiGzgpLBfqKndqVs/sM2zCvm+1XGwLQ9LrWbLViMejV8DOILt5OUJ23DgyMYzUHGHb3x
+         ppk8ysMEbGTmlxoDR29EWOZK9UdOlS9QqAsdzFcpEpoJBLup8UA8tD77whTPMSz/3tlf
+         WjeUYaG3jTA/ymk0a3bHYJPzM/3XHs+FLltkiLD46Vc/cjty+BRr5nvPABpQ+xN2Km3I
+         TxBXOl8QwCS4wyXsvq0sUv4UIT3spfGQoZNuED22DfAgjvDllnx56fwmpJ3lEqIWcP/F
+         sFXg==
+X-Gm-Message-State: ABy/qLZqdPWOsv5vkmDvQLSclrUZ0EuLMu4WsI2ZsOSL6zyPFMJ0Skq3
+	QO9cZYUbjt0KIKnWdXMAWUFo0Q==
+X-Google-Smtp-Source: APBJJlFVm/mD0dcIslde2+vo1h0MzL3tM9Znqz5P9eLlBAcDjqJloXRDQy5GwhCsjZ2SScRq8TUP2A==
+X-Received: by 2002:ac8:5c02:0:b0:403:a63d:9a2e with SMTP id i2-20020ac85c02000000b00403a63d9a2emr3018341qti.10.1690387823149;
+        Wed, 26 Jul 2023 09:10:23 -0700 (PDT)
+Received: from debian.debian ([140.141.197.139])
+        by smtp.gmail.com with ESMTPSA id fb14-20020a05622a480e00b003f7fd3ce69fsm4902747qtb.59.2023.07.26.09.10.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 09:10:22 -0700 (PDT)
+Date: Wed, 26 Jul 2023 09:10:20 -0700
+From: Yan Zhai <yan@cloudflare.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Yan Zhai <yan@cloudflare.com>, bpf@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
+	Jordan Griege <jgriege@cloudflare.com>,
+	Markus Elfring <Markus.Elfring@web.de>,
+	Jakub Sitnicki <jakub@cloudflare.com>
+Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
+Message-ID: <ZMFFbChK/66/8XZd@debian.debian>
+References: <cover.1690332693.git.yan@cloudflare.com>
+ <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
+ <a76b300a-e472-4568-b734-37115927621d@moroto.mountain>
+ <ZMEqYOOBc1ZNcEER@debian.debian>
+ <bc3ec02d-4d4e-477a-b8a5-5245425326c6@kadam.mountain>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3f956af-1f82-41fa-8136-08db8df02f2e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jul 2023 15:51:32.6169
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +VaQReD+QLV2uw/6IhFtdkZD1w88JcIH3ZsZyCCZwyIx5Cbta1rAi+WnKCHdCMdAu4a9Vqz6LqF2R1nz7Dr6Fg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB1346
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc3ec02d-4d4e-477a-b8a5-5245425326c6@kadam.mountain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmVzcGVyIERhbmdhYXJk
-IEJyb3VlciA8amJyb3VlckByZWRoYXQuY29tPg0KPiBTZW50OiBXZWRuZXNkYXksIEp1bHkgMjYs
-IDIwMjMgNToyMyBBTQ0KPiA+DQo+ID4gSW4gbWFuYV9nZF9zZXR1cF9pcnFzKCksIHdlIHNldCB0
-aGUgZGVmYXVsdCBJUlEvQ1BVIGFmZmluaXR5IHRvIGdjLQ0KPiA+bnVtYV9ub2RlDQo+ID4gdG9v
-LCBzbyBpdCB3b24ndCByZXZlcnQgdGhlIG5pZCBpbml0aWFsIHNldHRpbmcuDQo+ID4NCj4gPiBD
-dXJyZW50bHksIHRoZSBBenVyZSBoeXBlcnZpc29yIGFsd2F5cyBpbmRpY2F0ZXMgbnVtYSAwIGFz
-IGRlZmF1bHQuIChJbg0KPiA+IHRoZSBmdXR1cmUsIGl0IHdpbGwgc3RhcnQgdG8gcHJvdmlkZSB0
-aGUgYWNjdXJhdGUgZGVmYXVsdCBkZXYgbm9kZS4pIFdoZW4gYQ0KPiA+IHVzZXIgbWFudWFsbHkg
-Y2hhbmdlcyB0aGUgSVJRL0NQVSBhZmZpbml0eSBmb3IgcGVyZiB0dW5pbmcsIHdlIHdhbnQgdG8N
-Cj4gPiBhbGxvdyBwYWdlX3Bvb2xfbmlkX2NoYW5nZWQoKSB0byB1cGRhdGUgdGhlIHBvb2wuIElz
-IHRoaXMgT0s/DQo+ID4NCj4gDQo+IElmIEkgd2VyZSB5b3UsIEkgd291bGQgd2FpdCB3aXRoIHRo
-ZSBwYWdlX3Bvb2xfbmlkX2NoYW5nZWQoKQ0KPiAib3B0aW1pemF0aW9uIiBhbmQgZG8gYSBiZW5j
-aG1hcmsgbWFyayB0byBzZWUgaWYgdGhpcyBhY3R1YWxseSBoYXZlIGENCj4gYmVuZWZpdC4gIChZ
-b3UgY2FuIGRvIHRoaXMgaW4gYW5vdGhlciBwYXRjaCkuICAoSW4gYSBBenVyZSBoeXBlcnZpc29y
-DQo+IGVudmlyb25tZW50IGlzIG1pZ2h0IG5vdCBiZSB0aGUgcmlnaHQgY2hvaWNlKS4NCk9rLCBJ
-IHdpbGwgc3VibWl0IGEgcGF0Y2ggd2l0aG91dCB0aGUgcGFnZV9wb29sX25pZF9jaGFuZ2VkKCkg
-b3B0aW1pemF0aW9uIA0KZm9yIG5vdywgYW5kIHdpbGwgZG8gbW9yZSB0ZXN0aW5nIG9uIHRoaXMu
-DQoNCj4gVGhpcyByZW1pbmRzIG1lLCBkbyB5b3UgaGF2ZSBhbnkgYmVuY2htYXJrIGRhdGEgb24g
-dGhlIGltcHJvdmVtZW50IHRoaXMNCj4gcGF0Y2ggKHVzaW5nIHBhZ2VfcG9vbCkgZ2F2ZT8NCldp
-dGggaXBlcmYgYW5kIDEyOCB0aHJlYWRzIHRlc3QsIHRoaXMgcGF0Y2ggaW1wcm92ZWQgdGhlIHRo
-cm91Z2hwdXQgYnkgMTItMTUlLCANCmFuZCBkZWNyZWFzZWQgdGhlIElSUSBhc3NvY2lhdGVkIENQ
-VSdzIHVzYWdlIGZyb20gOTktMTAwJSB0byAxMC01MCUuDQoNClRoYW5rcywNCi0gSGFpeWFuZw0K
-DQo=
+On Wed, Jul 26, 2023 at 06:01:00PM +0300, Dan Carpenter wrote:
+> On Wed, Jul 26, 2023 at 07:14:56AM -0700, Yan Zhai wrote:
+> > On Wed, Jul 26, 2023 at 04:39:08PM +0300, Dan Carpenter wrote:
+> > > I'm not positive I understand the code in ip_finish_output2().  I think
+> > > instead of looking for LWTUNNEL_XMIT_DONE it should instead look for
+> > > != LWTUNNEL_XMIT_CONTINUE.  It's unfortunate that NET_XMIT_DROP and
+> > > LWTUNNEL_XMIT_CONTINUE are the both 0x1.  Why don't we just change that
+> > > instead?
+> > > 
+> > I considered about changing lwt side logic. But it would bring larger
+> > impact since there are multiple types of encaps on this hook, not just
+> > bpf redirect. Changing bpf return values is a minimum change on the
+> > other hand. In addition, returning value of NET_RX_DROP and
+> > NET_XMIT_CN are the same, so if we don't do something in bpf redirect,
+> > there is no way to distinguish them later: the former is considered as
+> > an error, while "CN" is considered as non-error.
+> 
+> Uh, NET_RX/XMIT_DROP values are 1.  NET_XMIT_CN is 2.
+> 
+> I'm not an expert but I think what happens is that we treat NET_XMIT_CN
+> as success so that it takes a while for the resend to happen.
+> Eventually the TCP layer will detect it as a dropped packet.
+> 
+My eyes slipped lines. CN is 2. But the fact RX return value can be
+returned on a TX path still makes me feel unclean. Odds are low that
+we will have new statuses in future, it is a risk. I'd hope to contain
+these values only inside BPF redirect code as they are the reason why
+such rx values can show up there. Meanwhile, your argument do make
+good sense to me that the same problem may occur for other stuff. It
+is true. In fact, I just re-examined BPF-REROUTE path, it has the
+exact same issue by directly sending dst_output value back.
+
+So I would propose to do two things:
+1. still convert BPF redirect ingress code to contain the propagation
+of mixed return. Return only TX side value instead, which is also what
+majority of those local senders are expecting. (I was wrong about
+positive values returned to sendmsg below btw, they are not).
+
+2. change LWTUNNEL_XMIT_CONTINUE and check for this at xmit hook.
+
+> > 
+> > > Also there seems to be a leak in lwtunnel_xmit().  Should that return
+> > > LWTUNNEL_XMIT_CONTINUE or should it call kfree_skb() before returning?
+> > > 
+> > > Something like the following?
+> > > 
+> > > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > > index 11652e464f5d..375790b672bc 100644
+> > > --- a/include/linux/netdevice.h
+> > > +++ b/include/linux/netdevice.h
+> > > @@ -112,6 +112,9 @@ void netdev_sw_irq_coalesce_default_on(struct net_device *dev);
+> > >  #define NET_XMIT_CN		0x02	/* congestion notification	*/
+> > >  #define NET_XMIT_MASK		0x0f	/* qdisc flags in net/sch_generic.h */
+> > >  
+> > > +#define LWTUNNEL_XMIT_DONE NET_XMIT_SUCCESS
+> > > +#define LWTUNNEL_XMIT_CONTINUE 0x3
+> > > +
+> > >  /* NET_XMIT_CN is special. It does not guarantee that this packet is lost. It
+> > >   * indicates that the device will soon be dropping packets, or already drops
+> > >   * some packets of the same priority; prompting us to send less aggressively. */
+> > > diff --git a/include/net/lwtunnel.h b/include/net/lwtunnel.h
+> > > index 6f15e6fa154e..8ab032ee04d0 100644
+> > > --- a/include/net/lwtunnel.h
+> > > +++ b/include/net/lwtunnel.h
+> > > @@ -16,12 +16,6 @@
+> > >  #define LWTUNNEL_STATE_INPUT_REDIRECT	BIT(1)
+> > >  #define LWTUNNEL_STATE_XMIT_REDIRECT	BIT(2)
+> > >  
+> > > -enum {
+> > > -	LWTUNNEL_XMIT_DONE,
+> > > -	LWTUNNEL_XMIT_CONTINUE,
+> > > -};
+> > > -
+> > > -
+> > >  struct lwtunnel_state {
+> > >  	__u16		type;
+> > >  	__u16		flags;
+> > > diff --git a/net/core/lwtunnel.c b/net/core/lwtunnel.c
+> > > index 711cd3b4347a..732415d1287d 100644
+> > > --- a/net/core/lwtunnel.c
+> > > +++ b/net/core/lwtunnel.c
+> > > @@ -371,7 +371,7 @@ int lwtunnel_xmit(struct sk_buff *skb)
+> > >  
+> > >  	if (lwtstate->type == LWTUNNEL_ENCAP_NONE ||
+> > >  	    lwtstate->type > LWTUNNEL_ENCAP_MAX)
+> > > -		return 0;
+> > > +		return LWTUNNEL_XMIT_CONTINUE;
+> > 
+> > You are correct this path would leak skb. Return continue (or drop)
+> > would avoid the leak. Personally I'd prefer drop instead to signal the
+> > error setup. Since this is a separate issue, do you want to send a
+> > separate patch on this? Or I am happy to do it if you prefer.
+> > 
+> 
+> I don't know which makes sense so I'll leave that up to you.
+> 
+This conversation is juicy, I think we discovered two potential new
+problem sites (the leak here and the reroute path) :)
+
+> > >  
+> > >  	ret = -EOPNOTSUPP;
+> > >  	rcu_read_lock();
+> > > diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+> > > index 6e70839257f7..4be50a211b14 100644
+> > > --- a/net/ipv4/ip_output.c
+> > > +++ b/net/ipv4/ip_output.c
+> > > @@ -216,7 +216,7 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
+> > >  	if (lwtunnel_xmit_redirect(dst->lwtstate)) {
+> > >  		int res = lwtunnel_xmit(skb);
+> > >  
+> > > -		if (res < 0 || res == LWTUNNEL_XMIT_DONE)
+> > > +		if (res != LWTUNNEL_XMIT_CONTINUE)
+> > >  			return res;
+> > 
+> > Unfortunately we cannot return res directly here when res > 0. This is
+> > the final reason why I didn't patch here. Return values here can be
+> > propagated back to sendmsg syscall, so returning a positive value
+> > would break the syscall convention.
+> 
+> The neigh_output() function is going to return NET_XMIT_DROP so this
+> already happens.  Is that not what we want to happen?
+> 
+My bad, those return values are processed at ip_send_skb etc, while I
+was staring only at ip_local_out and beneath with my sleepy eyes.
+
+> I guess my concern is that eventually people will eventually new
+> introduce bugs.  Fixing incorrect error codes is something that I do
+> several times per week.  :P
+> 
+> regards,
+> dan carpenter
+> 
+> 
 
