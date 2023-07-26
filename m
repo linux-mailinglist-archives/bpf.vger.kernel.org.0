@@ -1,131 +1,369 @@
-Return-Path: <bpf+bounces-5932-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5933-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F5DE763482
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 13:07:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D943763483
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 13:07:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09B25281D95
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 11:07:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443FA2810A0
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 11:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1459CA74;
-	Wed, 26 Jul 2023 11:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78463CA74;
+	Wed, 26 Jul 2023 11:07:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9EFDCA40
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 11:07:13 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8065CAC
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 04:07:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690369631;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2RhAASZDa4qR7wxJ12uUhhLwWeU47PEkDN4ojyr2iK0=;
-	b=F6+ynRoso5YDQS0o3hbqxegp6UQXHEL9qYAvSQyVJFtgGJD7ZIeVrZoAfge91yXUOrESgq
-	YtiA+pZBdYiO6KQQJxugbz5Usv8hKfSdLmTG4B4zLVRbyu+D+BfVKqSGfqzIixm60enxTf
-	KAm3M0Tyk4kMopRbNQ0W65pmanETyq0=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-630-aGNt06TMOumnMW_nNUpsSA-1; Wed, 26 Jul 2023 07:07:10 -0400
-X-MC-Unique: aGNt06TMOumnMW_nNUpsSA-1
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-40631b647cfso9790321cf.1
-        for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 04:07:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690369630; x=1690974430;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2RhAASZDa4qR7wxJ12uUhhLwWeU47PEkDN4ojyr2iK0=;
-        b=eiLXLkF06JWfybUZqhd65iImseTYaFJDjKdTksi/tUaj8INT2GrxKmhHxnESfFmYeG
-         ED30Y8uMxyRVMkRwqWNInJDALbUgOFa52WY24lrau03JqumQ+QpWOBkYujcLeCF+NrkN
-         +KkLZDBageRayHC+Qqsqnh2uyFICnyst8W2pUgy20/I6RvWzPVWOSKa4CtA5z0D3omtM
-         CUwJ6JuGdw+z5HrQMaR/VGxgWr8K5TpC6Jkir7BrSa9fVVP4PRl/HIl0mmLqQYY28Re8
-         Dky2kpwFmhnnHfBd5CAC5QOEKQEJJ769Va/OR8snoib2U6jn6TGVsQE39MDO/vOUr5hV
-         Trng==
-X-Gm-Message-State: ABy/qLYMHZgyA3hhd8dkrwzhONw+UwSKsWCPjoLtvs/Ts6sqxKzBYVKx
-	EeUNinS4OHQlmaj+FhTjmBRt1R87LH4uVd2hCTh/s9+H6m9+CXCmrWQ4FeBzZKVZ6+idu+muCL1
-	/9qA8ryR5KBqn
-X-Received: by 2002:a05:620a:4007:b0:763:a1d3:196d with SMTP id h7-20020a05620a400700b00763a1d3196dmr2275646qko.0.1690369629874;
-        Wed, 26 Jul 2023 04:07:09 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG7QqDnzpUB/dwYHGsT9KH02d9NGuFZpNXp+ZhNitR8Wn10FxTtx+Vjhi+ZWJYa1GU4+YNjiw==
-X-Received: by 2002:a05:620a:4007:b0:763:a1d3:196d with SMTP id h7-20020a05620a400700b00763a1d3196dmr2275618qko.0.1690369629594;
-        Wed, 26 Jul 2023 04:07:09 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-225-81.dyn.eolo.it. [146.241.225.81])
-        by smtp.gmail.com with ESMTPSA id dc8-20020a05620a520800b00767c76b2c38sm4268489qkb.83.2023.07.26.04.07.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 04:07:09 -0700 (PDT)
-Message-ID: <a9b4571021004affc10cb5e01a985636bd3e71f1.camel@redhat.com>
-Subject: Re: [PATCH bpf-next 0/4] Reduce overhead of LSMs with static calls
-From: Paolo Abeni <pabeni@redhat.com>
-To: Paul Moore <paul@paul-moore.com>, KP Singh <kpsingh@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
- linux-security-module@vger.kernel.org,  bpf@vger.kernel.org,
- ast@kernel.org, daniel@iogearbox.net, jackmanb@google.com, 
- renauld@google.com, casey@schaufler-ca.com, song@kernel.org,
- revest@chromium.org
-Date: Wed, 26 Jul 2023 13:07:05 +0200
-In-Reply-To: <CAHC9VhSqGtZFXn-HW5pfUub4TmU7cqFWWKekL1M+Ko+f5qgi1Q@mail.gmail.com>
-References: <20230119231033.1307221-1-kpsingh@kernel.org>
-	 <CAHC9VhRpsXME9Wht_RuSACuU97k359dihye4hW15nWwSQpxtng@mail.gmail.com>
-	 <63e525a8.170a0220.e8217.2fdb@mx.google.com>
-	 <CAHC9VhTCiCNjfQBZOq2DM7QteeiE1eRBxW77eVguj4=y7kS+eQ@mail.gmail.com>
-	 <CACYkzJ4w3BKNaogHdgW8AKmS2O+wJuVZSpCVVTCKj5j5PPK-Vg@mail.gmail.com>
-	 <CAHC9VhSqGtZFXn-HW5pfUub4TmU7cqFWWKekL1M+Ko+f5qgi1Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4488473
+	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 11:07:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D114C433C8;
+	Wed, 26 Jul 2023 11:07:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690369641;
+	bh=2ZjqU2SvWPSSpM/cKym1SBR+BCpIZZa3jkBYRwT0m4o=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=smiSuUOBnVh2z0aT789eXdEsV4J1QVY965uEYhlSup9kDc1zZPdm6vZySV4il18Qn
+	 vxHE3MXax938YgwSKhxOyagd3aLHQoDaC4vOL+9r+FV8Yru0pos7x2B/VULKb7l5HW
+	 7WXINSD+mozTnIsq4qN6nrpeGJDunJ1XhtwWvnHaV0OWdHaQKKCvyzVJULA8uxs6nb
+	 llYhIF8wod6nz5SaniijfSgTFIAmST+9NMbR0IEvIyPnI7yhfiU+or3te9ugnqHb/U
+	 gqYRVCoE5QEDwQHN2CGTi2BlyIHeAFsDImShuWoGsJRFQTX63d9Oto4gBdSbMBqDJl
+	 cKanqgBkDXC9g==
+Date: Wed, 26 Jul 2023 20:07:16 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>, Yonghong Song <yhs@fb.com>,
+ dwarves@vger.kernel.org, bpf@vger.kernel.org, Steven Rostedt
+ <rostedt@goodmis.org>
+Subject: Re: [RESEND] BTF is not generated for gcc-built kernel with the
+ latest pahole
+Message-Id: <20230726200716.609d8433a7292eead95e7330@kernel.org>
+In-Reply-To: <ZMDvmLdZSLi2QqB+@krava>
+References: <20230726102534.9ebc4678ad2c9395cc9be196@kernel.org>
+	<ZMDvmLdZSLi2QqB+@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi all,
+Hi Jiri,
 
-On Tue, 2023-06-20 at 19:40 -0400, Paul Moore wrote:
-> On Tue, Jun 13, 2023 at 6:03=E2=80=AFPM KP Singh <kpsingh@kernel.org> wro=
-te:
-> > I tried proposing an idea in
-> > https://patchwork.kernel.org/project/netdevbpf/patch/20220609234601.202=
-6362-1-kpsingh@kernel.org/
-> >  as an LSM_HOOK_NO_EFFECT but that did not seemed to have stuck.
->=20
-> It looks like this was posted about a month before I became
-> responsible for the LSM layer as a whole, and likely was lost (at
-> least on the LSM side of things) as a result.
->=20
-> I would much rather see a standalone fix to address the unintended LSM
-> interactions, then the static call performance improvements in a
-> separate patchset.
+On Wed, 26 Jul 2023 12:04:08 +0200
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-Please allow me to revive this old thread. I learned about this effort
-only recently and I'm interested into it.
+> On Wed, Jul 26, 2023 at 10:25:34AM +0900, Masami Hiramatsu wrote:
+> > Hello,
+> > (I resend this because kconfig was too big)
+> > 
+> > I found that BTF is not generated for gcc-built kernel with that latest
+> > pahole (v1.25).
+> 
+> hi,
+> I can't reproduce on my setup with your .config
+> 
+> does 'bpftool btf dump file ./vmlinux' show any error?
+> 
+> is there any error in the kernel build output?
 
-Looking at patch 4/4 from this series, it *think* it's doable to
-extract it from the series and make it work standalone. If so, would
-that approach be ok from a LSM point of view?
+Yes, here it is. I saw these 2 lines.
 
-One thing that I personally don't understand in said patch is how the
-'__ro_after_init' annotation for the bpf_lsm_hooks fits the run-time
-'default_state' changes?!?
+die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0)!
+die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0)!
 
-Cheers,
+> 
+> > When I'm using the distro origin pahole (v1.22) it works. (I also checked
+> > v1.23 and v1.24, both partially generated BTF)
+> > 
+> > e.g.
+> > 
+> > # echo 'f kfree $arg*' >> /sys/kernel/tracing/dynamic_events
+> > sh: write error: Invalid argument
+> > 
+> > # cat /sys/kernel/tracing/error_log 
+> > [   21.595724] trace_fprobe: error: BTF is not available or not supported
+> >   Command: f kfree $arg*
+> >                    ^
+> > [   21.596032] trace_fprobe: error: Invalid $-valiable specified
+> >   Command: f kfree $arg*
+> >                    ^
+> > 
+> > / # strings /sys/kernel/btf/vmlinux | grep kfree
+> 
+> hm, if you have this file present, you have BTF in
 
-Paolo
+Yes, it seems that the BTF itself is generated, but many entries seems
+dropped compared with pahole v1.22. So, if a given symbol has BTF, (e.g. 
+kfree_rcu_batch_init) it works.
 
+> 
+> > kfree_on_online
+> > maybe_kfree_parameter
+> > trace_event_raw_rcu_invoke_kfree_bulk_callback
+> > trace_event_data_offsets_rcu_invoke_kfree_bulk_callback
+> > btf_trace_rcu_invoke_kfree_bulk_callback
+> > early_boot_kfree_rcu
+> > __bpf_trace_rcu_invoke_kfree_bulk_callback
+> > perf_trace_rcu_invoke_kfree_bulk_callback
+> > trace_event_raw_event_rcu_invoke_kfree_bulk_callback
+> > trace_raw_output_rcu_invoke_kfree_bulk_callback
+> > __probestub_rcu_invoke_kfree_bulk_callback
+> > __traceiter_rcu_invoke_kfree_bulk_callback
+> > kfree_rcu_cpu_work
+> > kfree_rcu_cpu
+> > kfree_rcu_batch_init
+> > kfree_rcu_scheduler_running
+> > kfree_rcu_shrink_scan
+> > kfree_rcu_shrink_count
+> > kfree_rcu_monitor
+> > kfree_rcu_work
+> > 
+> > 
+> > Here is the gcc version which I'm using.
+> > 
+> > gcc version 11.3.0 (Ubuntu 11.3.0-1ubuntu1~22.04.1)
+> 
+> I tried with gcc (GCC) 13.1.1 20230614 (Red Hat 13.1.1-4)
+> and latest pahole (master branch)
+
+Curiously, with Clang 16.0.0, it works (but many different errors are shown,
+see below *).
+So the combination of gcc/clang and pahole version can affect it.
+
+> 
+> > 
+> > I also attached the kernel config file.
+> > 
+> > What is the recommended combination of the tools?
+> > Should I use Clang to build the kernel for BTF?
+> 
+> should work fine with both gcc and clang
+
+And I guess it depends on compiler version, doesn't it?
+
+Thank you,
+
+
+(*)
+  BTF     .btf.vmlinux.bin.o
+die__process_unit: DW_TAG_label (0xa) @ <0x4b138> not handled!
+die__process_unit: tag not supported 0xa (label)!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b241> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b263> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b290> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b2c0> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b2eb> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b317> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b33a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b35a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b37d> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b39e> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b3c4> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b3e7> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b40f> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b435> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b457> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b477> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b4a5> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b4d5> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b505> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b530> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b560> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b585> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b5b2> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b5d9> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b605> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b62e> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b652> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b670> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b694> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b6b3> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b6d9> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b705> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b72b> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b753> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b77f> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b7b3> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b7e4> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b811> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b83c> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b869> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b88c> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b8bd> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b8e7> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b90b> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b930> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b960> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b997> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4b9ce> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4ba00> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4ba24> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4ba4d> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4ba89> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4babc> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bae4> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bb0b> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bb2e> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bb4e> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bb6d> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bb8a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bba8> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bbc5> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bbe1> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bc01> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bc1c> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bc38> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bc58> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bc79> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bc95> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4bcb2> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7efd6> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7effe> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7f11c> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7f143> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7f178> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7f1a4> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7f1ca> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7f1fb> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7f22f> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7f25a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7f28d> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x7f2b7> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x1eea81> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x1eea9d> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x1eeac3> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x1eeaf3> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x1eeb0f> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x1eeb30> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x1eeb59> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x340734> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6b4a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6b67> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6b8a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6ba5> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6bc4> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6bea> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6c07> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6c2a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6c4e> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6c79> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6c9b> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6cc3> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6ceb> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x4c6d15> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x30626ac> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x30626cd> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x3062814> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x3062833> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x3062b8b> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f623f6> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f62416> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f62437> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f62458> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f6280b> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f62b09> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f62b37> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f62c45> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f62c60> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f62d69> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f62e8d> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f6305a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f63ec2> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f63edf> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f63efc> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f63f19> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f63f36> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f63f5b> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f63f80> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f63fa5> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f63fca> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f6fcae> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f6fcc7> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f6fed7> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f6fef0> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f6fdcb> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70352> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f7036f> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70394> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f703b1> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f703d6> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f703f3> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70418> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70435> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f7045a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f7057b> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f705a6> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f705cf> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f705f8> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70621> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f7064a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70673> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f7069c> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f706c5> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f706ee> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70716> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f7073e> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70767> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70790> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f707b9> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f707e2> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f7080b> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70834> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70864> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70892> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f708c0> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f708ee> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f7091c> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f7094a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70978> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f709a6> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f709d4> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70a01> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70a2e> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70a5c> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70a8a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70ab8> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70ae6> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70b14> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70b42> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70b72> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70ba0> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70bce> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70bfc> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70c2a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70c58> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70c86> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70cb4> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70ce2> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70d0f> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70d3c> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70d6a> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70d98> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70dc6> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70df4> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70e22> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70e50> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70e71> not handled!
+die__process_unit: DW_TAG_label (0xa) @ <0x5f70e94> not handled!
+  LD      .tmp_vmlinux.kallsyms1
+
+> 
+> jirka
+> 
+> > 
+> > Thank you,
+> > 
+> > -- 
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
