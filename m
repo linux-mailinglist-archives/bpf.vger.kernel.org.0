@@ -1,155 +1,135 @@
-Return-Path: <bpf+bounces-5981-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5982-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15FE7763C43
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 18:20:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D4D4763CB7
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 18:43:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 468C51C213B2
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 16:20:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDA42281ABE
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 16:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6087379A3;
-	Wed, 26 Jul 2023 16:20:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F8F1AA72;
+	Wed, 26 Jul 2023 16:43:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3281DA5F
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 16:20:00 +0000 (UTC)
-Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1408273D
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 09:19:41 -0700 (PDT)
-Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1bb445ef8d7so23218fac.3
-        for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 09:19:41 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62041AA63;
+	Wed, 26 Jul 2023 16:43:13 +0000 (UTC)
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A4626B8;
+	Wed, 26 Jul 2023 09:43:12 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b89cfb4571so55417545ad.3;
+        Wed, 26 Jul 2023 09:43:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690389792; x=1690994592;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KCv8whutDfLJorKpUOqJ8+KkOpc2kOBhY8hTu1PhHvI=;
+        b=QMUznHOLJYfI3Cg1OGbvbUK2zwN4Xs54ZJ3JbZrw4JhdF1uxPQBZ3HVCSn31MYAgdc
+         Q3UdwouTq+Mcv+ne7ujpatnJtig71lQqScyMfCpcd4njFTx2RrYTuWYS75n+F8Ub+lJb
+         sgYnZK0m3NpEEtpkxeXqvlCQL5FyNn9joXe4bALGP92MnaPs+jHcAWAHXearGlrCz8vp
+         NiOWaE+mGvO2zNT5aJxPyQVlYzpIxZgun8DIiMsIyNzjTELMbe8K/8SOPkhf+s3/lXjk
+         II5NtI1EzZjw6UkqZdZsvukqb8KGZBLOTuS3MfVf02FYRvI+M5kRxGwBzEWcbh/IBuyC
+         WI3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690388381; x=1690993181;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ja9lwwJiczR3VDcDEQG9wgS0ZmuFEIWnaFuz4pyvceE=;
-        b=cTnWGtLSrmsgXxQJ43h71Jz74AM2bas+E/l932W+snDVTGtW89bNjgYf4dph69/6Tk
-         UD6v1bAXqYmP4ds1uGADq8nWehWrhvGk6rIULn3fdmKy8CuYoponei4MhSlF4ISMx2XW
-         RY+d1bhn9rXzoYQCEEY9Jq73M+h8KOjgeHa2enaRwWcFWVDRy28dqZ0tDhCPmgQl5R1a
-         Jt2rfAJDRF6KjN6EO2x8VDKVbzHVCYwhF+WTsBp+tA4VgagWd2Uzk3YsJH8vkbYRnItl
-         S+9c6/Kx+z6KTxylS7rKWNx3/L4PQDkqzfj34ffsVvD0365j4Ywm4NfdJs4YGQSsXElp
-         +72g==
-X-Gm-Message-State: ABy/qLbRtY9I/NbJlVAsCHMmsHN6+OXy5DcWvkgXuYJEDlBm8G4VipoE
-	sY6XklqC1Hq1h4XjarZnN2ppP64yQpVeo20hp8HbSmG8dhrjrYHNAg==
-X-Google-Smtp-Source: APBJJlEn1YgXjOs36M36KnHcEy8x7JjmCEc4U9plYZLdf6dEihXYPrLzaVt4KiZKG2g1PhgJbsMMUQQ9aFylokuPb1B1lIU91EqO
+        d=1e100.net; s=20221208; t=1690389792; x=1690994592;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KCv8whutDfLJorKpUOqJ8+KkOpc2kOBhY8hTu1PhHvI=;
+        b=GBt3NA5pNQ1akjvGOAZItclKXqBzKoEc9R+/iZ4uWNPpeAs1ZMC2STAudf54WM8YPr
+         oEznqknjN1S5jLmJpBkyplAi9+3A34DJZ4L7EfCZdLhHn522n0OEYpJA4O8JkR5dngjv
+         pWtP0MogwAQTEU+8g6lqEnj48k47bM1ALXY5k9Jms3ORK2Q0P0f8uuC0v//1kdRbripe
+         ydXFDYsa5+uRYdmHO7/DCGhoUX+AsD3QT/sXR6zHL0PugOlYffmgAzUfkMgVct3m5vEh
+         XzYRFfqG/duH9w3UKYKdh3z1f/7gnZxt1eOmnzYu5p2liSyvrpM1AtEx5qHzfXmlrDnY
+         x07g==
+X-Gm-Message-State: ABy/qLYhU4dukQt5W0+ubN3zpnyzYGDdYO06KOw22brnUGgkGAKpBNlM
+	Nak27gn0Z8BuShSCHRpH1D87JTjtvobx6LhC1nU=
+X-Google-Smtp-Source: APBJJlExta4H2GjqFCFJjAPMwlKu75pRye0RG2yh6z7/8hWP5WKagkLUkY7X/mJhBRsTApJB/W2FhSG2fN3oUXYQ7wA=
+X-Received: by 2002:a17:90a:c714:b0:263:f643:4bd3 with SMTP id
+ o20-20020a17090ac71400b00263f6434bd3mr2209207pjt.27.1690389791855; Wed, 26
+ Jul 2023 09:43:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:3a06:b0:1bb:b65c:c28 with SMTP id
- du6-20020a0568703a0600b001bbb65c0c28mr45245oab.0.1690388381117; Wed, 26 Jul
- 2023 09:19:41 -0700 (PDT)
-Date: Wed, 26 Jul 2023 09:19:41 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fd316406016636ee@google.com>
-Subject: [syzbot] [net?] memory leak in kcm_sendmsg (2)
-From: syzbot <syzbot+6f98de741f7dbbfc4ccb@syzkaller.appspotmail.com>
-To: bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+References: <20230725131258.31306-1-linyunsheng@huawei.com>
+ <94272ffed7636c4c92fcc73ccfc15236dd8e47dc.camel@gmail.com>
+ <16b4ab57-dfb0-2c1d-9be1-57da30dff3c3@intel.com> <22af47fe-1347-3e32-70bf-745d833e88b9@huawei.com>
+ <CAKgT0UcU4RJj0SMQiVM8oZu86ZzK+5NjzZ2ELg_yWZyWGr04PA@mail.gmail.com>
+ <CAKgT0UfL4ri-o7WifeewpezGQY1UQKwcBEUSSY80DyKoE8g-0w@mail.gmail.com> <20230726085049.36b527a4@kernel.org>
+In-Reply-To: <20230726085049.36b527a4@kernel.org>
+From: Alexander Duyck <alexander.duyck@gmail.com>
+Date: Wed, 26 Jul 2023 09:42:34 -0700
+Message-ID: <CAKgT0UddT2CY_HrQ-d+5vPbpguuscsfF=oUVW02AFy0JAYet3w@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] page_pool: split types and declarations from page_pool.h
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Yunsheng Lin <linyunsheng@huawei.com>, 
+	Alexander Lobakin <aleksander.lobakin@intel.com>, davem@davemloft.net, pabeni@redhat.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Eric Dumazet <edumazet@google.com>, Wei Fang <wei.fang@nxp.com>, 
+	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, Sunil Goutham <sgoutham@marvell.com>, 
+	Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
+	hariprasad <hkelam@marvell.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Felix Fietkau <nbd@nbd.name>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, 
+	Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, 
+	Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, linux-rdma@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-	SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
+On Wed, Jul 26, 2023 at 8:50=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Wed, 26 Jul 2023 08:39:43 -0700 Alexander Duyck wrote:
+> > > > I suppose the above suggestion is about splitting or naming by
+> > > > the user as the discussed in the below thread?
+> > > > https://lore.kernel.org/all/20230721182942.0ca57663@kernel.org/
+> > >
+> > > Actually my suggestion is more about defining boundaries for what is
+> > > meant to be used by drivers and what isn't. The stuff you could keep
+> > > in net/core/page_pool.h would only be usable by the files in net/core=
+/
+> > > whereas the stuff you are keeping in the include/net/ folder is usabl=
+e
+> > > by drivers. It is meant to prevent things like what you were
+> > > complaining about with the Mellanox drivers making use of interfaces
+> > > you didn't intend them to use.
+>
+> FWIW moving stuff which is only supposed to be used by core (xdp, skb,
+> etc.) to net/core/page_pool.h is a good idea, too.
+> Seems a bit independent from splitting the main header, tho.
 
-syzbot found the following issue on:
+It seems a bit independent, but I was reacting only because I feel
+like this ijust adding to the technical debt on this. Basically before
+we can really just go ahead and split it the header file itself should
+probably be cleaned up a bit.
 
-HEAD commit:    18b44bc5a672 ovl: Always reevaluate the file signature for..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15e732c9a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8f187978508424dc
-dashboard link: https://syzkaller.appspot.com/bug?extid=6f98de741f7dbbfc4ccb
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d3d94ea80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13de8306a80000
+The reason why it occurred to me is that I noticed things like
+page_pool_use_xdp_mem and the forward declaration for xdp_mem_info was
+being picked up and moved into the types.h file in the move. The whole
+block was in a #if/#else statement w/ definitions for the PAGE_POOL
+and non-PAGE_POOL cases.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7520f98f6651/disk-18b44bc5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f13d09e3480e/vmlinux-18b44bc5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/587382b9a0e6/bzImage-18b44bc5.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6f98de741f7dbbfc4ccb@syzkaller.appspotmail.com
-
-Warning: Permanently added '10.128.0.5' (ED25519) to the list of known hosts.
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff88810b088c00 (size 240):
-  comm "syz-executor186", pid 5012, jiffies 4294943306 (age 13.680s)
-  hex dump (first 32 bytes):
-    00 89 08 0b 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff83e5d5ff>] __alloc_skb+0x1ef/0x230 net/core/skbuff.c:634
-    [<ffffffff84606e59>] alloc_skb include/linux/skbuff.h:1289 [inline]
-    [<ffffffff84606e59>] kcm_sendmsg+0x269/0x1050 net/kcm/kcmsock.c:815
-    [<ffffffff83e479c6>] sock_sendmsg_nosec net/socket.c:725 [inline]
-    [<ffffffff83e479c6>] sock_sendmsg+0x56/0xb0 net/socket.c:748
-    [<ffffffff83e47f55>] ____sys_sendmsg+0x365/0x470 net/socket.c:2494
-    [<ffffffff83e4c389>] ___sys_sendmsg+0xc9/0x130 net/socket.c:2548
-    [<ffffffff83e4c536>] __sys_sendmsg+0xa6/0x120 net/socket.c:2577
-    [<ffffffff84ad7bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84ad7bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff88810a2cc000 (size 640):
-  comm "syz-executor186", pid 5012, jiffies 4294943306 (age 13.680s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff83e5a2d1>] kmalloc_reserve+0xe1/0x180 net/core/skbuff.c:559
-    [<ffffffff83e5d4e5>] __alloc_skb+0xd5/0x230 net/core/skbuff.c:644
-    [<ffffffff84606e59>] alloc_skb include/linux/skbuff.h:1289 [inline]
-    [<ffffffff84606e59>] kcm_sendmsg+0x269/0x1050 net/kcm/kcmsock.c:815
-    [<ffffffff83e479c6>] sock_sendmsg_nosec net/socket.c:725 [inline]
-    [<ffffffff83e479c6>] sock_sendmsg+0x56/0xb0 net/socket.c:748
-    [<ffffffff83e47f55>] ____sys_sendmsg+0x365/0x470 net/socket.c:2494
-    [<ffffffff83e4c389>] ___sys_sendmsg+0xc9/0x130 net/socket.c:2548
-    [<ffffffff83e4c536>] __sys_sendmsg+0xa6/0x120 net/socket.c:2577
-    [<ffffffff84ad7bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84ad7bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+We also have functions that don't really need to be included such as
+page_pool_unlink_napi which is exported but not used outside of
+page_pool.c from what I can tell.
 
