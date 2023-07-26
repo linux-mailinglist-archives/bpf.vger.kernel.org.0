@@ -1,101 +1,112 @@
-Return-Path: <bpf+bounces-5940-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5941-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1097763651
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 14:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 57BBF7636EA
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 15:00:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BA28280F1C
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 12:27:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5E4A281D91
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 13:00:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8316AC2C3;
-	Wed, 26 Jul 2023 12:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43D2BE67;
+	Wed, 26 Jul 2023 13:00:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54BEDC14D
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 12:27:18 +0000 (UTC)
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B7D1FDA
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 05:27:15 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b962535808so96904761fa.0
-        for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 05:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1690374434; x=1690979234;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=UBWlekeadb6ll5cfrcuV68GqkFWW6y461yJLKCvTOag=;
-        b=RQnH4EvQgjKLSCBcnN6qage1q8xr1RAq6uvGWIBvdllBtnnhgDXKzy1D837z4p2fXC
-         ei3ZnUBc6aZFLHCOreaU1xSfrElRYNFOa+CVs5sibx1DPKBJZ/nigiCesxFewnuqs1z0
-         27sNVpGt60SLq4SuQWUwWBTwKVfiKCbHTxuRI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690374434; x=1690979234;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UBWlekeadb6ll5cfrcuV68GqkFWW6y461yJLKCvTOag=;
-        b=DZ+Fooqi+AXM0sQIt6RWlCwlHw1cgNM3VoAslYe1ktAjLRJYAD/TUcIWl4+bZL/rdm
-         wQRlCc1XDB8GFvckmTDa8/PiOvjer5WPvOEA7iYbGRauIgJQaNxJNblM2xsMDmguvp4O
-         u9tYKMpXSI7C3zsvbHXarjLug7uNm+MBpuVZtQm6S63Ii2/VsXsH2HMHluGVjPjSqUs4
-         UcAqKlf1eHNpZcn85Six9VDm+veSeSp1VJQYV3xxi2ybT2aAP0t5ZWu559vLqgRz+pCA
-         rFAmvvBbwEQHStTmjsn1cT6wEs2XN5ofQRfV2p4rya85Cxod7aGtH3130zDeKM7KgWhy
-         4VIw==
-X-Gm-Message-State: ABy/qLYoLgEDj2Qt4HO+PjfhipwEn1v3LRJa2liUt9j7KYJhCvUOAXJs
-	8khcGkjaWLP/K+q0Cz+w3pV5iw==
-X-Google-Smtp-Source: APBJJlGe0BnzdEiexUengASClPGYfYEAD6/edtGkc8pSs2d5oo3Xa6dhiLC0n0m2SfnTK3KW/uVebA==
-X-Received: by 2002:a2e:6e11:0:b0:2b9:aa4d:3728 with SMTP id j17-20020a2e6e11000000b002b9aa4d3728mr1294382ljc.29.1690374434227;
-        Wed, 26 Jul 2023 05:27:14 -0700 (PDT)
-Received: from cloudflare.com (79.184.136.135.ipv4.supernova.orange.pl. [79.184.136.135])
-        by smtp.gmail.com with ESMTPSA id kd7-20020a17090798c700b00992a8a54f32sm9436706ejc.139.2023.07.26.05.27.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 05:27:13 -0700 (PDT)
-References: <cover.1690332693.git.yan@cloudflare.com>
- <9c4896b109a39c3fa088844addaa1737a84bbbb5.1690332693.git.yan@cloudflare.com>
-User-agent: mu4e 1.6.10; emacs 28.2
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Yan Zhai <yan@cloudflare.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko
- <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com, Jordan Griege
- <jgriege@cloudflare.com>, Markus Elfring <Markus.Elfring@web.de>
-Subject: Re: [PATCH v4 bpf 2/2] bpf: selftests: add lwt redirect regression
- test cases
-Date: Wed, 26 Jul 2023 14:26:57 +0200
-In-reply-to: <9c4896b109a39c3fa088844addaa1737a84bbbb5.1690332693.git.yan@cloudflare.com>
-Message-ID: <87edkuyi1r.fsf@cloudflare.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC76CCA4F
+	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 12:59:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 539BBC433C7;
+	Wed, 26 Jul 2023 12:59:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690376398;
+	bh=qCZGKn1xSuw8bqgTgENy4mv3gBbzcDsXM+kRBp1p2pc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CajfpC+n/Ntcoxc6eX7AiPKHESntCL6bFmRiiQJpqHppVvw8HSCv+JKx9AZpaIZa2
+	 LUdm1yzAvxPZJS1JxHxXbcrJp6UJyAZD3n0dUsnNujwiEDh6UcfUZdAJM6m/Xyl9MF
+	 bJpIETWhqe63knc5HFdLvCTtKPS/rQ+wrUa8h8PESaDLszMHmM3ltfkJKN5Emi95tw
+	 hKZcN2mrTjIw5xM4zx+I9pIy69E06ezh9PwGNWlfNpKWkkUW5K6CleoePOQ/+Ll1wa
+	 cYfYWOmdXSV+cdwYm1yJC6H9Z6hwZYrEcmeyvl/KbXTp37m+lwEi7b5SdZwsScPeds
+	 kAGnm/cLDpeQQ==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: linux-trace-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	mhiramat@kernel.org,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf@vger.kernel.org,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH v3 0/9] tracing: Improbe BTF support on probe events
+Date: Wed, 26 Jul 2023 21:59:53 +0900
+Message-Id: <169037639315.607919.2613476171148037242.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jul 25, 2023 at 06:09 PM -07, Yan Zhai wrote:
-> Tests BPF redirect at the lwt xmit hook to ensure error handling are
-> safe, i.e. won't panic the kernel.
->
-> Tested-by: Jakub Sitnicki <jakub@cloudflare.com>
-> Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> ---
+Hi,
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+Here is the 3rd version of series to improve the BTF support on probe events.
+The previous series is here:
+
+https://lore.kernel.org/all/168960739768.34107.15145201749042174448.stgit@devnote2/
+
+The fixes patch in the previous version has been sent in different series.
+
+https://lore.kernel.org/all/169024903018.395371.1006584451160707296.stgit@devnote2/
+
+In this version, I added BTF support on module symbols (this will be the
+biggest change) [1/9] and cleanup the btf APIs [2/9][3/9] according to
+the comment. Also [5/9] introduce a query_btf_context() for simplifying
+common fields in traceprobe_parse_context. [8/9] added more complex test
+case for structure field access. And [9/9] update the documentation about
+the mixture of '.' and '->'.
+
+This series can be applied on top of "probes/core" branch of
+https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git/
+
+You can also get this series from:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git topic/fprobe-event-ext
+
+Thank you,
+
+---
+
+Masami Hiramatsu (Google) (9):
+      tracing/probes: Support BTF argument on module functions
+      bpf/btf: tracing: Move finding func-proto API and getting func-param API to BTF
+      bpf/btf: Add a function to search a member of a struct/union
+      tracing/probes: Support BTF based data structure field access
+      tracing/probes: Support BTF field access from $retval
+      tracing/probes: Add string type check with BTF
+      tracing/fprobe-event: Assume fprobe is a return event by $retval
+      selftests/ftrace: Add BTF fields access testcases
+      Documentation: tracing: Update fprobe event example with BTF field
+
+
+ Documentation/trace/fprobetrace.rst                |   64 ++-
+ include/linux/btf.h                                |    8 
+ kernel/bpf/btf.c                                   |   84 +++
+ kernel/trace/trace_eprobe.c                        |    4 
+ kernel/trace/trace_fprobe.c                        |   59 ++
+ kernel/trace/trace_kprobe.c                        |    1 
+ kernel/trace/trace_probe.c                         |  487 +++++++++++++++-----
+ kernel/trace/trace_probe.h                         |   27 +
+ kernel/trace/trace_uprobe.c                        |    1 
+ .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   14 +
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    6 
+ 11 files changed, 582 insertions(+), 173 deletions(-)
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
