@@ -1,122 +1,176 @@
-Return-Path: <bpf+bounces-5993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5390B763EC2
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 20:44:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D63B763F65
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 21:18:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83E3C1C21026
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 18:44:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0791B281EE0
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 19:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB424CE6A;
-	Wed, 26 Jul 2023 18:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6204CE97;
+	Wed, 26 Jul 2023 19:16:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DDC17EE
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 18:44:31 +0000 (UTC)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F52B2135
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 11:44:30 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbea14700bso400485e9.3
-        for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 11:44:30 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B174CE84
+	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 19:16:22 +0000 (UTC)
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F6E71FF0
+	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 12:16:20 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-4475615e245so50798137.2
+        for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 12:16:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690397068; x=1691001868;
+        d=obs-cr.20221208.gappssmtp.com; s=20221208; t=1690398979; x=1691003779;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RQ7OZ1wZW/07V4ABlHK6kZ3sEYSCJX6Ow0jjMBywwZM=;
-        b=DrKALyEJEJCjYt1L47slzumv2us34D+SkhJ7IDCcD/mfT8hOkbemSp4Y7Oy0riqAdr
-         oplu0KoOoAsdQUJCl/Mei/c3OSahCHRxGZ1WHi4ZvvTfDCyXIVYMyMaGfODFnSAcNmu6
-         47QJNohrt5GFGgm+wVbR44ar8ucvvGSoSDGA3rZh80LNUBWPXLucP9eNR/Fe29GHMhp/
-         Sx9BgbcBWtM/uIwS56KxZq1YQ/ZkVl5ij4DxywPbjUX+0vE7LRrIdG35Lfr52G1ERfUp
-         TYUcXrMvb4Up86LCZFmVt6hRPJS1p1kTGQPQL/sEV4CMbgXnD/jTrrCSbOsJ8G2NFYyP
-         tEOg==
+        bh=JM0ukKexePxMNw1wW/WLU+P2Zc71N+iGNBjfGQCeoCk=;
+        b=Bt4VN8O53f0KG+ZxAAB+hWBFMVXZi01E0yyoSRd2/SdgshfnugBS+zAjbbJb0jmMvc
+         x62uJrnWRaZRgArfLTjSGX6xbOApAupL9UMIOmREW9tq4WuEL/oTm83ruLYnySW771m0
+         NzM4QKDWGw5b+VVrsQcbSG0JWisv9SjjuvKxrGkPEz4cElxEXHy21h0SrW0BMRNcvi7I
+         +IArYh0iJfkmLdrQSz5/DE/qdTztllbp5nYvhc5dDslHoi/s4Pa9kD0Ca4YKf/2gpWFo
+         OwXBu6k2VbiUIdrt8BrovNc+1txeHGrsUW0o8Z6FHYWpkNvtI2c4jqNkLIN1WIqdyIJu
+         se1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690397068; x=1691001868;
+        d=1e100.net; s=20221208; t=1690398979; x=1691003779;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RQ7OZ1wZW/07V4ABlHK6kZ3sEYSCJX6Ow0jjMBywwZM=;
-        b=Re7HcszFBhClS0fVQFw3bYgrXI8bUkPqy4pzO4XC8EVH7pKacjn+L1++hmMNiR8lgX
-         Dl24Qtj76korx/Iq7mfx0IT8zB4k8u2rDxWFKaR0X1lFl7qTV4/ov9ZsyjAGdF21zMMh
-         yVZxUTaWkyZNIgne26O91yOh/d9POaQYwvj5aDciNl0qedds82HfGHhHfebe8R0dSPKH
-         2as3TCjpZ0dyN0KYKp/4Nf83tqUVIrizIbCb8Dm5LdaZhLxOLd2v3x9Ml4jCdTxRCrrE
-         ymU+YSoPzHZVE+UVg/fvEeqHjVoe6m80eeS2tg7lkNTy74wN9hkLqwN6EBcvjJUSfwim
-         cGHg==
-X-Gm-Message-State: ABy/qLbXEOukqXsU7Mid566WxKK200nBT92rqpBbTAQD6mhW6tuDoOdH
-	UVEd0cCfr3eFWom8lRtkQ36LrjxPIJKcyEeQwP3oFw==
-X-Google-Smtp-Source: APBJJlFbaLjYgaAp3ZiF1dpBW3M5vPnPaRN2ibSMPLJDDgnvd7+KqYr7kUJba2oyRapEIbcLI/Di8IpWdfMygEjdd/M=
-X-Received: by 2002:a05:600c:3788:b0:3fd:2d42:9392 with SMTP id
- o8-20020a05600c378800b003fd2d429392mr2037098wmr.4.1690397068574; Wed, 26 Jul
- 2023 11:44:28 -0700 (PDT)
+        bh=JM0ukKexePxMNw1wW/WLU+P2Zc71N+iGNBjfGQCeoCk=;
+        b=h23SmFyhQd2R/+c2qJPKTK6mhDB2A0ZVfUQA904scDNv6UKGerXarRMd92df9/+QRH
+         Ng137thBQaW2XIyR9hmQhVZsZ2LARjRR5cBeB/5hcQBlIdViWvfFqXoc9S0dOqA2ppNC
+         lZvtclrXJyXK4vewySgBFvPYQxgeuajEVq8w4L2jb6xxVvDgLVseWmNAlvXPJTdKe3aj
+         lsxE3oG9aGNREicW2lG//al8M+k5Lk3q7JazqK/T0AkqIaceYnL3899Jk1d2obAvGLV9
+         D0vsfIlhxzjRT0ah2Pk97tJvtPuScxtIkHoRqirY9Z3Tp/a6LTO9T3yjHGfn48T0TZEb
+         ZF3g==
+X-Gm-Message-State: ABy/qLY3rGZz3gK1Sm2fID54zx/YXKqXa2LBkmSejIcdR+dLxTBoKzsv
+	EJPDB2OjtARs5TUFfuEY7caztV4UCmR/l7bePAAfShYAGeBuG8ZehdE=
+X-Google-Smtp-Source: APBJJlH038bb259dvNC1s2Kh0EZ2ksB/8UiE4ZmHMtZECcEAgle/dnoZe3klf/zzDDbN/4k4M1Lqx5jGP2l5HcooXg0=
+X-Received: by 2002:a05:6102:84:b0:440:cbbf:cd72 with SMTP id
+ t4-20020a056102008400b00440cbbfcd72mr69039vsp.4.1690398979395; Wed, 26 Jul
+ 2023 12:16:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1689885610.git.zhuyifei@google.com> <d47f7d1c80b0eabfee89a0fc9ef75bbe3d1eced7.1689885610.git.zhuyifei@google.com>
- <0f90694e-308c-65e6-5360-a3d5dc7337b1@huaweicloud.com> <CAA-VZPmhm3SoD+tX-xPSj6wuOvFg=uZoar0b=sgAyLRz=5n+2A@mail.gmail.com>
- <0d242e21-3f53-87ca-7aa8-bb55b5223552@huaweicloud.com>
-In-Reply-To: <0d242e21-3f53-87ca-7aa8-bb55b5223552@huaweicloud.com>
-From: YiFei Zhu <zhuyifei@google.com>
-Date: Wed, 26 Jul 2023 11:44:17 -0700
-Message-ID: <CAA-VZPmretQpaGan_w=VMpvL_gKsAb_fT-x8Q4Eci8dE4EPvHQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf/memalloc: Non-atomically allocate freelist
- during prefill
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Stanislav Fomichev <sdf@google.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>
+References: <CACsn0ckZO+b5bRgMZhOvx+Jn-sa0g8cBD+ug1CJEdtYxSm_hgA@mail.gmail.com>
+ <PH7PR21MB3878D8DCEF24A5F8E52BA59DA303A@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <CAADnVQJ1fKXcsTXdCijwQzf0OVF0md-ATN5RbB3g10geyofNzA@mail.gmail.com> <CACsn0cmf22zEN9AduiRiFnQ7XhY1ABRL=SwAwmmFgxJvVZAOsg@mail.gmail.com>
+In-Reply-To: <CACsn0cmf22zEN9AduiRiFnQ7XhY1ABRL=SwAwmmFgxJvVZAOsg@mail.gmail.com>
+From: Will Hawkins <hawkinsw@obs.cr>
+Date: Wed, 26 Jul 2023 15:16:08 -0400
+Message-ID: <CADx9qWi+VQ=do+_Bsd8W4Yc-S1LekVq7Hp4bfD3nz0YP47Sqgg@mail.gmail.com>
+Subject: Re: [Bpf] Review of draft-thaler-bpf-isa-01
+To: Watson Ladd <watsonbladd@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Dave Thaler <dthaler@microsoft.com>, 
+	"bpf@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Jul 26, 2023 at 4:38=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
+On Tue, Jul 25, 2023 at 2:37=E2=80=AFPM Watson Ladd <watsonbladd@gmail.com>=
+ wrote:
 >
-> Hi,
+> On Tue, Jul 25, 2023 at 9:15=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Jul 25, 2023 at 7:03=E2=80=AFAM Dave Thaler <dthaler@microsoft.=
+com> wrote:
+> > >
+> > > I am forwarding the email below (after converting HTML to plain text)
+> > > to the mailto:bpf@vger.kernel.org list so replies can go to both list=
+s.
+> > >
+> > > Please use this one for any replies.
+> > >
+> > > Thanks,
+> > > Dave
+> > >
+> > > > From: Bpf <bpf-bounces@ietf.org> On Behalf Of Watson Ladd
+> > > > Sent: Monday, July 24, 2023 10:05 PM
+> > > > To: bpf@ietf.org
+> > > > Subject: [Bpf] Review of draft-thaler-bpf-isa-01
+> > > >
+> > > > Dear BPF wg,
+> > > >
+> > > > I took a look at the draft and think it has some issues, unsurprisi=
+ngly at this stage. One is
+> > > > the specification seems to use an underspecified C pseudo code for =
+operations vs
+> > > > defining them mathematically.
+> >
+> > Hi Watson,
+> >
+> > This is not "underspecified C" pseudo code.
+> > This is assembly syntax parsed and emitted by GCC, LLVM, gas, Linux Ker=
+nel, etc.
 >
-> On 7/21/2023 10:31 AM, YiFei Zhu wrote:
-> > On Thu, Jul 20, 2023 at 6:45=E2=80=AFPM Hou Tao <houtao@huaweicloud.com=
-> wrote:
-> >> On 7/21/2023 4:44 AM, YiFei Zhu wrote:
-> >>> Sometimes during prefill all precpu chunks are full and atomic
-> >>> __alloc_percpu_gfp would not allocate new chunks. This will cause
-> >>> -ENOMEM immediately upon next unit_alloc.
-> >>>
-> >>> Prefill phase does not actually run in atomic context, so we can
-> >>> use this fact to allocate non-atomically with GFP_KERNEL instead
-> >>> of GFP_NOWAIT. This avoids the immediate -ENOMEM. Unfortunately
-> >>> unit_alloc runs in atomic context, even from map item allocation in
-> >>> syscalls, due to rcu_read_lock, so we can't do non-atomic
-> >>> workarounds in unit_alloc.
-> >>>
-> >>> Fixes: 4ab67149f3c6 ("bpf: Add percpu allocation support to bpf_mem_a=
-lloc.")
-> >>> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
-> >> Make sense to me, so
-> >>
-> >> Acked-by: Hou Tao <houtao1@huawei.com>
-> >>
-> >> But I don't know whether or not it is suitable for bpf tree.
-> > I don't mind either way :) If changing to bpf-next requires a resend I
-> > can do that too.
->
-> Please resend and rebase the patch again bpf-next tree.
->
+> I don't see a reference to any description of that in section 4.1.
+> It's possible I've overlooked this, and if people think this style of
+> definition is good enough that works for me. But I found table 4
+> pretty scanty on what exactly happens.
 
-Will do. Should I drop the Fixes tag then?
+Hello! Based on Watson's post, I have done some research and would
+potentially like to offer a path forward. There are several different
+ways that ISAs specify the semantics of their operations:
 
-YiFei Zhu
+1. Intel has a section in their manual that describes the pseudocode
+they use to specify their ISA: Section 3.1.1.9 of The Intel=C2=AE 64 and
+IA-32 Architectures Software Developer=E2=80=99s Manual at
+https://cdrdv2.intel.com/v1/dl/getContent/671199
+2. ARM has an equivalent for their variety of pseudocode: Chapter J1
+of Arm Architecture Reference Manual for A-profile architecture at
+https://developer.arm.com/documentation/ddi0487/latest/
+3. Sail "is a language for describing the instruction-set architecture
+(ISA) semantics of processors."
+(https://www.cl.cam.ac.uk/~pes20/sail/)
+
+Given the commercial nature of (1) and (2), perhaps Sail is a way to
+proceed. If people are interested, I would be happy to lead an effort
+to encode the eBPF ISA semantics in Sail (or find someone who already
+has) and incorporate them in the draft.
+
+Sincerely,
+Will
+
+> >
+> > > > The good news is I think this is very fixable although tedious.
+> > > >
+> > > > The other thornier issues are memory model etc. But the overall str=
+ucture seems good
+> > > > and the document overall makes sense.
+> >
+> > What do you mean by "memory model" ?
+> > Do you see a reference to it ? Please be specific.
+>
+> No, and that's the problem. Section 5.2 talks about atomic operations.
+> I'd expect that to be paired with a description of barriers so that
+> these work, or a big warning about when you need to use them. For
+> clarity I'm pretty unfamiliar with bpf as a technology, and it's
+> possible that with more knowledge this would make sense. On looking
+> back on that I don't even know if the memory space is flat, or
+> segmented: can I access maps through a value set to dst+offset, or
+> must I always used index? I'm just very confused.
+>
+> Sincerely,
+> Watson
+>
+> --
+> Astra mortemque praestare gradatim
+>
+> --
+> Bpf mailing list
+> Bpf@ietf.org
+> https://www.ietf.org/mailman/listinfo/bpf
 
