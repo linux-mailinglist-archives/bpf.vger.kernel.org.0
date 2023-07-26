@@ -1,272 +1,179 @@
-Return-Path: <bpf+bounces-5958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2EE67637A3
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 15:31:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DD8B7637CB
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 15:39:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97E89281EEA
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 13:31:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E5BB1C21129
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 13:39:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65EFC1119A;
-	Wed, 26 Jul 2023 13:31:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4256D134CC;
+	Wed, 26 Jul 2023 13:39:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A3EC2CF
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 13:31:11 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4234E2
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 06:31:09 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 73E50C16950E
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 06:31:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1690378269; bh=jfTOYJsuM8LBC2K6CIIIgkuL/0EakwVjjxcOY2Crhwg=;
-	h=From:To:Cc:In-Reply-To:References:Date:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=jaJFm1E81xvug0VzLDq/pNrlvHad1/X/JhP2U/+fcsm6dFpYSJWkUCH52tER8BboT
-	 RaouMIbLO3SmnNv/NVtz7zoYPLLPn6zb3VY9kCShTAQ2iXVNNu2uvbYghB1h/mGoHI
-	 6TPTboFRpdJqy5J1Mf/GfgVzho0A2+Cx7Vc91mX0=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Wed Jul 26 06:31:09 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 5476AC15270E;
-	Wed, 26 Jul 2023 06:31:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1690378269; bh=jfTOYJsuM8LBC2K6CIIIgkuL/0EakwVjjxcOY2Crhwg=;
-	h=From:To:Cc:In-Reply-To:References:Date:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=jaJFm1E81xvug0VzLDq/pNrlvHad1/X/JhP2U/+fcsm6dFpYSJWkUCH52tER8BboT
-	 RaouMIbLO3SmnNv/NVtz7zoYPLLPn6zb3VY9kCShTAQ2iXVNNu2uvbYghB1h/mGoHI
-	 6TPTboFRpdJqy5J1Mf/GfgVzho0A2+Cx7Vc91mX0=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 4C8B2C15270E;
- Wed, 26 Jul 2023 06:31:08 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -7.105
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=oracle.com header.b="p3cIkGKm";
- dkim=pass (1024-bit key)
- header.d=oracle.onmicrosoft.com header.b="UCp6hXj1"
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id pKx4qNtT8I9m; Wed, 26 Jul 2023 06:31:06 -0700 (PDT)
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com
- [205.220.177.32])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 52712C15270B;
- Wed, 26 Jul 2023 06:31:06 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
- by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 36Q803SR025731; Wed, 26 Jul 2023 13:31:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=from : to : cc :
- subject : in-reply-to : references : date : message-id : content-type :
- mime-version; s=corp-2023-03-30;
- bh=6MFfUJr9eesa0/n1QzwOHyvq09RMn8VdrNF/0IrRtsQ=;
- b=p3cIkGKmQ1l9m1z9C4NAKkEFFLiUzs8mnLzbVTluyvAxOPfmNA++uPpdxPqyy8xi1AzQ
- IjgFyNTv9dPBI5E1qdcmKV1TUAdrprVCjbiyYtAniU1Ip/YDCSvabKjbjoaxIf+NspIH
- twTRqf/ahCMo/oZjjJyhkpBC4RlZ8ZIi/Rk1LY1Rukynmcj5i5LPgGY9bOOHLv3iMWR2
- 3r82YENrqk7jYz1tjLJzXi6cjPjDOEq25RFLKymBZd7tR3A/7EZNmw2Ihfzsf0abLI6j
- XawTMqcL1LZBTvC6aMVX26rTwrUkhiSBmo64NDcwoG4diba8LzQVgBeiTl4vF9Aek+EB Pw== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com
- (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
- by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s075d7h5r-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 26 Jul 2023 13:31:05 +0000
-Received: from pps.filterd
- (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
- by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19)
- with ESMTP id 36QCHXZ1022992; Wed, 26 Jul 2023 13:31:04 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com
- (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
- by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id
- 3s05j66wwq-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 26 Jul 2023 13:31:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=my0R/+PTfc+hLp5dUBGGYJEAy3RBYJRbMk85gn29XmyOG/ad+O8mExgMh3iM+k9kbE5xvpTHRjuFuHnbiMKyxZnuUbsaA8chFxrQ6UD1yGWlW+FzweOInQ6+CGQQtvKXZrhi/Y1ZbzTko5bYtfrGlHna6tQHDTtNJWyY4GHJQYZtX7Mme2cdQpPL2UjzHdCVgQiEIdNDkk7csn9SP6JjU8vr9GF2nEoj2lUBLLcT4bu1hGWsyW2a/hy4XT3qk5RXlBfXkLvSNjsP3wPMB6r5e+syI9rwPHWp/8sErAwm4mw0j9T0n1R0knT9E4eNBJesB62Mrq4+s9ikkTrazUMC/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6MFfUJr9eesa0/n1QzwOHyvq09RMn8VdrNF/0IrRtsQ=;
- b=GxJcYCUNUJUpqKg6329cPQFMSMDYP82I5alIPhIM7GGCaOgLlIYZXelZzQ4lQsB4IEE2dYdaW0o6TzdK6fXG6DJOPsD+Olk1uVqVnn/SW4dyO5EehU2djaAuyBFAsHBDrDNThs2SezF46gAwtRJmcUAkgZszJRzq5Ia7X+pnv832DdypnoKXl/zQ/+aCE5Gj8fWkXm7pz01ajGB+isgdEh3a1firuzknjtKMBXzNi3J0p6dkdXFSOIl335JSrajfwWmjj9i3G8MRa1sBNpAbvpDj0dtkNxxfHu6GEEbh58EzTV7F1gBPisO7EGwcsdLmwfBt5ESYquYsoADe4nXQIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC90BA43
+	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 13:39:18 +0000 (UTC)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9102B2132
+	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 06:39:14 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b701e41cd3so99322461fa.3
+        for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 06:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6MFfUJr9eesa0/n1QzwOHyvq09RMn8VdrNF/0IrRtsQ=;
- b=UCp6hXj1twHiK7YCBGMQexS1wKUCjVquNHQ+cY1StRD2tW3wrSEZlFC31+KBWbNedI2q/CpvystmdCG9fCCeC1Lnj/R/JGG8zd+ptALIti8821X2SnTNJLt+mJ78W1MaX4gcJYIywTOlf6rfB77e320xy4PTGCXuV7JqcTFVwvM=
-Received: from BYAPR10MB2888.namprd10.prod.outlook.com (2603:10b6:a03:88::32)
- by DS0PR10MB7204.namprd10.prod.outlook.com (2603:10b6:8:f3::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Wed, 26 Jul
- 2023 13:31:01 +0000
-Received: from BYAPR10MB2888.namprd10.prod.outlook.com
- ([fe80::d5ed:aedb:b99f:6f19]) by BYAPR10MB2888.namprd10.prod.outlook.com
- ([fe80::d5ed:aedb:b99f:6f19%3]) with mapi id 15.20.6609.032; Wed, 26 Jul 2023
- 13:31:01 +0000
-From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-To: Dave Thaler <dthaler=40microsoft.com@dmarc.ietf.org>
-Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "bpf@ietf.org" <bpf@ietf.org>
-In-Reply-To: <PH7PR21MB3878287822C8A1F5994A8E9FA300A@PH7PR21MB3878.namprd21.prod.outlook.com>
- (Dave Thaler's message of "Wed, 26 Jul 2023 13:28:53 +0000")
-References: <20230726092543.6362-1-jose.marchesi@oracle.com>
- <PH7PR21MB3878287822C8A1F5994A8E9FA300A@PH7PR21MB3878.namprd21.prod.outlook.com>
-Date: Wed, 26 Jul 2023 15:30:54 +0200
-Message-ID: <87cz0e7qb5.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
-X-ClientProxiedBy: LO2P265CA0193.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:9e::13) To BYAPR10MB2888.namprd10.prod.outlook.com
- (2603:10b6:a03:88::32)
+        d=linaro.org; s=google; t=1690378753; x=1690983553;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sHorn2FTxwc0GDGivshkp6+VTJEJlE83QxVA+vKmjNE=;
+        b=QtqNqfpE1x1/0/UDSxEqRIfyyVp5wMDHWM4K+MqdPWDXaWnPNZ23aDH1w4ey7rt3fq
+         koE1R4PoykZZ3WtvdpH0gebC9FGFI9CXVLTgrq0zRjQwNHeQjzB6sGSnUA6pSZLgdGvi
+         ndrD70cwEd3c+e1nYlS73PNkpzS0qpTV5ymUqdqDkKTK0QNTgZF3SdRrffaJ0z8t7pdc
+         k9jryvlx+EusM3TCaspE7FiJ7Z8v1y/03sg1uiguZMdRO1tbyNP/HcHIOzmF+I9a9Uf2
+         p6fluw7tX1PoZnlRruOJWB0AdgDobaaHWUb8uKlih3Iz823NB0HZJXAPVUZQqfSvqA0x
+         mSTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690378753; x=1690983553;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sHorn2FTxwc0GDGivshkp6+VTJEJlE83QxVA+vKmjNE=;
+        b=GozpuUvL0kbZtnjJYNzmMjZ40+5S16Ro+dzU6PkUkPqKXJmQhtqrHAA8Dc1+Q+ArqJ
+         5wv5JtvTZijPvKsJpir3cp+ElSsE1YQnpN+2Oj+S2EQYSs9PW3C8M2oLb2PnGw3LrAPe
+         STb//F6j0TvV7bMjcfDMIkoySIPmu1scGY/Xmv1cgHcgqlhNSdLTQXS+05M/8jb/aMc+
+         iMXORWz5NFNXJ9D3g3GlsHmMMcJ+Ali8qEOl4ndn7WZjmE6DppiVVwj5Fjp1LHbD5VL1
+         s1QoSiZeoEZdY+CJndKmwFvjJgz6rj1QkB7HMrA2Ujqa5PhzUTzOfA2SjJjChKvzzQd+
+         Banw==
+X-Gm-Message-State: ABy/qLbasSS7L+lCdNS6piLD+b57Q8au1M6ovlM4D9vdKHCsGgd4CP6Y
+	TVOroBGZqhlxfeGPBIJnS10RNgqIKjARWQt6pEg=
+X-Google-Smtp-Source: APBJJlGW/Eo+ksZ3sdIvRgAMD3SNfOzhdacCr9UTiIET+4QsoqSNOu4fp37X+OSa0YBrEyJX2Nzdpw==
+X-Received: by 2002:a2e:2e16:0:b0:2b6:c818:a9bc with SMTP id u22-20020a2e2e16000000b002b6c818a9bcmr1560633lju.23.1690378752781;
+        Wed, 26 Jul 2023 06:39:12 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id n12-20020a7bcbcc000000b003fbb346279dsm1986398wmi.38.2023.07.26.06.39.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 06:39:12 -0700 (PDT)
+Date: Wed, 26 Jul 2023 16:39:08 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Yan Zhai <yan@cloudflare.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
+	Jordan Griege <jgriege@cloudflare.com>,
+	Markus Elfring <Markus.Elfring@web.de>,
+	Jakub Sitnicki <jakub@cloudflare.com>
+Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
+Message-ID: <a76b300a-e472-4568-b734-37115927621d@moroto.mountain>
+References: <cover.1690332693.git.yan@cloudflare.com>
+ <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2888:EE_|DS0PR10MB7204:EE_
-X-MS-Office365-Filtering-Correlation-Id: b3c6f2c8-aba7-4d55-9d0c-08db8ddc8da1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GArjLd5cqN5khFfAwCe85AktP1kCy+KkhDZE5HZUkcCZ/MHIwfpa8YuBSGEG7FKoXoJQfsIckX9UdApMXRU4rxOxHcT6FXLoJRZjdqsyvxFvvEKsXF9GCrS/WhHlHPw0pOZDXGFHDvi5FLIZfKY6vJLRyyzN5FXiGtScHVLZ/gWHI23QK8NTHj4hhSx4Ly9enxl4oqqnl+FfI5otxHiZqTGop1BVfPWFXVUusJtAPWT0fzAaFyfm3abRwu4qHfBB8uPr9NNdte/jKFAKoBrEb3o1s3j8H6sFNmoEt25Bp+stW2fsW10dJWxss3NnmYlLjBkue/rx0r2QjvHXvOuKrbXw009kUcrylb4midOGuoVVCaVhwX1vV9eZkvC4uepm341RRP9UKUJfhxClGt/asyevcgXzevsT/xAKchwY14CYxVtnRygxoN8C7SD2i2ewUXaJ+UF73C2uEeW1JNNjyzgj1GwiG82FeIGXo8tLILrwAUaN1B9yxh+RCrYME8y9ICqkPmLPGhFGw7PzI6AKLL2XXUz7bPHyxCkKMdaP8E7P58rzuiUXID2XCVF0/9oL
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:; 
- IPV:NLI; SFV:NSPM;
- H:BYAPR10MB2888.namprd10.prod.outlook.com; PTR:; CAT:NONE; 
- SFS:(13230028)(396003)(39860400002)(136003)(366004)(346002)(376002)(451199021)(6512007)(66476007)(41300700001)(66946007)(66556008)(4326008)(6666004)(6486002)(316002)(38100700002)(36756003)(2906002)(45080400002)(478600001)(54906003)(2616005)(83380400001)(186003)(5660300002)(8676002)(8936002)(53546011)(6506007)(26005)(86362001);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?C6BwPGpHkkaCR5l6fMr8ilAkzgJt7iWj0nOtZfowd8Z2Es2x/uMYxHuiawmv?=
- =?us-ascii?Q?50ZiRtLn4xNjvF9rhkgf6FFexNnvlyoQZ8SsooMYdLlgRJ6C1wnZnFGNreqz?=
- =?us-ascii?Q?WVZa5nbJT/IIs0RahaJmCGt4WEeLpuA5BK8rfWAeQrVyaaF8RVkdy2a0UeT4?=
- =?us-ascii?Q?lXOSJvATY1VRrCXgN0z+8LqJ0y0uahygYG9K6s0pMoHKsSAMVas8Eapo/8xx?=
- =?us-ascii?Q?c+hnGyDNmIG/hyz6TA0Tkklzk8cvCigFfVqrrvek21du3/MBmnRJx5bqGz0J?=
- =?us-ascii?Q?+ZxxgIOpzgFvNQr0rq3TmeDN6XoMNcx0RUTUxEfynm0ky3JUpJaT8kEF1mSs?=
- =?us-ascii?Q?WWg5jNeUlS0WACW4AZMjHo+bhZbY9mDrjulJTmXTxMUumm1JrNnpEO71eQuQ?=
- =?us-ascii?Q?nCz2RqvErXoy8oDFalTNELN57jl3zH+NRl/T4HX3KxmiXBpqgfjnGZyUGbw4?=
- =?us-ascii?Q?bX6LGqQTh213QMz+ykIA0unmUvljrLrESitk47yLUr7aRc4pw4bg792VQY2U?=
- =?us-ascii?Q?JQ0liesmltW4bgK0H5sgjH+YS6aORWFn3sT2L4ut0jQGpwiriGDThVSxoSqq?=
- =?us-ascii?Q?yPOYIFAeUOIZ6U6z+PU/p/PHfbLsEYJFmgsO6P4ON2q0mKTOC+bPz0C6UspM?=
- =?us-ascii?Q?v/Ai+GEGRSDF3sBlenYY3oNn7fQkPk5y/81bm4/2cpbijXRzAnQCwQRF+eoE?=
- =?us-ascii?Q?cFGul0YXWxWa+sU99/7Ta7pjUEmGlsDm7D7LqAWzMCDbKQi/U33ZiGsE8Lif?=
- =?us-ascii?Q?x1qFub5UhsFxXdfe3r85nMRFrHzxklYQjNDxJc9lQKe5A0sPdbYCCv12HfN7?=
- =?us-ascii?Q?pZoJF5lgOywMmMMYxqFbHoqVTSnV4oUm9Sr0StJVMIWSQdOIAUYFqvSss6+0?=
- =?us-ascii?Q?Y8RyhKo5N0EAUDkVb9zRiXiiC/Q/WQ5Knz+mOC7eHx2rO1EQ+uymTJSxG/3Q?=
- =?us-ascii?Q?10bZO140H2FUsslus21rOwaq1SuAgQFtDqGhtCRHt+Nm6Pbbt+poIP0Qr8mW?=
- =?us-ascii?Q?xqoN8lWkA7cYFp87JzrECMQeE6TAIPvNvDCyGmk5pu3MdcTWqsX6yMYwm/D7?=
- =?us-ascii?Q?aHvwwq2fVjZieEwcNIs9786MK0nz8/Fkuh4jaopRxJXC9L366VHdlwrSJ4E4?=
- =?us-ascii?Q?feHL499bVu6JpPYJSTUFnLdtXrRIpZUfwS5G4Sxgq7smnGkN3t0p/hXwYk2F?=
- =?us-ascii?Q?6s3lu1W1RkK2aeRSYotq0Gpg+vq4tsra8zF5aB+cOa2tBqrfYyNnrIsg58mF?=
- =?us-ascii?Q?xkjpIZQK6T0rebt+LjcXMRSYQUwriNqrXLllTMuKvbsE/9lGFeLicACT5zdi?=
- =?us-ascii?Q?yza8y+hTHfT1Klm29M9MyydHsT3FgyhBFb3cfKPR59+hnl7n11uVulhbe4s2?=
- =?us-ascii?Q?VwOsoDqPA5l5P14IQG8Fl/xx0wWeIpx7grqkZ5UUbxD4f3qad8pKLFbyNzcR?=
- =?us-ascii?Q?IrW2Rfz1m5kAGKxj0R9GC0SRnL2Pdh4dUYJXOH0kWD8ot53pNOvu7+kN3gQc?=
- =?us-ascii?Q?NeuzpKqa8sa8hTaxF7B8bBKF2UfwPaLf8GsEXZcg515clLbD2AGdAJUHT5tJ?=
- =?us-ascii?Q?bFnOS2qsnWaPszwHGzrVKTDztrzBwn3hCWoVLkgeSKTDc3sRsX9VZCngkqoo?=
- =?us-ascii?Q?tg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: QSuJ7juIJeTFW4khlXruu0oYzI+9IhhR6s5oLgNO8Af8hBpdf2pRZucAHZtRBUtoAA9In6wQoa0+8OFVEnx46BqWOMG0/rVhOzSQk13hGgVEdTw1ueEWhy9gXYrSHnFzvC/4Bc7meM+uzgozf4BNU6mO9d42K/9+l2TtNXh9NXreHC0GdyVTYXXqmFZi/ungjgk2+I4nKj4wXSKRdDvv1yno2ahTO2poZxn5hSKunCV6V17eS2DcPux1z8PwvOFU/2fzCTw1j1n4cPmF2kRl6/TynMR/+eQW2DlAaaA6g1OASl05uDayvl4ALWLhCSFPYNqbgu/Gpp4ngasZA5q0cWKyEdWWsOQzyhYvk67dn0ca434lqbOlyTYvkFXpknaI+1sFldK6UuK9pppR/N4My2adNEBV4kgqJIGbDb9EbOtNDYl9I3W8bCfkd3r2rYmUopxciSw/aZX/06m+Jt8f/aWntaQ8vXbiJHawV+1HOayBAOonjcn2qPIPM3/BkLfVVgGu0GSwg7y5ew3EKb2QsZdkSjhn/TYy/F0ZVIFC4MsHe+0YhGQaEYdeBQEW2isHR5VWc/Bb7FirL5i66Qyg1gdIDhj1Y//7mLqTTJnenWxS8paj7PMBi+rXDCUV/g5KrbeffUg9XrJRxnCR7GG9dV/yIQ0p/nmRoxFmPVImG+emLbzgZMuMSc9WibNnzl7L/v4USZYume4ExjDdE1U+1kWzxBRXJbqwP1OpAM681VtPwDEhFAsSkZtYZ7hGBfo1aGMaROwkhXOONqPItcskj4eHXdiF362D4u0dtxPvxtiLlym8kXmQDaHD5JQwjPk50yzSrNDCwbSRm/feWVCC8g==
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b3c6f2c8-aba7-4d55-9d0c-08db8ddc8da1
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2888.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2023 13:31:01.2886 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: puRWBIPX+prWwGiAB3EQ6MGKOI0uL9RvKe2Bjr1YU0F80/DO/iSPHQ0fBIY8OGM7lj+NwRsIRJXzZ43lOcWhCb5uBNPUx4WnpNqyoU6hy5w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7204
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_06,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
- spamscore=0 adultscore=0
- phishscore=0 bulkscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307260119
-X-Proofpoint-ORIG-GUID: Ljq0li6yxKW_L1AQyQkdjP4YNJI4bHhz
-X-Proofpoint-GUID: Ljq0li6yxKW_L1AQyQkdjP4YNJI4bHhz
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/ITahcA-6_1Hunywmf3Wev4sy43Y>
-Subject: Re: [Bpf] [PATCH] bpf,
- docs: fix BPF_NEG entry in instruction-set.rst
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+I'm not positive I understand the code in ip_finish_output2().  I think
+instead of looking for LWTUNNEL_XMIT_DONE it should instead look for
+!= LWTUNNEL_XMIT_CONTINUE.  It's unfortunate that NET_XMIT_DROP and
+LWTUNNEL_XMIT_CONTINUE are the both 0x1.  Why don't we just change that
+instead?
 
->> -----Original Message-----
->> From: Jose E. Marchesi <jose.marchesi@oracle.com>
->> Sent: Wednesday, July 26, 2023 2:26 AM
->> To: bpf@vger.kernel.org
->> Subject: [PATCH] bpf, docs: fix BPF_NEG entry in instruction-set.rst
->> 
->> This patch fixes the documentation of the BPF_NEG instruction to denote
->> that it does not use the source register operand.
->> 
->> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
->> ---
->>  Documentation/bpf/standardization/instruction-set.rst | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/Documentation/bpf/standardization/instruction-set.rst
->> b/Documentation/bpf/standardization/instruction-set.rst
->> index 751e657973f0..6ef5534b410a 100644
->> --- a/Documentation/bpf/standardization/instruction-set.rst
->> +++ b/Documentation/bpf/standardization/instruction-set.rst
->> @@ -165,7 +165,7 @@ BPF_OR    0x40   dst \|= src
->>  BPF_AND   0x50   dst &= src
->>  BPF_LSH   0x60   dst <<= (src & mask)
->>  BPF_RSH   0x70   dst >>= (src & mask)
->> -BPF_NEG   0x80   dst = -src
->> +BPF_NEG   0x80   dst = -dst
->>  BPF_MOD   0x90   dst = (src != 0) ? (dst % src) : dst
->>  BPF_XOR   0xa0   dst ^= src
->>  BPF_MOV   0xb0   dst = src
->> --
->> 2.30.2
->
-> Acked-by: Dave Thaler <dthaler@microsoft.com>
->
-> Also, all changes to files in the standardization directory should also be cc'ed
-> to bpf@ietf.org, which I am doing on this email.
+Also there seems to be a leak in lwtunnel_xmit().  Should that return
+LWTUNNEL_XMIT_CONTINUE or should it call kfree_skb() before returning?
 
-Will do in future posts.  Thanks for CCing.
+Something like the following?
 
-> Dave
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 11652e464f5d..375790b672bc 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -112,6 +112,9 @@ void netdev_sw_irq_coalesce_default_on(struct net_device *dev);
+ #define NET_XMIT_CN		0x02	/* congestion notification	*/
+ #define NET_XMIT_MASK		0x0f	/* qdisc flags in net/sch_generic.h */
+ 
++#define LWTUNNEL_XMIT_DONE NET_XMIT_SUCCESS
++#define LWTUNNEL_XMIT_CONTINUE 0x3
++
+ /* NET_XMIT_CN is special. It does not guarantee that this packet is lost. It
+  * indicates that the device will soon be dropping packets, or already drops
+  * some packets of the same priority; prompting us to send less aggressively. */
+diff --git a/include/net/lwtunnel.h b/include/net/lwtunnel.h
+index 6f15e6fa154e..8ab032ee04d0 100644
+--- a/include/net/lwtunnel.h
++++ b/include/net/lwtunnel.h
+@@ -16,12 +16,6 @@
+ #define LWTUNNEL_STATE_INPUT_REDIRECT	BIT(1)
+ #define LWTUNNEL_STATE_XMIT_REDIRECT	BIT(2)
+ 
+-enum {
+-	LWTUNNEL_XMIT_DONE,
+-	LWTUNNEL_XMIT_CONTINUE,
+-};
+-
+-
+ struct lwtunnel_state {
+ 	__u16		type;
+ 	__u16		flags;
+diff --git a/net/core/lwtunnel.c b/net/core/lwtunnel.c
+index 711cd3b4347a..732415d1287d 100644
+--- a/net/core/lwtunnel.c
++++ b/net/core/lwtunnel.c
+@@ -371,7 +371,7 @@ int lwtunnel_xmit(struct sk_buff *skb)
+ 
+ 	if (lwtstate->type == LWTUNNEL_ENCAP_NONE ||
+ 	    lwtstate->type > LWTUNNEL_ENCAP_MAX)
+-		return 0;
++		return LWTUNNEL_XMIT_CONTINUE;
+ 
+ 	ret = -EOPNOTSUPP;
+ 	rcu_read_lock();
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 6e70839257f7..4be50a211b14 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -216,7 +216,7 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
+ 	if (lwtunnel_xmit_redirect(dst->lwtstate)) {
+ 		int res = lwtunnel_xmit(skb);
+ 
+-		if (res < 0 || res == LWTUNNEL_XMIT_DONE)
++		if (res != LWTUNNEL_XMIT_CONTINUE)
+ 			return res;
+ 	}
+ 
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 1e8c90e97608..016b0a513259 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -113,7 +113,7 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+ 	if (lwtunnel_xmit_redirect(dst->lwtstate)) {
+ 		int res = lwtunnel_xmit(skb);
+ 
+-		if (res < 0 || res == LWTUNNEL_XMIT_DONE)
++		if (res != LWTUNNEL_XMIT_CONTINUE)
+ 			return res;
+ 	}
+ 
 
