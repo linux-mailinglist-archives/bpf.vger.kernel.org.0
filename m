@@ -1,83 +1,196 @@
-Return-Path: <bpf+bounces-5893-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5894-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70CE27627B1
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 02:20:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B43607627C4
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 02:31:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A76531C21034
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 00:20:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69A3E281AF8
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 00:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D95BA42;
-	Wed, 26 Jul 2023 00:20:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC18C132;
+	Wed, 26 Jul 2023 00:31:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33BC197
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 00:20:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F3866C433C9;
-	Wed, 26 Jul 2023 00:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690330822;
-	bh=7wcN4rUePmmLlJk1tTMTnNhwadU28Arz2I7w3ZgklI8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=esGnh82foDyE3qC/MotoFMUx4XIIfLUebZJcW/MLKwIU/FJ6HkBNDe36sqW2n0pwF
-	 WxG2o+oBANZTjZhbhMtW5+YX5HffU6mL6CAW5wuspiWbinCP9wKweaELMlVZaYlMQM
-	 ZQqpESAwAmdCGvuUIVGWNM/T1zzXvwB6eZRRMe2dYSR1brJ9wKDoZEU//x6COhkP++
-	 2g7YFGFSbts9xMR9Ugk25GOMBXY5vq1R+3KqaPwAir2C12J7B9aX03BZ0M0HFtkuqU
-	 Q0XyhXNPX+3oYwwre1bM4E+IXAhkopoFYIih8I62n2nLGn7DNIYjMj/JYqe2QfC3I4
-	 Zbuk/bsjMFQHg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D2FA2C59A4C;
-	Wed, 26 Jul 2023 00:20:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B788DC126
+	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 00:31:30 +0000 (UTC)
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8F0187
+	for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 17:31:29 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b6f0508f54so91696791fa.3
+        for <bpf@vger.kernel.org>; Tue, 25 Jul 2023 17:31:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690331487; x=1690936287;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0YVqtHaY70BemLGXcIYPktmDtyZoZr/E+ReDDAPT4zo=;
+        b=IhmMyE5tO+jzUIPRyvDYH8Jd+Vx9dsv2hSwbZT95h28TCAdqnHqmgIrOL3MvDCm0kU
+         GaNDzyZHiXkH7J2ycrVg7lQtE4ZI6X/H935r1INLij+EfmFLCVR7LKdraUhVjlMhzM9g
+         1yLAbK9ruK55BKvBiY8LDUntrRBx23BVBxUsuyRuY18WlZfSKzzCKkrWShkKWOjBgZ1i
+         +V/qZOE/Gbi5/jvdcyWL4L9itLVynqc2nnIVydIQzZpyogwLfK9dpcolElchgInq0RBj
+         zrVRzlAeyjRvD89bzRw4wM4nVio5X/CUlooWStVWaeWaZdRe5mvk0WISCaCb6KBIyEFA
+         KSyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690331487; x=1690936287;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0YVqtHaY70BemLGXcIYPktmDtyZoZr/E+ReDDAPT4zo=;
+        b=Awf/5yfCoeOj/XqBuXIXuFAIed3LeA8nQCs0QrliAbnvo9Mm2YvDTRboygqjYMziCS
+         cM9ST0FX020RDV4ZTDvWWd/pLj/F+tqZjAOr8QHidRFZVuxfIfdWnahUy0LQ+km8kQJY
+         A56M7tUpbhLRqJpcMSQf/DTmQnXoSJ6UclNzuyoLKdxSEbJn+/WYCSEvHw8lU/yxav9X
+         WLWixzeFe0h6045zMwXwRN9po1zDWRne2hdFm0nnkNg0s2I5yAvpaM3GxYYTXcmFTJvu
+         /2Bi4r85Lnqfk7ARnmSackOFZrTLjdXoHP7qJR1FSjqKSIEaI/oc+WffOLLqCQ7gfkNI
+         OYjA==
+X-Gm-Message-State: ABy/qLYvBaL5Ug+eKTV6Hyze/MqWzHO2TDPSjH6p/DwBbHhga9IwFuTj
+	DTjILQ7AF8SWg1h0QT37i1JE5Oj5pO+6g6JCGGvk3Kx9Nbk=
+X-Google-Smtp-Source: APBJJlE/4twOeLtAkI/GhJ41cSPMdbTw1PJimjra+zZnEKormfamg7U6h03MWdbzCw70aX1CssWYcmWtP0lx6mlSZsA=
+X-Received: by 2002:a2e:8810:0:b0:2b6:e2c1:6cda with SMTP id
+ x16-20020a2e8810000000b002b6e2c16cdamr207740ljh.46.1690331487176; Tue, 25 Jul
+ 2023 17:31:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] [v2] bpf: work around -Wuninitialized warning
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169033082185.1972.9106498740194967439.git-patchwork-notify@kernel.org>
-Date: Wed, 26 Jul 2023 00:20:21 +0000
-References: <20230725202653.2905259-1-arnd@kernel.org>
-In-Reply-To: <20230725202653.2905259-1-arnd@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- houtao1@huawei.com, arnd@arndb.de, alexei.starovoitov@gmail.com,
- martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
- memxor@gmail.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <87ila7dhmp.fsf@oracle.com> <5e6b7c30-eba4-31ca-e0ac-1e21f4c9d8aa@linux.dev>
+ <87o7jzbz0z.fsf@oracle.com> <146bc14b-e15c-6e62-1fa0-4e9e67c974c9@linux.dev>
+ <87zg3jah2s.fsf@oracle.com> <6a102de2-2bd4-6933-e901-de00cda10045@linux.dev> <87v8e78w63.fsf@oracle.com>
+In-Reply-To: <87v8e78w63.fsf@oracle.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 25 Jul 2023 17:31:15 -0700
+Message-ID: <CAADnVQLDGUSSCkhxjgt6bxxN7hOh7L-86-wzESp2Oo8SQ91hOg@mail.gmail.com>
+Subject: Re: Register encoding in assembly for load/store instructions
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
+On Tue, Jul 25, 2023 at 3:28=E2=80=AFPM Jose E. Marchesi
+<jose.marchesi@oracle.com> wrote:
+>
+>
+> > On 7/25/23 1:09 PM, Jose E. Marchesi wrote:
+> >>
+> >>> On 7/25/23 11:56 AM, Jose E. Marchesi wrote:
+> >>>>
+> >>>>> On 7/25/23 10:29 AM, Jose E. Marchesi wrote:
+> >>>>>> Hello Yonghong.
+> >>>>>> We have noticed that the llvm disassembler uses different notation=
+s
+> >>>>>> for
+> >>>>>> registers in load and store instructions, depending somehow on the=
+ width
+> >>>>>> of the data being loaded or stored.
+> >>>>>> For example, this is an excerpt from the assembler-disassembler.s
+> >>>>>> test
+> >>>>>> file in llvm:
+> >>>>>>      // Note: For the group below w1 is used as a destination for
+> >>>>>> sizes u8, u16, u32.
+> >>>>>>      //       This is disassembler quirk, but is technically not w=
+rong, as there are
+> >>>>>>      //       no different encodings for 'r1 =3D load' vs 'w1 =3D =
+load'.
+> >>>>>>      //
+> >>>>>>      // CHECK: 71 21 2a 00 00 00 00 00   w1 =3D *(u8 *)(r2 + 0x2a)
+> >>>>>>      // CHECK: 69 21 2a 00 00 00 00 00   w1 =3D *(u16 *)(r2 + 0x2a=
+)
+> >>>>>>      // CHECK: 61 21 2a 00 00 00 00 00   w1 =3D *(u32 *)(r2 + 0x2a=
+)
+> >>>>>>      // CHECK: 79 21 2a 00 00 00 00 00   r1 =3D *(u64 *)(r2 + 0x2a=
+)
+> >>>>>>      r1 =3D *(u8*)(r2 + 42)
+> >>>>>>      r1 =3D *(u16*)(r2 + 42)
+> >>>>>>      r1 =3D *(u32*)(r2 + 42)
+> >>>>>>      r1 =3D *(u64*)(r2 + 42)
+> >>>>>> The comment there clarifies that the usage of wN instead of rN in
+> >>>>>> the
+> >>>>>> u8, u16 and u32 cases is a "disassembler quirk".
+> >>>>>> Anyway, the problem is that it seems that `clang -S' actually emit=
+s
+> >>>>>> these forms with wN.
+> >>>>>> Is that intended?
+> >>>>>
+> >>>>> Yes, this is intended since alu32 mode is enabled where
+> >>>>> w* registers are used for 8/16/32 bit load.
+> >>>> So then why suppporting 'r1 =3D 8948 8*9r2 + 0x2a)'?  The mode is
+> >>>> still
+> >>>> alu32 mode.  Isn't the u{8,16,32} part enough to discriminate?
+> >>>
+> >>> What does this 'r1 =3D 8948 8*9r2 + 0x2a)' mean?
+> >>>
+> >>> For u8/u16/u32 loads, if objdump with option to indicate alu32 mode,
+> >>> then w* register is used. If no alu32 mode for objdump, then r* regis=
+ter
+> >>> is used. Basically the same insn, disasm is different depending on
+> >>> alu32 mode or not. u8/u16/u32 is not enough to differentiate.
+> >> Ok, so the llvm objdump has a switch that tells when to use rN or wN
+> >> when printing these particular instructions.  Thats the "disassembler
+> >> quirk".  To what purpose?  Isnt the person passing the command line
+> >> switch the same person reading the disassembled program?  Is this "alu=
+32
+> >> mode" more than a cosmetic thing?
+> >> But what concern us is the assembler, not the disassembler.
+> >> clang -S (which is not objdump) seems to generate these instructions
+> >> with wN (see https://godbolt.org/z/5G433Yvrb for a store instruction f=
+or
+> >> example) and we assume the output of clang -S is intended to be passed
+> >> to an assembler, much like with gcc -S.
+> >> So, should we support both syntaxes as _input_ syntax in the
+> >> assembler?
+> >
+> > Considering -mcpu=3Dv3 is recommended cpu flavor (at least in bpf maili=
+ng
+> > list), and -mcpu=3Dv3 has alu32 enabled by default. So I think
+> > gcc can start to emit insn assuming alu32 mode is on by default.
+> > So
+> >    w1 =3D *(u8 *)(r2 + 42)
+> > is preferred.
+>
+> We have V4 by default now.  So we can emit
+>
+>   w1 =3D *(u8 *)(r2 + 42)
+>
+> when -mcpu is v3 or higher, or if -malu32 is specified, and
+>
+>   r1 =3D *(u8 *)(r2 + 42)
+>
+> when -mcpu is v2 or lower, or if -mnoalu32 is specified.
+>
+> Sounds good?
+>
+> However this implies that the assembler should indeed recognize both
+> forms of instructions.  But note that it will assembly them to the
+> exactly same encoded instruction.  This includes inline asm (remember
+> GCC does not have an integrated assembler.)
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Good point.
+I think we made a mistake in clang.
+We shouldn't be printing
+w1 =3D *(u8 *)(r2 + 42)
+since such instruction doesn't exist in BPF ISA
+and it's confusing.
+There is only one instruction:
+r1 =3D *(u8 *)(r2 + 42)
+which is an 8-bit load that zero extends into 64-bit.
+x86 JIT actually implements it as 8-bit load that stores
+into a 32-bit subregister, so it kinda matches w1,
+but that's an implementation detail of the JIT.
 
-On Tue, 25 Jul 2023 22:26:40 +0200 you wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Splitting these out into separate helper functions means that we
-> actually pass an uninitialized variable into another function call
-> if dec_active() happens to not be inlined, and CONFIG_PREEMPT_RT
-> is disabled:
-> 
-> [...]
-
-Here is the summary with links:
-  - [v2] bpf: work around -Wuninitialized warning
-    https://git.kernel.org/bpf/bpf-next/c/63e2da3b7f7f
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I think both gcc and clang should always print r1 =3D *(u8 *)(r2 + 42)
+regardless of alu32 or not.
+In gas and clang assembler we can support both w1=3D and r1=3D
+flavors for backward compat.
 
