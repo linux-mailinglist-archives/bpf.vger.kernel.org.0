@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-5949-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5950-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D4B9763702
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 15:01:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BECDC763703
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 15:02:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC48F281D79
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 13:01:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFF601C21297
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 13:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD00C148;
-	Wed, 26 Jul 2023 13:01:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E184C151;
+	Wed, 26 Jul 2023 13:01:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF54ABE7F
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 13:01:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEBF4C433C8;
-	Wed, 26 Jul 2023 13:01:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2992BE7F
+	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 13:01:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D76D0C433C8;
+	Wed, 26 Jul 2023 13:01:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690376475;
-	bh=KGJEEq13A9go4Yhd3XiG1sdw1r30ps972RCgI6Rs1/c=;
+	s=k20201202; t=1690376485;
+	bh=CcGORqTI9ZQHAZplK151N2vLhAMfOhssOSPkNJphVGw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hLtG+6zVJFvWeSUaYKZadVKdntgfcrrog6jSXxIKWqkPk1S2ukerb1CcomtuIQNb3
-	 gmLsCCtW9lpiMpW/7SzbkVeVGmjVdECwlXNriH7acx8jplPEK3BzEBGynJaLJWxcUZ
-	 +euWgPGhCflOdMl5sxqXbeTrWfJ/hHM2O/l57ELU60f9yqazpOsYXNj852RrDPlXMJ
-	 fwm9KRMFe6pulQmqOscoFh1WOqa5LOkLWfiSg9z7ta0yaqlVxne414OXI8tME66quK
-	 5Wx0re1TKdRgJpkgFqbxpqlcqQFhr14K2LD84kPoGx64Z6I5CQFTZY/rNsEL/sVoEt
-	 9bh2KAH2bAeKQ==
+	b=Pbc+uSu8VD3m5STq3XL048/uvTncN+tUJZ6Zhe/8MbtHzpfZS3Vjt1mel+Qq44uv9
+	 T43JoBLDSZaziybKP954o38v0ix4aSQMH9cLXnuRFwgxWvUZQjh1WfrLbUkXodqz4c
+	 Hn3Wdwgkpuc6M66PWQ4m4uaHqR/aBNyzNUVwWgk7modCyi8saqnb1/fwcvvBlKgPNA
+	 ysBplL4MGi69v6KwrlSDsmdB7AxG4sG9Vm/8UjpdHBCPtA8CipAdxsyD4AqAb82XQe
+	 EKcVaZfeKW1i+addyIzssh0iIbScYejmc0mCiZrekGg9MglzIL5QKBzThgxHg+hvoc
+	 kCFzUOSAWyXYQ==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: linux-trace-kernel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -39,9 +39,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Sven Schnelle <svens@linux.ibm.com>,
 	Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH v3 8/9] selftests/ftrace: Add BTF fields access testcases
-Date: Wed, 26 Jul 2023 22:01:11 +0900
-Message-Id: <169037647132.607919.15889838982085210322.stgit@devnote2>
+Subject: [PATCH v3 9/9] Documentation: tracing: Update fprobe event example with BTF field
+Date: Wed, 26 Jul 2023 22:01:21 +0900
+Message-Id: <169037648115.607919.18187565150152698053.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169037639315.607919.2613476171148037242.stgit@devnote2>
 References: <169037639315.607919.2613476171148037242.stgit@devnote2>
@@ -57,77 +57,113 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Add test cases for accessing the data structure fields using BTF info.
-This includes the field access from parameters and retval, and accessing
-string information.
+Update fprobe event example with BTF data structure field specification.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 ---
-Changes in v2:
- - Use '$retval' instead of 'retval'.
- - Add a test that use both '$retval' and '$arg1' for fprobe.
-Changes in v3:
- - Change a test case with a numeric value.
- - Add a test case with mixed '.' and '->' operators.
+ Changes in v2:
+  - Remove 'retval' and use '$retval'.
+ Changes in v3:
+  - Add description about mixture of '.' and '->' usage.
 ---
- .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   14 ++++++++++++++
- .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 ++++
- 2 files changed, 18 insertions(+)
+ Documentation/trace/fprobetrace.rst |   64 +++++++++++++++++++++++++----------
+ 1 file changed, 46 insertions(+), 18 deletions(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
-index f34b14ef9781..4bfd2f45db42 100644
---- a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
-@@ -21,6 +21,9 @@ echo 0 > events/enable
- echo > dynamic_events
+diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
+index 7297f9478459..8e9bebcf0a2e 100644
+--- a/Documentation/trace/fprobetrace.rst
++++ b/Documentation/trace/fprobetrace.rst
+@@ -79,9 +79,9 @@ automatically set by the given name. ::
+  f:fprobes/myprobe vfs_read count=count pos=pos
  
- TP=kfree
-+TP2=kmem_cache_alloc
-+TP3=getname_flags
-+TP4=sched_wakeup
+ It also chooses the fetch type from BTF information. For example, in the above
+-example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus, both
+-are converted to 64bit unsigned long, but only ``pos`` has "%Lx" print-format as
+-below ::
++example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus,
++both are converted to 64bit unsigned long, but only ``pos`` has "%Lx"
++print-format as below ::
  
- if [ "$FPROBES" ] ; then
- echo "f:fpevent $TP object" >> dynamic_events
-@@ -33,6 +36,7 @@ echo > dynamic_events
+  # cat events/fprobes/myprobe/format
+  name: myprobe
+@@ -105,9 +105,47 @@ is expanded to all function arguments of the function or the tracepoint. ::
+  # cat dynamic_events
+  f:fprobes/myprobe vfs_read file=file buf=buf count=count pos=pos
  
- echo "f:fpevent $TP "'$arg1' >> dynamic_events
- grep -q "fpevent.*object=object" dynamic_events
+-BTF also affects the ``$retval``. If user doesn't set any type, the retval type is
+-automatically picked from the BTF. If the function returns ``void``, ``$retval``
+-is rejected.
++BTF also affects the ``$retval``. If user doesn't set any type, the retval
++type is automatically picked from the BTF. If the function returns ``void``,
++``$retval`` is rejected.
 +
- echo > dynamic_events
- 
- echo "f:fpevent $TP "'$arg*' >> dynamic_events
-@@ -45,6 +49,16 @@ fi
- 
- echo > dynamic_events
- 
-+echo "t:tpevent ${TP2} obj_size=s->object_size" >> dynamic_events
-+echo "f:fpevent ${TP3}%return path=\$retval->name:string" >> dynamic_events
-+echo "t:tpevent2 ${TP4} p->se.group_node.next->prev" >> dynamic_events
++You can access the data fields of a data structure using allow operator ``->``
++(for pointer type) and dot operator ``.`` (for data structure type.)::
 +
-+grep -q "tpevent .*obj_size=s->object_size" dynamic_events
-+grep -q "fpevent.*path=\$retval->name:string" dynamic_events
-+grep -q 'tpevent2 .*p->se.group_node.next->prev' dynamic_events
++# echo 't sched_switch preempt prev_pid=prev->pid next_pid=next->pid' >> dynamic_events
 +
-+echo > dynamic_events
++The field access operators, ``->`` and ``.`` can be combined for accessing deeper
++members and other structure members pointed by the member. e.g. ``foo->bar.baz->qux``
++If there is non-name union member, you can directly access it as the C code does.
++For example::
 +
- if [ "$KPROBES" ] ; then
- echo "p:kpevent $TP object" >> dynamic_events
- grep -q "kpevent.*object=object" dynamic_events
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-index 72563b2e0812..49758f77c923 100644
---- a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-@@ -103,6 +103,10 @@ check_error 'f vfs_read%return ^$arg*'		# NOFENTRY_ARGS
- check_error 'f vfs_read ^hoge'			# NO_BTFARG
- check_error 'f kfree ^$arg10'			# NO_BTFARG (exceed the number of parameters)
- check_error 'f kfree%return ^$retval'		# NO_RETVAL
-+check_error 'f vfs_read%return $retval->^foo'	# NO_PTR_STRCT
-+check_error 'f vfs_read file->^foo'		# NO_BTF_FIELD
-+check_error 'f vfs_read file^-.foo'		# BAD_HYPHEN
-+check_error 'f vfs_read ^file:string'		# BAD_TYPE4STR
- else
- check_error 'f vfs_read ^$arg*'			# NOSUP_BTFARG
- check_error 't kfree ^$arg*'			# NOSUP_BTFARG
++ struct {
++	union {
++	int a;
++	int b;
++	};
++ } *foo;
++
++To access ``a`` and ``b``, use ``foo->a`` and ``foo->b`` in this case.
++
++This data field access is available for the return value via ``$retval``,
++e.g. ``$retval->name``.
++
++For these BTF arguments and fields, ``:string`` and ``:ustring`` change the
++behavior. If these are used for BTF argument or field, it checks whether
++the BTF type of the argument or the data field is ``char *`` or ``char []``,
++or not.  If not, it rejects applying the string types. Also, with the BTF
++support, you don't need a memory dereference operator (``+0(PTR)``) for
++accessing the string pointed by a ``PTR``. It automatically adds the memory
++dereference operator according to the BTF type. e.g. ::
++
++# echo 't sched_switch prev->comm:string' >> dynamic_events
++# echo 'f getname_flags%return $retval->name:string' >> dynamic_events
++
++The ``prev->comm`` is an embedded char array in the data structure, and
++``$retval->name`` is a char pointer in the data structure. But in both
++cases, you can use ``:string`` type to get the string.
++
+ 
+ Usage examples
+ --------------
+@@ -161,10 +199,10 @@ parameters. This means you can access any field values in the task
+ structure pointed by the ``prev`` and ``next`` arguments.
+ 
+ For example, usually ``task_struct::start_time`` is not traced, but with this
+-traceprobe event, you can trace it as below.
++traceprobe event, you can trace that field as below.
+ ::
+ 
+-  # echo 't sched_switch comm=+1896(next):string start_time=+1728(next):u64' > dynamic_events
++  # echo 't sched_switch comm=next->comm:string next->start_time' > dynamic_events
+   # head -n 20 trace | tail
+  #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+  #              | |         |   |||||     |         |
+@@ -176,13 +214,3 @@ traceprobe event, you can trace it as below.
+            <idle>-0       [000] d..3.  5606.690317: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
+       kworker/0:1-14      [000] d..3.  5606.690339: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="swapper/0" usage=2 start_time=0
+            <idle>-0       [000] d..3.  5606.692368: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
+-
+-Currently, to find the offset of a specific field in the data structure,
+-you need to build kernel with debuginfo and run `perf probe` command with
+-`-D` option. e.g.
+-::
+-
+- # perf probe -D "__probestub_sched_switch next->comm:string next->start_time"
+- p:probe/__probestub_sched_switch __probestub_sched_switch+0 comm=+1896(%cx):string start_time=+1728(%cx):u64
+-
+-And replace the ``%cx`` with the ``next``.
 
 
