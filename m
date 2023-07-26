@@ -1,107 +1,115 @@
-Return-Path: <bpf+bounces-5936-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5937-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6EF976352A
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 13:38:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F06AE763599
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 13:50:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D92A11C21242
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 11:38:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB839281E12
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 11:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80BCDBA46;
-	Wed, 26 Jul 2023 11:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3667BE4B;
+	Wed, 26 Jul 2023 11:50:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAEE8466
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 11:38:14 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C761BF8
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 04:38:12 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R9sN02r76z4f4Fmd
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 19:38:08 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgD31tSgBcFkVZ4gOw--.57522S2;
-	Wed, 26 Jul 2023 19:38:09 +0800 (CST)
-Subject: Re: [PATCH bpf 1/2] bpf/memalloc: Non-atomically allocate freelist
- during prefill
-To: YiFei Zhu <zhuyifei@google.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Stanislav Fomichev <sdf@google.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>
-References: <cover.1689885610.git.zhuyifei@google.com>
- <d47f7d1c80b0eabfee89a0fc9ef75bbe3d1eced7.1689885610.git.zhuyifei@google.com>
- <0f90694e-308c-65e6-5360-a3d5dc7337b1@huaweicloud.com>
- <CAA-VZPmhm3SoD+tX-xPSj6wuOvFg=uZoar0b=sgAyLRz=5n+2A@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <0d242e21-3f53-87ca-7aa8-bb55b5223552@huaweicloud.com>
-Date: Wed, 26 Jul 2023 19:38:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89CAC8473;
+	Wed, 26 Jul 2023 11:50:08 +0000 (UTC)
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57F02D45;
+	Wed, 26 Jul 2023 04:49:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+ s=s29768273; t=1690372117; x=1690976917; i=markus.elfring@web.de;
+ bh=nD+FWTsZoadzpiL8KCRemhvWVh0Pv3+2lvcgthKZ1P0=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=fY2pR94wgve+nmBOGeL46NIMbJfGLntN1U7BWMJbeOQDD7UL9w+bARsz5WaO/Hg6uwbai3f
+ JQ0lYnmiEhsqyi4aU7qJFNmqAbhrAs/CyWVtoFvBUkt7Gj1eL4rXl5PmLroKHuGCkveVuCK8K
+ fmZr/fMWYn+XC0ADCKOt/10Vn0JkTyOgv75hRMVzI+STdDpLoIgFHeOTWxupSCW8cHgK9h4XL
+ PwYCkgDTys5+15OjU51+aGSqI5ZF8ep4/nIDdw313CWJ65e6EIeVTR+eSSh2VetdgV52GaPyF
+ u5zCq1Oh33iPXSOx8BKyuEbQRJ4YBr8alw5SoJ9XuAH3NtHMeW0Q==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.83]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1N9cLR-1pm7Tl3U6X-015bQs; Wed, 26
+ Jul 2023 13:48:36 +0200
+Message-ID: <e1bb0c93-3b4b-3b25-f1e1-7833600a61f6@web.de>
+Date: Wed, 26 Jul 2023 13:48:35 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAA-VZPmhm3SoD+tX-xPSj6wuOvFg=uZoar0b=sgAyLRz=5n+2A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgD31tSgBcFkVZ4gOw--.57522S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtr4UuFWftr48Zry8GF4DArb_yoWkCFb_uF
-	4kZrsF93y5GryIk3Z3ta1Ygr9rKw4kXF1UGrZ8J3sxXFZ5Xa97WF12kr1fZ3yxJayxZrnI
-	ga4Fqa13Zr12vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbzxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-	0EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
+Content-Language: en-GB
+To: Yan Zhai <yan@cloudflare.com>, bpf@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
+ Stanislav Fomichev <sdf@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Jordan Griege <jgriege@cloudflare.com>,
+ Jakub Sitnicki <jakub@cloudflare.com>, LKML <linux-kernel@vger.kernel.org>
+References: <cover.1690332693.git.yan@cloudflare.com>
+ <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zaAnZafnGKstBzDpEVIMVGadLxDDZJj8afwvKYRcYMHiVQQjRz4
+ yKjA5FyYlKlnw2fhMeXN97/0F8gTnM/jbBzpo8ZLJB9eVx26AUjdmYCfvLHuT765H6v7Vmr
+ 55v1FYjpWQ6sWjVMTnfWsDzpZIC4ys/HNDzUHQt9GjtSwYLBhPpKD2L4Hvp1jrI/AqjLT6I
+ J8uaphp/1Je+YoKeXPMsw==
+UI-OutboundReport: notjunk:1;M01:P0:I90BWSs0ihM=;OIBww1F0d+ItFMNLrB7Iod4lEWM
+ eX5sqqj87qd1JrFgkvzNP7Lfr7NPWe90QLew1EsvKGn3SpyW1cLCR/r+yAfJMj/3ZJIYgQLwL
+ w3DN6rdLDkPt6us4pncA/Bm8JAmzm4YHyY89P0VOg6297K0F6zrD10ACPaFKuX+X8bWY3Dva+
+ 6xwg5OtDJUy/zsvy2sd2STUcQdQJ5UeVBckfQJXTMEmn1rSsrFk0RhMrj0clN3R7wI00K8J1d
+ wXZFKW1XC9E/tiW8OLMZpqRXdfhU5w8uSPI3ckcSEnnXwKawxwSS2MvwXlA5NUq7Egx3JG0qX
+ SMPthS3ahWjWw8bqAEg9MKMj0JiI7axmuliBK8+QnC89K6Pfi/c5OXDuIVcxK6kMSPESaZbE7
+ 5oA53AhCxX/kGV3txY9pO7yWDBN5lcnImZkc4KAbgUH10p/oPCOpFPH3Zr+vJX15j81kgUaGB
+ df+YXiFkDSwFRHIpCoBO6rBMtlzy04MTt1cZUFAPIal2++OqbwwdTpowtdhjqq0tWv6aFX768
+ gH2G6ZTyFEyaXUTsZlECsQSd5bZ02TqZr4BXXPowvIs7eYCjrQjUBT6f0VxlDxoZhvR0EIsZY
+ /bBG4OLHS3fmA+8midSuH7JCW/vqxhL9z18lDpFcqBAhr2BIzfYBDPbafXF13FoObnPTepr82
+ M611QJ9xZu0779UiBEHfAXacVOkQoxVSb8HvH5K2hoKzpSzdG3KbE/fFXXGYAoj1hsuY32Kgt
+ 5TkKBdyFrl7rWb1S2lnp1yF4LlZ/dmu+dpcdu9MpJLO5QsmofemJ9PXCmiftl3T7dkWBhur9Q
+ fYzooXKWp+93WGvogTSLtooibwKAZtviWMrgM6syMPEkoZLA06EOsYPfjjCOFmxK5fnhJ930T
+ opc1ptdqjrbUfMJ6+gBs1HKDow6LXRGQ63dwxr50H3rpYkSvB8kFXZVA7LBG5dBHHgRz/yJSV
+ +H7fFA==
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
+=E2=80=A6
+> +++ b/include/linux/netdevice.h
+> @@ -87,6 +87,8 @@ void netdev_sw_irq_coalesce_default_on(struct net_devi=
+ce *dev);
+>  #define NET_RX_SUCCESS		0	/* keep 'em coming, baby */
+>  #define NET_RX_DROP		1	/* packet dropped */
+>
+> +#define net_rx_errno(e)		((e) =3D=3D NET_RX_DROP ? -ENOBUFS : (e))
+=E2=80=A6
 
-On 7/21/2023 10:31 AM, YiFei Zhu wrote:
-> On Thu, Jul 20, 2023 at 6:45 PM Hou Tao <houtao@huaweicloud.com> wrote:
->> On 7/21/2023 4:44 AM, YiFei Zhu wrote:
->>> Sometimes during prefill all precpu chunks are full and atomic
->>> __alloc_percpu_gfp would not allocate new chunks. This will cause
->>> -ENOMEM immediately upon next unit_alloc.
->>>
->>> Prefill phase does not actually run in atomic context, so we can
->>> use this fact to allocate non-atomically with GFP_KERNEL instead
->>> of GFP_NOWAIT. This avoids the immediate -ENOMEM. Unfortunately
->>> unit_alloc runs in atomic context, even from map item allocation in
->>> syscalls, due to rcu_read_lock, so we can't do non-atomic
->>> workarounds in unit_alloc.
->>>
->>> Fixes: 4ab67149f3c6 ("bpf: Add percpu allocation support to bpf_mem_alloc.")
->>> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
->> Make sense to me, so
->>
->> Acked-by: Hou Tao <houtao1@huawei.com>
->>
->> But I don't know whether or not it is suitable for bpf tree.
-> I don't mind either way :) If changing to bpf-next requires a resend I
-> can do that too.
+Can it become safer to use an inline function
+instead of the proposed macro addition?
 
-Please resend and rebase the patch again bpf-next tree.
+See also:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/coding-style.rst?h=3Dv6.5-rc3#n814
 
+Regards,
+Markus
 
