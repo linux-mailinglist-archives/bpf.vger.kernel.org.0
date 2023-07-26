@@ -1,369 +1,139 @@
-Return-Path: <bpf+bounces-5933-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5934-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D943763483
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 13:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BF427634CC
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 13:23:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 443FA2810A0
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 11:07:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92AD1281DE9
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 11:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78463CA74;
-	Wed, 26 Jul 2023 11:07:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D719473;
+	Wed, 26 Jul 2023 11:23:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4488473
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 11:07:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D114C433C8;
-	Wed, 26 Jul 2023 11:07:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690369641;
-	bh=2ZjqU2SvWPSSpM/cKym1SBR+BCpIZZa3jkBYRwT0m4o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=smiSuUOBnVh2z0aT789eXdEsV4J1QVY965uEYhlSup9kDc1zZPdm6vZySV4il18Qn
-	 vxHE3MXax938YgwSKhxOyagd3aLHQoDaC4vOL+9r+FV8Yru0pos7x2B/VULKb7l5HW
-	 7WXINSD+mozTnIsq4qN6nrpeGJDunJ1XhtwWvnHaV0OWdHaQKKCvyzVJULA8uxs6nb
-	 llYhIF8wod6nz5SaniijfSgTFIAmST+9NMbR0IEvIyPnI7yhfiU+or3te9ugnqHb/U
-	 gqYRVCoE5QEDwQHN2CGTi2BlyIHeAFsDImShuWoGsJRFQTX63d9Oto4gBdSbMBqDJl
-	 cKanqgBkDXC9g==
-Date: Wed, 26 Jul 2023 20:07:16 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>, Yonghong Song <yhs@fb.com>,
- dwarves@vger.kernel.org, bpf@vger.kernel.org, Steven Rostedt
- <rostedt@goodmis.org>
-Subject: Re: [RESEND] BTF is not generated for gcc-built kernel with the
- latest pahole
-Message-Id: <20230726200716.609d8433a7292eead95e7330@kernel.org>
-In-Reply-To: <ZMDvmLdZSLi2QqB+@krava>
-References: <20230726102534.9ebc4678ad2c9395cc9be196@kernel.org>
-	<ZMDvmLdZSLi2QqB+@krava>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0826CA51;
+	Wed, 26 Jul 2023 11:23:28 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081DD1982;
+	Wed, 26 Jul 2023 04:23:25 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R9s181gh0zTlsy;
+	Wed, 26 Jul 2023 19:21:48 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 26 Jul
+ 2023 19:23:22 +0800
+Subject: Re: [PATCH net-next v2] page_pool: split types and declarations from
+ page_pool.h
+To: Alexander Lobakin <aleksander.lobakin@intel.com>, Alexander H Duyck
+	<alexander.duyck@gmail.com>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Eric Dumazet
+	<edumazet@google.com>, Wei Fang <wei.fang@nxp.com>, Shenwei Wang
+	<shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, NXP Linux Team
+	<linux-imx@nxp.com>, Sunil Goutham <sgoutham@marvell.com>, Geetha sowjanya
+	<gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, hariprasad
+	<hkelam@marvell.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+	<leon@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne
+ Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle
+ Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Ilias
+ Apalodimas <ilias.apalodimas@linaro.org>, <linux-rdma@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+References: <20230725131258.31306-1-linyunsheng@huawei.com>
+ <94272ffed7636c4c92fcc73ccfc15236dd8e47dc.camel@gmail.com>
+ <16b4ab57-dfb0-2c1d-9be1-57da30dff3c3@intel.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <22af47fe-1347-3e32-70bf-745d833e88b9@huawei.com>
+Date: Wed, 26 Jul 2023 19:23:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+In-Reply-To: <16b4ab57-dfb0-2c1d-9be1-57da30dff3c3@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hi Jiri,
-
-On Wed, 26 Jul 2023 12:04:08 +0200
-Jiri Olsa <olsajiri@gmail.com> wrote:
-
-> On Wed, Jul 26, 2023 at 10:25:34AM +0900, Masami Hiramatsu wrote:
-> > Hello,
-> > (I resend this because kconfig was too big)
-> > 
-> > I found that BTF is not generated for gcc-built kernel with that latest
-> > pahole (v1.25).
+On 2023/7/26 18:43, Alexander Lobakin wrote:
+> From: Alexander H Duyck <alexander.duyck@gmail.com>
+> Date: Tue, 25 Jul 2023 08:47:46 -0700
 > 
-> hi,
-> I can't reproduce on my setup with your .config
+>> On Tue, 2023-07-25 at 21:12 +0800, Yunsheng Lin wrote:
+>>> Split types and pure function declarations from page_pool.h
+>>> and add them in page_pool/types.h, so that C sources can
+>>> include page_pool.h and headers should generally only include
+>>> page_pool/types.h as suggested by jakub.
+>>>
+>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>>> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+>>> CC: Alexander Lobakin <aleksander.lobakin@intel.com>
 > 
-> does 'bpftool btf dump file ./vmlinux' show any error?
+> [...]
 > 
-> is there any error in the kernel build output?
-
-Yes, here it is. I saw these 2 lines.
-
-die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0)!
-die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0)!
-
+>>> +/* Caller must provide appropriate safe context, e.g. NAPI. */
+>>> +void page_pool_update_nid(struct page_pool *pool, int new_nid);
+>>> +
+>>> +#endif /* _NET_PAGE_POOL_H */
+>>
+>>
+>> This seems kind of overkill for what is needed. It seems like the
+>> general thought process with splitting this was so that you had just
+>> the minimum of what is needed to support skbuff.h and the functions
+>> declared there. The rest of this would then be added via the .h to the
+>> .c files that will actually be calling the functions.
+>>
+>> By that logic I think the only thing we really need is the function
+>> declaration for page_pool_return_skb_page moved into skbuff.h. We could
+>> then just remove page_pool.h from skbuff.h couldn't we?
 > 
-> > When I'm using the distro origin pahole (v1.22) it works. (I also checked
-> > v1.23 and v1.24, both partially generated BTF)
-> > 
-> > e.g.
-> > 
-> > # echo 'f kfree $arg*' >> /sys/kernel/tracing/dynamic_events
-> > sh: write error: Invalid argument
-> > 
-> > # cat /sys/kernel/tracing/error_log 
-> > [   21.595724] trace_fprobe: error: BTF is not available or not supported
-> >   Command: f kfree $arg*
-> >                    ^
-> > [   21.596032] trace_fprobe: error: Invalid $-valiable specified
-> >   Command: f kfree $arg*
-> >                    ^
-> > 
-> > / # strings /sys/kernel/btf/vmlinux | grep kfree
-> 
-> hm, if you have this file present, you have BTF in
+> This patch is not to drop page_pool.h include from skbuff.h.
+> This is more future-proof (since I'm dropping this include anyway in my
+> series) to have includes organized and prevent cases like that one with
+> skbuff.h from happening. And to save some CPU cycles on preprocessing if
+> that makes sense.
 
-Yes, it seems that the BTF itself is generated, but many entries seems
-dropped compared with pahole v1.22. So, if a given symbol has BTF, (e.g. 
-kfree_rcu_batch_init) it works.
+The suggestion is from below:
 
-> 
-> > kfree_on_online
-> > maybe_kfree_parameter
-> > trace_event_raw_rcu_invoke_kfree_bulk_callback
-> > trace_event_data_offsets_rcu_invoke_kfree_bulk_callback
-> > btf_trace_rcu_invoke_kfree_bulk_callback
-> > early_boot_kfree_rcu
-> > __bpf_trace_rcu_invoke_kfree_bulk_callback
-> > perf_trace_rcu_invoke_kfree_bulk_callback
-> > trace_event_raw_event_rcu_invoke_kfree_bulk_callback
-> > trace_raw_output_rcu_invoke_kfree_bulk_callback
-> > __probestub_rcu_invoke_kfree_bulk_callback
-> > __traceiter_rcu_invoke_kfree_bulk_callback
-> > kfree_rcu_cpu_work
-> > kfree_rcu_cpu
-> > kfree_rcu_batch_init
-> > kfree_rcu_scheduler_running
-> > kfree_rcu_shrink_scan
-> > kfree_rcu_shrink_count
-> > kfree_rcu_monitor
-> > kfree_rcu_work
-> > 
-> > 
-> > Here is the gcc version which I'm using.
-> > 
-> > gcc version 11.3.0 (Ubuntu 11.3.0-1ubuntu1~22.04.1)
-> 
-> I tried with gcc (GCC) 13.1.1 20230614 (Red Hat 13.1.1-4)
-> and latest pahole (master branch)
-
-Curiously, with Clang 16.0.0, it works (but many different errors are shown,
-see below *).
-So the combination of gcc/clang and pahole version can affect it.
+https://lore.kernel.org/all/20230710113841.482cbeac@kernel.org/
 
 > 
-> > 
-> > I also attached the kernel config file.
-> > 
-> > What is the recommended combination of the tools?
-> > Should I use Clang to build the kernel for BTF?
-> 
-> should work fine with both gcc and clang
+>>
+>> Another thing we could consider doing is looking at splitting things up
+>> so that we had a include file in net/core/page_pool.h to handle some of
+>> the cases where we are just linking the page_pool bits to other core
+>> file bits such as xdp.c and skbuff.c.
 
-And I guess it depends on compiler version, doesn't it?
-
-Thank you,
-
-
-(*)
-  BTF     .btf.vmlinux.bin.o
-die__process_unit: DW_TAG_label (0xa) @ <0x4b138> not handled!
-die__process_unit: tag not supported 0xa (label)!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b241> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b263> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b290> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b2c0> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b2eb> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b317> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b33a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b35a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b37d> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b39e> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b3c4> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b3e7> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b40f> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b435> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b457> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b477> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b4a5> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b4d5> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b505> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b530> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b560> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b585> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b5b2> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b5d9> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b605> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b62e> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b652> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b670> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b694> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b6b3> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b6d9> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b705> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b72b> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b753> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b77f> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b7b3> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b7e4> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b811> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b83c> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b869> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b88c> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b8bd> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b8e7> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b90b> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b930> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b960> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b997> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4b9ce> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4ba00> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4ba24> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4ba4d> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4ba89> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4babc> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bae4> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bb0b> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bb2e> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bb4e> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bb6d> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bb8a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bba8> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bbc5> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bbe1> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bc01> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bc1c> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bc38> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bc58> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bc79> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bc95> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4bcb2> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7efd6> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7effe> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7f11c> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7f143> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7f178> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7f1a4> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7f1ca> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7f1fb> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7f22f> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7f25a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7f28d> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x7f2b7> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x1eea81> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x1eea9d> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x1eeac3> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x1eeaf3> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x1eeb0f> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x1eeb30> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x1eeb59> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x340734> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6b4a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6b67> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6b8a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6ba5> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6bc4> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6bea> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6c07> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6c2a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6c4e> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6c79> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6c9b> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6cc3> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6ceb> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x4c6d15> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x30626ac> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x30626cd> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x3062814> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x3062833> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x3062b8b> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f623f6> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f62416> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f62437> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f62458> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f6280b> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f62b09> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f62b37> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f62c45> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f62c60> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f62d69> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f62e8d> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f6305a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f63ec2> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f63edf> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f63efc> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f63f19> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f63f36> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f63f5b> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f63f80> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f63fa5> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f63fca> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f6fcae> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f6fcc7> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f6fed7> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f6fef0> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f6fdcb> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70352> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f7036f> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70394> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f703b1> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f703d6> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f703f3> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70418> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70435> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f7045a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f7057b> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f705a6> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f705cf> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f705f8> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70621> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f7064a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70673> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f7069c> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f706c5> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f706ee> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70716> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f7073e> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70767> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70790> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f707b9> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f707e2> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f7080b> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70834> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70864> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70892> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f708c0> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f708ee> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f7091c> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f7094a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70978> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f709a6> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f709d4> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70a01> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70a2e> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70a5c> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70a8a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70ab8> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70ae6> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70b14> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70b42> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70b72> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70ba0> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70bce> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70bfc> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70c2a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70c58> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70c86> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70cb4> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70ce2> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70d0f> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70d3c> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70d6a> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70d98> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70dc6> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70df4> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70e22> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70e50> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70e71> not handled!
-die__process_unit: DW_TAG_label (0xa) @ <0x5f70e94> not handled!
-  LD      .tmp_vmlinux.kallsyms1
+I suppose the above suggestion is about splitting or naming by
+the user as the discussed in the below thread?
+https://lore.kernel.org/all/20230721182942.0ca57663@kernel.org/
 
 > 
-> jirka
+> Thanks,
+> Olek
+> .
 > 
-> > 
-> > Thank you,
-> > 
-> > -- 
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
