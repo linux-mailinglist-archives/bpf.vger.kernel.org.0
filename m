@@ -1,52 +1,88 @@
-Return-Path: <bpf+bounces-5984-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5985-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A32763D32
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 19:05:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0778A763D43
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 19:08:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A15561C2124B
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 17:05:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9C661C21304
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 17:08:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B776818027;
-	Wed, 26 Jul 2023 17:01:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A717C1AA93;
+	Wed, 26 Jul 2023 17:08:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1492D18026;
-	Wed, 26 Jul 2023 17:01:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6E8DC433C7;
-	Wed, 26 Jul 2023 17:01:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690390897;
-	bh=41IH+STJ6bMJLu2X89vfytzyvTOWg9NjdLg+SOjMTGs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=t+TkpMHi+OOJTwfkr0gBDx+A3BVXrx0R6aEWRg3SRabDjbOkuNa9sdegsHvosOzy6
-	 DF7TXXyuia2j2Z3CuCT/JRf9AfVpDfva8YvriMaGm3ADPFYQITJzGAaHDMco/hVajT
-	 q1zjZjru4gDZY1q+MxIMcfuXX4jp0jAga5kjt2WgyH8h2/fMwD98QxUcX60rOThekF
-	 09eSuHYpNK++akPLHgNQvuzg3WmuZNQElUoKpCDwdaenb1RY090YmSCILultRYCniL
-	 uUdaD5ZCwscr6PWTAJKk+habMTDl8S/ncVcjNijnXbkDUGsZBF6YNqkIzur3duDtwj
-	 dxrkEGrdE2f3Q==
-Date: Wed, 26 Jul 2023 20:01:33 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
-	syzbot <syzbot+14736e249bce46091c18@syzkaller.appspotmail.com>,
-	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-	kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-	Gal Pressman <gal@nvidia.com>
-Subject: Re: [syzbot] [bpf?] WARNING: ODEBUG bug in tcx_uninstall
-Message-ID: <20230726170133.GX11388@unreal>
-References: <000000000000ee69e80600ec7cc7@google.com>
- <91396dc0-23e4-6c81-f8d8-f6427eaa52b0@iogearbox.net>
- <20230726071254.GA1380402@unreal>
- <20230726082312.1600053e@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782B01AA65;
+	Wed, 26 Jul 2023 17:08:12 +0000 (UTC)
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C479B;
+	Wed, 26 Jul 2023 10:08:10 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686efb9ee3cso34628b3a.3;
+        Wed, 26 Jul 2023 10:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690391290; x=1690996090;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jyXhagd27xsfagA4mpBvlczZOCwL70cnZ1O+Bi2yCeM=;
+        b=WiRpf8xXnnPC2cDTySvVbHxkgThqpZ0c6oaaRYfTClFXawhCqp+jOW55lULpKEqU8M
+         LO2CWdxcXYpZjZSoAaKs1dPRwlsf1EsGR6j710vfmVhImIBT7opyYJmwXzvYLD2FXwTM
+         +dBEmqmarjHESBn3nXrpsFRKFOZvlAYnbsh5PrCC/4E1TQMTX2L37yhBsMmGPa5fSqf2
+         7M5lKKi8ANw/XpxFBsFXmr98MzXGSL72Af98+FFSXEek7e1CulNPIycG8n3+lWVDCaJC
+         AORitu/f+aJuVUu3bRMeQCg5RIAwvGrauvxQAsn2W9lieKqA/D9XqARHu1H/qaxRCIRX
+         9v0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690391290; x=1690996090;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jyXhagd27xsfagA4mpBvlczZOCwL70cnZ1O+Bi2yCeM=;
+        b=aQP4LPcwMvugw4MMBBMt9vLQ0tMaUoCXipOSpKXi4pQ93YJZSScDieat00f0OLzF1s
+         nPC4j0qM4RuQWBTqGx55tC4H/5owBLj9nj8cMqkIQqjuniEk3kfUGun5tRSBXTmB75m2
+         QZ4mdjfkJKRHEEvZJjqB+jIT15V62vwABp8tOSQsh5Jmg98AWIrhqMmaZ4vcMi3SGcsT
+         rIpGOBox8dzxlDZFMmspIxAq/M+U8pU/yA+7YgMHRgS0+/MQcB5arSzERu6lOBYiB8Ll
+         oQTz6JmeEPMmjNA77sw2BeApbl68WpiXh1fT71cy2SsOPEexIx3Q+hPvBZ68omGDlQSG
+         TIPg==
+X-Gm-Message-State: ABy/qLZScavji0eS3BA+Bc/H7v87fWGr1GW29Y8GcvwICDi86eQ/+p7j
+	wbCQE+Fiao06cHpO/iVbdALOLktOkGtU/TBN
+X-Google-Smtp-Source: APBJJlHoUxrL7Gb3vH3wGr3Zh4JL6JMMrXCYEcjaAvIOxbH/nVhdWi3v0nrKCkDeyj1henERh81tDA==
+X-Received: by 2002:aa7:88c6:0:b0:682:a6c5:6f28 with SMTP id k6-20020aa788c6000000b00682a6c56f28mr3411995pff.32.1690391290004;
+        Wed, 26 Jul 2023 10:08:10 -0700 (PDT)
+Received: from localhost (c-73-190-126-111.hsd1.wa.comcast.net. [73.190.126.111])
+        by smtp.gmail.com with ESMTPSA id x17-20020aa793b1000000b0064f51ee5b90sm12014pff.62.2023.07.26.10.08.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 10:08:09 -0700 (PDT)
+Date: Wed, 26 Jul 2023 17:08:08 +0000
+From: Bobby Eshleman <bobbyeshleman@gmail.com>
+To: Arseniy Krasnov <oxffffaa@gmail.com>
+Cc: Bobby Eshleman <bobby.eshleman@bytedance.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Bryan Tan <bryantan@vmware.com>, Vishnu Dasa <vdasa@vmware.com>,
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Simon Horman <simon.horman@corigine.com>, kvm@vger.kernel.org,
+	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH RFC net-next v5 07/14] virtio/vsock: add common datagram
+ send path
+Message-ID: <ZMFS+MlAPTso6wjQ@bullseye>
+References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
+ <20230413-b4-vsock-dgram-v5-7-581bd37fdb26@bytedance.com>
+ <051e4091-556c-4592-4a72-4dacf0015da8@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -55,33 +91,149 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230726082312.1600053e@kernel.org>
+In-Reply-To: <051e4091-556c-4592-4a72-4dacf0015da8@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, Jul 26, 2023 at 08:23:12AM -0700, Jakub Kicinski wrote:
-> On Wed, 26 Jul 2023 10:12:54 +0300 Leon Romanovsky wrote:
-> > > Thanks, I'll take a look this evening.  
-> > 
-> > Did anybody post a fix for that?
-> > 
-> > We are experiencing the following kernel panic in netdev commit
-> > b57e0d48b300 (net-next/main) Merge branch '100GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue
+On Sat, Jul 22, 2023 at 11:16:05AM +0300, Arseniy Krasnov wrote:
 > 
-> Not that I know, looks like this is with Daniel's previous fix already
-> present, and syzbot is hitting it, too :(
+> 
+> On 19.07.2023 03:50, Bobby Eshleman wrote:
+> > This commit implements the common function
+> > virtio_transport_dgram_enqueue for enqueueing datagrams. It does not add
+> > usage in either vhost or virtio yet.
+> > 
+> > Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+> > ---
+> >  net/vmw_vsock/virtio_transport_common.c | 76 ++++++++++++++++++++++++++++++++-
+> >  1 file changed, 75 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> > index ffcbdd77feaa..3bfaff758433 100644
+> > --- a/net/vmw_vsock/virtio_transport_common.c
+> > +++ b/net/vmw_vsock/virtio_transport_common.c
+> > @@ -819,7 +819,81 @@ virtio_transport_dgram_enqueue(struct vsock_sock *vsk,
+> >  			       struct msghdr *msg,
+> >  			       size_t dgram_len)
+> >  {
+> > -	return -EOPNOTSUPP;
+> > +	/* Here we are only using the info struct to retain style uniformity
+> > +	 * and to ease future refactoring and merging.
+> > +	 */
+> > +	struct virtio_vsock_pkt_info info_stack = {
+> > +		.op = VIRTIO_VSOCK_OP_RW,
+> > +		.msg = msg,
+> > +		.vsk = vsk,
+> > +		.type = VIRTIO_VSOCK_TYPE_DGRAM,
+> > +	};
+> > +	const struct virtio_transport *t_ops;
+> > +	struct virtio_vsock_pkt_info *info;
+> > +	struct sock *sk = sk_vsock(vsk);
+> > +	struct virtio_vsock_hdr *hdr;
+> > +	u32 src_cid, src_port;
+> > +	struct sk_buff *skb;
+> > +	void *payload;
+> > +	int noblock;
+> > +	int err;
+> > +
+> > +	info = &info_stack;
+> 
+> I think 'info' assignment could be moved below, to the place where it is used
+> first time.
+> 
+> > +
+> > +	if (dgram_len > VIRTIO_VSOCK_MAX_PKT_BUF_SIZE)
+> > +		return -EMSGSIZE;
+> > +
+> > +	t_ops = virtio_transport_get_ops(vsk);
+> > +	if (unlikely(!t_ops))
+> > +		return -EFAULT;
+> > +
+> > +	/* Unlike some of our other sending functions, this function is not
+> > +	 * intended for use without a msghdr.
+> > +	 */
+> > +	if (WARN_ONCE(!msg, "vsock dgram bug: no msghdr found for dgram enqueue\n"))
+> > +		return -EFAULT;
+> 
+> Sorry, but is that possible? I thought 'msg' is always provided by general socket layer (e.g. before
+> af_vsock.c code) and can't be NULL for DGRAM. Please correct me if i'm wrong.
+> 
+> Also I see, that in af_vsock.c , 'vsock_dgram_sendmsg()' dereferences 'msg' for checking MSG_OOB without any
+> checks (before calling transport callback - this function in case of virtio). So I think if we want to keep
+> this type of check - such check must be placed in af_vsock.c or somewhere before first dereference of this pointer.
+> 
 
-My naive workaround which restored our regression runs is:
+There is some talk about dgram sockets adding additional messages types
+in the future that help with congestion control. Those messages won't
+come from the socket layer, so msghdr will be null. Since there is no
+other function for sending datagrams, it seemed likely that this
+function would be reworked for that purpose. I felt that adding this
+check was a direct way to make it explicit that this function is
+currently designed only for the socket-layer caller.
 
-diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
-index 69a272712b29..10c9ab830702 100644
---- a/kernel/bpf/tcx.c
-+++ b/kernel/bpf/tcx.c
-@@ -111,6 +111,7 @@ void tcx_uninstall(struct net_device *dev, bool ingress)
-                        bpf_prog_put(tuple.prog);
-                tcx_skeys_dec(ingress);
-        }
--       WARN_ON_ONCE(tcx_entry(entry)->miniq_active);
-+       tcx_miniq_set_active(entry, false);
-        tcx_entry_free(entry);
- }
+Perhaps a comment would suffice?
 
+> > +
+> > +	noblock = msg->msg_flags & MSG_DONTWAIT;
+> > +
+> > +	/* Use sock_alloc_send_skb to throttle by sk_sndbuf. This helps avoid
+> > +	 * triggering the OOM.
+> > +	 */
+> > +	skb = sock_alloc_send_skb(sk, dgram_len + VIRTIO_VSOCK_SKB_HEADROOM,
+> > +				  noblock, &err);
+> > +	if (!skb)
+> > +		return err;
+> > +
+> > +	skb_reserve(skb, VIRTIO_VSOCK_SKB_HEADROOM);
+> > +
+> > +	src_cid = t_ops->transport.get_local_cid();
+> > +	src_port = vsk->local_addr.svm_port;
+> > +
+> > +	hdr = virtio_vsock_hdr(skb);
+> > +	hdr->type	= cpu_to_le16(info->type);
+> > +	hdr->op		= cpu_to_le16(info->op);
+> > +	hdr->src_cid	= cpu_to_le64(src_cid);
+> > +	hdr->dst_cid	= cpu_to_le64(remote_addr->svm_cid);
+> > +	hdr->src_port	= cpu_to_le32(src_port);
+> > +	hdr->dst_port	= cpu_to_le32(remote_addr->svm_port);
+> > +	hdr->flags	= cpu_to_le32(info->flags);
+> > +	hdr->len	= cpu_to_le32(dgram_len);
+> > +
+> > +	skb_set_owner_w(skb, sk);
+> > +
+> > +	payload = skb_put(skb, dgram_len);
+> > +	err = memcpy_from_msg(payload, msg, dgram_len);
+> > +	if (err)
+> > +		return err;
+> 
+> Do we need free allocated skb here ?
+> 
+
+Yep, thanks.
+
+> > +
+> > +	trace_virtio_transport_alloc_pkt(src_cid, src_port,
+> > +					 remote_addr->svm_cid,
+> > +					 remote_addr->svm_port,
+> > +					 dgram_len,
+> > +					 info->type,
+> > +					 info->op,
+> > +					 0);
+> > +
+> > +	return t_ops->send_pkt(skb);
+> >  }
+> >  EXPORT_SYMBOL_GPL(virtio_transport_dgram_enqueue);
+> >  
+> > 
+> 
+> Thanks, Arseniy
+
+Thanks for the review!
+
+Best,
+Bobby
 
