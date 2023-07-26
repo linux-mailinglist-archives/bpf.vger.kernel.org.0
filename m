@@ -1,72 +1,83 @@
-Return-Path: <bpf+bounces-5903-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-5904-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA560762922
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 05:12:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F718762982
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 05:53:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 086E01C20318
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 03:12:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A0A6281B4D
+	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 03:53:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B68A1FA2;
-	Wed, 26 Jul 2023 03:11:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F169C5236;
+	Wed, 26 Jul 2023 03:52:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B782A1101;
-	Wed, 26 Jul 2023 03:11:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9968CC433C7;
-	Wed, 26 Jul 2023 03:11:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690341104;
-	bh=9Upzi3S02vKTUvKJdNd22YEHdE2llnbz3XXAiMSuNQE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=OOjHtuoBNOKGC4Cyl5+apIy5ejwGjm9BJ7VcnFMgxtPGfvvNZJe/ZX/G/1B8Z4O2x
-	 eQOAs2Kp/LYfxkavQsjHHjqeqmQMFBWaOSHZyF3g58ifceVEphQL0CWIbMJg5yix7O
-	 sV3Nakdf8ebHoYjkgZL3xmQFkb0EYnxcj1xjjUKTsK+MdgcRbL7/iR+GDM6/maUP+N
-	 uhqmu0yaUEv2hQEPKz5yM2akmGRqPFuGwwlrWCB2g4VUSNJ1CKrv237SPUKq2mLR5f
-	 pdS2eVt5vTQGqGiuDApscRr5VzxEIat80QMf97lEdTGdpWeA/5zsZz9uLNlld8yhsa
-	 t/+5LIi+hmeRw==
-Date: Tue, 25 Jul 2023 20:11:42 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Lin Ma <linma@zju.edu.cn>
-Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- ast@kernel.org, martin.lau@kernel.org, yhs@fb.com, void@manifault.com,
- andrii@kernel.org, houtao1@huawei.com, inwardvessel@gmail.com,
- kuniyu@amazon.com, songliubraving@fb.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2] bpf: Add length check for
- SK_DIAG_BPF_STORAGE_REQ_MAP_FD parsing
-Message-ID: <20230725201142.593ae606@kernel.org>
-In-Reply-To: <20230725023330.422856-1-linma@zju.edu.cn>
-References: <20230725023330.422856-1-linma@zju.edu.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD311FD0;
+	Wed, 26 Jul 2023 03:52:53 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503BB2695;
+	Tue, 25 Jul 2023 20:52:51 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.55])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R9g050wtlzLp3n;
+	Wed, 26 Jul 2023 11:50:13 +0800 (CST)
+Received: from [10.174.178.66] (10.174.178.66) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 11:52:47 +0800
+Message-ID: <0878305d-7393-ea7a-25c4-455a43d3549e@huawei.com>
+Date: Wed, 26 Jul 2023 11:52:47 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+From: shaozhengchao <shaozhengchao@huawei.com>
+Subject: [Question]Attach xdp program to bond driver with skb mode
+To: netdev <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.66]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Tue, 25 Jul 2023 10:33:30 +0800 Lin Ma wrote:
-> The nla_for_each_nested parsing in function bpf_sk_storage_diag_alloc
-> does not check the length of the nested attribute. This can lead to an
-> out-of-attribute read and allow a malformed nlattr (e.g., length 0) to
-> be viewed as a 4 byte integer.
-> 
-> This patch adds an additional check when the nlattr is getting counted.
-> This makes sure the latter nla_get_u32 can access the attributes with
-> the correct length.
-> 
-> Fixes: 1ed4d92458a9 ("bpf: INET_DIAG support in bpf_sk_storage")
-> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Hi:
+	Now, as shown in commit 879af96ffd72("net, core: Add support for
+XDP redirection to slave device"), if the master has been attached
+program, the slave cannot be attached program. Similarly, if the slave
+is already attached program, the master is not allowed to attach the
+program. It does work for hw and driver mode. But in skb mode, if the
+slave has been attached program, the master also can be attached
+program. So I have two questions:
+1. should skb mode work the same to hw/drv mode?
+2. If other "master" drivers (team?) need to implement XDP feature, is
+it more appropriate to place the restriction in dev_xdp_attach? As shown
+in the following figure:
 
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+@@ -9194,6 +9194,14 @@  static int dev_xdp_attach(struct net_device 
+*dev, struct netlink_ext_ack *extack
+  		}
+  	}
 
-Those who parse manually must do checks manually. It is what it is.
++	/* don't allow if a slave device already has a program */
++	netdev_for_each_lower_dev(dev, lower, iter) {
++		if (dev_xdp_prog_count(lower) > 0) {
++			NL_SET_ERR_MSG(extack, "Cannot attach when a slave device already 
+has a program");
++			return -EEXIST;
++		}
++	}
++
 
