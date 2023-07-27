@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-6085-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 187267656E5
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 17:06:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DD3D7656F4
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 17:07:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4528D2823D3
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 15:06:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27F2C2823FF
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 15:07:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 370E517751;
-	Thu, 27 Jul 2023 15:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70BB517757;
+	Thu, 27 Jul 2023 15:07:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0358210794
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 15:05:57 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB33430F4
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 08:05:39 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC0710794
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 15:07:09 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A0F2D5B
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 08:06:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690470338;
+	s=mimecast20190719; t=1690470413;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
 	bh=Wcan3iVrHYYqIE9H2D+bHcKLyhQi2cTBlipiw/wRk0Q=;
-	b=MMN8MbDEJDXJeAqdRLqxn/Xhe8iUQw0FKnnSTenUJWQDwaxgSD39safqnRRBKUyaWU3Pmv
-	OBe7jwqpMp+GUXX9+s6iUtlv8GqvyJH29Mf395vtaBEDy+Mv0yHCCXziYP1dJd2pj+qyJq
-	Y+Ps98mi45/VwDOShwBtv+0Opw91dQY=
+	b=hTEzYRmtD4MnC1Ik/sCQVJYVYjvnfR3UyrYOfiM9qTS7GMjAU5NvAAIKaV0pG0eiuBvymn
+	Zgwb/DJImxbxVwtvpJyOxk0xa8nIPI11STGpZchs7B7KtfxMYgs9upqUEOasp6DM8cBl8h
+	Bwy7uiQBhEBzTAMyQT7FNUX1d5plhoc=
 Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-211-MUmTQ0raPHiUz571Ns4Dcw-1; Thu, 27 Jul 2023 11:05:37 -0400
-X-MC-Unique: MUmTQ0raPHiUz571Ns4Dcw-1
+ us-mta-132-C01TZgSEO1O4NOC_UEWs8A-1; Thu, 27 Jul 2023 11:06:50 -0400
+X-MC-Unique: C01TZgSEO1O4NOC_UEWs8A-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9B6973C0C4AB;
-	Thu, 27 Jul 2023 15:05:36 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B50463C0ED55;
+	Thu, 27 Jul 2023 15:06:49 +0000 (UTC)
 Received: from astarta.redhat.com (unknown [10.39.194.232])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id BAF7840C2063;
-	Thu, 27 Jul 2023 15:05:35 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id DB87D40C2063;
+	Thu, 27 Jul 2023 15:06:48 +0000 (UTC)
 From: Yauheni Kaliuta <ykaliuta@redhat.com>
 To: bpf@vger.kernel.org
 Cc: andrii@kernel.org,
 	ast@kernel.org,
 	Yauheni Kaliuta <ykaliuta@redhat.com>
-Subject: [PATCH] tracing: perf_call_bpf: use struct trace_entry in struct syscall_tp_t
-Date: Thu, 27 Jul 2023 18:05:34 +0300
-Message-ID: <20230727150534.397532-1-ykaliuta@redhat.com>
+Subject: [PATCH bpf-next] tracing: perf_call_bpf: use struct trace_entry in struct syscall_tp_t
+Date: Thu, 27 Jul 2023 18:06:47 +0300
+Message-ID: <20230727150647.397626-1-ykaliuta@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
