@@ -1,187 +1,442 @@
-Return-Path: <bpf+bounces-6031-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6032-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5881764396
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 03:57:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C0AF76439D
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 03:59:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D95C31C21478
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 01:57:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 740301C21471
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 01:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E212015BE;
-	Thu, 27 Jul 2023 01:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0D215B5;
+	Thu, 27 Jul 2023 01:59:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A297C;
-	Thu, 27 Jul 2023 01:57:33 +0000 (UTC)
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F70212A;
-	Wed, 26 Jul 2023 18:57:32 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-666edfc50deso254586b3a.0;
-        Wed, 26 Jul 2023 18:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690423051; x=1691027851;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LEjsP/ltbm5croJfxAs5qlFOgriD4zQ0avuotGYBbu4=;
-        b=eahNYGggeEgvUDyzlrIDhQQo1b2wEk+7H/Ca1jCf76MDplSkUIUN1YTX7vg6hfjaB1
-         FIRMYg2akZseLF37c1g/4dyPCO56IVd3vAOfh+fhvlGX/rmMy8FMWvXi3EnqyHFrU8mR
-         Qwttgzji9V/IcTt4pqUumai3R+9vz3qO51k7A9b5E6MgNttXaaAjVPO+Vd5Bx0uq3Gf8
-         U1WF8var4akqoo4V5xotMXoq7Q6j3OzOWNz23EJuLYSGXqlwICnkkv1/aDgvtG0ysKMx
-         FYURav52FaO9iwMGkHN1fvxpSuqBhmUZVt7VdRlrfKJj4UXGZsAO6ZgMmnJlsmIFAtgt
-         Ksiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690423051; x=1691027851;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LEjsP/ltbm5croJfxAs5qlFOgriD4zQ0avuotGYBbu4=;
-        b=kbWh+/eFARSO3AxnPkEpU0VNvCHeCAyWMpvulMvnZ6XhIu0fH+TgEp3d7EsXcSm0Bp
-         0MqZ4XV3Vdujka4MeFBrLR80M5keFR/PBMC8ecXwQMgDDzOaBbaYJ0m75rRFRyo60Yeu
-         elqzs8owG66pnJ6S6Nl5Vjgv+2J9ZfqDH2KmNCUguWHtwIgQMrQklfS8mHT4xfcuglGu
-         HK2G+4Ox3DzYJhHcf/0mFdY63Fx6o0+OrznO1GAHHOAmwoSbCcbkBJUJlZ8H9BBEc9nO
-         D1ShypJ2YVF1++nhe193L2gwehUEedgK/5b9p7xr680hT7E0OUdMwMETFWQRMnEe29kY
-         SEXw==
-X-Gm-Message-State: ABy/qLYpKGHJ+z64y2VQIppFnE/zcFoytL/yvB3ZB9XCKlWDaGF2J8s6
-	TiZqsHBMEuHyvih9TY2VtCg=
-X-Google-Smtp-Source: APBJJlEBJ5hmV0TI+3igCwAAXKrV3f3iRW2hHj66Vn9M8yi4NRyOIXRzPPVSjSOKYkiw6fAtAPdtmw==
-X-Received: by 2002:a05:6a21:788f:b0:117:3c00:77ea with SMTP id bf15-20020a056a21788f00b001173c0077eamr1404141pzc.0.1690423051326;
-        Wed, 26 Jul 2023 18:57:31 -0700 (PDT)
-Received: from [10.22.68.111] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id c17-20020aa78811000000b0066ccb8e8024sm262131pfo.30.2023.07.26.18.57.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 18:57:30 -0700 (PDT)
-Message-ID: <f1506d01-6063-e314-832b-ad3c72a580f1@gmail.com>
-Date: Thu, 27 Jul 2023 09:57:25 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6915D7C
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 01:59:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 161F4C433C8;
+	Thu, 27 Jul 2023 01:59:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690423152;
+	bh=4tiIkXZcidcM3AKwGvuJs9mlo2LKMyVzF4eKaBaz/BU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=NQ7UkGQD+sFtCXfV04OXtgUTBgWxgNWVNpWNxEN6INdw8OYufay/l5xEsWnRCdz9R
+	 IC9fls3ckgE254pAcCVVR2jhCDVs0hp9aXTTfRSHwtiyANPXzzw76MFAFYu07mfaC0
+	 Nsj9oyI23dwgDPDLgKecuctVJ/8uIs9+6ghJRMwR3PwA2nyvPDspx+AHHdlCReP43o
+	 eZm3RrhzESXL5t7gm+ER91AKdYwOFXv8k85uzMtCFO3DZvYJe9beL6cAvhQQ71ci82
+	 Okpx7rrYW40NV6xVfH59Y6pDIi9WxlJsruWNMBzk4fTqlWNxtKo3b2+GLS5f1n0Ry4
+	 Nu3hyf9r/sLFQ==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: linux-trace-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	mhiramat@kernel.org,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf@vger.kernel.org,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH 5/9 v3.1] tracing/probes: Support BTF field access from $retval
+Date: Thu, 27 Jul 2023 10:59:07 +0900
+Message-Id: <169042314720.45480.17144918708829875764.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230727075342.43f600a1850810f6e1dd6c2e@kernel.org>
+References: <20230727075342.43f600a1850810f6e1dd6c2e@kernel.org>
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [RESEND PATCH bpf-next v3 2/2] selftests/bpf: Add testcase for
- xdp attaching failure tracepoint
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- andrii@kernel.org, song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
- tangyeechou@gmail.com, kernel-patches-bot@fb.com, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <20230720155228.5708-1-hffilwlqm@gmail.com>
- <20230720155228.5708-3-hffilwlqm@gmail.com>
- <d988118b-3e02-24e3-281a-cff821f7abef@linux.dev>
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <d988118b-3e02-24e3-281a-cff821f7abef@linux.dev>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Support BTF argument on '$retval' for function return events including
+kretprobe and fprobe for accessing the return value.
+This also allows user to access its fields if the return value is a
+pointer of a data structure.
+
+E.g.
+ # echo 'f getname_flags%return +0($retval->name):string' \
+   > dynamic_events
+ # echo 1 > events/fprobes/getname_flags__exit/enable
+ # ls > /dev/null
+ # head -n 40 trace | tail
+              ls-87      [000] ...1.  8067.616101: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./function_profile_enabled"
+              ls-87      [000] ...1.  8067.616108: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./trace_stat"
+              ls-87      [000] ...1.  8067.616115: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_graph_notrace"
+              ls-87      [000] ...1.  8067.616122: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_graph_function"
+              ls-87      [000] ...1.  8067.616129: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_ftrace_notrace"
+              ls-87      [000] ...1.  8067.616135: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_ftrace_filter"
+              ls-87      [000] ...1.  8067.616143: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./touched_functions"
+              ls-87      [000] ...1.  8067.616237: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./enabled_functions"
+              ls-87      [000] ...1.  8067.616245: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./available_filter_functions"
+              ls-87      [000] ...1.  8067.616253: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_ftrace_notrace_pid"
 
 
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ Changes in v2:
+  - Use '$retval' instead of 'retval' because it is confusing.
+ Changes in v3:
+  - Introduce query_btf_context() to cache the btf related data (function
+    prototype) for using common field analyzing code with function
+    parameters.
+ Changes in v3.1
+  - Return int error code from query_btf_context() if !CONFIG_PROBE_EVENTS_BTF_ARGS
+---
+ kernel/trace/trace_probe.c |  182 +++++++++++++++++++-------------------------
+ kernel/trace/trace_probe.h |    1 
+ 2 files changed, 81 insertions(+), 102 deletions(-)
 
-On 27/7/23 05:52, Martin KaFai Lau wrote:
-> On 7/20/23 8:52 AM, Leon Hwang wrote:
->> Add a test case for the tracepoint of xdp attaching failure by bpf
->> tracepoint when attach XDP to a device with invalid flags option.
->>
->> The bpf tracepoint retrieves error message from the tracepoint, and
->> then put the error message to a perf buffer. The testing code receives
->> error message from perf buffer, and then ASSERT "Invalid XDP flags for
->> BPF link attachment".
->>
->> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
->> ---
->>   .../selftests/bpf/prog_tests/xdp_attach.c     | 65 +++++++++++++++++++
->>   .../bpf/progs/test_xdp_attach_fail.c          | 52 +++++++++++++++
->>   2 files changed, 117 insertions(+)
->>   create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_attach_fail.c
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
->> index fa3cac5488f5d..99f8d03f3c8bd 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
->> @@ -1,5 +1,6 @@
->>   // SPDX-License-Identifier: GPL-2.0
->>   #include <test_progs.h>
->> +#include "test_xdp_attach_fail.skel.h"
->>     #define IFINDEX_LO 1
->>   #define XDP_FLAGS_REPLACE        (1U << 4)
->> @@ -85,10 +86,74 @@ static void test_xdp_attach(const char *file)
->>       bpf_object__close(obj1);
->>   }
->>   +struct xdp_errmsg {
->> +    char msg[64];
->> +};
->> +
->> +static void on_xdp_errmsg(void *ctx, int cpu, void *data, __u32 size)
->> +{
->> +    struct xdp_errmsg *ctx_errmg = ctx, *tp_errmsg = data;
->> +
->> +    memcpy(&ctx_errmg->msg, &tp_errmsg->msg, size);
->> +}
->> +
->> +static const char tgt_errmsg[] = "Invalid XDP flags for BPF link attachment";
->> +
->> +static void test_xdp_attach_fail(const char *file)
-> 
-> The test crashed: https://github.com/kernel-patches/bpf/actions/runs/5672753995/job/15373384795#step:6:8037
-> 
-> Please monitor the CI test result in the future.
-> 
+diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+index f6b855de4256..6fef0c08be63 100644
+--- a/kernel/trace/trace_probe.c
++++ b/kernel/trace/trace_probe.c
+@@ -363,38 +363,46 @@ static const char *fetch_type_from_btf_type(struct btf *btf,
+ 	return NULL;
+ }
+ 
+-static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
+-						   struct btf **btf_p, bool tracepoint)
++static int query_btf_context(struct traceprobe_parse_context *ctx)
+ {
+ 	const struct btf_param *param;
+-	const struct btf_type *t;
++	const struct btf_type *type;
+ 	struct btf *btf;
++	s32 nr;
+ 
+-	if (!funcname || !nr)
+-		return ERR_PTR(-EINVAL);
++	if (ctx->btf)
++		return 0;
+ 
+-	t = btf_find_func_proto(funcname, &btf);
+-	if (!t)
+-		return (const struct btf_param *)t;
++	if (!ctx->funcname)
++		return -EINVAL;
+ 
+-	param = btf_get_func_param(t, nr);
+-	if (IS_ERR_OR_NULL(param))
+-		goto err;
++	type = btf_find_func_proto(ctx->funcname, &btf);
++	if (!type)
++		return -ENOENT;
+ 
+-	/* Hide the first 'data' argument of tracepoint */
+-	if (tracepoint) {
+-		(*nr)--;
+-		param++;
++	ctx->btf = btf;
++	ctx->proto = type;
++
++	/* ctx->params is optional, since func(void) will not have params. */
++	nr = 0;
++	param = btf_get_func_param(type, &nr);
++	if (!IS_ERR_OR_NULL(param)) {
++		/* Hide the first 'data' argument of tracepoint */
++		if (ctx->flags & TPARG_FL_TPOINT) {
++			nr--;
++			param++;
++		}
+ 	}
+ 
+-	if (*nr > 0) {
+-		*btf_p = btf;
+-		return param;
++	if (nr > 0) {
++		ctx->nr_params = nr;
++		ctx->params = param;
++	} else {
++		ctx->nr_params = 0;
++		ctx->params = NULL;
+ 	}
+ 
+-err:
+-	btf_put(btf);
+-	return NULL;
++	return 0;
+ }
+ 
+ static void clear_btf_context(struct traceprobe_parse_context *ctx)
+@@ -402,6 +410,7 @@ static void clear_btf_context(struct traceprobe_parse_context *ctx)
+ 	if (ctx->btf) {
+ 		btf_put(ctx->btf);
+ 		ctx->btf = NULL;
++		ctx->proto = NULL;
+ 		ctx->params = NULL;
+ 		ctx->nr_params = 0;
+ 	}
+@@ -517,7 +526,7 @@ static int parse_btf_arg(char *varname,
+ 	const struct btf_param *params;
+ 	const struct btf_type *type;
+ 	char *field = NULL;
+-	int i, is_ptr;
++	int i, is_ptr, ret;
+ 	u32 tid;
+ 
+ 	if (WARN_ON_ONCE(!ctx->funcname))
+@@ -533,17 +542,32 @@ static int parse_btf_arg(char *varname,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+-	if (!ctx->params) {
+-		params = find_btf_func_param(ctx->funcname,
+-					     &ctx->nr_params, &ctx->btf,
+-					     ctx->flags & TPARG_FL_TPOINT);
+-		if (IS_ERR_OR_NULL(params)) {
++	if (ctx->flags & TPARG_FL_RETURN) {
++		if (strcmp(varname, "$retval") != 0) {
++			trace_probe_log_err(ctx->offset, NO_BTFARG);
++			return -ENOENT;
++		}
++		/* Check whether the function return type is not void */
++		if (query_btf_context(ctx) == 0) {
++			if (ctx->proto->type == 0) {
++				trace_probe_log_err(ctx->offset, NO_RETVAL);
++				return -ENOENT;
++			}
++			tid = ctx->proto->type;
++		} else
++			tid = 0;
++		code->op = FETCH_OP_RETVAL;
++		goto found;
++	}
++
++	if (!ctx->btf) {
++		ret = query_btf_context(ctx);
++		if (ret < 0 || ctx->nr_params == 0) {
+ 			trace_probe_log_err(ctx->offset, NO_BTF_ENTRY);
+ 			return PTR_ERR(params);
+ 		}
+-		ctx->params = params;
+-	} else
+-		params = ctx->params;
++	}
++	params = ctx->params;
+ 
+ 	for (i = 0; i < ctx->nr_params; i++) {
+ 		const char *name = btf_name_by_offset(ctx->btf, params[i].name_off);
+@@ -554,7 +578,6 @@ static int parse_btf_arg(char *varname,
+ 				code->param = i + 1;
+ 			else
+ 				code->param = i;
+-
+ 			tid = params[i].type;
+ 			goto found;
+ 		}
+@@ -579,7 +602,7 @@ static int parse_btf_arg(char *varname,
+ 	return 0;
+ }
+ 
+-static const struct fetch_type *parse_btf_arg_type(
++static const struct fetch_type *find_fetch_type_from_btf_type(
+ 					struct traceprobe_parse_context *ctx)
+ {
+ 	struct btf *btf = ctx->btf;
+@@ -591,27 +614,6 @@ static const struct fetch_type *parse_btf_arg_type(
+ 	return find_fetch_type(typestr, ctx->flags);
+ }
+ 
+-static const struct fetch_type *parse_btf_retval_type(
+-					struct traceprobe_parse_context *ctx)
+-{
+-	const char *typestr = NULL;
+-	const struct btf_type *type;
+-	struct btf *btf;
+-
+-	if (ctx->funcname) {
+-		/* Do not use ctx->btf, because it must be used with ctx->param */
+-		type = btf_find_func_proto(ctx->funcname, &btf);
+-		if (type) {
+-			type = btf_type_skip_modifiers(btf, type->type, NULL);
+-			if (!IS_ERR_OR_NULL(type))
+-				typestr = fetch_type_from_btf_type(btf, type, ctx);
+-			btf_put(btf);
+-		}
+-	}
+-
+-	return find_fetch_type(typestr, ctx->flags);
+-}
+-
+ static int parse_btf_bitfield(struct fetch_insn **pcode,
+ 			      struct traceprobe_parse_context *ctx)
+ {
+@@ -634,30 +636,15 @@ static int parse_btf_bitfield(struct fetch_insn **pcode,
+ 	return 0;
+ }
+ 
+-static bool is_btf_retval_void(const char *funcname)
+-{
+-	const struct btf_type *t;
+-	struct btf *btf;
+-	bool ret;
+-
+-	t = btf_find_func_proto(funcname, &btf);
+-	if (!t)
+-		return false;
+-
+-	ret = (t->type == 0);
+-	btf_put(btf);
+-	return ret;
+-}
+ #else
+ static void clear_btf_context(struct traceprobe_parse_context *ctx)
+ {
+ 	ctx->btf = NULL;
+ }
+ 
+-static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
+-						   struct btf **btf_p, bool tracepoint)
++static int query_btf_context(struct traceprobe_parse_context *ctx)
+ {
+-	return ERR_PTR(-EOPNOTSUPP);
++	return -EOPNOTSUPP;
+ }
+ 
+ static int parse_btf_arg(char *varname,
+@@ -675,24 +662,23 @@ static int parse_btf_bitfield(struct fetch_insn **pcode,
+ 	return -EOPNOTSUPP;
+ }
+ 
+-#define parse_btf_arg_type(ctx)		\
++#define find_fetch_type_from_btf_type(ctx)		\
+ 	find_fetch_type(NULL, ctx->flags)
+ 
+-#define parse_btf_retval_type(ctx)		\
+-	find_fetch_type(NULL, ctx->flags)
+-
+-#define is_btf_retval_void(funcname)	(false)
+-
+ #endif
+ 
+ #define PARAM_MAX_STACK (THREAD_SIZE / sizeof(unsigned long))
+ 
+-static int parse_probe_vars(char *arg, const struct fetch_type *t,
+-			    struct fetch_insn *code,
++/* Parse $vars. @orig_arg points '$', which syncs to @ctx->offset */
++static int parse_probe_vars(char *orig_arg, const struct fetch_type *t,
++			    struct fetch_insn **pcode,
++			    struct fetch_insn *end,
+ 			    struct traceprobe_parse_context *ctx)
+ {
+-	unsigned long param;
++	struct fetch_insn *code = *pcode;
+ 	int err = TP_ERR_BAD_VAR;
++	char *arg = orig_arg + 1;
++	unsigned long param;
+ 	int ret = 0;
+ 	int len;
+ 
+@@ -711,18 +697,17 @@ static int parse_probe_vars(char *arg, const struct fetch_type *t,
+ 		goto inval;
+ 	}
+ 
+-	if (strcmp(arg, "retval") == 0) {
+-		if (ctx->flags & TPARG_FL_RETURN) {
+-			if ((ctx->flags & TPARG_FL_KERNEL) &&
+-			    is_btf_retval_void(ctx->funcname)) {
+-				err = TP_ERR_NO_RETVAL;
+-				goto inval;
+-			}
++	if (str_has_prefix(arg, "retval")) {
++		if (!(ctx->flags & TPARG_FL_RETURN)) {
++			err = TP_ERR_RETVAL_ON_PROBE;
++			goto inval;
++		}
++		if (!(ctx->flags & TPARG_FL_KERNEL) ||
++		    !IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS)) {
+ 			code->op = FETCH_OP_RETVAL;
+ 			return 0;
+ 		}
+-		err = TP_ERR_RETVAL_ON_PROBE;
+-		goto inval;
++		return parse_btf_arg(orig_arg, pcode, end, ctx);
+ 	}
+ 
+ 	len = str_has_prefix(arg, "stack");
+@@ -824,7 +809,7 @@ parse_probe_arg(char *arg, const struct fetch_type *type,
+ 
+ 	switch (arg[0]) {
+ 	case '$':
+-		ret = parse_probe_vars(arg + 1, type, code, ctx);
++		ret = parse_probe_vars(arg, type, pcode, end, ctx);
+ 		break;
+ 
+ 	case '%':	/* named register */
+@@ -1121,12 +1106,9 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
+ 		goto fail;
+ 
+ 	/* Update storing type if BTF is available */
+-	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) && !t) {
+-		if (ctx->last_type)
+-			parg->type = parse_btf_arg_type(ctx);
+-		else if (ctx->flags & TPARG_FL_RETURN)
+-			parg->type = parse_btf_retval_type(ctx);
+-	}
++	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) &&
++	    !t && ctx->last_type)
++		parg->type = find_fetch_type_from_btf_type(ctx);
+ 
+ 	ret = -EINVAL;
+ 	/* Store operation */
+@@ -1415,7 +1397,6 @@ const char **traceprobe_expand_meta_args(int argc, const char *argv[],
+ 	const struct btf_param *params = NULL;
+ 	int i, j, n, used, ret, args_idx = -1;
+ 	const char **new_argv = NULL;
+-	int nr_params;
+ 
+ 	ret = argv_has_var_arg(argc, argv, &args_idx, ctx);
+ 	if (ret < 0)
+@@ -1426,9 +1407,8 @@ const char **traceprobe_expand_meta_args(int argc, const char *argv[],
+ 		return NULL;
+ 	}
+ 
+-	params = find_btf_func_param(ctx->funcname, &nr_params, &ctx->btf,
+-				     ctx->flags & TPARG_FL_TPOINT);
+-	if (IS_ERR_OR_NULL(params)) {
++	ret = query_btf_context(ctx);
++	if (ret < 0 || ctx->nr_params == 0) {
+ 		if (args_idx != -1) {
+ 			/* $arg* requires BTF info */
+ 			trace_probe_log_err(0, NOSUP_BTFARG);
+@@ -1437,8 +1417,6 @@ const char **traceprobe_expand_meta_args(int argc, const char *argv[],
+ 		*new_argc = argc;
+ 		return NULL;
+ 	}
+-	ctx->params = params;
+-	ctx->nr_params = nr_params;
+ 
+ 	if (args_idx >= 0)
+ 		*new_argc = argc + ctx->nr_params - 1;
+@@ -1453,7 +1431,7 @@ const char **traceprobe_expand_meta_args(int argc, const char *argv[],
+ 	for (i = 0, j = 0; i < argc; i++) {
+ 		trace_probe_log_set_index(i + 2);
+ 		if (i == args_idx) {
+-			for (n = 0; n < nr_params; n++) {
++			for (n = 0; n < ctx->nr_params; n++) {
+ 				ret = sprint_nth_btf_arg(n, "", buf + used,
+ 							 bufsize - used, ctx);
+ 				if (ret < 0)
+diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+index 6111f1ffca6c..9184c84833f8 100644
+--- a/kernel/trace/trace_probe.h
++++ b/kernel/trace/trace_probe.h
+@@ -385,6 +385,7 @@ struct traceprobe_parse_context {
+ 	struct trace_event_call *event;
+ 	/* BTF related parameters */
+ 	const char *funcname;		/* Function name in BTF */
++	const struct btf_type  *proto;	/* Prototype of the function */
+ 	const struct btf_param *params;	/* Parameter of the function */
+ 	s32 nr_params;			/* The number of the parameters */
+ 	struct btf *btf;		/* The BTF to be used */
 
-Get it. I'll fix it as soon as possible. And make sure all the CI tests are passed.
-
->> +{
->> +    __u32 duration = 0;
->> +    int err, fd_xdp, fd_link_xdp;
->> +    struct bpf_object *obj = NULL;
->> +    struct test_xdp_attach_fail *skel = NULL;
->> +    struct bpf_link *link = NULL;
->> +    struct perf_buffer *pb = NULL;
->> +    struct xdp_errmsg errmsg = {};
->> +
->> +    LIBBPF_OPTS(bpf_link_create_opts, opts);
->> +
->> +    skel = test_xdp_attach_fail__open_and_load();
->> +    if (!ASSERT_OK_PTR(skel, "test_xdp_attach_fail_skel"))
->> +        goto out_close;
->> +
->> +    link = bpf_program__attach_tracepoint(skel->progs.tp__xdp__bpf_xdp_link_attach_failed,
->> +                          "xdp", "bpf_xdp_link_attach_failed");
->> +    if (!ASSERT_OK_PTR(link, "attach_tp"))
->> +        goto out_close;
->> +
->> +    /* set up perf buffer */
->> +    pb = perf_buffer__new(bpf_map__fd(skel->maps.xdp_errmsg_pb), 1,
->> +                  on_xdp_errmsg, NULL, &errmsg, NULL);
->> +
->> +    err = bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &fd_xdp);
->> +    if (CHECK_FAIL(err))
->> +        goto out_close;
->> +
->> +    opts.flags = 0xFF; // invalid flags to fail to attach XDP prog
->> +    fd_link_xdp = bpf_link_create(fd_xdp, IFINDEX_LO, BPF_XDP, &opts);
->> +    if (CHECK(fd_link_xdp != -22, "bpf_link_create_failed",
-> 
-> Please stay with the ASSERT_* macro.
-> 
-
-Get it.
-
-
-Thanks,
-Leon
 
