@@ -1,159 +1,188 @@
-Return-Path: <bpf+bounces-6034-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6035-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 898D07643FB
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 04:50:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3C17764460
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 05:33:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25147281FC3
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 02:50:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 000461C21471
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 03:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E6AC17F5;
-	Thu, 27 Jul 2023 02:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CFA3185D;
+	Thu, 27 Jul 2023 03:33:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC6E399
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 02:50:14 +0000 (UTC)
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FE81BCB
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 19:50:12 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a5ad44dc5aso443550b6e.3
-        for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 19:50:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.washington.edu; s=goo201206; t=1690426212; x=1691031012;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QspNxTEi/qT/BgadxTLzSVy271O3r6BuXIduCGxDThQ=;
-        b=efxZRhLkLzlA3ccwQazCze+AE3jhUxZF0vLhd6J+9iDsHnSAmrjU9K3DluO7dKZHwB
-         UxKYuDcrzLjb653pZPNHt0WYWdq+GR9OxaSW8kKZaItiAGblEU13aSjDND8Syk4dtVCH
-         nwcRaQ1IqmcJGUYMecWRwdVX5vpousJa/f448=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690426212; x=1691031012;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QspNxTEi/qT/BgadxTLzSVy271O3r6BuXIduCGxDThQ=;
-        b=DjspxP3fTOWCdPtVRdzNGrymJ0jxqlkuwnvZdvRdxvAbd4hoA5gB053cFUaWoOdj67
-         SOjDvVrMU/lmKSH20IGlJE1CwlLNuQNvrr5npgtfSryqemUdtwxdAy/f5qtRt6w4NtLh
-         H299JRN3wE95tXPidsbf9e2PH/Y0YKkSevOuGS+tmYg08aFrrGSUOF7eQrkgCY+Hk0+w
-         RKnyH0JyxymAhbnk7xZt7kL3DvezuDKFRmscLn3s6I55roQRJJ6rqXw0tUld+faa9X1w
-         bGUuzyCKbzUib7cNSos3wO71J7px+WmfATqbVCWclvuXOqQVhyJDa5tFPswu7C3x2+Kk
-         pT0Q==
-X-Gm-Message-State: ABy/qLaNsGJiSnf2OM8KfapoooInxHBbmu+eojGvD2qw5mJFhVW9P4F3
-	16ZR/PSeohWP8d8QSV6jE3OXdZYIu7PUGTJx0YohPg==
-X-Google-Smtp-Source: APBJJlEXoJUhxPgiBoapPWNXWPOoG4MBDEOp2OM0y2T2xlmygi47Kcm0f/Z4g8ETBkWfrszT1jJT8A==
-X-Received: by 2002:a05:6808:1a92:b0:3a1:ed1b:9541 with SMTP id bm18-20020a0568081a9200b003a1ed1b9541mr1443669oib.40.1690426211687;
-        Wed, 26 Jul 2023 19:50:11 -0700 (PDT)
-Received: from marth.. (75-172-111-252.tukw.qwest.net. [75.172.111.252])
-        by smtp.gmail.com with ESMTPSA id f25-20020a633819000000b0055bf13811f5sm240782pga.15.2023.07.26.19.50.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 19:50:11 -0700 (PDT)
-From: Luke Nelson <lukenels@cs.washington.edu>
-X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Luke Nelson <luke.r.nels@gmail.com>,
-	kernel test robot <lkp@intel.com>,
-	Xi Wang <xi.wang@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] riscv/bpf: Fix truncated immediate warning in rv_s_insn
-Date: Wed, 26 Jul 2023 19:49:31 -0700
-Message-Id: <20230727024931.17156-1-luke.r.nels@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C621BEE4
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 03:33:09 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8634DE75;
+	Wed, 26 Jul 2023 20:33:06 -0700 (PDT)
+X-UUID: 3cca24fa88994d4ba840e9aac1bc8355-20230727
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.28,REQID:f242e993-158b-4ea5-85f9-ef4642d75f6c,IP:25,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:10
+X-CID-INFO: VERSION:1.1.28,REQID:f242e993-158b-4ea5-85f9-ef4642d75f6c,IP:25,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:10
+X-CID-META: VersionHash:176cd25,CLOUDID:517194a0-0933-4333-8d4f-6c3c53ebd55b,B
+	ulkID:230727052327ADIGKCI6,BulkQuantity:4,Recheck:0,SF:19|44|24|17|102,TC:
+	nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI
+	:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: 3cca24fa88994d4ba840e9aac1bc8355-20230727
+X-User: guodongtai@kylinos.cn
+Received: from ky [(39.156.73.12)] by mailgw
+	(envelope-from <guodongtai@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 455361928; Thu, 27 Jul 2023 11:32:51 +0800
+Date: Thu, 27 Jul 2023 11:32:51 +0800
+From: <guodongtai@kylinos.cn>
+To: Nicolas Schier <nicolas@fjasle.eu>
+Cc: masahiroy@kernel.org, ndesaulniers@google.com, nathan@kernel.org,
+ linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Subject: Re: [PATCH] samples/bpf: Update sockex2: get the expected output
+ results
+Message-ID: <20230727113251.15f538ab@ky>
+In-Reply-To: <ZMGOqYG8oCAQmMtq@fjasle.eu>
+References: <20230726070955.178288-1-guodongtai@kylinos.cn>
+	<ZMGOqYG8oCAQmMtq@fjasle.eu>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Sparse warns that a cast in rv_s_insn truncates bits from the constant
-0x7ff to 0xff.  The warning originates from the use of a constant offset
-of -8 in a store instruction in bpf_jit_comp64.c:
+On Wed, 26 Jul 2023 23:22:49 +0200
+Nicolas Schier <nicolas@fjasle.eu> wrote:
 
-  emit(rv_sd(RV_REG_SP, -8, RV_REG_RA), &ctx);
+> On Wed, Jul 26, 2023 at 03:09:55PM +0800 George Guo wrote:
+> > Running "ping -4 -c5 localhost" only shows 4 times prints not 5:
+> >=20
+> > $ sudo ./samples/bpf/sockex2
+> > ip 127.0.0.1 bytes 392 packets 4
+> > ip 127.0.0.1 bytes 784 packets 8
+> > ip 127.0.0.1 bytes 1176 packets 12
+> > ip 127.0.0.1 bytes 1568 packets 16
+> >=20
+> > debug it with num prints:
+> > $ sudo ./samples/bpf/sockex2
+> > num =3D 1: ip 127.0.0.1 bytes 392 packets 4
+> > num =3D 2: ip 127.0.0.1 bytes 784 packets 8
+> > num =3D 3: ip 127.0.0.1 bytes 1176 packets 12
+> > num =3D 4: ip 127.0.0.1 bytes 1568 packets 16
+> >=20
+> > The reason is that we check it faster, just put sleep(1) before
+> > check while(bpf_map_get_next_key(map_fd, &key, &next_key) =3D=3D 0).
+> > Now we get the expected results:
+> >=20
+> > $ sudo ./samples/bpf/sockex2
+> > num =3D 0: ip 127.0.0.1 bytes 392 packets 4
+> > num =3D 1: ip 127.0.0.1 bytes 784 packets 8
+> > num =3D 2: ip 127.0.0.1 bytes 1176 packets 12
+> > num =3D 3: ip 127.0.0.1 bytes 1568 packets 16
+> > num =3D 4: ip 127.0.0.1 bytes 1960 packets 20
+> >=20
+> > Signed-off-by: George Guo <guodongtai@kylinos.cn>
+> > --- =20
+>=20
+> Thanks, sounds reasonable to me (but I haven't checked it).  Might
+> you want to minimize the diff to only contain the move of the sleep
+> call?
+>=20
+> Kind regards,
+> Nicolas
+>=20
+>=20
+> >  samples/bpf/sockex2_user.c | 13 +++++++------
+> >  1 file changed, 7 insertions(+), 6 deletions(-)
+> >=20
+> > diff --git a/samples/bpf/sockex2_user.c b/samples/bpf/sockex2_user.c
+> > index 2c18471336f0..84bf1ab77649 100644
+> > --- a/samples/bpf/sockex2_user.c
+> > +++ b/samples/bpf/sockex2_user.c
+> > @@ -18,8 +18,8 @@ int main(int ac, char **argv)
+> >  	struct bpf_program *prog;
+> >  	struct bpf_object *obj;
+> >  	int map_fd, prog_fd;
+> > -	char filename[256];
+> > -	int i, sock, err;
+> > +	char filename[256], command[64];
+> > +	int i, sock, err, num =3D 5;
+> >  	FILE *f;
+> > =20
+> >  	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
+> > @@ -42,21 +42,22 @@ int main(int ac, char **argv)
+> >  	assert(setsockopt(sock, SOL_SOCKET, SO_ATTACH_BPF,
+> > &prog_fd, sizeof(prog_fd)) =3D=3D 0);
+> > =20
+> > -	f =3D popen("ping -4 -c5 localhost", "r");
+> > +	snprintf(command, sizeof(command), "ping -4 -c%d
+> > localhost", num);
+> > +	f =3D popen(command, "r");
+> >  	(void) f;
+> > =20
+> > -	for (i =3D 0; i < 5; i++) {
+> > +	for (i =3D 0; i < num; i++) {
+> >  		int key =3D 0, next_key;
+> >  		struct pair value;
+> > =20
+> > +		sleep(1);
+> >  		while (bpf_map_get_next_key(map_fd, &key,
+> > &next_key) =3D=3D 0) { bpf_map_lookup_elem(map_fd, &next_key, &value);
+> > -			printf("ip %s bytes %lld packets %lld\n",
+> > +			printf("num =3D %d: ip %s bytes %lld packets
+> > %lld\n", i, inet_ntoa((struct in_addr){htonl(next_key)}),
+> >  			       value.bytes, value.packets);
+> >  			key =3D next_key;
+> >  		}
+> > -		sleep(1);
+> >  	}
+> >  	return 0;
+> >  }
+> > --=20
+> > 2.34.1 =20
+>=20
 
-rv_sd then calls rv_s_insn, with imm11_0 equal to (u16)(-8), or 0xfff8.
+hi=EF=BC=8C
 
-Here's the current implementation of rv_s_insn:
+the diff to only contain the move of the sleep call likes this:
 
-  static inline u32 rv_s_insn(u16 imm11_0, u8 rs2, u8 rs1, u8 funct3, u8 opcode)
-  {
-          u8 imm11_5 = imm11_0 >> 5, imm4_0 = imm11_0 & 0x1f;
 
-          return (imm11_5 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) |
-                 (imm4_0 << 7) | opcode;
-  }
-
-imm11_0 is a signed 12-bit immediate offset of the store instruction. The
-instruction encoding requires splitting the immediate into bits 11:5 and
-bits 4:0. In this case, imm11_0 >> 5 = 0x7ff, which then gets truncated
-to 0xff when cast to u8, causing the warning from sparse. However, this is
-not actually an issue because the immediate offset is signed---truncating
-upper bits that are all set to 1 has no effect on the value of the
-immediate.
-
-There is another subtle quirk with this code, which is imm11_5 is
-supposed to be the upper 7 bits of the 12-bit signed immediate, but its
-type is u8 with no explicit mask to select out only the bottom 7 bits.
-This happens to be okay here because imm11_5 is the left-most field in
-the instruction and the "extra" bit will be shifted out when imm11_5 is
-shifted left by 25.
-
-This commit fixes the warning by changing the type of imm11_5 and imm4_0
-to be u32 instead of u8, and adding an explicit mask to compute imm11_5
-instead of relying on truncation + shifting.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202307260704.dUElCrWU-lkp@intel.com/
-In-Reply-To: <202307260704.dUElCrWU-lkp@intel.com>
-Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
-Cc: Xi Wang <xi.wang@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
----
- arch/riscv/net/bpf_jit.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-index 2717f5490428..e159c6e3ff43 100644
---- a/arch/riscv/net/bpf_jit.h
-+++ b/arch/riscv/net/bpf_jit.h
-@@ -238,7 +238,7 @@ static inline u32 rv_i_insn(u16 imm11_0, u8 rs1, u8 funct3, u8 rd, u8 opcode)
-
- static inline u32 rv_s_insn(u16 imm11_0, u8 rs2, u8 rs1, u8 funct3, u8 opcode)
- {
--	u8 imm11_5 = imm11_0 >> 5, imm4_0 = imm11_0 & 0x1f;
-+	u32 imm11_5 = (imm11_0 >> 5) & 0x7f, imm4_0 = imm11_0 & 0x1f;
-
- 	return (imm11_5 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) |
- 		(imm4_0 << 7) | opcode;
---
-2.34.1
-
+diff --git a/samples/bpf/sockex2_user.c b/samples/bpf/sockex2_user.c
+index 2c18471336f0..82bb38b9cab0 100644
+--- a/samples/bpf/sockex2_user.c
++++ b/samples/bpf/sockex2_user.c
+@@ -49,6 +49,7 @@ int main(int ac, char **argv)
+                int key =3D 0, next_key;
+                struct pair value;
+=20
++               sleep(1);
+                while (bpf_map_get_next_key(map_fd, &key, &next_key) =3D=3D
+0) { bpf_map_lookup_elem(map_fd, &next_key, &value);
+                        printf("ip %s bytes %lld packets %lld\n",
+@@ -56,7 +57,6 @@ int main(int ac, char **argv)
+                               value.bytes, value.packets);
+                        key =3D next_key;
+                }
+-               sleep(1);
+        }
+        return 0;
+ }
 
