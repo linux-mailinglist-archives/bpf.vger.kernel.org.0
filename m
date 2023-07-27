@@ -1,87 +1,117 @@
-Return-Path: <bpf+bounces-6038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCE6C764520
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 06:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBBCB7645EC
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 07:42:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EE6E282093
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 04:52:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C71D2820DF
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 05:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1421FC5;
-	Thu, 27 Jul 2023 04:52:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECBDD8820;
+	Thu, 27 Jul 2023 05:41:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E92ED5
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 04:52:41 +0000 (UTC)
-Received: from out-46.mta0.migadu.com (out-46.mta0.migadu.com [91.218.175.46])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72ED41FFF
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 21:44:38 -0700 (PDT)
-Message-ID: <9ac948b7-d32c-a567-c9ce-b7f67d65d8de@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1690433076; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HHf/rPiejTlDS8J/PyEwesEHB/1FXMYR12ydqrPT7uw=;
-	b=vAlj70wQ0Jw4SLQgDcOC4b5nOUGww7Y7FI0f0oMHPewno3EGpDaMZ+iNg3H1YtKozPzs7X
-	IHgpbu+3el+zF7JzzN7P3iflam8eaxBhtI03UIL7QxVOQs9p7FIMjC8bOEu9TZBXi0Sg6d
-	sdNSEdzxAvEd6aI0pkqymqnhGSUAMzY=
-Date: Wed, 26 Jul 2023 21:44:32 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A605C538B;
+	Thu, 27 Jul 2023 05:41:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 538D0C433C8;
+	Thu, 27 Jul 2023 05:41:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690436510;
+	bh=tRQeUvtOWTVEnYHK/93U8TcFdC1blB4d+lsY7E7p0Ec=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bo2LTR56mu0jXWM+3RWJdC5SGW9+sY+RU8Ft0YUjDKUTx4zvXPFIu30w4m1VFz8K3
+	 fwoNR2WbMaPJI5qLbB/ivk+nrvO+ZVFhk2JRIyUDKnZNVIQ9tONHm5UjgLOUVkqiUa
+	 hdLDT505vAYhyrZlJ/k83tny8+KEAKBBzxMCTZim32wegoxxvb4zLxs2mV1NGszDj3
+	 cZI6dnGRNDZVBp14AaDSbJ/yWgWpMDOjhNSauVl4Xerxs6UNSf6zMxFvBFhPu0PNgC
+	 +dJ8D1t7EHKpNIqTyALF4dTETlKqI4YtXR5zZ95+wEhPShP8ixeDAm5ZAeqlvX9fpr
+	 By+qlOs9AFScQ==
+Date: Thu, 27 Jul 2023 08:41:45 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	syzbot <syzbot+14736e249bce46091c18@syzkaller.appspotmail.com>,
+	andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+	kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
+	syzkaller-bugs@googlegroups.com, yhs@fb.com,
+	Gal Pressman <gal@nvidia.com>
+Subject: Re: [syzbot] [bpf?] WARNING: ODEBUG bug in tcx_uninstall
+Message-ID: <20230727054145.GY11388@unreal>
+References: <000000000000ee69e80600ec7cc7@google.com>
+ <91396dc0-23e4-6c81-f8d8-f6427eaa52b0@iogearbox.net>
+ <20230726071254.GA1380402@unreal>
+ <20230726082312.1600053e@kernel.org>
+ <20230726170133.GX11388@unreal>
+ <896cbaf8-c23d-e51a-6f5e-1e6d0383aed0@linux.dev>
+ <1f91fe12-f9ff-06c8-4a5b-52dc21e6df05@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH] bpf, docs: fix BPF_NEG entry in instruction-set.rst
-Content-Language: en-US
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
-References: <20230726092543.6362-1-jose.marchesi@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20230726092543.6362-1-jose.marchesi@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f91fe12-f9ff-06c8-4a5b-52dc21e6df05@linux.dev>
 
-
-
-On 7/26/23 2:25 AM, Jose E. Marchesi wrote:
-> This patch fixes the documentation of the BPF_NEG instruction to
-> denote that it does not use the source register operand.
+On Wed, Jul 26, 2023 at 04:33:40PM -0700, Martin KaFai Lau wrote:
+> On 7/26/23 11:16 AM, Martin KaFai Lau wrote:
+> > On 7/26/23 10:01 AM, Leon Romanovsky wrote:
+> > > On Wed, Jul 26, 2023 at 08:23:12AM -0700, Jakub Kicinski wrote:
+> > > > On Wed, 26 Jul 2023 10:12:54 +0300 Leon Romanovsky wrote:
+> > > > > > Thanks, I'll take a look this evening.
+> > > > > 
+> > > > > Did anybody post a fix for that?
+> > > > > 
+> > > > > We are experiencing the following kernel panic in netdev commit
+> > > > > b57e0d48b300 (net-next/main) Merge branch '100GbE' of
+> > > > > git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue
+> > > > 
+> > > > Not that I know, looks like this is with Daniel's previous fix already
+> > > > present, and syzbot is hitting it, too :(
+> > > 
+> > > My naive workaround which restored our regression runs is:
+> > > 
+> > > diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
+> > > index 69a272712b29..10c9ab830702 100644
+> > > --- a/kernel/bpf/tcx.c
+> > > +++ b/kernel/bpf/tcx.c
+> > > @@ -111,6 +111,7 @@ void tcx_uninstall(struct net_device *dev, bool ingress)
+> > >                          bpf_prog_put(tuple.prog);
+> > >                  tcx_skeys_dec(ingress);
+> > >          }
+> > > -       WARN_ON_ONCE(tcx_entry(entry)->miniq_active);
+> > > +       tcx_miniq_set_active(entry, false);
+> > 
+> > Thanks for the report. I will look into it.
 > 
-> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
+> I don't see how that may be triggered for now after Daniel's recent fix in
+> commit dc644b540a2d ("tcx: Fix splat in ingress_destroy upon
+> tcx_entry_free"). 
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Both our regression and syzbot have this fix in the trees.
 
-> ---
->   Documentation/bpf/standardization/instruction-set.rst | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+
+> Do you have a small reproducible case? Thanks.
+
+Unfortunately no.
+
+Thanks
+
 > 
-> diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
-> index 751e657973f0..6ef5534b410a 100644
-> --- a/Documentation/bpf/standardization/instruction-set.rst
-> +++ b/Documentation/bpf/standardization/instruction-set.rst
-> @@ -165,7 +165,7 @@ BPF_OR    0x40   dst \|= src
->   BPF_AND   0x50   dst &= src
->   BPF_LSH   0x60   dst <<= (src & mask)
->   BPF_RSH   0x70   dst >>= (src & mask)
-> -BPF_NEG   0x80   dst = -src
-> +BPF_NEG   0x80   dst = -dst
->   BPF_MOD   0x90   dst = (src != 0) ? (dst % src) : dst
->   BPF_XOR   0xa0   dst ^= src
->   BPF_MOV   0xb0   dst = src
+> > 
+> > >          tcx_entry_free(entry);
+> > >   }
+> > > 
+> > 
+> > 
+> 
 
