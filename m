@@ -1,64 +1,66 @@
-Return-Path: <bpf+bounces-6086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DD3D7656F4
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 17:07:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAA43765700
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 17:08:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27F2C2823FF
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 15:07:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 305CE1C216CA
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 15:08:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70BB517757;
-	Thu, 27 Jul 2023 15:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A678B1775B;
+	Thu, 27 Jul 2023 15:08:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC0710794
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 15:07:09 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A0F2D5B
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 08:06:53 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7892010794
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 15:08:41 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8082B3A9F
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 08:08:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690470413;
+	s=mimecast20190719; t=1690470506;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Wcan3iVrHYYqIE9H2D+bHcKLyhQi2cTBlipiw/wRk0Q=;
-	b=hTEzYRmtD4MnC1Ik/sCQVJYVYjvnfR3UyrYOfiM9qTS7GMjAU5NvAAIKaV0pG0eiuBvymn
-	Zgwb/DJImxbxVwtvpJyOxk0xa8nIPI11STGpZchs7B7KtfxMYgs9upqUEOasp6DM8cBl8h
-	Bwy7uiQBhEBzTAMyQT7FNUX1d5plhoc=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-132-C01TZgSEO1O4NOC_UEWs8A-1; Thu, 27 Jul 2023 11:06:50 -0400
-X-MC-Unique: C01TZgSEO1O4NOC_UEWs8A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sobXbax/DXLXyfozu4NQWK9bV5IWun7S0SuuSyLNYyc=;
+	b=HtQ48fjV4Urong7dpRGh7LXlZ7kekQ2cMC+x7zSU6z4dWAqFEH0HB8EhcVNCvXaIskfZa6
+	e7RFFGW8c/xORRkWJByK30PSRheTRFa9TnTfD9m2ul5+dr/ZJamGWahBmH14FjdRj7Raqk
+	WuDfwb5p3yYWjwOkUiw3v8s8CpN/lvQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-569-K5ZXzCD6N62hni0nT3q2ng-1; Thu, 27 Jul 2023 11:08:22 -0400
+X-MC-Unique: K5ZXzCD6N62hni0nT3q2ng-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B50463C0ED55;
-	Thu, 27 Jul 2023 15:06:49 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 67C508564EF;
+	Thu, 27 Jul 2023 15:08:22 +0000 (UTC)
 Received: from astarta.redhat.com (unknown [10.39.194.232])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id DB87D40C2063;
-	Thu, 27 Jul 2023 15:06:48 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id AFA8F492C13;
+	Thu, 27 Jul 2023 15:08:21 +0000 (UTC)
 From: Yauheni Kaliuta <ykaliuta@redhat.com>
 To: bpf@vger.kernel.org
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	Yauheni Kaliuta <ykaliuta@redhat.com>
-Subject: [PATCH bpf-next] tracing: perf_call_bpf: use struct trace_entry in struct syscall_tp_t
-Date: Thu, 27 Jul 2023 18:06:47 +0300
-Message-ID: <20230727150647.397626-1-ykaliuta@redhat.com>
+Cc: andrii@kernel.org,  ast@kernel.org
+Subject: Re: [PATCH] tracing: perf_call_bpf: use struct trace_entry in
+ struct syscall_tp_t
+References: <20230727150534.397532-1-ykaliuta@redhat.com>
+Date: Thu, 27 Jul 2023 18:08:20 +0300
+In-Reply-To: <20230727150534.397532-1-ykaliuta@redhat.com> (Yauheni Kaliuta's
+	message of "Thu, 27 Jul 2023 18:05:34 +0300")
+Message-ID: <xunyzg3hpf2z.fsf@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -66,54 +68,65 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-bpf tracepoint program uses struct trace_event_raw_sys_enter as
-argument where trace_entry is the first field. Use the same instead
-of unsigned long long since if it's amended (for example by RT
-patch) it accesses data with wrong offset.
 
-Signed-off-by: Yauheni Kaliuta <ykaliuta@redhat.com>
----
- kernel/trace/trace_syscalls.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Resending with proper subject.
 
-diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-index 942ddbdace4a..07f4fa395e99 100644
---- a/kernel/trace/trace_syscalls.c
-+++ b/kernel/trace/trace_syscalls.c
-@@ -555,12 +555,15 @@ static int perf_call_bpf_enter(struct trace_event_call *call, struct pt_regs *re
- 			       struct syscall_trace_enter *rec)
- {
- 	struct syscall_tp_t {
--		unsigned long long regs;
-+		struct trace_entry ent;
- 		unsigned long syscall_nr;
- 		unsigned long args[SYSCALL_DEFINE_MAXARGS];
- 	} param;
- 	int i;
+>>>>> On Thu, 27 Jul 2023 18:05:34 +0300, Yauheni Kaliuta  wrote:
+
+ > bpf tracepoint program uses struct trace_event_raw_sys_enter as
+ > argument where trace_entry is the first field. Use the same instead
+ > of unsigned long long since if it's amended (for example by RT
+ > patch) it accesses data with wrong offset.
+
+ > Signed-off-by: Yauheni Kaliuta <ykaliuta@redhat.com>
+ > ---
+ >  kernel/trace/trace_syscalls.c | 10 ++++++++--
+ >  1 file changed, 8 insertions(+), 2 deletions(-)
+
+ > diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
+ > index 942ddbdace4a..07f4fa395e99 100644
+ > --- a/kernel/trace/trace_syscalls.c
+ > +++ b/kernel/trace/trace_syscalls.c
+ > @@ -555,12 +555,15 @@ static int perf_call_bpf_enter(struct trace_event_call *call, struct pt_regs *re
+ >  			       struct syscall_trace_enter *rec)
+ >  {
+ >  	struct syscall_tp_t {
+ > -		unsigned long long regs;
+ > +		struct trace_entry ent;
+ >  		unsigned long syscall_nr;
+ >  		unsigned long args[SYSCALL_DEFINE_MAXARGS];
+ >  	} param;
+ >  	int i;
  
-+	BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
-+
-+	/* __bpf_prog_run() requires *regs as the first parameter */
- 	*(struct pt_regs **)&param = regs;
- 	param.syscall_nr = rec->nr;
- 	for (i = 0; i < sys_data->nb_args; i++)
-@@ -657,11 +660,14 @@ static int perf_call_bpf_exit(struct trace_event_call *call, struct pt_regs *reg
- 			      struct syscall_trace_exit *rec)
- {
- 	struct syscall_tp_t {
--		unsigned long long regs;
-+		struct trace_entry ent;
- 		unsigned long syscall_nr;
- 		unsigned long ret;
- 	} param;
+ > +	BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
+ > +
+ > +	/* __bpf_prog_run() requires *regs as the first parameter */
+ >  	*(struct pt_regs **)&param = regs;
+ >  	param.syscall_nr = rec->nr;
+ >  	for (i = 0; i < sys_data->nb_args; i++)
+ > @@ -657,11 +660,14 @@ static int perf_call_bpf_exit(struct trace_event_call *call, struct pt_regs *reg
+ >  			      struct syscall_trace_exit *rec)
+ >  {
+ >  	struct syscall_tp_t {
+ > -		unsigned long long regs;
+ > +		struct trace_entry ent;
+ >  		unsigned long syscall_nr;
+ >  		unsigned long ret;
+ >  	} param;
  
-+	BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
-+
-+	/* __bpf_prog_run() requires *regs as the first parameter */
- 	*(struct pt_regs **)&param = regs;
- 	param.syscall_nr = rec->nr;
- 	param.ret = rec->ret;
+ > +	BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
+ > +
+ > +	/* __bpf_prog_run() requires *regs as the first parameter */
+ >  	*(struct pt_regs **)&param = regs;
+ >  	param.syscall_nr = rec->nr;
+ >  	param.ret = rec->ret;
+ > -- 
+
+ > 2.41.0
+
+
 -- 
-2.41.0
+WBR,
+Yauheni Kaliuta
 
 
