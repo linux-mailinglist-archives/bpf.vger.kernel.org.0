@@ -1,75 +1,69 @@
-Return-Path: <bpf+bounces-6060-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6062-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 699B5764D6D
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 10:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 68CE1764D77
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 10:34:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24A99282249
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 08:32:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23B72281A7B
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 08:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86367BE71;
-	Thu, 27 Jul 2023 08:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD17C2FD;
+	Thu, 27 Jul 2023 08:34:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DEE5D521
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 08:32:34 +0000 (UTC)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96C13C5B4
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 01:32:05 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbc59de009so6895555e9.3
-        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 01:32:05 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6290BD51B
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 08:34:43 +0000 (UTC)
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C3C41432
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 01:34:21 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-992e22c09edso83791866b.2
+        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 01:34:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wowsignal-io.20221208.gappssmtp.com; s=20221208; t=1690446676; x=1691051476;
+        d=gmail.com; s=20221208; t=1690446811; x=1691051611;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fZFtCpovnp82kT+FkbHY0+/cBruEvbU7wiC862ePSTI=;
-        b=K7tLlDmQGygN+P8AUY4HaZJeNFLMebfjrBrw3ETxkwRaLv/xIdJAA1w9GC8syEyqVp
-         YSxwyQQzu/JvlLv1w8c6solAxDm4LrjxLnGrOE7h7p3ANh9zWoR/H3pmAvglG0Hd9ZvS
-         ABVCCCfnNDdUpRuPJcxtRbQQ24hDZFUT+TJMqpH2D8cKO+U8DXzWRY1QO7+68aJdwSE9
-         82InR3Ani9UxDB2MT4zANVCpz3wuoZQbYNsWUDOmEDpGL81y3Nk25umjDBrLrpQdleFE
-         0T7eDtIlroh5/m3mWTnzBhkb7TZx8e4f0lRoAQMaEvzDSqtkWsNP7cbT+s39KPeIKMor
-         5wUA==
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nUvK86AzIN7ZlL1xdRRVHzWzExphj9M3BOhUf1rA40k=;
+        b=KgLkAYZv+ta3XaBsSFR3dQGvo9QtzAQ2o1jwXHRDnOnQZvy2KEeGKCdHxeJZFyqbyD
+         c7Q3B6p2FkmuiX+rEENXtzY2TDfzZUwI+VBkhxRB9Jr57BwO6JNS/GP66GNL73ArzyzB
+         w3Y6APCEIsGwaR6cDVHzx4U5xv7htbSW8PyP+W5ZJ8+df2BAnqZqQwqh973FEukzXIWt
+         zv9CPRH0DCtcu1yjErlUZ3lglco9Ok1l5TMDhucqECK2U3hDeKy42wuTu8m03rLBvr3G
+         z6LDoCvaVQfLoG8Il5dbv0Un9CrC65dWPkWdrWOZqcYIeTRyMrogPk5OqCMTRwUB7BL9
+         oMAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690446676; x=1691051476;
+        d=1e100.net; s=20221208; t=1690446811; x=1691051611;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fZFtCpovnp82kT+FkbHY0+/cBruEvbU7wiC862ePSTI=;
-        b=caSCkgGBoB530Yqa/ga5/QfjjW2mZSM5IQjrlzd+2u6tQ3Nvd8Wtf4UnnsMeQiZK7r
-         NRS26QMyrYQt69+5oUozu7JshL73Q03X2VQ7uST2YEtyueR5KgF2le5IkMK8WNV21kvF
-         Fv/jRHMdXpdRl8H2C8+pc4YIJol3rAHxfO4pzNWku6/MZQm+VAnlHgSfZlyrEsStnARF
-         /sbNR236jrga3fJ+TCfZ26slpS5csa4V9o5G0WG9aUIaUdRAoJP6D0rpz7En002bjATE
-         vrMFiY+CBPq5idV/o4z2u6ADyHY9YM0kxHcWgG4+HkW8AzRB13lUquZzEbaQpK38AjVj
-         UVUg==
-X-Gm-Message-State: ABy/qLZa6rpib4A5zp/OnxU7MtCZ/YaUZ6V9T37Cf1f3lo71b1IOCJ4f
-	zpr6LQjjaxGsCUCtXwaZbkZrxQ==
-X-Google-Smtp-Source: APBJJlFECgYh4ciyD3uPwT7v4rGJlK987lIDqpLvmusJiYpIMvGRPpg4IIVHsOfCIleUAJbqJQuqYQ==
-X-Received: by 2002:a7b:c8cf:0:b0:3f9:b19c:aab4 with SMTP id f15-20020a7bc8cf000000b003f9b19caab4mr1163765wml.6.1690446676284;
-        Thu, 27 Jul 2023 01:31:16 -0700 (PDT)
-Received: from localhost (212-51-140-210.fiber7.init7.net. [212.51.140.210])
-        by smtp.gmail.com with ESMTPSA id k17-20020a7bc311000000b003fc02218d6csm4024695wmj.25.2023.07.27.01.31.15
+        bh=nUvK86AzIN7ZlL1xdRRVHzWzExphj9M3BOhUf1rA40k=;
+        b=QbJciKGJiTUksxNIQZFbb9kAc1sdIfs/QyDohVI2kl4o1wqqJgKX09KQv3qmClhBuH
+         LcNm37TOxu8ELrW6MeCGc+Msko5b8BLuLyXzV6bML260Xn7XufuZjCkOspifCkhzOcK4
+         bpHgI7NeBafZcUqgu7V5/fQb3R6s12CnMZ9grN9i3fchiLl27Pa6mL0LkKQJKAHY9sqv
+         ytmJGz3PJUCfE4dvduRK7yb0/ujB5iFEPe+ebhiv/lc9Ny6+NFwM8egStM36hIFfsBeX
+         ByhjATLRmwpGBatxK6KLdtY8BkCYmeshoHiB1QiQjVWCCPr6PRbBNtrA9mW1SA74pdzr
+         QzyQ==
+X-Gm-Message-State: ABy/qLY5arGaFYMlwBwGXDtJvrtKgIw1Jq+Tqj3M7eUYyv7hs0XD/ire
+	rc4WkP7orRFXYTVFDTcp9eA=
+X-Google-Smtp-Source: APBJJlE63BBISGiGuSxlurg9tsEbp/txk7bd/+va20fiNOjuGhhAWX7k3HqKzCPkedUrliqTOs47+w==
+X-Received: by 2002:a17:906:9bef:b0:987:5761:2868 with SMTP id de47-20020a1709069bef00b0098757612868mr1505178ejc.11.1690446811001;
+        Thu, 27 Jul 2023 01:33:31 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id q20-20020a1709060e5400b00992b3ea1ee4sm499779eji.149.2023.07.27.01.33.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 01:31:15 -0700 (PDT)
-Date: Thu, 27 Jul 2023 10:31:15 +0200
-From: Adam Sindelar <adam@wowsignal.io>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Adam Sindelar <ats@fb.com>,
-	David Vernet <void@manifault.com>,
-	Brendan Jackman <jackmanb@google.com>,
-	KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Florent Revest <revest@chromium.org>,
+        Thu, 27 Jul 2023 01:33:30 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 27 Jul 2023 10:33:28 +0200
+To: Andrew Werner <awerner32@gmail.com>
+Cc: bpf@vger.kernel.org, kernel-team@dataexmachina.dev,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH] libbpf: Expose API to consume one ring at a time
-Message-ID: <ZMIrU0kQZElkUhAg@debian>
-References: <20230725162654.912897-1-adam@wowsignal.io>
- <cb844776-9045-1b69-f1db-8ef7d75815b5@huaweicloud.com>
- <482ed32c-5650-54a5-d5bb-18b9bb03e838@huaweicloud.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: handle producer position overflow
+Message-ID: <ZMIr2GbRcvihtidX@krava>
+References: <20230724132543.1282645-1-awerner32@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,82 +72,93 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <482ed32c-5650-54a5-d5bb-18b9bb03e838@huaweicloud.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230724132543.1282645-1-awerner32@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 27, 2023 at 02:17:12PM +0800, Hou Tao wrote:
-> Hi,
+On Mon, Jul 24, 2023 at 09:25:45AM -0400, Andrew Werner wrote:
+> Before this patch, the producer position could overflow `unsigned
+> long`, in which case libbpf would forever stop processing new writes to
+> the ringbuf. This patch addresses that bug by avoiding ordered
+> comparison between the consumer and producer position. If the consumer
+> position is greater than the producer position, the assumption is that
+> the producer has overflowed.
 > 
-> On 7/27/2023 9:06 AM, Hou Tao wrote:
-> > Hi,
-> >
-> > On 7/26/2023 12:26 AM, Adam Sindelar wrote:
-> >> We already provide ring_buffer__epoll_fd to enable use of external
-> >> polling systems. However, the only API available to consume the ring
-> >> buffer is ring_buffer__consume, which always checks all rings. When
-> >> polling for many events, this can be wasteful.
-> >>
-> >> Signed-off-by: Adam Sindelar <adam@wowsignal.io>
-> >> ---
-> >>  tools/lib/bpf/libbpf.h  |  1 +
-> >>  tools/lib/bpf/ringbuf.c | 15 +++++++++++++++
-> >>  2 files changed, 16 insertions(+)
-> >>
-> >> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> >> index 55b97b2087540..20ccc65eb3f9d 100644
-> >> --- a/tools/lib/bpf/libbpf.h
-> >> +++ b/tools/lib/bpf/libbpf.h
-> >> @@ -1195,6 +1195,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
-> >>  				ring_buffer_sample_fn sample_cb, void *ctx);
-> >>  LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
-> >>  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
-> >> +LIBBPF_API int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id);
-> >>  LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
-> >>  
-> >>  struct user_ring_buffer_opts {
-> >> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> >> index 02199364db136..8d087bfc7d005 100644
-> >> --- a/tools/lib/bpf/ringbuf.c
-> >> +++ b/tools/lib/bpf/ringbuf.c
-> >> @@ -290,6 +290,21 @@ int ring_buffer__consume(struct ring_buffer *rb)
-> >>  	return res;
-> >>  }
-> >>  
-> >> +/* Consume available data from a single RINGBUF map identified by its ID.
-> >> + * The ring ID is returned in epoll_data by epoll_wait when called with
-> >> + * ring_buffer__epoll_fd.
-> >> + */
-> >> +int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id)
-> >> +{
-> >> +	struct ring *ring;
-> >> +
-> >> +	if (ring_id >= rb->ring_cnt)
-> >> +		return libbpf_err(-EINVAL);
-> >> +
-> >> +	ring = &rb->rings[ring_id];
-> >> +	return ringbuf_process_ring(ring);
-> > When ringbuf_process_ring() returns an error, we need to use
-> > libbpf_err() to set the errno accordingly.
+> A more defensive check could be to ensure that the delta is within
+> the allowed range, but such defensive checks are neither present in
+> the kernel side code nor in libbpf. The overflow that this patch
+> handles can occur while the producer and consumer follow a correct
+> protocol.
 > 
-> It seems that even when ringbuf_process_ring() returns a positive
-> result, we also need to cap it under INT_MAX, otherwise it may be cast
-> into a negative error.
-
-Ah, sorry I missed that. Fixed in v3, going out in a few moments.
-
-> >> +}
-> >> +
-> >>  /* Poll for available data and consume records, if any are available.
-> >>   * Returns number of records consumed (or INT_MAX, whichever is less), or
-> >>   * negative number, if any of the registered callbacks returned error.
-> >
-> >
-> > .
+> A selftest was written to demonstrate the bug, and indeed this patch
+> allows the test to continue to make progress past the overflow.
+> However, the author was unable to create a testing environment on a
+> 32-bit machine, and the test requires substantial memory and over 4
+> hours to hit the overflow point on a 64-bit machine. Thus, the test
+> is not included in this patch because of the impracticality of running
+> it.
 > 
+> Additionally, this patch adds commentary around a separate point to note
+> that the modular arithmetic is valid in the face of overflows, as that
+> fact may not be obvious to future readers.
+> 
+> v1->v2:
+>  - Fixed comment grammar.
+>  - Properly formatted subject line.
+> 
+> Reference:
+> [v1]: https://lore.kernel.org/bpf/20230724132404.1280848-1-awerner32@gmail.com/T/#u
+> 
+> Signed-off-by: Andrew Werner <awerner32@gmail.com>
+> ---
+>  tools/lib/bpf/ringbuf.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index 02199364db13..2055f3099843 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -237,7 +237,11 @@ static int64_t ringbuf_process_ring(struct ring *r)
+>  	do {
+>  		got_new_data = false;
+>  		prod_pos = smp_load_acquire(r->producer_pos);
+> -		while (cons_pos < prod_pos) {
+> +
+> +		/* Avoid signed comparisons between the positions; the producer
+> +		 * position can overflow before the consumer position.
+> +		 */
+> +		while (cons_pos != prod_pos) {
+>  			len_ptr = r->data + (cons_pos & r->mask);
+>  			len = smp_load_acquire(len_ptr);
+>  
+> @@ -498,6 +502,11 @@ void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size)
+>  	prod_pos = smp_load_acquire(rb->producer_pos);
+>  
+>  	max_size = rb->mask + 1;
+> +
+> +	/* Note that this formulation is valid in the face of overflow of
+> +	 * prod_pos so long as the delta between prod_pos and cons_pos is
+> +	 * no greater than max_size.
+> +	 */
+>  	avail_size = max_size - (prod_pos - cons_pos);
 
-Thanks!
+hi,
+the above hunk handles the case for 'prod_pos < cons_pos',
+
+but it looks like we assume 'cons_pos < prod_pos' in above calculation,
+should we check on that?
+
+jirka
+
+
+>  	/* Round up total size to a multiple of 8. */
+>  	total_size = (size + BPF_RINGBUF_HDR_SZ + 7) / 8 * 8;
+> -- 
+> 2.39.2
+> 
+> 
 
