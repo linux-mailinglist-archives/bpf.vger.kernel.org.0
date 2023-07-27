@@ -1,78 +1,85 @@
-Return-Path: <bpf+bounces-6066-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17AE37651E4
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 13:02:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CBA07652BC
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 13:43:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 732732822D2
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 11:02:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE7121C2161A
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 11:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF5D156E1;
-	Thu, 27 Jul 2023 11:01:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D97815AFD;
+	Thu, 27 Jul 2023 11:43:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C767CAD2E
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 11:01:49 +0000 (UTC)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8B11FEC;
-	Thu, 27 Jul 2023 04:01:48 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso38725566b.1;
-        Thu, 27 Jul 2023 04:01:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D66D156C8
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 11:43:16 +0000 (UTC)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142011FDA
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 04:43:16 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b8c81e36c0so5193035ad.0
+        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 04:43:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690455706; x=1691060506;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YHfvgh8rSSrdkQk5e+JkE++Yn7WaF+CVtRWpok9XC9Y=;
-        b=bRqxGL26+Cd4UDJMsCRgvHHMbT81l6+oh+WQ2BqDYUGtTo2K3iTnsbNqccRgY/Byz/
-         vPTwqRRFSrPzJpytHiM28SzqGji9BPWO15KZPEvup3CQnvFvmTFzESAYuHycDgwKiPCa
-         MuoOQdSAgoLgmr2wkrqPECTLGd8mdI9SeZj5LBE14vMx2qYPhrwXbcO5UuyWNGtiOIck
-         jky8AGRxvfIKKr+qHyZ/JqPG/hpATQmDozL0O6tSm37W5PUT3XnjWVSwTUEOyFc6lK/b
-         rQUV+kox2Rs5IBQ/Ic1X9hohq1x4QWvZtt7SGI4bbL4TXB0mQsE39lHid+Bg8EsQFvDc
-         4wsw==
+        d=gmail.com; s=20221208; t=1690458195; x=1691062995;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KK4VZ9ruNwgHm88OPBjIEJh/h6mfrVuJ+BqfAsbCmMU=;
+        b=EWyoZx6fEEshrCgJzhTs8LnM0Ewrgd3z9gxptICXxzhmYxOBd73QCGSwG4RUK/hZEo
+         9Pas93BFIMcP9FpDi3LkJwHqJ5Z851+EFH2yk4IOvXRWcTEesCtqb4MZ7WMotzaNDz4F
+         hTeSDcY+7JopzS28aZaxi3pBnvF9iZonjIjjMwjH1GgAWNJhGjWSiqC8tpRBs5GkJPQR
+         ocNfJbvVGHVHpppzUOiU9beyqIokZpRjQka8X+BF73c5RiI4ruVH0xGpmHjkgEbD19cJ
+         zkjiy9wVye7DL5dx9olOR5RFTqOke/qnRAukhzKcRFknJkmUYk14iNuLoF4jxbEtLDjS
+         u6kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690455706; x=1691060506;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YHfvgh8rSSrdkQk5e+JkE++Yn7WaF+CVtRWpok9XC9Y=;
-        b=Ai37Gn0oqMZSQFFHmyvY76jf+oXyHPAFRnorri+ylwa30ZRjlYnEK0rIfDK9F3E4lj
-         acpEMEOsqYTnLS4v2jcgEJCShioS+Kk/hKcR1UDrXr0kXkXUfsR9nhZO92E8jqFgrdSf
-         /0JUZIo1BfE8wgerFzcAEj0c2QWHg8mVS1RSz73uSNAfqtbzvQrnqrVC+UM01ufIYMzj
-         n6085oedJ6vRwSV3pMG8lW4Oi+jAoHtMY77xrM40ZAYh3iWc8UFCQdjQkeHlY6QA4Bze
-         C0V/Zw927PhJLzHlrjvLVxNRRNGF83IfmeyPjEGGg98NcTZuSzwozohHl4vq41Esjh77
-         QwBw==
-X-Gm-Message-State: ABy/qLbKZfFQdKrpLNU8e5rh2XI21xGfK4zG+WSn6tS1H72wLmwxnH4g
-	W7ctKxiZmOhlHWBPPbTerKtTmNH5JcY=
-X-Google-Smtp-Source: APBJJlHcPaJ1NwM9+BwKxljX/Y1e7qZR3xAoj+zouHwkhYPy0b2mQN0JduuiJF3a/uJPaZ2Eq8zdWw==
-X-Received: by 2002:a17:906:10cd:b0:99b:d243:157c with SMTP id v13-20020a17090610cd00b0099bd243157cmr1845316ejv.31.1690455706292;
-        Thu, 27 Jul 2023 04:01:46 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id t26-20020a1709064f1a00b0099bd86f9248sm631649eju.63.2023.07.27.04.01.45
+        d=1e100.net; s=20221208; t=1690458195; x=1691062995;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KK4VZ9ruNwgHm88OPBjIEJh/h6mfrVuJ+BqfAsbCmMU=;
+        b=ipNiBvzpQmhfhp66Fp7swp7sgpB9krQ7bsS4Ho4bFCLItQEdFyNnt1Ml/ILcImmInc
+         b2D/gOQX6Lzq4DIuiIZRcUowzaIscheZ/3dQJeN4tOEpn8YcuMeonLOExfGwxUbP5OLu
+         etiDclsdRsbe4FBKKKhpmevQUADRz4KtcuWKyBR6pNX7FuXyXyootsaYfR2LSOBgeC4H
+         jku9bXkbZxWvQ8P9KQugKjhGiQYuW0XrfroPKIIjg9VGNtJPzjA2pb4NoMKDoIzgB3H2
+         CPAQschruKy0tlUQHzyUhzmEzgezN4ixJMn5+KAq/XKSg5atU9bq6YAUu/yT8o6ac3fo
+         oQHw==
+X-Gm-Message-State: ABy/qLbTC9K7Thd0DzaKmc0Q1mhQ4M5hJRLGfDp7ZgCvA3g+6BRUBgoQ
+	DoFtbraNCgd7WpbnMi7a2YY=
+X-Google-Smtp-Source: APBJJlFnXQdhPmkJQlBfqHjPLZUpcrGcjMKb2isSVPfHFPhowQ08O9bLQocU4Eqg9nM0gy2J/o+oqA==
+X-Received: by 2002:a17:902:ec8f:b0:1b8:b436:c006 with SMTP id x15-20020a170902ec8f00b001b8b436c006mr4483645plg.12.1690458195478;
+        Thu, 27 Jul 2023 04:43:15 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:ac01:1e6:5400:4ff:fe85:7796])
+        by smtp.gmail.com with ESMTPSA id z1-20020a170903018100b001b6a27dff99sm1419106plg.159.2023.07.27.04.43.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 04:01:45 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 27 Jul 2023 13:01:43 +0200
-To: Xiangyu Chen <xiangyu.chen@eng.windriver.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] libbpf: fix warnings "'pad_type' 'pad_bits' 'new_off'
- may be used uninitialized"
-Message-ID: <ZMJOl5uLrK9rucXB@krava>
-References: <20230727082536.1974154-1-xiangyu.chen@eng.windriver.com>
+        Thu, 27 Jul 2023 04:43:15 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v2 bpf-next 0/2] bpf: Fix fill_link_info and add selftest 
+Date: Thu, 27 Jul 2023 11:43:07 +0000
+Message-Id: <20230727114309.3739-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727082536.1974154-1-xiangyu.chen@eng.windriver.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -80,59 +87,25 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 27, 2023 at 04:25:36PM +0800, Xiangyu Chen wrote:
-> From: Xiangyu Chen <xiangyu.chen@windriver.com>
-> 
-> When turn on the yocto DEBUG_BUILD flag, the build options for gcc would enable maybe-uninitialized,
-> and following warnings would be reported as below:
+Patch #1: Fix an error in fill_link_info reported by Dan
+Patch #2: Add selftest for #1
 
-curious, what's the gcc version? I can't reproduce that,
-and we already have all warnings enabled:
+Yafang Shao (2):
+  bpf: Fix uninitialized symbol in bpf_perf_link_fill_kprobe()
+  selftests/bpf: Add selftest for fill_link_info
 
-  CFLAGS += -Werror -Wall
+v1->v2:
+  - Fix BPF CI failure due to the enabled ENDBDR
 
-they seem like false warnings also, because ARRAY_SIZE(pads)
-will be always > 0
+ kernel/bpf/syscall.c                               |  10 +-
+ .../selftests/bpf/prog_tests/fill_link_info.c      | 238 +++++++++++++++++++++
+ .../selftests/bpf/progs/test_fill_link_info.c      |  25 +++
+ tools/testing/selftests/bpf/test_progs.h           |  19 ++
+ 4 files changed, 287 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_fill_link_info.c
 
-jirka
+-- 
+1.8.3.1
 
-> 
-> | btf_dump.c: In function 'btf_dump_emit_bit_padding':
-> | btf_dump.c:916:4: error: 'pad_type' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> |   916 |    btf_dump_printf(d, "\n%s%s: %d;", pfx(lvl), pad_type,
-> |       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> |   917 |      in_bitfield ? new_off - cur_off : 0);
-> |       |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> | btf_dump.c:929:6: error: 'pad_bits' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> |   929 |   if (bits == pad_bits) {
-> |       |      ^
-> | btf_dump.c:913:28: error: 'new_off' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> |   913 |       (new_off == next_off && roundup(cur_off, next_align * 8) != new_off) ||
-> |       |       ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> |   HOSTLD  scripts/mod/modpost
-> 
-> Signed-off-by: Xiangyu Chen <xiangyu.chen@windriver.com>
-> ---
->  tools/lib/bpf/btf_dump.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index 4d9f30bf7f01..79923c3b8777 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -867,8 +867,8 @@ static void btf_dump_emit_bit_padding(const struct btf_dump *d,
->  	} pads[] = {
->  		{"long", d->ptr_sz * 8}, {"int", 32}, {"short", 16}, {"char", 8}
->  	};
-> -	int new_off, pad_bits, bits, i;
-> -	const char *pad_type;
-> +	int new_off = 0, pad_bits = 0, bits, i;
-> +	const char *pad_type = NULL;
->  
->  	if (cur_off >= next_off)
->  		return; /* no gap */
-> -- 
-> 2.34.1
-> 
-> 
 
