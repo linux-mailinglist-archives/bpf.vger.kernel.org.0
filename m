@@ -1,76 +1,75 @@
-Return-Path: <bpf+bounces-6081-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6082-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43F5C7655E4
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 16:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD3D67655EC
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 16:28:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7A132823B4
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 14:26:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 810D32822F3
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 14:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36CC17751;
-	Thu, 27 Jul 2023 14:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408EA17757;
+	Thu, 27 Jul 2023 14:27:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0AD8174D0
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 14:26:25 +0000 (UTC)
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CCF30D8
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 07:26:21 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63d09d886a3so7037206d6.2
-        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 07:26:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07997171AB
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 14:27:52 +0000 (UTC)
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9859AB4
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 07:27:51 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-76ad8892d49so92129485a.1
+        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 07:27:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690467980; x=1691072780;
+        d=gmail.com; s=20221208; t=1690468071; x=1691072871;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iG8sQ2cXuUFhOBJOfXd2cTvYqOb3QhhgdK9IHAFunfA=;
-        b=SondfhqtildiwdGLeRMAHRfDQQtL1/u/iztKURWQu0LShgEH2xxXLXL0fFhxYkajOz
-         Ggs9Webs0fEbD7xchmKkXVL6vC7ZA/sqKj1vZnMmM1MYyQQOzV8zl7ngtaPR3HEjbC7u
-         I0ZY7fCnO+XWM5rdLzy6HQgu/QmuXIqOgbgodnRG9pWvf4c5fk9TbCFrxaLSAochsxoE
-         r+NhDvv7yqxaWFFQy2poTh578/6McXQMb6i6YQSLj2IHHAYJb8wSYcYl565rOdoyMQ9a
-         ckjvvVRjbh1cVoIdctDAjcryaz2Y44wp7WRphIPgSqD1nhTbOtYYUeuTBSeqJlXDg5Sm
-         tDfQ==
+        bh=smAAMWPKU6WsX9XDYok9RgE2GXaOTtvMCbXQYV3XDb0=;
+        b=Bq7V3Hpe4RE/pKCCyj+Ln+nDuNzNL1QbTu0yVo3rdPioV7vT2tMuCv5X5QA2YkOrsL
+         OOn8JqF5a3DnSzH6GaIUiX8Z8FpvFZCEbQWUgfsstIrTVJGueqnynqlA7OJZVetLC+Zp
+         ioSxIeZKXhowHOIxFhgUdD+nRHIJL0fA+nY9IZi26mr9yXHGCgxvJIivSW87moQx/7tI
+         4DjIIXJeg1PziRxVTAZ79ceR90QHSwE+hC372mgQhwqNrPm/omwbqT3QbFqzDN6CD3P5
+         SuWRjzmNxE6Odo3w1FOE54SNZRzKqIfqHntG+ifCsZKR2E0dnPhmMGdxeGUQ5P4kFHr4
+         wT2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690467980; x=1691072780;
+        d=1e100.net; s=20221208; t=1690468071; x=1691072871;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iG8sQ2cXuUFhOBJOfXd2cTvYqOb3QhhgdK9IHAFunfA=;
-        b=eBRV2/j8Iw1fZzj9mttbQqMuCMrRb0Zl9S0ELS6g/OOFz72k0qz8SKYxDgYN7kxR73
-         mNpUF3eDb0dKCZERYqyvnlz8vcYxJ6XjIHtSBBEIhNRAFttlkE7N5TS3uexwiIuEEGgN
-         o0DuU1GTG3oo3ECqKD9FDxKOEfHGe4C0FkD+Hf7vQhC/BEuhH269u+Cq2ulMbCiwlXay
-         891FrY7YYt7x3mkl9MhYoCj5Bi3jByX8aKKz3+bBwusR2WH8XwUxEX2cfrTESBHCsqW3
-         3CR799yGo7zQI0+ONQcRBTmZYDG0bG9lodYu0baXV0wia2chGra6Ef2kcrCRTBE2kGJL
-         zuoQ==
-X-Gm-Message-State: ABy/qLaEAPOEcT567LBJ9/akIBh/en4d27ulZfx0zcXa+zxpiDhnvsUF
-	PTEmjGGUUudsCATP6ZCtWylzFJh6BWNc9bDhSa5jblZi3AvGRQ==
-X-Google-Smtp-Source: APBJJlFmSIIXZEwuiMUAJ8geVAe0ACDpRwcBFkXSuTpXWm8jWo5Bw5ii2yrk3hrzfD3tzi+x+K/i82wGJL92ELpyclE=
-X-Received: by 2002:a05:6214:268f:b0:63d:572:566 with SMTP id
- gm15-20020a056214268f00b0063d05720566mr127906qvb.46.1690467980193; Thu, 27
- Jul 2023 07:26:20 -0700 (PDT)
+        bh=smAAMWPKU6WsX9XDYok9RgE2GXaOTtvMCbXQYV3XDb0=;
+        b=iz5d5vo9IVQqFhRBQxrF/R7jRwVIcEd4nHI/iD9CmXO2W/2/BgBE2nEE2Y8Z4oKvlc
+         P6yUcDK/sxf6Rn3n8Vm5/DX3up2dBu1/t2pmIuW1YNrzEaGY6e6UUzatQH4MV1I6sa4m
+         S+yHGBEDw7fZdLm92qLiBXoBcsxI88m75etmb2A3eptFZPq9OhSmR1SA8h4cHrXaYdDZ
+         tYvVKXQ+3JPSMfJs9B73k9RxKRZ2Wvla4RcLTqsEVxmz6deR6g6ND8yBha2iXNEcPvWd
+         JWC5ndporo4n9xgu/0P9v7e3ZRQo9Ym/sBD/GqZ6yRX16GI+iPhDsQB3sLQfwDsoZZRe
+         LW9A==
+X-Gm-Message-State: ABy/qLaDaPj0z/ZZRquj+COgnmijCJqaCbbYGedCR4/plgrpJIPeAXC/
+	w+YQxX0cg4a2ZDtSQqelxA7Lo/tyZdSF6KHzBn4=
+X-Google-Smtp-Source: APBJJlFtnh+iqCHqjyO2hcxXpyt2Otl+2kZ1UWK+joS0LvXkq7SZGYsrIojdsGNN/6pVmGd/dGhXoMYVbMzMcGXRpfk=
+X-Received: by 2002:a0c:b391:0:b0:63c:f979:b810 with SMTP id
+ t17-20020a0cb391000000b0063cf979b810mr131135qve.46.1690468070619; Thu, 27 Jul
+ 2023 07:27:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230727114309.3739-1-laoar.shao@gmail.com> <20230727114309.3739-2-laoar.shao@gmail.com>
- <ZMJsETrHUF1X05t/@krava>
-In-Reply-To: <ZMJsETrHUF1X05t/@krava>
+References: <20230727114309.3739-1-laoar.shao@gmail.com> <20230727114309.3739-3-laoar.shao@gmail.com>
+ <ZMJ1+22ByZfWrL8I@krava>
+In-Reply-To: <ZMJ1+22ByZfWrL8I@krava>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 27 Jul 2023 22:25:44 +0800
-Message-ID: <CALOAHbDGW=vTyHWyThJN+5dScczyVrntoZWjax5O6uQKNReN3A@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Fix uninitialized symbol in bpf_perf_link_fill_kprobe()
+Date: Thu, 27 Jul 2023 22:27:14 +0800
+Message-ID: <CALOAHbD-sh56bW+t_ggyKEu-Pisodkvi_a07ovUG1eL7P1aGmg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add selftest for fill_link_info
 To: Jiri Olsa <olsajiri@gmail.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
 	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, bpf@vger.kernel.org, 
-	Dan Carpenter <dan.carpenter@linaro.org>
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -80,64 +79,132 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 27, 2023 at 9:07=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
+On Thu, Jul 27, 2023 at 9:49=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
 e:
 >
-> On Thu, Jul 27, 2023 at 11:43:08AM +0000, Yafang Shao wrote:
-> > The patch 1b715e1b0ec5: "bpf: Support ->fill_link_info for
-> > perf_event" from Jul 9, 2023, leads to the following Smatch static
-> > checker warning:
-> >
-> >     kernel/bpf/syscall.c:3416 bpf_perf_link_fill_kprobe()
-> >     error: uninitialized symbol 'type'.
-> >
-> > That can happens when uname is NULL. So fix it by verifying the uname
-> > when we really need to fill it.
-> >
-> > Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
-> > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > Closes: https://lore.kernel.org/bpf/85697a7e-f897-4f74-8b43-82721bebc46=
-2@kili.mountain/
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  kernel/bpf/syscall.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 7f4e8c3..ad9360d 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -3376,16 +3376,16 @@ static int bpf_perf_link_fill_common(const stru=
-ct perf_event *event,
-> >       size_t len;
-> >       int err;
-> >
-> > -     if (!ulen ^ !uname)
-> > -             return -EINVAL;
+> On Thu, Jul 27, 2023 at 11:43:09AM +0000, Yafang Shao wrote:
 >
-> would it make more sense to keep above check in place and move the
-> !uname change below? I'd think we want to return error in case of
-> wrong arguments as soon as possible
+> SNIP
+>
+> > +static int verify_link_info(int fd, enum bpf_perf_event_type type, lon=
+g addr, ssize_t offset)
+> > +{
+> > +     struct bpf_link_info info;
+> > +     __u32 len =3D sizeof(info);
+> > +     char buf[PATH_MAX];
+> > +     int err =3D 0;
+> > +
+> > +     memset(&info, 0, sizeof(info));
+> > +     buf[0] =3D '\0';
+> > +
+> > +again:
+> > +     err =3D bpf_link_get_info_by_fd(fd, &info, &len);
+> > +     if (!ASSERT_OK(err, "get_link_info"))
+> > +             return -1;
+> > +
+> > +     switch (info.type) {
+> > +     case BPF_LINK_TYPE_PERF_EVENT:
+> > +             if (!ASSERT_EQ(info.perf_event.type, type, "perf_type_mat=
+ch"))
+> > +                     return -1;
+> > +
+> > +             switch (info.perf_event.type) {
+> > +             case BPF_PERF_EVENT_KPROBE:
+> > +             case BPF_PERF_EVENT_KRETPROBE:
+> > +                     ASSERT_EQ(info.perf_event.kprobe.offset, offset, =
+"kprobe_offset");
+> > +
+> > +                     /* In case kptr setting is not permitted or MAX_S=
+YMS is reached */
+> > +                     if (addr) {
+> > +                             long addrs[2] =3D {
+> > +                                     addr + offset,
+> > +                                     addr + 0x4, /* For ENDBDR */
+> > +                             };
+> > +
+> > +                             ASSERT_IN_ARRAY(info.perf_event.kprobe.ad=
+dr, addrs, "kprobe_addr");
+>
+> we have check for IBT in get_func_ip_test, it might be easier
+> to use the same in here as well and do the exact check
 
-Good point. Will change it.
+Thanks for your information!
+will change it.
 
 >
-> > -     if (!uname)
-> > -             return 0;
-> > -
-> >       err =3D bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
-> >                                     probe_offset, probe_addr);
-> >       if (err)
-> >               return err;
-> >
-> > +     if (!ulen ^ !uname)
-> > +             return -EINVAL;
-> > +     if (!uname)
-> > +             return 0;
+> we wouldn't need the ASSERT_IN_ARRAY then and would be correct
+> wrt other archs
 >
-> and here we just return 0 if we do not store the name to provided buffer
+>
+> SNIP
+>
+> > +static void test_uprobe_fill_link_info(struct test_fill_link_info *ske=
+l,
+> > +                                    enum bpf_perf_event_type type, ssi=
+ze_t offset,
+> > +                                    bool retprobe)
+> > +{
+> > +     int link_fd, err;
+> > +
+> > +     skel->links.uprobe_run =3D bpf_program__attach_uprobe(skel->progs=
+.uprobe_run, retprobe,
+> > +                                                         0, /* self pi=
+d */
+> > +                                                         UPROBE_FILE, =
+offset);
+> > +     if (!ASSERT_OK_PTR(skel->links.uprobe_run, "attach_uprobe"))
+> > +             return;
+> > +
+> > +     link_fd =3D bpf_link__fd(skel->links.uprobe_run);
+> > +     if (!ASSERT_GE(link_fd, 0, "link_fd"))
+> > +             return;
+> > +
+> > +     err =3D verify_link_info(link_fd, type, 0, offset);
+> > +     ASSERT_OK(err, "verify_link_info");
+> > +     bpf_link__detach(skel->links.uprobe_run);
+> > +}
+> > +
+> > +void serial_test_fill_link_info(void)
+>
+> why does it need to be serial?
 
-Will do it.
+Ah, it can run in parallel. will change it.
+
+>
+> > +{
+> > +     struct test_fill_link_info *skel;
+> > +     ssize_t offset;
+> > +
+> > +     skel =3D test_fill_link_info__open_and_load();
+> > +     if (!ASSERT_OK_PTR(skel, "skel_open"))
+> > +             goto cleanup;
+> > +
+> > +     /* load kallsyms to compare the addr */
+> > +     if (!ASSERT_OK(load_kallsyms_refresh(), "load_kallsyms_refresh"))
+> > +             return;
+> > +     if (test__start_subtest("kprobe_link_info"))
+> > +             test_kprobe_fill_link_info(skel, BPF_PERF_EVENT_KPROBE, f=
+alse, false);
+> > +     if (test__start_subtest("kretprobe_link_info"))
+> > +             test_kprobe_fill_link_info(skel, BPF_PERF_EVENT_KRETPROBE=
+, true, false);
+> > +     if (test__start_subtest("fill_invalid_user_buff"))
+> > +             test_kprobe_fill_link_info(skel, BPF_PERF_EVENT_KPROBE, f=
+alse, true);
+> > +     if (test__start_subtest("tracepoint_link_info"))
+> > +             test_tp_fill_link_info(skel);
+> > +
+> > +     offset =3D get_uprobe_offset(&uprobe_func);
+> > +     if (test__start_subtest("uprobe_link_info"))
+> > +             test_uprobe_fill_link_info(skel, BPF_PERF_EVENT_UPROBE, o=
+ffset, false);
+> > +     if (test__start_subtest("uretprobe_link_info"))
+> > +             test_uprobe_fill_link_info(skel, BPF_PERF_EVENT_URETPROBE=
+, offset, true);
+>
+> do you plan to add kprobe_multi link test as well?
+
+will add it in the next version.
 
 --=20
 Regards
