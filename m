@@ -1,81 +1,79 @@
-Return-Path: <bpf+bounces-6101-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6102-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57C45765BF4
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 21:16:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFFFE765D0C
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 22:15:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1146B282310
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 19:16:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C1B91C216F7
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 20:15:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB15B1AA8D;
-	Thu, 27 Jul 2023 19:16:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A17091CA04;
+	Thu, 27 Jul 2023 20:15:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926501989F;
-	Thu, 27 Jul 2023 19:16:06 +0000 (UTC)
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524A52735;
-	Thu, 27 Jul 2023 12:16:04 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-267f8f36a3cso836203a91.2;
-        Thu, 27 Jul 2023 12:16:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637CF17AC1;
+	Thu, 27 Jul 2023 20:15:26 +0000 (UTC)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E337C1FDD;
+	Thu, 27 Jul 2023 13:15:24 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686b9920362so1089764b3a.1;
+        Thu, 27 Jul 2023 13:15:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690485364; x=1691090164;
+        d=gmail.com; s=20221208; t=1690488924; x=1691093724;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dID8NeabSHsX05XePj2pj/qvoOM/hy2hl2C7bgvnd6Q=;
-        b=OlJmul22CWmxmKQyZwAmojqt7OH591SEnUtxWzeOTbRFOOt2l3pQlJEasuyGHj9RD3
-         8X7/Fg65Jix7XBWBMIU/ee2ogSi1dnfHmUazeqwAvJ6IWicNVXjQsPIlri5axUr57y5O
-         6D8+ajJV2u+cKyObOyIyX7f+xAXFxQVnlRpFlw335dqa3acZVmJGSUD6ArsmdDTodlTU
-         52h0cSxfRSpu943/W8pR4DaC/npOB0wS7I0uwEwNPswJNVzo5La3AK8vSaQzGjxWpF3T
-         2ND/m27pvDEuHS0Cbu9RjIptmwLJ9Xxw1sjE10AwukwVTix+thPYn2Hwxs45cYk7FV8A
-         4E4A==
+        bh=5pjZ51xtViHPu61r/EFWrYe+qxWhroS6JQ+9gaxVDaQ=;
+        b=AhyHSKUIkkgbZvtQQcyOKRC4C+sGBBU1rnW7UKRYJelhzH7/ZrA6+1Xg4/vOjR9OBb
+         2LiXllBWDr3LkIBs0B/HpC95oZnJRCD0J4e6Qd/+w+xbPyfsCkd+ypfy8zlEEQg2Cs2l
+         1bNXUidT+UahwU+1TAhT92SRQd4PrYR4jj1FwXZuZrdtDG/PyKSc/2Cj5pi/joFqabur
+         JkmKOL1V/ewlylT3LCRSl78qgYZTBnWSXDg0te4dPPC4jPB3EFA+GB1EhGkQOlrFtEFQ
+         b4MraEAS4OuOvFpd4YQIPbgaCFLUB+9vO60R9LnsWln7xCCnmoiYLosUxYKJ4hpTpGB3
+         IMIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690485364; x=1691090164;
+        d=1e100.net; s=20221208; t=1690488924; x=1691093724;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=dID8NeabSHsX05XePj2pj/qvoOM/hy2hl2C7bgvnd6Q=;
-        b=IlJK1QGfzw8DDx6j/cEHNt7AKMBv7BrtHsObSunixwj/ZwXIYkUtcA7xnidyfNWwfP
-         x/plCCZ5T3Lrh4hAPvqKg9fJvHFbuWewMQo7p3RT4NvzsO9eWEI1Q8wbejT8RQiH91Nl
-         pa7ciFmLWSW3GrtGK6UfIQk1NKce7ulySTnZ0EOQePb4ELE7Lj5yW4zxAhqlHJ4Xu4Ph
-         0balBh5Yyn8rGz9F/6uPPE0gUbfkruj+X45HC2TRHzZ56a2Jnbshg/tJbRNszhY2M/aU
-         rxE+aDBlHUUEFI3a2Cz0TFb70mWBqnGJ7BlCEJa9XUrcBQPE0ji+K1be92IC1T5bu8l6
-         xNYw==
-X-Gm-Message-State: ABy/qLYuwQ61gjBWhqfnvmiWsnqwLGuvkzbzVCC//OCadrjseTeAk8ig
-	hx+4uX5poESSQXNP40FFe3Y=
-X-Google-Smtp-Source: APBJJlGRJ6kgWY3B0JuC7JNvsEnptYN4e9RQNs80fEcAIYq4rGRyxlw3GIlPdl7RUNW1q/WFV9QlOg==
-X-Received: by 2002:a17:90a:948a:b0:268:1c7f:c041 with SMTP id s10-20020a17090a948a00b002681c7fc041mr191328pjo.29.1690485363769;
-        Thu, 27 Jul 2023 12:16:03 -0700 (PDT)
+        bh=5pjZ51xtViHPu61r/EFWrYe+qxWhroS6JQ+9gaxVDaQ=;
+        b=gtaaOTcsrMrErlKyvsUhYNJ6UxEkH2T7pnO/ageJcMbL2aF+Ewt0k9LbF6STUwLvji
+         SJiiGQtcDP81BtECOBlICJaP9dBa7Wkd76ztOkExyx7pM1Kosu2GyGdM+weeySeQG5Qc
+         bank9xEjwwnEUnqCp0H4pgJzDbxhFQpk2ETt1X/xI6XhdQzp88xn7IJdNRmFro7npkfg
+         4UDeETbg73Uuizjg0T5ymiXrtCKIJh6XgIhWTn9TWWwDtWhA70jTXXKWlru0uaeOJczq
+         aKCwFmB2hZpcCM+qBVeqa0+VSXARwU6y4N1s44GzBjc/UothsnwfYy0b8QCTFFM8TuRM
+         ohqQ==
+X-Gm-Message-State: ABy/qLYz+eRBc5J7pvbmy2hRhOhWNdPbI/cBBqARlDTWSJWYNepniGyX
+	KXUMwWw3yI0oq56EwXtK7aE=
+X-Google-Smtp-Source: APBJJlE/vCxhHaS86mEOqx3kFx6vMxKfngxzPSkTcBkc7tZIAXfeUFlJDQsMA7TZxE9/hIrOlKW7eg==
+X-Received: by 2002:a05:6a20:7351:b0:133:656e:fe1e with SMTP id v17-20020a056a20735100b00133656efe1emr128808pzc.47.1690488924247;
+        Thu, 27 Jul 2023 13:15:24 -0700 (PDT)
 Received: from localhost ([2605:59c8:148:ba10:705d:54ca:a48d:47da])
-        by smtp.gmail.com with ESMTPSA id n12-20020a17090ade8c00b00263ba6a248bsm3112835pjv.1.2023.07.27.12.16.02
+        by smtp.gmail.com with ESMTPSA id m17-20020aa78a11000000b0063afb08afeesm1862257pfa.67.2023.07.27.13.15.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 12:16:03 -0700 (PDT)
-Date: Thu, 27 Jul 2023 12:16:02 -0700
+        Thu, 27 Jul 2023 13:15:23 -0700 (PDT)
+Date: Thu, 27 Jul 2023 13:15:22 -0700
 From: John Fastabend <john.fastabend@gmail.com>
-To: Eric Dumazet <edumazet@google.com>, 
- Liu Jian <liujian56@huawei.com>
-Cc: davem@davemloft.net, 
+To: tglozar@redhat.com, 
+ linux-kernel@vger.kernel.org
+Cc: john.fastabend@gmail.com, 
+ jakub@cloudflare.com, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
  kuba@kernel.org, 
  pabeni@redhat.com, 
- john.fastabend@gmail.com, 
- jakub@cloudflare.com, 
- dsahern@kernel.org, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
  netdev@vger.kernel.org, 
- bpf@vger.kernel.org
-Message-ID: <64c2c272c111_831d20880@john.notmuch>
-In-Reply-To: <CANn89i+DuhGRXj9U-iXcEA__j6jvV5FC+tLNkGBCSqMCPpuFaA@mail.gmail.com>
-References: <20230726142029.2867663-1-liujian56@huawei.com>
- <20230726142029.2867663-2-liujian56@huawei.com>
- <CANn89i+DuhGRXj9U-iXcEA__j6jvV5FC+tLNkGBCSqMCPpuFaA@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] net: introduce __sk_rmem_schedule() helper
+ bpf@vger.kernel.org, 
+ Tomas Glozar <tglozar@redhat.com>
+Message-ID: <64c2d05a894be_831d20896@john.notmuch>
+In-Reply-To: <20230726085003.261112-1-tglozar@redhat.com>
+References: <20230726085003.261112-1-tglozar@redhat.com>
+Subject: RE: [PATCH RFC net] bpf: sockmap: Remove preempt_disable in
+ sock_map_sk_acquire
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,7 +82,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -92,70 +90,67 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Eric Dumazet wrote:
-> On Wed, Jul 26, 2023 at 4:15=E2=80=AFPM Liu Jian <liujian56@huawei.com>=
- wrote:
-> >
-> > Compared with sk_wmem_schedule(), sk_rmem_schedule() not only perform=
-s
-> > rmem accounting, but also checks skb_pfmemalloc. The __sk_rmem_schedu=
-le()
-> > helper function is introduced here to perform only rmem accounting re=
-lated
-> > activities.
-> >
-> =
+tglozar@ wrote:
+> From: Tomas Glozar <tglozar@redhat.com>
+> 
+> Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
+> allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
+> GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exist
+> patchset notes for details).
+> 
+> This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps to
+> BUG (sleeping function called from invalid context) on RT kernels.
+> 
+> preempt_disable was introduced together with lock_sk and rcu_read_lock
+> in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and update
+> in parallel") with no comment on why it is necessary.
+> 
+> Remove preempt_disable to fix BUG in sock_map_update_common on RT.
+> 
+> Signed-off-by: Tomas Glozar <tglozar@redhat.com>
+> ---
+>  net/core/sock_map.c | 2 --
+>  1 file changed, 2 deletions(-)
 
-> Why not care about pfmemalloc ? Why is it safe ?
-> =
+Hi Thomas,
 
-> You need to give more details, or simply reuse the existing helper.
+I looked at this and don't see the need for the preempt_disable there
+at the moment. I believe it was there simply to match the BPF caller
+case where it was preempt_disable at the time and now is migrate
+disable. From the BPF side we don't want the migrate, but from the
+syscall interface it should be OK.
 
-I would just use the existing helper. Seems it should be fine.
+Can you submit without RFC tag I think this should be OK.
 
-> =
+Thanks,
+John
 
-> > Signed-off-by: Liu Jian <liujian56@huawei.com>
-> > ---
-> >  include/net/sock.h | 12 ++++++++----
-> >  1 file changed, 8 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/include/net/sock.h b/include/net/sock.h
-> > index 2eb916d1ff64..58bf26c5c041 100644
-> > --- a/include/net/sock.h
-> > +++ b/include/net/sock.h
-> > @@ -1617,16 +1617,20 @@ static inline bool sk_wmem_schedule(struct so=
-ck *sk, int size)
-> >         return delta <=3D 0 || __sk_mem_schedule(sk, delta, SK_MEM_SE=
-ND);
-> >  }
-> >
-> > -static inline bool
-> > -sk_rmem_schedule(struct sock *sk, struct sk_buff *skb, int size)
-> > +static inline bool __sk_rmem_schedule(struct sock *sk, int size)
-> >  {
-> >         int delta;
-> >
-> >         if (!sk_has_account(sk))
-> >                 return true;
-> >         delta =3D size - sk->sk_forward_alloc;
-> > -       return delta <=3D 0 || __sk_mem_schedule(sk, delta, SK_MEM_RE=
-CV) ||
-> > -               skb_pfmemalloc(skb);
-> > +       return delta <=3D 0 || __sk_mem_schedule(sk, delta, SK_MEM_RE=
-CV);
-> > +}
-> > +
-> > +static inline bool
-> > +sk_rmem_schedule(struct sock *sk, struct sk_buff *skb, int size)
-> > +{
-> > +       return __sk_rmem_schedule(sk, size) || skb_pfmemalloc(skb);
-> >  }
-> >
-> >  static inline int sk_unused_reserved_mem(const struct sock *sk)
-> > --
-> > 2.34.1
-> >
+> 
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index 19538d628714..08ab108206bf 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -115,7 +115,6 @@ static void sock_map_sk_acquire(struct sock *sk)
+>  	__acquires(&sk->sk_lock.slock)
+>  {
+>  	lock_sock(sk);
+> -	preempt_disable();
+>  	rcu_read_lock();
+>  }
+>  
+> @@ -123,7 +122,6 @@ static void sock_map_sk_release(struct sock *sk)
+>  	__releases(&sk->sk_lock.slock)
+>  {
+>  	rcu_read_unlock();
+> -	preempt_enable();
+>  	release_sock(sk);
+>  }
+>  
+> 
+> base-commit: 22117b3ae6e37d07225653d9ae5ae86b3a54f99c
+> -- 
+> 2.39.3
+> 
 
 
 
