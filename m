@@ -1,73 +1,52 @@
-Return-Path: <bpf+bounces-6074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CE8D765487
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 15:07:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB4DB7654A1
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 15:10:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44A171C21621
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 13:07:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8886628237C
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 13:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5B1171AB;
-	Thu, 27 Jul 2023 13:07:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 285D6171BE;
+	Thu, 27 Jul 2023 13:10:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91B1171A0
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 13:07:36 +0000 (UTC)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58121FFA
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 06:07:34 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bc0a20b54so126810466b.1
-        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 06:07:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690463253; x=1691068053;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Es+5vdN+nG4iX8j4eDeJTQusrI7sKNJPZaOiazyf0c=;
-        b=I0aJ1eAVC5fwcnmQ8rzWNYl0iiV5m3XKQi6jH4fFaBqYJjBelBaxgbObzZ3J0OXdQ+
-         cH6ErQC7RkvppKRpDgoBevtPkcDAcaPW2qZq7Iedz+97FUHpMqK2IqxWRfvn8IQYqgJS
-         HZnLQ5UNn4PgJ6yuWYsXRHXed4fstlgO2zBXaeixJGStmeB6nAG6VCotISyR50awIB94
-         /awDEcRGNgWLFyQ5iGpjrR29RIDMgukbU5EHomI2AFNULUjAw9ZqzN45YxYLwldv7IZT
-         VPaqh3tq0H+5vnkZtKN2aI6hI5MIkcjhtaR9e9fUXHe7SWKNjA7ilhzE7ZzgyzB3z/cH
-         uMkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690463253; x=1691068053;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5Es+5vdN+nG4iX8j4eDeJTQusrI7sKNJPZaOiazyf0c=;
-        b=lpYfMmTcXNQxKD2lhTelHH5kClrEBZ4fqIGkKhHG8bt16cz/PR6KwU14+0yvGyBumQ
-         xKujiYXDiASUf2iPXPh/3UxN/DyeCPyVyFHxcwOwbBoiKoGzrWkzhyw8I9G3+TSIhRXe
-         1/AvAC0P+CBGZs776ObN5JE1gQ8HDkRTwa6L2ngKT4VtJmNyO4VYcJjSAvqRrXb2LzcS
-         oWFJ25XreD1JJo6LzZKIEyI/BBtQl5OK5glfA/3d6QxfpHSxYVwPU6ZMvJWaex49gD4v
-         Y82BdCqblEBwq1stnQNKgSB7RBd4DMbLG96pynCcicVj4IURP0AKf0XTHNQ37BySNazF
-         gpbQ==
-X-Gm-Message-State: ABy/qLYGOCAmcx9B/kyakVjw0HxL96rG6lyjmU6zZydBo/JsjlmAiWis
-	U9ZUEziSNX3g/FYB5g9yLJE=
-X-Google-Smtp-Source: APBJJlGCaK2G1ErJ4QnxLqgnfjBjha085jzCw/GBmnhRj1E1nRapJ4G4SjyGCKvvvfPu6E55oiT9Ng==
-X-Received: by 2002:a17:907:a0d3:b0:993:e752:1a6a with SMTP id hw19-20020a170907a0d300b00993e7521a6amr1981285ejc.21.1690463252944;
-        Thu, 27 Jul 2023 06:07:32 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id j16-20020a170906831000b00993cc1242d4sm745172ejx.151.2023.07.27.06.07.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 06:07:32 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 27 Jul 2023 15:07:29 +0200
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	bpf@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Fix uninitialized symbol in
- bpf_perf_link_fill_kprobe()
-Message-ID: <ZMJsETrHUF1X05t/@krava>
-References: <20230727114309.3739-1-laoar.shao@gmail.com>
- <20230727114309.3739-2-laoar.shao@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A245C171B1
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 13:10:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8EDAC433CD;
+	Thu, 27 Jul 2023 13:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690463425;
+	bh=6XtOWBOqoXRqViOpbkT/L6kPfUHrdwju/8qldGnoyDg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nNXv11BxsjrMvsy0OEkh1MWpswr64xonr50/2PX69R2E14euI+UI3PbGhj06SB8Py
+	 LtB8AbThU8Gxtjl8PG/cY67xFhZunLjJ/Xd/a0hjTbjTdFwA5rsPzeo9AX36P4B4fK
+	 kxBbeb0kz8VuhMohWPZOSmc7xgUIKSD2IOlAk95h9NxZaNGX63kVvggldZ7aBe3uiP
+	 YTaec059Qral+eEZ/t6fx5JbwIaxvP5bNyNH4AoPRfCP69jg3YAhF0ltntNT0K+93M
+	 6YMWaHQi1NamVamrfBBgiqbqhO8wuw23MA9kvZg4wgzvJV7kNmzmlCBwtEPcJxepIr
+	 USyEaLwhOnNDA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 6DAB240516; Thu, 27 Jul 2023 10:10:22 -0300 (-03)
+Date: Thu, 27 Jul 2023 10:10:22 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Jiri Olsa <olsajiri@gmail.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Yonghong Song <yhs@fb.com>, dwarves@vger.kernel.org,
+	bpf@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RESEND] BTF is not generated for gcc-built kernel with the
+ latest pahole
+Message-ID: <ZMJsvpddM8M5lbex@kernel.org>
+References: <20230726102534.9ebc4678ad2c9395cc9be196@kernel.org>
+ <ZMDvmLdZSLi2QqB+@krava>
+ <20230726200716.609d8433a7292eead95e7330@kernel.org>
+ <6f0da094-5b49-954b-21e9-93f8c8cecc3f@oracle.com>
+ <20230727093814.23681b2b0ac73aa89f368ae8@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,71 +55,50 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230727114309.3739-2-laoar.shao@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+In-Reply-To: <20230727093814.23681b2b0ac73aa89f368ae8@kernel.org>
+X-Url: http://acmel.wordpress.com
 
-On Thu, Jul 27, 2023 at 11:43:08AM +0000, Yafang Shao wrote:
-> The patch 1b715e1b0ec5: "bpf: Support ->fill_link_info for
-> perf_event" from Jul 9, 2023, leads to the following Smatch static
-> checker warning:
+Em Thu, Jul 27, 2023 at 09:38:14AM +0900, Masami Hiramatsu escreveu:
+> On Wed, 26 Jul 2023 15:46:03 +0100
+> Alan Maguire <alan.maguire@oracle.com> wrote:
 > 
->     kernel/bpf/syscall.c:3416 bpf_perf_link_fill_kprobe()
->     error: uninitialized symbol 'type'.
+> > On 26/07/2023 12:07, Masami Hiramatsu (Google) wrote:
+> > > Hi Jiri,
+> > > 
+> > > On Wed, 26 Jul 2023 12:04:08 +0200
+> > > Jiri Olsa <olsajiri@gmail.com> wrote:
+> > > 
+> > >> On Wed, Jul 26, 2023 at 10:25:34AM +0900, Masami Hiramatsu wrote:
+> > >>> Hello,
+> > >>> (I resend this because kconfig was too big)
+> > >>>
+> > >>> I found that BTF is not generated for gcc-built kernel with that latest
+> > >>> pahole (v1.25).
+> > >>
+> > >> hi,
+> > >> I can't reproduce on my setup with your .config
+> > >>
+> > >> does 'bpftool btf dump file ./vmlinux' show any error?
+> > >>
+> > >> is there any error in the kernel build output?
+> > > 
+> > > Yes, here it is. I saw these 2 lines.
+> > > 
+> > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0)!
+> > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0)!
+> > 
+> > This is strange, looks like some CUs were encoded incorrectly or we are
+> > parsing incorrectly. The error originates in die__process() and happens
+> > if the dwarf_tag() associated with the DIE isn't an expected unit; it's
+> > not even a valid tag value (0) it looks like. I've not built with gcc 13
+> > yet so it's possible that's the reason you're seeing this, I'll try to
+> > reproduce it..
 > 
-> That can happens when uname is NULL. So fix it by verifying the uname
-> when we really need to fill it.
-> 
-> Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Closes: https://lore.kernel.org/bpf/85697a7e-f897-4f74-8b43-82721bebc462@kili.mountain/
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  kernel/bpf/syscall.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 7f4e8c3..ad9360d 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3376,16 +3376,16 @@ static int bpf_perf_link_fill_common(const struct perf_event *event,
->  	size_t len;
->  	int err;
->  
-> -	if (!ulen ^ !uname)
-> -		return -EINVAL;
+> And this warning message is not good for debugging. It would better dump
+> the message with DIE index so that we can analyze the DWARF with other
+> tools.
 
-would it make more sense to keep above check in place and move the
-!uname change below? I'd think we want to return error in case of
-wrong arguments as soon as possible
-
-> -	if (!uname)
-> -		return 0;
-> -
->  	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
->  				      probe_offset, probe_addr);
->  	if (err)
->  		return err;
->  
-> +	if (!ulen ^ !uname)
-> +		return -EINVAL;
-> +	if (!uname)
-> +		return 0;
-
-and here we just return 0 if we do not store the name to provided buffer
-
-thanks,
-jirka
-
-> +
->  	if (buf) {
->  		len = strlen(buf);
->  		err = bpf_copy_to_user(uname, buf, ulen, len);
-> -- 
-> 1.8.3.1
-> 
+Good idea, I'll add that.
+ 
+- Arnaldo
 
