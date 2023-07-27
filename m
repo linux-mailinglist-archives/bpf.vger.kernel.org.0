@@ -1,162 +1,132 @@
-Return-Path: <bpf+bounces-6026-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6027-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E56A764304
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 02:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B840B764337
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 03:06:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A619D1C214A5
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 00:38:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E99C81C214A6
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 01:06:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A062D136D;
-	Thu, 27 Jul 2023 00:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5857915A3;
+	Thu, 27 Jul 2023 01:06:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E5A7C
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 00:38:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94487C433C8;
-	Thu, 27 Jul 2023 00:38:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690418298;
-	bh=LRGeETeUPNx91JrCWN7rH5t95ddjH/6FHmKY4pmTY1A=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qDJc1C+myXCOVWMkLvsWXEZAPLV+h5CUpfMzS/FEwLflVjfvQPwuA2XBbOoTp/J5f
-	 E7ZHiouKmTtpiytAaqkXpTYa87lPJcZt5eiL5K83nAnmTBW1PMe++b+Tk1RbHsIdr+
-	 sJtFD+As8mv3ryX2whdCbTyUOh2TzeAGK9Kzc1+1bTOPhwkmEnO+/2NJkGrrBIqc7X
-	 jFq4ciwNBKpIF/PikkvguDSr0u3elf9O4GIHK+NZrEv8niFYgFh7Qx5FZqapOg5KYo
-	 8wZXXd/FRuFU+P6xAYrqgqtCeoiYdlEemOo9b1NrkEzYuabuF5BrextSntdTlSTqz4
-	 RzLjF7iRx7Adw==
-Date: Thu, 27 Jul 2023 09:38:14 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Arnaldo Carvalho de Melo
- <acme@redhat.com>, Yonghong Song <yhs@fb.com>, dwarves@vger.kernel.org,
- bpf@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RESEND] BTF is not generated for gcc-built kernel with the
- latest pahole
-Message-Id: <20230727093814.23681b2b0ac73aa89f368ae8@kernel.org>
-In-Reply-To: <6f0da094-5b49-954b-21e9-93f8c8cecc3f@oracle.com>
-References: <20230726102534.9ebc4678ad2c9395cc9be196@kernel.org>
-	<ZMDvmLdZSLi2QqB+@krava>
-	<20230726200716.609d8433a7292eead95e7330@kernel.org>
-	<6f0da094-5b49-954b-21e9-93f8c8cecc3f@oracle.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B967C
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 01:06:28 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628571BC1;
+	Wed, 26 Jul 2023 18:06:27 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RBCJY75CDz4f3kFJ;
+	Thu, 27 Jul 2023 09:06:21 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgAH_xwNw8FkloRjNw--.11314S2;
+	Thu, 27 Jul 2023 09:06:24 +0800 (CST)
+Subject: Re: [PATCH] libbpf: Expose API to consume one ring at a time
+To: Adam Sindelar <adam@wowsignal.io>, bpf@vger.kernel.org
+Cc: Adam Sindelar <ats@fb.com>, David Vernet <void@manifault.com>,
+ Brendan Jackman <jackmanb@google.com>, KP Singh <kpsingh@chromium.org>,
+ linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Florent Revest <revest@chromium.org>
+References: <20230725162654.912897-1-adam@wowsignal.io>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <cb844776-9045-1b69-f1db-8ef7d75815b5@huaweicloud.com>
+Date: Thu, 27 Jul 2023 09:06:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+In-Reply-To: <20230725162654.912897-1-adam@wowsignal.io>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgAH_xwNw8FkloRjNw--.11314S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw4rJF1rtrWfXr45tr4fKrg_yoW8tF4rpr
+	s0kry3Grs5uryfZFZxWF1Sq3yYvan7Xr4xKrWxJw1UA39rJF4DXr1jkr13Ar43XrWkK34a
+	yr1Yga4UCry8WwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed, 26 Jul 2023 15:46:03 +0100
-Alan Maguire <alan.maguire@oracle.com> wrote:
+Hi,
 
-> On 26/07/2023 12:07, Masami Hiramatsu (Google) wrote:
-> > Hi Jiri,
-> > 
-> > On Wed, 26 Jul 2023 12:04:08 +0200
-> > Jiri Olsa <olsajiri@gmail.com> wrote:
-> > 
-> >> On Wed, Jul 26, 2023 at 10:25:34AM +0900, Masami Hiramatsu wrote:
-> >>> Hello,
-> >>> (I resend this because kconfig was too big)
-> >>>
-> >>> I found that BTF is not generated for gcc-built kernel with that latest
-> >>> pahole (v1.25).
-> >>
-> >> hi,
-> >> I can't reproduce on my setup with your .config
-> >>
-> >> does 'bpftool btf dump file ./vmlinux' show any error?
-> >>
-> >> is there any error in the kernel build output?
-> > 
-> > Yes, here it is. I saw these 2 lines.
-> > 
-> > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0)!
-> > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0)!
-> 
-> This is strange, looks like some CUs were encoded incorrectly or we are
-> parsing incorrectly. The error originates in die__process() and happens
-> if the dwarf_tag() associated with the DIE isn't an expected unit; it's
-> not even a valid tag value (0) it looks like. I've not built with gcc 13
-> yet so it's possible that's the reason you're seeing this, I'll try to
-> reproduce it..
+On 7/26/2023 12:26 AM, Adam Sindelar wrote:
+> We already provide ring_buffer__epoll_fd to enable use of external
+> polling systems. However, the only API available to consume the ring
+> buffer is ring_buffer__consume, which always checks all rings. When
+> polling for many events, this can be wasteful.
+>
+> Signed-off-by: Adam Sindelar <adam@wowsignal.io>
+> ---
+>  tools/lib/bpf/libbpf.h  |  1 +
+>  tools/lib/bpf/ringbuf.c | 15 +++++++++++++++
+>  2 files changed, 16 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 55b97b2087540..20ccc65eb3f9d 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -1195,6 +1195,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+>  				ring_buffer_sample_fn sample_cb, void *ctx);
+>  LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
+>  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
+> +LIBBPF_API int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id);
+>  LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
+>  
+>  struct user_ring_buffer_opts {
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index 02199364db136..8d087bfc7d005 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -290,6 +290,21 @@ int ring_buffer__consume(struct ring_buffer *rb)
+>  	return res;
+>  }
+>  
+> +/* Consume available data from a single RINGBUF map identified by its ID.
+> + * The ring ID is returned in epoll_data by epoll_wait when called with
+> + * ring_buffer__epoll_fd.
+> + */
+> +int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id)
+> +{
+> +	struct ring *ring;
+> +
+> +	if (ring_id >= rb->ring_cnt)
+> +		return libbpf_err(-EINVAL);
+> +
+> +	ring = &rb->rings[ring_id];
+> +	return ringbuf_process_ring(ring);
 
-And this warning message is not good for debugging. It would better dump
-the message with DIE index so that we can analyze the DWARF with other
-tools.
+When ringbuf_process_ring() returns an error, we need to use
+libbpf_err() to set the errno accordingly.
+> +}
+> +
+>  /* Poll for available data and consume records, if any are available.
+>   * Returns number of records consumed (or INT_MAX, whichever is less), or
+>   * negative number, if any of the registered callbacks returned error.
 
-
-> >>> When I'm using the distro origin pahole (v1.22) it works. (I also checked
-> >>> v1.23 and v1.24, both partially generated BTF)
-> >>>
-> >>> e.g.
-> >>>
-> >>> # echo 'f kfree $arg*' >> /sys/kernel/tracing/dynamic_events
-> >>> sh: write error: Invalid argument
-> >>>
-> >>> # cat /sys/kernel/tracing/error_log 
-> >>> [   21.595724] trace_fprobe: error: BTF is not available or not supported
-> >>>   Command: f kfree $arg*
-> >>>                    ^
-> >>> [   21.596032] trace_fprobe: error: Invalid $-valiable specified
-> >>>   Command: f kfree $arg*
-> >>>                    ^
-> >>>
-> >>> / # strings /sys/kernel/btf/vmlinux | grep kfree
-> >>
-> >> hm, if you have this file present, you have BTF in
-> > 
-> > Yes, it seems that the BTF itself is generated, but many entries seems
-> > dropped compared with pahole v1.22. So, if a given symbol has BTF, (e.g. 
-> > kfree_rcu_batch_init) it works.
-> >
-> 
-> Yep, BPF generation is more selective about what it emits in 1.25 to
-> avoid cases where a kernel function signature is ambiguous (multiple
-> functions of the same name with different signatures) or where it has
-> unexpected register use. You can observe this via pahole's --verbose
-> option (a lot of outut is emitted):
-> 
-> In a built kernel directory (where unstripped vmlinux is present):
-> $ PAHOLE_FLAGS=$(./scripts/pahole_flags)
-> $ PAHOLE=/usr/local/bin/pahole
-> $ pahole --verbose -J $PAHOLE_FLAGS vmlinux > /tmp/pahole.out
-
-So this will generate BTF from vmlinux DWARF info.
-
-> If you want to investigate why a function has been left out, look for
-> "skipping" verbose output like this:
-> 
-> skipping addition of 'access_error'(access_error) due to multiple
-> inconsistent function prototypes
-> skipping addition of
-> 'acpi_ex_convert_to_object_type_string'(acpi_ex_convert_to_object_type_string.isra.0)
-> due to unexpected register used for parameter
-
-Ah, that's nice. Let me try.
-
-> 
-> FWIW I see most of the below in my BTF output on bpf-next, though I am
-> missing a few, possibly due to differing config options since they don't
-> appear in kallsyms either. I don't see the DWARF tag label not handled
-> messages so it's possible that's a symptom of something
-> 
-> I suspect however some form of corruption in the DWARF representation
-> may be the reason a lot of these are missing. Would be worth trying
-> to "objdump -g vmlinux >vmlinux.dwarf" (file will be huge tho) I suspect.
-
-OK, let me dump the dwarf and check what information it has for "kfree".
-
-Thank you,
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
