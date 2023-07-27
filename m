@@ -1,134 +1,146 @@
-Return-Path: <bpf+bounces-6073-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6074-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 852447653CE
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 14:27:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CE8D765487
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 15:07:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B639D1C21644
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 12:27:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44A171C21621
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 13:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B383171B1;
-	Thu, 27 Jul 2023 12:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5B1171AB;
+	Thu, 27 Jul 2023 13:07:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364BC13AC1
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 12:27:18 +0000 (UTC)
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE574200
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 05:26:56 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31297125334so586928f8f.0
-        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 05:26:56 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91B1171A0
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 13:07:36 +0000 (UTC)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58121FFA
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 06:07:34 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bc0a20b54so126810466b.1
+        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 06:07:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1690460815; x=1691065615;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=krUsWJrSbT94Y2njRnvGsx0mZ0IDUPa+ST4QCqg21Lk=;
-        b=SirOA77z3IYYVzo6MktRkF6SXigTC2gNOaK9LgeVqhnF4poO7cjaVWGOowctJLdZm4
-         p4np4nG0P5aWhe0Qxr6zY1IDJIKSpli9n+ZvXQd49z08XLStoFaronpi2dokRWTzxDY/
-         AoBytA6eEDOmIDoUr2Fry49cmkURQXxjE6zYW0mqjIaFjYD3Mxq1/Gz/yr8S121D6Au5
-         M7HqFRoQD8xpI+PmWqJOjHp9dctOqdrxw+za7TJ2P1PPs4moeci+258f2dn7Acr4DE76
-         78vs8AiXcxCFuFC8ZC345YAXJI9YbMdhDSKn1iAST8RQR8pC+8QecnGDNxdwsrq9qXG0
-         mRzg==
+        d=gmail.com; s=20221208; t=1690463253; x=1691068053;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Es+5vdN+nG4iX8j4eDeJTQusrI7sKNJPZaOiazyf0c=;
+        b=I0aJ1eAVC5fwcnmQ8rzWNYl0iiV5m3XKQi6jH4fFaBqYJjBelBaxgbObzZ3J0OXdQ+
+         cH6ErQC7RkvppKRpDgoBevtPkcDAcaPW2qZq7Iedz+97FUHpMqK2IqxWRfvn8IQYqgJS
+         HZnLQ5UNn4PgJ6yuWYsXRHXed4fstlgO2zBXaeixJGStmeB6nAG6VCotISyR50awIB94
+         /awDEcRGNgWLFyQ5iGpjrR29RIDMgukbU5EHomI2AFNULUjAw9ZqzN45YxYLwldv7IZT
+         VPaqh3tq0H+5vnkZtKN2aI6hI5MIkcjhtaR9e9fUXHe7SWKNjA7ilhzE7ZzgyzB3z/cH
+         uMkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690460815; x=1691065615;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=krUsWJrSbT94Y2njRnvGsx0mZ0IDUPa+ST4QCqg21Lk=;
-        b=HVqpkE40GPYJ9jzzWcetnhQTuBPndJcx77qDTwZ7X4dkIr+pouJ/vGASqKCcoWj7mv
-         l8tcsZ7RDemnId/VBfO/d5IwuN2pvYZaluKc6dh1azMKMawE8StsVNRJAGNN/GsacojI
-         EzgrVKE04M9QqpS8HGIAmuDfUno+A3U/9bzTF/AYT3NvNTIkf4uECNf0Zrsi28UiYPjN
-         x3o9027gL57vlzo4I4GbBfAjvNp1kpLndAdscX64j5bv3HF9jeA32djzGY/tzO34BO2e
-         Q1wPm3UB2raC4PhUka8ivvcxNiR6qzAkgW4i6g+WvG6GxMraQQYjSDv5f3VU1QnU+wjJ
-         buOQ==
-X-Gm-Message-State: ABy/qLYcWh7C7Kq97t0h5b8XS2RBhPvSjYJG4EaBxcsttJO590b+C6GF
-	3LPGTW59++aWO8FZ7NKYFiP6zA==
-X-Google-Smtp-Source: APBJJlHZESWh+iPWchiyU4VlWw4pInX9ZuRnhfnhpPmvQe48Qu8W8h1SapWmUqg5A8Lk7cb0f7hH5A==
-X-Received: by 2002:adf:e252:0:b0:314:1e15:f30b with SMTP id bl18-20020adfe252000000b003141e15f30bmr1223531wrb.35.1690460814905;
-        Thu, 27 Jul 2023 05:26:54 -0700 (PDT)
-Received: from ?IPV6:2a02:8011:e80c:0:3cc3:939b:a917:f0a3? ([2a02:8011:e80c:0:3cc3:939b:a917:f0a3])
-        by smtp.gmail.com with ESMTPSA id c18-20020a5d4f12000000b0030647449730sm1931066wru.74.2023.07.27.05.26.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 05:26:54 -0700 (PDT)
-Message-ID: <b22038a1-d06f-8bca-57f1-cc8da84a8fca@isovalent.com>
-Date: Thu, 27 Jul 2023 13:26:53 +0100
+        d=1e100.net; s=20221208; t=1690463253; x=1691068053;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5Es+5vdN+nG4iX8j4eDeJTQusrI7sKNJPZaOiazyf0c=;
+        b=lpYfMmTcXNQxKD2lhTelHH5kClrEBZ4fqIGkKhHG8bt16cz/PR6KwU14+0yvGyBumQ
+         xKujiYXDiASUf2iPXPh/3UxN/DyeCPyVyFHxcwOwbBoiKoGzrWkzhyw8I9G3+TSIhRXe
+         1/AvAC0P+CBGZs776ObN5JE1gQ8HDkRTwa6L2ngKT4VtJmNyO4VYcJjSAvqRrXb2LzcS
+         oWFJ25XreD1JJo6LzZKIEyI/BBtQl5OK5glfA/3d6QxfpHSxYVwPU6ZMvJWaex49gD4v
+         Y82BdCqblEBwq1stnQNKgSB7RBd4DMbLG96pynCcicVj4IURP0AKf0XTHNQ37BySNazF
+         gpbQ==
+X-Gm-Message-State: ABy/qLYGOCAmcx9B/kyakVjw0HxL96rG6lyjmU6zZydBo/JsjlmAiWis
+	U9ZUEziSNX3g/FYB5g9yLJE=
+X-Google-Smtp-Source: APBJJlGCaK2G1ErJ4QnxLqgnfjBjha085jzCw/GBmnhRj1E1nRapJ4G4SjyGCKvvvfPu6E55oiT9Ng==
+X-Received: by 2002:a17:907:a0d3:b0:993:e752:1a6a with SMTP id hw19-20020a170907a0d300b00993e7521a6amr1981285ejc.21.1690463252944;
+        Thu, 27 Jul 2023 06:07:32 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id j16-20020a170906831000b00993cc1242d4sm745172ejx.151.2023.07.27.06.07.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 06:07:32 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 27 Jul 2023 15:07:29 +0200
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	bpf@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Fix uninitialized symbol in
+ bpf_perf_link_fill_kprobe()
+Message-ID: <ZMJsETrHUF1X05t/@krava>
+References: <20230727114309.3739-1-laoar.shao@gmail.com>
+ <20230727114309.3739-2-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [RFC PATCH 3/5] libbpf, bpftool: Support BPF_PROG_TYPE_OOM_POLICY
-Content-Language: en-GB
-To: Chuyi Zhou <zhouchuyi@bytedance.com>, hannes@cmpxchg.org,
- mhocko@kernel.org, roman.gushchin@linux.dev, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- wuyun.abel@bytedance.com, robin.lu@bytedance.com
-References: <20230727073632.44983-1-zhouchuyi@bytedance.com>
- <20230727073632.44983-4-zhouchuyi@bytedance.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20230727073632.44983-4-zhouchuyi@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727114309.3739-2-laoar.shao@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-2023-07-27 15:36 UTC+0800 ~ Chuyi Zhou <zhouchuyi@bytedance.com>
-> Support BPF_PROG_TYPE_OOM_POLICY program in libbpf and bpftool, so that
-> we can identify and use BPF_PROG_TYPE_OOM_POLICY in our application.
+On Thu, Jul 27, 2023 at 11:43:08AM +0000, Yafang Shao wrote:
+> The patch 1b715e1b0ec5: "bpf: Support ->fill_link_info for
+> perf_event" from Jul 9, 2023, leads to the following Smatch static
+> checker warning:
 > 
-> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+>     kernel/bpf/syscall.c:3416 bpf_perf_link_fill_kprobe()
+>     error: uninitialized symbol 'type'.
+> 
+> That can happens when uname is NULL. So fix it by verifying the uname
+> when we really need to fill it.
+> 
+> Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/bpf/85697a7e-f897-4f74-8b43-82721bebc462@kili.mountain/
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > ---
->  tools/bpf/bpftool/common.c     |  1 +
->  tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
->  tools/lib/bpf/libbpf.c         |  3 +++
->  tools/lib/bpf/libbpf_probes.c  |  2 ++
->  4 files changed, 20 insertions(+)
+>  kernel/bpf/syscall.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-> index cc6e6aae2447..c5c311299c4a 100644
-> --- a/tools/bpf/bpftool/common.c
-> +++ b/tools/bpf/bpftool/common.c
-> @@ -1089,6 +1089,7 @@ const char *bpf_attach_type_input_str(enum bpf_attach_type t)
->  	case BPF_TRACE_FENTRY:			return "fentry";
->  	case BPF_TRACE_FEXIT:			return "fexit";
->  	case BPF_MODIFY_RETURN:			return "mod_ret";
-> +	case BPF_OOM_POLICY:			return "oom_policy";
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 7f4e8c3..ad9360d 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3376,16 +3376,16 @@ static int bpf_perf_link_fill_common(const struct perf_event *event,
+>  	size_t len;
+>  	int err;
+>  
+> -	if (!ulen ^ !uname)
+> -		return -EINVAL;
 
-This case is not necessary. This block is here to keep legacy attach
-type strings supported by bpftool. In your case, the name is the same as
-the one provided by libbpf, so...
+would it make more sense to keep above check in place and move the
+!uname change below? I'd think we want to return error in case of
+wrong arguments as soon as possible
 
->  	case BPF_SK_REUSEPORT_SELECT:		return "sk_skb_reuseport_select";
->  	case BPF_SK_REUSEPORT_SELECT_OR_MIGRATE:	return "sk_skb_reuseport_select_or_migrate";
->  	default:	return libbpf_bpf_attach_type_str(t);
+> -	if (!uname)
+> -		return 0;
+> -
+>  	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+>  				      probe_offset, probe_addr);
+>  	if (err)
+>  		return err;
+>  
+> +	if (!ulen ^ !uname)
+> +		return -EINVAL;
+> +	if (!uname)
+> +		return 0;
 
-... we just want to pick it up from libbpf directly, here.
+and here we just return 0 if we do not store the name to provided buffer
 
-[...]
+thanks,
+jirka
 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 214f828ece6b..10496bb9b3bc 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -118,6 +118,7 @@ static const char * const attach_type_name[] = {
->  	[BPF_TRACE_KPROBE_MULTI]	= "trace_kprobe_multi",
->  	[BPF_STRUCT_OPS]		= "struct_ops",
->  	[BPF_NETFILTER]			= "netfilter",
-> +	[BPF_OOM_POLICY]		= "oom_policy",
->  };
-
+> +
+>  	if (buf) {
+>  		len = strlen(buf);
+>  		err = bpf_copy_to_user(uname, buf, ulen, len);
+> -- 
+> 1.8.3.1
+> 
 
