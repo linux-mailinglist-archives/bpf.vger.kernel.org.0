@@ -1,143 +1,117 @@
-Return-Path: <bpf+bounces-6041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2095A764697
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 08:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C3667648C3
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 09:35:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D85352820D8
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 06:17:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DABF3281DF1
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 07:35:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAD48A95A;
-	Thu, 27 Jul 2023 06:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9805DC2EB;
+	Thu, 27 Jul 2023 07:35:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 863371C3E
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 06:17:23 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6309F19B;
-	Wed, 26 Jul 2023 23:17:20 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RBLCJ0g8Mz4f3prt;
-	Thu, 27 Jul 2023 14:17:16 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgBnwBrpC8Jki6qGOA--.46874S2;
-	Thu, 27 Jul 2023 14:17:16 +0800 (CST)
-Subject: Re: [PATCH] libbpf: Expose API to consume one ring at a time
-From: Hou Tao <houtao@huaweicloud.com>
-To: Adam Sindelar <adam@wowsignal.io>, bpf@vger.kernel.org
-Cc: Adam Sindelar <ats@fb.com>, David Vernet <void@manifault.com>,
- Brendan Jackman <jackmanb@google.com>, KP Singh <kpsingh@chromium.org>,
- linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Florent Revest <revest@chromium.org>, Andrii Nakryiko <andrii@kernel.org>
-References: <20230725162654.912897-1-adam@wowsignal.io>
- <cb844776-9045-1b69-f1db-8ef7d75815b5@huaweicloud.com>
-Message-ID: <482ed32c-5650-54a5-d5bb-18b9bb03e838@huaweicloud.com>
-Date: Thu, 27 Jul 2023 14:17:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70393BE72
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 07:35:20 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB56B59E6
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 00:34:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1690443290;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l/d1hElCRlKYILqamKbhScYXhcTsJFSt0ooe3i9EVAI=;
+	b=b4E+6dAA21Js1iQYnTcRcjj5vP6UC78vNpf7jgKR2YkfpvWzS3rfYn4BGHXph/JNd5YkOq
+	gcU8XWZIjKTI1oHE7DEcAbWcijFOQeVy0BhSvnCuJbXm/GqVCck0K0o09hVOgmo9YgNCXh
+	ieixBhNIgEwHpx/R94qqvarYSoZzO8Y=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-605--zZC3-8gNgWNzthtUQ5RXA-1; Thu, 27 Jul 2023 03:34:46 -0400
+X-MC-Unique: -zZC3-8gNgWNzthtUQ5RXA-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-63c9463c116so1941686d6.0
+        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 00:34:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690443286; x=1691048086;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=l/d1hElCRlKYILqamKbhScYXhcTsJFSt0ooe3i9EVAI=;
+        b=PEUpDA9POrPWIH13rFHRhuDw2tpLNoKyYnEwkTEwAQZ49Sbb4wFpC7ryW98GTQOz7d
+         /gG5ZHEWBW6z6QHPMQDBgRFvNjUB0cd4nzFcSNHr/cvdDWU9/uk9ir9SQfZcj4+zwNMR
+         QdQLYMUig5xW1Rt3+fYDQQURV8d5xtPxCfexiQhIJ/JKzD8D8gO9zDjtZ1SPKJ2KAcs7
+         LgVmkRhuSSYzbK/sbJ0E12ejWckQEGMnG2KzSuaJvnSV8TA9mrSmqZoOTuySb4G9Crhy
+         CnRnBUFLPabnU6zZTFyBiqwdDxt+zCSphfk2b1Ca0CmS/0eqJ56UvRllqshvvd9udoz0
+         hLHA==
+X-Gm-Message-State: ABy/qLZ9/751NgJIeaWzpdf7P/z8GIsKflrgPrFlEgdJXHGui5zsngTO
+	frG0BrwyJIWRtYCgk0Xhc1aOvXGP5dTXXSqnjGlKGM106EVkIxxfnQVJIHoRBfWhGvOjvEtNTIF
+	PD4WxoyL8GzmI
+X-Received: by 2002:a05:6214:19e9:b0:63c:7427:e7e9 with SMTP id q9-20020a05621419e900b0063c7427e7e9mr4493707qvc.6.1690443285857;
+        Thu, 27 Jul 2023 00:34:45 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGTrykDjpbg/R1Mtb6qfJcIecQ9pyF15SQ90DIo/BDc2dp4I1nqmkSehaimfPaY6ZdARx0Vcw==
+X-Received: by 2002:a05:6214:19e9:b0:63c:7427:e7e9 with SMTP id q9-20020a05621419e900b0063c7427e7e9mr4493694qvc.6.1690443285622;
+        Thu, 27 Jul 2023 00:34:45 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-238-55.dyn.eolo.it. [146.241.238.55])
+        by smtp.gmail.com with ESMTPSA id e16-20020a0caa50000000b0063d3dbf77f8sm106914qvb.51.2023.07.27.00.34.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 00:34:45 -0700 (PDT)
+Message-ID: <c4ca108f891718188ea2a9560324d23de2740565.camel@redhat.com>
+Subject: Re: [PATCH v2] bpf: Add length check for
+ SK_DIAG_BPF_STORAGE_REQ_MAP_FD parsing
+From: Paolo Abeni <pabeni@redhat.com>
+To: Lin Ma <linma@zju.edu.cn>, davem@davemloft.net, edumazet@google.com, 
+ kuba@kernel.org, ast@kernel.org, martin.lau@kernel.org, yhs@fb.com, 
+ void@manifault.com, andrii@kernel.org, houtao1@huawei.com,
+ inwardvessel@gmail.com,  kuniyu@amazon.com, songliubraving@fb.com,
+ netdev@vger.kernel.org,  linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Date: Thu, 27 Jul 2023 09:34:41 +0200
+In-Reply-To: <20230725023330.422856-1-linma@zju.edu.cn>
+References: <20230725023330.422856-1-linma@zju.edu.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <cb844776-9045-1b69-f1db-8ef7d75815b5@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgBnwBrpC8Jki6qGOA--.46874S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF45WF48GF4DZFy7AFyrWFg_yoW5JFWfpr
-	s0kFy5Crs5ZryxZFZxWF1SqryYvan29r4xKrWxJw1UA39rAF4kXr1jkr1akr43JrZ5K34a
-	yrWYga48CryUW37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
+On Tue, 2023-07-25 at 10:33 +0800, Lin Ma wrote:
+> The nla_for_each_nested parsing in function bpf_sk_storage_diag_alloc
+> does not check the length of the nested attribute. This can lead to an
+> out-of-attribute read and allow a malformed nlattr (e.g., length 0) to
+> be viewed as a 4 byte integer.
+>=20
+> This patch adds an additional check when the nlattr is getting counted.
+> This makes sure the latter nla_get_u32 can access the attributes with
+> the correct length.
+>=20
+> Fixes: 1ed4d92458a9 ("bpf: INET_DIAG support in bpf_sk_storage")
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Lin Ma <linma@zju.edu.cn>
 
-On 7/27/2023 9:06 AM, Hou Tao wrote:
-> Hi,
->
-> On 7/26/2023 12:26 AM, Adam Sindelar wrote:
->> We already provide ring_buffer__epoll_fd to enable use of external
->> polling systems. However, the only API available to consume the ring
->> buffer is ring_buffer__consume, which always checks all rings. When
->> polling for many events, this can be wasteful.
->>
->> Signed-off-by: Adam Sindelar <adam@wowsignal.io>
->> ---
->>  tools/lib/bpf/libbpf.h  |  1 +
->>  tools/lib/bpf/ringbuf.c | 15 +++++++++++++++
->>  2 files changed, 16 insertions(+)
->>
->> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
->> index 55b97b2087540..20ccc65eb3f9d 100644
->> --- a/tools/lib/bpf/libbpf.h
->> +++ b/tools/lib/bpf/libbpf.h
->> @@ -1195,6 +1195,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
->>  				ring_buffer_sample_fn sample_cb, void *ctx);
->>  LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
->>  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
->> +LIBBPF_API int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id);
->>  LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
->>  
->>  struct user_ring_buffer_opts {
->> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
->> index 02199364db136..8d087bfc7d005 100644
->> --- a/tools/lib/bpf/ringbuf.c
->> +++ b/tools/lib/bpf/ringbuf.c
->> @@ -290,6 +290,21 @@ int ring_buffer__consume(struct ring_buffer *rb)
->>  	return res;
->>  }
->>  
->> +/* Consume available data from a single RINGBUF map identified by its ID.
->> + * The ring ID is returned in epoll_data by epoll_wait when called with
->> + * ring_buffer__epoll_fd.
->> + */
->> +int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id)
->> +{
->> +	struct ring *ring;
->> +
->> +	if (ring_id >= rb->ring_cnt)
->> +		return libbpf_err(-EINVAL);
->> +
->> +	ring = &rb->rings[ring_id];
->> +	return ringbuf_process_ring(ring);
-> When ringbuf_process_ring() returns an error, we need to use
-> libbpf_err() to set the errno accordingly.
+I guess this should go via the ebpf tree, right? Setting the delegate
+accordingly.=20
 
-It seems that even when ringbuf_process_ring() returns a positive
-result, we also need to cap it under INT_MAX, otherwise it may be cast
-into a negative error.
->> +}
->> +
->>  /* Poll for available data and consume records, if any are available.
->>   * Returns number of records consumed (or INT_MAX, whichever is less), or
->>   * negative number, if any of the registered callbacks returned error.
->
->
-> .
+Please correct me if I'm wrong.
+
+Thanks!
+
+/P
 
 
