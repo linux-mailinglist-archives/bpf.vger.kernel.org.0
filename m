@@ -1,154 +1,237 @@
-Return-Path: <bpf+bounces-6090-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6091-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B7FD76581B
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 17:57:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AC617658CE
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 18:35:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D05C1C20FDE
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 15:57:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C4511C21396
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 16:35:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A86F18029;
-	Thu, 27 Jul 2023 15:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7559D8F6F;
+	Thu, 27 Jul 2023 16:34:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D4991FA8
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 15:57:17 +0000 (UTC)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908A1BC;
-	Thu, 27 Jul 2023 08:57:16 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so18018321fa.2;
-        Thu, 27 Jul 2023 08:57:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4188E2712A
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 16:34:43 +0000 (UTC)
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9241A3582
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 09:34:32 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5840614b107so11890927b3.1
+        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 09:34:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690473434; x=1691078234;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8vCICIct8K3+YgunPDpZmpu6xpQGPQVUOsCGBeoDwb0=;
-        b=OJ+5JYa4jSCXYpoEa2HkyFE5XEpQhdQbMCvYdD2OMcq8h2zaKE+DsuyNLbwpzxTuhK
-         m9Ppypg+dkl4PKaZ4/4en+f3cxe3UKwgaRaeqt2XeYCkc63wdlK862yTdDvdW9j3uyyO
-         YFPkOTd2HEGdGIvQ5LjqaOcw4L2WqhTiuP/07KutfF8K+6MAYAM9t3usT/YkNwn9Qgv2
-         ZDjj8xYjBmboY62Utm/4AUcbXqra3I1/uB+Uxg28SUZlz/oXof4+O0pOcmrCma/Z10Qr
-         z8Vj0p9UdiX42w8qAzJefaPQe+tLMn/OUZM2Cx5LYVzEUMBxNpC4Lw51/R/uAI5BcSdY
-         ErDg==
+        d=google.com; s=20221208; t=1690475672; x=1691080472;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=K2wnygM7MIusbGo2m1Zs9M+OgJsgRaKyw0VCsBVXffw=;
+        b=YqmXBdRAc8mjDcLYv0aS25cODDci8fkh5RBrh6hQQ1ZwxcTMmrS72sVT8hschN2YjD
+         hhOUYWHn4+Cy1BzFHFwcr2YuwZef+EeDLbv6sN8Jc5LMvYCT4vcgKKdIRbl9ZcVtkV+C
+         YJojX8U57xD8jgY4UcJEcqrjd+rnZTES1Ih1P1vV4txP3K6ranANB79Vzh6/kK46/qGk
+         U2Wr1vVB7e2tyiDoPj2LOzcXQd7qVlrFlXDX6MNjClgD02G/pTtG9aZMnubAiRubJgvj
+         KtQlbUlNp+ykrp+ZgFGH5/s79NQtjtSWyVLgvjvg8E6ecGtAs9ebYmGV5QNIVQ6xWoK9
+         gvDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690473434; x=1691078234;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8vCICIct8K3+YgunPDpZmpu6xpQGPQVUOsCGBeoDwb0=;
-        b=INZcFVFr89X7KyhlWHCEIqMwUtH6PCUon4ZSohZ43pfbR9/JjsS7PRxXko6J3zFKZI
-         Gb4ybUoJeYYbXplMZeJJ3JBt3KrqMLPHps3P8TjE8TKAfECinBmPIU43ayMDQ0o+fd6i
-         WPxfn4DdcsEa4kyhW6tOwbjkyhC+6R0eQPGj1uAEId6AelTOkJs3NurWaZ+XlBU5ZUmj
-         BBelt6ssjQ0qJvoCb40z/RGf0TbZMp99THYca8pM8mWchCQW4JnThbpQ8QCqieM5VXRB
-         FFvXfd3LjgpJAYpoTD1PxMPlWbVQoMaXAzAsqOpCBYkYBG769OfxrGGFrwltWh2oJ05P
-         kEYA==
-X-Gm-Message-State: ABy/qLa8oTI/pPxgi4l6w8w8KSb0MRzeKcz1zX5EjO0qAu6D9+2YiUP4
-	L5jKy1ydgwnpIo5Dq0HJ2cqBCSLBDQ3kVyZ8PiI=
-X-Google-Smtp-Source: APBJJlHcMipd8RMktB74Ux8FwWPaimgHQp+yZF0ROaw8GYTovX5qbUn4dFv6d/MIl4/7vPjoXRZWF2a9cDU5CJ5rTCA=
-X-Received: by 2002:a05:651c:8c:b0:2b6:e2e4:7d9a with SMTP id
- 12-20020a05651c008c00b002b6e2e47d9amr2047420ljq.38.1690473434364; Thu, 27 Jul
- 2023 08:57:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690475672; x=1691080472;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K2wnygM7MIusbGo2m1Zs9M+OgJsgRaKyw0VCsBVXffw=;
+        b=gGv9dbfCa/Mws30N57YQo97h/+J4S/2ZL4rs5BAnsVlxV7lX1B87cyQDXXN4YOme5c
+         a0NUf0ubO0L+KTWprpoKz2D3WNwTMPY/2Jh1PeCKnlzShf5T+5YRpoddQyK8wPan6KgW
+         92Cc7yrUeYKfAluAdleofEJGhw96QGfkHIja05pE9Bj+sLikr57xZ0UPClSBunWgok4t
+         6vc6lpYpc+TX+xYn8capcXwcdhaPIBjpNXthP1OXHd+18XugW1ncDtMjHheig3UPk3z6
+         DxOsMCS/Y92gGv0+ZKiD59g8BtkahVPuJC4yNuSjoLaA8R5jdkxYbFlzn+v+5Zwxwdu1
+         fcQg==
+X-Gm-Message-State: ABy/qLZH/FgbUQmlcbuY3eKF5pR5FOhobM6BpovTEQQP7u3VHgOmthJl
+	7jvbgNDfbZvEqvfm7fMeNV/dFSg=
+X-Google-Smtp-Source: APBJJlERUQoE3E9Gg1Uz7deSmH9cWSH4/rFnKUo2C3gNiKyffPhqC5m4DHj1PXhNalpO8GaBC5dL5mw=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a81:b621:0:b0:56d:647:664b with SMTP id
+ u33-20020a81b621000000b0056d0647664bmr48653ywh.5.1690475671890; Thu, 27 Jul
+ 2023 09:34:31 -0700 (PDT)
+Date: Thu, 27 Jul 2023 09:34:30 -0700
+In-Reply-To: <cce9db50-8c9d-ea97-cb88-171fa46cc064@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230727073632.44983-1-zhouchuyi@bytedance.com> <7dbaabf9-c7c6-478b-0d07-b4ce0d7c116c@oracle.com>
-In-Reply-To: <7dbaabf9-c7c6-478b-0d07-b4ce0d7c116c@oracle.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 27 Jul 2023 08:57:03 -0700
-Message-ID: <CAADnVQLdu_6aJH+0wwpKB146HvxkhvL-uRGAqSPZ8jDMAMqX=A@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/5] mm: Select victim memcg using BPF_OOM_POLICY
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Chuyi Zhou <zhouchuyi@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, wuyun.abel@bytedance.com, 
-	robin.lu@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+Mime-Version: 1.0
+References: <20230724235957.1953861-1-sdf@google.com> <20230724235957.1953861-3-sdf@google.com>
+ <383cc1ce-3c87-4b80-9e70-e0c10a7c1dcc@redhat.com> <ZMGPMIpeBsfs4/8L@google.com>
+ <cce9db50-8c9d-ea97-cb88-171fa46cc064@redhat.com>
+Message-ID: <ZMKclgdh4OVHEkJE@google.com>
+Subject: Re: [xdp-hints] [RFC net-next v4 2/8] xsk: add TX timestamp and TX
+ checksum offload support
+From: Stanislav Fomichev <sdf@google.com>
+To: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc: brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	haoluo@google.com, jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, 
+	willemb@google.com, dsahern@kernel.org, magnus.karlsson@intel.com, 
+	bjorn@kernel.org, maciej.fijalkowski@intel.com, hawk@kernel.org, 
+	netdev@vger.kernel.org, xdp-hints@xdp-project.net
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 27, 2023 at 4:45=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
->
-> On 27/07/2023 08:36, Chuyi Zhou wrote:
-> > This patchset tries to add a new bpf prog type and use it to select
-> > a victim memcg when global OOM is invoked. The mainly motivation is
-> > the need to customizable OOM victim selection functionality so that
-> > we can protect more important app from OOM killer.
-> >
->
-> It's a nice use case, but at a high level, the approach pursued here
-> is, as I understand it, discouraged for new BPF program development.
-> Specifically, adding a new BPF program type with semantics like this
-> is not preferred. Instead, can you look at using something like
->
-> - using "fmod_ret" instead of a new program type
-> - use BPF kfuncs instead of helpers.
-> - add selftests in tools/testing/selftests/bpf not samples.
+On 07/27, Jesper Dangaard Brouer wrote:
+> 
+> 
+> On 26/07/2023 23.25, Stanislav Fomichev wrote:
+> > On 07/26, Jesper Dangaard Brouer wrote:
+> > > 
+> > > 
+> > > On 25/07/2023 01.59, Stanislav Fomichev wrote:
+> > > > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > > > index 11652e464f5d..8b40c80557aa 100644
+> > > > --- a/include/linux/netdevice.h
+> > > > +++ b/include/linux/netdevice.h
+> > > > @@ -1660,6 +1660,31 @@ struct xdp_metadata_ops {
+> > > >    			       enum xdp_rss_hash_type *rss_type);
+> > > >    };
+> > > > +/*
+> > > > + * This structure defines the AF_XDP TX metadata hooks for network devices.
+> > > > + * The following hooks can be defined; unless noted otherwise, they are
+> > > > + * optional and can be filled with a null pointer.
+> > > > + *
+> > > > + * int (*tmo_request_timestamp)(void *priv)
+> > > > + *     This function is called when AF_XDP frame requested egress timestamp.
+> > > > + *
+> > > > + * int (*tmo_fill_timestamp)(void *priv)
+> > > > + *     This function is called when AF_XDP frame, that had requested
+> > > > + *     egress timestamp, received a completion. The hook needs to return
+> > > > + *     the actual HW timestamp.
+> > > > + *
+> > > > + * int (*tmo_request_timestamp)(u16 csum_start, u16 csum_offset, void *priv)
+> > > > + *     This function is called when AF_XDP frame requested HW checksum
+> > > > + *     offload. csum_start indicates position where checksumming should start.
+> > > > + *     csum_offset indicates position where checksum should be stored.
+> > > > + *
+> > > > + */
+> > > > +struct xsk_tx_metadata_ops {
+> > > > +	void	(*tmo_request_timestamp)(void *priv);
+> > > > +	u64	(*tmo_fill_timestamp)(void *priv);
+> > > > +	void	(*tmo_request_checksum)(u16 csum_start, u16 csum_offset, void *priv);
+> > > > +};
+> > > > +
+> > > >    /**
+> > > >     * enum netdev_priv_flags - &struct net_device priv_flags
+> > > >     *
+> > > > @@ -1844,6 +1869,7 @@ enum netdev_ml_priv_type {
+> > > >     *	@netdev_ops:	Includes several pointers to callbacks,
+> > > >     *			if one wants to override the ndo_*() functions
+> > > >     *	@xdp_metadata_ops:	Includes pointers to XDP metadata callbacks.
+> > > > + *	@xsk_tx_metadata_ops:	Includes pointers to AF_XDP TX metadata callbacks.
+> > > >     *	@ethtool_ops:	Management operations
+> > > >     *	@l3mdev_ops:	Layer 3 master device operations
+> > > >     *	@ndisc_ops:	Includes callbacks for different IPv6 neighbour
+> > > > @@ -2100,6 +2126,7 @@ struct net_device {
+> > > >    	unsigned long long	priv_flags;
+> > > >    	const struct net_device_ops *netdev_ops;
+> > > >    	const struct xdp_metadata_ops *xdp_metadata_ops;
+> > > > +	const struct xsk_tx_metadata_ops *xsk_tx_metadata_ops;
+> > > >    	int			ifindex;
+> > > >    	unsigned short		gflags;
+> > > >    	unsigned short		hard_header_len;
+> > > > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > > > index faaba050f843..5febc1a5131e 100644
+> > > > --- a/include/linux/skbuff.h
+> > > > +++ b/include/linux/skbuff.h
+> > > > @@ -581,7 +581,10 @@ struct skb_shared_info {
+> > > >    	/* Warning: this field is not always filled in (UFO)! */
+> > > >    	unsigned short	gso_segs;
+> > > >    	struct sk_buff	*frag_list;
+> > > > -	struct skb_shared_hwtstamps hwtstamps;
+> > > > +	union {
+> > > > +		struct skb_shared_hwtstamps hwtstamps;
+> > > > +		struct xsk_tx_metadata *xsk_meta;
+> > > > +	};
+> > > >    	unsigned int	gso_type;
+> > > >    	u32		tskey;
+> > > > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > > > index 467b9fb56827..288fa58c4665 100644
+> > > > --- a/include/net/xdp_sock.h
+> > > > +++ b/include/net/xdp_sock.h
+> > > > @@ -90,6 +90,54 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp);
+> > > >    int __xsk_map_redirect(struct xdp_sock *xs, struct xdp_buff *xdp);
+> > > >    void __xsk_map_flush(void);
+> > > > +/**
+> > > > + *  xsk_tx_metadata_request - Evaluate AF_XDP TX metadata at submission
+> > > > + *  and call appropriate xsk_tx_metadata_ops operation.
+> > > > + *  @meta: pointer to AF_XDP metadata area
+> > > > + *  @ops: pointer to struct xsk_tx_metadata_ops
+> > > > + *  @priv: pointer to driver-private aread
+> > > > + *
+> > > > + *  This function should be called by the networking device when
+> > > > + *  it prepares AF_XDP egress packet.
+> > > > + */
+> > > > +static inline void xsk_tx_metadata_request(const struct xsk_tx_metadata *meta,
+> > > > +					   const struct xsk_tx_metadata_ops *ops,
+> > > > +					   void *priv)
+> > > 
+> > > (As you mentioned) this gets inlined in drivers for performance.
+> > > 
+> > > > +{
+> > > > +	if (!meta)
+> > > > +		return;
+> > > > +
+> > > > +	if (ops->tmo_request_timestamp)
+> > > > +		if (meta->flags & XDP_TX_METADATA_TIMESTAMP)
+> > > > +			ops->tmo_request_timestamp(priv);
+> > > 
+> > > We still have the overhead of function pointer call.
+> > > With RETPOLINE this is costly.
+> > > 
+> > > Measured on my testlab CPU E5-1650 v4 @ 3.60GHz
+> > >   Type:function_call_cost:  3 cycles(tsc) 1.010 ns
+> > >   Type:func_ptr_call_cost: 30 cycles(tsc) 8.341 ns
+> > > 
+> > > Given this get inlined in drivers, perhaps we can add some
+> > > INDIRECT_CALL_1 macros to avoid these indirect calls?
+> > 
+> > I'm assuming that the compiler is smart enough to resolve these const
+> > struct ops definitions as long as they are in the same file.
+> > 
+> > At least here is what I see for mlx5e_xmit_xdp_frame_mpwqe: those
+> > indirect jumps are resolved and the calls themselves are unrolled.
+> > TBF, I don't have retpolines enabled in the config, but I don't think
+> > it will bring indirect jumps back? Am I missing anything?
+> > 
+> 
+> I tried this with CONFIG_RETPOLINE and same results.
+> The compiler is smart and inlines the call to mlx5e_xsk_request_checksum().
+> This is great, no need for crazy INDIRECT_CALL_1 macros :-)
 
-+1 to what Alan said above and below.
+Perfect, thanks for checking!
+ 
+> > 
+> > 0000000000001930 <mlx5e_xmit_xdp_frame_mpwqe>:
+> > ; mlx5e_xmit_xdp_frame_mpwqe():
+> > ; ./drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c:436
+> [...]
+> > ; ./drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c:381
+> > ; 	stats->mpwqe++;
+> >      1b4a: 49 ff 44 24 08               	incq	0x8(%r12)
+> > ; ././include/net/xdp_sock.h:107
+> 
+> How do you get objdump to add these file:line annotations?
+> 
+> I use:
+>  objdump -rS --visualize-jumps=color -Mintel | less -R
 
-Also as Michal said there needs to be a design doc with pros and cons.
-We see far too often that people attempt to use BPF in places where it
-shouldn't be.
-If programmability is not strictly necessary then BPF is not a good fit.
+I use llvm tools (and complier), so I did:
 
-> There's some examples of how solutions have evolved from the traditional
-> approach (adding a new program type, helpers etc) to using kfuncs etc on
-> this list - for example HID-BPF and the BPF scheduler series - which
-> should help orient you. There are presentations from Linux Plumbers 2022
-> that walk through some of this too.
->
-> Judging by the sample program example, all you should need here is a way
-> to override the return value of bpf_oom_set_policy() - a noinline
-> function that by default returns a no-op. It can then be overridden by
-> an "fmod_ret" BPF program.
->
-> One thing you lose is cgroup specificity at BPF attach time, but you can
-> always add predicates based on the cgroup to your BPF program if needed.
->
-> Alan
->
-> > Chuyi Zhou (5):
-> >   bpf: Introduce BPF_PROG_TYPE_OOM_POLICY
-> >   mm: Select victim memcg using bpf prog
-> >   libbpf, bpftool: Support BPF_PROG_TYPE_OOM_POLICY
-> >   bpf: Add a new bpf helper to get cgroup ino
-> >   bpf: Sample BPF program to set oom policy
-> >
-> >  include/linux/bpf_oom.h        |  22 ++++
-> >  include/linux/bpf_types.h      |   2 +
-> >  include/linux/memcontrol.h     |   6 ++
-> >  include/uapi/linux/bpf.h       |  21 ++++
-> >  kernel/bpf/core.c              |   1 +
-> >  kernel/bpf/helpers.c           |  17 +++
-> >  kernel/bpf/syscall.c           |  10 ++
-> >  mm/memcontrol.c                |  50 +++++++++
-> >  mm/oom_kill.c                  | 185 +++++++++++++++++++++++++++++++++
-> >  samples/bpf/Makefile           |   3 +
-> >  samples/bpf/oom_kern.c         |  42 ++++++++
-> >  samples/bpf/oom_user.c         | 128 +++++++++++++++++++++++
-> >  tools/bpf/bpftool/common.c     |   1 +
-> >  tools/include/uapi/linux/bpf.h |  21 ++++
-> >  tools/lib/bpf/libbpf.c         |   3 +
-> >  tools/lib/bpf/libbpf_probes.c  |   2 +
-> >  16 files changed, 514 insertions(+)
-> >  create mode 100644 include/linux/bpf_oom.h
-> >  create mode 100644 samples/bpf/oom_kern.c
-> >  create mode 100644 samples/bpf/oom_user.c
-> >
+llvm-objdump -r -S -l --disassemble xxx.o
+
+Most likely it's that -l option? man objdump seems to have it..
 
