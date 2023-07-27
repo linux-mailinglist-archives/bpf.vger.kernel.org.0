@@ -1,158 +1,162 @@
-Return-Path: <bpf+bounces-6025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6026-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E321A7642AE
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 01:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E56A764304
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 02:38:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ED001C2146D
-	for <lists+bpf@lfdr.de>; Wed, 26 Jul 2023 23:39:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A619D1C214A5
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 00:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B166BDDCA;
-	Wed, 26 Jul 2023 23:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A062D136D;
+	Thu, 27 Jul 2023 00:38:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD83BE5C
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 23:39:42 +0000 (UTC)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694642129
-	for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 16:39:40 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99bc0da5684so35105166b.0
-        for <bpf@vger.kernel.org>; Wed, 26 Jul 2023 16:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690414779; x=1691019579;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=XGx68qTI1bkx/pMJa88wVcICln3UVb6e60kC/3stXE0=;
-        b=W7PV0PaJZV2/7ZcjJp9/XWvmcHYNTtSGWUeAv+/zOsEnqG79qO38s+Rcw8tZOJb2Yh
-         c8kAJE7L2IF/CiiaMUgN9WVw5AFC734R5W/E96QTZiL/RvZ8E/YaIK3a+r8hQHiZ/iqs
-         uMngbJg8lNgy5Sw3EE8Nw0srz1JAqRP3qjSUKgVcsiVTiTWnRXbwhBDOMC5uaZOuQVP9
-         0MXAGbBBZGlrjkccRi/Lf9s6ayWGSZMVhXze5stQoYWvp6RBSq77xU4uNm+/Ev2S5me9
-         XCq7E1dS7H0qRoVAydzNaVzwNAnwuqwQHPhlvZnyKGlnbPCFUmoCZMQS6ddN8bZ3MGpb
-         luig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690414779; x=1691019579;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XGx68qTI1bkx/pMJa88wVcICln3UVb6e60kC/3stXE0=;
-        b=BNBqxMtUJrx5yXhW+q912qy+B4Z6/6ozJe6dQHEp52wYjRkbNZpbraEqu6HP1QTeE2
-         cv0dPmaNYa7v0BX8+rx6Po+kL3an+09a6w54x/Jxsjt+waW77pVyLZNmOnTZeCAFXAYY
-         ieZYTneyOYIaigqa80dq1BrSFn+nv0+Se0TDMEbgW78dhwQuE2h2x8Vh+3hjVviCSJWU
-         mzOhYZe30TcgJ7knIeS1r+gtkLbD/NNFekvQU84l98UdTFTK2nVFwJVhIZ5243IcbWjb
-         TKOR9gXt7gnktNsrQ3Jka7pPnXOEStano7teZp+X27zpogiOGkwgdEZ0mI2BmdAYvrk4
-         tyYQ==
-X-Gm-Message-State: ABy/qLYvfv5BtiA9gIyINAYB71Sc86nXBRUEJ88ltUq5Tfravsgi0btK
-	RIPza0mcpcOwYYeX/wb9YsU=
-X-Google-Smtp-Source: APBJJlEJ/zY0YXiFHSa2gPlrr7saHPAOhC5jJ4vIyljXxaksZ0bJABZJ4Pd/x3K4l14OMnMymrAmmA==
-X-Received: by 2002:a17:906:84:b0:993:8d16:4c22 with SMTP id 4-20020a170906008400b009938d164c22mr471162ejc.75.1690414778644;
-        Wed, 26 Jul 2023 16:39:38 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id gr16-20020a170906e2d000b00977cad140a8sm18073ejb.218.2023.07.26.16.39.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 16:39:38 -0700 (PDT)
-Message-ID: <4067a5cebe3df5b5cf436b27479a7c9a065d69a0.camel@gmail.com>
-Subject: Re: Question: CO-RE-enabled PT_REGS macros give strange results
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alan Maguire <alan.maguire@oracle.com>, Timofei Pushkin
-	 <pushkin.td@gmail.com>, Alexei Starovoitov <ast@kernel.org>
-Cc: bpf@vger.kernel.org
-Date: Thu, 27 Jul 2023 02:39:37 +0300
-In-Reply-To: <8dd70c47d4f395ad5dd3b1da9e77221125eb9146.camel@gmail.com>
-References: 
-	<CAChPKzs_QBghSBfxMtTZoAsaRgwBK9dRXuXZg+tg2=wz=AuGgg@mail.gmail.com>
-	 <3d26842f-86a4-e897-44c2-00c55fadb64a@oracle.com>
-	 <CAChPKztZ9kaNw-PkhEq4UKidjVgKNnwLPKzYvLc6BcOOUtvEkQ@mail.gmail.com>
-	 <883961c3-3ea2-2253-4976-aa5e20870820@oracle.com>
-	 <51d510b9-fbbd-d30a-9a01-e77c84db52a5@oracle.com>
-	 <49c9170f7dd0d3e78a12570ae422bce553a1e236.camel@gmail.com>
-	 <308bfec7-38d7-9dcd-3130-5602658db47f@oracle.com>
-	 <8dd70c47d4f395ad5dd3b1da9e77221125eb9146.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E5A7C
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 00:38:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94487C433C8;
+	Thu, 27 Jul 2023 00:38:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690418298;
+	bh=LRGeETeUPNx91JrCWN7rH5t95ddjH/6FHmKY4pmTY1A=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=qDJc1C+myXCOVWMkLvsWXEZAPLV+h5CUpfMzS/FEwLflVjfvQPwuA2XBbOoTp/J5f
+	 E7ZHiouKmTtpiytAaqkXpTYa87lPJcZt5eiL5K83nAnmTBW1PMe++b+Tk1RbHsIdr+
+	 sJtFD+As8mv3ryX2whdCbTyUOh2TzeAGK9Kzc1+1bTOPhwkmEnO+/2NJkGrrBIqc7X
+	 jFq4ciwNBKpIF/PikkvguDSr0u3elf9O4GIHK+NZrEv8niFYgFh7Qx5FZqapOg5KYo
+	 8wZXXd/FRuFU+P6xAYrqgqtCeoiYdlEemOo9b1NrkEzYuabuF5BrextSntdTlSTqz4
+	 RzLjF7iRx7Adw==
+Date: Thu, 27 Jul 2023 09:38:14 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Arnaldo Carvalho de Melo
+ <acme@redhat.com>, Yonghong Song <yhs@fb.com>, dwarves@vger.kernel.org,
+ bpf@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RESEND] BTF is not generated for gcc-built kernel with the
+ latest pahole
+Message-Id: <20230727093814.23681b2b0ac73aa89f368ae8@kernel.org>
+In-Reply-To: <6f0da094-5b49-954b-21e9-93f8c8cecc3f@oracle.com>
+References: <20230726102534.9ebc4678ad2c9395cc9be196@kernel.org>
+	<ZMDvmLdZSLi2QqB+@krava>
+	<20230726200716.609d8433a7292eead95e7330@kernel.org>
+	<6f0da094-5b49-954b-21e9-93f8c8cecc3f@oracle.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, 2023-07-26 at 23:03 +0300, Eduard Zingerman wrote:
-[...]
-> > > It looks like `PT_REGS_IP_CORE` macro should not be defined through
-> > > bpf_probe_read_kernel(). I'll dig through commit history tomorrow to
-> > > understand why is it defined like that now.
-> > >  help
-> >=20
-> > If I recall the rationale was to allow the macros to work for both
-> > BPF programs that can do direct dereference (fentry, fexit, tp_btf etc)
-> > and for kprobe-style that need to use bpf_probe_read_kernel().
-> > Not sure if it would be worth having variants that are purely
-> > dereference-based, since we can just use PT_REGS_IP() due to
-> > the __builtin_preserve_access_index attributes applied in vmlinux.h.
->=20
-> Sorry, need a bit more time, thanks for the context.
+On Wed, 26 Jul 2023 15:46:03 +0100
+Alan Maguire <alan.maguire@oracle.com> wrote:
 
-The PT_REGS_*_CORE macros were added by Andrii Nakryiko in [1].
-Stated intent there is to use those macros for raw tracepoint
-programs. Such programs have `struct pt_regs` as a parameter.
-Contexts of type `struct pt_regs` are *not* subject to rewrite by
-convert_ctx_access(), so it is valid to use PT_REGS_*_CORE for such
-programs.
+> On 26/07/2023 12:07, Masami Hiramatsu (Google) wrote:
+> > Hi Jiri,
+> > 
+> > On Wed, 26 Jul 2023 12:04:08 +0200
+> > Jiri Olsa <olsajiri@gmail.com> wrote:
+> > 
+> >> On Wed, Jul 26, 2023 at 10:25:34AM +0900, Masami Hiramatsu wrote:
+> >>> Hello,
+> >>> (I resend this because kconfig was too big)
+> >>>
+> >>> I found that BTF is not generated for gcc-built kernel with that latest
+> >>> pahole (v1.25).
+> >>
+> >> hi,
+> >> I can't reproduce on my setup with your .config
+> >>
+> >> does 'bpftool btf dump file ./vmlinux' show any error?
+> >>
+> >> is there any error in the kernel build output?
+> > 
+> > Yes, here it is. I saw these 2 lines.
+> > 
+> > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0)!
+> > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit or DW_TAG_skeleton_unit expected got INVALID (0x0)!
+> 
+> This is strange, looks like some CUs were encoded incorrectly or we are
+> parsing incorrectly. The error originates in die__process() and happens
+> if the dwarf_tag() associated with the DIE isn't an expected unit; it's
+> not even a valid tag value (0) it looks like. I've not built with gcc 13
+> yet so it's possible that's the reason you're seeing this, I'll try to
+> reproduce it..
 
-However, `struct pt_regs` is also a part of `struct
-bpf_perf_event_data`. Latter is used as a context parameter for
-"perf_event" programs and is a subject to rewrite by
-convert_ctx_access(). Thus, PT_REGS_*_CORE macros can't be used for
-such programs (because these macro are implemented through
-bpf_probe_read_kernel() of which convert_ctx_access() is not aware).
+And this warning message is not good for debugging. It would better dump
+the message with DIE index so that we can analyze the DWARF with other
+tools.
 
-If `struct pt_regs` is defined with `preserve_access_index` attribute
-CO-RE relocations are generated for both PT_REGS_IP_CORE and
-PT_REGS_IP invocations. So, there is no real need to use *_CORE
-variants in combination with `struct bpf_perf_event_data` to have all
-CO-RE benefits, e.g.:
 
-  $ cat bpf.c
-  #include "vmlinux.h"
-  // ...
-  SEC("perf_event")
-  int do_test(struct bpf_perf_event_data *ctx) {
-    return PT_REGS_IP(&ctx->regs);
-  }
-  // ...
-  $ llvm-objdump --no-show-raw-insn -rd bpf.o=20
-  ...
-  0000000000000000 <do_test>:
-         0: r0 =3D *(u64 *)(r1 + 0x80)
-            0000000000000000:  CO-RE <byte_off> [11] struct bpf_perf_event_=
-data::regs.ip (0:0:16)
-         1: exit
+> >>> When I'm using the distro origin pahole (v1.22) it works. (I also checked
+> >>> v1.23 and v1.24, both partially generated BTF)
+> >>>
+> >>> e.g.
+> >>>
+> >>> # echo 'f kfree $arg*' >> /sys/kernel/tracing/dynamic_events
+> >>> sh: write error: Invalid argument
+> >>>
+> >>> # cat /sys/kernel/tracing/error_log 
+> >>> [   21.595724] trace_fprobe: error: BTF is not available or not supported
+> >>>   Command: f kfree $arg*
+> >>>                    ^
+> >>> [   21.596032] trace_fprobe: error: Invalid $-valiable specified
+> >>>   Command: f kfree $arg*
+> >>>                    ^
+> >>>
+> >>> / # strings /sys/kernel/btf/vmlinux | grep kfree
+> >>
+> >> hm, if you have this file present, you have BTF in
+> > 
+> > Yes, it seems that the BTF itself is generated, but many entries seems
+> > dropped compared with pahole v1.22. So, if a given symbol has BTF, (e.g. 
+> > kfree_rcu_batch_init) it works.
+> >
+> 
+> Yep, BPF generation is more selective about what it emits in 1.25 to
+> avoid cases where a kernel function signature is ambiguous (multiple
+> functions of the same name with different signatures) or where it has
+> unexpected register use. You can observe this via pahole's --verbose
+> option (a lot of outut is emitted):
+> 
+> In a built kernel directory (where unstripped vmlinux is present):
+> $ PAHOLE_FLAGS=$(./scripts/pahole_flags)
+> $ PAHOLE=/usr/local/bin/pahole
+> $ pahole --verbose -J $PAHOLE_FLAGS vmlinux > /tmp/pahole.out
 
-[1] b8ebce86ffe6 ("libbpf: Provide CO-RE variants of PT_REGS macros")
+So this will generate BTF from vmlinux DWARF info.
 
----
+> If you want to investigate why a function has been left out, look for
+> "skipping" verbose output like this:
+> 
+> skipping addition of 'access_error'(access_error) due to multiple
+> inconsistent function prototypes
+> skipping addition of
+> 'acpi_ex_convert_to_object_type_string'(acpi_ex_convert_to_object_type_string.isra.0)
+> due to unexpected register used for parameter
 
-I think the following should be done:
-- Timofei's code should use PT_REGS_IP and make sure that `struct
-  pt_regs` has preserve_access_index annotation (e.g. use vmlinux.h);
-- verifier should be adjusted to report error when
-  bpf_probe_read_kernel() (and similar) are used to read from "fake"
-  contexts.
-- (maybe?) update PT_REGS_*_CORE to use `__builtin_preserve_access_index`
-  (to allow usage with `bpf_perf_event_data` context).
+Ah, that's nice. Let me try.
 
-[...]
+> 
+> FWIW I see most of the below in my BTF output on bpf-next, though I am
+> missing a few, possibly due to differing config options since they don't
+> appear in kallsyms either. I don't see the DWARF tag label not handled
+> messages so it's possible that's a symptom of something
+> 
+> I suspect however some form of corruption in the DWARF representation
+> may be the reason a lot of these are missing. Would be worth trying
+> to "objdump -g vmlinux >vmlinux.dwarf" (file will be huge tho) I suspect.
+
+OK, let me dump the dwarf and check what information it has for "kfree".
+
+Thank you,
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
