@@ -1,148 +1,145 @@
-Return-Path: <bpf+bounces-6080-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6081-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A0A97655A3
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 16:11:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43F5C7655E4
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 16:26:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2B541C216B1
-	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 14:11:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7A132823B4
+	for <lists+bpf@lfdr.de>; Thu, 27 Jul 2023 14:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52E7317757;
-	Thu, 27 Jul 2023 14:11:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36CC17751;
+	Thu, 27 Jul 2023 14:26:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0E51772B
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 14:11:26 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EDE30E0
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 07:11:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690467075;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=02H8x558hkZCT5QcK29c6OWGjNlpE3njHKaLGMgzpjQ=;
-	b=SFFHd8EmUCMLwTMZELqF2+Yz9czSu+Ehw47kqXvK8cwLLgvzFYcrSBlq1uQau2HhSsJqqo
-	LZcQI8LKAeLdJ8RxjXhMI9zCBdSOebVG+htRx+NCX5ZEVS9OUIPTgDd7fg7wiOM1Y+vNOo
-	oIqQNOIqAereYhNnnnACRhI1FoUiHT4=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-320-DAs6OwgIOKG-eu2ow3FofA-1; Thu, 27 Jul 2023 10:11:12 -0400
-X-MC-Unique: DAs6OwgIOKG-eu2ow3FofA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-99bcf56a2e9so60021066b.2
-        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 07:11:12 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0AD8174D0
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 14:26:25 +0000 (UTC)
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CCF30D8
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 07:26:21 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63d09d886a3so7037206d6.2
+        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 07:26:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690467980; x=1691072780;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iG8sQ2cXuUFhOBJOfXd2cTvYqOb3QhhgdK9IHAFunfA=;
+        b=SondfhqtildiwdGLeRMAHRfDQQtL1/u/iztKURWQu0LShgEH2xxXLXL0fFhxYkajOz
+         Ggs9Webs0fEbD7xchmKkXVL6vC7ZA/sqKj1vZnMmM1MYyQQOzV8zl7ngtaPR3HEjbC7u
+         I0ZY7fCnO+XWM5rdLzy6HQgu/QmuXIqOgbgodnRG9pWvf4c5fk9TbCFrxaLSAochsxoE
+         r+NhDvv7yqxaWFFQy2poTh578/6McXQMb6i6YQSLj2IHHAYJb8wSYcYl565rOdoyMQ9a
+         ckjvvVRjbh1cVoIdctDAjcryaz2Y44wp7WRphIPgSqD1nhTbOtYYUeuTBSeqJlXDg5Sm
+         tDfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690467071; x=1691071871;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=02H8x558hkZCT5QcK29c6OWGjNlpE3njHKaLGMgzpjQ=;
-        b=IWUdXQg4FqvclxB2l0prhoBRoB1SHwMS2ROvZrH/1hw1/Vl0fGDPBieDaNCmiAcIre
-         gyPaugwF4qwXRn6SnQCBLyctDjSqD7MvoPTbxFflX2yhcFfKRm/sQ+S3pH3o09Of7Ln0
-         5Ah5cShABO79jW0hQAEHXmztuyQmk0VA3332CBYDYwHEOila4EKqCKtnaXtjaehlcmNd
-         MKfN9U5SdgQKv8nXxFXEW7JYGAhBF1tPHtNVw4iXxyFtz955mEulIOzkzP0Y7AhAuSSH
-         aK5+d/rPVmedRa2BtLTr/DKaMZX6gwZpUDN1wE0OWsp9FEgNCeXSE/BJpKl25lCVwMZ9
-         bKtA==
-X-Gm-Message-State: ABy/qLaK4792Plo35IhJb5j8bp6Pgkn7KsD935ZbU6xdMViS9KNaYmMy
-	LGbrKMDQw5thL/RFRyvYtHWQpMpF+chTrebJZesLKYcvybmS3tySJIUwhBCPUScUc6YfJyXLT8T
-	CopyNKw35+rMt
-X-Received: by 2002:a17:906:7a54:b0:99b:4668:865f with SMTP id i20-20020a1709067a5400b0099b4668865fmr2312435ejo.10.1690467071172;
-        Thu, 27 Jul 2023 07:11:11 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG7IjqGxmTTXNFgOyjXwTagVILgqatNGoMeAgn/XqtOcq6Hkn97NgBSsfxMxoZ+Mwp8fNZ7Dg==
-X-Received: by 2002:a17:906:7a54:b0:99b:4668:865f with SMTP id i20-20020a1709067a5400b0099b4668865fmr2312413ejo.10.1690467070894;
-        Thu, 27 Jul 2023 07:11:10 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id gq15-20020a170906e24f00b00982a92a849asm822836ejb.91.2023.07.27.07.11.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 07:11:10 -0700 (PDT)
-From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <50fc375a-27a7-8b6a-3938-f9fcb4f85b06@redhat.com>
-Date: Thu, 27 Jul 2023 16:11:08 +0200
+        d=1e100.net; s=20221208; t=1690467980; x=1691072780;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iG8sQ2cXuUFhOBJOfXd2cTvYqOb3QhhgdK9IHAFunfA=;
+        b=eBRV2/j8Iw1fZzj9mttbQqMuCMrRb0Zl9S0ELS6g/OOFz72k0qz8SKYxDgYN7kxR73
+         mNpUF3eDb0dKCZERYqyvnlz8vcYxJ6XjIHtSBBEIhNRAFttlkE7N5TS3uexwiIuEEGgN
+         o0DuU1GTG3oo3ECqKD9FDxKOEfHGe4C0FkD+Hf7vQhC/BEuhH269u+Cq2ulMbCiwlXay
+         891FrY7YYt7x3mkl9MhYoCj5Bi3jByX8aKKz3+bBwusR2WH8XwUxEX2cfrTESBHCsqW3
+         3CR799yGo7zQI0+ONQcRBTmZYDG0bG9lodYu0baXV0wia2chGra6Ef2kcrCRTBE2kGJL
+         zuoQ==
+X-Gm-Message-State: ABy/qLaEAPOEcT567LBJ9/akIBh/en4d27ulZfx0zcXa+zxpiDhnvsUF
+	PTEmjGGUUudsCATP6ZCtWylzFJh6BWNc9bDhSa5jblZi3AvGRQ==
+X-Google-Smtp-Source: APBJJlFmSIIXZEwuiMUAJ8geVAe0ACDpRwcBFkXSuTpXWm8jWo5Bw5ii2yrk3hrzfD3tzi+x+K/i82wGJL92ELpyclE=
+X-Received: by 2002:a05:6214:268f:b0:63d:572:566 with SMTP id
+ gm15-20020a056214268f00b0063d05720566mr127906qvb.46.1690467980193; Thu, 27
+ Jul 2023 07:26:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc: brouer@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
- haoluo@google.com, jolsa@kernel.org, kuba@kernel.org, toke@kernel.org,
- willemb@google.com, dsahern@kernel.org, magnus.karlsson@intel.com,
- bjorn@kernel.org, maciej.fijalkowski@intel.com, hawk@kernel.org,
- netdev@vger.kernel.org, xdp-hints@xdp-project.net
-Subject: Re: [RFC net-next v4 2/8] xsk: add TX timestamp and TX checksum
- offload support
-Content-Language: en-US
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Stanislav Fomichev <sdf@google.com>
-References: <20230724235957.1953861-1-sdf@google.com>
- <20230724235957.1953861-3-sdf@google.com>
- <64c0369eadbd5_3fe1bc2940@willemb.c.googlers.com.notmuch>
- <ZMBPDe+IhvTQnKQa@google.com>
- <64c056686b527_3a4d294e6@willemb.c.googlers.com.notmuch>
-In-Reply-To: <64c056686b527_3a4d294e6@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+References: <20230727114309.3739-1-laoar.shao@gmail.com> <20230727114309.3739-2-laoar.shao@gmail.com>
+ <ZMJsETrHUF1X05t/@krava>
+In-Reply-To: <ZMJsETrHUF1X05t/@krava>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 27 Jul 2023 22:25:44 +0800
+Message-ID: <CALOAHbDGW=vTyHWyThJN+5dScczyVrntoZWjax5O6uQKNReN3A@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Fix uninitialized symbol in bpf_perf_link_fill_kprobe()
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, bpf@vger.kernel.org, 
+	Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Thu, Jul 27, 2023 at 9:07=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Thu, Jul 27, 2023 at 11:43:08AM +0000, Yafang Shao wrote:
+> > The patch 1b715e1b0ec5: "bpf: Support ->fill_link_info for
+> > perf_event" from Jul 9, 2023, leads to the following Smatch static
+> > checker warning:
+> >
+> >     kernel/bpf/syscall.c:3416 bpf_perf_link_fill_kprobe()
+> >     error: uninitialized symbol 'type'.
+> >
+> > That can happens when uname is NULL. So fix it by verifying the uname
+> > when we really need to fill it.
+> >
+> > Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
+> > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > Closes: https://lore.kernel.org/bpf/85697a7e-f897-4f74-8b43-82721bebc46=
+2@kili.mountain/
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  kernel/bpf/syscall.c | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 7f4e8c3..ad9360d 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -3376,16 +3376,16 @@ static int bpf_perf_link_fill_common(const stru=
+ct perf_event *event,
+> >       size_t len;
+> >       int err;
+> >
+> > -     if (!ulen ^ !uname)
+> > -             return -EINVAL;
+>
+> would it make more sense to keep above check in place and move the
+> !uname change below? I'd think we want to return error in case of
+> wrong arguments as soon as possible
 
-On 26/07/2023 01.10, Willem de Bruijn wrote:
-> Stanislav Fomichev wrote:
->> On 07/25, Willem de Bruijn wrote:
->>> Stanislav Fomichev wrote:
-[...]
->>>> +struct xsk_tx_metadata {
->>>> +	__u32 flags;
->>>> +
->>>> +	/* XDP_TX_METADATA_CHECKSUM */
->>>> +
->>>> +	/* Offset from desc->addr where checksumming should start. */
->>>> +	__u16 csum_start;
->>>> +	/* Offset from csum_start where checksum should be stored. */
->>>> +	__u16 csum_offset;
->>>> +
->>>> +	/* XDP_TX_METADATA_TIMESTAMP */
->>>> +
->>>> +	__u64 tx_timestamp;
->>>> +};
- >>>
->>> Is this structure easily extensible for future offloads,
-[...]
-> 
-> Pacing offload is the other feature that comes to mind. That could
-> conceivably use the tx_timestamp field.
+Good point. Will change it.
 
-I would really like to see hardware offload "pacing" or LaunchTime as
-hardware chips i210 and i225 calls it. I looked at the TX descriptor
-details for drivers igc (i225) and igb (i210), and documented my finding
-here[1], which should help with the code details if someone is motivated
-for implementing this (I know of people on xdp-hints list that wanted
-this LaunchTime feature).
+>
+> > -     if (!uname)
+> > -             return 0;
+> > -
+> >       err =3D bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+> >                                     probe_offset, probe_addr);
+> >       if (err)
+> >               return err;
+> >
+> > +     if (!ulen ^ !uname)
+> > +             return -EINVAL;
+> > +     if (!uname)
+> > +             return 0;
+>
+> and here we just return 0 if we do not store the name to provided buffer
 
-   [1] 
-https://github.com/xdp-project/xdp-project/blob/master/areas/tsn/code01_follow_qdisc_TSN_offload.org#tx-time-to-hardware-driver-igc
+Will do it.
 
-AFAIK this patchset uses struct xsk_tx_metadata as both TX and 
-TX-Completion, right?.  It would be "conceivable" to reuse tx_timestamp 
-field, but it might be confusing for uAPI end-users.  Maybe a union?
-
---Jesper
-
+--=20
+Regards
+Yafang
 
