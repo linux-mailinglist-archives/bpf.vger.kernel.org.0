@@ -1,182 +1,153 @@
-Return-Path: <bpf+bounces-6284-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6285-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C33A76791B
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 01:44:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FEE1767924
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 01:49:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 954E71C21104
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 23:44:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DBD41C20A6F
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 23:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BBCA20FB5;
-	Fri, 28 Jul 2023 23:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FBC120FB7;
+	Fri, 28 Jul 2023 23:49:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E5E525C;
-	Fri, 28 Jul 2023 23:44:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A074C433C8;
-	Fri, 28 Jul 2023 23:44:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690587872;
-	bh=cWmX8dje9L/t2n0sGzkMqdIweI7HyRrXvW9fatE/XmQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sEVL1iBujhtX6KL8vieDNOZRit8WKLYgDPzlWjysDVvATw3dW3wMmAmqcv34C7gRX
-	 ixTPaqduG6ZU+yDJxPY0C3oJHXRYtTeQkkOUf9/047ZjrYURNDRWQxHlx+8tFetvl2
-	 gs+UByaUwQOUX/PxL/HkxJI+P/D5LLLhEY4Z47Iw2CkDYTcr+cSKgchC9Dlz7hUZsj
-	 QKcn/9LAtdOSVe1jtA2tZfPMnMi/QT++V+KxpJ0wvSvygmtVpqvsfWgZUqK1Vq7pfT
-	 lrP2XQW+jWAq9IE9uEO62ZFYFgeVg9jPpJiFVb0TnAFo2Jznnfl5w2gzg6V/begJs8
-	 lhnvdL500Uy1A==
-Date: Fri, 28 Jul 2023 16:44:29 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, loongarch@lists.linux.dev,
-	Linux-Arch <linux-arch@vger.kernel.org>, bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH v3 1/2] asm-generic: Unify uapi bitsperlong.h for arm64,
- riscv and loongarch
-Message-ID: <20230728234429.GA611252@dev-arch.thelio-3990X>
-References: <1687443219-11946-1-git-send-email-yangtiezhu@loongson.cn>
- <1687443219-11946-2-git-send-email-yangtiezhu@loongson.cn>
- <20230727213648.GA354736@dev-arch.thelio-3990X>
- <1777400a-4d9c-4bdb-9d3b-f8808ef054cc@app.fastmail.com>
- <20230728173103.GA1299743@dev-arch.thelio-3990X>
- <a2fa1a31-e8bb-4659-9631-398b564e7c2b@app.fastmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F50525C
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 23:49:22 +0000 (UTC)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2164C422B
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 16:49:21 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9c0391749so40658271fa.0
+        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 16:49:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690588159; x=1691192959;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pvjslTV8dcXFYHH1cIkUZv3Bh4WKXkqP1ZgucmBlBok=;
+        b=Bnnt/RfzcPhGtgPsDriAEigUJZEcNR2xgFn2kLZdl83Hb8KGaiAAtFIt/d7BLv8mUq
+         q7cvh3129+6E4v+mAn2IPSTW1yNCuFjJRNhb7lxFbVJiptdeS8ncuR7EsrvSQgCr434T
+         BIxje1Q/oHcHnawBDC6+t9Qf+cyJThOBkvVOPjMBT18gkz0SMqNfY+/OA2axCZhtPDUt
+         swtkIivTqBpSQu65cGMoUapkfR88NJj2f1i38njf7morAJoTCSLqpoxc7TJNK7TzwKnh
+         25KGFpvnzm+iEAgzGg492O8D0Cpe9Xup695cmoSTmR5w4h45A9vXNzHd4IXhvXPgpLUe
+         ye2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690588159; x=1691192959;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pvjslTV8dcXFYHH1cIkUZv3Bh4WKXkqP1ZgucmBlBok=;
+        b=BXt7jC1ff5c47a+gxdEviFQhyh/iIJINrcpEpRTw/WnQlLrsslypq8Qj+eUW/49A2K
+         +CxuHB5HOQKQYOY0j7Bwwg+C76MM5xNF9t0+CmAeN25L2b5DSngJdPFNfE1cmKgJ9/Ha
+         pFckzPnKCjzoL/c69hRHFNojTf00OCnzXbyD5DUZaF8Gdy9G0A7KZRtU6Aso2qor4Jnw
+         0ksGWjICXn5+KdunlcWM3xxyctefG8rtEJeHtDIMgK2/1uu1HbPkjKMG0JPjLX1SNS4p
+         Pkw2PMIk/Lmnz43O9VhrxRv8tNQH4L8c14hVPWBnQuOzFz2r2JFeSk0E6AEsrzaY2++N
+         Qjpg==
+X-Gm-Message-State: ABy/qLYJ++L4lHeLGyJUG/DoIAV9VhL1l4YC/yGAXCZkj/TGSd7nMbHY
+	AzSpPxeoUlzZYeVP2COfQHqcXNzKy5pA1sEiGuwPuCQA
+X-Google-Smtp-Source: APBJJlEd5m9E5Drrc8cmSwFwjntwLF4CTzwykF62zPcztP+axgzADqxWYKQDR9oq7K9321g54vohojFlGbtUbcLZKiU=
+X-Received: by 2002:a2e:8816:0:b0:2b9:ac48:d7fe with SMTP id
+ x22-20020a2e8816000000b002b9ac48d7femr2819657ljh.38.1690588159075; Fri, 28
+ Jul 2023 16:49:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2fa1a31-e8bb-4659-9631-398b564e7c2b@app.fastmail.com>
+References: <878rb0yonc.fsf@oracle.com> <13eb5cae-e599-7f80-aa11-65846fccdc62@linux.dev>
+ <87v8e4x7cr.fsf@oracle.com> <87pm4bykxw.fsf@oracle.com>
+In-Reply-To: <87pm4bykxw.fsf@oracle.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 28 Jul 2023 16:49:07 -0700
+Message-ID: <CAADnVQLaZrqq232fxts0GmymaaG=fpvRbSZaBkfNnKFuy0LM8A@mail.gmail.com>
+Subject: Re: GCC and binutils support for BPF V4 instructions
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, Jul 28, 2023 at 10:56:38PM +0200, Arnd Bergmann wrote:
-> On Fri, Jul 28, 2023, at 19:31, Nathan Chancellor wrote:
-> > On Fri, Jul 28, 2023 at 01:00:30PM +0200, Arnd Bergmann wrote:
+On Fri, Jul 28, 2023 at 11:01=E2=80=AFAM Jose E. Marchesi
+<jose.marchesi@oracle.com> wrote:
+>
+>
+> >> On 7/28/23 9:41 AM, Jose E. Marchesi wrote:
+> >>> Hello.
+> >>> Just a heads up regarding the new BPF V4 instructions and their
+> >>> support
+> >>> in the GNU Toolchain.
+> >>> V4 sdiv/smod instructions
+> >>>    Binutils has been updated to use the V4 encoding of these
+> >>>    instructions, which used to be part of the xbpf testing dialect us=
+ed
+> >>>    in GCC.  GCC generates these instructions for signed division when
+> >>>    -mcpu=3Dv4 or higher.
+> >>> V4 sign-extending register move instructions
+> >>> V4 signed load instructions
+> >>> V4 byte swap instructions
+> >>>    Supported in assembler, disassembler and linker.  GCC generates
+> >>> these
+> >>>    instructions when -mcpu=3Dv4 or higher.
+> >>> V4 32-bit unconditional jump instruction
+> >>>    Supported in assembler and disassembler.  GCC doesn't generate
+> >>> that
+> >>>    instruction.
+> >>>    However, the assembler has been expanded in order to perform the
+> >>>    following relaxations when the disp16 field of a jump instruction =
+is
+> >>>    known at assembly time, and is overflown, unless -mno-relax is
+> >>>    specified:
+> >>>      JA disp16  -> JAL disp32
+> >>>      Jxx disp16 -> Jxx +1; JA +1; JAL disp32
+> >>>    Where Jxx is one of the conditional jump instructions such as
+> >>> jeq,
+> >>>    jlt, etc.
 > >>
-> >> of the uapi version. The sanity check in the kernel-side header
-> >> is intended to cross-check the CONFIG_64BIT value against the
-> >> __BITS_PER_LONG constant from the header.
-> >> 
-> >> My first guess would be that this only worked by accident if the headers
-> >> defaulted to "#define __BITS_PER_LONG 32" in and #undef CONFIG_64BIT"
-> >> when include/generated/autoconf.h, but now the __BITS_PER_LONG value
-> >> is actually correct.
+> >> Sounds great. The above 'JA/Jxx disp16' transformation matches
+> >> what llvm did as well.
 > >
-> > That seems like a reasonable theory. I am still busy looking into other
-> > things today but I can try to double back to this on Monday if you don't
-> > make any progress.
-> 
-> I tried reproducing this today on arm64 Debian with linux-6.5-rc3
-> and clang-14.0.6 but I don't see the problem here. With 'make V=1'
-> I see command for building scripts/sorttable is
-> 
-> clang -Wp,-MMD,scripts/.sorttable.d -Wall -Wmissing-prototypes \
->  -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu11   \
->  -I./tools/include -I./tools/arch/x86/include -DUNWINDER_ORC_ENABLED \
->  -o scripts/sorttable scripts/sorttable.c   -lpthread
-> 
-> which does create an arm64 executable but includes the x86 headers,
-> which is clearly a bug by itself, it just doesn't trigger the problem
-> for me.
+> > Not by chance ;)
+> >
+> > Now what is pending in binutils is to relax these jumps in the linker a=
+s
+> > well.  But it is very low priority, compared to get these kernel
+> > selftests building and running.  So it will happen, but probably not
+> > anytime soon.
+>
+> By the way, for doing things like that (further object transformations
+> by linkers and the like) we will need to have the ELF files annotated
+> with:
+>
+> - The BPF cpu version the object was compiled for: v1, v2, v3, v4, and
+>
+> - Individual flags specifying the BPF cpu capabilities (alu32, bswap,
+>   jmp32, etc) required/expected by the code in the object.
+>
+> Note it is interesting to being able to denote both, for flexibility.
+>
+> There are 32 bits available for machine-specific flags in e_flags, which
+> are commonly used for this purpose by other arches.  For BPF I would
+> suggest something like:
+>
+> #define EF_BPF_ALU32  0x00000001
+> #define EF_BPF_JMP32  0x00000002
+> #define EF_BPF_BSWAP  0x00000004
+> #define EF_BPF_SDIV   0x00000008
+> #define EF_BPF_CPUVER 0x00FF0000
 
-I could not initially reproduce this on Debian either but I figured out
-why that might be: the default include paths on Debian look different
-from Fedora so just doing 'headers_install' into /usr will not reproduce
-this. If I add '-H' to that GCC command, Debian shows (I highlighted the
-key difference):
-
-  . /linux-stable/scripts/sorttable.h
-  .. /linux-stable/tools/arch/x86/include/asm/orc_types.h
-  ... /linux-stable/tools/include/linux/types.h
-  .... /usr/lib/gcc/aarch64-linux-gnu/12/include/stdbool.h
-  .... /usr/lib/gcc/aarch64-linux-gnu/12/include/stddef.h
-  .... /usr/include/aarch64-linux-gnu/asm/types.h
-  ..... /usr/include/asm-generic/types.h
-  ...... /usr/include/asm-generic/int-ll64.h
-  ....... /usr/include/aarch64-linux-gnu/asm/bitsperlong.h <-
-  ........ /linux-stable/tools/include/asm-generic/bitsperlong.h
-  ......... /linux-stable/tools/include/uapi/asm-generic/bitsperlong.h
-
-Whereas Fedora shows:
-
-  . /linux-stable/scripts/sorttable.h
-  .. /linux-stable/tools/arch/x86/include/asm/orc_types.h
-  ... /linux-stable/tools/include/linux/types.h
-  .... /usr/lib/gcc/aarch64-redhat-linux/13/include/stdbool.h
-  .... /usr/lib/gcc/aarch64-redhat-linux/13/include/stddef.h
-  .... /usr/include/asm/types.h
-  ..... /usr/include/asm-generic/types.h
-  ...... /usr/include/asm-generic/int-ll64.h
-  ....... /usr/include/asm/bitsperlong.h <-
-  ........ /linux-stable/tools/include/asm-generic/bitsperlong.h
-  ......... /linux-stable/tools/include/uapi/asm-generic/bitsperlong.h
-
-Running 'gcc -fsyntax-only -v -x c /dev/null' shows:
-
-Debian:
-
-  #include <...> search starts here:
-   /usr/lib/gcc/aarch64-linux-gnu/12/include
-   /usr/local/include
-   /usr/include/aarch64-linux-gnu
-   /usr/include
-  End of search list.
-
-Fedora:
-
-  #include <...> search starts here:
-   /usr/lib/gcc/aarch64-redhat-linux/13/include
-   /usr/local/include
-   /usr/include
-  End of search list.
-
-It looks like Debian installs the architecture asm files into an
-architecture specific subdirectory, which headers_install does not know
-about, so the new "problematic" bitsperlong.h file gets installed to the
-default location but the older one actually gets used because it has
-higher priority in the include search path.
-
-https://salsa.debian.org/kernel-team/linux/-/blob/36b9562acea404ecdc2911aeb2c4539402f441a3/debian/rules.real#L334-336
-
-If I install/manipulate the headers as Debian does, I can reproduce this
-issue in a fresh Debian container.
-
-  # make -C /linux -j$(nproc) INSTALL_HDR_PATH=/usr O=/build headers_install
-  # rm -fr /usr/include/aarch64-linux-gnu/asm
-  # mv -v /usr/include/asm /usr/include/aarch64-linux-gnu
-  # make -C /linux-stable -j$(nproc) ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- O=/build mrproper defconfig prepare
-  ...
-    DESCEND objtool
-  In file included from /usr/include/aarch64-linux-gnu/asm/bitsperlong.h:1,
-                   from /usr/include/asm-generic/int-ll64.h:12,
-                   from /usr/include/asm-generic/types.h:7,
-                   from /usr/include/aarch64-linux-gnu/asm/types.h:1,
-                   from /linux-stable/tools/include/linux/types.h:13,
-                   from /linux-stable/tools/arch/x86/include/asm/orc_types.h:9,
-                   from /linux-stable/scripts/sorttable.h:96,
-                   from /linux-stable/scripts/sorttable.c:201:
-  /linux-stable/tools/include/asm-generic/bitsperlong.h:14:2: error: #error Inconsistent word size. Check asm/bitsperlong.h
-     14 | #error Inconsistent word size. Check asm/bitsperlong.h
-        |  ^~~~~
-  make[3]: *** [/linux-stable/scripts/Makefile.host:114: scripts/sorttable] Error 1
-  ...
-
-> I also noticed that your command line includes CROSS_COMPILE=x86_64-linux-
-> rather than CROSS_COMPILE=x86_64-linux-gnu-
-
-Right, as I was reproducing this with your kernel.org GCC for
-CROSS_COMPILE and Fedora's GCC for HOSTCC, since I wanted to make sure
-this was not some issue with clang (which it does not appear to be).
-
-Cheers,
-Nathan
+Interesting idea. I don't mind, but what are we going to do with this info?
+I cannot think of anything useful libbpf could do with it.
+For other archs such flags make sense, since disasm of everything
+to discover properties is hard. For BPF we will parse all insns anyway,
+so additional info in ELF doesn't give any additional insight.
 
