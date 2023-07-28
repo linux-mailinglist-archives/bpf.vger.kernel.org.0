@@ -1,150 +1,165 @@
-Return-Path: <bpf+bounces-6257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D531767436
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 20:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C8BD767444
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 20:10:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B4A11C214A3
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 18:07:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C7D21C213A9
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 18:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD55F1BB26;
-	Fri, 28 Jul 2023 18:07:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A621BB27;
+	Fri, 28 Jul 2023 18:10:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9847C1775A
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 18:07:27 +0000 (UTC)
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFEF3C1D
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 11:07:22 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-267fc1d776eso1360635a91.2
-        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 11:07:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690567642; x=1691172442;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0j1xWKyarV49sAVolaI4AB1ZfYUgMNGUimAsLLV4Mug=;
-        b=bthRLJgmCvjOnYvWo+2qon30TpingFUg2Fsc6mWV841J6V//QLFLhA/3pFUZ3RWjjp
-         lvqPYA00NNy/7rUAp+SRbT6DXYQV9P2xYvt6Fw87chrCyM0dslS+R/6hc5wlsGx04nxH
-         0m+HjUzgJ46oDMGQuIwdEtvGiOlhwqQO7dlBEa8W8NizZqJBs/5UmVIm7NdU+q4u2kwT
-         Ig/XvZWu743pJjwIQVwK0TnKLi848DKrm8Rcsm7V8TXDR7pyX+R3tOBiI8YtrQRupbSq
-         VYHkCSyOu+v4UnQfxGoiP/bFyUwxKmqJjciC1srz6+GGr7OHRgKVsqbjV3O/RlK8YIV7
-         7yGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690567642; x=1691172442;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0j1xWKyarV49sAVolaI4AB1ZfYUgMNGUimAsLLV4Mug=;
-        b=jo1wUUNW89roszTv/fMGxC8XN3bmyifaFwkx+q076CS/1LQceoDx/6PGli2Yz8w3Yp
-         x2nFQoI7Lfl3zVw/f2zysif+AqlQuIb0rFnjLgDfQXOJUD5Zl4hUmo91749m6KXisG2q
-         PLhpDk9eFXwEXEkC34NQAmjb5IjvsfofdQoCvD2DViOUL2rAs1ormZQ4+a/D75kQbi/u
-         QKsgi4qP2f6qq4/lHmNZO1JV/w5pnVZHb9biwnkqbaAyPkeXR+zDFD3blY9L0B7uIvfg
-         b8ofA1i4RpoJGGdCshaYFNIvI0MpzZkXdjhrsyYwjzbHoJthx9j9iox1hGGfXFm8b/MR
-         QnRA==
-X-Gm-Message-State: ABy/qLYvtgOJFZBQEJZgGFGiXn3BCTPgZZxraEZoQtGKUAtoMqfm/5rc
-	t0C2bW0FI7vr2B6BZ8UaGB4b4KxhT2v1TXybMdOd1Q==
-X-Google-Smtp-Source: APBJJlHgwJ3A+UmtsOH2HeGY6HcpJx29kymYLleOv2cjpggHGfecNjMbkiZLUi0kBVGPqDLYF511j6F7xC4+th4qRMQ=
-X-Received: by 2002:a17:90b:8c4:b0:268:23d7:21c with SMTP id
- ds4-20020a17090b08c400b0026823d7021cmr2007489pjb.30.1690567641609; Fri, 28
- Jul 2023 11:07:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975BE17AC4;
+	Fri, 28 Jul 2023 18:10:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98FD6C433C8;
+	Fri, 28 Jul 2023 18:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690567808;
+	bh=3LeMZELp4m+1YYGFtSrMAlQqThQJj6GMObRyyGm7lGs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RzYn+nxk5BM8Wz7vV7nTjftpnfIwmtyxP6J4GzJeLEQhZr2RLcF+z0Ds8EbGpPAHQ
+	 h2L2cjymJ524g3DzF/y8/NXSiwhm7AJ2zt6ITJwRY6i5O0O8DX5VOBB3SJa9cIuk4m
+	 4tHzJX2ywbDPnRr4ZPoy/jHG39RxguJ1AdH4+ODNzIBeh0zXQQv79N3z8owiGz61Zh
+	 yNJB4uj0PS3/2i5/+BygJi3E6gvFAuUo/ZdhyCKzaRY82vXVf+4hLZTrrYzL1/cmBk
+	 9YBIuVdMjoNIA+7q6HZ63s8+6iW6NAnaSVEUBGB9tueXB7k7kYAgqA5t7XDZ1kf4Df
+	 ZTClkQFSrd/cQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 08C7740096; Fri, 28 Jul 2023 15:10:05 -0300 (-03)
+Date: Fri, 28 Jul 2023 15:10:04 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: James Clark <james.clark@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Tom Rix <trix@redhat.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Gaosheng Cui <cuigaosheng1@huawei.com>,
+	Rob Herring <robh@kernel.org>, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: Re: [PATCH v1 4/6] perf build: Disable fewer flex warnings
+Message-ID: <ZMQEfIi/BYwpDIEB@kernel.org>
+References: <20230728064917.767761-1-irogers@google.com>
+ <20230728064917.767761-5-irogers@google.com>
+ <a8833945-3f0a-7651-39ff-a01e7edc2b3a@arm.com>
+ <ZMPJym7DnCkFH7aA@kernel.org>
+ <ZMPKekDl+g5PeiH8@kernel.org>
+ <CAP-5=fX2LOdd_34ysAYYB5zq5tr7dMje35Nw6hrLXTPLsOHoaw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230724142237.358769-1-leitao@debian.org> <20230724142237.358769-3-leitao@debian.org>
- <ZL61cIrQuo92Xzbu@google.com> <ZL+VfRiJQqrrLe/9@gmail.com>
- <ZMAAMKTaKSIKi1RW@google.com> <ZMP07KtOeJ09ejAd@gmail.com>
-In-Reply-To: <ZMP07KtOeJ09ejAd@gmail.com>
-From: Stanislav Fomichev <sdf@google.com>
-Date: Fri, 28 Jul 2023 11:07:10 -0700
-Message-ID: <CAKH8qBsm7JGnO+SF7PELT7Ua+5=RA8sAWdnD0UBiG3TYh0djHA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-To: Breno Leitao <leitao@debian.org>
-Cc: asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org, 
-	netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org, 
-	edumazet@google.com, pabeni@redhat.com, linux-kernel@vger.kernel.org, 
-	leit@meta.com, bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fX2LOdd_34ysAYYB5zq5tr7dMje35Nw6hrLXTPLsOHoaw@mail.gmail.com>
+X-Url: http://acmel.wordpress.com
 
-On Fri, Jul 28, 2023 at 10:03=E2=80=AFAM Breno Leitao <leitao@debian.org> w=
-rote:
->
-> Hello Stanislav,
->
-> On Tue, Jul 25, 2023 at 10:02:40AM -0700, Stanislav Fomichev wrote:
-> > On 07/25, Breno Leitao wrote:
-> > > On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
-> > > > On 07/24, Breno Leitao wrote:
-> > > > > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), =
-where
-> > > > > level is SOL_SOCKET. This is leveraging the sockptr_t infrastruct=
-ure,
-> > > > > where a sockptr_t is either userspace or kernel space, and handle=
-d as
-> > > > > such.
-> > > > >
-> > > > > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockop=
-t().
+Em Fri, Jul 28, 2023 at 08:26:54AM -0700, Ian Rogers escreveu:
+> On Fri, Jul 28, 2023 at 7:02 AM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > Em Fri, Jul 28, 2023 at 10:59:38AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Fri, Jul 28, 2023 at 09:50:59AM +0100, James Clark escreveu:
 > > > >
-> > > > We probably need to also have bpf bits in the new
-> > > > io_uring_cmd_getsockopt?
+> > > >
+> > > > On 28/07/2023 07:49, Ian Rogers wrote:
+> > > > > If flex is version 2.6.4, reduce the number of flex C warnings
+> > > > > disabled. Earlier flex versions have all C warnings disabled.
+> > > >
+> > > > Hi Ian,
+> > > >
+> > > > I get a build error with either this one or the bison warning change:
+> > > >
+> > > >   $ make LLVM=1 -C tools/perf NO_BPF_SKEL=1 DEBUG=1
+> > > >
+> > > >   util/pmu-bison.c:855:9: error: variable 'perf_pmu_nerrs' set but not
+> > > > used [-Werror,-Wunused-but-set-variable]
+> > > >     int yynerrs = 0;
+> > > >
+> > > > I tried a clean build which normally fixes these kind of bison errors.
+> > > > Let me know if you need any version info.
 > > >
-> > > It might be interesting to have the BPF hook for this function as
-> > > well, but I would like to do it in a following patch, so, I can
-> > > experiment with it better, if that is OK.
->
-> I spent smoe time looking at the problem, and I understand we want to
-> call something as BPF_CGROUP_RUN_PROG_{G,S}ETSOCKOPT() into
-> io_uring_cmd_{g,s}etsockopt().
->
-> Per the previous conversation with Williem,
-> io_uring_cmd_{g,s}etsockopt() should use optval as a user pointer (void _=
-_user
-> *optval), and optlen as a kernel integer (it comes as from the io_uring
-> SQE), such as:
->
->         void __user *optval =3D u64_to_user_ptr(READ_ONCE(cmd->sqe->optva=
-l));
->         int optlen =3D READ_ONCE(cmd->sqe->optlen);
->
-> Function BPF_CGROUP_RUN_PROG_GETSOCKOPT() calls
-> __cgroup_bpf_run_filter_getsockopt() which expects userpointer for
-> optlen and optval.
->
-> At the same time BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN() expects kernel
-> pointers for both optlen and optval.
->
-> In this current patchset, it has user pointer for optval and kernel value
-> for optlen. I.e., a third combination.  So, none of the functions would
-> work properly, and we probably do not want to create another function.
->
-> I am wondering if it is a good idea to move
-> __cgroup_bpf_run_filter_getsockopt() to use sockptr_t, so, it will be
-> able to adapt to any combination.
+> > > Trying to build it with the command line above I get:
+> > >
+> > >   CC      util/expr.o
+> > >   CC      util/parse-events.o
+> > >   CC      util/parse-events-flex.o
+> > > util/parse-events-flex.c:7503:13: error: misleading indentation; statement is not part of the previous 'if' [-Werror,-Wmisleading-indentation]
+> > >             if ( ! yyg->yy_state_buf )
+> > >             ^
+> > > util/parse-events-flex.c:7501:9: note: previous statement is here
+> > >         if ( ! yyg->yy_state_buf )
+> > >         ^
+> >
+> > I added this to the patch to get it moving:
+> >
+> > make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
+> > ⬢[acme@toolbox perf-tools-next]$ git diff
+> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> > index 32239c4b0393c319..afa93eff495811cf 100644
+> > --- a/tools/perf/util/Build
+> > +++ b/tools/perf/util/Build
+> > @@ -281,7 +281,7 @@ $(OUTPUT)util/bpf-filter-bison.c $(OUTPUT)util/bpf-filter-bison.h: util/bpf-filt
+> >
+> >  FLEX_GE_264 := $(shell expr $(shell $(FLEX) --version | sed -e  's/flex \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\= 264)
+> >  ifeq ($(FLEX_GE_264),1)
+> > -  flex_flags := -Wno-redundant-decls -Wno-switch-default -Wno-unused-function
+> > +  flex_flags := -Wno-redundant-decls -Wno-switch-default -Wno-unused-function -Wno-misleading-indentation
+> >  else
+> >    flex_flags := -w
+> >  endif
+> > ⬢[acme@toolbox perf-tools-next]$
+> >
+> >
+> > > 1 error generated.
+> > > make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: util/parse-events-flex.o] Error 1
+> > > make[4]: *** Waiting for unfinished jobs....
+> > >   LD      util/scripting-engines/perf-in.o
+> > > make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:140: util] Error 2
+> > > make[2]: *** [Makefile.perf:682: perf-in.o] Error 2
+> > > make[2]: *** Waiting for unfinished jobs....
+> > >   CC      pmu-events/pmu-events.o
+> > >   LD      pmu-events/pmu-events-in.o
+> > > make[1]: *** [Makefile.perf:242: sub-make] Error 2
+> > > make: *** [Makefile:70: all] Error 2
+> > >
+> > > ⬢[acme@toolbox perf-tools-next]$ clang --version
+> > > clang version 14.0.5 (Fedora 14.0.5-2.fc36)
+> > > Target: x86_64-redhat-linux-gnu
+> > > Thread model: posix
+> > > InstalledDir: /usr/bin
+> > > ⬢[acme@toolbox perf-tools-next]$
+> 
+> Thanks James/Arnaldo, I was trying to be aggressive in having more
+> flags, but it seems too aggressive. We should probably bring back the
+> logic to make this flag only added if it is supported:
+>   CC_HASNT_MISLEADING_INDENTATION := $(shell echo "int main(void) {
+> return 0 }" | $(CC) -Werror -Wno-misleading-indentation -o /dev/null
+> -xc - 2>&1 | grep -q -- -Wno-misleading-indentation ; echo $$?)
+>   ifeq ($(CC_HASNT_MISLEADING_INDENTATION), 1)
+>     flex_flags += -Wno-misleading-indentation
+>   endif
+> Arnaldo, is the misleading indentation in the bison generated code or
+> something copy-pasted from the parse-events.l ? If the latter we may
+> be able to fix the .l file to keep the warning.
 
-Yeah, I think it makes sense. However, note that the intent of that
-optlen being a __user pointer is to possibly write some (updated)
-value back into the userspace.
-Presumably, you'll pass that updated optlen into some io_uring
-completion queue? (maybe a stupid question, not super familiar with
-io_uring)
+I haven't checked, lemme do it now.
 
-> Any feedback is appreciate.
-> Thanks!
+- Arnaldo
 
