@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-6252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6254-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 758877673FC
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 19:54:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F59B767402
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 19:55:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6B0E1C209BA
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 17:54:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE63E280D8C
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 17:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5560023BCF;
-	Fri, 28 Jul 2023 17:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B11025155;
+	Fri, 28 Jul 2023 17:44:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F2B156EF;
-	Fri, 28 Jul 2023 17:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E312514D;
+	Fri, 28 Jul 2023 17:44:55 +0000 (UTC)
 Received: from mgamail.intel.com (unknown [192.55.52.120])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C0910CB;
-	Fri, 28 Jul 2023 10:44:51 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3554619B;
+	Fri, 28 Jul 2023 10:44:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690566291; x=1722102291;
+  t=1690566294; x=1722102294;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=PBjngCIm/FgHzex8a0aMYEeMlUg/2+IirTvX5FqObz4=;
-  b=Bt3vPz9aZ2LmZCLP+ZGBE56+mnBbJLExPDq0jWUzgChuklFGITrAUBK+
-   mbc6TxZTj3wjgBFvEnyOCrtgyhXKEisCgYPNbfIuX7tKDxHlNFPsRB3ZA
-   dK1o16R4oNe+fLKikHApIat7ZqNIdhysHPSeq2RHFTH+Cexvex3NrFATV
-   jq90allEZJYhR9rtI4aLeIVNYEyhVp3siVG39hk2RI6cxo6LfQoEgfcf0
-   9fxNuGrsyeiqx/YhucI/KRaJemCkKiLHfrCY+Q+B4dPg9VrlcQOM6YYWB
-   MuDQ1TFXyVgvGFoDnm5M9YnDBKIdnk+iVBCM9caxDtuzGHRWwt67dw0u2
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="367531057"
+  bh=bmoV5KED9X/fLK4ezU94EbHC65Ikdbt1JVgLru97zJk=;
+  b=Y2uD2BbwUvHkzkCAmgNby/emb4mXMkRa/V7UnQL64EynLhSSx+JK3NV+
+   Th9qO2E+3ZRrkh8XaHUz811GgAiS+1CdTZqFvwc5gE1uvD3OtjxThpOly
+   Il5Z2Y+QHBHrH7xZsvfUtnWicg6M+7J457Sd9w1vsUx99W22fCFBT/Yo2
+   4VeEigs7RVrs1lNqmYwC3pwNfM9DlGCnHrpuB+iT/XcjsBCumtaW0c1JS
+   5deFHmeJM23UOOmcjN32sG3U4NLnBRKnuYbBeYIzo/GXqUw6sSGos6LGV
+   sgJlV81uOd6T8l6iLwXgGMUjqEOEzRws1s//y9SddyUiWxVx8/b0AwC8a
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="367531089"
 X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="367531057"
+   d="scan'208";a="367531089"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 10:44:51 -0700
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 10:44:53 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="757254525"
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="757254533"
 X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="757254525"
+   d="scan'208";a="757254533"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga008.jf.intel.com with ESMTP; 28 Jul 2023 10:44:45 -0700
+  by orsmga008.jf.intel.com with ESMTP; 28 Jul 2023 10:44:47 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 930E737F68;
-	Fri, 28 Jul 2023 18:44:43 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 9C00137F71;
+	Fri, 28 Jul 2023 18:44:45 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -75,9 +75,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
 	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Simon Horman <simon.horman@corigine.com>
-Subject: [PATCH bpf-next v4 20/21] selftests/bpf: Check VLAN tag and proto in xdp_metadata
-Date: Fri, 28 Jul 2023 19:39:22 +0200
-Message-ID: <20230728173923.1318596-21-larysa.zaremba@intel.com>
+Subject: [PATCH bpf-next v4 21/21] selftests/bpf: check checksum state in xdp_metadata
+Date: Fri, 28 Jul 2023 19:39:23 +0200
+Message-ID: <20230728173923.1318596-22-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230728173923.1318596-1-larysa.zaremba@intel.com>
 References: <20230728173923.1318596-1-larysa.zaremba@intel.com>
@@ -95,106 +95,94 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Verify, whether VLAN tag and proto are set correctly.
-
-To simulate "stripped" VLAN tag on veth, send test packet from VLAN
-interface.
-
-Also, add TO_STR() macro for convenience.
+Verify, whether kfunc in xdp_metadata test correctly returns partial
+checksum status and offsets.
 
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- .../selftests/bpf/prog_tests/xdp_metadata.c   | 21 +++++++++++++++++--
- .../selftests/bpf/progs/xdp_metadata.c        |  5 +++++
- tools/testing/selftests/bpf/testing_helpers.h |  3 +++
- 3 files changed, 27 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/xdp_metadata.c   | 30 +++++++++++++++++++
+ .../selftests/bpf/progs/xdp_metadata.c        |  6 ++++
+ 2 files changed, 36 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-index 1877e5c6d6c7..61e1b073a4b2 100644
+index 61e1b073a4b2..6c3dd90b271b 100644
 --- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
 +++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-@@ -38,7 +38,14 @@
- #define TX_MAC "00:00:00:00:00:01"
- #define RX_MAC "00:00:00:00:00:02"
+@@ -46,6 +46,7 @@
  
-+#define VLAN_ID 59
-+#define VLAN_PROTO "802.1Q"
-+#define VLAN_PID htons(ETH_P_8021Q)
-+#define TX_NAME_VLAN TX_NAME "." TO_STR(VLAN_ID)
-+#define RX_NAME_VLAN RX_NAME "." TO_STR(VLAN_ID)
-+
  #define XDP_RSS_TYPE_L4 BIT(3)
-+#define VLAN_VID_MASK 0xfff
+ #define VLAN_VID_MASK 0xfff
++#define XDP_CHECKSUM_PARTIAL BIT(3)
  
  struct xsk {
  	void *umem_area;
-@@ -215,6 +222,12 @@ static int verify_xsk_metadata(struct xsk *xsk)
- 	if (!ASSERT_NEQ(meta->rx_hash_type & XDP_RSS_TYPE_L4, 0, "rx_hash_type"))
+@@ -167,6 +168,32 @@ static void refill_rx(struct xsk *xsk, __u64 addr)
+ 	}
+ }
+ 
++struct partial_csum_info {
++	__u16 csum_start;
++	__u16 csum_offset;
++};
++
++static bool assert_checksum_ok(struct xdp_meta *meta)
++{
++	struct partial_csum_info *info;
++	u32 csum_start, csum_offset;
++
++	if (!ASSERT_EQ(meta->rx_csum_status, XDP_CHECKSUM_PARTIAL,
++		       "rx_csum_status"))
++		return false;
++
++	csum_start = sizeof(struct ethhdr) + sizeof(struct iphdr);
++	csum_offset = offsetof(struct udphdr, check);
++	info = (void *)&meta->rx_csum_info;
++
++	if (!ASSERT_EQ(info->csum_start, csum_start, "rx csum_start"))
++		return false;
++	if (!ASSERT_EQ(info->csum_offset, csum_offset, "rx csum_offset"))
++		return false;
++
++	return true;
++}
++
+ static int verify_xsk_metadata(struct xsk *xsk)
+ {
+ 	const struct xdp_desc *rx_desc;
+@@ -228,6 +255,9 @@ static int verify_xsk_metadata(struct xsk *xsk)
+ 	if (!ASSERT_EQ(meta->rx_vlan_proto, VLAN_PID, "rx_vlan_proto"))
  		return -1;
  
-+	if (!ASSERT_EQ(meta->rx_vlan_tci & VLAN_VID_MASK, VLAN_ID, "rx_vlan_tci"))
-+		return -1;
-+
-+	if (!ASSERT_EQ(meta->rx_vlan_proto, VLAN_PID, "rx_vlan_proto"))
++	if (!assert_checksum_ok(meta))
 +		return -1;
 +
  	xsk_ring_cons__release(&xsk->rx, 1);
  	refill_rx(xsk, comp_addr);
  
-@@ -248,10 +261,14 @@ void test_xdp_metadata(void)
- 
- 	SYS(out, "ip link set dev " TX_NAME " address " TX_MAC);
- 	SYS(out, "ip link set dev " TX_NAME " up");
--	SYS(out, "ip addr add " TX_ADDR "/" PREFIX_LEN " dev " TX_NAME);
-+
-+	SYS(out, "ip link add link " TX_NAME " " TX_NAME_VLAN
-+		 " type vlan proto " VLAN_PROTO " id " TO_STR(VLAN_ID));
-+	SYS(out, "ip link set dev " TX_NAME_VLAN " up");
-+	SYS(out, "ip addr add " TX_ADDR "/" PREFIX_LEN " dev " TX_NAME_VLAN);
- 
- 	/* Avoid ARP calls */
--	SYS(out, "ip -4 neigh add " RX_ADDR " lladdr " RX_MAC " dev " TX_NAME);
-+	SYS(out, "ip -4 neigh add " RX_ADDR " lladdr " RX_MAC " dev " TX_NAME_VLAN);
- 	close_netns(tok);
- 
- 	tok = open_netns(RX_NETNS_NAME);
 diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata.c b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-index d151d406a123..f3db5cef4726 100644
+index f3db5cef4726..c99f7f4eb37d 100644
 --- a/tools/testing/selftests/bpf/progs/xdp_metadata.c
 +++ b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-@@ -23,6 +23,9 @@ extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
- extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
- 				    enum xdp_rss_hash_type *rss_type) __ksym;
-+extern int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
-+					__u16 *vlan_tci,
-+					__be16 *vlan_proto) __ksym;
+@@ -26,6 +26,9 @@ extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
+ extern int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
+ 					__u16 *vlan_tci,
+ 					__be16 *vlan_proto) __ksym;
++extern int bpf_xdp_metadata_rx_csum(const struct xdp_md *ctx,
++				    enum xdp_csum_status *csum_status,
++				    union xdp_csum_info *csum_info) __ksym;
  
  SEC("xdp")
  int rx(struct xdp_md *ctx)
-@@ -57,6 +60,8 @@ int rx(struct xdp_md *ctx)
- 		meta->rx_timestamp = 1;
+@@ -63,6 +66,9 @@ int rx(struct xdp_md *ctx)
+ 	bpf_xdp_metadata_rx_vlan_tag(ctx, &meta->rx_vlan_tci,
+ 				     &meta->rx_vlan_proto);
  
- 	bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash_type);
-+	bpf_xdp_metadata_rx_vlan_tag(ctx, &meta->rx_vlan_tci,
-+				     &meta->rx_vlan_proto);
- 
++	bpf_xdp_metadata_rx_csum(ctx, &meta->rx_csum_status,
++				 (void *)&meta->rx_csum_info);
++
  	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
  }
-diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
-index 5312323881b6..7e0f8543a3a4 100644
---- a/tools/testing/selftests/bpf/testing_helpers.h
-+++ b/tools/testing/selftests/bpf/testing_helpers.h
-@@ -8,6 +8,9 @@
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
  
-+#define __TO_STR(x) #x
-+#define TO_STR(x) __TO_STR(x)
-+
- int parse_num_list(const char *s, bool **set, int *set_len);
- __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_info *info);
- int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
 -- 
 2.41.0
 
