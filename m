@@ -1,42 +1,43 @@
-Return-Path: <bpf+bounces-6209-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6210-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0FC97670A0
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 17:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A14DC7670B6
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 17:37:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78E872827C0
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 15:33:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54BD12827AE
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 15:37:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5EAE1401D;
-	Fri, 28 Jul 2023 15:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B2714AA0;
+	Fri, 28 Jul 2023 15:36:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C2213FFD
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 15:33:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D81C5C433C8;
-	Fri, 28 Jul 2023 15:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BB914A86
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 15:36:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F875C433D9;
+	Fri, 28 Jul 2023 15:35:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690558424;
-	bh=oINpRshoP8wUOrW0KrHyosEeCy6vm0dPU8gi9b4Apus=;
+	s=k20201202; t=1690558565;
+	bh=RiameAJyaqASlv6hb4c10KMAlN4/6+6/hqnDkYkEzPY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AD2p4MRxVbTJMornW4rtnlVVyLtsVamKFOjKM/YtSATmK7lMhlOFDtRA8/G9pwgAF
-	 1sWs1sWg4F/hukZR/JU7U6+l+wo+TWOewD4I0cwarQlOh0aRJ5NoYtpqB65I1MoNkZ
-	 9eZ9o3jYY3UHmKnV1fAXG/Wsu+xLSUGP3fwhMzmUZYsiirR4cz2f0g0qO5oPqupzrV
-	 KVK6uhTCxPtxrv7b6kTCNn/0LI+haKYLBtnoLaTW2+Afw76EKbl/pDrq9Nr7zzTHx3
-	 98waSBKvQ5Se6QKIDWgXNStJwQxe0LwKr5KRFMdIy2JGzu/oByxmUdnBja60W0N9t0
-	 bBsDZIkwNMEcg==
-Date: Fri, 28 Jul 2023 10:33:34 -0500
+	b=p5Tu2hgT+a6gPKQMW1urJHIGxB0ZTZOTtxLFvSij1f/yjSQQyTa3zf0mqdYayXPmV
+	 iccIrLhwD4QgY1Nagc4saDTCQBBcQAV3RcD1m6I2F1ForGzrpqfl32G6a840/Taa7m
+	 jAW0KefOuBEpEOxh9v1oNKyA0vJvkBsDdk4UOR1d8fmxbhTXNBN479coNCzX9EKVkf
+	 g7e48OjBzRhIJ1ioN6rN2lAkY9uA3PrFeg93sId02DNN6tLC0glfzPl7gZYl7gg3Gu
+	 4sC+6Du26Ly24TZAb5B0eOcNMIwGZbynuoLApCVvleEIQpqXqssPsuv7UECOCOrQMQ
+	 03M7Kq16bokjw==
+Date: Fri, 28 Jul 2023 10:35:57 -0500
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 To: Valentin Schneider <vschneid@redhat.com>
 Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
 	linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
 	bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
+	Josh Poimboeuf <jpoimboe@redhat.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Jonathan Corbet <corbet@lwn.net>,
@@ -82,11 +83,11 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
 	Daniel Bristot de Oliveira <bristot@redhat.com>,
 	Marcelo Tosatti <mtosatti@redhat.com>,
 	Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 11/20] objtool: Flesh out warning related to
- pv_ops[] calls
-Message-ID: <20230728153334.myvh5sxppvjzd3oz@treble>
+Subject: Re: [RFC PATCH v2 12/20] objtool: Warn about non __ro_after_init
+ static key usage in .noinstr
+Message-ID: <20230728153557.frzmaayyy3auibx3@treble>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-12-vschneid@redhat.com>
+ <20230720163056.2564824-13-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,34 +96,36 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230720163056.2564824-12-vschneid@redhat.com>
+In-Reply-To: <20230720163056.2564824-13-vschneid@redhat.com>
 
-On Thu, Jul 20, 2023 at 05:30:47PM +0100, Valentin Schneider wrote:
-> I had to look into objtool itself to understand what this warning was
-> about; make it more explicit.
-> 
-> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-> ---
->  tools/objtool/check.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> index 8936a05f0e5ac..d308330f2910e 100644
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -3360,7 +3360,7 @@ static bool pv_call_dest(struct objtool_file *file, struct instruction *insn)
->  
->  	list_for_each_entry(target, &file->pv_ops[idx].targets, pv_target) {
->  		if (!target->sec->noinstr) {
-> -			WARN("pv_ops[%d]: %s", idx, target->name);
-> +			WARN("pv_ops[%d]: indirect call to %s() leaves .noinstr.text section", idx, target->name);
->  			file->pv_ops[idx].clean = false;
+On Thu, Jul 20, 2023 at 05:30:48PM +0100, Valentin Schneider wrote:
+> +static int validate_static_key(struct instruction *insn, struct insn_state *state)
+> +{
+> +	if (state->noinstr && state->instr <= 0) {
+> +		if ((strcmp(insn->key_sym->sec->name, ".data..ro_after_init"))) {
+> +			WARN_INSN(insn,
+> +				  "Non __ro_after_init static key \"%s\" in .noinstr section",
 
-This is an improvement, though I think it still results in two warnings,
-with the second not-so-useful warning happening in validate_call().
+For consistency with other warnings, this should start with a lowercase
+"n" and the string literal should be on the same line as the WARN_INSN,
+like
 
-Ideally it would only show a single warning, I guess that would need a
-little bit of restructuring the code.
+			WARN_INSN(insn, "non __ro_after_init static key \"%s\" in .noinstr section",
+				  ...
+
+> diff --git a/tools/objtool/special.c b/tools/objtool/special.c
+> index 91b1950f5bd8a..1f76cfd815bf3 100644
+> --- a/tools/objtool/special.c
+> +++ b/tools/objtool/special.c
+> @@ -127,6 +127,9 @@ static int get_alt_entry(struct elf *elf, const struct special_entry *entry,
+>  			return -1;
+>  		}
+>  		alt->key_addend = reloc_addend(key_reloc);
+> +
+> +		reloc_to_sec_off(key_reloc, &sec, &offset);
+> +		alt->key_sym = find_symbol_by_offset(sec, offset & ~2);
+
+Bits 0 and 1 can both store data, should be ~3?
 
 -- 
 Josh
