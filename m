@@ -1,127 +1,128 @@
-Return-Path: <bpf+bounces-6228-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6229-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3438176729E
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 19:00:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65ADF7672D2
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 19:04:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D59A1C20ACF
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 17:00:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97DC32816B3
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 17:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A310015498;
-	Fri, 28 Jul 2023 17:00:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652AC154B4;
+	Fri, 28 Jul 2023 17:04:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8059B10792
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 17:00:02 +0000 (UTC)
-Received: from out-94.mta0.migadu.com (out-94.mta0.migadu.com [91.218.175.94])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E14635B8
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 09:59:50 -0700 (PDT)
-Message-ID: <13eb5cae-e599-7f80-aa11-65846fccdc62@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1690563588; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cRv1R5exIhZcc4SJcUdoXjOJ+Jp8NpyOb2e2xO8445Y=;
-	b=GNRnamIqE1lIZFem9kDZsojWXh2Qbi2iBfyDU/wmi6Y8O/bP/YGquVvbWT4+JpLzj0ZVRB
-	HYv5ZL7K+arVbicbD65w7V2v3gQM9KxR+74rgTZSqQRoR721FYpivSgVUx1mdhYcfKHFdN
-	ikyQjlLzKplaYGC/+Se77G7fz9POQo8=
-Date: Fri, 28 Jul 2023 09:59:46 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D45814AA6;
+	Fri, 28 Jul 2023 17:04:08 +0000 (UTC)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAAF49D7;
+	Fri, 28 Jul 2023 10:03:47 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-99bd1d0cf2fso323879366b.3;
+        Fri, 28 Jul 2023 10:03:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690563825; x=1691168625;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Tzbpmy5CCesVeQWGWqphI5Ah11VcG7gal7MV1usl0UM=;
+        b=CU+NOYFryuYxCKuQcP6HgylayRgiNsGKJE1HPz92I3v4wllzqoo5Ob8lLGz3MH5PHH
+         hqi8iibkJVfrZaeT4DsCvAO+c4kO+HTPmGApD/+at9U2Bi9MdXpxhg094PJsZn+nBi8K
+         ReMwjFSFOwwQrLGKUAO+qJrqs7ZnbC3ZSXYN2EbWvH+m2OI5zSPvMnZDlL9LCnsqL8yU
+         J1aojVrGwWIRyBzd7rJ12wd+4Ns3cXQqe4aqrp7eWwJCJRb+ODnx9nheK3kZRTqNSzLO
+         M60SabbEvtmaDnxLxeZXMqFHd59CmYIKHAd9krk0K8OlZe6jQl/DxFMwNHV1e1lvnnU3
+         5UkA==
+X-Gm-Message-State: ABy/qLagh3AnId8zMZWYgLFSY800oFd1g2s7Z2WZ3sSX2ncmIklRa7Yr
+	SXn5R5TyvbP8GjaErlRz69Y=
+X-Google-Smtp-Source: APBJJlFkFo8sLIpwvsf/6r+8p9st0JibovN+mnUD9/Akswil8Kxf7K9RUBjI3zU0vCR+30lPCARKQQ==
+X-Received: by 2002:a17:906:6494:b0:994:9ed:300b with SMTP id e20-20020a170906649400b0099409ed300bmr2362960ejm.16.1690563825459;
+        Fri, 28 Jul 2023 10:03:45 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-006.fbsv.net. [2a03:2880:31ff:6::face:b00c])
+        by smtp.gmail.com with ESMTPSA id y10-20020a17090668ca00b009934b1eb577sm2277769ejr.77.2023.07.28.10.03.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 10:03:44 -0700 (PDT)
+Date: Fri, 28 Jul 2023 10:03:40 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Stanislav Fomichev <sdf@google.com>
+Cc: asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+	netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+	edumazet@google.com, pabeni@redhat.com,
+	linux-kernel@vger.kernel.org, leit@meta.com, bpf@vger.kernel.org,
+	ast@kernel.org, martin.lau@linux.dev
+Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+Message-ID: <ZMP07KtOeJ09ejAd@gmail.com>
+References: <20230724142237.358769-1-leitao@debian.org>
+ <20230724142237.358769-3-leitao@debian.org>
+ <ZL61cIrQuo92Xzbu@google.com>
+ <ZL+VfRiJQqrrLe/9@gmail.com>
+ <ZMAAMKTaKSIKi1RW@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: GCC and binutils support for BPF V4 instructions
-Content-Language: en-US
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
-References: <878rb0yonc.fsf@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <878rb0yonc.fsf@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMAAMKTaKSIKi1RW@google.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+Hello Stanislav,
 
+On Tue, Jul 25, 2023 at 10:02:40AM -0700, Stanislav Fomichev wrote:
+> On 07/25, Breno Leitao wrote:
+> > On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
+> > > On 07/24, Breno Leitao wrote:
+> > > > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+> > > > level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
+> > > > where a sockptr_t is either userspace or kernel space, and handled as
+> > > > such.
+> > > > 
+> > > > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
+> > > 
+> > > We probably need to also have bpf bits in the new
+> > > io_uring_cmd_getsockopt?
+> > 
+> > It might be interesting to have the BPF hook for this function as
+> > well, but I would like to do it in a following patch, so, I can
+> > experiment with it better, if that is OK.
 
-On 7/28/23 9:41 AM, Jose E. Marchesi wrote:
-> 
-> Hello.
-> 
-> Just a heads up regarding the new BPF V4 instructions and their support
-> in the GNU Toolchain.
-> 
-> V4 sdiv/smod instructions
-> 
->    Binutils has been updated to use the V4 encoding of these
->    instructions, which used to be part of the xbpf testing dialect used
->    in GCC.  GCC generates these instructions for signed division when
->    -mcpu=v4 or higher.
-> 
-> V4 sign-extending register move instructions
-> V4 signed load instructions
-> V4 byte swap instructions
-> 
->    Supported in assembler, disassembler and linker.  GCC generates these
->    instructions when -mcpu=v4 or higher.
-> 
-> V4 32-bit unconditional jump instruction
-> 
->    Supported in assembler and disassembler.  GCC doesn't generate that
->    instruction.
-> 
->    However, the assembler has been expanded in order to perform the
->    following relaxations when the disp16 field of a jump instruction is
->    known at assembly time, and is overflown, unless -mno-relax is
->    specified:
-> 
->      JA disp16  -> JAL disp32
->      Jxx disp16 -> Jxx +1; JA +1; JAL disp32
-> 
->    Where Jxx is one of the conditional jump instructions such as jeq,
->    jlt, etc.
+I spent smoe time looking at the problem, and I understand we want to
+call something as BPF_CGROUP_RUN_PROG_{G,S}ETSOCKOPT() into
+io_uring_cmd_{g,s}etsockopt().
 
-Sounds great. The above 'JA/Jxx disp16' transformation matches
-what llvm did as well.
+Per the previous conversation with Williem,
+io_uring_cmd_{g,s}etsockopt() should use optval as a user pointer (void __user
+*optval), and optlen as a kernel integer (it comes as from the io_uring
+SQE), such as:
 
-> 
-> So I think we are done with this.  Please let us know if these
-> instructions ever change.
-> 
-> Relevant binutils bugzillas (all now resolved as fixed):
-> 
-> * Make use of long range calls by relaxation (jal/gotol):
->    https://sourceware.org/bugzilla/show_bug.cgi?id=30690
-> 
-> Relevant GCC bugzillas (all now resolved as fixed):
-> 
-> * Make use of signed-load instructions:
->    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=110782
->    
-> * Make use of signed division/modulus:
->    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=110783
-> 
-> * Make use of signed mov instructions:
->    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=110784
-> 
-> * Make use of byte swap instructions:
->    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=110786
-> 
-> Salud!
-> 
+	void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
+	int optlen = READ_ONCE(cmd->sqe->optlen);
+
+Function BPF_CGROUP_RUN_PROG_GETSOCKOPT() calls
+__cgroup_bpf_run_filter_getsockopt() which expects userpointer for
+optlen and optval.
+
+At the same time BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN() expects kernel
+pointers for both optlen and optval.
+
+In this current patchset, it has user pointer for optval and kernel value
+for optlen. I.e., a third combination.  So, none of the functions would
+work properly, and we probably do not want to create another function.
+
+I am wondering if it is a good idea to move
+__cgroup_bpf_run_filter_getsockopt() to use sockptr_t, so, it will be
+able to adapt to any combination.
+
+Any feedback is appreciate.
+Thanks!
 
