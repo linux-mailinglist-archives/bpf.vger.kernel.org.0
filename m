@@ -1,259 +1,272 @@
-Return-Path: <bpf+bounces-6226-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6227-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A25176726D
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 18:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0CCE76729D
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 19:00:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B6D51C20A59
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 16:52:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E44101C20CEB
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 17:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DF38154A4;
-	Fri, 28 Jul 2023 16:52:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D5E156CD;
+	Fri, 28 Jul 2023 16:58:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333A61549A
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 16:52:06 +0000 (UTC)
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE4D49F1
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 09:51:36 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d1ef7a6abacso2052392276.2
-        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 09:51:36 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19D113FEC
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 16:58:43 +0000 (UTC)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B901B5
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 09:58:41 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31297125334so1628379f8f.0
+        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 09:58:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690563084; x=1691167884;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hSztq2dvrAtj1uS3ESiNs+Jg1HePYMDsZwSdft0wsVY=;
-        b=uC9D4FcQ4hwzphsSwJRgDNbPH7AACt801Mlm2IGAsaCpAbFm8nZ/5u79Nw0s7R6uTN
-         S0AqDXgmdZcN9sqoD6w3I4W2sdk/FkYcC/gwy7cQgo0LGGfDS5+9+Sm0owWE9jYCC8TN
-         TmtJK10RK9ulRo6V6oV6oDwYY1nnMo3vfgBGy0Ozsi9gIkswPMzDAjG+jewR7raXO+P3
-         95CCiOUHijIqyJXPUFIHEmwBnCL9VRYUEvCY5LGHTJHB32w4QIzGmnk+/XdJM1+8eN8Y
-         +AgjzUEjfZ/EFu/piAU2X3fpKgrpzv3rT9tuambFkZRwDttE7wnctxSipbS5Ay9LyUoi
-         1piw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690563084; x=1691167884;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+        d=gmail.com; s=20221208; t=1690563519; x=1691168319;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=hSztq2dvrAtj1uS3ESiNs+Jg1HePYMDsZwSdft0wsVY=;
-        b=cY0ghrj2dVxCzjMQEegdstyRGqZJsY/lX+4x0Yxdh3O1ePrTg0QkrLTnenOtEq0owx
-         Wqiutf8jgWXNejO5LlfqEQGPk0UZwcB8TYRtbp99sos9XLZmna2smH9z50wzVVNwWGuC
-         Wlz9ywxTVQ90mNh1xWcKM16HozuDLnG5R/ywcvU/B5rbW/6Kso497FiM6KSVoGrZuVmA
-         LVCKpVtDojajen5PwhCNnHw4B9Wsi5Km51IG3WvRWhQdf7F8rdnZe5FzQYndwG+DQimI
-         STyGYxTRdnpvcdZ2B5GLKH4gsfvBO2uHXE4RP9yo2pURVPtVUdZY778npr7wWliVPvxL
-         UV7A==
-X-Gm-Message-State: ABy/qLbC8ub+dYD0bbkYu0ODXvHcRLz4q1Vw5PjdBuxDGV61bHIszDU0
-	4jVB2PPRwNQ9uDvFCIx8+ZeKQks=
-X-Google-Smtp-Source: APBJJlEi55DECGldnh4oz+7pIZRoVzrzq1k+o9LpkI1MyKXobMp3xALP+1XPqinyyja4f6VBX3Vg0pc=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:f89:0:b0:d0b:c67:de3b with SMTP id
- 131-20020a250f89000000b00d0b0c67de3bmr13938ybp.13.1690563084070; Fri, 28 Jul
- 2023 09:51:24 -0700 (PDT)
-Date: Fri, 28 Jul 2023 09:51:22 -0700
-In-Reply-To: <1023fdeb-a45a-2e9e-cd2e-7e44e655e8fc@tessares.net>
+        bh=1rDph/ilI0FwAW+BQ2mqWWYLcbL4mKMHiE4xhFPgW7Q=;
+        b=hQVYUUjo/WN9KOMOikMP189nEe9lGIqeHSWLkQf87f2b8ltNBeorTRUi2s5M9zI/nU
+         tx1tJK0TCPj7Fut3Bq9XvA2K/2FcvATwf/GZvdU4kRxc9HXCajtgwSD7J27WmeNUAqPM
+         s1TEWGmIWFwovvLW6PncOHlQoA9Qnbkw06ummQ2ZJo2ZNR8vXIHZAvQWX2CgAZHJOtb4
+         xp44Ay7G/h69hmYmyPm4phzDKAjRixO6rwrTNqXC+UTDq9ZP/OTaLYc0ZPnWq7KnHYXR
+         28LHVzIwklZgiDg78apIitRt1fQen03FFIO6mzpKi0A4BkE+ZWM2KEGK/8qWpFQ5j5gV
+         ak7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690563519; x=1691168319;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1rDph/ilI0FwAW+BQ2mqWWYLcbL4mKMHiE4xhFPgW7Q=;
+        b=ON1AjY6d7mpZhlgH1iQTGu5bDIeA4B3P6tr7hG28WD617ATK7r4A5gtiJmDKDU3EI7
+         WC1PPv3NV2fr17tP7DD/S0rlgXEE809bTJaVNGb/REny6tzDW5RYr94GlEvl6t1Bko9A
+         A+sgggpy2H9Z/IWplXOZfVx/FqsaDF7kejJ7pwyDuCEzWCUmOFbrxnaPdCBRQdGcddhX
+         ZLpDwWfEWTJv3Bn5aPcKXXA8m1wKjrUnBYUW+M6hYozF3S1CGp7cuYMQ5S7Hb9dj2xtg
+         x79m7WkQoB/+9qT+78wqf14mwvQ42mTJKwwT3g/t1vDaZ0Hg2HyLvEMyPHZtyvACWvt0
+         /95A==
+X-Gm-Message-State: ABy/qLbia8bu8VmbAGod0OBVLyp+rh4MAnYCUZQydBAfPGqOQNLPsjKq
+	HuXPdCPR6xF+9JNQ939Npnw=
+X-Google-Smtp-Source: APBJJlEPxjGArDzcdaDY83+do02dct//a6tUJqqjmsOJsEsXLJvJsYSDqmrGTK4CahusUWaM+gZ9Ag==
+X-Received: by 2002:adf:fdce:0:b0:317:5d76:1d1a with SMTP id i14-20020adffdce000000b003175d761d1amr2549930wrs.8.1690563519401;
+        Fri, 28 Jul 2023 09:58:39 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id f3-20020a5d50c3000000b00317909f9985sm995362wrt.113.2023.07.28.09.58.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 09:58:38 -0700 (PDT)
+Message-ID: <f8d9ec82dd2da5fc5d18228e70bfe68f959d7ed1.camel@gmail.com>
+Subject: Re: Register encoding in assembly for load/store instructions
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: yonghong.song@linux.dev, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>,  "Jose E. Marchesi"
+ <jose.marchesi@oracle.com>
+Cc: Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>
+Date: Fri, 28 Jul 2023 19:58:37 +0300
+In-Reply-To: <d10ca36d-7ae6-90bf-8c2a-671cafe8f5fb@linux.dev>
+References: <87ila7dhmp.fsf@oracle.com>
+	 <5e6b7c30-eba4-31ca-e0ac-1e21f4c9d8aa@linux.dev>
+	 <87o7jzbz0z.fsf@oracle.com>
+	 <146bc14b-e15c-6e62-1fa0-4e9e67c974c9@linux.dev>
+	 <87zg3jah2s.fsf@oracle.com>
+	 <6a102de2-2bd4-6933-e901-de00cda10045@linux.dev>
+	 <87v8e78w63.fsf@oracle.com>
+	 <CAADnVQLDGUSSCkhxjgt6bxxN7hOh7L-86-wzESp2Oo8SQ91hOg@mail.gmail.com>
+	 <a1371ac96bdca45a07366868d331410a9836204e.camel@gmail.com>
+	 <d10ca36d-7ae6-90bf-8c2a-671cafe8f5fb@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <3076188eb88cca9151a2d12b50ba1e870b11ce09.1689693294.git.geliang.tang@suse.com>
- <CAHC9VhS_LKdkEmm5_J5y34RpaRcTbg8==fpz8pMThDCjF6nYtQ@mail.gmail.com>
- <b41babb1-f0f2-dc2f-c2e3-1870107fbd9f@tessares.net> <ZMKxC+CFj4GbCklg@google.com>
- <1023fdeb-a45a-2e9e-cd2e-7e44e655e8fc@tessares.net>
-Message-ID: <ZMPyCt2uozns776Q@google.com>
-Subject: Re: [RFC bpf-next v5] bpf: Force to MPTCP
-From: Stanislav Fomichev <sdf@google.com>
-To: Matthieu Baerts <matthieu.baerts@tessares.net>
-Cc: Paul Moore <paul@paul-moore.com>, Geliang Tang <geliang.tang@suse.com>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	mptcp@lists.linux.dev, apparmor@lists.ubuntu.com, 
-	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-	autolearn=unavailable autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 07/28, Matthieu Baerts wrote:
-> Hi Stanislav,
+On Tue, 2023-07-25 at 21:16 -0700, Yonghong Song wrote:
 >=20
-> On 27/07/2023 20:01, Stanislav Fomichev wrote:
-> > On 07/27, Matthieu Baerts wrote:
-> >> Hi Paul, Stanislav,
-> >>
-> >> On 18/07/2023 18:14, Paul Moore wrote:
-> >>> On Tue, Jul 18, 2023 at 11:21=E2=80=AFAM Geliang Tang <geliang.tang@s=
-use.com> wrote:
-> >>>>
-> >>>> As is described in the "How to use MPTCP?" section in MPTCP wiki [1]=
-:
-> >>>>
-> >>>> "Your app can create sockets with IPPROTO_MPTCP as the proto:
-> >>>> ( socket(AF_INET, SOCK_STREAM, IPPROTO_MPTCP); ). Legacy apps can be
-> >>>> forced to create and use MPTCP sockets instead of TCP ones via the
-> >>>> mptcpize command bundled with the mptcpd daemon."
-> >>>>
-> >>>> But the mptcpize (LD_PRELOAD technique) command has some limitations
-> >>>> [2]:
-> >>>>
-> >>>>  - it doesn't work if the application is not using libc (e.g. GoLang
-> >>>> apps)
-> >>>>  - in some envs, it might not be easy to set env vars / change the w=
-ay
-> >>>> apps are launched, e.g. on Android
-> >>>>  - mptcpize needs to be launched with all apps that want MPTCP: we c=
-ould
-> >>>> have more control from BPF to enable MPTCP only for some apps or all=
- the
-> >>>> ones of a netns or a cgroup, etc.
-> >>>>  - it is not in BPF, we cannot talk about it at netdev conf.
-> >>>>
-> >>>> So this patchset attempts to use BPF to implement functions similer =
-to
-> >>>> mptcpize.
-> >>>>
-> >>>> The main idea is add a hook in sys_socket() to change the protocol i=
-d
-> >>>> from IPPROTO_TCP (or 0) to IPPROTO_MPTCP.
-> >>>>
-> >>>> [1]
-> >>>> https://github.com/multipath-tcp/mptcp_net-next/wiki
-> >>>> [2]
-> >>>> https://github.com/multipath-tcp/mptcp_net-next/issues/79
-> >>>>
-> >>>> v5:
-> >>>>  - add bpf_mptcpify helper.
-> >>>>
-> >>>> v4:
-> >>>>  - use lsm_cgroup/socket_create
-> >>>>
-> >>>> v3:
-> >>>>  - patch 8: char cmd[128]; -> char cmd[256];
-> >>>>
-> >>>> v2:
-> >>>>  - Fix build selftests errors reported by CI
-> >>>>
-> >>>> Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/79
-> >>>> Signed-off-by: Geliang Tang <geliang.tang@suse.com>
-> >>>> ---
-> >>>>  include/linux/bpf.h                           |   1 +
-> >>>>  include/linux/lsm_hook_defs.h                 |   2 +-
-> >>>>  include/linux/security.h                      |   6 +-
-> >>>>  include/uapi/linux/bpf.h                      |   7 +
-> >>>>  kernel/bpf/bpf_lsm.c                          |   2 +
-> >>>>  net/mptcp/bpf.c                               |  20 +++
-> >>>>  net/socket.c                                  |   4 +-
-> >>>>  security/apparmor/lsm.c                       |   8 +-
-> >>>>  security/security.c                           |   2 +-
-> >>>>  security/selinux/hooks.c                      |   6 +-
-> >>>>  tools/include/uapi/linux/bpf.h                |   7 +
-> >>>>  .../testing/selftests/bpf/prog_tests/mptcp.c  | 128 +++++++++++++++=
-+--
-> >>>>  tools/testing/selftests/bpf/progs/mptcpify.c  |  17 +++
-> >>>>  13 files changed, 187 insertions(+), 23 deletions(-)
-> >>>>  create mode 100644 tools/testing/selftests/bpf/progs/mptcpify.c
-> >>>
-> >>> ...
-> >>>
-> >>>> diff --git a/security/security.c b/security/security.c
-> >>>> index b720424ca37d..bbebcddce420 100644
-> >>>> --- a/security/security.c
-> >>>> +++ b/security/security.c
-> >>>> @@ -4078,7 +4078,7 @@ EXPORT_SYMBOL(security_unix_may_send);
-> >>>>   *
-> >>>>   * Return: Returns 0 if permission is granted.
-> >>>>   */
-> >>>> -int security_socket_create(int family, int type, int protocol, int =
-kern)
-> >>>> +int security_socket_create(int *family, int *type, int *protocol, i=
-nt kern)
-> >>>>  {
-> >>>>         return call_int_hook(socket_create, 0, family, type, protoco=
-l, kern);
-> >>>>  }
-> >>>
-> >>> Using the LSM to change the protocol family is not something we want
-> >>> to allow.  I'm sorry, but you will need to take a different approach.
-> >>
-> >> @Paul: Thank you for your feedback. It makes sense and I understand.
-> >>
-> >> @Stanislav: Despite the fact the implementation was smaller and reusin=
-g
-> >> more code, it looks like we cannot go in the direction you suggested. =
-Do
-> >> you think what Geliang suggested before in his v3 [1] can be accepted?
-> >>
-> >> (Note that the v3 is the same as the v1, only some fixes in the selfte=
-sts.)
+> On 7/25/23 5:39 PM, Eduard Zingerman wrote:
+> > On Tue, 2023-07-25 at 17:31 -0700, Alexei Starovoitov wrote:
+> > > On Tue, Jul 25, 2023 at 3:28=E2=80=AFPM Jose E. Marchesi
+> > > <jose.marchesi@oracle.com> wrote:
+> > > >=20
+> > > >=20
+> > > > > On 7/25/23 1:09 PM, Jose E. Marchesi wrote:
+> > > > > >=20
+> > > > > > > On 7/25/23 11:56 AM, Jose E. Marchesi wrote:
+> > > > > > > >=20
+> > > > > > > > > On 7/25/23 10:29 AM, Jose E. Marchesi wrote:
+> > > > > > > > > > Hello Yonghong.
+> > > > > > > > > > We have noticed that the llvm disassembler uses differe=
+nt notations
+> > > > > > > > > > for
+> > > > > > > > > > registers in load and store instructions, depending som=
+ehow on the width
+> > > > > > > > > > of the data being loaded or stored.
+> > > > > > > > > > For example, this is an excerpt from the assembler-disa=
+ssembler.s
+> > > > > > > > > > test
+> > > > > > > > > > file in llvm:
+> > > > > > > > > >       // Note: For the group below w1 is used as a dest=
+ination for
+> > > > > > > > > > sizes u8, u16, u32.
+> > > > > > > > > >       //       This is disassembler quirk, but is techn=
+ically not wrong, as there are
+> > > > > > > > > >       //       no different encodings for 'r1 =3D load'=
+ vs 'w1 =3D load'.
+> > > > > > > > > >       //
+> > > > > > > > > >       // CHECK: 71 21 2a 00 00 00 00 00   w1 =3D *(u8 *=
+)(r2 + 0x2a)
+> > > > > > > > > >       // CHECK: 69 21 2a 00 00 00 00 00   w1 =3D *(u16 =
+*)(r2 + 0x2a)
+> > > > > > > > > >       // CHECK: 61 21 2a 00 00 00 00 00   w1 =3D *(u32 =
+*)(r2 + 0x2a)
+> > > > > > > > > >       // CHECK: 79 21 2a 00 00 00 00 00   r1 =3D *(u64 =
+*)(r2 + 0x2a)
+> > > > > > > > > >       r1 =3D *(u8*)(r2 + 42)
+> > > > > > > > > >       r1 =3D *(u16*)(r2 + 42)
+> > > > > > > > > >       r1 =3D *(u32*)(r2 + 42)
+> > > > > > > > > >       r1 =3D *(u64*)(r2 + 42)
+> > > > > > > > > > The comment there clarifies that the usage of wN instea=
+d of rN in
+> > > > > > > > > > the
+> > > > > > > > > > u8, u16 and u32 cases is a "disassembler quirk".
+> > > > > > > > > > Anyway, the problem is that it seems that `clang -S' ac=
+tually emits
+> > > > > > > > > > these forms with wN.
+> > > > > > > > > > Is that intended?
+> > > > > > > > >=20
+> > > > > > > > > Yes, this is intended since alu32 mode is enabled where
+> > > > > > > > > w* registers are used for 8/16/32 bit load.
+> > > > > > > > So then why suppporting 'r1 =3D 8948 8*9r2 + 0x2a)'?  The m=
+ode is
+> > > > > > > > still
+> > > > > > > > alu32 mode.  Isn't the u{8,16,32} part enough to discrimina=
+te?
+> > > > > > >=20
+> > > > > > > What does this 'r1 =3D 8948 8*9r2 + 0x2a)' mean?
+> > > > > > >=20
+> > > > > > > For u8/u16/u32 loads, if objdump with option to indicate alu3=
+2 mode,
+> > > > > > > then w* register is used. If no alu32 mode for objdump, then =
+r* register
+> > > > > > > is used. Basically the same insn, disasm is different dependi=
+ng on
+> > > > > > > alu32 mode or not. u8/u16/u32 is not enough to differentiate.
+> > > > > > Ok, so the llvm objdump has a switch that tells when to use rN =
+or wN
+> > > > > > when printing these particular instructions.  Thats the "disass=
+embler
+> > > > > > quirk".  To what purpose?  Isnt the person passing the command =
+line
+> > > > > > switch the same person reading the disassembled program?  Is th=
+is "alu32
+> > > > > > mode" more than a cosmetic thing?
+> > > > > > But what concern us is the assembler, not the disassembler.
+> > > > > > clang -S (which is not objdump) seems to generate these instruc=
+tions
+> > > > > > with wN (see https://godbolt.org/z/5G433Yvrb for a store instru=
+ction for
+> > > > > > example) and we assume the output of clang -S is intended to be=
+ passed
+> > > > > > to an assembler, much like with gcc -S.
+> > > > > > So, should we support both syntaxes as _input_ syntax in the
+> > > > > > assembler?
+> > > > >=20
+> > > > > Considering -mcpu=3Dv3 is recommended cpu flavor (at least in bpf=
+ mailing
+> > > > > list), and -mcpu=3Dv3 has alu32 enabled by default. So I think
+> > > > > gcc can start to emit insn assuming alu32 mode is on by default.
+> > > > > So
+> > > > >     w1 =3D *(u8 *)(r2 + 42)
+> > > > > is preferred.
+> > > >=20
+> > > > We have V4 by default now.  So we can emit
+> > > >=20
+> > > >    w1 =3D *(u8 *)(r2 + 42)
+> > > >=20
+> > > > when -mcpu is v3 or higher, or if -malu32 is specified, and
+> > > >=20
+> > > >    r1 =3D *(u8 *)(r2 + 42)
+> > > >=20
+> > > > when -mcpu is v2 or lower, or if -mnoalu32 is specified.
+> > > >=20
+> > > > Sounds good?
+> > > >=20
+> > > > However this implies that the assembler should indeed recognize bot=
+h
+> > > > forms of instructions.  But note that it will assembly them to the
+> > > > exactly same encoded instruction.  This includes inline asm (rememb=
+er
+> > > > GCC does not have an integrated assembler.)
+> > >=20
+> > > Good point.
+> > > I think we made a mistake in clang.
+> > > We shouldn't be printing
+> > > w1 =3D *(u8 *)(r2 + 42)
+> > > since such instruction doesn't exist in BPF ISA
+> > > and it's confusing.
+> > > There is only one instruction:
+> > > r1 =3D *(u8 *)(r2 + 42)
+> > > which is an 8-bit load that zero extends into 64-bit.
+> > > x86 JIT actually implements it as 8-bit load that stores
+> > > into a 32-bit subregister, so it kinda matches w1,
+> > > but that's an implementation detail of the JIT.
+> > >=20
+> > > I think both gcc and clang should always print r1 =3D *(u8 *)(r2 + 42=
+)
+> > > regardless of alu32 or not.
+> > > In gas and clang assembler we can support both w1=3D and r1=3D
+> > > flavors for backward compat.
+> > >=20
 > >=20
-> > We have too many hooks in networking, so something that doesn't add
-> > a new one is preferable :-(
+> > I agree with Alexei (the ... disassembler quirk ... comment is left by =
+me :).
+> > Can dig into clang part of things if this is a consensus.
 >=20
-> Thank you for your reply and the explanation, I understand.
+> For disassembler, we have stx as well may use w* registers with alu32.
+> In llvm BPFDisassembler.cpp, we have
 >=20
-> > Moreover, we already have a 'socket init' hook, but it runs a bit late.
->=20
-> Indeed. And we cannot move it before the creation of the socket.
->=20
-> > Is existing cgroup/sock completely unworkable? Is it possible to
-> > expose some new bpf_upgrade_socket_to(IPPROTO_MPTCP) kfunc which would
-> > call some new net_proto_family->upgrade_to(IPPROTO_MPTCP) to do the sur=
-gery?
-> > Or is it too hacky?
->=20
-> I cannot judge if it is too hacky or not but if you think it would be
-> OK, please tell us :)
-
-Maybe try and see how it goes? Doing the surgery to convert from tcp
-to mptcp is probably hard, but it seems that we should be able to
-do something like:
-
-int upgrade_to(sock, sk) {
-	if (sk is not a tcp one) return -EINVAL;
-
-	sk_common_release(sk);
-	return inet6_create(net, sock, IPPROTO_MPTCP, false);
-}
-
-?
-
-The only thing I'm not sure about is whether you can call inet6_create
-on a socket that has seen sk_common_release'd...
+>    if ((InstClass =3D=3D BPF_LDX || InstClass =3D=3D BPF_STX) &&
+>        getInstSize(Insn) !=3D BPF_DW &&
+>        (InstMode =3D=3D BPF_MEM || InstMode =3D=3D BPF_ATOMIC) &&
+>        STI.hasFeature(BPF::ALU32))
+>      Result =3D decodeInstruction(DecoderTableBPFALU3264, Instr, Insn,=
 =20
-> > Another option Alexei suggested is to add some fentry-like thing:
-> >=20
-> > noinline int update_socket_protocol(int protocol)
-> > {
-> > 	return protocol;
-> > }
-> > /* TODO: ^^^ add the above to mod_ret set */
-> >=20
-> > int __sys_socket(int family, int type, int protocol)
-> > {
-> > 	...
-> >=20
-> > 	protocol =3D update_socket_protocol(protocol);
-> >=20
-> > 	...
-> > }
-> >=20
-> > But it's also too problem specific it seems? And it's not cgroup-aware.
+> Address,
+>                                 this, STI);
+>    else
+>      Result =3D decodeInstruction(DecoderTableBPF64, Instr, Insn, Address=
+,=20
+> this,
+>                                 STI);
 >=20
-> It looks like it is what Geliang did in his v6. If it is the only
-> acceptable solution, I guess we can do without cgroup support. We can
-> continue the discussions in his v6 if that's easier.
+> Maybe we should just do
+>=20
+>    Result =3D decodeInstruction(DecoderTableBPF64, Instr, Insn, Address,=
+=20
+> this, STI);
+>=20
+> So we already disassemble based on non-alu32 mode?
+>=20
 
-Ack, that works too, let's see how other people feel about it. I'm
-assuming in the bpf program we can always do bpf_get_current_cgroup_id()
-to filter by cgroup.
+Yonghong, Alexei,
+
+I have a prototype [1] that consolidates STW/STW32, LDW/LDW32 etc
+instructions in LLVM BPF backend, thus removing the syntactic
+difference. I think it simplifies BPFInstrInfo.td a bit but that's up
+to debate.
+
+Should I proceed with it?
+
+[1] https://reviews.llvm.org/D156559
 
