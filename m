@@ -1,56 +1,56 @@
-Return-Path: <bpf+bounces-6279-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6280-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EBC77678DD
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 01:19:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BE967678E1
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 01:20:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 510621C209C8
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 23:19:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0324128217F
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 23:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CD15214EB;
-	Fri, 28 Jul 2023 23:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EAF4214FF;
+	Fri, 28 Jul 2023 23:18:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0B320FB9
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 23:18:44 +0000 (UTC)
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB71630D3
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 16:18:42 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68706d67ed9so1388231b3a.2
-        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 16:18:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A5F214F9
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 23:18:45 +0000 (UTC)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2217C30E4
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 16:18:44 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-686f25d045cso1762190b3a.0
+        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 16:18:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1690586322; x=1691191122;
+        d=broadcom.com; s=google; t=1690586323; x=1691191123;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t9Sps6OtPBfXeZbXQinYjH/Apy3maq5yZbBUFSaHXwg=;
-        b=ELLMTC3orVe+fPJv/rHSKCXNh/dku7+x7OmTCWYGO1DdP3Zx+qbPRFg0i8ybtMr3gw
-         K23jHCjLsgk/g0EEi9N8AeHtMbS2AcKcFk0iTvhzLqsLXJNk0Xe6xWkguXa4X70O+m+v
-         NjNsseciK2Yd0eQk0AFWWX0jUxl+YU+cWnw+4=
+        bh=NJsStpnWc2LOKafRA/NzR+Nc/UkVk+41aeG6DDX2ySk=;
+        b=evE4qVian6J7izcZqOEMWhjKOrpmrVpzoWk6bjv0RJzm/+ZD7VsfnYCQyzfyD1SRuH
+         z3KY2Ycdf+gyx0fqhJ1kxnNU+Ga/qmttjemcl6QY3cOQOpdcvtQRjBWozqmSo2Shr2Ej
+         SpkQ+oSJ4kKOuEYgFBvRiWqiPGaTiIZ0ogRFI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690586322; x=1691191122;
+        d=1e100.net; s=20221208; t=1690586323; x=1691191123;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t9Sps6OtPBfXeZbXQinYjH/Apy3maq5yZbBUFSaHXwg=;
-        b=VCbs9veGWOnCYVKN7kYSY91lmW2qsYoHRYVGebpGx5P51m3j4oqdBj4HE1mugNPewv
-         veADE0mIwrmjD48yHQncjnx8sBSNtI46ios8N7VZ1GPpX3FsH8kX8Lw8FfXDB1ZhGMsC
-         qe0GP0XdJMirqyjKx1skUpC9Tda1OisZKFHcbe2+xOxLMJljs1oyc1qnzTazfVLLqfq5
-         cjY+r6YWvXvnF0E+xmgCvUAh8+JxUsAwCks23CBE3sHNqQBHFOZsj5mNgvLbpRI6zeYj
-         ikBA3jjzpPX7wfJUJEj7CSpeilbGtSEduUL5FxpsabJqATb8QWmSpdpsMVQQ2S5GlpKm
-         Rjog==
-X-Gm-Message-State: ABy/qLYSyTX2CdynXVNCF39Y6jNsVGzhpxelRpz655vfuQEz/lTlEqly
-	+ctOgCysvMOYfwii9YjM6kfYaA==
-X-Google-Smtp-Source: APBJJlFB+fxvZFwynbUPAchBrlq/hE0y8MOmbhs7ZsjjMZv/No/xKtzBaWnEJd+hTAdxf008IAAGPg==
-X-Received: by 2002:a05:6a00:1343:b0:67a:31b7:456c with SMTP id k3-20020a056a00134300b0067a31b7456cmr3982562pfu.9.1690586321801;
-        Fri, 28 Jul 2023 16:18:41 -0700 (PDT)
+        bh=NJsStpnWc2LOKafRA/NzR+Nc/UkVk+41aeG6DDX2ySk=;
+        b=iebOTVmsAn5ppoubFX50PMlTacKSey94ETwOVfeLKvxfHa1eME7fr7qEY8tQjB80WZ
+         xTDDL486a6XFVrjSTk8hA3F+VECd/JoZ/3mVhkJf36fhVzItm3pUiHnc9NLhTFbfjN/p
+         Mw6cLpgpYy7SyxKydE62MIdZH/gSq7DP5MJUVvQ90e8bCkaD4IyMubVopHXpIHAfIh2b
+         GszhnQV7ikp0AzEjXiC9rzhlBmkLDvbrQWU0mUIuchCROBi/aTJ3xpsBcvwaYAvrhZ9Z
+         D/EIRKI12aJ9YGGfxswxIT7YKxMDnC+UhUvJc0z/QyUdxHPwZhC6SZz4VeKT6m4oOhyP
+         KA/g==
+X-Gm-Message-State: ABy/qLbkhj1baQTSCpXof2wn6kDpQ56OguijfIqhjbPX9yjjcDOpe8Ow
+	trQk1ezuLgMwrohWT1xk8r8XgQ==
+X-Google-Smtp-Source: APBJJlHJKRpBKkCwYBqmeihgQYbgRFSq2icOiubQ9r8RxElbczoOTRorNr8nXhoeehbBPxlpaOAmuA==
+X-Received: by 2002:a05:6a00:a08:b0:686:fb87:7f55 with SMTP id p8-20020a056a000a0800b00686fb877f55mr3698191pfh.15.1690586323028;
+        Fri, 28 Jul 2023 16:18:43 -0700 (PDT)
 Received: from lvnvda5233.lvn.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id f20-20020aa782d4000000b0066f37665a6asm3654424pfn.117.2023.07.28.16.18.40
+        by smtp.gmail.com with ESMTPSA id f20-20020aa782d4000000b0066f37665a6asm3654424pfn.117.2023.07.28.16.18.41
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 28 Jul 2023 16:18:41 -0700 (PDT)
+        Fri, 28 Jul 2023 16:18:42 -0700 (PDT)
 From: Michael Chan <michael.chan@broadcom.com>
 To: davem@davemloft.net
 Cc: netdev@vger.kernel.org,
@@ -60,9 +60,9 @@ Cc: netdev@vger.kernel.org,
 	gospo@broadcom.com,
 	bpf@vger.kernel.org,
 	somnath.kotur@broadcom.com
-Subject: [PATCH net-next 2/3] bnxt_en: Use the unified RX page pool buffers for XDP and non-XDP
-Date: Fri, 28 Jul 2023 16:18:28 -0700
-Message-Id: <20230728231829.235716-3-michael.chan@broadcom.com>
+Subject: [PATCH net-next 3/3] bnxt_en: Let the page pool manage the DMA mapping
+Date: Fri, 28 Jul 2023 16:18:29 -0700
+Message-Id: <20230728231829.235716-4-michael.chan@broadcom.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20230728231829.235716-1-michael.chan@broadcom.com>
 References: <20230728231829.235716-1-michael.chan@broadcom.com>
@@ -73,7 +73,7 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000003928d50601944dd9"
+	boundary="0000000000004bdee20601944dfb"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -81,162 +81,117 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
---0000000000003928d50601944dd9
+--0000000000004bdee20601944dfb
 Content-Transfer-Encoding: 8bit
 
 From: Somnath Kotur <somnath.kotur@broadcom.com>
 
-Convert to use the page pool buffers for the aggregation ring when
-running in non-XDP mode.  This simplifies the driver and we benefit
-from the recycling of pages.  Adjust the page pool size to account
-for the aggregation ring size.
+Use the page pool's ability to maintain DMA mappings for us.
+This avoids re-mapping of the recycled pages.
 
 Signed-off-by: Somnath Kotur <somnath.kotur@broadcom.com>
 Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 71 +++++------------------
- drivers/net/ethernet/broadcom/bnxt/bnxt.h |  3 -
- 2 files changed, 14 insertions(+), 60 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 32 +++++++----------------
+ 1 file changed, 10 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 77ce494643f2..adf785b7aa42 100644
+index adf785b7aa42..b35bc92094ce 100644
 --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -875,48 +875,15 @@ static inline int bnxt_alloc_rx_page(struct bnxt *bp,
- 	struct rx_bd *rxbd =
- 		&rxr->rx_agg_desc_ring[RX_RING(prod)][RX_IDX(prod)];
- 	struct bnxt_sw_rx_agg_bd *rx_agg_buf;
--	struct pci_dev *pdev = bp->pdev;
+@@ -759,7 +759,6 @@ static struct page *__bnxt_alloc_rx_page(struct bnxt *bp, dma_addr_t *mapping,
+ 					 unsigned int *offset,
+ 					 gfp_t gfp)
+ {
+-	struct device *dev = &bp->pdev->dev;
  	struct page *page;
- 	dma_addr_t mapping;
- 	u16 sw_prod = rxr->rx_sw_agg_prod;
- 	unsigned int offset = 0;
  
--	if (BNXT_RX_PAGE_MODE(bp)) {
--		page = __bnxt_alloc_rx_page(bp, &mapping, rxr, &offset, gfp);
--
--		if (!page)
--			return -ENOMEM;
--
--	} else {
--		if (PAGE_SIZE > BNXT_RX_PAGE_SIZE) {
--			page = rxr->rx_page;
--			if (!page) {
--				page = alloc_page(gfp);
--				if (!page)
--					return -ENOMEM;
--				rxr->rx_page = page;
--				rxr->rx_page_offset = 0;
--			}
--			offset = rxr->rx_page_offset;
--			rxr->rx_page_offset += BNXT_RX_PAGE_SIZE;
--			if (rxr->rx_page_offset == PAGE_SIZE)
--				rxr->rx_page = NULL;
--			else
--				get_page(page);
--		} else {
--			page = alloc_page(gfp);
--			if (!page)
--				return -ENOMEM;
--		}
-+	page = __bnxt_alloc_rx_page(bp, &mapping, rxr, &offset, gfp);
- 
--		mapping = dma_map_page_attrs(&pdev->dev, page, offset,
--					     BNXT_RX_PAGE_SIZE, DMA_FROM_DEVICE,
--					     DMA_ATTR_WEAK_ORDERING);
--		if (dma_mapping_error(&pdev->dev, mapping)) {
--			__free_page(page);
--			return -EIO;
--		}
--	}
-+	if (!page)
-+		return -ENOMEM;
- 
- 	if (unlikely(test_bit(sw_prod, rxr->rx_agg_bmap)))
- 		sw_prod = bnxt_find_next_agg_idx(rxr, sw_prod);
-@@ -1202,6 +1169,7 @@ static struct sk_buff *bnxt_rx_agg_pages_skb(struct bnxt *bp,
- 	total_frag_len = __bnxt_rx_agg_pages(bp, cpr, shinfo, idx,
- 					     agg_bufs, tpa, NULL);
- 	if (!total_frag_len) {
-+		skb_mark_for_recycle(skb);
- 		dev_kfree_skb(skb);
+ 	if (PAGE_SIZE > BNXT_RX_PAGE_SIZE) {
+@@ -772,12 +771,7 @@ static struct page *__bnxt_alloc_rx_page(struct bnxt *bp, dma_addr_t *mapping,
+ 	if (!page)
  		return NULL;
- 	}
-@@ -1792,6 +1760,7 @@ static void bnxt_deliver_skb(struct bnxt *bp, struct bnxt_napi *bnapi,
- 		return;
- 	}
- 	skb_record_rx_queue(skb, bnapi->index);
-+	skb_mark_for_recycle(skb);
- 	napi_gro_receive(&bnapi->napi, skb);
+ 
+-	*mapping = dma_map_page_attrs(dev, page, *offset, BNXT_RX_PAGE_SIZE,
+-				      bp->rx_dir, DMA_ATTR_WEAK_ORDERING);
+-	if (dma_mapping_error(dev, *mapping)) {
+-		page_pool_recycle_direct(rxr->page_pool, page);
+-		return NULL;
+-	}
++	*mapping = page_pool_get_dma_addr(page) + *offset;
+ 	return page;
  }
  
-@@ -3000,30 +2969,16 @@ static void bnxt_free_one_rx_ring_skbs(struct bnxt *bp, int ring_nr)
+@@ -996,8 +990,8 @@ static struct sk_buff *bnxt_rx_multi_page_skb(struct bnxt *bp,
+ 		return NULL;
+ 	}
+ 	dma_addr -= bp->rx_dma_offset;
+-	dma_unmap_page_attrs(&bp->pdev->dev, dma_addr, BNXT_RX_PAGE_SIZE, bp->rx_dir,
+-			     DMA_ATTR_WEAK_ORDERING);
++	dma_sync_single_for_cpu(&bp->pdev->dev, dma_addr, BNXT_RX_PAGE_SIZE,
++				bp->rx_dir);
+ 	skb = build_skb(data_ptr - bp->rx_offset, BNXT_RX_PAGE_SIZE);
+ 	if (!skb) {
+ 		page_pool_recycle_direct(rxr->page_pool, page);
+@@ -1030,8 +1024,8 @@ static struct sk_buff *bnxt_rx_page_skb(struct bnxt *bp,
+ 		return NULL;
+ 	}
+ 	dma_addr -= bp->rx_dma_offset;
+-	dma_unmap_page_attrs(&bp->pdev->dev, dma_addr, BNXT_RX_PAGE_SIZE, bp->rx_dir,
+-			     DMA_ATTR_WEAK_ORDERING);
++	dma_sync_single_for_cpu(&bp->pdev->dev, dma_addr, BNXT_RX_PAGE_SIZE,
++				bp->rx_dir);
+ 
+ 	if (unlikely(!payload))
+ 		payload = eth_get_headlen(bp->dev, data_ptr, len);
+@@ -1147,9 +1141,8 @@ static u32 __bnxt_rx_agg_pages(struct bnxt *bp,
+ 			return 0;
+ 		}
+ 
+-		dma_unmap_page_attrs(&pdev->dev, mapping, BNXT_RX_PAGE_SIZE,
+-				     bp->rx_dir,
+-				     DMA_ATTR_WEAK_ORDERING);
++		dma_sync_single_for_cpu(&pdev->dev, mapping, BNXT_RX_PAGE_SIZE,
++					bp->rx_dir);
+ 
+ 		total_frag_len += frag_len;
+ 		prod = NEXT_RX_AGG(prod);
+@@ -2945,10 +2938,6 @@ static void bnxt_free_one_rx_ring_skbs(struct bnxt *bp, int ring_nr)
+ 
+ 		rx_buf->data = NULL;
+ 		if (BNXT_RX_PAGE_MODE(bp)) {
+-			mapping -= bp->rx_dma_offset;
+-			dma_unmap_page_attrs(&pdev->dev, mapping, BNXT_RX_PAGE_SIZE,
+-					     bp->rx_dir,
+-					     DMA_ATTR_WEAK_ORDERING);
+ 			page_pool_recycle_direct(rxr->page_pool, data);
+ 		} else {
+ 			dma_unmap_single_attrs(&pdev->dev, mapping,
+@@ -2969,9 +2958,6 @@ static void bnxt_free_one_rx_ring_skbs(struct bnxt *bp, int ring_nr)
  		if (!page)
  			continue;
  
--		if (BNXT_RX_PAGE_MODE(bp)) {
--			dma_unmap_page_attrs(&pdev->dev, rx_agg_buf->mapping,
--					     BNXT_RX_PAGE_SIZE, bp->rx_dir,
--					     DMA_ATTR_WEAK_ORDERING);
--			rx_agg_buf->page = NULL;
--			__clear_bit(i, rxr->rx_agg_bmap);
--
--			page_pool_recycle_direct(rxr->page_pool, page);
--		} else {
--			dma_unmap_page_attrs(&pdev->dev, rx_agg_buf->mapping,
--					     BNXT_RX_PAGE_SIZE, DMA_FROM_DEVICE,
--					     DMA_ATTR_WEAK_ORDERING);
--			rx_agg_buf->page = NULL;
--			__clear_bit(i, rxr->rx_agg_bmap);
-+		dma_unmap_page_attrs(&pdev->dev, rx_agg_buf->mapping,
-+				     BNXT_RX_PAGE_SIZE, bp->rx_dir,
-+				     DMA_ATTR_WEAK_ORDERING);
-+		rx_agg_buf->page = NULL;
-+		__clear_bit(i, rxr->rx_agg_bmap);
+-		dma_unmap_page_attrs(&pdev->dev, rx_agg_buf->mapping,
+-				     BNXT_RX_PAGE_SIZE, bp->rx_dir,
+-				     DMA_ATTR_WEAK_ORDERING);
+ 		rx_agg_buf->page = NULL;
+ 		__clear_bit(i, rxr->rx_agg_bmap);
  
--			__free_page(page);
--		}
-+		page_pool_recycle_direct(rxr->page_pool, page);
- 	}
- 
- skip_rx_agg_free:
--	if (rxr->rx_page) {
--		__free_page(rxr->rx_page);
--		rxr->rx_page = NULL;
--	}
- 	map = rxr->rx_tpa_idx_map;
- 	if (map)
- 		memset(map->agg_idx_bmap, 0, sizeof(map->agg_idx_bmap));
-@@ -3242,7 +3197,9 @@ static int bnxt_alloc_rx_page_pool(struct bnxt *bp,
- {
- 	struct page_pool_params pp = { 0 };
- 
--	pp.pool_size = bp->rx_ring_size;
-+	pp.pool_size = bp->rx_agg_ring_size;
-+	if (BNXT_RX_PAGE_MODE(bp))
-+		pp.pool_size += bp->rx_ring_size;
+@@ -3203,7 +3189,9 @@ static int bnxt_alloc_rx_page_pool(struct bnxt *bp,
  	pp.nid = dev_to_node(&bp->pdev->dev);
  	pp.napi = &rxr->bnapi->napi;
  	pp.dev = &bp->pdev->dev;
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-index 9d16757e27fe..c446037f6bd9 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-@@ -919,9 +919,6 @@ struct bnxt_rx_ring_info {
- 	unsigned long		*rx_agg_bmap;
- 	u16			rx_agg_bmap_size;
- 
--	struct page		*rx_page;
--	unsigned int		rx_page_offset;
--
- 	dma_addr_t		rx_desc_mapping[MAX_RX_PAGES];
- 	dma_addr_t		rx_agg_desc_mapping[MAX_RX_AGG_PAGES];
+-	pp.dma_dir = DMA_BIDIRECTIONAL;
++	pp.dma_dir = bp->rx_dir;
++	pp.max_len = BNXT_RX_PAGE_SIZE;
++	pp.flags = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV;
+ 	if (PAGE_SIZE > BNXT_RX_PAGE_SIZE)
+ 		pp.flags |= PP_FLAG_PAGE_FRAG;
  
 -- 
 2.30.1
 
 
---0000000000003928d50601944dd9
+--0000000000004bdee20601944dfb
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -307,14 +262,14 @@ hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
 E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
 aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
 EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAUrdaCiab02tt2V/x+u5wnm7JmMy/WP
-4saxbksK4R2xMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDcy
-ODIzMTg0MlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJ4uCP3sjvtC4LXXjrAt3uC0ZYhdRz+1
+hom+MJo7q78zMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDcy
+ODIzMTg0M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
 SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQB9pxD64YNBBRYI0RsaNGRI+v3wWKrLLK6Z5ELEtBnrqqAmMUVa
-DfCOCwtkFwapOAUE7MB+cmKRkPjTEI9Z1ZA0M3gGJE0rB21Mx8F1Bx14/bAwiZcuHJjBvavo6umn
-mQ/trtn3+iVlewk8GorQrZx0sIXx6PeFPMCEAD5w/xuH6aJNLHcUsftbPFEuhbajEJAxE/yfiazk
-JHKNuelcrmn06LbOwIiWFWLLmWu/v/VieQJrwRGv7GBI4BlNea8p7CaLIb1s1clptFQX3mxFBnhL
-HkpBwV53jTQ8Iga7FMosz3IU1Af4N12Do21fG3WZA8jNJ4cw/1d/oS+xPqF9Kmx8
---0000000000003928d50601944dd9--
+ATANBgkqhkiG9w0BAQEFAASCAQBs9KkFd42nuDbbfMuvAVehwhVBsxrUFg8yuZz/jHNhY8uFIV+4
+/mt9OwqKKtuUa2IO4JYgl2W1k/6stOFKReNrvqKEVSZaBfjocDHC6u+QYlbNzYWSo6k7+TBt1QlF
+FmiPcUQAgPI7Dg9xODhfUzOXan+hqcn9bq+JI5NNkXROMCCzWTJful3iIAA12e0hXwZ7vgoBvddq
+zF5iCvpwMp+I6mMYc/drbYeAaiC0YaP2Zo/76loRTV/FR2Atw1lKCLm/hReEydR8fohOB3FSoFeo
+JPUEd1NovglBeoJNcpi2tJz5EifniHikGhY4KVxPuy7qnCIq7z9MguqWPowHORHH
+--0000000000004bdee20601944dfb--
 
