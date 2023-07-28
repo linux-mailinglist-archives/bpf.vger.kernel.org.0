@@ -1,140 +1,149 @@
-Return-Path: <bpf+bounces-6265-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6267-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF278767748
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 22:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B6493767762
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 23:03:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF6E81C217E3
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 20:57:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E66641C2158B
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 21:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31BEA1BB5B;
-	Fri, 28 Jul 2023 20:57:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC3D1FB24;
+	Fri, 28 Jul 2023 21:02:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0847A156C3
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 20:57:05 +0000 (UTC)
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA57E69;
-	Fri, 28 Jul 2023 13:57:03 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id A1E6D5C0042;
-	Fri, 28 Jul 2023 16:57:00 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Fri, 28 Jul 2023 16:57:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm2; t=1690577820; x=1690664220; bh=Ey
-	7an+eYR/EJFsqkCsdCEc8Gpv7n/y5ox8OPRdihLJI=; b=J27Ci6eOLXZMwc/xdV
-	k4/V2Ujs43ozjAJSJfzx33h29LYVAIsS3r2RJin3T/aW9oDcdd1RmPgh7hHplotG
-	ao4ExzZ+Elqt0PbHK3Vwpar0x2Xmc2UCfGmd9fLSKLLisrOaXsiEwdG5b2JHXKt+
-	trvJN84Kz9wP971MY1lA3BBjQeeyG2oSSDzot3+ap9eRp7uEKFLnlROvX1RyyOkQ
-	cPGLOYSXKF2fUtPeIw12+zug1HWozIuI7m5ocf203YAa3ZVbwLL7SuHuIeBvEwy1
-	nvlcDVRyTjyvo5hL1QEan/7GpZf+ZIRBcKTAPl0Kj8QzxbfeY/jlO1r1V5TxEC0+
-	ky/w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm3; t=1690577820; x=1690664220; bh=Ey7an+eYR/EJF
-	sqkCsdCEc8Gpv7n/y5ox8OPRdihLJI=; b=jRJzUyuQYnTKWqqxrP/jCtF5Nsa3F
-	Z59ZYd6uvIJ2NsV4sighrm6TCgeOo4hzicUeS4qEK+Vc+ptBiyjvc/iA+cYC7qv6
-	VqOpjVspD8FHl2t86zbctNl4U6KKcV/7akn+jkek9JdiTIerAcCZWdWGRztGSzTD
-	QXBS6NvyFWX057/XWOQkz+PrLRXQCf6pn1xfl0QV2XjV4QlfAXvRdgYWDkE/mzRD
-	NEKr+b+vfaWojiojrIpnd6m19hA63OKiKjUnNLjWYYllRHHTX0IUURnuGkJ6VsMO
-	XihH+C35mv6VdKTqMaysBbrtnOmshMXX5yufdrvqln2HCjtpBrM7IYeUg==
-X-ME-Sender: <xms:myvEZE3Kf0PQjnUrKwFBbfhjCs9alz8rvv8ujuU6sPyCqxIxrKFZRA>
-    <xme:myvEZPFsHBpgijMZ8HW7DHJccCK07jIYm0mAqG_Jj7RYocsyKSpYoRlSvRbgK3z_r
-    D3bOsCQ5MZXNNhuvIY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieeigdduheduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:myvEZM5Ahws0Z6Fti2HV7CL8kSy_SrbZMY_Sbxx9dXQfT347gKfP-Q>
-    <xmx:myvEZN0XmxO5j6XNcdHCoRnudYI_QAaQeYPj4xFi6joKwRoWSUVFiA>
-    <xmx:myvEZHF7eZKaSta7Ug36jfJ0rnDDOlRQg4ULRxeVexvvBQiC87wrIA>
-    <xmx:nCvEZNb439Dex4aaWQw5WdvGXT_tu2dwlKreo-BLQHj5EG1ucwKbTw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 49564B60089; Fri, 28 Jul 2023 16:56:59 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0BC41F18F;
+	Fri, 28 Jul 2023 21:02:46 +0000 (UTC)
+Received: from mgamail.intel.com (unknown [134.134.136.126])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C654490;
+	Fri, 28 Jul 2023 14:02:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690578165; x=1722114165;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TEuzJH5k9NjiUQxxhE7uZppNJs34BvDLFgeNAlEl6/4=;
+  b=MdAFllPDc3Xj0WCd4t/t4dGGII2LZQcyf5gg6N+JKARmeCG7beELGqyW
+   5t5XHRIm7tl53PoBbmSHk5zfleGhE44Y8F1i/qclnKuCTL05gl5r2TuNz
+   iuol7EUbwd7rxMOHw8WJPVEuENJJLEDF15rbqlgTevUoYQjIiwsWw9L3k
+   e++8WF/BTavECnEWMK9z2rSo51EVMhI96ac4yHc+M40vorIHBcz8CbCEB
+   skRS64pa1xORxwi1UNA9JzeCPXviTvxzFMdV/66rR0QuoBvzaJI0rAB8p
+   +Jt49SHpdNf6+sRCkSxThSupWC1M+0ugCCAldbdxUNgoQHZA2fpFpSd9p
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="353588604"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="353588604"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 14:02:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="817634323"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="817634323"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 28 Jul 2023 14:02:35 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qPUba-0003Zk-1M;
+	Fri, 28 Jul 2023 21:02:34 +0000
+Date: Sat, 29 Jul 2023 05:02:25 +0800
+From: kernel test robot <lkp@intel.com>
+To: Larysa Zaremba <larysa.zaremba@intel.com>, bpf@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Larysa Zaremba <larysa.zaremba@intel.com>, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, David Ahern <dsahern@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Willem de Bruijn <willemb@google.com>,
+	Jesper Dangaard Brouer <brouer@redhat.com>,
+	Anatoly Burakov <anatoly.burakov@intel.com>,
+	Alexander Lobakin <alexandr.lobakin@intel.com>,
+	Magnus Karlsson <magnus.karlsson@gmail.com>,
+	Maryam Tahhan <mtahhan@redhat.com>, xdp-hints@xdp-project.net,
+	netdev@vger.kernel.org,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH bpf-next v4 13/21] ice: Implement checksum hint
+Message-ID: <202307290459.rfUV5NZw-lkp@intel.com>
+References: <20230728173923.1318596-14-larysa.zaremba@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <a2fa1a31-e8bb-4659-9631-398b564e7c2b@app.fastmail.com>
-In-Reply-To: <20230728173103.GA1299743@dev-arch.thelio-3990X>
-References: <1687443219-11946-1-git-send-email-yangtiezhu@loongson.cn>
- <1687443219-11946-2-git-send-email-yangtiezhu@loongson.cn>
- <20230727213648.GA354736@dev-arch.thelio-3990X>
- <1777400a-4d9c-4bdb-9d3b-f8808ef054cc@app.fastmail.com>
- <20230728173103.GA1299743@dev-arch.thelio-3990X>
-Date: Fri, 28 Jul 2023 22:56:38 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Nathan Chancellor" <nathan@kernel.org>
-Cc: "Tiezhu Yang" <yangtiezhu@loongson.cn>,
- linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org,
- loongarch@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>,
- bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH v3 1/2] asm-generic: Unify uapi bitsperlong.h for arm64, riscv and
- loongarch
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728173923.1318596-14-larysa.zaremba@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+	SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jul 28, 2023, at 19:31, Nathan Chancellor wrote:
-> On Fri, Jul 28, 2023 at 01:00:30PM +0200, Arnd Bergmann wrote:
->>
->> of the uapi version. The sanity check in the kernel-side header
->> is intended to cross-check the CONFIG_64BIT value against the
->> __BITS_PER_LONG constant from the header.
->> 
->> My first guess would be that this only worked by accident if the headers
->> defaulted to "#define __BITS_PER_LONG 32" in and #undef CONFIG_64BIT"
->> when include/generated/autoconf.h, but now the __BITS_PER_LONG value
->> is actually correct.
->
-> That seems like a reasonable theory. I am still busy looking into other
-> things today but I can try to double back to this on Monday if you don't
-> make any progress.
+Hi Larysa,
 
-I tried reproducing this today on arm64 Debian with linux-6.5-rc3
-and clang-14.0.6 but I don't see the problem here. With 'make V=1'
-I see command for building scripts/sorttable is
+kernel test robot noticed the following build warnings:
 
-clang -Wp,-MMD,scripts/.sorttable.d -Wall -Wmissing-prototypes \
- -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu11   \
- -I./tools/include -I./tools/arch/x86/include -DUNWINDER_ORC_ENABLED \
- -o scripts/sorttable scripts/sorttable.c   -lpthread
+[auto build test WARNING on bpf-next/master]
 
-which does create an arm64 executable but includes the x86 headers,
-which is clearly a bug by itself, it just doesn't trigger the problem
-for me.
+url:    https://github.com/intel-lab-lkp/linux/commits/Larysa-Zaremba/ice-make-RX-HW-timestamp-reading-code-more-reusable/20230729-023952
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230728173923.1318596-14-larysa.zaremba%40intel.com
+patch subject: [PATCH bpf-next v4 13/21] ice: Implement checksum hint
+config: i386-randconfig-i012-20230728 (https://download.01.org/0day-ci/archive/20230729/202307290459.rfUV5NZw-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230729/202307290459.rfUV5NZw-lkp@intel.com/reproduce)
 
-I also noticed that your command line includes CROSS_COMPILE=x86_64-linux-
-rather than CROSS_COMPILE=x86_64-linux-gnu-, and I think we've had
-problems with that in the past, when "clang --target=x86_64-linux"
-fails to find the glibc system headers.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307290459.rfUV5NZw-lkp@intel.com/
 
-     Arnd
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/ethernet/intel/ice/ice_txrx_lib.c:674: warning: expecting prototype for ice_xdp_rx_csum_lvl(). Prototype was for ice_xdp_rx_csum() instead
+
+
+vim +674 drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+
+   662	
+   663	/**
+   664	 * ice_xdp_rx_csum_lvl - Get level, at which HW has checked the checksum
+   665	 * @ctx: XDP buff pointer
+   666	 * @csum_status: destination address
+   667	 * @csum_info: destination address
+   668	 *
+   669	 * Copy HW checksum level (if was checked) to the destination address.
+   670	 */
+   671	static int ice_xdp_rx_csum(const struct xdp_md *ctx,
+   672				   enum xdp_csum_status *csum_status,
+   673				   union xdp_csum_info *csum_info)
+ > 674	{
+   675		const struct ice_xdp_buff *xdp_ext = (void *)ctx;
+   676		const union ice_32b_rx_flex_desc *eop_desc;
+   677		enum ice_rx_csum_status status;
+   678		u16 ptype;
+   679	
+   680		eop_desc = xdp_ext->pkt_ctx.eop_desc;
+   681		ptype = ice_get_ptype(eop_desc);
+   682	
+   683		status = ice_get_rx_csum_status(eop_desc, ptype);
+   684		if (status & ICE_RX_CSUM_NONE)
+   685			return -ENODATA;
+   686	
+   687		*csum_status = XDP_CHECKSUM_VALID_LVL0 + ice_rx_csum_lvl(status);
+   688		return 0;
+   689	}
+   690	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
