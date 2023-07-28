@@ -1,174 +1,147 @@
-Return-Path: <bpf+bounces-6186-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6187-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC796766A66
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 12:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 02DA5766AFB
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 12:48:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9722C282650
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 10:26:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1F6328269A
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 10:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99054125CE;
-	Fri, 28 Jul 2023 10:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B6510960;
+	Fri, 28 Jul 2023 10:48:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5AC125A1
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 10:25:52 +0000 (UTC)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9604487
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 03:25:34 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51de9c2bc77so2491028a12.3
-        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 03:25:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690539931; x=1691144731;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=F9+fGenjRAvmbDdymEKXPrCcUwzQwH2Q3W4+IMBnd04=;
-        b=nPiGOiGiQgkvDg7MC/1nNnlkYNkmD1hcHCfYVmzC62s9cA1WDP93xgsyWYYswKHta8
-         o5anbWMv6VinDNlCC+3KUkd6TyVM9ScRtHD/3BJYgAtVI6Zo41QUhtXZGRazBRkGa0Xz
-         gcFMl1P8RuIghq5qHRaa5EwavLyI3YD9UBmjcSnDIGhvEM636ZfUki1vY8CM3/HsrMTF
-         geo8Y0SBztE27tkcJDb41QcyiuPlw128PyEcgroVJ9NNqZgnQrtl5C7Qmo7leVoN5wG3
-         LiZoEbe0SN3Tp4V/q5hvsIUzfV+pJ1fQR6jZTsg8I0XJbe+xN1ZlV/Q7G4HAlfB/JD6L
-         +htw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB41C8CA
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 10:48:06 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C577C1B8
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 03:48:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1690541285;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Pr9ZveHG7QOtuyUbRPlw2YGb3UBxbgtuPwUC4Zy2TSc=;
+	b=QwcitNovK4wZUoUw9q33SNCLXnVz4lNQYawRW1ROBD3HGOP0e/TeissNSKJk5s12tkK+TO
+	aeZygNyFW+B6UbfhxlqOlbvNIwrXm02G6viuOyzf3m2keGd7agZAjW/GsKelsv82ftCJoU
+	KuJc75lyPD7LLH7d/qFf5rFSkeoLxY4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-408-wl6WesItPQWTKPOE1OqFlg-1; Fri, 28 Jul 2023 06:48:03 -0400
+X-MC-Unique: wl6WesItPQWTKPOE1OqFlg-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-99bcf6ae8e1so110796066b.0
+        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 03:48:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690539931; x=1691144731;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F9+fGenjRAvmbDdymEKXPrCcUwzQwH2Q3W4+IMBnd04=;
-        b=BHKVREcr/ECqPZtuvtoRIDcIbmWMzcx4Fx4yk1CoJ24gTr1fny9T54oGi/EZO6mWmL
-         dl2cunHFGY0679sFruq2iO1Bui0PRqoP81OJt2UoVPMgeif9LCOLp3kNoIxYr2qiNZlN
-         2/gJ7xQJh+bmcbJBAFh4DA0ajpqMy+F5KS//t/VIV3t5acDZ9FAY+JjjRmTr21tUpGDF
-         5PGSAZM/C0X8DT0x8Q239IFd66Nxmoydlx64s2pXZWgN4sTUCA9P0TSs62TBf6gF5A5P
-         dQ0l77MSaMNyFdIE/Ewg6z8Q+34C4+dVg/WVY6s/Xonv4QFkat51Aj8KWOWU4BJ7D/3K
-         q+XQ==
-X-Gm-Message-State: ABy/qLb9/rx0Lk3KYd5aPE4wDhM7Y9D1dH/tz3+nUtg2ngmO/4PYdX00
-	ETlDyZvhjKVvxBNnc1OvBTA=
-X-Google-Smtp-Source: APBJJlHgFHvK9Kw4qQHHLaAfjtKRzUVN15EqoErb1o1LDvRdSmP46+KxmqkEza2xJBP/VzUgnpSqww==
-X-Received: by 2002:aa7:d40b:0:b0:51d:fa7c:c330 with SMTP id z11-20020aa7d40b000000b0051dfa7cc330mr1364166edq.26.1690539930588;
-        Fri, 28 Jul 2023 03:25:30 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id l5-20020aa7d945000000b005223e54d1edsm1622010eds.20.2023.07.28.03.25.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 03:25:30 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 28 Jul 2023 12:25:28 +0200
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix compilation warning with
- -Wparentheses
-Message-ID: <ZMOXmM4/pdACHPBq@krava>
-References: <20230728055740.2284534-1-yonghong.song@linux.dev>
+        d=1e100.net; s=20221208; t=1690541282; x=1691146082;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pr9ZveHG7QOtuyUbRPlw2YGb3UBxbgtuPwUC4Zy2TSc=;
+        b=LIGTiEEqxr9GR2VFr7IWKy3bKf+5CaJ1naFnr7KNrSvpmYWTUGABsww1kTLS9rcKba
+         TJS1WB1qFCN6j80mz7l8aqr+3icHeQqUIyclMHs4CBmMthjCJbNbL+eQUuvJD/aWvzBj
+         wcvoOyIoL1RSdKjQq4tda64BAqQiSdHfaaXto8zm0dmsnVUpGO+iwldyQg3OW/4ElqUc
+         kUX0HKAE8iYtpmG3twmLx2hF8cXLIzlu+RzMo/TsnY7QNsy195v3onftzl3NaG4qrzLj
+         zsUMUxx7UZhkMG1UmEyGupNSkQlYdueaxO6fjDBtvzsDHTTWPWgPGrNEmPkoT1Qof/Qk
+         lhdg==
+X-Gm-Message-State: ABy/qLbqCDaEh9tHeOt8qiyLIk1nida7Qf+QI9pXY9cuDLAsRs9+fgcD
+	hOTLOXSjz/CX2BWJw5jM1wThSIyhMDHMXuasjyAO+OHuZE4HkMY/4cjHjTCL0QaKpTDx+pFK3bn
+	pSgfhoq8MTgqM
+X-Received: by 2002:a17:906:1089:b0:99b:cb7a:c164 with SMTP id u9-20020a170906108900b0099bcb7ac164mr1596721eju.62.1690541282731;
+        Fri, 28 Jul 2023 03:48:02 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlE6YVrwsxI2jPfqI5yPNns9lR9mTVsyFVoPPYcykgvHGU1qra0WsDFpUM0MwxwWV9vOGNvFKQ==
+X-Received: by 2002:a17:906:1089:b0:99b:cb7a:c164 with SMTP id u9-20020a170906108900b0099bcb7ac164mr1596706eju.62.1690541282445;
+        Fri, 28 Jul 2023 03:48:02 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id y10-20020a17090668ca00b009934b1eb577sm1928162ejr.77.2023.07.28.03.48.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 03:48:01 -0700 (PDT)
+From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <bc0c9d76-7184-4d61-5262-2ae9efd2a136@redhat.com>
+Date: Fri, 28 Jul 2023 12:48:00 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230728055740.2284534-1-yonghong.song@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc: brouer@redhat.com, netdev@vger.kernel.org,
+ "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ houtao1@huawei.com
+Subject: Re: [PATCH bpf-next 1/2] bpf, cpumap: Remove unused cmap field from
+ bpf_cpu_map_entry
+Content-Language: en-US
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+References: <20230728014942.892272-1-houtao@huaweicloud.com>
+ <20230728014942.892272-2-houtao@huaweicloud.com>
+In-Reply-To: <20230728014942.892272-2-houtao@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Jul 27, 2023 at 10:57:40PM -0700, Yonghong Song wrote:
-> The kernel test robot reported compilation warnings when -Wparentheses is
-> added to KBUILD_CFLAGS with gcc compiler. The following is the error message:
-> 
->   .../bpf-next/kernel/bpf/verifier.c: In function ‘coerce_reg_to_size_sx’:
->   .../bpf-next/kernel/bpf/verifier.c:5901:14:
->     error: suggest parentheses around comparison in operand of ‘==’ [-Werror=parentheses]
->     if (s64_max >= 0 == s64_min >= 0) {
->         ~~~~~~~~^~~~
->   .../bpf-next/kernel/bpf/verifier.c: In function ‘coerce_subreg_to_size_sx’:
->   .../bpf-next/kernel/bpf/verifier.c:5965:14:
->     error: suggest parentheses around comparison in operand of ‘==’ [-Werror=parentheses]
->     if (s32_min >= 0 == s32_max >= 0) {
->         ~~~~~~~~^~~~
-> 
-> To fix the issue, add proper parentheses for the above '>=' condition
-> to silence the warning/error.
-> 
-> I tried a few clang compilers like clang16 and clang18 and they do not emit
-> such warnings with -Wparentheses.
 
-I just hit it with gcc and this fixes it for me
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-thanks,
-jirka
-
+On 28/07/2023 03.49, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202307281133.wi0c4SqG-lkp@intel.com/
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> Since commit cdfafe98cabe ("xdp: Make cpumap flush_list common for all
+> map instances"), cmap is no longer used, so just remove it.
+> 
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 > ---
->  kernel/bpf/core.c     | 4 ++--
->  kernel/bpf/verifier.c | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
+
+LGTM
+
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+
+
+>   kernel/bpf/cpumap.c | 3 ---
+>   1 file changed, 3 deletions(-)
 > 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index db0b631908c2..baccdec22f19 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1877,7 +1877,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
->  		case 1:
->  			AX = abs((s32)DST);
->  			do_div(AX, abs((s32)SRC));
-> -			if ((s32)DST < 0 == (s32)SRC < 0)
-> +			if (((s32)DST < 0) == ((s32)SRC < 0))
->  				DST = (u32)AX;
->  			else
->  				DST = (u32)-AX;
-> @@ -1904,7 +1904,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
->  		case 1:
->  			AX = abs((s32)DST);
->  			do_div(AX, abs((s32)IMM));
-> -			if ((s32)DST < 0 == (s32)IMM < 0)
-> +			if (((s32)DST < 0) == ((s32)IMM < 0))
->  				DST = (u32)AX;
->  			else
->  				DST = (u32)-AX;
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 0b1ada93582b..e7b1af016841 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5898,7 +5898,7 @@ static void coerce_reg_to_size_sx(struct bpf_reg_state *reg, int size)
->  	s64_min = min(init_s64_max, init_s64_min);
->  
->  	/* both of s64_max/s64_min positive or negative */
-> -	if (s64_max >= 0 == s64_min >= 0) {
-> +	if ((s64_max >= 0) == (s64_min >= 0)) {
->  		reg->smin_value = reg->s32_min_value = s64_min;
->  		reg->smax_value = reg->s32_max_value = s64_max;
->  		reg->umin_value = reg->u32_min_value = s64_min;
-> @@ -5962,7 +5962,7 @@ static void coerce_subreg_to_size_sx(struct bpf_reg_state *reg, int size)
->  	s32_max = max(init_s32_max, init_s32_min);
->  	s32_min = min(init_s32_max, init_s32_min);
->  
-> -	if (s32_min >= 0 == s32_max >= 0) {
-> +	if ((s32_min >= 0) == (s32_max >= 0)) {
->  		reg->s32_min_value = s32_min;
->  		reg->s32_max_value = s32_max;
->  		reg->u32_min_value = (u32)s32_min;
-> -- 
-> 2.34.1
-> 
-> 
+> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+> index 6ae02be7a48e..0a16e30b16ef 100644
+> --- a/kernel/bpf/cpumap.c
+> +++ b/kernel/bpf/cpumap.c
+> @@ -60,8 +60,6 @@ struct bpf_cpu_map_entry {
+>   	/* XDP can run multiple RX-ring queues, need __percpu enqueue store */
+>   	struct xdp_bulk_queue __percpu *bulkq;
+>   
+> -	struct bpf_cpu_map *cmap;
+> -
+>   	/* Queue with potential multi-producers, and single-consumer kthread */
+>   	struct ptr_ring *queue;
+>   	struct task_struct *kthread;
+> @@ -588,7 +586,6 @@ static long cpu_map_update_elem(struct bpf_map *map, void *key, void *value,
+>   		rcpu = __cpu_map_entry_alloc(map, &cpumap_value, key_cpu);
+>   		if (!rcpu)
+>   			return -ENOMEM;
+> -		rcpu->cmap = cmap;
+>   	}
+>   	rcu_read_lock();
+>   	__cpu_map_entry_replace(cmap, key_cpu, rcpu);
+
 
