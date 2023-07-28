@@ -1,220 +1,218 @@
-Return-Path: <bpf+bounces-6281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6283-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADBCD7678F2
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 01:26:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64823767917
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 01:33:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDFB61C20DDA
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 23:26:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 215B22822B9
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 23:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 562D0200BC;
-	Fri, 28 Jul 2023 23:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6516220FB4;
+	Fri, 28 Jul 2023 23:33:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28514525C
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 23:25:54 +0000 (UTC)
-Received: from out-87.mta1.migadu.com (out-87.mta1.migadu.com [95.215.58.87])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0365630CF
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 16:25:52 -0700 (PDT)
-Message-ID: <c030265d-7e9d-19f0-0362-2e99c3e2f13f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1690586751; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nmyB2+7eWvNCluO4mLdejfaZhOCFtVNoRZ26pY34Hew=;
-	b=NfSoKUpSj/J2JTHVBsbRPwG7NVCzOLiGmHUy93Zd6zLW7VLLfO4SVeknP9KQr/9F5iTSGI
-	dBTD4jc/FOFdOXf2RkBH+yPokuYmqtHyLuhy6fRWY5ZQkILgHYfD73RLe1V495belb6kZ8
-	Z/UTBS9+Ehk8x7qQ7E2SdQfUQ+sClDk=
-Date: Fri, 28 Jul 2023 16:25:45 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35EA1525C
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 23:33:06 +0000 (UTC)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0684222
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 16:33:04 -0700 (PDT)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 6F1A1C1516E3
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 16:33:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1690587184; bh=0Li9lTOWVzUbM5ZQRzFFJAEsft09LwTpjn/43HtOYnY=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=NXVeJe046dyLnoCL46Xg1xvwXlyL+aFonvRBeDUA+AThke0s6xwG79CQyrF6Y6vkB
+	 ZdYU8NuDsaqndyJENvhijixVdhK1O2Qj17ak71yACpzqCieCDr3LbvEBtVkEB4/G+P
+	 gJpMFU7tBsiMslBfjbmkLxwawxypW1Rc0TjAdiSs=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Fri Jul 28 16:33:04 2023
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 44350C14CE42;
+	Fri, 28 Jul 2023 16:33:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1690587184; bh=0Li9lTOWVzUbM5ZQRzFFJAEsft09LwTpjn/43HtOYnY=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=NXVeJe046dyLnoCL46Xg1xvwXlyL+aFonvRBeDUA+AThke0s6xwG79CQyrF6Y6vkB
+	 ZdYU8NuDsaqndyJENvhijixVdhK1O2Qj17ak71yACpzqCieCDr3LbvEBtVkEB4/G+P
+	 gJpMFU7tBsiMslBfjbmkLxwawxypW1Rc0TjAdiSs=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id BB57EC14CE42
+ for <bpf@ietfa.amsl.com>; Fri, 28 Jul 2023 16:33:02 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -1.904
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=obs-cr.20221208.gappssmtp.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Fg-pU9YfDft1 for <bpf@ietfa.amsl.com>;
+ Fri, 28 Jul 2023 16:32:58 -0700 (PDT)
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com
+ [IPv6:2607:f8b0:4864:20::f2b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 719B9C14CE40
+ for <bpf@ietf.org>; Fri, 28 Jul 2023 16:32:58 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id
+ 6a1803df08f44-63d3583d0efso16369846d6.1
+ for <bpf@ietf.org>; Fri, 28 Jul 2023 16:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=obs-cr.20221208.gappssmtp.com; s=20221208; t=1690587177; x=1691191977;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=bxCTFaHrTVESGNYLRZvUe6lEIyuB/4+fv2YbMx/txfo=;
+ b=tQtVLDq+kn+5hyaQZfNyV7++oK/YuKSIPWq9JIXwMFpbtUYCDBT2y7lhl6ecKVhXGw
+ ocZhTmhU/QNPcnn8uobWaDU99FGN1wN44SBbVbGZy+0wLxGScXEEMJoSJtSRZ7s3DN66
+ Bs3IzWZf3W0jXLPm/7Of4LkQlD/XKD83D351rTrpXBnJ3bmexfYhC29ioPgBTcq72pqA
+ 2MZzDtspuLxacRACb+G2k4ayRerosVDdtqqzQVGa5lmgtA/cUYB88JenuEn2NH6z4eSs
+ DKOtCPV1HeAZ0EEy35vMeaw+pbQdfwEd2amjDpWgtt+dTuod2MxClmMNMuSe2aDS+ZOd
+ FHBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1690587177; x=1691191977;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=bxCTFaHrTVESGNYLRZvUe6lEIyuB/4+fv2YbMx/txfo=;
+ b=Rbt+kLLuzw++VMNl0UBdB+KCmvcFNVW2psCeOGv3o3LlQIdAuAgqct6VvnXmwKFYhy
+ cA2IX5zeFnlgEfNHhWYtqfkhBg10lYGJpjCOhDU4BR++p082MgvyoCGqfT4dg0TMstIA
+ PyRvi5RqvRb8kZVRKvHeLR2SSjHheuMhYJ2DsZjYuKFxUgYBGE//nqgwlTvW9X2D/m2H
+ KnAHs+0qPvMoV2Yz09C5m9THpasrZmuPoGVjDfXL8vtueS/Qy3oeediFiyDPFSq9SuZG
+ a5JXtGIf0PN8at+b7a7dfR2/GS0w2rrCk9oPWcv71M3tYy8oVaMBbub1X+pHBKSLw1Kp
+ vihg==
+X-Gm-Message-State: ABy/qLa3zX9z5DQrlTVQ3yCUfkPdq2Gk14HS+6qIGJLsnQV2flmQ9PjE
+ DaCnOMxjpTl16FKUPo+ZjzKcR/gbFZ9GTDMUm+A+gQ==
+X-Google-Smtp-Source: APBJJlG/UEmQb5AeCTAQMFHj1XH7vGtnuyHr1Tk+quU5votGceS8nN2xWPHUihBJ3jLdUlSUSSFXz+jOOn0lPBlTRuI=
+X-Received: by 2002:a05:6214:57c8:b0:63d:311f:c901 with SMTP id
+ lw8-20020a05621457c800b0063d311fc901mr4002385qvb.34.1690587177470; Fri, 28
+ Jul 2023 16:32:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: Register encoding in assembly for load/store instructions
-Content-Language: en-US
-To: Eduard Zingerman <eddyz87@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc: Yonghong Song <yhs@meta.com>, bpf <bpf@vger.kernel.org>
-References: <87ila7dhmp.fsf@oracle.com>
- <5e6b7c30-eba4-31ca-e0ac-1e21f4c9d8aa@linux.dev> <87o7jzbz0z.fsf@oracle.com>
- <146bc14b-e15c-6e62-1fa0-4e9e67c974c9@linux.dev> <87zg3jah2s.fsf@oracle.com>
- <6a102de2-2bd4-6933-e901-de00cda10045@linux.dev> <87v8e78w63.fsf@oracle.com>
- <CAADnVQLDGUSSCkhxjgt6bxxN7hOh7L-86-wzESp2Oo8SQ91hOg@mail.gmail.com>
- <a1371ac96bdca45a07366868d331410a9836204e.camel@gmail.com>
- <d10ca36d-7ae6-90bf-8c2a-671cafe8f5fb@linux.dev>
- <f8d9ec82dd2da5fc5d18228e70bfe68f959d7ed1.camel@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <f8d9ec82dd2da5fc5d18228e70bfe68f959d7ed1.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <CACsn0ckZO+b5bRgMZhOvx+Jn-sa0g8cBD+ug1CJEdtYxSm_hgA@mail.gmail.com>
+ <PH7PR21MB3878D8DCEF24A5F8E52BA59DA303A@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <CAADnVQJ1fKXcsTXdCijwQzf0OVF0md-ATN5RbB3g10geyofNzA@mail.gmail.com>
+ <CACsn0cmf22zEN9AduiRiFnQ7XhY1ABRL=SwAwmmFgxJvVZAOsg@mail.gmail.com>
+ <CADx9qWi+VQ=do+_Bsd8W4Yc-S1LekVq7Hp4bfD3nz0YP47Sqgg@mail.gmail.com>
+ <CAADnVQ+5d8ztfFLraWnZKszAX23Z-12=pHjJfufNbd3qzWVNsQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+5d8ztfFLraWnZKszAX23Z-12=pHjJfufNbd3qzWVNsQ@mail.gmail.com>
+From: Will Hawkins <hawkinsw@obs.cr>
+Date: Fri, 28 Jul 2023 19:32:46 -0400
+Message-ID: <CADx9qWhSqb6xAP=nz5N-vmd2N3+h4TBFtFOGdJUWNfX=LapEBw@mail.gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Watson Ladd <watsonbladd@gmail.com>, Dave Thaler <dthaler@microsoft.com>, 
+ "bpf@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/yzWnOIpUpes3vMVZy-zPqnSVAhc>
+Subject: Re: [Bpf] Review of draft-thaler-bpf-isa-01
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
+ <bpf.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
+ <mailto:bpf-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
+ <mailto:bpf-request@ietf.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
-
-On 7/28/23 9:58 AM, Eduard Zingerman wrote:
-> On Tue, 2023-07-25 at 21:16 -0700, Yonghong Song wrote:
->>
->> On 7/25/23 5:39 PM, Eduard Zingerman wrote:
->>> On Tue, 2023-07-25 at 17:31 -0700, Alexei Starovoitov wrote:
->>>> On Tue, Jul 25, 2023 at 3:28 PM Jose E. Marchesi
->>>> <jose.marchesi@oracle.com> wrote:
->>>>>
->>>>>
->>>>>> On 7/25/23 1:09 PM, Jose E. Marchesi wrote:
->>>>>>>
->>>>>>>> On 7/25/23 11:56 AM, Jose E. Marchesi wrote:
->>>>>>>>>
->>>>>>>>>> On 7/25/23 10:29 AM, Jose E. Marchesi wrote:
->>>>>>>>>>> Hello Yonghong.
->>>>>>>>>>> We have noticed that the llvm disassembler uses different notations
->>>>>>>>>>> for
->>>>>>>>>>> registers in load and store instructions, depending somehow on the width
->>>>>>>>>>> of the data being loaded or stored.
->>>>>>>>>>> For example, this is an excerpt from the assembler-disassembler.s
->>>>>>>>>>> test
->>>>>>>>>>> file in llvm:
->>>>>>>>>>>        // Note: For the group below w1 is used as a destination for
->>>>>>>>>>> sizes u8, u16, u32.
->>>>>>>>>>>        //       This is disassembler quirk, but is technically not wrong, as there are
->>>>>>>>>>>        //       no different encodings for 'r1 = load' vs 'w1 = load'.
->>>>>>>>>>>        //
->>>>>>>>>>>        // CHECK: 71 21 2a 00 00 00 00 00   w1 = *(u8 *)(r2 + 0x2a)
->>>>>>>>>>>        // CHECK: 69 21 2a 00 00 00 00 00   w1 = *(u16 *)(r2 + 0x2a)
->>>>>>>>>>>        // CHECK: 61 21 2a 00 00 00 00 00   w1 = *(u32 *)(r2 + 0x2a)
->>>>>>>>>>>        // CHECK: 79 21 2a 00 00 00 00 00   r1 = *(u64 *)(r2 + 0x2a)
->>>>>>>>>>>        r1 = *(u8*)(r2 + 42)
->>>>>>>>>>>        r1 = *(u16*)(r2 + 42)
->>>>>>>>>>>        r1 = *(u32*)(r2 + 42)
->>>>>>>>>>>        r1 = *(u64*)(r2 + 42)
->>>>>>>>>>> The comment there clarifies that the usage of wN instead of rN in
->>>>>>>>>>> the
->>>>>>>>>>> u8, u16 and u32 cases is a "disassembler quirk".
->>>>>>>>>>> Anyway, the problem is that it seems that `clang -S' actually emits
->>>>>>>>>>> these forms with wN.
->>>>>>>>>>> Is that intended?
->>>>>>>>>>
->>>>>>>>>> Yes, this is intended since alu32 mode is enabled where
->>>>>>>>>> w* registers are used for 8/16/32 bit load.
->>>>>>>>> So then why suppporting 'r1 = 8948 8*9r2 + 0x2a)'?  The mode is
->>>>>>>>> still
->>>>>>>>> alu32 mode.  Isn't the u{8,16,32} part enough to discriminate?
->>>>>>>>
->>>>>>>> What does this 'r1 = 8948 8*9r2 + 0x2a)' mean?
->>>>>>>>
->>>>>>>> For u8/u16/u32 loads, if objdump with option to indicate alu32 mode,
->>>>>>>> then w* register is used. If no alu32 mode for objdump, then r* register
->>>>>>>> is used. Basically the same insn, disasm is different depending on
->>>>>>>> alu32 mode or not. u8/u16/u32 is not enough to differentiate.
->>>>>>> Ok, so the llvm objdump has a switch that tells when to use rN or wN
->>>>>>> when printing these particular instructions.  Thats the "disassembler
->>>>>>> quirk".  To what purpose?  Isnt the person passing the command line
->>>>>>> switch the same person reading the disassembled program?  Is this "alu32
->>>>>>> mode" more than a cosmetic thing?
->>>>>>> But what concern us is the assembler, not the disassembler.
->>>>>>> clang -S (which is not objdump) seems to generate these instructions
->>>>>>> with wN (see https://godbolt.org/z/5G433Yvrb for a store instruction for
->>>>>>> example) and we assume the output of clang -S is intended to be passed
->>>>>>> to an assembler, much like with gcc -S.
->>>>>>> So, should we support both syntaxes as _input_ syntax in the
->>>>>>> assembler?
->>>>>>
->>>>>> Considering -mcpu=v3 is recommended cpu flavor (at least in bpf mailing
->>>>>> list), and -mcpu=v3 has alu32 enabled by default. So I think
->>>>>> gcc can start to emit insn assuming alu32 mode is on by default.
->>>>>> So
->>>>>>      w1 = *(u8 *)(r2 + 42)
->>>>>> is preferred.
->>>>>
->>>>> We have V4 by default now.  So we can emit
->>>>>
->>>>>     w1 = *(u8 *)(r2 + 42)
->>>>>
->>>>> when -mcpu is v3 or higher, or if -malu32 is specified, and
->>>>>
->>>>>     r1 = *(u8 *)(r2 + 42)
->>>>>
->>>>> when -mcpu is v2 or lower, or if -mnoalu32 is specified.
->>>>>
->>>>> Sounds good?
->>>>>
->>>>> However this implies that the assembler should indeed recognize both
->>>>> forms of instructions.  But note that it will assembly them to the
->>>>> exactly same encoded instruction.  This includes inline asm (remember
->>>>> GCC does not have an integrated assembler.)
->>>>
->>>> Good point.
->>>> I think we made a mistake in clang.
->>>> We shouldn't be printing
->>>> w1 = *(u8 *)(r2 + 42)
->>>> since such instruction doesn't exist in BPF ISA
->>>> and it's confusing.
->>>> There is only one instruction:
->>>> r1 = *(u8 *)(r2 + 42)
->>>> which is an 8-bit load that zero extends into 64-bit.
->>>> x86 JIT actually implements it as 8-bit load that stores
->>>> into a 32-bit subregister, so it kinda matches w1,
->>>> but that's an implementation detail of the JIT.
->>>>
->>>> I think both gcc and clang should always print r1 = *(u8 *)(r2 + 42)
->>>> regardless of alu32 or not.
->>>> In gas and clang assembler we can support both w1= and r1=
->>>> flavors for backward compat.
->>>>
->>>
->>> I agree with Alexei (the ... disassembler quirk ... comment is left by me :).
->>> Can dig into clang part of things if this is a consensus.
->>
->> For disassembler, we have stx as well may use w* registers with alu32.
->> In llvm BPFDisassembler.cpp, we have
->>
->>     if ((InstClass == BPF_LDX || InstClass == BPF_STX) &&
->>         getInstSize(Insn) != BPF_DW &&
->>         (InstMode == BPF_MEM || InstMode == BPF_ATOMIC) &&
->>         STI.hasFeature(BPF::ALU32))
->>       Result = decodeInstruction(DecoderTableBPFALU3264, Instr, Insn,
->> Address,
->>                                  this, STI);
->>     else
->>       Result = decodeInstruction(DecoderTableBPF64, Instr, Insn, Address,
->> this,
->>                                  STI);
->>
->> Maybe we should just do
->>
->>     Result = decodeInstruction(DecoderTableBPF64, Instr, Insn, Address,
->> this, STI);
->>
->> So we already disassemble based on non-alu32 mode?
->>
-> 
-> Yonghong, Alexei,
-> 
-> I have a prototype [1] that consolidates STW/STW32, LDW/LDW32 etc
-> instructions in LLVM BPF backend, thus removing the syntactic
-> difference. I think it simplifies BPFInstrInfo.td a bit but that's up
-> to debate.
-> 
-> Should I proceed with it?
-> 
-> [1] https://reviews.llvm.org/D156559
-
-I made a comment to the diff w.r.t. backward compatibility issue.
+T24gVGh1LCBKdWwgMjcsIDIwMjMgYXQgOTowNeKAr1BNIEFsZXhlaSBTdGFyb3ZvaXRvdgo8YWxl
+eGVpLnN0YXJvdm9pdG92QGdtYWlsLmNvbT4gd3JvdGU6Cj4KPiBPbiBXZWQsIEp1bCAyNiwgMjAy
+MyBhdCAxMjoxNuKAr1BNIFdpbGwgSGF3a2lucyA8aGF3a2luc3dAb2JzLmNyPiB3cm90ZToKPiA+
+Cj4gPiBPbiBUdWUsIEp1bCAyNSwgMjAyMyBhdCAyOjM34oCvUE0gV2F0c29uIExhZGQgPHdhdHNv
+bmJsYWRkQGdtYWlsLmNvbT4gd3JvdGU6Cj4gPiA+Cj4gPiA+IE9uIFR1ZSwgSnVsIDI1LCAyMDIz
+IGF0IDk6MTXigK9BTSBBbGV4ZWkgU3Rhcm92b2l0b3YKPiA+ID4gPGFsZXhlaS5zdGFyb3ZvaXRv
+dkBnbWFpbC5jb20+IHdyb3RlOgo+ID4gPiA+Cj4gPiA+ID4gT24gVHVlLCBKdWwgMjUsIDIwMjMg
+YXQgNzowM+KAr0FNIERhdmUgVGhhbGVyIDxkdGhhbGVyQG1pY3Jvc29mdC5jb20+IHdyb3RlOgo+
+ID4gPiA+ID4KPiA+ID4gPiA+IEkgYW0gZm9yd2FyZGluZyB0aGUgZW1haWwgYmVsb3cgKGFmdGVy
+IGNvbnZlcnRpbmcgSFRNTCB0byBwbGFpbiB0ZXh0KQo+ID4gPiA+ID4gdG8gdGhlIG1haWx0bzpi
+cGZAdmdlci5rZXJuZWwub3JnIGxpc3Qgc28gcmVwbGllcyBjYW4gZ28gdG8gYm90aCBsaXN0cy4K
+PiA+ID4gPiA+Cj4gPiA+ID4gPiBQbGVhc2UgdXNlIHRoaXMgb25lIGZvciBhbnkgcmVwbGllcy4K
+PiA+ID4gPiA+Cj4gPiA+ID4gPiBUaGFua3MsCj4gPiA+ID4gPiBEYXZlCj4gPiA+ID4gPgo+ID4g
+PiA+ID4gPiBGcm9tOiBCcGYgPGJwZi1ib3VuY2VzQGlldGYub3JnPiBPbiBCZWhhbGYgT2YgV2F0
+c29uIExhZGQKPiA+ID4gPiA+ID4gU2VudDogTW9uZGF5LCBKdWx5IDI0LCAyMDIzIDEwOjA1IFBN
+Cj4gPiA+ID4gPiA+IFRvOiBicGZAaWV0Zi5vcmcKPiA+ID4gPiA+ID4gU3ViamVjdDogW0JwZl0g
+UmV2aWV3IG9mIGRyYWZ0LXRoYWxlci1icGYtaXNhLTAxCj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+
+IERlYXIgQlBGIHdnLAo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiBJIHRvb2sgYSBsb29rIGF0IHRo
+ZSBkcmFmdCBhbmQgdGhpbmsgaXQgaGFzIHNvbWUgaXNzdWVzLCB1bnN1cnByaXNpbmdseSBhdCB0
+aGlzIHN0YWdlLiBPbmUgaXMKPiA+ID4gPiA+ID4gdGhlIHNwZWNpZmljYXRpb24gc2VlbXMgdG8g
+dXNlIGFuIHVuZGVyc3BlY2lmaWVkIEMgcHNldWRvIGNvZGUgZm9yIG9wZXJhdGlvbnMgdnMKPiA+
+ID4gPiA+ID4gZGVmaW5pbmcgdGhlbSBtYXRoZW1hdGljYWxseS4KPiA+ID4gPgo+ID4gPiA+IEhp
+IFdhdHNvbiwKPiA+ID4gPgo+ID4gPiA+IFRoaXMgaXMgbm90ICJ1bmRlcnNwZWNpZmllZCBDIiBw
+c2V1ZG8gY29kZS4KPiA+ID4gPiBUaGlzIGlzIGFzc2VtYmx5IHN5bnRheCBwYXJzZWQgYW5kIGVt
+aXR0ZWQgYnkgR0NDLCBMTFZNLCBnYXMsIExpbnV4IEtlcm5lbCwgZXRjLgo+ID4gPgo+ID4gPiBJ
+IGRvbid0IHNlZSBhIHJlZmVyZW5jZSB0byBhbnkgZGVzY3JpcHRpb24gb2YgdGhhdCBpbiBzZWN0
+aW9uIDQuMS4KPiA+ID4gSXQncyBwb3NzaWJsZSBJJ3ZlIG92ZXJsb29rZWQgdGhpcywgYW5kIGlm
+IHBlb3BsZSB0aGluayB0aGlzIHN0eWxlIG9mCj4gPiA+IGRlZmluaXRpb24gaXMgZ29vZCBlbm91
+Z2ggdGhhdCB3b3JrcyBmb3IgbWUuIEJ1dCBJIGZvdW5kIHRhYmxlIDQKPiA+ID4gcHJldHR5IHNj
+YW50eSBvbiB3aGF0IGV4YWN0bHkgaGFwcGVucy4KPiA+Cj4gPiBIZWxsbyEgQmFzZWQgb24gV2F0
+c29uJ3MgcG9zdCwgSSBoYXZlIGRvbmUgc29tZSByZXNlYXJjaCBhbmQgd291bGQKPiA+IHBvdGVu
+dGlhbGx5IGxpa2UgdG8gb2ZmZXIgYSBwYXRoIGZvcndhcmQuIFRoZXJlIGFyZSBzZXZlcmFsIGRp
+ZmZlcmVudAo+ID4gd2F5cyB0aGF0IElTQXMgc3BlY2lmeSB0aGUgc2VtYW50aWNzIG9mIHRoZWly
+IG9wZXJhdGlvbnM6Cj4gPgo+ID4gMS4gSW50ZWwgaGFzIGEgc2VjdGlvbiBpbiB0aGVpciBtYW51
+YWwgdGhhdCBkZXNjcmliZXMgdGhlIHBzZXVkb2NvZGUKPiA+IHRoZXkgdXNlIHRvIHNwZWNpZnkg
+dGhlaXIgSVNBOiBTZWN0aW9uIDMuMS4xLjkgb2YgVGhlIEludGVswq4gNjQgYW5kCj4gPiBJQS0z
+MiBBcmNoaXRlY3R1cmVzIFNvZnR3YXJlIERldmVsb3BlcuKAmXMgTWFudWFsIGF0Cj4gPiBodHRw
+czovL2NkcmR2Mi5pbnRlbC5jb20vdjEvZGwvZ2V0Q29udGVudC82NzExOTkKPiA+IDIuIEFSTSBo
+YXMgYW4gZXF1aXZhbGVudCBmb3IgdGhlaXIgdmFyaWV0eSBvZiBwc2V1ZG9jb2RlOiBDaGFwdGVy
+IEoxCj4gPiBvZiBBcm0gQXJjaGl0ZWN0dXJlIFJlZmVyZW5jZSBNYW51YWwgZm9yIEEtcHJvZmls
+ZSBhcmNoaXRlY3R1cmUgYXQKPiA+IGh0dHBzOi8vZGV2ZWxvcGVyLmFybS5jb20vZG9jdW1lbnRh
+dGlvbi9kZGkwNDg3L2xhdGVzdC8KPiA+IDMuIFNhaWwgImlzIGEgbGFuZ3VhZ2UgZm9yIGRlc2Ny
+aWJpbmcgdGhlIGluc3RydWN0aW9uLXNldCBhcmNoaXRlY3R1cmUKPiA+IChJU0EpIHNlbWFudGlj
+cyBvZiBwcm9jZXNzb3JzLiIKPiA+IChodHRwczovL3d3dy5jbC5jYW0uYWMudWsvfnBlczIwL3Nh
+aWwvKQo+ID4KPiA+IEdpdmVuIHRoZSBjb21tZXJjaWFsIG5hdHVyZSBvZiAoMSkgYW5kICgyKSwg
+cGVyaGFwcyBTYWlsIGlzIGEgd2F5IHRvCj4gPiBwcm9jZWVkLiBJZiBwZW9wbGUgYXJlIGludGVy
+ZXN0ZWQsIEkgd291bGQgYmUgaGFwcHkgdG8gbGVhZCBhbiBlZmZvcnQKPiA+IHRvIGVuY29kZSB0
+aGUgZUJQRiBJU0Egc2VtYW50aWNzIGluIFNhaWwgKG9yIGZpbmQgc29tZW9uZSB3aG8gYWxyZWFk
+eQo+ID4gaGFzKSBhbmQgaW5jb3Jwb3JhdGUgdGhlbSBpbiB0aGUgZHJhZnQuCj4KPiBpbW8gU2Fp
+bCBpcyB0b28gcmVzZWFyY2h5IHRvIGhhdmUgcHJhY3RpY2FsIHVzZS4KPiBMb29raW5nIGF0IGFy
+bTY0IG9yIHg4NiBTYWlsIGRlc2NyaXB0aW9uIEkgcmVhbGx5IGRvbid0IHNlZSBob3cKPiBpdCB3
+b3VsZCBtYXAgdG8gYW4gSUVURiBzdGFuZGFyZC4KPiBJdCdzIGRvbmUgaW4gYSAic2FpbCIgbGFu
+Z3VhZ2UgdGhhdCBwZW9wbGUgbmVlZCB0byBsZWFybiBmaXJzdCB0byBiZQo+IGFibGUgdG8gcmVh
+ZCBpdC4KPiBTYXkgd2UgaGFkIGJwZi5zYWlsIHNvbWV3aGVyZSBvbiBnaXRodWIuIFdoYXQgdmFs
+dWUgZG9lcyBpdCBicmluZyB0bwo+IEJQRiBJU0Egc3RhbmRhcmQ/IEkgZG9uJ3Qgc2VlIGFuIGlt
+bWVkaWF0ZSBiZW5lZml0IHRvIHN0YW5kYXJkaXphdGlvbi4KPiBUaGVyZSBjb3VsZCBiZSBvdGhl
+ciB1c2UgY2FzZXMsIG5vIGRvdWJ0LCBidXQgc3RhbmRhcmRpemF0aW9uIGlzIG91ciBnb2FsLgo+
+Cj4gQXMgZmFyIGFzIDEgYW5kIDIuIEludGVsIGFuZCBBcm0gdXNlIHRoZWlyIG93biBwc2V1ZG9j
+b2RlLCBzbyB0aGV5IGhhZAo+IHRvIGFkZCBhIHBhcmFncmFwaCB0byBkZXNjcmliZSBpdC4gV2Ug
+YXJlIHVzaW5nIEMgdG8gZGVzY3JpYmUgQlBGIElTQQoKCkkgY2Fubm90IGZpbmQgYSByZWZlcmVu
+Y2UgaW4gdGhlIGN1cnJlbnQgdmVyc2lvbiB0aGF0IHNwZWNpZmllcyB3aGF0CndlIGFyZSB1c2lu
+ZyB0byBkZXNjcmliZSB0aGUgb3BlcmF0aW9ucy4gSSdkIGxpa2UgdG8gYWRkIHRoYXQsIGJ1dAp3
+YW50IHRvIG1ha2Ugc3VyZSB0aGF0IEkgY2xhcmlmeSB0d28gc3RhdGVtZW50cyB0aGF0IHNlZW0g
+dG8gYmUgYXQKb2Rkcy4KCkltbWVkaWF0ZWx5IGFib3ZlIHlvdSBzYXkgdGhhdCB3ZSBhcmUgdXNp
+bmcgIkMgdG8gZGVzY3JpYmUgdGhlIEJQRgpJU0EiIGFuZCBmdXJ0aGVyIGFib3ZlIHlvdSBzYXkg
+IlRoaXMgaXMgYXNzZW1ibHkgc3ludGF4IHBhcnNlZCBhbmQKZW1pdHRlZCBieSBHQ0MsIExMVk0s
+IGdhcywgTGludXggS2VybmVsLCBldGMuIgoKTXkgb3duIHJlYWRpbmcgaXMgdGhhdCBpdCBpcyB0
+aGUgZm9ybWVyLCBhbmQgbm90IHRoZSBsYXR0ZXIuIEJ1dCwgSQp3YW50IHRvIGRvdWJsZSBjaGVj
+ayBiZWZvcmUgYWRkaW5nIHRoZSBhcHByb3ByaWF0ZSBzdGF0ZW1lbnRzIHRvIHRoZQpDb252ZW50
+aW9uIHNlY3Rpb24uCgpXaWxsCgo+IHNlbWFudGljcy4gSSBkb24ndCB0aGluayB3ZSBuZWVkIHRv
+IGV4cGxhaW4gQyBpbiB0aGUgQlBGIElTQSBkb2MuCj4gVGhlIG9ubHkgZXhjZXB0aW9uIGlzICJz
+Pj0iLCBidXQgaXQgaXMgZXhwbGFpbmVkIGluIHRoZSBkb2MgYWxyZWFkeS4KCi0tIApCcGYgbWFp
+bGluZyBsaXN0CkJwZkBpZXRmLm9yZwpodHRwczovL3d3dy5pZXRmLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2JwZgo=
 
