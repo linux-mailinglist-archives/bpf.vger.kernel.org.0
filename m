@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-6143-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6146-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9457766129
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 03:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 73785766189
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 03:59:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9383028259D
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 01:18:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 208132825B1
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 01:59:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B260023AD;
-	Fri, 28 Jul 2023 01:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFFEE20E7;
+	Fri, 28 Jul 2023 01:58:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8E61FB6;
-	Fri, 28 Jul 2023 01:17:43 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8661FC9;
-	Thu, 27 Jul 2023 18:17:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BC6F7C;
+	Fri, 28 Jul 2023 01:58:31 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F8D2738;
+	Thu, 27 Jul 2023 18:58:29 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RBqW65hyNz4f400D;
-	Fri, 28 Jul 2023 09:17:38 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RBrQ66hNcz4f3nqX;
+	Fri, 28 Jul 2023 09:58:22 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgCnD7MuF8NklRzkOw--.24715S6;
-	Fri, 28 Jul 2023 09:17:39 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgCX_7K_IMNkBXLmOw--.17170S4;
+	Fri, 28 Jul 2023 09:58:25 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -35,6 +35,7 @@ Cc: netdev@vger.kernel.org,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
@@ -46,12 +47,10 @@ Cc: netdev@vger.kernel.org,
 	Stanislav Fomichev <sdf@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
 	houtao1@huawei.com
-Subject: [PATCH bpf-next 2/2] bpf, devmap: Remove unused dtab field from bpf_dtab_netdev
-Date: Fri, 28 Jul 2023 09:49:42 +0800
-Message-Id: <20230728014942.892272-3-houtao@huaweicloud.com>
+Subject: [RFC PATCH bpf-next 0/2] Remove unnecessary synchronizations in cpumap
+Date: Fri, 28 Jul 2023 10:30:28 +0800
+Message-Id: <20230728023030.1906124-1-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20230728014942.892272-1-houtao@huaweicloud.com>
-References: <20230728014942.892272-1-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -59,62 +58,55 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCnD7MuF8NklRzkOw--.24715S6
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFW8tF13ur45uFWxuF47XFb_yoWDXrc_Zw
-	40vryxCF4DGFn7XryUCFn3WFykKr1rKF109r1jqFZ3Jrn8Ww4Fvry8ZFy8ZrZ3WrZ7AFW3
-	AFn5WrsFgr43WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbfkYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r15M2
-	8IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
-	021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r
-	4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
-	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
-	JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwI
-	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7
-	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
+X-CM-TRANSID:gCh0CgCX_7K_IMNkBXLmOw--.17170S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFy7Aw15KF45trWfXw43ZFb_yoWfZwc_JF
+	WkJF97Gw48WF1vgFs0yF1xJa98WrZ5KF1jqa4vq3y5A343Za18Jr4v9FW8Zry8Z397trs8
+	Grn8G3yktr1aqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb2xYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+	87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-	SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+	MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 From: Hou Tao <houtao1@huawei.com>
 
-Commit 96360004b862 ("xdp: Make devmap flush_list common for all map
-instances") removes the use of bpf_dtab_netdev::dtab in bq_enqueue(),
-so just remove dtab from bpf_dtab_netdev.
+Hi,
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/devmap.c | 2 --
- 1 file changed, 2 deletions(-)
+The patchset aims to remove unnecessary synchronizations in cpu-map
+which were found during code inspection. Patch #1 removes the
+unnecessary rcu_barrier() when freeing bpf_cpu_map_entry and replaces
+it by queue_rcu_work(). Patch #2 removes the unnecessary call_rcu()
+and queue_work() when destroying cpu-map and does the freeing directly.
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 49cc0b5671c6..4d42f6ed6c11 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -65,7 +65,6 @@ struct xdp_dev_bulk_queue {
- struct bpf_dtab_netdev {
- 	struct net_device *dev; /* must be first member, due to tracepoint */
- 	struct hlist_node index_hlist;
--	struct bpf_dtab *dtab;
- 	struct bpf_prog *xdp_prog;
- 	struct rcu_head rcu;
- 	unsigned int idx;
-@@ -874,7 +873,6 @@ static struct bpf_dtab_netdev *__dev_map_alloc_node(struct net *net,
- 	}
- 
- 	dev->idx = idx;
--	dev->dtab = dtab;
- 	if (prog) {
- 		dev->xdp_prog = prog;
- 		dev->val.bpf_prog.id = prog->aux->id;
+Simply testing the patchset by running xdp_redirect_cpu test for
+virtio-net and no issues are reported. Hope to get more feedback before
+removing the RFC tag. As ususal, comments and suggestions are always
+welcome.
+
+Regards,
+Tao
+
+Hou Tao (2):
+  bpf, cpumap: Use queue_rcu_work() to remove unnecessary rcu_barrier()
+  bpf, cpumap: Clean up bpf_cpu_map_entry directly in cpu_map_free
+
+ kernel/bpf/cpumap.c | 110 +++++++++++++-------------------------------
+ 1 file changed, 31 insertions(+), 79 deletions(-)
+
 -- 
 2.29.2
 
