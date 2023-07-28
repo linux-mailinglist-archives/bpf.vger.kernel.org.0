@@ -1,149 +1,174 @@
-Return-Path: <bpf+bounces-6185-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6186-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2BCF7669B2
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 12:03:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC796766A66
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 12:26:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FBB01C21843
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 10:03:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9722C282650
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 10:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA6C011196;
-	Fri, 28 Jul 2023 10:03:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99054125CE;
+	Fri, 28 Jul 2023 10:25:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A009CD300
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 10:03:08 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794871FF5
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 03:03:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690538585;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/vZv9+FlKmE7Vh0kL6CAyZx9KLR01Jb2NTkoTJTS194=;
-	b=dwqVp0Zua1qNEiRV1V+pV8lhmr5Qqw2BYFPOeoC2blrMGLlPYr+41fpn6y0kEz7X6ThEvg
-	aIJ2LtZXULeO5/yeoH07Om0o2U9YRwpoNLznXtJcuFmHoYjtLlCouKlG7n4M+W627IkiAp
-	l//VpCgLiqsSEdfSA3zRkAXFUwgmde8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-25-5Pxqcpb4O2O3-npDAU0RvA-1; Fri, 28 Jul 2023 06:03:02 -0400
-X-MC-Unique: 5Pxqcpb4O2O3-npDAU0RvA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D10E5881B25;
-	Fri, 28 Jul 2023 10:03:01 +0000 (UTC)
-Received: from astarta.redhat.com (unknown [10.39.194.174])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id B33E72166B25;
-	Fri, 28 Jul 2023 10:03:00 +0000 (UTC)
-From: Yauheni Kaliuta <ykaliuta@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5AC125A1
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 10:25:52 +0000 (UTC)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9604487
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 03:25:34 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51de9c2bc77so2491028a12.3
+        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 03:25:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690539931; x=1691144731;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=F9+fGenjRAvmbDdymEKXPrCcUwzQwH2Q3W4+IMBnd04=;
+        b=nPiGOiGiQgkvDg7MC/1nNnlkYNkmD1hcHCfYVmzC62s9cA1WDP93xgsyWYYswKHta8
+         o5anbWMv6VinDNlCC+3KUkd6TyVM9ScRtHD/3BJYgAtVI6Zo41QUhtXZGRazBRkGa0Xz
+         gcFMl1P8RuIghq5qHRaa5EwavLyI3YD9UBmjcSnDIGhvEM636ZfUki1vY8CM3/HsrMTF
+         geo8Y0SBztE27tkcJDb41QcyiuPlw128PyEcgroVJ9NNqZgnQrtl5C7Qmo7leVoN5wG3
+         LiZoEbe0SN3Tp4V/q5hvsIUzfV+pJ1fQR6jZTsg8I0XJbe+xN1ZlV/Q7G4HAlfB/JD6L
+         +htw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690539931; x=1691144731;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F9+fGenjRAvmbDdymEKXPrCcUwzQwH2Q3W4+IMBnd04=;
+        b=BHKVREcr/ECqPZtuvtoRIDcIbmWMzcx4Fx4yk1CoJ24gTr1fny9T54oGi/EZO6mWmL
+         dl2cunHFGY0679sFruq2iO1Bui0PRqoP81OJt2UoVPMgeif9LCOLp3kNoIxYr2qiNZlN
+         2/gJ7xQJh+bmcbJBAFh4DA0ajpqMy+F5KS//t/VIV3t5acDZ9FAY+JjjRmTr21tUpGDF
+         5PGSAZM/C0X8DT0x8Q239IFd66Nxmoydlx64s2pXZWgN4sTUCA9P0TSs62TBf6gF5A5P
+         dQ0l77MSaMNyFdIE/Ewg6z8Q+34C4+dVg/WVY6s/Xonv4QFkat51Aj8KWOWU4BJ7D/3K
+         q+XQ==
+X-Gm-Message-State: ABy/qLb9/rx0Lk3KYd5aPE4wDhM7Y9D1dH/tz3+nUtg2ngmO/4PYdX00
+	ETlDyZvhjKVvxBNnc1OvBTA=
+X-Google-Smtp-Source: APBJJlHgFHvK9Kw4qQHHLaAfjtKRzUVN15EqoErb1o1LDvRdSmP46+KxmqkEza2xJBP/VzUgnpSqww==
+X-Received: by 2002:aa7:d40b:0:b0:51d:fa7c:c330 with SMTP id z11-20020aa7d40b000000b0051dfa7cc330mr1364166edq.26.1690539930588;
+        Fri, 28 Jul 2023 03:25:30 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id l5-20020aa7d945000000b005223e54d1edsm1622010eds.20.2023.07.28.03.25.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 03:25:30 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 28 Jul 2023 12:25:28 +0200
 To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org,  andrii@kernel.org,  ast@kernel.org
-Subject: Re: [PATCH bpf-next] tracing: perf_call_bpf: use struct trace_entry
- in struct syscall_tp_t
-References: <20230727150647.397626-1-ykaliuta@redhat.com>
-	<33b93245-6740-e2e7-3a2a-6a9375d7ddc4@linux.dev>
-Date: Fri, 28 Jul 2023 13:02:58 +0300
-In-Reply-To: <33b93245-6740-e2e7-3a2a-6a9375d7ddc4@linux.dev> (Yonghong Song's
-	message of "Thu, 27 Jul 2023 10:37:10 -0700")
-Message-ID: <xunyzg3gxsj1.fsf@redhat.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Fix compilation warning with
+ -Wparentheses
+Message-ID: <ZMOXmM4/pdACHPBq@krava>
+References: <20230728055740.2284534-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230728055740.2284534-1-yonghong.song@linux.dev>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi, Yonghong!
+On Thu, Jul 27, 2023 at 10:57:40PM -0700, Yonghong Song wrote:
+> The kernel test robot reported compilation warnings when -Wparentheses is
+> added to KBUILD_CFLAGS with gcc compiler. The following is the error message:
+> 
+>   .../bpf-next/kernel/bpf/verifier.c: In function ‘coerce_reg_to_size_sx’:
+>   .../bpf-next/kernel/bpf/verifier.c:5901:14:
+>     error: suggest parentheses around comparison in operand of ‘==’ [-Werror=parentheses]
+>     if (s64_max >= 0 == s64_min >= 0) {
+>         ~~~~~~~~^~~~
+>   .../bpf-next/kernel/bpf/verifier.c: In function ‘coerce_subreg_to_size_sx’:
+>   .../bpf-next/kernel/bpf/verifier.c:5965:14:
+>     error: suggest parentheses around comparison in operand of ‘==’ [-Werror=parentheses]
+>     if (s32_min >= 0 == s32_max >= 0) {
+>         ~~~~~~~~^~~~
+> 
+> To fix the issue, add proper parentheses for the above '>=' condition
+> to silence the warning/error.
+> 
+> I tried a few clang compilers like clang16 and clang18 and they do not emit
+> such warnings with -Wparentheses.
 
->>>>> On Thu, 27 Jul 2023 10:37:10 -0700, Yonghong Song  wrote:
+I just hit it with gcc and this fixes it for me
 
- > On 7/27/23 8:06 AM, Yauheni Kaliuta wrote:
- >> bpf tracepoint program uses struct trace_event_raw_sys_enter as
- >> argument where trace_entry is the first field. Use the same instead
- >> of unsigned long long since if it's amended (for example by RT
- >> patch) it accesses data with wrong offset.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
- > Is this 'amended by RT patch' a real thing?
+thanks,
+jirka
 
-Yes for me.
-
->> Signed-off-by: Yauheni Kaliuta <ykaliuta@redhat.com>
- >> ---
- >> kernel/trace/trace_syscalls.c | 10 ++++++++--
- >> 1 file changed, 8 insertions(+), 2 deletions(-)
- >> diff --git a/kernel/trace/trace_syscalls.c
- >> b/kernel/trace/trace_syscalls.c
- >> index 942ddbdace4a..07f4fa395e99 100644
- >> --- a/kernel/trace/trace_syscalls.c
- >> +++ b/kernel/trace/trace_syscalls.c
- >> @@ -555,12 +555,15 @@ static int perf_call_bpf_enter(struct trace_event_call *call, struct pt_regs *re
- >> struct syscall_trace_enter *rec)
- >> {
- >> struct syscall_tp_t {
- >> -		unsigned long long regs;
- >> +		struct trace_entry ent;
- >> unsigned long syscall_nr;
- >> unsigned long args[SYSCALL_DEFINE_MAXARGS];
- >> } param;
-
- > I suspect we may have issues for 32bit kernel.
- > In 32bit kernel, with the change, the alignment for
- > param could be 4. That means, the 'ctx' pointer
- > may have an alignment 4 for bpf program, if user
- > tries to do ctx->regs, which will be a mis-aligned
- > access and it may not work for all architectures.
-
-well, will __aligned(8) save the world?
-
- >> int i;
- >> +	BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
- >> +
- >> +	/* __bpf_prog_run() requires *regs as the first parameter */
- >> *(struct pt_regs **)&param = regs;
- >> param.syscall_nr = rec->nr;
- >> for (i = 0; i < sys_data->nb_args; i++)
- >> @@ -657,11 +660,14 @@ static int perf_call_bpf_exit(struct trace_event_call *call, struct pt_regs *reg
- >> struct syscall_trace_exit *rec)
- >> {
- >> struct syscall_tp_t {
- >> -		unsigned long long regs;
- >> +		struct trace_entry ent;
- >> unsigned long syscall_nr;
- >> unsigned long ret;
- >> } param;
- >> +	BUILD_BUG_ON(sizeof(param.ent) < sizeof(void *));
-
- > You already have BUILD_BUG_ON in perf_call_enter. There is no need
- > to have another one here.
-
-Oh yes, thanks  :)
-
- >> +
- >> +	/* __bpf_prog_run() requires *regs as the first parameter */
- >> *(struct pt_regs **)&param = regs;
- >> param.syscall_nr = rec->nr;
- >> param.ret = rec->ret;
-
-
--- 
-WBR,
-Yauheni Kaliuta
-
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307281133.wi0c4SqG-lkp@intel.com/
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  kernel/bpf/core.c     | 4 ++--
+>  kernel/bpf/verifier.c | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index db0b631908c2..baccdec22f19 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1877,7 +1877,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+>  		case 1:
+>  			AX = abs((s32)DST);
+>  			do_div(AX, abs((s32)SRC));
+> -			if ((s32)DST < 0 == (s32)SRC < 0)
+> +			if (((s32)DST < 0) == ((s32)SRC < 0))
+>  				DST = (u32)AX;
+>  			else
+>  				DST = (u32)-AX;
+> @@ -1904,7 +1904,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+>  		case 1:
+>  			AX = abs((s32)DST);
+>  			do_div(AX, abs((s32)IMM));
+> -			if ((s32)DST < 0 == (s32)IMM < 0)
+> +			if (((s32)DST < 0) == ((s32)IMM < 0))
+>  				DST = (u32)AX;
+>  			else
+>  				DST = (u32)-AX;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 0b1ada93582b..e7b1af016841 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5898,7 +5898,7 @@ static void coerce_reg_to_size_sx(struct bpf_reg_state *reg, int size)
+>  	s64_min = min(init_s64_max, init_s64_min);
+>  
+>  	/* both of s64_max/s64_min positive or negative */
+> -	if (s64_max >= 0 == s64_min >= 0) {
+> +	if ((s64_max >= 0) == (s64_min >= 0)) {
+>  		reg->smin_value = reg->s32_min_value = s64_min;
+>  		reg->smax_value = reg->s32_max_value = s64_max;
+>  		reg->umin_value = reg->u32_min_value = s64_min;
+> @@ -5962,7 +5962,7 @@ static void coerce_subreg_to_size_sx(struct bpf_reg_state *reg, int size)
+>  	s32_max = max(init_s32_max, init_s32_min);
+>  	s32_min = min(init_s32_max, init_s32_min);
+>  
+> -	if (s32_min >= 0 == s32_max >= 0) {
+> +	if ((s32_min >= 0) == (s32_max >= 0)) {
+>  		reg->s32_min_value = s32_min;
+>  		reg->s32_max_value = s32_max;
+>  		reg->u32_min_value = (u32)s32_min;
+> -- 
+> 2.34.1
+> 
+> 
 
