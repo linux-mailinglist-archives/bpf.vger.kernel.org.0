@@ -1,28 +1,28 @@
-Return-Path: <bpf+bounces-6128-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E5C76610C
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 03:13:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BA2276610E
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 03:13:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BA9B2822E2
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 01:13:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2581E28253C
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 01:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E885415C3;
-	Fri, 28 Jul 2023 01:12:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A009E17CF;
+	Fri, 28 Jul 2023 01:13:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE43417C4
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 01:12:58 +0000 (UTC)
-Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A6730DA
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 18:12:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE907C
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 01:13:04 +0000 (UTC)
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31DD30DA
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 18:13:02 -0700 (PDT)
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 4DEEB23C749F4; Thu, 27 Jul 2023 18:12:44 -0700 (PDT)
+	id E2A0623C74A3B; Thu, 27 Jul 2023 18:12:50 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
@@ -32,11 +32,10 @@ To: Alexei Starovoitov <ast@kernel.org>,
 Cc: David Faust <david.faust@oracle.com>,
 	Fangrui Song <maskray@google.com>,
 	"Jose E . Marchesi" <jose.marchesi@oracle.com>,
-	kernel-team@fb.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next v5 09/17] selftests/bpf: Fix a test_verifier failure
-Date: Thu, 27 Jul 2023 18:12:44 -0700
-Message-Id: <20230728011244.3717464-1-yonghong.song@linux.dev>
+	kernel-team@fb.com
+Subject: [PATCH bpf-next v5 10/17] selftests/bpf: Add a cpuv4 test runner for cpu=v4 testing
+Date: Thu, 27 Jul 2023 18:12:50 -0700
+Message-Id: <20230728011250.3718252-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230728011143.3710005-1-yonghong.song@linux.dev>
 References: <20230728011143.3710005-1-yonghong.song@linux.dev>
@@ -53,60 +52,155 @@ X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The following test_verifier subtest failed due to
-new encoding for BSWAP.
+Similar to no-alu32 runner, if clang compiler supports -mcpu=3Dv4,
+a cpuv4 runner is created to test bpf programs compiled with
+-mcpu=3Dv4.
 
-  $ ./test_verifier
-  ...
-  #99/u invalid 64-bit BPF_END FAIL
-  Unexpected success to load!
-  verification time 215 usec
-  stack depth 0
-  processed 3 insns (limit 1000000) max_states_per_insn 0 total_states 0 =
-peak_states 0 mark_read 0
-  #99/p invalid 64-bit BPF_END FAIL
-  Unexpected success to load!
-  verification time 198 usec
-  stack depth 0
-  processed 3 insns (limit 1000000) max_states_per_insn 0 total_states 0 =
-peak_states 0 mark_read 0
+The following are some num-of-insn statistics for each newer
+instructions based on existing selftests, excluding subsequent
+cpuv4 insn specific tests.
 
-Tighten the test so it still reports a failure.
+   insn pattern                # of instructions
+   reg =3D (s8)reg               4
+   reg =3D (s16)reg              4
+   reg =3D (s32)reg              144
+   reg =3D *(s8 *)(reg + off)    13
+   reg =3D *(s16 *)(reg + off)   14
+   reg =3D *(s32 *)(reg + off)   15215
+   reg =3D bswap16 reg           142
+   reg =3D bswap32 reg           38
+   reg =3D bswap64 reg           14
+   reg s/=3D reg                 0
+   reg s%=3D reg                 0
+   gotol <offset>              58
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Note that in llvm -mcpu=3Dv4 implementation, the compiler is a little
+bit conservative about generating 'gotol' insn (32-bit branch offset)
+as it didn't precise count the number of insns (e.g., some insns are
+debug insns, etc.). Compared to old 'goto' insn, newer 'gotol' insn
+should have comparable verification states to 'goto' insn.
+
+With current patch set, all selftests passed with -mcpu=3Dv4
+when running test_progs-cpuv4 binary. The -mcpu=3Dv3 and -mcpu=3Dv2 run
+are also successful.
+
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- tools/testing/selftests/bpf/verifier/basic_instr.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/.gitignore |  2 ++
+ tools/testing/selftests/bpf/Makefile   | 28 ++++++++++++++++++++++----
+ 2 files changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/verifier/basic_instr.c b/tools/t=
-esting/selftests/bpf/verifier/basic_instr.c
-index 071dbc889e8c..bd928a72ad73 100644
---- a/tools/testing/selftests/bpf/verifier/basic_instr.c
-+++ b/tools/testing/selftests/bpf/verifier/basic_instr.c
-@@ -176,11 +176,11 @@
- 	.retval =3D 1,
- },
- {
--	"invalid 64-bit BPF_END",
-+	"invalid 64-bit BPF_END with BPF_TO_BE",
- 	.insns =3D {
- 	BPF_MOV32_IMM(BPF_REG_0, 0),
- 	{
--		.code  =3D BPF_ALU64 | BPF_END | BPF_TO_LE,
-+		.code  =3D BPF_ALU64 | BPF_END | BPF_TO_BE,
- 		.dst_reg =3D BPF_REG_0,
- 		.src_reg =3D 0,
- 		.off   =3D 0,
-@@ -188,7 +188,7 @@
- 	},
- 	BPF_EXIT_INSN(),
- 	},
--	.errstr =3D "unknown opcode d7",
-+	.errstr =3D "unknown opcode df",
- 	.result =3D REJECT,
- },
- {
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
+ests/bpf/.gitignore
+index 116fecf80ca1..110518ba4804 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -13,6 +13,7 @@ test_dev_cgroup
+ /test_progs
+ /test_progs-no_alu32
+ /test_progs-bpf_gcc
++/test_progs-cpuv4
+ test_verifier_log
+ feature
+ test_sock
+@@ -36,6 +37,7 @@ test_cpp
+ *.lskel.h
+ /no_alu32
+ /bpf_gcc
++/cpuv4
+ /host-tools
+ /tools
+ /runqslower
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+index 882be03b179f..6a45719a8d47 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -33,9 +33,13 @@ CFLAGS +=3D -g -O0 -rdynamic -Wall -Werror $(GENFLAGS)=
+ $(SAN_CFLAGS)	\
+ LDFLAGS +=3D $(SAN_LDFLAGS)
+ LDLIBS +=3D -lelf -lz -lrt -lpthread
+=20
+-# Silence some warnings when compiled with clang
+ ifneq ($(LLVM),)
++# Silence some warnings when compiled with clang
+ CFLAGS +=3D -Wno-unused-command-line-argument
++# Check whether cpu=3Dv4 is supported or not by clang
++ifneq ($(shell $(CLANG) --target=3Dbpf -mcpu=3Dhelp 2>&1 | grep 'v4'),)
++CLANG_CPUV4 :=3D 1
++endif
+ endif
+=20
+ # Order correspond to 'make run_tests' order
+@@ -51,6 +55,10 @@ ifneq ($(BPF_GCC),)
+ TEST_GEN_PROGS +=3D test_progs-bpf_gcc
+ endif
+=20
++ifneq ($(CLANG_CPUV4),)
++TEST_GEN_PROGS +=3D test_progs-cpuv4
++endif
++
+ TEST_GEN_FILES =3D test_lwt_ip_encap.bpf.o test_tc_edt.bpf.o
+ TEST_FILES =3D xsk_prereqs.sh $(wildcard progs/btf_dump_test_case_*.c)
+=20
+@@ -383,6 +391,11 @@ define CLANG_NOALU32_BPF_BUILD_RULE
+ 	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
+ 	$(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv2 -o $2
+ endef
++# Similar to CLANG_BPF_BUILD_RULE, but with cpu-v4
++define CLANG_CPUV4_BPF_BUILD_RULE
++	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
++	$(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv4 -o $2
++endef
+ # Build BPF object using GCC
+ define GCC_BPF_BUILD_RULE
+ 	$(call msg,GCC-BPF,$(TRUNNER_BINARY),$2)
+@@ -425,7 +438,7 @@ LINKED_BPF_SRCS :=3D $(patsubst %.bpf.o,%.c,$(foreach=
+ skel,$(LINKED_SKELS),$($(ske
+ # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
+ # Parameters:
+ # $1 - test runner base binary name (e.g., test_progs)
+-# $2 - test runner extra "flavor" (e.g., no_alu32, gcc-bpf, etc)
++# $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, gcc-bpf, etc)
+ define DEFINE_TEST_RUNNER
+=20
+ TRUNNER_OUTPUT :=3D $(OUTPUT)$(if $2,/)$2
+@@ -453,7 +466,7 @@ endef
+ # Using TRUNNER_XXX variables, provided by callers of DEFINE_TEST_RUNNER=
+ and
+ # set up by DEFINE_TEST_RUNNER itself, create test runner build rules wi=
+th:
+ # $1 - test runner base binary name (e.g., test_progs)
+-# $2 - test runner extra "flavor" (e.g., no_alu32, gcc-bpf, etc)
++# $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, gcc-bpf, etc)
+ define DEFINE_TEST_RUNNER_RULES
+=20
+ ifeq ($($(TRUNNER_OUTPUT)-dir),)
+@@ -584,6 +597,13 @@ TRUNNER_BPF_BUILD_RULE :=3D CLANG_NOALU32_BPF_BUILD_=
+RULE
+ TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS)
+ $(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
+=20
++# Define test_progs-cpuv4 test runner.
++ifneq ($(CLANG_CPUV4),)
++TRUNNER_BPF_BUILD_RULE :=3D CLANG_CPUV4_BPF_BUILD_RULE
++TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS)
++$(eval $(call DEFINE_TEST_RUNNER,test_progs,cpuv4))
++endif
++
+ # Define test_progs BPF-GCC-flavored test runner.
+ ifneq ($(BPF_GCC),)
+ TRUNNER_BPF_BUILD_RULE :=3D GCC_BPF_BUILD_RULE
+@@ -681,7 +701,7 @@ EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) =
+$(HOST_SCRATCH_DIR)	\
+ 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
+ 	feature bpftool							\
+ 	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h *.subskel.h	\
+-			       no_alu32 bpf_gcc bpf_testmod.ko		\
++			       no_alu32 cpuv4 bpf_gcc bpf_testmod.ko	\
+ 			       liburandom_read.so)
+=20
+ .PHONY: docs docs-clean
 --=20
 2.34.1
 
