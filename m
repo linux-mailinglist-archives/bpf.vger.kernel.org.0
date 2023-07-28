@@ -1,234 +1,193 @@
-Return-Path: <bpf+bounces-6207-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6208-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 752CC76704F
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 17:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E5CFF767080
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 17:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A64471C2191F
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 15:15:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21D271C218EA
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 15:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A55514018;
-	Fri, 28 Jul 2023 15:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 924FE6129;
+	Fri, 28 Jul 2023 15:27:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEFC013FE7
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 15:15:09 +0000 (UTC)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7141119A7
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 08:15:06 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5221f193817so2869257a12.3
-        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 08:15:06 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69AA314005
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 15:27:09 +0000 (UTC)
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483DF1717
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 08:27:07 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40631c5b9e9so288311cf.1
+        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 08:27:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google; t=1690557305; x=1691162105;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dUsoDe1aciZkS3SYBk+FJnom/bcWm6HUHz7xtg9wGVE=;
-        b=xlBQr91VrE+fcTMQtJeL8UehPRNRDcOoL3Jb7oeY/mrCveqo1mf708pc0eDYwfspAJ
-         A+kaOd3By9dV4yBq+KBkmUafQK3E1WIz9fm1vsVKJtrzZ69uoTGDsVyPg7Xo8lpzBMV7
-         F6TD0DCllb2LydrhPW33jZF0TgI2xFAg27NxhuBNndHVKqMobgm/+RCpx6Ngqg8YxKB7
-         b83oDwxzwWX8OZXxHIXZG598ch1mn5d3uloQxGo1tY0/gZEnwuPNS6xRJH8gYeGIarEo
-         Gc73xHWp4OAegZDVNbxQI5pzehlWrR/ANJAK/2Ze7/lopQhmjJV/Vq/9Qqv6X8RhKmbK
-         ZQvQ==
+        d=google.com; s=20221208; t=1690558026; x=1691162826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w2cHEglOBw7vOs0ctBUQxyK7WvVIZxui8AGCj214fFw=;
+        b=e6XRIlLbdnBV3L+drIGrJ9hpPuszKL9KcdkNU3ekaiyj9oPIi424yCtahEr5IejeLS
+         DVaJsKY6P2gQinDqRDKpkG2Cqzp2iZRE+SuDVrql/sUVH/V6fLH1tcS6jVzZSIYiUExw
+         4mjNGLaKuaNSZpM9kj6StV2PQjstWNDxKKSjF++SSDOHr9RgtdhJON6K/z0E0sdf+HIw
+         GcV0Zs60/0lvk9ceXcscQ7QwYgzn3piuNUGWX3RqXqTt0Bx+NowyQrbj+pniVwxrEnPB
+         eG6jturlsiIsowf+LA6PWNH3FuS9c7Kix3RXflkIjjNKYHtE+5Jk+A2pw/05jXC99LK1
+         QPCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690557305; x=1691162105;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dUsoDe1aciZkS3SYBk+FJnom/bcWm6HUHz7xtg9wGVE=;
-        b=edbU4zpm/2yNa+aJFIVZEkttPAtP3Ola/upJksqRQtDqx80Wvbv0XYNLiokIDImaEX
-         9WNj3YymGlT0V+9pC4XxvPtXbyr1djsPHMOSKWFENR0TT24q1xWyAGAUguv+6JPnfd6v
-         0oYjGT5o7/hK00kUkp0l8HLhTXpeBQx7zmWzZLedLURSvhTbj3IOuOB5qpTpt7rz1rz6
-         P1leHUlJpCiB6xRTMxJThGh/l7/VGApcG+oY/13NZMfszanWweff9iK3qi+Ep9ZmOpZD
-         0jiPFnY4PbnvEqx2XbvOKW81Sqrwz7DjafysqLmva3ERXzMb+3ZqVH32+8pfvKfzKJkf
-         TmtQ==
-X-Gm-Message-State: ABy/qLbu5Tz76nBUrkxsmf2FJC/BsX0mgQFwrJg6eaIrlKquRQBXmxB6
-	upZJSztPaLPJTF+zwrxXh5vZFQ==
-X-Google-Smtp-Source: APBJJlGrx217B3+2JoDDsOR5Pe+xG2RV8Yfclk4WQBqChj/RTKdH94R2bDDyfq5dnAZDNu9v1WPHIA==
-X-Received: by 2002:aa7:c68f:0:b0:51e:24e1:c0e9 with SMTP id n15-20020aa7c68f000000b0051e24e1c0e9mr2023024edq.10.1690557304905;
-        Fri, 28 Jul 2023 08:15:04 -0700 (PDT)
-Received: from [10.44.2.5] ([81.246.10.41])
-        by smtp.gmail.com with ESMTPSA id ba4-20020a0564021ac400b00522572f323dsm1880856edb.16.2023.07.28.08.15.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 08:15:04 -0700 (PDT)
-Message-ID: <1023fdeb-a45a-2e9e-cd2e-7e44e655e8fc@tessares.net>
-Date: Fri, 28 Jul 2023 17:15:03 +0200
+        d=1e100.net; s=20221208; t=1690558026; x=1691162826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w2cHEglOBw7vOs0ctBUQxyK7WvVIZxui8AGCj214fFw=;
+        b=aa35PqsCSQlqrKil9IioujFfjJDp9jiVcbkiFxVBvouRvQfXqTzgdWLOYm/z6s1WjW
+         m407cJ5yaVUKvp8D1p2uEuyZD5Ktz44ACSzQPOD9fXEDrlKc+SeEzmYq3vpv6oTmVzgH
+         MdWB8zaMmODNMe+QoGuqHhQfuMaWG3u00aGdPmkd4VFHPUl1fDXs8oFwihz6LSa5ui+0
+         kL8R3ychMSxztZIhyd+xsP9hQBamnKZ7uGHOhfy8n//UK7lVkbtZR37aNPQWfddQJbi6
+         PSRytT65utn5Ufn1U5n20vGAMCl5MzDbESz39CIq5pKJ6WjkaaVb3X4lUN3VIuuWO7cR
+         qKIg==
+X-Gm-Message-State: ABy/qLZR1amX9EBdD7USbVDVTQK23kA6/wb/d8xhwscP+hhDaFnGmrdK
+	o1dn47vHORkncH6PtUyseWd3eR+PLNQ2JZYiKvWXNg==
+X-Google-Smtp-Source: APBJJlHIpT7XpTvB/yptY7dE3r/zPa8AQ/d9BXKIIJ1YOjIrDkWpf9UIHP7aBlLDk/kRbpYfjgdYrYdtNRjivLcW300=
+X-Received: by 2002:a05:622a:448:b0:3f8:5b2:aef0 with SMTP id
+ o8-20020a05622a044800b003f805b2aef0mr297197qtx.24.1690558026249; Fri, 28 Jul
+ 2023 08:27:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC bpf-next v5] bpf: Force to MPTCP
-Content-Language: en-GB
-To: Stanislav Fomichev <sdf@google.com>
-Cc: Paul Moore <paul@paul-moore.com>, Geliang Tang <geliang.tang@suse.com>,
- Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, mptcp@lists.linux.dev, apparmor@lists.ubuntu.com,
- linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <3076188eb88cca9151a2d12b50ba1e870b11ce09.1689693294.git.geliang.tang@suse.com>
- <CAHC9VhS_LKdkEmm5_J5y34RpaRcTbg8==fpz8pMThDCjF6nYtQ@mail.gmail.com>
- <b41babb1-f0f2-dc2f-c2e3-1870107fbd9f@tessares.net>
- <ZMKxC+CFj4GbCklg@google.com>
-From: Matthieu Baerts <matthieu.baerts@tessares.net>
-In-Reply-To: <ZMKxC+CFj4GbCklg@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230728064917.767761-1-irogers@google.com> <20230728064917.767761-5-irogers@google.com>
+ <a8833945-3f0a-7651-39ff-a01e7edc2b3a@arm.com> <ZMPJym7DnCkFH7aA@kernel.org> <ZMPKekDl+g5PeiH8@kernel.org>
+In-Reply-To: <ZMPKekDl+g5PeiH8@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 28 Jul 2023 08:26:54 -0700
+Message-ID: <CAP-5=fX2LOdd_34ysAYYB5zq5tr7dMje35Nw6hrLXTPLsOHoaw@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] perf build: Disable fewer flex warnings
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: James Clark <james.clark@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Gaosheng Cui <cuigaosheng1@huawei.com>, 
+	Rob Herring <robh@kernel.org>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Stanislav,
+On Fri, Jul 28, 2023 at 7:02=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Fri, Jul 28, 2023 at 10:59:38AM -0300, Arnaldo Carvalho de Melo escrev=
+eu:
+> > Em Fri, Jul 28, 2023 at 09:50:59AM +0100, James Clark escreveu:
+> > >
+> > >
+> > > On 28/07/2023 07:49, Ian Rogers wrote:
+> > > > If flex is version 2.6.4, reduce the number of flex C warnings
+> > > > disabled. Earlier flex versions have all C warnings disabled.
+> > >
+> > > Hi Ian,
+> > >
+> > > I get a build error with either this one or the bison warning change:
+> > >
+> > >   $ make LLVM=3D1 -C tools/perf NO_BPF_SKEL=3D1 DEBUG=3D1
+> > >
+> > >   util/pmu-bison.c:855:9: error: variable 'perf_pmu_nerrs' set but no=
+t
+> > > used [-Werror,-Wunused-but-set-variable]
+> > >     int yynerrs =3D 0;
+> > >
+> > > I tried a clean build which normally fixes these kind of bison errors=
+.
+> > > Let me know if you need any version info.
+> >
+> > Trying to build it with the command line above I get:
+> >
+> >   CC      util/expr.o
+> >   CC      util/parse-events.o
+> >   CC      util/parse-events-flex.o
+> > util/parse-events-flex.c:7503:13: error: misleading indentation; statem=
+ent is not part of the previous 'if' [-Werror,-Wmisleading-indentation]
+> >             if ( ! yyg->yy_state_buf )
+> >             ^
+> > util/parse-events-flex.c:7501:9: note: previous statement is here
+> >         if ( ! yyg->yy_state_buf )
+> >         ^
+>
+> I added this to the patch to get it moving:
+>
+> make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ git diff
+> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> index 32239c4b0393c319..afa93eff495811cf 100644
+> --- a/tools/perf/util/Build
+> +++ b/tools/perf/util/Build
+> @@ -281,7 +281,7 @@ $(OUTPUT)util/bpf-filter-bison.c $(OUTPUT)util/bpf-fi=
+lter-bison.h: util/bpf-filt
+>
+>  FLEX_GE_264 :=3D $(shell expr $(shell $(FLEX) --version | sed -e  's/fle=
+x \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\=3D 264)
+>  ifeq ($(FLEX_GE_264),1)
+> -  flex_flags :=3D -Wno-redundant-decls -Wno-switch-default -Wno-unused-f=
+unction
+> +  flex_flags :=3D -Wno-redundant-decls -Wno-switch-default -Wno-unused-f=
+unction -Wno-misleading-indentation
+>  else
+>    flex_flags :=3D -w
+>  endif
+> =E2=AC=A2[acme@toolbox perf-tools-next]$
+>
+>
+> > 1 error generated.
+> > make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.b=
+uild:97: util/parse-events-flex.o] Error 1
+> > make[4]: *** Waiting for unfinished jobs....
+> >   LD      util/scripting-engines/perf-in.o
+> > make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.b=
+uild:140: util] Error 2
+> > make[2]: *** [Makefile.perf:682: perf-in.o] Error 2
+> > make[2]: *** Waiting for unfinished jobs....
+> >   CC      pmu-events/pmu-events.o
+> >   LD      pmu-events/pmu-events-in.o
+> > make[1]: *** [Makefile.perf:242: sub-make] Error 2
+> > make: *** [Makefile:70: all] Error 2
+> >
+> > =E2=AC=A2[acme@toolbox perf-tools-next]$ clang --version
+> > clang version 14.0.5 (Fedora 14.0.5-2.fc36)
+> > Target: x86_64-redhat-linux-gnu
+> > Thread model: posix
+> > InstalledDir: /usr/bin
+> > =E2=AC=A2[acme@toolbox perf-tools-next]$
 
-On 27/07/2023 20:01, Stanislav Fomichev wrote:
-> On 07/27, Matthieu Baerts wrote:
->> Hi Paul, Stanislav,
->>
->> On 18/07/2023 18:14, Paul Moore wrote:
->>> On Tue, Jul 18, 2023 at 11:21 AM Geliang Tang <geliang.tang@suse.com> wrote:
->>>>
->>>> As is described in the "How to use MPTCP?" section in MPTCP wiki [1]:
->>>>
->>>> "Your app can create sockets with IPPROTO_MPTCP as the proto:
->>>> ( socket(AF_INET, SOCK_STREAM, IPPROTO_MPTCP); ). Legacy apps can be
->>>> forced to create and use MPTCP sockets instead of TCP ones via the
->>>> mptcpize command bundled with the mptcpd daemon."
->>>>
->>>> But the mptcpize (LD_PRELOAD technique) command has some limitations
->>>> [2]:
->>>>
->>>>  - it doesn't work if the application is not using libc (e.g. GoLang
->>>> apps)
->>>>  - in some envs, it might not be easy to set env vars / change the way
->>>> apps are launched, e.g. on Android
->>>>  - mptcpize needs to be launched with all apps that want MPTCP: we could
->>>> have more control from BPF to enable MPTCP only for some apps or all the
->>>> ones of a netns or a cgroup, etc.
->>>>  - it is not in BPF, we cannot talk about it at netdev conf.
->>>>
->>>> So this patchset attempts to use BPF to implement functions similer to
->>>> mptcpize.
->>>>
->>>> The main idea is add a hook in sys_socket() to change the protocol id
->>>> from IPPROTO_TCP (or 0) to IPPROTO_MPTCP.
->>>>
->>>> [1]
->>>> https://github.com/multipath-tcp/mptcp_net-next/wiki
->>>> [2]
->>>> https://github.com/multipath-tcp/mptcp_net-next/issues/79
->>>>
->>>> v5:
->>>>  - add bpf_mptcpify helper.
->>>>
->>>> v4:
->>>>  - use lsm_cgroup/socket_create
->>>>
->>>> v3:
->>>>  - patch 8: char cmd[128]; -> char cmd[256];
->>>>
->>>> v2:
->>>>  - Fix build selftests errors reported by CI
->>>>
->>>> Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/79
->>>> Signed-off-by: Geliang Tang <geliang.tang@suse.com>
->>>> ---
->>>>  include/linux/bpf.h                           |   1 +
->>>>  include/linux/lsm_hook_defs.h                 |   2 +-
->>>>  include/linux/security.h                      |   6 +-
->>>>  include/uapi/linux/bpf.h                      |   7 +
->>>>  kernel/bpf/bpf_lsm.c                          |   2 +
->>>>  net/mptcp/bpf.c                               |  20 +++
->>>>  net/socket.c                                  |   4 +-
->>>>  security/apparmor/lsm.c                       |   8 +-
->>>>  security/security.c                           |   2 +-
->>>>  security/selinux/hooks.c                      |   6 +-
->>>>  tools/include/uapi/linux/bpf.h                |   7 +
->>>>  .../testing/selftests/bpf/prog_tests/mptcp.c  | 128 ++++++++++++++++--
->>>>  tools/testing/selftests/bpf/progs/mptcpify.c  |  17 +++
->>>>  13 files changed, 187 insertions(+), 23 deletions(-)
->>>>  create mode 100644 tools/testing/selftests/bpf/progs/mptcpify.c
->>>
->>> ...
->>>
->>>> diff --git a/security/security.c b/security/security.c
->>>> index b720424ca37d..bbebcddce420 100644
->>>> --- a/security/security.c
->>>> +++ b/security/security.c
->>>> @@ -4078,7 +4078,7 @@ EXPORT_SYMBOL(security_unix_may_send);
->>>>   *
->>>>   * Return: Returns 0 if permission is granted.
->>>>   */
->>>> -int security_socket_create(int family, int type, int protocol, int kern)
->>>> +int security_socket_create(int *family, int *type, int *protocol, int kern)
->>>>  {
->>>>         return call_int_hook(socket_create, 0, family, type, protocol, kern);
->>>>  }
->>>
->>> Using the LSM to change the protocol family is not something we want
->>> to allow.  I'm sorry, but you will need to take a different approach.
->>
->> @Paul: Thank you for your feedback. It makes sense and I understand.
->>
->> @Stanislav: Despite the fact the implementation was smaller and reusing
->> more code, it looks like we cannot go in the direction you suggested. Do
->> you think what Geliang suggested before in his v3 [1] can be accepted?
->>
->> (Note that the v3 is the same as the v1, only some fixes in the selftests.)
-> 
-> We have too many hooks in networking, so something that doesn't add
-> a new one is preferable :-(
+Thanks James/Arnaldo, I was trying to be aggressive in having more
+flags, but it seems too aggressive. We should probably bring back the
+logic to make this flag only added if it is supported:
+  CC_HASNT_MISLEADING_INDENTATION :=3D $(shell echo "int main(void) {
+return 0 }" | $(CC) -Werror -Wno-misleading-indentation -o /dev/null
+-xc - 2>&1 | grep -q -- -Wno-misleading-indentation ; echo $$?)
+  ifeq ($(CC_HASNT_MISLEADING_INDENTATION), 1)
+    flex_flags +=3D -Wno-misleading-indentation
+  endif
+Arnaldo, is the misleading indentation in the bison generated code or
+something copy-pasted from the parse-events.l ? If the latter we may
+be able to fix the .l file to keep the warning.
 
-Thank you for your reply and the explanation, I understand.
+Thanks,
+Ian
 
-> Moreover, we already have a 'socket init' hook, but it runs a bit late.
-
-Indeed. And we cannot move it before the creation of the socket.
-
-> Is existing cgroup/sock completely unworkable? Is it possible to
-> expose some new bpf_upgrade_socket_to(IPPROTO_MPTCP) kfunc which would
-> call some new net_proto_family->upgrade_to(IPPROTO_MPTCP) to do the surgery?
-> Or is it too hacky?
-
-I cannot judge if it is too hacky or not but if you think it would be
-OK, please tell us :)
-
-> Another option Alexei suggested is to add some fentry-like thing:
-> 
-> noinline int update_socket_protocol(int protocol)
-> {
-> 	return protocol;
-> }
-> /* TODO: ^^^ add the above to mod_ret set */
-> 
-> int __sys_socket(int family, int type, int protocol)
-> {
-> 	...
-> 
-> 	protocol = update_socket_protocol(protocol);
-> 
-> 	...
-> }
-> 
-> But it's also too problem specific it seems? And it's not cgroup-aware.
-
-It looks like it is what Geliang did in his v6. If it is the only
-acceptable solution, I guess we can do without cgroup support. We can
-continue the discussions in his v6 if that's easier.
-
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+> --
+>
+> - Arnaldo
 
