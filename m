@@ -1,186 +1,173 @@
-Return-Path: <bpf+bounces-6139-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6144-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 912A0766120
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 03:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7825776616F
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 03:42:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AE72282593
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 01:16:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31F8A282580
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 01:42:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92AA517CB;
-	Fri, 28 Jul 2023 01:16:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB23417CF;
+	Fri, 28 Jul 2023 01:42:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623E27C;
-	Fri, 28 Jul 2023 01:16:27 +0000 (UTC)
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D937930E1;
-	Thu, 27 Jul 2023 18:16:25 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686e0213c0bso1209471b3a.1;
-        Thu, 27 Jul 2023 18:16:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690506985; x=1691111785;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lvFN6hiDGiGK7bLL2rKPH9uniCD9C1RLgo5XQErJ7mg=;
-        b=WNQS724lJFU/8U7drNhRHsl4iM2XrqT1FV0aKjC/uhLfIHNHYairlvvM4qE3F86Wz5
-         2ofxJTR69We2Aa+KTi7ZjWWdO9rlbsxRpprU15XR4VGBQPeEO0A2swgBYpCKCRf2TOGa
-         j04xrvr/6HijktwqrhB0OFBn3cNuEXqU1/Ke69+Fvqg0KfNy6HwXo+V6SmfMvshXIIDZ
-         WwB1UKt0Nu1Se8jQgcVtpap7it47yJ1kHLaI70TjXU3YlPc9fWTK9F4wP57YZgxPnjAZ
-         E0vtX/SW+5brPenb8z32j5N1dxxOPQQmp6Mvvj93HBng/fDfxFbNt6oZP3Wnn0MdY+HY
-         UbAg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1527C
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 01:42:16 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DD53584
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 18:42:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1690508534;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+B8/dh9FxUlYlsfj6c2Az3RVvE6Mk5Zpo699JVAL0Us=;
+	b=UCrkxbwTTj/NOaU+mujwbU4bv7w4azAAj/C59hBh27WyxcysgBHUHSyRfaLsD3OuoIZwwH
+	WSc6nro4Z7msCDddyTazjNwrr2lXBpgsMi/nevq+AfnBNHr9UqQ0HMt40nudfm1fg9RIQ4
+	AQU8Qm2qNYQShi4eKJ0VtgU+lskOwhM=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-600-hIvt1f5DORS9qEQL5Jn3FA-1; Thu, 27 Jul 2023 21:42:12 -0400
+X-MC-Unique: hIvt1f5DORS9qEQL5Jn3FA-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-4fb76659d44so1396252e87.3
+        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 18:42:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690506985; x=1691111785;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lvFN6hiDGiGK7bLL2rKPH9uniCD9C1RLgo5XQErJ7mg=;
-        b=e9vpB4b2zjiBaILAacr6oyfNhjMg2SkHPvUun4rExIqlW7B4ejFKgEUzAnRUWf7p9D
-         Sq4FNHKz4GJ9wa188V7M+arL5/0nEwFzCIwaz7qsydAgf5uZHDs1/4szed0sScdrjFU8
-         pUJkIhlN+EcuxxQnYCek4NIldX7fOJCAUMyjCI16Eb78NiLCAUsfpZ+Od4gEsqYd1ry+
-         OfZKaZ1ZHtRMyNu/qvpR9J708GSUv4sI4H2NzNXBmufkqwmRIG5nFK0Fx37Wqp4kWpYw
-         TQG62XAkIFZZH2RPXFuBPPZiuYYMQdpJrOqbZ3LPm9psenypr1cICK4g0czKMkknInbV
-         iBHA==
-X-Gm-Message-State: ABy/qLYDXE2Xgm9dfvyL1UZ6US1K22r2SHYa2ug9PkPMaX4lWl/aZfMi
-	r11uQeP3vb2K98suKuZ021I=
-X-Google-Smtp-Source: APBJJlEQxj3AXhexx+T1jcS0M1kRwMJQ/M8+DVCgVJU2/umqW4WqnvR5Hudlmguh8vmRTEe8M90YPQ==
-X-Received: by 2002:a05:6a20:9494:b0:137:a08b:8c04 with SMTP id hs20-20020a056a20949400b00137a08b8c04mr263393pzb.48.1690506985206;
-        Thu, 27 Jul 2023 18:16:25 -0700 (PDT)
-Received: from macbook-pro-8.dhcp.thefacebook.com ([2620:10d:c090:400::5:6cea])
-        by smtp.gmail.com with ESMTPSA id y15-20020a637d0f000000b00563b36264besm2187863pgc.85.2023.07.27.18.16.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 18:16:24 -0700 (PDT)
-Date: Thu, 27 Jul 2023 18:16:20 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: daniel@iogearbox.net, kadlec@netfilter.org, edumazet@google.com,
-	ast@kernel.org, fw@strlen.de, kuba@kernel.org, pabeni@redhat.com,
-	pablo@netfilter.org, andrii@kernel.org, davem@davemloft.net,
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org, netdev@vger.kernel.org, dsahern@kernel.org
-Subject: Re: [PATCH bpf-next v6 2/5] netfilter: bpf: Support
- BPF_F_NETFILTER_IP_DEFRAG in netfilter link
-Message-ID: <20230728011620.psvselzqdm7ku5e4@macbook-pro-8.dhcp.thefacebook.com>
-References: <cover.1689970773.git.dxu@dxuuu.xyz>
- <5cff26f97e55161b7d56b09ddcf5f8888a5add1d.1689970773.git.dxu@dxuuu.xyz>
+        d=1e100.net; s=20221208; t=1690508531; x=1691113331;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+B8/dh9FxUlYlsfj6c2Az3RVvE6Mk5Zpo699JVAL0Us=;
+        b=WJyHWSu37bMYgcPx2Cc4kTylxp3kmT4j19uUs+pdndJLxrumDLE0A9mac2f7CWatsM
+         d6IvVZRfRg/p5Dtf9hsB0j6MvTNT1E/CMD7OTaq4xZH7NMmj6gygERP/6fj0VpY7/2xf
+         uOobXx5+UA/2yIJNdWpByQzhwuF6Go22xxbHspMI53GB05PDqY8bLr15rR8Evks8EiG7
+         fA6ozkkh5194PnyCYauS6tVYODS10Mfpm6uK/sya7WgvNwxPthRKGXdYhTgytEapJDbt
+         /63szOPwaOM/JgWLialFn8aLZn1ihpSwV2cZ8i52QeskRLNq0WvtGiIkRFlqZERYoI0o
+         vSsQ==
+X-Gm-Message-State: ABy/qLaYdcuGm+jEH0E+pwVS2Puthh4RjsXd26OKTkhnLnLQXqKOLZkp
+	06Tnyc9U9W/FG6N9a73ON8O54Uea+igw40rIiRktGiNX8tun7APHAreLLbUf3OhJ47j4jV4zIgV
+	7ITIU4Ut6MMmb1tjAICOsR3wL7mrh
+X-Received: by 2002:a05:6512:1591:b0:4fb:893e:8ffc with SMTP id bp17-20020a056512159100b004fb893e8ffcmr676872lfb.17.1690508531485;
+        Thu, 27 Jul 2023 18:42:11 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHY6/ERBGZV6AEAlBJS5xI4dIRaHz1bMCv6qrVkYLdcfZ1S0GvRrifqu9u3Yc1vreyW0L0NNEbcznbuvGQrl6o=
+X-Received: by 2002:a05:6512:1591:b0:4fb:893e:8ffc with SMTP id
+ bp17-20020a056512159100b004fb893e8ffcmr676854lfb.17.1690508531188; Thu, 27
+ Jul 2023 18:42:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5cff26f97e55161b7d56b09ddcf5f8888a5add1d.1689970773.git.dxu@dxuuu.xyz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+References: <20230725130709.58207-1-gavinl@nvidia.com> <20230725130709.58207-3-gavinl@nvidia.com>
+ <f5823996fffad2f3c1862917772c182df74c74e7.camel@redhat.com>
+In-Reply-To: <f5823996fffad2f3c1862917772c182df74c74e7.camel@redhat.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Fri, 28 Jul 2023 09:42:00 +0800
+Message-ID: <CACGkMEs4wUh0TydcXSMR2GdBSTk+H-Tkbhn53BywEeiK9cA9Gg@mail.gmail.com>
+Subject: Re: [PATCH net-next V4 2/3] virtio_net: support per queue interrupt
+ coalesce command
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: Gavin Li <gavinl@nvidia.com>, mst@redhat.com, xuanzhuo@linux.alibaba.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
+	jiri@nvidia.com, dtatulea@nvidia.com, gavi@nvidia.com, 
+	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Heng Qi <hengqi@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jul 21, 2023 at 02:22:46PM -0600, Daniel Xu wrote:
-> This commit adds support for enabling IP defrag using pre-existing
-> netfilter defrag support. Basically all the flag does is bump a refcnt
-> while the link the active. Checks are also added to ensure the prog
-> requesting defrag support is run _after_ netfilter defrag hooks.
-> 
-> We also take care to avoid any issues w.r.t. module unloading -- while
-> defrag is active on a link, the module is prevented from unloading.
-> 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  include/uapi/linux/bpf.h       |   5 ++
->  net/netfilter/nf_bpf_link.c    | 123 +++++++++++++++++++++++++++++----
->  tools/include/uapi/linux/bpf.h |   5 ++
->  3 files changed, 118 insertions(+), 15 deletions(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 739c15906a65..12a5480314a2 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1187,6 +1187,11 @@ enum bpf_perf_event_type {
->   */
->  #define BPF_F_KPROBE_MULTI_RETURN	(1U << 0)
->  
-> +/* link_create.netfilter.flags used in LINK_CREATE command for
-> + * BPF_PROG_TYPE_NETFILTER to enable IP packet defragmentation.
-> + */
-> +#define BPF_F_NETFILTER_IP_DEFRAG (1U << 0)
-> +
->  /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
->   * the following extensions:
->   *
-> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-> index c36da56d756f..8fe594bbc7e2 100644
-> --- a/net/netfilter/nf_bpf_link.c
-> +++ b/net/netfilter/nf_bpf_link.c
-> @@ -1,6 +1,8 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <linux/bpf.h>
->  #include <linux/filter.h>
-> +#include <linux/kmod.h>
-> +#include <linux/module.h>
->  #include <linux/netfilter.h>
->  
->  #include <net/netfilter/nf_bpf_link.h>
-> @@ -23,8 +25,88 @@ struct bpf_nf_link {
->  	struct nf_hook_ops hook_ops;
->  	struct net *net;
->  	u32 dead;
-> +	const struct nf_defrag_hook *defrag_hook;
->  };
->  
-> +static const struct nf_defrag_hook *
-> +get_proto_defrag_hook(struct bpf_nf_link *link,
-> +		      const struct nf_defrag_hook __rcu *global_hook,
-> +		      const char *mod)
-> +{
-> +	const struct nf_defrag_hook *hook;
-> +	int err;
-> +
-> +	/* RCU protects us from races against module unloading */
-> +	rcu_read_lock();
-> +	hook = rcu_dereference(global_hook);
-> +	if (!hook) {
-> +		rcu_read_unlock();
-> +		err = request_module(mod);
-> +		if (err)
-> +			return ERR_PTR(err < 0 ? err : -EINVAL);
-> +
-> +		rcu_read_lock();
-> +		hook = rcu_dereference(global_hook);
-> +	}
-> +
-> +	if (hook && try_module_get(hook->owner)) {
-> +		/* Once we have a refcnt on the module, we no longer need RCU */
-> +		hook = rcu_pointer_handoff(hook);
-> +	} else {
-> +		WARN_ONCE(!hook, "%s has bad registration", mod);
-> +		hook = ERR_PTR(-ENOENT);
-> +	}
-> +	rcu_read_unlock();
-> +
-> +	if (!IS_ERR(hook)) {
-> +		err = hook->enable(link->net);
-> +		if (err) {
-> +			module_put(hook->owner);
-> +			hook = ERR_PTR(err);
-> +		}
-> +	}
-> +
-> +	return hook;
+On Thu, Jul 27, 2023 at 9:28=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
+te:
+>
+> On Tue, 2023-07-25 at 16:07 +0300, Gavin Li wrote:
+> > Add interrupt_coalesce config in send_queue and receive_queue to cache =
+user
+> > config.
+> >
+> > Send per virtqueue interrupt moderation config to underlying device in
+> > order to have more efficient interrupt moderation and cpu utilization o=
+f
+> > guest VM.
+> >
+> > Additionally, address all the VQs when updating the global configuratio=
+n,
+> > as now the individual VQs configuration can diverge from the global
+> > configuration.
+> >
+> > Signed-off-by: Gavin Li <gavinl@nvidia.com>
+> > Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> > Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> > Acked-by: Michael S. Tsirkin <mst@redhat.com>
+>
+> FTR, this patch is significantly different from the version previously
+> acked/reviewed, I'm unsure if all the reviewers are ok with the new
+> one.
 
-The rcu + module_get logic looks correct to me, but you've dropped all Florian's acks.
-What's going on?
+Good point, and I plan to review this no later than next Monday and
+offer my ack if necessary. Please hold this series now.
 
-We need explicit acks to merge this through bpf-next.
+Thanks
+
+>
+> [...]
+>
+> >  static int virtnet_set_coalesce(struct net_device *dev,
+> >                               struct ethtool_coalesce *ec,
+> >                               struct kernel_ethtool_coalesce *kernel_co=
+al,
+> >                               struct netlink_ext_ack *extack)
+> >  {
+> >       struct virtnet_info *vi =3D netdev_priv(dev);
+> > -     int ret, i, napi_weight;
+> > +     int ret, queue_number, napi_weight;
+> >       bool update_napi =3D false;
+> >
+> >       /* Can't change NAPI weight if the link is up */
+> >       napi_weight =3D ec->tx_max_coalesced_frames ? NAPI_POLL_WEIGHT : =
+0;
+> > -     if (napi_weight ^ vi->sq[0].napi.weight) {
+> > -             if (dev->flags & IFF_UP)
+> > -                     return -EBUSY;
+> > -             else
+> > -                     update_napi =3D true;
+> > +     for (queue_number =3D 0; queue_number < vi->max_queue_pairs; queu=
+e_number++) {
+> > +             ret =3D virtnet_should_update_vq_weight(dev->flags, napi_=
+weight,
+> > +                                                   vi->sq[queue_number=
+].napi.weight,
+> > +                                                   &update_napi);
+> > +             if (ret)
+> > +                     return ret;
+> > +
+> > +             if (update_napi) {
+> > +                     /* All queues that belong to [queue_number, queue=
+_count] will be
+> > +                      * updated for the sake of simplicity, which migh=
+t not be necessary
+>
+> It looks like the comment above still refers to the old code. Should
+> be:
+>         [queue_number, vi->max_queue_pairs]
+>
+> Otherwise LGTM, thanks!
+>
+> Paolo
+>
+
 
