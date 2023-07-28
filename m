@@ -1,28 +1,28 @@
-Return-Path: <bpf+bounces-6129-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6130-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BA2276610E
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 03:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0270676610F
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 03:13:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2581E28253C
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 01:13:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B047928253C
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 01:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A009E17CF;
-	Fri, 28 Jul 2023 01:13:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABE3E17D1;
+	Fri, 28 Jul 2023 01:13:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE907C
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 01:13:04 +0000 (UTC)
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31DD30DA
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 18:13:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A9C7C
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 01:13:09 +0000 (UTC)
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222F31BE8
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 18:13:08 -0700 (PDT)
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id E2A0623C74A3B; Thu, 27 Jul 2023 18:12:50 -0700 (PDT)
+	id 477CC23C74A63; Thu, 27 Jul 2023 18:13:04 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
@@ -33,9 +33,9 @@ Cc: David Faust <david.faust@oracle.com>,
 	Fangrui Song <maskray@google.com>,
 	"Jose E . Marchesi" <jose.marchesi@oracle.com>,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next v5 10/17] selftests/bpf: Add a cpuv4 test runner for cpu=v4 testing
-Date: Thu, 27 Jul 2023 18:12:50 -0700
-Message-Id: <20230728011250.3718252-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v5 11/17] selftests/bpf: Add unit tests for new sign-extension load insns
+Date: Thu, 27 Jul 2023 18:13:04 -0700
+Message-Id: <20230728011304.3719139-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230728011143.3710005-1-yonghong.song@linux.dev>
 References: <20230728011143.3710005-1-yonghong.song@linux.dev>
@@ -52,155 +52,194 @@ X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Similar to no-alu32 runner, if clang compiler supports -mcpu=3Dv4,
-a cpuv4 runner is created to test bpf programs compiled with
--mcpu=3Dv4.
+Add unit tests for new ldsx insns. The test includes sign-extension
+with a single value or with a value range.
 
-The following are some num-of-insn statistics for each newer
-instructions based on existing selftests, excluding subsequent
-cpuv4 insn specific tests.
-
-   insn pattern                # of instructions
-   reg =3D (s8)reg               4
-   reg =3D (s16)reg              4
-   reg =3D (s32)reg              144
-   reg =3D *(s8 *)(reg + off)    13
-   reg =3D *(s16 *)(reg + off)   14
-   reg =3D *(s32 *)(reg + off)   15215
-   reg =3D bswap16 reg           142
-   reg =3D bswap32 reg           38
-   reg =3D bswap64 reg           14
-   reg s/=3D reg                 0
-   reg s%=3D reg                 0
-   gotol <offset>              58
-
-Note that in llvm -mcpu=3Dv4 implementation, the compiler is a little
-bit conservative about generating 'gotol' insn (32-bit branch offset)
-as it didn't precise count the number of insns (e.g., some insns are
-debug insns, etc.). Compared to old 'goto' insn, newer 'gotol' insn
-should have comparable verification states to 'goto' insn.
-
-With current patch set, all selftests passed with -mcpu=3Dv4
-when running test_progs-cpuv4 binary. The -mcpu=3Dv3 and -mcpu=3Dv2 run
-are also successful.
+If cpuv4 is not supported due to
+  (1) older compiler, e.g., less than clang version 18, or
+  (2) test runner test_progs and test_progs-no_alu32 which tests
+      cpu v2 and v3, or
+  (3) non-x86_64 arch not supporting new insns in jit yet,
+a dummy program is added with below output:
+  #318/1   verifier_ldsx/cpuv4 is not supported by compiler or jit, use a=
+ dummy test:OK
+  #318     verifier_ldsx:OK
+to indicate the test passed with a dummy test instead of actually
+testing cpuv4. I am using a dummy prog to avoid changing the
+verifier testing infrastructure. Once clang 18 is widely available
+and other architectures support cpuv4, at least for CI run,
+the dummy program can be removed.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- tools/testing/selftests/bpf/.gitignore |  2 ++
- tools/testing/selftests/bpf/Makefile   | 28 ++++++++++++++++++++++----
- 2 files changed, 26 insertions(+), 4 deletions(-)
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ .../selftests/bpf/progs/verifier_ldsx.c       | 131 ++++++++++++++++++
+ 2 files changed, 133 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_ldsx.c
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
-ests/bpf/.gitignore
-index 116fecf80ca1..110518ba4804 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -13,6 +13,7 @@ test_dev_cgroup
- /test_progs
- /test_progs-no_alu32
- /test_progs-bpf_gcc
-+/test_progs-cpuv4
- test_verifier_log
- feature
- test_sock
-@@ -36,6 +37,7 @@ test_cpp
- *.lskel.h
- /no_alu32
- /bpf_gcc
-+/cpuv4
- /host-tools
- /tools
- /runqslower
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-index 882be03b179f..6a45719a8d47 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -33,9 +33,13 @@ CFLAGS +=3D -g -O0 -rdynamic -Wall -Werror $(GENFLAGS)=
- $(SAN_CFLAGS)	\
- LDFLAGS +=3D $(SAN_LDFLAGS)
- LDLIBS +=3D -lelf -lz -lrt -lpthread
-=20
--# Silence some warnings when compiled with clang
- ifneq ($(LLVM),)
-+# Silence some warnings when compiled with clang
- CFLAGS +=3D -Wno-unused-command-line-argument
-+# Check whether cpu=3Dv4 is supported or not by clang
-+ifneq ($(shell $(CLANG) --target=3Dbpf -mcpu=3Dhelp 2>&1 | grep 'v4'),)
-+CLANG_CPUV4 :=3D 1
-+endif
- endif
-=20
- # Order correspond to 'make run_tests' order
-@@ -51,6 +55,10 @@ ifneq ($(BPF_GCC),)
- TEST_GEN_PROGS +=3D test_progs-bpf_gcc
- endif
-=20
-+ifneq ($(CLANG_CPUV4),)
-+TEST_GEN_PROGS +=3D test_progs-cpuv4
-+endif
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
+sting/selftests/bpf/prog_tests/verifier.c
+index c375e59ff28d..6eec6a9463c8 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -31,6 +31,7 @@
+ #include "verifier_int_ptr.skel.h"
+ #include "verifier_jeq_infer_not_null.skel.h"
+ #include "verifier_ld_ind.skel.h"
++#include "verifier_ldsx.skel.h"
+ #include "verifier_leak_ptr.skel.h"
+ #include "verifier_loops1.skel.h"
+ #include "verifier_lwt.skel.h"
+@@ -133,6 +134,7 @@ void test_verifier_helper_value_access(void)  { RUN(v=
+erifier_helper_value_access
+ void test_verifier_int_ptr(void)              { RUN(verifier_int_ptr); }
+ void test_verifier_jeq_infer_not_null(void)   { RUN(verifier_jeq_infer_n=
+ot_null); }
+ void test_verifier_ld_ind(void)               { RUN(verifier_ld_ind); }
++void test_verifier_ldsx(void)                  { RUN(verifier_ldsx); }
+ void test_verifier_leak_ptr(void)             { RUN(verifier_leak_ptr); =
+}
+ void test_verifier_loops1(void)               { RUN(verifier_loops1); }
+ void test_verifier_lwt(void)                  { RUN(verifier_lwt); }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_ldsx.c b/tools/te=
+sting/selftests/bpf/progs/verifier_ldsx.c
+new file mode 100644
+index 000000000000..3c3d1bddd67f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_ldsx.c
+@@ -0,0 +1,131 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- TEST_GEN_FILES =3D test_lwt_ip_encap.bpf.o test_tc_edt.bpf.o
- TEST_FILES =3D xsk_prereqs.sh $(wildcard progs/btf_dump_test_case_*.c)
-=20
-@@ -383,6 +391,11 @@ define CLANG_NOALU32_BPF_BUILD_RULE
- 	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
- 	$(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv2 -o $2
- endef
-+# Similar to CLANG_BPF_BUILD_RULE, but with cpu-v4
-+define CLANG_CPUV4_BPF_BUILD_RULE
-+	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
-+	$(Q)$(CLANG) $3 -O2 --target=3Dbpf -c $1 -mcpu=3Dv4 -o $2
-+endef
- # Build BPF object using GCC
- define GCC_BPF_BUILD_RULE
- 	$(call msg,GCC-BPF,$(TRUNNER_BINARY),$2)
-@@ -425,7 +438,7 @@ LINKED_BPF_SRCS :=3D $(patsubst %.bpf.o,%.c,$(foreach=
- skel,$(LINKED_SKELS),$($(ske
- # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
- # Parameters:
- # $1 - test runner base binary name (e.g., test_progs)
--# $2 - test runner extra "flavor" (e.g., no_alu32, gcc-bpf, etc)
-+# $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, gcc-bpf, etc)
- define DEFINE_TEST_RUNNER
-=20
- TRUNNER_OUTPUT :=3D $(OUTPUT)$(if $2,/)$2
-@@ -453,7 +466,7 @@ endef
- # Using TRUNNER_XXX variables, provided by callers of DEFINE_TEST_RUNNER=
- and
- # set up by DEFINE_TEST_RUNNER itself, create test runner build rules wi=
-th:
- # $1 - test runner base binary name (e.g., test_progs)
--# $2 - test runner extra "flavor" (e.g., no_alu32, gcc-bpf, etc)
-+# $2 - test runner extra "flavor" (e.g., no_alu32, cpuv4, gcc-bpf, etc)
- define DEFINE_TEST_RUNNER_RULES
-=20
- ifeq ($($(TRUNNER_OUTPUT)-dir),)
-@@ -584,6 +597,13 @@ TRUNNER_BPF_BUILD_RULE :=3D CLANG_NOALU32_BPF_BUILD_=
-RULE
- TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS)
- $(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
-=20
-+# Define test_progs-cpuv4 test runner.
-+ifneq ($(CLANG_CPUV4),)
-+TRUNNER_BPF_BUILD_RULE :=3D CLANG_CPUV4_BPF_BUILD_RULE
-+TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS)
-+$(eval $(call DEFINE_TEST_RUNNER,test_progs,cpuv4))
-+endif
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
 +
- # Define test_progs BPF-GCC-flavored test runner.
- ifneq ($(BPF_GCC),)
- TRUNNER_BPF_BUILD_RULE :=3D GCC_BPF_BUILD_RULE
-@@ -681,7 +701,7 @@ EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) =
-$(HOST_SCRATCH_DIR)	\
- 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
- 	feature bpftool							\
- 	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h *.subskel.h	\
--			       no_alu32 bpf_gcc bpf_testmod.ko		\
-+			       no_alu32 cpuv4 bpf_gcc bpf_testmod.ko	\
- 			       liburandom_read.so)
-=20
- .PHONY: docs docs-clean
++#if defined(__TARGET_ARCH_x86) && __clang_major__ >=3D 18
++
++SEC("socket")
++__description("LDSX, S8")
++__success __success_unpriv __retval(-2)
++__naked void ldsx_s8(void)
++{
++	asm volatile ("					\
++	r1 =3D 0x3fe;					\
++	*(u64 *)(r10 - 8) =3D r1;				\
++	r0 =3D *(s8 *)(r10 - 8);				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("socket")
++__description("LDSX, S16")
++__success __success_unpriv __retval(-2)
++__naked void ldsx_s16(void)
++{
++	asm volatile ("					\
++	r1 =3D 0x3fffe;					\
++	*(u64 *)(r10 - 8) =3D r1;				\
++	r0 =3D *(s16 *)(r10 - 8);				\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("socket")
++__description("LDSX, S32")
++__success __success_unpriv __retval(-1)
++__naked void ldsx_s32(void)
++{
++	asm volatile ("					\
++	r1 =3D 0xfffffffe;				\
++	*(u64 *)(r10 - 8) =3D r1;				\
++	r0 =3D *(s32 *)(r10 - 8);				\
++	r0 >>=3D 1;					\
++	exit;						\
++"	::: __clobber_all);
++}
++
++SEC("socket")
++__description("LDSX, S8 range checking, privileged")
++__log_level(2) __success __retval(1)
++__msg("R1_w=3Dscalar(smin=3D-128,smax=3D127)")
++__naked void ldsx_s8_range_priv(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	*(u64 *)(r10 - 8) =3D r0;				\
++	r1 =3D *(s8 *)(r10 - 8);				\
++	/* r1 with s8 range */				\
++	if r1 s> 0x7f goto l0_%=3D;			\
++	if r1 s< -0x80 goto l0_%=3D;			\
++	r0 =3D 1;						\
++l1_%=3D:							\
++	exit;						\
++l0_%=3D:							\
++	r0 =3D 2;						\
++	goto l1_%=3D;					\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("LDSX, S16 range checking")
++__success __success_unpriv __retval(1)
++__naked void ldsx_s16_range(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	*(u64 *)(r10 - 8) =3D r0;				\
++	r1 =3D *(s16 *)(r10 - 8);				\
++	/* r1 with s16 range */				\
++	if r1 s> 0x7fff goto l0_%=3D;			\
++	if r1 s< -0x8000 goto l0_%=3D;			\
++	r0 =3D 1;						\
++l1_%=3D:							\
++	exit;						\
++l0_%=3D:							\
++	r0 =3D 2;						\
++	goto l1_%=3D;					\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++SEC("socket")
++__description("LDSX, S32 range checking")
++__success __success_unpriv __retval(1)
++__naked void ldsx_s32_range(void)
++{
++	asm volatile ("					\
++	call %[bpf_get_prandom_u32];			\
++	*(u64 *)(r10 - 8) =3D r0;				\
++	r1 =3D *(s32 *)(r10 - 8);				\
++	/* r1 with s16 range */				\
++	if r1 s> 0x7fffFFFF goto l0_%=3D;			\
++	if r1 s< -0x80000000 goto l0_%=3D;		\
++	r0 =3D 1;						\
++l1_%=3D:							\
++	exit;						\
++l0_%=3D:							\
++	r0 =3D 2;						\
++	goto l1_%=3D;					\
++"	:
++	: __imm(bpf_get_prandom_u32)
++	: __clobber_all);
++}
++
++#else
++
++SEC("socket")
++__description("cpuv4 is not supported by compiler or jit, use a dummy te=
+st")
++__success
++int dummy_test(void)
++{
++	return 0;
++}
++
++#endif
++
++char _license[] SEC("license") =3D "GPL";
 --=20
 2.34.1
 
