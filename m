@@ -1,143 +1,154 @@
-Return-Path: <bpf+bounces-6151-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6152-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69B2276622A
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 05:01:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D228A766244
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 05:04:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 998E01C21751
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 03:01:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F2882825CA
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 03:04:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 023151FB6;
-	Fri, 28 Jul 2023 03:01:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66DA528EF;
+	Fri, 28 Jul 2023 03:04:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9FA92714A
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 03:01:31 +0000 (UTC)
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4112119
-	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 20:01:30 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-687087d8ddaso681004b3a.1
-        for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 20:01:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690513289; x=1691118089;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NjkE2QJp5YH+tCDyB0wLIw4y8EiW40HSc+cEgR5MCMk=;
-        b=VvmisaMdxgMcf35NZKkxzBIEMm+XzGMyWPTURum1qlM6CdtFVFyFOTvgV8PL/UH4j4
-         pYW/vUMdOu9tmmkIP9nurlgZFpmnV+Sf8Q+ZXrS9g5r/esBK2irTxDtUbssJ1kxqpSi7
-         Z3Db1fyODX9ZfulI2m/gJ93B6U1o2WboemrLKTVm7MlPdhncKvuUdySAzvvX5VQDQ+OO
-         lsz7Ak8PIVB0y4ziEEJB1WpjZ7pvN24rcU8Z9DvLL7QjoiFEFzdPP+Qk7NlKhOKSttEM
-         OadyR10+iztUXbqtwZMeH654pslG5H9mofHiZUTTfW0BsB34JHkCJLqk3oCFzQC1fVtF
-         p53Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690513289; x=1691118089;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NjkE2QJp5YH+tCDyB0wLIw4y8EiW40HSc+cEgR5MCMk=;
-        b=fXkZXnyJSvPrN3xd+tsrl+FqDBp0dR24V+o7sj/Iy+NbRzoVOq3xqxdTL9wKJJ41uS
-         jGzqs6yDO4VfkKo8Zo9ffMHX+Za3BDlhGBsNzkcDorLVymD8AWO4ZpD10S6NDVXiRqeo
-         oetwtaADjbrvlmMvR4yupwv73NLfCVV/X2KGuirgxbSmClzMhZKNgGa4KGzcGViWMsSW
-         Z5CK2RQ7pQP3PQGHmVmSgfgDWDr+SRJdv06jDftY6PzGTf2Jl9CAG0i+COl1a63pVmrP
-         8fwKM1mL4NOyNWBCmcf3CXyhnfOmKQChhdAZjyRVEGtCN+yiKkszSn+c/qW4yaIfm4v6
-         rP+Q==
-X-Gm-Message-State: ABy/qLaRQwk/CcG71ODMz+jzYD93ed+FTZF4F0StPquVoDuov7ILn95m
-	CBRzdOBWNBn6ZoOpB7PU8qnE7g==
-X-Google-Smtp-Source: APBJJlE05KfBrHKqDjjmITmxgRbYb1H+7HaT32afOJNe6AQWDwQnF+KrC+py8os6ykbDJb7DHE7RTA==
-X-Received: by 2002:a05:6a00:2353:b0:668:79d6:34df with SMTP id j19-20020a056a00235300b0066879d634dfmr698433pfj.23.1690513289499;
-        Thu, 27 Jul 2023 20:01:29 -0700 (PDT)
-Received: from [10.85.117.81] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id n2-20020aa79042000000b00686a80f431dsm2130125pfo.126.2023.07.27.20.01.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 20:01:29 -0700 (PDT)
-Message-ID: <16326cd3-376b-4d08-409e-e64f43f848af@bytedance.com>
-Date: Fri, 28 Jul 2023 11:01:23 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E88D185E
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 03:04:09 +0000 (UTC)
+Received: from out-75.mta0.migadu.com (out-75.mta0.migadu.com [91.218.175.75])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC581BD1
+	for <bpf@vger.kernel.org>; Thu, 27 Jul 2023 20:03:40 -0700 (PDT)
+Message-ID: <84b63263-8dca-4e74-d440-a21c4c17da91@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1690513418; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DYTK13fV1KUGxYcbJ0bZgtnTHr57OWZGAPHO6A1BCj0=;
+	b=ZKlOY7luP48MjBbg0luooHRNs9QXdJUlY+Py56nI4ibKdOv6salEIRPQyfBa5IysfBt92w
+	ff2EOo5MfL9kuVABGffF02NSnZ0mJg1xk8nk7lP2C7hhCkoHlsJKdTQ9rjqo2HLMo3CU/L
+	IrBHInLa5FsslBWdcdQm3BWJQ/Dlzac=
+Date: Thu, 27 Jul 2023 20:03:33 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 3/5] libbpf, bpftool: Support BPF_PROG_TYPE_OOM_POLICY
-To: Quentin Monnet <quentin@isovalent.com>, hannes@cmpxchg.org,
- mhocko@kernel.org, roman.gushchin@linux.dev, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- wuyun.abel@bytedance.com, robin.lu@bytedance.com
-References: <20230727073632.44983-1-zhouchuyi@bytedance.com>
- <20230727073632.44983-4-zhouchuyi@bytedance.com>
- <b22038a1-d06f-8bca-57f1-cc8da84a8fca@isovalent.com>
-From: Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <b22038a1-d06f-8bca-57f1-cc8da84a8fca@isovalent.com>
+Reply-To: yonghong.song@linux.dev
+Subject: Re: Question: CO-RE-enabled PT_REGS macros give strange results
+Content-Language: en-US
+To: Eduard Zingerman <eddyz87@gmail.com>,
+ Alan Maguire <alan.maguire@oracle.com>,
+ Timofei Pushkin <pushkin.td@gmail.com>, Alexei Starovoitov <ast@kernel.org>
+Cc: bpf@vger.kernel.org
+References: <CAChPKzs_QBghSBfxMtTZoAsaRgwBK9dRXuXZg+tg2=wz=AuGgg@mail.gmail.com>
+ <3d26842f-86a4-e897-44c2-00c55fadb64a@oracle.com>
+ <CAChPKztZ9kaNw-PkhEq4UKidjVgKNnwLPKzYvLc6BcOOUtvEkQ@mail.gmail.com>
+ <883961c3-3ea2-2253-4976-aa5e20870820@oracle.com>
+ <51d510b9-fbbd-d30a-9a01-e77c84db52a5@oracle.com>
+ <49c9170f7dd0d3e78a12570ae422bce553a1e236.camel@gmail.com>
+ <308bfec7-38d7-9dcd-3130-5602658db47f@oracle.com>
+ <8dd70c47d4f395ad5dd3b1da9e77221125eb9146.camel@gmail.com>
+ <4067a5cebe3df5b5cf436b27479a7c9a065d69a0.camel@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <4067a5cebe3df5b5cf436b27479a7c9a065d69a0.camel@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
 
-在 2023/7/27 20:26, Quentin Monnet 写道:
-> 2023-07-27 15:36 UTC+0800 ~ Chuyi Zhou <zhouchuyi@bytedance.com>
->> Support BPF_PROG_TYPE_OOM_POLICY program in libbpf and bpftool, so that
->> we can identify and use BPF_PROG_TYPE_OOM_POLICY in our application.
->>
->> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
->> ---
->>   tools/bpf/bpftool/common.c     |  1 +
->>   tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
->>   tools/lib/bpf/libbpf.c         |  3 +++
->>   tools/lib/bpf/libbpf_probes.c  |  2 ++
->>   4 files changed, 20 insertions(+)
->>
->> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
->> index cc6e6aae2447..c5c311299c4a 100644
->> --- a/tools/bpf/bpftool/common.c
->> +++ b/tools/bpf/bpftool/common.c
->> @@ -1089,6 +1089,7 @@ const char *bpf_attach_type_input_str(enum bpf_attach_type t)
->>   	case BPF_TRACE_FENTRY:			return "fentry";
->>   	case BPF_TRACE_FEXIT:			return "fexit";
->>   	case BPF_MODIFY_RETURN:			return "mod_ret";
->> +	case BPF_OOM_POLICY:			return "oom_policy";
-> 
-> This case is not necessary. This block is here to keep legacy attach
-> type strings supported by bpftool. In your case, the name is the same as
-> the one provided by libbpf, so...
-> 
->>   	case BPF_SK_REUSEPORT_SELECT:		return "sk_skb_reuseport_select";
->>   	case BPF_SK_REUSEPORT_SELECT_OR_MIGRATE:	return "sk_skb_reuseport_select_or_migrate";
->>   	default:	return libbpf_bpf_attach_type_str(t);
-> 
-> ... we just want to pick it up from libbpf directly, here.
-> 
-I see..
 
-Thanks.
-
---
-Chuyi Zhou
+On 7/26/23 4:39 PM, Eduard Zingerman wrote:
+> On Wed, 2023-07-26 at 23:03 +0300, Eduard Zingerman wrote:
 > [...]
+>>>> It looks like `PT_REGS_IP_CORE` macro should not be defined through
+>>>> bpf_probe_read_kernel(). I'll dig through commit history tomorrow to
+>>>> understand why is it defined like that now.
+>>>>   help
+>>>
+>>> If I recall the rationale was to allow the macros to work for both
+>>> BPF programs that can do direct dereference (fentry, fexit, tp_btf etc)
+>>> and for kprobe-style that need to use bpf_probe_read_kernel().
+>>> Not sure if it would be worth having variants that are purely
+>>> dereference-based, since we can just use PT_REGS_IP() due to
+>>> the __builtin_preserve_access_index attributes applied in vmlinux.h.
+>>
+>> Sorry, need a bit more time, thanks for the context.
 > 
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 214f828ece6b..10496bb9b3bc 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -118,6 +118,7 @@ static const char * const attach_type_name[] = {
->>   	[BPF_TRACE_KPROBE_MULTI]	= "trace_kprobe_multi",
->>   	[BPF_STRUCT_OPS]		= "struct_ops",
->>   	[BPF_NETFILTER]			= "netfilter",
->> +	[BPF_OOM_POLICY]		= "oom_policy",
->>   };
+> The PT_REGS_*_CORE macros were added by Andrii Nakryiko in [1].
+> Stated intent there is to use those macros for raw tracepoint
+> programs. Such programs have `struct pt_regs` as a parameter.
+> Contexts of type `struct pt_regs` are *not* subject to rewrite by
+> convert_ctx_access(), so it is valid to use PT_REGS_*_CORE for such
+> programs.
+> 
+> However, `struct pt_regs` is also a part of `struct
+> bpf_perf_event_data`. Latter is used as a context parameter for
+> "perf_event" programs and is a subject to rewrite by
+> convert_ctx_access(). Thus, PT_REGS_*_CORE macros can't be used for
+> such programs (because these macro are implemented through
+> bpf_probe_read_kernel() of which convert_ctx_access() is not aware).
+> 
+> If `struct pt_regs` is defined with `preserve_access_index` attribute
+> CO-RE relocations are generated for both PT_REGS_IP_CORE and
+> PT_REGS_IP invocations. So, there is no real need to use *_CORE
+> variants in combination with `struct bpf_perf_event_data` to have all
+> CO-RE benefits, e.g.:
+> 
+>    $ cat bpf.c
+>    #include "vmlinux.h"
+>    // ...
+>    SEC("perf_event")
+>    int do_test(struct bpf_perf_event_data *ctx) {
+>      return PT_REGS_IP(&ctx->regs);
+>    }
+>    // ...
+>    $ llvm-objdump --no-show-raw-insn -rd bpf.o
+>    ...
+>    0000000000000000 <do_test>:
+>           0: r0 = *(u64 *)(r1 + 0x80)
+>              0000000000000000:  CO-RE <byte_off> [11] struct bpf_perf_event_data::regs.ip (0:0:16)
+>           1: exit
+> 
+> [1] b8ebce86ffe6 ("libbpf: Provide CO-RE variants of PT_REGS macros")
+> 
+> ---
+> 
+> I think the following should be done:
+> - Timofei's code should use PT_REGS_IP and make sure that `struct
+>    pt_regs` has preserve_access_index annotation (e.g. use vmlinux.h);
+> - verifier should be adjusted to report error when
+>    bpf_probe_read_kernel() (and similar) are used to read from "fake"
+>    contexts.
+
+The func prototype of bpf_probe_read_kernel() is
+
+BPF_CALL_3(bpf_probe_read_kernel, void *, dst, u32, size,
+            const void *, unsafe_ptr)
+{
+         return bpf_probe_read_kernel_common(dst, size, unsafe_ptr);
+}
+
+Notice the argument name is 'unsafe_ptr'. So there is no checking
+in verifier for this argument. Some users may take advantage of this
+to initialize the 'dst' with 0 by providing an illegal address.
+
+
+> - (maybe?) update PT_REGS_*_CORE to use `__builtin_preserve_access_index`
+>    (to allow usage with `bpf_perf_event_data` context).
+> 
+> [...]
 > 
 
