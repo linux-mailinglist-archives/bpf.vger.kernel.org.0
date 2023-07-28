@@ -1,276 +1,140 @@
-Return-Path: <bpf+bounces-6264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E797776772C
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 22:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF278767748
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 22:57:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FE261C21571
-	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 20:44:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF6E81C217E3
+	for <lists+bpf@lfdr.de>; Fri, 28 Jul 2023 20:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418161BB53;
-	Fri, 28 Jul 2023 20:43:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31BEA1BB5B;
+	Fri, 28 Jul 2023 20:57:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C6DEDC
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 20:43:44 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D56810DD
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 13:43:43 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 034FCC151AED
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 13:43:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1690577023; bh=S5ltqbGK2sa2JMVB758pDPLRJDtGNIKpP7O5A/Gl6E8=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=xHlNxuR90+s84uqvS+pZlT+2g6TzqWne6tAHpkcSeb5+zugKztUtv05ale4NA2Y1z
-	 tLTge0vLTEFpnLLZVs4m+jiFw/wWCb65jQuBHTVoAv707gQOA+ovKdLLOflzaihMTc
-	 n0GSu/ExDYpl6trhdB0kKU7078Pn4IAQ9KfC1rS0=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Fri Jul 28 13:43:42 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id BD007C14CE29;
-	Fri, 28 Jul 2023 13:43:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1690577022; bh=S5ltqbGK2sa2JMVB758pDPLRJDtGNIKpP7O5A/Gl6E8=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=Y0IipzTbVZN4ZmTrJl6u6rIRfIw2agxoMgwH4p65OfWtJ05x/RcOgbByax38z97gz
-	 7WM+KJCPSnqQcTBlBIM1V7cyQPY4xF2vv2LyEDuAV5jCC2JVTdaRoKMkefFa7qgI/k
-	 OoUrBKtB128rIMRI4yCjuG8c29Es7hCL+suIukf4=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 0AE87C14CE29
- for <bpf@ietfa.amsl.com>; Fri, 28 Jul 2023 13:43:42 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -1.41
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id SDZ4blsr36GK for <bpf@ietfa.amsl.com>;
- Fri, 28 Jul 2023 13:43:39 -0700 (PDT)
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com
- [209.85.222.170])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id ED8B5C14CF1A
- for <bpf@ietf.org>; Fri, 28 Jul 2023 13:43:39 -0700 (PDT)
-Received: by mail-qk1-f170.google.com with SMTP id
- af79cd13be357-76595a7b111so198260985a.2
- for <bpf@ietf.org>; Fri, 28 Jul 2023 13:43:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1690577019; x=1691181819;
- h=user-agent:in-reply-to:content-disposition:mime-version:references
- :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=1je410IndVAuCQIqFKB1JhqiJXDrRLKr/jUvDgctIxg=;
- b=f6WSSXvcE/LJvdPVv/ukhmYeyX5+7QRd8wk1QxvtvY3c07OxCIFOo6WgIpNBaQUknw
- m1bsbONH2ji0Jr+ouYL4KH6Zbh1KKyYn4h7koWW07BNP6w8bcNbNtgr3vRFcEURD1YGq
- Y0fpN15mjgRI9N9/S0vGbgNVPxTfdL6d5gB1PoVspjsgTAbMH9nt8mlBfA4Sw/pZzY8q
- mlWM20SbzMbdWODmGHAWeJ89VZuVJVo0AMhiJyIgHnOrL102kboAfr61sX3OzItTBTO7
- vUbJJQKcZAANSXc+MmAIXECVLARK8Llc5CDKxk7bBdwFwWbgE9fzNnYCbCnzwb7nNcKM
- YpCg==
-X-Gm-Message-State: ABy/qLbA9ZVQqZlQlFdVd9aldFW1zyy+/7ahPHOUsxSPnZW/4FmgW3Px
- 60BaM/3CCZIw9A7rkR1eJLc=
-X-Google-Smtp-Source: APBJJlFOzagdnf318g2Fq9cGk0Wg2k8bOFq2lqq1/htXzi2xWa3vxpBqlBnBcTCnMFJ5c283A2V7dA==
-X-Received: by 2002:a05:620a:1a0b:b0:76c:44f1:4fa with SMTP id
- bk11-20020a05620a1a0b00b0076c44f104famr4757178qkb.23.1690577018780; 
- Fri, 28 Jul 2023 13:43:38 -0700 (PDT)
-Received: from maniforge ([2620:10d:c091:400::5:5bb1])
- by smtp.gmail.com with ESMTPSA id
- pa2-20020a05620a830200b007682af2c8aasm1389276qkn.126.2023.07.28.13.43.37
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 28 Jul 2023 13:43:38 -0700 (PDT)
-Date: Fri, 28 Jul 2023 15:43:36 -0500
-From: David Vernet <void@manifault.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>, bpf@ietf.org
-Message-ID: <20230728204336.GC7328@maniforge>
-References: <20230728185852.3572290-1-yonghong.song@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0847A156C3
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 20:57:05 +0000 (UTC)
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA57E69;
+	Fri, 28 Jul 2023 13:57:03 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id A1E6D5C0042;
+	Fri, 28 Jul 2023 16:57:00 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Fri, 28 Jul 2023 16:57:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:sender
+	:subject:subject:to:to; s=fm2; t=1690577820; x=1690664220; bh=Ey
+	7an+eYR/EJFsqkCsdCEc8Gpv7n/y5ox8OPRdihLJI=; b=J27Ci6eOLXZMwc/xdV
+	k4/V2Ujs43ozjAJSJfzx33h29LYVAIsS3r2RJin3T/aW9oDcdd1RmPgh7hHplotG
+	ao4ExzZ+Elqt0PbHK3Vwpar0x2Xmc2UCfGmd9fLSKLLisrOaXsiEwdG5b2JHXKt+
+	trvJN84Kz9wP971MY1lA3BBjQeeyG2oSSDzot3+ap9eRp7uEKFLnlROvX1RyyOkQ
+	cPGLOYSXKF2fUtPeIw12+zug1HWozIuI7m5ocf203YAa3ZVbwLL7SuHuIeBvEwy1
+	nvlcDVRyTjyvo5hL1QEan/7GpZf+ZIRBcKTAPl0Kj8QzxbfeY/jlO1r1V5TxEC0+
+	ky/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm3; t=1690577820; x=1690664220; bh=Ey7an+eYR/EJF
+	sqkCsdCEc8Gpv7n/y5ox8OPRdihLJI=; b=jRJzUyuQYnTKWqqxrP/jCtF5Nsa3F
+	Z59ZYd6uvIJ2NsV4sighrm6TCgeOo4hzicUeS4qEK+Vc+ptBiyjvc/iA+cYC7qv6
+	VqOpjVspD8FHl2t86zbctNl4U6KKcV/7akn+jkek9JdiTIerAcCZWdWGRztGSzTD
+	QXBS6NvyFWX057/XWOQkz+PrLRXQCf6pn1xfl0QV2XjV4QlfAXvRdgYWDkE/mzRD
+	NEKr+b+vfaWojiojrIpnd6m19hA63OKiKjUnNLjWYYllRHHTX0IUURnuGkJ6VsMO
+	XihH+C35mv6VdKTqMaysBbrtnOmshMXX5yufdrvqln2HCjtpBrM7IYeUg==
+X-ME-Sender: <xms:myvEZE3Kf0PQjnUrKwFBbfhjCs9alz8rvv8ujuU6sPyCqxIxrKFZRA>
+    <xme:myvEZPFsHBpgijMZ8HW7DHJccCK07jIYm0mAqG_Jj7RYocsyKSpYoRlSvRbgK3z_r
+    D3bOsCQ5MZXNNhuvIY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieeigdduheduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:myvEZM5Ahws0Z6Fti2HV7CL8kSy_SrbZMY_Sbxx9dXQfT347gKfP-Q>
+    <xmx:myvEZN0XmxO5j6XNcdHCoRnudYI_QAaQeYPj4xFi6joKwRoWSUVFiA>
+    <xmx:myvEZHF7eZKaSta7Ug36jfJ0rnDDOlRQg4ULRxeVexvvBQiC87wrIA>
+    <xmx:nCvEZNb439Dex4aaWQw5WdvGXT_tu2dwlKreo-BLQHj5EG1ucwKbTw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 49564B60089; Fri, 28 Jul 2023 16:56:59 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230728185852.3572290-1-yonghong.song@linux.dev>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/_vsGtAeHaP8IKy7SjsEYNpx2JWg>
-Subject: Re: [Bpf] [PATCH bpf-next] docs/bpf: Improve documentation for
- cpu=v4 instructions
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+Mime-Version: 1.0
+Message-Id: <a2fa1a31-e8bb-4659-9631-398b564e7c2b@app.fastmail.com>
+In-Reply-To: <20230728173103.GA1299743@dev-arch.thelio-3990X>
+References: <1687443219-11946-1-git-send-email-yangtiezhu@loongson.cn>
+ <1687443219-11946-2-git-send-email-yangtiezhu@loongson.cn>
+ <20230727213648.GA354736@dev-arch.thelio-3990X>
+ <1777400a-4d9c-4bdb-9d3b-f8808ef054cc@app.fastmail.com>
+ <20230728173103.GA1299743@dev-arch.thelio-3990X>
+Date: Fri, 28 Jul 2023 22:56:38 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Nathan Chancellor" <nathan@kernel.org>
+Cc: "Tiezhu Yang" <yangtiezhu@loongson.cn>,
+ linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org,
+ loongarch@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>,
+ bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH v3 1/2] asm-generic: Unify uapi bitsperlong.h for arm64, riscv and
+ loongarch
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jul 28, 2023 at 11:58:52AM -0700, Yonghong Song wrote:
-> Improve documentation for cpu=v4 instructions based on
-> David's suggestions.
-> 
-> Cc: bpf@ietf.org
-> Suggested-by: David Vernet <void@manifault.com>
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+On Fri, Jul 28, 2023, at 19:31, Nathan Chancellor wrote:
+> On Fri, Jul 28, 2023 at 01:00:30PM +0200, Arnd Bergmann wrote:
+>>
+>> of the uapi version. The sanity check in the kernel-side header
+>> is intended to cross-check the CONFIG_64BIT value against the
+>> __BITS_PER_LONG constant from the header.
+>> 
+>> My first guess would be that this only worked by accident if the headers
+>> defaulted to "#define __BITS_PER_LONG 32" in and #undef CONFIG_64BIT"
+>> when include/generated/autoconf.h, but now the __BITS_PER_LONG value
+>> is actually correct.
+>
+> That seems like a reasonable theory. I am still busy looking into other
+> things today but I can try to double back to this on Monday if you don't
+> make any progress.
 
-LGTM, thanks Yonghong. Just left one nit below.
+I tried reproducing this today on arm64 Debian with linux-6.5-rc3
+and clang-14.0.6 but I don't see the problem here. With 'make V=1'
+I see command for building scripts/sorttable is
 
-Acked-by: David Vernet <void@manifault.com>
+clang -Wp,-MMD,scripts/.sorttable.d -Wall -Wmissing-prototypes \
+ -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu11   \
+ -I./tools/include -I./tools/arch/x86/include -DUNWINDER_ORC_ENABLED \
+ -o scripts/sorttable scripts/sorttable.c   -lpthread
 
-> ---
->  .../bpf/standardization/instruction-set.rst   | 54 +++++++++++--------
->  1 file changed, 32 insertions(+), 22 deletions(-)
-> 
-> diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
-> index 23e880a83a1f..95079a53a35b 100644
-> --- a/Documentation/bpf/standardization/instruction-set.rst
-> +++ b/Documentation/bpf/standardization/instruction-set.rst
-> @@ -174,7 +174,7 @@ BPF_MOV   0xb0   0        dst = src
->  BPF_MOVSX 0xb0   8/16/32  dst = (s8,s16,s32)src
->  BPF_ARSH  0xc0   0        sign extending dst >>= (src & mask)
->  BPF_END   0xd0   0        byte swap operations (see `Byte swap instructions`_ below)
-> -========  =====  ============  ==========================================================
-> +========  =====  =======  ==========================================================
->  
->  Underflow and overflow are allowed during arithmetic operations, meaning
->  the 64-bit or 32-bit value will wrap. If eBPF program execution would
-> @@ -201,26 +201,32 @@ where '(u32)' indicates that the upper 32 bits are zeroed.
->  
->    dst = dst ^ imm32
->  
-> -Note that most instructions have instruction offset of 0. But three instructions
-> -(BPF_SDIV, BPF_SMOD, BPF_MOVSX) have non-zero offset.
-> +Note that most instructions have instruction offset of 0. Only three instructions
-> +(``BPF_SDIV``, ``BPF_SMOD``, ``BPF_MOVSX``) have a non-zero offset.
->  
->  The devision and modulo operations support both unsigned and signed flavors.
-> -For unsigned operation (BPF_DIV and BPF_MOD), for ``BPF_ALU``, 'imm' is first
-> -interpreted as an unsigned 32-bit value, whereas for ``BPF_ALU64``, 'imm' is
-> -first sign extended to 64 bits and the result interpreted as an unsigned 64-bit
-> -value.  For signed operation (BPF_SDIV and BPF_SMOD), for ``BPF_ALU``, 'imm' is
-> -interpreted as a signed value. For ``BPF_ALU64``, the 'imm' is sign extended
-> -from 32 to 64 and interpreted as a signed 64-bit value.
->  
-> -Instruction BPF_MOVSX does move operation with sign extension.
-> -``BPF_ALU | MOVSX`` sign extendes 8-bit and 16-bit into 32-bit and upper 32-bit are zeroed.
-> -``BPF_ALU64 | MOVSX`` sign extends 8-bit, 16-bit and 32-bit into 64-bit.
-> +For unsigned operations (``BPF_DIV`` and ``BPF_MOD``), for ``BPF_ALU``,
-> +'imm' is interpreted as a 32-bit unsigned value. For ``BPF_ALU64``,
-> +'imm' is first sign extended from 32 to 64 bits, and then interpreted as
-> +a 64-bit unsigned value.
-> +
-> +For signed operations (``BPF_SDIV`` and ``BPF_SMOD``), for ``BPF_ALU``,
-> +'imm' is interpreted as a 32-bit signed value. For ``BPF_ALU64``, 'imm'
-> +is first sign extended from 32 to 64 bits, and then interpreted as a
-> +64-bit signed value.
-> +
-> +The ``BPF_MOVSX`` instruction does a move operation with sign extension.
-> +``BPF_ALU | BPF_MOVSX`` sign extends 8-bit and 16-bit operands into 32
-> +bit operands, and zeroes the remaining upper 32 bits.
-> +``BPF_ALU64 | BPF_MOVSX`` sign extends 8-bit, 16-bit, and 32-bit
-> +operands into 64 bit operands.
->  
->  Shift operations use a mask of 0x3F (63) for 64-bit operations and 0x1F (31)
->  for 32-bit operations.
->  
->  Byte swap instructions
-> -~~~~~~~~~~~~~~~~~~~~~~
-> +----------------------
->  
->  The byte swap instructions use instruction classes of ``BPF_ALU`` and ``BPF_ALU64``
->  and a 4-bit 'code' field of ``BPF_END``.
-> @@ -228,16 +234,17 @@ and a 4-bit 'code' field of ``BPF_END``.
->  The byte swap instructions operate on the destination register
->  only and do not use a separate source register or immediate value.
->  
-> -For ``BPF_ALU``, the 1-bit source operand field in the opcode is used to select what byte
-> -order the operation convert from or to. For ``BPF_ALU64``, the 1-bit source operand
-> -field in the opcode is not used and must be 0.
-> +For ``BPF_ALU``, the 1-bit source operand field in the opcode is used to
-> +select what byte order the operation converts from or to. For
-> +``BPF_ALU64``, the 1-bit source operand field in the opcode is reserved
-> +and must be set to 0.
->  
->  =========  =========  =====  =================================================
->  class      source     value  description
->  =========  =========  =====  =================================================
->  BPF_ALU    BPF_TO_LE  0x00   convert between host byte order and little endian
->  BPF_ALU    BPF_TO_BE  0x08   convert between host byte order and big endian
-> -BPF_ALU64  BPF_TO_LE  0x00   do byte swap unconditionally
-> +BPF_ALU64  Reserved   0x00   do byte swap unconditionally
->  =========  =========  =====  =================================================
->  
->  The 'imm' field encodes the width of the swap operations.  The following widths
-> @@ -305,9 +312,12 @@ where 's>=' indicates a signed '>=' comparison.
->  
->  where 'imm' means the branch offset comes from insn 'imm' field.
->  
-> -Note there are two flavors of BPF_JA instrions. BPF_JMP class permits 16-bit jump offset while
-> -BPF_JMP32 permits 32-bit jump offset. A >16bit conditional jmp can be converted to a <16bit
-> -conditional jmp plus a 32-bit unconditional jump.
-> +Note that there are two flavors of ``BPF_JA`` instructions. The
-> +``BPF_JMP`` class permits a 16-bit jump offset specified by 'offset'
+which does create an arm64 executable but includes the x86 headers,
+which is clearly a bug by itself, it just doesn't trigger the problem
+for me.
 
-s/by 'offset'/by the 'offset'
+I also noticed that your command line includes CROSS_COMPILE=x86_64-linux-
+rather than CROSS_COMPILE=x86_64-linux-gnu-, and I think we've had
+problems with that in the past, when "clang --target=x86_64-linux"
+fails to find the glibc system headers.
 
-> +field, whereas the ``BPF_JMP32`` class permits a 32-bit jump offset
-> +specified by the 'imm' field. A > 16-bit conditional jump may be
-> +converted to a < 16-bit conditional jump plus a 32-bit unconditional
-> +jump.
->  
->  Helper functions
->  ~~~~~~~~~~~~~~~~
-> @@ -385,7 +395,7 @@ instructions that transfer data between a register and memory.
->    dst = *(unsigned size *) (src + offset)
->  
->  Where size is one of: ``BPF_B``, ``BPF_H``, ``BPF_W``, or ``BPF_DW`` and
-> -'unsigned size' is one of u8, u16, u32 and u64.
-> +'unsigned size' is one of u8, u16, u32 or u64.
->  
->  The ``BPF_MEMSX`` mode modifier is used to encode sign-extension load
->  instructions that transfer data between a register and memory.
-> @@ -395,7 +405,7 @@ instructions that transfer data between a register and memory.
->    dst = *(signed size *) (src + offset)
->  
->  Where size is one of: ``BPF_B``, ``BPF_H`` or ``BPF_W``, and
-> -'signed size' is one of s8, s16 and s32.
-> +'signed size' is one of s8, s16 or s32.
->  
->  Atomic operations
->  -----------------
-> -- 
-> 2.34.1
-> 
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+     Arnd
 
