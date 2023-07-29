@@ -1,181 +1,187 @@
-Return-Path: <bpf+bounces-6326-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6327-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 297837680D3
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 19:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E31E7680D9
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 19:56:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30C5C1C20A65
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 17:46:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 883BC1C20A81
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 17:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7C0174C7;
-	Sat, 29 Jul 2023 17:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E958174C8;
+	Sat, 29 Jul 2023 17:56:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91AA715BD;
-	Sat, 29 Jul 2023 17:46:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8269FC433C8;
-	Sat, 29 Jul 2023 17:46:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690652780;
-	bh=e0zotVZ/XJUIPJGVsTb6UzBe7NAqRNMMif2hVV4YiQU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qZbtbH5WKJMuGws0Luokb+CuDmaBKbUK73w3QZie77uZxhedU9WqstnZvDo3dVwD9
-	 NKYZsseSEnQSPungkiwE0y8+hOJNLE8tIi3KQ6EuqArgdBEVZ4nFJGlkY9LSe6R6FT
-	 0EwLoNPg8BMybjeUnKIM9zadswk2O7XaWdGl7zfdjqCoGhjismZd+XOwWdND4cQ64H
-	 4O5qJrLekx0s9mb6RhGZrLUkCt9wqsQd2FRSGWtTe9ul0wnbLxeJ+CHMK94UyMN+WB
-	 eV7cfQpBj4tdS+BlsS2FK1aRi3IJPpIkRkOX6I7At4hdt6gUfuG+Y7MUbKAgQFdaU2
-	 5IRSLh+6capaA==
-Date: Sat, 29 Jul 2023 10:46:17 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, loongarch@lists.linux.dev,
-	Linux-Arch <linux-arch@vger.kernel.org>, bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH v3 1/2] asm-generic: Unify uapi bitsperlong.h for arm64,
- riscv and loongarch
-Message-ID: <20230729174617.GA1229655@dev-arch.thelio-3990X>
-References: <1687443219-11946-1-git-send-email-yangtiezhu@loongson.cn>
- <1687443219-11946-2-git-send-email-yangtiezhu@loongson.cn>
- <20230727213648.GA354736@dev-arch.thelio-3990X>
- <1777400a-4d9c-4bdb-9d3b-f8808ef054cc@app.fastmail.com>
- <20230728173103.GA1299743@dev-arch.thelio-3990X>
- <a2fa1a31-e8bb-4659-9631-398b564e7c2b@app.fastmail.com>
- <20230728234429.GA611252@dev-arch.thelio-3990X>
- <e7a792d9-39b9-440a-9c22-99e25b25a396@app.fastmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F91715BD
+	for <bpf@vger.kernel.org>; Sat, 29 Jul 2023 17:56:15 +0000 (UTC)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2AF2D64
+	for <bpf@vger.kernel.org>; Sat, 29 Jul 2023 10:56:13 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so49571611fa.2
+        for <bpf@vger.kernel.org>; Sat, 29 Jul 2023 10:56:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690653372; x=1691258172;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mJR5ivEB83OgZOd7G1HfH8uKhMkWUiic2SCw4A6juvY=;
+        b=VPOfmgj/poaaS8ODMePUQFxSTOgPEwS5ZdS4CcQ3+G8OI+PsYk9cSN9Owb+gqg/Y1N
+         ZUYCZDjhBc/I9gLsar2V8apqmxbPHSqg65fK9D7f3U0rOGrS8Gcq7LZI+eVNEQPfalm7
+         ru0zXXoNHLeZuy8lziVCj4jiMjQll5JnYzkSm9aEkR0aSbYkqQ4A4BYdR8x/f1i0VUyJ
+         zpZdpOn7mrzXeY8kD18KLO0XBhSHQbARZCe1GFPs02mMZL9NLLvW/9TvNDg6YZUxjkP0
+         mbIGu1RNk61voKSqt+rvnSz6HW8mEJlstilL+NexW0ditxJneG+mav90DcMpdpFjcJFv
+         52cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690653372; x=1691258172;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mJR5ivEB83OgZOd7G1HfH8uKhMkWUiic2SCw4A6juvY=;
+        b=Alk+2YadXyuh8z+xjjUGGn63c3paUfvYMJofkvcVlONp3XVmqB7VqxDvsBTNA6smwp
+         iXrg/OEl85r5M9RBdmn2TbpoGnHqqCyuTrQEGAdIoaV5pVyOKVbFvcd4lvJWeazyPQ8Q
+         uuxFaIQZavs9aFKyJyFDBsJa9Cjmf9VfIDO3YWuU7XPxlipXfewtWBArmrvn8gFcNE7e
+         kBCe5/42a86aaIszIE9GIJl91w2wcarFyDCPKW3Q+pLk6ZJ82ybF+J5MpHkIzlAs3xkS
+         c94FihyO0l3RZOrs3DDigNiZasbmVmI7pvxwN86jOBhczAqL05mx/eWdQaoBqhNVA0O3
+         ykiA==
+X-Gm-Message-State: ABy/qLYl+qF01bbllNn0+dnaJPXpdRY589n5PVzFvUznQ3DIQFp8n29m
+	PDLlUfhcsFyUOUhQPcAiWjFzN0LFxuoic40wuVo=
+X-Google-Smtp-Source: APBJJlF6GWCd40M3dhmq+0hHboOuNgqmbju2SW3Th1aaqa2YW3+zSJroMlBNlPXonUSe8ozFGQwXqwZGSCfWH84DChU=
+X-Received: by 2002:a2e:8612:0:b0:2b1:a89a:5f2b with SMTP id
+ a18-20020a2e8612000000b002b1a89a5f2bmr3839610lji.2.1690653371390; Sat, 29 Jul
+ 2023 10:56:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7a792d9-39b9-440a-9c22-99e25b25a396@app.fastmail.com>
+References: <878rb0yonc.fsf@oracle.com> <13eb5cae-e599-7f80-aa11-65846fccdc62@linux.dev>
+ <87v8e4x7cr.fsf@oracle.com> <87pm4bykxw.fsf@oracle.com> <CAADnVQLaZrqq232fxts0GmymaaG=fpvRbSZaBkfNnKFuy0LM8A@mail.gmail.com>
+ <87jzujnms6.fsf@oracle.com>
+In-Reply-To: <87jzujnms6.fsf@oracle.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 29 Jul 2023 10:56:00 -0700
+Message-ID: <CAADnVQ+2mHqRc2EBCKe+NHHPQ+FqaNt2PmD6t9DN6GwPnu1RQg@mail.gmail.com>
+Subject: Re: GCC and binutils support for BPF V4 instructions
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Sat, Jul 29, 2023 at 09:59:23AM +0200, Arnd Bergmann wrote:
-> On Sat, Jul 29, 2023, at 01:44, Nathan Chancellor wrote:
-> > On Fri, Jul 28, 2023 at 10:56:38PM +0200, Arnd Bergmann wrote:
-> 
-> >     DESCEND objtool
-> >   In file included from 
-> > /usr/include/aarch64-linux-gnu/asm/bitsperlong.h:1,
-> >                    from /usr/include/asm-generic/int-ll64.h:12,
-> >                    from /usr/include/asm-generic/types.h:7,
-> >                    from /usr/include/aarch64-linux-gnu/asm/types.h:1,
-> >                    from /linux-stable/tools/include/linux/types.h:13,
-> >                    from 
-> > /linux-stable/tools/arch/x86/include/asm/orc_types.h:9,
-> >                    from /linux-stable/scripts/sorttable.h:96,
-> >                    from /linux-stable/scripts/sorttable.c:201:
-> >   /linux-stable/tools/include/asm-generic/bitsperlong.h:14:2: error: 
-> > #error Inconsistent word size. Check asm/bitsperlong.h
-> >      14 | #error Inconsistent word size. Check asm/bitsperlong.h
-> >         |  ^~~~~
-> >   make[3]: *** [/linux-stable/scripts/Makefile.host:114: 
-> > scripts/sorttable] Error 1
-> >   ...
+On Sat, Jul 29, 2023 at 1:29=E2=80=AFAM Jose E. Marchesi
+<jose.marchesi@oracle.com> wrote:
+>
+>
+> > On Fri, Jul 28, 2023 at 11:01=E2=80=AFAM Jose E. Marchesi
+> > <jose.marchesi@oracle.com> wrote:
+> >>
+> >>
+> >> >> On 7/28/23 9:41 AM, Jose E. Marchesi wrote:
+> >> >>> Hello.
+> >> >>> Just a heads up regarding the new BPF V4 instructions and their
+> >> >>> support
+> >> >>> in the GNU Toolchain.
+> >> >>> V4 sdiv/smod instructions
+> >> >>>    Binutils has been updated to use the V4 encoding of these
+> >> >>>    instructions, which used to be part of the xbpf testing dialect=
+ used
+> >> >>>    in GCC.  GCC generates these instructions for signed division w=
+hen
+> >> >>>    -mcpu=3Dv4 or higher.
+> >> >>> V4 sign-extending register move instructions
+> >> >>> V4 signed load instructions
+> >> >>> V4 byte swap instructions
+> >> >>>    Supported in assembler, disassembler and linker.  GCC generates
+> >> >>> these
+> >> >>>    instructions when -mcpu=3Dv4 or higher.
+> >> >>> V4 32-bit unconditional jump instruction
+> >> >>>    Supported in assembler and disassembler.  GCC doesn't generate
+> >> >>> that
+> >> >>>    instruction.
+> >> >>>    However, the assembler has been expanded in order to perform th=
+e
+> >> >>>    following relaxations when the disp16 field of a jump instructi=
+on is
+> >> >>>    known at assembly time, and is overflown, unless -mno-relax is
+> >> >>>    specified:
+> >> >>>      JA disp16  -> JAL disp32
+> >> >>>      Jxx disp16 -> Jxx +1; JA +1; JAL disp32
+> >> >>>    Where Jxx is one of the conditional jump instructions such as
+> >> >>> jeq,
+> >> >>>    jlt, etc.
+> >> >>
+> >> >> Sounds great. The above 'JA/Jxx disp16' transformation matches
+> >> >> what llvm did as well.
+> >> >
+> >> > Not by chance ;)
+> >> >
+> >> > Now what is pending in binutils is to relax these jumps in the linke=
+r as
+> >> > well.  But it is very low priority, compared to get these kernel
+> >> > selftests building and running.  So it will happen, but probably not
+> >> > anytime soon.
+> >>
+> >> By the way, for doing things like that (further object transformations
+> >> by linkers and the like) we will need to have the ELF files annotated
+> >> with:
+> >>
+> >> - The BPF cpu version the object was compiled for: v1, v2, v3, v4, and
+> >>
+> >> - Individual flags specifying the BPF cpu capabilities (alu32, bswap,
+> >>   jmp32, etc) required/expected by the code in the object.
+> >>
+> >> Note it is interesting to being able to denote both, for flexibility.
+> >>
+> >> There are 32 bits available for machine-specific flags in e_flags, whi=
+ch
+> >> are commonly used for this purpose by other arches.  For BPF I would
+> >> suggest something like:
+> >>
+> >> #define EF_BPF_ALU32  0x00000001
+> >> #define EF_BPF_JMP32  0x00000002
+> >> #define EF_BPF_BSWAP  0x00000004
+> >> #define EF_BPF_SDIV   0x00000008
+> >> #define EF_BPF_CPUVER 0x00FF0000
 > >
-> >> I also noticed that your command line includes CROSS_COMPILE=x86_64-linux-
-> >> rather than CROSS_COMPILE=x86_64-linux-gnu-
-> >
-> > Right, as I was reproducing this with your kernel.org GCC for
-> > CROSS_COMPILE and Fedora's GCC for HOSTCC, since I wanted to make sure
-> > this was not some issue with clang (which it does not appear to be).
-> 
-> Ok, it's beginning to make more sense to me now. I see
-> that the tools/arch/x86/include/asm/orc_types.h comes from
-> the x86_64 target build and is intentional, as sorttable.c
-> needs to access the ORC information. Here the Makefile does
-> 
-> ifdef CONFIG_UNWINDER_ORC
-> ifeq ($(ARCH),x86_64)
-> ARCH := x86
-> endif
-> HOSTCFLAGS_sorttable.o += -I$(srctree)/tools/arch/x86/include
-> HOSTCFLAGS_sorttable.o += -DUNWINDER_ORC_ENABLED
-> endif
-> 
-> in order to get the ORC definitions from asm/orc_types.h, but
-> then it looks like it also gets the uapi/asm/bitsperlong.h
-> header from there which contains
-> 
-> #if defined(__x86_64__) && !defined(__ILP32__)
-> # define __BITS_PER_LONG 64
-> #else
-> # define __BITS_PER_LONG 32
-> #endif
-> 
-> and this would set __BITS_PER_LONG to 32 on arm64.
-> 
-> However, I don't see this actually being included on my
-> machine. Can you dump the sorttable.c preprocessor output
-> with your setup, using -fdirectives-only, so we can see
-> which of the two (__BITS_PER_LONG or BITS_PER_LONG) is
-> actually wrong and triggers the sanity check?
+> > Interesting idea. I don't mind, but what are we going to do with this i=
+nfo?
+> > I cannot think of anything useful libbpf could do with it.
+> > For other archs such flags make sense, since disasm of everything
+> > to discover properties is hard. For BPF we will parse all insns anyway,
+> > so additional info in ELF doesn't give any additional insight.
+>
+> I mainly had link-time relaxation in mind.  The linker needs to know
+> what instructions are available (JMP32 or not) in order to decide what
+> to relax, and to what.
 
-Sure thing, this is the output of:
+But the assembler has little choice when the jump target is >16bits.
+It can use jmp32 or error.
+I guess you're proposing to encode this e_flags in the text of asm ?
+Special asm directive that will force asm to error or use jmp32?
 
-  $ gcc -I/linux-stable/tools/include -I/linux-stable/tools/arch/x86/include -DUNWINDER_ORC_ENABLED -I ./scripts -E -fdirectives-only /linux-stable/scripts/sorttable.c
+> Also as you mention the disassembler can look in the object to determine
+> which instructions shall be recognized and with insructions shall be
+> reported as <unknown>.  Right now it is necessary to pass an explicit
+> option to the assembler, and the default is v4.
 
-https://gist.github.com/nathanchance/d2c3e58230930317dc84aff80fef38bf
+Disambiguating between unknown and exact insn kinda makes sense for disasm.
+For assembler it's kinda weird. If text says 'sdiv' the asm should emit
+binary code for it regardless of asm directive.
+It seems e_flags can only be emitted by assembler.
+Like if it needs to use jmp32 it will add EF_BPF_JMP32.
 
-> What I see on my machine is that both definitions come
-> from the local tools/include/ headers, not from the
-> installed system headers, so I'm still doing something
-> wrong in my installation:
+Still feels that we can live without these flags, but not a bad addition.
 
-Just to make sure, you have the 6.5-rc1+ headers installed and you are
-attempting to build the host tools from an earlier Linux release than
-6.5-rc1? I don't see a problem with building these host programs on
-mainline/6.5, I see this issue when building them in older stable
-releases (my reproduction so far has been on 6.4 but I see it when
-building all currently supported long term stable releases) when I have
-the 6.5-rc1+ headers installed.
-
-> ./tools/include/uapi/asm-generic/bitsperlong.h
-> #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
-
-Because this is the mainline version, whereas the stable version is:
-
-#ifndef _UAPI__ASM_GENERIC_BITS_PER_LONG
-#define _UAPI__ASM_GENERIC_BITS_PER_LONG
-
-/*
- * There seems to be no way of detecting this automatically from user
- * space, so 64 bit architectures should override this in their
- * bitsperlong.h. In particular, an architecture that supports
- * both 32 and 64 bit user space must not rely on CONFIG_64BIT
- * to decide it, but rather check a compiler provided macro.
- */
-#ifndef __BITS_PER_LONG
-#define __BITS_PER_LONG 32
-#endif
-
-#endif /* _UAPI__ASM_GENERIC_BITS_PER_LONG */
-
-which seems to be where the mismatch is coming from?
-
-> ./tools/include/asm-generic/bitsperlong.h
-> #define BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
-> 
-> Neither of these files actually contains the sanity
-> check in linux-6.5-rc3, and comparing these is clearly
-> nonsensical, as they are defined the same way (rather
-> than checking CONFIG_64BIT), but also I don't see why
-> there is both a uapi/ version and a non-uapi version
-> in what is meant to be a userspace header.
-
-May be worth looping in the tools/ folks, since that whole directory is
-rather special IMO...
-
-Cheers,
-Nathan
+As far as flag names, let's use EF_ prefix. I think it's more canonical.
+And single 0xF is probably enough for cpu ver.
 
