@@ -1,289 +1,207 @@
-Return-Path: <bpf+bounces-6321-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6322-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D81F767DF3
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 12:00:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DE45767E25
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 12:22:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72E041C20F6C
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 10:00:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 194D92825B2
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 10:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E522168D0;
-	Sat, 29 Jul 2023 09:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07051427F;
+	Sat, 29 Jul 2023 10:21:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DCC511C8F;
-	Sat, 29 Jul 2023 09:58:17 +0000 (UTC)
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on20611.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e1b::611])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9355129;
-	Sat, 29 Jul 2023 02:58:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TK5E/NnDzEHI986XwzHzSvvNa3/ZCxnRnDK+24CfFvulKSpjG1Nnss+5Nn7GqgeVKtY+/y621I+Dde5wZnOVBrLhM/Dux12WMmk8Sqpiht1m+W9KdKVjPSXx84lVqTjikbekJ8xWIO74N6mdVGXQD35mxFeyd/gDlFdped9Gjp5YALbS4EARRS9yXx1PWy7G/9w8+UE1VzIuQcot8NfgAdsghiRT+vluQMSIb8NtEUh5JiCR3NKOPX454VYXMwJTRsyvDpbwfhAh7xAx37onYgx9QkcyW/T5ID+XXJbELVHy86FPhJ+I7hrEeYo7h+5RlqeoEkUgejhLHMlpt0v+iw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fNR1Z0O8+imQ4xIF3S+4EWt9/8j7kXiMDTOLw5RsoM0=;
- b=kUkDSxU4jGQen6v9eiMJdJFj4exKUeVfKEbPWXUkREtOM82gTWzvClDMq806S5K9reu94NeKsV6HJKUiSD3MM6yb6GrZT8LICjpG8G33HbOwCplrukaodjBRe6ZPo7PonkNnhC4vSAkVRPX64PHlyC3IOpclVSiUyvEY8yFjwf3MUliJG4DFNBxbKKTg15eXunCS7OyiFunQY6VkqHla1MaoM4YPIuQFi94pOPQgj7BmqPUaWFkKsn5DWDB2LZDyiauRv8SEaagQwYzBEqySwrdk6/jai/r5pOqcVeDhX6c5KfhiCj5bTiVTGe3zkz8Zm7+/j5gNFX616iJwD534dg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fNR1Z0O8+imQ4xIF3S+4EWt9/8j7kXiMDTOLw5RsoM0=;
- b=M+T/9HmucdQBGrBB7SzhoQTk3BVluLQhR9Z7Kx1ew8laMW87dlNBAfWpP55VS/r+sTvgBwjTXV8Scw3Mde6AylmknFNDHZwBCzVZVFH7Q6dibOPjaW+oYsuPFi0gR8gukEsEqQqHHnetG2BP9b3qeogT7DQ99fyTwB3UiuWaVz3VjBTHfNadiQpjgtlBP7YJDgVkRbgQUkW7+5Wnraofe4opETcwn5gxwaqm838GVukp33UfpnGxFdTHA17G3wUtKZLP2HZZMcSU/au1kp1V6QjAsRJ8yhR6mVrxNhLSF7bikoDZXYanpfUmwwcgApItNJmFl7jKiLb8LpqDV0UZZg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com (2603:10a6:7:83::14)
- by AS8PR04MB8417.eurprd04.prod.outlook.com (2603:10a6:20b:3f9::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.39; Sat, 29 Jul
- 2023 09:58:11 +0000
-Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com
- ([fe80::bf65:a49a:8861:4f92]) by HE1PR0402MB3497.eurprd04.prod.outlook.com
- ([fe80::bf65:a49a:8861:4f92%2]) with mapi id 15.20.6631.026; Sat, 29 Jul 2023
- 09:58:10 +0000
-From: Geliang Tang <geliang.tang@suse.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Florent Revest <revest@chromium.org>,
-	Brendan Jackman <jackmanb@chromium.org>,
-	Matthieu Baerts <matthieu.baerts@tessares.net>,
-	Mat Martineau <martineau@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	John Johansen <john.johansen@canonical.com>,
-	Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Eric Paris <eparis@parisplace.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <geliang.tang@suse.com>,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	mptcp@lists.linux.dev,
-	apparmor@lists.ubuntu.com,
-	linux-security-module@vger.kernel.org,
-	selinux@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [RFC bpf-next v7 6/6] selftests/bpf: Add mptcpify selftest
-Date: Sat, 29 Jul 2023 17:57:27 +0800
-Message-Id: <27a7ada7aa480301102cbe1f7ea1303bae52d705.1690624340.git.geliang.tang@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <cover.1690624340.git.geliang.tang@suse.com>
-References: <cover.1690624340.git.geliang.tang@suse.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0120.apcprd02.prod.outlook.com
- (2603:1096:4:92::36) To HE1PR0402MB3497.eurprd04.prod.outlook.com
- (2603:10a6:7:83::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554597C;
+	Sat, 29 Jul 2023 10:21:46 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E9B19A7;
+	Sat, 29 Jul 2023 03:21:44 -0700 (PDT)
+Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.56])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RCgTL3FNdzLngj;
+	Sat, 29 Jul 2023 18:19:02 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sat, 29 Jul 2023 18:21:39 +0800
+Message-ID: <595910b8-c923-ecef-bd05-5e6928c7de3a@huawei.com>
+Date: Sat, 29 Jul 2023 18:21:39 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HE1PR0402MB3497:EE_|AS8PR04MB8417:EE_
-X-MS-Office365-Filtering-Correlation-Id: a4582274-8b00-4965-3283-08db901a50fe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	YzKuQJspS18Gf5DkJegF9TSMZIM9c3BwqXZyss4vzJoWrDdv2jrKSUhWdhJ7C2np4fTSsr2TJrvvVeFU6uK+KYYIJjZYCPI6/6BCUAHWwXSkZGLRoi09PPQiyKvmJNJyZn61+dAOdjWX+Brp8OlUySUEvUjFV6VuJpGueLF63s1fMSPxe+ModmM4NH/bGNsy9VflVs7ezhwgsKi8uSnMzI6zzU/iDsaTVO4A2Sy73m101T15nvTWu5Zu24CrYiPJV9uc4RqoE62V4Bnj7/MJeTfyGdMf7mhyeA3+QPqHFZuRFw4wcttnCoW+He3beTfsphZYDG2UTi3TAWLI4vymvqomB0z59P7dE9ZzXIcyJQ1cwJtY3T4fcYwiaVgo2LwWRe+05sYwrvTfFtkNYd5gaeY7oqOHa/EaqfsVk+4MmM07UrGiq7Z4OYDXEEr1qYczGPTka8ULR+rV/BHLeWojhF38iLrkSmnkegTnWEr1akvKoLDn38EFLK1MFAnQ5LochhyE/JTMWdpL31X0wz9y1H3alU9i2z1RzuwVHvNC5M23BJHZf2Vc0cbhf73VSk9eKSQ4DHCQFO5qXZlrTYUezDsSc5kCkLFyQfOMbDpmf1o=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3497.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(39860400002)(376002)(346002)(396003)(136003)(451199021)(6512007)(6486002)(36756003)(2616005)(6506007)(26005)(83380400001)(186003)(44832011)(66946007)(66556008)(7406005)(7416002)(921005)(110136005)(41300700001)(86362001)(66476007)(316002)(4326008)(5660300002)(8936002)(8676002)(38100700002)(2906002)(6666004)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?fj6n3OSbb4PgC5kxdtyTQI9MN05ivysGKoVqH5mE5yQ7OeDdDoDqdHhxGYoK?=
- =?us-ascii?Q?R3JAnM2hlRVhyMn4HotFx6JRGvGeXcAAsuWE03aM2CDe9T1g+svqPNq1b4MA?=
- =?us-ascii?Q?rq6EWBY2QdC2R7DcIQYLlvPvs6LOsiDk8kepu3r9o7DklzyKbXxfIYQ3FIua?=
- =?us-ascii?Q?5ubUc2LVIc6lOi9CtwbXKXnLL3ZaEmtGySnDqsRWi17kFfcHYFXt/qPK6DM8?=
- =?us-ascii?Q?j8dkNUtVwuqjeLryKEbL10zKcNivotfRHXiR2hmBvBzBjK/zW1J1MDm3Z/Ng?=
- =?us-ascii?Q?PIJoyrGK8tyC4Xggl+H8rvj7q/+dNs2RiQql2WQFk9I6YrqU8RXkQqUuKa6h?=
- =?us-ascii?Q?DX7TbHinUM8YwtTmledhkKU0SvklXlEix8N4RNOW0AbofC+8QoedorJbtLqI?=
- =?us-ascii?Q?VKHIpZYqJ1SnVpJpMGkF6RszW13zs3PGTbhRm5UnVozIY4yjlD9Y75qTQ1vU?=
- =?us-ascii?Q?RMynDi7re3cl3lZCNNBj6ewK3LbF/RfO/o8ARHNtyNbwTi5kZy9QASOZIUA8?=
- =?us-ascii?Q?JkPWQUDoH4DZns3orAo7EU0NuNCjkZOeVuUjbFjtYALs46lBexmtXExSby9e?=
- =?us-ascii?Q?eFjybR6nCuj5HmPGP8j/xIfE6k3gPz5Wr1fbtPyBZvnsXKZeQp8BYEp366Ck?=
- =?us-ascii?Q?3bfOiQ0BDVLVruGy/nnJeBn9LWzA+Qxr81BpR5Q6L5qzUBBMPyDfdsJLXghZ?=
- =?us-ascii?Q?RwehTfoDF2bfb2d2nmHmkyVr3UZ2WN5lEB2g3gKMfvVjsbasu6Qm454oSHOX?=
- =?us-ascii?Q?dAHi1RLIbfEigQqqGf7hVzCGuK1mdE/KRUgds9Nsbl1Z8sFH3TtPBw7I8qSn?=
- =?us-ascii?Q?MgyaO3G0RLWD64quzNVyvr3FbtKVA4fTBWck1hz7TSu9BXa0hK7VumuBvmAy?=
- =?us-ascii?Q?sJItwL03iYMl7FF5vwmwpn0nZPFYktbg0jxKB7wCG0y43E5OfB4I9FS5lV5m?=
- =?us-ascii?Q?y6OwHDppya236KL8GyrB6LeaIMuEQnesegFl2xderWVegGNRPvPUsM7rriJL?=
- =?us-ascii?Q?WiHfVtmISggq+FWnHfKI8SPsmTueQiQcCkFv/us5sQrXjVzAd2vJEFPZoQj/?=
- =?us-ascii?Q?UY+hxNa/L7h7oZToJv/D/JA2hNizyFf73Hb+rR055aDYXCRwyOrtpYna/du4?=
- =?us-ascii?Q?CI1/VADPKXoqubIhmCYC1YYPcUAG+CHlPfYbZKeQijDDs3jqC+zN6cZliOv1?=
- =?us-ascii?Q?IJ98LqPtQC5jb3EOaGqIH7q0ArWxaJizM7wHwizcSSPAAkU7lqxtgeqFJH9c?=
- =?us-ascii?Q?sKr+1pnwv8Iuk1B8sq+mmFa1RiX59YuM2YlpaC5UusNUI5pA0sg+IiGQo+Kq?=
- =?us-ascii?Q?1gVbRgjr2y83PbaxOqAaX+N3XJZyCHT0Boh10bh/PP/ITEOAs0F3aXH24498?=
- =?us-ascii?Q?XodQW+X0ujdGhwfc2OgHtINDyD8FQwn7ntjJkANoZHLOiwW1/O4RjqWqvdMT?=
- =?us-ascii?Q?wWciqV/NZDLFM+xQ2WYRytG5GraiWBo/9fdBGMQ/cNt9JUHlEmrZI8uu/ZDk?=
- =?us-ascii?Q?MyslDylzbtAO4wuOfjfu4LPuUJ//DPiuGNf6oAV51VwtI7W3VuFb1Ev0iKuZ?=
- =?us-ascii?Q?Dj8RVK6CkzwbVQLT7KprnG0ouDdC6jU/NhO9Eqez?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4582274-8b00-4965-3283-08db901a50fe
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3497.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2023 09:58:10.7748
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WDH64IBJT6Uqxut3kJxsdPzMXlYjjPe6hgCr1ngR6s5ItwZyy8BL+i6l61mHX1oxxfAFUne9PIbcypRx1xYNEA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8417
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH bpf 1/2] bpf, cpumap: Make sure kthread is running before
+ map update returns
+Content-Language: en-US
+To: Hou Tao <houtao@huaweicloud.com>, <bpf@vger.kernel.org>
+CC: <netdev@vger.kernel.org>, "David S . Miller" <davem@davemloft.net>, Jakub
+ Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+	<bjorn.topel@gmail.com>, =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?=
+	<toke@redhat.com>, Martin KaFai Lau <martin.lau@linux.dev>, Alexei
+ Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko
+	<andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann
+	<daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, <houtao1@huawei.com>
+References: <20230729095107.1722450-1-houtao@huaweicloud.com>
+ <20230729095107.1722450-2-houtao@huaweicloud.com>
+From: Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <20230729095107.1722450-2-houtao@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500020.china.huawei.com (7.221.188.8)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patch extends the MPTCP test base, add a selftest test_mptcpify()
-for the mptcpify case.
 
-Open and load the mptcpify test prog to mptcpify the TCP sockets
-dynamically, then use start_server() and connect_to_fd() to create a
-TCP socket, but actually what's created is an MPTCP socket, which can
-be verified through the outputs of 'ss' and 'nstat' commands.
 
-Signed-off-by: Geliang Tang <geliang.tang@suse.com>
----
- .../testing/selftests/bpf/prog_tests/mptcp.c  | 94 +++++++++++++++++++
- 1 file changed, 94 insertions(+)
+On 2023/7/29 17:51, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> The following warning was reported when running stress-mode enabled
+> xdp_redirect_cpu with some RT threads:
+> 
+>    ------------[ cut here ]------------
+>    WARNING: CPU: 4 PID: 65 at kernel/bpf/cpumap.c:135
+>    CPU: 4 PID: 65 Comm: kworker/4:1 Not tainted 6.5.0-rc2+ #1
+>    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
+>    Workqueue: events cpu_map_kthread_stop
+>    RIP: 0010:put_cpu_map_entry+0xda/0x220
+>    ......
+>    Call Trace:
+>     <TASK>
+>     ? show_regs+0x65/0x70
+>     ? __warn+0xa5/0x240
+>     ......
+>     ? put_cpu_map_entry+0xda/0x220
+>     cpu_map_kthread_stop+0x41/0x60
+>     process_one_work+0x6b0/0xb80
+>     worker_thread+0x96/0x720
+>     kthread+0x1a5/0x1f0
+>     ret_from_fork+0x3a/0x70
+>     ret_from_fork_asm+0x1b/0x30
+>     </TASK>
+> 
+> The root cause is the same as commit 436901649731 ("bpf: cpumap: Fix memory
+> leak in cpu_map_update_elem"). The kthread is stopped prematurely by
+> kthread_stop() in cpu_map_kthread_stop(), and kthread() doesn't call
+> cpu_map_kthread_run() at all but XDP program has already queued some
+> frames or skbs into ptr_ring. So when __cpu_map_ring_cleanup() checks
+> the ptr_ring, it will find it was not emptied and report a warning.
+> 
+> An alternative fix is to use __cpu_map_ring_cleanup() to drop these
+> pending frames or skbs when kthread_stop() returns -EINTR, but it may
+> confuse the user, because these frames or skbs have been handled
+> correctly by XDP program. So instead of dropping these frames or skbs,
+> just make sure the per-cpu kthread is running before
+> __cpu_map_entry_alloc() returns.
+> 
+> After apply the fix, the error handle for kthread_stop() will be
+> unnecessary because it will always return 0, so just remove it.
+> 
+> Fixes: 6710e1126934 ("bpf: introduce new bpf cpu map type BPF_MAP_TYPE_CPUMAP")
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>   kernel/bpf/cpumap.c | 21 +++++++++++----------
+>   1 file changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+> index 0a16e30b16ef..08351e0863e5 100644
+> --- a/kernel/bpf/cpumap.c
+> +++ b/kernel/bpf/cpumap.c
+> @@ -28,6 +28,7 @@
+>   #include <linux/sched.h>
+>   #include <linux/workqueue.h>
+>   #include <linux/kthread.h>
+> +#include <linux/completion.h>
+>   #include <trace/events/xdp.h>
+>   #include <linux/btf_ids.h>
+>   
+> @@ -71,6 +72,7 @@ struct bpf_cpu_map_entry {
+>   	struct rcu_head rcu;
+>   
+>   	struct work_struct kthread_stop_wq;
+> +	struct completion kthread_running;
+>   };
+>   
+>   struct bpf_cpu_map {
+> @@ -151,7 +153,6 @@ static void put_cpu_map_entry(struct bpf_cpu_map_entry *rcpu)
+>   static void cpu_map_kthread_stop(struct work_struct *work)
+>   {
+>   	struct bpf_cpu_map_entry *rcpu;
+> -	int err;
+>   
+>   	rcpu = container_of(work, struct bpf_cpu_map_entry, kthread_stop_wq);
+>   
+> @@ -161,14 +162,7 @@ static void cpu_map_kthread_stop(struct work_struct *work)
+>   	rcu_barrier();
+>   
+>   	/* kthread_stop will wake_up_process and wait for it to complete */
+> -	err = kthread_stop(rcpu->kthread);
+> -	if (err) {
+> -		/* kthread_stop may be called before cpu_map_kthread_run
+> -		 * is executed, so we need to release the memory related
+> -		 * to rcpu.
+> -		 */
+> -		put_cpu_map_entry(rcpu);
+> -	}
+> +	kthread_stop(rcpu->kthread);
+>   }
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-index 4407bd5c9e9a..caab3aa6a162 100644
---- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-@@ -6,6 +6,7 @@
- #include "cgroup_helpers.h"
- #include "network_helpers.h"
- #include "mptcp_sock.skel.h"
-+#include "mptcpify.skel.h"
- 
- char NS_TEST[32];
- 
-@@ -195,8 +196,101 @@ static void test_base(void)
- 	close(cgroup_fd);
- }
- 
-+static void send_byte(int fd)
-+{
-+	char b = 0x55;
-+
-+	ASSERT_EQ(write(fd, &b, sizeof(b)), 1, "send single byte");
-+}
-+
-+static int verify_mptcpify(void)
-+{
-+	char cmd[256];
-+	int err = 0;
-+
-+	snprintf(cmd, sizeof(cmd),
-+		 "ip netns exec %s ss -tOni | grep -q '%s'",
-+		 NS_TEST, "tcp-ulp-mptcp");
-+	if (!ASSERT_OK(system(cmd), "No tcp-ulp-mptcp found!"))
-+		err++;
-+
-+	snprintf(cmd, sizeof(cmd),
-+		 "ip netns exec %s nstat -asz %s | awk '%s' | grep -q '%s'",
-+		 NS_TEST, "MPTcpExtMPCapableSYNACKRX",
-+		 "NR==1 {next} {print $2}", "1");
-+	if (!ASSERT_OK(system(cmd), "No MPTcpExtMPCapableSYNACKRX found!"))
-+		err++;
-+
-+	return err;
-+}
-+
-+static int run_mptcpify(int cgroup_fd)
-+{
-+	int server_fd, client_fd, prog_fd, err = 0;
-+	struct mptcpify *mptcpify_skel;
-+
-+	mptcpify_skel = mptcpify__open_and_load();
-+	if (!ASSERT_OK_PTR(mptcpify_skel, "skel_open_load"))
-+		return -EIO;
-+
-+	err = mptcpify__attach(mptcpify_skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(mptcpify_skel->progs.mptcpify);
-+	if (!ASSERT_GE(prog_fd, 0, "bpf_program__fd")) {
-+		err = -EIO;
-+		goto out;
-+	}
-+
-+	/* without MPTCP */
-+	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, 0, 0);
-+	if (!ASSERT_GE(server_fd, 0, "start_server")) {
-+		err = -EIO;
-+		goto out;
-+	}
-+
-+	client_fd = connect_to_fd(server_fd, 0);
-+	if (!ASSERT_GE(client_fd, 0, "connect to fd")) {
-+		err = -EIO;
-+		goto close_server;
-+	}
-+
-+	send_byte(client_fd);
-+	err += verify_mptcpify();
-+
-+	close(client_fd);
-+close_server:
-+	close(server_fd);
-+out:
-+	mptcpify__destroy(mptcpify_skel);
-+	return err;
-+}
-+
-+static void test_mptcpify(void)
-+{
-+	struct nstoken *nstoken = NULL;
-+	int cgroup_fd;
-+
-+	cgroup_fd = test__join_cgroup("/mptcpify");
-+	if (!ASSERT_GE(cgroup_fd, 0, "test__join_cgroup"))
-+		return;
-+
-+	nstoken = create_netns();
-+	if (!ASSERT_OK_PTR(nstoken, "create_netns"))
-+		goto fail;
-+
-+	ASSERT_OK(run_mptcpify(cgroup_fd), "run_mptcpify");
-+
-+fail:
-+	cleanup_netns(nstoken);
-+	close(cgroup_fd);
-+}
-+
- void test_mptcp(void)
- {
- 	if (test__start_subtest("base"))
- 		test_base();
-+	if (test__start_subtest("mptcpify"))
-+		test_mptcpify();
- }
--- 
-2.35.3
+Looks good to me.
 
+Feel free to add:
+Reviewed-by: Pu Lehui <pulehui@huawei.com>
+
+>   
+>   static void cpu_map_bpf_prog_run_skb(struct bpf_cpu_map_entry *rcpu,
+> @@ -296,11 +290,11 @@ static int cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
+>   	return nframes;
+>   }
+>   
+> -
+>   static int cpu_map_kthread_run(void *data)
+>   {
+>   	struct bpf_cpu_map_entry *rcpu = data;
+>   
+> +	complete(&rcpu->kthread_running);
+>   	set_current_state(TASK_INTERRUPTIBLE);
+>   
+>   	/* When kthread gives stop order, then rcpu have been disconnected
+> @@ -465,6 +459,7 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
+>   		goto free_ptr_ring;
+>   
+>   	/* Setup kthread */
+> +	init_completion(&rcpu->kthread_running);
+>   	rcpu->kthread = kthread_create_on_node(cpu_map_kthread_run, rcpu, numa,
+>   					       "cpumap/%d/map:%d", cpu,
+>   					       map->id);
+> @@ -478,6 +473,12 @@ __cpu_map_entry_alloc(struct bpf_map *map, struct bpf_cpumap_val *value,
+>   	kthread_bind(rcpu->kthread, cpu);
+>   	wake_up_process(rcpu->kthread);
+>   
+> +	/* Make sure kthread has been running, so kthread_stop() will not
+> +	 * stop the kthread prematurely and all pending frames or skbs
+> +	 * will be handled by the kthread before kthread_stop() returns.
+> +	 */
+> +	wait_for_completion(&rcpu->kthread_running);
+> +
+>   	return rcpu;
+>   
+>   free_prog:
 
