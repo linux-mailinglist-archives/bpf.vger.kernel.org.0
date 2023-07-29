@@ -1,54 +1,103 @@
-Return-Path: <bpf+bounces-6299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39193767A4A
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 02:53:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6283767A4E
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 02:54:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44CC91C218E0
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 00:53:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C06C282841
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 00:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919137E0;
-	Sat, 29 Jul 2023 00:53:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF52980C;
+	Sat, 29 Jul 2023 00:53:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670FB7C
-	for <bpf@vger.kernel.org>; Sat, 29 Jul 2023 00:53:47 +0000 (UTC)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2874EE6
-	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 17:53:21 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b72161c6e9so49347491fa.0
-        for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 17:53:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42817C
+	for <bpf@vger.kernel.org>; Sat, 29 Jul 2023 00:53:56 +0000 (UTC)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A2B525A
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 17:53:28 -0700 (PDT)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 2DEF9C151545
+	for <bpf@vger.kernel.org>; Fri, 28 Jul 2023 17:52:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1690591953; bh=dK2JjgEJTEG9P4imzPuYPx35s97O1w823szvZpFl4jY=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=dUOfKqGBFwt37jhJah+iwC6LPHjEyqQrRiLNrDsHF2vKNt206vpBpH3CuFJPH7tEg
+	 +Ou6Ksz/XbOkZaqzWZY8M0BeaCvoNIinXOcCQi3HsNg5kWSEsk32+Tawouet75ECXB
+	 uZAorU+BDsmU3wfmuLC1QG7E6V3qvqij1C2pF3N0=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Fri Jul 28 17:52:33 2023
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 0F0ECC151078;
+	Fri, 28 Jul 2023 17:52:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1690591953; bh=dK2JjgEJTEG9P4imzPuYPx35s97O1w823szvZpFl4jY=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=dUOfKqGBFwt37jhJah+iwC6LPHjEyqQrRiLNrDsHF2vKNt206vpBpH3CuFJPH7tEg
+	 +Ou6Ksz/XbOkZaqzWZY8M0BeaCvoNIinXOcCQi3HsNg5kWSEsk32+Tawouet75ECXB
+	 uZAorU+BDsmU3wfmuLC1QG7E6V3qvqij1C2pF3N0=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 05101C151075
+ for <bpf@ietfa.amsl.com>; Fri, 28 Jul 2023 17:52:32 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -7.106
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id NTUy-lmlE54D for <bpf@ietfa.amsl.com>;
+ Fri, 28 Jul 2023 17:52:27 -0700 (PDT)
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com
+ [IPv6:2a00:1450:4864:20::22f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id A93ACC151078
+ for <bpf@ietf.org>; Fri, 28 Jul 2023 17:52:27 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id
+ 38308e7fff4ca-2b9c66e2e36so27200471fa.1
+ for <bpf@ietf.org>; Fri, 28 Jul 2023 17:52:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690591946; x=1691196746;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aM4BL6iGUN1LckaSEABpRw/rJR7OXts8NUN8kOvBUrc=;
-        b=Qpe+BCUXXI6yc+TwzLxQOz2Gq8t2lWzuUXZo+bfK+34zxA7QWfQ1K7vpwDPF3Bo74+
-         SF3UawbpqPRkRC/NjgLKOBWP+myoVORN/ZfSMTwSu9A0h6pOqGnHctd8RhgK87vDqLSO
-         eelWVoGj38dEKEJ/1VbfitHi9A/IxqmjCMpCKPv1i5a75LqQ6R241ciW8BnljfmeCWUs
-         32P39XEy55NYJMfTPdMt0lnIHj9/1O/rZptCbQd5KGb0Q8OYiwAXTprRdSB7Ai1adCDC
-         F30G9nR6wVyYVfMl1Q2qVGepRqmK4qKxuUCxNtFTMNCZLvs7dboCiascrOy3H3Dygrxd
-         bI1g==
+ d=gmail.com; s=20221208; t=1690591946; x=1691196746;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=aM4BL6iGUN1LckaSEABpRw/rJR7OXts8NUN8kOvBUrc=;
+ b=Qpe+BCUXXI6yc+TwzLxQOz2Gq8t2lWzuUXZo+bfK+34zxA7QWfQ1K7vpwDPF3Bo74+
+ SF3UawbpqPRkRC/NjgLKOBWP+myoVORN/ZfSMTwSu9A0h6pOqGnHctd8RhgK87vDqLSO
+ eelWVoGj38dEKEJ/1VbfitHi9A/IxqmjCMpCKPv1i5a75LqQ6R241ciW8BnljfmeCWUs
+ 32P39XEy55NYJMfTPdMt0lnIHj9/1O/rZptCbQd5KGb0Q8OYiwAXTprRdSB7Ai1adCDC
+ F30G9nR6wVyYVfMl1Q2qVGepRqmK4qKxuUCxNtFTMNCZLvs7dboCiascrOy3H3Dygrxd
+ bI1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690591946; x=1691196746;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aM4BL6iGUN1LckaSEABpRw/rJR7OXts8NUN8kOvBUrc=;
-        b=VVOp+WraJL9+0w3LsjboDceIZ6jV4R8yt6UcxTOU16k3LPSa/dgv9n1M12q64fkXp9
-         eX19+fVHMApHkq1gNI0suKaN4x58bYAq+3xyCtcjBY/KkbROpomq8rCQ2lAhr0J8Kxqw
-         WibkmxgtArnU6HMWyariC/dbQO38/x3wB6LskzwAaJ7+SfoxFhEXbbxT/liH76BMem2e
-         wRyS9Kr8y07iTOJaI+0THTsZ9/XNe2JhsRV1iT/KOhpnFemwCA44l+Y6g87PZXr6X7YE
-         kBoRTDJaGV/84AD7qeyKPy6IFZ45so7OennSqq6xCaCM9nbeaRUBYIbrhTf70gvr3Qle
-         fi4w==
-X-Gm-Message-State: ABy/qLZG0roGPELvVMLZczRn5xCNq7DWTaaNEujPbzSkHfRTanCSagZD
-	J9x8QSQLsM+aUIJVuGYmhuH8aX/lAwZlg2GsvDc=
+ d=1e100.net; s=20221208; t=1690591946; x=1691196746;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=aM4BL6iGUN1LckaSEABpRw/rJR7OXts8NUN8kOvBUrc=;
+ b=k7Fu8bwxXLs6uL2YTMUZpyxFeRNckqnqLMQmVO2lnJXcCefwKkQn1R0b+J9kgN1wxm
+ F3VKgTDgplU7bqvhayA052t/bPZs8cV1DOUJh1T77m/EbesTh+Vi+ird0Grbpb1e+YGH
+ KjAFBuQf9ltv+OlNEg44Cv6uCJnrvQDxQEX46A6nq6x517L7lg8AfaG7yTQ+QEmcoc4/
+ KNJ7B/tsHv7gSG5t2JMyx31zdZkbSFXRw/fFUrPLaAIl92WiyErRGmLB2/rkh8Cvtj2c
+ Ub1qXPeMhZjkNAujjpX34U69qiseOkjOyv5IVrL4Ix7AUY1/eoVjOhZEnL0Giwz0+ynN
+ B7Gg==
+X-Gm-Message-State: ABy/qLbq4jesgmEm14GHuIv6xV39igxwhYL8SYG+OgZtZN40w2YPsvj6
+ eta7ffRyzoEo0WxKV8r8OwguFlp3Wf+5k/sEHqM9/Y8e
 X-Google-Smtp-Source: APBJJlHc9+cLY9B666i/axrKpgjgN4X/7Xz2vnn5Jz4dIPMGQDLAXYvksl2KaoWn0zW9jwIm91vm+7Wf2IScLay5Nsc=
 X-Received: by 2002:a2e:880f:0:b0:2b6:d03a:5d8d with SMTP id
  x15-20020a2e880f000000b002b6d03a5d8dmr1451744ljh.6.1690591945739; Fri, 28 Jul
@@ -68,186 +117,147 @@ References: <CACsn0ckZO+b5bRgMZhOvx+Jn-sa0g8cBD+ug1CJEdtYxSm_hgA@mail.gmail.com>
  <CADx9qWhSqb6xAP=nz5N-vmd2N3+h4TBFtFOGdJUWNfX=LapEBw@mail.gmail.com>
  <CAADnVQJ4yzDc0qQExLUO1b23ndEiEjnYYPv5qC7JJYmLr4X3ew@mail.gmail.com>
  <CADx9qWh6ZUKvjkZow6=eB4gvEgP82mBqn+mMZvmDQynCYAfMWw@mail.gmail.com>
- <CAADnVQKOiwm1UB58=8QcowDyfPQct-wuMD19citS7w5PmadZ6g@mail.gmail.com> <CADx9qWjYChRf2qBr=Pt5D-RLCb665YFKmjDYX8WOQfqMx1-bag@mail.gmail.com>
+ <CAADnVQKOiwm1UB58=8QcowDyfPQct-wuMD19citS7w5PmadZ6g@mail.gmail.com>
+ <CADx9qWjYChRf2qBr=Pt5D-RLCb665YFKmjDYX8WOQfqMx1-bag@mail.gmail.com>
 In-Reply-To: <CADx9qWjYChRf2qBr=Pt5D-RLCb665YFKmjDYX8WOQfqMx1-bag@mail.gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Date: Fri, 28 Jul 2023 17:52:14 -0700
 Message-ID: <CAADnVQJDO9MgU2MQQ5NQAE3EwL6PuPp8aAxcV3apf0DHoq8TAw@mail.gmail.com>
-Subject: Re: [Bpf] Review of draft-thaler-bpf-isa-01
 To: Will Hawkins <hawkinsw@obs.cr>
 Cc: Watson Ladd <watsonbladd@gmail.com>, Dave Thaler <dthaler@microsoft.com>, 
-	"bpf@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+ "bpf@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/tYik4s1db553Qj5Zxo0rVZKNVHs>
+Subject: Re: [Bpf] Review of draft-thaler-bpf-isa-01
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
+ <bpf.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
+ <mailto:bpf-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
+ <mailto:bpf-request@ietf.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Jul 28, 2023 at 5:46=E2=80=AFPM Will Hawkins <hawkinsw@obs.cr> wrot=
-e:
->
-> On Fri, Jul 28, 2023 at 8:35=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Fri, Jul 28, 2023 at 5:19=E2=80=AFPM Will Hawkins <hawkinsw@obs.cr> =
-wrote:
-> > >
-> > > On Fri, Jul 28, 2023 at 8:05=E2=80=AFPM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Fri, Jul 28, 2023 at 4:32=E2=80=AFPM Will Hawkins <hawkinsw@obs.=
-cr> wrote:
-> > > > >
-> > > > > On Thu, Jul 27, 2023 at 9:05=E2=80=AFPM Alexei Starovoitov
-> > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > >
-> > > > > > On Wed, Jul 26, 2023 at 12:16=E2=80=AFPM Will Hawkins <hawkinsw=
-@obs.cr> wrote:
-> > > > > > >
-> > > > > > > On Tue, Jul 25, 2023 at 2:37=E2=80=AFPM Watson Ladd <watsonbl=
-add@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > On Tue, Jul 25, 2023 at 9:15=E2=80=AFAM Alexei Starovoitov
-> > > > > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > > > >
-> > > > > > > > > On Tue, Jul 25, 2023 at 7:03=E2=80=AFAM Dave Thaler <dtha=
-ler@microsoft.com> wrote:
-> > > > > > > > > >
-> > > > > > > > > > I am forwarding the email below (after converting HTML =
-to plain text)
-> > > > > > > > > > to the mailto:bpf@vger.kernel.org list so replies can g=
-o to both lists.
-> > > > > > > > > >
-> > > > > > > > > > Please use this one for any replies.
-> > > > > > > > > >
-> > > > > > > > > > Thanks,
-> > > > > > > > > > Dave
-> > > > > > > > > >
-> > > > > > > > > > > From: Bpf <bpf-bounces@ietf.org> On Behalf Of Watson =
-Ladd
-> > > > > > > > > > > Sent: Monday, July 24, 2023 10:05 PM
-> > > > > > > > > > > To: bpf@ietf.org
-> > > > > > > > > > > Subject: [Bpf] Review of draft-thaler-bpf-isa-01
-> > > > > > > > > > >
-> > > > > > > > > > > Dear BPF wg,
-> > > > > > > > > > >
-> > > > > > > > > > > I took a look at the draft and think it has some issu=
-es, unsurprisingly at this stage. One is
-> > > > > > > > > > > the specification seems to use an underspecified C ps=
-eudo code for operations vs
-> > > > > > > > > > > defining them mathematically.
-> > > > > > > > >
-> > > > > > > > > Hi Watson,
-> > > > > > > > >
-> > > > > > > > > This is not "underspecified C" pseudo code.
-> > > > > > > > > This is assembly syntax parsed and emitted by GCC, LLVM, =
-gas, Linux Kernel, etc.
-> > > > > > > >
-> > > > > > > > I don't see a reference to any description of that in secti=
-on 4.1.
-> > > > > > > > It's possible I've overlooked this, and if people think thi=
-s style of
-> > > > > > > > definition is good enough that works for me. But I found ta=
-ble 4
-> > > > > > > > pretty scanty on what exactly happens.
-> > > > > > >
-> > > > > > > Hello! Based on Watson's post, I have done some research and =
-would
-> > > > > > > potentially like to offer a path forward. There are several d=
-ifferent
-> > > > > > > ways that ISAs specify the semantics of their operations:
-> > > > > > >
-> > > > > > > 1. Intel has a section in their manual that describes the pse=
-udocode
-> > > > > > > they use to specify their ISA: Section 3.1.1.9 of The Intel=
-=C2=AE 64 and
-> > > > > > > IA-32 Architectures Software Developer=E2=80=99s Manual at
-> > > > > > > https://cdrdv2.intel.com/v1/dl/getContent/671199
-> > > > > > > 2. ARM has an equivalent for their variety of pseudocode: Cha=
-pter J1
-> > > > > > > of Arm Architecture Reference Manual for A-profile architectu=
-re at
-> > > > > > > https://developer.arm.com/documentation/ddi0487/latest/
-> > > > > > > 3. Sail "is a language for describing the instruction-set arc=
-hitecture
-> > > > > > > (ISA) semantics of processors."
-> > > > > > > (https://www.cl.cam.ac.uk/~pes20/sail/)
-> > > > > > >
-> > > > > > > Given the commercial nature of (1) and (2), perhaps Sail is a=
- way to
-> > > > > > > proceed. If people are interested, I would be happy to lead a=
-n effort
-> > > > > > > to encode the eBPF ISA semantics in Sail (or find someone who=
- already
-> > > > > > > has) and incorporate them in the draft.
-> > > > > >
-> > > > > > imo Sail is too researchy to have practical use.
-> > > > > > Looking at arm64 or x86 Sail description I really don't see how
-> > > > > > it would map to an IETF standard.
-> > > > > > It's done in a "sail" language that people need to learn first =
-to be
-> > > > > > able to read it.
-> > > > > > Say we had bpf.sail somewhere on github. What value does it bri=
-ng to
-> > > > > > BPF ISA standard? I don't see an immediate benefit to standardi=
-zation.
-> > > > > > There could be other use cases, no doubt, but standardization i=
-s our goal.
-> > > > > >
-> > > > > > As far as 1 and 2. Intel and Arm use their own pseudocode, so t=
-hey had
-> > > > > > to add a paragraph to describe it. We are using C to describe B=
-PF ISA
-> > > > >
-> > > > >
-> > > > > I cannot find a reference in the current version that specifies w=
-hat
-> > > > > we are using to describe the operations. I'd like to add that, bu=
-t
-> > > > > want to make sure that I clarify two statements that seem to be a=
-t
-> > > > > odds.
-> > > > >
-> > > > > Immediately above you say that we are using "C to describe the BP=
-F
-> > > > > ISA" and further above you say "This is assembly syntax parsed an=
-d
-> > > > > emitted by GCC, LLVM, gas, Linux Kernel, etc."
-> > > > >
-> > > > > My own reading is that it is the former, and not the latter. But,=
- I
-> > > > > want to double check before adding the appropriate statements to =
-the
-> > > > > Convention section.
-> > > >
-> > > > It's both. I'm not sure where you see a contradiction.
-> > > > It's a normal C syntax and it's emitted by the kernel verifier,
-> > > > parsed by clang/gcc assemblers and emitted by compilers.
-> > >
-> > >
-> > > Okay. I apologize. I am sincerely confused. For instance,
-> > >
-> > > if (u32)dst >=3D (u32)src goto +offset
-> > >
-> > > Looks like nothing that I have ever seen in "normal C syntax".
-> >
-> > I thought we're talking about table 4 and ALU ops.
-> > Above is not a pure C, but it's obvious enough without explanation, no?
->
-> To "us", yes. Although I am not an expert, it seems like being
-> explicit is important when it comes to writing a spec. I suppose we
-> should leave that to Dave and the chairs.
->
-> > Also I don't see above anywhere in the doc.
->
-> That is from the Appendix. It is currently in Dave's tree and gets
-> amalgamated with other files to build the final draft.
->
-> https://datatracker.ietf.org/doc/draft-thaler-bpf-isa/
-
-This is a mirror and it's already outdated.
-You should look at the source. Which is git kernel tree.
+T24gRnJpLCBKdWwgMjgsIDIwMjMgYXQgNTo0NuKAr1BNIFdpbGwgSGF3a2lucyA8aGF3a2luc3dA
+b2JzLmNyPiB3cm90ZToKPgo+IE9uIEZyaSwgSnVsIDI4LCAyMDIzIGF0IDg6MzXigK9QTSBBbGV4
+ZWkgU3Rhcm92b2l0b3YKPiA8YWxleGVpLnN0YXJvdm9pdG92QGdtYWlsLmNvbT4gd3JvdGU6Cj4g
+Pgo+ID4gT24gRnJpLCBKdWwgMjgsIDIwMjMgYXQgNToxOeKAr1BNIFdpbGwgSGF3a2lucyA8aGF3
+a2luc3dAb2JzLmNyPiB3cm90ZToKPiA+ID4KPiA+ID4gT24gRnJpLCBKdWwgMjgsIDIwMjMgYXQg
+ODowNeKAr1BNIEFsZXhlaSBTdGFyb3ZvaXRvdgo+ID4gPiA8YWxleGVpLnN0YXJvdm9pdG92QGdt
+YWlsLmNvbT4gd3JvdGU6Cj4gPiA+ID4KPiA+ID4gPiBPbiBGcmksIEp1bCAyOCwgMjAyMyBhdCA0
+OjMy4oCvUE0gV2lsbCBIYXdraW5zIDxoYXdraW5zd0BvYnMuY3I+IHdyb3RlOgo+ID4gPiA+ID4K
+PiA+ID4gPiA+IE9uIFRodSwgSnVsIDI3LCAyMDIzIGF0IDk6MDXigK9QTSBBbGV4ZWkgU3Rhcm92
+b2l0b3YKPiA+ID4gPiA+IDxhbGV4ZWkuc3Rhcm92b2l0b3ZAZ21haWwuY29tPiB3cm90ZToKPiA+
+ID4gPiA+ID4KPiA+ID4gPiA+ID4gT24gV2VkLCBKdWwgMjYsIDIwMjMgYXQgMTI6MTbigK9QTSBX
+aWxsIEhhd2tpbnMgPGhhd2tpbnN3QG9icy5jcj4gd3JvdGU6Cj4gPiA+ID4gPiA+ID4KPiA+ID4g
+PiA+ID4gPiBPbiBUdWUsIEp1bCAyNSwgMjAyMyBhdCAyOjM34oCvUE0gV2F0c29uIExhZGQgPHdh
+dHNvbmJsYWRkQGdtYWlsLmNvbT4gd3JvdGU6Cj4gPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+
+ID4gT24gVHVlLCBKdWwgMjUsIDIwMjMgYXQgOToxNeKAr0FNIEFsZXhlaSBTdGFyb3ZvaXRvdgo+
+ID4gPiA+ID4gPiA+ID4gPGFsZXhlaS5zdGFyb3ZvaXRvdkBnbWFpbC5jb20+IHdyb3RlOgo+ID4g
+PiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4gPiBPbiBUdWUsIEp1bCAyNSwgMjAyMyBhdCA3
+OjAz4oCvQU0gRGF2ZSBUaGFsZXIgPGR0aGFsZXJAbWljcm9zb2Z0LmNvbT4gd3JvdGU6Cj4gPiA+
+ID4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+ID4gPiBJIGFtIGZvcndhcmRpbmcgdGhlIGVt
+YWlsIGJlbG93IChhZnRlciBjb252ZXJ0aW5nIEhUTUwgdG8gcGxhaW4gdGV4dCkKPiA+ID4gPiA+
+ID4gPiA+ID4gPiB0byB0aGUgbWFpbHRvOmJwZkB2Z2VyLmtlcm5lbC5vcmcgbGlzdCBzbyByZXBs
+aWVzIGNhbiBnbyB0byBib3RoIGxpc3RzLgo+ID4gPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+
+ID4gPiA+ID4gUGxlYXNlIHVzZSB0aGlzIG9uZSBmb3IgYW55IHJlcGxpZXMuCj4gPiA+ID4gPiA+
+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+ID4gPiBUaGFua3MsCj4gPiA+ID4gPiA+ID4gPiA+ID4g
+RGF2ZQo+ID4gPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiA+ID4gPiBGcm9tOiBCcGYg
+PGJwZi1ib3VuY2VzQGlldGYub3JnPiBPbiBCZWhhbGYgT2YgV2F0c29uIExhZGQKPiA+ID4gPiA+
+ID4gPiA+ID4gPiA+IFNlbnQ6IE1vbmRheSwgSnVseSAyNCwgMjAyMyAxMDowNSBQTQo+ID4gPiA+
+ID4gPiA+ID4gPiA+ID4gVG86IGJwZkBpZXRmLm9yZwo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gU3Vi
+amVjdDogW0JwZl0gUmV2aWV3IG9mIGRyYWZ0LXRoYWxlci1icGYtaXNhLTAxCj4gPiA+ID4gPiA+
+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gRGVhciBCUEYgd2csCj4gPiA+ID4gPiA+
+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gSSB0b29rIGEgbG9vayBhdCB0aGUgZHJh
+ZnQgYW5kIHRoaW5rIGl0IGhhcyBzb21lIGlzc3VlcywgdW5zdXJwcmlzaW5nbHkgYXQgdGhpcyBz
+dGFnZS4gT25lIGlzCj4gPiA+ID4gPiA+ID4gPiA+ID4gPiB0aGUgc3BlY2lmaWNhdGlvbiBzZWVt
+cyB0byB1c2UgYW4gdW5kZXJzcGVjaWZpZWQgQyBwc2V1ZG8gY29kZSBmb3Igb3BlcmF0aW9ucyB2
+cwo+ID4gPiA+ID4gPiA+ID4gPiA+ID4gZGVmaW5pbmcgdGhlbSBtYXRoZW1hdGljYWxseS4KPiA+
+ID4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+ID4gSGkgV2F0c29uLAo+ID4gPiA+ID4gPiA+
+ID4gPgo+ID4gPiA+ID4gPiA+ID4gPiBUaGlzIGlzIG5vdCAidW5kZXJzcGVjaWZpZWQgQyIgcHNl
+dWRvIGNvZGUuCj4gPiA+ID4gPiA+ID4gPiA+IFRoaXMgaXMgYXNzZW1ibHkgc3ludGF4IHBhcnNl
+ZCBhbmQgZW1pdHRlZCBieSBHQ0MsIExMVk0sIGdhcywgTGludXggS2VybmVsLCBldGMuCj4gPiA+
+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4gSSBkb24ndCBzZWUgYSByZWZlcmVuY2UgdG8gYW55
+IGRlc2NyaXB0aW9uIG9mIHRoYXQgaW4gc2VjdGlvbiA0LjEuCj4gPiA+ID4gPiA+ID4gPiBJdCdz
+IHBvc3NpYmxlIEkndmUgb3Zlcmxvb2tlZCB0aGlzLCBhbmQgaWYgcGVvcGxlIHRoaW5rIHRoaXMg
+c3R5bGUgb2YKPiA+ID4gPiA+ID4gPiA+IGRlZmluaXRpb24gaXMgZ29vZCBlbm91Z2ggdGhhdCB3
+b3JrcyBmb3IgbWUuIEJ1dCBJIGZvdW5kIHRhYmxlIDQKPiA+ID4gPiA+ID4gPiA+IHByZXR0eSBz
+Y2FudHkgb24gd2hhdCBleGFjdGx5IGhhcHBlbnMuCj4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4g
+PiBIZWxsbyEgQmFzZWQgb24gV2F0c29uJ3MgcG9zdCwgSSBoYXZlIGRvbmUgc29tZSByZXNlYXJj
+aCBhbmQgd291bGQKPiA+ID4gPiA+ID4gPiBwb3RlbnRpYWxseSBsaWtlIHRvIG9mZmVyIGEgcGF0
+aCBmb3J3YXJkLiBUaGVyZSBhcmUgc2V2ZXJhbCBkaWZmZXJlbnQKPiA+ID4gPiA+ID4gPiB3YXlz
+IHRoYXQgSVNBcyBzcGVjaWZ5IHRoZSBzZW1hbnRpY3Mgb2YgdGhlaXIgb3BlcmF0aW9uczoKPiA+
+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+IDEuIEludGVsIGhhcyBhIHNlY3Rpb24gaW4gdGhlaXIg
+bWFudWFsIHRoYXQgZGVzY3JpYmVzIHRoZSBwc2V1ZG9jb2RlCj4gPiA+ID4gPiA+ID4gdGhleSB1
+c2UgdG8gc3BlY2lmeSB0aGVpciBJU0E6IFNlY3Rpb24gMy4xLjEuOSBvZiBUaGUgSW50ZWzCriA2
+NCBhbmQKPiA+ID4gPiA+ID4gPiBJQS0zMiBBcmNoaXRlY3R1cmVzIFNvZnR3YXJlIERldmVsb3Bl
+cuKAmXMgTWFudWFsIGF0Cj4gPiA+ID4gPiA+ID4gaHR0cHM6Ly9jZHJkdjIuaW50ZWwuY29tL3Yx
+L2RsL2dldENvbnRlbnQvNjcxMTk5Cj4gPiA+ID4gPiA+ID4gMi4gQVJNIGhhcyBhbiBlcXVpdmFs
+ZW50IGZvciB0aGVpciB2YXJpZXR5IG9mIHBzZXVkb2NvZGU6IENoYXB0ZXIgSjEKPiA+ID4gPiA+
+ID4gPiBvZiBBcm0gQXJjaGl0ZWN0dXJlIFJlZmVyZW5jZSBNYW51YWwgZm9yIEEtcHJvZmlsZSBh
+cmNoaXRlY3R1cmUgYXQKPiA+ID4gPiA+ID4gPiBodHRwczovL2RldmVsb3Blci5hcm0uY29tL2Rv
+Y3VtZW50YXRpb24vZGRpMDQ4Ny9sYXRlc3QvCj4gPiA+ID4gPiA+ID4gMy4gU2FpbCAiaXMgYSBs
+YW5ndWFnZSBmb3IgZGVzY3JpYmluZyB0aGUgaW5zdHJ1Y3Rpb24tc2V0IGFyY2hpdGVjdHVyZQo+
+ID4gPiA+ID4gPiA+IChJU0EpIHNlbWFudGljcyBvZiBwcm9jZXNzb3JzLiIKPiA+ID4gPiA+ID4g
+PiAoaHR0cHM6Ly93d3cuY2wuY2FtLmFjLnVrL35wZXMyMC9zYWlsLykKPiA+ID4gPiA+ID4gPgo+
+ID4gPiA+ID4gPiA+IEdpdmVuIHRoZSBjb21tZXJjaWFsIG5hdHVyZSBvZiAoMSkgYW5kICgyKSwg
+cGVyaGFwcyBTYWlsIGlzIGEgd2F5IHRvCj4gPiA+ID4gPiA+ID4gcHJvY2VlZC4gSWYgcGVvcGxl
+IGFyZSBpbnRlcmVzdGVkLCBJIHdvdWxkIGJlIGhhcHB5IHRvIGxlYWQgYW4gZWZmb3J0Cj4gPiA+
+ID4gPiA+ID4gdG8gZW5jb2RlIHRoZSBlQlBGIElTQSBzZW1hbnRpY3MgaW4gU2FpbCAob3IgZmlu
+ZCBzb21lb25lIHdobyBhbHJlYWR5Cj4gPiA+ID4gPiA+ID4gaGFzKSBhbmQgaW5jb3Jwb3JhdGUg
+dGhlbSBpbiB0aGUgZHJhZnQuCj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+IGltbyBTYWlsIGlzIHRv
+byByZXNlYXJjaHkgdG8gaGF2ZSBwcmFjdGljYWwgdXNlLgo+ID4gPiA+ID4gPiBMb29raW5nIGF0
+IGFybTY0IG9yIHg4NiBTYWlsIGRlc2NyaXB0aW9uIEkgcmVhbGx5IGRvbid0IHNlZSBob3cKPiA+
+ID4gPiA+ID4gaXQgd291bGQgbWFwIHRvIGFuIElFVEYgc3RhbmRhcmQuCj4gPiA+ID4gPiA+IEl0
+J3MgZG9uZSBpbiBhICJzYWlsIiBsYW5ndWFnZSB0aGF0IHBlb3BsZSBuZWVkIHRvIGxlYXJuIGZp
+cnN0IHRvIGJlCj4gPiA+ID4gPiA+IGFibGUgdG8gcmVhZCBpdC4KPiA+ID4gPiA+ID4gU2F5IHdl
+IGhhZCBicGYuc2FpbCBzb21ld2hlcmUgb24gZ2l0aHViLiBXaGF0IHZhbHVlIGRvZXMgaXQgYnJp
+bmcgdG8KPiA+ID4gPiA+ID4gQlBGIElTQSBzdGFuZGFyZD8gSSBkb24ndCBzZWUgYW4gaW1tZWRp
+YXRlIGJlbmVmaXQgdG8gc3RhbmRhcmRpemF0aW9uLgo+ID4gPiA+ID4gPiBUaGVyZSBjb3VsZCBi
+ZSBvdGhlciB1c2UgY2FzZXMsIG5vIGRvdWJ0LCBidXQgc3RhbmRhcmRpemF0aW9uIGlzIG91ciBn
+b2FsLgo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiBBcyBmYXIgYXMgMSBhbmQgMi4gSW50ZWwgYW5k
+IEFybSB1c2UgdGhlaXIgb3duIHBzZXVkb2NvZGUsIHNvIHRoZXkgaGFkCj4gPiA+ID4gPiA+IHRv
+IGFkZCBhIHBhcmFncmFwaCB0byBkZXNjcmliZSBpdC4gV2UgYXJlIHVzaW5nIEMgdG8gZGVzY3Jp
+YmUgQlBGIElTQQo+ID4gPiA+ID4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBJIGNhbm5vdCBmaW5kIGEg
+cmVmZXJlbmNlIGluIHRoZSBjdXJyZW50IHZlcnNpb24gdGhhdCBzcGVjaWZpZXMgd2hhdAo+ID4g
+PiA+ID4gd2UgYXJlIHVzaW5nIHRvIGRlc2NyaWJlIHRoZSBvcGVyYXRpb25zLiBJJ2QgbGlrZSB0
+byBhZGQgdGhhdCwgYnV0Cj4gPiA+ID4gPiB3YW50IHRvIG1ha2Ugc3VyZSB0aGF0IEkgY2xhcmlm
+eSB0d28gc3RhdGVtZW50cyB0aGF0IHNlZW0gdG8gYmUgYXQKPiA+ID4gPiA+IG9kZHMuCj4gPiA+
+ID4gPgo+ID4gPiA+ID4gSW1tZWRpYXRlbHkgYWJvdmUgeW91IHNheSB0aGF0IHdlIGFyZSB1c2lu
+ZyAiQyB0byBkZXNjcmliZSB0aGUgQlBGCj4gPiA+ID4gPiBJU0EiIGFuZCBmdXJ0aGVyIGFib3Zl
+IHlvdSBzYXkgIlRoaXMgaXMgYXNzZW1ibHkgc3ludGF4IHBhcnNlZCBhbmQKPiA+ID4gPiA+IGVt
+aXR0ZWQgYnkgR0NDLCBMTFZNLCBnYXMsIExpbnV4IEtlcm5lbCwgZXRjLiIKPiA+ID4gPiA+Cj4g
+PiA+ID4gPiBNeSBvd24gcmVhZGluZyBpcyB0aGF0IGl0IGlzIHRoZSBmb3JtZXIsIGFuZCBub3Qg
+dGhlIGxhdHRlci4gQnV0LCBJCj4gPiA+ID4gPiB3YW50IHRvIGRvdWJsZSBjaGVjayBiZWZvcmUg
+YWRkaW5nIHRoZSBhcHByb3ByaWF0ZSBzdGF0ZW1lbnRzIHRvIHRoZQo+ID4gPiA+ID4gQ29udmVu
+dGlvbiBzZWN0aW9uLgo+ID4gPiA+Cj4gPiA+ID4gSXQncyBib3RoLiBJJ20gbm90IHN1cmUgd2hl
+cmUgeW91IHNlZSBhIGNvbnRyYWRpY3Rpb24uCj4gPiA+ID4gSXQncyBhIG5vcm1hbCBDIHN5bnRh
+eCBhbmQgaXQncyBlbWl0dGVkIGJ5IHRoZSBrZXJuZWwgdmVyaWZpZXIsCj4gPiA+ID4gcGFyc2Vk
+IGJ5IGNsYW5nL2djYyBhc3NlbWJsZXJzIGFuZCBlbWl0dGVkIGJ5IGNvbXBpbGVycy4KPiA+ID4K
+PiA+ID4KPiA+ID4gT2theS4gSSBhcG9sb2dpemUuIEkgYW0gc2luY2VyZWx5IGNvbmZ1c2VkLiBG
+b3IgaW5zdGFuY2UsCj4gPiA+Cj4gPiA+IGlmICh1MzIpZHN0ID49ICh1MzIpc3JjIGdvdG8gK29m
+ZnNldAo+ID4gPgo+ID4gPiBMb29rcyBsaWtlIG5vdGhpbmcgdGhhdCBJIGhhdmUgZXZlciBzZWVu
+IGluICJub3JtYWwgQyBzeW50YXgiLgo+ID4KPiA+IEkgdGhvdWdodCB3ZSdyZSB0YWxraW5nIGFi
+b3V0IHRhYmxlIDQgYW5kIEFMVSBvcHMuCj4gPiBBYm92ZSBpcyBub3QgYSBwdXJlIEMsIGJ1dCBp
+dCdzIG9idmlvdXMgZW5vdWdoIHdpdGhvdXQgZXhwbGFuYXRpb24sIG5vPwo+Cj4gVG8gInVzIiwg
+eWVzLiBBbHRob3VnaCBJIGFtIG5vdCBhbiBleHBlcnQsIGl0IHNlZW1zIGxpa2UgYmVpbmcKPiBl
+eHBsaWNpdCBpcyBpbXBvcnRhbnQgd2hlbiBpdCBjb21lcyB0byB3cml0aW5nIGEgc3BlYy4gSSBz
+dXBwb3NlIHdlCj4gc2hvdWxkIGxlYXZlIHRoYXQgdG8gRGF2ZSBhbmQgdGhlIGNoYWlycy4KPgo+
+ID4gQWxzbyBJIGRvbid0IHNlZSBhYm92ZSBhbnl3aGVyZSBpbiB0aGUgZG9jLgo+Cj4gVGhhdCBp
+cyBmcm9tIHRoZSBBcHBlbmRpeC4gSXQgaXMgY3VycmVudGx5IGluIERhdmUncyB0cmVlIGFuZCBn
+ZXRzCj4gYW1hbGdhbWF0ZWQgd2l0aCBvdGhlciBmaWxlcyB0byBidWlsZCB0aGUgZmluYWwgZHJh
+ZnQuCj4KPiBodHRwczovL2RhdGF0cmFja2VyLmlldGYub3JnL2RvYy9kcmFmdC10aGFsZXItYnBm
+LWlzYS8KClRoaXMgaXMgYSBtaXJyb3IgYW5kIGl0J3MgYWxyZWFkeSBvdXRkYXRlZC4KWW91IHNo
+b3VsZCBsb29rIGF0IHRoZSBzb3VyY2UuIFdoaWNoIGlzIGdpdCBrZXJuZWwgdHJlZS4KCi0tIApC
+cGYgbWFpbGluZyBsaXN0CkJwZkBpZXRmLm9yZwpodHRwczovL3d3dy5pZXRmLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2JwZgo=
 
