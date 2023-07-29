@@ -1,48 +1,47 @@
-Return-Path: <bpf+bounces-6296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6297-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05C7A7679A7
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 02:36:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5657A7679F0
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 02:42:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B49C52828CA
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 00:36:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8855E1C2170C
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 00:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF29264C;
-	Sat, 29 Jul 2023 00:35:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF85364F;
+	Sat, 29 Jul 2023 00:42:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AAF37C;
-	Sat, 29 Jul 2023 00:35:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E62DC433C7;
-	Sat, 29 Jul 2023 00:35:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 895C47C;
+	Sat, 29 Jul 2023 00:42:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABFD8C433C9;
+	Sat, 29 Jul 2023 00:42:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690590947;
-	bh=swb+QlbOGgdla5kxgH6YKQpX1MeQ8cld4Ca9rdGg4Lo=;
+	s=k20201202; t=1690591334;
+	bh=d7Z6pnlFPGFfDhjwhra0Ri99vsNTVZ53Y3LVs7Z3vx0=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=p09H1ra/6P1mXAOuIAzKkF5Rg96BKcIcf4AI9Y5CDIUV1/LAOGATO+S0cFRb8kddk
-	 l9XYGJV4jLIVNgIs2aIgEcnmWM5jK/iXwrVnGbTI9BETTdftFy8S6X3L/2Yyo0K6pc
-	 dCkRE1Uz5D9Jr7ta8l4nEPRlKMPL7FdLzzHMH9W3VtpS8OIk9dJTQPDNSMao+TzfBS
-	 8yj/EvElSJc7EncwXNTaKYuJte1Ql1d5yqjjNjSlIm2aj9lf2D11XnD8Cg7paUqPA5
-	 mHQ847mY6iVQi4UG6aV7kid53hhmuPTLvik6zIqxwFyQdAGvxdpSlGG2ZCrKiVd8Of
-	 fZpToutDxep2w==
-Date: Fri, 28 Jul 2023 17:35:46 -0700
+	b=Mkl6qwm8py6K4mpgVWJwPRaXk50gl5hVq8We7KrZhpGWcclTrTfJL34hUpUK0hmVU
+	 uiyCA2EdhEAGUhf0VajdHublDI6aw7Ld/asV/LuDbs+EAW3rDy7lRXyhfQV1bKZg+p
+	 DQqbwjMYsmM7Y4rN6NHWjLMteqoYr3zJUF+85xCDkBxrvhCdudS1iHxtmSZYVLRhoj
+	 b53O1qYVaNaHdGmUzt6qTWoXRWLLOy9V3KdCEn7bW3ICVYdQFfjYHHeQlcW75u4qxx
+	 FJ6Cs/a3ZI/mdj/ky1uf5IoXCvuFJRhqM5k6IJ1x+TfchtMoHwkGv/enickgJObnpq
+	 Za6LTsqYPxwpQ==
+Date: Fri, 28 Jul 2023 17:42:12 -0700
 From: Jakub Kicinski <kuba@kernel.org>
 To: Michael Chan <michael.chan@broadcom.com>
 Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
  pabeni@redhat.com, gospo@broadcom.com, bpf@vger.kernel.org,
- somnath.kotur@broadcom.com, Andy Gospodarek
- <andrew.gospodarek@broadcom.com>
-Subject: Re: [PATCH net-next 1/3] bnxt_en: Fix page pool logic for page size
- >= 64K
-Message-ID: <20230728173546.122c3135@kernel.org>
-In-Reply-To: <20230728231829.235716-2-michael.chan@broadcom.com>
+ somnath.kotur@broadcom.com, Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: Re: [PATCH net-next 3/3] bnxt_en: Let the page pool manage the DMA
+ mapping
+Message-ID: <20230728174212.64000bdc@kernel.org>
+In-Reply-To: <20230728231829.235716-4-michael.chan@broadcom.com>
 References: <20230728231829.235716-1-michael.chan@broadcom.com>
-	<20230728231829.235716-2-michael.chan@broadcom.com>
+	<20230728231829.235716-4-michael.chan@broadcom.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,55 +51,17 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Fri, 28 Jul 2023 16:18:27 -0700 Michael Chan wrote:
-> From: Somnath Kotur <somnath.kotur@broadcom.com>
-> 
-> The RXBD length field on all bnxt chips is 16-bit and so we cannot
-> support a full page when the native page size is 64K or greater.
-> The non-XDP (non page pool) code path has logic to handle this but
-> the XDP page pool code path does not handle this.  Add the missing
-> logic to use page_pool_dev_alloc_frag() to allocate 32K chunks if
-> the page size is 64K or greater.
-> 
-> Fixes: 9f4b28301ce6 ("bnxt: XDP multibuffer enablement")
-> Reviewed-by: Andy Gospodarek <andrew.gospodarek@broadcom.com>
-> Signed-off-by: Somnath Kotur <somnath.kotur@broadcom.com>
-> Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+On Fri, 28 Jul 2023 16:18:29 -0700 Michael Chan wrote:
+> +	pp.dma_dir = bp->rx_dir;
+> +	pp.max_len = BNXT_RX_PAGE_SIZE;
 
-Fix is a fix... Let's get this into net, first.
+I _think_ you need PAGE_SIZE here.
 
-> -	dma_unmap_page_attrs(&bp->pdev->dev, dma_addr, PAGE_SIZE, bp->rx_dir,
-> +	dma_unmap_page_attrs(&bp->pdev->dev, dma_addr, BNXT_RX_PAGE_SIZE, bp->rx_dir,
->  			     DMA_ATTR_WEAK_ORDERING);
+This should be smaller than PAGE_SIZE only if you're wasting the rest
+of the buffer, e.g. MTU is 3k so you know last 1k will never get used.
+PAGE_SIZE is always a multiple of BNXT_RX_PAGE so you waste nothing.
 
-this
+Adding Jesper to CC to keep me honest.
 
-> -	dma_unmap_page_attrs(&bp->pdev->dev, dma_addr, PAGE_SIZE, bp->rx_dir,
-> +	dma_unmap_page_attrs(&bp->pdev->dev, dma_addr, BNXT_RX_PAGE_SIZE, bp->rx_dir,
->  			     DMA_ATTR_WEAK_ORDERING);
-
-this
-
-> -			dma_unmap_page_attrs(&pdev->dev, mapping, PAGE_SIZE,
-> +			dma_unmap_page_attrs(&pdev->dev, mapping, BNXT_RX_PAGE_SIZE,
->  					     bp->rx_dir,
->  					     DMA_ATTR_WEAK_ORDERING);
-
-and this - unnecessarily go over 80 chars when there's already 
-a continuation line that could take the last argument.
-
-> @@ -185,7 +185,7 @@ void bnxt_xdp_buff_init(struct bnxt *bp, struct bnxt_rx_ring_info *rxr,
->  			struct xdp_buff *xdp)
->  {
->  	struct bnxt_sw_rx_bd *rx_buf;
-> -	u32 buflen = PAGE_SIZE;
-> +	u32 buflen = BNXT_RX_PAGE_SIZE;
-
-nit: rev xmas tree here
-
->  	struct pci_dev *pdev;
->  	dma_addr_t mapping;
->  	u32 offset;
--- 
-pw-bot: cr
+> +	pp.flags = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV;
 
