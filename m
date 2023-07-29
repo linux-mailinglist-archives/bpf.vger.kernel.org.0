@@ -1,74 +1,84 @@
-Return-Path: <bpf+bounces-6327-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6328-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E31E7680D9
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 19:56:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E2947680E2
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 20:04:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 883BC1C20A81
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 17:56:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAF91282165
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 18:04:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E958174C8;
-	Sat, 29 Jul 2023 17:56:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1865E174D1;
+	Sat, 29 Jul 2023 18:04:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F91715BD
-	for <bpf@vger.kernel.org>; Sat, 29 Jul 2023 17:56:15 +0000 (UTC)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2AF2D64
-	for <bpf@vger.kernel.org>; Sat, 29 Jul 2023 10:56:13 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so49571611fa.2
-        for <bpf@vger.kernel.org>; Sat, 29 Jul 2023 10:56:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9A015BD;
+	Sat, 29 Jul 2023 18:04:30 +0000 (UTC)
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5193DE7A;
+	Sat, 29 Jul 2023 11:04:29 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b974031aeaso47416631fa.0;
+        Sat, 29 Jul 2023 11:04:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690653372; x=1691258172;
+        d=gmail.com; s=20221208; t=1690653867; x=1691258667;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mJR5ivEB83OgZOd7G1HfH8uKhMkWUiic2SCw4A6juvY=;
-        b=VPOfmgj/poaaS8ODMePUQFxSTOgPEwS5ZdS4CcQ3+G8OI+PsYk9cSN9Owb+gqg/Y1N
-         ZUYCZDjhBc/I9gLsar2V8apqmxbPHSqg65fK9D7f3U0rOGrS8Gcq7LZI+eVNEQPfalm7
-         ru0zXXoNHLeZuy8lziVCj4jiMjQll5JnYzkSm9aEkR0aSbYkqQ4A4BYdR8x/f1i0VUyJ
-         zpZdpOn7mrzXeY8kD18KLO0XBhSHQbARZCe1GFPs02mMZL9NLLvW/9TvNDg6YZUxjkP0
-         mbIGu1RNk61voKSqt+rvnSz6HW8mEJlstilL+NexW0ditxJneG+mav90DcMpdpFjcJFv
-         52cw==
+        bh=K5zTJ2m7y4gUPHPHwEYR3KU4kKwzaZIM/2cgPL3RDIA=;
+        b=M2lZREb6f3m5/J3yggEV0YpjtZOqHpuL7AvHoDm3iAu9g6ry+ZnHop+roInlkEfEGv
+         5xUUFHWV141rwPCccFt4EdcNLGXm8zvkOVlps29wRkGZIEV6PASVfJqz76ZPoz5tMifX
+         9hk9gs7IgpUEMlMayt1yZ0Uu0DPxA1LYojqoyVKr3v1x0GE8qmwg4KodObhvoiIfBVkL
+         agwv+QeG7RkYvxinIwSMEyWExnwRK8LFbEvV7eD8lWi+ZT+lQ/rRd+2618Bhw9bZxn94
+         1nTkghnOZQ6qyM3WLhUAOn3DYxVNaO2TtShV1Rrndmelkj1ftAZCEIuIcoserIy1WpM1
+         BPzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690653372; x=1691258172;
+        d=1e100.net; s=20221208; t=1690653867; x=1691258667;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mJR5ivEB83OgZOd7G1HfH8uKhMkWUiic2SCw4A6juvY=;
-        b=Alk+2YadXyuh8z+xjjUGGn63c3paUfvYMJofkvcVlONp3XVmqB7VqxDvsBTNA6smwp
-         iXrg/OEl85r5M9RBdmn2TbpoGnHqqCyuTrQEGAdIoaV5pVyOKVbFvcd4lvJWeazyPQ8Q
-         uuxFaIQZavs9aFKyJyFDBsJa9Cjmf9VfIDO3YWuU7XPxlipXfewtWBArmrvn8gFcNE7e
-         kBCe5/42a86aaIszIE9GIJl91w2wcarFyDCPKW3Q+pLk6ZJ82ybF+J5MpHkIzlAs3xkS
-         c94FihyO0l3RZOrs3DDigNiZasbmVmI7pvxwN86jOBhczAqL05mx/eWdQaoBqhNVA0O3
-         ykiA==
-X-Gm-Message-State: ABy/qLYl+qF01bbllNn0+dnaJPXpdRY589n5PVzFvUznQ3DIQFp8n29m
-	PDLlUfhcsFyUOUhQPcAiWjFzN0LFxuoic40wuVo=
-X-Google-Smtp-Source: APBJJlF6GWCd40M3dhmq+0hHboOuNgqmbju2SW3Th1aaqa2YW3+zSJroMlBNlPXonUSe8ozFGQwXqwZGSCfWH84DChU=
-X-Received: by 2002:a2e:8612:0:b0:2b1:a89a:5f2b with SMTP id
- a18-20020a2e8612000000b002b1a89a5f2bmr3839610lji.2.1690653371390; Sat, 29 Jul
- 2023 10:56:11 -0700 (PDT)
+        bh=K5zTJ2m7y4gUPHPHwEYR3KU4kKwzaZIM/2cgPL3RDIA=;
+        b=LIWkyfjTJWUvsxLCVTIN90D/CVTbpEjzf38O77ns5h3TMRvNM8AXHNrqr7I/7kK+v8
+         tPGEbXTzYuyqvj75V6tXgq1xJywHDsPVfK7R8qa9VIhg5WqmhSjGBiVAxU883dgBvBSI
+         fDyG/8lOqUX3s6WsgS+8UYUAIY/QRCSje3fF+EVCXK3sx0VtcRHfC6QIHsOe8gMa1jnT
+         +o+ZkKEEoYu8+nW0PazcSwbmZaYirQoaacdTTPhulDxXUdPS4D+qCZ0IL4wVunVK5DK6
+         dYhuBXBy4hPdTJU9t0ook/ceVJylajSJ6ZRV08dZzq4rZst1ZkPPp0OGVGDM6DiJVQYs
+         FZ2w==
+X-Gm-Message-State: ABy/qLbS2rTodlkrIjC4U69Jl1G8muogT8Uj/F/Ts+6sfj017cePQ5TV
+	zwgVqI7SxL+eGIUr/aTmNqI+7WwjsPvA2QCvEMc=
+X-Google-Smtp-Source: APBJJlEm83JwHBYnqV6b7FBIR3SRFxDWJ6rYq6OTRiXSBhRaERzeQ19BCZN38MMYIu5hnlC5x9ZdNpHfci2S1K/69kk=
+X-Received: by 2002:a2e:978f:0:b0:2b9:b066:66a4 with SMTP id
+ y15-20020a2e978f000000b002b9b06666a4mr3871153lji.4.1690653867374; Sat, 29 Jul
+ 2023 11:04:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <878rb0yonc.fsf@oracle.com> <13eb5cae-e599-7f80-aa11-65846fccdc62@linux.dev>
- <87v8e4x7cr.fsf@oracle.com> <87pm4bykxw.fsf@oracle.com> <CAADnVQLaZrqq232fxts0GmymaaG=fpvRbSZaBkfNnKFuy0LM8A@mail.gmail.com>
- <87jzujnms6.fsf@oracle.com>
-In-Reply-To: <87jzujnms6.fsf@oracle.com>
+References: <20230728173923.1318596-1-larysa.zaremba@intel.com>
+ <20230728173923.1318596-13-larysa.zaremba@intel.com> <20230728215340.pf3qcfxh7g4x7s6a@MacBook-Pro-8.local>
+ <64c53b1b29a66_e235c2942d@willemb.c.googlers.com.notmuch>
+In-Reply-To: <64c53b1b29a66_e235c2942d@willemb.c.googlers.com.notmuch>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sat, 29 Jul 2023 10:56:00 -0700
-Message-ID: <CAADnVQ+2mHqRc2EBCKe+NHHPQ+FqaNt2PmD6t9DN6GwPnu1RQg@mail.gmail.com>
-Subject: Re: GCC and binutils support for BPF V4 instructions
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+Date: Sat, 29 Jul 2023 11:04:16 -0700
+Message-ID: <CAADnVQ+vn0=1UT5_c628ovq+LzfrNFf0MxmZn++NqeUFJ-ykQw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 12/21] xdp: Add checksum hint
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Larysa Zaremba <larysa.zaremba@intel.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Willem de Bruijn <willemb@google.com>, Jesper Dangaard Brouer <brouer@redhat.com>, 
+	Anatoly Burakov <anatoly.burakov@intel.com>, Alexander Lobakin <alexandr.lobakin@intel.com>, 
+	Magnus Karlsson <magnus.karlsson@gmail.com>, Maryam Tahhan <mtahhan@redhat.com>, 
+	xdp-hints@xdp-project.net, Network Development <netdev@vger.kernel.org>, 
+	Simon Horman <simon.horman@corigine.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,110 +88,82 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Jul 29, 2023 at 1:29=E2=80=AFAM Jose E. Marchesi
-<jose.marchesi@oracle.com> wrote:
+On Sat, Jul 29, 2023 at 9:15=E2=80=AFAM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
 >
->
-> > On Fri, Jul 28, 2023 at 11:01=E2=80=AFAM Jose E. Marchesi
-> > <jose.marchesi@oracle.com> wrote:
-> >>
-> >>
-> >> >> On 7/28/23 9:41 AM, Jose E. Marchesi wrote:
-> >> >>> Hello.
-> >> >>> Just a heads up regarding the new BPF V4 instructions and their
-> >> >>> support
-> >> >>> in the GNU Toolchain.
-> >> >>> V4 sdiv/smod instructions
-> >> >>>    Binutils has been updated to use the V4 encoding of these
-> >> >>>    instructions, which used to be part of the xbpf testing dialect=
- used
-> >> >>>    in GCC.  GCC generates these instructions for signed division w=
-hen
-> >> >>>    -mcpu=3Dv4 or higher.
-> >> >>> V4 sign-extending register move instructions
-> >> >>> V4 signed load instructions
-> >> >>> V4 byte swap instructions
-> >> >>>    Supported in assembler, disassembler and linker.  GCC generates
-> >> >>> these
-> >> >>>    instructions when -mcpu=3Dv4 or higher.
-> >> >>> V4 32-bit unconditional jump instruction
-> >> >>>    Supported in assembler and disassembler.  GCC doesn't generate
-> >> >>> that
-> >> >>>    instruction.
-> >> >>>    However, the assembler has been expanded in order to perform th=
-e
-> >> >>>    following relaxations when the disp16 field of a jump instructi=
-on is
-> >> >>>    known at assembly time, and is overflown, unless -mno-relax is
-> >> >>>    specified:
-> >> >>>      JA disp16  -> JAL disp32
-> >> >>>      Jxx disp16 -> Jxx +1; JA +1; JAL disp32
-> >> >>>    Where Jxx is one of the conditional jump instructions such as
-> >> >>> jeq,
-> >> >>>    jlt, etc.
-> >> >>
-> >> >> Sounds great. The above 'JA/Jxx disp16' transformation matches
-> >> >> what llvm did as well.
-> >> >
-> >> > Not by chance ;)
-> >> >
-> >> > Now what is pending in binutils is to relax these jumps in the linke=
-r as
-> >> > well.  But it is very low priority, compared to get these kernel
-> >> > selftests building and running.  So it will happen, but probably not
-> >> > anytime soon.
-> >>
-> >> By the way, for doing things like that (further object transformations
-> >> by linkers and the like) we will need to have the ELF files annotated
-> >> with:
-> >>
-> >> - The BPF cpu version the object was compiled for: v1, v2, v3, v4, and
-> >>
-> >> - Individual flags specifying the BPF cpu capabilities (alu32, bswap,
-> >>   jmp32, etc) required/expected by the code in the object.
-> >>
-> >> Note it is interesting to being able to denote both, for flexibility.
-> >>
-> >> There are 32 bits available for machine-specific flags in e_flags, whi=
-ch
-> >> are commonly used for this purpose by other arches.  For BPF I would
-> >> suggest something like:
-> >>
-> >> #define EF_BPF_ALU32  0x00000001
-> >> #define EF_BPF_JMP32  0x00000002
-> >> #define EF_BPF_BSWAP  0x00000004
-> >> #define EF_BPF_SDIV   0x00000008
-> >> #define EF_BPF_CPUVER 0x00FF0000
+> Alexei Starovoitov wrote:
+> > On Fri, Jul 28, 2023 at 07:39:14PM +0200, Larysa Zaremba wrote:
+> > >
+> > > +union xdp_csum_info {
+> > > +   /* Checksum referred to by ``csum_start + csum_offset`` is consid=
+ered
+> > > +    * valid, but was never calculated, TX device has to do this,
+> > > +    * starting from csum_start packet byte.
+> > > +    * Any preceding checksums are also considered valid.
+> > > +    * Available, if ``status =3D=3D XDP_CHECKSUM_PARTIAL``.
+> > > +    */
+> > > +   struct {
+> > > +           u16 csum_start;
+> > > +           u16 csum_offset;
+> > > +   };
+> > > +
 > >
-> > Interesting idea. I don't mind, but what are we going to do with this i=
-nfo?
-> > I cannot think of anything useful libbpf could do with it.
-> > For other archs such flags make sense, since disasm of everything
-> > to discover properties is hard. For BPF we will parse all insns anyway,
-> > so additional info in ELF doesn't give any additional insight.
+> > CHECKSUM_PARTIAL makes sense on TX, but this RX. I don't see in the abo=
+ve.
 >
-> I mainly had link-time relaxation in mind.  The linker needs to know
-> what instructions are available (JMP32 or not) in order to decide what
-> to relax, and to what.
+> It can be observed on RX when packets are looped.
+>
+> This may be observed even in XDP on veth.
 
-But the assembler has little choice when the jump target is >16bits.
-It can use jmp32 or error.
-I guess you're proposing to encode this e_flags in the text of asm ?
-Special asm directive that will force asm to error or use jmp32?
+veth and XDP is a broken combination. GSO packets coming out of containers
+cannot be parsed properly by XDP.
+It was added mainly for testing. Just like "generic XDP".
+bpf progs at skb layer is much better fit for veth.
 
-> Also as you mention the disassembler can look in the object to determine
-> which instructions shall be recognized and with insructions shall be
-> reported as <unknown>.  Right now it is necessary to pass an explicit
-> option to the assembler, and the default is v4.
+> > > +   /* Checksum, calculated over the whole packet.
+> > > +    * Available, if ``status & XDP_CHECKSUM_COMPLETE``.
+> > > +    */
+> > > +   u32 checksum;
+> >
+> > imo XDP RX should only support XDP_CHECKSUM_COMPLETE with u32 checksum
+> > or XDP_CHECKSUM_UNNECESSARY.
+> >
+> > > +};
+> > > +
+> > > +enum xdp_csum_status {
+> > > +   /* HW had parsed several transport headers and validated their
+> > > +    * checksums, same as ``CHECKSUM_UNNECESSARY`` in ``sk_buff``.
+> > > +    * 3 least significant bytes contain number of consecutive checks=
+ums,
+> > > +    * starting with the outermost, reported by hardware as valid.
+> > > +    * ``sk_buff`` checksum level (``csum_level``) notation is provid=
+ed
+> > > +    * for driver developers.
+> > > +    */
+> > > +   XDP_CHECKSUM_VALID_LVL0         =3D 1,    /* 1 outermost checksum=
+ */
+> > > +   XDP_CHECKSUM_VALID_LVL1         =3D 2,    /* 2 outermost checksum=
+s */
+> > > +   XDP_CHECKSUM_VALID_LVL2         =3D 3,    /* 3 outermost checksum=
+s */
+> > > +   XDP_CHECKSUM_VALID_LVL3         =3D 4,    /* 4 outermost checksum=
+s */
+> > > +   XDP_CHECKSUM_VALID_NUM_MASK     =3D GENMASK(2, 0),
+> > > +   XDP_CHECKSUM_VALID              =3D XDP_CHECKSUM_VALID_NUM_MASK,
+> >
+> > I don't see what bpf prog suppose to do with these levels.
+> > The driver should pick between 3:
+> > XDP_CHECKSUM_UNNECESSARY, XDP_CHECKSUM_COMPLETE, XDP_CHECKSUM_NONE.
+> >
+> > No levels and no anything partial. please.
+>
+> This levels business is an unfortunate side effect of
+> CHECKSUM_UNNECESSARY. For a packet with multiple checksum fields, what
+> does the boolean actually mean? With these levels, at least that is
+> well defined: the first N checksum fields.
 
-Disambiguating between unknown and exact insn kinda makes sense for disasm.
-For assembler it's kinda weird. If text says 'sdiv' the asm should emit
-binary code for it regardless of asm directive.
-It seems e_flags can only be emitted by assembler.
-Like if it needs to use jmp32 it will add EF_BPF_JMP32.
-
-Still feels that we can live without these flags, but not a bad addition.
-
-As far as flag names, let's use EF_ prefix. I think it's more canonical.
-And single 0xF is probably enough for cpu ver.
+If I understand this correctly this is intel specific feature that
+other NICs don't have. skb layer also doesn't have such concept.
+The driver should say CHECKSUM_UNNECESSARY when it's sure
+or don't pretend that it checks the checksum and just say NONE.
 
