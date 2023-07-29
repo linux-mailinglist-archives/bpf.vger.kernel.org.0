@@ -1,167 +1,181 @@
-Return-Path: <bpf+bounces-6325-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6326-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 442EE76808C
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 18:15:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 297837680D3
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 19:46:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F15DC282316
-	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 16:15:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30C5C1C20A65
+	for <lists+bpf@lfdr.de>; Sat, 29 Jul 2023 17:46:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75851171CC;
-	Sat, 29 Jul 2023 16:15:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7C0174C7;
+	Sat, 29 Jul 2023 17:46:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D81F4FE;
-	Sat, 29 Jul 2023 16:15:26 +0000 (UTC)
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17703A9A;
-	Sat, 29 Jul 2023 09:15:24 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-6378cec43ddso17413076d6.2;
-        Sat, 29 Jul 2023 09:15:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690647324; x=1691252124;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yhbwdeVAVLw7w1LdIyvCySYdGFtXHpX0EQ+J02OgF0U=;
-        b=dEGwFuN2TtPnnCqswhXXgKZbTaI/LyaH7uLwuU39srOhBfG/jFwEVr+Om8WABl+htd
-         e9QEjLvfWSEst536eH66pyk1vjjoy2jJ0ZMk4fC3j7pvV7hKX+jDpeEeEg1Mj8kIFhEr
-         P0XM46OkPvCVfL047wmCBuzSqx8e8YA7pzdUA9UyWUwZUwOSjRO+NFo8CUpBelXBJAXB
-         3owEvVYN0YG8WOIwVtDsvJa8AdmILqHfFMExCbmbnv9g691x9pa7tLzrYx3D67RNGj1P
-         w9gnxpdry6iloqAHZRSwbuv0+sQUp2YZz0dWXjvtDl9+yxZlfbvoFWLEXWOKBScwQZKH
-         dYHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690647324; x=1691252124;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yhbwdeVAVLw7w1LdIyvCySYdGFtXHpX0EQ+J02OgF0U=;
-        b=Seg1oihRIv8GVghM6dpePbYrYXp+9G7nLrthfJ6/WuifQ4KMFDktAgBzIlkQqFcM4o
-         jGPqNtSY8GdRFHjiAScm7k/bL4exIq/XjuhYWI6T+qSW3Zf/4cUNAGzQPrE1RQGmMnL9
-         osuIu4+b0XJX7tBw/XHF+4GVIYduFiLY1IzSiE1iqaIoQUy9Po1GEMGEM2YRoDsMgv8M
-         NxQZfCfx7Z2tSGay+JwEUflTwJrjCtw2RNvsOKBRCXFinpXOXDQt+Iw2G5xvqmaaxvOr
-         HP5tpdzzDXiDTWrTm+gbGUJU2SMdXNB4zEL3XfxaKm51oiG+tVD8kuiow4ir7ofhR753
-         QVbQ==
-X-Gm-Message-State: ABy/qLaUWJO4snfSanH/WR4MtkGZwazmqqVGfK0ZVJz042/zTmV4gApH
-	Ps7OhCvaeUFi5VrWfZs3Wej+Z2m1q70=
-X-Google-Smtp-Source: APBJJlGt0Qsc8iu579OjS3dPBYko4Mly73GH0w3PE/9NxRgWO3Bi5UCQgQDNCukiPFPvWPSJIgavVg==
-X-Received: by 2002:a0c:e287:0:b0:63c:d763:77b4 with SMTP id r7-20020a0ce287000000b0063cd76377b4mr5144562qvl.8.1690647323986;
-        Sat, 29 Jul 2023 09:15:23 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id p15-20020a0ccb8f000000b0063d06253995sm2152667qvk.22.2023.07.29.09.15.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 09:15:23 -0700 (PDT)
-Date: Sat, 29 Jul 2023 12:15:23 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
- Larysa Zaremba <larysa.zaremba@intel.com>
-Cc: bpf@vger.kernel.org, 
- ast@kernel.org, 
- daniel@iogearbox.net, 
- andrii@kernel.org, 
- martin.lau@linux.dev, 
- song@kernel.org, 
- yhs@fb.com, 
- john.fastabend@gmail.com, 
- kpsingh@kernel.org, 
- sdf@google.com, 
- haoluo@google.com, 
- jolsa@kernel.org, 
- David Ahern <dsahern@gmail.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Willem de Bruijn <willemb@google.com>, 
- Jesper Dangaard Brouer <brouer@redhat.com>, 
- Anatoly Burakov <anatoly.burakov@intel.com>, 
- Alexander Lobakin <alexandr.lobakin@intel.com>, 
- Magnus Karlsson <magnus.karlsson@gmail.com>, 
- Maryam Tahhan <mtahhan@redhat.com>, 
- xdp-hints@xdp-project.net, 
- netdev@vger.kernel.org, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Simon Horman <simon.horman@corigine.com>
-Message-ID: <64c53b1b29a66_e235c2942d@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20230728215340.pf3qcfxh7g4x7s6a@MacBook-Pro-8.local>
-References: <20230728173923.1318596-1-larysa.zaremba@intel.com>
- <20230728173923.1318596-13-larysa.zaremba@intel.com>
- <20230728215340.pf3qcfxh7g4x7s6a@MacBook-Pro-8.local>
-Subject: Re: [PATCH bpf-next v4 12/21] xdp: Add checksum hint
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91AA715BD;
+	Sat, 29 Jul 2023 17:46:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8269FC433C8;
+	Sat, 29 Jul 2023 17:46:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690652780;
+	bh=e0zotVZ/XJUIPJGVsTb6UzBe7NAqRNMMif2hVV4YiQU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qZbtbH5WKJMuGws0Luokb+CuDmaBKbUK73w3QZie77uZxhedU9WqstnZvDo3dVwD9
+	 NKYZsseSEnQSPungkiwE0y8+hOJNLE8tIi3KQ6EuqArgdBEVZ4nFJGlkY9LSe6R6FT
+	 0EwLoNPg8BMybjeUnKIM9zadswk2O7XaWdGl7zfdjqCoGhjismZd+XOwWdND4cQ64H
+	 4O5qJrLekx0s9mb6RhGZrLUkCt9wqsQd2FRSGWtTe9ul0wnbLxeJ+CHMK94UyMN+WB
+	 eV7cfQpBj4tdS+BlsS2FK1aRi3IJPpIkRkOX6I7At4hdt6gUfuG+Y7MUbKAgQFdaU2
+	 5IRSLh+6capaA==
+Date: Sat, 29 Jul 2023 10:46:17 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Tiezhu Yang <yangtiezhu@loongson.cn>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, loongarch@lists.linux.dev,
+	Linux-Arch <linux-arch@vger.kernel.org>, bpf@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH v3 1/2] asm-generic: Unify uapi bitsperlong.h for arm64,
+ riscv and loongarch
+Message-ID: <20230729174617.GA1229655@dev-arch.thelio-3990X>
+References: <1687443219-11946-1-git-send-email-yangtiezhu@loongson.cn>
+ <1687443219-11946-2-git-send-email-yangtiezhu@loongson.cn>
+ <20230727213648.GA354736@dev-arch.thelio-3990X>
+ <1777400a-4d9c-4bdb-9d3b-f8808ef054cc@app.fastmail.com>
+ <20230728173103.GA1299743@dev-arch.thelio-3990X>
+ <a2fa1a31-e8bb-4659-9631-398b564e7c2b@app.fastmail.com>
+ <20230728234429.GA611252@dev-arch.thelio-3990X>
+ <e7a792d9-39b9-440a-9c22-99e25b25a396@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e7a792d9-39b9-440a-9c22-99e25b25a396@app.fastmail.com>
 
-Alexei Starovoitov wrote:
-> On Fri, Jul 28, 2023 at 07:39:14PM +0200, Larysa Zaremba wrote:
-> >  
-> > +union xdp_csum_info {
-> > +	/* Checksum referred to by ``csum_start + csum_offset`` is considered
-> > +	 * valid, but was never calculated, TX device has to do this,
-> > +	 * starting from csum_start packet byte.
-> > +	 * Any preceding checksums are also considered valid.
-> > +	 * Available, if ``status == XDP_CHECKSUM_PARTIAL``.
-> > +	 */
-> > +	struct {
-> > +		u16 csum_start;
-> > +		u16 csum_offset;
-> > +	};
-> > +
+On Sat, Jul 29, 2023 at 09:59:23AM +0200, Arnd Bergmann wrote:
+> On Sat, Jul 29, 2023, at 01:44, Nathan Chancellor wrote:
+> > On Fri, Jul 28, 2023 at 10:56:38PM +0200, Arnd Bergmann wrote:
 > 
-> CHECKSUM_PARTIAL makes sense on TX, but this RX. I don't see in the above.
+> >     DESCEND objtool
+> >   In file included from 
+> > /usr/include/aarch64-linux-gnu/asm/bitsperlong.h:1,
+> >                    from /usr/include/asm-generic/int-ll64.h:12,
+> >                    from /usr/include/asm-generic/types.h:7,
+> >                    from /usr/include/aarch64-linux-gnu/asm/types.h:1,
+> >                    from /linux-stable/tools/include/linux/types.h:13,
+> >                    from 
+> > /linux-stable/tools/arch/x86/include/asm/orc_types.h:9,
+> >                    from /linux-stable/scripts/sorttable.h:96,
+> >                    from /linux-stable/scripts/sorttable.c:201:
+> >   /linux-stable/tools/include/asm-generic/bitsperlong.h:14:2: error: 
+> > #error Inconsistent word size. Check asm/bitsperlong.h
+> >      14 | #error Inconsistent word size. Check asm/bitsperlong.h
+> >         |  ^~~~~
+> >   make[3]: *** [/linux-stable/scripts/Makefile.host:114: 
+> > scripts/sorttable] Error 1
+> >   ...
+> >
+> >> I also noticed that your command line includes CROSS_COMPILE=x86_64-linux-
+> >> rather than CROSS_COMPILE=x86_64-linux-gnu-
+> >
+> > Right, as I was reproducing this with your kernel.org GCC for
+> > CROSS_COMPILE and Fedora's GCC for HOSTCC, since I wanted to make sure
+> > this was not some issue with clang (which it does not appear to be).
+> 
+> Ok, it's beginning to make more sense to me now. I see
+> that the tools/arch/x86/include/asm/orc_types.h comes from
+> the x86_64 target build and is intentional, as sorttable.c
+> needs to access the ORC information. Here the Makefile does
+> 
+> ifdef CONFIG_UNWINDER_ORC
+> ifeq ($(ARCH),x86_64)
+> ARCH := x86
+> endif
+> HOSTCFLAGS_sorttable.o += -I$(srctree)/tools/arch/x86/include
+> HOSTCFLAGS_sorttable.o += -DUNWINDER_ORC_ENABLED
+> endif
+> 
+> in order to get the ORC definitions from asm/orc_types.h, but
+> then it looks like it also gets the uapi/asm/bitsperlong.h
+> header from there which contains
+> 
+> #if defined(__x86_64__) && !defined(__ILP32__)
+> # define __BITS_PER_LONG 64
+> #else
+> # define __BITS_PER_LONG 32
+> #endif
+> 
+> and this would set __BITS_PER_LONG to 32 on arm64.
+> 
+> However, I don't see this actually being included on my
+> machine. Can you dump the sorttable.c preprocessor output
+> with your setup, using -fdirectives-only, so we can see
+> which of the two (__BITS_PER_LONG or BITS_PER_LONG) is
+> actually wrong and triggers the sanity check?
 
-It can be observed on RX when packets are looped.
+Sure thing, this is the output of:
 
-This may be observed even in XDP on veth.
- 
-> > +	/* Checksum, calculated over the whole packet.
-> > +	 * Available, if ``status & XDP_CHECKSUM_COMPLETE``.
-> > +	 */
-> > +	u32 checksum;
-> 
-> imo XDP RX should only support XDP_CHECKSUM_COMPLETE with u32 checksum
-> or XDP_CHECKSUM_UNNECESSARY.
-> 
-> > +};
-> > +
-> > +enum xdp_csum_status {
-> > +	/* HW had parsed several transport headers and validated their
-> > +	 * checksums, same as ``CHECKSUM_UNNECESSARY`` in ``sk_buff``.
-> > +	 * 3 least significant bytes contain number of consecutive checksums,
-> > +	 * starting with the outermost, reported by hardware as valid.
-> > +	 * ``sk_buff`` checksum level (``csum_level``) notation is provided
-> > +	 * for driver developers.
-> > +	 */
-> > +	XDP_CHECKSUM_VALID_LVL0		= 1,	/* 1 outermost checksum */
-> > +	XDP_CHECKSUM_VALID_LVL1		= 2,	/* 2 outermost checksums */
-> > +	XDP_CHECKSUM_VALID_LVL2		= 3,	/* 3 outermost checksums */
-> > +	XDP_CHECKSUM_VALID_LVL3		= 4,	/* 4 outermost checksums */
-> > +	XDP_CHECKSUM_VALID_NUM_MASK	= GENMASK(2, 0),
-> > +	XDP_CHECKSUM_VALID		= XDP_CHECKSUM_VALID_NUM_MASK,
-> 
-> I don't see what bpf prog suppose to do with these levels.
-> The driver should pick between 3:
-> XDP_CHECKSUM_UNNECESSARY, XDP_CHECKSUM_COMPLETE, XDP_CHECKSUM_NONE.
-> 
-> No levels and no anything partial. please.
+  $ gcc -I/linux-stable/tools/include -I/linux-stable/tools/arch/x86/include -DUNWINDER_ORC_ENABLED -I ./scripts -E -fdirectives-only /linux-stable/scripts/sorttable.c
 
-This levels business is an unfortunate side effect of
-CHECKSUM_UNNECESSARY. For a packet with multiple checksum fields, what
-does the boolean actually mean? With these levels, at least that is
-well defined: the first N checksum fields.
+https://gist.github.com/nathanchance/d2c3e58230930317dc84aff80fef38bf
 
+> What I see on my machine is that both definitions come
+> from the local tools/include/ headers, not from the
+> installed system headers, so I'm still doing something
+> wrong in my installation:
+
+Just to make sure, you have the 6.5-rc1+ headers installed and you are
+attempting to build the host tools from an earlier Linux release than
+6.5-rc1? I don't see a problem with building these host programs on
+mainline/6.5, I see this issue when building them in older stable
+releases (my reproduction so far has been on 6.4 but I see it when
+building all currently supported long term stable releases) when I have
+the 6.5-rc1+ headers installed.
+
+> ./tools/include/uapi/asm-generic/bitsperlong.h
+> #define __BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+
+Because this is the mainline version, whereas the stable version is:
+
+#ifndef _UAPI__ASM_GENERIC_BITS_PER_LONG
+#define _UAPI__ASM_GENERIC_BITS_PER_LONG
+
+/*
+ * There seems to be no way of detecting this automatically from user
+ * space, so 64 bit architectures should override this in their
+ * bitsperlong.h. In particular, an architecture that supports
+ * both 32 and 64 bit user space must not rely on CONFIG_64BIT
+ * to decide it, but rather check a compiler provided macro.
+ */
+#ifndef __BITS_PER_LONG
+#define __BITS_PER_LONG 32
+#endif
+
+#endif /* _UAPI__ASM_GENERIC_BITS_PER_LONG */
+
+which seems to be where the mismatch is coming from?
+
+> ./tools/include/asm-generic/bitsperlong.h
+> #define BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+> 
+> Neither of these files actually contains the sanity
+> check in linux-6.5-rc3, and comparing these is clearly
+> nonsensical, as they are defined the same way (rather
+> than checking CONFIG_64BIT), but also I don't see why
+> there is both a uapi/ version and a non-uapi version
+> in what is meant to be a userspace header.
+
+May be worth looping in the tools/ folks, since that whole directory is
+rather special IMO...
+
+Cheers,
+Nathan
 
