@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-6363-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6364-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 348BE7685BA
-	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 15:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C29A7685BB
+	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 15:44:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4B1D2817C7
-	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 13:44:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9C2A2814DA
+	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 13:44:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5777D211C;
-	Sun, 30 Jul 2023 13:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E912102;
+	Sun, 30 Jul 2023 13:44:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E67D363
-	for <bpf@vger.kernel.org>; Sun, 30 Jul 2023 13:44:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE82DC433C8;
-	Sun, 30 Jul 2023 13:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF765363
+	for <bpf@vger.kernel.org>; Sun, 30 Jul 2023 13:44:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3577C433C8;
+	Sun, 30 Jul 2023 13:44:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690724659;
-	bh=JRRJz8/nLZw6vAx2LW1/td9rYqJfps4sUneIFNzu93M=;
+	s=k20201202; t=1690724669;
+	bh=UFAtJW/kUi20OUAFfN9cQ/cXigtSrtYou4rmtbzMGxs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Jc+pZhpeuGh5Z3xZKO7SMjkAHgW7GIUDC7g8Mi0PAXiRZdok3/7vWk/eJab8QE34V
-	 by/JVv8vS+eagBL2BkpzJOoh/wGTKR546Aw6l7Kg5YPK9IK3y60Cp7a75snoVcRrNn
-	 gTeCD/CxLwYzn+0DFb/TNU+tvX1xLn5Kli3yfN3fG4YBL3OuWgrT9/zzE8keLtuZMZ
-	 aNNWPgu7y4knTTx3zNFY+Shuv4Rexuo9Zep1Ga2abWLJ0qufk5uGE9DYRgTixu1X56
-	 UjMFle4QlRZDOYiONJcAxoVbmqllZGSBfOCEM3UMOyXyj5hSomL5hI9crJEEHAgC2/
-	 MZWdPURTC6cgA==
+	b=U47onJIEOQ/14XJ6vMUfjwX3gz4aWaJQLzg1cas3vNFMCFbyRNgZz3eLgp4hxcWak
+	 OCPLG0JP8jqCmrDyUXXyBAHZXzkDACnyjgj3j2oEv19IG0P+SzlYVsS3zHNHzL0zWg
+	 te8COFSovf63O/3753Vexz0Vvus+DNYG1ZNcqrab+FQq52/V7aDk2yk5GVz8BKu2cx
+	 rXHAH9Axw5iyRVYf0lSSUHZp4sFU1IRfoCteKUe2siXHJoDwfqIkr34Q32oMpW+VVQ
+	 6eNHq22zYRVwfLwzDQ8czu+UdBFeL7LdR+4P0N2ZYSKkGIpijq5WMzZloOTD+RgtFS
+	 NqDOgtIDNvoWQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -43,9 +43,9 @@ Cc: bpf@vger.kernel.org,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCHv5 bpf-next 11/28] libbpf: Add elf_resolve_syms_offsets function
-Date: Sun, 30 Jul 2023 15:42:06 +0200
-Message-ID: <20230730134223.94496-12-jolsa@kernel.org>
+Subject: [PATCHv5 bpf-next 12/28] libbpf: Add elf_resolve_pattern_offsets function
+Date: Sun, 30 Jul 2023 15:42:07 +0200
+Message-ID: <20230730134223.94496-13-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230730134223.94496-1-jolsa@kernel.org>
 References: <20230730134223.94496-1-jolsa@kernel.org>
@@ -57,73 +57,47 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding elf_resolve_syms_offsets function that looks up
-offsets for symbols specified in syms array argument.
+Adding elf_resolve_pattern_offsets function that looks up
+offsets for symbols specified by pattern argument.
 
-Offsets are returned in allocated array with the 'cnt' size,
-that needs to be released by the caller.
+The 'pattern' argument allows wildcards (*?' supported).
+
+Offsets are returned in allocated array together with its
+size and needs to be released by the caller.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/elf.c             | 110 ++++++++++++++++++++++++++++++++
- tools/lib/bpf/libbpf_internal.h |   2 +
- 2 files changed, 112 insertions(+)
+ tools/lib/bpf/elf.c             | 61 +++++++++++++++++++++++++++++++++
+ tools/lib/bpf/libbpf.c          |  2 +-
+ tools/lib/bpf/libbpf_internal.h |  5 +++
+ 3 files changed, 67 insertions(+), 1 deletion(-)
 
 diff --git a/tools/lib/bpf/elf.c b/tools/lib/bpf/elf.c
-index 8a3f8a725981..8c512641c1d7 100644
+index 8c512641c1d7..9d0296c1726a 100644
 --- a/tools/lib/bpf/elf.c
 +++ b/tools/lib/bpf/elf.c
-@@ -267,3 +267,113 @@ long elf_find_func_offset_from_file(const char *binary_path, const char *name)
+@@ -377,3 +377,64 @@ int elf_resolve_syms_offsets(const char *binary_path, int cnt,
  	elf_close(&elf_fd);
- 	return ret;
+ 	return err;
  }
 +
-+struct symbol {
-+	const char *name;
-+	int bind;
-+	int idx;
-+};
-+
-+static int symbol_cmp(const void *a, const void *b)
-+{
-+	const struct symbol *sym_a = a;
-+	const struct symbol *sym_b = b;
-+
-+	return strcmp(sym_a->name, sym_b->name);
-+}
-+
 +/*
-+ * Return offsets in @poffsets for symbols specified in @syms array argument.
-+ * On success returns 0 and offsets are returned in allocated array with @cnt
-+ * size, that needs to be released by the caller.
++ * Return offsets in @poffsets for symbols specified by @pattern argument.
++ * On success returns 0 and offsets are returned in allocated @poffsets
++ * array with the @pctn size, that needs to be released by the caller.
 + */
-+int elf_resolve_syms_offsets(const char *binary_path, int cnt,
-+			     const char **syms, unsigned long **poffsets)
++int elf_resolve_pattern_offsets(const char *binary_path, const char *pattern,
++				unsigned long **poffsets, size_t *pcnt)
 +{
-+	int sh_types[2] = { SHT_DYNSYM, SHT_SYMTAB };
-+	int err = 0, i, cnt_done = 0;
-+	unsigned long *offsets;
-+	struct symbol *symbols;
++	int sh_types[2] = { SHT_SYMTAB, SHT_DYNSYM };
++	unsigned long *offsets = NULL;
++	size_t cap = 0, cnt = 0;
 +	struct elf_fd elf_fd;
++	int err = 0, i;
 +
 +	err = elf_open(binary_path, &elf_fd);
 +	if (err)
 +		return err;
-+
-+	offsets = calloc(cnt, sizeof(*offsets));
-+	symbols = calloc(cnt, sizeof(*symbols));
-+
-+	if (!offsets || !symbols) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	for (i = 0; i < cnt; i++) {
-+		symbols[i].name = syms[i];
-+		symbols[i].idx = i;
-+	}
-+
-+	qsort(symbols, cnt, sizeof(*symbols), symbol_cmp);
 +
 +	for (i = 0; i < ARRAY_SIZE(sh_types); i++) {
 +		struct elf_sym_iter iter;
@@ -136,67 +110,70 @@ index 8a3f8a725981..8c512641c1d7 100644
 +			goto out;
 +
 +		while ((sym = elf_sym_iter_next(&iter))) {
-+			unsigned long sym_offset = elf_sym_offset(sym);
-+			int bind = GELF_ST_BIND(sym->sym.st_info);
-+			struct symbol *found, tmp = {
-+				.name = sym->name,
-+			};
-+			unsigned long *offset;
-+
-+			found = bsearch(&tmp, symbols, cnt, sizeof(*symbols), symbol_cmp);
-+			if (!found)
++			if (!glob_match(sym->name, pattern))
 +				continue;
 +
-+			offset = &offsets[found->idx];
-+			if (*offset > 0) {
-+				/* same offset, no problem */
-+				if (*offset == sym_offset)
-+					continue;
-+				/* handle multiple matches */
-+				if (found->bind != STB_WEAK && bind != STB_WEAK) {
-+					/* Only accept one non-weak bind. */
-+					pr_warn("elf: ambiguous match found '%s@%lu' in '%s' previous offset %lu\n",
-+						sym->name, sym_offset, binary_path, *offset);
-+					err = -ESRCH;
-+					goto out;
-+				} else if (bind == STB_WEAK) {
-+					/* already have a non-weak bind, and
-+					 * this is a weak bind, so ignore.
-+					 */
-+					continue;
-+				}
-+			} else {
-+				cnt_done++;
-+			}
-+			*offset = sym_offset;
-+			found->bind = bind;
++			err = libbpf_ensure_mem((void **) &offsets, &cap, sizeof(*offsets),
++						cnt + 1);
++			if (err)
++				goto out;
++
++			offsets[cnt++] = elf_sym_offset(sym);
 +		}
++
++		/* If we found anything in the first symbol section,
++		 * do not search others to avoid duplicates.
++		 */
++		if (cnt)
++			break;
 +	}
 +
-+	if (cnt != cnt_done) {
++	if (cnt) {
++		*poffsets = offsets;
++		*pcnt = cnt;
++	} else {
 +		err = -ENOENT;
-+		goto out;
 +	}
-+
-+	*poffsets = offsets;
 +
 +out:
-+	free(symbols);
 +	if (err)
 +		free(offsets);
 +	elf_close(&elf_fd);
 +	return err;
 +}
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 1bdda3f8c865..445953a4d8fc 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -10551,7 +10551,7 @@ struct bpf_link *bpf_program__attach_ksyscall(const struct bpf_program *prog,
+ }
+ 
+ /* Adapted from perf/util/string.c */
+-static bool glob_match(const char *str, const char *pat)
++bool glob_match(const char *str, const char *pat)
+ {
+ 	while (*str && *pat && *pat != '*') {
+ 		if (*pat == '?') {      /* Matches any single character */
 diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 0bbcd8e6fdc5..92851c5f912d 100644
+index 92851c5f912d..ead551318fec 100644
 --- a/tools/lib/bpf/libbpf_internal.h
 +++ b/tools/lib/bpf/libbpf_internal.h
-@@ -589,4 +589,6 @@ struct elf_fd {
- int elf_open(const char *binary_path, struct elf_fd *elf_fd);
- void elf_close(struct elf_fd *elf_fd);
+@@ -578,6 +578,8 @@ static inline bool is_pow_of_2(size_t x)
+ #define PROG_LOAD_ATTEMPTS 5
+ int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
  
-+int elf_resolve_syms_offsets(const char *binary_path, int cnt,
-+			     const char **syms, unsigned long **poffsets);
++bool glob_match(const char *str, const char *pat);
++
+ long elf_find_func_offset(Elf *elf, const char *binary_path, const char *name);
+ long elf_find_func_offset_from_file(const char *binary_path, const char *name);
+ 
+@@ -591,4 +593,7 @@ void elf_close(struct elf_fd *elf_fd);
+ 
+ int elf_resolve_syms_offsets(const char *binary_path, int cnt,
+ 			     const char **syms, unsigned long **poffsets);
++int elf_resolve_pattern_offsets(const char *binary_path, const char *pattern,
++				 unsigned long **poffsets, size_t *pcnt);
++
  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
 -- 
 2.41.0
