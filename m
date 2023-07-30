@@ -1,141 +1,125 @@
-Return-Path: <bpf+bounces-6380-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6381-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A9C97685D0
-	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 15:47:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4916A7685D4
+	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 15:49:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABA081C20925
-	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 13:47:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 008652815E4
+	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 13:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9746F2119;
-	Sun, 30 Jul 2023 13:47:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF1C3D75;
+	Sun, 30 Jul 2023 13:49:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D882363
-	for <bpf@vger.kernel.org>; Sun, 30 Jul 2023 13:47:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5552CC433C8;
-	Sun, 30 Jul 2023 13:47:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690724829;
-	bh=RY6UMDMXK1iJghRtWzlILqa6pOuuQe01XR9ZONDF4kM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TeJc0W0yv2BubUomWnaUpC6bNwcHcvoyiaxPt6/nhOY2Kf1o5QtizYd3ioa0TdoH2
-	 bQf9XhqkdztLjumI4tKST/Sc5XO9oxl+5LjDa/gMsYzfyXYLPIzWVxxUTsDr51ozd8
-	 S8BLxdqsxlXkxRX+MqIrp/srBgyZg44vmzrQFRTATjrcoUv3j97ymtUpHbuAPmGqHu
-	 Mnd2dp0wRC6v1jmtlbLuaZ0vteuDJJllcu5VuVudh4azVLUicWZ0gcmRketmCIt8BW
-	 MLDPGo1LxSzzdHamFPcu1lllLLOuOmmUkPDFaRl0Ne6lgBQzpU9mOH4BAp6nhgnRCu
-	 3+CDuYmJYFuCg==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCHv5 bpf-next 28/28] selftests/bpf: Add extra link to uprobe_multi tests
-Date: Sun, 30 Jul 2023 15:42:23 +0200
-Message-ID: <20230730134223.94496-29-jolsa@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230730134223.94496-1-jolsa@kernel.org>
-References: <20230730134223.94496-1-jolsa@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DEA8363;
+	Sun, 30 Jul 2023 13:49:27 +0000 (UTC)
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6BC10C1;
+	Sun, 30 Jul 2023 06:49:25 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-403b36a4226so16579761cf.0;
+        Sun, 30 Jul 2023 06:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690724964; x=1691329764;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FlliIXo6uvrh08ojtOL3l75jp+3FAUoZdbrhJ9gY36E=;
+        b=qEe/zN7auL/09nK5d8mKb1+/OjEMFoMxKz8xc6T/ntSdzi8G+npmr55x3t1SxgXuMx
+         +VukRHmefryMS0onazV7SximRLqYA8oa8Rj0dUlD3Z6no2jvnsOc6lF4Cxb2i8up01S1
+         etk9hJvHq+hOKAlQgVk0Adox4LTETi171kcFiy6IB1l1qZzMrE9dYjIS2uv+TsF4WTcq
+         V+m4NPnuWIg/5OxtWLX5uSQ0qsmtvGx5Xjj+/V74cPcLDhWYEqxDv2RgkO4M6qJPipgw
+         3zhqkU8eUtO3Phz2it6QzkiunhjTnxtBKH8SWZRSEsLAEoTZs4SK9MC5zN2KOqBkuZZv
+         9eEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690724964; x=1691329764;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FlliIXo6uvrh08ojtOL3l75jp+3FAUoZdbrhJ9gY36E=;
+        b=ijkFFWXswG9d5CBxtKTvNIyGrFJnKATxwpHzdd1+rmRjJ1YXVFx0oXv9JKhj+pjgIf
+         raLISYXt3hn+Tv6rWSaTi1BxVT266qNe/cErqmOgjV02Zr8V1SQ80wFhCtB8dZFGZKag
+         iFpbn2tnmaiqzeD8UYnQUA24FIo/JSC3RsvlYkdnAk7MtanqAuG/8dGL99qkTYlCo6bu
+         TtGth35OoeH6Lx7NSUjvHtNJpCt2vElvTi9aLjw+NDr9lPsa7N+/5OcXUiBZcbgZ4/2m
+         siAtMfrS8Qv+FffB5hd3I1Ma/d4QqCrjM6Yo1Lr4Ao8qcTerQMwIFGy8egc2Ve74ALaZ
+         892w==
+X-Gm-Message-State: ABy/qLZiReVMVA+0Ml9JfuLr04T5Ur8/zdQggn0Hesoz5lyFozDUUqxZ
+	l05Oc3JlkzBP8mBocq1LkwyeXQQJvuaE+6B9oiIMHjJZEc+Pbyg9
+X-Google-Smtp-Source: APBJJlE8m37sRUm45VC3Dw3ekTbcowEPlAHwCfE8/e5sWDKU9fPzGQnSEePTwCLFkzQcghx6XQHPt+51Ako5OsdBuy8=
+X-Received: by 2002:a05:622a:1212:b0:403:c2dc:929d with SMTP id
+ y18-20020a05622a121200b00403c2dc929dmr7268810qtx.48.1690724964385; Sun, 30
+ Jul 2023 06:49:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230730114951.74067-1-hffilwlqm@gmail.com>
+In-Reply-To: <20230730114951.74067-1-hffilwlqm@gmail.com>
+From: Manjusaka <lizheao940510@gmail.com>
+Date: Sun, 30 Jul 2023 21:49:13 +0800
+Message-ID: <CAFYRFEw98BhpcLyFdwivLcy5M6hk3fDRcWZVtUytSw7kNUQXRQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/2] bpf, xdp: Add tracepoint to xdp attaching failure
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org, rostedt@goodmis.org, 
+	mhiramat@kernel.org, mykolal@fb.com, shuah@kernel.org, tangyeechou@gmail.com, 
+	kernel-patches-bot@fb.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Attaching extra program to same functions system wide for api
-and link tests.
+This patch is very important to help us to debug the xdp program. At
+the same time, we can make some monitoring tools to observe the kernel
+status by using this trace event
 
-This way we can test the pid filter works properly when there's
-extra system wide consumer on the same uprobe that will trigger
-the original uprobe handler.
+=E6=9D=8E=E8=80=85=E7=92=88 & Zheaoli
 
-We expect to have the same counts as before.
+Email: lizheao940510@gmail.com
+Github: https://github.com/Zheaoli
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../bpf/prog_tests/uprobe_multi_test.c          | 17 +++++++++++++++++
- .../testing/selftests/bpf/progs/uprobe_multi.c  |  6 ++++++
- 2 files changed, 23 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-index 32704a2c7184..55a9c1bfa098 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-@@ -184,6 +184,12 @@ __test_attach_api(const char *binary, const char *pattern, struct bpf_uprobe_mul
- 	if (!ASSERT_OK_PTR(skel->links.uretprobe_sleep, "bpf_program__attach_uprobe_multi"))
- 		goto cleanup;
- 
-+	opts->retprobe = false;
-+	skel->links.uprobe_extra = bpf_program__attach_uprobe_multi(skel->progs.uprobe_extra, -1,
-+								    binary, pattern, opts);
-+	if (!ASSERT_OK_PTR(skel->links.uprobe_extra, "bpf_program__attach_uprobe_multi"))
-+		goto cleanup;
-+
- 	uprobe_multi_test_run(skel, child);
- 
- cleanup:
-@@ -240,6 +246,7 @@ static void __test_link_api(struct child *child)
- 		"uprobe_multi_func_2",
- 		"uprobe_multi_func_3",
- 	};
-+	int link_extra_fd = -1;
- 	int err;
- 
- 	err = elf_resolve_syms_offsets(path, 3, syms, (unsigned long **) &offsets);
-@@ -278,6 +285,14 @@ static void __test_link_api(struct child *child)
- 	link4_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &opts);
- 	if (!ASSERT_GE(link4_fd, 0, "link4_fd"))
- 		goto cleanup;
-+
-+	opts.kprobe_multi.flags = 0;
-+	opts.uprobe_multi.pid = 0;
-+	prog_fd = bpf_program__fd(skel->progs.uprobe_extra);
-+	link_extra_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &opts);
-+	if (!ASSERT_GE(link_extra_fd, 0, "link_extra_fd"))
-+		goto cleanup;
-+
- 	uprobe_multi_test_run(skel, child);
- 
- cleanup:
-@@ -289,6 +304,8 @@ static void __test_link_api(struct child *child)
- 		close(link3_fd);
- 	if (link4_fd >= 0)
- 		close(link4_fd);
-+	if (link_extra_fd >= 0)
-+		close(link_extra_fd);
- 
- 	uprobe_multi__destroy(skel);
- 	free(offsets);
-diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-index ec648a6699e6..419d9aa28fce 100644
---- a/tools/testing/selftests/bpf/progs/uprobe_multi.c
-+++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-@@ -93,3 +93,9 @@ int uretprobe_sleep(struct pt_regs *ctx)
- 	uprobe_multi_check(ctx, true, true);
- 	return 0;
- }
-+
-+SEC("uprobe.multi//proc/self/exe:uprobe_multi_func_*")
-+int uprobe_extra(struct pt_regs *ctx)
-+{
-+	return 0;
-+}
--- 
-2.41.0
-
+Leon Hwang <hffilwlqm@gmail.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=8830=E6=97=
+=A5=E5=91=A8=E6=97=A5 19:50=E5=86=99=E9=81=93=EF=BC=9A
+>
+> This series introduces a new tracepoint in bpf_xdp_link_attach(). By
+> this tracepoint, error message will be captured when error happens in
+> dev_xdp_attach(), e.g. invalid attaching flags.
+>
+> v3 -> v4:
+> * Fix selftest-crashed issue.
+>
+> Leon Hwang (2):
+>   bpf, xdp: Add tracepoint to xdp attaching failure
+>   selftests/bpf: Add testcase for xdp attaching failure tracepoint
+>
+>  include/trace/events/xdp.h                    | 17 +++++
+>  net/core/dev.c                                |  5 +-
+>  .../selftests/bpf/prog_tests/xdp_attach.c     | 65 +++++++++++++++++++
+>  .../bpf/progs/test_xdp_attach_fail.c          | 54 +++++++++++++++
+>  4 files changed, 140 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_attach_fai=
+l.c
+>
+>
+> base-commit: a33d978500acd8fb67efac9773ba0a8502c1ff06
+> --
+> 2.41.0
+>
+>
 
