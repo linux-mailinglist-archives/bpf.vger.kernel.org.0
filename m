@@ -1,113 +1,224 @@
-Return-Path: <bpf+bounces-6350-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6351-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30654768581
-	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 15:20:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B97BD7685A7
+	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 15:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46EB41C209CF
-	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 13:20:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7367828171C
+	for <lists+bpf@lfdr.de>; Sun, 30 Jul 2023 13:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC9E1FD6;
-	Sun, 30 Jul 2023 13:19:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E19652119;
+	Sun, 30 Jul 2023 13:35:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CA2363
-	for <bpf@vger.kernel.org>; Sun, 30 Jul 2023 13:19:55 +0000 (UTC)
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04CB10B
-	for <bpf@vger.kernel.org>; Sun, 30 Jul 2023 06:19:54 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bc0d39b52cso1277655ad.2
-        for <bpf@vger.kernel.org>; Sun, 30 Jul 2023 06:19:54 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAEE6363;
+	Sun, 30 Jul 2023 13:35:46 +0000 (UTC)
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C0810FF;
+	Sun, 30 Jul 2023 06:35:45 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-403b6b7c0f7so24194111cf.0;
+        Sun, 30 Jul 2023 06:35:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690723194; x=1691327994;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xe19FSyqVMtSJothuV+9HnDqwn9ZBzV0WLnzrMtLXqI=;
-        b=V/qUzZPl2C2fJiVrHo1ek0bN6LOIbGz0QJ2SNo0yUiouo4yAk+SZbOXMvIMbLmOL+Q
-         PNyEmwTg+lr+3oW/M2WEwzyb3XVJohKAFYERiXUACMMOevkatBUAtDmDGzgTRlQbXEed
-         Kp3b2KOR1aeyyT7WpYmSa/iByeX+NpQ+oAhxxWZp3A7upUn+t4wB9WTtvd6tDrwlibV/
-         wS82SrERCEN0prQsTVUaK/solx2On8AiHoIcl1EcXnKY6madqoTeHDX2KfO4ACzUTQWq
-         6zqppNtcYDpnaF1qMOlYy7P7fJcMoDID4PHAVUbJuDwDka/KE8uKmjmvP4ewlVfu9cwh
-         s74w==
+        d=gmail.com; s=20221208; t=1690724144; x=1691328944;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AJ5xsFH8IhLw6wkZNuYKRHa8h8wKy8G/E+zV8buPrmw=;
+        b=YDNOwdaUguRv/a9duChxdEJCoe6LD73gsYc3lIwYWIqZ3MpPSt5H663nitX24LLS0f
+         hZauwBkAZmTGJlqcmrgvQmyGGMXqKpC5PQwlgP3OoMZbiqMn/rwfm5Go7nu8z1X1ERTp
+         JBx9ekZ/B+115+Ks6XwQmElh2Z9y413Py1NSqIosv02xmYRSMHuJYwKzvHKm2IQhuVBR
+         NyiKzPUpADWIXTN73GwURKtZUUGtMyhRrSNzatOdb7XG70luLlmGTScksRCr7bMNM7zg
+         nIwfzIB7K3I9dpu9v7+HoVpLdIeE+DZH0cQmDnK5MJypRRfXziiZOyVIALlQAjvaocSF
+         QwXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690723194; x=1691327994;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xe19FSyqVMtSJothuV+9HnDqwn9ZBzV0WLnzrMtLXqI=;
-        b=SRArD4fYLzD1N4JFzXMm/MTB2POEE6UA1Wt1m5OuENC9WIPjRNzSGEsViUWOt53hiQ
-         sAe8b9k+pLQdFJm7kn+TMgcyxp4GaGTitYmc9k7uiN9UbFwpm9D+cTqLbsb4N968Url2
-         6QXqVDBlkNxilkla5cZkjgdjiEqOMwj+Z+ookbqyKw2M0/vNGw2WAKRrmF1vRyp6Lalx
-         VWwA3Ph9vFMzYb+6LAh5E2k9vEBFZvNzxAHv6ks/DZRlI+hOP5IDrMHg1yOzV+8AZ5kC
-         e7Ij4TWzmU2gZSNwgZBmTd/L3/RDsnH0ASrxk5P/ZANWmW1JpWYt33++gyDE5YpEmhgl
-         3qHg==
-X-Gm-Message-State: ABy/qLadvmX0uD0G3MI55Q99UPh4QAXKKwIJM2gNlDHXdNfdnw1flOUf
-	QFSvtFtmzV/PYgYiwe3fMzk=
-X-Google-Smtp-Source: APBJJlFhLL4w/TUxkKxMNKA43NH01EhQ9PdJy4NpTiPDx0o9DsuWqs8TzldfKmK5wA/8g3crgaqq8Q==
-X-Received: by 2002:a17:902:70c7:b0:1ba:1704:8a12 with SMTP id l7-20020a17090270c700b001ba17048a12mr6487132plt.45.1690723194166;
-        Sun, 30 Jul 2023 06:19:54 -0700 (PDT)
-Received: from [192.168.1.9] ([222.252.65.171])
-        by smtp.gmail.com with ESMTPSA id w5-20020a1709029a8500b001b03cda6389sm6658317plp.10.2023.07.30.06.19.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Jul 2023 06:19:53 -0700 (PDT)
-Message-ID: <cc5a6736-5fa8-1bae-8649-e113fb32c483@gmail.com>
-Date: Sun, 30 Jul 2023 20:19:51 +0700
+        d=1e100.net; s=20221208; t=1690724144; x=1691328944;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=AJ5xsFH8IhLw6wkZNuYKRHa8h8wKy8G/E+zV8buPrmw=;
+        b=a0/g45dbzuWD6OtrB+c41r4BD87JQ95+RK1lkNqmETc5/6zrHTFvjg3vxPcBQoTes9
+         nqr/a3/RqnwfcUe2IpWy6eVgPHoEUgfxBAH4GWjarD1T9DJKt6Mb/k50FCX/Ob5D9fks
+         lKGXGouV1CRJzTlkHFoGBGEn60vIwpwycZDp3Vsi+KR56oZjc7xOGegyLhGJqB+dt/OC
+         ZU53/VD4+uz3Gi98mciVFAzv3PnydUVQULW7nExken2jIonthZSgDC6Hi8tx/UEZETXF
+         xsX6KMeT+gD8b/s9wKJ11usextR1kpHKYamsBrXkSWfpcUt+q4i8J61CCJDotd0Qel++
+         wiUQ==
+X-Gm-Message-State: ABy/qLYQQEeKwhL8RmlKUgQVZbwOyZ6/KCpTZ44TCW1Av/ocLgaO4shh
+	NBOGFMOesJ5vvYvcAD+BG8U=
+X-Google-Smtp-Source: APBJJlFFwM1M8eKZU6q7iLMpg2JH429nyXoHSISp+LuT7GAcLSEZC7MM5Kw5XDCXA9fxGqM8SiGJ6Q==
+X-Received: by 2002:a05:622a:1646:b0:403:a814:ef4d with SMTP id y6-20020a05622a164600b00403a814ef4dmr7965167qtj.49.1690724143902;
+        Sun, 30 Jul 2023 06:35:43 -0700 (PDT)
+Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
+        by smtp.gmail.com with ESMTPSA id x1-20020ac87001000000b00402ed9adfa1sm2711309qtm.87.2023.07.30.06.35.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jul 2023 06:35:43 -0700 (PDT)
+Date: Sun, 30 Jul 2023 09:35:43 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: David Howells <dhowells@redhat.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: dhowells@redhat.com, 
+ syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>, 
+ bpf@vger.kernel.org, 
+ brauner@kernel.org, 
+ davem@davemloft.net, 
+ dsahern@kernel.org, 
+ edumazet@google.com, 
+ linux-fsdevel@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ pabeni@redhat.com, 
+ syzkaller-bugs@googlegroups.com, 
+ viro@zeniv.linux.org.uk
+Message-ID: <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch>
+In-Reply-To: <792238.1690667367@warthog.procyon.org.uk>
+References: <20230718160737.52c68c73@kernel.org>
+ <000000000000881d0606004541d1@google.com>
+ <0000000000001416bb06004ebf53@google.com>
+ <792238.1690667367@warthog.procyon.org.uk>
+Subject: RE: Endless loop in udp with MSG_SPLICE_READ - Re: [syzbot] [fs?]
+ INFO: task hung in pipe_release (4)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] samples/bpf: Fix build out of source tree
-Content-Language: en-US
-To: Stanislav Fomichev <sdf@google.com>
-Cc: ast <ast@kernel.org>, daniel <daniel@iogearbox.net>,
- andrii <andrii@kernel.org>, "martin.lau" <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>,
- linux-kernel-mentees <linux-kernel-mentees@lists.linuxfoundation.org>
-References: <2ba1c076-f5bf-432f-50c1-72c845403167@gmail.com>
- <CAKH8qBtJ-Nb--BqH+J6K4S++J7J-8uHTPewS3BrVA86GBry=sQ@mail.gmail.com>
-From: Anh Tuan Phan <tuananhlfc@gmail.com>
-In-Reply-To: <CAKH8qBtJ-Nb--BqH+J6K4S++J7J-8uHTPewS3BrVA86GBry=sQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+David Howells wrote:
+> Hi Jakub, Willem,
+> 
+> I think I'm going to need your help with this one.
+> 
+> > > syzbot has bisected this issue to:
+> > > 
+> > > commit 7ac7c987850c3ec617c778f7bd871804dc1c648d
+> > > Author: David Howells <dhowells@redhat.com>
+> > > Date:   Mon May 22 12:11:22 2023 +0000
+> > > 
+> > >     udp: Convert udp_sendpage() to use MSG_SPLICE_PAGES
+> > > 
+> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15853bcaa80000
+> > > start commit:   3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
+> > > git tree:       upstream
+> > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=17853bcaa80000
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=13853bcaa80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=150188feee7071a7
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=f527b971b4bdc8e79f9e
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a86682a80000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1520ab6ca80000
+> > > 
+> > > Reported-by: syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com
+> > > Fixes: 7ac7c987850c ("udp: Convert udp_sendpage() to use MSG_SPLICE_PAGES")
+> > > 
+> > > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> The issue that syzbot is triggering seems to be something to do with the
+> calculations in the "if (copy <= 0) { ... }" chunk in __ip_append_data() when
+> MSG_SPLICE_PAGES is in operation.
+> 
+> What seems to happen is that the test program uses sendmsg() + MSG_MORE to
+> loads a UDP packet with 1406 bytes of data to the MTU size (1434) and then
+> splices in 8 extra bytes.
+> 
+> 	r3 = socket$inet_udp(0x2, 0x2, 0x0)
+> 	setsockopt$sock_int(r3, 0x1, 0x6, &(0x7f0000000140)=0x32, 0x4)
+> 	bind$inet(r3, &(0x7f0000000000)={0x2, 0x0, @dev={0xac, 0x14, 0x14, 0x15}}, 0x10)
+> 	connect$inet(r3, &(0x7f0000000200)={0x2, 0x0, @broadcast}, 0x10)
+> 	sendmmsg(r3, &(0x7f0000000180)=[{{0x0, 0x0, 0x0}}, {{0x0, 0xfffffffffffffed3, &(0x7f0000000940)=[{&(0x7f00000006c0)='O', 0x57e}], 0x1}}], 0x4000000000003bd, 0x8800)
+> 	write$binfmt_misc(r1, &(0x7f0000000440)=ANY=[], 0x8)
+> 	splice(r0, 0x0, r2, 0x0, 0x4ffe0, 0x0)
+> 
+> This results in some negative intermediate values turning up in the
+> calculations - and this results in the remaining length being made longer
+> from 8 to 14.
+> 
+> I added some printks (patch attached), resulting in the attached tracelines:
+> 
+> 	==>splice_to_socket() 7099
+> 	udp_sendmsg(8,8)
+> 	__ip_append_data(copy=-6,len=8, mtu=1434 skblen=1434 maxfl=1428)
+> 	pagedlen 14 = 14 - 0
+> 	copy -6 = 14 - 0 - 6 - 14
+> 	length 8 -= -6 + 0
+> 	__ip_append_data(copy=1414,len=14, mtu=1434 skblen=20 maxfl=1428)
+> 	copy=1414 len=14
+> 	skb_splice_from_iter(8,14)
+> 	__ip_append_data(copy=1406,len=6, mtu=1434 skblen=28 maxfl=1428)
+> 	copy=1406 len=6
+> 	skb_splice_from_iter(0,6)
+> 	__ip_append_data(copy=1406,len=6, mtu=1434 skblen=28 maxfl=1428)
+> 	copy=1406 len=6
+> 	skb_splice_from_iter(0,6)
+> 	__ip_append_data(copy=1406,len=6, mtu=1434 skblen=28 maxfl=1428)
+> 	copy=1406 len=6
+> 	skb_splice_from_iter(0,6)
+> 	__ip_append_data(copy=1406,len=6, mtu=1434 skblen=28 maxfl=1428)
+> 	copy=1406 len=6
+> 	skb_splice_from_iter(0,6)
+> 	copy=1406 len=6
+> 	skb_splice_from_iter(0,6)
+> 	...
+> 
+> 'copy' gets calculated as -6 because the maxfraglen (maxfl=1428) is 8 bytes
+> less than the amount of data then in the packet (skblen=1434).
+> 
+> 'copy' gets recalculated part way down as -6 from datalen (14) - transhdrlen
+> (0) - fraggap (6) - pagedlen (14).
+> 
+> datalen is 14 because it was length (8) + fraggap (6).
+> 
+> Inside skb_splice_from_iter(), we eventually end up in an enless loop in which
+> msg_iter.count is 0 and the length to be copied is 6.  It always returns 0
+> because there's nothing to copy, and so __ip_append_data() cycles round the
+> loop endlessly.
+> 
+> Any suggestion as to how to fix this?
 
+Still ingesting.
 
-On 7/28/23 23:30, Stanislav Fomichev wrote:
-> On Thu, Jul 27, 2023 at 5:43 PM Anh Tuan Phan <tuananhlfc@gmail.com> wrote:
->>
->> This commit fixes a few compilation issues when building out of source
->> tree. The command that I used to build samples/bpf:
->>
->> export KBUILD_OUTPUT=/tmp
->> make V=1 M=samples/bpf
->>
->> The compilation failed since it tried to find the header files in the
->> wrong places between output directory and source tree directory
-> 
-> I was going to test it locally, but I can't apply it. Patchwork also
-> complains about the same issue:
->   stderr: 'error: corrupt patch at line 33
-> 
-> Are you copy-pasting it to gmail maybe? (or manually edited it after
-> git format-patch?)
-> Maybe rebase, and resend properly with git send-email?
-> 
-It was the copy paste problem. I rebased and sent again by git
-send-email. Sorry for the inconvenient.
+The syzkaller repro runs in threaded mode, so syscalls should not be
+interpreted in order.
+
+There are two seemingly (but evidently not really) independent
+operations:
+
+One involving splicing
+
+    pipe(&(0x7f0000000100)={<r0=>0xffffffffffffffff, <r1=>0xffffffffffffffff})
+    r2 = socket$inet_udp(0x2, 0x2, 0x0)
+    write$binfmt_misc(r1, &(0x7f0000000440)=ANY=[], 0x8)
+    splice(r0, 0x0, r2, 0x0, 0x4ffe0, 0x0)
+    close(r2)
+
+And separately the MSG_MORE transmission that you mentioned
+
+    r3 = socket$inet_udp(0x2, 0x2, 0x0)
+    setsockopt$sock_int(r3, 0x1, 0x6, &(0x7f0000000140)=0x32, 0x4)
+    bind$inet(r3, &(0x7f0000000000)={0x2, 0x0, @dev={0xac, 0x14, 0x14, 0x15}}, 0x10)
+    connect$inet(r3, &(0x7f0000000200)={0x2, 0x0, @broadcast}, 0x10)
+    sendmmsg(r3, &(0x7f0000000180)=[{{0x0, 0x0, 0x0}}, {{0x0, 0xfffffffffffffed3, &(0x7f0000000940)=[{&(0x7f00000006c0)='O', 0x57e}], 0x1}}], 0x4000000000003bd, 0x8800)
+
+This second program also sets setsockopt SOL_SOCKET/SO_BROADCAST. That
+is likely not some random noise in the program (but that can be easily
+checked, by removing it -- assuming the repro triggers quickly).
+
+Question is whether the infinite loop happens on the r2, the socket
+involving MSG_SPLICE_PAGES, or r3, the socket involving SO_BROADCAST.
+If the second, on the surface it would seem that splicing is entirely
+unrelated.
 
 
