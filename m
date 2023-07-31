@@ -1,181 +1,112 @@
-Return-Path: <bpf+bounces-6421-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0447C768FC7
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 10:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 161DB7691B3
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 11:29:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D847281612
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 08:14:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C443828160B
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 09:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30CB11C85;
-	Mon, 31 Jul 2023 08:14:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA7F1774F;
+	Mon, 31 Jul 2023 09:28:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50E4883D
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 08:14:21 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4888F35A2
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 01:13:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690791238;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=84A7MRcr6j0wpILuwXBGqg5ue7ADRIvAJFMR99EWls0=;
-	b=gJ7bkgFvSZ0SGvwmSLhNPH3XDDVyeJAk9rHQDo3tggfyMnlRwM26y80BiCOpL45XsuzxvM
-	EnR0F0gkKa8baceTiyPTNJimDYwuGd/TnRh+wsKfnhVu5M9T2Lr0mMf5JCKmf5UsoRNpve
-	8ASe8cpW0YRLQ+A9BX2C93NeDmm99lY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-30-8IG60DfBNI6WHWTz4-XXtw-1; Mon, 31 Jul 2023 04:13:56 -0400
-X-MC-Unique: 8IG60DfBNI6WHWTz4-XXtw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 83470803470;
-	Mon, 31 Jul 2023 08:13:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id D687740C2063;
-	Mon, 31 Jul 2023 08:13:53 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch>
-References: <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch> <20230718160737.52c68c73@kernel.org> <000000000000881d0606004541d1@google.com> <0000000000001416bb06004ebf53@google.com> <792238.1690667367@warthog.procyon.org.uk>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: dhowells@redhat.com, Jakub Kicinski <kuba@kernel.org>,
-    syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>,
-    bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
-    dsahern@kernel.org, edumazet@google.com,
-    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-    netdev@vger.kernel.org, pabeni@redhat.com,
-    syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: Endless loop in udp with MSG_SPLICE_READ - Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 367A11426B
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 09:28:51 +0000 (UTC)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9616111A
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 02:28:49 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-522bc9556f5so2213903a12.0
+        for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 02:28:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1690795728; x=1691400528;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=wtH3YJMD11ClFBOSnTSJccRhxUCi2rBb0qglhfD80e4=;
+        b=hpEhwkYRUgPwcYiX5zoW238M0RpToVCkf2zw8CHjXVjUcpOhbFkx44f6DRF2fH3C/O
+         kIL36gVAKuHoEpU24X+lAGQ3NWBEAKledAPHkMu3sx53L6rTxWDl+x8mnjdn0ZH7kSml
+         s1ZDnBF/acdwWm6mCquKVy5KmvlDNEr+SnAjI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690795728; x=1691400528;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wtH3YJMD11ClFBOSnTSJccRhxUCi2rBb0qglhfD80e4=;
+        b=j5piyoZ4gUWJe0Uhv8KquexQkp3XHEC007rxBCg2kRMZIJi+BNtfN3YSfWKIG7L/h6
+         4Ch7eUZNzA1JN9w95z55CvSEuGPW968go7J5UG6w8fS/IkMCKrXXqyhbU6mSGk8wEHT3
+         Eu6gBqni3zmltaNpwRLXff1F1rlxFjH1yMwyzp0SuWbvLH1mojvPT970tfjTKnsaKQW5
+         AYOKjAXfwKnOD3EvtLB1pGF7CqUQ7tgxGdgvv14rnMpfbWxh2IBQRZGtaYbblNOVnwK3
+         iCmzoV6QojCUinqCjsv5SfoVPJ7mTSJr/BThl2dIKZy1oQgAhnbymQ14MZrRUmwQm9xz
+         XaNQ==
+X-Gm-Message-State: ABy/qLaIAahvhIsZ81AJqbSSt66WV2fh8gEZmWc9jOo5ACA48Ug42lKw
+	SYzTEWEtL9Fl7GXcddmluiGu9bAn5lhPyETH/s8=
+X-Google-Smtp-Source: APBJJlH5vz9bIOjc/NhazbMjjsF4NHsoCSJFQ/SXvy3HcL+W4PkPGZj3rOCrhgK6jwYyNkWtfd8x7A==
+X-Received: by 2002:a17:906:1053:b0:99c:441:ffa with SMTP id j19-20020a170906105300b0099c04410ffamr5972053ejj.29.1690795728002;
+        Mon, 31 Jul 2023 02:28:48 -0700 (PDT)
+Received: from cloudflare.com (79.184.136.135.ipv4.supernova.orange.pl. [79.184.136.135])
+        by smtp.gmail.com with ESMTPSA id a11-20020a17090680cb00b009892cca8ae3sm5856176ejx.165.2023.07.31.02.28.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 02:28:47 -0700 (PDT)
+References: <20230728064411.305576-1-tglozar@redhat.com>
+User-agent: mu4e 1.6.10; emacs 28.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: tglozar@redhat.com
+Cc: linux-kernel@vger.kernel.org, john.fastabend@gmail.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net] bpf: sockmap: Remove preempt_disable in
+ sock_map_sk_acquire
+Date: Mon, 31 Jul 2023 11:16:12 +0200
+In-reply-to: <20230728064411.305576-1-tglozar@redhat.com>
+Message-ID: <87ila0fn01.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <831027.1690791233.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 31 Jul 2023 09:13:53 +0100
-Message-ID: <831028.1690791233@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
 	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Willem,
 
-Here's a reduced testcase.  I doesn't require anything special; the key is
-that the amount of data placed in the packet by the send() - it's related =
-to
-the MTU size.  It needs to stuff in sufficient data to go over the
-fragmentation limit (I think).
+On Fri, Jul 28, 2023 at 08:44 AM +02, tglozar@redhat.com wrote:
+> From: Tomas Glozar <tglozar@redhat.com>
+>
+> Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
+> allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
+> GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exist
+> patchset notes for details).
+>
+> This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps to
+> BUG (sleeping function called from invalid context) on RT kernels.
+>
+> preempt_disable was introduced together with lock_sk and rcu_read_lock
+> in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and update
+> in parallel"), probably to match disabled migration of BPF programs, and
+> is no longer necessary.
+>
+> Remove preempt_disable to fix BUG in sock_map_update_common on RT.
+>
+> Signed-off-by: Tomas Glozar <tglozar@redhat.com>
+> ---
 
-In this case, my interface's MTU is 8192.  send() is sticking in 8161 byte=
-s of
-data and then the output from the aforeposted debugging patch is:
+We disable softirq and hold a spin lock when modifying the map/hash in
+sock_{map,hash}_update_common so this LGTM:
 
-	=3D=3D>splice_to_socket() 6630
-	udp_sendmsg(8,8)
-	__ip_append_data(copy=3D-1,len=3D8, mtu=3D8192 skblen=3D8189 maxfl=3D8188=
-)
-	pagedlen 9 =3D 9 - 0
-	copy -1 =3D 9 - 0 - 1 - 9
-	length 8 -=3D -1 + 0
-	__ip_append_data(copy=3D8172,len=3D9, mtu=3D8192 skblen=3D20 maxfl=3D8188=
-)
-	copy=3D8172 len=3D9
-	skb_splice_from_iter(8,9)
-	__ip_append_data(copy=3D8164,len=3D1, mtu=3D8192 skblen=3D28 maxfl=3D8188=
-)
-	copy=3D8164 len=3D1
-	skb_splice_from_iter(0,1)
-	__ip_append_data(copy=3D8164,len=3D1, mtu=3D8192 skblen=3D28 maxfl=3D8188=
-)
-	copy=3D8164 len=3D1
-	skb_splice_from_iter(0,1)
-	__ip_append_data(copy=3D8164,len=3D1, mtu=3D8192 skblen=3D28 maxfl=3D8188=
-)
-	copy=3D8164 len=3D1
-	skb_splice_from_iter(0,1)
-	__ip_append_data(copy=3D8164,len=3D1, mtu=3D8192 skblen=3D28 maxfl=3D8188=
-)
-	copy=3D8164 len=3D1
-	skb_splice_from_iter(0,1)
-	copy=3D8164 len=3D1
-	skb_splice_from_iter(0,1)
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 
-It looks like send() pushes 1 byte over the fragmentation limit, then the
-splice sees -1 crop up, the length to be copied is increased by 1, but
-insufficient data is available and we go into an endless loop.
+You might want some extra tags:
 
----
-#define _GNU_SOURCE
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <netinet/in.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <sys/mman.h>
-#include <sys/uio.h>
-
-#define OSERROR(R, S) do { if ((long)(R) =3D=3D -1L) { perror((S)); exit(1=
-); } } while(0)
-
-int main()
-{
-	struct sockaddr_storage ss;
-	struct sockaddr_in sin;
-	void *buffer;
-	unsigned int tmp;
-	int pfd[2], sfd;
-	int res;
-
-	OSERROR(pipe(pfd), "pipe");
-
-	sfd =3D socket(AF_INET, SOCK_DGRAM, 0);
-	OSERROR(sfd, "socket/2");
-
-	memset(&sin, 0, sizeof(sin));
-	sin.sin_family =3D AF_INET;
-	sin.sin_port =3D htons(0);
-	sin.sin_addr.s_addr =3D htonl(0xc0a80601);
-#warning you might want to set the address here - this is 192.168.6.1
-	OSERROR(connect(sfd, (struct sockaddr *)&sin, sizeof(sin)), "connect");
-
-	buffer =3D mmap(NULL, 1024*1024, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_AN=
-ON, -1, 0);
-	OSERROR(buffer, "mmap");
-
-	OSERROR(send(sfd, buffer, 8161, MSG_CONFIRM|MSG_MORE), "send");
-#warning you need to adjust the length on the above line to match your MTU
-
-	OSERROR(write(pfd[1], buffer, 8), "write");
-
-	OSERROR(splice(pfd[0], 0, sfd, 0, 0x4ffe0ul, 0), "splice");
-	return 0;
-}
-
+Link: https://lore.kernel.org/all/20200224140131.461979697@linutronix.de/
+Fixes: 99ba2b5aba24 ("bpf: sockhash, disallow bpf_tcp_close and update in parallel")
 
