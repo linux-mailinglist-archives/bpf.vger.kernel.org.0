@@ -1,266 +1,184 @@
-Return-Path: <bpf+bounces-6446-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6447-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA29B76989E
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 15:57:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F15E76994E
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 16:21:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6413B2816C2
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 13:57:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 498F71C20C1E
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 14:21:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83A618AF7;
-	Mon, 31 Jul 2023 13:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DECB18B0A;
+	Mon, 31 Jul 2023 14:21:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF79A4429
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 13:57:05 +0000 (UTC)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EB7171B
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 06:56:44 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b74fa5e7d7so66644191fa.2
-        for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 06:56:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE85114F92
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 14:21:15 +0000 (UTC)
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6FAC9
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 07:21:14 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-686b91c2744so3230946b3a.0
+        for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 07:21:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google; t=1690811802; x=1691416602;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=//IuSF4aR8dDqdSUTPXRXM7wMeZmyHZKY6Im4lg/WZA=;
-        b=LmkI7deeD2ks/5C8RN/irm6cJromc4pVohQqFgm+kYIyM/FhhiHSbwR/wZtwbsAZ3Y
-         nhki4BBNcC4SYzhXv3w+vyXgnRyrS7U0A9AjcHduigl4wz3qK60pzT+Vaf22lkMNnXS5
-         GArHH+YQttOEsMC9C0qVcKcHFkAiGz5MNM5I5n0fmWRsHxGz79bc0Tr8CD0/zAm9qsGP
-         YtW2dyqPXFmRSfc8iiyhVjq211n8k2vMr8jdS4zOzLnPAxWsHwnTZ3kB2uV22HNnL9C5
-         V7jbptUdpJjN/bAWZzMx7/xvbs/CEKgqpYUZ/I0G8V2A4HzFtx+y+LqbFvaB18dskmWs
-         zf9g==
+        d=broadcom.com; s=google; t=1690813273; x=1691418073;
+        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xAO/UI2dPZAdRtT97dUt2izatcFeZ0w16/03gM5mWMo=;
+        b=Rq+eIgxdMJ7im79hqqzG9rMFq13DbHmAhdn50zFb4wC3b3mASVBbUAFHLJKS5K8OGp
+         Nai9gSPB4d/cIufAIYgoIXmhVsI1IJ1Kl22DvTathqX6TKYiaoqT8zHeCcB14C3aQHw9
+         3N2oihqgrs1mI7jlyPQrzhKUd7x4aAhgg4WKg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690811802; x=1691416602;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=//IuSF4aR8dDqdSUTPXRXM7wMeZmyHZKY6Im4lg/WZA=;
-        b=RU3iUvEMeZVffEpVFePuhl4/GZhdu7jJDSLfHI/Z0g3t9ZGRhrIL6W8X7Ztw2s7NRz
-         j+ftD/82eX7SWs99k5G6odgtpeWHXlJJede+UujpBFFvdX/chLP0vBnQzmBv732IUg6T
-         Jfw9vovoJFBfcrgN5Ahe11XSSubrmblHWWUp67NVRt0ojjZsPrQddeWuznsXn/IqVeyv
-         oZlSyIButn7eSErHkIIfogM8KOtnUN+hiDaAKXOzKWytdtVxHaBvzSCBIZQ0j5hYMDRV
-         dAGT/x5Wfw9ObKEqTrc/t/R78IkXIJL5F+URHrH65yZLUH6fCn6W3s13TgjB/py4tD4+
-         lX3w==
-X-Gm-Message-State: ABy/qLbWvnr2S936cEuRPzwKZ1eLnIOp0ZWrP8DpkQGB31OQoAViq0wR
-	DcJJIw0AlvMmYKmbz/scDlLJRA==
-X-Google-Smtp-Source: APBJJlHKc9Sq7znL8pmKS0GHJT9fHimiY4SCiPYkbNF+F1H/EbJPFLhADxI0WinnSPbnG2LtV5voIQ==
-X-Received: by 2002:a2e:8192:0:b0:2b6:dfef:d526 with SMTP id e18-20020a2e8192000000b002b6dfefd526mr39265ljg.11.1690811801505;
-        Mon, 31 Jul 2023 06:56:41 -0700 (PDT)
-Received: from ?IPV6:2a02:578:8593:1200:98dd:e30:7e10:82aa? ([2a02:578:8593:1200:98dd:e30:7e10:82aa])
-        by smtp.gmail.com with ESMTPSA id i9-20020a1709061cc900b0099b5a71b0bfsm6226337ejh.94.2023.07.31.06.56.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 06:56:41 -0700 (PDT)
-Message-ID: <b1f63c3f-5a26-4c69-af8f-216eaac19b69@tessares.net>
-Date: Mon, 31 Jul 2023 15:56:40 +0200
+        d=1e100.net; s=20221208; t=1690813273; x=1691418073;
+        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xAO/UI2dPZAdRtT97dUt2izatcFeZ0w16/03gM5mWMo=;
+        b=P9ftGBJG+g+sFM+7wYl3Km/v56e7P+fSyk8DD4i0InrcK/1NjdXoMh9oSp4b/XpK10
+         pabXN/aNUSVzOjnwE/PStfpFPE5ylndjMM+zZYeccBNkdeN56tYvRUZJ2dlag5Z5fpLS
+         EjGzY5wSykuootIgOzecQviFpdDTPKTddBDtQm464YnxkntQpu87RRAbwqM+8eyZA1ao
+         CyklRNf44qmW4n0TNpsIYYMwHLkovN5F02Fbt1mXPdj2nvNL+4Srma1gJcN/eAaholZ4
+         tHx7H2r4wj2zgSw5kHlGYokgspE2YqfJFj4hkqx5g6cIvcT35ZoFEbg9qmGh/24uStuw
+         lzfQ==
+X-Gm-Message-State: ABy/qLbFmRnCB+Vtxaa6aienv43CjCpXhIop5MPmZ6Wbpcr+pSv1J/rF
+	WLpqu+ZjpJ/WctihkP6RJVQ7wA==
+X-Google-Smtp-Source: APBJJlEdWPJN4hsI9u6pUKgTmy1cRMBjEwclpMPyfXui6YayZQtoVHK5zaFbE5EnTIVZQkYHsijycw==
+X-Received: by 2002:a05:6a00:891:b0:64f:aea5:7b49 with SMTP id q17-20020a056a00089100b0064faea57b49mr12552230pfj.17.1690813273075;
+        Mon, 31 Jul 2023 07:21:13 -0700 (PDT)
+Received: from lvnvda5233.lvn.broadcom.net ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id k12-20020aa790cc000000b00682c1db7551sm5509924pfk.49.2023.07.31.07.21.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 31 Jul 2023 07:21:12 -0700 (PDT)
+From: Michael Chan <michael.chan@broadcom.com>
+To: davem@davemloft.net
+Cc: netdev@vger.kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	gospo@broadcom.com,
+	bpf@vger.kernel.org,
+	somnath.kotur@broadcom.com
+Subject: [PATCH net 0/2] bnxt_en: 2 XDP bug fixes
+Date: Mon, 31 Jul 2023 07:20:41 -0700
+Message-Id: <20230731142043.58855-1-michael.chan@broadcom.com>
+X-Mailer: git-send-email 2.32.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC bpf-next v5] bpf: Force to MPTCP
-Content-Language: en-GB
-To: Stanislav Fomichev <sdf@google.com>
-Cc: Paul Moore <paul@paul-moore.com>, Geliang Tang <geliang.tang@suse.com>,
- Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, mptcp@lists.linux.dev, apparmor@lists.ubuntu.com,
- linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <3076188eb88cca9151a2d12b50ba1e870b11ce09.1689693294.git.geliang.tang@suse.com>
- <CAHC9VhS_LKdkEmm5_J5y34RpaRcTbg8==fpz8pMThDCjF6nYtQ@mail.gmail.com>
- <b41babb1-f0f2-dc2f-c2e3-1870107fbd9f@tessares.net>
- <ZMKxC+CFj4GbCklg@google.com>
- <1023fdeb-a45a-2e9e-cd2e-7e44e655e8fc@tessares.net>
- <ZMPyCt2uozns776Q@google.com>
-From: Matthieu Baerts <matthieu.baerts@tessares.net>
-In-Reply-To: <ZMPyCt2uozns776Q@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000009251ac0601c92482"
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Stanislav,
+--0000000000009251ac0601c92482
+Content-Transfer-Encoding: 8bit
 
-On 28/07/2023 18:51, Stanislav Fomichev wrote:
-> On 07/28, Matthieu Baerts wrote:
->> Hi Stanislav,
->>
->> On 27/07/2023 20:01, Stanislav Fomichev wrote:
->>> On 07/27, Matthieu Baerts wrote:
->>>> Hi Paul, Stanislav,
->>>>
->>>> On 18/07/2023 18:14, Paul Moore wrote:
->>>>> On Tue, Jul 18, 2023 at 11:21 AM Geliang Tang <geliang.tang@suse.com> wrote:
->>>>>>
->>>>>> As is described in the "How to use MPTCP?" section in MPTCP wiki [1]:
->>>>>>
->>>>>> "Your app can create sockets with IPPROTO_MPTCP as the proto:
->>>>>> ( socket(AF_INET, SOCK_STREAM, IPPROTO_MPTCP); ). Legacy apps can be
->>>>>> forced to create and use MPTCP sockets instead of TCP ones via the
->>>>>> mptcpize command bundled with the mptcpd daemon."
->>>>>>
->>>>>> But the mptcpize (LD_PRELOAD technique) command has some limitations
->>>>>> [2]:
->>>>>>
->>>>>>  - it doesn't work if the application is not using libc (e.g. GoLang
->>>>>> apps)
->>>>>>  - in some envs, it might not be easy to set env vars / change the way
->>>>>> apps are launched, e.g. on Android
->>>>>>  - mptcpize needs to be launched with all apps that want MPTCP: we could
->>>>>> have more control from BPF to enable MPTCP only for some apps or all the
->>>>>> ones of a netns or a cgroup, etc.
->>>>>>  - it is not in BPF, we cannot talk about it at netdev conf.
->>>>>>
->>>>>> So this patchset attempts to use BPF to implement functions similer to
->>>>>> mptcpize.
->>>>>>
->>>>>> The main idea is add a hook in sys_socket() to change the protocol id
->>>>>> from IPPROTO_TCP (or 0) to IPPROTO_MPTCP.
->>>>>>
->>>>>> [1]
->>>>>> https://github.com/multipath-tcp/mptcp_net-next/wiki
->>>>>> [2]
->>>>>> https://github.com/multipath-tcp/mptcp_net-next/issues/79
->>>>>>
->>>>>> v5:
->>>>>>  - add bpf_mptcpify helper.
->>>>>>
->>>>>> v4:
->>>>>>  - use lsm_cgroup/socket_create
->>>>>>
->>>>>> v3:
->>>>>>  - patch 8: char cmd[128]; -> char cmd[256];
->>>>>>
->>>>>> v2:
->>>>>>  - Fix build selftests errors reported by CI
->>>>>>
->>>>>> Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/79
->>>>>> Signed-off-by: Geliang Tang <geliang.tang@suse.com>
->>>>>> ---
->>>>>>  include/linux/bpf.h                           |   1 +
->>>>>>  include/linux/lsm_hook_defs.h                 |   2 +-
->>>>>>  include/linux/security.h                      |   6 +-
->>>>>>  include/uapi/linux/bpf.h                      |   7 +
->>>>>>  kernel/bpf/bpf_lsm.c                          |   2 +
->>>>>>  net/mptcp/bpf.c                               |  20 +++
->>>>>>  net/socket.c                                  |   4 +-
->>>>>>  security/apparmor/lsm.c                       |   8 +-
->>>>>>  security/security.c                           |   2 +-
->>>>>>  security/selinux/hooks.c                      |   6 +-
->>>>>>  tools/include/uapi/linux/bpf.h                |   7 +
->>>>>>  .../testing/selftests/bpf/prog_tests/mptcp.c  | 128 ++++++++++++++++--
->>>>>>  tools/testing/selftests/bpf/progs/mptcpify.c  |  17 +++
->>>>>>  13 files changed, 187 insertions(+), 23 deletions(-)
->>>>>>  create mode 100644 tools/testing/selftests/bpf/progs/mptcpify.c
->>>>>
->>>>> ...
->>>>>
->>>>>> diff --git a/security/security.c b/security/security.c
->>>>>> index b720424ca37d..bbebcddce420 100644
->>>>>> --- a/security/security.c
->>>>>> +++ b/security/security.c
->>>>>> @@ -4078,7 +4078,7 @@ EXPORT_SYMBOL(security_unix_may_send);
->>>>>>   *
->>>>>>   * Return: Returns 0 if permission is granted.
->>>>>>   */
->>>>>> -int security_socket_create(int family, int type, int protocol, int kern)
->>>>>> +int security_socket_create(int *family, int *type, int *protocol, int kern)
->>>>>>  {
->>>>>>         return call_int_hook(socket_create, 0, family, type, protocol, kern);
->>>>>>  }
->>>>>
->>>>> Using the LSM to change the protocol family is not something we want
->>>>> to allow.  I'm sorry, but you will need to take a different approach.
->>>>
->>>> @Paul: Thank you for your feedback. It makes sense and I understand.
->>>>
->>>> @Stanislav: Despite the fact the implementation was smaller and reusing
->>>> more code, it looks like we cannot go in the direction you suggested. Do
->>>> you think what Geliang suggested before in his v3 [1] can be accepted?
->>>>
->>>> (Note that the v3 is the same as the v1, only some fixes in the selftests.)
->>>
->>> We have too many hooks in networking, so something that doesn't add
->>> a new one is preferable :-(
->>
->> Thank you for your reply and the explanation, I understand.
->>
->>> Moreover, we already have a 'socket init' hook, but it runs a bit late.
->>
->> Indeed. And we cannot move it before the creation of the socket.
->>
->>> Is existing cgroup/sock completely unworkable? Is it possible to
->>> expose some new bpf_upgrade_socket_to(IPPROTO_MPTCP) kfunc which would
->>> call some new net_proto_family->upgrade_to(IPPROTO_MPTCP) to do the surgery?
->>> Or is it too hacky?
->>
->> I cannot judge if it is too hacky or not but if you think it would be
->> OK, please tell us :)
-> 
-> Maybe try and see how it goes? Doing the surgery to convert from tcp
-> to mptcp is probably hard, but it seems that we should be able to
-> do something like:
-> 
-> int upgrade_to(sock, sk) {
-> 	if (sk is not a tcp one) return -EINVAL;
-> 
-> 	sk_common_release(sk);
-> 	return inet6_create(net, sock, IPPROTO_MPTCP, false);
-> }
-> 
-> ?
-> 
-> The only thing I'm not sure about is whether you can call inet6_create
-> on a socket that has seen sk_common_release'd...
+The first patch fixes XDP page pool logic on systems with page size >=
+64K.  The second patch fixes the max_mtu setting when an XDP program
+supporting multi buffers is attached.
 
-Oh sorry, now I better understand your suggestion and the fact it is
-hacky. Good workaround, we can keep this in mind if there is no other
-solutions to avoid these create-release-create operations.
+Michael Chan (1):
+  bnxt_en: Fix max_mtu setting for multi-buf XDP
 
->>> Another option Alexei suggested is to add some fentry-like thing:
->>>
->>> noinline int update_socket_protocol(int protocol)
->>> {
->>> 	return protocol;
->>> }
->>> /* TODO: ^^^ add the above to mod_ret set */
->>>
->>> int __sys_socket(int family, int type, int protocol)
->>> {
->>> 	...
->>>
->>> 	protocol = update_socket_protocol(protocol);
->>>
->>> 	...
->>> }
->>>
->>> But it's also too problem specific it seems? And it's not cgroup-aware.
->>
->> It looks like it is what Geliang did in his v6. If it is the only
->> acceptable solution, I guess we can do without cgroup support. We can
->> continue the discussions in his v6 if that's easier.
-> 
-> Ack, that works too, let's see how other people feel about it. I'm
-> assuming in the bpf program we can always do bpf_get_current_cgroup_id()
-> to filter by cgroup.
+Somnath Kotur (1):
+  bnxt_en: Fix page pool logic for page size >= 64K
 
-Good point, that works too and looks enough!
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     | 59 +++++++++++--------
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |  6 +-
+ 2 files changed, 39 insertions(+), 26 deletions(-)
 
-Cheers,
-Matt
 -- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+2.30.1
+
+
+--0000000000009251ac0601c92482
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
+/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
+L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
+kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
+5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
+hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
+E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
+aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDhZzIc7bfeS9lxcn/ugH5EZ6z1YJoQi
+5Iil4Xmg4tcbMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDcz
+MTE0MjExM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
+ATANBgkqhkiG9w0BAQEFAASCAQCUuc/1EhHwL4ThfMP03NgTqYbm5Xa7Blu22knRIiD66uJHOCrt
+g5EGU6NeWiVxvUVmAEEoBKRJmAhoQIUqmAhgmEeWHcweV6panrEVdWv9FEH13lbSI4hdxqhrDRd1
+GrFxRy+AXpAevwSjet9PL7hAOZGIbrRCB3oW5QajBR3KPaECijsIk1L37Yfd0/4Db/F9Z1RMrNIX
+GeaYb47jYyM1Yt0WtZ1Sx1YpDMu0IWtDNEPGoDZsZ4KuMbsucPnvh2ACo8IxvPqbJmL0JIYBPhLR
+RTAnNYJnYZD8WXPmzx8iono8TiCg24o/MFBUqiWIqpmaxSY8ACxH4lZz5jnNh3mp
+--0000000000009251ac0601c92482--
 
