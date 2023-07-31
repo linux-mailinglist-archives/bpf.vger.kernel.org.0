@@ -1,191 +1,151 @@
-Return-Path: <bpf+bounces-6426-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6427-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65AD67692C7
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 12:10:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCBE47692D2
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 12:13:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B1192812DC
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 10:10:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7781C2812F1
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 10:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC2E17FE3;
-	Mon, 31 Jul 2023 10:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14EB217FEB;
+	Mon, 31 Jul 2023 10:13:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A30017744
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 10:10:23 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730B6E3
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 03:10:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690798221;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5xKuqYOqmlVZDJvMolVVhkUwvpv3MXvZb5ujWB1Ho20=;
-	b=VnxOu1GCUy4IDpVPIEByr8C2wLfA9NvKuTh5fyaIkbLfkE7l5+N6NvV7UoBJZ4NDIaXouO
-	kbwtnVb88NsbpB++qQQhc+KuLcb20FtMFvXYlCCNYItF4HX35o9fYd5RZhIhQ5AhHw/uI2
-	K9Xr8d3+V/9tPcoLL8bm7QVzbxmtb5c=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-363-jbKCUeW-PN6_Vt3KLbB_-w-1; Mon, 31 Jul 2023 06:09:50 -0400
-X-MC-Unique: jbKCUeW-PN6_Vt3KLbB_-w-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-94a34a0b75eso298043566b.1
-        for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 03:09:49 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE2A117744;
+	Mon, 31 Jul 2023 10:13:38 +0000 (UTC)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEDAE3;
+	Mon, 31 Jul 2023 03:13:36 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-99bfcf4c814so339718566b.0;
+        Mon, 31 Jul 2023 03:13:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690798188; x=1691402988;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5xKuqYOqmlVZDJvMolVVhkUwvpv3MXvZb5ujWB1Ho20=;
-        b=KpSss+NB+Q4vKeIGjz/F4APQY6VUrSKY+75ZbH+tzaiNnZ4noC1t+/Bqptv7E42NDj
-         +7GcFT0ix3BJtzwQ76M9uXEJeidU1broASeLFwfnz3rNtOmm9asxxr2br/6xaBOJy0XC
-         2VWXgT6eIeo//W3sftEnurUFqpc7Fn6rUDA4aCiUIAeBV2Dl0pkI+NWjsvUyAs+i6mAT
-         vTubzQeduOPtHYe1a+7fpn13FhRPJChJQp1ai7DdnazBEW9psRr7SwwMna0cVXXCXcNR
-         zpmsMIaB/ygQNUqecIh2eKQHG+CGughnYOsA8tdD5KyEVssH5djYzq/ZoN0qeD5SW1NS
-         b4lA==
-X-Gm-Message-State: ABy/qLblyIl1jD1lC6PCr6kBD6DdLYiTRoqIK7AJay4UMueJDWjd1W2/
-	dGfi2WVWrTI9t7i1Xg74u4Hz3EXJ6DAw/Kry1vxjC17LIkg5GSu9SwL+sNplMpSuv92WGJvL7yr
-	vxLK6MNBwekmI
-X-Received: by 2002:a17:907:a072:b0:99b:efc8:51d with SMTP id ia18-20020a170907a07200b0099befc8051dmr5478321ejc.21.1690798188396;
-        Mon, 31 Jul 2023 03:09:48 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFwwLkrWqLwBDKAZavwRn+ex00l9mHmODZ3T+ZMCcOof8Bri8pSKq+DYoIIVJlmKt3NEvOJuA==
-X-Received: by 2002:a17:907:a072:b0:99b:efc8:51d with SMTP id ia18-20020a170907a07200b0099befc8051dmr5478291ejc.21.1690798187986;
-        Mon, 31 Jul 2023 03:09:47 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id pw3-20020a17090720a300b00987e2f84768sm5899913ejb.0.2023.07.31.03.09.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 03:09:47 -0700 (PDT)
-From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <6e55ab8c-0b84-4de7-0f92-c8789732dbdb@redhat.com>
-Date: Mon, 31 Jul 2023 12:09:45 +0200
+        d=1e100.net; s=20221208; t=1690798415; x=1691403215;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MCE5qRVpdCIKbrLA0MVnXkLR11xNVpzRW52JK1t8Hl4=;
+        b=i+oPgCtmwd/oNMe+7K4iY0i4ukVkOFpwCzUYTWtivNJri0aNDT9McTMxZeNRpeQGEP
+         SxKnJaAkJkqdFD9EnkffzwuA6e5fpYMo7dJXAoXpQYjuf8kBqnCJzr+eVHoigXh5a4up
+         ii8Po7DexJq7zLoKWCpFRdeqlUa2Emb4cf6Hn5qShE+J04K5GO2lRkU7IXf7YFy0Dy9t
+         QHnr/ywZEj3TKY4g/q9fsGTp3cyUgHlvkDz+TPrkx0rcLC/Hi2k65o5fb+QPLjIETbAa
+         u1CiDJkeNkt/tRalP4RanFARDRpMTBfKdbvbFFPVMADajEJ9wFxvPmu2htXtr8HdWRkq
+         dbiw==
+X-Gm-Message-State: ABy/qLbu8SrqQ5avvNp/jkXPFFA2QEZvhj63hhdcypwcyEZ0qF0yLNVk
+	fKjaPtdduizZtd0l3YTrj3Y=
+X-Google-Smtp-Source: APBJJlFARErXv7L48dVMZakbBdzXoKvqyy2gZ2NRTNuT/zjcchJMAEgti0oj85PtPUcuAzWQdnFtBA==
+X-Received: by 2002:a17:906:74c8:b0:992:9005:5ed5 with SMTP id z8-20020a17090674c800b0099290055ed5mr7480077ejl.32.1690798415227;
+        Mon, 31 Jul 2023 03:13:35 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-007.fbsv.net. [2a03:2880:31ff:7::face:b00c])
+        by smtp.gmail.com with ESMTPSA id q26-20020a1709060e5a00b00992b50fbbe9sm5927789eji.90.2023.07.31.03.13.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 03:13:34 -0700 (PDT)
+Date: Mon, 31 Jul 2023 03:13:33 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Stanislav Fomichev <sdf@google.com>
+Cc: asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+	netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+	edumazet@google.com, pabeni@redhat.com,
+	linux-kernel@vger.kernel.org, leit@meta.com, bpf@vger.kernel.org,
+	ast@kernel.org, martin.lau@linux.dev
+Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+Message-ID: <ZMeJTRTEEcahEHLJ@gmail.com>
+References: <20230724142237.358769-1-leitao@debian.org>
+ <20230724142237.358769-3-leitao@debian.org>
+ <ZL61cIrQuo92Xzbu@google.com>
+ <ZL+VfRiJQqrrLe/9@gmail.com>
+ <ZMAAMKTaKSIKi1RW@google.com>
+ <ZMP07KtOeJ09ejAd@gmail.com>
+ <CAKH8qBsm7JGnO+SF7PELT7Ua+5=RA8sAWdnD0UBiG3TYh0djHA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc: brouer@redhat.com, netdev@vger.kernel.org,
- "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
- =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Pu Lehui <pulehui@huawei.com>, houtao1@huawei.com
-Subject: Re: [PATCH bpf 2/2] bpf, cpumap: Handle skb as well when clean up
- ptr_ring
-Content-Language: en-US
-To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
-References: <20230729095107.1722450-1-houtao@huaweicloud.com>
- <20230729095107.1722450-3-houtao@huaweicloud.com>
-In-Reply-To: <20230729095107.1722450-3-houtao@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKH8qBsm7JGnO+SF7PELT7Ua+5=RA8sAWdnD0UBiG3TYh0djHA@mail.gmail.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
-On 29/07/2023 11.51, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
+On Fri, Jul 28, 2023 at 11:07:10AM -0700, Stanislav Fomichev wrote:
+> On Fri, Jul 28, 2023 at 10:03 AM Breno Leitao <leitao@debian.org> wrote:
+> >
+> > Hello Stanislav,
+> >
+> > On Tue, Jul 25, 2023 at 10:02:40AM -0700, Stanislav Fomichev wrote:
+> > > On 07/25, Breno Leitao wrote:
+> > > > On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
+> > > > > On 07/24, Breno Leitao wrote:
+> > > > > > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+> > > > > > level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
+> > > > > > where a sockptr_t is either userspace or kernel space, and handled as
+> > > > > > such.
+> > > > > >
+> > > > > > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
+> > > > >
+> > > > > We probably need to also have bpf bits in the new
+> > > > > io_uring_cmd_getsockopt?
+> > > >
+> > > > It might be interesting to have the BPF hook for this function as
+> > > > well, but I would like to do it in a following patch, so, I can
+> > > > experiment with it better, if that is OK.
+> >
+> > I spent smoe time looking at the problem, and I understand we want to
+> > call something as BPF_CGROUP_RUN_PROG_{G,S}ETSOCKOPT() into
+> > io_uring_cmd_{g,s}etsockopt().
+> >
+> > Per the previous conversation with Williem,
+> > io_uring_cmd_{g,s}etsockopt() should use optval as a user pointer (void __user
+> > *optval), and optlen as a kernel integer (it comes as from the io_uring
+> > SQE), such as:
+> >
+> >         void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
+> >         int optlen = READ_ONCE(cmd->sqe->optlen);
+> >
+> > Function BPF_CGROUP_RUN_PROG_GETSOCKOPT() calls
+> > __cgroup_bpf_run_filter_getsockopt() which expects userpointer for
+> > optlen and optval.
+> >
+> > At the same time BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN() expects kernel
+> > pointers for both optlen and optval.
+> >
+> > In this current patchset, it has user pointer for optval and kernel value
+> > for optlen. I.e., a third combination.  So, none of the functions would
+> > work properly, and we probably do not want to create another function.
+> >
+> > I am wondering if it is a good idea to move
+> > __cgroup_bpf_run_filter_getsockopt() to use sockptr_t, so, it will be
+> > able to adapt to any combination.
 > 
-> The following warning was reported when running xdp_redirect_cpu with
-> both skb-mode and stress-mode enabled:
-> 
->    ------------[ cut here ]------------
->    Incorrect XDP memory type (-2128176192) usage
+> Yeah, I think it makes sense. However, note that the intent of that
+> optlen being a __user pointer is to possibly write some (updated)
+> value back into the userspace.
+> Presumably, you'll pass that updated optlen into some io_uring
+> completion queue? (maybe a stupid question, not super familiar with
+> io_uring)
 
-I'm happy to see that WARN "Incorrect XDP memory type" caught this.
+On io_uring proposal, the optlen is part of the SQE for setsockopt().
+You give a  userpointer (optval) and set the optlen in the SQE->optlen.
 
->    WARNING: CPU: 7 PID: 1442 at net/core/xdp.c:405
->    Modules linked in:
->    CPU: 7 PID: 1442 Comm: kworker/7:0 Tainted: G  6.5.0-rc2+ #1
->    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
->    Workqueue: events __cpu_map_entry_free
->    RIP: 0010:__xdp_return+0x1e4/0x4a0
->    ......
->    Call Trace:
->     <TASK>
->     ? show_regs+0x65/0x70
->     ? __warn+0xa5/0x240
->     ? __xdp_return+0x1e4/0x4a0
->     ......
->     xdp_return_frame+0x4d/0x150
->     __cpu_map_entry_free+0xf9/0x230
->     process_one_work+0x6b0/0xb80
->     worker_thread+0x96/0x720
->     kthread+0x1a5/0x1f0
->     ret_from_fork+0x3a/0x70
->     ret_from_fork_asm+0x1b/0x30
->     </TASK>
-> 
-> The reason for the warning is twofold. One is due to the kthread
-> cpu_map_kthread_run() is stopped prematurely. Another one is
-> __cpu_map_ring_cleanup() doesn't handle skb mode and treats skbs in
-> ptr_ring as XDP frames.
-> 
-> Prematurely-stopped kthread will be fixed by the preceding patch and
-> ptr_ring will be empty when __cpu_map_ring_cleanup() is called. But
-> as the comments in __cpu_map_ring_cleanup() said, handling and freeing
-> skbs in ptr_ring as well to "catch any broken behaviour gracefully".
-> 
-> Fixes: 11941f8a8536 ("bpf: cpumap: Implement generic cpumap")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
+For getsockopt(), the optlen is returned as a result of the operation,
+in the CQE->res.
 
-Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+If you need more detail about it, I documented this behaviour in the
+cover-letter (PS1):
 
-I think we should fix this code, even-though patch 1 have made it harder
-to trigger.
+https://lore.kernel.org/all/20230724142237.358769-1-leitao@debian.org/
 
-
->   kernel/bpf/cpumap.c | 14 ++++++++++----
->   1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-> index 08351e0863e5..ef28c64f1eb1 100644
-> --- a/kernel/bpf/cpumap.c
-> +++ b/kernel/bpf/cpumap.c
-> @@ -129,11 +129,17 @@ static void __cpu_map_ring_cleanup(struct ptr_ring *ring)
->   	 * invoked cpu_map_kthread_stop(). Catch any broken behaviour
->   	 * gracefully and warn once.
->   	 */
-> -	struct xdp_frame *xdpf;
-> +	void *ptr;
->   
-> -	while ((xdpf = ptr_ring_consume(ring)))
-> -		if (WARN_ON_ONCE(xdpf))
-> -			xdp_return_frame(xdpf);
-> +	while ((ptr = ptr_ring_consume(ring))) {
-> +		WARN_ON_ONCE(1);
-> +		if (unlikely(__ptr_test_bit(0, &ptr))) {
-> +			__ptr_clear_bit(0, &ptr);
-> +			kfree_skb(ptr);
-> +			continue;
-> +		}
-> +		xdp_return_frame(ptr);
-> +	}
->   }
->   
->   static void put_cpu_map_entry(struct bpf_cpu_map_entry *rcpu)
-
+Thanks for the feedback!
 
