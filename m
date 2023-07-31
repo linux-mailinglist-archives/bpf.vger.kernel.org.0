@@ -1,65 +1,65 @@
-Return-Path: <bpf+bounces-6432-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6433-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD726769477
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 13:17:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3682376947A
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 13:17:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A0C61C2094E
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 11:17:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E765928157E
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 11:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D500C18006;
-	Mon, 31 Jul 2023 11:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BEA718008;
+	Mon, 31 Jul 2023 11:17:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 948C48BF0
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 11:16:58 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDEEE4A
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 04:16:57 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045278BF0
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 11:17:13 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BEFE76
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 04:17:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690802216;
+	s=mimecast20190719; t=1690802231;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+0D5IDco97vTYvh6fNm/B5oplVBZcV0X3CdU07UZHvk=;
-	b=MTfLqBeNmzydu8o7PYl0NQaBneTqj+4IYUDyelf2pEZgYuMdKIfophppcTfVyhG4v5OhnL
-	CD1go5dS+YDlw3NRPl+GeCJv9gIS3akE2qL+49twL+jw5SWIaEdKjzId8W7grcJBEeJnFU
-	Pj0A5Y2U4daoE8TkSpRgV37c5xPNEE0=
-Received: from mail-vs1-f72.google.com (mail-vs1-f72.google.com
- [209.85.217.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=M/35EV6KuQFV76XfAiI3kNPUCvGz0oTI5DQh4eGuYFg=;
+	b=fFnEag9y5RN50KP4mj3gkF2z0ZM1tSnqk1Nc97pKzPIuHdrBzI8Jns7E+HRumo3GXjXP5p
+	R9vRwHp13hn8ZSaZq3IxMnn7ESPNQ11s9Mo6lG6NEVfDFdONTCIwAKF5fTLOAkBzT353/o
+	+V3xZUPB1SssmHXNnW0i+ZWb+qn8DpU=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-404-kmjJj2ROPXe4QI7K97xO2w-1; Mon, 31 Jul 2023 07:16:55 -0400
-X-MC-Unique: kmjJj2ROPXe4QI7K97xO2w-1
-Received: by mail-vs1-f72.google.com with SMTP id ada2fe7eead31-4476f6bb5a8so496602137.3
-        for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 04:16:55 -0700 (PDT)
+ us-mta-287-Ke4aKv1tN72AgtSjp1wH9Q-1; Mon, 31 Jul 2023 07:17:09 -0400
+X-MC-Unique: Ke4aKv1tN72AgtSjp1wH9Q-1
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-403ba1eebedso58002101cf.1
+        for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 04:17:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690802214; x=1691407014;
+        d=1e100.net; s=20221208; t=1690802229; x=1691407029;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+0D5IDco97vTYvh6fNm/B5oplVBZcV0X3CdU07UZHvk=;
-        b=W43ehRsxHLe80WKxKj92kqodRkzjU5ZMrEyKMPenLImdk6NzbS34JV7kxukInqEEpP
-         yOdwQ4skDUaVrzSJ1Md7QdFfORIPNTfAoon6uy/NPUEJ0X84G5FaK+vSEkaceV/PotYD
-         MoYvQxQDxT2q5BnA+DMp/X8zne9jYTvWu7+FMSEzScsr/cqCBifN5xxsZv8pXxyxhp4M
-         udRBmdH/akLrd9cWQFUAmhGrtwjfbqLYOF5LTlUkA9HRpS1k/qia/MYpSHmDeAtR+RF2
-         UsW0DinKkgwrIQv1qwycM3TUnd8VpKaT//5g87Q/h43XhzFSY8bjcyjzh6fSh5Zshw9/
-         /D0w==
-X-Gm-Message-State: ABy/qLaK9oLxv5UhlapHTTHvD9PVX31xVqEUB3HMkJnOk42VCQtbw4Pt
-	1/kZTPLzjyGffNnsRfJ6hH34aherqIO2uWK8iPaIJGIsArWvtkqJjVI1jn0y3CFXCAxpio1UYuO
-	bHAFzuZ5rdnm2
-X-Received: by 2002:a67:cfc7:0:b0:443:92a5:f454 with SMTP id h7-20020a67cfc7000000b0044392a5f454mr4890261vsm.26.1690802214759;
-        Mon, 31 Jul 2023 04:16:54 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGotwePfsXKLeBlKhf8sO13ly4OfXrqZZNVUmXDsF4Tb1xqGBmiDGw9g/K6bGBIoBOR4Hianw==
-X-Received: by 2002:a67:cfc7:0:b0:443:92a5:f454 with SMTP id h7-20020a67cfc7000000b0044392a5f454mr4890212vsm.26.1690802214510;
-        Mon, 31 Jul 2023 04:16:54 -0700 (PDT)
+        bh=M/35EV6KuQFV76XfAiI3kNPUCvGz0oTI5DQh4eGuYFg=;
+        b=AoVR5vhNRRu7NgPF/fqzF6vv0QwUzxaPZpclPBT+pCh7DVYSzQ9obEdwqMSQMlXSlw
+         A5Xjaa+ntqCNTBBjvkhFFbowgg8daSr/xJxpPel1nYUx1sH+5dT4YFtTZHgqnQLveMJl
+         iTIuR7PdcxwCGkXhiu6ysDOySHO7MuM2khONg4cXpa9eEQyubToIZi2v+fravC7+2ESX
+         RYzAdQ/TN2e/BesD0quVYiKX3sqVp2rdbMHGdxq+5Qh1e6p90eNzm/cJSLz02ZMV0GBi
+         pZi9OmpMOr9GL0alI/ujvsaqNzAlwsUX70Hd84G4ebpmxARY1x4n4wFhE1xlrZghVdzz
+         J1sw==
+X-Gm-Message-State: ABy/qLZvwT3hbzBhtUuHgILiwgNQlg8lqnb5tp8GbKPar2ed207vKHso
+	K1t7qEgtjjt7kXMq0Fk4Y927Sdfgm1tV0bhuBJDCqUc552O/yDogS+BYrzCrHtlG7jhY9oxfoSg
+	BdMJCYtVdy82h
+X-Received: by 2002:a05:622a:1a27:b0:403:cb17:c108 with SMTP id f39-20020a05622a1a2700b00403cb17c108mr12984327qtb.24.1690802229041;
+        Mon, 31 Jul 2023 04:17:09 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGfjSM0EY4ReLF74gjgUvSgh5M/dv10+80eXvDCpwVYLgcCJZkRhEPkohi/ydjwax6EynCsig==
+X-Received: by 2002:a05:622a:1a27:b0:403:cb17:c108 with SMTP id f39-20020a05622a1a2700b00403cb17c108mr12984294qtb.24.1690802228754;
+        Mon, 31 Jul 2023 04:17:08 -0700 (PDT)
 Received: from vschneid.remote.csb ([149.12.7.81])
-        by smtp.gmail.com with ESMTPSA id r7-20020a0c8d07000000b0063d119034a9sm3601878qvb.140.2023.07.31.04.16.46
+        by smtp.gmail.com with ESMTPSA id o18-20020ac85552000000b00403bf34266csm3426262qtr.30.2023.07.31.04.17.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 04:16:53 -0700 (PDT)
+        Mon, 31 Jul 2023 04:17:08 -0700 (PDT)
 From: Valentin Schneider <vschneid@redhat.com>
 To: Josh Poimboeuf <jpoimboe@kernel.org>
 Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
@@ -94,14 +94,14 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
  <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>, Daniel Bristot
  de Oliveira <bristot@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
  Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 13/20] context_tracking: Make
- context_tracking_key __ro_after_init
-In-Reply-To: <20230728160014.vjxikkoo4rieng55@treble>
+Subject: Re: [RFC PATCH v2 11/20] objtool: Flesh out warning related to
+ pv_ops[] calls
+In-Reply-To: <20230728153334.myvh5sxppvjzd3oz@treble>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-14-vschneid@redhat.com>
- <20230728160014.vjxikkoo4rieng55@treble>
-Date: Mon, 31 Jul 2023 12:16:43 +0100
-Message-ID: <xhsmha5vcs544.mognet@vschneid.remote.csb>
+ <20230720163056.2564824-12-vschneid@redhat.com>
+ <20230728153334.myvh5sxppvjzd3oz@treble>
+Date: Mon, 31 Jul 2023 12:16:59 +0100
+Message-ID: <xhsmh8raws53o.mognet@vschneid.remote.csb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -112,47 +112,64 @@ Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 28/07/23 11:00, Josh Poimboeuf wrote:
-> On Thu, Jul 20, 2023 at 05:30:49PM +0100, Valentin Schneider wrote:
->> objtool now warns about it:
->>
->>   vmlinux.o: warning: objtool: enter_from_user_mode+0x4e: Non __ro_after_init static key "context_tracking_key" in .noinstr section
->>   vmlinux.o: warning: objtool: enter_from_user_mode+0x50: Non __ro_after_init static key "context_tracking_key" in .noinstr section
->>   vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x60: Non __ro_after_init static key "context_tracking_key" in .noinstr section
->>   vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x62: Non __ro_after_init static key "context_tracking_key" in .noinstr section
->>   [...]
->>
->> The key can only be enabled (and not disabled) in the __init function
->> ct_cpu_tracker_user(), so mark it as __ro_after_init.
+On 28/07/23 10:33, Josh Poimboeuf wrote:
+> On Thu, Jul 20, 2023 at 05:30:47PM +0100, Valentin Schneider wrote:
+>> I had to look into objtool itself to understand what this warning was
+>> about; make it more explicit.
 >>
 >> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+>> ---
+>>  tools/objtool/check.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+>> index 8936a05f0e5ac..d308330f2910e 100644
+>> --- a/tools/objtool/check.c
+>> +++ b/tools/objtool/check.c
+>> @@ -3360,7 +3360,7 @@ static bool pv_call_dest(struct objtool_file *file, struct instruction *insn)
+>>
+>>      list_for_each_entry(target, &file->pv_ops[idx].targets, pv_target) {
+>>              if (!target->sec->noinstr) {
+>> -			WARN("pv_ops[%d]: %s", idx, target->name);
+>> +			WARN("pv_ops[%d]: indirect call to %s() leaves .noinstr.text section", idx, target->name);
+>>                      file->pv_ops[idx].clean = false;
 >
-> It's best to avoid temporarily introducing warnings.  Bots will
-> rightfully complain about that.  This patch and the next one should come
-> before the objtool patches.
+> This is an improvement, though I think it still results in two warnings,
+> with the second not-so-useful warning happening in validate_call().
 >
+> Ideally it would only show a single warning, I guess that would need a
+> little bit of restructuring the code.
 
-Ack, I'll reverse the order of these.
+You're quite right - fabricating an artificial warning with a call to __flush_tlb_local():
 
-> Also it would be helpful for the commit log to have a brief
-> justification for the patch beyond "fix the objtool warning".  Something
-> roughly like:
->
->   Soon, runtime-mutable text won't be allowed in .noinstr sections, so
->   that a code patching IPI to a userspace-bound CPU can be safely
->   deferred to the next kernel entry.
->
->   'context_tracking_key' is only enabled in __init ct_cpu_tracker_user().
->   Mark it as __ro_after_init.
->
+  vmlinux.o: warning: objtool: pv_ops[1]: indirect call to native_flush_tlb_local() leaves .noinstr.text section
+  vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: call to {dynamic}() leaves .noinstr.text section
 
-Looks better indeed, thanks!
+Interestingly the second one doesn't seem to have triggered the "pv_ops"
+bit of call_dest_name. Seems like any call to insn_reloc(NULL, x) will
+return NULL.
 
+Trickling down the file yields:
+
+  vmlinux.o: warning: objtool: pv_ops[1]: indirect call to native_flush_tlb_local() leaves .noinstr.text section
+  vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: call to pv_ops[0]() leaves .noinstr.text section
+
+In my case (!PARAVIRT_XXL) pv_ops should look like:
+  [0]: .cpu.io_delay
+  [1]: .mmu.flush_tlb_user()
+
+so pv_ops[1] looks right. Seems like pv_call_dest() gets it right because
+it uses arch_dest_reloc_offset().
+
+If I use the above to fix up validate_call(), would we still need
+pv_call_dest() & co?
+
+>
 > --
 > Josh
 
