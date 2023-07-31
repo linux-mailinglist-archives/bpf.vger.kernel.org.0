@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-6409-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6410-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CA37768EC0
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 09:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 54B21768EC1
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 09:30:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B612828149D
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 07:30:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AA5C2815C9
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 07:30:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 755646137;
-	Mon, 31 Jul 2023 07:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0241B613A;
+	Mon, 31 Jul 2023 07:30:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D22E612C
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 07:30:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD863C433C8;
-	Mon, 31 Jul 2023 07:30:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E016124
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 07:30:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22CCAC433C7;
+	Mon, 31 Jul 2023 07:30:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690788618;
-	bh=KReumcvfAA7aUU41c/MWj+LowvbdvMSmvuGEweZl3FI=;
+	s=k20201202; t=1690788629;
+	bh=SVaKMsm5wi9MtePH615CD5h2bQfFDb6xVagKrZjtk0U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Yk5RC9/Eey4v3uiQbcxGeVcd3OuTXzhbNndT/RueCZlJsms0vRpd1YfQkIkLh4LP7
-	 vBWFVfEHIqnrcGaEQrKqF2NRPyIwHvPpAqQpvp/nP1SZOeMbDX/UKR5p6AsanAn7ek
-	 IRsiecm4Acy7QJcEhLm1GWC35FOOTfZ01D2qLx3gHcyGniENbPlzSAMc3YyukX+6ET
-	 /REU4J6j26tkrqeMH4Nz83yr9DSMYkbOw1jHx2USxThk5Qb7GRUwfJp4R9gGDwFJVH
-	 9EApAghejIX2UnYkmCpzjRSLsKuOLqpKAVXO4cIBEQ1gTneftq0mgSR8TTPFfYevgR
-	 Kv7mUOuIr9qpg==
+	b=LdZJ7fD3T+xhrnDmL+T7tHHUuFYDGmrM0yS8YzfN7su2DNxMmUwE6wd0weiynMwWM
+	 bZtsOuDuv09Q99o9hdOxijhLTUDclWHnM3cBEoOw5kIGaAZijCZrOpAqfIPG4ANZ+2
+	 Lv62sx5inwIHaXGJYAc3vjj4m2SLW4vZH6LFTL6IWyz8Wd9AxUNb24y8xWLWRkKrXw
+	 md/vTfZyIR3H2GN3e9nsdrJsR0DqveTwZ+9uOOwPfF0/ScgqnrE/sIHs48vzdeZAgr
+	 2SANoGKJTxFs+ncRbd5UV7l9YfrukVMYifnrtCenO1uU5LL3NlIv/oE0z2lcoM/6lL
+	 oqo1JY5YBc4OQ==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: linux-trace-kernel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -39,9 +39,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Sven Schnelle <svens@linux.ibm.com>,
 	Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH v4 1/9] tracing/probes: Support BTF argument on module functions
-Date: Mon, 31 Jul 2023 16:30:14 +0900
-Message-Id: <169078861390.173706.6123335543895839788.stgit@devnote2>
+Subject: [PATCH v4 2/9] bpf/btf: tracing: Move finding func-proto API and getting func-param API to BTF
+Date: Mon, 31 Jul 2023 16:30:24 +0900
+Message-Id: <169078862446.173706.13484451284649857042.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169078860386.173706.3091034523220945605.stgit@devnote2>
 References: <169078860386.173706.3091034523220945605.stgit@devnote2>
@@ -57,386 +57,187 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Since the btf returned from bpf_get_btf_vmlinux() only covers functions in
-the vmlinux, BTF argument is not available on the functions in the modules.
-Use bpf_find_btf_id() instead of bpf_get_btf_vmlinux()+btf_find_name_kind()
-so that BTF argument can find the correct struct btf and btf_type in it.
-With this fix, fprobe events can use `$arg*` on module functions as below
+Move generic function-proto find API and getting function parameter API
+to BTF library code from trace_probe.c. This will avoid redundant efforts
+on different feature.
 
- # grep nf_log_ip_packet /proc/kallsyms
-ffffffffa0005c00 t nf_log_ip_packet	[nf_log_syslog]
-ffffffffa0005bf0 t __pfx_nf_log_ip_packet	[nf_log_syslog]
- # echo 'f nf_log_ip_packet $arg*' > dynamic_events
- # cat dynamic_events
-f:fprobes/nf_log_ip_packet__entry nf_log_ip_packet net=net pf=pf hooknum=hooknum skb=skb in=in out=out loginfo=loginfo prefix=prefix
-
-To support the module's btf which is removable, the struct btf needs to be
-ref-counted. So this also records the btf in the traceprobe_parse_context
-and returns the refcount when the parse has done.
-
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
  Changes in v3:
-  - Newly added.
+  - Remove perameter check.
+  - Fix a typo.
+  - Add a type check for btf_get_func_param() and add comment for that.
+  - Use bpf_find_btf_id() and add bpf_put().
+  - Move the code before btf_show() related code.
 ---
- include/linux/btf.h         |    1 
- kernel/bpf/btf.c            |    2 -
- kernel/trace/trace_eprobe.c |    4 --
- kernel/trace/trace_fprobe.c |    1 
- kernel/trace/trace_kprobe.c |    1 
- kernel/trace/trace_probe.c  |  100 +++++++++++++++++++++++++------------------
- kernel/trace/trace_probe.h  |   14 +++++-
- kernel/trace/trace_uprobe.c |    1 
- 8 files changed, 75 insertions(+), 49 deletions(-)
+ include/linux/btf.h        |    4 ++++
+ kernel/bpf/btf.c           |   47 +++++++++++++++++++++++++++++++++++++++++
+ kernel/trace/trace_probe.c |   50 +++++++++-----------------------------------
+ 3 files changed, 61 insertions(+), 40 deletions(-)
 
 diff --git a/include/linux/btf.h b/include/linux/btf.h
-index cac9f304e27a..dbfe41a09c4b 100644
+index dbfe41a09c4b..20e3a07eef8f 100644
 --- a/include/linux/btf.h
 +++ b/include/linux/btf.h
-@@ -211,6 +211,7 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
- int btf_check_and_fixup_fields(const struct btf *btf, struct btf_record *rec);
- bool btf_type_is_void(const struct btf_type *t);
- s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind);
-+s32 bpf_find_btf_id(const char *name, u32 kind, struct btf **btf_p);
- const struct btf_type *btf_type_skip_modifiers(const struct btf *btf,
- 					       u32 id, u32 *res_id);
- const struct btf_type *btf_type_resolve_ptr(const struct btf *btf,
+@@ -222,6 +222,10 @@ const struct btf_type *
+ btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+ 		 u32 *type_size);
+ const char *btf_type_str(const struct btf_type *t);
++const struct btf_type *btf_find_func_proto(const char *func_name,
++					   struct btf **btf_p);
++const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
++					   s32 *nr);
+ 
+ #define for_each_member(i, struct_type, member)			\
+ 	for (i = 0, member = btf_type_member(struct_type);	\
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 817204d53372..b9b0eb1189bb 100644
+index b9b0eb1189bb..f7b25c615269 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -552,7 +552,7 @@ s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind)
- 	return -ENOENT;
- }
- 
--static s32 bpf_find_btf_id(const char *name, u32 kind, struct btf **btf_p)
-+s32 bpf_find_btf_id(const char *name, u32 kind, struct btf **btf_p)
- {
- 	struct btf *btf;
- 	s32 ret;
-diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
-index a0a704ba27db..09bac836d72b 100644
---- a/kernel/trace/trace_eprobe.c
-+++ b/kernel/trace/trace_eprobe.c
-@@ -807,13 +807,11 @@ static int trace_eprobe_tp_update_arg(struct trace_eprobe *ep, const char *argv[
- 	int ret;
- 
- 	ret = traceprobe_parse_probe_arg(&ep->tp, i, argv[i], &ctx);
--	if (ret)
--		return ret;
--
- 	/* Handle symbols "@" */
- 	if (!ret)
- 		ret = traceprobe_update_arg(&ep->tp.args[i]);
- 
-+	traceprobe_finish_parse(&ctx);
- 	return ret;
- }
- 
-diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-index dfe2e546acdc..8f43f1f65b1b 100644
---- a/kernel/trace/trace_fprobe.c
-+++ b/kernel/trace/trace_fprobe.c
-@@ -1096,6 +1096,7 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 	}
- 
- out:
-+	traceprobe_finish_parse(&ctx);
- 	trace_probe_log_clear();
- 	kfree(new_argv);
- 	kfree(symbol);
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 23dba01831f7..cc822f69bfe8 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -907,6 +907,7 @@ static int __trace_kprobe_create(int argc, const char *argv[])
- 	}
- 
- out:
-+	traceprobe_finish_parse(&ctx);
- 	trace_probe_log_clear();
- 	kfree(new_argv);
- 	kfree(symbol);
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index c68a72707852..ecbe28f8d676 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -304,16 +304,6 @@ static int parse_trace_event_arg(char *arg, struct fetch_insn *code,
- 
- #ifdef CONFIG_PROBE_EVENTS_BTF_ARGS
- 
--static struct btf *traceprobe_get_btf(void)
--{
--	struct btf *btf = bpf_get_btf_vmlinux();
--
--	if (IS_ERR_OR_NULL(btf))
--		return NULL;
--
--	return btf;
--}
--
- static u32 btf_type_int(const struct btf_type *t)
- {
- 	return *(u32 *)(t + 1);
-@@ -371,42 +361,49 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
- 	return NULL;
- }
- 
--static const struct btf_type *find_btf_func_proto(const char *funcname)
-+static const struct btf_type *find_btf_func_proto(const char *funcname,
-+						  struct btf **btf_p)
- {
--	struct btf *btf = traceprobe_get_btf();
- 	const struct btf_type *t;
-+	struct btf *btf = NULL;
- 	s32 id;
- 
--	if (!btf || !funcname)
-+	if (!funcname)
- 		return ERR_PTR(-EINVAL);
- 
--	id = btf_find_by_name_kind(btf, funcname, BTF_KIND_FUNC);
-+	id = bpf_find_btf_id(funcname, BTF_KIND_FUNC, &btf);
- 	if (id <= 0)
- 		return ERR_PTR(-ENOENT);
- 
- 	/* Get BTF_KIND_FUNC type */
- 	t = btf_type_by_id(btf, id);
- 	if (!t || !btf_type_is_func(t))
--		return ERR_PTR(-ENOENT);
-+		goto err;
- 
- 	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
- 	t = btf_type_by_id(btf, t->type);
- 	if (!t || !btf_type_is_func_proto(t))
--		return ERR_PTR(-ENOENT);
-+		goto err;
- 
-+	*btf_p = btf;
+@@ -911,6 +911,53 @@ static const struct btf_type *btf_type_skip_qualifiers(const struct btf *btf,
  	return t;
-+
-+err:
-+	btf_put(btf);
-+	return ERR_PTR(-ENOENT);
  }
  
- static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
--						   bool tracepoint)
-+						   struct btf **btf_p, bool tracepoint)
- {
- 	const struct btf_param *param;
- 	const struct btf_type *t;
-+	struct btf *btf;
- 
- 	if (!funcname || !nr)
- 		return ERR_PTR(-EINVAL);
- 
--	t = find_btf_func_proto(funcname);
-+	t = find_btf_func_proto(funcname, &btf);
- 	if (IS_ERR(t))
- 		return (const struct btf_param *)t;
- 
-@@ -419,29 +416,37 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
- 		param++;
- 	}
- 
--	if (*nr > 0)
-+	if (*nr > 0) {
-+		*btf_p = btf;
- 		return param;
--	else
--		return NULL;
-+	}
++/*
++ * Find a function proto type by name, and return the btf_type with its btf
++ * in *@btf_p. Return NULL if not found.
++ * Note that caller has to call btf_put(*@btf_p) after using the btf_type.
++ */
++const struct btf_type *btf_find_func_proto(const char *func_name, struct btf **btf_p)
++{
++	const struct btf_type *t;
++	s32 id;
 +
-+	btf_put(btf);
++	id = bpf_find_btf_id(func_name, BTF_KIND_FUNC, btf_p);
++	if (id < 0)
++		return NULL;
++
++	/* Get BTF_KIND_FUNC type */
++	t = btf_type_by_id(*btf_p, id);
++	if (!t || !btf_type_is_func(t))
++		goto err;
++
++	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
++	t = btf_type_by_id(*btf_p, t->type);
++	if (!t || !btf_type_is_func_proto(t))
++		goto err;
++
++	return t;
++err:
++	btf_put(*btf_p);
 +	return NULL;
 +}
 +
-+static void clear_btf_context(struct traceprobe_parse_context *ctx)
++/*
++ * Get function parameter with the number of parameters.
++ * This can return NULL if the function has no parameters.
++ * It can return -EINVAL if the @func_proto is not a function proto type.
++ */
++const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
 +{
-+	if (ctx->btf) {
-+		btf_put(ctx->btf);
-+		ctx->btf = NULL;
-+		ctx->params = NULL;
-+		ctx->nr_params = 0;
-+	}
- }
- 
- static int parse_btf_arg(const char *varname, struct fetch_insn *code,
- 			 struct traceprobe_parse_context *ctx)
- {
--	struct btf *btf = traceprobe_get_btf();
- 	const struct btf_param *params;
- 	int i;
- 
--	if (!btf) {
--		trace_probe_log_err(ctx->offset, NOSUP_BTFARG);
--		return -EOPNOTSUPP;
--	}
--
- 	if (WARN_ON_ONCE(!ctx->funcname))
- 		return -EINVAL;
- 
- 	if (!ctx->params) {
--		params = find_btf_func_param(ctx->funcname, &ctx->nr_params,
-+		params = find_btf_func_param(ctx->funcname,
-+					     &ctx->nr_params, &ctx->btf,
- 					     ctx->flags & TPARG_FL_TPOINT);
- 		if (IS_ERR_OR_NULL(params)) {
- 			trace_probe_log_err(ctx->offset, NO_BTF_ENTRY);
-@@ -452,7 +457,7 @@ static int parse_btf_arg(const char *varname, struct fetch_insn *code,
- 		params = ctx->params;
- 
- 	for (i = 0; i < ctx->nr_params; i++) {
--		const char *name = btf_name_by_offset(btf, params[i].name_off);
-+		const char *name = btf_name_by_offset(ctx->btf, params[i].name_off);
- 
- 		if (name && !strcmp(name, varname)) {
- 			code->op = FETCH_OP_ARG;
-@@ -470,7 +475,7 @@ static int parse_btf_arg(const char *varname, struct fetch_insn *code,
- static const struct fetch_type *parse_btf_arg_type(int arg_idx,
- 					struct traceprobe_parse_context *ctx)
- {
--	struct btf *btf = traceprobe_get_btf();
-+	struct btf *btf = ctx->btf;
- 	const char *typestr = NULL;
- 
- 	if (btf && ctx->params) {
-@@ -485,14 +490,17 @@ static const struct fetch_type *parse_btf_arg_type(int arg_idx,
- static const struct fetch_type *parse_btf_retval_type(
- 					struct traceprobe_parse_context *ctx)
- {
--	struct btf *btf = traceprobe_get_btf();
- 	const char *typestr = NULL;
- 	const struct btf_type *t;
-+	struct btf *btf;
- 
--	if (btf && ctx->funcname) {
--		t = find_btf_func_proto(ctx->funcname);
--		if (!IS_ERR(t))
-+	if (ctx->funcname) {
-+		/* Do not use ctx->btf, because it must be used with ctx->param */
-+		t = find_btf_func_proto(ctx->funcname, &btf);
-+		if (!IS_ERR(t)) {
- 			typestr = type_from_btf_id(btf, t->type);
-+			btf_put(btf);
-+		}
- 	}
- 
- 	return find_fetch_type(typestr, ctx->flags);
-@@ -501,21 +509,25 @@ static const struct fetch_type *parse_btf_retval_type(
- static bool is_btf_retval_void(const char *funcname)
- {
- 	const struct btf_type *t;
-+	struct btf *btf;
-+	bool ret;
- 
--	t = find_btf_func_proto(funcname);
-+	t = find_btf_func_proto(funcname, &btf);
- 	if (IS_ERR(t))
- 		return false;
- 
--	return t->type == 0;
-+	ret = (t->type == 0);
-+	btf_put(btf);
-+	return ret;
- }
- #else
--static struct btf *traceprobe_get_btf(void)
-+static void clear_btf_context(struct traceprobe_parse_context *ctx)
- {
--	return NULL;
-+	ctx->btf = NULL;
- }
- 
- static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
--						   bool tracepoint)
-+						   struct btf **btf_p, bool tracepoint)
- {
- 	return ERR_PTR(-EOPNOTSUPP);
- }
-@@ -1231,7 +1243,6 @@ static int sprint_nth_btf_arg(int idx, const char *type,
- 			      char *buf, int bufsize,
- 			      struct traceprobe_parse_context *ctx)
- {
--	struct btf *btf = traceprobe_get_btf();
- 	const char *name;
- 	int ret;
- 
-@@ -1239,7 +1250,7 @@ static int sprint_nth_btf_arg(int idx, const char *type,
- 		trace_probe_log_err(0, NO_BTFARG);
- 		return -ENOENT;
- 	}
--	name = btf_name_by_offset(btf, ctx->params[idx].name_off);
-+	name = btf_name_by_offset(ctx->btf, ctx->params[idx].name_off);
- 	if (!name) {
- 		trace_probe_log_err(0, NO_BTF_ENTRY);
- 		return -ENOENT;
-@@ -1271,7 +1282,7 @@ const char **traceprobe_expand_meta_args(int argc, const char *argv[],
- 		return NULL;
- 	}
- 
--	params = find_btf_func_param(ctx->funcname, &nr_params,
-+	params = find_btf_func_param(ctx->funcname, &nr_params, &ctx->btf,
- 				     ctx->flags & TPARG_FL_TPOINT);
- 	if (IS_ERR_OR_NULL(params)) {
- 		if (args_idx != -1) {
-@@ -1337,6 +1348,11 @@ const char **traceprobe_expand_meta_args(int argc, const char *argv[],
- 	return ERR_PTR(ret);
- }
- 
-+void traceprobe_finish_parse(struct traceprobe_parse_context *ctx)
-+{
-+	clear_btf_context(ctx);
++	if (!btf_type_is_func_proto(func_proto))
++		return ERR_PTR(-EINVAL);
++
++	*nr = btf_type_vlen(func_proto);
++	if (*nr > 0)
++		return (const struct btf_param *)(func_proto + 1);
++	else
++		return NULL;
 +}
 +
- int traceprobe_update_arg(struct probe_arg *arg)
+ #define BTF_SHOW_MAX_ITER	10
+ 
+ #define BTF_KIND_BIT(kind)	(1ULL << kind)
+diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+index ecbe28f8d676..21a228d88ebb 100644
+--- a/kernel/trace/trace_probe.c
++++ b/kernel/trace/trace_probe.c
+@@ -361,38 +361,6 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
+ 	return NULL;
+ }
+ 
+-static const struct btf_type *find_btf_func_proto(const char *funcname,
+-						  struct btf **btf_p)
+-{
+-	const struct btf_type *t;
+-	struct btf *btf = NULL;
+-	s32 id;
+-
+-	if (!funcname)
+-		return ERR_PTR(-EINVAL);
+-
+-	id = bpf_find_btf_id(funcname, BTF_KIND_FUNC, &btf);
+-	if (id <= 0)
+-		return ERR_PTR(-ENOENT);
+-
+-	/* Get BTF_KIND_FUNC type */
+-	t = btf_type_by_id(btf, id);
+-	if (!t || !btf_type_is_func(t))
+-		goto err;
+-
+-	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+-	t = btf_type_by_id(btf, t->type);
+-	if (!t || !btf_type_is_func_proto(t))
+-		goto err;
+-
+-	*btf_p = btf;
+-	return t;
+-
+-err:
+-	btf_put(btf);
+-	return ERR_PTR(-ENOENT);
+-}
+-
+ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
+ 						   struct btf **btf_p, bool tracepoint)
  {
- 	struct fetch_insn *code = arg->code;
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index 01ea148723de..4dc91460a75d 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -383,9 +383,11 @@ static inline bool tparg_is_function_entry(unsigned int flags)
+@@ -403,12 +371,13 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
+ 	if (!funcname || !nr)
+ 		return ERR_PTR(-EINVAL);
  
- struct traceprobe_parse_context {
- 	struct trace_event_call *event;
--	const struct btf_param *params;
--	s32 nr_params;
--	const char *funcname;
-+	/* BTF related parameters */
-+	const char *funcname;		/* Function name in BTF */
-+	const struct btf_param *params;	/* Parameter of the function */
-+	s32 nr_params;			/* The number of the parameters */
-+	struct btf *btf;		/* The BTF to be used */
- 	unsigned int flags;
- 	int offset;
- };
-@@ -400,6 +402,12 @@ const char **traceprobe_expand_meta_args(int argc, const char *argv[],
- extern int traceprobe_update_arg(struct probe_arg *arg);
- extern void traceprobe_free_probe_arg(struct probe_arg *arg);
+-	t = find_btf_func_proto(funcname, &btf);
+-	if (IS_ERR(t))
++	t = btf_find_func_proto(funcname, &btf);
++	if (!t)
+ 		return (const struct btf_param *)t;
  
-+/*
-+ * If either traceprobe_parse_probe_arg() or traceprobe_expand_meta_args() is called,
-+ * this MUST be called for clean up the context and return a resource.
-+ */
-+void traceprobe_finish_parse(struct traceprobe_parse_context *ctx);
-+
- extern int traceprobe_split_symbol_offset(char *symbol, long *offset);
- int traceprobe_parse_event_name(const char **pevent, const char **pgroup,
- 				char *buf, int offset);
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 688bf579f2f1..9790f8f0a32d 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -693,6 +693,7 @@ static int __trace_uprobe_create(int argc, const char **argv)
+-	*nr = btf_type_vlen(t);
+-	param = (const struct btf_param *)(t + 1);
++	param = btf_get_func_param(t, nr);
++	if (IS_ERR_OR_NULL(param))
++		goto err;
  
- 		trace_probe_log_set_index(i + 2);
- 		ret = traceprobe_parse_probe_arg(&tu->tp, i, argv[i], &ctx);
-+		traceprobe_finish_parse(&ctx);
- 		if (ret)
- 			goto error;
+ 	/* Hide the first 'data' argument of tracepoint */
+ 	if (tracepoint) {
+@@ -421,6 +390,7 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
+ 		return param;
  	}
+ 
++err:
+ 	btf_put(btf);
+ 	return NULL;
+ }
+@@ -496,8 +466,8 @@ static const struct fetch_type *parse_btf_retval_type(
+ 
+ 	if (ctx->funcname) {
+ 		/* Do not use ctx->btf, because it must be used with ctx->param */
+-		t = find_btf_func_proto(ctx->funcname, &btf);
+-		if (!IS_ERR(t)) {
++		t = btf_find_func_proto(ctx->funcname, &btf);
++		if (t) {
+ 			typestr = type_from_btf_id(btf, t->type);
+ 			btf_put(btf);
+ 		}
+@@ -512,8 +482,8 @@ static bool is_btf_retval_void(const char *funcname)
+ 	struct btf *btf;
+ 	bool ret;
+ 
+-	t = find_btf_func_proto(funcname, &btf);
+-	if (IS_ERR(t))
++	t = btf_find_func_proto(funcname, &btf);
++	if (!t)
+ 		return false;
+ 
+ 	ret = (t->type == 0);
 
 
