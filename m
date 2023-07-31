@@ -1,119 +1,139 @@
-Return-Path: <bpf+bounces-6391-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6392-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E16A768A22
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 04:46:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C65EF768A26
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 04:50:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EA5F1C209AD
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 02:46:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 592802814FD
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 02:50:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 099FC64B;
-	Mon, 31 Jul 2023 02:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550E863B;
+	Mon, 31 Jul 2023 02:50:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8AE3363;
-	Mon, 31 Jul 2023 02:46:29 +0000 (UTC)
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DD2E45;
-	Sun, 30 Jul 2023 19:46:23 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VoXLgUE_1690771579;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VoXLgUE_1690771579)
-          by smtp.aliyun-inc.com;
-          Mon, 31 Jul 2023 10:46:20 +0800
-Message-ID: <1690770875.591743-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v11 05/10] virtio_ring: introduce virtqueue_dma_dev()
-Date: Mon, 31 Jul 2023 10:34:35 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
- virtualization@lists.linux-foundation.org,
- Jason Wang <jasowang@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric  Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>,
- Alexei  Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- netdev@vger.kernel.org,
- bpf@vger.kernel.org,
- "Michael S. Tsirkin" <mst@redhat.com>
-References: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
- <20230710034237.12391-6-xuanzhuo@linux.alibaba.com>
- <ZK/cxNHzI23I6efc@infradead.org>
- <20230713104805-mutt-send-email-mst@kernel.org>
- <ZLjSsmTfcpaL6H/I@infradead.org>
- <20230720131928-mutt-send-email-mst@kernel.org>
- <ZL6qPvd6X1CgUD4S@infradead.org>
- <1690251228.3455179-1-xuanzhuo@linux.alibaba.com>
- <20230725033321-mutt-send-email-mst@kernel.org>
- <1690283243.4048996-1-xuanzhuo@linux.alibaba.com>
- <1690524153.3603117-1-xuanzhuo@linux.alibaba.com>
- <20230728080305.5fe3737c@kernel.org>
-In-Reply-To: <20230728080305.5fe3737c@kernel.org>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2102562D
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 02:50:35 +0000 (UTC)
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44DCE46
+	for <bpf@vger.kernel.org>; Sun, 30 Jul 2023 19:50:33 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-76c845dc5beso122297385a.1
+        for <bpf@vger.kernel.org>; Sun, 30 Jul 2023 19:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690771833; x=1691376633;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tu7nICAcXLKsjvFXjzCa8zu8KakSfVUww6okC4enQ9o=;
+        b=EGVbz8mXfKIgIp/5StHHJIDegpkNw9OHblzH0mZJN5/7DBbzehwZEPeTTtpgJzqJpT
+         Kbm6zNRsMhcQ7M7MBFMvQ1nsRSI8a9/hLorT8P0ka2qK1KdjE/cuwXdPK5viZp3uXIJH
+         pf2+ces/cFz2Edf51P8nsCIFaeJLfQ0m53V/vnUPAR6bU5mI8g/0Cjlr3pXWLqb+ZglJ
+         TJSHyoXOORTUntNsC97888BgwkAaHbOJqpXnM43vdw+eGq7MDSxPmiLJAA4CooGSOHwl
+         0Ja4+7q5pSyi+IMPAIvgB+fFfQyohhtsDIVSJkaVivaL5st2HtsJJm3cEvLbnCcAB2Fi
+         BMkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690771833; x=1691376633;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tu7nICAcXLKsjvFXjzCa8zu8KakSfVUww6okC4enQ9o=;
+        b=PIlaukcQJ76zB5GXiX62jRZ0A616vDY1gXYA0CqAa9sctSC8XGNupp7xt+OgRvoe0A
+         oKlCB2DMudwtDUH0tlb+0OSAwB1+8/Nm3QyZN3CdcWl76lddSj+tLcJmy0kHEieamq76
+         1Q9ckekbr6RGN3XpQ7cjCZNSdmlh0NTDhAV+4H2UD+jm2GTB1/HNtRYA53GfR4U28Ei+
+         L9oiqeMgnFMr3YBP8DuVWdX2WNXxUWBrtpW9QPSCUPB4TEQt4RlrxqNg5mqIxl7oDNn8
+         cWbHuxVTkTciwAxwkwVZGfogsSovpNWADMff0tAM7L5x+HNJbmZ8GQy9YBXyHFvWPV1y
+         iETw==
+X-Gm-Message-State: ABy/qLb/Yc8YXlc+o8ZQ+rksQRGYf4hXTuvsZLPAmpxPcLNO88aSULsi
+	v0Zxnw/v9CnFHsYWARJw2THpflvM4mp3jeocrkE=
+X-Google-Smtp-Source: APBJJlFWJh8RCLhRESkRWYNEwbEvM2+NxJqOEWcjgh8/IHUPUBNc8Nf9hyflTkv/E7ID1cEXMKCrARwsJE3OqvEu56Q=
+X-Received: by 2002:a05:6214:12e:b0:63c:f932:1bf7 with SMTP id
+ w14-20020a056214012e00b0063cf9321bf7mr5901175qvs.59.1690771832971; Sun, 30
+ Jul 2023 19:50:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20230730134223.94496-1-jolsa@kernel.org> <20230730134223.94496-2-jolsa@kernel.org>
+In-Reply-To: <20230730134223.94496-2-jolsa@kernel.org>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Mon, 31 Jul 2023 10:49:56 +0800
+Message-ID: <CALOAHbC617xPdffC6pGrKDbDvub+p=4kxkdGzdspC9XhKtUPAw@mail.gmail.com>
+Subject: Re: [PATCHv5 bpf-next 01/28] bpf: Switch BPF_F_KPROBE_MULTI_RETURN
+ macro to enum
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Fri, 28 Jul 2023 08:03:05 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
-> On Fri, 28 Jul 2023 14:02:33 +0800 Xuan Zhuo wrote:
-> > Hi guys, this topic is stuck again. How should I proceed with this work?
-> >
-> > Let me briefly summarize:
-> > 1. The problem with adding virtio_dma_{map, sync} api is that, for AF_XDP and
-> > the driver layer, we need to support these APIs. The current conclusion of
-> > AF_XDP is no.
-> >
-> > 2. Set dma_set_mask_and_coherent, then we can use DMA API uniformly inside
-> > driver. This idea seems to be inconsistent with the framework design of DMA. The
-> > conclusion is no.
-> >
-> > 3. We noticed that if the virtio device supports VIRTIO_F_ACCESS_PLATFORM, it
-> > uses DMA API. And this type of device is the future direction, so we only
-> > support DMA premapped for this type of virtio device. The problem with this
-> > solution is that virtqueue_dma_dev() only returns dev in some cases, because
-> > VIRTIO_F_ACCESS_PLATFORM is supported in such cases. Otherwise NULL is returned.
-> > This option is currently NO.
-> >
-> > So I'm wondering what should I do, from a DMA point of view, is there any
-> > solution in case of using DMA API?
+On Sun, Jul 30, 2023 at 9:42=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> I'd step back and ask you why do you want to use AF_XDP with virtio.
+> Switching BPF_F_KPROBE_MULTI_RETURN macro to anonymous enum,
+> so it'd show up in vmlinux.h. There's not functional change
+> compared to having this as macro.
+>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-Or do you mean virtio vs virtio-net?
-All I did with virtio was to get the virtio-net to support AF_XDP.
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
 
-> Instead of bifurcating one virtio instance into different queues
+> ---
+>  include/uapi/linux/bpf.h       | 4 +++-
+>  tools/include/uapi/linux/bpf.h | 4 +++-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 70da85200695..7abb382dc6c1 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1186,7 +1186,9 @@ enum bpf_perf_event_type {
+>  /* link_create.kprobe_multi.flags used in LINK_CREATE command for
+>   * BPF_TRACE_KPROBE_MULTI attach type to create return probe.
+>   */
+> -#define BPF_F_KPROBE_MULTI_RETURN      (1U << 0)
+> +enum {
+> +       BPF_F_KPROBE_MULTI_RETURN =3D (1U << 0)
+> +};
+>
+>  /* link_create.netfilter.flags used in LINK_CREATE command for
+>   * BPF_PROG_TYPE_NETFILTER to enable IP packet defragmentation.
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index 70da85200695..7abb382dc6c1 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1186,7 +1186,9 @@ enum bpf_perf_event_type {
+>  /* link_create.kprobe_multi.flags used in LINK_CREATE command for
+>   * BPF_TRACE_KPROBE_MULTI attach type to create return probe.
+>   */
+> -#define BPF_F_KPROBE_MULTI_RETURN      (1U << 0)
+> +enum {
+> +       BPF_F_KPROBE_MULTI_RETURN =3D (1U << 0)
+> +};
+>
+>  /* link_create.netfilter.flags used in LINK_CREATE command for
+>   * BPF_PROG_TYPE_NETFILTER to enable IP packet defragmentation.
+> --
+> 2.41.0
+>
 
-That is not the key of our problem.
 
-Even though we have a device that only works with AF_XDP,
-it still has this DMA issues.
-
-I think the current way(v11, v12) is a good solution, the only problem is that
-if the device is old, we can not do dma with DMA APIs. Then we will not suppot
-AF_XDP. I don't think it matters. But Christoph was a little worried.
-
-Thanks.
-
-
-> why
-> not create a separate virtio instance?
-
-
-
-
+--=20
+Regards
+Yafang
 
