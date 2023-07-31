@@ -1,167 +1,182 @@
-Return-Path: <bpf+bounces-6488-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E07976A471
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 01:02:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F83176A4E5
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 01:35:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4083E281455
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 23:02:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D55282814D8
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 23:35:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1331EA7A;
-	Mon, 31 Jul 2023 23:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E711EA85;
+	Mon, 31 Jul 2023 23:35:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE011EA64
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 23:02:04 +0000 (UTC)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324E61BEC
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 16:02:01 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-522382c4840so7331018a12.2
-        for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 16:02:01 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C15E1DDC1
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 23:35:27 +0000 (UTC)
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D21EE
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 16:35:25 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-267f870e6ffso2967081a91.0
+        for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 16:35:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1690844519; x=1691449319;
+        d=google.com; s=20221208; t=1690846525; x=1691451325;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4WL3gOAOsh8o0LXKeeq1iHRytJLE+8+Td/rKsOuxt3c=;
-        b=ifhJ1b6gnzdlfV3hSa51bPaBs3eS8DGeEYJ1X56dUdEAsywWSe+UBM5K8J0teZorOw
-         ZCeoSk2Wpbudv9QJbyUSVS61XtzgkEZLhUMfJhWJ/kMLB46f6ozvmjwPE8zS0H2Q+aBI
-         xVI7E+FKWFVFUFnmjndaHdAva+vDU9TxrTfD0=
+        bh=Ey2ryvOz6VZwjtSUJUm3tN7LBBt048JuDhewPiwIObA=;
+        b=WzbBom19lBHnQPMF8nc6G0Lnicm/MLSIz7DYZXzAduSft4tjQZJkozYl1MYdLHy6Sg
+         7j7Z/+vr7/5o6Zl+FQ76NcUjeY0jliTEAvQCVu2B1eGNp/cYkhnCQakfig51B6HftzIp
+         yiOVbltI59IkyGt8pqQrawZOS7XcevCDpMIZz9pme1w4+G1m0IG9uLhhl3q9Etxw/NoF
+         E4Ik0CxpFww2uKqx0JBIguLP74jFElNOAj8xaPz7ckW6EMjQmuVHW4bydOE4UNcs0SYG
+         CkxhlMupHipTd5LwCltWX1AnqceRw8AN1ynROtvWeT7f58yEBCdXcYjLXXq6EcL2N81+
+         cg4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690844519; x=1691449319;
+        d=1e100.net; s=20221208; t=1690846525; x=1691451325;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4WL3gOAOsh8o0LXKeeq1iHRytJLE+8+Td/rKsOuxt3c=;
-        b=To474NmZcpt34fspYS4ShCfKNkMXWDom01Falwmv+2hd6mPD/T8WunHp+HdBM3X4JV
-         z7NbsWLmyL4L0EIkGEGEqj+i+XI95aOSyj/BxC3X5e/uRUbqWAjGKCvHv6zcntpECPHI
-         Yn/Ujeo/lLqomDGGw10HLyK86s/nU6ig9tVnbx2u+5WkIQ5TxKaw5MUq/gpH5uITN+nB
-         uWrVgauLl5uim6HvTk20F2cyR7eG1LqlC6itwKX4PuP8aIHLbmOnegXRZiPAp3y6w8sn
-         GUeQXCXmWBXA1WGLk2vFGkLR1RYAhMGnCVvbPi0GWKslVtpjjj2ojO/7x8MNKRLvtHwo
-         PSxA==
-X-Gm-Message-State: ABy/qLYEme+zdwuEoyA0RICtGmcYAGqSfv2RqLScJ7zjv/aqJsEhydgQ
-	+Kn5aMDGY8B0t5B7/rEOkUpAyG33mwVJoRtUTei0kw==
-X-Google-Smtp-Source: APBJJlEArhe0cg2s67OkddzWHVkNzo44OpuZEBQ6YwO/CmvBOYKNaeen/qZXTJVAZN+WLMX4ggG5P4BVbhYZgzuz5ew=
-X-Received: by 2002:a05:6402:14d1:b0:522:ba6c:9b1b with SMTP id
- f17-20020a05640214d100b00522ba6c9b1bmr880560edx.26.1690844519499; Mon, 31 Jul
- 2023 16:01:59 -0700 (PDT)
+        bh=Ey2ryvOz6VZwjtSUJUm3tN7LBBt048JuDhewPiwIObA=;
+        b=FFPf0mJXHVu2TgGYKMYkgR18dezM97vsMKl+NfQysIRVfoMQK8Hjp4FE4oAc7JwQrL
+         iJVQo5ka+SeO0BMQTMLVjTji/Lg2xKbelF213sLUs1EvNIYGKtXeOE/tx/N3xSQVTXEM
+         WDPb0+IpTJXpfTDyQ2Dr1mRgq/ywVmr4h29fq8Z7VZUvUFbKupNsD2B0XoQXX7xPOiEp
+         pQpeUzQ0LefGjP7dCQz0Q0yg1jlPORq4A0JQw6F2prGQBTwfesixuUoAcDGe3Mmx7sK6
+         n8pqObApX1Yg6f7FNQIH7xqwe+BtjS9HFdaADzrFJH/XxPpwI/ATS1vXeF0AfKIgYma2
+         DNAg==
+X-Gm-Message-State: ABy/qLYUlQFCV85Gh3bY4u//ewvV/Sn8pa/LE2k0J1ZgXUezd7Ccvgng
+	JIlYKYboGQxAz1UNaMOM5a7ZNwEFTo0ULEi1xdsgYiPJurkkoghNUFYtvg==
+X-Google-Smtp-Source: APBJJlEoVEJ84b8bOcUTpt8QC4lRahBum4SQXUxwYE3M/ewlJ5GhZs6YEq++ynhhcMs++N54EcqXpwjumimge3l2+ac=
+X-Received: by 2002:a17:90a:f284:b0:268:36c1:4204 with SMTP id
+ fs4-20020a17090af28400b0026836c14204mr10094145pjb.4.1690846525114; Mon, 31
+ Jul 2023 16:35:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1690332693.git.yan@cloudflare.com> <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
- <266ab56e-ae83-7ddc-618e-3af228df81bd@linux.dev> <CAO3-Pbon7tCdChnK9kZ4992C-AFPvE5gTDWre6dQT9npEMxS2Q@mail.gmail.com>
- <2f285967-6cc0-c492-6a79-edc233c1368e@linux.dev>
-In-Reply-To: <2f285967-6cc0-c492-6a79-edc233c1368e@linux.dev>
-From: Yan Zhai <yan@cloudflare.com>
-Date: Mon, 31 Jul 2023 18:01:48 -0500
-Message-ID: <CAO3-PboZ5eQUbL3UO1HsaQ0s5CyS0ch=ksFVP1R6s8zv0+FTAg@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com, 
-	Jordan Griege <jgriege@cloudflare.com>, Markus Elfring <Markus.Elfring@web.de>, 
-	Jakub Sitnicki <jakub@cloudflare.com>
+References: <20230722052248.1062582-1-kuifeng@meta.com> <20230722052248.1062582-2-kuifeng@meta.com>
+ <ZL7Ery1lzqj4as7N@google.com> <00dbd930-5ec2-7fb6-202b-38d09e13eb0b@gmail.com>
+In-Reply-To: <00dbd930-5ec2-7fb6-202b-38d09e13eb0b@gmail.com>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Mon, 31 Jul 2023 16:35:13 -0700
+Message-ID: <CAKH8qBvcD7r0e-0oZryLHyGnsNnZ66w6tHj5t4Qi1SzONnwN+w@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/5] bpf: enable sleepable BPF programs attached to cgroup/{get,set}sockopt.
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com, 
+	andrii@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Jul 31, 2023 at 5:11=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
-dev> wrote:
+On Mon, Jul 31, 2023 at 3:02=E2=80=AFPM Kui-Feng Lee <sinquersw@gmail.com> =
+wrote:
 >
-> On 7/31/23 2:35 PM, Yan Zhai wrote:
-> > On Fri, Jul 28, 2023 at 5:02=E2=80=AFPM Martin KaFai Lau <martin.lau@li=
-nux.dev> wrote:
-> >>
-> >> On 7/25/23 6:08 PM, Yan Zhai wrote:
-> >>> skb_do_redirect returns various of values: error code (negative),
-> >>> 0 (success), and some positive status code, e.g. NET_XMIT_CN,
-> >>> NET_RX_DROP. Commit 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel
-> >>> infrastructure") didn't check the return code correctly, so positive
-> >>> values are propagated back along call chain:
-> >>>
-> >>>     ip_finish_output2
-> >>>       -> bpf_xmit
-> >>>         -> run_lwt_bpf
-> >>>           -> skb_do_redirect
-> >>
-> >>   From looking at skb_do_redirect, the skb_do_redirect should have con=
-sumed the
-> >> skb except for the -EAGAIN return value. afaik, -EAGAIN could only hap=
-pen by
-> >> using the bpf_redirect_peer helper. lwt does not have the bpf_redirect=
-_peer
-> >> helper available, so there is no -EAGAIN case in lwt. iow, skb_do_redi=
-rect
-> >> should have always consumed the skb in lwt. or did I miss something?
-> >>
-> >> If that is the case, it feels like the fix should be in run_lwt_bpf() =
-and the
-> >> "if (ret =3D=3D 0)" test in run_lwt_bpf() is unnecessary?
-> >>
-> >>                          ret =3D skb_do_redirect(skb);
-> >>                          if (ret =3D=3D 0)
-> >>                                  ret =3D BPF_REDIRECT;
-> >>
-> >>
-> > Just fixing skb redirect return code won't be sufficient. I realized
-> > there are other return paths that need to be treated, e.g. bpf reroute
-> > path also directly returns dev_queue_xmit status. I plan to check for
-> > LWTUNNEL_XMIT_CONTINUE (and change it to a value that does not
-> > conflict with NET_RX_DROP and NET_XMIT_DROP) in the next revision. On
-> > the other hand, the return value of NETDEV_TX_BUSY is another hassle.
+> Sorry for the late reply! I just backed from a vacation.
 >
-> I suspect we are talking about different things or I am still missing som=
-ething.
 >
-> I was thinking skb_do_redirect() should have always consumed the skb and
-> bpf_xmit should always return LWTUNNEL_XMIT_DONE also (instead of
-> LWTUNNEL_XMIT_CONTINUE described in the this patch commit message). It is=
- what
-> sch_handle_egress() is doing also. Could you explain how is it different =
-from
-> the skb_do_redirect usage in sch_handle_egress() or you are suggesting th=
+> On 7/24/23 11:36, Stanislav Fomichev wrote:
+> > On 07/21, kuifeng@meta.com wrote:
+> >> From: Kui-Feng Lee <kuifeng@meta.com>
+> >>
+> >> Enable sleepable cgroup/{get,set}sockopt hooks.
+> >>
+> >> The sleepable BPF programs attached to cgroup/{get,set}sockopt hooks m=
+ay
+> >> received a pointer to the optval in user space instead of a kernel
+> >> copy. ctx->user_optval and ctx->user_optval_end are the pointers to th=
 e
-> current sch_handle_egress() has the issue too also?
->
-I think we were not on the same page. You are absolutely right that
-skb_do_redirect should consume the packet anyway. The difference
-between your proposal and this patch is that this patch returns errno
-or LWTUNNEL_XMIT_DONE, and yours does not even return errno. Both
-approaches fix the issue of "redirect to down device crashes the
-kernel".
-
-What I commented was an exact same issue at different location: BPF
-reroute may trigger the crash as well, since it also returns
-dev_queue_xmit status in bpf_xmit. Need to fix this, or instead fixing
-LWTUNNEL_XMIT_CONTINUE value and correct the behavior at lwtunnel_xmit
-rather than bpf_xmit.
-
-Yan
-
->
-> > As Dan suggested, packets might not have been freed when this is
-> > returned from drivers. The caller of dev_queue_xmit might need to free
-> > skb when this happens.
+> >> begin and end of the user space buffer if receiving a user space
+> >> buffer. ctx->optval and ctx->optval_end will be a kernel copy if recei=
+ving
+> >> a kernel space buffer.
+> >>
+> >> A program receives a user space buffer if ctx->flags &
+> >> BPF_SOCKOPT_FLAG_OPTVAL_USER is true, otherwise it receives a kernel s=
+pace
+> >> buffer.  The BPF programs should not read/write from/to a user space b=
+uffer
+> >> dirrectly.  It should access the buffer through bpf_copy_from_user() a=
+nd
+> >> bpf_copy_to_user() provided in the following patches.
+> >>
+> >> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
+> >> ---
+> >>   include/linux/filter.h         |   3 +
+> >>   include/uapi/linux/bpf.h       |   9 ++
+> >>   kernel/bpf/cgroup.c            | 189 ++++++++++++++++++++++++++-----=
+--
+> >>   kernel/bpf/verifier.c          |   7 +-
+> >>   tools/include/uapi/linux/bpf.h |   9 ++
+> >>   tools/lib/bpf/libbpf.c         |   2 +
+> >>   6 files changed, 176 insertions(+), 43 deletions(-)
+> >>
+> >> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> >> index f69114083ec7..301dd1ba0de1 100644
+> >> --- a/include/linux/filter.h
+> >> +++ b/include/linux/filter.h
+> >> @@ -1345,6 +1345,9 @@ struct bpf_sockopt_kern {
+> >>      s32             level;
+> >>      s32             optname;
+> >>      s32             optlen;
+> >> +    u32             flags;
+> >> +    u8              *user_optval;
+> >> +    u8              *user_optval_end;
+> >>      /* for retval in struct bpf_cg_run_ctx */
+> >>      struct task_struct *current_task;
+> >>      /* Temporary "register" for indirect stores to ppos. */
+> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> >> index 739c15906a65..b2f81193f97b 100644
+> >> --- a/include/uapi/linux/bpf.h
+> >> +++ b/include/uapi/linux/bpf.h
+> >> @@ -7135,6 +7135,15 @@ struct bpf_sockopt {
+> >>      __s32   optname;
+> >>      __s32   optlen;
+> >>      __s32   retval;
+> >> +
+> >> +    __bpf_md_ptr(void *, user_optval);
+> >> +    __bpf_md_ptr(void *, user_optval_end);
 > >
-> > Yan
+> > Can we re-purpose existing optval/optval_end pointers
+> > for the sleepable programs? IOW, when the prog is sleepable,
+> > pass user pointers via optval/optval_end and require the programs
+> > to do copy_to/from on this buffer (even if the backing pointer might be
+> > in kernel memory - we can handle that in the kfuncs?).
+> >
+> > The fact that the program now needs to look at the flag
+> > (BPF_SOCKOPT_FLAG_OPTVAL_USER) and decide which buffer to
+> > use makes the handling even more complicated; and we already have a
+> > bunch of hairy stuff in these hooks. (or I misreading the change?)
+> >
+> > Also, regarding sleepable and non-sleepable co-existence: do we really =
+need
+> > that? Can we say that all the programs have to be sleepable
+> > or non-sleepable? Mixing them complicates the sharing of that buffer.
 >
+> I considered this approach as well. This is an open question for me.
+> If we go this way, it means we can not attach a BPF program of a type
+> if any program of the other type has been installed.
+
+If we pass two pointers (kernel copy buffer + real user mem) to the
+sleepable program, we'll make it even more complicated by inheriting
+all existing warts of the non-sleepable version :-(
+IOW, feels like we should try to see if we can have some
+copy_to/from_user kfuncs in the sleepable version that transparently
+support either kernel or user memory (and prohibit direct access to
+user_optval in the sleepable version).
+And then, if we have one non-sleepable program in the chain, we can
+fallback everything to the kernel buffer (maybe).
+This way seems like we can support both versions in the same chain and
+have a more sane api?
 
