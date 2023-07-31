@@ -1,118 +1,98 @@
-Return-Path: <bpf+bounces-6406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6401-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B8D8768E9F
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 09:25:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62F0E768C0E
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 08:33:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3475728106A
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 07:25:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1990F2815D6
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 06:33:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB216124;
-	Mon, 31 Jul 2023 07:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EDDB4437;
+	Mon, 31 Jul 2023 06:33:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470801FA4
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 07:24:53 +0000 (UTC)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744042121
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 00:24:24 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-317798b359aso3692673f8f.1
-        for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 00:24:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB4C91FDA
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 06:33:13 +0000 (UTC)
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E651B2
+	for <bpf@vger.kernel.org>; Sun, 30 Jul 2023 23:33:09 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-4036bd4fff1so416091cf.0
+        for <bpf@vger.kernel.org>; Sun, 30 Jul 2023 23:33:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690788236; x=1691393036;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oGkyugvrEM6xlunfW9YYWZ5ucwxLmuDUqkGX4b2iOh8=;
-        b=qQK5xiVbHQ0s49w3n8GJnkrT+3BNDrv+1HVHaLxPSwxHtCZAEfQYw+OgMfdSGXiHcV
-         3kGJ3LhFbKOVG7gmi4w3mNVasWYu9gtPFele8Y70ujr3lSpHxcaOqKbn0jGI7W6YHnTB
-         xlf9xULjx5FNoZHA2ah3Kr4EGDFz60q7uVHSyDmHTZRm6xISfMN27p5ya+3y5YWVg8pH
-         WpfYV/lDXiJauCX6QAQcpEqH8Qay/sBTox0T5zutMQuAjY62y87uqfPSxJFuA09poU8c
-         nI15zNaJKxbtxPow9GtaYcvGeTZG51TqRyeq/eHvgMikcTClaBggGZlgN3NZR3WI7vwm
-         yrFw==
+        d=google.com; s=20221208; t=1690785188; x=1691389988;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hF2HEe0+qJoM+NbKNI8XGqSl9fJ84u2rvglgtgrk3F8=;
+        b=Co+BfdH4q5lblFrRuoa0AM7x0se3HGi2su6UQbqk0WSMUV4zyUI+872ReyiE397ITB
+         kNDv2ilpt0e5axL10ACol9h179as3VS7GeTyD87LPGfuqClcVkiFURGUO6/NBz8iUOeA
+         5LoUfxsCyI+vfl4tPQinQGpTJQKDPsh7Fu6hTcVQMoqCzKPUMp6w4vyO3fNrZRRP/CZM
+         vLqu6jWZsYoDd1MRjAgL10URSIO0US2A30QyREZC6dg+rY0D1NO1dYYtj6FiOjsVKdcg
+         PFwUGOTjzQfgrWKD6jbOTWFLOf/He7fpui28uRnjijNEZoI3fGKjCCeplbFXB3Wnxc12
+         8gMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690788236; x=1691393036;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oGkyugvrEM6xlunfW9YYWZ5ucwxLmuDUqkGX4b2iOh8=;
-        b=T9Hb4gaAg0VRVHmuIT+KZRV8jBNbjpEaDDnifOvlMGG3/Ic6p5lRJ0M+ZzSQNAuyLQ
-         18eVi1JIbrv8AnscqHfT56Az2YlHmWM6Mxj/B5AFD5WmCHZXBMxRkB07EqZBMWX0QKfh
-         iezbURlFvndN6cSHmUt4D5HS/4/HiQf+DkXXcq6YHluf18GA07BYlEo9992XD7s0ZfZs
-         wuLuVT1m4CMRDCuqypEBa/wCLSn34xqHojPYFtbI2FAp7N5XlDJLXkI/fieiKNnJEKNW
-         UAaeTN3/ccAdQ9V/JcyJAWaeWn+PlZJHB9Z6d7Fx5ulj7yjoQNjMJgImJAmwV01kxPq1
-         owmA==
-X-Gm-Message-State: ABy/qLZPPdMDJPegvkMDlEcuoXnMIGxPWxnpSxX2d6wiZPpJUKiMdRxO
-	dpPhmW7l3ueuAxe6MjxpZYHc07kD5utK0wP+0cI=
-X-Google-Smtp-Source: APBJJlGGefjSfRLzDqfy6n0xkLrVkZTQJkZ0wt1xsiiqKwJWdNvqxpkai+L6mhbxu9yl4OJwmAtKQw==
-X-Received: by 2002:adf:d092:0:b0:314:3b02:a8a8 with SMTP id y18-20020adfd092000000b003143b02a8a8mr4035110wrh.55.1690788236048;
-        Mon, 31 Jul 2023 00:23:56 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id t18-20020adfdc12000000b003143c9beeaesm12127892wri.44.2023.07.31.00.23.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 00:23:55 -0700 (PDT)
-Date: Mon, 31 Jul 2023 09:29:02 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: joannelkoong@gmail.com
-Cc: bpf@vger.kernel.org
-Subject: [bug report] bpf: Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr
-Message-ID: <d1360219-85c3-4a03-9449-253ea905f9d1@moroto.mountain>
+        d=1e100.net; s=20221208; t=1690785188; x=1691389988;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hF2HEe0+qJoM+NbKNI8XGqSl9fJ84u2rvglgtgrk3F8=;
+        b=JGqKyJCQg3LUpjr1G/hwXvQv+6/7kQJKphy9glQ7bCXrxpP7Va3GU800m+vVM5yrVX
+         tEg6pTcnBRUwfVWO5VVpkY8LuBgwdiyL6I9cY6Xej/8eaTTPcBtkYKdhDMmcrzAkVH/Q
+         3KJbkjHuTO+HYXxtHNPc1qo32T5iQaS9+5nL2nsPG61LJ8Oq7bHfBwv8oy/mNFKKzmPv
+         iGlft2jT0yd/dCFt2DCR8lXdYxSxEjQzxC7fLhNp44lj9Ayos8cLuSl8as3WxyAs2vZ4
+         x7E6CWSeQKvVIOI1lgTBkeUTf04a7oEhfQBrgWFkZiqka9wYjaD9TypmKctpOPZEE/t+
+         +Cwg==
+X-Gm-Message-State: ABy/qLYaI9YgKdi+o/Pa5Jqz8HUCCXHZnc5fjT1xNQ8ESnrV7UH2+k8t
+	rYX04X7c+EEwNuUtHHY6bvFa5OWKe2BDQHs80NBpag==
+X-Google-Smtp-Source: APBJJlG6gGK/GOUaULJUu6HL4W5EnyaRMlBrlreYMuM0pj3LOGzquxHx00Sx5hWjTAE2X2GDa7DLsUVncxQDYNYhCmM=
+X-Received: by 2002:a05:622a:1006:b0:3f9:ab2c:88b9 with SMTP id
+ d6-20020a05622a100600b003f9ab2c88b9mr384460qte.25.1690785188057; Sun, 30 Jul
+ 2023 23:33:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20230729122644.10648-1-yuehaibing@huawei.com>
+In-Reply-To: <20230729122644.10648-1-yuehaibing@huawei.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 31 Jul 2023 08:32:56 +0200
+Message-ID: <CANn89iLhasFL-8iTUmKFkL4QczvkHsZ9LxGeu_ffaJT7h7oeOA@mail.gmail.com>
+Subject: Re: [PATCH net-next] tcp: Remove unused function declarations
+To: Yue Haibing <yuehaibing@huawei.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello Joanne Koong,
+On Sat, Jul 29, 2023 at 2:27=E2=80=AFPM Yue Haibing <yuehaibing@huawei.com>=
+ wrote:
+>
+> commit 8a59f9d1e3d4 ("sock: Introduce sk->sk_prot->psock_update_sk_prot()=
+")
+> left behind tcp_bpf_get_proto() declaration. And tcp_v4_tw_remember_stamp=
+()
+> function is remove in ccb7c410ddc0 ("timewait_sock: Create and use getpee=
+r op.").
+> Since commit 686989700cab ("tcp: simplify tcp_mark_skb_lost")
+> tcp_skb_mark_lost_uncond_verify() declaration is not used anymore.
+>
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 
-The patch 66e3a13e7c2c: "bpf: Add bpf_dynptr_slice and
-bpf_dynptr_slice_rdwr" from Mar 1, 2023 (linux-next), leads to the
-following Smatch static checker warning:
+SGTM, thanks.
 
-	tools/testing/selftests/bpf/progs/test_cls_redirect_dynptr.c:403 forward_with_gre()
-	error: 'encap_gre' dereferencing possible ERR_PTR()
-
-tools/testing/selftests/bpf/progs/test_cls_redirect_dynptr.c
-    396 
-    397         encap_gre = bpf_dynptr_slice_rdwr(dynptr, 0, encap_buffer, sizeof(encap_buffer));
-    398         if (!encap_gre) {
-    399                 metrics->errors_total_encap_buffer_too_small++;
-    400                 return TC_ACT_SHOT;
-    401         }
-    402 
---> 403         encap_gre->ip.protocol = IPPROTO_GRE;
-                ^^^^^^^^^^^
-
-The bpf_dynptr_slice() function accidentally propagates error pointers
-from bpf_xdp_pointer() so it would crash here.
-
-
-    404         encap_gre->ip.daddr = next_hop->s_addr;
-    405         encap_gre->ip.saddr = ENCAPSULATION_IP;
-    406         encap_gre->ip.tot_len =
-    407                 bpf_htons(bpf_ntohs(encap_gre->ip.tot_len) + delta);
-    408         encap_gre->gre.flags = 0;
-    409         encap_gre->gre.protocol = bpf_htons(proto);
-    410         pkt_ipv4_checksum((void *)&encap_gre->ip);
-    411 
-    412         if (encap_gre == encap_buffer)
-    413                 bpf_dynptr_write(dynptr, 0, encap_buffer, sizeof(encap_buffer), 0);
-    414 
-    415         return bpf_redirect(skb->ifindex, 0);
-    416 }
-
-regards,
-dan carpenter
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
