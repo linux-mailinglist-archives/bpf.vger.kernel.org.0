@@ -1,65 +1,65 @@
-Return-Path: <bpf+bounces-6434-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6435-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 746F876948D
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 13:19:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D96DC76948E
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 13:19:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38868281596
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 11:19:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08A1A1C20865
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 11:19:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5116918009;
-	Mon, 31 Jul 2023 11:18:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D95331800A;
+	Mon, 31 Jul 2023 11:19:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F6EA8BF0
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 11:18:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14AD8BF0
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 11:19:10 +0000 (UTC)
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754FF10CE
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 04:18:37 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E54E53
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 04:19:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690802316;
+	s=mimecast20190719; t=1690802348;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Feb3SbI628V0M+Xl6cXNHTwh1emqN1pCsroF1cMMhXw=;
-	b=Lz5B9a8tI/ubSSVOY7g9gMzwaa1MeAaBzaJ4gjvx3QdAJ7HMTB13ZG7DGdd3GCjO2DMBpo
-	kq6YW7eNQHLJ2kywXHxFrCIfxLHmyoHHEO+ciwjZYwd9pm39YaMEdyZLTehiB/ShDBmqLO
-	4THpOJ/D7HR/wViODRlDt1t+pZZXIrY=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=liRJKw+opNrXfUwr+Bq4QbRM7UJXeuw3tZj+4BJUEBU=;
+	b=SHuY2zU4BUpamVxGw/r7pnJuyKm8LyP1WTnrkDe+P30+qsHN8DQDvknKa59Aew3t9Sj7FU
+	QWSk40s3e9SwlK82ygQLfy5Pzp/pheJpMfEdxEBay0/KjTy/q9U2KBb/bcC4oRPeQCrm8O
+	M9hCORDcLWDs+iCWCziIEjizFe+MS1I=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-127-olcDItZpMAe2vw3eeRUSKw-1; Mon, 31 Jul 2023 07:18:35 -0400
-X-MC-Unique: olcDItZpMAe2vw3eeRUSKw-1
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4054bb356a6so31966831cf.1
-        for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 04:18:35 -0700 (PDT)
+ us-mta-453-rY4XJBW6PwutfJ0_tEJFLA-1; Mon, 31 Jul 2023 07:19:07 -0400
+X-MC-Unique: rY4XJBW6PwutfJ0_tEJFLA-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-76843c4b0f3so350629885a.2
+        for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 04:19:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690802315; x=1691407115;
+        d=1e100.net; s=20221208; t=1690802346; x=1691407146;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Feb3SbI628V0M+Xl6cXNHTwh1emqN1pCsroF1cMMhXw=;
-        b=FxMb9YqWI4zocnz3GqBRZVe7xrwSYnzFpURhIQiUgTnZPlOa0rSipIrk/I/JTHzH13
-         GDkHFidu12lb9JOb0fdx2oqYcOz+T+no+FvY/44rVwFfr9vlWZJEDZ5r0Gp+N1EiJXFk
-         J/NKH2GOyHd/9R9BQAH+CGseUqb3k1wUeT8rCJ1hzXj2ZQ2kchInLT6Dl1eGXAmtWBsR
-         MRwomU2qMNekssJSBT+N84gHNmZLuP0GWwL7w6Bx5CoXVyGfcB/wHQwlDwyOlYzPyxzw
-         KMjlQREwqGJWtuVIMB0zJAtGe35sYzxW+qFmwVShOJDvRmK4bo9FUUMUFYC63F58K/Xu
-         TkGA==
-X-Gm-Message-State: ABy/qLaoxB5GUZrF0Gixa7jkHHBk2VcTDP4oe3fKtFZc1QCs62ZBRXjq
-	Jk4bZBXWfjgKZ2YVrUv9SAZAgU4UUmh9BHFRJjV2S7En29KlsWxOmZf97YLd+HQzTlqf2yVqlcr
-	ohSUnZJ7RinuV
-X-Received: by 2002:a05:622a:1806:b0:403:b23f:9e16 with SMTP id t6-20020a05622a180600b00403b23f9e16mr13377232qtc.2.1690802314899;
-        Mon, 31 Jul 2023 04:18:34 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEehrZuAEoVbTnlaVgIfddlc4rg89Sd70WHq1FBXragdFZy0TviERBFx02bWZYfpI2p+8TwzA==
-X-Received: by 2002:a05:622a:1806:b0:403:b23f:9e16 with SMTP id t6-20020a05622a180600b00403b23f9e16mr13377176qtc.2.1690802314653;
-        Mon, 31 Jul 2023 04:18:34 -0700 (PDT)
+        bh=liRJKw+opNrXfUwr+Bq4QbRM7UJXeuw3tZj+4BJUEBU=;
+        b=jT3HvY4H49CTJetDmFqjhl06tV6NUlcVcg7d/piGJu+FIuxDkF32wQRadFfr/bdCbJ
+         /PsekY54DqoOEWSfOGuH1vYIi//HLkmukioCW37FTVf6YheE6SB+9mB6VQ4sxv5lKytH
+         q3/+65MUGB/HMNM25GxN/gArrWKtDHJsL/9ty1jURj/+0+MOhxcqONfOcYDYG+8rTv/s
+         tcA+dhujO2SfX/mPDObUq//OLczlyY/xyPsXPITWvKR9GJKYP6GjQ5HhDC6jnwIqoiX5
+         35PWVcEPmTyhWpGPbsuVdhK08Z7RIn46BwhcIg1PFkbqL5gZqbEJDS4j/+M8yKz113dy
+         Pokw==
+X-Gm-Message-State: ABy/qLYZsGZxz5hvhaPpR3xQtIXkqdzK2G0eLc/NQCKFrczu39G/C3uI
+	c6qt4YZUmfGBThxsbQAx9W8Io/H1qZGGtj47jOWicb/ZM6xtB6Kn8QrRa09t1QXDHspZFEio7J0
+	dTi0/7It3UywG
+X-Received: by 2002:a05:620a:4083:b0:766:68cd:d9dc with SMTP id f3-20020a05620a408300b0076668cdd9dcmr8634457qko.19.1690802346566;
+        Mon, 31 Jul 2023 04:19:06 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHxRoj22fts1ZRiVdo7BaEAZi0l1tMUruIOv4Nb34gy9lu7KljXIlDPd8x8zhbGrKa5lC+fNA==
+X-Received: by 2002:a05:620a:4083:b0:766:68cd:d9dc with SMTP id f3-20020a05620a408300b0076668cdd9dcmr8634382qko.19.1690802346102;
+        Mon, 31 Jul 2023 04:19:06 -0700 (PDT)
 Received: from vschneid.remote.csb ([149.12.7.81])
-        by smtp.gmail.com with ESMTPSA id e21-20020ac85995000000b003fde3d63d22sm3385798qte.69.2023.07.31.04.18.13
+        by smtp.gmail.com with ESMTPSA id f7-20020a05620a15a700b007682634ac20sm3177128qkk.115.2023.07.31.04.18.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 04:18:33 -0700 (PDT)
+        Mon, 31 Jul 2023 04:19:05 -0700 (PDT)
 From: Valentin Schneider <vschneid@redhat.com>
 To: Josh Poimboeuf <jpoimboe@kernel.org>
 Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
@@ -97,12 +97,12 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
  Yair Podemsky <ypodemsk@redhat.com>
 Subject: Re: [RFC PATCH v2 12/20] objtool: Warn about non __ro_after_init
  static key usage in .noinstr
-In-Reply-To: <20230728160247.multb2csnpa22fgx@treble>
+In-Reply-To: <20230728153557.frzmaayyy3auibx3@treble>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
  <20230720163056.2564824-13-vschneid@redhat.com>
- <20230728160247.multb2csnpa22fgx@treble>
-Date: Mon, 31 Jul 2023 12:18:10 +0100
-Message-ID: <xhsmh7cqgs51p.mognet@vschneid.remote.csb>
+ <20230728153557.frzmaayyy3auibx3@treble>
+Date: Mon, 31 Jul 2023 12:18:40 +0100
+Message-ID: <xhsmh5y60s50v.mognet@vschneid.remote.csb>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -118,21 +118,38 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 28/07/23 11:02, Josh Poimboeuf wrote:
+On 28/07/23 10:35, Josh Poimboeuf wrote:
 > On Thu, Jul 20, 2023 at 05:30:48PM +0100, Valentin Schneider wrote:
->> Later commits will depend on having no runtime-mutable text in early entry
->> code. (ab)use the .noinstr section as a marker of early entry code and warn
->> about static keys used in it that can be flipped at runtime.
+>> +static int validate_static_key(struct instruction *insn, struct insn_state *state)
+>> +{
+>> +	if (state->noinstr && state->instr <= 0) {
+>> +		if ((strcmp(insn->key_sym->sec->name, ".data..ro_after_init"))) {
+>> +			WARN_INSN(insn,
+>> +				  "Non __ro_after_init static key \"%s\" in .noinstr section",
 >
-> Similar to my comment on patch 13, this could also use a short
-> justification for adding the feature, i.e. why runtime-mutable text
-> isn't going to be allowed in .noinstr.
+> For consistency with other warnings, this should start with a lowercase
+> "n" and the string literal should be on the same line as the WARN_INSN,
+> like
 >
-> Also, please add a short description of the warning (and why it exists)
-> to tools/objtool/Documentation/objtool.txt.
+>                       WARN_INSN(insn, "non __ro_after_init static key \"%s\" in .noinstr section",
+>                                 ...
+>
+>> diff --git a/tools/objtool/special.c b/tools/objtool/special.c
+>> index 91b1950f5bd8a..1f76cfd815bf3 100644
+>> --- a/tools/objtool/special.c
+>> +++ b/tools/objtool/special.c
+>> @@ -127,6 +127,9 @@ static int get_alt_entry(struct elf *elf, const struct special_entry *entry,
+>>                      return -1;
+>>              }
+>>              alt->key_addend = reloc_addend(key_reloc);
+>> +
+>> +		reloc_to_sec_off(key_reloc, &sec, &offset);
+>> +		alt->key_sym = find_symbol_by_offset(sec, offset & ~2);
+>
+> Bits 0 and 1 can both store data, should be ~3?
 >
 
-I had missed this, thanks for the pointer.
+Quite so, that needs to be the same as jump_entry_key().
 
 > --
 > Josh
