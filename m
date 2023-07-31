@@ -1,29 +1,29 @@
-Return-Path: <bpf+bounces-6453-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6454-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 650E5769B2C
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 17:49:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC02C769B6C
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 17:55:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CF24280E22
-	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 15:49:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 283F41C20B4F
+	for <lists+bpf@lfdr.de>; Mon, 31 Jul 2023 15:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6A619BCD;
-	Mon, 31 Jul 2023 15:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01FEE19BAE;
+	Mon, 31 Jul 2023 15:55:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2381519BC6
-	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 15:48:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAAFBC433C8;
-	Mon, 31 Jul 2023 15:48:05 +0000 (UTC)
-Date: Mon, 31 Jul 2023 11:48:03 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD0618C2C
+	for <bpf@vger.kernel.org>; Mon, 31 Jul 2023 15:55:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 494BDC433C7;
+	Mon, 31 Jul 2023 15:54:55 +0000 (UTC)
+Date: Mon, 31 Jul 2023 11:54:53 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>, linux-kernel@vger.kernel.org,
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
  kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
  x86@kernel.org, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
@@ -40,11 +40,11 @@ Cc: Josh Poimboeuf <jpoimboe@kernel.org>, linux-kernel@vger.kernel.org,
  <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
  Zqiang <qiang.zhang1211@gmail.com>, Andrew Morton
  <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, Christoph
- Hellwig <hch@infradead.org>, Lorenzo Stoakes <lstoakes@gmail.com>, Jason
- Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>, Sami Tolvanen
- <samitolvanen@google.com>, Ard Biesheuvel <ardb@kernel.org>, Nicholas
- Piggin <npiggin@gmail.com>, Juerg Haefliger
- <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
+ Hellwig <hch@infradead.org>, Lorenzo Stoakes <lstoakes@gmail.com>, Josh
+ Poimboeuf <jpoimboe@kernel.org>, Jason Baron <jbaron@akamai.com>, Kees Cook
+ <keescook@chromium.org>, Sami Tolvanen <samitolvanen@google.com>, Ard
+ Biesheuvel <ardb@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Juerg
+ Haefliger <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
  <nsaenz@kernel.org>, "Kirill A. Shutemov"
  <kirill.shutemov@linux.intel.com>, Nadav Amit <namit@vmware.com>, Dan
  Carpenter <error27@gmail.com>, Chuang Wang <nashuiliang@gmail.com>, Yang
@@ -55,15 +55,14 @@ Cc: Josh Poimboeuf <jpoimboe@kernel.org>, linux-kernel@vger.kernel.org,
  <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>, Daniel Bristot
  de Oliveira <bristot@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
  Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 02/20] tracing/filters: Enable filtering a
- cpumask field by another cpumask
-Message-ID: <20230731114803.019158b9@gandalf.local.home>
-In-Reply-To: <xhsmh4jlks4yw.mognet@vschneid.remote.csb>
+Subject: Re: [RFC PATCH v2 06/20] tracing/filters: Optimise scalar vs
+ cpumask filtering when the user mask is a single CPU
+Message-ID: <20230731115453.395d20c6@gandalf.local.home>
+In-Reply-To: <04f20e58-6b24-4f44-94e2-0d12324a30e4@kadam.mountain>
 References: <20230720163056.2564824-1-vschneid@redhat.com>
-	<20230720163056.2564824-3-vschneid@redhat.com>
-	<20230726194148.4jhyqqbtn3qqqqsq@treble>
-	<20230729150901.25b9ae0c@rorschach.local.home>
-	<xhsmh4jlks4yw.mognet@vschneid.remote.csb>
+	<20230720163056.2564824-7-vschneid@redhat.com>
+	<20230729155547.35719a1f@rorschach.local.home>
+	<04f20e58-6b24-4f44-94e2-0d12324a30e4@kadam.mountain>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,32 +73,31 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 31 Jul 2023 12:19:51 +0100
-Valentin Schneider <vschneid@redhat.com> wrote:
-> >
-> > Also, when you do an empty for loop:
-> >
-> >       for (; str[i] && str[i] != '}'; i++);
-> >
-> > Always put the semicolon on the next line, otherwise it is really easy
-> > to think that the next line is part of the for loop. That is, instead
-> > of the above, do:
-> >
-> >       for (; str[i] && str[i] != '}'; i++)
-> >               ;
-> >  
+On Mon, 31 Jul 2023 15:07:52 +0300
+Dan Carpenter <dan.carpenter@linaro.org> wrote:
+
+> On Sat, Jul 29, 2023 at 03:55:47PM -0400, Steven Rostedt wrote:
+> > > @@ -1761,6 +1761,11 @@ static int parse_pred(const char *str, void *data,
+> > >  				FILTER_PRED_FN_CPUMASK;
+> > >  		} else if (field->filter_type == FILTER_CPU) {
+> > >  			pred->fn_num = FILTER_PRED_FN_CPU_CPUMASK;
+> > > +		} else if (single) {
+> > > +			pred->op = pred->op == OP_BAND ? OP_EQ : pred->op;  
+> > 
+> > Nit, the above can be written as:
+> > 
+> > 			pred->op = pret->op != OP_BAND ? : OP_EQ;
+> >   
 > 
-> Interestingly I don't think I've ever encountered that variant, usually
-> having an empty line (which this lacks) and the indentation level is enough
-> to identify these - regardless, I'll change it.
+> Heh.  Those are not equivalent.  The right way to write this is:
 
+You mean because of my typo?
 
-Do a "git grep -B1 -e '^\s*;\s*$'"
+> 
+> 	if (pred->op == OP_BAND)
+> 		pred->op = OP_EQ;
 
-You'll find that it is quite common.
-
-Thanks,
+But sure, I'm fine with that, and it's probably more readable too.
 
 -- Steve
-
 
