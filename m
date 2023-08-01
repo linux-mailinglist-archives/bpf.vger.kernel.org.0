@@ -1,148 +1,136 @@
-Return-Path: <bpf+bounces-6587-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6588-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80CAF76B956
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 18:05:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C96F076B965
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 18:06:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1151280CC8
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 16:05:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06FE91C20FE4
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 16:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF231ADF4;
-	Tue,  1 Aug 2023 16:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44261ADF8;
+	Tue,  1 Aug 2023 16:06:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0DD1ADD9
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 16:05:20 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29F0BF
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 09:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690905908;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rZTW9cojqSQW2bZi6sZ+IdoqRlKJXkCjqyxPfvTXPbg=;
-	b=TyxXpEcRQZL0XBuKm5G6GayN3Bk1KsA+e0+sESOLqqmuWGi1f+sbiKXIoFRbNGKB0SVZ8n
-	EGnI4nuQw8M3jM/C2vjNj6QURpoEaVaxf9XOdhFCEE+E9Xuj4ppl6ckRdnVy0/JJoHJkU4
-	MsmOJZHmYeW2mT1vcfUMIOOPf12E+6Q=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-630-YfCTGYscPM-1AguFnf6XDw-1; Tue, 01 Aug 2023 12:04:53 -0400
-X-MC-Unique: YfCTGYscPM-1AguFnf6XDw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fe13881511so19741935e9.3
-        for <bpf@vger.kernel.org>; Tue, 01 Aug 2023 09:04:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690905890; x=1691510690;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rZTW9cojqSQW2bZi6sZ+IdoqRlKJXkCjqyxPfvTXPbg=;
-        b=bpknIX1cE4F45Eudrq6kZvP+10Js+H+Ayshp1s2iXDJz3R5krZ/W8APBISQ1CnuYWB
-         hlCibmEMKmgUcMyYf9p4iA/TChrJzxTr0273a+nJqUs4Uq2p7SI53XJFr5V1WM/bWLYO
-         IhiqjsqXj6kDHq+9ONH2qXssXU85J/MKNcxJw/Jmu4SBWEvd8XgAX7xE2cEEo7uD9ixf
-         /UJ6U+/zWWHGL8B/hElAdhLZ7zgAHT5MebfiTRMqqNnHzxysOibsomvMvX0hnKU6zHSB
-         LANxdwMXwnBj4F4l/lFdnjy7v/tD0ykRXMD/1uwlYfGwc0i6HkkJNB2NMBWc/UtiixjR
-         0R1Q==
-X-Gm-Message-State: ABy/qLbo/O4cTUDU9bkDJKnc4+mYad8bZ9qiB9Zlb3Lj+dJ8gxF7ylet
-	TqR3Fujf+mG+fKRbtfF6BP2T9Ge7Ru3LYqD/ysVQI0ASu+ggDn8LoMwlOdtVUab485W6+UdInFJ
-	RzI72kefOC6+Z
-X-Received: by 2002:a1c:7310:0:b0:3fb:e189:3532 with SMTP id d16-20020a1c7310000000b003fbe1893532mr2701253wmb.20.1690905890720;
-        Tue, 01 Aug 2023 09:04:50 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHNvxPggY+ulCpxWm153ryyCBd6qp7Nemz78JW1jh60aRTALT7If6+aYqQcQ/iizAk261YnOw==
-X-Received: by 2002:a1c:7310:0:b0:3fb:e189:3532 with SMTP id d16-20020a1c7310000000b003fbe1893532mr2701225wmb.20.1690905890321;
-        Tue, 01 Aug 2023 09:04:50 -0700 (PDT)
-Received: from sgarzare-redhat (host-82-57-51-214.retail.telecomitalia.it. [82.57.51.214])
-        by smtp.gmail.com with ESMTPSA id d7-20020adfe2c7000000b00317ac0642b0sm3078341wrj.27.2023.08.01.09.04.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 09:04:49 -0700 (PDT)
-Date: Tue, 1 Aug 2023 18:04:46 +0200
-From: Stefano Garzarella <sgarzare@redhat.com>
-To: Bobby Eshleman <bobbyeshleman@gmail.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, 
-	Bobby Eshleman <bobby.eshleman@bytedance.com>, linux-hyperv@vger.kernel.org, 
-	Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org, 
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Simon Horman <simon.horman@corigine.com>, 
-	virtualization@lists.linux-foundation.org, Eric Dumazet <edumazet@google.com>, 
-	Dan Carpenter <dan.carpenter@linaro.org>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, 
-	Bryan Tan <bryantan@vmware.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Haiyang Zhang <haiyangz@microsoft.com>, 
-	Krasnov Arseniy <oxffffaa@gmail.com>, Vishnu Dasa <vdasa@vmware.com>, 
-	Jiang Wang <jiang.wang@bytedance.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH RFC net-next v5 10/14] virtio/vsock: add
- VIRTIO_VSOCK_F_DGRAM feature bit
-Message-ID: <nnftjp3ek3hpiqlvz6ajbxcjswraclrayei2wi2qwgxzi7gpl6@yxdcz5eknofy>
-References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
- <20230413-b4-vsock-dgram-v5-10-581bd37fdb26@bytedance.com>
- <20230726143736-mutt-send-email-mst@kernel.org>
- <tpwk67lij7t7hquduogxzyox5wvq73yriv7vqiizqoxxtxvfwq@jzkcmq4kv3b4>
- <ZMiKXh173b/3Pj1L@bullseye>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB2E1ADD9
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 16:06:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A6E4C433CA;
+	Tue,  1 Aug 2023 16:06:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690906001;
+	bh=BBcCALZSvC2LFhRKcMqxP8rdH2NP0e0xXifPtDkOjO8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vCrg74c7T3Iz63b0Kd6NgZegwDi8uBiXQoM380X5QyO9JQStSJ1vVIYg5lBwm6mGw
+	 G5KOxDdFaZ7Piz25JAUwBZD/3gaIndaeQTHekVYLS3qu/aHMvXlBS74Y+fcyy1aTEk
+	 ekFWbXUbEVFdALD5l54i41nQHanZW89VH2ePBQMh5U9QZ5HMo56dgNJvyaeiY04Jyl
+	 Xf14Hk85AfA++XUjsYmfdUWau4GAJM10KRtVfqcqHC8KYUuOhv/aWt7bPVRl++OF56
+	 Y2ze4WvLuzReIZF+YcVIa7kCLw1OcNEHpfPPSiU8sxiQPotRbp7L6618dtrmlDOhKL
+	 o2cGG2hsMdBsQ==
+Date: Tue, 1 Aug 2023 11:06:36 -0500
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+	x86@kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Juerg Haefliger <juerg.haefliger@canonical.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
+	Chuang Wang <nashuiliang@gmail.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Petr Mladek <pmladek@suse.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+	Julian Pidancet <julian.pidancet@oracle.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 11/20] objtool: Flesh out warning related to
+ pv_ops[] calls
+Message-ID: <20230801160636.ko3oc4cwycwejyxy@treble>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-12-vschneid@redhat.com>
+ <20230728153334.myvh5sxppvjzd3oz@treble>
+ <xhsmh8raws53o.mognet@vschneid.remote.csb>
+ <20230731213631.pywytiwdqgtgx4ps@treble>
+ <20230731214612.GC51835@hirez.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZMiKXh173b/3Pj1L@bullseye>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-	T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+In-Reply-To: <20230731214612.GC51835@hirez.programming.kicks-ass.net>
 
-On Tue, Aug 01, 2023 at 04:30:22AM +0000, Bobby Eshleman wrote:
->On Thu, Jul 27, 2023 at 09:48:21AM +0200, Stefano Garzarella wrote:
->> On Wed, Jul 26, 2023 at 02:38:08PM -0400, Michael S. Tsirkin wrote:
->> > On Wed, Jul 19, 2023 at 12:50:14AM +0000, Bobby Eshleman wrote:
->> > > This commit adds a feature bit for virtio vsock to support datagrams.
->> > >
->> > > Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
->> > > Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
->> > > ---
->> > >  include/uapi/linux/virtio_vsock.h | 1 +
->> > >  1 file changed, 1 insertion(+)
->> > >
->> > > diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
->> > > index 331be28b1d30..27b4b2b8bf13 100644
->> > > --- a/include/uapi/linux/virtio_vsock.h
->> > > +++ b/include/uapi/linux/virtio_vsock.h
->> > > @@ -40,6 +40,7 @@
->> > >
->> > >  /* The feature bitmap for virtio vsock */
->> > >  #define VIRTIO_VSOCK_F_SEQPACKET	1	/* SOCK_SEQPACKET supported */
->> > > +#define VIRTIO_VSOCK_F_DGRAM		3	/* SOCK_DGRAM supported */
->> > >
->> > >  struct virtio_vsock_config {
->> > >  	__le64 guest_cid;
->> >
->> > pls do not add interface without first getting it accepted in the
->> > virtio spec.
->>
->> Yep, fortunatelly this series is still RFC.
->> I think by now we've seen that the implementation is doable, so we
->> should discuss the changes to the specification ASAP. Then we can
->> merge the series.
->>
->> @Bobby can you start the discussion about spec changes?
->>
->
->No problem at all. Am I right to assume that a new patch to the spec is
->the standard starting point for discussion?
+On Mon, Jul 31, 2023 at 11:46:12PM +0200, Peter Zijlstra wrote:
+> > Ideally it would only print a single warning for this case, something
+> > like:
+> > 
+> >   vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: indirect call to native_flush_tlb_local() leaves .noinstr.text section
+> 
+> But then what for the case where there are multiple implementations and
+> more than one isn't noinstr?
 
-Yep, I think so!
+The warning would be in the loop in pv_call_dest(), so it would
+potentially print multiple warnings, one for each potential dest.
 
-Thanks,
-Stefano
+> IIRC that is where these double prints came from. One is the callsite
+> (always one) and the second is the offending implementation (but there
+> could be more).
 
+It's confusing to warn about the call site and the destination in two
+separate warnings.  That's why I'm proposing combining them into a
+single warning (which still could end up as multiple warnings if there
+are multiple affected dests).
+
+> > I left out "pv_ops[1]" because it's already long enough :-)
+> 
+> The index number is useful when also looking at the assembler, which
+> IIRC is an indexed indirect call.
+
+Ok, so something like so?
+
+  vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: indirect call to pv_ops[1] (native_flush_tlb_local) leaves .noinstr.text section
+
+-- 
+Josh
 
