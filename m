@@ -1,181 +1,155 @@
-Return-Path: <bpf+bounces-6570-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6572-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53D6076B810
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 16:54:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2381976B82B
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 16:59:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 845541C203D8
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 14:54:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5453D1C20E91
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 14:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC8F64DC75;
-	Tue,  1 Aug 2023 14:54:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB2A4DC81;
+	Tue,  1 Aug 2023 14:59:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 759E120EA
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 14:54:44 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E03120
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 07:54:42 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3710O7lF008372
-	for <bpf@vger.kernel.org>; Tue, 1 Aug 2023 07:54:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=trsVcPr7uxZWVuGvJ0WSe7hF7ghQVrsr32Hcl5RQaM4=;
- b=ZQ24oqHubyxPyvbnxFGj34GVp0LY8JxjGu6wsQ8mNAvbg5QMp7MnHY79eKKo8DcOLNiG
- L2eroI0Nvl3UwG3bkH/Vj50DzsS3eASY46J3iIpOLwSGqxOST8RB5Z0O8S9SKQWHZFSp
- QL93j1SkTpPGODgetxcsg8bw13LBDTf1ALU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3s6qfgwg07-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Tue, 01 Aug 2023 07:54:42 -0700
-Received: from twshared6136.05.ash9.facebook.com (2620:10d:c0a8:1c::1b) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 1 Aug 2023 07:54:40 -0700
-Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-	id CE35822006B57; Tue,  1 Aug 2023 07:54:31 -0700 (PDT)
-From: Dave Marchevsky <davemarchevsky@fb.com>
-To: <bpf@vger.kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau
-	<martin.lau@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Marchevsky
-	<davemarchevsky@fb.com>
-Subject: [PATCH v1 bpf-next 2/2] selftests/bpf: Add test exercising bpf_find_vma's BPF_F_VMA_NEXT flag
-Date: Tue, 1 Aug 2023 07:54:14 -0700
-Message-ID: <20230801145414.418145-2-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230801145414.418145-1-davemarchevsky@fb.com>
-References: <20230801145414.418145-1-davemarchevsky@fb.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 069E220EA;
+	Tue,  1 Aug 2023 14:59:38 +0000 (UTC)
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B89122;
+	Tue,  1 Aug 2023 07:59:37 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-40fbf360a9cso12574981cf.3;
+        Tue, 01 Aug 2023 07:59:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690901977; x=1691506777;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=re83epYEGAxkxHedXjaq8xzla1lDRq5bwOjxObe6kmA=;
+        b=AjcKhRMG7Tn4kqu/M2vl6iY01gZ6kGwQRUrhlDkYY07dCE1ECs5r5aB5Uj2Pv934gH
+         LQFwOxjOGs4Ko9tVWpg+fmBwhdajvRUhCFRNrW3LIeT7rOG7kVUYv46KXpEtRRIwjWF+
+         SGjzn7hUxvXUCDJdOGvblVR3XmYgBIUjb0fIW+7aQUSCM5ZNGEshGBBPc04u304UVll8
+         aHkOCuskswn0/6NXYFFltR8pxcztW4xhANbBG5Azem4lRATS7DcZkWxca3zjjxeSYysd
+         6Gtimjp1ylxtdIaXLN3eyGMB/7A9t/j0nf/BoORYzWTkafCIC8mEosH69ql35KUUX+RG
+         FbwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690901977; x=1691506777;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=re83epYEGAxkxHedXjaq8xzla1lDRq5bwOjxObe6kmA=;
+        b=HfibK9xLE3gfQRE4RAaPHcJ+W5m8a/4ucTKFH08sCoeUN3W/myMf809K3rZGsMzdgQ
+         rho0KJvYpUsOYWj4ZO4438R5zGPR94UA6KRNv557uN6kwe9OV0Bw/wjxsvi7juLygIGN
+         rDFb4csHOlMJQUyFK1Hs8lHdnTD/kYi6wB25MW5rdBLAaUdrMuDMZG+IDLe6V/s5L9Ic
+         rUe1jUPLLc0uIQv6nVsa45SNkdjZCgrIkRf2H0EFUOOMFgf+AH4aPiGD46o7sbUQRpfc
+         zxdI6xxb+NM91uxbeqXUfSq7qOgd7yG1JqTsLoRw/pezMxV89Bc+OYTi03GXG02BZvap
+         dt3Q==
+X-Gm-Message-State: ABy/qLZDWoqlFVYmzbsmgFVdV3Raqi3s/pj80X7JoLA7Igs4y5KaOsln
+	4GDO/GGtb/7368IEVSJkvfw=
+X-Google-Smtp-Source: APBJJlErfXjF8pYZdwrKxG91Ge8pM6l3z9gx62O1NDpCQDtrWiq6If1QCo0+ZoR8+RhK/uqCdBz5Mg==
+X-Received: by 2002:a05:622a:64e:b0:403:1c7a:6c70 with SMTP id a14-20020a05622a064e00b004031c7a6c70mr17000763qtb.38.1690901976867;
+        Tue, 01 Aug 2023 07:59:36 -0700 (PDT)
+Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
+        by smtp.gmail.com with ESMTPSA id c24-20020ac81e98000000b0040fd72bca22sm446392qtm.10.2023.08.01.07.59.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 07:59:36 -0700 (PDT)
+Date: Tue, 01 Aug 2023 10:59:35 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: David Howells <dhowells@redhat.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: dhowells@redhat.com, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>, 
+ bpf@vger.kernel.org, 
+ brauner@kernel.org, 
+ davem@davemloft.net, 
+ dsahern@kernel.org, 
+ edumazet@google.com, 
+ linux-fsdevel@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ pabeni@redhat.com, 
+ syzkaller-bugs@googlegroups.com, 
+ viro@zeniv.linux.org.uk
+Message-ID: <64c91dd7ebb09_1c09b429484@willemb.c.googlers.com.notmuch>
+In-Reply-To: <1410190.1690901255@warthog.procyon.org.uk>
+References: <64c9174fda48e_1bf0a42945f@willemb.c.googlers.com.notmuch>
+ <64c903b02b234_1b307829418@willemb.c.googlers.com.notmuch>
+ <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch>
+ <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch>
+ <20230718160737.52c68c73@kernel.org>
+ <000000000000881d0606004541d1@google.com>
+ <0000000000001416bb06004ebf53@google.com>
+ <792238.1690667367@warthog.procyon.org.uk>
+ <831028.1690791233@warthog.procyon.org.uk>
+ <1401696.1690893633@warthog.procyon.org.uk>
+ <1409099.1690899546@warthog.procyon.org.uk>
+ <1410190.1690901255@warthog.procyon.org.uk>
+Subject: Re: Endless loop in udp with MSG_SPLICE_READ - Re: [syzbot] [fs?]
+ INFO: task hung in pipe_release (4)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 1z_JINg1j6rVDl321_dMry3fjX5CytGT
-X-Proofpoint-GUID: 1z_JINg1j6rVDl321_dMry3fjX5CytGT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_11,2023-08-01_01,2023-05-22_02
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.6
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Nothing is mapped to the zero page, so current find_vma tests use addr 0
-to test "failure to find vma containing addr". With the BPF_F_VMA_NEXT
-flag, a bpf_find_vma call on an addr 0 will return some vma, so only
-small adjustments to existing tests are necessary to validate.
+David Howells wrote:
+> Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
+> 
+> > > I'm also not entirely sure what 'paged' means in this function.  Should it
+> > > actually be set in the MSG_SPLICE_PAGES context?
+> > 
+> > I introduced it with MSG_ZEROCOPY. It sets up pagedlen to capture the
+> > length that is not copied.
+> > 
+> > If the existing code would affect MSG_ZEROCOPY too, I expect syzbot
+> > to have reported that previously.
+> 
+> Ah...  I think it *should* affect MSG_ZEROCOPY also... but...  If you look at:
+> 
+> 		} else {
+> 			err = skb_zerocopy_iter_dgram(skb, from, copy);
+> 			if (err < 0)
+> 				goto error;
+> 		}
+> 		offset += copy;
+> 		length -= copy;
+> 
+> MSG_ZEROCOPY assumes that if it didn't return an error, then
+> skb_zerocopy_iter_dgram() copied all the data requested - whether or not the
+> iterator had sufficient data to copy.
+> 
+> If you look in __zerocopy_sg_from_iter(), it will drop straight out, returning
+> 0 if/when iov_iter_count() is/reaches 0, even if length is still > 0, just as
+> skb_splice_from_iter() does.
+> 
+> So there's a potential bug in the handling of MSG_ZEROCOPY - but one that you
+> survive because it subtracts 'copy' from 'length', reducing it to zero, exits
+> the loop and returns without looking at 'length' again.  The actual length to
+> be transmitted is in the skbuff.
+> 
+> > Since the arithmetic is so complicated and error prone, I would try
+> > to structure a fix that is easy to reason about to only change
+> > behavior for the MSG_SPLICE_PAGES case.
+> 
+> Does that mean you want to have a go at that - or did you want me to try
+Please give it a try. I can review. It's just safer if it's trivial
+to review that the patch only affects the behavior of the recently
+introduced MSG_SPLICE_PAGES code.
 
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
- .../testing/selftests/bpf/prog_tests/find_vma.c | 17 +++++++++++++----
- tools/testing/selftests/bpf/progs/find_vma.c    |  5 +++--
- 2 files changed, 16 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/te=
-sting/selftests/bpf/prog_tests/find_vma.c
-index 5165b38f0e59..dccf1ccd7468 100644
---- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
-+++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
-@@ -19,6 +19,7 @@ static void test_and_reset_skel(struct find_vma *skel, =
-int expected_find_zero_re
- 	skel->bss->found_vm_exec =3D 0;
- 	skel->data->find_addr_ret =3D -1;
- 	skel->data->find_zero_ret =3D -1;
-+	skel->bss->find_zero_flags =3D 0;
- 	skel->bss->d_iname[0] =3D 0;
- }
-=20
-@@ -77,16 +78,23 @@ static void test_find_vma_pe(struct find_vma *skel)
- 	close(pfd);
- }
-=20
--static void test_find_vma_kprobe(struct find_vma *skel)
-+static void test_find_vma_kprobe(struct find_vma *skel, bool vma_next)
- {
--	int err;
-+	int err, expected_find_zero_ret;
-=20
- 	err =3D find_vma__attach(skel);
- 	if (!ASSERT_OK(err, "get_branch_snapshot__attach"))
- 		return;
-=20
-+	if (vma_next) {
-+		skel->bss->find_zero_flags =3D BPF_F_VMA_NEXT;
-+		expected_find_zero_ret =3D 0;
-+	} else {
-+		expected_find_zero_ret =3D -ENOENT; /* no vma contains ptr 0 */
-+	}
-+
- 	getpgid(skel->bss->target_pid);
--	test_and_reset_skel(skel, -ENOENT /* could not find vma for ptr 0 */, t=
-rue);
-+	test_and_reset_skel(skel, expected_find_zero_ret, true);
- }
-=20
- static void test_illegal_write_vma(void)
-@@ -119,7 +127,8 @@ void serial_test_find_vma(void)
- 	skel->bss->addr =3D (__u64)(uintptr_t)test_find_vma_pe;
-=20
- 	test_find_vma_pe(skel);
--	test_find_vma_kprobe(skel);
-+	test_find_vma_kprobe(skel, false);
-+	test_find_vma_kprobe(skel, true);
-=20
- 	find_vma__destroy(skel);
- 	test_illegal_write_vma();
-diff --git a/tools/testing/selftests/bpf/progs/find_vma.c b/tools/testing=
-/selftests/bpf/progs/find_vma.c
-index 38034fb82530..73ade81722fa 100644
---- a/tools/testing/selftests/bpf/progs/find_vma.c
-+++ b/tools/testing/selftests/bpf/progs/find_vma.c
-@@ -17,6 +17,7 @@ pid_t target_pid =3D 0;
- char d_iname[DNAME_INLINE_LEN] =3D {0};
- __u32 found_vm_exec =3D 0;
- __u64 addr =3D 0;
-+__u64 find_zero_flags =3D 0;
- int find_zero_ret =3D -1;
- int find_addr_ret =3D -1;
-=20
-@@ -46,7 +47,7 @@ int handle_getpid(void)
- 	find_addr_ret =3D bpf_find_vma(task, addr, check_vma, &data, 0);
-=20
- 	/* this should return -ENOENT */
--	find_zero_ret =3D bpf_find_vma(task, 0, check_vma, &data, 0);
-+	find_zero_ret =3D bpf_find_vma(task, 0, check_vma, &data, find_zero_fla=
-gs);
- 	return 0;
- }
-=20
-@@ -64,6 +65,6 @@ int handle_pe(void)
- 	/* In NMI, this should return -EBUSY, as the previous call is using
- 	 * the irq_work.
- 	 */
--	find_zero_ret =3D bpf_find_vma(task, 0, check_vma, &data, 0);
-+	find_zero_ret =3D bpf_find_vma(task, 0, check_vma, &data, find_zero_fla=
-gs);
- 	return 0;
- }
---=20
-2.34.1
 
 
