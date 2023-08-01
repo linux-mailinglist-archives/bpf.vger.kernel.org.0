@@ -1,133 +1,80 @@
-Return-Path: <bpf+bounces-6638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6639-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCE7276C0B5
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 01:17:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FCA176C0BA
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 01:18:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB74E1C210BC
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 23:17:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4617C1C210F0
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 23:18:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88028821;
-	Tue,  1 Aug 2023 23:17:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6688125A0;
+	Tue,  1 Aug 2023 23:18:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326DD440C
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 23:17:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B6D6C433C8;
-	Tue,  1 Aug 2023 23:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690931836;
-	bh=88zkvAVDUFWqbW4oJyMLFNy3ju90g2621RUrlMf/Du0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YZTL4fESnAxnkfayIkA5m25sZobaFGsMuDbvhwbG5rk32Vrh/STz+FnVSkmRMuneR
-	 sNDPe0AfCByyN7A7sI+zabf/sz1wHHpJp719Xh9zJaO8YwHmxP6MMEEgRMx6BqLg9Y
-	 x0LnEGIn+udJHza1m+Ox1PEJI/FGssHLoQ6sNzPnvFb1fwoWU1W/bn4bofvQipirdz
-	 7yD8wix5G3U6I9Ki/FRdqSdy+SCW4O1txJ+KJiBwDrX6F3gy1lxajt8wej6Q44FohZ
-	 XWS6J6x0izVWJs3g5B4UgglwJ7BJyZy8teHdN+sEbDv/KNA2TJ2lgq5vIZjMx+cOZp
-	 6vPF/jmjp2Y0w==
-Date: Wed, 2 Aug 2023 08:17:11 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Linus
- Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-Id: <20230802081711.7711f8775ffc730b2c32df5e@kernel.org>
-In-Reply-To: <CAADnVQJ2ixjZUY7hJJMM1iUBAYY2VxdL6v--Rg8wvKypfxBsGw@mail.gmail.com>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-	<169078863449.173706.2322042687021909241.stgit@devnote2>
-	<CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-	<20230731211527.3bde484d@gandalf.local.home>
-	<CAADnVQJz41QgpFHr3k0pndjHZ8ragH--=C_bYxrzitj7bN3bbg@mail.gmail.com>
-	<20230802001824.90819c7355283843178d9163@kernel.org>
-	<CAADnVQJ2ixjZUY7hJJMM1iUBAYY2VxdL6v--Rg8wvKypfxBsGw@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F98E440C
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 23:18:04 +0000 (UTC)
+Received: from out-106.mta1.migadu.com (out-106.mta1.migadu.com [95.215.58.106])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CFC19B6
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 16:17:59 -0700 (PDT)
+Message-ID: <97511804-ea81-67aa-3120-92415b0be5df@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1690931874;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HiOZong6Dayf6SOaF5LtkcSVSZUjJaHR5JnKR3+5N+U=;
+	b=eMTpIwTORTb3Uwb/YfLrffCT6bjOFSPsU+3ej5MpXFLdcmMHai+w2nnDfuZh7a0hQUpa7K
+	rEmXJTf3d2jeIcKQBYBA8u49UPRsDdImKzPC6HD+GVDEH/mIV5Q2OfDaMd+s9MRAyMOVrz
+	8rU/eyMJQYFQNkEO8PL4Yq0V0VvQOX0=
+Date: Tue, 1 Aug 2023 16:17:49 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Subject: Re: bpf_sk_cgroup_id is not available in tracepoints
+Content-Language: en-US
+To: Ivan Babrou <ivan@cloudflare.com>
+Cc: bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Stanislav Fomichev <sdf@google.com>,
+ Martin KaFai Lau <kafai@fb.com>
+References: <CABWYdi1KERLa9dOK8mxxdNvT746R8adFHxuN53VMvWMS=yyq_w@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CABWYdi1KERLa9dOK8mxxdNvT746R8adFHxuN53VMvWMS=yyq_w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Tue, 1 Aug 2023 15:21:59 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-
-> On Tue, Aug 1, 2023 at 8:18 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Mon, 31 Jul 2023 19:24:25 -0700
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> >
-> > > On Mon, Jul 31, 2023 at 6:15 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > >
-> > > > On Mon, 31 Jul 2023 14:59:47 -0700
-> > > > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > > Assuming that is addressed. How do we merge the series?
-> > > > > The first 3 patches have serious conflicts with bpf trees.
-> > > > >
-> > > > > Maybe send the first 3 with extra selftest for above recursion
-> > > > > targeting bpf-next then we can have a merge commit that Steven can pull
-> > > > > into tracing?
-> > > >
-> > > > Would it be possible to do this by basing it off of one of Linus's tags,
-> > > > and doing the merge and conflict resolution in your tree before it gets to
-> > > > Linus?
-> > > >
-> > > > That way we can pull in that clean branch without having to pull in
-> > > > anything else from BPF. I believe Linus prefers this over having tracing
-> > > > having extra changes from BPF that are not yet in his tree. We only need
-> > > > these particular changes, we shouldn't be pulling in anything specific for
-> > > > BPF, as I believe that will cause issues on Linus's side.
-> > >
-> > > We can try, but I suspect git tricks won't do it.
-> > > Masami's changes depend on patches for kernel/bpf/btf.c that
-> > > are already in bpf-next, so git would have to follow all commits
-> > > that touch this file.
-> >
-> > This point is strange. I'm working on probe/fixes which is based on
-> > v6.5-rc3, so any bpf-next change should not be involved. Can you recheck
-> > this point?
-> >
-> > > I don't think git is smart enough to
-> > > thread the needle and split the commit into files. If one commit touches
-> > > btf.c and something else that whole commit becomes a dependency
-> > > that pulls another commit with all files touched by
-> > > the previous commit and so on.
-> >
-> > As far as I understand Steve's method, we will have an intermediate branch
-> > on bpf or probe tree, like
-> >
-> > linus(some common commit) ---- probes/btf-find-api
-> >
-> > and merge it to both bpf-next and probes/for-next branch
-> >
-> >           +----------------------bpf-next --- (merge bpf patches)
-> >          /                       / merge
-> > common -/\ probes/btf-find-api -/-\
-> >           \                        \ merge
-> >            +----------------------probes/for-next --- (merge probe patches)
-> >
-> > Thus, we can merge both for-next branches at next merge window without
-> > any issue. (But, yes, this is not simple, and needs maxium care)
+On 8/1/23 2:59 PM, Ivan Babrou wrote:
+> I noticed that bpf_sk_cgroup_id is not available in a tracepoint (it
+> is only available in cgroup related skb filters), even though I can
+> easily do what it does manually:
 > 
-> Sounds like the path of least resistance is to keep the changes
-> in kernel/trace and consolidate with kernel/bpf/btf.c after the next
-> merge window.
+> u64 cgroup_id = sk->sk_cgrp_data.cgroup->kn->id;
+> 
+> It seems to me that bpf_sk_cgroup_id and similar functions should be
+> added to bpf_base_func_proto (unless there's a better place).
 
-OK, sounds good to me. I will only expose the bpf_find_btf_id() then.
+This will make it available to all tracing progs. How to ensure doing 
+'sk->sk_cgrp_data.cgroup->kn->id' is safe in all traceable context? so please 
+don't do that.
 
-Thank you,
+bpf will handle the exception when the bpf prog reads 'sk->...' (eg. in case sk 
+is an invalid ptr), so please keep using it for tracing programs.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
