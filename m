@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-6529-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9405976A9FE
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 09:30:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E36BB76A9FF
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 09:30:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53519281779
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 07:30:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A41F9281785
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 07:30:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844D76AB6;
-	Tue,  1 Aug 2023 07:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF0F26AB8;
+	Tue,  1 Aug 2023 07:30:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E337611A
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 07:30:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF527C433C7;
-	Tue,  1 Aug 2023 07:30:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5D36AB3
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 07:30:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09638C433C7;
+	Tue,  1 Aug 2023 07:30:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690875007;
-	bh=8qfQ1J99caPq8AYsD2v6A0gYhxZm6Gt//FdIRXuMteg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=SHfLXTHcH3hQAzbX1Y2rMHGn2c37Irh1dEYUW0lYC3lPr2TJNEpYOcsmQCWS4xCtz
-	 ISAoq7Y6QMPBUEOq3vP7byc1TspZ48s3GOa58vVXMfWx6cJ5vtWGDBvdq8R0b19aKu
-	 j24rw9WgeJgB5Och3DV6+BvW6ilnY9EseWHNAbZcxlijOYx8z6RHMIcVmOXQq5by0m
-	 zTKgkDl1YuRGKbfI1drd3iWFWF5fDscLdCPI4abo+IT2mvq1JAqIYEqVWJDx8sKIH+
-	 TF8moXFRRuM8T95nV+/6yprySxTqw8uWEtvLODWC3uiUwyhgTS3ROtRT9lUaST+CrF
-	 tUAAXbkAweL6Q==
+	s=k20201202; t=1690875018;
+	bh=DmuqKOpPTD6vKL18zL9ew0GAc2+mqa+zCodQAfCTPhQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Op/V4oKZtni6iYN1tfHqI9FpwGjEl5vvQWVyjmiwYFECx4K6KOKqUhN4Bef1hwHWG
+	 bMeEtGEGgl3mlb2b/6+4h5A+g3kDgUwuN01B2RmVbbCUwxhKaoXtWM8W2/C9elXDnC
+	 UsFLzsTE0BXi36tddoA33z86Mte0q0hL3yAkpJs+DPlY4xoRH6DeSy6MGgjdKpybqY
+	 E2z0P2/nsfRQU0odqXf8ETiLMljf2fF1TZTvC1SFuSF2BlqrNXd3rb2im9h8ubDS1Y
+	 zxO9YkR/r7hRkdk29arnRapwl0x2BStxlLF/OjvVpHPYg9D9JFZci/340q0THnrSS9
+	 Pab9Pf4zMWZSw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -44,10 +44,12 @@ Cc: bpf@vger.kernel.org,
 	Hao Luo <haoluo@google.com>,
 	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH bpf-next 0/3] bpf: Support bpf_get_func_ip helper in uprobes
-Date: Tue,  1 Aug 2023 09:29:59 +0200
-Message-ID: <20230801073002.1006443-1-jolsa@kernel.org>
+Subject: [PATCH bpf-next 1/3] bpf: Add support for bpf_get_func_ip helper for uprobe program
+Date: Tue,  1 Aug 2023 09:30:00 +0200
+Message-ID: <20230801073002.1006443-2-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230801073002.1006443-1-jolsa@kernel.org>
+References: <20230801073002.1006443-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,13 +58,11 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-hi,
-adding support for bpf_get_func_ip helper for uprobe program to return
-probed address for both uprobe and return uprobe as suggested by Andrii
-in [1].
+Adding support for bpf_get_func_ip helper for uprobe program to return
+probed address for both uprobe and return uprobe.
 
-We agreed that uprobe can have special use of bpf_get_func_ip helper
-that differs from kprobe.
+We discussed this in [1] and agreed that uprobe can have special use
+of bpf_get_func_ip helper that differs from kprobe.
 
 The kprobe bpf_get_func_ip returns:
   - address of the function if probe is attach on function entry
@@ -75,30 +75,163 @@ The uprobe bpf_get_func_ip returns:
 The reason for this semantic change is that kernel can't really tell
 if the probe user space address is function entry.
 
-Also available at:
-  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-  uprobe_get_func_ip
+The uprobe program is actually kprobe type program attached as uprobe.
+One of the consequences of this design is that uprobes do not have its
+own set of helpers, but share them with kprobes.
 
-thanks,
-jirka
+As we need different functionality for bpf_get_func_ip helper for uprobe,
+I'm adding the bool value to the bpf_trace_run_ctx, so the helper can
+detect that it's executed in uprobe context and call specific code.
 
+The is_uprobe bool is set as true in bpf_prog_run_array_sleepable which
+is currently used only for executing bpf programs in uprobe.
 
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 [1] https://lore.kernel.org/bpf/CAEf4BzZ=xLVkG5eurEuvLU79wAMtwho7ReR+XJAgwhFF4M-7Cg@mail.gmail.com/
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
-Jiri Olsa (3):
-      bpf: Add support for bpf_get_func_ip helper for uprobe program
-      selftests/bpf: Add bpf_get_func_ip tests for uprobe on function entry
-      selftests/bpf: Add bpf_get_func_ip test for uprobe inside function
+ include/linux/bpf.h            |  5 +++++
+ include/uapi/linux/bpf.h       |  7 ++++++-
+ kernel/trace/bpf_trace.c       | 21 ++++++++++++++++++++-
+ kernel/trace/trace_probe.h     |  5 +++++
+ kernel/trace/trace_uprobe.c    |  5 -----
+ tools/include/uapi/linux/bpf.h |  7 ++++++-
+ 6 files changed, 42 insertions(+), 8 deletions(-)
 
- include/linux/bpf.h                                         |  5 +++++
- include/uapi/linux/bpf.h                                    |  7 ++++++-
- kernel/trace/bpf_trace.c                                    | 21 ++++++++++++++++++++-
- kernel/trace/trace_probe.h                                  |  5 +++++
- kernel/trace/trace_uprobe.c                                 |  5 -----
- tools/include/uapi/linux/bpf.h                              |  7 ++++++-
- tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c   | 51 ++++++++++++++++++++++++++++++++++++++++++++++++++-
- tools/testing/selftests/bpf/progs/get_func_ip_test.c        | 25 +++++++++++++++++++++++--
- tools/testing/selftests/bpf/progs/get_func_ip_uprobe_test.c | 18 ++++++++++++++++++
- 9 files changed, 133 insertions(+), 11 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/get_func_ip_uprobe_test.c
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index ceaa8c23287f..8ea071383ef1 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1819,6 +1819,7 @@ struct bpf_cg_run_ctx {
+ struct bpf_trace_run_ctx {
+ 	struct bpf_run_ctx run_ctx;
+ 	u64 bpf_cookie;
++	bool is_uprobe;
+ };
+ 
+ struct bpf_tramp_run_ctx {
+@@ -1867,6 +1868,8 @@ bpf_prog_run_array(const struct bpf_prog_array *array,
+ 	if (unlikely(!array))
+ 		return ret;
+ 
++	run_ctx.is_uprobe = false;
++
+ 	migrate_disable();
+ 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+ 	item = &array->items[0];
+@@ -1906,6 +1909,8 @@ bpf_prog_run_array_sleepable(const struct bpf_prog_array __rcu *array_rcu,
+ 	rcu_read_lock_trace();
+ 	migrate_disable();
+ 
++	run_ctx.is_uprobe = true;
++
+ 	array = rcu_dereference_check(array_rcu, rcu_read_lock_trace_held());
+ 	if (unlikely(!array))
+ 		goto out;
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 70da85200695..d21deb46f49f 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5086,9 +5086,14 @@ union bpf_attr {
+  * u64 bpf_get_func_ip(void *ctx)
+  * 	Description
+  * 		Get address of the traced function (for tracing and kprobe programs).
++ *
++ * 		When called for kprobe program attached as uprobe it returns
++ * 		probe address for both entry and return uprobe.
++ *
+  * 	Return
+- * 		Address of the traced function.
++ * 		Address of the traced function for kprobe.
+  * 		0 for kprobes placed within the function (not at the entry).
++ * 		Address of the probe for uprobe and return uprobe.
+  *
+  * u64 bpf_get_attach_cookie(void *ctx)
+  * 	Description
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index c92eb8c6ff08..7930a91ca7f3 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1057,9 +1057,28 @@ static unsigned long get_entry_ip(unsigned long fentry_ip)
+ #define get_entry_ip(fentry_ip) fentry_ip
+ #endif
+ 
++#ifdef CONFIG_UPROBES
++static unsigned long bpf_get_func_ip_uprobe(struct pt_regs *regs)
++{
++	struct uprobe_dispatch_data *udd;
++
++	udd = (struct uprobe_dispatch_data *) current->utask->vaddr;
++	return udd->bp_addr;
++}
++#else
++#define bpf_get_func_ip_uprobe(regs) (u64) -1
++#endif
++
+ BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
+ {
+-	struct kprobe *kp = kprobe_running();
++	struct bpf_trace_run_ctx *run_ctx;
++	struct kprobe *kp;
++
++	run_ctx = container_of(current->bpf_ctx, struct bpf_trace_run_ctx, run_ctx);
++	if (run_ctx->is_uprobe)
++		return bpf_get_func_ip_uprobe(regs);
++
++	kp = kprobe_running();
+ 
+ 	if (!kp || !(kp->flags & KPROBE_FLAG_ON_FUNC_ENTRY))
+ 		return 0;
+diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+index 01ea148723de..7dde806be91e 100644
+--- a/kernel/trace/trace_probe.h
++++ b/kernel/trace/trace_probe.h
+@@ -519,3 +519,8 @@ void __trace_probe_log_err(int offset, int err);
+ 
+ #define trace_probe_log_err(offs, err)	\
+ 	__trace_probe_log_err(offs, TP_ERR_##err)
++
++struct uprobe_dispatch_data {
++	struct trace_uprobe	*tu;
++	unsigned long		bp_addr;
++};
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 555c223c3232..fc76c3985672 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -88,11 +88,6 @@ static struct trace_uprobe *to_trace_uprobe(struct dyn_event *ev)
+ static int register_uprobe_event(struct trace_uprobe *tu);
+ static int unregister_uprobe_event(struct trace_uprobe *tu);
+ 
+-struct uprobe_dispatch_data {
+-	struct trace_uprobe	*tu;
+-	unsigned long		bp_addr;
+-};
+-
+ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs);
+ static int uretprobe_dispatcher(struct uprobe_consumer *con,
+ 				unsigned long func, struct pt_regs *regs);
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 70da85200695..d21deb46f49f 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5086,9 +5086,14 @@ union bpf_attr {
+  * u64 bpf_get_func_ip(void *ctx)
+  * 	Description
+  * 		Get address of the traced function (for tracing and kprobe programs).
++ *
++ * 		When called for kprobe program attached as uprobe it returns
++ * 		probe address for both entry and return uprobe.
++ *
+  * 	Return
+- * 		Address of the traced function.
++ * 		Address of the traced function for kprobe.
+  * 		0 for kprobes placed within the function (not at the entry).
++ * 		Address of the probe for uprobe and return uprobe.
+  *
+  * u64 bpf_get_attach_cookie(void *ctx)
+  * 	Description
+-- 
+2.41.0
+
 
