@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-6549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5576776B54C
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 14:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B482B76B57B
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 15:08:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AC4C2818B1
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 12:58:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E0D7281973
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 13:08:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7065921513;
-	Tue,  1 Aug 2023 12:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE9021517;
+	Tue,  1 Aug 2023 13:08:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CB11FB5F;
-	Tue,  1 Aug 2023 12:58:19 +0000 (UTC)
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36551AA;
-	Tue,  1 Aug 2023 05:58:17 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63d0228d32bso30796556d6.2;
-        Tue, 01 Aug 2023 05:58:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D42111E;
+	Tue,  1 Aug 2023 13:08:14 +0000 (UTC)
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E86E1727;
+	Tue,  1 Aug 2023 06:08:02 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-40e268fe7ddso13448021cf.3;
+        Tue, 01 Aug 2023 06:08:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690894697; x=1691499497;
+        d=gmail.com; s=20221208; t=1690895281; x=1691500081;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=52xtRMZBq0GtelXFCLGXXpjBQ9BYFSeOAKYA+Oh87s8=;
-        b=kvXqaj+XplVDOb28tqmrpexUF28oi70HOCK4+onfdTzh9FE74ILEwwwzWOm7u/dQ+W
-         fbafYj/o5j09MrGbiTty2jVcNKP/ilMf0vMOYgg/Zr1gRNhAVxMaK5xGPZ97gS1aSFPt
-         ESe6WsuIjE69o7F1KM0/2Ndnde/qqi+zSWO4Ulv+9a5TjxVdYeo47KZCa6QG7GlmR6a6
-         vyc2MEg7XSeR3wMxpZGUBKd31pBzT25OVd8ojchCX8BzZ3WlvMTXu7XTcWj1TAFg3Ac/
-         9T4fv5z0Xfo6Pg+ZXOdI3BquNpgqs3r0Qhx3yDmMVaeCchKFYpNIXLycnXndoWI08DPj
-         dFvg==
+        bh=AccyrdI4Islk0cLDdXZ9MEAhmea3ReAH0ddsNjoh+g0=;
+        b=FiwR3Bgf2y/IASlAH4AmTy+Tw1/tBeY/GGYIfvB59YuFHC2g77MRGPDc+Rx20KGaI3
+         xK9RnOYDh27Q9omDLsTtyLSOzeB9y9tJBJ7yzuEZdz9IrpGitbJr9Vky4ffjia300lw0
+         A6FLFOY9gIq+p7DGF2aXTUMvZ8BjFlhv3ft+yupcBIAB0YAlDib7NCfHk3G4ESmJK9Ut
+         IY0saMFeik2bu9euj+rIQAZC8DjdzU1WF16EXuc9suR+6psgpYYYENrLotwTMnvv8CBx
+         zzaKWHH++9Dfz2dbJAvVYtPU8TYeussEg1JAw17BaHYD70Mnl2yVD2Js4jfuZ0xflkBs
+         VzGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690894697; x=1691499497;
+        d=1e100.net; s=20221208; t=1690895281; x=1691500081;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=52xtRMZBq0GtelXFCLGXXpjBQ9BYFSeOAKYA+Oh87s8=;
-        b=lVA+PRvEgXvCpNWfd2CsOMtwn928gOkiHDJrYukmfhA1p9hLtTwgNMGuEaF34D5qGF
-         7lyAjE1vtdEVSXhyFW/KHolVP9rau2iZT8HQhBARTOnQn6C2sy7pS1zaE6MEoP+yHAYe
-         YihC5BKdTpkTLNm/8hRc6FKXwwqEfckUtyxA1hoOZ1S9Lf4NLsQTNuvH6ne+a4W5RLsd
-         gyaJfHZxGOumyQ+F1E+mSdUPQFMIcHiCIdrsnpc8UNOIsikoPp1SmYhGkVUKWxNK4O8o
-         4r+IzTpidUsySETfRtiyk+suoMJZeKtEkRZn9liRVjKepENnLZHroUffPlkQKpctb9YK
-         d9bA==
-X-Gm-Message-State: ABy/qLZj+4oHBdDXtG1ONorpBNiJ2VkCsDRCnTg91ZILoNFZucIXPhAR
-	NSO0uobMd3+aSLp/3SsDiBAuV/0j+ow=
-X-Google-Smtp-Source: APBJJlEIkqTRVKZLtG2Iljy/p50YykXPDd0qhhxO1UjmNJV6WTEQmOjO1bdp1USUVPMsmBVFFenkFw==
-X-Received: by 2002:ad4:5810:0:b0:636:14d4:4461 with SMTP id dd16-20020ad45810000000b0063614d44461mr9962767qvb.62.1690894696926;
-        Tue, 01 Aug 2023 05:58:16 -0700 (PDT)
+        bh=AccyrdI4Islk0cLDdXZ9MEAhmea3ReAH0ddsNjoh+g0=;
+        b=PCTUsfSB2AV4XhXDL0KJ80/TxMt3c6NvrryScU4xDvbL+6d+yfRbP8b525CXrgJYmv
+         VMB7IUCfh8xmV2CGoRKpik336i2Zo+CoCux8q79BWzAPkTXuZ8jRR0IGwAYw7j8W5UNh
+         9X/VLRzP2x0FnS3tdRo7rH+vpA9I710P9x9LUB48JpMB/BjeQ6wz6WVIgwgFg90Hct1y
+         5TY3jGdcsHBQLa3AN739gjQaZH3qmagDwcT282VpEhb7ZelUUt2Pxz//wznrDMC0zVof
+         UDxq/veI77XshLZZ44lWk14mXUhAzuN7+nAfsVm6VFFhY4+vOvD4Jyfhpc1tAy/CGOvQ
+         KgYg==
+X-Gm-Message-State: ABy/qLZnK+RKM+5C78x/f8tJBaFBIgbaHOR0zr460SKULumxTkc4EFyA
+	Kx3Q9zygJnofAYbwkGJ2YOk=
+X-Google-Smtp-Source: APBJJlFQTOqNYYriaEQOeEiGlgbmt6PYyFxrbqc33voaEdXCrTIeb5nY1uOaHhYNXQXkkREB2/Qk7A==
+X-Received: by 2002:ac8:5792:0:b0:40a:fc6a:e86e with SMTP id v18-20020ac85792000000b0040afc6ae86emr9900180qta.62.1690895281288;
+        Tue, 01 Aug 2023 06:08:01 -0700 (PDT)
 Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id w10-20020a0cb54a000000b0063d47a29e6fsm3944170qvd.55.2023.08.01.05.58.16
+        by smtp.gmail.com with ESMTPSA id i3-20020ac84f43000000b0040553dac952sm4352606qtw.28.2023.08.01.06.08.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 05:58:16 -0700 (PDT)
-Date: Tue, 01 Aug 2023 08:58:16 -0400
+        Tue, 01 Aug 2023 06:08:00 -0700 (PDT)
+Date: Tue, 01 Aug 2023 09:08:00 -0400
 From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 To: David Howells <dhowells@redhat.com>, 
  Willem de Bruijn <willemdebruijn.kernel@gmail.com>
@@ -74,7 +74,7 @@ Cc: dhowells@redhat.com,
  pabeni@redhat.com, 
  syzkaller-bugs@googlegroups.com, 
  viro@zeniv.linux.org.uk
-Message-ID: <64c901683e0b6_1b28392946b@willemb.c.googlers.com.notmuch>
+Message-ID: <64c903b02b234_1b307829418@willemb.c.googlers.com.notmuch>
 In-Reply-To: <1401696.1690893633@warthog.procyon.org.uk>
 References: <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch>
  <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch>
@@ -157,6 +157,24 @@ David Howells wrote:
 > root seems to be that we're subtracting pagedlen from datalen - but probably
 > we shouldn't be doing getfrag() if pagedlen > 0.
 
-q
+That getfrag is needed. For non-splice cases, to fill the linear part
+of an skb. As your example shows, it is skipped if all data is covered
+by pagedlen?
 
+In this edge case, splicing appends pagedlen to an skb that holds only
+a small linear part for fragheaderlen and fraggap.
+
+Splicing has no problem appending to a normal linear skb, right. Say
+
+  send(fd, buf, 100, MSG_MORE);
+  write(pipe[1], buf, 8);
+  splice(pipe[2], 0, fd, 0, 8, 0);
+
+This only happens when a new skb has to be allocated during the splice
+call.
+
+What causes the infinite loop: does skb_splice_from_iter return 0 and
+therefore the loop neither decrements copy, nor breaks out with error?
+
+Apologies for the earlier mail. Accidentally hit send too soon..
 
