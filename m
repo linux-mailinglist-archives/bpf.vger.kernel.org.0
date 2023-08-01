@@ -1,77 +1,79 @@
-Return-Path: <bpf+bounces-6518-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6519-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A15A76A7AF
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 05:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 36A1B76A7B1
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 05:59:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8E3E2817F1
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 03:56:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C0AA28187F
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 03:59:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122AE1C3A;
-	Tue,  1 Aug 2023 03:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AC691FCF;
+	Tue,  1 Aug 2023 03:59:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9947E;
-	Tue,  1 Aug 2023 03:55:52 +0000 (UTC)
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C7110FD;
-	Mon, 31 Jul 2023 20:55:51 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-76cb0d2fc9cso133735585a.2;
-        Mon, 31 Jul 2023 20:55:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055407E;
+	Tue,  1 Aug 2023 03:59:00 +0000 (UTC)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D299173F;
+	Mon, 31 Jul 2023 20:58:56 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-686f0d66652so4963006b3a.2;
+        Mon, 31 Jul 2023 20:58:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690862150; x=1691466950;
+        d=gmail.com; s=20221208; t=1690862335; x=1691467135;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bI5ApKmAaEVjVH/lQQslgrHdUJoivEjWSZTwEUMIjGg=;
-        b=Ah4suT3qyoCBjj+fWIAiu0pVKzu7TdaF+2Z+TryuoLDeS1C1jNbbK/ZdFD02CwiiUE
-         zBwQGTyOunNQ7ZpCGVurAgRkeB2eOiYq0FwwSN+P2YzfvLI5Zb1UxUzdc9zzFIvvhM1R
-         pQhLYu2rp/IZzbGVjxJTUM46DH+bZ2Ow+9iPlhLn7Wndt93MbnsnYpIYAE18+wZgwwfw
-         x+R2f5dB0P3GoIXA9TQw3CQ7GqTnYHpIaOCksh54DlOzcLXIZdrdLtVeCQvQmDRxPW4a
-         jvf2N4lbHcb3Mhv4Q+aOCrOsD+S+jEwpSFQ8mOOBMugyOimMkWHrnY7QibajMavuSjLu
-         i/EQ==
+        bh=Am6kUc1gFEEL40tXojHcI3O9SLUldvAEmwslcqO3ZMY=;
+        b=RxgbSzYibpT3RWg1jhG3KETydqYw/5JtWpI4tu1YKbB2Kp0I3liS7rF4kEbelG2LiY
+         NwyBQOioD2j0VAcRYep61Jtblhp1WpP+r+A8hbJgWKnQZ7CfzpQ/KPcugFIb79+SsxXq
+         tBfzFBO5zJuva4FTVNFjO7Pn4AY1Zp39msFIDm2hdTi1u6YOPjZIrduytsOQdIThOLHz
+         EsoZyK7xE7Ve5ENs7XKAn3ci8pobH3lp40257pkiwHWbwCyjMWnuKkM01dWGFqEkXNnm
+         1+bfLJzgk5K1a5QLeBs27GO1u9NEM1MPsO7U6m0p9IdZ6rWgAuDF19sDh48WhR8Gxlcb
+         jAIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690862150; x=1691466950;
+        d=1e100.net; s=20221208; t=1690862335; x=1691467135;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=bI5ApKmAaEVjVH/lQQslgrHdUJoivEjWSZTwEUMIjGg=;
-        b=TO43Ay7wNas7o8XaM4AxWfUzltyPKg/DQvFywMdUkN8GWdkmy3mrtjTrCaK5l+BP9x
-         AIrA8waLg5VDaQRbxEpYic5WLzsRNukXUYxMTVC4KuDasYbxpL/vGYQ2wLPBNqbNE/E1
-         Ii7/jkbvr8CUodogFfus+jFeGluUG73zv4DxTuzK7MdaYCpIO4yYodAX/+3oJdspSLUW
-         Iq2DfEJDGn2RI/vujsh27HmCJeiB1QKexFNnXY/bwM17ZB97wXWs5AqfQUdCpS/fH1gm
-         ugQGzq/zb4zmuhU0mJ/WgimWMiJTO0dWViy08MfCESZWZi6fG3JPuFUKUIZtfiHbKP8/
-         dm7w==
-X-Gm-Message-State: ABy/qLZWDL8I87DmSK/FvV2k7zYVU8PAVOajh2BTXR33bq0sQuMcLQEy
-	dx+vi1L/7sUuZNN48rVV52E=
-X-Google-Smtp-Source: APBJJlG6tTB3yOwwrFUmEoDsvvSoUgB86ycoDSCxr5yNn6jzOz9iCAJs3o7N2Pztosr6iN7gbf6gpg==
-X-Received: by 2002:a05:620a:2847:b0:763:a1e2:127c with SMTP id h7-20020a05620a284700b00763a1e2127cmr13538362qkp.69.1690862150146;
-        Mon, 31 Jul 2023 20:55:50 -0700 (PDT)
+        bh=Am6kUc1gFEEL40tXojHcI3O9SLUldvAEmwslcqO3ZMY=;
+        b=bYsxS99kU04bWQrH6BFFEQfplXbppf1rN2fqch0grvZnCn6Qs4lcDBAW/jKyojuqUr
+         Q0IEymJTy2oxfLWnDD23GpGJezelZDg7cX9uo4TKswxIS0mlR03ysW/Fsgf4KB25FEJO
+         pGTJiJ42mX9zQOwd0GDcA+ryVK58RIbf7wOuekwGwVJgDK45SpXKikmrfueRu3dprGgy
+         WISEnU/tmncaRJZtqyZqmaYZUxvXqjFdTdEZBLDXM19JKLeyUIm2lSYrdtV9fsuFDrat
+         vEjz1zXjf6H3ZUuVieo0MyRl5GtgE8MUv9HNnIHcB315qZA2/SOodwCQor8h7oA8CuVE
+         h5Vg==
+X-Gm-Message-State: ABy/qLZYumibl41S1Dpks4iKb/Vz7TnHgbt1qmgxw+UxZ6Nf2XRBkfe2
+	NFW0KVHh8/l+kwufu1NVMXQ=
+X-Google-Smtp-Source: APBJJlGyJou8AYk5Y33j8CcQLh9C2/sy8vLy8kISy+DYape3NAmn0QQw2hLBApQlEOtkOSz0fVyzHg==
+X-Received: by 2002:a05:6a20:9150:b0:138:64d4:b040 with SMTP id x16-20020a056a20915000b0013864d4b040mr14767219pzc.54.1690862335303;
+        Mon, 31 Jul 2023 20:58:55 -0700 (PDT)
 Received: from localhost ([98.97.32.4])
-        by smtp.gmail.com with ESMTPSA id k2-20020aa790c2000000b00686dd062207sm8259979pfk.150.2023.07.31.20.55.49
+        by smtp.gmail.com with ESMTPSA id 21-20020aa79255000000b00686bb3acfc2sm8299822pfp.181.2023.07.31.20.58.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 20:55:49 -0700 (PDT)
-Date: Mon, 31 Jul 2023 20:55:48 -0700
+        Mon, 31 Jul 2023 20:58:54 -0700 (PDT)
+Date: Mon, 31 Jul 2023 20:58:53 -0700
 From: John Fastabend <john.fastabend@gmail.com>
-To: Xu Kuohai <xukuohai@huaweicloud.com>, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org
-Cc: John Fastabend <john.fastabend@gmail.com>, 
- Jakub Sitnicki <jakub@cloudflare.com>, 
- "David S . Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <64c882442b8b0_a427920828@john.notmuch>
-In-Reply-To: <20230728105717.3978849-1-xukuohai@huaweicloud.com>
-References: <20230728105717.3978849-1-xukuohai@huaweicloud.com>
-Subject: RE: [PATCH bpf] bpf, sockmap: Fix bug that strp_done cannot be called
+To: Jakub Sitnicki <jakub@cloudflare.com>, 
+ tglozar@redhat.com
+Cc: linux-kernel@vger.kernel.org, 
+ john.fastabend@gmail.com, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ netdev@vger.kernel.org, 
+ bpf@vger.kernel.org
+Message-ID: <64c882fd8c200_a427920843@john.notmuch>
+In-Reply-To: <87ila0fn01.fsf@cloudflare.com>
+References: <20230728064411.305576-1-tglozar@redhat.com>
+ <87ila0fn01.fsf@cloudflare.com>
+Subject: Re: [PATCH net] bpf: sockmap: Remove preempt_disable in
+ sock_map_sk_acquire
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,83 +85,49 @@ Content-Type: text/plain;
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Xu Kuohai wrote:
-> From: Xu Kuohai <xukuohai@huawei.com>
+Jakub Sitnicki wrote:
 > 
-> strp_done is only called when psock->progs.stream_parser is not NULL,
-> but stream_parser was set to NULL by sk_psock_stop_strp(), called
-> by sk_psock_drop() earlier. So, strp_done can never be called.
+> On Fri, Jul 28, 2023 at 08:44 AM +02, tglozar@redhat.com wrote:
+> > From: Tomas Glozar <tglozar@redhat.com>
+> >
+> > Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
+> > allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
+> > GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exist
+> > patchset notes for details).
+> >
+> > This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps to
+> > BUG (sleeping function called from invalid context) on RT kernels.
+> >
+> > preempt_disable was introduced together with lock_sk and rcu_read_lock
+> > in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and update
+> > in parallel"), probably to match disabled migration of BPF programs, and
+> > is no longer necessary.
+> >
+> > Remove preempt_disable to fix BUG in sock_map_update_common on RT.
+> >
+> > Signed-off-by: Tomas Glozar <tglozar@redhat.com>
+> > ---
 > 
-> Introduce SK_PSOCK_RX_ENABLED to mark whether there is strp on psock.
-> Change the condition for calling strp_done from judging whether
-> stream_parser is set to judging whether this flag is set. This flag is
-> only set once when strp_init() succeeds, and will never be cleared later.
+> We disable softirq and hold a spin lock when modifying the map/hash in
+> sock_{map,hash}_update_common so this LGTM:
 > 
-> Fixes: c0d95d3380ee ("bpf, sockmap: Re-evaluate proto ops when psock is removed from sockmap")
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> ---
->  include/linux/skmsg.h |  1 +
->  net/core/skmsg.c      | 10 ++++++++--
->  2 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index 054d7911bfc9..959c5f4c4d19 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -62,6 +62,7 @@ struct sk_psock_progs {
->  
->  enum sk_psock_state_bits {
->  	SK_PSOCK_TX_ENABLED,
-> +	SK_PSOCK_RX_ENABLED,
 
-small nit can be make this SK_PSOCK_RX_STRP_ENABLED? That way its
-explicit what we are talking about here.
+Agree.
 
-Otherwise it looks good thanks nice catch.
+> Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 
->  };
->  
->  struct sk_psock_link {
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index a29508e1ff35..7c2764beeb04 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -1120,13 +1120,19 @@ static void sk_psock_strp_data_ready(struct sock *sk)
->  
->  int sk_psock_init_strp(struct sock *sk, struct sk_psock *psock)
->  {
-> +	int ret;
-> +
->  	static const struct strp_callbacks cb = {
->  		.rcv_msg	= sk_psock_strp_read,
->  		.read_sock_done	= sk_psock_strp_read_done,
->  		.parse_msg	= sk_psock_strp_parse,
->  	};
->  
-> -	return strp_init(&psock->strp, sk, &cb);
-> +	ret = strp_init(&psock->strp, sk, &cb);
-> +	if (!ret)
-> +		sk_psock_set_state(psock, SK_PSOCK_RX_ENABLED);
-> +
-> +	return ret;
->  }
->  
->  void sk_psock_start_strp(struct sock *sk, struct sk_psock *psock)
-> @@ -1154,7 +1160,7 @@ void sk_psock_stop_strp(struct sock *sk, struct sk_psock *psock)
->  static void sk_psock_done_strp(struct sk_psock *psock)
->  {
->  	/* Parser has been stopped */
-> -	if (psock->progs.stream_parser)
-> +	if (sk_psock_test_state(psock, SK_PSOCK_RX_ENABLED))
->  		strp_done(&psock->strp);
->  }
->  #else
-> -- 
-> 2.30.2
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+
 > 
+> You might want some extra tags:
+> 
+> Link: https://lore.kernel.org/all/20200224140131.461979697@linutronix.de/
+> Fixes: 99ba2b5aba24 ("bpf: sockhash, disallow bpf_tcp_close and update in parallel")
+
+
 
