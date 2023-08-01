@@ -1,124 +1,116 @@
-Return-Path: <bpf+bounces-6575-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6576-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6150576B870
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 17:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08AC876B87A
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 17:20:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 108B5280F73
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 15:19:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7F8F281A38
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 15:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E3114DC92;
-	Tue,  1 Aug 2023 15:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 299BF4DC9C;
+	Tue,  1 Aug 2023 15:20:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2E520FA9
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 15:18:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3111EC433C7;
-	Tue,  1 Aug 2023 15:18:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690903109;
-	bh=9zE3B/GzLbe9RK3XK4iNIjOkmj6TzTD5UskW9ugQeFc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=tcNCDq0gVabvvlUcl27p35Ui7WkL+VQMdfoqPGtPSX4GjohIEg0bcMkuETnOzffpB
-	 P/VEmk1oGKPtb5gVYqZlWgwsIPOtUdKcyaO4HijEewZRkxc2fpuwGoVP32nqBxfbRS
-	 ijRFKRPDh7AfM8s8FFhPjlgZKd/wOchK3PA5pgqERNLOFGSJr3sXdooJjT2iVClsFt
-	 QftIonj9c0c+0lrYZO49aDSj6JKglZdN9unSfJEyTMBc/EkGEuRIhr5cHRhAM5rLQf
-	 2kyuRGm1MvFXL/Ll+p05+pIMOAVYMKoEmuK/Qldgs9G1o3Mg6vPSwskew7EMjNtK/F
-	 uoUDOFoBhP93w==
-Date: Wed, 2 Aug 2023 00:18:24 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, "Masami Hiramatsu (Google)"
- <mhiramat@kernel.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
- Starovoitov <ast@kernel.org>, Linus Torvalds
- <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-Id: <20230802001824.90819c7355283843178d9163@kernel.org>
-In-Reply-To: <CAADnVQJz41QgpFHr3k0pndjHZ8ragH--=C_bYxrzitj7bN3bbg@mail.gmail.com>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-	<169078863449.173706.2322042687021909241.stgit@devnote2>
-	<CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-	<20230731211527.3bde484d@gandalf.local.home>
-	<CAADnVQJz41QgpFHr3k0pndjHZ8ragH--=C_bYxrzitj7bN3bbg@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3D724DC90;
+	Tue,  1 Aug 2023 15:20:18 +0000 (UTC)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EDB10F5;
+	Tue,  1 Aug 2023 08:20:17 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id E7CC75C01DE;
+	Tue,  1 Aug 2023 11:20:15 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 01 Aug 2023 11:20:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:sender
+	:subject:subject:to:to; s=fm2; t=1690903215; x=1690989615; bh=gJ
+	mKl0XnfNOfeViEaAye1ljmUyCgjpGGF5LwtdmY9m8=; b=kAI8OP+w7hRnTsNISf
+	Uz+0k1ByOl3+BgqmhHW9gkvOaahlgmnyQYuQXD0XvuiC9wbgMXM+fUWkkxp0+vZ2
+	HqA6h2rJh0ciY1zXNCldFw8QkHIcXqBNbAqm9ygVKkUkMFc1ohf4++NLc+6uUgXr
+	9WhZ/xhp1GqOI9MDlYiO7QkatBosPBRWgoCTCqEPVlZvjua1IweDyTJP77cMOZBn
+	dc86f1YG6SOXdeazIGGb/lBpPWrMObPdqseYvBMPzexLCojwScx7TusVPKSIiqNw
+	9oRic0LKT/n5BXIIAYJ/6zwEBYeTgKvmopa3VM/LGOT/SZX10vLcB8aPADrHMLvv
+	E1aA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm3; t=1690903215; x=1690989615; bh=gJmKl0XnfNOfe
+	ViEaAye1ljmUyCgjpGGF5LwtdmY9m8=; b=U3O8+Gro+DkZxLXCtbWwh6i9IVZXB
+	hNHMFHthh6/il7yvHM4u1C6NOh/jSLpAXZA83VYSmVOmH0VLK+0Ydg2RUpg5Mlza
+	25wh7vqZVROnVgoCa8/9hXlYUCoNu7ZYbeaH5IFalx9vBv3a0kjP+5mx8IoSs4SW
+	xKGENUCVy1ZlWdxgXopgv+5KoPPexXR6Rz3CHmBzxLyAHM/Z+IPG6zdMTxSS1NxM
+	WWZ1jHC3yY0xfF6hV0/ycGiy+ozB5CVKmyBnoS6jDcPoW275+TOFxLYwVCYeyTSC
+	A2TNvuqCGz0ts8Frf0dbZjpMqSrMYEka4l4h5hHkGEeWbaGXavGsbFLDg==
+X-ME-Sender: <xms:riLJZLBKShiHEt2Jt0XrZxQlvbCqcP8vETNLGad1i2726e2Kq6t8og>
+    <xme:riLJZBgJ8thDWvPCaILDz5Q-jFTPISTjfStM7Kz6vFX8rQiSn_7sbTy_tOwm6tm1w
+    _S7RD1sLf6DEKh7Qg>
+X-ME-Received: <xmr:riLJZGnHufzWUOKIv0dzHj-Q4YwEoPHbYLQCgWYwXbhUu7pYs5Hvoi77dySZyueS9H3ugM3VYXbBzwN0qmefzMdBqy2Ocmc5exQzRes>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeigdekgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddt
+    vdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenuc
+    ggtffrrghtthgvrhhnpedvfeekteduudefieegtdehfeffkeeuudekheduffduffffgfeg
+    iedttefgvdfhvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:riLJZNyp8avT4hqkWtTi6P7QFYLejjQX1DmMAko_e6a1u1Y1cSuQnA>
+    <xmx:riLJZAS_lO_aF1M4T4pQrfMD4BAr65r2RhU0HQpogBNz8g4CQAtu9Q>
+    <xmx:riLJZAaJibbHNJLxn4HWL59zmo30xOjafDy0_v5LUPIbHJUB4m0gTA>
+    <xmx:ryLJZCBKkD_yXavyx1-3FGHLfr9nSP4AUF0aamOKeyb6FaHa2n4t1Q>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 1 Aug 2023 11:20:13 -0400 (EDT)
+Date: Tue, 1 Aug 2023 09:20:12 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, 
+	Jozsef Kadlecsik <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, Arnd Bergmann <arnd@arndb.de>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] netfilter: bpf_link: avoid unused-function warning
+Message-ID: <z3gp6rcrlotwjwux7chza4vmbgv747v5jlr4xhuaad3y2yofsf@jjiju6zltbmh>
+References: <20230801150304.1980987-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801150304.1980987-1-arnd@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Mon, 31 Jul 2023 19:24:25 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Hi Arnd,
 
-> On Mon, Jul 31, 2023 at 6:15 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Mon, 31 Jul 2023 14:59:47 -0700
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> >
-> > > Assuming that is addressed. How do we merge the series?
-> > > The first 3 patches have serious conflicts with bpf trees.
-> > >
-> > > Maybe send the first 3 with extra selftest for above recursion
-> > > targeting bpf-next then we can have a merge commit that Steven can pull
-> > > into tracing?
-> >
-> > Would it be possible to do this by basing it off of one of Linus's tags,
-> > and doing the merge and conflict resolution in your tree before it gets to
-> > Linus?
-> >
-> > That way we can pull in that clean branch without having to pull in
-> > anything else from BPF. I believe Linus prefers this over having tracing
-> > having extra changes from BPF that are not yet in his tree. We only need
-> > these particular changes, we shouldn't be pulling in anything specific for
-> > BPF, as I believe that will cause issues on Linus's side.
+On Tue, Aug 01, 2023 at 05:02:41PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> We can try, but I suspect git tricks won't do it.
-> Masami's changes depend on patches for kernel/bpf/btf.c that
-> are already in bpf-next, so git would have to follow all commits
-> that touch this file. 
+> The newly added function is unused in some random configurations:
+> 
+> net/netfilter/nf_bpf_link.c:32:1: error: 'get_proto_defrag_hook' defined but not used [-Werror=unused-function]
+>    32 | get_proto_defrag_hook(struct bpf_nf_link *link,
+>       | ^~~~~~~~~~~~~~~~~~~~~
+> 
 
-This point is strange. I'm working on probe/fixes which is based on
-v6.5-rc3, so any bpf-next change should not be involved. Can you recheck
-this point?
+This was fixed in 81584c23f249 ("netfilter: bpf: Only define get_proto_defrag_hook() if necessary").
 
-> I don't think git is smart enough to
-> thread the needle and split the commit into files. If one commit touches
-> btf.c and something else that whole commit becomes a dependency
-> that pulls another commit with all files touched by
-> the previous commit and so on.
-
-As far as I understand Steve's method, we will have an intermediate branch
-on bpf or probe tree, like 
-
-linus(some common commit) ---- probes/btf-find-api
-
-and merge it to both bpf-next and probes/for-next branch
-
-          +----------------------bpf-next --- (merge bpf patches)
-         /                       / merge
-common -/\ probes/btf-find-api -/-\
-          \                        \ merge
-           +----------------------probes/for-next --- (merge probe patches)
-
-Thus, we can merge both for-next branches at next merge window without
-any issue. (But, yes, this is not simple, and needs maxium care)
-
-Thank you,
-
-> tbh for this set, the easiest for everyone, is to land the whole thing
-> through bpf-next, since there are no conflicts on fprobe side.
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Thanks,
+Daniel
 
