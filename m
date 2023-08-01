@@ -1,62 +1,165 @@
-Return-Path: <bpf+bounces-6612-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6613-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 645E176BE25
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 21:51:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F01776BE52
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 22:13:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94FE71C21017
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 19:51:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C840D281AFE
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 20:13:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF66253D2;
-	Tue,  1 Aug 2023 19:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A9A263BF;
+	Tue,  1 Aug 2023 20:12:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D5C025170;
-	Tue,  1 Aug 2023 19:51:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7009C433C8;
-	Tue,  1 Aug 2023 19:51:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690919497;
-	bh=Vsh2EggMUIyZ6IFbT29YXmtzY2olDYuT+fH6QmapKVo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LFF8Sp3Q4nScO4/C7Qz9kS8hTLttTL31YXFSdz5DUiZss3RPczW8uKfiKLw6+jg7+
-	 JlbdtNgSn8qFbmnW1t1i0a4h9kQl4/xtvAkzBCyUZl95dPpRBrtg27N4/wOwO7jQU4
-	 UQGphkldSKKi8jt34/xvVydUueUDMOrfNKcPF75ZwnCxlyHzMRZIFuZ+SxzZ1TE4G1
-	 k0ktFUrUzyVWZEKiumffOhZKI8Vidf8vu+DjZ4oVoJO5Qf7LO8YzurSETspAKFsL/8
-	 T2oj0GxdzAaUG1c3oV2/dwu3ykZt9LeEi0EgvJqjOpelqTTVa+cuXnpQN+UtqBSLH7
-	 mIPB1EHbpeqlA==
-Date: Tue, 1 Aug 2023 12:51:36 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Larysa Zaremba <larysa.zaremba@intel.com>
-Cc: Wei Fang <wei.fang@nxp.com>, <davem@davemloft.net>,
- <edumazet@google.com>, <pabeni@redhat.com>, <shenwei.wang@nxp.com>,
- <xiaoning.wang@nxp.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
- <hawk@kernel.org>, <john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
- <linux-imx@nxp.com>, <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
-Message-ID: <20230801125136.5d57e3ad@kernel.org>
-In-Reply-To: <ZMkl6HUYMGWXj87P@lincoln>
-References: <20230731060025.3117343-1-wei.fang@nxp.com>
-	<ZMkl6HUYMGWXj87P@lincoln>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B25253D1
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 20:12:48 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D08213E
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 13:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1690920765;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eS079lTc6uMyHb9fOEpx+7PdtvoQL179wIlpAdqGQ6s=;
+	b=WQC6VgDYWXFipl5Wmqu7Op54MdhqGOi7sA/EPFPRZ9ZT6IE6gGbHVb9KPMHqfE00Azlb+B
+	OKTqnQGwKewR1InJfKHlcuFKGUiqRWJWxtZGbIwLJMvbyzHdOGLMozZghg8zLMLFAXtGnO
+	PvdI3vo5hVTELp2HYcUSeaaA4DSw0qo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-594-loSXWq-lM_edaYjHQd4WLw-1; Tue, 01 Aug 2023 16:12:32 -0400
+X-MC-Unique: loSXWq-lM_edaYjHQd4WLw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 721B28C46F9;
+	Tue,  1 Aug 2023 20:11:56 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7CC00112132D;
+	Tue,  1 Aug 2023 20:11:54 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <64c93109c084e_1c5e3529452@willemb.c.googlers.com.notmuch>
+References: <64c93109c084e_1c5e3529452@willemb.c.googlers.com.notmuch> <1420063.1690904933@warthog.procyon.org.uk>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: dhowells@redhat.com, netdev@vger.kernel.org,
+    syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com,
+    bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+    dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+    pabeni@redhat.com, axboe@kernel.dk, viro@zeniv.linux.org.uk,
+    linux-fsdevel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] udp: Fix __ip_append_data()'s handling of MSG_SPLICE_PAGES
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1501752.1690920713.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 01 Aug 2023 21:11:53 +0100
+Message-ID: <1501753.1690920713@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Tue, 1 Aug 2023 17:34:00 +0200 Larysa Zaremba wrote:
-> But I thought XDP-related code should go to bpf-next :/
-> Could somebody clarify this?
+Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
 
-AFAIU pure driver XDP implementations end up flowing directly into
-net-next most of the time. If there are core changes or new API
-additions in the series - that's when bpf-next becomes important.
+> __ip6_append_data probably needs the same.
+
+Now that's interesting.  __ip6_append_data() has a check for this and retu=
+rns
+-EINVAL in this case:
+
+		copy =3D datalen - transhdrlen - fraggap - pagedlen;
+		if (copy < 0) {
+			err =3D -EINVAL;
+			goto error;
+		}
+
+but should I bypass that check for MSG_SPLICE_PAGES?  It hits the check wh=
+en
+it should be able to get past it.  The code seems to go back to prehistori=
+c
+times, so I'm not sure why it's there.
+
+For an 8192 MTU, the breaking point is at a send of 8137 bytes.  The attac=
+hed
+test program iterates through different send sizes until it hits the point=
+.
+
+David
+---
+#define _GNU_SOURCE
+
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <netinet/ip6.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <sys/mman.h>
+#include <sys/uio.h>
+
+#define OSERROR(R, S) do { if ((long)(R) =3D=3D -1L) { perror((S)); exit(1=
+); } } while(0)
+
+int main()
+{
+	struct sockaddr_storage ss;
+	struct sockaddr_in6 sin6;
+	void *buffer;
+	unsigned int tmp;
+	int pfd[2], sfd;
+	int res, i;
+
+	OSERROR(pipe(pfd), "pipe");
+
+	sfd =3D socket(AF_INET6, SOCK_DGRAM, 0);
+	OSERROR(sfd, "socket/2");
+
+	memset(&sin6, 0, sizeof(sin6));
+	sin6.sin6_family =3D AF_INET6;
+	sin6.sin6_port =3D htons(7);
+#warning set dest IPv6 address below
+	sin6.sin6_addr.s6_addr32[0] =3D htonl(0x01020304);
+	sin6.sin6_addr.s6_addr32[1] =3D htonl(0x05060708);
+	sin6.sin6_addr.s6_addr32[2] =3D htonl(0x00000000);
+	sin6.sin6_addr.s6_addr32[3] =3D htonl(0x00000001);
+	OSERROR(connect(sfd, (struct sockaddr *)&sin6, sizeof(sin6)), "connect");
+
+	buffer =3D mmap(NULL, 1024*1024, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_AN=
+ON, -1, 0);
+	OSERROR(buffer, "mmap");
+
+	for (i =3D 1000; i < 65535; i++) {
+		printf("%d\n", i);
+		OSERROR(send(sfd, buffer, i, MSG_MORE), "send");
+
+		OSERROR(write(pfd[1], buffer, 8), "write");
+
+		OSERROR(splice(pfd[0], 0, sfd, 0, 0x4ffe0ul, 0), "splice");
+	}
+	return 0;
+}
+
 
