@@ -1,132 +1,97 @@
-Return-Path: <bpf+bounces-6510-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BF9D76A6F4
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 04:27:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E22C76A6E9
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 04:24:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DE321C20DDC
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 02:27:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32BF72817A3
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 02:24:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 734BA1107;
-	Tue,  1 Aug 2023 02:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E02EB1104;
+	Tue,  1 Aug 2023 02:24:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20CEC7E;
-	Tue,  1 Aug 2023 02:27:39 +0000 (UTC)
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5674210DD;
-	Mon, 31 Jul 2023 19:27:35 -0700 (PDT)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R301e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VojLbbu_1690856850;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VojLbbu_1690856850)
-          by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 10:27:31 +0800
-Message-ID: <1690855424.7821567-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v11 05/10] virtio_ring: introduce virtqueue_dma_dev()
-Date: Tue, 1 Aug 2023 10:03:44 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
- virtualization@lists.linux-foundation.org,
- "David S.  Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Paolo  Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel  Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- netdev@vger.kernel.org,
- bpf@vger.kernel.org,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>
-References: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
- <20230710034237.12391-6-xuanzhuo@linux.alibaba.com>
- <ZK/cxNHzI23I6efc@infradead.org>
- <20230713104805-mutt-send-email-mst@kernel.org>
- <ZLjSsmTfcpaL6H/I@infradead.org>
- <20230720131928-mutt-send-email-mst@kernel.org>
- <ZL6qPvd6X1CgUD4S@infradead.org>
- <1690251228.3455179-1-xuanzhuo@linux.alibaba.com>
- <20230725033321-mutt-send-email-mst@kernel.org>
- <1690283243.4048996-1-xuanzhuo@linux.alibaba.com>
- <1690524153.3603117-1-xuanzhuo@linux.alibaba.com>
- <20230728080305.5fe3737c@kernel.org>
- <CACGkMEs5uc=ct8BsJzV2SEJzAGXqCP__yxo-MBa6d6JzDG4YOg@mail.gmail.com>
- <20230731084651.16ec0a96@kernel.org>
-In-Reply-To: <20230731084651.16ec0a96@kernel.org>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2D07E;
+	Tue,  1 Aug 2023 02:24:28 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657071BEB;
+	Mon, 31 Jul 2023 19:24:27 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFJpF4d3Bz4f4K1L;
+	Tue,  1 Aug 2023 10:24:21 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP1 (Coremail) with SMTP id cCh0CgB32SPXbMhk0Yj0OQ--.17894S2;
+	Tue, 01 Aug 2023 10:24:24 +0800 (CST)
+Message-ID: <6965ceb9-0b96-ce21-cc72-7d29b42544bd@huaweicloud.com>
+Date: Tue, 1 Aug 2023 10:24:23 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf] bpf, sockmap: Fix map type error in sock_map_del_link
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+ Xu Kuohai <xukuohai@huaweicloud.com>,
+ John Fastabend <john.fastabend@gmail.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ Jakub Sitnicki <jakub@cloudflare.com>, "David S . Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Daniel Borkmann <daniel@iogearbox.net>
+References: <20230728105649.3978774-1-xukuohai@huaweicloud.com>
+ <e2d06c78-1434-8322-1089-ba6355bb4c83@linux.dev>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <e2d06c78-1434-8322-1089-ba6355bb4c83@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgB32SPXbMhk0Yj0OQ--.17894S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYy7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8I
+	cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
+	Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+	6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72
+	CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4II
+	rI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr4
+	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
+	wI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Mon, 31 Jul 2023 08:46:51 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
-> On Mon, 31 Jul 2023 09:23:29 +0800 Jason Wang wrote:
-> > > I'd step back and ask you why do you want to use AF_XDP with virtio.
-> > > Instead of bifurcating one virtio instance into different queues why
-> > > not create a separate virtio instance?
-> >
-> > I'm not sure I get this, but do you mean a separate virtio device that
-> > owns AF_XDP queues only? If I understand it correctly, bifurcating is
-> > one of the key advantages of AF_XDP. What's more, current virtio
-> > doesn't support being split at queue (pair) level. And it may still
-> > suffer from the yes/no DMA API issue.
->
-> I guess we should step even further back and ask Xuan what the use case
-> is, because I'm not very sure. All we hear is "enable AF_XDP on virtio"
-> but AF_XDP is barely used on real HW, so why?
+On 8/1/2023 9:19 AM, Martin KaFai Lau wrote:
+> On 7/28/23 3:56 AM, Xu Kuohai wrote:
+>> sock_map_del_link() operates on both SOCKMAP and SOCKHASH, although
+>> both types have member named "progs", the offset of "progs" member in
+>> these two types is different, so "progs" should be accessed with the
+>> real map type.
+> 
+> The patch makes sense to me. Can a test be written to trigger it?
+> 
 
+Thank you for the review. I have a messy prog that triggers memleak
+caused by this issue. I'll try to simplify it to a test.
 
-Why just for real HW?
+> John, please review.
+> 
+> 
+> .
 
-I want to enable AF_XDP on virtio-net. Then the user can send/recv packets by
-AF_XDP bypass through the kernel. That has be used on large scale.
-
-I donot know what is the problem of the virtio-net.
-Why do you think that the virtio-net cannot work with AF_XDP?
-
-
->
-> Bifurcating makes (used to make?) some sense in case of real HW when you
-> had only one PCI function and had to subdivide it.
-
-Sorry I do not get this.
-
-
-> Virtio is either a SW
-> construct or offloaded to very capable HW, so either way cost of
-> creating an extra instance for DPDK or whatever else is very low.
-
-
-The extra instance is virtio-net?
-
-I think there is a gap. So let me give you a brief introduction of our case.
-
-Firstly, we donot use dpdk. We use the AF_XDP, because of that the AF_XDP is
-more simpler and easy to deploy for the nginx.
-
-We use the AF_XDP to speedup the UDP of the quic. By the library, the APP just
-needs some simple change.
-
-On the AliYun, the net driver is virtio-net. So we want the virtio-net support
-the AF_XDP.
-
-I guess what you mean is that we can speed up through the cooperation of devices
-and drivers, but our machines are public clouds, and we cannot change the
-back-end devices of virtio under normal circumstances.
-
-Here I do not know the different of the real hw and the virtio-net.
-
-
-Thanks.
 
