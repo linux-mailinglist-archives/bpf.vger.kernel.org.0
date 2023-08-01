@@ -1,148 +1,116 @@
-Return-Path: <bpf+bounces-6580-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6581-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7366876B8D9
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 17:41:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4DFC76B8EF
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 17:45:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2769B281A40
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 15:41:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 219B71C20F56
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 15:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7621ADCC;
-	Tue,  1 Aug 2023 15:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9BA1ADDC;
+	Tue,  1 Aug 2023 15:45:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC874DC81
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 15:40:56 +0000 (UTC)
-Received: from out-92.mta1.migadu.com (out-92.mta1.migadu.com [95.215.58.92])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758B4193
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 08:40:44 -0700 (PDT)
-Message-ID: <172c46c3-c1bd-9628-0d20-fd51d79ec727@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1690904442; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JBMwQ8KCBjd5slY4JwUkXV2ks/hunh75PmWoZASxVyA=;
-	b=pFRK5CUc1dfL3l/SyNCm24X2lzNZLw6NWejlU/Yv1zLa8NbCGDIH1GVKdIR1Aer80lCcFp
-	J7OXymHzOOMi3lJgyHmhZXx4gPJ+bwVE6auNEC7w/TkPM97IsySYo5lR6guXF/dk/MJReG
-	wDXG/Y3TfsxBQloOPuXSCDF+1klkacI=
-Date: Tue, 1 Aug 2023 08:40:36 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB9F4DC8F;
+	Tue,  1 Aug 2023 15:45:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCA1CC43391;
+	Tue,  1 Aug 2023 15:45:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690904712;
+	bh=VEaLAWfjIhnDGSpVQ/9ljIaO+E4dOVi/Dh1KjH+8jgw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=EzN5c6CkRbdeXJgQUWFyAiXuNmcAlX3e8DSQ44aT3fzSoUzqtVO5l79tjMuItMQmW
+	 /YnUADAwNhMzU4IbzAFSgfe6F61DSqruE3po0+o6xgwKDwjlsQJJSAuOqh7MmAOvni
+	 bcySCw7rbxjES1O71Twq59QuzKgAT+nDxbs/5oPol76177763IUV3jdHXe6g+iTct+
+	 iGYbGTBuEz6fBH3ZBNDbXHN+5U5CXE3/7TubhFZBejqqBU9AEzh82Pf+QFdxc8q25G
+	 1aEYLKzOfIIHoCG0wj+CkGCD77oT8ycoTnGQQl2VcEps2GHvuMx6cg9OSNPsWZP3J0
+	 Ktci7jenX9MaA==
+Date: Tue, 1 Aug 2023 08:45:10 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Christoph Hellwig <hch@infradead.org>,
+ virtualization@lists.linux-foundation.org, "David S.  Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo  Abeni
+ <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel  Borkmann
+ <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John 
+ Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
+ <jasowang@redhat.com>, Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH vhost v11 05/10] virtio_ring: introduce
+ virtqueue_dma_dev()
+Message-ID: <20230801084510.1c2460b9@kernel.org>
+In-Reply-To: <1690858650.8698683-2-xuanzhuo@linux.alibaba.com>
+References: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
+	<20230710034237.12391-6-xuanzhuo@linux.alibaba.com>
+	<ZK/cxNHzI23I6efc@infradead.org>
+	<20230713104805-mutt-send-email-mst@kernel.org>
+	<ZLjSsmTfcpaL6H/I@infradead.org>
+	<20230720131928-mutt-send-email-mst@kernel.org>
+	<ZL6qPvd6X1CgUD4S@infradead.org>
+	<1690251228.3455179-1-xuanzhuo@linux.alibaba.com>
+	<20230725033321-mutt-send-email-mst@kernel.org>
+	<1690283243.4048996-1-xuanzhuo@linux.alibaba.com>
+	<1690524153.3603117-1-xuanzhuo@linux.alibaba.com>
+	<20230728080305.5fe3737c@kernel.org>
+	<CACGkMEs5uc=ct8BsJzV2SEJzAGXqCP__yxo-MBa6d6JzDG4YOg@mail.gmail.com>
+	<20230731084651.16ec0a96@kernel.org>
+	<1690855424.7821567-1-xuanzhuo@linux.alibaba.com>
+	<20230731193606.25233ed9@kernel.org>
+	<1690858650.8698683-2-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v3] selftests/bpf: replace fall through comment
- by fallthrough pseudo-keyword
-Content-Language: en-US
-To: Ruan Jinjie <ruanjinjie@huawei.com>, Ast@kernel.org,
- Daniel@iogearbox.net, Andrii@kernel.org, Martin.lau@linux.dev,
- Song@kernel.org, John.fastabend@gmail.com, Kpsingh@kernel.org,
- Sdf@google.com, Haoluo@google.com, Jolsa@kernel.org, Mykolal@fb.com,
- Shuah@kernel.org, Benjamin.tissoires@redhat.com, Asavkov@redhat.com,
- Memxor@gmail.com, Iii@linux.ibm.com, Colin.i.king@gmail.com,
- Awkrail01@gmail.com, Rdunlap@infradead.org, Joannelkoong@gmail.com,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20230801094833.4146816-1-ruanjinjie@huawei.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20230801094833.4146816-1-ruanjinjie@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-
-
-On 8/1/23 2:48 AM, Ruan Jinjie wrote:
-> Replace the existing /* fall through */ comments with the
-> new pseudo-keyword macro fallthrough[1].
+On Tue, 1 Aug 2023 10:57:30 +0800 Xuan Zhuo wrote:
+> > You have this working and benchmarked or this is just and idea?  
 > 
-> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> This is not just an idea. I said that has been used on large scale.
 > 
-> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
-> ---
-> v3:
-> - Update the subject prefix and fix the 'fallthrough' undeclared build error.
-> ---
-> v2:
-> - Update the subject and commit message.
-> ---
->   tools/testing/selftests/bpf/prog_tests/kfunc_call.c          | 4 ++--
->   tools/testing/selftests/bpf/progs/test_cls_redirect.c        | 2 +-
->   tools/testing/selftests/bpf/progs/test_cls_redirect_dynptr.c | 2 +-
->   tools/testing/selftests/bpf/test_verifier.c                  | 3 ++-
->   4 files changed, 6 insertions(+), 5 deletions(-)
+> This is the library for the APP to use the AF_XDP. We has open it.
+> https://gitee.com/anolis/libxudp
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-> index a543742cd7bd..0fd08172965a 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-> @@ -101,7 +101,7 @@ static void verify_success(struct kfunc_test_params *param)
->   	case syscall_test:
->   		topts.ctx_in = &args;
->   		topts.ctx_size_in = sizeof(args);
-> -		/* fallthrough */
-> +		fallthrough;
+> This is the Alibaba version of the nginx. That has been opened, that supported
+> to work with the libray to use AF_XDP.
+> http://tengine.taobao.org/
+> 
+> I supported this on our kernel release Anolis/Alinux.
 
-This won't work for clang built kernel/selftests:
+Interesting!
 
-In file included from progs/test_cls_redirect_subprogs.c:2:
-progs/test_cls_redirect.c:303:4: error: use of undeclared identifier 
-'fallthrough'
-   303 |                         fallthrough;
-       |                         ^
-   CLNG-BPF [test_maps] netns_cookie_prog.bpf.o
-   CLNG-BPF [test_maps] test_skmsg_load_helpers.bpf.o
-   CLNG-BPF [test_maps] bpf_iter_setsockopt.bpf.o
-   CLNG-BPF [test_maps] timer.bpf.o
-progs/test_cls_redirect.c:303:4: error: use of undeclared identifier 
-'fallthrough'
-   303 |                         fallthrough;
-       |                         ^
+> The work was done about 2 years ago. You know, I pushed the first version to
+> enable AF_XDP on virtio-net about two years ago. I never thought the job would
+> be so difficult.
 
-Try to build the kernel with:
-   make -j LLVM=1
-   make headers_install
+Me neither, but it is what it is.
 
-and then build the selftests with
-   make -C tools/testing/selftests/bpf -j LLVM=1
+> The nic (virtio-net) of AliYun can reach 24,000,000PPS.
+> So I think there is no different with the real HW on the performance.
+> 
+> With the AF_XDP, the UDP pps is seven times that of the kernel udp stack.
 
-[~/work/bpf-next/tools/include (master)]$ egrep -r fallthrough
-egrep: warning: egrep is obsolescent; using grep -E
-linux/compiler-gcc.h:#if __has_attribute(__fallthrough__)
-linux/compiler-gcc.h:# define fallthrough 
-__attribute__((__fallthrough__))
-linux/compiler-gcc.h:# define fallthrough                    do {} while 
-(0)  /* fallthrough */
-[~/work/bpf-next/tools/include (master)]$
+UDP pps or QUIC pps? UDP with or without GSO?
 
-Looks like 'fallthrough' is not defined for clang build tools/selftests.
+Do you have measurements of how much it saves in real world workloads?
+I'm asking mostly out of curiosity, not to question the use case.
 
->   	case syscall_null_ctx_test:
->   		break;
->   	case tc_test:
-> @@ -167,7 +167,7 @@ static void verify_fail(struct kfunc_test_params *param)
->   	case syscall_test:
->   		topts.ctx_in = &args;
->   		topts.ctx_size_in = sizeof(args);
-> -		/* fallthrough */
-> +		fallthrough;
->   	case syscall_null_ctx_test:
->   		break;
->   	case tc_test:
-[...]
+> > What about io_uring zero copy w/ pre-registered buffers.
+> > You'll get csum offload, GSO, all the normal perf features.  
+> 
+> We tried io-uring, but it was not suitable for our scenario.
+> 
+> Yes, now the AF_XDP does not support the csum offload and GSO.
+> This is indeed a small problem.
+
+Can you say more about io-uring suitability? It can do zero copy
+and recently-ish Pavel optimized it quite a bit.
 
