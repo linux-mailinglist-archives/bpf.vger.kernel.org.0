@@ -1,198 +1,156 @@
-Return-Path: <bpf+bounces-6601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D145C76BBF7
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 20:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4EEA76BC17
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 20:14:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BBF4281B93
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 18:09:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7071F2819CF
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 18:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8789E235B2;
-	Tue,  1 Aug 2023 18:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81C3F235B8;
+	Tue,  1 Aug 2023 18:14:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511AF23596
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 18:09:12 +0000 (UTC)
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BB92682
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 11:09:10 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bbf0f36ce4so26887155ad.0
-        for <bpf@vger.kernel.org>; Tue, 01 Aug 2023 11:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690913350; x=1691518150;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1sNlfDLhq6ZwXwDmpPUIJM5Vz1YGx0SwK4wb0VqcAcE=;
-        b=HOPGtfkVTgqZoTOrhuWcHpKFO9ahQ5ARKB4uJnRupvDz9k8FOECjIoNrdjyWKTnO9C
-         eE8sx90gDpw/Lh2dwxspcaaW3JGCZRU1kUFUuaCRTc8xnLyv/2k7gpoUItcLdWqCO8sJ
-         eYr5LU1bzhkefagYFHCWhdDnp7sk49JUD5qi4k65mKIxch3XxQ54zapW4hNLvrDebW7b
-         4yapE8GLxDQl5O9My++lcXcZ8apUOKB2gddxgtcZWPSqh9maorDDCwD7fuSXbyBBdjwu
-         Weura9VFHbjpr0p5jnuUuY8fUhuqHWRWReTuBeRWWIe9PgqwK8X5ZfvjiQCn3ztDHuCW
-         a83Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690913350; x=1691518150;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1sNlfDLhq6ZwXwDmpPUIJM5Vz1YGx0SwK4wb0VqcAcE=;
-        b=YocdEtLy5A0h/FayrsTVITKvemYgKsntCU8Ds+WQWX+wC8BwvvZtvGqmmP/pKaXKz7
-         AWa0k+gwixQpa05UHp1qILTM5bI/nyy9eyfZpXCOmMpjJoBP4GmbaVlXmSziBFrq6RcM
-         rWWqkqZnIp8hcR6I865nx1c3kLzz92kR5IQQqgCYkHy69yS9vYxBql/P/Tb1IQhtPpOD
-         ZlFaLtsteAjv/zNWfBaVRLDhf37xC46Rke6C3rz8sSwcyDT1mN1THFl30O4w/bref9Cy
-         4KobpL6gKn0vMO6UTIU9/MKZITfWB+aR2McXJdn4xu9jiXjdeJ0BIAXbOwBqNfaSnQiR
-         drXA==
-X-Gm-Message-State: ABy/qLa7O2y1Me0hsuBeNdRL7zlFqNoIE2xNF7fn74O1T4tH/7CZx7LN
-	mUnBWmKiykrQc44crTpqhO8iapnXVwT7QzBqxy7TyA==
-X-Google-Smtp-Source: APBJJlEvjVXzBgP6LtJ/zjR8zDgzgrWS5WN12W6f0IzeV7wBrpxxF0EaycfC4KwUtQ6y9n/GAUwmIpoSAkXT3OU2epU=
-X-Received: by 2002:a17:90a:bf0a:b0:268:5558:de4c with SMTP id
- c10-20020a17090abf0a00b002685558de4cmr12612074pjs.38.1690913349788; Tue, 01
- Aug 2023 11:09:09 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57FC923589
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 18:14:09 +0000 (UTC)
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCB61723;
+	Tue,  1 Aug 2023 11:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=WCvORc63Xc/jlm9uhOtZxAQJTdnogdSx3B9Dg3F/tt8=; b=EG3k5D0X6i7MCDl7fPlu0Os/T9
+	P3DWozrpKZNiiTwIBKQbwpm6VZvqHcqh7vAhLujXPTORzLj8CF/HM4qZkvrXeBx7bFnKTsYO3WqWE
+	bfWAfHbPGIYvejU5QbtqQx0o+6xAJQHWzVYVP8KX85kXbMgunY/JYMFk92i3U5+HepWLcYPvoEiBw
+	5zkkL3cy2U7+suRvx85VDiz+0m0G0BqTaOpB8ACt4WMUTt9BOyTdUC1F3BdlG3LcB4+k7LUJeTGaS
+	sHJ2p05k/d1NF2jIFFJjlyNPNnnPCFx1SmRwdSU4C1BrS2bJZ1eskX0IZPg16ydkyxbSIuEmbP+8P
+	iQLxh1XQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1qQtre-00EpOw-2F;
+	Tue, 01 Aug 2023 18:12:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7A4593002D3;
+	Tue,  1 Aug 2023 20:12:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 5C6BC201C57DC; Tue,  1 Aug 2023 20:12:55 +0200 (CEST)
+Date: Tue, 1 Aug 2023 20:12:55 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+	x86@kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Juerg Haefliger <juerg.haefliger@canonical.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
+	Chuang Wang <nashuiliang@gmail.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Petr Mladek <pmladek@suse.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+	Julian Pidancet <julian.pidancet@oracle.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 11/20] objtool: Flesh out warning related to
+ pv_ops[] calls
+Message-ID: <20230801181255.GE11704@hirez.programming.kicks-ass.net>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-12-vschneid@redhat.com>
+ <20230728153334.myvh5sxppvjzd3oz@treble>
+ <xhsmh8raws53o.mognet@vschneid.remote.csb>
+ <20230731213631.pywytiwdqgtgx4ps@treble>
+ <20230731214612.GC51835@hirez.programming.kicks-ass.net>
+ <20230801160636.ko3oc4cwycwejyxy@treble>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230722052248.1062582-1-kuifeng@meta.com> <20230722052248.1062582-2-kuifeng@meta.com>
- <ZL7Ery1lzqj4as7N@google.com> <00dbd930-5ec2-7fb6-202b-38d09e13eb0b@gmail.com>
- <CAKH8qBvcD7r0e-0oZryLHyGnsNnZ66w6tHj5t4Qi1SzONnwN+w@mail.gmail.com> <bf361930-7d39-531f-d21a-a4e436b2a544@gmail.com>
-In-Reply-To: <bf361930-7d39-531f-d21a-a4e436b2a544@gmail.com>
-From: Stanislav Fomichev <sdf@google.com>
-Date: Tue, 1 Aug 2023 11:08:58 -0700
-Message-ID: <CAKH8qBsn9e+ROsBN9EJ9mWQ6T_1=d0adHYPQ37WwM0TVn1H9hw@mail.gmail.com>
-Subject: Re: [RFC bpf-next 1/5] bpf: enable sleepable BPF programs attached to cgroup/{get,set}sockopt.
-To: Kui-Feng Lee <sinquersw@gmail.com>
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com, 
-	andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801160636.ko3oc4cwycwejyxy@treble>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+	SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 1, 2023 at 10:31=E2=80=AFAM Kui-Feng Lee <sinquersw@gmail.com> =
-wrote:
->
->
->
-> On 7/31/23 16:35, Stanislav Fomichev wrote:
-> > On Mon, Jul 31, 2023 at 3:02=E2=80=AFPM Kui-Feng Lee <sinquersw@gmail.c=
-om> wrote:
-> >>
-> >> Sorry for the late reply! I just backed from a vacation.
-> >>
-> >>
-> >> On 7/24/23 11:36, Stanislav Fomichev wrote:
-> >>> On 07/21, kuifeng@meta.com wrote:
-> >>>> From: Kui-Feng Lee <kuifeng@meta.com>
-> >>>>
-> >>>> Enable sleepable cgroup/{get,set}sockopt hooks.
-> >>>>
-> >>>> The sleepable BPF programs attached to cgroup/{get,set}sockopt hooks=
- may
-> >>>> received a pointer to the optval in user space instead of a kernel
-> >>>> copy. ctx->user_optval and ctx->user_optval_end are the pointers to =
-the
-> >>>> begin and end of the user space buffer if receiving a user space
-> >>>> buffer. ctx->optval and ctx->optval_end will be a kernel copy if rec=
-eiving
-> >>>> a kernel space buffer.
-> >>>>
-> >>>> A program receives a user space buffer if ctx->flags &
-> >>>> BPF_SOCKOPT_FLAG_OPTVAL_USER is true, otherwise it receives a kernel=
- space
-> >>>> buffer.  The BPF programs should not read/write from/to a user space=
- buffer
-> >>>> dirrectly.  It should access the buffer through bpf_copy_from_user()=
- and
-> >>>> bpf_copy_to_user() provided in the following patches.
-> >>>>
-> >>>> Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
-> >>>> ---
-> >>>>    include/linux/filter.h         |   3 +
-> >>>>    include/uapi/linux/bpf.h       |   9 ++
-> >>>>    kernel/bpf/cgroup.c            | 189 ++++++++++++++++++++++++++--=
------
-> >>>>    kernel/bpf/verifier.c          |   7 +-
-> >>>>    tools/include/uapi/linux/bpf.h |   9 ++
-> >>>>    tools/lib/bpf/libbpf.c         |   2 +
-> >>>>    6 files changed, 176 insertions(+), 43 deletions(-)
-> >>>>
-> >>>> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> >>>> index f69114083ec7..301dd1ba0de1 100644
-> >>>> --- a/include/linux/filter.h
-> >>>> +++ b/include/linux/filter.h
-> >>>> @@ -1345,6 +1345,9 @@ struct bpf_sockopt_kern {
-> >>>>       s32             level;
-> >>>>       s32             optname;
-> >>>>       s32             optlen;
-> >>>> +    u32             flags;
-> >>>> +    u8              *user_optval;
-> >>>> +    u8              *user_optval_end;
-> >>>>       /* for retval in struct bpf_cg_run_ctx */
-> >>>>       struct task_struct *current_task;
-> >>>>       /* Temporary "register" for indirect stores to ppos. */
-> >>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >>>> index 739c15906a65..b2f81193f97b 100644
-> >>>> --- a/include/uapi/linux/bpf.h
-> >>>> +++ b/include/uapi/linux/bpf.h
-> >>>> @@ -7135,6 +7135,15 @@ struct bpf_sockopt {
-> >>>>       __s32   optname;
-> >>>>       __s32   optlen;
-> >>>>       __s32   retval;
-> >>>> +
-> >>>> +    __bpf_md_ptr(void *, user_optval);
-> >>>> +    __bpf_md_ptr(void *, user_optval_end);
-> >>>
-> >>> Can we re-purpose existing optval/optval_end pointers
-> >>> for the sleepable programs? IOW, when the prog is sleepable,
-> >>> pass user pointers via optval/optval_end and require the programs
-> >>> to do copy_to/from on this buffer (even if the backing pointer might =
-be
-> >>> in kernel memory - we can handle that in the kfuncs?).
-> >>>
-> >>> The fact that the program now needs to look at the flag
-> >>> (BPF_SOCKOPT_FLAG_OPTVAL_USER) and decide which buffer to
-> >>> use makes the handling even more complicated; and we already have a
-> >>> bunch of hairy stuff in these hooks. (or I misreading the change?)
-> >>>
-> >>> Also, regarding sleepable and non-sleepable co-existence: do we reall=
-y need
-> >>> that? Can we say that all the programs have to be sleepable
-> >>> or non-sleepable? Mixing them complicates the sharing of that buffer.
-> >>
-> >> I considered this approach as well. This is an open question for me.
-> >> If we go this way, it means we can not attach a BPF program of a type
-> >> if any program of the other type has been installed.
-> >
-> > If we pass two pointers (kernel copy buffer + real user mem) to the
-> > sleepable program, we'll make it even more complicated by inheriting
-> > all existing warts of the non-sleepable version :-(
-> > IOW, feels like we should try to see if we can have some
-> > copy_to/from_user kfuncs in the sleepable version that transparently
-> > support either kernel or user memory (and prohibit direct access to
-> > user_optval in the sleepable version).
-> > And then, if we have one non-sleepable program in the chain, we can
-> > fallback everything to the kernel buffer (maybe).
-> > This way seems like we can support both versions in the same chain and
-> > have a more sane api?
->
-> Basically, you are saying to move cp_from_optval() and cp_to_optval() in
-> the testcase to kfuncs. This can cause unnecessary copy. We can add
-> an API to make a dynptr from the ctx to avoid unnecessary copies.
+On Tue, Aug 01, 2023 at 11:06:36AM -0500, Josh Poimboeuf wrote:
+> On Mon, Jul 31, 2023 at 11:46:12PM +0200, Peter Zijlstra wrote:
+> > > Ideally it would only print a single warning for this case, something
+> > > like:
+> > > 
+> > >   vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: indirect call to native_flush_tlb_local() leaves .noinstr.text section
+> > 
+> > But then what for the case where there are multiple implementations and
+> > more than one isn't noinstr?
+> 
+> The warning would be in the loop in pv_call_dest(), so it would
+> potentially print multiple warnings, one for each potential dest.
+> 
+> > IIRC that is where these double prints came from. One is the callsite
+> > (always one) and the second is the offending implementation (but there
+> > could be more).
+> 
+> It's confusing to warn about the call site and the destination in two
+> separate warnings.  That's why I'm proposing combining them into a
+> single warning (which still could end up as multiple warnings if there
+> are multiple affected dests).
+> 
+> > > I left out "pv_ops[1]" because it's already long enough :-)
+> > 
+> > The index number is useful when also looking at the assembler, which
+> > IIRC is an indexed indirect call.
+> 
+> Ok, so something like so?
+> 
+>   vmlinux.o: warning: objtool: __flush_tlb_all_noinstr+0x4: indirect call to pv_ops[1] (native_flush_tlb_local) leaves .noinstr.text section
 
-Yeah, handle this transparently in the kfunc or via dynptr, whatever works.
-I'm not too worried about the extra copy tbh, this is a slow path; I'm
-more concerned about improving the bpf program / user experience.
+Sure, that all would work I suppose.
 
