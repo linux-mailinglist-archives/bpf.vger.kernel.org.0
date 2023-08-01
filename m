@@ -1,260 +1,161 @@
-Return-Path: <bpf+bounces-6608-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6609-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBAD276BDE0
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 21:36:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E14476BE03
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 21:45:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1259281B0C
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 19:36:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF1C91C21067
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 19:45:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7221253A9;
-	Tue,  1 Aug 2023 19:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601D7253B6;
+	Tue,  1 Aug 2023 19:44:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC116235B3
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 19:36:32 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A587919AA
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 12:36:30 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id B3B3AC17EB58
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 12:35:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1690918556; bh=cxDtKyiSPMNkQZ8D2oQFWlUp9tkJ15Zt60jFpYqtpxM=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=tfNofF2hD+m6JyYKrA62mDRe5Rv3Qz7UIuME2XZh4nuBTKr9qGHdFw9hMPgTaNB/K
-	 VLHnBP6m+wr7MsflAr8hLIp35n/w0/zIgQXYj0OJpW8qP6jftA1uE5cTDydI5/L8KF
-	 mC5+vCne31DpBdLUT1I5IxOlJRhAIH7IUU1pN5vM=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Tue Aug  1 12:35:56 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 2A12AC131943;
-	Tue,  1 Aug 2023 12:35:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1690918556; bh=cxDtKyiSPMNkQZ8D2oQFWlUp9tkJ15Zt60jFpYqtpxM=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=tfNofF2hD+m6JyYKrA62mDRe5Rv3Qz7UIuME2XZh4nuBTKr9qGHdFw9hMPgTaNB/K
-	 VLHnBP6m+wr7MsflAr8hLIp35n/w0/zIgQXYj0OJpW8qP6jftA1uE5cTDydI5/L8KF
-	 mC5+vCne31DpBdLUT1I5IxOlJRhAIH7IUU1pN5vM=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 30EFBC151548
- for <bpf@ietfa.amsl.com>; Tue,  1 Aug 2023 12:35:53 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -6.407
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id GVBx0p6ULb6u for <bpf@ietfa.amsl.com>;
- Tue,  1 Aug 2023 12:35:49 -0700 (PDT)
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com
- [209.85.222.180])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 6755BC15155A
- for <bpf@ietf.org>; Tue,  1 Aug 2023 12:35:49 -0700 (PDT)
-Received: by mail-qk1-f180.google.com with SMTP id
- af79cd13be357-76c845dc5beso261336485a.1
- for <bpf@ietf.org>; Tue, 01 Aug 2023 12:35:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1690918548; x=1691523348;
- h=user-agent:in-reply-to:content-disposition:mime-version:references
- :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=nlhhS7kfbla9qv0NmNoYHsZTH4ZpHkrh0WDGmda+xFQ=;
- b=BHmj1LPxJHz/4d3v8/0Bh9AH6S0MoL9CXOkqo9Q/Pkg6RNJMKO19MkIlFiDH555R87
- DRS4KiyIDiVbI5BsrOORWMags+b4J+PPTzlw02yRWnwTV2RyPHiQ6S1QGFVaYciKNvtC
- BvDUnJWcXZmhUKXjyL98mJj1FWqeC8183LNYSKlqkUrbtMcCHQHD3Xo3egK3bSIXpO+U
- b+aYre5uN96hjedEqm8Gdm7V3nGq6nrPsJ4Es9qFhfG6Uu37LKQeijV8czY+18PTsFp4
- Bs4tr73p0nb6UyeiCn6BxhPDphNnU1oH0d1fFXyufa4UXN/pEVfZHA6RT25MErVbW3cl
- Gflw==
-X-Gm-Message-State: ABy/qLa2iMDDIM3+WkPoFkRg0r7u02izPaYHzsXY3Fhl1dJVCc44wbU4
- 00T/KPyhRmFlF2Cvl6syrvECkLixN0urWg==
-X-Google-Smtp-Source: APBJJlHnZXDWKX2G01ajPmOo5e2Ovpdqap9eK2GdkQpeSIUh9TZkEHLTqh6h7u5kth7U9YFzESPRkQ==
-X-Received: by 2002:a05:620a:1a24:b0:767:35a:5f19 with SMTP id
- bk36-20020a05620a1a2400b00767035a5f19mr13017374qkb.14.1690918548235; 
- Tue, 01 Aug 2023 12:35:48 -0700 (PDT)
-Received: from maniforge ([2620:10d:c091:400::5:e145])
- by smtp.gmail.com with ESMTPSA id
- l22-20020ac87256000000b00403eab8b7cesm4595943qtp.16.2023.08.01.12.35.40
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 01 Aug 2023 12:35:40 -0700 (PDT)
-Date: Tue, 1 Aug 2023 14:35:38 -0500
-From: David Vernet <void@manifault.com>
-To: Will Hawkins <hawkinsw@obs.cr>
-Cc: bpf@vger.kernel.org, bpf@ietf.org
-Message-ID: <20230801193538.GA472124@maniforge>
-References: <20230730035156.2728106-1-hawkinsw@obs.cr>
- <20230730035156.2728106-2-hawkinsw@obs.cr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 376704DC6B
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 19:44:56 +0000 (UTC)
+Received: from out-111.mta1.migadu.com (out-111.mta1.migadu.com [95.215.58.111])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870B219AA
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 12:44:54 -0700 (PDT)
+Message-ID: <20f1cf2e-6145-000a-0344-4c03c7b54e28@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1690919092; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QzlcqM0iZJnUjmph/C1EqgBF8qqoFrP8RuW4eIzJg8A=;
+	b=cpOJrNmlXaxxC6apH6IIeRRynFMlkV+pAzbjf7sQmzzVo1HFmLgpWYbiPIsWdE+9k2hlYQ
+	TYaf4e4GD9aHnAxjcm6D5+rutIW8/zfxLfzyPzKYC5LsNG5buphgFGyCCXdTFDjp6iwBz9
+	kv3IVhJg6ihmXGJJGDkEKQ9bdMHz23w=
+Date: Tue, 1 Aug 2023 12:44:46 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230730035156.2728106-2-hawkinsw@obs.cr>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/338Bl1UKWhLHhQcKW4CgBHVFGW4>
-Subject: Re: [Bpf] [PATCH 1/1] bpf,
- docs: Formalize type notation and function semantics in ISA standard
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [PATCH bpf-next 1/3] bpf: Add support for bpf_get_func_ip helper
+ for uprobe program
+To: Yafang Shao <laoar.shao@gmail.com>, Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+ Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+ Steven Rostedt <rostedt@goodmis.org>
+References: <20230801073002.1006443-1-jolsa@kernel.org>
+ <20230801073002.1006443-2-jolsa@kernel.org>
+ <CALOAHbDdurfzh7jRfqWVVS5RFRT44fx3zjQRNN8B66HJDNogAQ@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CALOAHbDdurfzh7jRfqWVVS5RFRT44fx3zjQRNN8B66HJDNogAQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Sat, Jul 29, 2023 at 11:51:56PM -0400, Will Hawkins wrote:
-> Give a single place where the shorthand for types are defined and the
-> semantics of helper functions are described.
+
+
+On 8/1/23 4:53 AM, Yafang Shao wrote:
+> On Tue, Aug 1, 2023 at 3:30 PM Jiri Olsa <jolsa@kernel.org> wrote:
+>>
+>> Adding support for bpf_get_func_ip helper for uprobe program to return
+>> probed address for both uprobe and return uprobe.
+>>
+>> We discussed this in [1] and agreed that uprobe can have special use
+>> of bpf_get_func_ip helper that differs from kprobe.
+>>
+>> The kprobe bpf_get_func_ip returns:
+>>    - address of the function if probe is attach on function entry
+>>      for both kprobe and return kprobe
+>>    - 0 if the probe is not attach on function entry
+>>
+>> The uprobe bpf_get_func_ip returns:
+>>    - address of the probe for both uprobe and return uprobe
+>>
+>> The reason for this semantic change is that kernel can't really tell
+>> if the probe user space address is function entry.
+>>
+>> The uprobe program is actually kprobe type program attached as uprobe.
+>> One of the consequences of this design is that uprobes do not have its
+>> own set of helpers, but share them with kprobes.
+>>
+>> As we need different functionality for bpf_get_func_ip helper for uprobe,
+>> I'm adding the bool value to the bpf_trace_run_ctx, so the helper can
+>> detect that it's executed in uprobe context and call specific code.
+>>
+>> The is_uprobe bool is set as true in bpf_prog_run_array_sleepable which
+>> is currently used only for executing bpf programs in uprobe.
 > 
-> Signed-off-by: Will Hawkins <hawkinsw@obs.cr>
-> ---
->  .../bpf/standardization/instruction-set.rst   | 65 ++++++++++++++++++-
->  Documentation/sphinx/requirements.txt         |  2 +-
->  2 files changed, 63 insertions(+), 4 deletions(-)
+> That is error-prone.  If we don't intend to rename
+> bpf_prog_run_array_sleepable() to bpf_prog_run_array_uprobe(), I think
+> we'd better introduce a new parameter 'bool is_uprobe' into it.
+
+Agree that renaming bpf_prog_run_array_sleepable() to
+bpf_prog_run_array_uprobe() probably better. This way, it is
+self-explainable for `run_ctx.is_uprobe = true`.
+
+If unlikely case in the future, another sleepable run prog array
+is needed. They can have their own bpf_prog_run_array_<..>
+and underlying bpf_prog_run_array_sleepable() can be factored out.
+
 > 
-> diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
-> index fb8154cedd84..97378388e20b 100644
-> --- a/Documentation/bpf/standardization/instruction-set.rst
-> +++ b/Documentation/bpf/standardization/instruction-set.rst
-> @@ -10,9 +10,68 @@ This document specifies version 1.0 of the eBPF instruction set.
->  Documentation conventions
->  =========================
->  
-> -For brevity, this document uses the type notion "u64", "u32", etc.
-> -to mean an unsigned integer whose width is the specified number of bits,
-> -and "s32", etc. to mean a signed integer of the specified number of bits.
-> +For brevity and consistency, this document refers to families
-> +of types using a shorthand syntax and refers to several helper
-> +functions when explaining the semantics of opcodes. The range
-
-nit: Can we use a different term than "helper functions" here, just
-because it's an overloaded term for BPF. Maybe "shorthand functions" or
-"mnemonic functions"? Or just "functions"?
-
-> +of valid values for those types and the semantics of those functions
-> +are defined in the following subsections.
-> +
-> +Types
-> +-----
-> +This document refers to integer types with a notation of the form `SX`
-
-I suggest replacing `SX` with `Sn`, as `SX` is short for sign-extension
-in several instructions.
-
-> +that succinctly defines whether their values are signed or unsigned
-> +numbers and the bit widths:
-> +
-> +=== =======
-> +`S` Meaning
-> +=== =======
-> +`u` unsigned
-> +`s` signed
-> +=== =======
-> +
-> +===== =========
-> +`X`   Bit width
-> +===== =========
-> +`8`   8 bits
-> +`16`  16 bits
-> +`32`  32 bits
-> +`64`  64 bits
-> +`128` 128 bits
-> +===== =========
-> +
-> +For example, `u32` is a type whose valid values are all the 32-bit unsigned
-> +numbers and `s16` is a types whose valid values are all the 16-bit signed
-> +numbers.
-> +
-> +Functions
-> +---------
-> +* `htobe16`: Takes an unsigned 16-bit number in host-endian format and
-> +  returns the equivalent number as an unsigned 16-bit number in big-endian
-> +  format.
-> +* `htobe32`: Takes an unsigned 32-bit number in host-endian format and
-> +  returns the equivalent number as an unsigned 32-bit number in big-endian
-> +  format.
-> +* `htobe64`: Takes an unsigned 64-bit number in host-endian format and
-> +  returns the equivalent number as an unsigned 64-bit number in big-endian
-> +  format.
-> +* `htole16`: Takes an unsigned 16-bit number in host-endian format and
-> +  returns the equivalent number as an unsigned 16-bit number in little-endian
-> +  format.
-> +* `htole32`: Takes an unsigned 32-bit number in host-endian format and
-> +  returns the equivalent number as an unsigned 32-bit number in little-endian
-> +  format.
-> +* `htole64`: Takes an unsigned 64-bit number in host-endian format and
-> +  returns the equivalent number as an unsigned 64-bit number in little-endian
-> +  format.
-
-Hmm, some of these functions aren't actually used elsewhere in the
-document. Maybe update the hto{b,l}eN examples later in the Byte swap
-instructions section to match bswapN where all widths are illustrated in
-the example?
-
-> +* `bswap16`: Takes an unsigned 16-bit number in either big- or little-endian
-> +  format and returns the equivalent number with the same bit width but
-> +  opposite endianness.
-> +* `bswap32`: Takes an unsigned 32-bit number in either big- or little-endian
-> +  format and returns the equivalent number with the same bit width but
-> +  opposite endianness.
-> +* `bswap64`: Takes an unsigned 64-bit number in either big- or little-endian
-> +  format and returns the equivalent number with the same bit width but
-> +  opposite endianness.
->  
->  Registers and calling convention
->  ================================
-> diff --git a/Documentation/sphinx/requirements.txt b/Documentation/sphinx/requirements.txt
-> index 335b53df35e2..9479c5c2e338 100644
-> --- a/Documentation/sphinx/requirements.txt
-> +++ b/Documentation/sphinx/requirements.txt
-> @@ -1,3 +1,3 @@
->  # jinja2>=3.1 is not compatible with Sphinx<4.0
->  jinja2<3.1
-> -Sphinx==2.4.4
-> +Sphinx==7.1.1
-
-I don't think we can unilaterally update the whole kernel docs tree to
-require a new version of Sphinx like this. Could you please clarify why
-you needed to update it? Was it for the tables or something?
-
-> -- 
-> 2.40.1
-> 
-> -- 
-> Bpf mailing list
-> Bpf@ietf.org
-> https://www.ietf.org/mailman/listinfo/bpf
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+>>
+>> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+>> [1] https://lore.kernel.org/bpf/CAEf4BzZ=xLVkG5eurEuvLU79wAMtwho7ReR+XJAgwhFF4M-7Cg@mail.gmail.com/
+>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>> ---
+>>   include/linux/bpf.h            |  5 +++++
+>>   include/uapi/linux/bpf.h       |  7 ++++++-
+>>   kernel/trace/bpf_trace.c       | 21 ++++++++++++++++++++-
+>>   kernel/trace/trace_probe.h     |  5 +++++
+>>   kernel/trace/trace_uprobe.c    |  5 -----
+>>   tools/include/uapi/linux/bpf.h |  7 ++++++-
+>>   6 files changed, 42 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index ceaa8c23287f..8ea071383ef1 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -1819,6 +1819,7 @@ struct bpf_cg_run_ctx {
+>>   struct bpf_trace_run_ctx {
+>>          struct bpf_run_ctx run_ctx;
+>>          u64 bpf_cookie;
+>> +       bool is_uprobe;
+>>   };
+>>
+>>   struct bpf_tramp_run_ctx {
+>> @@ -1867,6 +1868,8 @@ bpf_prog_run_array(const struct bpf_prog_array *array,
+>>          if (unlikely(!array))
+>>                  return ret;
+>>
+>> +       run_ctx.is_uprobe = false;
+>> +
+>>          migrate_disable();
+>>          old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+>>          item = &array->items[0];
+>> @@ -1906,6 +1909,8 @@ bpf_prog_run_array_sleepable(const struct bpf_prog_array __rcu *array_rcu,
+>>          rcu_read_lock_trace();
+>>          migrate_disable();
+>>
+>> +       run_ctx.is_uprobe = true;
+>> +
+>>          array = rcu_dereference_check(array_rcu, rcu_read_lock_trace_held());
+>>          if (unlikely(!array))
+>>                  goto out;
+[...]
 
