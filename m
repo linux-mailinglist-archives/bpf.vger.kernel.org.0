@@ -1,176 +1,208 @@
-Return-Path: <bpf+bounces-6615-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD58076BE63
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 22:18:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A432D76BE83
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 22:37:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19B971C21018
-	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 20:18:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58FFE281BD1
+	for <lists+bpf@lfdr.de>; Tue,  1 Aug 2023 20:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F07C6263AC;
-	Tue,  1 Aug 2023 20:18:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BDFB263AD;
+	Tue,  1 Aug 2023 20:36:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75D84DC6B
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 20:18:32 +0000 (UTC)
-Received: from out-85.mta0.migadu.com (out-85.mta0.migadu.com [IPv6:2001:41d0:1004:224b::55])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A97268C
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 13:18:29 -0700 (PDT)
-Message-ID: <10d4b655-6232-efbd-9b5f-7d4637ef197d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1690921107; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IAo7WK+FXPsiNvfokH4Ee2k01vITZ5bQLjQP3UF12ws=;
-	b=qVb/V7Abqk02sUZpjHgDTYH4khv1j4ubIKa/QPYOo6dadQ31poq4wk6ChcWO8PnkTbDzs3
-	KcLOAt61YvJ5mo7Ht601HHgr5ukDn5jM5FRNPDDxS8yNhtyoKVHp+qdLno1YW/mDtQXPMs
-	Dx4mxJ+IVdjeE7tgsBQJgSWeNRfeR/k=
-Date: Tue, 1 Aug 2023 13:18:21 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744954DC94
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 20:36:47 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631A0210A
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 13:36:45 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 371H5wGU014768
+	for <bpf@vger.kernel.org>; Tue, 1 Aug 2023 13:36:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=ZZNzWf1GcGYE0TX4c3ETTa33gMTq9fUocvNzEBzZMmQ=;
+ b=Ym1iNo/aUxezNNDaN6RwZc30gNcfYvx9yTcZrS+mGW/bI+7OsCeXOD8rhVo5VWedhTGg
+ EsD+ZzxAn3ojrcOKRPiMOZpw64xcTAqrJzTEs4Vdm5h+hSfOsvIqx+HyFKShvNJmhRK/
+ Fax56F0Ju3bVnFX2P7a6PodFwklcJEoZWQU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3s6yfm5310-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 01 Aug 2023 13:36:45 -0700
+Received: from twshared18891.17.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 1 Aug 2023 13:36:44 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+	id EEA162204866D; Tue,  1 Aug 2023 13:36:32 -0700 (PDT)
+From: Dave Marchevsky <davemarchevsky@fb.com>
+To: <bpf@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann
+	<daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau
+	<martin.lau@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Marchevsky
+	<davemarchevsky@fb.com>
+Subject: [PATCH v1 bpf-next 0/7] BPF Refcount followups 3: bpf_mem_free_rcu refcounted nodes
+Date: Tue, 1 Aug 2023 13:36:23 -0700
+Message-ID: <20230801203630.3581291-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: lAFHgm_dFYM8oGkWOCHOMtnvj-ALxHq5
+X-Proofpoint-ORIG-GUID: lAFHgm_dFYM8oGkWOCHOMtnvj-ALxHq5
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next 1/3] bpf: Add support for bpf_get_func_ip helper
- for uprobe program
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-To: Yafang Shao <laoar.shao@gmail.com>, Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
- Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
- Steven Rostedt <rostedt@goodmis.org>
-References: <20230801073002.1006443-1-jolsa@kernel.org>
- <20230801073002.1006443-2-jolsa@kernel.org>
- <CALOAHbDdurfzh7jRfqWVVS5RFRT44fx3zjQRNN8B66HJDNogAQ@mail.gmail.com>
- <20f1cf2e-6145-000a-0344-4c03c7b54e28@linux.dev>
-In-Reply-To: <20f1cf2e-6145-000a-0344-4c03c7b54e28@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_19,2023-08-01_01,2023-05-22_02
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+This series is the third of three (or more) followups to address issues
+in the bpf_refcount shared ownership implementation discovered by Kumar.
+This series addresses the use-after-free scenario described in [0]. The
+first followup series ([1]) also attempted to address the same
+use-after-free, but only got rid of the splat without addressing the
+underlying issue. After this series the underyling issue is fixed and
+bpf_refcount_acquire can be re-enabled.
 
+The main fix here is migration of bpf_obj_drop to use
+bpf_mem_free_rcu. To understand why this fixes the issue, let us consider
+the example interleaving provided by Kumar in [0]:
 
-On 8/1/23 12:44 PM, Yonghong Song wrote:
-> 
-> 
-> On 8/1/23 4:53 AM, Yafang Shao wrote:
->> On Tue, Aug 1, 2023 at 3:30 PM Jiri Olsa <jolsa@kernel.org> wrote:
->>>
->>> Adding support for bpf_get_func_ip helper for uprobe program to return
->>> probed address for both uprobe and return uprobe.
->>>
->>> We discussed this in [1] and agreed that uprobe can have special use
->>> of bpf_get_func_ip helper that differs from kprobe.
->>>
->>> The kprobe bpf_get_func_ip returns:
->>>    - address of the function if probe is attach on function entry
->>>      for both kprobe and return kprobe
->>>    - 0 if the probe is not attach on function entry
->>>
->>> The uprobe bpf_get_func_ip returns:
->>>    - address of the probe for both uprobe and return uprobe
->>>
->>> The reason for this semantic change is that kernel can't really tell
->>> if the probe user space address is function entry.
->>>
->>> The uprobe program is actually kprobe type program attached as uprobe.
->>> One of the consequences of this design is that uprobes do not have its
->>> own set of helpers, but share them with kprobes.
->>>
->>> As we need different functionality for bpf_get_func_ip helper for 
->>> uprobe,
->>> I'm adding the bool value to the bpf_trace_run_ctx, so the helper can
->>> detect that it's executed in uprobe context and call specific code.
->>>
->>> The is_uprobe bool is set as true in bpf_prog_run_array_sleepable which
->>> is currently used only for executing bpf programs in uprobe.
->>
->> That is error-prone.  If we don't intend to rename
->> bpf_prog_run_array_sleepable() to bpf_prog_run_array_uprobe(), I think
->> we'd better introduce a new parameter 'bool is_uprobe' into it.
-> 
-> Agree that renaming bpf_prog_run_array_sleepable() to
-> bpf_prog_run_array_uprobe() probably better. This way, it is
-> self-explainable for `run_ctx.is_uprobe = true`.
-> 
-> If unlikely case in the future, another sleepable run prog array
-> is needed. They can have their own bpf_prog_run_array_<..>
-> and underlying bpf_prog_run_array_sleepable() can be factored out.
+CPU 0                                   CPU 1
+n =3D bpf_obj_new
+lock(lock1)
+bpf_rbtree_add(rbtree1, n)
+m =3D bpf_rbtree_acquire(n)
+unlock(lock1)
 
-Or if want to avoid unnecessary code churn, at least add
-a comment in bpf_prog_run_array_sleepable() to explain
-that why it is safe to do `run_ctx.is_uprobe = true;`.
+kptr_xchg(map, m) // move to map
+// at this point, refcount =3D 2
+					m =3D kptr_xchg(map, NULL)
+					lock(lock2)
+lock(lock1)				bpf_rbtree_add(rbtree2, m)
+p =3D bpf_rbtree_first(rbtree1)			if (!RB_EMPTY_NODE) bpf_obj_drop_impl(m) =
+// A
+bpf_rbtree_remove(rbtree1, p)
+unlock(lock1)
+bpf_obj_drop(p) // B
+					bpf_refcount_acquire(m) // use-after-free
+					...
 
-> 
->>
->>>
->>> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
->>> [1] 
->>> https://lore.kernel.org/bpf/CAEf4BzZ=xLVkG5eurEuvLU79wAMtwho7ReR+XJAgwhFF4M-7Cg@mail.gmail.com/
->>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
->>> ---
->>>   include/linux/bpf.h            |  5 +++++
->>>   include/uapi/linux/bpf.h       |  7 ++++++-
->>>   kernel/trace/bpf_trace.c       | 21 ++++++++++++++++++++-
->>>   kernel/trace/trace_probe.h     |  5 +++++
->>>   kernel/trace/trace_uprobe.c    |  5 -----
->>>   tools/include/uapi/linux/bpf.h |  7 ++++++-
->>>   6 files changed, 42 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->>> index ceaa8c23287f..8ea071383ef1 100644
->>> --- a/include/linux/bpf.h
->>> +++ b/include/linux/bpf.h
->>> @@ -1819,6 +1819,7 @@ struct bpf_cg_run_ctx {
->>>   struct bpf_trace_run_ctx {
->>>          struct bpf_run_ctx run_ctx;
->>>          u64 bpf_cookie;
->>> +       bool is_uprobe;
->>>   };
->>>
->>>   struct bpf_tramp_run_ctx {
->>> @@ -1867,6 +1868,8 @@ bpf_prog_run_array(const struct bpf_prog_array 
->>> *array,
->>>          if (unlikely(!array))
->>>                  return ret;
->>>
->>> +       run_ctx.is_uprobe = false;
->>> +
->>>          migrate_disable();
->>>          old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
->>>          item = &array->items[0];
->>> @@ -1906,6 +1909,8 @@ bpf_prog_run_array_sleepable(const struct 
->>> bpf_prog_array __rcu *array_rcu,
->>>          rcu_read_lock_trace();
->>>          migrate_disable();
->>>
->>> +       run_ctx.is_uprobe = true;
->>> +
->>>          array = rcu_dereference_check(array_rcu, 
->>> rcu_read_lock_trace_held());
->>>          if (unlikely(!array))
->>>                  goto out;
-> [...]
-> 
+Before this series, bpf_obj_drop returns memory to the allocator using
+bpf_mem_free. At this point (B in the example) there might be some
+non-owning references to that memory which the verifier believes are valid,
+but where the underlying memory was reused for some other allocation.
+Commit 7793fc3babe9 ("bpf: Make bpf_refcount_acquire fallible for
+non-owning refs") attempted to fix this by doing refcount_inc_non_zero
+on refcount_acquire in instead of refcount_inc under the assumption that
+preventing erroneous incr-on-0 would be sufficient. This isn't true,
+though: refcount_inc_non_zero must *check* if the refcount is zero, and
+the memory it's checking could have been reused, so the check may look
+at and incr random reused bytes.
+
+If we wait to reuse this memory until all non-owning refs that could
+point to it are gone, there is no possibility of this scenario
+happening. Migrating bpf_obj_drop to use bpf_mem_free_rcu for refcounted
+nodes accomplishes this.
+
+For such nodes, the validity of their underlying memory is now tied to
+RCU Tasks Trace critical section. This matches MEM_RCU trustedness
+expectations, so the series takes the opportunity to more explicitly=20
+mark this trustedness state.
+
+The functional effects of trustedness changes here are rather small.
+This is largely due to local kptrs having separate verifier handling -
+with implicit trustedness assumptions - than arbitrary kptrs.
+Regardless, let's take the opportunity to move towards a world where
+trustedness is more explictly handled.
+
+Summary of patch contents, with sub-bullets being leading questions and
+comments I think are worth reviewer attention:
+
+  * Patches 1 and 2 are moreso documententation - and
+    enforcement, in patch 1's case - of existing semantics / expectations
+
+  * Patch 3 changes bpf_obj_drop behavior for refcounted nodes such that
+    their underlying memory is not reused until RCU grace period elapses
+    * Perhaps it makes sense to move to mem_free_rcu for _all_
+      non-owning refs in the future, not just refcounted. This might
+      allow custom non-owning ref lifetime + invalidation logic to be
+      entirely subsumed by MEM_RCU handling. IMO this needs a bit more
+      thought and should be tackled outside of a fix series, so it's not
+      attempted here.
+
+  * Patch 4 re-enables bpf_refcount_acquire as changes in patch 3 fix
+    the remaining use-after-free
+    * One might expect this patch to be last in the series, or last
+      before selftest changes. Patches 5 and 6 don't change
+      verification or runtime behavior for existing BPF progs, though.
+
+  * Patch 5 brings the verifier's understanding of refcounted node
+    trustedness in line with Patch 4's changes
+
+  * Patch 6 allows some bpf_spin_{lock, unlock} calls in sleepable
+    progs. Marked RFC for a few reasons:
+    * bpf_spin_{lock,unlock} haven't been usable in sleepable progs
+      since before the introduction of bpf linked list and rbtree. As
+      such this feels more like a new feature that may not belong in
+      this fixes series.
+    * If we do want to allow bpf_spin_{lock,unlock} in sleepable progs,
+      Alexei has expressed a preference for that do be done as part of a
+      broader set of changes to verifier determination of where those
+      helpers can be called, and what can be called inside the spin_lock
+      CS.
+    * I'm unsure whether preemption needs to be disabled in this patch
+      as well.
+
+  * Patch 7 adds tests
+
+  [0]: https://lore.kernel.org/bpf/atfviesiidev4hu53hzravmtlau3wdodm2vqs7rd=
+7tnwft34e3@xktodqeqevir/
+  [1]: https://lore.kernel.org/bpf/20230602022647.1571784-1-davemarchevsky@=
+fb.com/
+
+Dave Marchevsky (7):
+  bpf: Ensure kptr_struct_meta is non-NULL for collection insert and
+    refcount_acquire
+  bpf: Consider non-owning refs trusted
+  bpf: Use bpf_mem_free_rcu when bpf_obj_dropping refcounted nodes
+  bpf: Reenable bpf_refcount_acquire
+  bpf: Consider non-owning refs to refcounted nodes RCU protected
+  [RFC] bpf: Allow bpf_spin_{lock,unlock} in sleepable prog's RCU CS
+  selftests/bpf: Add tests for rbtree API interaction in sleepable progs
+
+ include/linux/bpf.h                           |  3 +-
+ include/linux/bpf_verifier.h                  |  2 +-
+ kernel/bpf/helpers.c                          |  6 ++-
+ kernel/bpf/verifier.c                         | 45 ++++++++++++-----
+ .../bpf/prog_tests/refcounted_kptr.c          | 26 ++++++++++
+ .../selftests/bpf/progs/refcounted_kptr.c     | 37 ++++++++++++++
+ .../bpf/progs/refcounted_kptr_fail.c          | 48 +++++++++++++++++++
+ 7 files changed, 153 insertions(+), 14 deletions(-)
+
+--=20
+2.34.1
+
 
