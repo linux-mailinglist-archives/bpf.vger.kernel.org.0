@@ -1,134 +1,118 @@
-Return-Path: <bpf+bounces-6689-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6690-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21D1A76C7DA
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 10:03:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A6AE76C7EB
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 10:05:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0CA8281D01
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 08:03:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24808281D1D
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 08:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472415661;
-	Wed,  2 Aug 2023 08:03:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41FC53B2;
+	Wed,  2 Aug 2023 08:05:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE1753A6
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 08:03:30 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17DCC212B
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 01:03:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690963401;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Oo+8dg/DBj2V+G5oZvUMnojMP7aeWCXmA1VlhFSPE34=;
-	b=SXn6W5xWy8NeVTte4GPeviFPpf2UqFaOMoJD58BA5unExfin1QiHN7Bx30n2mntnThe6pO
-	HKLcdRogmd1E/GpxFp1HLd7N+E4h6iZ3ILh41epV4Gfcyftt4OfQQc73ja1yizO77Mor6r
-	PMBYc6c3XwjGlMNrzxJg6jw+RLHAaf4=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-66-sg1e3OZ4MUGqhcUBNk0Teg-1; Wed, 02 Aug 2023 04:03:20 -0400
-X-MC-Unique: sg1e3OZ4MUGqhcUBNk0Teg-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-76ca3baaec8so76571685a.1
-        for <bpf@vger.kernel.org>; Wed, 02 Aug 2023 01:03:20 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05E653A6
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 08:05:46 +0000 (UTC)
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0103AC
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 01:05:44 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-4053d203c07so13062741cf.0
+        for <bpf@vger.kernel.org>; Wed, 02 Aug 2023 01:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690963544; x=1691568344;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Qus0rMPZusRp3DkpBIap3bybcHsqs5bqRXlvNt8egpE=;
+        b=W9ySPQa5meTVUGyIY3ARJsDY4OGW0wWBxw87LsLtAygbBLrLQ+RvomgwnGpC560qbM
+         5giv6S5d3J5e31eLcHk2hM4/s4PdS3K1WCuPL3tIUkdGKBvLT9wa49uN2iLV0MYJ2KG9
+         hGtrEAl/RIiUrQUatUvdRYCxyTd4xRSIjAofk3cTnO4+l7nXi60V0eTiV3Oo5cjh85gT
+         eOeSQ5yPbwkId1Z97PY6EJ51VCPryzpcd/HJQC22n02NyBUsvfVBkg2fNl7IpszSPGKp
+         WboWYjFzbAUQi6FltIK+5eTjgqVAR1cpCJMbP9Rz8WEEOFENZl8Vu7fPtHixOJC38k8a
+         U5cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690963400; x=1691568200;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=1e100.net; s=20221208; t=1690963544; x=1691568344;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Oo+8dg/DBj2V+G5oZvUMnojMP7aeWCXmA1VlhFSPE34=;
-        b=bUeXW7vw+Nfac/DHDwsce8fNiJTqJ0waGO7SiU/PhA+bKWJJCIMCNiQ53rDBg3oRWQ
-         mPDO9uHJhXILntT2Q43nZAdL/MDYuNH5OyPE4RV5NrxriuiEyPqMGH+BZkgKq3FEWYAc
-         9I/PCTHgy86c810AKIL8pK0ukbGAhw6wic1CeHBeECBoCcswmhqILhyi7199639pXHmN
-         Cq8hE3HDpbqVfZAfx4TTzhjTvox7aVuOuQU1oeQwEli1N0OwZIt9cuQHJXaYimNfLPDy
-         WwLMZ52rCuwxT9zOYUL/7PGe72xOTNOP9Wrrot34/YTYUW67fFhAHoBaOzuQh8vn0qoP
-         K9/A==
-X-Gm-Message-State: ABy/qLaAWDP4d/YosG+7z95Uw3CJ/UH0qwlR0gUzbmLmgh86MMt2FVt1
-	InG8Y2EG31pW7e5kBcjpOnyBWI5S8VNIi5NSD/lx8p9jheoe0sa0JDxSf3hp7IMF0d29Y32zepo
-	Yi8xvqpMOIbmY
-X-Received: by 2002:a05:620a:31aa:b0:767:7a4c:1b9e with SMTP id bi42-20020a05620a31aa00b007677a4c1b9emr15272970qkb.7.1690963399776;
-        Wed, 02 Aug 2023 01:03:19 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFnNAWWhSXb/HktBSfXGFmabV1fvsy307saOx2MgChsfs7xTXLkVxm9csctRpjZ4apFAXP/zg==
-X-Received: by 2002:a05:620a:31aa:b0:767:7a4c:1b9e with SMTP id bi42-20020a05620a31aa00b007677a4c1b9emr15272941qkb.7.1690963399461;
-        Wed, 02 Aug 2023 01:03:19 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-233-7.dyn.eolo.it. [146.241.233.7])
-        by smtp.gmail.com with ESMTPSA id p12-20020a05620a132c00b0076c9cc1e107sm3299044qkj.54.2023.08.02.01.03.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 01:03:18 -0700 (PDT)
-Message-ID: <1b51c79c59cb3ec4be95e993be9be2e5d9441670.camel@redhat.com>
-Subject: Re: [RFC bpf-next v7 0/6] bpf: Force to MPTCP
-From: Paolo Abeni <pabeni@redhat.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Geliang Tang
-	 <geliang.tang@suse.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,  Yonghong Song
- <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
- <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Florent Revest
- <revest@chromium.org>, Brendan Jackman <jackmanb@chromium.org>, Matthieu
- Baerts <matthieu.baerts@tessares.net>, Mat Martineau
- <martineau@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,  John
- Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>,
- James Morris <jmorris@namei.org>,  "Serge E. Hallyn" <serge@hallyn.com>,
- Stephen Smalley <stephen.smalley.work@gmail.com>, Eric Paris
- <eparis@parisplace.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>,  bpf@vger.kernel.org, netdev@vger.kernel.org,
- mptcp@lists.linux.dev,  apparmor@lists.ubuntu.com,
- linux-security-module@vger.kernel.org,  selinux@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Date: Wed, 02 Aug 2023 10:03:12 +0200
-In-Reply-To: <20230801004323.l2npfegkq3srzff3@MacBook-Pro-8.local>
-References: <cover.1690624340.git.geliang.tang@suse.com>
-	 <20230801004323.l2npfegkq3srzff3@MacBook-Pro-8.local>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        bh=Qus0rMPZusRp3DkpBIap3bybcHsqs5bqRXlvNt8egpE=;
+        b=XHBkieJU+MLTqZKYlruW1ExdkYPIqv4SGnXKCqiSy+Hgfne+Cov1DinRKmklWnAz7w
+         6R1vspdz/7pTswOWThaYcPJZGBoBVQj2MViISTUsq+Zgpe2FW4qn8c1mYi1GUdrw2FLk
+         XOTuywrkEcoGkndUYxKu0pqiD9ageUDzuqDBpP5GPpK14sBWcI0ICaay/ujamfnpI9Gf
+         OAa/tADD7AOF8G3r/CmTfhcIrN3MVrGPOsvqDI3kK2i983IFk3iwCmyDS2wirLfht7RR
+         VwgH5WGSjnr7fzYDPc2ibITa+rdQefbJ6WLKkHvh6KTMXsby8gQ9weGOYE8HMgug4fZf
+         oCSg==
+X-Gm-Message-State: ABy/qLb93GbHBE56kdE1h+pIxw6dVSEv3qWm6veDWJEHOtdJ/1Zu8CLg
+	tIK/0CNpgy6j75fYpwn2i/M0moPFnsQZ5PE/pgPieDlYqX0=
+X-Google-Smtp-Source: APBJJlG+uMpunrqvepKocBA5RmbWGy7J9u2mctNIHVDwq2VtuFq1iv2g92Ycnvf/lN7q6OndYMolmoVsrHHMlhqJjNw=
+X-Received: by 2002:ac8:7d90:0:b0:40a:6359:2120 with SMTP id
+ c16-20020ac87d90000000b0040a63592120mr15351155qtd.0.1690963543632; Wed, 02
+ Aug 2023 01:05:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
+From: Sergey Kacheev <s.kacheev@gmail.com>
+Date: Wed, 2 Aug 2023 11:05:32 +0300
+Message-ID: <CAJVhQqW6nvWFozMOVQ=_sUTRwVjsQL+G2yCyd91c0bjsc7PcGA@mail.gmail.com>
+Subject: [PATCH v2 bpf-next] libbpf: Use local includes inside the library
+To: bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, 2023-07-31 at 17:43 -0700, Alexei Starovoitov wrote:
+This patch makes it possible to import the header files of the bpf
+part directly from the source tree.
 
-> I still think it's a hack, but its blast radius is nicely contained.
-> And since I cannot propose any better I'm ok with it.
->=20
-> Patches 1-2 can be squashed into one.
-> Just like patches 3-6 as a single patch for selftests.
->=20
-> But before proceeding I'd like an explicit ack from netdev maintainers.
+Signed-off-by: Sergey Kacheev <s.kacheev@gmail.com>
+---
+Changes from v1:
+- Replaced the patch for github/libpf with a patch for bpf-next Linux
+source tree
+Reference:
+- v1: https://lore.kernel.org/bpf/CAJVhQqXomJeO_23DqNWO9KUU-+pwVFoae0Xj=8uH2V=N0mOUSg@mail.gmail.com/
+---
+ tools/lib/bpf/bpf_tracing.h | 2 +-
+ tools/lib/bpf/usdt.bpf.h    | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Just to state the obvious, I carry my personal bias on this topic due
-to my background ;)
+diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+index be076a404..3803479db 100644
+--- a/tools/lib/bpf/bpf_tracing.h
++++ b/tools/lib/bpf/bpf_tracing.h
+@@ -2,7 +2,7 @@
+ #ifndef __BPF_TRACING_H__
+ #define __BPF_TRACING_H__
 
-My perspective is quite similar to Alexei's one: the solution is not
-extremely elegant, but is very self-contained; it looks viable to me.
+-#include <bpf/bpf_helpers.h>
++#include "bpf_helpers.h"
 
-WRT the specific code, I think the additional checks on the 'protocol'
-value after the 'update_socket_protocol()' call should be dropped: the
-user space can already provide an arbitrary value there and the later
-code deal with that.
+ /* Scan the ARCH passed in from ARCH env variable (see Makefile) */
+ #if defined(__TARGET_ARCH_x86)
+diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
+index 0bd4c135a..f6763300b 100644
+--- a/tools/lib/bpf/usdt.bpf.h
++++ b/tools/lib/bpf/usdt.bpf.h
+@@ -4,8 +4,8 @@
+ #define __USDT_BPF_H__
 
-Cheers,
+ #include <linux/errno.h>
+-#include <bpf/bpf_helpers.h>
+-#include <bpf/bpf_tracing.h>
++#include "bpf_helpers.h"
++#include "bpf_tracing.h"
 
-Paolo
-
+ /* Below types and maps are internal implementation details of libbpf's USDT
+  * support and are subjects to change. Also, bpf_usdt_xxx() API helpers should
+--
+2.39.2
 
