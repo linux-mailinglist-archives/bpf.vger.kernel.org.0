@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-6643-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2EBA76C186
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 02:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 919DA76C188
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 02:34:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88406281C5A
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 00:33:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5318281CAA
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 00:34:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 457E8A5F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B366710F1;
 	Wed,  2 Aug 2023 00:33:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE92A40;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF4527E;
+	Wed,  2 Aug 2023 00:33:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C96B8C433CC;
 	Wed,  2 Aug 2023 00:33:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43811C433C9;
-	Wed,  2 Aug 2023 00:33:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690936382;
-	bh=A3BXXpE0ZGUshoZprV1BnkEKcp6ww7lalvidLo2qbSs=;
+	s=k20201202; t=1690936383;
+	bh=l86gxSWc1Jd3rASRkcoIDFwYTDgTfik1ANL2zHDwlL8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=S4uBXlRlNFxPWQIM2eX9KwDX0ToY8JUnt3C62TcUW/kHHFaN4B7uDdaZ7uL4D4cFg
-	 Hw7/zEglOX4c9axzBXqYgBeis2+mUbdYiZgnvDl4Oto6ov579fuAbyKcuhx+3p+Wa9
-	 jaVWeql1S5DiwwqIhnkMCM19gM1isCONXRvSp77IweH39eCzSwTL1HWqeBx/G054g9
-	 6tpuCAfCLBS07IgdvbY35cYLI9MssvIAyo6MCVHX90+lDbOSb5YqUcqXt/YXtW82XK
-	 SAQ9Jww38AuUT8aPK8G5ayZpkxTSDS3gCdZPDnMcr00ZxuCMOoBbdaP1mS0vOB8bqw
-	 NtdfBjE/c6ZBg==
+	b=MSwPg8SXcMgJi1H1+B6j50OXaqZgfKu4HJVRkEku+eI2fjAEzQ1AQvMBBUPm3Nt/S
+	 1qw4UKFct6dq4i2tLWVDYId40ZmA1b23DNQY+XRbOEnA439S16J+o1gcoAvinxWxHq
+	 VGAkcMcOnAgTh3rbVd02mAvHR7upHEaV3b5yzbviraJcvLnIcAcVPz2r0m6jO6E3/J
+	 1j8tUuIr0dlXZehD6NvvvT1rzQE/837KWuV/LMCtPKKe+1Y6def5g5Qn9R1Y0DoIWa
+	 2kNZ+P5yMHNefiQCaw8a9OLVh37TKgmgtYzQfJSuVE4TivRifbeWmw6160WqjFVSle
+	 at6e1v4UfL49Q==
 From: Jakub Kicinski <kuba@kernel.org>
 To: ast@kernel.org
 Cc: netdev@vger.kernel.org,
@@ -38,45 +38,29 @@ Cc: netdev@vger.kernel.org,
 	amritha.nambiar@intel.com,
 	aleksander.lobakin@intel.com,
 	Jakub Kicinski <kuba@kernel.org>,
-	j.vosburgh@gmail.com,
-	andy@greyhouse.net,
-	shayagr@amazon.com,
-	akiyano@amazon.com,
-	ioana.ciornei@nxp.com,
-	claudiu.manoil@nxp.com,
-	vladimir.oltean@nxp.com,
-	wei.fang@nxp.com,
-	shenwei.wang@nxp.com,
-	xiaoning.wang@nxp.com,
-	linux-imx@nxp.com,
-	dmichail@fungible.com,
-	jeroendb@google.com,
-	pkaligineedi@google.com,
-	shailend@google.com,
-	jesse.brandeburg@intel.com,
-	anthony.l.nguyen@intel.com,
-	horatiu.vultur@microchip.com,
-	UNGLinuxDriver@microchip.com,
-	kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	peppe.cavallaro@st.com,
-	alexandre.torgue@foss.st.com,
-	joabreu@synopsys.com,
-	mcoquelin.stm32@gmail.com,
-	grygorii.strashko@ti.com,
-	longli@microsoft.com,
-	sharmaajay@microsoft.com,
+	mst@redhat.com,
+	jasowang@redhat.com,
+	xuanzhuo@linux.alibaba.com,
 	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
 	john.fastabend@gmail.com,
-	gerhard@engleder-embedded.com,
-	simon.horman@corigine.com,
-	leon@kernel.org,
-	linux-hyperv@vger.kernel.org
-Subject: [PATCH bpf-next 1/3] eth: add missing xdp.h includes in drivers
-Date: Tue,  1 Aug 2023 17:32:44 -0700
-Message-ID: <20230802003246.2153774-2-kuba@kernel.org>
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	bjorn@kernel.org,
+	magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com,
+	jonathan.lemon@gmail.com,
+	gregkh@linuxfoundation.org,
+	wangyufen@huawei.com,
+	virtualization@lists.linux-foundation.org
+Subject: [PATCH bpf-next 2/3] net: move struct netdev_rx_queue out of netdevice.h
+Date: Tue,  1 Aug 2023 17:32:45 -0700
+Message-ID: <20230802003246.2153774-3-kuba@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230802003246.2153774-1-kuba@kernel.org>
 References: <20230802003246.2153774-1-kuba@kernel.org>
@@ -88,262 +72,235 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Handful of drivers currently expect to get xdp.h by virtue
-of including netdevice.h. This will soon no longer be the case
-so add explicit includes.
+struct netdev_rx_queue is touched in only a few places
+and having it defined in netdevice.h brings in the dependency
+on xdp.h, because struct xdp_rxq_info gets embedded in
+struct netdev_rx_queue.
+
+In prep for removal of xdp.h from netdevice.h move all
+the netdev_rx_queue stuff to a new header.
+
+We could technically break the new header up to avoid
+the sysfs.h include but it's so rarely included it
+doesn't seem to be worth it at this point.
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
-CC: j.vosburgh@gmail.com
-CC: andy@greyhouse.net
-CC: shayagr@amazon.com
-CC: akiyano@amazon.com
-CC: ioana.ciornei@nxp.com
-CC: claudiu.manoil@nxp.com
-CC: vladimir.oltean@nxp.com
-CC: wei.fang@nxp.com
-CC: shenwei.wang@nxp.com
-CC: xiaoning.wang@nxp.com
-CC: linux-imx@nxp.com
-CC: dmichail@fungible.com
-CC: jeroendb@google.com
-CC: pkaligineedi@google.com
-CC: shailend@google.com
-CC: jesse.brandeburg@intel.com
-CC: anthony.l.nguyen@intel.com
-CC: horatiu.vultur@microchip.com
-CC: UNGLinuxDriver@microchip.com
-CC: kys@microsoft.com
-CC: haiyangz@microsoft.com
-CC: wei.liu@kernel.org
-CC: decui@microsoft.com
-CC: peppe.cavallaro@st.com
-CC: alexandre.torgue@foss.st.com
-CC: joabreu@synopsys.com
-CC: mcoquelin.stm32@gmail.com
-CC: grygorii.strashko@ti.com
-CC: longli@microsoft.com
-CC: sharmaajay@microsoft.com
+CC: mst@redhat.com
+CC: jasowang@redhat.com
+CC: xuanzhuo@linux.alibaba.com
+CC: ast@kernel.org
 CC: daniel@iogearbox.net
-CC: hawk@kernel.org
+CC: andrii@kernel.org
+CC: martin.lau@linux.dev
+CC: song@kernel.org
+CC: yonghong.song@linux.dev
 CC: john.fastabend@gmail.com
-CC: gerhard@engleder-embedded.com
-CC: simon.horman@corigine.com
-CC: leon@kernel.org
-CC: linux-hyperv@vger.kernel.org
+CC: kpsingh@kernel.org
+CC: sdf@google.com
+CC: haoluo@google.com
+CC: jolsa@kernel.org
+CC: bjorn@kernel.org
+CC: magnus.karlsson@intel.com
+CC: maciej.fijalkowski@intel.com
+CC: jonathan.lemon@gmail.com
+CC: hawk@kernel.org
+CC: gregkh@linuxfoundation.org
+CC: wangyufen@huawei.com
+CC: virtualization@lists.linux-foundation.org
 CC: bpf@vger.kernel.org
 ---
- drivers/net/bonding/bond_main.c                       | 1 +
- drivers/net/ethernet/amazon/ena/ena_netdev.h          | 1 +
- drivers/net/ethernet/engleder/tsnep.h                 | 1 +
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h      | 1 +
- drivers/net/ethernet/freescale/enetc/enetc.h          | 1 +
- drivers/net/ethernet/freescale/fec.h                  | 1 +
- drivers/net/ethernet/fungible/funeth/funeth_txrx.h    | 1 +
- drivers/net/ethernet/google/gve/gve.h                 | 1 +
- drivers/net/ethernet/intel/igc/igc.h                  | 1 +
- drivers/net/ethernet/microchip/lan966x/lan966x_main.h | 1 +
- drivers/net/ethernet/microsoft/mana/mana_en.c         | 1 +
- drivers/net/ethernet/stmicro/stmmac/stmmac.h          | 1 +
- drivers/net/ethernet/ti/cpsw_priv.h                   | 1 +
- drivers/net/hyperv/hyperv_net.h                       | 1 +
- drivers/net/tap.c                                     | 1 +
- include/net/mana/mana.h                               | 2 ++
- 16 files changed, 17 insertions(+)
+ drivers/net/virtio_net.c      |  1 +
+ include/linux/netdevice.h     | 44 -----------------------------
+ include/net/netdev_rx_queue.h | 53 +++++++++++++++++++++++++++++++++++
+ net/bpf/test_run.c            |  1 +
+ net/core/dev.c                |  1 +
+ net/core/net-sysfs.c          |  1 +
+ net/xdp/xsk.c                 |  1 +
+ 7 files changed, 58 insertions(+), 44 deletions(-)
+ create mode 100644 include/net/netdev_rx_queue.h
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 7a0f25301f7e..2f21cca4fdaf 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -90,6 +90,7 @@
- #include <net/tls.h>
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 0db14f6b87d3..5bcfd69333ea 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -22,6 +22,7 @@
+ #include <net/route.h>
+ #include <net/xdp.h>
+ #include <net/net_failover.h>
++#include <net/netdev_rx_queue.h>
+ 
+ static int napi_weight = NAPI_POLL_WEIGHT;
+ module_param(napi_weight, int, 0444);
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 3800d0479698..5563c8a210b5 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -782,32 +782,6 @@ bool rps_may_expire_flow(struct net_device *dev, u16 rxq_index, u32 flow_id,
  #endif
- #include <net/ip6_route.h>
-+#include <net/xdp.h>
+ #endif /* CONFIG_RPS */
  
- #include "bonding_priv.h"
+-/* This structure contains an instance of an RX queue. */
+-struct netdev_rx_queue {
+-	struct xdp_rxq_info		xdp_rxq;
+-#ifdef CONFIG_RPS
+-	struct rps_map __rcu		*rps_map;
+-	struct rps_dev_flow_table __rcu	*rps_flow_table;
+-#endif
+-	struct kobject			kobj;
+-	struct net_device		*dev;
+-	netdevice_tracker		dev_tracker;
+-
+-#ifdef CONFIG_XDP_SOCKETS
+-	struct xsk_buff_pool            *pool;
+-#endif
+-} ____cacheline_aligned_in_smp;
+-
+-/*
+- * RX queue sysfs structures and functions.
+- */
+-struct rx_queue_attribute {
+-	struct attribute attr;
+-	ssize_t (*show)(struct netdev_rx_queue *queue, char *buf);
+-	ssize_t (*store)(struct netdev_rx_queue *queue,
+-			 const char *buf, size_t len);
+-};
+-
+ /* XPS map type and offset of the xps map within net_device->xps_maps[]. */
+ enum xps_map_type {
+ 	XPS_CPUS = 0,
+@@ -3828,24 +3802,6 @@ static inline int netif_set_real_num_rx_queues(struct net_device *dev,
+ int netif_set_real_num_queues(struct net_device *dev,
+ 			      unsigned int txq, unsigned int rxq);
  
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.h b/drivers/net/ethernet/amazon/ena/ena_netdev.h
-index 248b715b4d68..a1134152ecce 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.h
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.h
-@@ -15,6 +15,7 @@
- #include <linux/netdevice.h>
- #include <linux/skbuff.h>
- #include <uapi/linux/bpf.h>
-+#include <net/xdp.h>
+-static inline struct netdev_rx_queue *
+-__netif_get_rx_queue(struct net_device *dev, unsigned int rxq)
+-{
+-	return dev->_rx + rxq;
+-}
+-
+-#ifdef CONFIG_SYSFS
+-static inline unsigned int get_netdev_rx_queue_index(
+-		struct netdev_rx_queue *queue)
+-{
+-	struct net_device *dev = queue->dev;
+-	int index = queue - dev->_rx;
+-
+-	BUG_ON(index >= dev->num_rx_queues);
+-	return index;
+-}
+-#endif
+-
+ int netif_get_num_default_rss_queues(void);
  
- #include "ena_com.h"
- #include "ena_eth_com.h"
-diff --git a/drivers/net/ethernet/engleder/tsnep.h b/drivers/net/ethernet/engleder/tsnep.h
-index 11b29f56aaf9..6e14c918e3fb 100644
---- a/drivers/net/ethernet/engleder/tsnep.h
-+++ b/drivers/net/ethernet/engleder/tsnep.h
-@@ -14,6 +14,7 @@
- #include <linux/net_tstamp.h>
- #include <linux/ptp_clock_kernel.h>
- #include <linux/miscdevice.h>
-+#include <net/xdp.h>
- 
- #define TSNEP "tsnep"
- 
-diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h
-index d56d7a13262e..bfb6c96c3b2f 100644
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.h
-@@ -12,6 +12,7 @@
- #include <linux/fsl/mc.h>
- #include <linux/net_tstamp.h>
- #include <net/devlink.h>
-+#include <net/xdp.h>
- 
- #include <soc/fsl/dpaa2-io.h>
- #include <soc/fsl/dpaa2-fd.h>
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc.h b/drivers/net/ethernet/freescale/enetc/enetc.h
-index 8577cf7699a0..7439739cd81a 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc.h
-+++ b/drivers/net/ethernet/freescale/enetc/enetc.h
-@@ -11,6 +11,7 @@
- #include <linux/if_vlan.h>
- #include <linux/phylink.h>
- #include <linux/dim.h>
-+#include <net/xdp.h>
- 
- #include "enetc_hw.h"
- 
-diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
-index 8f1edcca96c4..5a0974e62f99 100644
---- a/drivers/net/ethernet/freescale/fec.h
-+++ b/drivers/net/ethernet/freescale/fec.h
-@@ -22,6 +22,7 @@
- #include <linux/timecounter.h>
- #include <dt-bindings/firmware/imx/rsrc.h>
- #include <linux/firmware/imx/sci.h>
-+#include <net/xdp.h>
- 
- #if defined(CONFIG_M523x) || defined(CONFIG_M527x) || defined(CONFIG_M528x) || \
-     defined(CONFIG_M520x) || defined(CONFIG_M532x) || defined(CONFIG_ARM) || \
-diff --git a/drivers/net/ethernet/fungible/funeth/funeth_txrx.h b/drivers/net/ethernet/fungible/funeth/funeth_txrx.h
-index 53b7e95213a8..5eec552a1f24 100644
---- a/drivers/net/ethernet/fungible/funeth/funeth_txrx.h
-+++ b/drivers/net/ethernet/fungible/funeth/funeth_txrx.h
-@@ -5,6 +5,7 @@
- 
- #include <linux/netdevice.h>
- #include <linux/u64_stats_sync.h>
-+#include <net/xdp.h>
- 
- /* Tx descriptor size */
- #define FUNETH_SQE_SIZE 64U
-diff --git a/drivers/net/ethernet/google/gve/gve.h b/drivers/net/ethernet/google/gve/gve.h
-index 4b425bf71ede..a31256f70348 100644
---- a/drivers/net/ethernet/google/gve/gve.h
-+++ b/drivers/net/ethernet/google/gve/gve.h
-@@ -11,6 +11,7 @@
- #include <linux/netdevice.h>
- #include <linux/pci.h>
- #include <linux/u64_stats_sync.h>
-+#include <net/xdp.h>
- 
- #include "gve_desc.h"
- #include "gve_desc_dqo.h"
-diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-index 9db384f66a8e..4bffc3cb502f 100644
---- a/drivers/net/ethernet/intel/igc/igc.h
-+++ b/drivers/net/ethernet/intel/igc/igc.h
-@@ -15,6 +15,7 @@
- #include <linux/net_tstamp.h>
- #include <linux/bitfield.h>
- #include <linux/hrtimer.h>
-+#include <net/xdp.h>
- 
- #include "igc_hw.h"
- 
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-index 27f272831ea5..eb7d81b5e9f8 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-@@ -14,6 +14,7 @@
- #include <net/pkt_cls.h>
- #include <net/pkt_sched.h>
- #include <net/switchdev.h>
-+#include <net/xdp.h>
- 
- #include <vcap_api.h>
- #include <vcap_api_client.h>
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index ac2acc9aca9d..21665f114fe9 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -11,6 +11,7 @@
- 
- #include <net/checksum.h>
- #include <net/ip6_checksum.h>
-+#include <net/xdp.h>
- 
- #include <net/mana/mana.h>
- #include <net/mana/mana_auxiliary.h>
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-index 4ce5eaaae513..f838a13b9447 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-@@ -23,6 +23,7 @@
- #include <linux/reset.h>
- #include <net/page_pool.h>
- #include <uapi/linux/bpf.h>
-+#include <net/xdp.h>
- 
- struct stmmac_resources {
- 	void __iomem *addr;
-diff --git a/drivers/net/ethernet/ti/cpsw_priv.h b/drivers/net/ethernet/ti/cpsw_priv.h
-index 34230145ca0b..67ca005fd990 100644
---- a/drivers/net/ethernet/ti/cpsw_priv.h
-+++ b/drivers/net/ethernet/ti/cpsw_priv.h
-@@ -7,6 +7,7 @@
- #define DRIVERS_NET_ETHERNET_TI_CPSW_PRIV_H_
- 
- #include <uapi/linux/bpf.h>
-+#include <net/xdp.h>
- 
- #include "davinci_cpdma.h"
- 
-diff --git a/drivers/net/hyperv/hyperv_net.h b/drivers/net/hyperv/hyperv_net.h
-index c9dd69dbe1b8..810977952f95 100644
---- a/drivers/net/hyperv/hyperv_net.h
-+++ b/drivers/net/hyperv/hyperv_net.h
-@@ -16,6 +16,7 @@
- #include <linux/hyperv.h>
- #include <linux/rndis.h>
- #include <linux/jhash.h>
-+#include <net/xdp.h>
- 
- /* RSS related */
- #define OID_GEN_RECEIVE_SCALE_CAPABILITIES 0x00010203  /* query only */
-diff --git a/drivers/net/tap.c b/drivers/net/tap.c
-index 9137fb8c1c42..b196a2a54355 100644
---- a/drivers/net/tap.c
-+++ b/drivers/net/tap.c
-@@ -22,6 +22,7 @@
- #include <net/net_namespace.h>
- #include <net/rtnetlink.h>
- #include <net/sock.h>
-+#include <net/xdp.h>
- #include <linux/virtio_net.h>
- #include <linux/skb_array.h>
- 
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 024ad8ddb27e..1ccdca03e166 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -4,6 +4,8 @@
- #ifndef _MANA_H
- #define _MANA_H
- 
+ void dev_kfree_skb_irq_reason(struct sk_buff *skb, enum skb_drop_reason reason);
+diff --git a/include/net/netdev_rx_queue.h b/include/net/netdev_rx_queue.h
+new file mode 100644
+index 000000000000..cdcafb30d437
+--- /dev/null
++++ b/include/net/netdev_rx_queue.h
+@@ -0,0 +1,53 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_NETDEV_RX_QUEUE_H
++#define _LINUX_NETDEV_RX_QUEUE_H
++
++#include <linux/kobject.h>
++#include <linux/netdevice.h>
++#include <linux/sysfs.h>
 +#include <net/xdp.h>
 +
- #include "gdma.h"
- #include "hw_channel.h"
++/* This structure contains an instance of an RX queue. */
++struct netdev_rx_queue {
++	struct xdp_rxq_info		xdp_rxq;
++#ifdef CONFIG_RPS
++	struct rps_map __rcu		*rps_map;
++	struct rps_dev_flow_table __rcu	*rps_flow_table;
++#endif
++	struct kobject			kobj;
++	struct net_device		*dev;
++	netdevice_tracker		dev_tracker;
++
++#ifdef CONFIG_XDP_SOCKETS
++	struct xsk_buff_pool            *pool;
++#endif
++} ____cacheline_aligned_in_smp;
++
++/*
++ * RX queue sysfs structures and functions.
++ */
++struct rx_queue_attribute {
++	struct attribute attr;
++	ssize_t (*show)(struct netdev_rx_queue *queue, char *buf);
++	ssize_t (*store)(struct netdev_rx_queue *queue,
++			 const char *buf, size_t len);
++};
++
++static inline struct netdev_rx_queue *
++__netif_get_rx_queue(struct net_device *dev, unsigned int rxq)
++{
++	return dev->_rx + rxq;
++}
++
++#ifdef CONFIG_SYSFS
++static inline unsigned int
++get_netdev_rx_queue_index(struct netdev_rx_queue *queue)
++{
++	struct net_device *dev = queue->dev;
++	int index = queue - dev->_rx;
++
++	BUG_ON(index >= dev->num_rx_queues);
++	return index;
++}
++#endif
++#endif
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 7d47f53f20c1..4ed68141d9a3 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -21,6 +21,7 @@
+ #include <linux/sock_diag.h>
+ #include <linux/netfilter.h>
+ #include <net/xdp.h>
++#include <net/netdev_rx_queue.h>
+ #include <net/netfilter/nf_bpf_link.h>
  
+ #define CREATE_TRACE_POINTS
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 8e7d0cb540cd..1fee2372b633 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -151,6 +151,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/prandom.h>
+ #include <linux/once_lite.h>
++#include <net/netdev_rx_queue.h>
+ 
+ #include "dev.h"
+ #include "net-sysfs.h"
+diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
+index 15e3f4606b5f..fccaa5bac0ed 100644
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -23,6 +23,7 @@
+ #include <linux/of.h>
+ #include <linux/of_net.h>
+ #include <linux/cpu.h>
++#include <net/netdev_rx_queue.h>
+ 
+ #include "dev.h"
+ #include "net-sysfs.h"
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 4f1e0599146e..82aaec1b079f 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -25,6 +25,7 @@
+ #include <linux/vmalloc.h>
+ #include <net/xdp_sock_drv.h>
+ #include <net/busy_poll.h>
++#include <net/netdev_rx_queue.h>
+ #include <net/xdp.h>
+ 
+ #include "xsk_queue.h"
 -- 
 2.41.0
 
