@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-6754-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6755-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C5CA76D93A
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 23:10:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A13C76D941
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 23:10:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2101E281DB8
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 21:10:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCEFE281DCF
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 21:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A541911CB6;
-	Wed,  2 Aug 2023 21:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FF9125BC;
+	Wed,  2 Aug 2023 21:10:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B806D2E8
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 21:10:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A35E8C433CA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F101111AD;
+	Wed,  2 Aug 2023 21:10:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A16EDC433C8;
 	Wed,  2 Aug 2023 21:10:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1691010621;
-	bh=BdosRve/1vfQeMLTfUBO5k42yoYp/cyiP43a62UOc6U=;
+	bh=U6fwEY6CTug5r3b9WDLABmO5cBrj/XDZhdVoueKrQtc=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=oqumx8W9D+/hwn6ORB/oyhkDY+eEmmWfjtjnUOFva6X0C17qbyxEJy777dS6Fm8zA
-	 ykk7FWf8KXUoXwWFQeIOvQ9QwPpPj8wt5gTC6+zB8KOQSn55j7SwluR6zsSLMY/h8t
-	 hjPBsKynmu6iTAGVx5oriJ5zATy9fI07eKwAH09xduV5rchomigR6+7Iwv7AeXAEru
-	 DxU19I7qVYVy+hX5nq3bAYqmPCpO0tiyYtHtKlMRXhUi3Xi7dzHaz0wE/grqEneCEh
-	 2AZSjMTpxtpLhnmk0pWadz5VJq64hSTmUXkXYNHC2ZK5GBRiS1IdgOHGdxZChG1Btd
-	 1pdaq/LBQ/Pbw==
+	b=Y2kTcAN3AYkOVOEGiwmAZkCCdIQ9M9IKrP+EDBGrQD9Ej//4M9AwTvVAUQCnYXhQM
+	 NvD/5tevUYJM9WqfvhkC2cseOVDORAh+RnmFQk/8fjlRXlWSSFuwERNeelqnojK8nQ
+	 OEBHMgdDM/L8ih49+XTb6rrSyTqsKZbHdFMoBl2uxdGaOwK9KtBxnTjkdvxTLhAV6r
+	 oTH7B3n5fAnpJ6x1m8nBpst8c3n9MHn6ZOKsaIOisT5nQyNeU4TdcAB1RVFyxazsXZ
+	 mjdsWBCVY9KRtdvFhBbuu/dKs+RuXGWZY1TZ/7ahklfVevr3SPanEy8/KLCmrneEFj
+	 +8QDeN634tY6Q==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8C8C4C6445B;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 81E99E270D3;
 	Wed,  2 Aug 2023 21:10:21 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -41,38 +41,45 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] libbpf: fix typos in Makefile
+Subject: Re: [PATCH v2] riscv,
+ bpf: Adapt bpf trampoline to optimized riscv ftrace framework
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <169101062157.23031.3643802072740316226.git-patchwork-notify@kernel.org>
+ <169101062152.23031.14952859291909120655.git-patchwork-notify@kernel.org>
 Date: Wed, 02 Aug 2023 21:10:21 +0000
-References: <20230722065236.17010-1-rdunlap@infradead.org>
-In-Reply-To: <20230722065236.17010-1-rdunlap@infradead.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, bpf@vger.kernel.org, liuxin350@huawei.com
+References: <20230721100627.2630326-1-pulehui@huaweicloud.com>
+In-Reply-To: <20230721100627.2630326-1-pulehui@huaweicloud.com>
+To: Pu Lehui <pulehui@huaweicloud.com>
+Cc: linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bjorn@kernel.org,
+ palmer@dabbelt.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+ guoren@kernel.org, suagrfillet@gmail.com, pulehui@huawei.com
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Fri, 21 Jul 2023 23:52:36 -0700 you wrote:
-> Capitalize ABI (acronym) and fix spelling of "destination".
+On Fri, 21 Jul 2023 18:06:27 +0800 you wrote:
+> From: Pu Lehui <pulehui@huawei.com>
 > 
-> Fixes: 706819495921 ("libbpf: Improve usability of libbpf Makefile")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: bpf@vger.kernel.org
-> Cc: Xin Liu <liuxin350@huawei.com>
+> Commit 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to
+> half") optimizes the detour code size of kernel functions to half with
+> T0 register and the upcoming DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv
+> is based on this optimization, we need to adapt riscv bpf trampoline
+> based on this. One thing to do is to reduce detour code size of bpf
+> programs, and the second is to deal with the return address after the
+> execution of bpf trampoline. Meanwhile, we need to construct the frame
+> of parent function, otherwise we will miss one layer when unwinding.
+> The related tests have passed.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf] libbpf: fix typos in Makefile
-    https://git.kernel.org/bpf/bpf-next/c/94e38c956b97
+  - [v2] riscv, bpf: Adapt bpf trampoline to optimized riscv ftrace framework
+    https://git.kernel.org/bpf/bpf-next/c/25ad10658dc1
 
 You are awesome, thank you!
 -- 
