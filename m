@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-6756-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F88C76D962
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 23:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 02F6076D963
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 23:20:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5966B1C21258
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 21:20:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 339801C212B1
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 21:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD9A125D4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AEC612B67;
 	Wed,  2 Aug 2023 21:20:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF68B101FC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 008C2125BC
 	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 21:20:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 44973C433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 53901C433C7;
 	Wed,  2 Aug 2023 21:20:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1691011221;
-	bh=PHuX0utjhqzEQg8OB1w4qikGmM4KBBYjc+Tmuzrxblc=;
+	bh=r3kCRVSYFBLItWe2GV/TfNk+pBsHmyVL2Z8MBrXrPg0=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=BDmm1078C49x2CVy4zAn582A1B6Ylpa9jq8+ebJiPIX5YOTJfDTayK30GpkfoTcn3
-	 4r9EBAeVuOH6vgylP7JR2LH4S5VM3HIlcA4wWmPJY4O4SyEnwzEayw4wNMujMZA4J3
-	 uISFahRBKUGWxQqgidLeOqhd4HdW+X6k2/kNsa55dEMBbvzZJ6e9WJUDjxQoNgDZUN
-	 VyAq7ZfPDWKnqGc0A0+LrI4p5d+kuyHHAWYMJ+vABUzwQIGH97lbejSouqj8Xka8qQ
-	 V2IQ3sBZqJk7ejyWumVh6dYn1OOVt1T3YDvpGlnlv8wD8dIPU2paYEbi3VYXgO6ids
-	 DlMn4G5S+YrtQ==
+	b=KfzHGHMko0UeGp/f2ND5mAbBMYnRoflMYUXrOCIrcKUS2s+QQwiHjK8oIKAzyCbub
+	 RKxePwuIa8y+637dazizHtwLEoUZkgCLyh03bGBDvp46nZ66fmHqG8dQnpZnPFgAF0
+	 Y40jmjeZiFYBByXk5XQ/tqHpuMLg2GDMIsewf7ioYwzjOGogm6oz4AJ1ikb4JUL19e
+	 OtK6eUQ0HqjrU02q8IUiqmu4N5WnPq6G6PSLAJzD8ILUzc37XkGGtO18sqFpi2l4n7
+	 1HnJ00IZk+JwweFreVP19PhWZ6o5FXkBHWiuMsDxTb2TK1fP+6ChiDT7jiL7ZACtUG
+	 vyJdLb+Fw4LyQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 26B4EE96ABD;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 339AFE270D7;
 	Wed,  2 Aug 2023 21:20:21 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -41,64 +41,42 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf] selftests/bpf: fix static assert compilation issue for
- test_cls_*.c
+Subject: Re: [PATCH] [v5] bpf: fix bpf_probe_read_kernel prototype mismatch
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <169101122115.28051.16510564953155235362.git-patchwork-notify@kernel.org>
+ <169101122119.28051.8597932529135437329.git-patchwork-notify@kernel.org>
 Date: Wed, 02 Aug 2023 21:20:21 +0000
-References: <20230802073906.3197480-1-alan.maguire@oracle.com>
-In-Reply-To: <20230802073906.3197480-1-alan.maguire@oracle.com>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: yhs@fb.com, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- bpf@vger.kernel.org, colm.harrington@oracle.com
+References: <20230801111449.185301-1-arnd@kernel.org>
+In-Reply-To: <20230801111449.185301-1-arnd@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
+ rostedt@goodmis.org, mhiramat@kernel.org, arnd@arndb.de,
+ stable@vger.kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, memxor@gmail.com, davemarchevsky@fb.com,
+ void@manifault.com, peterz@infradead.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Wed,  2 Aug 2023 08:39:06 +0100 you wrote:
-> commit bdeeed3498c7 ("libbpf: fix offsetof() and container_of() to work with CO-RE")
+On Tue,  1 Aug 2023 13:13:58 +0200 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> ...was backported to stable trees such as 5.15. The problem is that with older
-> LLVM/clang (14/15) - which is often used for older kernels - we see compilation
-> failures in BPF selftests now:
+> bpf_probe_read_kernel() has a __weak definition in core.c and another
+> definition with an incompatible prototype in kernel/trace/bpf_trace.c,
+> when CONFIG_BPF_EVENTS is enabled.
 > 
-> In file included from progs/test_cls_redirect_subprogs.c:2:
-> progs/test_cls_redirect.c:90:2: error: static assertion expression is not an integral constant expression
->         sizeof(flow_ports_t) !=
->         ^~~~~~~~~~~~~~~~~~~~~~~
-> progs/test_cls_redirect.c:91:3: note: cast that performs the conversions of a reinterpret_cast is not allowed in a constant expression
->                 offsetofend(struct bpf_sock_tuple, ipv4.dport) -
->                 ^
-> progs/test_cls_redirect.c:32:3: note: expanded from macro 'offsetofend'
->         (offsetof(TYPE, MEMBER) + sizeof((((TYPE *)0)->MEMBER)))
->          ^
-> tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:86:33: note: expanded from macro 'offsetof'
->                                  ^
-> In file included from progs/test_cls_redirect_subprogs.c:2:
-> progs/test_cls_redirect.c:95:2: error: static assertion expression is not an integral constant expression
->         sizeof(flow_ports_t) !=
->         ^~~~~~~~~~~~~~~~~~~~~~~
-> progs/test_cls_redirect.c:96:3: note: cast that performs the conversions of a reinterpret_cast is not allowed in a constant expression
->                 offsetofend(struct bpf_sock_tuple, ipv6.dport) -
->                 ^
-> progs/test_cls_redirect.c:32:3: note: expanded from macro 'offsetofend'
->         (offsetof(TYPE, MEMBER) + sizeof((((TYPE *)0)->MEMBER)))
->          ^
-> tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:86:33: note: expanded from macro 'offsetof'
->                                  ^
-> 2 errors generated.
-> make: *** [Makefile:594: tools/testing/selftests/bpf/test_cls_redirect_subprogs.bpf.o] Error 1
+> Since the two are incompatible, there cannot be a shared declaration in
+> a header file, but the lack of a prototype causes a W=1 warning:
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,bpf] selftests/bpf: fix static assert compilation issue for test_cls_*.c
-    https://git.kernel.org/bpf/bpf-next/c/416c6d01244e
+  - [v5] bpf: fix bpf_probe_read_kernel prototype mismatch
+    https://git.kernel.org/bpf/bpf-next/c/6a5a148aaf14
 
 You are awesome, thank you!
 -- 
