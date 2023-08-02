@@ -1,77 +1,95 @@
-Return-Path: <bpf+bounces-6647-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6648-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CAF376C197
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 02:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ECE7D76C227
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 03:24:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C97D4281AC3
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 00:44:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADAC7281C35
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 01:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F11F7F6;
-	Wed,  2 Aug 2023 00:44:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2CEA35;
+	Wed,  2 Aug 2023 01:24:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A191E7E
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 00:44:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C2DDC433C7;
-	Wed,  2 Aug 2023 00:44:09 +0000 (UTC)
-Date: Tue, 1 Aug 2023 20:44:07 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Florent Revest <revest@chromium.org>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-ID: <20230801204407.7b284b00@rorschach.local.home>
-In-Reply-To: <20230801204054.3884688e@rorschach.local.home>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-	<169078863449.173706.2322042687021909241.stgit@devnote2>
-	<CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-	<20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
-	<CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
-	<20230802000228.158f1bd605e497351611739e@kernel.org>
-	<20230801112036.0d4ee60d@gandalf.local.home>
-	<20230801113240.4e625020@gandalf.local.home>
-	<CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
-	<20230801190920.7a1abfd5@gandalf.local.home>
-	<20230802092146.9bda5e49528e6988ab97899c@kernel.org>
-	<20230801204054.3884688e@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7477E;
+	Wed,  2 Aug 2023 01:24:37 +0000 (UTC)
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+	by lindbergh.monkeyblade.net (Postfix) with SMTP id DD105E75;
+	Tue,  1 Aug 2023 18:24:35 -0700 (PDT)
+Received: from localhost.localdomain (unknown [219.141.250.2])
+	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 9FA986025F708;
+	Wed,  2 Aug 2023 09:24:20 +0800 (CST)
+X-MD-Sfrom: kunyu@nfschina.com
+X-MD-SrcIP: 219.141.250.2
+From: Li kunyu <kunyu@nfschina.com>
+To: martin.lau@linux.dev,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	song@kernel.org,
+	yhs@fb.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Li kunyu <kunyu@nfschina.com>
+Subject: [PATCH] =?UTF-8?q?bpf:=20bpf=5Fstruct=5Fops:=20Remove=20unnecessa?= =?UTF-8?q?ry=20=E2=80=980=E2=80=99=20values=20from=20err?=
+Date: Wed,  2 Aug 2023 09:23:54 +0800
+Message-Id: <20230802012354.7404-1-kunyu@nfschina.com>
+X-Mailer: git-send-email 2.18.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+	RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Tue, 1 Aug 2023 20:40:54 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+err is assigned first, so it does not need to initialize the assignment.
 
-> Maybe we can add a ftrace_partial_regs(fregs) that returns a
-> partially filled pt_regs, and the caller that uses this obviously knows
-> its partial (as it's in the name). But this doesn't quite help out arm64
-> because unlike x86, struct ftrace_regs does not contain an address
-> compatibility with pt_regs fields. It would need to do a copy.
-> 
->  ftrace_partial_regs(fregs, &regs) ?
+Signed-off-by: Li kunyu <kunyu@nfschina.com>
+---
+ kernel/bpf/bpf_struct_ops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Well, both would be pointers so you wouldn't need the "&", but it was
-to stress that it would be copying one to the other.
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index d3f0a4825fa6..5b591fda5d62 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -376,7 +376,7 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 	const struct btf_type *t = st_ops->type;
+ 	struct bpf_tramp_links *tlinks = NULL;
+ 	void *udata, *kdata;
+-	int prog_fd, err = 0;
++	int prog_fd, err;
+ 	void *image, *image_end;
+ 	u32 i;
+ 
+@@ -818,7 +818,7 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
+ 	struct bpf_struct_ops_map *st_map, *old_st_map;
+ 	struct bpf_map *old_map;
+ 	struct bpf_struct_ops_link *st_link;
+-	int err = 0;
++	int err;
+ 
+ 	st_link = container_of(link, struct bpf_struct_ops_link, link);
+ 	st_map = container_of(new_map, struct bpf_struct_ops_map, map);
+-- 
+2.18.2
 
-  void ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs regs);
-
--- Steve
 
