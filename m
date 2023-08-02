@@ -1,131 +1,87 @@
-Return-Path: <bpf+bounces-6730-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6731-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD94B76D3C6
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 18:33:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7895E76D408
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 18:49:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12DEA1C2139D
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 16:33:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A93FF1C212F4
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 16:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B42079CB;
-	Wed,  2 Aug 2023 16:33:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063DCDDB6;
+	Wed,  2 Aug 2023 16:48:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8EAF63D8
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 16:33:34 +0000 (UTC)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6966C26B5
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 09:33:32 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9f48b6796so41369841fa.3
-        for <bpf@vger.kernel.org>; Wed, 02 Aug 2023 09:33:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690994010; x=1691598810;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RQubRKv5sLMIVdyl63NSTIY5PJZsJuy6j4UtDcLwJiY=;
-        b=U6PDDWdu4w7QbzjoAcRGcpaLYOfQwExIznPrVmziEWWxbsPfGYFMfkyyB1Q02XC7D8
-         Ma68CWHP4ZR886T4q9GM9ya0upBGMCDNVyn3SoUyKgngQvobD2VXoCzw0qgQ6JCmD0Aj
-         2CgNLAe8BStYqyAzz26Hu0x99xdVbJwn19h51Ndcb/249Q1ECwm0pZo67uQnTBbLVd0k
-         7qHJpjwV4rIPTypA4uwwgGPY93nHus3SIk/yEA/DEgixtKvukyCWLmdJsgUoAkmhDZXl
-         wLHkp8KO8a/PUUDCaG8h59rvvZZhD+PgL0eImBtXteh1a8/ieyl431fOfndyp5roz+In
-         aeeg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CABE2DDAF
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 16:48:33 +0000 (UTC)
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5AD2718
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 09:48:31 -0700 (PDT)
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-56c7adba6afso8791650eaf.3
+        for <bpf@vger.kernel.org>; Wed, 02 Aug 2023 09:48:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690994010; x=1691598810;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RQubRKv5sLMIVdyl63NSTIY5PJZsJuy6j4UtDcLwJiY=;
-        b=fkIKiRiOUAciSQYBBU+bNOaUUgiv3iUkbaPcRYwxDBZdfuiYosDC3y8ImJzEFv42mT
-         W0xQASX6N2QW5UnhguTiBquro3bPNm3xDvAOMi0S/OJV6xclZ+MqaTvL6moX7i/lIMzb
-         0Yy0wrGogWqcSHfBdBtAF+LFvcxNzJXC3Cvq8DVPDkzCZVP9m+RFdU8dIts46BVpJnha
-         Ukk/XCHGwlZMHSHs49xaLzbB5ck7Caoe/1lyic9GzP6C1YyX5FLUcmx5KBmb4bIPm4ba
-         8xkZ5fGWQ4mMSCPxaaTUUZpN9V8DsJyRDzjBvcMV0W/ORuyB6X9MIdzmJYRYuVYWo55Y
-         DKrg==
-X-Gm-Message-State: ABy/qLb3YRlR/56/eBU9/fXnmiYOL9YrJ69GuFVWKsLVk4zr3AYo8veE
-	5Rd9C+m18KnonkCud/4o1SGvAIkbC3aTOjRg73m3lFVmH7c=
-X-Google-Smtp-Source: APBJJlEEhZZmYpL1zAJkGJAxxTdM+RVZPj/1sKxi8KA2WgIv1rsvHIKqZF7/KW1tLtsDxBtG+FmBUAIER3TdlWwBofo=
-X-Received: by 2002:a2e:870b:0:b0:2b6:eefc:3e4f with SMTP id
- m11-20020a2e870b000000b002b6eefc3e4fmr5466271lji.21.1690994009753; Wed, 02
- Aug 2023 09:33:29 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690994910; x=1691599710;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qYKi8o9F6eiWCa6W4LKamwGGGyahz7HtNFcm3VxSBwM=;
+        b=hJrz2YS3HEZI7TFNBEMPfO0wOTaZG4AsOdCGzuaKLfmanaM4W5rirANdD0rVqZTGUt
+         nTeIErEyvGy6idiasXhOVjuJ2s5Y7h27sFzQuY/82WQHKGUOog/9I7Mi+bKZtJuSjfEj
+         dGhUhkp0yNADjJRf1NIoq8kJn/8kyk7hbWK5AjRuxGHwY20nn3uuJXI9zYmvE6x1FgJs
+         /JWcXulVO9psTMslsGvHwrxLAY+i9rNKbQDrY63StZber6IED88bMJngBR73uepU35/e
+         788UE2sgX5yBbsg3z5gjuvuYuPGEnx8rJgckwc76TQzBloLiWhf97FnFkdjIWjOhidmh
+         LjUA==
+X-Gm-Message-State: ABy/qLahsle8syMPMmkoI/cEghaXCOMMhzG7xQY8yZIGCHnNuAemWVvt
+	kmv5aSOfSTZAkwQXndvgvMZZjRJ0DIGvyaYZpJibbYoC4pPQlVg=
+X-Google-Smtp-Source: APBJJlGJmB7c8epxLUHVlcd5q9o6JmFyZq+1fc1su7ZzZrNN0BVgY079DaI9kO8K9tDJb1lVZUP9D8ESC8PRbct7dF2zSmc0Pgtv
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230801142912.55078-1-laoar.shao@gmail.com> <3f56b3b3-9b71-f0d3-ace1-406a8eeb64c0@linux.dev>
- <CALOAHbAnyorNdYAp1FretQcqEp_j6mQ93ATwx02auLTYnL_0KQ@mail.gmail.com>
- <CAADnVQKwY+j6JrxJ4dc1M7yhkSf958ubSH=WB7dKmHt9Ac9gQQ@mail.gmail.com> <20230802032958.GB472124@maniforge>
-In-Reply-To: <20230802032958.GB472124@maniforge>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 2 Aug 2023 09:33:18 -0700
-Message-ID: <CAADnVQJnv5mC2=s1sQ8YKNj6gZXyXHeuNyaBJjk3D90VrM0iBw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: Add new bpf helper bpf_for_each_cpu
-To: David Vernet <void@manifault.com>, Alan Maguire <alan.maguire@oracle.com>
-Cc: Yafang Shao <laoar.shao@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>
+X-Received: by 2002:a05:6870:a888:b0:1bb:4d41:e929 with SMTP id
+ eb8-20020a056870a88800b001bb4d41e929mr18010511oab.3.1690994910687; Wed, 02
+ Aug 2023 09:48:30 -0700 (PDT)
+Date: Wed, 02 Aug 2023 09:48:30 -0700
+In-Reply-To: <1796030.1690982494@warthog.procyon.org.uk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f7f8fc0601f36e4c@google.com>
+Subject: Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
+From: syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>
+To: bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net, 
+	dhowells@redhat.com, dsahern@kernel.org, edumazet@google.com, kuba@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
+	viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 1, 2023 at 8:30=E2=80=AFPM David Vernet <void@manifault.com> wr=
-ote:
-> I agree that this is the correct way to generalize this. The only thing
-> that we'll have to figure out is how to generalize treating const struct
-> cpumask * objects as kptrs. In sched_ext [0] we export
-> scx_bpf_get_idle_cpumask() and scx_bpf_get_idle_smtmask() kfuncs to
-> return trusted global cpumask kptrs that can then be "released" in
-> scx_bpf_put_idle_cpumask(). scx_bpf_put_idle_cpumask() is empty and
-> exists only to appease the verifier that the trusted cpumask kptrs
-> aren't being leaked and are having their references "dropped".
+Hello,
 
-why is it KF_ACQUIRE ?
-I think it can just return a trusted pointer without acquire.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> [0]: https://lore.kernel.org/all/20230711011412.100319-13-tj@kernel.org/
->
-> I'd imagine that we have 2 ways forward if we want to enable progs to
-> fetch other global cpumasks with static lifetimes (e.g.
-> __cpu_possible_mask or nohz.idle_cpus_mask):
->
-> 1. The most straightforward thing to do would be to add a new kfunc in
->    kernel/bpf/cpumask.c that's a drop-in replacment for
->    scx_bpf_put_idle_cpumask():
->
-> void bpf_global_cpumask_drop(const struct cpumask *cpumask)
-> {}
->
-> 2. Another would be to implement something resembling what Yonghong
->    suggested in [1], where progs can link against global allocated kptrs
->    like:
->
-> const struct cpumask *__cpu_possible_mask __ksym;
->
-> [1]: https://lore.kernel.org/all/3f56b3b3-9b71-f0d3-ace1-406a8eeb64c0@lin=
-ux.dev/#t
->
-> In my opinion (1) is more straightforward, (2) is a better UX.
+Reported-and-tested-by: syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com
 
-1 =3D adding few kfuncs.
-2 =3D teaching pahole to emit certain global vars.
+Tested on:
 
-nm vmlinux|g -w D|g -v __SCK_|g -v __tracepoint_|wc -l
-1998
+commit:         5d0c230f Linux 6.5-rc4
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15a8b5d5a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=df103238a07f256e
+dashboard link: https://syzkaller.appspot.com/bug?extid=f527b971b4bdc8e79f9e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17e285dea80000
 
-imo BTF increase trade off is acceptable.
+Note: testing is done by a robot and is best-effort only.
 
