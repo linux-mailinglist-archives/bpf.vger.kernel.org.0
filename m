@@ -1,215 +1,191 @@
-Return-Path: <bpf+bounces-6672-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6673-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDBDD76C34B
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 05:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D76C76C352
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 05:07:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A85CD280A81
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 03:05:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07145280C11
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 03:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813E3A56;
-	Wed,  2 Aug 2023 03:05:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F5FA4C;
+	Wed,  2 Aug 2023 03:07:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C66A40
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 03:05:03 +0000 (UTC)
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D040EC
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 20:05:02 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1b8b2b60731so38170265ad.2
-        for <bpf@vger.kernel.org>; Tue, 01 Aug 2023 20:05:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690945501; x=1691550301;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KrTeUZeBnkvhMs7Cn02BDSHXUnGPcEFPFubIShESgns=;
-        b=leNicxnTVqX1Qt3ANTJRQh0ORZclfjfD+OfkL+oQKrrblOXJaWICkSxHdqwsraX57J
-         FxQsab2MfmU+ySI6fRQnt9mU2rzCxo9lg6SHB9G+jOyQBkpeVcMUB5obNnmC3FlCH2aq
-         WO2zZQYyxyZKnjLVQ30Rk92IlYarnpOjTiYZ4qVZExzefL4rn+3ebvqUtF46CFNZAlvJ
-         cQutWYd3yhyipNrMIA7PY2HAv6TyIgY8LfKykGKAnQvenSJd0MyRws2zMqK+75YLabLS
-         4X3zRzSmKybzAuWnkhFIHDSeSScqq0U5wjH6fN7KK/CcAjdeE4XiB1TqnylypjYXCIsM
-         SIaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690945501; x=1691550301;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KrTeUZeBnkvhMs7Cn02BDSHXUnGPcEFPFubIShESgns=;
-        b=ZWuN6uh7fu6ywO5DwXwqK9AXcWJEibX1QiN4lgWOwWdFzTGJ8kHDTdksZjqjmrRiYh
-         zeKosnuvcKcEhBtDJ9BGAKYrLka1lZlZ3xHgKtzVWLM0KdC9jb27UvFpLIR3PT0cXlwR
-         n5Ha9OQjBhI3JBC5W0RZ2JUz7Ueq9SRUiU1bBWTY4MmINv9lpMkkeXpT8bPjb4Pkpeqv
-         j3jXk34L58ONFd2HBUo6jBybDiPE1jwPpMXIAVix4Y1WuJB3+8sR/UQUHbKmVemcxPGq
-         ZbKupWQNXeBzsesXp+NMbluAnlf8k/uHzO/CrzA8oLL7B/rx973K/+8FScfm07QxKcIw
-         bjcw==
-X-Gm-Message-State: ABy/qLa6xriXh9/uzBgXM9DU6LcFypFMLUhUfUu2l2BNyfD5Zp2Qatvt
-	Wf5x/7g1xNYwYrWAf8FOC6oHbg==
-X-Google-Smtp-Source: APBJJlGkGlnRtGOhUYsWIGdfaYH8VzYo0xlGljESTIO4JXmf7uVp2EPhjsmNTWpYukrc+ecJ1k/A4w==
-X-Received: by 2002:a17:902:f7c7:b0:1bc:afa:95a6 with SMTP id h7-20020a170902f7c700b001bc0afa95a6mr7510567plw.40.1690945501211;
-        Tue, 01 Aug 2023 20:05:01 -0700 (PDT)
-Received: from [10.85.117.81] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id l5-20020a170903120500b001a5fccab02dsm11160846plh.177.2023.08.01.20.04.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 20:05:00 -0700 (PDT)
-Message-ID: <979ff2ac-b634-46f9-2d75-e7774c164de6@bytedance.com>
-Date: Wed, 2 Aug 2023 11:04:54 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD763EA5
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 03:07:21 +0000 (UTC)
+Received: from out-66.mta0.migadu.com (out-66.mta0.migadu.com [91.218.175.66])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175BFAC
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 20:07:18 -0700 (PDT)
+Message-ID: <7b99d323-711a-9971-3138-186461fbd245@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1690945634; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lJt2gIhUr6aV0/XSwzSrKWvC8aXk23/c0YJRkqkiTCc=;
+	b=crPT/eY9pVJEZ4eQ6QkgN0plsyRBAGx0YeQDIO0vUeR3W4hBYUimdmW2fMY83fk8XmC1a/
+	oS0TdpFg25poIPHZPct7PrMSpmwqnUYUPwC86vB6OSXw9xZoT/UyczEOLnneod8R3Be9ll
+	baNQyq92idVBbPMy6C+d+YBUcsf62DA=
+Date: Tue, 1 Aug 2023 20:07:08 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 0/5] mm: Select victim memcg using BPF_OOM_POLICY
-To: Michal Hocko <mhocko@suse.com>
-Cc: hannes@cmpxchg.org, roman.gushchin@linux.dev, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, wuyun.abel@bytedance.com,
- robin.lu@bytedance.com, muchun.song@linux.dev, zhengqi.arch@bytedance.com
-References: <20230727073632.44983-1-zhouchuyi@bytedance.com>
- <ZMInlGaW90Uw1hSo@dhcp22.suse.cz>
- <7347aad5-f25c-6b76-9db5-9f1be3a9f303@bytedance.com>
- <ZMKoAfGRgkl4rmtj@dhcp22.suse.cz>
- <eb764131-6d2f-c088-5481-99d605a67349@bytedance.com>
- <ZMe17kOoHr/eYnVT@dhcp22.suse.cz>
- <f8f44103-afba-10ee-b14b-a8e60a7f33d8@bytedance.com>
- <ZMi/7oWdrczvE8eU@dhcp22.suse.cz>
-From: Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <ZMi/7oWdrczvE8eU@dhcp22.suse.cz>
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [PATCH v1 bpf-next 0/7] BPF Refcount followups 3:
+ bpf_mem_free_rcu refcounted nodes
+Content-Language: en-US
+To: Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
+References: <20230801203630.3581291-1-davemarchevsky@fb.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20230801203630.3581291-1-davemarchevsky@fb.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 
 
-Hello,
-在 2023/8/1 16:18, Michal Hocko 写道:
-> On Tue 01-08-23 00:26:20, Chuyi Zhou wrote:
->>
->>
->> 在 2023/7/31 21:23, Michal Hocko 写道:
->>> On Mon 31-07-23 14:00:22, Chuyi Zhou wrote:
->>>> Hello, Michal
->>>>
->>>> 在 2023/7/28 01:23, Michal Hocko 写道:
->>> [...]
->>>>> This sounds like a very specific oom policy and that is fine. But the
->>>>> interface shouldn't be bound to any concepts like priorities let alone
->>>>> be bound to memcg based selection. Ideally the BPF program should get
->>>>> the oom_control as an input and either get a hook to kill process or if
->>>>> that is not possible then return an entity to kill (either process or
->>>>> set of processes).
->>>>
->>>> Here are two interfaces I can think of. I was wondering if you could give me
->>>> some feedback.
->>>>
->>>> 1. Add a new hook in select_bad_process(), we can attach it and return a set
->>>> of pids or cgroup_ids which are pre-selected by user-defined policy,
->>>> suggested by Roman. Then we could use oom_evaluate_task to find a final
->>>> victim among them. It's user-friendly and we can offload the OOM policy to
->>>> userspace.
->>>>
->>>> 2. Add a new hook in oom_evaluate_task() and return a point to override the
->>>> default oom_badness return-value. The simplest way to use this is to protect
->>>> certain processes by setting the minimum score.
->>>>
->>>> Of course if you have a better idea, please let me know.
->>>
->>> Hooking into oom_evaluate_task seems the least disruptive to the
->>> existing oom killer implementation. I would start by planing with that
->>> and see whether useful oom policies could be defined this way. I am not
->>> sure what is the best way to communicate user input so that a BPF prgram
->>> can consume it though. The interface should be generic enough that it
->>> doesn't really pre-define any specific class of policies. Maybe we can
->>> add something completely opaque to each memcg/task? Does BPF
->>> infrastructure allow anything like that already?
->>>
->>
->> “Maybe we can add something completely opaque to each memcg/task?”
->> Sorry, I don't understand what you mean.
+On 8/1/23 1:36 PM, Dave Marchevsky wrote:
+> This series is the third of three (or more) followups to address issues
+> in the bpf_refcount shared ownership implementation discovered by Kumar.
+> This series addresses the use-after-free scenario described in [0]. The
+> first followup series ([1]) also attempted to address the same
+> use-after-free, but only got rid of the splat without addressing the
+> underlying issue. After this series the underyling issue is fixed and
+> bpf_refcount_acquire can be re-enabled.
 > 
-> What I meant to say is to add a very non-specific interface that would
-> would a specific BPF program understand. Mostly an opaque value from the
-> memcg POV.
+> The main fix here is migration of bpf_obj_drop to use
+> bpf_mem_free_rcu. To understand why this fixes the issue, let us consider
+> the example interleaving provided by Kumar in [0]:
 > 
->> I think we probably don't need to expose too much to the user, the following
->> might be sufficient:
->>
->> noinline int bpf_get_score(struct oom_control *oc,
->> 		struct task_struct *task);
->>
->> static int oom_evaluate_task()
->> {
->> 	...
->> 	points = bpf_get_score(oc, task);
->> 	if (!check_points_valid(points))
->>           	points = oom_badness(task, oc->totalpages);
->> 	...
->> }
->>
->> There are several reasons:
->>
->> 1. The implementation of use-defined OOM policy, such as iteration, sorting
->> and other complex operations, is more suitable to be placed in the userspace
->> rather than in the bpf program. It is more convenient to implement these
->> operations in userspace in which the useful information (memory usage of
->> each task and memcg, memory allocation speed, etc.) can also be captured.
->> For example, oomd implements multiple policies[1] without kernel-space
->> input.
+> CPU 0                                   CPU 1
+> n = bpf_obj_new
+> lock(lock1)
+> bpf_rbtree_add(rbtree1, n)
+> m = bpf_rbtree_acquire(n)
+> unlock(lock1)
 > 
-> I do agree that userspace can handle a lot on its own and provide the
-> input to the BPF program to make a decision.
-> 
->> 2. Userspace apps, such as oomd, can import useful information into bpf
->> program, e.g., through bpf_map, and update it periodically. For example, we
->> can do the scoring directly in userspace and maintain a score hash, so that
->> in the bpf program, we only need to look for the corresponding score of the
->> process.
-> 
-> Sure, why not. But all that is an implementation detail. We are
-> currently talkin about a proper abstraction and layering that would
-> allow what you do currently but also much more.
-> 
->> Userspace policy（oomd）
->>           bpf_map_update
->>           score_hash
->>        ------------------>  BPF program
->>                                look up score in
->>                                 score_hash
->>                              ---------------> kernel space
->> Just some thoughts.
-> 
-> I believe all the above should be possible if BPF program is hooked at
-> the oom_evaluate_task layer and allow to bypass the default logic. BPF
-> program can process whatever data it has available. The oom scope iteration
-> will be implemented already in the kernel so all the BPF program has to
-> do is to rank processes and/or memcgs if oom.group is enabled. Whould
-> that work for your usecase?
+> kptr_xchg(map, m) // move to map
+> // at this point, refcount = 2
+> 					m = kptr_xchg(map, NULL)
+> 					lock(lock2)
+> lock(lock1)				bpf_rbtree_add(rbtree2, m)
 
-Yes, I think the above interface can works well for our usecase.
+On the right column: bpf_rbtree_add(rbtree1, m) ?
 
-In our scenario, we want to protect the application with higher priority 
-and try to select lower priority as the victim.
-
-Specifically, We can set priority for memcgs in userspace. In BPF 
-program, we can find the memcg to which the given process belongs, and 
-then rank according to the memcg's priority.
-
-Thanks.
+> p = bpf_rbtree_first(rbtree1)			if (!RB_EMPTY_NODE) bpf_obj_drop_impl(m) // A
+> bpf_rbtree_remove(rbtree1, p)
+> unlock(lock1)
+> bpf_obj_drop(p) // B
+> 					bpf_refcount_acquire(m) // use-after-free
+> 					...
 > 
->> Thanks!
->>
->> [1]https://github.com/facebookincubator/oomd/tree/main/src/oomd/plugins)
+> Before this series, bpf_obj_drop returns memory to the allocator using
+> bpf_mem_free. At this point (B in the example) there might be some
+> non-owning references to that memory which the verifier believes are valid,
+> but where the underlying memory was reused for some other allocation.
+> Commit 7793fc3babe9 ("bpf: Make bpf_refcount_acquire fallible for
+> non-owning refs") attempted to fix this by doing refcount_inc_non_zero
+> on refcount_acquire in instead of refcount_inc under the assumption that
+> preventing erroneous incr-on-0 would be sufficient. This isn't true,
+> though: refcount_inc_non_zero must *check* if the refcount is zero, and
+> the memory it's checking could have been reused, so the check may look
+> at and incr random reused bytes.
+> 
+> If we wait to reuse this memory until all non-owning refs that could
+> point to it are gone, there is no possibility of this scenario
+> happening. Migrating bpf_obj_drop to use bpf_mem_free_rcu for refcounted
+> nodes accomplishes this.
+> 
+> For such nodes, the validity of their underlying memory is now tied to
+> RCU Tasks Trace critical section. This matches MEM_RCU trustedness
+> expectations, so the series takes the opportunity to more explicitly
+> mark this trustedness state.
+> 
+> The functional effects of trustedness changes here are rather small.
+> This is largely due to local kptrs having separate verifier handling -
+> with implicit trustedness assumptions - than arbitrary kptrs.
+> Regardless, let's take the opportunity to move towards a world where
+> trustedness is more explictly handled.
+> 
+> Summary of patch contents, with sub-bullets being leading questions and
+> comments I think are worth reviewer attention:
+> 
+>    * Patches 1 and 2 are moreso documententation - and
+>      enforcement, in patch 1's case - of existing semantics / expectations
+> 
+>    * Patch 3 changes bpf_obj_drop behavior for refcounted nodes such that
+>      their underlying memory is not reused until RCU grace period elapses
+>      * Perhaps it makes sense to move to mem_free_rcu for _all_
+>        non-owning refs in the future, not just refcounted. This might
+>        allow custom non-owning ref lifetime + invalidation logic to be
+>        entirely subsumed by MEM_RCU handling. IMO this needs a bit more
+>        thought and should be tackled outside of a fix series, so it's not
+>        attempted here.
+> 
+>    * Patch 4 re-enables bpf_refcount_acquire as changes in patch 3 fix
+>      the remaining use-after-free
+>      * One might expect this patch to be last in the series, or last
+>        before selftest changes. Patches 5 and 6 don't change
+>        verification or runtime behavior for existing BPF progs, though.
+> 
+>    * Patch 5 brings the verifier's understanding of refcounted node
+>      trustedness in line with Patch 4's changes
+> 
+>    * Patch 6 allows some bpf_spin_{lock, unlock} calls in sleepable
+>      progs. Marked RFC for a few reasons:
+>      * bpf_spin_{lock,unlock} haven't been usable in sleepable progs
+>        since before the introduction of bpf linked list and rbtree. As
+>        such this feels more like a new feature that may not belong in
+>        this fixes series.
+>      * If we do want to allow bpf_spin_{lock,unlock} in sleepable progs,
+>        Alexei has expressed a preference for that do be done as part of a
+>        broader set of changes to verifier determination of where those
+>        helpers can be called, and what can be called inside the spin_lock
+>        CS.
+>      * I'm unsure whether preemption needs to be disabled in this patch
+>        as well.
+> 
+>    * Patch 7 adds tests
+> 
+>    [0]: https://lore.kernel.org/bpf/atfviesiidev4hu53hzravmtlau3wdodm2vqs7rd7tnwft34e3@xktodqeqevir/
+>    [1]: https://lore.kernel.org/bpf/20230602022647.1571784-1-davemarchevsky@fb.com/
+> 
+> Dave Marchevsky (7):
+>    bpf: Ensure kptr_struct_meta is non-NULL for collection insert and
+>      refcount_acquire
+>    bpf: Consider non-owning refs trusted
+>    bpf: Use bpf_mem_free_rcu when bpf_obj_dropping refcounted nodes
+>    bpf: Reenable bpf_refcount_acquire
+>    bpf: Consider non-owning refs to refcounted nodes RCU protected
+>    [RFC] bpf: Allow bpf_spin_{lock,unlock} in sleepable prog's RCU CS
+>    selftests/bpf: Add tests for rbtree API interaction in sleepable progs
+> 
+>   include/linux/bpf.h                           |  3 +-
+>   include/linux/bpf_verifier.h                  |  2 +-
+>   kernel/bpf/helpers.c                          |  6 ++-
+>   kernel/bpf/verifier.c                         | 45 ++++++++++++-----
+>   .../bpf/prog_tests/refcounted_kptr.c          | 26 ++++++++++
+>   .../selftests/bpf/progs/refcounted_kptr.c     | 37 ++++++++++++++
+>   .../bpf/progs/refcounted_kptr_fail.c          | 48 +++++++++++++++++++
+>   7 files changed, 153 insertions(+), 14 deletions(-)
 > 
 
