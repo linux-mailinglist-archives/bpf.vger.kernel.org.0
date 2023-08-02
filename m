@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-6717-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEE0276CFFA
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 16:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8D9676D005
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 16:27:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E453281E2A
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 14:26:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B190281DCA
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 14:27:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF6F847B;
-	Wed,  2 Aug 2023 14:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FE58826;
+	Wed,  2 Aug 2023 14:27:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DC679F8;
-	Wed,  2 Aug 2023 14:25:47 +0000 (UTC)
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68092271B;
-	Wed,  2 Aug 2023 07:25:42 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-63d0f62705dso47127696d6.0;
-        Wed, 02 Aug 2023 07:25:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19C38468;
+	Wed,  2 Aug 2023 14:27:20 +0000 (UTC)
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0761A2D52;
+	Wed,  2 Aug 2023 07:27:18 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-56661fe27cbso4674081eaf.3;
+        Wed, 02 Aug 2023 07:27:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690986341; x=1691591141;
+        d=gmail.com; s=20221208; t=1690986438; x=1691591238;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qjGfCJHkpMI9k9iIwIjOnqVQQFNO/gdmK6q0Dzbrkgo=;
-        b=szoMmaSEm9MLeTWawWU5dNjYLMw23jK+nWPZ6yXPHDf7+dk2FlDMxC2+j5l/mTzpQq
-         hkF2eouNELYBI3+0zTlcRQbE7WihLyUZZ8bvvSl8Sn5asQcTQ1uy3V+AaHtkeypKLBud
-         7VVvW8/peW1t2tVBf0KwSrlqzywd6UwhmL1oHFzhR9RpxSp9X0Rmr5oMuFXgVx/4728Q
-         k6tnJ+RucHyInTiPtw2T5VTGcd/Y/acDGfV9zyJsGBSJ/6XuFuZL7+zKjk3IuBHI1YZ2
-         ARu5ipmcuKmrmnwK79xu5gq1JhA/N1RJsB35YIuh3TwpYRQFJex/zUF9op1s+75Xy1e1
-         8p9g==
+        bh=Q1qQgIORJRlmD0UJ8myQJ3W2VLdY4qHSEBJu+2btObE=;
+        b=m/bhPUCkD7SbtEw2eb/bvy1F39jLWLEwVMcNSLoIyJKWX4L1ghEbu2JC82d9NJ9cbu
+         K/H8DiudsHYUST3HeuuISIWdxNXK0JcTyMkaokgme6aVzjHfC5iQ+nmCuIvgIVPZE1GF
+         ol9DF8YxH/Xh1vCd/hKG9hR757K2M8Ts1QVhyZw0eKvqzGECzxpKLhuXQcy2cJ7VOEFW
+         4EWtGSKVhNJ+69XkPRDY195dD7lL7QA6NhTsgOT7hw3Alfym7x8eotbXx+Unagn7tzCW
+         rcltUSomOFK85TCIv8t3Uid8d7+RWBvxxCG3ZsUhyB3Ba49z+rf2H5PwPhbHQaFuz7g9
+         Jggg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690986341; x=1691591141;
+        d=1e100.net; s=20221208; t=1690986438; x=1691591238;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=qjGfCJHkpMI9k9iIwIjOnqVQQFNO/gdmK6q0Dzbrkgo=;
-        b=K9UO/2Y/tfBkjiqS4rP0PN6YTKE4a6yAt9xyvp6e0PpN/oAIb/uXNkpTyCPvquZP4j
-         k91WJaXhqIkGc7ve3PAHRCkwcV7JV/h28kl+7MmV+IZ5jybS8h6XIVLK4gdMzBhLmF6L
-         PLMRNMJ/CzQbiCJUTO6+9gVnDjIbQbmIryhdtz7Drjw2OlsNEAwIADyAXegT4tW7i1uQ
-         z4MQjRiToUZk5fHIIzv8f/WoL50+NYTpYdQ1VZWsw0NAJbzNL1tqC+G0ttpbrSsXFAx6
-         yX7Cd6fdp8JWrz1qT3TrbRQVYwon1v0vAbLznaOi7t7xsbKrphO+WUCyUd3IfDOgczs6
-         WKRw==
-X-Gm-Message-State: ABy/qLZ7YlaGmL1Hfy+Efi0vdECU/NjxBu8ge5zEIERrRwdGD1F1AaiH
-	wxC7sG1SBMCWKb88J5WdSHQ=
-X-Google-Smtp-Source: APBJJlHEFfN8kUg4HDOk2etMtixHMke1yb5c8y1W0MjgkKfRiR1LSGq0N7KZidGzYH/2qo4XG7S5sw==
-X-Received: by 2002:a0c:e401:0:b0:635:93fb:fbfa with SMTP id o1-20020a0ce401000000b0063593fbfbfamr13940074qvl.5.1690986341311;
-        Wed, 02 Aug 2023 07:25:41 -0700 (PDT)
+        bh=Q1qQgIORJRlmD0UJ8myQJ3W2VLdY4qHSEBJu+2btObE=;
+        b=Uo2nxsAlHT8CEHgDH3579oDseGtUPNA8Tm6/5pYrzuGC49bSjJl/5GRPKKVhnAYobP
+         ms5PFZwa8JdE+rhfRCGPK5AHt28Q13JvBvmULTTyl6GqB2Bo/zuSimNvgKqW0xQLDr+J
+         WU6/1VmFcdt+/e11n//pkw+pHSSXzx2snstilUp6p0eyH7pyCv3CcgYGW1avTUsrXQKR
+         KgFRt6eyLJM/w4HyBWJlksQpBHUsAZqTqo5l4IPd88Tdhll/xwYNxdiBqfEWeoebL9jI
+         piRm78MvGxqdB6gaqPBnNgXpvu2lYWuX/dVLvvKmtcP2V4jtK7gr4QqtTcl6DNLHhyq9
+         8/zg==
+X-Gm-Message-State: ABy/qLbClnwb3WQ6gH2q+idfiVWFsxaRvtY7ESTyt+cMNPzUEsJMj0Ka
+	uQilW7Q3PpIhjyEdg1A5t7I=
+X-Google-Smtp-Source: APBJJlE2tnKHyanb9fqR4kiTgcF0DCMwEBcvtN3sJ72Ud3TWHEHvhM9J+23wYjZgJfSdH0ImOgPmAg==
+X-Received: by 2002:a05:6358:4309:b0:139:cdfa:52e9 with SMTP id r9-20020a056358430900b00139cdfa52e9mr6487878rwc.3.1690986437990;
+        Wed, 02 Aug 2023 07:27:17 -0700 (PDT)
 Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id i11-20020a0cf38b000000b0063d67548802sm3083544qvk.137.2023.08.02.07.25.40
+        by smtp.gmail.com with ESMTPSA id i11-20020a0cf48b000000b0063cf9478fddsm5581091qvm.128.2023.08.02.07.27.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 07:25:41 -0700 (PDT)
-Date: Wed, 02 Aug 2023 10:25:40 -0400
+        Wed, 02 Aug 2023 07:27:17 -0700 (PDT)
+Date: Wed, 02 Aug 2023 10:27:17 -0400
 From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 To: David Howells <dhowells@redhat.com>, 
  netdev@vger.kernel.org, 
@@ -75,10 +75,10 @@ Cc: dhowells@redhat.com,
  linux-fsdevel@vger.kernel.org, 
  syzkaller-bugs@googlegroups.com, 
  linux-kernel@vger.kernel.org
-Message-ID: <64ca6764b3c6b_294ce9294bc@willemb.c.googlers.com.notmuch>
-In-Reply-To: <1580952.1690961810@warthog.procyon.org.uk>
-References: <1580952.1690961810@warthog.procyon.org.uk>
-Subject: RE: [PATCH net-next] udp6: Fix __ip6_append_data()'s handling of
+Message-ID: <64ca67c534d71_294ce929485@willemb.c.googlers.com.notmuch>
+In-Reply-To: <1420063.1690904933@warthog.procyon.org.uk>
+References: <1420063.1690904933@warthog.procyon.org.uk>
+Subject: RE: [PATCH net] udp: Fix __ip_append_data()'s handling of
  MSG_SPLICE_PAGES
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -97,15 +97,15 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 David Howells wrote:
-> __ip6_append_data() can has a similar problem to __ip_append_data()[1] when
-> asked to splice into a partially-built UDP message that has more than the
-> frag-limit data and up to the MTU limit, but in the ipv6 case, it errors
-> out with EINVAL.  This can be triggered with something like:
+>     
+> __ip_append_data() can get into an infinite loop when asked to splice into
+> a partially-built UDP message that has more than the frag-limit data and up
+> to the MTU limit.  Something like:
 > 
 >         pipe(pfd);
->         sfd = socket(AF_INET6, SOCK_DGRAM, 0);
+>         sfd = socket(AF_INET, SOCK_DGRAM, 0);
 >         connect(sfd, ...);
->         send(sfd, buffer, 8137, MSG_CONFIRM|MSG_MORE);
+>         send(sfd, buffer, 8161, MSG_CONFIRM|MSG_MORE);
 >         write(pfd[1], buffer, 8);
 >         splice(pfd[0], 0, sfd, 0, 0x4ffe0ul, 0);
 > 
@@ -113,15 +113,23 @@ David Howells wrote:
 > this instance an interface with an MTU of 8192).
 > 
 > The problem is that the calculation of the amount to copy in
-> __ip6_append_data() goes negative in two places, but a check has been put
-> in to give an error in this case.
+> __ip_append_data() goes negative in two places, and, in the second place,
+> this gets subtracted from the length remaining, thereby increasing it.
 > 
-> This happens because when pagedlen > 0 (which happens for MSG_ZEROCOPY and
-> MSG_SPLICE_PAGES), the terms in:
+> This happens when pagedlen > 0 (which happens for MSG_ZEROCOPY and
+> MSG_SPLICE_PAGES), because the terms in:
 > 
 >         copy = datalen - transhdrlen - fraggap - pagedlen;
 > 
 > then mostly cancel when pagedlen is substituted for, leaving just -fraggap.
+> This causes:
+> 
+>         length -= copy + transhdrlen;
+> 
+> to increase the length to more than the amount of data in msg->msg_iter,
+> which causes skb_splice_from_iter() to be unable to fill the request and it
+> returns less than 'copied' - which means that length never gets to 0 and we
+> never exit the loop.
 > 
 > Fix this by:
 > 
@@ -136,11 +144,14 @@ David Howells wrote:
 >      we're asked to splice more than is in the iterator.  It might be
 >      better to not give the warning or even just give a 'short' write.
 > 
->  (4) If MSG_SPLICE_PAGES, override the copy<0 check.
+> [!] Note that this ought to also affect MSG_ZEROCOPY, but MSG_ZEROCOPY
+> avoids the problem by simply assuming that everything asked for got copied,
+> not just the amount that was in the iterator.  This is a potential bug for
+> the future.
 > 
-> [!] Note that this should also affect MSG_ZEROCOPY, but that will return
-> -EINVAL for the range of send sizes that requires the skbuff to be split.
-> 
+> Fixes: 7ac7c987850c ("udp: Convert udp_sendpage() to use MSG_SPLICE_PAGES")
+> Reported-by: syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/r/000000000000881d0606004541d1@google.com/
 > Signed-off-by: David Howells <dhowells@redhat.com>
 > cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 > cc: "David S. Miller" <davem@davemloft.net>
@@ -149,27 +160,9 @@ David Howells wrote:
 > cc: Paolo Abeni <pabeni@redhat.com>
 > cc: David Ahern <dsahern@kernel.org>
 > cc: Jens Axboe <axboe@kernel.dk>
-> cc: Matthew Wilcox <willy@infradead.org>
 > cc: netdev@vger.kernel.org
-> Link: https://lore.kernel.org/r/000000000000881d0606004541d1@google.com/ [1]
 
 Reviewed-by: Willem de Bruijn <willemb@google.com>
 
-I'm beginning to understand your point that the bug is older and copy
-should never end up equal to -fraglen. pagedlen includes all of
-datalen, which includes fraggap. This is wrong, as fraggap is always
-copied to skb->linear. Haven't really thought it through, but would
-this solve it as well?
-
-                        else {
-                                alloclen = fragheaderlen + transhdrlen;
--                               pagedlen = datalen - transhdrlen;
-+                               pagedlen = datalen - transhdrlen - fraggap;
-
-After that copy no longer subtracts fraglen twice.
-
-                        copy = datalen - transhdrlen - fraggap - pagedlen;
-
-But don't mean to delay these targeted fixes for MSG_SPLICE_PAGES any
-further.
+I noticed that this is still open in patchwork, no need to resend.
 
