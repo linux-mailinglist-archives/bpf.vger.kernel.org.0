@@ -1,448 +1,282 @@
-Return-Path: <bpf+bounces-6708-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6709-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E643176CCC3
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 14:34:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A00D76CD3F
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 14:43:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14A3B1C212C6
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 12:34:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CC39281DB9
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 12:43:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1736FAE;
-	Wed,  2 Aug 2023 12:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D6C746C;
+	Wed,  2 Aug 2023 12:43:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C129E5695
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 12:34:33 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D31E270F
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 05:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1690979670;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nd6PwvIkgOQbG/ZZUIxqOtQIR8jsXYk0JyqgiV1oL8s=;
-	b=iHM34QYgdydbJJoRALt4c+5iNkvrKQu5WktJCbJazv9/f8fkX6iwsyLDLERiLhVPKf+fds
-	W+occwMFn3wg94T0Kx7Mb8Wkptp1Kew0v8xLuPb/WFobku930aJ5gEX71DW9XwBkVuRnfE
-	1ueV4LYj6Hq2I/69UT4Wh1Dk5+HJlJE=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-198-PO-MlYPVPfmU1d1SU5BK-w-1; Wed, 02 Aug 2023 08:34:29 -0400
-X-MC-Unique: PO-MlYPVPfmU1d1SU5BK-w-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fe27502459so3986247e87.3
-        for <bpf@vger.kernel.org>; Wed, 02 Aug 2023 05:34:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690979668; x=1691584468;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nd6PwvIkgOQbG/ZZUIxqOtQIR8jsXYk0JyqgiV1oL8s=;
-        b=H2wSWjDxbSLPqWOcxxSMhIUMEVgJ4KXEPEdHRfquuDTfFNAReQ/3XlePIPPjFByUKn
-         Mc7OlsB3SRVBl7/K2bgf8/r8T6k+ziok54J5BJrQXGGvG0+8wo1ciNNOm4bqCiZ9JBWX
-         TRKjsVeNJ3EAu4i548X+RQq+2LQTRJcngij4knfa2xwhO5QpOBE7ZTi2s8d4Evo2BhA5
-         iEhvrSR2KU1EO466LQwaJffA6pX6O7eYbjTS/bLssfCFmE+P8lPs0rmz3aFU2Wyoy0av
-         RoFNmYwUGx2bYzaHpfDEI5wjfMnPxa/Cx9wLkzulSyWi8IQth3NxyrqAzB/SJHL6oXpt
-         7mOQ==
-X-Gm-Message-State: ABy/qLby73sZYKTAyXeVmjf8JnZGvm7fM7MR6zSkdX0qii+DqPADynTe
-	vGw5Xz0Jr/zr1IR9GSEGDrhmnJmO/JPM4dU9RPkHSgWpHt7a11CTEMj3+tVX4Y6MeZfU8ytePZ0
-	Eij3JbKaQD7Mk
-X-Received: by 2002:a19:2d42:0:b0:4fb:9772:6639 with SMTP id t2-20020a192d42000000b004fb97726639mr4145443lft.6.1690979667782;
-        Wed, 02 Aug 2023 05:34:27 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGuTGE0fpv9NDoMuASP5eIoZrg2KEoyn2i2JWE29RyKU9gt7z68YPsntExjobep84onv45CeQ==
-X-Received: by 2002:a19:2d42:0:b0:4fb:9772:6639 with SMTP id t2-20020a192d42000000b004fb97726639mr4145410lft.6.1690979667323;
-        Wed, 02 Aug 2023 05:34:27 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id u18-20020aa7d0d2000000b0051e0f21c43fsm8657234edo.31.2023.08.02.05.34.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 05:34:26 -0700 (PDT)
-From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <6cfddca7-0c22-01ca-de43-a2b3f71aa75a@redhat.com>
-Date: Wed, 2 Aug 2023 14:34:24 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04E163B1
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 12:43:41 +0000 (UTC)
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97673273B
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 05:43:20 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372Ai4uZ002886;
+	Wed, 2 Aug 2023 12:42:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=Ezcjl9H66KCQE7teV+jNL0ozEJc+wgSNNl84aVLJpks=;
+ b=jE9ue6PVuHKyjFI+/9Sr7WiM8b2E6cT5c5x9ZW2xJDz1noE28KVmfjcznGoGMJN9N1n3
+ C9/+ex0cdp6z+IQX//QyinDYJQ8UMGCvTctwS8MVNqkKwArWLtO6qDTChj5606HY+MwO
+ Cq1OC9aN09Un7QGkJES1Vq8a/T1fL9FdoNl3ln9i012UZGGAa91s30uexIV1rTGB5anP
+ cB7+whlK8LxKxL3LIVA3gr82cu1U14m1e4qoszc82VQb/sbCVhWs882re+3GUsJs5DQE
+ ad3FTgBq+eGle/uSN07LpEsTvlF0D/cECRfs5wOdyayG79OvV55qsNz1PIUFIDALe+ci sA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s4tcty43b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 02 Aug 2023 12:42:20 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 372BoMFl006605;
+	Wed, 2 Aug 2023 12:42:20 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3s4s7ed35n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 02 Aug 2023 12:42:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SeoDworvSL0ixCrRbL9hcmVvLSx8FvXSegGEy8RCkRYVNEkjG9DzmnmT/S4QSXMsGAedjxqLpsMVxXmq8btlSqTEweZf8AL40yE0cdCwgp+JvM7aDQyVTT/VFpeDBDgHI3p68jKTRUf65KuJmhMCKwLv9dXLmVk9CuGmv8jOZutT40lKeOHz6Wu8TzqGeVG29zGXTU4nhhvv8laWgx9zm14a7/VFa0qvMedeJKI8FS5wKFSemf5SFr73VhXA+UrbnjoLKgSnqE3+yWwB9+m9yvKqjHXVK7B+da7p2kEmbPR+D7bEfAVkMNjvfmcK5rUWxnPCAHqhqUP4WkcMdJCKZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ezcjl9H66KCQE7teV+jNL0ozEJc+wgSNNl84aVLJpks=;
+ b=If1jn7DOqML+b5E4WL4Vq5VVqNJkryGukJNMVqQWHDOxdLIro4cWz+QB1ZWp+6SSva3Vu1BWCwxgzN0gckSUPmMMK6Ipip9/ZMOeuhZsYNyfsvIjkiGzGumAL7wjXU2vQtUZsQuK+M8YmnKS12TWUIFZTeSZlj0P1RW5BGmXJCUnRRutssFFt2Tq3NuuHu32Xliq/+BhWh2E+4HF75bhHV0pUn7jkMaK/lJSAabWbDvKW2nF/AUrihvKHrtBnctIB5licoKh/cO+wIGqBu7PLV1RMg8wL8YLmJ9KH8s/RMS9OXVlO0X6tlsUKJrrd8sTpc87s76Jl34M5z3q3/9Qgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ezcjl9H66KCQE7teV+jNL0ozEJc+wgSNNl84aVLJpks=;
+ b=diMNxo3l+f+pNnc+lCM+cOGqsJUSUUuzgKmvYM9PPW3qTl+AJktyMJYMrt/6dQfHcNwtPdKpS8pySzty/uDZou+Geex30vuSsB4jzUET1KzlE4GZk9imcgsRTpU92xOUNvYdtZm4R8O6Yh4Qi4p2tA2Z9Ic2pM66C939+Hi2TAU=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by PH7PR10MB6178.namprd10.prod.outlook.com (2603:10b6:510:1f2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
+ 2023 12:42:17 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::97e0:4c4b:17bb:a90f]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::97e0:4c4b:17bb:a90f%4]) with mapi id 15.20.6652.019; Wed, 2 Aug 2023
+ 12:42:17 +0000
+Message-ID: <bb978112-c133-fdb8-44b4-4775832207c7@oracle.com>
+Date: Wed, 2 Aug 2023 13:42:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Add bpf_get_func_ip test for
+ uprobe inside function
+Content-Language: en-GB
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <20230801073002.1006443-1-jolsa@kernel.org>
+ <20230801073002.1006443-4-jolsa@kernel.org>
+ <ca1c1fcf-4cc5-da44-d0ed-1bf7b6c66892@oracle.com> <ZMpLkJVPSVcc17Ou@krava>
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <ZMpLkJVPSVcc17Ou@krava>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AS4P190CA0018.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5d0::11) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc: brouer@redhat.com, dl-linux-imx <linux-imx@nxp.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
-Content-Language: en-US
-To: Wei Fang <wei.fang@nxp.com>, Jesper Dangaard Brouer <jbrouer@redhat.com>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "edumazet@google.com" <edumazet@google.com>,
- "kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com"
- <pabeni@redhat.com>, Shenwei Wang <shenwei.wang@nxp.com>,
- Clark Wang <xiaoning.wang@nxp.com>, "ast@kernel.org" <ast@kernel.org>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- "hawk@kernel.org" <hawk@kernel.org>,
- "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <20230731060025.3117343-1-wei.fang@nxp.com>
- <3d0a8536-6a22-22e5-41c0-98c13dd7b802@redhat.com>
- <AM5PR04MB31394F01926FB20F95262E0A880BA@AM5PR04MB3139.eurprd04.prod.outlook.com>
-In-Reply-To: <AM5PR04MB31394F01926FB20F95262E0A880BA@AM5PR04MB3139.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|PH7PR10MB6178:EE_
+X-MS-Office365-Filtering-Correlation-Id: a5740ddf-9f88-4cb7-059d-08db9355e793
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	2yBE7F20n9ziX+MZ6hg6A9Lji26k13fJKep0xeQ6vEht4jvSkRWiuqKAoQOr2Dj4tFJkVuHmRZHt1UIjfz9THDCUMWwxWsL5wG3nPdSLAcQGVFHL8wIVIHhw9zW1bW3iqUTgr3hqzAMaPT/s70dBSdRxo9fYcVqvrYAClEli9tOpqbvmOCY7vvDZZ3ROHPX6fHdE0XpFeQzo2/jBDBcCR11qFlUKOe/IKs4qv56TPQNA4GXweJN3wwbEYO3SyvyLJjsDMannvKJ6CbBBBUhoj0BbeQeyeM8dxIwshV42euTgQJy6SvwSZl24TZ1wVrWGYiwGgHzOZsYl9VKHnp0U8ftJ6CwY1zbKCWMY4rNBxAMCm5jWRzpBlTSsB5RyXO2B8xWNZbKo7DMDRlxC0bfk4Bozi7oTRekYlyG0Zdq1MuRAQd2NmI2QyxUqv5TRknmO7nbciCZ8RN5zed2RTVKA/W+KVRoqx3Nc+KENEjLoXYoJ1/CeBqkgL1JfokKjO6oF0fUsgQyONvDoXqtWGta12TlWs2fpqz/XbSjTtGP77aoTPqQxCHiCfje8YluKTDUqIahn1ccCA8k71itV/jgY/4Z3VLA+UEFgZGM5G+DCzWewRSleZMh9Eh1uYvm6mgXU3DA9wq5kqZM5cV3FalBSpw==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(396003)(136003)(366004)(376002)(39860400002)(451199021)(5660300002)(83380400001)(36756003)(6506007)(53546011)(8676002)(8936002)(31686004)(7416002)(44832011)(54906003)(38100700002)(6512007)(2616005)(2906002)(66476007)(66556008)(6666004)(66946007)(478600001)(31696002)(4326008)(6916009)(6486002)(86362001)(316002)(186003)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?RnluL1VYczlKMnUwTDFOZThVRDZXWnZoTEZDbC9KOGFhY1k0Zm0yVDNVay91?=
+ =?utf-8?B?d2NDTk43d0M3T1UzZm5VRThLaWx0dFZyWTVPTWxHRU9BOGU4VFJDSU01aHcr?=
+ =?utf-8?B?MmN0OGtsaUd2SXo2eE1rTWpjckY2cjBKYTFrSWNad2doendoQWVITmJrT1pt?=
+ =?utf-8?B?USsrK2szUStnd3JZQTJDeUo5WFhxWWMyd2pNNlAzM0RiVXdMY3E3cHNCQ3ZM?=
+ =?utf-8?B?SFNZUWx2alR3S21wWkQ5clkzNDZoL0R3aHRqOEs0RnFqZkJWRkkrYk1jcXpq?=
+ =?utf-8?B?My9QMXIyNytNWTE0UVJZWkdJd2xtSmc5QmY5TVp0aEdPN1c0VU9lNk9mMXRh?=
+ =?utf-8?B?ZDVZRGRhV1FxWURubVdkYThGcmFjczg2UlhERDJzQjVWN0U5QkNtYjlwZ3c1?=
+ =?utf-8?B?ME1ZeTNST1J4MmlQYVZBSzQwY1oyMnhVZFhRY2xWY2VlZzgwc1hweU1kN2dw?=
+ =?utf-8?B?ZDU5ejJld29oZHkrc2lqRTNVY2ZqWjNiYTNaYWdZVzdUdkgyVkVrYXB6N2pM?=
+ =?utf-8?B?Ry9mWnpqU0MxSktXNTVjdjgxY3lDbnkxb2M2ZXZLSUJPVzVXY0ZCSE1sbkxp?=
+ =?utf-8?B?bVRxd095alRycEZQSjBKZFlnckZBOElwMXg5YnZRN0hkQzY5cUJCR3JadjV2?=
+ =?utf-8?B?NzM5MnV3WXpHK0J6TkFvdElZWDQzR2xkdXNPL2xQKytUOTZxMWZua0Rqbndh?=
+ =?utf-8?B?Q1J0QndkbDl0eFNsaGMwVkFORVNxWlFPSDRjWFZBMkZFSkFIc09UM2I1S2sx?=
+ =?utf-8?B?VDdMQnhObEtBMzF4dGliNVZKZ1JKM2ZyR2djMzhGY1ZSMXB3clExQnNRVW1q?=
+ =?utf-8?B?TGsrUGszVDRmREtSM0lFUUpNd29CM2FvckFKUjVzY0I1akcybjlVeXJzWnZW?=
+ =?utf-8?B?WTFGdVE0OEhVbithYkhaYzIwaDUxdU5jUWE3YVJzZnlZaGxDblk4Mm1WOXM2?=
+ =?utf-8?B?NVJuRGU1SkhMZTVKeTlPNmNxZzlzS01KZWtOa0NoTWhDV0VtMEhSblBQZVBJ?=
+ =?utf-8?B?TndUR3BTRy83ZjVTQmIycG8xV1hpV3RIZVpDMmFUdU5EcUdmRTBmV21RTUlQ?=
+ =?utf-8?B?b0dCZ3llcHA1V2hXY3NXKzRkZ3lwb3Q3aGplSkpjZ2tZekdVdDB2UkJwejBm?=
+ =?utf-8?B?cEQxQ1ZRVlMzckVQQy8veVpNU0FaV3RJTjB1dytWSngzM0hCcjcwaXdUTlVz?=
+ =?utf-8?B?MytVT2VycmlqbUczNkc0UVRLTmhLd1NCTEJNT0REeWJjdWFieW9mMUp5UlB2?=
+ =?utf-8?B?Z2xhOEVvdmI5bkpoQ0s3WmtVenZwVXlsMFJwZ3pkekVkQjdwemN5bHRMd2hD?=
+ =?utf-8?B?eHNDa3RuTzFLZ1FYR29YOG9zSkRyRTF1dnRKRzJicGYvNU5YVkVkMG1IRng1?=
+ =?utf-8?B?RFJDSXB1bWtyT3ZkbXgzN1BveG9jQy9jK1c5M3B3ZXlPM3BwUFNZQmtWeWlC?=
+ =?utf-8?B?Y2w0MnlHcFRoZFdBME1aY056QU1RTWNmbkg0a280SWF6VXI2TFZwYWZFZmhQ?=
+ =?utf-8?B?RnVVYWpQQkNybjJnRmRDRTlXRU9qRDd1dlZQcG9MdThPMjkzTjFDTHFia0lU?=
+ =?utf-8?B?UDFEUFUydzB4ZVJMZlZESmUzQ1pid3JEWDF1RXYzNUh6WUlBMXpobElROHhG?=
+ =?utf-8?B?TC9UM0dnYlp5Smt6NzdPZ2NCdmkrbWMxSHIwazFIU1ozS3g1WENCVHUxN0p2?=
+ =?utf-8?B?T3JyKzJCaGlZRFZVUnA4M01XcGNuOVBnZ0N6SzN1RmZXUG42RGMrdFFnMUpa?=
+ =?utf-8?B?aHU5cU5pNmR0VThMZXFyWG9abWg2bXVFUEhGQnU4R3ZGTXVIREJscjl6Tnh6?=
+ =?utf-8?B?UHRLSnVPOTBIL29NMFNxYWN0N3pOY3JDMzJWZlNCdnRFelRrZmU3K1lpcXZm?=
+ =?utf-8?B?akhIejIwT3c1SlJUYXRKc3NFd1BkeWJpRDJUNlJXbWUzTXUyNndKank4aDV6?=
+ =?utf-8?B?Wmg3SmVhbEtZR2diczA3Q0ZRb0hRcUdNRTI4SnpLZ0F1RWJhTi9oSlMwSXkw?=
+ =?utf-8?B?bDVkd2wrZm9sOUduOC9QZHBhYk0rbkNNaGNDZzR5QVVVRy9VeFlhQTNqMWMr?=
+ =?utf-8?B?Rk1HMklERlgwOWcreGZyU29xQzFoTm9XZWxDeWZZSXZ2UEtqcENOOERRYkdv?=
+ =?utf-8?B?MTc2SFpVZ3NxM1dMSGJ2VFpLVWoxWlRvTHpNS3ZhSXB6WmI1MzROUzlWMUdh?=
+ =?utf-8?Q?SYVFoNdTOs2sHk3AjJWkitI=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	=?utf-8?B?TlgvSnhVdVlMR0dhQis1QU82dDZJa214d0dUNE0wK3Jkc1pONkN5Nk81OTB5?=
+ =?utf-8?B?YXhQWGVFZENjcW9NTmdnRjkxayswT081Q2RsMUFhTEJwaTcxbC83TGllWnpp?=
+ =?utf-8?B?OUFiWW9uSFk5cGtkeFM4bkVtVDVmNmp1bWlWNG1uNitsb3lDR0pxUTZzelgr?=
+ =?utf-8?B?NDZneDZLci9zL2haVnVVbTN4ckswTlhzQTVTS0JDWkNvSm9DNzVnU1N3eTY4?=
+ =?utf-8?B?NjB4b0VpSkVyNmpIQlpJdzRDSlhDVEVDeTJSc0NIRk0xcFlHNGdoWHNxSTdN?=
+ =?utf-8?B?UklPWS9MampOWEVxNHpiMW16MTIxWmFLcXpRdU5GMmlKblpTd29zdm9pWTc2?=
+ =?utf-8?B?MU9IZEFpUHJFaWl6TStkOVJ0ak9ndGNWaTlNODRFSlp1ak1Ha0dWTFBBaDU0?=
+ =?utf-8?B?dHYyK2I2dHpEUFJRWk1xbTJPZkw5Y2N1TTE3ZlZTVHhrRjRsRUliZTd3SytE?=
+ =?utf-8?B?NUdZUnc5aHpsTHNvcmkrZ3BGN1hoZnpRQXJvcldDVmhXUXRtVmlnN2VXU0tq?=
+ =?utf-8?B?TDZHeXZWR0tPWFV5YWZEUWR1NzN5SVdhMzBIenFLZEJPK1djZFlXbithdDhj?=
+ =?utf-8?B?UjZaakdtWmRPNmViNW0wbzN2NE9rMU5KOGUvOGJDWWYyeGtxNmVvb2l0WEY2?=
+ =?utf-8?B?VDY4TXl1eW1oZzBoa0pWcGxvcFZHRHYyZlprQWtHbnQxKzFrSVVOUEF6cTJU?=
+ =?utf-8?B?bGxlRkZ2Vm5xcFRrcFJLbWxCYmlNOGM1REM4YWF1NmxESGtoWGtKTWRaSk40?=
+ =?utf-8?B?Y09ORGxoZnF6Sm1xY2M3MFRnZzNnK2g2MGVJS05DbEhnRzk0NGUrWHRzd3pB?=
+ =?utf-8?B?dlZydi9SaXNMK1k3d1lVcS9ZR0hiVXo1eFNHenNTMjFoOW4veU5jdUwrUzNS?=
+ =?utf-8?B?b2J2SFdTK2FIWGpRaGhnd1lJMXlySXExdDNYNWZNb3BZQ01ZV1lPVWdxUVVF?=
+ =?utf-8?B?UWptZU1uQzJsVHpqTndwbFYxSzdYaUdiZExrMGU3YzlHTVVEYk1ibE8ybE1w?=
+ =?utf-8?B?UFB1RFU3UnNKTlp2Qm54TDVCN2JqWm90WVBIQjA4Y09JaVcxVjZCVWxycnRX?=
+ =?utf-8?B?a3N5aUt4d0VqRDk1SFpLU3hxK2pGbEE4WFVUUTNHZnBSeHAxcHh6bVI1RkFP?=
+ =?utf-8?B?N2t5QnRHdGZuUVFSN2ZrNkpXSHpjTlRpNW5uY1YyT0NQMnMzN2svMENKTWxl?=
+ =?utf-8?B?blZkSVZEdzlzTG0zUnhtQloreDZtQSt3V3dRT0s1d3dkWDF1S2hJV3MwUVlw?=
+ =?utf-8?B?dVJMSEFnN21KanU1NkxzcjhrUG1GcUtWTGtFNFJPMnNPa3Ardz09?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5740ddf-9f88-4cb7-059d-08db9355e793
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2023 12:42:17.2247
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DGi2qJFMBkbi5qWHDKM9gjb5QL90YWgvmko4DtG8y8E5YhWgglzzcpF/03uxGodK3+//jQy4fP2FdJCJIQX3BA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6178
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_08,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020113
+X-Proofpoint-GUID: O_u42Td0MxUGo_QDYwlXwF7xDeD_AWkI
+X-Proofpoint-ORIG-GUID: O_u42Td0MxUGo_QDYwlXwF7xDeD_AWkI
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
-
-On 02/08/2023 11.59, Wei Fang wrote:
->>
->> On 31/07/2023 08.00, Wei Fang wrote:
->>> The XDP_TX feature is not supported before, and all the frames
->>> which are deemed to do XDP_TX action actually do the XDP_DROP
->>> action. So this patch adds the XDP_TX support to FEC driver.
+On 02/08/2023 13:26, Jiri Olsa wrote:
+> On Wed, Aug 02, 2023 at 12:30:36PM +0100, Alan Maguire wrote:
+>> On 01/08/2023 08:30, Jiri Olsa wrote:
+>>> Adding get_func_ip test for uprobe inside function that validates
+>>> the get_func_ip helper returns correct probe address value.
 >>>
->>> I tested the performance of XDP_TX feature in XDP_DRV and XDP_SKB
->>> modes on i.MX8MM-EVK and i.MX8MP-EVK platforms respectively, and
->>> the test steps and results are as follows.
->>>
->>> Step 1: Board A connects to the FEC port of the DUT and runs the
->>> pktgen_sample03_burst_single_flow.sh script to generate and send
->>> burst traffic to DUT. Note that the length of packet was set to
->>> 64 bytes and the procotol of packet was UDP in my test scenario.
->>>
->>> Step 2: The DUT runs the xdp2 program to transmit received UDP
->>> packets back out on the same port where they were received.
->>>
->>
->> Below test result runs should have some more explaination, please.
->> (more inline code comments below)
->>
->>> root@imx8mmevk:~# ./xdp2 eth0
->>> proto 17:     150326 pkt/s
->>> proto 17:     141920 pkt/s
->>> proto 17:     147338 pkt/s
->>> proto 17:     140783 pkt/s
->>> proto 17:     150400 pkt/s
->>> proto 17:     134651 pkt/s
->>> proto 17:     134676 pkt/s
->>> proto 17:     134959 pkt/s
->>> proto 17:     148152 pkt/s
->>> proto 17:     149885 pkt/s
->>>
->>> root@imx8mmevk:~# ./xdp2 -S eth0
->>> proto 17:     131094 pkt/s
->>> proto 17:     134691 pkt/s
->>> proto 17:     138930 pkt/s
->>> proto 17:     129347 pkt/s
->>> proto 17:     133050 pkt/s
->>> proto 17:     132932 pkt/s
->>> proto 17:     136628 pkt/s
->>> proto 17:     132964 pkt/s
->>> proto 17:     131265 pkt/s
->>> proto 17:     135794 pkt/s
->>>
->>> root@imx8mpevk:~# ./xdp2 eth0
->>> proto 17:     135817 pkt/s
->>> proto 17:     142776 pkt/s
->>> proto 17:     142237 pkt/s
->>> proto 17:     135673 pkt/s
->>> proto 17:     139508 pkt/s
->>> proto 17:     147340 pkt/s
->>> proto 17:     133329 pkt/s
->>> proto 17:     141171 pkt/s
->>> proto 17:     146917 pkt/s
->>> proto 17:     135488 pkt/s
->>>
->>> root@imx8mpevk:~# ./xdp2 -S eth0
->>> proto 17:     133150 pkt/s
->>> proto 17:     133127 pkt/s
->>> proto 17:     133538 pkt/s
->>> proto 17:     133094 pkt/s
->>> proto 17:     133690 pkt/s
->>> proto 17:     133199 pkt/s
->>> proto 17:     133905 pkt/s
->>> proto 17:     132908 pkt/s
->>> proto 17:     133292 pkt/s
->>> proto 17:     133511 pkt/s
->>>
->>
->> For this driver, I would like to see a benchmark comparison between
->> XDP_TX and XDP_REDIRECT.
->>
-> Okay, I'll do a comparison test.
-
-Thanks.
-
-> 
->> As below code does could create a situation where XDP_REDIRECT is just
->> as fast as XDP_TX.  (Note, that I expect XDP_TX to be faster than
->> XDP_REDIRECT.)
->>
-> Could you explain why you expect XDP_TX should be faster than XDP_REDIRECT?
-
-First of all: I explained the changes needed to improve XDP_TX, below as
-comments on the code. Please read and address.
-
-XDP_TX should always be faster than XDP_REDIRECT, because it happens
-locally in the driver and doesn't have to go through any generic
-xdp_do_redirect code.
-
-Like benchmarks shown in our XDP-paper[1] on mlx5 the graph[2] shows
-XDP_TX vs XDP_REDIRECT vs. DPDK.
-
-  [1] https://dl.acm.org/doi/10.1145/3281411.3281443
-  [2] 
-https://github.com/xdp-project/xdp-paper/blob/master/figures/redirect-test.pdf
-
-
-> What's the problem if XDP_TX is as fast ad XDP_REDIRECT?
-> 
->>> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 >>> ---
->>> V2 changes:
->>> According to Jakub's comments, the V2 patch adds two changes.
->>> 1. Call txq_trans_cond_update() in fec_enet_xdp_tx_xmit() to avoid
->>> tx timeout as XDP shares the queues with kernel stack.
->>> 2. Tx processing shouldn't call any XDP (or page pool) APIs if the
->>> "budget" is 0.
+>>>  .../bpf/prog_tests/get_func_ip_test.c         | 40 ++++++++++++++++++-
+>>>  .../bpf/progs/get_func_ip_uprobe_test.c       | 18 +++++++++
+>>>  2 files changed, 57 insertions(+), 1 deletion(-)
+>>>  create mode 100644 tools/testing/selftests/bpf/progs/get_func_ip_uprobe_test.c
 >>>
->>> V3 changes:
->>> 1. Remove the second change in V2, because this change has been
->>> separated into another patch and it has been submmitted to the
->>> upstream [1].
->>> [1]
->> https://lore.k/
->> ernel.org%2Fr%2F20230725074148.2936402-1-wei.fang%40nxp.com&data=
->> 05%7C01%7Cwei.fang%40nxp.com%7C9a2fc5bab84947e4bea608db933aa5
->> e9%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C638265652320
->> 018962%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV
->> 2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=wc
->> xe8nBeLS9uQrbphuNI18owgDNHJq9478V53KybWB8%3D&reserved=0
->>> ---
->>>    drivers/net/ethernet/freescale/fec.h      |  1 +
->>>    drivers/net/ethernet/freescale/fec_main.c | 80
->> ++++++++++++++++++-----
->>>    2 files changed, 65 insertions(+), 16 deletions(-)
->>>
->>> diff --git a/drivers/net/ethernet/freescale/fec.h
->> b/drivers/net/ethernet/freescale/fec.h
->>> index 8f1edcca96c4..f35445bddc7a 100644
->>> --- a/drivers/net/ethernet/freescale/fec.h
->>> +++ b/drivers/net/ethernet/freescale/fec.h
->>> @@ -547,6 +547,7 @@ enum {
->>>    enum fec_txbuf_type {
->>>      FEC_TXBUF_T_SKB,
->>>      FEC_TXBUF_T_XDP_NDO,
->>> +   FEC_TXBUF_T_XDP_TX,
->>>    };
->>>
->>>    struct fec_tx_buffer {
->>> diff --git a/drivers/net/ethernet/freescale/fec_main.c
->> b/drivers/net/ethernet/freescale/fec_main.c
->>> index 14d0dc7ba3c9..2068fe95504e 100644
->>> --- a/drivers/net/ethernet/freescale/fec_main.c
->>> +++ b/drivers/net/ethernet/freescale/fec_main.c
->>> @@ -75,6 +75,8 @@
->>>
->>>    static void set_multicast_list(struct net_device *ndev);
->>>    static void fec_enet_itr_coal_set(struct net_device *ndev);
->>> +static int fec_enet_xdp_tx_xmit(struct net_device *ndev,
->>> +                           struct xdp_buff *xdp);
->>>
->>>    #define DRIVER_NAME       "fec"
->>>
->>> @@ -960,7 +962,8 @@ static void fec_enet_bd_init(struct net_device
->> *dev)
->>>                                      txq->tx_buf[i].skb = NULL;
->>>                              }
->>>                      } else {
->>> -                           if (bdp->cbd_bufaddr)
->>> +                           if (bdp->cbd_bufaddr &&
->>> +                               txq->tx_buf[i].type == FEC_TXBUF_T_XDP_NDO)
->>>                                      dma_unmap_single(&fep->pdev->dev,
->>>                                                       fec32_to_cpu(bdp->cbd_bufaddr),
->>>                                                       fec16_to_cpu(bdp->cbd_datlen),
->>> @@ -1423,7 +1426,8 @@ fec_enet_tx_queue(struct net_device *ndev, u16
->> queue_id, int budget)
->>>                              break;
->>>
->>>                      xdpf = txq->tx_buf[index].xdp;
->>> -                   if (bdp->cbd_bufaddr)
->>> +                   if (bdp->cbd_bufaddr &&
->>> +                       txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO)
->>>                              dma_unmap_single(&fep->pdev->dev,
->>>                                               fec32_to_cpu(bdp->cbd_bufaddr),
->>>                                               fec16_to_cpu(bdp->cbd_datlen),
->>> @@ -1482,7 +1486,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16
->> queue_id, int budget)
->>>                      /* Free the sk buffer associated with this last transmit */
->>>                      dev_kfree_skb_any(skb);
->>>              } else {
->>> -                   xdp_return_frame(xdpf);
->>> +                   xdp_return_frame_rx_napi(xdpf);
->>>
->>>                      txq->tx_buf[index].xdp = NULL;
->>>                      /* restore default tx buffer type: FEC_TXBUF_T_SKB */
->>> @@ -1573,11 +1577,18 @@ fec_enet_run_xdp(struct fec_enet_private
->> *fep, struct bpf_prog *prog,
->>>              }
->>>              break;
->>>
->>> -   default:
->>> -           bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
->>> -           fallthrough;
->>> -
->>>      case XDP_TX:
->>> +           err = fec_enet_xdp_tx_xmit(fep->netdev, xdp);
+>>> diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+>>> index 114cdbc04caf..f199220ad6de 100644
+>>> --- a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+>>> +++ b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+>>> @@ -55,7 +55,16 @@ static void test_function_entry(void)
+>>>   * offset, disabling it for all other archs
 >>
->> You should pass along the "sync" length value to fec_enet_xdp_tx_xmit().
->> Because we know DMA comes from same device (it is already DMA mapped
->> to), then we can do a DMA sync "to_device" with only the sync length.
+>> nit: comment here
 >>
->>> +           if (err) {
+>> /* test6 is x86_64 specific because of the instruction
+>>  * offset, disabling it for all other archs
 >>
->> Add an unlikely(err) or do like above case XDP_REDIRECT, where it takes
->> the likely case "if (!err)" first.
->>
->>> +                   ret = FEC_ENET_XDP_CONSUMED;
->>> +                   page = virt_to_head_page(xdp->data);
->>> +                   page_pool_put_page(rxq->page_pool, page, sync, true);
->>> +           } else {
->>> +                   ret = FEC_ENET_XDP_TX;
->>> +           }
->>> +           break;
->>> +
->>> +   default:
->>>              bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
->>>              fallthrough;
->>>
->>> @@ -3793,7 +3804,8 @@ fec_enet_xdp_get_tx_queue(struct
->> fec_enet_private *fep, int index)
->>>
->>>    static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
->>>                                 struct fec_enet_priv_tx_q *txq,
->>> -                              struct xdp_frame *frame)
->>> +                              struct xdp_frame *frame,
->>> +                              bool ndo_xmit)
->>
->> E.g add parameter dma_sync_len.
->>
->>>    {
->>>      unsigned int index, status, estatus;
->>>      struct bufdesc *bdp;
->>> @@ -3813,10 +3825,24 @@ static int fec_enet_txq_xmit_frame(struct
->> fec_enet_private *fep,
->>>
->>>      index = fec_enet_get_bd_index(bdp, &txq->bd);
->>>
->>> -   dma_addr = dma_map_single(&fep->pdev->dev, frame->data,
->>> -                             frame->len, DMA_TO_DEVICE);
->>> -   if (dma_mapping_error(&fep->pdev->dev, dma_addr))
->>> -           return -ENOMEM;
->>> +   if (ndo_xmit) {
->>> +           dma_addr = dma_map_single(&fep->pdev->dev, frame->data,
->>> +                                     frame->len, DMA_TO_DEVICE);
->>> +           if (dma_mapping_error(&fep->pdev->dev, dma_addr))
->>> +                   return -ENOMEM;
->>> +
->>> +           txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
->>> +   } else {
->>> +           struct page *page = virt_to_page(frame->data);
->>> +
->>> +           dma_addr = page_pool_get_dma_addr(page) + sizeof(*frame) +
->>> +                      frame->headroom;
->>> +           dma_sync_single_for_device(&fep->pdev->dev, dma_addr,
->>> +                                      frame->len, DMA_BIDIRECTIONAL);
->>
->> Optimization: use dma_sync_len here instead of frame->len.
->>
->>> +           txq->tx_buf[index].type = FEC_TXBUF_T_XDP_TX;
->>> +   }
->>> +
->>> +   txq->tx_buf[index].xdp = frame;
->>>
->>>      status |= (BD_ENET_TX_INTR | BD_ENET_TX_LAST);
->>>      if (fep->bufdesc_ex)
->>> @@ -3835,9 +3861,6 @@ static int fec_enet_txq_xmit_frame(struct
->> fec_enet_private *fep,
->>>              ebdp->cbd_esc = cpu_to_fec32(estatus);
->>>      }
->>>
->>> -   txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
->>> -   txq->tx_buf[index].xdp = frame;
->>> -
->>>      /* Make sure the updates to rest of the descriptor are performed
->> before
->>>       * transferring ownership.
->>>       */
->>> @@ -3863,6 +3886,31 @@ static int fec_enet_txq_xmit_frame(struct
->> fec_enet_private *fep,
->>>      return 0;
->>>    }
->>>
->>> +static int fec_enet_xdp_tx_xmit(struct net_device *ndev,
->>> +                           struct xdp_buff *xdp)
->>> +{
->>
->> E.g add parameter dma_sync_len.
->>
->>> +   struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
->>
->> XDP_TX can avoid this conversion to xdp_frame.
->> It would requires some refactor of fec_enet_txq_xmit_frame().
->>
->>> +   struct fec_enet_private *fep = netdev_priv(ndev);
->>> +   struct fec_enet_priv_tx_q *txq;
->>> +   int cpu = smp_processor_id();
->>> +   struct netdev_queue *nq;
->>> +   int queue, ret;
->>> +
->>> +   queue = fec_enet_xdp_get_tx_queue(fep, cpu);
->>> +   txq = fep->tx_queue[queue];
->>> +   nq = netdev_get_tx_queue(fep->netdev, queue);
->>> +
->>> +   __netif_tx_lock(nq, cpu);
->>
->> It is sad that XDP_TX takes a lock for each frame.
->>
->>> +
->>> +   /* Avoid tx timeout as XDP shares the queue with kernel stack */
->>> +   txq_trans_cond_update(nq);
->>> +   ret = fec_enet_txq_xmit_frame(fep, txq, xdpf, false);
->>
->> Add/pass parameter dma_sync_len to fec_enet_txq_xmit_frame().
->>
->>
->>> +
->>> +   __netif_tx_unlock(nq);
->>> +
->>> +   return ret;
->>> +}
->>> +
->>>    static int fec_enet_xdp_xmit(struct net_device *dev,
->>>                           int num_frames,
->>>                           struct xdp_frame **frames,
->>> @@ -3885,7 +3933,7 @@ static int fec_enet_xdp_xmit(struct net_device
->> *dev,
->>>      /* Avoid tx timeout as XDP shares the queue with kernel stack */
->>>      txq_trans_cond_update(nq);
->>>      for (i = 0; i < num_frames; i++) {
->>> -           if (fec_enet_txq_xmit_frame(fep, txq, frames[i]) < 0)
->>> +           if (fec_enet_txq_xmit_frame(fep, txq, frames[i], true) < 0)
->>>                      break;
->>>              sent_frames++;
->>>      }
+>> ...should probably be updated now multiple tests are gated by the
+>> #ifdef __x86_64__.
 > 
+> right will update that
+> 
+>>
+>> BTW I tested if these tests would pass on aarch64 with a few tweaks
+>> to instruction offsets, and they do. Something like the following
+>> gets all of the tests running and passing on aarch64:
+> 
+> nice, thanks a lot for testing that
+> 
+> SNIP
+> 
+>> diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_uprobe_test.c
+>> b/tools/testing/selftests/bpf/progs/get_func_ip_uprobe_test.c
+>> index 052f8a4345a8..56af4a8447b9 100644
+>> --- a/tools/testing/selftests/bpf/progs/get_func_ip_uprobe_test.c
+>> +++ b/tools/testing/selftests/bpf/progs/get_func_ip_uprobe_test.c
+>> @@ -8,11 +8,17 @@ char _license[] SEC("license") = "GPL";
+>>  unsigned long uprobe_trigger_body;
+>>
+>>  __u64 test1_result = 0;
+>> +#if defined(__TARGET_ARCH_x86)
+>> +#define OFFSET 1
+>>  SEC("uprobe//proc/self/exe:uprobe_trigger_body+1")
+>> +#elif defined(__TARGET_ARCH_arm64)
+>> +#define OFFSET 4
+>> +SEC("uprobe//proc/self/exe:uprobe_trigger_body+4")
+>> +#endif
+>>  int BPF_UPROBE(test1)
+>>  {
+>>         __u64 addr = bpf_get_func_ip(ctx);
+>>
+>> -       test1_result = (const void *) addr == (const void *)
+>> uprobe_trigger_body + 1;
+>> +       test1_result = (const void *) addr == (const void *)
+>> uprobe_trigger_body + OFFSET;
+>>         return 0;
+>>  }
+>>
+>>
+>> Anyway if you're doing a later version and want to roll something like
+>> the above in feel free, otherwise I can send a followup patch later on.
+>> Regardless, for the series on aarch64:
+> 
+> I'd preffer if you could send follow up for arm, because I have
+> no easy way to test that change
+>
 
+sure, will do! thanks!
+
+Alan
 
