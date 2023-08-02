@@ -1,66 +1,66 @@
-Return-Path: <bpf+bounces-6703-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6704-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9736676CC71
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 14:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F43876CC7F
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 14:21:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28082281D32
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 12:17:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 258B8281D60
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 12:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA677475;
-	Wed,  2 Aug 2023 12:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB4337465;
+	Wed,  2 Aug 2023 12:21:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865717462
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 12:16:50 +0000 (UTC)
-Received: from mail-lf1-x161.google.com (mail-lf1-x161.google.com [IPv6:2a00:1450:4864:20::161])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D45D10FB
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 05:16:48 -0700 (PDT)
-Received: by mail-lf1-x161.google.com with SMTP id 2adb3069b0e04-4fe15bfb1adso10920553e87.0
-        for <bpf@vger.kernel.org>; Wed, 02 Aug 2023 05:16:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75D36FDC
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 12:21:11 +0000 (UTC)
+Received: from mail-ej1-x661.google.com (mail-ej1-x661.google.com [IPv6:2a00:1450:4864:20::661])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB61269E
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 05:21:10 -0700 (PDT)
+Received: by mail-ej1-x661.google.com with SMTP id a640c23a62f3a-99bd1d0cf2fso1023459266b.3
+        for <bpf@vger.kernel.org>; Wed, 02 Aug 2023 05:21:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=6wind.com; s=google; t=1690978606; x=1691583406;
+        d=6wind.com; s=google; t=1690978869; x=1691583669;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vI0xScBewLpP69CRTitC0lTT7+EQ4m3F00K4EPi3Rvc=;
-        b=Mbafs0baJURckkIHcwi0pOJ6UDeZzv5ZovlhZi8oTGUC/gXOxjLjfvTKqkXCbyMwZ2
-         nyWkDOXap24VDElJYdG7iUDsu5/SOsjsisMDT0uw2jO2uabGEd1E85G2cmEEXTH0mKDG
-         vuTSVqVwWTHZx7Z2b33jurtmq+2pFhvrRUkrBmx7pHsFWCCIoRdsrNhA/uSe5VhyoYJ5
-         1I8gO8XHCXjtCTegTEc+2IRSleM4wTcs+nYFTXMIzd4Jah3zhK61ruCvm2gWUJPXNQYg
-         p32aOmxkC7V1lMgxcbub+WERhjxwBB30A9Rgmn9i60a4ZjC2AXpchC0GKqaxYoumYjRr
-         wQkw==
+        bh=hrNzIICG8qTOKNKwTpWMsAjtR+/c8US07CWmXigNAyM=;
+        b=fHYXNcVOhdR/7FH6J7G0r2LQcNAp1FVyB9XdgBRE+iEeavQVvMNf4ffpzYPDkORFXi
+         IXJC7gn50gp/rymY/8kGGRU1gHLfz5sxdXtkt/RxYlGlqrAYZMWqwE7UpGsLoGAYmtaB
+         itSF7NXItQLdSJgqFAjkhS4SrEdzuNrQ660+9eddLza9rCr1RpmFyzmeO2bkro31ckk1
+         0of8IyNbY61B8bge1cwM9mLiaedKNp24IBa/Wha5OvcVr8StfH5S0MqDsXdhQxzo00dM
+         KWXLIuUi6jbqiGqjX0+E2jjcER/FzhnohaUEfe/4lrxxz/RuUquElWP9rxSH5aTn5Zk4
+         iIfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690978606; x=1691583406;
+        d=1e100.net; s=20221208; t=1690978869; x=1691583669;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=vI0xScBewLpP69CRTitC0lTT7+EQ4m3F00K4EPi3Rvc=;
-        b=DKjNv1yTad80TurSRO6rOlH9Q9yW2KWoXJBe7Opt4EcXQMWzcOqK+czpXyLYZJuvKc
-         ArWLdR321/ZRCd5JM3sv5DL5tfhB9wHkBy963c8jO8JkTsWGQ3+K0dQewMI5HdspOE5a
-         l5rFqKx8F7kKVZHqZQhk6ktyjN+81WNU5KdJqyJGvuWtEiE/pGNyfCGGKPtvC6vZn7yi
-         rkf36sjrQP3CpKsTCI5gtDFHAYhKY4KI+NxBnl6UvTXCGHLQSma5GUsCknim5pxTZa/A
-         Nlj156K8T+8Fn+OMQmnNpaAdjFyNHQeFYJ1P4WM2b8plzlx6h6yiipSraGdMARXayyRS
-         MFkg==
-X-Gm-Message-State: ABy/qLbqpf5+OqUu3IV6VzmYYFOLVOVZOlgxkvP6syG/mmxAm91+99w0
-	WZrUzUScRqeW4p5/Fee1BVPl/2Xc2DBn4s5XOpvkeSVj3nbGBA==
-X-Google-Smtp-Source: APBJJlE48gCCETGUTzl7w+GwHpvtWhiyjXW+/IDQTPtJtflWvIY+F//loA9GYiYXlZQ2AkOWG4isovje9bGf
-X-Received: by 2002:ac2:58c9:0:b0:4f5:a181:97b8 with SMTP id u9-20020ac258c9000000b004f5a18197b8mr3787757lfo.25.1690978606213;
-        Wed, 02 Aug 2023 05:16:46 -0700 (PDT)
+        bh=hrNzIICG8qTOKNKwTpWMsAjtR+/c8US07CWmXigNAyM=;
+        b=Sgdj1UYv0HJOy7yFfUhSY97jvNVB1IPHKRNspATYRLCzo3YrWS70RWP+dhMUKtUrnh
+         ZlMBLyLEG9gDoeaEAXtY+QcSXzppbjLSEYDVmk0bYx+R8uET/aiEtw9m2Kbw6SBX7qjz
+         bHSB88dKhSmLWijsuUdec04S5L+LSr5r6OzQm/FJ5NfhoDQ3cMSJ3lkK4Arlab0Inomc
+         zvFllsj7NNrkErWm3Go6w86br37ofJ5D2Fc9Hdhvwi5p4zMt/cs3FRwGoZG5RD+g4LGR
+         48gJszltB31B1N7VzHtb5aL321dN79VRuRmLOSKQNjO8ySPRbdW+5D+u5vcYSYYms0kh
+         N4mA==
+X-Gm-Message-State: ABy/qLY3OwRPV/txbYYn2j4p+h0IRX1zJZNoQspmlENvJUk/ybsc8/zC
+	AHLHkglrOjAwYF/3YSLiWBOZWLpMyUpnMj2wIZVxjYOLQ7G3Zw==
+X-Google-Smtp-Source: APBJJlGIEIkB2PhuqBTTOaBiGs4N6Ks58Bs+FekI9vndNgxTSInymxMmFj3f8DEQHlL+4uCiZQRTjtAGCM1w
+X-Received: by 2002:a17:907:7633:b0:99b:c949:5ef8 with SMTP id jy19-20020a170907763300b0099bc9495ef8mr4869671ejc.54.1690978868758;
+        Wed, 02 Aug 2023 05:21:08 -0700 (PDT)
 Received: from smtpservice.6wind.com ([185.13.181.2])
-        by smtp-relay.gmail.com with ESMTP id a26-20020a17090640da00b00993ad4112f7sm1949585ejk.260.2023.08.02.05.16.46;
-        Wed, 02 Aug 2023 05:16:46 -0700 (PDT)
+        by smtp-relay.gmail.com with ESMTP id v17-20020a17090690d100b0099bcaf23d2csm1931414ejw.25.2023.08.02.05.21.08;
+        Wed, 02 Aug 2023 05:21:08 -0700 (PDT)
 X-Relaying-Domain: 6wind.com
 Received: from bretzel (bretzel.dev.6wind.com [10.17.1.57])
-	by smtpservice.6wind.com (Postfix) with ESMTPS id D8FFE60036;
-	Wed,  2 Aug 2023 14:16:45 +0200 (CEST)
+	by smtpservice.6wind.com (Postfix) with ESMTPS id 6D930602BB;
+	Wed,  2 Aug 2023 14:21:08 +0200 (CEST)
 Received: from dichtel by bretzel with local (Exim 4.94.2)
 	(envelope-from <nicolas.dichtel@6wind.com>)
-	id 1qRAmT-00Cgt0-In; Wed, 02 Aug 2023 14:16:45 +0200
+	id 1qRAqi-00Ch1d-4i; Wed, 02 Aug 2023 14:21:08 +0200
 From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
 To: "David S . Miller" <davem@davemloft.net>,
 	Jakub Kicinski <kuba@kernel.org>,
@@ -72,10 +72,11 @@ To: "David S . Miller" <davem@davemloft.net>,
 Cc: netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-	stable@vger.kernel.org
-Subject: [PATCH net] net: handle ARPHRD_PPP in dev_is_mac_header_xmit()
-Date: Wed,  2 Aug 2023 14:16:14 +0200
-Message-Id: <20230802121614.3024701-1-nicolas.dichtel@6wind.com>
+	stable@vger.kernel.org,
+	Siwar Zitouni <siwar.zitouni@6wind.com>
+Subject: [PATCH net v2] net: handle ARPHRD_PPP in dev_is_mac_header_xmit()
+Date: Wed,  2 Aug 2023 14:21:06 +0200
+Message-Id: <20230802122106.3025277-1-nicolas.dichtel@6wind.com>
 X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -87,7 +88,7 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
 	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
@@ -97,7 +98,12 @@ bpf_redirect() to a ppp interface.
 CC: stable@vger.kernel.org
 Fixes: 27b29f63058d ("bpf: add bpf_redirect() helper")
 Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Tested-by: Siwar Zitouni <siwar.zitouni@6wind.com>
 ---
+
+v1 -> v2:
+ - I forgot the 'Tested-by' tag in the v1 :/
+
  include/linux/if_arp.h | 1 +
  1 file changed, 1 insertion(+)
 
