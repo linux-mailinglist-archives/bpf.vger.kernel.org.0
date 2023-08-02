@@ -1,65 +1,102 @@
-Return-Path: <bpf+bounces-6735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6746-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCE2C76D5EA
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 19:48:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 685C876D817
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 21:41:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76BA7281DFE
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 17:47:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9878D1C210C3
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 19:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35922100D3;
-	Wed,  2 Aug 2023 17:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C37511CB3;
+	Wed,  2 Aug 2023 19:40:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E12100C4;
-	Wed,  2 Aug 2023 17:47:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22D2CC433C8;
-	Wed,  2 Aug 2023 17:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690998463;
-	bh=kV9NfAwEiyRC6suvZbE0jpxaoqklhAtkhU0iiN3U7S8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=CEMIiX+wwTlL3uCSxU1l8G9VXsCpuXq8hyDVlZnhhkIKz2JpIuLqaD+0nV4bvVADc
-	 oyqtT5QFdccdh4r2tYLzDXQ6BIhdgN3WXFdgIpknr6ZI1WaEhtml/Gynui9cOMJpYt
-	 a3rbdk+xoiCYZIjshBxYaNUiS94JxcL9q/RBRBTvnbA5h8iEbTA/qyaAkBZdR6gQzi
-	 J6UFH9WyBs3GhIuxBXFZ0JRpMO3Hsbv/qyMvPMgRMl2ifks8RxPOpl2Mko5cSLYN8S
-	 G6EtfS9M0PHlLKRisHamCUTkIT+oZJ/BpHZpDzidJLwZCvI1ZVDHFgF1YOJv/vviDz
-	 fdW9PpIf/0XSg==
-Date: Wed, 2 Aug 2023 10:47:42 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Wei Fang <wei.fang@nxp.com>
-Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- shenwei.wang@nxp.com, xiaoning.wang@nxp.com, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- netdev@vger.kernel.org, larysa.zaremba@intel.com, linux-imx@nxp.com,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH V4 net-next] net: fec: add XDP_TX feature support
-Message-ID: <20230802104742.2f129238@kernel.org>
-In-Reply-To: <20230802024857.3153756-1-wei.fang@nxp.com>
-References: <20230802024857.3153756-1-wei.fang@nxp.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE9611C9C
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 19:40:26 +0000 (UTC)
+X-Greylist: delayed 3591 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 02 Aug 2023 12:40:24 PDT
+Received: from mx09lb.world4you.com (mx09lb.world4you.com [81.19.149.119])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEA4D9;
+	Wed,  2 Aug 2023 12:40:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=+IumxvxKi+iMawNAaFtZK2UTAxlSL2j77qZ9xPuW9H8=; b=CroP3RA+k/rOE7AQbNo4oTgRJa
+	34GSZMOuq76KLSYV52p0p+qQ9JYfD4HhTOcwk0hjF8Lu4mCdtOrFcdlrp/lcn6PEWevT8zJtHwv14
+	CPU4HT54usIODNpBFKQROn9PXoxvQYqYsogrXC809Fyzc+tkSVCnTsnDZjx2k8cJr+3s=;
+Received: from [88.117.54.85] (helo=[10.0.0.160])
+	by mx09lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <gerhard@engleder-embedded.com>)
+	id 1qRGEv-00028k-0j;
+	Wed, 02 Aug 2023 20:06:29 +0200
+Message-ID: <58b4f563-5bfc-65ed-c213-ae17724e5a33@engleder-embedded.com>
+Date: Wed, 2 Aug 2023 20:06:28 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH bpf-next 1/3] eth: add missing xdp.h includes in drivers
+To: Jakub Kicinski <kuba@kernel.org>, ast@kernel.org
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, hawk@kernel.org,
+ amritha.nambiar@intel.com, aleksander.lobakin@intel.com,
+ j.vosburgh@gmail.com, andy@greyhouse.net, shayagr@amazon.com,
+ akiyano@amazon.com, ioana.ciornei@nxp.com, claudiu.manoil@nxp.com,
+ vladimir.oltean@nxp.com, wei.fang@nxp.com, shenwei.wang@nxp.com,
+ xiaoning.wang@nxp.com, linux-imx@nxp.com, dmichail@fungible.com,
+ jeroendb@google.com, pkaligineedi@google.com, shailend@google.com,
+ jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+ horatiu.vultur@microchip.com, UNGLinuxDriver@microchip.com,
+ kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+ joabreu@synopsys.com, mcoquelin.stm32@gmail.com, grygorii.strashko@ti.com,
+ longli@microsoft.com, sharmaajay@microsoft.com, daniel@iogearbox.net,
+ john.fastabend@gmail.com, simon.horman@corigine.com, leon@kernel.org,
+ linux-hyperv@vger.kernel.org
+References: <20230802003246.2153774-1-kuba@kernel.org>
+ <20230802003246.2153774-2-kuba@kernel.org>
+Content-Language: en-US
+From: Gerhard Engleder <gerhard@engleder-embedded.com>
+In-Reply-To: <20230802003246.2153774-2-kuba@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-AV-Do-Run: Yes
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Wed,  2 Aug 2023 10:48:57 +0800 Wei Fang wrote:
-> The XDP_TX feature is not supported before, and all the frames
-> which are deemed to do XDP_TX action actually do the XDP_DROP
-> action. So this patch adds the XDP_TX support to FEC driver.
+On 02.08.23 02:32, Jakub Kicinski wrote:
+> Handful of drivers currently expect to get xdp.h by virtue
+> of including netdevice.h. This will soon no longer be the case
+> so add explicit includes.
 > 
-> I tested the performance of XDP_TX feature in XDP_DRV and XDP_SKB
-> modes on i.MX8MM-EVK and i.MX8MP-EVK platforms respectively, and
-> the test steps and results are as follows.
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-There were changes requested on v3, so marking it as
-pw-bot: changes-requested
+(...)
+
+> diff --git a/drivers/net/ethernet/engleder/tsnep.h b/drivers/net/ethernet/engleder/tsnep.h
+> index 11b29f56aaf9..6e14c918e3fb 100644
+> --- a/drivers/net/ethernet/engleder/tsnep.h
+> +++ b/drivers/net/ethernet/engleder/tsnep.h
+> @@ -14,6 +14,7 @@
+>   #include <linux/net_tstamp.h>
+>   #include <linux/ptp_clock_kernel.h>
+>   #include <linux/miscdevice.h>
+> +#include <net/xdp.h>
+
+Reviewed-by: Gerhard Engleder <gerhard@engleder-embedded.com>
 
