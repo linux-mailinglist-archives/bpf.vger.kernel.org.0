@@ -1,127 +1,204 @@
-Return-Path: <bpf+bounces-6683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3E4976C5B7
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 08:52:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38D2E76C5E0
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 08:54:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3204B281CAD
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 06:52:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72A691C211A5
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 06:54:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98FE2186D;
-	Wed,  2 Aug 2023 06:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFBB41869;
+	Wed,  2 Aug 2023 06:54:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3021111;
-	Wed,  2 Aug 2023 06:52:16 +0000 (UTC)
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE962D53;
-	Tue,  1 Aug 2023 23:51:45 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bbd2761f1bso54462795ad.2;
-        Tue, 01 Aug 2023 23:51:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690959102; x=1691563902;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7ZOYz5tJWIm5wwiu4clNWQAkqTwhMrt2CWLKqUdg8b0=;
-        b=IzeHwt2JyZr1omnyxl/9LlDPoarPSoZBsZtf6OM5pnMbxIsuze+GLyevO8tgqGqZ/2
-         dK4ubBy95WuUpzappL98/g6mN2HXuvZw9m7kv6ySU2eYa3pQ3y7o3uRuxoEzVyApW56Y
-         HOeO9G+M8qSJkVOHsRIa2Ofvrl6n2Fz6Obb7I5fiJamdEE0ffosKXAwT+YZBDhGGMEcb
-         H6abgTo8k1KZJ5K9oKQntO/ARoDtc+Rerdvb+xQAIUsF76Atq3xe9JeoH1pfUWYpqeIz
-         g4N7+mgwH3CfTTBmcIfgO8/toINwvbh1V+3QtFzTzz5rigL8Ia3lGCGe8vDYzIIHl6I6
-         xhZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690959102; x=1691563902;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7ZOYz5tJWIm5wwiu4clNWQAkqTwhMrt2CWLKqUdg8b0=;
-        b=ANURGCDyaETQAX4QJrBcWZQ3iQhl9MFMmNce/W4xagrfuqlEC83mXJm1d6X/7f1MLm
-         oU1rXSLq7Ib5koA3qyw0SVu/oolL7sZ5IysTShsWqXZIcxdna6K0PattyDS2Hn7bIr3y
-         HvxiOQMV6uZ039B6BZ8mLbH2X+rIfbsVllGTNgOvAlEh7PQXb1k+PZzEzUqtaKwE0doU
-         k4Bgo/zrKOGz0p9s5px9zkNYgEctNN5MVHyfX7tTPNxCmVj6qx/UitKLJkI6M4SQKVys
-         UwF2OmVni+10yGf/LGPvqygBhcGpgQfrnZwwSdwA3B1twZ3bH8hCG7b3z/GyRtFGch7A
-         s3XA==
-X-Gm-Message-State: ABy/qLYQZ5CTRhzuN73oqmVwy+sAV1PL8iraYZ72FSlpUVr+LjY1Ir9M
-	H5zQwYXivfFfqhR8j2/I6hA/JdaCI94D2I9W
-X-Google-Smtp-Source: APBJJlHPUMf6CpGNUzLl+072yFaIiU/Vjiu2Lyni6TT2M0vLzGFtjD/rY1bYh8RKhME4IwbsD7lD6g==
-X-Received: by 2002:a17:902:c20c:b0:1b8:adc:7c3d with SMTP id 12-20020a170902c20c00b001b80adc7c3dmr15322879pll.40.1690959102532;
-        Tue, 01 Aug 2023 23:51:42 -0700 (PDT)
-Received: from [10.22.68.111] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id g8-20020a1709029f8800b001a80ad9c599sm11496477plq.294.2023.08.01.23.51.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 23:51:42 -0700 (PDT)
-Message-ID: <1483f6db-35a8-849b-9bda-00ad5aa81eff@gmail.com>
-Date: Wed, 2 Aug 2023 14:51:35 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D251111
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 06:54:40 +0000 (UTC)
+Received: from out-94.mta1.migadu.com (out-94.mta1.migadu.com [IPv6:2001:41d0:203:375::5e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F3D2D7D
+	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 23:54:26 -0700 (PDT)
+Message-ID: <8b6b0703-4ed6-c0cb-c61a-9ebcfb5fe668@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1690959263; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ffbbhxXh4DsgdVMg4qFuWVPTer+LcrbUFX2YyXoOncA=;
+	b=k5ACqMQClwgbdWN8sz6BYvHHCFZ4RwCmWfB0QWdVBqFuOCf+XSYpcJJHl1csbr1Igf20St
+	wXqVc07dWxJqt91OdJq6GWxMlI4Tc8xDvQzfglPGNgQZU1FszmjfYfu+cCge4m4hOobaAN
+	+eOKIXgMfLHrFaQOpAuSpyCT245ZmTE=
+Date: Tue, 1 Aug 2023 23:54:18 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH bpf-next v5 1/2] bpf, xdp: Add tracepoint to xdp attaching
- failure
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [RFC PATCH bpf-next 0/3] bpf: Add new bpf helper bpf_for_each_cpu
 Content-Language: en-US
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, hawk@kernel.org,
- rostedt@goodmis.org, mhiramat@kernel.org, mykolal@fb.com, shuah@kernel.org,
- tangyeechou@gmail.com, kernel-patches-bot@fb.com,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20230801142621.7925-1-hffilwlqm@gmail.com>
- <20230801142621.7925-2-hffilwlqm@gmail.com>
- <20230801150826.6f617919@kernel.org>
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <20230801150826.6f617919@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-	version=3.4.6
+To: David Vernet <void@manifault.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Yafang Shao <laoar.shao@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20230801142912.55078-1-laoar.shao@gmail.com>
+ <3f56b3b3-9b71-f0d3-ace1-406a8eeb64c0@linux.dev>
+ <CALOAHbAnyorNdYAp1FretQcqEp_j6mQ93ATwx02auLTYnL_0KQ@mail.gmail.com>
+ <CAADnVQKwY+j6JrxJ4dc1M7yhkSf958ubSH=WB7dKmHt9Ac9gQQ@mail.gmail.com>
+ <20230802032958.GB472124@maniforge>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20230802032958.GB472124@maniforge>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 
 
-On 2/8/23 06:08, Jakub Kicinski wrote:
-> On Tue,  1 Aug 2023 22:26:20 +0800 Leon Hwang wrote:
->> When error happens in dev_xdp_attach(), it should have a way to tell
->> users the error message like the netlink approach.
->>
->> To avoid breaking uapi, adding a tracepoint in bpf_xdp_link_attach() is
->> an appropriate way to notify users the error message.
->>
->> Hence, bpf libraries are able to retrieve the error message by this
->> tracepoint, and then report the error message to users.
+On 8/1/23 8:29 PM, David Vernet wrote:
+> On Tue, Aug 01, 2023 at 07:45:57PM -0700, Alexei Starovoitov wrote:
+>> On Tue, Aug 1, 2023 at 7:34 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+>>>
+>>>>
+>>>> In kernel, we have a global variable
+>>>>      nr_cpu_ids (also in kernel/bpf/helpers.c)
+>>>> which is used in numerous places for per cpu data struct access.
+>>>>
+>>>> I am wondering whether we could have bpf code like
+>>>>      int nr_cpu_ids __ksym;
 > 
-> Whatevered-by: Jakub Kicinski <kuba@kernel.org> ?
+> I think this would be useful in general, though any __ksym variable like
+> this would have to be const and mapped in .rodata, right? But yeah,
+> being able to R/O map global variables like this which have static
+> lifetimes would be nice.
 
-Oh, it's not responsible for libraries to retrieve the error message. It
-should be users' responsibility.
+No. There is no map here. __ksym symbol will have a ld_imm64 insn
+to load the value in the bpf code. The address will be the kernel
+address patched by libbpf.
 
-Sorry for the misguiding text.
+> 
+> It's not quite the same thing as nr_cpu_ids, but FWIW, you could
+> accomplish something close to this by doing something like this in your
+> BPF prog:
+> 
+> /* Set in user space to libbpf_num_possible_cpus() */
+> const volatile __u32 nr_cpus;
 
-In the previous patch[0], which changes uapi, it's able to back-propagate
-the error message from dev_xdp_attach() to userspace through BPF syscall.
-Then, tracepoint idea is suggested to avoid changing uapi. I do agree to
-implement a tracepoint to avoid changing uapi.
+This is another approach. In this case, nr_cpus will be
+stored in a map.
 
-[0] bpf: Introduce user log
-https://lore.kernel.org/bpf/20230708040750.72570-1-hffilwlqm@gmail.com/
+I don't know the difference between kernel nr_cpu_ids vs.
+libbpf_num_possible_cpus(). I am choosing nr_cpu_ids
+because it is the one used inside the kernel. If
+libbpf_num_possible_cpus() effectively nr_cpu_ids,
+then happy to use libbpf_num_possible_cpus() which
+is more user/libbpf friendly.
 
-Thanks,
-Leon
+> 
+> ...
+> 	__u32 i;
+> 
+> 	bpf_for(i, 0, nr_cpus)
+> 		bpf_printk("Iterating over cpu %u", i);
+> 
+> ...
+> 
+>>>>      struct bpf_iter_num it;
+>>>>      int i = 0;
+>>>>
+>>>>      // nr_cpu_ids is special, we can give it a range [1, CONFIG_NR_CPUS].
+>>>>      bpf_iter_num_new(&it, 1, nr_cpu_ids);
+>>>>      while ((v = bpf_iter_num_next(&it))) {
+>>>>             /* access cpu i data */
+>>>>             i++;
+>>>>      }
+>>>>      bpf_iter_num_destroy(&it);
+>>>>
+>>>>   From all existing open coded iterator loops, looks like
+>>>> upper bound has to be a constant. We might need to extend support
+>>>> to bounded scalar upper bound if not there.
+>>>
+>>> Currently the upper bound is required by both the open-coded for-loop
+>>> and the bpf_loop. I think we can extend it.
+>>>
+>>> It can't handle the cpumask case either.
+>>>
+>>>      for_each_cpu(cpu, mask)
+>>>
+>>> In the 'mask', the CPU IDs might not be continuous. In our container
+>>> environment, we always use the cpuset cgroup for some critical tasks,
+>>> but it is not so convenient to traverse the percpu data of this cpuset
+>>> cgroup.  We have to do it as follows for this case :
+>>>
+>>> That's why we prefer to introduce a bpf_for_each_cpu helper. It is
+>>> fine if it can be implemented as a kfunc.
+>>
+>> I think open-coded-iterators is the only acceptable path forward here.
+>> Since existing bpf_iter_num doesn't fit due to sparse cpumask,
+>> let's introduce bpf_iter_cpumask and few additional kfuncs
+>> that return cpu_possible_mask and others.
+> 
+> I agree that this is the correct way to generalize this. The only thing
+> that we'll have to figure out is how to generalize treating const struct
+> cpumask * objects as kptrs. In sched_ext [0] we export
+> scx_bpf_get_idle_cpumask() and scx_bpf_get_idle_smtmask() kfuncs to
+> return trusted global cpumask kptrs that can then be "released" in
+> scx_bpf_put_idle_cpumask(). scx_bpf_put_idle_cpumask() is empty and
+> exists only to appease the verifier that the trusted cpumask kptrs
+> aren't being leaked and are having their references "dropped".
+> 
+> [0]: https://lore.kernel.org/all/20230711011412.100319-13-tj@kernel.org/
+> 
+> I'd imagine that we have 2 ways forward if we want to enable progs to
+> fetch other global cpumasks with static lifetimes (e.g.
+> __cpu_possible_mask or nohz.idle_cpus_mask):
+> 
+> 1. The most straightforward thing to do would be to add a new kfunc in
+>     kernel/bpf/cpumask.c that's a drop-in replacment for
+>     scx_bpf_put_idle_cpumask():
+> 
+> void bpf_global_cpumask_drop(const struct cpumask *cpumask)
+> {}
+> 
+> 2. Another would be to implement something resembling what Yonghong
+>     suggested in [1], where progs can link against global allocated kptrs
+>     like:
+> 
+> const struct cpumask *__cpu_possible_mask __ksym;
+> 
+> [1]: https://lore.kernel.org/all/3f56b3b3-9b71-f0d3-ace1-406a8eeb64c0@linux.dev/#t
+> 
+> In my opinion (1) is more straightforward, (2) is a better UX.
+> 
+> Note again that both approaches only works for cpumasks with static
+> lifetimes.  I can't think of a way to treat dynamically allocated struct
+> cpumask *objects as kptrs as there's nowhere to put a reference. If
+> someone wants to track a dynamically allocated cpumask, they'd have to
+> create a kptr out of its container object, and then pass that object's
+> cpumask as a const struct cpumask * to other BPF cpumask kfuncs
+> (including e.g. the proposed iterator).
+> 
+>> We already have some cpumask support in kernel/bpf/cpumask.c
+>> bpf_iter_cpumask will be a natural follow up.
+> 
+> Yes, this should be easy to add.
+> 
+> - David
 
