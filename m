@@ -1,216 +1,157 @@
-Return-Path: <bpf+bounces-6663-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6665-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B4EC76C2F5
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 04:34:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B190C76C306
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 04:43:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 408CE281CAA
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 02:34:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64C70281402
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 02:43:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE751A56;
-	Wed,  2 Aug 2023 02:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73FE7A5F;
+	Wed,  2 Aug 2023 02:43:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB3D7E6
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 02:34:19 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D381990
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 19:34:16 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id AF87EC151B0D
-	for <bpf@vger.kernel.org>; Tue,  1 Aug 2023 19:34:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1690943656; bh=BS5h+6bfdTWSYAHHTm16tpEiO9vaXvCROk9sK6h2/S4=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=ISJHOiPuvvvTr3otrMBMtACi5u+qNNsaWhvCxs2WWB82oKB/RBQQfYJIDbHgcJY6t
-	 iitftmDAB9pef/MZ6erfVwBcI7KeF7YXkrb4Q1ExOBzuthzLpK/Ml3rkafhC0P1OgO
-	 5G/9WSJE8UGT4muHpRU6m57QnlwSp5/NHUkDLHFw=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Tue Aug  1 19:34:16 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 83E2BC151AF5;
-	Tue,  1 Aug 2023 19:34:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1690943656; bh=BS5h+6bfdTWSYAHHTm16tpEiO9vaXvCROk9sK6h2/S4=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=ISJHOiPuvvvTr3otrMBMtACi5u+qNNsaWhvCxs2WWB82oKB/RBQQfYJIDbHgcJY6t
-	 iitftmDAB9pef/MZ6erfVwBcI7KeF7YXkrb4Q1ExOBzuthzLpK/Ml3rkafhC0P1OgO
-	 5G/9WSJE8UGT4muHpRU6m57QnlwSp5/NHUkDLHFw=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 0E38FC151AF5
- for <bpf@ietfa.amsl.com>; Tue,  1 Aug 2023 19:34:16 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -7.105
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=gmail.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id nrtJEmTNJwvB for <bpf@ietfa.amsl.com>;
- Tue,  1 Aug 2023 19:34:11 -0700 (PDT)
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com
- [IPv6:2607:f8b0:4864:20::c2a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id C4B52C151AF2
- for <bpf@ietf.org>; Tue,  1 Aug 2023 19:34:11 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id
- 006d021491bc7-56ced49d51aso316315eaf.1
- for <bpf@ietf.org>; Tue, 01 Aug 2023 19:34:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20221208; t=1690943650; x=1691548450;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=NmebHOtXlZgHQwI3hcOIMEjHaYQnEDiBuPQ8ahygC6Q=;
- b=AHTZUae2aqA5w3llG3TMs+2YGLmJP6qkUlzSoseE24un71Z2nPKOBva4ImYpNp8Knt
- AS4SDDPnduWwLgwp5zZ9UflhJW8YtJhCYR7BHLQ00m3LlWlZnhQnwi4bDgbd4FczKqa/
- cJt1yg0cR1QF9MEsRgKjWNt6n+/qjwc8KDC/yYQ4lmcvHPPBFtdN70quXqLYGcgro4s8
- cUwc2YGta8V40lKr69HY0l+GFq4zCoEC+7xkqV0cVnEzfSY+HoRMjrMGnA1z9ILXxhKJ
- hyySWpoeU+rTFasv4cXElYMF4qZYfAis8F/AW2chDNnda5SUxMdRhcZ22+W0nKJqd/Dk
- NUgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1690943650; x=1691548450;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=NmebHOtXlZgHQwI3hcOIMEjHaYQnEDiBuPQ8ahygC6Q=;
- b=iJka40QOs7l24gfJAvjoEkHNNlOp4/D+MiX5Rv4Ojt3qZ4DpS8v9b0UJtqHyhib94m
- wj+CRqZLFzYo5e6dP/XdcseVI2CI2rdsWFxsGnJTcNMPoaca+1vYbzIyKYe6VxjHiR5t
- cL7/UgIqzbdHVe99OGhJZReWUDqWY6/KGht4wyTss23toOpSitVRTevDX2u2iQMAuH/9
- aduCRZ6Qj36PAqmo7M25WzHybfpWV74eBGlWn0j38dBEDJrpXI5wxzEsf2zJcD7zJw2Z
- not4sEtP2lHvzlubK1683oI8ldviPizhJWwCe7JV8j8FjOSFChiQdQa0wbRKuGc7pQIU
- v/hQ==
-X-Gm-Message-State: ABy/qLYjXGBd8upXkoL2WAx3np9pRFQI2gofzSAHiN02CPaU0PGJajzY
- rrJ4zMd9dqipPFCrtoM6Q7Knx/N8+ireuCg77uI=
-X-Google-Smtp-Source: APBJJlHJIKaVyPwnRlcXpSJpebRp130dDAfFDW3pcZ0xkVR+sM78ddMaA6feaqLyeOPO7DnewjxLgfA7BnjF+m56qwo=
-X-Received: by 2002:a4a:e9b5:0:b0:56c:cbb1:b6c7 with SMTP id
- t21-20020a4ae9b5000000b0056ccbb1b6c7mr5751194ood.1.1690943650442; Tue, 01 Aug
- 2023 19:34:10 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DCDE7E6;
+	Wed,  2 Aug 2023 02:43:20 +0000 (UTC)
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2047.outbound.protection.outlook.com [40.107.104.47])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D361BFD;
+	Tue,  1 Aug 2023 19:43:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RyZ8Xpr3tr3nd35BgWuo+p277WY3H9uXIgPEbkQJrjqWe31CCjz1foFnPE7DOHW9180J72OrMRlZIyLjDM4CLE+0aeYWaDrdEFrSkRwUaUALHEks30iue7vNIiidTKTWe9FRVh8nYCThOtjfx4b9xkkZxsB4pGp2TVmNbScIEvKghe2PG3fKtPqnTgzG1jwWgmZPHJeC0K/FT4fLsOitGma6qiKmxCikLYbawiiBZOmdhkS9W9MXUWYygwMnBeuZeQ8HGz8lFSBeqKrQdfvZQW/5yRVWSbdkbLS+gOWiJhxd/eZZ3tWI7Eu2SuY16tfILaBYnevomhnFv+u63t3ErA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9JtlXZ36JouyBFOFuM9o4bzb6VjBwcrk4al28Co5Xjs=;
+ b=f0cJj4Z8HSuYZz5EYl63OgRGprHtCL+1eZtTwe4avx49HIQCy2zRgWH86v6efP7pAdtnDcjqPAuyU+ui7ddVW37eRZR2Cs608oIJFGUEqUzQe7I/9CJqhafdPLiAvSjK83XebXnPw3wJaQgYLaqor3TJmkH25C0L97fu8gjPnecxUAgKP6tJ+Tq+Gl/q5DhirBxiG2N7KxqS4IxO5hgbT3k60onImOrt1Z/GnLvE5f7/BmM/gSqNWEPXJ3jY+QkDRsF5M+IxHpiIrb1MLL4s4c4wEu1880X9sVS9jORQDJwRlDPDdQa37xtp+oQ0QQ2yKTaVKTElZo7o1APGFmLJqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9JtlXZ36JouyBFOFuM9o4bzb6VjBwcrk4al28Co5Xjs=;
+ b=K0TUP+s5op7RSwycZrNduV2qvECsBQd/QcgAAqUo2B0gep9D2TLm7FkT5346MyVSN1fnXnZVpGIqog2Lrp5MYFRwJYg4XwbQmkWAArNf6ZGQJvi6UCg/SCMyJbSeceZmdG6SHrUHUOk9zY4Zh/u19j9Kh1Q1zSNSVarDAgq9UB4=
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
+ by AS8PR04MB9094.eurprd04.prod.outlook.com (2603:10a6:20b:445::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
+ 2023 02:43:16 +0000
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
+ 02:43:16 +0000
+From: Wei Fang <wei.fang@nxp.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: "davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com"
+	<edumazet@google.com>, "pabeni@redhat.com" <pabeni@redhat.com>, Shenwei Wang
+	<shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, "ast@kernel.org"
+	<ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"hawk@kernel.org" <hawk@kernel.org>, "john.fastabend@gmail.com"
+	<john.fastabend@gmail.com>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, dl-linux-imx <linux-imx@nxp.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Thread-Topic: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Thread-Index: AQHZw3VFF5NSBizeREOxLxVc18wksa/V/2KAgABLGEA=
+Date: Wed, 2 Aug 2023 02:43:16 +0000
+Message-ID:
+ <AM5PR04MB313902042437FD2D89A7677A880BA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+References: <20230731060025.3117343-1-wei.fang@nxp.com>
+ <20230801145723.7ddc2dba@kernel.org>
+In-Reply-To: <20230801145723.7ddc2dba@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM5PR04MB3139:EE_|AS8PR04MB9094:EE_
+x-ms-office365-filtering-correlation-id: 742df579-b87d-4436-cd29-08db93023937
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Cb1mNr2EVluyP0p439Di7axCTZGmWLxD9NW5R/wrZlpxGzBViNgAC0kLACPHQiiNs5PEhoRaPJtKjJ1+KcVcXQZVLE21G6E7Yq3tQGQJa0OPo7+ecsNyuC8CY5nvLq6NbM0gEH5thi7QVENAdpvNgBTdsoN3Gey5X3Dc2n+7ijT8wMUUZV4o5fgv4MNKKySbLnq3qFPsikwZG7d6ld8TQt8aoYdEqikJ1sjrmXTebYNs7PJYqYGbWarazq34YsqHZegScHZT4UIFUp+QpiGquMerKVO6tVCGFAjWrrdHXohHvOYqaFRArqCQfxDziDL6dmT5xUWeljh94eJGWc4pd1mO24gS5HKMPDxvuFGKDznm8zDyFAqMf+CNoFvO6XTn83k7+xAZr7O0Oa7btoxdoRY61rszu92ZSjRFTxwzsJk0RWP+5xsEqlCjeoucl9ANo7wO73VJHOgqUfHG7LapSD1Pvlth4A5azR5lgVzeitxpnyLy0z1MxcVfNUE4BVhBlpRFl/gehOCs6mzL1UmKEZFcZXOzTijoh+ulf8466MvhDikirQCzT2KUEciRE3PU4KgAu7k5cYEHpghzahdZVEIQbU+H0ElAzVrQPVSFY4byOt80CsJVrpYfrXRjTiCJ
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(366004)(136003)(396003)(346002)(451199021)(55016003)(186003)(9686003)(316002)(86362001)(478600001)(122000001)(54906003)(38100700002)(76116006)(71200400001)(66946007)(66556008)(66476007)(66446008)(33656002)(64756008)(7696005)(6916009)(4326008)(6506007)(41300700001)(26005)(52536014)(8676002)(5660300002)(8936002)(4744005)(2906002)(38070700005)(7416002)(44832011)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?OhV6Emw3PiPbLe4hFrUhkmiqXxlix3GLJ3xl52uhbAC+IafXAtmeKceyByBk?=
+ =?us-ascii?Q?GKnqXyEb6DB4VwJ/1/qXQlkcXQsFLxws4wSWhp8dPAfUQxR2vQhduVtxZ+Nz?=
+ =?us-ascii?Q?KuGmN+va6K3PCmSAdgVNTYRUouTwj0VPieFNKnK9c/8OmXeXon5Kedf8lyQ5?=
+ =?us-ascii?Q?YeSZSH4iOMU9leGqyIWykWYQrgDqD5z8bmtKbzsSNFJLEPZ/U7xmCfayKWf0?=
+ =?us-ascii?Q?bcPNyjUN0TL6z+F9JOYZB5jwQ9GWB9o18fSNClrm6wy4bO29WcJZdKTlgE/H?=
+ =?us-ascii?Q?ne7HOLZEFbspkBU68jW5V3cJOFmBtnvMX8HhWUvCKIi82Q5yt7WpuwXPPyvk?=
+ =?us-ascii?Q?Jsu7mVyMjx+JIxHcOg1gEi6csLRLzh30nnKZBclcvjCP42gorsUGMzDuDHtK?=
+ =?us-ascii?Q?q7InCMLcNOKENi8iHQdjfO2j233BkvW2ZTgIfUP5Ls5XqM7RgjHI15sOXOIv?=
+ =?us-ascii?Q?G1wGzlZXGbnlWegkgbKuej5C2sHMME/yVl+j+q/swpYp1kdYJuhCvA2wpEaq?=
+ =?us-ascii?Q?9UwBjdCTsGimQPStYVKXyVs3+O9mtFpKNaI4k4snXGwR5fgTrMIDrpCiCrNL?=
+ =?us-ascii?Q?JLEGu+x/QqBHpcMVN7s1bGrmCVX1vfZH4laP77hKYCPZO0xBBmGqoIGfsuOW?=
+ =?us-ascii?Q?LgsYgJaObqg9SsPvCFfAZu+ReGf4tdamza9qxXtpy+N6r02FZq12ggdw6/7Y?=
+ =?us-ascii?Q?oiTZ3fuJQnrQwsxeifrmHVvXktxRn5aNtbDbeTdbDWrOyJCjPEbgv4VivTf/?=
+ =?us-ascii?Q?KSAKHHqjJaNDi8jYmnvq5o8rSlQ0O+rLdxPJUGqX8jPoox6Ai71q8QMcviA6?=
+ =?us-ascii?Q?ZY9w5XB4e+2l0Ya5hFwj5jCrwQQEdGksBuGtQUvUd+mkykW2oFmVIAXE5tnF?=
+ =?us-ascii?Q?OzE0PIjkPZe7lNscZT9F0n4nK4nvmCzv5zW/ERPMEVYL2wtOJpXrC7TKEtIU?=
+ =?us-ascii?Q?iMpiVEKWqIpdGIDtjhE9T2J/VE88F6s9yd804EBhZtP2sbwm2yuoNIWQzKmV?=
+ =?us-ascii?Q?hvJJ0ZYOgpvxkBhdjJ5afYa0bcWhLOwgtzWBjEqQ9tJrDBRwSDKYGA4h/Kl2?=
+ =?us-ascii?Q?XTbTDQh9BC0R4eAzjX2Z0MvrVQRn4fwMhCZHGkZ338QED+EuCX3VH31dYTq0?=
+ =?us-ascii?Q?SDc1fVe9f/L4SW9nZNP53MMmU6QpMard1feYOHyN/cmKh6kwml3fzBj3riBB?=
+ =?us-ascii?Q?MmMonRV/M7TQUPTm5Y2F5fD6WjtW57jjOxSLecxzxme/ZbIWR4VARREs32zI?=
+ =?us-ascii?Q?x1nGdvIdcQ1mUc635+bEikqg6Tv0MrYKZeC6Pb7SsO69R+pf+y5tStCOxnZC?=
+ =?us-ascii?Q?K3Y3lGLXH5gYX7jdefkQZnsxpBh+KTmJbCe1X/TgQK1Rm+WI3LreONsLYW4s?=
+ =?us-ascii?Q?UF+3vvmHz8SWhdrpD7M3eWx6ZFKK1mkDgq4WFltg27GJzveZSoT6KPsiF1bQ?=
+ =?us-ascii?Q?Rv6H1PDMbFLqlef8w6FkBrZp5PbFzb6pvp9nf9M9zLiTmn6Yytlkm+8f4Pef?=
+ =?us-ascii?Q?b+WbEPNKleaxkiJ/Kf+KgNJvCfyV4Qk10vQud12yaqC0UHE9tvU3KBgUi5ro?=
+ =?us-ascii?Q?SJaTvI4PdHy7m5y0ZaI=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CACsn0ckZO+b5bRgMZhOvx+Jn-sa0g8cBD+ug1CJEdtYxSm_hgA@mail.gmail.com>
- <PH7PR21MB3878D8DCEF24A5F8E52BA59DA303A@PH7PR21MB3878.namprd21.prod.outlook.com>
- <CAADnVQJ1fKXcsTXdCijwQzf0OVF0md-ATN5RbB3g10geyofNzA@mail.gmail.com>
- <CACsn0cmf22zEN9AduiRiFnQ7XhY1ABRL=SwAwmmFgxJvVZAOsg@mail.gmail.com>
- <CAADnVQ+O0CZQ1-5+dBiPWgZig3MVRX92PWPwNCrL7rG+4Xrbag@mail.gmail.com>
-In-Reply-To: <CAADnVQ+O0CZQ1-5+dBiPWgZig3MVRX92PWPwNCrL7rG+4Xrbag@mail.gmail.com>
-From: Watson Ladd <watsonbladd@gmail.com>
-Date: Tue, 1 Aug 2023 19:33:59 -0700
-Message-ID: <CACsn0cmvuGBKd3erDQKugygZfhT-Cu8xYBJ3hCETp6a-1HNbYw@mail.gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Dave Thaler <dthaler@microsoft.com>, "bpf@ietf.org" <bpf@ietf.org>,
- bpf <bpf@vger.kernel.org>
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/yZ-_qVE1NQEf0dyJuLvuSMnmJ7I>
-Subject: Re: [Bpf] Review of draft-thaler-bpf-isa-01
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 742df579-b87d-4436-cd29-08db93023937
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2023 02:43:16.2204
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5aTxNIMmm9ZFN8zvjujoh9PhKXvbtelQiTx1y2LbpD5Jninbs98Ns1zCFh6c8BQHTRa2nnkpqlf4HAbW8AJq1w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9094
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-In reply to a long conversation:
-<snip>
->
-> Could you please be specific which instruction in table 4 is not obvious?
+> -----Original Message-----
+> Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+>=20
+> On Mon, 31 Jul 2023 14:00:25 +0800 Wei Fang wrote:
+> >  	case XDP_TX:
+> > +		err =3D fec_enet_xdp_tx_xmit(fep->netdev, xdp);
+> > +		if (err) {
+> > +			ret =3D FEC_ENET_XDP_CONSUMED;
+> > +			page =3D virt_to_head_page(xdp->data);
+> > +			page_pool_put_page(rxq->page_pool, page, sync, true);
+>=20
+> The error path should call trace_xdp_exception().
 
-The question isn't obvious, the question is unambigious, and C is not
-great for this. Maybe with a reference and some text it would get
-better.
->
-> > >
-> > > > > The good news is I think this is very fixable although tedious.
-> > > > >
-> > > > > The other thornier issues are memory model etc. But the overall structure seems good
-> > > > > and the document overall makes sense.
-> > >
-> > > What do you mean by "memory model" ?
-> > > Do you see a reference to it ? Please be specific.
-> >
-> > No, and that's the problem. Section 5.2 talks about atomic operations.
-> > I'd expect that to be paired with a description of barriers so that
-> > these work, or a big warning about when you need to use them.
->
-> That's a good suggestion.
-> A warning paragraph that BPF ISA does not have barrier instructions
-> is necessary.
->
-> > For
-> > clarity I'm pretty unfamiliar with bpf as a technology, and it's
-> > possible that with more knowledge this would make sense. On looking
-> > back on that I don't even know if the memory space is flat, or
-> > segmented: can I access maps through a value set to dst+offset, or
-> > must I always used index? I'm just very confused.
->
-> flat vs segmented is an orthogonal topic.
-> We definitely need to cover it in the architecture doc.
-> BPF WG charter requires us to produce it as Informational doc eventually.
-
-Huh? If you access memory through specialized descriptors+offsets
-that's very different from arbitrary computations with addresses, even
-if they do trap. A little explanation might orient the reader to
-understand what is going on. As is I thought "ok, it's flat" and then
-saw the maps and really got thrown for a loop.
-
->
-> As far as memory model BPF adopts LKMM (Linux Kernel Memory Model).
-> https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p0124r7.html
->
-> We can add a reference to it from BPF ISA doc, but since
-> there are no barrier instructions at the moment the memory model
-> statement would be premature.
-> The work on "BPF Memory Model" have been ongoing for quite some time.
-> For example see:
-> https://lpc.events/event/11/contributions/941/attachments/859/1667/bpf-memory-model.2020.09.22a.pdf
->
-> BPF Memory Model is certainly an important topic, but out of scope for ISA.
-
-I expect that an ISA defines the semantics of the instructions. Which
-absolutely includes the memory model.  Now maybe we're envisioning a
-different splitting of this information, but I don't see how it can't
-be at a different level if you want to give the instructions
-semantics.
-
-Sincerely,
-Watson Ladd
-
-
---
-Astra mortemque praestare gradatim
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+Thanks for your reminder, it made me realize that the error processing of
+other XDP actions also needs to add exception tracing. I'll add the excepti=
+on
+tracing for XDP_TX in V4 patch, and add the tracing for other XDP actions i=
+n
+a separate patch.
 
