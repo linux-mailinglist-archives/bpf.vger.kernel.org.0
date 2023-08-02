@@ -1,146 +1,154 @@
-Return-Path: <bpf+bounces-6725-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6726-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11F0F76D2BC
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 17:47:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5F2D76D30D
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 17:55:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4344F1C211C4
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 15:47:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF4801C212D0
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 15:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9553BC8E9;
-	Wed,  2 Aug 2023 15:47:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DF09D308;
+	Wed,  2 Aug 2023 15:55:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 680E98C0C
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 15:47:17 +0000 (UTC)
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481E0E4
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 08:47:15 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686b9964ae2so4933106b3a.3
-        for <bpf@vger.kernel.org>; Wed, 02 Aug 2023 08:47:15 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F79FD505
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 15:55:47 +0000 (UTC)
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCE32D78
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 08:55:38 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-447762a1be6so416685137.1
+        for <bpf@vger.kernel.org>; Wed, 02 Aug 2023 08:55:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690991235; x=1691596035;
+        d=gmail.com; s=20221208; t=1690991738; x=1691596538;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VkMUNgKxht7YwbZMZK7OHgHWSnVKkc1p6TLM+Nlb7N0=;
-        b=cAn9a1GhV/IswzlC1cdUKtgmW1/O55mQp+VbeqG4VPljJ4MYvh+B/ToAasgWBzkZmK
-         IKxbdQoO1ClubGMGFeWCU4j/JV/kMfN+B36SFTQ7vuE4DLp9B72fKHAjvF7kvT9flLjz
-         le/rW/mYwJTtJtbSAOc4jEnihcWIZRjG/Ocik=
+        bh=Wy7gA3f8tSty9rabtDHKjMdRr3IA4wpn79L1F8L4sQI=;
+        b=Ij02ILf2HfIwI8IR3X4pUC3pOQs/sVaMb2oSPVep0MTYlCLL4qEs/YcG6fArf5wni2
+         phVEnXP5Ubvkbu6TgDO6rV834TN+Ew05pZbCC0gDFxdgNtlrDY1o64nZvns3AesZxEaJ
+         t+HA3dR6abqWNeytM1doeTde/hZpRUnKjouZYErXXH63tdNLAFtGQBtWyibMSAygyk42
+         uSqAJwSlpjbVSLeJtZnLpiGtOeUkeL1aka0Vl5rxdhk3IwurcCeujvjbYZuZDXL9pHhs
+         evcHIzhbDGi1JyNL4pWdQUX2yviGOVNKOeiJ4SUIyojH8kc/TI0OWi4dA6sveNP14Uiu
+         oyrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690991235; x=1691596035;
+        d=1e100.net; s=20221208; t=1690991738; x=1691596538;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VkMUNgKxht7YwbZMZK7OHgHWSnVKkc1p6TLM+Nlb7N0=;
-        b=ND3kObnuzYKvssHnFHPy/ZDbKnY+qH4+qCw919VEiJP5mXQ8N9h+QTyau5CEmmq+Z9
-         ihUpZ3udABwYXOVjDDBVDXF/hXrJZ1KtLyqCOjTnEpevnomPSK8ng7lv1GRCXuzjgy9G
-         MWbxzp5tTQHICw1LRZ7hoAgNPGHT7W2VWnwjE2aNhkNjhRxBoefJC+hprwztuQbFTvMr
-         1cIgTDOrIafICOMIBxfV4pvE0Dorc9zbSWM731sjhtRz35ntypibMtoGfJpg8TznxJTn
-         6nnQed4aP+NSNwgio0UGiiS3NQztFycmrQjQ8xuqrRAkRKMfCXcCOZhbGJJPKSQ5BGD/
-         ib4Q==
-X-Gm-Message-State: ABy/qLYE0Z6QtOZs85Kt5opgcWoNyayLu9YJcth7czdeWiaj7jDWoP8/
-	qMOygcXOv7VqsGJHvbiAAhJUsoI3Q3P+OlwpyBE2Cg==
-X-Google-Smtp-Source: APBJJlGj44q8t2bFk7J5q48WOvpItv1C9uoMhJGOUbUjIXjAL/NxnApNadXWFtx6xiiK17jLwIhzgu+p3f/wWA0Qkzg=
-X-Received: by 2002:a17:90b:1954:b0:256:8dbd:74fa with SMTP id
- nk20-20020a17090b195400b002568dbd74famr12467229pjb.22.1690991234786; Wed, 02
- Aug 2023 08:47:14 -0700 (PDT)
+        bh=Wy7gA3f8tSty9rabtDHKjMdRr3IA4wpn79L1F8L4sQI=;
+        b=eKQGwTBIM2RIvY/57NlVX+D0oHlwkEvB58nS8RacUVow80gyq7fbY2uQrV3PkejT0o
+         2J8GpaNdH2yyEKk7Dh09UjA1hB8nVbcO+xfA7I0etgGPgthiMbEHJsmV65SbbCTyN5q5
+         goqp9lyIWjPuZtoEoNYDeaRPKKupy99FDEvmYSKh9hraJRMOCDs8zNyjDbBwAXlYdEG+
+         lR/je3iZHhYGRVdy1vNTT9qDqzyTfNvXvFqGGynR6GkMdGnlwmyTAQQEVNrVq1DGJj9B
+         MlkrPkqLWbDLjkgwHf2TswDp160VhcCX9fkdrc6F15L7krrf2oHVkIpxE4ptdHv5Vbqm
+         WgFA==
+X-Gm-Message-State: ABy/qLao7dJe3qoNjLf2ZZrzav1l7a3eBsgQVSYysL8PYfCBgD5AxEXr
+	wFWldO/TscxlcORQAYV4qpn5tgmYAN1yDAwGv6E=
+X-Google-Smtp-Source: APBJJlGXL2LgO6xBUD0gr5uYtEv8b1k2uBvruqoIeblVkEM0tCXaH3pjHB6ckrgsxPp1RoCLmwTomuPV737bqAB+bTU=
+X-Received: by 2002:a05:6102:374b:b0:445:b56:2f3d with SMTP id
+ u11-20020a056102374b00b004450b562f3dmr5916244vst.3.1690991737833; Wed, 02 Aug
+ 2023 08:55:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
- <169078863449.173706.2322042687021909241.stgit@devnote2> <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
- <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org> <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
- <20230802000228.158f1bd605e497351611739e@kernel.org> <20230801112036.0d4ee60d@gandalf.local.home>
- <20230801113240.4e625020@gandalf.local.home> <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
- <20230801190920.7a1abfd5@gandalf.local.home> <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
- <20230801204054.3884688e@rorschach.local.home> <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
-In-Reply-To: <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
-From: Florent Revest <revest@chromium.org>
-Date: Wed, 2 Aug 2023 17:47:03 +0200
-Message-ID: <CABRcYm+-tBmM1sUMozPaa8fBfRFhTNpTNtwT5z6xz0nsZA=P0g@mail.gmail.com>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a struct/union
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
+References: <CAJVhQqW6nvWFozMOVQ=_sUTRwVjsQL+G2yCyd91c0bjsc7PcGA@mail.gmail.com>
+ <2e44382b-13a0-5346-c914-be0ae0c7edcd@linux.dev>
+In-Reply-To: <2e44382b-13a0-5346-c914-be0ae0c7edcd@linux.dev>
+From: Sergey Kacheev <s.kacheev@gmail.com>
+Date: Wed, 2 Aug 2023 18:55:26 +0300
+Message-ID: <CAJVhQqXQfcO8Y_uZK-9ShEjQp9RTEZtHndHBoWdeb_d9qLBzrg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: Use local includes inside the library
+To: yonghong.song@linux.dev
+Cc: bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Aug 2, 2023 at 3:56=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.or=
-g> wrote:
->
-> On Tue, 1 Aug 2023 20:40:54 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> > On Wed, 2 Aug 2023 09:21:46 +0900
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> >
-> > > > Then use kprobes. When I asked Masami what the difference between f=
-probes
-> > > > and kprobes was, he told me that it would be that it would no longe=
-r rely
-> > > > on the slower FTRACE_WITH_REGS. But currently, it still does.
-> > >
-> > > kprobes needs to keep using pt_regs because software-breakpoint excep=
-tion
-> > > handler gets that. And fprobe is used for bpf multi-kprobe interface,
-> > > but I think it can be optional.
-> > >
-> > > So until user-land tool supports the ftrace_regs, you can just disabl=
-e
-> > > using fprobes if CONFIG_DYNAMIC_FTRACE_WITH_REGS=3Dn
-> >
-> > I'm confused. I asked about the difference between kprobes on ftrace
-> > and fprobes, and you said it was to get rid of the requirement of
-> > FTRACE_WITH_REGS.
-> >
-> >  https://lore.kernel.org/all/20230120205535.98998636329ca4d5f8325bc3@ke=
-rnel.org/
->
-> Yes, it is for enabling fprobe (and fprobe-event) on more architectures.
-> I don't think it's possible to change everything at once. So, it will be
-> changed step by step. At the first step, I will replace pt_regs with
-> ftrace_regs, and make bpf_trace.c and fprobe_event depends on
-> FTRACE_WITH_REGS.
->
-> At this point, we can split the problem into two, how to move bpf on
-> ftrace_regs and how to move fprobe-event on ftrace_regs. fprobe-event
-> change is not hard because it is closing in the kernel and I can do it.
-> But for BPF, I need to ask BPF user-land tools to support ftrace_regs.
+In our monrepo, we try to minimize special processing when importing
+(aka vendor) third-party source code. Ideally, we try to import
+directly from the repositories with the code without changing it, we
+try to stick to the source code dependency instead of the artifact
+dependency. In the current situation, a patch has to be made for
+libbpf to fix the includes in bpf headers so that they work directly
+from libbpf/src.
+I made this patch only because I believe that it will not harm the
+quality of the library code in any way and will not break current
+users, if this is not the case, please tell me what I'm missing and
+what can break?
 
-Ah! I finally found the branch where I had pushed my proof of concept
-of fprobe with ftrace_regs... it's a few months old and I didn't get
-it in a state such that it could be sent to the list but maybe this
-can save you a little bit of lead time Masami :) (especially the bpf
-and arm64 specific bits)
+Thanks!
 
-https://github.com/FlorentRevest/linux/commits/bpf-arm-complete
-
-08afb628c6e1 ("ftrace: Add a macro to forge an incomplete pt_regs from
-a ftrace_regs")
-203e96fe1790 ("fprobe, rethook: Use struct ftrace_regs instead of
-struct pt_regs")
-1a9e280b9b16 ("arm64,rethook,kprobes: Replace kretprobe with rethook on arm=
-64")
-7751c6db9f9d ("bpf: Fix bpf get_func_ip() on arm64 multi-kprobe programs")
-a10c49c0d717 ("selftests/bpf: Update the tests deny list on aarch64")
+On Wed, Aug 2, 2023 at 5:44=E2=80=AFPM Yonghong Song <yonghong.song@linux.d=
+ev> wrote:
+>
+>
+>
+> On 8/2/23 1:05 AM, Sergey Kacheev wrote:
+> > This patch makes it possible to import the header files of the bpf
+> > part directly from the source tree.
+>
+> Could you describe more about your workflow why this patch
+> is necessary? I would like to understand whether this is a bug
+> fix for your workflow or something else.
+>
+> >
+> > Signed-off-by: Sergey Kacheev <s.kacheev@gmail.com>
+> > ---
+> > Changes from v1:
+> > - Replaced the patch for github/libpf with a patch for bpf-next Linux
+> > source tree
+> > Reference:
+> > - v1: https://lore.kernel.org/bpf/CAJVhQqXomJeO_23DqNWO9KUU-+pwVFoae0Xj=
+=3D8uH2V=3DN0mOUSg@mail.gmail.com/
+> > ---
+> >   tools/lib/bpf/bpf_tracing.h | 2 +-
+> >   tools/lib/bpf/usdt.bpf.h    | 4 ++--
+> >   2 files changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> > index be076a404..3803479db 100644
+> > --- a/tools/lib/bpf/bpf_tracing.h
+> > +++ b/tools/lib/bpf/bpf_tracing.h
+> > @@ -2,7 +2,7 @@
+> >   #ifndef __BPF_TRACING_H__
+> >   #define __BPF_TRACING_H__
+> >
+> > -#include <bpf/bpf_helpers.h>
+> > +#include "bpf_helpers.h"
+> >
+> >   /* Scan the ARCH passed in from ARCH env variable (see Makefile) */
+> >   #if defined(__TARGET_ARCH_x86)
+> > diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
+> > index 0bd4c135a..f6763300b 100644
+> > --- a/tools/lib/bpf/usdt.bpf.h
+> > +++ b/tools/lib/bpf/usdt.bpf.h
+> > @@ -4,8 +4,8 @@
+> >   #define __USDT_BPF_H__
+> >
+> >   #include <linux/errno.h>
+> > -#include <bpf/bpf_helpers.h>
+> > -#include <bpf/bpf_tracing.h>
+> > +#include "bpf_helpers.h"
+> > +#include "bpf_tracing.h"
+> >
+> >   /* Below types and maps are internal implementation details of libbpf=
+'s USDT
+> >    * support and are subjects to change. Also, bpf_usdt_xxx() API helpe=
+rs should
+> > --
+> > 2.39.2
+> >
 
