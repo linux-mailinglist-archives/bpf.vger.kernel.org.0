@@ -1,161 +1,132 @@
-Return-Path: <bpf+bounces-6687-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6688-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9467776C726
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 09:40:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D672F76C7D5
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 10:03:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F46328130D
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 07:40:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12B2F1C2125D
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 08:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 688744C8F;
-	Wed,  2 Aug 2023 07:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A614553B1;
+	Wed,  2 Aug 2023 08:02:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED6C1859
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 07:40:01 +0000 (UTC)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF754682
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 00:39:39 -0700 (PDT)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 371KxjfD026106;
-	Wed, 2 Aug 2023 07:39:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=J8Ao0y3j5TNBhCEP/tdsSpJi1XQycCUVNr+X7nMR31E=;
- b=Cbv3f3GuLdJHdTBYa1h2EJHGmzNfU196hP8B08EvTDvmsy0oQgfLFmIsMrcKFLCiubYM
- Hmcz6+uCNeNp1NhKF7tVL22UmJnNxycP1e2+qY9F7f3zJmjAd/iZfU6r4m/SYhCzW9WH
- LgwLxt+J9nNxHZN1Q3fVOhEVyU7FCgqsuXJ4hkSv9whdkDMGjZKOxYI/tUhQaP4jmmJ0
- FHvoYTmgYfDO9gCqzoRzP16wzCeV7uEDoOgMiRW8coVGUH17hrpGClPVl037jEEPH6oK
- xECpf5WiJwvrvy3N02uu2TD7wUazuhSVAwKxGp+AqmvZQUQKUOQO254d+acGnxpX9i7d pw== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s4spc6nkv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 02 Aug 2023 07:39:12 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3726vnQf000737;
-	Wed, 2 Aug 2023 07:39:11 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3s4s7dkbd9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 02 Aug 2023 07:39:11 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3727dAeM015242;
-	Wed, 2 Aug 2023 07:39:10 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-175-173-85.vpn.oracle.com [10.175.173.85])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3s4s7dkbah-1;
-	Wed, 02 Aug 2023 07:39:10 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: yhs@fb.com, ast@kernel.org, andrii@kernel.org
-Cc: martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, mykolal@fb.com, bpf@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Colm Harrington <colm.harrington@oracle.com>
-Subject: [PATCH v2 bpf] selftests/bpf: fix static assert compilation issue for test_cls_*.c
-Date: Wed,  2 Aug 2023 08:39:06 +0100
-Message-Id: <20230802073906.3197480-1-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.39.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E68953A6
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 08:02:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 233E8C433C8;
+	Wed,  2 Aug 2023 08:02:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690963371;
+	bh=5Cmwg1OSJW9YIeItjL/DKDCrSrb/G35k9uKL7G8eV1w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Vdmy5RwAWWhTIDxBfKEk1DiYQPdPB7qwaJ0K6hNWiYPG2hIOx4SEO9uI+p+HhqJ/c
+	 ffuKbMQlWE5naMPlvjDgSPB4UOET6gmHSzS5aYb9yiEMrQdMFRYekqt1eEmJ0aFUY4
+	 /R7V1wiXTKW7j2h67MmwIG6J+Zer1RkfpiXnvt1d0FU1UAaOZFt12YDV3dnvvbpTI1
+	 mhQijCVUdBXPN5mdJGsLXveDdG3+hheR8GbcDDuAXxK1TbylTKsYkT1ew5Wszd/n+0
+	 rayjQs9I3s2nn3YLlwiMikQwiSJqSJCGlaYUjLQEysX3lGTHib9I3JDJEpRJvpVq/G
+	 fJWoMRwRYe7Zw==
+Date: Wed, 2 Aug 2023 17:02:47 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, "cc: Jiri Olsa"
+ <olsajiri@gmail.com>, Arnaldo Carvalho de Melo <acme@redhat.com>,
+ dwarves@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>, bpf
+ <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>
+Subject: Re: Fwd: [RESEND] BTF is not generated for gcc-built kernel with
+ the latest pahole
+Message-Id: <20230802170247.1f91f98ebe354608f6e8e36f@kernel.org>
+In-Reply-To: <CA+JHD93MiFyJEP+1K7dAey+2d8v-az6qqwAKBgUzk9USXmmbzg@mail.gmail.com>
+References: <20230726102534.9ebc4678ad2c9395cc9be196@kernel.org>
+	<ZMDvmLdZSLi2QqB+@krava>
+	<20230726200716.609d8433a7292eead95e7330@kernel.org>
+	<6f0da094-5b49-954b-21e9-93f8c8cecc3f@oracle.com>
+	<20230727093814.23681b2b0ac73aa89f368ae8@kernel.org>
+	<20230727105102.509161e1f57fd0b49e98b844@kernel.org>
+	<c5accb4d-21d1-d8d9-85a0-263177a06208@oracle.com>
+	<20230801100148.defdc4c41833054c56c53bf0@kernel.org>
+	<bba3b423-8e38-ade3-7ce7-23b1be454d1f@oracle.com>
+	<CA+JHD93Liq95RvfChifmnE7E9mKR42_W7rtpqgY9KAgYyGTZwQ@mail.gmail.com>
+	<CA+JHD93MiFyJEP+1K7dAey+2d8v-az6qqwAKBgUzk9USXmmbzg@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_03,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 suspectscore=0
- adultscore=0 mlxlogscore=999 spamscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308020067
-X-Proofpoint-ORIG-GUID: yBIofNBFqYShNSKu0-0MMBEBdjheNCwL
-X-Proofpoint-GUID: yBIofNBFqYShNSKu0-0MMBEBdjheNCwL
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-commit bdeeed3498c7 ("libbpf: fix offsetof() and container_of() to work with CO-RE")
+On Tue, 1 Aug 2023 15:28:38 -0300
+Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
 
-...was backported to stable trees such as 5.15. The problem is that with older
-LLVM/clang (14/15) - which is often used for older kernels - we see compilation
-failures in BPF selftests now:
+> Sorry, replied only to Alan :-\
+> 
+> - Arnaldo
+> 
+> ---------- Forwarded message ---------
+> From: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> Date: Tue, Aug 1, 2023 at 3:26 PM
+> Subject: Re: [RESEND] BTF is not generated for gcc-built kernel with
+> the latest pahole
+> To: Alan Maguire <alan.maguire@oracle.com>
+> 
+> 
+> On Tue, Aug 1, 2023 at 2:37 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+> > On 01/08/2023 02:01, Masami Hiramatsu (Google) wrote:
+> > > On Mon, 31 Jul 2023 16:45:24 +0100
+> > > Alan Maguire <alan.maguire@oracle.com> wrote:
+> 
+> > >> Unfortunately (or fortunately?) I haven't been able to reproduce so far
+> > >> I'm afraid. I used your config and built gcc 13 from source; everything
+> > >> worked as expected, with no warnings or missing functions (aside from
+> > >> the ones skipped due to inconsistent prototypes etc).
+> > >
+> > > Yeah, so I think gcc-11.3 is suspicious too (and it seems fixed in gcc-13).
+> 
+> See below, but this one is interesting, gcc-13 works with
+> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y?
 
-In file included from progs/test_cls_redirect_subprogs.c:2:
-progs/test_cls_redirect.c:90:2: error: static assertion expression is not an integral constant expression
-        sizeof(flow_ports_t) !=
-        ^~~~~~~~~~~~~~~~~~~~~~~
-progs/test_cls_redirect.c:91:3: note: cast that performs the conversions of a reinterpret_cast is not allowed in a constant expression
-                offsetofend(struct bpf_sock_tuple, ipv4.dport) -
-                ^
-progs/test_cls_redirect.c:32:3: note: expanded from macro 'offsetofend'
-        (offsetof(TYPE, MEMBER) + sizeof((((TYPE *)0)->MEMBER)))
-         ^
-tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:86:33: note: expanded from macro 'offsetof'
-                                 ^
-In file included from progs/test_cls_redirect_subprogs.c:2:
-progs/test_cls_redirect.c:95:2: error: static assertion expression is not an integral constant expression
-        sizeof(flow_ports_t) !=
-        ^~~~~~~~~~~~~~~~~~~~~~~
-progs/test_cls_redirect.c:96:3: note: cast that performs the conversions of a reinterpret_cast is not allowed in a constant expression
-                offsetofend(struct bpf_sock_tuple, ipv6.dport) -
-                ^
-progs/test_cls_redirect.c:32:3: note: expanded from macro 'offsetofend'
-        (offsetof(TYPE, MEMBER) + sizeof((((TYPE *)0)->MEMBER)))
-         ^
-tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:86:33: note: expanded from macro 'offsetof'
-                                 ^
-2 errors generated.
-make: *** [Makefile:594: tools/testing/selftests/bpf/test_cls_redirect_subprogs.bpf.o] Error 1
+I'm using gcc-11.3, and it seems to work.
 
-The problem is the new offsetof() does not play nice with static asserts.
-Given that the context is a static assert (and CO-RE relocation is not
-needed at compile time), offsetof() usage can be replaced by restoring
-the original offsetof() definition as __builtin_offsetof().
+> 
+> > >> One other thing I can think of - is it possible libdw[arf]/libelf
+> > >> versions might be having an effect here? I'm using libdwarf.so.1.2,
+> > >> libdw-0.188, libelf-0.188. I can try and match yours. Thanks!
+> > >
+> > > Both libdw/libelf are 0.181. I didn't install libdwarf.
+> > > Hmm, I should update the libdw (elfutils) too.
+> >
+> > That might help. Thanks!
+> 
+> Probably he needs to tweak these CONFIG_ entries:
+> 
+> ⬢[acme@toolbox perf-tools]$ grep DWARF ../build/v6.2-rc5+/.config
+> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+> # CONFIG_DEBUG_INFO_DWARF4 is not set
+> # CONFIG_DEBUG_INFO_DWARF5 is not set
+> ⬢[acme@toolbox perf-tools]$
+> 
+> And make it use CONFIG_DEBUG_INFO_DWARF4=y,
+> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=n
 
-Fixes: bdeeed3498c7 ("libbpf: fix offsetof() and container_of() to work with CO-RE")
-Reported-by: Colm Harrington <colm.harrington@oracle.com>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+OK, interesting. Let me check again with DWARF4.
 
----
-Changes since v1:
+Thank you!
 
-- simplified to restore offsetof() definition in test_cls_redirect.h,
-  and added explanatory comment (Yonghong)
----
- tools/testing/selftests/bpf/progs/test_cls_redirect.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> 
+> For DWARF5 I need to forward port what I have in:
+> 
+> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/log/?h=WIP-imported-unit
+> 
+> - Arnaldo
 
-diff --git a/tools/testing/selftests/bpf/progs/test_cls_redirect.h b/tools/testing/selftests/bpf/progs/test_cls_redirect.h
-index 76eab0aacba0..233b089d1fba 100644
---- a/tools/testing/selftests/bpf/progs/test_cls_redirect.h
-+++ b/tools/testing/selftests/bpf/progs/test_cls_redirect.h
-@@ -12,6 +12,15 @@
- #include <linux/ipv6.h>
- #include <linux/udp.h>
- 
-+/* offsetof() is used in static asserts, and the libbpf-redefined CO-RE
-+ * friendly version breaks compilation for older clang versions <= 15
-+ * when invoked in a static assert.  Restore original here.
-+ */
-+#ifdef offsetof
-+#undef offsetof
-+#define offsetof(type, member) __builtin_offsetof(type, member)
-+#endif
-+
- struct gre_base_hdr {
- 	uint16_t flags;
- 	uint16_t protocol;
+
 -- 
-2.39.3
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
