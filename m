@@ -1,132 +1,134 @@
-Return-Path: <bpf+bounces-6688-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6689-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D672F76C7D5
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 10:03:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21D1A76C7DA
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 10:03:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12B2F1C2125D
-	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 08:03:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0CA8281D01
+	for <lists+bpf@lfdr.de>; Wed,  2 Aug 2023 08:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A614553B1;
-	Wed,  2 Aug 2023 08:02:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472415661;
+	Wed,  2 Aug 2023 08:03:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E68953A6
-	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 08:02:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 233E8C433C8;
-	Wed,  2 Aug 2023 08:02:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690963371;
-	bh=5Cmwg1OSJW9YIeItjL/DKDCrSrb/G35k9uKL7G8eV1w=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Vdmy5RwAWWhTIDxBfKEk1DiYQPdPB7qwaJ0K6hNWiYPG2hIOx4SEO9uI+p+HhqJ/c
-	 ffuKbMQlWE5naMPlvjDgSPB4UOET6gmHSzS5aYb9yiEMrQdMFRYekqt1eEmJ0aFUY4
-	 /R7V1wiXTKW7j2h67MmwIG6J+Zer1RkfpiXnvt1d0FU1UAaOZFt12YDV3dnvvbpTI1
-	 mhQijCVUdBXPN5mdJGsLXveDdG3+hheR8GbcDDuAXxK1TbylTKsYkT1ew5Wszd/n+0
-	 rayjQs9I3s2nn3YLlwiMikQwiSJqSJCGlaYUjLQEysX3lGTHib9I3JDJEpRJvpVq/G
-	 fJWoMRwRYe7Zw==
-Date: Wed, 2 Aug 2023 17:02:47 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, "cc: Jiri Olsa"
- <olsajiri@gmail.com>, Arnaldo Carvalho de Melo <acme@redhat.com>,
- dwarves@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>, bpf
- <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>
-Subject: Re: Fwd: [RESEND] BTF is not generated for gcc-built kernel with
- the latest pahole
-Message-Id: <20230802170247.1f91f98ebe354608f6e8e36f@kernel.org>
-In-Reply-To: <CA+JHD93MiFyJEP+1K7dAey+2d8v-az6qqwAKBgUzk9USXmmbzg@mail.gmail.com>
-References: <20230726102534.9ebc4678ad2c9395cc9be196@kernel.org>
-	<ZMDvmLdZSLi2QqB+@krava>
-	<20230726200716.609d8433a7292eead95e7330@kernel.org>
-	<6f0da094-5b49-954b-21e9-93f8c8cecc3f@oracle.com>
-	<20230727093814.23681b2b0ac73aa89f368ae8@kernel.org>
-	<20230727105102.509161e1f57fd0b49e98b844@kernel.org>
-	<c5accb4d-21d1-d8d9-85a0-263177a06208@oracle.com>
-	<20230801100148.defdc4c41833054c56c53bf0@kernel.org>
-	<bba3b423-8e38-ade3-7ce7-23b1be454d1f@oracle.com>
-	<CA+JHD93Liq95RvfChifmnE7E9mKR42_W7rtpqgY9KAgYyGTZwQ@mail.gmail.com>
-	<CA+JHD93MiFyJEP+1K7dAey+2d8v-az6qqwAKBgUzk9USXmmbzg@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE1753A6
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 08:03:30 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17DCC212B
+	for <bpf@vger.kernel.org>; Wed,  2 Aug 2023 01:03:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1690963401;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Oo+8dg/DBj2V+G5oZvUMnojMP7aeWCXmA1VlhFSPE34=;
+	b=SXn6W5xWy8NeVTte4GPeviFPpf2UqFaOMoJD58BA5unExfin1QiHN7Bx30n2mntnThe6pO
+	HKLcdRogmd1E/GpxFp1HLd7N+E4h6iZ3ILh41epV4Gfcyftt4OfQQc73ja1yizO77Mor6r
+	PMBYc6c3XwjGlMNrzxJg6jw+RLHAaf4=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-66-sg1e3OZ4MUGqhcUBNk0Teg-1; Wed, 02 Aug 2023 04:03:20 -0400
+X-MC-Unique: sg1e3OZ4MUGqhcUBNk0Teg-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-76ca3baaec8so76571685a.1
+        for <bpf@vger.kernel.org>; Wed, 02 Aug 2023 01:03:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690963400; x=1691568200;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Oo+8dg/DBj2V+G5oZvUMnojMP7aeWCXmA1VlhFSPE34=;
+        b=bUeXW7vw+Nfac/DHDwsce8fNiJTqJ0waGO7SiU/PhA+bKWJJCIMCNiQ53rDBg3oRWQ
+         mPDO9uHJhXILntT2Q43nZAdL/MDYuNH5OyPE4RV5NrxriuiEyPqMGH+BZkgKq3FEWYAc
+         9I/PCTHgy86c810AKIL8pK0ukbGAhw6wic1CeHBeECBoCcswmhqILhyi7199639pXHmN
+         Cq8hE3HDpbqVfZAfx4TTzhjTvox7aVuOuQU1oeQwEli1N0OwZIt9cuQHJXaYimNfLPDy
+         WwLMZ52rCuwxT9zOYUL/7PGe72xOTNOP9Wrrot34/YTYUW67fFhAHoBaOzuQh8vn0qoP
+         K9/A==
+X-Gm-Message-State: ABy/qLaAWDP4d/YosG+7z95Uw3CJ/UH0qwlR0gUzbmLmgh86MMt2FVt1
+	InG8Y2EG31pW7e5kBcjpOnyBWI5S8VNIi5NSD/lx8p9jheoe0sa0JDxSf3hp7IMF0d29Y32zepo
+	Yi8xvqpMOIbmY
+X-Received: by 2002:a05:620a:31aa:b0:767:7a4c:1b9e with SMTP id bi42-20020a05620a31aa00b007677a4c1b9emr15272970qkb.7.1690963399776;
+        Wed, 02 Aug 2023 01:03:19 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFnNAWWhSXb/HktBSfXGFmabV1fvsy307saOx2MgChsfs7xTXLkVxm9csctRpjZ4apFAXP/zg==
+X-Received: by 2002:a05:620a:31aa:b0:767:7a4c:1b9e with SMTP id bi42-20020a05620a31aa00b007677a4c1b9emr15272941qkb.7.1690963399461;
+        Wed, 02 Aug 2023 01:03:19 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-233-7.dyn.eolo.it. [146.241.233.7])
+        by smtp.gmail.com with ESMTPSA id p12-20020a05620a132c00b0076c9cc1e107sm3299044qkj.54.2023.08.02.01.03.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 01:03:18 -0700 (PDT)
+Message-ID: <1b51c79c59cb3ec4be95e993be9be2e5d9441670.camel@redhat.com>
+Subject: Re: [RFC bpf-next v7 0/6] bpf: Force to MPTCP
+From: Paolo Abeni <pabeni@redhat.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Geliang Tang
+	 <geliang.tang@suse.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,  Yonghong Song
+ <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+ <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Florent Revest
+ <revest@chromium.org>, Brendan Jackman <jackmanb@chromium.org>, Matthieu
+ Baerts <matthieu.baerts@tessares.net>, Mat Martineau
+ <martineau@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,  John
+ Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>,
+ James Morris <jmorris@namei.org>,  "Serge E. Hallyn" <serge@hallyn.com>,
+ Stephen Smalley <stephen.smalley.work@gmail.com>, Eric Paris
+ <eparis@parisplace.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan
+ <shuah@kernel.org>,  bpf@vger.kernel.org, netdev@vger.kernel.org,
+ mptcp@lists.linux.dev,  apparmor@lists.ubuntu.com,
+ linux-security-module@vger.kernel.org,  selinux@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Date: Wed, 02 Aug 2023 10:03:12 +0200
+In-Reply-To: <20230801004323.l2npfegkq3srzff3@MacBook-Pro-8.local>
+References: <cover.1690624340.git.geliang.tang@suse.com>
+	 <20230801004323.l2npfegkq3srzff3@MacBook-Pro-8.local>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Tue, 1 Aug 2023 15:28:38 -0300
-Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
+On Mon, 2023-07-31 at 17:43 -0700, Alexei Starovoitov wrote:
 
-> Sorry, replied only to Alan :-\
-> 
-> - Arnaldo
-> 
-> ---------- Forwarded message ---------
-> From: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Date: Tue, Aug 1, 2023 at 3:26 PM
-> Subject: Re: [RESEND] BTF is not generated for gcc-built kernel with
-> the latest pahole
-> To: Alan Maguire <alan.maguire@oracle.com>
-> 
-> 
-> On Tue, Aug 1, 2023 at 2:37 PM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > On 01/08/2023 02:01, Masami Hiramatsu (Google) wrote:
-> > > On Mon, 31 Jul 2023 16:45:24 +0100
-> > > Alan Maguire <alan.maguire@oracle.com> wrote:
-> 
-> > >> Unfortunately (or fortunately?) I haven't been able to reproduce so far
-> > >> I'm afraid. I used your config and built gcc 13 from source; everything
-> > >> worked as expected, with no warnings or missing functions (aside from
-> > >> the ones skipped due to inconsistent prototypes etc).
-> > >
-> > > Yeah, so I think gcc-11.3 is suspicious too (and it seems fixed in gcc-13).
-> 
-> See below, but this one is interesting, gcc-13 works with
-> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y?
+> I still think it's a hack, but its blast radius is nicely contained.
+> And since I cannot propose any better I'm ok with it.
+>=20
+> Patches 1-2 can be squashed into one.
+> Just like patches 3-6 as a single patch for selftests.
+>=20
+> But before proceeding I'd like an explicit ack from netdev maintainers.
 
-I'm using gcc-11.3, and it seems to work.
+Just to state the obvious, I carry my personal bias on this topic due
+to my background ;)
 
-> 
-> > >> One other thing I can think of - is it possible libdw[arf]/libelf
-> > >> versions might be having an effect here? I'm using libdwarf.so.1.2,
-> > >> libdw-0.188, libelf-0.188. I can try and match yours. Thanks!
-> > >
-> > > Both libdw/libelf are 0.181. I didn't install libdwarf.
-> > > Hmm, I should update the libdw (elfutils) too.
-> >
-> > That might help. Thanks!
-> 
-> Probably he needs to tweak these CONFIG_ entries:
-> 
-> ⬢[acme@toolbox perf-tools]$ grep DWARF ../build/v6.2-rc5+/.config
-> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
-> # CONFIG_DEBUG_INFO_DWARF4 is not set
-> # CONFIG_DEBUG_INFO_DWARF5 is not set
-> ⬢[acme@toolbox perf-tools]$
-> 
-> And make it use CONFIG_DEBUG_INFO_DWARF4=y,
-> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=n
+My perspective is quite similar to Alexei's one: the solution is not
+extremely elegant, but is very self-contained; it looks viable to me.
 
-OK, interesting. Let me check again with DWARF4.
+WRT the specific code, I think the additional checks on the 'protocol'
+value after the 'update_socket_protocol()' call should be dropped: the
+user space can already provide an arbitrary value there and the later
+code deal with that.
 
-Thank you!
+Cheers,
 
-> 
-> For DWARF5 I need to forward port what I have in:
-> 
-> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/log/?h=WIP-imported-unit
-> 
-> - Arnaldo
+Paolo
 
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
