@@ -1,117 +1,168 @@
-Return-Path: <bpf+bounces-6843-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6844-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3160B76E8DA
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 14:54:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B23776E8DE
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 14:56:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62D4C1C211D3
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 12:54:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1FAB2820F9
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 12:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4BBF1ED50;
-	Thu,  3 Aug 2023 12:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E7021ED51;
+	Thu,  3 Aug 2023 12:55:45 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E86614287;
-	Thu,  3 Aug 2023 12:53:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4BBEC433C8;
-	Thu,  3 Aug 2023 12:53:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DFE14287;
+	Thu,  3 Aug 2023 12:55:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21202C433C8;
+	Thu,  3 Aug 2023 12:55:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691067227;
-	bh=r4FB9C3DbyML50THOYSEoMjiyY77SgxV2l1qtwpxE3Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nN0wvvfqkt0Oh2vmUhgUKxgefq2fjGdBl3Xc1C0D1Hv1tbt26iNf+M/ps2GN9QKkh
-	 Zzp8aOGK4IJdtlp78ZHErfGc3btpdICVz9a69a8tzFGauOoN8QRlkjiHUSFeerQaeC
-	 MdNTQg6Pa+W0RXdTbE4nmWBys5er8hvo3aWE9i+uJVTn1EuIMDRakpkWVWdIvGwVBR
-	 u39lif0pHj6/7hYmNeWAWnbvQigCf8NtUwdzAMM1pCGbXbsHLQuRd/S3zTD7E8ZVlf
-	 34m/8LH+0HMVIBO9P+jMC2OqUTOdeAPbVnnepr2zeM4fkSbPChud+iiZ1nHCngAz2C
-	 OoZ/H55FwCmhw==
-Date: Thu, 3 Aug 2023 14:53:38 +0200
-From: Simon Horman <horms@kernel.org>
-To: Geliang Tang <geliang.tang@suse.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Florent Revest <revest@chromium.org>,
-	Brendan Jackman <jackmanb@chromium.org>,
-	Matthieu Baerts <matthieu.baerts@tessares.net>,
-	Mat Martineau <martineau@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	John Johansen <john.johansen@canonical.com>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Eric Paris <eparis@parisplace.org>, Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, mptcp@lists.linux.dev,
-	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v8 1/4] bpf: Add update_socket_protocol hook
-Message-ID: <ZMujUofDnb8wMb36@kernel.org>
-References: <cover.1691047403.git.geliang.tang@suse.com>
- <120b307aacd1791fac016d33e112069ffb7db21a.1691047403.git.geliang.tang@suse.com>
+	s=k20201202; t=1691067343;
+	bh=GhmWwQWMZjJg/eGpXkU3AgopEMscfS5D4Dor979ob8c=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dvRmOH831+pqhZHhKsHSaiHkJOMtiL241WzFcGB2utZAUuahi0yp3FqdSCC/u4tF7
+	 AhTpYtOPJ/wDhlQ1PfZAzXijJmtgCio2MMfqDnqqRbU/WNFII3KsWVUMy2DE8yfu/n
+	 rAViT3AaaJNMGdX7Yyl7w/ckImq62lVTrRrf/3wrJHT67MNWpxNUmmOCCMnZ6qB1y9
+	 5R6s7wbeLRm2ioTPtiZT4bbiJZZOfWYC3lYFq6NEcfTK+/CmRpq5WEJQ0XH7bRMWbG
+	 Bbt0nJ82xqJynIwryPSM1ws4WggJo/VoAfsVj3XRm+WrcCDM6Sh7dUVlLOaomxSTGK
+	 222NuFAoKZ0Vw==
+Message-ID: <cc24e860-7d6f-7ec8-49cb-a49cb066f618@kernel.org>
+Date: Thu, 3 Aug 2023 14:55:37 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <120b307aacd1791fac016d33e112069ffb7db21a.1691047403.git.geliang.tang@suse.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Content-Language: en-US
+To: Wei Fang <wei.fang@nxp.com>, Jesper Dangaard Brouer <jbrouer@redhat.com>,
+ Jakub Kicinski <kuba@kernel.org>
+Cc: "brouer@redhat.com" <brouer@redhat.com>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "edumazet@google.com" <edumazet@google.com>,
+ "pabeni@redhat.com" <pabeni@redhat.com>, Shenwei Wang
+ <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>,
+ "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ dl-linux-imx <linux-imx@nxp.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>
+References: <20230731060025.3117343-1-wei.fang@nxp.com>
+ <20230802104706.5ce541e9@kernel.org>
+ <AM5PR04MB313985C61D92E183238809138808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <1bf41ea8-5131-7d54-c373-00c1fbcac095@redhat.com>
+ <AM5PR04MB31398ABF941EBDD0907E845B8808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <AM5PR04MB31398ABF941EBDD0907E845B8808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Aug 03, 2023 at 03:30:39PM +0800, Geliang Tang wrote:
-> Add a hook named update_socket_protocol in __sys_socket(), for bpf
-> progs to attach to and update socket protocol. One user case is to
-> force legacy TCP apps to create and use MPTCP sockets instead of
-> TCP ones.
+
+
+On 03/08/2023 13.18, Wei Fang wrote:
+>> On 03/08/2023 05.58, Wei Fang wrote:
+>>>>>                    } else {
+>>>>> -                 xdp_return_frame(xdpf);
+>>>>> +                 xdp_return_frame_rx_napi(xdpf);
+>>>> If you implement Jesper's syncing suggestions, I think you can use
+>>>>
+>>>>     page_pool_put_page(pool, page, 0, true);
+>> To Jakub, using 0 here you are trying to bypass the DMA-sync (which is valid
+>> as driver knows XDP_TX have already done the sync).
+>> The code will still call into DMA-sync calls with zero as size, so wonder if we
+>> should detect size zero and skip that call?
+>> (I mean is this something page_pool should support.)
+>>
+[...]
+>>
+>>
+>>>> for XDP_TX here to avoid the DMA sync on page recycle.
+>>> I tried Jasper's syncing suggestion and used page_pool_put_page() to
+>>> recycle pages, but the results does not seem to improve the
+>>> performance of XDP_TX,
+>> The optimization will only have effect on those devices which have
+>> dev->dma_coherent=false else DMA function [1] (e.g.
+>> dma_direct_sync_single_for_device) will skip the sync calls.
+>>
+>>  [1] https://elixir.bootlin.com/linux/v6.5-rc4/source/kernel/dma/direct.h#L63
+>>
+>> (Cc. Andrew Lunn)
+>> Does any of the imx generations have dma-noncoherent memory?
+>>
+>> And does any of these use the fec NIC driver?
+>>
+>>> it even degrades the speed.
+>> 
+>> Could be low runs simply be a variation between your test runs?
+>>
+> Maybe, I just tested once before. So I test several times again, the
+> results of the two methods do not seem to be much different so far,
+> both about 255000 pkt/s.
 > 
-> Define a mod_ret set named bpf_mptcp_fmodret_ids, add the hook
-> update_socket_protocol into this set, and register it in
-> bpf_mptcp_kfunc_init().
+>> The specific device (imx8mpevk) this was tested on, clearly have
+>> dma_coherent=true, or else we would have seen a difference.
+>> But the code change should not have any overhead for the
+>> dma_coherent=true case, the only extra overhead is the extra empty DMA
+>> sync call with size zero (as discussed in top).
+>>
+> The FEC of i.MX8MP-EVK has dma_coherent=false, and as I mentioned
+> above, I did not see an obvious difference in the performance. :(
+
+That is surprising - given the results.
+
+(see below, lack of perf/diff might be caused by Ethernet flow-control).
+
 > 
-> Signed-off-by: Geliang Tang <geliang.tang@suse.com>
+>>> The result of the current modification.
+>>> root@imx8mpevk:~# ./xdp2 eth0
+>>> proto 17:     260180 pkt/s
+>>
+>> These results are*significantly*  better than reported in patch-1.
+>> What happened?!?
+>>
+> The test environment is slightly different, in patch-1, the FEC port was
+> directly connected to the port of another board. But in the latest test,
+> the ports of the two boards were connected to a switch, so the ports of
+> the two boards are not directly connected.
+> 
 
-...
+Hmm, I've seen this kind of perf behavior of direct-connected or via
+switch before. The mistake I made was, that I had not disabled Ethernet
+flow-control.  The xdp2 XDP_TX program will swap the mac addresses, and
+send the packet back to the packet generator (running pktgen), which
+will get overloaded itself and starts sending Ethernet flow-control
+pause frames.
 
-> diff --git a/net/socket.c b/net/socket.c
-> index 2b0e54b2405c..586a437d7a5e 100644
-> --- a/net/socket.c
-> +++ b/net/socket.c
-> @@ -1644,11 +1644,36 @@ struct file *__sys_socket_file(int family, int type, int protocol)
->  	return sock_alloc_file(sock, flags, NULL);
->  }
->  
-> +/**
+Command line to disable:
+  # ethtool -A eth0 rx off tx off
 
-Hi Geliang Tang,
+Can I ask/get you to make sure that Ethernet flow-control is disabled
+(on both generator and DUT (to be on safe-side)) and run the test again?
 
-nit: The format of the text below is not in kernel doc format,
-     so it is probably better if the comment begins with '/*'
-     rather than '/**'.
+--Jesper
 
-> + *	A hook for bpf progs to attach to and update socket protocol.
-> + *
-> + *	A static noinline declaration here could cause the compiler to
-> + *	optimize away the function. A global noinline declaration will
-> + *	keep the definition, but may optimize away the callsite.
-> + *	Therefore, __weak is needed to ensure that the call is still
-> + *	emitted, by telling the compiler that we don't know what the
-> + *	function might eventually be.
-> + *
-> + *	__diag_* below are needed to dismiss the missing prototype warning.
-> + */
-
-...
+>> e.g.
+>>    root@imx8mpevk:~# ./xdp2 eth0
+>>    proto 17:     135817 pkt/s
+>>    proto 17:     142776 pkt/s
+>>
+>>> proto 17:     260373 pkt/s
+>>> proto 17:     260363 pkt/s
+>>> proto 17:     259036 pkt/s
+[...]
+>>>
+>>> After using the sync suggestion, the result shows as follow.
+>>> root@imx8mpevk:~# ./xdp2 eth0
+>>> proto 17:     255956 pkt/s
+>>> proto 17:     255841 pkt/s
+>>> proto 17:     255835 pkt/s
 
