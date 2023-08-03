@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-6826-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4BB176E25F
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 10:03:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 036CF76E263
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 10:03:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ED36282047
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 08:03:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB836281FF0
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 08:03:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D728F14A90;
-	Thu,  3 Aug 2023 08:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4147214A9E;
+	Thu,  3 Aug 2023 08:03:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA6E125A7
-	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 08:02:57 +0000 (UTC)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682E5E46
-	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 01:02:50 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5230ac6dbc5so669038a12.3
-        for <bpf@vger.kernel.org>; Thu, 03 Aug 2023 01:02:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120419440
+	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 08:03:16 +0000 (UTC)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F5F35BE
+	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 01:03:13 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bf1f632b8so95866566b.1
+        for <bpf@vger.kernel.org>; Thu, 03 Aug 2023 01:03:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google; t=1691049769; x=1691654569;
+        d=tessares.net; s=google; t=1691049792; x=1691654592;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=oyeiaJJUGAnaCqsFNjqE65OIC0yesXPouF4fyxelTrg=;
-        b=NxwhbTnp9xOzxdetcqaAdaX/wdTxeGr952XttQKrMwniWc9O/qxD6tD0WWkHgod3lk
-         nvA10uVuunkzixZB2du8FmhhcMLcsdQRvGrj5NsNgDGnXBBsCrT3+D1p6vA/7pwtX7zg
-         8MGLOEEe0fMrvbNqIdVvPJ/xDO8J+XtYGiGkR50nRoB2GoOFN/r1e/C4uZ5YJgfMBYYq
-         T+uzVaKKTJT/vQsLiiPT5u9hIrrC3ybM/+0eLEnXCJZ5dMkd68K8kLkUh4A9hjTyLJ+0
-         2TRqAV9ZfCDYTMqDnMYa2oh4U9CKft+Qa65Eu7FyU0BXmvH/e8fvcMOPJhhjwvN7QsN/
-         FIew==
+        bh=GrJQSNHnWu1Mk5U+4IadqjOBUP3A5seeDYi38nWCivY=;
+        b=KwkT2N3PnW/R4BDYOzR+gHZbBvaQbN2DmN4G4cp/vO9MI6hwOw43rB3gJ7xyRvAd2l
+         Xzhx0deoBlgSKZTOTDNNaMI70lQzpdhOS+A8n1V6nuBwo74OH63U9ztZQms14YeVUCM6
+         X+iC5w6tvwGk9aCZeBWjVmg27727jU47u0+/+INna0wmiQMcF4QfrqvAt1uNoOHDmfkS
+         m091u50oCxlPSRc3eUNBlYoSmPcyuYSCb4ZMV5XSGc9KFTqWzX0dERGOj0hRWNNU53ap
+         3OgGo/+Yb8SwQa4H/rX1e4W6ZRM/BuJGtE7/9RWCWeU4NGRiENn9DhIH9sLlvif5tQjZ
+         3Jzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691049769; x=1691654569;
+        d=1e100.net; s=20221208; t=1691049792; x=1691654592;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oyeiaJJUGAnaCqsFNjqE65OIC0yesXPouF4fyxelTrg=;
-        b=BRPuaPd1UP4XS8z/StUVni4mkEtcsrd8Z3XT92ccCLIY7Ta+YH8lPNgXzrKny1Kh+F
-         Gbm8c7qJtGrv+uolGbSdfsJcecnpxi27mfPe9PvGQ1JNFaxu+EwZs3uRVzN3adeUgT2J
-         SLVhgzzkkIbQjA2rvmX3fcHfyYDeNeeQE3K0o/VPCBmn7Vfab5zneMIDqD2H6/bhzP+B
-         cIbCjuw7bVMk2XIwfInDQCTmA4Mb564jFqYt5vMrUdTK6QEcpxexT4R1ZaZRTLsCatjb
-         wtrXklFSABzO98VOYmTit9yc0Bt6v8O3W6XoNrY7xPIESPxBd98Mtj00kUzAUupLa90M
-         Iapw==
-X-Gm-Message-State: ABy/qLYKqF+SSUY94GqOdG0vHdTCBLtUnXdlZGNvZcX22ZOkiWQS972/
-	/J+c7MELT4RFsAyuVoT4ufTqUQ==
-X-Google-Smtp-Source: APBJJlG/zXuNQVHI6sqTDl/HdxE/zJkMFbko/Sk+XHrssrUl1Ye5fGLe5SAEJjzorQTBzeZUfc7j+g==
-X-Received: by 2002:aa7:d3d8:0:b0:522:28fa:3009 with SMTP id o24-20020aa7d3d8000000b0052228fa3009mr6862340edr.13.1691049768861;
-        Thu, 03 Aug 2023 01:02:48 -0700 (PDT)
+        bh=GrJQSNHnWu1Mk5U+4IadqjOBUP3A5seeDYi38nWCivY=;
+        b=Mb1BV5TPoprDt7BN5WQ2nA0kddDnuQWcePB7Pm0O5YaIO+hnp2wlZ8GxiX6BDXaBDo
+         RoKfx51W29kfpmF5NnAofWRDW4FBMgr6VmrUlz4zcA6gFcVW/F7Cz2I5lM2O/ce+patF
+         1C/59gAhibsFSBjYp49opUyFFyX6g7guVMO9b9wq/GwhDK3wKjwnXxXezSW7gI+iqH1g
+         nc4N8lpBpI+0rR3aJXSupE4zdnFWI1HlZNPVHFiPKubPrKV7/4MZ46Y8Qlj8BYEZveJ8
+         dT6f9B6a+stpXuuJiquO+0bdheE/0PdW9MCR7pLry4wl5Hob+LwstC49URX40ufUY5zn
+         sh2w==
+X-Gm-Message-State: ABy/qLZ3dxSpiSxNh8/xbrp6Lmjl4nu8hGdwyYi4odgEMsoJ4sCrHyZN
+	GZn93mup0URZQ29TZztTppVYow==
+X-Google-Smtp-Source: APBJJlFuoAgOoNZTTSWYdyf/voBRcYNotvUorgT7zRDZV0LpAzuovYP3wZXGHTzDfXBjWUDoRCCLCg==
+X-Received: by 2002:aa7:de14:0:b0:519:6a6a:7659 with SMTP id h20-20020aa7de14000000b005196a6a7659mr8036773edv.18.1691049791807;
+        Thu, 03 Aug 2023 01:03:11 -0700 (PDT)
 Received: from ?IPV6:2a02:578:8593:1200:ace8:eb44:12a0:888? ([2a02:578:8593:1200:ace8:eb44:12a0:888])
-        by smtp.gmail.com with ESMTPSA id ay9-20020a056402202900b005223d76a3e3sm9669924edb.85.2023.08.03.01.02.47
+        by smtp.gmail.com with ESMTPSA id ay9-20020a056402202900b005223d76a3e3sm9669924edb.85.2023.08.03.01.03.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 01:02:48 -0700 (PDT)
-Message-ID: <94791e4f-98d4-454b-ae1d-3f61ac2b46d1@tessares.net>
-Date: Thu, 3 Aug 2023 10:02:32 +0200
+        Thu, 03 Aug 2023 01:03:11 -0700 (PDT)
+Message-ID: <6bcd3193-deb2-42b6-9732-48d76eb59913@tessares.net>
+Date: Thu, 3 Aug 2023 10:03:09 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v8 1/4] bpf: Add update_socket_protocol hook
+Subject: Re: [PATCH bpf-next v8 4/4] selftests/bpf: Add mptcpify test
 Content-Language: en-GB
 To: Geliang Tang <geliang.tang@suse.com>, Alexei Starovoitov
  <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
@@ -88,7 +88,7 @@ Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, mptcp@lists.linux.dev,
  apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
  selinux@vger.kernel.org, linux-kselftest@vger.kernel.org
 References: <cover.1691047403.git.geliang.tang@suse.com>
- <120b307aacd1791fac016d33e112069ffb7db21a.1691047403.git.geliang.tang@suse.com>
+ <4b95511da1a9dfd1a55734e32b7b6510739a7ab7.1691047403.git.geliang.tang@suse.com>
 From: Matthieu Baerts <matthieu.baerts@tessares.net>
 Autocrypt: addr=matthieu.baerts@tessares.net; keydata=
  xsFNBFXj+ekBEADxVr99p2guPcqHFeI/JcFxls6KibzyZD5TQTyfuYlzEp7C7A9swoK5iCvf
@@ -133,7 +133,7 @@ Autocrypt: addr=matthieu.baerts@tessares.net; keydata=
  xV1U0s853l+uo6+anPRWEUCU1ONTVXLQKe7FfcAznUnx2l03IbRLysAOHoLwAoIM59Sy2mrb
  z/qhNpC/tBl2B7Qljp2CXMYqcKL/Oyanb7XDnn1+vPj4gLuP+KC8kZfgoMMpSzSaWV3wna7a
  wFe/sIbF3NCgdrOXNVsV7t924dsAGZjP1x59Ck7vAMT9
-In-Reply-To: <120b307aacd1791fac016d33e112069ffb7db21a.1691047403.git.geliang.tang@suse.com>
+In-Reply-To: <4b95511da1a9dfd1a55734e32b7b6510739a7ab7.1691047403.git.geliang.tang@suse.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -146,25 +146,23 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 Hi Geliang,
 
 On 03/08/2023 09:30, Geliang Tang wrote:
-> Add a hook named update_socket_protocol in __sys_socket(), for bpf
-> progs to attach to and update socket protocol. One user case is to
-> force legacy TCP apps to create and use MPTCP sockets instead of
-> TCP ones.
+> Implement a new test program mptcpify: if the family is AF_INET or
+> AF_INET6, the type is SOCK_STREAM, and the protocol ID is 0 or
+> IPPROTO_TCP, set it to IPPROTO_MPTCP. It will be hooked in
+> update_socket_protocol().
 > 
-> Define a mod_ret set named bpf_mptcp_fmodret_ids, add the hook
-> update_socket_protocol into this set, and register it in
-> bpf_mptcp_kfunc_init().
+> Extend the MPTCP test base, add a selftest test_mptcpify() for the
+> mptcpify case. Open and load the mptcpify test prog to mptcpify the
+> TCP sockets dynamically, then use start_server() and connect_to_fd()
+> to create a TCP socket, but actually what's created is an MPTCP
+> socket, which can be verified through the outputs of 'ss' and 'nstat'
+> commands.
 
-Thank you for having looked at that!
+Thank you for the modifications!
 
-Because it is related to MPTCP:
+For MPTCP related code, it looks good to me:
 
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-
-I don't know if your scripts to apply patches support the "Closes" tag
-but just in case:
-
-Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/79
+Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 
 Cheers,
 Matt
