@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-6798-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6799-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3E0B76E18C
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 09:35:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6556276E18D
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 09:35:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 893BE28123D
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 07:35:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 876851C214B3
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 07:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05173111A7;
-	Thu,  3 Aug 2023 07:34:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA11F11C8C;
+	Thu,  3 Aug 2023 07:35:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FFBF9450
-	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 07:34:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A8E3C433C7;
-	Thu,  3 Aug 2023 07:34:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC1E9450
+	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 07:35:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C56C433C7;
+	Thu,  3 Aug 2023 07:35:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691048095;
-	bh=6KDINBWKk8WLD24OKFEO/OmWDl2nF8kvUBKQcsgUKo8=;
+	s=k20201202; t=1691048105;
+	bh=3edrEm150AG3vthTlVYhRTaxeAxmVdRONaRnBz9DnpY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rbc2oDMGQez4grH9P+BLS8oiri1gPkxj4Ghxctj8zw21uQTGLCYtyYPHYqWoyh+nV
-	 dh2GbCmmguPyQn4dhI6SWg4E72NEYJ1YQFyoa/UamptnVxuprIxN1hsl3hLbZnuO4+
-	 NkQ7cu4HUWmEWE1cBbgfn1nUxv8baFTb6bcsNpMsedv3ItWhGGG+sSDFGN0tqgPVxz
-	 hQLORUSHqXSbb6QU3DJ+3buBW/kBhWHCZoMdG9e4LNKoaXf0hRSMXCcuFOHdiolXl8
-	 T9VHMr0juWhdyzo+r1k8uyPUj90xUiw0TKcySt1WhCmVt6bMOTubkEIv09YloRyLLK
-	 8WmVoiGUpe/9A==
+	b=U0SrY+jIpVXhMW22Y7xoP7nqkoCcEgygKwbPmon7TgFHk/bBblcksAM3JrrGQ7K7H
+	 0kHl4o+QO05UI6W0sCyzsVGuCDdqmExpbpa8vgnp/EDQJOSkW6Y0aHk3TuAJhcnupV
+	 dkv+7iKcgEQTaU8pMMIT2PvqEE652xplReFXILqrQLGkFtMEwXhs6JefIUsxXipzm6
+	 Ki6dLq5zRSddhH/CNkcZwppHH8C6FLhzEw+Uto121RYnPsNdDo6iyZsMcKlEWBybOS
+	 ilzSzl5/Ex9MuX59Me2x+tAl9a+ZCSecErhna2nRpk7CnM+7Ux+TQikdnF7VyHCvCt
+	 NP7RgzsND77uw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -43,9 +43,9 @@ Cc: Yafang Shao <laoar.shao@gmail.com>,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>
-Subject: [PATCHv6 bpf-next 03/28] bpf: Add multi uprobe link
-Date: Thu,  3 Aug 2023 09:33:55 +0200
-Message-ID: <20230803073420.1558613-4-jolsa@kernel.org>
+Subject: [PATCHv6 bpf-next 04/28] bpf: Add cookies support for uprobe_multi link
+Date: Thu,  3 Aug 2023 09:33:56 +0200
+Message-ID: <20230803073420.1558613-5-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230803073420.1558613-1-jolsa@kernel.org>
 References: <20230803073420.1558613-1-jolsa@kernel.org>
@@ -57,455 +57,193 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding new multi uprobe link that allows to attach bpf program
-to multiple uprobes.
+Adding support to specify cookies array for uprobe_multi link.
 
-Uprobes to attach are specified via new link_create uprobe_multi
-union:
+The cookies array share indexes and length with other uprobe_multi
+arrays (offsets/ref_ctr_offsets).
 
-  struct {
-    __aligned_u64   path;
-    __aligned_u64   offsets;
-    __aligned_u64   ref_ctr_offsets;
-    __u32           cnt;
-    __u32           flags;
-  } uprobe_multi;
-
-Uprobes are defined for single binary specified in path and multiple
-calling sites specified in offsets array with optional reference
-counters specified in ref_ctr_offsets array. All specified arrays
-have length of 'cnt'.
-
-The 'flags' supports single bit for now that marks the uprobe as
-return probe.
+The cookies[i] value defines cookie for i-the uprobe and will be
+returned by bpf_get_attach_cookie helper when called from ebpf
+program hooked to that specific uprobe.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Yafang Shao <laoar.shao@gmail.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/linux/trace_events.h   |   6 +
- include/uapi/linux/bpf.h       |  16 +++
- kernel/bpf/syscall.c           |  14 +-
- kernel/trace/bpf_trace.c       | 237 +++++++++++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h |  16 +++
- 5 files changed, 286 insertions(+), 3 deletions(-)
+ include/uapi/linux/bpf.h       |  1 +
+ kernel/bpf/syscall.c           |  2 +-
+ kernel/trace/bpf_trace.c       | 45 +++++++++++++++++++++++++++++++---
+ tools/include/uapi/linux/bpf.h |  1 +
+ 4 files changed, 44 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index e66d04dbe56a..5b85cf18c350 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -752,6 +752,7 @@ int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
- 			    u32 *fd_type, const char **buf,
- 			    u64 *probe_offset, u64 *probe_addr);
- int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
-+int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
- #else
- static inline unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index f112a0b948f3..2b6cd7d1c165 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1639,6 +1639,7 @@ union bpf_attr {
+ 				__aligned_u64	path;
+ 				__aligned_u64	offsets;
+ 				__aligned_u64	ref_ctr_offsets;
++				__aligned_u64	cookies;
+ 				__u32		cnt;
+ 				__u32		flags;
+ 			} uprobe_multi;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 75c83300339e..98459fb34ff7 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -4883,7 +4883,7 @@ static int bpf_map_do_batch(const union bpf_attr *attr,
+ 	return err;
+ }
+ 
+-#define BPF_LINK_CREATE_LAST_FIELD link_create.kprobe_multi.cookies
++#define BPF_LINK_CREATE_LAST_FIELD link_create.uprobe_multi.flags
+ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
  {
-@@ -798,6 +799,11 @@ bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+ 	struct bpf_prog *prog;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 0c67644ccb2e..f1442ef65ad7 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -87,6 +87,8 @@ static int bpf_btf_printf_prepare(struct btf_ptr *ptr, u32 btf_ptr_size,
+ static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx);
+ static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx);
+ 
++static u64 bpf_uprobe_multi_cookie(struct bpf_run_ctx *ctx);
++
+ /**
+  * trace_call_bpf - invoke BPF program
+  * @call: tracepoint event
+@@ -1088,6 +1090,18 @@ static const struct bpf_func_proto bpf_get_attach_cookie_proto_kmulti = {
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ };
+ 
++BPF_CALL_1(bpf_get_attach_cookie_uprobe_multi, struct pt_regs *, regs)
++{
++	return bpf_uprobe_multi_cookie(current->bpf_ctx);
++}
++
++static const struct bpf_func_proto bpf_get_attach_cookie_proto_umulti = {
++	.func		= bpf_get_attach_cookie_uprobe_multi,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_CTX,
++};
++
+ BPF_CALL_1(bpf_get_attach_cookie_trace, void *, ctx)
+ {
+ 	struct bpf_trace_run_ctx *run_ctx;
+@@ -1534,9 +1548,11 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 			&bpf_get_func_ip_proto_kprobe_multi :
+ 			&bpf_get_func_ip_proto_kprobe;
+ 	case BPF_FUNC_get_attach_cookie:
+-		return prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI ?
+-			&bpf_get_attach_cookie_proto_kmulti :
+-			&bpf_get_attach_cookie_proto_trace;
++		if (prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI)
++			return &bpf_get_attach_cookie_proto_kmulti;
++		if (prog->expected_attach_type == BPF_TRACE_UPROBE_MULTI)
++			return &bpf_get_attach_cookie_proto_umulti;
++		return &bpf_get_attach_cookie_proto_trace;
+ 	default:
+ 		return bpf_tracing_func_proto(func_id, prog);
+ 	}
+@@ -2962,6 +2978,7 @@ struct bpf_uprobe_multi_link;
+ struct bpf_uprobe {
+ 	struct bpf_uprobe_multi_link *link;
+ 	loff_t offset;
++	u64 cookie;
+ 	struct uprobe_consumer consumer;
+ };
+ 
+@@ -2975,6 +2992,7 @@ struct bpf_uprobe_multi_link {
+ struct bpf_uprobe_multi_run_ctx {
+ 	struct bpf_run_ctx run_ctx;
+ 	unsigned long entry_ip;
++	struct bpf_uprobe *uprobe;
+ };
+ 
+ static void bpf_uprobe_unregister(struct path *path, struct bpf_uprobe *uprobes,
+@@ -3018,6 +3036,7 @@ static int uprobe_prog_run(struct bpf_uprobe *uprobe,
+ 	struct bpf_uprobe_multi_link *link = uprobe->link;
+ 	struct bpf_uprobe_multi_run_ctx run_ctx = {
+ 		.entry_ip = entry_ip,
++		.uprobe = uprobe,
+ 	};
+ 	struct bpf_prog *prog = link->link.prog;
+ 	bool sleepable = prog->aux->sleepable;
+@@ -3064,6 +3083,14 @@ uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, s
+ 	return uprobe_prog_run(uprobe, func, regs);
+ }
+ 
++static u64 bpf_uprobe_multi_cookie(struct bpf_run_ctx *ctx)
++{
++	struct bpf_uprobe_multi_run_ctx *run_ctx;
++
++	run_ctx = container_of(current->bpf_ctx, struct bpf_uprobe_multi_run_ctx, run_ctx);
++	return run_ctx->uprobe->cookie;
++}
++
+ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+ {
+ 	struct bpf_uprobe_multi_link *link = NULL;
+@@ -3072,6 +3099,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 	struct bpf_link_primer link_primer;
+ 	struct bpf_uprobe *uprobes = NULL;
+ 	unsigned long __user *uoffsets;
++	u64 __user *ucookies;
+ 	void __user *upath;
+ 	u32 flags, cnt, i;
+ 	struct path path;
+@@ -3091,7 +3119,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 
+ 	/*
+ 	 * path, offsets and cnt are mandatory,
+-	 * ref_ctr_offsets is optional
++	 * ref_ctr_offsets and cookies are optional
+ 	 */
+ 	upath = u64_to_user_ptr(attr->link_create.uprobe_multi.path);
+ 	uoffsets = u64_to_user_ptr(attr->link_create.uprobe_multi.offsets);
+@@ -3101,6 +3129,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 		return -EINVAL;
+ 
+ 	uref_ctr_offsets = u64_to_user_ptr(attr->link_create.uprobe_multi.ref_ctr_offsets);
++	ucookies = u64_to_user_ptr(attr->link_create.uprobe_multi.cookies);
+ 
+ 	name = strndup_user(upath, PATH_MAX);
+ 	if (IS_ERR(name)) {
+@@ -3133,6 +3162,10 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 	}
+ 
+ 	for (i = 0; i < cnt; i++) {
++		if (ucookies && __get_user(uprobes[i].cookie, ucookies + i)) {
++			err = -EFAULT;
++			goto error_free;
++		}
+ 		if (uref_ctr_offsets && __get_user(ref_ctr_offsets[i], uref_ctr_offsets + i)) {
+ 			err = -EFAULT;
+ 			goto error_free;
+@@ -3190,4 +3223,8 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
  {
  	return -EOPNOTSUPP;
  }
-+static inline int
-+bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
++static u64 bpf_uprobe_multi_cookie(struct bpf_run_ctx *ctx)
 +{
-+	return -EOPNOTSUPP;
++	return 0;
 +}
- #endif
- 
- enum {
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 7abb382dc6c1..f112a0b948f3 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1039,6 +1039,7 @@ enum bpf_attach_type {
- 	BPF_NETFILTER,
- 	BPF_TCX_INGRESS,
- 	BPF_TCX_EGRESS,
-+	BPF_TRACE_UPROBE_MULTI,
- 	__MAX_BPF_ATTACH_TYPE
- };
- 
-@@ -1057,6 +1058,7 @@ enum bpf_link_type {
- 	BPF_LINK_TYPE_STRUCT_OPS = 9,
- 	BPF_LINK_TYPE_NETFILTER = 10,
- 	BPF_LINK_TYPE_TCX = 11,
-+	BPF_LINK_TYPE_UPROBE_MULTI = 12,
- 	MAX_BPF_LINK_TYPE,
- };
- 
-@@ -1190,6 +1192,13 @@ enum {
- 	BPF_F_KPROBE_MULTI_RETURN = (1U << 0)
- };
- 
-+/* link_create.uprobe_multi.flags used in LINK_CREATE command for
-+ * BPF_TRACE_UPROBE_MULTI attach type to create return probe.
-+ */
-+enum {
-+	BPF_F_UPROBE_MULTI_RETURN = (1U << 0)
-+};
-+
- /* link_create.netfilter.flags used in LINK_CREATE command for
-  * BPF_PROG_TYPE_NETFILTER to enable IP packet defragmentation.
-  */
-@@ -1626,6 +1635,13 @@ union bpf_attr {
- 				};
- 				__u64		expected_revision;
- 			} tcx;
-+			struct {
-+				__aligned_u64	path;
-+				__aligned_u64	offsets;
-+				__aligned_u64	ref_ctr_offsets;
-+				__u32		cnt;
-+				__u32		flags;
-+			} uprobe_multi;
- 		};
- 	} link_create;
- 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 7c01186d4078..75c83300339e 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2815,10 +2815,12 @@ static void bpf_link_free_id(int id)
- 
- /* Clean up bpf_link and corresponding anon_inode file and FD. After
-  * anon_inode is created, bpf_link can't be just kfree()'d due to deferred
-- * anon_inode's release() call. This helper marksbpf_link as
-+ * anon_inode's release() call. This helper marks bpf_link as
-  * defunct, releases anon_inode file and puts reserved FD. bpf_prog's refcnt
-  * is not decremented, it's the responsibility of a calling code that failed
-  * to complete bpf_link initialization.
-+ * This helper eventually calls link's dealloc callback, but does not call
-+ * link's release callback.
-  */
- void bpf_link_cleanup(struct bpf_link_primer *primer)
- {
-@@ -3757,8 +3759,12 @@ static int bpf_prog_attach_check_attach_type(const struct bpf_prog *prog,
- 		if (prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI &&
- 		    attach_type != BPF_TRACE_KPROBE_MULTI)
- 			return -EINVAL;
-+		if (prog->expected_attach_type == BPF_TRACE_UPROBE_MULTI &&
-+		    attach_type != BPF_TRACE_UPROBE_MULTI)
-+			return -EINVAL;
- 		if (attach_type != BPF_PERF_EVENT &&
--		    attach_type != BPF_TRACE_KPROBE_MULTI)
-+		    attach_type != BPF_TRACE_KPROBE_MULTI &&
-+		    attach_type != BPF_TRACE_UPROBE_MULTI)
- 			return -EINVAL;
- 		return 0;
- 	case BPF_PROG_TYPE_SCHED_CLS:
-@@ -4954,8 +4960,10 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
- 	case BPF_PROG_TYPE_KPROBE:
- 		if (attr->link_create.attach_type == BPF_PERF_EVENT)
- 			ret = bpf_perf_link_attach(attr, prog);
--		else
-+		else if (attr->link_create.attach_type == BPF_TRACE_KPROBE_MULTI)
- 			ret = bpf_kprobe_multi_link_attach(attr, prog);
-+		else if (attr->link_create.attach_type == BPF_TRACE_UPROBE_MULTI)
-+			ret = bpf_uprobe_multi_link_attach(attr, prog);
- 		break;
- 	default:
- 		ret = -EINVAL;
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 83bde2475ae5..0c67644ccb2e 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -23,6 +23,7 @@
- #include <linux/sort.h>
- #include <linux/key.h>
- #include <linux/verification.h>
-+#include <linux/namei.h>
- 
- #include <net/bpf_sk_storage.h>
- 
-@@ -2954,3 +2955,239 @@ static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
- 	return 0;
- }
- #endif
-+
-+#ifdef CONFIG_UPROBES
-+struct bpf_uprobe_multi_link;
-+
-+struct bpf_uprobe {
-+	struct bpf_uprobe_multi_link *link;
-+	loff_t offset;
-+	struct uprobe_consumer consumer;
-+};
-+
-+struct bpf_uprobe_multi_link {
-+	struct path path;
-+	struct bpf_link link;
-+	u32 cnt;
-+	struct bpf_uprobe *uprobes;
-+};
-+
-+struct bpf_uprobe_multi_run_ctx {
-+	struct bpf_run_ctx run_ctx;
-+	unsigned long entry_ip;
-+};
-+
-+static void bpf_uprobe_unregister(struct path *path, struct bpf_uprobe *uprobes,
-+				  u32 cnt)
-+{
-+	u32 i;
-+
-+	for (i = 0; i < cnt; i++) {
-+		uprobe_unregister(d_real_inode(path->dentry), uprobes[i].offset,
-+				  &uprobes[i].consumer);
-+	}
-+}
-+
-+static void bpf_uprobe_multi_link_release(struct bpf_link *link)
-+{
-+	struct bpf_uprobe_multi_link *umulti_link;
-+
-+	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
-+	bpf_uprobe_unregister(&umulti_link->path, umulti_link->uprobes, umulti_link->cnt);
-+}
-+
-+static void bpf_uprobe_multi_link_dealloc(struct bpf_link *link)
-+{
-+	struct bpf_uprobe_multi_link *umulti_link;
-+
-+	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
-+	path_put(&umulti_link->path);
-+	kvfree(umulti_link->uprobes);
-+	kfree(umulti_link);
-+}
-+
-+static const struct bpf_link_ops bpf_uprobe_multi_link_lops = {
-+	.release = bpf_uprobe_multi_link_release,
-+	.dealloc = bpf_uprobe_multi_link_dealloc,
-+};
-+
-+static int uprobe_prog_run(struct bpf_uprobe *uprobe,
-+			   unsigned long entry_ip,
-+			   struct pt_regs *regs)
-+{
-+	struct bpf_uprobe_multi_link *link = uprobe->link;
-+	struct bpf_uprobe_multi_run_ctx run_ctx = {
-+		.entry_ip = entry_ip,
-+	};
-+	struct bpf_prog *prog = link->link.prog;
-+	bool sleepable = prog->aux->sleepable;
-+	struct bpf_run_ctx *old_run_ctx;
-+	int err = 0;
-+
-+	might_fault();
-+
-+	migrate_disable();
-+
-+	if (sleepable)
-+		rcu_read_lock_trace();
-+	else
-+		rcu_read_lock();
-+
-+	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-+	err = bpf_prog_run(link->link.prog, regs);
-+	bpf_reset_run_ctx(old_run_ctx);
-+
-+	if (sleepable)
-+		rcu_read_unlock_trace();
-+	else
-+		rcu_read_unlock();
-+
-+	migrate_enable();
-+	return err;
-+}
-+
-+static int
-+uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs)
-+{
-+	struct bpf_uprobe *uprobe;
-+
-+	uprobe = container_of(con, struct bpf_uprobe, consumer);
-+	return uprobe_prog_run(uprobe, instruction_pointer(regs), regs);
-+}
-+
-+static int
-+uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, struct pt_regs *regs)
-+{
-+	struct bpf_uprobe *uprobe;
-+
-+	uprobe = container_of(con, struct bpf_uprobe, consumer);
-+	return uprobe_prog_run(uprobe, func, regs);
-+}
-+
-+int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-+{
-+	struct bpf_uprobe_multi_link *link = NULL;
-+	unsigned long __user *uref_ctr_offsets;
-+	unsigned long *ref_ctr_offsets = NULL;
-+	struct bpf_link_primer link_primer;
-+	struct bpf_uprobe *uprobes = NULL;
-+	unsigned long __user *uoffsets;
-+	void __user *upath;
-+	u32 flags, cnt, i;
-+	struct path path;
-+	char *name;
-+	int err;
-+
-+	/* no support for 32bit archs yet */
-+	if (sizeof(u64) != sizeof(void *))
-+		return -EOPNOTSUPP;
-+
-+	if (prog->expected_attach_type != BPF_TRACE_UPROBE_MULTI)
-+		return -EINVAL;
-+
-+	flags = attr->link_create.uprobe_multi.flags;
-+	if (flags & ~BPF_F_UPROBE_MULTI_RETURN)
-+		return -EINVAL;
-+
-+	/*
-+	 * path, offsets and cnt are mandatory,
-+	 * ref_ctr_offsets is optional
-+	 */
-+	upath = u64_to_user_ptr(attr->link_create.uprobe_multi.path);
-+	uoffsets = u64_to_user_ptr(attr->link_create.uprobe_multi.offsets);
-+	cnt = attr->link_create.uprobe_multi.cnt;
-+
-+	if (!upath || !uoffsets || !cnt)
-+		return -EINVAL;
-+
-+	uref_ctr_offsets = u64_to_user_ptr(attr->link_create.uprobe_multi.ref_ctr_offsets);
-+
-+	name = strndup_user(upath, PATH_MAX);
-+	if (IS_ERR(name)) {
-+		err = PTR_ERR(name);
-+		return err;
-+	}
-+
-+	err = kern_path(name, LOOKUP_FOLLOW, &path);
-+	kfree(name);
-+	if (err)
-+		return err;
-+
-+	if (!d_is_reg(path.dentry)) {
-+		err = -EBADF;
-+		goto error_path_put;
-+	}
-+
-+	err = -ENOMEM;
-+
-+	link = kzalloc(sizeof(*link), GFP_KERNEL);
-+	uprobes = kvcalloc(cnt, sizeof(*uprobes), GFP_KERNEL);
-+
-+	if (!uprobes || !link)
-+		goto error_free;
-+
-+	if (uref_ctr_offsets) {
-+		ref_ctr_offsets = kvcalloc(cnt, sizeof(*ref_ctr_offsets), GFP_KERNEL);
-+		if (!ref_ctr_offsets)
-+			goto error_free;
-+	}
-+
-+	for (i = 0; i < cnt; i++) {
-+		if (uref_ctr_offsets && __get_user(ref_ctr_offsets[i], uref_ctr_offsets + i)) {
-+			err = -EFAULT;
-+			goto error_free;
-+		}
-+		if (__get_user(uprobes[i].offset, uoffsets + i)) {
-+			err = -EFAULT;
-+			goto error_free;
-+		}
-+
-+		uprobes[i].link = link;
-+
-+		if (flags & BPF_F_UPROBE_MULTI_RETURN)
-+			uprobes[i].consumer.ret_handler = uprobe_multi_link_ret_handler;
-+		else
-+			uprobes[i].consumer.handler = uprobe_multi_link_handler;
-+	}
-+
-+	link->cnt = cnt;
-+	link->uprobes = uprobes;
-+	link->path = path;
-+
-+	bpf_link_init(&link->link, BPF_LINK_TYPE_UPROBE_MULTI,
-+		      &bpf_uprobe_multi_link_lops, prog);
-+
-+	err = bpf_link_prime(&link->link, &link_primer);
-+	if (err)
-+		goto error_free;
-+
-+	for (i = 0; i < cnt; i++) {
-+		err = uprobe_register_refctr(d_real_inode(link->path.dentry),
-+					     uprobes[i].offset,
-+					     ref_ctr_offsets ? ref_ctr_offsets[i] : 0,
-+					     &uprobes[i].consumer);
-+		if (err) {
-+			bpf_uprobe_unregister(&path, uprobes, i);
-+			bpf_link_cleanup(&link_primer);
-+			kvfree(ref_ctr_offsets);
-+			return err;
-+		}
-+	}
-+
-+	kvfree(ref_ctr_offsets);
-+	return bpf_link_settle(&link_primer);
-+
-+error_free:
-+	kvfree(ref_ctr_offsets);
-+	kvfree(uprobes);
-+	kfree(link);
-+error_path_put:
-+	path_put(&path);
-+	return err;
-+}
-+#else /* !CONFIG_UPROBES */
-+int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-+{
-+	return -EOPNOTSUPP;
-+}
-+#endif /* CONFIG_UPROBES */
+ #endif /* CONFIG_UPROBES */
 diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 7abb382dc6c1..f112a0b948f3 100644
+index f112a0b948f3..2b6cd7d1c165 100644
 --- a/tools/include/uapi/linux/bpf.h
 +++ b/tools/include/uapi/linux/bpf.h
-@@ -1039,6 +1039,7 @@ enum bpf_attach_type {
- 	BPF_NETFILTER,
- 	BPF_TCX_INGRESS,
- 	BPF_TCX_EGRESS,
-+	BPF_TRACE_UPROBE_MULTI,
- 	__MAX_BPF_ATTACH_TYPE
- };
- 
-@@ -1057,6 +1058,7 @@ enum bpf_link_type {
- 	BPF_LINK_TYPE_STRUCT_OPS = 9,
- 	BPF_LINK_TYPE_NETFILTER = 10,
- 	BPF_LINK_TYPE_TCX = 11,
-+	BPF_LINK_TYPE_UPROBE_MULTI = 12,
- 	MAX_BPF_LINK_TYPE,
- };
- 
-@@ -1190,6 +1192,13 @@ enum {
- 	BPF_F_KPROBE_MULTI_RETURN = (1U << 0)
- };
- 
-+/* link_create.uprobe_multi.flags used in LINK_CREATE command for
-+ * BPF_TRACE_UPROBE_MULTI attach type to create return probe.
-+ */
-+enum {
-+	BPF_F_UPROBE_MULTI_RETURN = (1U << 0)
-+};
-+
- /* link_create.netfilter.flags used in LINK_CREATE command for
-  * BPF_PROG_TYPE_NETFILTER to enable IP packet defragmentation.
-  */
-@@ -1626,6 +1635,13 @@ union bpf_attr {
- 				};
- 				__u64		expected_revision;
- 			} tcx;
-+			struct {
-+				__aligned_u64	path;
-+				__aligned_u64	offsets;
-+				__aligned_u64	ref_ctr_offsets;
-+				__u32		cnt;
-+				__u32		flags;
-+			} uprobe_multi;
- 		};
- 	} link_create;
- 
+@@ -1639,6 +1639,7 @@ union bpf_attr {
+ 				__aligned_u64	path;
+ 				__aligned_u64	offsets;
+ 				__aligned_u64	ref_ctr_offsets;
++				__aligned_u64	cookies;
+ 				__u32		cnt;
+ 				__u32		flags;
+ 			} uprobe_multi;
 -- 
 2.41.0
 
