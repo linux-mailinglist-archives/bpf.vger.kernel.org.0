@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-6833-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6834-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD82576E4FE
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 11:52:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 609BC76E4FF
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 11:53:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7872728206A
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 09:52:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BA90282043
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 09:53:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A270F15AD0;
-	Thu,  3 Aug 2023 09:52:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5F4A15AD1;
+	Thu,  3 Aug 2023 09:52:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1117E
-	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 09:52:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A972AC433C8;
-	Thu,  3 Aug 2023 09:52:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 760787E
+	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 09:52:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C04DC433C7;
+	Thu,  3 Aug 2023 09:52:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691056365;
-	bh=+DDY0D4Y6bFjiG8v3EZ/JqpUklUKAy8LVEiwQiD7ld4=;
+	s=k20201202; t=1691056376;
+	bh=rd4PiPHvQFmoacLWFoTv/0Eyp1Igc9qd6VNck/4UW1o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Uq53IrApDnK2ynOsTLE5dMpcmx7Le5FKJMMWMeJSQuBBmrKNCQeytW81i4qkJ6qKi
-	 e2J9Gb76NJpFlDbF2ac4oRfhR8cfZN6eYKLr2m556vysCmSIF7Uh9i0Yv/yxHnjK7X
-	 FPQX32IlwzURRAMoM6dcKBOBzFi+7Nw6F4+eQ7gXCKqIcavQhMGCjsB+pOgfPlBOBT
-	 eyZYMAOQd6hP0b2xEBKbSyT3OZormZvU+iYKhgM9plrG6TZw64fzuV3Zbv7ywaVx0k
-	 xkg9qiE3Wy8yZDHBIzzwQsRUqiYm94EIwzbOmmZGUikBWXAUCGHbrZBU3fCquA+XBR
-	 I7xWhiRUjm2nA==
+	b=Z17FL82idMAXzMNYruGhKGtodSYpfgrnTCwvNdi4fJ0LT1BcZnb6VstOqG2G57zbf
+	 jiRhOBIcNxUhnd6FegAuwiEhi9bB+kpEIO6mkOukgn8JxHPCJ9ADZQN6eip8g+w6ky
+	 kOllqmLvBvibbTf2krNfxxMM6gl6yZN8NNwiq5vAxGLCRzT8AYJgeSzgbRZBx6XZdq
+	 JaKrd7n0yjk+cAizMjFPkrKL0Ypp/UDi/ni5JyPqSieJzW3nXIjgTnBwNhc+//g3Lq
+	 p/cNno02/UFAczU7rmcQ96wntAj7ve00geySDAsPfPgd6xrQFFnOXj0p5nyud5i0B1
+	 coU4GOc5gVi9g==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -45,9 +45,9 @@ Cc: Alan Maguire <alan.maguire@oracle.com>,
 	Hao Luo <haoluo@google.com>,
 	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCHv2 bpf-next 2/3] selftests/bpf: Add bpf_get_func_ip tests for uprobe on function entry
-Date: Thu,  3 Aug 2023 11:52:18 +0200
-Message-ID: <20230803095219.1669065-3-jolsa@kernel.org>
+Subject: [PATCHv2 bpf-next 3/3] selftests/bpf: Add bpf_get_func_ip test for uprobe inside function
+Date: Thu,  3 Aug 2023 11:52:19 +0200
+Message-ID: <20230803095219.1669065-4-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230803095219.1669065-1-jolsa@kernel.org>
 References: <20230803095219.1669065-1-jolsa@kernel.org>
@@ -59,96 +59,111 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding get_func_ip tests for uprobe on function entry that
-validates that bpf_get_func_ip returns proper values from
-both uprobe and return uprobe.
+Adding get_func_ip test for uprobe inside function that validates
+the get_func_ip helper returns correct probe address value.
 
 Tested-by: Alan Maguire <alan.maguire@oracle.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../bpf/prog_tests/get_func_ip_test.c         | 11 ++++++++
- .../selftests/bpf/progs/get_func_ip_test.c    | 25 +++++++++++++++++--
- 2 files changed, 34 insertions(+), 2 deletions(-)
+ .../bpf/prog_tests/get_func_ip_test.c         | 46 +++++++++++++++++--
+ .../bpf/progs/get_func_ip_uprobe_test.c       | 18 ++++++++
+ 2 files changed, 60 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/get_func_ip_uprobe_test.c
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-index fede8ef58b5b..114cdbc04caf 100644
+index 114cdbc04caf..c40242dfa8fb 100644
 --- a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
 +++ b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-@@ -1,6 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
- #include "get_func_ip_test.skel.h"
-+#include "get_func_ip_uprobe_test.skel.h"
-+
-+static noinline void uprobe_trigger(void)
-+{
-+}
- 
- static void test_function_entry(void)
- {
-@@ -20,6 +25,8 @@ static void test_function_entry(void)
- 	if (!ASSERT_OK(err, "get_func_ip_test__attach"))
- 		goto cleanup;
- 
-+	skel->bss->uprobe_trigger = (unsigned long) uprobe_trigger;
-+
- 	prog_fd = bpf_program__fd(skel->progs.test1);
- 	err = bpf_prog_test_run_opts(prog_fd, &topts);
- 	ASSERT_OK(err, "test_run");
-@@ -30,11 +37,15 @@ static void test_function_entry(void)
- 
- 	ASSERT_OK(err, "test_run");
- 
-+	uprobe_trigger();
-+
- 	ASSERT_EQ(skel->bss->test1_result, 1, "test1_result");
- 	ASSERT_EQ(skel->bss->test2_result, 1, "test2_result");
- 	ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
- 	ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
- 	ASSERT_EQ(skel->bss->test5_result, 1, "test5_result");
-+	ASSERT_EQ(skel->bss->test7_result, 1, "test7_result");
-+	ASSERT_EQ(skel->bss->test8_result, 1, "test8_result");
- 
- cleanup:
+@@ -51,11 +51,17 @@ static void test_function_entry(void)
  	get_func_ip_test__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-index 8559e698b40d..8956eb78a226 100644
---- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-+++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-@@ -1,8 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
--#include <linux/bpf.h>
-+#include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
--#include <stdbool.h>
+ }
  
- char _license[] SEC("license") = "GPL";
+-/* test6 is x86_64 specific because of the instruction
+- * offset, disabling it for all other archs
+- */
+ #ifdef __x86_64__
+-static void test_function_body(void)
++extern void uprobe_trigger_body(void);
++asm(
++".globl uprobe_trigger_body\n"
++".type uprobe_trigger_body, @function\n"
++"uprobe_trigger_body:\n"
++"	nop\n"
++"	ret\n"
++);
++
++static void test_function_body_kprobe(void)
+ {
+ 	struct get_func_ip_test *skel = NULL;
+ 	LIBBPF_OPTS(bpf_test_run_opts, topts);
+@@ -67,6 +73,9 @@ static void test_function_body(void)
+ 	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open"))
+ 		return;
  
-@@ -83,3 +82,25 @@ int test6(struct pt_regs *ctx)
- 	test6_result = (const void *) addr == 0;
- 	return 0;
++	/* test6 is x86_64 specific and is disabled by default,
++	 * enable it for body test.
++	 */
+ 	bpf_program__set_autoload(skel->progs.test6, true);
+ 
+ 	err = get_func_ip_test__load(skel);
+@@ -90,6 +99,35 @@ static void test_function_body(void)
+ 	bpf_link__destroy(link6);
+ 	get_func_ip_test__destroy(skel);
  }
 +
-+unsigned long uprobe_trigger;
-+
-+__u64 test7_result = 0;
-+SEC("uprobe//proc/self/exe:uprobe_trigger")
-+int BPF_UPROBE(test7)
++static void test_function_body_uprobe(void)
 +{
-+	__u64 addr = bpf_get_func_ip(ctx);
++	struct get_func_ip_uprobe_test *skel = NULL;
++	int err;
 +
-+	test7_result = (const void *) addr == (const void *) uprobe_trigger;
-+	return 0;
++	skel = get_func_ip_uprobe_test__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "get_func_ip_uprobe_test__open_and_load"))
++		return;
++
++	err = get_func_ip_uprobe_test__attach(skel);
++	if (!ASSERT_OK(err, "get_func_ip_test__attach"))
++		goto cleanup;
++
++	skel->bss->uprobe_trigger_body = (unsigned long) uprobe_trigger_body;
++
++	uprobe_trigger_body();
++
++	ASSERT_EQ(skel->bss->test1_result, 1, "test1_result");
++
++cleanup:
++	get_func_ip_uprobe_test__destroy(skel);
 +}
 +
-+__u64 test8_result = 0;
-+SEC("uretprobe//proc/self/exe:uprobe_trigger")
-+int BPF_URETPROBE(test8, int ret)
++static void test_function_body(void)
++{
++	test_function_body_kprobe();
++	test_function_body_uprobe();
++}
+ #else
+ #define test_function_body()
+ #endif
+diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_uprobe_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_uprobe_test.c
+new file mode 100644
+index 000000000000..052f8a4345a8
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/get_func_ip_uprobe_test.c
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++unsigned long uprobe_trigger_body;
++
++__u64 test1_result = 0;
++SEC("uprobe//proc/self/exe:uprobe_trigger_body+1")
++int BPF_UPROBE(test1)
 +{
 +	__u64 addr = bpf_get_func_ip(ctx);
 +
-+	test8_result = (const void *) addr == (const void *) uprobe_trigger;
++	test1_result = (const void *) addr == (const void *) uprobe_trigger_body + 1;
 +	return 0;
 +}
 -- 
