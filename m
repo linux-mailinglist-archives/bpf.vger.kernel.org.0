@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-6808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9812C76E1B5
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 09:37:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E490876E1C0
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 09:37:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C14F1C214D1
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 07:37:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 209FC1C214CB
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 07:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED959134DA;
-	Thu,  3 Aug 2023 07:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FEC7134A1;
+	Thu,  3 Aug 2023 07:36:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8CB125A5
-	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 07:36:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEFCAC433C7;
-	Thu,  3 Aug 2023 07:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2479454
+	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 07:36:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7B57C433C7;
+	Thu,  3 Aug 2023 07:36:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691048195;
-	bh=kS46N1o+M01ZmsvoKyuB9PlBcUzMc5VPHvHAomf7JsE=;
+	s=k20201202; t=1691048205;
+	bh=9/c+0yPNR+ZkL/Wj1aseckWomQIFZdeaDh6R7S4ZRno=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PmeIB0QbmX3+jP8/Jo34HpsOTkFN0SBcRCWXOCSnJae0W8zEpRCztHS//8PHVvDGW
-	 jObGK11pP4BcodYE7kb4mPmLYKpB8zO7jFm5ROw/LA7b4x8+rFJSG6OSAzrD/GeahO
-	 KipadDEPj5+RISoo7ekG6yB8qkkF9rPJlxmr/uR9nFcrf7HPRKAWOSEUqEmQoznvHo
-	 +TM98plWQEKsSOxWF4B0CuEzhM/9GmQTcWd8E6A/nmOSCrUm8ClRlFteAnGqSvI6KR
-	 VPgCvh1ma69bWi8Oe0QhGApzzzXkRmrtOmDgzBDEGsvakpIN9Gv05TLS1KRKFOUoin
-	 8bFE6oqmONe0A==
+	b=syOMgcACpDSAPOGit91Zmp2MB8jLUvA71mG0GpdW1FXkNRFJCkrxCUdxXoMRoWZEC
+	 zE+j0x+8zUN2PpUYDsfXwWeywrpjTnXU8Tcf5HJA8aQQJ4IeLtTGFKGmVskCQRS3zE
+	 VKoC0xyqo+v5JFGGc0vgVYn1n3e5wUmwtK/lgbRpyuHInEZSWviX63EHfIggtMGbRg
+	 5iTkO0M1fnAQML1AVXe0LQZ9+S5Z+JoOUMeKEZ2hp61t+Q7h+ajMhRy1p9R0tgv+qc
+	 S0yGv1ttM1sXGtSYGmcxWGfXRdqNy2DKUB8mVmgvePQPzlc0Z7NgQYEm9MFgt4buIh
+	 2ygYhsA9PAsqw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -43,9 +43,9 @@ Cc: bpf@vger.kernel.org,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCHv6 bpf-next 13/28] libbpf: Add bpf_link_create support for multi uprobes
-Date: Thu,  3 Aug 2023 09:34:05 +0200
-Message-ID: <20230803073420.1558613-14-jolsa@kernel.org>
+Subject: [PATCHv6 bpf-next 14/28] libbpf: Add bpf_program__attach_uprobe_multi function
+Date: Thu,  3 Aug 2023 09:34:06 +0200
+Message-ID: <20230803073420.1558613-15-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230803073420.1558613-1-jolsa@kernel.org>
 References: <20230803073420.1558613-1-jolsa@kernel.org>
@@ -57,67 +57,236 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding new uprobe_multi struct to bpf_link_create_opts object
-to pass multiple uprobe data to link_create attr uapi.
+Adding bpf_program__attach_uprobe_multi function that
+allows to attach multiple uprobes with uprobe_multi link.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+The user can specify uprobes with direct arguments:
+
+  binary_path/func_pattern/pid
+
+or with struct bpf_uprobe_multi_opts opts argument fields:
+
+  const char **syms;
+  const unsigned long *offsets;
+  const unsigned long *ref_ctr_offsets;
+  const __u64 *cookies;
+
+User can specify 2 mutually exclusive set of inputs:
+
+ 1) use only path/func_pattern/pid arguments
+
+ 2) use path/pid with allowed combinations of:
+    syms/offsets/ref_ctr_offsets/cookies/cnt
+
+    - syms and offsets are mutually exclusive
+    - ref_ctr_offsets and cookies are optional
+
+Any other usage results in error.
+
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/bpf.c | 11 +++++++++++
- tools/lib/bpf/bpf.h | 11 ++++++++++-
- 2 files changed, 21 insertions(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.c   | 114 +++++++++++++++++++++++++++++++++++++++
+ tools/lib/bpf/libbpf.h   |  51 ++++++++++++++++++
+ tools/lib/bpf/libbpf.map |   1 +
+ 3 files changed, 166 insertions(+)
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index c9b6b311a441..b0f1913763a3 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -767,6 +767,17 @@ int bpf_link_create(int prog_fd, int target_fd,
- 		if (!OPTS_ZEROED(opts, kprobe_multi))
- 			return libbpf_err(-EINVAL);
- 		break;
-+	case BPF_TRACE_UPROBE_MULTI:
-+		attr.link_create.uprobe_multi.flags = OPTS_GET(opts, uprobe_multi.flags, 0);
-+		attr.link_create.uprobe_multi.cnt = OPTS_GET(opts, uprobe_multi.cnt, 0);
-+		attr.link_create.uprobe_multi.path = ptr_to_u64(OPTS_GET(opts, uprobe_multi.path, 0));
-+		attr.link_create.uprobe_multi.offsets = ptr_to_u64(OPTS_GET(opts, uprobe_multi.offsets, 0));
-+		attr.link_create.uprobe_multi.ref_ctr_offsets = ptr_to_u64(OPTS_GET(opts, uprobe_multi.ref_ctr_offsets, 0));
-+		attr.link_create.uprobe_multi.cookies = ptr_to_u64(OPTS_GET(opts, uprobe_multi.cookies, 0));
-+		attr.link_create.uprobe_multi.pid = OPTS_GET(opts, uprobe_multi.pid, 0);
-+		if (!OPTS_ZEROED(opts, uprobe_multi))
-+			return libbpf_err(-EINVAL);
-+		break;
- 	case BPF_TRACE_FENTRY:
- 	case BPF_TRACE_FEXIT:
- 	case BPF_MODIFY_RETURN:
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 044a74ffc38a..74c2887cfd24 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -392,6 +392,15 @@ struct bpf_link_create_opts {
- 			const unsigned long *addrs;
- 			const __u64 *cookies;
- 		} kprobe_multi;
-+		struct {
-+			__u32 flags;
-+			__u32 cnt;
-+			const char *path;
-+			const unsigned long *offsets;
-+			const unsigned long *ref_ctr_offsets;
-+			const __u64 *cookies;
-+			__u32 pid;
-+		} uprobe_multi;
- 		struct {
- 			__u64 cookie;
- 		} tracing;
-@@ -409,7 +418,7 @@ struct bpf_link_create_opts {
- 	};
- 	size_t :0;
- };
--#define bpf_link_create_opts__last_field kprobe_multi.cookies
-+#define bpf_link_create_opts__last_field uprobe_multi.pid
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 445953a4d8fc..eb16d6f307e0 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -11128,6 +11128,120 @@ static int resolve_full_path(const char *file, char *result, size_t result_sz)
+ 	return -ENOENT;
+ }
  
- LIBBPF_API int bpf_link_create(int prog_fd, int target_fd,
- 			       enum bpf_attach_type attach_type,
++struct bpf_link *
++bpf_program__attach_uprobe_multi(const struct bpf_program *prog,
++				 pid_t pid,
++				 const char *path,
++				 const char *func_pattern,
++				 const struct bpf_uprobe_multi_opts *opts)
++{
++	const unsigned long *ref_ctr_offsets = NULL, *offsets = NULL;
++	LIBBPF_OPTS(bpf_link_create_opts, lopts);
++	unsigned long *resolved_offsets = NULL;
++	int err = 0, link_fd, prog_fd;
++	struct bpf_link *link = NULL;
++	char errmsg[STRERR_BUFSIZE];
++	char full_path[PATH_MAX];
++	const __u64 *cookies;
++	const char **syms;
++	size_t cnt;
++
++	if (!OPTS_VALID(opts, bpf_uprobe_multi_opts))
++		return libbpf_err_ptr(-EINVAL);
++
++	syms = OPTS_GET(opts, syms, NULL);
++	offsets = OPTS_GET(opts, offsets, NULL);
++	ref_ctr_offsets = OPTS_GET(opts, ref_ctr_offsets, NULL);
++	cookies = OPTS_GET(opts, cookies, NULL);
++	cnt = OPTS_GET(opts, cnt, 0);
++
++	/*
++	 * User can specify 2 mutually exclusive set of inputs:
++	 *
++	 * 1) use only path/func_pattern/pid arguments
++	 *
++	 * 2) use path/pid with allowed combinations of:
++	 *    syms/offsets/ref_ctr_offsets/cookies/cnt
++	 *
++	 *    - syms and offsets are mutually exclusive
++	 *    - ref_ctr_offsets and cookies are optional
++	 *
++	 * Any other usage results in error.
++	 */
++
++	if (!path)
++		return libbpf_err_ptr(-EINVAL);
++	if (!func_pattern && cnt == 0)
++		return libbpf_err_ptr(-EINVAL);
++
++	if (func_pattern) {
++		if (syms || offsets || ref_ctr_offsets || cookies || cnt)
++			return libbpf_err_ptr(-EINVAL);
++	} else {
++		if (!!syms == !!offsets)
++			return libbpf_err_ptr(-EINVAL);
++	}
++
++	if (func_pattern) {
++		if (!strchr(path, '/')) {
++			err = resolve_full_path(path, full_path, sizeof(full_path));
++			if (err) {
++				pr_warn("prog '%s': failed to resolve full path for '%s': %d\n",
++					prog->name, path, err);
++				return libbpf_err_ptr(err);
++			}
++			path = full_path;
++		}
++
++		err = elf_resolve_pattern_offsets(path, func_pattern,
++						  &resolved_offsets, &cnt);
++		if (err < 0)
++			return libbpf_err_ptr(err);
++		offsets = resolved_offsets;
++	} else if (syms) {
++		err = elf_resolve_syms_offsets(path, cnt, syms, &resolved_offsets);
++		if (err < 0)
++			return libbpf_err_ptr(err);
++		offsets = resolved_offsets;
++	}
++
++	lopts.uprobe_multi.path = path;
++	lopts.uprobe_multi.offsets = offsets;
++	lopts.uprobe_multi.ref_ctr_offsets = ref_ctr_offsets;
++	lopts.uprobe_multi.cookies = cookies;
++	lopts.uprobe_multi.cnt = cnt;
++	lopts.uprobe_multi.flags = OPTS_GET(opts, retprobe, false) ? BPF_F_UPROBE_MULTI_RETURN : 0;
++
++	if (pid == 0)
++		pid = getpid();
++	if (pid > 0)
++		lopts.uprobe_multi.pid = pid;
++
++	link = calloc(1, sizeof(*link));
++	if (!link) {
++		err = -ENOMEM;
++		goto error;
++	}
++	link->detach = &bpf_link__detach_fd;
++
++	prog_fd = bpf_program__fd(prog);
++	link_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &lopts);
++	if (link_fd < 0) {
++		err = -errno;
++		pr_warn("prog '%s': failed to attach multi-uprobe: %s\n",
++			prog->name, libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		goto error;
++	}
++	link->fd = link_fd;
++	free(resolved_offsets);
++	return link;
++
++error:
++	free(resolved_offsets);
++	free(link);
++	return libbpf_err_ptr(err);
++}
++
+ LIBBPF_API struct bpf_link *
+ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ 				const char *binary_path, size_t func_offset,
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 55b97b208754..2e3eb3614c40 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -529,6 +529,57 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+ 				      const char *pattern,
+ 				      const struct bpf_kprobe_multi_opts *opts);
+ 
++struct bpf_uprobe_multi_opts {
++	/* size of this struct, for forward/backward compatibility */
++	size_t sz;
++	/* array of function symbols to attach to */
++	const char **syms;
++	/* array of function addresses to attach to */
++	const unsigned long *offsets;
++	/* optional, array of associated ref counter offsets */
++	const unsigned long *ref_ctr_offsets;
++	/* optional, array of associated BPF cookies */
++	const __u64 *cookies;
++	/* number of elements in syms/addrs/cookies arrays */
++	size_t cnt;
++	/* create return uprobes */
++	bool retprobe;
++	size_t :0;
++};
++
++#define bpf_uprobe_multi_opts__last_field retprobe
++
++/**
++ * @brief **bpf_program__attach_uprobe_multi()** attaches a BPF program
++ * to multiple uprobes with uprobe_multi link.
++ *
++ * User can specify 2 mutually exclusive set of inputs:
++ *
++ *   1) use only path/func_pattern/pid arguments
++ *
++ *   2) use path/pid with allowed combinations of
++ *      syms/offsets/ref_ctr_offsets/cookies/cnt
++ *
++ *      - syms and offsets are mutually exclusive
++ *      - ref_ctr_offsets and cookies are optional
++ *
++ *
++ * @param prog BPF program to attach
++ * @param pid Process ID to attach the uprobe to, 0 for self (own process),
++ * -1 for all processes
++ * @param binary_path Path to binary
++ * @param func_pattern Regular expression to specify functions to attach
++ * BPF program to
++ * @param opts Additional options (see **struct bpf_uprobe_multi_opts**)
++ * @return 0, on success; negative error code, otherwise
++ */
++LIBBPF_API struct bpf_link *
++bpf_program__attach_uprobe_multi(const struct bpf_program *prog,
++				 pid_t pid,
++				 const char *binary_path,
++				 const char *func_pattern,
++				 const struct bpf_uprobe_multi_opts *opts);
++
+ struct bpf_ksyscall_opts {
+ 	/* size of this struct, for forward/backward compatibility */
+ 	size_t sz;
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 9c7538dd5835..841a2f9c6fef 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -398,4 +398,5 @@ LIBBPF_1.3.0 {
+ 		bpf_prog_detach_opts;
+ 		bpf_program__attach_netfilter;
+ 		bpf_program__attach_tcx;
++		bpf_program__attach_uprobe_multi;
+ } LIBBPF_1.2.0;
 -- 
 2.41.0
 
