@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-6813-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6814-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 662B676E1D5
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 09:38:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47DB276E1D6
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 09:38:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 887DD1C214CB
-	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 07:38:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75A331C214A3
+	for <lists+bpf@lfdr.de>; Thu,  3 Aug 2023 07:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49EFD134DC;
-	Thu,  3 Aug 2023 07:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2097134AA;
+	Thu,  3 Aug 2023 07:37:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F050D9454
-	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 07:37:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEEDEC433C8;
-	Thu,  3 Aug 2023 07:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CCA9454
+	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 07:37:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C5BAC433C8;
+	Thu,  3 Aug 2023 07:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691048248;
-	bh=TYvbI4J+iiAairt216XCxpjfpCxYWmTZ2NCuQBTKWbk=;
+	s=k20201202; t=1691048258;
+	bh=y6vFacDuTSEWaNw3zurZjJfC7xwc5HJ1wjHlw/c1dtw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Cboj1Q4jL2qu/SasFJhb+PgMtDZqwhisLnWEp+CpAxqJ6DKNA6L4gTjsqnQQbq38k
-	 kNO+x70KP9kjnEqexewsCM+6yGCOH8ajsjZofi8RDhvBGLo1pKDg/UwGMYoJYmhjPl
-	 tmyJnUkMV8h8LPwWts+tjCTVuBZZzeUPIVqdYeRoN0n5CDzlG5jPloEsm1DXOe/wPR
-	 fMxY7WkMG46QFz7MOM3O7s924wlQhWgj/eMOkI9sTMY4LMoWuFlnt5PdOtVNtv439z
-	 QIsUu40bLOGOtyrHxTZ8ZxAbPcweBH40Y047e3ddWQi4y73DprWEynQyGHKRgdw9jJ
-	 GAICjDcZHF/hg==
+	b=QnH6EyBmGvhQbrzvz19acJHgErFh81WECkz0y4ClnzIICEOlWEHppebDeqZqUopKb
+	 ZPFhvMv7Ugh6Gzy2d2fHAh5IiYX8/Py6wW7fKmUcSUOQA10HzyOAsGZpRRK4pMAint
+	 Z1CcufrRWYLCGeBnP8v9sZOH5juLUEy8b+cNYgvulDxgH4IqCjj1k4oZljXQLSjkHE
+	 Dq36bg63YuYjphT+ZkEn9e/KqNSQEeuAF5QdNBcuJe8fQsmH16nZHCAVsqGZ/1wCCi
+	 ReqpYUqMVhbPWDDPYDiO683QApfLl5PdKaqEftnn8EMONu2QQV5eNnM+z2p7/lU1gq
+	 lkx37EziKpZpQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -43,9 +43,9 @@ Cc: bpf@vger.kernel.org,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCHv6 bpf-next 18/28] selftests/bpf: Move get_time_ns to testing_helpers.h
-Date: Thu,  3 Aug 2023 09:34:10 +0200
-Message-ID: <20230803073420.1558613-19-jolsa@kernel.org>
+Subject: [PATCHv6 bpf-next 19/28] selftests/bpf: Add uprobe_multi skel test
+Date: Thu,  3 Aug 2023 09:34:11 +0200
+Message-ID: <20230803073420.1558613-20-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230803073420.1558613-1-jolsa@kernel.org>
 References: <20230803073420.1558613-1-jolsa@kernel.org>
@@ -57,85 +57,199 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We'd like to have single copy of get_time_ns used b bench and test_progs,
-but we can't just include bench.h, because of conflicting 'struct env'
-objects.
+Adding uprobe_multi test for skeleton load/attach functions,
+to test skeleton auto attach for uprobe_multi link.
 
-Moving get_time_ns to testing_helpers.h which is being included by both
-bench and test_progs objects.
+Test that bpf_get_func_ip works properly for uprobe_multi
+attachment.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/testing/selftests/bpf/bench.h                    |  9 ---------
- .../selftests/bpf/prog_tests/kprobe_multi_test.c       |  8 --------
- tools/testing/selftests/bpf/testing_helpers.h          | 10 ++++++++++
- 3 files changed, 10 insertions(+), 17 deletions(-)
+ .../bpf/prog_tests/uprobe_multi_test.c        | 76 ++++++++++++++++
+ .../selftests/bpf/progs/uprobe_multi.c        | 91 +++++++++++++++++++
+ 2 files changed, 167 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_multi.c
 
-diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftests/bpf/bench.h
-index 7ff32be3d730..68180d8f8558 100644
---- a/tools/testing/selftests/bpf/bench.h
-+++ b/tools/testing/selftests/bpf/bench.h
-@@ -81,15 +81,6 @@ void grace_period_latency_basic_stats(struct bench_res res[], int res_cnt,
- void grace_period_ticks_basic_stats(struct bench_res res[], int res_cnt,
- 				    struct basic_stats *gp_stat);
- 
--static inline __u64 get_time_ns(void)
--{
--	struct timespec t;
--
--	clock_gettime(CLOCK_MONOTONIC, &t);
--
--	return (u64)t.tv_sec * 1000000000 + t.tv_nsec;
--}
--
- static inline void atomic_inc(long *value)
- {
- 	(void)__atomic_add_fetch(value, 1, __ATOMIC_RELAXED);
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index 2173c4bb555e..179fe300534f 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -304,14 +304,6 @@ static void test_attach_api_fails(void)
- 	kprobe_multi__destroy(skel);
- }
- 
--static inline __u64 get_time_ns(void)
--{
--	struct timespec t;
--
--	clock_gettime(CLOCK_MONOTONIC, &t);
--	return (__u64) t.tv_sec * 1000000000 + t.tv_nsec;
--}
--
- static size_t symbol_hash(long key, void *ctx __maybe_unused)
- {
- 	return str_hash((const char *) key);
-diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
-index 5312323881b6..5b7a55136741 100644
---- a/tools/testing/selftests/bpf/testing_helpers.h
-+++ b/tools/testing/selftests/bpf/testing_helpers.h
-@@ -7,6 +7,7 @@
- #include <stdbool.h>
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-+#include <time.h>
- 
- int parse_num_list(const char *s, bool **set, int *set_len);
- __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_info *info);
-@@ -33,4 +34,13 @@ int load_bpf_testmod(bool verbose);
- int unload_bpf_testmod(bool verbose);
- int kern_sync_rcu(void);
- 
-+static inline __u64 get_time_ns(void)
+diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+new file mode 100644
+index 000000000000..5cd1116bbb62
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+@@ -0,0 +1,76 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <unistd.h>
++#include <test_progs.h>
++#include "uprobe_multi.skel.h"
++
++static char test_data[] = "test_data";
++
++noinline void uprobe_multi_func_1(void)
 +{
-+	struct timespec t;
-+
-+	clock_gettime(CLOCK_MONOTONIC, &t);
-+
-+	return (u64)t.tv_sec * 1000000000 + t.tv_nsec;
++	asm volatile ("");
 +}
 +
- #endif /* __TESTING_HELPERS_H */
++noinline void uprobe_multi_func_2(void)
++{
++	asm volatile ("");
++}
++
++noinline void uprobe_multi_func_3(void)
++{
++	asm volatile ("");
++}
++
++static void uprobe_multi_test_run(struct uprobe_multi *skel)
++{
++	skel->bss->uprobe_multi_func_1_addr = (__u64) uprobe_multi_func_1;
++	skel->bss->uprobe_multi_func_2_addr = (__u64) uprobe_multi_func_2;
++	skel->bss->uprobe_multi_func_3_addr = (__u64) uprobe_multi_func_3;
++
++	skel->bss->user_ptr = test_data;
++	skel->bss->pid = getpid();
++
++	/* trigger all probes */
++	uprobe_multi_func_1();
++	uprobe_multi_func_2();
++	uprobe_multi_func_3();
++
++	/*
++	 * There are 2 entry and 2 exit probe called for each uprobe_multi_func_[123]
++	 * function and each slepable probe (6) increments uprobe_multi_sleep_result.
++	 */
++	ASSERT_EQ(skel->bss->uprobe_multi_func_1_result, 2, "uprobe_multi_func_1_result");
++	ASSERT_EQ(skel->bss->uprobe_multi_func_2_result, 2, "uprobe_multi_func_2_result");
++	ASSERT_EQ(skel->bss->uprobe_multi_func_3_result, 2, "uprobe_multi_func_3_result");
++
++	ASSERT_EQ(skel->bss->uretprobe_multi_func_1_result, 2, "uretprobe_multi_func_1_result");
++	ASSERT_EQ(skel->bss->uretprobe_multi_func_2_result, 2, "uretprobe_multi_func_2_result");
++	ASSERT_EQ(skel->bss->uretprobe_multi_func_3_result, 2, "uretprobe_multi_func_3_result");
++
++	ASSERT_EQ(skel->bss->uprobe_multi_sleep_result, 6, "uprobe_multi_sleep_result");
++}
++
++static void test_skel_api(void)
++{
++	struct uprobe_multi *skel = NULL;
++	int err;
++
++	skel = uprobe_multi__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_multi__open_and_load"))
++		goto cleanup;
++
++	err = uprobe_multi__attach(skel);
++	if (!ASSERT_OK(err, "uprobe_multi__attach"))
++		goto cleanup;
++
++	uprobe_multi_test_run(skel);
++
++cleanup:
++	uprobe_multi__destroy(skel);
++}
++
++void test_uprobe_multi_test(void)
++{
++	if (test__start_subtest("skel_api"))
++		test_skel_api();
++}
+diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/testing/selftests/bpf/progs/uprobe_multi.c
+new file mode 100644
+index 000000000000..ab467970256a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
+@@ -0,0 +1,91 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <stdbool.h>
++
++char _license[] SEC("license") = "GPL";
++
++__u64 uprobe_multi_func_1_addr = 0;
++__u64 uprobe_multi_func_2_addr = 0;
++__u64 uprobe_multi_func_3_addr = 0;
++
++__u64 uprobe_multi_func_1_result = 0;
++__u64 uprobe_multi_func_2_result = 0;
++__u64 uprobe_multi_func_3_result = 0;
++
++__u64 uretprobe_multi_func_1_result = 0;
++__u64 uretprobe_multi_func_2_result = 0;
++__u64 uretprobe_multi_func_3_result = 0;
++
++__u64 uprobe_multi_sleep_result = 0;
++
++int pid = 0;
++bool test_cookie = false;
++void *user_ptr = 0;
++
++static __always_inline bool verify_sleepable_user_copy(void)
++{
++	char data[9];
++
++	bpf_copy_from_user(data, sizeof(data), user_ptr);
++	return bpf_strncmp(data, sizeof(data), "test_data") == 0;
++}
++
++static void uprobe_multi_check(void *ctx, bool is_return, bool is_sleep)
++{
++	if (bpf_get_current_pid_tgid() >> 32 != pid)
++		return;
++
++	__u64 cookie = test_cookie ? bpf_get_attach_cookie(ctx) : 0;
++	__u64 addr = bpf_get_func_ip(ctx);
++
++#define SET(__var, __addr, __cookie) ({			\
++	if (addr == __addr &&				\
++	   (!test_cookie || (cookie == __cookie)))	\
++		__var += 1;				\
++})
++
++	if (is_return) {
++		SET(uretprobe_multi_func_1_result, uprobe_multi_func_1_addr, 2);
++		SET(uretprobe_multi_func_2_result, uprobe_multi_func_2_addr, 3);
++		SET(uretprobe_multi_func_3_result, uprobe_multi_func_3_addr, 1);
++	} else {
++		SET(uprobe_multi_func_1_result, uprobe_multi_func_1_addr, 3);
++		SET(uprobe_multi_func_2_result, uprobe_multi_func_2_addr, 1);
++		SET(uprobe_multi_func_3_result, uprobe_multi_func_3_addr, 2);
++	}
++
++#undef SET
++
++	if (is_sleep && verify_sleepable_user_copy())
++		uprobe_multi_sleep_result += 1;
++}
++
++SEC("uprobe.multi//proc/self/exe:uprobe_multi_func_*")
++int uprobe(struct pt_regs *ctx)
++{
++	uprobe_multi_check(ctx, false, false);
++	return 0;
++}
++
++SEC("uretprobe.multi//proc/self/exe:uprobe_multi_func_*")
++int uretprobe(struct pt_regs *ctx)
++{
++	uprobe_multi_check(ctx, true, false);
++	return 0;
++}
++
++SEC("uprobe.multi.s//proc/self/exe:uprobe_multi_func_*")
++int uprobe_sleep(struct pt_regs *ctx)
++{
++	uprobe_multi_check(ctx, false, true);
++	return 0;
++}
++
++SEC("uretprobe.multi.s//proc/self/exe:uprobe_multi_func_*")
++int uretprobe_sleep(struct pt_regs *ctx)
++{
++	uprobe_multi_check(ctx, true, true);
++	return 0;
++}
 -- 
 2.41.0
 
