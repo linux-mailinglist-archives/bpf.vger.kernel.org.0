@@ -1,175 +1,256 @@
-Return-Path: <bpf+bounces-6932-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6933-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ABE776F7A7
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 04:13:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4B5076F7D1
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 04:25:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E27B1C216C1
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 02:13:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89F422810F3
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 02:25:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949EB1FA7;
-	Fri,  4 Aug 2023 02:12:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B167A15A8;
+	Fri,  4 Aug 2023 02:24:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E9A1FA2
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 02:12:09 +0000 (UTC)
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D62B4EC1
-	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 19:11:37 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-686f8614ce5so1484412b3a.3
-        for <bpf@vger.kernel.org>; Thu, 03 Aug 2023 19:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691115071; x=1691719871;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ih06HArn9iAryRcOKi/nyaTeAf4B1pYQ5n3lzBGwExw=;
-        b=ew4rB+H6wBVVmeh/ui4LIzo+yvnm98oRAW4V9bmZm0KpT/glMjqRgPghU5Pe7h4Esc
-         ULiTigZbpum8dCcqLDUYCXDomBKmpj2JOHEklft07nNCBx1z82UYhCKCpuxj1PHAOzaE
-         NMax1U3YW9v1aHa4//bwc1cTcDl4jdIR8DOmMX78OtylMdsneAv0M+DVuZ/oUvlzDjuy
-         /Eo3HBz3BDHFXmGEXCMfBNAi9hv3UebxWREasDtlfQDxVygFxm5W9omrOT80TWEdv1+I
-         6Q3E3HhXfnIfxGtKYjYgSXjJeDKzMUjL0JxLCdBqUgV5jfcWHjIg0Oq1bhb98rkkscuS
-         E9Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691115071; x=1691719871;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ih06HArn9iAryRcOKi/nyaTeAf4B1pYQ5n3lzBGwExw=;
-        b=ZHY6xVUrD4AD9bnGdu20Sg7C1mdtymE3o9ODqcwJny700uBXrilP2emPT+/sZ/9PxK
-         j58abk+vm5KP8JulvqZypFEjOBL224mRg9ozMfLEzBOw1skT131p4OMCeOJCZf+abMvp
-         VytVp2Bi1PrzZaxB+hcprAdDb0RGDm9jTIkESaapBEt7wdCEibbDEFNRcDM39hkHwHUk
-         22vFijn1j9NdxEXkcOj4hFSxuViPw/TorblF4+C3Tf6r676my/+x643V8TvPt+hdgef9
-         mh4t//SNbqqsXkHo9IfVeAMEuyo0jOUhNQW/X90JvrBCqkaxYXAnSJftRoVbVhMQZQYf
-         iHIA==
-X-Gm-Message-State: AOJu0YzGUuZmKi3Jjb1mvOh3ccwPEmN7QyIKyiL2XIwI1hE8LwG4UzDR
-	RGiWsdB1ZHb3j7VfGPbls3dg3g==
-X-Google-Smtp-Source: AGHT+IHuwaCo50Vehua+AGfdkcRKSRRWmSFHlzqzBP1tYtF/TOsW9qAWFW9rXyDnlZAMKZPqtqPdwQ==
-X-Received: by 2002:a05:6a00:189d:b0:687:2be1:e2f6 with SMTP id x29-20020a056a00189d00b006872be1e2f6mr555577pfh.16.1691115071421;
-        Thu, 03 Aug 2023 19:11:11 -0700 (PDT)
-Received: from charlie.ba.rivosinc.com ([66.220.2.162])
-        by smtp.gmail.com with ESMTPSA id g6-20020a655806000000b0055c558ac4edsm369499pgr.46.2023.08.03.19.11.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 19:11:10 -0700 (PDT)
-From: Charlie Jenkins <charlie@rivosinc.com>
-Date: Thu, 03 Aug 2023 19:10:35 -0700
-Subject: [PATCH 10/10] RISC-V: Refactor bug and traps instructions
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70DD11105;
+	Fri,  4 Aug 2023 02:24:55 +0000 (UTC)
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2077.outbound.protection.outlook.com [40.107.7.77])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD862130;
+	Thu,  3 Aug 2023 19:24:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aWV8VHR2Ou30CDrhYMWMkMui57FX9o7uCUyRJCsTcn68S8QVZ9zlNJmRG+JA1OSagrrepV45cjbE8E82BIeGu6gGoPxa1dY1hlFAlC/bbp9u1GH95hbl+5kiBv0ZPnkwHStbYZqhj0IBbp2QmT8b14xCrzW9f4NLXenys3aJ6NNI2lPS7t96esoaN61alojMrwM5UqEZVEyrqc0ZIYXyzfhTRBry9IWBQ5WrqNisGJaueqwBkNhH/RAkEMUo9vJtSFD71DO/SHSh5VErnvnBxpe0P5kupVt5yCbH8AC9RSCJxR8lo6kOd+5gUsc2yDdxjvI+9PLwO+9gWnDUKMrmLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fm1jzY4HxxL2rnalmJXLZHi5edPPOjUHyGaGnSAE/Jw=;
+ b=Rp9P2FF7eTGIQYSwgUFZ+uZZXe8g4JkGZFLhtdNAzsaWxI9+htlm+4C6v43Lu+AL/4ahqMXGkOD7Ce7MLx48lyZFWtZpYsHy8g1EOx01bQSx5fAC6hzYOLBsd+2818X7mpM52EHlRGvzQ2eKKfy9zFwdHQ6YWu89NUX1WAvD22H8ZeCeSfezkNEFkSNdgS6jsbET1bZn7RYHEIJRZpnG4vDzbLh+JVYWfQZmRPMUlJYT3c6cJW10J/mBQqdRqAJY19XWkIIko3BYSiZy19G6pbE6uV//r3nb7aNiqzGkSc151nAm3GQhYMyKU0/RqFYYJwBM0kB4HOc4TzM4pJ+vqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fm1jzY4HxxL2rnalmJXLZHi5edPPOjUHyGaGnSAE/Jw=;
+ b=3ha4WfE20oB1BhNEqbqM3i2lxtonrbtrZJQqd/f4nmWeQkqISdaQVvLcXyDq+JsZVlXE4IvFSmSrj17qe+1/l/g77pt15oALULTUcrSFZl5h8OH12tX4yE3O5SOoQ7KBQqkpdrPrQYgx1wkCktLEmTUuyvnocwT/TJkS2x0fWOhjEecdxiqctdT4/q0+MJ+FlvFcbKeqEw6TEfzzgZIW9fulmIvmlMf3A/P/WZEONJ3tcguIICg+J/213X133+0etoWfniPA2tomsWZgLJyCJO7u2o3Bhu2MSRWP7wYkz+3MefXzyuGoO+igQ3zseP30wh9uzYKCIVWOxFxeH1ifjQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com (2603:10a6:7:83::14)
+ by PA4PR04MB7632.eurprd04.prod.outlook.com (2603:10a6:102:e8::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Fri, 4 Aug
+ 2023 02:24:48 +0000
+Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com
+ ([fe80::2867:7a72:20ac:5f71]) by HE1PR0402MB3497.eurprd04.prod.outlook.com
+ ([fe80::2867:7a72:20ac:5f71%3]) with mapi id 15.20.6652.020; Fri, 4 Aug 2023
+ 02:24:47 +0000
+Date: Fri, 4 Aug 2023 10:24:59 +0800
+From: Geliang Tang <geliang.tang@suse.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Florent Revest <revest@chromium.org>,
+	Brendan Jackman <jackmanb@chromium.org>,
+	Matthieu Baerts <matthieu.baerts@tessares.net>,
+	Mat Martineau <martineau@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Eric Paris <eparis@parisplace.org>, Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org, mptcp@lists.linux.dev,
+	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v9 4/4] selftests/bpf: Add mptcpify test
+Message-ID: <20230804022459.GA28296@localhost>
+References: <cover.1691069778.git.geliang.tang@suse.com>
+ <92ee6be5a465601ff3a2df29b6a517086e87ca3c.1691069778.git.geliang.tang@suse.com>
+ <1bf7f5cf-a944-a284-28af-83a6603542fb@linux.dev>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1bf7f5cf-a944-a284-28af-83a6603542fb@linux.dev>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-ClientProxiedBy: SGBP274CA0002.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::14)
+ To HE1PR0402MB3497.eurprd04.prod.outlook.com (2603:10a6:7:83::14)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230803-master-refactor-instructions-v4-v1-10-2128e61fa4ff@rivosinc.com>
-References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
-In-Reply-To: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
-To: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
- kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, bpf@vger.kernel.org
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
- Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
- Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, 
- Ard Biesheuvel <ardb@kernel.org>, Anup Patel <anup@brainfault.org>, 
- Atish Patra <atishp@atishpatra.org>, Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, 
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
- =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>, 
- Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, 
- Nam Cao <namcaov@gmail.com>, Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HE1PR0402MB3497:EE_|PA4PR04MB7632:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8d5cdb5b-3c1e-434e-3069-08db9491f92b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Bkg/B50dGKh9j/hMbOO7vj5/CRkdM+eGLYb3PH8Zy9c5sx6H2u60QuFO+JmBgDCF76bvhmCGJHxbcet7GqSOP3xAMtdWNvcLub9DkVuVQt77DZsMAH82rAr4hLJ9PDxCVNoMFd2W6cIsNyf2nlJuaBFz7C8EQjBH/v4TpYmK/ZMlpBYcfY1WOHvVL3e/jXiNL1/mkGMKM+fJbduKTbHa28Tzoiq5dRGOqkgvkNiVGlVtq7jq1OHEpZ5J+c7tWNBBXZgDu3THTSfVI7nfVWLQ3uXcxOK1V9Oohu+TMLIT8UHi8duvZWlvOmYO8xB8OzMU4x/VmtOLsiwvxH82b/6We/UymBO9snlRmNCQ99G8rs/X39tg1o33YdFNTj3uMZcvUSsfRxqz0hbUkgiHiFKmatkBwcr4/ZMjW+BWurMhlJ1HYTazNbLYyNta5VjVIe5q8ejaIUB6dpmTU2yoS3UMz17KgAAVOpkaq8Qga6cCM2n+XMUyeQ/ehF24ebPHT4wPijNHBcmzhYYmI218nbt+7DRnDL6O2LYTS5KNeK0Zxq7Lkt5mi2GOQzeIk29TBYBKaTleXfPIxe7F7NgGU72v1lKLevlOLMciHCNJpdSHgio=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3497.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(346002)(376002)(39860400002)(366004)(136003)(396003)(451199021)(1800799003)(186006)(1076003)(53546011)(8676002)(26005)(6506007)(83380400001)(66476007)(2906002)(316002)(4326008)(66946007)(5660300002)(6916009)(66556008)(44832011)(8936002)(7416002)(41300700001)(6666004)(7406005)(6486002)(9686003)(6512007)(478600001)(54906003)(38100700002)(33716001)(33656002)(86362001)(13296009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?onN2daBVL0kIiYI8YzfK94zWLPEazeVTWaFhL2rlTrOG7kG8jVKDnnhboFZ+?=
+ =?us-ascii?Q?N53GpEplo4YfFrxdVw+IfGuZLtXSJJWHHtp19mwHqB/fF0zhMbaOBh8ru7vG?=
+ =?us-ascii?Q?B4MssmXgISPUUxrYjq8hZQjEu5dH3Ej873yD2YvAFaZU3GcSKa6Wu0iqslZe?=
+ =?us-ascii?Q?UD+KYA9atNspPbNyPd8PQVCuDcjblI/JrWwkF5IgFNMYIPMThjro2hhA6I1l?=
+ =?us-ascii?Q?nKOd6T06SDAmO8Fm0TakemwndsjDfIShXeRW5K/1GOFXCN9hlSU0qOzNwGSL?=
+ =?us-ascii?Q?8WqqOmcJ6761KJVZ2V4sxEdXBuv5+Q7lSIc4IEDWzUqFRpyTEaq9sa7BzA+d?=
+ =?us-ascii?Q?+EYi3ieVYpJWMrH9R1jbS6dHzYNlFT3llCnjapDgr/5a6MOf2L2ovCDGkitD?=
+ =?us-ascii?Q?+HU51pvhlXhKwvv3OKYUmn8UarokMQXACYwfFde76/jd+9dtfI5dfHV4jq/a?=
+ =?us-ascii?Q?oqZBYvQTlAK3cI8gROwqENd0cgMJ/IwmviYFvjJ4/mfbWTbTNmm7D6ARt5JB?=
+ =?us-ascii?Q?Aqrn4ZqU0SfkEa3WXaHfFT/8MKBWP1KdIBbo/fieFibbfUhjG9BjHCnJOF5X?=
+ =?us-ascii?Q?lbpsFnm5V/7wQwjSXy7YDexDM3D2AcqmtJJ13Lx2E1RF2Nx49+Mi87+a43B8?=
+ =?us-ascii?Q?8OAcJR1t0APT6CUunqC+IHo4cQro11mfK/ZgefX5oybAKm8IdBhApHqM15ck?=
+ =?us-ascii?Q?9mYF+4eZ8gKQ2HdjJvr3NHcRtdBCihjfKJTRrDVZZf7TojaV7nNgdDsLOpy+?=
+ =?us-ascii?Q?qO8fwqb1XDWYSouKQZC8X54WXR8/yk7J3UN2geN4PScqokPgWWlJPCsjfj4/?=
+ =?us-ascii?Q?e7tIYjCbguUASh1t3HrvPMAZ1Pm69t7m793TCAn85OjXqeFGHsZLgOv2BpNv?=
+ =?us-ascii?Q?oUVanOX9HYG4mBgjzIIx34D4Tq7Nf9Dwa9ImpZR2yGYRiFKXYq4PF9erEEtI?=
+ =?us-ascii?Q?Yz+nFCCG+lIrKPZ3tveLvfXkqPcll5g190bthWLRx/pohrpGvpzbNxZtI3D9?=
+ =?us-ascii?Q?9CqcvTbtmU+G7K40R+n1joPTrvCyoddpB+XTAnAZKVJM7XhiBpNeZoXEbXuH?=
+ =?us-ascii?Q?L8g3MaeaYTZm+J5z9i0XgNOrMmzVH4dP2hD6pSO8QOi+tAyn/cAKhQsSjDQA?=
+ =?us-ascii?Q?2FrYjyu55tfwBoKDPRZOLB8RAVKVwUOjSSNIny6NTTPhBUyey9LIcHE1pk9i?=
+ =?us-ascii?Q?nVVbU5DpwCrSIIMxSGBLznz7F3Nmp70InGBcPz9BtdcatatAelC1W2yNhxoE?=
+ =?us-ascii?Q?1Shoa7b4FRxUmWRvvE7kSCa17cwcxseEcIugzV1bQBtJqR8OqGqa838r4RdA?=
+ =?us-ascii?Q?AMeHunIa/q8lMpogbypUh8PCIWD4iSWWFgc31x/ef1mbR4mrvV7/eGAECFGx?=
+ =?us-ascii?Q?C/uGBQQFOUyGEtWTKbJ7JZOIJrlJfPCZ9Kjx+tTHTweeG+V6U/6CPUFzEAex?=
+ =?us-ascii?Q?yWeQv1Y5WeyfhhfDUerjiShpUjnN3uF7tiaFI00nqWS33YNxLN7Tv6/UO/pI?=
+ =?us-ascii?Q?MMoJ5o4x639jL6yiMPACCtSytL4eWTbv9PQJh+nJbqz5MBoORztv0tfDFzP5?=
+ =?us-ascii?Q?81vB239vxUejbURGrN3XukjMlQqqFXosScOFP8Zt?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d5cdb5b-3c1e-434e-3069-08db9491f92b
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3497.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 02:24:47.8188
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i2icH+i7Fapm5+jc5cq5Cw4enEluL2D2afhbqltBw0RpC0QparNNs3ly9RagzpMe3aq78iHEtMrsW/pWOIkUug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7632
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Use shared instruction definitions in insn.h instead of manually
-constructing them.
+Hi Yonghong,
 
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
----
- arch/riscv/include/asm/bug.h | 18 +++++-------------
- arch/riscv/kernel/traps.c    |  9 +++++----
- 2 files changed, 10 insertions(+), 17 deletions(-)
+On Thu, Aug 03, 2023 at 06:23:57PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 8/3/23 6:41 AM, Geliang Tang wrote:
+> > Implement a new test program mptcpify: if the family is AF_INET or
+> > AF_INET6, the type is SOCK_STREAM, and the protocol ID is 0 or
+> > IPPROTO_TCP, set it to IPPROTO_MPTCP. It will be hooked in
+> > update_socket_protocol().
+> > 
+> > Extend the MPTCP test base, add a selftest test_mptcpify() for the
+> > mptcpify case. Open and load the mptcpify test prog to mptcpify the
+> > TCP sockets dynamically, then use start_server() and connect_to_fd()
+> > to create a TCP socket, but actually what's created is an MPTCP
+> > socket, which can be verified through the outputs of 'ss' and 'nstat'
+> > commands.
+> > 
+> > Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+> > Signed-off-by: Geliang Tang <geliang.tang@suse.com>
+> > ---
+> >   .../testing/selftests/bpf/prog_tests/mptcp.c  | 94 +++++++++++++++++++
+> >   tools/testing/selftests/bpf/progs/mptcpify.c  | 25 +++++
+> >   2 files changed, 119 insertions(+)
+> >   create mode 100644 tools/testing/selftests/bpf/progs/mptcpify.c
+> > 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> > index 4407bd5c9e9a..caab3aa6a162 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> > @@ -6,6 +6,7 @@
+> >   #include "cgroup_helpers.h"
+> >   #include "network_helpers.h"
+> >   #include "mptcp_sock.skel.h"
+> > +#include "mptcpify.skel.h"
+> >   char NS_TEST[32];
+> > @@ -195,8 +196,101 @@ static void test_base(void)
+> >   	close(cgroup_fd);
+> >   }
+> > +static void send_byte(int fd)
+> > +{
+> > +	char b = 0x55;
+> > +
+> > +	ASSERT_EQ(write(fd, &b, sizeof(b)), 1, "send single byte");
+> > +}
+> > +
+> > +static int verify_mptcpify(void)
+> > +{
+> > +	char cmd[256];
+> > +	int err = 0;
+> > +
+> > +	snprintf(cmd, sizeof(cmd),
+> > +		 "ip netns exec %s ss -tOni | grep -q '%s'",
+> > +		 NS_TEST, "tcp-ulp-mptcp");
+> 
+> Could you show what is the expected output from the above command line
+>   ip netns exec %s ss -tOni
+> ?
+> This way, users can easily reason about the ss states based on tests.
 
-diff --git a/arch/riscv/include/asm/bug.h b/arch/riscv/include/asm/bug.h
-index 1aaea81fb141..6d9002d93f85 100644
---- a/arch/riscv/include/asm/bug.h
-+++ b/arch/riscv/include/asm/bug.h
-@@ -11,21 +11,13 @@
- #include <linux/types.h>
- 
- #include <asm/asm.h>
-+#include <asm/insn.h>
- 
--#define __INSN_LENGTH_MASK  _UL(0x3)
--#define __INSN_LENGTH_32    _UL(0x3)
--#define __COMPRESSED_INSN_MASK	_UL(0xffff)
-+#define __IS_BUG_INSN_32(insn) riscv_insn_is_c_ebreak(insn)
-+#define __IS_BUG_INSN_16(insn) riscv_insn_is_ebreak(insn)
- 
--#define __BUG_INSN_32	_UL(0x00100073) /* ebreak */
--#define __BUG_INSN_16	_UL(0x9002) /* c.ebreak */
--
--#define GET_INSN_LENGTH(insn)						\
--({									\
--	unsigned long __len;						\
--	__len = ((insn & __INSN_LENGTH_MASK) == __INSN_LENGTH_32) ?	\
--		4UL : 2UL;						\
--	__len;								\
--})
-+#define __BUG_INSN_32	RVG_MATCH_EBREAK
-+#define __BUG_INSN_16	RVC_MATCH_C_EBREAK
- 
- typedef u32 bug_insn_t;
- 
-diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index f910dfccbf5d..970b118d36b5 100644
---- a/arch/riscv/kernel/traps.c
-+++ b/arch/riscv/kernel/traps.c
-@@ -22,6 +22,7 @@
- #include <asm/asm-prototypes.h>
- #include <asm/bug.h>
- #include <asm/csr.h>
-+#include <asm/insn.h>
- #include <asm/processor.h>
- #include <asm/ptrace.h>
- #include <asm/syscall.h>
-@@ -243,7 +244,7 @@ static inline unsigned long get_break_insn_length(unsigned long pc)
- 	if (get_kernel_nofault(insn, (bug_insn_t *)pc))
- 		return 0;
- 
--	return GET_INSN_LENGTH(insn);
-+	return INSN_LEN(insn);
- }
- 
- void handle_break(struct pt_regs *regs)
-@@ -389,10 +390,10 @@ int is_valid_bugaddr(unsigned long pc)
- 		return 0;
- 	if (get_kernel_nofault(insn, (bug_insn_t *)pc))
- 		return 0;
--	if ((insn & __INSN_LENGTH_MASK) == __INSN_LENGTH_32)
--		return (insn == __BUG_INSN_32);
-+	if (INSN_IS_C(insn))
-+		return __IS_BUG_INSN_16(insn);
- 	else
--		return ((insn & __COMPRESSED_INSN_MASK) == __BUG_INSN_16);
-+		return __IS_BUG_INSN_32(insn);
- }
- #endif /* CONFIG_GENERIC_BUG */
- 
+There're too many items in the output of command 'ip netns exec %s ss -tOni':
 
--- 
-2.34.1
+'''
+State Recv-Q Send-Q Local Address:Port  Peer Address:Port Process                                                                                                                                                                                                                                                                                                                                                                                                                                    
+ESTAB 0      0          127.0.0.1:42225    127.0.0.1:44180 cubic wscale:7,7 rto:201 rtt:0.034/0.017 ato:40 mss:16640 pmtu:65535 rcvmss:536 advmss:65483 cwnd:10 bytes_received:1 segs_out:1 segs_in:3 data_segs_in:1 send 39152941176bps lastsnd:7 lastrcv:7 lastack:7 pacing_rate 78305882352bps delivered:1 app_limited rcv_space:33280 rcv_ssthresh:33280 minrtt:0.034 snd_wnd:33280 tcp-ulp-mptcp flags:Mec token:0000(id:0)/3a1e0d3c(id:0) seq:c2802f11c5228db6 sfseq:1 ssnoff:49d3c135 maplen:1
+ESTAB 0      0          127.0.0.1:44180    127.0.0.1:42225 cubic wscale:7,7 rto:201 rtt:0.036/0.02 mss:16640 pmtu:65535 rcvmss:536 advmss:65483 cwnd:10 bytes_sent:1 bytes_acked:2 segs_out:3 segs_in:2 data_segs_out:1 send 36977777778bps lastsnd:7 lastrcv:7 lastack:7 pacing_rate 72200677960bps delivery_rate 8874666664bps delivered:2 rcv_space:33280 rcv_ssthresh:33280 minrtt:0.015 snd_wnd:33280 tcp-ulp-mptcp flags:Mmec token:0000(id:0)/39429ce(id:0) seq:e3ed00de37c805c sfseq:1 ssnoff:d4e4d561 maplen:0
+'''
 
+We only care about this 'tcp-ulp-mptcp' item.
+
+Show all output will confuse users. So we just pick and test the only
+item we care.
+
+> 
+> > +	if (!ASSERT_OK(system(cmd), "No tcp-ulp-mptcp found!"))
+> > +		err++;
+> > +
+> > +	snprintf(cmd, sizeof(cmd),
+> > +		 "ip netns exec %s nstat -asz %s | awk '%s' | grep -q '%s'",
+> > +		 NS_TEST, "MPTcpExtMPCapableSYNACKRX",
+> > +		 "NR==1 {next} {print $2}", "1");
+> 
+> The same thing here. Could you show the expected output with
+>    ip netns exec %s nstat -asz %s
+> ?
+
+The output of 'ip netns exec %s nstat -asz %s' is:
+
+'''
+#kernel
+MPTcpExtMPCapableSYNACKRX       1                  0.0
+'''
+
+The same, we only check if it contains an MPTcpExtMPCapableSYNACKRX, not
+show the output.
+
+-Geliang
+
+> 
+> > +	if (!ASSERT_OK(system(cmd), "No MPTcpExtMPCapableSYNACKRX found!"))
+> > +		err++;
+> > +
+> > +	return err;
+> > +}
+> > +
+> [...]
 
