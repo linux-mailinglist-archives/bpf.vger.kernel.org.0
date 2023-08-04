@@ -1,38 +1,38 @@
-Return-Path: <bpf+bounces-7022-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7023-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FA5F770510
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 17:43:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EE7577054B
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 17:53:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DBB21C2181A
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 15:43:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD7FA28276E
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 15:53:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F6D1804C;
-	Fri,  4 Aug 2023 15:43:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6745B1805F;
+	Fri,  4 Aug 2023 15:53:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01C54CA6E
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 15:43:24 +0000 (UTC)
-Received: from out-112.mta1.migadu.com (out-112.mta1.migadu.com [IPv6:2001:41d0:203:375::70])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDF5170F
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 08:43:23 -0700 (PDT)
-Message-ID: <ad78a828-6c83-06c3-0154-ca53f22b03a9@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38097BE7B
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 15:52:59 +0000 (UTC)
+Received: from out-104.mta0.migadu.com (out-104.mta0.migadu.com [91.218.175.104])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B474EE0
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 08:52:45 -0700 (PDT)
+Message-ID: <a2a3bd2e-a254-997f-a437-cc95e4482b5e@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1691163801; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	t=1691164362; h=from:from:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QXrUeP429xEL/WRuddVSXwTO8nw+ktCiM1mUMoAM7yI=;
-	b=FTZ8Ktcmkb7QwcyeivAW8N4hOXMSMNsKE1+1kaUYm083m9bZ7Ds8bKEaEPr7TKgzk7+0Rd
-	HsJ3gp/8RMLPzGSJ3lcax7wLHlz5U1VC5CABT2rggRjAw6rWHnax2oDUzU2UNsCC8lB4MN
-	IFASoVJ/AVTKPyU9F64UePLyL2riy5U=
-Date: Fri, 4 Aug 2023 08:43:16 -0700
+	bh=04bz/lLp1mN3/sJ1RwJUlFCdDbNah/HJ6PDbfNdfz1g=;
+	b=EZOvx/WwuYhJommlqcZVn/24LT672D1GjCrTULGeViQj5n2OmgJk//JM92JY0HRv8TW7bk
+	0S3lTMShWNCMCWVrN2LQKAShpUVXb2eSLsCToH1SvrhjfiXW0YXGp0NZhRHzkrj5FExXPa
+	u8w2IpG53VFj95+OuZ1BqqYod8V9K/o=
+Date: Fri, 4 Aug 2023 08:52:37 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -40,21 +40,22 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH v1 bpf-next 5/7] bpf: Consider non-owning refs to
- refcounted nodes RCU protected
+Subject: Re: [PATCH v1 bpf-next 1/2] [RFC] bpf: Introduce BPF_F_VMA_NEXT flag
+ for bpf_find_vma helper
 Content-Language: en-US
 To: David Marchevsky <david.marchevsky@linux.dev>,
- Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Dave Marchevsky <davemarchevsky@fb.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
-References: <20230801203630.3581291-1-davemarchevsky@fb.com>
- <20230801203630.3581291-6-davemarchevsky@fb.com>
- <eda219c8-88ef-0907-377c-eb965c3f1008@linux.dev>
- <e040f58a-4505-9333-2250-57df8ab7290e@linux.dev>
+ Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>,
+ Nathan Slingerland <slinger@meta.com>
+References: <20230801145414.418145-1-davemarchevsky@fb.com>
+ <CAADnVQKo5VTkmS+DdYc5a8Hns4meptn7g76dOjxmJCHgpo29hQ@mail.gmail.com>
+ <a07132a2-9828-a84a-af5b-ab660678157d@linux.dev>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <e040f58a-4505-9333-2250-57df8ab7290e@linux.dev>
+In-Reply-To: <a07132a2-9828-a84a-af5b-ab660678157d@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -67,188 +68,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 
 
-On 8/3/23 11:47 PM, David Marchevsky wrote:
-> On 8/2/23 1:59 AM, Yonghong Song wrote:
->>
->>
->> On 8/1/23 1:36 PM, Dave Marchevsky wrote:
->>> The previous patch in the series ensures that the underlying memory of
->>> nodes with bpf_refcount - which can have multiple owners - is not reused
->>> until RCU Tasks Trace grace period has elapsed. This prevents
->>> use-after-free with non-owning references that may point to
->>> recently-freed memory. While RCU read lock is held, it's safe to
->>> dereference such a non-owning ref, as by definition RCU GP couldn't have
->>> elapsed and therefore underlying memory couldn't have been reused.
+On 8/3/23 11:59 PM, David Marchevsky wrote:
+> On 8/1/23 4:41 PM, Alexei Starovoitov wrote:
+>> On Tue, Aug 1, 2023 at 7:54 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
 >>>
->>>   From the perspective of verifier "trustedness" non-owning refs to
->>> refcounted nodes are now trusted only in RCU CS and therefore should no
->>> longer pass is_trusted_reg, but rather is_rcu_reg. Let's mark them
->>> MEM_RCU in order to reflect this new state.
+>>> At Meta we have a profiling daemon which periodically collects
+>>> information on many hosts. This collection usually involves grabbing
+>>> stacks (user and kernel) using perf_event BPF progs and later symbolicating
+>>> them. For user stacks we try to use BPF_F_USER_BUILD_ID and rely on
+>>> remote symbolication, but BPF_F_USER_BUILD_ID doesn't always succeed. In
+>>> those cases we must fall back to digging around in /proc/PID/maps to map
+>>> virtual address to (binary, offset). The /proc/PID/maps digging does not
+>>> occur synchronously with stack collection, so the process might already
+>>> be gone, in which case it won't have /proc/PID/maps and we will fail to
+>>> symbolicate.
 >>>
->>> Similarly to bpf_spin_unlock being a non-owning ref invalidation point,
->>> where non-owning ref reg states are clobbered so that they cannot be
->>> used outside of the critical section, currently all MEM_RCU regs are
->>> marked untrusted after bpf_rcu_read_unlock. This patch makes
->>> bpf_rcu_read_unlock a non-owning ref invalidation point as well,
->>> clobbering the non-owning refs instead of marking untrusted. In the
->>> future we may want to allow untrusted non-owning refs in which case we
->>> can remove this custom logic without breaking BPF programs as it's more
->>> restrictive than the default. That's a big change in semantics, though,
->>> and this series is focused on fixing the use-after-free in most
->>> straightforward way.
+>>> This 'exited process problem' doesn't occur very often as
+>>> most of the prod services we care to profile are long-lived daemons,
+>>> there are enough usecases to warrant a workaround: a BPF program which
+>>> can be optionally loaded at data collection time and essentially walks
+>>> /proc/PID/maps. Currently this is done by walking the vma list:
 >>>
->>> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
->>> ---
->>>    include/linux/bpf.h   |  3 ++-
->>>    kernel/bpf/verifier.c | 17 +++++++++++++++--
->>>    2 files changed, 17 insertions(+), 3 deletions(-)
+>>>    struct vm_area_struct* mmap = BPF_CORE_READ(mm, mmap);
+>>>    mmap_next = BPF_CORE_READ(rmap, vm_next); /* in a loop */
 >>>
->>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->>> index ceaa8c23287f..37fba01b061a 100644
->>> --- a/include/linux/bpf.h
->>> +++ b/include/linux/bpf.h
->>> @@ -653,7 +653,8 @@ enum bpf_type_flag {
->>>        MEM_RCU            = BIT(13 + BPF_BASE_TYPE_BITS),
->>>          /* Used to tag PTR_TO_BTF_ID | MEM_ALLOC references which are non-owning.
->>> -     * Currently only valid for linked-list and rbtree nodes.
->>> +     * Currently only valid for linked-list and rbtree nodes. If the nodes
->>> +     * have a bpf_refcount_field, they must be tagged MEM_RCU as well.
+>>> Since commit 763ecb035029 ("mm: remove the vma linked list") there's no
+>>> longer a vma linked list to walk. Walking the vma maple tree is not as
+>>> simple as hopping struct vm_area_struct->vm_next. That commit replaces
+>>> vm_next hopping with calls to find_vma(mm, addr) helper function, which
+>>> returns the vma containing addr, or if no vma contains addr,
+>>> the closest vma with higher start addr.
+>>>
+>>> The BPF helper bpf_find_vma is unsurprisingly a thin wrapper around
+>>> find_vma, with the major difference that no 'closest vma' is returned if
+>>> there is no VMA containing a particular address. This prevents BPF
+>>> programs from being able to use bpf_find_vma to iterate all vmas in a
+>>> task in a reasonable way.
+>>>
+>>> This patch adds a BPF_F_VMA_NEXT flag to bpf_find_vma which restores
+>>> 'closest vma' behavior when used. Because this is find_vma's default
+>>> behavior it's as straightforward as nerfing a 'vma contains addr' check
+>>> on find_vma retval.
+>>>
+>>> Also, change bpf_find_vma's address parameter to 'addr' instead of
+>>> 'start'. The former is used in documentation and more accurately
+>>> describes the param.
+>>>
+>>> [
+>>>    RFC: This isn't an ideal solution for iteration of all vmas in a task
+>>>         in the long term for a few reasons:
+>>>
+>>>       * In nmi context, second call to bpf_find_vma will fail because
+>>>         irq_work is busy, so can't iterate all vmas
+>>>       * Repeatedly taking and releasing mmap_read lock when a dedicated
+>>>         iterate_all_vmas(task) kfunc could just take it once and hold for
+>>>         all vmas
+>>>
+>>>      My specific usecase doesn't do vma iteration in nmi context and I
+>>>      think the 'closest vma' behavior can be useful here despite locking
+>>>      inefficiencies.
+>>>
+>>>      When Alexei and I discussed this offline, two alternatives to
+>>>      provide similar functionality while addressing above issues seemed
+>>>      reasonable:
+>>>
+>>>        * open-coded iterator for task vma. Similar to existing
+>>>          task_vma bpf_iter, but no need to create a bpf_link and read
+>>>          bpf_iter fd from userspace.
+>>>        * New kfunc taking callback similar bpf_find_vma, but iterating
+>>>          over all vmas in one go
+>>>
+>>>       I think this patch is useful on its own since it's a fairly minimal
+>>>       change and fixes my usecase. Sending for early feedback and to
+>>>       solicit further thought about whether this should be dropped in
+>>>       favor of one of the above options.
 >>
->> What does 'must' here mean?
+>> - In theory this patch can work, but patch 2 didn't attempt to actually
+>> use it in a loop to iterate all vma-s.
+>> Which is a bit of red flag whether such iteration is practical
+>> (either via bpf_loop or bpf_for).
 >>
+>> - This behavior of bpf_find_vma() feels too much implementation detail.
+>> find_vma will probably stay this way, since different parts of the kernel
+>> rely on it, but exposing it like BPF_F_VMA_NEXT leaks implementation too much.
+>>
+>> - Looking at task_vma_seq_get_next().. that's how vma iter should be done and
+>> I don't think bpf prog can do it on its own.
+>> Because with bpf_find_vma() the lock will drop at every step the problems
+>> described at that large comment will be hit sooner or later.
+>>
+>> All concerns combined I feel we better provide a new kfunc that iterates vma
+>> and drops the lock before invoking callback.
+>> It can be much simpler than task_vma_seq_get_next() if we don't drop the lock.
+>> Maybe it's ok.
+>> Doing it open coded iterators style is likely better.
+>> bpf_iter_vma_new() kfunc will do
+>> bpf_mmap_unlock_get_irq_work+mmap_read_trylock
+>> while bpf_iter_vma_destroy() will bpf_mmap_unlock_mm.
+>>
+>> I'd try to do open-code-iter first. It's a good test for the iter infra.
+>> bpf_iter_testmod_seq_new is an example of how to add a new iter.
+>>
+>> Another issue with bpf_find_vma is .arg1_type = ARG_PTR_TO_BTF_ID.
+>> It's not a trusted arg. We better move away from this legacy pointer.
+>> bpf_iter_vma_new() should accept only trusted ptr to task_struct.
+>> fwiw bpf_get_current_task_btf_proto has
+>> .ret_type = RET_PTR_TO_BTF_ID_TRUSTED and it matters here.
+>> The bpf prog might look like:
+>> task = bpf_get_current_task_btf();
+>> err = bpf_iter_vma_new(&it, task);
+>> while ((vma = bpf_iter_vma_next(&it))) ...;
+>> assuming lock is not dropped by _next.
 > 
-> Meaning that if there's any NON_OWN_REF-flagged
-> PTR_TO_BTF_ID which points to a struct with a bpf_refcount field,
-> it should also be flagged with MEM_RCU. If it isn't, it's a
-> verifier error.
-> 
->>>         */
->>>        NON_OWN_REF        = BIT(14 + BPF_BASE_TYPE_BITS),
->>>    diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index 9014b469dd9d..4bda365000d3 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -469,7 +469,8 @@ static bool type_is_ptr_alloc_obj(u32 type)
->>>      static bool type_is_non_owning_ref(u32 type)
->>>    {
->>> -    return type_is_ptr_alloc_obj(type) && type_flag(type) & NON_OWN_REF;
->>> +    return type_is_ptr_alloc_obj(type) &&
->>> +        type_flag(type) & NON_OWN_REF;
->>
->> There is no code change here.
->>
-> 
-> Yep, will undo in v2.
-> 
->>>    }
->>>      static struct btf_record *reg_btf_record(const struct bpf_reg_state *reg)
->>> @@ -8012,6 +8013,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
->>>        case PTR_TO_BTF_ID | PTR_TRUSTED:
->>>        case PTR_TO_BTF_ID | MEM_RCU:
->>>        case PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF:
->>> +    case PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF | MEM_RCU:
->>>            /* When referenced PTR_TO_BTF_ID is passed to release function,
->>>             * its fixed offset must be 0. In the other cases, fixed offset
->>>             * can be non-zero. This was already checked above. So pass
->>> @@ -10478,6 +10480,7 @@ static int process_kf_arg_ptr_to_btf_id(struct bpf_verifier_env *env,
->>>    static int ref_set_non_owning(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
->>>    {
->>>        struct bpf_verifier_state *state = env->cur_state;
->>> +    struct btf_record *rec = reg_btf_record(reg);
->>>          if (!state->active_lock.ptr) {
->>>            verbose(env, "verifier internal error: ref_set_non_owning w/o active lock\n");
->>> @@ -10490,6 +10493,9 @@ static int ref_set_non_owning(struct bpf_verifier_env *env, struct bpf_reg_state
->>>        }
->>>          reg->type |= NON_OWN_REF;
->>> +    if (rec->refcount_off >= 0)
->>> +        reg->type |= MEM_RCU;
->>
->> Should we check whether the state is in rcu cs before marking MEM_RCU?
->>
-> 
-> I think this is implicitly being enforced.
-> Rbtree/list kfuncs must be called under bpf_spin_lock,
-> and this series requires bpf_spin_{lock,unlock} helpers
-> to called in RCU CS if the BPF prog is sleepable.
+> The only concern here that doesn't seem reasonable to me is the
+> "too much implementation detail". I agree with the rest, though,
+> so will send a different series with new implementation and point
+>   to this discussion.
 
-I see.
+For reference, this is another use case for traversing
+vma's in the bpf program reported from bcc mailing list:
+   https://github.com/iovisor/bcc/pull/4679
 
-Alexei early mentioned that
-there is no need to put bpf_spin_lock inside RCU CS
-if for sleepable program, we do preempt_disable before
-real arch_spin_lock(). This is similar to to regular
-spin_lock/raw_spin_lock which does preempt_disable
-so spin_lock/spin_unlock region becomes an ATOMIC
-region which prevents any blocking.
-
-Not sure whether you want to implement in this
-patch set or in later patch set.
-
-> 
->>> +
->>>        return 0;
->>>    }
->>>    @@ -11327,10 +11333,16 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>>            struct bpf_func_state *state;
->>>            struct bpf_reg_state *reg;
->>>    +        if (in_rbtree_lock_required_cb(env) && (rcu_lock || rcu_unlock)) {
->>> +            verbose(env, "can't rcu read {lock,unlock} in rbtree cb\n");
->>> +            return -EACCES;
->>> +        }
->>> +
->>>            if (rcu_lock) {
->>>                verbose(env, "nested rcu read lock (kernel function %s)\n", func_name);
->>>                return -EINVAL;
->>>            } else if (rcu_unlock) {
->>> +            invalidate_non_owning_refs(env);
->>
->> If we have both spin lock and rcu like
->>
->>       bpf_rcu_read_lock()
->>       ...
->>       bpf_spin_lock()
->>       ...
->>       bpf_spin_unlock()  <=== invalidate all non_owning_refs
->>       ...                <=== MEM_RCU type is gone
->>       bpf_rcu_read_unlock()
->>
->> Maybe we could fine tune here to preserve MEM_RCU after bpf_spin_unlock()?
->>
-> 
-> IIUC, you're saying that we should no longer
-> have non-owning refs get clobbered after bpf_spin_unlock,
-> and instead just have rcu_read_unlock do its default
-> "MEM_RCU refs become PTR_UNTRUSTED" logic.
-> 
-> In the cover letter I mention that this is probably
-> the direction we want to go in in the long term, on
-> the comments on patch 3:
-> 
->    This might
->    allow custom non-owning ref lifetime + invalidation logic to be
->    entirely subsumed by MEM_RCU handling.
-> 
-> But I'm hesitant to do that in this fixes series
-> as I'd like to minimize changes that could introduce
-> additional bugs. This series' current changes keep the
-> clobbering rules effectively unchanged - can always
-> loosen them in the future. Also, I think we should
-> make this change for _all_ non-owning refs, (w/ and w/o
-> bpf_refcount field). Otherwise the verifier lifetime
-> of non-owning refs would change if BPF program writer
-> adds bpf_refcount field to their struct, or removes it.
->   
-> 
->>>                bpf_for_each_reg_in_vstate(env->cur_state, state, reg, ({
->>>                    if (reg->type & MEM_RCU) {
->>>                        reg->type &= ~(MEM_RCU | PTR_MAYBE_NULL);
->>> @@ -16679,7 +16691,8 @@ static int do_check(struct bpf_verifier_env *env)
->>>                        return -EINVAL;
->>>                    }
->>>    -                if (env->cur_state->active_rcu_lock) {
->>> +                if (env->cur_state->active_rcu_lock &&
->>> +                    !in_rbtree_lock_required_cb(env)) {
->>>                        verbose(env, "bpf_rcu_read_unlock is missing\n");
->>>                        return -EINVAL;
->>>                    }
+The use case is for that the application may not have frame pointer
+so bpf program will just scan stack's and find potential
+user text region pointers and report them. This is similar
+to what current arch (e.g., x86) code reporting crash stack.
 
