@@ -1,36 +1,36 @@
-Return-Path: <bpf+bounces-7042-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7043-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F0A3770A01
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 22:46:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 061CA770A2E
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 22:59:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 393701C20FB7
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 20:46:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4E10281AC3
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 20:59:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 979321DA3B;
-	Fri,  4 Aug 2023 20:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43F551DA53;
+	Fri,  4 Aug 2023 20:59:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5031E1AA95;
-	Fri,  4 Aug 2023 20:46:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50CB9C433C7;
-	Fri,  4 Aug 2023 20:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB381DA40;
+	Fri,  4 Aug 2023 20:59:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC36AC433C7;
+	Fri,  4 Aug 2023 20:59:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691181989;
-	bh=MeJG2vuAuzwQPAdsG0vf4tmGc9lh6I+FFfN9rIwpfm0=;
+	s=k20201202; t=1691182779;
+	bh=xl9ztlWBE79b1gyAU0i58q8O4xnhwyApAJm9B8ORFps=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D9tqZdJ30TDBdZpjaI3uDUgJjJV4vCo9oKGYzNfnFLJ4X0rK27qJuVmgenqbdcJM1
-	 OrqYnrLixy3ZCw2rcNFFVW20WKXlS5lWj7jUXR30VQjNFCPj+6JRBFwxYbmlRj4Q10
-	 ZMZti95gpxwYsBAiur8KkXwn204nEJt8MEGjRCIyc3Y3xyrCxZg+CS3seOvZZAO7fI
-	 ORlnmyBbgYmEh37ie26N+8g4gj0Rk22K3x2ZMSNA25LrOo/AOzsPm+x5qO/Gnd+EAv
-	 RZ47rQLifPaoSV+YNoJLUfgA+e+Zf2jVPmmrUumq/iPh1XxvEIZy4R6MfClwVafHLM
-	 PfhGXK21lNmUg==
-Date: Fri, 4 Aug 2023 22:46:24 +0200
+	b=TLfT6PIF0sqgoaK3n/922Fa8/0gbGRWzzj/dTE1NEb80e9p+UDpiPw2Etmo+/399F
+	 gj9QhBEPBBkXT5rVG+n+aVfTO5n5cQEgDp7vKsiCOQTWE2G5mVWENI7oF+HvuRKhei
+	 n63JWg+aVkNjc7zs5ZpdAdJQ+twt7S4EIrIeLo9FxqBCcy0LQOCJGF4vI5ht4ChVQ3
+	 EoPnAjDeuBIREbrezDZJYMGXa0DGk2DyGSOqh6Q7/MA5Te6zGXxa3yLrPxTPK1O0j8
+	 HKREwC78Jxros3kkvSp3NchfTEtcKZI2/aVErOMd8Ta0xAk/6R1ljGKOrvZV5cWP9/
+	 wcuhxNsK5XIow==
+Date: Fri, 4 Aug 2023 22:59:33 +0200
 From: Simon Horman <horms@kernel.org>
 To: "huangjie.albert" <huangjie.albert@bytedance.com>
 Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
@@ -43,17 +43,18 @@ Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
 	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
 	Jonathan Lemon <jonathan.lemon@gmail.com>,
 	Pavel Begunkov <asml.silence@gmail.com>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
+	Kees Cook <keescook@chromium.org>,
 	Menglong Dong <imagedong@tencent.com>,
 	Richard Gobert <richardbgobert@gmail.com>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
 	"open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
 	open list <linux-kernel@vger.kernel.org>,
 	"open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
-Subject: Re: [RFC Optimizing veth xsk performance 04/10] xsk: add
- xsk_tx_completed_addr function
-Message-ID: <ZM1joMiYtbrXVLv6@vergenet.net>
+Subject: Re: [RFC Optimizing veth xsk performance 05/10] veth: use send queue
+ tx napi to xmit xsk tx desc
+Message-ID: <ZM1mtcIBUzL5kwll@vergenet.net>
 References: <20230803140441.53596-1-huangjie.albert@bytedance.com>
- <20230803140441.53596-5-huangjie.albert@bytedance.com>
+ <20230803140441.53596-6-huangjie.albert@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,38 +63,74 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230803140441.53596-5-huangjie.albert@bytedance.com>
+In-Reply-To: <20230803140441.53596-6-huangjie.albert@bytedance.com>
 
-On Thu, Aug 03, 2023 at 10:04:30PM +0800, huangjie.albert wrote:
+On Thu, Aug 03, 2023 at 10:04:31PM +0800, huangjie.albert wrote:
 
-...
+Please include a patch description.
 
-> index 13354a1e4280..a494d1dcb1c3 100644
-> --- a/net/xdp/xsk_queue.h
-> +++ b/net/xdp/xsk_queue.h
-> @@ -428,6 +428,17 @@ static inline void __xskq_prod_submit(struct xsk_queue *q, u32 idx)
->  	smp_store_release(&q->ring->producer, idx); /* B, matches C */
+> Signed-off-by: huangjie.albert <huangjie.albert@bytedance.com>
+
+Please consider formatting this as:
+
+	... Albert Huang <huangjie.albert@bytedance.com>
+
+> ---
+>  drivers/net/veth.c | 265 ++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 264 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> index 63c3ebe4c5d0..944761807ca4 100644
+> --- a/drivers/net/veth.c
+> +++ b/drivers/net/veth.c
+> @@ -27,6 +27,8 @@
+>  #include <linux/bpf_trace.h>
+>  #include <linux/net_tstamp.h>
+>  #include <net/page_pool.h>
+> +#include <net/xdp_sock_drv.h>
+> +#include <net/xdp.h>
+>  
+>  #define DRV_NAME	"veth"
+>  #define DRV_VERSION	"1.0"
+
+> @@ -1061,6 +1063,176 @@ static int veth_poll(struct napi_struct *napi, int budget)
+>  	return done;
 >  }
 >  
-> +
-
-nit: one blank line is enough
-
-> +static inline void xskq_prod_submit_addr(struct xsk_queue *q, u64 addr)
+> +static int veth_xsk_tx_xmit(struct veth_sq *sq, struct xsk_buff_pool *xsk_pool, int budget)
 > +{
-> +	struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
-> +	u32 idx = q->ring->producer;
+> +	struct veth_priv *priv, *peer_priv;
+> +	struct net_device *dev, *peer_dev;
+> +	struct veth_rq *peer_rq;
+> +	struct veth_stats peer_stats = {};
+> +	struct veth_stats stats = {};
+> +	struct veth_xdp_tx_bq bq;
+> +	struct xdp_desc desc;
+> +	void *xdpf;
+> +	int done = 0;
+
+Please try to use reverse xmas tree ordering - longest line to shortest -
+for local variable declarations in new Networking code.
+
+https://github.com/ecree-solarflare/xmastree is your friend here.
+
 > +
-> +	ring->desc[idx++ & q->ring_mask] = addr;
-> +
-> +	__xskq_prod_submit(q, idx);
-> +}
-> +
->  static inline void xskq_prod_submit(struct xsk_queue *q)
->  {
->  	__xskq_prod_submit(q, q->cached_prod);
-> -- 
-> 2.20.1
-> 
-> 
+> +	bq.count = 0;
+> +	dev = sq->dev;
+> +	priv = netdev_priv(dev);
+> +	peer_dev = priv->peer;
+
+Sparse seems a bit unhappy about this.
+
+  .../veth.c:1081:18: warning: incorrect type in assignment (different address spaces)
+  .../veth.c:1081:18:    expected struct net_device *peer_dev
+  .../veth.c:1081:18:    got struct net_device [noderef] __rcu *peer
+
+Looking over existing code in this file, perhaps this is appropriate:
+
+	peer_dev = rtnl_dereference(priv->peer);
+
+Likewise in a few other places in this patch.
+
+...
 
