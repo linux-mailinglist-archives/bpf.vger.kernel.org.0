@@ -1,222 +1,153 @@
-Return-Path: <bpf+bounces-6956-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6960-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6641376FAFF
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 09:18:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6D4A76FB8E
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 10:00:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 974B51C2177E
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 07:18:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 907A6282536
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 08:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB92C9477;
-	Fri,  4 Aug 2023 07:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9503E8498;
+	Fri,  4 Aug 2023 08:00:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A029448;
-	Fri,  4 Aug 2023 07:16:39 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F02A3588;
-	Fri,  4 Aug 2023 00:16:37 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHH822PdHz4f3lXj;
-	Fri,  4 Aug 2023 15:16:34 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-	by APP2 (Coremail) with SMTP id Syh0CgAHF+jMpcxkm1vaPQ--.64994S6;
-	Fri, 04 Aug 2023 15:16:34 +0800 (CST)
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-To: bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	John Fastabend <john.fastabend@gmail.com>,
-	Bobby Eshleman <bobby.eshleman@bytedance.com>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Cong Wang <cong.wang@bytedance.com>
-Subject: [PATCH bpf v3 4/4] selftests/bpf: Add sockmap test for redirecting partial skb data
-Date: Fri,  4 Aug 2023 03:37:40 -0400
-Message-Id: <20230804073740.194770-5-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230804073740.194770-1-xukuohai@huaweicloud.com>
-References: <20230804073740.194770-1-xukuohai@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7192F33
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 08:00:25 +0000 (UTC)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3BA1704;
+	Fri,  4 Aug 2023 01:00:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1691136023; x=1722672023;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mozKuYzJnKHA2aKr3eiYDtSGyCx3d+I7fkTRCyvB7W0=;
+  b=S9meV5hrPUbBWAY9o6CBbP4zp+xjTUOqzEz4V6ZlpD8H2B8tHo8L1nwn
+   J+cxYIHYcDIgWTY2rLLlG3UhfVIB554mdIApG5n6sVzQMbMid3158CjkH
+   v/rNMykvOYsJ49x2MXBs1YjEVpZlQTA+Li9qoAZJVc86SfwWzIp/+RIHq
+   C0o7scN3tX+VkKR/L+J5S+dFJK5K7cDvlqF3d42Pk4MR0XiKzXV6bm8hK
+   W6ISf0f/5EQPsoIdmAlr3tcyz+F72jnKDnepDDHxGslQ76uyFlcoyIogo
+   H8xoAXe/MiIZPQ1mhshb9FWdRwKYEmZwvCbhM0ZHqoAGTLBeefzP/VehU
+   g==;
+X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
+   d="asc'?scan'208";a="164824311"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Aug 2023 01:00:21 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 4 Aug 2023 01:00:06 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Fri, 4 Aug 2023 01:00:01 -0700
+Date: Fri, 4 Aug 2023 08:59:24 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+CC: <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<kvm@vger.kernel.org>, <kvm-riscv@lists.infradead.org>,
+	<bpf@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Peter
+ Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>, Jason
+ Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
+ Biesheuvel <ardb@kernel.org>, Anup Patel <anup@brainfault.org>, Atish Patra
+	<atishp@atishpatra.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+	<martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+	<yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>, Luke Nelson
+	<luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, Nam Cao
+	<namcaov@gmail.com>
+Subject: Re: [PATCH 01/10] RISC-V: Expand instruction definitions
+Message-ID: <20230804-barterer-heritage-ed191081bc47@wendy>
+References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
+ <20230803-master-refactor-instructions-v4-v1-1-2128e61fa4ff@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAHF+jMpcxkm1vaPQ--.64994S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw4xKF47KF1xCF13ZF47urg_yoWrZr43pa
-	yrCa4DKF4xtFyYgr4Yqa18GF4Fg3WFq345tF4rGwnIvrsrGr1rXrn2gayUtFnxKrZYqayF
-	y3ZIgrWfW3yDJrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
-	6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU13l1DUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="giltLFM/xoeS/K8e"
+Content-Disposition: inline
+In-Reply-To: <20230803-master-refactor-instructions-v4-v1-1-2128e61fa4ff@rivosinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Xu Kuohai <xukuohai@huawei.com>
+--giltLFM/xoeS/K8e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Add a test case to check whether sockmap redirection works correctly
-when data length returned by stream_parser is less than skb->len.
+On Thu, Aug 03, 2023 at 07:10:26PM -0700, Charlie Jenkins wrote:
+> There are many systems across the kernel that rely on directly creating
+> and modifying instructions. In order to unify them, create shared
+> definitions for instructions and registers.
+>=20
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/insn.h            | 2742 ++++++++++++++++++++++++=
++++---
 
-In addition, this test checks whether strp_done is called correctly.
-The reason is that we returns skb->len - 1 from the stream_parser, so
-the last byte in the skb will be held by strp->skb_head. Therefore,
-if strp_done is not called to free strp->skb_head, we'll get a memleak
-warning.
+"I did a lot of copy-pasting from the RISC-V spec"
 
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
----
- .../selftests/bpf/prog_tests/sockmap_listen.c | 72 +++++++++++++++++++
- .../selftests/bpf/progs/test_sockmap_listen.c | 14 ++++
- 2 files changed, 86 insertions(+)
+How is anyone supposed to cross check this when there's 1000s of lines
+of a diff here? We've had some subtle bugs in some of the definitions in
+the past, so I would like to be able to check at this opportune moment
+that things are correct.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index ba35bcc66e7e..5674a9d0cacf 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -869,6 +869,77 @@ static void test_msg_redir_to_listening(struct test_sockmap_listen *skel,
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_MSG_VERDICT);
- }
- 
-+static void redir_partial(int family, int sotype, int sock_map, int parser_map)
-+{
-+	int s, c0, c1, p0, p1;
-+	int err, n, key, value;
-+	char buf[] = "abc";
-+
-+	key = 0;
-+	value = sizeof(buf) - 1;
-+	err = xbpf_map_update_elem(parser_map, &key, &value, 0);
-+	if (err)
-+		return;
-+
-+	s = socket_loopback(family, sotype | SOCK_NONBLOCK);
-+	if (s < 0)
-+		goto clean_parser_map;
-+
-+	err = create_socket_pairs(s, family, sotype, &c0, &c1, &p0, &p1);
-+	if (err)
-+		goto close_srv;
-+
-+	err = add_to_sockmap(sock_map, p0, p1);
-+	if (err)
-+		goto close;
-+
-+	n = xsend(c1, buf, sizeof(buf), 0);
-+	if (n < sizeof(buf))
-+		FAIL("incomplete write");
-+
-+	n = xrecv_nonblock(c0, buf, sizeof(buf), 0);
-+	if (n != sizeof(buf) - 1)
-+		FAIL("expect %zu, received %d", sizeof(buf) - 1, n);
-+
-+close:
-+	xclose(c0);
-+	xclose(p0);
-+	xclose(c1);
-+	xclose(p1);
-+close_srv:
-+	xclose(s);
-+
-+clean_parser_map:
-+	key = 0;
-+	value = 0;
-+	xbpf_map_update_elem(parser_map, &key, &value, 0);
-+}
-+
-+static void test_skb_redir_partial(struct test_sockmap_listen *skel,
-+				   struct bpf_map *inner_map, int family,
-+				   int sotype)
-+{
-+	int verdict = bpf_program__fd(skel->progs.prog_stream_verdict);
-+	int parser = bpf_program__fd(skel->progs.prog_stream_parser);
-+	int parser_map = bpf_map__fd(skel->maps.parser_map);
-+	int sock_map = bpf_map__fd(inner_map);
-+	int err;
-+
-+	err = xbpf_prog_attach(parser, sock_map, BPF_SK_SKB_STREAM_PARSER, 0);
-+	if (err)
-+		return;
-+
-+	err = xbpf_prog_attach(verdict, sock_map, BPF_SK_SKB_STREAM_VERDICT, 0);
-+	if (err)
-+		goto detach;
-+
-+	redir_partial(family, sotype, sock_map, parser_map);
-+
-+	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_STREAM_VERDICT);
-+detach:
-+	xbpf_prog_detach2(parser, sock_map, BPF_SK_SKB_STREAM_PARSER);
-+}
-+
- static void test_reuseport_select_listening(int family, int sotype,
- 					    int sock_map, int verd_map,
- 					    int reuseport_prog)
-@@ -1243,6 +1314,7 @@ static void test_redir(struct test_sockmap_listen *skel, struct bpf_map *map,
- 	} tests[] = {
- 		TEST(test_skb_redir_to_connected),
- 		TEST(test_skb_redir_to_listening),
-+		TEST(test_skb_redir_partial),
- 		TEST(test_msg_redir_to_connected),
- 		TEST(test_msg_redir_to_listening),
- 	};
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_listen.c b/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-index 325c9f193432..464d35bd57c7 100644
---- a/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-@@ -28,12 +28,26 @@ struct {
- 	__type(value, unsigned int);
- } verdict_map SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, int);
-+} parser_map SEC(".maps");
-+
- bool test_sockmap = false; /* toggled by user-space */
- bool test_ingress = false; /* toggled by user-space */
- 
- SEC("sk_skb/stream_parser")
- int prog_stream_parser(struct __sk_buff *skb)
- {
-+	int *value;
-+	__u32 key = 0;
-+
-+	value = bpf_map_lookup_elem(&parser_map, &key);
-+	if (value && *value)
-+		return *value;
-+
- 	return skb->len;
- }
- 
--- 
-2.30.2
+>  arch/riscv/include/asm/reg.h             |   88 +
+>  arch/riscv/kernel/kgdb.c                 |    4 +-
+>  arch/riscv/kernel/probes/simulate-insn.c |   39 +-
+>  arch/riscv/kernel/vector.c               |    2 +-
 
+You need to at least split this up. I doubt a 2742 change diff for
+insn.h was required to make the changes in these 4 files.
+
+Then after that, it would be so much easier to reason about these
+changes if the additions to insn.h happened at the same time as the
+removals from the affected locations.
+
+I would probably split this so that things are done in more stages,
+with the larger patches split between changes that require no new
+definitions and changes that require moving things to insn.h
+
+>  5 files changed, 2629 insertions(+), 246 deletions(-)
+
+What you would want to see if this arrived in your inbox as a reviewer?
+
+Don't get me wrong, I do like what you are doing here, the BPF JIT
+especially is filled with "uhh okay, I guess those offsets are right",
+so I don't mean to be discouraging.
+
+Thanks,
+Conor.
+
+--giltLFM/xoeS/K8e
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMyvzwAKCRB4tDGHoIJi
+0gQYAP0UlvSWYX6mB67CAGmIVZwnT0CwyiNPOEXW+G0t9GnWngD+PxdgtapB+DMY
+MPJ1zDp8mSYyzU+MKQ++56q8pPpFyQg=
+=yGw/
+-----END PGP SIGNATURE-----
+
+--giltLFM/xoeS/K8e--
 
