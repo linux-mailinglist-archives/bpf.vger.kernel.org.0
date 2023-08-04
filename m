@@ -1,382 +1,173 @@
-Return-Path: <bpf+bounces-6985-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6988-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2DB576FF6D
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 13:24:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3B8B76FF7B
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 13:29:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A819D282563
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 11:24:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FA271C20A8B
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 11:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED33CBA36;
-	Fri,  4 Aug 2023 11:23:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4388CBA28;
+	Fri,  4 Aug 2023 11:29:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1733BA2D;
-	Fri,  4 Aug 2023 11:23:47 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F361B9;
-	Fri,  4 Aug 2023 04:23:38 -0700 (PDT)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.54])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RHNb03sZyzVjxy;
-	Fri,  4 Aug 2023 19:21:48 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggpeml500026.china.huawei.com
- (7.185.36.106) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 4 Aug
- 2023 19:23:35 +0800
-From: Zhengchao Shao <shaozhengchao@huawei.com>
-To: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <jiri@resnulli.us>, <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-	<shaozhengchao@huawei.com>
-Subject: [PATCH net-next 2/2] team: change return value of getter in the team_option structure to void
-Date: Fri, 4 Aug 2023 19:28:25 +0800
-Message-ID: <20230804112825.1697920-3-shaozhengchao@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230804112825.1697920-1-shaozhengchao@huawei.com>
-References: <20230804112825.1697920-1-shaozhengchao@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22D4BA959
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 11:29:22 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C69711B;
+	Fri,  4 Aug 2023 04:29:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2BAFD1F8AF;
+	Fri,  4 Aug 2023 11:29:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1691148557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gWX8UAE3vE+ECHESJ7u2irG1vRHlk+PFNMojuMOOzsU=;
+	b=Yi1KQ6Y6gjCUg17Re2YSDtjdjGq8O6Uw+IWTvdXzRT9SToLnRJl81QhBp9t8Hfuvy/V0EP
+	pWuDnUkcCIr0qRKh7wqscRObmm7NfR5fM/PeDHmDD8Jj2V+a2HDs+GFQGaAN2EvbiZ/BwE
+	xsClVxAsEAt5HYkQjUDARP66k3B87Kk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 024B2133B5;
+	Fri,  4 Aug 2023 11:29:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id Jh09OQzhzGQ3VAAAMHmgww
+	(envelope-from <mhocko@suse.com>); Fri, 04 Aug 2023 11:29:16 +0000
+Date: Fri, 4 Aug 2023 13:29:16 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc: hannes@cmpxchg.org, roman.gushchin@linux.dev, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, muchun.song@linux.dev,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	wuyun.abel@bytedance.com, robin.lu@bytedance.com
+Subject: Re: [RFC PATCH 1/2] mm, oom: Introduce bpf_select_task
+Message-ID: <ZMzhDFhvol2VQBE4@dhcp22.suse.cz>
+References: <20230804093804.47039-1-zhouchuyi@bytedance.com>
+ <20230804093804.47039-2-zhouchuyi@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500026.china.huawei.com (7.185.36.106)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804093804.47039-2-zhouchuyi@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
+	T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Because the getter function always returns 0, so change return value of
-getter in the team_option structure to void and remove redundant code.
+On Fri 04-08-23 17:38:03, Chuyi Zhou wrote:
+> This patch adds a new hook bpf_select_task in oom_evaluate_task. It
+> takes oc and current iterating task as parameters and returns a result
+> indicating which one is selected by bpf program.
+> 
+> Although bpf_select_task is used to bypass the default method, there are
+> some existing rules should be obeyed. Specifically, we skip these
+> "unkillable" tasks(e.g., kthread, MMF_OOM_SKIP, in_vfork()).So we do not
+> consider tasks with lowest score returned by oom_badness except it was
+> caused by OOM_SCORE_ADJ_MIN.
 
-Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+Is this really necessary? I do get why we need to preserve
+OOM_SCORE_ADJ_* semantic for in-kernel oom selection logic but why
+should an arbitrary oom policy care. Look at it from an arbitrary user
+space based policy. It just picks a task or memcg and kills taks by
+sending SIG_KILL (or maybe SIG_TERM first) signal. oom_score constrains
+will not prevent anybody from doing that.
+
+tsk_is_oom_victim (and MMF_OOM_SKIP) is a slightly different case but
+not too much. The primary motivation is to prevent new oom victims
+while there is one already being killed. This is a reasonable heuristic
+especially with the async oom reclaim (oom_reaper). It also reduces
+amount of oom emergency memory reserves to some degree but since those
+are not absolute this is no longer the primary motivation. _But_ I can
+imagine that some policies might be much more aggresive and allow to
+select new victims if preexisting are not being killed in time.
+
+oom_unkillable_task is a general sanity check so it should remain in
+place.
+
+I am not really sure about oom_task_origin. That is just a very weird
+case and I guess it wouldn't hurt to keep it in generic path.
+
+All that being said I think we want something like the following (very
+pseudo-code). I have no idea what is the proper way how to define BPF
+hooks though so a help from BPF maintainers would be more then handy
 ---
- drivers/net/team/team.c                   | 52 ++++++++++-------------
- drivers/net/team/team_mode_activebackup.c |  3 +-
- drivers/net/team/team_mode_loadbalance.c  | 24 ++++-------
- include/linux/if_team.h                   |  2 +-
- 4 files changed, 33 insertions(+), 48 deletions(-)
-
-diff --git a/drivers/net/team/team.c b/drivers/net/team/team.c
-index 84a57dcddb8b..8f8a3eabdbe7 100644
---- a/drivers/net/team/team.c
-+++ b/drivers/net/team/team.c
-@@ -358,7 +358,9 @@ static int team_option_get(struct team *team,
+diff --git a/include/linux/nmi.h b/include/linux/nmi.h
+index 00982b133dc1..9f1743ee2b28 100644
+--- a/include/linux/nmi.h
++++ b/include/linux/nmi.h
+@@ -190,10 +190,6 @@ static inline bool trigger_all_cpu_backtrace(void)
  {
- 	if (!opt_inst->option->getter)
- 		return -EOPNOTSUPP;
--	return opt_inst->option->getter(team, ctx);
-+
-+	opt_inst->option->getter(team, ctx);
-+	return 0;
- }
- 
- static int team_option_set(struct team *team,
-@@ -1373,10 +1375,9 @@ static int team_port_del(struct team *team, struct net_device *port_dev)
-  * Net device ops
-  *****************/
- 
--static int team_mode_option_get(struct team *team, struct team_gsetter_ctx *ctx)
-+static void team_mode_option_get(struct team *team, struct team_gsetter_ctx *ctx)
- {
- 	ctx->data.str_val = team->mode->kind;
--	return 0;
- }
- 
- static int team_mode_option_set(struct team *team, struct team_gsetter_ctx *ctx)
-@@ -1384,11 +1385,10 @@ static int team_mode_option_set(struct team *team, struct team_gsetter_ctx *ctx)
- 	return team_change_mode(team, ctx->data.str_val);
- }
- 
--static int team_notify_peers_count_get(struct team *team,
--				       struct team_gsetter_ctx *ctx)
-+static void team_notify_peers_count_get(struct team *team,
-+					struct team_gsetter_ctx *ctx)
- {
- 	ctx->data.u32_val = team->notify_peers.count;
--	return 0;
- }
- 
- static int team_notify_peers_count_set(struct team *team,
-@@ -1398,11 +1398,10 @@ static int team_notify_peers_count_set(struct team *team,
- 	return 0;
- }
- 
--static int team_notify_peers_interval_get(struct team *team,
--					  struct team_gsetter_ctx *ctx)
-+static void team_notify_peers_interval_get(struct team *team,
-+					   struct team_gsetter_ctx *ctx)
- {
- 	ctx->data.u32_val = team->notify_peers.interval;
--	return 0;
- }
- 
- static int team_notify_peers_interval_set(struct team *team,
-@@ -1412,11 +1411,10 @@ static int team_notify_peers_interval_set(struct team *team,
- 	return 0;
- }
- 
--static int team_mcast_rejoin_count_get(struct team *team,
--				       struct team_gsetter_ctx *ctx)
-+static void team_mcast_rejoin_count_get(struct team *team,
-+					struct team_gsetter_ctx *ctx)
- {
- 	ctx->data.u32_val = team->mcast_rejoin.count;
--	return 0;
- }
- 
- static int team_mcast_rejoin_count_set(struct team *team,
-@@ -1426,11 +1424,10 @@ static int team_mcast_rejoin_count_set(struct team *team,
- 	return 0;
- }
- 
--static int team_mcast_rejoin_interval_get(struct team *team,
--					  struct team_gsetter_ctx *ctx)
-+static void team_mcast_rejoin_interval_get(struct team *team,
-+					   struct team_gsetter_ctx *ctx)
- {
- 	ctx->data.u32_val = team->mcast_rejoin.interval;
--	return 0;
- }
- 
- static int team_mcast_rejoin_interval_set(struct team *team,
-@@ -1440,13 +1437,12 @@ static int team_mcast_rejoin_interval_set(struct team *team,
- 	return 0;
- }
- 
--static int team_port_en_option_get(struct team *team,
--				   struct team_gsetter_ctx *ctx)
-+static void team_port_en_option_get(struct team *team,
-+				    struct team_gsetter_ctx *ctx)
- {
- 	struct team_port *port = ctx->info->port;
- 
- 	ctx->data.bool_val = team_port_enabled(port);
--	return 0;
- }
- 
- static int team_port_en_option_set(struct team *team,
-@@ -1461,13 +1457,12 @@ static int team_port_en_option_set(struct team *team,
- 	return 0;
- }
- 
--static int team_user_linkup_option_get(struct team *team,
--				       struct team_gsetter_ctx *ctx)
-+static void team_user_linkup_option_get(struct team *team,
-+					struct team_gsetter_ctx *ctx)
- {
- 	struct team_port *port = ctx->info->port;
- 
- 	ctx->data.bool_val = port->user.linkup;
--	return 0;
- }
- 
- static void __team_carrier_check(struct team *team);
-@@ -1483,13 +1478,12 @@ static int team_user_linkup_option_set(struct team *team,
- 	return 0;
- }
- 
--static int team_user_linkup_en_option_get(struct team *team,
--					  struct team_gsetter_ctx *ctx)
-+static void team_user_linkup_en_option_get(struct team *team,
-+					   struct team_gsetter_ctx *ctx)
- {
- 	struct team_port *port = ctx->info->port;
- 
- 	ctx->data.bool_val = port->user.linkup_enabled;
--	return 0;
- }
- 
- static int team_user_linkup_en_option_set(struct team *team,
-@@ -1503,13 +1497,12 @@ static int team_user_linkup_en_option_set(struct team *team,
- 	return 0;
- }
- 
--static int team_priority_option_get(struct team *team,
--				    struct team_gsetter_ctx *ctx)
-+static void team_priority_option_get(struct team *team,
-+				     struct team_gsetter_ctx *ctx)
- {
- 	struct team_port *port = ctx->info->port;
- 
- 	ctx->data.s32_val = port->priority;
--	return 0;
- }
- 
- static int team_priority_option_set(struct team *team,
-@@ -1525,13 +1518,12 @@ static int team_priority_option_set(struct team *team,
- 	return 0;
- }
- 
--static int team_queue_id_option_get(struct team *team,
--				    struct team_gsetter_ctx *ctx)
-+static void team_queue_id_option_get(struct team *team,
-+				     struct team_gsetter_ctx *ctx)
- {
- 	struct team_port *port = ctx->info->port;
- 
- 	ctx->data.u32_val = port->queue_id;
--	return 0;
- }
- 
- static int team_queue_id_option_set(struct team *team,
-diff --git a/drivers/net/team/team_mode_activebackup.c b/drivers/net/team/team_mode_activebackup.c
-index 44d604f1c512..e0f599e2a51d 100644
---- a/drivers/net/team/team_mode_activebackup.c
-+++ b/drivers/net/team/team_mode_activebackup.c
-@@ -63,7 +63,7 @@ static void ab_active_port_init(struct team *team,
- 	ab_priv(team)->ap_opt_inst_info = info;
- }
- 
--static int ab_active_port_get(struct team *team, struct team_gsetter_ctx *ctx)
-+static void ab_active_port_get(struct team *team, struct team_gsetter_ctx *ctx)
- {
- 	struct team_port *active_port;
- 
-@@ -73,7 +73,6 @@ static int ab_active_port_get(struct team *team, struct team_gsetter_ctx *ctx)
- 		ctx->data.u32_val = active_port->dev->ifindex;
- 	else
- 		ctx->data.u32_val = 0;
--	return 0;
- }
- 
- static int ab_active_port_set(struct team *team, struct team_gsetter_ctx *ctx)
-diff --git a/drivers/net/team/team_mode_loadbalance.c b/drivers/net/team/team_mode_loadbalance.c
-index 50c015cd0682..2f1573f253ec 100644
---- a/drivers/net/team/team_mode_loadbalance.c
-+++ b/drivers/net/team/team_mode_loadbalance.c
-@@ -242,19 +242,18 @@ static bool lb_transmit(struct team *team, struct sk_buff *skb)
  	return false;
  }
- 
--static int lb_bpf_func_get(struct team *team, struct team_gsetter_ctx *ctx)
-+static void lb_bpf_func_get(struct team *team, struct team_gsetter_ctx *ctx)
+-static inline bool trigger_allbutself_cpu_backtrace(void)
+-{
+-	return false;
+-}
+ static inline bool trigger_cpumask_backtrace(struct cpumask *mask)
  {
- 	struct lb_priv *lb_priv = get_lb_priv(team);
+ 	return false;
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 612b5597d3af..c9e04be52700 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -317,6 +317,22 @@ static int oom_evaluate_task(struct task_struct *task, void *arg)
+ 	if (!is_memcg_oom(oc) && !oom_cpuset_eligible(task, oc))
+ 		goto next;
  
- 	if (!lb_priv->ex->orig_fprog) {
- 		ctx->data.bin_val.len = 0;
- 		ctx->data.bin_val.ptr = NULL;
--		return 0;
-+		return;
++	/*
++	 * If task is allocating a lot of memory and has been marked to be
++	 * killed first if it triggers an oom, then select it.
++	 */
++	if (oom_task_origin(task)) {
++		points = LONG_MAX;
++		goto select;
++	}
++
++	switch (bpf_oom_evaluate_task(task, oc, &points)) {
++		case -EOPNOTSUPP: break; /* No BPF policy */
++		case -EBUSY: goto abort; /* abort search process */
++		case 0: goto next; /* ignore process */
++		default: goto select; /* note the task */
++	}
++
+ 	/*
+ 	 * This task already has access to memory reserves and is being killed.
+ 	 * Don't allow any other task to have access to the reserves unless
+@@ -329,15 +345,6 @@ static int oom_evaluate_task(struct task_struct *task, void *arg)
+ 		goto abort;
  	}
- 	ctx->data.bin_val.len = lb_priv->ex->orig_fprog->len *
- 				sizeof(struct sock_filter);
- 	ctx->data.bin_val.ptr = lb_priv->ex->orig_fprog->filter;
--	return 0;
- }
  
- static int __fprog_create(struct sock_fprog_kern **pfprog, u32 data_len,
-@@ -335,7 +334,7 @@ static void lb_bpf_func_free(struct team *team)
- 	bpf_prog_destroy(fp);
- }
- 
--static int lb_tx_method_get(struct team *team, struct team_gsetter_ctx *ctx)
-+static void lb_tx_method_get(struct team *team, struct team_gsetter_ctx *ctx)
- {
- 	struct lb_priv *lb_priv = get_lb_priv(team);
- 	lb_select_tx_port_func_t *func;
-@@ -346,7 +345,6 @@ static int lb_tx_method_get(struct team *team, struct team_gsetter_ctx *ctx)
- 	name = lb_select_tx_port_get_name(func);
- 	BUG_ON(!name);
- 	ctx->data.str_val = name;
--	return 0;
- }
- 
- static int lb_tx_method_set(struct team *team, struct team_gsetter_ctx *ctx)
-@@ -370,8 +368,8 @@ static void lb_tx_hash_to_port_mapping_init(struct team *team,
- 	LB_HTPM_OPT_INST_INFO_BY_HASH(lb_priv, hash) = info;
- }
- 
--static int lb_tx_hash_to_port_mapping_get(struct team *team,
--					  struct team_gsetter_ctx *ctx)
-+static void lb_tx_hash_to_port_mapping_get(struct team *team,
-+					   struct team_gsetter_ctx *ctx)
- {
- 	struct lb_priv *lb_priv = get_lb_priv(team);
- 	struct team_port *port;
-@@ -379,7 +377,6 @@ static int lb_tx_hash_to_port_mapping_get(struct team *team,
- 
- 	port = LB_HTPM_PORT_BY_HASH(lb_priv, hash);
- 	ctx->data.u32_val = port ? port->dev->ifindex : 0;
--	return 0;
- }
- 
- static int lb_tx_hash_to_port_mapping_set(struct team *team,
-@@ -409,14 +406,13 @@ static void lb_hash_stats_init(struct team *team,
- 	lb_priv->ex->stats.info[hash].opt_inst_info = info;
- }
- 
--static int lb_hash_stats_get(struct team *team, struct team_gsetter_ctx *ctx)
-+static void lb_hash_stats_get(struct team *team, struct team_gsetter_ctx *ctx)
- {
- 	struct lb_priv *lb_priv = get_lb_priv(team);
- 	unsigned char hash = ctx->info->array_index;
- 
- 	ctx->data.bin_val.ptr = &lb_priv->ex->stats.info[hash].stats;
- 	ctx->data.bin_val.len = sizeof(struct lb_stats);
--	return 0;
- }
- 
- static void lb_port_stats_init(struct team *team,
-@@ -428,14 +424,13 @@ static void lb_port_stats_init(struct team *team,
- 	lb_port_priv->stats_info.opt_inst_info = info;
- }
- 
--static int lb_port_stats_get(struct team *team, struct team_gsetter_ctx *ctx)
-+static void lb_port_stats_get(struct team *team, struct team_gsetter_ctx *ctx)
- {
- 	struct team_port *port = ctx->info->port;
- 	struct lb_port_priv *lb_port_priv = get_lb_port_priv(port);
- 
- 	ctx->data.bin_val.ptr = &lb_port_priv->stats_info.stats;
- 	ctx->data.bin_val.len = sizeof(struct lb_stats);
--	return 0;
- }
- 
- static void __lb_stats_info_refresh_prepare(struct lb_stats_info *s_info)
-@@ -528,13 +523,12 @@ static void lb_stats_refresh(struct work_struct *work)
- 	mutex_unlock(&team->lock);
- }
- 
--static int lb_stats_refresh_interval_get(struct team *team,
--					 struct team_gsetter_ctx *ctx)
-+static void lb_stats_refresh_interval_get(struct team *team,
-+					  struct team_gsetter_ctx *ctx)
- {
- 	struct lb_priv *lb_priv = get_lb_priv(team);
- 
- 	ctx->data.u32_val = lb_priv->ex->stats.refresh_interval;
--	return 0;
- }
- 
- static int lb_stats_refresh_interval_set(struct team *team,
-diff --git a/include/linux/if_team.h b/include/linux/if_team.h
-index fc01c3cfe86d..1b9b15a492fa 100644
---- a/include/linux/if_team.h
-+++ b/include/linux/if_team.h
-@@ -163,7 +163,7 @@ struct team_option {
- 	unsigned int array_size; /* != 0 means the option is array */
- 	enum team_option_type type;
- 	void (*init)(struct team *team, struct team_option_inst_info *info);
--	int (*getter)(struct team *team, struct team_gsetter_ctx *ctx);
-+	void (*getter)(struct team *team, struct team_gsetter_ctx *ctx);
- 	int (*setter)(struct team *team, struct team_gsetter_ctx *ctx);
- };
- 
+-	/*
+-	 * If task is allocating a lot of memory and has been marked to be
+-	 * killed first if it triggers an oom, then select it.
+-	 */
+-	if (oom_task_origin(task)) {
+-		points = LONG_MAX;
+-		goto select;
+-	}
+-
+ 	points = oom_badness(task, oc->totalpages);
+ 	if (points == LONG_MIN || points < oc->chosen_points)
+ 		goto next;
 -- 
-2.34.1
-
+Michal Hocko
+SUSE Labs
 
