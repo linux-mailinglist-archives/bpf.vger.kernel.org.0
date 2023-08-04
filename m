@@ -1,196 +1,219 @@
-Return-Path: <bpf+bounces-7023-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7024-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EE7577054B
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 17:53:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9A217705AA
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 18:11:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD7FA28276E
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 15:53:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A461282796
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 16:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6745B1805F;
-	Fri,  4 Aug 2023 15:53:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB4B198AB;
+	Fri,  4 Aug 2023 16:11:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38097BE7B
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 15:52:59 +0000 (UTC)
-Received: from out-104.mta0.migadu.com (out-104.mta0.migadu.com [91.218.175.104])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B474EE0
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 08:52:45 -0700 (PDT)
-Message-ID: <a2a3bd2e-a254-997f-a437-cc95e4482b5e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1691164362; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=04bz/lLp1mN3/sJ1RwJUlFCdDbNah/HJ6PDbfNdfz1g=;
-	b=EZOvx/WwuYhJommlqcZVn/24LT672D1GjCrTULGeViQj5n2OmgJk//JM92JY0HRv8TW7bk
-	0S3lTMShWNCMCWVrN2LQKAShpUVXb2eSLsCToH1SvrhjfiXW0YXGp0NZhRHzkrj5FExXPa
-	u8w2IpG53VFj95+OuZ1BqqYod8V9K/o=
-Date: Fri, 4 Aug 2023 08:52:37 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3671989D
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 16:11:23 +0000 (UTC)
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8921BDD
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 09:11:21 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-63cfd6e3835so13503986d6.3
+        for <bpf@vger.kernel.org>; Fri, 04 Aug 2023 09:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691165481; x=1691770281;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pUz/F00xT7ugkiSWf6rX95nllWRBNhd9+1A0dvrpdTo=;
+        b=2HDrihAGdJ7MfG1+8dsPUespfe5jeI5JTAKbQMm7RUu3pT7znehTtJYlI2HEIZMoEW
+         80hUqnVlxpk3GzGqz9b8/pacgiHlKPzFqMkDCJpA+i8S2SoIQmzAkKvIAg0R3LLah3jN
+         +2D3LfDn7kQ86X0ZFAH3Vug0De+inxrPJE1Ie/Kqm0mFSo8ixETdQ3SNF8agLwkAug3m
+         RGzzQJH6XAJuarzhBB+WL2aLlOkcYKk8ncxPyNGHgwpHHRNYje4BcBFAE2uDvXibZW8L
+         IQiLxa3yayHJFOHOOA22uu2jSL9oZjI1f4eMNs5AyXil+0Z3do7AgyLUTHE5QEmxmpgv
+         RjVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691165481; x=1691770281;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pUz/F00xT7ugkiSWf6rX95nllWRBNhd9+1A0dvrpdTo=;
+        b=Udeltfqdel2o3sZKLd+DSsvHvlRXY6pOx4YM7Q5i9OwI1LAHcv3CMp1a/xOwzdEnPi
+         Bsuvh1nNahQ0rBSE3SZyBss36roL4V1/8wDnDA4PfECRdumhkMXg/vso2i5UzLXWil78
+         OqMkOIqTdXOMPaT5W0kIBaODMHFD2g4nzcosL6w3uihcquwgyCjH3KjVHI+vDbTw/GI3
+         KmpJtLZCD56Pet6cGwahlhxSk8JMO+BgTwARdKpEDG0LddnkKIO8GZYGTKCFhafjzpOf
+         qd/jgTbw6INef+BiJ2XjPIsImOvR++cE858Nyb2buHFahvcIvJB2t7MVytmxAvEMqn1+
+         y6fQ==
+X-Gm-Message-State: AOJu0Yz+sCtm1NPKbLzt/RpDRXDAPfFvbplCBYqQJY+25dN2MyNkM5gP
+	rrMx9+2+ZMa5vXIdkBCqHDxl+IgFeJ5nONXiiZxswg==
+X-Google-Smtp-Source: AGHT+IFlHVI/xT5Mi4eYkWwoZ2wzHeDhtUCEOZDCwUnOxvTK/WFNztLQP67jQfTZt0Wwru0rT3bCBpGJQb5XDgkLXfI=
+X-Received: by 2002:a0c:e587:0:b0:636:6205:fb01 with SMTP id
+ t7-20020a0ce587000000b006366205fb01mr2062984qvm.34.1691165480664; Fri, 04 Aug
+ 2023 09:11:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH v1 bpf-next 1/2] [RFC] bpf: Introduce BPF_F_VMA_NEXT flag
- for bpf_find_vma helper
-Content-Language: en-US
-To: David Marchevsky <david.marchevsky@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Dave Marchevsky <davemarchevsky@fb.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>,
- Nathan Slingerland <slinger@meta.com>
-References: <20230801145414.418145-1-davemarchevsky@fb.com>
- <CAADnVQKo5VTkmS+DdYc5a8Hns4meptn7g76dOjxmJCHgpo29hQ@mail.gmail.com>
- <a07132a2-9828-a84a-af5b-ab660678157d@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <a07132a2-9828-a84a-af5b-ab660678157d@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+References: <CAKwvOdm9PqNBLSZa_t5b=15cdtKvKq4q8WZr3i77W66m4FRAAQ@mail.gmail.com>
+ <ZMwQivemlha+fU5i@kernel.org> <CAKwvOd=w3PFMDyZ1WL1DDx0Gyt-+sh7hYP_+8b9zEFu3uZpVXQ@mail.gmail.com>
+ <afe71df3-48e4-837a-e85d-b6a6764eee62@oracle.com>
+In-Reply-To: <afe71df3-48e4-837a-e85d-b6a6764eee62@oracle.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Fri, 4 Aug 2023 09:11:09 -0700
+Message-ID: <CAKwvOdn93Zpdkk3faNNdDw=tnMQ6Mxo5tTVCDmrqStU95MVQqA@mail.gmail.com>
+Subject: Re: FAILED: load BTF from vmlinux: Invalid argument
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, martin.lau@linux.dev, bpf <bpf@vger.kernel.org>, 
+	clang-built-linux <llvm@lists.linux.dev>, =?UTF-8?Q?Tomasz_Pawe=C5=82_Gajc?= <tpgxyz@gmail.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, m.seyfarth@gmail.com, 
+	Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
++ Marcus (who also just reported seeing this
+https://github.com/ClangBuiltLinux/linux/issues/1825#issuecomment-166467102=
+7
+and might be able to help reproduce).
++ Fangrui (because seeing dd used as a result of 90ceddcb4950 makes me shud=
+der)
+
+On Thu, Aug 3, 2023 at 3:10=E2=80=AFPM Alan Maguire <alan.maguire@oracle.co=
+m> wrote:
+>
+> On 03/08/2023 21:50, Nick Desaulniers wrote:
+> > On Thu, Aug 3, 2023 at 1:39=E2=80=AFPM Arnaldo Carvalho de Melo <acme@k=
+ernel.org> wrote:
+> >>
+> >> Em Thu, Aug 03, 2023 at 11:02:46AM -0700, Nick Desaulniers escreveu:
+> >>> Hi Martin (and BTF/BPF team),
+> >>> I've observed 2 user reports with the error from the subject of this =
+email.
+> >>> https://github.com/ClangBuiltLinux/linux/issues/1825
+> >>> https://bbs.archlinux.org/viewtopic.php?id=3D284177
+> >>>
+> >>> Any chance you could take a look at these reports and help us figure
+> >>> out what's going wrong here?  Nathan and I haven't been able to
+> >>> reproduce, but this seems to be affecting OpenMandriva (and Tomasz).
+> >>>
+> >>> Sounds like perhaps llvm-objcopy vs gnu objcopy might be a relevant d=
+etail?
+> >>
+> >> Masami had a problem with new versions of compilers that was solved
+> >> with:
+> >>
+> >> ------------------------ 8< ------------------------------------------=
+--
+> >>> To check that please tweak:
+> >>>
+> >>> =E2=AC=A2[acme@toolbox perf-tools-next]$ grep DWARF ../build/v6.2-rc5=
++/.config
+> >>> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=3Dy
+> >>> # CONFIG_DEBUG_INFO_DWARF4 is not set
+> >>> # CONFIG_DEBUG_INFO_DWARF5 is not set
+> >>> =E2=AC=A2[acme@toolbox perf-tools-next]$
+> >>>
+> >>> i.e. disable CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT and enable
+> >>> CONFIG_DEBUG_INFO_DWARF4.
+> >>
+> >> Hm, with CONFIG_DEBUG_INFO_DWARF4, no warning were shown.
+> >
+> > Downgrading from the now-6-year-old DWARFv5 to now-13-year-old DWARFv4
+> > is not what I'd consider a fix. Someday we can move to
+> > DWARFv5...someday...
+> >
+> > What you describe sounds like build success, but reduction in debug inf=
+o.
+> >
+> > The reports I'm referring to seem to result in a build failure.
+> >
+>
+> This is a strange one. The error in question
+>
+> CC .vmlinux.export.o
+> UPD include/generated/utsversion.h
+> CC init/version-timestamp.o
+> LD .tmp_vmlinux.btf
+> BTF .btf.vmlinux.bin.o
+> libbpf: BTF header not found
+> pahole: .tmp_vmlinux.btf: Invalid argument
+
+That's slightly different from Tomasz and Marcus' report (not sure if
+that's relevant):
+
+FAILED: load BTF from vmlinux: Invalid argument
+
+That seems to come from
+tools/bpf/resolve_btfids/main.c:529
+Which seems like some failed call to btf_parse().
+EINVAL is getting propagated up from btf_parse(), but that's not super
+descriptive...
+
+The hard part is that I suspect OpenMandriva (Tomasz) and Marcus are
+both setting additional flags in their toolchains, which can make
+reproducing tricky.
+
+>
+> ...occurs during BTF parsing when the raw size of the BTF is smaller
+> than the BTF header size, which should never happen unless BTF
+> is corrupted. Thing is, at that stage we shouldn't be parsing BTF,
+> we should be generating it from DWARF. The only time pahole parses BTF
+> is when it's creating split BTF for modules (it parses the base BTF), or
+> when it's reading existing BTF, neither of which it should be doing at
+> this stage.
+>
+> But I suspect the issue is in gen_btf() in scripts/link-vmlinux.sh.
+> Prior to running pahole, we call "vmlinux_link .tmp_vmlinux.btf".
+> If that went awry somehow and .tmp_vmlinux.btf wasn't created, it
+
+Wouldn't we expect some kind of linker error though in that case?
+
+> would explain the "Invalid argument" error:
+>
+> $ pahole -J nosuchfile
+> pahole: nosuchfile: Invalid argument
+>
+> I see some clang specifics in vmlinux_link(), so I think a good
+> first step would be to check if .tmp_vlinux.btf exists prior
+> to running pahole. The submitter mentioned swapping linkers seems to
+> help, so that seems a promising angle. If there's a kernel .config
+> available I can try and reproduce the failure too. Thanks!
+>
+> Alan
+>
+> >>
+> >>   LD      .tmp_vmlinux.btf
+> >>   BTF     .btf.vmlinux.bin.o
+> >>   LD      .tmp_vmlinux.kallsyms1
+> >>
+> >> And
+> >>
+> >> / # strings /sys/kernel/btf/vmlinux | wc -l
+> >> 89921
+> >> / # strings /sys/kernel/btf/vmlinux | grep -w kfree
+> >> kfree
+> >>
+> >> It seems the BTF is correctly generated. (with DWARF5, the number of s=
+ymbols
+> >> are about 30000.)
+> >
+> >
+> >
 
 
-On 8/3/23 11:59 PM, David Marchevsky wrote:
-> On 8/1/23 4:41 PM, Alexei Starovoitov wrote:
->> On Tue, Aug 1, 2023 at 7:54 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
->>>
->>> At Meta we have a profiling daemon which periodically collects
->>> information on many hosts. This collection usually involves grabbing
->>> stacks (user and kernel) using perf_event BPF progs and later symbolicating
->>> them. For user stacks we try to use BPF_F_USER_BUILD_ID and rely on
->>> remote symbolication, but BPF_F_USER_BUILD_ID doesn't always succeed. In
->>> those cases we must fall back to digging around in /proc/PID/maps to map
->>> virtual address to (binary, offset). The /proc/PID/maps digging does not
->>> occur synchronously with stack collection, so the process might already
->>> be gone, in which case it won't have /proc/PID/maps and we will fail to
->>> symbolicate.
->>>
->>> This 'exited process problem' doesn't occur very often as
->>> most of the prod services we care to profile are long-lived daemons,
->>> there are enough usecases to warrant a workaround: a BPF program which
->>> can be optionally loaded at data collection time and essentially walks
->>> /proc/PID/maps. Currently this is done by walking the vma list:
->>>
->>>    struct vm_area_struct* mmap = BPF_CORE_READ(mm, mmap);
->>>    mmap_next = BPF_CORE_READ(rmap, vm_next); /* in a loop */
->>>
->>> Since commit 763ecb035029 ("mm: remove the vma linked list") there's no
->>> longer a vma linked list to walk. Walking the vma maple tree is not as
->>> simple as hopping struct vm_area_struct->vm_next. That commit replaces
->>> vm_next hopping with calls to find_vma(mm, addr) helper function, which
->>> returns the vma containing addr, or if no vma contains addr,
->>> the closest vma with higher start addr.
->>>
->>> The BPF helper bpf_find_vma is unsurprisingly a thin wrapper around
->>> find_vma, with the major difference that no 'closest vma' is returned if
->>> there is no VMA containing a particular address. This prevents BPF
->>> programs from being able to use bpf_find_vma to iterate all vmas in a
->>> task in a reasonable way.
->>>
->>> This patch adds a BPF_F_VMA_NEXT flag to bpf_find_vma which restores
->>> 'closest vma' behavior when used. Because this is find_vma's default
->>> behavior it's as straightforward as nerfing a 'vma contains addr' check
->>> on find_vma retval.
->>>
->>> Also, change bpf_find_vma's address parameter to 'addr' instead of
->>> 'start'. The former is used in documentation and more accurately
->>> describes the param.
->>>
->>> [
->>>    RFC: This isn't an ideal solution for iteration of all vmas in a task
->>>         in the long term for a few reasons:
->>>
->>>       * In nmi context, second call to bpf_find_vma will fail because
->>>         irq_work is busy, so can't iterate all vmas
->>>       * Repeatedly taking and releasing mmap_read lock when a dedicated
->>>         iterate_all_vmas(task) kfunc could just take it once and hold for
->>>         all vmas
->>>
->>>      My specific usecase doesn't do vma iteration in nmi context and I
->>>      think the 'closest vma' behavior can be useful here despite locking
->>>      inefficiencies.
->>>
->>>      When Alexei and I discussed this offline, two alternatives to
->>>      provide similar functionality while addressing above issues seemed
->>>      reasonable:
->>>
->>>        * open-coded iterator for task vma. Similar to existing
->>>          task_vma bpf_iter, but no need to create a bpf_link and read
->>>          bpf_iter fd from userspace.
->>>        * New kfunc taking callback similar bpf_find_vma, but iterating
->>>          over all vmas in one go
->>>
->>>       I think this patch is useful on its own since it's a fairly minimal
->>>       change and fixes my usecase. Sending for early feedback and to
->>>       solicit further thought about whether this should be dropped in
->>>       favor of one of the above options.
->>
->> - In theory this patch can work, but patch 2 didn't attempt to actually
->> use it in a loop to iterate all vma-s.
->> Which is a bit of red flag whether such iteration is practical
->> (either via bpf_loop or bpf_for).
->>
->> - This behavior of bpf_find_vma() feels too much implementation detail.
->> find_vma will probably stay this way, since different parts of the kernel
->> rely on it, but exposing it like BPF_F_VMA_NEXT leaks implementation too much.
->>
->> - Looking at task_vma_seq_get_next().. that's how vma iter should be done and
->> I don't think bpf prog can do it on its own.
->> Because with bpf_find_vma() the lock will drop at every step the problems
->> described at that large comment will be hit sooner or later.
->>
->> All concerns combined I feel we better provide a new kfunc that iterates vma
->> and drops the lock before invoking callback.
->> It can be much simpler than task_vma_seq_get_next() if we don't drop the lock.
->> Maybe it's ok.
->> Doing it open coded iterators style is likely better.
->> bpf_iter_vma_new() kfunc will do
->> bpf_mmap_unlock_get_irq_work+mmap_read_trylock
->> while bpf_iter_vma_destroy() will bpf_mmap_unlock_mm.
->>
->> I'd try to do open-code-iter first. It's a good test for the iter infra.
->> bpf_iter_testmod_seq_new is an example of how to add a new iter.
->>
->> Another issue with bpf_find_vma is .arg1_type = ARG_PTR_TO_BTF_ID.
->> It's not a trusted arg. We better move away from this legacy pointer.
->> bpf_iter_vma_new() should accept only trusted ptr to task_struct.
->> fwiw bpf_get_current_task_btf_proto has
->> .ret_type = RET_PTR_TO_BTF_ID_TRUSTED and it matters here.
->> The bpf prog might look like:
->> task = bpf_get_current_task_btf();
->> err = bpf_iter_vma_new(&it, task);
->> while ((vma = bpf_iter_vma_next(&it))) ...;
->> assuming lock is not dropped by _next.
-> 
-> The only concern here that doesn't seem reasonable to me is the
-> "too much implementation detail". I agree with the rest, though,
-> so will send a different series with new implementation and point
->   to this discussion.
 
-For reference, this is another use case for traversing
-vma's in the bpf program reported from bcc mailing list:
-   https://github.com/iovisor/bcc/pull/4679
-
-The use case is for that the application may not have frame pointer
-so bpf program will just scan stack's and find potential
-user text region pointers and report them. This is similar
-to what current arch (e.g., x86) code reporting crash stack.
+--=20
+Thanks,
+~Nick Desaulniers
 
