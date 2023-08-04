@@ -1,95 +1,102 @@
-Return-Path: <bpf+bounces-7056-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7058-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E15F770BEE
-	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 00:26:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 542E4770C14
+	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 00:42:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3050D28272B
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 22:26:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 866381C217B6
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 22:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3EA253A2;
-	Fri,  4 Aug 2023 22:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3059421D33;
+	Fri,  4 Aug 2023 22:40:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC3411AA8B
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 22:26:47 +0000 (UTC)
-Received: from out-120.mta0.migadu.com (out-120.mta0.migadu.com [IPv6:2001:41d0:1004:224b::78])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D461704
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 15:26:46 -0700 (PDT)
-Message-ID: <e0e8bf3b-70af-3827-2fa3-30f3d48bcf46@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1691188004;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VlHvVn8ION/wYMTcwm/zIJedCAnl/hLvcfGQJkof7IM=;
-	b=AjPHjOyQGFuAhWHcOt26P+iYoIVdygHw6jC/Fj8A4P1L9PvUP3Pd+gtbD7hknbpM1+fod6
-	ZEPoNOUz8mYkxOCAa7T0zaNJ9BKLb3kNZRk/NZKYSDHeGsFrFxT8TYPkBIgZjSzOrFSCE6
-	mpQ3ERTp1MuW9tqdXmcoKMIvk4QiB7I=
-Date: Fri, 4 Aug 2023 15:26:40 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C511AD4A
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 22:40:56 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77FFB46B3;
+	Fri,  4 Aug 2023 15:40:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691188855; x=1722724855;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=KIHq1/BLnN0GMEwjg4gEEkT8zWZgQ+MJx2PmCBPEvjM=;
+  b=b4Z/LdGzBXxYmMltFpDwzsFfLSCwwz0TH6z1GD2GZl5zMBHKxA2nsRNG
+   vDTRlWgqMhSqph5637wu8qdupmdj3ZeXb7hYGdRvDFOLcVP74fTXi6E4P
+   bD6/EwD+N8wYq1JUhglFtEWYkO3WxIHRL/mrs+hpSqucde63bVqg8QnNR
+   Np2gt7SbupILD9/RzdPDfOCHIHpv4PnRJ8MpJ8836/wSoxRZVKlI7VT8p
+   XcPcW11Qpoy5bpSWpUDZuxCQklnTaJH++AZdg/cmuOXDUeigS7a5K0tA6
+   9fgiw+Cm9B1925bZaMywvNx8/pG5B+F0WCJ+0c9nGeXQZn7fmhPvnFtWH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="373916930"
+X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
+   d="scan'208";a="373916930"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 15:40:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="844286842"
+X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
+   d="scan'208";a="844286842"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 04 Aug 2023 15:40:51 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qS3TW-00039j-1d;
+	Fri, 04 Aug 2023 22:40:50 +0000
+Date: Sat, 5 Aug 2023 06:40:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Quentin Monnet <quentin@isovalent.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [linux-next:master 4617/7272] kernel/bpf/disasm.c:90:12: sparse:
+ sparse: symbol 'bpf_alu_sign_string' was not declared. Should it be static?
+Message-ID: <202308050615.wxAn1v2J-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: fix bpf_dynptr_slice() to stop return an
- ERR_PTR.
-Content-Language: en-US
-To: thinker.li@gmail.com
-Cc: sinquersw@gmail.com, kuifeng@meta.com,
- Dan Carpenter <dan.carpenter@linaro.org>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
- ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org
-References: <20230803231206.1060485-1-thinker.li@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230803231206.1060485-1-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/3/23 4:12 PM, thinker.li@gmail.com wrote:
-> From: Kui-Feng Lee <thinker.li@gmail.com>
-> 
-> Verify if the pointer obtained from bpf_xdp_pointer() is either an error or
-> NULL before returning it.
-> 
-> The function bpf_dynptr_slice() mistakenly returned an ERR_PTR. Instead of
-> solely checking for NULL, it should also verify if the pointer returned by
-> bpf_xdp_pointer() is an error or NULL.
-> 
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Closes: https://lore.kernel.org/bpf/d1360219-85c3-4a03-9449-253ea905f9d1@moroto.mountain/
-> Fixes: 66e3a13e7c2c ("bpf: Add bpf_dynptr_slice and bpf_dynptr_slice_rdwr")
-> Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->   kernel/bpf/helpers.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 56ce5008aedd..eb91cae0612a 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2270,7 +2270,7 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset
->   	case BPF_DYNPTR_TYPE_XDP:
->   	{
->   		void *xdp_ptr = bpf_xdp_pointer(ptr->data, ptr->offset + offset, len);
-> -		if (xdp_ptr)
-> +		if (!IS_ERR_OR_NULL(xdp_ptr))
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+head:   bdffb18b5dd8071cd25685b966f380a30b1fadaa
+commit: f835bb6222998c8655bc4e85287d42b57c17b208 [4617/7272] bpf: Add kernel/bpftool asm support for new instructions
+config: i386-randconfig-i063-20230730 (https://download.01.org/0day-ci/archive/20230805/202308050615.wxAn1v2J-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230805/202308050615.wxAn1v2J-lkp@intel.com/reproduce)
 
-Considering the earlier bpf_dynptr_check_off_len() should have avoided the 
-IS_ERR() case here, I think targeting bpf-next makes sense. Applied.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308050615.wxAn1v2J-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> kernel/bpf/disasm.c:90:12: sparse: sparse: symbol 'bpf_alu_sign_string' was not declared. Should it be static?
+>> kernel/bpf/disasm.c:95:12: sparse: sparse: symbol 'bpf_movsx_string' was not declared. Should it be static?
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
