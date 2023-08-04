@@ -1,205 +1,242 @@
-Return-Path: <bpf+bounces-6939-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6940-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4315A76F914
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 06:43:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F89D76F945
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 07:07:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F15132824B6
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 04:43:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FAE81C21720
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 05:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C7C1FD7;
-	Fri,  4 Aug 2023 04:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CCFF4400;
+	Fri,  4 Aug 2023 05:07:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF861FA7
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 04:43:29 +0000 (UTC)
-Received: from out-118.mta1.migadu.com (out-118.mta1.migadu.com [95.215.58.118])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF133C01
-	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 21:43:19 -0700 (PDT)
-Message-ID: <57615016-a7a5-3ba5-4124-084b7d01f2bd@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1691124197; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2oqYRixqJSQOjAdmBaMhIIt6Nwo1HIOOcWGBh2+E0m0=;
-	b=EB7c50o6hLwly8prdcAMJ485EDqHTQFuZ76yko2ReEDV68av2IAD8gHSHMgJBzRCcTCW8V
-	lldMP9f0RDgiQbh2KGICRvBI9BFQ19DHHFoSEjLkg4cAWydoD7BiHgCUuNQaulLSrLxVB2
-	YBunvRucwB4mzS4UQwRIfak1oQYcPdo=
-Date: Thu, 3 Aug 2023 21:43:07 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF2A31FC8;
+	Fri,  4 Aug 2023 05:07:34 +0000 (UTC)
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2052.outbound.protection.outlook.com [40.107.6.52])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0694C2F;
+	Thu,  3 Aug 2023 22:07:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VNIv6B3omhPeRHbBT2Pc663BfZ8lWi0p10L9vfW99e1/kM3q9hr6B7WnZ5OQnfwYMwwGbrkKvgcvwkfTmpSPd3X2UTbpVdE7AAMXtaZf5P2tsDu6YxdIP8C2tW8fasnim8EkH0umIUKzZUV2ANcUs5VvvWbhd1LGnIwtgRrNKYDeT2Ra6AKHRDF5KFQOIwzyaF7aYoK8ufR3PHCVSXLUkPFYiygIUGOd7xjySquIHgy5j/lwDTsT9+exvZjcB6zTMXfylCjCBmJA5wceqBUtQf8u6nsHYRppK82Bh9mdEs2bqsrr2Pbs+Q0Uwa7zqusw91fXTc3UtRC3HKSHoyPCyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wP7m4Z1KueX23fCfLn/JL9twyhPWY0e3IuS/1OJvSU0=;
+ b=VUQxbjy13YJf6x6IbqHz649xsi8LqCccRcjpNEsRK85vlN8tbyJqilHA0EHlzHNePFkMRF/b6QvcejXz0APAt/YDz3Lg1GiEbMCvp9rVS6BBEMU+iA1/832iQGFDKh+LXqvNbhq59thF2jE3qyS7eTZFXfEGZVD0UQTn+lCbdz2KF7KL59oWw6p7Adnc2Efq1D26bXfcuTCjpSQhwO+yR7NW4jJExxnQ1fgAUc+sUrODHON3O0yPsx/U6etezd/J2JmXWgaOfCaRJgkGzmLKiQiiSw0fb3Zllx0RP/0rQzFoJjIb9qkw9vSGsLVnbg2QzFXRhga5ldnp7oSLBY9t1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wP7m4Z1KueX23fCfLn/JL9twyhPWY0e3IuS/1OJvSU0=;
+ b=I1njfW8mC4nXltxTYkkeoM846CjWp8SpK/4ygJit4B+q1jVqB8vBoIAQjmK4Ly6XbPbm2b77UgJcIymmSglykGyjCXG6nv7YJ0OJkURhDX8xOo7xTEfTjA7iZ+TKysdWE3i8nJbJzudEpdiNFtUgVoUgZBTyY+G2ujcc8Mp9kpfTCf8yQqZRpzbML9cQr4nYnn/QHhYbWR2Dbu5eXymcFNMjn1D4+KLOHc7rxkFqMphXjSDQWLb0oU7L2WgVySW7pmN6H0WkBUpNZ3K7+nmjigT+sEXK6HXMb7nc1+d3mAs21Hmc81lRdiF5q2IG7zCN5ZUez4Jy9YuZvF7uY45tfA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com (2603:10a6:7:83::14)
+ by DUZPR04MB10061.eurprd04.prod.outlook.com (2603:10a6:10:4df::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Fri, 4 Aug
+ 2023 05:07:30 +0000
+Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com
+ ([fe80::2867:7a72:20ac:5f71]) by HE1PR0402MB3497.eurprd04.prod.outlook.com
+ ([fe80::2867:7a72:20ac:5f71%3]) with mapi id 15.20.6652.020; Fri, 4 Aug 2023
+ 05:07:29 +0000
+From: Geliang Tang <geliang.tang@suse.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Florent Revest <revest@chromium.org>,
+	Brendan Jackman <jackmanb@chromium.org>,
+	Matthieu Baerts <matthieu.baerts@tessares.net>,
+	Mat Martineau <martineau@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Eric Paris <eparis@parisplace.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Simon Horman <horms@kernel.org>
+Cc: Geliang Tang <geliang.tang@suse.com>,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	mptcp@lists.linux.dev,
+	apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org,
+	selinux@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v11 0/5] bpf: Force to MPTCP
+Date: Fri,  4 Aug 2023 13:07:38 +0800
+Message-Id: <cover.1691125344.git.geliang.tang@suse.com>
+X-Mailer: git-send-email 2.35.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0046.apcprd02.prod.outlook.com
+ (2603:1096:4:1f5::14) To HE1PR0402MB3497.eurprd04.prod.outlook.com
+ (2603:10a6:7:83::14)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v10 5/5] selftests/bpf: Add mptcpify test
-Content-Language: en-US
-To: Geliang Tang <geliang.tang@suse.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Florent Revest <revest@chromium.org>, Brendan Jackman
- <jackmanb@chromium.org>, Matthieu Baerts <matthieu.baerts@tessares.net>,
- Mat Martineau <martineau@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- John Johansen <john.johansen@canonical.com>, Paul Moore
- <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
- "Serge E. Hallyn" <serge@hallyn.com>,
- Stephen Smalley <stephen.smalley.work@gmail.com>,
- Eric Paris <eparis@parisplace.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, mptcp@lists.linux.dev,
- apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
- selinux@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <cover.1691113640.git.geliang.tang@suse.com>
- <db0d187dabf08d272a3f953cb2edfba8e8bf47e8.1691113640.git.geliang.tang@suse.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <db0d187dabf08d272a3f953cb2edfba8e8bf47e8.1691113640.git.geliang.tang@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HE1PR0402MB3497:EE_|DUZPR04MB10061:EE_
+X-MS-Office365-Filtering-Correlation-Id: e213b7e0-744f-428b-7446-08db94a8b395
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	rV1EZ7LQhKBepJRvl0wWwMF+zbxdkMtqqZ3GFMW8WTBoPXCAsQymyrNyf26L4J1GxA6yEkhDuHDxnTj81MW2Wl/5SOVIIhsfZrsvRfsZ/ncBkScStHnw5t6sl0M2PfZIjVay/yT5KADKJpbDFSwyrwy1tmvDlyXuqLBRCOjkNODoIIFllypFlo/FZN6zistAFOEvsjyVUSyYrgjrSgTRGm22KbrgSZlN0efYHXEvpBVVmhIHDlSf7FCDzqINhG3RNLDJSVgrC+zWyfj6tXA4zJxXn6wGGGI/WHEsekMhqxYTrs4kbhZiZnaxInVC161Uz/8pRf9WIA6NSR4yx4FF3mwipBOinzf96qf1tFmTExtbWhj5W2L6/17Hb3fGdiVqNSjqEdxJ/t9E9t/2kjXvAmR+5Oh14nZ+dJ1X3qiwOPDWQyvQ5FTRERsnQwlDw2trC5/fNiSnODhlegncAl9MQolifocH7PpGt67a0o6wB2RkEo0+S6cLpDTPN2FhNX2W40B2/PNmwVxAgl4YGBekzf5Uy825PzgKgUOJ3vhrC9ju+sdog25ev9ahMa7+x1sWc8i9pxdFRSI/VQZu/oAdy3BEuZAh134K65N09OLROE9KNB/xMH+GcxwfEn3Hy69+viTgo3HOA9HDN3LTUH5W4g==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3497.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(136003)(366004)(39860400002)(346002)(376002)(1800799003)(186006)(451199021)(86362001)(36756003)(478600001)(110136005)(38100700002)(921005)(2616005)(83380400001)(6506007)(26005)(6666004)(6486002)(41300700001)(8936002)(8676002)(966005)(6512007)(4326008)(66476007)(7406005)(66556008)(44832011)(316002)(7416002)(5660300002)(66946007)(2906002)(13296009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?SM8/RXGHm0v1oZzPzAra5absZODyMBQzQU0ehlfAM6GGuIsOF4R06wAgzGhb?=
+ =?us-ascii?Q?7Q/QBrBIxO5+sPcv6u7y5+rwsV33h5qF33NwWCdF/dFhfI+aH/hyPuFjifSQ?=
+ =?us-ascii?Q?7IDJzVMNXgr28PWDc7mFofHCJFcUi39b9go76xxf84IKgRDeHfIS3R8jVmMH?=
+ =?us-ascii?Q?EftswzgoE/GNHVQ3xY4Yq0btTqYl1DsXRyXAFhKjlBADILToca+0ViYzVf2C?=
+ =?us-ascii?Q?53F3i7sMxh5+TgRnF1LYy+iOdHnzk0sVEwHS4vQAnIyg13B+tBzJLu5uwXzM?=
+ =?us-ascii?Q?eLQx7RMXITuG1UYNPJjeO+Am3U2FoLH2pQqLZ5wZUM+JU+aW7uPnc/kXnbI/?=
+ =?us-ascii?Q?PX7OlDIiP7prrRQw5FtimC8HjvvZXkvgIIQzi5m3zUa+2M8LO+qcT1WvPfLS?=
+ =?us-ascii?Q?W73VPCeA3x4gxnF7CrYA+icuwnQobSd9Tp2sjZRux+0cJv0SIDkpS2UptO/z?=
+ =?us-ascii?Q?t6GlA4OwNIagL61OBEJ/PqQAn7JzjSGKMJYD8kC76Awlvc1F4wWy8+Xlozbh?=
+ =?us-ascii?Q?yqvwIFnIxkQku7rBdYAUcg7R/oGhPEATRBpYunbhRJD0NUr3y8ZKt+M7U4VF?=
+ =?us-ascii?Q?m7ogh9S+uxzOTNs2WQ3iBapuR/8975DYLhXKJSuuPEbFGj4Lp7L3lLiASe3z?=
+ =?us-ascii?Q?kj/efM1k0N+1aqovMRuj8UAjQ7IGX3T3aTw41DalReECdLFKc0itwbL9ENJb?=
+ =?us-ascii?Q?iwWUsfJztVLSnk77wjoxyjz5WSVeXu4mBE1z6gFLFswBS+oidIlpY4GqkeMh?=
+ =?us-ascii?Q?cEBAa2Sg6qO2BhaK68pCvHo+aS3tRMeuPWM1SfuM7x2M//cWnXjiyXy2lfU6?=
+ =?us-ascii?Q?YxdOVHipWJ1XCKNH4k7GZk69P9KQicyxl7K7TNbuvIq/bBqRCWeLU5pzOpMR?=
+ =?us-ascii?Q?BlKHOkj71mFxv32yEK4HmyEzMrS9I6j1lkSwPcwjtTAATpGHhB7MaK78E8vo?=
+ =?us-ascii?Q?WeV/LLliUBeCXYejir1t+M2v1VVeNr+1OoXPRheI8YEQvFNMPt8OlfjQQRYi?=
+ =?us-ascii?Q?b2DnaEB9q6kNxYSMyIzT0g2sTDd7RmXfuVNiKzaV9tJ8iiTZCngqrh3tos7X?=
+ =?us-ascii?Q?gnsD/Rgp1BD0rrIplf6EhAXFhHiG87O1hPqvZp2CkCRjMpXVUAEAqx8b8X1K?=
+ =?us-ascii?Q?qMYtaSMuEzHEDLLW7RJVRJN82REYoNl43hW3KMNyeAOYjfeXTBA8APJpFdZP?=
+ =?us-ascii?Q?bgKVEnqv+bBRWvFJfyAzLxsEMFzHgkcXIBDf3aLptG8sa03F6JAkx9j+aUgh?=
+ =?us-ascii?Q?UZaXZxPU0gUyDhWgXW0bW7Yp9k9N0Glfn0O2iC1EhJjixKTXl6UiTtnN4FrZ?=
+ =?us-ascii?Q?8yCFPDwoYONxK/u9S3bosUQ/MbcqJXOf/yyWcfQxfPgPtUj4tOOl2VSEp6Gr?=
+ =?us-ascii?Q?vDfiBNrNoUQySSnP3mJ0XaTcQlZ+pIrB4JbSJ0/AF9tcRoE8QBC1ei7cQgwn?=
+ =?us-ascii?Q?Y51mxgw/mFcTtRVa9qfhoFlNHsvZ7qKW4Q6SGnnZHniJypkZJm4IP59nSv2V?=
+ =?us-ascii?Q?vqx1mq26mpcFCpWtoqOtt66Q34AJtdpn1uLgKKlH3KCrBizCqo7JRApMFMOL?=
+ =?us-ascii?Q?W0Qv1/ITYsVHpvW/Yfq3OUPRoiTVBcnEr03D6jpv?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e213b7e0-744f-428b-7446-08db94a8b395
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3497.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 05:07:29.4341
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mzqD1PjdYVsfypuoIgN+5h1INFvP4cdjnz4OF7qP9CSWGuTJ7U09Rjk1d0sC9VuZaXd8AEVoa8X/dpZQXdoIHg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DUZPR04MB10061
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+As is described in the "How to use MPTCP?" section in MPTCP wiki [1]:
 
+"Your app should create sockets with IPPROTO_MPTCP as the proto:
+( socket(AF_INET, SOCK_STREAM, IPPROTO_MPTCP); ). Legacy apps can be
+forced to create and use MPTCP sockets instead of TCP ones via the
+mptcpize command bundled with the mptcpd daemon."
 
-On 8/3/23 6:55 PM, Geliang Tang wrote:
-> Implement a new test program mptcpify: if the family is AF_INET or
-> AF_INET6, the type is SOCK_STREAM, and the protocol ID is 0 or
-> IPPROTO_TCP, set it to IPPROTO_MPTCP. It will be hooked in
-> update_socket_protocol().
-> 
-> Extend the MPTCP test base, add a selftest test_mptcpify() for the
-> mptcpify case. Open and load the mptcpify test prog to mptcpify the
-> TCP sockets dynamically, then use start_server() and connect_to_fd()
-> to create a TCP socket, but actually what's created is an MPTCP
-> socket, which can be verified through the outputs of 'ss' and 'nstat'
-> commands.
-> 
-> Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Signed-off-by: Geliang Tang <geliang.tang@suse.com>
+But the mptcpize (LD_PRELOAD technique) command has some limitations
+[2]:
 
-Ack with a minor nit below.
+ - it doesn't work if the application is not using libc (e.g. GoLang
+apps)
+ - in some envs, it might not be easy to set env vars / change the way
+apps are launched, e.g. on Android
+ - mptcpize needs to be launched with all apps that want MPTCP: we could
+have more control from BPF to enable MPTCP only for some apps or all the
+ones of a netns or a cgroup, etc.
+ - it is not in BPF, we cannot talk about it at netdev conf.
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+So this patchset attempts to use BPF to implement functions similer to
+mptcpize.
 
-> ---
->   .../testing/selftests/bpf/prog_tests/mptcp.c  | 88 +++++++++++++++++++
->   tools/testing/selftests/bpf/progs/mptcpify.c  | 20 +++++
->   2 files changed, 108 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/progs/mptcpify.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> index 3dc0ba2e7590..e5ac2c3aab7d 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> @@ -6,6 +6,7 @@
->   #include "cgroup_helpers.h"
->   #include "network_helpers.h"
->   #include "mptcp_sock.skel.h"
-> +#include "mptcpify.skel.h"
->   
->   char NS_TEST[32];
->   
-> @@ -185,8 +186,95 @@ static void test_base(void)
->   	close(cgroup_fd);
->   }
->   
-> +static void send_byte(int fd)
-> +{
-> +	char b = 0x55;
-> +
-> +	ASSERT_EQ(write(fd, &b, sizeof(b)), 1, "send single byte");
-> +}
-> +
-> +static int verify_mptcpify(void)
-> +{
-> +	char cmd[256];
-> +	int err = 0;
-> +
-> +	snprintf(cmd, sizeof(cmd),
-> +		 "ip netns exec %s ss -tOni | grep -q '%s'",
-> +		 NS_TEST, "tcp-ulp-mptcp");
-> +	if (!ASSERT_OK(system(cmd), "No tcp-ulp-mptcp found!"))
-> +		err++;
-> +
-> +	snprintf(cmd, sizeof(cmd),
-> +		 "ip netns exec %s nstat -asz %s | awk '%s' | grep -q '%s'",
-> +		 NS_TEST, "MPTcpExtMPCapableSYNACKRX",
-> +		 "NR==1 {next} {print $2}", "1");
-> +	if (!ASSERT_OK(system(cmd), "No MPTcpExtMPCapableSYNACKRX found!"))
-> +		err++;
-> +
-> +	return err;
-> +}
-> +
-> +static int run_mptcpify(int cgroup_fd)
-> +{
-> +	int server_fd, client_fd, err = 0;
-> +	struct mptcpify *mptcpify_skel;
-> +
-> +	mptcpify_skel = mptcpify__open_and_load();
-> +	if (!ASSERT_OK_PTR(mptcpify_skel, "skel_open_load"))
-> +		return -EIO;
-> +
-> +	err = mptcpify__attach(mptcpify_skel);
-> +	if (!ASSERT_OK(err, "skel_attach"))
-> +		goto out;
-> +
-> +	/* without MPTCP */
-> +	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, 0, 0);
-> +	if (!ASSERT_GE(server_fd, 0, "start_server")) {
-> +		err = -EIO;
-> +		goto out;
-> +	}
-> +
-> +	client_fd = connect_to_fd(server_fd, 0);
-> +	if (!ASSERT_GE(client_fd, 0, "connect to fd")) {
-> +		err = -EIO;
-> +		goto close_server;
-> +	}
-> +
-> +	send_byte(client_fd);
-> +	err += verify_mptcpify();
+The main idea is to add a hook in sys_socket() to change the protocol id
+from IPPROTO_TCP (or 0) to IPPROTO_MPTCP.
 
-The above code essentially equals to
-	err = verify_mptcpify()
-since err must be 0 before the above code.
-I think it is worthwhile to change the above to
-	err = verify_mptcpify();
+[1]
+https://github.com/multipath-tcp/mptcp_net-next/wiki
+[2]
+https://github.com/multipath-tcp/mptcp_net-next/issues/79
 
-Otherwise, people may confuse that maybe err could be
-non-zero before send_byte(client_fd)? If this is the
-case, why we did not return earlier? The code
-	err = verify_mptcpify()
-will make it clear that all previous error
-conditions have been handled properly.
+v11:
+ - add comments about outputs of 'ss' and 'nstat'.
+ - use "err = verify_mptcpify()" instead of using =+.
 
-> +
-> +	close(client_fd);
-> +close_server:
-> +	close(server_fd);
-> +out:
-> +	mptcpify__destroy(mptcpify_skel);
-> +	return err;
-> +}
-> +
-[...]
+v10:
+ - drop "#ifdef CONFIG_BPF_JIT".
+ - include vmlinux.h and bpf_tracing_net.h to avoid defining some
+macros.
+ - drop unneeded checks for mptcp.
+
+v9:
+ - update comment for 'update_socket_protocol'.
+
+v8:
+ - drop the additional checks on the 'protocol' value after the
+'update_socket_protocol()' call.
+
+v7:
+ - add __weak and __diag_* for update_socket_protocol.
+
+v6:
+ - add update_socket_protocol.
+
+v5:
+ - add bpf_mptcpify helper.
+
+v4:
+ - use lsm_cgroup/socket_create
+
+v3:
+ - patch 8: char cmd[128]; -> char cmd[256];
+
+v2:
+ - Fix build selftests errors reported by CI
+
+Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/79
+
+Geliang Tang (5):
+  bpf: Add update_socket_protocol hook
+  selftests/bpf: Use random netns name for mptcp
+  selftests/bpf: Add two mptcp netns helpers
+  selftests/bpf: Drop unneeded checks for mptcp
+  selftests/bpf: Add mptcpify test
+
+ net/mptcp/bpf.c                               |  15 ++
+ net/socket.c                                  |  24 +++
+ .../testing/selftests/bpf/prog_tests/mptcp.c  | 139 +++++++++++++++---
+ tools/testing/selftests/bpf/progs/mptcpify.c  |  20 +++
+ 4 files changed, 179 insertions(+), 19 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/mptcpify.c
+
+-- 
+2.35.3
+
 
