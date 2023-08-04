@@ -1,153 +1,133 @@
-Return-Path: <bpf+bounces-6960-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6961-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6D4A76FB8E
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 10:00:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C20B76FBB4
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 10:10:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 907A6282536
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 08:00:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29E301C21523
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 08:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9503E8498;
-	Fri,  4 Aug 2023 08:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A698BF1;
+	Fri,  4 Aug 2023 08:10:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7192F33
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 08:00:25 +0000 (UTC)
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3BA1704;
-	Fri,  4 Aug 2023 01:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1691136023; x=1722672023;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mozKuYzJnKHA2aKr3eiYDtSGyCx3d+I7fkTRCyvB7W0=;
-  b=S9meV5hrPUbBWAY9o6CBbP4zp+xjTUOqzEz4V6ZlpD8H2B8tHo8L1nwn
-   J+cxYIHYcDIgWTY2rLLlG3UhfVIB554mdIApG5n6sVzQMbMid3158CjkH
-   v/rNMykvOYsJ49x2MXBs1YjEVpZlQTA+Li9qoAZJVc86SfwWzIp/+RIHq
-   C0o7scN3tX+VkKR/L+J5S+dFJK5K7cDvlqF3d42Pk4MR0XiKzXV6bm8hK
-   W6ISf0f/5EQPsoIdmAlr3tcyz+F72jnKDnepDDHxGslQ76uyFlcoyIogo
-   H8xoAXe/MiIZPQ1mhshb9FWdRwKYEmZwvCbhM0ZHqoAGTLBeefzP/VehU
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="asc'?scan'208";a="164824311"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Aug 2023 01:00:21 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 4 Aug 2023 01:00:06 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Fri, 4 Aug 2023 01:00:01 -0700
-Date: Fri, 4 Aug 2023 08:59:24 +0100
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-CC: <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<kvm@vger.kernel.org>, <kvm-riscv@lists.infradead.org>,
-	<bpf@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Peter
- Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>, Jason
- Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
- Biesheuvel <ardb@kernel.org>, Anup Patel <anup@brainfault.org>, Atish Patra
-	<atishp@atishpatra.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
-	<martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
-	<yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
-	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>, Luke Nelson
-	<luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, Nam Cao
-	<namcaov@gmail.com>
-Subject: Re: [PATCH 01/10] RISC-V: Expand instruction definitions
-Message-ID: <20230804-barterer-heritage-ed191081bc47@wendy>
-References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
- <20230803-master-refactor-instructions-v4-v1-1-2128e61fa4ff@rivosinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244A179EF;
+	Fri,  4 Aug 2023 08:10:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1E85C433C7;
+	Fri,  4 Aug 2023 08:10:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691136620;
+	bh=n/fbxmZgAXx2EhdsI/2S74fch9nO3iVOz+1LpZmWgnY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=iu2MzKzcD2cspKi4j0qUBryfPs2H/VDOcp+QbnswsIQM++ze1K8Bqc67hs9Pytgnf
+	 qPnHbJdmC4z90XYPZB3IrIcphE40CclpvvHcMKdIh/MKJEteGCEYaPQ+Ju/EHJD2i8
+	 5pKPJuuH7dOBEl3OkpgzQNIb/KIgC46EMqXVkgKeKioszFuu4XtYe5GcUFrhTesWpC
+	 72feH3UcNJJknPm6bI9uT7t2JvfPRCrimNQIX+7kU2TMKSA1U7Y9r05Yvx+yuvgAvq
+	 QdUk+gbk6la6YfjiJVec8Y/TJqXXxZXTXGfKTa3fP9AoGZ2ul4NDIhHZ/uZdlVhEmv
+	 potgPC1tdJ02w==
+Date: Fri, 4 Aug 2023 17:10:16 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, martin.lau@linux.dev, bpf
+ <bpf@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>, Tomasz
+ =?UTF-8?B?UGF3ZcWC?= Gajc <tpgxyz@gmail.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>
+Subject: Re: FAILED: load BTF from vmlinux: Invalid argument
+Message-Id: <20230804171016.5676b193723d400dec062f5f@kernel.org>
+In-Reply-To: <CAKwvOd=w3PFMDyZ1WL1DDx0Gyt-+sh7hYP_+8b9zEFu3uZpVXQ@mail.gmail.com>
+References: <CAKwvOdm9PqNBLSZa_t5b=15cdtKvKq4q8WZr3i77W66m4FRAAQ@mail.gmail.com>
+	<ZMwQivemlha+fU5i@kernel.org>
+	<CAKwvOd=w3PFMDyZ1WL1DDx0Gyt-+sh7hYP_+8b9zEFu3uZpVXQ@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="giltLFM/xoeS/K8e"
-Content-Disposition: inline
-In-Reply-To: <20230803-master-refactor-instructions-v4-v1-1-2128e61fa4ff@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
---giltLFM/xoeS/K8e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Nick,
 
-On Thu, Aug 03, 2023 at 07:10:26PM -0700, Charlie Jenkins wrote:
-> There are many systems across the kernel that rely on directly creating
-> and modifying instructions. In order to unify them, create shared
-> definitions for instructions and registers.
->=20
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  arch/riscv/include/asm/insn.h            | 2742 ++++++++++++++++++++++++=
-+++---
+On Thu, 3 Aug 2023 13:50:02 -0700
+Nick Desaulniers <ndesaulniers@google.com> wrote:
 
-"I did a lot of copy-pasting from the RISC-V spec"
+> On Thu, Aug 3, 2023 at 1:39 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >
+> > Em Thu, Aug 03, 2023 at 11:02:46AM -0700, Nick Desaulniers escreveu:
+> > > Hi Martin (and BTF/BPF team),
+> > > I've observed 2 user reports with the error from the subject of this email.
+> > > https://github.com/ClangBuiltLinux/linux/issues/1825
+> > > https://bbs.archlinux.org/viewtopic.php?id=284177
+> > >
+> > > Any chance you could take a look at these reports and help us figure
+> > > out what's going wrong here?  Nathan and I haven't been able to
+> > > reproduce, but this seems to be affecting OpenMandriva (and Tomasz).
+> > >
+> > > Sounds like perhaps llvm-objcopy vs gnu objcopy might be a relevant detail?
+> >
+> > Masami had a problem with new versions of compilers that was solved
+> > with:
+> >
+> > ------------------------ 8< --------------------------------------------
+> > > To check that please tweak:
+> > >
+> > > ⬢[acme@toolbox perf-tools-next]$ grep DWARF ../build/v6.2-rc5+/.config
+> > > CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+> > > # CONFIG_DEBUG_INFO_DWARF4 is not set
+> > > # CONFIG_DEBUG_INFO_DWARF5 is not set
+> > > ⬢[acme@toolbox perf-tools-next]$
+> > >
+> > > i.e. disable CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT and enable
+> > > CONFIG_DEBUG_INFO_DWARF4.
+> >
+> > Hm, with CONFIG_DEBUG_INFO_DWARF4, no warning were shown.
+> 
+> Downgrading from the now-6-year-old DWARFv5 to now-13-year-old DWARFv4
+> is not what I'd consider a fix. Someday we can move to
+> DWARFv5...someday...
 
-How is anyone supposed to cross check this when there's 1000s of lines
-of a diff here? We've had some subtle bugs in some of the definitions in
-the past, so I would like to be able to check at this opportune moment
-that things are correct.
+Actually, even with DWARFv5, if I use newer clang, pahole succeded to make
+BTF info. So it may depend on compiler version too.
 
->  arch/riscv/include/asm/reg.h             |   88 +
->  arch/riscv/kernel/kgdb.c                 |    4 +-
->  arch/riscv/kernel/probes/simulate-insn.c |   39 +-
->  arch/riscv/kernel/vector.c               |    2 +-
+> 
+> What you describe sounds like build success, but reduction in debug info.
+> 
+> The reports I'm referring to seem to result in a build failure.
 
-You need to at least split this up. I doubt a 2742 change diff for
-insn.h was required to make the changes in these 4 files.
+Yeah, it seems a different issue. I could build it at least.
 
-Then after that, it would be so much easier to reason about these
-changes if the additions to insn.h happened at the same time as the
-removals from the affected locations.
+Thank you,
 
-I would probably split this so that things are done in more stages,
-with the larger patches split between changes that require no new
-definitions and changes that require moving things to insn.h
+> 
+> >
+> >   LD      .tmp_vmlinux.btf
+> >   BTF     .btf.vmlinux.bin.o
+> >   LD      .tmp_vmlinux.kallsyms1
+> >
+> > And
+> >
+> > / # strings /sys/kernel/btf/vmlinux | wc -l
+> > 89921
+> > / # strings /sys/kernel/btf/vmlinux | grep -w kfree
+> > kfree
+> >
+> > It seems the BTF is correctly generated. (with DWARF5, the number of symbols
+> > are about 30000.)
+> 
+> 
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
 
->  5 files changed, 2629 insertions(+), 246 deletions(-)
 
-What you would want to see if this arrived in your inbox as a reviewer?
-
-Don't get me wrong, I do like what you are doing here, the BPF JIT
-especially is filled with "uhh okay, I guess those offsets are right",
-so I don't mean to be discouraging.
-
-Thanks,
-Conor.
-
---giltLFM/xoeS/K8e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMyvzwAKCRB4tDGHoIJi
-0gQYAP0UlvSWYX6mB67CAGmIVZwnT0CwyiNPOEXW+G0t9GnWngD+PxdgtapB+DMY
-MPJ1zDp8mSYyzU+MKQ++56q8pPpFyQg=
-=yGw/
------END PGP SIGNATURE-----
-
---giltLFM/xoeS/K8e--
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
