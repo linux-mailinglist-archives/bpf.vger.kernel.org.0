@@ -1,148 +1,127 @@
-Return-Path: <bpf+bounces-6980-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6981-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1645D76FEF7
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 12:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E254976FF13
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 12:57:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B61AD2825EF
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 10:50:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BE2B282462
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 10:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676B3AD41;
-	Fri,  4 Aug 2023 10:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3379AD41;
+	Fri,  4 Aug 2023 10:57:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 063A4A929;
-	Fri,  4 Aug 2023 10:49:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5677BC433C8;
-	Fri,  4 Aug 2023 10:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691146184;
-	bh=6wEAhsdKD605Kpg3pmFf+yAduxBEJdnh1zQ9VC2lH+Y=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=HWD3/zqYL2D+G4Je/OVGF4ZX0qepzRs8cAalGTgD/1M3gd1oON28OHJ+cEk2gjdmR
-	 d5pl63TF1E4YPNAhLXq58AJL4ZUsKdmoJhLMDnXA+p2G+I9Gf6+R5B6EQszD9XA9/1
-	 b+cwGTNyrcoSkrLmKllZoF+ThD0t2sO4gtkecfF63NTCeVKKpOdjixNjbAsZnlWo5p
-	 b9f00O44jqmbczxwg6818cY+ZG9a4ixjGXwazv2gZ8ArbYcHUgSEyAD9kuwLHtO66A
-	 r7yzjcp9sE6yoaXGzfehBQl712NJVBCgRKkM7LFDLDekMkU1/ur6AUmMItCQdsUuuT
-	 Gw+sHFTOuKQ+w==
-Message-ID: <7d159ee4-7361-c04a-681e-1afc74765c5b@kernel.org>
-Date: Fri, 4 Aug 2023 12:49:37 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9158F7D
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 10:57:49 +0000 (UTC)
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C316D4ED3
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 03:57:36 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-687087d8ddaso1778974b3a.1
+        for <bpf@vger.kernel.org>; Fri, 04 Aug 2023 03:57:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691146656; x=1691751456;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UL8MkoXOfwG26pirKO6m6C8z2icQry1K095zSCO6FKs=;
+        b=ri/qUIqxx4il9j6Bq3aLbJ/bAevWRMjh4Yb6+3GemjJ0dlMjlcCPqwgSi6o3E4Qc1E
+         4KnSypxrLZ0plSvQC8fJwxdIGKvZH5Ld6hLFHOob+vas6cPGl5B5Vzsc0M+9tzwF1JaR
+         Z0vJSvyBWwsbBV9xOyrB+1Ig7JSu2cscFyeq2PZWEpesLk/0z1NS0RPa1jFtu0QD8MKD
+         Cu8w6CnHpGdi8RYc+YhMxrzm/K9oeMe2NOaH2RX+XONjQUYmVATDWTp4O5yVxnBL3OEr
+         tigJJWnqP/sntQ7I4dRhtPjLi3yYRRwoofrI+kt9TX4kiBgDd75iJha81jaz8zmtqx/A
+         /uvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691146656; x=1691751456;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UL8MkoXOfwG26pirKO6m6C8z2icQry1K095zSCO6FKs=;
+        b=AE+ahdl6nyB9cs/5wghxN3WYRFyPzxGLHMb8+QUJ+iJue+igZ89ZTnJxSsCFiKJtQL
+         PB+L6cOhNiDOmz4Pa2iKnpvDsJ6Wvf6Bk92BYHgp0QOC6x8x5gNA9OtkColgePNsC6Iz
+         em0TGQrel84UhEP5Aai9qMRc5QVv+pxnArUNq8fgZHEQEqeIK9esGWshMtlI47nd3pBm
+         geu0I7Ri/9qPN7MlcMqGL/nxyLUwqFh5ui/zGD8uyrMqgXVEXJqi4H84B5fp13UuaujZ
+         +CgJa7QAo+rwj43x4sTgjTZlQmfIc7I2xJqKnehtQ9eTQnQYNnas2gKYos82uADZbnB2
+         UG7w==
+X-Gm-Message-State: AOJu0Yxn7N5DV7qDe6R5YzUxGEDae5Tey9tlvlniLOBQpztIYAkvnujD
+	7A9cqR0w0625NRkSYr5O4gg=
+X-Google-Smtp-Source: AGHT+IF4ND8rX9Ja238O5GNoF6iKEQJjN4LyxR+uZWL9HK4ZDHo00tLK4QX//YeJGvmeGPhWydSzqA==
+X-Received: by 2002:a05:6a21:3285:b0:133:71e4:c172 with SMTP id yt5-20020a056a21328500b0013371e4c172mr1875686pzb.15.1691146656146;
+        Fri, 04 Aug 2023 03:57:36 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:ac01:c27:5400:4ff:fe87:9943])
+        by smtp.gmail.com with ESMTPSA id q19-20020a170902bd9300b001b850c9d7b3sm1457691pls.249.2023.08.04.03.57.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 03:57:35 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org
+Cc: bpf@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v4 bpf-next 0/2] bpf: Fix fill_link_info and add selftest 
+Date: Fri,  4 Aug 2023 10:57:30 +0000
+Message-Id: <20230804105732.3768-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc: decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
- olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
- wei.liu@kernel.org, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- leon@kernel.org, longli@microsoft.com, ssengar@linux.microsoft.com,
- linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
- hawk@kernel.org, tglx@linutronix.de, shradhagupta@linux.microsoft.com,
- linux-kernel@vger.kernel.org, Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: Re: [PATCH V5,net-next] net: mana: Add page pool for RX buffers
-Content-Language: en-US
-To: Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, linux-hyperv@vger.kernel.org,
- netdev@vger.kernel.org
-References: <1690999650-9557-1-git-send-email-haiyangz@microsoft.com>
- <e1093991-6f54-2c8d-c713-babac0d216d4@intel.com>
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <e1093991-6f54-2c8d-c713-babac0d216d4@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
+Patch #1: Fix an error in fill_link_info reported by Dan
+Patch #2: Add selftest for #1
 
+v3->v4:
+  - Comments from Yonghong
+    - re-word the kptr comment
+    - Avoid unnecessary switch statement 
+    - No need to check the return value of bpf_link__fd()
+    - offset is always 0
+    - Return directly when test_fill_link_info__open_and_load() fails
+    - Cleanup skel when load_kallsyms_refresh() fails
 
-On 03/08/2023 03.44, Jesse Brandeburg wrote:
-> On 8/2/2023 11:07 AM, Haiyang Zhang wrote:
->> Add page pool for RX buffers for faster buffer cycle and reduce CPU
->> usage.
->>
+v2->v3:
+  - Comments from Jiri
+    - Verify wrong arguments as soon as possible
+    - Use CONFIG_X86_KERNEL_IBT
+    - No need to make the test serial
+    - Add test case for kprobe_multi
 
-Can you add some info on the performance improvement this patch gives?
+v1->v2:
+  - Fix BPF CI failure due to the enabled ENDBDR
 
-Your previous post mentioned:
- > With iperf and 128 threads test, this patch improved the throughput 
-by 12-15%, and decreased the IRQ associated CPU's usage from 99-100% to 
-10-50%.
+Yafang Shao (2):
+  bpf: Fix uninitialized symbol in bpf_perf_link_fill_kprobe()
+  selftests/bpf: Add selftest for fill_link_info
 
+ kernel/bpf/syscall.c                               |   4 +-
+ tools/testing/selftests/bpf/DENYLIST.aarch64       |   3 +
+ .../selftests/bpf/prog_tests/fill_link_info.c      | 337 +++++++++++++++++++++
+ .../selftests/bpf/progs/test_fill_link_info.c      |  42 +++
+ 4 files changed, 384 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fill_link_info.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_fill_link_info.c
 
->> The standard page pool API is used.
->>
->> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
->> ---
->> V5:
->> In err path, set page_pool_put_full_page(..., false) as suggested by
->> Jakub Kicinski
->> V4:
->> Add nid setting, remove page_pool_nid_changed(), as suggested by
->> Jesper Dangaard Brouer
->> V3:
->> Update xdp mem model, pool param, alloc as suggested by Jakub Kicinski
->> V2:
->> Use the standard page pool API as suggested by Jesper Dangaard Brouer
->> ---
-> 
->> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
->> index 024ad8ddb27e..b12859511839 100644
->> --- a/include/net/mana/mana.h
->> +++ b/include/net/mana/mana.h
->> @@ -280,6 +280,7 @@ struct mana_recv_buf_oob {
->>   	struct gdma_wqe_request wqe_req;
->>   
->>   	void *buf_va;
->> +	bool from_pool; /* allocated from a page pool */
-> 
-> suggest you use flags and not bools, as bools waste 7 bits each, plus
-> your packing of this struct will be full of holes, made worse by this
-> patch. (see pahole tool)
-> 
+-- 
+1.8.3.1
 
-Agreed.
-
-> 
->>   
->>   	/* SGL of the buffer going to be sent has part of the work request. */
->>   	u32 num_sge;
->> @@ -330,6 +331,8 @@ struct mana_rxq {
->>   	bool xdp_flush;
->>   	int xdp_rc; /* XDP redirect return code */
->>   
->> +	struct page_pool *page_pool;
->> +
->>   	/* MUST BE THE LAST MEMBER:
->>   	 * Each receive buffer has an associated mana_recv_buf_oob.
->>   	 */
-> 
-> 
-> The rest of the patch looks ok and is remarkably compact for a
-> conversion to page pool. I'd prefer someone with more page pool exposure
-> review this for correctness, but FWIW
- >
-
-Both Jakub and I have reviewed the page_pool parts, and I think we are
-in a good place.
-
-Looking at the driver, I wonder why you are keeping the driver local
-memory cache (when PP is also contains a memory cache) ?
-(I assume there is a good reason, so this is not blocking patch)
-
-> 
-> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-
-Thanks for taking your time to review.
-
-I'm ready to ACK once the description is improved a bit :-)
-
---Jesper
-pw-bot: cr
 
