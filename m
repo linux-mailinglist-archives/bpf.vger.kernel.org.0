@@ -1,60 +1,61 @@
-Return-Path: <bpf+bounces-6981-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6982-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E254976FF13
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 12:57:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAEC976FF16
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 12:58:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BE2B282462
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 10:57:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64DC9282492
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 10:58:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3379AD41;
-	Fri,  4 Aug 2023 10:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCB7AD47;
+	Fri,  4 Aug 2023 10:57:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9158F7D
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 10:57:49 +0000 (UTC)
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C316D4ED3
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 03:57:36 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-687087d8ddaso1778974b3a.1
-        for <bpf@vger.kernel.org>; Fri, 04 Aug 2023 03:57:36 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01AC8AD3C
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 10:57:53 +0000 (UTC)
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433D34C02
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 03:57:38 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bc0d39b52cso13347985ad.2
+        for <bpf@vger.kernel.org>; Fri, 04 Aug 2023 03:57:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691146656; x=1691751456;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UL8MkoXOfwG26pirKO6m6C8z2icQry1K095zSCO6FKs=;
-        b=ri/qUIqxx4il9j6Bq3aLbJ/bAevWRMjh4Yb6+3GemjJ0dlMjlcCPqwgSi6o3E4Qc1E
-         4KnSypxrLZ0plSvQC8fJwxdIGKvZH5Ld6hLFHOob+vas6cPGl5B5Vzsc0M+9tzwF1JaR
-         Z0vJSvyBWwsbBV9xOyrB+1Ig7JSu2cscFyeq2PZWEpesLk/0z1NS0RPa1jFtu0QD8MKD
-         Cu8w6CnHpGdi8RYc+YhMxrzm/K9oeMe2NOaH2RX+XONjQUYmVATDWTp4O5yVxnBL3OEr
-         tigJJWnqP/sntQ7I4dRhtPjLi3yYRRwoofrI+kt9TX4kiBgDd75iJha81jaz8zmtqx/A
-         /uvQ==
+        d=gmail.com; s=20221208; t=1691146657; x=1691751457;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XS4CfR7sbVJSeYvNGPYQWpoR/Kdz1smh358cnKQ1/Rg=;
+        b=qCTYIgnUIihWxqytpwWbJDXDrVcn1vKiwiimvDysKG8rXqUr1Ypu7854tijIMFw66T
+         ppIxsnVTGueDDnLL9mYFQoXeSn2WIMql/1ReOM1EJr0y6T44EE463pMXj2ZwsK3AhSDC
+         Ml/M1fFQWm0dvX26qFzvnVfg0rAvFzHMbVqBaQbbtmBTIn8mp3UfAN/GzrP1WYtOgdmf
+         2rnnBlw85eU6iB+vqdJrJ5Rk0BPesQhrFlP8Wazo02dQmKwxbxwqSfs4/HzXjX4wdUX/
+         3J8QhCiryHEa+yRrdYIesE+0EpjxewQgVZL9wnqry5YjCpViY0W6T4MhSQ2quJKNbTqy
+         bJhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691146656; x=1691751456;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UL8MkoXOfwG26pirKO6m6C8z2icQry1K095zSCO6FKs=;
-        b=AE+ahdl6nyB9cs/5wghxN3WYRFyPzxGLHMb8+QUJ+iJue+igZ89ZTnJxSsCFiKJtQL
-         PB+L6cOhNiDOmz4Pa2iKnpvDsJ6Wvf6Bk92BYHgp0QOC6x8x5gNA9OtkColgePNsC6Iz
-         em0TGQrel84UhEP5Aai9qMRc5QVv+pxnArUNq8fgZHEQEqeIK9esGWshMtlI47nd3pBm
-         geu0I7Ri/9qPN7MlcMqGL/nxyLUwqFh5ui/zGD8uyrMqgXVEXJqi4H84B5fp13UuaujZ
-         +CgJa7QAo+rwj43x4sTgjTZlQmfIc7I2xJqKnehtQ9eTQnQYNnas2gKYos82uADZbnB2
-         UG7w==
-X-Gm-Message-State: AOJu0Yxn7N5DV7qDe6R5YzUxGEDae5Tey9tlvlniLOBQpztIYAkvnujD
-	7A9cqR0w0625NRkSYr5O4gg=
-X-Google-Smtp-Source: AGHT+IF4ND8rX9Ja238O5GNoF6iKEQJjN4LyxR+uZWL9HK4ZDHo00tLK4QX//YeJGvmeGPhWydSzqA==
-X-Received: by 2002:a05:6a21:3285:b0:133:71e4:c172 with SMTP id yt5-20020a056a21328500b0013371e4c172mr1875686pzb.15.1691146656146;
-        Fri, 04 Aug 2023 03:57:36 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691146657; x=1691751457;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XS4CfR7sbVJSeYvNGPYQWpoR/Kdz1smh358cnKQ1/Rg=;
+        b=B3wVupS1aucsIzoQqfBwwpavNBF9UiTSHIMiGwyyPqenbBl2O8JIx3w9VlJhv2lI6O
+         2I7sAvImyYGHx3TbKRhKjAM9lUAzx6MQ+18Ixmb8e9/05Ok0Ris+HQS756WhKNpv40T3
+         UOHamk80F0c3AFgFIR9/SFoDjgK5zDiiiZGTEMzuFI0auO191Ue/jqXBOR0u/aDl8pO8
+         RqwxHlm/NKYd1GZuKfAk4oNpIVoC3mHtEzfjfSMUMCE5L3sEP97KVXt6TGUqCM7X7v3p
+         9/vjEgULywt3HPxkF49e7vo+rlizQT9SS/bTFpIDXyk7wSvZfvJqTe9Y8CWIPXdxZy/w
+         oOCA==
+X-Gm-Message-State: AOJu0YzzG5TeK94y6Z0W6uNUItKTFp0WGGcaRIu21g2oeqHWn7y3+ZIi
+	hevRPQN8jcisiIx87pULMCo=
+X-Google-Smtp-Source: AGHT+IGLnvXCwqaXs1yPr4FZBovhpQUoqSdcjRFrITNRbGtTcMh3wGQlhxeJJjAFFNQV/pXn4Kxy6w==
+X-Received: by 2002:a17:902:bd07:b0:1b1:9218:6bf9 with SMTP id p7-20020a170902bd0700b001b192186bf9mr1032382pls.43.1691146657574;
+        Fri, 04 Aug 2023 03:57:37 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:ac01:c27:5400:4ff:fe87:9943])
-        by smtp.gmail.com with ESMTPSA id q19-20020a170902bd9300b001b850c9d7b3sm1457691pls.249.2023.08.04.03.57.34
+        by smtp.gmail.com with ESMTPSA id q19-20020a170902bd9300b001b850c9d7b3sm1457691pls.249.2023.08.04.03.57.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 03:57:35 -0700 (PDT)
+        Fri, 04 Aug 2023 03:57:37 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -68,11 +69,14 @@ To: ast@kernel.org,
 	haoluo@google.com,
 	jolsa@kernel.org
 Cc: bpf@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v4 bpf-next 0/2] bpf: Fix fill_link_info and add selftest 
-Date: Fri,  4 Aug 2023 10:57:30 +0000
-Message-Id: <20230804105732.3768-1-laoar.shao@gmail.com>
+	Yafang Shao <laoar.shao@gmail.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH v4 bpf-next 1/2] bpf: Fix uninitialized symbol in bpf_perf_link_fill_kprobe()
+Date: Fri,  4 Aug 2023 10:57:31 +0000
+Message-Id: <20230804105732.3768-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230804105732.3768-1-laoar.shao@gmail.com>
+References: <20230804105732.3768-1-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,45 +86,51 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Patch #1: Fix an error in fill_link_info reported by Dan
-Patch #2: Add selftest for #1
+The patch 1b715e1b0ec5: "bpf: Support ->fill_link_info for
+perf_event" from Jul 9, 2023, leads to the following Smatch static
+checker warning:
 
-v3->v4:
-  - Comments from Yonghong
-    - re-word the kptr comment
-    - Avoid unnecessary switch statement 
-    - No need to check the return value of bpf_link__fd()
-    - offset is always 0
-    - Return directly when test_fill_link_info__open_and_load() fails
-    - Cleanup skel when load_kallsyms_refresh() fails
+    kernel/bpf/syscall.c:3416 bpf_perf_link_fill_kprobe()
+    error: uninitialized symbol 'type'.
 
-v2->v3:
-  - Comments from Jiri
-    - Verify wrong arguments as soon as possible
-    - Use CONFIG_X86_KERNEL_IBT
-    - No need to make the test serial
-    - Add test case for kprobe_multi
+That can happens when uname is NULL. So fix it by verifying the uname
+when we really need to fill it.
 
-v1->v2:
-  - Fix BPF CI failure due to the enabled ENDBDR
+Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/bpf/85697a7e-f897-4f74-8b43-82721bebc462@kili.mountain/
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ kernel/bpf/syscall.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Yafang Shao (2):
-  bpf: Fix uninitialized symbol in bpf_perf_link_fill_kprobe()
-  selftests/bpf: Add selftest for fill_link_info
-
- kernel/bpf/syscall.c                               |   4 +-
- tools/testing/selftests/bpf/DENYLIST.aarch64       |   3 +
- .../selftests/bpf/prog_tests/fill_link_info.c      | 337 +++++++++++++++++++++
- .../selftests/bpf/progs/test_fill_link_info.c      |  42 +++
- 4 files changed, 384 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/fill_link_info.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_fill_link_info.c
-
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 7f4e8c3..166390f 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3378,14 +3378,14 @@ static int bpf_perf_link_fill_common(const struct perf_event *event,
+ 
+ 	if (!ulen ^ !uname)
+ 		return -EINVAL;
+-	if (!uname)
+-		return 0;
+ 
+ 	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+ 				      probe_offset, probe_addr);
+ 	if (err)
+ 		return err;
+ 
++	if (!uname)
++		return 0;
+ 	if (buf) {
+ 		len = strlen(buf);
+ 		err = bpf_copy_to_user(uname, buf, ulen, len);
 -- 
 1.8.3.1
 
