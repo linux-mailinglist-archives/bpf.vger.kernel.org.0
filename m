@@ -1,163 +1,214 @@
-Return-Path: <bpf+bounces-6935-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-6936-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCFA576F8DA
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 06:16:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED3F176F8EA
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 06:26:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 133351C21706
-	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 04:16:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A86622823BD
+	for <lists+bpf@lfdr.de>; Fri,  4 Aug 2023 04:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 659311FCC;
-	Fri,  4 Aug 2023 04:16:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19FA41FD7;
+	Fri,  4 Aug 2023 04:26:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AAEA1C20
-	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 04:16:22 +0000 (UTC)
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5487C3598
-	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 21:16:18 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9338e4695so26222881fa.2
-        for <bpf@vger.kernel.org>; Thu, 03 Aug 2023 21:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691122576; x=1691727376;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aDFuCPil4pEoLXHYo0Ls7o77K/H32wrnIMBAQN1MPHk=;
-        b=hlmtKbG2KrbEEPRHkFHomIqd3it6JQzSyCXO8KEnc7gH627jiD/g1QCZY2teTeo2tN
-         gNcFOuNVfd/1LTIoyAZqGEXs9cLWYiJVOKfumFUC4g/ZSl/JAylvGdy3RK7t7fDO6gnE
-         ylkutQ7MeB5QQDH+l8yYEHBNssCTEYh1nZ+F5IjhYsNBirqO4sgKkYJRjpd6fPZF0+4s
-         vd4ErP5Y2wCVSfZgXxM6xmRLfVTnVjS0By9Ae+rsexsgIaXU0Xxcgcv2CBrSGjsred+F
-         VH93jsHGvJgRoFwaHepHrMXJhMLBDdmlcOpr5WhHyNf7N/QEP3Ey1lOagS95r3l536mM
-         Ha+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691122576; x=1691727376;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aDFuCPil4pEoLXHYo0Ls7o77K/H32wrnIMBAQN1MPHk=;
-        b=W8wK2BUknoPXlQBag2k0EfAp0KKo8AZWYnyBtTIRMfsWKlPFlExZUl8Mbb4Iv1tT+7
-         yuL31JuyySqgCdESAYqJS6FSfi82tGB5zlu8IalwSXQ1he5U6Xy3L0JcZfLK5tR4IJVC
-         hjXF8O/8x1mKV1bw7rtnFcwvku8xUK0UKEcBcf9w2nUPcuGb6h1YRo+Vo/m2kc7xk1gy
-         hbUdy7gyV7I/YO4chxu74QXAk2kv+eKcLDcwYopID/5NuNYbV57Lg4y4/kHFK1bwiwDK
-         9lKNZ+UH/TtKSMnL5+LZqVnMgcwuv84w6goGlCCgaq++di8qkISAztQjvt8M85+QZdGY
-         MlLw==
-X-Gm-Message-State: AOJu0Yx+w+LQUEBVnStv8rdBma9t36bkVA3lPUz1rRA693A3TPIpv2oy
-	FIfB1865xqPq19OY/dIYSddp09eJn1n7nQjME40Wcw==
-X-Google-Smtp-Source: AGHT+IHbAuP+LciwG2AIp+kFI5TMnvMEJLCNUx4sEUfKirQwmvhTnp6ylv/Nzsk5Ug9B6Q6iguTXEydIdwA5RfhCyI0=
-X-Received: by 2002:a2e:97d7:0:b0:2b9:f3b4:6808 with SMTP id
- m23-20020a2e97d7000000b002b9f3b46808mr554724ljj.29.1691122576570; Thu, 03 Aug
- 2023 21:16:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E550B1FAE
+	for <bpf@vger.kernel.org>; Fri,  4 Aug 2023 04:26:41 +0000 (UTC)
+Received: from out-99.mta1.migadu.com (out-99.mta1.migadu.com [IPv6:2001:41d0:203:375::63])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC0335BE
+	for <bpf@vger.kernel.org>; Thu,  3 Aug 2023 21:26:39 -0700 (PDT)
+Message-ID: <de5118d6-3dfe-9185-dbfa-c797f2821ce2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1691123197; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m082I1X9tbhjiROnfjM2jHYq1ftKJQeenvc+niZ4Cz4=;
+	b=r7HILlHe7qtM8mdPN1M9YxKznXH26/pkhJZWm8x4FppG3rvuS7a0kxExrHjfW44V6uoGm3
+	WfzZ8o6wxbk087JzIhHSJkwcUWal+76Bn8tcBHo+WOIIrDgb9wwYTccBs/1mfdKzsy0qdK
+	xQTi76W9uccn4yQOKHqHlmCiY7IOsJs=
+Date: Thu, 3 Aug 2023 21:26:24 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230803140441.53596-1-huangjie.albert@bytedance.com> <a144aa6351412e25bbdf866c0d31b550e6ff3e8a.camel@redhat.com>
-In-Reply-To: <a144aa6351412e25bbdf866c0d31b550e6ff3e8a.camel@redhat.com>
-From: =?UTF-8?B?6buE5p2w?= <huangjie.albert@bytedance.com>
-Date: Fri, 4 Aug 2023 12:16:05 +0800
-Message-ID: <CABKxMyMj4+9r44GFO3PM15516Pkmr=g8WBVhdjv7tk231fGqWg@mail.gmail.com>
-Subject: Re: [External] Re: [RFC Optimizing veth xsk performance 00/10]
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Magnus Karlsson <magnus.karlsson@intel.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
-	Pavel Begunkov <asml.silence@gmail.com>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Kees Cook <keescook@chromium.org>, Richard Gobert <richardbgobert@gmail.com>, 
-	"open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [PATCH bpf-next v9 4/4] selftests/bpf: Add mptcpify test
+To: Geliang Tang <geliang.tang@suse.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Florent Revest <revest@chromium.org>, Brendan Jackman
+ <jackmanb@chromium.org>, Matthieu Baerts <matthieu.baerts@tessares.net>,
+ Mat Martineau <martineau@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ John Johansen <john.johansen@canonical.com>, Paul Moore
+ <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+ "Serge E. Hallyn" <serge@hallyn.com>,
+ Stephen Smalley <stephen.smalley.work@gmail.com>,
+ Eric Paris <eparis@parisplace.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, mptcp@lists.linux.dev,
+ apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+ selinux@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <cover.1691069778.git.geliang.tang@suse.com>
+ <92ee6be5a465601ff3a2df29b6a517086e87ca3c.1691069778.git.geliang.tang@suse.com>
+ <1bf7f5cf-a944-a284-28af-83a6603542fb@linux.dev>
+ <20230804022459.GA28296@localhost>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20230804022459.GA28296@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Paolo Abeni <pabeni@redhat.com> =E4=BA=8E2023=E5=B9=B48=E6=9C=883=E6=97=A5=
-=E5=91=A8=E5=9B=9B 22:20=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu, 2023-08-03 at 22:04 +0800, huangjie.albert wrote:
-> > AF_XDP is a kernel bypass technology that can greatly improve performan=
-ce.
-> > However, for virtual devices like veth, even with the use of AF_XDP soc=
-kets,
-> > there are still many additional software paths that consume CPU resourc=
-es.
-> > This patch series focuses on optimizing the performance of AF_XDP socke=
-ts
-> > for veth virtual devices. Patches 1 to 4 mainly involve preparatory wor=
-k.
-> > Patch 5 introduces tx queue and tx napi for packet transmission, while
-> > patch 9 primarily implements zero-copy, and patch 10 adds support for
-> > batch sending of IPv4 UDP packets. These optimizations significantly re=
-duce
-> > the software path and support checksum offload.
-> >
-> > I tested those feature with
-> > A typical topology is shown below:
-> > veth<-->veth-peer                                    veth1-peer<--->vet=
-h1
-> >       1       |                                                  |   7
-> >               |2                                                6|
-> >               |                                                  |
-> >             bridge<------->eth0(mlnx5)- switch -eth1(mlnx5)<--->bridge1
-> >                   3                    4                 5
-> >              (machine1)                              (machine2)
-> > AF_XDP socket is attach to veth and veth1. and send packets to physical=
- NIC(eth0)
-> > veth:(172.17.0.2/24)
-> > bridge:(172.17.0.1/24)
-> > eth0:(192.168.156.66/24)
-> >
-> > eth1(172.17.0.2/24)
-> > bridge1:(172.17.0.1/24)
-> > eth0:(192.168.156.88/24)
-> >
-> > after set default route . snat . dnat. we can have a tests
-> > to get the performance results.
-> >
-> > packets send from veth to veth1:
-> > af_xdp test tool:
-> > link:https://github.com/cclinuxer/libxudp
-> > send:(veth)
-> > ./objs/xudpperf send --dst 192.168.156.88:6002 -l 1300
-> > recv:(veth1)
-> > ./objs/xudpperf recv --src 172.17.0.2:6002
-> >
-> > udp test tool:iperf3
-> > send:(veth)
-> > iperf3 -c 192.168.156.88 -p 6002 -l 1300 -b 60G -u
->
-> Should be: '-b 0' otherwise you will experience additional overhead.
->
 
-with -b 0:
-performance:
-performance:(test weth libxdp lib)
-UDP                              : 320 Kpps (with 100% cpu)
-AF_XDP   no  zerocopy + no batch : 480 Kpps (with ksoftirqd 100% cpu)
-AF_XDP  with zerocopy + no batch : 540 Kpps (with ksoftirqd 100% cpu)
-AF_XDP  with  batch  +  zerocopy : 1.5 Mpps (with ksoftirqd 15% cpu)
 
-thanks.
+On 8/3/23 7:24 PM, Geliang Tang wrote:
+> Hi Yonghong,
+> 
+> On Thu, Aug 03, 2023 at 06:23:57PM -0700, Yonghong Song wrote:
+>>
+>>
+>> On 8/3/23 6:41 AM, Geliang Tang wrote:
+>>> Implement a new test program mptcpify: if the family is AF_INET or
+>>> AF_INET6, the type is SOCK_STREAM, and the protocol ID is 0 or
+>>> IPPROTO_TCP, set it to IPPROTO_MPTCP. It will be hooked in
+>>> update_socket_protocol().
+>>>
+>>> Extend the MPTCP test base, add a selftest test_mptcpify() for the
+>>> mptcpify case. Open and load the mptcpify test prog to mptcpify the
+>>> TCP sockets dynamically, then use start_server() and connect_to_fd()
+>>> to create a TCP socket, but actually what's created is an MPTCP
+>>> socket, which can be verified through the outputs of 'ss' and 'nstat'
+>>> commands.
+>>>
+>>> Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+>>> Signed-off-by: Geliang Tang <geliang.tang@suse.com>
+>>> ---
+>>>    .../testing/selftests/bpf/prog_tests/mptcp.c  | 94 +++++++++++++++++++
+>>>    tools/testing/selftests/bpf/progs/mptcpify.c  | 25 +++++
+>>>    2 files changed, 119 insertions(+)
+>>>    create mode 100644 tools/testing/selftests/bpf/progs/mptcpify.c
+>>>
+>>> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+>>> index 4407bd5c9e9a..caab3aa6a162 100644
+>>> --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
+>>> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+>>> @@ -6,6 +6,7 @@
+>>>    #include "cgroup_helpers.h"
+>>>    #include "network_helpers.h"
+>>>    #include "mptcp_sock.skel.h"
+>>> +#include "mptcpify.skel.h"
+>>>    char NS_TEST[32];
+>>> @@ -195,8 +196,101 @@ static void test_base(void)
+>>>    	close(cgroup_fd);
+>>>    }
+>>> +static void send_byte(int fd)
+>>> +{
+>>> +	char b = 0x55;
+>>> +
+>>> +	ASSERT_EQ(write(fd, &b, sizeof(b)), 1, "send single byte");
+>>> +}
+>>> +
+>>> +static int verify_mptcpify(void)
+>>> +{
+>>> +	char cmd[256];
+>>> +	int err = 0;
+>>> +
+>>> +	snprintf(cmd, sizeof(cmd),
+>>> +		 "ip netns exec %s ss -tOni | grep -q '%s'",
+>>> +		 NS_TEST, "tcp-ulp-mptcp");
+>>
+>> Could you show what is the expected output from the above command line
+>>    ip netns exec %s ss -tOni
+>> ?
+>> This way, users can easily reason about the ss states based on tests.
+> 
+> There're too many items in the output of command 'ip netns exec %s ss -tOni':
+> 
+> '''
+> State Recv-Q Send-Q Local Address:Port  Peer Address:Port Process
+> ESTAB 0      0          127.0.0.1:42225    127.0.0.1:44180 cubic wscale:7,7 rto:201 rtt:0.034/0.017 ato:40 mss:16640 pmtu:65535 rcvmss:536 advmss:65483 cwnd:10 bytes_received:1 segs_out:1 segs_in:3 data_segs_in:1 send 39152941176bps lastsnd:7 lastrcv:7 lastack:7 pacing_rate 78305882352bps delivered:1 app_limited rcv_space:33280 rcv_ssthresh:33280 minrtt:0.034 snd_wnd:33280 tcp-ulp-mptcp flags:Mec token:0000(id:0)/3a1e0d3c(id:0) seq:c2802f11c5228db6 sfseq:1 ssnoff:49d3c135 maplen:1
+> ESTAB 0      0          127.0.0.1:44180    127.0.0.1:42225 cubic wscale:7,7 rto:201 rtt:0.036/0.02 mss:16640 pmtu:65535 rcvmss:536 advmss:65483 cwnd:10 bytes_sent:1 bytes_acked:2 segs_out:3 segs_in:2 data_segs_out:1 send 36977777778bps lastsnd:7 lastrcv:7 lastack:7 pacing_rate 72200677960bps delivery_rate 8874666664bps delivered:2 rcv_space:33280 rcv_ssthresh:33280 minrtt:0.015 snd_wnd:33280 tcp-ulp-mptcp flags:Mmec token:0000(id:0)/39429ce(id:0) seq:e3ed00de37c805c sfseq:1 ssnoff:d4e4d561 maplen:0
+> '''
+> 
+> We only care about this 'tcp-ulp-mptcp' item.
+> 
+> Show all output will confuse users. So we just pick and test the only
+> item we care.
 
-> And you would likely pin processes and irqs to ensure BH and US run on
-> different cores of the same numa node.
->
-> Cheers,
->
-> Paolo
->
+Thanks. Originally I thought at least we should put one line in
+the comment which has 'tcp-ulp-mptcp' like
+
+ESTAB 0      0          127.0.0.1:44180    127.0.0.1:42225 cubic 
+wscale:7,7 rto:201 rtt:0.036/0.02 mss:16640 pmtu:65535 rcvmss:536 
+advmss:65483 cwnd:10 bytes_sent:1 bytes_acked:2 segs_out:3 segs_in:2 
+data_segs_out:1 send 36977777778bps lastsnd:7 lastrcv:7 lastack:7 
+pacing_rate 72200677960bps delivery_rate 8874666664bps delivered:2 
+rcv_space:33280 rcv_ssthresh:33280 minrtt:0.015 snd_wnd:33280 
+tcp-ulp-mptcp flags:Mmec token:0000(id:0)/39429ce(id:0) 
+seq:e3ed00de37c805c sfseq:1 ssnoff:d4e4d561 maplen:0
+
+or simplified version
+
+ESTAB 0      0          127.0.0.1:44180    127.0.0.1:42225 cubic
+... tcp-ulp-mptcp flags:Mmec ...
+
+But people familiar with 'ss' should be able to dump it and get
+the above (maybe without tcp-ulp-mptcp) easily. So I am okay
+with no additional comments.
+
+> 
+>>
+>>> +	if (!ASSERT_OK(system(cmd), "No tcp-ulp-mptcp found!"))
+>>> +		err++;
+>>> +
+>>> +	snprintf(cmd, sizeof(cmd),
+>>> +		 "ip netns exec %s nstat -asz %s | awk '%s' | grep -q '%s'",
+>>> +		 NS_TEST, "MPTcpExtMPCapableSYNACKRX",
+>>> +		 "NR==1 {next} {print $2}", "1");
+>>
+>> The same thing here. Could you show the expected output with
+>>     ip netns exec %s nstat -asz %s
+>> ?
+> 
+> The output of 'ip netns exec %s nstat -asz %s' is:
+> 
+> '''
+> #kernel
+> MPTcpExtMPCapableSYNACKRX       1                  0.0
+> '''
+> 
+> The same, we only check if it contains an MPTcpExtMPCapableSYNACKRX, not
+> show the output.
+> 
+> -Geliang
+> 
+>>
+>>> +	if (!ASSERT_OK(system(cmd), "No MPTcpExtMPCapableSYNACKRX found!"))
+>>> +		err++;
+>>> +
+>>> +	return err;
+>>> +}
+>>> +
+>> [...]
 
