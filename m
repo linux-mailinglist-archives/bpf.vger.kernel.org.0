@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-7082-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D587A771046
-	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 16:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EF5A771048
+	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 16:58:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89382281F51
-	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 14:58:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33A28281C55
+	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 14:58:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A443CC159;
-	Sat,  5 Aug 2023 14:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B04C159;
+	Sat,  5 Aug 2023 14:58:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF060BA4B
-	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 14:58:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9CC9C433C7;
-	Sat,  5 Aug 2023 14:58:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1553BA4B
+	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 14:58:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E28A4C433C8;
+	Sat,  5 Aug 2023 14:58:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691247498;
-	bh=kTo/aoefVKctIuXm1UMj2MsQELVZD2xl3Ne2+DS37E0=;
+	s=k20201202; t=1691247510;
+	bh=fjaYPjmq2BoIv7RB2HzPUoTjb8xMQJDDRRopt22BLAo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Kv+kjjWME/gela2qJFapSDl5WTptMVpqdyKyi/pQOiiSyqTJHqEDqg/8VpUm3p3P+
-	 g/+WLdRfqqsOhkwMec7FtEPbAum/T2ESapKHGluRM7LlNA6zyQNQ62dOwZFSF24nYP
-	 9GXLEld7Zva96ge445ZM1y4jIjUf3L1TrT+9tCTITw6yDEE6o376slWsBw/j4IHFlx
-	 TknB5eVNwnJY6voEQ3RlfoZAL9J2KWps0MIcux8a5UynAHGQVDovEcg/Z2LxJysU4O
-	 dMqPvPgxQbyoUqDTSiVVvkZsZoOo/TRMoQaT0GSq98wuVgb2wCLWRlJ2rL04lQtwKc
-	 CWnDCCoRVqM9g==
+	b=YS5ehamyR5LmjE824aRhjllQA0SnAYFtS4LqRRj8q0OA/ALWaUjW0x6Nc9wsodgPm
+	 FifP/X8tVxSypyuJpHDqyC84csbCqKE+OVM6HkV2DMkTCpg/HbyIzDmtsGObutO9y5
+	 yk086RR9YHZ/2qC3zaesxcpAFj1HlAQ0X3/tkdUVFIYzHu84sEVq3ZaYTmGLKmIgh5
+	 xcDgxU4Bb8m214nPLEyotAEL05WDf5UsHyUONYnQ8zST9kSZVxFW3hKXfY+wXOoxkn
+	 fv2mVnXdudKKqti4Lusonz0qpPgVfIK65qGYo8ZSLD/nd2LQH6WNDdauZKsOejyxZb
+	 ENfX4vt67ytbQ==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -47,9 +47,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Mark Rutland <mark.rutland@arm.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>
-Subject: [RFC PATCH 2/5] fprobe: rethook: Use fprobe_regs in fprobe exit handler and rethook
-Date: Sat,  5 Aug 2023 23:58:12 +0900
-Message-Id: <169124749229.186149.1426658495303367593.stgit@devnote2>
+Subject: [RFC PATCH 3/5] tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+Date: Sat,  5 Aug 2023 23:58:24 +0900
+Message-Id: <169124750396.186149.18312551315786049736.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169124746774.186149.2326708176801468806.stgit@devnote2>
 References: <169124746774.186149.2326708176801468806.stgit@devnote2>
@@ -65,412 +65,265 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Change the fprobe exit handler and rethook to use ftrace_regs data structure
-instead of pt_regs. This also introduce HAVE_FTRACE_REGS_COMPATIBLE_WITH_PT_REGS
-which means the ftrace_regs is equal to the pt_regs so that those are
-compatible. Only if it is enabled, kretprobe will use rethook since kretprobe
-requires pt_regs for backward compatibility.
-
-This means the archs which currently implement rethook for kretprobes needs to
-set that flag and it must ensure struct ftrace_regs is same as pt_regs.
-If not, it must be either disabling kretprobe or implementing kretprobe
-trampoline separately from rethook trampoline.
+Allow fprobe events to be enabled with CONFIG_DYNAMIC_FTRACE_WITH_ARGS.
+With this change, fprobe events mostly use ftrace_regs instead of pt_regs.
+Note that if the arch doesn't enable HAVE_PT_REGS_COMPAT_FTRACE_REGS,
+fprobe events will not be able to use from perf.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- arch/Kconfig                    |    1 +
- arch/loongarch/Kconfig          |    1 +
- arch/s390/Kconfig               |    1 +
- arch/x86/Kconfig                |    1 +
- arch/x86/kernel/rethook.c       |    9 ++++++---
- include/linux/fprobe.h          |    2 +-
- include/linux/rethook.h         |   11 ++++++-----
- kernel/kprobes.c                |    9 +++++++--
- kernel/trace/Kconfig            |    7 +++++++
- kernel/trace/bpf_trace.c        |    6 +++++-
- kernel/trace/fprobe.c           |    6 +++---
- kernel/trace/rethook.c          |   16 ++++++++--------
- kernel/trace/trace_fprobe.c     |    6 +++++-
- lib/test_fprobe.c               |    6 +++---
- samples/fprobe/fprobe_example.c |    2 +-
- 15 files changed, 56 insertions(+), 28 deletions(-)
+ kernel/trace/Kconfig            |    1 -
+ kernel/trace/trace_fprobe.c     |   72 ++++++++++++++++++++++-----------------
+ kernel/trace/trace_probe_tmpl.h |    2 +
+ 3 files changed, 41 insertions(+), 34 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index aff2746c8af2..e321bdb8b22b 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -201,6 +201,7 @@ config KRETPROBE_ON_RETHOOK
- 	def_bool y
- 	depends on HAVE_RETHOOK
- 	depends on KRETPROBES
-+	depends on HAVE_PT_REGS_COMPAT_FTRACE_REGS || !HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 	select RETHOOK
- 
- config USER_RETURN_NOTIFIER
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index e55511af4c77..93a4336b0a94 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -102,6 +102,7 @@ config LOONGARCH
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+	select HAVE_PT_REGS_COMPAT_FTRACE_REGS
- 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
- 	select HAVE_EBPF_JIT
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 5b39918b7042..299ba17d3316 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -165,6 +165,7 @@ config S390
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+	select HAVE_PT_REGS_COMPAT_FTRACE_REGS
- 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
- 	select HAVE_EBPF_JIT if HAVE_MARCH_Z196_FEATURES
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 7422db409770..df1b7a2791e8 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -207,6 +207,7 @@ config X86
- 	select HAVE_DYNAMIC_FTRACE
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
- 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS	if X86_64
-+	select HAVE_PT_REGS_COMPAT_FTRACE_REGS	if X86_64
- 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	select HAVE_SAMPLE_FTRACE_DIRECT	if X86_64
- 	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI	if X86_64
-diff --git a/arch/x86/kernel/rethook.c b/arch/x86/kernel/rethook.c
-index 8a1c0111ae79..79a52bfde562 100644
---- a/arch/x86/kernel/rethook.c
-+++ b/arch/x86/kernel/rethook.c
-@@ -83,7 +83,8 @@ __used __visible void arch_rethook_trampoline_callback(struct pt_regs *regs)
- 	 * arch_rethook_fixup_return() which called from this
- 	 * rethook_trampoline_handler().
- 	 */
--	rethook_trampoline_handler(regs, (unsigned long)frame_pointer);
-+	rethook_trampoline_handler((struct ftrace_regs *)regs,
-+				   (unsigned long)frame_pointer);
- 
- 	/*
- 	 * Copy FLAGS to 'pt_regs::ss' so that arch_rethook_trapmoline()
-@@ -104,9 +105,10 @@ NOKPROBE_SYMBOL(arch_rethook_trampoline_callback);
- STACK_FRAME_NON_STANDARD_FP(arch_rethook_trampoline);
- 
- /* This is called from rethook_trampoline_handler(). */
--void arch_rethook_fixup_return(struct pt_regs *regs,
-+void arch_rethook_fixup_return(struct ftrace_regs *fregs,
- 			       unsigned long correct_ret_addr)
- {
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
- 	unsigned long *frame_pointer = (void *)(regs + 1);
- 
- 	/* Replace fake return address with real one. */
-@@ -114,8 +116,9 @@ void arch_rethook_fixup_return(struct pt_regs *regs,
- }
- NOKPROBE_SYMBOL(arch_rethook_fixup_return);
- 
--void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
-+void arch_rethook_prepare(struct rethook_node *rh, struct ftrace_regs *fregs, bool mcount)
- {
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
- 	unsigned long *stack = (unsigned long *)regs->sp;
- 
- 	rh->ret_addr = stack[0];
-diff --git a/include/linux/fprobe.h b/include/linux/fprobe.h
-index 36c0595f7b93..b9c0c216dedb 100644
---- a/include/linux/fprobe.h
-+++ b/include/linux/fprobe.h
-@@ -38,7 +38,7 @@ struct fprobe {
- 			     unsigned long ret_ip, struct ftrace_regs *regs,
- 			     void *entry_data);
- 	void (*exit_handler)(struct fprobe *fp, unsigned long entry_ip,
--			     unsigned long ret_ip, struct pt_regs *regs,
-+			     unsigned long ret_ip, struct ftrace_regs *regs,
- 			     void *entry_data);
- };
- 
-diff --git a/include/linux/rethook.h b/include/linux/rethook.h
-index 26b6f3c81a76..138d64c8b67b 100644
---- a/include/linux/rethook.h
-+++ b/include/linux/rethook.h
-@@ -7,6 +7,7 @@
- 
- #include <linux/compiler.h>
- #include <linux/freelist.h>
-+#include <linux/ftrace.h>
- #include <linux/kallsyms.h>
- #include <linux/llist.h>
- #include <linux/rcupdate.h>
-@@ -14,7 +15,7 @@
- 
- struct rethook_node;
- 
--typedef void (*rethook_handler_t) (struct rethook_node *, void *, unsigned long, struct pt_regs *);
-+typedef void (*rethook_handler_t) (struct rethook_node *, void *, unsigned long, struct ftrace_regs *);
- 
- /**
-  * struct rethook - The rethook management data structure.
-@@ -64,12 +65,12 @@ void rethook_free(struct rethook *rh);
- void rethook_add_node(struct rethook *rh, struct rethook_node *node);
- struct rethook_node *rethook_try_get(struct rethook *rh);
- void rethook_recycle(struct rethook_node *node);
--void rethook_hook(struct rethook_node *node, struct pt_regs *regs, bool mcount);
-+void rethook_hook(struct rethook_node *node, struct ftrace_regs *regs, bool mcount);
- unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame,
- 				    struct llist_node **cur);
- 
- /* Arch dependent code must implement arch_* and trampoline code */
--void arch_rethook_prepare(struct rethook_node *node, struct pt_regs *regs, bool mcount);
-+void arch_rethook_prepare(struct rethook_node *node, struct ftrace_regs *regs, bool mcount);
- void arch_rethook_trampoline(void);
- 
- /**
-@@ -84,11 +85,11 @@ static inline bool is_rethook_trampoline(unsigned long addr)
- }
- 
- /* If the architecture needs to fixup the return address, implement it. */
--void arch_rethook_fixup_return(struct pt_regs *regs,
-+void arch_rethook_fixup_return(struct ftrace_regs *regs,
- 			       unsigned long correct_ret_addr);
- 
- /* Generic trampoline handler, arch code must prepare asm stub */
--unsigned long rethook_trampoline_handler(struct pt_regs *regs,
-+unsigned long rethook_trampoline_handler(struct ftrace_regs *regs,
- 					 unsigned long frame);
- 
- #ifdef CONFIG_RETHOOK
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 1fc6095d502d..ccbe41c961c3 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2120,7 +2120,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 	if (rp->entry_handler && rp->entry_handler(ri, regs))
- 		rethook_recycle(rhn);
- 	else
--		rethook_hook(rhn, regs, kprobe_ftrace(p));
-+		rethook_hook(rhn, (struct ftrace_regs *)regs, kprobe_ftrace(p));
- 
- 	return 0;
- }
-@@ -2128,12 +2128,17 @@ NOKPROBE_SYMBOL(pre_handler_kretprobe);
- 
- static void kretprobe_rethook_handler(struct rethook_node *rh, void *data,
- 				      unsigned long ret_addr,
--				      struct pt_regs *regs)
-+				      struct ftrace_regs *fregs)
- {
- 	struct kretprobe *rp = (struct kretprobe *)data;
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
- 	struct kretprobe_instance *ri;
- 	struct kprobe_ctlblk *kcb;
- 
-+	/* This is bug because this depends on HAVE_PT_REGS_COMPAT_FTRACE_REGS */
-+	if (WARN_ON_ONCE(!regs))
-+		return;
-+
- 	/* The data must NOT be null. This means rethook data structure is broken. */
- 	if (WARN_ON_ONCE(!data) || !rp->handler)
- 		return;
 diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 976fd594b446..7d6abb5bd861 100644
+index 7d6abb5bd861..e9b7bd88cf9e 100644
 --- a/kernel/trace/Kconfig
 +++ b/kernel/trace/Kconfig
-@@ -57,6 +57,13 @@ config HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 	 This allows for use of ftrace_regs_get_argument() and
- 	 ftrace_regs_get_stack_pointer().
- 
-+config HAVE_PT_REGS_COMPAT_FTRACE_REGS
-+	bool
-+	help
-+	 If this is set, the ftrace_regs data structure is compatible
-+	 with the pt_regs. So it is possible to be converted by
-+	 ftrace_get_regs().
-+
- config HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
- 	bool
+@@ -679,7 +679,6 @@ config FPROBE_EVENTS
+ 	select TRACING
+ 	select PROBE_EVENTS
+ 	select DYNAMIC_EVENTS
+-	depends on DYNAMIC_FTRACE_WITH_REGS
+ 	default y
  	help
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 51573eaa04c4..99c5f95360f9 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2668,10 +2668,14 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
- 
- static void
- kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
--			       unsigned long ret_ip, struct pt_regs *regs,
-+			       unsigned long ret_ip, struct ftrace_regs *fregs,
- 			       void *data)
- {
- 	struct bpf_kprobe_multi_link *link;
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
-+
-+	if (!regs)
-+		return;
- 
- 	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
- 	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-index 15a2aef92733..70b9c493e52d 100644
---- a/kernel/trace/fprobe.c
-+++ b/kernel/trace/fprobe.c
-@@ -53,7 +53,7 @@ static inline void __fprobe_handler(unsigned long ip, unsigned long parent_ip,
- 		if (ret)
- 			rethook_recycle(rh);
- 		else
--			rethook_hook(rh, ftrace_get_regs(fregs), true);
-+			rethook_hook(rh, fregs, true);
- 	}
- }
- 
-@@ -120,7 +120,7 @@ static void fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
- }
- 
- static void fprobe_exit_handler(struct rethook_node *rh, void *data,
--				unsigned long ret_ip, struct pt_regs *regs)
-+				unsigned long ret_ip, struct ftrace_regs *fregs)
- {
- 	struct fprobe *fp = (struct fprobe *)data;
- 	struct fprobe_rethook_node *fpr;
-@@ -141,7 +141,7 @@ static void fprobe_exit_handler(struct rethook_node *rh, void *data,
- 		return;
- 	}
- 
--	fp->exit_handler(fp, fpr->entry_ip, ret_ip, regs,
-+	fp->exit_handler(fp, fpr->entry_ip, ret_ip, fregs,
- 			 fp->entry_data_size ? (void *)fpr->data : NULL);
- 	ftrace_test_recursion_unlock(bit);
- }
-diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
-index 5eb9b598f4e9..7c5cf9d5910c 100644
---- a/kernel/trace/rethook.c
-+++ b/kernel/trace/rethook.c
-@@ -189,7 +189,7 @@ NOKPROBE_SYMBOL(rethook_try_get);
- /**
-  * rethook_hook() - Hook the current function return.
-  * @node: The struct rethook node to hook the function return.
-- * @regs: The struct pt_regs for the function entry.
-+ * @fregs: The struct ftrace_regs for the function entry.
-  * @mcount: True if this is called from mcount(ftrace) context.
-  *
-  * Hook the current running function return. This must be called when the
-@@ -199,9 +199,9 @@ NOKPROBE_SYMBOL(rethook_try_get);
-  * from the real function entry (e.g. kprobes) @mcount must be set false.
-  * This is because the way to hook the function return depends on the context.
-  */
--void rethook_hook(struct rethook_node *node, struct pt_regs *regs, bool mcount)
-+void rethook_hook(struct rethook_node *node, struct ftrace_regs *fregs, bool mcount)
- {
--	arch_rethook_prepare(node, regs, mcount);
-+	arch_rethook_prepare(node, fregs, mcount);
- 	__llist_add(&node->llist, &current->rethooks);
- }
- NOKPROBE_SYMBOL(rethook_hook);
-@@ -269,7 +269,7 @@ unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame
- }
- NOKPROBE_SYMBOL(rethook_find_ret_addr);
- 
--void __weak arch_rethook_fixup_return(struct pt_regs *regs,
-+void __weak arch_rethook_fixup_return(struct ftrace_regs *fregs,
- 				      unsigned long correct_ret_addr)
- {
- 	/*
-@@ -281,7 +281,7 @@ void __weak arch_rethook_fixup_return(struct pt_regs *regs,
- }
- 
- /* This function will be called from each arch-defined trampoline. */
--unsigned long rethook_trampoline_handler(struct pt_regs *regs,
-+unsigned long rethook_trampoline_handler(struct ftrace_regs *fregs,
- 					 unsigned long frame)
- {
- 	struct llist_node *first, *node = NULL;
-@@ -295,7 +295,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
- 		BUG_ON(1);
- 	}
- 
--	instruction_pointer_set(regs, correct_ret_addr);
-+	ftrace_regs_set_instruction_pointer(fregs, correct_ret_addr);
- 
- 	/*
- 	 * These loops must be protected from rethook_free_rcu() because those
-@@ -315,7 +315,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
- 		handler = READ_ONCE(rhn->rethook->handler);
- 		if (handler)
- 			handler(rhn, rhn->rethook->data,
--				correct_ret_addr, regs);
-+				correct_ret_addr, fregs);
- 
- 		if (first == node)
- 			break;
-@@ -323,7 +323,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
- 	}
- 
- 	/* Fixup registers for returning to correct address. */
--	arch_rethook_fixup_return(regs, correct_ret_addr);
-+	arch_rethook_fixup_return(fregs, correct_ret_addr);
- 
- 	/* Unlink used shadow stack */
- 	first = current->rethooks.first;
+ 	  This allows user to add tracing events on the function entry and
 diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-index 4d3ae79f036e..f440c97e050f 100644
+index f440c97e050f..4e9c250dbd19 100644
 --- a/kernel/trace/trace_fprobe.c
 +++ b/kernel/trace/trace_fprobe.c
-@@ -341,10 +341,14 @@ static int fentry_dispatcher(struct fprobe *fp, unsigned long entry_ip,
- NOKPROBE_SYMBOL(fentry_dispatcher);
- 
- static void fexit_dispatcher(struct fprobe *fp, unsigned long entry_ip,
--			     unsigned long ret_ip, struct pt_regs *regs,
-+			     unsigned long ret_ip, struct ftrace_regs *fregs,
- 			     void *entry_data)
+@@ -132,25 +132,30 @@ static int
+ process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
+ 		   void *base)
  {
- 	struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
-+	struct pt_regs *regs = ftrace_get_regs(fregs);
-+
-+	if (!regs)
-+		return;
+-	struct pt_regs *regs = rec;
+-	unsigned long val;
++	struct ftrace_regs *fregs = rec;
++	unsigned long val, *stackp;
+ 	int ret;
  
- 	if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
- 		fexit_trace_func(tf, entry_ip, ret_ip, regs);
-diff --git a/lib/test_fprobe.c b/lib/test_fprobe.c
-index ff607babba18..d1e80653bf0c 100644
---- a/lib/test_fprobe.c
-+++ b/lib/test_fprobe.c
-@@ -59,9 +59,9 @@ static notrace int fp_entry_handler(struct fprobe *fp, unsigned long ip,
- 
- static notrace void fp_exit_handler(struct fprobe *fp, unsigned long ip,
- 				    unsigned long ret_ip,
--				    struct pt_regs *regs, void *data)
-+				    struct ftrace_regs *fregs, void *data)
+ retry:
+ 	/* 1st stage: get value from context */
+ 	switch (code->op) {
+ 	case FETCH_OP_STACK:
+-		val = regs_get_kernel_stack_nth(regs, code->param);
++		stackp = (unsigned long *)ftrace_regs_get_stack_pointer(fregs);
++		if (((unsigned long)(stackp + code->param) & ~(THREAD_SIZE - 1)) ==
++		    ((unsigned long)stackp & ~(THREAD_SIZE - 1)))
++			val = *(stackp + code->param);
++		else
++			val = 0;
+ 		break;
+ 	case FETCH_OP_STACKP:
+-		val = kernel_stack_pointer(regs);
++		val = ftrace_regs_get_stack_pointer(fregs);
+ 		break;
+ 	case FETCH_OP_RETVAL:
+-		val = regs_return_value(regs);
++		val = ftrace_regs_return_value(fregs);
+ 		break;
+ #ifdef CONFIG_HAVE_FUNCTION_ARG_ACCESS_API
+ 	case FETCH_OP_ARG:
+-		val = regs_get_kernel_argument(regs, code->param);
++		val = ftrace_regs_get_argument(fregs, code->param);
+ 		break;
+ #endif
+ 	case FETCH_NOP_SYMBOL:	/* Ignore a place holder */
+@@ -170,7 +175,7 @@ NOKPROBE_SYMBOL(process_fetch_insn)
+ /* function entry handler */
+ static nokprobe_inline void
+ __fentry_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
+-		    struct pt_regs *regs,
++		    struct ftrace_regs *fregs,
+ 		    struct trace_event_file *trace_file)
  {
--	unsigned long ret = regs_return_value(regs);
-+	unsigned long ret = ftrace_regs_return_value(fregs);
+ 	struct fentry_trace_entry_head *entry;
+@@ -184,36 +189,36 @@ __fentry_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
+ 	if (trace_trigger_soft_disabled(trace_file))
+ 		return;
  
- 	KUNIT_EXPECT_FALSE(current_test, preemptible());
- 	if (ip != target_ip) {
-@@ -89,7 +89,7 @@ static notrace int nest_entry_handler(struct fprobe *fp, unsigned long ip,
+-	dsize = __get_data_size(&tf->tp, regs);
++	dsize = __get_data_size(&tf->tp, fregs);
  
- static notrace void nest_exit_handler(struct fprobe *fp, unsigned long ip,
- 				      unsigned long ret_ip,
--				      struct pt_regs *regs, void *data)
-+				      struct ftrace_regs *fregs, void *data)
- {
- 	KUNIT_EXPECT_FALSE(current_test, preemptible());
- 	KUNIT_EXPECT_EQ(current_test, ip, target_nest_ip);
-diff --git a/samples/fprobe/fprobe_example.c b/samples/fprobe/fprobe_example.c
-index 1545a1aac616..d476d1f07538 100644
---- a/samples/fprobe/fprobe_example.c
-+++ b/samples/fprobe/fprobe_example.c
-@@ -67,7 +67,7 @@ static int sample_entry_handler(struct fprobe *fp, unsigned long ip,
+ 	entry = trace_event_buffer_reserve(&fbuffer, trace_file,
+ 					   sizeof(*entry) + tf->tp.size + dsize);
+ 	if (!entry)
+ 		return;
+ 
+-	fbuffer.regs = regs;
++	fbuffer.regs = ftrace_get_regs(fregs);
+ 	entry = fbuffer.entry = ring_buffer_event_data(fbuffer.event);
+ 	entry->ip = entry_ip;
+-	store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
++	store_trace_args(&entry[1], &tf->tp, fregs, sizeof(*entry), dsize);
+ 
+ 	trace_event_buffer_commit(&fbuffer);
  }
  
- static void sample_exit_handler(struct fprobe *fp, unsigned long ip,
--				unsigned long ret_ip, struct pt_regs *regs,
-+				unsigned long ret_ip, struct ftrace_regs *regs,
- 				void *data)
+ static void
+ fentry_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
+-		  struct pt_regs *regs)
++		  struct ftrace_regs *fregs)
  {
- 	unsigned long rip = ret_ip;
+ 	struct event_file_link *link;
+ 
+ 	trace_probe_for_each_link_rcu(link, &tf->tp)
+-		__fentry_trace_func(tf, entry_ip, regs, link->file);
++		__fentry_trace_func(tf, entry_ip, fregs, link->file);
+ }
+ NOKPROBE_SYMBOL(fentry_trace_func);
+ 
+ /* Kretprobe handler */
+ static nokprobe_inline void
+ __fexit_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
+-		   unsigned long ret_ip, struct pt_regs *regs,
++		   unsigned long ret_ip, struct ftrace_regs *fregs,
+ 		   struct trace_event_file *trace_file)
+ {
+ 	struct fexit_trace_entry_head *entry;
+@@ -227,37 +232,37 @@ __fexit_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
+ 	if (trace_trigger_soft_disabled(trace_file))
+ 		return;
+ 
+-	dsize = __get_data_size(&tf->tp, regs);
++	dsize = __get_data_size(&tf->tp, fregs);
+ 
+ 	entry = trace_event_buffer_reserve(&fbuffer, trace_file,
+ 					   sizeof(*entry) + tf->tp.size + dsize);
+ 	if (!entry)
+ 		return;
+ 
+-	fbuffer.regs = regs;
++	fbuffer.regs = ftrace_get_regs(fregs);
+ 	entry = fbuffer.entry = ring_buffer_event_data(fbuffer.event);
+ 	entry->func = entry_ip;
+ 	entry->ret_ip = ret_ip;
+-	store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
++	store_trace_args(&entry[1], &tf->tp, fregs, sizeof(*entry), dsize);
+ 
+ 	trace_event_buffer_commit(&fbuffer);
+ }
+ 
+ static void
+ fexit_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
+-		 unsigned long ret_ip, struct pt_regs *regs)
++		 unsigned long ret_ip, struct ftrace_regs *fregs)
+ {
+ 	struct event_file_link *link;
+ 
+ 	trace_probe_for_each_link_rcu(link, &tf->tp)
+-		__fexit_trace_func(tf, entry_ip, ret_ip, regs, link->file);
++		__fexit_trace_func(tf, entry_ip, ret_ip, fregs, link->file);
+ }
+ NOKPROBE_SYMBOL(fexit_trace_func);
+ 
+ #ifdef CONFIG_PERF_EVENTS
+ 
+ static int fentry_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+-			    struct pt_regs *regs)
++			    struct ftrace_regs *fregs, struct pt_regs *regs)
+ {
+ 	struct trace_event_call *call = trace_probe_event_call(&tf->tp);
+ 	struct fentry_trace_entry_head *entry;
+@@ -269,7 +274,7 @@ static int fentry_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+ 	if (hlist_empty(head))
+ 		return 0;
+ 
+-	dsize = __get_data_size(&tf->tp, regs);
++	dsize = __get_data_size(&tf->tp, fregs);
+ 	__size = sizeof(*entry) + tf->tp.size + dsize;
+ 	size = ALIGN(__size + sizeof(u32), sizeof(u64));
+ 	size -= sizeof(u32);
+@@ -280,7 +285,7 @@ static int fentry_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+ 
+ 	entry->ip = entry_ip;
+ 	memset(&entry[1], 0, dsize);
+-	store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
++	store_trace_args(&entry[1], &tf->tp, fregs, sizeof(*entry), dsize);
+ 	perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
+ 			      head, NULL);
+ 	return 0;
+@@ -289,7 +294,8 @@ NOKPROBE_SYMBOL(fentry_perf_func);
+ 
+ static void
+ fexit_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+-		unsigned long ret_ip, struct pt_regs *regs)
++		unsigned long ret_ip, struct ftrace_regs *fregs,
++		struct pt_regs *regs)
+ {
+ 	struct trace_event_call *call = trace_probe_event_call(&tf->tp);
+ 	struct fexit_trace_entry_head *entry;
+@@ -301,7 +307,7 @@ fexit_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+ 	if (hlist_empty(head))
+ 		return;
+ 
+-	dsize = __get_data_size(&tf->tp, regs);
++	dsize = __get_data_size(&tf->tp, fregs);
+ 	__size = sizeof(*entry) + tf->tp.size + dsize;
+ 	size = ALIGN(__size + sizeof(u32), sizeof(u64));
+ 	size -= sizeof(u32);
+@@ -312,7 +318,7 @@ fexit_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
+ 
+ 	entry->func = entry_ip;
+ 	entry->ret_ip = ret_ip;
+-	store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
++	store_trace_args(&entry[1], &tf->tp, fregs, sizeof(*entry), dsize);
+ 	perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
+ 			      head, NULL);
+ }
+@@ -327,14 +333,15 @@ static int fentry_dispatcher(struct fprobe *fp, unsigned long entry_ip,
+ 	struct pt_regs *regs = ftrace_get_regs(fregs);
+ 	int ret = 0;
+ 
++	if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
++		fentry_trace_func(tf, entry_ip, fregs);
++
++#ifdef CONFIG_PERF_EVENTS
+ 	if (!regs)
+ 		return 0;
+ 
+-	if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
+-		fentry_trace_func(tf, entry_ip, regs);
+-#ifdef CONFIG_PERF_EVENTS
+ 	if (trace_probe_test_flag(&tf->tp, TP_FLAG_PROFILE))
+-		ret = fentry_perf_func(tf, entry_ip, regs);
++		ret = fentry_perf_func(tf, entry_ip, fregs, regs);
+ #endif
+ 	return ret;
+ }
+@@ -347,14 +354,15 @@ static void fexit_dispatcher(struct fprobe *fp, unsigned long entry_ip,
+ 	struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
+ 	struct pt_regs *regs = ftrace_get_regs(fregs);
+ 
++	if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
++		fexit_trace_func(tf, entry_ip, ret_ip, fregs);
++
++#ifdef CONFIG_PERF_EVENTS
+ 	if (!regs)
+ 		return;
+ 
+-	if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
+-		fexit_trace_func(tf, entry_ip, ret_ip, regs);
+-#ifdef CONFIG_PERF_EVENTS
+ 	if (trace_probe_test_flag(&tf->tp, TP_FLAG_PROFILE))
+-		fexit_perf_func(tf, entry_ip, ret_ip, regs);
++		fexit_perf_func(tf, entry_ip, ret_ip, fregs, regs);
+ #endif
+ }
+ NOKPROBE_SYMBOL(fexit_dispatcher);
+diff --git a/kernel/trace/trace_probe_tmpl.h b/kernel/trace/trace_probe_tmpl.h
+index 3935b347f874..05445a745a07 100644
+--- a/kernel/trace/trace_probe_tmpl.h
++++ b/kernel/trace/trace_probe_tmpl.h
+@@ -232,7 +232,7 @@ process_fetch_insn_bottom(struct fetch_insn *code, unsigned long val,
+ 
+ /* Sum up total data length for dynamic arrays (strings) */
+ static nokprobe_inline int
+-__get_data_size(struct trace_probe *tp, struct pt_regs *regs)
++__get_data_size(struct trace_probe *tp, void *regs)
+ {
+ 	struct probe_arg *arg;
+ 	int i, len, ret = 0;
 
 
