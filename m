@@ -1,101 +1,55 @@
-Return-Path: <bpf+bounces-7076-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2B8E771016
-	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 16:14:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EAAB771015
+	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 16:14:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E02611C20A7D
-	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 14:14:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5362281563
+	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 14:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28AFCC157;
-	Sat,  5 Aug 2023 14:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65613C14D;
+	Sat,  5 Aug 2023 14:14:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C0EA947
-	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 14:14:35 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F06B3C16
-	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 07:14:34 -0700 (PDT)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 3C66FC151981
-	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 07:14:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1691244874; bh=U4TR4kl6KPTDZMxl3E811ZBsrM+qTtFYcvVJrSylvfA=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=FWr31Y77nTJmGJkUlX0T+QHjtEFsTwuAC85aZJ6epQrJD4qxw3S0gNx5XPt6Yi95K
-	 F/kIOOlJj1xBCy8iWOXZxQ5n5EnFXlwLBImfgugwoZBpVQFLkUFltW5ZT9mXOvI/UU
-	 rGySLT98tH4t2riuysCJMe0psXK+/+CeuYaBLCRo=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Sat Aug  5 07:14:34 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id EC9A8C15108B;
-	Sat,  5 Aug 2023 07:14:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1691244874; bh=U4TR4kl6KPTDZMxl3E811ZBsrM+qTtFYcvVJrSylvfA=;
-	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=FWr31Y77nTJmGJkUlX0T+QHjtEFsTwuAC85aZJ6epQrJD4qxw3S0gNx5XPt6Yi95K
-	 F/kIOOlJj1xBCy8iWOXZxQ5n5EnFXlwLBImfgugwoZBpVQFLkUFltW5ZT9mXOvI/UU
-	 rGySLT98tH4t2riuysCJMe0psXK+/+CeuYaBLCRo=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 2CF17C15108B
- for <bpf@ietfa.amsl.com>; Sat,  5 Aug 2023 07:14:32 -0700 (PDT)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -1.41
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.6
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id anEHzrxU1aIi for <bpf@ietfa.amsl.com>;
- Sat,  5 Aug 2023 07:14:31 -0700 (PDT)
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com
- [209.85.222.172])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 7BAFEC15106C
- for <bpf@ietf.org>; Sat,  5 Aug 2023 07:14:31 -0700 (PDT)
-Received: by mail-qk1-f172.google.com with SMTP id
- af79cd13be357-765a7768f1dso260993885a.0
- for <bpf@ietf.org>; Sat, 05 Aug 2023 07:14:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43DEEA947
+	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 14:14:33 +0000 (UTC)
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5E83C16
+	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 07:14:31 -0700 (PDT)
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-768054797f7so259417785a.2
+        for <bpf@vger.kernel.org>; Sat, 05 Aug 2023 07:14:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20221208; t=1691244870; x=1691849670;
- h=user-agent:in-reply-to:content-disposition:mime-version:references
- :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=sAVDVCo+4slW4hCzfuwcLGF5uKTnDKfhS8R43/E39JY=;
- b=MQ9L6fmbtXHbFdzDneMxh9d8HrEbC4/iV53vgb4Hb0OWJfZ8CnG3YOtBMaYyuVey+w
- 4rPecilZI+RY0mLsrXsShaDPqNL1qJdsKiiEAnjltT87tdex1tLOqE72YusAwmjoRONf
- rdHTUjDfSS6Z8edRPIn0No2G3LIsmVzCM8mowMUGJFZe6M+LjIdx35BhC3Xpf/uH3vgu
- hxkHHU2nSViQnIvkM5Bd1I31lUOiUvf4L4iOYAmD0u1T5Qx10ekBFcMWr/YHU8ULLrLH
- 26sL+lfDfwDCK+Z+Dx2KApHG3sGAgCpW+fqtm14ITe6/amGjIpRJjqMgXcohtw9zrqgz
- atmw==
-X-Gm-Message-State: AOJu0Yyto5agMCseg+LKaDLkuLMyvH1KjGpdfcWWhKv/SMVtVajCcVmk
- 9clh2SOpU3VEYwXddsRGOno=
+        d=1e100.net; s=20221208; t=1691244870; x=1691849670;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sAVDVCo+4slW4hCzfuwcLGF5uKTnDKfhS8R43/E39JY=;
+        b=l0lUvvfTe+//UWg5N6HHK2vVvBSBK97lrqUVbfguRh8AE6VvO9s19g5MlQIsV1mZWK
+         fkezhVnanVnBLhNJr0zHGSTBbpKnRK/C3iHwmMXgJHNm08IdExVUc5pkbLDg3Il5SzN+
+         SZVbbUY+ZKC8XpglY7f+dRkwWkzjU/Y6K8Si2B6//GDmW2GX3MzlTp/vMlB0mRlVBt8R
+         ueHvDiuu1gHl8f8+99TQGA7ANLxEcG2bMUloILnmTGUnFOhgmuxX0YSa/Q6rp9ZMy2Nl
+         egQ8zMdk/ZdT9SBX+kr15mwZCQp3VX4zsET8aNHbN0CvhiVE+rUdE0tF2l/oRSkATQME
+         mrUA==
+X-Gm-Message-State: AOJu0YwCHnAANRRv+swPbCRLovQM5L4CJpEWmUdGZb4LiFPbVG4wDbHq
+	cx8PJvERf9aVJWyx6VCPQix0A1jaI6FIZg==
 X-Google-Smtp-Source: AGHT+IHCBxVgd48w6iqlEeqBCs606qitHNITcise7l3gLZ6N0bxTA7P4HEU4x6dzvk101D6crdiJLw==
-X-Received: by 2002:ae9:df85:0:b0:760:6b8e:eba with SMTP id
- t127-20020ae9df85000000b007606b8e0ebamr5111468qkf.12.1691244870317; 
- Sat, 05 Aug 2023 07:14:30 -0700 (PDT)
+X-Received: by 2002:ae9:df85:0:b0:760:6b8e:eba with SMTP id t127-20020ae9df85000000b007606b8e0ebamr5111468qkf.12.1691244870317;
+        Sat, 05 Aug 2023 07:14:30 -0700 (PDT)
 Received: from maniforge ([2620:10d:c091:400::5:f01c])
- by smtp.gmail.com with ESMTPSA id
- m14-20020a0cf18e000000b0063d561ea04csm1427055qvl.102.2023.08.05.07.14.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 05 Aug 2023 07:14:29 -0700 (PDT)
+        by smtp.gmail.com with ESMTPSA id m14-20020a0cf18e000000b0063d561ea04csm1427055qvl.102.2023.08.05.07.14.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Aug 2023 07:14:29 -0700 (PDT)
 Date: Sat, 5 Aug 2023 09:14:27 -0500
 From: David Vernet <void@manifault.com>
 To: Will Hawkins <hawkinsw@obs.cr>
 Cc: bpf@vger.kernel.org, bpf@ietf.org
+Subject: Re: [Bpf] [PATCH v3 1/2] bpf, docs: Formalize type notation and
+ function semantics in ISA standard
 Message-ID: <20230805141427.GC519395@maniforge>
 References: <20230805030921.52035-1-hawkinsw@obs.cr>
 Precedence: bulk
@@ -104,28 +58,14 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20230805030921.52035-1-hawkinsw@obs.cr>
 User-Agent: Mutt/2.2.10 (2023-03-25)
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/5hJyk80rOje0B_vPoKhpyZDaRDM>
-Subject: Re: [Bpf] [PATCH v3 1/2] bpf,
- docs: Formalize type notation and function semantics in ISA standard
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
@@ -294,9 +234,4 @@ specific to byte swap.
 [...]
 
 - David
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
 
