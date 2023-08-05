@@ -1,248 +1,241 @@
-Return-Path: <bpf+bounces-7086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64FAB77105F
-	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 17:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 805927711F5
+	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 21:59:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 179D6282331
-	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 15:42:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AADD281F3A
+	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 19:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08833C2E5;
-	Sat,  5 Aug 2023 15:42:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB5EC8DB;
+	Sat,  5 Aug 2023 19:58:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5830A945
-	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 15:42:16 +0000 (UTC)
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6448139
-	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 08:42:14 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52227884855so4247444a12.1
-        for <bpf@vger.kernel.org>; Sat, 05 Aug 2023 08:42:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88EC32CA6
+	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 19:58:57 +0000 (UTC)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F74FA
+	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 12:58:55 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so688641666b.0
+        for <bpf@vger.kernel.org>; Sat, 05 Aug 2023 12:58:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691250133; x=1691854933;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5oPGlPcQoIGdgM0VCxXAjsaz8qStZCqVt1y/O55TbU4=;
-        b=UFweuQbNV4JurJGWQjoD+wJciMB9H3KlN8C1Y2VUFPBhhX6sVGKaCkW/MpCIXVN5nt
-         C57P3lZvHzg6z7lZfEc0RlmRA84cp4S5Hjisry90yGZXE/65jiumw6IQ3Yj8/pQAtgDO
-         SVlRG8vFPinL6F8dfRcJ7HJqOltipBzNMqu6ojC3bOh1G/G17kqW1OBLh59zF1Fgs58m
-         eKNGsfz5xyfTBWvtcCgiAgB3qDR500YrTPgCCktVMPfVsnkvEv/9x2UOgmqVBhF/ykFU
-         j/Kb0PWVVbUk4R9mjelzdwVJOssYMyUsmQpUdHOdzCfhG7ivezmQnTfRHzT8rzjIqLFb
-         glxQ==
+        d=gmail.com; s=20221208; t=1691265534; x=1691870334;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qg4vW9SrnygWrtGnV0wP3GYXsTK4dPBgt/fsrSHkJbk=;
+        b=JYmPLhTna0IobGh6tq2Bz4OmRmGRYbpAm4Z/l/bEjXqKGjN9M39cAge2I2/CzuIuEW
+         6SFmu41LkmflR2gfcGLbBln0c2jTVWrNSkk8BdXBRnYc7Ma/HEvY+b90wL+sdQvXTjGW
+         3+mpbstgKVTViaRs3j7RiSLVrK2VcJcXbhqIm8roMzd1ARMedpPPhGwH//iLMO+Tj18g
+         Xtir9Q4YUdMEzbkaOeRcRzQbRztFk7neYD7+3r1nq9FeMv79fjgIwn6At5DFUEX0vcJ9
+         L6HSUgxaJfHnsEl/Q7E4BJ0HEDLV1CdqqkD6ZHafJt4CXV505PG+QXYrP6Yg7U4+jNyx
+         BtIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691250133; x=1691854933;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5oPGlPcQoIGdgM0VCxXAjsaz8qStZCqVt1y/O55TbU4=;
-        b=ZcsDLQWS/Xtl0jUzgytj5ehXHxOpIDkkz4us6l9K7V5w4AEJveHiogpz+6vZhECPlN
-         rmGPk6x4QIGiFNe4JGXN7j3v3UUPu1a5aOqRy1+rdR5Ph7F/t/JM22A1SfiJTQblpSKR
-         z83sL5qdWSyriAZPB9GjLXXCqVqLCota//GnoK3BmNShFT0UbKp3KZ3fkpAk2uBPLizU
-         YOwZdRMMllqLrETOb4GdZxb9JfRYMlmv35JDnWAwoDdftjfAzijzmwMAF3pHLjSyTZuF
-         W5+p4kp8UHVOQdFG7jdeCoaUFDqcq6tXlQqCvncsTXFHWWUyEF+sGfAYmx+CcpEd4PRV
-         s+tw==
-X-Gm-Message-State: AOJu0YwXk8hLi2BjywHlJwAHzNpqJD0ZuU+kYjK+HPT1BW+adwUXPb98
-	OTB9HEYfD4ZO+YHwfDNYPM4=
-X-Google-Smtp-Source: AGHT+IE/HMWsULhkXl7ttOYIT+mNc+J9SfE66Ad1bnDfnLmrAudP21AMWaSGDN8uiPVJYZvTnqkSOA==
-X-Received: by 2002:a05:6402:78a:b0:522:5980:ae08 with SMTP id d10-20020a056402078a00b005225980ae08mr4206668edy.18.1691250132873;
-        Sat, 05 Aug 2023 08:42:12 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691265534; x=1691870334;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qg4vW9SrnygWrtGnV0wP3GYXsTK4dPBgt/fsrSHkJbk=;
+        b=X5YGowqC+DfZ6b77ujuh4FrwDRLaw2944L6G4J7qM2JeTs1f9BXCxzmGK6zorQWqdO
+         ufVeWTXdwceN44GctW2iXb/Tsi9iff+ZJSZVEhri/fzhmfB1v51H2MRmsy9QXeTG8ZaE
+         PXa5uCi+EbobnZiu9kqdhP0bM96HUMaROu97d8966Gi6Hj3vk7qiNRDd6uFOlMCjzR5U
+         lWNDAawBE4Z59Rgva8lyBPMR07pObblgcMswkh025bSM1Z49dl5ITPRgHL7oqdxi3C2d
+         6cdEM4WkR/NdbFuKz3RKNLPOnIaVbcyN/qHcmJjH89uyBEEgT0XqwuxQ+5OCiIyEGmdI
+         OVrA==
+X-Gm-Message-State: AOJu0YyDkKI6+crtVA3bg9qSOmptYefKaVYrkYQT5rHSwAKZUr0jjAol
+	zrjA/fAWoKo2QLMAVRtPPd0=
+X-Google-Smtp-Source: AGHT+IHYmixDLshC7UWKOsAHs4laHspVtTEEQZeR4JoctAaO4Uihotq6P6uZkTaeV3dOPrEVMtUJdA==
+X-Received: by 2002:a17:906:53ce:b0:99c:7300:94b8 with SMTP id p14-20020a17090653ce00b0099c730094b8mr3242386ejo.10.1691265534018;
+        Sat, 05 Aug 2023 12:58:54 -0700 (PDT)
 Received: from krava ([83.240.60.134])
-        by smtp.gmail.com with ESMTPSA id j2-20020a50ed02000000b005223e54d1edsm2780976eds.20.2023.08.05.08.42.12
+        by smtp.gmail.com with ESMTPSA id q8-20020a1709066b0800b0098921e1b064sm3027493ejr.181.2023.08.05.12.58.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 08:42:12 -0700 (PDT)
+        Sat, 05 Aug 2023 12:58:53 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 5 Aug 2023 17:42:10 +0200
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>, martin.lau@linux.dev,
-	bpf <bpf@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>,
-	Tomasz =?utf-8?B?UGF3ZcWC?= Gajc <tpgxyz@gmail.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>, m.seyfarth@gmail.com,
-	Fangrui Song <maskray@google.com>
-Subject: Re: FAILED: load BTF from vmlinux: Invalid argument
-Message-ID: <ZM5t0mMODRtvpi1c@krava>
-References: <CAKwvOdm9PqNBLSZa_t5b=15cdtKvKq4q8WZr3i77W66m4FRAAQ@mail.gmail.com>
- <ZMwQivemlha+fU5i@kernel.org>
- <CAKwvOd=w3PFMDyZ1WL1DDx0Gyt-+sh7hYP_+8b9zEFu3uZpVXQ@mail.gmail.com>
- <afe71df3-48e4-837a-e85d-b6a6764eee62@oracle.com>
- <CAKwvOdn93Zpdkk3faNNdDw=tnMQ6Mxo5tTVCDmrqStU95MVQqA@mail.gmail.com>
- <7eea26c2-e3c9-d212-1688-21d448649e07@oracle.com>
+Date: Sat, 5 Aug 2023 21:58:51 +0200
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, bpf@vger.kernel.org
+Subject: Re: [PATCH v4 bpf-next 2/2] selftests/bpf: Add selftest for
+ fill_link_info
+Message-ID: <ZM6p+++fSnKrEYM5@krava>
+References: <20230804105732.3768-1-laoar.shao@gmail.com>
+ <20230804105732.3768-3-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7eea26c2-e3c9-d212-1688-21d448649e07@oracle.com>
+In-Reply-To: <20230804105732.3768-3-laoar.shao@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Aug 04, 2023 at 11:03:03PM +0100, Alan Maguire wrote:
-> On 04/08/2023 17:11, Nick Desaulniers wrote:
-> > + Marcus (who also just reported seeing this
-> > https://github.com/ClangBuiltLinux/linux/issues/1825#issuecomment-1664671027
-> > and might be able to help reproduce).
-> > + Fangrui (because seeing dd used as a result of 90ceddcb4950 makes me shudder)
-> > 
-> > On Thu, Aug 3, 2023 at 3:10 PM Alan Maguire <alan.maguire@oracle.com> wrote:
-> >>
-> >> On 03/08/2023 21:50, Nick Desaulniers wrote:
-> >>> On Thu, Aug 3, 2023 at 1:39 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >>>>
-> >>>> Em Thu, Aug 03, 2023 at 11:02:46AM -0700, Nick Desaulniers escreveu:
-> >>>>> Hi Martin (and BTF/BPF team),
-> >>>>> I've observed 2 user reports with the error from the subject of this email.
-> >>>>> https://github.com/ClangBuiltLinux/linux/issues/1825
-> >>>>> https://bbs.archlinux.org/viewtopic.php?id=284177
-> >>>>>
-> >>>>> Any chance you could take a look at these reports and help us figure
-> >>>>> out what's going wrong here?  Nathan and I haven't been able to
-> >>>>> reproduce, but this seems to be affecting OpenMandriva (and Tomasz).
-> >>>>>
-> >>>>> Sounds like perhaps llvm-objcopy vs gnu objcopy might be a relevant detail?
-> >>>>
-> >>>> Masami had a problem with new versions of compilers that was solved
-> >>>> with:
-> >>>>
-> >>>> ------------------------ 8< --------------------------------------------
-> >>>>> To check that please tweak:
-> >>>>>
-> >>>>> ⬢[acme@toolbox perf-tools-next]$ grep DWARF ../build/v6.2-rc5+/.config
-> >>>>> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
-> >>>>> # CONFIG_DEBUG_INFO_DWARF4 is not set
-> >>>>> # CONFIG_DEBUG_INFO_DWARF5 is not set
-> >>>>> ⬢[acme@toolbox perf-tools-next]$
-> >>>>>
-> >>>>> i.e. disable CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT and enable
-> >>>>> CONFIG_DEBUG_INFO_DWARF4.
-> >>>>
-> >>>> Hm, with CONFIG_DEBUG_INFO_DWARF4, no warning were shown.
-> >>>
-> >>> Downgrading from the now-6-year-old DWARFv5 to now-13-year-old DWARFv4
-> >>> is not what I'd consider a fix. Someday we can move to
-> >>> DWARFv5...someday...
-> >>>
-> >>> What you describe sounds like build success, but reduction in debug info.
-> >>>
-> >>> The reports I'm referring to seem to result in a build failure.
-> >>>
-> >>
-> >> This is a strange one. The error in question
-> >>
-> >> CC .vmlinux.export.o
-> >> UPD include/generated/utsversion.h
-> >> CC init/version-timestamp.o
-> >> LD .tmp_vmlinux.btf
-> >> BTF .btf.vmlinux.bin.o
-> >> libbpf: BTF header not found
-> >> pahole: .tmp_vmlinux.btf: Invalid argument
-> > 
-> > That's slightly different from Tomasz and Marcus' report (not sure if
-> > that's relevant):
-> > 
-> > FAILED: load BTF from vmlinux: Invalid argument
-> > 
-> > That seems to come from
-> > tools/bpf/resolve_btfids/main.c:529
-> > Which seems like some failed call to btf_parse().
-> > EINVAL is getting propagated up from btf_parse(), but that's not super
-> > descriptive...
-> > 
-> Okay, that makes more sense. Basically the stage where we read vmlinux
-> BTF to do BTF id resolution (BTFIDS) is finding an empty BTF section.
+On Fri, Aug 04, 2023 at 10:57:32AM +0000, Yafang Shao wrote:
 
-+1, looks like pahole failed to generate the BTF section, the BTFIDS
-is just follow up error.. we might want to consider special error
-output for missing BTF data ;-)
+SNIP
 
-I can't reproduce this on my setup with either gcc or clang and trying
-DWARF4/5 config options and latest and 1.24 pahole version
+> +
+> +static void kprobe_fill_invalid_user_buffer(int fd)
+> +{
+> +	struct bpf_link_info info;
+> +	__u32 len = sizeof(info);
+> +	int err;
+> +
+> +	memset(&info, 0, sizeof(info));
+> +
+> +	info.perf_event.kprobe.func_name = 0x1; /* invalid address */
+> +	err = bpf_link_get_info_by_fd(fd, &info, &len);
+> +	ASSERT_EQ(err, -EINVAL, "invalid_buff_and_len");
+> +
+> +	info.perf_event.kprobe.name_len = 64;
+> +	err = bpf_link_get_info_by_fd(fd, &info, &len);
+> +	ASSERT_EQ(err, -EFAULT, "invalid_buff");
+> +
+> +	info.perf_event.kprobe.func_name = 0;
+> +	err = bpf_link_get_info_by_fd(fd, &info, &len);
+> +	ASSERT_EQ(err, -EINVAL, "invalid_len");
+> +
+> +	ASSERT_EQ(info.perf_event.kprobe.addr, 0, "func_addr");
+> +	ASSERT_EQ(info.perf_event.kprobe.offset, 0, "func_offset");
+> +	ASSERT_EQ(info.perf_event.type, 0, "type");
+> +}
+> +
+> +static void test_kprobe_fill_link_info(struct test_fill_link_info *skel,
+> +				       enum bpf_perf_event_type type,
+> +				       bool retprobe, bool invalid)
+> +{
+> +	DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts,
+> +		.attach_mode = PROBE_ATTACH_MODE_LINK,
+> +		.retprobe = retprobe,
 
-> 
-> > The hard part is that I suspect OpenMandriva (Tomasz) and Marcus are
-> > both setting additional flags in their toolchains, which can make
-> > reproducing tricky.
-> >
-> 
-> I tried falling back to the config referenced in the earlier bug report
-> 
-> https://github.com/ClangBuiltLinux/linux/files/10050200/config_bpf.txt
+you could got rid of the retprobe argument and just do
 
-hum, I did not find this in the report.. are there more kernel configs
-related to this issue? seems like more people hit this
+		.retprobe = retprobe == BPF_PERF_EVENT_KRETPROBE,
+
+
+> +	);
+> +	ssize_t offset = 0, entry_offset = 0;
+> +	int link_fd, err;
+> +	long addr;
+> +
+> +	skel->links.kprobe_run = bpf_program__attach_kprobe_opts(skel->progs.kprobe_run,
+> +								 KPROBE_FUNC, &opts);
+> +	if (!ASSERT_OK_PTR(skel->links.kprobe_run, "attach_kprobe"))
+> +		return;
+> +
+> +	link_fd = bpf_link__fd(skel->links.kprobe_run);
+> +	addr = ksym_get_addr(KPROBE_FUNC);
+> +	if (!invalid) {
+> +		/* See also arch_adjust_kprobe_addr(). */
+> +		if (skel->kconfig->CONFIG_X86_KERNEL_IBT)
+> +			entry_offset = 4;
+> +		err = verify_perf_link_info(link_fd, type, addr, offset, entry_offset);
+> +		ASSERT_OK(err, "verify_perf_link_info");
+> +	} else {
+> +		kprobe_fill_invalid_user_buffer(link_fd);
+> +	}
+> +	bpf_link__detach(skel->links.kprobe_run);
+> +}
+> +
+> +static void test_tp_fill_link_info(struct test_fill_link_info *skel)
+> +{
+> +	int link_fd, err;
+> +
+> +	skel->links.tp_run = bpf_program__attach_tracepoint(skel->progs.tp_run, TP_CAT, TP_NAME);
+> +	if (!ASSERT_OK_PTR(skel->links.tp_run, "attach_tp"))
+> +		return;
+> +
+> +	link_fd = bpf_link__fd(skel->links.tp_run);
+> +	err = verify_perf_link_info(link_fd, BPF_PERF_EVENT_TRACEPOINT, 0, 0, 0);
+> +	ASSERT_OK(err, "verify_perf_link_info");
+> +	bpf_link__detach(skel->links.tp_run);
+> +}
+> +
+> +static void test_uprobe_fill_link_info(struct test_fill_link_info *skel,
+> +				       enum bpf_perf_event_type type, ssize_t offset,
+> +				       bool retprobe)
+> +{
+> +	int link_fd, err;
+> +
+> +	skel->links.uprobe_run = bpf_program__attach_uprobe(skel->progs.uprobe_run, retprobe,
+> +							    0, /* self pid */
+> +							    UPROBE_FILE, offset);
+
+same here with 'type == BPF_PERF_EVENT_URETPROBE'
+
+
+> +	if (!ASSERT_OK_PTR(skel->links.uprobe_run, "attach_uprobe"))
+> +		return;
+> +
+> +	link_fd = bpf_link__fd(skel->links.uprobe_run);
+> +	err = verify_perf_link_info(link_fd, type, 0, offset, 0);
+> +	ASSERT_OK(err, "verify_perf_link_info");
+> +	bpf_link__detach(skel->links.uprobe_run);
+> +}
+> +
+
+SNIP
+
+> +
+> +static void test_kprobe_multi_fill_link_info(struct test_fill_link_info *skel,
+> +					     bool retprobe, bool buffer)
+> +{
+> +	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
+> +	const char *syms[KMULTI_CNT] = {
+> +		"schedule_timeout_interruptible",
+> +		"schedule_timeout_uninterruptible",
+> +		"schedule_timeout_idle",
+> +		"schedule_timeout_killable",
+
+nit, might be better to use some of the bpf_fentry_test[1-9] functions,
+also for KPROBE_FUNC
+
+> +	};
+> +	__u64 addrs[KMULTI_CNT];
+> +	int link_fd, i, err = 0;
+> +
+> +	qsort(syms, KMULTI_CNT, sizeof(syms[0]), symbols_cmp_r);
+> +	opts.syms = syms;
+> +	opts.cnt = KMULTI_CNT;
+> +	opts.retprobe = retprobe;
+> +	skel->links.kmulti_run = bpf_program__attach_kprobe_multi_opts(skel->progs.kmulti_run,
+> +								       NULL, &opts);
+> +	if (!ASSERT_OK_PTR(skel->links.kmulti_run, "attach_kprobe_multi"))
+> +		return;
+> +
+> +	link_fd = bpf_link__fd(skel->links.kmulti_run);
+> +	for (i = 0; i < KMULTI_CNT; i++)
+> +		addrs[i] = ksym_get_addr(syms[i]);
+> +
+> +	if (!buffer)
+> +		err = verify_kmulti_link_info(link_fd, addrs, retprobe);
+> +	else
+> +		verify_kmulti_user_buffer(link_fd, addrs);
+
+verify_kmulti_user_buffer is actually what you call 'invalid' in other
+tests right? seems better to keep it in here unless I miss something
 
 thanks,
 jirka
 
-> 
-> ...but still couldn't reproduce it with LLVM 17 + pahole v1.24. That
-> config did specify DWARF5; if we can reproduce this, it would probably
-> be good to vary between forcing DWARF4 and DWARF5 to see if that is a
-> contributing factor as Arnaldo suggested.
-> 
-> Alan
-> 
-> >>
-> >> ...occurs during BTF parsing when the raw size of the BTF is smaller
-> >> than the BTF header size, which should never happen unless BTF
-> >> is corrupted. Thing is, at that stage we shouldn't be parsing BTF,
-> >> we should be generating it from DWARF. The only time pahole parses BTF
-> >> is when it's creating split BTF for modules (it parses the base BTF), or
-> >> when it's reading existing BTF, neither of which it should be doing at
-> >> this stage.
-> >>
-> >> But I suspect the issue is in gen_btf() in scripts/link-vmlinux.sh.
-> >> Prior to running pahole, we call "vmlinux_link .tmp_vmlinux.btf".
-> >> If that went awry somehow and .tmp_vmlinux.btf wasn't created, it
-> > 
-> > Wouldn't we expect some kind of linker error though in that case?
-> > 
-> >> would explain the "Invalid argument" error:
-> >>
-> >> $ pahole -J nosuchfile
-> >> pahole: nosuchfile: Invalid argument
-> >>
-> >> I see some clang specifics in vmlinux_link(), so I think a good
-> >> first step would be to check if .tmp_vlinux.btf exists prior
-> >> to running pahole. The submitter mentioned swapping linkers seems to
-> >> help, so that seems a promising angle. If there's a kernel .config
-> >> available I can try and reproduce the failure too. Thanks!
-> >>
-> >> Alan
-> >>
-> >>>>
-> >>>>   LD      .tmp_vmlinux.btf
-> >>>>   BTF     .btf.vmlinux.bin.o
-> >>>>   LD      .tmp_vmlinux.kallsyms1
-> >>>>
-> >>>> And
-> >>>>
-> >>>> / # strings /sys/kernel/btf/vmlinux | wc -l
-> >>>> 89921
-> >>>> / # strings /sys/kernel/btf/vmlinux | grep -w kfree
-> >>>> kfree
-> >>>>
-> >>>> It seems the BTF is correctly generated. (with DWARF5, the number of symbols
-> >>>> are about 30000.)
-> >>>
-> >>>
-> >>>
-> > 
-> > 
-> > 
-> 
+> +	ASSERT_OK(err, "verify_kmulti_link_info");
+> +	bpf_link__detach(skel->links.kmulti_run);
+> +}
+> +
+
+SNIP
 
