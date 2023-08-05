@@ -1,73 +1,74 @@
-Return-Path: <bpf+bounces-7087-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7088-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 805927711F5
-	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 21:59:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D2317711F6
+	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 21:59:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AADD281F3A
-	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 19:59:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 534061C20A3B
+	for <lists+bpf@lfdr.de>; Sat,  5 Aug 2023 19:59:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB5EC8DB;
-	Sat,  5 Aug 2023 19:58:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07293C8DE;
+	Sat,  5 Aug 2023 19:59:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88EC32CA6
-	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 19:58:57 +0000 (UTC)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F74FA
-	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 12:58:55 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so688641666b.0
-        for <bpf@vger.kernel.org>; Sat, 05 Aug 2023 12:58:55 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D423CC8D4
+	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 19:59:03 +0000 (UTC)
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F444FA
+	for <bpf@vger.kernel.org>; Sat,  5 Aug 2023 12:59:02 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe0e34f498so5525791e87.2
+        for <bpf@vger.kernel.org>; Sat, 05 Aug 2023 12:59:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691265534; x=1691870334;
+        d=gmail.com; s=20221208; t=1691265541; x=1691870341;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qg4vW9SrnygWrtGnV0wP3GYXsTK4dPBgt/fsrSHkJbk=;
-        b=JYmPLhTna0IobGh6tq2Bz4OmRmGRYbpAm4Z/l/bEjXqKGjN9M39cAge2I2/CzuIuEW
-         6SFmu41LkmflR2gfcGLbBln0c2jTVWrNSkk8BdXBRnYc7Ma/HEvY+b90wL+sdQvXTjGW
-         3+mpbstgKVTViaRs3j7RiSLVrK2VcJcXbhqIm8roMzd1ARMedpPPhGwH//iLMO+Tj18g
-         Xtir9Q4YUdMEzbkaOeRcRzQbRztFk7neYD7+3r1nq9FeMv79fjgIwn6At5DFUEX0vcJ9
-         L6HSUgxaJfHnsEl/Q7E4BJ0HEDLV1CdqqkD6ZHafJt4CXV505PG+QXYrP6Yg7U4+jNyx
-         BtIg==
+        bh=wrmsO5kbeLCgoLNRUeCbTqmbonHAao1zR+4IiEZ1vbI=;
+        b=Mv5M/toV1VKXj/5+2HzMWhaVwkqB016YU3SMyxDBLb/7CvxKmhKqyBCjgglqxbvDBK
+         bHcnH82unHx5gRrbjOck3ockId/XzEWDnV4BXVBVtBo3R42wd+Jw13oz/dkmgNgsYFBz
+         7N0HQBOVs8RGNr9oYF2b/65MPrmBztCdgUYZz0XgAwYvvhnDsuJ20HR7EYyMUKVUqJfN
+         yg7Mpw6X350Hoy4mhykgkSpSzwIbpp9rZni7XGT1InTPtdVDe7oq2gzqqvBv5S6iCrNk
+         9PzdpEGW65dvc/T7VfFo/JJxQVg4doVXMv9VlzGNGtUmP3MO6lys4jJNVksjwRP5DF7L
+         VzVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691265534; x=1691870334;
+        d=1e100.net; s=20221208; t=1691265541; x=1691870341;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Qg4vW9SrnygWrtGnV0wP3GYXsTK4dPBgt/fsrSHkJbk=;
-        b=X5YGowqC+DfZ6b77ujuh4FrwDRLaw2944L6G4J7qM2JeTs1f9BXCxzmGK6zorQWqdO
-         ufVeWTXdwceN44GctW2iXb/Tsi9iff+ZJSZVEhri/fzhmfB1v51H2MRmsy9QXeTG8ZaE
-         PXa5uCi+EbobnZiu9kqdhP0bM96HUMaROu97d8966Gi6Hj3vk7qiNRDd6uFOlMCjzR5U
-         lWNDAawBE4Z59Rgva8lyBPMR07pObblgcMswkh025bSM1Z49dl5ITPRgHL7oqdxi3C2d
-         6cdEM4WkR/NdbFuKz3RKNLPOnIaVbcyN/qHcmJjH89uyBEEgT0XqwuxQ+5OCiIyEGmdI
-         OVrA==
-X-Gm-Message-State: AOJu0YyDkKI6+crtVA3bg9qSOmptYefKaVYrkYQT5rHSwAKZUr0jjAol
-	zrjA/fAWoKo2QLMAVRtPPd0=
-X-Google-Smtp-Source: AGHT+IHYmixDLshC7UWKOsAHs4laHspVtTEEQZeR4JoctAaO4Uihotq6P6uZkTaeV3dOPrEVMtUJdA==
-X-Received: by 2002:a17:906:53ce:b0:99c:7300:94b8 with SMTP id p14-20020a17090653ce00b0099c730094b8mr3242386ejo.10.1691265534018;
-        Sat, 05 Aug 2023 12:58:54 -0700 (PDT)
+        bh=wrmsO5kbeLCgoLNRUeCbTqmbonHAao1zR+4IiEZ1vbI=;
+        b=c0MPHVhi4NKI9NLQa9N3pqSzt/S8obfz6++Lfv6vO63k+JU13dP2X2C5DAsliBrZMZ
+         hcddXZz3uap9KvCnNtS8f4TY5Byq+Xq+6FiSwa7DN4O9QUZ9SulBpZuCuZw9/u9MhK8Q
+         eS0ym+uPoYCc8LzRLwr/LR/rs7rARpVvtf8mzuQAmen1cT5N5eyyZ4IO/fu+9H5gg2rx
+         c261EffhJkgvoxrZ9BKfA9qaj+jzen+apZndR3GwBHPknMnwPoh9pjrXM7z25CJtW/Nh
+         hU/vJPAfnZtn4wlU5Ck9O8vy6z/MHqDLRUXAQxRU4rDairIUNcMEIqo9KvJAe8LnJ0sL
+         uNZA==
+X-Gm-Message-State: AOJu0Yz1e61uX8ZnXZW2Fj9jK0C39Qb/pxyNKe7o9TihEMm/Bdl4ZP1m
+	fqqQQ5z41687KnPKvUQT8oQ=
+X-Google-Smtp-Source: AGHT+IHx71kv0J30EPJTJTxKfpdLFbpzoCPN84cgtduN3tP2KmDKEq32ngZBTY/9waQboxYB+O7x2g==
+X-Received: by 2002:a05:6512:20cc:b0:4f9:5d2a:e0f6 with SMTP id u12-20020a05651220cc00b004f95d2ae0f6mr3170538lfr.14.1691265540503;
+        Sat, 05 Aug 2023 12:59:00 -0700 (PDT)
 Received: from krava ([83.240.60.134])
-        by smtp.gmail.com with ESMTPSA id q8-20020a1709066b0800b0098921e1b064sm3027493ejr.181.2023.08.05.12.58.53
+        by smtp.gmail.com with ESMTPSA id g17-20020aa7c591000000b00522d742bc4bsm2984720edq.62.2023.08.05.12.58.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 12:58:53 -0700 (PDT)
+        Sat, 05 Aug 2023 12:59:00 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 5 Aug 2023 21:58:51 +0200
+Date: Sat, 5 Aug 2023 21:58:58 +0200
 To: Yafang Shao <laoar.shao@gmail.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
 	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
 	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, bpf@vger.kernel.org
-Subject: Re: [PATCH v4 bpf-next 2/2] selftests/bpf: Add selftest for
- fill_link_info
-Message-ID: <ZM6p+++fSnKrEYM5@krava>
+	haoluo@google.com, bpf@vger.kernel.org,
+	Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH v4 bpf-next 1/2] bpf: Fix uninitialized symbol in
+ bpf_perf_link_fill_kprobe()
+Message-ID: <ZM6qAt6gVSJIyy21@krava>
 References: <20230804105732.3768-1-laoar.shao@gmail.com>
- <20230804105732.3768-3-laoar.shao@gmail.com>
+ <20230804105732.3768-2-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,7 +77,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230804105732.3768-3-laoar.shao@gmail.com>
+In-Reply-To: <20230804105732.3768-2-laoar.shao@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -84,158 +85,53 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Aug 04, 2023 at 10:57:32AM +0000, Yafang Shao wrote:
+On Fri, Aug 04, 2023 at 10:57:31AM +0000, Yafang Shao wrote:
+> The patch 1b715e1b0ec5: "bpf: Support ->fill_link_info for
+> perf_event" from Jul 9, 2023, leads to the following Smatch static
+> checker warning:
+> 
+>     kernel/bpf/syscall.c:3416 bpf_perf_link_fill_kprobe()
+>     error: uninitialized symbol 'type'.
+> 
+> That can happens when uname is NULL. So fix it by verifying the uname
+> when we really need to fill it.
+> 
+> Fixes: 1b715e1b0ec5 ("bpf: Support ->fill_link_info for perf_event")
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/bpf/85697a7e-f897-4f74-8b43-82721bebc462@kili.mountain/
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-SNIP
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-> +
-> +static void kprobe_fill_invalid_user_buffer(int fd)
-> +{
-> +	struct bpf_link_info info;
-> +	__u32 len = sizeof(info);
-> +	int err;
-> +
-> +	memset(&info, 0, sizeof(info));
-> +
-> +	info.perf_event.kprobe.func_name = 0x1; /* invalid address */
-> +	err = bpf_link_get_info_by_fd(fd, &info, &len);
-> +	ASSERT_EQ(err, -EINVAL, "invalid_buff_and_len");
-> +
-> +	info.perf_event.kprobe.name_len = 64;
-> +	err = bpf_link_get_info_by_fd(fd, &info, &len);
-> +	ASSERT_EQ(err, -EFAULT, "invalid_buff");
-> +
-> +	info.perf_event.kprobe.func_name = 0;
-> +	err = bpf_link_get_info_by_fd(fd, &info, &len);
-> +	ASSERT_EQ(err, -EINVAL, "invalid_len");
-> +
-> +	ASSERT_EQ(info.perf_event.kprobe.addr, 0, "func_addr");
-> +	ASSERT_EQ(info.perf_event.kprobe.offset, 0, "func_offset");
-> +	ASSERT_EQ(info.perf_event.type, 0, "type");
-> +}
-> +
-> +static void test_kprobe_fill_link_info(struct test_fill_link_info *skel,
-> +				       enum bpf_perf_event_type type,
-> +				       bool retprobe, bool invalid)
-> +{
-> +	DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts,
-> +		.attach_mode = PROBE_ATTACH_MODE_LINK,
-> +		.retprobe = retprobe,
-
-you could got rid of the retprobe argument and just do
-
-		.retprobe = retprobe == BPF_PERF_EVENT_KRETPROBE,
-
-
-> +	);
-> +	ssize_t offset = 0, entry_offset = 0;
-> +	int link_fd, err;
-> +	long addr;
-> +
-> +	skel->links.kprobe_run = bpf_program__attach_kprobe_opts(skel->progs.kprobe_run,
-> +								 KPROBE_FUNC, &opts);
-> +	if (!ASSERT_OK_PTR(skel->links.kprobe_run, "attach_kprobe"))
-> +		return;
-> +
-> +	link_fd = bpf_link__fd(skel->links.kprobe_run);
-> +	addr = ksym_get_addr(KPROBE_FUNC);
-> +	if (!invalid) {
-> +		/* See also arch_adjust_kprobe_addr(). */
-> +		if (skel->kconfig->CONFIG_X86_KERNEL_IBT)
-> +			entry_offset = 4;
-> +		err = verify_perf_link_info(link_fd, type, addr, offset, entry_offset);
-> +		ASSERT_OK(err, "verify_perf_link_info");
-> +	} else {
-> +		kprobe_fill_invalid_user_buffer(link_fd);
-> +	}
-> +	bpf_link__detach(skel->links.kprobe_run);
-> +}
-> +
-> +static void test_tp_fill_link_info(struct test_fill_link_info *skel)
-> +{
-> +	int link_fd, err;
-> +
-> +	skel->links.tp_run = bpf_program__attach_tracepoint(skel->progs.tp_run, TP_CAT, TP_NAME);
-> +	if (!ASSERT_OK_PTR(skel->links.tp_run, "attach_tp"))
-> +		return;
-> +
-> +	link_fd = bpf_link__fd(skel->links.tp_run);
-> +	err = verify_perf_link_info(link_fd, BPF_PERF_EVENT_TRACEPOINT, 0, 0, 0);
-> +	ASSERT_OK(err, "verify_perf_link_info");
-> +	bpf_link__detach(skel->links.tp_run);
-> +}
-> +
-> +static void test_uprobe_fill_link_info(struct test_fill_link_info *skel,
-> +				       enum bpf_perf_event_type type, ssize_t offset,
-> +				       bool retprobe)
-> +{
-> +	int link_fd, err;
-> +
-> +	skel->links.uprobe_run = bpf_program__attach_uprobe(skel->progs.uprobe_run, retprobe,
-> +							    0, /* self pid */
-> +							    UPROBE_FILE, offset);
-
-same here with 'type == BPF_PERF_EVENT_URETPROBE'
-
-
-> +	if (!ASSERT_OK_PTR(skel->links.uprobe_run, "attach_uprobe"))
-> +		return;
-> +
-> +	link_fd = bpf_link__fd(skel->links.uprobe_run);
-> +	err = verify_perf_link_info(link_fd, type, 0, offset, 0);
-> +	ASSERT_OK(err, "verify_perf_link_info");
-> +	bpf_link__detach(skel->links.uprobe_run);
-> +}
-> +
-
-SNIP
-
-> +
-> +static void test_kprobe_multi_fill_link_info(struct test_fill_link_info *skel,
-> +					     bool retprobe, bool buffer)
-> +{
-> +	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-> +	const char *syms[KMULTI_CNT] = {
-> +		"schedule_timeout_interruptible",
-> +		"schedule_timeout_uninterruptible",
-> +		"schedule_timeout_idle",
-> +		"schedule_timeout_killable",
-
-nit, might be better to use some of the bpf_fentry_test[1-9] functions,
-also for KPROBE_FUNC
-
-> +	};
-> +	__u64 addrs[KMULTI_CNT];
-> +	int link_fd, i, err = 0;
-> +
-> +	qsort(syms, KMULTI_CNT, sizeof(syms[0]), symbols_cmp_r);
-> +	opts.syms = syms;
-> +	opts.cnt = KMULTI_CNT;
-> +	opts.retprobe = retprobe;
-> +	skel->links.kmulti_run = bpf_program__attach_kprobe_multi_opts(skel->progs.kmulti_run,
-> +								       NULL, &opts);
-> +	if (!ASSERT_OK_PTR(skel->links.kmulti_run, "attach_kprobe_multi"))
-> +		return;
-> +
-> +	link_fd = bpf_link__fd(skel->links.kmulti_run);
-> +	for (i = 0; i < KMULTI_CNT; i++)
-> +		addrs[i] = ksym_get_addr(syms[i]);
-> +
-> +	if (!buffer)
-> +		err = verify_kmulti_link_info(link_fd, addrs, retprobe);
-> +	else
-> +		verify_kmulti_user_buffer(link_fd, addrs);
-
-verify_kmulti_user_buffer is actually what you call 'invalid' in other
-tests right? seems better to keep it in here unless I miss something
-
-thanks,
 jirka
 
-> +	ASSERT_OK(err, "verify_kmulti_link_info");
-> +	bpf_link__detach(skel->links.kmulti_run);
-> +}
-> +
-
-SNIP
+> ---
+>  kernel/bpf/syscall.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 7f4e8c3..166390f 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3378,14 +3378,14 @@ static int bpf_perf_link_fill_common(const struct perf_event *event,
+>  
+>  	if (!ulen ^ !uname)
+>  		return -EINVAL;
+> -	if (!uname)
+> -		return 0;
+>  
+>  	err = bpf_get_perf_event_info(event, &prog_id, fd_type, &buf,
+>  				      probe_offset, probe_addr);
+>  	if (err)
+>  		return err;
+>  
+> +	if (!uname)
+> +		return 0;
+>  	if (buf) {
+>  		len = strlen(buf);
+>  		err = bpf_copy_to_user(uname, buf, ulen, len);
+> -- 
+> 1.8.3.1
+> 
 
