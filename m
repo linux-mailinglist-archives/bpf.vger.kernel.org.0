@@ -1,160 +1,258 @@
-Return-Path: <bpf+bounces-7100-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7101-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E90F3771575
-	for <lists+bpf@lfdr.de>; Sun,  6 Aug 2023 15:50:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48B367715A8
+	for <lists+bpf@lfdr.de>; Sun,  6 Aug 2023 16:34:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A05742812AF
-	for <lists+bpf@lfdr.de>; Sun,  6 Aug 2023 13:50:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3646D1C20974
+	for <lists+bpf@lfdr.de>; Sun,  6 Aug 2023 14:34:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D265241;
-	Sun,  6 Aug 2023 13:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 808495245;
+	Sun,  6 Aug 2023 14:34:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5034C28EF;
-	Sun,  6 Aug 2023 13:50:35 +0000 (UTC)
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2074.outbound.protection.outlook.com [40.107.95.74])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B661EB;
-	Sun,  6 Aug 2023 06:50:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NrzEpZhANu8nhSvGSUeooGrHik2fIDgKa5Ue5skayFQyhxBzKm7R5l79t9vuU2EzSjGRV2xw1kpFSLcwzoRhCUE+whcI4L1Pb8Q6e6BrusNjIqiJ5eg5ug381QJQla10DuReL1vZXfJYfKSZxw/S2yE/ym5qUh1R9uUSABsvGOtktSpSC0WSxljThXCB8quRZIOKgP9rI7BwmKPgTC/OLDzEFQhNReX57B/SVU++SQWZcdVfNg1uqZz0uFy38cyyX/BUDb3gpyvd8+StRbtFo3iwXAHsxJoD4NxfAQv3YNqcg5i2Lg/Z162Fk4pnZCJF29rhqDZX6IVmPbhjalHGZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Rpdt/QWh6coGw0bD/0QhDbRoeN6AB40JtkfzARXs7aE=;
- b=Rs5WLvW/h3SAXUw9aV2tiormUv3ipm26r4XH6TlNqp/g5HeYW/+pi9mFMQ8r+wNTrq/E00jo095/ZIIIm4sJCMgIWftzj0wGFbp16oq8QwhQ4+1awhIVElmhAGH94Tg0YbcZGJodSVl0aEH+C0vxkmq75LjYWfqctGzy0m5iV0yCadyyNLVe/9sQGc9PBGAN+RaAWJVbhEE9PF8iujmBDgy5HjJoNMu8h7pm/nF43htrmsbCpscVOl21KGGtNmw2bLmsAzNQgkMGLajesvbPnuGURmchJlHldCSScJQUK6205LSg7iDHILp0tQxbaGYfj28Rece0DFdITuDJ+f5ZKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rpdt/QWh6coGw0bD/0QhDbRoeN6AB40JtkfzARXs7aE=;
- b=PxCsAII7rdWGty/xOvhd1sMXQ8MLu+F+g6kQHC8TLoy50piMdnCAolRfCjWqdMctPTk3xUmlz52rAC81efPhhSZjym1ibsZCBIHFypcOE/OkxVIP+Qmhdy74X5RxP0/jUNwtM+vUXLRzUYWyZMu6PHZBf8TtoPIh41GQaAuJK96W8kagtqUx5Tpbpn4Pv1co9ULFTPKiNuokt76RDrblVwISRdqZnlcVuIin9UfjHbg0uZvfx5jvwPyfRZKNO96WpvX3OloNLOgciwTt6zrgWylW6ollMfXOZZ6wKYiY9Dh5/hNsl7q2MBv5LW+SutRol9icMlTr7ADrbdUn+2kb5g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB6288.namprd12.prod.outlook.com (2603:10b6:8:93::7) by
- SN7PR12MB8104.namprd12.prod.outlook.com (2603:10b6:806:35a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.25; Sun, 6 Aug
- 2023 13:50:26 +0000
-Received: from DS7PR12MB6288.namprd12.prod.outlook.com
- ([fe80::2666:236b:2886:d78b]) by DS7PR12MB6288.namprd12.prod.outlook.com
- ([fe80::2666:236b:2886:d78b%7]) with mapi id 15.20.6652.025; Sun, 6 Aug 2023
- 13:50:27 +0000
-Message-ID: <e7007a56-7e4e-b5ce-bcfb-4e35e7025a4e@nvidia.com>
-Date: Sun, 6 Aug 2023 16:50:18 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH net-next] tcx: Fix splat in ingress_destroy upon
- tcx_entry_free
-Content-Language: en-US
-To: Daniel Borkmann <daniel@iogearbox.net>, kuba@kernel.org
-Cc: ast@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
- syzbot+bdcf141f362ef83335cf@syzkaller.appspotmail.com,
- syzbot+b202b7208664142954fa@syzkaller.appspotmail.com,
- syzbot+14736e249bce46091c18@syzkaller.appspotmail.com
-References: <20230721233330.5678-1-daniel@iogearbox.net>
- <bdfc2640-8f65-5b56-4472-db8e2b161aab@nvidia.com>
- <96b33f76-de8e-54ce-fcef-47924d797013@iogearbox.net>
-From: Gal Pressman <gal@nvidia.com>
-In-Reply-To: <96b33f76-de8e-54ce-fcef-47924d797013@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VI1P191CA0005.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:800:1ba::12) To DS7PR12MB6288.namprd12.prod.outlook.com
- (2603:10b6:8:93::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5031B28EF
+	for <bpf@vger.kernel.org>; Sun,  6 Aug 2023 14:34:07 +0000 (UTC)
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D9A1B3
+	for <bpf@vger.kernel.org>; Sun,  6 Aug 2023 07:34:05 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-63c70dc7ed2so26789016d6.0
+        for <bpf@vger.kernel.org>; Sun, 06 Aug 2023 07:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691332444; x=1691937244;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hnWPeteNFBR42Mf7auTDYOmuwtBIgbuYmQVKtoXSUsw=;
+        b=CV8seiTI9/QnBehMbVTHBz6TsFrvuUMY/8gviilINa53hMZF5CzmrgDK0Qh8FUX5jQ
+         D+HbliMnFd9iKBexPvZLl1kHLshL0+PfZJ3toFzv4iMuSozRPC/gY60dqNGRwqLkogO3
+         WH/ymI8ovOdcJWS1JcReLAIEGb0JByvlUiCbUuRX6Zhw9b367FSt199AzflyFKO1JGCb
+         5EbDUqVJq1tadPI3V5Est32XIR1xCkO68Y6B3bSZXPtSxyPXLu3F3sOc4NnChde+oFd9
+         I6fOWcnTOkK9nbG9hoya4FAjuqVVmS3zFvxvSY5ZbjxmiQP/FzLbr3rfefYvKKO1lz63
+         8QOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691332444; x=1691937244;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hnWPeteNFBR42Mf7auTDYOmuwtBIgbuYmQVKtoXSUsw=;
+        b=GgZF1kciPmNnkcowD4XvRxRBwqDfuhGvjTAygYkThDhnE8ApbJm3FzOZvEqY8u8SBX
+         6sUD/QxlzHLTXcUweJfcKtb11wUJPRg6GkMrN1xJK+X/8S2E7GbZdctortgqIM+qGked
+         dmLpY/x0805wZD9Ad7iy4bx1KawFIqoJ8TArNAlwSByk36ZsQpNboB1ZN0v1cDRPGFzL
+         Z0zqp1IoB1+nRxGqa3j9TBfuUrOohNJav3VKS4xIO//o+KXIf7HV4ezReB289nqZqls3
+         puibhYrWEMhLRIe8uQciBM3E+9RAcAz83mlw2jdPYMAFK8cJJHBhNhGt5jr4pzWUsTYZ
+         tPPA==
+X-Gm-Message-State: AOJu0Yzv4tT5En+V5zLRAjnUcoa5KnF0A8B09a58u7ud65guC3bRqSk1
+	bxxxtatV1sGT4ujX1IoYEQUDNUYHTLvXorQoWF8=
+X-Google-Smtp-Source: AGHT+IF44PhbZoz4kjcDcuRX8z0+z8ylQ6gWxGl/C08oQyO34EW+RePKVlVyYBmXyPteO+Nwz+hpLkkrk8pRs6mx7sw=
+X-Received: by 2002:ad4:514b:0:b0:628:2e08:78b7 with SMTP id
+ g11-20020ad4514b000000b006282e0878b7mr7832891qvq.31.1691332444093; Sun, 06
+ Aug 2023 07:34:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6288:EE_|SN7PR12MB8104:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8f3f6efa-dc66-43ba-bed9-08db96841773
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	xwYqQxDluPXii/JNfas+4hiYqH30891jwW8CczgFE7W7mDnBsiEItKCTWEGGF5168GvIo1a1jVHZyOipeSQb/ncnGhG4oFEjWvGcsaz/WxLN1rBDFuIoKQfIYJ3oYFB2MWubHNesGYU7WZr4gp2EZtbtMMB7amtH6XeL6G0edtBqbhU/iEAdE7WjQQXftd3n/zJj8n07Hzz3Utj3IyRdw65CfWaJuBuo/exNC2lhMm6YsU9H0/vNtCCELOAsRFhINDBUn1yGgtwM5poew/f957U0+g/Hgzrmgpxb6Byuh0r0sM0H5wAcyBauhSyDB10WZrrvFa/nfNgaXFAaVpv5uOBcmbZs2VwXMPuX7Wrqv79SBp3VrFGsxNkmaW8Iha5bvBFprfSTTolc6acxGXf8drPXASVb748iarGLTPTFt6Ac7vTV9whs3dhYD+Ea+6zq1CEhAldYWCbGteZAPg1ojhe9IgXCTfQQIsryozyZTCVbRMwnJZcolfyTf90MNziJmWgqLE8uqzQgRoQ5k5xzc+he2ZuLtYysQAbzPExKObWbXVBtItIRGulXRCi6iqhl/15FKxNjH3nCAsMHbIt2q5txiNEsivHNx7llX5VJQ+b44oeahXVgh0GH6gEfQRMmgwvmFLkjGFRlAkbBi2J+4g==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6288.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(396003)(376002)(346002)(39860400002)(451199021)(186006)(1800799003)(31686004)(83380400001)(2616005)(38100700002)(2906002)(316002)(66476007)(66556008)(66946007)(4326008)(8676002)(8936002)(41300700001)(4744005)(6512007)(6486002)(86362001)(478600001)(6666004)(5660300002)(53546011)(31696002)(26005)(6506007)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NEJ3c0FDL29nejZoOVNmei9MdjcveVM5V0RCNi9acWUxc3c0ZnF6RW1QbzVk?=
- =?utf-8?B?SFVidWNtMkgrSm5Lc3h3ckhMblBLT3RTdzdRdG1DN0ZGMVc3SUo1MStld05K?=
- =?utf-8?B?T0U5SVFXZXU4SmRtN1d3RHVtODJSaU1lN3FZSnd6aExsckE4dkpMYzNWR2tB?=
- =?utf-8?B?WHZhUEVDTkRmVkFFTmo2T1BFbFNmZXd3S2N6dVkyMDhlUGdFWGZOWUZuU2Q4?=
- =?utf-8?B?QVZ2SW9tWnMySmdpSE9Vell1Ly9VUFBuUUs3bEpnSVRGdys3ZHhSb2hVM3hM?=
- =?utf-8?B?UVlnTktxTnBLckI2QnZnYlVBZUc2ZjdGdmtJcnNSaVVQcmkySmtJZGZkSi83?=
- =?utf-8?B?L29rZ1dBdVg5MW9oNWNWTVhSM2xranBrY1RpZE5tNHdOMnhoVmFYZlpQZElz?=
- =?utf-8?B?a0pob2tNWGd5MTRDL0l2MGZROWczY1ZkWGZDUGFOa1hGYUdTVVA4bHE2QnBo?=
- =?utf-8?B?YU1Tc1dNQzFMdXI3MU9qNE1pYitIa05nNHhNc0cyNmNPcEFPUzhTM1ZwU2lr?=
- =?utf-8?B?QktZREdHdXk3aFEyY0MvQjBBTGlhemZKbFFFU3V4MXhzYTJMbDczTjFVN09x?=
- =?utf-8?B?VE12b1Y1U0hXZmtQTW13R1EwckhqR2RMR09rYVZZT3g3ajZ4eTRkMENncUxk?=
- =?utf-8?B?ZzY1anUrSC9xS2RoWGdOQUNRa09lUVFFNzlEZnNSL2xQOG04cWdQOERSY0h4?=
- =?utf-8?B?NjBkQ1c1RkxiM3ZNemN0bUFlWHl6RXlsWkZhU2hjQ1UyZXB1dDcySmtWU3JF?=
- =?utf-8?B?R1FtNHE4bzhvSzA2eUR3VktwR0VaSzlPc2xEQTY4TXU1SWdSZXN3SURoTGdi?=
- =?utf-8?B?RlVCSVhBRXorYmcvc0t6MTdFUFdUUTVPVGZHN2w5dU1iai9UVDhIVU5tYUpo?=
- =?utf-8?B?RCt3QzJ1Z2Uxc25FZzNzZE4weVlSL3BXdkRJZGIzRVNDbktKTndpUmFxRVRT?=
- =?utf-8?B?TUZLZmRjNTVaamFWTVZvOHV1bzY4NXh3ODZZZTJSditGdCtpbXhSQnNpRW1U?=
- =?utf-8?B?dlRWd2hiSS9wNyttaFNWMm9SSFhsN1UxNmZXb0ZqQ3dmMndKWU5jbnVZcjFY?=
- =?utf-8?B?VUhRNEtxZ09UQnBxKzY5QzZ3VUUrQjVycVYraGlIbmxwSEZVc3VMRkJCN3lJ?=
- =?utf-8?B?WXFxZlljalRsYU5USzcyUEg0YVNEb3NsQXhWdmNIdm5VNUc4Vi9XUUMrV3lV?=
- =?utf-8?B?Kzd2azlVUk9GRW9xY2tvOG1FV0tTKzE0VFlFajhBeEZqamJVd1Y5SUtiZTVp?=
- =?utf-8?B?eERmcXdKRERDamwzZzdmei9mZk1wNk0rUGVGQ1BibEpLKy9FU0VrVGs0Rzhw?=
- =?utf-8?B?QjBvTVhBOVR5NjBBUTZDR3I4MVo4WnBLTkp1ejJzTHZIQXZ0eUFZWDlxdVFM?=
- =?utf-8?B?N2JxWUI4TjQxbjY1UW83WmdNTFdXSHVKK21qeDk3TzZCTlcxdGw4aXVtbEN3?=
- =?utf-8?B?Ni9iaGgzVVM0ZkVGMVB0M1NTS1V3UDN6RHh2SU9DMWFsR3pLbEczNkN3N2do?=
- =?utf-8?B?SUpXTG5DRC81Y2Rtbkw1VnJ2RkRza1dqdUtHSGttc3YxY3ZzWTYxbUl1cTRF?=
- =?utf-8?B?Wk9oaEUzdEtLU2d0VkJOOG43M3RjeHFSTExHN0IyaDFTREpKNGNoS291dE96?=
- =?utf-8?B?Q0xNUTZ5MjNPL0ZFMkpBczJtMXAwZVcyaGQzeGRHUElyT2EvVnhGV0RYZTVP?=
- =?utf-8?B?ZzVBU29CWlZUcVlLYm01eE5iM2hUTHJ0cmpwY2kwOHp0V2ZCSU9lb1huanEx?=
- =?utf-8?B?SkxmUkZNZkFUcVdDQVo3Ly9VN1dDY01UTy9IUzdTMGh1NmVFZW00ZWVNQU9C?=
- =?utf-8?B?QnZZbDB0YVR0MDZIQWlsL2xwSFV0QWQzUy9mNkpnQXlMY09nSUYwSlhydU1u?=
- =?utf-8?B?VVhaT05QSUlFbmFHTFE0TG50T1M2aS8wSG1INmxabmtLSDIrdnFubVRSSmlO?=
- =?utf-8?B?R1VxVVpQTWlvVFdJQmZhaWkwaGhRYVBSZU1DeVR2aWltM1dxVmZsTS96MWRO?=
- =?utf-8?B?UHIwdzNGNXd6d2lZTnVRdlRYcmVwcGZpZFZyUG9rMHltdEFCNitoUzB5SXdS?=
- =?utf-8?B?VU1MdFFhZDFPQ2JDRlRSVVRqYVFtUEhpRWo5bnFSTDhPM1c3M1U1LzNNNGsv?=
- =?utf-8?Q?Kugm5u1B5fgb7BPjG/2tlM5YR?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f3f6efa-dc66-43ba-bed9-08db96841773
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6288.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2023 13:50:27.9077
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mB34o+kAf/l9+zUkZs2+z67zz4GnEWNwgQezbOaW8VXaNUcUDSubNr2f8cgtHOjK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8104
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-	NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-	SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230804105732.3768-1-laoar.shao@gmail.com> <20230804105732.3768-3-laoar.shao@gmail.com>
+ <ZM6p+++fSnKrEYM5@krava>
+In-Reply-To: <ZM6p+++fSnKrEYM5@krava>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sun, 6 Aug 2023 22:33:28 +0800
+Message-ID: <CALOAHbC68vUTL-N1mPqqt1-O42ME7o+Q5j0AmwWtTS6hkADAcg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/2] selftests/bpf: Add selftest for fill_link_info
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 04/08/2023 2:54, Daniel Borkmann wrote:
-> Hi Gal,
-> 
-> On 8/3/23 1:10 PM, Gal Pressman wrote:
-> [...]
->> Our nightly regression testing picked up new memory leaks which were
->> bisected to this commit.
->> Unfortunately, I do not know the exact repro steps to trigger it, maybe
->> the attached kmemeleak logs can help?
-> 
-> Is this on latest net-next? Do you have some more info on what the test
-> is doing? Does it trigger on qdisc cleanup only? Also, is there a way to
-> run the regression suite?
+On Sun, Aug 6, 2023 at 3:58=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
+:
+>
+> On Fri, Aug 04, 2023 at 10:57:32AM +0000, Yafang Shao wrote:
+>
+> SNIP
+>
+> > +
+> > +static void kprobe_fill_invalid_user_buffer(int fd)
+> > +{
+> > +     struct bpf_link_info info;
+> > +     __u32 len =3D sizeof(info);
+> > +     int err;
+> > +
+> > +     memset(&info, 0, sizeof(info));
+> > +
+> > +     info.perf_event.kprobe.func_name =3D 0x1; /* invalid address */
+> > +     err =3D bpf_link_get_info_by_fd(fd, &info, &len);
+> > +     ASSERT_EQ(err, -EINVAL, "invalid_buff_and_len");
+> > +
+> > +     info.perf_event.kprobe.name_len =3D 64;
+> > +     err =3D bpf_link_get_info_by_fd(fd, &info, &len);
+> > +     ASSERT_EQ(err, -EFAULT, "invalid_buff");
+> > +
+> > +     info.perf_event.kprobe.func_name =3D 0;
+> > +     err =3D bpf_link_get_info_by_fd(fd, &info, &len);
+> > +     ASSERT_EQ(err, -EINVAL, "invalid_len");
+> > +
+> > +     ASSERT_EQ(info.perf_event.kprobe.addr, 0, "func_addr");
+> > +     ASSERT_EQ(info.perf_event.kprobe.offset, 0, "func_offset");
+> > +     ASSERT_EQ(info.perf_event.type, 0, "type");
+> > +}
+> > +
+> > +static void test_kprobe_fill_link_info(struct test_fill_link_info *ske=
+l,
+> > +                                    enum bpf_perf_event_type type,
+> > +                                    bool retprobe, bool invalid)
+> > +{
+> > +     DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts,
+> > +             .attach_mode =3D PROBE_ATTACH_MODE_LINK,
+> > +             .retprobe =3D retprobe,
+>
+> you could got rid of the retprobe argument and just do
+>
+>                 .retprobe =3D retprobe =3D=3D BPF_PERF_EVENT_KRETPROBE,
 
-I don't have more information ATM, I'll try to figure it out if the
-other fix doesn't resolve it.
+good point. will change it and the others.
+
+>
+>
+> > +     );
+> > +     ssize_t offset =3D 0, entry_offset =3D 0;
+> > +     int link_fd, err;
+> > +     long addr;
+> > +
+> > +     skel->links.kprobe_run =3D bpf_program__attach_kprobe_opts(skel->=
+progs.kprobe_run,
+> > +                                                              KPROBE_F=
+UNC, &opts);
+> > +     if (!ASSERT_OK_PTR(skel->links.kprobe_run, "attach_kprobe"))
+> > +             return;
+> > +
+> > +     link_fd =3D bpf_link__fd(skel->links.kprobe_run);
+> > +     addr =3D ksym_get_addr(KPROBE_FUNC);
+> > +     if (!invalid) {
+> > +             /* See also arch_adjust_kprobe_addr(). */
+> > +             if (skel->kconfig->CONFIG_X86_KERNEL_IBT)
+> > +                     entry_offset =3D 4;
+> > +             err =3D verify_perf_link_info(link_fd, type, addr, offset=
+, entry_offset);
+> > +             ASSERT_OK(err, "verify_perf_link_info");
+> > +     } else {
+> > +             kprobe_fill_invalid_user_buffer(link_fd);
+> > +     }
+> > +     bpf_link__detach(skel->links.kprobe_run);
+> > +}
+> > +
+> > +static void test_tp_fill_link_info(struct test_fill_link_info *skel)
+> > +{
+> > +     int link_fd, err;
+> > +
+> > +     skel->links.tp_run =3D bpf_program__attach_tracepoint(skel->progs=
+.tp_run, TP_CAT, TP_NAME);
+> > +     if (!ASSERT_OK_PTR(skel->links.tp_run, "attach_tp"))
+> > +             return;
+> > +
+> > +     link_fd =3D bpf_link__fd(skel->links.tp_run);
+> > +     err =3D verify_perf_link_info(link_fd, BPF_PERF_EVENT_TRACEPOINT,=
+ 0, 0, 0);
+> > +     ASSERT_OK(err, "verify_perf_link_info");
+> > +     bpf_link__detach(skel->links.tp_run);
+> > +}
+> > +
+> > +static void test_uprobe_fill_link_info(struct test_fill_link_info *ske=
+l,
+> > +                                    enum bpf_perf_event_type type, ssi=
+ze_t offset,
+> > +                                    bool retprobe)
+> > +{
+> > +     int link_fd, err;
+> > +
+> > +     skel->links.uprobe_run =3D bpf_program__attach_uprobe(skel->progs=
+.uprobe_run, retprobe,
+> > +                                                         0, /* self pi=
+d */
+> > +                                                         UPROBE_FILE, =
+offset);
+>
+> same here with 'type =3D=3D BPF_PERF_EVENT_URETPROBE'
+>
+>
+> > +     if (!ASSERT_OK_PTR(skel->links.uprobe_run, "attach_uprobe"))
+> > +             return;
+> > +
+> > +     link_fd =3D bpf_link__fd(skel->links.uprobe_run);
+> > +     err =3D verify_perf_link_info(link_fd, type, 0, offset, 0);
+> > +     ASSERT_OK(err, "verify_perf_link_info");
+> > +     bpf_link__detach(skel->links.uprobe_run);
+> > +}
+> > +
+>
+> SNIP
+>
+> > +
+> > +static void test_kprobe_multi_fill_link_info(struct test_fill_link_inf=
+o *skel,
+> > +                                          bool retprobe, bool buffer)
+> > +{
+> > +     LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
+> > +     const char *syms[KMULTI_CNT] =3D {
+> > +             "schedule_timeout_interruptible",
+> > +             "schedule_timeout_uninterruptible",
+> > +             "schedule_timeout_idle",
+> > +             "schedule_timeout_killable",
+>
+> nit, might be better to use some of the bpf_fentry_test[1-9] functions,
+> also for KPROBE_FUNC
+
+will use them instead.
+
+>
+> > +     };
+> > +     __u64 addrs[KMULTI_CNT];
+> > +     int link_fd, i, err =3D 0;
+> > +
+> > +     qsort(syms, KMULTI_CNT, sizeof(syms[0]), symbols_cmp_r);
+> > +     opts.syms =3D syms;
+> > +     opts.cnt =3D KMULTI_CNT;
+> > +     opts.retprobe =3D retprobe;
+> > +     skel->links.kmulti_run =3D bpf_program__attach_kprobe_multi_opts(=
+skel->progs.kmulti_run,
+> > +                                                                    NU=
+LL, &opts);
+> > +     if (!ASSERT_OK_PTR(skel->links.kmulti_run, "attach_kprobe_multi")=
+)
+> > +             return;
+> > +
+> > +     link_fd =3D bpf_link__fd(skel->links.kmulti_run);
+> > +     for (i =3D 0; i < KMULTI_CNT; i++)
+> > +             addrs[i] =3D ksym_get_addr(syms[i]);
+> > +
+> > +     if (!buffer)
+> > +             err =3D verify_kmulti_link_info(link_fd, addrs, retprobe)=
+;
+> > +     else
+> > +             verify_kmulti_user_buffer(link_fd, addrs);
+>
+> verify_kmulti_user_buffer is actually what you call 'invalid' in other
+> tests right? seems better to keep it in here unless I miss something
+
+will rename it.
+
+--=20
+Regards
+Yafang
 
