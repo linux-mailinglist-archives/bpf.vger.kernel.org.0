@@ -1,188 +1,159 @@
-Return-Path: <bpf+bounces-7151-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7152-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E2B5772366
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 14:06:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13D6C7723B2
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 14:20:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83FC41C20B75
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 12:06:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA70E2812F2
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 12:20:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6AE7101CD;
-	Mon,  7 Aug 2023 12:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 784F3101C9;
+	Mon,  7 Aug 2023 12:20:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8FF101C7
-	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 12:05:46 +0000 (UTC)
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B554106
-	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 05:05:44 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686b879f605so2955160b3a.1
-        for <bpf@vger.kernel.org>; Mon, 07 Aug 2023 05:05:44 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E800FC17
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 12:20:01 +0000 (UTC)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6BD1BE8
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 05:19:37 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bc6624623cso12030565ad.3
+        for <bpf@vger.kernel.org>; Mon, 07 Aug 2023 05:19:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691409944; x=1692014744;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UxNPOJp2gtDhfWZRzOWarZZZVlOwdeuN9g0kWHnf9gs=;
-        b=WsVfgJHsSXlOYhSa7RnTOFdsaoX0xEoReCh4sis0XDX/ZC4AZZ4i7l+6ft+Dh8q6vB
-         ZANsA/Dtc2VdW8u7FnrP6vhl0HCYwl+0lqeYM5BgkcxalSXu0RgUX8YfcOrtCb+IU5qh
-         8tfYLBfQRD8KRBSA3FfUsqZ5ZRrfd2q9Ypk+RU6CqBzKSdW79JSEAfOtj3sDInliciF5
-         MIBhYmv1/CGoUDgvZSIAlmIyn9r6HsjyaSq7lbNiasxCJUaJDvoHvCPyqcFX66qUV2iP
-         je8aXyp/+daaeX0IfqkVrnyT7rGBLtqve+JO7YPpk4qVZ/pOITQZ/mPUFQmjBzWa0+eY
-         sz4g==
+        d=bytedance.com; s=google; t=1691410772; x=1692015572;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CSkaRhEoax/kU+S7BeIv84prtFC3VRpkmwXx3cyNhW4=;
+        b=lNSdc/+v7DVvIEdGXmh9m6TWjMuePx5ixHEq5A3moRUidZPbc2VkVmgz1HIHwnketG
+         iYbjjR8DZZK5NGxcmtk9G8i7h01IWnAeFmogRREbWXxQdB2EObvt44H1JoEpCjKbiuHC
+         T57RpuMx0LOtogAgDRmTcNHhLJhyJTLgUnc2UgsniuZpFVkr4JH6dprrwRSG2kSfmWgt
+         wadkCo10VcLkZ+OEiFVhdCQdxybRGB5eoyhqF5gj/aQr4p6d9334in9xO74pK7dl6UVJ
+         4d7212QuSx1U5p8qpETqLnQRyUeq2pHeC2RruKBBb4hgNQeHaypp1chUN9oxFR4w2mK9
+         +A3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691409944; x=1692014744;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UxNPOJp2gtDhfWZRzOWarZZZVlOwdeuN9g0kWHnf9gs=;
-        b=R+nu0h/jNgMVKz6BW0E40Mle/C+6X46tXjK12rKaOWq0d1V4aiu7sBmbuR4KrfDuJn
-         vEDOrbVE3CtDIAnhdn0gDPWpR2Q4j6ZYOJWnjN4BPY80i5OsQU/BYPJEY1fFONRsVTxg
-         dublX+h3qSGVlgWHMepyYqviAaK0/wLvGcyxulqGnHB9mX/nIUJrPjBO10lgDWbRLQOs
-         Vjp707XnKfc15G13blgNgi3Z9/+yDNFwyR//UNmxWArbhX+JNct8ynHHUSPHeDbLrB8N
-         EbO2RG/RSDHrChPTZnCi2Z57X+iTUHIi02Exb78h8yZweiH5+HrxJCXZdj+8t0iD6uEz
-         6lSw==
-X-Gm-Message-State: AOJu0Yzk3ygVlXQCd2SBbaynw/7zHk5+iuxH4sY9su3dhiD6fhrpesbb
-	cguUMTqP9wOJzufa4n5todxqxQ==
-X-Google-Smtp-Source: AGHT+IGIntJFzxEfnZfu0K5hC4TFi3jmhVJZWB+WVqNK9Sop7DxQpbxBhPnmG4v2fW+FmoyvjvB0Ag==
-X-Received: by 2002:a17:90a:a095:b0:263:53be:5120 with SMTP id r21-20020a17090aa09500b0026353be5120mr6488176pjp.36.1691409943733;
-        Mon, 07 Aug 2023 05:05:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691410772; x=1692015572;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CSkaRhEoax/kU+S7BeIv84prtFC3VRpkmwXx3cyNhW4=;
+        b=aqOh7xBfD7oocaf0Fjrvu6plwak6VwovHsFTkj+SLRrzQY+cSgFnMlCy/qwa9aloni
+         9znHEbJHJdfoGdFMTUsqjerC/8/3E8+BHO3dbDyu9luHXOYfR9i8UAVl0Kkwo/GEgJCF
+         yIu8t6JKT036LWNS2NxoZ48z4NJeflf7rYWIPhqsipxSu0T2CdG77GIbZt1K7OAgW7D6
+         CJ91Ucaex1vVNIHHHR3LmWr62DRMfKuOXudvX9SbfiK+0YTCwPpb1dqYNzwT8hTs0+yt
+         nt+5KGqJoVe+MFnGQAb67HkWjv0d6C7bTuTv/dRdMKt5krRYqhRxFMgu6bzBElTdNIZX
+         6ELQ==
+X-Gm-Message-State: AOJu0YxfR+BuNDydQDH0rpsRUWDCgmBaLA/d8E9Srfn1Ome40QlpBofE
+	PHthjTjWpBNqjO2ZYYCqwSpHKA==
+X-Google-Smtp-Source: AGHT+IG0EOJYPbVCZdHWLuCBSIWm1P+FwFwIuu5YzmQQNlmkkc7aqTPCBYttrj4ssxYQsG4YxAEaPw==
+X-Received: by 2002:a17:902:e743:b0:1bb:8e13:deba with SMTP id p3-20020a170902e74300b001bb8e13debamr11182082plf.11.1691410772101;
+        Mon, 07 Aug 2023 05:19:32 -0700 (PDT)
 Received: from C02FG34NMD6R.bytedance.net ([2408:8656:30f8:e020::b])
-        by smtp.gmail.com with ESMTPSA id bx6-20020a17090af48600b00263f8915aa3sm8578098pjb.31.2023.08.07.05.05.38
+        by smtp.gmail.com with ESMTPSA id m1-20020a170902db0100b001b9d95945afsm6758444plx.155.2023.08.07.05.19.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 05:05:43 -0700 (PDT)
+        Mon, 07 Aug 2023 05:19:31 -0700 (PDT)
 From: Albert Huang <huangjie.albert@bytedance.com>
 To: 
 Cc: Albert Huang <huangjie.albert@bytedance.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
 	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
 	Magnus Karlsson <magnus.karlsson@intel.com>,
 	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
 	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Richard Gobert <richardbgobert@gmail.com>,
-	Menglong Dong <imagedong@tencent.com>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-	linux-kernel@vger.kernel.org (open list),
-	bpf@vger.kernel.org (open list:XDP SOCKETS (AF_XDP))
-Subject: [RFC v2 Optimizing veth xsk performance 0/9]
-Date: Mon,  7 Aug 2023 20:04:20 +0800
-Message-Id: <20230807120434.83644-1-huangjie.albert@bytedance.com>
+	netdev@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
+	bpf@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [RFC v2 Optimizing veth xsk performance 2/9] xsk: add dma_check_skip for skipping dma check
+Date: Mon,  7 Aug 2023 20:19:17 +0800
+Message-Id: <20230807121917.84905-1-huangjie.albert@bytedance.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+In-Reply-To: <20230807120434.83644-1-huangjie.albert@bytedance.com>
+References: <20230807120434.83644-1-huangjie.albert@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=yes
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-AF_XDP is a kernel bypass technology that can greatly improve performance.
-However, for virtual devices like veth, even with the use of AF_XDP sockets,
-there are still many additional software paths that consume CPU resources. 
-This patch series focuses on optimizing the performance of AF_XDP sockets 
-for veth virtual devices. Patches 1 to 4 mainly involve preparatory work. 
-Patch 5 introduces tx queue and tx napi for packet transmission, while 
-patch 8 primarily implements batch sending for IPv4 UDP packets, and patch 9
-add support for AF_XDP tx need_wakup feature. These optimizations significantly
-reduce the software path and support checksum offload.
+for the virtual net device such as veth, there is
+no need to do dma check if we support zero copy.
 
-I tested those feature with
-A typical topology is shown below:
-client(send):                                        server:(recv)
-veth<-->veth-peer                                    veth1-peer<--->veth1
-  1       |                                                  |   7
-          |2                                                6|
-          |                                                  |
-        bridge<------->eth0(mlnx5)- switch -eth1(mlnx5)<--->bridge1
-                  3                    4                 5    
-             (machine1)                              (machine2)    
-AF_XDP socket is attach to veth and veth1. and send packets to physical NIC(eth0)
-veth:(172.17.0.2/24)
-bridge:(172.17.0.1/24)
-eth0:(192.168.156.66/24)
+add this flag after unaligned. beacause there is 4 bytes hole
+pahole -V ./net/xdp/xsk_buff_pool.o:
+-----------
+...
+	/* --- cacheline 3 boundary (192 bytes) --- */
+	u32                        chunk_size;           /*   192     4 */
+	u32                        frame_len;            /*   196     4 */
+	u8                         cached_need_wakeup;   /*   200     1 */
+	bool                       uses_need_wakeup;     /*   201     1 */
+	bool                       dma_need_sync;        /*   202     1 */
+	bool                       unaligned;            /*   203     1 */
 
-eth1(172.17.0.2/24)
-bridge1:(172.17.0.1/24)
-eth0:(192.168.156.88/24)
+	/* XXX 4 bytes hole, try to pack */
 
-after set default route、snat、dnat. we can have a tests
-to get the performance results.
+	void *                     addrs;                /*   208     8 */
+	spinlock_t                 cq_lock;              /*   216     4 */
+...
+-----------
 
-packets send from veth to veth1:
-af_xdp test tool:
-link:https://github.com/cclinuxer/libxudp
-send:(veth)
-./objs/xudpperf send --dst 192.168.156.88:6002 -l 1300
-recv:(veth1)
-./objs/xudpperf recv --src 172.17.0.2:6002
+Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+---
+ include/net/xsk_buff_pool.h | 1 +
+ net/xdp/xsk_buff_pool.c     | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-udp test tool:iperf3
-send:(veth)
-iperf3 -c 192.168.156.88 -p 6002 -l 1300 -b 0 -u
-recv:(veth1)
-iperf3 -s -p 6002
-
-performance:
-performance:(test weth libxudp lib)
-UDP                              : 320 Kpps (with 100% cpu)
-AF_XDP   no  zerocopy + no batch : 480 Kpps (with ksoftirqd 100% cpu)
-AF_XDP  with  batch  +  zerocopy : 1.5 Mpps (with ksoftirqd 15% cpu)
-
-With af_xdp batch, the libxudp user-space program reaches a bottleneck.
-Therefore, the softirq did not reach the limit.
-
-This is just an RFC patch series, and some code details still need 
-further consideration. Please review this proposal.
-
-thanks!
-
-v1->v2:
-- all the patches pass checkpatch.pl test. suggested by Simon Horman.
-- iperf3 tested with -b 0, update the test results. suggested by Paolo Abeni.
-- refactor code to make code structure clearer.
-- delete some useless code logic in the veth_xsk_tx_xmit function.
-- add support for AF_XDP tx need_wakup feature.
-
-Albert Huang (9):
-  veth: Implement ethtool's get_ringparam() callback
-  xsk: add dma_check_skip for skipping dma check
-  veth: add support for send queue
-  xsk: add xsk_tx_completed_addr function
-  veth: use send queue tx napi to xmit xsk tx desc
-  veth: add ndo_xsk_wakeup callback for veth
-  sk_buff: add destructor_arg_xsk_pool for zero copy
-  veth: af_xdp tx batch support for ipv4 udp
-  veth: add support for AF_XDP tx need_wakup feature
-
- drivers/net/veth.c          | 679 +++++++++++++++++++++++++++++++++++-
- include/linux/skbuff.h      |   2 +
- include/net/xdp_sock_drv.h  |   1 +
- include/net/xsk_buff_pool.h |   1 +
- net/xdp/xsk.c               |   6 +
- net/xdp/xsk_buff_pool.c     |   3 +-
- net/xdp/xsk_queue.h         |  10 +
- 7 files changed, 700 insertions(+), 2 deletions(-)
-
+diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+index b0bdff26fc88..fe31097dc11b 100644
+--- a/include/net/xsk_buff_pool.h
++++ b/include/net/xsk_buff_pool.h
+@@ -81,6 +81,7 @@ struct xsk_buff_pool {
+ 	bool uses_need_wakeup;
+ 	bool dma_need_sync;
+ 	bool unaligned;
++	bool dma_check_skip;
+ 	void *addrs;
+ 	/* Mutual exclusion of the completion ring in the SKB mode. Two cases to protect:
+ 	 * NAPI TX thread and sendmsg error paths in the SKB destructor callback and when
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index b3f7b310811e..ed251b8e8773 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -85,6 +85,7 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
+ 		XDP_PACKET_HEADROOM;
+ 	pool->umem = umem;
+ 	pool->addrs = umem->addrs;
++	pool->dma_check_skip = false;
+ 	INIT_LIST_HEAD(&pool->free_list);
+ 	INIT_LIST_HEAD(&pool->xskb_list);
+ 	INIT_LIST_HEAD(&pool->xsk_tx_list);
+@@ -202,7 +203,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
+ 	if (err)
+ 		goto err_unreg_pool;
+ 
+-	if (!pool->dma_pages) {
++	if (!pool->dma_pages && !pool->dma_check_skip) {
+ 		WARN(1, "Driver did not DMA map zero-copy buffers");
+ 		err = -EINVAL;
+ 		goto err_unreg_xsk;
 -- 
 2.20.1
 
