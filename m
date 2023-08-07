@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-7186-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7187-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CE73772C0F
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 19:08:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D9C772C6C
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 19:13:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBB952814CE
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 17:08:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFC9B1C20C49
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 17:13:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F7B125D3;
-	Mon,  7 Aug 2023 17:08:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63CCD125DB;
+	Mon,  7 Aug 2023 17:13:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CA3125B3
-	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 17:08:04 +0000 (UTC)
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DEF1A3
-	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 10:08:02 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bd011dc2e7so201613a34.3
-        for <bpf@vger.kernel.org>; Mon, 07 Aug 2023 10:08:02 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4087E125D0
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 17:13:26 +0000 (UTC)
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913A810E9
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 10:13:03 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d44c2ca78ceso4323606276.0
+        for <bpf@vger.kernel.org>; Mon, 07 Aug 2023 10:13:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691428082; x=1692032882;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20221208; t=1691428375; x=1692033175;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=umunrnbPrAood3tmFHCyahEfKYvMse04c234Fl53qEQ=;
-        b=f3fTJpaw72tj4wI670TzgKRTgkSRUEErKaf4QqF6Lxe8EmUApowUccfRL7MIHee8rW
-         yx6dgZDl6CYg3IIW6r0e6DvKdYhc1fgh2UeasqwLRiYVQZP/SSvYsD1pa6WgMGFY+LxR
-         s73mFtoXRJW+aVfHp0UdZXCF7vgNJq9ICZP8MLU+jQT1y6z1zZPMc/OugiEH7+gAb2zm
-         /Y6QoNazAWaqormZvZihL2jK8o6SUsKWlxM3OFobN4Va/iqC9bOydCskC4LSlyprmps3
-         Y9301zoOjefyt5h3eERK7lGzZSOnsXDkjZgAfAScd5mLFnML68V7CXtp8EYLES0crWol
-         bvCw==
+        bh=v3aOJIQOm35AgITJDIMD09MqPKL6EICdm0WL8UW7ijM=;
+        b=NjJ4vNtcHCNGq3wDfENW6g66tkYgeFM444YJQrmvjONx5pSaqzY4fnSe14KJFiPAnc
+         3TETDviDyn/w0e9xh0zXXPoOEGi32Mt22FfiVR8JoMVcHgGvT5/pM2tA57Kmt2FA4+U7
+         534RQ8bSFOXf6eacNsG86SDIRl6koMD7eoNQwNLaN1pYu0EOaynXL4C/WfYkmWToN9Nn
+         cIdzBhu4OwoaywOuYW1aTSvoQwSPsegSjBIgVmXx098USEAcf/luZN720yUahwi+Bmwz
+         OBKy2Eyfgiw+3nrRcJH7PlQyKJcLUUWoJDY9PThBOAX1YpPOsl18QCg1EJEUL8kPB32s
+         UmpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691428082; x=1692032882;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1691428375; x=1692033175;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=umunrnbPrAood3tmFHCyahEfKYvMse04c234Fl53qEQ=;
-        b=ZI9nGUrUYEiivtgZJTZEeoCo77yPoiLOrKYvvBVjb7w43MBgSueh9FY3SeGE082LAk
-         RYWg9RRikJGadOfLPfCITMObLLNUvvDgPOtK1p/ZTGXwb1V/jGnANnsWKR1VQVNkbhjo
-         hUBHH42421d6TTTkL3FrLfyfC1JkdSNnAHr6gu/jH7AoiNNHq+bHV41L0La1Yn/TS1jh
-         5SjH5V0umSXATQQ4XYuGkTtSVP7m5yWDZqJP/8qCF0maR8FQ6fqYx1vb5kuMgCd7Y2dV
-         +QChkmljoN7e25uvmDsghsyXyvqGW2eXmulMca/94srLH29gJ+w0owyw32u+cMrMfeqo
-         EYvg==
-X-Gm-Message-State: AOJu0YwGGzpUoPC7/S5s6XH1/NS8dvabIdCn8qoX9x01HIogqaZdHQ/0
-	B4YNgjsUJvK0LTgQ2UX1EKyGXvNqCu8=
-X-Google-Smtp-Source: AGHT+IF0fVOkarvm46vqepIsgSaN72XtdXFL9u2wdp6PfwyGUAWeeWU37YYpatdaa5cwBDldyxq95A==
-X-Received: by 2002:a05:6358:922:b0:137:881b:fc73 with SMTP id r34-20020a056358092200b00137881bfc73mr3093550rwi.2.1691428081941;
-        Mon, 07 Aug 2023 10:08:01 -0700 (PDT)
+        bh=v3aOJIQOm35AgITJDIMD09MqPKL6EICdm0WL8UW7ijM=;
+        b=Xo07Oe8M8M3K1MgfCT4Bz7+YFQGQKJ3h7kAb7KbTABgPDHYzY9AmeCv268SuXpH4Ix
+         74LXfWLA1D7Y5RHPy8wW/nmd2ZgUA6PTTHDOXIeNx1MUPwgnRHvQDFJLXwrZoeQZUR9C
+         pZNtW3M7sAr3R5n6LCGsHe8cJkHhxFJu8jJOWDrXcc7gb4Y4Gb9N/0cejP/IEHc70rlV
+         17QKFmyJaOieNRBtF91EgkUXFZz+Uv4SWEX3oy0jIq5+eWdW5RY5tD35PPVf36fEa/bZ
+         cziQLhP8cwRGfMAFOAvCB9W1V4KA5vhG2JMzTQs7eHJDor+sn8Qd6MtAdm68OZih7SYI
+         S9Sg==
+X-Gm-Message-State: AOJu0YwSibTz+1HcdmT0+VHQRtSz1J86vRrmdXhvSU+0SXIA+VEca4zN
+	MF5Eouh211LfDN4u2L9I5j8=
+X-Google-Smtp-Source: AGHT+IErzv6nq1ftenQ4qbudgGnXQZcLURhI1MFMIEgB/Izu5YCxnZypy/+MZiF+JK5qHf1xlTMeYw==
+X-Received: by 2002:a25:944:0:b0:cb4:6167:a69c with SMTP id u4-20020a250944000000b00cb46167a69cmr8965729ybm.8.1691428374970;
+        Mon, 07 Aug 2023 10:12:54 -0700 (PDT)
 Received: from ?IPV6:2600:1700:6cf8:1240:24f0:2f4c:34ea:71b5? ([2600:1700:6cf8:1240:24f0:2f4c:34ea:71b5])
-        by smtp.gmail.com with ESMTPSA id a205-20020a0dd8d6000000b005772154dddbsm2784678ywe.24.2023.08.07.10.08.00
+        by smtp.gmail.com with ESMTPSA id c133-20020a254e8b000000b00d2a002a88desm2399913ybb.22.2023.08.07.10.12.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 10:08:01 -0700 (PDT)
-Message-ID: <5f4bbed7-e0d1-e848-d820-e74b551075b4@gmail.com>
-Date: Mon, 7 Aug 2023 10:07:59 -0700
+        Mon, 07 Aug 2023 10:12:54 -0700 (PDT)
+Message-ID: <101e3512-f688-1af2-16f6-70c804888f60@gmail.com>
+Date: Mon, 7 Aug 2023 10:12:53 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,17 +66,17 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH bpf-next] bpf: fix bpf_dynptr_slice() to stop return an
- ERR_PTR.
-To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, Dan Carpenter <dan.carpenter@linaro.org>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org,
- ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org
-References: <20230803231206.1060485-1-thinker.li@gmail.com>
- <e0e8bf3b-70af-3827-2fa3-30f3d48bcf46@linux.dev>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix the incorrect verification
+ of port numbers.
 Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, dan.carpenter@linaro.org,
+ yonghong.song@linux.dev
+References: <20230804165831.173627-1-thinker.li@gmail.com>
+ <c2776380-7550-3777-24a0-1f155785696c@linux.dev>
 From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <e0e8bf3b-70af-3827-2fa3-30f3d48bcf46@linux.dev>
+In-Reply-To: <c2776380-7550-3777-24a0-1f155785696c@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -88,53 +88,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 
 
-On 8/4/23 15:26, Martin KaFai Lau wrote:
-> On 8/3/23 4:12 PM, thinker.li@gmail.com wrote:
+On 8/4/23 14:37, Martin KaFai Lau wrote:
+> On 8/4/23 9:58 AM, thinker.li@gmail.com wrote:
 >> From: Kui-Feng Lee <thinker.li@gmail.com>
 >>
->> Verify if the pointer obtained from bpf_xdp_pointer() is either an 
->> error or
->> NULL before returning it.
+>> Check port numbers before calling htons().
 >>
->> The function bpf_dynptr_slice() mistakenly returned an ERR_PTR. 
->> Instead of
->> solely checking for NULL, it should also verify if the pointer 
->> returned by
->> bpf_xdp_pointer() is an error or NULL.
+>> According to Dan Carpenter's report, Smatch identified incorrect port
+>> number checks. It is expected that the returned port number is an 
+>> integer,
+>> with negative numbers indicating errors. However, the value was 
+>> mistakenly
+>> verified after being translated by htons().
 >>
+>> Major changes from v1:
+>>
+>>   - Move the variable 'port' to the same line of 'err'.
+>>
+>> Fixes: 539c7e67aa4a ("selftests/bpf: Verify that the cgroup_skb 
+>> filters receive expected packets.")
 >> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
 >> Closes: 
->> https://lore.kernel.org/bpf/d1360219-85c3-4a03-9449-253ea905f9d1@moroto.mountain/
->> Fixes: 66e3a13e7c2c ("bpf: Add bpf_dynptr_slice and 
->> bpf_dynptr_slice_rdwr")
->> Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+>> https://lore.kernel.org/bpf/cafd6585-d5a2-4096-b94f-7556f5aa7737@moroto.mountain/
+>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
 >> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 >> ---
->>   kernel/bpf/helpers.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>   tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c | 7 ++++---
+>>   1 file changed, 4 insertions(+), 3 deletions(-)
 >>
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index 56ce5008aedd..eb91cae0612a 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -2270,7 +2270,7 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct 
->> bpf_dynptr_kern *ptr, u32 offset
->>       case BPF_DYNPTR_TYPE_XDP:
->>       {
->>           void *xdp_ptr = bpf_xdp_pointer(ptr->data, ptr->offset + 
->> offset, len);
->> -        if (xdp_ptr)
->> +        if (!IS_ERR_OR_NULL(xdp_ptr))
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c 
+>> b/tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c
+>> index 95bab61a1e57..d686ef19f705 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c
+>> @@ -110,11 +110,12 @@ static int connect_client_server_v6(int 
+>> client_fd, int listen_fd)
+>>           .sin6_family = AF_INET6,
+>>           .sin6_addr = IN6ADDR_LOOPBACK_INIT,
+>>       };
+>> -    int err;
+>> +    int err, port;
+>> -    addr.sin6_port = htons(get_sock_port_v6(listen_fd));
+>> -    if (addr.sin6_port < 0)
+>> +    port = get_sock_port_v6(listen_fd);
+>> +    if (port < 0)
 > 
-> Considering the earlier bpf_dynptr_check_off_len() should have avoided 
-> the IS_ERR() case here, I think targeting bpf-next makes sense. Applied.
+> Applied. Some follow up questions:
+> 
+> Does other get_sock_port_v6() usage need to check -1 also?
+> 
+> It is a good idea to see if similar helpers exist in network_helpers.c 
+> e.g. There is get_socket_local_port() that supports both v4 and v6 in 
+> network_helpers.c which is equivalent to the get_sock_port_v6() here.
+> To a larger extent, I believe many codes in this new test can be saved 
+> by using the helpers in network_helpers.c. For example, the 
+> connect_client_server_v6() here can be replaced with connect_to_fd() 
+> from network_helpers.c to avoid the mistake this patch fixing. It also 
+> has some timeout limit on the socket such that it won't block the 
+> test_progs for a long time.
 
-It is a good point. I think the bpf_dynptr_check_off_len() check is
-wrong as well. According to the behavior of the rest of the function,
-it should be
 
-     err = bpf_dynptr_check_off_len(ptr, ptr->offset + offset, len);
+Got it! I will check the code to send another patch if necessary.
 
-How do you think?
 
 
