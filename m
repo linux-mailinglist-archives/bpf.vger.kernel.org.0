@@ -1,190 +1,191 @@
-Return-Path: <bpf+bounces-7129-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7130-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42E9F771A91
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 08:40:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9FEF771A94
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 08:41:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 665CC1C208E7
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 06:40:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A4D71C209C9
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 06:41:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A703D6A;
-	Mon,  7 Aug 2023 06:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06C2F210B;
+	Mon,  7 Aug 2023 06:40:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A321E210D
-	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 06:40:20 +0000 (UTC)
-Received: from out-81.mta1.migadu.com (out-81.mta1.migadu.com [IPv6:2001:41d0:203:375::51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71171134
-	for <bpf@vger.kernel.org>; Sun,  6 Aug 2023 23:40:17 -0700 (PDT)
-Message-ID: <d520bd6c-bfd3-47f1-c794-ab451905256b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1691390414; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VJUWcmGTVPGG4iy4ZlXmu/uUCSg/dG8oHYGl3onncXI=;
-	b=juJSH2azRyHhlpCmHz8a+I42wI3hVpYDl9UQ3isBoEGYSF4cDG/+0nyzEvDE/QguW6bFpo
-	ex4wq66m29GF1e43jKXhMgYucmp5tt8rlY1yikpOXPJPdoYaczBSmHVKoY9z5/8o/7P9wY
-	qBZLEePvPH8xv8pXloWy7oLmoTK3NdI=
-Date: Sun, 6 Aug 2023 23:40:04 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA648ECA;
+	Mon,  7 Aug 2023 06:40:40 +0000 (UTC)
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2043.outbound.protection.outlook.com [40.107.20.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0E71735;
+	Sun,  6 Aug 2023 23:40:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H4fnI/+HF5/NaoLEfBrLlhNvk+9FdDxec2p7aSbG0FSSZ6IRkKMe158jsWRHCTFtetlNusAZecJLjubBtBw8AVMaZ8rK0q3NRnxOduNgMnSRmRWi8BwL5nzIpqE1hGN1/a6m5OMFcOrQWALN3xJapkhE1hkrEhN4LgsB/Qii+JlRZh2JfGYrfctnm3NlOwD0YVgOMkmlpbv2xS4G3o6O5qDcKukkGjUDtYFnlVlz81aGxJ174vjJeu5nf9ZxsGcFO7uwLSzqUg6JKs0HysWkON+/X6Jamq2Cc+QlfFid1jvheVEyRqQFGd5o+Vc84jNDUhz9BV7i1NtVc6rI/sMXPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=91LvCAz0v9un/ZvlpuBytJaFlxBmo6bbLsI8aHbToaU=;
+ b=aDg7g8nvNXkONn2sTjSNMD5ctIuEpjLXH+KNzyJvYKouXG0hulaHZ/xa+qpkZEY85ZkSf1t77ZBu4//uJohKzFRdyS7r+zBN7IpPkm9zYaKq0Ixd0kzHFpYc+FcjguGBaYl4lr8smAFSejdrqjgNv3B70aAWV6uwAFJt57FA79Q5kXzUsqajz1FUzitnwOfZ4LwwuqbaQmezr4MyXyTwzpA/1kB0PCbIT5S6zCRxf8k0rTUaHSJNYvLr+gM59oMmPCUImsN2yPXKrpsqtE/uSeNTuX62+YiRDXdEgY0RKY6mY7PGCFXZNnILfaND+5OOj5X6RXNws5tthnDqq7qwnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=91LvCAz0v9un/ZvlpuBytJaFlxBmo6bbLsI8aHbToaU=;
+ b=P7+eyk8G2/AHs72cjitVDLbLlk5VJeXiyaghcx4488ywNRbqkPT7ujlcDUNLYeKJHKcU1Jo6gzz+LDcELfqckTLdRlO5kQRkIPfUrQf9U9xn1556eO8PUnxNzMQkxAlX1sWPdHl6KHFPYhBWsDq2/egA0HqqL9DntulwvkwsJPMyINMUVjckyxdj7u+InFPcgoH0eqe1wCuA1gTXBu7zA66PJidJkGbjURjoOYyOo8HuYHXt97YwJqqZCRq3VGshqA6pD+rken1fcYe+KNfBQvDvqgyuw9Wg1AwC6+YJuQ3x2BIquPE4ENkeOU9OxBVif15Ssh2NHKMgIf1vpkfu4w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com (2603:10a6:7:83::14)
+ by AM8PR04MB7763.eurprd04.prod.outlook.com (2603:10a6:20b:246::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Mon, 7 Aug
+ 2023 06:40:31 +0000
+Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com
+ ([fe80::2867:7a72:20ac:5f71]) by HE1PR0402MB3497.eurprd04.prod.outlook.com
+ ([fe80::2867:7a72:20ac:5f71%3]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
+ 06:40:31 +0000
+Date: Mon, 7 Aug 2023 14:40:44 +0800
+From: Geliang Tang <geliang.tang@suse.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Florent Revest <revest@chromium.org>,
+	Brendan Jackman <jackmanb@chromium.org>,
+	Matthieu Baerts <matthieu.baerts@tessares.net>,
+	Mat Martineau <martineau@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Eric Paris <eparis@parisplace.org>, Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>,
+	bpf@vger.kernel.org, netdev@vger.kernel.org, mptcp@lists.linux.dev,
+	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v11 2/5] selftests/bpf: Use random netns name
+ for mptcp
+Message-ID: <20230807064044.GA11180@localhost.localdomain>
+References: <cover.1691125344.git.geliang.tang@suse.com>
+ <15d7646940fcbb8477b1be1aa11a5d5485d10b48.1691125344.git.geliang.tang@suse.com>
+ <8b706f66-2afa-b3d0-a13a-11f1ffb452fe@linux.dev>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8b706f66-2afa-b3d0-a13a-11f1ffb452fe@linux.dev>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-ClientProxiedBy: SG2PR01CA0152.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::32) To HE1PR0402MB3497.eurprd04.prod.outlook.com
+ (2603:10a6:7:83::14)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
- ieee802154_subif_start_xmit
-Content-Language: en-US
-To: syzbot <syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com>,
- andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
- haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
- jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
- linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org,
- sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000002098bc0602496cc3@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <0000000000002098bc0602496cc3@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HE1PR0402MB3497:EE_|AM8PR04MB7763:EE_
+X-MS-Office365-Filtering-Correlation-Id: ef1e8c98-6570-49ae-3b50-08db971131fe
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	bGmS76Sm9kCbmQq9zO6cTZLnDbIQS/y+rQIWMu/u+2QKjOtyQ3Mv1/IJr5VxjqkIlNlJ5nh1ILsJXBGfs+91fUCahjK/W2d/qDq43ptwUebCefEFlOSHZykQPgDUpEhx6Rwk6FqXuuXjZ0UkKWxudsS/ru8c4vY7PbtAdPkTTFDaG7mUzxjXou811LB+VUBPGhDlZ7q+vqyY5pBC7rOGmk/R0/VYJKZ3n49GlZgeTiJoATvxjTbPJmStWYP2xU7iiOV1imaKnY6MUyk2HD4oGJxqKlCQvOc3vpa4p3LJmw78Sbai6I8H0vfwpdOwCuFKEVAVNNa+42LlCFu7LVI7z8qHDG05yVW7MpPwK3guPKA70degmbWXF5kJCTbonOgD8CKqvuDdMK22nMaA90Ce50mPiOOSUTUjhumUj9rR6kFU6eeQuSPMj9ny0MSTsp+vRqwFzCROhNnO3NIp3ZLYmX+zMGseaOJnMD+gwepe8pj3pBOvVckJds4ovfhZ4BJ7P02zh9jhAsuvcvLpcywqv04nhuWX+PFJka5R+LwMhzNVvpdicdUHeQFZvs62z0RGFDziybuBPvl9PyadHWgeTYLAtDp0wvIrHjcKFwCFLmc=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3497.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(39860400002)(346002)(376002)(366004)(136003)(451199021)(186006)(1800799003)(9686003)(6512007)(4326008)(316002)(86362001)(6916009)(478600001)(54906003)(38100700002)(66946007)(6666004)(6486002)(66476007)(66556008)(33656002)(53546011)(6506007)(41300700001)(1076003)(26005)(8676002)(8936002)(2906002)(83380400001)(7406005)(7416002)(5660300002)(44832011)(17423001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?/XudbASiPau38uTYEJf3Zv4EfqzYhpuK4vIonI+D42/JkrCtErZK2N8oExYT?=
+ =?us-ascii?Q?DE3L/ZsN36i7dlDBtqoQthwv8oeIMBY2YbLimp7cNJkUiJrwM0wPi1mlcyxY?=
+ =?us-ascii?Q?mtLPwO5Gx3V4QC44n5jS8R4wcQglE+JVCri0Ku+xYPyFGHRMQ68MfWqe/Spd?=
+ =?us-ascii?Q?OzYofFioHtUj770hyqkfGTeTzmKQ2ZbqAhwljUNDvNWDmXMXshhWhVBPqaZu?=
+ =?us-ascii?Q?+8WByrq3iLygvEmD08KwAq5i97go+6leWj5IPBMWqNH6R6h1iF1rPAjlHoyb?=
+ =?us-ascii?Q?v3Mjja2IthhIG7TcDTs4+IZkPg+ubuQobvylP1JpWutuxLrY1afnUIA2cVYa?=
+ =?us-ascii?Q?DW81Vvq3NrhTz/DmIV13IuO5Lz5/p0LFs+nq2SaGgfc81QSHHDTDRY/DVK/P?=
+ =?us-ascii?Q?hja6/KToa1y6RAFtNyDlQuIeAoihzdZFgoCYwOpnJotBS9ipQL2Uw+3G3NcU?=
+ =?us-ascii?Q?fNcAOH3+i0tRWaCerC0YIs2AwUBN095PT6f4vnFbijeh4yrBwW0hXXP1yy+o?=
+ =?us-ascii?Q?pORj5cQqwzr1ON02sbAqb+81zvQCXKxVK0uq2ZZ8WVh9k2qhrnQ8KucrIQ/b?=
+ =?us-ascii?Q?YFKg1JJrrrMPTYSl/68/BdEZMh+Sa2rwRMa66jjZTUaNiBrZQeCAvDhjMGtC?=
+ =?us-ascii?Q?+sm+/alSdmntrlG0wgKJbdIf5O3XwvXw+6k/LMm8sSdcA0+6/J4Lnw0XykMj?=
+ =?us-ascii?Q?3DDXjO4pZDjLRA/g9xWGo1vHsJoLCRBmtGgXJkI6WwLxv0RJ5NueEa2Ho7oR?=
+ =?us-ascii?Q?a29tiJ07fWafWzydAszuCIzB1e8tcqSaPyBvzn6TiEh8lxF9TENSQXXbS1dq?=
+ =?us-ascii?Q?XquTumYTvHrgYSGyytyBcwoeai2hDCg4CislMflQA3RFx4oIrtYapXw2+6vM?=
+ =?us-ascii?Q?wP6bx2/nP0alR7R9JIXSb94mf8xkwSbDfHO4uq077uydEn7tUZCza7yd2wOU?=
+ =?us-ascii?Q?HyxBT8PC6Bn47lnZXkUG/5yfU1cXw/V4JP5KC22+4E2etAGAgYfBwb8ldSzy?=
+ =?us-ascii?Q?nIffRup3svOdBAiCpduO4rTLhIwWz/YshM3gRzMKqxwZKMPTJjjycWgH7Obo?=
+ =?us-ascii?Q?6mIkt4BOJ3T/xkVXC1g1leXQuY+tIQf+JPlU7PJfk9P/fooZNBsEFPXZbAPs?=
+ =?us-ascii?Q?caUE79PwhAsSvJrfXjnAMPCp90VSLMIElM8klb+J5ck4dEb6ORsrnyf66kOE?=
+ =?us-ascii?Q?8NfM7c6iQE5lhBth0X08NbPAMCTb8EmSGadytq7atRXoROaAioRupnZLR3kM?=
+ =?us-ascii?Q?/025XjTIO5qPQVMCdRXtzq54KFr955IhKrfe302bmg3+ENKyHZq4I8Kbdwdk?=
+ =?us-ascii?Q?HzKU9CKdtK6wWk8Z4InW74jdKKL7EJDuD4UkZHxVCayYc0Pl5lc9Wt6XLh3u?=
+ =?us-ascii?Q?pR+RFxQSFhoodjnnI+ADR4MKRudov6dS6UGVtwXOcwKADXg/5br5sYoFg7JM?=
+ =?us-ascii?Q?boZE7c5TINIoZOEPE/HZsqXiomVy+R6ak0AHq08TRkSG1luG5UAbsZN79Lcc?=
+ =?us-ascii?Q?xeAnms6qxRuY3ha1w9q/JHkxN7tPi897bCTeCNHZJLMyIHKRmgGIGfeQHmA4?=
+ =?us-ascii?Q?FXKgFOxofnR1Ii0B+CU/GCL9r539o6To8mb/LM24?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef1e8c98-6570-49ae-3b50-08db971131fe
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3497.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 06:40:31.3951
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 29GH0/L7XD+RvxOuyynNLvPEatSXDSPkDYPlKu3sevPlS38/z0On/UdxxpBQrtMtTswwGG1Rch3jdI0pUvg27Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7763
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Fri, Aug 04, 2023 at 05:23:32PM -0700, Martin KaFai Lau wrote:
+> On 8/3/23 10:07 PM, Geliang Tang wrote:
+> > Use rand() to generate a random netns name instead of using the fixed
+> > name "mptcp_ns" for every test.
+> > 
+> > By doing that, we can re-launch the test even if there was an issue
+> > removing the previous netns or if by accident, a netns with this generic
+> > name already existed on the system.
+> > 
+> > Note that using a different name each will also help adding more
+> > subtests in future commits.
 
+Hi Martin,
 
-On 8/6/23 4:23 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    25ad10658dc1 riscv, bpf: Adapt bpf trampoline to optimized..
-> git tree:       bpf-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=147cbb29a80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=8acaeb93ad7c6aaa
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d61b595e9205573133b3
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d73ccea80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1276aedea80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/3d378cc13d42/disk-25ad1065.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/44580fd5d1af/vmlinux-25ad1065.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/840587618b41/bzImage-25ad1065.xz
-> 
-> The issue was bisected to:
-> 
-> commit 8100928c881482a73ed8bd499d602bab0fe55608
-> Author: Yonghong Song <yonghong.song@linux.dev>
-> Date:   Fri Jul 28 01:12:02 2023 +0000
-> 
->      bpf: Support new sign-extension mov insns
+I tried to run mptcp tests simultaneously, and got "Cannot create
+namespace file "/var/run/netns/mptcp_ns": File exists" errors sometimes.
+So I add this patch to fix it.
 
-Thanks for reporting. I will look into this ASAP.
+It's easy to reproduce, just run this commands in multiple terminals:
+ > for i in `seq 1 100`; do sudo ./test_progs -t mptcp; done
 
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17970c5da80000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14570c5da80000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10570c5da80000
+> I run test_progs repeatedly without rebooting qemu to save time. If there is
+> a test did not clean up its netns, I would rather uncover it earlier and fix
+> it instead. Randomizing the name is hiding the issue and does not help to
+> uncover the broken test sooner. Although this change is to mptcp test alone,
+> this could be referred in other future tests.
+
+I added "ip netns show" after "ip netns del" in v12 to check if there is
+a test did not clean up its netns.
+
+Thanks,
+-Geliang
+
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com
-> Fixes: 8100928c8814 ("bpf: Support new sign-extension mov insns")
-> 
-> general protection fault, probably for non-canonical address 0xdffffc0000000f4f: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: probably user-memory-access in range [0x0000000000007a78-0x0000000000007a7f]
-> CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.5.0-rc2-syzkaller-00619-g25ad10658dc1 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-> RIP: 0010:strnchr+0x25/0x80 lib/string.c:403
-> Code: 00 00 00 00 90 f3 0f 1e fa 53 48 01 fe 48 bb 00 00 00 00 00 fc ff df 48 83 ec 18 eb 28 48 89 f8 48 89 f9 48 c1 e8 03 83 e1 07 <0f> b6 04 18 38 c8 7f 04 84 c0 75 25 0f b6 07 38 d0 74 15 48 83 c7
-> RSP: 0018:ffffc90000177848 EFLAGS: 00010046
-> RAX: 0000000000000f4f RBX: dffffc0000000000 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 0000000000007a7b RDI: 0000000000007a78
-> RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000007a78
-> R13: ffffc900001779b0 R14: 0000000000000000 R15: 0000000000000003
-> FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00005611db5094b8 CR3: 0000000028ef0000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   bpf_bprintf_prepare+0x127/0x1490 kernel/bpf/helpers.c:823
->   ____bpf_trace_printk kernel/trace/bpf_trace.c:385 [inline]
->   bpf_trace_printk+0xdb/0x180 kernel/trace/bpf_trace.c:375
->   bpf_prog_ebeed182d92b487f+0x38/0x3c
->   bpf_dispatcher_nop_func include/linux/bpf.h:1180 [inline]
->   __bpf_prog_run include/linux/filter.h:609 [inline]
->   bpf_prog_run include/linux/filter.h:616 [inline]
->   __bpf_trace_run kernel/trace/bpf_trace.c:2269 [inline]
->   bpf_trace_run1+0x148/0x400 kernel/trace/bpf_trace.c:2307
->   __bpf_trace_rcu_utilization+0x8e/0xc0 include/trace/events/rcu.h:27
->   trace_rcu_utilization+0xcd/0x120 include/trace/events/rcu.h:27
->   rcu_note_context_switch+0x6c/0x1ac0 kernel/rcu/tree_plugin.h:318
->   __schedule+0x293/0x59f0 kernel/sched/core.c:6610
->   schedule_idle+0x5b/0x80 kernel/sched/core.c:6814
->   do_idle+0x288/0x3f0 kernel/sched/idle.c:310
->   cpu_startup_entry+0x18/0x20 kernel/sched/idle.c:379
->   start_secondary+0x200/0x290 arch/x86/kernel/smpboot.c:326
->   secondary_startup_64_no_verify+0x167/0x16b
->   </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:strnchr+0x25/0x80 lib/string.c:403
-> Code: 00 00 00 00 90 f3 0f 1e fa 53 48 01 fe 48 bb 00 00 00 00 00 fc ff df 48 83 ec 18 eb 28 48 89 f8 48 89 f9 48 c1 e8 03 83 e1 07 <0f> b6 04 18 38 c8 7f 04 84 c0 75 25 0f b6 07 38 d0 74 15 48 83 c7
-> RSP: 0018:ffffc90000177848 EFLAGS: 00010046
-> 
-> RAX: 0000000000000f4f RBX: dffffc0000000000 RCX: 0000000000000000
-> RDX: 0000000000000000 RSI: 0000000000007a7b RDI: 0000000000007a78
-> RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000007a78
-> R13: ffffc900001779b0 R14: 0000000000000000 R15: 0000000000000003
-> FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00005611db5094b8 CR3: 0000000028ef0000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> ----------------
-> Code disassembly (best guess):
->     0:	00 00                	add    %al,(%rax)
->     2:	00 00                	add    %al,(%rax)
->     4:	90                   	nop
->     5:	f3 0f 1e fa          	endbr64
->     9:	53                   	push   %rbx
->     a:	48 01 fe             	add    %rdi,%rsi
->     d:	48 bb 00 00 00 00 00 	movabs $0xdffffc0000000000,%rbx
->    14:	fc ff df
->    17:	48 83 ec 18          	sub    $0x18,%rsp
->    1b:	eb 28                	jmp    0x45
->    1d:	48 89 f8             	mov    %rdi,%rax
->    20:	48 89 f9             	mov    %rdi,%rcx
->    23:	48 c1 e8 03          	shr    $0x3,%rax
->    27:	83 e1 07             	and    $0x7,%ecx
-> * 2a:	0f b6 04 18          	movzbl (%rax,%rbx,1),%eax <-- trapping instruction
->    2e:	38 c8                	cmp    %cl,%al
->    30:	7f 04                	jg     0x36
->    32:	84 c0                	test   %al,%al
->    34:	75 25                	jne    0x5b
->    36:	0f b6 07             	movzbl (%rdi),%eax
->    39:	38 d0                	cmp    %dl,%al
->    3b:	74 15                	je     0x52
->    3d:	48                   	rex.W
->    3e:	83                   	.byte 0x83
->    3f:	c7                   	.byte 0xc7
-> 
-> 
-[...]
+> afaik, I don't remember bpf CI ever run into a test failure because the
+> picked name had already been used by the system. It seems you ran into this
+> issue a lot with the mptcp test in your setup. Could you explain a little
+> more?
 
