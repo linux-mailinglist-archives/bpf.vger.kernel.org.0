@@ -1,321 +1,283 @@
-Return-Path: <bpf+bounces-7161-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7162-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10DA4772525
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 15:11:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BC3E77253D
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 15:15:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF232281081
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 13:11:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10EC1281399
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 13:15:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BA8010797;
-	Mon,  7 Aug 2023 13:11:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340C01079C;
+	Mon,  7 Aug 2023 13:15:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71728101FE;
-	Mon,  7 Aug 2023 13:11:19 +0000 (UTC)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C78F99;
-	Mon,  7 Aug 2023 06:11:17 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-991c786369cso612432166b.1;
-        Mon, 07 Aug 2023 06:11:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691413876; x=1692018676;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fQ9/+uqc4LD3vJxBlfQv0jPxDYwQJpSkgZcRtt8Hekk=;
-        b=EbxHOSTQ+593ktHrumJoPXkabz7HwS5V4ezBQ6DjhBJyokw6sCO4qF4iFtEJ1bJzBc
-         0bwu54uts/dO9jh1gBGRfJJkuM037urL5rnXwsON3BmO4Buf7k66KfLJXxXblw//ie4F
-         RIqCDXC6FqkQ0qNjGpw1zpF7c8VJeTzerAh8VSfE9sV2TH+9qwSmLnTWIly61M4H2YNE
-         sEg4gqIgfsYbKL3rtWjnsxRztGw7XAlC09b7xPYv1BjAGuGqDraOp+tYo/GjUNfNasje
-         CNP6jbmzfhSqsUZ2sJjqC11D5KUE43CT5f/KRA5rEfaONpunP1HgodS1y/i79QUbwnHa
-         QP0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691413876; x=1692018676;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=fQ9/+uqc4LD3vJxBlfQv0jPxDYwQJpSkgZcRtt8Hekk=;
-        b=DWn+k9rXKevUv8DMOeCgCZNRvxWNQEg02UzD5SD1JpiVtMGUBCaOIAz678bo16IaY8
-         HNtaQBlijHoHhGXE9OeYZIRT7rm6PXf2qcLssQgdrKfPnSYkQP2cQ7JDgHMHZbQ9sfA0
-         URDViSfrF9wJX0zFZE5Z6avywDI20sfzv40hUaDjuKuIMWpmNvKkJASAfQzLP2LgLELt
-         ER8Vuklxk2UfJo+oXUpwwKsQlrLyi+MuNq1LLfJRvMlfMuOrnloeU6NRqp5aUKNYrLUl
-         SSqdcQRo0gPxaV6vusxTxpimBJ9hp/Nm2OBAPAMvpk432MRK7e4+Smy/cJNbDMfOwclp
-         1bGQ==
-X-Gm-Message-State: AOJu0YxqN+at5Yx1BS7H/QlnnSMWk62kDy82lxSGIk8PoEXaXSSzWS3B
-	WrdFyBe8fwJX4Bl7jIFHOWU=
-X-Google-Smtp-Source: AGHT+IHN9ItUZRFCRufHaF2koU+5Xb7zt80AozHb4R279jeTC7TwsJtaq1FVWEXjN0xC2K7FuqLsqg==
-X-Received: by 2002:a17:906:3049:b0:98e:419b:4cc6 with SMTP id d9-20020a170906304900b0098e419b4cc6mr7647525ejd.70.1691413875509;
-        Mon, 07 Aug 2023 06:11:15 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id x17-20020a170906b09100b0098f99048053sm5302347ejy.148.2023.08.07.06.11.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 06:11:14 -0700 (PDT)
-Message-ID: <9c8f04a0bf90db4bb8e6192824ab71f58244b74b.camel@gmail.com>
-Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
- ieee802154_subif_start_xmit
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: yonghong.song@linux.dev, syzbot
- <syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com>, andrii@kernel.org,
-  ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
- davem@davemloft.net,  haoluo@google.com, hawk@kernel.org,
- john.fastabend@gmail.com, jolsa@kernel.org,  kpsingh@kernel.org,
- kuba@kernel.org, linux-kernel@vger.kernel.org,  martin.lau@linux.dev,
- netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
- syzkaller-bugs@googlegroups.com
-Date: Mon, 07 Aug 2023 16:11:13 +0300
-In-Reply-To: <d520bd6c-bfd3-47f1-c794-ab451905256b@linux.dev>
-References: <0000000000002098bc0602496cc3@google.com>
-	 <d520bd6c-bfd3-47f1-c794-ab451905256b@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB77BFC02;
+	Mon,  7 Aug 2023 13:15:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A126C433C8;
+	Mon,  7 Aug 2023 13:15:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691414128;
+	bh=88hsxuLYKVqz+P+8ZpynUOYXC8Wm0wXVKKrSqpdIOug=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=YBlxm7LoLK6UmjBK4jHs58gD/F3lMu8Psw28IA2IEDXh91vGWSHe8iy/TkSyK9xwW
+	 c8kzPYJenw58/QcIgmbbrA/KRPaAxgoYmIbBRiNcPs1CQrRbs+NrbYC49S1idtv2b2
+	 MsIzeZ4+TtaZHwa72bA6i1nObVOXVppYOnw4gnMWENf/IZ5YBEuFjAeaGmG08V3CzQ
+	 085e8YnnB/+yGlXA1bNO0HxKycKBUEfEkHH4oOeAD9MjwhLoHMuiAIKebV4JheCZFz
+	 abhEd2A1BgcsJRB4rvZboGli8P4Jo5OGVMGim9lROetRRF6ibt0oUzo0I29hkjkBU1
+	 UDSl/2scXRsew==
+Message-ID: <8fd0313b-8f6f-9814-247d-c2687d053e2a@kernel.org>
+Date: Mon, 7 Aug 2023 15:15:22 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc: "davem@davemloft.net" <davem@davemloft.net>,
+ "edumazet@google.com" <edumazet@google.com>,
+ "pabeni@redhat.com" <pabeni@redhat.com>, Shenwei Wang
+ <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>,
+ "ast@kernel.org" <ast@kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ dl-linux-imx <linux-imx@nxp.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Content-Language: en-US
+To: Wei Fang <wei.fang@nxp.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Jesper Dangaard Brouer <jbrouer@redhat.com>, Jakub Kicinski <kuba@kernel.org>
+References: <20230731060025.3117343-1-wei.fang@nxp.com>
+ <20230802104706.5ce541e9@kernel.org>
+ <AM5PR04MB313985C61D92E183238809138808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <1bf41ea8-5131-7d54-c373-00c1fbcac095@redhat.com>
+ <AM5PR04MB31398ABF941EBDD0907E845B8808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <cc24e860-7d6f-7ec8-49cb-a49cb066f618@kernel.org>
+ <AM5PR04MB3139D8AAAB6B96B58425BBA08809A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <ba96db35-2273-9cc5-9a32-e924e8eff37c@kernel.org>
+ <AM5PR04MB313903036E0DF277FEC45722880CA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <AM5PR04MB313903036E0DF277FEC45722880CA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, 2023-08-06 at 23:40 -0700, Yonghong Song wrote:
->=20
-> On 8/6/23 4:23 PM, syzbot wrote:
-> > Hello,
-> >=20
-> > syzbot found the following issue on:
-> >=20
-> > HEAD commit:    25ad10658dc1 riscv, bpf: Adapt bpf trampoline to optimi=
-zed..
-> > git tree:       bpf-next
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D147cbb29a80=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D8acaeb93ad7=
-c6aaa
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd61b595e92055=
-73133b3
-> > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for=
- Debian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D14d73ccea=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1276aedea80=
-000
-> >=20
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/3d378cc13d42/d=
-isk-25ad1065.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/44580fd5d1af/vmli=
-nux-25ad1065.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/840587618b41=
-/bzImage-25ad1065.xz
-> >=20
-> > The issue was bisected to:
-> >=20
-> > commit 8100928c881482a73ed8bd499d602bab0fe55608
-> > Author: Yonghong Song <yonghong.song@linux.dev>
-> > Date:   Fri Jul 28 01:12:02 2023 +0000
-> >=20
-> >      bpf: Support new sign-extension mov insns
->=20
-> Thanks for reporting. I will look into this ASAP.
 
-Hi Yonghong,
 
-I guess it's your night and my morning, so I did some initial assessment.
-The BPF program being loaded is:
+On 07/08/2023 12.30, Wei Fang wrote:
+>>> The flow-control was not disabled before, so according to your
+>>> suggestion, I disable the flow-control on the both boards and run the
+>>> test again, the performance is slightly improved, but still can not
+>>> see a clear difference between the two methods. Below are the results.
+>>
+>> Something else must be stalling the CPU.
+>> When looking at fec_main.c code, I noticed that
+>> fec_enet_txq_xmit_frame() will do a MMIO write for every xdp_frame (to
+>> trigger transmit start), which I believe will stall the CPU.
+>> The ndo_xdp_xmit/fec_enet_xdp_xmit does bulking, and should be the
+>> function that does the MMIO write to trigger transmit start.
+>>
+> We'd better keep a MMIO write for every xdp_frame on txq, as you know,
+> the txq will be inactive when no additional ready descriptors remain in the
+> tx-BDR. So it may increase the delay of the packets if we do a MMIO write
+> for multiple packets.
+> 
 
-  0 : (62) *(u32 *)(r10 -8) =3D 553656332=20
-  1 : (bf) r1 =3D (s16)r10=20
-  2 : (07) r1 +=3D -8=20
-  3 : (b7) r2 =3D 3=20
-  4 : (bd) if r2 <=3D r1 goto pc+0=20
-  5 : (85) call bpf_trace_printk#6=20
-  6 : (b7) r0 =3D 0=20
-  7 : (95) exit=20
+You know this hardware better than me, so I will leave to you.
 
-(Note: when using bpftool (prog dump xlated id <some-id>) the disassembly
- of the instruction #1 is incorrectly printed as "1: (bf) r1 =3D r10")
-=20
-The error occurs when instruction #5 (call to printk) is executed.
-An incorrect address for the format string is passed to printk.
-Disassembly of the jited program looks as follows:
+>> $ git diff
+>> diff --git a/drivers/net/ethernet/freescale/fec_main.c
+>> b/drivers/net/ethernet/freescale/fec_main.c
+>> index 03ac7690b5c4..57a6a3899b80 100644
+>> --- a/drivers/net/ethernet/freescale/fec_main.c
+>> +++ b/drivers/net/ethernet/freescale/fec_main.c
+>> @@ -3849,9 +3849,6 @@ static int fec_enet_txq_xmit_frame(struct
+>> fec_enet_private *fep,
+>>
+>>           txq->bd.cur = bdp;
+>>
+>> -       /* Trigger transmission start */
+>> -       writel(0, txq->bd.reg_desc_active);
+>> -
+>>           return 0;
+>>    }
+>>
+>> @@ -3880,6 +3877,9 @@ static int fec_enet_xdp_xmit(struct net_device
+>> *dev,
+>>                   sent_frames++;
+>>           }
+>>
+>> +       /* Trigger transmission start */
+>> +       writel(0, txq->bd.reg_desc_active);
+>> +
+>>           __netif_tx_unlock(nq);
+>>
+>>           return sent_frames;
+>>
+>>
+>>> Result: use "sync_dma_len" method
+>>> root@imx8mpevk:~# ./xdp2 eth0
+>>
+>> The xdp2 (and xdp1) program(s) have a performance issue (due to using
+>>
+>> Can I ask you to test using xdp_rxq_info, like:
+>>
+>>    sudo ./xdp_rxq_info --dev mlx5p1 --action XDP_TX
+>>
+> Yes, below are the results, the results are also basically the same.
+> Result 1: current method
+> ./xdp_rxq_info --dev eth0 --action XDP_TX
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       259,102     0
+> XDP-RX CPU      total   259,102
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    0:0   259,102     0
+> rx_queue_index    0:sum 259,102
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       259,498     0
+> XDP-RX CPU      total   259,498
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    0:0   259,496     0
+> rx_queue_index    0:sum 259,496
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       259,408     0
+> XDP-RX CPU      total   259,408
+> 
+> Result 2: dma_sync_len method
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       258,254     0
+> XDP-RX CPU      total   258,254
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    0:0   258,254     0
+> rx_queue_index    0:sum 258,254
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       259,316     0
+> XDP-RX CPU      total   259,316
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    0:0   259,318     0
+> rx_queue_index    0:sum 259,318
+> Running XDP on dev:eth0 (ifindex:2) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      0       259,554     0
+> XDP-RX CPU      total   259,554
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    0:0   259,553     0
+> rx_queue_index    0:sum 259,553
+> 
 
-  $ bpftool prog dump jited id <some-id>
-  bpf_prog_ebeed182d92b487f:
-     0: nopl    (%rax,%rax)
-     5: nop
-     7: pushq   %rbp
-     8: movq    %rsp, %rbp
-     b: subq    $8, %rsp
-    12: movl    $553656332, -8(%rbp)
-    19: movswq  %bp, %rdi            ; <---- Note movswq %bp !
-    1d: addq    $-8, %rdi
-    21: movl    $3, %esi
-    26: cmpq    %rdi, %rsi
-    29: jbe 0x2b
-    2b: callq   0xffffffffe11c484c
-    30: xorl    %eax, %eax
-    32: leave
-    33: retq
+Thanks for running this.
 
-Note jit instruction #19 corresponding to BPF instruction #1, which
-loads truncated and sign-extended value of %rbp's first byte as an
-address of format string.
+>>
+>>> proto 17:     258886 pkt/s
+>>> proto 17:     258879 pkt/s
+>>
+>> If you provide numbers for xdp_redirect, then we could better evaluate if
+>> changing the lock per xdp_frame, for XDP_TX also, is worth it.
+>>
+> For XDP_REDIRECT, the performance show as follow.
+> root@imx8mpevk:~# ./xdp_redirect eth1 eth0
+> Redirecting from eth1 (ifindex 3; driver st_gmac) to eth0 (ifindex 2; driver fec)
 
-Here is how verifier log looks for (slightly modified) program:
+This is not exactly the same as XDP_TX setup as here you choose to 
+redirect between eth1 (driver st_gmac) and to eth0 (driver fec).
 
-  func#0 @0
-  0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-  ; asm volatile ("			\n\
-  0: (b7) r1 =3D 553656332                ; R1_w=3D553656332
-  1: (63) *(u32 *)(r10 -8) =3D r1         ; R1_w=3D553656332 R10=3Dfp0 fp-8=
-=3D553656332
-  2: (bf) r1 =3D (s16)r10                 ; R1_w=3Dfp0 R10=3Dfp0
-  3: (07) r1 +=3D -8                      ; R1_w=3Dfp-8
-  4: (b7) r2 =3D 3                        ; R2_w=3D3
-  5: (bd) if r2 <=3D r1 goto pc+0         ; R1_w=3Dfp-8 R2_w=3D3
-  6: (85) call bpf_trace_printk#6
-  mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1=20
-  ...
-  mark_precise: frame0: falling back to forcing all scalars precise
-  7: R0=3Dscalar()
-  7: (b7) r0 =3D 0                        ; R0_w=3D0
-  8: (95) exit
- =20
-  from 5 to 6: R1_w=3Dfp-8 R2_w=3D3 R10=3Dfp0 fp-8=3D553656332
-  6: (85) call bpf_trace_printk#6
-  mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1=20
-  ...
-  mark_precise: frame0: falling back to forcing all scalars precise
-  7: safe
+I would like to see eth0 to eth0 XDP_REDIRECT, so we can compare to 
+XDP_TX performance.
+Sorry for all the requests, but can you provide those numbers?
 
-Note the following line:
+> eth1->eth0        221,642 rx/s       0 err,drop/s      221,643 xmit/s
 
-  2: (bf) r1 =3D (s16)r10                 ; R1_w=3Dfp0 R10=3Dfp0
+So, XDP_REDIRECT is approx (1-(221825/259554))*100 = 14.53% slower.
+But as this is 'eth1->eth0' this isn't true comparison to XDP_TX.
 
-Verifier incorrectly marked r1 as fp0, hence not noticing the problem
-with address passed to printk.
+> eth1->eth0        221,761 rx/s       0 err,drop/s      221,760 xmit/s
+> eth1->eth0        221,793 rx/s       0 err,drop/s      221,794 xmit/s
+> eth1->eth0        221,825 rx/s       0 err,drop/s      221,825 xmit/s
+> eth1->eth0        221,823 rx/s       0 err,drop/s      221,821 xmit/s
+> eth1->eth0        221,815 rx/s       0 err,drop/s      221,816 xmit/s
+> eth1->eth0        222,016 rx/s       0 err,drop/s      222,016 xmit/s
+> eth1->eth0        222,059 rx/s       0 err,drop/s      222,059 xmit/s
+> eth1->eth0        222,085 rx/s       0 err,drop/s      222,089 xmit/s
+> eth1->eth0        221,956 rx/s       0 err,drop/s      221,952 xmit/s
+> eth1->eth0        222,070 rx/s       0 err,drop/s      222,071 xmit/s
+> eth1->eth0        222,017 rx/s       0 err,drop/s      222,017 xmit/s
+> eth1->eth0        222,069 rx/s       0 err,drop/s      222,067 xmit/s
+> eth1->eth0        221,986 rx/s       0 err,drop/s      221,987 xmit/s
+> eth1->eth0        221,932 rx/s       0 err,drop/s      221,936 xmit/s
+> eth1->eth0        222,045 rx/s       0 err,drop/s      222,041 xmit/s
+> eth1->eth0        222,014 rx/s       0 err,drop/s      222,014 xmit/s
+>    Packets received    : 3,772,908
+>    Average packets/s   : 221,936
+>    Packets transmitted : 3,772,908
+>    Average transmit/s  : 221,936
+>> And also find out of moving the MMIO write have any effect.
+>>
+> I move the MMIO write to fec_enet_xdp_xmit(), the result shows as follow,
+> the performance is slightly improved.
+> 
 
-Thanks,
-Eduard.
+I'm puzzled that moving the MMIO write isn't change performance.
 
-> >=20
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17970c5d=
-a80000
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D14570c5d=
-a80000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D10570c5da80=
-000
-> >=20
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com
-> > Fixes: 8100928c8814 ("bpf: Support new sign-extension mov insns")
-> >=20
-> > general protection fault, probably for non-canonical address 0xdffffc00=
-00000f4f: 0000 [#1] PREEMPT SMP KASAN
-> > KASAN: probably user-memory-access in range [0x0000000000007a78-0x00000=
-00000007a7f]
-> > CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.5.0-rc2-syzkaller-00619-g25=
-ad10658dc1 #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
- Google 07/12/2023
-> > RIP: 0010:strnchr+0x25/0x80 lib/string.c:403
-> > Code: 00 00 00 00 90 f3 0f 1e fa 53 48 01 fe 48 bb 00 00 00 00 00 fc ff=
- df 48 83 ec 18 eb 28 48 89 f8 48 89 f9 48 c1 e8 03 83 e1 07 <0f> b6 04 18 =
-38 c8 7f 04 84 c0 75 25 0f b6 07 38 d0 74 15 48 83 c7
-> > RSP: 0018:ffffc90000177848 EFLAGS: 00010046
-> > RAX: 0000000000000f4f RBX: dffffc0000000000 RCX: 0000000000000000
-> > RDX: 0000000000000000 RSI: 0000000000007a7b RDI: 0000000000007a78
-> > RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-> > R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000007a78
-> > R13: ffffc900001779b0 R14: 0000000000000000 R15: 0000000000000003
-> > FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:00000000000=
-00000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00005611db5094b8 CR3: 0000000028ef0000 CR4: 00000000003506e0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >   <TASK>
-> >   bpf_bprintf_prepare+0x127/0x1490 kernel/bpf/helpers.c:823
-> >   ____bpf_trace_printk kernel/trace/bpf_trace.c:385 [inline]
-> >   bpf_trace_printk+0xdb/0x180 kernel/trace/bpf_trace.c:375
-> >   bpf_prog_ebeed182d92b487f+0x38/0x3c
-> >   bpf_dispatcher_nop_func include/linux/bpf.h:1180 [inline]
-> >   __bpf_prog_run include/linux/filter.h:609 [inline]
-> >   bpf_prog_run include/linux/filter.h:616 [inline]
-> >   __bpf_trace_run kernel/trace/bpf_trace.c:2269 [inline]
-> >   bpf_trace_run1+0x148/0x400 kernel/trace/bpf_trace.c:2307
-> >   __bpf_trace_rcu_utilization+0x8e/0xc0 include/trace/events/rcu.h:27
-> >   trace_rcu_utilization+0xcd/0x120 include/trace/events/rcu.h:27
-> >   rcu_note_context_switch+0x6c/0x1ac0 kernel/rcu/tree_plugin.h:318
-> >   __schedule+0x293/0x59f0 kernel/sched/core.c:6610
-> >   schedule_idle+0x5b/0x80 kernel/sched/core.c:6814
-> >   do_idle+0x288/0x3f0 kernel/sched/idle.c:310
-> >   cpu_startup_entry+0x18/0x20 kernel/sched/idle.c:379
-> >   start_secondary+0x200/0x290 arch/x86/kernel/smpboot.c:326
-> >   secondary_startup_64_no_verify+0x167/0x16b
-> >   </TASK>
-> > Modules linked in:
-> > ---[ end trace 0000000000000000 ]---
-> > RIP: 0010:strnchr+0x25/0x80 lib/string.c:403
-> > Code: 00 00 00 00 90 f3 0f 1e fa 53 48 01 fe 48 bb 00 00 00 00 00 fc ff=
- df 48 83 ec 18 eb 28 48 89 f8 48 89 f9 48 c1 e8 03 83 e1 07 <0f> b6 04 18 =
-38 c8 7f 04 84 c0 75 25 0f b6 07 38 d0 74 15 48 83 c7
-> > RSP: 0018:ffffc90000177848 EFLAGS: 00010046
-> >=20
-> > RAX: 0000000000000f4f RBX: dffffc0000000000 RCX: 0000000000000000
-> > RDX: 0000000000000000 RSI: 0000000000007a7b RDI: 0000000000007a78
-> > RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-> > R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000007a78
-> > R13: ffffc900001779b0 R14: 0000000000000000 R15: 0000000000000003
-> > FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:00000000000=
-00000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00005611db5094b8 CR3: 0000000028ef0000 CR4: 00000000003506e0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > ----------------
-> > Code disassembly (best guess):
-> >     0:	00 00                	add    %al,(%rax)
-> >     2:	00 00                	add    %al,(%rax)
-> >     4:	90                   	nop
-> >     5:	f3 0f 1e fa          	endbr64
-> >     9:	53                   	push   %rbx
-> >     a:	48 01 fe             	add    %rdi,%rsi
-> >     d:	48 bb 00 00 00 00 00 	movabs $0xdffffc0000000000,%rbx
-> >    14:	fc ff df
-> >    17:	48 83 ec 18          	sub    $0x18,%rsp
-> >    1b:	eb 28                	jmp    0x45
-> >    1d:	48 89 f8             	mov    %rdi,%rax
-> >    20:	48 89 f9             	mov    %rdi,%rcx
-> >    23:	48 c1 e8 03          	shr    $0x3,%rax
-> >    27:	83 e1 07             	and    $0x7,%ecx
-> > * 2a:	0f b6 04 18          	movzbl (%rax,%rbx,1),%eax <-- trapping inst=
-ruction
-> >    2e:	38 c8                	cmp    %cl,%al
-> >    30:	7f 04                	jg     0x36
-> >    32:	84 c0                	test   %al,%al
-> >    34:	75 25                	jne    0x5b
-> >    36:	0f b6 07             	movzbl (%rdi),%eax
-> >    39:	38 d0                	cmp    %dl,%al
-> >    3b:	74 15                	je     0x52
-> >    3d:	48                   	rex.W
-> >    3e:	83                   	.byte 0x83
-> >    3f:	c7                   	.byte 0xc7
-> >=20
-> >=20
-> [...]
+Can you please verify that the packet generator machine is sending more
+frame than the system can handle?
 
+(meaning the pktgen_sample03_burst_single_flow.sh script fast enough?)
+
+> root@imx8mpevk:~# ./xdp_redirect eth1 eth0
+> Redirecting from eth1 (ifindex 3; driver st_gmac) to eth0 (ifindex 2; driver fec)
+> eth1->eth0        222,666 rx/s        0 err,drop/s      222,668 xmit/s
+> eth1->eth0        221,663 rx/s        0 err,drop/s      221,664 xmit/s
+> eth1->eth0        222,743 rx/s        0 err,drop/s      222,741 xmit/s
+> eth1->eth0        222,917 rx/s        0 err,drop/s      222,923 xmit/s
+> eth1->eth0        221,810 rx/s        0 err,drop/s      221,808 xmit/s
+> eth1->eth0        222,891 rx/s        0 err,drop/s      222,888 xmit/s
+> eth1->eth0        222,983 rx/s        0 err,drop/s      222,984 xmit/s
+> eth1->eth0        221,655 rx/s        0 err,drop/s      221,653 xmit/s
+> eth1->eth0        222,827 rx/s        0 err,drop/s      222,827 xmit/s
+> eth1->eth0        221,728 rx/s        0 err,drop/s      221,728 xmit/s
+> eth1->eth0        222,790 rx/s        0 err,drop/s      222,789 xmit/s
+> eth1->eth0        222,874 rx/s        0 err,drop/s      222,874 xmit/s
+> eth1->eth0        221,888 rx/s        0 err,drop/s      221,887 xmit/s
+> eth1->eth0        223,057 rx/s        0 err,drop/s      223,056 xmit/s
+> eth1->eth0        222,219 rx/s        0 err,drop/s      222,220 xmit/s
+>    Packets received    : 3,336,711
+>    Average packets/s   : 222,447
+>    Packets transmitted : 3,336,710
+>    Average transmit/s  : 222,447
+> 
+>> I also noticed driver does a MMIO write (on rxq) for every RX-packet in
+>> fec_enet_rx_queue() napi-poll loop.  This also looks like a potential
+>> performance stall.
+>>
+> The same as txq, the rxq will be inactive if the rx-BDR has no free BDs, so we'd
+> better do a MMIO write when we recycle a BD, so that the hardware can timely
+> attach the received pakcets on the rx-BDR.
+> 
+> In addition, I also tried to avoid using xdp_convert_buff_to_frame(), but the
+> performance of XDP_TX is still not improved. :(
+> 
+
+I would not expect much performance improvement from this anyhow.
+
+> After these days of testing, I think it's best to keep the solution in V3, and then
+> make some optimizations on the V3 patch.
+
+I agree.
+
+I think you need to send a V5, and then I can ACK that.
+
+Thanks for all this testing,
+--Jesper
 
