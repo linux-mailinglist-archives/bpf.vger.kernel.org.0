@@ -1,120 +1,91 @@
-Return-Path: <bpf+bounces-7138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 043A1771B14
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 09:05:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21B4C771BC3
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 09:47:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2A0D280EDC
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 07:05:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A4311C209C4
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 07:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1A413D99;
-	Mon,  7 Aug 2023 07:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 783E6C2E3;
+	Mon,  7 Aug 2023 07:46:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8343A2106
-	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 07:05:07 +0000 (UTC)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD951BCF;
-	Mon,  7 Aug 2023 00:04:36 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C98401F460;
-	Mon,  7 Aug 2023 07:04:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1691391874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bTuF2TgB1pBwN8OkG1rHpu4xeWoKn3NkiBu7ZL/kjNo=;
-	b=b+BEiZrOazh2iKNnKC3SDf37eCGPzo5Aktuj/Bb87LGLBIIPO0oKrfVZECh/ZUHZQ99A3c
-	I3vc76WsiiUEN9tTFrpjkAy6FTYDwpr9s0sxVhGg2tqAN3zAA3EYGD9Tyz5KJbN4X4u7Lp
-	b/oocpwiNVjz3VbAlTQNFBjjSQyLl8g=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AAB8013910;
-	Mon,  7 Aug 2023 07:04:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id k5euJoKX0GSvWAAAMHmgww
-	(envelope-from <mhocko@suse.com>); Mon, 07 Aug 2023 07:04:34 +0000
-Date: Mon, 7 Aug 2023 09:04:34 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc: hannes@cmpxchg.org, roman.gushchin@linux.dev, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, muchun.song@linux.dev,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	wuyun.abel@bytedance.com, robin.lu@bytedance.com
-Subject: Re: [RFC PATCH 1/2] mm, oom: Introduce bpf_select_task
-Message-ID: <ZNCXgsZL7bKsCEBM@dhcp22.suse.cz>
-References: <20230804093804.47039-1-zhouchuyi@bytedance.com>
- <20230804093804.47039-2-zhouchuyi@bytedance.com>
- <ZMzhDFhvol2VQBE4@dhcp22.suse.cz>
- <dfbf05d1-daff-e855-f4fd-e802614b79c4@bytedance.com>
- <ZMz+aBHFvfcr0oIe@dhcp22.suse.cz>
- <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A0C17E3
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 07:46:58 +0000 (UTC)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C561210F4
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 00:46:55 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbea147034so35969565e9.0
+        for <bpf@vger.kernel.org>; Mon, 07 Aug 2023 00:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1691394414; x=1691999214;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gpqdTONlpi3G07rnwUafrNHsRWwfMm3a1uejZJocsEc=;
+        b=aPzyf4Agl+ymx7gzJZYIC0CCJ/DHJere12jDw2utFbKoqhRx9SqqIPOodawBg0iEiU
+         ApKY2qwprix69u/dq9WjCiqT7XhSHncmoJt4SlvkfgP8JVl6ZY/Uo4gfTXEzAB5Lh9y9
+         fFfDBU9g+s3sUB/drLg2mGlZqfcKRcMLTxQzedLRLXACqMa3LRedIgut1+fZkjDbKkkf
+         E+mPwHxQiPmFJBms97WTfWqvWHaeai0pwqSWmSPbHI5O138Tg75Q46+jAT5VVIGILahp
+         Ne4LBxsO0JmsGYRVaytbwmumUMk4pnFh0HFHPdCBWOi3cwBr3NTORsNw828CeD4oL8fa
+         +KdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691394414; x=1691999214;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gpqdTONlpi3G07rnwUafrNHsRWwfMm3a1uejZJocsEc=;
+        b=kI09W90VN6wMhRMroK1vVdQfIPcYaxvBVIBmVE/88PmP6UW/pUO2morczq8qKpxv10
+         j3c8Q4M+KG8ehSAbkRammom4pTeqOlZFz+xROmbbgL1gUBC/l3dL2rxB3s2eisQg3FWw
+         EpXYRdzpbu5BSzbMH5KEYJFM6JELwqWVcp2kSD6hyewpW7GSJSaUOOUM6Kh7daLLcDkz
+         X7hNQunKYMNJyXMbesCpZr8l3SiGgH4jORmEvYJzDep5U2VPhzILb1P/JGM4RgK5NRMn
+         uLTsWFwLgo1m4qJQRDLjVOhUUuw/hNne03rQvQnRhaRjZK06GasW+Jb/QsklAj5UaG8w
+         cStg==
+X-Gm-Message-State: AOJu0YxzbFNDfkaRTl39ccBDGjlN03xuSRqcnidHYQw8V1St2ui79Uo8
+	HNnkB0ryNr280utQ9Ni4ej5gcA==
+X-Google-Smtp-Source: AGHT+IEw9AXB7bXSpCw08cfjahzkwEY15BlvCv6dKvfDP8XXZ/QLAYpUR2sQyofzI04Gw37DdY5cKA==
+X-Received: by 2002:a7b:c7cc:0:b0:3fe:21c2:7d81 with SMTP id z12-20020a7bc7cc000000b003fe21c27d81mr4923934wmk.35.1691394414119;
+        Mon, 07 Aug 2023 00:46:54 -0700 (PDT)
+Received: from localhost ([212.23.236.67])
+        by smtp.gmail.com with ESMTPSA id y7-20020a05600c364700b003fe1c332810sm14211561wmq.33.2023.08.07.00.46.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 00:46:53 -0700 (PDT)
+Date: Mon, 7 Aug 2023 09:46:52 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Zhengchao Shao <shaozhengchao@huawei.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	weiyongjun1@huawei.com, yuehaibing@huawei.com
+Subject: Re: [PATCH net-next,v3 0/5] team: do some cleanups in team driver
+Message-ID: <ZNChbDOF3J40deOv@nanopsycho>
+References: <20230807012556.3146071-1-shaozhengchao@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230807012556.3146071-1-shaozhengchao@huawei.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon 07-08-23 10:21:09, Chuyi Zhou wrote:
-> 
-> 
-> 在 2023/8/4 21:34, Michal Hocko 写道:
-> > On Fri 04-08-23 21:15:57, Chuyi Zhou wrote:
-> > [...]
-> > > > +	switch (bpf_oom_evaluate_task(task, oc, &points)) {
-> > > > +		case -EOPNOTSUPP: break; /* No BPF policy */
-> > > > +		case -EBUSY: goto abort; /* abort search process */
-> > > > +		case 0: goto next; /* ignore process */
-> > > > +		default: goto select; /* note the task */
-> > > > +	}
-> > > 
-> > > Why we need to change the *points* value if we do not care about oom_badness
-> > > ? Is it used to record some state? If so, we could record it through bpf
-> > > map.
-> > 
-> > Strictly speaking we do not need to. That would require BPF to keep the
-> > state internally. Many will do I suppose but we have to keep track of
-> > the victim so that the oom killer knows what to kill so I thought that
-> > it doesn't hurt to keep track of an abstract concept of points as well.
-> > If you think this is not needed then oc->points could be always 0 for
-> > bpf selected victims. The value is not used anyway in the proposed
-> > scheme.
-> > 
-> > Btw. we will need another hook or metadata for the reporting side of
-> > things. Generally dump_header() to know what has been the selection
-> > policy.
-> > 
-> OK. Maybe a integer like policy_type is enough to distinguish different
-> policies and the default method is zero. Or we can let BPF return a string
-> like policy_name.
-> 
-> Which one should I start implementing in next version? Do you have a better
-> idea?
+Mon, Aug 07, 2023 at 03:25:51AM CEST, shaozhengchao@huawei.com wrote:
+>Do some cleanups in team driver.
+>
+>---
+>v3: add header file back to team_mode_activebackup.c
+>v2: combine patch 5/6 and patch 6/6 into patch 5/5
+>---
 
-String seems to be more descriptive.
--- 
-Michal Hocko
-SUSE Labs
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
