@@ -1,325 +1,189 @@
-Return-Path: <bpf+bounces-7150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 565C9771F2C
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 13:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E2B5772366
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 14:06:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A8FF1C20B60
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 11:03:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83FC41C20B75
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 12:06:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F5B8D307;
-	Mon,  7 Aug 2023 11:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6AE7101CD;
+	Mon,  7 Aug 2023 12:05:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2AF5249
-	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 11:02:32 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC1C1FC1
-	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 04:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1691406137;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4tVoX28GTGtCUXdSQaBJtaWNWRKg0UVBLfIJI4oLwi0=;
-	b=f54uQ9wDTCAncOyoTEDVTngyx2J74k1myFrtcVj5c29v1EmPCgLYAzUG00Z1eiWxspUxJE
-	XggSfqmqzVP2QlP/a6nCfZPqtIYES5Y7ZogetERZdpaycWFsZpea4fbPANykFLWtKP7uVX
-	0PetFQWzNCxoUQOT7rFX3MymNUQ9CBI=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-262-lZ_RSfagNkuoq06zx7gqgQ-1; Mon, 07 Aug 2023 07:02:15 -0400
-X-MC-Unique: lZ_RSfagNkuoq06zx7gqgQ-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5218b9647a8so2922493a12.1
-        for <bpf@vger.kernel.org>; Mon, 07 Aug 2023 04:02:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8FF101C7
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 12:05:46 +0000 (UTC)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B554106
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 05:05:44 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686b879f605so2955160b3a.1
+        for <bpf@vger.kernel.org>; Mon, 07 Aug 2023 05:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1691409944; x=1692014744;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UxNPOJp2gtDhfWZRzOWarZZZVlOwdeuN9g0kWHnf9gs=;
+        b=WsVfgJHsSXlOYhSa7RnTOFdsaoX0xEoReCh4sis0XDX/ZC4AZZ4i7l+6ft+Dh8q6vB
+         ZANsA/Dtc2VdW8u7FnrP6vhl0HCYwl+0lqeYM5BgkcxalSXu0RgUX8YfcOrtCb+IU5qh
+         8tfYLBfQRD8KRBSA3FfUsqZ5ZRrfd2q9Ypk+RU6CqBzKSdW79JSEAfOtj3sDInliciF5
+         MIBhYmv1/CGoUDgvZSIAlmIyn9r6HsjyaSq7lbNiasxCJUaJDvoHvCPyqcFX66qUV2iP
+         je8aXyp/+daaeX0IfqkVrnyT7rGBLtqve+JO7YPpk4qVZ/pOITQZ/mPUFQmjBzWa0+eY
+         sz4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691406133; x=1692010933;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4tVoX28GTGtCUXdSQaBJtaWNWRKg0UVBLfIJI4oLwi0=;
-        b=lv+XEYyP3AvSATtrzaSKp0wwlEBUbWshWmvStaksvmugZJlqgIAi9f7bTeqYHSjMXy
-         Ch3VAlb9na1vRHtV9o5eYv3dL3aqZrDQVGHxV4qRLsulGwYq1XWdqQ3KJa3o/mbp1zy1
-         uJEezK+YoeF+DkF8MjhNpAtPuHqClBKlouE+zF9Utd4yExBKOc6iZuGK2dYj1miGJwZL
-         Ze8nxz1xNLKjjOjwt7k9rfzwEHn0t0cTiOlxwb9iTMPZOzeBiLCvQtuWp2sqe3UPvuh3
-         QjoWNs9kTzhyXOSImA5Kw/lyOkjSOFyh6HUBuDuZSROVukLahYd9blQmnp4F41AgU6N0
-         V8wg==
-X-Gm-Message-State: AOJu0YzOaZxT9pCBBJLnufKVdvSY1+aRcv4TBtTLmUJRN0weRo2XusRR
-	J2IPSgvKVYM/4w3FpjpbppmmwJiY2lYosDR5vaH5KmOEsk2Xvr3/TmPaUtCYAxRyGumAO1ZHoSg
-	4Mk6+a96wcuys
-X-Received: by 2002:aa7:da91:0:b0:523:f29:a912 with SMTP id q17-20020aa7da91000000b005230f29a912mr5825460eds.21.1691406133618;
-        Mon, 07 Aug 2023 04:02:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEpV1CiOzHk73Q0S1VjzXSs0/DvHhdz0S3B8+70wxb75oVf2/18bmu8foLRZEbGwYEDxL6b1A==
-X-Received: by 2002:aa7:da91:0:b0:523:f29:a912 with SMTP id q17-20020aa7da91000000b005230f29a912mr5825448eds.21.1691406133282;
-        Mon, 07 Aug 2023 04:02:13 -0700 (PDT)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id t10-20020aa7d4ca000000b005226f281bc5sm5036828edr.25.2023.08.07.04.02.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 04:02:12 -0700 (PDT)
-Message-ID: <145d7375-0e58-b7cf-6240-5d8bc16b0344@redhat.com>
-Date: Mon, 7 Aug 2023 13:02:11 +0200
+        d=1e100.net; s=20221208; t=1691409944; x=1692014744;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UxNPOJp2gtDhfWZRzOWarZZZVlOwdeuN9g0kWHnf9gs=;
+        b=R+nu0h/jNgMVKz6BW0E40Mle/C+6X46tXjK12rKaOWq0d1V4aiu7sBmbuR4KrfDuJn
+         vEDOrbVE3CtDIAnhdn0gDPWpR2Q4j6ZYOJWnjN4BPY80i5OsQU/BYPJEY1fFONRsVTxg
+         dublX+h3qSGVlgWHMepyYqviAaK0/wLvGcyxulqGnHB9mX/nIUJrPjBO10lgDWbRLQOs
+         Vjp707XnKfc15G13blgNgi3Z9/+yDNFwyR//UNmxWArbhX+JNct8ynHHUSPHeDbLrB8N
+         EbO2RG/RSDHrChPTZnCi2Z57X+iTUHIi02Exb78h8yZweiH5+HrxJCXZdj+8t0iD6uEz
+         6lSw==
+X-Gm-Message-State: AOJu0Yzk3ygVlXQCd2SBbaynw/7zHk5+iuxH4sY9su3dhiD6fhrpesbb
+	cguUMTqP9wOJzufa4n5todxqxQ==
+X-Google-Smtp-Source: AGHT+IGIntJFzxEfnZfu0K5hC4TFi3jmhVJZWB+WVqNK9Sop7DxQpbxBhPnmG4v2fW+FmoyvjvB0Ag==
+X-Received: by 2002:a17:90a:a095:b0:263:53be:5120 with SMTP id r21-20020a17090aa09500b0026353be5120mr6488176pjp.36.1691409943733;
+        Mon, 07 Aug 2023 05:05:43 -0700 (PDT)
+Received: from C02FG34NMD6R.bytedance.net ([2408:8656:30f8:e020::b])
+        by smtp.gmail.com with ESMTPSA id bx6-20020a17090af48600b00263f8915aa3sm8578098pjb.31.2023.08.07.05.05.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 05:05:43 -0700 (PDT)
+From: Albert Huang <huangjie.albert@bytedance.com>
+To: 
+Cc: Albert Huang <huangjie.albert@bytedance.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Richard Gobert <richardbgobert@gmail.com>,
+	Menglong Dong <imagedong@tencent.com>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+	linux-kernel@vger.kernel.org (open list),
+	bpf@vger.kernel.org (open list:XDP SOCKETS (AF_XDP))
+Subject: [RFC v2 Optimizing veth xsk performance 0/9]
+Date: Mon,  7 Aug 2023 20:04:20 +0800
+Message-Id: <20230807120434.83644-1-huangjie.albert@bytedance.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH net-next v2 1/5] platform/x86: intel_pmc_core: Add IPC
- mailbox accessor function and add SoC register access
-Content-Language: en-US
-To: Choong Yong Liang <yong.liang.choong@linux.intel.com>,
- Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
- David E Box <david.e.box@linux.intel.com>, Mark Gross
- <markgross@kernel.org>, Jose Abreu <Jose.Abreu@synopsys.com>,
- Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
- Russell King <linux@armlinux.org.uk>, "David S . Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
- Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Richard Cochran <richardcochran@gmail.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Wong Vee Khee
- <veekhee@apple.com>, Jon Hunter <jonathanh@nvidia.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Shenwei Wang <shenwei.wang@nxp.com>,
- Andrey Konovalov <andrey.konovalov@linaro.org>,
- Jochen Henneberg <jh@henneberg-systemdesign.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org,
- linux-hwmon@vger.kernel.org, bpf@vger.kernel.org,
- Voon Wei Feng <weifeng.voon@intel.com>,
- Tan Tee Min <tee.min.tan@linux.intel.com>,
- Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
- Lai Peter Jun Ann <jun.ann.lai@intel.com>
-References: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
- <20230804084527.2082302-2-yong.liang.choong@linux.intel.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230804084527.2082302-2-yong.liang.choong@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-	SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=yes
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi David,
+AF_XDP is a kernel bypass technology that can greatly improve performance.
+However, for virtual devices like veth, even with the use of AF_XDP sockets,
+there are still many additional software paths that consume CPU resources. 
+This patch series focuses on optimizing the performance of AF_XDP sockets 
+for veth virtual devices. Patches 1 to 4 mainly involve preparatory work. 
+Patch 5 introduces tx queue and tx napi for packet transmission, while 
+patch 8 primarily implements batch sending for IPv4 UDP packets, and patch 9
+add support for AF_XDP tx need_wakup feature. These optimizations significantly
+reduce the software path and support checksum offload.
 
-On 8/4/23 10:45, Choong Yong Liang wrote:
-> From: "David E. Box" <david.e.box@linux.intel.com>
-> 
-> - Exports intel_pmc_core_ipc() for host access to the PMC IPC mailbox
-> - Add support to use IPC command allows host to access SoC registers
-> through PMC firmware that are otherwise inaccessible to the host due to
-> security policies.
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Signed-off-by: Chao Qin <chao.qin@intel.com>
-> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+I tested those feature with
+A typical topology is shown below:
+client(send):                                        server:(recv)
+veth<-->veth-peer                                    veth1-peer<--->veth1
+  1       |                                                  |   7
+          |2                                                6|
+          |                                                  |
+        bridge<------->eth0(mlnx5)- switch -eth1(mlnx5)<--->bridge1
+                  3                    4                 5    
+             (machine1)                              (machine2)    
+AF_XDP socket is attach to veth and veth1. and send packets to physical NIC(eth0)
+veth:(172.17.0.2/24)
+bridge:(172.17.0.1/24)
+eth0:(192.168.156.66/24)
 
-The new exported intel_pmc_core_ipc() function does not seem to
-depend on any existing PMC code.
+eth1(172.17.0.2/24)
+bridge1:(172.17.0.1/24)
+eth0:(192.168.156.88/24)
 
-IMHO it would be better to put this in a new .c file under
-arch/x86/platform/intel/ this is where similar helpers like
-the iosf_mbi functions also live.
+after set default route、snat、dnat. we can have a tests
+to get the performance results.
 
-This also avoids Kconfig complications. Currently the
-drivers/platform/x86/intel/pmc/core.c code is only
-build if CONFIG_X86_PLATFORM_DEVICES and
-CONFIG_INTEL_PMC_CORE are both set. So if a driver
-wants to make sure this is enabled by selecting them
-then it needs to select both.
+packets send from veth to veth1:
+af_xdp test tool:
+link:https://github.com/cclinuxer/libxudp
+send:(veth)
+./objs/xudpperf send --dst 192.168.156.88:6002 -l 1300
+recv:(veth1)
+./objs/xudpperf recv --src 172.17.0.2:6002
 
-Talking about Kconfig:
+udp test tool:iperf3
+send:(veth)
+iperf3 -c 192.168.156.88 -p 6002 -l 1300 -b 0 -u
+recv:(veth1)
+iperf3 -s -p 6002
 
-#if IS_ENABLED(CONFIG_INTEL_PMC_CORE)
-int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf);
-#else
-static inline int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf)
-{
-	return -ENODEV;
-}
-#endif /* CONFIG_INTEL_PMC_CORE */
+performance:
+performance:(test weth libxudp lib)
+UDP                              : 320 Kpps (with 100% cpu)
+AF_XDP   no  zerocopy + no batch : 480 Kpps (with ksoftirqd 100% cpu)
+AF_XDP  with  batch  +  zerocopy : 1.5 Mpps (with ksoftirqd 15% cpu)
 
-Notice that CONFIG_INTEL_PMC_CORE is a tristate, so pmc might be build as a module where as a consumer of intel_pmc_core_ipc() might end up builtin in which case this will not work without extra Kconfig protection. And if you are going to add extra Kconfig you might just as well select or depend on INTEL_PMC_CORE and drop the #if .
+With af_xdp batch, the libxudp user-space program reaches a bottleneck.
+Therefore, the softirq did not reach the limit.
 
-Regards,
+This is just an RFC patch series, and some code details still need 
+further consideration. Please review this proposal.
 
-Hans
+thanks!
 
+v1->v2:
+- all the patches pass checkpatch.pl test. suggested by Simon Horman.
+- iperf3 tested with -b 0, update the test results. suggested by Paolo Abeni.
+- refactor code to make code structure clearer.
+- delete some useless code logic in the veth_xsk_tx_xmit function.
+- add support for AF_XDP tx need_wakup feature.
 
+Albert Huang (9):
+  veth: Implement ethtool's get_ringparam() callback
+  xsk: add dma_check_skip for skipping dma check
+  veth: add support for send queue
+  xsk: add xsk_tx_completed_addr function
+  veth: use send queue tx napi to xmit xsk tx desc
+  veth: add ndo_xsk_wakeup callback for veth
+  sk_buff: add destructor_arg_xsk_pool for zero copy
+  veth: af_xdp tx batch support for ipv4 udp
+  veth: add support for AF_XDP tx need_wakup feature
 
+ drivers/net/veth.c          | 679 +++++++++++++++++++++++++++++++++++-
+ include/linux/skbuff.h      |   2 +
+ include/net/xdp_sock_drv.h  |   1 +
+ include/net/xsk_buff_pool.h |   1 +
+ net/xdp/xsk.c               |   6 +
+ net/xdp/xsk_buff_pool.c     |   3 +-
+ net/xdp/xsk_queue.h         |  10 +
+ 7 files changed, 700 insertions(+), 2 deletions(-)
 
-
-
-> ---
->  MAINTAINERS                                   |  1 +
->  drivers/platform/x86/intel/pmc/core.c         | 60 +++++++++++++++++++
->  .../linux/platform_data/x86/intel_pmc_core.h  | 41 +++++++++++++
->  3 files changed, 102 insertions(+)
->  create mode 100644 include/linux/platform_data/x86/intel_pmc_core.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 069e176d607a..8a034dee9da9 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -10648,6 +10648,7 @@ L:	platform-driver-x86@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
->  F:	drivers/platform/x86/intel/pmc/
-> +F:	linux/platform_data/x86/intel_pmc_core.h
->  
->  INTEL PMIC GPIO DRIVERS
->  M:	Andy Shevchenko <andy@kernel.org>
-> diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
-> index 5a36b3f77bc5..6fb1b0f453d8 100644
-> --- a/drivers/platform/x86/intel/pmc/core.c
-> +++ b/drivers/platform/x86/intel/pmc/core.c
-> @@ -20,6 +20,7 @@
->  #include <linux/pci.h>
->  #include <linux/slab.h>
->  #include <linux/suspend.h>
-> +#include <linux/platform_data/x86/intel_pmc_core.h>
->  
->  #include <asm/cpu_device_id.h>
->  #include <asm/intel-family.h>
-> @@ -28,6 +29,8 @@
->  
->  #include "core.h"
->  
-> +#define PMC_IPCS_PARAM_COUNT           7
-> +
->  /* Maximum number of modes supported by platfoms that has low power mode capability */
->  const char *pmc_lpm_modes[] = {
->  	"S0i2.0",
-> @@ -53,6 +56,63 @@ const struct pmc_bit_map msr_map[] = {
->  	{}
->  };
->  
-> +int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf)
-> +{
-> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> +	union acpi_object params[PMC_IPCS_PARAM_COUNT] = {
-> +		{.type = ACPI_TYPE_INTEGER,},
-> +		{.type = ACPI_TYPE_INTEGER,},
-> +		{.type = ACPI_TYPE_INTEGER,},
-> +		{.type = ACPI_TYPE_INTEGER,},
-> +		{.type = ACPI_TYPE_INTEGER,},
-> +		{.type = ACPI_TYPE_INTEGER,},
-> +		{.type = ACPI_TYPE_INTEGER,},
-> +	};
-> +	struct acpi_object_list arg_list = { PMC_IPCS_PARAM_COUNT, params };
-> +	union acpi_object *obj;
-> +	int status;
-> +
-> +	if (!ipc_cmd || !rbuf)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * 0: IPC Command
-> +	 * 1: IPC Sub Command
-> +	 * 2: Size
-> +	 * 3-6: Write Buffer for offset
-> +	 */
-> +	params[0].integer.value = ipc_cmd->cmd;
-> +	params[1].integer.value = ipc_cmd->sub_cmd;
-> +	params[2].integer.value = ipc_cmd->size;
-> +	params[3].integer.value = ipc_cmd->wbuf[0];
-> +	params[4].integer.value = ipc_cmd->wbuf[1];
-> +	params[5].integer.value = ipc_cmd->wbuf[2];
-> +	params[6].integer.value = ipc_cmd->wbuf[3];
-> +
-> +	status = acpi_evaluate_object(NULL, "\\IPCS", &arg_list, &buffer);
-> +	if (ACPI_FAILURE(status))
-> +		return -ENODEV;
-> +
-> +	obj = buffer.pointer;
-> +	/* Check if the number of elements in package is 5 */
-> +	if (obj && obj->type == ACPI_TYPE_PACKAGE && obj->package.count == 5) {
-> +		const union acpi_object *objs = obj->package.elements;
-> +
-> +		if ((u8)objs[0].integer.value != 0)
-> +			return -EINVAL;
-> +
-> +		rbuf[0] = objs[1].integer.value;
-> +		rbuf[1] = objs[2].integer.value;
-> +		rbuf[2] = objs[3].integer.value;
-> +		rbuf[3] = objs[4].integer.value;
-> +	} else {
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(intel_pmc_core_ipc);
-> +
->  static inline u32 pmc_core_reg_read(struct pmc *pmc, int reg_offset)
->  {
->  	return readl(pmc->regbase + reg_offset);
-> diff --git a/include/linux/platform_data/x86/intel_pmc_core.h b/include/linux/platform_data/x86/intel_pmc_core.h
-> new file mode 100644
-> index 000000000000..9bb3394fedcf
-> --- /dev/null
-> +++ b/include/linux/platform_data/x86/intel_pmc_core.h
-> @@ -0,0 +1,41 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Intel Core SoC Power Management Controller Header File
-> + *
-> + * Copyright (c) 2023, Intel Corporation.
-> + * All Rights Reserved.
-> + *
-> + * Authors: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-> + *          David E. Box <david.e.box@linux.intel.com>
-> + */
-> +#ifndef INTEL_PMC_CORE_H
-> +#define INTEL_PMC_CORE_H
-> +
-> +#define IPC_SOC_REGISTER_ACCESS			0xAA
-> +#define IPC_SOC_SUB_CMD_READ			0x00
-> +#define IPC_SOC_SUB_CMD_WRITE			0x01
-> +
-> +struct pmc_ipc_cmd {
-> +	u32 cmd;
-> +	u32 sub_cmd;
-> +	u32 size;
-> +	u32 wbuf[4];
-> +};
-> +
-> +#if IS_ENABLED(CONFIG_INTEL_PMC_CORE)
-> +/**
-> + * intel_pmc_core_ipc() - PMC IPC Mailbox accessor
-> + * @ipc_cmd:  struct pmc_ipc_cmd prepared with input to send
-> + * @rbuf:     Allocated u32[4] array for returned IPC data
-> + *
-> + * Return: 0 on success. Non-zero on mailbox error
-> + */
-> +int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf);
-> +#else
-> +static inline int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf)
-> +{
-> +	return -ENODEV;
-> +}
-> +#endif /* CONFIG_INTEL_PMC_CORE */
-> +
-> +#endif /* INTEL_PMC_CORE_H */
+-- 
+2.20.1
 
 
