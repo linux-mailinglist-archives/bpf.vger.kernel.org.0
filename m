@@ -1,280 +1,198 @@
-Return-Path: <bpf+bounces-7172-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7173-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6AA977281F
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 16:46:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA4BB7728CD
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 17:10:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 919B628143B
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 14:46:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC3E91C20BE9
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 15:10:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8CF101C7;
-	Mon,  7 Aug 2023 14:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E59210975;
+	Mon,  7 Aug 2023 15:10:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E66B20FE;
-	Mon,  7 Aug 2023 14:46:02 +0000 (UTC)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3F710DC;
-	Mon,  7 Aug 2023 07:46:00 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c47ef365cso691109266b.0;
-        Mon, 07 Aug 2023 07:46:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691419559; x=1692024359;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hAlba8j5WNsUJrqq14ThkPmUT4lIimPw4652fzwMMR4=;
-        b=A+xUi1Aug1Dht+qcl9x83hPQb5fNj4iSVUvtAgxaUP6G+rmyTlDrrAUTUT/g9wUoZS
-         vnW4K8v+IkW72ddlwr0dl7YDPdXPiihrBT1HuGEB6wKcrZZQLX0CEu9kN6KZ5EAwXQ3E
-         181yq5k6s3W1Q99G9OSyXkHAsX3I+g5dpTBa/88fu9+7BYFlHjYBzPElKSnB7EeExfaF
-         n3X9/+Q2JggBAIC9Kxb03eEPwNZ0q8Q3nPgyL5aihbluFH9zW9cAohfDq6YZGhDQpCsz
-         8WBRXbpoqecoEqnlLckFzI6vFPJkQAh3845jOvbsj3iIGV0GHygLow1sGP9Oj76mzFyd
-         Gdcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691419559; x=1692024359;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=hAlba8j5WNsUJrqq14ThkPmUT4lIimPw4652fzwMMR4=;
-        b=LnL+w4g2uid6jsr/anH6cPgMioap86x2vXoOWHiI/8tBpeBY6PD2TmAwwu8kBhiiWA
-         Vzy708xfM0hhYZ8JelRY1jMmSMBfvFzL//+u0sK6JjC9cimPRNWuwkMWSZEF8iTycGn4
-         bjMuNcj5AR93zGxMOQyk4UZMayKOQLi7rjgnXUYTWkJJ541FZtdcohH3Cdwt924UzNdT
-         dl8zPfa7+Y7nLCYpoYWLFHeqsOlqB5a8QbwImqM8EzYO+Rs9mPnvf1DZkfKyxI2NmP57
-         cMFy6Z4kb4ztCIHeLXxI80mHJ2DnUWdMpS+bh3ze7Vwuu9oim5QXD7BjogxPC9d9xFvh
-         zIWg==
-X-Gm-Message-State: AOJu0Yw1aaIZNs/Qm/Lq2d5OGp5cKd8bPgiBzIVsByi/+0xnMv4lkMXF
-	XHRaC+HAe29l1kF9ePcEFfs=
-X-Google-Smtp-Source: AGHT+IFYYxUG11Fu8DIQ2vdtlUyk+6wNpqkNFpRzgx0gu7BNpd2ZblEVe9sa86EpMu7L7EW/zB/urw==
-X-Received: by 2002:a17:906:51d7:b0:994:9ed:300b with SMTP id v23-20020a17090651d700b0099409ed300bmr10035935ejk.16.1691419559044;
-        Mon, 07 Aug 2023 07:45:59 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id d11-20020a170906c20b00b00992d70f8078sm5329200ejz.106.2023.08.07.07.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 07:45:58 -0700 (PDT)
-Message-ID: <72e2ff187fb8cd031a6330e4c3cd8e66a0590fc1.camel@gmail.com>
-Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
- ieee802154_subif_start_xmit
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: yonghong.song@linux.dev, syzbot
- <syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com>, andrii@kernel.org,
-  ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
- davem@davemloft.net,  haoluo@google.com, hawk@kernel.org,
- john.fastabend@gmail.com, jolsa@kernel.org,  kpsingh@kernel.org,
- kuba@kernel.org, linux-kernel@vger.kernel.org,  martin.lau@linux.dev,
- netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
- syzkaller-bugs@googlegroups.com
-Date: Mon, 07 Aug 2023 17:45:56 +0300
-In-Reply-To: <bc69afd6-6eec-a070-ab96-05ab137aaf0b@linux.dev>
-References: <0000000000002098bc0602496cc3@google.com>
-	 <d520bd6c-bfd3-47f1-c794-ab451905256b@linux.dev>
-	 <9c8f04a0bf90db4bb8e6192824ab71f58244b74b.camel@gmail.com>
-	 <bc69afd6-6eec-a070-ab96-05ab137aaf0b@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521A210942;
+	Mon,  7 Aug 2023 15:10:03 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3096610DE;
+	Mon,  7 Aug 2023 08:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691420982; x=1722956982;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=BoqlASTseF92+jGlTgnBi6ZtRHs1udtIlBKCP9DyJWQ=;
+  b=mZORUNc67BB/7JhVKZuy9JNHhHyd92TUPE+YgaV3yPhg2BY6DejOXxTa
+   e0x+g4LjlehJOlMdpTwODJKyuTqklp56ytg0Z9+pI4bgRlIp3P3BfMfTT
+   AxoXqT8TdFI0PNNRj61Y2mxEOkI8RqawxkF99kmpFQacbpbHQrhoqlKAX
+   ST3AstjZTzSbhjEMFV6x+dQAStAcjg0AHFToN76Rk7TcgHG5E3IHLwric
+   ticxdgH557uWvr+DuzNJIwEf45O6aHof+At317qMlIs4ZCYX3kBtfNGBI
+   yzYxryTgw8//HgeiVnfJ5gwnJxCPjObOqGjh4pcRFhMCqoy4bIhGnivDj
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="360655169"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="360655169"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 08:09:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="760529293"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="760529293"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga008.jf.intel.com with ESMTP; 07 Aug 2023 08:09:19 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 7 Aug 2023 08:09:20 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 7 Aug 2023 08:09:20 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 7 Aug 2023 08:09:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jY42hQ/g9gLKyjlYsUKrm/VEAojCeQLO3pYAA+ad+DjCxY5knC/DW69yF3M9tEAaQUom8FDiCsHYEInTK5znKczlf7uXDbNEVlSKeYKtk6Idln18uhqHJGkXf9b5MmZuD9TgDrwh5T6YPCSQSneJs2K8/W7RNBf04VcxIRMdPDI8SSUcgheLvDr0R5CN6RtbJGzAfm4/9xGtxEHjiv2CCV36kqv5UOLXDLwkRenc86oiB0lo2DE8d+95B6LhkzVsklnxF7n1yLp2R+RXgoRYtan742F/vMVNGsA9vqEf2eU6H2ARa71iuRM8rOJzPj2yTZwJsSm9M9qTHOKZHc6Huw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nqv1FsIpmz7TZl501lDJHg9ZQD7PZ3UsMgvPkP1V9W4=;
+ b=JhkxFlG6VQrUgT8k92jx8r6UrhmADLFz1Thm53CxLc9EwFCueLHnL+nXPNp7VNU08Ax6f19H8UoV/d1is2fTrfyFIZOw/rSarm19RodMZiYdiroxoyzre6axo+/FAChHOCY52TUAiK03RZrwU1grLacji/QMRvmzFkCFNLfOircQKoiEx+UYxixgsgcwTweRCU5KERa8gMzDkV3/e9i8kSum3G1xuU4/JUmU6/F1IH7uy6MeG1ZsMr/mDCeI0BsHS0k2It8sA9K3q4/+0kciQNWlZSSujwYJUgXLeu0hya2ANfCPWaFHwg6KYekY+SJTTxST9zvlO27jZa/bfBmMSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
+ by PH0PR11MB7472.namprd11.prod.outlook.com (2603:10b6:510:28c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Mon, 7 Aug
+ 2023 15:09:03 +0000
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::2e3b:2384:e6ce:698a]) by SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::2e3b:2384:e6ce:698a%7]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
+ 15:09:03 +0000
+Date: Mon, 7 Aug 2023 17:03:21 +0200
+From: Larysa Zaremba <larysa.zaremba@intel.com>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+CC: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf
+	<bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+	<martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+	<yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, David Ahern
+	<dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>, Willem de Bruijn
+	<willemb@google.com>, Jesper Dangaard Brouer <brouer@redhat.com>, "Anatoly
+ Burakov" <anatoly.burakov@intel.com>, Alexander Lobakin
+	<alexandr.lobakin@intel.com>, Magnus Karlsson <magnus.karlsson@gmail.com>,
+	Maryam Tahhan <mtahhan@redhat.com>, <xdp-hints@xdp-project.net>, "Network
+ Development" <netdev@vger.kernel.org>, Simon Horman
+	<simon.horman@corigine.com>
+Subject: Re: [PATCH bpf-next v4 12/21] xdp: Add checksum hint
+Message-ID: <ZNEHuaY+9LWzfZMt@lincoln>
+References: <20230728173923.1318596-1-larysa.zaremba@intel.com>
+ <20230728173923.1318596-13-larysa.zaremba@intel.com>
+ <20230728215340.pf3qcfxh7g4x7s6a@MacBook-Pro-8.local>
+ <64c53b1b29a66_e235c2942d@willemb.c.googlers.com.notmuch>
+ <CAADnVQ+vn0=1UT5_c628ovq+LzfrNFf0MxmZn++NqeUFJ-ykQw@mail.gmail.com>
+ <64c661de227c2_11bfb629493@willemb.c.googlers.com.notmuch>
+ <ZMeSUrOfhq9dWz6f@lincoln>
+ <CAADnVQJPgpo7J0qVTQJYYocZ=Jnw=O5GfN2=PyAQ55+WWG_DVg@mail.gmail.com>
+ <64ca59bfbb1cd_294ce929467@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <64ca59bfbb1cd_294ce929467@willemb.c.googlers.com.notmuch>
+X-ClientProxiedBy: FR0P281CA0246.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:af::11) To SN7PR11MB7540.namprd11.prod.outlook.com
+ (2603:10b6:806:340::7)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-	FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|PH0PR11MB7472:EE_
+X-MS-Office365-Filtering-Correlation-Id: 970b39df-c21a-4fa3-293d-08db97583c5f
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LvZTD9ux/aPFm6dH2bSKOz9pwBZ4S1Mr2bk4E+CKqeZeis6zX11vnz/P2wFjBVo/zhCmhh1dCj8uCYy2qGEb5/2sWaBwrI09EhVvh8sPgb9b3Ov1vwQdLE0sPjvKH8MYCZ2ik2UDGyii+DEOmXgXVtOKIvTy/HN3zemGx1bWY29CQEjM/WeaVd+4DLmVcw7yyLf+RpZfYc1oduWyBLC8BB5G5lyKHVFd1hMz3mGWlrhaLltYWxrgiWZnsgUeywRlLXumXMUKNH7rgaoak0MJK/XUBrTIqe2lamcYBt7TiUQrTjnji0NnVGeR5CilDgIwb3l+KqNnQ7jWAAJRJdbPjSGnUUeX0pOoVzC1ojhSuHz2H7JXbpNr/ZOycRt6NWKVIr48snfixmSfJLGGCu55+7hg1Dq3EK2YqbSSKlMhhjyysyLSH/MTtOAa+5Px3RgbfZv0Lqj64/eMNSNVfef66nnzwcI0YpOf63CyC0m3hUwpn84q4R48agIWFQIVKVBwfzR81cF68pmuW8bb3sxoTNKIGYV8sqs8GcNSNi+zO5L9GZyg3e/8rxANPvT6wcyKGfRwJvEw0enw22J7cTMbkwYhF72h3uzH5KTG6z8c3fU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(346002)(376002)(39860400002)(366004)(396003)(136003)(186006)(1800799003)(451199021)(41300700001)(26005)(2906002)(44832011)(5660300002)(7416002)(8936002)(8676002)(478600001)(6916009)(86362001)(316002)(82960400001)(6506007)(38100700002)(54906003)(6486002)(33716001)(66476007)(66556008)(6666004)(66946007)(4326008)(9686003)(6512007)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Emh2PrOFU0rprkjYcwoMMGfqh1+TG43DJxxY+Y1nlU3flMtF1VgMTBbq5INk?=
+ =?us-ascii?Q?lABSmCNEPxtOzaz7A1ApATwsINr3szONdovmMNdh+tWhZgx3kU0d9ug7n8kI?=
+ =?us-ascii?Q?96YYM69Qcw/eEoKfgO9sZHbVFmoe3DSNQ+X74YT2UEfNkCt9YNzBXsXstPsS?=
+ =?us-ascii?Q?LRNb5IUJDaXhwYyyU9B0kBgVb/1IbkpGj4shJJC6iKlUGeEnPW2oE/s4+N4y?=
+ =?us-ascii?Q?NdiVNO//b4Xk+mCqH51+KooimEe49UOtp7Hsq0K98DYjboteCZhDu/v6bIW2?=
+ =?us-ascii?Q?GESK2VrKOypO6BUPqJHbBsqoiFkPZZJoqyBUn2JkjTDTRrZySMABBdPuA++J?=
+ =?us-ascii?Q?/CvzfMYaiX+vsuz5M6R0S1yARoEd0GJmvlEr2ETkCkm05DEqFTXUIssI3y4v?=
+ =?us-ascii?Q?3/Bko3OlqKBuR+A6zM3dCof5Mwwx11STlZgIokwHIkKJ4K81FLfb9m0L+Dj3?=
+ =?us-ascii?Q?gFrP2ubzTTyC2R27bl8QXXu5dYOLBIPyoOlV3yxE2iYpXw7ywb9LX7WN00EN?=
+ =?us-ascii?Q?6b0Y1HJQ9OSGNbVScxFKsgi1ppX/bWnD3Ukx0ATXDOhLrkz0d0YeTw5UlGVE?=
+ =?us-ascii?Q?DGj2x9vdEhZIcyOHvLyZ8yJC/uA9epkbpF+pXXFIuxmaaKckSci15dohKCVs?=
+ =?us-ascii?Q?T+XAb6i8680H0BaJ90TE1aP/GjWBKqKxt4eQyVJCXDSXYl9ECi6O5+zJ/UmQ?=
+ =?us-ascii?Q?tMeKgpbx40X7Io6YTBggTm7nvSPKFvJpvmMSpPNPaQCl4f78uvwlcf3EfpSl?=
+ =?us-ascii?Q?6Mtib7S1aYLC6lY9a3FbCnWPclU5+t7l9Li7DJilvGVc0m6siZjtTXUXNPBG?=
+ =?us-ascii?Q?I9IfAhGG8Fk40Xt4Js1OyKInYur/CN2tnWqgF2U44n4xrS+WvL5sAJOnxnJV?=
+ =?us-ascii?Q?qtyJQbO8RJ43Azn9EdEpEyfV4tllZJRQVBWz6S1si7qgFqrwb6U1dHDAW8C8?=
+ =?us-ascii?Q?2QFyd0ML1TgZuLqkvzoxd3EODA3spLv7yro+LbC+KBpv8A1+1nrNu/9KrbDr?=
+ =?us-ascii?Q?qiG/kGfPxraYpY/ci5ar9qBhOov67VDXvztQXnjQ2YBIKEZYoUHbi5pUhW4I?=
+ =?us-ascii?Q?7jFgXaCZzWV5kzbND40mNeRJK7cKFRRQ7jv197zLjitauKLJcffoKmNXmmYF?=
+ =?us-ascii?Q?iACLIG7CfvelxaaVL+m31AuEia2vghuRhXyny0Mk8Vzrg2AN+Og87eMCvcYC?=
+ =?us-ascii?Q?QkwQ3OD3aJOXnhlQQsojuUTGWC9ft1kaL1a4yJRkUMV7DaotCEC6TPDHPrWZ?=
+ =?us-ascii?Q?hMR35SdxrDBS/+YWz08xIjf1dm1Scp09kL46G+EdwOiLolYSw5iCxrXOGrWo?=
+ =?us-ascii?Q?P8p45AhN+LVYXprSzzUH1rk/pBTvXkdqPeVxNisAkqtC362cgE2M5xoSVRvc?=
+ =?us-ascii?Q?jAQK27PkqhmExyWlA8RnPmb1lUj3ge2aQbWUn5/6vq2aEAtF7M/eqgoANBHX?=
+ =?us-ascii?Q?UrG9rIL78YA1Nf3T0VYe432uEIjhbAUx91kYIxQX47iIJCd1NzmlPbAb5uNV?=
+ =?us-ascii?Q?yTMTaHBsNEhLji+pOeyXSKsLK+z97NgkiY0IJeWM/mXMRYIP4FPBHr3umEbc?=
+ =?us-ascii?Q?vHqaql/a2p0tNkwQmWRL9DT+aKcBhjFDNQWWjVlCYTPG6c7RJSZvh3M+V+cc?=
+ =?us-ascii?Q?AA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 970b39df-c21a-4fa3-293d-08db97583c5f
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 15:09:03.0416
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RwARI00mBz1I4iP0SUoq8QPP683zTGyBujsp62q2U6TfSkKlGrrVgVh/f5ZJpYfkreEJdc2UO3ldDbrALqC/dAEwYBdp6LHD7vXeNtAvmVU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7472
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, 2023-08-07 at 07:40 -0700, Yonghong Song wrote:
->=20
-> On 8/7/23 6:11 AM, Eduard Zingerman wrote:
-> > On Sun, 2023-08-06 at 23:40 -0700, Yonghong Song wrote:
-> > >=20
-> > > On 8/6/23 4:23 PM, syzbot wrote:
-> > > > Hello,
-> > > >=20
-> > > > syzbot found the following issue on:
-> > > >=20
-> > > > HEAD commit:    25ad10658dc1 riscv, bpf: Adapt bpf trampoline to op=
-timized..
-> > > > git tree:       bpf-next
-> > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D147cbb2=
-9a80000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D8acaeb9=
-3ad7c6aaa
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd61b595e9=
-205573133b3
-> > > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils=
- for Debian) 2.40
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D14d73=
-ccea80000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1276aed=
-ea80000
-> > > >=20
-> > > > Downloadable assets:
-> > > > disk image: https://storage.googleapis.com/syzbot-assets/3d378cc13d=
-42/disk-25ad1065.raw.xz
-> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/44580fd5d1af/=
-vmlinux-25ad1065.xz
-> > > > kernel image: https://storage.googleapis.com/syzbot-assets/84058761=
-8b41/bzImage-25ad1065.xz
-> > > >=20
-> > > > The issue was bisected to:
-> > > >=20
-> > > > commit 8100928c881482a73ed8bd499d602bab0fe55608
-> > > > Author: Yonghong Song <yonghong.song@linux.dev>
-> > > > Date:   Fri Jul 28 01:12:02 2023 +0000
-> > > >=20
-> > > >       bpf: Support new sign-extension mov insns
-> > >=20
-> > > Thanks for reporting. I will look into this ASAP.
-> >=20
-> > Hi Yonghong,
-> >=20
-> > I guess it's your night and my morning, so I did some initial assessmen=
-t.
-> > The BPF program being loaded is:
-> >=20
-> >    0 : (62) *(u32 *)(r10 -8) =3D 553656332
-> >    1 : (bf) r1 =3D (s16)r10
-> >    2 : (07) r1 +=3D -8
-> >    3 : (b7) r2 =3D 3
-> >    4 : (bd) if r2 <=3D r1 goto pc+0
-> >    5 : (85) call bpf_trace_printk#6
-> >    6 : (b7) r0 =3D 0
-> >    7 : (95) exit
-> >=20
-> > (Note: when using bpftool (prog dump xlated id <some-id>) the disassemb=
-ly
-> >   of the instruction #1 is incorrectly printed as "1: (bf) r1 =3D r10")
-> >  =20
-> > The error occurs when instruction #5 (call to printk) is executed.
-> > An incorrect address for the format string is passed to printk.
-> > Disassembly of the jited program looks as follows:
-> >=20
-> >    $ bpftool prog dump jited id <some-id>
-> >    bpf_prog_ebeed182d92b487f:
-> >       0: nopl    (%rax,%rax)
-> >       5: nop
-> >       7: pushq   %rbp
-> >       8: movq    %rsp, %rbp
-> >       b: subq    $8, %rsp
-> >      12: movl    $553656332, -8(%rbp)
-> >      19: movswq  %bp, %rdi            ; <---- Note movswq %bp !
-> >      1d: addq    $-8, %rdi
-> >      21: movl    $3, %esi
-> >      26: cmpq    %rdi, %rsi
-> >      29: jbe 0x2b
-> >      2b: callq   0xffffffffe11c484c
-> >      30: xorl    %eax, %eax
-> >      32: leave
-> >      33: retq
-> >=20
-> > Note jit instruction #19 corresponding to BPF instruction #1, which
-> > loads truncated and sign-extended value of %rbp's first byte as an
-> > address of format string.
-> >=20
-> > Here is how verifier log looks for (slightly modified) program:
-> >=20
-> >    func#0 @0
-> >    0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> >    ; asm volatile ("			\n\
-> >    0: (b7) r1 =3D 553656332                ; R1_w=3D553656332
-> >    1: (63) *(u32 *)(r10 -8) =3D r1         ; R1_w=3D553656332 R10=3Dfp0=
- fp-8=3D553656332
-> >    2: (bf) r1 =3D (s16)r10                 ; R1_w=3Dfp0 R10=3Dfp0
-> >    3: (07) r1 +=3D -8                      ; R1_w=3Dfp-8
-> >    4: (b7) r2 =3D 3                        ; R2_w=3D3
-> >    5: (bd) if r2 <=3D r1 goto pc+0         ; R1_w=3Dfp-8 R2_w=3D3
-> >    6: (85) call bpf_trace_printk#6
-> >    mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
-> >    ...
-> >    mark_precise: frame0: falling back to forcing all scalars precise
-> >    7: R0=3Dscalar()
-> >    7: (b7) r0 =3D 0                        ; R0_w=3D0
-> >    8: (95) exit
-> >   =20
-> >    from 5 to 6: R1_w=3Dfp-8 R2_w=3D3 R10=3Dfp0 fp-8=3D553656332
-> >    6: (85) call bpf_trace_printk#6
-> >    mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
-> >    ...
-> >    mark_precise: frame0: falling back to forcing all scalars precise
-> >    7: safe
-> >=20
-> > Note the following line:
-> >=20
-> >    2: (bf) r1 =3D (s16)r10                 ; R1_w=3Dfp0 R10=3Dfp0
-> >=20
-> > Verifier incorrectly marked r1 as fp0, hence not noticing the problem
-> > with address passed to printk.
->=20
-> Thanks, Eduard. Right. I am also able to dump xlated code like
-> below:
->=20
->     0: (62) *(u32 *)(r10 -8) =3D 553656332
->     1: (bf) r1 =3D (s16)r10
->     2: (07) r1 +=3D -8
->     3: (b7) r2 =3D 3
->     4: (bd) if r2 <=3D r1 goto pc+0
->     5: (85) call bpf_trace_printk#-138320
->     6: (b7) r0 =3D 0
->     7: (95) exit
->=20
-> Something like below can fix the problem,
->=20
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 132f25dab931..db72619551b2 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -13171,6 +13171,7 @@ static int check_alu_op(struct bpf_verifier_env=
-=20
-> *env, struct bpf_insn *insn)
->                                          if (no_sext && need_id)
->                                                  src_reg->id =3D=20
-> ++env->id_gen;
->                                          copy_register_state(dst_reg,=20
-> src_reg);
-> +                                       dst_reg->type =3D SCALAR_VALUE;
->                                          if (!no_sext)
->                                                  dst_reg->id =3D 0;
->                                          coerce_reg_to_size_sx(dst_reg,=
-=20
-> insn->off >> 3);
->=20
-> After insn 1, we need change r1 type to SCALAR_VALUE. Will add
-> the the test to selftest and submit the patch to fix the problem
-> today.
+On Wed, Aug 02, 2023 at 09:27:27AM -0400, Willem de Bruijn wrote:
+> > No. What I'm saying is that XDP_CHECKSUM_UNNECESSARY should be
+> > equivalent to skb's CHECKSUM_UNNECESSARY with csum_level = 0.
+> > I'm well aware that some drivers are trying to be smart and put csum_level=1.
+> > There is no use case for it in XDP.
+> > "But our HW supports it so XDP prog should read it" is the reason NOT
+> > to expose it to bpf in generic api.
+> > 
+> > Either we're doing per-driver kfuncs and no common infra or common kfunc
+> > that covers 99% of the drivers. Which is CHECKSUM_UNNECESSARY && csum_level = 0
+> > 
+> > It's not acceptable to present a generic api to xdp prog with multi level
+> > csum that only works on a specific HW. Next thing there will be new flags
+> > and MAX_CSUM_LEVEL in XDP features.
+> > Pretending to be generic while being HW specific is the worst interface.
+> 
+> Ok. Agreed that without it we still cover 99% of the use cases. Fine to drop.
 
-Should this be an error?
-Like in the same function but slightly below, when u32 moves are
-processed:
-
-    /* R1 =3D (u32) R2 */
-    if (is_pointer_value(env, insn->src_reg)) {
-        verbose(env,
-            "R%d partial copy of pointer\n",
-            insn->src_reg);
-        return -EACCES;
-    } else { ...
-
->=20
-> >=20
-> > Thanks,
-> > Eduard.
-> >=20
-> > > >=20
-> > > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1797=
-0c5da80000
-> > > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D1457=
-0c5da80000
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D10570c5=
-da80000
-> > > >=20
-> [...]
-
+Sorry for the late response.
+Thanks everyone for the feedback, will drop the checksum level concept from the 
+design.
 
