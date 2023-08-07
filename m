@@ -1,67 +1,67 @@
-Return-Path: <bpf+bounces-7197-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7198-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 970967730A6
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 22:48:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A55F7732D1
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 00:09:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D73D2814FA
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 20:48:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A40AB1C20B17
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 22:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D4715AC2;
-	Mon,  7 Aug 2023 20:48:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE7917AA7;
+	Mon,  7 Aug 2023 22:09:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E329C125C3
-	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 20:48:42 +0000 (UTC)
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BD610F6;
-	Mon,  7 Aug 2023 13:48:34 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9936b3d0286so750347466b.0;
-        Mon, 07 Aug 2023 13:48:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D1617736
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 22:09:39 +0000 (UTC)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CB7448C;
+	Mon,  7 Aug 2023 15:09:10 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5227e5d9d96so6641472a12.2;
+        Mon, 07 Aug 2023 15:09:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691441313; x=1692046113;
+        d=gmail.com; s=20221208; t=1691446094; x=1692050894;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8CVC74fhP0sy/y3NvWAwOMXaX3+HMUjEbw6HzuiD9uQ=;
-        b=PaO30Qr5zLgmYyvf4Z+3G9KqIMYdeSd8FopFZ00wZGL4BEOxcbvvOpWz7RlOI1c9US
-         6aZAkmx9N0AvGcN8N3/tQ1qTjP3JNKdY+zB59VB7BetcvCRJrnKPY2Ckw3nKC7LbcUij
-         8gryIoefc4PbipIouFSencBJt48m/ZpWWU3HCBLIXLM9jd0VApvE7wDIUEfvxhzNZlKN
-         cLHLPey7tiMmqYjczppU9fc8B9sZGMqO3XyNdW0Gh3bz9PxB+qNweIwAQSz0YsJumcv8
-         uMu/8r7BKAtq0b9AcHz5imdDna1lTdFQ+NdWd0VuHZPz0RpHGGdlKTDAtTFf4yqAY+ee
-         mt/Q==
+        bh=M6+h3JPtffH3KCnU+FPVbWvNYGtSA/UOocgPTJJmPrM=;
+        b=dhwsK4bB5MaJTm9+mzIvA5OXXQvBIIJkM3LHvM0/KCirJESPqHr/1ROandY8hhMcF1
+         Ypy8TqMIwmFozUDcajbUy72oPZj2xQxT+0oJ8sz02MO9GCY+MyJ70npaJmzZK+24sBFH
+         OBDsvT0M/XL5XYy9mQV5wowXxgCvtqK+Wq7TSdrX3/d5hjMj8LiDD/yY1PtpBbgAGzJz
+         X+fmNKB+as6A60nEV0fRcHN4yM/RDpgZANcjIrRq1qxlo3TvobWe5w6o4mPncr93v6nh
+         mzCEzEJuHBg8G+09kfF8qQI59MEuXUWjhguHVj0KzUCxFHXOlExxnb3wVqBndwc4ir7z
+         Q/AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691441313; x=1692046113;
+        d=1e100.net; s=20221208; t=1691446094; x=1692050894;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8CVC74fhP0sy/y3NvWAwOMXaX3+HMUjEbw6HzuiD9uQ=;
-        b=EypoGcyikHW8kCvdPONsrlqaOb6PwGIcZVxfteYvZ/KJJ2IIN9dp5p7iIwvovtY9/f
-         Ptbtg4xuQw9yVS1Q369FR4+VwrhWeq6xfXYE9lVCNs+pftzFt8eTzFVnS4W4J07Kz9SX
-         sntrGM3+cj+LxKpNb4Uw0oE7hRm2aux7kKfrnRFqi27/TlmYBkSHBsFwPHGpHOUZYYrx
-         //Je0fr2xd8U2bbYwgqd85MYpAy9WAD7QG4OUzmCaRRX75uetbZo/7LoJPmQqu/oPvOJ
-         aS7Erv4YpnTL64mwV7aU5ZQHTD7eae8/9Bp7ppUBIwuzano3nn4TnEwZ7VRpwFHCWV4w
-         3wdA==
-X-Gm-Message-State: AOJu0YyWm71Vok4PYz+i/bsHkZL5u/P52YJnnjZ+eEn74ENumKISyNBu
-	K97/8CZO8nYZXq9q6DyNLpU=
-X-Google-Smtp-Source: AGHT+IGi9neasvPU3HF15xpZdrL+c2axX9IYb3Ux1/9J0YE2gqbZBeoWr756aN7H9t+gAOmSyfgBGA==
-X-Received: by 2002:a17:906:1045:b0:98d:f4a7:71cf with SMTP id j5-20020a170906104500b0098df4a771cfmr10832322ejj.62.1691441312595;
-        Mon, 07 Aug 2023 13:48:32 -0700 (PDT)
+        bh=M6+h3JPtffH3KCnU+FPVbWvNYGtSA/UOocgPTJJmPrM=;
+        b=Q96FQii6I8/rbMQWhCcppCpDv6ZsSYSr0XzQCeaG25vj9Z59qtk637BEfrCahrArHv
+         Whx0gUGGQ2V9ZKrAVh+qqSzwJMr8LcjzbB884Rs54WLPVYY+ZVfDfE42dUaJP85Vro5L
+         N8sN/xcVdshSwuNVj0SI8PuQvxpuyoYzpTdCBTU5FRV0PIAeWxbjNqT47PLUWDoA+dG6
+         TbHqzQ4JQajnSHKVjEJczAKZOkOcx2jw/kDar2itm1yzcpT22Ks+98d5JwUunYYjieiH
+         kKcz6bKXs5AgxmYwRGH7iT1XO1LH7TdGqjVrxF5gng+3WtOn/9axAFrzB2t5TnEXdhfG
+         zQRA==
+X-Gm-Message-State: AOJu0Yx86rLPgd8Afs2wtJXHY65cMN96y0VeftIqLx+BlbqcbxRv+rX7
+	1Q0k43g+ajAhNcLYTHfixmk=
+X-Google-Smtp-Source: AGHT+IHcFeSC/KLA5gbHHDoZ38Wjuek7W2QjlW9lOhBV5LyfzbSNg41cd2VqVgu1h/MLxxqARpsyCQ==
+X-Received: by 2002:a05:6402:110a:b0:523:7b1:3718 with SMTP id u10-20020a056402110a00b0052307b13718mr7820189edv.14.1691446093469;
+        Mon, 07 Aug 2023 15:08:13 -0700 (PDT)
 Received: from krava ([83.240.60.134])
-        by smtp.gmail.com with ESMTPSA id ot29-20020a170906ccdd00b00991d54db2acsm5617944ejb.44.2023.08.07.13.48.31
+        by smtp.gmail.com with ESMTPSA id d13-20020a50fe8d000000b0051e1660a34esm5637299edt.51.2023.08.07.15.08.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 13:48:32 -0700 (PDT)
+        Mon, 07 Aug 2023 15:08:13 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 7 Aug 2023 22:48:29 +0200
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Florent Revest <revest@chromium.org>,
+Date: Tue, 8 Aug 2023 00:08:11 +0200
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Florent Revest <revest@chromium.org>,
 	linux-trace-kernel@vger.kernel.org,
 	LKML <linux-kernel@vger.kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
@@ -73,19 +73,11 @@ Cc: Florent Revest <revest@chromium.org>,
 	Mark Rutland <mark.rutland@arm.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-ID: <ZNFYnbqlyOjo5dkH@krava>
-References: <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
- <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
- <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
- <20230802000228.158f1bd605e497351611739e@kernel.org>
- <20230801112036.0d4ee60d@gandalf.local.home>
- <20230801113240.4e625020@gandalf.local.home>
- <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
- <20230801190920.7a1abfd5@gandalf.local.home>
- <CABRcYmJjtVq-330ktqTAUiNO1=yG_aHd0xz=c550O5C7QP++UA@mail.gmail.com>
- <20230804004206.9fdfae0b9270b9acca2c096f@kernel.org>
+Subject: Re: [RFC PATCH v2 6/6] bpf: Enable kprobe_multi feature if
+ CONFIG_FPROBE is enabled
+Message-ID: <ZNFrS4YGcW8dyxnF@krava>
+References: <169139090386.324433.6412259486776991296.stgit@devnote2>
+ <169139097360.324433.2521527070503682979.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,7 +86,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230804004206.9fdfae0b9270b9acca2c096f@kernel.org>
+In-Reply-To: <169139097360.324433.2521527070503682979.stgit@devnote2>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -102,121 +94,115 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Fri, Aug 04, 2023 at 12:42:06AM +0900, Masami Hiramatsu wrote:
-
-SNIP
-
-> > 
-> > On the other hand, untangling all code paths that come from
-> > trampolines (with a light regs structure) from those that come from an
-> > exception (with a pt_regs) could lead to a lot of duplicated code, and
-> > converting between each subsystem's idea of a light regs structure
-> > (what if perf introduces a perf_regs now ?) would be tedious and slow
-> > (lots of copies ?).
+On Mon, Aug 07, 2023 at 03:49:33PM +0900, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> This is one discussion point I think. Actually, using pt_regs in kretprobe
-> (and rethook) is histrical accident. Originally, it had put a kprobe on
-> the function return trampoline to hook it. So keep the API compatiblity
-> I made the hand assembled code to save the pt_regs on the stack.
+> Enable kprobe_multi feature if CONFIG_FPROBE is enabled. The pt_regs is
+> converted from ftrace_regs by ftrace_partial_regs(), thus some registers
+> may always returns 0. But it should be enough for function entry (access
+> arguments) and exit (access return value).
 > 
-> My another question is if we have the fprobe to trace (hook) the function
-> return, why we still need the kretprobe itself. I think we can remove
-> kretprobe and use fprobe exit handler, because "function" probing will
-> be done by fprobe, not kprobe. And then, we can simplify the kprobe
-> interface and clarify what it is -- "kprobe is a wrapper of software
-> breakpoint". And we don't need to think about duplicated code anymore :)
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  kernel/trace/bpf_trace.c |   22 +++++++++-------------
+>  1 file changed, 9 insertions(+), 13 deletions(-)
+> 
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 99c5f95360f9..0725272a3de2 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2460,7 +2460,7 @@ static int __init bpf_event_init(void)
+>  fs_initcall(bpf_event_init);
+>  #endif /* CONFIG_MODULES */
+>  
+> -#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> +#ifdef CONFIG_FPROBE
+>  struct bpf_kprobe_multi_link {
+>  	struct bpf_link link;
+>  	struct fprobe fp;
+> @@ -2482,6 +2482,8 @@ struct user_syms {
+>  	char *buf;
+>  };
+>  
+> +static DEFINE_PER_CPU(struct pt_regs, bpf_kprobe_multi_pt_regs);
+> +
+>  static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32 cnt)
+>  {
+>  	unsigned long __user usymbol;
+> @@ -2623,13 +2625,14 @@ static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
+>  
+>  static int
+>  kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+> -			   unsigned long entry_ip, struct pt_regs *regs)
+> +			   unsigned long entry_ip, struct ftrace_regs *fregs)
+>  {
+>  	struct bpf_kprobe_multi_run_ctx run_ctx = {
+>  		.link = link,
+>  		.entry_ip = entry_ip,
+>  	};
+>  	struct bpf_run_ctx *old_run_ctx;
+> +	struct pt_regs *regs;
+>  	int err;
+>  
+>  	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
+> @@ -2639,6 +2642,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+>  
+>  	migrate_disable();
+>  	rcu_read_lock();
+> +	regs = ftrace_partial_regs(fregs, this_cpu_ptr(&bpf_kprobe_multi_pt_regs));
 
-1+ sounds like good idea
+you did check for !regs when returned from ftrace_get_regs, why don't we need
+to check it in here? both ftrace_partial_regs and ftrace_get_regs call
+arch_ftrace_get_regs on x86
 
-> 
-> >  
-> > > Otherwise, ftrace_regs() has support on arm64 for getting to the argument
-> > > registers and the stack. Even live kernel patching now uses ftrace_regs().
-> > >
-> > > >
-> > > > If you guys decide to convert fprobe to ftrace_regs please
-> > > > make it depend on kconfig or something.
-> > > > bpf side needs full pt_regs.
-> > 
-> > Some wild ideas that I brought up once in a BPF office hour: BPF
-> > "multi_kprobe" could provide a fake pt_regs (either by constructing a
-> > sparse one on the stack or by JIT-ing different offset accesses and/or
-> > by having the verifier deny access to unpopulated fields) or break the
-> > current API (is it conceivable to phase out BPF "multi_kprobe"
-> > programs in favor of BPF "fprobe" programs that don't lie about their
-> > API and guarantees and just provide a ftrace_regs ?)
-> 
-> +1 :)
+also also I can't find the place ensuring fregs->regs.cs != 0 for FL_SAVE_REGS
+flag as stated in arch_ftrace_get_regs, any hint?
 
-so multi_kprobe link was created to allow fast attach of BPF kprobe-type
-programs to multiple functions.. I don't think there's need for new fprobe
-program
-
-> 
-> > 
-> > > Then use kprobes. When I asked Masami what the difference between fprobes
-> > > and kprobes was, he told me that it would be that it would no longer rely
-> > > on the slower FTRACE_WITH_REGS. But currently, it still does.
-> > 
-> > Actually... Moving fprobe to ftrace_regs should get even more spicy!
-> > :) Fprobe also wraps "rethook" which is basically the same thing as
-> > kretprobe: a return trampoline that saves a pt_regs, to the point that
-> > on x86 kretprobe's trampoline got dropped in favor of rethook's
-> > trampoline. But for the same reasons that we don't want ftrace to save
-> > pt_regs on arm64, rethook should probably also just save a ftrace_regs
-> > ? (also, to keep the fprobe callback signatures consistent between
-> > pre- and post- handlers). But if we want fprobe "post" callbacks to
-> > save a ftrace_regs now, either we need to re-introduce the kretprobe
-> > trampoline or also change the API of kretprobe (and break its symmetry
-> > with kprobe and we'd have the same problem all over again with BPF
-> > kretprobe program types...). All of this is "beautifully" entangled...
-> > :)
-> 
-> As I said, I would like to phase out the kretprobe itself because it
-> provides the same feature of fprobe, which is confusing. jprobe was
-> removed a while ago, and now kretprobe is. But we can not phase out
-> it at once. So I think we will keep current kretprobe trampoline on
-> arm64 and just add new ftrace_regs based rethook. Then remove the
-> API next release. (after all users including systemtap is moved) 
-> 
-> > 
-> > > The reason I started the FTRACE_WITH_ARGS (which gave us ftrace_regs) in
-> > > the first place, was because of the overhead you reported to me with
-> > > ftrace_regs_caller and why you wanted to go the direct trampoline approach.
-> > > That's when I realized I could use a subset because those registers were
-> > > already being saved. The only reason FTRACE_WITH_REGS was created was it
-> > > had to supply full pt_regs (including flags) and emulate a breakpoint for
-> > > the kprobes interface. But in reality, nothing really needs all that.
-> > >
-> > > > It's not about access to args.
-> > > > pt_regs is passed from bpf prog further into all kinds of perf event
-> > > > functions including stack walking.
-> > 
-> > If all accesses are done in BPF bytecode, we could (theoretically)
-> > have the verifier and JIT work together to deny accesses to
-> > unpopulated fields, or relocate pt_regs accesses to ftrace_regs
-> > accesses to keep backward compatibility with existing multi_kprobe BPF
-> > programs.
-> 
-> Yeah, that is what I would like to suggest, and what my patch does.
-> (let me update rethook too, it'll be a bit tricky since I don't want
-> break anything) 
-> 
-> Thanks,
-> 
-> > 
-> > Is there a risk that a "multi_kprobe" program could call into a BPF
-> > helper or kfunc that reads this pt_regs pointer and expect certain
-> > fields to be set ? I suppose we could also deny giving that "pt_regs"
-> > pointer to a helper... :/
-
-I think Alexei answered this earlier in the thread:
-
- >From bpf side we don't care that such pt_regs is 100% filled in or
- >only partial as long as this pt_regs pointer is valid for perf_event_output
- >and stack walking that consume pt_regs.
- >I believe that was and still is the case for both x86 and arm64.
-
-
+thanks,
 jirka
+
+
+>  	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+>  	err = bpf_prog_run(link->link.prog, regs);
+>  	bpf_reset_run_ctx(old_run_ctx);
+> @@ -2656,13 +2660,9 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
+>  			  void *data)
+>  {
+>  	struct bpf_kprobe_multi_link *link;
+> -	struct pt_regs *regs = ftrace_get_regs(fregs);
+> -
+> -	if (!regs)
+> -		return 0;
+>  
+>  	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
+> -	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
+> +	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
+>  	return 0;
+>  }
+>  
+> @@ -2672,13 +2672,9 @@ kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
+>  			       void *data)
+>  {
+>  	struct bpf_kprobe_multi_link *link;
+> -	struct pt_regs *regs = ftrace_get_regs(fregs);
+> -
+> -	if (!regs)
+> -		return;
+>  
+>  	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
+> -	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
+> +	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
+>  }
+>  
+>  static int symbols_cmp_r(const void *a, const void *b, const void *priv)
+> @@ -2918,7 +2914,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>  	kvfree(cookies);
+>  	return err;
+>  }
+> -#else /* !CONFIG_DYNAMIC_FTRACE_WITH_REGS */
+> +#else /* !CONFIG_FPROBE */
+>  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>  {
+>  	return -EOPNOTSUPP;
+> 
 
