@@ -1,136 +1,123 @@
-Return-Path: <bpf+bounces-7164-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7165-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E618772639
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 15:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B604C77267B
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 15:49:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 917A61C20B40
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 13:42:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7DF31C20C41
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 13:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29160107B1;
-	Mon,  7 Aug 2023 13:42:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D349910946;
+	Mon,  7 Aug 2023 13:48:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D29D4D51D;
-	Mon,  7 Aug 2023 13:42:09 +0000 (UTC)
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2A01738;
-	Mon,  7 Aug 2023 06:41:53 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.nyi.internal (Postfix) with ESMTP id 917EC5C00D8;
-	Mon,  7 Aug 2023 09:41:12 -0400 (EDT)
-Received: from imap48 ([10.202.2.98])
-  by compute4.internal (MEProxy); Mon, 07 Aug 2023 09:41:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-	1691415672; x=1691502072; bh=+lJs9GYWBNiOAOVqXWOH5SilIPKlB6jLhY/
-	Q7PdyL5M=; b=c312f7jQA5+I9qUi7iYMuedJv8L70Agehy5ZgTGHu0Pz7W02Ppn
-	1Z0zgOZSW2+Bv0x1KO8g+qvpdX1jJY9WG7g8pnbWkBwFEqg+84zoWP6S1dnE7MOS
-	/r5DMQ22koAnK/vCle3StbOWP1xM3F5JzzvnVMv0Jvu4iwB13wo60yRWIiRPYs8s
-	dpF+gV36ExFSygq4CkMunTHg+MxRP+jvBJ3G9mvxbnZYKcq5kVzTIJ4PU2BftWrI
-	rIqavDwtv+cKnHvhLqrb9Olfx19dG+6qv4BLCUYeF3gzezjfCInoecIgUXOPFgmq
-	gKw6f8dhXk8CKVhPpBlgOGitVCq0DA2/GAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1691415672; x=1691502072; bh=+lJs9GYWBNiOAOVqXWOH5SilIPKlB6jLhY/
-	Q7PdyL5M=; b=NmN9ldXHdYl8oT9Ay+qbHn3v/Q5TrM9dwmeMiGBHNbuFtqFFVdZ
-	FXsekpSzser2hjjbLWZ/LFfpy6gvCojDVo1zSsWnBWA2S9biWuK2PNGZjIUuHPaQ
-	KSOgleN5/FltuUD9QXOf+3+vgw0/wtK8mW/Muqm5QrAo3DWsiku0TZ4RO00bodPk
-	JO8BV/lilVlQWU+XpztM96iCKIKwwSDwherBuYJg/SNy7U/NlpU5YFmiFjBuAqOt
-	YAu/EGAYSG+RQAIw48t/gpQcCDKqgZivS1eVophmS2qSHNE3Y7sIO1zevL+gB6Ub
-	7+5imLaLazgqYAv+x+upwHIMgfwCiAz68lQ==
-X-ME-Sender: <xms:ePTQZFhj4BgrepeJi7gipSXbCHfnu4sfbC1YaTdukRmuHiUmlFzMQw>
-    <xme:ePTQZKB44V1VXUw48nKXZAuErKB1R2HqBUCcfQjQawoD_6-TDqFoYJYgWxegv7JZW
-    5yt_j2Yacpz42u3gWA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrledtgdeiudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpeforghn
-    jhhushgrkhgruceomhgvsehmrghnjhhushgrkhgrrdhmvgeqnecuggftrfgrthhtvghrnh
-    epffdvfeejleefjeegfedtieeuleelhffhuedufeevkeeltdelgeetiefgkefhvddvnecu
-    ffhomhgrihhnpegsohhothhlihhnrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgvsehmrghnjhhushgrkhgrrdhmvg
-X-ME-Proxy: <xmx:ePTQZFF0QHaQLh1RuKjgP3zP_kN2U6dPHVkA5Ifwxv4-qBYP4sVzRw>
-    <xmx:ePTQZKS4gf-qO2z8zRIqXaGcMLLcjMzBhUNKfyGESlz_n0btgobuwQ>
-    <xmx:ePTQZCy6kgGn8XT-ax_a7z8RwXM3cWFKhnIlooeEJoUUFKOiea6Fwg>
-    <xmx:ePTQZBkTqdOKcxNm50I0dY9yK8GyISvfGeqwQLd9PoRJs8ahLIPh1Q>
-Feedback-ID: i3ea9498d:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 4B4B831A0065; Mon,  7 Aug 2023 09:41:12 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F76107A0;
+	Mon,  7 Aug 2023 13:48:46 +0000 (UTC)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315E510E2;
+	Mon,  7 Aug 2023 06:48:44 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5217ad95029so5874706a12.2;
+        Mon, 07 Aug 2023 06:48:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691416122; x=1692020922;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IPIx8EZcuvxWfdbA6NbH4db5tWSFzcsuDpYZ0i60n1A=;
+        b=NwKzhFHHrGTkbH/+TvGBsJJlbF0T2UWM3/oO6ClLad1Jn5ohFvrfZIccwTNX0kNIuq
+         2pYWCkNiNs+mGcNPKnYr6NEJzaVqMx6mah3WpzblJr9O7DYng7AWHmEEzQEG07rRM/n0
+         CUycTDsW38N6ov/EAcFrMNpKa/BGxZGcVMRWdKWhs7ZkycqefKV6Z/HqZRyTB82pDbNG
+         HrH9GZsVMBLwtZtvrLw5RQvDA9wSgWgLUC8ZO84GHwBRIMwSED+3ITajmx7AqE2UCG7Z
+         Uw2ZZOe1L7Rm2xtIV0emhn43EWg43vC3+eA9V+yLmvhCkWVpF+4zPilDkbUH98qDPeAw
+         JrPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691416122; x=1692020922;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=IPIx8EZcuvxWfdbA6NbH4db5tWSFzcsuDpYZ0i60n1A=;
+        b=ANPS6AphClrxiAPRo/1Y83sKCRJJyVgRuBGJey4E6DlOTWRqTCa08A6rPS+GDEPeCG
+         0OCTcbaH2GiETKFGcG5BElEDZz1MYWU8vbLbVhNqwm1qmpYz2vkDE4yqhdrY67VkIyFa
+         Dr2i7BQLZbId0uJdpzH6i/mY5hoY8L2i0qof7GNnFNgCbvq4AeOrADQSHtVDFDP+xyds
+         c6mr1AY8H8za9UO4FDflWSVyCPM3Y1e8kMA0XmgNU8/4t+boAPPUSLIfAtTMvl+bfRb/
+         +aRpAeJKl21DxSYScO9qjPlSu0QwgA21ZUynLMLozWogBUwAtGSdcHKcYC72SE8oXS9P
+         vNBQ==
+X-Gm-Message-State: AOJu0YwEdMV/yJ1GH9ACSfabDT+qHxqVEeNTX7Oqp45fOtBPHgZ2zHfd
+	yUq0rryMJNrOl6U0t15txK4=
+X-Google-Smtp-Source: AGHT+IEhZLlO7uV4KSBWNATjPjlNnWvOVhucZAbCmZZ2qeKkD3T1f0puZTLTGrcqTw0jTVhyzsGmFA==
+X-Received: by 2002:a50:ef0c:0:b0:523:9c4:544f with SMTP id m12-20020a50ef0c000000b0052309c4544fmr7546875eds.31.1691416122229;
+        Mon, 07 Aug 2023 06:48:42 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id m13-20020aa7c2cd000000b0051df54c6a27sm5195834edp.56.2023.08.07.06.48.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 06:48:41 -0700 (PDT)
+Message-ID: <74c9a88d79b7c65e2fdc2dc1609e13590225cb60.camel@gmail.com>
+Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
+ ieee802154_subif_start_xmit
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: yonghong.song@linux.dev, syzbot
+ <syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com>, andrii@kernel.org,
+  ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+ davem@davemloft.net,  haoluo@google.com, hawk@kernel.org,
+ john.fastabend@gmail.com, jolsa@kernel.org,  kpsingh@kernel.org,
+ kuba@kernel.org, linux-kernel@vger.kernel.org,  martin.lau@linux.dev,
+ netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
+ syzkaller-bugs@googlegroups.com
+Date: Mon, 07 Aug 2023 16:48:40 +0300
+In-Reply-To: <9c8f04a0bf90db4bb8e6192824ab71f58244b74b.camel@gmail.com>
+References: <0000000000002098bc0602496cc3@google.com>
+	 <d520bd6c-bfd3-47f1-c794-ab451905256b@linux.dev>
+	 <9c8f04a0bf90db4bb8e6192824ab71f58244b74b.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-Id: <9f0abdcc-1cb2-4a4a-8348-4fcbd2be9a53@app.fastmail.com>
-In-Reply-To: 
- <CANn89iJAu5CLq1LkRLt0qJ+ytFGXWGqymMHBnMevcPS4Z2GAXQ@mail.gmail.com>
-References: <20230806075216.13378-1-me@manjusaka.me>
- <CANn89i+bMh-xU7PCxf_O5N+vy=83S+V=23mAAmbCuhjuP5Ob9g@mail.gmail.com>
- <8d25f9e8-9653-4e9b-b88b-c5434ce8aabf@app.fastmail.com>
- <CANn89iJAu5CLq1LkRLt0qJ+ytFGXWGqymMHBnMevcPS4Z2GAXQ@mail.gmail.com>
-Date: Mon, 07 Aug 2023 21:40:50 +0800
-From: Manjusaka <me@manjusaka.me>
-To: "Eric Dumazet" <edumazet@google.com>
-Cc: mhiramat@kernel.org, rostedt@goodmis.org, davem@davemloft.net,
- dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] [RFC PATCH] tcp event: add new tcp:tcp_cwnd_restart event
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Got you means! LGTM
+On Mon, 2023-08-07 at 16:11 +0300, Eduard Zingerman wrote:
+[...]
+>   $ bpftool prog dump jited id <some-id>
+>   bpf_prog_ebeed182d92b487f:
+>      0: nopl    (%rax,%rax)
+>      5: nop
+>      7: pushq   %rbp
+>      8: movq    %rsp, %rbp
+>      b: subq    $8, %rsp
+>     12: movl    $553656332, -8(%rbp)
+>     19: movswq  %bp, %rdi            ; <---- Note movswq %bp !
+>     1d: addq    $-8, %rdi
+>     21: movl    $3, %esi
+>     26: cmpq    %rdi, %rsi
+>     29: jbe 0x2b
+>     2b: callq   0xffffffffe11c484c
+>     30: xorl    %eax, %eax
+>     32: leave
+>     33: retq
+>=20
+> Note jit instruction #19 corresponding to BPF instruction #1, which
+> loads truncated and sign-extended value of %rbp's first byte as an
+> address of format string.
 
-I will make a patch later and make a try
+Correction: sign-extended value of %rbp's first *two* bytes,
+disassembly with opcodes:
 
-On Mon, Aug 7, 2023, at 9:25 PM, Eric Dumazet wrote:
-> On Mon, Aug 7, 2023 at 2:49=E2=80=AFPM Manjusaka <me@manjusaka.me> wro=
-te:
-> >
-> > > Do not include code before variable declarations.
-> > Sorry about that. I will update the code later.
-> >
-> > > I would rather add a trace in tcp_ca_event(), this would be more g=
-eneric ?
-> >
-> > https://elixir.bootlin.com/linux/latest/source/net/ipv4/tcp_cong.c#L=
-41
-> >
-> > I think maybe we already have the tcp_ca_event but named tcp_cong_st=
-ate_set?
->=20
-> I am speaking of tcp_ca_event()...
->=20
-> For instance, tcp_cwnd_restart() calls tcp_ca_event(sk, CA_EVENT_CWND_=
-RESTART);
->=20
-> tcp_set_ca_state() can only set icsk_ca_state to one value from enum
-> tcp_ca_state:
-> TCP_CA_Open, TCP_CA_Disorder, TCP_CA_CWR, TCP_CA_Recovery, TCP_CA_Loss
->=20
-> enum tcp_ca_event has instead:
-> CA_EVENT_TX_START, CA_EVENT_CWND_RESTART, CA_EVENT_COMPLETE_CWR,
-> CA_EVENT_LOSS, CA_EVENT_ECN_NO_CE, CA_EVENT_ECN_IS_CE
->=20
+  19:	movswq	%bp, %rdi
+    48 0f bf fd=20
+
+[...]
 
