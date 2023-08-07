@@ -1,111 +1,161 @@
-Return-Path: <bpf+bounces-7117-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7114-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D93477188E
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 04:55:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAC10771884
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 04:55:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 797B41C208A8
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 02:55:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8213728110E
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 02:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1DA10EA;
-	Mon,  7 Aug 2023 02:55:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146EA816;
+	Mon,  7 Aug 2023 02:55:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F7FA20;
-	Mon,  7 Aug 2023 02:55:29 +0000 (UTC)
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F291719B9;
-	Sun,  6 Aug 2023 19:55:01 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-563f752774fso2109717a12.1;
-        Sun, 06 Aug 2023 19:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691376901; x=1691981701;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rw6YeYl+42W56ILPnRQdhw7vhzVVQwbtgdY6eZmvNZw=;
-        b=cn9LcF3ol6PAZxQoqmiPolR82kUUQhImtdThUZovGfuVTbKx9psxYZsYUlQ1ngrobH
-         xwaieKOp/Hj051ym29wuirEV48FdFVdMaIvyAgDqNE+U91HqNmJHhXArWk9ALXO50ZFy
-         3QkN1cwJt+9w46jkEwGUb3qBLZPOxVvcyonVsOyfpxviKJct75A+pzoNI8WioPIZnF+d
-         MdnPgnPsR9ak8k+0u/PgB+FIs8Azqw6cofRIInncuD7S759AVI34Ri4QCCMJg3dcStN9
-         4XFiRwchChAgOXCfBHv9DQPZ9haxU8Jz9huu8PEgmwiYt/U+nktCYZ1WBVzlH1EOFfCT
-         lhKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691376901; x=1691981701;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rw6YeYl+42W56ILPnRQdhw7vhzVVQwbtgdY6eZmvNZw=;
-        b=btFff97E6dX2u8Tem1KTjiDitlzgOZfGE9Dj8zj7Afb1RxkQM3AB1pLOM15fsJ3bBD
-         MhvRTrz+D6p3ry3mPxxTRRkcUqEEgcxlLP60CbSdw1lF6zRU7jpi4AgwWk249F4Lb2kQ
-         ngOOOTDLAiCoJ7eywx+HfGKel7tuUQwoo9uMaDNCTTjOcVMJrUWRvk/ZciUrbJgs5cqN
-         3q4pd7H8+nQFY6tEXZsi+H0xuMs7XjeznZ3s8+DD24CDGD7bkuEUyVRetMxxNip+xG3M
-         NB6m9WZ9oyMiJKyEocj+IIjT4/5szVNvFkShcdPgk5Ou7ryS/bZZCDri0Xea/zkUYLG1
-         crvQ==
-X-Gm-Message-State: AOJu0Yxs2dQyhJf6Wa6Lk92gNjomuF4NAjeJANSzosLyaLQV0qKRWJEb
-	xBuEFirb4V31PB5QFxVihq0=
-X-Google-Smtp-Source: AGHT+IFnT58N7fr1rNnDjidG3fPkT5mRWlaMMiglYC/Lq4axiZ5fNQU+u0IJxl6JfRCkqBzCg5wu2Q==
-X-Received: by 2002:a05:6a21:71c7:b0:137:514a:984f with SMTP id ay7-20020a056a2171c700b00137514a984fmr6140301pzc.35.1691376900876;
-        Sun, 06 Aug 2023 19:55:00 -0700 (PDT)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id ju18-20020a170903429200b001b86e17ecacsm5538891plb.131.2023.08.06.19.54.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Aug 2023 19:55:00 -0700 (PDT)
-Date: Mon, 7 Aug 2023 10:54:55 +0800
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Zhengchao Shao <shaozhengchao@huawei.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	jiri@resnulli.us, weiyongjun1@huawei.com, yuehaibing@huawei.com
-Subject: Re: [PATCH net-next,v3 0/5] team: do some cleanups in team driver
-Message-ID: <ZNBc/4Os0y9j0nc7@Laptop-X1>
-References: <20230807012556.3146071-1-shaozhengchao@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAD29A41
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 02:55:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EC5AC433C7;
+	Mon,  7 Aug 2023 02:55:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691376903;
+	bh=rV1bOw0hiZEtTOaUVe7fSzFVckAJ245a4sD8LTyT1SE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=qCZG/V3fcbZVNuMOaTj3EJJObTyrXo5Q4DaxzsTy7pvcVIHUFsu1FKiF5Hu5cc+MY
+	 LcKUM95FijXPv+8p5I+hYNeoi8YsfasDjOC/teENOMP50uosuuXwTq0XH/aMPN6nv2
+	 YkocZgQOhBO706c6uE51VhTbz7YaOXjPiG2tbgYfYmrxrXBkrK9Md+3A3QQc1hRKof
+	 wOl1toGSyJ6TDnj44HCBykS5FII3CYI456r7PDovemhXAUzXrDmfvOHEo82M245tcO
+	 UVa0qEtZuw0B1Jpl+y2QW6uR/hDz6ZIwBTklAaeU63ciMMDH9+zCVR3ekCOVxjjTSD
+	 k3aLJxZAK5uOA==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: linux-trace-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	mhiramat@kernel.org,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf@vger.kernel.org,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH v5 3/9] tracing/probes: Add a function to search a member of a struct/union
+Date: Mon,  7 Aug 2023 11:54:58 +0900
+Message-Id: <169137689818.271367.4200174950023036516.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <169137686814.271367.11218568219311636206.stgit@devnote2>
+References: <169137686814.271367.11218568219311636206.stgit@devnote2>
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807012556.3146071-1-shaozhengchao@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, Aug 07, 2023 at 09:25:51AM +0800, Zhengchao Shao wrote:
-> Do some cleanups in team driver.
-> 
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Reviewed-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
-> v3: add header file back to team_mode_activebackup.c
-> v2: combine patch 5/6 and patch 6/6 into patch 5/5
-> ---
-> Zhengchao Shao (5):
->   team: add __exit modifier to team_nl_fini()
->   team: remove unreferenced header in broadcast and roundrobin files
->   team: change the init function in the team_option structure to void
->   team: change the getter function in the team_option structure to void
->   team: remove unused input parameters in lb_htpm_select_tx_port and
->     lb_hash_select_tx_port
-> 
->  drivers/net/team/team.c                   | 62 +++++++++--------------
->  drivers/net/team/team_mode_activebackup.c |  8 ++-
->  drivers/net/team/team_mode_broadcast.c    |  1 -
->  drivers/net/team/team_mode_loadbalance.c  | 50 +++++++-----------
->  drivers/net/team/team_mode_roundrobin.c   |  1 -
->  include/linux/if_team.h                   |  4 +-
->  6 files changed, 48 insertions(+), 78 deletions(-)
-> 
-> -- 
-> 2.34.1
-> 
+Add btf_find_struct_member() API to search a member of a given data structure
+or union from the member's name.
+
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ Changes in v3:
+  - Remove simple input check.
+  - Fix unneeded IS_ERR_OR_NULL() check for btf_type_by_id().
+  - Move the code next to btf_get_func_param().
+  - Use for_each_member() macro instead of for-loop.
+  - Use btf_type_skip_modifiers() instead of btf_type_by_id().
+ Changes in v4:
+  - Use a stack for searching in anonymous members instead of nested call.
+ Changes in v5:
+  - Move the generic functions into a new file, trace_btf.c, for avoiding
+    tree-merge conflict.
+  - Return anon_offset for calculating correct offset from root struct.
+---
+ kernel/trace/trace_btf.c |   57 ++++++++++++++++++++++++++++++++++++++++++++++
+ kernel/trace/trace_btf.h |    4 +++
+ 2 files changed, 61 insertions(+)
+
+diff --git a/kernel/trace/trace_btf.c b/kernel/trace/trace_btf.c
+index 82cbbeeda071..109a238437cf 100644
+--- a/kernel/trace/trace_btf.c
++++ b/kernel/trace/trace_btf.c
+@@ -50,3 +50,60 @@ const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s3
+ 		return NULL;
+ }
+ 
++#define BTF_ANON_STACK_MAX	16
++
++/*
++ * Find a member of data structure/union by name and return it.
++ * Return NULL if not found, or -EINVAL if parameter is invalid.
++ * If the member is an member of anonymous union/structure, the offset
++ * of that anonymous union/structure is stored into @anon_offset. Caller
++ * can calculate the correct offset from the root data structure by
++ * adding anon_offset to the member's offset.
++ */
++const struct btf_member *btf_find_struct_member(struct btf *btf,
++						const struct btf_type *type,
++						const char *member_name,
++						u32 *anon_offset)
++{
++	struct {
++		u32 tid;
++		u32 offset;
++	} anon_stack[BTF_ANON_STACK_MAX];
++	const struct btf_member *member;
++	u32 tid, cur_offset = 0;
++	const char *name;
++	int i, top = 0;
++
++retry:
++	if (!btf_type_is_struct(type))
++		return ERR_PTR(-EINVAL);
++
++	for_each_member(i, type, member) {
++		if (!member->name_off) {
++			/* Anonymous union/struct: push it for later use */
++			type = btf_type_skip_modifiers(btf, member->type, &tid);
++			if (type && top < BTF_ANON_STACK_MAX) {
++				anon_stack[top].tid = tid;
++				anon_stack[top++].offset =
++					cur_offset + member->offset;
++			}
++		} else {
++			name = btf_name_by_offset(btf, member->name_off);
++			if (name && !strcmp(member_name, name)) {
++				if (anon_offset)
++					*anon_offset = cur_offset;
++				return member;
++			}
++		}
++	}
++	if (top > 0) {
++		/* Pop from the anonymous stack and retry */
++		tid = anon_stack[--top].tid;
++		cur_offset = anon_stack[top].offset;
++		type = btf_type_by_id(btf, tid);
++		goto retry;
++	}
++
++	return NULL;
++}
++
+diff --git a/kernel/trace/trace_btf.h b/kernel/trace/trace_btf.h
+index 2ef1b2367e1e..fb2919a74225 100644
+--- a/kernel/trace/trace_btf.h
++++ b/kernel/trace/trace_btf.h
+@@ -5,3 +5,7 @@ const struct btf_type *btf_find_func_proto(const char *func_name,
+ 					   struct btf **btf_p);
+ const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
+ 					   s32 *nr);
++const struct btf_member *btf_find_struct_member(struct btf *btf,
++						const struct btf_type *type,
++						const char *member_name,
++						u32 *anon_offset);
+
 
