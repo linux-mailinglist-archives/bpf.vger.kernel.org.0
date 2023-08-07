@@ -1,87 +1,73 @@
-Return-Path: <bpf+bounces-7193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7194-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5F29772DE8
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 20:33:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 614CC772F9B
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 21:43:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7AF51C20CFF
-	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 18:33:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 166602815A5
+	for <lists+bpf@lfdr.de>; Mon,  7 Aug 2023 19:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C845115AEA;
-	Mon,  7 Aug 2023 18:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C1D1643E;
+	Mon,  7 Aug 2023 19:39:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B27716410;
-	Mon,  7 Aug 2023 18:33:37 +0000 (UTC)
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31602171A;
-	Mon,  7 Aug 2023 11:33:33 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id C79B65C0159;
-	Mon,  7 Aug 2023 14:33:30 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 07 Aug 2023 14:33:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
-	cc:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:sender:subject
-	:subject:to:to; s=fm3; t=1691433210; x=1691519610; bh=DRvg+yWrex
-	nAnSV98wMNJk8fdPpNOtRsOx0xI68DJjk=; b=qiAHe5FdIJqaYwx0rcigl6dBud
-	Rg2tnNy20s+bA2ayPEf84TCsT++DsA6Ohc4YoEXNuNWXqjUILFScLDVeIvrLwj9+
-	NZXDNzA1Zg1Dvx/B+Dj0vGUxTlUYDpd1f9H7PqQ9M7giGZOz59Gz5pzqDzTXkRqd
-	2xomMXvY6Y3px0A818c6ab0j6X9cE3ms3AwRm66q8ZLkUGwn64ev5mFyODm4po/g
-	Iic1oyGsHv93MaL3sRPooybgsv+W+Tpu2B1gJ82iVdg7kTbkiVeVKWDkqFXVkGrY
-	LhY5rCAHP7vqBvdLvsCJqmVjKlBG5LBaTbx8TXUZh71MXuwUzImYZWdQX0XQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm3; t=1691433210; x=1691519610; bh=DRvg+yWrexnAn
-	SV98wMNJk8fdPpNOtRsOx0xI68DJjk=; b=AKJlkPbH6czuweAxLwLh3HzQzCBvo
-	Mx73WEW4EzMNmuIkcLBVcaMjDSHlN8v6utwiS1Zrd0i4HJIJfQsc0XB4DEwUJYo3
-	PpQ0Q/b69La76ZlB7IhXbh470+k519iLWziFJM9XdNH353UrwLkRwo1hdAXQ4j5h
-	IDHgp/wXP+OwyDC9f2IjO5m2JP28Xm6jpnP51zxD/cAMBeOes48im56LoRizZcy8
-	spZdnb10nbJwEsGAU1kJrTFXNx9+pZpn8dH3PAulDY4aeGPc/lbiFUFbL1TOXSF2
-	/VlHG25PGVrLfXe3OCjxzpDFje+qqpm6JIoYsYRW/l2jCymhynSbA8fSw==
-X-ME-Sender: <xms:-jjRZIPzCPFLgOdmelOScrtvbBb_tzbQK6hXEo9KaaOSg11lB1Nmdg>
-    <xme:-jjRZO98UQpsUTc8jlLvDVfA6xYeSDWfraG1BOCRW6x1EMJWa_SNzmtm81LVHefjf
-    nW32_0HEoErtjMcEEI>
-X-ME-Received: <xmr:-jjRZPRDpQACdtLHE0LOphcaA5CpxXX9q10Gh4N1tUDD69GiI3O4nTHR-u_ECNxkZvHcipUV_A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrledtgdduvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeforghnjhhushgrkhgruceomhgvsehmrghnjhhushgrkhgrrdhm
-    vgeqnecuggftrfgrthhtvghrnhepvddujeetiefgheehvefhveetieeuudeutdehhedtue
-    etueehjeffhefhueeutdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepmhgvsehmrghnjhhushgrkhgrrdhmvg
-X-ME-Proxy: <xmx:-jjRZAuTPkND5FlrRHANWKN3_eh9pLUyPXtxwBsOjObXfHOUU9GQ9g>
-    <xmx:-jjRZAdCKC4JDSdXrq8l8DNvcj2mWMRyi8YheAU521x-3aC9_erm9g>
-    <xmx:-jjRZE0D0UMTqpOiOHA1exvvdB0YdzK3_nj6uGF5f10vDNjO56RGLQ>
-    <xmx:-jjRZBVkTyRBPnIVc3JPMab5sE1QlXYs7E4B4WWiPeDx2vFRZNfdsw>
-Feedback-ID: i3ea9498d:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 7 Aug 2023 14:33:26 -0400 (EDT)
-From: Manjusaka <me@manjusaka.me>
-To: edumazet@google.com,
-	mhiramat@kernel.org,
-	rostedt@goodmis.org,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Manjusaka <me@manjusaka.me>
-Subject: [PATCH] tracepoint: add new `tcp:tcp_ca_event_set` trace event
-Date: Mon,  7 Aug 2023 18:33:08 +0000
-Message-Id: <20230807183308.9015-1-me@manjusaka.me>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A0481640B
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 19:39:29 +0000 (UTC)
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF0119B9
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 12:38:58 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-583d63ca1e9so56670917b3.1
+        for <bpf@vger.kernel.org>; Mon, 07 Aug 2023 12:38:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691437123; x=1692041923;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3gKfosq/mKZMp2DGktrUPHNHkHFpwamRSk1MNeIWG34=;
+        b=nWn4C/IYGTog75QzHoS+72rLYiUwrDm+fDSxguKwSDSmWqMUuvGuPEVWJiPXDhY9zk
+         RyWUDw9lxPMoXIxPdD2gGeJzn15/AGcLK+Mr9jNtz26H6qAAdIJCYjB/VLB30RIOZk2r
+         mjBYnjlZ8DuEiA5K72l5dzvtsNkB4CH4XRhpkraymgBJ5Yevs6iAropLS47ztfm0+Yfj
+         Lm7QckrCvH4cl/pZ/TahJwvqiGlQzlOyvtPNwNFSD+5znjGJ5gD/w3X2Gu9jFQxZCBvb
+         Y+mdYOmN4/FRpoIpu7dG36HlJrWGrJ4gd1ZE9y97QXKilOgrA+9OZ9Ys2iXWg1ZKkmNF
+         +juQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691437123; x=1692041923;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3gKfosq/mKZMp2DGktrUPHNHkHFpwamRSk1MNeIWG34=;
+        b=UTnAs3N5yxiQcQzkcg36oHQi0QuV4SzVYN6624Le6BCDtV43cVnA8AW0HsTLHH90ev
+         81EWT9P8EwE/XARxdkGkPoifDzjt07zifRnBRSXgXMxTzhCZaWsv8gWpRq0b53TbLw+i
+         NbP+LA0/ZoMVePE4BV9VrjpiAF9Sy8jchYCpejimjtM+AoJGVzT//7WYFevKFTY0Optj
+         NrF4sqjBG+j5r0HrHEf1+LLPJhi9L7C3XrnFOuKbcZFE8X7zCCLy91uqUlkoDP1jxGvq
+         jpbtDV59taWd1I9XgnbhTfxPzlosJ1w+MK/A+T0pFluNJrvprPH5WFsBThXxGLxO7N9N
+         Qtzw==
+X-Gm-Message-State: AOJu0YytfaPfOD3Jq08SWmdkMScVlDUlOrj/q2pPcH+Ygmc5sxrAUFIl
+	Y2GWFT5ICkezN4Xon4WF5t9KemCpIxY=
+X-Google-Smtp-Source: AGHT+IFRWDpV53oApf+C80XsBdV3mz8xKTuE+sBh0ST31B5VVD4knZQrHjX4aJDPcukwiPZuNXvNrw==
+X-Received: by 2002:a81:5b43:0:b0:573:7f55:a40e with SMTP id p64-20020a815b43000000b005737f55a40emr11194621ywb.49.1691437123480;
+        Mon, 07 Aug 2023 12:38:43 -0700 (PDT)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:24f0:2f4c:34ea:71b5])
+        by smtp.gmail.com with ESMTPSA id w125-20020a817b83000000b00583cd6f8e1dsm2904083ywc.15.2023.08.07.12.38.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 12:38:43 -0700 (PDT)
+From: thinker.li@gmail.com
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next] selftests/bpf: remove duplicated functions
+Date: Mon,  7 Aug 2023 12:38:40 -0700
+Message-Id: <20230807193840.567962-1-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -91,123 +77,139 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-In normal use case, the tcp_ca_event would be changed in high frequency.
+From: Kui-Feng Lee <thinker.li@gmail.com>
 
-It's a good indicator to represent the network quanlity.
+The file cgroup_tcp_skb.c contains redundant implementations of the similar
+functions (create_server_sock_v6() and connect_client_server_v6()) found in
+network_helpers.c. Let's eliminate these duplicated functions.
 
-So I propose to add a `tcp:tcp_ca_event_set` trace event
-like `tcp:tcp_cong_state_set` to help the people to
-trace the TCP connection status
-
-Signed-off-by: Manjusaka <me@manjusaka.me>
+Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- include/net/tcp.h          |  9 ++------
- include/trace/events/tcp.h | 45 ++++++++++++++++++++++++++++++++++++++
- net/ipv4/tcp_cong.c        | 10 +++++++++
- 3 files changed, 57 insertions(+), 7 deletions(-)
+ .../selftests/bpf/prog_tests/cgroup_tcp_skb.c | 65 ++-----------------
+ 1 file changed, 7 insertions(+), 58 deletions(-)
 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 0ca972ebd3dd..a68c5b61889c 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -1154,13 +1154,8 @@ static inline bool tcp_ca_needs_ecn(const struct sock *sk)
- 	return icsk->icsk_ca_ops->flags & TCP_CONG_NEEDS_ECN;
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c b/tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c
+index d686ef19f705..3085d539608d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_tcp_skb.c
+@@ -9,6 +9,7 @@
+ #include "testing_helpers.h"
+ #include "cgroup_tcp_skb.skel.h"
+ #include "cgroup_tcp_skb.h"
++#include "network_helpers.h"
+ 
+ #define CGROUP_TCP_SKB_PATH "/test_cgroup_tcp_skb"
+ 
+@@ -58,36 +59,6 @@ static int create_client_sock_v6(void)
+ 	return fd;
  }
  
--static inline void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
+-static int create_server_sock_v6(void)
 -{
--	const struct inet_connection_sock *icsk = inet_csk(sk);
+-	struct sockaddr_in6 addr = {
+-		.sin6_family = AF_INET6,
+-		.sin6_port = htons(0),
+-		.sin6_addr = IN6ADDR_LOOPBACK_INIT,
+-	};
+-	int fd, err;
 -
--	if (icsk->icsk_ca_ops->cwnd_event)
--		icsk->icsk_ca_ops->cwnd_event(sk, event);
+-	fd = socket(AF_INET6, SOCK_STREAM, 0);
+-	if (fd < 0) {
+-		perror("socket");
+-		return -1;
+-	}
+-
+-	err = bind(fd, (struct sockaddr *)&addr, sizeof(addr));
+-	if (err < 0) {
+-		perror("bind");
+-		return -1;
+-	}
+-
+-	err = listen(fd, 1);
+-	if (err < 0) {
+-		perror("listen");
+-		return -1;
+-	}
+-
+-	return fd;
 -}
-+/* from tcp_cong.c */
-+void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event);
- 
- /* From tcp_cong.c */
- void tcp_set_ca_state(struct sock *sk, const u8 ca_state);
-diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-index bf06db8d2046..38415c5f1d52 100644
---- a/include/trace/events/tcp.h
-+++ b/include/trace/events/tcp.h
-@@ -416,6 +416,51 @@ TRACE_EVENT(tcp_cong_state_set,
- 		  __entry->cong_state)
- );
- 
-+TRACE_EVENT(tcp_ca_event_set,
-+
-+	TP_PROTO(struct sock *sk, const u8 ca_event),
-+
-+	TP_ARGS(sk, ca_event),
-+
-+	TP_STRUCT__entry(
-+		__field(const void *, skaddr)
-+		__field(__u16, sport)
-+		__field(__u16, dport)
-+		__array(__u8, saddr, 4)
-+		__array(__u8, daddr, 4)
-+		__array(__u8, saddr_v6, 16)
-+		__array(__u8, daddr_v6, 16)
-+		__field(__u8, ca_event)
-+	),
-+
-+	TP_fast_assign(
-+		struct inet_sock *inet = inet_sk(sk);
-+		__be32 *p32;
-+
-+		__entry->skaddr = sk;
-+
-+		__entry->sport = ntohs(inet->inet_sport);
-+		__entry->dport = ntohs(inet->inet_dport);
-+
-+		p32 = (__be32 *) __entry->saddr;
-+		*p32 = inet->inet_saddr;
-+
-+		p32 = (__be32 *) __entry->daddr;
-+		*p32 =  inet->inet_daddr;
-+
-+		TP_STORE_ADDRS(__entry, inet->inet_saddr, inet->inet_daddr,
-+			   sk->sk_v6_rcv_saddr, sk->sk_v6_daddr);
-+
-+		__entry->ca_event = ca_event;
-+	),
-+
-+	TP_printk("sport=%hu dport=%hu saddr=%pI4 daddr=%pI4 saddrv6=%pI6c daddrv6=%pI6c ca_event=%u",
-+		  __entry->sport, __entry->dport,
-+		  __entry->saddr, __entry->daddr,
-+		  __entry->saddr_v6, __entry->daddr_v6,
-+		  __entry->ca_event)
-+);
-+
- #endif /* _TRACE_TCP_H */
- 
- /* This part must be outside protection */
-diff --git a/net/ipv4/tcp_cong.c b/net/ipv4/tcp_cong.c
-index 1b34050a7538..08e02850d3de 100644
---- a/net/ipv4/tcp_cong.c
-+++ b/net/ipv4/tcp_cong.c
-@@ -34,6 +34,16 @@ struct tcp_congestion_ops *tcp_ca_find(const char *name)
- 	return NULL;
+-
+ static int get_sock_port_v6(int fd)
+ {
+ 	struct sockaddr_in6 addr;
+@@ -104,28 +75,6 @@ static int get_sock_port_v6(int fd)
+ 	return ntohs(addr.sin6_port);
  }
  
-+void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
-+{
-+	const struct inet_connection_sock *icsk = inet_csk(sk);
-+
-+	trace_tcp_ca_event_set(sk, (u8)event);
-+
-+	if (icsk->icsk_ca_ops->cwnd_event)
-+		icsk->icsk_ca_ops->cwnd_event(sk, event);
-+}
-+
- void tcp_set_ca_state(struct sock *sk, const u8 ca_state)
- {
- 	struct inet_connection_sock *icsk = inet_csk(sk);
+-static int connect_client_server_v6(int client_fd, int listen_fd)
+-{
+-	struct sockaddr_in6 addr = {
+-		.sin6_family = AF_INET6,
+-		.sin6_addr = IN6ADDR_LOOPBACK_INIT,
+-	};
+-	int err, port;
+-
+-	port = get_sock_port_v6(listen_fd);
+-	if (port < 0)
+-		return -1;
+-	addr.sin6_port = htons(port);
+-
+-	err = connect(client_fd, (struct sockaddr *)&addr, sizeof(addr));
+-	if (err < 0) {
+-		perror("connect");
+-		return -1;
+-	}
+-
+-	return 0;
+-}
+-
+ /* Connect to the server in a cgroup from the outside of the cgroup. */
+ static int talk_to_cgroup(int *client_fd, int *listen_fd, int *service_fd,
+ 			  struct cgroup_tcp_skb *skel)
+@@ -143,14 +92,14 @@ static int talk_to_cgroup(int *client_fd, int *listen_fd, int *service_fd,
+ 	err = join_cgroup(CGROUP_TCP_SKB_PATH);
+ 	if (!ASSERT_OK(err, "join_cgroup"))
+ 		return -1;
+-	*listen_fd = create_server_sock_v6();
++	*listen_fd = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 2000);
+ 	if (!ASSERT_GE(*listen_fd, 0, "listen_fd"))
+ 		return -1;
+ 	skel->bss->g_sock_port = get_sock_port_v6(*listen_fd);
+ 
+ 	/* Connect client to server */
+-	err = connect_client_server_v6(*client_fd, *listen_fd);
+-	if (!ASSERT_OK(err, "connect_client_server_v6"))
++	err = connect_fd_to_fd(*client_fd, *listen_fd, 500);
++	if (!ASSERT_OK(err, "connect_fd_to_fd"))
+ 		return -1;
+ 	*service_fd = accept(*listen_fd, NULL, NULL);
+ 	if (!ASSERT_GE(*service_fd, 0, "service_fd"))
+@@ -180,7 +129,7 @@ static int talk_to_outside(int *client_fd, int *listen_fd, int *service_fd,
+ 	err = join_root_cgroup();
+ 	if (!ASSERT_OK(err, "join_root_cgroup"))
+ 		return -1;
+-	*listen_fd = create_server_sock_v6();
++	*listen_fd = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 2000);
+ 	if (!ASSERT_GE(*listen_fd, 0, "listen_fd"))
+ 		return -1;
+ 	err = join_cgroup(CGROUP_TCP_SKB_PATH);
+@@ -195,8 +144,8 @@ static int talk_to_outside(int *client_fd, int *listen_fd, int *service_fd,
+ 	skel->bss->g_sock_port = get_sock_port_v6(*listen_fd);
+ 
+ 	/* Connect client to server */
+-	err = connect_client_server_v6(*client_fd, *listen_fd);
+-	if (!ASSERT_OK(err, "connect_client_server_v6"))
++	err = connect_fd_to_fd(*client_fd, *listen_fd, 500);
++	if (!ASSERT_OK(err, "connect_fd_to_fd"))
+ 		return -1;
+ 	*service_fd = accept(*listen_fd, NULL, NULL);
+ 	if (!ASSERT_GE(*service_fd, 0, "service_fd"))
 -- 
 2.34.1
 
