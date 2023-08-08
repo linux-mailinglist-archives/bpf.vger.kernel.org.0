@@ -1,142 +1,103 @@
-Return-Path: <bpf+bounces-7251-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D083773EFA
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 18:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A6512773E88
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 18:32:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AADAD281692
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 16:39:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 616EB2814F7
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 16:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67988171A1;
-	Tue,  8 Aug 2023 16:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B4914A8E;
+	Tue,  8 Aug 2023 16:32:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A48C26B60;
-	Tue,  8 Aug 2023 16:38:03 +0000 (UTC)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AEB47E2;
-	Tue,  8 Aug 2023 09:37:48 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so7259366b.0;
-        Tue, 08 Aug 2023 09:37:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691512580; x=1692117380;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DkmTv84pMJXYa4K1dNGjk/Yamo7BduW6q6khqHXBPa8=;
-        b=Dd8Vgwj0UHNXYwynWoCRfMASq4JLeZpNRyD/tDC9/ATD1zoHWUD7ZBnS7KIY4WDcfK
-         ft9+HC6Im3yySuN5IA5x2mBmsJHnSVZ1PXbqb+ovN4ly171nyV0dASxLtRo3/nlwXxDo
-         aLK1oV5PIlsIJs2UrdsvJjI7JFwh3NrDn54tIZ3w0s3CkR0cC0e71kaoBOGXWS8pJA0W
-         nEmzli7l0wxxb4cN1N2BC61xsSM+p2tbs2xTwZyKuS7hTuFdRVGBsWeUl3I7NzhFcLoR
-         ZEoZ8LhZxB+pGH0RTFuHz9iTIkCjkS5MgAOof+PL6lB2JUE8uTccbwHO/zc5G23VX2UL
-         RJVg==
-X-Gm-Message-State: AOJu0Yx4C50amqYS9gt0/ZdikrVwIQtBhmV0KIH8JFMRFOWB81RRqczP
-	dTuNCJmSONEKBPOItM+Xhm94RIj+iFA=
-X-Google-Smtp-Source: AGHT+IFCb2xDaXaWa86RAvY8VGrjOIB1tiZauK4N/+kpq0thYV6NlgElKwksutrFFgGq6zVtrt/YmA==
-X-Received: by 2002:a17:906:53ce:b0:99c:7300:94b8 with SMTP id p14-20020a17090653ce00b0099c730094b8mr10749291ejo.10.1691502074057;
-        Tue, 08 Aug 2023 06:41:14 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-116.fbsv.net. [2a03:2880:31ff:74::face:b00c])
-        by smtp.gmail.com with ESMTPSA id qh17-20020a170906ecb100b0099cc1ffd8f5sm4484910ejb.53.2023.08.08.06.41.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 06:41:13 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: sdf@google.com,
-	axboe@kernel.dk,
-	asml.silence@gmail.com,
-	willemdebruijn.kernel@gmail.com
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	io-uring@vger.kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Subject: [PATCH v2 8/8] io_uring/cmd: BPF hook for setsockopt cmd
-Date: Tue,  8 Aug 2023 06:40:48 -0700
-Message-Id: <20230808134049.1407498-9-leitao@debian.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230808134049.1407498-1-leitao@debian.org>
-References: <20230808134049.1407498-1-leitao@debian.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D581DA36;
+	Tue,  8 Aug 2023 16:32:04 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A19530A49;
+	Tue,  8 Aug 2023 09:31:51 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RKvyB3v3szrSP3;
+	Tue,  8 Aug 2023 22:02:10 +0800 (CST)
+Received: from [10.174.176.93] (10.174.176.93) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 8 Aug 2023 22:03:20 +0800
+Message-ID: <1f172347-4ed1-a571-18e9-9c5d951f213c@huawei.com>
+Date: Tue, 8 Aug 2023 22:02:58 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH bpf-next] bpf, sockmap: add BPF_F_PERMANENTLY flag for
+ skmsg redirect
+To: Jakub Sitnicki <jakub@cloudflare.com>
+CC: <john.fastabend@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+	<yonghong.song@linux.dev>, <kpsingh@kernel.org>, <sdf@google.com>,
+	<haoluo@google.com>, <jolsa@kernel.org>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<dsahern@kernel.org>, <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <20230805094254.1082999-1-liujian56@huawei.com>
+ <87sf8xwslw.fsf@cloudflare.com>
+From: "liujian (CE)" <liujian56@huawei.com>
+In-Reply-To: <87sf8xwslw.fsf@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.93]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add support for BPF hooks for io_uring setsockopts command.
 
-This implementation follows a similar approach to what
-__sys_setsockopt() does, but, operates only on kernel memory instead of
-user memory (which is also possible, but not preferred since the kernel
-memory is already available)
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- io_uring/uring_cmd.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
-
-diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
-index 3693e5779229..b7b27e4dbddd 100644
---- a/io_uring/uring_cmd.c
-+++ b/io_uring/uring_cmd.c
-@@ -205,23 +205,42 @@ static inline int io_uring_cmd_setsockopt(struct socket *sock,
- {
- 	void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
- 	int optname = READ_ONCE(cmd->sqe->optname);
-+	sockptr_t optval_s = USER_SOCKPTR(optval);
- 	int optlen = READ_ONCE(cmd->sqe->optlen);
- 	int level = READ_ONCE(cmd->sqe->level);
-+	char *kernel_optval = NULL;
- 	int err;
- 
- 	err = security_socket_setsockopt(sock, level, optname);
- 	if (err)
- 		return err;
- 
-+	if (!in_compat_syscall()) {
-+		err = BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock->sk, &level,
-+						     &optname,
-+						     USER_SOCKPTR(optval),
-+						     &optlen,
-+						     &kernel_optval);
-+		if (err < 0)
-+			return err;
-+		if (err > 0)
-+			return 0;
-+
-+		/* Replace optval by the one returned by BPF */
-+		if (kernel_optval)
-+			optval_s = KERNEL_SOCKPTR(kernel_optval);
-+	}
-+
- 	if (level == SOL_SOCKET && !sock_use_custom_sol_socket(sock))
- 		err = sock_setsockopt(sock, level, optname,
--				      USER_SOCKPTR(optval), optlen);
-+				      optval_s, optlen);
- 	else if (unlikely(!sock->ops->setsockopt))
- 		err = -EOPNOTSUPP;
- 	else
- 		err = sock->ops->setsockopt(sock, level, optname,
--					    USER_SOCKPTR(koptval), optlen);
-+					    optval_s, optlen);
- 
-+	kfree(kernel_optval);
- 	return err;
- }
- 
--- 
-2.34.1
-
+On 2023/8/5 20:51, Jakub Sitnicki wrote:
+> On Sat, Aug 05, 2023 at 05:42 PM +08, Liu Jian wrote:
+>> If the sockmap msg redirection function is used only to forward packets
+>> and no other operation, the execution result of the BPF_SK_MSG_VERDICT
+>> program is the same each time. In this case, the BPF program only needs to
+>> be run once. Add BPF_F_PERMANENTLY flag to bpf_msg_redirect_map() and
+>> bpf_msg_redirect_hash() to implement this ability.
+>>
+>> Then we can enable this function in the bpf program as follows:
+>> bpf_msg_redirect_hash(xx, xx, xx, BPF_F_INGRESS | BPF_F_PERMANENTLY);
+>>
+>> Test results using netperf  TCP_STREAM mode:
+>> for i in 1 64 128 512 1k 2k 32k 64k 100k 500k 1m;then
+>> netperf -T 1,2 -t TCP_STREAM -H 127.0.0.1 -l 20 -- -m $i -s 100m,100m -S 100m,100m
+>> done
+>>
+>> before:
+>> 3.84 246.52 496.89 1885.03 3415.29 6375.03 40749.09 48764.40 51611.34 55678.26 55992.78
+>> after:
+>> 4.43 279.20 555.82 2080.79 3870.70 7105.44 41836.41 49709.75 51861.56 55211.00 54566.85
+>>
+>> Signed-off-by: Liu Jian <liujian56@huawei.com>
+>> ---
+> 
+> Interesting idea. Potentially opens up the way to redirect without
+> fallback to backlog thread in the future. If we know the target, then we
+> can propagate backpressure.
+> 
+> If we go this route, we will need tests. selftests/test_sockmap would
+> need to be extended, and we will also need some unit tests in test_progs
+> for corner cases. Corner cases to cover that come to mind: redirect to
+> self, redirect target socket closed.
+Thanks. I will add some tests in v2.
+> 
+> I'm out next week, so won't be able to give it a proper review.
 
