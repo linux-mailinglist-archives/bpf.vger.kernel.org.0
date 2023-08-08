@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-7249-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7244-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78620773EDB
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 18:37:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DBB6773E1A
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 18:26:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A96CE1C20F93
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 16:37:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED34E28165A
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 16:26:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00FDA14AB5;
-	Tue,  8 Aug 2023 16:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B1515489;
+	Tue,  8 Aug 2023 16:23:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F9B14AAF;
-	Tue,  8 Aug 2023 16:37:36 +0000 (UTC)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E266537C90;
-	Tue,  8 Aug 2023 09:37:20 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-4fe44955decso28257e87.1;
-        Tue, 08 Aug 2023 09:37:20 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C611427B;
+	Tue,  8 Aug 2023 16:23:51 +0000 (UTC)
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D780429B5D;
+	Tue,  8 Aug 2023 09:23:36 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-31765aee31bso4407799f8f.1;
+        Tue, 08 Aug 2023 09:23:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691512594; x=1692117394;
+        d=1e100.net; s=20221208; t=1691511776; x=1692116576;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WLStaBoTlMXtsHG0LLCYkbddKzfAcQ5BShqSRpjotqI=;
-        b=cAsypFqqvS+Y1at9eJ3zijNrYf0ExbU767ArQWvaTpHunW+EjPLYRZ68jJ9Fq6bmlQ
-         iKE9VwwR9tXTPRipPom8syovBPjxiwW02P0SMW1DGE4J1AQZhSbX0O0OTWYLg4DuWCj8
-         KXKZZCaf0uczTvDIkX8wAXkAPhVBoaLQ5WPQTNcGvnNY1yuJhbaNoba+ev0wxXSCYbfP
-         KycSjnQmfGq0kiXgIJIpn86msevJGZ63S61ckWBcLijETXUO9zgVophEF/pDr2J8WZDg
-         FwmXajkv+yXcLCq2LbOAud0c9V7h8aIormKQf+aSmxP2NQR+sWRuNZvl2pCuWzvBHc3j
-         fuhQ==
-X-Gm-Message-State: AOJu0YxVEv+LATBsrqAmNCgTsgVDZKzg17PzZdKp9ameNPyhiKujq3D8
-	aET8o3K9vk8NRXEj6wAIclRAehcTsLpAVw==
-X-Google-Smtp-Source: AGHT+IF4pL/BbT9L+kSVOMCx71cAwnol6Gbk2yOMizfp6UByrTTgxHgBZXsIOIp5AcahLoyQBhIXHQ==
-X-Received: by 2002:a17:906:8a66:b0:99b:4210:cc76 with SMTP id hy6-20020a1709068a6600b0099b4210cc76mr10279182ejc.28.1691502069666;
-        Tue, 08 Aug 2023 06:41:09 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-002.fbsv.net. [2a03:2880:31ff:2::face:b00c])
-        by smtp.gmail.com with ESMTPSA id o17-20020a17090611d100b0099bd0b5a2bcsm6750611eja.101.2023.08.08.06.41.09
+        bh=Evi9zaaIocUJUljhUqjZf7aG4nW/p3HKqWc5e4qc1/c=;
+        b=lD9mAXwki50v5R4shgAO1eWV6+duHpa3z72W63T7UURzzxtw3HoaFXmxhgceq6d7FT
+         q7QMebiG8AHcS1p6i/B0zGbry6Gp/YEFrtKAUzPdclXOfk8h/tgW1VQ+8x4o7J0GHXve
+         LXGmBh8JBE8yAkCwAQcIno4ShJJtcF26kmLq1bVkwv4vxQE368eYHIJywEd9IR3x0SdV
+         AiJq2ikEthR2wECttUhEjMf1mX5dUuWOYpVXPzFfwE/iWv6amFPW9/XBVgzsYAHzEon4
+         ZWW/+sWxUHHyxlOr7NwDHktMHE/brgKXLPb09e+epZo32UBm1yqYlHCa5o7AUyHW4OAG
+         8zgQ==
+X-Gm-Message-State: AOJu0Yx4BO3TxX9eF4R6aGXjrCgpMirBYdzlwbS2IyPskoPDLucjHL7f
+	p4FLyEKCFx2cGKEhc3OpbJith4rK6nMObA==
+X-Google-Smtp-Source: AGHT+IF+kwB5pVAkz6onSyAIl+T5+1+ttJMPZ4G+vAb/sWRvLXfUO1y6Zyhx90T3HXmclZ/857Yrnw==
+X-Received: by 2002:a17:906:3046:b0:992:6064:f32b with SMTP id d6-20020a170906304600b009926064f32bmr11160819ejd.46.1691502071224;
+        Tue, 08 Aug 2023 06:41:11 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-020.fbsv.net. [2a03:2880:31ff:14::face:b00c])
+        by smtp.gmail.com with ESMTPSA id d11-20020a170906c20b00b00992d70f8078sm6731416ejz.106.2023.08.08.06.41.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 06:41:09 -0700 (PDT)
+        Tue, 08 Aug 2023 06:41:10 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: sdf@google.com,
 	axboe@kernel.dk,
@@ -51,11 +51,11 @@ To: sdf@google.com,
 	willemdebruijn.kernel@gmail.com,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Song Liu <song@kernel.org>,
 	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
@@ -67,9 +67,9 @@ Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org,
 	io-uring@vger.kernel.org
-Subject: [PATCH v2 5/8] bpf: Leverage sockptr_t in BPF getsockopt hook
-Date: Tue,  8 Aug 2023 06:40:45 -0700
-Message-Id: <20230808134049.1407498-6-leitao@debian.org>
+Subject: [PATCH v2 6/8] bpf: Leverage sockptr_t in BPF setsockopt hook
+Date: Tue,  8 Aug 2023 06:40:46 -0700
+Message-Id: <20230808134049.1407498-7-leitao@debian.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230808134049.1407498-1-leitao@debian.org>
 References: <20230808134049.1407498-1-leitao@debian.org>
@@ -87,116 +87,69 @@ X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Leverage sockptr_t structure to have an argument that is either an
-userspace pointer, or, a kernel pointer.
+Move BPF setsockopt hook (__cgroup_bpf_run_filter_setsockopt()) to use
+sockptr instead of user pointers. This brings flexibility to the
+function, since it could be called with userspace or kernel pointers.
 
-This makes this function flexible, so, we can mix and match user and
-kernel space pointers. The main motivation for this change is to use it
-in the io_uring {g,s}etsockopt(), which will use a userspace pointer for
-*optval, but, a kernel value for optlen.
+This also aligns with the getsockopt() counterpart, which is now using
+sockptr_t types.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- include/linux/bpf-cgroup.h |  5 +++--
- kernel/bpf/cgroup.c        | 20 +++++++++++---------
- net/socket.c               |  5 +++--
- 3 files changed, 17 insertions(+), 13 deletions(-)
+ include/linux/bpf-cgroup.h | 2 +-
+ kernel/bpf/cgroup.c        | 5 +++--
+ net/socket.c               | 2 +-
+ 3 files changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 57e9e109257e..d16cb99fd4f1 100644
+index d16cb99fd4f1..5e3419eb267a 100644
 --- a/include/linux/bpf-cgroup.h
 +++ b/include/linux/bpf-cgroup.h
-@@ -139,9 +139,10 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
- int __cgroup_bpf_run_filter_setsockopt(struct sock *sock, int *level,
- 				       int *optname, char __user *optval,
- 				       int *optlen, char **kernel_optval);
-+
- int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
--				       int optname, char __user *optval,
--				       int __user *optlen, int max_optlen,
-+				       int optname, sockptr_t optval,
-+				       sockptr_t optlen, int max_optlen,
- 				       int retval);
+@@ -137,7 +137,7 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
+ 				   enum cgroup_bpf_attach_type atype);
  
- int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
+ int __cgroup_bpf_run_filter_setsockopt(struct sock *sock, int *level,
+-				       int *optname, char __user *optval,
++				       int *optname, sockptr_t optval,
+ 				       int *optlen, char **kernel_optval);
+ 
+ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
 diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 5b2741aa0d9b..ebc8c58f7e46 100644
+index ebc8c58f7e46..f0dedd4f7f2e 100644
 --- a/kernel/bpf/cgroup.c
 +++ b/kernel/bpf/cgroup.c
-@@ -1875,8 +1875,8 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+@@ -1785,7 +1785,7 @@ static bool sockopt_buf_allocated(struct bpf_sockopt_kern *ctx,
  }
  
- int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
--				       int optname, char __user *optval,
--				       int __user *optlen, int max_optlen,
-+				       int optname, sockptr_t optval,
-+				       sockptr_t optlen, int max_optlen,
- 				       int retval)
+ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+-				       int *optname, char __user *optval,
++				       int *optname, sockptr_t optval,
+ 				       int *optlen, char **kernel_optval)
  {
  	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-@@ -1903,8 +1903,8 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 		 * one that kernel returned as well to let
- 		 * BPF programs inspect the value.
- 		 */
--
--		if (get_user(ctx.optlen, optlen)) {
-+		if (copy_from_sockptr(&ctx.optlen, optlen,
-+				      sizeof(ctx.optlen))) {
- 			ret = -EFAULT;
- 			goto out;
- 		}
-@@ -1915,8 +1915,8 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 		}
- 		orig_optlen = ctx.optlen;
+@@ -1808,7 +1808,8 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
  
--		if (copy_from_user(ctx.optval, optval,
--				   min(ctx.optlen, max_optlen)) != 0) {
-+		if (copy_from_sockptr(ctx.optval, optval,
-+				      min(ctx.optlen, max_optlen))) {
- 			ret = -EFAULT;
- 			goto out;
- 		}
-@@ -1930,7 +1930,8 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 	if (ret < 0)
+ 	ctx.optlen = *optlen;
+ 
+-	if (copy_from_user(ctx.optval, optval, min(*optlen, max_optlen)) != 0) {
++	if (copy_from_sockptr(ctx.optval, optval,
++			      min(*optlen, max_optlen))) {
+ 		ret = -EFAULT;
  		goto out;
- 
--	if (optval && (ctx.optlen > max_optlen || ctx.optlen < 0)) {
-+	if (!sockptr_is_null(optval) &&
-+	    (ctx.optlen > max_optlen || ctx.optlen < 0)) {
- 		if (orig_optlen > PAGE_SIZE && ctx.optlen >= 0) {
- 			pr_info_once("bpf getsockopt: ignoring program buffer with optlen=%d (max_optlen=%d)\n",
- 				     ctx.optlen, max_optlen);
-@@ -1942,11 +1943,12 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
  	}
- 
- 	if (ctx.optlen != 0) {
--		if (optval && copy_to_user(optval, ctx.optval, ctx.optlen)) {
-+		if (!sockptr_is_null(optval) &&
-+		    copy_to_sockptr(optval, ctx.optval, ctx.optlen)) {
- 			ret = -EFAULT;
- 			goto out;
- 		}
--		if (put_user(ctx.optlen, optlen)) {
-+		if (copy_to_sockptr(optlen, &ctx.optlen, sizeof(ctx.optlen))) {
- 			ret = -EFAULT;
- 			goto out;
- 		}
 diff --git a/net/socket.c b/net/socket.c
-index 8df54352af83..c686c6e89441 100644
+index c686c6e89441..b7d22633995a 100644
 --- a/net/socket.c
 +++ b/net/socket.c
-@@ -2306,8 +2306,9 @@ int __sys_getsockopt(int fd, int level, int optname, char __user *optval,
+@@ -2241,7 +2241,7 @@ int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
  
  	if (!in_compat_syscall())
- 		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level, optname,
--						     optval, optlen, max_optlen,
--						     err);
-+						     USER_SOCKPTR(optval),
-+						     USER_SOCKPTR(optlen),
-+						     max_optlen, err);
- out_put:
- 	fput_light(sock->file, fput_needed);
- 	return err;
+ 		err = BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock->sk, &level, &optname,
+-						     user_optval, &optlen,
++						     optval, &optlen,
+ 						     &kernel_optval);
+ 	if (err < 0)
+ 		goto out_put;
 -- 
 2.34.1
 
