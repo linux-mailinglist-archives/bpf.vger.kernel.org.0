@@ -1,231 +1,150 @@
-Return-Path: <bpf+bounces-7234-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7237-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA6D773CD4
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 18:10:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9F91773D50
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 18:16:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5214280FAC
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 16:10:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12627280A73
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 16:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD2F154AD;
-	Tue,  8 Aug 2023 15:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E34814296;
+	Tue,  8 Aug 2023 16:04:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1097E13AC7
-	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 15:52:25 +0000 (UTC)
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48FA1FF3
-	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 08:52:08 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bc0075ab7aso135685ad.1
-        for <bpf@vger.kernel.org>; Tue, 08 Aug 2023 08:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691509924; x=1692114724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kCOXJYzxETCH/0UcvxLQeHGSMM7DSEXKUT9P3Dlmymo=;
-        b=rUrkDjslp3GvFKzWKQbveeKj+rhblEPqNC3vGULuYZekoOdWJotIaWqf/4VJKWKFsu
-         bpTFoiaG0d0oAo+shShaW66RBgpNyq7ZxH5YTVzXU3rqFRGlFnrxSuy0aL+kSsm96CXd
-         VBOzCkDT0MxcQGr00yFl7vhWlgTuZtZoOj+2xQ9zMwRA2mP53MpQ6sOo5C/4ChFg1ILC
-         EO5M1HK8GnMXRfcPrS6tn9lz2Gyo7bB9iLC0k6o9iLvQR06uxekgg9n7nxQG4NIXj6tC
-         4Xer1MH5ohALnTAj81+gDniwiKG4QXRb5Z5Sek1ZT2MqdwJ3AQshnbep9ynhgSnqwiXz
-         VbTw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766F33C37
+	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 16:04:00 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5324A625
+	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 09:03:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1691510586;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IcoJJyPlaY9qGuPjkOscHYRCk2xomxp+tZRbf9NDd6M=;
+	b=BceOlnqX7wBHmIcfgsnGcYAGCyFTxd4PDWE+Hk9r/WDrZmqlL1+Oz+6P5bsyxc/ZpyIg+K
+	JUVwbYCdmqJ16iJ7en37W96oJXz5tNKQqgexM2Q5BLkOn1gAlS6HAv/yC+HA7eqaR9WiyE
+	CFpIHazYtpIlyRe2OmCMeQ31WQ8p9xE=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-511-7T0iVOeCPOCff4kTyyL5oQ-1; Tue, 08 Aug 2023 08:01:08 -0400
+X-MC-Unique: 7T0iVOeCPOCff4kTyyL5oQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99c0fb2d4b0so418894866b.0
+        for <bpf@vger.kernel.org>; Tue, 08 Aug 2023 05:01:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509924; x=1692114724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kCOXJYzxETCH/0UcvxLQeHGSMM7DSEXKUT9P3Dlmymo=;
-        b=jtVvq3oOYNV88cSnpfLslGr21GhsiULhdy3WIMKrnvYSsOqcf0M+G6r/88+MYsAA+2
-         kDbVM0PD6vLPyT06ysz9OwReXL8HbHl9sO3ubKxcghM5LpMQWsP9jn+9u5b5nyZd2HS9
-         dadICXDeAr4V1BabDn7p+M30ZRTNSnHY8ElEL8m5kNAUsCIQz+/WDi/OCw8NCJTca4F8
-         B+o2zN3qEjO7beNy9Gy6I8YWt3ExSgEdk2zWp1JbejHuTBycWSWnNFzNT7BCuUGfog/C
-         nyYigQ856cQM+j3u2wVcVWbYFnh9FfWwmuuOvwz3E5FUVnTIN8ggn6XgI18Tr96Jr6lH
-         gfCw==
-X-Gm-Message-State: AOJu0Yyfg3of7hpJ8UZCpeuVopFSY/k8KhAU6XG/1xOsYC19VVQHQAhB
-	OBN2R85axHa42vrKdikpDNkxsSsYDYr5QxvnlbGfS9O3fXCc8heqNVg=
-X-Google-Smtp-Source: AGHT+IEfM3zZpi2A8IEkcUU11DnAyYRP6HYaBR73Q/AKzK2pHMPvaVHfkSYylHJ4uhb2VI1kTwpMv6BetR8BNyyQJjc=
-X-Received: by 2002:ac8:5951:0:b0:403:96e3:4745 with SMTP id
- 17-20020ac85951000000b0040396e34745mr749543qtz.20.1691484513351; Tue, 08 Aug
- 2023 01:48:33 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691496067; x=1692100867;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IcoJJyPlaY9qGuPjkOscHYRCk2xomxp+tZRbf9NDd6M=;
+        b=DByZK1fU38onHBh+r01xqwscHlsPFfzum44xtMzF/jAh8CYa0tL13md0x838XRggTC
+         ggSHr6ry/CXeEEHg24HXl5nOm4k0+bJY8SklamkG+xmUdrUFIVSthtargcI+vy7X+OAR
+         g39/YkccVNyv1SvAE6vT1aTZCWqVnQPw7JWSqXnf6J3ZhBECzBnzXdNVyNzZjL+Tv8tl
+         r3AUmScCGRhxoKCjwxCiOwkSLXEp6RPT9xjpsNY+25JYqfFCkQ7z4H/dvvTcd17yIVvE
+         xmLyk+Xxx8fdoGxQn1wyXKhcw2+U6CFbnXsVx9lcn3JFaWn7ZpNIdQ3XdY0Rh15N/v7V
+         VAlA==
+X-Gm-Message-State: AOJu0Yze2YRXFYHsjxsxdArDFNTjXFscnXRucpnfq3cRpe4OvMNSPVxM
+	BU7rNoqDPUqN4s/fLmEgLh1AwsScuHBWdXWxv87l/O4B8mnV6Nsihtx80EnQ5Mw0ZQFLqcgFOEi
+	1MvVaXH6M0J6i
+X-Received: by 2002:a17:906:10cb:b0:99b:574f:d201 with SMTP id v11-20020a17090610cb00b0099b574fd201mr12542745ejv.40.1691496067596;
+        Tue, 08 Aug 2023 05:01:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IExprTRWssJI7svYIKpAk9QD7eZgNMMaCHszU1opQzSkcMk4JdoidE7FYhHnoUzGicOwYlHMA==
+X-Received: by 2002:a17:906:10cb:b0:99b:574f:d201 with SMTP id v11-20020a17090610cb00b0099b574fd201mr12542716ejv.40.1691496067077;
+        Tue, 08 Aug 2023 05:01:07 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id lg12-20020a170906f88c00b00992ca779f42sm6538145ejb.97.2023.08.08.05.01.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Aug 2023 05:01:06 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id C9617D255EA; Tue,  8 Aug 2023 14:01:04 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Albert Huang <huangjie.albert@bytedance.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc: Albert Huang <huangjie.albert@bytedance.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Magnus Karlsson
+ <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon
+ <jonathan.lemon@gmail.com>, Pavel Begunkov <asml.silence@gmail.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>, Kees Cook <keescook@chromium.org>,
+ Richard Gobert <richardbgobert@gmail.com>, "open list:NETWORKING DRIVERS"
+ <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "open
+ list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
+Subject: Re: [RFC v3 Optimizing veth xsk performance 0/9]
+In-Reply-To: <20230808031913.46965-1-huangjie.albert@bytedance.com>
+References: <20230808031913.46965-1-huangjie.albert@bytedance.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Tue, 08 Aug 2023 14:01:04 +0200
+Message-ID: <87v8dpbv5r.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CADVnQyn3UMa3Qx6cC1Rx97xLjQdG0eKsiF7oY9UR=b9vU4R-yA@mail.gmail.com>
- <20230808055817.3979-1-me@manjusaka.me> <CANn89iKxJThy4ZVq4do6Z1bOZsRptfN6N8ydPaHQAmYKCjtOnw@mail.gmail.com>
- <af02d2a9-4655-45a1-8c3a-d9921bfdbc35@manjusaka.me>
-In-Reply-To: <af02d2a9-4655-45a1-8c3a-d9921bfdbc35@manjusaka.me>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 8 Aug 2023 10:48:21 +0200
-Message-ID: <CANn89iKQXhqgOTkSchH6Bz-xH--pAoSyEORBtawqBTvgG+dFig@mail.gmail.com>
-Subject: Re: [PATCH v2] tracepoint: add new `tcp:tcp_ca_event` trace event
-To: Manjusaka <me@manjusaka.me>
-Cc: ncardwell@google.com, bpf@vger.kernel.org, davem@davemloft.net, 
-	dsahern@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, rostedt@goodmis.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-16.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-	DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 8, 2023 at 10:46=E2=80=AFAM Manjusaka <me@manjusaka.me> wrote:
->
->
->
-> On 2023/8/8 16:26, Eric Dumazet wrote:
-> > On Tue, Aug 8, 2023 at 7:59=E2=80=AFAM Manjusaka <me@manjusaka.me> wrot=
-e:
-> >>
-> >> In normal use case, the tcp_ca_event would be changed in high frequenc=
-y.
-> >>
-> >> It's a good indicator to represent the network quanlity.
-> >
-> > quality ?
-> >
-> > Honestly, it is more about TCP stack tracing than 'network quality'
-> >
-> >>
-> >> So I propose to add a `tcp:tcp_ca_event` trace event
-> >> like `tcp:tcp_cong_state_set` to help the people to
-> >> trace the TCP connection status
-> >>
-> >> Signed-off-by: Manjusaka <me@manjusaka.me>
-> >> ---
-> >>  include/net/tcp.h          |  9 ++------
-> >>  include/trace/events/tcp.h | 45 +++++++++++++++++++++++++++++++++++++=
-+
-> >>  net/ipv4/tcp_cong.c        | 10 +++++++++
-> >>  3 files changed, 57 insertions(+), 7 deletions(-)
-> >>
-> >> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> >> index 0ca972ebd3dd..a68c5b61889c 100644
-> >> --- a/include/net/tcp.h
-> >> +++ b/include/net/tcp.h
-> >> @@ -1154,13 +1154,8 @@ static inline bool tcp_ca_needs_ecn(const struc=
-t sock *sk)
-> >>         return icsk->icsk_ca_ops->flags & TCP_CONG_NEEDS_ECN;
-> >>  }
-> >>
-> >> -static inline void tcp_ca_event(struct sock *sk, const enum tcp_ca_ev=
-ent event)
-> >> -{
-> >> -       const struct inet_connection_sock *icsk =3D inet_csk(sk);
-> >> -
-> >> -       if (icsk->icsk_ca_ops->cwnd_event)
-> >> -               icsk->icsk_ca_ops->cwnd_event(sk, event);
-> >> -}
-> >> +/* from tcp_cong.c */
-> >> +void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event);
-> >>
-> >>  /* From tcp_cong.c */
-> >>  void tcp_set_ca_state(struct sock *sk, const u8 ca_state);
-> >> diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-> >> index bf06db8d2046..b374eb636af9 100644
-> >> --- a/include/trace/events/tcp.h
-> >> +++ b/include/trace/events/tcp.h
-> >> @@ -416,6 +416,51 @@ TRACE_EVENT(tcp_cong_state_set,
-> >>                   __entry->cong_state)
-> >>  );
-> >>
-> >> +TRACE_EVENT(tcp_ca_event,
-> >> +
-> >> +       TP_PROTO(struct sock *sk, const u8 ca_event),
-> >> +
-> >> +       TP_ARGS(sk, ca_event),
-> >> +
-> >> +       TP_STRUCT__entry(
-> >> +               __field(const void *, skaddr)
-> >> +               __field(__u16, sport)
-> >> +               __field(__u16, dport)
-> >> +               __array(__u8, saddr, 4)
-> >> +               __array(__u8, daddr, 4)
-> >> +               __array(__u8, saddr_v6, 16)
-> >> +               __array(__u8, daddr_v6, 16)
-> >> +               __field(__u8, ca_event)
-> >> +       ),
-> >> +
-> >
-> > Please add the family (look at commit 3dd344ea84e1 ("net: tracepoint:
-> > exposing sk_family in all tcp:tracepoints"))
-> >
-> >
-> >
-> >> +       TP_fast_assign(
-> >> +               struct inet_sock *inet =3D inet_sk(sk);
-> >> +               __be32 *p32;
-> >> +
-> >> +               __entry->skaddr =3D sk;
-> >> +
-> >> +               __entry->sport =3D ntohs(inet->inet_sport);
-> >> +               __entry->dport =3D ntohs(inet->inet_dport);
-> >> +
-> >> +               p32 =3D (__be32 *) __entry->saddr;
-> >> +               *p32 =3D inet->inet_saddr;
-> >> +
-> >> +               p32 =3D (__be32 *) __entry->daddr;
-> >> +               *p32 =3D  inet->inet_daddr;
-> >
-> > We keep copying IPv4 addresses that might contain garbage for IPv6 sock=
-ets :/
-> >
-> >> +
-> >> +               TP_STORE_ADDRS(__entry, inet->inet_saddr, inet->inet_d=
-addr,
-> >> +                          sk->sk_v6_rcv_saddr, sk->sk_v6_daddr);
-> >
-> > I will send a cleanup, because IP_STORE_ADDRS() should really take
-> > care of all details.
-> >
-> >
-> >> +
-> >> +               __entry->ca_event =3D ca_event;
-> >> +       ),
-> >> +
-> >> +       TP_printk("sport=3D%hu dport=3D%hu saddr=3D%pI4 daddr=3D%pI4 s=
-addrv6=3D%pI6c daddrv6=3D%pI6c ca_event=3D%u",
-> >> +                 __entry->sport, __entry->dport,
-> >> +                 __entry->saddr, __entry->daddr,
-> >> +                 __entry->saddr_v6, __entry->daddr_v6,
-> >> +                 __entry->ca_event)
-> >
-> > Please print the symbol instead of numeric ca_event.
-> >
-> > Look at show_tcp_state_name() for instance.
->
-> Thanks for the kindness code review, I still get some issue here(Sorry fo=
-r the first time to contribute):
->
-> 1. > We keep copying IPv4 addresses that might contain garbage for IPv6 s=
-ockets :/
->
-> I'm not getting your means, would you mean that we should only save the I=
-Pv4 Address here?
->
-> 2. > I will send a cleanup, because IP_STORE_ADDRS() should really take c=
-are of all details.
->
-> I think you will make the address assignment code in TP_fast_assign as a =
-new function.
->
-> Should I submit the new change until you send the cleanup patch or I can =
-make this in my patch(cleanup the address assignment)
->
+Albert Huang <huangjie.albert@bytedance.com> writes:
 
-Wait a bit, I am sending fixes today, so that no more copy/paste
-duplicates the issues.
+> AF_XDP is a kernel bypass technology that can greatly improve performance.
+> However,for virtual devices like veth,even with the use of AF_XDP sockets,
+> there are still many additional software paths that consume CPU resources. 
+> This patch series focuses on optimizing the performance of AF_XDP sockets 
+> for veth virtual devices. Patches 1 to 4 mainly involve preparatory work. 
+> Patch 5 introduces tx queue and tx napi for packet transmission, while 
+> patch 8 primarily implements batch sending for IPv4 UDP packets, and patch 9
+> add support for AF_XDP tx need_wakup feature. These optimizations significantly
+> reduce the software path and support checksum offload.
+>
+> I tested those feature with
+> A typical topology is shown below:
+> client(send):                                        server:(recv)
+> veth<-->veth-peer                                    veth1-peer<--->veth1
+>   1       |                                                  |   7
+>           |2                                                6|
+>           |                                                  |
+>         bridge<------->eth0(mlnx5)- switch -eth1(mlnx5)<--->bridge1
+>                   3                    4                 5    
+>              (machine1)                              (machine2)    
+
+I definitely applaud the effort to improve the performance of af_xdp
+over veth, this is something we have flagged as in need of improvement
+as well.
+
+However, looking through your patch series, I am less sure that the
+approach you're taking here is the right one.
+
+AFAIU (speaking about the TX side here), the main difference between
+AF_XDP ZC and the regular transmit mode is that in the regular TX mode
+the stack will allocate an skb to hold the frame and push that down the
+stack. Whereas in ZC mode, there's a driver NDO that gets called
+directly, bypassing the skb allocation entirely.
+
+In this series, you're implementing the ZC mode for veth, but the driver
+code ends up allocating an skb anyway. Which seems to be a bit of a
+weird midpoint between the two modes, and adds a lot of complexity to
+the driver that (at least conceptually) is mostly just a
+reimplementation of what the stack does in non-ZC mode (allocate an skb
+and push it through the stack).
+
+So my question is, why not optimise the non-zc path in the stack instead
+of implementing the zc logic for veth? It seems to me that it would be
+quite feasible to apply the same optimisations (bulking, and even GRO)
+to that path and achieve the same benefits, without having to add all
+this complexity to the veth driver?
+
+-Toke
+
 
