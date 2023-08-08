@@ -1,247 +1,242 @@
-Return-Path: <bpf+bounces-7238-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7239-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1845A773D52
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 18:16:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FF4C773D60
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 18:17:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6480280F6F
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 16:16:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80E611C2030B
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 16:17:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A98014A88;
-	Tue,  8 Aug 2023 16:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2660B14F66;
+	Tue,  8 Aug 2023 16:04:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C081401D
-	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 16:04:38 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123C461B9
-	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 09:04:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1691510628;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0l/zIpBzoNd3YD/UzVcSkuz5BdVlgIEgD7g5fXRAKWw=;
-	b=ML7uOGWXzUzxZEXOLxB4QceX5fhiQrweU9MLinK61S6ITVN0wNk9zPzjzWIl0mSySrHMPk
-	oYyu2D6OcB7l3Gyrac5ik9J/s1WwoiPHmeMrF/KtT7QZASyNX8KKA+dCWtouFcQJIcd6YE
-	LaYF14zvkxqNgC+BoVMOaOr/cgYpSXU=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-90-3wuPiNQbPBOg1-fmOUK6LA-1; Mon, 07 Aug 2023 23:59:21 -0400
-X-MC-Unique: 3wuPiNQbPBOg1-fmOUK6LA-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2ba1949656bso39771621fa.0
-        for <bpf@vger.kernel.org>; Mon, 07 Aug 2023 20:59:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00A2C1427F
+	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 16:04:58 +0000 (UTC)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E61676B5
+	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 09:04:41 -0700 (PDT)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 7A5ACC131814
+	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 22:27:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1691472467; bh=8ZumXcidc6CvWtCXYjGy0cZUt3guAegiqPDrgjlS3t0=;
+	h=From:To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe;
+	b=SIHKzdlo454nGh2Tt8chZ86/5V2rJLANoFwEA8r1wjSWF3nAxvE3nZiFUmvx2J39g
+	 ZfzHBhCGYQE5dW/1jeaJLfKf3otrwAnIjxgXJXGoMB7F/VWjMS4ha+j5+YKJ7tbJag
+	 Yse7EiP9ghrjPXGF60o4cs9oWaDD/sOi8Uf7gid8=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Mon Aug  7 22:27:47 2023
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 4183CC16953C;
+	Mon,  7 Aug 2023 22:27:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1691472467; bh=8ZumXcidc6CvWtCXYjGy0cZUt3guAegiqPDrgjlS3t0=;
+	h=From:To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe;
+	b=SIHKzdlo454nGh2Tt8chZ86/5V2rJLANoFwEA8r1wjSWF3nAxvE3nZiFUmvx2J39g
+	 ZfzHBhCGYQE5dW/1jeaJLfKf3otrwAnIjxgXJXGoMB7F/VWjMS4ha+j5+YKJ7tbJag
+	 Yse7EiP9ghrjPXGF60o4cs9oWaDD/sOi8Uf7gid8=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 832ECC16953C
+ for <bpf@ietfa.amsl.com>; Mon,  7 Aug 2023 22:27:45 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -1.907
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=obs-cr.20221208.gappssmtp.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id bFCPvQc_uvnG for <bpf@ietfa.amsl.com>;
+ Mon,  7 Aug 2023 22:27:45 -0700 (PDT)
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com
+ [IPv6:2607:f8b0:4864:20::82d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 0A978C16953B
+ for <bpf@ietf.org>; Mon,  7 Aug 2023 22:27:44 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id
+ d75a77b69052e-40648d758f1so38790651cf.0
+ for <bpf@ietf.org>; Mon, 07 Aug 2023 22:27:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=obs-cr.20221208.gappssmtp.com; s=20221208; t=1691472464; x=1692077264;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=0EGKCZDiJ4NloB/y09AGL84/WyHzdyCqQmvg2p6jph0=;
+ b=SlK3X/knb1NE0E/HaKA1lbWzqUtT8jVg2u5Rs5GcS8HMCNwddtq+rUk/NLKVuhdPgp
+ BgsBkakLLw6AIJb+qxhbvGeUygXRrwVhx0PTR5/bGFuEMSKBa/Gyygo5PQfQFKI5HKuH
+ g/A8ThNdNiXLU36boTEEJLyqlz4ofN47H7UxJAHLpf6Lh95+J9cxNHXjMygKkpKbwOpo
+ wl8wd5QqDh+Ul9DSfYGalQ3wODqsYA4QaiIOLD8muNL6DoM5rBFI38fTjBxkqJOw+Hv9
+ WyZzTiJHWZsQ/vZm7//ls6vwUKoLLUzSi6DLyQHY2roRgMIkAOyzxkFObOcUB1ToS5N1
+ 84Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691467160; x=1692071960;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0l/zIpBzoNd3YD/UzVcSkuz5BdVlgIEgD7g5fXRAKWw=;
-        b=Jg7zZtyHuTVWW9JzBTPl3CsnlTlOmsaJlaPRWuFwA2ah7I3v2HZ2xENlP6fwA+1Ub6
-         z9fpcd2TpI9Wpn++SGpXlFDBPHrHtZ6dn/3fbf6sTGVGPcBdsj/ORRWhymC8pFALV7vV
-         bgtCneLUogS2RWxpYcRm1Ecsrz5u1xofrE409Oa9DReOr/9Pk1vZAy0ZtruBmC/lPXAq
-         SWg0CpBdllHzUFfPmJXhsY/x/y75SuFRr1lbn4eMwYiE9NqCzeufRa8xGF8jaCEssMe3
-         tVYGwWnsHAkoWOQHbyyQiH2rQBCD/X8n+r529ZC31jBzkGsoNSuvSI1pLtGGQ11IDveW
-         lRIA==
-X-Gm-Message-State: AOJu0YwmZA4JBoDBdptMZxe/81pznqpAFoGFQICYFsoLA686UV8X0gKt
-	XjB/S4nD4xntcSStFJLhEw3j+R6+G1KPF5iGgPPr34mZGtNxllEfIL0VEFHj+PnMhnK6ATBLdnu
-	TrNOIskHtVDmGUkNU7gBfGE+XgzUh
-X-Received: by 2002:a2e:8706:0:b0:2b9:e317:ec4d with SMTP id m6-20020a2e8706000000b002b9e317ec4dmr9509532lji.39.1691467160181;
-        Mon, 07 Aug 2023 20:59:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH/9DQrTRIe+MaGC1ED1i2uMJlzXFS32E9/+NfifHX+gPXxXE3/LPQ40a8wIeObDaFpyFOuHy6vDfjex5ZAdXk=
-X-Received: by 2002:a2e:8706:0:b0:2b9:e317:ec4d with SMTP id
- m6-20020a2e8706000000b002b9e317ec4dmr9509524lji.39.1691467159855; Mon, 07 Aug
- 2023 20:59:19 -0700 (PDT)
+ d=1e100.net; s=20221208; t=1691472464; x=1692077264;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=0EGKCZDiJ4NloB/y09AGL84/WyHzdyCqQmvg2p6jph0=;
+ b=ljsfynCo8e3hLSIlh+MdefmxlhAdRJAEiqthQ+lsLAt29/WyOY7D2qaha9ugDaa3NF
+ d7Uo3i86zLXATOqk9ZSWfqjzEiCAXllR/SEMHcQvc2QFop5SmMy3UA5uNJYxs9dy38jj
+ jTMS375q6a+O9IqTrIloZeYKs8uh4baa3F5Iuu9TiCMx1J2Shlp7BufzlM3EPvDUyvMj
+ ObQMi67DwKdx7VlWGKy0JeKB9LJbVzzeNLR9HSIVW6FCqRon6XBWIT2Gp16DLRrO+0Li
+ 9V8cM7xx7OCacKxQh0ZHgzbojlkAAF579hQmBw+KxUdAcbcWh5dGd5UibOah5YHhOy5s
+ y88Q==
+X-Gm-Message-State: AOJu0YzwV4aYICBseYw2hdmcAk7CUPSv1qwOSHWynGZp5q+oaC824hLW
+ 7pL0S+PzMrg3d6gLTTmzDlWzoQ==
+X-Google-Smtp-Source: AGHT+IEkjCajoCyK/YJSybiGl+0sajLbVjFQGBIgAkqqZ34FP2KU31RJr/WUCkU3reXpydGUSyAhng==
+X-Received: by 2002:ac8:5f08:0:b0:405:50b8:dc1d with SMTP id
+ x8-20020ac85f08000000b0040550b8dc1dmr14718265qta.48.1691472463721; 
+ Mon, 07 Aug 2023 22:27:43 -0700 (PDT)
+Received: from borderland.rhod.uc.edu ([129.137.96.2])
+ by smtp.gmail.com with ESMTPSA id
+ x4-20020ac81204000000b003f9efa2ddb4sm3102304qti.66.2023.08.07.22.27.43
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 07 Aug 2023 22:27:43 -0700 (PDT)
+From: Will Hawkins <hawkinsw@obs.cr>
+To: bpf@vger.kernel.org,
+	bpf@ietf.org
+Cc: Will Hawkins <hawkinsw@obs.cr>
+Date: Tue,  8 Aug 2023 01:27:32 -0400
+Message-ID: <20230808052736.182587-1-hawkinsw@obs.cr>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230710034237.12391-1-xuanzhuo@linux.alibaba.com>
- <20230710034237.12391-6-xuanzhuo@linux.alibaba.com> <ZK/cxNHzI23I6efc@infradead.org>
- <20230713104805-mutt-send-email-mst@kernel.org> <ZLjSsmTfcpaL6H/I@infradead.org>
- <20230720131928-mutt-send-email-mst@kernel.org> <ZL6qPvd6X1CgUD4S@infradead.org>
- <1690251228.3455179-1-xuanzhuo@linux.alibaba.com> <20230725033321-mutt-send-email-mst@kernel.org>
- <1690283243.4048996-1-xuanzhuo@linux.alibaba.com> <1690524153.3603117-1-xuanzhuo@linux.alibaba.com>
- <20230801121543-mutt-send-email-mst@kernel.org> <1690940971.9409487-2-xuanzhuo@linux.alibaba.com>
- <1691388845.9121156-1-xuanzhuo@linux.alibaba.com> <CACGkMEsoivXfBV75whjyB0yreUNh7HeucGLw3Bq9Zvu1NGnj_g@mail.gmail.com>
- <1691462837.6043541-2-xuanzhuo@linux.alibaba.com> <CACGkMEsM4cPaMHz-XowU+qpKZL2atZUwYzcUMUfr7N-GN+J2nQ@mail.gmail.com>
- <1691464183.5436294-1-xuanzhuo@linux.alibaba.com> <CACGkMEvUJ+GhhfkOB4Ux7-bDaPHvkA3xnvnMMQ+dYfWE4ZzFyw@mail.gmail.com>
- <1691466855.2312648-3-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1691466855.2312648-3-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Tue, 8 Aug 2023 11:59:04 +0800
-Message-ID: <CACGkMEtf8SHZUdpGwDgtWv=Pf02t7RCLSZusFmsyi93TZ7dFkw@mail.gmail.com>
-Subject: Re: [PATCH vhost v11 05/10] virtio_ring: introduce virtqueue_dma_dev()
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Christoph Hellwig <hch@infradead.org>, 
-	virtualization@lists.linux-foundation.org, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/s_B2b1uGK-Dl9JkXsOBVPz1psPc>
+Subject: [Bpf] [PATCH] bpf,
+ docs: Fix small typo and define semantics of sign extension
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
+ <bpf.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
+ <mailto:bpf-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
+ <mailto:bpf-request@ietf.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 8, 2023 at 11:57=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
->
-> On Tue, 8 Aug 2023 11:49:08 +0800, Jason Wang <jasowang@redhat.com> wrote=
-:
-> > On Tue, Aug 8, 2023 at 11:12=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.aliba=
-ba.com> wrote:
-> > >
-> > > On Tue, 8 Aug 2023 11:08:09 +0800, Jason Wang <jasowang@redhat.com> w=
-rote:
-> > > > On Tue, Aug 8, 2023 at 10:52=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.a=
-libaba.com> wrote:
-> > > > >
-> > > > > On Tue, 8 Aug 2023 10:26:04 +0800, Jason Wang <jasowang@redhat.co=
-m> wrote:
-> > > > > > On Mon, Aug 7, 2023 at 2:15=E2=80=AFPM Xuan Zhuo <xuanzhuo@linu=
-x.alibaba.com> wrote:
-> > > > > > >
-> > > > > > > On Wed, 2 Aug 2023 09:49:31 +0800, Xuan Zhuo <xuanzhuo@linux.=
-alibaba.com> wrote:
-> > > > > > > > On Tue, 1 Aug 2023 12:17:47 -0400, "Michael S. Tsirkin" <ms=
-t@redhat.com> wrote:
-> > > > > > > > > On Fri, Jul 28, 2023 at 02:02:33PM +0800, Xuan Zhuo wrote=
-:
-> > > > > > > > > > On Tue, 25 Jul 2023 19:07:23 +0800, Xuan Zhuo <xuanzhuo=
-@linux.alibaba.com> wrote:
-> > > > > > > > > > > On Tue, 25 Jul 2023 03:34:34 -0400, "Michael S. Tsirk=
-in" <mst@redhat.com> wrote:
-> > > > > > > > > > > > On Tue, Jul 25, 2023 at 10:13:48AM +0800, Xuan Zhuo=
- wrote:
-> > > > > > > > > > > > > On Mon, 24 Jul 2023 09:43:42 -0700, Christoph Hel=
-lwig <hch@infradead.org> wrote:
-> > > > > > > > > > > > > > On Thu, Jul 20, 2023 at 01:21:07PM -0400, Micha=
-el S. Tsirkin wrote:
-> > > > > > > > > > > > > > > Well I think we can add wrappers like virtio_=
-dma_sync and so on.
-> > > > > > > > > > > > > > > There are NOP for non-dma so passing the dma =
-device is harmless.
-> > > > > > > > > > > > > >
-> > > > > > > > > > > > > > Yes, please.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > I am not sure I got this fully.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Are you mean this:
-> > > > > > > > > > > > > https://lore.kernel.org/all/20230214072704.126660=
--8-xuanzhuo@linux.alibaba.com/
-> > > > > > > > > > > > > https://lore.kernel.org/all/20230214072704.126660=
--9-xuanzhuo@linux.alibaba.com/
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Then the driver must do dma operation(map and syn=
-c) by these virtio_dma_* APIs.
-> > > > > > > > > > > > > No care the device is non-dma device or dma devic=
-e.
-> > > > > > > > > > > >
-> > > > > > > > > > > > yes
-> > > > > > > > > > > >
-> > > > > > > > > > > > > Then the AF_XDP must use these virtio_dma_* APIs =
-for virtio device.
-> > > > > > > > > > > >
-> > > > > > > > > > > > We'll worry about AF_XDP when the patch is posted.
-> > > > > > > > > > >
-> > > > > > > > > > > YES.
-> > > > > > > > > > >
-> > > > > > > > > > > We discussed it. They voted 'no'.
-> > > > > > > > > > >
-> > > > > > > > > > > http://lore.kernel.org/all/20230424082856.15c1e593@ke=
-rnel.org
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > Hi guys, this topic is stuck again. How should I procee=
-d with this work?
-> > > > > > > > > >
-> > > > > > > > > > Let me briefly summarize:
-> > > > > > > > > > 1. The problem with adding virtio_dma_{map, sync} api i=
-s that, for AF_XDP and
-> > > > > > > > > > the driver layer, we need to support these APIs. The cu=
-rrent conclusion of
-> > > > > > > > > > AF_XDP is no.
-> > > > > > > > > >
-> > > > > > > > > > 2. Set dma_set_mask_and_coherent, then we can use DMA A=
-PI uniformly inside
-> > > > > > > > > > driver. This idea seems to be inconsistent with the fra=
-mework design of DMA. The
-> > > > > > > > > > conclusion is no.
-> > > > > > > > > >
-> > > > > > > > > > 3. We noticed that if the virtio device supports VIRTIO=
-_F_ACCESS_PLATFORM, it
-> > > > > > > > > > uses DMA API. And this type of device is the future dir=
-ection, so we only
-> > > > > > > > > > support DMA premapped for this type of virtio device. T=
-he problem with this
-> > > > > > > > > > solution is that virtqueue_dma_dev() only returns dev i=
-n some cases, because
-> > > > > > > > > > VIRTIO_F_ACCESS_PLATFORM is supported in such cases.
-> > > > > >
-> > > > > > Could you explain the issue a little bit more?
-> > > > > >
-> > > > > > E.g if we limit AF_XDP to ACESS_PLATFROM only, why does
-> > > > > > virtqueue_dma_dev() only return dev in some cases?
-> > > > >
-> > > > > The behavior of virtqueue_dma_dev() is not related to AF_XDP.
-> > > > >
-> > > > > The return value of virtqueue_dma_dev() is used for the DMA APIs.=
- So it can
-> > > > > return dma dev when the virtio is with ACCESS_PLATFORM. If virtio=
- is without
-> > > > > ACCESS_PLATFORM then it MUST return NULL.
-> > > > >
-> > > > > In the virtio-net driver, if the virtqueue_dma_dev() returns dma =
-dev,
-> > > > > we can enable AF_XDP. If not, we return error to AF_XDP.
-> > > >
-> > > > Yes, as discussed, just having wrappers in the virtio_ring and doin=
-g
-> > > > the switch there. Then can virtio-net use them without worrying abo=
-ut
-> > > > DMA details?
-> > >
-> > >
-> > > Yes. In the virtio drivers, we can use the wrappers. That is ok.
-> > >
-> > > But we also need to support virtqueue_dma_dev() for AF_XDP, because t=
-hat the
-> > > AF_XDP will not use the wrappers.
-> >
-> > You mean AF_XDP core or other? Could you give me an example?
->
->
-> Yes. The AF_XDP core.
->
-> Now the AF_XDP core will do the dma operation.  Because that the memory i=
-s
-> allocated by the user from the user space.  So before putting the memory =
-to the
-> driver, the AF_XDP will do the dma mapping.
->
->
-> int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
->                unsigned long attrs, struct page **pages, u32 nr_pages)
-> {
+Add additional precision on the semantics of the sign extension
+operations in eBPF. In addition, fix a very minor typo.
 
-I think it's the driver who passes the device pointer here. Anything I miss=
-ed?
+Signed-off-by: Will Hawkins <hawkinsw@obs.cr>
+---
+ .../bpf/standardization/instruction-set.rst   | 39 ++++++++++++++-----
+ 1 file changed, 30 insertions(+), 9 deletions(-)
 
-Thanks
+ Changelog:
+   v0 -> v1:
+     - Separated from an earlier patch -- fly free, patch!
 
+diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
+index 25be958130dc..4f73e9dc8d9e 100644
+--- a/Documentation/bpf/standardization/instruction-set.rst
++++ b/Documentation/bpf/standardization/instruction-set.rst
+@@ -76,6 +76,27 @@ Functions
+   format and returns the equivalent number with the same bit width but
+   opposite endianness.
+ 
++
++Definitions
++-----------
++
++.. glossary::
++
++  Sign Extend
++    To `sign extend an` ``X`` `-bit number, A, to a` ``Y`` `-bit number, B  ,` means to
++
++    #. Copy all ``X`` bits from `A` to the lower ``X`` bits of `B`.
++    #. Set the value of the remaining ``Y`` - ``X`` bits of `B` to the value of
++       the  most-significant bit of `A`.
++
++.. admonition:: Example
++
++  Sign extend an 8-bit number ``A`` to a 16-bit number ``B`` on a big-endian platform:
++  ::
++
++    A:          10000110
++    B: 11111111 10000110
++
+ Registers and calling convention
+ ================================
+ 
+@@ -234,7 +255,7 @@ BPF_SMOD   0x90   1        dst = (src != 0) ? (dst s% src) : dst
+ BPF_XOR    0xa0   0        dst ^= src
+ BPF_MOV    0xb0   0        dst = src
+ BPF_MOVSX  0xb0   8/16/32  dst = (s8,s16,s32)src
+-BPF_ARSH   0xc0   0        sign extending dst >>= (src & mask)
++BPF_ARSH   0xc0   0        :term:`sign extending<Sign Extend>` dst >>= (src & mask)
+ BPF_END    0xd0   0        byte swap operations (see `Byte swap instructions`_ below)
+ =========  =====  =======  ==========================================================
+ 
+@@ -266,22 +287,22 @@ where '(u32)' indicates that the upper 32 bits are zeroed.
+ Note that most instructions have instruction offset of 0. Only three instructions
+ (``BPF_SDIV``, ``BPF_SMOD``, ``BPF_MOVSX``) have a non-zero offset.
+ 
+-The devision and modulo operations support both unsigned and signed flavors.
++The division and modulo operations support both unsigned and signed flavors.
+ 
+ For unsigned operations (``BPF_DIV`` and ``BPF_MOD``), for ``BPF_ALU``,
+ 'imm' is interpreted as a 32-bit unsigned value. For ``BPF_ALU64``,
+-'imm' is first sign extended from 32 to 64 bits, and then interpreted as
+-a 64-bit unsigned value.
++'imm' is first :term:`sign extended<Sign Extend>` from 32 to 64 bits, and then
++interpreted as a 64-bit unsigned value.
+ 
+ For signed operations (``BPF_SDIV`` and ``BPF_SMOD``), for ``BPF_ALU``,
+ 'imm' is interpreted as a 32-bit signed value. For ``BPF_ALU64``, 'imm'
+-is first sign extended from 32 to 64 bits, and then interpreted as a
+-64-bit signed value.
++is first :term:`sign extended<Sign Extend>` from 32 to 64 bits, and then
++interpreted as a 64-bit signed value.
+ 
+ The ``BPF_MOVSX`` instruction does a move operation with sign extension.
+-``BPF_ALU | BPF_MOVSX`` sign extends 8-bit and 16-bit operands into 32
++``BPF_ALU | BPF_MOVSX`` :term:`sign extends<Sign Extend>` 8-bit and 16-bit operands into 32
+ bit operands, and zeroes the remaining upper 32 bits.
+-``BPF_ALU64 | BPF_MOVSX`` sign extends 8-bit, 16-bit, and 32-bit
++``BPF_ALU64 | BPF_MOVSX`` :term:`sign extends<Sign Extend>` 8-bit, 16-bit, and 32-bit
+ operands into 64 bit operands.
+ 
+ Shift operations use a mask of 0x3F (63) for 64-bit operations and 0x1F (31)
+@@ -466,7 +487,7 @@ Where size is one of: ``BPF_B``, ``BPF_H``, ``BPF_W``, or ``BPF_DW`` and
+ Sign-extension load operations
+ ------------------------------
+ 
+-The ``BPF_MEMSX`` mode modifier is used to encode sign-extension load
++The ``BPF_MEMSX`` mode modifier is used to encode :term:`sign-extension<Sign Extend>` load
+ instructions that transfer data between a register and memory.
+ 
+ ``BPF_MEMSX | <size> | BPF_LDX`` means::
+-- 
+2.41.0
+
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
