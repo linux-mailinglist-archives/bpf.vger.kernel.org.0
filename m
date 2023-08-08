@@ -1,150 +1,136 @@
-Return-Path: <bpf+bounces-7237-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9F91773D50
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 18:16:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC05B773F0C
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 18:42:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12627280A73
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 16:16:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95A452802E6
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 16:42:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E34814296;
-	Tue,  8 Aug 2023 16:04:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E72D29DE3;
+	Tue,  8 Aug 2023 16:39:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766F33C37
-	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 16:04:00 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5324A625
-	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 09:03:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1691510586;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IcoJJyPlaY9qGuPjkOscHYRCk2xomxp+tZRbf9NDd6M=;
-	b=BceOlnqX7wBHmIcfgsnGcYAGCyFTxd4PDWE+Hk9r/WDrZmqlL1+Oz+6P5bsyxc/ZpyIg+K
-	JUVwbYCdmqJ16iJ7en37W96oJXz5tNKQqgexM2Q5BLkOn1gAlS6HAv/yC+HA7eqaR9WiyE
-	CFpIHazYtpIlyRe2OmCMeQ31WQ8p9xE=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-511-7T0iVOeCPOCff4kTyyL5oQ-1; Tue, 08 Aug 2023 08:01:08 -0400
-X-MC-Unique: 7T0iVOeCPOCff4kTyyL5oQ-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99c0fb2d4b0so418894866b.0
-        for <bpf@vger.kernel.org>; Tue, 08 Aug 2023 05:01:08 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481CC15486;
+	Tue,  8 Aug 2023 16:39:26 +0000 (UTC)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB227F8397;
+	Tue,  8 Aug 2023 09:39:13 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9b9f0387dso91904961fa.0;
+        Tue, 08 Aug 2023 09:39:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691496067; x=1692100867;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IcoJJyPlaY9qGuPjkOscHYRCk2xomxp+tZRbf9NDd6M=;
-        b=DByZK1fU38onHBh+r01xqwscHlsPFfzum44xtMzF/jAh8CYa0tL13md0x838XRggTC
-         ggSHr6ry/CXeEEHg24HXl5nOm4k0+bJY8SklamkG+xmUdrUFIVSthtargcI+vy7X+OAR
-         g39/YkccVNyv1SvAE6vT1aTZCWqVnQPw7JWSqXnf6J3ZhBECzBnzXdNVyNzZjL+Tv8tl
-         r3AUmScCGRhxoKCjwxCiOwkSLXEp6RPT9xjpsNY+25JYqfFCkQ7z4H/dvvTcd17yIVvE
-         xmLyk+Xxx8fdoGxQn1wyXKhcw2+U6CFbnXsVx9lcn3JFaWn7ZpNIdQ3XdY0Rh15N/v7V
-         VAlA==
-X-Gm-Message-State: AOJu0Yze2YRXFYHsjxsxdArDFNTjXFscnXRucpnfq3cRpe4OvMNSPVxM
-	BU7rNoqDPUqN4s/fLmEgLh1AwsScuHBWdXWxv87l/O4B8mnV6Nsihtx80EnQ5Mw0ZQFLqcgFOEi
-	1MvVaXH6M0J6i
-X-Received: by 2002:a17:906:10cb:b0:99b:574f:d201 with SMTP id v11-20020a17090610cb00b0099b574fd201mr12542745ejv.40.1691496067596;
-        Tue, 08 Aug 2023 05:01:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IExprTRWssJI7svYIKpAk9QD7eZgNMMaCHszU1opQzSkcMk4JdoidE7FYhHnoUzGicOwYlHMA==
-X-Received: by 2002:a17:906:10cb:b0:99b:574f:d201 with SMTP id v11-20020a17090610cb00b0099b574fd201mr12542716ejv.40.1691496067077;
-        Tue, 08 Aug 2023 05:01:07 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id lg12-20020a170906f88c00b00992ca779f42sm6538145ejb.97.2023.08.08.05.01.06
+        d=1e100.net; s=20221208; t=1691512449; x=1692117249;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kJKYbjr1Hb9WHuWOPFqDpGQyS7eVaxQ0WI1Ze6xYIuI=;
+        b=IdbhSqHeOKswzkca5dluhYktrPp8i3K2kABdafIB0YCr22D+8AOEVhSPSP3fGPGALT
+         FQb1E33gANLCwK5rk1smFLTU/c2kau6oLb1SLgvtqVKWshiEPRYJ8btoFhDTjImDCtKa
+         o/XDpULcAZzTmvYhVZRsPUhhUih70si+6sxmYmyvjWBikCuweB+BLG318AjShkPdnqNG
+         iJHh8lSrgOcDvmw2aY7uiHmYU4ATDfdnqoFEUzetQ4aZve4ojynHiygUW5iY2KPhyajj
+         dFiD1DDWRLSBS7wl/JUZQrQtWVRoJNo7PyNVhYrHFieDp96nf5z9KLP9WvhvefAEPYZP
+         HzxQ==
+X-Gm-Message-State: AOJu0YxhFGLUp4AM3WVUQ7K0Oc9o5z6zt4oErMQmJPEzvSIMjaV/yDUJ
+	Al39XtyUR7CuuYkidfQZ3uSZBTBtq5Q=
+X-Google-Smtp-Source: AGHT+IHG80o/f8oaKNOhKd6kp2JtfXZl2uTVt4PvEONnauM2jHioMJyp37dG+uFfwEgRQxRkt9dZ1A==
+X-Received: by 2002:a17:906:535d:b0:99c:db8d:f9a with SMTP id j29-20020a170906535d00b0099cdb8d0f9amr3999486ejo.58.1691502062242;
+        Tue, 08 Aug 2023 06:41:02 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-010.fbsv.net. [2a03:2880:31ff:a::face:b00c])
+        by smtp.gmail.com with ESMTPSA id g4-20020a170906520400b0099bd7b26639sm6774937ejm.6.2023.08.08.06.41.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 05:01:06 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id C9617D255EA; Tue,  8 Aug 2023 14:01:04 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Albert Huang <huangjie.albert@bytedance.com>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: Albert Huang <huangjie.albert@bytedance.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
- Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Magnus Karlsson
- <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon
- <jonathan.lemon@gmail.com>, Pavel Begunkov <asml.silence@gmail.com>,
- Yunsheng Lin <linyunsheng@huawei.com>, Kees Cook <keescook@chromium.org>,
- Richard Gobert <richardbgobert@gmail.com>, "open list:NETWORKING DRIVERS"
- <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "open
- list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
-Subject: Re: [RFC v3 Optimizing veth xsk performance 0/9]
-In-Reply-To: <20230808031913.46965-1-huangjie.albert@bytedance.com>
-References: <20230808031913.46965-1-huangjie.albert@bytedance.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Tue, 08 Aug 2023 14:01:04 +0200
-Message-ID: <87v8dpbv5r.fsf@toke.dk>
+        Tue, 08 Aug 2023 06:41:01 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: sdf@google.com,
+	axboe@kernel.dk,
+	asml.silence@gmail.com,
+	willemdebruijn.kernel@gmail.com
+Cc: bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	io-uring@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Subject: [PATCH v2 0/8] io_uring: Initial support for {s,g}etsockopt commands
+Date: Tue,  8 Aug 2023 06:40:40 -0700
+Message-Id: <20230808134049.1407498-1-leitao@debian.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Albert Huang <huangjie.albert@bytedance.com> writes:
+This patchset adds support for getsockopt (SOCKET_URING_OP_GETSOCKOPT)
+and setsockopt (SOCKET_URING_OP_SETSOCKOPT) in io_uring commands.
+SOCKET_URING_OP_SETSOCKOPT implements generic case, covering all levels
+nad optnames. On the other hand, SOCKET_URING_OP_GETSOCKOPT just
+implements level SOL_SOCKET case, which seems to be the
+most common level parameter for get/setsockopt(2).
 
-> AF_XDP is a kernel bypass technology that can greatly improve performance.
-> However,for virtual devices like veth,even with the use of AF_XDP sockets,
-> there are still many additional software paths that consume CPU resources. 
-> This patch series focuses on optimizing the performance of AF_XDP sockets 
-> for veth virtual devices. Patches 1 to 4 mainly involve preparatory work. 
-> Patch 5 introduces tx queue and tx napi for packet transmission, while 
-> patch 8 primarily implements batch sending for IPv4 UDP packets, and patch 9
-> add support for AF_XDP tx need_wakup feature. These optimizations significantly
-> reduce the software path and support checksum offload.
->
-> I tested those feature with
-> A typical topology is shown below:
-> client(send):                                        server:(recv)
-> veth<-->veth-peer                                    veth1-peer<--->veth1
->   1       |                                                  |   7
->           |2                                                6|
->           |                                                  |
->         bridge<------->eth0(mlnx5)- switch -eth1(mlnx5)<--->bridge1
->                   3                    4                 5    
->              (machine1)                              (machine2)    
+struct proto_ops->setsockopt() uses sockptr instead of userspace
+pointers, which makes it easy to bind to io_uring. Unfortunately
+proto_ops->getsockopt() callback uses userspace pointers, except for
+SOL_SOCKET, which is handled by sk_getsockopt(). Thus, this patchset
+leverages sk_getsockopt() to imlpement the SOCKET_URING_OP_GETSOCKOPT
+case.
 
-I definitely applaud the effort to improve the performance of af_xdp
-over veth, this is something we have flagged as in need of improvement
-as well.
+In order to support BPF hooks, I modified the hooks to use  sockptr, so,
+it is flexible enough to accept user or kernel pointers for
+optval/optlen.
 
-However, looking through your patch series, I am less sure that the
-approach you're taking here is the right one.
+PS1: For getsockopt command, the optlen field is not a userspace
+pointers, but an absolute value, so this is slightly different from
+getsockopt(2) behaviour. The new optlen value is returned in cqe->res.
 
-AFAIU (speaking about the TX side here), the main difference between
-AF_XDP ZC and the regular transmit mode is that in the regular TX mode
-the stack will allocate an skb to hold the frame and push that down the
-stack. Whereas in ZC mode, there's a driver NDO that gets called
-directly, bypassing the skb allocation entirely.
+PS2: The userspace pointers need to be alive until the operation is
+completed.
 
-In this series, you're implementing the ZC mode for veth, but the driver
-code ends up allocating an skb anyway. Which seems to be a bit of a
-weird midpoint between the two modes, and adds a lot of complexity to
-the driver that (at least conceptually) is mostly just a
-reimplementation of what the stack does in non-ZC mode (allocate an skb
-and push it through the stack).
+These changes were tested with a new test[1] in liburing. On the BPF
+side, I tested that no regression was introduced by running "test_progs"
+self test using "sockopt" test case.
 
-So my question is, why not optimise the non-zc path in the stack instead
-of implementing the zc logic for veth? It seems to me that it would be
-quite feasible to apply the same optimisations (bulking, and even GRO)
-to that path and achieve the same benefits, without having to add all
-this complexity to the veth driver?
+[1] Link: https://github.com/leitao/liburing/blob/getsock/test/socket-getsetsock-cmd.c
 
--Toke
+RFC -> V1:
+	* Copy user memory at io_uring subsystem, and call proto_ops
+	  callbacks using kernel memory
+	* Implement all the cases for SOCKET_URING_OP_SETSOCKOPT
+V1 -> V2
+	* Implemented the BPF part
+	* Using user pointers from optval to avoid kmalloc in io_uring part.
+
+Breno Leitao (8):
+  net: expose sock_use_custom_sol_socket
+  io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+  io_uring/cmd: Introduce SOCKET_URING_OP_SETSOCKOPT
+  io_uring/cmd: Extend support beyond SOL_SOCKET
+  bpf: Leverage sockptr_t in BPF getsockopt hook
+  bpf: Leverage sockptr_t in BPF setsockopt hook
+  io_uring/cmd: BPF hook for getsockopt cmd
+  io_uring/cmd: BPF hook for setsockopt cmd
+
+ include/linux/bpf-cgroup.h    |  7 +--
+ include/linux/net.h           |  5 +++
+ include/uapi/linux/io_uring.h |  8 ++++
+ io_uring/uring_cmd.c          | 82 +++++++++++++++++++++++++++++++++++
+ kernel/bpf/cgroup.c           | 25 ++++++-----
+ net/socket.c                  | 12 ++---
+ 6 files changed, 117 insertions(+), 22 deletions(-)
+
+-- 
+2.34.1
 
 
