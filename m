@@ -1,144 +1,191 @@
-Return-Path: <bpf+bounces-7220-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7221-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C59E7737B3
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 05:25:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4B05773995
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 12:21:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 064A61C20D91
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 03:25:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DAC0281752
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 10:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D6EF9D5;
-	Tue,  8 Aug 2023 03:21:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80239EAD1;
+	Tue,  8 Aug 2023 10:20:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E2B8F9C4
-	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 03:21:51 +0000 (UTC)
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC79213E
-	for <bpf@vger.kernel.org>; Mon,  7 Aug 2023 20:21:28 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-686be28e1a8so3619235b3a.0
-        for <bpf@vger.kernel.org>; Mon, 07 Aug 2023 20:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691464888; x=1692069688;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DZBR/L7n+c0K4+2jvj2qF9IKHrGGr2P5oMHLWIibsdA=;
-        b=P/V9ljiS+RZV06sSAc2COBIOCp251sZvy3FmMZoG/OkNXoyMAnbNe24EKZNrbifKu0
-         TMw9/bIBHlaHnzbtUtWzPHTqYsy2sFGtkRs+xt8vbZzsiS0x7Rc9mKFj2RktzhmElS+2
-         SIeHhQhwHgkVPUcIXzdkakUQs/PkxTbSAUA2zU2DOYbE+GTmiLeGsM6DB34oY7IioJoX
-         u8Jqfm2ETyE34gqRs7naQ2o/4eL8Sh9ZBIOH/9/XmQWQmnyKbBt5QKI6jrWVjEbTDSob
-         NWueoCvGAVQgsnFEvyZJztfQr+58ypf9d4mbmvIy2JWUjfWc7DNBUg9/MfRu1XPR5mvw
-         xldg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691464888; x=1692069688;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DZBR/L7n+c0K4+2jvj2qF9IKHrGGr2P5oMHLWIibsdA=;
-        b=H+kf8+2pXjasMoCM2/SGN2BTkcLt4LYd/9JTVzQ1PBIlD7uRtIooeNEYXGMLjmEw6b
-         4oK8mCRBdLSKcsdhmPrqtvDrsAvX1AD/pbf1YWEBvUEKYGu0EpvG1cMKB2gdV0uvx6A3
-         n9qwmW5AfjMRV7nAJ7AZHosFIf6B4k1pb0IiPXd1NRu26VAPkVoj+JZfkYhBSTelB+/S
-         Cywkxekby4xbZgDUqfoL5oVJU62z+UFNuPjDPo/JUq2m8Glt0WlXTSby1mZhASnAnHwS
-         1ve4MOFxPwOvYw9vSea3cEemWDC9j2k41kgmbwAJbdsuCxl31KWlvsWCpdaLsgH8XZVi
-         fvZg==
-X-Gm-Message-State: AOJu0Yys+vzQ4AvCwe7fy2TMIQsYP0Oy0LPn7QPtc3/E8ZS9SUAqVMjg
-	s9rzuBNmkRlOkpZbvq5g+DRCDQ==
-X-Google-Smtp-Source: AGHT+IFOa9auvTw+52jDK1Q58QGt14PBhuKoWVXpCxAriS0oNTmVYC/tpubsf59++3sdyZXGMGacNA==
-X-Received: by 2002:a05:6a20:9193:b0:140:d536:d424 with SMTP id v19-20020a056a20919300b00140d536d424mr6753584pzd.53.1691464887689;
-        Mon, 07 Aug 2023 20:21:27 -0700 (PDT)
-Received: from C02FG34NMD6R.bytedance.net ([2408:8656:30f8:e020::b])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c10d00b001b896686c78sm7675800pli.66.2023.08.07.20.21.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 20:21:27 -0700 (PDT)
-From: Albert Huang <huangjie.albert@bytedance.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: Albert Huang <huangjie.albert@bytedance.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Kees Cook <keescook@chromium.org>,
-	Richard Gobert <richardbgobert@gmail.com>,
-	"open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
-Subject: [RFC v3 Optimizing veth xsk performance 9/9] veth: add support for AF_XDP tx need_wakup feature
-Date: Tue,  8 Aug 2023 11:19:13 +0800
-Message-Id: <20230808031913.46965-10-huangjie.albert@bytedance.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20230808031913.46965-1-huangjie.albert@bytedance.com>
-References: <20230808031913.46965-1-huangjie.albert@bytedance.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202BEDDBF
+	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 10:20:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12030C433C7;
+	Tue,  8 Aug 2023 10:20:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691490057;
+	bh=3D8UlFaQhT9sb59ACbUa5dShagqWM3haJ/9jO2RNvK4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jzT3dAbhEjiZBW7Dluo41cuVp4S/mvEjxsBDpyQB6jAJfcz9vFfLHpcTjMUf4pHRB
+	 BpFpxbUHqdgB1in+UDTXMXptX5Ok7LAHuHO8NqMSdnRk9Z4F9dVdJse1XjA0G382Rp
+	 OkuK7nw8evOoQ/606MpZuZgsqPhFetNfNeEQmbp/rCr+SMqb+W7U7mP73cqNDUI8L2
+	 ceTpHRgVJCUajztU5xIPvHiIp9e3ZHXxsD3PJEOAHorzAcHTW/X0oXG0KIUsmVMglt
+	 3NBxz+LMy8nEZgkdxu33HXBFFmHQ9C3Yo3bhfdRy5WyB9ALb0h+dh+AFAfmz7hrE8y
+	 EnKi2PRm3w6ZA==
+Date: Tue, 8 Aug 2023 19:20:51 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>, Mark
+ Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RFC PATCH v2 6/6] bpf: Enable kprobe_multi feature if
+ CONFIG_FPROBE is enabled
+Message-Id: <20230808192051.ef24cfae1532f9e7779bae43@kernel.org>
+In-Reply-To: <ZNFrS4YGcW8dyxnF@krava>
+References: <169139090386.324433.6412259486776991296.stgit@devnote2>
+	<169139097360.324433.2521527070503682979.stgit@devnote2>
+	<ZNFrS4YGcW8dyxnF@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-this patch only support for tx need_wakup feature.
+On Tue, 8 Aug 2023 00:08:11 +0200
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
----
- drivers/net/veth.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+> On Mon, Aug 07, 2023 at 03:49:33PM +0900, Masami Hiramatsu (Google) wrote:
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Enable kprobe_multi feature if CONFIG_FPROBE is enabled. The pt_regs is
+> > converted from ftrace_regs by ftrace_partial_regs(), thus some registers
+> > may always returns 0. But it should be enough for function entry (access
+> > arguments) and exit (access return value).
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > ---
+> >  kernel/trace/bpf_trace.c |   22 +++++++++-------------
+> >  1 file changed, 9 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 99c5f95360f9..0725272a3de2 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2460,7 +2460,7 @@ static int __init bpf_event_init(void)
+> >  fs_initcall(bpf_event_init);
+> >  #endif /* CONFIG_MODULES */
+> >  
+> > -#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> > +#ifdef CONFIG_FPROBE
+> >  struct bpf_kprobe_multi_link {
+> >  	struct bpf_link link;
+> >  	struct fprobe fp;
+> > @@ -2482,6 +2482,8 @@ struct user_syms {
+> >  	char *buf;
+> >  };
+> >  
+> > +static DEFINE_PER_CPU(struct pt_regs, bpf_kprobe_multi_pt_regs);
+> > +
+> >  static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32 cnt)
+> >  {
+> >  	unsigned long __user usymbol;
+> > @@ -2623,13 +2625,14 @@ static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
+> >  
+> >  static int
+> >  kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+> > -			   unsigned long entry_ip, struct pt_regs *regs)
+> > +			   unsigned long entry_ip, struct ftrace_regs *fregs)
+> >  {
+> >  	struct bpf_kprobe_multi_run_ctx run_ctx = {
+> >  		.link = link,
+> >  		.entry_ip = entry_ip,
+> >  	};
+> >  	struct bpf_run_ctx *old_run_ctx;
+> > +	struct pt_regs *regs;
+> >  	int err;
+> >  
+> >  	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
+> > @@ -2639,6 +2642,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+> >  
+> >  	migrate_disable();
+> >  	rcu_read_lock();
+> > +	regs = ftrace_partial_regs(fregs, this_cpu_ptr(&bpf_kprobe_multi_pt_regs));
+> 
+> you did check for !regs when returned from ftrace_get_regs, why don't we need
+> to check it in here? both ftrace_partial_regs and ftrace_get_regs call
+> arch_ftrace_get_regs on x86
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 70489d017b51..7c60c64ef10b 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -1447,9 +1447,9 @@ static int veth_xsk_tx_xmit(struct veth_sq *sq, struct xsk_buff_pool *xsk_pool,
- 
- 	memset(&tuple, 0, sizeof(tuple));
- 
--	/* set xsk wake up flag, to do: where to disable */
-+	/* clear xsk wake up flag */
- 	if (xsk_uses_need_wakeup(xsk_pool))
--		xsk_set_tx_need_wakeup(xsk_pool);
-+		xsk_clear_tx_need_wakeup(xsk_pool);
- 
- 	while (budget-- > 0) {
- 		unsigned int truesize = 0;
-@@ -1539,12 +1539,15 @@ static int veth_poll_tx(struct napi_struct *napi, int budget)
- 	if (pool)
- 		done  = veth_xsk_tx_xmit(sq, pool, budget);
- 
--	rcu_read_unlock();
--
- 	if (done < budget) {
-+		/* set xsk wake up flag */
-+		if (xsk_uses_need_wakeup(pool))
-+			xsk_set_tx_need_wakeup(pool);
-+
- 		/* if done < budget, the tx ring is no buffer */
- 		napi_complete_done(napi, done);
- 	}
-+	rcu_read_unlock();
- 
- 	return done;
- }
+Good catch! I think ftrace_partial_regs must not return NULL (unless getting
+invalid parameter, e.g. fregs == NULL).
+
+> 
+> also also I can't find the place ensuring fregs->regs.cs != 0 for FL_SAVE_REGS
+> flag as stated in arch_ftrace_get_regs, any hint?
+
+Oops, I misread that part. Maybe ftrace_partial_regs must forcibly return
+ftrace_regs::regs if HAVE_PT_REGS_COMPAT_FTRACE_REGS=y because it does not
+care the regs is partial or not.
+
+Thank you!
+
+> 
+> thanks,
+> jirka
+> 
+> 
+> >  	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+> >  	err = bpf_prog_run(link->link.prog, regs);
+> >  	bpf_reset_run_ctx(old_run_ctx);
+> > @@ -2656,13 +2660,9 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
+> >  			  void *data)
+> >  {
+> >  	struct bpf_kprobe_multi_link *link;
+> > -	struct pt_regs *regs = ftrace_get_regs(fregs);
+> > -
+> > -	if (!regs)
+> > -		return 0;
+> >  
+> >  	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
+> > -	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
+> > +	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
+> >  	return 0;
+> >  }
+> >  
+> > @@ -2672,13 +2672,9 @@ kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
+> >  			       void *data)
+> >  {
+> >  	struct bpf_kprobe_multi_link *link;
+> > -	struct pt_regs *regs = ftrace_get_regs(fregs);
+> > -
+> > -	if (!regs)
+> > -		return;
+> >  
+> >  	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
+> > -	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
+> > +	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
+> >  }
+> >  
+> >  static int symbols_cmp_r(const void *a, const void *b, const void *priv)
+> > @@ -2918,7 +2914,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+> >  	kvfree(cookies);
+> >  	return err;
+> >  }
+> > -#else /* !CONFIG_DYNAMIC_FTRACE_WITH_REGS */
+> > +#else /* !CONFIG_FPROBE */
+> >  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> >  {
+> >  	return -EOPNOTSUPP;
+> > 
+
+
 -- 
-2.20.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
