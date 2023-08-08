@@ -1,65 +1,63 @@
-Return-Path: <bpf+bounces-7228-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7232-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AEDA773B42
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 17:47:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03BF7773C32
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 18:01:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03EE6280D14
-	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 15:47:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32C3E1C20DD6
+	for <lists+bpf@lfdr.de>; Tue,  8 Aug 2023 16:01:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC64114292;
-	Tue,  8 Aug 2023 15:42:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B6D1989B;
+	Tue,  8 Aug 2023 15:47:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91919134BC;
-	Tue,  8 Aug 2023 15:42:36 +0000 (UTC)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF371FCD;
-	Tue,  8 Aug 2023 08:42:07 -0700 (PDT)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5232d593646so4480642a12.0;
-        Tue, 08 Aug 2023 08:42:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 349AF18B1F;
+	Tue,  8 Aug 2023 15:47:16 +0000 (UTC)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB267EC1;
+	Tue,  8 Aug 2023 08:47:00 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2b9e6cc93d8so93815801fa.0;
+        Tue, 08 Aug 2023 08:47:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691509275; x=1692114075;
+        d=1e100.net; s=20221208; t=1691509614; x=1692114414;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ChPT/lHzXHpKHyXlCB2W1LoY3mnd1UwLMSxiYiQjKmg=;
-        b=Aq0HpdvkekfQbw+pkrnpkt0EUqI2o9wYwT779VYgsIebtZ323pxA6fUaihE2No2Ojq
-         W+eHddT/Cjqr7KndK6kk7jMXK25ESTvHK3ysjzsCh5Jtf2p9o0Uw6ITaTpWtPuAUtejm
-         1B4K776/QDeS5jATJ6wdyf9Ec5ZGmqxHCm+OS/hojhjIrwCqo/B4HS9erRyY/HYjeuea
-         Sa6P0gFa3Fbm1EBj6eJf1d+/5txs1pLbAIZKAMAz80zPvwZXSgT8V2B0bLagraQxyGbF
-         FTyiJ8vobs7KBmAV/Ybuwklvhx9wquFj3MrPO2J3nl48A7j9flOZc0B4ty6gnOfz+u4C
-         HT2g==
-X-Gm-Message-State: AOJu0Yw8iWUPcnIcnQoeBnZc5XwHH7eX3ZwUHposQ6766q/FczVlOHWH
-	ERLrGmt4N6zSeBnJSY87Rf/50b+YRNQ=
-X-Google-Smtp-Source: AGHT+IEtMdELcO0r2mho0d8dPID1Lr2S9Ywk3n1aEbs+vzrbTUu1jEy7bEX0QBvnj23d6IU/jIcNYQ==
-X-Received: by 2002:a17:907:770b:b0:99b:ce9c:a94a with SMTP id kw11-20020a170907770b00b0099bce9ca94amr12488319ejc.4.1691502063751;
-        Tue, 08 Aug 2023 06:41:03 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-018.fbsv.net. [2a03:2880:31ff:12::face:b00c])
-        by smtp.gmail.com with ESMTPSA id h23-20020a1709067cd700b00992f309cfe8sm6775236ejp.178.2023.08.08.06.41.03
+        bh=r9Qw/F0brYOmpW9rwZop//d4heqX4w4nP09GhRsKIik=;
+        b=T4BQwXpXdsCuYvtifYD93c+gJl9rrz++/mR+4CynnqIvkUphBdDQ+lCgTW1D5Bi+Pd
+         VzU5S/44j9RzUIScS4QKgvxAIEgjOrRy8tDji1l921ZgNNxUFqrtES9Ziv9X6D3dHBib
+         G7vP+ZDfprdS+SwSUuLv58BN+BeGptCqziUtKUOPiyKKG+ub3vTum+zI2bk9IZ7ZIcAE
+         iSuXNg9/rEwuUhXUCKN7a5MpHlyfMeNolQIQE3qUpI2Py1QozWcyrh4m/mjELJrfeoB+
+         nLeM6ywoACfu+zpBe7U8v+g8pnpYv0x5wwMHOJx4MIrMUzz8K2294mNLzrRmA+yMxSJu
+         R+/A==
+X-Gm-Message-State: AOJu0Yw68NILxUrlrTB/SJ1JZ9iclpb5ZGtyYQEOzYatsri3G6neoxCe
+	+OsiLVGqovmnCRwfei7OonbnVu78xjE=
+X-Google-Smtp-Source: AGHT+IEqhkwYaYSGAbqiw/LtPf5oEi+RgNvatwnvbRraW5eX4hKHlnSYlRuneFBiMukqQzpmDTlkmg==
+X-Received: by 2002:aa7:dad0:0:b0:51d:9ddf:f0f6 with SMTP id x16-20020aa7dad0000000b0051d9ddff0f6mr10088298eds.36.1691502065220;
+        Tue, 08 Aug 2023 06:41:05 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-012.fbsv.net. [2a03:2880:31ff:c::face:b00c])
+        by smtp.gmail.com with ESMTPSA id bc5-20020a056402204500b005230f06de15sm6767707edb.78.2023.08.08.06.41.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 06:41:03 -0700 (PDT)
+        Tue, 08 Aug 2023 06:41:04 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: sdf@google.com,
 	axboe@kernel.dk,
 	asml.silence@gmail.com,
-	willemdebruijn.kernel@gmail.com,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
+	willemdebruijn.kernel@gmail.com
 Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org,
-	io-uring@vger.kernel.org
-Subject: [PATCH v2 1/8] net: expose sock_use_custom_sol_socket
-Date: Tue,  8 Aug 2023 06:40:41 -0700
-Message-Id: <20230808134049.1407498-2-leitao@debian.org>
+	io-uring@vger.kernel.org,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Subject: [PATCH v2 2/8] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+Date: Tue,  8 Aug 2023 06:40:42 -0700
+Message-Id: <20230808134049.1407498-3-leitao@debian.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230808134049.1407498-1-leitao@debian.org>
 References: <20230808134049.1407498-1-leitao@debian.org>
@@ -77,48 +75,113 @@ X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Exposing function sock_use_custom_sol_socket(), so it could be used by
-io_uring subsystem.
+Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
+where a sockptr_t is either userspace or kernel space, and handled as
+such.
 
-This function will be used in the function io_uring_cmd_setsockopt() in
-the coming patch, so, let's move it to the socket.h header file.
+Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
+
+Differently from the getsockopt(2), the optlen field is not a userspace
+pointers. In getsockopt(2), userspace provides optlen pointer, which is
+overwritten by the kernel.  In this implementation, userspace passes a
+u32, and the new value is returned in cqe->res. I.e., optlen is not a
+pointer.
+
+Important to say that userspace needs to keep the pointer alive until
+the CQE is completed.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- include/linux/net.h | 5 +++++
- net/socket.c        | 5 -----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ include/uapi/linux/io_uring.h |  7 +++++++
+ io_uring/uring_cmd.c          | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
 
-diff --git a/include/linux/net.h b/include/linux/net.h
-index 41c608c1b02c..14a956e4530e 100644
---- a/include/linux/net.h
-+++ b/include/linux/net.h
-@@ -355,4 +355,9 @@ u32 kernel_sock_ip_overhead(struct sock *sk);
- #define MODULE_ALIAS_NET_PF_PROTO_NAME(pf, proto, name) \
- 	MODULE_ALIAS("net-pf-" __stringify(pf) "-proto-" __stringify(proto) \
- 		     name)
-+
-+static inline bool sock_use_custom_sol_socket(const struct socket *sock)
-+{
-+	return test_bit(SOCK_CUSTOM_SOCKOPT, &sock->flags);
-+}
- #endif	/* _LINUX_NET_H */
-diff --git a/net/socket.c b/net/socket.c
-index 1dc23f5298ba..8df54352af83 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2216,11 +2216,6 @@ SYSCALL_DEFINE4(recv, int, fd, void __user *, ubuf, size_t, size,
- 	return __sys_recvfrom(fd, ubuf, size, flags, NULL, NULL);
- }
+diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+index 9fc7195f25df..8152151080db 100644
+--- a/include/uapi/linux/io_uring.h
++++ b/include/uapi/linux/io_uring.h
+@@ -43,6 +43,10 @@ struct io_uring_sqe {
+ 	union {
+ 		__u64	addr;	/* pointer to buffer or iovecs */
+ 		__u64	splice_off_in;
++		struct {
++			__u32	level;
++			__u32	optname;
++		};
+ 	};
+ 	__u32	len;		/* buffer size or number of iovecs */
+ 	union {
+@@ -79,6 +83,7 @@ struct io_uring_sqe {
+ 	union {
+ 		__s32	splice_fd_in;
+ 		__u32	file_index;
++		__u32	optlen;
+ 		struct {
+ 			__u16	addr_len;
+ 			__u16	__pad3[1];
+@@ -89,6 +94,7 @@ struct io_uring_sqe {
+ 			__u64	addr3;
+ 			__u64	__pad2[1];
+ 		};
++		__u64	optval;
+ 		/*
+ 		 * If the ring is initialized with IORING_SETUP_SQE128, then
+ 		 * this field is used for 80 bytes of arbitrary command data
+@@ -729,6 +735,7 @@ struct io_uring_recvmsg_out {
+ enum {
+ 	SOCKET_URING_OP_SIOCINQ		= 0,
+ 	SOCKET_URING_OP_SIOCOUTQ,
++	SOCKET_URING_OP_GETSOCKOPT,
+ };
  
--static bool sock_use_custom_sol_socket(const struct socket *sock)
--{
--	return test_bit(SOCK_CUSTOM_SOCKOPT, &sock->flags);
--}
--
- /*
-  *	Set a socket option. Because we don't know the option lengths we have
-  *	to pass the user mode parameter for the protocols to sort out.
+ #ifdef __cplusplus
+diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+index 8e7a03c1b20e..582931879482 100644
+--- a/io_uring/uring_cmd.c
++++ b/io_uring/uring_cmd.c
+@@ -166,6 +166,32 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
+ }
+ EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
+ 
++static inline int io_uring_cmd_getsockopt(struct socket *sock,
++					  struct io_uring_cmd *cmd)
++{
++	void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
++	int optname = READ_ONCE(cmd->sqe->optname);
++	int optlen = READ_ONCE(cmd->sqe->optlen);
++	int level = READ_ONCE(cmd->sqe->level);
++	int err;
++
++	err = security_socket_getsockopt(sock, level, optname);
++	if (err)
++		return err;
++
++	if (level == SOL_SOCKET) {
++		err = sk_getsockopt(sock->sk, level, optname,
++				    USER_SOCKPTR(optval),
++				    KERNEL_SOCKPTR(&optlen));
++		if (err)
++			return err;
++
++		return optlen;
++	}
++
++	return -EOPNOTSUPP;
++}
++
+ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+ {
+ 	struct socket *sock = cmd->file->private_data;
+@@ -187,6 +213,8 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+ 		if (ret)
+ 			return ret;
+ 		return arg;
++	case SOCKET_URING_OP_GETSOCKOPT:
++		return io_uring_cmd_getsockopt(sock, cmd);
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
 -- 
 2.34.1
 
