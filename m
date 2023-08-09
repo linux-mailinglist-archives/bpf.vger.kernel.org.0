@@ -1,363 +1,283 @@
-Return-Path: <bpf+bounces-7399-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7400-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F148377674E
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 20:30:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E90A776980
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 22:09:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F6DB281327
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 18:30:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4254C281D72
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 20:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44DF01DA2C;
-	Wed,  9 Aug 2023 18:29:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D1E024539;
+	Wed,  9 Aug 2023 20:09:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65FF1DA33;
-	Wed,  9 Aug 2023 18:29:46 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2451BFA;
-	Wed,  9 Aug 2023 11:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691605785; x=1723141785;
-  h=date:from:to:cc:subject:message-id;
-  bh=JO28v4AThAH9S4Jz1TvazVqFHkRKaGQWvh2JuhCpHm4=;
-  b=b1RoipgsXlr8EZ9owtB8RXOXpgjmyUg4u7knS3KflInD4V+PZ2q8whH3
-   vGpwas4kykVvnDJqvsqN4wCTGXdpf5RTa9ke4MtxAR2P19bF41+LMhUkJ
-   pYaQJOVR5H62c2Ep9kUsAzLDwMBMTeq+5Yb7P1yjcCJWabKUtB0k6Nebz
-   gXgPYzc2opTT9jbJ1TozwWpSoqslltuEpyoIDORCGtH1cPMFVlgG8q8/c
-   45vVu96w2Jay0DsIUfT8nG/MRS1D3JQOE5OinFHiWb9Yt1FBk7uVkvF49
-   C+wTZzsH3oxJd3EYUCTm7NpCQBWm0pD6aFLjBWWWJBCr4TdgGXZ8CkceT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="370099551"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="370099551"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 11:29:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="846078968"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="846078968"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Aug 2023 11:29:41 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qTnwD-0006Jy-0G;
-	Wed, 09 Aug 2023 18:29:41 +0000
-Date: Thu, 10 Aug 2023 02:29:19 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
- amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-alpha@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux-input@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: [linux-next:master] BUILD REGRESSION
- 21ef7b1e17d039053edaeaf41142423810572741
-Message-ID: <202308100207.to2feahW-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CB2418B01
+	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 20:09:19 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED8010C4
+	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 13:09:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1691611757;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2UI4MpUxYa7asPwT6vRagp+E5hi0tX/TsRpk9l93Frc=;
+	b=VodCzcxjmf+Gcc4LU9ZjTYwDTjkK+xZ30P0d0CT8+fZ4CVRTO8RzaWjA+Ff5gtG8GOfhRL
+	D+q/NRjgm6LYyub91UAEktfGi5S+6+p9nn7CNq8NQALzScLFBvRoM8ez85yeOER5desWcm
+	p0d5vGMV+Ff23F8tIUUZGkFKbsZhh+8=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-248-dOpP81VYNmmI_Fx43Fg1SA-1; Wed, 09 Aug 2023 16:09:14 -0400
+X-MC-Unique: dOpP81VYNmmI_Fx43Fg1SA-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-51a5296eb8eso71424a12.2
+        for <bpf@vger.kernel.org>; Wed, 09 Aug 2023 13:09:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691611753; x=1692216553;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2UI4MpUxYa7asPwT6vRagp+E5hi0tX/TsRpk9l93Frc=;
+        b=BoSEfTDcxFZ6/z2maFHauWHzjxOvogK+dqh2HJgE+s5a6bUwOFCps2lBW/KMhEqETS
+         a7UOjuZVQklcyrEab5HoVPmnm0xX8OSBRsHR8cWp/8bNf3DyBvT/cYLcaaCAfz3ibxzt
+         s9/S528iH04yh4f29l+K/6NspSu2AiRvfdiEu8zFoeTum8tfx7O8X3p0ES14GF4r1P4S
+         d5i/u6+/dMuW2QWP8W8JgfL/kRNug7Kc0ONW6phX+CWYio/mAGdGg+XavlZkX3lvFqzb
+         HprnA4LMnv0K/Y8VBfRO1Ycmf8q9aYzQwRbWGkSQQAMB4OWKrTxdfRYXTKsiXcquPmcq
+         ch0Q==
+X-Gm-Message-State: AOJu0Yw68L07sdlWjS5VzJff1p4zijk5doMg9RoU3498ShMMYLRVi8gt
+	etmnBNEKMpu1io8nsUcQn0UCvWrMVPIPCiL6xMYJGUeDpxHDXFHBIDygJ0HWR14BkjlTuB0qiCa
+	f08i3js0PBRa+
+X-Received: by 2002:aa7:ce0d:0:b0:523:2e0e:5462 with SMTP id d13-20020aa7ce0d000000b005232e0e5462mr153793edv.42.1691611753137;
+        Wed, 09 Aug 2023 13:09:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH+VvPzm14EVc5hzu8EUxTUqBK3Dx3Y6e/2dvKvte00uHaf7IepyuqRwWUvlhzIq20YEDM4ag==
+X-Received: by 2002:aa7:ce0d:0:b0:523:2e0e:5462 with SMTP id d13-20020aa7ce0d000000b005232e0e5462mr153769edv.42.1691611752756;
+        Wed, 09 Aug 2023 13:09:12 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id b18-20020aa7c6d2000000b005233ec5f16bsm3817868eds.79.2023.08.09.13.09.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 13:09:11 -0700 (PDT)
+From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <0cd7fa8a-6fe6-9945-4656-b4bd941b3d3c@redhat.com>
+Date: Wed, 9 Aug 2023 22:09:10 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc: brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+ jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, willemb@google.com,
+ dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org,
+ maciej.fijalkowski@intel.com, hawk@kernel.org, netdev@vger.kernel.org,
+ xdp-hints@xdp-project.net, Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [xdp-hints] [PATCH bpf-next 0/9] xsk: TX metadata
+Content-Language: en-US
+To: Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+References: <20230809165418.2831456-1-sdf@google.com>
+In-Reply-To: <20230809165418.2831456-1-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 21ef7b1e17d039053edaeaf41142423810572741  Add linux-next specific files for 20230809
 
-Error/Warning reports:
 
-https://lore.kernel.org/oe-kbuild-all/202307251531.p8ZLFTMZ-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308081459.US5rLYAY-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308091728.NEJhgUPP-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308091820.0dPY7D6f-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308092009.dDIMqss4-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308100149.2rvEPRIG-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202308100247.oHTlRKLx-lkp@intel.com
+On 09/08/2023 18.54, Stanislav Fomichev wrote:
+> This series implements initial TX metadata (offloads) for AF_XDP.
+> See patch #2 for the main implementation and mlx5-one for the
+> example on how to consume the metadata on the device side.
+> 
+> Starting with two types of offloads:
+> - request TX timestamp (and write it back into the metadata area)
+> - request TX checksum offload
+> 
+> Changes since last RFC:
+> - add /* private: */ comments to headers (Simon)
+> - handle metadata only in the first frag (Simon)
+> - rename xdp_hw_metadata flags (Willem)
+> - s/tmo_request_checksum/tmo_request_timestamp/ in xdp_metadata_ops
+>    comment (Willem)
+> - Documentation/networking/xsk-tx-metadata.rst
+> 
+> RFC v4: https://lore.kernel.org/bpf/20230724235957.1953861-1-sdf@google.com/
+> 
+> Performance:
+> 
+> I've implemented a small xskgen tool to try to saturate single tx queue:
+> https://github.com/fomichev/xskgen/tree/master
+> 
+> Here are the performance numbers with some analysis.
+> 
 
-Error/Warning: (recently discovered and may have been fixed)
+What is the clock freq GHz for the CPU used for this benchmark?
 
-../lib/gcc/loongarch64-linux/12.3.0/plugin/include/config/loongarch/loongarch-opts.h:31:10: fatal error: loongarch-def.h: No such file or directory
-drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_replay.c:37: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-drivers/video/backlight/lp855x_bl.c:252:11: warning: variable 'ret' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-drivers/video/backlight/lp855x_bl.c:252:7: warning: variable 'ret' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-include/linux/list.h:53:13: error: '__preserve_most__' calling convention is not supported for this target [-Werror,-Wignored-attributes]
-include/linux/list.h:53:13: warning: '__preserve_most__' calling convention is not supported for this target [-Wignored-attributes]
-lib/list_debug.c:20:1: warning: '__preserve_most__' calling convention is not supported for this target [-Wignored-attributes]
-warning: unsafe memchr() usage lacked '__read_overflow' warning in lib/test_fortify/read_overflow-memchr.c
-warning: unsafe memchr_inv() usage lacked '__read_overflow' warning in lib/test_fortify/read_overflow-memchr_inv.c
-warning: unsafe memcmp() usage lacked '__read_overflow' warning in lib/test_fortify/read_overflow-memcmp.c
-warning: unsafe memcmp() usage lacked '__read_overflow2' warning in lib/test_fortify/read_overflow2-memcmp.c
-warning: unsafe memcpy() usage lacked '__read_overflow2' warning in lib/test_fortify/read_overflow2-memcpy.c
-warning: unsafe memcpy() usage lacked '__read_overflow2_field' warning in lib/test_fortify/read_overflow2_field-memcpy.c
-warning: unsafe memcpy() usage lacked '__write_overflow' warning in lib/test_fortify/write_overflow-memcpy.c
-warning: unsafe memcpy() usage lacked '__write_overflow_field' warning in lib/test_fortify/write_overflow_field-memcpy.c
-warning: unsafe memmove() usage lacked '__read_overflow2' warning in lib/test_fortify/read_overflow2-memmove.c
-warning: unsafe memmove() usage lacked '__read_overflow2_field' warning in lib/test_fortify/read_overflow2_field-memmove.c
-warning: unsafe memmove() usage lacked '__write_overflow' warning in lib/test_fortify/write_overflow-memmove.c
-warning: unsafe memmove() usage lacked '__write_overflow_field' warning in lib/test_fortify/write_overflow_field-memmove.c
-warning: unsafe memscan() usage lacked '__read_overflow' warning in lib/test_fortify/read_overflow-memscan.c
-warning: unsafe memset() usage lacked '__write_overflow' warning in lib/test_fortify/write_overflow-memset.c
-warning: unsafe memset() usage lacked '__write_overflow_field' warning in lib/test_fortify/write_overflow_field-memset.c
-warning: unsafe strcpy() usage lacked '__write_overflow' warning in lib/test_fortify/write_overflow-strcpy-lit.c
-warning: unsafe strcpy() usage lacked '__write_overflow' warning in lib/test_fortify/write_overflow-strcpy.c
-warning: unsafe strlcpy() usage lacked '__write_overflow' warning in lib/test_fortify/write_overflow-strlcpy-src.c
-warning: unsafe strlcpy() usage lacked '__write_overflow' warning in lib/test_fortify/write_overflow-strlcpy.c
-warning: unsafe strncpy() usage lacked '__write_overflow' warning in lib/test_fortify/write_overflow-strncpy-src.c
-warning: unsafe strncpy() usage lacked '__write_overflow' warning in lib/test_fortify/write_overflow-strncpy.c
-warning: unsafe strscpy() usage lacked '__write_overflow' warning in lib/test_fortify/write_overflow-strscpy.c
+> 1. Baseline. Running with commit eb62e6aef940 ("Merge branch 'bpf:
+> Support bpf_get_func_ip helper in uprobes'"), nothing from this series:
+> 
+> - with 1400 bytes of payload: 98 gbps, 8 mpps
+> ./xskgen -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000000 packets 116960000000 bits, took 1.189130 sec, 98.357623 gbps 8.409509 mpps
+> 
+> - with 200 bytes of payload: 49 gbps, 23 mpps
+> ./xskgen -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000064 packets 20960134144 bits, took 0.422235 sec, 49.640921 gbps 23.683645 mpps
+> 
+> 2. Adding single commit that supports reserving XDP_TX_METADATA_LEN
+>     changes nothing numbers-wise.
+> 
+> - baseline for 1400
+> ./xskgen -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000000 packets 116960000000 bits, took 1.189247 sec, 98.347946 gbps 8.408682 mpps
+> 
+> - baseline for 200
+> ./xskgen -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000000 packets 20960000000 bits, took 0.421248 sec, 49.756913 gbps 23.738985 mpps
+> 
+> 3. Adding -M flag causes xskgen to reserve the metadata and fill it, but
+>     doesn't set XDP_TX_METADATA descriptor option.
+> 
+> - new baseline for 1400 (with only filling the metadata)
+> ./xskgen -M -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000000 packets 116960000000 bits, took 1.188767 sec, 98.387657 gbps 8.412077 mpps
+> 
+> - new baseline for 200 (with only filling the metadata)
+> ./xskgen -M -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000000 packets 20960000000 bits, took 0.410213 sec, 51.095407 gbps 24.377579 mpps
+> (the numbers go sligtly up here, not really sure why, maybe some cache-related
+> side-effects?
+> 
 
-Unverified Error/Warning (likely false positive, please contact us if interested):
+Notice this change/improvement (23.7 to 24.4 Mpps) is only 1 nanosec.
+  - (1/24.377579-1/23.738985)*10^3 = -1.103499 nanosec
 
-drivers/block/ublk_drv.c:445 ublk_setup_iod_zoned() warn: signedness bug returning '(-95)'
-drivers/gpu/drm/tests/drm_exec_test.c:166 test_prepare_array() error: uninitialized symbol 'ret'.
-drivers/input/touchscreen/iqs7211.c:1761 iqs7211_parse_cycles() error: buffer overflow 'cycle_alloc[0]' 2 <= 41
-drivers/regulator/max77857-regulator.c:430:28: sparse: sparse: symbol 'max77857_id' was not declared. Should it be static?
-drivers/soundwire/qcom.c:905:22-23: WARNING opportunity for min()
-drivers/video/fbdev/core/fb_chrdev.c:239 do_fscreeninfo_to_user() warn: ignoring unreachable code.
-kernel/workqueue.c:324:40: sparse: sparse: duplicate [noderef]
-kernel/workqueue.c:324:40: sparse: sparse: multiple address spaces given: __percpu & __rcu
-mm/khugepaged.c:2138 collapse_file() warn: variable dereferenced before check 'cc' (see line 1787)
-net/xdp/xsk.c:696 xsk_build_skb() error: 'skb' dereferencing possible ERR_PTR()
-sh4-linux-gcc: internal compiler error: Segmentation fault signal terminated program cc1
-{standard input}: Warning: end of file not at end of a line; newline inserted
-{standard input}:927: Error: pcrel too far
+This 1 nanosec could be noise in your testlab.
 
-Error/Warning ids grouped by kconfigs:
 
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- alpha-randconfig-r082-20230808
-|   |-- kernel-workqueue.c:sparse:sparse:duplicate-noderef
-|   `-- kernel-workqueue.c:sparse:sparse:multiple-address-spaces-given:__percpu-__rcu
-|-- alpha-randconfig-r093-20230809
-|   `-- arch-alpha-include-asm-xchg.h:sparse:sparse:cast-truncates-bits-from-constant-value-(eb9f-becomes-9f)
-|-- arc-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- arm-allmodconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- arm-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- arm64-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- i386-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- i386-buildonly-randconfig-r006-20230809
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- i386-randconfig-r082-20230809
-|   `-- drivers-regulator-max77857-regulator.c:sparse:sparse:symbol-max77857_id-was-not-declared.-Should-it-be-static
-|-- loongarch-allmodconfig
-|   `-- lib-gcc-loongarch64-linux-..-plugin-include-config-loongarch-loongarch-opts.h:fatal-error:loongarch-def.h:No-such-file-or-directory
-|-- microblaze-randconfig-r035-20230808
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- mips-allmodconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- mips-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- mips-randconfig-m031-20230809
-|   |-- drivers-gpu-drm-tests-drm_exec_test.c-test_prepare_array()-error:uninitialized-symbol-ret-.
-|   |-- drivers-input-touchscreen-iqs7211.c-iqs7211_parse_cycles()-error:buffer-overflow-cycle_alloc
-|   `-- net-xdp-xsk.c-xsk_build_skb()-error:skb-dereferencing-possible-ERR_PTR()
-|-- parisc-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- powerpc-allmodconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- riscv-allmodconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- riscv-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- s390-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- s390-randconfig-m041-20230809
-|   |-- drivers-block-ublk_drv.c-ublk_setup_iod_zoned()-warn:signedness-bug-returning
-|   |-- drivers-video-fbdev-core-fb_chrdev.c-do_fscreeninfo_to_user()-warn:ignoring-unreachable-code.
-|   `-- mm-khugepaged.c-collapse_file()-warn:variable-dereferenced-before-check-cc-(see-line-)
-|-- s390-randconfig-r044-20230808
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- sh-allmodconfig
-|   |-- sh4-linux-gcc:internal-compiler-error:Segmentation-fault-signal-terminated-program-cc1
-|   |-- standard-input:Error:pcrel-too-far
-|   `-- standard-input:Warning:end-of-file-not-at-end-of-a-line-newline-inserted
-|-- sparc-allyesconfig
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-|-- um-randconfig-r051-20230809
-|   `-- drivers-soundwire-qcom.c:WARNING-opportunity-for-min()
-`-- x86_64-allyesconfig
-    `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce-dmub_replay.c:warning:This-comment-starts-with-but-isn-t-a-kernel-doc-comment.-Refer-Documentation-doc-guide-kernel-doc.rst
-clang_recent_errors
-|-- arm-randconfig-r005-20230809
-|   |-- include-linux-list.h:error:__preserve_most__-calling-convention-is-not-supported-for-this-target-Werror-Wignored-attributes
-|   |-- include-linux-list.h:warning:__preserve_most__-calling-convention-is-not-supported-for-this-target
-|   |-- lib-list_debug.c:warning:__preserve_most__-calling-convention-is-not-supported-for-this-target
-|   |-- warning:unsafe-memchr()-usage-lacked-__read_overflow-warning-in-lib-test_fortify-read_overflow-memchr.c
-|   |-- warning:unsafe-memchr_inv()-usage-lacked-__read_overflow-warning-in-lib-test_fortify-read_overflow-memchr_inv.c
-|   |-- warning:unsafe-memcmp()-usage-lacked-__read_overflow-warning-in-lib-test_fortify-read_overflow-memcmp.c
-|   |-- warning:unsafe-memcmp()-usage-lacked-__read_overflow2-warning-in-lib-test_fortify-read_overflow2-memcmp.c
-|   |-- warning:unsafe-memcpy()-usage-lacked-__read_overflow2-warning-in-lib-test_fortify-read_overflow2-memcpy.c
-|   |-- warning:unsafe-memcpy()-usage-lacked-__read_overflow2_field-warning-in-lib-test_fortify-read_overflow2_field-memcpy.c
-|   |-- warning:unsafe-memcpy()-usage-lacked-__write_overflow-warning-in-lib-test_fortify-write_overflow-memcpy.c
-|   |-- warning:unsafe-memcpy()-usage-lacked-__write_overflow_field-warning-in-lib-test_fortify-write_overflow_field-memcpy.c
-|   |-- warning:unsafe-memmove()-usage-lacked-__read_overflow2-warning-in-lib-test_fortify-read_overflow2-memmove.c
-|   |-- warning:unsafe-memmove()-usage-lacked-__read_overflow2_field-warning-in-lib-test_fortify-read_overflow2_field-memmove.c
-|   |-- warning:unsafe-memmove()-usage-lacked-__write_overflow-warning-in-lib-test_fortify-write_overflow-memmove.c
-|   |-- warning:unsafe-memmove()-usage-lacked-__write_overflow_field-warning-in-lib-test_fortify-write_overflow_field-memmove.c
-|   |-- warning:unsafe-memscan()-usage-lacked-__read_overflow-warning-in-lib-test_fortify-read_overflow-memscan.c
-|   |-- warning:unsafe-memset()-usage-lacked-__write_overflow-warning-in-lib-test_fortify-write_overflow-memset.c
-|   |-- warning:unsafe-memset()-usage-lacked-__write_overflow_field-warning-in-lib-test_fortify-write_overflow_field-memset.c
-|   |-- warning:unsafe-strcpy()-usage-lacked-__write_overflow-warning-in-lib-test_fortify-write_overflow-strcpy-lit.c
-|   |-- warning:unsafe-strcpy()-usage-lacked-__write_overflow-warning-in-lib-test_fortify-write_overflow-strcpy.c
-|   |-- warning:unsafe-strlcpy()-usage-lacked-__write_overflow-warning-in-lib-test_fortify-write_overflow-strlcpy-src.c
-|   |-- warning:unsafe-strlcpy()-usage-lacked-__write_overflow-warning-in-lib-test_fortify-write_overflow-strlcpy.c
-|   |-- warning:unsafe-strncpy()-usage-lacked-__write_overflow-warning-in-lib-test_fortify-write_overflow-strncpy-src.c
-|   |-- warning:unsafe-strncpy()-usage-lacked-__write_overflow-warning-in-lib-test_fortify-write_overflow-strncpy.c
-|   `-- warning:unsafe-strscpy()-usage-lacked-__write_overflow-warning-in-lib-test_fortify-write_overflow-strscpy.c
-|-- hexagon-randconfig-r015-20230809
-|   `-- drivers-video-backlight-lp855x_bl.c:warning:variable-ret-is-used-uninitialized-whenever-if-condition-is-false
-|-- hexagon-randconfig-r041-20230808
-|   |-- include-linux-list.h:warning:__preserve_most__-calling-convention-is-not-supported-for-this-target
-|   `-- lib-list_debug.c:warning:__preserve_most__-calling-convention-is-not-supported-for-this-target
-|-- i386-randconfig-i011-20230809
-|   `-- drivers-video-backlight-lp855x_bl.c:warning:variable-ret-is-used-uninitialized-whenever-if-condition-is-false
-|-- i386-randconfig-i015-20230809
-|   `-- drivers-video-backlight-lp855x_bl.c:warning:variable-ret-is-used-uninitialized-whenever-if-condition-is-false
-`-- x86_64-buildonly-randconfig-r002-20230808
-    `-- drivers-video-backlight-lp855x_bl.c:warning:variable-ret-is-used-uninitialized-whenever-if-condition-is-false
+> 4. Next, I'm running the same test but with the commit that adds actual
+>     general infra to parse XDP_TX_METADATA (but no driver support).
+>     Essentially applying "xsk: add TX timestamp and TX checksum offload support"
+>     from this series. Numbers are the same.
+> 
+> - fill metadata for 1400
+> ./xskgen -M -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000000 packets 116960000000 bits, took 1.188430 sec, 98.415557 gbps 8.414463 mpps
+> 
+> - fill metadata for 200
+> ./xskgen -M -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000000 packets 20960000000 bits, took 0.411559 sec, 50.928299 gbps 24.297853 mpps
+> 
+> - request metadata for 1400
+> ./xskgen -m -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000000 packets 116960000000 bits, took 1.188723 sec, 98.391299 gbps 8.412389 mpps
+> 
+> - request metadata for 200
+> ./xskgen -m -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000064 packets 20960134144 bits, took 0.411240 sec, 50.968131 gbps 24.316856 mpps
+> 
+> 5. Now, for the most interesting part, I'm adding mlx5 driver support.
+>     The mpps for 200 bytes case goes down from 23 mpps to 19 mpps, but
+>     _only_ when I enable the metadata. This looks like a side effect
+>     of me pushing extra metadata pointer via mlx5e_xdpi_fifo_push.
+>     Hence, this part is wrapped into 'if (xp_tx_metadata_enabled)'
+>     to not affect the existing non-metadata use-cases. Since this is not
+>     regressing existing workloads, I'm not spending any time trying to
+>     optimize it more (and leaving it up to mlx owners to purse if
+>     they see any good way to do it).
+> 
+> - same baseline
+> ./xskgen -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000000 packets 116960000000 bits, took 1.189434 sec, 98.332484 gbps 8.407360 mpps
+> 
+> ./xskgen -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000128 packets 20960268288 bits, took 0.425254 sec, 49.288821 gbps 23.515659 mpps
+> 
+> - fill metadata for 1400
+> ./xskgen -M -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000000 packets 116960000000 bits, took 1.189528 sec, 98.324714 gbps 8.406696 mpps
+> 
+> - fill metadata for 200
+> ./xskgen -M -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000128 packets 20960268288 bits, took 0.519085 sec, 40.379260 gbps 19.264914 mpps
+> 
 
-elapsed time: 722m
+This change from 23 mpps to 19 mpps is approx 10 nanosec
+  - (1/23.738985-1/19.264914)*10^3 = -9.78 nanosec
+  - (1/23.515659-1/19.264914)*10^3 = -9.38 nanosec
 
-configs tested: 115
-configs skipped: 5
+A 10 nanosec difference is more than noise.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r033-20230808   gcc  
-arc                  randconfig-r043-20230808   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r005-20230809   clang
-arm                  randconfig-r046-20230808   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r002-20230809   gcc  
-arm64                randconfig-r006-20230809   gcc  
-arm64                randconfig-r031-20230808   clang
-csky                                defconfig   gcc  
-hexagon              randconfig-r004-20230809   clang
-hexagon              randconfig-r041-20230808   clang
-hexagon              randconfig-r045-20230808   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230808   clang
-i386         buildonly-randconfig-r004-20230809   gcc  
-i386         buildonly-randconfig-r005-20230809   gcc  
-i386         buildonly-randconfig-r006-20230808   clang
-i386         buildonly-randconfig-r006-20230809   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230808   clang
-i386                 randconfig-i001-20230809   gcc  
-i386                 randconfig-i002-20230808   clang
-i386                 randconfig-i002-20230809   gcc  
-i386                 randconfig-i003-20230808   clang
-i386                 randconfig-i003-20230809   gcc  
-i386                 randconfig-i004-20230808   clang
-i386                 randconfig-i004-20230809   gcc  
-i386                 randconfig-i005-20230809   gcc  
-i386                 randconfig-i006-20230809   gcc  
-i386                 randconfig-i011-20230809   clang
-i386                 randconfig-i012-20230809   clang
-i386                 randconfig-i013-20230809   clang
-i386                 randconfig-i014-20230809   clang
-i386                 randconfig-i015-20230809   clang
-i386                 randconfig-i016-20230809   clang
-i386                 randconfig-r023-20230808   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r001-20230809   gcc  
-m68k                 randconfig-r011-20230808   gcc  
-microblaze           randconfig-r035-20230808   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r034-20230808   gcc  
-openrisc             randconfig-r013-20230808   gcc  
-openrisc             randconfig-r016-20230808   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r003-20230809   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r014-20230808   gcc  
-riscv                randconfig-r042-20230808   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230808   gcc  
-sh                               allmodconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r015-20230808   gcc  
-sparc                randconfig-r025-20230808   gcc  
-sparc64              randconfig-r026-20230808   gcc  
-sparc64              randconfig-r032-20230808   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r036-20230808   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230808   clang
-x86_64       buildonly-randconfig-r001-20230809   gcc  
-x86_64       buildonly-randconfig-r002-20230808   clang
-x86_64       buildonly-randconfig-r002-20230809   gcc  
-x86_64       buildonly-randconfig-r003-20230808   clang
-x86_64       buildonly-randconfig-r003-20230809   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r021-20230808   gcc  
-x86_64               randconfig-x001-20230808   gcc  
-x86_64               randconfig-x002-20230808   gcc  
-x86_64               randconfig-x003-20230808   gcc  
-x86_64               randconfig-x004-20230808   gcc  
-x86_64               randconfig-x005-20230808   gcc  
-x86_64               randconfig-x006-20230808   gcc  
-x86_64               randconfig-x011-20230809   gcc  
-x86_64               randconfig-x012-20230809   gcc  
-x86_64               randconfig-x013-20230809   gcc  
-x86_64               randconfig-x014-20230809   gcc  
-x86_64               randconfig-x015-20230809   gcc  
-x86_64               randconfig-x016-20230809   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> - request metadata for 1400
+> ./xskgen -m -s 1400 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000000 packets 116960000000 bits, took 1.189329 sec, 98.341165 gbps 8.408102 mpps
+> 
+> - request metadata for 200
+> ./xskgen -m -s 200 -b eth3 10:70:fd:48:10:77 10:70:fd:48:10:87 fe80::1270:fdff:fe48:1077 fe80::1270:fdff:fe48:1087 1 1
+> sent 10000128 packets 20960268288 bits, took 0.519929 sec, 40.313713 gbps 19.233642 mpps
+> 
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
+> 
+> Stanislav Fomichev (9):
+>    xsk: Support XDP_TX_METADATA_LEN
+>    xsk: add TX timestamp and TX checksum offload support
+>    tools: ynl: print xsk-features from the sample
+>    net/mlx5e: Implement AF_XDP TX timestamp and checksum offload
+>    selftests/xsk: Support XDP_TX_METADATA_LEN
+>    selftests/bpf: Add csum helpers
+>    selftests/bpf: Add TX side to xdp_metadata
+>    selftests/bpf: Add TX side to xdp_hw_metadata
+>    xsk: document XDP_TX_METADATA_LEN layout
+> 
+>   Documentation/netlink/specs/netdev.yaml       |  20 ++
+>   Documentation/networking/index.rst            |   1 +
+>   Documentation/networking/xsk-tx-metadata.rst  |  75 +++++++
+>   drivers/net/ethernet/mellanox/mlx5/core/en.h  |   4 +-
+>   .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  72 ++++++-
+>   .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |  10 +-
+>   .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   |  11 +-
+>   .../net/ethernet/mellanox/mlx5/core/en_main.c |   1 +
+>   include/linux/netdevice.h                     |  27 +++
+>   include/linux/skbuff.h                        |   5 +-
+>   include/net/xdp_sock.h                        |  61 ++++++
+>   include/net/xdp_sock_drv.h                    |  13 ++
+>   include/net/xsk_buff_pool.h                   |   6 +
+>   include/uapi/linux/if_xdp.h                   |  36 ++++
+>   include/uapi/linux/netdev.h                   |  16 ++
+>   net/core/netdev-genl.c                        |  12 +-
+>   net/xdp/xsk.c                                 |  61 ++++++
+>   net/xdp/xsk_buff_pool.c                       |   1 +
+>   net/xdp/xsk_queue.h                           |  19 +-
+>   tools/include/uapi/linux/if_xdp.h             |  50 ++++-
+>   tools/include/uapi/linux/netdev.h             |  15 ++
+>   tools/net/ynl/generated/netdev-user.c         |  19 ++
+>   tools/net/ynl/generated/netdev-user.h         |   3 +
+>   tools/net/ynl/samples/netdev.c                |   6 +
+>   tools/testing/selftests/bpf/network_helpers.h |  43 ++++
+>   .../selftests/bpf/prog_tests/xdp_metadata.c   |  31 ++-
+>   tools/testing/selftests/bpf/xdp_hw_metadata.c | 201 +++++++++++++++++-
+>   tools/testing/selftests/bpf/xsk.c             |  17 ++
+>   tools/testing/selftests/bpf/xsk.h             |   1 +
+>   29 files changed, 793 insertions(+), 44 deletions(-)
+>   create mode 100644 Documentation/networking/xsk-tx-metadata.rst
+> 
+
+Thanks for working on this :-)
+--Jesper
+
 
