@@ -1,266 +1,277 @@
-Return-Path: <bpf+bounces-7332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7333-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 232BA775CD5
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 13:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA26C775DD9
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 13:42:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D017A281859
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 11:31:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4771E281B28
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 11:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D85E17AB5;
-	Wed,  9 Aug 2023 11:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFA4018002;
+	Wed,  9 Aug 2023 11:41:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC7017744
-	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 11:31:15 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE53A1724;
-	Wed,  9 Aug 2023 04:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691580673; x=1723116673;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=gc/k12JdBABud9ZIDvGAhL+ZChT73bLO70lm7YLIVAk=;
-  b=hPWXF/noIesp9h075VOEuRMsZqXi/EC0w0g6rL96IdG8FXlD9Odbhxw4
-   cUHZPHKRQm+0IzIC6zZ3tvk8dEvanLMTjcGixZb6ZwL3I0hT1tswudaom
-   74MkfwR1RdWk2wsW9HAW5yDoFz8YC1A9XyDc3Z8YevklWldUbSlcZyJho
-   xEu/vqFRBzejnlmqHDhKZpUBf2KwaU5BcRUhoxKOlwNyGhcXmSdpa/JUX
-   fcSASyOCnMeAd6NHJ0I86llUQfTAc2Hl59LlFy2NtHUVXbeY2nk2t5GrE
-   eNeQmjhEBJaxxQKBIWEzqWP3aYgk5CtPIWejqz2eWOB9trEG0Um2KJYgR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="368553946"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="368553946"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 04:31:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="731771419"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200"; 
-   d="scan'208";a="731771419"
-Received: from sjakoel-mobl1.ger.corp.intel.com (HELO [10.252.50.115]) ([10.252.50.115])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 04:31:09 -0700
-Message-ID: <ee9d2d01-96f7-2032-7b12-7e2748829bf9@linux.intel.com>
-Date: Wed, 9 Aug 2023 14:31:07 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A097C17FE3
+	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 11:41:30 +0000 (UTC)
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF6F173A
+	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 04:41:28 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id 4fb4d7f45d1cf-52164adea19so8755285a12.1
+        for <bpf@vger.kernel.org>; Wed, 09 Aug 2023 04:41:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691581286; x=1692186086;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TtpzjHLoHgaMDqgSRL7xoaoEHj9FQExpgHDqNpnV7B4=;
+        b=LFR2VnQifb02/UF/kzlpWCwqeFu/dw+bvK4t4dqvainXynJpmFYEQoBrjEpow/AqQE
+         pptjcgd5uwHT5+F8WV2y7sOYZ3KmGBpKepaSE6q18XXpRUXAx+wR2qeCE6SbqXSeYDws
+         wEWnVcpnpc2qLUVNtRaa214DXXre+xFoCleZ1DYCfAmmGJZQ0G0B3fAQKJehKFrUiMXI
+         kW00nyA1bzj7NF/TjnW1+vqRsuElo0mRfR38OvzRdgsoBqZUhNRRJ1Ph9zuJBIpipXdm
+         utgzRsXe/e7uCTHQ/T+++edlrF2ysiLdZmMiFmwGlXedzN4oxSN4jI/FtujFR9L3Vkgc
+         dWjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691581286; x=1692186086;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TtpzjHLoHgaMDqgSRL7xoaoEHj9FQExpgHDqNpnV7B4=;
+        b=YN3aaej0p/+mLUzNTKywd7jNT732XSBtL+hOQInouta3Zy2FSahd+nzNrxrcXhCNJp
+         I40VpH3VANNCeGti+tt4widSxzruork2PuiDJW8jopwMFXCEQWJdYyh/9G7C3wFPAPzB
+         yJGQo7lFrkV6/+eXQK8RB0Lu0s6jKI4V5xQBxqLkzZWJ13tVltCwKduhnfSE0fm+PVKF
+         wz4Eug0W2KVGZwqiE4XXMZ1HYKnZyuFQlmvlm+cK9ZzDKRuqfkKIELao5PQmJ7Iw6xts
+         3QWEbZvbVAW9wwaxBoEuzxA/NLxozhzrZS8C7Va38X1K2yWoLQWiz3r84sTwqFs4sPa6
+         BUkw==
+X-Gm-Message-State: AOJu0YwqrFkJJfnsF4X8zbikENgpwGc1ngZUq6LN9Syd+AyKHCXIPUmh
+	dG2pf+3U7F5A6obyNDCQ1CGO7rAfAWL8mVUQkg4=
+X-Google-Smtp-Source: AGHT+IGtsN3d0o/xZIgkIqcF20fyNbcIKXSS07Pm/oHFgoZ8CtrCv/66sTWX+SM5nczWxbEISE/Tzg==
+X-Received: by 2002:a05:6402:1602:b0:51b:d567:cfed with SMTP id f2-20020a056402160200b0051bd567cfedmr2292397edv.5.1691581286236;
+        Wed, 09 Aug 2023 04:41:26 -0700 (PDT)
+Received: from localhost ([2405:201:6014:dae3:1f3a:4dfc:39ef:546b])
+        by smtp.gmail.com with ESMTPSA id e14-20020a50fb8e000000b0051df67eaf62sm8012873edq.42.2023.08.09.04.41.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 04:41:24 -0700 (PDT)
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	David Vernet <void@manifault.com>
+Subject: [PATCH bpf-next v2 00/14] Exceptions - 1/2
+Date: Wed,  9 Aug 2023 17:11:02 +0530
+Message-ID: <20230809114116.3216687-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] x86/tsc: Add new BPF helper call bpf_rdtsc
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: John Fastabend <john.fastabend@gmail.com>, Shuah Khan <shuah@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- Ingo Molnar <mingo@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
-References: <20230703105745.1314475-1-tero.kristo@linux.intel.com>
- <20230703105745.1314475-2-tero.kristo@linux.intel.com>
- <CAADnVQL2Tn+2rP0hVB3kdB0At12qVu+vJ_WbJzrkxqOJ5va2vQ@mail.gmail.com>
- <64a64e46b7d5b_b20ce208de@john.notmuch>
- <4b874e4c-4ad3-590d-3885-b4a3b894524e@linux.intel.com>
- <CAADnVQK0rzHWxxx7LMFSTuBx18A+6H6AEkKFHNDkPwbPUbsk4Q@mail.gmail.com>
- <64a7a597b1e9e_dddea208db@john.notmuch>
- <6b0c67e9-e806-200c-3af4-cfdd2e5c47d3@linux.intel.com>
- <CAADnVQ+bsKuio_wNQV-sk-ZHbS-+z686BLs5_5u7Uybbt5GU=Q@mail.gmail.com>
-Content-Language: en-US
-From: Tero Kristo <tero.kristo@linux.intel.com>
-In-Reply-To: <CAADnVQ+bsKuio_wNQV-sk-ZHbS-+z686BLs5_5u7Uybbt5GU=Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8692; i=memxor@gmail.com; h=from:subject; bh=ktel/tEhGiw62jAB9m063feRvuGmTTp/0Z9qEEcKkK4=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBk03rIeuQRpQCOMTu+uO0CU8UQc+Ols4YEKuDns 5vCF/uFMY2JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZNN6yAAKCRBM4MiGSL8R ysVID/4lDfB4sGOwS0YsOE0NFIEsQj/4YY4i54NvECA4MayEnmM1pMjkzZ+syraB8wsxNVr7GHS ox6CijPnQvY19+iPF32OQT1+Fov2dhxce1Kui4pC7ECDZUQL/yIsR6dfVqzWHayEI4F9RK3n4O1 WwKq7Aj7e76h+JZuqb7TZz7jrUAgSv5A2KW85+e11tBnRYK7TH60r//nSP3hAbErKT330PpAJVO gidiGUnrflYnKiNlshQEjGYbTGj7H7lQd+ALz81kzNSurCgJy4xTttJVr+VkUtjUpRBpuT17H6+ dv81Q4bOnPUMGF/6H8GM+gI2HyqORqicdk9vtu0kfJ8h2ZlFX+D9t6CGnnsqOlqJlJZARya+gNv svb/g3IGsknH7aX/h+MFejt+awdQb0KLEA5JrJSLhKi0Z67kOg8eblnrqhLVFrrYxiqih7ZHWSh 0pJKDfNqBE0unEJ2Fk1yHA/8leBPchfCNoRQqrxvu2bKE/Kp6wH7MNQtzx1HDozW7TlHth7MSUl qFb436CxrnfHx6J4A8xuS6LH723RvDAXYnoAsdRsLBzI2qu7xq6Qe367GF+WjRhK09/IZO9RIWB F2r4BsNxY2xXsIgKM4xsVTuLX3mUG9Qfd60jWUzKKE2If7ogGEkY69kTTQvoRGOb4n746OH3h92 yrlCOQQwC6HFpHQ==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
+This series implements the _first_ part of the runtime and verifier
+support needed to enable BPF exceptions. Exceptions thrown from programs
+are processed as an immediate exit from the program, which unwinds all
+the active stack frames until the main stack frame, and returns to the
+BPF program's caller. The ability to perform this unwinding safely
+allows the program to test conditions that are always true at runtime
+but which the verifier has no visibility into.
 
-Coming back to this bit late, I was on vacation for a few weeks.
+Thus, it also reduces verification effort by safely terminating
+redundant paths that can be taken within a program.
 
-On 07/07/2023 17:42, Alexei Starovoitov wrote:
-> On Fri, Jul 7, 2023 at 1:28 AM Tero Kristo <tero.kristo@linux.intel.com> wrote:
->>
->> On 07/07/2023 08:41, John Fastabend wrote:
->>> Alexei Starovoitov wrote:
->>>> On Thu, Jul 6, 2023 at 4:59 AM Tero Kristo <tero.kristo@linux.intel.com> wrote:
->>>>> On 06/07/2023 08:16, John Fastabend wrote:
->>>>>> Alexei Starovoitov wrote:
->>>>>>> On Mon, Jul 3, 2023 at 3:58 AM Tero Kristo <tero.kristo@linux.intel.com> wrote:
->>>>>>>> Currently the raw TSC counter can be read within kernel via rdtsc_ordered()
->>>>>>>> and friends, and additionally even userspace has access to it via the
->>>>>>>> RDTSC assembly instruction. BPF programs on the other hand don't have
->>>>>>>> direct access to the TSC counter, but alternatively must go through the
->>>>>>>> performance subsystem (bpf_perf_event_read), which only provides relative
->>>>>>>> value compared to the start point of the program, and is also much slower
->>>>>>>> than the direct read. Add a new BPF helper definition for bpf_rdtsc() which
->>>>>>>> can be used for any accurate profiling needs.
->>>>>>>>
->>>>>>>> A use-case for the new API is for example wakeup latency tracing via
->>>>>>>> eBPF on Intel architecture, where it is extremely beneficial to be able
->>>>>>>> to get raw TSC timestamps and compare these directly to the value
->>>>>>>> programmed to the MSR_IA32_TSC_DEADLINE register. This way a direct
->>>>>>>> latency value from the hardware interrupt to the execution of the
->>>>>>>> interrupt handler can be calculated. Having the functionality within
->>>>>>>> eBPF also has added benefits of allowing to filter any other relevant
->>>>>>>> data like C-state residency values, and also to drop any irrelevant
->>>>>>>> data points directly in the kernel context, without passing all the
->>>>>>>> data to userspace for post-processing.
->>>>>>>>
->>>>>>>> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
->>>>>>>> ---
->>>>>>>>     arch/x86/include/asm/msr.h |  1 +
->>>>>>>>     arch/x86/kernel/tsc.c      | 23 +++++++++++++++++++++++
->>>>>>>>     2 files changed, 24 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
->>>>>>>> index 65ec1965cd28..3dde673cb563 100644
->>>>>>>> --- a/arch/x86/include/asm/msr.h
->>>>>>>> +++ b/arch/x86/include/asm/msr.h
->>>>>>>> @@ -309,6 +309,7 @@ struct msr *msrs_alloc(void);
->>>>>>>>     void msrs_free(struct msr *msrs);
->>>>>>>>     int msr_set_bit(u32 msr, u8 bit);
->>>>>>>>     int msr_clear_bit(u32 msr, u8 bit);
->>>>>>>> +u64 bpf_rdtsc(void);
->>>>>>>>
->>>>>>>>     #ifdef CONFIG_SMP
->>>>>>>>     int rdmsr_on_cpu(unsigned int cpu, u32 msr_no, u32 *l, u32 *h);
->>>>>>>> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
->>>>>>>> index 344698852146..ded857abef81 100644
->>>>>>>> --- a/arch/x86/kernel/tsc.c
->>>>>>>> +++ b/arch/x86/kernel/tsc.c
->>>>>>>> @@ -15,6 +15,8 @@
->>>>>>>>     #include <linux/timex.h>
->>>>>>>>     #include <linux/static_key.h>
->>>>>>>>     #include <linux/static_call.h>
->>>>>>>> +#include <linux/btf.h>
->>>>>>>> +#include <linux/btf_ids.h>
->>>>>>>>
->>>>>>>>     #include <asm/hpet.h>
->>>>>>>>     #include <asm/timer.h>
->>>>>>>> @@ -29,6 +31,7 @@
->>>>>>>>     #include <asm/intel-family.h>
->>>>>>>>     #include <asm/i8259.h>
->>>>>>>>     #include <asm/uv/uv.h>
->>>>>>>> +#include <asm/tlbflush.h>
->>>>>>>>
->>>>>>>>     unsigned int __read_mostly cpu_khz;    /* TSC clocks / usec, not used here */
->>>>>>>>     EXPORT_SYMBOL(cpu_khz);
->>>>>>>> @@ -1551,6 +1554,24 @@ void __init tsc_early_init(void)
->>>>>>>>            tsc_enable_sched_clock();
->>>>>>>>     }
->>>>>>>>
->>>>>>>> +u64 bpf_rdtsc(void)
->>>>>>>> +{
->>>>>>>> +       /* Check if Time Stamp is enabled only in ring 0 */
->>>>>>>> +       if (cr4_read_shadow() & X86_CR4_TSD)
->>>>>>>> +               return 0;
->>>>>>> Why check this? It's always enabled in the kernel, no?
->>>>> It is always enabled, but there are certain syscalls that can be used to
->>>>> disable the TSC access for oneself. prctl(PR_SET_TSC, ...) and
->>>>> seccomp(SET_MODE_STRICT,...). Not having the check in place would in
->>>>> theory allow a restricted BPF program to circumvent this (if there ever
->>>>> was such a thing.) But yes, I do agree this part is a bit debatable
->>>>> whether it should be there at all.
->>>> What do you mean 'circumvent' ?
->>>> It's a tracing bpf prog running in the kernel loaded by root
->>>> and reading tsc for the purpose of the kernel.
->>>> There is no unprivileged access to tsc here.
->> This was based on some discussions with the security team at Intel, I
->> don't pretend to know anything about security myself. But I can drop the
->> check. It is probably not needed because of the fact that it is already
->> possible to read the TSC counter with the approach I mention in the
->> cover letter; via perf and bpf_core_read().
->>>>>>>> +
->>>>>>>> +       return rdtsc_ordered();
->>>>>>> Why _ordered? Why not just rdtsc ?
->>>>>>> Especially since you want to trace latency. Extra lfence will ruin
->>>>>>> the measurements.
->>>>>>>
->>>>>> If we used it as a fast way to order events on multiple CPUs I
->>>>>> guess we need the lfence? We use ktime_get_ns() now for things
->>>>>> like this when we just need an order counter. We have also
->>>>>> observed time going backwards with this and have heuristics
->>>>>> to correct it but its rare.
->>>>> Yeah, I think it is better to induce some extra latency instead of
->>>>> having some weird ordering issues with the timestamps.
->>>> lfence is not 'some extra latency'.
->>>> I suspect rdtsc_ordered() will be slower than bpf_ktime_get_ns().
->>>> What's the point of using it then?
->>> I would only use it if its faster then bpf_ktime_get_ns() and
->>> have already figured out how to handle rare unordered events
->>> so I think its OK to relax somewhat strict ordering.
->> I believe that on x86-arch using bpf_ktime_get_ns() also ends up calling
->> rdtsc_odered() under the hood.
->>
->> I just did some measurements on an Intel(R) Xeon(R) Platinum 8360Y CPU @
->> 2.40GHz, with a simple BPF code:
->>
->>           t1 = bpf_ktime_get_ns();
->>
->>           for (i = 0; i < NUM_CYC; i++) {
->>                   bpf_rdtsc(); // or bpf_ktime_get_ns() here
->>           }
->>
->>           t2 = bpf_ktime_get_ns();
->>
->> The results I got with the CPU locked at 2.4GHz (average execution times
->> per a call within the loop, this with some 10M executions):
->>
->> bpf_rdtsc() ordered : 45ns
->>
->> bpf_rdtsc() un-ordered : 23ns
->>
->> bpf_ktime_get_ns() : 49ns
-> Thanks for crunching the numbers.
-> Based on them it's hard to justify adding the ordered variant.
-> We already have ktime_get_ns, ktime_get_boot_ns, ktime_get_coarse_ns,
-> ktime_get_tai_ns with pretty close performance and different time
-> constraints. rdtsc_ordered doesn't bring anything new to the table.
-> bpf_rdtsc() would be justified if it's significantly faster
-> than traditional ktime*() helpers.
+The patches to perform runtime resource cleanup during the
+frame-by-frame unwinding will be posted as a follow-up to this set.
 
-The only other justification I can use here is that the TSC counter is 
-useful if you are dealing with any other counters that use TSC as a 
-reference; mainly the Intel power management residency counters use same 
-time base / resolution as TSC.
+It must be noted that exceptions are not an error handling mechanism for
+unlikely runtime conditions, but a way to safely terminate the execution
+of a program in presence of conditions that should never occur at
+runtime. They are meant to serve higher-level primitives such as program
+assertions.
 
-Converting between the TSC / ktime can get cumbersome, and you would 
-need to get the magic conversion factors from somewhere.
+The following kfuncs and macros are introduced:
 
--Tero
+Assertion macros are also introduced, please see patch 13 for their
+documentation.
 
->
->> Locking the CPU at 800MHz the results are:
->>
->> bpf_rdtsc() ordered : 55ns
->>
->> bpf_rdtsc() un-ordered : 33ns
->>
->> bpf_ktime_get_ns() : 71ns
->>
->> The bpf_rdtsc() in these results contains some extra latency caused by
->> conditional execution, I added a flag to the call to select whether it
->> should use _ordered() or not, and it also still contains the CR4_TSD
->> check in place.
->>
->> -Tero
->>
->>>>> Also, things like the ftrace also use rdtsc_ordered() as its underlying
->>>>> clock, if you use x86-tsc as the trace clock (see
->>>>> arch/x86/kernel/trace_clock.c.)
->>>>>
->>>>> -Tero
->>>>>
+/* Description
+ *	Throw a BPF exception from the program, immediately terminating its
+ *	execution and unwinding the stack. The supplied 'cookie' parameter
+ *	will be the return value of the program when an exception is thrown,
+ *	and the default exception callback is used. Otherwise, if an exception
+ *	callback is set using the '__exception_cb(callback)' declaration tag
+ *	on the main program, the 'cookie' parameter will be the callback's only
+ *	input argument.
+ *
+ *	Thus, in case of default exception callback, 'cookie' is subjected to
+ *	constraints on the program's return value (as with R0 on exit).
+ *	Otherwise, the return value of the marked exception callback will be
+ *	subjected to the same checks.
+ *
+ *	Note that throwing an exception with lingering resources (locks,
+ *	references, etc.) will lead to a verification error.
+ *
+ *	Note that callbacks *cannot* call this helper.
+ * Returns
+ *	Never.
+ * Throws
+ *	An exception with the specified 'cookie' value.
+ */
+extern void bpf_throw(u64 cookie) __ksym;
+
+/* This macro must be used to mark the exception callback corresponding to the
+ * main program. For example:
+ *
+ * int exception_cb(u64 cookie) {
+ *	return cookie;
+ * }
+ *
+ * SEC("tc")
+ * __exception_cb(exception_cb)
+ * int main_prog(struct __sk_buff *ctx) {
+ *	...
+ *	return TC_ACT_OK;
+ * }
+ *
+ * Here, exception callback for the main program will be 'exception_cb'. Note
+ * that this attribute can only be used once, and multiple exception callbacks
+ * specified for the main program will lead to verification error.
+ */
+\#define __exception_cb(name) __attribute__((btf_decl_tag("exception_callback:" #name)))
+
+As such, a program can only install an exception handler once for the
+lifetime of a BPF program, and this handler cannot be changed at
+runtime. The purpose of the handler is to simply interpret the cookie
+value supplied by the bpf_throw call, and execute user-defined logic
+corresponding to it. The primary purpose of allowing a handler is to
+control the return value of the program. The default handler returns the
+cookie value passed to bpf_throw when an exception is thrown.
+
+Fixing the handler for the lifetime of the program eliminates tricky and
+expensive handling in case of runtime changes of the handler callback
+when programs begin to nest, where it becomes more complex to save and
+restore the active handler at runtime.
+
+This version of offline unwinding based BPF exceptions is truly zero
+overhead, with the exception of generation of a default callback which
+contains a few instructions to return a default return value (0) when no
+exception callback is supplied by the user.
+
+Callbacks are disallowed from throwing BPF exceptions for now, since
+such exceptions need to cross the callback helper boundary (and
+therefore must care about unwinding kernel state), however it is
+possible to lift this restriction in the future follow-up.
+
+Exceptions terminate propogating at program boundaries, hence both
+BPF_PROG_TYPE_EXT and tail call targets return to their caller context
+the return value of the exception callback, in the event that they throw
+an exception. Thus, exceptions do not cross extension or tail call
+boundary.
+
+However, this is mostly an implementation choice, and can be changed to
+suit more user-friendly semantics.
+
+Known issues
+------------
+
+ * Just asm volatile ("call bpf_throw" :::) does not emit DATASEC .ksyms
+   for bpf_throw, there needs to be explicit call in C for clang to emit
+   the DATASEC info in BTF, leading to errors during compilation.
+
+Changelog:
+----------
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20230713023232.1411523-1-memxor@gmail.com
+
+ * Address all comments from Alexei.
+ * Fix a few bugs and corner cases in the implementations found during
+   testing. Also add new selftests for these cases.
+ * Reinstate patch to consider ksym.end part of the program (but
+   reworked to cover other corner cases).
+ * Implement new style of tagging exception callbacks, add libbpf
+   support for the new declaration tag.
+ * Limit support to 64-bit integer types for assertion macros. The
+   compiler ends up performing shifts or bitwise and operations when
+   finally making use of the value, which defeats the purpose of the
+   macro. On noalu32 mode, the shifts may also happen before use,
+   hurting reliability.
+ * Comprehensively test assertion macros and their side effects on the
+   verifier state, register bounds, etc.
+ * Fix a KASAN false positive warning.
+
+RFC v1 -> v1
+RFC v1: https://lore.kernel.org/bpf/20230405004239.1375399-1-memxor@gmail.com
+
+ * Completely rework the unwinding infrastructure to use offline
+   unwinding support.
+ * Remove the runtime exception state and program rewriting code.
+ * Make bpf_set_exception_callback idempotent to avoid vexing
+   synchronization and state clobbering issues in presence of program
+   nesting.
+ * Disable bpf_throw within callback functions, for now.
+ * Allow bpf_throw in tail call programs and extension programs,
+   removing limitations of rewrite based unwinding.
+ * Expand selftests.
+
+Kumar Kartikeya Dwivedi (14):
+  arch/x86: Implement arch_bpf_stack_walk
+  bpf: Implement support for adding hidden subprogs
+  bpf: Implement BPF exceptions
+  bpf: Refactor check_btf_func and split into two phases
+  bpf: Add support for custom exception callbacks
+  bpf: Perform CFG walk for exception callback
+  bpf: Treat first argument as return value for bpf_throw
+  bpf: Prevent KASAN false positive with bpf_throw
+  bpf: Detect IP == ksym.end as part of BPF program
+  bpf: Disallow extensions to exception callbacks
+  bpf: Fix kfunc callback register type handling
+  libbpf: Add support for custom exception callbacks
+  selftests/bpf: Add BPF assertion macros
+  selftests/bpf: Add tests for BPF exceptions
+
+ arch/x86/net/bpf_jit_comp.c                   | 118 ++++-
+ include/linux/bpf.h                           |   8 +-
+ include/linux/bpf_verifier.h                  |   8 +-
+ include/linux/filter.h                        |   8 +
+ include/linux/kasan.h                         |   2 +
+ kernel/bpf/btf.c                              |  29 +-
+ kernel/bpf/core.c                             |  29 +-
+ kernel/bpf/helpers.c                          |  45 ++
+ kernel/bpf/syscall.c                          |   2 +-
+ kernel/bpf/verifier.c                         | 455 +++++++++++++++---
+ tools/lib/bpf/libbpf.c                        | 166 ++++++-
+ tools/testing/selftests/bpf/DENYLIST.aarch64  |   1 +
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../testing/selftests/bpf/bpf_experimental.h  | 287 +++++++++++
+ .../selftests/bpf/prog_tests/exceptions.c     | 324 +++++++++++++
+ .../testing/selftests/bpf/progs/exceptions.c  | 368 ++++++++++++++
+ .../selftests/bpf/progs/exceptions_assert.c   | 135 ++++++
+ .../selftests/bpf/progs/exceptions_ext.c      |  59 +++
+ .../selftests/bpf/progs/exceptions_fail.c     | 347 +++++++++++++
+ 19 files changed, 2271 insertions(+), 121 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/exceptions.c
+ create mode 100644 tools/testing/selftests/bpf/progs/exceptions.c
+ create mode 100644 tools/testing/selftests/bpf/progs/exceptions_assert.c
+ create mode 100644 tools/testing/selftests/bpf/progs/exceptions_ext.c
+ create mode 100644 tools/testing/selftests/bpf/progs/exceptions_fail.c
+
+
+base-commit: 2adbb7637fd1fcec93f4680ddb5ddbbd1a91aefb
+-- 
+2.41.0
+
 
