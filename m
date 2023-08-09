@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-7356-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7357-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E393C775F9D
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 14:47:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FEBE775FA0
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 14:48:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98AF9281C42
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 12:47:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50A2E1C2120F
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 12:48:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E05718C30;
-	Wed,  9 Aug 2023 12:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3726B1988B;
+	Wed,  9 Aug 2023 12:44:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 152E317FFB;
-	Wed,  9 Aug 2023 12:44:33 +0000 (UTC)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09021BDA;
-	Wed,  9 Aug 2023 05:44:32 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe23319695so18114245e9.0;
-        Wed, 09 Aug 2023 05:44:32 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C45D18C38;
+	Wed,  9 Aug 2023 12:44:37 +0000 (UTC)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1621BDA;
+	Wed,  9 Aug 2023 05:44:36 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe1b6192e8so18174645e9.1;
+        Wed, 09 Aug 2023 05:44:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691585071; x=1692189871;
+        d=gmail.com; s=20221208; t=1691585074; x=1692189874;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=vUrJqJfUUQQBrqSXP7Dl6CLg1z//SQw+Nn6QflXfcAc=;
-        b=dMd+ypHkPDAjJ76oYf1mXRMKNIxl+V1v9I/5ZWsFO4aAluh8kHojgEvP7mYcLHqXjp
-         zKro49ILQK/Ht0vSWBNrohJNJ5tWvAEHh3x6rqbQopXiMIxFqC5En1sd0bvl9eUzYbz2
-         /z0mCw8RRrCb+u1Xll0XrTd/Z4XRKblj30eMqt0aPezuz6EVnkCjeonW96DL6ZZDhZbh
-         /wINkd+rv7WzuANGoXNX1Dyjq50i+Of4Ndm/ituTUdHKUbXvspJ/Ht3YP3bH8EfJy0Zh
-         7OPDaYcSaBZXHudEc6bbuq7GcG5WfGUfF/l8aPUY9DqQk/riFp8nmPmOCNaHmD3+vRwm
-         POow==
+        bh=a5LGwYrDwcayojjQPJLrwM7i+6zcw7e3Fl0L8ybGHMc=;
+        b=OPUavXAVE+eM91Y7eZQzbcEbLTBnfBX/uivXaqGyFuZ9H8swzUgK8i9cjRsFZ6LAO/
+         QYdr+gRPt8wJfrTC043R5UxEzu1pslXrwl5qUh0KRz9MkhfqsvXcxOEf9E9gY8jEAnmC
+         XevFeTe0Uac4XC/3EUM3JBBZB58RvSPekhgEXsR7t6OgPn22Pa74Ga6ETs4sAzNIpgdu
+         crLKD1x58WlnEQLqxyKys6HpFv26KsJjhrhQhENpTV2k02al1Apr/pLDCIuFqEU4zIr8
+         oMNzpNSSl9zWTGB/isIdcGONbe3EgGi+Mz5mH/sCaQMUg7rhqdY5Ez39Ycha0P5dx3D2
+         h49Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691585071; x=1692189871;
+        d=1e100.net; s=20221208; t=1691585074; x=1692189874;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vUrJqJfUUQQBrqSXP7Dl6CLg1z//SQw+Nn6QflXfcAc=;
-        b=K+fqZyJfGBKEh5cdYZcxl69fBYIqDPltXcwvB4iUVpMUfIuHNo+gtFqNQ40srz9GrF
-         xNA3gfhub9+1t2XELAvIUnmPBDJHKMLeDo7XFRI8Y8swRKi61XNhslGtjNnkUUB0nojF
-         w0mId086qBQj+4UKdfXKXqibJrzQuLB3dJbFqjPp4BJfBHersNqVcEgQnI9ntyfN4LOD
-         5SbZy1We3bODp1yRNlK5Qo/a+Nk8FS1tOLzVoxso79G9RVfZ1ocXi5ioCXOAibu6ckeg
-         Td0DR4sG4gCz2nRc13+Wv32lNypdWJ8GVJv3T/ekiidL2XtSVHmxYo4mtWdC/iWD1Yfa
-         0zqw==
-X-Gm-Message-State: AOJu0Yyyc6u+cIeXKJ84p6LolnP6Sn3uVGPjmX9mTRjkOEtsSgcOgLx6
-	ogcP607AG5HsSmu6h+Pq3/0=
-X-Google-Smtp-Source: AGHT+IEhKOEN0hnVuJkb8gEGPcTsQZXI4c5WZz+G9XvG3RcLtOlzNt+DbEh1IHLtaHR2zSZPRT6PmA==
-X-Received: by 2002:a5d:534d:0:b0:317:3da0:7606 with SMTP id t13-20020a5d534d000000b003173da07606mr1597297wrv.4.1691585071028;
-        Wed, 09 Aug 2023 05:44:31 -0700 (PDT)
+        bh=a5LGwYrDwcayojjQPJLrwM7i+6zcw7e3Fl0L8ybGHMc=;
+        b=LmKVSJcrvZUQghS3Dw6ad6OXTeoEZPA6au+1nyIMFHH6fwU3EEbt8rTUQM4iM9UX3M
+         R6WasQotmj7hqaX6IZkH/g+JtHLJ4olBNlQL46wFZCqwmEc/Ut+pWe0AuBa3YuBc53zh
+         QXaO5lTlq44Ch3en5RwjQLN/nDUCoClV1FVBkTf8gxnwXn3Kb/gMkBGSEZpfvsl1r8vB
+         wRT17TyxSneeDZVDaAQiq2CLrL+kM9+eLFrEnAuYgt+6D4eEXW4fWXq4+cNV5JSM6dV1
+         vn+0Ig6EmO54CzHLS+CmLjHa2yNHTMzjBvjuEmce53mkgpla1wkb2tRkKl0RHl7DAn6X
+         y8yg==
+X-Gm-Message-State: AOJu0YwtXEElD5jkw1MLdKuhvngeNKZDD7wKXDpUciDQCVUCAmkoNeIq
+	sp0dGBABy3UrhrdDlWTjtNU=
+X-Google-Smtp-Source: AGHT+IG187hssArojzic8dSuLvqvGK4f7mOqOJu48BKwqpd0hkf3HI7ZDH2bJ9QsZktzyyfA73if0A==
+X-Received: by 2002:a5d:534d:0:b0:317:3da0:7606 with SMTP id t13-20020a5d534d000000b003173da07606mr1597376wrv.4.1691585074380;
+        Wed, 09 Aug 2023 05:44:34 -0700 (PDT)
 Received: from localhost.localdomain (c-5eea7243-74736162.cust.telenor.se. [94.234.114.67])
-        by smtp.gmail.com with ESMTPSA id d2-20020a5d4f82000000b0031784ac0babsm16811538wru.28.2023.08.09.05.44.27
+        by smtp.gmail.com with ESMTPSA id d2-20020a5d4f82000000b0031784ac0babsm16811538wru.28.2023.08.09.05.44.31
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Aug 2023 05:44:30 -0700 (PDT)
+        Wed, 09 Aug 2023 05:44:34 -0700 (PDT)
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
 To: magnus.karlsson@intel.com,
 	bjorn@kernel.org,
@@ -73,9 +73,9 @@ To: magnus.karlsson@intel.com,
 	sdf@google.com,
 	haoluo@google.com,
 	jolsa@kernel.org
-Subject: [PATCH bpf-next 07/10] selftests/xsk: add option to run single test
-Date: Wed,  9 Aug 2023 14:43:40 +0200
-Message-Id: <20230809124343.12957-8-magnus.karlsson@gmail.com>
+Subject: [PATCH bpf-next 08/10] selftests/xsk: use ksft_print_msg uniformly
+Date: Wed,  9 Aug 2023 14:43:41 +0200
+Message-Id: <20230809124343.12957-9-magnus.karlsson@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230809124343.12957-1-magnus.karlsson@gmail.com>
 References: <20230809124343.12957-1-magnus.karlsson@gmail.com>
@@ -95,192 +95,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Add a command line option to be able to run a single test. This option
-(-t) takes a number from the list of tests available with the "-l"
-option. Here are two examples:
-
-Run test number 2, the "receive single packet" test in all available modes:
-
-./test_xsk.sh -t 2
-
-Run test number 21, the metadata copy test in zero-copy mode only
-
-./test_xsh.sh -t 21 -m zc
+Use ksft_print_msg() instead of printf() and fprintf() in all places
+as the ksefltests framework is being used. There is only one exception
+and that is for the list-of-tests print out option, since no tests are
+run in that case.
 
 Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- tools/testing/selftests/bpf/test_xsk.sh  | 10 ++++++-
- tools/testing/selftests/bpf/xskxceiver.c | 38 +++++++++++++++++++-----
- tools/testing/selftests/bpf/xskxceiver.h |  3 ++
- 3 files changed, 42 insertions(+), 9 deletions(-)
+ tools/testing/selftests/bpf/xskxceiver.c | 25 ++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
-index 00a504f0929a..94b4b86d5239 100755
---- a/tools/testing/selftests/bpf/test_xsk.sh
-+++ b/tools/testing/selftests/bpf/test_xsk.sh
-@@ -76,12 +76,15 @@
- #
- # Run test suite in a specific mode only [skb,drv,zc]
- #   sudo ./test_xsk.sh -m MODE
-+#
-+# Run a specific test from the test suite
-+#   sudo ./test_xsk.sh -t TEST_NAME
- 
- . xsk_prereqs.sh
- 
- ETH=""
- 
--while getopts "vi:dm:l" flag
-+while getopts "vi:dm:lt:" flag
- do
- 	case "${flag}" in
- 		v) verbose=1;;
-@@ -89,6 +92,7 @@ do
- 		i) ETH=${OPTARG};;
- 		m) MODE=${OPTARG};;
- 		l) list=1;;
-+		t) TEST=${OPTARG};;
- 	esac
- done
- 
-@@ -166,6 +170,10 @@ if [ ! -z $MODE ]; then
- 	ARGS+="-m ${MODE} "
- fi
- 
-+if [ ! -z $TEST ]; then
-+	ARGS+="-t ${TEST} "
-+fi
-+
- retval=$?
- test_status $retval "${TEST_NAME}"
- 
 diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index a063b9af7fff..38ec66292e03 100644
+index 38ec66292e03..7c19aef1dcc9 100644
 --- a/tools/testing/selftests/bpf/xskxceiver.c
 +++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -110,6 +110,7 @@ static const char *MAC2 = "\x00\x0A\x56\x9E\xEE\x61";
- static bool opt_verbose;
- static bool opt_print_tests;
- static enum test_mode opt_mode = TEST_MODE_ALL;
-+static u32 opt_run_test = RUN_ALL_TESTS;
+@@ -810,7 +810,7 @@ static void pkt_print_data(u32 *data, u32 cnt)
  
- static void __exit_with_error(int error, const char *file, const char *func, int line)
- {
-@@ -316,6 +317,7 @@ static struct option long_options[] = {
- 	{"verbose", no_argument, 0, 'v'},
- 	{"mode", required_argument, 0, 'm'},
- 	{"list", no_argument, 0, 'l'},
-+	{"test", required_argument, 0, 'y'},
- 	{0, 0, 0, 0}
- };
- 
-@@ -328,7 +330,8 @@ static void usage(const char *prog)
- 		"  -v, --verbose        Verbose output\n"
- 		"  -b, --busy-poll      Enable busy poll\n"
- 		"  -m, --mode           Run only mode skb, drv, or zc\n"
--		"  -l, --list           List all available tests\n";
-+		"  -l, --list           List all available tests\n"
-+		"  -t, --test           Run a specific test. Enter number from -l option\n";
- 
- 	ksft_print_msg(str, prog);
- }
-@@ -350,7 +353,7 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
- 	opterr = 0;
- 
- 	for (;;) {
--		c = getopt_long(argc, argv, "i:vbm:l", long_options, &option_index);
-+		c = getopt_long(argc, argv, "i:vbm:lt:", long_options, &option_index);
- 		if (c == -1)
- 			break;
- 
-@@ -397,6 +400,9 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
- 		case 'l':
- 			opt_print_tests = true;
- 			break;
-+		case 't':
-+			opt_run_test = atol(optarg);
-+			break;
- 		default:
- 			usage(basename(argv[0]));
- 			ksft_exit_xfail();
-@@ -2330,8 +2336,8 @@ int main(int argc, char **argv)
- 	struct pkt_stream *rx_pkt_stream_default;
- 	struct pkt_stream *tx_pkt_stream_default;
- 	struct ifobject *ifobj_tx, *ifobj_rx;
-+	u32 i, j, failed_tests = 0, nb_tests;
- 	int modes = TEST_MODE_SKB + 1;
--	u32 i, j, failed_tests = 0;
- 	struct test_spec test;
- 	bool shared_netdev;
- 
-@@ -2353,6 +2359,10 @@ int main(int argc, char **argv)
- 		print_tests();
- 		ksft_exit_xpass();
+ 		seqnum = ntohl(*data) & 0xffff;
+ 		pkt_nb = ntohl(*data) >> 16;
+-		fprintf(stdout, "%u:%u ", pkt_nb, seqnum);
++		ksft_print_msg("%u:%u ", pkt_nb, seqnum);
+ 		data++;
  	}
-+	if (opt_run_test != RUN_ALL_TESTS && opt_run_test >= ARRAY_SIZE(tests)) {
-+		ksft_print_msg("Error: test %u does not exist.\n", opt_run_test);
-+		ksft_exit_xfail();
-+	}
+ }
+@@ -822,13 +822,13 @@ static void pkt_dump(void *pkt, u32 len, bool eth_header)
  
- 	shared_netdev = (ifobj_tx->ifindex == ifobj_rx->ifindex);
- 	ifobj_tx->shared_umem = shared_netdev;
-@@ -2380,19 +2390,31 @@ int main(int argc, char **argv)
- 	test.tx_pkt_stream_default = tx_pkt_stream_default;
- 	test.rx_pkt_stream_default = rx_pkt_stream_default;
+ 	if (eth_header) {
+ 		/*extract L2 frame */
+-		fprintf(stdout, "DEBUG>> L2: dst mac: ");
++		ksft_print_msg("DEBUG>> L2: dst mac: ");
+ 		for (i = 0; i < ETH_ALEN; i++)
+-			fprintf(stdout, "%02X", ethhdr->h_dest[i]);
++			ksft_print_msg("%02X", ethhdr->h_dest[i]);
  
-+	if (opt_run_test == RUN_ALL_TESTS)
-+		nb_tests = ARRAY_SIZE(tests);
-+	else
-+		nb_tests = 1;
- 	if (opt_mode == TEST_MODE_ALL)
--		ksft_set_plan(modes * ARRAY_SIZE(tests));
-+		ksft_set_plan(modes * nb_tests);
- 	else
--		ksft_set_plan(ARRAY_SIZE(tests));
-+		ksft_set_plan(nb_tests);
+-		fprintf(stdout, "\nDEBUG>> L2: src mac: ");
++		ksft_print_msg("\nDEBUG>> L2: src mac: ");
+ 		for (i = 0; i < ETH_ALEN; i++)
+-			fprintf(stdout, "%02X", ethhdr->h_source[i]);
++			ksft_print_msg("%02X", ethhdr->h_source[i]);
  
- 	for (i = 0; i < modes; i++) {
- 		if (opt_mode != TEST_MODE_ALL && i != opt_mode)
- 			continue;
+ 		data = pkt + PKT_HDR_SIZE;
+ 	} else {
+@@ -836,15 +836,15 @@ static void pkt_dump(void *pkt, u32 len, bool eth_header)
+ 	}
  
--		for (j = 0; j < ARRAY_SIZE(tests); j++) {
--			test_spec_init(&test, ifobj_tx, ifobj_rx, i, &tests[j]);
-+		if (opt_run_test == RUN_ALL_TESTS) {
-+			for (j = 0; j < ARRAY_SIZE(tests); j++) {
-+				test_spec_init(&test, ifobj_tx, ifobj_rx, i, &tests[j]);
-+				run_pkt_test(&test);
-+				usleep(USLEEP_MAX);
-+
-+				if (test.fail)
-+					failed_tests++;
-+			}
-+		} else {
-+			test_spec_init(&test, ifobj_tx, ifobj_rx, i, &tests[opt_run_test]);
- 			run_pkt_test(&test);
--			usleep(USLEEP_MAX);
+ 	/*extract L5 frame */
+-	fprintf(stdout, "\nDEBUG>> L5: seqnum: ");
++	ksft_print_msg("\nDEBUG>> L5: seqnum: ");
+ 	pkt_print_data(data, PKT_DUMP_NB_TO_PRINT);
+-	fprintf(stdout, "....");
++	ksft_print_msg("....");
+ 	if (len > PKT_DUMP_NB_TO_PRINT * sizeof(u32)) {
+-		fprintf(stdout, "\n.... ");
++		ksft_print_msg("\n.... ");
+ 		pkt_print_data(data + len / sizeof(u32) - PKT_DUMP_NB_TO_PRINT,
+ 			       PKT_DUMP_NB_TO_PRINT);
+ 	}
+-	fprintf(stdout, "\n---------------------------------------\n");
++	ksft_print_msg("\n---------------------------------------\n");
+ }
  
- 			if (test.fail)
- 				failed_tests++;
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 3a71d490db3e..8015aeea839d 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -5,6 +5,8 @@
- #ifndef XSKXCEIVER_H_
- #define XSKXCEIVER_H_
+ static bool is_offset_correct(struct xsk_umem_info *umem, struct pkt *pkt, u64 addr)
+@@ -1555,7 +1555,8 @@ static void *worker_testapp_validate_rx(void *arg)
+ 		xsk_clear_xskmap(ifobject->xskmap);
+ 		err = xsk_update_xskmap(ifobject->xskmap, ifobject->xsk->xsk);
+ 		if (err) {
+-			printf("Error: Failed to update xskmap, error %s\n", strerror(-err));
++			ksft_print_msg("Error: Failed to update xskmap, error %s\n",
++				       strerror(-err));
+ 			exit_with_error(-err);
+ 		}
+ 	}
+@@ -1619,7 +1620,7 @@ static void xsk_reattach_xdp(struct ifobject *ifobj, struct bpf_program *xdp_pro
+ 	xsk_detach_xdp_program(ifobj->ifindex, mode_to_xdp_flags(ifobj->mode));
+ 	err = xsk_attach_xdp_program(xdp_prog, ifobj->ifindex, mode_to_xdp_flags(mode));
+ 	if (err) {
+-		printf("Error attaching XDP program\n");
++		ksft_print_msg("Error attaching XDP program\n");
+ 		exit_with_error(-err);
+ 	}
  
-+#include <limits.h>
-+
- #include "xsk_xdp_progs.skel.h"
+@@ -2106,7 +2107,7 @@ static void init_iface(struct ifobject *ifobj, const char *dst_mac, const char *
  
- #ifndef SOL_XDP
-@@ -56,6 +58,7 @@
- #define XSK_DESC__MAX_SKB_FRAGS 18
- #define HUGEPAGE_SIZE (2 * 1024 * 1024)
- #define PKT_DUMP_NB_TO_PRINT 16
-+#define RUN_ALL_TESTS UINT_MAX
- 
- #define print_verbose(x...) do { if (opt_verbose) ksft_print_msg(x); } while (0)
+ 	err = xsk_load_xdp_programs(ifobj);
+ 	if (err) {
+-		printf("Error loading XDP program\n");
++		ksft_print_msg("Error loading XDP program\n");
+ 		exit_with_error(err);
+ 	}
  
 -- 
 2.34.1
