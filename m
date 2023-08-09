@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-7313-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7314-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E547755BD
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 10:45:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 066647755C0
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 10:46:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21DE71C21029
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 08:45:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4855281468
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 08:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9B8182DF;
-	Wed,  9 Aug 2023 08:38:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB6F18C0D;
+	Wed,  9 Aug 2023 08:38:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820AE6AAB
-	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 08:38:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C677C433C8;
-	Wed,  9 Aug 2023 08:38:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0AA06AAB
+	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 08:38:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C070C433C7;
+	Wed,  9 Aug 2023 08:38:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691570300;
-	bh=DSOy7tf57CPi59BqT+HgfoPBm60V5VC+YwYP7qkR+HM=;
+	s=k20201202; t=1691570310;
+	bh=NIeWJgVrAw17naHEv0PHMRCgDQmSX5RUF9i7t4pViDI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OAd72I7fwdqapkTH/LuAZUHTmA31ll2zpt4cL8GvGPJlD1EOU/mWxqF5VjXSOs/dM
-	 DwV0MuH5NoY95zyM+/sxIDostD0tN5HUFpwzUWA6+72Z1+qXRtMAuCr4xvKbXVzJTK
-	 Apa1LZ1ZKURDKHI0gdeFCJI2PHHIfwJNDLkuqM6iQzZru5qYAMTmyOfA1Grf8Klt6M
-	 u1MZsS8/bKz4gHPWrO2AKKG4YM0EqD0ntSLaESlQJp8U6ZLBLQ5H7kZ9OURbgVsaUd
-	 ug00dF5u2BPu8YmGgGgMMfRdaYe4k1O9555lUYzbv6u516rjn4g566GNBPcFhI1Vz0
-	 I5i2E/TqIAa0Q==
+	b=ic/sbv0FwqGoTzFf7BlZSUHrQspTFtRdW+vPd6PGCptPmCKeRoaWnI0EHzGq8Pbhe
+	 0wrnB10BI60lvI0gBTHP6M7gyvU2+6p1igl+W0SpORu7wffC+jzJBDy0KphGBZUKcO
+	 hxFcR2G/yW/m5QzCaSjOO5zwu28JekrjIyExTXCqGEBbW3PdxqjsjMHVvCOV4tecyx
+	 p0pDTCkgCEoRU2DnyixFE19+RV+dOu9FmNUnw0Pib5X+BKVl6rD+Zo8aDAPbYJNVuE
+	 lDKySKCIX/hPKDSSUorbePvuIZVP9jqiVuEDYr7wC/ks0jOs9wZ8G3Nw1K3/0ZIlL1
+	 10ub3PCzJckDw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -43,9 +43,9 @@ Cc: bpf@vger.kernel.org,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCHv7 bpf-next 21/28] selftests/bpf: Add uprobe_multi link test
-Date: Wed,  9 Aug 2023 10:34:33 +0200
-Message-ID: <20230809083440.3209381-22-jolsa@kernel.org>
+Subject: [PATCHv7 bpf-next 22/28] selftests/bpf: Add uprobe_multi test program
+Date: Wed,  9 Aug 2023 10:34:34 +0200
+Message-ID: <20230809083440.3209381-23-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230809083440.3209381-1-jolsa@kernel.org>
 References: <20230809083440.3209381-1-jolsa@kernel.org>
@@ -57,107 +57,113 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding uprobe_multi test for bpf_link_create attach function.
-
-Testing attachment using the struct bpf_link_create_opts.
+Adding uprobe_multi test program that defines 50k uprobe_multi_func_*
+functions and will serve as attach point for uprobe_multi bench test
+in following patch.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../bpf/prog_tests/uprobe_multi_test.c        | 69 +++++++++++++++++++
- 1 file changed, 69 insertions(+)
+ tools/testing/selftests/bpf/Makefile       |  5 ++
+ tools/testing/selftests/bpf/uprobe_multi.c | 67 ++++++++++++++++++++++
+ 2 files changed, 72 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/uprobe_multi.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-index 2ac8954123e4..3860beda82c8 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-@@ -3,6 +3,7 @@
- #include <unistd.h>
- #include <test_progs.h>
- #include "uprobe_multi.skel.h"
-+#include "bpf/libbpf_internal.h"
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index e4e1e6492268..edef49fcd23e 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -585,6 +585,7 @@ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
+ 		       $(OUTPUT)/liburandom_read.so			\
+ 		       $(OUTPUT)/xdp_synproxy				\
+ 		       $(OUTPUT)/sign-file				\
++		       $(OUTPUT)/uprobe_multi				\
+ 		       ima_setup.sh 					\
+ 		       verify_sig_setup.sh				\
+ 		       $(wildcard progs/btf_dump_test_case_*.c)		\
+@@ -698,6 +699,10 @@ $(OUTPUT)/veristat: $(OUTPUT)/veristat.o
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
  
- static char test_data[] = "test_data";
- 
-@@ -130,6 +131,72 @@ static void test_attach_api_syms(void)
- 	test_attach_api("/proc/self/exe", NULL, &opts);
- }
- 
-+static void test_link_api(void)
++$(OUTPUT)/uprobe_multi: uprobe_multi.c
++	$(call msg,BINARY,,$@)
++	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
++
+ EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
+ 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
+ 	feature bpftool							\
+diff --git a/tools/testing/selftests/bpf/uprobe_multi.c b/tools/testing/selftests/bpf/uprobe_multi.c
+new file mode 100644
+index 000000000000..d19184103fa3
+--- /dev/null
++++ b/tools/testing/selftests/bpf/uprobe_multi.c
+@@ -0,0 +1,67 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <stdio.h>
++#include <string.h>
++
++#define __PASTE(a, b) a##b
++#define PASTE(a, b) __PASTE(a, b)
++
++#define NAME(name, idx) PASTE(name, idx)
++
++#define DEF(name, idx)  int NAME(name, idx)(void) { return 0; }
++#define CALL(name, idx) NAME(name, idx)();
++
++#define F(body, name, idx) body(name, idx)
++
++#define F10(body, name, idx) \
++	F(body, PASTE(name, idx), 0) F(body, PASTE(name, idx), 1) F(body, PASTE(name, idx), 2) \
++	F(body, PASTE(name, idx), 3) F(body, PASTE(name, idx), 4) F(body, PASTE(name, idx), 5) \
++	F(body, PASTE(name, idx), 6) F(body, PASTE(name, idx), 7) F(body, PASTE(name, idx), 8) \
++	F(body, PASTE(name, idx), 9)
++
++#define F100(body, name, idx) \
++	F10(body, PASTE(name, idx), 0) F10(body, PASTE(name, idx), 1) F10(body, PASTE(name, idx), 2) \
++	F10(body, PASTE(name, idx), 3) F10(body, PASTE(name, idx), 4) F10(body, PASTE(name, idx), 5) \
++	F10(body, PASTE(name, idx), 6) F10(body, PASTE(name, idx), 7) F10(body, PASTE(name, idx), 8) \
++	F10(body, PASTE(name, idx), 9)
++
++#define F1000(body, name, idx) \
++	F100(body, PASTE(name, idx), 0) F100(body, PASTE(name, idx), 1) F100(body, PASTE(name, idx), 2) \
++	F100(body, PASTE(name, idx), 3) F100(body, PASTE(name, idx), 4) F100(body, PASTE(name, idx), 5) \
++	F100(body, PASTE(name, idx), 6) F100(body, PASTE(name, idx), 7) F100(body, PASTE(name, idx), 8) \
++	F100(body, PASTE(name, idx), 9)
++
++#define F10000(body, name, idx) \
++	F1000(body, PASTE(name, idx), 0) F1000(body, PASTE(name, idx), 1) F1000(body, PASTE(name, idx), 2) \
++	F1000(body, PASTE(name, idx), 3) F1000(body, PASTE(name, idx), 4) F1000(body, PASTE(name, idx), 5) \
++	F1000(body, PASTE(name, idx), 6) F1000(body, PASTE(name, idx), 7) F1000(body, PASTE(name, idx), 8) \
++	F1000(body, PASTE(name, idx), 9)
++
++F10000(DEF, uprobe_multi_func_, 0)
++F10000(DEF, uprobe_multi_func_, 1)
++F10000(DEF, uprobe_multi_func_, 2)
++F10000(DEF, uprobe_multi_func_, 3)
++F10000(DEF, uprobe_multi_func_, 4)
++
++static int bench(void)
 +{
-+	int prog_fd, link1_fd = -1, link2_fd = -1, link3_fd = -1, link4_fd = -1;
-+	LIBBPF_OPTS(bpf_link_create_opts, opts);
-+	const char *path = "/proc/self/exe";
-+	struct uprobe_multi *skel = NULL;
-+	unsigned long *offsets = NULL;
-+	const char *syms[3] = {
-+		"uprobe_multi_func_1",
-+		"uprobe_multi_func_2",
-+		"uprobe_multi_func_3",
-+	};
-+	int err;
-+
-+	err = elf_resolve_syms_offsets(path, 3, syms, (unsigned long **) &offsets);
-+	if (!ASSERT_OK(err, "elf_resolve_syms_offsets"))
-+		return;
-+
-+	opts.uprobe_multi.path = path;
-+	opts.uprobe_multi.offsets = offsets;
-+	opts.uprobe_multi.cnt = ARRAY_SIZE(syms);
-+
-+	skel = uprobe_multi__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "uprobe_multi__open_and_load"))
-+		goto cleanup;
-+
-+	opts.kprobe_multi.flags = 0;
-+	prog_fd = bpf_program__fd(skel->progs.uprobe);
-+	link1_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &opts);
-+	if (!ASSERT_GE(link1_fd, 0, "link1_fd"))
-+		goto cleanup;
-+
-+	opts.kprobe_multi.flags = BPF_F_UPROBE_MULTI_RETURN;
-+	prog_fd = bpf_program__fd(skel->progs.uretprobe);
-+	link2_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &opts);
-+	if (!ASSERT_GE(link2_fd, 0, "link2_fd"))
-+		goto cleanup;
-+
-+	opts.kprobe_multi.flags = 0;
-+	prog_fd = bpf_program__fd(skel->progs.uprobe_sleep);
-+	link3_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &opts);
-+	if (!ASSERT_GE(link3_fd, 0, "link3_fd"))
-+		goto cleanup;
-+
-+	opts.kprobe_multi.flags = BPF_F_UPROBE_MULTI_RETURN;
-+	prog_fd = bpf_program__fd(skel->progs.uretprobe_sleep);
-+	link4_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &opts);
-+	if (!ASSERT_GE(link4_fd, 0, "link4_fd"))
-+		goto cleanup;
-+
-+	uprobe_multi_test_run(skel);
-+
-+cleanup:
-+	if (link1_fd >= 0)
-+		close(link1_fd);
-+	if (link2_fd >= 0)
-+		close(link2_fd);
-+	if (link3_fd >= 0)
-+		close(link3_fd);
-+	if (link4_fd >= 0)
-+		close(link4_fd);
-+
-+	uprobe_multi__destroy(skel);
-+	free(offsets);
++	F10000(CALL, uprobe_multi_func_, 0)
++	F10000(CALL, uprobe_multi_func_, 1)
++	F10000(CALL, uprobe_multi_func_, 2)
++	F10000(CALL, uprobe_multi_func_, 3)
++	F10000(CALL, uprobe_multi_func_, 4)
++	return 0;
 +}
 +
- void test_uprobe_multi_test(void)
- {
- 	if (test__start_subtest("skel_api"))
-@@ -138,4 +205,6 @@ void test_uprobe_multi_test(void)
- 		test_attach_api_pattern();
- 	if (test__start_subtest("attach_api_syms"))
- 		test_attach_api_syms();
-+	if (test__start_subtest("link_api"))
-+		test_link_api();
- }
++int main(int argc, char **argv)
++{
++	if (argc != 2)
++		goto error;
++
++	if (!strcmp("bench", argv[1]))
++		return bench();
++
++error:
++	fprintf(stderr, "usage: %s <bench>\n", argv[0]);
++	return -1;
++}
 -- 
 2.41.0
 
