@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-7357-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7358-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FEBE775FA0
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 14:48:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DADA775FA4
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 14:48:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50A2E1C2120F
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 12:48:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11465280D42
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 12:48:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3726B1988B;
-	Wed,  9 Aug 2023 12:44:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2FAD198BF;
+	Wed,  9 Aug 2023 12:44:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C45D18C38;
-	Wed,  9 Aug 2023 12:44:37 +0000 (UTC)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1621BDA;
-	Wed,  9 Aug 2023 05:44:36 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe1b6192e8so18174645e9.1;
-        Wed, 09 Aug 2023 05:44:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E12182A4;
+	Wed,  9 Aug 2023 12:44:40 +0000 (UTC)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEEB19A1;
+	Wed,  9 Aug 2023 05:44:39 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fe23319695so18114525e9.0;
+        Wed, 09 Aug 2023 05:44:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691585074; x=1692189874;
+        d=gmail.com; s=20221208; t=1691585078; x=1692189878;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=a5LGwYrDwcayojjQPJLrwM7i+6zcw7e3Fl0L8ybGHMc=;
-        b=OPUavXAVE+eM91Y7eZQzbcEbLTBnfBX/uivXaqGyFuZ9H8swzUgK8i9cjRsFZ6LAO/
-         QYdr+gRPt8wJfrTC043R5UxEzu1pslXrwl5qUh0KRz9MkhfqsvXcxOEf9E9gY8jEAnmC
-         XevFeTe0Uac4XC/3EUM3JBBZB58RvSPekhgEXsR7t6OgPn22Pa74Ga6ETs4sAzNIpgdu
-         crLKD1x58WlnEQLqxyKys6HpFv26KsJjhrhQhENpTV2k02al1Apr/pLDCIuFqEU4zIr8
-         oMNzpNSSl9zWTGB/isIdcGONbe3EgGi+Mz5mH/sCaQMUg7rhqdY5Ez39Ycha0P5dx3D2
-         h49Q==
+        bh=Daga65Saxn8lUhaPrHDRPk4encj5FyjP/ZTSakJvhfA=;
+        b=AT4QQwmlm65yiwXYNUjIkmiKr0ZtrKtPoTrF9DFMON33H6YBz8cRdcq7B64qiBq+zK
+         0srLBEEKUseFk/xceUOuJEml82ohxSqzU1zh5CYg5TYNWsAi0JQZPhrjJjUV8T9YVtcT
+         0imT4g8Jvl0pe1M0ggltmkr8SobJf4gnlFYWmus5Q0oVsfzOBAIzd0V+X3FHA+ZiCv/v
+         sa/y52QjDLK7QYNXw0MXgHKuYXTCpXu86s8AOGkheTRjZRw7VgsHi+paYlLqRPi04Cvh
+         Y76kDwSUytROQ/PcVIAT5eMM68q76W1ZkHlysOH+cFU11jiB5NkVCS7ugm4/nX3gFbMM
+         EoVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691585074; x=1692189874;
+        d=1e100.net; s=20221208; t=1691585078; x=1692189878;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a5LGwYrDwcayojjQPJLrwM7i+6zcw7e3Fl0L8ybGHMc=;
-        b=LmKVSJcrvZUQghS3Dw6ad6OXTeoEZPA6au+1nyIMFHH6fwU3EEbt8rTUQM4iM9UX3M
-         R6WasQotmj7hqaX6IZkH/g+JtHLJ4olBNlQL46wFZCqwmEc/Ut+pWe0AuBa3YuBc53zh
-         QXaO5lTlq44Ch3en5RwjQLN/nDUCoClV1FVBkTf8gxnwXn3Kb/gMkBGSEZpfvsl1r8vB
-         wRT17TyxSneeDZVDaAQiq2CLrL+kM9+eLFrEnAuYgt+6D4eEXW4fWXq4+cNV5JSM6dV1
-         vn+0Ig6EmO54CzHLS+CmLjHa2yNHTMzjBvjuEmce53mkgpla1wkb2tRkKl0RHl7DAn6X
-         y8yg==
-X-Gm-Message-State: AOJu0YwtXEElD5jkw1MLdKuhvngeNKZDD7wKXDpUciDQCVUCAmkoNeIq
-	sp0dGBABy3UrhrdDlWTjtNU=
-X-Google-Smtp-Source: AGHT+IG187hssArojzic8dSuLvqvGK4f7mOqOJu48BKwqpd0hkf3HI7ZDH2bJ9QsZktzyyfA73if0A==
-X-Received: by 2002:a5d:534d:0:b0:317:3da0:7606 with SMTP id t13-20020a5d534d000000b003173da07606mr1597376wrv.4.1691585074380;
-        Wed, 09 Aug 2023 05:44:34 -0700 (PDT)
+        bh=Daga65Saxn8lUhaPrHDRPk4encj5FyjP/ZTSakJvhfA=;
+        b=ADBO+vhtKuSzgRb1xb9aTYjZmQHNq8el6yFbsp7dib2tAPbwN4JvOep1PHna8SH2V5
+         8PkeQrVAh9PJPJq77uqiH0HRYxBd2A/7fy+mmxrtC+t8uwc8MnQFbiO1RMKg6nLaO8Aw
+         UFgsqaNSPsZw3tsvWkBiAYx/uEKr2w8WcyBDcA7RNih/WOWmtmKHbXSQx9fPPFcfsODx
+         2gg8kJv90pa2SJCx5FquFWEWk0KdI4o1WY9sTVLwpAT5YTXJ182J9VZsq6Q5th8ccK+Z
+         TU9N1M37VzfqChQr6TeFgr7tLdtxMDwZdI5LcolLb/v4ZHFED9maTQcfAkSHmMUg0o2O
+         C2Ng==
+X-Gm-Message-State: AOJu0YxoMCSYUdo/lbZspcF1LzStpZazgF11MJM9zVvkkZ3VxWzvzK4N
+	5vQy5g0V4G6qtj1kRbjoNGc=
+X-Google-Smtp-Source: AGHT+IHoeHuiNN0DyqSm07Mxs63vb0S5sE1hi6b1VF1VpPdnHyqk63VzSUGwE1PwTEgNIt2RnfPraQ==
+X-Received: by 2002:adf:e70d:0:b0:317:ec2e:5a07 with SMTP id c13-20020adfe70d000000b00317ec2e5a07mr1801328wrm.0.1691585077720;
+        Wed, 09 Aug 2023 05:44:37 -0700 (PDT)
 Received: from localhost.localdomain (c-5eea7243-74736162.cust.telenor.se. [94.234.114.67])
-        by smtp.gmail.com with ESMTPSA id d2-20020a5d4f82000000b0031784ac0babsm16811538wru.28.2023.08.09.05.44.31
+        by smtp.gmail.com with ESMTPSA id d2-20020a5d4f82000000b0031784ac0babsm16811538wru.28.2023.08.09.05.44.34
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Aug 2023 05:44:34 -0700 (PDT)
+        Wed, 09 Aug 2023 05:44:37 -0700 (PDT)
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
 To: magnus.karlsson@intel.com,
 	bjorn@kernel.org,
@@ -73,9 +73,9 @@ To: magnus.karlsson@intel.com,
 	sdf@google.com,
 	haoluo@google.com,
 	jolsa@kernel.org
-Subject: [PATCH bpf-next 08/10] selftests/xsk: use ksft_print_msg uniformly
-Date: Wed,  9 Aug 2023 14:43:41 +0200
-Message-Id: <20230809124343.12957-9-magnus.karlsson@gmail.com>
+Subject: [PATCH bpf-next 09/10] selftests/xsk: fail single test instead of all tests
+Date: Wed,  9 Aug 2023 14:43:42 +0200
+Message-Id: <20230809124343.12957-10-magnus.karlsson@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230809124343.12957-1-magnus.karlsson@gmail.com>
 References: <20230809124343.12957-1-magnus.karlsson@gmail.com>
@@ -95,95 +95,202 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Use ksft_print_msg() instead of printf() and fprintf() in all places
-as the ksefltests framework is being used. There is only one exception
-and that is for the list-of-tests print out option, since no tests are
-run in that case.
+In a number of places at en error, exit_with_error() is called that
+terminates the whole test suite. This is not always desirable as it
+would be more logical to only fail that test and then go along with
+the other ones. So change this in a number of places in which I though
+it would be more logical to just fail the test in question. Examples
+of this are in code that is only used by a single test.
+
+Also delete a pointless if-statement in receive_pkts() that has an
+exit_with_error() in it. It can never occur since the return value is
+an unisnged and the test is for less than zero.
 
 Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- tools/testing/selftests/bpf/xskxceiver.c | 25 ++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ tools/testing/selftests/bpf/xskxceiver.c | 70 ++++++++++++++++--------
+ 1 file changed, 46 insertions(+), 24 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 38ec66292e03..7c19aef1dcc9 100644
+index 7c19aef1dcc9..ffa8905a66f1 100644
 --- a/tools/testing/selftests/bpf/xskxceiver.c
 +++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -810,7 +810,7 @@ static void pkt_print_data(u32 *data, u32 cnt)
- 
- 		seqnum = ntohl(*data) & 0xffff;
- 		pkt_nb = ntohl(*data) >> 16;
--		fprintf(stdout, "%u:%u ", pkt_nb, seqnum);
-+		ksft_print_msg("%u:%u ", pkt_nb, seqnum);
- 		data++;
- 	}
- }
-@@ -822,13 +822,13 @@ static void pkt_dump(void *pkt, u32 len, bool eth_header)
- 
- 	if (eth_header) {
- 		/*extract L2 frame */
--		fprintf(stdout, "DEBUG>> L2: dst mac: ");
-+		ksft_print_msg("DEBUG>> L2: dst mac: ");
- 		for (i = 0; i < ETH_ALEN; i++)
--			fprintf(stdout, "%02X", ethhdr->h_dest[i]);
-+			ksft_print_msg("%02X", ethhdr->h_dest[i]);
- 
--		fprintf(stdout, "\nDEBUG>> L2: src mac: ");
-+		ksft_print_msg("\nDEBUG>> L2: src mac: ");
- 		for (i = 0; i < ETH_ALEN; i++)
--			fprintf(stdout, "%02X", ethhdr->h_source[i]);
-+			ksft_print_msg("%02X", ethhdr->h_source[i]);
- 
- 		data = pkt + PKT_HDR_SIZE;
- 	} else {
-@@ -836,15 +836,15 @@ static void pkt_dump(void *pkt, u32 len, bool eth_header)
- 	}
- 
- 	/*extract L5 frame */
--	fprintf(stdout, "\nDEBUG>> L5: seqnum: ");
-+	ksft_print_msg("\nDEBUG>> L5: seqnum: ");
- 	pkt_print_data(data, PKT_DUMP_NB_TO_PRINT);
--	fprintf(stdout, "....");
-+	ksft_print_msg("....");
- 	if (len > PKT_DUMP_NB_TO_PRINT * sizeof(u32)) {
--		fprintf(stdout, "\n.... ");
-+		ksft_print_msg("\n.... ");
- 		pkt_print_data(data + len / sizeof(u32) - PKT_DUMP_NB_TO_PRINT,
- 			       PKT_DUMP_NB_TO_PRINT);
- 	}
--	fprintf(stdout, "\n---------------------------------------\n");
-+	ksft_print_msg("\n---------------------------------------\n");
+@@ -949,36 +949,42 @@ static bool is_pkt_valid(struct pkt *pkt, void *buffer, u64 addr, u32 len)
+ 	return true;
  }
  
- static bool is_offset_correct(struct xsk_umem_info *umem, struct pkt *pkt, u64 addr)
-@@ -1555,7 +1555,8 @@ static void *worker_testapp_validate_rx(void *arg)
- 		xsk_clear_xskmap(ifobject->xskmap);
- 		err = xsk_update_xskmap(ifobject->xskmap, ifobject->xsk->xsk);
- 		if (err) {
--			printf("Error: Failed to update xskmap, error %s\n", strerror(-err));
-+			ksft_print_msg("Error: Failed to update xskmap, error %s\n",
-+				       strerror(-err));
- 			exit_with_error(-err);
+-static void kick_tx(struct xsk_socket_info *xsk)
++static int kick_tx(struct xsk_socket_info *xsk)
+ {
+ 	int ret;
+ 
+ 	ret = sendto(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, 0);
+ 	if (ret >= 0)
+-		return;
++		return TEST_PASS;
+ 	if (errno == ENOBUFS || errno == EAGAIN || errno == EBUSY || errno == ENETDOWN) {
+ 		usleep(100);
+-		return;
++		return TEST_PASS;
+ 	}
+-	exit_with_error(errno);
++	return TEST_FAILURE;
+ }
+ 
+-static void kick_rx(struct xsk_socket_info *xsk)
++static int kick_rx(struct xsk_socket_info *xsk)
+ {
+ 	int ret;
+ 
+ 	ret = recvfrom(xsk_socket__fd(xsk->xsk), NULL, 0, MSG_DONTWAIT, NULL, NULL);
+ 	if (ret < 0)
+-		exit_with_error(errno);
++		return TEST_FAILURE;
++
++	return TEST_PASS;
+ }
+ 
+ static int complete_pkts(struct xsk_socket_info *xsk, int batch_size)
+ {
+ 	unsigned int rcvd;
+ 	u32 idx;
++	int ret;
+ 
+-	if (xsk_ring_prod__needs_wakeup(&xsk->tx))
+-		kick_tx(xsk);
++	if (xsk_ring_prod__needs_wakeup(&xsk->tx)) {
++		ret = kick_tx(xsk);
++		if (ret)
++			return TEST_FAILURE;
++	}
+ 
+ 	rcvd = xsk_ring_cons__peek(&xsk->umem->cq, batch_size, &idx);
+ 	if (rcvd) {
+@@ -1026,11 +1032,14 @@ static int receive_pkts(struct test_spec *test, struct pollfd *fds)
+ 			return TEST_FAILURE;
  		}
- 	}
-@@ -1619,7 +1620,7 @@ static void xsk_reattach_xdp(struct ifobject *ifobj, struct bpf_program *xdp_pro
- 	xsk_detach_xdp_program(ifobj->ifindex, mode_to_xdp_flags(ifobj->mode));
- 	err = xsk_attach_xdp_program(xdp_prog, ifobj->ifindex, mode_to_xdp_flags(mode));
- 	if (err) {
--		printf("Error attaching XDP program\n");
-+		ksft_print_msg("Error attaching XDP program\n");
- 		exit_with_error(-err);
+ 
+-		kick_rx(xsk);
++		ret = kick_rx(xsk);
++		if (ret)
++			return TEST_FAILURE;
++
+ 		if (ifobj->use_poll) {
+ 			ret = poll(fds, 1, POLL_TMOUT);
+ 			if (ret < 0)
+-				exit_with_error(errno);
++				return TEST_FAILURE;
+ 
+ 			if (!ret) {
+ 				if (!is_umem_valid(test->ifobj_tx))
+@@ -1051,12 +1060,10 @@ static int receive_pkts(struct test_spec *test, struct pollfd *fds)
+ 		if (ifobj->use_fill_ring) {
+ 			ret = xsk_ring_prod__reserve(&umem->fq, rcvd, &idx_fq);
+ 			while (ret != rcvd) {
+-				if (ret < 0)
+-					exit_with_error(-ret);
+ 				if (xsk_ring_prod__needs_wakeup(&umem->fq)) {
+ 					ret = poll(fds, 1, POLL_TMOUT);
+ 					if (ret < 0)
+-						exit_with_error(errno);
++						return TEST_FAILURE;
+ 				}
+ 				ret = xsk_ring_prod__reserve(&umem->fq, rcvd, &idx_fq);
+ 			}
+@@ -1140,7 +1147,9 @@ static int __send_pkts(struct ifobject *ifobject, struct pollfd *fds, bool timeo
+ 	buffer_len = pkt_get_buffer_len(umem, pkt_stream->max_pkt_len);
+ 	/* pkts_in_flight might be negative if many invalid packets are sent */
+ 	if (pkts_in_flight >= (int)((umem_size(umem) - BATCH_SIZE * buffer_len) / buffer_len)) {
+-		kick_tx(xsk);
++		ret = kick_tx(xsk);
++		if (ret)
++			return TEST_FAILURE;
+ 		return TEST_CONTINUE;
  	}
  
-@@ -2106,7 +2107,7 @@ static void init_iface(struct ifobject *ifobj, const char *dst_mac, const char *
+@@ -1323,7 +1332,9 @@ static int validate_rx_dropped(struct ifobject *ifobject)
+ 	struct xdp_statistics stats;
+ 	int err;
  
- 	err = xsk_load_xdp_programs(ifobj);
- 	if (err) {
--		printf("Error loading XDP program\n");
-+		ksft_print_msg("Error loading XDP program\n");
- 		exit_with_error(err);
- 	}
+-	kick_rx(ifobject->xsk);
++	err = kick_rx(ifobject->xsk);
++	if (err)
++		return TEST_FAILURE;
  
+ 	err = get_xsk_stats(xsk, &stats);
+ 	if (err)
+@@ -1349,7 +1360,9 @@ static int validate_rx_full(struct ifobject *ifobject)
+ 	int err;
+ 
+ 	usleep(1000);
+-	kick_rx(ifobject->xsk);
++	err = kick_rx(ifobject->xsk);
++	if (err)
++		return TEST_FAILURE;
+ 
+ 	err = get_xsk_stats(xsk, &stats);
+ 	if (err)
+@@ -1368,7 +1381,9 @@ static int validate_fill_empty(struct ifobject *ifobject)
+ 	int err;
+ 
+ 	usleep(1000);
+-	kick_rx(ifobject->xsk);
++	err = kick_rx(ifobject->xsk);
++	if (err)
++		return TEST_FAILURE;
+ 
+ 	err = get_xsk_stats(xsk, &stats);
+ 	if (err)
+@@ -1777,7 +1792,7 @@ static int testapp_bidirectional(struct test_spec *test)
+ 	return res;
+ }
+ 
+-static void swap_xsk_resources(struct ifobject *ifobj_tx, struct ifobject *ifobj_rx)
++static int swap_xsk_resources(struct ifobject *ifobj_tx, struct ifobject *ifobj_rx)
+ {
+ 	int ret;
+ 
+@@ -1788,7 +1803,9 @@ static void swap_xsk_resources(struct ifobject *ifobj_tx, struct ifobject *ifobj
+ 
+ 	ret = xsk_update_xskmap(ifobj_rx->xskmap, ifobj_rx->xsk->xsk);
+ 	if (ret)
+-		exit_with_error(errno);
++		return TEST_FAILURE;
++
++	return TEST_PASS;
+ }
+ 
+ static int testapp_xdp_prog_cleanup(struct test_spec *test)
+@@ -1798,7 +1815,8 @@ static int testapp_xdp_prog_cleanup(struct test_spec *test)
+ 	if (testapp_validate_traffic(test))
+ 		return TEST_FAILURE;
+ 
+-	swap_xsk_resources(test->ifobj_tx, test->ifobj_rx);
++	if (swap_xsk_resources(test->ifobj_tx, test->ifobj_rx))
++		return TEST_FAILURE;
+ 	return testapp_validate_traffic(test);
+ }
+ 
+@@ -1999,11 +2017,15 @@ static int testapp_xdp_metadata_copy(struct test_spec *test)
+ 	test->ifobj_rx->use_metadata = true;
+ 
+ 	data_map = bpf_object__find_map_by_name(skel_rx->obj, "xsk_xdp_.bss");
+-	if (!data_map || !bpf_map__is_internal(data_map))
+-		exit_with_error(ENOMEM);
++	if (!data_map || !bpf_map__is_internal(data_map)) {
++		ksft_print_msg("Error: could not find bss section of XDP program\n");
++		return TEST_FAILURE;
++	}
+ 
+-	if (bpf_map_update_elem(bpf_map__fd(data_map), &key, &count, BPF_ANY))
+-		exit_with_error(errno);
++	if (bpf_map_update_elem(bpf_map__fd(data_map), &key, &count, BPF_ANY)) {
++		ksft_print_msg("Error: could not update count element\n");
++		return TEST_FAILURE;
++	}
+ 
+ 	return testapp_validate_traffic(test);
+ }
 -- 
 2.34.1
 
