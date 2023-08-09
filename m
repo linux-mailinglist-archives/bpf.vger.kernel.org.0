@@ -1,67 +1,67 @@
-Return-Path: <bpf+bounces-7325-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7326-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B1C1775714
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 12:29:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2089775716
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 12:29:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBBFB1C21187
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 10:29:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A10E281B4C
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 10:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40956171C0;
-	Wed,  9 Aug 2023 10:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ED4F171C3;
+	Wed,  9 Aug 2023 10:29:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A644100B6
-	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 10:28:52 +0000 (UTC)
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204031FF9
-	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 03:28:50 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a78a2c0f81so2987744b6e.0
-        for <bpf@vger.kernel.org>; Wed, 09 Aug 2023 03:28:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0ECF613F
+	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 10:29:25 +0000 (UTC)
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205081982
+	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 03:29:25 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3a6f3ef3155so5182618b6e.1
+        for <bpf@vger.kernel.org>; Wed, 09 Aug 2023 03:29:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691576929; x=1692181729;
+        d=chromium.org; s=google; t=1691576964; x=1692181764;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0Q8MkAHQ4z//oNqFY2MVENDhG30E0OZjbLf49uqOaBk=;
-        b=crMbapozPwtjeNppbjAxpjpuLGNgFYD9emI6UusfTFZYXC/sp6pXc9xnok3zJTqSgr
-         D7E22VtBhnYZIMc5IeWUOTWbm3fQkafC00OZVVnU3trR9jrCtMSJTDkK/QZvMPqfD4jG
-         jb4tVCQ9nDPf6zKfQ/TGYPFEKZ9dTG78Ooeqo=
+        bh=dbRTactPL+UoTh7JhtLP7m2QS4BKZHHCNQWVDx5nQag=;
+        b=GEO0/nvBajwIJUPnEU41+WNGwH2DtulMBc4FPYU1jw1eJyQzRO1uSpXBuBH8QLOwCt
+         GwhW7UCHdaFTfMpbBv5D8LXISJFDNz6p84oe70QtyPQ0jjTGD/KZxrq2YaTVBZXBmjLX
+         O/QMcqR39ySFwSZn+/0ISTfXyj/Fu+13hAe1M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691576929; x=1692181729;
+        d=1e100.net; s=20221208; t=1691576964; x=1692181764;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0Q8MkAHQ4z//oNqFY2MVENDhG30E0OZjbLf49uqOaBk=;
-        b=fMegXpzelRN9BH+RN9oDvWt+5j0OobJPzHmyKNO/mR5+/3hmSeSHJtEMaRzXW1G28k
-         ntshLkUIhiqC4gfKMEjHzYObk/VQo5x3Ph9QNcnkeleKTefSyLK0f04Yi2wZ4hFytZj/
-         aTrwz7VMCqP181xmaqhcUDU/Afjwa5g2PS8hjcmzmjM2sLdcSGo641QyOiW75gb+T2HL
-         N19TLPN4pqi/8Uq75EGxp0y04L9Rpg3kfpF81GNW9m6PDsdkoqFfe1vj264mX1oob4fM
-         eJNzEWk4dxGYTBEuHzIQYwN5ywfjcpQoamYVWtUmoZhjB5gJv4Ox4AH//DSahJ3uobaI
-         FlAQ==
-X-Gm-Message-State: AOJu0Yxmtcag9vkgdXMGtnL0kZMbhr1MZvRPrXZ5R+VwI9fl+5bGltkh
-	EMvs9+8zpttUZU2QWnbQcLCqF7rMA5W9bK+7X0jGpg==
-X-Google-Smtp-Source: AGHT+IEby5BA1Rb3TBNtuipAvYfV2qs3Uz9qjee9oiSSDipAwzSRR3crVDKQeJvAjzfmcMJMfmyvZreaIidOcz+N0dQ=
-X-Received: by 2002:a05:6808:23c7:b0:3a7:8e1b:9d65 with SMTP id
- bq7-20020a05680823c700b003a78e1b9d65mr2647100oib.47.1691576929466; Wed, 09
- Aug 2023 03:28:49 -0700 (PDT)
+        bh=dbRTactPL+UoTh7JhtLP7m2QS4BKZHHCNQWVDx5nQag=;
+        b=bmAheEAq3imuZ1EkuCXCidN6IT/rwb/kU39xE+Xz4Q07ryLXt01aH4+AbdaHFPiMwo
+         gSujes3QMjnYqXo7rokDBb5A6E1ZdPz2PbNCEThLz3zND2Y7m3TcG5c6DU4fgFSSfMzJ
+         rbxuUGkyTl12aoHMDEL5Wvlc1aNGZo47ZQz5N7Yh2tljhwK6tLkn58z2UwPcgsW2l8aX
+         CW+OpMlsdgb6LnVhunVdmxZh7pFE4zqPujmfDrQ+z/qxCfI72euazIdD7RmhZoeCHHMt
+         Z5vjH/6JqaD60EtHovPP95ODVjODMVhyMphjSJ27gcAVBODkvbnByUEg/nihIROPyLRq
+         yqHQ==
+X-Gm-Message-State: AOJu0Yxc6xqvpv6IcmYARCdA9mrner53ntdPIegUCR2K7vfH2xeIBDpD
+	AiAAsOlGf7cCYc92qeWunNh+hTm+8gnLRFotJe/Scg==
+X-Google-Smtp-Source: AGHT+IGZRaNEp0r0k3lBJzbjA9stkGRIasFKmrjd8YKrsWWFriAXqq3HukzU4wsTEvJmwBf0L3B0LsNobh4bY0RjQds=
+X-Received: by 2002:aca:2113:0:b0:3a7:4878:235a with SMTP id
+ 19-20020aca2113000000b003a74878235amr2168484oiz.29.1691576964523; Wed, 09 Aug
+ 2023 03:29:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <169139090386.324433.6412259486776991296.stgit@devnote2> <169139091575.324433.13168120610633669432.stgit@devnote2>
-In-Reply-To: <169139091575.324433.13168120610633669432.stgit@devnote2>
+References: <169139090386.324433.6412259486776991296.stgit@devnote2> <169139092722.324433.16681957760325391475.stgit@devnote2>
+In-Reply-To: <169139092722.324433.16681957760325391475.stgit@devnote2>
 From: Florent Revest <revest@chromium.org>
-Date: Wed, 9 Aug 2023 12:28:38 +0200
-Message-ID: <CABRcYmKRAbOuqNQm5mCwC9NWbtcz1JJDYL_h5x6dK77SJ5FRkA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/6] fprobe: Use fprobe_regs in fprobe entry handler
+Date: Wed, 9 Aug 2023 12:29:13 +0200
+Message-ID: <CABRcYmJpA7tWk7pNxMy-44aoT9fFByQY3kGiEfKDbOe9WPkmNg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/6] tracing: Expose ftrace_regs regardless of CONFIG_FUNCTION_TRACER
 To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
 	linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
@@ -81,39 +81,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 
 On Mon, Aug 7, 2023 at 8:48=E2=80=AFAM Masami Hiramatsu (Google)
 <mhiramat@kernel.org> wrote:
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index ce156c7704ee..3fb94a1a2461 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -112,11 +112,11 @@ static inline int ftrace_mod_get_kallsym(unsigned i=
+nt symnum, unsigned long *val
+>  }
+>  #endif
 >
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
->
-> This allows fprobes to be available with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-> instead of CONFIG_DYNAMIC_FTRACE_WITH_REGS, then we can enable fprobe
-> on arm64.
+> -#ifdef CONFIG_FUNCTION_TRACER
+> -
+> -extern int ftrace_enabled;
+> -
+> -#ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> +/*
+> + * If the architecture doesn't support FTRACE_WITH_ARGS or disable funct=
+ion
 
-This patch lets fprobe code build on configs WITH_ARGS and !WITH_REGS
-but fprobe wouldn't run on these builds because fprobe still registers
-to ftrace with FTRACE_OPS_FL_SAVE_REGS, which would fail on
-!WITH_REGS. Shouldn't we also let the fprobe_init callers decide
-whether they want REGS or not ?
+nit: disables*
 
->  static int
->  kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
-> -                         unsigned long ret_ip, struct pt_regs *regs,
-> +                         unsigned long ret_ip, struct ftrace_regs *fregs=
-,
->                           void *data)
->  {
->         struct bpf_kprobe_multi_link *link;
-> +       struct pt_regs *regs =3D ftrace_get_regs(fregs);
-> +
-> +       if (!regs)
-> +               return 0;
+> + * tracer, define the default(pt_regs compatible) ftrace_regs.
+> + */
+> +#if !defined(CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS) || !defined(CONFIG_FU=
+NCTION_TRACER)
 
-(with the above comment addressed) this means that BPF multi_kprobe
-would successfully attach on builds WITH_ARGS but the programs would
-never actually run because here regs would be 0. This is a confusing
-failure mode for the user. I think that if multi_kprobe won't work
-(because we don't have a pt_regs conversion path yet), the user should
-be notified at attachment time that they won't be getting any events.
-That's why I think kprobe_multi should inform fprobe_init that it
-wants FTRACE_OPS_FL_SAVE_REGS and fail if that's not possible (no
-trampoline for it for example)
+I wonder if we should make things simpler with:
+
+#if defined(HAVE_PT_REGS_COMPAT_FTRACE_REGS) || !defined(CONFIG_FUNCTION_TR=
+ACER)
+
+And remove the ftrace_regs definitions that are copy-pastes of this
+block in arch specific headers. Then we can enforce in a single point
+that HAVE_PT_REGS_COMPAT_FTRACE_REGS holds.
+
+Maybe that's a question for Steven ?
 
