@@ -1,112 +1,123 @@
-Return-Path: <bpf+bounces-7284-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7285-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E8F775272
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 08:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3BCD77527C
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 08:03:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 340B82819EF
-	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 06:02:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D2652819F9
+	for <lists+bpf@lfdr.de>; Wed,  9 Aug 2023 06:03:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECD7469E;
-	Wed,  9 Aug 2023 06:01:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53763468C;
+	Wed,  9 Aug 2023 06:03:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16182443F;
-	Wed,  9 Aug 2023 06:01:56 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B211BFA;
-	Tue,  8 Aug 2023 23:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691560915; x=1723096915;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=62vBEsNLqi1Mjl+DIxfpijOYd5i+/By8huTMmJzzxY0=;
-  b=FloBIzyXntx/8nTSs9MwLfFm9+YKtYYoUjHF34/1Hq4K+gbQGuq5zq7z
-   Vmbn+UNT/Ik4K09sk5j0dhAjAc2WKzAIikkwdxeJsSmDKdp84VN8tX0ug
-   9w5O36jbo1Fm8rFeS7RG4BgpEeRuBugppw2hPSg+9+Cc2Xo8k1EzxmHCz
-   wWqHpyx+kPouPFCbAwLzlnojyfC8rwiOQV+l9eQ94WBQ110vFQRyxQqHP
-   Al2KFHywR4QShyVuHmbxGtne7J5kJJb+k/x5LslC937XrdYTZBWE30mDT
-   0jkX+xdBLRIqwTx6/w8ek0pPuF/L2Fvmc/0yYz+aRulDmB21BTk/kFe0/
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="355996472"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="355996472"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2023 23:01:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="761224544"
-X-IronPort-AV: E=Sophos;i="6.01,158,1684825200"; 
-   d="scan'208";a="761224544"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 08 Aug 2023 23:01:23 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qTcG2-0005qi-2y;
-	Wed, 09 Aug 2023 06:01:22 +0000
-Date: Wed, 9 Aug 2023 14:01:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: Breno Leitao <leitao@debian.org>, sdf@google.com, axboe@kernel.dk,
-	asml.silence@gmail.com, willemdebruijn.kernel@gmail.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, io-uring@vger.kernel.org, kuba@kernel.org,
-	pabeni@redhat.com
-Subject: Re: [PATCH v2 3/8] io_uring/cmd: Introduce SOCKET_URING_OP_SETSOCKOPT
-Message-ID: <202308091352.OnDIGFfN-lkp@intel.com>
-References: <20230808134049.1407498-4-leitao@debian.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3254381B
+	for <bpf@vger.kernel.org>; Wed,  9 Aug 2023 06:03:47 +0000 (UTC)
+Received: from out-77.mta1.migadu.com (out-77.mta1.migadu.com [95.215.58.77])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F8B1BF3
+	for <bpf@vger.kernel.org>; Tue,  8 Aug 2023 23:03:42 -0700 (PDT)
+Message-ID: <9a84e026-402d-b6d9-b6d1-57d91455da47@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1691561020;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vZ6V615A2KqrskAOUp1MTFIPzrZmCi/maZKOac3W810=;
+	b=HLvjH2ogbvNYgLBEabSq0L0ndbjsUYoxG9XBVixYUkq93imGD6SmYSCQGkkV3UE5OhTso+
+	EuynVJbQyP4jlk0+SYzMeAGPHKZZGPYdtE87MUq04XqOcWW6VK/1DeTlun8ADzQ1RMsYo7
+	mF0JvS5dGjKv44EceTfYn+WeOH08Kg0=
+Date: Tue, 8 Aug 2023 23:03:30 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230808134049.1407498-4-leitao@debian.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-	SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next v11 2/5] selftests/bpf: Use random netns name for
+ mptcp
+Content-Language: en-US
+To: Geliang Tang <geliang.tang@suse.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Florent Revest <revest@chromium.org>,
+ Brendan Jackman <jackmanb@chromium.org>,
+ Matthieu Baerts <matthieu.baerts@tessares.net>,
+ Mat Martineau <martineau@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ John Johansen <john.johansen@canonical.com>, Paul Moore
+ <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+ "Serge E. Hallyn" <serge@hallyn.com>,
+ Stephen Smalley <stephen.smalley.work@gmail.com>,
+ Eric Paris <eparis@parisplace.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Simon Horman <horms@kernel.org>,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, mptcp@lists.linux.dev,
+ apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+ selinux@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <cover.1691125344.git.geliang.tang@suse.com>
+ <15d7646940fcbb8477b1be1aa11a5d5485d10b48.1691125344.git.geliang.tang@suse.com>
+ <8b706f66-2afa-b3d0-a13a-11f1ffb452fe@linux.dev>
+ <20230807064044.GA11180@localhost.localdomain>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230807064044.GA11180@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi Breno,
+On 8/6/23 11:40 PM, Geliang Tang wrote:
+> On Fri, Aug 04, 2023 at 05:23:32PM -0700, Martin KaFai Lau wrote:
+>> On 8/3/23 10:07 PM, Geliang Tang wrote:
+>>> Use rand() to generate a random netns name instead of using the fixed
+>>> name "mptcp_ns" for every test.
+>>>
+>>> By doing that, we can re-launch the test even if there was an issue
+>>> removing the previous netns or if by accident, a netns with this generic
+>>> name already existed on the system.
+>>>
+>>> Note that using a different name each will also help adding more
+>>> subtests in future commits.
+> 
+> Hi Martin,
+> 
+> I tried to run mptcp tests simultaneously, and got "Cannot create
+> namespace file "/var/run/netns/mptcp_ns": File exists" errors sometimes.
+> So I add this patch to fix it.
+> 
+> It's easy to reproduce, just run this commands in multiple terminals:
+>   > for i in `seq 1 100`; do sudo ./test_progs -t mptcp; done
 
-kernel test robot noticed the following build errors:
+Not only the "-t mptcp" test. Other tests in test_progs also don't support 
+running parallel in multiple terminals. Does it really help to test the bpf part 
+of the prog_tests/mptcp.c test by running like this? If it wants to exercise the 
+other mptcp networking specific code like this, a separate mptcp test is needed 
+outside of test_progs and it won't be run in the bpf CI.
 
-[auto build test ERROR on next-20230808]
-[cannot apply to bpf-next/master bpf/master net/main net-next/main linus/master horms-ipvs/master v6.5-rc5 v6.5-rc4 v6.5-rc3 v6.5-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+If you agree, can you please avoid introducing unnecessary randomness to the 
+test_progs where bpf CI and most users don't run in this way?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Breno-Leitao/net-expose-sock_use_custom_sol_socket/20230809-011901
-base:   next-20230808
-patch link:    https://lore.kernel.org/r/20230808134049.1407498-4-leitao%40debian.org
-patch subject: [PATCH v2 3/8] io_uring/cmd: Introduce SOCKET_URING_OP_SETSOCKOPT
-config: hexagon-randconfig-r041-20230808 (https://download.01.org/0day-ci/archive/20230809/202308091352.OnDIGFfN-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230809/202308091352.OnDIGFfN-lkp@intel.com/reproduce)
+Also, please don't resend the patches too fast until the discussion is 
+concluded. Please give reasonable time for others to reply.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308091352.OnDIGFfN-lkp@intel.com/
+I have a high level question. In LPC 2022 
+(https://lpc.events/event/16/contributions/1354/), I recall there was idea in 
+using bpf to make other mptcp decision/policy. Any thought and progress on this? 
+This set which only uses bpf to change the protocol feels like an incomplete 
+solution.
 
-All errors (new ones prefixed by >>):
-
->> ld.lld: error: undefined symbol: sock_setsockopt
-   >>> referenced by uring_cmd.c
-   >>>               io_uring/uring_cmd.o:(io_uring_cmd_sock) in archive vmlinux.a
-   >>> referenced by uring_cmd.c
-   >>>               io_uring/uring_cmd.o:(io_uring_cmd_sock) in archive vmlinux.a
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
