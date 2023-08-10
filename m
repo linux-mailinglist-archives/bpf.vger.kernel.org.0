@@ -1,413 +1,376 @@
-Return-Path: <bpf+bounces-7464-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7465-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69D66777A32
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 16:12:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31ED6777BEE
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 17:14:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D08C1C21680
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 14:12:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5DD228224B
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 15:14:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EFE71FB47;
-	Thu, 10 Aug 2023 14:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD4F20C8F;
+	Thu, 10 Aug 2023 15:14:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C020D1E1C4;
-	Thu, 10 Aug 2023 14:11:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E67BBC433C8;
-	Thu, 10 Aug 2023 14:11:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691676706;
-	bh=HUCI77XEP/ZejO9fCuPmVe89GUolOa/dD4cccMIUgWI=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=H8SqIptR340Pnua6h/WiAcjmrFZHU3Fe2izBiwtddWpXgaeDn9AVDnycR6LVOrVaG
-	 K5L/TJdBvwCuYgUlWquj/l2zotI9xQ8iN6sXeM4nbI2A/MMo4B+JagOD/MsLj+7DDZ
-	 2YwWe9kcXiCZrK6Z0616NbqWMPTU91+IMty/pS5hRl9hmcEBulaknWG276frp9N1ej
-	 XXCEy3bPFdHIPHmgjNHzI4Fy8NUdET6LlaQJlBVC5cp2AdXBpPhs7jgV9mjo+hltPf
-	 7sr9n3xng1wR/smWxwVA1fJhMeDXMRbu7HUlgK7jiWqkPmY75MhRc7oU8mKs0Wfc6T
-	 ecCu79nvJ8FJA==
-Message-ID: <831968f6-3abb-6427-bb1a-e6fd40beb633@kernel.org>
-Date: Thu, 10 Aug 2023 16:11:41 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E758020C85
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 15:14:24 +0000 (UTC)
+Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C7326A6;
+	Thu, 10 Aug 2023 08:14:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1691680460;
+	bh=8iX4AZvqF0mnbmZ/25iLnlbKxcbIj6Y1Oyzof9l4lsU=;
+	h=From:To:Cc:Subject:Date;
+	b=fuphHTWKng4RqyxAfBHSBPax83nwfYrrpe8gDShHdbWGkZsTFxTXOar+qQ+Tiixvc
+	 B8HPbKv0P1+Zwt6KGStL68dAPED4E6rxfrMTRPHu3/1XvmICsRhsAsBzRkBQb9dhur
+	 WnadxbWeDPTY+KnxaCwGBMdgl9iBViVokf5T+4oI=
+Received: from rtoax.. ([124.126.137.199])
+	by newxmesmtplogicsvrszb1-0.qq.com (NewEsmtp) with SMTP
+	id 38E01EC2; Thu, 10 Aug 2023 23:14:14 +0800
+X-QQ-mid: xmsmtpt1691680454tw3ysamxb
+Message-ID: <tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com>
+X-QQ-XMAILINFO: NY3HYYTs4gYS6V/gjwcwbhlmyR19kq+bHFP29CjlmP6NKnvDBD21JRAW78CNdo
+	 Cye91/d9ao2KNbOU8jZcKzqcGg4RI23zpXaMJN1lTXPuW34UjHYNBUPWx5VI1TocuqPAOWoL/Bqw
+	 3qtGFZMeQPvZ5CuQYMPYhvEnzqEmaWv1JcU+8jIjvcrNEH7/3QUJG2su4k+BzjqAHugg7I84NWjJ
+	 032N+1H46a+4KHRRD1/NczZ1JCzPv9LkaEdUxi2T2gotkIiBjFoGkih2fGMf6R2O+6OcJ9RgV4Ux
+	 J2YiKRI6/6qxBQo5OTNTJjrpRgSzQGDZN3ZAWnDn8YWKezvGP0YLfioej9itSYUh2jk5vVaetfpq
+	 ZURv7YET3rYMKe3fH9WfjbUp9Sx2s0Zg3skY5OWkppHVhByCtIYCTT97JxQiCvWeQ90bMlj+X4dO
+	 UdLOrS/h+GwKsBSkJwt4ZVxUVUaQuoaKiWj5K858L0wHOhy4t+J6kKVsTpU6vWnLIFUYFlxr4j3s
+	 CDggrRQXFA01R9j3Gsxm+/CD1beh7zhgdNTNVZBorHNoe8XmaYBC4qSiOPB+thUYGpkC1StRro40
+	 bTFe4ZaenuTcv3GNgxNuE3s1AWMejQ0I3Ap8D5tlt4cHyX24OWB12+RYDLfN1zdkuUtuk2f/XAhf
+	 5LTXd8msHDrrQxUwo5u2pMKnjTH5fycBoq2A/I9YeLNHnuOvpU1K64StMkDBmZsBmwg2LIP+skSy
+	 owbPNKQWIkaptKP+YvDOkP4zUMTokvz4a3b0LWt1Sshwlfm5yiP00cil+2wfwBSoYCiaQ3YqkvXl
+	 fj50l2ZjrsgRcWQ31AMGUILA9mWxOz7CpDvqwZjSiWYuTf/+NPqZ4qv1cffmF4akqrJKHEzW0jUL
+	 ql2eSpM7dPOkYIB8vFHx1pp6HOdOgZaHIVBzkKDk/EKQ60sCiqYgZbz9uQklUokUkXIWbu8C6+hN
+	 zIbZbPGCn7STUPcTmioECRk4fXBB6Xjcr+QV0TCrUlZWnrdmfzwNoS7TXSt7Z/xNKctW2wlMA=
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+From: Rong Tao <rtoax@foxmail.com>
+To: ast@kernel.org
+Cc: rongtao@cestc.cn,
+	rtoax@foxmail.com,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	=?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>,
+	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
+	Ross Zwisler <zwisler@google.com>,
+	Manu Bretelle <chantr4@gmail.com>,
+	Xu Kuohai <xukuohai@huawei.com>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+	linux-kernel@vger.kernel.org (open list),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+	linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32 ARCHITECTURE),
+	linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32 ARCHITECTURE)
+Subject: [PATCH bpf-next] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date: Thu, 10 Aug 2023 23:14:04 +0800
+X-OQ-MSGID: <20230810151412.85296-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc: linux-imx@nxp.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH V5 net-next 2/2] net: fec: improve XDP_TX performance
-Content-Language: en-US
-To: Wei Fang <wei.fang@nxp.com>, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, shenwei.wang@nxp.com,
- xiaoning.wang@nxp.com, ast@kernel.org, daniel@iogearbox.net,
- hawk@kernel.org, john.fastabend@gmail.com, larysa.zaremba@intel.com,
- aleksander.lobakin@intel.com, jbrouer@redhat.com, netdev@vger.kernel.org
-References: <20230810064514.104470-1-wei.fang@nxp.com>
- <20230810064514.104470-3-wei.fang@nxp.com>
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20230810064514.104470-3-wei.fang@nxp.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
+From: Rong Tao <rongtao@cestc.cn>
 
+Static ksyms often have problems because the number of symbols exceeds the
+MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+the problem somewhat, but it's not the perfect way.
 
-On 10/08/2023 08.45, Wei Fang wrote:
-> As suggested by Jesper and Alexander, we can avoid converting xdp_buff
-> to xdp_frame in case of XDP_TX to save a bunch of CPU cycles, so that
-> we can further improve the XDP_TX performance.
-> 
-> Before this patch on i.MX8MP-EVK board, the performance shows as follows.
-> root@imx8mpevk:~# ./xdp2 eth0
-> proto 17:     353918 pkt/s
-> proto 17:     352923 pkt/s
-> proto 17:     353900 pkt/s
-> proto 17:     352672 pkt/s
-> proto 17:     353912 pkt/s
-> proto 17:     354219 pkt/s
-> 
-> After applying this patch, the performance is improved.
-> root@imx8mpevk:~# ./xdp2 eth0
-> proto 17:     369261 pkt/s
-> proto 17:     369267 pkt/s
-> proto 17:     369206 pkt/s
-> proto 17:     369214 pkt/s
-> proto 17:     369126 pkt/s
-> proto 17:     369272 pkt/s
-> 
+This commit uses dynamic memory allocation, which completely solves the
+problem caused by the limitation of the number of kallsyms.
 
-So approx 4.3% improvement.
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ samples/bpf/offwaketime_user.c                |  1 +
+ samples/bpf/sampleip_user.c                   |  1 +
+ samples/bpf/spintest_user.c                   |  1 +
+ samples/bpf/task_fd_query_user.c              |  1 +
+ samples/bpf/trace_event_user.c                |  1 +
+ .../selftests/bpf/prog_tests/bpf_cookie.c     |  1 +
+ .../bpf/prog_tests/get_stack_raw_tp.c         |  1 +
+ .../bpf/prog_tests/kprobe_multi_test.c        |  2 +
+ .../prog_tests/kprobe_multi_testmod_test.c    |  2 +
+ tools/testing/selftests/bpf/trace_helpers.c   | 74 ++++++++++++-------
+ tools/testing/selftests/bpf/trace_helpers.h   |  1 +
+ 11 files changed, 60 insertions(+), 26 deletions(-)
 
-> Signed-off-by: Wei Fang <wei.fang@nxp.com>
-> Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> Suggested-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> ---
-> V5 changes:
-> New patch. Separated from the first patch, to keep track of the changes
-> and improvements (suggested by Jesper).
+diff --git a/samples/bpf/offwaketime_user.c b/samples/bpf/offwaketime_user.c
+index b6eedcb98fb9..5e6934f2d932 100644
+--- a/samples/bpf/offwaketime_user.c
++++ b/samples/bpf/offwaketime_user.c
+@@ -149,5 +149,6 @@ int main(int argc, char **argv)
+ 		bpf_link__destroy(links[i]);
+ 
+ 	bpf_object__close(obj);
++	free_kallsyms();
+ 	return 0;
+ }
+diff --git a/samples/bpf/sampleip_user.c b/samples/bpf/sampleip_user.c
+index 9283f47844fb..548ca1e9fcac 100644
+--- a/samples/bpf/sampleip_user.c
++++ b/samples/bpf/sampleip_user.c
+@@ -230,5 +230,6 @@ int main(int argc, char **argv)
+ 
+ 	free(links);
+ 	bpf_object__close(obj);
++	free_kallsyms();
+ 	return error;
+ }
+diff --git a/samples/bpf/spintest_user.c b/samples/bpf/spintest_user.c
+index aadac14f748a..895a64afaf78 100644
+--- a/samples/bpf/spintest_user.c
++++ b/samples/bpf/spintest_user.c
+@@ -88,5 +88,6 @@ int main(int ac, char **argv)
+ 		bpf_link__destroy(links[j]);
+ 
+ 	bpf_object__close(obj);
++	free_kallsyms();
+ 	return 0;
+ }
+diff --git a/samples/bpf/task_fd_query_user.c b/samples/bpf/task_fd_query_user.c
+index 1e61f2180470..3eb9477541fb 100644
+--- a/samples/bpf/task_fd_query_user.c
++++ b/samples/bpf/task_fd_query_user.c
+@@ -419,5 +419,6 @@ int main(int argc, char **argv)
+ 		bpf_link__destroy(links[i]);
+ 
+ 	bpf_object__close(obj);
++	free_kallsyms();
+ 	return err;
+ }
+diff --git a/samples/bpf/trace_event_user.c b/samples/bpf/trace_event_user.c
+index 9664749bf618..a8b9343126fa 100644
+--- a/samples/bpf/trace_event_user.c
++++ b/samples/bpf/trace_event_user.c
+@@ -348,5 +348,6 @@ int main(int argc, char **argv)
+ 
+ cleanup:
+ 	bpf_object__close(obj);
++	free_kallsyms();
+ 	err_exit(error);
+ }
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+index 26b2d1bffdfd..4786396e554b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+@@ -170,6 +170,7 @@ static void kprobe_multi_link_api_subtest(void)
+ cleanup:
+ 	close(link1_fd);
+ 	close(link2_fd);
++	free_kallsyms();
+ 	kprobe_multi__destroy(skel);
+ }
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c b/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
+index 858e0575f502..4e1c564746e1 100644
+--- a/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
++++ b/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
+@@ -146,4 +146,5 @@ void test_get_stack_raw_tp(void)
+ 	bpf_link__destroy(link);
+ 	perf_buffer__free(pb);
+ 	bpf_object__close(obj);
++	free_kallsyms();
+ }
+diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+index 2173c4bb555e..d6c0b5f2f887 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+@@ -488,4 +488,6 @@ void test_kprobe_multi_test(void)
+ 		test_attach_api_syms();
+ 	if (test__start_subtest("attach_api_fails"))
+ 		test_attach_api_fails();
++
++	free_kallsyms();
+ }
+diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+index 1fbe7e4ac00a..c25f262832b7 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+@@ -86,4 +86,6 @@ void serial_test_kprobe_multi_testmod_test(void)
+ 		test_testmod_attach_api_syms();
+ 	if (test__start_subtest("testmod_attach_api_addrs"))
+ 		test_testmod_attach_api_addrs();
++
++	free_kallsyms();
+ }
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+index f83d9f65c65b..08986f70836b 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -18,9 +18,32 @@
+ #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+ #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
+ 
+-#define MAX_SYMS 400000
+-static struct ksym syms[MAX_SYMS];
+-static int sym_cnt;
++static struct {
++	struct ksym *syms;
++	unsigned int sym_cnt;
++} ksyms = {
++	.syms = NULL,
++	.sym_cnt = 0,
++};
++
++static int ksyms__add_symbol(const char *name, unsigned long addr)
++{
++	void *tmp;
++	unsigned int cnt = ksyms.sym_cnt;
++
++	cnt++;
++	tmp = realloc(ksyms.syms, sizeof(struct ksym) * cnt);
++	if (!tmp)
++		return -ENOMEM;
++
++	ksyms.sym_cnt = cnt;
++	ksyms.syms = tmp;
++
++	ksyms.syms[ksyms.sym_cnt - 1].addr = addr;
++	ksyms.syms[ksyms.sym_cnt - 1].name = strdup(name);
++
++	return 0;
++}
+ 
+ static int ksym_cmp(const void *p1, const void *p2)
+ {
+@@ -33,9 +56,6 @@ int load_kallsyms_refresh(void)
+ 	char func[256], buf[256];
+ 	char symbol;
+ 	void *addr;
+-	int i = 0;
+-
+-	sym_cnt = 0;
+ 
+ 	f = fopen("/proc/kallsyms", "r");
+ 	if (!f)
+@@ -46,16 +66,10 @@ int load_kallsyms_refresh(void)
+ 			break;
+ 		if (!addr)
+ 			continue;
+-		if (i >= MAX_SYMS)
+-			return -EFBIG;
+-
+-		syms[i].addr = (long) addr;
+-		syms[i].name = strdup(func);
+-		i++;
++		ksyms__add_symbol(func, (unsigned long)addr);
+ 	}
+ 	fclose(f);
+-	sym_cnt = i;
+-	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
++	qsort(ksyms.syms, ksyms.sym_cnt, sizeof(struct ksym), ksym_cmp);
+ 	return 0;
+ }
+ 
+@@ -65,48 +79,56 @@ int load_kallsyms(void)
+ 	 * This is called/used from multiplace places,
+ 	 * load symbols just once.
+ 	 */
+-	if (sym_cnt)
++	if (ksyms.sym_cnt)
+ 		return 0;
+ 	return load_kallsyms_refresh();
+ }
+ 
++void free_kallsyms(void)
++{
++	if (!ksyms.sym_cnt)
++		return;
++	free(ksyms.syms);
++	ksyms.sym_cnt = 0;
++}
++
+ struct ksym *ksym_search(long key)
+ {
+-	int start = 0, end = sym_cnt;
++	int start = 0, end = ksyms.sym_cnt;
+ 	int result;
+ 
+ 	/* kallsyms not loaded. return NULL */
+-	if (sym_cnt <= 0)
++	if (ksyms.sym_cnt <= 0)
+ 		return NULL;
+ 
+ 	while (start < end) {
+ 		size_t mid = start + (end - start) / 2;
+ 
+-		result = key - syms[mid].addr;
++		result = key - ksyms.syms[mid].addr;
+ 		if (result < 0)
+ 			end = mid;
+ 		else if (result > 0)
+ 			start = mid + 1;
+ 		else
+-			return &syms[mid];
++			return &ksyms.syms[mid];
+ 	}
+ 
+-	if (start >= 1 && syms[start - 1].addr < key &&
+-	    key < syms[start].addr)
++	if (start >= 1 && ksyms.syms[start - 1].addr < key &&
++	    key < ksyms.syms[start].addr)
+ 		/* valid ksym */
+-		return &syms[start - 1];
++		return &ksyms.syms[start - 1];
+ 
+ 	/* out of range. return _stext */
+-	return &syms[0];
++	return &ksyms.syms[0];
+ }
+ 
+ long ksym_get_addr(const char *name)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < sym_cnt; i++) {
+-		if (strcmp(syms[i].name, name) == 0)
+-			return syms[i].addr;
++	for (i = 0; i < ksyms.sym_cnt; i++) {
++		if (strcmp(ksyms.syms[i].name, name) == 0)
++			return ksyms.syms[i].addr;
+ 	}
+ 
+ 	return 0;
+diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/selftests/bpf/trace_helpers.h
+index 876f3e711df6..d0d2bc4066c3 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.h
++++ b/tools/testing/selftests/bpf/trace_helpers.h
+@@ -14,6 +14,7 @@ struct ksym {
+ 
+ int load_kallsyms(void);
+ int load_kallsyms_refresh(void);
++void free_kallsyms(void);
+ 
+ struct ksym *ksym_search(long key);
+ long ksym_get_addr(const char *name);
+-- 
+2.41.0
 
-Thanks
-
-> ---
->   drivers/net/ethernet/freescale/fec.h      |   5 +-
->   drivers/net/ethernet/freescale/fec_main.c | 134 ++++++++++++----------
->   2 files changed, 73 insertions(+), 66 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
-> index 7bb02a9da2a6..a8fbcada6b01 100644
-> --- a/drivers/net/ethernet/freescale/fec.h
-> +++ b/drivers/net/ethernet/freescale/fec.h
-> @@ -552,10 +552,7 @@ enum fec_txbuf_type {
->   };
->   
->   struct fec_tx_buffer {
-> -	union {
-> -		struct sk_buff *skb;
-> -		struct xdp_frame *xdp;
-> -	};
-> +	void *buf_p;
-
-I want to hear Olek's (Alexander) oppinion on this void pointer circus.
-
-The rest of the patch looks correct to me so:
-
-Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
-
---Jesper
-
->   	enum fec_txbuf_type type;
->   };
->   
-> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-> index 30b01985be7c..ae6e41ad71b8 100644
-> --- a/drivers/net/ethernet/freescale/fec_main.c
-> +++ b/drivers/net/ethernet/freescale/fec_main.c
-> @@ -399,7 +399,7 @@ static void fec_dump(struct net_device *ndev)
->   			fec16_to_cpu(bdp->cbd_sc),
->   			fec32_to_cpu(bdp->cbd_bufaddr),
->   			fec16_to_cpu(bdp->cbd_datlen),
-> -			txq->tx_buf[index].skb);
-> +			txq->tx_buf[index].buf_p);
->   		bdp = fec_enet_get_nextdesc(bdp, &txq->bd);
->   		index++;
->   	} while (bdp != txq->bd.base);
-> @@ -656,7 +656,7 @@ static int fec_enet_txq_submit_skb(struct fec_enet_priv_tx_q *txq,
->   
->   	index = fec_enet_get_bd_index(last_bdp, &txq->bd);
->   	/* Save skb pointer */
-> -	txq->tx_buf[index].skb = skb;
-> +	txq->tx_buf[index].buf_p = skb;
->   
->   	/* Make sure the updates to rest of the descriptor are performed before
->   	 * transferring ownership.
-> @@ -862,7 +862,7 @@ static int fec_enet_txq_submit_tso(struct fec_enet_priv_tx_q *txq,
->   	}
->   
->   	/* Save skb pointer */
-> -	txq->tx_buf[index].skb = skb;
-> +	txq->tx_buf[index].buf_p = skb;
->   
->   	skb_tx_timestamp(skb);
->   	txq->bd.cur = bdp;
-> @@ -959,27 +959,27 @@ static void fec_enet_bd_init(struct net_device *dev)
->   							 fec32_to_cpu(bdp->cbd_bufaddr),
->   							 fec16_to_cpu(bdp->cbd_datlen),
->   							 DMA_TO_DEVICE);
-> -				if (txq->tx_buf[i].skb) {
-> -					dev_kfree_skb_any(txq->tx_buf[i].skb);
-> -					txq->tx_buf[i].skb = NULL;
-> -				}
-> -			} else {
-> -				if (bdp->cbd_bufaddr &&
-> -				    txq->tx_buf[i].type == FEC_TXBUF_T_XDP_NDO)
-> +				if (txq->tx_buf[i].buf_p)
-> +					dev_kfree_skb_any(txq->tx_buf[i].buf_p);
-> +			} else if (txq->tx_buf[i].type == FEC_TXBUF_T_XDP_NDO) {
-> +				if (bdp->cbd_bufaddr)
->   					dma_unmap_single(&fep->pdev->dev,
->   							 fec32_to_cpu(bdp->cbd_bufaddr),
->   							 fec16_to_cpu(bdp->cbd_datlen),
->   							 DMA_TO_DEVICE);
->   
-> -				if (txq->tx_buf[i].xdp) {
-> -					xdp_return_frame(txq->tx_buf[i].xdp);
-> -					txq->tx_buf[i].xdp = NULL;
-> -				}
-> +				if (txq->tx_buf[i].buf_p)
-> +					xdp_return_frame(txq->tx_buf[i].buf_p);
-> +			} else {
-> +				struct page *page = txq->tx_buf[i].buf_p;
->   
-> -				/* restore default tx buffer type: FEC_TXBUF_T_SKB */
-> -				txq->tx_buf[i].type = FEC_TXBUF_T_SKB;
-> +				if (page)
-> +					page_pool_put_page(page->pp, page, 0, false);
->   			}
->   
-> +			txq->tx_buf[i].buf_p = NULL;
-> +			/* restore default tx buffer type: FEC_TXBUF_T_SKB */
-> +			txq->tx_buf[i].type = FEC_TXBUF_T_SKB;
->   			bdp->cbd_bufaddr = cpu_to_fec32(0);
->   			bdp = fec_enet_get_nextdesc(bdp, &txq->bd);
->   		}
-> @@ -1386,6 +1386,8 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->   	struct netdev_queue *nq;
->   	int	index = 0;
->   	int	entries_free;
-> +	struct page *page;
-> +	int frame_len;
->   
->   	fep = netdev_priv(ndev);
->   
-> @@ -1407,8 +1409,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->   		index = fec_enet_get_bd_index(bdp, &txq->bd);
->   
->   		if (txq->tx_buf[index].type == FEC_TXBUF_T_SKB) {
-> -			skb = txq->tx_buf[index].skb;
-> -			txq->tx_buf[index].skb = NULL;
-> +			skb = txq->tx_buf[index].buf_p;
->   			if (bdp->cbd_bufaddr &&
->   			    !IS_TSO_HEADER(txq, fec32_to_cpu(bdp->cbd_bufaddr)))
->   				dma_unmap_single(&fep->pdev->dev,
-> @@ -1427,18 +1428,24 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->   			if (unlikely(!budget))
->   				break;
->   
-> -			xdpf = txq->tx_buf[index].xdp;
-> -			if (bdp->cbd_bufaddr &&
-> -			    txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO)
-> -				dma_unmap_single(&fep->pdev->dev,
-> -						 fec32_to_cpu(bdp->cbd_bufaddr),
-> -						 fec16_to_cpu(bdp->cbd_datlen),
-> -						 DMA_TO_DEVICE);
-> +			if (txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO) {
-> +				xdpf = txq->tx_buf[index].buf_p;
-> +				if (bdp->cbd_bufaddr)
-> +					dma_unmap_single(&fep->pdev->dev,
-> +							 fec32_to_cpu(bdp->cbd_bufaddr),
-> +							 fec16_to_cpu(bdp->cbd_datlen),
-> +							 DMA_TO_DEVICE);
-> +			} else {
-> +				page = txq->tx_buf[index].buf_p;
-> +			}
-> +
->   			bdp->cbd_bufaddr = cpu_to_fec32(0);
-> -			if (unlikely(!xdpf)) {
-> +			if (unlikely(!txq->tx_buf[index].buf_p)) {
->   				txq->tx_buf[index].type = FEC_TXBUF_T_SKB;
->   				goto tx_buf_done;
->   			}
-> +
-> +			frame_len = fec16_to_cpu(bdp->cbd_datlen);
->   		}
->   
->   		/* Check for errors. */
-> @@ -1462,7 +1469,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->   			if (txq->tx_buf[index].type == FEC_TXBUF_T_SKB)
->   				ndev->stats.tx_bytes += skb->len;
->   			else
-> -				ndev->stats.tx_bytes += xdpf->len;
-> +				ndev->stats.tx_bytes += frame_len;
->   		}
->   
->   		/* Deferred means some collisions occurred during transmit,
-> @@ -1487,20 +1494,16 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->   
->   			/* Free the sk buffer associated with this last transmit */
->   			dev_kfree_skb_any(skb);
-> +		} else if (txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO) {
-> +			xdp_return_frame_rx_napi(xdpf);
->   		} else {
-> -			if (txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO) {
-> -				xdp_return_frame_rx_napi(xdpf);
-> -			} else {
-> -				struct page *page = virt_to_head_page(xdpf->data);
-> -
-> -				page_pool_put_page(page->pp, page, 0, true);
-> -			}
-> -
-> -			txq->tx_buf[index].xdp = NULL;
-> -			/* restore default tx buffer type: FEC_TXBUF_T_SKB */
-> -			txq->tx_buf[index].type = FEC_TXBUF_T_SKB;
-> +			page_pool_put_page(page->pp, page, 0, true);
->   		}
->   
-> +		txq->tx_buf[index].buf_p = NULL;
-> +		/* restore default tx buffer type: FEC_TXBUF_T_SKB */
-> +		txq->tx_buf[index].type = FEC_TXBUF_T_SKB;
-> +
->   tx_buf_done:
->   		/* Make sure the update to bdp and tx_buf are performed
->   		 * before dirty_tx
-> @@ -3230,7 +3233,6 @@ static void fec_enet_free_buffers(struct net_device *ndev)
->   {
->   	struct fec_enet_private *fep = netdev_priv(ndev);
->   	unsigned int i;
-> -	struct sk_buff *skb;
->   	struct fec_enet_priv_tx_q *txq;
->   	struct fec_enet_priv_rx_q *rxq;
->   	unsigned int q;
-> @@ -3255,18 +3257,23 @@ static void fec_enet_free_buffers(struct net_device *ndev)
->   			kfree(txq->tx_bounce[i]);
->   			txq->tx_bounce[i] = NULL;
->   
-> +			if (!txq->tx_buf[i].buf_p) {
-> +				txq->tx_buf[i].type = FEC_TXBUF_T_SKB;
-> +				continue;
-> +			}
-> +
->   			if (txq->tx_buf[i].type == FEC_TXBUF_T_SKB) {
-> -				skb = txq->tx_buf[i].skb;
-> -				txq->tx_buf[i].skb = NULL;
-> -				dev_kfree_skb(skb);
-> +				dev_kfree_skb(txq->tx_buf[i].buf_p);
-> +			} else if (txq->tx_buf[i].type == FEC_TXBUF_T_XDP_NDO) {
-> +				xdp_return_frame(txq->tx_buf[i].buf_p);
->   			} else {
-> -				if (txq->tx_buf[i].xdp) {
-> -					xdp_return_frame(txq->tx_buf[i].xdp);
-> -					txq->tx_buf[i].xdp = NULL;
-> -				}
-> +				struct page *page = txq->tx_buf[i].buf_p;
->   
-> -				txq->tx_buf[i].type = FEC_TXBUF_T_SKB;
-> +				page_pool_put_page(page->pp, page, 0, false);
->   			}
-> +
-> +			txq->tx_buf[i].buf_p = NULL;
-> +			txq->tx_buf[i].type = FEC_TXBUF_T_SKB;
->   		}
->   	}
->   }
-> @@ -3789,13 +3796,14 @@ fec_enet_xdp_get_tx_queue(struct fec_enet_private *fep, int index)
->   
->   static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
->   				   struct fec_enet_priv_tx_q *txq,
-> -				   struct xdp_frame *frame,
-> -				   u32 dma_sync_len, bool ndo_xmit)
-> +				   void *frame, u32 dma_sync_len,
-> +				   bool ndo_xmit)
->   {
->   	unsigned int index, status, estatus;
->   	struct bufdesc *bdp;
->   	dma_addr_t dma_addr;
->   	int entries_free;
-> +	u16 frame_len;
->   
->   	entries_free = fec_enet_get_free_txdesc_num(txq);
->   	if (entries_free < MAX_SKB_FRAGS + 1) {
-> @@ -3811,30 +3819,36 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
->   	index = fec_enet_get_bd_index(bdp, &txq->bd);
->   
->   	if (ndo_xmit) {
-> -		dma_addr = dma_map_single(&fep->pdev->dev, frame->data,
-> -					  frame->len, DMA_TO_DEVICE);
-> +		struct xdp_frame *xdpf = frame;
-> +
-> +		dma_addr = dma_map_single(&fep->pdev->dev, xdpf->data,
-> +					  xdpf->len, DMA_TO_DEVICE);
->   		if (dma_mapping_error(&fep->pdev->dev, dma_addr))
->   			return -ENOMEM;
->   
-> +		frame_len = xdpf->len;
-> +		txq->tx_buf[index].buf_p = xdpf;
->   		txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
->   	} else {
-> -		struct page *page = virt_to_page(frame->data);
-> +		struct xdp_buff *xdpb = frame;
-> +		struct page *page;
->   
-> -		dma_addr = page_pool_get_dma_addr(page) + sizeof(*frame) +
-> -			   frame->headroom;
-> +		page = virt_to_page(xdpb->data);
-> +		dma_addr = page_pool_get_dma_addr(page) +
-> +			   (xdpb->data - xdpb->data_hard_start);
->   		dma_sync_single_for_device(&fep->pdev->dev, dma_addr,
->   					   dma_sync_len, DMA_BIDIRECTIONAL);
-> +		frame_len = xdpb->data_end - xdpb->data;
-> +		txq->tx_buf[index].buf_p = page;
->   		txq->tx_buf[index].type = FEC_TXBUF_T_XDP_TX;
->   	}
->   
-> -	txq->tx_buf[index].xdp = frame;
-> -
->   	status |= (BD_ENET_TX_INTR | BD_ENET_TX_LAST);
->   	if (fep->bufdesc_ex)
->   		estatus = BD_ENET_TX_INT;
->   
->   	bdp->cbd_bufaddr = cpu_to_fec32(dma_addr);
-> -	bdp->cbd_datlen = cpu_to_fec16(frame->len);
-> +	bdp->cbd_datlen = cpu_to_fec16(frame_len);
->   
->   	if (fep->bufdesc_ex) {
->   		struct bufdesc_ex *ebdp = (struct bufdesc_ex *)bdp;
-> @@ -3875,14 +3889,10 @@ static int fec_enet_xdp_tx_xmit(struct fec_enet_private *fep,
->   				int cpu, struct xdp_buff *xdp,
->   				u32 dma_sync_len)
->   {
-> -	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
->   	struct fec_enet_priv_tx_q *txq;
->   	struct netdev_queue *nq;
->   	int queue, ret;
->   
-> -	if (unlikely(!xdpf))
-> -		return -EFAULT;
-> -
->   	queue = fec_enet_xdp_get_tx_queue(fep, cpu);
->   	txq = fep->tx_queue[queue];
->   	nq = netdev_get_tx_queue(fep->netdev, queue);
-> @@ -3891,7 +3901,7 @@ static int fec_enet_xdp_tx_xmit(struct fec_enet_private *fep,
->   
->   	/* Avoid tx timeout as XDP shares the queue with kernel stack */
->   	txq_trans_cond_update(nq);
-> -	ret = fec_enet_txq_xmit_frame(fep, txq, xdpf, dma_sync_len, false);
-> +	ret = fec_enet_txq_xmit_frame(fep, txq, xdp, dma_sync_len, false);
->   
->   	__netif_tx_unlock(nq);
->   
 
