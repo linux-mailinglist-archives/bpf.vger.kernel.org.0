@@ -1,180 +1,133 @@
-Return-Path: <bpf+bounces-7436-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7437-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F49777299
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 10:15:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 045197772DC
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 10:27:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4491E2822EA
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 08:15:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E7A91C21500
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 08:27:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8724E1E50C;
-	Thu, 10 Aug 2023 08:13:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A7661E500;
+	Thu, 10 Aug 2023 08:26:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689EB1ADE8
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 08:13:52 +0000 (UTC)
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA28E56
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 01:13:51 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-55b0e7efb1cso442840a12.1
-        for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 01:13:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691655231; x=1692260031;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YS6ue8t2dd5iDW6jb431VKpPx5tAdDiMNn4sU9SZ4eM=;
-        b=KNJbzwTxxK3KzgAfGpr2FeHEj85XtDGujL07/8Dd3z3V3jSF8Rh+LYfOCIp5iXK0w7
-         YcNv7ogCQvXKM3pEP24qCmrjpg/JDP9h1bPZJUTufYhvRvW+AfvjaCJjSAIiDVPy4YlB
-         FvMnZgpH//K7t4jlj1KtZkT8Tjr1dVTBmA31ymCxgtTRo28F/xNhPrvKRxrHZK39ygQZ
-         TPSiOnZgnkDk1zDo7yeScGo2f+KIT1WWFlda15vKkcDADn6i8rF0kiPkSV8N9pjikKK2
-         NsnxwPD8zv745JOrycqHn98sjc4x3oYJA0Stmu2pcb6Xa6lTRk6/qVJaIsczS2Rfi1mM
-         78hA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65AE61ADFF;
+	Thu, 10 Aug 2023 08:26:41 +0000 (UTC)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA93E56;
+	Thu, 10 Aug 2023 01:26:39 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-9936b3d0286so100551466b.0;
+        Thu, 10 Aug 2023 01:26:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691655231; x=1692260031;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YS6ue8t2dd5iDW6jb431VKpPx5tAdDiMNn4sU9SZ4eM=;
-        b=h+YwW7kWbilbrQ6P6L+D0nXgVcuc1PDIiQfGWnbp+K9t0fjWCvbw3LeMEc+uEqRl77
-         wdjALWw/w4SFrKDvvLhZGnNRN171lPaTwpZEwoM4UQyee+l8xEB2vMzt39fzhJ/0D4IP
-         Ni+IJ21pLXkowZ1fZerfeZ4CvxW6gHK9dSTx8brgG6MH7w0PqBnYBWupAfj/VB5y4P9i
-         ET3tEPNXR0XdrWJaOMnAlUSm1Gh09LpdI1x/HeVb2ouQD32wAQVbujtEp+it0X5obkbv
-         Q+TVskNYNJBzYXCnFf7w0DYO8dJDQAtUKMQjNh1AHo8cwclXVTRs2x7SkUyQMj+hxggk
-         wlKg==
-X-Gm-Message-State: AOJu0YzCEopx0HRbTt5jwgwAghkvriSOODWVFxJLUzRejHQoQaVT8PpB
-	Rp1ygWEcVAl33gedDlGx/Dy3XA==
-X-Google-Smtp-Source: AGHT+IHuFmD3Cyae7WIdtzmgxlWYjNuOj281DztPhX4TApif8F0U2Be9/d7VjjGRzVC64hKOa/1OAA==
-X-Received: by 2002:a17:902:e548:b0:1ac:63ac:10a7 with SMTP id n8-20020a170902e54800b001ac63ac10a7mr1519133plf.68.1691655230885;
-        Thu, 10 Aug 2023 01:13:50 -0700 (PDT)
-Received: from n37-019-243.byted.org ([180.184.51.40])
-        by smtp.gmail.com with ESMTPSA id x12-20020a170902ec8c00b001b1a2c14a4asm1019036plg.38.2023.08.10.01.13.46
+        d=1e100.net; s=20221208; t=1691655998; x=1692260798;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U8rApuESa0pdY0AmwOH319MzG7nEB2DXH9x9ay8kvn0=;
+        b=gBsowc9TUzW0DfzcTEX9VY4XVPunlWnRC9z0+2wedToyJBzOwR5ZsjhJu79eL9gqjK
+         78X3rymT74ATMqsxyV3Xq0zVESLBtu1kPF1alftFugYAQgxWwc61vAREJkWjzGkahm6Z
+         UnVM/DmHmWZeQlwJjxbCUcpPBX9/gSiYoqp8gKTEVfAwx9DEF86imfeAQorGo2AeZ8Rw
+         1L1QkN4JpJbSoUEWOb+U3arkfTSVI6ISpBJk/I8WVpk//lHCfXbJi73JnDZYTIgyJFst
+         tdi58WTHNkmfYSkfMAyh/Ob4fVTtJ3kWKAgh0beiU3UCsbQHh0qLel8MddDXonsjFNQi
+         FozQ==
+X-Gm-Message-State: AOJu0Ywu5uo/lBgjvfnvNCeb0EzmpomeGa4FYJyvoAEZOQTjfjCbtn3Z
+	UZmGkkaL+oLZLoBCVTieRLI=
+X-Google-Smtp-Source: AGHT+IFx4EFqf13z8URjVO5WQq9zhgRcOP4Nw82UvtV0Z8zilOx3N6RkaSnLYXCygnYj8r2Qf2LCSg==
+X-Received: by 2002:a17:906:1da1:b0:98d:f062:8503 with SMTP id u1-20020a1709061da100b0098df0628503mr1360609ejh.77.1691655997855;
+        Thu, 10 Aug 2023 01:26:37 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-020.fbsv.net. [2a03:2880:31ff:14::face:b00c])
+        by smtp.gmail.com with ESMTPSA id a13-20020a17090682cd00b00992f81122e1sm597355ejy.21.2023.08.10.01.26.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 01:13:50 -0700 (PDT)
-From: Chuyi Zhou <zhouchuyi@bytedance.com>
-To: hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	muchun.song@linux.dev
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	wuyun.abel@bytedance.com,
-	robin.lu@bytedance.com,
-	Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [RFC PATCH v2 5/5] bpf: Add a BPF OOM policy Doc
-Date: Thu, 10 Aug 2023 16:13:19 +0800
-Message-Id: <20230810081319.65668-6-zhouchuyi@bytedance.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230810081319.65668-1-zhouchuyi@bytedance.com>
-References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
+        Thu, 10 Aug 2023 01:26:37 -0700 (PDT)
+Date: Thu, 10 Aug 2023 01:26:35 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+	willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	io-uring@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com
+Subject: Re: [PATCH v2 7/8] io_uring/cmd: BPF hook for getsockopt cmd
+Message-ID: <ZNSfO2aaX5TsKKqz@gmail.com>
+References: <20230808134049.1407498-1-leitao@debian.org>
+ <20230808134049.1407498-8-leitao@debian.org>
+ <87wmy46u58.fsf@suse.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wmy46u58.fsf@suse.de>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patch adds a new doc Documentation/bpf/oom.rst to describe how
-BPF OOM policy is supposed to work.
+Hello Gabriel,
 
-Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
----
- Documentation/bpf/oom.rst | 70 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
- create mode 100644 Documentation/bpf/oom.rst
+On Wed, Aug 09, 2023 at 12:46:27PM -0400, Gabriel Krisman Bertazi wrote:
+> Breno Leitao <leitao@debian.org> writes:
+> 
+> > Add BPF hooks support for getsockopts io_uring command. So, bpf cgroups
+> > programs can run when SOCKET_URING_OP_GETSOCKOPT command is called.
+> >
+> > This implementation follows a similar approach to what
+> > __sys_getsockopt() does, but, using USER_SOCKPTR() for optval instead of
+> > kernel pointer.
+> >
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > ---
+> >  io_uring/uring_cmd.c | 18 +++++++++++++-----
+> >  1 file changed, 13 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+> > index dbba005a7290..3693e5779229 100644
+> > --- a/io_uring/uring_cmd.c
+> > +++ b/io_uring/uring_cmd.c
+> > @@ -5,6 +5,8 @@
+> >  #include <linux/io_uring.h>
+> >  #include <linux/security.h>
+> >  #include <linux/nospec.h>
+> > +#include <linux/compat.h>
+> > +#include <linux/bpf-cgroup.h>
+> >  
+> >  #include <uapi/linux/io_uring.h>
+> >  #include <uapi/asm-generic/ioctls.h>
+> > @@ -179,17 +181,23 @@ static inline int io_uring_cmd_getsockopt(struct socket *sock,
+> >  	if (err)
+> >  		return err;
+> >  
+> > -	if (level == SOL_SOCKET) {
+> > +	err = -EOPNOTSUPP;
+> > +	if (level == SOL_SOCKET)
+> >  		err = sk_getsockopt(sock->sk, level, optname,
+> >  				    USER_SOCKPTR(optval),
+> >  				    KERNEL_SOCKPTR(&optlen));
+> > -		if (err)
+> > -			return err;
+> >  
+> > +	if (!in_compat_syscall())
+> > +		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level,
+> > +						     optname,
+> > +						     USER_SOCKPTR(optval),
+> > +						     KERNEL_SOCKPTR(&optlen),
+> > +						     optlen, err);
+> 
+> I'm not sure if it makes sense to use in_compat_syscall() here.  Can't
+> this be invoked in a ring with ctx->compat set, but from outside a
+> compat syscall context (i.e. from sqpoll or even a !compat
+> io_uring_enter syscall)? I suspect you might need to check ctx->compact
+> instead, but I'm not sure. Did you consider that?
 
-diff --git a/Documentation/bpf/oom.rst b/Documentation/bpf/oom.rst
-new file mode 100644
-index 000000000000..9bad1fd30d4a
---- /dev/null
-+++ b/Documentation/bpf/oom.rst
-@@ -0,0 +1,70 @@
-+=============
-+BPF OOM Policy
-+=============
-+
-+The Out Of Memory Killer (aka OOM Killer) is invoked when the system is
-+critically low on memory. The in-kernel implementation is to iterate over
-+all tasks in the specific oom domain (all tasks for global and all members
-+of memcg tree for hard limit oom) and select a victim based some heuristic
-+policy to kill.
-+
-+Specifically:
-+
-+1. Begin to iterate tasks using ``oom_evaluate_task()`` and find a valid (killable)
-+   victim in iteration N, select it.
-+
-+2. In iteration N + 1, N + 2..., we compare the current iteration task with the
-+   previous selected task, if current is more suitable then select it.
-+
-+3. finally we get a victim to kill.
-+
-+However, this does not meet the needs of users in some special scenarios. Using
-+the eBPF capabilities, We can implement customized OOM policies to meet needs.
-+
-+Developer API:
-+==================
-+
-+bpf_oom_evaluate_task
-+----------------------
-+
-+``bpf_oom_evaluate_task`` is a new interface hooking into ``oom_evaluate_task()``
-+which is used to bypass the in-kernel selection logic. Users can customize their
-+victim selection policy through BPF programs attached to it.
-+::
-+
-+    int bpf_oom_evaluate_task(struct task_struct *task,
-+                                struct oom_control *oc);
-+
-+return value::
-+
-+    NO_BPF_POLICY     no bpf policy and would fallback to the in-kernel selection
-+    BPF_EVAL_ABORT    abort the selection (exit from current selection loop)
-+    BPF_EVAL_NEXT     ignore the task
-+    BPF_EAVL_SELECT   select the current task
-+
-+Suppose we want to select a victim based on the specified pid when OOM is
-+invoked, we can use the following BPF program::
-+
-+    SEC("fmod_ret/bpf_oom_evaluate_task")
-+    int BPF_PROG(bpf_oom_evaluate_task, struct task_struct *task, struct oom_control *oc)
-+    {
-+        if (task->pid == target_pid)
-+            return BPF_EAVL_SELECT;
-+        return BPF_EVAL_NEXT;
-+    }
-+
-+bpf_set_policy_name
-+---------------------
-+
-+``bpf_set_policy_name`` is a interface hooking before the start of victim selection. We can
-+set policy's name in the attached program, so dump_header() can identify different policies
-+when reporting messages. We can set policy's name through kfunc ``set_oom_policy_name``
-+::
-+
-+    SEC("fentry/bpf_set_policy_name")
-+    int BPF_PROG(set_police_name_k, struct oom_control *oc)
-+    {
-+	    char name[] = "my_policy";
-+	    set_oom_policy_name(oc, name, sizeof(name));
-+	    return 0;
-+    }
-\ No newline at end of file
--- 
-2.20.1
-
+I think that checking ctx->compat seems to be the right thing to do. I
+will update.
 
