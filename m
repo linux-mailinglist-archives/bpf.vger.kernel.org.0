@@ -1,262 +1,197 @@
-Return-Path: <bpf+bounces-7483-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7484-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8499778063
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 20:38:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A516F7780B0
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 20:49:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61BC2281F31
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 18:38:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98A0C1C20E9A
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 18:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD4C20CB3;
-	Thu, 10 Aug 2023 18:38:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A08921516;
+	Thu, 10 Aug 2023 18:49:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2A162A
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 18:38:07 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A2A2D4D
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 11:37:51 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37AFEBx3030621
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 11:37:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=bCen6zmSioX3EuaMKsc3zqIezrOBODd4ABsAZsebbOE=;
- b=bn4KotJoYVnHoXB13aZTVkJogY31E+98BNQCk/bYlRq6c+94CMhMeQb1zJb8ro69EDNY
- 13iRwzozLcNkT2toXbzigWE0zBNN+I7qIiU1V9ws7+Bsr4TUPtQ12S4fu7g/hZJfTuY8
- XXm0Zk0FHErdVI4DXabKjcsO+hTZmLdtxnA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3scpykys9r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 11:37:49 -0700
-Received: from twshared29562.14.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 10 Aug 2023 11:37:48 -0700
-Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-	id E7BFA2274BE59; Thu, 10 Aug 2023 11:35:18 -0700 (PDT)
-From: Dave Marchevsky <davemarchevsky@fb.com>
-To: <bpf@vger.kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau
-	<martin.lau@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Marchevsky
-	<davemarchevsky@fb.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Add tests for open-coded task_vma iter
-Date: Thu, 10 Aug 2023 11:35:13 -0700
-Message-ID: <20230810183513.684836-4-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230810183513.684836-1-davemarchevsky@fb.com>
-References: <20230810183513.684836-1-davemarchevsky@fb.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CCB20C91
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 18:49:04 +0000 (UTC)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CF626B8
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 11:49:03 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5868992ddd4so16442397b3.0
+        for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 11:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691693342; x=1692298142;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2WWD5RZ7txT2y+bELeSkVRhqrv7guu+AZxZ+/B7ig64=;
+        b=o6wAtGQZ+EMExEpuZahj/6wsFfkHVecrBuxbrUbdt4kWtVVWlsOch4CjsXbTwhXhxH
+         zxl0RCAPlpLOCS/l8jd8aiJFY1P8RgMKDRhXUzHclXHUuM+GygFj1DEKAOeIRB29b1kv
+         oSeQOZkYAoO6O808GInBOzO56yOKAMbzQf+rjffwfV5gfWwSX32XkyriMgY3psluxqNV
+         X9novVdNaiywNUONa6PhYsD787KsL9D2WtcSr+O3ajPI/SXxFqoYCiE8Zd5o782PqCaL
+         ALWFZ6CXNi2XIkKbUQHNSTnO6EGNfwEFqaEi04rZCxhtRHiWuOOQOkp/5m+co1mjQcXY
+         ttqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691693342; x=1692298142;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2WWD5RZ7txT2y+bELeSkVRhqrv7guu+AZxZ+/B7ig64=;
+        b=b7w4KeC+M1K4k29bFojXWgTUg2pziHJ4zn8mGYImO9zlw0/pYyNj4Ffcvn0OkjG6uc
+         yhPSbAklBTtqJRKfcoFrVIjNOWKDxQZFaos10RdRK90rHkhMIXtZLqaJi902S+b5Rz3n
+         a769VGUb3z6ly0UEtksEUb6xunvlp6WjgcuhNFl5zlqwnz40lDVENckY60IkwpMuvKYZ
+         ABgAsDntwUgb2/kIin7dB2IGcAqRIP0nDvFQK0X54yT69GGycq8jtafBe4prdgAyjJpy
+         SvJ/aPw1HlgPvBdJ0r0WdtnNCnFy7p8IDFJWV8CU8oNHwkyMg9diAJqtSbODLbxpRm91
+         03MA==
+X-Gm-Message-State: AOJu0YytlVwTfooSabVaAuc8fMlz0ozqddFw8Q3QTVdwK8JeKuBTCbXY
+	600XCBpAJKDWcm3/DmiWa+Z76w4sTJRl
+X-Google-Smtp-Source: AGHT+IFE9EYsPE6iA3GxYy5BS/jQkuwPyiISjc4pFGXsdQlHdsFatosLNj3Mf8IlBuDHO64S2yFQbFam0TmK
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:797f:302e:992f:97f2])
+ (user=irogers job=sendgmr) by 2002:a81:af06:0:b0:581:7b58:5e70 with SMTP id
+ n6-20020a81af06000000b005817b585e70mr68906ywh.5.1691693342432; Thu, 10 Aug
+ 2023 11:49:02 -0700 (PDT)
+Date: Thu, 10 Aug 2023 11:48:49 -0700
+Message-Id: <20230810184853.2860737-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: NwXxuaDO6Izw8gG24bouVtURpOIFwU3-
-X-Proofpoint-ORIG-GUID: NwXxuaDO6Izw8gG24bouVtURpOIFwU3-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-10_14,2023-08-10_01,2023-05-22_02
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
+Subject: [PATCH v1 0/4] Remove BPF event support
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
+	Fangrui Song <maskray@google.com>, Anshuman Khandual <anshuman.khandual@arm.com>, 
+	Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Carsten Haitzler <carsten.haitzler@arm.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>, 
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, James Clark <james.clark@arm.com>, 
+	Tiezhu Yang <yangtiezhu@loongson.cn>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	bpf@vger.kernel.org, llvm@lists.linux.dev, Wang Nan <wangnan0@huawei.com>, 
+	Wang ShaoBo <bobo.shaobowang@huawei.com>, YueHaibing <yuehaibing@huawei.com>, 
+	He Kuang <hekuang@huawei.com>, Brendan Gregg <brendan.d.gregg@gmail.com>
+Cc: Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The open-coded task_vma iter added earlier in this series allows for
-natural iteration over a task's vmas using existing open-coded iter
-infrastructure, specifically bpf_for_each.
+The patch series removes BPF event support as past commits have shown
+the support has bit rotten:
+https://lore.kernel.org/lkml/20230728001212.457900-1-irogers@google.com/
 
-This patch adds a test demonstrating this pattern and validating
-correctness. The vma->vm_start and vma->vm_end addresses of the first
-1000 vmas are recorded and compared to /proc/PID/maps output. As
-expected, both see the same vmas and addresses - with the exception of
-the [vsyscall] vma - which is explained in a comment in the prog_tests
-program.
+Similar functionality is now available via the --filter option, that
+uses a BPF skeleton, and is therefore more compact and simpler to
+use. The simplicity coming from not having to build BPF object files.
 
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
- .../testing/selftests/bpf/prog_tests/iters.c  | 71 +++++++++++++++++++
- .../selftests/bpf/progs/iters_task_vma.c      | 56 +++++++++++++++
- 2 files changed, 127 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/iters_task_vma.c
+A different use case for the events was for syscall augmentation in
+perf trace. So that this isn't broken, and to make its use
+significantly simpler, the support is migrated to use a BPF
+skeleton. This means perf trace is much more likely to augment
+syscalls for users.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testi=
-ng/selftests/bpf/prog_tests/iters.c
-index 10804ae5ae97..f91f4a49066a 100644
---- a/tools/testing/selftests/bpf/prog_tests/iters.c
-+++ b/tools/testing/selftests/bpf/prog_tests/iters.c
-@@ -8,6 +8,7 @@
- #include "iters_looping.skel.h"
- #include "iters_num.skel.h"
- #include "iters_testmod_seq.skel.h"
-+#include "iters_task_vma.skel.h"
-=20
- static void subtest_num_iters(void)
- {
-@@ -90,6 +91,74 @@ static void subtest_testmod_seq_iters(void)
- 	iters_testmod_seq__destroy(skel);
- }
-=20
-+static void subtest_task_vma_iters(void)
-+{
-+	unsigned long start, end, bpf_iter_start, bpf_iter_end;
-+	struct iters_task_vma *skel;
-+	char rest_of_line[1000];
-+	unsigned int seen;
-+	int err;
-+	FILE *f;
-+
-+	skel =3D iters_task_vma__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	bpf_program__set_autoload(skel->progs.iter_task_vma_for_each, true);
-+
-+	err =3D iters_task_vma__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+
-+	skel->bss->target_pid =3D getpid();
-+
-+	err =3D iters_task_vma__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto cleanup;
-+
-+	iters_task_vma__detach(skel);
-+	getpgid(skel->bss->target_pid);
-+
-+	if (!ASSERT_GT(skel->bss->vmas_seen, 0, "vmas_seen_gt_zero"))
-+		goto cleanup;
-+
-+	f =3D fopen("/proc/self/maps", "r");
-+	if (!ASSERT_OK_PTR(f, "proc_maps_fopen"))
-+		goto cleanup;
-+
-+	seen =3D 0;
-+	while (fscanf(f, "%lx-%lx %[^\n]\n", &start, &end, rest_of_line) =3D=3D=
- 3) {
-+		/* [vsyscall] vma isn't _really_ part of task->mm vmas.
-+		 * /proc/PID/maps returns it when out of vmas - see get_gate_vma
-+		 * calls in fs/proc/task_mmu.c
-+		 */
-+		if (strstr(rest_of_line, "[vsyscall]"))
-+			continue;
-+
-+		err =3D bpf_map_lookup_elem(bpf_map__fd(skel->maps.vm_start),
-+					  &seen, &bpf_iter_start);
-+		if (!ASSERT_OK(err, "vm_start map_lookup_elem"))
-+			goto cleanup;
-+
-+		err =3D bpf_map_lookup_elem(bpf_map__fd(skel->maps.vm_end),
-+					  &seen, &bpf_iter_end);
-+		if (!ASSERT_OK(err, "vm_end map_lookup_elem"))
-+			goto cleanup;
-+
-+		ASSERT_EQ(bpf_iter_start, start, "vma->vm_start match");
-+		ASSERT_EQ(bpf_iter_end, end, "vma->vm_end match");
-+		seen++;
-+	}
-+
-+	fclose(f);
-+
-+	if (!ASSERT_EQ(skel->bss->vmas_seen, seen, "vmas_seen_eq"))
-+		goto cleanup;
-+
-+cleanup:
-+	iters_task_vma__destroy(skel);
-+}
-+
- void test_iters(void)
- {
- 	RUN_TESTS(iters_state_safety);
-@@ -103,4 +172,6 @@ void test_iters(void)
- 		subtest_num_iters();
- 	if (test__start_subtest("testmod_seq"))
- 		subtest_testmod_seq_iters();
-+	if (test__start_subtest("task_vma"))
-+		subtest_task_vma_iters();
- }
-diff --git a/tools/testing/selftests/bpf/progs/iters_task_vma.c b/tools/t=
-esting/selftests/bpf/progs/iters_task_vma.c
-new file mode 100644
-index 000000000000..b961d0a12223
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/iters_task_vma.c
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+
-+#include <limits.h>
-+#include <linux/errno.h>
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+pid_t target_pid =3D 0;
-+unsigned int vmas_seen =3D 0;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1000);
-+	__type(key, int);
-+	__type(value, unsigned long);
-+} vm_start SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1000);
-+	__type(key, int);
-+	__type(value, unsigned long);
-+} vm_end SEC(".maps");
-+
-+SEC("?raw_tp/sys_enter")
-+int iter_task_vma_for_each(const void *ctx)
-+{
-+	struct task_struct *task =3D bpf_get_current_task_btf();
-+	struct vm_area_struct *vma;
-+	unsigned long *start, *end;
-+
-+	if (task->pid !=3D target_pid)
-+		return 0;
-+
-+	bpf_for_each(task_vma, vma, task, 0) {
-+		if (vmas_seen >=3D 1000)
-+			break;
-+
-+		start =3D bpf_map_lookup_elem(&vm_start, &vmas_seen);
-+		if (!start)
-+			break;
-+		*start =3D vma->vm_start;
-+
-+		end =3D bpf_map_lookup_elem(&vm_end, &vmas_seen);
-+		if (!end)
-+			break;
-+		*end =3D vma->vm_end;
-+
-+		vmas_seen++;
-+	}
-+	return 0;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
---=20
-2.34.1
+Removal of BPF events was raised on LKML two weeks ago with the
+original authors cc-ed:
+https://lore.kernel.org/lkml/CAP-5=fXxGimJRXKf7bcaPqfjxxGcn1k3CspY_iSjQnpAKs3uFQ@mail.gmail.com/
+
+BPF events are described publicly in very few places but one is:
+https://www.brendangregg.com/perf.html#eBPF
+"eBPF is currently a little restricted and difficult to use from
+perf. It's getting better all the time. A different and currently
+easier way to access eBPF is via the bcc Python interface, which is
+described on my eBPF Tools page. On this page, I'll discuss perf."
+
+I don't think the "getting better all the time" is any longer true as
+BPF features are being added to perf primarily by using BPF
+skeletons. The given example is a filter and would be better supported
+via "perf record --filter".
+
+Ian Rogers (4):
+  perf parse-events: Remove BPF event support
+  perf trace: Migrate BPF augmentation to use a skeleton
+  perf bpf examples: With no BPF events remove examples
+  perf trace: Tidy comments
+
+ tools/perf/Documentation/perf-config.txt      |   33 -
+ tools/perf/Documentation/perf-record.txt      |   22 -
+ tools/perf/Makefile.config                    |   43 -
+ tools/perf/Makefile.perf                      |   19 +-
+ tools/perf/builtin-record.c                   |   45 -
+ tools/perf/builtin-trace.c                    |  310 +--
+ tools/perf/examples/bpf/5sec.c                |   53 -
+ tools/perf/examples/bpf/empty.c               |   12 -
+ tools/perf/examples/bpf/hello.c               |   27 -
+ tools/perf/examples/bpf/sys_enter_openat.c    |   33 -
+ tools/perf/perf.c                             |    2 -
+ tools/perf/tests/.gitignore                   |    5 -
+ tools/perf/tests/Build                        |   31 -
+ tools/perf/tests/bpf-script-example.c         |   60 -
+ tools/perf/tests/bpf-script-test-kbuild.c     |   21 -
+ tools/perf/tests/bpf-script-test-prologue.c   |   49 -
+ tools/perf/tests/bpf-script-test-relocation.c |   51 -
+ tools/perf/tests/bpf.c                        |  390 ----
+ tools/perf/tests/builtin-test.c               |    3 -
+ tools/perf/tests/clang.c                      |   32 -
+ tools/perf/tests/llvm.c                       |  219 --
+ tools/perf/tests/llvm.h                       |   31 -
+ tools/perf/tests/make                         |    2 -
+ tools/perf/tests/tests.h                      |    2 -
+ tools/perf/trace/beauty/beauty.h              |   15 +-
+ tools/perf/util/Build                         |    8 +-
+ tools/perf/util/bpf-loader.c                  | 2006 -----------------
+ tools/perf/util/bpf-loader.h                  |  216 --
+ .../bpf_skel/augmented_raw_syscalls.bpf.c}    |   35 +-
+ tools/perf/util/c++/Build                     |    5 -
+ tools/perf/util/c++/clang-c.h                 |   43 -
+ tools/perf/util/c++/clang-test.cpp            |   67 -
+ tools/perf/util/c++/clang.cpp                 |  225 --
+ tools/perf/util/c++/clang.h                   |   27 -
+ tools/perf/util/config.c                      |    4 -
+ tools/perf/util/llvm-utils.c                  |  612 -----
+ tools/perf/util/llvm-utils.h                  |   69 -
+ tools/perf/util/parse-events.c                |  268 ---
+ tools/perf/util/parse-events.h                |   15 -
+ tools/perf/util/parse-events.l                |   31 -
+ tools/perf/util/parse-events.y                |   44 +-
+ 41 files changed, 133 insertions(+), 5052 deletions(-)
+ delete mode 100644 tools/perf/examples/bpf/5sec.c
+ delete mode 100644 tools/perf/examples/bpf/empty.c
+ delete mode 100644 tools/perf/examples/bpf/hello.c
+ delete mode 100644 tools/perf/examples/bpf/sys_enter_openat.c
+ delete mode 100644 tools/perf/tests/.gitignore
+ delete mode 100644 tools/perf/tests/bpf-script-example.c
+ delete mode 100644 tools/perf/tests/bpf-script-test-kbuild.c
+ delete mode 100644 tools/perf/tests/bpf-script-test-prologue.c
+ delete mode 100644 tools/perf/tests/bpf-script-test-relocation.c
+ delete mode 100644 tools/perf/tests/bpf.c
+ delete mode 100644 tools/perf/tests/clang.c
+ delete mode 100644 tools/perf/tests/llvm.c
+ delete mode 100644 tools/perf/tests/llvm.h
+ delete mode 100644 tools/perf/util/bpf-loader.c
+ delete mode 100644 tools/perf/util/bpf-loader.h
+ rename tools/perf/{examples/bpf/augmented_raw_syscalls.c => util/bpf_skel/augmented_raw_syscalls.bpf.c} (93%)
+ delete mode 100644 tools/perf/util/c++/Build
+ delete mode 100644 tools/perf/util/c++/clang-c.h
+ delete mode 100644 tools/perf/util/c++/clang-test.cpp
+ delete mode 100644 tools/perf/util/c++/clang.cpp
+ delete mode 100644 tools/perf/util/c++/clang.h
+ delete mode 100644 tools/perf/util/llvm-utils.c
+ delete mode 100644 tools/perf/util/llvm-utils.h
+
+-- 
+2.41.0.640.ga95def55d0-goog
 
 
