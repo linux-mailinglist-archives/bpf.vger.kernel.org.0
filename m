@@ -1,66 +1,81 @@
-Return-Path: <bpf+bounces-7496-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7497-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DDAB7782C0
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 23:33:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 969EF7782C4
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 23:41:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EB9C1C20DF2
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 21:33:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C59BD1C20D87
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 21:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0EF23BF7;
-	Thu, 10 Aug 2023 21:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A19023BFC;
+	Thu, 10 Aug 2023 21:40:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D8B20F92;
-	Thu, 10 Aug 2023 21:33:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBDB1C433C7;
-	Thu, 10 Aug 2023 21:33:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F9C322F02;
+	Thu, 10 Aug 2023 21:40:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A2DCBC433C8;
+	Thu, 10 Aug 2023 21:40:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691703194;
-	bh=JBEQ5T1F14iE3Zlr18krO6C0aeBqKMC+YkVjR6hTAKE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=HGR22EXasfk4ZbhpXoPYbEO2wCbWe3SbL1ihE1nb0nktAFimGi9WQTos5Wjf2Mumu
-	 PKx/gjQb3wpGOeaY91jJf7iRvIqWDtq3jxUO0ypEp85peIKyq7vBCMyXkrRjuHWOY/
-	 Id+UdzGGyAqoK4MsProUIQp+naFaj7oVWdnQsoemNeW11od0ZM63VAfsAIhJz8vhFm
-	 AHE2KBpOi5/hnyrx/1hht8I4eE0C3VpSnCkKrYpMQlcGA6kluEHcW16I0kN9tvgmTZ
-	 kqYJYg7CSxcyXu6NRlOJrk6XU09q3Pw1m5att8fZGRoUc4UQhpQDSUpqCxDb29Lv8M
-	 m0rJ7YnFboBXQ==
-Date: Thu, 10 Aug 2023 14:33:13 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- daniel@iogearbox.net, andrii@kernel.org, ast@kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: pull-request: bpf-next 2023-08-09
-Message-ID: <20230810143313.016929c5@kernel.org>
-In-Reply-To: <b3d4972e-2a08-d627-db2f-64dfd4e96bde@linux.dev>
-References: <20230810055123.109578-1-martin.lau@linux.dev>
-	<20230810141926.49f4c281@kernel.org>
-	<b3d4972e-2a08-d627-db2f-64dfd4e96bde@linux.dev>
+	s=k20201202; t=1691703651;
+	bh=jt/NUvha+AYuETQysbUBUq/dMQaLn0OJNT63dU0S4O4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=CRiK0Vu2oY6CBNly+YV8KfDusbwR8fqYoLyGRqLu2df24sdtBxlqLD28VxhQSUBpX
+	 jsSKIEnimRCYbf48JL3/vydWN+hDMKWEltmuQ3vEyDvVJ2wTbfVsYlxvrYFLoefhGt
+	 dS3GyeuAGCb3c7qme3d75n8IRNUYkjldAgupWvf8AGqwpnL+ZHF+dnsDP/1m1lLuZ4
+	 IQsHgb4oQ7Am3tNbBY+hGKZZzv3uA0+ncQYZpg8AprGOBfieG/4PITNcDBnc8NMQMv
+	 iP8UGDM3lEsMCPXy9aC/5Jls9c55d4fw7PTfVjzDO9FojZkBKHcrSEYZOvzI6rdCs7
+	 d7arnJTGBBDhA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6E756C595D0;
+	Thu, 10 Aug 2023 21:40:51 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf-next 2023-08-09
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169170365144.3628.7011774572938196429.git-patchwork-notify@kernel.org>
+Date: Thu, 10 Aug 2023 21:40:51 +0000
+References: <20230810055123.109578-1-martin.lau@linux.dev>
+In-Reply-To: <20230810055123.109578-1-martin.lau@linux.dev>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+ pabeni@redhat.com, daniel@iogearbox.net, andrii@kernel.org, ast@kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org
 
-On Thu, 10 Aug 2023 14:26:01 -0700 Martin KaFai Lau wrote:
-> On 8/10/23 2:19 PM, Jakub Kicinski wrote:
-> > On Wed,  9 Aug 2023 22:51:23 -0700 Martin KaFai Lau wrote:  
-> >>        bpf: fix bpf_dynptr_slice() to stop return an ERR_PTR.  
-> > 
-> > This one looks like solid bpf material TBH, any reason it's here?  
+Hello:
+
+This pull request was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed,  9 Aug 2023 22:51:23 -0700 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
 > 
-> There is an earlier bpf_dynptr_check_off_len() call which should have caught 
-> that already, so ERR_PTR case should not happen.
-> https://lore.kernel.org/bpf/e0e8bf3b-70af-3827-2fa3-30f3d48bcf46@linux.dev/
+> The following pull-request contains BPF updates for your *net-next* tree.
+> 
+> We've added 19 non-merge commits during the last 6 day(s) which contain
+> a total of 25 files changed, 369 insertions(+), 141 deletions(-).
+> 
+> [...]
 
-That kind of info needs to be in the commit message :(
+Here is the summary with links:
+  - pull-request: bpf-next 2023-08-09
+    https://git.kernel.org/netdev/net-next/c/6a1ed1430daa
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
