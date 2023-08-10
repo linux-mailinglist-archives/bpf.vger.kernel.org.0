@@ -1,56 +1,71 @@
-Return-Path: <bpf+bounces-7503-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7500-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19067778392
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 00:22:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FF4377836D
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 00:05:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CF041C20D68
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 22:22:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6C94281EAD
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 22:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3C025149;
-	Thu, 10 Aug 2023 22:22:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B5C225145;
+	Thu, 10 Aug 2023 22:05:11 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D5722F02
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 22:22:48 +0000 (UTC)
-Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84392717
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 15:22:47 -0700 (PDT)
-Received: from pps.filterd (m0354653.ppops.net [127.0.0.1])
-	by mx0b-00206402.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37AIxtMQ016096;
-	Thu, 10 Aug 2023 21:45:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=default; bh=vRl8VUDqK
-	+kxu1qqP1KTRlJIk3Qeh/ckZJFSE82UaUo=; b=VfpVl4ez0iK6YvMT3bD9MXOyR
-	BwwDrx6dLQwL8OD68z6zEHZCkUkXcKbh3nHO4MGXlc0LPY3dhwF9Hxqy73n2br0a
-	G/P0lK4HSK8lNWObz0KSAPGYWou/2XBhqplX3ngMD00wtBJM9QioP2fVf00keawp
-	LLqDv4dRU1MBK361fnMmLulsiA0GFfcDmWwcKHdqNcOumyP3LADdNuQPIfQ/d9d4
-	U5hsFpTWJm3XR8awgzm7bc7gZwnED8U3aAT6HFZEO0b08ithKQ4gbSvlxaJ4668K
-	t72owpJG7gbhArhJrsKbTk90A9Ge5mF+M2Yri+l9t3T8iDA0vjt1j0/XUXimQ==
-Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
-	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 3sbx1adj68-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 10 Aug 2023 21:45:50 +0000 (GMT)
-Received: from LL-556NGK3.crowdstrike.sys (10.100.11.122) by
- 04wpexch06.crowdstrike.sys (10.100.11.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.16; Thu, 10 Aug 2023 21:45:48 +0000
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-To: <bpf@vger.kernel.org>
-CC: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Martin Kelly <martin.kelly@crowdstrike.com>,
-        Marco Vedovati
-	<marco.vedovati@crowdstrike.com>
-Subject: [PATCH bpf-next] libbpf: set close-on-exec flag on gzopen
-Date: Thu, 10 Aug 2023 14:43:53 -0700
-Message-ID: <20230810214350.106301-1-martin.kelly@crowdstrike.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B9922F02
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 22:05:10 +0000 (UTC)
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E31042123;
+	Thu, 10 Aug 2023 15:05:09 -0700 (PDT)
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-76c8dd2ce79so114764085a.1;
+        Thu, 10 Aug 2023 15:05:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691705109; x=1692309909;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aFjkqjJ2FVdTFKrxffUkW0MiERwjfIJkGtRrXjfMlRg=;
+        b=PpDBuX4+CX94MTfOiRJWRTmaXzOk+GhkXHfml+DYm8XeqXzAmmfiu+h94J7biYGlDv
+         7hPgEfbzrt2GulnkvAvcielkOYhkcJbqO8xKQxZcgly9kObQ91rT8Ez7ujdtrSOpStfm
+         ssIVldsjhwvS+VaRHoLaGF/a5ZuERE6jkagOzaTXNp9eqTywyxI+L5wdPMxm8ki7spct
+         HaYoTYxFYy5O5N21EQK1HxTYMJxYyNFpI31vJ1rOVmSxAB4hzUfj+GIbNilem+BkCt7r
+         e1K7nRLsPfz3ApiXDwp5wxRvMyax6kR5UOuOY3XGZQKEDoRVkw8bdlMYW57c7cvhagcr
+         CE0A==
+X-Gm-Message-State: AOJu0YwO0JZU2iX4B6ACNI+tvvYWrt8fcGWuV+hpvs24NZSRgY3sCFDZ
+	j7Au+shc5CdBq6s6r3uNw2uu03AfABPoxUEr
+X-Google-Smtp-Source: AGHT+IENK/+KAi6n28GpOvj2pkywcPRdPdwKuCuLe6XXOVQRvanxlY5xzTWyNV4xam9K+joUt0N98g==
+X-Received: by 2002:a05:620a:25cf:b0:76c:9427:5c54 with SMTP id y15-20020a05620a25cf00b0076c94275c54mr109875qko.27.1691705108724;
+        Thu, 10 Aug 2023 15:05:08 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:d81f])
+        by smtp.gmail.com with ESMTPSA id x8-20020ae9f808000000b0076cdc3b5beasm782788qkh.86.2023.08.10.15.05.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 15:05:08 -0700 (PDT)
+From: David Vernet <void@manifault.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yhs@fb.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	tj@kernel.org,
+	clm@meta.com,
+	thinker.li@gmail.com
+Subject: [PATCH bpf-next] bpf: Support default .validate() and .update() behavior for struct_ops links
+Date: Thu, 10 Aug 2023 17:04:56 -0500
+Message-ID: <20230810220456.521517-1-void@manifault.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -58,57 +73,76 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.100.11.122]
-X-ClientProxiedBy: 04WPEXCH10.crowdstrike.sys (10.100.11.114) To
- 04wpexch06.crowdstrike.sys (10.100.11.99)
-X-Disclaimer: USA
-X-Proofpoint-ORIG-GUID: tqf7gHNHzwnhE0Arr1uK0kDhFVfiLtPX
-X-Proofpoint-GUID: tqf7gHNHzwnhE0Arr1uK0kDhFVfiLtPX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-10_16,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=834
- suspectscore=0 mlxscore=0 bulkscore=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 priorityscore=1501 spamscore=0 malwarescore=0
- adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2306200000 definitions=main-2308100187
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Marco Vedovati <marco.vedovati@crowdstrike.com>
+Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
+define the .validate() and .update() callbacks in its corresponding
+struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
+in its own right to ensure that the map is unloaded if an application
+crashes. For example, with sched_ext, we want to automatically unload
+the host-wide scheduler if the application crashes. We would likely
+never support updating elements of a sched_ext struct_ops map, so we'd
+have to implement these callbacks showing that they _can't_ support
+element updates just to benefit from the basic lifetime management of
+struct_ops links.
 
-Enable the close-on-exec flag when using gzopen
+Let's enable struct_ops maps to work with BPF_F_LINK even if they
+haven't defined these callbacks, by assuming that a struct_ops map
+element cannot be updated by default.
 
-This is especially important for multithreaded programs making use of
-libbpf, where a fork + exec could race with libbpf library calls,
-potentially resulting in a file descriptor leaked to the new process.
-
-Signed-off-by: Marco Vedovati <marco.vedovati@crowdstrike.com>
+Signed-off-by: David Vernet <void@manifault.com>
 ---
- tools/lib/bpf/libbpf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/bpf/bpf_struct_ops.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 17883f5a44b9..b14a4376a86e 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1978,9 +1978,9 @@ static int bpf_object__read_kconfig_file(struct bpf_object *obj, void *data)
- 		return -ENAMETOOLONG;
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index eaff04eefb31..3d2fb85186a9 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -509,9 +509,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 	}
  
- 	/* gzopen also accepts uncompressed files. */
--	file = gzopen(buf, "r");
-+	file = gzopen(buf, "re");
- 	if (!file)
--		file = gzopen("/proc/config.gz", "r");
-+		file = gzopen("/proc/config.gz", "re");
+ 	if (st_map->map.map_flags & BPF_F_LINK) {
+-		err = st_ops->validate(kdata);
+-		if (err)
+-			goto reset_unlock;
++		err = 0;
++		if (st_ops->validate) {
++			err = st_ops->validate(kdata);
++			if (err)
++				goto reset_unlock;
++		}
+ 		set_memory_rox((long)st_map->image, 1);
+ 		/* Let bpf_link handle registration & unregistration.
+ 		 *
+@@ -663,9 +666,6 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+ 	if (attr->value_size != vt->size)
+ 		return ERR_PTR(-EINVAL);
  
- 	if (!file) {
- 		pr_warn("failed to open system Kconfig\n");
+-	if (attr->map_flags & BPF_F_LINK && (!st_ops->validate || !st_ops->update))
+-		return ERR_PTR(-EOPNOTSUPP);
+-
+ 	t = st_ops->type;
+ 
+ 	st_map_size = sizeof(*st_map) +
+@@ -838,6 +838,11 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
+ 		goto err_out;
+ 	}
+ 
++	if (!st_map->st_ops->update) {
++		err = -EOPNOTSUPP;
++		goto err_out;
++	}
++
+ 	err = st_map->st_ops->update(st_map->kvalue.data, old_st_map->kvalue.data);
+ 	if (err)
+ 		goto err_out;
 -- 
-2.34.1
+2.41.0
 
 
