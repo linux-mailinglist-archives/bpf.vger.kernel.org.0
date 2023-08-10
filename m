@@ -1,85 +1,114 @@
-Return-Path: <bpf+bounces-7442-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7443-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 059837775E8
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 12:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3AB97777F7
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 14:15:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28CA61C2157F
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 10:36:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6B131C21550
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 12:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A90E1E521;
-	Thu, 10 Aug 2023 10:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64AC11FB34;
+	Thu, 10 Aug 2023 12:14:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F31FE3D71
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 10:35:52 +0000 (UTC)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15765E4D
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 03:35:52 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37A7Yn0L031066;
-	Thu, 10 Aug 2023 10:35:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=corp-2023-03-30;
- bh=aTfHSuCTuYzD8MLkBzEWLz0YEU1ud4u4qlJENhFsNLg=;
- b=C6geHRemmvNJjSZ6uW6vsRTfVnD88vOwwXBoZfCUBTmySmPagSE9uz7H1zdkBOX2SqR6
- MCK0UKMC19Z+O5mCUR+dOIhN0MWpNt4TJhb+7MOLOu2JFjQZ7NKLyftzi6RmPo9o+yAt
- boZYkvKXBu1q0Es+4UclLi7GbY3HjiGF7emTq8kVWHXGFkUVJMb2kYSEd2VDD0f7z4Fq
- nVjd5enLobSH3kU6oFcs/CYV3F5YruQqaAddQtb/JaBrVaj5rGJ6OuspI+JchBujXKRN
- t3UCiZSUIgMAx+nmE9wluU2nVirb2m5PRa5B6Gpi3mJQ7ze48FqBPCzHFj9UvTFUNKBp Zw== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s9eaatsge-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 10 Aug 2023 10:35:45 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37A9XGQq017875;
-	Thu, 10 Aug 2023 10:35:44 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3s9cv8t97x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 10 Aug 2023 10:35:43 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14AA61ED4E;
+	Thu, 10 Aug 2023 12:14:54 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F280A110;
+	Thu, 10 Aug 2023 05:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691669693; x=1723205693;
+  h=message-id:date:subject:to:references:from:in-reply-to:
+   content-transfer-encoding:mime-version;
+  bh=YM/D4bwlTWDf+XXwc0rkgRlZKb/pwpsKPBhffPOK0oE=;
+  b=R1yVCHorXSV8kFbkEPkIJB3znSadWNegutNlumC1QElLT2H/OPifmpU6
+   QKwwooy4sigRU3Zczhlr7lduPTpD6frJXTb1nvSgEWuVvfnJQx2STcmMR
+   6Gn5q+KwH1JWiCRaNvtxvBa0L7GKdgTj2InBy0q3JGsFNFSDpmH+mrSdV
+   CL/JtF3vWXMwBU81aBbhwFHoWkCMqbCJ+iArZOYWQ2dUIenB6ONAJQgI6
+   K8fgzOiR/8XRN/+cp1c/U2I6wO49VeIpeHfiCjQcnuEirYVsnI3ZlBcTH
+   7ycKiC3bf7Cju5alJb7OkrAmEYJNkynh4qvrqEx2Fl8CLSZKCnY+zI1py
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="370277729"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="370277729"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 05:14:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="682080605"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="682080605"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga003.jf.intel.com with ESMTP; 10 Aug 2023 05:14:52 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 10 Aug 2023 05:14:52 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 10 Aug 2023 05:14:52 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 10 Aug 2023 05:14:52 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 10 Aug 2023 05:14:52 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AwfwG2pSVTwhe0BpAacEaxZcOFjWYWeB9LSUUVJ2VMxCIO/p3I3Pn235xvKjFQ0XxjnueNzL+8IzjbbiXYznkuMCf1tLuJOUkprEQxDT1YV3q+jqglla7cfsWC+PTw9U2oIDizGnU3jlsITMw/tSTH+CqXCyvdtPBdzjh59HEJWYbLKfW5u4sRTDboQpRusWfNHyc+SwWNyojHmn1vRAVKTcYI3eDdQvkaSuc22eQojztcj5Bi3s6AyHk4AN9BtBiEhZYsoTFgd4lT54jmMFL7FC3fT2Fl/+cZS8S/1DQbu5cpv4zEFWZfvZxsdsy5r2iuXGT3hVxRAoGKu+4nueOg==
+ b=dv3BTe5uW9ybHIrEGNGhdbAU0UHOSzTzvu4WZi1qEUQf8kHdVqyhNZ8d7fUV4YD7nNIeBT5m0uUEpsO9QbdGSvG7DM+paBi9F4oGZznDb5USQ7hUultIc4YZhi6u/g/Ia+uWTAPjqAO3D8nqaOFeY34nanKBrdIdWMGEGC/a20dxEJrj6T5oqxIQOJ79dWoBU8gcwVTBc16VLtunnZHN/nnqjJPsKzHOsy4oWPMvMRnW7+NZVo5X6BmIoknuy0aCEmOif6844hl2kTgqFm+d+aXqsNFFRxcsxm6r04OByxRIwHh0G7Q7fp7Vms/jgPM1baBAunnVIpVk9cBiMV2DOw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aTfHSuCTuYzD8MLkBzEWLz0YEU1ud4u4qlJENhFsNLg=;
- b=kVPmwjuDHg2cM9Uprgyh+bXJWVmQJ/rWxD5YUHttg5Tmj16N+ApVEeY0W8CKC+imwwkEa5Ev4B4bUeAL8RIIPy9tKR0IXlp5RmGq9SQFCAKxCPdzNYK3s8R3u+JcpRJ90nN8Fke86GO51QhGumTPZwzRNAs87MJRPUXF6IQzAlpA6rKesG5eHoHI71IuCLcGlSR7gGXcifmVYoYEI0ALQgjQbVWp/IlP7DAehS7GvrEab0ZxWUIXbKfF39MFclLMI+xlLplSNU7SdTuf/TtBFSiTVkRr9HHo9jPB3xEbJABSZQLlAxkmC4z3QZ5Vl4Xcvcsvh/VKtZsou7wIiZBUKQ==
+ bh=LPWaTCDWc+Bfge72tImTq/RYyTm7xg8/V3QoqdSE93E=;
+ b=PzVFKUV3a83YuGq1IRd0RLW+ziqfzktgBtPEOD4BgZuVsQPJgTxNzrdmqCkkn/VMuHBipxJXe/ChWHByrH1oKSaJPA615kFvf3JOAvK0H5uCqUswQPf7VefLHMvUPdl9ISBK/41PVpIvtUF+ubqv+LjKalbQi+hJkndvdu/LLMai7s3e8erknA86Wpl8yBaNwPyCnk8n6RVJ3JQ5NbUgBC8iFwM8GY4v4oXS+N6E+IzVgWGr8FbkHChdzHGYLkLneSss/tnEaUGTsnvgp30r9drwkrj8KCD63ea6Jk7GozRw+sYD7Yxq217xv02Vw5nEAqG6SJTewt5nlh0qY9QdfQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aTfHSuCTuYzD8MLkBzEWLz0YEU1ud4u4qlJENhFsNLg=;
- b=YxnhQ+dOve3LhDAmbE07kwg9Iv/1DsLEdL0eEeigxk6nyZLR0a4COkjEQbMPO+/4wobkcLxjyxNfG/QInWeiHMaXr7etkvVOvYi9YQmJi+rdJREJQoTh7q0qTl7crlINpPm43EhLlIbN92tUcd9bzx4KYTNFQzwIuAH6VkovQhc=
-Received: from BYAPR10MB2888.namprd10.prod.outlook.com (2603:10b6:a03:88::32)
- by SJ0PR10MB4429.namprd10.prod.outlook.com (2603:10b6:a03:2d1::14) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com (2603:10b6:a03:fa::30)
+ by CYXPR11MB8710.namprd11.prod.outlook.com (2603:10b6:930:da::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.26; Thu, 10 Aug
- 2023 10:35:41 +0000
-Received: from BYAPR10MB2888.namprd10.prod.outlook.com
- ([fe80::991c:237e:165e:1af]) by BYAPR10MB2888.namprd10.prod.outlook.com
- ([fe80::991c:237e:165e:1af%3]) with mapi id 15.20.6652.028; Thu, 10 Aug 2023
- 10:35:41 +0000
-From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-To: bpf@vger.kernel.org
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Subject: Usage of "p" constraint in BPF inline asm
-Date: Thu, 10 Aug 2023 12:35:35 +0200
-Message-ID: <87edkbnq14.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: AM0PR07CA0020.eurprd07.prod.outlook.com
- (2603:10a6:208:ac::33) To BYAPR10MB2888.namprd10.prod.outlook.com
- (2603:10b6:a03:88::32)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
+ 2023 12:14:50 +0000
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::aa6e:f274:83d0:a0d2]) by BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::aa6e:f274:83d0:a0d2%3]) with mapi id 15.20.6652.029; Thu, 10 Aug 2023
+ 12:14:50 +0000
+Message-ID: <be1643cc-dbfd-5e62-4750-54b41658f82f@intel.com>
+Date: Thu, 10 Aug 2023 14:14:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Subject: Re: [PATCH bpf-next 03/10] selftests/xsk: add option to only run
+ tests in a single mode
+Content-Language: en-US
+To: Magnus Karlsson <magnus.karlsson@gmail.com>, "Karlsson, Magnus"
+	<magnus.karlsson@intel.com>, "bjorn@kernel.org" <bjorn@kernel.org>,
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
+	<daniel@iogearbox.net>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "yhs@fb.com" <yhs@fb.com>, "andrii@kernel.org"
+	<andrii@kernel.org>, "martin.lau@linux.dev" <martin.lau@linux.dev>,
+	"song@kernel.org" <song@kernel.org>, "john.fastabend@gmail.com"
+	<john.fastabend@gmail.com>, "kpsingh@kernel.org" <kpsingh@kernel.org>,
+	"sdf@google.com" <sdf@google.com>, "haoluo@google.com" <haoluo@google.com>,
+	"jolsa@kernel.org" <jolsa@kernel.org>
+References: <20230809124343.12957-1-magnus.karlsson@gmail.com>
+ <20230809124343.12957-4-magnus.karlsson@gmail.com>
+From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+In-Reply-To: <20230809124343.12957-4-magnus.karlsson@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0095.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a1::7) To BYAPR11MB3672.namprd11.prod.outlook.com
+ (2603:10b6:a03:fa::30)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,207 +116,236 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2888:EE_|SJ0PR10MB4429:EE_
-X-MS-Office365-Filtering-Correlation-Id: 301860c8-4fcf-4bd7-8448-08db998d8b83
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3672:EE_|CYXPR11MB8710:EE_
+X-MS-Office365-Filtering-Correlation-Id: 63fcd000-e0b7-47ec-b265-08db999b6543
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	30VSQrpNxtLpW3RP1ooeBhVSrgxpHJtgTlw1EDBnyR04ZKA7nr5TsQop3/5q6qoHlXNj8PiPF9H75AIwWYSYkcMvisnpGPPRUfSsLDDssadhvrc+mnqX0X437r+rYZ4Ws+hFnA7pWNqyLIS/miHZyYYujE/JQuaiRp43e4pcxuJMQA/hUuGfTBI7lWWdspAMpw4DBN7itCj3ahP50ZTJhHd/8Ul5pwSbmHViRX6gsnKFDWA2AONdXH499hNlVMH99VWscuMgJMgdsN4fai+Z2enYFxroiwOn5J1MrmxLJxjw8y4CAGoAesiR95HrfZqZrNQReEVSujciD2wPLwKtGIh09Z7m2gXgEUM5T9z+bmVEASwKN39gaIKVK3TuhkbAc+FvCBnZlRPsVnDkgHm2NAJ2GkM9tfuQ64szTO8qsP+f+I9zvSHXE3c0MtBwjh8GMCkQYm/fXmv7k2+L0+quVvdSJkoOCGCxQc3LAR3K8/+zx3LbxW2w/0w+tyZ3qVf6iCKT1XzCn43DDstu3maa/pRZrcY+t9l/Ppcej7fuFFMluvqJw6jyFdWDdZ4puv9R
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2888.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(366004)(376002)(346002)(136003)(396003)(1800799006)(451199021)(186006)(36756003)(5660300002)(2906002)(2616005)(6666004)(66476007)(66946007)(6512007)(66556008)(4326008)(38100700002)(6486002)(316002)(6916009)(6506007)(41300700001)(86362001)(8936002)(8676002)(26005)(478600001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: iSLpfWoANpq6/4TvLbdO3DYJnhjZArcOfpZkepVpy8k+lEaGUoAidE7JEuzMwnPVY2FUrs8UZtSNnvFtlw4XTMJvakCWdRXsOhm1J4VxZ3ACi3CQgXZjFH1LXC6yLnaeUOappps1Qh698a8hgDnvspmW+iQIGHcYqpRxhBhlqwRpb/7TfYVR7sJPqiBj3ShnMEQy4mF7JMT4/WfBZzvJRNI+/rrZZK/VpxVQqQMvkWBG0nHx7OYxvhzan949zp5zl1ZNp1N2YLiRHAcrgsBQ/R3CJrR53zUwe607pTFA000mctKWU6ivJjCWd2CLabllheBbvGGwaFpuiwjYyTm70G9gS4wR6sULXqXYy5aLu/VsOIXbdPPYq8y1YsyEtOa+Hm7mhPhM60Sm34nRvoC30u7l0emvh+AQ/X1g44Ey03mmbCZVKsgFk3yGqaDklhurGeDy7iKzqAv6jpaTXVjuhd+SJ9t9eEtCqN6h3whmC2lZErpHBfD/30Y9kCBkNMyVNuBglNjkzLeDgM18xDRr0OeXIvZ7w9Osc430hWG8F153Zi1e3Urv0K4klDAxRiHBvzz6kqXJbLZ8yaGDNMNtRRJ//GrwEn0XkGMyOdCr+UIZGbK9Jw/tgmrxQoj6sp3UOHXUFm7zZDxhXPw+LnQZOXjhqZqa+Qcv3evWzFqJ0XY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3672.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(396003)(376002)(346002)(366004)(39860400002)(186006)(1800799006)(451199021)(7416002)(66476007)(66946007)(41300700001)(6512007)(6486002)(6666004)(36756003)(66556008)(5660300002)(8676002)(8936002)(316002)(31686004)(110136005)(478600001)(2906002)(921005)(82960400001)(38100700002)(83380400001)(6506007)(26005)(2616005)(86362001)(53546011)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?RUZyUDhqY29xdC8veGU5bC9aSDFzcmgxNUlLNzNRWkYyM0ZUTk5JRjAvYUc3?=
- =?utf-8?B?cURCcmhmVXZKbTZ4bWZqK2RPc2JFTVlJcDM0RjVmdFZSU1ZEcnBpZmN1SW5v?=
- =?utf-8?B?cE9pc29sVHNsV2cybHYvOU5mT3BzSmZSaHVNMXVROWhWMUQ2dVZwdGdtbitZ?=
- =?utf-8?B?dHRTbTRNbHc0K3FuRS83VGp3Z2hMOHdIQ2lEc0VlUlkrM1EzOVp3TkhRbCtq?=
- =?utf-8?B?NVl3elVxUlpwbjRkcCsxdHN2d0I3UWZXbEhPQ3JHVjluTXRMaGd6ZmZOZEc5?=
- =?utf-8?B?SkE5NEk0TTJoUnJkQmxrcTZhVzVJSFZLaU4zUVJPR0xOaHlLcFNXejhOV0d4?=
- =?utf-8?B?aHpkeGVMRUNyMG5HRTVNN1RYTHRNcWZSZFJETDh1a2VMdE9MUlBBVnBtdGhn?=
- =?utf-8?B?ZVNLeHpiRFNOdCs2aDZIR1oxK0FvOFhWMGsvNDFMQ2QzcGtsR08xZkF6Y3NP?=
- =?utf-8?B?OGgzaHhieHoyTERSK1JnUFU2dndSUEdsZ0dQRnYvTldyREV2ZFBWNUN0UFp6?=
- =?utf-8?B?ZVlyT3E2OC9mUzFpdkFDWUxubGJTNVBpaHRhbHVrSERRM2NlRTdpdHN5Z1pY?=
- =?utf-8?B?bjFjdWZzMTV4YzM5STc3R3dpYUNDRXdoRHdGZjJBc25NVVpFR2lrU0sreWRp?=
- =?utf-8?B?dEdaWVVqQkRvY3QrekF0ZTRxSllEVm5lVGMxS3pFSWliRTFMcUlrcExSOHlw?=
- =?utf-8?B?aWJpQ01tWlVlMElZUStCRDdBUzNPaHQzYTBOSEJTbW5NMTlWNGlCNkJ2MTdG?=
- =?utf-8?B?U0RMQklycHV3dVREVHVJN3d0UTNnUUZsS21yaTZwMTJsOTZqMUR4aXJ0Vmt4?=
- =?utf-8?B?ODBwWlpySkJ1OVQ5RGwrbDJ4Y1pIUEtLNFpheWEzdWg1VkMwM3JGbGlXVm1J?=
- =?utf-8?B?N3ZTWGZlT3B3d3RtcnZxQU9yOWVtQzZUbUk3Y0FSS2JvOWdBNSs1UnJOZ3Nl?=
- =?utf-8?B?VHhEY0NrNEk4bzJFYjlML3BYZ1hZVmZIUzFxUUFrNVlrUzE5bHpJWi94Z1oy?=
- =?utf-8?B?Ukl1R2dJcURYbmpVUkw1Y0lWOTFTWHhJV2pnTnRRKzRvT0t4K3RUWVg2dWhP?=
- =?utf-8?B?VWUwM0lNZTJNVkxWMThVRWlibzBzeDVUL2w5NWZSUXRwUkt2UlViUTRvdFlo?=
- =?utf-8?B?SGpRUDdHN3F3TlVoMVhQMnJGS2xhd0FvZzBZS25Ud0tGdllPVXc3U3hZYkhv?=
- =?utf-8?B?OStZWVNXaWZ6UkYvekhlOWZtbXRmT3VqSGZCclRVTTYwQUptNE5VaitTaVVV?=
- =?utf-8?B?dzNPVHowMUlsZTFvVm5ZdCtyNXJjaGVwV2pvTnZMc1phSEI3RkRXcy9rVTlL?=
- =?utf-8?B?VExrWksrZXYwcHNCU2xnRHRSbGlDN3Y1S1p0L1J1U01kZEJURVFwZThab1M2?=
- =?utf-8?B?VENCK1RMclVTNEVTVHpESTJoZ1I2MHY0Yy9ZVW9ydXlaMzF0VHNWcm5FUW83?=
- =?utf-8?B?dmF6aFRKZTh3L21uWThZaWU4RTE2cHF2bGN4SWhscjVlZVBtTkllemN1Rjcw?=
- =?utf-8?B?a2JlZ3VuQkFqWXhHRlIwSk45ZWpNdTdwdGpOUzROSjRBbW5adW1EaEM1NU5k?=
- =?utf-8?B?OWRuSlY2dDBtYUJwekY1K1YvaWdlUzArTWRwaUY3VFNQcEdxT3RZTzRNUjky?=
- =?utf-8?B?TXM5YTNiRWx4RzJDRFFaQWZOQ3dVdi85M1pJdnlCdW5NVGFWcSs2Z1RYNU82?=
- =?utf-8?B?YVgxSHo0ZER1VXR0d2VtMmw3Z3MxYmpGRnJSdHZSRkphQTJybVZGKy9sTHow?=
- =?utf-8?B?Z3pTcGg5RExPQ0czSGhXa09lK21LR1JVMk1HRTY2MWlkQlZ6SlpLKzBoYzFL?=
- =?utf-8?B?a3cxNGxCcHZLSC94eEhzM2dxUUFoamIxL3lOT0FNY0NMUStGTXlDQjhsY2ZI?=
- =?utf-8?B?UVlsallzVGMrODM4K3cyYm0rZXFmak1SYmQzRXh4VFgxSSs4QWdva1B2N0JF?=
- =?utf-8?B?bGJlYW9qekgwV2VqVUNXU3hXLzBiQ29VVjV3eXFBdFd2YU9NWHRvMStPeHQ1?=
- =?utf-8?B?eGRCbWhLaXZoNG5BSGsvVU0rZHFkODRwT0dUYXp6dWQxSVhGRXR5NitPV0Q4?=
- =?utf-8?B?a0dHdHhRWGo5dVNjMWJvaUEva1pXNk5pYnJOWVE1N2daLzU3U1p0VTM5UllT?=
- =?utf-8?B?QW4wVmNhbDBWQ0ZjbmFUN2N4Vk5YK3BHOHgzeVNaSmFYVnFWSTVZWk1UcHlS?=
- =?utf-8?B?N3c9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	gkE+WKWw59No+zqO0rSVVlqGRFP1Ew7hHuvV+KYEc9wqF73JMCn+vyr7qAKcspqggcy7S8LJjRffHg9mtQTx6L0vHvw1VGFIEGlDxEDcZ7I+xlLcs8FrBVb58w0rbBKMicCOqiHrd8pDkvlwAxBJUeHQzFfZvOSmAPvT2gi5mK0wEOlN9BwK6WlZpgctGr7SqMrWYCOjMbTSadxteceUTzKOjQFjUmwTOAzzYX6mr1xacuH+wvAWn401/JgfI1dlOhGDfYkW/NC7aT46Mo5uuHKebOQQ98mZPYqR+MThmHjBJ/1k1i8X23k4AeOqOwLqCJADnjvXNPDiK+/OPoKa8kJFsEHOgxktnGGtMU/WmvZtaJ7gZ3eKaqDzt+wnWcmg43oLueRqpv9NlOlS+Q6mk546KLDY5m5apwmtjkiWj/p3eW/IZkk0qpov7M7DPyuk3cvB8yk8U+orjc2UK/84dv+mZCrmCyjUQWoYl7KdJNqRCgP6JnsEqKPGMIxta+oTZrLFfsAPK06S4hWk+AuvvC7jQyAqrFmid4P58FgB4zbYvwlV0el5BkpZc7P6NT7JIm5fJ76HaJSRa/F6xN2A6aVjyGbGHoNzAuV57m35frkNg88gBTUS9BU2grUMClfZ6+bitTYByCejcHsRzEUpKchybLygJj/RVoIPqtf8bBQ56afw/yNhh+AQKSNJ28+LPOTnd72VR4oZh9/QF8toknfXeQQwPAU17i9qCphfOLwxeQhEqM3nalwkMMZX/zbWYpnLi8aef1PqekMtv5dEklHjmPR35Jh5N+ZoLyx2dq0=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 301860c8-4fcf-4bd7-8448-08db998d8b83
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2888.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UHhJRm9qVTFMamRINkJyYmVRazI0bFMrS2NXemRkYTA4Z09rd2V4MGwxZUl0?=
+ =?utf-8?B?OUNKOFZoNnhkQzBRYlRmTGU0WXNORTdCRGJaRmhXODV6K1R2emFCMkRNdXdh?=
+ =?utf-8?B?ZTF2aW9pS01qZUVRSDI2WWdJQVFVUkE3YXc1aEdNK09XdlJ0dUFQRVF0Si9P?=
+ =?utf-8?B?NHlWb0tQOVVzYjR1eWJQemxxY2p6em9ic1c3aE53RnpLY3pwNnhMcTkvY2dt?=
+ =?utf-8?B?SldRaXlkZjFWQk5FQnE1ZXM2N05OUDVDUkRkbWc4YVVOYUtrbHRkT1lhd0FP?=
+ =?utf-8?B?N2FNbURTNVpVS3N0YnVVTjBOczMrK1V1OVlsZk00a2V5Z3dKZkVCTTBQUVd5?=
+ =?utf-8?B?RG5QRzEveHRMbml3ZUpFT0ZvU2s1ZDUrYjZPOWJIVXE3UnNvWEUyRENjVitQ?=
+ =?utf-8?B?T2VmVlRXbE85RE41N09xUlF3Y3JHMU5rczF5WDNWSXdJMkllVkc3bmJMUkxI?=
+ =?utf-8?B?em1HNGhXSVgvdUlvZkRCcHl3a2N1Y0F5QjgvSDNOWmN3a1YvM2IrbFAweThk?=
+ =?utf-8?B?ZEMzRUtXVHZob2dIdVhFdEtxU3pGUGQvRHhrNWF1Y0IxeUlYR1lWRzVyeXY5?=
+ =?utf-8?B?MGJzeWlaTW13d2dDdDVzOVI5TWtxT3hTOWw5anlQakM2YTBEQmxFQThleC9a?=
+ =?utf-8?B?b0psSmFJdFZWK2VZamJXZzA4OC9kZW44NTA3S3BYU21jeHJVQUxMZDIweWVX?=
+ =?utf-8?B?RDhlWjRHRWJKNXFsdEtwdC80NUhLZFBaMHJPRElzeHZZSXZtbVQxZTVEalJn?=
+ =?utf-8?B?VFdmYkJuN2NiSUdqcE1vK3ZkMkI1SGIxbVZvVTlOVVE0NEVTRU9zOFBMWUtY?=
+ =?utf-8?B?R1BUSE1CNjFnVk91YmYyRkNJQ0FxOW8rVmlSTkppd0VqMUR6MEhVQlV5TVc5?=
+ =?utf-8?B?U2lkSzlKTjZNL2dRb0JuQy9jRVR6OUpLYjRqODVKdU9oZkZDNXIvM2FMSlRk?=
+ =?utf-8?B?V3MyUnNMcGdvSk5rVlJJUXZJc2ZrN3RpY0lnSCtiaWNZc0NnZ3ZGUnJwaXZF?=
+ =?utf-8?B?U0Q4cDllK2tqMFBjOG9lTkhscUNFclRiN3pWS0IwdkZ1OUJBN2s4UUdWTHhz?=
+ =?utf-8?B?S1NXSnBsU1hyOGZMdERBYVYvUVFlY0ZZZy9qdGFDRWxVQmtYM2JYVzZtcmNC?=
+ =?utf-8?B?bDJ5N0xZc3AvYjVjd0JaVys5SlQ1UnkvN3JnUkU2MnF5eXl0cDM1UG5FVjE4?=
+ =?utf-8?B?WlR4NWQ1OERnelRHQ1hlaFgyeU1hOHFSSkxZTFErQSsxb0xLb25jTStHY0Ry?=
+ =?utf-8?B?SXhvQzlNUm01UUlUMlViSVE2cDRBWEgvNnllckZFaHlaOUs1WXZVajYvc3lE?=
+ =?utf-8?B?S2RiN0NsSGRGVzRVaXBMUnpHZ1N6RVd1THk3L3lRdFk1dUxWY3ZuS2lZZWlB?=
+ =?utf-8?B?YTlTRzVrTm03VjRMYm9tbHF1VFY4QjBnK056VmQ2K1BMWjJHTmtGMnpOc1hJ?=
+ =?utf-8?B?QnZoazNxUTE5d0hMSVRMWUV2TndZSHkwdnF0cVhNZ1gxMHhoNVN1b3EyZ1g3?=
+ =?utf-8?B?elNxcWplRy9HMGRFdkhPMlRQSFBFQWVJNWI3TXdIOGxtT3h4UjRUL0IyRnZP?=
+ =?utf-8?B?MFcvbnhyZUhZbjNaY0UrUzJKZmJLQ3BqLzJPR3Ivd1EwdlltbmRYSkRBcW5v?=
+ =?utf-8?B?ZGI0WUhxNlU1R05sN3dWTDFiR01pbGFVTTFuUjNOWVVzS1ZlZUxiYS95dHVE?=
+ =?utf-8?B?aE1TdUU5aW9oRDhZa3BUZ2xPRTh2ZVZ5SXAvelIzelh1bGlGR0VnM2RtWGRH?=
+ =?utf-8?B?ZUUrcnRWRmRIam9sa05aRldxcTNJeitPOVdteEFCSDdXeEdOS1JRZytsTHV1?=
+ =?utf-8?B?WXFpaFhRYlBXWk1WVVNsS2VvaFYwSTBRckltemk2QlZIcGk5VGIrcmpXMjhH?=
+ =?utf-8?B?ZnRHd0JoVDFTb1BJd2tCUGUvWS9ZR3NvS1Y0SWdzSEo0cldoU2lLY2N6dnlY?=
+ =?utf-8?B?VHdrVStQTUlTQ0ZQQTRWTEZiZ1ZqYlR5Zlh6VUFxbk9VRWhCQjk1bGRNM3Vh?=
+ =?utf-8?B?dDNmTVpmNGZkS2xmZnVscHdCc3hqZEJYSVU0S0l4UWhLZkt1OWtEM3lkcDhZ?=
+ =?utf-8?B?RnU0YTlkRG8wYm5aTk1uRXRmbFZPNzhhZThiYXh1V1lyVks3Ym5zRGlmUGNt?=
+ =?utf-8?B?OHpBS3NBS2M4SnQvb1RqNkViZEt1WFQzc3NQNlZGUGN6K2d4bGQ5NnluWTZZ?=
+ =?utf-8?B?NlE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63fcd000-e0b7-47ec-b265-08db999b6543
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3672.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 10:35:41.6141
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 12:14:50.3624
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i3V+9EHyos+imN5jzgxb2iqzy9/1oDpll6vy/b8OV7wiick/Fm8VukrerDDTHZxNICoMmMeokbUPDW6peODmmMGZTn2BGnSpzTCZOfDGI6Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4429
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-10_10,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
- malwarescore=0 adultscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308100090
-X-Proofpoint-ORIG-GUID: i8oyX6DQBFcVBBK92p4vcmfvhI2cODjn
-X-Proofpoint-GUID: i8oyX6DQBFcVBBK92p4vcmfvhI2cODjn
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-	autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: bNYvWvUscPDMd4xCRSjkMRl3PArLD9cmu0EJPCc58MtEqyFAE2VnvHnFw5ij5MIwqsiX3v6dLNo1yX2O18wwjcMylEVcd3+Tb7KyCDsmVXg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR11MB8710
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On 8/9/23 14:43, Magnus Karlsson wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> Add an option -m on the command line that allows the user to run the
+> tests in a single mode instead of all of them. Valid modes are skb,
+> drv, and zc (zero-copy). An example:
+> 
+> To run test suite in drv mode only:
+> 
+> ./test_xsk.sh -m drv
+> 
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> ---
+>   tools/testing/selftests/bpf/test_xsk.sh  | 10 ++++++-
+>   tools/testing/selftests/bpf/xskxceiver.c | 34 +++++++++++++++++++++---
+>   tools/testing/selftests/bpf/xskxceiver.h |  4 +--
+>   3 files changed, 40 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
+> index 2aa5a3445056..4ec621f4d3db 100755
+> --- a/tools/testing/selftests/bpf/test_xsk.sh
+> +++ b/tools/testing/selftests/bpf/test_xsk.sh
+> @@ -73,17 +73,21 @@
+>   #
+>   # Run test suite for physical device in loopback mode
+>   #   sudo ./test_xsk.sh -i IFACE
+> +#
+> +# Run test suite in a specific mode only [skb,drv,zc]
+> +#   sudo ./test_xsk.sh -m MODE
+>   
+>   . xsk_prereqs.sh
+>   
+>   ETH=""
+>   
+> -while getopts "vi:d" flag
+> +while getopts "vi:dm:" flag
+>   do
+>   	case "${flag}" in
+>   		v) verbose=1;;
+>   		d) debug=1;;
+>   		i) ETH=${OPTARG};;
+> +		m) MODE=${OPTARG};;
+>   	esac
+>   done
+>   
+> @@ -153,6 +157,10 @@ if [[ $verbose -eq 1 ]]; then
+>   	ARGS+="-v "
+>   fi
+>   
+> +if [ ! -z $MODE ]; then
 
-Hello.
+better: `if [ -n "$MODE" ]`
 
-We found that some of the BPF selftests use the "p" constraint in inline
-assembly snippets, for input operands for MOV (rN =3D rM) instructions.
+note that quotes are really good invention for such cases, especially 
+that default value of MODE is "take such named variable from user env".
 
-This is mainly done via the __imm_ptr macro defined in
-tools/testing/selftests/bpf/progs/bpf_misc.h:
+> +	ARGS+="-m ${MODE} "
+> +fi
+> +
+>   retval=$?
+>   test_status $retval "${TEST_NAME}"
+>   
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+> index 514fe994e02b..9f79c2b6aa97 100644
+> --- a/tools/testing/selftests/bpf/xskxceiver.c
+> +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> @@ -107,6 +107,9 @@
+>   static const char *MAC1 = "\x00\x0A\x56\x9E\xEE\x62";
+>   static const char *MAC2 = "\x00\x0A\x56\x9E\xEE\x61";
+>   
+> +static bool opt_verbose;
+> +static enum test_mode opt_mode = TEST_MODE_ALL;
+> +
+>   static void __exit_with_error(int error, const char *file, const char *func, int line)
+>   {
+>   	ksft_test_result_fail("[%s:%s:%i]: ERROR: %d/\"%s\"\n", file, func, line, error,
+> @@ -310,17 +313,19 @@ static struct option long_options[] = {
+>   	{"interface", required_argument, 0, 'i'},
+>   	{"busy-poll", no_argument, 0, 'b'},
+>   	{"verbose", no_argument, 0, 'v'},
+> +	{"mode", required_argument, 0, 'm'},
+>   	{0, 0, 0, 0}
+>   };
+>   
+>   static void usage(const char *prog)
+>   {
+>   	const char *str =
+> -		"  Usage: %s [OPTIONS]\n"
+> +		"  Usage: xskxceiver [OPTIONS]\n"
+>   		"  Options:\n"
+>   		"  -i, --interface      Use interface\n"
+>   		"  -v, --verbose        Verbose output\n"
+> -		"  -b, --busy-poll      Enable busy poll\n";
+> +		"  -b, --busy-poll      Enable busy poll\n"
+> +		"  -m, --mode           Run only mode skb, drv, or zc\n";
+>   
+>   	ksft_print_msg(str, prog);
+>   }
+> @@ -342,7 +347,7 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
+>   	opterr = 0;
+>   
+>   	for (;;) {
+> -		c = getopt_long(argc, argv, "i:vb", long_options, &option_index);
+> +		c = getopt_long(argc, argv, "i:vbm:", long_options, &option_index);
+>   		if (c == -1)
+>   			break;
+>   
+> @@ -371,6 +376,21 @@ static void parse_command_line(struct ifobject *ifobj_tx, struct ifobject *ifobj
+>   			ifobj_tx->busy_poll = true;
+>   			ifobj_rx->busy_poll = true;
+>   			break;
+> +		case 'm':
+> +			if (!strncmp("skb", optarg, min_t(size_t, strlen(optarg),
+> +							  strlen("skb")))) {
+> +				opt_mode = TEST_MODE_SKB;
+> +			} else if (!strncmp("drv", optarg, min_t(size_t, strlen(optarg),
+> +								 strlen("drv")))) {
+> +				opt_mode = TEST_MODE_DRV;
+> +			} else if (!strncmp("zc", optarg, min_t(size_t, strlen(optarg),
+> +								strlen("zc")))) {
+> +				opt_mode = TEST_MODE_ZC;
+> +			} else {
+> +				usage(basename(argv[0]));
+> +				ksft_exit_xfail();
+> +			}
+> +			break;
+>   		default:
+>   			usage(basename(argv[0]));
+>   			ksft_exit_xfail();
+> @@ -2365,9 +2385,15 @@ int main(int argc, char **argv)
+>   	test.tx_pkt_stream_default = tx_pkt_stream_default;
+>   	test.rx_pkt_stream_default = rx_pkt_stream_default;
+>   
+> -	ksft_set_plan(modes * TEST_TYPE_MAX);
+> +	if (opt_mode == TEST_MODE_ALL)
+> +		ksft_set_plan(modes * TEST_TYPE_MAX);
+> +	else
+> +		ksft_set_plan(TEST_TYPE_MAX);
+>   
+>   	for (i = 0; i < modes; i++) {
+> +		if (opt_mode != TEST_MODE_ALL && i != opt_mode)
+> +			continue;
+> +
+>   		for (j = 0; j < TEST_TYPE_MAX; j++) {
+>   			test_spec_init(&test, ifobj_tx, ifobj_rx, i);
+>   			run_pkt_test(&test, i, j);
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
+> index 233b66cef64a..1412492e9618 100644
+> --- a/tools/testing/selftests/bpf/xskxceiver.h
+> +++ b/tools/testing/selftests/bpf/xskxceiver.h
+> @@ -63,7 +63,7 @@ enum test_mode {
+>   	TEST_MODE_SKB,
+>   	TEST_MODE_DRV,
+>   	TEST_MODE_ZC,
+> -	TEST_MODE_MAX
+> +	TEST_MODE_ALL
+>   };
+>   
+>   enum test_type {
+> @@ -98,8 +98,6 @@ enum test_type {
+>   	TEST_TYPE_MAX
+>   };
+>   
+> -static bool opt_verbose;
+> -
+>   struct xsk_umem_info {
+>   	struct xsk_ring_prod fq;
+>   	struct xsk_ring_cons cq;
 
-  #define __imm_ptr(name) [name]"p"(&name)
-
-Example:
-
-  int consume_first_item_only(void *ctx)
-  {
-        struct bpf_iter_num iter;
-        asm volatile (
-                /* create iterator */
-                "r1 =3D %[iter];"
-                [...]
-                :
-                : __imm_ptr(iter)
-                : CLOBBERS);
-        [...]
-  }
-
-Little equivalent reproducer:
-
-  int bar ()
-  {
-    int jorl;
-    asm volatile ("r1 =3D %a[jorl]" : : [jorl]"p"(&jorl));
-    return jorl;
-  }
-
-The "p" constraint is a tricky one.  It is documented in the GCC manual
-section "Simple Constraints":
-
-  An operand that is a valid memory address is allowed.  This is for
-  ``load address'' and ``push address'' instructions.
-
-  p in the constraint must be accompanied by address_operand as the
-  predicate in the match_operand.  This predicate interprets the mode
-  specified in the match_operand as the mode of the memory reference for
-  which the address would be valid.
-
-There are two problems:
-
-1. It is questionable whether that constraint was ever intended to be
-   used in inline assembly templates, because its behavior really
-   depends on compiler internals.  A "memory address" is not the same
-   than a "memory operand" or a "memory reference" (constraint "m"), and
-   in fact its usage in the template above results in an error in both
-   x86_64-linux-gnu and bpf-unkonwn-none:
-
-     foo.c: In function =E2=80=98bar=E2=80=99:
-     foo.c:6:3: error: invalid 'asm': invalid expression as operand
-        6 |   asm volatile ("r1 =3D %[jorl]" : : [jorl]"p"(&jorl));
-          |   ^~~
-
-   I would assume the same happens with aarch64, riscv, and most/all
-   other targets in GCC, that do not accept operands of the form A + B
-   that are not wrapped either in a const or in a memory reference.
-
-   To avoid that error, the usage of the "p" constraint in internal GCC
-   instruction templates is supposed to be complemented by the 'a'
-   modifier, like in:
-
-     asm volatile ("r1 =3D %a[jorl]" : : [jorl]"p"(&jorl));
-
-   Internally documented (in GCC's final.cc) as:
-
-     %aN means expect operand N to be a memory address
-        (not a memory reference!) and print a reference
-        to that address.
-
-   That works because when the modifier 'a' is found, GCC prints an
-   "operand address", which is not the same than an "operand".
-
-   But...
-
-2. Even if we used the internal 'a' modifier (we shouldn't) the 'rN =3D
-   rM' instruction really requires a register argument.  In cases
-   involving automatics, like in the examples above, we easily end with:
-
-     bar:
-        #APP
-            r1 =3D r10-4
-        #NO_APP
-
-   In other cases we could conceibly also end with a 64-bit label that
-   may overflow the 32-bit immediate operand of `rN =3D imm32'
-   instructions:
-
-        r1 =3D foo
-
-   All of which is clearly wrong.
-
-clang happens to do "the right thing" in the current usage of __imm_ptr
-in the BPF tests, because even with -O2 it seems to "reload" the
-fp-relative address of the automatic to a register like in:
-
-  bar:
-	r1 =3D r10
-	r1 +=3D -4
-	#APP
-	r1 =3D r1
-	#NO_APP
-
-Which is what GCC would generate with -O0.  Whether this is by chance or
-by design (Nick, do you know?) I don't think the compiler should be
-expected to do that reload driven by the "p" constraint.
-
-I would suggest to change that macro (and similar out of macro usages of
-the "p" constraint in selftests/bpf/progs/iters.c) to use the "r"
-constraint instead.  If a register is what is required, we should let
-the compiler know.
-
-Thoughts?
-
-PS: I am aware that the x86 port of the kernel uses the "p" constraint
-    in the percpu macros (arch/x86/include/asm/percpu.h) but that usage
-    is in a different context (I would assume it is used in x86
-    instructions that get constant addresses or global addresses loaded
-    in registers and not automatics) where it seems to work well.
 
