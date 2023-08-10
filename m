@@ -1,57 +1,57 @@
-Return-Path: <bpf+bounces-7460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BA327778AB
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 14:39:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525237778B3
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 14:41:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8A6928220E
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 12:39:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A18628210F
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 12:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 211E61E1C4;
-	Thu, 10 Aug 2023 12:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82031E1B5;
+	Thu, 10 Aug 2023 12:41:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4A81E1A9;
-	Thu, 10 Aug 2023 12:37:05 +0000 (UTC)
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6E1212F;
-	Thu, 10 Aug 2023 05:37:04 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63d4f1cb5a9so1800686d6.1;
-        Thu, 10 Aug 2023 05:37:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A31041FA3;
+	Thu, 10 Aug 2023 12:41:15 +0000 (UTC)
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819D110C7;
+	Thu, 10 Aug 2023 05:41:14 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-76d198deb34so8229385a.1;
+        Thu, 10 Aug 2023 05:41:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691671023; x=1692275823;
+        d=gmail.com; s=20221208; t=1691671273; x=1692276073;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=P9ys6Jeef8G09yaoEvIqMEbXdjIdPXjqR7+fqH762U0=;
-        b=CaVo1zRpTkQf4EkOfaX2qP34cFKGQ7UtuVh5U+WS+gnIS9E5UYsOZ4yNpqAGOTQhJy
-         wDYrYFhkktPT+IML+ywMilvdN/RqRPAtidfRvGnZqU5pXEhq26liRwz17Mz59gSw8cdH
-         ZKfLtUuiG3lNyjs6nCUC2JJTpoSd43SX10kxt3bhdcLvwVy/0+dwpByEYWw7WIkLR0GU
-         9Xov1PCwhqq3X00qbJehqVqIDezXkuCjY639ibgwuuCguGxziA3L/WK13wSvC33ZGilv
-         h4Rdc5CPCxxYCtFat9XdxuvphsOsLvA9gmWxICsPqvZq0csUSY8tkLWhU702ILoW8cZC
-         XHNw==
+        bh=FfjNDNgC24vs9Kdz3Xj80hL5fKYTUu+BDGtRZjA/j9o=;
+        b=ZjTxzE0EjzlRfDTUtEekeM2g7RPcgcZ+KbFxnPzQqgkh1ro7l8FqrNd+rNU1YEIyd9
+         gqFP41XWc13kz90KgvnFSWmQl9Y+gRm+SjR9ftLuev76phgyTPl3fDet2nQvMy4oK2NY
+         +uytXAXlI/gQDVv/uXCQCcgQ44LED6kFsIJFaxebcI1cbwbplu8kANtKTcvsY8raMnxz
+         GSWPF+CBXfHmWwjfK4/vIuGyZ1RuACG3cSfQmegmpPP7v9YqZJjmyN93VRC+EQwGpI/X
+         1EE9clgDDNtaQ+HfVBD6SyI45ZMynwKju/g2OidTawhSlb5Tt9OB9tKUFxUgLiUBVG7h
+         u2mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691671023; x=1692275823;
+        d=1e100.net; s=20221208; t=1691671273; x=1692276073;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=P9ys6Jeef8G09yaoEvIqMEbXdjIdPXjqR7+fqH762U0=;
-        b=XTJJEy5GS5Y5kNis6u3FDYkRE+p6nTh6UeQf7Toh/wKoy29lwZkbcNsWrcWpXmvgKV
-         FFiS7oLOtI5Wncrj8qMlJsBCoy5Q6dc50YL9pOCqriA1x7SkjjhNUfNbkURv4LfC88SK
-         EFWOj4zoW8MrgMqqj5UnR6M+849sMW8J4mB0iwadcqp08J596oq+DKgVMFBTshmMyoBT
-         HvDZqLSZTJcb+t+L2zWC5cHkOsJFKgdwB5/hhGMqniTSG5iHO+wxRel56HGOS2Ad0hg8
-         c0u7qcHZOPc6p3hdvGRabXKy4f9ZCZgpAA4NmKhUNKXTVickDUeElllUfqnCTThsIAX1
-         UwGQ==
-X-Gm-Message-State: AOJu0Yxt+ll8Hn4bw49sovirrFTeZssO+w+YCFXiAfIgHcYy1gcFVaH+
-	XBsy7k+FZu/7jfN9uw1o3sAxgVVpr6EP8v93n/o=
-X-Google-Smtp-Source: AGHT+IHHGynzxYbsxXFicPkE/GLx5oxU/LYkv3kZhE1Z/+ttmUs8dgD97ei1texcDXIhLJ5xCbPHBMJ3Z2VPr1/ZNxY=
-X-Received: by 2002:a05:6214:5012:b0:63d:1861:29d2 with SMTP id
- jo18-20020a056214501200b0063d186129d2mr2794327qvb.4.1691671023451; Thu, 10
- Aug 2023 05:37:03 -0700 (PDT)
+        bh=FfjNDNgC24vs9Kdz3Xj80hL5fKYTUu+BDGtRZjA/j9o=;
+        b=jXpZ5rc3iCl+EW9f4Ycpc0hsfztO9+/QIzEbl/LiQKRR++N63DPMqYxMjaEmtjPTHX
+         y1RygmTHTuGUPwAQQdm+GRZAbt6cFQsw88Xl1xWmrrxhP8FRmaHNVu5whevTvN8vCdt/
+         NMkJKweHs2EVz5ROiFIDThDv+w42uUmpNekPZah5CLFye4LETM+hqQQRtpY3jnA3nhIf
+         bzvRdSPsIJeWEnXtgxLrWNDCMG0YEsjqTH9jQPNmmLAlT8fJdMp2UCUy4uy41S7P1z/a
+         qhCEnCAkD/DyzSCUg8VclqBJAfrOhEzFGISg6h0KgFtiHZyB+Q4ojeY1af0Hde6vSgT/
+         dd6g==
+X-Gm-Message-State: AOJu0YxDx1mGkP2iTAXK91Uw8P0sbRsvTBkpuGbRs//uRNEWa1iaWqX6
+	QjVDbtrRF1fa8qrKAonPTMjii0ULRVhFRgTpDpA=
+X-Google-Smtp-Source: AGHT+IHsRaFUYW0gFyhcABKjtFZ0/TYe4GG+7qPeW4ujXO9zs6o/LXn7fjDwsz+alICGFUVZ6ql0R+kWLpVHc8jkJIo=
+X-Received: by 2002:a05:6214:509e:b0:63c:7427:e7e9 with SMTP id
+ kk30-20020a056214509e00b0063c7427e7e9mr334545qvb.6.1691671273646; Thu, 10 Aug
+ 2023 05:41:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -59,12 +59,13 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20230809124343.12957-1-magnus.karlsson@gmail.com>
- <20230809124343.12957-6-magnus.karlsson@gmail.com> <59631f92-c206-0f90-3eea-58d883147784@intel.com>
-In-Reply-To: <59631f92-c206-0f90-3eea-58d883147784@intel.com>
+ <20230809124343.12957-11-magnus.karlsson@gmail.com> <8cb436d2-0f7f-6c78-c4bd-08a2d4caa584@intel.com>
+In-Reply-To: <8cb436d2-0f7f-6c78-c4bd-08a2d4caa584@intel.com>
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Thu, 10 Aug 2023 14:36:52 +0200
-Message-ID: <CAJ8uoz046aFr4p5hLSFjZi8E0PuzBLqHTDBLqtyrpFYZwPpdsw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 05/10] selftests/xsk: declare test names in struct
+Date: Thu, 10 Aug 2023 14:41:02 +0200
+Message-ID: <CAJ8uoz19edB3d=wHhVAbHf-QhNhyNz7gUciXfZ=_f0boXJBoyA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 10/10] selftests/xsk: display command line
+ options with -h
 To: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 Cc: "Karlsson, Magnus" <magnus.karlsson@intel.com>, "bjorn@kernel.org" <bjorn@kernel.org>, 
 	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, 
@@ -78,32 +79,75 @@ Cc: "Karlsson, Magnus" <magnus.karlsson@intel.com>, "bjorn@kernel.org" <bjorn@ke
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, 10 Aug 2023 at 14:16, Przemek Kitszel
+On Thu, 10 Aug 2023 at 14:19, Przemek Kitszel
 <przemyslaw.kitszel@intel.com> wrote:
 >
 > On 8/9/23 14:43, Magnus Karlsson wrote:
 > > From: Magnus Karlsson <magnus.karlsson@intel.com>
 > >
-> > Declare the test names statically in a struct so that we can refer to
-> > them when adding the support to execute a single test in the next
-> > commit. Before this pathc, the names of them was not declared in a
->
-> patch
-
-Thanks for catching. Will fix it in the next revision.
-
-> > single place which made it not possible to refer to them.
+> > Add the -h option to display all available command line options
+> > available for test_xsk.sh and xskxceiver.
 > >
 > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 > > ---
-> >   tools/testing/selftests/bpf/xskxceiver.c | 191 +++++++----------------
-> >   tools/testing/selftests/bpf/xskxceiver.h |  37 +----
-> >   2 files changed, 57 insertions(+), 171 deletions(-)
+> >   tools/testing/selftests/bpf/test_xsk.sh | 11 ++++++++++-
+> >   1 file changed, 10 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
+> > index 94b4b86d5239..baaeb016d699 100755
+> > --- a/tools/testing/selftests/bpf/test_xsk.sh
+> > +++ b/tools/testing/selftests/bpf/test_xsk.sh
+> > @@ -79,12 +79,15 @@
+> >   #
+> >   # Run a specific test from the test suite
+> >   #   sudo ./test_xsk.sh -t TEST_NAME
+> > +#
+> > +# Display the available command line options
+> > +#   sudo ./test_xsk.sh -h
 >
-> [...]
+> any "help" / "list" commands (that do nothing but print) should be (able
+> ot) execute/d without `sudo`.
+> Removing `sudo` part from the doc here would make it clear to reader too.
+
+You are correct. Will remove the "sudo" here as it is not needed.
+Would be nice if we could execute the list option (-l) without sudo
+rights too since it does not involve creating any xsk sockets. Will
+fix that in patch 6.
+
+> >
+> >   . xsk_prereqs.sh
+> >
+> >   ETH=""
+> >
+> > -while getopts "vi:dm:lt:" flag
+> > +while getopts "vi:dm:lt:h" flag
+> >   do
+> >       case "${flag}" in
+> >               v) verbose=1;;
+> > @@ -93,6 +96,7 @@ do
+> >               m) MODE=${OPTARG};;
+> >               l) list=1;;
+> >               t) TEST=${OPTARG};;
+> > +             h) help=1;;
+> >       esac
+> >   done
+> >
+> > @@ -140,6 +144,11 @@ setup_vethPairs() {
+> >       ip link set ${VETH0} up
+> >   }
+> >
+> > +if [[ $help -eq 1 ]]; then
+> > +     ./${XSKOBJ}
+> > +        exit
+> > +fi
+> > +
+> >   if [ ! -z $ETH ]; then
+> >       VETH0=${ETH}
+> >       VETH1=${ETH}
+>
 
