@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-7482-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7480-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54C7778056
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 20:36:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63F3F778053
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 20:35:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 104351C21088
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 18:36:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17B1C281097
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 18:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4090F214E5;
-	Thu, 10 Aug 2023 18:35:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8839D20FAC;
+	Thu, 10 Aug 2023 18:35:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5095ED1
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 18:35:32 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E742703
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 11:35:31 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 37AIXpiD025592
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 11:35:30 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC3BED1
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 18:35:29 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C61226BC
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 11:35:28 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37AI09Ug020470
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 11:35:28 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=YezOoMvhV1b87yBgm7+c4SWo+qqvz5J7+uXcvO2/lHQ=;
- b=Y1xhMhthK71BE3ZL78gmayToi6Whnu8L8FBSEnmeDDOesfnyvc68uc0ikcHb+78y66k5
- zKxpE3kuemRflJykUDUsbLQG3mUsUbxqwcCWI1dbw8YDo31ugVhSmKXaZ9Ja0TPx5u2V
- ahME/fboy2FKZgsIQd14tm+TQsQdYE4QV9I= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by m0089730.ppops.net (PPS) with ESMTPS id 3sd06hura5-1
+ bh=bCen6zmSioX3EuaMKsc3zqIezrOBODd4ABsAZsebbOE=;
+ b=bn4KotJoYVnHoXB13aZTVkJogY31E+98BNQCk/bYlRq6c+94CMhMeQb1zJb8ro69EDNY
+ 13iRwzozLcNkT2toXbzigWE0zBNN+I7qIiU1V9ws7+Bsr4TUPtQ12S4fu7g/hZJfTuY8
+ XXm0Zk0FHErdVI4DXabKjcsO+hTZmLdtxnA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3sd0w7kc25-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 11:35:30 -0700
-Received: from twshared24695.38.frc1.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 11:35:27 -0700
+Received: from twshared17985.02.ash8.facebook.com (2620:10d:c0a8:1b::30) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 10 Aug 2023 11:35:29 -0700
+ 15.1.2507.27; Thu, 10 Aug 2023 11:35:26 -0700
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-	id 945772274BE4F; Thu, 10 Aug 2023 11:35:16 -0700 (PDT)
+	id E7BFA2274BE59; Thu, 10 Aug 2023 11:35:18 -0700 (PDT)
 From: Dave Marchevsky <davemarchevsky@fb.com>
 To: <bpf@vger.kernel.org>
 CC: Alexei Starovoitov <ast@kernel.org>,
@@ -51,11 +51,10 @@ CC: Alexei Starovoitov <ast@kernel.org>,
 	<martin.lau@kernel.org>,
         Kernel Team <kernel-team@fb.com>,
         Dave Marchevsky
-	<davemarchevsky@fb.com>,
-        Nathan Slingerland <slinger@meta.com>
-Subject: [PATCH bpf-next 2/3] bpf: Introduce task_vma open-coded iterator kfuncs
-Date: Thu, 10 Aug 2023 11:35:12 -0700
-Message-ID: <20230810183513.684836-3-davemarchevsky@fb.com>
+	<davemarchevsky@fb.com>
+Subject: [PATCH bpf-next 3/3] selftests/bpf: Add tests for open-coded task_vma iter
+Date: Thu, 10 Aug 2023 11:35:13 -0700
+Message-ID: <20230810183513.684836-4-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230810183513.684836-1-davemarchevsky@fb.com>
 References: <20230810183513.684836-1-davemarchevsky@fb.com>
@@ -68,8 +67,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: JYcu0aJxz7D7LUBg9FqlycYLId3ffDfl
-X-Proofpoint-GUID: JYcu0aJxz7D7LUBg9FqlycYLId3ffDfl
+X-Proofpoint-ORIG-GUID: KlZZibwvzK6V7E9z0J3MnujxT2iulhS2
+X-Proofpoint-GUID: KlZZibwvzK6V7E9z0J3MnujxT2iulhS2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-08-10_14,2023-08-10_01,2023-05-22_02
@@ -80,267 +79,183 @@ X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patch adds kfuncs bpf_iter_task_vma_{new,next,destroy} which allow
-creation and manipulation of struct bpf_iter_task_vma in open-coded
-iterator style. BPF programs can use these kfuncs directly or through
-bpf_for_each macro for natural-looking iteration of all task vmas.
+The open-coded task_vma iter added earlier in this series allows for
+natural iteration over a task's vmas using existing open-coded iter
+infrastructure, specifically bpf_for_each.
 
-The implementation borrows heavily from bpf_find_vma helper's locking -
-differing only in that it holds the mmap_read lock for all iterations
-while the helper only executes its provided callback on a maximum of 1
-vma. Aside from locking, struct vma_iterator and vma_next do all the
-heavy lifting.
-
-The newly-added struct bpf_iter_task_vma has a name collision with a
-selftest for the seq_file task_vma iter's bpf skel, so the selftests/bpf/=
-progs
-file is renamed in order to avoid the collision.
+This patch adds a test demonstrating this pattern and validating
+correctness. The vma->vm_start and vma->vm_end addresses of the first
+1000 vmas are recorded and compared to /proc/PID/maps output. As
+expected, both see the same vmas and addresses - with the exception of
+the [vsyscall] vma - which is explained in a comment in the prog_tests
+program.
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-Cc: Nathan Slingerland <slinger@meta.com>
 ---
- include/uapi/linux/bpf.h                      |  5 ++
- kernel/bpf/helpers.c                          |  3 +
- kernel/bpf/task_iter.c                        | 56 +++++++++++++++++++
- tools/include/uapi/linux/bpf.h                |  5 ++
- tools/lib/bpf/bpf_helpers.h                   |  8 +++
- .../selftests/bpf/prog_tests/bpf_iter.c       | 26 ++++-----
- ...f_iter_task_vma.c =3D> bpf_iter_task_vmas.c} |  0
- 7 files changed, 90 insertions(+), 13 deletions(-)
- rename tools/testing/selftests/bpf/progs/{bpf_iter_task_vma.c =3D> bpf_i=
-ter_task_vmas.c} (100%)
+ .../testing/selftests/bpf/prog_tests/iters.c  | 71 +++++++++++++++++++
+ .../selftests/bpf/progs/iters_task_vma.c      | 56 +++++++++++++++
+ 2 files changed, 127 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_task_vma.c
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index d21deb46f49f..c4a65968f9f5 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -7291,4 +7291,9 @@ struct bpf_iter_num {
- 	__u64 __opaque[1];
- } __attribute__((aligned(8)));
-=20
-+struct bpf_iter_task_vma {
-+	__u64 __opaque[9]; /* See bpf_iter_num comment above */
-+	char __opaque_c[3];
-+} __attribute__((aligned(8)));
-+
- #endif /* _UAPI__LINUX_BPF_H__ */
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index eb91cae0612a..7a06dea749f1 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2482,6 +2482,9 @@ BTF_ID_FLAGS(func, bpf_dynptr_slice_rdwr, KF_RET_NU=
-LL)
- BTF_ID_FLAGS(func, bpf_iter_num_new, KF_ITER_NEW)
- BTF_ID_FLAGS(func, bpf_iter_num_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
-+BTF_ID_FLAGS(func, bpf_iter_task_vma_new, KF_ITER_NEW)
-+BTF_ID_FLAGS(func, bpf_iter_task_vma_next, KF_ITER_NEXT | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_iter_task_vma_destroy, KF_ITER_DESTROY)
- BTF_ID_FLAGS(func, bpf_dynptr_adjust)
- BTF_ID_FLAGS(func, bpf_dynptr_is_null)
- BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index c4ab9d6cdbe9..76be9998a65a 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
+diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testi=
+ng/selftests/bpf/prog_tests/iters.c
+index 10804ae5ae97..f91f4a49066a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/iters.c
++++ b/tools/testing/selftests/bpf/prog_tests/iters.c
 @@ -8,6 +8,7 @@
- #include <linux/fdtable.h>
- #include <linux/filter.h>
- #include <linux/btf_ids.h>
-+#include <linux/mm_types.h>
- #include "mmap_unlock_work.h"
+ #include "iters_looping.skel.h"
+ #include "iters_num.skel.h"
+ #include "iters_testmod_seq.skel.h"
++#include "iters_task_vma.skel.h"
 =20
- static const char * const iter_task_type_names[] =3D {
-@@ -823,6 +824,61 @@ const struct bpf_func_proto bpf_find_vma_proto =3D {
- 	.arg5_type	=3D ARG_ANYTHING,
- };
+ static void subtest_num_iters(void)
+ {
+@@ -90,6 +91,74 @@ static void subtest_testmod_seq_iters(void)
+ 	iters_testmod_seq__destroy(skel);
+ }
 =20
-+struct bpf_iter_task_vma_kern {
-+	struct mm_struct *mm;
-+	struct mmap_unlock_irq_work *work;
-+	struct vma_iterator vmi;
-+} __attribute__((aligned(8)));
-+
-+__bpf_kfunc int bpf_iter_task_vma_new(struct bpf_iter_task_vma *it,
-+				      struct task_struct *task, u64 addr)
++static void subtest_task_vma_iters(void)
 +{
-+	struct bpf_iter_task_vma_kern *i =3D (void *)it;
-+	bool irq_work_busy =3D false;
++	unsigned long start, end, bpf_iter_start, bpf_iter_end;
++	struct iters_task_vma *skel;
++	char rest_of_line[1000];
++	unsigned int seen;
++	int err;
++	FILE *f;
 +
-+	BUILD_BUG_ON(sizeof(struct bpf_iter_task_vma_kern) !=3D sizeof(struct b=
-pf_iter_task_vma));
-+	BUILD_BUG_ON(__alignof__(struct bpf_iter_task_vma_kern) !=3D __alignof_=
-_(struct bpf_iter_task_vma));
++	skel =3D iters_task_vma__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return;
 +
-+	BTF_TYPE_EMIT(struct bpf_iter_task_vma);
++	bpf_program__set_autoload(skel->progs.iter_task_vma_for_each, true);
 +
-+	/* NULL i->mm signals failed bpf_iter_task_vma initialization.
-+	 * i->work =3D=3D NULL is valid.
-+	 */
-+	i->mm =3D NULL;
-+	if (!task)
-+		return -ENOENT;
++	err =3D iters_task_vma__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto cleanup;
 +
-+	i->mm =3D task->mm;
-+	if (!i->mm)
-+		return -ENOENT;
++	skel->bss->target_pid =3D getpid();
 +
-+	irq_work_busy =3D bpf_mmap_unlock_get_irq_work(&i->work);
-+	if (irq_work_busy || !mmap_read_trylock(i->mm)) {
-+		i->mm =3D NULL;
-+		return -EBUSY;
++	err =3D iters_task_vma__attach(skel);
++	if (!ASSERT_OK(err, "skel_attach"))
++		goto cleanup;
++
++	iters_task_vma__detach(skel);
++	getpgid(skel->bss->target_pid);
++
++	if (!ASSERT_GT(skel->bss->vmas_seen, 0, "vmas_seen_gt_zero"))
++		goto cleanup;
++
++	f =3D fopen("/proc/self/maps", "r");
++	if (!ASSERT_OK_PTR(f, "proc_maps_fopen"))
++		goto cleanup;
++
++	seen =3D 0;
++	while (fscanf(f, "%lx-%lx %[^\n]\n", &start, &end, rest_of_line) =3D=3D=
+ 3) {
++		/* [vsyscall] vma isn't _really_ part of task->mm vmas.
++		 * /proc/PID/maps returns it when out of vmas - see get_gate_vma
++		 * calls in fs/proc/task_mmu.c
++		 */
++		if (strstr(rest_of_line, "[vsyscall]"))
++			continue;
++
++		err =3D bpf_map_lookup_elem(bpf_map__fd(skel->maps.vm_start),
++					  &seen, &bpf_iter_start);
++		if (!ASSERT_OK(err, "vm_start map_lookup_elem"))
++			goto cleanup;
++
++		err =3D bpf_map_lookup_elem(bpf_map__fd(skel->maps.vm_end),
++					  &seen, &bpf_iter_end);
++		if (!ASSERT_OK(err, "vm_end map_lookup_elem"))
++			goto cleanup;
++
++		ASSERT_EQ(bpf_iter_start, start, "vma->vm_start match");
++		ASSERT_EQ(bpf_iter_end, end, "vma->vm_end match");
++		seen++;
 +	}
 +
-+	vma_iter_init(&i->vmi, i->mm, addr);
++	fclose(f);
++
++	if (!ASSERT_EQ(skel->bss->vmas_seen, seen, "vmas_seen_eq"))
++		goto cleanup;
++
++cleanup:
++	iters_task_vma__destroy(skel);
++}
++
+ void test_iters(void)
+ {
+ 	RUN_TESTS(iters_state_safety);
+@@ -103,4 +172,6 @@ void test_iters(void)
+ 		subtest_num_iters();
+ 	if (test__start_subtest("testmod_seq"))
+ 		subtest_testmod_seq_iters();
++	if (test__start_subtest("task_vma"))
++		subtest_task_vma_iters();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/iters_task_vma.c b/tools/t=
+esting/selftests/bpf/progs/iters_task_vma.c
+new file mode 100644
+index 000000000000..b961d0a12223
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/iters_task_vma.c
+@@ -0,0 +1,56 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++#include <limits.h>
++#include <linux/errno.h>
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++pid_t target_pid =3D 0;
++unsigned int vmas_seen =3D 0;
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1000);
++	__type(key, int);
++	__type(value, unsigned long);
++} vm_start SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1000);
++	__type(key, int);
++	__type(value, unsigned long);
++} vm_end SEC(".maps");
++
++SEC("?raw_tp/sys_enter")
++int iter_task_vma_for_each(const void *ctx)
++{
++	struct task_struct *task =3D bpf_get_current_task_btf();
++	struct vm_area_struct *vma;
++	unsigned long *start, *end;
++
++	if (task->pid !=3D target_pid)
++		return 0;
++
++	bpf_for_each(task_vma, vma, task, 0) {
++		if (vmas_seen >=3D 1000)
++			break;
++
++		start =3D bpf_map_lookup_elem(&vm_start, &vmas_seen);
++		if (!start)
++			break;
++		*start =3D vma->vm_start;
++
++		end =3D bpf_map_lookup_elem(&vm_end, &vmas_seen);
++		if (!end)
++			break;
++		*end =3D vma->vm_end;
++
++		vmas_seen++;
++	}
 +	return 0;
 +}
 +
-+__bpf_kfunc struct vm_area_struct *bpf_iter_task_vma_next(struct bpf_ite=
-r_task_vma *it)
-+{
-+	struct bpf_iter_task_vma_kern *i =3D (void *)it;
-+
-+	if (!i->mm) /* bpf_iter_task_vma_new failed */
-+		return NULL;
-+	return vma_next(&i->vmi);
-+}
-+
-+__bpf_kfunc void bpf_iter_task_vma_destroy(struct bpf_iter_task_vma *it)
-+{
-+	struct bpf_iter_task_vma_kern *i =3D (void *)it;
-+
-+	if (i->mm)
-+		bpf_mmap_unlock_mm(i->work, i->mm);
-+}
-+
- DEFINE_PER_CPU(struct mmap_unlock_irq_work, mmap_unlock_work);
-=20
- static void do_mmap_read_unlock(struct irq_work *entry)
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-index d21deb46f49f..c4a65968f9f5 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -7291,4 +7291,9 @@ struct bpf_iter_num {
- 	__u64 __opaque[1];
- } __attribute__((aligned(8)));
-=20
-+struct bpf_iter_task_vma {
-+	__u64 __opaque[9]; /* See bpf_iter_num comment above */
-+	char __opaque_c[3];
-+} __attribute__((aligned(8)));
-+
- #endif /* _UAPI__LINUX_BPF_H__ */
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index bbab9ad9dc5a..d885ffee4d88 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -302,6 +302,14 @@ extern int bpf_iter_num_new(struct bpf_iter_num *it,=
- int start, int end) __weak
- extern int *bpf_iter_num_next(struct bpf_iter_num *it) __weak __ksym;
- extern void bpf_iter_num_destroy(struct bpf_iter_num *it) __weak __ksym;
-=20
-+struct bpf_iter_task_vma;
-+
-+extern int bpf_iter_task_vma_new(struct bpf_iter_task_vma *it,
-+				 struct task_struct *task,
-+				 unsigned long addr) __weak __ksym;
-+extern struct vm_area_struct *bpf_iter_task_vma_next(struct bpf_iter_tas=
-k_vma *it) __weak __ksym;
-+extern void bpf_iter_task_vma_destroy(struct bpf_iter_task_vma *it) __we=
-ak __ksym;
-+
- #ifndef bpf_for_each
- /* bpf_for_each(iter_type, cur_elem, args...) provides generic construct=
- for
-  * using BPF open-coded iterators without having to write mundane explic=
-it
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index 1f02168103dd..41aba139b20b 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -10,7 +10,7 @@
- #include "bpf_iter_task.skel.h"
- #include "bpf_iter_task_stack.skel.h"
- #include "bpf_iter_task_file.skel.h"
--#include "bpf_iter_task_vma.skel.h"
-+#include "bpf_iter_task_vmas.skel.h"
- #include "bpf_iter_task_btf.skel.h"
- #include "bpf_iter_tcp4.skel.h"
- #include "bpf_iter_tcp6.skel.h"
-@@ -1399,19 +1399,19 @@ static void str_strip_first_line(char *str)
- static void test_task_vma_common(struct bpf_iter_attach_opts *opts)
- {
- 	int err, iter_fd =3D -1, proc_maps_fd =3D -1;
--	struct bpf_iter_task_vma *skel;
-+	struct bpf_iter_task_vmas *skel;
- 	int len, read_size =3D 4;
- 	char maps_path[64];
-=20
--	skel =3D bpf_iter_task_vma__open();
--	if (!ASSERT_OK_PTR(skel, "bpf_iter_task_vma__open"))
-+	skel =3D bpf_iter_task_vmas__open();
-+	if (!ASSERT_OK_PTR(skel, "bpf_iter_task_vmas__open"))
- 		return;
-=20
- 	skel->bss->pid =3D getpid();
- 	skel->bss->one_task =3D opts ? 1 : 0;
-=20
--	err =3D bpf_iter_task_vma__load(skel);
--	if (!ASSERT_OK(err, "bpf_iter_task_vma__load"))
-+	err =3D bpf_iter_task_vmas__load(skel);
-+	if (!ASSERT_OK(err, "bpf_iter_task_vmas__load"))
- 		goto out;
-=20
- 	skel->links.proc_maps =3D bpf_program__attach_iter(
-@@ -1462,25 +1462,25 @@ static void test_task_vma_common(struct bpf_iter_=
-attach_opts *opts)
- out:
- 	close(proc_maps_fd);
- 	close(iter_fd);
--	bpf_iter_task_vma__destroy(skel);
-+	bpf_iter_task_vmas__destroy(skel);
- }
-=20
- static void test_task_vma_dead_task(void)
- {
--	struct bpf_iter_task_vma *skel;
-+	struct bpf_iter_task_vmas *skel;
- 	int wstatus, child_pid =3D -1;
- 	time_t start_tm, cur_tm;
- 	int err, iter_fd =3D -1;
- 	int wait_sec =3D 3;
-=20
--	skel =3D bpf_iter_task_vma__open();
--	if (!ASSERT_OK_PTR(skel, "bpf_iter_task_vma__open"))
-+	skel =3D bpf_iter_task_vmas__open();
-+	if (!ASSERT_OK_PTR(skel, "bpf_iter_task_vmas__open"))
- 		return;
-=20
- 	skel->bss->pid =3D getpid();
-=20
--	err =3D bpf_iter_task_vma__load(skel);
--	if (!ASSERT_OK(err, "bpf_iter_task_vma__load"))
-+	err =3D bpf_iter_task_vmas__load(skel);
-+	if (!ASSERT_OK(err, "bpf_iter_task_vmas__load"))
- 		goto out;
-=20
- 	skel->links.proc_maps =3D bpf_program__attach_iter(
-@@ -1533,7 +1533,7 @@ static void test_task_vma_dead_task(void)
- out:
- 	waitpid(child_pid, &wstatus, 0);
- 	close(iter_fd);
--	bpf_iter_task_vma__destroy(skel);
-+	bpf_iter_task_vmas__destroy(skel);
- }
-=20
- void test_bpf_sockmap_map_iter_fd(void)
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c b/tool=
-s/testing/selftests/bpf/progs/bpf_iter_task_vmas.c
-similarity index 100%
-rename from tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-rename to tools/testing/selftests/bpf/progs/bpf_iter_task_vmas.c
++char _license[] SEC("license") =3D "GPL";
 --=20
 2.34.1
 
