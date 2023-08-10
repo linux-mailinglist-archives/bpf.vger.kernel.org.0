@@ -1,178 +1,232 @@
-Return-Path: <bpf+bounces-7468-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7469-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B065777ED5
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 19:10:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA4DE777F19
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 19:27:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BC211C2171C
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 17:10:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCD491C21593
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 17:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C5120FAF;
-	Thu, 10 Aug 2023 17:10:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55C8B214E7;
+	Thu, 10 Aug 2023 17:26:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A771E1C0;
-	Thu, 10 Aug 2023 17:10:31 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B12F26A9;
-	Thu, 10 Aug 2023 10:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691687429; x=1723223429;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=775MfnnaTiwKWwX0WE4xNNZXvmgkHTxCHtDIgf2UKQI=;
-  b=bVluSIXJ5xbiUShYnCJKSZ2njx3JHKsVxwbCinOa0U8g1s/lnGJkvEHv
-   qipChLxs4Ae+6lZu2bsMQaX5pZjq7e1bvoH+GUcwajxDnb/wqeBJ/ZHa8
-   Cgjxfkou8cD8LXUTSxe6fLDOhjS+ZToLJdtmhReMgtBbDfDWGzGbqj1Ki
-   MT/SaYr3FUpsd/c4HY2JmHqWsrlZoEWg7VS8XTCy0LxTlG/q3+ts+b+9P
-   guLMykOKmEOpUqFT9bZQQM/vvS1AkcSvNE0sDMeJwDUSKoYkejErVuKSy
-   XmZFooo2aGtdDhYGkysap7jZfWZOh/wJeL8kLqRQQUOsx+l5o5Ksu7i9V
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="361605272"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="361605272"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 10:10:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="1062992888"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="1062992888"
-Received: from unknown (HELO paamrpdk12-S2600BPB.aw.intel.com) ([10.228.151.145])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 10:10:10 -0700
-From: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	bjorn@kernel.org,
-	magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com,
-	jonathan.lemon@gmail.com,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	dan.carpenter@linaro.org
-Subject: [PATCH bpf-next] xsk: fix xsk_build_skb() error: 'skb' dereferencing possible ERR_PTR()
-Date: Thu, 10 Aug 2023 22:22:23 +0530
-Message-Id: <20230810165223.1870882-1-tirthendu.sarkar@intel.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28FAB1E1C0
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 17:26:55 +0000 (UTC)
+Received: from out-65.mta0.migadu.com (out-65.mta0.migadu.com [91.218.175.65])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8512702
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 10:26:53 -0700 (PDT)
+Message-ID: <a4c550e4-1d65-aace-d9ba-820b89390f54@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1691688412; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3DYDuDmTEzK/8ypxAHYhc9PLKIKIpgIvhcUR7WlqjMw=;
+	b=PJVD1JdvYRIN00s+bLVIBUK4UY6nlQsechkvU0fmjg3gmXUA7S8ksi4kZ6B4mSDT7iEtuU
+	HNnYHoMIFEs63krF2mdlvuPRwv/pgIY8N5ARG3g8OpXgMgbudbNp0YEzlP7FjhN5YhxbTp
+	Qgva+zGleYGCQPj2p8mXKpId6ASpPbU=
+Date: Thu, 10 Aug 2023 10:26:46 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Reply-To: yonghong.song@linux.dev
+Subject: Re: Usage of "p" constraint in BPF inline asm
+Content-Language: en-US
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+References: <87edkbnq14.fsf@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <87edkbnq14.fsf@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-xsk_build_skb_zerocopy() may return an error other than -EAGAIN and this
-is received as skb and used later in xsk_set_destructor_arg() and
-xsk_drop_skb() which must operate on a valid skb.
 
-Add new parameter to xsk_build_skb_zerocopy() to explicitly return error
-and invoke xsk_set_destructor_arg() and xsk_drop_skb() only for a valid
-skb.
 
-Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/r/202307210434.OjgqFcbB-lkp@intel.com/
-Fixes: cf24f5a5feea ("xsk: add support for AF_XDP multi-buffer on Tx path")
----
- net/xdp/xsk.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+On 8/10/23 3:35 AM, Jose E. Marchesi wrote:
+> 
+> Hello.
+> 
+> We found that some of the BPF selftests use the "p" constraint in inline
+> assembly snippets, for input operands for MOV (rN = rM) instructions.
+> 
+> This is mainly done via the __imm_ptr macro defined in
+> tools/testing/selftests/bpf/progs/bpf_misc.h:
+> 
+>    #define __imm_ptr(name) [name]"p"(&name)
+> 
+> Example:
+> 
+>    int consume_first_item_only(void *ctx)
+>    {
+>          struct bpf_iter_num iter;
+>          asm volatile (
+>                  /* create iterator */
+>                  "r1 = %[iter];"
+>                  [...]
+>                  :
+>                  : __imm_ptr(iter)
+>                  : CLOBBERS);
+>          [...]
+>    }
+> 
+> Little equivalent reproducer:
+> 
+>    int bar ()
+>    {
+>      int jorl;
+>      asm volatile ("r1 = %a[jorl]" : : [jorl]"p"(&jorl));
+>      return jorl;
+>    }
+> 
+> The "p" constraint is a tricky one.  It is documented in the GCC manual
+> section "Simple Constraints":
+> 
+>    An operand that is a valid memory address is allowed.  This is for
+>    ``load address'' and ``push address'' instructions.
+> 
+>    p in the constraint must be accompanied by address_operand as the
+>    predicate in the match_operand.  This predicate interprets the mode
+>    specified in the match_operand as the mode of the memory reference for
+>    which the address would be valid.
+> 
+> There are two problems:
+> 
+> 1. It is questionable whether that constraint was ever intended to be
+>     used in inline assembly templates, because its behavior really
+>     depends on compiler internals.  A "memory address" is not the same
+>     than a "memory operand" or a "memory reference" (constraint "m"), and
+>     in fact its usage in the template above results in an error in both
+>     x86_64-linux-gnu and bpf-unkonwn-none:
+> 
+>       foo.c: In function ‘bar’:
+>       foo.c:6:3: error: invalid 'asm': invalid expression as operand
+>          6 |   asm volatile ("r1 = %[jorl]" : : [jorl]"p"(&jorl));
+>            |   ^~~
+> 
+>     I would assume the same happens with aarch64, riscv, and most/all
+>     other targets in GCC, that do not accept operands of the form A + B
+>     that are not wrapped either in a const or in a memory reference.
+> 
+>     To avoid that error, the usage of the "p" constraint in internal GCC
+>     instruction templates is supposed to be complemented by the 'a'
+>     modifier, like in:
+> 
+>       asm volatile ("r1 = %a[jorl]" : : [jorl]"p"(&jorl));
+> 
+>     Internally documented (in GCC's final.cc) as:
+> 
+>       %aN means expect operand N to be a memory address
+>          (not a memory reference!) and print a reference
+>          to that address.
+> 
+>     That works because when the modifier 'a' is found, GCC prints an
+>     "operand address", which is not the same than an "operand".
+> 
+>     But...
+> 
+> 2. Even if we used the internal 'a' modifier (we shouldn't) the 'rN =
+>     rM' instruction really requires a register argument.  In cases
+>     involving automatics, like in the examples above, we easily end with:
+> 
+>       bar:
+>          #APP
+>              r1 = r10-4
+>          #NO_APP
+> 
+>     In other cases we could conceibly also end with a 64-bit label that
+>     may overflow the 32-bit immediate operand of `rN = imm32'
+>     instructions:
+> 
+>          r1 = foo
+> 
+>     All of which is clearly wrong.
+> 
+> clang happens to do "the right thing" in the current usage of __imm_ptr
+> in the BPF tests, because even with -O2 it seems to "reload" the
+> fp-relative address of the automatic to a register like in:
+> 
+>    bar:
+> 	r1 = r10
+> 	r1 += -4
+> 	#APP
+> 	r1 = r1
+> 	#NO_APP
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 47796a5a79b3..ff467ade2da6 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -572,22 +572,23 @@ static void xsk_drop_skb(struct sk_buff *skb)
- }
- 
- static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
--					      struct xdp_desc *desc)
-+					      struct xdp_desc *desc,
-+					      int *err)
- {
- 	struct xsk_buff_pool *pool = xs->pool;
- 	u32 hr, len, ts, offset, copy, copied;
- 	struct sk_buff *skb = xs->skb;
- 	struct page *page;
- 	void *buffer;
--	int err, i;
- 	u64 addr;
-+	int i;
- 
- 	if (!skb) {
- 		hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
- 
--		skb = sock_alloc_send_skb(&xs->sk, hr, 1, &err);
-+		skb = sock_alloc_send_skb(&xs->sk, hr, 1, err);
- 		if (unlikely(!skb))
--			return ERR_PTR(err);
-+			goto ret_err;
- 
- 		skb_reserve(skb, hr);
- 	}
-@@ -601,8 +602,10 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
- 	addr = buffer - pool->addrs;
- 
- 	for (copied = 0, i = skb_shinfo(skb)->nr_frags; copied < len; i++) {
--		if (unlikely(i >= MAX_SKB_FRAGS))
--			return ERR_PTR(-EFAULT);
-+		if (unlikely(i >= MAX_SKB_FRAGS)) {
-+			*err = -EFAULT;
-+			goto ret_err;
-+		}
- 
- 		page = pool->umem->pgs[addr >> PAGE_SHIFT];
- 		get_page(page);
-@@ -620,7 +623,8 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
- 	skb->truesize += ts;
- 
- 	refcount_add(ts, &xs->sk.sk_wmem_alloc);
--
-+	*err = 0;
-+ret_err:
- 	return skb;
- }
- 
-@@ -632,11 +636,9 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 	int err;
- 
- 	if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
--		skb = xsk_build_skb_zerocopy(xs, desc);
--		if (IS_ERR(skb)) {
--			err = PTR_ERR(skb);
-+		skb = xsk_build_skb_zerocopy(xs, desc, &err);
-+		if (err)
- 			goto free_err;
--		}
- 	} else {
- 		u32 hr, tr, len;
- 		void *buffer;
-@@ -692,7 +694,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- free_err:
- 	if (err == -EAGAIN) {
- 		xsk_cq_cancel_locked(xs, 1);
--	} else {
-+	} else if (skb) {
- 		xsk_set_destructor_arg(skb);
- 		xsk_drop_skb(skb);
- 		xskq_cons_release(xs->tx);
--- 
-2.34.1
+Unfortunately, the modifier 'a' won't work for clang.
 
+$ cat t.c 
+ 
+
+int bar () 
+ 
+
+{ 
+ 
+
+   int jorl; 
+ 
+
+   asm volatile ("r1 = %a[jorl]" : : [jorl]"p"(&jorl)); 
+ 
+
+   return jorl; 
+ 
+
+} 
+ 
+
+$ gcc -O2 -g -S t.c 
+ 
+
+$ clang --target=bpf -O2 -g -S t.c 
+ 
+
+clang: ../lib/Target/BPF/BPFAsmPrinter.cpp:126: virtual bool 
+{anonymous}::BPFAsmPrinter::PrintAsmMemoryOperand(const 
+llvm::MachineInstr*, unsigned int, const char*, llvm::raw_ostream&): 
+Assertion `Offs
+etMO.isImm() && "Unexpected offset for inline asm memory operand."' failed.
+...
+
+I guess BPF backend can try to add support for this 'a' modifier
+if necessary.
+
+> Which is what GCC would generate with -O0.  Whether this is by chance or
+> by design (Nick, do you know?) I don't think the compiler should be
+> expected to do that reload driven by the "p" constraint.
+> 
+> I would suggest to change that macro (and similar out of macro usages of
+> the "p" constraint in selftests/bpf/progs/iters.c) to use the "r"
+> constraint instead.  If a register is what is required, we should let
+> the compiler know.
+
+Could you specify what is the syntax ("r" constraint) which will work
+for both clang and gcc?
+
+> 
+> Thoughts?
+> 
+> PS: I am aware that the x86 port of the kernel uses the "p" constraint
+>      in the percpu macros (arch/x86/include/asm/percpu.h) but that usage
+>      is in a different context (I would assume it is used in x86
+>      instructions that get constant addresses or global addresses loaded
+>      in registers and not automatics) where it seems to work well.
+> 
 
