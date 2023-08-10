@@ -1,81 +1,133 @@
-Return-Path: <bpf+bounces-7497-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7499-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 969EF7782C4
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 23:41:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FF227782F7
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 23:57:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C59BD1C20D87
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 21:41:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6419281EAD
+	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 21:57:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A19023BFC;
-	Thu, 10 Aug 2023 21:40:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC71025142;
+	Thu, 10 Aug 2023 21:57:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F9C322F02;
-	Thu, 10 Aug 2023 21:40:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A2DCBC433C8;
-	Thu, 10 Aug 2023 21:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691703651;
-	bh=jt/NUvha+AYuETQysbUBUq/dMQaLn0OJNT63dU0S4O4=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=CRiK0Vu2oY6CBNly+YV8KfDusbwR8fqYoLyGRqLu2df24sdtBxlqLD28VxhQSUBpX
-	 jsSKIEnimRCYbf48JL3/vydWN+hDMKWEltmuQ3vEyDvVJ2wTbfVsYlxvrYFLoefhGt
-	 dS3GyeuAGCb3c7qme3d75n8IRNUYkjldAgupWvf8AGqwpnL+ZHF+dnsDP/1m1lLuZ4
-	 IQsHgb4oQ7Am3tNbBY+hGKZZzv3uA0+ncQYZpg8AprGOBfieG/4PITNcDBnc8NMQMv
-	 iP8UGDM3lEsMCPXy9aC/5Jls9c55d4fw7PTfVjzDO9FojZkBKHcrSEYZOvzI6rdCs7
-	 d7arnJTGBBDhA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6E756C595D0;
-	Thu, 10 Aug 2023 21:40:51 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2AD222F02
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 21:57:24 +0000 (UTC)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477D4ED
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 14:57:22 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d41bfd5e507so1375479276.3
+        for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 14:57:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691704641; x=1692309441;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MNwLy3iHZtOpcl0meS/wC+MlR+oWmH9NnQj2g+LUwL8=;
+        b=IhNUAiMeKyD7T6gFhFBhkb+A0pYbVfWj2qjbGtMLMcd5yyRVwaMACnSxNjtCyOij9u
+         pwhH89dPquHDmA+kcLk4m4u8YdBmT+jfqyclMcbjW4LRCHCP1toChQvrMnJa4dxXT0UY
+         kLCzi35W0lvlWmZ0IdqiZV8LmdT1Y34ettYn3iisJLpbpPFILaeLjZHTizIq1HulSFN6
+         0Avq89czrlvDJlzQCoSVj2xXvtdccs8mSGamZbVf2SYRZkOgq7vs+4jDT+VBP56s7m+A
+         nNJ3E3ou4QABbo9RNDaBz2NhbkM4K0EgyH3cxeNo0713eTu7h5Fc6pMgveZwuLJGS9/I
+         nOig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691704641; x=1692309441;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MNwLy3iHZtOpcl0meS/wC+MlR+oWmH9NnQj2g+LUwL8=;
+        b=QML/Lrd62eb6sQwgGmxIuibTr5v1j814dGZRUna52WxE+lGGS3fYPlWArsWEnM3AQ+
+         TiO9G/duBVEYYPSAe0T1mLY0fBzSRpJLGiT4ajuKqR1J6ghPs8z2S90K4Pv8lnBKYZLi
+         FzUjBvy0KEuexH3z4D6KiRv14Fi+Ow2SH2d2eKqCZFwKYd3N+S+VQh6BEuNPxuuIEzqv
+         793IJFZhrwmUs3seUB8Ec2BBC04ZjLHo24iePZwUEQmVqD18J1IUVZcvNz1FWbzN9ixr
+         M3L8XMnNKohkAxvfUVcgjj2wrOztfHgZ1naTOxVhepE3PZSyzuyqxl91uvsKZNi31eqX
+         uh7Q==
+X-Gm-Message-State: AOJu0YybaqNpKIcpSl8raKMpxn5bL49dbgRkio3vTEczKpcW90A+VxnU
+	CUSr5+pAlhiWB61wc0uftgati/0=
+X-Google-Smtp-Source: AGHT+IFsyof2NL/dYaUfbxcL3lvCoXo5tZDKsBLCsWMhclWtvt/1uJfhLbGNPF6aDg3Sa73QDaWO6XM=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6902:160e:b0:d4b:99ce:5e51 with SMTP id
+ bw14-20020a056902160e00b00d4b99ce5e51mr58872ybb.6.1691704641553; Thu, 10 Aug
+ 2023 14:57:21 -0700 (PDT)
+Date: Thu, 10 Aug 2023 14:57:19 -0700
+In-Reply-To: <20230810183513.684836-3-davemarchevsky@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf-next 2023-08-09
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169170365144.3628.7011774572938196429.git-patchwork-notify@kernel.org>
-Date: Thu, 10 Aug 2023 21:40:51 +0000
-References: <20230810055123.109578-1-martin.lau@linux.dev>
-In-Reply-To: <20230810055123.109578-1-martin.lau@linux.dev>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
- pabeni@redhat.com, daniel@iogearbox.net, andrii@kernel.org, ast@kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org
+Mime-Version: 1.0
+References: <20230810183513.684836-1-davemarchevsky@fb.com> <20230810183513.684836-3-davemarchevsky@fb.com>
+Message-ID: <ZNVdP0mA9REeLQJj@google.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Introduce task_vma open-coded iterator kfuncs
+From: Stanislav Fomichev <sdf@google.com>
+To: Dave Marchevsky <davemarchevsky@fb.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, 
+	Nathan Slingerland <slinger@meta.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
-
-This pull request was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed,  9 Aug 2023 22:51:23 -0700 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
+On 08/10, Dave Marchevsky wrote:
+> This patch adds kfuncs bpf_iter_task_vma_{new,next,destroy} which allow
+> creation and manipulation of struct bpf_iter_task_vma in open-coded
+> iterator style. BPF programs can use these kfuncs directly or through
+> bpf_for_each macro for natural-looking iteration of all task vmas.
 > 
-> The following pull-request contains BPF updates for your *net-next* tree.
+> The implementation borrows heavily from bpf_find_vma helper's locking -
+> differing only in that it holds the mmap_read lock for all iterations
+> while the helper only executes its provided callback on a maximum of 1
+> vma. Aside from locking, struct vma_iterator and vma_next do all the
+> heavy lifting.
 > 
-> We've added 19 non-merge commits during the last 6 day(s) which contain
-> a total of 25 files changed, 369 insertions(+), 141 deletions(-).
+> The newly-added struct bpf_iter_task_vma has a name collision with a
+> selftest for the seq_file task_vma iter's bpf skel, so the selftests/bpf/progs
+> file is renamed in order to avoid the collision.
 > 
-> [...]
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> Cc: Nathan Slingerland <slinger@meta.com>
+> ---
+>  include/uapi/linux/bpf.h                      |  5 ++
+>  kernel/bpf/helpers.c                          |  3 +
+>  kernel/bpf/task_iter.c                        | 56 +++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h                |  5 ++
+>  tools/lib/bpf/bpf_helpers.h                   |  8 +++
+>  .../selftests/bpf/prog_tests/bpf_iter.c       | 26 ++++-----
+>  ...f_iter_task_vma.c => bpf_iter_task_vmas.c} |  0
+>  7 files changed, 90 insertions(+), 13 deletions(-)
+>  rename tools/testing/selftests/bpf/progs/{bpf_iter_task_vma.c => bpf_iter_task_vmas.c} (100%)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index d21deb46f49f..c4a65968f9f5 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -7291,4 +7291,9 @@ struct bpf_iter_num {
+>  	__u64 __opaque[1];
+>  } __attribute__((aligned(8)));
+>  
+> +struct bpf_iter_task_vma {
 
-Here is the summary with links:
-  - pull-request: bpf-next 2023-08-09
-    https://git.kernel.org/netdev/net-next/c/6a1ed1430daa
+[..]
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +	__u64 __opaque[9]; /* See bpf_iter_num comment above */
+> +	char __opaque_c[3];
 
+Everything in the series makes sense, but this part is a big confusing
+when reading without too much context. If you're gonna do a respin, maybe:
 
+- __opaque_c[8*9+3] (or whatever the size is)? any reason for separate
+  __u64 + char?
+- maybe worth adding something like /* Opaque representation of
+  bpf_iter_task_vma_kern; see bpf_iter_num comment above */.
+  that bpf_iter_task_vma<>bpf_iter_task_vma_kern wasn't super apparent
+  until I got to the BUG_ON part
 
