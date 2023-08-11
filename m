@@ -1,163 +1,97 @@
-Return-Path: <bpf+bounces-7534-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7536-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2C8E7789F0
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 11:31:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A0F3778A44
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 11:44:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACFED1C21624
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 09:31:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05250281194
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 09:44:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3468748E;
-	Fri, 11 Aug 2023 09:28:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2CA163AB;
+	Fri, 11 Aug 2023 09:44:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0370746E;
-	Fri, 11 Aug 2023 09:28:19 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDAD2D78;
-	Fri, 11 Aug 2023 02:28:18 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RMdjL2hQgzrSQw;
-	Fri, 11 Aug 2023 17:27:02 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 11 Aug
- 2023 17:28:15 +0800
-From: Liu Jian <liujian56@huawei.com>
-To: <john.fastabend@gmail.com>, <jakub@cloudflare.com>, <ast@kernel.org>,
-	<daniel@iogearbox.net>, <andrii@kernel.org>, <martin.lau@linux.dev>,
-	<song@kernel.org>, <yonghong.song@linux.dev>, <kpsingh@kernel.org>,
-	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <dsahern@kernel.org>
-CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <liujian56@huawei.com>
-Subject: [PATCH bpf-next v2 7/7] selftests/bpf: add tests for verdict skmsg to closed socket
-Date: Fri, 11 Aug 2023 17:32:37 +0800
-Message-ID: <20230811093237.3024459-8-liujian56@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230811093237.3024459-1-liujian56@huawei.com>
-References: <20230811093237.3024459-1-liujian56@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95415690
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 09:44:42 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C5D2D4F
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 02:44:40 -0700 (PDT)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.56])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RMf1d2SW8zCrZP;
+	Fri, 11 Aug 2023 17:41:09 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 11 Aug 2023 17:44:38 +0800
+Subject: Re: [PATCH bpf-next 0/2] bpf: Update h_proto of ethhdr when the outer
+ protocol changed
+To: <yonghong.song@linux.dev>, <martin.lau@linux.dev>, <daniel@iogearbox.net>,
+	<john.fastabend@gmail.com>, <ast@kernel.org>, <andrii@kernel.org>,
+	<song@kernel.org>, <kpsingh@kernel.org>, <sdf@google.com>,
+	<haoluo@google.com>, <jolsa@kernel.org>, <bpf@vger.kernel.org>
+References: <cover.1691639830.git.william.xuanziyang@huawei.com>
+ <148a0235-04c9-6983-4d2a-7030bd91fc4e@linux.dev>
+From: "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <7b5ec0f4-dff0-a2bf-a996-98cea7d8f843@huawei.com>
+Date: Fri, 11 Aug 2023 17:44:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
+In-Reply-To: <148a0235-04c9-6983-4d2a-7030bd91fc4e@linux.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.200]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
+ canpemm500006.china.huawei.com (7.192.105.130)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add four tests for verdict skmsg to closed socket in sockmap_basic.c.
+> On 8/9/23 11:25 PM, Ziyang Xuan wrote:
+>> When use bpf_skb_adjust_room() to encapsulate or decapsulate packet,
+>> and outer protocol changed, we can update h_proto of ethhdr directly.
+> 
+> My mailbox somehow lost patch 1/2.
+> 
+> Looks like current bpf_skb_adjust_room() only changes skb meta data and
+> tries not to modify the packet. Probably there is a reason for this.
+> 
+I found that this could reduce updating h_proto of ethhdr by bpf_skb_store_bytes()
+in bpf program when I used bpf_skb_adjust_room(). I thought it should be a small
+optimization. So I did it. No other problems.
 
-Signed-off-by: Liu Jian <liujian56@huawei.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 42 +++++++++++++++----
- 1 file changed, 34 insertions(+), 8 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 37b0c05b77ff..689e904cc11e 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -476,9 +476,10 @@ static void test_sockmap_skb_verdict_fionread(bool pass_prog)
- 		test_sockmap_drop_prog__destroy(drop);
- }
- 
--static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanently, bool is_self)
-+static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanently, bool is_self,
-+				     bool target_shutdown)
- {
--	int key, sent, recvd, recv_fd;
-+	int key, sent, recvd, recv_fd, target_fd;
- 	int err, map, verdict, s, c0, c1, p0, p1;
- 	struct test_sockmap_msg_verdict *skel;
- 	char buf[256] = "0123456789";
-@@ -522,18 +523,22 @@ static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanently, bool
- 		skel->bss->skmsg_redir_flags = BPF_F_INGRESS;
- 		if (is_self) {
- 			skel->bss->skmsg_redir_key = 0;
-+			target_fd = p1;
- 			recv_fd = p1;
- 		} else {
- 			skel->bss->skmsg_redir_key = 1;
-+			target_fd = c1;
- 			recv_fd = c1;
- 		}
- 	} else {
- 		skel->bss->skmsg_redir_flags = 0;
- 		if (is_self) {
- 			skel->bss->skmsg_redir_key = 0;
-+			target_fd = p1;
- 			recv_fd = c1;
- 		} else {
- 			skel->bss->skmsg_redir_key = 2;
-+			target_fd = p0;
- 			recv_fd = c0;
- 		}
- 	}
-@@ -546,6 +551,19 @@ static void test_sockmap_msg_verdict(bool is_ingress, bool is_permanently, bool
- 	recvd = recv_timeout(recv_fd, &buf, sizeof(buf), SOCK_NONBLOCK, IO_TIMEOUT_SEC);
- 	ASSERT_EQ(recvd, sizeof(buf), "recv_timeout(recv_fd)");
- 
-+	if (target_shutdown) {
-+		signal(SIGPIPE, SIG_IGN);
-+		close(target_fd);
-+		sent = send(p1, &buf, sizeof(buf), 0);
-+		if (is_permanently) {
-+			ASSERT_EQ(sent, -1, "xsend(p1)");
-+			ASSERT_EQ(errno, EPIPE, "xsend(p1)");
-+		} else {
-+			ASSERT_EQ(sent, sizeof(buf), "xsend(p1)");
-+		}
-+		goto out_close;
-+	}
-+
- 	sent = xsend(p1, &buf, sizeof(buf), 0);
- 	ASSERT_EQ(sent, sizeof(buf), "xsend(p1)");
- 	recvd = recv_timeout(recv_fd, &buf, sizeof(buf), SOCK_NONBLOCK, IO_TIMEOUT_SEC);
-@@ -600,15 +618,23 @@ void test_sockmap_basic(void)
- 	if (test__start_subtest("sockmap skb_verdict fionread on drop"))
- 		test_sockmap_skb_verdict_fionread(false);
- 	if (test__start_subtest("sockmap msg_verdict"))
--		test_sockmap_msg_verdict(false, false, false);
-+		test_sockmap_msg_verdict(false, false, false, false);
- 	if (test__start_subtest("sockmap msg_verdict ingress"))
--		test_sockmap_msg_verdict(true, false, false);
-+		test_sockmap_msg_verdict(true, false, false, false);
- 	if (test__start_subtest("sockmap msg_verdict permanently"))
--		test_sockmap_msg_verdict(false, true, false);
-+		test_sockmap_msg_verdict(false, true, false, false);
- 	if (test__start_subtest("sockmap msg_verdict ingress permanently"))
--		test_sockmap_msg_verdict(true, true, false);
-+		test_sockmap_msg_verdict(true, true, false, false);
- 	if (test__start_subtest("sockmap msg_verdict permanently self"))
--		test_sockmap_msg_verdict(false, true, true);
-+		test_sockmap_msg_verdict(false, true, true, false);
- 	if (test__start_subtest("sockmap msg_verdict ingress permanently self"))
--		test_sockmap_msg_verdict(true, true, true);
-+		test_sockmap_msg_verdict(true, true, true, false);
-+	if (test__start_subtest("sockmap msg_verdict permanently shutdown"))
-+		test_sockmap_msg_verdict(false, true, false, true);
-+	if (test__start_subtest("sockmap msg_verdict ingress permanently shutdown"))
-+		test_sockmap_msg_verdict(true, true, false, true);
-+	if (test__start_subtest("sockmap msg_verdict shutdown"))
-+		test_sockmap_msg_verdict(false, false, false, true);
-+	if (test__start_subtest("sockmap msg_verdict ingress shutdown"))
-+		test_sockmap_msg_verdict(true, false, false, true);
- }
--- 
-2.34.1
-
+Thank you!
+William Xuan
+>>
+>> $./test_tc_tunnel.sh
+>> ipip
+>> encap 192.168.1.1 to 192.168.1.2, type ipip, mac none len 100
+>> test basic connectivity
+>> 0
+>> test bpf encap without decap (expect failure)
+>> Ncat: TIMEOUT.
+>> 1
+>> test bpf encap with tunnel device decap
+>> 0
+>> test bpf encap with bpf decap
+>> 0
+>> OK
+>> ipip6
+> [...]
+> 
+> .
 
