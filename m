@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-7517-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7518-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B90D778685
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 06:32:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E548778686
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 06:32:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CA391C2111E
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 04:32:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28AAA281FB1
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 04:32:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F00AE184C;
-	Fri, 11 Aug 2023 04:31:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF901863;
+	Fri, 11 Aug 2023 04:31:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF54E1848
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 04:31:37 +0000 (UTC)
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F612696
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 21:31:36 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5844bb9923eso18313027b3.0
-        for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 21:31:36 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F56C1848
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 04:31:39 +0000 (UTC)
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D512696
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 21:31:38 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d63c0a6568fso1265899276.0
+        for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 21:31:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691728295; x=1692333095;
+        d=gmail.com; s=20221208; t=1691728297; x=1692333097;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KYXmLMARaNSnqbsYlVhllcjiCNynLXQcD00yVEiyYf0=;
-        b=MK9DDRLSL0ITsdY9yW9fyWUrK9xCSnuXYmNFkJRPd1+F8g1/6UPyZaCPBizSQjC9J9
-         K0LOihpVd+m1i3W6rziOwVCOhs1arPQzDopjQXwNc7ioR0wmXXWrdlML7oXZJend6x1k
-         88/b//Gb0ardsmOLJr9QVzjYkapQV9QxENTRqsJkSiPCj5W9NA2CipSnNek1XSaqwIoX
-         0EU3401qvCwXUZ4Ysxy+zuNojhu9C8hf4x07CyjMOZcDdgz3C6I+Je+QrRMnHQXsvqDF
-         kfxPznes7wM8dISrz1plyhWYNg0LRj5UVhoP3YuTe5yPP0Y9pnHCLCho2OCc9RkUHgIL
-         /WYw==
+        bh=MpGHHkDwFcMkpaRoNhESkySt4m0eL6u0f0BnGicWv54=;
+        b=OZK9IXBiBJHGGRC52II9Yrkfa52haWlv15dBiWY9NY0WMH08O3TBvJGuv/+gRDrFHk
+         vU7UxwQS9UNOAGN66M4MbfRusfH2gtoiUNPZ25CWlmvTaQYJGq3zthyCPHtXme2vhOgy
+         7C84om0vgEpS1rvHhqBgO50FWWRXF80/FShULvqzW+7Z4vKxjGCoZ7oO2QvNLqQ0i0GP
+         cagqpbtGkP/zjtIHH/wwYJ7GgScbEtm4ID8hJzxmvU4iKH4aVKipwkvnGyB27egGrJ4/
+         GUyU7nLR0cOpTIemk5TDuuiApegIibiaXtFoveDxDuxVK1zzHxzYazwiloywhy0cBDmP
+         QrZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691728295; x=1692333095;
+        d=1e100.net; s=20221208; t=1691728297; x=1692333097;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KYXmLMARaNSnqbsYlVhllcjiCNynLXQcD00yVEiyYf0=;
-        b=FAMYcixqrYGREIgXvYCe9DYJT4e4PZnoRVXtYOnmEWttWUUFFVQgQyHHYd2TQejrIy
-         DRI0wgBum4P618B3apNNuG6fFURoYt/XExh/1kRTrxRcCyygM218w3IzizFOmLyW8HRE
-         Ba4B20XWbIILVWrcR/bPmTgEf2k7UaEnrdXvOyfq9amZjWGtHfjHHqUiZBC4y/Zgljts
-         4gzpxXaea+s7nwoto0mVMiCHN3YsdtjCmw4ag9xgJ3pZfDosmPcquvn1qDT7zdc/cUx2
-         KtcGkVM2ayQZUcE7bD5p3NdaKpPs63rZSJe7UBQ3/7hJtkjRnEYFnejt9UP/LbOfg96r
-         rEjQ==
-X-Gm-Message-State: AOJu0YzK8glOnPV90Rs9U0eNH3KZpT1zXQgDROzzpoTtszxOIM5PI8nm
-	NeG40ltVbnxowkDqy+/OixktcDlPrH6FuQ==
-X-Google-Smtp-Source: AGHT+IH/HXxVf8xv+PLK65aVs6Z6JTEDPHC4RiQfKZ/0/+jM9+P7Vs2sq8wJydFK6Nmw3IRgnT/6UA==
-X-Received: by 2002:a0d:eb10:0:b0:57a:69eb:7a06 with SMTP id u16-20020a0deb10000000b0057a69eb7a06mr1204697ywe.25.1691728295629;
-        Thu, 10 Aug 2023 21:31:35 -0700 (PDT)
+        bh=MpGHHkDwFcMkpaRoNhESkySt4m0eL6u0f0BnGicWv54=;
+        b=klsz2kMHW1ceyWKRDlpREhAu5u8QL5OXFeiCR5Qx35uOvmwWoVGtyXWaykZWTcYctk
+         hGbBRinan0NcvPU09ET+uh1/FCXmm9pqlcVQyOOWVpU3nFpJxVA4Saazm7jJt8xVWWA+
+         Vb7CUQqkWYmoEnFOjHUyGSX+z8WrqSgo00k1bUuln9rbbibM2ihmo2E8no4tO6GjGVN9
+         E0kLFbN5nssOWX/vpBD0KhMXFvLNEs4SXOf8x39AUFxncXf1QRw/CFtrpUlpDEhueycS
+         cVvx7F3PnNrCxusjO+HfuT3Z6qWvPX7gRYASR7udMjKmeFfrYZ07GHZ1xPCEW5AoWenE
+         O+pw==
+X-Gm-Message-State: AOJu0Yziv4i3bHBIoBdqG4DTmOGuc4w/IiKHWWuM9rKXbtybP9n+jnXW
+	xfXqJPMHxg7e86cTHKNChJmxw1AuF8YLOg==
+X-Google-Smtp-Source: AGHT+IEQ9mdJSORbl3UMaxKh56WJNASdbnjSo5u5IZBSBeoNUdG1MlPBbnHjZauh9xZwv46MuZ7oWA==
+X-Received: by 2002:a81:6d43:0:b0:586:a14f:ecc6 with SMTP id i64-20020a816d43000000b00586a14fecc6mr764105ywc.47.1691728297034;
+        Thu, 10 Aug 2023 21:31:37 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:16da:9387:4176:e970])
-        by smtp.gmail.com with ESMTPSA id n15-20020a819c4f000000b00583e52232f1sm767961ywa.112.2023.08.10.21.31.34
+        by smtp.gmail.com with ESMTPSA id n15-20020a819c4f000000b00583e52232f1sm767961ywa.112.2023.08.10.21.31.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 21:31:35 -0700 (PDT)
+        Thu, 10 Aug 2023 21:31:36 -0700 (PDT)
 From: thinker.li@gmail.com
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -68,9 +68,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [RFC bpf-next v2 3/6] bpf: rename bpf_copy_to_user().
-Date: Thu, 10 Aug 2023 21:31:24 -0700
-Message-Id: <20230811043127.1318152-4-thinker.li@gmail.com>
+Subject: [RFC bpf-next v2 4/6] bpf: Provide bpf_copy_from_user() and bpf_copy_to_user().
+Date: Thu, 10 Aug 2023 21:31:25 -0700
+Message-Id: <20230811043127.1318152-5-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230811043127.1318152-1-thinker.li@gmail.com>
 References: <20230811043127.1318152-1-thinker.li@gmail.com>
@@ -83,53 +83,105 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Kui-Feng Lee <thinker.li@gmail.com>
+From: Kui-Feng Lee <kuifeng@meta.com>
 
-Rename bpf_copy_to_user() to avoid confliction with the BPF kfunc.
+Provide bpf_copy_from_user() and bpf_copy_to_user() to the BPF programs
+attached to cgroup/{set,get}sockopt. bpf_copy_to_user() is a new kfunc to
+copy data from an kernel space buffer to a user space buffer. They are only
+available for sleepable BPF programs. bpf_copy_to_user() is only available
+to the BPF programs attached to cgroup/getsockopt.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- kernel/bpf/syscall.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/bpf/cgroup.c  |  6 ++++++
+ kernel/bpf/helpers.c | 31 +++++++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 7f4e8c357a6a..81b6e60cc030 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3297,8 +3297,8 @@ static void bpf_raw_tp_link_show_fdinfo(const struct bpf_link *link,
- 		   raw_tp_link->btp->tp->name);
- }
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 5bf3115b265c..c15a72860d2a 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -2461,6 +2461,12 @@ cg_sockopt_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ #endif
+ 	case BPF_FUNC_perf_event_output:
+ 		return &bpf_event_output_data_proto;
++
++	case BPF_FUNC_copy_from_user:
++		if (prog->aux->sleepable)
++			return &bpf_copy_from_user_proto;
++		return NULL;
++
+ 	default:
+ 		return bpf_base_func_proto(func_id);
+ 	}
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index eb91cae0612a..ff240db1512c 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -669,6 +669,26 @@ const struct bpf_func_proto bpf_copy_from_user_proto = {
+ 	.arg3_type	= ARG_ANYTHING,
+ };
  
--static int bpf_copy_to_user(char __user *ubuf, const char *buf, u32 ulen,
--			    u32 len)
-+static int _bpf_copy_to_user(char __user *ubuf, const char *buf, u32 ulen,
-+			     u32 len)
++/**
++ * int bpf_copy_to_user(void *dst, u32 size, const void *kern_ptr)
++ *     Description
++ *             Read *size* bytes from kernel space address *kern_ptr* and
++ *              store the data in user space address *dst*. This is a
++ *              wrapper of **copy_to_user**\ ().
++ *     Return
++ *             0 on success, or a negative error in case of failure.
++ */
++__bpf_kfunc int bpf_copy_to_user(void *dst__uninit, u32 dst__sz,
++				 const void *src__ign)
++{
++	int ret = copy_to_user(dst__uninit, src__ign, dst__sz);
++
++	if (unlikely(ret))
++		return -EFAULT;
++
++	return ret;
++}
++
+ BPF_CALL_5(bpf_copy_from_user_task, void *, dst, u32, size,
+ 	   const void __user *, user_ptr, struct task_struct *, tsk, u64, flags)
  {
- 	if (ulen >= len + 1) {
- 		if (copy_to_user(ubuf, buf, len + 1))
-@@ -3334,7 +3334,7 @@ static int bpf_raw_tp_link_fill_link_info(const struct bpf_link *link,
- 	if (!ubuf)
- 		return 0;
+@@ -2456,6 +2476,7 @@ BTF_ID_FLAGS(func, bpf_cgroup_from_id, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_task_under_cgroup, KF_RCU)
+ #endif
+ BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
++BTF_ID_FLAGS(func, bpf_copy_to_user, KF_SLEEPABLE)
+ BTF_SET8_END(generic_btf_ids)
  
--	return bpf_copy_to_user(ubuf, tp_name, ulen, tp_len);
-+	return _bpf_copy_to_user(ubuf, tp_name, ulen, tp_len);
- }
+ static const struct btf_kfunc_id_set generic_kfunc_set = {
+@@ -2494,6 +2515,15 @@ static const struct btf_kfunc_id_set common_kfunc_set = {
+ 	.set   = &common_btf_ids,
+ };
  
- static const struct bpf_link_ops bpf_raw_tp_link_lops = {
-@@ -3388,7 +3388,7 @@ static int bpf_perf_link_fill_common(const struct perf_event *event,
- 
- 	if (buf) {
- 		len = strlen(buf);
--		err = bpf_copy_to_user(uname, buf, ulen, len);
-+		err = _bpf_copy_to_user(uname, buf, ulen, len);
- 		if (err)
- 			return err;
- 	} else {
++BTF_SET8_START(cgroup_common_btf_ids)
++BTF_ID_FLAGS(func, bpf_copy_to_user, KF_SLEEPABLE)
++BTF_SET8_END(cgroup_common_btf_ids)
++
++static const struct btf_kfunc_id_set cgroup_kfunc_set = {
++	.owner	= THIS_MODULE,
++	.set	= &cgroup_common_btf_ids,
++};
++
+ static int __init kfunc_init(void)
+ {
+ 	int ret;
+@@ -2513,6 +2543,7 @@ static int __init kfunc_init(void)
+ 	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &generic_kfunc_set);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &generic_kfunc_set);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &generic_kfunc_set);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCKOPT, &cgroup_kfunc_set);
+ 	ret = ret ?: register_btf_id_dtor_kfuncs(generic_dtors,
+ 						  ARRAY_SIZE(generic_dtors),
+ 						  THIS_MODULE);
 -- 
 2.34.1
 
