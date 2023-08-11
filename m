@@ -1,155 +1,146 @@
-Return-Path: <bpf+bounces-7622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17C7B779B59
-	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 01:31:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59565779B61
+	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 01:34:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5AAE28164A
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 23:31:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13CFB281E85
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 23:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54163D3A9;
-	Fri, 11 Aug 2023 23:31:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD683D3AE;
+	Fri, 11 Aug 2023 23:34:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5BB2329D4
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 23:31:30 +0000 (UTC)
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70ABCE77
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 16:31:29 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-583fe10bb3cso27050737b3.2
-        for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 16:31:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691796688; x=1692401488;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=StpTR692gZchn729yEh6jalGSGqjJsjai3PYqDElyV0=;
-        b=TBI2+gKxyjucP6r4MEUxVnzRSEyE2AGllF+44Tlok5mIQSilpmwGAo8nXfDq1oRNud
-         1rtppFu+MjC9TlLxE2zaeHfAeHi+R4rJTpMqTePRH7PSRQgeOuUiV57v4h5dn6E/LGx2
-         S2cdz3Ru3unUOe+uW1L3x5hUdcv23sf4gy1MkSjXGFFkPBILUcXDQ4NyYHOYI65E/yc8
-         4/PyLmOXFxtYkTq16IRVqkVSy1JQfKQhluODiQbu+C+ehUlPZYl26a7jmbYurBNllPB1
-         1asBGnyULUZAC8E7oCo0+A6TEhQ3nysTQ9jIsBMUWBILvvO0VkHFE0TxUwW6jhgHK1T2
-         POYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691796688; x=1692401488;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=StpTR692gZchn729yEh6jalGSGqjJsjai3PYqDElyV0=;
-        b=eoF/JAvvY5UrT6p7c8rgpsZBwKVBrmZC8fUilRggFaAsXbLZVbse1xSgZhDECFJr0z
-         avWEoFIqDMZLCXdrc9y2BXM7GzadNSvuTxb0ev7bnidIyu3JecGbWvgeqAKK9sA2kaqz
-         +0QXGVlon0/9E0sKUPMyNVq4wZRRUGGUPTq5GbAPNW+j/iMYPzNr74KnOVmbSoSNxfGN
-         mAeVJJTDD+N/W/3Jy6uKZRzDr54w3VAp7VB/aMoiYoBIPUNeemyrwqWvpi9kjdZaeWH9
-         Ew3ATEjVomceEa5zktfdXPzkZJ62RNE3IF/hVaDp0mGb3+QjM2pyX3MfXbX+jdWZWdse
-         shHw==
-X-Gm-Message-State: AOJu0YxUpgO5T1laqHxrXiEinltL8aHMAthmeLxarD45IGHJ0AMKcGXO
-	sf+i5kN9ZLyN/5EoTNs/7erW580coSs=
-X-Google-Smtp-Source: AGHT+IHldVpv0+Xv9NZOd4zjJTitZ0VJhRvZ+hYEPz8UXzKQBt437UMOdSWxM+Z9mhEc33yG//USNA==
-X-Received: by 2002:a05:690c:c01:b0:586:9ccb:b5ad with SMTP id cl1-20020a05690c0c0100b005869ccbb5admr4094446ywb.46.1691796688625;
-        Fri, 11 Aug 2023 16:31:28 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:680f:f8a3:c49b:84db? ([2600:1700:6cf8:1240:680f:f8a3:c49b:84db])
-        by smtp.gmail.com with ESMTPSA id z125-20020a0dd783000000b00561e7639ee8sm1302241ywd.57.2023.08.11.16.31.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 16:31:28 -0700 (PDT)
-Message-ID: <0164ca41-01bc-be14-2f99-b1c4400850b8@gmail.com>
-Date: Fri, 11 Aug 2023 16:31:26 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B98B329D4
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 23:34:19 +0000 (UTC)
+Received: from out-88.mta1.migadu.com (out-88.mta1.migadu.com [95.215.58.88])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4B110F5
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 16:34:17 -0700 (PDT)
+Message-ID: <d9a8c8e0-a06d-2dd0-20a9-1fbf228fcef9@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1691796855;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XOAmUrlmN46mc8kLRjXg/L06bahnJsC47ASbtgox2n0=;
+	b=SNHoCg5d13wmYFB3Vv9vgXrj8JvkuLaWsHbv6s1y5JjHbtBbtZKKPWBjqBxloswco9LOjr
+	7IndQQykzTcQQpn3uC1QjRHqlrTXkvucO5lPLo8m7b3mZ2jQMN1VzjNtU+WIrX7wbM+fQB
+	09xhUlEP0LxhAOA/EtAWr2ZHGMgogiM=
+Date: Fri, 11 Aug 2023 16:34:10 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC bpf-next v2 4/6] bpf: Provide bpf_copy_from_user() and
- bpf_copy_to_user().
+Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
+ behavior for struct_ops links
 Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-To: Stanislav Fomichev <sdf@google.com>, thinker.li@gmail.com
-Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
- song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
- yonghong.song@linux.dev, kuifeng@meta.com
-References: <20230811043127.1318152-1-thinker.li@gmail.com>
- <20230811043127.1318152-5-thinker.li@gmail.com> <ZNa+vhzXxYYOzk96@google.com>
- <6a634e79-db63-df29-9d18-93387191f937@gmail.com>
-In-Reply-To: <6a634e79-db63-df29-9d18-93387191f937@gmail.com>
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org,
+ linux-kernel@vger.kernel.org, kernel-team@meta.com, tj@kernel.org,
+ clm@meta.com, thinker.li@gmail.com, Stanislav Fomichev <sdf@google.com>,
+ David Vernet <void@manifault.com>
+References: <20230810220456.521517-1-void@manifault.com>
+ <ZNVousfpuRFgfuAo@google.com> <20230810230141.GA529552@maniforge>
+ <ZNVvfYEsLyotn+G1@google.com>
+ <fe388d79-bdfc-0480-5f4b-1a40016fd53d@linux.dev>
+ <20230811201914.GD542801@maniforge>
+ <d1fa5eff-b0d2-4388-0513-eaead8542b9f@linux.dev>
+ <03f9f9be-620d-a44d-d6a3-8b9084344db5@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <03f9f9be-620d-a44d-d6a3-8b9084344db5@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-
-
-On 8/11/23 16:27, Kui-Feng Lee wrote:
+On 8/11/23 4:12 PM, Kui-Feng Lee wrote:
 > 
 > 
-> On 8/11/23 16:05, Stanislav Fomichev wrote:
->> On 08/10, thinker.li@gmail.com wrote:
->>> From: Kui-Feng Lee <kuifeng@meta.com>
+> On 8/11/23 15:49, Martin KaFai Lau wrote:
+>> On 8/11/23 1:19 PM, David Vernet wrote:
+>>> On Fri, Aug 11, 2023 at 10:35:03AM -0700, Martin KaFai Lau wrote:
+>>>> On 8/10/23 4:15 PM, Stanislav Fomichev wrote:
+>>>>> On 08/10, David Vernet wrote:
+>>>>>> On Thu, Aug 10, 2023 at 03:46:18PM -0700, Stanislav Fomichev wrote:
+>>>>>>> On 08/10, David Vernet wrote:
+>>>>>>>> Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
+>>>>>>>> define the .validate() and .update() callbacks in its corresponding
+>>>>>>>> struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
+>>>>>>>> in its own right to ensure that the map is unloaded if an application
+>>>>>>>> crashes. For example, with sched_ext, we want to automatically unload
+>>>>>>>> the host-wide scheduler if the application crashes. We would likely
+>>>>>>>> never support updating elements of a sched_ext struct_ops map, so we'd
+>>>>>>>> have to implement these callbacks showing that they _can't_ support
+>>>>>>>> element updates just to benefit from the basic lifetime management of
+>>>>>>>> struct_ops links.
+>>>>>>>>
+>>>>>>>> Let's enable struct_ops maps to work with BPF_F_LINK even if they
+>>>>>>>> haven't defined these callbacks, by assuming that a struct_ops map
+>>>>>>>> element cannot be updated by default.
+>>>>>>>
+>>>>>>> Any reason this is not part of sched_ext series? As you mention,
+>>>>>>> we don't seem to have such users in the three?
+>>>>>>
+>>>>>> Hi Stanislav,
+>>>>>>
+>>>>>> The sched_ext series [0] implements these callbacks. See
+>>>>>> bpf_scx_update() and bpf_scx_validate().
+>>>>>>
+>>>>>> [0]: https://lore.kernel.org/all/20230711011412.100319-13-tj@kernel.org/
+>>>>>>
+>>>>>> We could add this into that series and remove those callbacks, but this
+>>>>>> patch is fixing a UX / API issue with struct_ops links that's not really
+>>>>>> relevant to sched_ext. I don't think there's any reason to couple
+>>>>>> updating struct_ops map elements with allowing the kernel to manage the
+>>>>>> lifetime of struct_ops maps -- just because we only have 1 (non-test)
+>>>>
+>>>> Agree the link-update does not necessarily couple with link-creation, so
+>>>> removing 'link' update function enforcement is ok. The intention was to
+>>>> avoid the struct_ops link inconsistent experience (one struct_ops link
+>>>> support update and another struct_ops link does not) because consistency was
+>>>> one of the reason for the true kernel backed link support that Kui-Feng did.
+>>>> tcp-cc is the only one for now in struct_ops and it can support update, so
+>>>> the enforcement is here. I can see Stan's point that removing it now looks
+>>>> immature before a struct_ops landed in the kernel showing it does not make
+>>>> sense or very hard to support 'link' update. However, the scx patch set has
+>>>> shown this point, so I think it is good enough.
 >>>
->>> Provide bpf_copy_from_user() and bpf_copy_to_user() to the BPF programs
->>> attached to cgroup/{set,get}sockopt. bpf_copy_to_user() is a new 
->>> kfunc to
->>> copy data from an kernel space buffer to a user space buffer. They 
->>> are only
->>> available for sleepable BPF programs. bpf_copy_to_user() is only 
->>> available
->>> to the BPF programs attached to cgroup/getsockopt.
+>>> Sorry for sending v2 of the patch a bit prematurely. Should have let you
+>>> weigh in first.
 >>>
->>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->>> ---
->>>   kernel/bpf/cgroup.c  |  6 ++++++
->>>   kernel/bpf/helpers.c | 31 +++++++++++++++++++++++++++++++
->>>   2 files changed, 37 insertions(+)
+>>>> For 'validate', it is not related a 'link' update. It is for the struct_ops
+>>>> 'map' update. If the loaded struct_ops map is invalid, it will end up having
+>>>> a useless struct_ops map and no link can be created from it. I can see some
 >>>
->>> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
->>> index 5bf3115b265c..c15a72860d2a 100644
->>> --- a/kernel/bpf/cgroup.c
->>> +++ b/kernel/bpf/cgroup.c
->>> @@ -2461,6 +2461,12 @@ cg_sockopt_func_proto(enum bpf_func_id 
->>> func_id, const struct bpf_prog *prog)
->>>   #endif
->>>       case BPF_FUNC_perf_event_output:
->>>           return &bpf_event_output_data_proto;
->>> +
->>> +    case BPF_FUNC_copy_from_user:
->>> +        if (prog->aux->sleepable)
->>> +            return &bpf_copy_from_user_proto;
->>> +        return NULL;
+>>> To be honest I'm actually not sure I understand why .validate() is only
+>>> called for when BPF_F_LINK is specified. Is it because it could break
 >>
->> If we just allow copy to/from, I'm not sure I understand how the buffer
->> sharing between sleepable/non-sleepable works.
->>
->> Let's assume I have two progs in the chain:
->> 1. non-sleepable - copies the buffer, does some modifications; since
->>     we don't copy the buffer back after every prog run, the modifications
->>     stay in the kernel buffer
->> 2. sleepable - runs and just gets the user pointer? does it mean this
->>    sleepable program doesn't see the changes from (1)?
-
-It is still visible from sleepable programs.  Sleepable programs
-will receive a pointer to the buffer in the kernel.
-And, BPF_SOCKOPT_FLAG_OPTVAL_USER is clear.
-
->>
->> IOW, do we need some custom sockopt copy_to/from that handle this
->> potential buffer location transparently or am I missing something?
->>
->> Assuming we want to support this at all. If we do, might deserve a
->> selftest.
+>> Regardless '.validate' must be enforced or not, the ->validate() should be 
+>> called for the non BPF_F_LINK case also during map update. This should be fixed.
 > 
-> It is why BPF_SOCKOPT_FLAG_OPTVAL_USER is there.
-> It helps programs to make a right decision.
-> However, I am going to remove bpf_copy_from_user()
-> since we have bpf_so_optval_copy_to() and bpf_so_optval_copy_to_r().
-> Does it make sense to you?
+> For the case of the TCP congestion control, its validation function is
+> called by the implementations of ->validate() and ->reg(). I mean it
+> expects ->reg() to do validation as well.
+
+Right, for tcp-cc, the reg is doing the validation because it is how the kernel 
+tcp-cc module is done.
+
+For newer subsystem supporting struct_ops, it should expect the validation is 
+done in the .validate alone.
+
 
