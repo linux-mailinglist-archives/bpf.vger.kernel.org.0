@@ -1,169 +1,184 @@
-Return-Path: <bpf+bounces-7593-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7594-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77A24779591
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 19:04:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B23E7795C0
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 19:08:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FCA7281A2F
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 17:04:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55CEF1C2180A
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 17:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2563219C4;
-	Fri, 11 Aug 2023 17:03:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27473219CA;
+	Fri, 11 Aug 2023 17:08:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB22DEAF9
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 17:03:59 +0000 (UTC)
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BDD19F
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 10:03:58 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-26b2daf44c3so675953a91.3
-        for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 10:03:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E5F219C2
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 17:08:03 +0000 (UTC)
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CE8E54
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 10:08:02 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-586b0ef17daso62610427b3.1
+        for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 10:08:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691773438; x=1692378238;
+        d=google.com; s=20221208; t=1691773682; x=1692378482;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=X+aEC/ljquqUkZGMqqsO713y8QEhpsiG2wta3ptRrcM=;
-        b=Uf8CCmEeTzDy/8X5mYCoe2EvBY7OqGqUFuuzTU3g9nQ+zfma0K53oj1d2RnxG5Ay/p
-         nj1mCNpfhmhX2BUvIf7VF4w3SZ/y4AM4M1fY7OQTeVe8HMOgsevjvFIB0qZu5ULs+JrM
-         3xJTrQlCnQeeF1kBhNoFjxCAPWU2A5M+c/LTQEle5BdGnD58l+PG185ohFeta6xG4Q9s
-         jOckHXJQg0VBLQsjFWifo4+KESCdNfjibNuHozo5AtSLInq4msiOry+BrJ6Py8jfhz6s
-         0B/pMPcm+slwEFCg5h9wobevwoArsfYxSaZEl9fqTR5YAXZk4JLkGXhdQztdlJSXwigr
-         kDyg==
+        bh=ayz3zWc5n3NudgvHTBCmK21hNqKenj4cKODpSVkSh7g=;
+        b=5wQtFFTKe7JU84UnUAeBPgLTdVs+EP8+6Do7b6+vVW9RuOTz9jwCgCWfe565qsLApw
+         bfMG9/8zSqb5S5Qshu/bhlurAnhIS15yOErL5ifV5nrGBPJKyD4CoiZ28xyzQtluxXta
+         Wv53XGNFIaJi+vkf4P3sy/JLKA/NfL+GeZlg6z6NlG9v4a4Q3maZRuuPnZuyeYNDv7CH
+         MXb7RrCrhaEqhWcFIrE3ZjcBfdr12ZM9J3aObGNFDeVousviT7uBHMojSywWR3C11TMJ
+         rId6X4H+ibZc4m6Y9YVrApUJfYluBz2HiA5OxlHtEkoPrsQG4CtE2+5f+bv6AymtLVKJ
+         mfww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691773438; x=1692378238;
+        d=1e100.net; s=20221208; t=1691773682; x=1692378482;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X+aEC/ljquqUkZGMqqsO713y8QEhpsiG2wta3ptRrcM=;
-        b=QJHOq3JVstSxvH43xaEll3aImSYD2GO2t5BaT9XbWj/hPqeO6Xg2CWYCBF2G6E5XMo
-         rt8kYKsqCwH4vKVuNP2RZH1VnhAMbJ8Q4y8x3D33igdoLtBgqhIR8EIAfLmJvEeIDGxf
-         W7bNEGSunlgO69UbLcfexIhdRkiV0i6+m+S5+mW4FmrFO9gM3ORjyvZe6DPuMDJGdUXW
-         hzOsdfROOgURyGDihPCX5S3sSS7MYsWQzk541rpQHohJdGv8Cq23ZMBkHQxn4Dg3d0Ew
-         3NMrsQw0maKel7/iAA/4vr7D3TqLFnMRqTZzwUdnME3QKKwP0wfl7UJAl6Vc7o5qjtdY
-         7Qlw==
-X-Gm-Message-State: AOJu0Yw9wFXKHKf26UwU+3FEsA1g70fOF+uZNY4TBe0tLwpvCzD4jV+b
-	Dl8+907lnm8JKUcHuZaRriVqABU=
-X-Google-Smtp-Source: AGHT+IEsZmRt3qryW/cn8xRBJZFjw2tfbtre91KZnBefrT0fECP26eGN4fqjFtPrwkNXo48Siou09Gg=
+        bh=ayz3zWc5n3NudgvHTBCmK21hNqKenj4cKODpSVkSh7g=;
+        b=kFoKQfNYQvlYky8kH5Y0wIxM67VoPbQFNEPcNflL+T8Kc2urb57llkG5CG4VNmBxdL
+         2+3PAIeDXoSD7MHNIPdR7j2dt4OvA2C99z6/DffGLUDiYWB29yOspXF9Ls0AiDT9jkhZ
+         baanurd0vLQXtht601sRrDe70FcmJufwb2S22MgWZel9kRl3MzHj2AvMhG4Db9ZkC3rn
+         X43IbHxAfH6DPvwKDge/zodMoToWIJKtppcPeTp7dNRPw8os5XS6x+27teMGppgroF2F
+         m/4Y+f4i3WxCmwto3eeWiKY+vd852Vs5ZZQzZ2spJQaICHVXf17YR5sr9Z/35jeTiU1P
+         7iiw==
+X-Gm-Message-State: AOJu0YzOPFe+/N37Z/qWd5DbFIq31KQMeoiPwiTqGRQRXwN2KOcYPHOT
+	cCaUQTUQbSwDvx1L6p4+aav+6z4=
+X-Google-Smtp-Source: AGHT+IF253YnhQbVEgKkS2r0RUIcWNjp4R4hKGjDuiQ7+PhQKLu1ym8TIYnfVPFUKmv1uY2Nh0/7NUw=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:902:e74b:b0:1bc:5182:1ddb with SMTP id
- p11-20020a170902e74b00b001bc51821ddbmr927520plf.3.1691773438134; Fri, 11 Aug
- 2023 10:03:58 -0700 (PDT)
-Date: Fri, 11 Aug 2023 10:03:56 -0700
-In-Reply-To: <d000d817-54b9-f6b8-dcb3-d417ed2cbc97@linux.dev>
+ (user=sdf job=sendgmr) by 2002:a05:690c:72c:b0:589:a3d6:2e02 with SMTP id
+ bt12-20020a05690c072c00b00589a3d62e02mr58827ywb.3.1691773681829; Fri, 11 Aug
+ 2023 10:08:01 -0700 (PDT)
+Date: Fri, 11 Aug 2023 10:07:59 -0700
+In-Reply-To: <tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20230810183513.684836-1-davemarchevsky@fb.com>
- <20230810183513.684836-3-davemarchevsky@fb.com> <ZNVdP0mA9REeLQJj@google.com> <d000d817-54b9-f6b8-dcb3-d417ed2cbc97@linux.dev>
-Message-ID: <ZNZp/Pb7HGi2y4Q+@google.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Introduce task_vma open-coded iterator kfuncs
+References: <tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com>
+Message-ID: <ZNZq76jCnzNy7QVF@google.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: trace_helpers.c: optimize
+ kallsyms cache
 From: Stanislav Fomichev <sdf@google.com>
-To: David Marchevsky <david.marchevsky@linux.dev>
-Cc: Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kernel Team <kernel-team@fb.com>, Nathan Slingerland <slinger@meta.com>
+To: Rong Tao <rtoax@foxmail.com>
+Cc: ast@kernel.org, rongtao@cestc.cn, Andrii Nakryiko <andrii@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, 
+	"open list:BPF [SELFTESTS] (Test Runners & Infrastructure)" <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 08/11, David Marchevsky wrote:
-> On 8/10/23 5:57 PM, Stanislav Fomichev wrote:
-> > On 08/10, Dave Marchevsky wrote:
-> >> This patch adds kfuncs bpf_iter_task_vma_{new,next,destroy} which allow
-> >> creation and manipulation of struct bpf_iter_task_vma in open-coded
-> >> iterator style. BPF programs can use these kfuncs directly or through
-> >> bpf_for_each macro for natural-looking iteration of all task vmas.
-> >>
-> >> The implementation borrows heavily from bpf_find_vma helper's locking -
-> >> differing only in that it holds the mmap_read lock for all iterations
-> >> while the helper only executes its provided callback on a maximum of 1
-> >> vma. Aside from locking, struct vma_iterator and vma_next do all the
-> >> heavy lifting.
-> >>
-> >> The newly-added struct bpf_iter_task_vma has a name collision with a
-> >> selftest for the seq_file task_vma iter's bpf skel, so the selftests/bpf/progs
-> >> file is renamed in order to avoid the collision.
-> >>
-> >> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> >> Cc: Nathan Slingerland <slinger@meta.com>
-> >> ---
-> >>  include/uapi/linux/bpf.h                      |  5 ++
-> >>  kernel/bpf/helpers.c                          |  3 +
-> >>  kernel/bpf/task_iter.c                        | 56 +++++++++++++++++++
-> >>  tools/include/uapi/linux/bpf.h                |  5 ++
-> >>  tools/lib/bpf/bpf_helpers.h                   |  8 +++
-> >>  .../selftests/bpf/prog_tests/bpf_iter.c       | 26 ++++-----
-> >>  ...f_iter_task_vma.c => bpf_iter_task_vmas.c} |  0
-> >>  7 files changed, 90 insertions(+), 13 deletions(-)
-> >>  rename tools/testing/selftests/bpf/progs/{bpf_iter_task_vma.c => bpf_iter_task_vmas.c} (100%)
-> >>
-> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >> index d21deb46f49f..c4a65968f9f5 100644
-> >> --- a/include/uapi/linux/bpf.h
-> >> +++ b/include/uapi/linux/bpf.h
-> >> @@ -7291,4 +7291,9 @@ struct bpf_iter_num {
-> >>  	__u64 __opaque[1];
-> >>  } __attribute__((aligned(8)));
-> >>  
-> >> +struct bpf_iter_task_vma {
-> > 
-> > [..]
-> > 
-> >> +	__u64 __opaque[9]; /* See bpf_iter_num comment above */
-> >> +	char __opaque_c[3];
-> > 
-> > Everything in the series makes sense, but this part is a big confusing
-> > when reading without too much context. If you're gonna do a respin, maybe:
-> > 
-> > - __opaque_c[8*9+3] (or whatever the size is)? any reason for separate
-> >   __u64 + char?
+On 08/11, Rong Tao wrote:
+> From: Rong Tao <rongtao@cestc.cn>
 > 
-> IIUC this is because BTF generation doesn't pick up __attribute__((aligned(8))),
-> so if a vmlinux.h is generated via 'bpftool btf dump file vmlinux format c' and
-> this struct only contains chars, it won't have the correct alignment.
+> Static ksyms often have problems because the number of symbols exceeds the
+> MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+> commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+> the problem somewhat, but it's not the perfect way.
 > 
-> I'm not sure if the bitfield approach taken by bpf_{list,rb}_node similar has
-> the same effect. Some quick googling indicates that if it does, it's probably
-> not in the C standard.
-
-Ugh, the alignment, right..
-
-> But yeah, I agree that it's ugly. While we're on the topic, WDYT about my
-> comment in the cover letter about this struct (copied here for convenience):
+> This commit uses dynamic memory allocation, which completely solves the
+> problem caused by the limitation of the number of kallsyms.
 > 
->   * The struct vma_iterator wrapped by struct bpf_iter_task_vma itself wraps
->     struct ma_state. Because we need the entire struct, not a ptr, changes to
->     either struct vma_iterator or struct ma_state will necessitate changing the
->     opaque struct bpf_iter_task_vma to account for the new size. This feels a
->     bit brittle. We could instead use bpf_mem_alloc to allocate a struct
->     vma_iterator in bpf_iter_task_vma_new and have struct bpf_iter_task_vma
->     point to that, but that's not quite equivalent as BPF progs will usually
->     use the stack for this struct via bpf_for_each. Went with the simpler route
->     for now.
-
-LGTM! (assuming you'll keep non-pointer; looking at that other thread
-where Yonghong suggests to go with the ptr...)
-
-> > - maybe worth adding something like /* Opaque representation of
-> >   bpf_iter_task_vma_kern; see bpf_iter_num comment above */.
-> >   that bpf_iter_task_vma<>bpf_iter_task_vma_kern wasn't super apparent
-> >   until I got to the BUG_ON part
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> ---
+> v2: Do the usual len/capacity scheme here to amortize the cost of realloc, and
+>     don't free symbols.
+> v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
+> ---
+>  tools/testing/selftests/bpf/trace_helpers.c | 73 ++++++++++++++-------
+>  1 file changed, 48 insertions(+), 25 deletions(-)
 > 
-> It feels weird to refer to the non-UAPI _kern struct in uapi header. Maybe
-> better to add a comment to the _kern struct referring to this one? I don't
-> feel strongly either way, though.
+> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+> index f83d9f65c65b..cda5a2328450 100644
+> --- a/tools/testing/selftests/bpf/trace_helpers.c
+> +++ b/tools/testing/selftests/bpf/trace_helpers.c
+> @@ -18,9 +18,37 @@
+>  #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+>  #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
+>  
+> -#define MAX_SYMS 400000
+> -static struct ksym syms[MAX_SYMS];
+> -static int sym_cnt;
+> +static struct {
+> +	struct ksym *syms;
+> +	unsigned int sym_cap;
+> +	unsigned int sym_cnt;
+> +} ksyms = {
+> +	.syms = NULL,
+> +	.sym_cap = 1024,
+> +	.sym_cnt = 0,
+> +};
 
-Yeah, good point, let's keep as is.
+Not sure what the struct buys you here (besides grouping everything
+nicely), maybe do the following?
+static struct ksym *syms;
+static int sym_cnt;
+static int sym_cap = 1024;
+
+Will reduce the churn elsewhere..
+
+> +static int ksyms__add_symbol(const char *name, unsigned long addr)
+> +{
+> +	void *tmp;
+> +	unsigned int new_cap;
+> +
+> +	if (ksyms.sym_cnt + 1 > ksyms.sym_cap) {
+> +		new_cap = ksyms.sym_cap * 4 / 3;
+> +		tmp = realloc(ksyms.syms, sizeof(struct ksym) * new_cap);
+> +		if (!tmp)
+> +			return -ENOMEM;
+> +		ksyms.syms = tmp;
+> +		ksyms.sym_cap = new_cap;
+> +	}
+> +
+> +	ksyms.syms[ksyms.sym_cnt].addr = addr;
+> +	ksyms.syms[ksyms.sym_cnt].name = strdup(name);
+> +
+> +	ksyms.sym_cnt++;
+> +
+> +	return 0;
+> +}
+>  
+>  static int ksym_cmp(const void *p1, const void *p2)
+>  {
+> @@ -33,9 +61,10 @@ int load_kallsyms_refresh(void)
+>  	char func[256], buf[256];
+>  	char symbol;
+>  	void *addr;
+> -	int i = 0;
+>  
+> -	sym_cnt = 0;
+> +	ksyms.syms = malloc(sizeof(struct ksym) * ksyms.sym_cap);
+> +	if (!ksyms.syms)
+> +		return -ENOMEM;
+>  
+>  	f = fopen("/proc/kallsyms", "r");
+>  	if (!f)
+> @@ -46,16 +75,10 @@ int load_kallsyms_refresh(void)
+>  			break;
+>  		if (!addr)
+>  			continue;
+> -		if (i >= MAX_SYMS)
+> -			return -EFBIG;
+> -
+> -		syms[i].addr = (long) addr;
+> -		syms[i].name = strdup(func);
+> -		i++;
+> +		ksyms__add_symbol(func, (unsigned long)addr);
+
+Need to check the return of ksyms__add_symbol here?
 
