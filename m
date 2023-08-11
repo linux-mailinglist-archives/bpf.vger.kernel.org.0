@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-7516-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7517-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58112778684
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 06:32:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B90D778685
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 06:32:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 846B61C21134
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 04:32:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CA391C2111E
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 04:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63C317F8;
-	Fri, 11 Aug 2023 04:31:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F00AE184C;
+	Fri, 11 Aug 2023 04:31:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B48EE110C
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 04:31:36 +0000 (UTC)
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7954F26AE
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 21:31:35 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-584034c706dso18496717b3.1
-        for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 21:31:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF54E1848
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 04:31:37 +0000 (UTC)
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F612696
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 21:31:36 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5844bb9923eso18313027b3.0
+        for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 21:31:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691728294; x=1692333094;
+        d=gmail.com; s=20221208; t=1691728295; x=1692333095;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1On4WBu4ktBmJYsqyTQyB5Pq9dtHflwATbA7mIeMEbU=;
-        b=IJGCDdoeDuPw/Cap1YoRIgfFaVp6B6Rtjbk1zyD2FbtMmEb8fD/yG6cwOUQw2vhVEU
-         +kW1Nd5qDu/bn46HYdLJZNhl6GDYMaPkzDP794VhiKIZ11Pl4LAvsAVkArYYuW68jZ4S
-         7tD+s+1fLkhTmkAcqAo54XXPK4/WwBwFlON7GxGRsYj/kxrq5fdKgxc1qRKDOVWdwKaV
-         5iIvVM5sbFUta3ISe6i8Bg/iqLtKfntjYvlmKKEYaBBtIadWmd3KkCkLZ3lza8mzmjRw
-         r0fbqnZODDzsJZ+NEBB9mNtFhx5FkzalsHviUgwsUV8JATdvjgtQH46FqgHgFWdcogPt
-         iD3w==
+        bh=KYXmLMARaNSnqbsYlVhllcjiCNynLXQcD00yVEiyYf0=;
+        b=MK9DDRLSL0ITsdY9yW9fyWUrK9xCSnuXYmNFkJRPd1+F8g1/6UPyZaCPBizSQjC9J9
+         K0LOihpVd+m1i3W6rziOwVCOhs1arPQzDopjQXwNc7ioR0wmXXWrdlML7oXZJend6x1k
+         88/b//Gb0ardsmOLJr9QVzjYkapQV9QxENTRqsJkSiPCj5W9NA2CipSnNek1XSaqwIoX
+         0EU3401qvCwXUZ4Ysxy+zuNojhu9C8hf4x07CyjMOZcDdgz3C6I+Je+QrRMnHQXsvqDF
+         kfxPznes7wM8dISrz1plyhWYNg0LRj5UVhoP3YuTe5yPP0Y9pnHCLCho2OCc9RkUHgIL
+         /WYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691728294; x=1692333094;
+        d=1e100.net; s=20221208; t=1691728295; x=1692333095;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1On4WBu4ktBmJYsqyTQyB5Pq9dtHflwATbA7mIeMEbU=;
-        b=LzXz4Glg93rsOBXZkTG8nMJD/oa/keV/cQgsyyoRSAzXalY4RcnpAnpdZlPHcoeYeH
-         6NGyUyeAVhX9dEBHeVzToDoH3DW5mslCZKDUlVI7qLSvniwTr1Q3LJHITUpmwjvAW7Mc
-         YPZLDMviXN4jIgvoLHFV8cPKlbf/UamKg65RAIGzVPOuqxyQTj2Lar43rYAMnYf6iFm6
-         uJNhNgFxUemZct0KbsM0LGxJQL8RpA13xg29sgH/wPNz6dfAgxgd/XGQBjKrcNVACfAL
-         O+5yqv9Q5olmud6ETdnDvd7B+ukiVPvUtusc1mY3wmNrr8Z0NbbpeTYUXjWQHEjfw7ej
-         2sQQ==
-X-Gm-Message-State: AOJu0YyZ8xn56M7EODt3cSAy6hWihrbqbbDKYrqr+3XWfhO88aV/Yzcg
-	bru9qbL7gOudwyukpGk2jx+ilSFDwfY0Tg==
-X-Google-Smtp-Source: AGHT+IHnPlvPwIh6bmNDlCDyHLhZSXMLcy5+LpAvR4uCLRXB9i4+yTGRjK4e3CW/OYp42JDs2Tpr7A==
-X-Received: by 2002:a81:524c:0:b0:56d:4f2e:6f83 with SMTP id g73-20020a81524c000000b0056d4f2e6f83mr867036ywb.4.1691728294321;
-        Thu, 10 Aug 2023 21:31:34 -0700 (PDT)
+        bh=KYXmLMARaNSnqbsYlVhllcjiCNynLXQcD00yVEiyYf0=;
+        b=FAMYcixqrYGREIgXvYCe9DYJT4e4PZnoRVXtYOnmEWttWUUFFVQgQyHHYd2TQejrIy
+         DRI0wgBum4P618B3apNNuG6fFURoYt/XExh/1kRTrxRcCyygM218w3IzizFOmLyW8HRE
+         Ba4B20XWbIILVWrcR/bPmTgEf2k7UaEnrdXvOyfq9amZjWGtHfjHHqUiZBC4y/Zgljts
+         4gzpxXaea+s7nwoto0mVMiCHN3YsdtjCmw4ag9xgJ3pZfDosmPcquvn1qDT7zdc/cUx2
+         KtcGkVM2ayQZUcE7bD5p3NdaKpPs63rZSJe7UBQ3/7hJtkjRnEYFnejt9UP/LbOfg96r
+         rEjQ==
+X-Gm-Message-State: AOJu0YzK8glOnPV90Rs9U0eNH3KZpT1zXQgDROzzpoTtszxOIM5PI8nm
+	NeG40ltVbnxowkDqy+/OixktcDlPrH6FuQ==
+X-Google-Smtp-Source: AGHT+IH/HXxVf8xv+PLK65aVs6Z6JTEDPHC4RiQfKZ/0/+jM9+P7Vs2sq8wJydFK6Nmw3IRgnT/6UA==
+X-Received: by 2002:a0d:eb10:0:b0:57a:69eb:7a06 with SMTP id u16-20020a0deb10000000b0057a69eb7a06mr1204697ywe.25.1691728295629;
+        Thu, 10 Aug 2023 21:31:35 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:16da:9387:4176:e970])
-        by smtp.gmail.com with ESMTPSA id n15-20020a819c4f000000b00583e52232f1sm767961ywa.112.2023.08.10.21.31.33
+        by smtp.gmail.com with ESMTPSA id n15-20020a819c4f000000b00583e52232f1sm767961ywa.112.2023.08.10.21.31.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 21:31:34 -0700 (PDT)
+        Thu, 10 Aug 2023 21:31:35 -0700 (PDT)
 From: thinker.li@gmail.com
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -68,9 +68,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [RFC bpf-next v2 2/6] bpf: Prevent BPF programs from access the buffer pointed by user_optval.
-Date: Thu, 10 Aug 2023 21:31:23 -0700
-Message-Id: <20230811043127.1318152-3-thinker.li@gmail.com>
+Subject: [RFC bpf-next v2 3/6] bpf: rename bpf_copy_to_user().
+Date: Thu, 10 Aug 2023 21:31:24 -0700
+Message-Id: <20230811043127.1318152-4-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230811043127.1318152-1-thinker.li@gmail.com>
 References: <20230811043127.1318152-1-thinker.li@gmail.com>
@@ -83,186 +83,53 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Kui-Feng Lee <kuifeng@meta.com>
+From: Kui-Feng Lee <thinker.li@gmail.com>
 
-Since the buffer pointed by ctx->user_optval is in user space, BPF programs
-in kernel space should not access it directly.  They should use
-bpf_copy_from_user() and bpf_copy_to_user() to move data between user and
-kernel space.
+Rename bpf_copy_to_user() to avoid confliction with the BPF kfunc.
 
-Signed-off-by: Kui-Feng Lee <kuifeng@meta.com>
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- kernel/bpf/cgroup.c   | 16 +++++++++--
- kernel/bpf/verifier.c | 66 +++++++++++++++++++++----------------------
- 2 files changed, 47 insertions(+), 35 deletions(-)
+ kernel/bpf/syscall.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 59489d9619a3..5bf3115b265c 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -2509,12 +2509,24 @@ static bool cg_sockopt_is_valid_access(int off, int size,
- 	case offsetof(struct bpf_sockopt, optval):
- 		if (size != sizeof(__u64))
- 			return false;
--		info->reg_type = PTR_TO_PACKET;
-+		if (prog->aux->sleepable)
-+			/* Prohibit access to the memory pointed by optval
-+			 * in sleepable programs.
-+			 */
-+			info->reg_type = PTR_TO_PACKET | MEM_USER;
-+		else
-+			info->reg_type = PTR_TO_PACKET;
- 		break;
- 	case offsetof(struct bpf_sockopt, optval_end):
- 		if (size != sizeof(__u64))
- 			return false;
--		info->reg_type = PTR_TO_PACKET_END;
-+		if (prog->aux->sleepable)
-+			/* Prohibit access to the memory pointed by
-+			 * optval_end in sleepable programs.
-+			 */
-+			info->reg_type = PTR_TO_PACKET_END | MEM_USER;
-+		else
-+			info->reg_type = PTR_TO_PACKET_END;
- 		break;
- 	case offsetof(struct bpf_sockopt, retval):
- 		if (size != size_default)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index fbc0096693e7..ca27be76207a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -13364,7 +13364,7 @@ static void find_good_pkt_pointers(struct bpf_verifier_state *vstate,
- 	 * dst_reg->off is known < MAX_PACKET_OFF, therefore it fits in a u16.
- 	 */
- 	bpf_for_each_reg_in_vstate(vstate, state, reg, ({
--		if (reg->type == type && reg->id == dst_reg->id)
-+		if (base_type(reg->type) == type && reg->id == dst_reg->id)
- 			/* keep the maximum range already checked */
- 			reg->range = max(reg->range, new_range);
- 	}));
-@@ -13917,84 +13917,84 @@ static bool try_match_pkt_pointers(const struct bpf_insn *insn,
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 7f4e8c357a6a..81b6e60cc030 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3297,8 +3297,8 @@ static void bpf_raw_tp_link_show_fdinfo(const struct bpf_link *link,
+ 		   raw_tp_link->btp->tp->name);
+ }
  
- 	switch (BPF_OP(insn->code)) {
- 	case BPF_JGT:
--		if ((dst_reg->type == PTR_TO_PACKET &&
--		     src_reg->type == PTR_TO_PACKET_END) ||
--		    (dst_reg->type == PTR_TO_PACKET_META &&
-+		if ((base_type(dst_reg->type) == PTR_TO_PACKET &&
-+		     base_type(src_reg->type) == PTR_TO_PACKET_END) ||
-+		    (base_type(dst_reg->type) == PTR_TO_PACKET_META &&
- 		     reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET))) {
- 			/* pkt_data' > pkt_end, pkt_meta' > pkt_data */
- 			find_good_pkt_pointers(this_branch, dst_reg,
--					       dst_reg->type, false);
-+					       base_type(dst_reg->type), false);
- 			mark_pkt_end(other_branch, insn->dst_reg, true);
--		} else if ((dst_reg->type == PTR_TO_PACKET_END &&
--			    src_reg->type == PTR_TO_PACKET) ||
-+		} else if ((base_type(dst_reg->type) == PTR_TO_PACKET_END &&
-+			    base_type(src_reg->type) == PTR_TO_PACKET) ||
- 			   (reg_is_init_pkt_pointer(dst_reg, PTR_TO_PACKET) &&
--			    src_reg->type == PTR_TO_PACKET_META)) {
-+			    base_type(src_reg->type) == PTR_TO_PACKET_META)) {
- 			/* pkt_end > pkt_data', pkt_data > pkt_meta' */
- 			find_good_pkt_pointers(other_branch, src_reg,
--					       src_reg->type, true);
-+					       base_type(src_reg->type), true);
- 			mark_pkt_end(this_branch, insn->src_reg, false);
- 		} else {
- 			return false;
- 		}
- 		break;
- 	case BPF_JLT:
--		if ((dst_reg->type == PTR_TO_PACKET &&
--		     src_reg->type == PTR_TO_PACKET_END) ||
--		    (dst_reg->type == PTR_TO_PACKET_META &&
-+		if ((base_type(dst_reg->type) == PTR_TO_PACKET &&
-+		     base_type(src_reg->type) == PTR_TO_PACKET_END) ||
-+		    (base_type(dst_reg->type) == PTR_TO_PACKET_META &&
- 		     reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET))) {
- 			/* pkt_data' < pkt_end, pkt_meta' < pkt_data */
- 			find_good_pkt_pointers(other_branch, dst_reg,
--					       dst_reg->type, true);
-+					       base_type(dst_reg->type), true);
- 			mark_pkt_end(this_branch, insn->dst_reg, false);
--		} else if ((dst_reg->type == PTR_TO_PACKET_END &&
--			    src_reg->type == PTR_TO_PACKET) ||
-+		} else if ((base_type(dst_reg->type) == PTR_TO_PACKET_END &&
-+			    base_type(src_reg->type) == PTR_TO_PACKET) ||
- 			   (reg_is_init_pkt_pointer(dst_reg, PTR_TO_PACKET) &&
--			    src_reg->type == PTR_TO_PACKET_META)) {
-+			    base_type(src_reg->type) == PTR_TO_PACKET_META)) {
- 			/* pkt_end < pkt_data', pkt_data > pkt_meta' */
- 			find_good_pkt_pointers(this_branch, src_reg,
--					       src_reg->type, false);
-+					       base_type(src_reg->type), false);
- 			mark_pkt_end(other_branch, insn->src_reg, true);
- 		} else {
- 			return false;
- 		}
- 		break;
- 	case BPF_JGE:
--		if ((dst_reg->type == PTR_TO_PACKET &&
--		     src_reg->type == PTR_TO_PACKET_END) ||
--		    (dst_reg->type == PTR_TO_PACKET_META &&
-+		if ((base_type(dst_reg->type) == PTR_TO_PACKET &&
-+		     base_type(src_reg->type) == PTR_TO_PACKET_END) ||
-+		    (base_type(dst_reg->type) == PTR_TO_PACKET_META &&
- 		     reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET))) {
- 			/* pkt_data' >= pkt_end, pkt_meta' >= pkt_data */
- 			find_good_pkt_pointers(this_branch, dst_reg,
--					       dst_reg->type, true);
-+					       base_type(dst_reg->type), true);
- 			mark_pkt_end(other_branch, insn->dst_reg, false);
--		} else if ((dst_reg->type == PTR_TO_PACKET_END &&
--			    src_reg->type == PTR_TO_PACKET) ||
-+		} else if ((base_type(dst_reg->type) == PTR_TO_PACKET_END &&
-+			    base_type(src_reg->type) == PTR_TO_PACKET) ||
- 			   (reg_is_init_pkt_pointer(dst_reg, PTR_TO_PACKET) &&
--			    src_reg->type == PTR_TO_PACKET_META)) {
-+			    base_type(src_reg->type) == PTR_TO_PACKET_META)) {
- 			/* pkt_end >= pkt_data', pkt_data >= pkt_meta' */
- 			find_good_pkt_pointers(other_branch, src_reg,
--					       src_reg->type, false);
-+					       base_type(src_reg->type), false);
- 			mark_pkt_end(this_branch, insn->src_reg, true);
- 		} else {
- 			return false;
- 		}
- 		break;
- 	case BPF_JLE:
--		if ((dst_reg->type == PTR_TO_PACKET &&
--		     src_reg->type == PTR_TO_PACKET_END) ||
--		    (dst_reg->type == PTR_TO_PACKET_META &&
-+		if ((base_type(dst_reg->type) == PTR_TO_PACKET &&
-+		     base_type(src_reg->type) == PTR_TO_PACKET_END) ||
-+		    (base_type(dst_reg->type) == PTR_TO_PACKET_META &&
- 		     reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET))) {
- 			/* pkt_data' <= pkt_end, pkt_meta' <= pkt_data */
- 			find_good_pkt_pointers(other_branch, dst_reg,
--					       dst_reg->type, false);
-+					       base_type(dst_reg->type), false);
- 			mark_pkt_end(this_branch, insn->dst_reg, true);
--		} else if ((dst_reg->type == PTR_TO_PACKET_END &&
--			    src_reg->type == PTR_TO_PACKET) ||
-+		} else if ((base_type(dst_reg->type) == PTR_TO_PACKET_END &&
-+			    base_type(src_reg->type) == PTR_TO_PACKET) ||
- 			   (reg_is_init_pkt_pointer(dst_reg, PTR_TO_PACKET) &&
--			    src_reg->type == PTR_TO_PACKET_META)) {
-+			    base_type(src_reg->type) == PTR_TO_PACKET_META)) {
- 			/* pkt_end <= pkt_data', pkt_data <= pkt_meta' */
- 			find_good_pkt_pointers(this_branch, src_reg,
--					       src_reg->type, true);
-+					       base_type(src_reg->type), true);
- 			mark_pkt_end(other_branch, insn->src_reg, false);
- 		} else {
- 			return false;
+-static int bpf_copy_to_user(char __user *ubuf, const char *buf, u32 ulen,
+-			    u32 len)
++static int _bpf_copy_to_user(char __user *ubuf, const char *buf, u32 ulen,
++			     u32 len)
+ {
+ 	if (ulen >= len + 1) {
+ 		if (copy_to_user(ubuf, buf, len + 1))
+@@ -3334,7 +3334,7 @@ static int bpf_raw_tp_link_fill_link_info(const struct bpf_link *link,
+ 	if (!ubuf)
+ 		return 0;
+ 
+-	return bpf_copy_to_user(ubuf, tp_name, ulen, tp_len);
++	return _bpf_copy_to_user(ubuf, tp_name, ulen, tp_len);
+ }
+ 
+ static const struct bpf_link_ops bpf_raw_tp_link_lops = {
+@@ -3388,7 +3388,7 @@ static int bpf_perf_link_fill_common(const struct perf_event *event,
+ 
+ 	if (buf) {
+ 		len = strlen(buf);
+-		err = bpf_copy_to_user(uname, buf, ulen, len);
++		err = _bpf_copy_to_user(uname, buf, ulen, len);
+ 		if (err)
+ 			return err;
+ 	} else {
 -- 
 2.34.1
 
