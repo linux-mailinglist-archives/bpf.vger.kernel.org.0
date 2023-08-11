@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-7580-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7579-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94E6E77946D
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 18:27:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5179C779468
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 18:27:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6B981C216CB
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 16:27:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 829AC1C216AF
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 16:27:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE633D394;
-	Fri, 11 Aug 2023 16:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 945F33D380;
+	Fri, 11 Aug 2023 16:20:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 211E73D38D;
-	Fri, 11 Aug 2023 16:20:47 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC022702;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FBF0360D0;
+	Fri, 11 Aug 2023 16:20:46 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE8992;
 	Fri, 11 Aug 2023 09:20:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691770846; x=1723306846;
+  t=1691770845; x=1723306845;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=/bVUCVzI7ISJNqobMVC1syQcqj3ccgVlhj7g4HTrk/Q=;
-  b=Ka041B4/5E08fbtwbvZyp5G96Hvzu33HqyBMRIx6YnwWA+eK+K94+8gq
-   s8TDvaViuF8dr+yVoR/BvekSl18p8utvPV44lYJU6W4Rr53AOz4X9++AC
-   7DTvOD7ENB9uah3UPdls+juLtCMDsPWlVFdjfFV8lNoHaUj+/V6QybR/C
-   ivua0NQPiBx1aAOEgFAM0GbpLX994v5dPhNeO7ebhlIVcJRevCziK5tJy
-   VeJVLR2nhjB3+kfaR+izaJosmxi095pvgcnoDIRKGWxiT0K6q2QGGNbEM
-   rG3c3/VpMsW+lTqQy1r9L6gW2BQ+SuHIDLDFSgifoM+w4wlMDV4OpFqPu
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="356672145"
+  bh=5p/6LrkVhD1srZ1C0shnBPSltvtTeK9faThdhrldm0U=;
+  b=bb8ZY56dVy+lk5CQHIPPzzcvgPnIcue5KO5YwnQXfrpPW4JT7b4xVCkY
+   1DvkHqJiqstSsZf3H0aXx7m3Z4bTwJ/nH1pIGkUAgxuHSPgq2bsePjERq
+   spuIVLt9OfMoBmdLpKu9nIjEyoUy1vosVLHb2WbCw9YSerEJtG2J06s0Z
+   kzHSpdhOOldogXHS6TZvszXcOIAZBrmr5MgnuOHKakSoxxcQm88JBTmca
+   PAaUU9Ym51mFP1X05udKQACNeykQ4UQvvMoM6poKKS1svO9+O1vLX4XRt
+   M0yfLdpkZqWq8hCvxU93XlRZvny1gwIVYi4SVCd6JVTrLwimWssJjMbuv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="351314757"
 X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="356672145"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 09:20:42 -0700
+   d="scan'208";a="351314757"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 09:20:45 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="1063363829"
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="906501038"
 X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="1063363829"
+   d="scan'208";a="906501038"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Aug 2023 09:20:36 -0700
+  by orsmga005.jf.intel.com with ESMTP; 11 Aug 2023 09:20:38 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 3F5AE33BC6;
-	Fri, 11 Aug 2023 17:20:35 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 7480533BD0;
+	Fri, 11 Aug 2023 17:20:37 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -74,10 +74,11 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	netdev@vger.kernel.org,
 	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
 	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Simon Horman <simon.horman@corigine.com>
-Subject: [PATCH bpf-next v5 14/21] selftests/bpf: Allow VLAN packets in xdp_hw_metadata
-Date: Fri, 11 Aug 2023 18:15:02 +0200
-Message-ID: <20230811161509.19722-15-larysa.zaremba@intel.com>
+	Simon Horman <simon.horman@corigine.com>,
+	Aleksander Lobakin <aleksander.lobakin@intel.com>
+Subject: [PATCH bpf-next v5 15/21] net, xdp: allow metadata > 32
+Date: Fri, 11 Aug 2023 18:15:03 +0200
+Message-ID: <20230811161509.19722-16-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230811161509.19722-1-larysa.zaremba@intel.com>
 References: <20230811161509.19722-1-larysa.zaremba@intel.com>
@@ -95,65 +96,80 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Make VLAN c-tag and s-tag XDP hint testing more convenient
-by not skipping VLAN-ed packets.
+From: Aleksander Lobakin <aleksander.lobakin@intel.com>
 
-Allow both 802.1ad and 802.1Q headers.
+When using XDP hints, metadata sometimes has to be much bigger
+than 32 bytes. Relax the restriction, allow metadata larger than 32 bytes
+and make __skb_metadata_differs() work with bigger lengths.
 
+Now size of metadata is only limited by the fact it is stored as u8
+in skb_shared_info, so maximum possible value is 255. Other important
+conditions, such as having enough space for xdp_frame building, are already
+checked in bpf_xdp_adjust_meta().
+
+The requirement of having its length aligned to 4 bytes is still
+valid.
+
+Signed-off-by: Aleksander Lobakin <aleksander.lobakin@intel.com>
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- tools/testing/selftests/bpf/progs/xdp_hw_metadata.c | 10 +++++++++-
- tools/testing/selftests/bpf/xdp_metadata.h          |  8 ++++++++
- 2 files changed, 17 insertions(+), 1 deletion(-)
+ include/linux/skbuff.h | 13 ++++++++-----
+ include/net/xdp.h      |  7 ++++++-
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-index b2dfd7066c6e..63d7de6c6bbb 100644
---- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-@@ -26,15 +26,23 @@ int rx(struct xdp_md *ctx)
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index aa57e2eca33b..0e455678cb8a 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -4216,10 +4216,13 @@ static inline bool __skb_metadata_differs(const struct sk_buff *skb_a,
  {
- 	void *data, *data_meta, *data_end;
- 	struct ipv6hdr *ip6h = NULL;
--	struct ethhdr *eth = NULL;
- 	struct udphdr *udp = NULL;
- 	struct iphdr *iph = NULL;
- 	struct xdp_meta *meta;
-+	struct ethhdr *eth;
- 	int err;
+ 	const void *a = skb_metadata_end(skb_a);
+ 	const void *b = skb_metadata_end(skb_b);
+-	/* Using more efficient varaiant than plain call to memcmp(). */
+-#if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) && BITS_PER_LONG == 64
+ 	u64 diffs = 0;
  
- 	data = (void *)(long)ctx->data;
- 	data_end = (void *)(long)ctx->data_end;
- 	eth = data;
++	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ||
++	    BITS_PER_LONG != 64)
++		goto slow;
 +
-+	if (eth + 1 < data_end && (eth->h_proto == bpf_htons(ETH_P_8021AD) ||
-+				   eth->h_proto == bpf_htons(ETH_P_8021Q)))
-+		eth = (void *)eth + sizeof(struct vlan_hdr);
-+
-+	if (eth + 1 < data_end && eth->h_proto == bpf_htons(ETH_P_8021Q))
-+		eth = (void *)eth + sizeof(struct vlan_hdr);
-+
- 	if (eth + 1 < data_end) {
- 		if (eth->h_proto == bpf_htons(ETH_P_IP)) {
- 			iph = (void *)(eth + 1);
-diff --git a/tools/testing/selftests/bpf/xdp_metadata.h b/tools/testing/selftests/bpf/xdp_metadata.h
-index 938a729bd307..6664893c2c77 100644
---- a/tools/testing/selftests/bpf/xdp_metadata.h
-+++ b/tools/testing/selftests/bpf/xdp_metadata.h
-@@ -9,6 +9,14 @@
- #define ETH_P_IPV6 0x86DD
- #endif
++	/* Using more efficient variant than plain call to memcmp(). */
+ 	switch (meta_len) {
+ #define __it(x, op) (x -= sizeof(u##op))
+ #define __it_diff(a, b, op) (*(u##op *)__it(a, op)) ^ (*(u##op *)__it(b, op))
+@@ -4239,11 +4242,11 @@ static inline bool __skb_metadata_differs(const struct sk_buff *skb_a,
+ 		fallthrough;
+ 	case  4: diffs |= __it_diff(a, b, 32);
+ 		break;
++	default:
++slow:
++		return memcmp(a - meta_len, b - meta_len, meta_len);
+ 	}
+ 	return diffs;
+-#else
+-	return memcmp(a - meta_len, b - meta_len, meta_len);
+-#endif
+ }
  
-+#ifndef ETH_P_8021Q
-+#define ETH_P_8021Q 0x8100
-+#endif
+ static inline bool skb_metadata_differs(const struct sk_buff *skb_a,
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 495c4d2a2c50..05234f156a73 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -369,7 +369,12 @@ xdp_data_meta_unsupported(const struct xdp_buff *xdp)
+ 
+ static inline bool xdp_metalen_invalid(unsigned long metalen)
+ {
+-	return (metalen & (sizeof(__u32) - 1)) || (metalen > 32);
++	typeof(metalen) meta_max;
 +
-+#ifndef ETH_P_8021AD
-+#define ETH_P_8021AD 0x88A8
-+#endif
++	meta_max = type_max(typeof_member(struct skb_shared_info, meta_len));
++	BUILD_BUG_ON(!__builtin_constant_p(meta_max));
 +
- struct xdp_meta {
- 	__u64 rx_timestamp;
- 	__u64 xdp_timestamp;
++	return !IS_ALIGNED(metalen, sizeof(u32)) || metalen > meta_max;
+ }
+ 
+ struct xdp_attachment_info {
 -- 
 2.41.0
 
