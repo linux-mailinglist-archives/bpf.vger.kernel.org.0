@@ -1,191 +1,169 @@
-Return-Path: <bpf+bounces-7605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC0077984D
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 22:14:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8767D779870
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 22:19:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E58841C2174D
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 20:14:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4079F282481
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 20:19:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C87D2AB50;
-	Fri, 11 Aug 2023 20:14:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF672AB5C;
+	Fri, 11 Aug 2023 20:19:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D99D78468
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 20:14:07 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6B130ED
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 13:14:06 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BGMsZk016723
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 13:14:06 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=/IXfMgkPIbhY1b/mlUShV7LNHaq0AH2p4dmr3OLHeyA=;
- b=Tz7t+G0geHKLKKReVoctDkLYB9jyrncvk4iI7AjfQJFWCIWllTFMDzgK14ORZcFIgIOw
- OJHHpkjNsl2Gue/0pHKwyZr/JiT2DoZdGTTkIWlZodj1qmtu4HiFN2ovDBlHQY3JutrJ
- GQ+py/StVO8MjR0+hH749pIRtfvnTwUgaXQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3sd909huny-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 13:14:05 -0700
-Received: from twshared6713.09.ash9.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 11 Aug 2023 13:14:03 -0700
-Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-	id CE8C02282EDF3; Fri, 11 Aug 2023 13:13:57 -0700 (PDT)
-From: Dave Marchevsky <davemarchevsky@fb.com>
-To: <bpf@vger.kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau
-	<martin.lau@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, Tejun Heo
-	<tj@kernel.org>,
-        <dvernet@meta.com>, Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add CO-RE relocs kfunc flavors tests
-Date: Fri, 11 Aug 2023 13:13:46 -0700
-Message-ID: <20230811201346.3240403-2-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230811201346.3240403-1-davemarchevsky@fb.com>
-References: <20230811201346.3240403-1-davemarchevsky@fb.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C918468
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 20:19:19 +0000 (UTC)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176B2D3;
+	Fri, 11 Aug 2023 13:19:18 -0700 (PDT)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-58969d4f1b6so26205737b3.2;
+        Fri, 11 Aug 2023 13:19:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691785157; x=1692389957;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EZDJSm9RNf/nSpvAQ4JhrwLKn9yLiHfE3C0QiPzYPb8=;
+        b=ghumX5DjOChmU9HHpGgBLOKoEiGR+J3aOeBIFbEVQuaykUZDuzjUZT4ZslHE16VIud
+         QAR2NfTk2gS2BFtuJIPu9aekyDv3iDGFlVTGwgaYxippwIK4GSqwYrf/YncZbNwExTku
+         J7HVkSMRG9FXQvWgmklAY2HZSKlVMv1ZpyysjO0rWUdsZa62fJdOXlPyLdfiP3kEhHtm
+         PP4L47xBIKhIkOAK7zsX5MpTDtKjgZYHmkE7o8r0NUOD/dBvbbWur8ZMUuVSbLLFaZ4f
+         FOsONDZvJIZBQq6AB1CO1w/4mNGvLj2ZXhZ0buWSCpxM5Ia52tSB1zS6UIWl+UfQbYSK
+         DRRg==
+X-Gm-Message-State: AOJu0Yw6iIJHVHIf9T3NXnHkLStYcxYZjqL/p6/He4R3+6iq8LIuj1+7
+	tsQeBclZnugAvRQg5TogUFM=
+X-Google-Smtp-Source: AGHT+IEJP0i/MsbqW/Ls0XJo2q92GFLKjBpom7LnCeGJEMwcGbrl//1iF+MhKB1Qiw0iAeYdco0crg==
+X-Received: by 2002:a81:4f94:0:b0:561:429e:acd2 with SMTP id d142-20020a814f94000000b00561429eacd2mr2733067ywb.35.1691785157084;
+        Fri, 11 Aug 2023 13:19:17 -0700 (PDT)
+Received: from maniforge ([24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id p139-20020a0de691000000b00583b144fe51sm1195843ywe.118.2023.08.11.13.19.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 13:19:16 -0700 (PDT)
+Date: Fri, 11 Aug 2023 15:19:14 -0500
+From: David Vernet <void@manifault.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, song@kernel.org, yhs@fb.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+	jolsa@kernel.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com, tj@kernel.org, clm@meta.com,
+	thinker.li@gmail.com, Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
+ behavior for struct_ops links
+Message-ID: <20230811201914.GD542801@maniforge>
+References: <20230810220456.521517-1-void@manifault.com>
+ <ZNVousfpuRFgfuAo@google.com>
+ <20230810230141.GA529552@maniforge>
+ <ZNVvfYEsLyotn+G1@google.com>
+ <fe388d79-bdfc-0480-5f4b-1a40016fd53d@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: NOq8gPCPVhwRDLI9Q-QsymkJ6LxqBy10
-X-Proofpoint-ORIG-GUID: NOq8gPCPVhwRDLI9Q-QsymkJ6LxqBy10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-11_12,2023-08-10_01,2023-05-22_02
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe388d79-bdfc-0480-5f4b-1a40016fd53d@linux.dev>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-This patch adds selftests that exercise kfunc flavor relocation
-functionality added in the previous patch. The actual kfunc defined in
-kernel/bpf/helpers.c is
+On Fri, Aug 11, 2023 at 10:35:03AM -0700, Martin KaFai Lau wrote:
+> On 8/10/23 4:15 PM, Stanislav Fomichev wrote:
+> > On 08/10, David Vernet wrote:
+> > > On Thu, Aug 10, 2023 at 03:46:18PM -0700, Stanislav Fomichev wrote:
+> > > > On 08/10, David Vernet wrote:
+> > > > > Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
+> > > > > define the .validate() and .update() callbacks in its corresponding
+> > > > > struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
+> > > > > in its own right to ensure that the map is unloaded if an application
+> > > > > crashes. For example, with sched_ext, we want to automatically unload
+> > > > > the host-wide scheduler if the application crashes. We would likely
+> > > > > never support updating elements of a sched_ext struct_ops map, so we'd
+> > > > > have to implement these callbacks showing that they _can't_ support
+> > > > > element updates just to benefit from the basic lifetime management of
+> > > > > struct_ops links.
+> > > > > 
+> > > > > Let's enable struct_ops maps to work with BPF_F_LINK even if they
+> > > > > haven't defined these callbacks, by assuming that a struct_ops map
+> > > > > element cannot be updated by default.
+> > > > 
+> > > > Any reason this is not part of sched_ext series? As you mention,
+> > > > we don't seem to have such users in the three?
+> > > 
+> > > Hi Stanislav,
+> > > 
+> > > The sched_ext series [0] implements these callbacks. See
+> > > bpf_scx_update() and bpf_scx_validate().
+> > > 
+> > > [0]: https://lore.kernel.org/all/20230711011412.100319-13-tj@kernel.org/
+> > > 
+> > > We could add this into that series and remove those callbacks, but this
+> > > patch is fixing a UX / API issue with struct_ops links that's not really
+> > > relevant to sched_ext. I don't think there's any reason to couple
+> > > updating struct_ops map elements with allowing the kernel to manage the
+> > > lifetime of struct_ops maps -- just because we only have 1 (non-test)
+> 
+> Agree the link-update does not necessarily couple with link-creation, so
+> removing 'link' update function enforcement is ok. The intention was to
+> avoid the struct_ops link inconsistent experience (one struct_ops link
+> support update and another struct_ops link does not) because consistency was
+> one of the reason for the true kernel backed link support that Kui-Feng did.
+> tcp-cc is the only one for now in struct_ops and it can support update, so
+> the enforcement is here. I can see Stan's point that removing it now looks
+> immature before a struct_ops landed in the kernel showing it does not make
+> sense or very hard to support 'link' update. However, the scx patch set has
+> shown this point, so I think it is good enough.
 
-  struct task_struct *bpf_task_acquire(struct task_struct *p)
+Sorry for sending v2 of the patch a bit prematurely. Should have let you
+weigh in first.
 
-The following relocation behaviors are checked:
+> For 'validate', it is not related a 'link' update. It is for the struct_ops
+> 'map' update. If the loaded struct_ops map is invalid, it will end up having
+> a useless struct_ops map and no link can be created from it. I can see some
 
-  struct task_struct *bpf_task_acquire___one(struct task_struct *name)
-    * Should succeed despite differing param name
+To be honest I'm actually not sure I understand why .validate() is only
+called for when BPF_F_LINK is specified. Is it because it could break
+existing programs if they defined a struct_ops map that wasn't valid
+_without_ using BPF_F_LINK? Whether or not a map is valid should inform
+whether we can load it regardless of whether there's a link, no? It
+seems like .init_member() was already doing this as well. That's why I
+got confused and conflated the two.
 
-  struct task_struct *bpf_task_acquire___two(struct task_struct *p, void =
-*ctx)
-    * Should fail because there is no two-param bpf_task_acquire
+> struct_ops subsystem check all the 'ops' function for NULL before calling
+> (like the FUSE RFC). I can also see some future struct_ops will prefer not
+> to check NULL at all and prefer to assume a subset of the ops is always
+> valid. Does having a 'validate' enforcement is blocking the scx patchset in
+> some way? If not, I would like to keep this for now. Once it is removed,
 
-  struct task_struct *bpf_task_acquire___three(void *ctx)
-    * Should fail because, despite vmlinux's bpf_task_acquire having one =
-param,
-      the types don't match
+No, it's not blocking scx at all. scx, as with any other struct_ops
+implementation, could and does just implement these callbacks. As
+Kui-Feng said in [0], this is really just about enabling a sane default
+to improve usability. If a struct_ops implementation actually should
+have implemented some validation but neglected to, that would be a bug
+in exactly the same manner as if it had implemented .validate(), but
+neglected to check some corner case that makes the map invalid.
 
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
- .../selftests/bpf/prog_tests/task_kfunc.c     |  1 +
- .../selftests/bpf/progs/task_kfunc_success.c  | 41 +++++++++++++++++++
- 2 files changed, 42 insertions(+)
+[0]: https://lore.kernel.org/lkml/887699ea-f837-6ed7-50bd-48720cea581c@gmail.com/
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c b/tools/=
-testing/selftests/bpf/prog_tests/task_kfunc.c
-index 740d5f644b40..99abb0350154 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
-@@ -79,6 +79,7 @@ static const char * const success_tests[] =3D {
- 	"test_task_from_pid_current",
- 	"test_task_from_pid_invalid",
- 	"task_kfunc_acquire_trusted_walked",
-+	"test_task_kfunc_flavor_relo",
- };
-=20
- void test_task_kfunc(void)
-diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_success.c b/too=
-ls/testing/selftests/bpf/progs/task_kfunc_success.c
-index b09371bba204..33e1eb88874f 100644
---- a/tools/testing/selftests/bpf/progs/task_kfunc_success.c
-+++ b/tools/testing/selftests/bpf/progs/task_kfunc_success.c
-@@ -18,6 +18,13 @@ int err, pid;
-  */
-=20
- struct task_struct *bpf_task_acquire(struct task_struct *p) __ksym __wea=
-k;
-+
-+struct task_struct *bpf_task_acquire___one(struct task_struct *task) __k=
-sym __weak;
-+/* The two-param bpf_task_acquire doesn't exist */
-+struct task_struct *bpf_task_acquire___two(struct task_struct *p, void *=
-ctx) __ksym __weak;
-+/* Incorrect type for first param */
-+struct task_struct *bpf_task_acquire___three(void *ctx) __ksym __weak;
-+
- void invalid_kfunc(void) __ksym __weak;
- void bpf_testmod_test_mod_kfunc(int i) __ksym __weak;
-=20
-@@ -55,6 +62,40 @@ static int test_acquire_release(struct task_struct *ta=
-sk)
- 	return 0;
- }
-=20
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(test_task_kfunc_flavor_relo, struct task_struct *task, u64 =
-clone_flags)
-+{
-+	struct task_struct *acquired =3D NULL;
-+	int fake_ctx =3D 42;
-+
-+	if (bpf_ksym_exists(bpf_task_acquire___one)) {
-+		acquired =3D bpf_task_acquire___one(task);
-+	} else if (bpf_ksym_exists(bpf_task_acquire___two)) {
-+		/* if verifier's dead code elimination doesn't remove this,
-+		 * verification should fail due to return w/o bpf_task_release
-+		 */
-+		acquired =3D bpf_task_acquire___two(task, &fake_ctx);
-+		err =3D 3;
-+		return 0;
-+	} else if (bpf_ksym_exists(bpf_task_acquire___three)) {
-+		/* Here, bpf_object__resolve_ksym_func_btf_id's find_ksym_btf_id
-+		 * call will find vmlinux's bpf_task_acquire, but subsequent
-+		 * bpf_core_types_are_compat will fail
-+		 *
-+		 * Should be removed by dead code elimination similar to ___two
-+		 */
-+		acquired =3D bpf_task_acquire___three(&fake_ctx);
-+		err =3D 4;
-+		return 0;
-+	}
-+
-+	if (acquired)
-+		bpf_task_release(acquired);
-+	else
-+		err =3D 5;
-+	return 0;
-+}
-+
- SEC("tp_btf/task_newtask")
- int BPF_PROG(test_task_acquire_release_argument, struct task_struct *tas=
-k, u64 clone_flags)
- {
---=20
-2.34.1
+> there is no turning back.
 
+Hmm, why there would be no turning back from this? This isn't a UAPI
+concern, is it? Whether or not a struct_ops implementation needs to
+implement .validate() or can just rely on the default behavior of "no
+.validate() callback implies the map is valid" is 100% an implementation
+detail that's hidden from the end user. This is meant to be a UX
+improvement for a developr defining a struct bpf_struct_ops instance in
+the main kernel, not someone defining an instance of that struct_ops
+(e.g. struct tcp_congestion_ops) in a BPF prog.
 
