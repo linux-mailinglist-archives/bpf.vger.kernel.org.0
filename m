@@ -1,156 +1,156 @@
-Return-Path: <bpf+bounces-7613-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7614-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EECA7799F8
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 23:54:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 873BB779AC5
+	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 00:40:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CE28281A65
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 21:54:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A433F1C20B31
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 22:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B003329D7;
-	Fri, 11 Aug 2023 21:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 634FC34CCA;
+	Fri, 11 Aug 2023 22:40:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029928833
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 21:54:24 +0000 (UTC)
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288AC2712;
-	Fri, 11 Aug 2023 14:54:23 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d67869054bfso720199276.3;
-        Fri, 11 Aug 2023 14:54:23 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F942F4E
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 22:40:43 +0000 (UTC)
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333851FED
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 15:40:42 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-26b362e4141so520431a91.2
+        for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 15:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691790862; x=1692395662;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FWFzHDJZSe7IcdQmnpxG0U9/1ZYD5Blo4+gtS89Sf8Y=;
-        b=qWxWmvSvomy+GlYkpiNxVPXlHfDHpdizpeoDeIBvHdTMa4G3YSZrPLA56qzMGICfhb
-         qb80OLnktOhh3ICpQ7aEkc/9H33KWKtBZGQ5oSUWk3lqMBQrCOC1dCIpOcwiVBFwnoy4
-         +BXqrP6N8VPlBpusK7owLY+8WZbP5Kzw6UlXyDHQ4g+U1qH5P84RScL0V3m8LVcxUKgh
-         zQ1JsE1LN2L6nMgfD2najav9qn/R/1XaN/HOWzcfzu1bABgaQlwxFaA9TBaklMm+yKTe
-         mVgyunsTYyS2FSCLxnzreVN5Lu01RIZaK9vu9avM9W+/bKWS63R6+ejkCduziZoW5RSO
-         OdjA==
+        d=google.com; s=20221208; t=1691793641; x=1692398441;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cnz6CXGdI5tjATMPj8y6HhcwUMQRaGJGbDyGoMCPg4U=;
+        b=2Ae+kGzmS5z/nH3/XEG20uNs8QDBmhh2LREi27N9xhaikMf+TZ6iACjg/+FCgW3Epe
+         yqJb2pOWcrVu5kIDGKIllDou3tRMxFnx1mTKaLUMrDvSiN3McIhTsRd9TVfTraHE7PUI
+         in/J3mIC6F6F/4T85RdPtyG35dp7Ai0pqnz6rM9uJkKc+b0hRi7PBlmP2gSPo65cgSR/
+         MJige+fBmfOuHziErAjmaQ4UYjyAOAwMANfa48xm4ALsN0mhDkWKZrNRD28mdZSvw7S1
+         mPOG4LR+/s+mfm2gnEn3hrnzfd90sioeAUaGfLkrs4Z4yk2g4HnjfVl7hEcIK6przox7
+         PJ7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691790862; x=1692395662;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FWFzHDJZSe7IcdQmnpxG0U9/1ZYD5Blo4+gtS89Sf8Y=;
-        b=hyvYArugGP5GxQzlM+tpJzp9AOTThLr0FfurpBeK1k4wje5QF56UUjTLtkeZ4T3aKV
-         KI/SLvZe/Y2B+t1nfWc5O+wXQLd/DfJoEn/hs1Ac5UwY6UhE/doIyyoPY5you3ExPo3d
-         eJ5IUrQpdRZi/EFMsXG9mSXKynrL4TdiggaMTpPebysBULBnfKRFMOMg1HdsNw1jFdzL
-         zEJJaXBOU44AfWDb6TEvCystmi5qF8qzLuNuWi0IIuNx4DibPphdJnQXWBZlnNqv89+j
-         GUY47UQhKjWz1Vf1kA6XYI6DumuM/HN3F7/zn4KgLn+L+sKWTlVDNtCkN1ZqHtAu9UwT
-         yzzw==
-X-Gm-Message-State: AOJu0Yxr2vW5l0zdzdpiByqzQQ+CvPXxk4fVrdjbhxw/CO42FfkhtGQH
-	toIQXiabIfoxEWRduEuNnA8=
-X-Google-Smtp-Source: AGHT+IEmEgyb8XHh6sDOFJXQYmxPlm9ssZFigSXSfosEn5xL9Y59cxJk/KKoOa4p2KMkpKkE3wNSsw==
-X-Received: by 2002:a25:2fd1:0:b0:cef:e2c4:d366 with SMTP id v200-20020a252fd1000000b00cefe2c4d366mr2805538ybv.48.1691790862200;
-        Fri, 11 Aug 2023 14:54:22 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:680f:f8a3:c49b:84db? ([2600:1700:6cf8:1240:680f:f8a3:c49b:84db])
-        by smtp.gmail.com with ESMTPSA id s3-20020a25b943000000b00cad44e2417esm1091611ybm.64.2023.08.11.14.54.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 14:54:21 -0700 (PDT)
-Message-ID: <0f5ea3de-c6e7-490f-b5ec-b5c7cd288687@gmail.com>
-Date: Fri, 11 Aug 2023 14:54:19 -0700
+        d=1e100.net; s=20221208; t=1691793641; x=1692398441;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cnz6CXGdI5tjATMPj8y6HhcwUMQRaGJGbDyGoMCPg4U=;
+        b=CFpHHXvjQT2VqzaBIyq/+bq1/XipxMfceGplTY06y9uJQsQYC0mVmPqP5wwQMF1TyV
+         RTNl5e5AvNDHZ87Hmddmebfh2wJABT6l7AgChAfBEnmvaJ6ZEIHbidjGVdgTLiL9ysXQ
+         u8TxpNIsI3DI5RtFxLjM+pe0aqFfXbY2HxR6s/8KktAl/1z3530o+APVT0cy6my3ZToj
+         HqVocXEY0GNgT3I9axDVr9Cp6MDPcMHV6cDxEyExP7Nn4T1nALvfT2Mv+XwNq1TB+U/H
+         9wOgBnBc4nP3IL72qFxsVVeB8aEGmuicL8Gq/7Rqf2yaSCpwaFBfdhrffu36Yb2w967M
+         wSaA==
+X-Gm-Message-State: AOJu0YyCwD+6vEDzG2zW+yKlDfNYE3gIQyqL+fpDlcq+d0ug2M2QKWeC
+	kRDUNAYibnxpPe5xprYLebJDeiE=
+X-Google-Smtp-Source: AGHT+IGiqZF+yuCc49aHwgx/JihoN5pke9u7tgs+2Too0gvZdMfPdWpNJ4dE16YWAtoyWPyGxO3yXV4=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:e74b:b0:1bc:5182:1ddb with SMTP id
+ p11-20020a170902e74b00b001bc51821ddbmr1221948plf.3.1691793641717; Fri, 11 Aug
+ 2023 15:40:41 -0700 (PDT)
+Date: Fri, 11 Aug 2023 15:40:40 -0700
+In-Reply-To: <20230811201346.3240403-1-davemarchevsky@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH bpf-next v2] bpf: Support default .validate() and
- .update() behavior for struct_ops links
-Content-Language: en-US
-To: David Vernet <void@manifault.com>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
- kernel-team@meta.com, tj@kernel.org, clm@meta.com, thinker.li@gmail.com
-References: <20230811172541.618284-1-void@manifault.com>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <20230811172541.618284-1-void@manifault.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Mime-Version: 1.0
+References: <20230811201346.3240403-1-davemarchevsky@fb.com>
+Message-ID: <ZNa46DsinJIj5r+/@google.com>
+Subject: Re: [PATCH bpf-next 1/2] libbpf: Support triple-underscore flavors
+ for kfunc relocation
+From: Stanislav Fomichev <sdf@google.com>
+To: Dave Marchevsky <davemarchevsky@fb.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>, 
+	dvernet@meta.com
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-LGTM!
-
-Acked-by: Kui-Feng Lee <thinker.li@gmail.com>
-
-
-On 8/11/23 10:25, David Vernet wrote:
-> Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
-> define the .validate() and .update() callbacks in its corresponding
-> struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
-> in its own right to ensure that the map is unloaded if an application
-> crashes. For example, with sched_ext, we want to automatically unload
-> the host-wide scheduler if the application crashes. We would likely
-> never support updating elements of a sched_ext struct_ops map, so we'd
-> have to implement these callbacks showing that they _can't_ support
-> element updates just to benefit from the basic lifetime management of
-> struct_ops links.
+On 08/11, Dave Marchevsky wrote:
+> The function signature of kfuncs can change at any time due to their
+> intentional lack of stability guarantees. As kfuncs become more widely
+> used, BPF program writers will need facilities to support calling
+> different versions of a kfunc from a single BPF object. Consider this
+> simplified example based on a real scenario we ran into at Meta:
 > 
-> Let's enable struct_ops maps to work with BPF_F_LINK even if they
-> haven't defined these callbacks, by assuming that a struct_ops map
-> element cannot be updated by default.
+>   /* initial kfunc signature */
+>   int some_kfunc(void *ptr)
 > 
-> Signed-off-by: David Vernet <void@manifault.com>
+>   /* Oops, we need to add some flag to modify behavior. No problem,
+>     change the kfunc. flags = 0 retains original behavior */
+>   int some_kfunc(void *ptr, long flags)
+> 
+> If the initial version of the kfunc is deployed on some portion of the
+> fleet and the new version on the rest, a fleetwide service that uses
+> some_kfunc will currently need to load different BPF programs depending
+> on which some_kfunc is available.
+> 
+> Luckily CO-RE provides a facility to solve a very similar problem,
+> struct definition changes, by allowing program writers to declare
+> my_struct___old and my_struct___new, with ___suffix being considered a
+> 'flavor' of the non-suffixed name and being ignored by
+> bpf_core_type_exists and similar calls.
+> 
+> This patch extends the 'flavor' facility to the kfunc extern
+> relocation process. BPF program writers can now declare
+> 
+>   extern int some_kfunc___old(void *ptr)
+>   extern int some_kfunc___new(void *ptr, int flags)
+> 
+> then test which version of the kfunc exists with bpf_ksym_exists.
+> Relocation and verifier's dead code elimination will work in concert as
+> expected, allowing this pattern:
+> 
+>   if (bpf_ksym_exists(some_kfunc___old))
+>     some_kfunc___old(ptr);
+>   else
+>     some_kfunc___new(ptr, 0);
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 > ---
->   kernel/bpf/bpf_struct_ops.c | 15 +++++++++------
->   1 file changed, 9 insertions(+), 6 deletions(-)
+>  tools/lib/bpf/libbpf.c | 21 ++++++++++++++++++++-
+>  1 file changed, 20 insertions(+), 1 deletion(-)
 > 
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index eaff04eefb31..fdc3e8705a3c 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -509,9 +509,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->   	}
->   
->   	if (st_map->map.map_flags & BPF_F_LINK) {
-> -		err = st_ops->validate(kdata);
-> -		if (err)
-> -			goto reset_unlock;
-> +		err = 0;
-> +		if (st_ops->validate) {
-> +			err = st_ops->validate(kdata);
-> +			if (err)
-> +				goto reset_unlock;
-> +		}
->   		set_memory_rox((long)st_map->image, 1);
->   		/* Let bpf_link handle registration & unregistration.
->   		 *
-> @@ -663,9 +666,6 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->   	if (attr->value_size != vt->size)
->   		return ERR_PTR(-EINVAL);
->   
-> -	if (attr->map_flags & BPF_F_LINK && (!st_ops->validate || !st_ops->update))
-> -		return ERR_PTR(-EOPNOTSUPP);
-> -
->   	t = st_ops->type;
->   
->   	st_map_size = sizeof(*st_map) +
-> @@ -823,6 +823,9 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
->   	if (!bpf_struct_ops_valid_to_reg(new_map))
->   		return -EINVAL;
->   
-> +	if (!st_map->st_ops->update)
-> +		return -EOPNOTSUPP;
-> +
->   	mutex_lock(&update_mutex);
->   
->   	old_map = rcu_dereference_protected(st_link->map, lockdep_is_held(&update_mutex));
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 17883f5a44b9..8949d489a35f 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -550,6 +550,7 @@ struct extern_desc {
+>  	int btf_id;
+>  	int sec_btf_id;
+>  	const char *name;
+> +	char *essent_name;
+>  	bool is_set;
+>  	bool is_weak;
+>  	union {
+> @@ -3770,6 +3771,7 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+>  	struct extern_desc *ext;
+>  	int i, n, off, dummy_var_btf_id;
+>  	const char *ext_name, *sec_name;
+> +	size_t ext_essent_len;
+>  	Elf_Scn *scn;
+>  	Elf64_Shdr *sh;
+>  
+> @@ -3819,6 +3821,14 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+>  		ext->sym_idx = i;
+>  		ext->is_weak = ELF64_ST_BIND(sym->st_info) == STB_WEAK;
+>  
+> +		ext_essent_len = bpf_core_essential_name_len(ext->name);
+> +		ext->essent_name = NULL;
+> +		if (ext_essent_len != strlen(ext->name)) {
+> +			ext->essent_name = malloc(ext_essent_len + 1);
+
+Do we care about malloc's potential -ENOMEM here?
 
