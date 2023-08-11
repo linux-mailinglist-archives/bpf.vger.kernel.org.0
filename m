@@ -1,124 +1,113 @@
-Return-Path: <bpf+bounces-7506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7507-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5DF5778400
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 01:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F58F778471
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 02:01:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A04E7281EE9
-	for <lists+bpf@lfdr.de>; Thu, 10 Aug 2023 23:15:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29F02281D75
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 00:01:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC416FB3;
-	Thu, 10 Aug 2023 23:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC3A1800D;
+	Fri, 11 Aug 2023 00:01:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463BF1877
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 23:15:13 +0000 (UTC)
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19642D47
-	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 16:15:11 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-267f18688efso866376a91.1
-        for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 16:15:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691709311; x=1692314111;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aMuVuUELujEyMxUarfaXkK7Kz9zqbETZ2pCK99qy/60=;
-        b=tdRltnptjesiJDlumN+KCLy7vDzJPuhqCPr2APhv+S6vcuDOVJlVfyDG2d7+yA/bIN
-         Fr5NGa1Yaei0CmzoPhfuSY9lQm+RsEy87Q5jxMWsCvk/WHUbK7LOZVQhFXEBL1CnHJP+
-         1U2pDKXskzzJXMdUw+TFBy5zKc3pzE6wL4lxxDhgwz3dr0JvHk7F41bR/UTMUhg7Vnrj
-         uanzaJuRRHbmkxthcnerF9V1w9av50HIbK2wzMCpjMLWqNAtLWMEEiFVhuzX3Cto5adS
-         P+YaHkiRI08feJD2J7p25BW81Yp1PbSxI3d8vmPCnfAMAqDRu2Km/07jB6aXhK6EqRw+
-         tPhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691709311; x=1692314111;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aMuVuUELujEyMxUarfaXkK7Kz9zqbETZ2pCK99qy/60=;
-        b=HSkP367YwQmOMyqBhTLApCQFVrVtfc0dFAHRpxqfjKfxpmWJG5EYiRON+aDCQCAV8E
-         oQ453AVADMzzUWLKMCyoAFbwyGoCaPGNuEICoUFujhAsbKNgjYZ3LSh15y5Bmsc053us
-         cHd1i64BAPX6Sshb9enijDtLtvxFGcIQYlA+4zin9SI0QBLeTgKcbN4m019tLuoBxLJ6
-         eRRDguv2LHX2TNck1IvLMzDn/kOEcZSMpVaoj0fdSRw6BqPlHDpZP6MogXD8UV/f7Ml4
-         dbailB2h00DtitABSDdEiX21KYSyZb24p8JEQeRdXWnCFRvLFs7t6eABxeC99jFVyazX
-         ukgg==
-X-Gm-Message-State: AOJu0YwmXwToLdRixKvNSvKnjy98pd0Ln78B9eAwbs0YR8ZqH87Z70c3
-	bPvH60/UzY8OVhsk0xZsRlRezM4=
-X-Google-Smtp-Source: AGHT+IE2r/FSTHWCgDHBwTpQo4Jb++Ywt93XIGJAIrKRnp9rKjsdBgMqTFoG1A9tllXvBrsdceu7kQQ=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90b:4393:b0:263:3437:a0b0 with SMTP id
- in19-20020a17090b439300b002633437a0b0mr9075pjb.3.1691709311296; Thu, 10 Aug
- 2023 16:15:11 -0700 (PDT)
-Date: Thu, 10 Aug 2023 16:15:09 -0700
-In-Reply-To: <20230810230141.GA529552@maniforge>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3A020F3
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 00:01:39 +0000 (UTC)
+X-Greylist: delayed 429 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Aug 2023 17:01:37 PDT
+Received: from out203-205-251-66.mail.qq.com (out203-205-251-66.mail.qq.com [203.205.251.66])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BBF2D52
+	for <bpf@vger.kernel.org>; Thu, 10 Aug 2023 17:01:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1691712095;
+	bh=Dw7XtY4SevyEQWP/R3km8lwVfji8O5oF8nQ61Ju8lII=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=fPgoqTGhW84AbF8oFHVhFBR65ge9CkjUUxSCPgTQngOz1jIdCsPxVRb/bfxxNicLr
+	 08qMFDqTZFVMtKrHilrO05kM76G4vjeC4vP7EM7M6088MKk5PamdJDrcuGWm7qVONn
+	 AnXKwP9r0F05LjceNc3Spq3KeeMXotBDLtl4RVW0=
+Received: from localhost.localdomain ([39.156.73.12])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id 5C93239; Fri, 11 Aug 2023 08:01:28 +0800
+X-QQ-mid: xmsmtpt1691712088tsfdmiii9
+Message-ID: <tencent_9C20DA1AB80A0564315EF2A91CBF7A8C260A@qq.com>
+X-QQ-XMAILINFO: NY3HYYTs4gYS7ayxzI94vsOZqKVqzudryzUCgm2P/WZtV5OQZSk4thPDk4eEea
+	 aOAs2ToOp0ryzFXZFmC5//FrsUCvlph1kCqtBy17GTWj5v06gIDvPYoQPUAm3eXXgwY+8YZcn7wH
+	 nZ5Bv033LLS2gs6ZbFTeZOMZbGPBooqpR1kVEX8oUbEGLAQqFDyrVgCdphpUsnGtDFCjH1G9RKYd
+	 JQIYkqSvxZPkF0QUpRYPQjsJTW+WESgkevpos0ZrUv1JE2pBY+LufkvpE7iDJRFLh+uslBk1H+Xc
+	 vM3p+r4h/oz9x+mDl2UcnjveZnz//TyMkAx2s9tuECDg0I9xxr8htuMrnBWBvG2itJOIgU1nNx5a
+	 ihlL0pc2XKwPjmHyOj8rHX3E2rNLbpYYhoceF94vtR8XaoY+At/u1fQEV3OiykDtZg7ZBTXeLbWN
+	 SCHBBCDoBTct28+Eq4HrXH9o1hVl8h5MGy7NSzZcuv6q5RwdpeQ0uWHW/AIcuCw9Tto+w/lrlu+b
+	 EadIcOJW7lATigJ8z7ITNUkSQeWtiuYTXmgkOXXW9+gajSAwIUdIfiavia2zLSCJQE2eadhn+tG0
+	 Pbzy5+KuLpcV1MCGF1GOxkHvf0YwUUtY5caEQpeHrupbrQBPm6GQAOTzNppjpGQSBH/WaDyNopv4
+	 OaFd1ALlwVZhbbuaSXRa/4/TYldXvISgNPCvc4OgWUx2e0/rR6wh7w0cOHYxNP9HdKrfTXjphFH7
+	 psBmTEBCjRRMO4RxHMeZ+5CKTkwmVhO65hHeSuAutrUujDm73PERC3mmza6exk2f/z9rt4v4EKIr
+	 T2K8MkaXdR1hX1ezbY8mT34Sazzt0qGeXOL7xj5DU7iRQepKbj+BahIhiHvrzItdlrqY9NYvnqkG
+	 CvPQCxjmB6TOSOp09g5b7xGoNFeB3PQuQr7p+pGjdx6elLQW7QCaEwTN0B37dkjt/i+ZWex7/RdC
+	 FvUpfn5YT7dHIdykWUVks76hC5OA2M4AnIJDLTxXWrMmfNYz7KOA+QtVZDcRaQ
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: Rong Tao <rtoax@foxmail.com>
+To: sdf@google.com
+Cc: alexandre.torgue@foss.st.com,
+	andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	chantr4@gmail.com,
+	daniel@iogearbox.net,
+	deso@posteo.net,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	iii@linux.ibm.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	martin.lau@linux.dev,
+	mcoquelin.stm32@gmail.com,
+	mykolal@fb.com,
+	rongtao@cestc.cn,
+	rostedt@goodmis.org,
+	rtoax@foxmail.com,
+	shuah@kernel.org,
+	song@kernel.org,
+	xukuohai@huawei.com,
+	yonghong.song@linux.dev,
+	zwisler@google.com
+Subject: Re: [PATCH bpf-next] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date: Fri, 11 Aug 2023 08:01:28 +0800
+X-OQ-MSGID: <20230811000128.298569-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <ZNUnxJ26/4QfvoC+@google.com>
+References: <ZNUnxJ26/4QfvoC+@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20230810220456.521517-1-void@manifault.com> <ZNVousfpuRFgfuAo@google.com>
- <20230810230141.GA529552@maniforge>
-Message-ID: <ZNVvfYEsLyotn+G1@google.com>
-Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
- behavior for struct_ops links
-From: Stanislav Fomichev <sdf@google.com>
-To: David Vernet <void@manifault.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
-	tj@kernel.org, clm@meta.com, thinker.li@gmail.com
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-	autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 08/10, David Vernet wrote:
-> On Thu, Aug 10, 2023 at 03:46:18PM -0700, Stanislav Fomichev wrote:
-> > On 08/10, David Vernet wrote:
-> > > Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
-> > > define the .validate() and .update() callbacks in its corresponding
-> > > struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
-> > > in its own right to ensure that the map is unloaded if an application
-> > > crashes. For example, with sched_ext, we want to automatically unload
-> > > the host-wide scheduler if the application crashes. We would likely
-> > > never support updating elements of a sched_ext struct_ops map, so we'd
-> > > have to implement these callbacks showing that they _can't_ support
-> > > element updates just to benefit from the basic lifetime management of
-> > > struct_ops links.
-> > > 
-> > > Let's enable struct_ops maps to work with BPF_F_LINK even if they
-> > > haven't defined these callbacks, by assuming that a struct_ops map
-> > > element cannot be updated by default.
-> > 
-> > Any reason this is not part of sched_ext series? As you mention,
-> > we don't seem to have such users in the three?
-> 
-> Hi Stanislav,
-> 
-> The sched_ext series [0] implements these callbacks. See
-> bpf_scx_update() and bpf_scx_validate(). 
-> 
-> [0]: https://lore.kernel.org/all/20230711011412.100319-13-tj@kernel.org/
-> 
-> We could add this into that series and remove those callbacks, but this
-> patch is fixing a UX / API issue with struct_ops links that's not really
-> relevant to sched_ext. I don't think there's any reason to couple
-> updating struct_ops map elements with allowing the kernel to manage the
-> lifetime of struct_ops maps -- just because we only have 1 (non-test)
-> struct_ops implementation in-tree doesn't mean we shouldn't improve APIs
-> where it makes sense.
-> 
-> Thanks,
-> David
+Thanks for your advise, you are right, i just submit v2 [0].
 
-Ack. I guess up to you and Martin. Just trying to understand whether I'm
-missing something or the patch does indeed fix some use-case :-)
+I just found that, because of the modified patch, your email address was not
+obtained through scripts/get_maintainer.pl, so the v2 [0] email was not sent
+to you, sorry.
+
+Rong Tao,
+Good day.
+
+[0] v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
+
 
