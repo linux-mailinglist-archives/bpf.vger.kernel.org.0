@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-7619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35854779B21
-	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 01:18:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06404779B4B
+	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 01:22:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 432E81C20B42
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 23:18:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29EC61C20B22
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 23:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418BB3D3A1;
-	Fri, 11 Aug 2023 23:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1046E3D3A2;
+	Fri, 11 Aug 2023 23:22:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E6E34CCC
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 23:17:50 +0000 (UTC)
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5F4E5C
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 16:17:47 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-583fe10bb3cso26959817b3.2
-        for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 16:17:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBCEF329D4
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 23:22:33 +0000 (UTC)
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A94E73
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 16:22:09 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-586a3159588so35846067b3.0
+        for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 16:22:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691795867; x=1692400667;
+        d=gmail.com; s=20221208; t=1691796125; x=1692400925;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YxZ4F079z94S9ElgccgQazE6Z7fhPNUm2tlTmoN9338=;
-        b=ITjc5ISPVGBoWwYWn4szq2tjfB7tVDE3e1URJbRe9MZQjp+V+02v9ttHMmrU9dV06Q
-         +gbj0W2EvfbQPNaD0C+1MlLU0aR2N8i9qT/0heHAtIXbo/NVqZ+Ik38OZOitUtbetkvL
-         AJiUQH+8j/d/vm+/vb1AGqUBXbXLIl7jlkwCIrU6ZRU47NEIEx3DQegwKxt5g9z7CLGb
-         QFmXJVvA8VUVYyAa2h6bX9Fc2oRkzveIxs/qEja7YUyP83LX3ZKQos63QXLHiI3RoGwX
-         744/qYoqK6ajYfXNRp1pK6CSM5tSXBYbtqWlQrqMxQmNUmco1S7HimF5K0cM3f2OsD5t
-         X8kg==
+        bh=5GL/cL7PfMq9HhHTr9HiqB5q20RVJwth7m8ZG4Dx9ws=;
+        b=HSD1G9FsbxYjmC0AD/vHWl3Eh1j/xuvelgyB0Ns8EGw5gFjyY576h0UXIoun6Is/Hl
+         RzGsudsIu1RnZMZj+N8PGDyaAAMurrpyWfyetwPJb5XJiWmlvbCcbZt7NQUBqf8z9AyL
+         9H34ka6UD5vH5OPNBZmcWcg1gX8vnVVbkM8c72o8SDF7qzRxX6HrI266S/AZonHZnIsq
+         n2eMBqwa9OVoYhQpbfJ33FotarTJ52UcxLjxXz2MUZO9w3/9sMtqdvFkLaD1fbr54+WO
+         mihdUUrwYI4NtrMhDmCv99x5OhJAZBRPoAhnaM1YXTtAZwqksHBb1lxNAV3kEcqizyP6
+         o23w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691795867; x=1692400667;
+        d=1e100.net; s=20221208; t=1691796125; x=1692400925;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YxZ4F079z94S9ElgccgQazE6Z7fhPNUm2tlTmoN9338=;
-        b=QPkaYRxtKQlctR2e2aJrW2Q53jtaQFNEwgHxxR/8LKs5dA0E/8+LAVxUraViI6YPLi
-         hfktJQK69mWGmrNyu8YPWe+lSSYmJM9GGFUolJpCbrryyA8pGarJbOvoeI9oq73Cpmxn
-         tWQXQ36P0nodaEVrVuwgIeuRihSULIJ6oEKoaZMxDjy+fBNdSEHOEmmE6T70vWOMmXmN
-         AHPQ1jVmLrmmQSuV0859uy9kGBU+emJZB3ttvRweWhJDfS8aaCyI/Gy4iXp/wgKtWMYY
-         BEj0+mi4xJuXc3sDs/+RviVIZIdKmkNOdgvlJOotH3Q+OJLWXl5XhNjvs0iyiyDXybga
-         wMJQ==
-X-Gm-Message-State: AOJu0YxqBicDPtN/iukYpPkPMzj590DnGnC4VGB3IHRUj5mEcfZujMRo
-	QvDs1pPPFEpp4eNvyp/xEZ8=
-X-Google-Smtp-Source: AGHT+IF5DSMEfXil6oMQj2fuIj3xBEuWiqLms4GPX9UFpySYgEIj0S0DTEbVnrgUBe9EtqlGXCSTXQ==
-X-Received: by 2002:a0d:d7c2:0:b0:586:a705:8d4a with SMTP id z185-20020a0dd7c2000000b00586a7058d4amr4131155ywd.4.1691795866976;
-        Fri, 11 Aug 2023 16:17:46 -0700 (PDT)
+        bh=5GL/cL7PfMq9HhHTr9HiqB5q20RVJwth7m8ZG4Dx9ws=;
+        b=b5/1amobmDnqLvDJZl/NNU97rlz0ddePGxKa0g99hC1Jl+sk5/1AmDaAeyidiBjFei
+         IdtWMRnh5izeas4mk+92mlFhocvfGA0qsBUQzYod3wxiLE4KpZ+8kMWIMX0u99i285RZ
+         1GVRf0ZM1YUXviX5ALewnOkTFIUhMC1d6P+UjlGKlDtValOBLYEwLzCm/jtg7WW+8moO
+         PqX4eyJoikWcdOoYB+dOIMaNhBXWgSBf8j70s7W3cORqPvFkflgKn/Ps4t22f2FS1C7F
+         mt9Ux6mkFroEuURP/JlGQMiR1+mV7kBYviPidiCm1HuKPkXcvF/Yyow747V6gc3NJav7
+         3EsQ==
+X-Gm-Message-State: AOJu0YxyZKcAOS42VPB95CgM9H3whvU9E+rUY6/tZaU5SqdD6U6R+LkE
+	LjuibCrmjrUluBDP993oKM4=
+X-Google-Smtp-Source: AGHT+IF1/VbSrFwPGOiqQLDEaaE2JN/nXhxTOu6qKAx0ct+3XEZVMGrw3bE3IE1MfuxmkEp+lg0HgA==
+X-Received: by 2002:a0d:cc53:0:b0:57a:3942:bb74 with SMTP id o80-20020a0dcc53000000b0057a3942bb74mr3791327ywd.17.1691796125489;
+        Fri, 11 Aug 2023 16:22:05 -0700 (PDT)
 Received: from ?IPV6:2600:1700:6cf8:1240:680f:f8a3:c49b:84db? ([2600:1700:6cf8:1240:680f:f8a3:c49b:84db])
-        by smtp.gmail.com with ESMTPSA id i125-20020a0dc683000000b0055a07c7be39sm1297594ywd.31.2023.08.11.16.17.45
+        by smtp.gmail.com with ESMTPSA id p11-20020a0de60b000000b0057060bb2874sm1289029ywe.37.2023.08.11.16.22.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 16:17:46 -0700 (PDT)
-Message-ID: <184261ed-cb16-23be-d678-e0dbbd7dd6c7@gmail.com>
-Date: Fri, 11 Aug 2023 16:17:45 -0700
+        Fri, 11 Aug 2023 16:22:05 -0700 (PDT)
+Message-ID: <1f63f380-2bfb-62cb-e1c9-9c784690af85@gmail.com>
+Date: Fri, 11 Aug 2023 16:22:03 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -244,10 +244,6 @@ On 8/11/23 16:01, Stanislav Fomichev wrote:
 > Running the loop every time we get a sockopt syscall another time
 > seems like something we can avoid? (even though it's a slow path,
 > seems like we can do better?)
-
-I can move this function into compute_effective_progs().
-
-
 > 
 >> +
 >> +static __always_inline int
@@ -594,6 +590,9 @@ I can move this function into compute_effective_progs().
 > 
 > I don't think we split the lines even if they are too long.
 > Makes them ungreppable :-(
+
+Got it!
+
 > 
 >>   		return -EINVAL;
 >>   	}
@@ -618,4 +617,6 @@ I can move this function into compute_effective_progs().
 > Why do we need to export the flag? Do we still want the users
 > to do something based on the presence/absence of
 > BPF_SOCKOPT_FLAG_OPTVAL_USER?
+
+I will remove this flag from the view of BPF programs.
 
