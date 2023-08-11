@@ -1,81 +1,296 @@
-Return-Path: <bpf+bounces-7595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 755EA7795D7
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 19:10:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C15F779605
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 19:21:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61E92281C0D
-	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 17:10:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E8051C216FE
+	for <lists+bpf@lfdr.de>; Fri, 11 Aug 2023 17:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09ADE219CA;
-	Fri, 11 Aug 2023 17:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF22E219DA;
+	Fri, 11 Aug 2023 17:21:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A55EA18AE1
-	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 17:10:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BF09C433C8;
-	Fri, 11 Aug 2023 17:10:03 +0000 (UTC)
-Date: Fri, 11 Aug 2023 13:10:01 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Florent Revest <revest@chromium.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
- Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>
-Subject: Re: [RFC PATCH v2 1/6] fprobe: Use fprobe_regs in fprobe entry
- handler
-Message-ID: <20230811131001.7b22a17d@gandalf.local.home>
-In-Reply-To: <20230810071330.d41a728f996f76e3243f469e@kernel.org>
-References: <169139090386.324433.6412259486776991296.stgit@devnote2>
-	<169139091575.324433.13168120610633669432.stgit@devnote2>
-	<CABRcYmKRAbOuqNQm5mCwC9NWbtcz1JJDYL_h5x6dK77SJ5FRkA@mail.gmail.com>
-	<20230809231011.b125bd68887a5659db59905e@kernel.org>
-	<CABRcYmKEd=zmriE8VUnSTvybwA962r60+QaRJZK=KNqYixd_eg@mail.gmail.com>
-	<CABRcYmLHfQsjwf7dk+A0Q96iANhj60M0g_xRjVyMUY9LJPybNg@mail.gmail.com>
-	<20230810071330.d41a728f996f76e3243f469e@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81BCD1172F
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 17:21:28 +0000 (UTC)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F5630C1
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 10:21:26 -0700 (PDT)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 744C5C16951F
+	for <bpf@vger.kernel.org>; Fri, 11 Aug 2023 10:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1691774486; bh=9gDIewtekosY0ZAp/+5A7uKTfXJoMwJV8DibNAvWLD8=;
+	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=tiOBUfv6dVH/9wAnFhu5kh65ztLAP010xGfqSTY1dGSZH/TSqln+TyJZ2qmZxLqBb
+	 LEeR34UA2PBciExzKDNGwNfJWqI6G9Gi+UTjvm3OJtvwVKtMCzEhUaHvZYV0N+LcTN
+	 +/5vayMKZ00HZxu9V4MFGZhGrjoq0De/9EMdw4a0=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Fri Aug 11 10:21:26 2023
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 43D64C151067;
+	Fri, 11 Aug 2023 10:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1691774486; bh=9gDIewtekosY0ZAp/+5A7uKTfXJoMwJV8DibNAvWLD8=;
+	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=tiOBUfv6dVH/9wAnFhu5kh65ztLAP010xGfqSTY1dGSZH/TSqln+TyJZ2qmZxLqBb
+	 LEeR34UA2PBciExzKDNGwNfJWqI6G9Gi+UTjvm3OJtvwVKtMCzEhUaHvZYV0N+LcTN
+	 +/5vayMKZ00HZxu9V4MFGZhGrjoq0De/9EMdw4a0=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id BFA8CC151067
+ for <bpf@ietfa.amsl.com>; Fri, 11 Aug 2023 10:21:24 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -5.408
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+	RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id WocPZaLl1i2J for <bpf@ietfa.amsl.com>;
+ Fri, 11 Aug 2023 10:21:20 -0700 (PDT)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com
+ [209.85.128.175])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 00329C14CF0D
+ for <bpf@ietf.org>; Fri, 11 Aug 2023 10:21:19 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id
+ 00721157ae682-589a9fc7fc6so22421817b3.1
+ for <bpf@ietf.org>; Fri, 11 Aug 2023 10:21:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20221208; t=1691774479; x=1692379279;
+ h=user-agent:in-reply-to:content-disposition:mime-version:references
+ :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=pXPGMYl+Um9Suj2eKbpL2yH2IeMxL4HkaLB/aol2J90=;
+ b=FlTsBrbZ4kvV1Sm9UkHyI75zK2+Mmsb+2zoPAYW7pIZ9IdbPCk75LwXdPkdDbSabfD
+ aH9CVcdhIaKVvW3ZQrpEa5e05SKTVFsA9qkz8ONFTic9Pkuk81k68GpCvf47TZsLdw+0
+ wwqvNSkz3FVPe1tCTJBnCihu87MsX6b4MRQrKieZ3ZIpCevb5xu7YjVTAJ+dKUzD7ONI
+ EbDp2oPZX+0RzjIhL0MVdxCVhCm+7epN6Pyw74WbAnpytmzrGim/Nim2h6rlYhMMJqkn
+ 42xqEdZcGTXF8dSwYSAwn/ktJu8XlEq3GggZtBloUHCjQzbVF2h3qzj9hYCU542d9jPk
+ L+lA==
+X-Gm-Message-State: AOJu0YwsnOrEzrY559aaqi4SbCqKF/0Ho33vCulQHchjdaIfk1RzKx/Q
+ spE3Y2uLASTh/5k2QkJ4kWM=
+X-Google-Smtp-Source: AGHT+IE/plexj042A4WnLi49Lo4hP8apDVXjeVpxS1ldybq3FVRtuoFYx6k7dWEAEyFf0OafvdLkFQ==
+X-Received: by 2002:a05:690c:3389:b0:579:f5c2:b16e with SMTP id
+ fl9-20020a05690c338900b00579f5c2b16emr2931672ywb.31.1691774478964; 
+ Fri, 11 Aug 2023 10:21:18 -0700 (PDT)
+Received: from maniforge ([24.1.27.177]) by smtp.gmail.com with ESMTPSA id
+ g19-20020a815213000000b0057d24f8278bsm1100597ywb.104.2023.08.11.10.21.18
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 11 Aug 2023 10:21:18 -0700 (PDT)
+Date: Fri, 11 Aug 2023 12:21:16 -0500
+From: David Vernet <void@manifault.com>
+To: Watson Ladd <watsonbladd@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Dave Thaler <dthaler@microsoft.com>, Christoph Hellwig <hch@infradead.org>,
+ "bpf@ietf.org" <bpf@ietf.org>, bpf <bpf@vger.kernel.org>
+Message-ID: <20230811172116.GC542801@maniforge>
+References: <CACsn0ckZO+b5bRgMZhOvx+Jn-sa0g8cBD+ug1CJEdtYxSm_hgA@mail.gmail.com>
+ <PH7PR21MB3878D8DCEF24A5F8E52BA59DA303A@PH7PR21MB3878.namprd21.prod.outlook.com>
+ <CAADnVQJ1fKXcsTXdCijwQzf0OVF0md-ATN5RbB3g10geyofNzA@mail.gmail.com>
+ <CACsn0cmf22zEN9AduiRiFnQ7XhY1ABRL=SwAwmmFgxJvVZAOsg@mail.gmail.com>
+ <CAADnVQ+O0CZQ1-5+dBiPWgZig3MVRX92PWPwNCrL7rG+4Xrbag@mail.gmail.com>
+ <CACsn0cmvuGBKd3erDQKugygZfhT-Cu8xYBJ3hCETp6a-1HNbYw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+In-Reply-To: <CACsn0cmvuGBKd3erDQKugygZfhT-Cu8xYBJ3hCETp6a-1HNbYw@mail.gmail.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/_WoygSMs8VP6QNG6A8qRtFl0Hgw>
+Subject: Re: [Bpf] Review of draft-thaler-bpf-isa-01
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
+ <bpf.ietf.org>
+List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
+ <mailto:bpf-request@ietf.org?subject=unsubscribe>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
+ <mailto:bpf-request@ietf.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Thu, 10 Aug 2023 07:13:30 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-
-> > 
-> > I hope that makes my thoughts clearer? It's a hairy topic ahah  
+On Tue, Aug 01, 2023 at 07:33:59PM -0700, Watson Ladd wrote:
+> In reply to a long conversation:
+> <snip>
+> >
+> > Could you please be specific which instruction in table 4 is not obvious?
 > 
-> Ah, I see your point.
+> The question isn't obvious, the question is unambigious, and C is not
+> great for this. Maybe with a reference and some text it would get
+> better.
+> >
+> > > >
+> > > > > > The good news is I think this is very fixable although tedious.
+> > > > > >
+> > > > > > The other thornier issues are memory model etc. But the overall structure seems good
+> > > > > > and the document overall makes sense.
+> > > >
+> > > > What do you mean by "memory model" ?
+> > > > Do you see a reference to it ? Please be specific.
+> > >
+> > > No, and that's the problem. Section 5.2 talks about atomic operations.
+> > > I'd expect that to be paired with a description of barriers so that
+> > > these work, or a big warning about when you need to use them.
+> >
+> > That's a good suggestion.
+> > A warning paragraph that BPF ISA does not have barrier instructions
+> > is necessary.
+> >
+> > > For
+> > > clarity I'm pretty unfamiliar with bpf as a technology, and it's
+> > > possible that with more knowledge this would make sense. On looking
+> > > back on that I don't even know if the memory space is flat, or
+> > > segmented: can I access maps through a value set to dst+offset, or
+> > > must I always used index? I'm just very confused.
+> >
+> > flat vs segmented is an orthogonal topic.
+> > We definitely need to cover it in the architecture doc.
+> > BPF WG charter requires us to produce it as Informational doc eventually.
 > 
-> static void fprobe_init(struct fprobe *fp)
-> {
->         fp->nmissed = 0;
->         if (fprobe_shared_with_kprobes(fp))
->                 fp->ops.func = fprobe_kprobe_handler;
->         else
->                 fp->ops.func = fprobe_handler;
->         fp->ops.flags |= FTRACE_OPS_FL_SAVE_REGS; <---- This flag!
-> }
+> Huh? If you access memory through specialized descriptors+offsets
+> that's very different from arbitrary computations with addresses, even
+> if they do trap. A little explanation might orient the reader to
+> understand what is going on. As is I thought "ok, it's flat" and then
+> saw the maps and really got thrown for a loop.
 > 
-> So it should be FTRACE_OPS_FL_ARGS. Let me fix that.
+> >
+> > As far as memory model BPF adopts LKMM (Linux Kernel Memory Model).
+> > https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p0124r7.html
+> >
+> > We can add a reference to it from BPF ISA doc, but since
+> > there are no barrier instructions at the moment the memory model
+> > statement would be premature.
+> > The work on "BPF Memory Model" have been ongoing for quite some time.
+> > For example see:
+> > https://lpc.events/event/11/contributions/941/attachments/859/1667/bpf-memory-model.2020.09.22a.pdf
+> >
+> > BPF Memory Model is certainly an important topic, but out of scope for ISA.
+> 
+> I expect that an ISA defines the semantics of the instructions. Which
+> absolutely includes the memory model.  Now maybe we're envisioning a
+> different splitting of this information, but I don't see how it can't
+> be at a different level if you want to give the instructions
+> semantics.
 
-Yes, this was the concern that I was bringing up, where I did not see an
-advantage of fprobes over kprobes using ftrace, because they both were
-saving all registers.
+Hello Watson,
 
--- Steve
+Thank you for sharing your thoughts on the ISA standard document thus
+far. I tend to agree with you that defining a memory model (including a
+memory consistency model) is inevitable, and I think it will be critical
+for ensuring source code compatibility between different BPF
+implementations. That said, I'm not sure that it needs to be a blocker
+to us ratifying this initial proposed standard (not that you said that
+explicitly) for the ISA, for a couple of reasons.
+
+Firstly and perhaps most importantly, there is a precedence for ISA
+standards evolving, sometimes significantly, as the platforms and
+ecosystems surrounding a standard mature. RISC-V is an excellent example
+of this. The 2.0 version of the Unprivileged ISA standard [0] published
+in 2019 included_many changes that were not present in the initial
+publication [1] of the standard in 2011.
+
+[0]: https://github.com/riscv/riscv-isa-manual/releases/download/Ratified-IMAFDQC/riscv-spec-20191213.pdf
+[1]: https://people.eecs.berkeley.edu/~krste/papers/EECS-2011-62.pdf
+
+Note, for example, that the RVWMO  (RISC-V Weak Memory Ordering) Memory
+Consistency Model was not ratified until v2.0 of the standard, which was
+8 years following the publication of v1. Subsection 2.8 in v1.0 does
+describe a Memory Model, but it's very high level, and doesn't even
+mention e.g. device I/O. This is despite the v1.0 publication describing
+"Atomic Memory Operation Instructions" as follows (excluding the diagram
+showing the encoding which I won't take the time to type out in
+plaintext form):
+
+> The atomic memory operation (AMO) instructions perform
+> read-modify-write operations for multiprocessor synchronization and
+> are encoded with an R-type instruction format. These AMO instructions
+> atomically load a data value from the address in rs1, place the value
+> into register rd, apply a binary operator to the loaded value and the
+> value in rs2, then store the result back to the address in rs1. AMOs
+> can either operate on 32-bit or 64-bit words in memory. For RV64,
+> 32-bit AMOs always sign-extend the value placed in rd. The address
+> held in rs1 must be naturally aligned to the size of the operand
+> (i.e., eight-byte aligned for 64-bit words and four-byte aligned for
+> 32-bit words). If the address is not naturally aligned, a misaligned
+> address trap will be generated.  The operations supported are integer
+> add, logical AND, logical OR, swap, and signed and unsigned integer
+> maximum and minimum.
+
+This is in contrast to v2.0, which dedicates the entirety of Chapter 8:
+"A" Standard Extension for Atomic Instructions, Version 2.1 to
+discussing and formalizing atomic instructions.
+
+That's all to say, I don't think we need to have a full and "feature
+complete" ISA standard for our initial ratification. Speaking for
+myself, I think it would be prudent for us to actually hold off on
+defining some of these finer points like the memory model until we've
+had more time to think about what the proper memory model would look
+like for BPF rather than just standardizing what industry has built thus
+far.
+
+What we _definitely_ need to think through completely in this early
+stage is how we're going to enable extensions to the standard, because
+no matter how much work we put into this version, we're inevitably going
+to have to write extensions (not that you're claiming otherwise).
+
+In my personal opinion, I think standardizing instruction encoding and
+semantics is a reasonable first step. Which leads me to my other reason
+why I don't think it's necessary to formally define a memory model for
+v1:
+
+One of the unique challenges we're going to have to work through as a
+Working Group is how to collaborate between the IETF and Linux Kernel
+communities. I think we're doing a great job so far, especially given
+how things went at IETF 117, and that folks from both communities are
+already engaging on the standard. That said, I am personally of the
+opinion that we're most likely to succeed in figuring out an ideal
+working relationship / culture for the WG if we can do so while
+iterating on a standard that has a minimal amount of complexity, and a
+lower likelihood of being contentious.
+
+That of course doesn't mean that we should sacrifice the quality of
+whatever standard(s) we write and ratify, but I think that if we can
+write a standard that we agree is correct, self-contained, well-written,
+and can be easily extended, but that is also "non-controversial" (e.g.
+for the case of the ISA, defines instruction encodings that are
+implemented by clang and gcc, and whose semantics are implemented by
+Linux, Microsoft, Netronome, etc), that it may be prudent to take
+advantage of that in these early days to flesh out how our WG will
+operate when we have to write more open-ended and potentially
+contentious parts of the standard such as the BPF memory model.
+
+What do you think? Thanks again for sharing your thoughts, and for
+participating in the WG.
+
+- David
+
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
