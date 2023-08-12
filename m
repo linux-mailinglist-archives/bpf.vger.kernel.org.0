@@ -1,32 +1,32 @@
-Return-Path: <bpf+bounces-7658-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7659-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76D24779F53
-	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 12:50:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAE69779F54
+	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 12:51:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B81E928033B
-	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 10:50:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDA5F1C2088A
+	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 10:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD8A1FCA;
-	Sat, 12 Aug 2023 10:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5875220F6;
+	Sat, 12 Aug 2023 10:50:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4CCE370
-	for <bpf@vger.kernel.org>; Sat, 12 Aug 2023 10:50:44 +0000 (UTC)
-Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED073594;
-	Sat, 12 Aug 2023 03:50:12 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RNH9v2RGQz9ygHH;
-	Sat, 12 Aug 2023 18:35:31 +0800 (CST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE6F370
+	for <bpf@vger.kernel.org>; Sat, 12 Aug 2023 10:50:53 +0000 (UTC)
+Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614DE30F7;
+	Sat, 12 Aug 2023 03:50:19 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4RNHDW45mCzB03Lp;
+	Sat, 12 Aug 2023 18:37:47 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwBXC7scY9dkThi9AA--.8440S13;
-	Sat, 12 Aug 2023 11:48:50 +0100 (CET)
+	by APP1 (Coremail) with SMTP id LxC2BwBXC7scY9dkThi9AA--.8440S14;
+	Sat, 12 Aug 2023 11:49:00 +0100 (CET)
 From: Roberto Sassu <roberto.sassu@huaweicloud.com>
 To: corbet@lwn.net,
 	zohar@linux.ibm.com,
@@ -47,9 +47,9 @@ Cc: linux-kernel@vger.kernel.org,
 	pmatilai@redhat.com,
 	jannh@google.com,
 	Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH v2 11/13] tools/digest-lists: Add tlv digest list generator and parser
-Date: Sat, 12 Aug 2023 12:46:14 +0200
-Message-Id: <20230812104616.2190095-12-roberto.sassu@huaweicloud.com>
+Subject: [RFC][PATCH v2 12/13] tools/digest-lists: Add rpm digest list generator and parser
+Date: Sat, 12 Aug 2023 12:46:15 +0200
+Message-Id: <20230812104616.2190095-13-roberto.sassu@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230812104616.2190095-1-roberto.sassu@huaweicloud.com>
 References: <20230812104616.2190095-1-roberto.sassu@huaweicloud.com>
@@ -60,618 +60,576 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:LxC2BwBXC7scY9dkThi9AA--.8440S13
-X-Coremail-Antispam: 1UD129KBjvAXoWfXr1xCr18urykKr43AFW5Wrg_yoW8WFWxZo
-	ZaqF43Gw48Jr129F4kuF43ZF47Wa9Yqay5Aw1rGrWDX3WFyF18Ka1qka13Ja13Xw18trWj
-	v3W0q3yagw48KrZ7n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUYK7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
+X-CM-TRANSID:LxC2BwBXC7scY9dkThi9AA--.8440S14
+X-Coremail-Antispam: 1UD129KBjvAXoWfJr17Jw1DuF1UWFWkurykKrg_yoW8XF45uo
+	Zaga13Gan0kr18uF4vkFy3Xa1ayanYya1UA3yrWryqq3W8AFy0g3Z5KanrXrW7ur4rJryS
+	qr4Iq343Aw4xW3s5n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUYt7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
 	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF
 	0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
 	j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxV
 	AFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x02
-	67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F4
-	0Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC
-	6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82
-	IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-	0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMI
-	IF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l
-	IxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4
-	A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFgAwUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj5KVagAAse
+	67AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrV
+	C2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE
+	7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20x
+	vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
+	3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIx
+	AIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI
+	42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z2
+	80aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZo7tUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAHBF1jj46UtAAAse
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-	PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-	RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.6
+	PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+	SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Add a generator of tlv digest lists. It will store the digest
-algorithm, the digest and path of each file provided as input.
+Add a generator to generate an rpm digest list from one or multiple RPM
+package headers. The digest list contains the RPM magic string, the content
+of the RPMTAG_IMMUTABLE section, and the user asymmetric key signature
+(module-style) converted from the PGP signature in the RPMTAG_RSAHEADER
+section.
 
-Also add a parser of tlv digest lists. It will display the content (digest
-algorithm and value, and file path), and will add/remove the
-security.digest_list xattr to/from each file in the digest list.
+This generator has as prerequisite gpg support for a new command
+--conv-kernel, which converts the PGP format to a user asymmetric key
+signature.
+
+Also add a parser of rpm digest list, to show the content (digest algorithm
+and value, and file path), and to add/remove the security.digest_list xattr
+to/from each file in the RPM packages.
 
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
  tools/digest-lists/.gitignore              |   2 +
- tools/digest-lists/Makefile                |  22 ++-
- tools/digest-lists/generators/generators.h |  16 ++
- tools/digest-lists/generators/tlv.c        | 168 ++++++++++++++++++
- tools/digest-lists/manage_digest_lists.c   |   5 +
- tools/digest-lists/parsers/parsers.h       |  14 ++
- tools/digest-lists/parsers/tlv.c           | 195 +++++++++++++++++++++
- tools/digest-lists/parsers/tlv_parser.h    |  38 ++++
- 8 files changed, 458 insertions(+), 2 deletions(-)
- create mode 100644 tools/digest-lists/generators/generators.h
- create mode 100644 tools/digest-lists/generators/tlv.c
- create mode 100644 tools/digest-lists/parsers/parsers.h
- create mode 100644 tools/digest-lists/parsers/tlv.c
- create mode 100644 tools/digest-lists/parsers/tlv_parser.h
+ tools/digest-lists/Makefile                |  10 +-
+ tools/digest-lists/generators/generators.h |   2 +
+ tools/digest-lists/generators/rpm.c        | 257 +++++++++++++++++++++
+ tools/digest-lists/manage_digest_lists.c   |   2 +
+ tools/digest-lists/parsers/parsers.h       |   2 +
+ tools/digest-lists/parsers/rpm.c           | 169 ++++++++++++++
+ 7 files changed, 442 insertions(+), 2 deletions(-)
+ create mode 100644 tools/digest-lists/generators/rpm.c
+ create mode 100644 tools/digest-lists/parsers/rpm.c
 
 diff --git a/tools/digest-lists/.gitignore b/tools/digest-lists/.gitignore
-index 1b8a7b9c205..9a75ae766ff 100644
+index 9a75ae766ff..51ca25f3b50 100644
 --- a/tools/digest-lists/.gitignore
 +++ b/tools/digest-lists/.gitignore
-@@ -1,3 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- manage_digest_lists
+@@ -3,3 +3,5 @@ manage_digest_lists
  manage_digest_lists.1
-+libgen-tlv-list.so
-+libparse-tlv-list.so
+ libgen-tlv-list.so
+ libparse-tlv-list.so
++libgen-rpm-list.so
++libparse-rpm-list.so
 diff --git a/tools/digest-lists/Makefile b/tools/digest-lists/Makefile
-index 05af3a91c06..23f9fa3b588 100644
+index 23f9fa3b588..2c8089affb8 100644
 --- a/tools/digest-lists/Makefile
 +++ b/tools/digest-lists/Makefile
-@@ -1,13 +1,23 @@
- # SPDX-License-Identifier: GPL-2.0
- include ../scripts/Makefile.include
-+include ../scripts/Makefile.arch
- include ../scripts/utilities.mak
-+
- BINDIR=usr/bin
-+ifeq ($(LP64), 1)
-+  LIBDIR=usr/lib64
-+else
-+  LIBDIR=usr/lib
-+endif
- MANDIR=usr/share/man
- MAN1DIR=$(MANDIR)/man1
- CFLAGS=-ggdb -Wall
+@@ -15,8 +15,8 @@ CFLAGS=-ggdb -Wall
  
  PROGS=manage_digest_lists
  
-+GENERATORS=libgen-tlv-list.so
-+PARSERS=libparse-tlv-list.so
-+
+-GENERATORS=libgen-tlv-list.so
+-PARSERS=libparse-tlv-list.so
++GENERATORS=libgen-tlv-list.so libgen-rpm-list.so
++PARSERS=libparse-tlv-list.so libparse-rpm-list.so
+ 
  MAN1=manage_digest_lists.1
  
- A2X=a2x
-@@ -15,9 +25,15 @@ a2x_path := $(call get-executable,$(A2X))
+@@ -31,9 +31,15 @@ manage_digest_lists: manage_digest_lists.c common.c $(GENERATORS) $(PARSERS)
+ libgen-tlv-list.so: generators/tlv.c common.c
+ 	$(CC) $(CFLAGS) -fPIC --shared -Wl,-soname,libgen-tlv-list.so $^ -o $@
  
- all: man $(PROGS)
- 
--manage_digest_lists: manage_digest_lists.c common.c
-+manage_digest_lists: manage_digest_lists.c common.c $(GENERATORS) $(PARSERS)
- 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) -lcrypto
- 
-+libgen-tlv-list.so: generators/tlv.c common.c
-+	$(CC) $(CFLAGS) -fPIC --shared -Wl,-soname,libgen-tlv-list.so $^ -o $@
++libgen-rpm-list.so: generators/rpm.c common.c
++	$(CC) $(CFLAGS) -fPIC --shared -Wl,-soname,libgen-rpm-list.so $^ -o $@ -lrpm -lrpmio
 +
-+libparse-tlv-list.so: parsers/tlv.c common.c ../../lib/tlv_parser.c
-+	$(CC) $(CFLAGS) -fPIC --shared -Wl,-soname,libparse-tlv-list.so $^ -o $@ -I parsers
+ libparse-tlv-list.so: parsers/tlv.c common.c ../../lib/tlv_parser.c
+ 	$(CC) $(CFLAGS) -fPIC --shared -Wl,-soname,libparse-tlv-list.so $^ -o $@ -I parsers
+ 
++libparse-rpm-list.so: parsers/rpm.c common.c
++	$(CC) $(CFLAGS) -fPIC --shared -Wl,-soname,libparse-rpm-list.so $^ -o $@ -I parsers -lrpm -lrpmio
 +
  ifneq ($(findstring $(MAKEFLAGS),s),s)
    ifneq ($(V),1)
       QUIET_A2X = @echo '  A2X     '$@;
-@@ -32,7 +48,7 @@ else
- endif
- 
- clean:
--	rm -f $(MAN1) $(PROGS)
-+	rm -f $(MAN1) $(PROGS) $(GENERATORS) $(PARSERS)
- 
- man: $(MAN1)
- 
-@@ -43,6 +59,8 @@ install-man: man
- install-tools: $(PROGS)
- 	install -d -m 755 $(INSTALL_ROOT)/$(BINDIR)
- 	install -m 755 -p $(PROGS) "$(INSTALL_ROOT)/$(BINDIR)/$(TARGET)"
-+	install -m 755 -p $(GENERATORS) "$(INSTALL_ROOT)/$(LIBDIR)/$(TARGET)"
-+	install -m 755 -p $(PARSERS) "$(INSTALL_ROOT)/$(LIBDIR)/$(TARGET)"
- 
- install: install-tools install-man
- .PHONY: all clean man install-tools install-man install
 diff --git a/tools/digest-lists/generators/generators.h b/tools/digest-lists/generators/generators.h
-new file mode 100644
-index 00000000000..9830b791667
---- /dev/null
+index 9830b791667..ff3ed6ac8d4 100644
+--- a/tools/digest-lists/generators/generators.h
 +++ b/tools/digest-lists/generators/generators.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2017-2023 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Author: Roberto Sassu <roberto.sassu@huawei.com>
-+ *
-+ * Header for all digest list generators.
-+ */
+@@ -14,3 +14,5 @@
+ void *tlv_list_gen_new(int dirfd, char *input, enum hash_algo algo);
+ int tlv_list_gen_add(int dirfd, void *ptr, char *input);
+ void tlv_list_gen_close(void *ptr);
 +
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+
-+void *tlv_list_gen_new(int dirfd, char *input, enum hash_algo algo);
-+int tlv_list_gen_add(int dirfd, void *ptr, char *input);
-+void tlv_list_gen_close(void *ptr);
-diff --git a/tools/digest-lists/generators/tlv.c b/tools/digest-lists/generators/tlv.c
++int rpm_list_gen_add(int dirfd, void *ptr, char *input);
+diff --git a/tools/digest-lists/generators/rpm.c b/tools/digest-lists/generators/rpm.c
 new file mode 100644
-index 00000000000..cbc29a49f51
+index 00000000000..29e7a6eb0ca
 --- /dev/null
-+++ b/tools/digest-lists/generators/tlv.c
-@@ -0,0 +1,168 @@
++++ b/tools/digest-lists/generators/rpm.c
+@@ -0,0 +1,257 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (C) 2017-2023 Huawei Technologies Duesseldorf GmbH
 + *
 + * Author: Roberto Sassu <roberto.sassu@huawei.com>
 + *
-+ * Generate tlv digest lists.
++ * Generate rpm digest lists.
 + */
 +
 +#include <stdio.h>
 +#include <fcntl.h>
 +#include <errno.h>
-+#include <stdbool.h>
-+#include <stdlib.h>
 +#include <limits.h>
-+#include <sys/mman.h>
++#include <string.h>
++#include <sys/wait.h>
 +#include <sys/xattr.h>
 +#include <linux/xattr.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <linux/hash_info.h>
++#include <rpm/rpmlib.h>
++#include <rpm/header.h>
++#include <rpm/rpmts.h>
++#include <rpm/rpmdb.h>
++#include <rpm/rpmlog.h>
++#include <rpm/rpmtag.h>
++#include <rpm/rpmpgp.h>
++#include <rpm/rpmmacro.h>
 +#include <asm/byteorder.h>
 +
-+#ifndef __packed
-+#define __packed __attribute__((packed))
-+#endif
-+
-+#include "../../../include/uapi/linux/tlv_parser.h"
-+#include "../../../include/uapi/linux/tlv_digest_list.h"
 +#include "../common.h"
 +
-+struct tlv_struct {
-+	__u8 *digest_list;
-+	struct tlv_hdr *outer_hdr;
-+	struct tlv_entry *outer_entry;
-+	__u8 algo;
-+	int fd;
-+};
-+
-+static int new_digest_list(int dirfd, const char *input, struct tlv_struct *tlv)
++static int gen_filename(Header rpm, char *filename, int filename_len)
 +{
-+	char filename[NAME_MAX + 1];
-+	struct tlv_hdr *hdr;
-+	const char *input_ptr;
++	char *_filename = headerFormat(rpm, "rpm-%{nvra}", NULL);
 +
-+	input_ptr = strrchr(input, '/');
-+	if (input_ptr)
-+		input_ptr++;
-+	else
-+		input_ptr = input;
-+
-+	snprintf(filename, sizeof(filename), "tlv-%s", input_ptr);
-+
-+	tlv->fd = openat(dirfd, filename, O_RDWR | O_CREAT | O_TRUNC, 0644);
-+	if (tlv->fd < 0) {
-+		printf("Unable to create %s\n", filename);
-+		return -errno;
-+	}
-+
-+	ftruncate(tlv->fd, DIGEST_LIST_SIZE_MAX);
-+	tlv->digest_list = mmap(NULL, DIGEST_LIST_SIZE_MAX,
-+				PROT_READ | PROT_WRITE, MAP_SHARED, tlv->fd, 0);
-+
-+	if (tlv->digest_list == MAP_FAILED) {
-+		printf("Cannot allocate buffer\n");
-+		close(tlv->fd);
++	if (!_filename)
 +		return -ENOMEM;
-+	}
 +
-+	hdr = (struct tlv_hdr *)tlv->digest_list;
-+	memset(hdr, 0, sizeof(*hdr));
-+
-+	hdr->data_type = __cpu_to_be64(DIGEST_LIST_FILE);
-+	hdr->num_fields = 0;
-+	hdr->total_len = 0;
++	strncpy(filename, _filename, filename_len);
++	free(_filename);
 +	return 0;
 +}
 +
-+static void write_entry(struct tlv_hdr *hdr, struct tlv_entry **entry,
-+			__u16 field, __u8 *data, __u32 data_len,
-+			bool update_data)
++static int write_rpm_header(Header rpm, int dirfd, char *filename)
 +{
-+	__u16 num_fields;
-+	__u64 total_len;
-+	__u64 entry_len;
++	rpmtd immutable;
++	ssize_t ret;
++	int fd;
 +
-+	num_fields = __be64_to_cpu(hdr->num_fields);
-+	total_len = __be64_to_cpu(hdr->total_len);
++	fd = openat(dirfd, filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
++	if (fd < 0)
++		return -EACCES;
 +
-+	(*entry)->field = __cpu_to_be64(field);
-+	(*entry)->length = __cpu_to_be64(data_len);
-+
-+	if (update_data)
-+		memcpy((*entry)->data, data, data_len);
-+
-+	num_fields++;
-+	entry_len = sizeof(*(*entry)) + data_len;
-+	total_len += entry_len;
-+
-+	hdr->num_fields = __cpu_to_be64(num_fields);
-+	hdr->total_len = __cpu_to_be64(total_len);
-+	(*entry) = (struct tlv_entry *)((__u8 *)*entry + entry_len);
-+}
-+
-+void *tlv_list_gen_new(int dirfd, char *input, enum hash_algo algo)
-+{
-+	struct tlv_struct *tlv;
-+	int ret;
-+
-+	tlv = malloc(sizeof(*tlv));
-+	if (!tlv)
-+		return NULL;
-+
-+	ret = new_digest_list(dirfd, input, tlv);
-+	if (ret < 0) {
-+		free(tlv);
-+		return NULL;
++	ret = _write(fd, (void *)rpm_header_magic, sizeof(rpm_header_magic));
++	if (ret != sizeof(rpm_header_magic)) {
++		ret = -EIO;
++		goto out;
 +	}
 +
-+	tlv->outer_hdr = (struct tlv_hdr *)tlv->digest_list;
-+	tlv->outer_entry = (struct tlv_entry *)(tlv->outer_hdr + 1);
-+	tlv->algo = algo;
-+
-+	write_entry(tlv->outer_hdr, &tlv->outer_entry, DIGEST_LIST_ALGO,
-+		    &tlv->algo, sizeof(tlv->algo), true);
-+	return tlv;
-+}
-+
-+int tlv_list_gen_add(int dirfd, void *ptr, char *input)
-+{
-+	struct tlv_struct *tlv = (struct tlv_struct *)ptr;
-+	__u8 digest[SHA512_DIGEST_SIZE];
-+	struct tlv_hdr *inner_hdr;
-+	struct tlv_entry *inner_entry;
-+	int ret;
-+
-+	ret = calc_file_digest(digest, input, tlv->algo);
-+	if (ret < 0) {
-+		printf("Cannot calculate digest of %s\n", input);
-+		return ret;
++	immutable = rpmtdNew();
++	headerGet(rpm, RPMTAG_HEADERIMMUTABLE, immutable, 0);
++	ret = _write(fd, immutable->data, immutable->count);
++	if (ret != immutable->count) {
++		ret = -EIO;
++		goto out;
 +	}
 +
-+	inner_hdr = (struct tlv_hdr *)(tlv->outer_entry + 1);
-+	inner_hdr->data_type = __cpu_to_be64(DIGEST_LIST_FILE);
++	rpmtdFree(immutable);
++out:
++	close(fd);
 +
-+	inner_entry = (struct tlv_entry *)(inner_hdr + 1);
++	if (ret < 0)
++		unlinkat(dirfd, filename, 0);
 +
-+	write_entry(inner_hdr, &inner_entry, ENTRY_DIGEST, digest,
-+		    hash_digest_size[tlv->algo], true);
-+	write_entry(inner_hdr, &inner_entry, ENTRY_PATH, (__u8 *)input,
-+		    strlen(input) + 1, true);
-+
-+	write_entry(tlv->outer_hdr, &tlv->outer_entry, DIGEST_LIST_ENTRY, NULL,
-+		    (__u8 *)inner_entry - (__u8 *)inner_hdr, false);
-+	return 0;
++	return ret;
 +}
 +
-+void tlv_list_gen_close(void *ptr)
++static int write_rpm_header_signature(Header rpm, int dirfd, char *filename)
 +{
-+	struct tlv_struct *tlv = (struct tlv_struct *)ptr;
++	char sig_to_convert[] = "/tmp/sig_to_convert_XXXXXX";
++	char uasym_sig[] = "/tmp/uasym_sig_XXXXXX";
++	struct module_signature modsig = { 0 };
++	rpmtd signature = rpmtdNew();
++	__u8 buf[1024];
++	struct stat st;
++	int ret, n_read, status, fd, fd_sig_to_convert, fd_uasym_sig;
 +
-+	munmap(tlv->digest_list, DIGEST_LIST_SIZE_MAX);
-+	ftruncate(tlv->fd, (__u8 *)tlv->outer_entry - (__u8 *)tlv->outer_hdr);
-+	close(tlv->fd);
-+	free(tlv);
++	fd_sig_to_convert = mkstemp(sig_to_convert);
++	if (fd_sig_to_convert == -1)
++		return -errno;
++
++	fd_uasym_sig = mkstemp(uasym_sig);
++	if (fd_uasym_sig == -1) {
++		ret = -errno;
++		goto out;
++	}
++
++	headerGet(rpm, RPMTAG_RSAHEADER, signature, 0);
++	if (!signature->count) {
++		printf("Warning: no RPM signature for %s\n", filename);
++		ret = 0;
++		goto out_get;
++	}
++
++	ret = _write(fd_sig_to_convert, signature->data, signature->count);
++	if (ret != signature->count)
++		goto out_get;
++
++	close(fd_sig_to_convert);
++	fd_sig_to_convert = -1;
++
++	if (fork() == 0)
++		return execlp("gpg", "gpg", "--no-keyring", "--conv-kernel",
++			      "-o", uasym_sig, sig_to_convert, NULL);
++
++	wait(&status);
++	if (WEXITSTATUS(status)) {
++		ret = WEXITSTATUS(status);
++		goto out_get;
++	}
++
++	if (stat(uasym_sig, &st) == -1)
++		goto out_get;
++
++	fd = openat(dirfd, filename, O_WRONLY | O_APPEND);
++	if (fd < 0) {
++		ret = -errno;
++		goto out_get;
++	}
++
++	modsig.id_type = PKEY_ID_PGP;
++	modsig.sig_len = st.st_size;
++	modsig.sig_len = __cpu_to_be32(modsig.sig_len);
++
++	while ((n_read = read(fd_uasym_sig, buf, sizeof(buf))) > 0) {
++		ret = _write(fd, buf, n_read);
++		if (ret != n_read)
++			goto out_fd;
++	}
++
++	ret = _write(fd, &modsig, sizeof(modsig));
++	if (ret != sizeof(modsig))
++		goto out_fd;
++
++	ret = _write(fd, MODULE_SIG_STRING, sizeof(MODULE_SIG_STRING) - 1);
++	if (ret != sizeof(MODULE_SIG_STRING) - 1)
++		goto out_fd;
++
++	ret = 0;
++out_fd:
++	close(fd);
++
++	if (ret < 0)
++		unlinkat(dirfd, filename, 0);
++out_get:
++	rpmtdFree(signature);
++out:
++	close(fd_sig_to_convert);
++	unlink(sig_to_convert);
++	close(fd_uasym_sig);
++	unlink(uasym_sig);
++
++	return ret;
++}
++
++static void write_rpm_digest_list(Header rpm, int dirfd, char *filename)
++{
++	int ret;
++
++	ret = write_rpm_header(rpm, dirfd, filename);
++	if (ret < 0) {
++		printf("Cannot dump RPM header of %s\n", filename);
++		return;
++	}
++
++	ret = write_rpm_header_signature(rpm, dirfd, filename);
++	if (ret < 0)
++		printf("Cannot add signature to %s\n", filename);
++}
++
++int rpm_list_gen_add(int dirfd, void *ptr, char *input)
++{
++	char filename[NAME_MAX + 1], *selection;
++	rpmts ts = NULL;
++	Header hdr;
++	FD_t fd;
++	rpmdbMatchIterator mi;
++	rpmVSFlags vsflags = 0;
++	int ret;
++
++	ts = rpmtsCreate();
++	if (!ts) {
++		rpmlog(RPMLOG_NOTICE, "rpmtsCreate() error..\n");
++		ret = -EACCES;
++		goto out;
++	}
++
++	ret = rpmReadConfigFiles(NULL, NULL);
++	if (ret != RPMRC_OK) {
++		rpmlog(RPMLOG_NOTICE, "Unable to read RPM configuration.\n");
++		ret = -EACCES;
++		goto out_ts;
++	}
++
++	if (strncmp(input, "rpmdb", 5)) {
++		vsflags |= _RPMVSF_NODIGESTS;
++		vsflags |= _RPMVSF_NOSIGNATURES;
++		rpmtsSetVSFlags(ts, vsflags);
++
++		fd = Fopen(input, "r.ufdio");
++		if (!fd || Ferror(fd)) {
++			rpmlog(RPMLOG_NOTICE,
++			       "Failed to open package file %s, %s\n", input,
++			       Fstrerror(fd));
++			ret = -EACCES;
++			goto out_rpm;
++		}
++
++		ret = rpmReadPackageFile(ts, fd, "rpm", &hdr);
++		Fclose(fd);
++
++		if (ret != RPMRC_OK) {
++			rpmlog(RPMLOG_NOTICE,
++			       "Could not read package file %s\n", input);
++			goto out_rpm;
++		}
++
++		gen_filename(hdr, filename, sizeof(filename));
++
++		write_rpm_digest_list(hdr, dirfd, filename);
++		headerFree(hdr);
++		goto out_rpm;
++	}
++
++	mi = rpmtsInitIterator(ts, RPMDBI_PACKAGES, NULL, 0);
++	while ((hdr = rpmdbNextIterator(mi)) != NULL) {
++		gen_filename(hdr, filename, sizeof(filename));
++
++		/* Skip rpm- */
++		if (strstr(filename + 4, "gpg-pubkey"))
++			continue;
++
++		selection = strchr(input, ':');
++		if (selection && !strstr(filename + 4, selection + 1))
++			continue;
++
++		write_rpm_digest_list(hdr, dirfd, filename);
++	}
++
++	rpmdbFreeIterator(mi);
++out_rpm:
++	rpmFreeRpmrc();
++	rpmFreeCrypto();
++	rpmFreeMacros(NULL);
++out_ts:
++	rpmtsFree(ts);
++out:
++	return ret;
 +}
 diff --git a/tools/digest-lists/manage_digest_lists.c b/tools/digest-lists/manage_digest_lists.c
-index bc425da5317..7caad681eee 100644
+index 7caad681eee..3985bfcb827 100644
 --- a/tools/digest-lists/manage_digest_lists.c
 +++ b/tools/digest-lists/manage_digest_lists.c
-@@ -20,6 +20,8 @@
- #include <fts.h>
- 
- #include "common.h"
-+#include "generators/generators.h"
-+#include "parsers/parsers.h"
- 
- const char *ops_str[OP__LAST] = {
- 	[OP_GEN] = "gen",
-@@ -29,9 +31,12 @@ const char *ops_str[OP__LAST] = {
- };
- 
+@@ -33,10 +33,12 @@ const char *ops_str[OP__LAST] = {
  struct generator generators[] = {
-+	{ .name = "tlv", .new = tlv_list_gen_new, .add = tlv_list_gen_add,
-+	  .close = tlv_list_gen_close },
+ 	{ .name = "tlv", .new = tlv_list_gen_new, .add = tlv_list_gen_add,
+ 	  .close = tlv_list_gen_close },
++	{ .name = "rpm", .add = rpm_list_gen_add },
  };
  
  struct parser parsers[] = {
-+	{ .name = "tlv", .parse = tlv_list_parse },
+ 	{ .name = "tlv", .parse = tlv_list_parse },
++	{ .name = "rpm", .parse = rpm_list_gen_parse },
  };
  
  static int generator_add(struct generator *generator, int dirfd,
 diff --git a/tools/digest-lists/parsers/parsers.h b/tools/digest-lists/parsers/parsers.h
-new file mode 100644
-index 00000000000..708da7eac3b
---- /dev/null
+index 708da7eac3b..ecefb2ec79b 100644
+--- a/tools/digest-lists/parsers/parsers.h
 +++ b/tools/digest-lists/parsers/parsers.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2017-2023 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Author: Roberto Sassu <roberto.sassu@huawei.com>
-+ *
-+ * Header for all digest list parsers.
-+ */
+@@ -12,3 +12,5 @@
+ #include <errno.h>
+ 
+ int tlv_list_parse(const char *digest_list_path, enum ops op);
 +
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+
-+int tlv_list_parse(const char *digest_list_path, enum ops op);
-diff --git a/tools/digest-lists/parsers/tlv.c b/tools/digest-lists/parsers/tlv.c
++int rpm_list_gen_parse(const char *digest_list_path, enum ops op);
+diff --git a/tools/digest-lists/parsers/rpm.c b/tools/digest-lists/parsers/rpm.c
 new file mode 100644
-index 00000000000..1c9909e80b9
+index 00000000000..7dd063b64ac
 --- /dev/null
-+++ b/tools/digest-lists/parsers/tlv.c
-@@ -0,0 +1,195 @@
++++ b/tools/digest-lists/parsers/rpm.c
+@@ -0,0 +1,169 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (C) 2017-2023 Huawei Technologies Duesseldorf GmbH
 + *
 + * Author: Roberto Sassu <roberto.sassu@huawei.com>
 + *
-+ * Parse tlv digest lists.
++ * Parse rpm digest lists.
 + */
 +
 +#include <stdio.h>
 +#include <fcntl.h>
 +#include <errno.h>
-+
++#include <string.h>
 +#include <limits.h>
-+#include <sys/mman.h>
++#include <sys/wait.h>
 +#include <sys/xattr.h>
 +#include <linux/xattr.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <linux/hash_info.h>
++#include <rpm/rpmlib.h>
++#include <rpm/header.h>
++#include <rpm/rpmts.h>
++#include <rpm/rpmdb.h>
++#include <rpm/rpmlog.h>
++#include <rpm/rpmtag.h>
++#include <rpm/rpmpgp.h>
++#include <rpm/rpmmacro.h>
 +#include <asm/byteorder.h>
-+#include <tlv_parser.h>
 +
-+#ifndef __packed
-+#define __packed __attribute__((packed))
-+#endif
-+
-+#include "../../../include/uapi/linux/tlv_digest_list.h"
 +#include "../common.h"
 +
-+struct tlv_parse_ctx {
-+	const char *digest_list_path;
-+	size_t digest_list_path_len;
-+	enum hash_algo algo;
-+	enum ops op;
++static const enum hash_algo pgp_hash_algorithms[PGPHASHALGO_SHA224 + 1] = {
++	[PGPHASHALGO_MD5]		= HASH_ALGO_MD5,
++	[PGPHASHALGO_SHA1]		= HASH_ALGO_SHA1,
++	[PGPHASHALGO_RIPEMD160]		= HASH_ALGO_RIPE_MD_160,
++	[PGPHASHALGO_SHA256]		= HASH_ALGO_SHA256,
++	[PGPHASHALGO_SHA384]		= HASH_ALGO_SHA384,
++	[PGPHASHALGO_SHA512]		= HASH_ALGO_SHA512,
++	[PGPHASHALGO_SHA224]		= HASH_ALGO_SHA224,
 +};
 +
-+const char *digest_list_types_str[] = {
-+	FOR_EACH_DIGEST_LIST_TYPE(GENERATE_STRING)
-+};
-+
-+const char *digest_list_fields_str[] = {
-+	FOR_EACH_FIELD(GENERATE_STRING)
-+};
-+
-+const char *entry_fields_str[] = {
-+	FOR_EACH_ENTRY_FIELD(GENERATE_STRING)
-+};
-+
-+static int parse_digest_list_algo(struct tlv_parse_ctx *ctx,
-+				  enum digest_list_fields field,
-+				  const __u8 *field_data, __u64 field_data_len)
++int rpm_list_gen_parse(const char *digest_list_path, enum ops op)
 +{
-+	ctx->algo = *field_data;
-+	return 0;
-+}
-+
-+static int parse_entry_digest(struct tlv_parse_ctx *ctx,
-+			      enum entry_fields field, const __u8 *field_data,
-+			      __u64 field_data_len)
-+{
-+	int i;
-+
-+	if (ctx->op != OP_SHOW)
-+		return 0;
-+
-+	printf("%s:", hash_algo_name[ctx->algo]);
-+
-+	for (i = 0; i < hash_digest_size[ctx->algo]; i++)
-+		printf("%02x", field_data[i]);
-+
-+	return 0;
-+}
-+
-+static int parse_entry_path(struct tlv_parse_ctx *ctx, enum entry_fields field,
-+			    const __u8 *field_data, __u64 field_data_len)
-+{
-+	char *entry_path = (char *)field_data;
++	rpmtd filedigestalgo, filedigests, basenames, dirnames, dirindexes;
++	rpmts ts = NULL;
++	Header hdr;
++	FD_t fd;
++	rpmVSFlags vsflags = 0;
++	char file_path[PATH_MAX];
++	enum hash_algo algo = HASH_ALGO_MD5;
++	const char *digest_str, *basename, *dirname;
++	__u32 dirindex, *pgp_algo_ptr;
++	size_t digest_list_path_len = strlen(digest_list_path);
 +	int ret;
 +
-+	switch (ctx->op) {
-+	case OP_SHOW:
-+		printf(" %s\n", entry_path);
-+		ret = 0;
-+		break;
-+	case OP_ADD_XATTR:
-+		ret = lsetxattr(entry_path, XATTR_NAME_DIGEST_LIST,
-+				ctx->digest_list_path,
-+				ctx->digest_list_path_len, 0);
-+		if (ret < 0 && errno == ENODATA)
++	ts = rpmtsCreate();
++	if (!ts) {
++		rpmlog(RPMLOG_NOTICE, "rpmtsCreate() error..\n");
++		ret = -EACCES;
++		goto out;
++	}
++
++	ret = rpmReadConfigFiles(NULL, NULL);
++	if (ret != RPMRC_OK) {
++		rpmlog(RPMLOG_NOTICE, "Unable to read RPM configuration.\n");
++		ret = -EACCES;
++		goto out_ts;
++	}
++
++	vsflags |= _RPMVSF_NODIGESTS;
++	vsflags |= _RPMVSF_NOSIGNATURES;
++	rpmtsSetVSFlags(ts, vsflags);
++
++	fd = Fopen(digest_list_path, "r.ufdio");
++	if (!fd || Ferror(fd)) {
++		rpmlog(RPMLOG_NOTICE, "Failed to open package file %s, %s\n",
++		       digest_list_path, Fstrerror(fd));
++		ret = -EACCES;
++		goto out_rpm;
++	}
++
++	ret = rpmReadHeader(ts, fd, &hdr, NULL);
++	Fclose(fd);
++
++	if (ret != RPMRC_OK) {
++		rpmlog(RPMLOG_NOTICE, "Could not read package file %s\n",
++		       digest_list_path);
++		goto out_rpm;
++	}
++
++	filedigestalgo = rpmtdNew();
++	filedigests = rpmtdNew();
++	basenames = rpmtdNew();
++	dirnames = rpmtdNew();
++	dirindexes = rpmtdNew();
++
++	headerGet(hdr, RPMTAG_FILEDIGESTALGO, filedigestalgo, 0);
++	headerGet(hdr, RPMTAG_FILEDIGESTS, filedigests, 0);
++	headerGet(hdr, RPMTAG_BASENAMES, basenames, 0);
++	headerGet(hdr, RPMTAG_DIRNAMES, dirnames, 0);
++	headerGet(hdr, RPMTAG_DIRINDEXES, dirindexes, 0);
++
++	pgp_algo_ptr = rpmtdGetUint32(filedigestalgo);
++	if (pgp_algo_ptr && *pgp_algo_ptr <= PGPHASHALGO_SHA224)
++		algo = pgp_hash_algorithms[*pgp_algo_ptr];
++
++	while ((digest_str = rpmtdNextString(filedigests))) {
++		basename = rpmtdNextString(basenames);
++		dirindex = *rpmtdNextUint32(dirindexes);
++
++		rpmtdSetIndex(dirnames, dirindex);
++		dirname = rpmtdGetString(dirnames);
++
++		snprintf(file_path, sizeof(file_path), "%s%s", dirname,
++			 basename);
++
++		if (!strlen(digest_str))
++			continue;
++
++		switch (op) {
++		case OP_SHOW:
++			printf("%s:%s %s\n", hash_algo_name[algo], digest_str,
++			       file_path);
 +			ret = 0;
++			break;
++		case OP_ADD_XATTR:
++			ret = lsetxattr(file_path, XATTR_NAME_DIGEST_LIST,
++					digest_list_path,
++					digest_list_path_len, 0);
++			if (ret < 0 && errno == ENODATA)
++				ret = 0;
++
++			if (ret < 0)
++				printf("Error setting %s on %s, %s\n",
++				       XATTR_NAME_DIGEST_LIST, file_path,
++				       strerror(errno));
++			break;
++		case OP_RM_XATTR:
++			ret = lremovexattr(file_path, XATTR_NAME_DIGEST_LIST);
++			if (ret < 0 && errno == ENODATA)
++				ret = 0;
++
++			if (ret < 0)
++				printf("Error removing %s from %s, %s\n",
++				       XATTR_NAME_DIGEST_LIST, file_path,
++				       strerror(errno));
++			break;
++		default:
++			ret = -EOPNOTSUPP;
++			break;
++		}
 +
 +		if (ret < 0)
-+			printf("Error setting %s on %s, %s\n",
-+			       XATTR_NAME_DIGEST_LIST, entry_path,
-+			       strerror(errno));
-+		break;
-+	case OP_RM_XATTR:
-+		ret = lremovexattr(entry_path, XATTR_NAME_DIGEST_LIST);
-+		if (ret < 0 && errno == ENODATA)
-+			ret = 0;
-+
-+		if (ret < 0)
-+			printf("Error removing %s from %s, %s\n",
-+			       XATTR_NAME_DIGEST_LIST, entry_path,
-+			       strerror(errno));
-+		break;
-+	default:
-+		break;
++			break;
 +	}
 +
-+	return 0;
-+}
-+
-+static int entry_callback(void *callback_data, __u64 field,
-+			  const __u8 *field_data, __u64 field_data_len)
-+{
-+	struct tlv_parse_ctx *ctx = (struct tlv_parse_ctx *)callback_data;
-+	int ret;
-+
-+	switch (field) {
-+	case ENTRY_DIGEST:
-+		ret = parse_entry_digest(ctx, field, field_data,
-+					 field_data_len);
-+		break;
-+	case ENTRY_PATH:
-+		ret = parse_entry_path(ctx, field, field_data, field_data_len);
-+		break;
-+	default:
-+		pr_debug("Unhandled field %llu\n", field);
-+		/* Just ignore non-relevant fields. */
-+		ret = 0;
-+		break;
-+	}
-+
++	rpmtdFree(filedigestalgo);
++	rpmtdFree(filedigests);
++	rpmtdFree(basenames);
++	rpmtdFree(dirnames);
++	rpmtdFree(dirindexes);
++	headerFree(hdr);
++out_rpm:
++	rpmFreeRpmrc();
++	rpmFreeCrypto();
++	rpmFreeMacros(NULL);
++out_ts:
++	rpmtsFree(ts);
++out:
 +	return ret;
 +}
-+
-+static int parse_digest_list_entry(struct tlv_parse_ctx *ctx,
-+				   enum digest_list_fields field,
-+				   const __u8 *field_data, __u64 field_data_len)
-+{
-+	return tlv_parse(DIGEST_LIST_FILE, entry_callback, ctx, field_data,
-+			 field_data_len, digest_list_types_str,
-+			 DIGEST_LIST__LAST, entry_fields_str, ENTRY__LAST);
-+}
-+
-+static int digest_list_callback(void *callback_data, __u64 field,
-+				const __u8 *field_data, __u64 field_data_len)
-+{
-+	struct tlv_parse_ctx *ctx = (struct tlv_parse_ctx *)callback_data;
-+	int ret;
-+
-+	switch (field) {
-+	case DIGEST_LIST_ALGO:
-+		ret = parse_digest_list_algo(ctx, field, field_data,
-+					     field_data_len);
-+		break;
-+	case DIGEST_LIST_ENTRY:
-+		ret = parse_digest_list_entry(ctx, field, field_data,
-+					      field_data_len);
-+		break;
-+	default:
-+		pr_debug("Unhandled field %llu\n", field);
-+		/* Just ignore non-relevant fields. */
-+		ret = 0;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+int tlv_list_parse(const char *digest_list_path, enum ops op)
-+{
-+	struct tlv_parse_ctx ctx = {
-+		.op = op, .digest_list_path = digest_list_path,
-+		.digest_list_path_len = strlen(digest_list_path)
-+	};
-+	unsigned char *data;
-+	size_t data_len;
-+	int ret;
-+
-+	ret = read_file(digest_list_path, &data_len, &data);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = tlv_parse(DIGEST_LIST_FILE, digest_list_callback, &ctx, data,
-+			data_len, digest_list_types_str, DIGEST_LIST__LAST,
-+			digest_list_fields_str, FIELD__LAST);
-+
-+	munmap(data, data_len);
-+	return ret;
-+}
-diff --git a/tools/digest-lists/parsers/tlv_parser.h b/tools/digest-lists/parsers/tlv_parser.h
-new file mode 100644
-index 00000000000..3c9f54a97b3
---- /dev/null
-+++ b/tools/digest-lists/parsers/tlv_parser.h
-@@ -0,0 +1,38 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Author: Roberto Sassu <roberto.sassu@huawei.com>
-+ *
-+ * Header file of TLV parser.
-+ */
-+
-+#ifndef _TLV_PARSER_H
-+#define _TLV_PARSER_H
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <stddef.h>
-+#include <asm/byteorder.h>
-+#include <linux/tlv_parser.h>
-+
-+#ifdef TLV_DEBUG
-+#define pr_debug(fmt, ...) printf(fmt, ##__VA_ARGS__)
-+#else
-+#define pr_debug(fmt, ...) { }
-+#endif
-+
-+typedef int (*parse_callback)(void *, __u64, const __u8 *, __u64);
-+
-+int tlv_parse_hdr(const __u8 **data, size_t *data_len, __u64 *parsed_data_type,
-+		  __u64 *parsed_num_fields, __u64 *parsed_total_len,
-+		  const char **data_types, __u64 num_data_types);
-+int tlv_parse_data(parse_callback callback, void *callback_data,
-+		   __u64 parsed_num_fields, const __u8 *data, size_t data_len,
-+		   const char **fields, __u64 num_fields);
-+int tlv_parse(__u64 expected_data_type, parse_callback callback,
-+	      void *callback_data, const __u8 *data, size_t data_len,
-+	      const char **data_types, __u64 num_data_types,
-+	      const char **fields, __u64 num_fields);
-+
-+#endif /* _TLV_PARSER_H */
 -- 
 2.34.1
 
