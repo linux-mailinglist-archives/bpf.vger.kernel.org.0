@@ -1,110 +1,186 @@
-Return-Path: <bpf+bounces-7643-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14DD2779D51
-	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 07:38:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72F64779D6E
+	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 07:58:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4607C1C20A11
-	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 05:38:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A62A6281D88
+	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 05:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB93D185F;
-	Sat, 12 Aug 2023 05:38:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D57A185F;
+	Sat, 12 Aug 2023 05:58:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F701CCAF
-	for <bpf@vger.kernel.org>; Sat, 12 Aug 2023 05:38:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8381C433C8;
-	Sat, 12 Aug 2023 05:38:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691818696;
-	bh=nAPla5bM8WSnDqOSNz1wS0JqUKaETcUf6cGd53WZP3U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vIyseh5+5Iingx8OnLvN6kaJ7wrl4oBRajbwJKbZugplFLx7LonBLHuGJaNAidhln
-	 Qj456vP1yYN9RTIN1KuRcN1+7BD2igrXkl02vy+9zwYogTG1qgfV9HKHQjlGtrmyRk
-	 7F3XE+M124rLYmw3dNQ+yLvjS+4/VIV0NVZmZYodOkndN7GRRi1pjqquI0UCwfICEA
-	 oMtY+DIpevdQU/qN/LntUD3J3ZAHzGhhrRsKDfHB2WpivcowDRu1nwtpEhigKlCUxd
-	 VbiOauyMb0KjEINJ82tB7NfWPNNOduLNqjb/NTr8azbs51dA96LmNmw/uL73Jlv6Lt
-	 WbQlYsCxikycQ==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF9E1CCAF
+	for <bpf@vger.kernel.org>; Sat, 12 Aug 2023 05:58:37 +0000 (UTC)
+X-Greylist: delayed 139453 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 22:58:35 PDT
+Received: from out203-205-221-221.mail.qq.com (out203-205-221-221.mail.qq.com [203.205.221.221])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906D7127;
+	Fri, 11 Aug 2023 22:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1691819908;
+	bh=6k+2tlcHY6MZU1kfTY6UiFMgENXZRojososrfddZu4I=;
+	h=From:To:Cc:Subject:Date;
+	b=ZmB3cJWBDsyHZM7BhMd1wkOWXlDefme40o0ikENygQfXQeg7cep7Xv03D0kVhPgig
+	 fGwsnlE1yKkC4fIvFAgD+s4pMcuTYRfQLifCat40X8UgT+ieDlmQzClquf4kfarpwC
+	 9qyd9xXzDR45PXg9P/rCypFZJQQcAGfJtjTJwknY=
+Received: from localhost.localdomain ([183.197.149.136])
+	by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
+	id E97B6647; Sat, 12 Aug 2023 13:58:23 +0800
+X-QQ-mid: xmsmtpt1691819903tjj8co8sd
+Message-ID: <tencent_89AF48A3CA88040670422959BB97062A2408@qq.com>
+X-QQ-XMAILINFO: NcdhUYIpzyYIKndtqfunD+qyjoV23avozVjtyniOAOQzyWGfkdOsh1PmlHRmZu
+	 1a8cOYp2BUT3DL2R/dnbDneIQKH/79sLWHSf+DeWPx5R4fp9Icm9mr4agJYzd5b/aq94swhGCDHx
+	 YH5gyo/z+Lrdffh4/VOdadR4mG1F01UHOGTYbE8waE9DHSuyCnU3xJrHCYyv/unwhIFsexjgTjRm
+	 4+QGzFPPLfQsN22fm4H5kgtv0HFtgkUGIt2Crmd1txPC0A9f+M4zNsid55FLS5GynOjLRAiW72+D
+	 f+wjMNYKF7KTz33cjgptIMCI+nfBjG0zJpMuPXWzXZC/ykaOJRtc8gCmiXuxw4Bz99Xgb9tTj65U
+	 pNsSYC8fuiuyK6fqgepnn/F7EtWqpuRMavZj1bL5j+yp3L9rZ0IoS7wSuAgn5Z1SihX0ghICvey5
+	 BEIW/IsNfGu7UXSg+isDWZ3NbZdvYsx/wdOLdqT6vNxVw8wJrGZfKFEemXSH3MsV7fF6nCBtELvH
+	 hp01wbipUxw0nU5uqTjiIdCVpo5GKNHzeP/hL2N4hOCe77qO9HQnfMUaiw0PhqJDN+7p1pexaIm2
+	 DjHspo2BL/HVTxtDSZG2YkUt3lx1RFM48nw5GNmTyg4SKOnehALJ6RQraauW0ZgDk4+OtdGQ5F05
+	 m1X58E+CcfLOTl7MSYqequQ7919awtuH1nL2QWwDzykK7O56ZQvJXAP8ZbUK4W87YJiLDdL8vjw3
+	 mPKhGpjnbdgWuFH2F1MdigmSjewvtnu7KWK2v9gOS+2MjYUvLio6FivxDcYsXml+siQAWCw7/BeB
+	 bFuoiDnZAlUqJnRGaKDKO0XPhIaPah5XryJIa6x0Ooo+2AZj9lM3DZg65Sxw9Q3i2MmXecfMgalm
+	 NvxY11bixjcHwZIMchV0ELi9X4IxH02BghdfQkjSFowT2bMTI30tq0nM5dFiW04mkyImiKGeVHgd
+	 Ht4Ps2BVXRa9oOr9VTsD6kMPyO7sYsfi/Ytk+kHXeNQQfKJcWaWuHF8obD3R7i
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: Rong Tao <rtoax@foxmail.com>
+To: sdf@google.com,
+	ast@kernel.org
+Cc: rongtao@cestc.cn,
+	rtoax@foxmail.com,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v3 8/8] Documentations: probes: Update fprobe document to use ftrace_regs
-Date: Sat, 12 Aug 2023 14:38:10 +0900
-Message-Id: <169181869006.505132.4695602314698748304.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <169181859570.505132.10136520092011157898.stgit@devnote2>
-References: <169181859570.505132.10136520092011157898.stgit@devnote2>
-User-Agent: StGit/0.19
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next v3] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date: Sat, 12 Aug 2023 13:57:02 +0800
+X-OQ-MSGID: <20230812055703.7218-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+From: Rong Tao <rongtao@cestc.cn>
 
-Update fprobe document so that the entry/exit handler uses ftrace_regs
-instead of pt_regs.
+Static ksyms often have problems because the number of symbols exceeds the
+MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+the problem somewhat, but it's not the perfect way.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+This commit uses dynamic memory allocation, which completely solves the
+problem caused by the limitation of the number of kallsyms.
+
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
 ---
- Documentation/trace/fprobe.rst |   14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+v3: Do not use structs and judge ksyms__add_symbol function return value.
+v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
+    Do the usual len/capacity scheme here to amortize the cost of realloc, and
+    don't free symbols.
+v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
+---
+ tools/testing/selftests/bpf/trace_helpers.c | 42 ++++++++++++++++-----
+ 1 file changed, 32 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
-index a6d682478147..8eee88eda4e6 100644
---- a/Documentation/trace/fprobe.rst
-+++ b/Documentation/trace/fprobe.rst
-@@ -91,9 +91,9 @@ The prototype of the entry/exit callback function are as follows:
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+index f83d9f65c65b..d8391a2122b4 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -18,10 +18,32 @@
+ #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+ #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
  
- .. code-block:: c
+-#define MAX_SYMS 400000
+-static struct ksym syms[MAX_SYMS];
++static struct ksym *syms;
++static int sym_cap;
+ static int sym_cnt;
  
-- int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
++static int ksyms__add_symbol(const char *name, unsigned long addr)
++{
++	void *tmp;
++	unsigned int new_cap;
++
++	if (sym_cnt + 1 > sym_cap) {
++		new_cap = sym_cap * 4 / 3;
++		tmp = realloc(syms, sizeof(struct ksym) * new_cap);
++		if (!tmp)
++			return -ENOMEM;
++		syms = tmp;
++		sym_cap = new_cap;
++	}
++
++	syms[sym_cnt].addr = addr;
++	syms[sym_cnt].name = strdup(name);
++
++	sym_cnt++;
++
++	return 0;
++}
++
+ static int ksym_cmp(const void *p1, const void *p2)
+ {
+ 	return ((struct ksym *)p1)->addr - ((struct ksym *)p2)->addr;
+@@ -33,9 +55,13 @@ int load_kallsyms_refresh(void)
+ 	char func[256], buf[256];
+ 	char symbol;
+ 	void *addr;
+-	int i = 0;
++	int ret;
  
-- void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
++	sym_cap = 1024;
+ 	sym_cnt = 0;
++	syms = malloc(sizeof(struct ksym) * sym_cap);
++	if (!syms)
++		return -ENOMEM;
  
- Note that the @entry_ip is saved at function entry and passed to exit handler.
- If the entry callback function returns !0, the corresponding exit callback will be cancelled.
-@@ -112,12 +112,10 @@ If the entry callback function returns !0, the corresponding exit callback will
-         This is the return address of the traced function. This can be used
-         at both entry and exit.
- 
--@regs
--        This is the `pt_regs` data structure at the entry and exit. Note that
--        the instruction pointer of @regs may be different from the @entry_ip
--        in the entry_handler. If you need traced instruction pointer, you need
--        to use @entry_ip. On the other hand, in the exit_handler, the instruction
--        pointer of @regs is set to the currect return address.
-+@fregs
-+        This is the `ftrace_regs` data structure at the entry and exit. Note that
-+        the instruction pointer of @fregs may be incorrect in entry handler and
-+        exit handler, so you have to use @entry_ip and @ret_ip instead.
- 
- @entry_data
-         This is a local storage to share the data between entry and exit handlers.
+ 	f = fopen("/proc/kallsyms", "r");
+ 	if (!f)
+@@ -46,15 +72,11 @@ int load_kallsyms_refresh(void)
+ 			break;
+ 		if (!addr)
+ 			continue;
+-		if (i >= MAX_SYMS)
+-			return -EFBIG;
+-
+-		syms[i].addr = (long) addr;
+-		syms[i].name = strdup(func);
+-		i++;
++		ret = ksyms__add_symbol(func, (unsigned long)addr);
++		if (ret)
++			return ret;
+ 	}
+ 	fclose(f);
+-	sym_cnt = i;
+ 	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
+ 	return 0;
+ }
+-- 
+2.41.0
 
 
