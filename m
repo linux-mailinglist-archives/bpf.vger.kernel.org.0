@@ -1,191 +1,314 @@
-Return-Path: <bpf+bounces-7777-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7781-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B59F077C3EF
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 01:27:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7F6777C533
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 03:42:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8D171C20C01
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 23:26:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24BCA1C20C0A
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 01:42:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB0E6AD2A;
-	Mon, 14 Aug 2023 23:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8134617E1;
+	Tue, 15 Aug 2023 01:41:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97368A925
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 23:26:50 +0000 (UTC)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A81BE;
-	Mon, 14 Aug 2023 16:26:49 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37EN3FYO029924;
-	Mon, 14 Aug 2023 23:26:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=LbOGZMmhNlVa4ttclSQNtMPwN4Io1A6KXK/1M1+rEYc=;
- b=UR2z69B7Lvy9Vs3FWl2PX62cWJxF93RykR98OH9jfrahT+junQisll8dKd7o3VraRuo7
- ewqCdTw2YfqgwTMk3g0o9J6uGSVE9DFfByQYGuT/p+H/nqAez6gkOYzjP87/j3q0UAmE
- 89EvYiXG1YIQ3mb7G/FRfLY0lLogE8t8VfkkydAzCSoLIi5FU/usLvwj6dUvNMa0fNNE
- EGu43O0X1sGG2oi8kdfs8FCIt9eKlCGTGdJ/6OKS/w+QtiiNR7pdQdjP4UjcVAO3hsLS
- JenqCniFfxgtedyi7a8/Dsj53oyhrVEtyGej2hCfVC4MKvdZ5M/l/HqqTdNdGCxngXiV Eg== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sfwkj0ech-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 14 Aug 2023 23:26:39 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37EMpf77003495;
-	Mon, 14 Aug 2023 23:26:38 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3semds8wr2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 14 Aug 2023 23:26:37 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37ENQaXd46924218
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 14 Aug 2023 23:26:36 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 404272004B;
-	Mon, 14 Aug 2023 23:26:36 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 42C4820040;
-	Mon, 14 Aug 2023 23:26:35 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 14 Aug 2023 23:26:35 +0000 (GMT)
-Received: from [10.61.2.107] (haven.au.ibm.com [9.192.254.114])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by ozlabs.au.ibm.com (Postfix) with ESMTPSA id BBBF3602FC;
-	Tue, 15 Aug 2023 09:26:30 +1000 (AEST)
-Message-ID: <ab85e604-b7ba-dbbe-53c2-2454e145d829@linux.ibm.com>
-Date: Tue, 15 Aug 2023 09:26:10 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/8] Documentation/sphinx: fix Python string escapes
-To: Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org,
-        bpf@vger.kernel.org, linux-pm@vger.kernel.org
-Cc: abbotti@mev.co.uk, hsweeten@visionengravers.com, jan.kiszka@siemens.com,
-        kbingham@kernel.org, mykolal@fb.com
-References: <20230814060704.79655-1-bgray@linux.ibm.com>
- <20230814060704.79655-3-bgray@linux.ibm.com> <87jztxwxtu.fsf@meer.lwn.net>
-Content-Language: en-US, en-AU
-From: Benjamin Gray <bgray@linux.ibm.com>
-In-Reply-To: <87jztxwxtu.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fMeSr82h78OcmSFLpK5YKZdGHM_Cfxs6
-X-Proofpoint-ORIG-GUID: fMeSr82h78OcmSFLpK5YKZdGHM_Cfxs6
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A9017C4;
+	Tue, 15 Aug 2023 01:41:58 +0000 (UTC)
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89399E7;
+	Mon, 14 Aug 2023 18:41:56 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bdaeb0f29aso25175265ad.2;
+        Mon, 14 Aug 2023 18:41:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692063716; x=1692668516;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zJmcVMAU4TgrCcNXkXAS+N8HGmM+6YlnKwixI3mOkho=;
+        b=PS6mNx5AfxI9YlQhcW/wcTBsQnG2VSSInSw8BJ1gDEJW6Vsgs+ba3UUhgz2JAuGr5b
+         jD+6QksLRAzYcZRALnkqp1CyS7fciA0bYLLcy2Tni0dYskGQezWK6pG9AyyYPah2smUR
+         vdWkHYbAK3xikutP5LLKkUTPE2+oFEjVxLCC5AVse9hFu+RREVILXIL1ufslmbLG27nY
+         gHHCX9uxpEaIqMnuDT2AQxjWKbnFC+GpD7kTXhZzc8P3OLmMdUkYYCz+jEgw/xeosBiT
+         pxAOViaTY5GBpo9cV5TdT7UXDHZDT4dLxV0uzqLPnalwBpZf89RI6FqZXTfzT6x5yOp3
+         qCUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692063716; x=1692668516;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zJmcVMAU4TgrCcNXkXAS+N8HGmM+6YlnKwixI3mOkho=;
+        b=ISFRP93LBZm8xjwmqgE3I/32Ohp7Z19ijHofp8UIcXuhSVjUrh69HCoQ82v0LO3jVl
+         W4P4zea01vq4K/gsPhj9qdDBArJqv3xaimM/Bvty2QWWGcZlKLSnR8DObIr8Oa1RqX52
+         4Nbr8f8N8AVGbY5XCh6K0L0uPssQKJp6vBFSVvECfgefv1RSQP8kKn9R4kAKLJd+PHLs
+         JMlRvu2iTPdRVzYDkerHSovHqNGQ07SJlp7cBh2YzbXe6gorfE+iz6ECZ2Jgnhygj/fo
+         wfHXc+ZT2x4kFPBaxQY0N316wAzadgIXJanmskM6RG5zHGt+491aED5WLiF8h/lUQnDd
+         OQWA==
+X-Gm-Message-State: AOJu0YwdMEwBVk80fifxQD5EyWUBGb85dl3osDhIS/w0v3T0yS2p+MZD
+	L6/CfWr4SaKyXaA+LR7Djso=
+X-Google-Smtp-Source: AGHT+IHZtwf+PGcuyF+OLzXnffXSdo3TScZXHJc1yP9U5VCRVgUzIY9rRbZZ42I1srG7RexUOxqtKw==
+X-Received: by 2002:a17:902:eccc:b0:1bb:c64f:9a5e with SMTP id a12-20020a170902eccc00b001bbc64f9a5emr10707894plh.5.1692063715867;
+        Mon, 14 Aug 2023 18:41:55 -0700 (PDT)
+Received: from localhost (ec2-52-8-182-0.us-west-1.compute.amazonaws.com. [52.8.182.0])
+        by smtp.gmail.com with ESMTPSA id m8-20020a170902db0800b001bc445e2497sm10168421plx.79.2023.08.14.18.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 18:41:55 -0700 (PDT)
+Date: Sat, 12 Aug 2023 08:01:13 +0000
+From: Bobby Eshleman <bobbyeshleman@gmail.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Bobby Eshleman <bobby.eshleman@bytedance.com>,
+	linux-hyperv@vger.kernel.org, Stefan Hajnoczi <stefanha@redhat.com>,
+	kvm@vger.kernel.org,
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+	Simon Horman <simon.horman@corigine.com>,
+	virtualization@lists.linux-foundation.org,
+	Eric Dumazet <edumazet@google.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Bryan Tan <bryantan@vmware.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Krasnov Arseniy <oxffffaa@gmail.com>,
+	Vishnu Dasa <vdasa@vmware.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH RFC net-next v5 11/14] vhost/vsock: implement datagram
+ support
+Message-ID: <ZNc8Sav6TTLM8wUM@bullseye>
+References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
+ <20230413-b4-vsock-dgram-v5-11-581bd37fdb26@bytedance.com>
+ <20230726143850-mutt-send-email-mst@kernel.org>
+ <ZMquW+6Rl6ZsYHad@bullseye>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-14_18,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- adultscore=0 clxscore=1011 lowpriorityscore=0 malwarescore=0 mlxscore=0
- impostorscore=0 priorityscore=1501 suspectscore=0 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308140211
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMquW+6Rl6ZsYHad@bullseye>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 14/8/23 11:35 pm, Jonathan Corbet wrote:
-> Benjamin Gray <bgray@linux.ibm.com> writes:
+On Wed, Aug 02, 2023 at 07:28:27PM +0000, Bobby Eshleman wrote:
+> On Wed, Jul 26, 2023 at 02:40:22PM -0400, Michael S. Tsirkin wrote:
+> > On Wed, Jul 19, 2023 at 12:50:15AM +0000, Bobby Eshleman wrote:
+> > > This commit implements datagram support for vhost/vsock by teaching
+> > > vhost to use the common virtio transport datagram functions.
+> > > 
+> > > If the virtio RX buffer is too small, then the transmission is
+> > > abandoned, the packet dropped, and EHOSTUNREACH is added to the socket's
+> > > error queue.
+> > > 
+> > > Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+> > 
+> > EHOSTUNREACH?
+> > 
+> > 
+> > > ---
+> > >  drivers/vhost/vsock.c    | 62 +++++++++++++++++++++++++++++++++++++++++++++---
+> > >  net/vmw_vsock/af_vsock.c |  5 +++-
+> > >  2 files changed, 63 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+> > > index d5d6a3c3f273..da14260c6654 100644
+> > > --- a/drivers/vhost/vsock.c
+> > > +++ b/drivers/vhost/vsock.c
+> > > @@ -8,6 +8,7 @@
+> > >   */
+> > >  #include <linux/miscdevice.h>
+> > >  #include <linux/atomic.h>
+> > > +#include <linux/errqueue.h>
+> > >  #include <linux/module.h>
+> > >  #include <linux/mutex.h>
+> > >  #include <linux/vmalloc.h>
+> > > @@ -32,7 +33,8 @@
+> > >  enum {
+> > >  	VHOST_VSOCK_FEATURES = VHOST_FEATURES |
+> > >  			       (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
+> > > -			       (1ULL << VIRTIO_VSOCK_F_SEQPACKET)
+> > > +			       (1ULL << VIRTIO_VSOCK_F_SEQPACKET) |
+> > > +			       (1ULL << VIRTIO_VSOCK_F_DGRAM)
+> > >  };
+> > >  
+> > >  enum {
+> > > @@ -56,6 +58,7 @@ struct vhost_vsock {
+> > >  	atomic_t queued_replies;
+> > >  
+> > >  	u32 guest_cid;
+> > > +	bool dgram_allow;
+> > >  	bool seqpacket_allow;
+> > >  };
+> > >  
+> > > @@ -86,6 +89,32 @@ static struct vhost_vsock *vhost_vsock_get(u32 guest_cid)
+> > >  	return NULL;
+> > >  }
+> > >  
+> > > +/* Claims ownership of the skb, do not free the skb after calling! */
+> > > +static void
+> > > +vhost_transport_error(struct sk_buff *skb, int err)
+> > > +{
+> > > +	struct sock_exterr_skb *serr;
+> > > +	struct sock *sk = skb->sk;
+> > > +	struct sk_buff *clone;
+> > > +
+> > > +	serr = SKB_EXT_ERR(skb);
+> > > +	memset(serr, 0, sizeof(*serr));
+> > > +	serr->ee.ee_errno = err;
+> > > +	serr->ee.ee_origin = SO_EE_ORIGIN_NONE;
+> > > +
+> > > +	clone = skb_clone(skb, GFP_KERNEL);
+> > > +	if (!clone)
+> > > +		return;
+> > > +
+> > > +	if (sock_queue_err_skb(sk, clone))
+> > > +		kfree_skb(clone);
+> > > +
+> > > +	sk->sk_err = err;
+> > > +	sk_error_report(sk);
+> > > +
+> > > +	kfree_skb(skb);
+> > > +}
+> > > +
+> > >  static void
+> > >  vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+> > >  			    struct vhost_virtqueue *vq)
+> > > @@ -160,9 +189,15 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+> > >  		hdr = virtio_vsock_hdr(skb);
+> > >  
+> > >  		/* If the packet is greater than the space available in the
+> > > -		 * buffer, we split it using multiple buffers.
+> > > +		 * buffer, we split it using multiple buffers for connectible
+> > > +		 * sockets and drop the packet for datagram sockets.
+> > >  		 */
+> > 
+> > won't this break things like recently proposed zerocopy?
+> > I think splitup has to be supported for all types.
+> > 
 > 
->> Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
->> This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
->> be a syntax error.
->>
->> Fix these now to get ahead of it before it's an error.
->>
->> Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
->> ---
->>   Documentation/sphinx/cdomain.py             | 2 +-
->>   Documentation/sphinx/kernel_abi.py          | 2 +-
->>   Documentation/sphinx/kernel_feat.py         | 2 +-
->>   Documentation/sphinx/kerneldoc.py           | 2 +-
->>   Documentation/sphinx/maintainers_include.py | 8 ++++----
->>   5 files changed, 8 insertions(+), 8 deletions(-)
+> Could you elaborate? Is there something about zerocopy that would
+> prohibit the transport from dropping a datagram?
 > 
-> So I am the maintainer for this stuff...is there a reason you didn't
-> copy me on this work?
 
-Sorry, I thought the list linux-doc@vger.kernel.org itself was enough. I 
-haven't done a cross tree series before, I was a bit adverse to CC'ing 
-everyone that appears as a maintainer for every patch.
+I would like to ask about this before I send out the draft spec.
 
-> 
->> diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
->> index ca8ac9e59ded..dbdc74bd0772 100644
->> --- a/Documentation/sphinx/cdomain.py
->> +++ b/Documentation/sphinx/cdomain.py
->> @@ -93,7 +93,7 @@ def markup_ctype_refs(match):
->>   #
->>   RE_expr = re.compile(r':c:(expr|texpr):`([^\`]+)`')
->>   def markup_c_expr(match):
->> -    return '\ ``' + match.group(2) + '``\ '
->> +    return '\\ ``' + match.group(2) + '``\\ '
-> 
-> I have to wonder about this one; I doubt the intent was to insert a
-> literal backslash.  I have to fire up my ancient build environment to
-> even try this, but even if it's right...
+I'm not sure if a lack of splitting breaks anything, but I do like
+the flexibility that splitting offers between senders and receivers, and
+I think it will avoid confusion for some users.
 
-Yeah, there is even a file that just has a syntax error. I don't have a 
-way to verify the original script was correct, but I have verified this 
-series doesn't change the parsed AST.
+Regarding the spec: because datagrams are connectionless, same-address
+fragments can be coming from different sockets and therefore different
+packets. This Linux implementation can avoid some complexity because it
+already follows the rule that "fragments are always sent in order, one
+after the other, until completion"... and so by adding a "more
+fragments" flag, seqnum, and "offset" field to the header, a simple FIFO
+accounting of fragments until MF=0 and offset != 0 works perfectly fine.
+But is this "fragments must be sent in-order" a reasonable constraint to
+build into the spec?
 
-In this case though, it's generating reST, so it might just be 
-conservatively guarding against generating bad markup[1]
+Without that constraint, the implementation requires a good amount more
+code to defrag incoming packets... but for vhost/virtio, I'm not sure
+the out-of-order case will ever occur because they both simply requeue
+at the queue head the partially sent packet. That said, if it is an
+unreasonable constraint for the specification, then Linux needs to
+support the out-of-order cause even if it doesn't use it.
 
-[1]: 
-https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#inline-markup 
+Best,
+Bobby
 
-
->>   #
->>   # Parse Sphinx 3.x C markups, replacing them by backward-compatible ones
->> diff --git a/Documentation/sphinx/kernel_abi.py b/Documentation/sphinx/kernel_abi.py
->> index b5feb5b1d905..b9f026f016fd 100644
->> --- a/Documentation/sphinx/kernel_abi.py
->> +++ b/Documentation/sphinx/kernel_abi.py
->> @@ -138,7 +138,7 @@ class KernelCmd(Directive):
->>                   code_block += "\n    " + l
->>               lines = code_block + "\n\n"
->>   
->> -        line_regex = re.compile("^\.\. LINENO (\S+)\#([0-9]+)$")
->> +        line_regex = re.compile("^\\.\\. LINENO (\\S+)\\#([0-9]+)$")
-> 
-> All of these really just want to be raw strings - a much more minimal
-> fix that makes the result quite a bit more readable:
-> 
->       line_regex = re.compile(r"^\.\. LINENO (\S+)\#([0-9]+)$")
->                               ^
->                               |
->    ---------------------------+
-> 
-> That, I think, is how these should be fixed.
-
-Yup, I mentioned that at the end of the cover letter. I can automate and 
-verify the conversion, but automating what _should_ be treated as a 
-'regex' string is fuzzier. Checking if there's a `re.*(` prefix on the 
-string should work for most though. I'll give it a shot.
-
-> Thanks,
-> 
-> jon
-
+> > 
+> > >  		if (payload_len > iov_len - sizeof(*hdr)) {
+> > > +			if (le16_to_cpu(hdr->type) == VIRTIO_VSOCK_TYPE_DGRAM) {
+> > > +				vhost_transport_error(skb, EHOSTUNREACH);
+> > > +				continue;
+> > > +			}
+> > > +
+> > >  			payload_len = iov_len - sizeof(*hdr);
+> > >  
+> > >  			/* As we are copying pieces of large packet's buffer to
+> > > @@ -394,6 +429,7 @@ static bool vhost_vsock_more_replies(struct vhost_vsock *vsock)
+> > >  	return val < vq->num;
+> > >  }
+> > >  
+> > > +static bool vhost_transport_dgram_allow(u32 cid, u32 port);
+> > >  static bool vhost_transport_seqpacket_allow(u32 remote_cid);
+> > >  
+> > >  static struct virtio_transport vhost_transport = {
+> > > @@ -410,7 +446,8 @@ static struct virtio_transport vhost_transport = {
+> > >  		.cancel_pkt               = vhost_transport_cancel_pkt,
+> > >  
+> > >  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+> > > -		.dgram_allow              = virtio_transport_dgram_allow,
+> > > +		.dgram_allow              = vhost_transport_dgram_allow,
+> > > +		.dgram_addr_init          = virtio_transport_dgram_addr_init,
+> > >  
+> > >  		.stream_enqueue           = virtio_transport_stream_enqueue,
+> > >  		.stream_dequeue           = virtio_transport_stream_dequeue,
+> > > @@ -443,6 +480,22 @@ static struct virtio_transport vhost_transport = {
+> > >  	.send_pkt = vhost_transport_send_pkt,
+> > >  };
+> > >  
+> > > +static bool vhost_transport_dgram_allow(u32 cid, u32 port)
+> > > +{
+> > > +	struct vhost_vsock *vsock;
+> > > +	bool dgram_allow = false;
+> > > +
+> > > +	rcu_read_lock();
+> > > +	vsock = vhost_vsock_get(cid);
+> > > +
+> > > +	if (vsock)
+> > > +		dgram_allow = vsock->dgram_allow;
+> > > +
+> > > +	rcu_read_unlock();
+> > > +
+> > > +	return dgram_allow;
+> > > +}
+> > > +
+> > >  static bool vhost_transport_seqpacket_allow(u32 remote_cid)
+> > >  {
+> > >  	struct vhost_vsock *vsock;
+> > > @@ -799,6 +852,9 @@ static int vhost_vsock_set_features(struct vhost_vsock *vsock, u64 features)
+> > >  	if (features & (1ULL << VIRTIO_VSOCK_F_SEQPACKET))
+> > >  		vsock->seqpacket_allow = true;
+> > >  
+> > > +	if (features & (1ULL << VIRTIO_VSOCK_F_DGRAM))
+> > > +		vsock->dgram_allow = true;
+> > > +
+> > >  	for (i = 0; i < ARRAY_SIZE(vsock->vqs); i++) {
+> > >  		vq = &vsock->vqs[i];
+> > >  		mutex_lock(&vq->mutex);
+> > > diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+> > > index e73f3b2c52f1..449ed63ac2b0 100644
+> > > --- a/net/vmw_vsock/af_vsock.c
+> > > +++ b/net/vmw_vsock/af_vsock.c
+> > > @@ -1427,9 +1427,12 @@ int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+> > >  		return prot->recvmsg(sk, msg, len, flags, NULL);
+> > >  #endif
+> > >  
+> > > -	if (flags & MSG_OOB || flags & MSG_ERRQUEUE)
+> > > +	if (unlikely(flags & MSG_OOB))
+> > >  		return -EOPNOTSUPP;
+> > >  
+> > > +	if (unlikely(flags & MSG_ERRQUEUE))
+> > > +		return sock_recv_errqueue(sk, msg, len, SOL_VSOCK, 0);
+> > > +
+> > >  	transport = vsk->transport;
+> > >  
+> > >  	/* Retrieve the head sk_buff from the socket's receive queue. */
+> > > 
+> > > -- 
+> > > 2.30.2
+> > 
+> > _______________________________________________
+> > Virtualization mailing list
+> > Virtualization@lists.linux-foundation.org
+> > https://lists.linuxfoundation.org/mailman/listinfo/virtualization
 
