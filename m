@@ -1,54 +1,54 @@
-Return-Path: <bpf+bounces-7644-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7645-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72F64779D6E
-	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 07:58:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78B9B779D6F
+	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 07:58:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A62A6281D88
-	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 05:58:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9B9A1C20AE8
+	for <lists+bpf@lfdr.de>; Sat, 12 Aug 2023 05:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D57A185F;
-	Sat, 12 Aug 2023 05:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54414186A;
+	Sat, 12 Aug 2023 05:58:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF9E1CCAF
-	for <bpf@vger.kernel.org>; Sat, 12 Aug 2023 05:58:37 +0000 (UTC)
-X-Greylist: delayed 139453 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 22:58:35 PDT
-Received: from out203-205-221-221.mail.qq.com (out203-205-221-221.mail.qq.com [203.205.221.221])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906D7127;
-	Fri, 11 Aug 2023 22:58:35 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F8B1867
+	for <bpf@vger.kernel.org>; Sat, 12 Aug 2023 05:58:42 +0000 (UTC)
+Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602D518F;
+	Fri, 11 Aug 2023 22:58:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1691819908;
+	s=s201512; t=1691819919;
 	bh=6k+2tlcHY6MZU1kfTY6UiFMgENXZRojososrfddZu4I=;
-	h=From:To:Cc:Subject:Date;
-	b=ZmB3cJWBDsyHZM7BhMd1wkOWXlDefme40o0ikENygQfXQeg7cep7Xv03D0kVhPgig
-	 fGwsnlE1yKkC4fIvFAgD+s4pMcuTYRfQLifCat40X8UgT+ieDlmQzClquf4kfarpwC
-	 9qyd9xXzDR45PXg9P/rCypFZJQQcAGfJtjTJwknY=
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=LPQVLmrsKYLI9e9HiVnPxJiYj+MVC5PGhSXNXy1gz1VDHtt4myPeM0IAwqVCp/1x0
+	 2yMRQkcsZleN6VpM5sXaT7koNtlFJo/xIpSH5Impt5h8uDI+0/IT2NBcuDBm3n+3/u
+	 Gf5enaMUJyvt3MJTzKckMqrW2wPTtsKpmw1necg4=
 Received: from localhost.localdomain ([183.197.149.136])
 	by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
 	id E97B6647; Sat, 12 Aug 2023 13:58:23 +0800
-X-QQ-mid: xmsmtpt1691819903tjj8co8sd
-Message-ID: <tencent_89AF48A3CA88040670422959BB97062A2408@qq.com>
-X-QQ-XMAILINFO: NcdhUYIpzyYIKndtqfunD+qyjoV23avozVjtyniOAOQzyWGfkdOsh1PmlHRmZu
-	 1a8cOYp2BUT3DL2R/dnbDneIQKH/79sLWHSf+DeWPx5R4fp9Icm9mr4agJYzd5b/aq94swhGCDHx
-	 YH5gyo/z+Lrdffh4/VOdadR4mG1F01UHOGTYbE8waE9DHSuyCnU3xJrHCYyv/unwhIFsexjgTjRm
-	 4+QGzFPPLfQsN22fm4H5kgtv0HFtgkUGIt2Crmd1txPC0A9f+M4zNsid55FLS5GynOjLRAiW72+D
-	 f+wjMNYKF7KTz33cjgptIMCI+nfBjG0zJpMuPXWzXZC/ykaOJRtc8gCmiXuxw4Bz99Xgb9tTj65U
-	 pNsSYC8fuiuyK6fqgepnn/F7EtWqpuRMavZj1bL5j+yp3L9rZ0IoS7wSuAgn5Z1SihX0ghICvey5
-	 BEIW/IsNfGu7UXSg+isDWZ3NbZdvYsx/wdOLdqT6vNxVw8wJrGZfKFEemXSH3MsV7fF6nCBtELvH
-	 hp01wbipUxw0nU5uqTjiIdCVpo5GKNHzeP/hL2N4hOCe77qO9HQnfMUaiw0PhqJDN+7p1pexaIm2
-	 DjHspo2BL/HVTxtDSZG2YkUt3lx1RFM48nw5GNmTyg4SKOnehALJ6RQraauW0ZgDk4+OtdGQ5F05
-	 m1X58E+CcfLOTl7MSYqequQ7919awtuH1nL2QWwDzykK7O56ZQvJXAP8ZbUK4W87YJiLDdL8vjw3
-	 mPKhGpjnbdgWuFH2F1MdigmSjewvtnu7KWK2v9gOS+2MjYUvLio6FivxDcYsXml+siQAWCw7/BeB
-	 bFuoiDnZAlUqJnRGaKDKO0XPhIaPah5XryJIa6x0Ooo+2AZj9lM3DZg65Sxw9Q3i2MmXecfMgalm
-	 NvxY11bixjcHwZIMchV0ELi9X4IxH02BghdfQkjSFowT2bMTI30tq0nM5dFiW04mkyImiKGeVHgd
-	 Ht4Ps2BVXRa9oOr9VTsD6kMPyO7sYsfi/Ytk+kHXeNQQfKJcWaWuHF8obD3R7i
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+X-QQ-mid: xmsmtpt1691819907tjhossl2a
+Message-ID: <tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com>
+X-QQ-XMAILINFO: MpO6L0LObisWlSPyv0ox+ZvMrl6iV1FUX3NaeEq6C+iNu2Xfz/4TfRjebT0iwT
+	 jRO2L4CZ8senOrM1WgysUkFrCY9MDXEcFoEdjONCfIqk8yzynKkc8DvKvb2/BXLLIWZwA9/KUZXX
+	 h7Sw1SckGjvWMulxOgVVEQtTBIwfTpDF80SV+YfkZCaBN0cvEJW8ABUL/FZdJ39pAQ18z8hr8IzV
+	 mel8lr/rjN7bS1LFBGdiCpMgcBEGqaoCa1pyPBr7rQWJPvPj43IvehKPTsNfEX9fKJ49FPtfQ/qe
+	 IQa8LRQY2Xz0wbdnxH0KVe15p1sWFbLgz5IJwkadS7c947YelRQ9P/x4uSvF62Jkc3mhZTh5ksch
+	 XV0kelJvfMZHClTO8bwzFIEYK7U/H4VArDCN5U5oP4lo3hseBlwnt1BOouNaImdDsDCdD2ecC075
+	 6gZ86VxIYxBmpEP7zK7j0fBXRiWbTAU5R20g9578yxK+iKRm7wVAU13e/Pa3lemy9+H4lTQxc5id
+	 3mW4VlPXq3fhnrr03fIzNPU59zrVn8mVcqoFeD9+ijAjIs6GrgnZHj8vjRCtziRK+ZVGQ7sBD9Pb
+	 YXLBVS9eGHWdEPAo1gNESRjErU9tUSvYN2SG90NFdNLaiEupzEP5NxiUDv1zf8l7+70m9qvJdmQA
+	 7Dk8potQQIftKVhxBRS/Bz/9KXilmvzDwz/4JVM8OdZvUQEIiYFezP2lTNMaG5LNjQEHU/uwrYVN
+	 pNTQCNlRLcfVqReM7i5Ou9yCuAkD5IvShNlaqHrgB4cdwq51kpiHECSt+ddInqdxVkDOFZu5vtlC
+	 hR8vR7y83s7aF2kAO2J2x+YiHqglNddCnYlCWH+Vn99f9SVhqiIW6DpSJLSuKUkBK2h4WmGeOi7B
+	 lfkINmi6Ep3mvGlUuysnRvuaQ5oWppxA7a6KKoTUrLHRGNy88GWI1IbfdLT9TojIDwp3LvbiWHW6
+	 FmTn3FRfjQJ3MJNC/0asszYu6BfmaJJYLVLsNbj9+bcI84M7piKRtG68OBwJQ0GeWva9KtyfjXoQ
+	 rtAxIumjDt1vZVJbleo+iU2j9hgl8auCm/suww8ejBNg0fCeOy
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
 From: Rong Tao <rtoax@foxmail.com>
 To: sdf@google.com,
 	ast@kernel.org
@@ -69,9 +69,11 @@ Cc: rongtao@cestc.cn,
 	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
 	linux-kernel@vger.kernel.org (open list)
 Subject: [PATCH bpf-next v3] selftests/bpf: trace_helpers.c: optimize kallsyms cache
-Date: Sat, 12 Aug 2023 13:57:02 +0800
-X-OQ-MSGID: <20230812055703.7218-1-rtoax@foxmail.com>
+Date: Sat, 12 Aug 2023 13:57:03 +0800
+X-OQ-MSGID: <20230812055703.7218-2-rtoax@foxmail.com>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230812055703.7218-1-rtoax@foxmail.com>
+References: <20230812055703.7218-1-rtoax@foxmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
