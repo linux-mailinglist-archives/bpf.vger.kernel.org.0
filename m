@@ -1,277 +1,132 @@
-Return-Path: <bpf+bounces-7741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5172977BEB0
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 19:13:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B525A77BED3
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 19:22:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A87928114F
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 17:13:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8D221C209C1
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 17:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07945C8E6;
-	Mon, 14 Aug 2023 17:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51601C8F1;
+	Mon, 14 Aug 2023 17:22:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813A9BE79
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 17:13:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F495C433C8;
-	Mon, 14 Aug 2023 17:13:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692033200;
-	bh=6sB0MXEZJTc5MyRjUr5ZjTDTIyVe78Iq4SedpR4xA6c=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=iHXE+B79VQw2Xu+svDx/uv1d0+6A1cL00Fi9RE726fiaEboN83Aw7MqXC2ysghAWk
-	 oRa6XKlaO+gITatZWz2ntX83ohQBteACnJ+ELPHxsiBLjuVltdnKIkooJZcf6mrn+P
-	 WuH354SsNnfg9xd9du8JSKV3Wnsdxv4lTB8LjdWfRjNhaV/T8mfovSA78MVxfbZqe7
-	 Wcm1d71t0hXuyBqtEAo1mB4eOTW6/ju8MFVRw7J32va0aW1hin/ZctA+qJSAvTP05y
-	 BrZnKgeN7IKpNPT9nZ2N9GahgUFIAGX8BerHZjMogu2+R0TLY/GPwzEGEjJ9Yi+a/0
-	 Fgpl9ez1OvULA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26AB0C2FF
+	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 17:22:27 +0000 (UTC)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70F610D0
+	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 10:22:26 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d664f9c5b92so4247379276.3
+        for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 10:22:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692033746; x=1692638546;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=K4kC8VdwRVtwS3SYD2fsCeGdVP47xqsJs+F+kjoCJt8=;
+        b=QqppkQfZcvfWKp0It6PxdXG5wNPjeRybUln6bQP8usjcp6RMH5wdXv1pvsVdvDExGS
+         Dr5dCDXITZC90isqbPTyutvnqunbZPro5WAvYsA9voVOv6TaBx1VSZGE802vliYDCYoX
+         fcFBS1cIrABZu/1ip1lg34dU3gW4ZKm1j1hheQ1kQHLLoDtvairF5/EPr2G1by0E7KSu
+         1Asyfx2MwfavXPE8ucSm9UOGGv77HBqnkZipeuSRLAiBp/M4mMHZnxpo8d6myONS35Qq
+         lPZZ3tyF0Vgik1AkmzSM2spr3KzohzpW4y5CJ5dt8t+xi1JuTeJ5mRYZSq5ATh2thErn
+         by+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692033746; x=1692638546;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K4kC8VdwRVtwS3SYD2fsCeGdVP47xqsJs+F+kjoCJt8=;
+        b=AzTPOa2JiXWCf/+zNAOUGQOMVqdSEe/nq70y/BcF7O+j5AhUJPuN3eutNASysFLhDk
+         bVQOX917HoUcPNL4i1OTRXAwYUxKJzWyc5nZhEZUBDR0rFSLKqwVlSazILrlii3U8Mn0
+         NXbFAR6AmzRrth93zgVFipdqRPJBzeFMvanf5XfekiSmd0MkmE2AcOSHHvfGnTlnmtuK
+         WK4wJ508G0H9YRMYgRsIcWGKPk3jvoizr0u+TNi6Yi8dqOij+ozdgYlanqt6B5Fotq0Y
+         Gr14ccMYT2fsJjl8HxHKBJnlAc2wxdbfvCSO1LB5GAG61KDuiDaJl4DXn62x1DcJP1Ix
+         x7bw==
+X-Gm-Message-State: AOJu0YyXgT4ZTfkn+IdFdNYL0kntBs9hXn3jgH3NsVZ6Io66TrZzuB94
+	0T9xUb37/R+hkhrnSPJzkkhzAu4=
+X-Google-Smtp-Source: AGHT+IHZ6W/zTV2xaZIGU94xFjfsD19UE705tAS9fruZGyiFxbrRi8Qkewej2Rt6Eky1W/eR4dbeEbo=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6902:1084:b0:d09:17f2:d3b0 with SMTP id
+ v4-20020a056902108400b00d0917f2d3b0mr150604ybu.9.1692033746236; Mon, 14 Aug
+ 2023 10:22:26 -0700 (PDT)
+Date: Mon, 14 Aug 2023 10:22:24 -0700
+In-Reply-To: <tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 14 Aug 2023 20:13:14 +0300
-Message-Id: <CUSFPINBGDSS.DQ0I19Z9FNR4@suppilovahvero>
-To: "Roberto Sassu" <roberto.sassu@huaweicloud.com>, <corbet@lwn.net>,
- <zohar@linux.ibm.com>, <dmitry.kasatkin@gmail.com>, <paul@paul-moore.com>,
- <jmorris@namei.org>, <serge@hallyn.com>
-Cc: <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
- <linux-integrity@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
- <bpf@vger.kernel.org>, <pbrobinson@gmail.com>, <zbyszek@in.waw.pl>,
- <hch@lst.de>, <mjg59@srcf.ucam.org>, <pmatilai@redhat.com>,
- <jannh@google.com>, "Roberto Sassu" <roberto.sassu@huawei.com>
-Subject: Re: [RFC][PATCH v2 03/13] integrity/digest_cache: Add functions to
- populate and search
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230812104616.2190095-1-roberto.sassu@huaweicloud.com>
- <20230812104616.2190095-4-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20230812104616.2190095-4-roberto.sassu@huaweicloud.com>
+References: <20230812055703.7218-1-rtoax@foxmail.com> <tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com>
+Message-ID: <ZNpi0MWUlFiaBUH6@google.com>
+Subject: Re: [PATCH bpf-next v3] selftests/bpf: trace_helpers.c: optimize
+ kallsyms cache
+From: Stanislav Fomichev <sdf@google.com>
+To: Rong Tao <rtoax@foxmail.com>
+Cc: ast@kernel.org, rongtao@cestc.cn, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+	Shuah Khan <shuah@kernel.org>, 
+	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-On Sat Aug 12, 2023 at 1:46 PM EEST, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Add digest_cache_init_htable(), to size a hash table depending on the
-> number of digests to be added to the cache.
->
-> Add digest_cache_add() and digest_cache_lookup() to respectively add and
-> lookup a digest in the digest cache.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+On 08/12, Rong Tao wrote:
+> From: Rong Tao <rongtao@cestc.cn>
+> 
+> Static ksyms often have problems because the number of symbols exceeds the
+> MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+> commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+> the problem somewhat, but it's not the perfect way.
+> 
+> This commit uses dynamic memory allocation, which completely solves the
+> problem caused by the limitation of the number of kallsyms.
+> 
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+
+I believe this is the one that won the pw race:
+https://patchwork.kernel.org/project/netdevbpf/patch/tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com/
+
+Acked-by: Stanislav Fomichev <sdf@google.com>
+
 > ---
->  security/integrity/digest_cache.c | 131 ++++++++++++++++++++++++++++++
->  security/integrity/digest_cache.h |  24 ++++++
->  2 files changed, 155 insertions(+)
->
-> diff --git a/security/integrity/digest_cache.c b/security/integrity/diges=
-t_cache.c
-> index 4201c68171a..d14d84b804b 100644
-> --- a/security/integrity/digest_cache.c
-> +++ b/security/integrity/digest_cache.c
-> @@ -315,3 +315,134 @@ struct digest_cache *digest_cache_get(struct dentry=
- *dentry,
-> =20
->  	return iint->dig_user;
->  }
-> +
-> +/**
-> + * digest_cache_init_htable - Allocate and initialize the hash table
-> + * @digest_cache: Digest cache
-> + * @num_digests: Number of digests to add to the digest cache
-> + *
-> + * This function allocates and initializes the hash table. Its size is
-> + * determined by the number of digests to add to the digest cache, known
-> + * at this point by the parser calling this function.
-> + *
-> + * Return: Zero on success, a negative value otherwise.
-> + */
-> +int digest_cache_init_htable(struct digest_cache *digest_cache,
-> +			     u64 num_digests)
+> v3: Do not use structs and judge ksyms__add_symbol function return value.
+> v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
+>     Do the usual len/capacity scheme here to amortize the cost of realloc, and
+>     don't free symbols.
+> v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
+> ---
+>  tools/testing/selftests/bpf/trace_helpers.c | 42 ++++++++++++++++-----
+>  1 file changed, 32 insertions(+), 10 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+> index f83d9f65c65b..d8391a2122b4 100644
+> --- a/tools/testing/selftests/bpf/trace_helpers.c
+> +++ b/tools/testing/selftests/bpf/trace_helpers.c
+> @@ -18,10 +18,32 @@
+>  #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+>  #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
+>  
+> -#define MAX_SYMS 400000
+> -static struct ksym syms[MAX_SYMS];
+> +static struct ksym *syms;
+> +static int sym_cap;
+>  static int sym_cnt;
+>  
+> +static int ksyms__add_symbol(const char *name, unsigned long addr)
 > +{
-> +	int i;
-> +
-> +	if (!digest_cache)
-> +		return 0;
-> +
-> +	digest_cache->num_slots =3D num_digests / DIGEST_CACHE_HTABLE_DEPTH;
-> +	if (!digest_cache->num_slots)
-> +		digest_cache->num_slots =3D 1;
-> +
-> +	digest_cache->slots =3D kmalloc_array(num_digests,
-> +					    sizeof(*digest_cache->slots),
-> +					    GFP_KERNEL);
-> +	if (!digest_cache->slots)
-> +		return -ENOMEM;
-> +
-> +	for (i =3D 0; i < digest_cache->num_slots; i++)
-> +		INIT_HLIST_HEAD(&digest_cache->slots[i]);
-> +
-> +	pr_debug("Initialized %d hash table slots for digest list %s\n",
-> +		 digest_cache->num_slots, digest_cache->path_str);
-> +	return 0;
-> +}
-> +
-> +/**
-> + * digest_cache_add - Add a new digest to the digest cache
-> + * @digest_cache: Digest cache
-> + * @digest: Digest to add
-> + *
-> + * This function, invoked by a digest list parser, adds a digest extract=
-ed
-> + * from a digest list to the digest cache.
-> + *
-> + * Return: Zero on success, a negative value on error.
+> +	void *tmp;
+> +	unsigned int new_cap;
 
-Nit: previous had a different phrasing "a negative value otherwise".
-
-I would suggest "a POSIX error code otherwise" for both.
-
-> + */
-> +int digest_cache_add(struct digest_cache *digest_cache, u8 *digest)
-> +{
-> +	struct digest_cache_entry *entry;
-> +	unsigned int key;
-> +	int digest_len;
-> +
-> +	if (!digest_cache)
-> +		return 0;
-> +
-> +	digest_len =3D hash_digest_size[digest_cache->algo];
-> +
-> +	entry =3D kmalloc(sizeof(*entry) + digest_len, GFP_KERNEL);
-> +	if (!entry)
-> +		return -ENOMEM;
-> +
-> +	memcpy(entry->digest, digest, digest_len);
-> +
-> +	key =3D digest_cache_hash_key(digest, digest_cache->num_slots);
-> +	hlist_add_head(&entry->hnext, &digest_cache->slots[key]);
-> +	pr_debug("Add digest %s:%*phN from digest list %s\n",
-> +		 hash_algo_name[digest_cache->algo], digest_len, digest,
-> +		 digest_cache->path_str);
-> +	return 0;
-> +}
-> +
-> +/**
-> + * digest_cache_lookup - Searches a digest in the digest cache
-> + * @digest_cache: Digest cache
-> + * @digest: Digest to search
-> + * @algo: Algorithm of the digest to search
-> + * @pathname: Path of the file whose digest is looked up
-> + *
-> + * This function, invoked by IMA or EVM, searches the calculated digest =
-of
-> + * a file or file metadata in the digest cache acquired with
-> + * digest_cache_get().
-> + *
-> + * Return: Zero if the digest is found, a negative value if not.
-> + */
-> +int digest_cache_lookup(struct digest_cache *digest_cache, u8 *digest,
-> +			enum hash_algo algo, const char *pathname)
-> +{
-> +	struct digest_cache_entry *entry;
-> +	unsigned int key;
-> +	int digest_len;
-> +	int search_depth =3D 0;
-> +
-> +	if (!digest_cache)
-> +		return -ENOENT;
-> +
-> +	if (digest_cache->algo =3D=3D HASH_ALGO__LAST) {
-> +		pr_debug("Algorithm not set for digest list %s\n",
-> +			 digest_cache->path_str);
-> +		return -ENOENT;
-> +	}
-> +
-> +	digest_len =3D hash_digest_size[digest_cache->algo];
-> +
-> +	if (algo !=3D digest_cache->algo) {
-> +		pr_debug("Algo mismatch for file %s, digest %s:%*phN in digest list %s=
- (%s)\n",
-> +			 pathname, hash_algo_name[algo], digest_len, digest,
-> +			 digest_cache->path_str,
-> +			 hash_algo_name[digest_cache->algo]);
-> +		return -ENOENT;
-> +	}
-> +
-> +	key =3D digest_cache_hash_key(digest, digest_cache->num_slots);
-> +
-> +	hlist_for_each_entry_rcu(entry, &digest_cache->slots[key], hnext) {
-> +		if (!memcmp(entry->digest, digest, digest_len)) {
-> +			pr_debug("Cache hit at depth %d for file %s, digest %s:%*phN in diges=
-t list %s\n",
-> +				 search_depth, pathname, hash_algo_name[algo],
-> +				 digest_len, digest, digest_cache->path_str);
-> +			return 0;
-> +		}
-> +
-> +		search_depth++;
-> +	}
-> +
-> +	pr_debug("Cache miss for file %s, digest %s:%*phN in digest list %s\n",
-> +		 pathname, hash_algo_name[algo], digest_len, digest,
-> +		 digest_cache->path_str);
-> +	return -ENOENT;
-> +}
-> diff --git a/security/integrity/digest_cache.h b/security/integrity/diges=
-t_cache.h
-> index ff88e8593c6..01cd70f9850 100644
-> --- a/security/integrity/digest_cache.h
-> +++ b/security/integrity/digest_cache.h
-> @@ -66,6 +66,11 @@ static inline unsigned int digest_cache_hash_key(u8 *d=
-igest,
->  void digest_cache_free(struct digest_cache *digest_cache);
->  struct digest_cache *digest_cache_get(struct dentry *dentry,
->  				      struct integrity_iint_cache *iint);
-> +int digest_cache_init_htable(struct digest_cache *digest_cache,
-> +			     u64 num_digests);
-> +int digest_cache_add(struct digest_cache *digest_cache, u8 *digest);
-> +int digest_cache_lookup(struct digest_cache *digest_cache, u8 *digest,
-> +			enum hash_algo algo, const char *pathname);
->  #else
->  static inline void digest_cache_free(struct digest_cache *digest_cache)
->  {
-> @@ -77,5 +82,24 @@ digest_cache_get(struct dentry *dentry, struct integri=
-ty_iint_cache *iint)
->  	return NULL;
->  }
-> =20
-> +static inline int digest_cache_init_htable(struct digest_cache *digest_c=
-ache,
-> +					   u64 num_digests)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static inline int digest_cache_add(struct digest_cache *digest_cache,
-> +				   u8 *digest)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static inline int digest_cache_lookup(struct digest_cache *digest_cache,
-> +				      u8 *digest, enum hash_algo algo,
-> +				      const char *pathname)
-> +{
-> +	return -ENOENT;
-> +}
-> +
->  #endif /* CONFIG_INTEGRITY_DIGEST_CACHE */
->  #endif /* _DIGEST_CACHE_H */
-> --=20
-> 2.34.1
-
-Why all this complexity instead of using xarray?
-
-https://docs.kernel.org/core-api/xarray.html
-
-BR, Jarkko
+Nit: reverse Christmas tree, not sure we care for the tests though..
 
