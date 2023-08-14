@@ -1,137 +1,139 @@
-Return-Path: <bpf+bounces-7765-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7766-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA2E377BFFD
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 20:49:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE24977C02C
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 20:59:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B749281208
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 18:49:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E04111C20B1F
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 18:59:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8BC3CA48;
-	Mon, 14 Aug 2023 18:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86719CA61;
+	Mon, 14 Aug 2023 18:59:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83485C140
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 18:49:19 +0000 (UTC)
-Received: from mx0a-00206402.pphosted.com (mx0a-00206402.pphosted.com [148.163.148.77])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7768612E
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 11:49:18 -0700 (PDT)
-Received: from pps.filterd (m0354650.ppops.net [127.0.0.1])
-	by mx0a-00206402.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37EHD5p8004467;
-	Mon, 14 Aug 2023 18:49:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=default;
-	 bh=JJNIDGgTos3wELEWNmjfQwz1EBupJcdB2aMdIQJx35I=; b=TsKPIjjIbUP+
-	XX4AL0b5cIuGDWyN52tx5QCpWbrhOXHlQXP8Y+EmKAHZTwkcJ0kNy6t7fnzH/j92
-	KEqicqxnhVR9qYO4dJIgPts98MlwCtOpxG+Q0zbHmv4vGD/IIL4Uwd3fnbA+lVpA
-	qsFK5ayS59Qp+0RzRmvnwjRF5QT1HuHm768gMPGm5asyw3E3mVA96RMtGXdtwm3i
-	b8CTflD3GZ4y532rKQa8kHaKEDmBosLEBy0+MEK4m6vBCVDkSPyW6hX3gQrRVv7K
-	pQcNfFx2g0rzRxftCqsIgMoyCQsn9xAEdtJyVUz2tzWUoArYllWfVC1fN9sSSFtI
-	DDC+7DZjkQ==
-Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
-	by mx0a-00206402.pphosted.com (PPS) with ESMTPS id 3sepj93asm-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 14 Aug 2023 18:49:03 +0000 (GMT)
-Received: from [10.102.42.42] (10.100.11.122) by 04wpexch06.crowdstrike.sys
- (10.100.11.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.16; Mon, 14 Aug
- 2023 18:48:57 +0000
-Message-ID: <66c7f651-1482-e1db-2231-b35410bd1900@crowdstrike.com>
-Date: Mon, 14 Aug 2023 11:48:56 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621DDC12F;
+	Mon, 14 Aug 2023 18:59:22 +0000 (UTC)
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2246C10F7;
+	Mon, 14 Aug 2023 11:59:21 -0700 (PDT)
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-76d535567afso87556985a.1;
+        Mon, 14 Aug 2023 11:59:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692039560; x=1692644360;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jTub9WclxOHEsi9/NJWWi275qZt7CmU6ZzBgj/2xmWs=;
+        b=EIYz++F+PsgqsNXmqtZ58mLLilZd/b+BIU4ABGyxpXzHGTsd/Z20cSXSiag6XMy9ti
+         SBryGbiVfAdrFn/pvQVXcaTazJtPZWsLU2yA96Kc8kajQCKcZRv1519ROm0pF5x/ORwd
+         2vEG7DVwTj7lbfP1QYzQGhVxEY9LjlWDCa3C+pGVJgfmW52OSTfwdC6T5mqvi9ARcitn
+         rh24vH43z5wdEvLIuolRUICDpInXiFBcskcenhBbxRpNo5acmRu5iTpcs4LFlJSLchKJ
+         fYw8scV2cI3SP5xdcsdAEw8tglbwunNfLG8Z9wCTR4dD5HJs+RG4xZShdhbVcYMM4zcN
+         7EKg==
+X-Gm-Message-State: AOJu0YwdTKQazgHUYBfjjzOYAAzQedKnjkMgDOacq2WJa4BVj8iGdAEs
+	ypClTqPq+GfgSIo0QvztceuNFf4wq3CF3gwx
+X-Google-Smtp-Source: AGHT+IEpHbjrvnEmGVSYnnSNUKns5dxPjG36Pr1OSN4IwCjitx6awkcKChE6PNq7E0ONFBZEROdFxQ==
+X-Received: by 2002:a05:6214:5d12:b0:636:14d4:4461 with SMTP id me18-20020a0562145d1200b0063614d44461mr11090391qvb.62.1692039559869;
+        Mon, 14 Aug 2023 11:59:19 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:93a1])
+        by smtp.gmail.com with ESMTPSA id w3-20020a05620a148300b0076c9cc1e107sm3199516qkj.54.2023.08.14.11.59.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 11:59:19 -0700 (PDT)
+From: David Vernet <void@manifault.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	tj@kernel.org,
+	clm@meta.com,
+	thinker.li@gmail.com,
+	netdev@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/2] Update and document struct_ops
+Date: Mon, 14 Aug 2023 13:59:06 -0500
+Message-ID: <20230814185908.700553-1-void@manifault.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [External] Re: [PATCH bpf-next] libbpf: set close-on-exec flag on
- gzopen
-Content-Language: en-US
-To: Stanislav Fomichev <sdf@google.com>
-CC: <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei
- Starovoitov <ast@kernel.org>,
-        Marco Vedovati <marco.vedovati@crowdstrike.com>
-References: <20230810214350.106301-1-martin.kelly@crowdstrike.com>
- <674989d5-abc1-60fb-64ea-da25d24f935e@crowdstrike.com>
- <ZNpeU4faW3wSgDVf@google.com>
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-In-Reply-To: <ZNpeU4faW3wSgDVf@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.100.11.122]
-X-ClientProxiedBy: 04WPEXCH11.crowdstrike.sys (10.100.11.115) To
- 04wpexch06.crowdstrike.sys (10.100.11.99)
-X-Disclaimer: USA
-X-Proofpoint-GUID: sbjuRLZN7pNAiRMGOPR-lXbRHDXcZ0VF
-X-Proofpoint-ORIG-GUID: sbjuRLZN7pNAiRMGOPR-lXbRHDXcZ0VF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-14_16,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 malwarescore=0 phishscore=0 mlxlogscore=999 spamscore=0
- impostorscore=0 mlxscore=0 bulkscore=0 adultscore=0 suspectscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2306200000 definitions=main-2308140175
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+The struct bpf_struct_ops structure in BPF is a framework that allows
+subsystems to extend themselves using BPF. In commit 68b04864ca425
+("bpf: Create links for BPF struct_ops maps") and commit aef56f2e918bf
+("bpf: Update the struct_ops of a bpf_link"), the structure was updated
+to include new ->validate() and ->update() callbacks respectively in
+support of allowing struct_ops maps to be created with BPF_F_LINK.
 
-On 8/14/23 10:03, Stanislav Fomichev wrote:
-> On 08/10, Martin Kelly wrote:
->> On 8/10/23 14:43, Martin Kelly wrote:
->>> From: Marco Vedovati <marco.vedovati@crowdstrike.com>
->>>
->>> Enable the close-on-exec flag when using gzopen
->>>
->>> This is especially important for multithreaded programs making use of
->>> libbpf, where a fork + exec could race with libbpf library calls,
->>> potentially resulting in a file descriptor leaked to the new process.
->>>
->>> Signed-off-by: Marco Vedovati <marco.vedovati@crowdstrike.com>
->>> ---
->>>    tools/lib/bpf/libbpf.c | 4 ++--
->>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->>> index 17883f5a44b9..b14a4376a86e 100644
->>> --- a/tools/lib/bpf/libbpf.c
->>> +++ b/tools/lib/bpf/libbpf.c
->>> @@ -1978,9 +1978,9 @@ static int bpf_object__read_kconfig_file(struct bpf_object *obj, void *data)
->>>    		return -ENAMETOOLONG;
->>>    	/* gzopen also accepts uncompressed files. */
->>> -	file = gzopen(buf, "r");
->>> +	file = gzopen(buf, "re");
->>>    	if (!file)
->>> -		file = gzopen("/proc/config.gz", "r");
->>> +		file = gzopen("/proc/config.gz", "re");
->>>    	if (!file) {
->>>    		pr_warn("failed to open system Kconfig\n");
->> Sorry for double-sending the patch; the first was missing the bpf-next
->> prefix and I wasn't sure if that would be an issue. Feel free to ignore this
->> patch, as the other already got a reply.
->
-> Next time pls at least reply to the first 'wrong' one :-)
+The intention was that struct bpf_struct_ops implementations could
+support map updates through the link. Because map validation and
+registration would take place in two separate steps for struct_ops
+maps managed by the link (the first in map update elem, and the latter
+in link create), the ->validate() callback was added, and any struct_ops
+implementation that wished to use BPF_F_LINK, even just for lifetime
+management, would then be required to define both it and ->update().
 
-Yeah, I replied to this one as you had already replied to the first, and 
-I didn't want to add confusion and split the conversation into two 
-pieces. I saw a 40 minute or so delay before the initial patch was 
-posted to vger, and I had thought "maybe it's because I was missing the 
-bpf-next prefix" and then resent... only to have the initial message 
-appear a few minutes later :). So, my bad, I jumped the gun.
+Not all struct_ops implementations can or will support update, however.
+For example, the sched_ext struct_ops implementation proposed in [0]
+will not be able to support atomic map updates because it can race with
+sysrq, has to cycle tasks through various states in order to safely
+transition, etc. It can, however, benefit from letting the BPF link
+automatically evict the struc_ops map when the application exits (e.g.
+if it crashes).
 
-Next time I'll make sure to add the right prefix initially and to take 
-into account mailing list delay.
+This patch set therefore:
+
+1. Updates the struct_ops implementation to support default values for
+   ->validate() and ->update() so that struct_ops implementations can
+   benefit from BPF_F_LINK management even if they can't support
+   updates.
+2. Documents struct bpf_struct_ops so that the semantics are clear and
+   well defined.
+
+---
+v2: https://lore.kernel.org/bpf/0f5ea3de-c6e7-490f-b5ec-b5c7cd288687@gmail.com/T/
+Changes from v2 -> v3:
+- Add patch 2/2 that documents the struct bpf_struct_ops structure.
+- Add Kui-Feng's Acked-by tag to patch 1/2.
+
+v1: https://lore.kernel.org/lkml/20230811150934.GA542801@maniforge/
+Changes from v1 -> v2:
+- Move the if (!st_map->st_ops->update) check outside of the critical
+  section before we acquire the update_mutex.
+
+David Vernet (2):
+  bpf: Support default .validate() and .update() behavior for struct_ops
+    links
+  bpf: Document struct bpf_struct_ops fields
+
+ include/linux/bpf.h         | 43 +++++++++++++++++++++++++++++++++++++
+ kernel/bpf/bpf_struct_ops.c | 15 +++++++------
+ 2 files changed, 52 insertions(+), 6 deletions(-)
+
+-- 
+2.41.0
 
 
