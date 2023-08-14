@@ -1,143 +1,156 @@
-Return-Path: <bpf+bounces-7694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DD1B77B14C
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 08:15:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB3C277B507
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 11:03:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307171C2098E
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 06:15:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6606E280E72
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 09:03:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF03F5660;
-	Mon, 14 Aug 2023 06:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 385B0A94D;
+	Mon, 14 Aug 2023 09:03:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C4C185D
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 06:14:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7C65C433C7;
-	Mon, 14 Aug 2023 06:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691993689;
-	bh=eTq5lg24E4jKVRcCvUSUIYtJjm4KTPFGD0GKMh0DwbY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=pwFkuPtx46gDfSQ66A/GRRPyzJjcJt1TI5pNb82BdeWjlND/GZO+giPGpnxXDRVVA
-	 TGGBHnuZ+PN07ZH3/NXiuZ7sepOrEs6yvGMslevzLBNWwkoMfYyewErt664hm7hj1Q
-	 m11doQknDFzC1bTt5ake8lMFvycE/Bs0dw43da0clEL3pgb8UHUXETDgzHTKKEAhL4
-	 wKI2tou1K/8cHSYoJh9t7Np2BQIWIlGO746RNbUYtOtI3yQHk5sY+64TAhP5PgdFCX
-	 gdVaHRssYwAKX9ut8WcogxzN3+wAY69OynwpSXeVjVx6pyuZSOlkPSCcbFBN9lyCDE
-	 7043B8bPTtE5w==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Puranjay Mohan <puranjay12@gmail.com>, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, pulehui@huawei.com,
- conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- kpsingh@kernel.org, bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: Re: [PATCH bpf-next 0/2] bpf, riscv: use BPF prog pack allocator in
- BPF JIT
-In-Reply-To: <87ttt21yd1.fsf@all.your.base.are.belong.to.us>
-References: <20230720154941.1504-1-puranjay12@gmail.com>
- <87ttt21yd1.fsf@all.your.base.are.belong.to.us>
-Date: Mon, 14 Aug 2023 08:14:46 +0200
-Message-ID: <874jl2up49.fsf@all.your.base.are.belong.to.us>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D444A927;
+	Mon, 14 Aug 2023 09:03:38 +0000 (UTC)
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984EC10B;
+	Mon, 14 Aug 2023 02:03:36 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VpjgjX-_1692003812;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VpjgjX-_1692003812)
+          by smtp.aliyun-inc.com;
+          Mon, 14 Aug 2023 17:03:33 +0800
+Message-ID: <1692003413.6339955-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v13 05/12] virtio_ring: introduce virtqueue_dma_dev()
+Date: Mon, 14 Aug 2023 16:56:53 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: virtualization@lists.linux-foundation.org,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ netdev@vger.kernel.org,
+ bpf@vger.kernel.org,
+ Christoph Hellwig <hch@infradead.org>
+References: <20230810123057.43407-1-xuanzhuo@linux.alibaba.com>
+ <20230810123057.43407-6-xuanzhuo@linux.alibaba.com>
+ <CACGkMEsaYbsWyOKxA-xY=3dSmvzq9pMdYbypG9q+Ry2sMwAMPg@mail.gmail.com>
+In-Reply-To: <CACGkMEsaYbsWyOKxA-xY=3dSmvzq9pMdYbypG9q+Ry2sMwAMPg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
-Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+On Mon, 14 Aug 2023 11:05:49 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> On Thu, Aug 10, 2023 at 8:31=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba=
+.com> wrote:
+> >
+> > Added virtqueue_dma_dev() to get DMA device for virtio. Then the
+> > caller can do dma operation in advance. The purpose is to keep memory
+> > mapped across multiple add/get buf operations.
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Acked-by: Jason Wang <jasowang@redhat.com>
+>
+> So I think we don't have actual users for this in this series? Can we
+> simply have another independent patch for this?
 
-> Puranjay Mohan <puranjay12@gmail.com> writes:
->
->> BPF programs currently consume a page each on RISCV. For systems with ma=
-ny BPF
->> programs, this adds significant pressure to instruction TLB. High iTLB p=
-ressure
->> usually causes slow down for the whole system.
->>
->> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above=
- issue.
->> It packs multiple BPF programs into a single huge page. It is currently =
-only
->> enabled for the x86_64 BPF JIT.
->>
->> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed n=
-ow.
->>
->> This patch series enables the BPF prog pack allocator for the RISCV BPF =
-JIT.
->> This series needs a patch[3] from the ARM64 series to work.
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->> Performance Analysis of prog pack allocator on RISCV64
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->>
->> Test setup:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->> Host machine: Debian GNU/Linux 11 (bullseye)
->> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
->> u-boot-qemu Version: 2023.07+dfsg-1
->> opensbi Version: 1.3-1
->>
->> To test the performance of the BPF prog pack allocator on RV, a stresser
->> tool[4] linked below was built. This tool loads 8 BPF programs on the sy=
-stem and
->> triggers 5 of them in an infinite loop by doing system calls.
->>
->> The runner script starts 20 instances of the above which loads 8*20=3D16=
-0 BPF
->> programs on the system, 5*20=3D100 of which are being constantly trigger=
-ed.
->> The script is passed a command which would be run in the above environme=
-nt.
->>
->> The script was run with following perf command:
->> ./run.sh "perf stat -a \
->>         -e iTLB-load-misses \
->>         -e dTLB-load-misses  \
->>         -e dTLB-store-misses \
->>         -e instructions \
->>         --timeout 60000"
->>
->> The output of the above command is discussed below before and after enab=
-ling the
->> BPF prog pack allocator.
->>
->> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The r=
-ootfs
->> was created using Bjorn's riscv-cross-builder[5] docker container linked=
- below.
->
-> Back in the saddle! Sorry for the horribly late reply...
->
-> Did you run the test_progs kselftest test, and passed w/o regressions? I
-> ran a test without/with your series (plus the patch from the arm64
-> series that you pointed out), and I'm getting regressions with this
-> series:
->
-> w/o Summary: 318/3114 PASSED, 27 SKIPPED, 60 FAILED
-> w/  Summary: 299/3026 PASSED, 33 SKIPPED, 79 FAILED
->
-> I'm did the test on commit 4c75bf7e4a0e ("Merge tag
-> 'kbuild-fixes-v6.5-2' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild").
->
-> I'm re-running, and investigating now.
+I am ok. I will remove this from the next version.
 
-I had a bad environment on for the rebuild; A proper rebuild worked. No
-regressions. Sorry for the noise!
+But I also help merge this to 6.6. Then we can let the virtio-net to support
+AF_XDP in 6.7+.
+
+
+>
+> > ---
+> >  drivers/virtio/virtio_ring.c | 17 +++++++++++++++++
+> >  include/linux/virtio.h       |  2 ++
+> >  2 files changed, 19 insertions(+)
+> >
+> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > index f9f772e85a38..bb3d73d221cd 100644
+> > --- a/drivers/virtio/virtio_ring.c
+> > +++ b/drivers/virtio/virtio_ring.c
+> > @@ -2265,6 +2265,23 @@ int virtqueue_add_inbuf_ctx(struct virtqueue *vq,
+> >  }
+> >  EXPORT_SYMBOL_GPL(virtqueue_add_inbuf_ctx);
+> >
+> > +/**
+> > + * virtqueue_dma_dev - get the dma dev
+> > + * @_vq: the struct virtqueue we're talking about.
+> > + *
+> > + * Returns the dma dev. That can been used for dma api.
+> > + */
+> > +struct device *virtqueue_dma_dev(struct virtqueue *_vq)
+> > +{
+> > +       struct vring_virtqueue *vq =3D to_vvq(_vq);
+> > +
+> > +       if (vq->use_dma_api)
+> > +               return vring_dma_dev(vq);
+> > +       else
+> > +               return NULL;
+> > +}
+> > +EXPORT_SYMBOL_GPL(virtqueue_dma_dev);
+>
+> One possible concern is that exporting things like NULL may result in
+> the switch in the caller (driver). I wonder if it's better to do
+> BUG_ON() in the path of NULL?
+
+
+I agree.
+
+But we need a new helper to tell the driver(or AF_XDP) that the device supp=
+ort
+ACCESS_PLATFORM or not.
+
+We need a switch, but we can make the switch is irrelevant to the DMA.
+
+Thanks.
+
+
+
+>
+> Thanks
+>
+> > +
+> >  /**
+> >   * virtqueue_kick_prepare - first half of split virtqueue_kick call.
+> >   * @_vq: the struct virtqueue
+> > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+> > index 8add38038877..bd55a05eec04 100644
+> > --- a/include/linux/virtio.h
+> > +++ b/include/linux/virtio.h
+> > @@ -61,6 +61,8 @@ int virtqueue_add_sgs(struct virtqueue *vq,
+> >                       void *data,
+> >                       gfp_t gfp);
+> >
+> > +struct device *virtqueue_dma_dev(struct virtqueue *vq);
+> > +
+> >  bool virtqueue_kick(struct virtqueue *vq);
+> >
+> >  bool virtqueue_kick_prepare(struct virtqueue *vq);
+> > --
+> > 2.32.0.3.g01195cf9f
+> >
+>
 
