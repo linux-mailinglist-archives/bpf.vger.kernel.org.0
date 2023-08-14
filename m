@@ -1,125 +1,169 @@
-Return-Path: <bpf+bounces-7714-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7715-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6A277BA34
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 15:36:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6037477BA56
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 15:42:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DDFA281179
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 13:36:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 915F61C20A42
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 13:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED17BE7C;
-	Mon, 14 Aug 2023 13:36:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A0BC129;
+	Mon, 14 Aug 2023 13:42:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09330AD29
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 13:36:12 +0000 (UTC)
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D9010C6;
-	Mon, 14 Aug 2023 06:35:58 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 383902DC;
-	Mon, 14 Aug 2023 13:35:58 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 383902DC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1692020158; bh=TTfv8kyCp+lhTXNlRfFTNBLGGFbAUEW/7RUG2jpU/lA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=jzVnUWEeH0OBts9ZGWMVY16Ee4OZCCdCOllpzYuGjxL2jP5/bu/ssntiDH3y3nvBD
-	 O3PU2D2PG03RjZqrNKvt0hHAsxKlebT0FKBtNE/5Einys6RC8fL2/mhuV+4ZsRS4Fi
-	 a1tBF3Z1jeSC7fr59WzGvWbWK1SuGttXXinXdOHWPlQWz4sI56/PIeLxA0Y4CjzO+2
-	 ipWPJPL3ZqW9/aCH+MxhAoy+aOiUadLGpDgZCdmtKaZdyBmbaivIebZ0tAxxcYZFZ3
-	 E0jRRBCVYi/gt/OkTIVEJjmnRO4NkzwPhEVjRXQMcDpQP8jdRna6CNq6uqF2JPhGW6
-	 uiKiS9d0+HSXg==
-From: Jonathan Corbet <corbet@lwn.net>
-To: Benjamin Gray <bgray@linux.ibm.com>, linux-kernel@vger.kernel.org,
- linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org,
- bpf@vger.kernel.org, linux-pm@vger.kernel.org
-Cc: abbotti@mev.co.uk, hsweeten@visionengravers.com, jan.kiszka@siemens.com,
- kbingham@kernel.org, mykolal@fb.com, Benjamin Gray <bgray@linux.ibm.com>
-Subject: Re: [PATCH 2/8] Documentation/sphinx: fix Python string escapes
-In-Reply-To: <20230814060704.79655-3-bgray@linux.ibm.com>
-References: <20230814060704.79655-1-bgray@linux.ibm.com>
- <20230814060704.79655-3-bgray@linux.ibm.com>
-Date: Mon, 14 Aug 2023 07:35:57 -0600
-Message-ID: <87jztxwxtu.fsf@meer.lwn.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05721AD29;
+	Mon, 14 Aug 2023 13:42:21 +0000 (UTC)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E023D106;
+	Mon, 14 Aug 2023 06:42:20 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68843ed67a8so166825b3a.2;
+        Mon, 14 Aug 2023 06:42:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692020540; x=1692625340;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lDCAzxWdtY8TWbeLrXdWW1Rai4n5TCJ5494zqu6HPfU=;
+        b=Fjxw6gu8bboVjTZ+auStS34IcemdRAKkM+l3uJNXDisu2msNUp+VeFdjl63CoEetEY
+         Nr4h1LFqyJcDm2xvSnXF0ptRW5mPdJ3Gdpmh2gsRjyc65E08bIG+BVaG28tdv/t1v/x3
+         lOwabI1XL66yLiAu6ZzR/ApmyEWyFYIN01fonPiBsRJF2rJgclPOWP4pep2ANjAkKANq
+         8I+MoaxPlX3rFpRQBYtRZ0wOA0Fc1KdeJytDa0UyBWaqLynECIxewWZIAJuayKggHglk
+         dDyh4fqEZyjwy1BI9HAZ7u1Ybu+wNl82tS+WOOSTG6gIbJXVwZchk4+bma5M9poAQA3S
+         g6EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692020540; x=1692625340;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lDCAzxWdtY8TWbeLrXdWW1Rai4n5TCJ5494zqu6HPfU=;
+        b=Xt3WvWCV/v1QaznAUbyyWnOy8efqNfzJPq0iNc/huPCd65hNJw4ylc7L7bp2AbE1f1
+         RxiZIsBBfm3Pg5pNt9Hwzdg71wpieSWNcpeQ1ag31rKyrjuVXT/thIPgeIhkPXcGXFAe
+         TR5nkAW9D4+JiuwNWiYfmX9rH/qFgIAQAEKm/WNR626w/ARFuW+0x6atc1w46Z3XEVmR
+         M/q1f8cwvYFTH9wGRHjCcDcd5ZU0j+W7O41vv+8JkVi6nFcNTStQ8E3BCh0baZ+rLvy7
+         FE65u4MVvTpR35rf2+VKceblA7Ws9KUvMUq02Bisebvr1Apa/9teTSyznOX0Tdoljxgv
+         qfNg==
+X-Gm-Message-State: AOJu0YzuRHcP/1shtFPYo2SaBzT1vJAHqkozA2Y/Yws6wZkVa2+Nxgg7
+	0+rtrB+Fuq/GU97in8QiHqrEAN8MnMY1TRUE
+X-Google-Smtp-Source: AGHT+IE9wKPAW8hDDXYgn6NS1woZmMGvp8CdL1oFFe/zjWjyGir6jLu0Ld1BbUDtZFJTbdD3OGS95A==
+X-Received: by 2002:a05:6a21:47cb:b0:131:eeba:184b with SMTP id as11-20020a056a2147cb00b00131eeba184bmr11891180pzc.25.1692020539955;
+        Mon, 14 Aug 2023 06:42:19 -0700 (PDT)
+Received: from localhost.localdomain (bb219-74-209-211.singnet.com.sg. [219.74.209.211])
+        by smtp.gmail.com with ESMTPSA id m3-20020a638c03000000b0055c02b8688asm8555583pgd.20.2023.08.14.06.42.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 06:42:19 -0700 (PDT)
+From: Leon Hwang <hffilwlqm@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	x86@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	hpa@zytor.com,
+	mykolal@fb.com,
+	shuah@kernel.org,
+	davem@davemloft.net,
+	dsahern@kernel.org,
+	hffilwlqm@gmail.com,
+	tangyeechou@gmail.com,
+	kernel-patches-bot@fb.com,
+	maciej.fijalkowski@intel.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [RFC PATCH bpf-next 0/2] bpf, x64: Fix tailcall infinite loop bug
+Date: Mon, 14 Aug 2023 21:41:45 +0800
+Message-ID: <20230814134147.70289-1-hffilwlqm@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+	HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Benjamin Gray <bgray@linux.ibm.com> writes:
+From commit ebf7d1f508a73871 ("bpf, x64: rework pro/epilogue and tailcall
+handling in JIT"), the tailcall on x64 works better than before.
 
-> Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
-> This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
-> be a syntax error.
->
-> Fix these now to get ahead of it before it's an error.
->
-> Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
-> ---
->  Documentation/sphinx/cdomain.py             | 2 +-
->  Documentation/sphinx/kernel_abi.py          | 2 +-
->  Documentation/sphinx/kernel_feat.py         | 2 +-
->  Documentation/sphinx/kerneldoc.py           | 2 +-
->  Documentation/sphinx/maintainers_include.py | 8 ++++----
->  5 files changed, 8 insertions(+), 8 deletions(-)
+From commit e411901c0b775a3a ("bpf: allow for tailcalls in BPF subprograms
+for x64 JIT"), tailcall is able to run in BPF subprograms on x64.
 
-So I am the maintainer for this stuff...is there a reason you didn't
-copy me on this work?
+From commit 5b92a28aae4dd0f8 ("bpf: Support attaching tracing BPF program
+to other BPF programs"), BPF program is able to trace other BPF programs.
 
-> diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
-> index ca8ac9e59ded..dbdc74bd0772 100644
-> --- a/Documentation/sphinx/cdomain.py
-> +++ b/Documentation/sphinx/cdomain.py
-> @@ -93,7 +93,7 @@ def markup_ctype_refs(match):
->  #
->  RE_expr = re.compile(r':c:(expr|texpr):`([^\`]+)`')
->  def markup_c_expr(match):
-> -    return '\ ``' + match.group(2) + '``\ '
-> +    return '\\ ``' + match.group(2) + '``\\ '
+How about combining them all together?
 
-I have to wonder about this one; I doubt the intent was to insert a
-literal backslash.  I have to fire up my ancient build environment to
-even try this, but even if it's right...
+1. FENTRY/FEXIT on a BPF subprogram.
+2. A tailcall runs in the BPF subprogram.
+3. The tailcall calls itself.
 
->  #
->  # Parse Sphinx 3.x C markups, replacing them by backward-compatible ones
-> diff --git a/Documentation/sphinx/kernel_abi.py b/Documentation/sphinx/kernel_abi.py
-> index b5feb5b1d905..b9f026f016fd 100644
-> --- a/Documentation/sphinx/kernel_abi.py
-> +++ b/Documentation/sphinx/kernel_abi.py
-> @@ -138,7 +138,7 @@ class KernelCmd(Directive):
->                  code_block += "\n    " + l
->              lines = code_block + "\n\n"
->  
-> -        line_regex = re.compile("^\.\. LINENO (\S+)\#([0-9]+)$")
-> +        line_regex = re.compile("^\\.\\. LINENO (\\S+)\\#([0-9]+)$")
+As a result, a tailcall infinite loop comes up. And the loop would halt
+the machine.
 
-All of these really just want to be raw strings - a much more minimal
-fix that makes the result quite a bit more readable:
+As we know, in tail call context, the tail_call_cnt propagates by stack
+and RAX register between BPF subprograms. So do it in FENTRY/FEXIT
+trampolines.
 
-     line_regex = re.compile(r"^\.\. LINENO (\S+)\#([0-9]+)$")
-                             ^
-                             |
-  ---------------------------+
+How did I discover the bug?
 
-That, I think, is how these should be fixed.
+From commit 7f6e4312e15a5c37 ("bpf: Limit caller's stack depth 256 for
+subprogs with tailcalls"), the total stack size limits to around 8KiB.
+Then, I write some bpf progs to validate the stack consuming, that are
+tailcalls running in bpf2bpf and FENTRY/FEXIT tracing on bpf2bpf[1].
 
-Thanks,
+At that time, accidently, I made a tailcall loop. And then the loop halted
+my VM. Without the loop, the bpf progs would consume over 8KiB stack size.
+But the _stack-overflow_ did not halt my VM.
 
-jon
+With bpf_printk(), I confirmed that the tailcall count limit did not work
+expectedly. Next, read the code and fix it.
+
+Finally, unfortunately, I only fix it on x64 but other arches. As a
+result, CI tests failed because this bug hasn't been fixed on s390x.
+
+Some helps are requested.
+
+[1]: https://github.com/Asphaltt/learn-by-example/tree/main/ebpf/tailcall-stackoverflow
+
+Leon Hwang (2):
+  bpf, x64: Fix tailcall infinite loop bug
+  selftests/bpf: Add testcases for tailcall infinite loop bug fixing
+
+ arch/x86/net/bpf_jit_comp.c                   |  23 ++-
+ include/linux/bpf.h                           |   6 +
+ kernel/bpf/trampoline.c                       |   5 +-
+ kernel/bpf/verifier.c                         |   9 +-
+ .../selftests/bpf/prog_tests/tailcalls.c      | 194 +++++++++++++++++-
+ .../bpf/progs/tailcall_bpf2bpf_fentry.c       |  18 ++
+ .../bpf/progs/tailcall_bpf2bpf_fexit.c        |  18 ++
+ 7 files changed, 264 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fentry.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf_fexit.c
+
+
+base-commit: 9930e4af4b509bcf6f060b09b16884f26102d110
+-- 
+2.41.0
+
 
