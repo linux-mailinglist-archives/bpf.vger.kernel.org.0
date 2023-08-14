@@ -1,28 +1,28 @@
-Return-Path: <bpf+bounces-7756-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3375177BF02
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 19:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 213D977BF03
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 19:30:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1E952810EA
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 17:30:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF194280E5D
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 17:30:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33EA5CA4A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A39CA63;
 	Mon, 14 Aug 2023 17:29:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A7E2C2FF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A29CAC2FF
 	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 17:29:40 +0000 (UTC)
-Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D8B1723
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 10:29:35 -0700 (PDT)
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7C81726
+	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 10:29:36 -0700 (PDT)
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 81EC324C2212C; Mon, 14 Aug 2023 10:29:23 -0700 (PDT)
+	id ACF0F24C22195; Mon, 14 Aug 2023 10:29:28 -0700 (PDT)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -30,9 +30,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next 14/15] selftests/bpf: Add some negative tests
-Date: Mon, 14 Aug 2023 10:29:23 -0700
-Message-Id: <20230814172923.1371368-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next 15/15] bpf: Mark BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE deprecated
+Date: Mon, 14 Aug 2023 10:29:28 -0700
+Message-Id: <20230814172928.1373311-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230814172809.1361446-1-yonghong.song@linux.dev>
 References: <20230814172809.1361446-1-yonghong.song@linux.dev>
@@ -43,163 +43,68 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,
 	RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_SOFTFAIL,
-	TVD_RCVD_IP autolearn=no autolearn_force=no version=3.4.6
+	TVD_RCVD_IP,UPPERCASE_50_75 autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Add a few negative tests for common mistakes with using percpu kptr.
-Other similar error cases occuring with bpf_obj_new/drop() are not
-included here.
+Now 'BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE + local percpu ptr'
+can cover all BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE functionality
+and more. So mark BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE deprecated.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- .../selftests/bpf/prog_tests/percpu_alloc.c   |   7 ++
- .../selftests/bpf/progs/percpu_alloc_fail.c   | 100 ++++++++++++++++++
- 2 files changed, 107 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
+ include/uapi/linux/bpf.h       | 9 ++++++++-
+ tools/include/uapi/linux/bpf.h | 9 ++++++++-
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c b/tool=
-s/testing/selftests/bpf/prog_tests/percpu_alloc.c
-index ee9dd495db7b..17ba3159cea7 100644
---- a/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/percpu_alloc.c
-@@ -3,6 +3,7 @@
- #include "percpu_alloc_array.skel.h"
- #include "percpu_alloc_cgrp_local_storage.skel.h"
- #include "percpu_alloc_nested_special_fields.skel.h"
-+#include "percpu_alloc_fail.skel.h"
-=20
- static void test_array(void)
- {
-@@ -145,6 +146,10 @@ static void test_nested_special_fields(void)
- 	close(cgroup_fd);
- }
-=20
-+static void test_failure(void) {
-+	RUN_TESTS(percpu_alloc_fail);
-+}
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index d21deb46f49f..5d1bb6b42ea2 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -932,7 +932,14 @@ enum bpf_map_type {
+ 	 */
+ 	BPF_MAP_TYPE_CGROUP_STORAGE =3D BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED,
+ 	BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
+-	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE,
++	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE_DEPRECATED,
++	/* BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE is available to bpf programs
++	 * attaching to a cgroup. The new mechanism (BPF_MAP_TYPE_CGRP_STORAGE =
 +
- void test_percpu_alloc(void)
- {
- 	if (test__start_subtest("array"))
-@@ -155,4 +160,6 @@ void test_percpu_alloc(void)
- 		test_cgrp_local_storage();
- 	if (test__start_subtest("nested_special_fields"))
- 		test_nested_special_fields();
-+	if (test__start_subtest("failure_tests"))
-+		test_failure();
- }
-diff --git a/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c b/tool=
-s/testing/selftests/bpf/progs/percpu_alloc_fail.c
-new file mode 100644
-index 000000000000..47bdf6f857cb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
-@@ -0,0 +1,100 @@
-+#include "bpf_experimental.h"
-+#include "bpf_misc.h"
++	 * local percpu kptr) supports all BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE
++	 * functionality and more. So mark * BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE
++	 * deprecated.
++	 */
++	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE =3D BPF_MAP_TYPE_PERCPU_CGROUP_STORA=
+GE_DEPRECATED,
+ 	BPF_MAP_TYPE_QUEUE,
+ 	BPF_MAP_TYPE_STACK,
+ 	BPF_MAP_TYPE_SK_STORAGE,
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index d21deb46f49f..5d1bb6b42ea2 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -932,7 +932,14 @@ enum bpf_map_type {
+ 	 */
+ 	BPF_MAP_TYPE_CGROUP_STORAGE =3D BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED,
+ 	BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
+-	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE,
++	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE_DEPRECATED,
++	/* BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE is available to bpf programs
++	 * attaching to a cgroup. The new mechanism (BPF_MAP_TYPE_CGRP_STORAGE =
 +
-+struct val_t {
-+	long b, c, d;
-+};
-+
-+struct val2_t {
-+	long b;
-+};
-+
-+struct elem {
-+	long sum;
-+	struct val_t __percpu *pc;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct elem);
-+} array SEC(".maps");
-+
-+long ret;
-+
-+SEC("?fentry/bpf_fentry_test1")
-+__failure __msg("store to referenced kptr disallowed")
-+int BPF_PROG(test_array_map_1)
-+{
-+	struct val_t __percpu *p;
-+	struct elem *e;
-+	int index =3D 0;
-+
-+	e =3D bpf_map_lookup_elem(&array, &index);
-+	if (!e)
-+		return 0;
-+
-+	p =3D bpf_percpu_obj_new(struct val_t);
-+	if (!p)
-+		return 0;
-+
-+	p =3D bpf_kptr_xchg(&e->pc, p);
-+	if (p)
-+		bpf_percpu_obj_drop(p);
-+
-+	e->pc =3D (struct val_t __percpu *)ret;
-+	return 0;
-+}
-+
-+SEC("?fentry/bpf_fentry_test1")
-+__failure __msg("invalid kptr access, R2 type=3Dpercpu_ptr_val2_t expect=
-ed=3Dptr_val_t")
-+int BPF_PROG(test_array_map_2)
-+{
-+	struct val2_t __percpu *p2;
-+	struct val_t __percpu *p;
-+	struct elem *e;
-+	int index =3D 0;
-+
-+	e =3D bpf_map_lookup_elem(&array, &index);
-+	if (!e)
-+		return 0;
-+
-+	p2 =3D bpf_percpu_obj_new(struct val2_t);
-+	if (!p2)
-+		return 0;
-+
-+	p =3D bpf_kptr_xchg(&e->pc, p2);
-+	if (p)
-+		bpf_percpu_obj_drop(p);
-+
-+	return 0;
-+}
-+
-+SEC("?fentry.s/bpf_fentry_test1")
-+__failure __msg("R1 type=3Dscalar expected=3Dpercpu_ptr_, percpu_rcu_ptr=
-_, percpu_trusted_ptr_")
-+int BPF_PROG(test_array_map_3)
-+{
-+	struct val_t __percpu *p, *p1;
-+	struct val_t *v;
-+	struct elem *e;
-+	int index =3D 0;
-+
-+	e =3D bpf_map_lookup_elem(&array, &index);
-+	if (!e)
-+		return 0;
-+
-+	p =3D bpf_percpu_obj_new(struct val_t);
-+	if (!p)
-+		return 0;
-+
-+	p1 =3D bpf_kptr_xchg(&e->pc, p);
-+	if (p1)
-+		bpf_percpu_obj_drop(p1);
-+
-+	v =3D bpf_this_cpu_ptr(p);
-+	ret =3D v->b;
-+	return 0;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
++	 * local percpu kptr) supports all BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE
++	 * functionality and more. So mark * BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE
++	 * deprecated.
++	 */
++	BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE =3D BPF_MAP_TYPE_PERCPU_CGROUP_STORA=
+GE_DEPRECATED,
+ 	BPF_MAP_TYPE_QUEUE,
+ 	BPF_MAP_TYPE_STACK,
+ 	BPF_MAP_TYPE_SK_STORAGE,
 --=20
 2.34.1
 
