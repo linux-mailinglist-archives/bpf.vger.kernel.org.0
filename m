@@ -1,165 +1,277 @@
-Return-Path: <bpf+bounces-7740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B4B677BEA3
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 19:07:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5172977BEB0
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 19:13:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E5082810F4
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 17:07:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A87928114F
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 17:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA67C8D6;
-	Mon, 14 Aug 2023 17:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07945C8E6;
+	Mon, 14 Aug 2023 17:13:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D99C2F44
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 17:07:27 +0000 (UTC)
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87A4D1
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 10:07:26 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-2685bc4f867so5045540a91.0
-        for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 10:07:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692032846; x=1692637646;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HOPcU1s6dOxKoHYRJZpqjdctLTPuo9TU9m/Z/GfnYEk=;
-        b=hGbt68DNzLNeOnJPugmwC+ihD+ployxbX6ovpj3tusOy86so0gkCB2KNPD0UsvJj23
-         yix9Gc0LqFj2pZ+W2vMRViOh63u0QG/pcmizv+JaC6ksfBfSzbMTHzwLxNfQTOkUVckX
-         YoSIR9wbrFa7jTXKxKO9NhFIFSo8ufVbafVCAnYPkH5aIX+o6ERClvDmwY1G6Tsi8+NK
-         BNerwMrf57LZiqkaaUXG2SgsqY/Z2MYB2iZPimSsOt0zBlkdjC+RO/zG7QuToncigiUq
-         QgQfjWSKUEIt0KVKe5s2b/+lphK9bNgLRdLf86ZPYvn7Wbid77ftc6DhYSE00EHlVZ2S
-         6M9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692032846; x=1692637646;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HOPcU1s6dOxKoHYRJZpqjdctLTPuo9TU9m/Z/GfnYEk=;
-        b=XTyV0bql7JJ401eNUxSaOHobhPaXErvuhskxsXG6LvPUyfJaP3WinqEHv21GkxYJom
-         +Ac8WqdVoLtQ8dK5WNFEs4qI68OGTnFnmRDjuAyMLys/qus/9SPKVQQNqUgnKORl260F
-         fxS4+9BPy2PI6tX0rTTTH8evWWWK7EkcEE5LfBaLbm9Ex6cRZKPbXSF2IIGkPxX/NU2U
-         QEc9ITGpsE4x/0foFwBcywz7pcpha9CZ0E3oEbjP1DG2Uzrfvto7GpxTZJ6SVcJ0+qUU
-         x2TKteV1L11Smcolg7UJiTlJbubKvHg+R67du+O0oYCEZiCKQuTq2wWfMKZ8ZdnHFFyc
-         goUw==
-X-Gm-Message-State: AOJu0Yy0vzMyT5TjHvRTFt5KWO1fD+e7gcS/cnJecH6cjsx+VeaFxont
-	bg1CtoJO1xbdtGnN5VqFLTeyT6w=
-X-Google-Smtp-Source: AGHT+IEx9GXBwXDn87IkzTs4uRACno3/UEVJolEaNR+oMCCxIC0gbCOoCti7weqvgPfx4RBox+0pHr8=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:e557:b0:26b:2001:54f8 with SMTP id
- ei23-20020a17090ae55700b0026b200154f8mr2139270pjb.9.1692032846422; Mon, 14
- Aug 2023 10:07:26 -0700 (PDT)
-Date: Mon, 14 Aug 2023 10:07:24 -0700
-In-Reply-To: <0164ca41-01bc-be14-2f99-b1c4400850b8@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813A9BE79
+	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 17:13:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F495C433C8;
+	Mon, 14 Aug 2023 17:13:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692033200;
+	bh=6sB0MXEZJTc5MyRjUr5ZjTDTIyVe78Iq4SedpR4xA6c=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=iHXE+B79VQw2Xu+svDx/uv1d0+6A1cL00Fi9RE726fiaEboN83Aw7MqXC2ysghAWk
+	 oRa6XKlaO+gITatZWz2ntX83ohQBteACnJ+ELPHxsiBLjuVltdnKIkooJZcf6mrn+P
+	 WuH354SsNnfg9xd9du8JSKV3Wnsdxv4lTB8LjdWfRjNhaV/T8mfovSA78MVxfbZqe7
+	 Wcm1d71t0hXuyBqtEAo1mB4eOTW6/ju8MFVRw7J32va0aW1hin/ZctA+qJSAvTP05y
+	 BrZnKgeN7IKpNPT9nZ2N9GahgUFIAGX8BerHZjMogu2+R0TLY/GPwzEGEjJ9Yi+a/0
+	 Fgpl9ez1OvULA==
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20230811043127.1318152-1-thinker.li@gmail.com>
- <20230811043127.1318152-5-thinker.li@gmail.com> <ZNa+vhzXxYYOzk96@google.com>
- <6a634e79-db63-df29-9d18-93387191f937@gmail.com> <0164ca41-01bc-be14-2f99-b1c4400850b8@gmail.com>
-Message-ID: <ZNpfTBh4cC1oW8Cf@google.com>
-Subject: Re: [RFC bpf-next v2 4/6] bpf: Provide bpf_copy_from_user() and bpf_copy_to_user().
-From: Stanislav Fomichev <sdf@google.com>
-To: Kui-Feng Lee <sinquersw@gmail.com>
-Cc: thinker.li@gmail.com, bpf@vger.kernel.org, ast@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com, 
-	andrii@kernel.org, yonghong.song@linux.dev, kuifeng@meta.com
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 14 Aug 2023 20:13:14 +0300
+Message-Id: <CUSFPINBGDSS.DQ0I19Z9FNR4@suppilovahvero>
+To: "Roberto Sassu" <roberto.sassu@huaweicloud.com>, <corbet@lwn.net>,
+ <zohar@linux.ibm.com>, <dmitry.kasatkin@gmail.com>, <paul@paul-moore.com>,
+ <jmorris@namei.org>, <serge@hallyn.com>
+Cc: <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+ <linux-integrity@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
+ <bpf@vger.kernel.org>, <pbrobinson@gmail.com>, <zbyszek@in.waw.pl>,
+ <hch@lst.de>, <mjg59@srcf.ucam.org>, <pmatilai@redhat.com>,
+ <jannh@google.com>, "Roberto Sassu" <roberto.sassu@huawei.com>
+Subject: Re: [RFC][PATCH v2 03/13] integrity/digest_cache: Add functions to
+ populate and search
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.14.0
+References: <20230812104616.2190095-1-roberto.sassu@huaweicloud.com>
+ <20230812104616.2190095-4-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20230812104616.2190095-4-roberto.sassu@huaweicloud.com>
 
-On 08/11, Kui-Feng Lee wrote:
->=20
->=20
-> On 8/11/23 16:27, Kui-Feng Lee wrote:
-> >=20
-> >=20
-> > On 8/11/23 16:05, Stanislav Fomichev wrote:
-> > > On 08/10, thinker.li@gmail.com wrote:
-> > > > From: Kui-Feng Lee <kuifeng@meta.com>
-> > > >=20
-> > > > Provide bpf_copy_from_user() and bpf_copy_to_user() to the BPF prog=
-rams
-> > > > attached to cgroup/{set,get}sockopt. bpf_copy_to_user() is a new
-> > > > kfunc to
-> > > > copy data from an kernel space buffer to a user space buffer.
-> > > > They are only
-> > > > available for sleepable BPF programs. bpf_copy_to_user() is only
-> > > > available
-> > > > to the BPF programs attached to cgroup/getsockopt.
-> > > >=20
-> > > > Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> > > > ---
-> > > > =C2=A0 kernel/bpf/cgroup.c=C2=A0 |=C2=A0 6 ++++++
-> > > > =C2=A0 kernel/bpf/helpers.c | 31 +++++++++++++++++++++++++++++++
-> > > > =C2=A0 2 files changed, 37 insertions(+)
-> > > >=20
-> > > > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> > > > index 5bf3115b265c..c15a72860d2a 100644
-> > > > --- a/kernel/bpf/cgroup.c
-> > > > +++ b/kernel/bpf/cgroup.c
-> > > > @@ -2461,6 +2461,12 @@ cg_sockopt_func_proto(enum bpf_func_id
-> > > > func_id, const struct bpf_prog *prog)
-> > > > =C2=A0 #endif
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BPF_FUNC_perf_event_output:
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return &bpf_=
-event_output_data_proto;
-> > > > +
-> > > > +=C2=A0=C2=A0=C2=A0 case BPF_FUNC_copy_from_user:
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (prog->aux->sleepabl=
-e)
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- return &bpf_copy_from_user_proto;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return NULL;
-> > >=20
-> > > If we just allow copy to/from, I'm not sure I understand how the buff=
-er
-> > > sharing between sleepable/non-sleepable works.
-> > >=20
-> > > Let's assume I have two progs in the chain:
-> > > 1. non-sleepable - copies the buffer, does some modifications; since
-> > > =C2=A0=C2=A0=C2=A0 we don't copy the buffer back after every prog run=
-, the modifications
-> > > =C2=A0=C2=A0=C2=A0 stay in the kernel buffer
-> > > 2. sleepable - runs and just gets the user pointer? does it mean this
-> > > =C2=A0=C2=A0 sleepable program doesn't see the changes from (1)?
->=20
-> It is still visible from sleepable programs.  Sleepable programs
-> will receive a pointer to the buffer in the kernel.
-> And, BPF_SOCKOPT_FLAG_OPTVAL_USER is clear.
->=20
-> > >=20
-> > > IOW, do we need some custom sockopt copy_to/from that handle this
-> > > potential buffer location transparently or am I missing something?
-> > >=20
-> > > Assuming we want to support this at all. If we do, might deserve a
-> > > selftest.
-> >=20
-> > It is why BPF_SOCKOPT_FLAG_OPTVAL_USER is there.
-> > It helps programs to make a right decision.
-> > However, I am going to remove bpf_copy_from_user()
-> > since we have bpf_so_optval_copy_to() and bpf_so_optval_copy_to_r().
-> > Does it make sense to you?
+On Sat Aug 12, 2023 at 1:46 PM EEST, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> Add digest_cache_init_htable(), to size a hash table depending on the
+> number of digests to be added to the cache.
+>
+> Add digest_cache_add() and digest_cache_lookup() to respectively add and
+> lookup a digest in the digest cache.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  security/integrity/digest_cache.c | 131 ++++++++++++++++++++++++++++++
+>  security/integrity/digest_cache.h |  24 ++++++
+>  2 files changed, 155 insertions(+)
+>
+> diff --git a/security/integrity/digest_cache.c b/security/integrity/diges=
+t_cache.c
+> index 4201c68171a..d14d84b804b 100644
+> --- a/security/integrity/digest_cache.c
+> +++ b/security/integrity/digest_cache.c
+> @@ -315,3 +315,134 @@ struct digest_cache *digest_cache_get(struct dentry=
+ *dentry,
+> =20
+>  	return iint->dig_user;
+>  }
+> +
+> +/**
+> + * digest_cache_init_htable - Allocate and initialize the hash table
+> + * @digest_cache: Digest cache
+> + * @num_digests: Number of digests to add to the digest cache
+> + *
+> + * This function allocates and initializes the hash table. Its size is
+> + * determined by the number of digests to add to the digest cache, known
+> + * at this point by the parser calling this function.
+> + *
+> + * Return: Zero on success, a negative value otherwise.
+> + */
+> +int digest_cache_init_htable(struct digest_cache *digest_cache,
+> +			     u64 num_digests)
+> +{
+> +	int i;
+> +
+> +	if (!digest_cache)
+> +		return 0;
+> +
+> +	digest_cache->num_slots =3D num_digests / DIGEST_CACHE_HTABLE_DEPTH;
+> +	if (!digest_cache->num_slots)
+> +		digest_cache->num_slots =3D 1;
+> +
+> +	digest_cache->slots =3D kmalloc_array(num_digests,
+> +					    sizeof(*digest_cache->slots),
+> +					    GFP_KERNEL);
+> +	if (!digest_cache->slots)
+> +		return -ENOMEM;
+> +
+> +	for (i =3D 0; i < digest_cache->num_slots; i++)
+> +		INIT_HLIST_HEAD(&digest_cache->slots[i]);
+> +
+> +	pr_debug("Initialized %d hash table slots for digest list %s\n",
+> +		 digest_cache->num_slots, digest_cache->path_str);
+> +	return 0;
+> +}
+> +
+> +/**
+> + * digest_cache_add - Add a new digest to the digest cache
+> + * @digest_cache: Digest cache
+> + * @digest: Digest to add
+> + *
+> + * This function, invoked by a digest list parser, adds a digest extract=
+ed
+> + * from a digest list to the digest cache.
+> + *
+> + * Return: Zero on success, a negative value on error.
 
-Ah, so that's where it's handled. I didn't read that far :-)
-In this case yes, let's have only those helpers.
+Nit: previous had a different phrasing "a negative value otherwise".
 
-Btw, do we also really need bpf_so_optval_copy_to_r? If we are doing
-dynptr, let's only have bpf_so_optval_copy_to version?
+I would suggest "a POSIX error code otherwise" for both.
 
-I'd also call them something like bpf_sockopt_copy_{to,from}. That
-"_so_optval_" is not super intuitive imho.
+> + */
+> +int digest_cache_add(struct digest_cache *digest_cache, u8 *digest)
+> +{
+> +	struct digest_cache_entry *entry;
+> +	unsigned int key;
+> +	int digest_len;
+> +
+> +	if (!digest_cache)
+> +		return 0;
+> +
+> +	digest_len =3D hash_digest_size[digest_cache->algo];
+> +
+> +	entry =3D kmalloc(sizeof(*entry) + digest_len, GFP_KERNEL);
+> +	if (!entry)
+> +		return -ENOMEM;
+> +
+> +	memcpy(entry->digest, digest, digest_len);
+> +
+> +	key =3D digest_cache_hash_key(digest, digest_cache->num_slots);
+> +	hlist_add_head(&entry->hnext, &digest_cache->slots[key]);
+> +	pr_debug("Add digest %s:%*phN from digest list %s\n",
+> +		 hash_algo_name[digest_cache->algo], digest_len, digest,
+> +		 digest_cache->path_str);
+> +	return 0;
+> +}
+> +
+> +/**
+> + * digest_cache_lookup - Searches a digest in the digest cache
+> + * @digest_cache: Digest cache
+> + * @digest: Digest to search
+> + * @algo: Algorithm of the digest to search
+> + * @pathname: Path of the file whose digest is looked up
+> + *
+> + * This function, invoked by IMA or EVM, searches the calculated digest =
+of
+> + * a file or file metadata in the digest cache acquired with
+> + * digest_cache_get().
+> + *
+> + * Return: Zero if the digest is found, a negative value if not.
+> + */
+> +int digest_cache_lookup(struct digest_cache *digest_cache, u8 *digest,
+> +			enum hash_algo algo, const char *pathname)
+> +{
+> +	struct digest_cache_entry *entry;
+> +	unsigned int key;
+> +	int digest_len;
+> +	int search_depth =3D 0;
+> +
+> +	if (!digest_cache)
+> +		return -ENOENT;
+> +
+> +	if (digest_cache->algo =3D=3D HASH_ALGO__LAST) {
+> +		pr_debug("Algorithm not set for digest list %s\n",
+> +			 digest_cache->path_str);
+> +		return -ENOENT;
+> +	}
+> +
+> +	digest_len =3D hash_digest_size[digest_cache->algo];
+> +
+> +	if (algo !=3D digest_cache->algo) {
+> +		pr_debug("Algo mismatch for file %s, digest %s:%*phN in digest list %s=
+ (%s)\n",
+> +			 pathname, hash_algo_name[algo], digest_len, digest,
+> +			 digest_cache->path_str,
+> +			 hash_algo_name[digest_cache->algo]);
+> +		return -ENOENT;
+> +	}
+> +
+> +	key =3D digest_cache_hash_key(digest, digest_cache->num_slots);
+> +
+> +	hlist_for_each_entry_rcu(entry, &digest_cache->slots[key], hnext) {
+> +		if (!memcmp(entry->digest, digest, digest_len)) {
+> +			pr_debug("Cache hit at depth %d for file %s, digest %s:%*phN in diges=
+t list %s\n",
+> +				 search_depth, pathname, hash_algo_name[algo],
+> +				 digest_len, digest, digest_cache->path_str);
+> +			return 0;
+> +		}
+> +
+> +		search_depth++;
+> +	}
+> +
+> +	pr_debug("Cache miss for file %s, digest %s:%*phN in digest list %s\n",
+> +		 pathname, hash_algo_name[algo], digest_len, digest,
+> +		 digest_cache->path_str);
+> +	return -ENOENT;
+> +}
+> diff --git a/security/integrity/digest_cache.h b/security/integrity/diges=
+t_cache.h
+> index ff88e8593c6..01cd70f9850 100644
+> --- a/security/integrity/digest_cache.h
+> +++ b/security/integrity/digest_cache.h
+> @@ -66,6 +66,11 @@ static inline unsigned int digest_cache_hash_key(u8 *d=
+igest,
+>  void digest_cache_free(struct digest_cache *digest_cache);
+>  struct digest_cache *digest_cache_get(struct dentry *dentry,
+>  				      struct integrity_iint_cache *iint);
+> +int digest_cache_init_htable(struct digest_cache *digest_cache,
+> +			     u64 num_digests);
+> +int digest_cache_add(struct digest_cache *digest_cache, u8 *digest);
+> +int digest_cache_lookup(struct digest_cache *digest_cache, u8 *digest,
+> +			enum hash_algo algo, const char *pathname);
+>  #else
+>  static inline void digest_cache_free(struct digest_cache *digest_cache)
+>  {
+> @@ -77,5 +82,24 @@ digest_cache_get(struct dentry *dentry, struct integri=
+ty_iint_cache *iint)
+>  	return NULL;
+>  }
+> =20
+> +static inline int digest_cache_init_htable(struct digest_cache *digest_c=
+ache,
+> +					   u64 num_digests)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static inline int digest_cache_add(struct digest_cache *digest_cache,
+> +				   u8 *digest)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static inline int digest_cache_lookup(struct digest_cache *digest_cache,
+> +				      u8 *digest, enum hash_algo algo,
+> +				      const char *pathname)
+> +{
+> +	return -ENOENT;
+> +}
+> +
+>  #endif /* CONFIG_INTEGRITY_DIGEST_CACHE */
+>  #endif /* _DIGEST_CACHE_H */
+> --=20
+> 2.34.1
+
+Why all this complexity instead of using xarray?
+
+https://docs.kernel.org/core-api/xarray.html
+
+BR, Jarkko
 
