@@ -1,91 +1,113 @@
-Return-Path: <bpf+bounces-7709-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7710-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDD7077B83B
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 14:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28BF477B8B0
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 14:34:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B65ED1C20A95
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 12:08:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 599D61C20B28
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 12:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA45CBE48;
-	Mon, 14 Aug 2023 12:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1402FAD53;
+	Mon, 14 Aug 2023 12:34:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6D9323D0
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 12:08:38 +0000 (UTC)
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C1D1718
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 05:08:27 -0700 (PDT)
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1bbdced15f3so85050585ad.2
-        for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 05:08:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692014907; x=1692619707;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EJNRfP8cUatIsJc6YU7EUPAo/O9QZ6sb5iejP2DNk7g=;
-        b=dcyvFkO/XkjFhjd+nUjuzmkbFjRVgE6zIN4Tuy5Vf23Tv2w1IPhv1klRlE03YYMSWF
-         uJG2k4lX1YXssPIWRsfxVpW76iNUnnuZ32nejthiAvcKcHMw8I4iwJg+7b3G5n5034eu
-         j6H9F3a9rxko1Sy8tZAVTXc5sTACt2MzK/fXcdeZUnYfLNlg9Iu6z3wfmwjEIiykgPme
-         niRpR694jfOthLqMbWGFp2SgHc4N8pFxyCXpOU2eywCD1FHmJhZRdMXliV/QV8MTq8BO
-         4tAZEbY7W7YoVQHt4vWGcBsgdYpmpWJXajO6Gh2BhxVWFHzVIkzgyS2qCDqH7uh6CTCC
-         9Uhg==
-X-Gm-Message-State: AOJu0YzNprCDjU58yBtSNYe99sOmdrIDTqmpjxUg841eAFZOSzJvJVNG
-	d7J9QrEeJ8x6sB2HzJP7JX2ptQuxcgEgNRobK0oy/ZzfKRFEapc=
-X-Google-Smtp-Source: AGHT+IGfcIkUiHrqX6S1IiQDnpfA7pI0z5lomwAUYnqquL64y/gfrx5YhhnnQ+4btgQR6c0hoTwQIEUozbHJHcQ6cTPptARUW4Gu
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D85DA923
+	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 12:34:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81A5AC433C8;
+	Mon, 14 Aug 2023 12:34:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692016447;
+	bh=t71erLmdjDETQFMozOa5QiuBONUPlCTO6eXNRPYpsaQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=pJ3RlT5N10HvSfKcd/fgnkpycLpBYhyLanjgHlWoH8pNrUcTNHEDLKexj1+G6810c
+	 djt2PQGj+NHmGBig8UMSPsqfsKk4WDWJDGfcAry8Vxrr0AFf0j9/zQtgmnTtkuUHmf
+	 Lllm0o0Zp3P0/811gPu9W4XCpyiPB043JF9xEqT2SQK/frqVhcfeKMleDiLGcLF03N
+	 It1tFoKOk4gsTVFTkJ9jIIdozSFmArNSDDPPpU+rwRRrxjcrVWf8WeSwxw1o2WGp5T
+	 7MYh1YwqT9LHD1WUR2dfG7CNOJl+nwE4HGutVSMDqAX7enITVGi0MNtk51Y+hWJ/wD
+	 C12gwixr6U3Pw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Luke Nelson <lukenels@cs.washington.edu>, bpf@vger.kernel.org
+Cc: Luke Nelson <luke.r.nels@gmail.com>, kernel test robot <lkp@intel.com>,
+ Xi Wang <xi.wang@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] riscv/bpf: Fix truncated immediate warning in
+ rv_s_insn
+In-Reply-To: <20230727024931.17156-1-luke.r.nels@gmail.com>
+References: <20230727024931.17156-1-luke.r.nels@gmail.com>
+Date: Mon, 14 Aug 2023 14:34:04 +0200
+Message-ID: <87edk5g5vn.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:c94b:b0:1b8:97ed:a437 with SMTP id
- i11-20020a170902c94b00b001b897eda437mr4164664pla.4.1692014907452; Mon, 14 Aug
- 2023 05:08:27 -0700 (PDT)
-Date: Mon, 14 Aug 2023 05:08:27 -0700
-In-Reply-To: <0000000000000e4cc105ff68937b@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000083735b0602e0eb7d@google.com>
-Subject: Re: [syzbot] [modules?] KASAN: invalid-access Read in init_module_from_file
-From: syzbot <syzbot+e3705186451a87fd93b8@syzkaller.appspotmail.com>
-To: bpf@vger.kernel.org, chris@chrisdown.name, linan122@huawei.com, 
-	linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org, 
-	llvm@lists.linux.dev, mcgrof@kernel.org, nathan@kernel.org, 
-	ndesaulniers@google.com, nogikh@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org, 
-	trix@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-	RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-syzbot suspects this issue was fixed by commit:
+Luke Nelson <lukenels@cs.washington.edu> writes:
 
-commit f1962207150c8b602e980616f04b37ea4e64bb9f
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue Jul 4 13:37:32 2023 +0000
+> Sparse warns that a cast in rv_s_insn truncates bits from the constant
+> 0x7ff to 0xff.  The warning originates from the use of a constant offset
+> of -8 in a store instruction in bpf_jit_comp64.c:
+>
+>   emit(rv_sd(RV_REG_SP, -8, RV_REG_RA), &ctx);
+>
+> rv_sd then calls rv_s_insn, with imm11_0 equal to (u16)(-8), or 0xfff8.
+>
+> Here's the current implementation of rv_s_insn:
+>
+>   static inline u32 rv_s_insn(u16 imm11_0, u8 rs2, u8 rs1, u8 funct3, u8 =
+opcode)
+>   {
+>           u8 imm11_5 =3D imm11_0 >> 5, imm4_0 =3D imm11_0 & 0x1f;
+>
+>           return (imm11_5 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 <<=
+ 12) |
+>                  (imm4_0 << 7) | opcode;
+>   }
+>
+> imm11_0 is a signed 12-bit immediate offset of the store instruction. The
+> instruction encoding requires splitting the immediate into bits 11:5 and
+> bits 4:0. In this case, imm11_0 >> 5 =3D 0x7ff, which then gets truncated
+> to 0xff when cast to u8, causing the warning from sparse. However, this is
+> not actually an issue because the immediate offset is signed---truncating
+> upper bits that are all set to 1 has no effect on the value of the
+> immediate.
+>
+> There is another subtle quirk with this code, which is imm11_5 is
+> supposed to be the upper 7 bits of the 12-bit signed immediate, but its
+> type is u8 with no explicit mask to select out only the bottom 7 bits.
+> This happens to be okay here because imm11_5 is the left-most field in
+> the instruction and the "extra" bit will be shifted out when imm11_5 is
+> shifted left by 25.
+>
+> This commit fixes the warning by changing the type of imm11_5 and imm4_0
+> to be u32 instead of u8, and adding an explicit mask to compute imm11_5
+> instead of relying on truncation + shifting.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307260704.dUElCrWU-lkp@i=
+ntel.com/
+> In-Reply-To: <202307260704.dUElCrWU-lkp@intel.com>
+> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+> Cc: Xi Wang <xi.wang@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
 
-    module: fix init_module_from_file() error handling
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17c80763a80000
-start commit:   995b406c7e97 Merge tag 'csky-for-linus-6.5' of https://git..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3f27fb02fc20d955
-dashboard link: https://syzkaller.appspot.com/bug?extid=e3705186451a87fd93b8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12219fbf280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1278c8a4a80000
+Thanks, Luke!
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: module: fix init_module_from_file() error handling
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
 
