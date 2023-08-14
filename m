@@ -1,268 +1,324 @@
-Return-Path: <bpf+bounces-7700-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7701-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E469D77B6EE
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 12:40:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5951277B725
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 12:57:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B74C2810CC
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 10:40:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85B9B1C20931
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 10:57:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0DDAD3D;
-	Mon, 14 Aug 2023 10:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60094BA2E;
+	Mon, 14 Aug 2023 10:57:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F08BA28
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 10:40:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72568C433C8;
-	Mon, 14 Aug 2023 10:40:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692009635;
-	bh=oa+UioMJtCh+RpbOZR5nvAauR+j46DGFQoqGXz6dvI0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=Sw/dRZd0S15CXFTEU2PtvX/BWBoLhf/4bLInzGm+z5DLXXEYyENABATehX6JOBARN
-	 aQTVFgYIpX5YGRju+R/egO8m8ziEI2zfGz09WDxWOnQ9MT4mrGxgPzRCbmLlp5KooY
-	 VzLAWMgrvhgX1cYtCrmfv9Jle4nXQ4NdUBkBiJ+HXWfcP5tUUdq/GQYUiSIXWBjlaj
-	 oX7Oiqi7uwCBX1+LS3eny0E5WeK9q/Z1H/bBRL/Bdsj8GYjN+7TVbLzRFcpIKAoKUD
-	 oUav9dBUN+jJo9GCPejFmCov7bm9cIyD2Rk3H+5sleSt0cRvNxQ0pALt0PybxjeCBT
-	 qY2+A+pTKjWXA==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Puranjay Mohan <puranjay12@gmail.com>, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, pulehui@huawei.com,
- conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- kpsingh@kernel.org, bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: Re: [PATCH bpf-next 0/2] bpf, riscv: use BPF prog pack allocator in
- BPF JIT
-In-Reply-To: <87pm3qt2c8.fsf@all.your.base.are.belong.to.us>
-References: <20230720154941.1504-1-puranjay12@gmail.com>
- <87pm3qt2c8.fsf@all.your.base.are.belong.to.us>
-Date: Mon, 14 Aug 2023 12:40:33 +0200
-Message-ID: <87v8dhgb4u.fsf@all.your.base.are.belong.to.us>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2FA9476;
+	Mon, 14 Aug 2023 10:57:09 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F870195;
+	Mon, 14 Aug 2023 03:57:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692010627; x=1723546627;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=AWnQCakNxgTq4VluXWJsSBFzw+sK5lj8TUVyEasVdXI=;
+  b=ZIsi4SYMox1IG1H2EzZM/MAuILJzOZM+acWPesEnyd9UcGdKywjSYyCA
+   NpcPSSPOsUgGiNT3xA9cNStc6jU9HHxGgemh0X+pIdeeWEeg7XHBzpBFQ
+   FCHF+y3s5C/UUKrHmvCMqgv0oPRS8h6vCNPJMlSBTV0OBBSq5pdiy9llL
+   7DhSh2vCSeiGrp0kEhSFTrfs+l+vmNLjJTCJyW9TtXv+EC1Nmwyx4dJMh
+   BY7oRD8GEfC6EXvmmzS0wBd0mZ5iopwuOMsdVwcqsFSPyhmMPUrjWwYb6
+   OdbGdPpNSDLUzJx2U7F8azbJ5a+Tc1nS/9zZSxH8SAl16FPcezx9gwByx
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="362163877"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="362163877"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 03:57:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="798783858"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="798783858"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga008.fm.intel.com with ESMTP; 14 Aug 2023 03:57:06 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 14 Aug 2023 03:57:06 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 14 Aug 2023 03:57:06 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.42) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 14 Aug 2023 03:57:06 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OqT0EOdN0ZufTulqAr/aD8ohhT6aszPQF9TXQcoqS6HPOCjCn8wxK85/T4rM+w+Afsx/ekQuZuvCjY9iqHCz/HflC9lat9v73nxenTiVQvFBd4ToAOFFXNkDDJdHiWmHcAK5qHn4JJB2QbjI0rusTj/uTVUBYOieNyaeweA8wW5RCUVCbck7DFb24Z9OFN/yDafSdqTl+XCbDdwgkkw8ZbRUjo0vOPTpBuBN1407SGCs2ODWPG0s3kUBPKiz0p63/nlj2jGHJInDyWrqIJypQcZm3ntx0j8+QWTSzyQa9jkJdmnev+UxaBuJS17mZE2IhiG8RsaHOp1LwE5vxOnB/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nQhOv5zEwPx5+VkL2Lcg3TX+rrGZxdSgA8+gBFRaB4Q=;
+ b=igpNuKl2137dzOd2F94KV+khtGAv44gII3qDh+hBgB/3uvTbbwGcgI8FYW5PoxQntrcZLdZhfKqgS1HlPhXp+szZCZnboC2A4EfdaKalefNSZzz9R7+9MutLDZG+XE2OOlXFGjjg46XA51OIiBg32vnrIDc22GV5YTcQxLkwRQ5UoBGbxxcXEoWNlq1E+a6h6dPT7db/IZjIs1wus3hMi3rl5dwfNhPGwJehswh5io7VbvqTVkm+OLiM+hgnkvml1ErtmQK9mctmuvmutKWbYDpPLT8PCt5WOeIiRYqwwvdig4MNtEu8mGT/T90cdU1rxkQZO5NBPba5ZQ/NCJJg5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ IA0PR11MB8377.namprd11.prod.outlook.com (2603:10b6:208:487::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6678.24; Mon, 14 Aug 2023 10:57:04 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::c1f9:b4eb:f57e:5c3d]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::c1f9:b4eb:f57e:5c3d%3]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
+ 10:57:03 +0000
+Date: Mon, 14 Aug 2023 12:56:55 +0200
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: Stanislav Fomichev <sdf@google.com>
+CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <haoluo@google.com>,
+	<jolsa@kernel.org>, <kuba@kernel.org>, <toke@kernel.org>,
+	<willemb@google.com>, <dsahern@kernel.org>, <magnus.karlsson@intel.com>,
+	<bjorn@kernel.org>, <hawk@kernel.org>, <netdev@vger.kernel.org>,
+	<xdp-hints@xdp-project.net>
+Subject: Re: [PATCH bpf-next 1/9] xsk: Support XDP_TX_METADATA_LEN
+Message-ID: <ZNoIdzdHQV6OUecF@boxer>
+References: <20230809165418.2831456-1-sdf@google.com>
+ <20230809165418.2831456-2-sdf@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230809165418.2831456-2-sdf@google.com>
+X-ClientProxiedBy: FR0P281CA0053.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:48::17) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|IA0PR11MB8377:EE_
+X-MS-Office365-Filtering-Correlation-Id: b158b5b6-a29e-479d-e55c-08db9cb53193
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hgBJG++AO6bEosEameVM/ga6mr8lho3MgLjNv+EdTtkhOuBjH7SzuWK3bgYNzet6JNKBIHRI6y6mKl41hHoOMYJ+ex06zNWlS7adKc0pzUeqCLF3F/682IdhX352Z9t5QTvWI7vq+9qVCvVwOelygpZgiph+T9wQcPBg13R9FSsqYDK0q56+fas5fPAseb+mofxAdQHdnRAaL95N4kWVnLIvp/kIZ+G6adhzUKKYOviOWrYByIJDpp/7kmD/cxQ/z2FawTo1Kjgu5CkXA5Lo5M3T0XOIuZ/9EPOZKbXfk7FpToYgGf8CFHeneIJZyL3EcTQ4eQu6xHolf75+5kLD7tPY/BJ6e8zjBc0VgwomgaCLE5SJzretZPLbXuPXOs0RlR254nPNS8Pw26gSjMHni7wsUercPqOEzSY89CZw/pVwsxFmUgTT2qr6n8lJ1CWo+S+8b1jeLLq9MsoC2g8rPjwvpQVOHdZv96g7t1G46lyvY+1z+sSE0nFTK2LMEf+ceyUoXkznQXBDUHigLT/c6ygWYw4YfVL+RgOYcq9t5LsvXiYWxvSnQn9YIo3esjen
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(376002)(346002)(39860400002)(136003)(396003)(366004)(186006)(1800799006)(451199021)(83380400001)(33716001)(86362001)(38100700002)(41300700001)(478600001)(66946007)(6512007)(316002)(66476007)(66556008)(6916009)(8676002)(8936002)(9686003)(5660300002)(4326008)(44832011)(82960400001)(26005)(6506007)(7416002)(6486002)(2906002)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?th22BpFEqTCx/fIHaNqjyL2fKSeDw9RBmwpgFNcferzpDDxk7zxnmR4a6E5T?=
+ =?us-ascii?Q?nmILpUoRox6f7d58saxVPZ6iFZA0qmscGC4PRxS+TGNWfPTDxfDWRsPMCIMo?=
+ =?us-ascii?Q?h8yGIQSLg6IdbWEE/gitHO0I71bDk/hdLbxbFfb9gLimtBP6auA0Gjdl4Bw/?=
+ =?us-ascii?Q?9KLSm+fMIBzIOssUhLjpxd0KDOIj3k3rZi6rVu2a0ln47OwsKSqCAygwi5jy?=
+ =?us-ascii?Q?0LOfAognHU7a98osKxWBk2RNp5chkrYm+7enXVmdZo91bzzkU+sdbGQ9QX2C?=
+ =?us-ascii?Q?aQ1/32C9zmRK6c9X6SYx7LjxXM8buUDYfC4TQTZ1fBdGsGrE+6XJ1Uz/BgwG?=
+ =?us-ascii?Q?205wP2FmVuGahM8296rTws5VlxZz6zuvCgBXgPzddAeK6/cxNcS1CCt2LSiN?=
+ =?us-ascii?Q?+KjUZbg3OFtply+Z+D1xv0PJRMUxOKIPVOlqxl6yQcNSk9jXnWrFvGk4mYNW?=
+ =?us-ascii?Q?aFqv5d0PP6+jVMthBJ89wCWmw7R8SpssIFOMbErXPEKxr67MSfXzfW5yfq8y?=
+ =?us-ascii?Q?iSUJBY9jZV7p38A5L/HOzCeQTjlRfcV2mqagq8Af+eKMIkHtu9zV07GlwN00?=
+ =?us-ascii?Q?IBHYogCHIPljaMbKt2dd6WGJ3E3cBj6ia+y+PifIN16pwRuIQY74Mu3euxcX?=
+ =?us-ascii?Q?fJaiaInk/GxDuhLEvJagkyvd89P+3NJTarB/5e8B5thkm4vevCIW/+cqiESq?=
+ =?us-ascii?Q?7bQMjD17ZaFvKG8WifZh8vF6ys7x0wPJ53BV/Cs65aYqfm7Ydl0m4IJSYT3u?=
+ =?us-ascii?Q?G91DyTWK7wwNlrYv9n45bEcBs0/WdMX2FIkc/8Kk2HkkPQVPiUv/wB+zNpIO?=
+ =?us-ascii?Q?3l4QpkzvppWafNFzW5CdmgzvV8MSZLvnAWkk8DkA2f58APJKNqb2UutLtUpK?=
+ =?us-ascii?Q?kMddD8q4J/aAorNCarPxnJxnG25/xybx6Kr53tNAQKn7FatgsEZQLc+OThsI?=
+ =?us-ascii?Q?XJygqCIDXY3PAvzmY3+vObvTmBs7EBkeGs1ISfLEyPlkdnlLzpuGOWzblZZS?=
+ =?us-ascii?Q?/+5VRA1DU4QT+0JegH7SOMIzZMpe4Tqjpbi82FSomWKC+nZyH3pyF0DTIFm/?=
+ =?us-ascii?Q?ZCSp9YS+axRIO6rl2zzd9nkAgcuX5c+1oeCrqSerHppsvF06FCSFy1b2YzpV?=
+ =?us-ascii?Q?aebJDuxqzmE/DKl9Ng526ZTpRStE134jJ0rYYSHPp0YdUhkPZZ5nplpB75AY?=
+ =?us-ascii?Q?YS8Q7CM3WROTtWbiMHx0CbSfk+xB2Kzgf+CAVpwaUx/gXqGS8rYdH5N5B+AJ?=
+ =?us-ascii?Q?hrORupsdgAVKZKl8xggEjSMa9zq6w2zLaEjx5o1Y+khjWKyrj0WLQe92zTCb?=
+ =?us-ascii?Q?lQMTj7Pv9oc9aypNjw7j9cnS0STPerrH0vovA5q6lAYwGwSR2kErfC8l78vc?=
+ =?us-ascii?Q?tygWBsl/NOCTvXeCacvppJmvp93qEq0PYM2+ZymKdRAQjChivcdW8MlQ5pt4?=
+ =?us-ascii?Q?HuvN1p5C00NLricWGG6xL3KrdNBe9ce+jKLt6srkrojGO1oT2JihJP95nBBq?=
+ =?us-ascii?Q?MMTykreTJPrx31bK2HH0f7OxrspGFjeJ1/ONmZ0lIIdcYS3hBNaWxM9Uw6u4?=
+ =?us-ascii?Q?Nl7d//0pvfdYwLqEFCbaa292KGO+eT1b6SqisVWyR8C9f1FqiNE7DeTTrR/D?=
+ =?us-ascii?Q?ag=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b158b5b6-a29e-479d-e55c-08db9cb53193
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 10:57:03.9298
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JCgrUzMnBKjIRs447YjA1efeCU67A11VxwykM23ZPu5Qtr9Sr/bvzB5S4iGumk9QhGB/hC6P7Y9uwldxl1qxSUx3AEbIlBFR/iRbwGPz6Xw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB8377
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+On Wed, Aug 09, 2023 at 09:54:10AM -0700, Stanislav Fomichev wrote:
+> For zerocopy mode, tx_desc->addr can point to the arbitrary offset
+> and carry some TX metadata in the headroom. For copy mode, there
+> is no way currently to populate skb metadata.
+> 
+> Introduce new XDP_TX_METADATA_LEN that indicates how many bytes
+> to treat as metadata. Metadata bytes come prior to tx_desc address
+> (same as in RX case).
+> 
+> The size of the metadata has the same constraints as XDP:
+> - less than 256 bytes
+> - 4-byte aligned
+> - non-zero
+> 
+> This data is not interpreted in any way right now.
+> 
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  include/net/xdp_sock.h      |  1 +
+>  include/net/xsk_buff_pool.h |  1 +
+>  include/uapi/linux/if_xdp.h |  1 +
+>  net/xdp/xsk.c               | 20 ++++++++++++++++++++
+>  net/xdp/xsk_buff_pool.c     |  1 +
+>  net/xdp/xsk_queue.h         | 17 ++++++++++-------
+>  6 files changed, 34 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> index 1617af380162..467b9fb56827 100644
+> --- a/include/net/xdp_sock.h
+> +++ b/include/net/xdp_sock.h
+> @@ -51,6 +51,7 @@ struct xdp_sock {
+>  	struct list_head flush_node;
+>  	struct xsk_buff_pool *pool;
+>  	u16 queue_id;
+> +	u8 tx_metadata_len;
+>  	bool zc;
+>  	bool sg;
+>  	enum {
+> diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+> index b0bdff26fc88..9c31e8d1e198 100644
+> --- a/include/net/xsk_buff_pool.h
+> +++ b/include/net/xsk_buff_pool.h
+> @@ -77,6 +77,7 @@ struct xsk_buff_pool {
+>  	u32 chunk_size;
+>  	u32 chunk_shift;
+>  	u32 frame_len;
+> +	u8 tx_metadata_len; /* inherited from xsk_sock */
+>  	u8 cached_need_wakeup;
+>  	bool uses_need_wakeup;
+>  	bool dma_need_sync;
+> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
+> index 8d48863472b9..b37b50102e1c 100644
+> --- a/include/uapi/linux/if_xdp.h
+> +++ b/include/uapi/linux/if_xdp.h
+> @@ -69,6 +69,7 @@ struct xdp_mmap_offsets {
+>  #define XDP_UMEM_COMPLETION_RING	6
+>  #define XDP_STATISTICS			7
+>  #define XDP_OPTIONS			8
+> +#define XDP_TX_METADATA_LEN		9
+>  
+>  struct xdp_umem_reg {
+>  	__u64 addr; /* Start of packet data area */
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 47796a5a79b3..28df3280501d 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -1338,6 +1338,26 @@ static int xsk_setsockopt(struct socket *sock, int level, int optname,
+>  		mutex_unlock(&xs->mutex);
+>  		return err;
+>  	}
+> +	case XDP_TX_METADATA_LEN:
+> +	{
+> +		int val;
+> +
+> +		if (optlen < sizeof(val))
+> +			return -EINVAL;
+> +		if (copy_from_sockptr(&val, optval, sizeof(val)))
+> +			return -EFAULT;
+> +		if (!val || val > 256 || val % 4)
+> +			return -EINVAL;
+> +
+> +		mutex_lock(&xs->mutex);
+> +		if (xs->state != XSK_READY) {
+> +			mutex_unlock(&xs->mutex);
+> +			return -EBUSY;
+> +		}
+> +		xs->tx_metadata_len = val;
+> +		mutex_unlock(&xs->mutex);
+> +		return 0;
+> +	}
+>  	default:
+>  		break;
+>  	}
+> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+> index b3f7b310811e..b351732f1032 100644
+> --- a/net/xdp/xsk_buff_pool.c
+> +++ b/net/xdp/xsk_buff_pool.c
+> @@ -85,6 +85,7 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
+>  		XDP_PACKET_HEADROOM;
+>  	pool->umem = umem;
+>  	pool->addrs = umem->addrs;
+> +	pool->tx_metadata_len = xs->tx_metadata_len;
 
-> Puranjay Mohan <puranjay12@gmail.com> writes:
->
->> BPF programs currently consume a page each on RISCV. For systems with ma=
-ny BPF
->> programs, this adds significant pressure to instruction TLB. High iTLB p=
-ressure
->> usually causes slow down for the whole system.
->>
->> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above=
- issue.
->> It packs multiple BPF programs into a single huge page. It is currently =
-only
->> enabled for the x86_64 BPF JIT.
->>
->> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed n=
-ow.
->>
->> This patch series enables the BPF prog pack allocator for the RISCV BPF =
-JIT.
->> This series needs a patch[3] from the ARM64 series to work.
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->> Performance Analysis of prog pack allocator on RISCV64
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->>
->> Test setup:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->> Host machine: Debian GNU/Linux 11 (bullseye)
->> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
->> u-boot-qemu Version: 2023.07+dfsg-1
->> opensbi Version: 1.3-1
->>
->> To test the performance of the BPF prog pack allocator on RV, a stresser
->> tool[4] linked below was built. This tool loads 8 BPF programs on the sy=
-stem and
->> triggers 5 of them in an infinite loop by doing system calls.
->>
->> The runner script starts 20 instances of the above which loads 8*20=3D16=
-0 BPF
->> programs on the system, 5*20=3D100 of which are being constantly trigger=
-ed.
->> The script is passed a command which would be run in the above environme=
-nt.
->>
->> The script was run with following perf command:
->> ./run.sh "perf stat -a \
->>         -e iTLB-load-misses \
->>         -e dTLB-load-misses  \
->>         -e dTLB-store-misses \
->>         -e instructions \
->>         --timeout 60000"
->>
->> The output of the above command is discussed below before and after enab=
-ling the
->> BPF prog pack allocator.
->>
->> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The r=
-ootfs
->> was created using Bjorn's riscv-cross-builder[5] docker container linked=
- below.
->>
->> Results
->> =3D=3D=3D=3D=3D=3D=3D
->>
->> Before enabling prog pack allocator:
->> ------------------------------------
->>
->> Performance counter stats for 'system wide':
->>
->>            4939048      iTLB-load-misses
->>            5468689      dTLB-load-misses
->>             465234      dTLB-store-misses
->>      1441082097998      instructions
->>
->>       60.045791200 seconds time elapsed
->>
->> After enabling prog pack allocator:
->> -----------------------------------
->>
->> Performance counter stats for 'system wide':
->>
->>            3430035      iTLB-load-misses
->>            5008745      dTLB-load-misses
->>             409944      dTLB-store-misses
->>      1441535637988      instructions
->>
->>       60.046296600 seconds time elapsed
->>
->> Improvements in metrics
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->> It was expected that the iTLB-load-misses would decrease as now a single=
- huge
->> page is used to keep all the BPF programs compared to a single page for =
-each
->> program earlier.
->>
->> --------------------------------------------
->> The improvement in iTLB-load-misses: -30.5 %
->> --------------------------------------------
->>
->> I repeated this expriment more than 100 times in different setups and the
->> improvement was always greater than 30%.
->>
->> This patch series is boot tested on the Starfive VisionFive 2 board[6].
->> The performance analysis was not done on the board because it doesn't
->> expose iTLB-load-misses, etc. The stresser program was run on the board =
-to test
->> the loading and unloading of BPF programs
->>
->> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
->> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gmai=
-l.com/
->> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gmai=
-l.com/
->> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
->> [5] https://github.com/bjoto/riscv-cross-builder
->> [6] https://www.starfivetech.com/en/site/boards
->>
->> Puranjay Mohan (2):
->>   riscv: Extend patch_text_nosync() for multiple pages
->>   bpf, riscv: use prog pack allocator in the BPF JIT
->
-> I get a hang for "test_tag", but it's not directly related to your
-> series, but rather "remote fence.i".
->
->   | rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
->   | rcu: 	0-....: (1400 ticks this GP) idle=3Dd5e4/1/0x4000000000000000 s=
-oftirq=3D5542/5542 fqs=3D1862
->   | rcu: 	(detected by 1, t=3D5252 jiffies, g=3D10253, q=3D195 ncpus=3D4)
->   | Task dump for CPU 0:
->   | task:kworker/0:5     state:R  running task     stack:0     pid:319   =
-ppid:2      flags:0x00000008
->   | Workqueue: events bpf_prog_free_deferred
->   | Call Trace:
->   | [<ffffffff80cbc444>] __schedule+0x2d0/0x940
->   | watchdog: BUG: soft lockup - CPU#0 stuck for 21s! [kworker/0:5:319]
->   | Modules linked in: nls_iso8859_1 drm fuse i2c_core drm_panel_orientat=
-ion_quirks backlight dm_mod configfs ip_tables x_tables
->   | CPU: 0 PID: 319 Comm: kworker/0:5 Not tainted 6.5.0-rc5 #1
->   | Hardware name: riscv-virtio,qemu (DT)
->   | Workqueue: events bpf_prog_free_deferred
->   | epc : __sbi_rfence_v02_call.isra.0+0x74/0x11a
->   |  ra : __sbi_rfence_v02+0xda/0x1a4
->   | epc : ffffffff8000ab4c ra : ffffffff8000accc sp : ff20000001c9bbd0
->   |  gp : ffffffff82078c48 tp : ff600000888e6a40 t0 : ff20000001c9bd44
->   |  t1 : 0000000000000000 t2 : 0000000000000040 s0 : ff20000001c9bbf0
->   |  s1 : 0000000000000010 a0 : 0000000000000000 a1 : 0000000000000000
->   |  a2 : 0000000000000000 a3 : 0000000000000000 a4 : 0000000000000000
->   |  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000052464e43
->   |  s2 : 000000000000ffff s3 : 00000000ffffffff s4 : ffffffff81667528
->   |  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
->   |  s8 : 0000000000000001 s9 : 0000000000000003 s10: 0000000000000040
->   |  s11: ffffffff8207d240 t3 : 000000000000000f t4 : 000000000000002a
->   |  t5 : ff600000872df140 t6 : ffffffff81e26828
->   | status: 0000000200000120 badaddr: 0000000000000000 cause: 80000000000=
-00005
->   | [<ffffffff8000ab4c>] __sbi_rfence_v02_call.isra.0+0x74/0x11a
->   | [<ffffffff8000accc>] __sbi_rfence_v02+0xda/0x1a4
->   | [<ffffffff8000a886>] sbi_remote_fence_i+0x1e/0x26
->   | [<ffffffff8000cee2>] flush_icache_all+0x1a/0x48
->   | [<ffffffff80007736>] patch_text_nosync+0x6c/0x8c
->   | [<ffffffff8000f0f8>] bpf_arch_text_invalidate+0x62/0xac
->   | [<ffffffff8016c538>] bpf_prog_pack_free+0x9c/0x1b2
->   | [<ffffffff8016c84a>] bpf_jit_binary_pack_free+0x20/0x4a
->   | [<ffffffff8000f198>] bpf_jit_free+0x56/0x9e
->   | [<ffffffff8016b43a>] bpf_prog_free_deferred+0x15a/0x182
->   | [<ffffffff800576c4>] process_one_work+0x1b6/0x3d6
->   | [<ffffffff80057d52>] worker_thread+0x84/0x378
->   | [<ffffffff8005fc2c>] kthread+0xe8/0x108
->   | [<ffffffff80003ffa>] ret_from_fork+0xe/0x20
->
-> I'm digging into that now, and I would appreciate if you could run the
-> test_tag on VF2 or similar (I'm missing that HW).
->
-> It seems like we're hitting a bug with this series, so let's try to
-> figure out where the problems is, prior merging it.
+Hey Stan,
 
-Hmm, it looks like the bpf_arch_text_invalidate() implementation is a
-bit problematic:
+what would happen in case when one socket sets pool->tx_metadata_len say
+to 16 and the other one that is sharing the pool to 24? If sockets should
+and can have different padding, then this will not work unless the
+metadata_len is on a per socket level.
 
-+int bpf_arch_text_invalidate(void *dst, size_t len)
-+{
-+	__le32 *ptr;
-+	int ret =3D 0;
-+	u32 inval =3D 0;
-+
-+	for (ptr =3D dst; ret =3D=3D 0 && len >=3D sizeof(u32); len -=3D sizeof(u=
-32)) {
-+		mutex_lock(&text_mutex);
-+		ret =3D patch_text_nosync(ptr++, &inval, sizeof(u32));
-+		mutex_unlock(&text_mutex);
-+	}
-+
-+	return ret;
-+}
-
-Each patch_text_nosync() is a remote fence.i, and for a big "len", we'll
-be flooded with remote fences.
-
-I think that's exactly what we hit with "test_tag".
-
-
-Bj=C3=B6rn
+>  	INIT_LIST_HEAD(&pool->free_list);
+>  	INIT_LIST_HEAD(&pool->xskb_list);
+>  	INIT_LIST_HEAD(&pool->xsk_tx_list);
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index 13354a1e4280..c74a1372bcb9 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -143,15 +143,17 @@ static inline bool xp_unused_options_set(u32 options)
+>  static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
+>  					    struct xdp_desc *desc)
+>  {
+> -	u64 offset = desc->addr & (pool->chunk_size - 1);
+> +	u64 addr = desc->addr - pool->tx_metadata_len;
+> +	u64 len = desc->len + pool->tx_metadata_len;
+> +	u64 offset = addr & (pool->chunk_size - 1);
+>  
+>  	if (!desc->len)
+>  		return false;
+>  
+> -	if (offset + desc->len > pool->chunk_size)
+> +	if (offset + len > pool->chunk_size)
+>  		return false;
+>  
+> -	if (desc->addr >= pool->addrs_cnt)
+> +	if (addr >= pool->addrs_cnt)
+>  		return false;
+>  
+>  	if (xp_unused_options_set(desc->options))
+> @@ -162,16 +164,17 @@ static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
+>  static inline bool xp_unaligned_validate_desc(struct xsk_buff_pool *pool,
+>  					      struct xdp_desc *desc)
+>  {
+> -	u64 addr = xp_unaligned_add_offset_to_addr(desc->addr);
+> +	u64 addr = xp_unaligned_add_offset_to_addr(desc->addr) - pool->tx_metadata_len;
+> +	u64 len = desc->len + pool->tx_metadata_len;
+>  
+>  	if (!desc->len)
+>  		return false;
+>  
+> -	if (desc->len > pool->chunk_size)
+> +	if (len > pool->chunk_size)
+>  		return false;
+>  
+> -	if (addr >= pool->addrs_cnt || addr + desc->len > pool->addrs_cnt ||
+> -	    xp_desc_crosses_non_contig_pg(pool, addr, desc->len))
+> +	if (addr >= pool->addrs_cnt || addr + len > pool->addrs_cnt ||
+> +	    xp_desc_crosses_non_contig_pg(pool, addr, len))
+>  		return false;
+>  
+>  	if (xp_unused_options_set(desc->options))
+> -- 
+> 2.41.0.640.ga95def55d0-goog
+> 
 
