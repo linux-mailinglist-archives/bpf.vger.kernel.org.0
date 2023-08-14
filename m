@@ -1,111 +1,106 @@
-Return-Path: <bpf+bounces-7770-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7771-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D95B877C0B0
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 21:23:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D505177C0E3
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 21:38:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 931792811BE
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 19:23:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 112251C20B14
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 19:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC22ACA7A;
-	Mon, 14 Aug 2023 19:23:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8ABD2E8;
+	Mon, 14 Aug 2023 19:38:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1E6C2CE
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 19:23:08 +0000 (UTC)
-Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF489C
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 12:23:06 -0700 (PDT)
-Received: from pps.filterd (m0354653.ppops.net [127.0.0.1])
-	by mx0b-00206402.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37EHCtIg005333;
-	Mon, 14 Aug 2023 19:22:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
-	 h=message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=default;
-	 bh=zZQL6ddNNuvjKMCNF7YfZarodTl8T3gIqMxkwImreEE=; b=uqeag0OEd8lC
-	vZnMqxOSsC2lj5WeOPnKobK0E7rdHjYqZX15dmKgN/v9+RX54rr3UTu+5fbX4M7/
-	mwvDv4TddE5uSrAD4boDLW+vY+tmcvDAcTCmq6mv9haNO/yMLJbz3HCBhDIi9/k7
-	LHHOwEdX+kUm42ARRdYhHldcR2qyf+95PKXUjDLPFpX+hwfqVs4oF43H2vchXDa2
-	FgrK4nkcQwD55nvoqhUr0V0+4QHSesjvYtTojLJShLSkb/Hu6Y3GrIw5cR1KXUbl
-	rSmv5OhHuIYUlNFLrRCSHCtLajoRgvvm1M89BqOa0o1z4lAcJVM9rxn7LXcnTdvb
-	mzEFtcVrrg==
-Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
-	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 3sen1mukvh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 14 Aug 2023 19:22:46 +0000 (GMT)
-Received: from [10.102.42.42] (10.100.11.122) by 04wpexch06.crowdstrike.sys
- (10.100.11.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.16; Mon, 14 Aug
- 2023 19:22:44 +0000
-Message-ID: <c5353680-23a2-542f-6512-27910047aa70@crowdstrike.com>
-Date: Mon, 14 Aug 2023 12:22:43 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9905687;
+	Mon, 14 Aug 2023 19:37:59 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7F8BB;
+	Mon, 14 Aug 2023 12:37:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=H3/XY/jv4icK4NgBoiigxpPa2AsF3Mqwv5r97vJFS/w=; b=pOr8bcG6l/kfke8Nee4BbrwhDN
+	A2s7rzPErfg+NVwgfSWisFIPVQH8cUmi9poBS1F1nB4w0UNXGjbNEK6bNA/ENONh546s78g4R1edz
+	WAuBCj2wUx0j5lG1e9keu4qCMaxo35Zlae00gOpVVmuNUq5yHF6GbNIAizv/Ly7lH+ud3UzJKq/iE
+	9PPEPCWlZ40lnWip20o8IyQj3PlXFdkIZziRyF1CKarFaKT2LOy1L195COrXoJbtVWRluBGdKwI2x
+	yX8yOtm+eAo3yEBl/j9XgHpxa8a++yujMymBpgH1ERG+rbzqQZR4Wj7/rfbvbPsUZA4i5FRL1cJ0L
+	zm2L6yhw==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qVdNw-000Kkk-B7; Mon, 14 Aug 2023 21:37:52 +0200
+Received: from [85.1.206.226] (helo=pc-102.home)
+	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1qVdNw-0002wv-35; Mon, 14 Aug 2023 21:37:52 +0200
+Subject: LPC 2023 Networking and BPF Track CFP (Reminder)
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc: xdp-newbies@vger.kernel.org, linux-wireless@vger.kernel.org,
+ netfilter-devel@vger.kernel.org
+References: <1515db2c-f517-76da-8aad-127a67da802f@iogearbox.net>
+Message-ID: <db3003d6-733b-099f-ef73-abce750d66c6@iogearbox.net>
+Date: Mon, 14 Aug 2023 21:37:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Re: [PATCH bpf-next] libbpf: set close-on-exec flag on gzopen
+In-Reply-To: <1515db2c-f517-76da-8aad-127a67da802f@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To: Daniel Borkmann <daniel@iogearbox.net>, <bpf@vger.kernel.org>
-CC: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Marco Vedovati <marco.vedovati@crowdstrike.com>
-References: <20230810214350.106301-1-martin.kelly@crowdstrike.com>
- <86e24c5b-f27e-42ee-aab9-af5379c3cf79@iogearbox.net>
-From: Martin Kelly <martin.kelly@crowdstrike.com>
-In-Reply-To: <86e24c5b-f27e-42ee-aab9-af5379c3cf79@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.100.11.122]
-X-ClientProxiedBy: 04WPEXCH11.crowdstrike.sys (10.100.11.115) To
- 04wpexch06.crowdstrike.sys (10.100.11.99)
-X-Disclaimer: USA
-X-Proofpoint-ORIG-GUID: yEesSJ40RHt6YxT8B1Va_bv-WQ122_pB
-X-Proofpoint-GUID: yEesSJ40RHt6YxT8B1Va_bv-WQ122_pB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-14_16,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=954 impostorscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 clxscore=1011 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2306200000 definitions=main-2308140179
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27000/Mon Aug 14 09:37:02 2023)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/14/23 08:40, Daniel Borkmann wrote:
-> On 8/10/23 11:43 PM, Martin Kelly wrote:
->> From: Marco Vedovati <marco.vedovati@crowdstrike.com>
->>
->> Enable the close-on-exec flag when using gzopen
->>
->> This is especially important for multithreaded programs making use of
->> libbpf, where a fork + exec could race with libbpf library calls,
->> potentially resulting in a file descriptor leaked to the new process.
->>
->> Signed-off-by: Marco Vedovati <marco.vedovati@crowdstrike.com>
->
-> Looks good, thanks for the fix, applied! Do we also need to convert the
-> fmemopen in bpf_object__read_kconfig_mem - if yes, could you also send a
-> patch?
->
-> Thanks,
-> Daniel
+This is a reminder for the Call for Proposals (CFP) for the Networking and
+BPF track at the 2023 edition of the Linux Plumbers Conference (LPC) which is
+taking place in Richmond, VA, United States, on November 13th - 15th, 2023.
 
-Good thinking, but it looks like (from libc sources and a quick test) 
-the underlying fmemopen doesn't accept the "e" mode for close-on-exec. 
-On glibc 2.35 at least, it's calling into _IO_fopencookie, which then 
-executes this switch and rejects the flag.
+Note that the conference is planned to be both in person and remote (hybrid).
+CFP submitters should ideally be able to give their presentation in person to
+minimize technical issues, although presenting remotely will also be possible.
 
+The Networking and BPF track technical committee consists of:
+
+     David S. Miller <davem@davemloft.net>
+     Jakub Kicinski <kuba@kernel.org>
+     Paolo Abeni <pabeni@redhat.com>
+     Eric Dumazet <edumazet@google.com>
+     Alexei Starovoitov <ast@kernel.org>
+     Daniel Borkmann <daniel@iogearbox.net>
+     Andrii Nakryiko <andrii@kernel.org>
+     Martin Lau <martin.lau@linux.dev>
+
+We are seeking proposals of 30 minutes in length (including Q&A discussion). Any
+kind of advanced Linux networking and/or BPF related topic will be considered.
+
+Please submit your proposals through the official LPC website at:
+
+     https://lpc.events/event/17/abstracts/
+
+Make sure to select "eBPF & Networking Track" in the track pull-down menu.
+
+Proposals must be submitted by September 27th, and submitters will be notified
+of acceptance by October 2nd. Final slides (as PDF) are due on the first day of
+the conference.
+
+We are very much looking forward to a great conference and seeing you all!
 
