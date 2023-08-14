@@ -1,203 +1,278 @@
-Return-Path: <bpf+bounces-7761-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7762-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C36E77BF84
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 20:05:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A113277BF87
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 20:06:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABA36280EE9
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 18:05:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A638281184
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 18:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD490CA54;
-	Mon, 14 Aug 2023 18:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7DBCA6E;
+	Mon, 14 Aug 2023 18:05:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D357C2FC
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 18:05:17 +0000 (UTC)
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1639C1703
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 11:05:15 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5650ef42f6dso2741829a12.0
-        for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 11:05:15 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01BCACA43
+	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 18:05:25 +0000 (UTC)
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDAAB10F4
+	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 11:05:19 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-564ef63a010so3883196a12.0
+        for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 11:05:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692036314; x=1692641114;
+        d=google.com; s=20221208; t=1692036319; x=1692641119;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m7g1R/21wNzU5e8eJcC+fpUif2cqg4RQzc6j7+Cbixw=;
-        b=NLwR0hZljonn0iprYdGZXFuRHxpcnqiLK6RdF9URm4R08zhVSUDOU6W16EGdjcb9Mt
-         9UXnZw2t+dTJGr/SRdhWwvx1y5rPIA69ELhZioh6ZvapvK0ndw8iGp6dc3UAmeru0d6j
-         49VyCdJMo3hdJ8jfraJA5LdUJ++oRCMub8/8U+5NwR/h6aevFAGUmGqPOI4tQE8WgCoV
-         LGD5nRla5EEgJ43wjIgLB96iF0z1IS1YPwV0It3CCtoDZG0SPhm0Myx3YVfEGSF29KOD
-         dQje/8cBvp839QYpX1ldmktWvVB1YNoZxegQvVITKAg7+YjVBftYSAS4ZJMTjquHDoy3
-         a7Ew==
+        bh=0dcp1L3zFcyKn19jEWG25mKgp7jPhJr/6G2z6GZ7IzE=;
+        b=kW+7tt015gIa1gGv6tX0gGrCoYMR3vIoMhjrl7XxnFCl9FXqvzol5QlHy5+4s7N/60
+         P6pm+44PRXnfxm2GXYF83OXQ1AXWGJe4hjKtcHH6vYxPdZbY5jMD+G4I3Ph/+/oldbpG
+         TCOsthrVHEUVasQVrrfXuU+TrApVuSj6OrAgFw0Re5RZ+vaJ4g+lYBm4r8iEeaS+6Zjx
+         TH2rvfsgfpisbyB/5vQvnvYqYwWYDSiW7S5fuPt/m1V2ITfj8QzX/CgZB5hEG8vZ6Luf
+         uVtmFjQWjAe8CB3rpAfvaRgIDiYqpk+d6R0u7kJXYgDt3m1as0p8YxzbYFH8+Up9yyTW
+         YrVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692036314; x=1692641114;
+        d=1e100.net; s=20221208; t=1692036319; x=1692641119;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=m7g1R/21wNzU5e8eJcC+fpUif2cqg4RQzc6j7+Cbixw=;
-        b=d8XrtrBK8cIPr4neuO+OuosVPWtJElQymd4uEPHF4gCr0yp1Tncy0FFRUAGx4rR/TI
-         eoi55B4v8XigxuWKZcsn3ryr6r3hqNZONyk1hqPBEIDjIyTu4qbQwQ5u1A33B4sTqMjW
-         dky9jO2O2jY5F6hwCN+oc7Oicrc4buufs32enXnsYOAHhvmQ7UOSCl7y15VGTkTmC3K5
-         jRtMs4+Q52NtUAQA4XlwbOrGjLvQhPp08P4nOzRChgEWyINrYZ/ypFk8WXWLcYqLlsWQ
-         pZHQ22kmeXmEHtb7NAE/w/+LKAD7rKdgx5ZSH+DkEyykVSbljkLpK+UBwdwi3NMPseFC
-         e8kA==
-X-Gm-Message-State: AOJu0YzADymjtAf3JH5WXBRjQzKfTYHlOz7zfXWWesZRCeKAFf0Q5R5m
-	LbLuC/cRr/jCRJB85xrf882qArR2Y5d1f3r6WsQKhA==
-X-Google-Smtp-Source: AGHT+IFmklskcpj993E1zbKMUrIDed1HAft3WDszMju3MwSdz1XnQqYUQhQEXysogzFrKlxLKlXEwy2bfBXlhMeSr8U=
-X-Received: by 2002:a17:90a:6046:b0:268:b682:23da with SMTP id
- h6-20020a17090a604600b00268b68223damr7465920pjm.34.1692036314332; Mon, 14 Aug
- 2023 11:05:14 -0700 (PDT)
+        bh=0dcp1L3zFcyKn19jEWG25mKgp7jPhJr/6G2z6GZ7IzE=;
+        b=B53ESBVjrs/9UEyQS6RGTpSoXupWxS+ktgHKuLjBneVFcXw6UzRFJc/sIDo7iNQb4D
+         ilTHtuWhK73CJIJh2NXZChzCy2vFMQW4MH7rWd+/xTlOmooejaTLkRRPUWpEV6kbpWcA
+         GY7ovyaiPkSsI1cEi/VIZqZ41V5elYidvepLqcNnIT9XnHXlnhD/jrrIpi9gp2yNYoRL
+         aGJkCE5vUD3q9S+E1OGtC7Qmzy70lQuc8L3803Qc1ShZfFK+d9kIZ3cYc3tMytmK/c0c
+         vcHos8rsE0cdTNoC/hL5hRJMRPggdvtWERCGH4tXJvCWiZgOcHU4jyCqGfxEhz0zYfSm
+         /lJA==
+X-Gm-Message-State: AOJu0Yxjdpi4P421qh6xrplYx4sdN1lNNto8xL7MhiRIXweTLVRnM2V4
+	8r1VZ3uQadR5BDhgtQMAgNsY0+VV319xkLEkCrNdEQ==
+X-Google-Smtp-Source: AGHT+IF46j9NoeBt3K8/VwCQ0W4IZ1OTuPgGyxmjRtX/Zv8q51eju4jsQ8lvNiBtF4g+QBzLjU4ofRn9JBbi6pJDfgM=
+X-Received: by 2002:a17:90b:388a:b0:26b:455b:8d61 with SMTP id
+ mu10-20020a17090b388a00b0026b455b8d61mr7556655pjb.22.1692036318924; Mon, 14
+ Aug 2023 11:05:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230809165418.2831456-1-sdf@google.com> <20230809165418.2831456-5-sdf@google.com>
- <ZNoJxCgGrftwt+4x@boxer>
-In-Reply-To: <ZNoJxCgGrftwt+4x@boxer>
+References: <20230809165418.2831456-1-sdf@google.com> <20230809165418.2831456-3-sdf@google.com>
+ <ZNoJenzKXW5QSR3E@boxer>
+In-Reply-To: <ZNoJenzKXW5QSR3E@boxer>
 From: Stanislav Fomichev <sdf@google.com>
-Date: Mon, 14 Aug 2023 11:05:02 -0700
-Message-ID: <CAKH8qBsoi1PbDMwDEQ+-=r_D+=JCesV4JbZwbH7+rkjxZ3pWtg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/9] net/mlx5e: Implement AF_XDP TX timestamp and
- checksum offload
+Date: Mon, 14 Aug 2023 11:05:07 -0700
+Message-ID: <CAKH8qBvf+4YjdFOM6P62p3Z1eo0D92UNyBO2rKVCh1id35iMAQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/9] xsk: add TX timestamp and TX checksum
+ offload support
 To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
 	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
 	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
 	jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, willemb@google.com, 
 	dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org, 
-	hawk@kernel.org, netdev@vger.kernel.org, xdp-hints@xdp-project.net, 
-	Saeed Mahameed <saeedm@nvidia.com>
+	hawk@kernel.org, netdev@vger.kernel.org, xdp-hints@xdp-project.net
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Aug 14, 2023 at 4:02=E2=80=AFAM Maciej Fijalkowski
+On Mon, Aug 14, 2023 at 4:01=E2=80=AFAM Maciej Fijalkowski
 <maciej.fijalkowski@intel.com> wrote:
 >
-> On Wed, Aug 09, 2023 at 09:54:13AM -0700, Stanislav Fomichev wrote:
-> > TX timestamp:
-> > - requires passing clock, not sure I'm passing the correct one (from
-> >   cq->mdev), but the timestamp value looks convincing
+> On Wed, Aug 09, 2023 at 09:54:11AM -0700, Stanislav Fomichev wrote:
+> > This change actually defines the (initial) metadata layout
+> > that should be used by AF_XDP userspace (xsk_tx_metadata).
+> > The first field is flags which requests appropriate offloads,
+> > followed by the offload-specific fields. The supported per-device
+> > offloads are exported via netlink (new xsk-flags).
 > >
-> > TX checksum:
-> > - looks like device does packet parsing (and doesn't accept custom
-> >   start/offset), so I'm ignoring user offsets
+> > The offloads themselves are still implemented in a bit of a
+> > framework-y fashion that's left from my initial kfunc attempt.
+> > I'm introducing new xsk_tx_metadata_ops which drivers are
+> > supposed to implement. The drivers are also supposed
+> > to call xsk_tx_metadata_request/xsk_tx_metadata_complete in
+> > the right places. Since xsk_tx_metadata_{request,_complete}
+> > are static inline, we don't incur any extra overhead doing
+> > indirect calls.
 > >
-> > Cc: Saeed Mahameed <saeedm@nvidia.com>
+> > The benefit of this scheme is as follows:
+> > - keeps all metadata layout parsing away from driver code
+> > - makes it easy to grep and see which drivers implement what
+> > - don't need any extra flags to maintain to keep track of what
+> >   offloads are implemented; if the callback is implemented - the offloa=
+d
+> >   is supported (used by netlink reporting code)
+> >
+> > Two offloads are defined right now:
+> > 1. XDP_TX_METADATA_CHECKSUM: skb-style csum_start+csum_offset
+> > 2. XDP_TX_METADATA_TIMESTAMP: writes TX timestamp back into metadata
+> >    area upon completion (tx_timestamp field)
+> >
+> > The offloads are also implemented for copy mode:
+> > 1. Extra XDP_TX_METADATA_CHECKSUM_SW to trigger skb_checksum_help; this
+> >    might be useful as a reference implementation and for testing
+> > 2. XDP_TX_METADATA_TIMESTAMP writes SW timestamp from the skb
+> >    destructor (note I'm reusing hwtstamps to pass metadata pointer)
+> >
+> > The struct is forward-compatible and can be extended in the future
+> > by appending more fields.
+> >
 > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/en.h  |  4 +-
-> >  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 72 ++++++++++++++++---
-> >  .../net/ethernet/mellanox/mlx5/core/en/xdp.h  | 10 ++-
-> >  .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   | 11 ++-
-> >  .../net/ethernet/mellanox/mlx5/core/en_main.c |  1 +
-> >  5 files changed, 82 insertions(+), 16 deletions(-)
+> >  Documentation/netlink/specs/netdev.yaml | 20 +++++++++
+> >  include/linux/netdevice.h               | 27 +++++++++++
+> >  include/linux/skbuff.h                  |  5 ++-
+> >  include/net/xdp_sock.h                  | 60 +++++++++++++++++++++++++
+> >  include/net/xdp_sock_drv.h              | 13 ++++++
+> >  include/net/xsk_buff_pool.h             |  5 +++
+> >  include/uapi/linux/if_xdp.h             | 35 +++++++++++++++
+> >  include/uapi/linux/netdev.h             | 16 +++++++
+> >  net/core/netdev-genl.c                  | 12 ++++-
+> >  net/xdp/xsk.c                           | 41 +++++++++++++++++
+> >  net/xdp/xsk_queue.h                     |  2 +-
+> >  tools/include/uapi/linux/if_xdp.h       | 50 ++++++++++++++++++---
+> >  tools/include/uapi/linux/netdev.h       | 15 +++++++
+> >  13 files changed, 293 insertions(+), 8 deletions(-)
 > >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net=
-/ethernet/mellanox/mlx5/core/en.h
-> > index 0f8f70b91485..6f38627ae7f8 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> > @@ -476,10 +476,12 @@ struct mlx5e_xdp_info_fifo {
-> >
-> >  struct mlx5e_xdpsq;
-> >  struct mlx5e_xmit_data;
-> > +struct xsk_tx_metadata;
-> >  typedef int (*mlx5e_fp_xmit_xdp_frame_check)(struct mlx5e_xdpsq *);
-> >  typedef bool (*mlx5e_fp_xmit_xdp_frame)(struct mlx5e_xdpsq *,
-> >                                       struct mlx5e_xmit_data *,
-> > -                                     int);
-> > +                                     int,
-> > +                                     struct xsk_tx_metadata *);
-> >
-> >  struct mlx5e_xdpsq {
-> >       /* data path */
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers=
-/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> > index 40589cebb773..197d372048ec 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> > @@ -102,7 +102,7 @@ mlx5e_xmit_xdp_buff(struct mlx5e_xdpsq *sq, struct =
-mlx5e_rq *rq,
-> >               xdptxd->dma_addr =3D dma_addr;
-> >
-> >               if (unlikely(!INDIRECT_CALL_2(sq->xmit_xdp_frame, mlx5e_x=
-mit_xdp_frame_mpwqe,
-> > -                                           mlx5e_xmit_xdp_frame, sq, x=
-dptxd, 0)))
-> > +                                           mlx5e_xmit_xdp_frame, sq, x=
-dptxd, 0, NULL)))
-> >                       return false;
-> >
-> >               /* xmit_mode =3D=3D MLX5E_XDP_XMIT_MODE_FRAME */
-> > @@ -144,7 +144,7 @@ mlx5e_xmit_xdp_buff(struct mlx5e_xdpsq *sq, struct =
-mlx5e_rq *rq,
-> >       xdptxd->dma_addr =3D dma_addr;
-> >
-> >       if (unlikely(!INDIRECT_CALL_2(sq->xmit_xdp_frame, mlx5e_xmit_xdp_=
-frame_mpwqe,
-> > -                                   mlx5e_xmit_xdp_frame, sq, xdptxd, 0=
-)))
-> > +                                   mlx5e_xmit_xdp_frame, sq, xdptxd, 0=
-, NULL)))
-> >               return false;
-> >
-> >       /* xmit_mode =3D=3D MLX5E_XDP_XMIT_MODE_PAGE */
-> > @@ -260,6 +260,37 @@ const struct xdp_metadata_ops mlx5e_xdp_metadata_o=
-ps =3D {
-> >       .xmo_rx_hash                    =3D mlx5e_xdp_rx_hash,
+>
+> [...]
+>
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index 0896aaa91dd7..3f02aaa30590 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -1647,6 +1647,31 @@ struct net_device_ops {
+> >                                                   struct netlink_ext_ac=
+k *extack);
 > >  };
 > >
-> > +struct mlx5e_xsk_tx_complete {
-> > +     struct mlx5_cqe64 *cqe;
-> > +     struct mlx5e_cq *cq;
+> > +/*
+> > + * This structure defines the AF_XDP TX metadata hooks for network dev=
+ices.
+> > + * The following hooks can be defined; unless noted otherwise, they ar=
+e
+> > + * optional and can be filled with a null pointer.
+> > + *
+> > + * int (*tmo_request_timestamp)(void *priv)
+> > + *     This function is called when AF_XDP frame requested egress time=
+stamp.
+> > + *
+> > + * int (*tmo_fill_timestamp)(void *priv)
+> > + *     This function is called when AF_XDP frame, that had requested
+> > + *     egress timestamp, received a completion. The hook needs to retu=
+rn
+> > + *     the actual HW timestamp.
+> > + *
+> > + * int (*tmo_request_checksum)(u16 csum_start, u16 csum_offset, void *=
+priv)
+> > + *     This function is called when AF_XDP frame requested HW checksum
+> > + *     offload. csum_start indicates position where checksumming shoul=
+d start.
+> > + *     csum_offset indicates position where checksum should be stored.
+> > + *
+> > + */
+> > +struct xsk_tx_metadata_ops {
+> > +     void    (*tmo_request_timestamp)(void *priv);
+> > +     u64     (*tmo_fill_timestamp)(void *priv);
+> > +     void    (*tmo_request_checksum)(u16 csum_start, u16 csum_offset, =
+void *priv);
 > > +};
 > > +
-> > +static u64 mlx5e_xsk_fill_timestamp(void *_priv)
+> >  /**
+> >   * enum netdev_priv_flags - &struct net_device priv_flags
+> >   *
+> > @@ -1835,6 +1860,7 @@ enum netdev_ml_priv_type {
+> >   *   @netdev_ops:    Includes several pointers to callbacks,
+> >   *                   if one wants to override the ndo_*() functions
+> >   *   @xdp_metadata_ops:      Includes pointers to XDP metadata callbac=
+ks.
+> > + *   @xsk_tx_metadata_ops:   Includes pointers to AF_XDP TX metadata c=
+allbacks.
+> >   *   @ethtool_ops:   Management operations
+> >   *   @l3mdev_ops:    Layer 3 master device operations
+> >   *   @ndisc_ops:     Includes callbacks for different IPv6 neighbour
+> > @@ -2091,6 +2117,7 @@ struct net_device {
+> >       unsigned long long      priv_flags;
+> >       const struct net_device_ops *netdev_ops;
+> >       const struct xdp_metadata_ops *xdp_metadata_ops;
+> > +     const struct xsk_tx_metadata_ops *xsk_tx_metadata_ops;
+> >       int                     ifindex;
+> >       unsigned short          gflags;
+> >       unsigned short          hard_header_len;
+> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > index 16a49ba534e4..5d73d5df67fb 100644
+> > --- a/include/linux/skbuff.h
+> > +++ b/include/linux/skbuff.h
+> > @@ -579,7 +579,10 @@ struct skb_shared_info {
+> >       /* Warning: this field is not always filled in (UFO)! */
+> >       unsigned short  gso_segs;
+> >       struct sk_buff  *frag_list;
+> > -     struct skb_shared_hwtstamps hwtstamps;
+> > +     union {
+> > +             struct skb_shared_hwtstamps hwtstamps;
+> > +             struct xsk_tx_metadata *xsk_meta;
+> > +     };
+> >       unsigned int    gso_type;
+> >       u32             tskey;
+> >
+> > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > index 467b9fb56827..288fa58c4665 100644
+> > --- a/include/net/xdp_sock.h
+> > +++ b/include/net/xdp_sock.h
+> > @@ -90,6 +90,54 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_=
+buff *xdp);
+> >  int __xsk_map_redirect(struct xdp_sock *xs, struct xdp_buff *xdp);
+> >  void __xsk_map_flush(void);
+> >
+> > +/**
+> > + *  xsk_tx_metadata_request - Evaluate AF_XDP TX metadata at submissio=
+n
+> > + *  and call appropriate xsk_tx_metadata_ops operation.
+> > + *  @meta: pointer to AF_XDP metadata area
+> > + *  @ops: pointer to struct xsk_tx_metadata_ops
+> > + *  @priv: pointer to driver-private aread
+> > + *
+> > + *  This function should be called by the networking device when
+> > + *  it prepares AF_XDP egress packet.
+> > + */
+> > +static inline void xsk_tx_metadata_request(const struct xsk_tx_metadat=
+a *meta,
+> > +                                        const struct xsk_tx_metadata_o=
+ps *ops,
+> > +                                        void *priv)
 > > +{
-> > +     struct mlx5e_xsk_tx_complete *priv =3D _priv;
-> > +     u64 ts;
+> > +     if (!meta)
+> > +             return;
 > > +
-> > +     ts =3D get_cqe_ts(priv->cqe);
-> > +
-> > +     if (mlx5_is_real_time_rq(priv->cq->mdev) || mlx5_is_real_time_sq(=
-priv->cq->mdev))
-> > +             return mlx5_real_time_cyc2time(&priv->cq->mdev->clock, ts=
-);
-> > +
-> > +     return  mlx5_timecounter_cyc2time(&priv->cq->mdev->clock, ts);
-> > +}
-> > +
-> > +static void mlx5e_xsk_request_checksum(u16 csum_start, u16 csum_offset=
-, void *priv)
-> > +{
-> > +     struct mlx5_wqe_eth_seg *eseg =3D priv;
-> > +
-> > +     /* HW/FW is doing parsing, so offsets are largely ignored. */
-> > +     eseg->cs_flags |=3D MLX5_ETH_WQE_L3_CSUM | MLX5_ETH_WQE_L4_CSUM;
-> > +}
-> > +
-> > +const struct xsk_tx_metadata_ops mlx5e_xsk_tx_metadata_ops =3D {
-> > +     .tmo_fill_timestamp             =3D mlx5e_xsk_fill_timestamp,
-> > +     .tmo_request_checksum           =3D mlx5e_xsk_request_checksum,
+> > +     if (ops->tmo_request_timestamp)
+> > +             if (meta->flags & XDP_TX_METADATA_TIMESTAMP)
 >
-> Can you explain to us why mlx5 doesn't need to implement the request
-> timestamp op?
+> We should have a copy of flags or any other things that we read multiple
+> times from metadata in order to avoid potential attacks from user space.
+> An example of that is the fact that timestamp metadata handling is two
+> step process, meaning to fill the timestamp you have to request it in the
+> first place. If user space would set XDP_TX_METADATA_TIMESTAMP after
+> sending but before completing we would crash the kernel potentially.
+>
+> We could also move the responsibility of handling that issue to driver
+> programmers but IMHO that would be harder to implement, hence we think
+> handling it in core would be better.
 
-There is always a timestamp in the tx completion descriptor, so no
-need to explicitly request it.
+Hmm, very good point. I believe we only care about the timestamp
+address for the completion, right? Not the rest of the metadata field.
+So saving/passing that single pointer might be good enough..
+For copy mode I think I can abuse skb_shared_info the same way I'm
+adding new xsk_meta (IOW, store tx_timestamp ptr instead of overall
+xsk_meta pointer).
+For the native mode, not sure how we could implement that in the
+generic fashion? Let me play with it and see if I can provide some
+helpers for the drivers..
 
