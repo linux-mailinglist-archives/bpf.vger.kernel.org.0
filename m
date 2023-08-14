@@ -1,73 +1,69 @@
-Return-Path: <bpf+bounces-7702-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7703-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A3E177B739
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 13:01:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E085E77B73C
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 13:03:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2988C28111F
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 11:01:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96930281116
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 11:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09BA9BA32;
-	Mon, 14 Aug 2023 11:01:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68999BA33;
+	Mon, 14 Aug 2023 11:02:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39438F77;
-	Mon, 14 Aug 2023 11:01:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB2E9476;
+	Mon, 14 Aug 2023 11:02:46 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE875F4;
-	Mon, 14 Aug 2023 04:01:37 -0700 (PDT)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C40F4;
+	Mon, 14 Aug 2023 04:02:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692010897; x=1723546897;
+  t=1692010964; x=1723546964;
   h=date:from:to:cc:subject:message-id:references:
    in-reply-to:mime-version;
-  bh=2QbLcDXu7K+WByEczd1naBvnwSK36sDb/lI4iLNmGs0=;
-  b=SWRbD1EnXT6fVfEnheOkMlexCuN9Wp22DIJ039S5dJ1JyHkGtJCqHeA5
-   bYuDEGAOykSwbG7au5VhPxLMLOI0T6apcsF+/IfxARDdfxjNi0jueCqFh
-   dlAPX09cWzMYrkr8rro4keoL+YM4oLoQy8VjiwUKxedpNdoHQ+8zXWCPl
-   AbiZ1QMnhq4LOAH4Z9/rSMw+IZWDF2jWSkv5lZPrTm6In44h1rcdmVvpY
-   OEY9LUv93nrv6XKCIe8I8biI318yr4rCqxn+Hep3w2hFaGw+8kdcqrSyf
-   huX2E4WTlBA4TjrP399U4uQnJfjRIRqjULFjFED2J0LUT+iOftRjq/7jV
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="362164791"
+  bh=GYUazRQ0X6IIJ3CAWGSqEudJdZEPwc5E8jxIoIm9thA=;
+  b=FCoDs7OVs51S1PpyAdJrE/fKelTu8zpygCki7CaVPyHf07PxSBoMeIyd
+   yTK0z57wHr1YzbTlndNNrsCdDbfgcjHhU/Cd75bcr2lkbkzogjA82RUMG
+   ElJ0SCKmv47/gKNDwFHsszeMjc0eotV5JiiRA6FMjgMBA8GTdNQGwOXpT
+   qyAdSx98M/Mcw0DCc0IpEBO1OYvLg6gvvDOcjbg0uVhB74sM9GbxH7f/N
+   fk0rQV8tagXSJC0LHAKqf65Zpe4u2uGJOZiPWWGuuGquGN4JTBoC2+tJu
+   +KyXMk9M9Q35SMZ/1Q9yz6I34iMp4Zbk/yRig6OpFrvWmH7zGc2JUnUdy
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="362165301"
 X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="362164791"
+   d="scan'208";a="362165301"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 04:01:29 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 04:02:42 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="798784871"
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="798785186"
 X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="798784871"
+   d="scan'208";a="798785186"
 Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga008.fm.intel.com with ESMTP; 14 Aug 2023 04:01:28 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+  by fmsmga008.fm.intel.com with ESMTP; 14 Aug 2023 04:02:41 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
  ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 14 Aug 2023 04:01:28 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 14 Aug 2023 04:01:28 -0700
+ 15.1.2507.27; Mon, 14 Aug 2023 04:02:41 -0700
 Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 14 Aug 2023 04:01:28 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.174)
+ 15.1.2507.27 via Frontend Transport; Mon, 14 Aug 2023 04:02:41 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.171)
  by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 14 Aug 2023 04:01:26 -0700
+ 15.1.2507.27; Mon, 14 Aug 2023 04:02:40 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f76+Grtszl4gVn2291nZcU826aIP1kWqBn0Q8uL8JusIY8oxpg8T1QxBbnh2nne5MIMn/h4bhzyrtGbzsf9VbqrlVXenUqleuI31eE0WkUJHixnwwNa/gTN3RudYl9um0gCL7i5ICIydEBgqjkgi381lB55vNAIkO1wG9TucmxhVfX07B8qrIwWfNPMxwVmLhxJ9aPq2ky3Cmgp20/ioIgOre5b0sfKso6nBMqU7tjy2lXZYyiUx0SSN4F26aEBakRpZpGF7dtirEj+6DvSFsmZDWvHDzZ1uSJA+lUKjvT4SUQhm3BNJTvNYGU+hAO8Zgtr/OF1zYfvgV+kY1tY4Iw==
+ b=SMAS/sURFXkz6vaxxlk4ZF5/g6qROOYqoW4uc7O2BGiD33govkHL1uVLr3+84sDJFwlFO0GAr8hnQEP4TPw9kjCMMri88YpNW8kTyHnFJg+x/EA43D44d/EVVpA5Y6Ov88jDoXneQy3MZajQitEcfmQsI51kTQVi1QX4VyWK7aad1i541eLZhFJneQHDrPJMlLrvM17TC02nfz8QD5Wb77g+AMquRa1A0zDyuPXox0QT6PVAwco0iy5j6rkQgmXgjp1tc5VCmRPFRPL9SmjaB2fvy62jB5IA8rlr3e3Eq1ixffLoTT1aJq/mXfQQv/ubsHdK36/f8kbOVdB2qO0x1g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YpBywxaDbdyX3iOX7cID2MiijnMvKjicAzTDlaNaWIQ=;
- b=L4fE5Yqyhg2Zgb8E8k5OFcKdG5x5Vpp2/+LKd34vToqYgl3dcE7xAoNb3/AvtemnEK6b90k6L05XC4AxDlp68WTYN0tcGnqpsLRbtke6AQV2smrGhJfKqKUXfHtQ4v9ymN4rn3f7ktLCWTPRHsjqGAkuSYG3jIuUothZphZekPX/RItWIaO2dM5QvZJCjH9Vg+Zh57Y3lELDOztwq0yrE2X7reb2EDnKZsqQLyAkhPatzKgJZ44Hs2ORSJ7gC+wsK7dYFYnzxQb5Y2uBGnvH1+FtIgkWLgr+f/K2mWg3zgYwIvW1qfH/Wh1ciIMlgRDL8BdRYkv475nuZdFgIpdIjQ==
+ bh=HkuLZ2qji2hk4N25F55mJuSF6Q9RgkOVdNC4fRIIoU4=;
+ b=EeErqenSe+hAPcfikmm1DtjfdeEkNuHhB7udoXZv6mPsSs+eAJ4pIsJnie72Awlf618/MisFJivSd/a9itWAPx1DOzv5X5AQABUDQNRwrnsiWed71hXbgZEBTivloDoEJMPkFw9ECrLvimGzcW56VSfIIwY8ecDS4qci0Y1IZRy/VQKsTVGc5TaM5DlmHXvWMjmmoxcLgrs9u3V7JCFw12LPJxu4ORfXkdj9GydaLr3Husa++sTXIFgMgUrOPeaKXrcH1LhwftWVRFbP/dfEOAIhHdjHClyAT3gl532r4Q9y1him3Ub/RJY020s0GPpK7oSkvozj7zXkFr5EFQTM/A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
@@ -76,12 +72,12 @@ Authentication-Results: dkim=none (message not signed)
 Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
  CY5PR11MB6319.namprd11.prod.outlook.com (2603:10b6:930:3d::6) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6678.24; Mon, 14 Aug 2023 11:01:24 +0000
+ 15.20.6678.24; Mon, 14 Aug 2023 11:02:37 +0000
 Received: from DM4PR11MB6117.namprd11.prod.outlook.com
  ([fe80::c1f9:b4eb:f57e:5c3d]) by DM4PR11MB6117.namprd11.prod.outlook.com
  ([fe80::c1f9:b4eb:f57e:5c3d%3]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
- 11:01:24 +0000
-Date: Mon, 14 Aug 2023 13:01:14 +0200
+ 11:02:37 +0000
+Date: Mon, 14 Aug 2023 13:02:28 +0200
 From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To: Stanislav Fomichev <sdf@google.com>
 CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
@@ -90,17 +86,17 @@ CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
 	<jolsa@kernel.org>, <kuba@kernel.org>, <toke@kernel.org>,
 	<willemb@google.com>, <dsahern@kernel.org>, <magnus.karlsson@intel.com>,
 	<bjorn@kernel.org>, <hawk@kernel.org>, <netdev@vger.kernel.org>,
-	<xdp-hints@xdp-project.net>
-Subject: Re: [PATCH bpf-next 2/9] xsk: add TX timestamp and TX checksum
- offload support
-Message-ID: <ZNoJenzKXW5QSR3E@boxer>
+	<xdp-hints@xdp-project.net>, Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH bpf-next 4/9] net/mlx5e: Implement AF_XDP TX timestamp
+ and checksum offload
+Message-ID: <ZNoJxCgGrftwt+4x@boxer>
 References: <20230809165418.2831456-1-sdf@google.com>
- <20230809165418.2831456-3-sdf@google.com>
+ <20230809165418.2831456-5-sdf@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230809165418.2831456-3-sdf@google.com>
-X-ClientProxiedBy: FR0P281CA0131.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:97::16) To DM4PR11MB6117.namprd11.prod.outlook.com
+In-Reply-To: <20230809165418.2831456-5-sdf@google.com>
+X-ClientProxiedBy: FR0P281CA0202.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:ad::17) To DM4PR11MB6117.namprd11.prod.outlook.com
  (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -110,50 +106,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|CY5PR11MB6319:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7b38f61b-8da6-46d3-b7a5-08db9cb5ccd1
+X-MS-Office365-Filtering-Correlation-Id: e6f1dbe5-e55c-422b-7220-08db9cb5f82c
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /NG65PIzfr1F+iTEFp5+NIIVPCp5P6TmJMn2VhcJjk0ajecGaJWZGw5rLOx9yi2GF3V4BQhFC640qoWF4odkpGbmTIE0sG/+NOPJl3p4pW4IYsdg4rQqnJ7HywjK0GKtibPzAOH4gHfw6Exs23H1yM1vxqtDDszvnnRWUojDm3wJI6CaBfP82NW/ZDTkKrTe/T4slSDGuRTA00FZ/LUzT4PbC4yDRWcfTF72L0RLe99++WOeyrQbHRrxVR1SceRzNE3IYb8F704n+avI04CQ2K8qwG2zGxzXA1pWP5tOoHDWSfxczHOO0k1k81uxtH7osO7uhp9rg6VNn2/xHwWqqgquxGy3TKvgfF/rNYaLiBKZydQKwRh59aKSKG+cFWDRAu9EmF/scWwd49zZRi1sK1tfiub8C27CZMpep6kl1HAnwQXApljkKfkB9JPkTX/3+PbSAW86qz9QeKMKC8hGPiUNrLZrgwfLf7D2vm8aSJ/XfmZro4DtpkfMTPIxc7Px3Yv6PrdYmmLL7BrmC2QNoTDIbB//YKlSXITl5mYe+jF6k9LJMmV/biW8XJcujU9i
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(346002)(39860400002)(376002)(396003)(366004)(136003)(1800799006)(186006)(451199021)(26005)(6506007)(41300700001)(8936002)(66476007)(66556008)(66946007)(316002)(8676002)(9686003)(6512007)(83380400001)(6666004)(6486002)(478600001)(38100700002)(44832011)(33716001)(86362001)(6916009)(4326008)(82960400001)(5660300002)(2906002)(7416002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: NySW7dmIRIzRErTtmuIGFA1qhs/mGQfHDFBAdfltabN8MV6S9tKxIxnrYYxucgzuGQBKfTdukfnpKKYeAcQZV2XOStOSn87MeNcMWK8bHE3H1fLHbRuIm0TWiBJoq4v6scI7vRrp0XgJzbf2TE7E4Dl2vDmELZSOd5CvKE3wplWaXtvIWtr0O8TeCsecfw61SOgvTC6ZKat8oUmDsvUX3C+3zej/6IHKAQiFtS5gK69BMalwr8q+ARGNuyIEFGn2Xy2Qt5SeFgYXolFEyJWsw8FbX1AKtcEsQocd0/28SoLl8LEMEgLuruvV11qM2HqK5Y68bk+Cwu5fjHQY7qKbYHNiB65Fr2WwZ4kS33w4bSvD5ixnUyBER/GfN8EVoUbZR215N7QHuNzXhPxNkpq11Pxq/nWAexV2mzJ1DTNvlKfy1xzOevbfLtgGzhJAYKURRtG1/ebDxTXZ87Cmk2wfIhm7+MDVwQyp9O0dYr+tn5ThpkAblMC/3s9+GC4STRtiQ/Cr5WxPl6JatLfwB3/cWGaxh/50ueIqjR4BTa7yg/PfIm7D6mXQNHKsvOmD56Y7D7wZd1bLeSTMok/V4voz0iimWFl4Gy/7Jz79U05+YMc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(346002)(39860400002)(376002)(396003)(366004)(136003)(1800799006)(186006)(451199021)(26005)(6506007)(41300700001)(8936002)(66476007)(66556008)(66946007)(316002)(8676002)(9686003)(6512007)(83380400001)(6666004)(6486002)(478600001)(38100700002)(44832011)(33716001)(30864003)(86362001)(6916009)(4326008)(82960400001)(5660300002)(2906002)(7416002)(67856001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cijIZ5OPdyuTcjgu9KLs/4TODovpujkPEoZ9bCK5I+/kZqtAC7WdqYrSitAj?=
- =?us-ascii?Q?FNUYqVTntfQ0x2iR3MTiboi3p+gmvcYSd+794gMdqTA4fAYIz3Gp/BcKYGuH?=
- =?us-ascii?Q?/sI2KmaEg01H2GJUN3l4GypTzO4rrrxq2/hTTjn/xu1vw3rMhghnCKEOexpF?=
- =?us-ascii?Q?gOSYmngRaYMR0eEd9e3GE0cddJpxVnzUF1IZA8N4lrG7D8FpgT9WdbTDq4np?=
- =?us-ascii?Q?2Ec+BnH8ra09o1+oNxMscHd6DJ+dzNspMxPnX2porp9knTI+RJT7hX7JRY6p?=
- =?us-ascii?Q?lQFDXcKDQgNni0FXpBeTVgds9QQmkhOLPKG7s4nwx6q3SglkHRtiw6YKvvv9?=
- =?us-ascii?Q?ijN0fvfrpIs76FBWZGQsXFK4eyaJAPH0oXK6rWZhAePHn9Beio/79/xXDyB8?=
- =?us-ascii?Q?yxjOyaDo6SprRWb58vvGa4Ny4wQsxch/BioEzuB8fZaOUhFb3/ExjdsDaQ70?=
- =?us-ascii?Q?OESUrRDQJQ5jyJ/JHueBsxWB6Yyj8NG6LLsBRIJ7D3/1MPcanNNWX0BZxJGZ?=
- =?us-ascii?Q?9q0nmR0CdP8UopZmDkZlvxLLaWHDlE3YA7rwGWyEPnr+EPr3EgKoDTONXhlq?=
- =?us-ascii?Q?kN7lXQaqdRJfPOfkY1VOgG4vLRA37KycMEY3PtICn2Pufm7PBSMGJ9F2qGbS?=
- =?us-ascii?Q?gx0Ei/Lku3vwzImYjUJXMerhsBH2YOqudokat82hoBVIBX9QPJbGLPqec0RI?=
- =?us-ascii?Q?TrAiTTW7B5eXMGiIHA8Fg/0WqMPXyGtYamP4CQHE006zeM14L/RyYddEN+RG?=
- =?us-ascii?Q?UCs/j2jb64Rfoup483FJ/eDVHYsbOlHB1oCHjVNh+BLpdpC6tNR6BiSVrUI2?=
- =?us-ascii?Q?CQyvl5M3BI2ULUDcNXpaYyVFzV+fOI/iJbvG72Em6HTfhdUWnegTG8Vf3VpM?=
- =?us-ascii?Q?cXAeu5ouEhqKnD6HNWekMM1jWhNpEaQP9O0OgGCEWXo7eTU0Pkhk8Hd0vlIC?=
- =?us-ascii?Q?3zxKt3iV4fRZW2S2t/cKBD8V6J+7jgZ8CyLDcGWkupkOrjxNHYOkHFEvarIQ?=
- =?us-ascii?Q?NfEPM1aMO8akESREyCj8oB7pzG0Aa75SSzWlNZnXaVF0bMIcl9s6JSndVMf0?=
- =?us-ascii?Q?T9PYdYuPHZVRcT9GSJ93buJtm41n08V2JGIEMBeeb5vrJSEx9DclK/tyJUUi?=
- =?us-ascii?Q?qynpr/Y9c3nnyARTab9joiE+eF67Pp/AMMgKDjjCgV5Z/4gYGELPHXWzZM0k?=
- =?us-ascii?Q?6zUXjfGdjh3OYq1SKbQ0J9kjTeZ8Ftw25MdBLsEpGsk7qzkd8IpJxKek+FWx?=
- =?us-ascii?Q?2PX9bHd269DGPNk9Y2CxiVFVJUj2e7F9fEUm6/g7WdGehSDiEvrLxOdmpIkv?=
- =?us-ascii?Q?Jch+NZy90NGdZ3Lh1GIKUK3GKoMr6KpaOEET/GpIXWmw886fS/gtFoMTv7i6?=
- =?us-ascii?Q?5RXC1evZHG4kE1qIjVhZoH4Ks/Xk42Mf5Q8QkGhT76DjEUachRWOenFnpZjx?=
- =?us-ascii?Q?qbcmg2k6/ibLQtW+BMMF6woP6E/BHXb9V81C350ZM5BZTywZRNzoEF4zM5fY?=
- =?us-ascii?Q?kKl9hISagitLEbrLJpYhJ7AbK4vBdpa3kH8JipE8BScpICFM8rZe6cwSfYfn?=
- =?us-ascii?Q?6WKTx0sfGquCj/+a3rxgp1QcO4gDmf95hfgdwM2+cagS9JHT6xfmswko4Qau?=
- =?us-ascii?Q?ww=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b38f61b-8da6-46d3-b7a5-08db9cb5ccd1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bWIsdG12fNQJHnAGYfU7KdQtYKOKopKtGQchdZNu+1tgk397jBuTiIjf4z81?=
+ =?us-ascii?Q?RP1ebknUvbpER4qTONUyHOCHgHytu5cwvIaztznUH8T5Gc2NytjZRPxc9vB/?=
+ =?us-ascii?Q?Xmg7syV/F5a7RaDUNxTaUnpyICa8yNo0cpygTxSzZaGqtBKtPiPzYSVsH4O+?=
+ =?us-ascii?Q?+oqUlUihZtTMT9kf1XmCCGd79dwqx8TmhBsnVwGx7nyXs/FwTciBhNW4LHWa?=
+ =?us-ascii?Q?Q+8i+YdZaVf4Vyqp4R67UB6BeEHwIQhlEp/OchLxmqhPpDGXZu1vjgYwczlO?=
+ =?us-ascii?Q?ykoJRSP6y5OaKdxJ4jOcQ1f2oxnZ9/G7eto2zHDMf9t0Q3KHzfHiodLJdsUT?=
+ =?us-ascii?Q?S36/MQZIHF1yAFcRKgkeUMpdCpJOlMGMWx2LvE4hkh34V/59vjyDftDjdyw3?=
+ =?us-ascii?Q?63wFa6lK3meowdZ6AZ5FskFALF0MPU65IRHXlw/XsXYLNhvgG5a6gu7CFaTD?=
+ =?us-ascii?Q?+ovgq2hiB3sUyGzu70Zw5lIT/1vu0AAXELbfV8Ttret2/nS478dtKoqpx1dS?=
+ =?us-ascii?Q?sWcr0mCxWVaLbAldDyQFIqZeaNsPcEJLIGJny4wXgJ9+D7If9QHHxs1Lzr0m?=
+ =?us-ascii?Q?Mj5Gp2Sjo19wSEUOoHiIpknjKEF77BL7oMEMnH4DA2Gj9YGX5ZZXUV89329w?=
+ =?us-ascii?Q?rmxhRySu/8/RfraVqwO88PmfBAeaaMtrDd9cxX63wAhjAm/B2LDG/kIbaJ0f?=
+ =?us-ascii?Q?4uNKRZ3bOkCJYWbiadJBZ8Uilg6NiqVfFsm8BHzcO6e+PtXKo94m8UL+2v+W?=
+ =?us-ascii?Q?nLk6/7oxWG6mObzPlODJUPSKqQRt57EYPvln7yQo+RFvrXsmggXFTXns4WlW?=
+ =?us-ascii?Q?0ZUTzYb7TvGkm+OcpR5HseSoJ9kAi8oHheeTdbok5mNNdMZOydUQI5mqVyMZ?=
+ =?us-ascii?Q?FmzRWZ8uYYRPV1PN/0MsOBK3FfWX2Nqx/VKAkjvNgsYEBBwj8+tou24NZMAe?=
+ =?us-ascii?Q?n6OECMOxd7zRBRL0SbZgYv5Fs+Vu9M/JUFySFmO20XT9h+W/4FHGRGKiu34m?=
+ =?us-ascii?Q?fUlpdMZ5+BT0w8LHH/ccd3WXiaLxoBQVkdBOj0VkzRY33vOqkz2N4EvAcpGB?=
+ =?us-ascii?Q?7hqFaCbfrlV1hciIP1PGr09ZT1Sf6rwsHT+UQ1WJ8pDTf8S1jflzYOdh8tuv?=
+ =?us-ascii?Q?vYv2KYWRuVGvb2jZ8c1Sxq88+qzNlrXEUqIIm6OaSWdLZnLQpTa8zUW/qMos?=
+ =?us-ascii?Q?nW0wQBVuPVkNZOsHC0vfDZTN7MCGox9Do7RJnf3Kwq6JaXm6EU8csVEXP3x/?=
+ =?us-ascii?Q?HLKN97Ia6trdcFJbS9764lrVjAPA3YVH4nPeKXB4FuKicCgNdAvACTMFVu9i?=
+ =?us-ascii?Q?I8PmDjHiX7yjBm/sj+dHFtSvw+X2JSB2bNY5UDbJhwc4r9GfviTPBBvkKLKS?=
+ =?us-ascii?Q?E/zp9J0uxfjSlylLxCYYL8bRt/onuWnwOXMtrndph19gLVyem3F6cHgGOMYa?=
+ =?us-ascii?Q?TiMOlZOc8QlBE02COf62RNWzh0wSgwT0ReXRbKwe7u8LKx/17o1HAraFggQg?=
+ =?us-ascii?Q?K+dM0ybEulxU8bGl2E2BGabOEwJLS/jJ17i9iOu/2fTrUR7rrPumPfuVjBqu?=
+ =?us-ascii?Q?ZsC7kvIMnp78YIXLE0Xtzz99QpIwhLVE2bb75UcLk/OsECmEPdc8y85EfSlq?=
+ =?us-ascii?Q?sA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6f1dbe5-e55c-422b-7220-08db9cb5f82c
 X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 11:01:24.4259
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 11:02:37.2570
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i7dkJ697sLDXn26MM4ngszRsr0kAHic7vhMI0zSeYO1kdRk0ecd9Y1rIrnTUm64XaXaHK0PkF/UoDi13ci2G+pHLbrZ+85TuRM77neGVMmo=
+X-MS-Exchange-CrossTenant-UserPrincipalName: t1mppYQbgifLuk6GghQSHdAksHshPqfx72Lqtu+cG85M8Zv5NOOYU7bFWFYrtek+Qe5qNqgarZd+o9VKLK4NMbnEDhCE0hKMFzsqQyiyk5c=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6319
 X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -163,222 +160,319 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Aug 09, 2023 at 09:54:11AM -0700, Stanislav Fomichev wrote:
-> This change actually defines the (initial) metadata layout
-> that should be used by AF_XDP userspace (xsk_tx_metadata).
-> The first field is flags which requests appropriate offloads,
-> followed by the offload-specific fields. The supported per-device
-> offloads are exported via netlink (new xsk-flags).
+On Wed, Aug 09, 2023 at 09:54:13AM -0700, Stanislav Fomichev wrote:
+> TX timestamp:
+> - requires passing clock, not sure I'm passing the correct one (from
+>   cq->mdev), but the timestamp value looks convincing
 > 
-> The offloads themselves are still implemented in a bit of a
-> framework-y fashion that's left from my initial kfunc attempt.
-> I'm introducing new xsk_tx_metadata_ops which drivers are
-> supposed to implement. The drivers are also supposed
-> to call xsk_tx_metadata_request/xsk_tx_metadata_complete in
-> the right places. Since xsk_tx_metadata_{request,_complete}
-> are static inline, we don't incur any extra overhead doing
-> indirect calls.
+> TX checksum:
+> - looks like device does packet parsing (and doesn't accept custom
+>   start/offset), so I'm ignoring user offsets
 > 
-> The benefit of this scheme is as follows:
-> - keeps all metadata layout parsing away from driver code
-> - makes it easy to grep and see which drivers implement what
-> - don't need any extra flags to maintain to keep track of what
->   offloads are implemented; if the callback is implemented - the offload
->   is supported (used by netlink reporting code)
-> 
-> Two offloads are defined right now:
-> 1. XDP_TX_METADATA_CHECKSUM: skb-style csum_start+csum_offset
-> 2. XDP_TX_METADATA_TIMESTAMP: writes TX timestamp back into metadata
->    area upon completion (tx_timestamp field)
-> 
-> The offloads are also implemented for copy mode:
-> 1. Extra XDP_TX_METADATA_CHECKSUM_SW to trigger skb_checksum_help; this
->    might be useful as a reference implementation and for testing
-> 2. XDP_TX_METADATA_TIMESTAMP writes SW timestamp from the skb
->    destructor (note I'm reusing hwtstamps to pass metadata pointer)
-> 
-> The struct is forward-compatible and can be extended in the future
-> by appending more fields.
-> 
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
 > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > ---
->  Documentation/netlink/specs/netdev.yaml | 20 +++++++++
->  include/linux/netdevice.h               | 27 +++++++++++
->  include/linux/skbuff.h                  |  5 ++-
->  include/net/xdp_sock.h                  | 60 +++++++++++++++++++++++++
->  include/net/xdp_sock_drv.h              | 13 ++++++
->  include/net/xsk_buff_pool.h             |  5 +++
->  include/uapi/linux/if_xdp.h             | 35 +++++++++++++++
->  include/uapi/linux/netdev.h             | 16 +++++++
->  net/core/netdev-genl.c                  | 12 ++++-
->  net/xdp/xsk.c                           | 41 +++++++++++++++++
->  net/xdp/xsk_queue.h                     |  2 +-
->  tools/include/uapi/linux/if_xdp.h       | 50 ++++++++++++++++++---
->  tools/include/uapi/linux/netdev.h       | 15 +++++++
->  13 files changed, 293 insertions(+), 8 deletions(-)
+>  drivers/net/ethernet/mellanox/mlx5/core/en.h  |  4 +-
+>  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 72 ++++++++++++++++---
+>  .../net/ethernet/mellanox/mlx5/core/en/xdp.h  | 10 ++-
+>  .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   | 11 ++-
+>  .../net/ethernet/mellanox/mlx5/core/en_main.c |  1 +
+>  5 files changed, 82 insertions(+), 16 deletions(-)
 > 
-
-[...]
-
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 0896aaa91dd7..3f02aaa30590 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -1647,6 +1647,31 @@ struct net_device_ops {
->  						    struct netlink_ext_ack *extack);
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> index 0f8f70b91485..6f38627ae7f8 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> @@ -476,10 +476,12 @@ struct mlx5e_xdp_info_fifo {
+>  
+>  struct mlx5e_xdpsq;
+>  struct mlx5e_xmit_data;
+> +struct xsk_tx_metadata;
+>  typedef int (*mlx5e_fp_xmit_xdp_frame_check)(struct mlx5e_xdpsq *);
+>  typedef bool (*mlx5e_fp_xmit_xdp_frame)(struct mlx5e_xdpsq *,
+>  					struct mlx5e_xmit_data *,
+> -					int);
+> +					int,
+> +					struct xsk_tx_metadata *);
+>  
+>  struct mlx5e_xdpsq {
+>  	/* data path */
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> index 40589cebb773..197d372048ec 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> @@ -102,7 +102,7 @@ mlx5e_xmit_xdp_buff(struct mlx5e_xdpsq *sq, struct mlx5e_rq *rq,
+>  		xdptxd->dma_addr = dma_addr;
+>  
+>  		if (unlikely(!INDIRECT_CALL_2(sq->xmit_xdp_frame, mlx5e_xmit_xdp_frame_mpwqe,
+> -					      mlx5e_xmit_xdp_frame, sq, xdptxd, 0)))
+> +					      mlx5e_xmit_xdp_frame, sq, xdptxd, 0, NULL)))
+>  			return false;
+>  
+>  		/* xmit_mode == MLX5E_XDP_XMIT_MODE_FRAME */
+> @@ -144,7 +144,7 @@ mlx5e_xmit_xdp_buff(struct mlx5e_xdpsq *sq, struct mlx5e_rq *rq,
+>  	xdptxd->dma_addr = dma_addr;
+>  
+>  	if (unlikely(!INDIRECT_CALL_2(sq->xmit_xdp_frame, mlx5e_xmit_xdp_frame_mpwqe,
+> -				      mlx5e_xmit_xdp_frame, sq, xdptxd, 0)))
+> +				      mlx5e_xmit_xdp_frame, sq, xdptxd, 0, NULL)))
+>  		return false;
+>  
+>  	/* xmit_mode == MLX5E_XDP_XMIT_MODE_PAGE */
+> @@ -260,6 +260,37 @@ const struct xdp_metadata_ops mlx5e_xdp_metadata_ops = {
+>  	.xmo_rx_hash			= mlx5e_xdp_rx_hash,
 >  };
 >  
-> +/*
-> + * This structure defines the AF_XDP TX metadata hooks for network devices.
-> + * The following hooks can be defined; unless noted otherwise, they are
-> + * optional and can be filled with a null pointer.
-> + *
-> + * int (*tmo_request_timestamp)(void *priv)
-> + *     This function is called when AF_XDP frame requested egress timestamp.
-> + *
-> + * int (*tmo_fill_timestamp)(void *priv)
-> + *     This function is called when AF_XDP frame, that had requested
-> + *     egress timestamp, received a completion. The hook needs to return
-> + *     the actual HW timestamp.
-> + *
-> + * int (*tmo_request_checksum)(u16 csum_start, u16 csum_offset, void *priv)
-> + *     This function is called when AF_XDP frame requested HW checksum
-> + *     offload. csum_start indicates position where checksumming should start.
-> + *     csum_offset indicates position where checksum should be stored.
-> + *
-> + */
-> +struct xsk_tx_metadata_ops {
-> +	void	(*tmo_request_timestamp)(void *priv);
-> +	u64	(*tmo_fill_timestamp)(void *priv);
-> +	void	(*tmo_request_checksum)(u16 csum_start, u16 csum_offset, void *priv);
+> +struct mlx5e_xsk_tx_complete {
+> +	struct mlx5_cqe64 *cqe;
+> +	struct mlx5e_cq *cq;
 > +};
 > +
->  /**
->   * enum netdev_priv_flags - &struct net_device priv_flags
->   *
-> @@ -1835,6 +1860,7 @@ enum netdev_ml_priv_type {
->   *	@netdev_ops:	Includes several pointers to callbacks,
->   *			if one wants to override the ndo_*() functions
->   *	@xdp_metadata_ops:	Includes pointers to XDP metadata callbacks.
-> + *	@xsk_tx_metadata_ops:	Includes pointers to AF_XDP TX metadata callbacks.
->   *	@ethtool_ops:	Management operations
->   *	@l3mdev_ops:	Layer 3 master device operations
->   *	@ndisc_ops:	Includes callbacks for different IPv6 neighbour
-> @@ -2091,6 +2117,7 @@ struct net_device {
->  	unsigned long long	priv_flags;
->  	const struct net_device_ops *netdev_ops;
->  	const struct xdp_metadata_ops *xdp_metadata_ops;
-> +	const struct xsk_tx_metadata_ops *xsk_tx_metadata_ops;
->  	int			ifindex;
->  	unsigned short		gflags;
->  	unsigned short		hard_header_len;
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index 16a49ba534e4..5d73d5df67fb 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -579,7 +579,10 @@ struct skb_shared_info {
->  	/* Warning: this field is not always filled in (UFO)! */
->  	unsigned short	gso_segs;
->  	struct sk_buff	*frag_list;
-> -	struct skb_shared_hwtstamps hwtstamps;
-> +	union {
-> +		struct skb_shared_hwtstamps hwtstamps;
-> +		struct xsk_tx_metadata *xsk_meta;
-> +	};
->  	unsigned int	gso_type;
->  	u32		tskey;
->  
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index 467b9fb56827..288fa58c4665 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -90,6 +90,54 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp);
->  int __xsk_map_redirect(struct xdp_sock *xs, struct xdp_buff *xdp);
->  void __xsk_map_flush(void);
->  
-> +/**
-> + *  xsk_tx_metadata_request - Evaluate AF_XDP TX metadata at submission
-> + *  and call appropriate xsk_tx_metadata_ops operation.
-> + *  @meta: pointer to AF_XDP metadata area
-> + *  @ops: pointer to struct xsk_tx_metadata_ops
-> + *  @priv: pointer to driver-private aread
-> + *
-> + *  This function should be called by the networking device when
-> + *  it prepares AF_XDP egress packet.
-> + */
-> +static inline void xsk_tx_metadata_request(const struct xsk_tx_metadata *meta,
-> +					   const struct xsk_tx_metadata_ops *ops,
-> +					   void *priv)
+> +static u64 mlx5e_xsk_fill_timestamp(void *_priv)
 > +{
-> +	if (!meta)
-> +		return;
+> +	struct mlx5e_xsk_tx_complete *priv = _priv;
+> +	u64 ts;
 > +
-> +	if (ops->tmo_request_timestamp)
-> +		if (meta->flags & XDP_TX_METADATA_TIMESTAMP)
-
-We should have a copy of flags or any other things that we read multiple
-times from metadata in order to avoid potential attacks from user space.
-An example of that is the fact that timestamp metadata handling is two
-step process, meaning to fill the timestamp you have to request it in the
-first place. If user space would set XDP_TX_METADATA_TIMESTAMP after
-sending but before completing we would crash the kernel potentially.
-
-We could also move the responsibility of handling that issue to driver
-programmers but IMHO that would be harder to implement, hence we think
-handling it in core would be better.
-
-
-> +			ops->tmo_request_timestamp(priv);
+> +	ts = get_cqe_ts(priv->cqe);
 > +
-> +	if (ops->tmo_request_checksum)
-> +		if (meta->flags & XDP_TX_METADATA_CHECKSUM)
-> +			ops->tmo_request_checksum(meta->csum_start, meta->csum_offset, priv);
+> +	if (mlx5_is_real_time_rq(priv->cq->mdev) || mlx5_is_real_time_sq(priv->cq->mdev))
+> +		return mlx5_real_time_cyc2time(&priv->cq->mdev->clock, ts);
+> +
+> +	return  mlx5_timecounter_cyc2time(&priv->cq->mdev->clock, ts);
 > +}
 > +
-> +/**
-> + *  xsk_tx_metadata_complete - Evaluate AF_XDP TX metadata at completion
-> + *  and call appropriate xsk_tx_metadata_ops operation.
-> + *  @meta: pointer to AF_XDP metadata area
-> + *  @ops: pointer to struct xsk_tx_metadata_ops
-> + *  @priv: pointer to driver-private aread
-> + *
-> + *  This function should be called by the networking device upon
-> + *  AF_XDP egress completion.
-> + */
-> +static inline void xsk_tx_metadata_complete(struct xsk_tx_metadata *meta,
-> +					    const struct xsk_tx_metadata_ops *ops,
-> +					    void *priv)
+> +static void mlx5e_xsk_request_checksum(u16 csum_start, u16 csum_offset, void *priv)
 > +{
-> +	if (!meta)
-> +		return;
+> +	struct mlx5_wqe_eth_seg *eseg = priv;
 > +
-> +	if (ops->tmo_fill_timestamp)
-> +		if (meta->flags & XDP_TX_METADATA_TIMESTAMP)
-> +			meta->tx_timestamp = ops->tmo_fill_timestamp(priv);
+> +	/* HW/FW is doing parsing, so offsets are largely ignored. */
+> +	eseg->cs_flags |= MLX5_ETH_WQE_L3_CSUM | MLX5_ETH_WQE_L4_CSUM;
 > +}
 > +
->  #else
+> +const struct xsk_tx_metadata_ops mlx5e_xsk_tx_metadata_ops = {
+> +	.tmo_fill_timestamp		= mlx5e_xsk_fill_timestamp,
+> +	.tmo_request_checksum		= mlx5e_xsk_request_checksum,
+
+Can you explain to us why mlx5 doesn't need to implement the request
+timestamp op?
+
+> +};
+> +
+>  /* returns true if packet was consumed by xdp */
+>  bool mlx5e_xdp_handle(struct mlx5e_rq *rq,
+>  		      struct bpf_prog *prog, struct mlx5e_xdp_buff *mxbuf)
+> @@ -397,11 +428,11 @@ INDIRECT_CALLABLE_SCOPE int mlx5e_xmit_xdp_frame_check_mpwqe(struct mlx5e_xdpsq
 >  
->  static inline int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
-> @@ -106,6 +154,18 @@ static inline void __xsk_map_flush(void)
+>  INDIRECT_CALLABLE_SCOPE bool
+>  mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
+> -		     int check_result);
+> +		     int check_result, struct xsk_tx_metadata *meta);
+>  
+>  INDIRECT_CALLABLE_SCOPE bool
+>  mlx5e_xmit_xdp_frame_mpwqe(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
+> -			   int check_result)
+> +			   int check_result, struct xsk_tx_metadata *meta)
 >  {
+>  	struct mlx5e_tx_mpwqe *session = &sq->mpwqe;
+>  	struct mlx5e_xdpsq_stats *stats = sq->stats;
+> @@ -419,7 +450,7 @@ mlx5e_xmit_xdp_frame_mpwqe(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptx
+>  			 */
+>  			if (unlikely(sq->mpwqe.wqe))
+>  				mlx5e_xdp_mpwqe_complete(sq);
+> -			return mlx5e_xmit_xdp_frame(sq, xdptxd, 0);
+> +			return mlx5e_xmit_xdp_frame(sq, xdptxd, 0, meta);
+>  		}
+>  		if (!xdptxd->len) {
+>  			skb_frag_t *frag = &xdptxdf->sinfo->frags[0];
+> @@ -449,6 +480,7 @@ mlx5e_xmit_xdp_frame_mpwqe(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptx
+>  		 * and it's safe to complete it at any time.
+>  		 */
+>  		mlx5e_xdp_mpwqe_session_start(sq);
+> +		xsk_tx_metadata_request(meta, &mlx5e_xsk_tx_metadata_ops, &session->wqe->eth);
+>  	}
+>  
+>  	mlx5e_xdp_mpwqe_add_dseg(sq, p, stats);
+> @@ -479,7 +511,7 @@ INDIRECT_CALLABLE_SCOPE int mlx5e_xmit_xdp_frame_check(struct mlx5e_xdpsq *sq)
+>  
+>  INDIRECT_CALLABLE_SCOPE bool
+>  mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
+> -		     int check_result)
+> +		     int check_result, struct xsk_tx_metadata *meta)
+>  {
+>  	struct mlx5e_xmit_data_frags *xdptxdf =
+>  		container_of(xdptxd, struct mlx5e_xmit_data_frags, xd);
+> @@ -598,6 +630,8 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
+>  		sq->pc++;
+>  	}
+>  
+> +	xsk_tx_metadata_request(meta, &mlx5e_xsk_tx_metadata_ops, eseg);
+> +
+>  	sq->doorbell_cseg = cseg;
+>  
+>  	stats->xmit++;
+> @@ -607,7 +641,9 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
+>  static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
+>  				  struct mlx5e_xdp_wqe_info *wi,
+>  				  u32 *xsk_frames,
+> -				  struct xdp_frame_bulk *bq)
+> +				  struct xdp_frame_bulk *bq,
+> +				  struct mlx5e_cq *cq,
+> +				  struct mlx5_cqe64 *cqe)
+>  {
+>  	struct mlx5e_xdp_info_fifo *xdpi_fifo = &sq->db.xdpi_fifo;
+>  	u16 i;
+> @@ -667,10 +703,24 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
+>  
+>  			break;
+>  		}
+> -		case MLX5E_XDP_XMIT_MODE_XSK:
+> +		case MLX5E_XDP_XMIT_MODE_XSK: {
+>  			/* AF_XDP send */
+> +			struct mlx5e_xsk_tx_complete priv = {
+> +				.cqe = cqe,
+> +				.cq = cq,
+> +			};
+> +			struct xsk_tx_metadata *meta = NULL;
+> +
+> +			if (xp_tx_metadata_enabled(sq->xsk_pool)) {
+> +				xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
+> +				meta = (void *)xdpi.frame.xsk_meta;
+> +
+> +				xsk_tx_metadata_complete(meta, &mlx5e_xsk_tx_metadata_ops, &priv);
+> +			}
+> +
+>  			(*xsk_frames)++;
+>  			break;
+> +		}
+>  		default:
+>  			WARN_ON_ONCE(true);
+>  		}
+> @@ -719,7 +769,7 @@ bool mlx5e_poll_xdpsq_cq(struct mlx5e_cq *cq)
+>  
+>  			sqcc += wi->num_wqebbs;
+>  
+> -			mlx5e_free_xdpsq_desc(sq, wi, &xsk_frames, &bq);
+> +			mlx5e_free_xdpsq_desc(sq, wi, &xsk_frames, &bq, cq, cqe);
+>  		} while (!last_wqe);
+>  
+>  		if (unlikely(get_cqe_opcode(cqe) != MLX5_CQE_REQ)) {
+> @@ -766,7 +816,7 @@ void mlx5e_free_xdpsq_descs(struct mlx5e_xdpsq *sq)
+>  
+>  		sq->cc += wi->num_wqebbs;
+>  
+> -		mlx5e_free_xdpsq_desc(sq, wi, &xsk_frames, &bq);
+> +		mlx5e_free_xdpsq_desc(sq, wi, &xsk_frames, &bq, NULL, NULL);
+>  	}
+>  
+>  	xdp_flush_frame_bulk(&bq);
+> @@ -839,7 +889,7 @@ int mlx5e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+>  		}
+>  
+>  		ret = INDIRECT_CALL_2(sq->xmit_xdp_frame, mlx5e_xmit_xdp_frame_mpwqe,
+> -				      mlx5e_xmit_xdp_frame, sq, xdptxd, 0);
+> +				      mlx5e_xmit_xdp_frame, sq, xdptxd, 0, NULL);
+>  		if (unlikely(!ret)) {
+>  			int j;
+>  
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
+> index 9e8e6184f9e4..2fcd19c16103 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h
+> @@ -82,13 +82,14 @@ enum mlx5e_xdp_xmit_mode {
+>   *    num, page_1, page_2, ... , page_num.
+>   *
+>   * MLX5E_XDP_XMIT_MODE_XSK:
+> - *    none.
+> + *    frame.xsk_meta.
+>   */
+>  union mlx5e_xdp_info {
+>  	enum mlx5e_xdp_xmit_mode mode;
+>  	union {
+>  		struct xdp_frame *xdpf;
+>  		dma_addr_t dma_addr;
+> +		void *xsk_meta;
+>  	} frame;
+>  	union {
+>  		struct mlx5e_rq *rq;
+> @@ -110,13 +111,16 @@ int mlx5e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+>  		   u32 flags);
+>  
+>  extern const struct xdp_metadata_ops mlx5e_xdp_metadata_ops;
+> +extern const struct xsk_tx_metadata_ops mlx5e_xsk_tx_metadata_ops;
+>  
+>  INDIRECT_CALLABLE_DECLARE(bool mlx5e_xmit_xdp_frame_mpwqe(struct mlx5e_xdpsq *sq,
+>  							  struct mlx5e_xmit_data *xdptxd,
+> -							  int check_result));
+> +							  int check_result,
+> +							  struct xsk_tx_metadata *meta));
+>  INDIRECT_CALLABLE_DECLARE(bool mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq,
+>  						    struct mlx5e_xmit_data *xdptxd,
+> -						    int check_result));
+> +						    int check_result,
+> +						    struct xsk_tx_metadata *meta));
+>  INDIRECT_CALLABLE_DECLARE(int mlx5e_xmit_xdp_frame_check_mpwqe(struct mlx5e_xdpsq *sq));
+>  INDIRECT_CALLABLE_DECLARE(int mlx5e_xmit_xdp_frame_check(struct mlx5e_xdpsq *sq));
+>  
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c
+> index 597f319d4770..2f69c7912490 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c
+> @@ -55,12 +55,16 @@ static void mlx5e_xsk_tx_post_err(struct mlx5e_xdpsq *sq,
+>  
+>  	nopwqe = mlx5e_post_nop(&sq->wq, sq->sqn, &sq->pc);
+>  	mlx5e_xdpi_fifo_push(&sq->db.xdpi_fifo, *xdpi);
+> +	if (xp_tx_metadata_enabled(sq->xsk_pool))
+> +		mlx5e_xdpi_fifo_push(&sq->db.xdpi_fifo,
+> +				     (union mlx5e_xdp_info) { .frame.xsk_meta = NULL });
+>  	sq->doorbell_cseg = &nopwqe->ctrl;
 >  }
 >  
-> +static inline void xsk_tx_metadata_request(struct xsk_tx_metadata *meta,
-> +					   const struct xsk_tx_metadata_ops *ops,
-> +					   void *priv)
-> +{
-> +}
-> +
-> +static inline void xsk_tx_metadata_complete(struct xsk_tx_metadata *meta,
-> +					    const struct xsk_tx_metadata_ops *ops,
-> +					    void *priv)
-> +{
-> +}
-> +
->  #endif /* CONFIG_XDP_SOCKETS */
+>  bool mlx5e_xsk_tx(struct mlx5e_xdpsq *sq, unsigned int budget)
+>  {
+>  	struct xsk_buff_pool *pool = sq->xsk_pool;
+> +	struct xsk_tx_metadata *meta = NULL;
+>  	union mlx5e_xdp_info xdpi;
+>  	bool work_done = true;
+>  	bool flush = false;
+> @@ -93,12 +97,13 @@ bool mlx5e_xsk_tx(struct mlx5e_xdpsq *sq, unsigned int budget)
+>  		xdptxd.dma_addr = xsk_buff_raw_get_dma(pool, desc.addr);
+>  		xdptxd.data = xsk_buff_raw_get_data(pool, desc.addr);
+>  		xdptxd.len = desc.len;
+> +		meta = xsk_buff_get_metadata(pool, desc.addr);
 >  
->  #endif /* _LINUX_XDP_SOCK_H */
-
-[...]
+>  		xsk_buff_raw_dma_sync_for_device(pool, xdptxd.dma_addr, xdptxd.len);
+>  
+>  		ret = INDIRECT_CALL_2(sq->xmit_xdp_frame, mlx5e_xmit_xdp_frame_mpwqe,
+>  				      mlx5e_xmit_xdp_frame, sq, &xdptxd,
+> -				      check_result);
+> +				      check_result, meta);
+>  		if (unlikely(!ret)) {
+>  			if (sq->mpwqe.wqe)
+>  				mlx5e_xdp_mpwqe_complete(sq);
+> @@ -106,6 +111,10 @@ bool mlx5e_xsk_tx(struct mlx5e_xdpsq *sq, unsigned int budget)
+>  			mlx5e_xsk_tx_post_err(sq, &xdpi);
+>  		} else {
+>  			mlx5e_xdpi_fifo_push(&sq->db.xdpi_fifo, xdpi);
+> +			if (xp_tx_metadata_enabled(sq->xsk_pool))
+> +				mlx5e_xdpi_fifo_push(&sq->db.xdpi_fifo,
+> +						     (union mlx5e_xdp_info)
+> +						     { .frame.xsk_meta = (void *)meta });
+>  		}
+>  
+>  		flush = true;
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index 1c820119e438..99c2a6babaea 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -5097,6 +5097,7 @@ static void mlx5e_build_nic_netdev(struct net_device *netdev)
+>  
+>  	netdev->netdev_ops = &mlx5e_netdev_ops;
+>  	netdev->xdp_metadata_ops = &mlx5e_xdp_metadata_ops;
+> +	netdev->xsk_tx_metadata_ops = &mlx5e_xsk_tx_metadata_ops;
+>  
+>  	mlx5e_dcbnl_build_netdev(netdev);
+>  
+> -- 
+> 2.41.0.640.ga95def55d0-goog
+> 
 
