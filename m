@@ -1,211 +1,205 @@
-Return-Path: <bpf+bounces-7775-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7776-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96D177C39B
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 00:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8DA77C3C0
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 01:03:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F7891C20BE8
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 22:43:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6C241C20BCD
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 23:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C6B3A928;
-	Mon, 14 Aug 2023 22:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA8BA93A;
+	Mon, 14 Aug 2023 23:03:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568787E;
-	Mon, 14 Aug 2023 22:43:03 +0000 (UTC)
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E41198;
-	Mon, 14 Aug 2023 15:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=so+nIMogsDEjvaVSmTA1TkKUt0VqeGL8iPbeGxQGV44=; b=V9laNy1dvw7FVJMjSINjPje0wq
-	jiL3SO5WjjPgzr9qyzrbQd/GFauY5VmOSLeBaOBfqnEYlPNJMkpiXDSJpgdMOEhGYMXMZRI1me5K3
-	atQIr0hEulDUXTNEEVncS57V2Yry8hA4lwBuqO3QsCLe0wLhP2LASSdDSC/IaESiPWpe1D8qJoMha
-	v72RmhMzR1CVrzs4OjyO9i9qv2nKxYvdgcX3YvDY+lM0OWAYsvBiEc84SSFxiDAb5fMEy1YXNQ3MK
-	S/T+zdsRO5t0uX+9ZV2CVIxHULwdiQe6DnCBdQ/z7frYtQuVt0ilZn0ppAFWZXvD1w42htLE/hwca
-	c+4a+I+A==;
-Received: from [2601:1c2:980:9ec0::577]
-	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1qVgGn-004eME-OR; Mon, 14 Aug 2023 22:42:42 +0000
-Message-ID: <479a9c1f-9db7-61c8-3485-9b330f777930@infradead.org>
-Date: Mon, 14 Aug 2023 15:42:34 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB2A846D;
+	Mon, 14 Aug 2023 23:03:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA58FC433C8;
+	Mon, 14 Aug 2023 23:03:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692054185;
+	bh=gta2RtEYggf0RpNH45Xk8FTnI+6MKWM1/9f6yWhUR/o=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=TdVN+aYEY94NTcpsxsxpj03c3ThEy4uGx6nbWIXsARtkWISBPgE7A7KM0e7GxSMmH
+	 ImTOlRGqL1bkDWbOeX1uoxpuMGEMzOqUlwXAlpPE1okuniMdSJ0rt6lEyivo5Cy4ua
+	 +CrbsX7htjyrb/Qs3em85E8TgWOrDA73J8PKGjdBHYiWKKwEBqq5tsDzz1pNwZYGiA
+	 eUopaU/kdmBS1V932hZ8/WkJ9DuiP0SCqpjgEb56V3/p+LVS41qht+vQyQehrA0yQb
+	 uFaJxWxVpJhs2rR1UUwq7E1mJCatiErl5PUBNFqOj042F5iEodOYo0L8U7k5nJFlky
+	 9ck3X3V88fBoA==
+Date: Mon, 14 Aug 2023 16:03:03 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: syzbot <syzbot+a3618a167af2021433cd@syzkaller.appspotmail.com>, Vladimir
+ Oltean <vladimir.oltean@nxp.com>
+Cc: bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+ edumazet@google.com, jiri@nvidia.com, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] INFO: rcu detected stall in unix_release
+Message-ID: <20230814160303.41b383b0@kernel.org>
+In-Reply-To: <0000000000008a1fbb0602d4088a@google.com>
+References: <0000000000008a1fbb0602d4088a@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH net-next v6 5/6] page_pool: update document about frag API
-Content-Language: en-US
-To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
- kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Lorenzo Bianconi <lorenzo@kernel.org>,
- Alexander Duyck <alexander.duyck@gmail.com>,
- Liang Chen <liangchen.linux@gmail.com>,
- Alexander Lobakin <aleksander.lobakin@intel.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Eric Dumazet <edumazet@google.com>, Jonathan Corbet <corbet@lwn.net>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>, linux-doc@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20230814125643.59334-1-linyunsheng@huawei.com>
- <20230814125643.59334-6-linyunsheng@huawei.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230814125643.59334-6-linyunsheng@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
 
-Hi--
+Hi Vladimir, any ideas for this one?
+The bisection looks pooped, FWIW, looks like a taprio inf loop.
 
-On 8/14/23 05:56, Yunsheng Lin wrote:
-> As more drivers begin to use the frag API, update the
-> document about how to decide which API to use for the
-> driver author.
+On Sun, 13 Aug 2023 13:45:59 -0700 syzbot wrote:
+> Hello,
 > 
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> CC: Lorenzo Bianconi <lorenzo@kernel.org>
-> CC: Alexander Duyck <alexander.duyck@gmail.com>
-> CC: Liang Chen <liangchen.linux@gmail.com>
-> CC: Alexander Lobakin <aleksander.lobakin@intel.com>
+> syzbot found the following issue on:
+> 
+> HEAD commit:    d0378ae6d16c Merge branch 'enetc-probe-fix'
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1052ea2ba80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=fa5bd4cd5ab6259d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a3618a167af2021433cd
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1152c6eda80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b1eddda80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/c893f52cd6ab/disk-d0378ae6.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/dfb7a8b86a99/vmlinux-d0378ae6.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/cb9134e0a22c/bzImage-d0378ae6.xz
+> 
+> The issue was bisected to:
+> 
+> commit c2368b19807affd7621f7c4638cd2e17fec13021
+> Author: Jiri Pirko <jiri@nvidia.com>
+> Date:   Fri Jul 29 07:10:35 2022 +0000
+> 
+>     net: devlink: introduce "unregistering" mark and use it during devlinks iteration
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=134f1179a80000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10cf1179a80000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=174f1179a80000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+a3618a167af2021433cd@syzkaller.appspotmail.com
+> Fixes: c2368b19807a ("net: devlink: introduce "unregistering" mark and use it during devlinks iteration")
+> 
+> rcu: INFO: rcu_preempt self-detected stall on CPU
+> rcu: 	0-....: (10499 ticks this GP) idle=9774/1/0x4000000000000000 softirq=8757/8758 fqs=5219
+> rcu: 	         hardirqs   softirqs   csw/system
+> rcu: 	 number:        1          0            0
+> rcu: 	cputime:    26308      26181           17   ==> 52490(ms)
+> rcu: 	(t=10500 jiffies g=8417 q=457 ncpus=2)
+> CPU: 0 PID: 5047 Comm: syz-executor224 Not tainted 6.5.0-rc4-syzkaller-00212-gd0378ae6d16c #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+> RIP: 0010:taprio_dequeue_tc_priority+0x263/0x4b0 net/sched/sch_taprio.c:798
+> Code: 8b 74 24 10 89 ef 44 89 f6 e8 29 b8 2c f9 44 39 f5 0f 84 40 ff ff ff e8 2b bd 2c f9 49 83 ff 0f 0f 87 e1 01 00 00 48 8b 04 24 <0f> b6 00 38 44 24 36 7c 08 84 c0 0f 85 bf 01 00 00 8b 33 8b 4c 24
+> RSP: 0018:ffffc90000007d60 EFLAGS: 00000293
+> RAX: ffffed10047a4a72 RBX: ffff888023d25394 RCX: 0000000000000100
+> RDX: ffff888028efbb80 RSI: ffffffff88594af5 RDI: 0000000000000004
+> RBP: 0000000000000008 R08: 0000000000000004 R09: 0000000000000008
+> R10: 0000000000000000 R11: ffffc90000007ff8 R12: 0000000000000010
+> R13: ffff88802d19ab60 R14: 0000000000000000 R15: 0000000000000001
+> FS:  0000555555857380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020000600 CR3: 000000002cdd1000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <IRQ>
+>  taprio_dequeue+0x12e/0x5f0 net/sched/sch_taprio.c:868
+>  dequeue_skb net/sched/sch_generic.c:292 [inline]
+>  qdisc_restart net/sched/sch_generic.c:397 [inline]
+>  __qdisc_run+0x1c4/0x19d0 net/sched/sch_generic.c:415
+>  qdisc_run include/net/pkt_sched.h:125 [inline]
+>  qdisc_run include/net/pkt_sched.h:122 [inline]
+>  net_tx_action+0x71e/0xc80 net/core/dev.c:5049
+>  __do_softirq+0x218/0x965 kernel/softirq.c:553
+>  invoke_softirq kernel/softirq.c:427 [inline]
+>  __irq_exit_rcu kernel/softirq.c:632 [inline]
+>  irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
+>  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1109
+>  </IRQ>
+>  <TASK>
+>  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+> RIP: 0010:unwind_next_frame+0x5ba/0x2020 arch/x86/kernel/unwind_orc.c:517
+> Code: 31 02 00 00 41 80 fe 04 0f 84 08 0c 00 00 41 80 fe 05 0f 85 d7 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 14 24 48 c1 ea 03 <80> 3c 02 00 0f 85 42 19 00 00 48 89 c8 4d 8b 7d 38 48 ba 00 00 00
+> RSP: 0018:ffffc90003b9f748 EFLAGS: 00000a02
+> RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffffff8f3ed5c8
+> RDX: 1ffff92000773efe RSI: 0000000000000001 RDI: ffffffff8ec31910
+> RBP: ffffc90003b9f800 R08: ffffffff8f3ed646 R09: ffffffff8f3ed5cc
+> R10: ffffc90003b9f7b8 R11: 000000000000d9e9 R12: ffffc90003b9f808
+> R13: ffffc90003b9f7b8 R14: 0000000000000005 R15: 0000000000000000
+>  arch_stack_walk+0x8b/0xf0 arch/x86/kernel/stacktrace.c:25
+>  stack_trace_save+0x96/0xd0 kernel/stacktrace.c:122
+>  kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+>  kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+>  kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+>  ____kasan_slab_free mm/kasan/common.c:236 [inline]
+>  ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
+>  kasan_slab_free include/linux/kasan.h:162 [inline]
+>  slab_free_hook mm/slub.c:1792 [inline]
+>  slab_free_freelist_hook+0x10b/0x1e0 mm/slub.c:1818
+>  slab_free mm/slub.c:3801 [inline]
+>  kmem_cache_free+0xf0/0x490 mm/slub.c:3823
+>  sk_prot_free net/core/sock.c:2122 [inline]
+>  __sk_destruct+0x49e/0x770 net/core/sock.c:2216
+>  sk_destruct+0xc2/0xf0 net/core/sock.c:2231
+>  __sk_free+0xc4/0x3a0 net/core/sock.c:2242
+>  sk_free+0x7c/0xa0 net/core/sock.c:2253
+>  sock_put include/net/sock.h:1975 [inline]
+>  unix_release_sock+0xa76/0xf70 net/unix/af_unix.c:668
+>  unix_release+0x88/0xe0 net/unix/af_unix.c:1065
+>  __sock_release+0xcd/0x290 net/socket.c:654
+>  sock_close+0x1c/0x20 net/socket.c:1386
+>  __fput+0x3fd/0xac0 fs/file_table.c:384
+>  task_work_run+0x14d/0x240 kernel/task_work.c:179
+>  resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+>  exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
+>  syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297
+>  do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7fc3bb116ef7
+> Code: 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8
+> RSP: 002b:00007ffd1d8ead88 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+> RAX: 0000000000000000 RBX: 0000000000000004 RCX: 00007fc3bb116ef7
+> RDX: 0000000000000000 RSI: 0000000000008933 RDI: 0000000000000004
+> RBP: 00007ffd1d8ead90 R08: 0000000000000008 R09: 0000000000000004
+> R10: 000000000000000b R11: 0000000000000246 R12: 00007ffd1d8eafc0
+> R13: 00003faaaaaaaaaa R14: 00007ffd1d8eaff0 R15: 00007fc3bb164376
+>  </TASK>
+> 
+> 
 > ---
->   Documentation/networking/page_pool.rst |  4 +-
->   include/net/page_pool/helpers.h        | 58 +++++++++++++++++++++++---
->   2 files changed, 55 insertions(+), 7 deletions(-)
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-
-> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-> index b920224f6584..0f1eaa2986f9 100644
-> --- a/include/net/page_pool/helpers.h
-> +++ b/include/net/page_pool/helpers.h
-> @@ -8,13 +8,28 @@
->   /**
->    * DOC: page_pool allocator
->    *
-> - * The page_pool allocator is optimized for the XDP mode that
-> - * uses one frame per-page, but it can fallback on the
-> - * regular page allocator APIs.
-> + * The page_pool allocator is optimized for recycling page or page frag used by
-> + * skb packet and xdp frame.
->    *
-> - * Basic use involves replacing alloc_pages() calls with the
-> - * page_pool_alloc_pages() call.  Drivers should use
-> - * page_pool_dev_alloc_pages() replacing dev_alloc_pages().
-> + * Basic use involves replacing napi_alloc_frag() and alloc_pages() calls with
-> + * page_pool_cache_alloc() and page_pool_alloc(), which allocate memory with or
-> + * without page splitting depending on the requested memory size.
-> + *
-> + * If the driver knows that it always requires full pages or its allocates are
-
-                                                              allocations
-
-> + * always smaller than half a page, it can use one of the more specific API
-> + * calls:
-> + *
-> + * 1. page_pool_alloc_pages(): allocate memory without page splitting when
-> + * driver knows that the memory it need is always bigger than half of the page
-> + * allocated from page pool. There is no cache line dirtying for 'struct page'
-> + * when a page is recycled back to the page pool.
-> + *
-> + * 2. page_pool_alloc_frag(): allocate memory with page splitting when driver
-> + * knows that the memory it need is always smaller than or equal to half of the
-> + * page allocated from page pool. Page splitting enables memory saving and thus
-> + * avoid TLB/cache miss for data access, but there also is some cost to
-
-       avoids
-
-> + * implement page splitting, mainly some cache line dirtying/bouncing for
-> + * 'struct page' and atomic operation for page->pp_frag_count.
->    *
->    * API keeps track of in-flight pages, in order to let API user know
->    * when it is safe to free a page_pool object.  Thus, API users
-> @@ -100,6 +115,14 @@ static inline struct page *page_pool_alloc_frag(struct page_pool *pool,
->   	return __page_pool_alloc_frag(pool, offset, size, gfp);
->   }
->   
-> +/**
-> + * page_pool_dev_alloc_frag() - allocate a page frag.
-> + * @pool[in]	pool from which to allocate
-> + * @offset[out]	offset to the allocated page
-> + * @size[in]	requested size
-
-Please use kernel-doc syntax/notation here.
-
-> + *
-> + * Get a page frag from the page allocator or page_pool caches.
-> + */
->   static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
->   						    unsigned int *offset,
->   						    unsigned int size)
-> @@ -143,6 +166,14 @@ static inline struct page *page_pool_alloc(struct page_pool *pool,
->   	return page;
->   }
->   
-> +/**
-> + * page_pool_dev_alloc() - allocate a page or a page frag.
-> + * @pool[in]:		pool from which to allocate
-> + * @offset[out]:	offset to the allocated page
-> + * @size[in, out]:	in as the requested size, out as the allocated size
-
-and here.
-
-> + *
-> + * Get a page or a page frag from the page allocator or page_pool caches.
-> + */
->   static inline struct page *page_pool_dev_alloc(struct page_pool *pool,
->   					       unsigned int *offset,
->   					       unsigned int *size)
-> @@ -165,6 +196,13 @@ static inline void *page_pool_cache_alloc(struct page_pool *pool,
->   	return page_address(page) + offset;
->   }
->   
-> +/**
-> + * page_pool_dev_cache_alloc() - allocate a cache.
-> + * @pool[in]:		pool from which to allocate
-> + * @size[in, out]:	in as the requested size, out as the allocated size
-
-and here.
-
-> + *
-> + * Get a cache from the page allocator or page_pool caches.
-> + */
->   static inline void *page_pool_dev_cache_alloc(struct page_pool *pool,
->   					      unsigned int *size)
->   {
-> @@ -316,6 +354,14 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
->   	page_pool_put_full_page(pool, page, true);
->   }
->   
-> +/**
-> + * page_pool_cache_free() - free a cache into the page_pool
-> + * @pool[in]:		pool from which cache was allocated
-> + * @data[in]:		cache to free
-> + * @allow_direct[in]:	freed by the consumer, allow lockless caching
-
-and here.
-
-> + *
-> + * Free a cache allocated from page_pool_dev_cache_alloc().
-> + */
->   static inline void page_pool_cache_free(struct page_pool *pool, void *data,
->   					bool allow_direct)
->   {
-
-Thanks.
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to change bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
 
 
