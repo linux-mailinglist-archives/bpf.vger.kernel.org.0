@@ -1,73 +1,79 @@
-Return-Path: <bpf+bounces-7739-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7740-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECD1677BE9A
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 19:03:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B4B677BEA3
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 19:07:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 328271C20AE0
-	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 17:03:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E5082810F4
+	for <lists+bpf@lfdr.de>; Mon, 14 Aug 2023 17:07:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C08CC8D2;
-	Mon, 14 Aug 2023 17:03:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA67C8D6;
+	Mon, 14 Aug 2023 17:07:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35031C2D9
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 17:03:21 +0000 (UTC)
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEE310C8
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 10:03:17 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d68d99100b9so2834944276.3
-        for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 10:03:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D99C2F44
+	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 17:07:27 +0000 (UTC)
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87A4D1
+	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 10:07:26 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-2685bc4f867so5045540a91.0
+        for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 10:07:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692032597; x=1692637397;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l0H/pqj2BR1tyIRn8q8USyPsEy4h35fWTWZztRAqhrg=;
-        b=jjT0Aw84/WIQOz/+nOofiWHpKTUfsadoWis7Ko46Laoefrn472TOjAqTYA05NnB/n9
-         5HpzRlIDRUr4Lrt7WsQ+YcPTUinm/SA6bpwtaTfQArHk0J7wVB/ei8AYEXjY6+B2Gh1U
-         fe4uLHTHgbGh6VIFjV3IZaym8O53OHgxa8MX8LiQPM/CRAhEiSOTDtsMfaXhfSv6lE62
-         8BxlpSNE1+xduInyyabNgiC0IQfb2ND8Ywc4rYQkbkkvezG+msMlO+EnGEIcpviSi6Wt
-         lMwk5m6QvepgZAjpJicq07BlRaJwkV/iWSFRES5F88SAQmpxpO5tQAg8d9AcFvzlhPK3
-         svfA==
+        d=google.com; s=20221208; t=1692032846; x=1692637646;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HOPcU1s6dOxKoHYRJZpqjdctLTPuo9TU9m/Z/GfnYEk=;
+        b=hGbt68DNzLNeOnJPugmwC+ihD+ployxbX6ovpj3tusOy86so0gkCB2KNPD0UsvJj23
+         yix9Gc0LqFj2pZ+W2vMRViOh63u0QG/pcmizv+JaC6ksfBfSzbMTHzwLxNfQTOkUVckX
+         YoSIR9wbrFa7jTXKxKO9NhFIFSo8ufVbafVCAnYPkH5aIX+o6ERClvDmwY1G6Tsi8+NK
+         BNerwMrf57LZiqkaaUXG2SgsqY/Z2MYB2iZPimSsOt0zBlkdjC+RO/zG7QuToncigiUq
+         QgQfjWSKUEIt0KVKe5s2b/+lphK9bNgLRdLf86ZPYvn7Wbid77ftc6DhYSE00EHlVZ2S
+         6M9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692032597; x=1692637397;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l0H/pqj2BR1tyIRn8q8USyPsEy4h35fWTWZztRAqhrg=;
-        b=SjNsl/46bbSWVkGu1U1eaXwumwniCv1RFEvJMjIZAreYWs2WhiH+PtbyaOtHxFdGcf
-         1AowS3K8+QDh0or976ElyjXs1X2vY9BMY2EMBxXVCIvHy+cDiWx1HXR/IB9vdRyLhAA3
-         +e/0DRP8bICZBBmhNVP3EPt1EpS2vN421oABH3IkR1Xc6Hpmn/AuCEQiofJgf6Pbd4ex
-         LG+UK9RBVuoHcZo6FDM5X52XxlcD8KpiWKYKje5Np9HjdY1jF2CB4JjJJ1uTTRSqwddx
-         I02vBugep4OlG+grsZ4Od/NJBGv30h9g5uswZ3/yGJR+KPskerMUb8DpvFO8A39DXjbd
-         kJtA==
-X-Gm-Message-State: AOJu0YxAKi2+nJ0n6l/+ccysyhIw9tx1OhgbdZNNTjz22/rIzauBOYFI
-	9D+3jeJxzJyCH4QSzG8cuG8Qq+E=
-X-Google-Smtp-Source: AGHT+IHNKlkPUPE8yqucICnfhZqeHusjBYrEGm9zUtRT1Rgwu33sFdAuDxRE4qWXeH1y07JBzRqEah0=
+        d=1e100.net; s=20221208; t=1692032846; x=1692637646;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HOPcU1s6dOxKoHYRJZpqjdctLTPuo9TU9m/Z/GfnYEk=;
+        b=XTyV0bql7JJ401eNUxSaOHobhPaXErvuhskxsXG6LvPUyfJaP3WinqEHv21GkxYJom
+         +Ac8WqdVoLtQ8dK5WNFEs4qI68OGTnFnmRDjuAyMLys/qus/9SPKVQQNqUgnKORl260F
+         fxS4+9BPy2PI6tX0rTTTH8evWWWK7EkcEE5LfBaLbm9Ex6cRZKPbXSF2IIGkPxX/NU2U
+         QEc9ITGpsE4x/0foFwBcywz7pcpha9CZ0E3oEbjP1DG2Uzrfvto7GpxTZJ6SVcJ0+qUU
+         x2TKteV1L11Smcolg7UJiTlJbubKvHg+R67du+O0oYCEZiCKQuTq2wWfMKZ8ZdnHFFyc
+         goUw==
+X-Gm-Message-State: AOJu0Yy0vzMyT5TjHvRTFt5KWO1fD+e7gcS/cnJecH6cjsx+VeaFxont
+	bg1CtoJO1xbdtGnN5VqFLTeyT6w=
+X-Google-Smtp-Source: AGHT+IEx9GXBwXDn87IkzTs4uRACno3/UEVJolEaNR+oMCCxIC0gbCOoCti7weqvgPfx4RBox+0pHr8=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:bf86:0:b0:d09:6ba9:69ec with SMTP id
- l6-20020a25bf86000000b00d096ba969ecmr157621ybk.4.1692032597140; Mon, 14 Aug
- 2023 10:03:17 -0700 (PDT)
-Date: Mon, 14 Aug 2023 10:03:15 -0700
-In-Reply-To: <674989d5-abc1-60fb-64ea-da25d24f935e@crowdstrike.com>
+ (user=sdf job=sendgmr) by 2002:a17:90a:e557:b0:26b:2001:54f8 with SMTP id
+ ei23-20020a17090ae55700b0026b200154f8mr2139270pjb.9.1692032846422; Mon, 14
+ Aug 2023 10:07:26 -0700 (PDT)
+Date: Mon, 14 Aug 2023 10:07:24 -0700
+In-Reply-To: <0164ca41-01bc-be14-2f99-b1c4400850b8@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20230810214350.106301-1-martin.kelly@crowdstrike.com> <674989d5-abc1-60fb-64ea-da25d24f935e@crowdstrike.com>
-Message-ID: <ZNpeU4faW3wSgDVf@google.com>
-Subject: Re: [PATCH bpf-next] libbpf: set close-on-exec flag on gzopen
+References: <20230811043127.1318152-1-thinker.li@gmail.com>
+ <20230811043127.1318152-5-thinker.li@gmail.com> <ZNa+vhzXxYYOzk96@google.com>
+ <6a634e79-db63-df29-9d18-93387191f937@gmail.com> <0164ca41-01bc-be14-2f99-b1c4400850b8@gmail.com>
+Message-ID: <ZNpfTBh4cC1oW8Cf@google.com>
+Subject: Re: [RFC bpf-next v2 4/6] bpf: Provide bpf_copy_from_user() and bpf_copy_to_user().
 From: Stanislav Fomichev <sdf@google.com>
-To: Martin Kelly <martin.kelly@crowdstrike.com>
-Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Marco Vedovati <marco.vedovati@crowdstrike.com>
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: thinker.li@gmail.com, bpf@vger.kernel.org, ast@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com, 
+	andrii@kernel.org, yonghong.song@linux.dev, kuifeng@meta.com
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
@@ -75,43 +81,85 @@ X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 08/10, Martin Kelly wrote:
-> On 8/10/23 14:43, Martin Kelly wrote:
-> > From: Marco Vedovati <marco.vedovati@crowdstrike.com>
-> > 
-> > Enable the close-on-exec flag when using gzopen
-> > 
-> > This is especially important for multithreaded programs making use of
-> > libbpf, where a fork + exec could race with libbpf library calls,
-> > potentially resulting in a file descriptor leaked to the new process.
-> > 
-> > Signed-off-by: Marco Vedovati <marco.vedovati@crowdstrike.com>
-> > ---
-> >   tools/lib/bpf/libbpf.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 17883f5a44b9..b14a4376a86e 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -1978,9 +1978,9 @@ static int bpf_object__read_kconfig_file(struct bpf_object *obj, void *data)
-> >   		return -ENAMETOOLONG;
-> >   	/* gzopen also accepts uncompressed files. */
-> > -	file = gzopen(buf, "r");
-> > +	file = gzopen(buf, "re");
-> >   	if (!file)
-> > -		file = gzopen("/proc/config.gz", "r");
-> > +		file = gzopen("/proc/config.gz", "re");
-> >   	if (!file) {
-> >   		pr_warn("failed to open system Kconfig\n");
-> 
-> Sorry for double-sending the patch; the first was missing the bpf-next
-> prefix and I wasn't sure if that would be an issue. Feel free to ignore this
-> patch, as the other already got a reply.
+On 08/11, Kui-Feng Lee wrote:
+>=20
+>=20
+> On 8/11/23 16:27, Kui-Feng Lee wrote:
+> >=20
+> >=20
+> > On 8/11/23 16:05, Stanislav Fomichev wrote:
+> > > On 08/10, thinker.li@gmail.com wrote:
+> > > > From: Kui-Feng Lee <kuifeng@meta.com>
+> > > >=20
+> > > > Provide bpf_copy_from_user() and bpf_copy_to_user() to the BPF prog=
+rams
+> > > > attached to cgroup/{set,get}sockopt. bpf_copy_to_user() is a new
+> > > > kfunc to
+> > > > copy data from an kernel space buffer to a user space buffer.
+> > > > They are only
+> > > > available for sleepable BPF programs. bpf_copy_to_user() is only
+> > > > available
+> > > > to the BPF programs attached to cgroup/getsockopt.
+> > > >=20
+> > > > Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> > > > ---
+> > > > =C2=A0 kernel/bpf/cgroup.c=C2=A0 |=C2=A0 6 ++++++
+> > > > =C2=A0 kernel/bpf/helpers.c | 31 +++++++++++++++++++++++++++++++
+> > > > =C2=A0 2 files changed, 37 insertions(+)
+> > > >=20
+> > > > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> > > > index 5bf3115b265c..c15a72860d2a 100644
+> > > > --- a/kernel/bpf/cgroup.c
+> > > > +++ b/kernel/bpf/cgroup.c
+> > > > @@ -2461,6 +2461,12 @@ cg_sockopt_func_proto(enum bpf_func_id
+> > > > func_id, const struct bpf_prog *prog)
+> > > > =C2=A0 #endif
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BPF_FUNC_perf_event_output:
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return &bpf_=
+event_output_data_proto;
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0 case BPF_FUNC_copy_from_user:
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (prog->aux->sleepabl=
+e)
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ return &bpf_copy_from_user_proto;
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return NULL;
+> > >=20
+> > > If we just allow copy to/from, I'm not sure I understand how the buff=
+er
+> > > sharing between sleepable/non-sleepable works.
+> > >=20
+> > > Let's assume I have two progs in the chain:
+> > > 1. non-sleepable - copies the buffer, does some modifications; since
+> > > =C2=A0=C2=A0=C2=A0 we don't copy the buffer back after every prog run=
+, the modifications
+> > > =C2=A0=C2=A0=C2=A0 stay in the kernel buffer
+> > > 2. sleepable - runs and just gets the user pointer? does it mean this
+> > > =C2=A0=C2=A0 sleepable program doesn't see the changes from (1)?
+>=20
+> It is still visible from sleepable programs.  Sleepable programs
+> will receive a pointer to the buffer in the kernel.
+> And, BPF_SOCKOPT_FLAG_OPTVAL_USER is clear.
+>=20
+> > >=20
+> > > IOW, do we need some custom sockopt copy_to/from that handle this
+> > > potential buffer location transparently or am I missing something?
+> > >=20
+> > > Assuming we want to support this at all. If we do, might deserve a
+> > > selftest.
+> >=20
+> > It is why BPF_SOCKOPT_FLAG_OPTVAL_USER is there.
+> > It helps programs to make a right decision.
+> > However, I am going to remove bpf_copy_from_user()
+> > since we have bpf_so_optval_copy_to() and bpf_so_optval_copy_to_r().
+> > Does it make sense to you?
 
-Oops, I missed your resend:
+Ah, so that's where it's handled. I didn't read that far :-)
+In this case yes, let's have only those helpers.
 
-https://lore.kernel.org/bpf/ZNVf6kHamI9awatB@google.com/
+Btw, do we also really need bpf_so_optval_copy_to_r? If we are doing
+dynptr, let's only have bpf_so_optval_copy_to version?
 
-Next time pls at least reply to the first 'wrong' one :-)
+I'd also call them something like bpf_sockopt_copy_{to,from}. That
+"_so_optval_" is not super intuitive imho.
 
