@@ -1,169 +1,102 @@
-Return-Path: <bpf+bounces-7825-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7814-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14D1877CF14
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 17:27:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B7E877CEC1
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 17:13:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C23ED281597
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 15:27:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE1631C20B8B
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 15:13:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A25215482;
-	Tue, 15 Aug 2023 15:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2E4214282;
+	Tue, 15 Aug 2023 15:13:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4FB8134AD;
-	Tue, 15 Aug 2023 15:27:17 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9473B10E;
-	Tue, 15 Aug 2023 08:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692113236; x=1723649236;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ntcK//hDwpIaSQAS3okkAAFw2AoMGueinRApB3qebB0=;
-  b=AY7AmGmWbfe4N5bxbYgypMbRvWgZ0jY4yj2XC/b9aRDDyuHgMnPaUgsK
-   9XzXuzxmwdyaGiN8OBKlvxkJg7ErCZqnpzFzspZAmm5mjajNoKmsN9vOa
-   rKIDHBUSb9qF3Ifv79AXb+gCEp5D0gNI+maYY+3ZMWn7H8197A7XMJt35
-   46T3+2Ehu+DBddiQL+WaLKnjwCkZgqBJqOlLaXxR/6oRfZkeIi3VPksOj
-   v3DRbSpn4H0aWWX56N5OpUg4VvUHusTWgnBJ/MZvKD1hi9/l+NgFa338O
-   OwKZHjjF7XulUB8wzPhm4ARP1uGGO21ELZW7/lCGKbr9LzIe+w9fSYvtA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="357273938"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="357273938"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 08:21:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="803848427"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="803848427"
-Received: from unknown (HELO paamrpdk12-S2600BPB.aw.intel.com) ([10.228.151.145])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 08:21:07 -0700
-From: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	bjorn@kernel.org,
-	magnus.karlsson@intel.com,
-	maciej.fijalkowski@intel.com,
-	jonathan.lemon@gmail.com,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	dan.carpenter@linaro.org,
-	sdf@google.com
-Subject: [PATCH bpf-next v2] xsk: fix xsk_build_skb() error: 'skb' dereferencing possible ERR_PTR()
-Date: Tue, 15 Aug 2023 20:33:25 +0530
-Message-Id: <20230815150325.2010460-1-tirthendu.sarkar@intel.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF56713AEF;
+	Tue, 15 Aug 2023 15:13:09 +0000 (UTC)
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091121991;
+	Tue, 15 Aug 2023 08:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=3FVkfmimyGLe7ZQLw14Bh2D/6Fym3SH8k3h8yeiqRQU=; b=gmRUb9WNZ1BobTGE+WroBYMCGl
+	VnvndwBnm8gMluT/dcWJcPsQAD6bVncAtBXWdu7gVyMZhWErV/7upSyu62pyq2QmzlFetaQpEnh2M
+	UAb8l/5UoZkiUgaDvFfMjP1txW3ONUpohtdTUOj2IjbVjNAKiTqSls1orWH2rWDgiBtlpTidb38tr
+	Sfm7/fYiBxZBX6F2CE3zRq4QPl/LOKga/QCiqtVXwh15V/rVBINul+ZkaL9ZpWYH6IHhMb/rirGkS
+	V+I80XXGzu0dK1J6H1hWm1wG+n9pY2Z6MLNFBcyoeXBX7t3b1e10ibPoVQNVnOrrOkMxMoSAXPxi6
+	TabqlluQ==;
+Received: from [2601:1c2:980:9ec0::2764]
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1qVviz-001pNO-13;
+	Tue, 15 Aug 2023 15:12:49 +0000
+Message-ID: <c52210ab-48a5-d6bf-26ee-b828df0f9408@infradead.org>
+Date: Tue, 15 Aug 2023 08:12:47 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH net-next v6 5/6] page_pool: update document about frag API
+Content-Language: en-US
+To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+ kuba@kernel.org, pabeni@redhat.com
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Lorenzo Bianconi <lorenzo@kernel.org>,
+ Alexander Duyck <alexander.duyck@gmail.com>,
+ Liang Chen <liangchen.linux@gmail.com>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Eric Dumazet <edumazet@google.com>, Jonathan Corbet <corbet@lwn.net>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>, linux-doc@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20230814125643.59334-1-linyunsheng@huawei.com>
+ <20230814125643.59334-6-linyunsheng@huawei.com>
+ <479a9c1f-9db7-61c8-3485-9b330f777930@infradead.org>
+ <0cbf592e-2f21-30ca-799e-5cc15e89c3f8@huawei.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <0cbf592e-2f21-30ca-799e-5cc15e89c3f8@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
 	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-xsk_build_skb_zerocopy() may return an error other than -EAGAIN and this
-is received as skb and used later in xsk_set_destructor_arg() and
-xsk_drop_skb() which must operate on a valid skb.
 
-Set -EOVERFLOW as error when MAX_SKB_FRAGS are exceeded and packet needs
-to be dropped and use this to distinguish against all other error cases
-where allocation needs to be retried.
 
-Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/r/202307210434.OjgqFcbB-lkp@intel.com/
-Fixes: cf24f5a5feea ("xsk: add support for AF_XDP multi-buffer on Tx path")
+On 8/15/23 05:24, Yunsheng Lin wrote:
+> On 2023/8/15 6:42, Randy Dunlap wrote:
+>> Hi--
+> Thanks for the reviewing.
+> 
+> ...
+> 
+>>> @@ -100,6 +115,14 @@ static inline struct page *page_pool_alloc_frag(struct page_pool *pool,
+>>>       return __page_pool_alloc_frag(pool, offset, size, gfp);
+>>>   }
+>>>   +/**
+>>> + * page_pool_dev_alloc_frag() - allocate a page frag.
+>>> + * @pool[in]    pool from which to allocate
+>>> + * @offset[out]    offset to the allocated page
+>>> + * @size[in]    requested size
+>> Please use kernel-doc syntax/notation here.
+> Will change to:
 
-Changelog:
-	v1 -> v2:
-	- Removed err as a parameter to xsk_build_skb_zerocopy()
-	[Stanislav Fomichev]
-	- use explicit error to distinguish packet drop vs retry
----
- net/xdp/xsk.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+Thanks. Those look good.
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index fcfc8472f73d..55f8b9b0e06d 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -602,7 +602,7 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
- 
- 	for (copied = 0, i = skb_shinfo(skb)->nr_frags; copied < len; i++) {
- 		if (unlikely(i >= MAX_SKB_FRAGS))
--			return ERR_PTR(-EFAULT);
-+			return ERR_PTR(-EOVERFLOW);
- 
- 		page = pool->umem->pgs[addr >> PAGE_SHIFT];
- 		get_page(page);
-@@ -655,15 +655,17 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 			skb_put(skb, len);
- 
- 			err = skb_store_bits(skb, 0, buffer, len);
--			if (unlikely(err))
-+			if (unlikely(err)) {
-+				kfree_skb(skb);
- 				goto free_err;
-+			}
- 		} else {
- 			int nr_frags = skb_shinfo(skb)->nr_frags;
- 			struct page *page;
- 			u8 *vaddr;
- 
- 			if (unlikely(nr_frags == (MAX_SKB_FRAGS - 1) && xp_mb_desc(desc))) {
--				err = -EFAULT;
-+				err = -EOVERFLOW;
- 				goto free_err;
- 			}
- 
-@@ -690,12 +692,14 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
- 	return skb;
- 
- free_err:
--	if (err == -EAGAIN) {
--		xsk_cq_cancel_locked(xs, 1);
--	} else {
--		xsk_set_destructor_arg(skb);
--		xsk_drop_skb(skb);
-+	if (err == -EOVERFLOW) {
-+		/* Drop the packet */
-+		xsk_set_destructor_arg(xs->skb);
-+		xsk_drop_skb(xs->skb);
- 		xskq_cons_release(xs->tx);
-+	} else {
-+		/* Let application retry */
-+		xsk_cq_cancel_locked(xs, 1);
- 	}
- 
- 	return ERR_PTR(err);
-@@ -738,7 +742,7 @@ static int __xsk_generic_xmit(struct sock *sk)
- 		skb = xsk_build_skb(xs, &desc);
- 		if (IS_ERR(skb)) {
- 			err = PTR_ERR(skb);
--			if (err == -EAGAIN)
-+			if (err != -EOVERFLOW)
- 				goto out;
- 			err = 0;
- 			continue;
 -- 
-2.34.1
-
+~Randy
 
