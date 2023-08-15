@@ -1,92 +1,112 @@
-Return-Path: <bpf+bounces-7801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B411277C9D8
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 10:59:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2717177CA9B
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 11:40:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3B211C20C49
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 08:59:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D66432813FF
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 09:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360DFCA69;
-	Tue, 15 Aug 2023 08:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A64100D9;
+	Tue, 15 Aug 2023 09:40:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081D7AD5F
-	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 08:59:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97C15C433C7;
-	Tue, 15 Aug 2023 08:59:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692089969;
-	bh=MArXAIr8c9w9SGHAmRMmXFdx0pibI2BQaL9ZvGmfZ+k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=c5eMKztoKIGPUroWlu0kDWQckmc28nItr01rFT5I4CClgh1M1uBGGsZnH0LVIWtxQ
-	 qbyNyWmOigSmPPXS//NsFqZ9z6h+6rRzHjkCFmltOp/mkVdE2AzNOBZUgCaIrPJu+r
-	 t5DXUaKuPLwXWbvbt2oDhXLrx1ief2b1C0jrRI9DQ9WUBxNdcwtLDipJ3GH9bMJgQM
-	 fylZxEdJM8GgdaLe3wW0HTPWleupgJAT4B6d5eGuxRTVkc4uyMvaeRpJbJJjLfBl6M
-	 RiNcn4YA86xiFhW6ycuJCQ+Xt9h3rNTaqz3fqPDb+/mnBoD5TArukWBsYwS9HDsJJg
-	 Is5XzyeFf2jLA==
-Date: Tue, 15 Aug 2023 10:59:22 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
-Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Quentin Monnet <quentin@isovalent.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	gyroidos@aisec.fraunhofer.de
-Subject: Re: [PATCH RFC 1/4] bpf: add cgroup device guard to flag a cgroup
- device prog
-Message-ID: <20230815-feigling-kopfsache-56c2d31275bd@brauner>
-References: <20230814-devcg_guard-v1-0-654971ab88b1@aisec.fraunhofer.de>
- <20230814-devcg_guard-v1-1-654971ab88b1@aisec.fraunhofer.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010A8CA72;
+	Tue, 15 Aug 2023 09:40:12 +0000 (UTC)
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954DBA6;
+	Tue, 15 Aug 2023 02:40:10 -0700 (PDT)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VprYifQ_1692092406;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VprYifQ_1692092406)
+          by smtp.aliyun-inc.com;
+          Tue, 15 Aug 2023 17:40:07 +0800
+Message-ID: <1692091669.428807-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v13 05/12] virtio_ring: introduce virtqueue_dma_dev()
+Date: Tue, 15 Aug 2023 17:27:49 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: virtualization@lists.linux-foundation.org,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ netdev@vger.kernel.org,
+ bpf@vger.kernel.org,
+ Christoph Hellwig <hch@infradead.org>
+References: <20230810123057.43407-1-xuanzhuo@linux.alibaba.com>
+ <20230810123057.43407-6-xuanzhuo@linux.alibaba.com>
+ <CACGkMEsaYbsWyOKxA-xY=3dSmvzq9pMdYbypG9q+Ry2sMwAMPg@mail.gmail.com>
+ <1692081029.4299796-8-xuanzhuo@linux.alibaba.com>
+ <CACGkMEt5RyOy_6rTXon_7py=ZmdJD=e4dMOGpNOo3NOyahGvjg@mail.gmail.com>
+In-Reply-To: <CACGkMEt5RyOy_6rTXon_7py=ZmdJD=e4dMOGpNOo3NOyahGvjg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230814-devcg_guard-v1-1-654971ab88b1@aisec.fraunhofer.de>
 
-On Mon, Aug 14, 2023 at 04:26:09PM +0200, Michael Weiß wrote:
-> Introduce the BPF_F_CGROUP_DEVICE_GUARD flag for BPF_PROG_LOAD
-> which allows to set a cgroup device program to be a device guard.
+On Tue, 15 Aug 2023 15:50:23 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> On Tue, Aug 15, 2023 at 2:32=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba=
+.com> wrote:
+> >
+> >
+> > Hi, Jason
+> >
+> > Could you skip this patch?
+>
+> I'm fine with either merging or dropping this.
+>
+> >
+> > Let we review other patches firstly?
+>
+> I will be on vacation soon, and won't have time to do this until next wee=
+k.
 
-Currently we block access to devices unconditionally in may_open_dev().
-Anything that's mounted by an unprivileged containers will get
-SB_I_NODEV set in s_i_flags.
+Have a happly vacation.
 
-Then we currently mediate device access in:
+>
+> But I spot two possible "issues":
+>
+> 1) the DMA metadata were stored in the headroom of the page, this
+> breaks frags coalescing, we need to benchmark it's impact
 
-* inode_permission()
-  -> devcgroup_inode_permission()
-* vfs_mknod()
-  -> devcgroup_inode_mknod()
-* blkdev_get_by_dev() // sget()/sget_fc(), other ways to open block devices and friends
-  -> devcgroup_check_permission()
-* drivers/gpu/drm/amd/amdkfd // weird restrictions on showing gpu info afaict
-  -> devcgroup_check_permission()
+Not every page, just the first page of the COMP pages.
 
-All your new flag does is to bypass that SB_I_NODEV check afaict and let
-it proceed to the devcgroup_*() checks for the vfs layer.
+So I think there is no impact.
 
-But I don't get the semantics yet.
-Is that a flag which is set on BPF_PROG_TYPE_CGROUP_DEVICE programs or
-is that a flag on random bpf programs? It looks like it would be the
-latter but design-wise I would expect this to be a property of the
-device program itself.
+
+> 2) pre mapped DMA addresses were not reused in the case of XDP_TX/XDP_RED=
+IRECT
+
+Because that the tx is not the premapped mode.
+
+Thanks.
+
+>
+> I see Michael has merge this series so I'm fine to let it go first.
+>
+> Thanks
+>
+> >
+> > Thanks.
+> >
+>
 
