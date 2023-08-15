@@ -1,193 +1,122 @@
-Return-Path: <bpf+bounces-7798-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7799-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 304B477C8D7
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 09:50:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AE0277C8DE
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 09:50:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D5951C20C35
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 07:50:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 053172813E2
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 07:50:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA63BA29;
-	Tue, 15 Aug 2023 07:49:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D89BA26;
+	Tue, 15 Aug 2023 07:50:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB80AD38
-	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 07:49:54 +0000 (UTC)
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D633D1733
-	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 00:49:50 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4ff8936d247so34903e87.0
-        for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 00:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mihalicyn.com; s=mihalicyn; t=1692085789; x=1692690589;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JXOEvzRF8ADpNQSaByqRT4RWjoHlgIorYKOCNB0xrSo=;
-        b=ctI2X5htkoAwJxA2kfQY81apo4f+wOZMRTR4YSRI2MhUTPTrl1aaQxfvGnkOK021Xh
-         N2b6oekgxREzZSBd26EtP2sXHYTmO4B9wM/i9SlqSuK8I2WTsnM40oatmwc5vZcC6UsX
-         dxeGlWj27TUrD/saPJfipYs6jTOAXOCVPpCS0=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 366425242
+	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 07:50:40 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25909172A
+	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 00:50:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1692085838;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VUb2n6Q11KVMArkdv0WcRmLKrFLcgRyJRWatuAzlaDY=;
+	b=U6jN1H5lo0nfUfm5EFL3f+knEauKYJF0K/SZtdiVoG6JsmR5cRk9Ows5rcZLZh4nZ0tuVW
+	VqzYl181x/G+hYBCJjpdkV503RD7JMn58gLg2h4Z9toXn2+izCLZ8vD3qZdUtJymyLD8F+
+	YRGMS8WFsHX/AU8BuHm5+DlsbNRikgE=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-60-7pbaE3C_OFOOXnUW3V9OMA-1; Tue, 15 Aug 2023 03:50:36 -0400
+X-MC-Unique: 7pbaE3C_OFOOXnUW3V9OMA-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b9dc1bfddcso29954591fa.0
+        for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 00:50:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692085789; x=1692690589;
+        d=1e100.net; s=20221208; t=1692085835; x=1692690635;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JXOEvzRF8ADpNQSaByqRT4RWjoHlgIorYKOCNB0xrSo=;
-        b=aDahI7xtMzfqNT4as5kMYOzJ+Jt3eG2FwwEXgZ5Xx2L17+ozkjpx9R9pFKSRbE6lrh
-         pbYRu3kGYj/kSJBCEmpOPMWX+1F6nClXESLCoOdE9sl/1K3ccuMdEQs+qEqY9SkD9xYM
-         tc5xS3/qm7m1r1vc+ZhB+ZE46PyXLLsUvU7pw5BItCq4F+79D+kW0zsxHxLe1cK/jwv0
-         W7Bt8OdDkamw0TKa3iM+TyJUiDA4ztiFMIn/nBAwdgvFRnIdhsdbmOS8Zk3secm4ODha
-         J1U17VWoP7oahb2pT7fn8dk2md4FNzTEaZ0tTUXw7qsljQEvQUlWVl+sjRpCZ8Osl7kE
-         payg==
-X-Gm-Message-State: AOJu0YzQIhBs/5xO9hm7i0ucIcDti+N6tkPk2d6xkwdROa+Fgz3hus8G
-	nU/FFGeK915jjdzvjvM4wZQlkLvTkHqniA8KYy6HXg==
-X-Google-Smtp-Source: AGHT+IGn1Ixr5bTVNGHlW/hSLsuoMvWjfq1mrKGq4Ekrskbsvt5z7tXbeqR2zu4QGtGdbLbRF6sbB0NZkd2uhSdrjUM=
-X-Received: by 2002:a05:6512:49a:b0:4fd:d0f7:5b90 with SMTP id
- v26-20020a056512049a00b004fdd0f75b90mr5999537lfq.4.1692085788398; Tue, 15 Aug
- 2023 00:49:48 -0700 (PDT)
+        bh=VUb2n6Q11KVMArkdv0WcRmLKrFLcgRyJRWatuAzlaDY=;
+        b=QM7C15E1PH45BYtst1Wj+krGEYSbtzx4thSI6Enbh4bdxE2rSo9G6umOp4nB/34WkD
+         vqNqnY9BpEUQYrVxD3M0sJTONQ1yEGG7vp9emRYdHBrI9CdEZmGijJv8H1UJPhWJLIUh
+         nJGQ2p2qIh2wLcPVNP19GOmyuHhPy7TLA4YgvYzZiv3svxkqHEACsjr5FRDMGXR4lCxg
+         xVeTPLEpVzwYK3Mzy9tP/OHaXnf4qvWVeyYKYLGSewUdqJdlw2lpr4ioIccJ/H7PpY3Y
+         iqdn86LwL/VH1S+0/7JeYQ9nTIDkivzizuKcVGXC7hB8g0Ahd5KBoCYudI9xnh+8pFQF
+         Tjag==
+X-Gm-Message-State: AOJu0YzUqh+adG1eoQZ6n4EiwJ1hxg4PMutORUz3Rec/d/7DRkTQK8xt
+	3akkHUcOa74dL0Ukb0UoS5gTeabSudHsTbBe8+fyId71NXkZPBuPsH4jccdSXqLRkUMIeiGx1Ir
+	6WKi5NLJbP5CvDp7XsaN3ziuLUKQL
+X-Received: by 2002:a2e:b5cd:0:b0:2ba:8197:5b42 with SMTP id g13-20020a2eb5cd000000b002ba81975b42mr364201ljn.10.1692085835596;
+        Tue, 15 Aug 2023 00:50:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG2PAmBtKQ9ZnmjhZ9eS5fy7BGjFEsLr29JIN9ZtyHi+hnDN0FBcYAl19yjmo+5USD8xM2Rvyvilm8K6oTA9Eo=
+X-Received: by 2002:a2e:b5cd:0:b0:2ba:8197:5b42 with SMTP id
+ g13-20020a2eb5cd000000b002ba81975b42mr364187ljn.10.1692085835304; Tue, 15 Aug
+ 2023 00:50:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230814-devcg_guard-v1-4-654971ab88b1@aisec.fraunhofer.de> <202308151506.6be3b169-oliver.sang@intel.com>
-In-Reply-To: <202308151506.6be3b169-oliver.sang@intel.com>
-From: Alexander Mikhalitsyn <alexander@mihalicyn.com>
-Date: Tue, 15 Aug 2023 09:49:37 +0200
-Message-ID: <CAJqdLrrZAXn8hwReSFtP7x+G_ge-eOrx8A5gUvOZojQdwk4frw@mail.gmail.com>
-Subject: Re: [PATCH RFC 4/4] fs: allow mknod in non-initial userns using
- cgroup device guard
-To: kernel test robot <oliver.sang@intel.com>
-Cc: =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>, 
-	oe-lkp@lists.linux.dev, lkp@intel.com, linux-fsdevel@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Quentin Monnet <quentin@isovalent.com>, Alexander Viro <viro@zeniv.linux.org.uk>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, gyroidos@aisec.fraunhofer.de, 
-	stgraber@ubuntu.com
+References: <20230810123057.43407-1-xuanzhuo@linux.alibaba.com>
+ <20230810123057.43407-6-xuanzhuo@linux.alibaba.com> <CACGkMEsaYbsWyOKxA-xY=3dSmvzq9pMdYbypG9q+Ry2sMwAMPg@mail.gmail.com>
+ <1692081029.4299796-8-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1692081029.4299796-8-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Tue, 15 Aug 2023 15:50:23 +0800
+Message-ID: <CACGkMEt5RyOy_6rTXon_7py=ZmdJD=e4dMOGpNOo3NOyahGvjg@mail.gmail.com>
+Subject: Re: [PATCH vhost v13 05/12] virtio_ring: introduce virtqueue_dma_dev()
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: virtualization@lists.linux-foundation.org, 
+	"Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	Christoph Hellwig <hch@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+	SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 15, 2023 at 9:18=E2=80=AFAM kernel test robot <oliver.sang@inte=
-l.com> wrote:
+On Tue, Aug 15, 2023 at 2:32=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+om> wrote:
 >
 >
+> Hi, Jason
 >
-> Hello,
->
-> kernel test robot noticed "WARNING:suspicious_RCU_usage" on:
->
-> commit: bffc333633f1e681c01ada11bd695aa220518bd8 ("[PATCH RFC 4/4] fs: al=
-low mknod in non-initial userns using cgroup device guard")
-> url: https://github.com/intel-lab-lkp/linux/commits/Michael-Wei/bpf-add-c=
-group-device-guard-to-flag-a-cgroup-device-prog/20230814-224110
-> patch link: https://lore.kernel.org/all/20230814-devcg_guard-v1-4-654971a=
-b88b1@aisec.fraunhofer.de/
-> patch subject: [PATCH RFC 4/4] fs: allow mknod in non-initial userns usin=
-g cgroup device guard
->
-> in testcase: boot
->
-> compiler: gcc-12
-> test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
->
-> (please refer to attached dmesg/kmsg for entire log/backtrace)
->
->
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202308151506.6be3b169-oliver.san=
-g@intel.com
->
->
->
-> [   14.468719][  T139]
-> [   14.468999][  T139] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [   14.469545][  T139] WARNING: suspicious RCU usage
-> [   14.469968][  T139] 6.5.0-rc6-00004-gbffc333633f1 #1 Not tainted
-> [   14.470520][  T139] -----------------------------
-> [   14.470940][  T139] include/linux/cgroup.h:423 suspicious rcu_derefere=
-nce_check() usage!
+> Could you skip this patch?
 
-Most likely it's because in "cgroup_bpf_device_guard_enabled" function:
+I'm fine with either merging or dropping this.
 
-struct cgroup *cgrp =3D task_dfl_cgroup(task);
+>
+> Let we review other patches firstly?
 
-should be under rcu_read_lock (or cgroup_mutex). If we get rid of
-cgroup_mutex and make cgroup_bpf_device_guard_enabled
-function specific to "current" task we will solve this issue too.
+I will be on vacation soon, and won't have time to do this until next week.
 
-> [   14.471703][  T139]
-> [   14.471703][  T139] other info that might help us debug this:
-> [   14.471703][  T139]
-> [   14.472692][  T139]
-> [   14.472692][  T139] rcu_scheduler_active =3D 2, debug_locks =3D 1
-> [   14.473469][  T139] no locks held by (journald)/139.
-> [   14.473935][  T139]
-> [   14.473935][  T139] stack backtrace:
-> [   14.474454][  T139] CPU: 1 PID: 139 Comm: (journald) Not tainted 6.5.0=
--rc6-00004-gbffc333633f1 #1
-> [   14.475296][  T139] Hardware name: QEMU Standard PC (i440FX + PIIX, 19=
-96), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [   14.476298][  T139] Call Trace:
-> [   14.476608][  T139]  dump_stack_lvl+0x78/0x8c
-> [   14.477055][  T139]  dump_stack+0x12/0x18
-> [   14.477420][  T139]  lockdep_rcu_suspicious+0x153/0x1a4
-> [   14.477928][  T139]  cgroup_bpf_device_guard_enabled+0x14f/0x168
-> [   14.478476][  T139]  devcgroup_task_is_guarded+0x10/0x20
-> [   14.478973][  T139]  may_open_dev+0x11/0x44
-> [   14.479367][  T139]  may_open+0x115/0x13c
-> [   14.479727][  T139]  do_open+0xa1/0x378
-> [   14.480113][  T139]  path_openat+0xdc/0x1bc
-> [   14.480512][  T139]  do_filp_open+0x91/0x124
-> [   14.480911][  T139]  ? lock_release+0x62/0x118
-> [   14.481329][  T139]  ? _raw_spin_unlock+0x18/0x34
-> [   14.481797][  T139]  ? alloc_fd+0x112/0x1c4
-> [   14.482183][  T139]  do_sys_openat2+0x7a/0xa0
-> [   14.482592][  T139]  __ia32_sys_openat+0x66/0x9c
-> [   14.483065][  T139]  do_int80_syscall_32+0x27/0x48
-> [   14.483502][  T139]  entry_INT80_32+0x10d/0x10d
-> [   14.483962][  T139] EIP: 0xa7f39092
-> [   14.484267][  T139] Code: 00 00 00 e9 90 ff ff ff ff a3 24 00 00 00 68=
- 30 00 00 00 e9 80 ff ff ff ff a3 f8 ff ff ff 66 90 00 00 00 00 00 00 00 00=
- cd 80 <c3> 8d b4
->  26 00 00 00 00 8d b6 00 00 00 00 8b 1c 24 c3 8d b4 26 00
-> [   14.485995][  T139] EAX: ffffffda EBX: ffffff9c ECX: 005df542 EDX: 000=
-08100
-> [   14.486622][  T139] ESI: 00000000 EDI: 00000000 EBP: affeb888 ESP: aff=
-eb6ec
-> [   14.487225][  T139] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAG=
-S: 00200246
+But I spot two possible "issues":
+
+1) the DMA metadata were stored in the headroom of the page, this
+breaks frags coalescing, we need to benchmark it's impact
+2) pre mapped DMA addresses were not reused in the case of XDP_TX/XDP_REDIR=
+ECT
+
+I see Michael has merge this series so I'm fine to let it go first.
+
+Thanks
+
 >
+> Thanks.
 >
->
-> The kernel config and materials to reproduce are available at:
-> https://download.01.org/0day-ci/archive/20230815/202308151506.6be3b169-ol=
-iver.sang@intel.com
->
->
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
->
+
 
