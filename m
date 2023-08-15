@@ -1,137 +1,236 @@
-Return-Path: <bpf+bounces-7806-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7807-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71E8D77CC32
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 13:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 200FC77CC71
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 14:19:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2DF11C20A5A
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 11:58:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43C8F1C20CF3
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 12:19:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDEAF111B4;
-	Tue, 15 Aug 2023 11:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA51011CAF;
+	Tue, 15 Aug 2023 12:19:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68255C9D
-	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 11:58:13 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6E21985
-	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 04:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1692100663;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3bjmiQ78zXka/be7wSlHzWAbQz0mNi9OuhXjHfAzz0s=;
-	b=KQRlDnBHT+PmRsgYNggYvy84rx7SKlI8RBaZWsY8XNd2Tj89hV0nVqNd2PJEPmIdjHHHzO
-	bKQ4orG2jTZMkMdCMLwVaidbmEPteRBPQ418BdYLNRqeAQSyIa/ZPMsP2XSAQVALMP6WrH
-	Tmm9RWAE87BmAhsG8d821ruWeKZWbL0=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-78-aJA8PonSOT6C3FFoMhTJjQ-1; Tue, 15 Aug 2023 07:57:42 -0400
-X-MC-Unique: aJA8PonSOT6C3FFoMhTJjQ-1
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-589ac93bc6eso71801257b3.0
-        for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 04:57:42 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E345C9D;
+	Tue, 15 Aug 2023 12:19:16 +0000 (UTC)
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D3F12E;
+	Tue, 15 Aug 2023 05:19:15 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-64712741d5cso7978176d6.1;
+        Tue, 15 Aug 2023 05:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692101954; x=1692706754;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QUoMJvwvNDiWDbpEX8hXChfExLzmgKTcQbHp89OBZMs=;
+        b=dLw29zKrqoD2PGMb3iRNbMvVW9Ao5kN7FnTC/ZapK4csW7kpJKYrajq+QeUbDhr+1X
+         SwpC/tMarYSMQFpn/XgAurFXJZKPHVy7sDmo61muWTDyBcL/GXkspVS80IvKPSjwc/VC
+         ek+iNzFqz7NwX2B+IItLUaSky4Db7SvRfbgcdOILtCE8mp2GYVYnW9SoJRw+SRsAULYE
+         RTF4xAPfC6noYZd4QsQNLV0XBop0CKbE2eI8xiPbZE1WyQJWGmVB0ReykajBja59xRqW
+         tAcA6fCThCUmt5quC8aMcYUm8dRDpxhXSjvStvuCQXdrDaMmutztuSPThA33AASD0/DI
+         GGyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692100661; x=1692705461;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3bjmiQ78zXka/be7wSlHzWAbQz0mNi9OuhXjHfAzz0s=;
-        b=NkcFSCfevONUZAGD0jlYhZ7BUznsp/LAjIrkyiJRZMTSHj7oORs8imRftxMk+GFxlp
-         DX3UXiZVYlpfQ0Mm6FAE013LUlSXwdPzeJ38+UrpBGldZTqjBGKVH98R2OP3B7T6rPiP
-         CxDw+we2M0P3BkdFN0rjtO8O3gKL0ZPRK7yyKm1+4DZGkVq+Kiyb7SpJohFqiXSDg1ys
-         GgWaTdl0ByYsn+Es9JSlnM/bLUWgmL6ZgBOUS7EDEANKhJs7Xi3HURgBXYmR6t+YAazD
-         lwMwJ07n2eLjG2nxZ8N+U/fpSuKSy/Jte3sQrcXSHhdmMQCF322o0OK8S+8ntAEOCTHE
-         CFCA==
-X-Gm-Message-State: AOJu0YyaLdF83RVOGeqPMXJZKfIbFoinVvoEIZbh45gdVBPeQK26zzJV
-	z7u1o1agRJ4ohqueyjmaC1SxXKO0+grPVoO7A/vOQSH3wa/6bDM8B6kB9GTXy/fWG+4b49qFFTn
-	1vyxUCrfi06hD
-X-Received: by 2002:a81:9485:0:b0:579:e318:4c01 with SMTP id l127-20020a819485000000b00579e3184c01mr18861422ywg.19.1692100661584;
-        Tue, 15 Aug 2023 04:57:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGa32SRzmLDzRL9d7mFMGVtctsdkaYjp8FEkY7pKzeAFfj3pB6VWOajMjS+DzIe14yU1WjDiw==
-X-Received: by 2002:a81:9485:0:b0:579:e318:4c01 with SMTP id l127-20020a819485000000b00579e3184c01mr18861394ywg.19.1692100661208;
-        Tue, 15 Aug 2023 04:57:41 -0700 (PDT)
-Received: from redhat.com ([172.58.160.133])
-        by smtp.gmail.com with ESMTPSA id b4-20020a0dd904000000b005772154dddbsm3327997ywe.24.2023.08.15.04.57.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 04:57:40 -0700 (PDT)
-Date: Tue, 15 Aug 2023 07:57:31 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Jason Wang <jasowang@redhat.com>
-Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	virtualization@lists.linux-foundation.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH vhost v13 05/12] virtio_ring: introduce
- virtqueue_dma_dev()
-Message-ID: <20230815075702-mutt-send-email-mst@kernel.org>
-References: <20230810123057.43407-1-xuanzhuo@linux.alibaba.com>
- <20230810123057.43407-6-xuanzhuo@linux.alibaba.com>
- <CACGkMEsaYbsWyOKxA-xY=3dSmvzq9pMdYbypG9q+Ry2sMwAMPg@mail.gmail.com>
- <1692081029.4299796-8-xuanzhuo@linux.alibaba.com>
- <CACGkMEt5RyOy_6rTXon_7py=ZmdJD=e4dMOGpNOo3NOyahGvjg@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1692101954; x=1692706754;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QUoMJvwvNDiWDbpEX8hXChfExLzmgKTcQbHp89OBZMs=;
+        b=kpYg/oJUXlZE3fMSSvw2Dpqdoz9408Lna7etFyVmqpWeA5Xl5q5aaMG89MImRraL0A
+         N+Vo36mSK2T1hE4ekSW0PjVllgSOI0hrRI5gOmiKDo01qEKJxLZKduIKx8oknvvkPonD
+         KtOAjpZHfZYsXJFCokZSzqI9+wueqQm/sk+u7zfUnov31ob8av7IWb3kdw4uLvi8VfEv
+         hq3OosU3EsH6JRDWF5wge/ylZCKeiKYNgZiU2/21zaEOI1IRPKf6ZqAWcrHr0v9kn3+g
+         m88JaOncUCfoxtMdTeagIjF4A1wWiNR9ZSkJFEcRwYBYygwoKAfpoQLUyKmNr3YS83Z0
+         orxg==
+X-Gm-Message-State: AOJu0YwQLFfA3fldRqFAdkC9OdD2odtzsU8b51jynOM7pYSgQe8Dtngl
+	TJMcSlTO1q5MhX/U70JSGrC5rtfx24rH6LeEOy4=
+X-Google-Smtp-Source: AGHT+IGAUWQgEDBbjZlUJhilsyn0HTT73s2jGPd8nSnSgtvj0hq/pGLJeKsGGOVaNjzL0E35+yiCXJg/jbX5WX5Dfrc=
+X-Received: by 2002:ad4:5c4c:0:b0:635:fa38:5216 with SMTP id
+ a12-20020ad45c4c000000b00635fa385216mr18797070qva.0.1692101954034; Tue, 15
+ Aug 2023 05:19:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACGkMEt5RyOy_6rTXon_7py=ZmdJD=e4dMOGpNOo3NOyahGvjg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-	version=3.4.6
+References: <20230809165418.2831456-1-sdf@google.com> <20230809165418.2831456-2-sdf@google.com>
+ <ZNoIdzdHQV6OUecF@boxer> <CAKH8qBv9jw_C1B_LRcnbGK90dfsS9bY7GqYJA5Nvyiug1VqRCQ@mail.gmail.com>
+ <CAKH8qBshXjc3rKgn6A-dfE4sXtk+ckSJx0qr=14t4heKXXEhcQ@mail.gmail.com>
+In-Reply-To: <CAKH8qBshXjc3rKgn6A-dfE4sXtk+ckSJx0qr=14t4heKXXEhcQ@mail.gmail.com>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Tue, 15 Aug 2023 14:19:03 +0200
+Message-ID: <CAJ8uoz0Hmru4XeVUJK=M97CSML2RMQbucLNTVDFPaZQRjJrgkg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/9] xsk: Support XDP_TX_METADATA_LEN
+To: Stanislav Fomichev <sdf@google.com>
+Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
+	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	haoluo@google.com, jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, 
+	willemb@google.com, dsahern@kernel.org, magnus.karlsson@intel.com, 
+	bjorn@kernel.org, hawk@kernel.org, netdev@vger.kernel.org, 
+	xdp-hints@xdp-project.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 15, 2023 at 03:50:23PM +0800, Jason Wang wrote:
-> On Tue, Aug 15, 2023 at 2:32 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+On Tue, 15 Aug 2023 at 00:25, Stanislav Fomichev <sdf@google.com> wrote:
+>
+> On Mon, Aug 14, 2023 at 11:05=E2=80=AFAM Stanislav Fomichev <sdf@google.c=
+om> wrote:
 > >
+> > On Mon, Aug 14, 2023 at 3:57=E2=80=AFAM Maciej Fijalkowski
+> > <maciej.fijalkowski@intel.com> wrote:
+> > >
+> > > On Wed, Aug 09, 2023 at 09:54:10AM -0700, Stanislav Fomichev wrote:
+> > > > For zerocopy mode, tx_desc->addr can point to the arbitrary offset
+> > > > and carry some TX metadata in the headroom. For copy mode, there
+> > > > is no way currently to populate skb metadata.
+> > > >
+> > > > Introduce new XDP_TX_METADATA_LEN that indicates how many bytes
+> > > > to treat as metadata. Metadata bytes come prior to tx_desc address
+> > > > (same as in RX case).
+> > > >
+> > > > The size of the metadata has the same constraints as XDP:
+> > > > - less than 256 bytes
+> > > > - 4-byte aligned
+> > > > - non-zero
+> > > >
+> > > > This data is not interpreted in any way right now.
+> > > >
+> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > > ---
+> > > >  include/net/xdp_sock.h      |  1 +
+> > > >  include/net/xsk_buff_pool.h |  1 +
+> > > >  include/uapi/linux/if_xdp.h |  1 +
+> > > >  net/xdp/xsk.c               | 20 ++++++++++++++++++++
+> > > >  net/xdp/xsk_buff_pool.c     |  1 +
+> > > >  net/xdp/xsk_queue.h         | 17 ++++++++++-------
+> > > >  6 files changed, 34 insertions(+), 7 deletions(-)
+> > > >
+> > > > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > > > index 1617af380162..467b9fb56827 100644
+> > > > --- a/include/net/xdp_sock.h
+> > > > +++ b/include/net/xdp_sock.h
+> > > > @@ -51,6 +51,7 @@ struct xdp_sock {
+> > > >       struct list_head flush_node;
+> > > >       struct xsk_buff_pool *pool;
+> > > >       u16 queue_id;
+> > > > +     u8 tx_metadata_len;
+> > > >       bool zc;
+> > > >       bool sg;
+> > > >       enum {
+> > > > diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_poo=
+l.h
+> > > > index b0bdff26fc88..9c31e8d1e198 100644
+> > > > --- a/include/net/xsk_buff_pool.h
+> > > > +++ b/include/net/xsk_buff_pool.h
+> > > > @@ -77,6 +77,7 @@ struct xsk_buff_pool {
+> > > >       u32 chunk_size;
+> > > >       u32 chunk_shift;
+> > > >       u32 frame_len;
+> > > > +     u8 tx_metadata_len; /* inherited from xsk_sock */
+> > > >       u8 cached_need_wakeup;
+> > > >       bool uses_need_wakeup;
+> > > >       bool dma_need_sync;
+> > > > diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xd=
+p.h
+> > > > index 8d48863472b9..b37b50102e1c 100644
+> > > > --- a/include/uapi/linux/if_xdp.h
+> > > > +++ b/include/uapi/linux/if_xdp.h
+> > > > @@ -69,6 +69,7 @@ struct xdp_mmap_offsets {
+> > > >  #define XDP_UMEM_COMPLETION_RING     6
+> > > >  #define XDP_STATISTICS                       7
+> > > >  #define XDP_OPTIONS                  8
+> > > > +#define XDP_TX_METADATA_LEN          9
+> > > >
+> > > >  struct xdp_umem_reg {
+> > > >       __u64 addr; /* Start of packet data area */
+> > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > index 47796a5a79b3..28df3280501d 100644
+> > > > --- a/net/xdp/xsk.c
+> > > > +++ b/net/xdp/xsk.c
+> > > > @@ -1338,6 +1338,26 @@ static int xsk_setsockopt(struct socket *soc=
+k, int level, int optname,
+> > > >               mutex_unlock(&xs->mutex);
+> > > >               return err;
+> > > >       }
+> > > > +     case XDP_TX_METADATA_LEN:
+> > > > +     {
+> > > > +             int val;
+> > > > +
+> > > > +             if (optlen < sizeof(val))
+> > > > +                     return -EINVAL;
+> > > > +             if (copy_from_sockptr(&val, optval, sizeof(val)))
+> > > > +                     return -EFAULT;
+> > > > +             if (!val || val > 256 || val % 4)
+> > > > +                     return -EINVAL;
+> > > > +
+> > > > +             mutex_lock(&xs->mutex);
+> > > > +             if (xs->state !=3D XSK_READY) {
+> > > > +                     mutex_unlock(&xs->mutex);
+> > > > +                     return -EBUSY;
+> > > > +             }
+> > > > +             xs->tx_metadata_len =3D val;
+> > > > +             mutex_unlock(&xs->mutex);
+> > > > +             return 0;
+> > > > +     }
+> > > >       default:
+> > > >               break;
+> > > >       }
+> > > > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+> > > > index b3f7b310811e..b351732f1032 100644
+> > > > --- a/net/xdp/xsk_buff_pool.c
+> > > > +++ b/net/xdp/xsk_buff_pool.c
+> > > > @@ -85,6 +85,7 @@ struct xsk_buff_pool *xp_create_and_assign_umem(s=
+truct xdp_sock *xs,
+> > > >               XDP_PACKET_HEADROOM;
+> > > >       pool->umem =3D umem;
+> > > >       pool->addrs =3D umem->addrs;
+> > > > +     pool->tx_metadata_len =3D xs->tx_metadata_len;
+> > >
+> > > Hey Stan,
+> > >
+> > > what would happen in case when one socket sets pool->tx_metadata_len =
+say
+> > > to 16 and the other one that is sharing the pool to 24? If sockets sh=
+ould
+> > > and can have different padding, then this will not work unless the
+> > > metadata_len is on a per socket level.
 > >
-> > Hi, Jason
-> >
-> > Could you skip this patch?
-> 
-> I'm fine with either merging or dropping this.
-> 
-> >
-> > Let we review other patches firstly?
-> 
-> I will be on vacation soon, and won't have time to do this until next week.
-> 
-> But I spot two possible "issues":
-> 
-> 1) the DMA metadata were stored in the headroom of the page, this
-> breaks frags coalescing, we need to benchmark it's impact
-> 2) pre mapped DMA addresses were not reused in the case of XDP_TX/XDP_REDIRECT
-> 
-> I see Michael has merge this series so I'm fine to let it go first.
-> 
-> Thanks
+> > Hmm, good point. I didn't think about umem sharing :-/
+> > Maybe they all have to agree on the size? And once the size has been
+> > size by one socket, the same size should be set on the others? (or at
+> > least be implied that the other sockets will use the same metadata
+> > layout)
+>
+> Thinking about it a bit more: should that tx_metadata_len be part of a
+> umem then?
+> Users can provide it as part of xdp_umem_reg which is probably a
+> better place to pass it compared to the setsockopt?
 
-it's still queued for next. not too late to drop or better add
-a patch on top.
+If all the sockets sharing the umem have to agree on the
+tx_metadata_len, then this is a better place than the setsockopt.
+IMHO, it sounds unlikely that multiple versions of the same program,
+or different programs, would like to share the same umem.
 
+Please note that some of the members of struct xdp_umem are copied out
+to the individual struct xsk_buff_pool even though they are the same
+between all of them (chunk_size and the size of the umem for example).
+The reason for this is performance, as to avoid having to access the
+umem struct in the fast path. Something similar might be a good idea
+here too, even though tx_metadata_len is fixed for a umem being
+shared. Might be worth trying.
 
-> >
-> > Thanks.
-> >
-
+Again, thanks for working on this Stanislav.
 
