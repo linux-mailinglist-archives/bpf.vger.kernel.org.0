@@ -1,655 +1,258 @@
-Return-Path: <bpf+bounces-7836-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7837-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9490F77D150
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 19:48:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 513AE77D1A4
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 20:21:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 498182814F9
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 17:48:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8069A1C20CD2
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 18:21:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64BB717FFE;
-	Tue, 15 Aug 2023 17:47:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0F0E18044;
+	Tue, 15 Aug 2023 18:20:40 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B3113AFD
-	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 17:47:40 +0000 (UTC)
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060E61BDB
-	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 10:47:38 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-583d702129cso62060937b3.3
-        for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 10:47:37 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6ECC18033
+	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 18:20:40 +0000 (UTC)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC761BC3
+	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 11:20:38 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-565aba2e397so3898692a12.3
+        for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 11:20:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692121656; x=1692726456;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JOqmEllem/jPeBzpq8fEl4V95lhjC3iSrE+tn6lSaq0=;
-        b=WvDnAcCJm20xYQRzAfAa3rEpZ2EDbdSWa2V7DksaUUTLEfvLJ2Chiuo7C555yKx1HH
-         50RTOXFxAv14Rj1euie5r8EinTQFwMgfI9AC12A/MJgDKypK0ybohndJLl6ZrLQRA5qt
-         tVxpiMXTi4B9+017soFfzOuZm4LH0yqFjG43+fpaAwXDLw5TWFvd/dshoLAmepzFRlAA
-         KBhVYXacSe32LPbpHmrOzR5nM/aTf6BTJct/Gmw5gHzMLkOAjKDnNSwfwBLtmeR8kopO
-         dKy7g3H4zGX/4l8X/Kp/9JfKsrsO6lwB0LigZJrAHoS/XKg/ziq6YLtmElZxyP1wBKYp
-         tKBA==
+        d=google.com; s=20221208; t=1692123638; x=1692728438;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oXIokqSHoHVJikQ0OTsHuVwuQJkAt9SyMe34Pt2DmXQ=;
+        b=weigtb1BCv2vrtlWHVPt3BGxcYsZC+Ss2/Grvk6O1ywQf03LxDksSKbI9n2lLR497g
+         hpgnE0k86YynWKfIn7JZ6j1p6VrHZCkIhZgfUOcDbxvjspIgeBANs4m1Whtph8LiInzm
+         tjwZl/TRVoIidwfhbdk1CUfy4W2rc5So5Ee48Msbg0UWRVW0MSG875TjwU8e/MeDlhjs
+         wtRbewY2dYQNng5vIRR45O27eU9nl8geDRmttEKaJ9vHCcrOhWT3t3bM064vbVXOIyER
+         /XU7XReqh7g8e2zcT+xCuDCNx/reUAcqU78fsxrsrITmwTz0aHj0u8Zj6mPTnp2BjL0s
+         ODfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692121656; x=1692726456;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JOqmEllem/jPeBzpq8fEl4V95lhjC3iSrE+tn6lSaq0=;
-        b=kmVZuSxPfX87nPjB0ce9vo//HaqOT24mkOUHgr7LQRABddz0PRHoM9z75HSZancPWD
-         IXPJf+SNfGq5ff0mmnS8lbOZah70//BGNhpvMFZ/onXmn1jzVnfxFHtCw8XivHRzefYY
-         c+fQyhUqgy30jlBchCd9Mxjr6oKt6ChM8fbnktYr/+ufCX33gme4+Q1svG3yb8diKH5T
-         ZAUFKuFscqe2CENldWOfy9+QxTN3AJYdhmdFGPhsQJjWZXH7uj6sw6MLTvVnV/90zEWr
-         h4KGs66kJcRuzV83rrINryCMbSKp448LoxME0L3NvPg9zXQy4rzdkRjelwyrGsQtgQgm
-         RlKg==
-X-Gm-Message-State: AOJu0YymZ4Ap8HWACcIbMQpRS8pCJUOnVD0Y2YOczqFTyVr+k5Ty9RJ8
-	vEEaDsGQuiaqye3js/2Y4MlvlRPOcfDnkg==
-X-Google-Smtp-Source: AGHT+IGbO0ysPOdNX0TwbMRRNmVT/IrLnuPhCvy0JAp/vu8z2xNK2Nq3M31ziOt7CY4rVWTaj+R+TA==
-X-Received: by 2002:a0d:edc6:0:b0:56d:3b91:7e76 with SMTP id w189-20020a0dedc6000000b0056d3b917e76mr13678510ywe.12.1692121656369;
-        Tue, 15 Aug 2023 10:47:36 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:84ee:9e38:88fa:8a7b])
-        by smtp.gmail.com with ESMTPSA id o128-20020a0dcc86000000b00577139f85dfsm3509404ywd.22.2023.08.15.10.47.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 10:47:35 -0700 (PDT)
-From: thinker.li@gmail.com
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org,
-	sdf@google.com,
-	yonghong.song@linux.dev
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [RFC bpf-next v3 5/5] selftests/bpf: Add test cases for sleepable BPF programs of the CGROUP_SOCKOPT type
-Date: Tue, 15 Aug 2023 10:47:12 -0700
-Message-Id: <20230815174712.660956-6-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230815174712.660956-1-thinker.li@gmail.com>
-References: <20230815174712.660956-1-thinker.li@gmail.com>
+        d=1e100.net; s=20221208; t=1692123638; x=1692728438;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oXIokqSHoHVJikQ0OTsHuVwuQJkAt9SyMe34Pt2DmXQ=;
+        b=e+4byOWAxGYVHWmqMh9St/BlG0BbBSvdI32QpwWZCWA9z9Tjd5Pkp8EQ81oVhYjt0/
+         r7vfJqp3UfcoQRw+fPmDCC+3HCWWnkR+Y+sbQHgOf4ECqTCZbsAIx6pJYcUS0EHewpJc
+         GixDn2en2vrcP9IP5K7cql5jyg3DvOXRZHYkb/3TVKYhAa82VZNxWrNpGka79Z04PK55
+         ohSd08+ayDVMJbq0NzMsuHUjrcjJXylqzOKENbKeAMxWiAJpQQ3Bm5+hXTrsGo2S6w+r
+         xkPKN5g7PwAPCVi1+eDhRCwcsaFHTNYsaBni3A3ngX40mLgoNbTeOONBTWZFMHIAmPiy
+         4VVw==
+X-Gm-Message-State: AOJu0YxgBR9kHNpCeD4x3rT8a6wwzQ+n4MZ/c87odaXuccORE1nkXVNG
+	Wc69ZHslJkBqcyQh2ex21IIzD2E=
+X-Google-Smtp-Source: AGHT+IEGhJT/Ml15gtxj+nd3+ADfuioUCVJlt1CZAZinybKEDS2+OsvJ0QZujjYfuHeVu14AhCawksc=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:3646:0:b0:565:e991:d1ca with SMTP id
+ d67-20020a633646000000b00565e991d1camr279543pga.11.1692123638420; Tue, 15 Aug
+ 2023 11:20:38 -0700 (PDT)
+Date: Tue, 15 Aug 2023 11:20:36 -0700
+In-Reply-To: <20230815150325.2010460-1-tirthendu.sarkar@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+Mime-Version: 1.0
+References: <20230815150325.2010460-1-tirthendu.sarkar@intel.com>
+Message-ID: <ZNvB9AUzNIzwMW6+@google.com>
+Subject: Re: [PATCH bpf-next v2] xsk: fix xsk_build_skb() error: 'skb'
+ dereferencing possible ERR_PTR()
+From: Stanislav Fomichev <sdf@google.com>
+To: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn@kernel.org, 
+	magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
+	jonathan.lemon@gmail.com, davem@davemloft.net, kuba@kernel.org, 
+	pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	dan.carpenter@linaro.org
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-From: Kui-Feng Lee <thinker.li@gmail.com>
+On 08/15, Tirthendu Sarkar wrote:
+> xsk_build_skb_zerocopy() may return an error other than -EAGAIN and this
+> is received as skb and used later in xsk_set_destructor_arg() and
+> xsk_drop_skb() which must operate on a valid skb.
+> 
+> Set -EOVERFLOW as error when MAX_SKB_FRAGS are exceeded and packet needs
+> to be dropped and use this to distinguish against all other error cases
+> where allocation needs to be retried.
+> 
+> Signed-off-by: Tirthendu Sarkar <tirthendu.sarkar@intel.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/r/202307210434.OjgqFcbB-lkp@intel.com/
+> Fixes: cf24f5a5feea ("xsk: add support for AF_XDP multi-buffer on Tx path")
+> 
+> Changelog:
+> 	v1 -> v2:
+> 	- Removed err as a parameter to xsk_build_skb_zerocopy()
+> 	[Stanislav Fomichev]
+> 	- use explicit error to distinguish packet drop vs retry
+> ---
+>  net/xdp/xsk.c | 22 +++++++++++++---------
+>  1 file changed, 13 insertions(+), 9 deletions(-)
+> 
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index fcfc8472f73d..55f8b9b0e06d 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -602,7 +602,7 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+>  
+>  	for (copied = 0, i = skb_shinfo(skb)->nr_frags; copied < len; i++) {
+>  		if (unlikely(i >= MAX_SKB_FRAGS))
+> -			return ERR_PTR(-EFAULT);
+> +			return ERR_PTR(-EOVERFLOW);
+>  
+>  		page = pool->umem->pgs[addr >> PAGE_SHIFT];
+>  		get_page(page);
+> @@ -655,15 +655,17 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>  			skb_put(skb, len);
+>  
+>  			err = skb_store_bits(skb, 0, buffer, len);
+> -			if (unlikely(err))
+> +			if (unlikely(err)) {
+> +				kfree_skb(skb);
+>  				goto free_err;
+> +			}
+>  		} else {
+>  			int nr_frags = skb_shinfo(skb)->nr_frags;
+>  			struct page *page;
+>  			u8 *vaddr;
+>  
+>  			if (unlikely(nr_frags == (MAX_SKB_FRAGS - 1) && xp_mb_desc(desc))) {
+> -				err = -EFAULT;
+> +				err = -EOVERFLOW;
+>  				goto free_err;
+>  			}
+>  
+> @@ -690,12 +692,14 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+>  	return skb;
+>  
+>  free_err:
+> -	if (err == -EAGAIN) {
+> -		xsk_cq_cancel_locked(xs, 1);
+> -	} else {
+> -		xsk_set_destructor_arg(skb);
+> -		xsk_drop_skb(skb);
+> +	if (err == -EOVERFLOW) {
 
-Do the same test as non-sleepable ones.
+Don't think this will work? We have some other error paths in xsk_build_skb
+that are not -EOVERFLOW that still need kfree_skb, right?
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- .../testing/selftests/bpf/bpf_experimental.h  |  36 +++
- tools/testing/selftests/bpf/bpf_kfuncs.h      |  41 +++
- .../selftests/bpf/prog_tests/sockopt_sk.c     | 112 +++++++-
- .../testing/selftests/bpf/progs/sockopt_sk.c  | 257 ++++++++++++++++++
- .../selftests/bpf/verifier/sleepable.c        |   2 +-
- 5 files changed, 445 insertions(+), 3 deletions(-)
+I feel like we are trying to share some state between xsk_build_skb and
+xsk_build_skb_zerocopy which we really shouldn't share. So how about
+we try to have a separate cleanup path in xsk_build_skb_zerocopy?
 
-diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-index 209811b1993a..9b5dfefe65dc 100644
---- a/tools/testing/selftests/bpf/bpf_experimental.h
-+++ b/tools/testing/selftests/bpf/bpf_experimental.h
-@@ -131,4 +131,40 @@ extern int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_node *nod
-  */
- extern struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root) __ksym;
+Will something like the following (untested / uncompiled) work instead?
+
+IOW, ideally, xsk_build_skb should look like:
+
+	if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
+		return xsk_build_skb_zerocopy(xs, desc);
+	} else {
+		return xsk_build_skb_copy(xs, desc);
+		/* ^^ current path that should really be a separate func */
+	}
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 79a96019b7ef..747dd012afdb 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -578,6 +578,19 @@ static void xsk_drop_skb(struct sk_buff *skb)
+ 	xsk_consume_skb(skb);
+ }
  
-+/*
-+ *     Description
-+ *             Copy data from *ptr* to *sopt->optval*.
-+ *     Return
-+ *             >= 0 on success, or a negative error in case of failure.
-+ */
-+extern int bpf_sockopt_dynptr_copy_to(struct bpf_sockopt *sopt,
-+				      struct bpf_dynptr *ptr) __ksym;
++static struct sk_buff *xsk_cleanup_skb(int err, struct sk_buff *skb, struct xdp_sock *xs)
++{
++	if (err == -EAGAIN) {
++		xsk_cq_cancel_locked(xs, 1);
++	} else {
++		xsk_set_destructor_arg(skb);
++		xsk_drop_skb(skb);
++		xskq_cons_release(xs->tx);
++	}
 +
-+/* Description
-+ *	Allocate a buffer of 'size' bytes for being installed as optval.
-+ * Returns
-+ *	> 0 on success, the size of the allocated buffer
-+ *	-ENOMEM or -EINVAL on failure
-+ */
-+extern int bpf_sockopt_dynptr_alloc(struct bpf_sockopt *sopt, int size,
-+				    struct bpf_dynptr *ptr__uninit) __ksym;
++	return ERR_PTR(err);
++}
 +
-+/* Description
-+ *	Install the buffer pointed to by 'ptr' as optval.
-+ * Returns
-+ *	0 on success
-+ *	-EINVAL if the buffer is too small
-+ */
-+extern int bpf_sockopt_dynptr_install(struct bpf_sockopt *sopt,
-+				      struct bpf_dynptr *ptr) __ksym;
-+
-+/* Description
-+ *	Release the buffer allocated by bpf_sockopt_dynptr_alloc.
-+ * Returns
-+ *	0 on success
-+ *	-EINVAL if the buffer was not allocated by bpf_sockopt_dynptr_alloc
-+ */
-+extern int bpf_sockopt_dynptr_release(struct bpf_sockopt *sopt,
-+				      struct bpf_dynptr *ptr) __ksym;
-+
- #endif
-diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
-index 642dda0e758a..772040225257 100644
---- a/tools/testing/selftests/bpf/bpf_kfuncs.h
-+++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
-@@ -41,4 +41,45 @@ extern bool bpf_dynptr_is_rdonly(const struct bpf_dynptr *ptr) __ksym;
- extern __u32 bpf_dynptr_size(const struct bpf_dynptr *ptr) __ksym;
- extern int bpf_dynptr_clone(const struct bpf_dynptr *ptr, struct bpf_dynptr *clone__init) __ksym;
+ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ 					      struct xdp_desc *desc)
+ {
+@@ -593,8 +606,10 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ 		hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
  
-+extern int bpf_sockopt_dynptr_copy_to(struct bpf_sockopt *sopt,
-+				      struct bpf_dynptr *ptr) __ksym;
-+
-+/* Description
-+ *	Allocate a buffer of 'size' bytes for being installed as optval.
-+ * Returns
-+ *	> 0 on success, the size of the allocated buffer
-+ *	-ENOMEM or -EINVAL on failure
-+ */
-+extern int bpf_sockopt_dynptr_alloc(struct bpf_sockopt *sopt, int size,
-+				    struct bpf_dynptr *ptr__uninit) __ksym;
-+
-+/* Description
-+ *	Install the buffer pointed to by 'ptr' as optval.
-+ * Returns
-+ *	0 on success
-+ *	-EINVAL if the buffer is too small
-+ */
-+extern int bpf_sockopt_dynptr_install(struct bpf_sockopt *sopt,
-+				      struct bpf_dynptr *ptr) __ksym;
-+
-+/* Description
-+ *	Release the buffer allocated by bpf_sockopt_dynptr_alloc.
-+ * Returns
-+ *	0 on success
-+ *	-EINVAL if the buffer was not allocated by bpf_sockopt_dynptr_alloc
-+ */
-+extern int bpf_sockopt_dynptr_release(struct bpf_sockopt *sopt,
-+				      struct bpf_dynptr *ptr) __ksym;
-+
-+/* Description
-+ *	Initialize a dynptr to access the content of optval passing
-+ *      to {get,set}sockopt()s.
-+ * Returns
-+ *	> 0 on success, the size of the allocated buffer
-+ *	-ENOMEM or -EINVAL on failure
-+ */
-+extern int bpf_sockopt_dynptr_from(struct bpf_sockopt *sopt,
-+				   struct bpf_dynptr *ptr__uninit,
-+				   unsigned int size) __ksym;
-+
- #endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-index 05d0e07da394..85255648747f 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-@@ -92,6 +92,7 @@ static int getsetsockopt(void)
+ 		skb = sock_alloc_send_skb(&xs->sk, hr, 1, &err);
+-		if (unlikely(!skb))
+-			return ERR_PTR(err);
++		if (unlikely(!skb)) {
++			err = ERR_PTR(err);
++			goto free_err;
++		}
+ 
+ 		skb_reserve(skb, hr);
  	}
- 	if (buf.u8[0] != 0x01) {
- 		log_err("Unexpected buf[0] 0x%02x != 0x01", buf.u8[0]);
-+		log_err("optlen %d", optlen);
- 		goto err;
- 	}
+@@ -608,8 +623,10 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ 	addr = buffer - pool->addrs;
  
-@@ -220,7 +221,7 @@ static int getsetsockopt(void)
- 	return -1;
- }
- 
--static void run_test(int cgroup_fd)
-+static void run_test_nonsleepable(int cgroup_fd)
- {
- 	struct sockopt_sk *skel;
- 
-@@ -246,6 +247,106 @@ static void run_test(int cgroup_fd)
- 	sockopt_sk__destroy(skel);
- }
- 
-+static void run_test_nonsleepable_mixed(int cgroup_fd)
-+{
-+	struct sockopt_sk *skel;
-+
-+	skel = sockopt_sk__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	skel->bss->page_size = getpagesize();
-+	skel->bss->skip_sleepable = 1;
-+
-+	skel->links._setsockopt_s =
-+		bpf_program__attach_cgroup(skel->progs._setsockopt_s, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links._setsockopt_s, "setsockopt_link (sleepable)"))
-+		goto cleanup;
-+
-+	skel->links._getsockopt_s =
-+		bpf_program__attach_cgroup(skel->progs._getsockopt_s, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links._getsockopt_s, "getsockopt_link (sleepable)"))
-+		goto cleanup;
-+
-+	skel->links._setsockopt =
-+		bpf_program__attach_cgroup(skel->progs._setsockopt, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links._setsockopt, "setsockopt_link"))
-+		goto cleanup;
-+
-+	skel->links._getsockopt =
-+		bpf_program__attach_cgroup(skel->progs._getsockopt, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links._getsockopt, "getsockopt_link"))
-+		goto cleanup;
-+
-+	ASSERT_OK(getsetsockopt(), "getsetsockopt");
-+
-+cleanup:
-+	sockopt_sk__destroy(skel);
-+}
-+
-+static void run_test_sleepable(int cgroup_fd)
-+{
-+	struct sockopt_sk *skel;
-+
-+	skel = sockopt_sk__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	skel->bss->page_size = getpagesize();
-+
-+	skel->links._setsockopt_s =
-+		bpf_program__attach_cgroup(skel->progs._setsockopt_s, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links._setsockopt_s, "setsockopt_link"))
-+		goto cleanup;
-+
-+	skel->links._getsockopt_s =
-+		bpf_program__attach_cgroup(skel->progs._getsockopt_s, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links._getsockopt_s, "getsockopt_link"))
-+		goto cleanup;
-+
-+	ASSERT_OK(getsetsockopt(), "getsetsockopt");
-+
-+cleanup:
-+	sockopt_sk__destroy(skel);
-+}
-+
-+static void run_test_sleepable_mixed(int cgroup_fd)
-+{
-+	struct sockopt_sk *skel;
-+
-+	skel = sockopt_sk__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	skel->bss->page_size = getpagesize();
-+	skel->bss->skip_nonsleepable = 1;
-+
-+	skel->links._setsockopt =
-+		bpf_program__attach_cgroup(skel->progs._setsockopt, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links._setsockopt, "setsockopt_link (nonsleepable)"))
-+		goto cleanup;
-+
-+	skel->links._getsockopt =
-+		bpf_program__attach_cgroup(skel->progs._getsockopt, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links._getsockopt, "getsockopt_link (nonsleepable)"))
-+		goto cleanup;
-+
-+	skel->links._setsockopt_s =
-+		bpf_program__attach_cgroup(skel->progs._setsockopt_s, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links._setsockopt_s, "setsockopt_link"))
-+		goto cleanup;
-+
-+	skel->links._getsockopt_s =
-+		bpf_program__attach_cgroup(skel->progs._getsockopt_s, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links._getsockopt_s, "getsockopt_link"))
-+		goto cleanup;
-+
-+	ASSERT_OK(getsetsockopt(), "getsetsockopt");
-+
-+cleanup:
-+	sockopt_sk__destroy(skel);
-+}
-+
- void test_sockopt_sk(void)
- {
- 	int cgroup_fd;
-@@ -254,6 +355,13 @@ void test_sockopt_sk(void)
- 	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup /sockopt_sk"))
- 		return;
- 
--	run_test(cgroup_fd);
-+	if (test__start_subtest("nonsleepable"))
-+		run_test_nonsleepable(cgroup_fd);
-+	if (test__start_subtest("sleepable"))
-+		run_test_sleepable(cgroup_fd);
-+	if (test__start_subtest("nonsleepable_mixed"))
-+		run_test_nonsleepable_mixed(cgroup_fd);
-+	if (test__start_subtest("sleepable_mixed"))
-+		run_test_sleepable_mixed(cgroup_fd);
- 	close(cgroup_fd);
- }
-diff --git a/tools/testing/selftests/bpf/progs/sockopt_sk.c b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-index cb990a7d3d45..efacd3b88c40 100644
---- a/tools/testing/selftests/bpf/progs/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-@@ -5,10 +5,16 @@
- #include <netinet/in.h>
- #include <bpf/bpf_helpers.h>
- 
-+typedef int bool;
-+#include "bpf_kfuncs.h"
-+
- char _license[] SEC("license") = "GPL";
- 
- int page_size = 0; /* userspace should set it */
- 
-+int skip_sleepable = 0;
-+int skip_nonsleepable = 0;
-+
- #ifndef SOL_TCP
- #define SOL_TCP IPPROTO_TCP
- #endif
-@@ -34,6 +40,9 @@ int _getsockopt(struct bpf_sockopt *ctx)
- 	struct sockopt_sk *storage;
- 	struct bpf_sock *sk;
- 
-+	if (skip_nonsleepable)
-+		return 1;
-+
- 	/* Bypass AF_NETLINK. */
- 	sk = ctx->sk;
- 	if (sk && sk->family == AF_NETLINK)
-@@ -136,6 +145,134 @@ int _getsockopt(struct bpf_sockopt *ctx)
- 	return 1;
- }
- 
-+SEC("cgroup/getsockopt.s")
-+int _getsockopt_s(struct bpf_sockopt *ctx)
-+{
-+	struct tcp_zerocopy_receive *zcvr;
-+	struct bpf_dynptr optval_dynptr;
-+	struct sockopt_sk *storage;
-+	__u8 *optval, *optval_end;
-+	struct bpf_sock *sk;
-+	char buf[1];
-+	__u64 addr;
-+	int ret;
-+
-+	if (skip_sleepable)
-+		return 1;
-+
-+	/* Bypass AF_NETLINK. */
-+	sk = ctx->sk;
-+	if (sk && sk->family == AF_NETLINK)
-+		return 1;
-+
-+	optval = ctx->optval;
-+	optval_end = ctx->optval_end;
-+
-+	/* Make sure bpf_get_netns_cookie is callable.
-+	 */
-+	if (bpf_get_netns_cookie(NULL) == 0)
-+		return 0;
-+
-+	if (bpf_get_netns_cookie(ctx) == 0)
-+		return 0;
-+
-+	if (ctx->level == SOL_IP && ctx->optname == IP_TOS) {
-+		/* Not interested in SOL_IP:IP_TOS;
-+		 * let next BPF program in the cgroup chain or kernel
-+		 * handle it.
-+		 */
-+		return 1;
-+	}
-+
-+	if (ctx->level == SOL_SOCKET && ctx->optname == SO_SNDBUF) {
-+		/* Not interested in SOL_SOCKET:SO_SNDBUF;
-+		 * let next BPF program in the cgroup chain or kernel
-+		 * handle it.
-+		 */
-+		return 1;
-+	}
-+
-+	if (ctx->level == SOL_TCP && ctx->optname == TCP_CONGESTION) {
-+		/* Not interested in SOL_TCP:TCP_CONGESTION;
-+		 * let next BPF program in the cgroup chain or kernel
-+		 * handle it.
-+		 */
-+		return 1;
-+	}
-+
-+	if (ctx->level == SOL_TCP && ctx->optname == TCP_ZEROCOPY_RECEIVE) {
-+		/* Verify that TCP_ZEROCOPY_RECEIVE triggers.
-+		 * It has a custom implementation for performance
-+		 * reasons.
-+		 */
-+
-+		bpf_sockopt_dynptr_from(ctx, &optval_dynptr, sizeof(*zcvr));
-+		zcvr = bpf_dynptr_data(&optval_dynptr, 0, sizeof(*zcvr));
-+		addr = zcvr ? zcvr->address : 0;
-+		bpf_sockopt_dynptr_release(ctx, &optval_dynptr);
-+
-+		return addr != 0 ? 0 : 1;
-+	}
-+
-+	if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
-+		if (optval + 1 > optval_end)
-+			return 0; /* bounds check */
-+
-+		ctx->retval = 0; /* Reset system call return value to zero */
-+
-+		/* Always export 0x55 */
-+		buf[0] = 0x55;
-+		ret = bpf_sockopt_dynptr_alloc(ctx, 1, &optval_dynptr);
-+		if (ret >= 0) {
-+			bpf_dynptr_write(&optval_dynptr, 0, buf, 1, 0);
-+			ret = bpf_sockopt_dynptr_copy_to(ctx, &optval_dynptr);
+ 	for (copied = 0, i = skb_shinfo(skb)->nr_frags; copied < len; i++) {
+-		if (unlikely(i >= MAX_SKB_FRAGS))
+-			return ERR_PTR(-EFAULT);
++		if (unlikely(i >= MAX_SKB_FRAGS)) {
++			err = ERR_PTR(-EFAULT);
++			goto free_err;
 +		}
-+		bpf_sockopt_dynptr_release(ctx, &optval_dynptr);
-+		if (ret < 0)
-+			return 0;
-+		ctx->optlen = 1;
-+
-+		/* Userspace buffer is PAGE_SIZE * 2, but BPF
-+		 * program can only see the first PAGE_SIZE
-+		 * bytes of data.
-+		 */
-+		if (optval_end - optval != page_size && 0)
-+			return 0; /* unexpected data size */
-+
-+		return 1;
-+	}
-+
-+	if (ctx->level != SOL_CUSTOM)
-+		return 0; /* deny everything except custom level */
-+
-+	if (optval + 1 > optval_end)
-+		return 0; /* bounds check */
-+
-+	storage = bpf_sk_storage_get(&socket_storage_map, ctx->sk, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0; /* couldn't get sk storage */
-+
-+	if (!ctx->retval)
-+		return 0; /* kernel should not have handled
-+			   * SOL_CUSTOM, something is wrong!
-+			   */
-+	ctx->retval = 0; /* Reset system call return value to zero */
-+
-+	buf[0] = storage->val;
-+	ret = bpf_sockopt_dynptr_alloc(ctx, 1, &optval_dynptr);
-+	if (ret >= 0) {
-+		bpf_dynptr_write(&optval_dynptr, 0, buf, 1, 0);
-+		ret = bpf_sockopt_dynptr_copy_to(ctx, &optval_dynptr);
-+	}
-+	bpf_sockopt_dynptr_release(ctx, &optval_dynptr);
-+	if (ret < 0)
-+		return 0;
-+	ctx->optlen = 1;
-+
-+	return 1;
-+}
-+
- SEC("cgroup/setsockopt")
- int _setsockopt(struct bpf_sockopt *ctx)
- {
-@@ -144,6 +281,9 @@ int _setsockopt(struct bpf_sockopt *ctx)
- 	struct sockopt_sk *storage;
- 	struct bpf_sock *sk;
  
-+	if (skip_nonsleepable)
-+		return 1;
+ 		page = pool->umem->pgs[addr >> PAGE_SHIFT];
+ 		get_page(page);
+@@ -629,6 +646,9 @@ static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+ 	refcount_add(ts, &xs->sk.sk_wmem_alloc);
+ 
+ 	return skb;
 +
- 	/* Bypass AF_NETLINK. */
- 	sk = ctx->sk;
- 	if (sk && sk->family == AF_NETLINK)
-@@ -236,3 +376,120 @@ int _setsockopt(struct bpf_sockopt *ctx)
- 		ctx->optlen = 0;
- 	return 1;
++free_err:
++	return xsk_cleanup_skb(err, skb, xs);
  }
-+
-+SEC("cgroup/setsockopt.s")
-+int _setsockopt_s(struct bpf_sockopt *ctx)
-+{
-+	struct bpf_dynptr optval_buf;
-+	struct sockopt_sk *storage;
-+	__u8 *optval, *optval_end;
-+	struct bpf_sock *sk;
-+	__u8 tmp_u8;
-+	__u32 tmp;
-+	int ret;
-+
-+	if (skip_sleepable)
-+		return 1;
-+
-+	optval = ctx->optval;
-+	optval_end = ctx->optval_end;
-+
-+	/* Bypass AF_NETLINK. */
-+	sk = ctx->sk;
-+	if (sk && sk->family == AF_NETLINK)
-+		return -1;
-+
-+	/* Make sure bpf_get_netns_cookie is callable.
-+	 */
-+	if (bpf_get_netns_cookie(NULL) == 0)
-+		return 0;
-+
-+	if (bpf_get_netns_cookie(ctx) == 0)
-+		return 0;
-+
-+	if (ctx->level == SOL_IP && ctx->optname == IP_TOS) {
-+		/* Not interested in SOL_IP:IP_TOS;
-+		 * let next BPF program in the cgroup chain or kernel
-+		 * handle it.
-+		 */
-+		ctx->optlen = 0; /* bypass optval>PAGE_SIZE */
-+		return 1;
-+	}
-+
-+	if (ctx->level == SOL_SOCKET && ctx->optname == SO_SNDBUF) {
-+		/* Overwrite SO_SNDBUF value */
-+
-+		ret = bpf_sockopt_dynptr_alloc(ctx, sizeof(__u32),
-+					       &optval_buf);
-+		if (ret < 0)
-+			bpf_sockopt_dynptr_release(ctx, &optval_buf);
-+		else {
-+			tmp = 0x55AA;
-+			bpf_dynptr_write(&optval_buf, 0, &tmp, sizeof(tmp), 0);
-+			ret = bpf_sockopt_dynptr_install(ctx, &optval_buf);
-+		}
-+
-+		return ret >= 0 ? 1 : 0;
-+	}
-+
-+	if (ctx->level == SOL_TCP && ctx->optname == TCP_CONGESTION) {
-+		/* Always use cubic */
-+
-+		ret = bpf_sockopt_dynptr_alloc(ctx, 5, &optval_buf);
-+		if (ret < 0) {
-+			bpf_sockopt_dynptr_release(ctx, &optval_buf);
-+			return 0;
-+		}
-+		bpf_dynptr_write(&optval_buf, 0, "cubic", 5, 0);
-+		ret = bpf_sockopt_dynptr_install(ctx, &optval_buf);
-+		if (ret < 0)
-+			return 0;
-+		ctx->optlen = 5;
-+
-+		return 1;
-+	}
-+
-+	if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
-+		/* Original optlen is larger than PAGE_SIZE. */
-+		if (ctx->optlen != page_size * 2)
-+			return 0; /* unexpected data size */
-+
-+		ret = bpf_sockopt_dynptr_alloc(ctx, 1, &optval_buf);
-+		if (ret < 0) {
-+			bpf_sockopt_dynptr_release(ctx, &optval_buf);
-+			return 0;
-+		}
-+		tmp_u8 = 0;
-+		bpf_dynptr_write(&optval_buf, 0, &tmp_u8, 1, 0);
-+		ret = bpf_sockopt_dynptr_install(ctx, &optval_buf);
-+		if (ret < 0)
-+			return 0;
-+		ctx->optlen = 1;
-+
-+		return 1;
-+	}
-+
-+	if (ctx->level != SOL_CUSTOM)
-+		return 0; /* deny everything except custom level */
-+
-+	if (optval + 1 > optval_end)
-+		return 0; /* bounds check */
-+
-+	storage = bpf_sk_storage_get(&socket_storage_map, ctx->sk, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0; /* couldn't get sk storage */
-+
-+	bpf_sockopt_dynptr_from(ctx, &optval_buf, sizeof(__u8));
-+	optval = bpf_dynptr_data(&optval_buf, 0, sizeof(__u8));
-+	if (optval) {
-+		storage->val = *optval;
-+		ctx->optlen = -1; /* BPF has consumed this option, don't call
-+				   * kernel setsockopt handler.
-+				   */
-+	}
-+	bpf_sockopt_dynptr_release(ctx, &optval_buf);
-+
-+	return optval ? 1 : 0;
-+}
-+
-diff --git a/tools/testing/selftests/bpf/verifier/sleepable.c b/tools/testing/selftests/bpf/verifier/sleepable.c
-index 1f0d2bdc673f..4b6c1117ec9f 100644
---- a/tools/testing/selftests/bpf/verifier/sleepable.c
-+++ b/tools/testing/selftests/bpf/verifier/sleepable.c
-@@ -85,7 +85,7 @@
- 	.expected_attach_type = BPF_TRACE_RAW_TP,
- 	.kfunc = "sched_switch",
- 	.result = REJECT,
--	.errstr = "Only fentry/fexit/fmod_ret, lsm, iter, uprobe, and struct_ops programs can be sleepable",
-+	.errstr = "Only fentry/fexit/fmod_ret, lsm, iter, uprobe, cgroup, and struct_ops programs can be sleepable",
- 	.flags = BPF_F_SLEEPABLE,
- 	.runs = -1,
- },
--- 
-2.34.1
-
+ 
+ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+@@ -641,11 +661,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 	int err;
+ 
+ 	if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
+-		skb = xsk_build_skb_zerocopy(xs, desc);
+-		if (IS_ERR(skb)) {
+-			err = PTR_ERR(skb);
+-			goto free_err;
+-		}
++		return xsk_build_skb_zerocopy(xs, desc);
+ 	} else {
+ 		u32 hr, tr, len;
+ 		void *buffer;
+@@ -729,15 +745,7 @@ static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+ 	return skb;
+ 
+ free_err:
+-	if (err == -EAGAIN) {
+-		xsk_cq_cancel_locked(xs, 1);
+-	} else {
+-		xsk_set_destructor_arg(skb);
+-		xsk_drop_skb(skb);
+-		xskq_cons_release(xs->tx);
+-	}
+-
+-	return ERR_PTR(err);
++	return xsk_cleanup_skb(err, skb, xs);
+ }
+ 
+ static int __xsk_generic_xmit(struct sock *sk)
 
