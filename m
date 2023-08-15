@@ -1,153 +1,304 @@
-Return-Path: <bpf+bounces-7783-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7784-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C48E177C610
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 04:46:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16A8577C62E
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 05:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 862C81C20BD3
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 02:46:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C51728132D
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 03:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F3F1C13;
-	Tue, 15 Aug 2023 02:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C6261FA0;
+	Tue, 15 Aug 2023 03:01:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E062F1FB6
-	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 02:46:18 +0000 (UTC)
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27071715
-	for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 19:46:17 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-6418d37f006so25633746d6.2
-        for <bpf@vger.kernel.org>; Mon, 14 Aug 2023 19:46:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF907622;
+	Tue, 15 Aug 2023 03:01:19 +0000 (UTC)
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79031173D;
+	Mon, 14 Aug 2023 20:01:18 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68783004143so3217296b3a.2;
+        Mon, 14 Aug 2023 20:01:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692067577; x=1692672377;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bOisQtV6rmKAqeGYvqjvfN7hklNuRtsKGxaBOCuoNRY=;
-        b=FCT0EISC5JeYGg8rX0asrbplZ3LSwv8IvfjShd2LqSJiiLnhcwaKcP++7DiIr+z/yF
-         pilEKj/S6tSohrY0dZKdcOf38AGfcD+ldpLRLhdryzqtrNO8uF5VYoAGPWgR1jdPf/54
-         WV3D12oZmOwwt1QMKhejPf75khyd3xYq1U95e5DCsqKZDBLRfa8v1ob/TjHlSA7bRHQy
-         DV5Rutd50xp8N+6ArFAFXKJhJPJzmcK1fmqZCdFLrawTlIi0xCoBW9YY3QYb/lh2WirE
-         bKwGjMy+4Ch+vN3Ya2rc/sMxjCeIEo/V5Om3tSRNrVaWAT6RSSqksHSUAqLx+gG0u2kq
-         RLTQ==
+        d=gmail.com; s=20221208; t=1692068478; x=1692673278;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=x5C/1PvUiL8DSfmWpsIxllcEjbtqgJK+mdWQGka7G2A=;
+        b=Z7PpLQ6VpbDrzZJFUYNRb4Ug+0z55YYTyXVv3fZQgB+W6GrZmWItYTYsfnJEEVWY2a
+         fDCaqAQ4oJrZjA+8xZxD9C0sa9L2JO+eK1rgJwHApSCpXqJw9j8Syt+fAanSkTpMtr42
+         vAl8Ux9IFqgg8PoV37ArJmpHP+FoSMIg+pehOWqJ9smRwsi7NGc8GwDr4zf5BsXu6m3j
+         ossC+fuVbDJbQ+NFIgiHhDLRcc5kut8hF5nrZfjaNgRUn3xsNgtHIcp+lFMcuxoowUaE
+         Gu35UMZs7lcQisZdy5LAF2YlkiYc6HyYBOA0qjp0QaRcMtVWK1nEq2J4DeQPPBNsnBHi
+         SeWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692067577; x=1692672377;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bOisQtV6rmKAqeGYvqjvfN7hklNuRtsKGxaBOCuoNRY=;
-        b=HWBSoY8Pa7JcHzqtxFOwDRtYkod9ZeAo+o4K+cWOxkSc6+IxcbZv1OTKo5fSN96Cvc
-         SGPEzYfSQnQ1RkvS4PQ+TojFBKS9Hqp11zF2dsQtyneStgVdxns2lx3TVV/3CGHQAP7s
-         wfnr+Hej/znS+89mwRaUcImeT7FhnvTbcFRu0wjScxcdG+VsgXKbf+D08h3Eq9Q7bKHr
-         AizcwhlLZqV/IOH2KGh88WgmXHyHseZFIlyQYSTLY6eehNMxEMHvJkzNiwpSPASSZ+dX
-         09rRrQfadZPU5hJsHONsyOWRSBjz/lvmaFjmb+8e4Uj4r1kJptfM08dP2AANf/HQTekX
-         l5hQ==
-X-Gm-Message-State: AOJu0YwEV1mkCZ1M0mE+bmApc+4vT5r6a736G1maR+OmXBcS5xiUe6VQ
-	Uk1tWajsSNFwPOxSXrMmz2P8q5HBoXFNU6xx/NU=
-X-Google-Smtp-Source: AGHT+IFsupL9yyj97gcMzist6DNzp7CYnbTAAAxXd2CKfQF9X/OR6qlVH6F5gspk0htjMqBx+Zs3ueslK4JyCp8K7mY=
-X-Received: by 2002:a05:6214:712:b0:63f:8677:34a with SMTP id
- c18-20020a056214071200b0063f8677034amr11452341qvz.50.1692067576769; Mon, 14
- Aug 2023 19:46:16 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692068478; x=1692673278;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x5C/1PvUiL8DSfmWpsIxllcEjbtqgJK+mdWQGka7G2A=;
+        b=dz+uv1UXwciaDBe0e00XyNjNlNcrUbIbN5qF9bTyaGZsCJiqQ2pYNs7XuMWi9v+/Vx
+         XLPoJvAAx9YodQk7yK74PAlCFtR4T5IzPcQS3DfucyTCNwUvrThuNdRY4moZ2AdNTD7P
+         sqRoaT2Tit2b1F4RZypeVE8KOpMi7eJkYyjGY6tOXp++FVx/E2oZcc5NdRfV76ZZOMMR
+         LZdehcovqkxNjIKJS8PEjJG+32JDQuJ2QJGBMBZ4tcYC4bP73Q4o1mOiZ8u/bNdLcHaL
+         bS0y5HRKVkbu13H9IwyHtyQJsOHvuVdoMQJmGdLgA9/Ht61gZ7vpbgAZ2TWe8zMxzxHF
+         P7Ug==
+X-Gm-Message-State: AOJu0Yz7rVVc98mHFZbqCHrsdTGWsd/PBQho4oD3dld96h8d9cKD5ZHe
+	iQj01n4UokRgcGrh6COf8bQ=
+X-Google-Smtp-Source: AGHT+IHsxJ3ItPHxAF8wCs7z30D+sHHez/drJWRptmraQ/qUUQytMbj3/U0NlM5oAIjTETh6Zgc4+g==
+X-Received: by 2002:a05:6a00:2e84:b0:687:1c2c:7cf7 with SMTP id fd4-20020a056a002e8400b006871c2c7cf7mr10793597pfb.19.1692068477711;
+        Mon, 14 Aug 2023 20:01:17 -0700 (PDT)
+Received: from [10.22.68.146] ([122.11.166.8])
+        by smtp.gmail.com with ESMTPSA id bu29-20020a63295d000000b005501b24b1c9sm688567pgb.62.2023.08.14.20.01.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 20:01:17 -0700 (PDT)
+Message-ID: <43201fd2-dca7-9294-1dea-8460a9e99296@gmail.com>
+Date: Tue, 15 Aug 2023 11:01:08 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230814143341.3767-1-laoar.shao@gmail.com> <20230814143341.3767-2-laoar.shao@gmail.com>
- <56dc2449-f01c-f0a7-e31b-cfe6cd157aaa@linux.dev>
-In-Reply-To: <56dc2449-f01c-f0a7-e31b-cfe6cd157aaa@linux.dev>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 15 Aug 2023 10:45:40 +0800
-Message-ID: <CALOAHbC9cka4Ma7KWOjGtFkjshU214z9NMaYXHiOTfc7dc7=tQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 1/2] bpf: Add bpf_current_capable kfunc
-To: yonghong.song@linux.dev
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [RFC PATCH bpf-next 1/2] bpf, x64: Fix tailcall infinite loop bug
+Content-Language: en-US
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, x86@kernel.org, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+ mykolal@fb.com, shuah@kernel.org, davem@davemloft.net, dsahern@kernel.org,
+ tangyeechou@gmail.com, kernel-patches-bot@fb.com,
+ maciej.fijalkowski@intel.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20230814134147.70289-1-hffilwlqm@gmail.com>
+ <20230814134147.70289-2-hffilwlqm@gmail.com>
+ <ad3db96c97aea916d555c76069490a176f634ccb.camel@gmail.com>
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <ad3db96c97aea916d555c76069490a176f634ccb.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+	HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 15, 2023 at 8:28=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
->
-> On 8/14/23 7:33 AM, Yafang Shao wrote:
-> > Add a new bpf_current_capable kfunc to check whether the current task
-> > has a specific capability. In our use case, we will use it in a lsm bpf
-> > program to help identify if the user operation is permitted.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >   kernel/bpf/helpers.c | 6 ++++++
-> >   1 file changed, 6 insertions(+)
-> >
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index eb91cae..bbee7ea 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -2429,6 +2429,11 @@ __bpf_kfunc void bpf_rcu_read_unlock(void)
-> >       rcu_read_unlock();
-> >   }
-> >
-> > +__bpf_kfunc bool bpf_current_capable(int cap)
-> > +{
-> > +     return has_capability(current, cap);
-> > +}
->
-> Since you are testing against 'current' capabilities, I assume
-> that the context should be process. Otherwise, you are testing
-> against random task which does not make much sense.
 
-It is in the process context.
 
->
-> Since you are testing against 'current' cap, and if the capability
-> for that task is stable, you do not need this kfunc.
-> You can test cap in user space and pass it into the bpf program.
->
-> But if the cap for your process may change in the middle of
-> run, then you indeed need bpf prog to test capability in real time.
-> Is this your use case and could you describe in in more detail?
+On 15/8/23 08:52, Eduard Zingerman wrote:
+> On Mon, 2023-08-14 at 21:41 +0800, Leon Hwang wrote:
+>> From commit ebf7d1f508a73871 ("bpf, x64: rework pro/epilogue and tailcall
+>> handling in JIT"), the tailcall on x64 works better than before.
+>>
+>> From commit e411901c0b775a3a ("bpf: allow for tailcalls in BPF subprograms
+>> for x64 JIT"), tailcall is able to run in BPF subprograms on x64.
+>>
+>> From commit 5b92a28aae4dd0f8 ("bpf: Support attaching tracing BPF program
+>> to other BPF programs"), BPF program is able to trace other BPF programs.
+>>
+>> How about combining them all together?
+>>
+>> 1. FENTRY/FEXIT on a BPF subprogram.
+>> 2. A tailcall runs in the BPF subprogram.
+>> 3. The tailcall calls itself.
+>>
+>> As a result, a tailcall infinite loop comes up. And the loop halts the
+>> machine.
+>>
+>> As we know, in tail call context, the tail_call_cnt propagates by stack
+>> and RAX register between BPF subprograms. So do it in FENTRY/FEXIT
+>> trampolines.
+> 
+> Hi Leon,
+> 
+> I'm not familiar with this part of the jit compiler, so decided that
+> taking a look at your series might be a good learning point.
+> I think I got the gist of it, but I don't understand where
+> the initial value of RAX (== 0) is coming from in
+> arch_prepare_bpf_trampoline(), could you please help me out?
+> 
+> Also a nitpick:
+> - in arch_prepare_bpf_trampoline() there is a comment detailing 
+>   the stack layout, it probably should be updated to say that
+>   tail call count is stored as well;
+> - before arch_prepare_bpf_trampoline() there is a comment with
+>   an example of generated assembly, should it be updated?
+> 
+> Thanks,
+> Eduard
+> 
 
-After we convert the capability of our networking bpf program from
-CAP_SYS_ADMIN to CAP_BPF+CAP_NET_ADMIN to enhance the security, we
-encountered the "pointer comparison prohibited" error, because
-allow_ptr_leaks is enabled only when CAP_PERFMON is set. However, if
-we enable the CAP_PERFMON for the networking bpf program, it can run
-tracing bpf prog, perf_event bpf prog and etc, that is not expected by
-us.
+a) Initial value of RAX is in emit_prologue().
+	if (!ebpf_from_cbpf) {
+		if (tail_call_reachable && !is_subprog)
+			/* When it's the entry of the whole
+			 * tailcall context, zeroing the RAX
+			 * means init tail_call_cnt.
+			 */
+			EMIT2(0x31, 0xC0); /* xor eax, eax */
+		else
+			// Keep the same asm layout.
+			EMIT2(0x66, 0x90); /* nop2 */
+	}
+   I'd like to add this comment to emit_prologue().
 
-Hence we are planning to use a lsm bpf program to disallow it from
-running other bpf programs. In our lsm bpf program we will check the
-capability of processes, if the process has cap_net_admin, cap_bpf and
-cap_perfmon but don't have cap_sys_admin we will refuse it to run
-tracing and perf_event bpf program. While if a process has  cap_bpf
-and cap_perfmon but doesn't have cap_net_admin, that said it is a bpf
-program which wants to run trace bpf, we will allow it.
+b) Good to update the stack layout. I'll do it.
 
-We can't use lsm_cgroup because it is supported on cgroup2 only, while
-we're still using cgroup1.
+c) Its comment will be updated also.
 
-Another possible solution is enable allow_ptr_leaks for cap_net_admin
-as well, but after I checked the commit which introduces the cap_bpf
-and cap_perfmon [1], I think we wouldn't like to do it.
+Thanks,
+Leon
 
-[1]. https://lore.kernel.org/bpf/20200513230355.7858-3-alexei.starovoitov@g=
-mail.com/
---=20
-Regards
-Yafang
+>>
+>> Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
+>> Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for x64 JIT")
+>> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+>> ---
+>>  arch/x86/net/bpf_jit_comp.c | 23 +++++++++++++++++++----
+>>  include/linux/bpf.h         |  6 ++++++
+>>  kernel/bpf/trampoline.c     |  5 +++--
+>>  kernel/bpf/verifier.c       |  9 +++++++--
+>>  4 files changed, 35 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index a5930042139d3..ca5366d97ad04 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -1018,6 +1018,10 @@ static void emit_shiftx(u8 **pprog, u32 dst_reg, u8 src_reg, bool is64, u8 op)
+>>  
+>>  #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
+>>  
+>> +/* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
+>> +#define RESTORE_TAIL_CALL_CNT(stack)				\
+>> +	EMIT3_off32(0x48, 0x8B, 0x85, -round_up(stack, 8) - 8)
+>> +
+>>  static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
+>>  		  int oldproglen, struct jit_context *ctx, bool jmp_padding)
+>>  {
+>> @@ -1623,9 +1627,7 @@ st:			if (is_imm8(insn->off))
+>>  
+>>  			func = (u8 *) __bpf_call_base + imm32;
+>>  			if (tail_call_reachable) {
+>> -				/* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
+>> -				EMIT3_off32(0x48, 0x8B, 0x85,
+>> -					    -round_up(bpf_prog->aux->stack_depth, 8) - 8);
+>> +				RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stack_depth);
+>>  				if (!imm32)
+>>  					return -EINVAL;
+>>  				offs = 7 + x86_call_depth_emit_accounting(&prog, func);
+>> @@ -2464,6 +2466,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>  	else
+>>  		/* sub rsp, stack_size */
+>>  		EMIT4(0x48, 0x83, 0xEC, stack_size);
+>> +	if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
+>> +		EMIT1(0x50);		/* push rax */
+>>  	/* mov QWORD PTR [rbp - rbx_off], rbx */
+>>  	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_6, -rbx_off);
+>>  
+>> @@ -2516,6 +2520,12 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>  		restore_regs(m, &prog, regs_off);
+>>  		save_args(m, &prog, arg_stack_off, true);
+>>  
+>> +		if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
+>> +			/* Before calling the original function, restore the
+>> +			 * tail_call_cnt from stack.
+>> +			 */
+>> +			RESTORE_TAIL_CALL_CNT(stack_size);
+>> +
+>>  		if (flags & BPF_TRAMP_F_ORIG_STACK) {
+>>  			emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
+>>  			EMIT2(0xff, 0xd0); /* call *rax */
+>> @@ -2569,7 +2579,12 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>  			ret = -EINVAL;
+>>  			goto cleanup;
+>>  		}
+>> -	}
+>> +	} else if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
+>> +		/* Before running the original function, restore the
+>> +		 * tail_call_cnt from stack.
+>> +		 */
+>> +		RESTORE_TAIL_CALL_CNT(stack_size);
+>> +
+>>  	/* restore return value of orig_call or fentry prog back into RAX */
+>>  	if (save_ret)
+>>  		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index cfabbcf47bdb8..55c72086034ef 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -1028,6 +1028,11 @@ struct btf_func_model {
+>>   */
+>>  #define BPF_TRAMP_F_SHARE_IPMODIFY	BIT(6)
+>>  
+>> +/* Indicate that current trampoline is in a tail call context. Then, it has to
+>> + * cache and restore tail_call_cnt to avoid infinite tail call loop.
+>> + */
+>> +#define BPF_TRAMP_F_TAIL_CALL_CTX	BIT(7)
+>> +
+>>  /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
+>>   * bytes on x86.
+>>   */
+>> @@ -1147,6 +1152,7 @@ struct bpf_attach_target_info {
+>>  	struct module *tgt_mod;
+>>  	const char *tgt_name;
+>>  	const struct btf_type *tgt_type;
+>> +	bool tail_call_ctx;
+>>  };
+>>  
+>>  #define BPF_DISPATCHER_MAX 48 /* Fits in 2048B */
+>> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+>> index 78acf28d48732..0fae334e3f7b8 100644
+>> --- a/kernel/bpf/trampoline.c
+>> +++ b/kernel/bpf/trampoline.c
+>> @@ -415,8 +415,8 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
+>>  		goto out;
+>>  	}
+>>  
+>> -	/* clear all bits except SHARE_IPMODIFY */
+>> -	tr->flags &= BPF_TRAMP_F_SHARE_IPMODIFY;
+>> +	/* clear all bits except SHARE_IPMODIFY and TAIL_CALL_CTX */
+>> +	tr->flags &= (BPF_TRAMP_F_SHARE_IPMODIFY | BPF_TRAMP_F_TAIL_CALL_CTX);
+>>  
+>>  	if (tlinks[BPF_TRAMP_FEXIT].nr_links ||
+>>  	    tlinks[BPF_TRAMP_MODIFY_RETURN].nr_links) {
+>> @@ -783,6 +783,7 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
+>>  
+>>  	memcpy(&tr->func.model, &tgt_info->fmodel, sizeof(tgt_info->fmodel));
+>>  	tr->func.addr = (void *)tgt_info->tgt_addr;
+>> +	tr->flags = (tgt_info->tail_call_ctx ? BPF_TRAMP_F_TAIL_CALL_CTX : 0);
+>>  out:
+>>  	mutex_unlock(&tr->mutex);
+>>  	return tr;
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 4ccca1f6c9981..a78e5a2ae5c72 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -19400,10 +19400,15 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>>  			return -EINVAL;
+>>  		fallthrough;
+>>  	case BPF_MODIFY_RETURN:
+>> -	case BPF_LSM_MAC:
+>> -	case BPF_LSM_CGROUP:
+>>  	case BPF_TRACE_FENTRY:
+>>  	case BPF_TRACE_FEXIT:
+>> +		if (tgt_prog && subprog > 0 &&
+>> +		    tgt_prog->aux->func[subprog]->is_func &&
+>> +		    tgt_prog->aux->tail_call_reachable)
+>> +			tgt_info->tail_call_ctx = true;
+>> +		fallthrough;
+>> +	case BPF_LSM_MAC:
+>> +	case BPF_LSM_CGROUP:
+>>  		if (!btf_type_is_func(t)) {
+>>  			bpf_log(log, "attach_btf_id %u is not a function\n",
+>>  				btf_id);
+> 
 
