@@ -1,136 +1,115 @@
-Return-Path: <bpf+bounces-7811-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7812-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DF2877CE04
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 16:25:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB41A77CE31
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 16:36:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB8C82814DB
-	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 14:25:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC71E1C20A7D
+	for <lists+bpf@lfdr.de>; Tue, 15 Aug 2023 14:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A65C5134DC;
-	Tue, 15 Aug 2023 14:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A94134DE;
+	Tue, 15 Aug 2023 14:35:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B9D5C9D;
-	Tue, 15 Aug 2023 14:25:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1D9FC433C8;
-	Tue, 15 Aug 2023 14:25:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692109528;
-	bh=coObV9y/RYS3AiSNn8u13h8zoAh7+fxjKoeBOZzSR9M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Jyvy+H7ssDO2P5B/nS4Sc2bspYwRxSNsTRDI+ZodIPUfCNJcmo/Of3p8kOorKTxUs
-	 eRM/jzo7f9zNOI0mgx36unEe+oIA3yaUSUd2qNpge/UbziBLmuYQLvNPosoOobv2dQ
-	 AfNuScxOGKv8xlTk6TTHR4JDnUsAF4iZuepIDxItyzW5618GCTPewpu9gaYo6a5o0U
-	 /SvSbs7MZ2AKaZpbogI+kljbfBzjoX6GnbFizCB3bckrMeX7welOSI6LW7wusVYFSh
-	 Db9JWBESivJmEWHewjC8O7qmsfcp0g2bctBSZnN4msw1MhaDr4mdRD8+4DWf9vHxUB
-	 jrU77Ync1/adg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id DACE6404DF; Tue, 15 Aug 2023 11:25:25 -0300 (-03)
-Date: Tue, 15 Aug 2023 11:25:25 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Carsten Haitzler <carsten.haitzler@arm.com>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	James Clark <james.clark@arm.com>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>,
-	Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-	llvm@lists.linux.dev, Wang Nan <wangnan0@huawei.com>,
-	Wang ShaoBo <bobo.shaobowang@huawei.com>,
-	YueHaibing <yuehaibing@huawei.com>, He Kuang <hekuang@huawei.com>,
-	Brendan Gregg <brendan.d.gregg@gmail.com>
-Subject: Re: [PATCH v1 2/4] perf trace: Migrate BPF augmentation to use a
- skeleton
-Message-ID: <ZNuK1TFwdjyezV3I@kernel.org>
-References: <20230810184853.2860737-1-irogers@google.com>
- <20230810184853.2860737-3-irogers@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 004701097E;
+	Tue, 15 Aug 2023 14:35:57 +0000 (UTC)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D3719A6;
+	Tue, 15 Aug 2023 07:35:54 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5234b80e9b6so7461639a12.2;
+        Tue, 15 Aug 2023 07:35:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692110153; x=1692714953;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5ExkU1aXgwbVZAT4/86NsHH+oPTHRo8kokP8esTR6pM=;
+        b=T8JfBGRKfRbUqDuTJiwMDTGkrsRIKO5jTVuAqeDt45jhDd+MoPa0r9rX6d+JXB2SLH
+         +PdVegksVN7bVdmYt0loLcqvellOQIle4Gh8C4S0uUSTNbGFG/T1RJl2QvLFUj6BVGsi
+         fpLg6c77iRfXi/coDfTa7VaY7bVSsXhSeZmxhUS0UEWcVpiUmO2MkQoZFY6YHpkt9Ltv
+         XzWstHS/9nWlHwYLdZhEtS2nCeZx3HXivTZv7prynNSMvoL5EfqyMFQJFwL4WjM0xpZm
+         N/tnxa2KLrWGXfxKLLIqTwz+bs1lST0+VmoajwsrbVuLtgVk/XpaFyfJZXlHNXb58Qyw
+         Cizw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692110153; x=1692714953;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5ExkU1aXgwbVZAT4/86NsHH+oPTHRo8kokP8esTR6pM=;
+        b=iLrb6NVavHradzfYV9cbPUdV03q0U14iyiR5YoXPjcZGWczPo7NcDHjg7tE8T3UeHv
+         k7kNNzcwt0HzKC2gJCoLbpPaVwX2+Rcu/zRU/gMOwmF/3rVh5K1ZZf60NG0Mwl4ysk8D
+         Vveoxik8QYJiGyLv6DgQkF4LhKXxnm4d7rdneeulkxUS2r3Nm0NUBldMR+KRf4KeQmem
+         xLJS+Flsc5eRp3qb/5MdRKHBlL6spE1mEZeKiZeSaORiGTmBWMW9yCsXtvwpksAaMJoM
+         IpcdDvuzDy1fA+RL/AL90f/s1xHoqiUff4Q/MrYzzMUj1AmqiKVmGvZF06w6XB1cc+EC
+         lgGg==
+X-Gm-Message-State: AOJu0Yw/Qy1GpeZvuMV+OLBGQB7ouGOF9SraQlfNiJkXhnGe5eyNw+QF
+	LdgR6nChaItJ9/Ke9GXNOdvbxIDsIl/csA==
+X-Google-Smtp-Source: AGHT+IFsmByXjHI0wnLzrSXkFNHsDb7aGcOCiExsey2xd2N/qfCGkxS21qOBHQU7rf4CmMMPM/mEAg==
+X-Received: by 2002:aa7:c612:0:b0:522:20a0:7eb8 with SMTP id h18-20020aa7c612000000b0052220a07eb8mr9909900edq.33.1692110152723;
+        Tue, 15 Aug 2023 07:35:52 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id n19-20020aa7c453000000b0052328d4268asm6831254edr.81.2023.08.15.07.35.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 07:35:52 -0700 (PDT)
+Message-ID: <841306f0691a7d56be72be0bb3c7472eadcc3367.camel@gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/2] bpf, x64: Fix tailcall infinite loop
+ bug
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Leon Hwang <hffilwlqm@gmail.com>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev,  song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com,  kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org,  x86@kernel.org, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de,  dave.hansen@linux.intel.com,
+ hpa@zytor.com, mykolal@fb.com, shuah@kernel.org,  davem@davemloft.net,
+ dsahern@kernel.org, tangyeechou@gmail.com,  kernel-patches-bot@fb.com,
+ maciej.fijalkowski@intel.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Date: Tue, 15 Aug 2023 17:35:50 +0300
+In-Reply-To: <43201fd2-dca7-9294-1dea-8460a9e99296@gmail.com>
+References: <20230814134147.70289-1-hffilwlqm@gmail.com>
+	 <20230814134147.70289-2-hffilwlqm@gmail.com>
+	 <ad3db96c97aea916d555c76069490a176f634ccb.camel@gmail.com>
+	 <43201fd2-dca7-9294-1dea-8460a9e99296@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810184853.2860737-3-irogers@google.com>
-X-Url: http://acmel.wordpress.com
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+	FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Em Thu, Aug 10, 2023 at 11:48:51AM -0700, Ian Rogers escreveu:
-> Previously a BPF event of augmented_raw_syscalls.c could be used to
-> enable augmentation of syscalls by perf trace. As BPF events are no
-> longer supported, switch to using a BPF skeleton which when attached
-> explicitly opens the sysenter and sysexit tracepoints.
-> 
-> The dump map is removed as debugging wasn't supported by the
-> augmentation and bpf_printk can be used when necessary.
-> 
-> Remove tools/perf/examples/bpf/augmented_raw_syscalls.c so that the
-> rename/migration to a BPF skeleton captures that this was the source.
-> +#ifdef HAVE_BPF_SKEL
-> +	trace.skel = augmented_raw_syscalls_bpf__open();
-> +	if (!trace.skel) {
-> +		pr_debug("Failed to open augmented syscalls BPF skeleton");
-> +	} else {
-> +		/*
-> +		 * Disable attaching the BPF programs except for sys_enter and
-> +		 * sys_exit that tail call into this as necessary.
-> +		 */
-> +		bpf_program__set_autoattach(trace.skel->progs.syscall_unaugmented,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_connect,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_sendto,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_open,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_openat,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_rename,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_renameat,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_perf_event_open,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_clock_nanosleep,
-> +					    /*autoattach=*/false);
-> +
-> +		err = augmented_raw_syscalls_bpf__load(trace.skel);
->  
+On Tue, 2023-08-15 at 11:01 +0800, Leon Hwang wrote:
+[...]
+> a) Initial value of RAX is in emit_prologue().
+> 	if (!ebpf_from_cbpf) {
+> 		if (tail_call_reachable && !is_subprog)
+> 			/* When it's the entry of the whole
+> 			 * tailcall context, zeroing the RAX
+> 			 * means init tail_call_cnt.
+> 			 */
+> 			EMIT2(0x31, 0xC0); /* xor eax, eax */
+> 		else
+> 			// Keep the same asm layout.
+> 			EMIT2(0x66, 0x90); /* nop2 */
+> 	}
+>    I'd like to add this comment to emit_prologue().
 
-So I converted the above to:
+Got it, thank you.
 
-		struct bpf_program *prog;
 
-		bpf_object__for_each_program(prog, trace.skel->obj) {
-			if (prog != trace.skel->progs.sys_enter && prog != trace.skel->progs.sys_exit)
-				bpf_program__set_autoattach(prog, /*autoattach=*/false);
-		}
-
-So that we don't have to add new lines disabling attachment when adding
-support for other pointer receiving syscalls.
-
-- Arnaldo
+[...]
 
