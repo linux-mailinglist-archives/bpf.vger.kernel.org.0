@@ -1,227 +1,149 @@
-Return-Path: <bpf+bounces-7865-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7866-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E201177D878
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 04:34:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F85E77D897
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 04:54:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C28A91C20F2E
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 02:34:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 704151C20EDE
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 02:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DFB17D9;
-	Wed, 16 Aug 2023 02:33:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592C63FDC;
+	Wed, 16 Aug 2023 02:54:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB89C2E9
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 02:33:50 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748CD1BE6
-	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 19:33:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1692153228;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VNW1zQdlSA+EBMwsqEGzK2TiH2hiDgSEYVGqzy81FKw=;
-	b=ivfv7coNyr6G+K3BeKepxNRJ84eDyBcx4Vcwp8fvdAPFGUcQfluj/pnOVX80BilVvAn3lQ
-	16jeI9TZUF6hpWv5/5tL/i8HawOKrWFcS0Qv/Oo/3nnv4AiZEUntgi0jQCx2SQza/aHJwJ
-	SqMVHQdS/khQ9Vd5RFF4fhpWrPphWYU=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-687-nlPkqR0hMye2InOePnjxxg-1; Tue, 15 Aug 2023 22:33:47 -0400
-X-MC-Unique: nlPkqR0hMye2InOePnjxxg-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b6ff15946fso63930031fa.2
-        for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 19:33:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3697D3D7B
+	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 02:54:09 +0000 (UTC)
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AF12132
+	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 19:54:07 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-6471e071996so14107856d6.0
+        for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 19:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1692154446; x=1692759246;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2jAVBy2MkmXmlDNRy4QvEu431ZhbMb0FhFH3eSVe50I=;
+        b=s1C2tL1gwzB9t1W8VGjfLV8zpPSqNILfvoZd7kA5FZ9giVSw/PctFcXKSiDXYkoGUj
+         1J3ikEOfXp+jpODaD5f7mpP0/lMAq0LmLyxnAz/lDqn5zuop//mbNmqaNG3n4CR7nOzd
+         3MJOvbDoMyc0pVW5eUOZfakv4t579QuSvvZRM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692153226; x=1692758026;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VNW1zQdlSA+EBMwsqEGzK2TiH2hiDgSEYVGqzy81FKw=;
-        b=EkrT9R/qtX0DdkYT3DcYY0ezxewW5uDfin/oE0O8wDVhOHj7PcXaKgk+WgTpZTk/jA
-         gsQomcKRzQhhl8ZT9+lX+tlOdtewm6RO8azMJNRGV6+YWah5echZcOK4DF7RUvZce/Pq
-         ySUEj1rWMGad1k19avia6HXdFPFZ+0szc+61OK6aghgbah5KLlKsgilfiIGrv7xIZssT
-         jjJoWSpRXtMQ/6a6COlYSyx6rt204leMDq7kIoaK9kV22a3hFlpPVREnVeebzB3p/32r
-         CO9+N/AhituC2W9sUImdfya0M7UZrQUYCwVm4l3yoR00OgJai415RlvrleTM9I32JM2T
-         5LOA==
-X-Gm-Message-State: AOJu0YxXROh0U7HjW/OAjFio3tYnYyajsnMlz0XTR842nQcZZkYgjcUQ
-	wQv+36wlSlSCv4F0ufVAXHDDz8PbhNQ7hJwP9xJXDHB6v9Vfrxb3jlAYy6d5zadluGoJ4tNggRS
-	EfIKJaVxVGzgktg24+xonTJIMpCw/
-X-Received: by 2002:a2e:87d4:0:b0:2b9:cd3d:4136 with SMTP id v20-20020a2e87d4000000b002b9cd3d4136mr426227ljj.2.1692153225915;
-        Tue, 15 Aug 2023 19:33:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGuqvZAnE6ML8oI2NAwZU1V3nFQiHWJ1QHjUqgo9pCf+uRWTz3qikCM4YBJ7Mh6JT7RKQu36d2mSMT50bmGwcU=
-X-Received: by 2002:a2e:87d4:0:b0:2b9:cd3d:4136 with SMTP id
- v20-20020a2e87d4000000b002b9cd3d4136mr426215ljj.2.1692153225633; Tue, 15 Aug
- 2023 19:33:45 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692154446; x=1692759246;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2jAVBy2MkmXmlDNRy4QvEu431ZhbMb0FhFH3eSVe50I=;
+        b=CzdHIvtjcqg6cPfKECw+64jq4pOD4f2w/KLOmF/t9rJPBQiBg8wkrXZmFehAc8g7sh
+         4lZDI54U0ANPfUsyZhIv0RB3UzSKqs7iAUZ/0NIsqhGPc3G8XmiN47JxGC6STkhtTNT4
+         pr2M9D9N93hTPzKft9H+pZfXxe8D361B/bCo71iSTt8IxpeRejgIcaze1t02MpEtdMFu
+         J8eVWdYWxYvzm/WK8PlMk96kiACa4cr29p+eVj4dfDr83I2n0/kwzc+nsWPk6HlhJzkP
+         DIYsQ0/DhRbNHCN5uYE8tFdBoZG44Atq9CGiqYSxz75UrAX8AMo3/wUv3mI2RHaemwgq
+         1mdg==
+X-Gm-Message-State: AOJu0YzhMPKayBBIh7olsLi+2RdhnVsmlfeAJ5qN6OB+lSD1uEcmZqVQ
+	Gpp0LYLJ7F9h8J/O94BCPG+FXndoz385tQSPKLtEUQ==
+X-Google-Smtp-Source: AGHT+IFUyON3WYFx3pyMbAY54IPL8txV66k0Ez5DFT6rOchV7FfvRatH9VayV7nsUi0glnx5sw9aFA==
+X-Received: by 2002:a0c:c444:0:b0:626:3a5a:f8dc with SMTP id t4-20020a0cc444000000b006263a5af8dcmr517063qvi.57.1692154446180;
+        Tue, 15 Aug 2023 19:54:06 -0700 (PDT)
+Received: from debian.debian ([140.141.197.139])
+        by smtp.gmail.com with ESMTPSA id c21-20020ae9e215000000b00765a9f53af0sm4136929qkc.128.2023.08.15.19.54.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 19:54:05 -0700 (PDT)
+Date: Tue, 15 Aug 2023 19:54:03 -0700
+From: Yan Zhai <yan@cloudflare.com>
+To: bpf@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	David Ahern <dsahern@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Yan Zhai <yan@cloudflare.com>, Thomas Graf <tgraf@suug.ch>,
+	Jordan Griege <jgriege@cloudflare.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH v5 bpf 0/4] lwt: fix return values of BPF ops
+Message-ID: <cover.1692153515.git.yan@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230810123057.43407-1-xuanzhuo@linux.alibaba.com>
- <20230810123057.43407-6-xuanzhuo@linux.alibaba.com> <CACGkMEsaYbsWyOKxA-xY=3dSmvzq9pMdYbypG9q+Ry2sMwAMPg@mail.gmail.com>
- <1692081029.4299796-8-xuanzhuo@linux.alibaba.com> <CACGkMEt5RyOy_6rTXon_7py=ZmdJD=e4dMOGpNOo3NOyahGvjg@mail.gmail.com>
- <1692091669.428807-1-xuanzhuo@linux.alibaba.com> <CACGkMEsnW-+fqcxu6E-cbAtMduE_n82fu+RA162fX5gr=Ckf5A@mail.gmail.com>
- <1692151724.9150448-1-xuanzhuo@linux.alibaba.com> <CACGkMEt7LSTY-TRcSD75vYcv0AkH2a5otVXga7VGRLu7JQT_dA@mail.gmail.com>
- <1692152487.9422052-2-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1692152487.9422052-2-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 16 Aug 2023 10:33:34 +0800
-Message-ID: <CACGkMEvnVy+p8+Nro6v7Yr-m_N07200skcqwz-pCr5==sn68BQ@mail.gmail.com>
-Subject: Re: [PATCH vhost v13 05/12] virtio_ring: introduce virtqueue_dma_dev()
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: virtualization@lists.linux-foundation.org, 
-	"Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Aug 16, 2023 at 10:24=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.=
-com> wrote:
->
-> On Wed, 16 Aug 2023 10:19:34 +0800, Jason Wang <jasowang@redhat.com> wrot=
-e:
-> > On Wed, Aug 16, 2023 at 10:16=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alib=
-aba.com> wrote:
-> > >
-> > > On Wed, 16 Aug 2023 09:13:48 +0800, Jason Wang <jasowang@redhat.com> =
-wrote:
-> > > > On Tue, Aug 15, 2023 at 5:40=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.a=
-libaba.com> wrote:
-> > > > >
-> > > > > On Tue, 15 Aug 2023 15:50:23 +0800, Jason Wang <jasowang@redhat.c=
-om> wrote:
-> > > > > > On Tue, Aug 15, 2023 at 2:32=E2=80=AFPM Xuan Zhuo <xuanzhuo@lin=
-ux.alibaba.com> wrote:
-> > > > > > >
-> > > > > > >
-> > > > > > > Hi, Jason
-> > > > > > >
-> > > > > > > Could you skip this patch?
-> > > > > >
-> > > > > > I'm fine with either merging or dropping this.
-> > > > > >
-> > > > > > >
-> > > > > > > Let we review other patches firstly?
-> > > > > >
-> > > > > > I will be on vacation soon, and won't have time to do this unti=
-l next week.
-> > > > >
-> > > > > Have a happly vacation.
-> > > > >
-> > > > > >
-> > > > > > But I spot two possible "issues":
-> > > > > >
-> > > > > > 1) the DMA metadata were stored in the headroom of the page, th=
-is
-> > > > > > breaks frags coalescing, we need to benchmark it's impact
-> > > > >
-> > > > > Not every page, just the first page of the COMP pages.
-> > > > >
-> > > > > So I think there is no impact.
-> > > >
-> > > > Nope, see this:
-> > > >
-> > > >         if (SKB_FRAG_PAGE_ORDER &&
-> > > >             !static_branch_unlikely(&net_high_order_alloc_disable_k=
-ey)) {
-> > > >                 /* Avoid direct reclaim but allow kswapd to wake */
-> > > >                 pfrag->page =3D alloc_pages((gfp & ~__GFP_DIRECT_RE=
-CLAIM) |
-> > > >                                           __GFP_COMP | __GFP_NOWARN=
- |
-> > > >                                           __GFP_NORETRY,
-> > > >                                           SKB_FRAG_PAGE_ORDER);
-> > > >                 if (likely(pfrag->page)) {
-> > > >                         pfrag->size =3D PAGE_SIZE << SKB_FRAG_PAGE_=
-ORDER;
-> > > >                         return true;
-> > > >                 }
-> > > >         }
-> > > >
-> > > > The comp page might be disabled due to the SKB_FRAG_PAGE_ORDER and
-> > > > net_high_order_alloc_disable_key.
-> > >
-> > >
-> > > YES.
-> > >
-> > > But if comp page is disabled. Then we only get one page each time. Th=
-e pages are
-> > > not contiguous, so we don't have frags coalescing.
-> > >
-> > > If you mean the two pages got from alloc_page may be contiguous. The =
-coalescing
-> > > may then be broken. It's a possibility, but I think the impact will b=
-e small.
-> >
-> > Let's have a simple benchmark and see?
->
->
-> That is ok.
->
-> I think you want to know the perf num with big traffic and the comp page
-> disabled.
+lwt xmit hook does not expect positive return values in function
+ip_finish_output2 and ip6_finish_output. However, BPF programs can
+directly return positive statuses such like NET_XMIT_DROP, NET_RX_DROP,
+and etc to the caller. Such return values would make the kernel continue
+processing already freed skbs and eventually panic.
 
-Yes.
+This set fixes the return values from BPF ops to unexpected continue
+processing, and checks strictly on the correct continue condition for
+future proof. In addition, add missing selftests for BPF_REDIRECT
+and BPF_REROUTE cases for BPF-CI.
 
-Thanks
+v4: https://lore.kernel.org/bpf/ZMD1sFTW8SFiex+x@debian.debian/T/ 
+v3: https://lore.kernel.org/bpf/cover.1690255889.git.yan@cloudflare.com/ 
+v2: https://lore.kernel.org/netdev/ZLdY6JkWRccunvu0@debian.debian/ 
+v1: https://lore.kernel.org/bpf/ZLbYdpWC8zt9EJtq@debian.debian/ 
 
->
-> Thanks.
->
->
-> >
-> > Thanks
-> >
-> > >
-> > > Thanks.
-> > >
-> > >
-> > > >
-> > > > >
-> > > > >
-> > > > > > 2) pre mapped DMA addresses were not reused in the case of XDP_=
-TX/XDP_REDIRECT
-> > > > >
-> > > > > Because that the tx is not the premapped mode.
-> > > >
-> > > > Yes, we can optimize this on top.
-> > > >
-> > > > Thanks
-> > > >
-> > > > >
-> > > > > Thanks.
-> > > > >
-> > > > > >
-> > > > > > I see Michael has merge this series so I'm fine to let it go fi=
-rst.
-> > > > > >
-> > > > > > Thanks
-> > > > > >
-> > > > > > >
-> > > > > > > Thanks.
-> > > > > > >
-> > > > > >
-> > > > >
-> > > >
-> > >
-> >
->
+changes since v4:
+ * fixed same error on BPF_REROUTE path
+ * re-implemented selftests under BPF-CI requirement
+
+changes since v3:
+ * minor change in commit message and changelogs
+ * tested by Jakub Sitnicki
+
+changes since v2:
+ * subject name changed
+ * also covered redirect to ingress case
+ * added selftests
+
+changes since v1:
+ * minor code style changes
+
+Yan Zhai (4):
+  lwt: fix return values of BPF ops
+  lwt: check LWTUNNEL_XMIT_CONTINUE strictly
+  selftests/bpf: add lwt_xmit tests for BPF_REDIRECT
+  selftests/bpf: add lwt_xmit tests for BPF_REROUTE
+
+ include/net/lwtunnel.h                        |   5 +-
+ net/core/lwt_bpf.c                            |   7 +-
+ net/ipv4/ip_output.c                          |   2 +-
+ net/ipv6/ip6_output.c                         |   2 +-
+ .../selftests/bpf/prog_tests/lwt_helpers.h    | 139 ++++++++
+ .../selftests/bpf/prog_tests/lwt_redirect.c   | 319 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/lwt_reroute.c    | 256 ++++++++++++++
+ .../selftests/bpf/progs/test_lwt_redirect.c   |  58 ++++
+ .../selftests/bpf/progs/test_lwt_reroute.c    |  36 ++
+ 9 files changed, 817 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lwt_helpers.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lwt_redirect.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lwt_reroute.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_lwt_redirect.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_lwt_reroute.c
+
+-- 
+2.30.2
 
 
