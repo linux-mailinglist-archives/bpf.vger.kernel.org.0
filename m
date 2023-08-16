@@ -1,131 +1,194 @@
-Return-Path: <bpf+bounces-7857-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7858-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3E1A77D7AA
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 03:28:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC6C177D7D3
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 03:45:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0CF11C20E7E
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 01:28:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 771BA281674
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 01:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21A317F2;
-	Wed, 16 Aug 2023 01:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501C6A50;
+	Wed, 16 Aug 2023 01:45:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57F7392
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 01:28:35 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAA0211E
-	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 18:28:34 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RQVrs2YNNz4f3m7J
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 09:28:29 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP2 (Coremail) with SMTP id Syh0CgAHKm49JtxkDYY6Aw--.30849S2;
-	Wed, 16 Aug 2023 09:28:30 +0800 (CST)
-Message-ID: <67212714-15f3-84e8-d5c6-84746632eedd@huaweicloud.com>
-Date: Wed, 16 Aug 2023 09:28:29 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224BF7F0
+	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 01:45:17 +0000 (UTC)
+Received: from out203-205-221-236.mail.qq.com (out203-205-221-236.mail.qq.com [203.205.221.236])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED7D2109;
+	Tue, 15 Aug 2023 18:45:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1692150313;
+	bh=p9swnxtjKzpWU0CCLxh3ai2IDMKAHQvIudSZ/qgIf5w=;
+	h=From:To:Cc:Subject:Date;
+	b=K77xyGgMT03mMbLwoxmznZYpD3JrtXcKL+eP0rMQu392ZXjQY/24C9D2bvrQCzHGG
+	 7pIa1siQ6JucETn3UTpV4a0jwl2IIOCOzGuBEZXLNAn1Su0dW+h2STXDtur1pg/UPu
+	 lnbIgFVSXk9FTyXjmst8wck0HLEF6crY2I+hCQmk=
+Received: from localhost.localdomain ([39.156.73.12])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id 93B8F64C; Wed, 16 Aug 2023 09:36:59 +0800
+X-QQ-mid: xmsmtpt1692149819tp6gg1e0n
+Message-ID: <tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com>
+X-QQ-XMAILINFO: OMWm0AbyvxL+tZBWJ1ZHcNDuZOj9clm0twjWnbc37IBWOt7o/a57bTkq0rSmIV
+	 tcjdYI21zz6zgaNTSF8LuqoMsSLpQtomXz3RUA9pARkOBr6PXNJBkSVCk5vmm3u/jWCNjWYwJxrd
+	 uVaDeUG/YIh3MdBbc0swXRt8rm9acY9/WAReHlsJ9jbks9dcncaxU4T8HlTmuTVdEDoK8bGtWWUn
+	 hidsQUYkc8wMac+ielWf5vlBricVMCX/uyfnKv5R0EJFk8HGVnwoTFTxAsQS02PIh9ZsgRYrR6UU
+	 XSjjolUuXAdqjfRqjIhJ0leaJLISF0LFHlPk9qM4hvR3Jm4ycuKkQ8vXDq1KaqNJb0g0EjKhsbg6
+	 SeiKoHocjlY8/j10oy0QXcEjysZDOwmRuhRJGYWQK6HNGrAuNTdeCU3Otm6Lw5yF4EByHjZCIF3p
+	 FESIsIYTerLC7H54McpcoXMESK1xvqJHIXOHJi9NaDtCfuqCJez+RgjG9j7PubLsaEnhwK2HMqHC
+	 R7L5c08fween1qvGvguvSbhvfAubIhgWjpDJQyVuBem0dJu/7GhQ07lLQbDHVyn3za950O5N2n1m
+	 j72gkjXyp8KG7MtsBgANoKQOCeM1DBPZs0lRtBKPRVGuM33N2SvL98ErOEGShW8SqYqxt3VYCim5
+	 rTkhShLPCcVQHBXsuSQ+VbAbn3qxMqIAT5dKfsjMogkBfIzJDk7jA4qPgB76iIqFGMne3LoNJ3sm
+	 GzMfkcY9qGqcTc6MuOaArbfN3aVQePoxX+oDm4aJUXzr6yIPUR3QHSzttwdqHTiSqzqSjF17ZVvl
+	 wcNB0tCHGgGUTdkUuTBQrdRlI4IKBSpgGuqXjA9IJyXUmNfgm84nT/GU1e1BS7GrOcpyWGHDjBH+
+	 7hA3l/Ud+Pf8CClMjHUv83tOvbtmkfSNHVPe0FOADIOhW8HYiIQyej5CGAgcZ0HLs8bY07hFSzYf
+	 boQU/jC+3JgDibnjgb3FABmtN+hGc3hNVycDwMsJAgXFH0sofDKTZZu6a1F2avQdhmFojD2cvryf
+	 dUJCLeNg==
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Rong Tao <rtoax@foxmail.com>
+To: sdf@google.com,
+	daniel@iogearbox.net,
+	andrii@kernel.org
+Cc: rongtao@cestc.cn,
+	rtoax@foxmail.com,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org (open list:BPF [SELFTESTS] (Test Runners & Infrastructure)),
+	linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next v4] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date: Wed, 16 Aug 2023 09:36:52 +0800
+X-OQ-MSGID: <20230816013652.26900-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next 7/7] selftests/bpf: Enable cpu v4 tests for arm64
-Content-Language: en-US
-To: yonghong.song@linux.dev, bpf@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Yonghong Song <yhs@fb.com>,
- Zi Shen Lim <zlim.lnx@gmail.com>
-References: <20230815154158.717901-1-xukuohai@huaweicloud.com>
- <20230815154158.717901-8-xukuohai@huaweicloud.com>
- <f1b6fde2-5097-7a0f-29ad-7390a165bf16@linux.dev>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <f1b6fde2-5097-7a0f-29ad-7390a165bf16@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAHKm49JtxkDYY6Aw--.30849S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw1xZryfGF1kZr17uF4rKrg_yoW8CF1rpa
-	4kWas8Kr1IkFnxWF13GFW7ZFyrtws2vryYya10yw45WF1DJryxJrs7KF45KrnIgrZY9rs5
-	Za42g39xZF48ZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/16/2023 12:57 AM, Yonghong Song wrote:
-> 
-> 
-> On 8/15/23 8:41 AM, Xu Kuohai wrote:
->> From: Xu Kuohai <xukuohai@huawei.com>
->>
->> Enable cpu v4 instruction tests for arm64.
->>
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> 
-> Thanks for adding cpu v4 support for arm64. The CI looks green as well for arm64.
-> 
-> https://github.com/kernel-patches/bpf/actions/runs/5868919914/job/15912774884?pr=5525
->
+From: Rong Tao <rongtao@cestc.cn>
 
-Well, it looks like the CI's clang doesn't support cpu v4 yet:
+Static ksyms often have problems because the number of symbols exceeds the
+MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+the problem somewhat, but it's not the perfect way.
 
-   #306/1   verifier_bswap/cpuv4 is not supported by compiler or jit, use a dummy test:OK
-   #306     verifier_bswap:OK
+This commit uses dynamic memory allocation, which completely solves the
+problem caused by the limitation of the number of kallsyms.
 
-> Ack this patch which enabled cpu v4 tests for arm64.
-> 
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> 
->> ---
->>   tools/testing/selftests/bpf/progs/test_ldsx_insn.c | 2 +-
->>   tools/testing/selftests/bpf/progs/verifier_bswap.c | 2 +-
->>   tools/testing/selftests/bpf/progs/verifier_gotol.c | 2 +-
->>   tools/testing/selftests/bpf/progs/verifier_ldsx.c  | 2 +-
->>   tools/testing/selftests/bpf/progs/verifier_movsx.c | 2 +-
->>   tools/testing/selftests/bpf/progs/verifier_sdiv.c  | 2 +-
->>   6 files changed, 6 insertions(+), 6 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/progs/test_ldsx_insn.c b/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
->> index 321abf862801..916d9435f12c 100644
->> --- a/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
->> +++ b/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
->> @@ -5,7 +5,7 @@
->>   #include <bpf/bpf_helpers.h>
->>   #include <bpf/bpf_tracing.h>
->> -#if defined(__TARGET_ARCH_x86) && __clang_major__ >= 18
->> +#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86)) && __clang_major__ >= 18
->>   const volatile int skip = 0;
->>   #else
->>   const volatile int skip = 1;
-> [...]
-> 
-> .
+Acked-by: Stanislav Fomichev <sdf@google.com>
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+v4: Make sure most cases we don't need the realloc() path to begin with,
+    and check strdup() return value.
+v3: https://lore.kernel.org/lkml/tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com/
+    Do not use structs and judge ksyms__add_symbol function return value.
+v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
+    Do the usual len/capacity scheme here to amortize the cost of realloc, and
+    don't free symbols.
+v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
+---
+ tools/testing/selftests/bpf/trace_helpers.c | 46 ++++++++++++++++-----
+ 1 file changed, 36 insertions(+), 10 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+index f83d9f65c65b..a1461508925e 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -18,10 +18,35 @@
+ #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+ #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
+ 
+-#define MAX_SYMS 400000
+-static struct ksym syms[MAX_SYMS];
++static struct ksym *syms;
++static int sym_cap;
+ static int sym_cnt;
+ 
++static int ksyms__add_symbol(const char *name, unsigned long addr)
++{
++	void *tmp;
++	unsigned int new_cap;
++
++	if (sym_cnt + 1 > sym_cap) {
++		new_cap = sym_cap * 4 / 3;
++		tmp = realloc(syms, sizeof(struct ksym) * new_cap);
++		if (!tmp)
++			return -ENOMEM;
++		syms = tmp;
++		sym_cap = new_cap;
++	}
++
++	tmp = strdup(name);
++	if (!tmp)
++		return -ENOMEM;
++	syms[sym_cnt].addr = addr;
++	syms[sym_cnt].name = tmp;
++
++	sym_cnt++;
++
++	return 0;
++}
++
+ static int ksym_cmp(const void *p1, const void *p2)
+ {
+ 	return ((struct ksym *)p1)->addr - ((struct ksym *)p2)->addr;
+@@ -33,9 +58,14 @@ int load_kallsyms_refresh(void)
+ 	char func[256], buf[256];
+ 	char symbol;
+ 	void *addr;
+-	int i = 0;
++	int ret;
+ 
++	/* Make sure most cases we don't need the realloc() path to begin with */
++	sym_cap = 400000;
+ 	sym_cnt = 0;
++	syms = malloc(sizeof(struct ksym) * sym_cap);
++	if (!syms)
++		return -ENOMEM;
+ 
+ 	f = fopen("/proc/kallsyms", "r");
+ 	if (!f)
+@@ -46,15 +76,11 @@ int load_kallsyms_refresh(void)
+ 			break;
+ 		if (!addr)
+ 			continue;
+-		if (i >= MAX_SYMS)
+-			return -EFBIG;
+-
+-		syms[i].addr = (long) addr;
+-		syms[i].name = strdup(func);
+-		i++;
++		ret = ksyms__add_symbol(func, (unsigned long)addr);
++		if (ret)
++			return ret;
+ 	}
+ 	fclose(f);
+-	sym_cnt = i;
+ 	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
+ 	return 0;
+ }
+-- 
+2.39.3
 
 
