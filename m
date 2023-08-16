@@ -1,268 +1,386 @@
-Return-Path: <bpf+bounces-7892-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7893-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B66AC77E164
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 14:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C777F77E1AE
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 14:31:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E80F1C21014
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 12:22:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF6E31C21089
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 12:31:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2CF107BF;
-	Wed, 16 Aug 2023 12:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C48156D5;
+	Wed, 16 Aug 2023 12:31:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4A8DF57;
-	Wed, 16 Aug 2023 12:22:42 +0000 (UTC)
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801A92D47;
-	Wed, 16 Aug 2023 05:22:13 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GCI0Mt023293;
-	Wed, 16 Aug 2023 12:21:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=q9AhJjcwrKeKKfGXDoGS/fZRNNeZiPjnBnZlx49JZZE=;
- b=CQAt3X8kxN2EAREku8sHa9gObXjlHFW/wJy6cootO8gNEDmnGdBOjeS9LBzokrLCjArD
- IYQgpqo9se7TDorSprHXFQm87bgOtFewMW7rzSUvB4u+Fi1IrqcjslC8jEvHY5zxaO/y
- PP9tulkwOJQE8IEWSi5EN1nAw46LhaneKuSugbVBCdBsxZiTx9jKmL/t4pgY51fkKbJY
- +Bj5Ghf7Kv/4IEl8z6jpBda0N3F6+MnIb/DVAVY0k43ZX30G+XikNHAPqB6h2FvoYu1V
- vFYfPbZP2s94EQuVpLi9Yp44MFhKH51lkxxCMJb5VP8wy47hJO2f1olec7BSx2sYgLTz NA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sgx048mmt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Aug 2023 12:21:48 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37GCB4UD021895;
-	Wed, 16 Aug 2023 12:21:48 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sgx048mme-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Aug 2023 12:21:48 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37GAL6On003446;
-	Wed, 16 Aug 2023 12:21:46 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3semdsmjfb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 16 Aug 2023 12:21:46 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37GCLhhI11600392
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 16 Aug 2023 12:21:44 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DD50920040;
-	Wed, 16 Aug 2023 12:21:43 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D51D82004B;
-	Wed, 16 Aug 2023 12:21:39 +0000 (GMT)
-Received: from li-05afa54c-330e-11b2-a85c-e3f3aa0db1e9.in.ibm.com (unknown [9.204.206.180])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 16 Aug 2023 12:21:39 +0000 (GMT)
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-To: srikar@linux.vnet.ibm.com
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, sachinp@linux.ibm.com,
-        sdf@google.com, song@kernel.org, yhs@fb.com, vishalc@linux.ibm.com
-Subject: [PATCH] Fix invalid escape sequence warnings
-Date: Wed, 16 Aug 2023 17:51:33 +0530
-Message-Id: <20230816122133.1231599-1-vishalc@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230811084739.GY3902@linux.vnet.ibm.com>
-References: <20230811084739.GY3902@linux.vnet.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4B51772D
+	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 12:31:16 +0000 (UTC)
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE6510C8
+	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 05:31:13 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-26b4a9205e3so1894534a91.0
+        for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 05:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1692189072; x=1692793872;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=So4cE/EwPzWwkGHeDBYhVdRGKHVyJL5UQ3cn6SnvDco=;
+        b=SLvAmL9QRt4Gu1zNHfL3L2btkogzuREP2Xh0AAFqxRolyJg6tVrJxRkkWVVHZGj1fQ
+         Y/KvJ2SPD9QqD967GcWS9PWUQ9bF9zOPi7nHjX+GOX60ORE4LTuK2dtIcVZa1qnEsXAu
+         dLF1jESghknHoN3HyGJJZMtKNUsi95hUUc7S1oe9UhOwvnyGU6wecLfObXYLnUYc9Wug
+         5Ks1p0e38NwAQ2GpPAYKDPLHyF0NSFimCW2bNrYjBNEH09IqDET4C3REhO1pHPfPIr00
+         SOww+Z4xRijs6OtZXd+k/pSa2FmNmVXICWtUzHfK5CRBuXnPTuA0Nptbi5AbVeAf7QGU
+         Si4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692189072; x=1692793872;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=So4cE/EwPzWwkGHeDBYhVdRGKHVyJL5UQ3cn6SnvDco=;
+        b=APO5cE7kRlwV6nqPOWJpOygsHXN1aRQphuI+xGUcTUsYg9jjd1uNgT+D+cc23qlT7f
+         8EA27yWTyekT2hem8HAj+Yzf18hFAgu7vhap9fhnjVmyBDvFOw/ON0VlOclTv8QCE2gb
+         0yobll8X2cEpU1K8KFcGoteW6uDoMISCnZb8kzvtNHzqFQLF+4hKCG4cnRF93dUJtecS
+         d/QrfD/qj13yIYx+Yb5yt7ptRjklYp/OenSNXGug2onp0QcgF2MX5R9chkQxJ8d9O7ZO
+         CLPrSCTHnrSELSFhw3Sc2ey/oV5EYrFCZG8dpKO8pJVeBcQm//s6t4SqFeaTL7MqLkKE
+         teIg==
+X-Gm-Message-State: AOJu0YwldSJ5B4XnVAmbW+z4Rr2hJsGi+H9tYav7SPU1oIYU+oPyAdYt
+	uRtJ0lhJdvvJZtXx+J/+lzcpaQ==
+X-Google-Smtp-Source: AGHT+IERO3Ln0lTmScqxHVGcLWbOGWsp6MYbctvBXJ8TaKn0Z4GP1goUtRoYLnCGFxXQ/bkVhsEDkw==
+X-Received: by 2002:a17:90b:3007:b0:262:f579:41db with SMTP id hg7-20020a17090b300700b00262f57941dbmr1064731pjb.6.1692189072435;
+        Wed, 16 Aug 2023 05:31:12 -0700 (PDT)
+Received: from [10.255.177.31] ([139.177.225.253])
+        by smtp.gmail.com with ESMTPSA id gp22-20020a17090adf1600b00265a7145fe5sm13123137pjb.41.2023.08.16.05.31.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 05:31:12 -0700 (PDT)
+Message-ID: <ae654476-5cc2-36ae-1047-eba196c9b38d@bytedance.com>
+Date: Wed, 16 Aug 2023 20:31:03 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [RFC PATCH v2 4/5] bpf: Add a OOM policy test
+To: Alan Maguire <alan.maguire@oracle.com>, hannes@cmpxchg.org,
+ mhocko@kernel.org, roman.gushchin@linux.dev, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, muchun.song@linux.dev
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ wuyun.abel@bytedance.com, robin.lu@bytedance.com
+References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
+ <20230810081319.65668-5-zhouchuyi@bytedance.com>
+ <5bb59039-4f3b-49b6-d440-3210d7a92754@oracle.com>
+From: Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <5bb59039-4f3b-49b6-d440-3210d7a92754@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Ni1vr0Yufmq6LHza8J1mtIR-9onUPdgp
-X-Proofpoint-GUID: FVG1B_V01_11AQzXP3Jz7yX5Vf0G_Skp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_10,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 impostorscore=0 suspectscore=0 malwarescore=0
- adultscore=0 phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
- mlxscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2308160105
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-The Python script `bpf_doc.py` uses regular expressions with
-backslashes in string literals, which results in SyntaxWarnings
-during its execution.
+Hello,
 
-This patch addresses these warnings by converting relevant string
-literals to raw strings, which interpret backslashes as literal
-characters. This ensures that the regular expressions are parsed
-correctly without causing any warnings.
+在 2023/8/16 19:53, Alan Maguire 写道:
+> On 10/08/2023 09:13, Chuyi Zhou wrote:
+>> This patch adds a test which implements a priority-based policy through
+>> bpf_oom_evaluate_task.
+>>
+>> The BPF program, oom_policy.c, compares the cgroup priority of two tasks
+>> and select the lower one. The userspace program test_oom_policy.c
+>> maintains a priority map by using cgroup id as the keys and priority as
+>> the values. We could protect certain cgroups from oom-killer by setting
+>> higher priority.
+>>
+>> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+>> ---
+>>   .../bpf/prog_tests/test_oom_policy.c          | 140 ++++++++++++++++++
+>>   .../testing/selftests/bpf/progs/oom_policy.c  | 104 +++++++++++++
+>>   2 files changed, 244 insertions(+)
+>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_oom_policy.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/oom_policy.c
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/test_oom_policy.c b/tools/testing/selftests/bpf/prog_tests/test_oom_policy.c
+>> new file mode 100644
+>> index 000000000000..bea61ff22603
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/test_oom_policy.c
+>> @@ -0,0 +1,140 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +#define _GNU_SOURCE
+>> +
+>> +#include <stdio.h>
+>> +#include <fcntl.h>
+>> +#include <unistd.h>
+>> +#include <stdlib.h>
+>> +#include <signal.h>
+>> +#include <sys/stat.h>
+>> +#include <test_progs.h>
+>> +#include <bpf/btf.h>
+>> +#include <bpf/bpf.h>
+>> +
+>> +#include "cgroup_helpers.h"
+>> +#include "oom_policy.skel.h"
+>> +
+>> +static int map_fd;
+>> +static int cg_nr;
+>> +struct {
+>> +	const char *path;
+>> +	int fd;
+>> +	unsigned long long id;
+>> +} cgs[] = {
+>> +	{ "/cg1" },
+>> +	{ "/cg2" },
+>> +};
+>> +
+>> +
+>> +static struct oom_policy *open_load_oom_policy_skel(void)
+>> +{
+>> +	struct oom_policy *skel;
+>> +	int err;
+>> +
+>> +	skel = oom_policy__open();
+>> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
+>> +		return NULL;
+>> +
+>> +	err = oom_policy__load(skel);
+>> +	if (!ASSERT_OK(err, "skel_load"))
+>> +		goto cleanup;
+>> +
+>> +	return skel;
+>> +
+>> +cleanup:
+>> +	oom_policy__destroy(skel);
+>> +	return NULL;
+>> +}
+>> +
+>> +static void run_memory_consume(unsigned long long consume_size, int idx)
+>> +{
+>> +	char *buf;
+>> +
+>> +	join_parent_cgroup(cgs[idx].path);
+>> +	buf = malloc(consume_size);
+>> +	memset(buf, 0, consume_size);
+>> +	sleep(2);
+>> +	exit(0);
+>> +}
+>> +
+>> +static int set_cgroup_prio(unsigned long long cg_id, int prio)
+>> +{
+>> +	int err;
+>> +
+>> +	err = bpf_map_update_elem(map_fd, &cg_id, &prio, BPF_ANY);
+>> +	ASSERT_EQ(err, 0, "update_map");
+>> +	return err;
+>> +}
+>> +
+>> +static int prepare_cgroup_environment(void)
+>> +{
+>> +	int err;
+>> +
+>> +	err = setup_cgroup_environment();
+>> +	if (err)
+>> +		goto clean_cg_env;
+>> +	for (int i = 0; i < cg_nr; i++) {
+>> +		err = cgs[i].fd = create_and_get_cgroup(cgs[i].path);
+>> +		if (!ASSERT_GE(cgs[i].fd, 0, "cg_create"))
+>> +			goto clean_cg_env;
+>> +		cgs[i].id = get_cgroup_id(cgs[i].path);
+>> +	}
+>> +	return 0;
+>> +clean_cg_env:
+>> +	cleanup_cgroup_environment();
+>> +	return err;
+>> +}
+>> +
+>> +void test_oom_policy(void)
+>> +{
+>> +	struct oom_policy *skel;
+>> +	struct bpf_link *link;
+>> +	int err;
+>> +	int victim_pid;
+>> +	unsigned long long victim_cg_id;
+>> +
+>> +	link = NULL;
+>> +	cg_nr = ARRAY_SIZE(cgs);
+>> +
+>> +	skel = open_load_oom_policy_skel();
+>> +	err = oom_policy__attach(skel);
+>> +	if (!ASSERT_OK(err, "oom_policy__attach"))
+>> +		goto cleanup;
+>> +
+>> +	map_fd = bpf_object__find_map_fd_by_name(skel->obj, "cg_map");
+>> +	if (!ASSERT_GE(map_fd, 0, "find map"))
+>> +		goto cleanup;
+>> +
+>> +	err = prepare_cgroup_environment();
+>> +	if (!ASSERT_EQ(err, 0, "prepare cgroup env"))
+>> +		goto cleanup;
+>> +
+>> +	write_cgroup_file("/", "memory.max", "10M");
+>> +
+>> +	/*
+>> +	 * Set higher priority to cg2 and lower to cg1, so we would select
+>> +	 * task under cg1 as victim.(see oom_policy.c)
+>> +	 */
+>> +	set_cgroup_prio(cgs[0].id, 10);
+>> +	set_cgroup_prio(cgs[1].id, 50);
+>> +
+>> +	victim_cg_id = cgs[0].id;
+>> +	victim_pid = fork();
+>> +
+>> +	if (victim_pid == 0)
+>> +		run_memory_consume(1024 * 1024 * 4, 0);
+>> +
+>> +	if (fork() == 0)
+>> +		run_memory_consume(1024 * 1024 * 8, 1);
+>> +
+>> +	while (wait(NULL) > 0)
+>> +		;
+>> +
+>> +	ASSERT_EQ(skel->bss->victim_pid, victim_pid, "victim_pid");
+>> +	ASSERT_EQ(skel->bss->victim_cg_id, victim_cg_id, "victim_cgid");
+>> +	ASSERT_EQ(skel->bss->failed_cnt, 1, "failed_cnt");
+>> +cleanup:
+>> +	bpf_link__destroy(link);
+>> +	oom_policy__destroy(skel);
+>> +	cleanup_cgroup_environment();
+>> +}
+>> diff --git a/tools/testing/selftests/bpf/progs/oom_policy.c b/tools/testing/selftests/bpf/progs/oom_policy.c
+>> new file mode 100644
+>> index 000000000000..fc9efc93914e
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/oom_policy.c
+>> @@ -0,0 +1,104 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +#include <vmlinux.h>
+>> +#include <bpf/bpf_tracing.h>
+>> +#include <bpf/bpf_helpers.h>
+>> +
+>> +char _license[] SEC("license") = "GPL";
+>> +
+>> +struct {
+>> +	__uint(type, BPF_MAP_TYPE_HASH);
+>> +	__type(key, int);
+>> +	__type(value, int);
+>> +	__uint(max_entries, 24);
+>> +} cg_map SEC(".maps");
+>> +
+>> +unsigned int victim_pid;
+>> +u64 victim_cg_id;
+>> +int failed_cnt;
+>> +
+>> +#define	EOPNOTSUPP	95
+>> +
+>> +enum {
+>> +	NO_BPF_POLICY,
+>> +	BPF_EVAL_ABORT,
+>> +	BPF_EVAL_NEXT,
+>> +	BPF_EVAL_SELECT,
+>> +};
+> 
+> When I built a kernel using this series and tried building the
+> associated test for that kernel I saw:
+> 
+> progs/oom_policy.c:22:2: error: redefinition of enumerator 'NO_BPF_POLICY'
+>          NO_BPF_POLICY,
+>          ^
+> /home/opc/src/bpf-next/tools/testing/selftests/bpf/tools/include/vmlinux.h:75894:2:
+> note: previous definition is here
+>          NO_BPF_POLICY = 0,
+>          ^
+> progs/oom_policy.c:23:2: error: redefinition of enumerator 'BPF_EVAL_ABORT'
+>          BPF_EVAL_ABORT,
+>          ^
+> /home/opc/src/bpf-next/tools/testing/selftests/bpf/tools/include/vmlinux.h:75895:2:
+> note: previous definition is here
+>          BPF_EVAL_ABORT = 1,
+>          ^
+> progs/oom_policy.c:24:2: error: redefinition of enumerator 'BPF_EVAL_NEXT'
+>          BPF_EVAL_NEXT,
+>          ^
+> /home/opc/src/bpf-next/tools/testing/selftests/bpf/tools/include/vmlinux.h:75896:2:
+> note: previous definition is here
+>          BPF_EVAL_NEXT = 2,
+>          ^
+> progs/oom_policy.c:  CLNG-BPF [test_maps] tailcall_bpf2bpf4.bpf.o
+> 25:2: error: redefinition of enumerator 'BPF_EVAL_SELECT'
+>          BPF_EVAL_SELECT,
+>          ^
+> /home/opc/src/bpf-next/tools/testing/selftests/bpf/tools/include/vmlinux.h:75897:2:
+> note: previous definition is here
+>          BPF_EVAL_SELECT = 3,
+>          ^
+> 4 errors generated.
+> 
+> 
+> So you shouldn't need the enum definition since it already makes it into
+> vmlinux.h.
+> OK. It seems my vmlinux.h doesn't contain these enum...
+> I also ran into test failures when I removed the above (and compilation
+> succeeded):
+> 
+> 
+> test_oom_policy:PASS:prepare cgroup env 0 nsec
+> (cgroup_helpers.c:130: errno: No such file or directory) Opening
+> /mnt/cgroup-test-work-dir23054//memory.max
+> set_cgroup_prio:PASS:update_map 0 nsec
+> set_cgroup_prio:PASS:update_map 0 nsec
+> test_oom_policy:FAIL:victim_pid unexpected victim_pid: actual 0 !=
+> expected 23058
+> test_oom_policy:FAIL:victim_cgid unexpected victim_cgid: actual 0 !=
+> expected 68
+> test_oom_policy:FAIL:failed_cnt unexpected failed_cnt: actual 0 !=
+> expected 1
+> #154     oom_policy:FAIL
+> Summary: 1/0 PASSED, 0 SKIPPED, 1 FAILED
+> 
+> So it seems that because my system was using the cgroupv1 memory
+> controller, it could not be used for v2 unless I rebooted with
+> 
+> systemd.unified_cgroup_hierarchy=1
+> 
+> ...on the boot commandline. It would be good to note any such
+> requirements for this test in the selftests/bpf/README.rst.
+> Might also be worth adding
+> 
+> write_cgroup_file("", "cgroup.subtree_control", "+memory");
+> 
+> ...to ensure the memory controller is enabled for the root cgroup.
+> 
+> At that point the test still failed:
+> 
+> set_cgroup_prio:PASS:update_map 0 nsec
+> test_oom_policy:FAIL:victim_pid unexpected victim_pid: actual 0 !=
+> expected 12649
+> test_oom_policy:FAIL:victim_cgid unexpected victim_cgid: actual 0 !=
+> expected 9583
+> test_oom_policy:FAIL:failed_cnt unexpected failed_cnt: actual 0 !=
+> expected 1
+> #154     oom_policy:FAIL
+> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+> Successfully unloaded bpf_testmod.ko.
+> 
+> 
+It seems that OOM is not invoked in your environment(you can check it in 
+demsg). If the memcg OOM is invoked by the test, we would record the 
+*victim_pid* and *victim_cgid* and they would not be zero. I guess the 
+reason is memory_control is not enabled in cgroup 
+"/mnt/cgroup-test-work-dir23054/", because I see the error message:
+(cgroup_helpers.c:130: errno: No such file or directory) Opening
+ > /mnt/cgroup-test-work-dir23054//memory.max
 
-Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
-Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Thanks for your review and test!
 
----
- scripts/bpf_doc.py | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index eaae2ce78381..dfd819c952b2 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -59,9 +59,9 @@ class Helper(APIElement):
-         Break down helper function protocol into smaller chunks: return type,
-         name, distincts arguments.
-         """
--        arg_re = re.compile('((\w+ )*?(\w+|...))( (\**)(\w+))?$')
-+        arg_re = re.compile(r'((\w+ )*?(\w+|...))( (\**)(\w+))?$')
-         res = {}
--        proto_re = re.compile('(.+) (\**)(\w+)\(((([^,]+)(, )?){1,5})\)$')
-+        proto_re = re.compile(r'(.+) (\**)(\w+)\(((([^,]+)(, )?){1,5})\)$')
- 
-         capture = proto_re.match(self.proto)
-         res['ret_type'] = capture.group(1)
-@@ -114,11 +114,11 @@ class HeaderParser(object):
-         return Helper(proto=proto, desc=desc, ret=ret)
- 
-     def parse_symbol(self):
--        p = re.compile(' \* ?(BPF\w+)$')
-+        p = re.compile(r' \* ?(BPF\w+)$')
-         capture = p.match(self.line)
-         if not capture:
-             raise NoSyscallCommandFound
--        end_re = re.compile(' \* ?NOTES$')
-+        end_re = re.compile(r' \* ?NOTES$')
-         end = end_re.match(self.line)
-         if end:
-             raise NoSyscallCommandFound
-@@ -133,7 +133,7 @@ class HeaderParser(object):
-         #   - Same as above, with "const" and/or "struct" in front of type
-         #   - "..." (undefined number of arguments, for bpf_trace_printk())
-         # There is at least one term ("void"), and at most five arguments.
--        p = re.compile(' \* ?((.+) \**\w+\((((const )?(struct )?(\w+|\.\.\.)( \**\w+)?)(, )?){1,5}\))$')
-+        p = re.compile(r' \* ?((.+) \**\w+\((((const )?(struct )?(\w+|\.\.\.)( \**\w+)?)(, )?){1,5}\))$')
-         capture = p.match(self.line)
-         if not capture:
-             raise NoHelperFound
-@@ -141,7 +141,7 @@ class HeaderParser(object):
-         return capture.group(1)
- 
-     def parse_desc(self, proto):
--        p = re.compile(' \* ?(?:\t| {5,8})Description$')
-+        p = re.compile(r' \* ?(?:\t| {5,8})Description$')
-         capture = p.match(self.line)
-         if not capture:
-             raise Exception("No description section found for " + proto)
-@@ -154,7 +154,7 @@ class HeaderParser(object):
-             if self.line == ' *\n':
-                 desc += '\n'
-             else:
--                p = re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
-+                p = re.compile(r' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
-                 capture = p.match(self.line)
-                 if capture:
-                     desc_present = True
-@@ -167,7 +167,7 @@ class HeaderParser(object):
-         return desc
- 
-     def parse_ret(self, proto):
--        p = re.compile(' \* ?(?:\t| {5,8})Return$')
-+        p = re.compile(r' \* ?(?:\t| {5,8})Return$')
-         capture = p.match(self.line)
-         if not capture:
-             raise Exception("No return section found for " + proto)
-@@ -180,7 +180,7 @@ class HeaderParser(object):
-             if self.line == ' *\n':
-                 ret += '\n'
-             else:
--                p = re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
-+                p = re.compile(r' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
-                 capture = p.match(self.line)
-                 if capture:
-                     ret_present = True
-@@ -219,12 +219,12 @@ class HeaderParser(object):
-         self.seek_to('enum bpf_cmd {',
-                      'Could not find start of bpf_cmd enum', 0)
-         # Searches for either one or more BPF\w+ enums
--        bpf_p = re.compile('\s*(BPF\w+)+')
-+        bpf_p = re.compile(r'\s*(BPF\w+)+')
-         # Searches for an enum entry assigned to another entry,
-         # for e.g. BPF_PROG_RUN = BPF_PROG_TEST_RUN, which is
-         # not documented hence should be skipped in check to
-         # determine if the right number of syscalls are documented
--        assign_p = re.compile('\s*(BPF\w+)\s*=\s*(BPF\w+)')
-+        assign_p = re.compile(r'\s*(BPF\w+)\s*=\s*(BPF\w+)')
-         bpf_cmd_str = ''
-         while True:
-             capture = assign_p.match(self.line)
-@@ -239,7 +239,7 @@ class HeaderParser(object):
-                 break
-             self.line = self.reader.readline()
-         # Find the number of occurences of BPF\w+
--        self.enum_syscalls = re.findall('(BPF\w+)+', bpf_cmd_str)
-+        self.enum_syscalls = re.findall(r'(BPF\w+)+', bpf_cmd_str)
- 
-     def parse_desc_helpers(self):
-         self.seek_to(helpersDocStart,
-@@ -263,7 +263,7 @@ class HeaderParser(object):
-         self.seek_to('#define ___BPF_FUNC_MAPPER(FN, ctx...)',
-                      'Could not find start of eBPF helper definition list')
-         # Searches for one FN(\w+) define or a backslash for newline
--        p = re.compile('\s*FN\((\w+), (\d+), ##ctx\)|\\\\')
-+        p = re.compile(r'\s*FN\((\w+), (\d+), ##ctx\)|\\\\')
-         fn_defines_str = ''
-         i = 0
-         while True:
-@@ -278,7 +278,7 @@ class HeaderParser(object):
-                 break
-             self.line = self.reader.readline()
-         # Find the number of occurences of FN(\w+)
--        self.define_unique_helpers = re.findall('FN\(\w+, \d+, ##ctx\)', fn_defines_str)
-+        self.define_unique_helpers = re.findall(r'FN\(\w+, \d+, ##ctx\)', fn_defines_str)
- 
-     def validate_helpers(self):
-         last_helper = ''
-@@ -425,7 +425,7 @@ class PrinterRST(Printer):
-         try:
-             cmd = ['git', 'log', '-1', '--pretty=format:%cs', '--no-patch',
-                    '-L',
--                   '/{}/,/\*\//:include/uapi/linux/bpf.h'.format(delimiter)]
-+                   r'/{}/,/\*\//:include/uapi/linux/bpf.h'.format(delimiter)]
-             date = subprocess.run(cmd, cwd=linuxRoot,
-                                   capture_output=True, check=True)
-             return date.stdout.decode().rstrip()
-@@ -496,7 +496,7 @@ HELPERS
-                             date=lastUpdate))
- 
-     def print_footer(self):
--        footer = '''
-+        footer = r'''
- EXAMPLES
- ========
- 
-@@ -598,7 +598,7 @@ SEE ALSO
-             one_arg = '{}{}'.format(comma, a['type'])
-             if a['name']:
-                 if a['star']:
--                    one_arg += ' {}**\ '.format(a['star'].replace('*', '\\*'))
-+                    one_arg += r' {}**\ '.format(a['star'].replace('*', '\\*'))
-                 else:
-                     one_arg += '** '
-                 one_arg += '*{}*\\ **'.format(a['name'])
--- 
-2.41.0
-
+> Are there other implicit assumptions about configuration that cause this
+> test to fail perhaps?
+> 
+> Alan
 
