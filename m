@@ -1,386 +1,229 @@
-Return-Path: <bpf+bounces-7893-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7894-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C777F77E1AE
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 14:31:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3E4277E209
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 14:59:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF6E31C21089
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 12:31:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 215971C2109B
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 12:59:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C48156D5;
-	Wed, 16 Aug 2023 12:31:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFBFD1118C;
+	Wed, 16 Aug 2023 12:58:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4B51772D
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 12:31:16 +0000 (UTC)
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE6510C8
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 05:31:13 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-26b4a9205e3so1894534a91.0
-        for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 05:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692189072; x=1692793872;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=So4cE/EwPzWwkGHeDBYhVdRGKHVyJL5UQ3cn6SnvDco=;
-        b=SLvAmL9QRt4Gu1zNHfL3L2btkogzuREP2Xh0AAFqxRolyJg6tVrJxRkkWVVHZGj1fQ
-         Y/KvJ2SPD9QqD967GcWS9PWUQ9bF9zOPi7nHjX+GOX60ORE4LTuK2dtIcVZa1qnEsXAu
-         dLF1jESghknHoN3HyGJJZMtKNUsi95hUUc7S1oe9UhOwvnyGU6wecLfObXYLnUYc9Wug
-         5Ks1p0e38NwAQ2GpPAYKDPLHyF0NSFimCW2bNrYjBNEH09IqDET4C3REhO1pHPfPIr00
-         SOww+Z4xRijs6OtZXd+k/pSa2FmNmVXICWtUzHfK5CRBuXnPTuA0Nptbi5AbVeAf7QGU
-         Si4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692189072; x=1692793872;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=So4cE/EwPzWwkGHeDBYhVdRGKHVyJL5UQ3cn6SnvDco=;
-        b=APO5cE7kRlwV6nqPOWJpOygsHXN1aRQphuI+xGUcTUsYg9jjd1uNgT+D+cc23qlT7f
-         8EA27yWTyekT2hem8HAj+Yzf18hFAgu7vhap9fhnjVmyBDvFOw/ON0VlOclTv8QCE2gb
-         0yobll8X2cEpU1K8KFcGoteW6uDoMISCnZb8kzvtNHzqFQLF+4hKCG4cnRF93dUJtecS
-         d/QrfD/qj13yIYx+Yb5yt7ptRjklYp/OenSNXGug2onp0QcgF2MX5R9chkQxJ8d9O7ZO
-         CLPrSCTHnrSELSFhw3Sc2ey/oV5EYrFCZG8dpKO8pJVeBcQm//s6t4SqFeaTL7MqLkKE
-         teIg==
-X-Gm-Message-State: AOJu0YwldSJ5B4XnVAmbW+z4Rr2hJsGi+H9tYav7SPU1oIYU+oPyAdYt
-	uRtJ0lhJdvvJZtXx+J/+lzcpaQ==
-X-Google-Smtp-Source: AGHT+IERO3Ln0lTmScqxHVGcLWbOGWsp6MYbctvBXJ8TaKn0Z4GP1goUtRoYLnCGFxXQ/bkVhsEDkw==
-X-Received: by 2002:a17:90b:3007:b0:262:f579:41db with SMTP id hg7-20020a17090b300700b00262f57941dbmr1064731pjb.6.1692189072435;
-        Wed, 16 Aug 2023 05:31:12 -0700 (PDT)
-Received: from [10.255.177.31] ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id gp22-20020a17090adf1600b00265a7145fe5sm13123137pjb.41.2023.08.16.05.31.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 05:31:12 -0700 (PDT)
-Message-ID: <ae654476-5cc2-36ae-1047-eba196c9b38d@bytedance.com>
-Date: Wed, 16 Aug 2023 20:31:03 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA4010976;
+	Wed, 16 Aug 2023 12:58:27 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E031FF3;
+	Wed, 16 Aug 2023 05:58:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692190706; x=1723726706;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=jbien+a97zhD9i+uD7rTezabkOWnOVqxk6DiCTZSanA=;
+  b=jQCMyIg6FFji4k9jQGAHRIM5G3Ly9m3vLscaoTn/NA2fyqhadgWVm1Te
+   U3ZWoFpOs7q4gRt5+X3Hfd+xJUyzAMyGYJgjDtRT+MfS0eGz/ZjtYklHB
+   3dDNvYrF9b7MwenlafR54iBV9WiU2cwv/ZlSJIWfrcOANmE0WsFVINpJ6
+   QmkExdadrYn928/ACaMdI43/5EaVAiH0nVGB4jYR6XRs34OU1y78t3oru
+   GXGy4f8GJTsshWXYLcxgf45LyLO+TfUI1s7FDdF8FR7XcMQVN2xa7AW/i
+   jCGE7R3DN73haNqdSib50F01GiKJU5uCFlMZ+omyD7lzff+yE6HLW5zmL
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="352114598"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="352114598"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 05:58:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="1064814914"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="1064814914"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Aug 2023 05:58:24 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 16 Aug 2023 05:58:24 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 16 Aug 2023 05:58:23 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 16 Aug 2023 05:58:23 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.176)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 16 Aug 2023 05:58:23 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iGuQnjBl2YPZvM0OP36SaCmhq0H3HioVdLUrHwMoeyaGYvhCFQ62n27iYOpJOLUAVwi5YnmFToD9lG7ZRnb2AX3LvJtYbZ3KPJrbZ/Zvmk7GmpN8EQCmUIZoPHKUKKGdFTlIv7OURzFscp0QZteNC6VEDEewDacb4CY0YncLRlKvcSQLiYDIsu45GRJjJKi7fjH1VhUIypABhkrB7vKtqWDTXczID3EMbN3T+H3rqqw+O17VGLP1TdPWCRicXUEZZd1p4Qb/OiRm2D0HeC38t78gcVlBBzrh/FY8cswFAZRXtOxdO6cvOfOaWfZL/I1vXbxVgIf97SAtn7HkbojquA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ajh+zSqXw7dlZHMgkKsPyPUotowfaqQz9XoTRVAw8oc=;
+ b=TQdF7DRW+KA3+tFxZyui2K3ZWKBSzNmKVml4p5YU2uN59P76lH5hHDBEw66/jnbYXLWJLcW+xgjlibmRVBzOfWHweShN3woD0km1jo/7uwUUymtLZGZD7NiahqU4UuXkjZoW5YnjDXCEH0OzMcc5kZx7jGbK1pefA+Qkcw9yQFeqRTtWF94qlh/y0CbTp1rl7SM8NEGCauql0VeGfac6aJWn8iS8z0/cG6REIdGDG8bHOvaFJxp+zVOYBRuI3qNO1Nk1GqNGgA9mi2mS6F8izg8QvoRcWfDOJ0BHLgNfyXGsly+8xhMivdiB9ZRPcj/ej28SGiZtNu5sPBI3ul/wdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by CO1PR11MB4993.namprd11.prod.outlook.com (2603:10b6:303:6c::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
+ 2023 12:58:21 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a%7]) with mapi id 15.20.6678.025; Wed, 16 Aug 2023
+ 12:58:21 +0000
+Message-ID: <5b00e2c6-738e-7025-91c0-315d67422a0e@intel.com>
+Date: Wed, 16 Aug 2023 14:57:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V6 net-next 2/2] net: fec: improve XDP_TX performance
+Content-Language: en-US
+To: Wei Fang <wei.fang@nxp.com>
+CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <shenwei.wang@nxp.com>, <xiaoning.wang@nxp.com>,
+	<ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+	<john.fastabend@gmail.com>, <larysa.zaremba@intel.com>, <jbrouer@redhat.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, <netdev@vger.kernel.org>,
+	<linux-imx@nxp.com>, <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <20230815051955.150298-1-wei.fang@nxp.com>
+ <20230815051955.150298-3-wei.fang@nxp.com>
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20230815051955.150298-3-wei.fang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BE1P281CA0481.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:7e::14) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [RFC PATCH v2 4/5] bpf: Add a OOM policy test
-To: Alan Maguire <alan.maguire@oracle.com>, hannes@cmpxchg.org,
- mhocko@kernel.org, roman.gushchin@linux.dev, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, muchun.song@linux.dev
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- wuyun.abel@bytedance.com, robin.lu@bytedance.com
-References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
- <20230810081319.65668-5-zhouchuyi@bytedance.com>
- <5bb59039-4f3b-49b6-d440-3210d7a92754@oracle.com>
-From: Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <5bb59039-4f3b-49b6-d440-3210d7a92754@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|CO1PR11MB4993:EE_
+X-MS-Office365-Filtering-Correlation-Id: f53edafb-d6a1-475b-764c-08db9e587834
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0Ct/SceK9cpiIGYX0cXiL0YAfGUXF5a1PFDbZA9zBG1gtAUfF5SBaddHIDSz5eQx5NMcfIZ4fnbCtjc0QeC07B6KY9gcY+Afft6x6ElV+qcoU8y3DLyHa2AKxyapaTNWGsx5cQf8QbSAXNXzwuPiuZiVGamGh52LXOor9wbRBtOhXGI7LThwy0whj7B+sja/m7pmc9Y/Kydd0paaedZnkY73iHIS8VhltFWLE73PsqkT1AF5pkR8dSaffF3lJbtT2RmTigZMw1hlJdKWU1ijgmeJ53+O41txQKFT3G0x71vOvfMSCVsW2Yv50rHKr/oWZGRYXBFYu+ukkAn3DaFbvej8O8N2Iq25rUKTpxqRI5AK30fvzynm5Py3y+lFtDPKQZOmpU9wJ2uYX1wViHU8E/SqDkiUISkOpyiSa9HzPnnHkqFqTZxb3OYElhSzsuUpPcjdpbq24rXgzXOF92Oi3WBvnlMAwHCX3uo7ZiawJgODYUon6rtt29GQNxn2JqGjcyUW6umI6+E7qYaq7hs8Lo4ZbmHqlrdwyu6XtnYUmgpdYCeA0ug2+O1iELN9mw4Eg9IcarVOVj5D3LSHSBnMwkY6oqa93CJ5YAqtnKlxX9aecqwU99aSxUgvNBEstptKTkhyUgJKrH47F1PQjzm50g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(366004)(376002)(136003)(1800799009)(451199024)(186009)(316002)(6916009)(66946007)(66476007)(66556008)(41300700001)(5660300002)(38100700002)(31686004)(8676002)(4326008)(8936002)(82960400001)(2906002)(83380400001)(26005)(478600001)(7416002)(86362001)(31696002)(6512007)(6506007)(36756003)(6666004)(2616005)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bUZUSld6T05VRmFNZDdxTkJRdEIyZ0c0cDV5dzFUL1paK1V0czJ5dWgxcWpw?=
+ =?utf-8?B?eGdLMHJPOVAvMG1LQzMzM2lVYkdsRzZOeUNFUXRnU2EwNk5sMEM1ekFYRTV1?=
+ =?utf-8?B?dXgvdDlzMnFSNkR0c2JiS3JNOS91cFpSYVAvc0dNVTcyblhsalpIZlhXOTln?=
+ =?utf-8?B?S0JaTkJWYlBTOFYrV3VPZnhqTXh4dmZMd0NTT013NEVNdWFKM25uUVBmU2I2?=
+ =?utf-8?B?eUQ0em5VeEVRYkV6OU5hSktGTnduWkdIa0twZ1dSeTR1SXRmZkU3aGw4YUNT?=
+ =?utf-8?B?RmFBcFZIK3R4SFA5d3ZTK09TaTFnSEFIUExVbFFrWWg0c3VxOWFGQUZYZWFL?=
+ =?utf-8?B?Y1RvcmVGUjBFalV5VituTS9PT3NGRVJHTTRiTFFRM0dyUDhSYXBnU1I0UTU2?=
+ =?utf-8?B?c1R3WkVvelFEZFF0ZXlwWUhFYXlqRGh6Sm1pOWFQOW9JNmVsWFd5bGJjRW9n?=
+ =?utf-8?B?bGdlaGpyM0tObkpsUmVhK3BUS0hOUE50Z0FzTUZyUllkMGVPZHVFQ3BVNEpr?=
+ =?utf-8?B?dWdtSjRwalVWZ1hmN2NTTWhhU1hlNlVSdk4wYU1lVFdVTE9XeWMvNGwzWk5h?=
+ =?utf-8?B?bkhnajdjeUJyNUpqVnNyaDZNUXZCKzdzbjBQN05rd0dmb1ZPNW81NXl1TlZz?=
+ =?utf-8?B?SUtYSlRKTFZLT3FaUEVxajZHTjBodWpNWHFMaWJQcklnNGVoTVNxM0V1MWhT?=
+ =?utf-8?B?OFF5dUtyUnNtbnRMajVXUU9ZYTZCcGhvU2RNejFzQmFvckViNmdFdmxNRWM4?=
+ =?utf-8?B?bXJpaGgvVFZpajBOY2lSOUZ3WGJZbmJVQXZwVUVQdW5Qc0dONXR2REtZSS9Y?=
+ =?utf-8?B?ZUVrdVplTExIUHRRdXpXSUZWSDdKNnk2UHhMOTJOZ3NadHVSVFBLZFhWYUVo?=
+ =?utf-8?B?Rm9DMzQwOEhYUE1hMUhXeDQvL3pQU2FWUmFTNVN4NnFjSkNHRFdtQjV6K3Qy?=
+ =?utf-8?B?TkI4RTJGZElMZkE4YUI1bmNxVlRBMmNwS3dHdDNsVEpWQW0zMDJySlFINk5G?=
+ =?utf-8?B?NWJTMkNDelIyZ3l5cThDR1ZyOGtHUTNXM29pTVFBU2ZqUzZvL3BlS2NZdTAw?=
+ =?utf-8?B?T3ZZWWE2UThaTXI3T1c5b2FTd3VVR1VsMncybWtub0U3UzRqdjNQNllHdzBq?=
+ =?utf-8?B?OThoajdSYnY1TEI1amQ4bklMTml4V2YyaCtnSDErd0JaRngwaVJWRTBlTmNT?=
+ =?utf-8?B?emdPYTR0Vk1EOWM3VlR1aFR5U2xxVU5KeGtqeVh3Z0pjdmovVmVOc1dCNVk0?=
+ =?utf-8?B?T3VNaW5uazRXUWhWalV6YkxlKzl0TUpFWUdZMEVzRVpBejRjbGs0VHJSbzVh?=
+ =?utf-8?B?MlMvYjZzaE0vTEJORDhaMHo0eDdaWVhxOVFRTTEvQXI1eVpqeG85WFlIcGlY?=
+ =?utf-8?B?bkJnMjFsWkt6YWZNa0YySEJiQmgxVXJDRHd1YmVXVi9YcExaZTU1Ni9VR2Fs?=
+ =?utf-8?B?NVFJcUhZcndkMXVkV05ud3h2elNmU200UEMwK3hOenBRbk1VTU16N3B6ZXhO?=
+ =?utf-8?B?RDl1NXNRY2MrbjRiWUpwRGhtc0Z4RDBSVURvVEh1dTRuZ2JqYWRvMEV4SVB4?=
+ =?utf-8?B?amFQZWJqNG5nT2thd2VoUWhKRGtzbzdaSHcxeVdzUyt1UDZySTdqQktEOWFD?=
+ =?utf-8?B?TGpDOERSQVZkbUZ3M3EyVWRWZjM4TWdUMkl5SU8zeDJQRWVHMDh4b0NHNXBx?=
+ =?utf-8?B?VXJ3ZHpueTB5SnlQOXgwUzNIYzIzRzZ4VGNmRktUcVh0RVBlWWQwVGxDOFN6?=
+ =?utf-8?B?UENjU1h3VExkQVFLNXJZRnVNNis2Wmt2cjVhZkZHZVpMOC9SbWpwNHUrZVdk?=
+ =?utf-8?B?Mm1ta0htSm9iZnFXaDRrQ2UvWEdUb2JWM0QyamhWcDBTSW03OFBvdkZDSUxN?=
+ =?utf-8?B?UmlsRXFDQnRwWW9JRWxMdnIrL091TDkxQk5BL3lXSXZ0Y0xLcUtwYkdQS2h5?=
+ =?utf-8?B?cDBOeklJR3FESW5ueWVGaWhsL2MyZjVnZlE4T1IxUlkyQWRGa21TL3orR2ww?=
+ =?utf-8?B?UkJXUFlmeXM2NzI2S2d5UGVIemxicGxlYkhQM3pOMUVIR0lwV1lHYlMrZHhw?=
+ =?utf-8?B?THhya3lXOW1nRFM2MmJFMUYzUExUbnc3WkVIc09qNCtCQ1ZzU1lCbysyTXNK?=
+ =?utf-8?B?aGlNM3lFcE9sRDRoQzJjWCtseE8xUXpLRFA0cDhFRCtwUEZ4a3lnRXZ6aHJ4?=
+ =?utf-8?B?eEE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f53edafb-d6a1-475b-764c-08db9e587834
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 12:58:21.6243
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W34uWwrJql6V6DWByEWJxm3nzYxeqEz/Vlne98Dtueu80i5TGE0ztH90koaIH6+o8Mi/S90mrm37HvbHibUSjpUQkufLByFjFljzK77Mo08=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4993
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hello,
+From: Wei Fang <wei.fang@nxp.com>
+Date: Tue, 15 Aug 2023 13:19:55 +0800
 
-在 2023/8/16 19:53, Alan Maguire 写道:
-> On 10/08/2023 09:13, Chuyi Zhou wrote:
->> This patch adds a test which implements a priority-based policy through
->> bpf_oom_evaluate_task.
->>
->> The BPF program, oom_policy.c, compares the cgroup priority of two tasks
->> and select the lower one. The userspace program test_oom_policy.c
->> maintains a priority map by using cgroup id as the keys and priority as
->> the values. We could protect certain cgroups from oom-killer by setting
->> higher priority.
->>
->> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
->> ---
->>   .../bpf/prog_tests/test_oom_policy.c          | 140 ++++++++++++++++++
->>   .../testing/selftests/bpf/progs/oom_policy.c  | 104 +++++++++++++
->>   2 files changed, 244 insertions(+)
->>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_oom_policy.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/oom_policy.c
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/test_oom_policy.c b/tools/testing/selftests/bpf/prog_tests/test_oom_policy.c
->> new file mode 100644
->> index 000000000000..bea61ff22603
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/prog_tests/test_oom_policy.c
->> @@ -0,0 +1,140 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +#define _GNU_SOURCE
->> +
->> +#include <stdio.h>
->> +#include <fcntl.h>
->> +#include <unistd.h>
->> +#include <stdlib.h>
->> +#include <signal.h>
->> +#include <sys/stat.h>
->> +#include <test_progs.h>
->> +#include <bpf/btf.h>
->> +#include <bpf/bpf.h>
->> +
->> +#include "cgroup_helpers.h"
->> +#include "oom_policy.skel.h"
->> +
->> +static int map_fd;
->> +static int cg_nr;
->> +struct {
->> +	const char *path;
->> +	int fd;
->> +	unsigned long long id;
->> +} cgs[] = {
->> +	{ "/cg1" },
->> +	{ "/cg2" },
->> +};
->> +
->> +
->> +static struct oom_policy *open_load_oom_policy_skel(void)
->> +{
->> +	struct oom_policy *skel;
->> +	int err;
->> +
->> +	skel = oom_policy__open();
->> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
->> +		return NULL;
->> +
->> +	err = oom_policy__load(skel);
->> +	if (!ASSERT_OK(err, "skel_load"))
->> +		goto cleanup;
->> +
->> +	return skel;
->> +
->> +cleanup:
->> +	oom_policy__destroy(skel);
->> +	return NULL;
->> +}
->> +
->> +static void run_memory_consume(unsigned long long consume_size, int idx)
->> +{
->> +	char *buf;
->> +
->> +	join_parent_cgroup(cgs[idx].path);
->> +	buf = malloc(consume_size);
->> +	memset(buf, 0, consume_size);
->> +	sleep(2);
->> +	exit(0);
->> +}
->> +
->> +static int set_cgroup_prio(unsigned long long cg_id, int prio)
->> +{
->> +	int err;
->> +
->> +	err = bpf_map_update_elem(map_fd, &cg_id, &prio, BPF_ANY);
->> +	ASSERT_EQ(err, 0, "update_map");
->> +	return err;
->> +}
->> +
->> +static int prepare_cgroup_environment(void)
->> +{
->> +	int err;
->> +
->> +	err = setup_cgroup_environment();
->> +	if (err)
->> +		goto clean_cg_env;
->> +	for (int i = 0; i < cg_nr; i++) {
->> +		err = cgs[i].fd = create_and_get_cgroup(cgs[i].path);
->> +		if (!ASSERT_GE(cgs[i].fd, 0, "cg_create"))
->> +			goto clean_cg_env;
->> +		cgs[i].id = get_cgroup_id(cgs[i].path);
->> +	}
->> +	return 0;
->> +clean_cg_env:
->> +	cleanup_cgroup_environment();
->> +	return err;
->> +}
->> +
->> +void test_oom_policy(void)
->> +{
->> +	struct oom_policy *skel;
->> +	struct bpf_link *link;
->> +	int err;
->> +	int victim_pid;
->> +	unsigned long long victim_cg_id;
->> +
->> +	link = NULL;
->> +	cg_nr = ARRAY_SIZE(cgs);
->> +
->> +	skel = open_load_oom_policy_skel();
->> +	err = oom_policy__attach(skel);
->> +	if (!ASSERT_OK(err, "oom_policy__attach"))
->> +		goto cleanup;
->> +
->> +	map_fd = bpf_object__find_map_fd_by_name(skel->obj, "cg_map");
->> +	if (!ASSERT_GE(map_fd, 0, "find map"))
->> +		goto cleanup;
->> +
->> +	err = prepare_cgroup_environment();
->> +	if (!ASSERT_EQ(err, 0, "prepare cgroup env"))
->> +		goto cleanup;
->> +
->> +	write_cgroup_file("/", "memory.max", "10M");
->> +
->> +	/*
->> +	 * Set higher priority to cg2 and lower to cg1, so we would select
->> +	 * task under cg1 as victim.(see oom_policy.c)
->> +	 */
->> +	set_cgroup_prio(cgs[0].id, 10);
->> +	set_cgroup_prio(cgs[1].id, 50);
->> +
->> +	victim_cg_id = cgs[0].id;
->> +	victim_pid = fork();
->> +
->> +	if (victim_pid == 0)
->> +		run_memory_consume(1024 * 1024 * 4, 0);
->> +
->> +	if (fork() == 0)
->> +		run_memory_consume(1024 * 1024 * 8, 1);
->> +
->> +	while (wait(NULL) > 0)
->> +		;
->> +
->> +	ASSERT_EQ(skel->bss->victim_pid, victim_pid, "victim_pid");
->> +	ASSERT_EQ(skel->bss->victim_cg_id, victim_cg_id, "victim_cgid");
->> +	ASSERT_EQ(skel->bss->failed_cnt, 1, "failed_cnt");
->> +cleanup:
->> +	bpf_link__destroy(link);
->> +	oom_policy__destroy(skel);
->> +	cleanup_cgroup_environment();
->> +}
->> diff --git a/tools/testing/selftests/bpf/progs/oom_policy.c b/tools/testing/selftests/bpf/progs/oom_policy.c
->> new file mode 100644
->> index 000000000000..fc9efc93914e
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/oom_policy.c
->> @@ -0,0 +1,104 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +#include <vmlinux.h>
->> +#include <bpf/bpf_tracing.h>
->> +#include <bpf/bpf_helpers.h>
->> +
->> +char _license[] SEC("license") = "GPL";
->> +
->> +struct {
->> +	__uint(type, BPF_MAP_TYPE_HASH);
->> +	__type(key, int);
->> +	__type(value, int);
->> +	__uint(max_entries, 24);
->> +} cg_map SEC(".maps");
->> +
->> +unsigned int victim_pid;
->> +u64 victim_cg_id;
->> +int failed_cnt;
->> +
->> +#define	EOPNOTSUPP	95
->> +
->> +enum {
->> +	NO_BPF_POLICY,
->> +	BPF_EVAL_ABORT,
->> +	BPF_EVAL_NEXT,
->> +	BPF_EVAL_SELECT,
->> +};
+> As suggested by Jesper and Alexander, we can avoid converting xdp_buff
+> to xdp_frame in case of XDP_TX to save a bunch of CPU cycles, so that
+> we can further improve the XDP_TX performance.
 > 
-> When I built a kernel using this series and tried building the
-> associated test for that kernel I saw:
+> Before this patch on i.MX8MP-EVK board, the performance shows as follows.
+> root@imx8mpevk:~# ./xdp2 eth0
+> proto 17:     353918 pkt/s
+> proto 17:     352923 pkt/s
+> proto 17:     353900 pkt/s
+> proto 17:     352672 pkt/s
+> proto 17:     353912 pkt/s
+> proto 17:     354219 pkt/s
 > 
-> progs/oom_policy.c:22:2: error: redefinition of enumerator 'NO_BPF_POLICY'
->          NO_BPF_POLICY,
->          ^
-> /home/opc/src/bpf-next/tools/testing/selftests/bpf/tools/include/vmlinux.h:75894:2:
-> note: previous definition is here
->          NO_BPF_POLICY = 0,
->          ^
-> progs/oom_policy.c:23:2: error: redefinition of enumerator 'BPF_EVAL_ABORT'
->          BPF_EVAL_ABORT,
->          ^
-> /home/opc/src/bpf-next/tools/testing/selftests/bpf/tools/include/vmlinux.h:75895:2:
-> note: previous definition is here
->          BPF_EVAL_ABORT = 1,
->          ^
-> progs/oom_policy.c:24:2: error: redefinition of enumerator 'BPF_EVAL_NEXT'
->          BPF_EVAL_NEXT,
->          ^
-> /home/opc/src/bpf-next/tools/testing/selftests/bpf/tools/include/vmlinux.h:75896:2:
-> note: previous definition is here
->          BPF_EVAL_NEXT = 2,
->          ^
-> progs/oom_policy.c:  CLNG-BPF [test_maps] tailcall_bpf2bpf4.bpf.o
-> 25:2: error: redefinition of enumerator 'BPF_EVAL_SELECT'
->          BPF_EVAL_SELECT,
->          ^
-> /home/opc/src/bpf-next/tools/testing/selftests/bpf/tools/include/vmlinux.h:75897:2:
-> note: previous definition is here
->          BPF_EVAL_SELECT = 3,
->          ^
-> 4 errors generated.
+> After applying this patch, the performance is improved.
+> root@imx8mpevk:~# ./xdp2 eth0
+> proto 17:     369261 pkt/s
+> proto 17:     369267 pkt/s
+> proto 17:     369206 pkt/s
+> proto 17:     369214 pkt/s
+> proto 17:     369126 pkt/s
+> proto 17:     369272 pkt/s
 > 
-> 
-> So you shouldn't need the enum definition since it already makes it into
-> vmlinux.h.
-> OK. It seems my vmlinux.h doesn't contain these enum...
-> I also ran into test failures when I removed the above (and compilation
-> succeeded):
-> 
-> 
-> test_oom_policy:PASS:prepare cgroup env 0 nsec
-> (cgroup_helpers.c:130: errno: No such file or directory) Opening
-> /mnt/cgroup-test-work-dir23054//memory.max
-> set_cgroup_prio:PASS:update_map 0 nsec
-> set_cgroup_prio:PASS:update_map 0 nsec
-> test_oom_policy:FAIL:victim_pid unexpected victim_pid: actual 0 !=
-> expected 23058
-> test_oom_policy:FAIL:victim_cgid unexpected victim_cgid: actual 0 !=
-> expected 68
-> test_oom_policy:FAIL:failed_cnt unexpected failed_cnt: actual 0 !=
-> expected 1
-> #154     oom_policy:FAIL
-> Summary: 1/0 PASSED, 0 SKIPPED, 1 FAILED
-> 
-> So it seems that because my system was using the cgroupv1 memory
-> controller, it could not be used for v2 unless I rebooted with
-> 
-> systemd.unified_cgroup_hierarchy=1
-> 
-> ...on the boot commandline. It would be good to note any such
-> requirements for this test in the selftests/bpf/README.rst.
-> Might also be worth adding
-> 
-> write_cgroup_file("", "cgroup.subtree_control", "+memory");
-> 
-> ...to ensure the memory controller is enabled for the root cgroup.
-> 
-> At that point the test still failed:
-> 
-> set_cgroup_prio:PASS:update_map 0 nsec
-> test_oom_policy:FAIL:victim_pid unexpected victim_pid: actual 0 !=
-> expected 12649
-> test_oom_policy:FAIL:victim_cgid unexpected victim_cgid: actual 0 !=
-> expected 9583
-> test_oom_policy:FAIL:failed_cnt unexpected failed_cnt: actual 0 !=
-> expected 1
-> #154     oom_policy:FAIL
-> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
-> Successfully unloaded bpf_testmod.ko.
-> 
-> 
-It seems that OOM is not invoked in your environment(you can check it in 
-demsg). If the memcg OOM is invoked by the test, we would record the 
-*victim_pid* and *victim_cgid* and they would not be zero. I guess the 
-reason is memory_control is not enabled in cgroup 
-"/mnt/cgroup-test-work-dir23054/", because I see the error message:
-(cgroup_helpers.c:130: errno: No such file or directory) Opening
- > /mnt/cgroup-test-work-dir23054//memory.max
+> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> Suggested-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
-Thanks for your review and test!
+BTW I forgot to mention that it was Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> who initially told me that converting
+xdp_buff -> xdp_frame is expensive and we can avoid that on XDP_TX (he
+introduced that improved to the ice driver half a year ago). Now I feel
+like he must've been credited, but it's too late already, sorry :z
 
-> Are there other implicit assumptions about configuration that cause this
-> test to fail perhaps?
+> Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> ---
+> V5 changes:
+> New patch. Separated from the first patch, to keep track of the changes
+> and improvements (suggested by Jesper).
 > 
-> Alan
+> V6 changes:
+> No changes.
+> ---
+>  drivers/net/ethernet/freescale/fec.h      |   5 +-
+>  drivers/net/ethernet/freescale/fec_main.c | 140 ++++++++++++----------
+>  2 files changed, 75 insertions(+), 70 deletions(-)
+
+[...]
+
+Thanks,
+Olek
 
