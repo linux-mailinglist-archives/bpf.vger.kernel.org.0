@@ -1,96 +1,243 @@
-Return-Path: <bpf+bounces-7926-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7927-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06C0C77E931
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 21:00:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41CCB77E938
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 21:01:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 384E41C20DC8
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 19:00:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF3FC2816D1
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 19:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8968217721;
-	Wed, 16 Aug 2023 19:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85968174F7;
+	Wed, 16 Aug 2023 19:01:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166BF3D60;
-	Wed, 16 Aug 2023 19:00:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 79FD3C433C8;
-	Wed, 16 Aug 2023 19:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692212428;
-	bh=rEdul0JpWo7UI26UCX+q00I+G+ygegw9aObVQvYySQI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=HTi8CWJQFmhUdke7qA/SrQiU5COF+gwJ7Tdlwl5X9rh1Zm6plgklArcrTsArFqx5I
-	 piJ2OTVJj19Ah/2MScXA854R3eb8qaKx2WXDPNeiI08fmTpqZ+gptxBVZ7TzTmGyi2
-	 sQhmBQQb57HYAmEPaZCMdzrUG8ijso96fEUMEEFWGyChPfWKhoeuY0wVF/S3RuIpef
-	 4Uhtb5iT0vGSLoRQIBtfh9PU1BMjolhvnKpEXE9xnncDvz9wXHlnzJ0krxFsxxHVgw
-	 ZVQik7R6HdSylHFVaa1PTRyED9XhDJMGP9Pgq7c9XbPR2dxi0DJcPb/Vy55O1xY3qN
-	 iNha9n9uHj+KQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5D2BAE93B39;
-	Wed, 16 Aug 2023 19:00:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569EAF9F7
+	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 19:01:16 +0000 (UTC)
+Received: from out-60.mta1.migadu.com (out-60.mta1.migadu.com [95.215.58.60])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BD42708
+	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 12:01:14 -0700 (PDT)
+Message-ID: <b88ef926-bf7f-b2db-5047-9ab1e7f112e4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1692212472;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jq9hjeloarfRE+wbppbGWsV/sxG0PoQ7ak2HegOClC0=;
+	b=Kl75DB5r4Zcwg1gsHJk+bre8uw7aK9gGQqd6nrRcyIV47aXPjAnZJ26K2yQA3D/CuGaJR5
+	YUjl/0F3qaFjtdyKQgBCnmpTrFFQkJ1eL26AAilyJtpT/Y+bXCdQGuLD92yq3Z05AG/jcr
+	+iEanwB1+fnnfWWEsvcRyHIkyMtvQN4=
+Date: Wed, 16 Aug 2023 15:01:10 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v14 0/4] bpf: Force to MPTCP
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169221242837.25657.8139131994909389115.git-patchwork-notify@kernel.org>
-Date: Wed, 16 Aug 2023 19:00:28 +0000
-References: <cover.1692147782.git.geliang.tang@suse.com>
-In-Reply-To: <cover.1692147782.git.geliang.tang@suse.com>
-To: Geliang Tang <geliang.tang@suse.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
- revest@chromium.org, jackmanb@chromium.org, matthieu.baerts@tessares.net,
- martineau@kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, john.johansen@canonical.com,
- paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
- stephen.smalley.work@gmail.com, eparis@parisplace.org, mykolal@fb.com,
- shuah@kernel.org, horms@kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, mptcp@lists.linux.dev,
- linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
- linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 bpf-next 1/2] libbpf: Support triple-underscore flavors
+ for kfunc relocation
+To: David Vernet <void@manifault.com>, Dave Marchevsky <davemarchevsky@fb.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
+References: <20230816165813.3718580-1-davemarchevsky@fb.com>
+ <20230816173731.GA814797@maniforge>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: David Marchevsky <david.marchevsky@linux.dev>
+In-Reply-To: <20230816173731.GA814797@maniforge>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Wed, 16 Aug 2023 09:11:55 +0800 you wrote:
-> As is described in the "How to use MPTCP?" section in MPTCP wiki [1]:
+On 8/16/23 1:37 PM, David Vernet wrote:
+> On Wed, Aug 16, 2023 at 09:58:12AM -0700, Dave Marchevsky wrote:
+>> The function signature of kfuncs can change at any time due to their
+>> intentional lack of stability guarantees. As kfuncs become more widely
+>> used, BPF program writers will need facilities to support calling
+>> different versions of a kfunc from a single BPF object. Consider this
+>> simplified example based on a real scenario we ran into at Meta:
+>>
+>>   /* initial kfunc signature */
+>>   int some_kfunc(void *ptr)
+>>
+>>   /* Oops, we need to add some flag to modify behavior. No problem,
+>>     change the kfunc. flags = 0 retains original behavior */
+>>   int some_kfunc(void *ptr, long flags)
+>>
+>> If the initial version of the kfunc is deployed on some portion of the
+>> fleet and the new version on the rest, a fleetwide service that uses
+>> some_kfunc will currently need to load different BPF programs depending
+>> on which some_kfunc is available.
+>>
+>> Luckily CO-RE provides a facility to solve a very similar problem,
+>> struct definition changes, by allowing program writers to declare
+>> my_struct___old and my_struct___new, with ___suffix being considered a
+>> 'flavor' of the non-suffixed name and being ignored by
+>> bpf_core_type_exists and similar calls.
+>>
+>> This patch extends the 'flavor' facility to the kfunc extern
+>> relocation process. BPF program writers can now declare
+>>
+>>   extern int some_kfunc___old(void *ptr)
+>>   extern int some_kfunc___new(void *ptr, int flags)
+>>
+>> then test which version of the kfunc exists with bpf_ksym_exists.
+>> Relocation and verifier's dead code elimination will work in concert as
+>> expected, allowing this pattern:
+>>
+>>   if (bpf_ksym_exists(some_kfunc___old))
+>>     some_kfunc___old(ptr);
+>>   else
+>>     some_kfunc___new(ptr, 0);
+>>
+>> Changelog:
+>>
+>> v1 -> v2: https://lore.kernel.org/bpf/20230811201346.3240403-1-davemarchevsky@fb.com/
+>>   * No need to check obj->externs[i].essent_name before zfree (Jiri)
+>>   * Use strndup instead of replicating same functionality (Jiri)
+>>   * Properly handle memory allocation falure (Stanislav)
+>>
+>> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+>> ---
+>>  tools/lib/bpf/libbpf.c | 20 +++++++++++++++++++-
+>>  1 file changed, 19 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index b14a4376a86e..8899abc04b8c 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -550,6 +550,7 @@ struct extern_desc {
+>>  	int btf_id;
+>>  	int sec_btf_id;
+>>  	const char *name;
+>> +	char *essent_name;
+>>  	bool is_set;
+>>  	bool is_weak;
+>>  	union {
+>> @@ -3770,6 +3771,7 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+>>  	struct extern_desc *ext;
+>>  	int i, n, off, dummy_var_btf_id;
+>>  	const char *ext_name, *sec_name;
+>> +	size_t ext_essent_len;
+>>  	Elf_Scn *scn;
+>>  	Elf64_Shdr *sh;
+>>  
+>> @@ -3819,6 +3821,14 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+>>  		ext->sym_idx = i;
+>>  		ext->is_weak = ELF64_ST_BIND(sym->st_info) == STB_WEAK;
+>>  
+>> +		ext_essent_len = bpf_core_essential_name_len(ext->name);
+>> +		ext->essent_name = NULL;
+>> +		if (ext_essent_len != strlen(ext->name)) {
+>> +			ext->essent_name = strndup(ext->name, ext_essent_len);
+>> +			if (!ext->essent_name)
+>> +				return -ENOMEM;
+>> +		}
+>> +
+>>  		ext->sec_btf_id = find_extern_sec_btf_id(obj->btf, ext->btf_id);
+>>  		if (ext->sec_btf_id <= 0) {
+>>  			pr_warn("failed to find BTF for extern '%s' [%d] section: %d\n",
+>> @@ -7624,7 +7634,8 @@ static int bpf_object__resolve_ksym_func_btf_id(struct bpf_object *obj,
+>>  
+>>  	local_func_proto_id = ext->ksym.type_id;
+>>  
+>> -	kfunc_id = find_ksym_btf_id(obj, ext->name, BTF_KIND_FUNC, &kern_btf, &mod_btf);
+>> +	kfunc_id = find_ksym_btf_id(obj, ext->essent_name ?: ext->name, BTF_KIND_FUNC, &kern_btf,
+>> +				    &mod_btf);
+>>  	if (kfunc_id < 0) {
+>>  		if (kfunc_id == -ESRCH && ext->is_weak)
+>>  			return 0;
+>> @@ -7642,6 +7653,9 @@ static int bpf_object__resolve_ksym_func_btf_id(struct bpf_object *obj,
+>>  		pr_warn("extern (func ksym) '%s': func_proto [%d] incompatible with %s [%d]\n",
+>>  			ext->name, local_func_proto_id,
 > 
-> "Your app should create sockets with IPPROTO_MPTCP as the proto:
-> ( socket(AF_INET, SOCK_STREAM, IPPROTO_MPTCP); ). Legacy apps can be
-> forced to create and use MPTCP sockets instead of TCP ones via the
-> mptcpize command bundled with the mptcpd daemon."
+> Should we do ext->essent_name ?: ext->name here or in the below pr's as
+> well? Hmm, maybe it would be more clear to keep the full name.
 > 
-> [...]
 
-Here is the summary with links:
-  - [bpf-next,v14,1/4] bpf: Add update_socket_protocol hook
-    https://git.kernel.org/bpf/bpf-next/c/0dd061a6a115
-  - [bpf-next,v14,2/4] selftests/bpf: Add two mptcp netns helpers
-    https://git.kernel.org/bpf/bpf-next/c/97c9c652089b
-  - [bpf-next,v14,3/4] selftests/bpf: Fix error checks of mptcp open_and_load
-    https://git.kernel.org/bpf/bpf-next/c/207746550262
-  - [bpf-next,v14,4/4] selftests/bpf: Add mptcpify test
-    https://git.kernel.org/bpf/bpf-next/c/ddba122428a7
+Yeah, I agree that the full name should be used in this warning for clarity.
+So won't change.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+>>  			mod_btf ? mod_btf->name : "vmlinux", kfunc_proto_id);
+>> +
+>> +		if (ext->is_weak)
+>> +			return 0;
+> 
+> Could you clarify why we want this check? Don't we want to fail if the
+> prototype of the actual (essent) symbol we resolve to doesn't match
+> what's in the BPF prog? If we do want to keep this, should we do the
+> check above the pr_warn()?
+> 
+
+Actually this if-and-return was initially above the pr_warn while I was
+developing the patch. I moved it down here to confirm via './test_progs -vv'
+that the pseudo-failure cases in the selftests were going down the codepaths
+I expected, and left it b/c better to err on the side of too much logging
+when doing this ___flavor trickery.
+
+In re: "clarify why we want this check?" and subsequent question, IIUC, with an
+extern decl like
+
+  struct task_struct *bpf_task_acquire___one(struct task_struct *task) __ksym __weak;
+
+if we removed __weak from the declaration, symbol resolution would happen during
+compilation + linking, at which point there would be no opportunity to do
+our ___flavor trickery. But __weak is already used to express "if this kfunc
+doesn't exist at all, it's not a problem, don't fail loading the program". So
+as of this version of the code, it's not possible to express "one of
+bpf_task_acquire___{one,two,three} must resolve, otherwise fail to
+load" - that check would have to be done at runtime like
+
+  if (!(bpf_ksym_exists(bpf_task_acquire___one) ||
+        bpf_ksym_exists(bpf_task_acquire___two) ||
+        bpf_ksym_exists(bpf_task_acquire___three)) {
+    /* communicate failure to userspace runner via global var or something */
+    return 0;
+  }
+
+Maybe something like BTF tags could be used to group a set of __weak
+kfunc declarations together such that one (probably _only_ one) of them
+must resolve at load time. This would obviate the need for such a runtime
+check without causing compile+link step to fail. But also seems overly
+complex for now.
+
+Feels useful to have "incompatible resolution" log message even if it doesn't
+stop loading process. But because __weak ties ___flavor trickery to "not a 
+problem if kfunc doesn't exist at all", probably more accurate to make the
+pr_warn a pr_debug if ___flavor AND ext->is_weak. Adding the logic to do that
+felt like it would raise more questions than answers to a future reader of the
+code, so I didn't add it. Now that I'm writing this out, I think it's better
+to add it along with a comment.
 
 
+>>  		return -EINVAL;
+>>  	}
+>>  
+>> @@ -8370,6 +8384,10 @@ void bpf_object__close(struct bpf_object *obj)
+>>  
+>>  	zfree(&obj->btf_custom_path);
+>>  	zfree(&obj->kconfig);
+>> +
+>> +	for (i = 0; i < obj->nr_extern; i++)
+>> +		zfree(&obj->externs[i].essent_name);
+>> +
+>>  	zfree(&obj->externs);
+>>  	obj->nr_extern = 0;
+>>  
+>> -- 
+>> 2.34.1
+>>
+>>
 
