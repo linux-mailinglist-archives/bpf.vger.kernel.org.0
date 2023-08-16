@@ -1,193 +1,236 @@
-Return-Path: <bpf+bounces-7912-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7913-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAA1377E640
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 18:22:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF2A277E646
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 18:24:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CC63281AFE
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 16:22:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BA151C21123
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 16:24:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C15916432;
-	Wed, 16 Aug 2023 16:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D11216436;
+	Wed, 16 Aug 2023 16:24:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF37156E8
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 16:22:18 +0000 (UTC)
-Received: from out-30.mta0.migadu.com (out-30.mta0.migadu.com [91.218.175.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057642711
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 09:22:16 -0700 (PDT)
-Message-ID: <bbd86b4e-89ea-8e60-883e-f348117483b4@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692202933; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pe266H6yLoZFPljTbXhxvPbLZcJenRDQ7MYvn3RPzL8=;
-	b=OJUcKpHlMNTfKEyOrzJZyK2AiNdJ8Lur50Zi6qK4cl5teKPYBdncLbuS/keif1DpLFi7rD
-	A7fE5s8z2+UL8wtxblG141xy7G7mDbLdqGb9aaJkjpvd3qmh8kPii658X0g46dWl52/5/N
-	DonJk5PkOdZxrVFEgLv9JX3THwDNgwQ=
-Date: Wed, 16 Aug 2023 09:22:09 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E80C8FF
+	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 16:24:27 +0000 (UTC)
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02733198C
+	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 09:24:25 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-58419517920so71980567b3.0
+        for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 09:24:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692203065; x=1692807865;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PnywXpHlI6ay7Ck0Rlvm7S9jZvim3Y/ZQMiOdbgHj3A=;
+        b=mifFKGImVtBOZ29dtIlB+s6qMEvoQu7RqhL9y0tITJm03OcElMUBazinOspBvHup5I
+         Hc8MYi7z7RmndPf2cWWzqN6xNf90EKnAMfJKIPlTTasXTa8RKI9wEmSfqgwyWdHUulBK
+         Dh5uJq70pIUc35u63owMRG64MhHz+wpotmNdID8q6JqUNojyegsOdPpa/8fPLofo5MLK
+         nGeVj6jLm0yvlmiY8cfycsThbkxkiQFP8i8TdJYNvEpsDfPxcTdR1oqxVQiOLAgAD5gy
+         IYDzaXxjUeRQG6PcW7IGMLGOKSopT3gS/4qDviCpMoL+e8iX0vE0gGUEf/axSlDLgnvB
+         3WXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692203065; x=1692807865;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PnywXpHlI6ay7Ck0Rlvm7S9jZvim3Y/ZQMiOdbgHj3A=;
+        b=OUJ730y1dahfraLxwSmEFH0PussqLDEZDUDYySxAmAcsUqiFq+NBVR0IsM7RKF2D+A
+         fTtY6j8v9ag9k7q8jK/eYz/QRsuoQa5jQnn30+jNGY7bZyBQrxry2pA2Ykup/KW7Vtuz
+         vdGxaHrCtfVtfGdFoxeUoZENndFsGLFwxOXaeOLxUVurtjOF35Nt3W7iBOktnh/Q3p21
+         MQpJSuA/A4Anz7Sk4c2vfoyAlrjX3zTnewAGQBoehHHX98UWsrfSYr6rCDqS30mRnS5G
+         6TjZRLdI9xb1Y7awS+FPJzbq9VGAcuuoo7AQ4t9NpMf/rNGUUcdVB0EkdZh+jFq8MujW
+         TOeA==
+X-Gm-Message-State: AOJu0YySUcr2gLdm5Dcysn7/4kLE6eUQ5Z1xo+n5/WmTaZcWAmNfc9ja
+	BArW6bSQ+jeTptVCkZcyAi9rpIvnCdAv+315Whhv/gCcfd27Bw==
+X-Google-Smtp-Source: AGHT+IH2YTE3GDkUJROPdPqZBiQDJXMSOb14qPaRfvWfb99lx/hvZm+aTcvVq3DmjEro/XggnTqt7Tx+8GFX2+40aUk=
+X-Received: by 2002:a67:e3c6:0:b0:430:e0:ac2e with SMTP id k6-20020a67e3c6000000b0043000e0ac2emr2419624vsm.15.1692203044669;
+ Wed, 16 Aug 2023 09:24:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: Masks and overflow of signed immediates in BPF instructions
-Content-Language: en-US
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc: bpf@vger.kernel.org, david.faust@oracle.com, cupertino.miranda@oracle.com
-References: <877cpwgzgh.fsf@oracle.com>
- <ab4264da-7c73-e7c5-334d-ed61c9fdd241@linux.dev> <87leec44v1.fsf@oracle.com>
- <87wmxv2ut4.fsf@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <87wmxv2ut4.fsf@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20230816095651.10014-1-daniel@iogearbox.net> <CALOAHbDtmTPV6enF1M0RnZr4pPyWkr1bZ7afcFchfNYRGVKu7w@mail.gmail.com>
+ <d25d1dc0-d4fc-eb0c-e9cf-ee3d4783e07a@iogearbox.net>
+In-Reply-To: <d25d1dc0-d4fc-eb0c-e9cf-ee3d4783e07a@iogearbox.net>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 17 Aug 2023 00:23:26 +0800
+Message-ID: <CALOAHbBxBgtLP=4mxJRF3w3XkbZKDRB=1kkQ290Jw6-8SZZSRQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpftool: Implement link show support for tcx
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: martin.lau@linux.dev, bpf@vger.kernel.org, 
+	Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
+On Wed, Aug 16, 2023 at 11:11=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.=
+net> wrote:
+>
+> On 8/16/23 4:23 PM, Yafang Shao wrote:
+> > On Wed, Aug 16, 2023 at 5:56=E2=80=AFPM Daniel Borkmann <daniel@iogearb=
+ox.net> wrote:
+> >>
+> >> Add support to dump tcx link information to bpftool. This adds a
+> >> common helper show_link_ifindex_{plain,json}() which can be reused
+> >> also for other link types. The plain text and json device output is
+> >> the same format as in bpftool net dump.
+> >>
+> >> Below shows an example link dump output along with a cgroup link
+> >> for comparison:
+> >>
+> >>    # bpftool link
+> >>    [...]
+> >>    10: cgroup  prog 1977
+> >>          cgroup_id 1  attach_type cgroup_inet6_post_bind
+> >>    [...]
+> >>    13: tcx  prog 2053
+> >>          ifindex enp5s0(3)  attach_type tcx_ingress
+> >>    14: tcx  prog 2080
+> >>          ifindex enp5s0(3)  attach_type tcx_egress
+> >>    [...]
+> >>
+> >> Equivalent json output:
+> >>
+> >>    # bpftool link --json
+> >>    [...]
+> >>    {
+> >>      "id": 10,
+> >>      "type": "cgroup",
+> >>      "prog_id": 1977,
+> >>      "cgroup_id": 1,
+> >>      "attach_type": "cgroup_inet6_post_bind"
+> >>    },
+> >>    [...]
+> >>    {
+> >>      "id": 13,
+> >>      "type": "tcx",
+> >>      "prog_id": 2053,
+> >>      "devname": "enp5s0",
+> >>      "ifindex": 3,
+> >>      "attach_type": "tcx_ingress"
+> >>    },
+> >>    {
+> >>      "id": 14,
+> >>      "type": "tcx",
+> >>      "prog_id": 2080,
+> >>      "devname": "enp5s0",
+> >>      "ifindex": 3,
+> >>      "attach_type": "tcx_egress"
+> >>    }
+> >>    [...]
+> >>
+> >> Suggested-by: Yafang Shao <laoar.shao@gmail.com>
+> >> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> >> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+> >
+> > Thanks for your work. This patch looks good to me.
+> > A minor nit below.
+> >
+> >> ---
+> >>   tools/bpf/bpftool/link.c | 37 +++++++++++++++++++++++++++++++++++++
+> >>   1 file changed, 37 insertions(+)
+> >>
+> >> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+> >> index 65a168df63bc..a3774594f154 100644
+> >> --- a/tools/bpf/bpftool/link.c
+> >> +++ b/tools/bpf/bpftool/link.c
+> >> @@ -150,6 +150,18 @@ static void show_link_attach_type_json(__u32 atta=
+ch_type, json_writer_t *wtr)
+> >>                  jsonw_uint_field(wtr, "attach_type", attach_type);
+> >>   }
+> >>
+> >> +static void show_link_ifindex_json(__u32 ifindex, json_writer_t *wtr)
+> >> +{
+> >> +       char devname[IF_NAMESIZE] =3D "(unknown)";
+> >> +
+> >> +       if (ifindex)
+> >> +               if_indextoname(ifindex, devname);
+> >> +       else
+> >> +               snprintf(devname, sizeof(devname), "(detached)");
+> >> +       jsonw_string_field(wtr, "devname", devname);
+> >> +       jsonw_uint_field(wtr, "ifindex", ifindex);
+> >> +}
+> >> +
+> >>   static bool is_iter_map_target(const char *target_name)
+> >>   {
+> >>          return strcmp(target_name, "bpf_map_elem") =3D=3D 0 ||
+> >> @@ -433,6 +445,10 @@ static int show_link_close_json(int fd, struct bp=
+f_link_info *info)
+> >>          case BPF_LINK_TYPE_NETFILTER:
+> >>                  netfilter_dump_json(info, json_wtr);
+> >>                  break;
+> >> +       case BPF_LINK_TYPE_TCX:
+> >> +               show_link_ifindex_json(info->tcx.ifindex, json_wtr);
+> >> +               show_link_attach_type_json(info->tcx.attach_type, json=
+_wtr);
+> >> +               break;
+> >>          case BPF_LINK_TYPE_STRUCT_OPS:
+> >>                  jsonw_uint_field(json_wtr, "map_id",
+> >>                                   info->struct_ops.map_id);
+> >> @@ -509,6 +525,22 @@ static void show_link_attach_type_plain(__u32 att=
+ach_type)
+> >>                  printf("attach_type %u  ", attach_type);
+> >>   }
+> >>
+> >> +static void show_link_ifindex_plain(__u32 ifindex)
+> >> +{
+> >> +       char devname[IF_NAMESIZE * 2] =3D "(unknown)";
+> >> +       char tmpname[IF_NAMESIZE];
+> >> +       char *ret =3D NULL;
+> >> +
+> >> +       if (ifindex)
+> >> +               ret =3D if_indextoname(ifindex, tmpname);
+> >> +       else
+> >> +               snprintf(devname, sizeof(devname), "(detached)");
+> >> +       if (ret)
+> >> +               snprintf(devname, sizeof(devname), "%s(%d)",
+> >> +                        tmpname, ifindex);
+> >> +       printf("ifindex %s  ", devname);
+> >> +}
+> >
+> > This function looks a little strange to me. What about the change below=
+?
+> >
+> > static void show_link_ifindex_plain(__u32 ifindex)
+> > {
+> >          char devname[IF_NAMESIZE] =3D "(unknown)";
+> >
+> >          if (ifindex) {
+> >                  if_indextoname(ifindex, devname);
+> >                  printf("ifindex %s(%d)  ", devname, ifindex);
+> >          } else {
+> >                  printf("ifindex (detached)  ");
+> >          }
+> > }
+>
+> Arguably, it's a corner case (and should never happen), but for the case
+> where the if_indextoname call fails, I only intended to print `ifindex (u=
+nknown)`
+> for the plain mode hence the check for if_indextoname success so that thi=
+s
+> looks similar as `ifindex (detached)` situation.
+>
 
+Fair enough.
 
-On 8/16/23 2:36 AM, Jose E. Marchesi wrote:
-> 
->>> On 8/15/23 7:19 AM, Jose E. Marchesi wrote:
->>>> Hello.
->>>> The selftest progs/verifier_masking.c contains inline assembly code
->>>> like:
->>>>     	w1 = 0xffffffff;
->>>> The 32-bit immediate of that instruction is signed.  Therefore, GAS
->>>> complains that the above instruction overflows its field:
->>>>     /tmp/ccNOXFQy.s:46: Error: signed immediate out of range, shall
->>>> fit in 32 bits
->>>> The llvm assembler is likely relying on signed overflow for the
->>>> above to
->>>> work.
->>>
->>> Not really.
->>>
->>>    def _ri_32 : ALU_RI<BPF_ALU, Opc, off,
->>>                     (outs GPR32:$dst),
->>>                     (ins GPR32:$src2, i32imm:$imm),
->>>                     "$dst "#OpcodeStr#" $imm",
->>>                     [(set GPR32:$dst, (OpNode GPR32:$src2,
->>>                     i32immSExt32:$imm))]>;
->>>
->>>
->>> If generating from source, the pattern [(set GPR32:$dst, (OpNode
->>> GPR32:$src2, i32immSExt32:$imm))] so value 0xffffffff is not SExt32
->>> and it won't match and eventually a LDimm_64 insn will be generated.
->>
->> If by "generating from source" you mean compiling from C, then sure, I
->> wasn't implying clang was generating `r1 = 0xffffffff' for assigning
->> that positive value to a register.
->>
->>> But for inline asm, we will have
->>>    (outs GPR32:$dst)
->>>    (ins GPR32:$src2, i32imm:$imm)
->>>
->>> and i32imm is defined as
->>>    def i32imm : Operand<i32>;
->>> which is a unsigned 32bit value, so it is recognized properly
->>> and the insn is encoded properly.
->>
->> We thought the imm32 operand in ALU instructions is signed, not
->> unsigned.  Is it really unsigned??
-> 
-> I am going through all the BPF instructions that get 32-bit, 16-bit and
-> 64-bit immediates, because it seems to me that we may need to
-> distinguish between two different levels:
-> 
-> - Value encoded in the instruction immediate: interpreted as signed or
->    as unsigned.
+Then fail free to add :
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
 
-The 'imm' in the instruction is a 32-bit signed insn.
-I think we have no dispute here.
-
-> 
-> - How the assembler interprets a written number for the corresponding
->    instruction operand: for example, for which instructions the assemler
->    shall accept 0xfffffffe and 4294967294 and -2 all to denote the same
->    value, what value is it (negative or positive) or shall it emit an
->    overflow error.
-
-In llvm, for inline asm, 0xfffffffe, 4294967294 and -2 have the same
-4-byte bit-wise encoding, so they will be all encoded the same
-0xfffffffe in the actual insn.
-
-The following is an example for x86 target in llvm:
-
-$ cat t.c
-int foo() {
-   int a, b;
-
-   asm volatile("movl $0xfffffffe, %0" : "=r"(a) :);
-   asm volatile("movl $-2, %0" : "=r"(b) :);
-   return a + b;
-}
-$ clang -O2 -c t.c
-$ llvm-objdump -d t.o
-
-t.o:    file format elf64-x86-64
-
-Disassembly of section .text:
-
-0000000000000000 <foo>:
-        0: b9 fe ff ff ff                movl    $0xfffffffe, %ecx 
-# imm = 0xFFFFFFFE
-        5: b8 fe ff ff ff                movl    $0xfffffffe, %eax 
-# imm = 0xFFFFFFFE
-        a: 01 c8                         addl    %ecx, %eax
-        c: c3                            retq
-$
-
-Whether it is 0xfffffffe or -2, the insn encoding is the same
-and disasm prints out 0xfffffffe.
-
-> 
-> Will follow up with a summary that hopefully will serve to clarify this.
-> 
->>>> Using negative numbers to denote masks is ugly and obfuscating (for
->>>> non-obvious cases like -1/0xffffffff) so I suggest we introduce a
->>>> pseudo-op so we can do:
->>>>      w1 = %mask(0xffffffff)
->>>
->>> I changed above
->>>    w1 = 0xffffffff;
->>> to
->>>    w1 = %mask(0xffffffff)
->>> and hit the following compilation failure.
->>>
->>> progs/verifier_masking.c:54:9: error: invalid % escape in inline
->>> assembly string
->>>     53 |         asm volatile ("                                 \
->>>        |                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>     54 |         w1 = %mask(0xffffffff);                         \
->>>        |                ^
->>> 1 error generated.
->>>
->>> Do you have documentation what is '%mask' thing?
->>
->> It doesn't exist.
->>
->> I am suggesting to add support for that pseudo-op to the BPF assemblers:
->> both GAS and the llvm BPF assembler.
->>
->>>> allowing the assembler to do the right thing (TM) converting and
->>>> checking that the mask is valid and not relying on UB.
->>>> Thoughts?
->>>>
+--=20
+Regards
+Yafang
 
