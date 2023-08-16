@@ -1,307 +1,227 @@
-Return-Path: <bpf+bounces-7864-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7865-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7C4277D873
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 04:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E201177D878
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 04:34:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDB9C1C20ECA
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 02:31:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C28A91C20F2E
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 02:34:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE68DC2FA;
-	Wed, 16 Aug 2023 02:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DFB17D9;
+	Wed, 16 Aug 2023 02:33:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A83B3C2EB
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 02:31:19 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA801BE6
-	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 19:31:17 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RQXCl2P8Fz1GDbk;
-	Wed, 16 Aug 2023 10:29:55 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 16 Aug 2023 10:31:14 +0800
-Message-ID: <6e8244b3-acf8-acd3-2dda-8777b2b4c7f9@huawei.com>
-Date: Wed, 16 Aug 2023 10:31:13 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB89C2E9
+	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 02:33:50 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748CD1BE6
+	for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 19:33:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1692153228;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VNW1zQdlSA+EBMwsqEGzK2TiH2hiDgSEYVGqzy81FKw=;
+	b=ivfv7coNyr6G+K3BeKepxNRJ84eDyBcx4Vcwp8fvdAPFGUcQfluj/pnOVX80BilVvAn3lQ
+	16jeI9TZUF6hpWv5/5tL/i8HawOKrWFcS0Qv/Oo/3nnv4AiZEUntgi0jQCx2SQza/aHJwJ
+	SqMVHQdS/khQ9Vd5RFF4fhpWrPphWYU=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-687-nlPkqR0hMye2InOePnjxxg-1; Tue, 15 Aug 2023 22:33:47 -0400
+X-MC-Unique: nlPkqR0hMye2InOePnjxxg-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b6ff15946fso63930031fa.2
+        for <bpf@vger.kernel.org>; Tue, 15 Aug 2023 19:33:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692153226; x=1692758026;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VNW1zQdlSA+EBMwsqEGzK2TiH2hiDgSEYVGqzy81FKw=;
+        b=EkrT9R/qtX0DdkYT3DcYY0ezxewW5uDfin/oE0O8wDVhOHj7PcXaKgk+WgTpZTk/jA
+         gsQomcKRzQhhl8ZT9+lX+tlOdtewm6RO8azMJNRGV6+YWah5echZcOK4DF7RUvZce/Pq
+         ySUEj1rWMGad1k19avia6HXdFPFZ+0szc+61OK6aghgbah5KLlKsgilfiIGrv7xIZssT
+         jjJoWSpRXtMQ/6a6COlYSyx6rt204leMDq7kIoaK9kV22a3hFlpPVREnVeebzB3p/32r
+         CO9+N/AhituC2W9sUImdfya0M7UZrQUYCwVm4l3yoR00OgJai415RlvrleTM9I32JM2T
+         5LOA==
+X-Gm-Message-State: AOJu0YxXROh0U7HjW/OAjFio3tYnYyajsnMlz0XTR842nQcZZkYgjcUQ
+	wQv+36wlSlSCv4F0ufVAXHDDz8PbhNQ7hJwP9xJXDHB6v9Vfrxb3jlAYy6d5zadluGoJ4tNggRS
+	EfIKJaVxVGzgktg24+xonTJIMpCw/
+X-Received: by 2002:a2e:87d4:0:b0:2b9:cd3d:4136 with SMTP id v20-20020a2e87d4000000b002b9cd3d4136mr426227ljj.2.1692153225915;
+        Tue, 15 Aug 2023 19:33:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGuqvZAnE6ML8oI2NAwZU1V3nFQiHWJ1QHjUqgo9pCf+uRWTz3qikCM4YBJ7Mh6JT7RKQu36d2mSMT50bmGwcU=
+X-Received: by 2002:a2e:87d4:0:b0:2b9:cd3d:4136 with SMTP id
+ v20-20020a2e87d4000000b002b9cd3d4136mr426215ljj.2.1692153225633; Tue, 15 Aug
+ 2023 19:33:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next 7/7] selftests/bpf: Enable cpu v4 tests for arm64
-Content-Language: en-US
-To: <yonghong.song@linux.dev>, Xu Kuohai <xukuohai@huaweicloud.com>,
-	<bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-CC: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>, Daniel Borkmann
-	<daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Will Deacon
-	<will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Yonghong Song
-	<yhs@fb.com>, Zi Shen Lim <zlim.lnx@gmail.com>
-References: <20230815154158.717901-1-xukuohai@huaweicloud.com>
- <20230815154158.717901-8-xukuohai@huaweicloud.com>
- <f1b6fde2-5097-7a0f-29ad-7390a165bf16@linux.dev>
- <67212714-15f3-84e8-d5c6-84746632eedd@huaweicloud.com>
- <2fd02263-669f-82cf-d2c0-86fb5e4ad993@linux.dev>
-From: Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <2fd02263-669f-82cf-d2c0-86fb5e4ad993@linux.dev>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <20230810123057.43407-1-xuanzhuo@linux.alibaba.com>
+ <20230810123057.43407-6-xuanzhuo@linux.alibaba.com> <CACGkMEsaYbsWyOKxA-xY=3dSmvzq9pMdYbypG9q+Ry2sMwAMPg@mail.gmail.com>
+ <1692081029.4299796-8-xuanzhuo@linux.alibaba.com> <CACGkMEt5RyOy_6rTXon_7py=ZmdJD=e4dMOGpNOo3NOyahGvjg@mail.gmail.com>
+ <1692091669.428807-1-xuanzhuo@linux.alibaba.com> <CACGkMEsnW-+fqcxu6E-cbAtMduE_n82fu+RA162fX5gr=Ckf5A@mail.gmail.com>
+ <1692151724.9150448-1-xuanzhuo@linux.alibaba.com> <CACGkMEt7LSTY-TRcSD75vYcv0AkH2a5otVXga7VGRLu7JQT_dA@mail.gmail.com>
+ <1692152487.9422052-2-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1692152487.9422052-2-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Wed, 16 Aug 2023 10:33:34 +0800
+Message-ID: <CACGkMEvnVy+p8+Nro6v7Yr-m_N07200skcqwz-pCr5==sn68BQ@mail.gmail.com>
+Subject: Re: [PATCH vhost v13 05/12] virtio_ring: introduce virtqueue_dma_dev()
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: virtualization@lists.linux-foundation.org, 
+	"Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/16/2023 9:57 AM, Yonghong Song wrote:
-> 
-> 
-> On 8/15/23 6:28 PM, Xu Kuohai wrote:
->> On 8/16/2023 12:57 AM, Yonghong Song wrote:
->>>
->>>
->>> On 8/15/23 8:41 AM, Xu Kuohai wrote:
->>>> From: Xu Kuohai <xukuohai@huawei.com>
->>>>
->>>> Enable cpu v4 instruction tests for arm64.
->>>>
->>>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->>>
->>> Thanks for adding cpu v4 support for arm64. The CI looks green as well for arm64.
->>>
->>> https://github.com/kernel-patches/bpf/actions/runs/5868919914/job/15912774884?pr=5525
->>>
->>
->> Well, it looks like the CI's clang doesn't support cpu v4 yet:
->>
->>    #306/1   verifier_bswap/cpuv4 is not supported by compiler or jit, use a dummy test:OK
->>    #306     verifier_bswap:OK
->>
->>> Ack this patch which enabled cpu v4 tests for arm64.
-> 
-> Ah. Sorry. Could you paste your local cpu v4 run results for
-> these related tests in the commit message then?
-> 
+On Wed, Aug 16, 2023 at 10:24=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.=
+com> wrote:
+>
+> On Wed, 16 Aug 2023 10:19:34 +0800, Jason Wang <jasowang@redhat.com> wrot=
+e:
+> > On Wed, Aug 16, 2023 at 10:16=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alib=
+aba.com> wrote:
+> > >
+> > > On Wed, 16 Aug 2023 09:13:48 +0800, Jason Wang <jasowang@redhat.com> =
+wrote:
+> > > > On Tue, Aug 15, 2023 at 5:40=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.a=
+libaba.com> wrote:
+> > > > >
+> > > > > On Tue, 15 Aug 2023 15:50:23 +0800, Jason Wang <jasowang@redhat.c=
+om> wrote:
+> > > > > > On Tue, Aug 15, 2023 at 2:32=E2=80=AFPM Xuan Zhuo <xuanzhuo@lin=
+ux.alibaba.com> wrote:
+> > > > > > >
+> > > > > > >
+> > > > > > > Hi, Jason
+> > > > > > >
+> > > > > > > Could you skip this patch?
+> > > > > >
+> > > > > > I'm fine with either merging or dropping this.
+> > > > > >
+> > > > > > >
+> > > > > > > Let we review other patches firstly?
+> > > > > >
+> > > > > > I will be on vacation soon, and won't have time to do this unti=
+l next week.
+> > > > >
+> > > > > Have a happly vacation.
+> > > > >
+> > > > > >
+> > > > > > But I spot two possible "issues":
+> > > > > >
+> > > > > > 1) the DMA metadata were stored in the headroom of the page, th=
+is
+> > > > > > breaks frags coalescing, we need to benchmark it's impact
+> > > > >
+> > > > > Not every page, just the first page of the COMP pages.
+> > > > >
+> > > > > So I think there is no impact.
+> > > >
+> > > > Nope, see this:
+> > > >
+> > > >         if (SKB_FRAG_PAGE_ORDER &&
+> > > >             !static_branch_unlikely(&net_high_order_alloc_disable_k=
+ey)) {
+> > > >                 /* Avoid direct reclaim but allow kswapd to wake */
+> > > >                 pfrag->page =3D alloc_pages((gfp & ~__GFP_DIRECT_RE=
+CLAIM) |
+> > > >                                           __GFP_COMP | __GFP_NOWARN=
+ |
+> > > >                                           __GFP_NORETRY,
+> > > >                                           SKB_FRAG_PAGE_ORDER);
+> > > >                 if (likely(pfrag->page)) {
+> > > >                         pfrag->size =3D PAGE_SIZE << SKB_FRAG_PAGE_=
+ORDER;
+> > > >                         return true;
+> > > >                 }
+> > > >         }
+> > > >
+> > > > The comp page might be disabled due to the SKB_FRAG_PAGE_ORDER and
+> > > > net_high_order_alloc_disable_key.
+> > >
+> > >
+> > > YES.
+> > >
+> > > But if comp page is disabled. Then we only get one page each time. Th=
+e pages are
+> > > not contiguous, so we don't have frags coalescing.
+> > >
+> > > If you mean the two pages got from alloc_page may be contiguous. The =
+coalescing
+> > > may then be broken. It's a possibility, but I think the impact will b=
+e small.
+> >
+> > Let's have a simple benchmark and see?
+>
+>
+> That is ok.
+>
+> I think you want to know the perf num with big traffic and the comp page
+> disabled.
 
-Sure. The results are as follows. I'll post these in the commit message.
+Yes.
 
-# ./test_progs -t ldsx_insn,verifier_sdiv,verifier_movsx,verifier_ldsx,verifier_gotol,verifier_bswap
-#115/1   ldsx_insn/map_val and probed_memory:OK
-#115/2   ldsx_insn/ctx_member_sign_ext:OK
-#115/3   ldsx_insn/ctx_member_narrow_sign_ext:OK
-#115     ldsx_insn:OK
-#302/1   verifier_bswap/BSWAP, 16:OK
-#302/2   verifier_bswap/BSWAP, 16 @unpriv:OK
-#302/3   verifier_bswap/BSWAP, 32:OK
-#302/4   verifier_bswap/BSWAP, 32 @unpriv:OK
-#302/5   verifier_bswap/BSWAP, 64:OK
-#302/6   verifier_bswap/BSWAP, 64 @unpriv:OK
-#302     verifier_bswap:OK
-#316/1   verifier_gotol/gotol, small_imm:OK
-#316/2   verifier_gotol/gotol, small_imm @unpriv:OK
-#316     verifier_gotol:OK
-#324/1   verifier_ldsx/LDSX, S8:OK
-#324/2   verifier_ldsx/LDSX, S8 @unpriv:OK
-#324/3   verifier_ldsx/LDSX, S16:OK
-#324/4   verifier_ldsx/LDSX, S16 @unpriv:OK
-#324/5   verifier_ldsx/LDSX, S32:OK
-#324/6   verifier_ldsx/LDSX, S32 @unpriv:OK
-#324/7   verifier_ldsx/LDSX, S8 range checking, privileged:OK
-#324/8   verifier_ldsx/LDSX, S16 range checking:OK
-#324/9   verifier_ldsx/LDSX, S16 range checking @unpriv:OK
-#324/10  verifier_ldsx/LDSX, S32 range checking:OK
-#324/11  verifier_ldsx/LDSX, S32 range checking @unpriv:OK
-#324     verifier_ldsx:OK
-#335/1   verifier_movsx/MOV32SX, S8:OK
-#335/2   verifier_movsx/MOV32SX, S8 @unpriv:OK
-#335/3   verifier_movsx/MOV32SX, S16:OK
-#335/4   verifier_movsx/MOV32SX, S16 @unpriv:OK
-#335/5   verifier_movsx/MOV64SX, S8:OK
-#335/6   verifier_movsx/MOV64SX, S8 @unpriv:OK
-#335/7   verifier_movsx/MOV64SX, S16:OK
-#335/8   verifier_movsx/MOV64SX, S16 @unpriv:OK
-#335/9   verifier_movsx/MOV64SX, S32:OK
-#335/10  verifier_movsx/MOV64SX, S32 @unpriv:OK
-#335/11  verifier_movsx/MOV32SX, S8, range_check:OK
-#335/12  verifier_movsx/MOV32SX, S8, range_check @unpriv:OK
-#335/13  verifier_movsx/MOV32SX, S16, range_check:OK
-#335/14  verifier_movsx/MOV32SX, S16, range_check @unpriv:OK
-#335/15  verifier_movsx/MOV32SX, S16, range_check 2:OK
-#335/16  verifier_movsx/MOV32SX, S16, range_check 2 @unpriv:OK
-#335/17  verifier_movsx/MOV64SX, S8, range_check:OK
-#335/18  verifier_movsx/MOV64SX, S8, range_check @unpriv:OK
-#335/19  verifier_movsx/MOV64SX, S16, range_check:OK
-#335/20  verifier_movsx/MOV64SX, S16, range_check @unpriv:OK
-#335/21  verifier_movsx/MOV64SX, S32, range_check:OK
-#335/22  verifier_movsx/MOV64SX, S32, range_check @unpriv:OK
-#335/23  verifier_movsx/MOV64SX, S16, R10 Sign Extension:OK
-#335/24  verifier_movsx/MOV64SX, S16, R10 Sign Extension @unpriv:OK
-#335     verifier_movsx:OK
-#347/1   verifier_sdiv/SDIV32, non-zero imm divisor, check 1:OK
-#347/2   verifier_sdiv/SDIV32, non-zero imm divisor, check 1 @unpriv:OK
-#347/3   verifier_sdiv/SDIV32, non-zero imm divisor, check 2:OK
-#347/4   verifier_sdiv/SDIV32, non-zero imm divisor, check 2 @unpriv:OK
-#347/5   verifier_sdiv/SDIV32, non-zero imm divisor, check 3:OK
-#347/6   verifier_sdiv/SDIV32, non-zero imm divisor, check 3 @unpriv:OK
-#347/7   verifier_sdiv/SDIV32, non-zero imm divisor, check 4:OK
-#347/8   verifier_sdiv/SDIV32, non-zero imm divisor, check 4 @unpriv:OK
-#347/9   verifier_sdiv/SDIV32, non-zero imm divisor, check 5:OK
-#347/10  verifier_sdiv/SDIV32, non-zero imm divisor, check 5 @unpriv:OK
-#347/11  verifier_sdiv/SDIV32, non-zero imm divisor, check 6:OK
-#347/12  verifier_sdiv/SDIV32, non-zero imm divisor, check 6 @unpriv:OK
-#347/13  verifier_sdiv/SDIV32, non-zero imm divisor, check 7:OK
-#347/14  verifier_sdiv/SDIV32, non-zero imm divisor, check 7 @unpriv:OK
-#347/15  verifier_sdiv/SDIV32, non-zero imm divisor, check 8:OK
-#347/16  verifier_sdiv/SDIV32, non-zero imm divisor, check 8 @unpriv:OK
-#347/17  verifier_sdiv/SDIV32, non-zero reg divisor, check 1:OK
-#347/18  verifier_sdiv/SDIV32, non-zero reg divisor, check 1 @unpriv:OK
-#347/19  verifier_sdiv/SDIV32, non-zero reg divisor, check 2:OK
-#347/20  verifier_sdiv/SDIV32, non-zero reg divisor, check 2 @unpriv:OK
-#347/21  verifier_sdiv/SDIV32, non-zero reg divisor, check 3:OK
-#347/22  verifier_sdiv/SDIV32, non-zero reg divisor, check 3 @unpriv:OK
-#347/23  verifier_sdiv/SDIV32, non-zero reg divisor, check 4:OK
-#347/24  verifier_sdiv/SDIV32, non-zero reg divisor, check 4 @unpriv:OK
-#347/25  verifier_sdiv/SDIV32, non-zero reg divisor, check 5:OK
-#347/26  verifier_sdiv/SDIV32, non-zero reg divisor, check 5 @unpriv:OK
-#347/27  verifier_sdiv/SDIV32, non-zero reg divisor, check 6:OK
-#347/28  verifier_sdiv/SDIV32, non-zero reg divisor, check 6 @unpriv:OK
-#347/29  verifier_sdiv/SDIV32, non-zero reg divisor, check 7:OK
-#347/30  verifier_sdiv/SDIV32, non-zero reg divisor, check 7 @unpriv:OK
-#347/31  verifier_sdiv/SDIV32, non-zero reg divisor, check 8:OK
-#347/32  verifier_sdiv/SDIV32, non-zero reg divisor, check 8 @unpriv:OK
-#347/33  verifier_sdiv/SDIV64, non-zero imm divisor, check 1:OK
-#347/34  verifier_sdiv/SDIV64, non-zero imm divisor, check 1 @unpriv:OK
-#347/35  verifier_sdiv/SDIV64, non-zero imm divisor, check 2:OK
-#347/36  verifier_sdiv/SDIV64, non-zero imm divisor, check 2 @unpriv:OK
-#347/37  verifier_sdiv/SDIV64, non-zero imm divisor, check 3:OK
-#347/38  verifier_sdiv/SDIV64, non-zero imm divisor, check 3 @unpriv:OK
-#347/39  verifier_sdiv/SDIV64, non-zero imm divisor, check 4:OK
-#347/40  verifier_sdiv/SDIV64, non-zero imm divisor, check 4 @unpriv:OK
-#347/41  verifier_sdiv/SDIV64, non-zero imm divisor, check 5:OK
-#347/42  verifier_sdiv/SDIV64, non-zero imm divisor, check 5 @unpriv:OK
-#347/43  verifier_sdiv/SDIV64, non-zero imm divisor, check 6:OK
-#347/44  verifier_sdiv/SDIV64, non-zero imm divisor, check 6 @unpriv:OK
-#347/45  verifier_sdiv/SDIV64, non-zero reg divisor, check 1:OK
-#347/46  verifier_sdiv/SDIV64, non-zero reg divisor, check 1 @unpriv:OK
-#347/47  verifier_sdiv/SDIV64, non-zero reg divisor, check 2:OK
-#347/48  verifier_sdiv/SDIV64, non-zero reg divisor, check 2 @unpriv:OK
-#347/49  verifier_sdiv/SDIV64, non-zero reg divisor, check 3:OK
-#347/50  verifier_sdiv/SDIV64, non-zero reg divisor, check 3 @unpriv:OK
-#347/51  verifier_sdiv/SDIV64, non-zero reg divisor, check 4:OK
-#347/52  verifier_sdiv/SDIV64, non-zero reg divisor, check 4 @unpriv:OK
-#347/53  verifier_sdiv/SDIV64, non-zero reg divisor, check 5:OK
-#347/54  verifier_sdiv/SDIV64, non-zero reg divisor, check 5 @unpriv:OK
-#347/55  verifier_sdiv/SDIV64, non-zero reg divisor, check 6:OK
-#347/56  verifier_sdiv/SDIV64, non-zero reg divisor, check 6 @unpriv:OK
-#347/57  verifier_sdiv/SMOD32, non-zero imm divisor, check 1:OK
-#347/58  verifier_sdiv/SMOD32, non-zero imm divisor, check 1 @unpriv:OK
-#347/59  verifier_sdiv/SMOD32, non-zero imm divisor, check 2:OK
-#347/60  verifier_sdiv/SMOD32, non-zero imm divisor, check 2 @unpriv:OK
-#347/61  verifier_sdiv/SMOD32, non-zero imm divisor, check 3:OK
-#347/62  verifier_sdiv/SMOD32, non-zero imm divisor, check 3 @unpriv:OK
-#347/63  verifier_sdiv/SMOD32, non-zero imm divisor, check 4:OK
-#347/64  verifier_sdiv/SMOD32, non-zero imm divisor, check 4 @unpriv:OK
-#347/65  verifier_sdiv/SMOD32, non-zero imm divisor, check 5:OK
-#347/66  verifier_sdiv/SMOD32, non-zero imm divisor, check 5 @unpriv:OK
-#347/67  verifier_sdiv/SMOD32, non-zero imm divisor, check 6:OK
-#347/68  verifier_sdiv/SMOD32, non-zero imm divisor, check 6 @unpriv:OK
-#347/69  verifier_sdiv/SMOD32, non-zero reg divisor, check 1:OK
-#347/70  verifier_sdiv/SMOD32, non-zero reg divisor, check 1 @unpriv:OK
-#347/71  verifier_sdiv/SMOD32, non-zero reg divisor, check 2:OK
-#347/72  verifier_sdiv/SMOD32, non-zero reg divisor, check 2 @unpriv:OK
-#347/73  verifier_sdiv/SMOD32, non-zero reg divisor, check 3:OK
-#347/74  verifier_sdiv/SMOD32, non-zero reg divisor, check 3 @unpriv:OK
-#347/75  verifier_sdiv/SMOD32, non-zero reg divisor, check 4:OK
-#347/76  verifier_sdiv/SMOD32, non-zero reg divisor, check 4 @unpriv:OK
-#347/77  verifier_sdiv/SMOD32, non-zero reg divisor, check 5:OK
-#347/78  verifier_sdiv/SMOD32, non-zero reg divisor, check 5 @unpriv:OK
-#347/79  verifier_sdiv/SMOD32, non-zero reg divisor, check 6:OK
-#347/80  verifier_sdiv/SMOD32, non-zero reg divisor, check 6 @unpriv:OK
-#347/81  verifier_sdiv/SMOD64, non-zero imm divisor, check 1:OK
-#347/82  verifier_sdiv/SMOD64, non-zero imm divisor, check 1 @unpriv:OK
-#347/83  verifier_sdiv/SMOD64, non-zero imm divisor, check 2:OK
-#347/84  verifier_sdiv/SMOD64, non-zero imm divisor, check 2 @unpriv:OK
-#347/85  verifier_sdiv/SMOD64, non-zero imm divisor, check 3:OK
-#347/86  verifier_sdiv/SMOD64, non-zero imm divisor, check 3 @unpriv:OK
-#347/87  verifier_sdiv/SMOD64, non-zero imm divisor, check 4:OK
-#347/88  verifier_sdiv/SMOD64, non-zero imm divisor, check 4 @unpriv:OK
-#347/89  verifier_sdiv/SMOD64, non-zero imm divisor, check 5:OK
-#347/90  verifier_sdiv/SMOD64, non-zero imm divisor, check 5 @unpriv:OK
-#347/91  verifier_sdiv/SMOD64, non-zero imm divisor, check 6:OK
-#347/92  verifier_sdiv/SMOD64, non-zero imm divisor, check 6 @unpriv:OK
-#347/93  verifier_sdiv/SMOD64, non-zero imm divisor, check 7:OK
-#347/94  verifier_sdiv/SMOD64, non-zero imm divisor, check 7 @unpriv:OK
-#347/95  verifier_sdiv/SMOD64, non-zero imm divisor, check 8:OK
-#347/96  verifier_sdiv/SMOD64, non-zero imm divisor, check 8 @unpriv:OK
-#347/97  verifier_sdiv/SMOD64, non-zero reg divisor, check 1:OK
-#347/98  verifier_sdiv/SMOD64, non-zero reg divisor, check 1 @unpriv:OK
-#347/99  verifier_sdiv/SMOD64, non-zero reg divisor, check 2:OK
-#347/100 verifier_sdiv/SMOD64, non-zero reg divisor, check 2 @unpriv:OK
-#347/101 verifier_sdiv/SMOD64, non-zero reg divisor, check 3:OK
-#347/102 verifier_sdiv/SMOD64, non-zero reg divisor, check 3 @unpriv:OK
-#347/103 verifier_sdiv/SMOD64, non-zero reg divisor, check 4:OK
-#347/104 verifier_sdiv/SMOD64, non-zero reg divisor, check 4 @unpriv:OK
-#347/105 verifier_sdiv/SMOD64, non-zero reg divisor, check 5:OK
-#347/106 verifier_sdiv/SMOD64, non-zero reg divisor, check 5 @unpriv:OK
-#347/107 verifier_sdiv/SMOD64, non-zero reg divisor, check 6:OK
-#347/108 verifier_sdiv/SMOD64, non-zero reg divisor, check 6 @unpriv:OK
-#347/109 verifier_sdiv/SMOD64, non-zero reg divisor, check 7:OK
-#347/110 verifier_sdiv/SMOD64, non-zero reg divisor, check 7 @unpriv:OK
-#347/111 verifier_sdiv/SMOD64, non-zero reg divisor, check 8:OK
-#347/112 verifier_sdiv/SMOD64, non-zero reg divisor, check 8 @unpriv:OK
-#347/113 verifier_sdiv/SDIV32, zero divisor:OK
-#347/114 verifier_sdiv/SDIV32, zero divisor @unpriv:OK
-#347/115 verifier_sdiv/SDIV64, zero divisor:OK
-#347/116 verifier_sdiv/SDIV64, zero divisor @unpriv:OK
-#347/117 verifier_sdiv/SMOD32, zero divisor:OK
-#347/118 verifier_sdiv/SMOD32, zero divisor @unpriv:OK
-#347/119 verifier_sdiv/SMOD64, zero divisor:OK
-#347/120 verifier_sdiv/SMOD64, zero divisor @unpriv:OK
-#347     verifier_sdiv:OK
-Summary: 6/166 PASSED, 0 SKIPPED, 0 FAILED
+Thanks
 
->>>
->>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
->>>
->>>> ---
->>>>   tools/testing/selftests/bpf/progs/test_ldsx_insn.c | 2 +-
->>>>   tools/testing/selftests/bpf/progs/verifier_bswap.c | 2 +-
->>>>   tools/testing/selftests/bpf/progs/verifier_gotol.c | 2 +-
->>>>   tools/testing/selftests/bpf/progs/verifier_ldsx.c  | 2 +-
->>>>   tools/testing/selftests/bpf/progs/verifier_movsx.c | 2 +-
->>>>   tools/testing/selftests/bpf/progs/verifier_sdiv.c  | 2 +-
->>>>   6 files changed, 6 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/tools/testing/selftests/bpf/progs/test_ldsx_insn.c b/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
->>>> index 321abf862801..916d9435f12c 100644
->>>> --- a/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
->>>> +++ b/tools/testing/selftests/bpf/progs/test_ldsx_insn.c
->>>> @@ -5,7 +5,7 @@
->>>>   #include <bpf/bpf_helpers.h>
->>>>   #include <bpf/bpf_tracing.h>
->>>> -#if defined(__TARGET_ARCH_x86) && __clang_major__ >= 18
->>>> +#if (defined(__TARGET_ARCH_arm64) || defined(__TARGET_ARCH_x86)) && __clang_major__ >= 18
->>>>   const volatile int skip = 0;
->>>>   #else
->>>>   const volatile int skip = 1;
->>> [...]
->>>
->>> .
->>
-> 
-> .
+>
+> Thanks.
+>
+>
+> >
+> > Thanks
+> >
+> > >
+> > > Thanks.
+> > >
+> > >
+> > > >
+> > > > >
+> > > > >
+> > > > > > 2) pre mapped DMA addresses were not reused in the case of XDP_=
+TX/XDP_REDIRECT
+> > > > >
+> > > > > Because that the tx is not the premapped mode.
+> > > >
+> > > > Yes, we can optimize this on top.
+> > > >
+> > > > Thanks
+> > > >
+> > > > >
+> > > > > Thanks.
+> > > > >
+> > > > > >
+> > > > > > I see Michael has merge this series so I'm fine to let it go fi=
+rst.
+> > > > > >
+> > > > > > Thanks
+> > > > > >
+> > > > > > >
+> > > > > > > Thanks.
+> > > > > > >
+> > > > > >
+> > > > >
+> > > >
+> > >
+> >
+>
 
 
