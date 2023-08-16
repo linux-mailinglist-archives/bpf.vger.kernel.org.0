@@ -1,236 +1,167 @@
-Return-Path: <bpf+bounces-7913-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7917-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF2A277E646
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 18:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BDF8877E71A
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 18:59:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BA151C21123
-	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 16:24:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03B5C1C20B0B
+	for <lists+bpf@lfdr.de>; Wed, 16 Aug 2023 16:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D11216436;
-	Wed, 16 Aug 2023 16:24:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 397C5168B9;
+	Wed, 16 Aug 2023 16:58:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E80C8FF
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 16:24:27 +0000 (UTC)
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02733198C
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 09:24:25 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-58419517920so71980567b3.0
-        for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 09:24:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692203065; x=1692807865;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PnywXpHlI6ay7Ck0Rlvm7S9jZvim3Y/ZQMiOdbgHj3A=;
-        b=mifFKGImVtBOZ29dtIlB+s6qMEvoQu7RqhL9y0tITJm03OcElMUBazinOspBvHup5I
-         Hc8MYi7z7RmndPf2cWWzqN6xNf90EKnAMfJKIPlTTasXTa8RKI9wEmSfqgwyWdHUulBK
-         Dh5uJq70pIUc35u63owMRG64MhHz+wpotmNdID8q6JqUNojyegsOdPpa/8fPLofo5MLK
-         nGeVj6jLm0yvlmiY8cfycsThbkxkiQFP8i8TdJYNvEpsDfPxcTdR1oqxVQiOLAgAD5gy
-         IYDzaXxjUeRQG6PcW7IGMLGOKSopT3gS/4qDviCpMoL+e8iX0vE0gGUEf/axSlDLgnvB
-         3WXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692203065; x=1692807865;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PnywXpHlI6ay7Ck0Rlvm7S9jZvim3Y/ZQMiOdbgHj3A=;
-        b=OUJ730y1dahfraLxwSmEFH0PussqLDEZDUDYySxAmAcsUqiFq+NBVR0IsM7RKF2D+A
-         fTtY6j8v9ag9k7q8jK/eYz/QRsuoQa5jQnn30+jNGY7bZyBQrxry2pA2Ykup/KW7Vtuz
-         vdGxaHrCtfVtfGdFoxeUoZENndFsGLFwxOXaeOLxUVurtjOF35Nt3W7iBOktnh/Q3p21
-         MQpJSuA/A4Anz7Sk4c2vfoyAlrjX3zTnewAGQBoehHHX98UWsrfSYr6rCDqS30mRnS5G
-         6TjZRLdI9xb1Y7awS+FPJzbq9VGAcuuoo7AQ4t9NpMf/rNGUUcdVB0EkdZh+jFq8MujW
-         TOeA==
-X-Gm-Message-State: AOJu0YySUcr2gLdm5Dcysn7/4kLE6eUQ5Z1xo+n5/WmTaZcWAmNfc9ja
-	BArW6bSQ+jeTptVCkZcyAi9rpIvnCdAv+315Whhv/gCcfd27Bw==
-X-Google-Smtp-Source: AGHT+IH2YTE3GDkUJROPdPqZBiQDJXMSOb14qPaRfvWfb99lx/hvZm+aTcvVq3DmjEro/XggnTqt7Tx+8GFX2+40aUk=
-X-Received: by 2002:a67:e3c6:0:b0:430:e0:ac2e with SMTP id k6-20020a67e3c6000000b0043000e0ac2emr2419624vsm.15.1692203044669;
- Wed, 16 Aug 2023 09:24:04 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AFA310949;
+	Wed, 16 Aug 2023 16:58:34 +0000 (UTC)
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64B81BE7;
+	Wed, 16 Aug 2023 09:58:31 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 082113200936;
+	Wed, 16 Aug 2023 12:58:26 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 16 Aug 2023 12:58:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+	1692205106; x=1692291506; bh=bqqqxjVQXB11bXS2XPDSYy3H/z1FMuEH1+F
+	+yhBNcXM=; b=SpGcFI9tty5G9XxTIQp3m6j1v9g7Rc+qHIb5y47g7gC6r0+95eY
+	+X+ZSJi+X0Dxakt4z2FYC2C4DqK0ylAhgjHgVdEP2s4W3dL49EhSfVcu1VvvB/Yp
+	iHiffyxaZI6Qz8LlZeX5SwRgnapi5xZqp0wfYFk9C+BbySVny8N8wi+LFBysjpKB
+	LPI1VHIOzflT3dZmwW8wI0GIj1YlhKCQWpBy2mQ1qcnobS1Y1pgxEKcZHvM+HDGC
+	IAN8LTbyBQIHsmu87bLmJFcC0Ctu3mnGAO8N8t5MYvCUyFNApef30btJhD4+pjlx
+	3QDLHg7vCkw+mUodUjzm+oFT6va+yzeKciQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1692205106; x=1692291506; bh=bqqqxjVQXB11bXS2XPDSYy3H/z1FMuEH1+F
+	+yhBNcXM=; b=dSXAhvZyD1Sz+sOQ3jiijy0iUP53HYcBiZP2hGb3arMwbXBe7S8
+	KxRPuWgfAp0WTOQrJBRLRUDkLJ7DO0tXCBgODTGcaZU0FFONSpiIpiOilPzF2aJ4
+	ZcVMzU6OyGB4JshhmAoM9SmBQttKYuGubGqypLM0+c124+53N1Rb3qq75ECJJOFT
+	Nux9CJL6fjoiCPTY8k5dCL+sCfJZihdtEquH9S2GsPS+G2/javkjTdhTVRS8Bj3I
+	1tSyjvGtxnoHpwZH384e8BtvEe9VouYSvNsGKh2ZlnXOREIRuGVzTzDJWcdEPsuL
+	vCRTPD4+7620a0NJfy2EK6MMBkoF3mBPw6w==
+X-ME-Sender: <xms:MgDdZGJYKhzEkNmosz2m88L_QOMyOQHl5WZPng0N--h88yITaDq3Mg>
+    <xme:MgDdZOLJvceuiltx6y0I9R0j6gOlnWULTMtP8WlIWMGUP--z29YQiupKCP1X9xygF
+    ZKCbQzlbgzxZ5uz9tY>
+X-ME-Received: <xmr:MgDdZGtZ6J7ncVdtmCiy3Ltu2xHIZqL8wZsyuikDtO_hDDNp_-u8mRJIN2dMofbk9A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtledguddtlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepofgr
+    nhhjuhhsrghkrgcuoehmvgesmhgrnhhjuhhsrghkrgdrmhgvqeenucggtffrrghtthgvrh
+    hnpeehheevjeeiudegledtleevuddufedttdekudfgteejjeetfeejleejffdtvdeugeen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmvgesmh
+    grnhhjuhhsrghkrgdrmhgv
+X-ME-Proxy: <xmx:MgDdZLagy-aPeEAMS0OSIjhUPaOQntc9XLR_qTYYc2qVM_l34zZcng>
+    <xmx:MgDdZNa1Im85TOLkeBt9i3gWwp-qwmfxU6WxKY7CDNqcbmGB_-py6Q>
+    <xmx:MgDdZHBMVDd02v-SsyL6JXDEPT9AP77lQijOkPSa3Gwqcn1tIVyiJA>
+    <xmx:MgDdZDBbVpaQiNItVk7nTG8Ez2anmqSlo6xWg_kAVLEO4hJgL0-vWA>
+Feedback-ID: i3ea9498d:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Aug 2023 12:58:19 -0400 (EDT)
+Message-ID: <82771f1c-9659-4aaa-bded-62bef6082bf8@manjusaka.me>
+Date: Thu, 17 Aug 2023 00:58:05 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230816095651.10014-1-daniel@iogearbox.net> <CALOAHbDtmTPV6enF1M0RnZr4pPyWkr1bZ7afcFchfNYRGVKu7w@mail.gmail.com>
- <d25d1dc0-d4fc-eb0c-e9cf-ee3d4783e07a@iogearbox.net>
-In-Reply-To: <d25d1dc0-d4fc-eb0c-e9cf-ee3d4783e07a@iogearbox.net>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 17 Aug 2023 00:23:26 +0800
-Message-ID: <CALOAHbBxBgtLP=4mxJRF3w3XkbZKDRB=1kkQ290Jw6-8SZZSRQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpftool: Implement link show support for tcx
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: martin.lau@linux.dev, bpf@vger.kernel.org, 
-	Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] tracepoint: add new `tcp:tcp_ca_event` trace event
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Joe Perches <joe@perches.com>, edumazet@google.com, bpf@vger.kernel.org,
+ davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ mhiramat@kernel.org, ncardwell@google.com, netdev@vger.kernel.org,
+ pabeni@redhat.com
+References: <CANn89iKQXhqgOTkSchH6Bz-xH--pAoSyEORBtawqBTvgG+dFig@mail.gmail.com>
+ <20230812201249.62237-1-me@manjusaka.me>
+ <20230812205905.016106c0@rorschach.local.home>
+ <20230812210140.117da558@rorschach.local.home>
+ <20230812210450.53464a78@rorschach.local.home>
+ <6bfa88099fe13b3fd4077bb3a3e55e3ae04c3b5d.camel@perches.com>
+ <20230812215327.1dbd30f3@rorschach.local.home>
+ <a587dac9e02cfde669743fd54ab41a3c6014c5e9.camel@perches.com>
+ <8b0f2d2b-c5a0-4654-9cc0-78873260a881@manjusaka.me>
+ <20230816110206.13980573@gandalf.local.home>
+Content-Language: en-US
+From: Manjusaka <me@manjusaka.me>
+In-Reply-To: <20230816110206.13980573@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Wed, Aug 16, 2023 at 11:11=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.=
-net> wrote:
->
-> On 8/16/23 4:23 PM, Yafang Shao wrote:
-> > On Wed, Aug 16, 2023 at 5:56=E2=80=AFPM Daniel Borkmann <daniel@iogearb=
-ox.net> wrote:
-> >>
-> >> Add support to dump tcx link information to bpftool. This adds a
-> >> common helper show_link_ifindex_{plain,json}() which can be reused
-> >> also for other link types. The plain text and json device output is
-> >> the same format as in bpftool net dump.
-> >>
-> >> Below shows an example link dump output along with a cgroup link
-> >> for comparison:
-> >>
-> >>    # bpftool link
-> >>    [...]
-> >>    10: cgroup  prog 1977
-> >>          cgroup_id 1  attach_type cgroup_inet6_post_bind
-> >>    [...]
-> >>    13: tcx  prog 2053
-> >>          ifindex enp5s0(3)  attach_type tcx_ingress
-> >>    14: tcx  prog 2080
-> >>          ifindex enp5s0(3)  attach_type tcx_egress
-> >>    [...]
-> >>
-> >> Equivalent json output:
-> >>
-> >>    # bpftool link --json
-> >>    [...]
-> >>    {
-> >>      "id": 10,
-> >>      "type": "cgroup",
-> >>      "prog_id": 1977,
-> >>      "cgroup_id": 1,
-> >>      "attach_type": "cgroup_inet6_post_bind"
-> >>    },
-> >>    [...]
-> >>    {
-> >>      "id": 13,
-> >>      "type": "tcx",
-> >>      "prog_id": 2053,
-> >>      "devname": "enp5s0",
-> >>      "ifindex": 3,
-> >>      "attach_type": "tcx_ingress"
-> >>    },
-> >>    {
-> >>      "id": 14,
-> >>      "type": "tcx",
-> >>      "prog_id": 2080,
-> >>      "devname": "enp5s0",
-> >>      "ifindex": 3,
-> >>      "attach_type": "tcx_egress"
-> >>    }
-> >>    [...]
-> >>
-> >> Suggested-by: Yafang Shao <laoar.shao@gmail.com>
-> >> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> >> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-> >
-> > Thanks for your work. This patch looks good to me.
-> > A minor nit below.
-> >
-> >> ---
-> >>   tools/bpf/bpftool/link.c | 37 +++++++++++++++++++++++++++++++++++++
-> >>   1 file changed, 37 insertions(+)
-> >>
-> >> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> >> index 65a168df63bc..a3774594f154 100644
-> >> --- a/tools/bpf/bpftool/link.c
-> >> +++ b/tools/bpf/bpftool/link.c
-> >> @@ -150,6 +150,18 @@ static void show_link_attach_type_json(__u32 atta=
-ch_type, json_writer_t *wtr)
-> >>                  jsonw_uint_field(wtr, "attach_type", attach_type);
-> >>   }
-> >>
-> >> +static void show_link_ifindex_json(__u32 ifindex, json_writer_t *wtr)
-> >> +{
-> >> +       char devname[IF_NAMESIZE] =3D "(unknown)";
-> >> +
-> >> +       if (ifindex)
-> >> +               if_indextoname(ifindex, devname);
-> >> +       else
-> >> +               snprintf(devname, sizeof(devname), "(detached)");
-> >> +       jsonw_string_field(wtr, "devname", devname);
-> >> +       jsonw_uint_field(wtr, "ifindex", ifindex);
-> >> +}
-> >> +
-> >>   static bool is_iter_map_target(const char *target_name)
-> >>   {
-> >>          return strcmp(target_name, "bpf_map_elem") =3D=3D 0 ||
-> >> @@ -433,6 +445,10 @@ static int show_link_close_json(int fd, struct bp=
-f_link_info *info)
-> >>          case BPF_LINK_TYPE_NETFILTER:
-> >>                  netfilter_dump_json(info, json_wtr);
-> >>                  break;
-> >> +       case BPF_LINK_TYPE_TCX:
-> >> +               show_link_ifindex_json(info->tcx.ifindex, json_wtr);
-> >> +               show_link_attach_type_json(info->tcx.attach_type, json=
-_wtr);
-> >> +               break;
-> >>          case BPF_LINK_TYPE_STRUCT_OPS:
-> >>                  jsonw_uint_field(json_wtr, "map_id",
-> >>                                   info->struct_ops.map_id);
-> >> @@ -509,6 +525,22 @@ static void show_link_attach_type_plain(__u32 att=
-ach_type)
-> >>                  printf("attach_type %u  ", attach_type);
-> >>   }
-> >>
-> >> +static void show_link_ifindex_plain(__u32 ifindex)
-> >> +{
-> >> +       char devname[IF_NAMESIZE * 2] =3D "(unknown)";
-> >> +       char tmpname[IF_NAMESIZE];
-> >> +       char *ret =3D NULL;
-> >> +
-> >> +       if (ifindex)
-> >> +               ret =3D if_indextoname(ifindex, tmpname);
-> >> +       else
-> >> +               snprintf(devname, sizeof(devname), "(detached)");
-> >> +       if (ret)
-> >> +               snprintf(devname, sizeof(devname), "%s(%d)",
-> >> +                        tmpname, ifindex);
-> >> +       printf("ifindex %s  ", devname);
-> >> +}
-> >
-> > This function looks a little strange to me. What about the change below=
-?
-> >
-> > static void show_link_ifindex_plain(__u32 ifindex)
-> > {
-> >          char devname[IF_NAMESIZE] =3D "(unknown)";
-> >
-> >          if (ifindex) {
-> >                  if_indextoname(ifindex, devname);
-> >                  printf("ifindex %s(%d)  ", devname, ifindex);
-> >          } else {
-> >                  printf("ifindex (detached)  ");
-> >          }
-> > }
->
-> Arguably, it's a corner case (and should never happen), but for the case
-> where the if_indextoname call fails, I only intended to print `ifindex (u=
-nknown)`
-> for the plain mode hence the check for if_indextoname success so that thi=
-s
-> looks similar as `ifindex (detached)` situation.
->
+On 2023/8/16 23:02, Steven Rostedt wrote:
+> On Wed, 16 Aug 2023 14:09:06 +0800
+> Manjusaka <me@manjusaka.me> wrote:
+> 
+>>> +# trace include files use a completely different grammar
+>>> +		next if ($realfile =~ m{(?:include/trace/events/|/trace\.h$/)});
+>>> +
+>>>  # check multi-line statement indentation matches previous line
+>>>  		if ($perl_version_ok &&
+>>>  		    $prevline =~ /^\+([ \t]*)((?:$c90_Keywords(?:\s+if)\s*)|(?:$Declare\s*)?(?:$Ident|\(\s*\*\s*$Ident\s*\))\s*|(?:\*\s*)*$Lval\s*=\s*$Ident\s*)\(.*(\&\&|\|\||,)\s*$/) {
+>>>
+>>>
+>>>   
+>>
+>> Actually, I'm not sure this is the checkpatch style issue or my code style issue.
+>>
+>> Seems wired.
+> 
+> The TRACE_EVENT() macro has its own style. I need to document it, and
+> perhaps one day get checkpatch to understand it as well.
+> 
+> The TRACE_EVENT() typically looks like:
+> 
+> 
+> TRACE_EVENT(name,
+> 
+> 	TP_PROTO(int arg1, struct foo *arg2, struct bar *arg3),
+> 
+> 	TP_ARGS(arg1, arg2, arg3),
+> 
+> 	TP_STRUCT__entry(
+> 		__field(	int,		field1				)
+> 		__array(	char,		mystring,	MYSTRLEN	)
+> 		__string(	filename,	arg3->name			)
+> 	),
+> 
+> 	TP_fast_assign(
+> 		__entry->field1 = arg1;
+> 		memcpy(__entry->mystring, arg2->string);
+> 		__assign_str(filename, arg3->name);
+> 	),
+> 
+> 	TP_printk("field1=%d mystring=%s filename=%s",
+> 		__entry->field1, __entry->mystring, __get_str(filename))
+> );
+> 
+> The TP_STRUCT__entry() should be considered more of a "struct" layout than
+> a macro layout, and that's where checkpatch gets confused. The spacing
+> makes it much easier to see the fields and their types.
+> 
+> -- Steve
 
-Fair enough.
+Thanks for the explain!
 
-Then fail free to add :
-Acked-by: Yafang Shao <laoar.shao@gmail.com>
+So could I keep the current code without any code style change?
 
---=20
-Regards
-Yafang
+I think it would be a good idea to fix the checkpatch.pl script in another patch
 
