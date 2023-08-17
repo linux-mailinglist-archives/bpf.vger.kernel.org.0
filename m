@@ -1,68 +1,68 @@
-Return-Path: <bpf+bounces-7975-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7976-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F82F77F297
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 10:58:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BFE277F298
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 10:58:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D09621C212FD
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 08:58:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5642A281E2E
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 08:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA8E10786;
-	Thu, 17 Aug 2023 08:58:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CC9110940;
+	Thu, 17 Aug 2023 08:58:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30AB5100A5
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 08:58:09 +0000 (UTC)
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA51210E
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 01:58:08 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bc83a96067so47993695ad.0
-        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 01:58:08 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF506100A5
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 08:58:13 +0000 (UTC)
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F83E7C
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 01:58:13 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-26b3f4d3372so2795615a91.3
+        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 01:58:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692262688; x=1692867488;
+        d=chromium.org; s=google; t=1692262692; x=1692867492;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=crlYGKquqF5t5yJzuYzOspJUZ1j4poI8LPHia0IINUw=;
-        b=DksOOuTp1UVrleiR8CEK0iz/auSb6d/LPavN/30BDmNJ0cdz7LS99xeIxjET/PJ41X
-         h81Ebion1q7krwAQiA51IC+KPYAqix6+FMf3GyFu87M3wpXcLnJ/nLO4LuaIACrnECZC
-         CQtdKis22ego1txUw9OgYHzv9B7tY+JdrfxRM=
+        bh=ehijAG3+DimElseOvhT2ydoS3VjVdNFUrFCVSW8Tlxc=;
+        b=hSxOPHq4BKOHG2rjMx+eCEaltK6EuVzY7bFcWGYSKFEM4Ma2nvNcu1knimN7RQYL5j
+         V6ZILhSBJ4uRpu1Yex71+JSerksuhVkWPYksqQmCYT+6Ayogq/Lkm02Xf3/T44eLdmfg
+         AYrAhWo3fORH8bOal2jmfPFbxW92+q9w3Gvtc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692262688; x=1692867488;
+        d=1e100.net; s=20221208; t=1692262692; x=1692867492;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=crlYGKquqF5t5yJzuYzOspJUZ1j4poI8LPHia0IINUw=;
-        b=ghR/RsicgksonY6xAd9LyuGy//IWuVAaJGUCzDWlHQUhsyPQ4TZL770PwUA6OcVoh5
-         MYa6sZgI1nrN6jGscB5HembJhqo6oDkifzXRhP+V8LwTv7wSRC2bA3Q9tpUY9OUYUhQi
-         4iYrJqz+pzWqJtXhkfwzACciyBNjTidXXW8y/1o1voaGymNY2yhiPwyh+dDeEnH618xb
-         JVIFlbZfpVsrTU+UUoVgJCh+6eZfnNob9dC89e4afuAKJW0lvla+V4AdLJLq1x8OeVo/
-         SVY4/0b0kQQU9cZuR7xmFNS2I6gRCdf1royo8eI5uB4gXwsxsGITszTgp6msHpbSRfWj
-         D9Yw==
-X-Gm-Message-State: AOJu0Yzxif9+rr4ygP+jsIz27Y4XKJ7NeVyv/Y/DZZM5AUxhIvB90WfW
-	3KKE4Z07AdyoOcGjKg2DnGfZs4AtMbfQbVJhObqF7g==
-X-Google-Smtp-Source: AGHT+IHPdZNMxsM5+V5vX1EyN/E9ZUkGEZfEzPzHjovvpTHCp44OCZVb5aKpzX0DMTkIEr47E1RrBt56OImd/BKdS3c=
-X-Received: by 2002:a17:90b:4391:b0:268:c7fc:b771 with SMTP id
- in17-20020a17090b439100b00268c7fcb771mr3404103pjb.14.1692262688334; Thu, 17
- Aug 2023 01:58:08 -0700 (PDT)
+        bh=ehijAG3+DimElseOvhT2ydoS3VjVdNFUrFCVSW8Tlxc=;
+        b=Ek6UwLgcbL1wvAPNczl3hH6lthXTuHQ621RxxJAiO6avS62cNOC+j+PQFMmWP9+VwY
+         YMMltljZap8SyLkkNFKGDMkczG3GgKadJT4CgHum072lvib3Q5XMSEow2o6a+7YU5WsH
+         dwQtwhYP12HTaJLDAAiDwe9tpROOdPite3vS9ar9aR80h5rk8olxRQYsczaWnoE3cB4q
+         Yf14QXpQujeDVOJrQmUM5WAng0F4NNrILKVQQKdGfI8Ei106DS9gWGT+HG/kdYs0qicS
+         Som84R42ToGXl3l8OEttBODSDxeIB+SOyB7lhIMOf/IR4hoB76aCHqru22U1PrYDEbHs
+         hM2w==
+X-Gm-Message-State: AOJu0YzmNuhOaUwNPnk/EH+1MMhZWbszB6emErqg9WcB1jhpX0HX6mgN
+	KNSERIBCbczHkbDnm/61MG7culVH8vku9o3gxUwdJA==
+X-Google-Smtp-Source: AGHT+IH7wJlK1Wn93MuV/91kwcNihtgsOunIPXO95uzJnJCqLl1ks9/sg/b2XhIGI7m4uJxhwSFPfPgEM1o0qlVcsn8=
+X-Received: by 2002:a17:90b:3b49:b0:268:1be1:745a with SMTP id
+ ot9-20020a17090b3b4900b002681be1745amr3423253pjb.29.1692262692654; Thu, 17
+ Aug 2023 01:58:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <169181859570.505132.10136520092011157898.stgit@devnote2> <169181867839.505132.10717747708330472036.stgit@devnote2>
-In-Reply-To: <169181867839.505132.10717747708330472036.stgit@devnote2>
+References: <169181859570.505132.10136520092011157898.stgit@devnote2> <169181869006.505132.4695602314698748304.stgit@devnote2>
+In-Reply-To: <169181869006.505132.4695602314698748304.stgit@devnote2>
 From: Florent Revest <revest@chromium.org>
-Date: Thu, 17 Aug 2023 10:57:57 +0200
-Message-ID: <CABRcYmLxL=F3xuNKV12oPt_aHoLM8gDLeAxMeVQsk-iuXi2mSw@mail.gmail.com>
-Subject: Re: [PATCH v3 7/8] bpf: Enable kprobe_multi feature if CONFIG_FPROBE
- is enabled
+Date: Thu, 17 Aug 2023 10:58:01 +0200
+Message-ID: <CABRcYmLzPRZERpF2PUru7_LJOASrGp9Q=ftdxFfJYCVd0QFDJg@mail.gmail.com>
+Subject: Re: [PATCH v3 8/8] Documentations: probes: Update fprobe document to
+ use ftrace_regs
 To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
 	linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
@@ -84,10 +84,8 @@ On Sat, Aug 12, 2023 at 7:38=E2=80=AFAM Masami Hiramatsu (Google)
 >
 > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 >
-> Enable kprobe_multi feature if CONFIG_FPROBE is enabled. The pt_regs is
-> converted from ftrace_regs by ftrace_partial_regs(), thus some registers
-> may always returns 0. But it should be enough for function entry (access
-> arguments) and exit (access return value).
+> Update fprobe document so that the entry/exit handler uses ftrace_regs
+> instead of pt_regs.
 >
 > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
