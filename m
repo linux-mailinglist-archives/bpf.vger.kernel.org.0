@@ -1,104 +1,93 @@
-Return-Path: <bpf+bounces-8025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8026-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2E80780109
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 00:32:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59AE3780140
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 00:45:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84317282258
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 22:32:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 792DE1C21531
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 22:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A981BF07;
-	Thu, 17 Aug 2023 22:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36FF6107B4;
+	Thu, 17 Aug 2023 22:45:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CAC1DA27;
-	Thu, 17 Aug 2023 22:31:50 +0000 (UTC)
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B823590;
-	Thu, 17 Aug 2023 15:31:49 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bdbf10333bso2656895ad.1;
-        Thu, 17 Aug 2023 15:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692311509; x=1692916309;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FZEzx/BglPtyuNXga5z6ZOvALGdPR3nROuhrA48CEhQ=;
-        b=VgdQi0wb+QcqqKFEK32EQETLpGKr94hILCEzMs+ya4wgLVbMBxZLweILHxpTWUNT29
-         wnDZxPQJjysDQ8Pzpm9/L9thmavJvPhTroxZd4fuWSlP9NoAJDe/dSgAtu4jpw5piPiq
-         /TqauBKuM0QcOnovn0zauAsvmZqfGQJvoARPSKSNZ0INCbpVBuhiWjzthW2DZ3uHuoAZ
-         jrslOjG6Psob7Obghhzc47zrqRhaeLRRAm3EbeN226r0qerv9MT9YlaARsR+p0bRMhsR
-         gzAb2gC7d5EcO0wBi/6aOqUTzWhgUfyYFVqI4yOKFGdrTwThrlRvBIHdY6V7U7udtNKo
-         wPfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692311509; x=1692916309;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FZEzx/BglPtyuNXga5z6ZOvALGdPR3nROuhrA48CEhQ=;
-        b=K63QjKxC2z4vurlAuFAMKaCkElm3kG0NGu0TGzcqF/MSw958hIppBXKTQy7BcG9Vj+
-         RVIAj2IdQf4FrjYT38Z5W8YtjVtb4/b8eU+ItHZ+k6GQFmdhg4O/ZxkRJduvBT+pXIbG
-         GntwG07ua4oyor8ZdaQ2B3pI8JV1F1Yv9yGrcOLcDlP6IlGRVHM8E+dRbPMjy5ftD9yB
-         hase1gxQP6NklLlNQptcvsHKtAYKpnShT1Whv+E+7uTcyYXKXsmKAvq8f4llMuBrjEPc
-         Ny2J3mPrONQ9RQfAnrFYjss62eCNGx90MJDCGLwfdQiYvrW8WeWLpEHBTifmwbcaQbv+
-         5xvQ==
-X-Gm-Message-State: AOJu0YwvnL4lRzC2x7VtGVBJgnQkR3YcOvBO96xYByeqVMQmbMfMKv2R
-	H8oiJOvNiNPhVEaXRMzE7Ug=
-X-Google-Smtp-Source: AGHT+IFpMhFHbdHJblnyyng0Ai8C8bEUNnlFfR7MeAyCIH06kdI3U/lM3NwBzp3uHHBzLf9bl0T1bQ==
-X-Received: by 2002:a17:903:2310:b0:1bc:6c8:cde3 with SMTP id d16-20020a170903231000b001bc06c8cde3mr963298plh.57.1692311508914;
-        Thu, 17 Aug 2023 15:31:48 -0700 (PDT)
-Received: from macbook-pro-8.dhcp.thefacebook.com ([2620:10d:c090:500::4:8d88])
-        by smtp.gmail.com with ESMTPSA id iy20-20020a170903131400b001bc18e579aesm274111plb.101.2023.08.17.15.31.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 15:31:48 -0700 (PDT)
-Date: Thu, 17 Aug 2023 15:31:43 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Leon Hwang <hffilwlqm@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	jolsa@kernel.org, x86@kernel.org, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	hpa@zytor.com, mykolal@fb.com, shuah@kernel.org,
-	davem@davemloft.net, dsahern@kernel.org, tangyeechou@gmail.com,
-	kernel-patches-bot@fb.com, maciej.fijalkowski@intel.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 1/2] bpf, x64: Fix tailcall infinite loop bug
-Message-ID: <20230817223143.jyclrtf3a6kmtgh5@macbook-pro-8.dhcp.thefacebook.com>
-References: <20230814134147.70289-1-hffilwlqm@gmail.com>
- <20230814134147.70289-2-hffilwlqm@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE17C100B3
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 22:45:40 +0000 (UTC)
+Received: from out-61.mta1.migadu.com (out-61.mta1.migadu.com [95.215.58.61])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D3D35B1
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 15:45:34 -0700 (PDT)
+Message-ID: <5f061b5f-89a0-fadd-7233-e5bb877e680d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1692312332;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P5cm9AFLUSjvLg/Q5Q1zFGOnGqPEazcej1e5Ponp9Lk=;
+	b=Hvo9WyrqqLdmBrOmgLICRjw0tfxyKAXp19sK4HUy9JuFjgU6UDqZvkuaim2+EfOYZTBP3N
+	FMmjmAuA0584Vu48WojIMChntVTusQl6F2OginhdNT8qfG79Wn9S1paXXbhmfTlp5WL45C
+	EjHhXLdhOQJckjf91YfcKNStXRU/tXg=
+Date: Thu, 17 Aug 2023 15:45:26 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814134147.70289-2-hffilwlqm@gmail.com>
+Subject: Re: [RFC bpf-next v3 4/5] bpf: Add a new dynptr type for
+ CGRUP_SOCKOPT.
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Song Liu <song@kernel.org>, Kernel Team <kernel-team@meta.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>, Kui-Feng Lee <sinquersw@gmail.com>,
+ Kui-Feng Lee <kuifeng@meta.com>, Kui-Feng Lee <thinker.li@gmail.com>
+References: <20230815174712.660956-1-thinker.li@gmail.com>
+ <20230815174712.660956-5-thinker.li@gmail.com>
+ <20230817012518.erfkm4tgdm3isnks@MacBook-Pro-8.local>
+ <f903808f-13c3-c440-c720-2051fe6ec4fe@linux.dev>
+ <CAADnVQKpiJE1aJNS=OP7GF+M9fm5ipOfO6tbKo-6yjdZMJ6YxQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAADnVQKpiJE1aJNS=OP7GF+M9fm5ipOfO6tbKo-6yjdZMJ6YxQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, Aug 14, 2023 at 09:41:46PM +0800, Leon Hwang wrote:
-> @@ -1147,6 +1152,7 @@ struct bpf_attach_target_info {
->  	struct module *tgt_mod;
->  	const char *tgt_name;
->  	const struct btf_type *tgt_type;
-> +	bool tail_call_ctx;
+On 8/17/23 2:46 PM, Alexei Starovoitov wrote:
+>> To avoid other potential optname cases that may run into similar situation and
+>> requires the bpf prog work around it again like the above, it needs a way to
+>> track whether a bpf prog has changed the optval in runtime. If it is not
+>> changed, use the result from the kernel set/getsockopt. If reading/writing to
+>> optval is done through a kfunc, this can be tracked. The kfunc can also directly
+>> read/write the user memory in optval, avoid the pre-alloc kernel memory and the
+>> PAGE_SIZE limit but this is a minor point.
+> so I'm still not following what sleepable progs that can access everything
+> would help the existing situation.
+> I agree that sleepable bpf sockopt should be free from old mistakes,
+> but people might still write old-style non-sleeptable bpf sockopt and
+> might repeat the same mistakes.
+> I'm missing the value of the new interface. It's better, sure, but why?
+> Do we expect to rewrite existing sockopt progs in sleepable way?
+> It might not be easy due to sleepable limitations like maps and whatever else.
 
-Instead of extra flag here can you check tgt_prog->aux->tail_call_reachable in check_attach_btf_id()
-and set tr->flags there?
-Other than this the fix makes sense.
-Please trim your cc list when you respin.
-Just maintainers, Maciej (author of fixes tag) and bpf@vger is enough.
+so far our sockopt progs only uses sk local storage that can support sleepable 
+and we can all move to the sleepable way to avoid any future quirk.
+
+Agree that others may have sockopt prog that has hard dependency on 
+non-sleepable. If the existing non-sleepable and sleepable inter-leaved 
+together, it would end up hitting similar issue.
+
+Lets drop the idea of this set.
 
