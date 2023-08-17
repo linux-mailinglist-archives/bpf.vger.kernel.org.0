@@ -1,236 +1,227 @@
-Return-Path: <bpf+bounces-7940-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7941-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E49677EE25
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 02:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C5D077EE54
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 02:31:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB400281D21
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 00:17:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16679281D81
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 00:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF02A37A;
-	Thu, 17 Aug 2023 00:17:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CCBD1DA40;
+	Thu, 17 Aug 2023 00:31:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89EF418F
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 00:17:34 +0000 (UTC)
-X-Greylist: delayed 2209 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 16 Aug 2023 17:17:32 PDT
-Received: from out-62.mta0.migadu.com (out-62.mta0.migadu.com [91.218.175.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E3D10F
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 17:17:32 -0700 (PDT)
-Message-ID: <f06506b5-b4b7-3588-7c78-1b23929f9e0f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692231450;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6owE7O1+eXjkUzatTsHBzylCK9vGQRAnlBqa6D3AiTM=;
-	b=mpA8XGiUi0AL9LI9kEeZ63m6Y68wSmpbf764U+N2ubrLkR9lUsy+8vrJR5lLTqjIMqtVQX
-	Khu09Jl+WhKvscVLBnsrxsTxnr4wnss2HEEpzaCsz9MhyU5zlsh5m1uo6ihCBpoCW1eC1v
-	Xm3UQBnMhY/KtDBulDdK1oRgzZfj6Ig=
-Date: Wed, 16 Aug 2023 20:17:27 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 192B21DA2E
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 00:31:32 +0000 (UTC)
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275682D4F
+	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 17:31:31 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bc73a2b0easo48398095ad.0
+        for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 17:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1692232290; x=1692837090;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bgC1JR3GltIDSf4x3tRknvWq/71clnqR/lvG3W7lMIY=;
+        b=Wk7ZcI2cSkKCmpwAOwQEWMxrL0tl/66pfHLM07y/kUfYtekvi/9AI3fVG2F8cet9z7
+         HaNmXcsLFe/opiDrpqTUwTwp2xAGG4VppLrGtJ817cSohKNEmlr38uTFl2Sz3N/BKGh8
+         URPT4Pgv2IShCvFGZg6os9YjX98OSOzdKTEzsWFGAay4H3HVGpaS/GVv2QchNq8KafvK
+         IkyqfPF8xyh33b6/CuFgitvJDNid8GWpU+t4AG4nrLS2uSTJcWTF+Ba4KnzXdwinN19W
+         fAdrVc/FNL6bAuRBVyr3h8XYuAfq3Ea1xvc1SKwFPIR4gZhmU+xURpjxgFC4H/ctLxds
+         ZEyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692232290; x=1692837090;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bgC1JR3GltIDSf4x3tRknvWq/71clnqR/lvG3W7lMIY=;
+        b=NhYOnwhc7CyEbxwJu9MZHuOBs9OnedOFFUhcE5cwIa++DSBz/vfMjkGvqR2k7AMORd
+         RdUo4ekrNqy25pMt2GxYKdcjz8/aBxo85jZe3hboodLK40mibnDW4tDTPWwuXfDa6e6e
+         76pD9CInYwIiS0qElBUy/PqNVq2P9Z7M63B9oIudS21p4zt+Q7RAx3B21NUz73KZGjqh
+         FQZN45GFC5JwnpTbreVOje7knOyJsMZ/Kshdznu+dR5fwhJzQbVA8t3eKcQ0gqJ1Uf5A
+         oW7gwNfo88VHkJqS3r6ZaUWhcTnmq2Ug7WTWeduikt0hGn4LxFwlpDLZ55SyOEoFaNEE
+         SVYQ==
+X-Gm-Message-State: AOJu0YyXKYjtqZ1GrST6RQpX8cmcQuPMTx2CA6h4BEOqiisPOJuFEYy+
+	/leB9QW5HBUO6JvtEP4BsNMFBQ==
+X-Google-Smtp-Source: AGHT+IGx864ksrcElUkMdcjLIA8ZzATRBTzPfs5VJbwgXjA+rTZAtM/bmlMaN8VpB9uJmBPGLXp17Q==
+X-Received: by 2002:a17:902:e80d:b0:1bd:a0cd:1860 with SMTP id u13-20020a170902e80d00b001bda0cd1860mr4137638plg.64.1692232290547;
+        Wed, 16 Aug 2023 17:31:30 -0700 (PDT)
+Received: from ghost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id d12-20020a170902728c00b001ac5896e96esm13666450pll.207.2023.08.16.17.31.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 17:31:30 -0700 (PDT)
+Date: Wed, 16 Aug 2023 17:31:26 -0700
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
+	bpf@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jason Baron <jbaron@akamai.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ard Biesheuvel <ardb@kernel.org>, Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
+	Nam Cao <namcaov@gmail.com>
+Subject: Re: [PATCH 00/10] RISC-V: Refactor instructions
+Message-ID: <ZN1qXlLp6qfpBeGF@ghost>
+References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
+ <20230804-2c57bddd6e87fdebc20ff9d5@orel>
+ <ZM00UYDzEAz/JT3n@ghost>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add CO-RE relocs kfunc
- flavors tests
-Content-Language: en-US
-To: David Vernet <void@manifault.com>,
- David Marchevsky <david.marchevsky@linux.dev>
-Cc: Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
-References: <20230816165813.3718580-1-davemarchevsky@fb.com>
- <20230816165813.3718580-2-davemarchevsky@fb.com>
- <20230816174455.GB814797@maniforge>
- <2ce292e0-f9e5-b1ea-0de3-735670139cb9@linux.dev>
- <20230816193942.GB1295964@maniforge>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: David Marchevsky <david.marchevsky@linux.dev>
-In-Reply-To: <20230816193942.GB1295964@maniforge>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZM00UYDzEAz/JT3n@ghost>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/16/23 3:39 PM, David Vernet wrote:
-> On Wed, Aug 16, 2023 at 03:10:23PM -0400, David Marchevsky wrote:
->> On 8/16/23 1:44 PM, David Vernet wrote:
->>> On Wed, Aug 16, 2023 at 09:58:13AM -0700, Dave Marchevsky wrote:
->>>> This patch adds selftests that exercise kfunc flavor relocation
->>>> functionality added in the previous patch. The actual kfunc defined in
->>>> kernel/bpf/helpers.c is
->>>>
->>>>   struct task_struct *bpf_task_acquire(struct task_struct *p)
->>>>
->>>> The following relocation behaviors are checked:
->>>>
->>>>   struct task_struct *bpf_task_acquire___one(struct task_struct *name)
->>>>     * Should succeed despite differing param name
->>>>
->>>>   struct task_struct *bpf_task_acquire___two(struct task_struct *p, void *ctx)
->>>>     * Should fail because there is no two-param bpf_task_acquire
->>>>
->>>>   struct task_struct *bpf_task_acquire___three(void *ctx)
->>>>     * Should fail because, despite vmlinux's bpf_task_acquire having one param,
->>>>       the types don't match
->>>>
->>>> Changelog:
->>>> v1 -> v2: https://lore.kernel.org/bpf/20230811201346.3240403-2-davemarchevsky@fb.com/
->>>>   * Change comment on bpf_task_acquire___two to more accurately reflect
->>>>     that it fails in same codepath as bpf_task_acquire___three, and to
->>>>     not mention dead code elimination as thats an implementation detail
->>>>     (Yonghong)
->>>>
->>>> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
->>>> ---
->>>>  .../selftests/bpf/prog_tests/task_kfunc.c     |  1 +
->>>>  .../selftests/bpf/progs/task_kfunc_success.c  | 37 +++++++++++++++++++
->>>>  2 files changed, 38 insertions(+)
->>>>
->>>> diff --git a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
->>>> index 740d5f644b40..99abb0350154 100644
->>>> --- a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
->>>> +++ b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
->>>> @@ -79,6 +79,7 @@ static const char * const success_tests[] = {
->>>>  	"test_task_from_pid_current",
->>>>  	"test_task_from_pid_invalid",
->>>>  	"task_kfunc_acquire_trusted_walked",
->>>> +	"test_task_kfunc_flavor_relo",
->>>>  };
->>>>  
->>>>  void test_task_kfunc(void)
->>>> diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_success.c b/tools/testing/selftests/bpf/progs/task_kfunc_success.c
->>>> index b09371bba204..ffbe3ff72639 100644
->>>> --- a/tools/testing/selftests/bpf/progs/task_kfunc_success.c
->>>> +++ b/tools/testing/selftests/bpf/progs/task_kfunc_success.c
->>>
->>> Do you think it's worth it to also add a failure case for if there's no
->>> correct bpf_taks_acquire___one(), to verify e.g. that we can't resolve
->>> bpf_task_acquire___three(void *ctx) __ksym __weak?
->>>
->>
->> IIUC you're asking about whether it's possible to fail loading the program
->> entirely if _none_ of the three variants resolve successfully? If so, I
->> sent out a response to another email in this round of your comments that should
->> address it.
-> 
-> Sorry, that was unclear in the way I worded it. I understand that the
-> program will still load if none of the variants resolve succesfully. I
-> was asking whether we should add a test that verifies that the wrong
-> variant won't be resolved if a correct one isn't present. Maybe that's
-> overkill? Seems prudent to add just in case, though. Something like
-> this:
-> 
-> SEC("tp_btf/task_newtask")
-> int BPF_PROG(test_task_kfunc_flavor_relo_not_found,
-> 	     struct task_struct *task, u64 clone_flags)
-> {
-> 	/* Neither symbol should resolve successfully. */
->         if (bpf_ksym_exists(bpf_task_acquire___two))
->                 err = 1;
->         else if (bpf_ksym_exists(bpf_task_acquire___three))
->                 err = 2;
-> 	
-> 	return 0;
-> }
-> 
-
-
-I was leaning towards pushing back here, but agree with you after digging and
-seeing:
-
-  * weak symbols aren't discussed in the C99 standard at all and are an ELF
-    specification concept
-  * my previous bullet point isn't really relevant to what you're saying here
-    as you're talking about the linkage process more generally
-  * Then I started digging in the C99 standard and realized that even if there
-    was something in there that would allow me to say "well by definition I 
-    don't need to test for this", would be too obscure and I should just add the
-    test
-
->>
->>>> @@ -18,6 +18,13 @@ int err, pid;
->>>>   */
->>>>  
->>>>  struct task_struct *bpf_task_acquire(struct task_struct *p) __ksym __weak;
->>>> +
->>>> +struct task_struct *bpf_task_acquire___one(struct task_struct *task) __ksym __weak;
->>>> +/* The two-param bpf_task_acquire doesn't exist */
->>>> +struct task_struct *bpf_task_acquire___two(struct task_struct *p, void *ctx) __ksym __weak;
->>>> +/* Incorrect type for first param */
->>>> +struct task_struct *bpf_task_acquire___three(void *ctx) __ksym __weak;
->>>> +
->>>>  void invalid_kfunc(void) __ksym __weak;
->>>>  void bpf_testmod_test_mod_kfunc(int i) __ksym __weak;
->>>>  
->>>> @@ -55,6 +62,36 @@ static int test_acquire_release(struct task_struct *task)
->>>>  	return 0;
->>>>  }
->>>>  
->>>> +SEC("tp_btf/task_newtask")
->>>> +int BPF_PROG(test_task_kfunc_flavor_relo, struct task_struct *task, u64 clone_flags)
->>>> +{
->>>> +	struct task_struct *acquired = NULL;
->>>> +	int fake_ctx = 42;
->>>> +
->>>> +	if (bpf_ksym_exists(bpf_task_acquire___one)) {
->>>> +		acquired = bpf_task_acquire___one(task);
->>>> +	} else if (bpf_ksym_exists(bpf_task_acquire___two)) {
->>>> +		/* Here, bpf_object__resolve_ksym_func_btf_id's find_ksym_btf_id
->>>> +		 * call will find vmlinux's bpf_task_acquire, but subsequent
->>>> +		 * bpf_core_types_are_compat will fail
->>>> +		 */
->>>> +		acquired = bpf_task_acquire___two(task, &fake_ctx);
->>>> +		err = 3;
->>>> +		return 0;
->>>> +	} else if (bpf_ksym_exists(bpf_task_acquire___three)) {
->>>> +		/* bpf_core_types_are_compat will fail similarly to above case */
->>>> +		acquired = bpf_task_acquire___three(&fake_ctx);
->>>> +		err = 4;
->>>> +		return 0;
->>>> +	}
->>>> +
->>>> +	if (acquired)
->>>> +		bpf_task_release(acquired);
->>>
->>> Might be slightly simpler to do the release + return immediately in the
->>> bpf_task_acquire___one branch, and then to just do the following here
->>> without the if / else:
->>>
->>> err = 5;
->>> return 0;
->>>
->>> What do you think?
->>>
->>
->> Eh, I like this form more because it's easier to visually distinguish that the
->> bpf_task_acquire___one case above is not a 'failure' case and should
->> successfully resolve, whereas the other two bail out early.
->>
->>>> +	else
->>>> +		err = 5;
->>>> +	return 0;
->>>> +}
->>>> +
->>>>  SEC("tp_btf/task_newtask")
->>>>  int BPF_PROG(test_task_acquire_release_argument, struct task_struct *task, u64 clone_flags)
->>>>  {
->>>> -- 
->>>> 2.34.1
->>>>
->>>>
+On Fri, Aug 04, 2023 at 10:24:33AM -0700, Charlie Jenkins wrote:
+> On Fri, Aug 04, 2023 at 12:28:28PM +0300, Andrew Jones wrote:
+> > On Thu, Aug 03, 2023 at 07:10:25PM -0700, Charlie Jenkins wrote:
+> > > There are numerous systems in the kernel that rely on directly
+> > > modifying, creating, and reading instructions. Many of these systems
+> > > have rewritten code to do this. This patch will delegate all instruction
+> > > handling into insn.h and reg.h. All of the compressed instructions, RVI,
+> > > Zicsr, M, A instructions are included, as well as a subset of the F,D,Q
+> > > extensions.
+> > > 
+> > > ---
+> > > This is modifying code that https://lore.kernel.org/lkml/20230731183925.152145-1-namcaov@gmail.com/
+> > > is also touching.
+> > > 
+> > > ---
+> > > Testing:
+> > > 
+> > > There are a lot of subsystems touched and I have not tested every
+> > > individual instruction. I did a lot of copy-pasting from the RISC-V spec
+> > > so opcodes and such should be correct
+> > 
+> > How about we create macros which generate each of the functions an
+> > instruction needs, e.g. riscv_insn_is_*(), etc. based on the output of
+> > [1]. I know basically nothing about that project, but it looks like it
+> > creates most the defines this series is creating from what we [hope] to
+> > be an authoritative source. I also assume that if we don't like the
+> > current output format, then we could probably post patches to the project
+> > to get the format we want. For example, we could maybe propose an "lc"
+> > format for "Linux C".
+> That's a great idea, I didn't realize that existed!
+I have discovered that the riscv-opcodes repository is not in a state
+that makes it helpful. If it were workable, it would make it easy to
+include a "Linux C" format. I have had a pull request open on the repo
+for two weeks now and the person who maintains the repo has not
+interacted. At minimum, in order for it to be useful it would need an ability to
+describe the bit order of immediates in an instruction and include script
+arguments to select which instructions should be included. There is a
+"C" format, but it is actually just a Spike format. Nonetheless, it
+seems like it is prohibitive to use it.
+> > 
+> > I'd also recommend only importing the generated defines and generating
+> > the functions that will actually have immediate consumers or are part of
+> > a set of defines that have immediate consumers. Each consumer of new
+> > instructions will be responsible for generating and importing the defines
+> > and adding the respective macro invocations to generate the functions.
+> > This series can also take that approach, i.e. convert one set of
+> > instructions at a time, each in a separate patch.
+> Since I was hand-writing everything and copying it wasn't too much
+> effort to just copy all of the instructions from a group. However, from
+> a testing standpoint it makes sense to exclude instructions not yet in
+> use.
+> > 
+> > [1] https://github.com/riscv/riscv-opcodes
+> > 
+> > Thanks,
+> > drew
+> > 
+> > 
+> > > , but the construction of every
+> > > instruction is not fully tested.
+> > > 
+> > > vector: Compiled and booted
+> > > 
+> > > jump_label: Ensured static keys function as expected.
+> > > 
+> > > kgdb: Attempted to run the provided tests but they failed even without
+> > > my changes
+> > > 
+> > > module: Loaded and unloaded modules
+> > > 
+> > > patch.c: Ensured kernel booted
+> > > 
+> > > kprobes: Used a kprobing module to probe jalr, auipc, and branch
+> > > instructions
+> > > 
+> > > nommu misaligned addresses: Kernel boots
+> > > 
+> > > kvm: Ran KVM selftests
+> > > 
+> > > bpf: Kernel boots. Most of the instructions are exclusively used by BPF
+> > > but I am unsure of the best way of testing BPF.
+> > > 
+> > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > 
+> > > ---
+> > > Charlie Jenkins (10):
+> > >       RISC-V: Expand instruction definitions
+> > >       RISC-V: vector: Refactor instructions
+> > >       RISC-V: Refactor jump label instructions
+> > >       RISC-V: KGDB: Refactor instructions
+> > >       RISC-V: module: Refactor instructions
+> > >       RISC-V: Refactor patch instructions
+> > >       RISC-V: nommu: Refactor instructions
+> > >       RISC-V: kvm: Refactor instructions
+> > >       RISC-V: bpf: Refactor instructions
+> > >       RISC-V: Refactor bug and traps instructions
+> > > 
+> > >  arch/riscv/include/asm/bug.h             |   18 +-
+> > >  arch/riscv/include/asm/insn.h            | 2744 +++++++++++++++++++++++++++---
+> > >  arch/riscv/include/asm/reg.h             |   88 +
+> > >  arch/riscv/kernel/jump_label.c           |   13 +-
+> > >  arch/riscv/kernel/kgdb.c                 |   13 +-
+> > >  arch/riscv/kernel/module.c               |   80 +-
+> > >  arch/riscv/kernel/patch.c                |    3 +-
+> > >  arch/riscv/kernel/probes/kprobes.c       |   13 +-
+> > >  arch/riscv/kernel/probes/simulate-insn.c |  100 +-
+> > >  arch/riscv/kernel/probes/uprobes.c       |    5 +-
+> > >  arch/riscv/kernel/traps.c                |    9 +-
+> > >  arch/riscv/kernel/traps_misaligned.c     |  218 +--
+> > >  arch/riscv/kernel/vector.c               |    5 +-
+> > >  arch/riscv/kvm/vcpu_insn.c               |  281 +--
+> > >  arch/riscv/net/bpf_jit.h                 |  707 +-------
+> > >  15 files changed, 2825 insertions(+), 1472 deletions(-)
+> > > ---
+> > > base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+> > > change-id: 20230801-master-refactor-instructions-v4-433aa040da03
+> > > -- 
+> > > - Charlie
+> > > 
+> > > 
+> > > -- 
+> > > kvm-riscv mailing list
+> > > kvm-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/kvm-riscv
 
