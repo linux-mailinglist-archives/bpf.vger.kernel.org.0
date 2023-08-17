@@ -1,316 +1,176 @@
-Return-Path: <bpf+bounces-7995-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7996-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0250577FB0F
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 17:44:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7359F77FB1D
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 17:47:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C3C92820A0
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 15:44:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E9BF28204F
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 15:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84570156FC;
-	Thu, 17 Aug 2023 15:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5017F156FC;
+	Thu, 17 Aug 2023 15:47:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FA57156CC
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 15:44:18 +0000 (UTC)
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEA930DA
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 08:44:16 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-40c72caec5cso370651cf.0
-        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 08:44:16 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7D514011
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 15:47:16 +0000 (UTC)
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D183B30C5
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 08:47:15 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5656a5c6721so4329155a12.1
+        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 08:47:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692287055; x=1692891855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fnSBHKbg+bFVx1C0vxWi4Wu1D2ldOSatGLLDKItke1w=;
-        b=c7Z6abzKUvTJaXkCERiNZUJHCRJSh0d1wHhlZF/Opu4YZURFRABagzmKECUatXBZ6o
-         thYmaG2kTsK7lGrLiMMVbi85zfs0PeGZmLbHDwvsa0SdYXVKfWlMtVNN5f7Keov/BjIi
-         AvSjLslyIWz4M5itjWif3CVi/hxrbkKOdeM74wBmGxTSI3I0U232Kcs5c34QHMIP2KVe
-         U0saaVVeBjudwo5Sb5xStqalNamWAeErf14CwpLX5WLCjh9OSrFPiYjAhxcOFbXNqWUD
-         O0SnSM/tKGERsC1MbHI3pZ4IBD2ZLxHSua8NgIzyymyX2sO73Jg0RdOlxizG5uLrMhjr
-         Imow==
+        d=gmail.com; s=20221208; t=1692287235; x=1692892035;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yy/n52yulvpcfWLb++c8suVS1IeV5wLMc2On2ajtVn0=;
+        b=DqRgdTipiN1W5MeiyyQWhKSSmmvLWQTF5ygJCsGh+oUUGl8go+IAm32IYP941AIBd+
+         ukPZ95stXV19993mwBNQBV2xC+YEW0lMCnT17/h28xTbVNlgY9bRt42DdhAnWL42Slqm
+         eAsfjrlGIcOFCqRk87Z+KIhXaN0rlBNlvgAX7IbGTDJxTf3zTQ/vODSYUDpPitBPKdS2
+         wLtuhyWy/doXzdPMM+pfWVngYOCipb7ne76EPNQ9X8iTbNzVy9Z4UT/RXHCTDxYnNxoY
+         BSXKHw4/c47JUtkwAaZsmu059qt8c/0902d99isxRcAkbi6gslbhTqolxxRbYkAJZSeD
+         KnDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692287055; x=1692891855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fnSBHKbg+bFVx1C0vxWi4Wu1D2ldOSatGLLDKItke1w=;
-        b=clSnYNMeavRu7Nksix4aAMn/frstvFe3rrQvGzhj/g7Sx/t0IBDsMVD1dX/85PrfL/
-         Onc6Hy5TYKMnlSGectEh8/3zL0XBU2sSmBSvsVyoMNx339rVWFMTPF+sao6zTH5ZSxXX
-         M3ZByd3OwG9dHUhUkIXVluQ4Caqsyu7SkER/Nlya8NiEgUUPAnlWgFOPHSSzq+ko1FZx
-         fHqaRwVq3FmnuoLOamGcAhgb/Ob1vvHB+h+8fjxAUZ0MSPhGgTXmu0yTY+4NLOikCe7g
-         l23F1+7sIOk9YVn+smXlVdX5r1YQRyG+MBKeou+1uDkkxNTYP5v7+/kN9O4i/Jn74+/I
-         SrIg==
-X-Gm-Message-State: AOJu0Yx0x8L+JsKBcBuuMphBGIHuitnDrlseKAFxZJoD6X+Mn/raBAJ4
-	lN1nC/2zew/sC3u3Pe2yHG2DvRqPLwvArVsM555/wg==
-X-Google-Smtp-Source: AGHT+IEr19MMeyMiAlfVJCDFx4zGb7T76ZmH0bEemxbxQAs2OUxW/Psp4bMXtQt2Nx84ICTNeqTZvnA9G9ZFNmvc5gM=
-X-Received: by 2002:a05:622a:180a:b0:404:8218:83da with SMTP id
- t10-20020a05622a180a00b00404821883damr217250qtc.1.1692287055249; Thu, 17 Aug
- 2023 08:44:15 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692287235; x=1692892035;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Yy/n52yulvpcfWLb++c8suVS1IeV5wLMc2On2ajtVn0=;
+        b=TNd9Wpm1Foa2GyMFOaNHN8YP1/d0CaZLX/KLKs8xu3/NQbYg4B3VWO/LzT81VcgI6e
+         AvKlGsMLTqtPFZoU8S8V4vzKw/1OLY+d7elQjQS4b0vx8lPo66a3sKFuZKc6qAQuecKj
+         590Ukj5ulMEIrPIi0P4Bxp2W1QXy9L88GNJwnO6lT6wiIL941pdBcK5+W43WoFrtY8KH
+         qVXq82cJsvJweUeZblhZHF5WN7EpPXOa5zkVXmgpPTQ0Gl/u0W+Lb0/Dz+UXaJjij01L
+         2cnfgC+Ssk/y7A2K5yL4cfafdj4YmEeKRvvkiV6YAfptNDVWULIyTYBrFMYL9V0AnPVB
+         PjwQ==
+X-Gm-Message-State: AOJu0YyCa160JY1KTHhB8iP0L197Ag3a71OLR4nuR8Y3V0WaWRqTEKiN
+	fAP5w5U+jbT4NAdaLAS/Ue4=
+X-Google-Smtp-Source: AGHT+IGEvVWcUtDczq5FDtbetppkb7VnPjnBC82kxf6Cv44eHo872be3BCwGzdNZww+R2KKxBmmL5Q==
+X-Received: by 2002:a05:6a20:d7:b0:13a:8082:5324 with SMTP id 23-20020a056a2000d700b0013a80825324mr72037pzh.44.1692287235094;
+        Thu, 17 Aug 2023 08:47:15 -0700 (PDT)
+Received: from fanta-System-Product-Name.. ([222.252.65.171])
+        by smtp.gmail.com with ESMTPSA id v10-20020a63ac0a000000b00563709c8647sm14019742pge.7.2023.08.17.08.47.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 08:47:14 -0700 (PDT)
+From: Anh Tuan Phan <tuananhlfc@gmail.com>
+To: sdf@google.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev
+Cc: Anh Tuan Phan <tuananhlfc@gmail.com>,
+	bpf@vger.kernel.org,
+	linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [bpf-next PATCH v1] samples/bpf: Cleanup repetitive swap function
+Date: Thu, 17 Aug 2023 22:46:15 +0700
+Message-Id: <20230817154615.87967-1-tuananhlfc@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZN4+s2Wl+zYmXTDj@kernel.org>
-In-Reply-To: <ZN4+s2Wl+zYmXTDj@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 17 Aug 2023 08:44:03 -0700
-Message-ID: <CAP-5=fUX78z+i5sKcZVAV1prWhA0wzNSK2zkzg70ERaLVDLFAQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] perf trace: Use the augmented_raw_syscall BPF skel
- only for tracing syscalls
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Andi Kleen <ak@linux.intel.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Anshuman Khandual <anshuman.khandual@arm.com>, 
-	Athira Jajeev <atrajeev@linux.vnet.ibm.com>, bpf@vger.kernel.org, 
-	Brendan Gregg <brendan.d.gregg@gmail.com>, Carsten Haitzler <carsten.haitzler@arm.com>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Fangrui Song <maskray@google.com>, He Kuang <hekuang@huawei.com>, 
-	Ingo Molnar <mingo@redhat.com>, James Clark <james.clark@arm.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kan Liang <kan.liang@linux.intel.com>, Leo Yan <leo.yan@linaro.org>, llvm@lists.linux.dev, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Nathan Chancellor <nathan@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, Rob Herring <robh@kernel.org>, 
-	Tiezhu Yang <yangtiezhu@loongson.cn>, Tom Rix <trix@redhat.com>, Wang Nan <wangnan0@huawei.com>, 
-	Wang ShaoBo <bobo.shaobowang@huawei.com>, Yang Jihong <yangjihong1@huawei.com>, 
-	Yonghong Song <yhs@fb.com>, YueHaibing <yuehaibing@huawei.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-	USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Aug 17, 2023 at 8:37=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> It is possible to use 'perf trace' with tracepoints and in that case we
-> can't initialize/use the augmented_raw_syscalls BPF skel.
->
-> For instance, this usecase:
->
->   # perf trace -e sched:*exec --max-events=3D5
->          ? (         ): NetworkManager/1183  ... [continued]: poll())    =
-                                         =3D 1
->      0.043 ( 0.007 ms): NetworkManager/1183 epoll_wait(epfd: 17<anon_inod=
-e:[eventpoll]>, events: 0x55555f90e920, maxevents: 6) =3D 0
->      0.060 ( 0.007 ms): NetworkManager/1183 write(fd: 3<anon_inode:[event=
-fd]>, buf: 0x7ffc5a27cd30, count: 8)     =3D 8
->      0.073 ( 0.005 ms): NetworkManager/1183 epoll_wait(epfd: 24<anon_inod=
-e:[eventpoll]>, events: 0x7ffc5a27cd20, maxevents: 2) =3D 1
->      0.082 ( 0.010 ms): NetworkManager/1183 recvmmsg(fd: 26<socket:[30298=
-]>, mmsg: 0x7ffc5a27caa0, vlen: 8)       =3D 1
->   #
->
-> Where we want to trace just some sched tracepoints ending in 'exec' ends
-> up tracing all syscalls.
->
-> Fix it by checking existing trace->trace_syscalls boolean to see if we
-> need the augmenter.
->
-> A followup patch will move those sections of code used only with the
-> augmenter to separate functions, to get it cleaner and remove the goto,
-> done just for reviewing purposes.
->
-> With this patch in place the previous behaviour is restored: no syscalls
-> when we have other events and no syscall names:
->
->   [root@quaco ~]# perf probe do_filp_open "filename=3Dpathname->name:stri=
-ng"
->   Added new event:
->     probe:do_filp_open   (on do_filp_open with filename=3Dpathname->name:=
-string)
->
->   You can now use it in all perf tools, such as:
->
->           perf record -e probe:do_filp_open -aR sleep 1
->
->   [root@quaco ~]# perf trace --max-events=3D10 -e probe:do_filp_open slee=
-p 1
->      0.000 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filen=
-ame: "/etc/ld.so.cache")
->      0.056 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filen=
-ame: "/lib64/libc.so.6")
->      0.481 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filen=
-ame: "/usr/lib/locale/locale-archive")
->      0.501 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filen=
-ame: "/usr/share/locale/locale.alias")
->      0.572 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filen=
-ame: "/usr/lib/locale/en_US.UTF-8/LC_IDENTIFICATION")
->      0.581 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filen=
-ame: "/usr/lib/locale/en_US.utf8/LC_IDENTIFICATION")
->      0.616 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filen=
-ame: "/usr/lib64/gconv/gconv-modules.cache")
->      0.656 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filen=
-ame: "/usr/lib/locale/en_US.UTF-8/LC_MEASUREMENT")
->      0.664 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filen=
-ame: "/usr/lib/locale/en_US.utf8/LC_MEASUREMENT")
->      0.696 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filen=
-ame: "/usr/lib/locale/en_US.UTF-8/LC_TELEPHONE")
->   [root@quaco ~]#
->
-> As well as mixing syscalls with tracepoints, getting the syscall
-> tracepoints used augmented using the BPF skel:
->
->   [root@quaco ~]# perf trace --max-events=3D10 -e open*,probe:do_filp_ope=
-n sleep 1
->      0.000 (         ): sleep/455124 openat(dfd: CWD, filename: "/etc/ld.=
-so.cache", flags: RDONLY|CLOEXEC) ...
->      0.005 (         ): sleep/455124 probe:do_filp_open(__probe_ip: -1186=
-560412, filename: "/etc/ld.so.cache")
->      0.000 ( 0.011 ms): sleep/455124  ... [continued]: openat())         =
-                                  =3D 3
->      0.031 (         ): sleep/455124 openat(dfd: CWD, filename: "/lib64/l=
-ibc.so.6", flags: RDONLY|CLOEXEC) ...
->      0.033 (         ): sleep/455124 probe:do_filp_open(__probe_ip: -1186=
-560412, filename: "/lib64/libc.so.6")
->      0.031 ( 0.006 ms): sleep/455124  ... [continued]: openat())         =
-                                  =3D 3
->      0.258 (         ): sleep/455124 openat(dfd: CWD, filename: "/usr/lib=
-/locale/locale-archive", flags: RDONLY|CLOEXEC) ...
->      0.261 (         ): sleep/455124 probe:do_filp_open(__probe_ip: -1186=
-560412, filename: "/usr/lib/locale/locale-archive")
->      0.258 ( 0.006 ms): sleep/455124  ... [continued]: openat())         =
-                                  =3D -1 ENOENT (No such file or directory)
->      0.272 (         ): sleep/455124 openat(dfd: CWD, filename: "/usr/sha=
-re/locale/locale.alias", flags: RDONLY|CLOEXEC) ...
->      0.273  (        ): sleep/455124 probe:do_filp_open(__probe_ip: -1186=
-560412, filename: "/usr/share/locale/locale.alias")
->
-> A final note: the probe:do_filp_open uses a kprobe (probably optimized
-> as its in the start of a function) that uses the kprobe_tracer mechanism
-> in the kernel to collect the pathname->name string and stash it into the
-> tracepoint created by 'perf probe' for that:
->
->   [root@quaco ~]# cat /sys/kernel/debug/tracing/kprobe_events
->   p:probe/do_filp_open _text+4621920 filename=3D+0(+0(%si)):string
->   [root@quaco ~]#
->
-> While the syscalls:sys_enter_openat tracepoint gets its string from a
-> BPF program attached to raw_syscalls:sys_enter that tail calls into
-> another BPF program that knows the types for the openat syscall args and
-> thus can bpf_probe_read it right after the normal
-> sys_enter/sys_enter_openat tracepoint payload that comes prefixed with
-> whatever perf_event_open asked for (CPU, timestamp, etc):
->
->   [root@quaco ~]# bpftool prog | grep -E "sys_enter |sys_enter_opena" -A3
->   3176: tracepoint  name sys_enter  tag 0bc3fc9d11754ba1  gpl
->         loaded_at 2023-08-17T12:32:20-0300  uid 0
->         xlated 272B  jited 257B  memlock 4096B  map_ids 2462,2466,2463
->         btf_id 2976
->   --
->   3180: tracepoint  name sys_enter_opena  tag 19dd077f00ec2f58  gpl
->           loaded_at 2023-08-17T12:32:20-0300  uid 0
->           xlated 328B  jited 206B  memlock 4096B  map_ids 2466,2465
->           btf_id 2976
->   [root@quaco ~]#
->
-> Fixes: 42963c8bedeb864b ("perf trace: Migrate BPF augmentation to use a s=
-keleton")
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Athira Jajeev <atrajeev@linux.vnet.ibm.com>
-> Cc: bpf@vger.kernel.org
-> Cc: Brendan Gregg <brendan.d.gregg@gmail.com>
-> Cc: Carsten Haitzler <carsten.haitzler@arm.com>
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> Cc: Fangrui Song <maskray@google.com>
-> Cc: He Kuang <hekuang@huawei.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Kan Liang <kan.liang@linux.intel.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: llvm@lists.linux.dev
-> Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Cc: Tom Rix <trix@redhat.com>
-> Cc: Wang Nan <wangnan0@huawei.com>
-> Cc: Wang ShaoBo <bobo.shaobowang@huawei.com>
-> Cc: Yang Jihong <yangjihong1@huawei.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: YueHaibing <yuehaibing@huawei.com>
-> Link: https://lore.kernel.org/lkml/
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Use the macro version of swap function and move its definition to
+bpf_util.h since it is repetitive in some files. This commit also fixes
+a warning from coccinelle:
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+- ./samples/bpf/xdp_sample_user.c:1493:8-9: WARNING opportunity for swap()
+- ./samples/bpf/xdp_rxq_info_user.c:435:8-9: WARNING opportunity for swap()
 
-Thanks,
-Ian
+Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
+---
+ samples/bpf/xdp_rxq_info_user.c        | 12 +-----------
+ samples/bpf/xdp_sample_user.c          | 12 +-----------
+ tools/testing/selftests/bpf/bpf_util.h |  3 +++
+ 3 files changed, 5 insertions(+), 22 deletions(-)
 
-> ---
->  tools/perf/builtin-trace.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index 0ebfa95895e0bf4d..3964cf44cdbcb3e8 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -3895,7 +3895,7 @@ static int trace__run(struct trace *trace, int argc=
-, const char **argv)
->         if (err < 0)
->                 goto out_error_open;
->  #ifdef HAVE_BPF_SKEL
-> -       {
-> +       if (trace->syscalls.events.bpf_output) {
->                 struct perf_cpu cpu;
->
->                 /*
-> @@ -3916,7 +3916,7 @@ static int trace__run(struct trace *trace, int argc=
-, const char **argv)
->                 goto out_error_mem;
->
->  #ifdef HAVE_BPF_SKEL
-> -       if (trace->skel->progs.sys_enter)
-> +       if (trace->skel && trace->skel->progs.sys_enter)
->                 trace__init_syscalls_bpf_prog_array_maps(trace);
->  #endif
->
-> @@ -4850,6 +4850,9 @@ int cmd_trace(int argc, const char **argv)
->         }
->
->  #ifdef HAVE_BPF_SKEL
-> +       if (!trace.trace_syscalls)
-> +               goto skip_augmentation;
-> +
->         trace.skel =3D augmented_raw_syscalls_bpf__open();
->         if (!trace.skel) {
->                 pr_debug("Failed to open augmented syscalls BPF skeleton"=
-);
-> @@ -4884,6 +4887,7 @@ int cmd_trace(int argc, const char **argv)
->         }
->         trace.syscalls.events.bpf_output =3D evlist__last(trace.evlist);
->         assert(!strcmp(evsel__name(trace.syscalls.events.bpf_output), "__=
-augmented_syscalls__"));
-> +skip_augmentation:
->  #endif
->         err =3D -1;
->
-> --
-> 2.41.0
->
+diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_user.c
+index b95e0ef61f06..862ee370f96a 100644
+--- a/samples/bpf/xdp_rxq_info_user.c
++++ b/samples/bpf/xdp_rxq_info_user.c
+@@ -426,16 +426,6 @@ static void stats_print(struct stats_record *stats_rec,
+ }
+ 
+ 
+-/* Pointer swap trick */
+-static inline void swap(struct stats_record **a, struct stats_record **b)
+-{
+-	struct stats_record *tmp;
+-
+-	tmp = *a;
+-	*a = *b;
+-	*b = tmp;
+-}
+-
+ static void stats_poll(int interval, int action, __u32 cfg_opt)
+ {
+ 	struct stats_record *record, *prev;
+@@ -445,7 +435,7 @@ static void stats_poll(int interval, int action, __u32 cfg_opt)
+ 	stats_collect(record);
+ 
+ 	while (1) {
+-		swap(&prev, &record);
++		swap(prev, record);
+ 		stats_collect(record);
+ 		stats_print(record, prev, action, cfg_opt);
+ 		sleep(interval);
+diff --git a/samples/bpf/xdp_sample_user.c b/samples/bpf/xdp_sample_user.c
+index 158682852162..9508bc0c2f2f 100644
+--- a/samples/bpf/xdp_sample_user.c
++++ b/samples/bpf/xdp_sample_user.c
+@@ -1484,16 +1484,6 @@ static int sample_signal_cb(void)
+ 	return 0;
+ }
+ 
+-/* Pointer swap trick */
+-static void swap(struct stats_record **a, struct stats_record **b)
+-{
+-	struct stats_record *tmp;
+-
+-	tmp = *a;
+-	*a = *b;
+-	*b = tmp;
+-}
+-
+ static int sample_timer_cb(int timerfd, struct stats_record **rec,
+ 			   struct stats_record **prev)
+ {
+@@ -1505,7 +1495,7 @@ static int sample_timer_cb(int timerfd, struct stats_record **rec,
+ 	if (ret < 0)
+ 		return -errno;
+ 
+-	swap(prev, rec);
++	swap(*prev, *rec);
+ 	ret = sample_stats_collect(*rec);
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selftests/bpf/bpf_util.h
+index 10587a29b967..ba3c44d64d44 100644
+--- a/tools/testing/selftests/bpf/bpf_util.h
++++ b/tools/testing/selftests/bpf/bpf_util.h
+@@ -8,6 +8,9 @@
+ #include <errno.h>
+ #include <bpf/libbpf.h> /* libbpf_num_possible_cpus */
+ 
++#define swap(a, b) \
++	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
++
+ static inline unsigned int bpf_num_possible_cpus(void)
+ {
+ 	int possible_cpus = libbpf_num_possible_cpus();
+-- 
+2.34.1
+
 
