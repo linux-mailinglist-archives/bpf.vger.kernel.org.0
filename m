@@ -1,301 +1,90 @@
-Return-Path: <bpf+bounces-7958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2A7B77EFBA
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 06:06:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD46077EFC8
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 06:20:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA51E281D54
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 04:06:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADB021C2127C
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 04:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A6F802;
-	Thu, 17 Aug 2023 04:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E17A34;
+	Thu, 17 Aug 2023 04:19:44 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18A7F638
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 04:06:00 +0000 (UTC)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D26272B
-	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 21:05:59 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe1fc8768aso72478345e9.1
-        for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 21:05:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrtc27.com; s=gmail.jrtc27.user; t=1692245157; x=1692849957;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RPAvUFmMc6MHYhPtcS+J2Wjm5R9zwPAqvH6XS/X0hao=;
-        b=DOx//VT3uLRhMKZN1gvZ1e26MR0GD7yjJ1Uh+tgiJ+j0T+pf111e0oMTmi8jmQJZxn
-         Xfo8mfRy6RIEBDYYhD2/32oqIKdUL649MurhO4POndlvLkJ3bM9V+USg+Hrx/Z+kexZq
-         7hvC/W+pUlWMG4lleGbE3G20NaHhNwpnf7dB+1T1n2inx09RFpX+CK9hjSjieUkelE9T
-         jwHmeU1WHzYErWj/Tch/cK2mM8RN5N+xMiY3xnehx8OSGnTIYFMW8vk068IC8r8uvwaD
-         0v6Pw/SGwnilyihfyQTh19Fp3SFjpw9jocPMNod+RiquXGvkiyBSgAsaRMlSCzZd5/96
-         71ng==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B007FE
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 04:19:44 +0000 (UTC)
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A9C2D5D
+	for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 21:19:42 -0700 (PDT)
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-26d1f0d9b3fso257407a91.1
+        for <bpf@vger.kernel.org>; Wed, 16 Aug 2023 21:19:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692245157; x=1692849957;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RPAvUFmMc6MHYhPtcS+J2Wjm5R9zwPAqvH6XS/X0hao=;
-        b=e9MFiQcI+xycfQUsbxUy59pMq5SMCKoYoqcDeXvfjsho5F0z4/XuWeQtCQr0e1WxtB
-         Xryev/XWT/cPID2mPqGAs9x4k32cl9RrxnVgc79lY6As10PBIAEnnqheNA1MlWL+RF45
-         hjxWAKzDIVF8QzGKlhOGd5R7fK+05cxZ+GZQ3FwQEz0/O5/J0i/dXgkYLqQxryeCI4Ui
-         /1tjhupiJGZf2hIDepjwnEQTqoF+/OlMmQky6R9z8ZEE/kSXIL+PFhjxL8BYQz0aoIaI
-         OrN9AfE8SxYvILEXkdcGIwZKEv5OGoi/1ZtMQ4WkRxpxEZmpeeVQ+5etuyqXFfEu/r1U
-         Ds3w==
-X-Gm-Message-State: AOJu0YzIPvm8QdV3TEXbWOntvbSYLGvYz+C8rzKI1DdAqbAkeWBPzMau
-	LumZ3wmUZF/EAvIiqLoZ3M+vJA==
-X-Google-Smtp-Source: AGHT+IG7M1cue9DEYwFoKSeGNCqOcVuwwMifdF7sqjo7y0IqOhjGcIK5XPaod2BNxeerL82qeVFCEA==
-X-Received: by 2002:a05:6000:cd:b0:317:5e5e:60e0 with SMTP id q13-20020a05600000cd00b003175e5e60e0mr2939290wrx.28.1692245157358;
-        Wed, 16 Aug 2023 21:05:57 -0700 (PDT)
-Received: from smtpclient.apple ([131.111.5.246])
-        by smtp.gmail.com with ESMTPSA id j2-20020adfff82000000b003195504c754sm21581512wrr.31.2023.08.16.21.05.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Aug 2023 21:05:57 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+        d=1e100.net; s=20221208; t=1692245982; x=1692850782;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5174e1lhoEtAOJSx6OzZg8YIf4r3sHHxcBtCy/AqYyo=;
+        b=SUPODhJ61pqiAI6KfmTz3b8pZFrB1CythQ6nxqjcOaLufBHgNnWVl3yRgq0t1tmWZE
+         kvpBSnN68Gzdmt5F0iQvWZkfCCYje1xPJHPsHWnQccyATL6SAvQbBYx+hw/pgd32t0bT
+         AIZRyLgn9QRFZAJStvTgZSJQZ745o4ZhXeSLXbXbV1JTeri1NRN0b+bFyilIYtv4+poU
+         +uFVKaeQaC66zheDfQDqNnm8303k7JEiGdNccPCroG6afcNaC3hpiztA+lS6JJrh11c+
+         AZerQxFRIQgDvCFT2k9ZVpLEGDc6WVM68wuqFuWvMYekYW5YnutgatI+eksQ+HlIO/eZ
+         UcQw==
+X-Gm-Message-State: AOJu0YwYCRoMQSWQXWtgwBGzG0DTGOeFJSRpG3r8jUzciPc49o7ps+oi
+	yQRPpjOtEQZ2B4jY7YtSOgLq64Tz7+zCy2q1CgCzJP36F9Me
+X-Google-Smtp-Source: AGHT+IEZTSdaa9kcYRvTXFZpDfiX5p9rZQWqGwpWUOdqE4TBv2CeMoaYVGf46u3LVELNCiS2dd8ME/kduWdrJuI3NqGAvxNOuL9V
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
-Subject: Re: [PATCH 00/10] RISC-V: Refactor instructions
-From: Jessica Clarke <jrtc27@jrtc27.com>
-In-Reply-To: <12FAB5A9-5723-4A5B-8729-75D8A38921B9@jrtc27.com>
-Date: Thu, 17 Aug 2023 05:05:45 +0100
-Cc: Andrew Jones <ajones@ventanamicro.com>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>,
- kvm@vger.kernel.org,
- kvm-riscv@lists.infradead.org,
- bpf@vger.kernel.org,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>,
- Peter Zijlstra <peterz@infradead.org>,
- Josh Poimboeuf <jpoimboe@kernel.org>,
- Jason Baron <jbaron@akamai.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Ard Biesheuvel <ardb@kernel.org>,
- Anup Patel <anup@brainfault.org>,
- Atish Patra <atishp@atishpatra.org>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Song Liu <song@kernel.org>,
- Yonghong Song <yhs@fb.com>,
- John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>,
- =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Luke Nelson <luke.r.nels@gmail.com>,
- Xi Wang <xi.wang@gmail.com>,
- Nam Cao <namcaov@gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <46884D2C-F3AA-4A83-8295-AE5C0F58FE13@jrtc27.com>
-References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
- <20230804-2c57bddd6e87fdebc20ff9d5@orel> <ZM00UYDzEAz/JT3n@ghost>
- <ZN1qXlLp6qfpBeGF@ghost> <12FAB5A9-5723-4A5B-8729-75D8A38921B9@jrtc27.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: Apple Mail (2.3731.600.7)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-Received: by 2002:a17:90a:c901:b0:26b:5182:d042 with SMTP id
+ v1-20020a17090ac90100b0026b5182d042mr837650pjt.2.1692245982314; Wed, 16 Aug
+ 2023 21:19:42 -0700 (PDT)
+Date: Wed, 16 Aug 2023 21:19:42 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a60932060316b8f1@google.com>
+Subject: [syzbot] [net?] WARNING in dev_index_reserve
+From: syzbot <syzbot+5ba06978f34abb058571@syzkaller.appspotmail.com>
+To: ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	davem@davemloft.net, edumazet@google.com, hawk@kernel.org, 
+	john.fastabend@gmail.com, kuba@kernel.org, leonro@nvidia.com, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+	HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+	RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 17 Aug 2023, at 04:57, Jessica Clarke <jrtc27@jrtc27.com> wrote:
->=20
-> On 17 Aug 2023, at 01:31, Charlie Jenkins <charlie@rivosinc.com> =
-wrote:
->>=20
->> On Fri, Aug 04, 2023 at 10:24:33AM -0700, Charlie Jenkins wrote:
->>> On Fri, Aug 04, 2023 at 12:28:28PM +0300, Andrew Jones wrote:
->>>> On Thu, Aug 03, 2023 at 07:10:25PM -0700, Charlie Jenkins wrote:
->>>>> There are numerous systems in the kernel that rely on directly
->>>>> modifying, creating, and reading instructions. Many of these =
-systems
->>>>> have rewritten code to do this. This patch will delegate all =
-instruction
->>>>> handling into insn.h and reg.h. All of the compressed =
-instructions, RVI,
->>>>> Zicsr, M, A instructions are included, as well as a subset of the =
-F,D,Q
->>>>> extensions.
->>>>>=20
->>>>> ---
->>>>> This is modifying code that =
-https://lore.kernel.org/lkml/20230731183925.152145-1-namcaov@gmail.com/
->>>>> is also touching.
->>>>>=20
->>>>> ---
->>>>> Testing:
->>>>>=20
->>>>> There are a lot of subsystems touched and I have not tested every
->>>>> individual instruction. I did a lot of copy-pasting from the =
-RISC-V spec
->>>>> so opcodes and such should be correct
->>>>=20
->>>> How about we create macros which generate each of the functions an
->>>> instruction needs, e.g. riscv_insn_is_*(), etc. based on the output =
-of
->>>> [1]. I know basically nothing about that project, but it looks like =
-it
->>>> creates most the defines this series is creating from what we =
-[hope] to
->>>> be an authoritative source. I also assume that if we don't like the
->>>> current output format, then we could probably post patches to the =
-project
->>>> to get the format we want. For example, we could maybe propose an =
-"lc"
->>>> format for "Linux C".
->>> That's a great idea, I didn't realize that existed!
->> I have discovered that the riscv-opcodes repository is not in a state
->> that makes it helpful. If it were workable, it would make it easy to
->> include a "Linux C" format. I have had a pull request open on the =
-repo
->> for two weeks now and the person who maintains the repo has not
->> interacted.
->=20
-> Huh? Andrew has replied to you twice on your PR, and was the last one =
-to
-> comment. That=E2=80=99s hardly =E2=80=9Chas not interacted=E2=80=9D.
->=20
->> At minimum, in order for it to be useful it would need an ability to
->> describe the bit order of immediates in an instruction and include =
-script
->> arguments to select which instructions should be included. There is a
->> "C" format, but it is actually just a Spike format.
->=20
-> So extend it? Or do something with QEMU=E2=80=99s equivalent that =
-expresses it.
+syzbot has bisected this issue to:
 
-Note that every field already identifies the bit order (or, for the
-case of compressed instructions, register restrictions) since that=E2=80=99=
-s
-needed to produce the old LaTeX instruction set listings; that=E2=80=99s =
-why
-there=E2=80=99s jimm20 vs imm20, for example. One could surely encode =
-that in
-Python and generate the LaTeX strings from the Python, making the
-details of the encodings available elsewhere. Or just have your own
-mapping from name to whatever you need. But, either way, the
-information should all be there today in the input files, it=E2=80=99s =
-just a
-matter of extending the script to produce whatever you want from them.
+commit 956db0a13b47df7f3d6d624394e602e8bf9b057e
+Author: Jakub Kicinski <kuba@kernel.org>
+Date:   Mon Aug 14 20:56:25 2023 +0000
 
-> Jess
->=20
->> Nonetheless, it
->> seems like it is prohibitive to use it.
->>>>=20
->>>> I'd also recommend only importing the generated defines and =
-generating
->>>> the functions that will actually have immediate consumers or are =
-part of
->>>> a set of defines that have immediate consumers. Each consumer of =
-new
->>>> instructions will be responsible for generating and importing the =
-defines
->>>> and adding the respective macro invocations to generate the =
-functions.
->>>> This series can also take that approach, i.e. convert one set of
->>>> instructions at a time, each in a separate patch.
->>> Since I was hand-writing everything and copying it wasn't too much
->>> effort to just copy all of the instructions from a group. However, =
-from
->>> a testing standpoint it makes sense to exclude instructions not yet =
-in
->>> use.
->>>>=20
->>>> [1] https://github.com/riscv/riscv-opcodes
->>>>=20
->>>> Thanks,
->>>> drew
->>>>=20
->>>>=20
->>>>> , but the construction of every
->>>>> instruction is not fully tested.
->>>>>=20
->>>>> vector: Compiled and booted
->>>>>=20
->>>>> jump_label: Ensured static keys function as expected.
->>>>>=20
->>>>> kgdb: Attempted to run the provided tests but they failed even =
-without
->>>>> my changes
->>>>>=20
->>>>> module: Loaded and unloaded modules
->>>>>=20
->>>>> patch.c: Ensured kernel booted
->>>>>=20
->>>>> kprobes: Used a kprobing module to probe jalr, auipc, and branch
->>>>> instructions
->>>>>=20
->>>>> nommu misaligned addresses: Kernel boots
->>>>>=20
->>>>> kvm: Ran KVM selftests
->>>>>=20
->>>>> bpf: Kernel boots. Most of the instructions are exclusively used =
-by BPF
->>>>> but I am unsure of the best way of testing BPF.
->>>>>=20
->>>>> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
->>>>>=20
->>>>> ---
->>>>> Charlie Jenkins (10):
->>>>>     RISC-V: Expand instruction definitions
->>>>>     RISC-V: vector: Refactor instructions
->>>>>     RISC-V: Refactor jump label instructions
->>>>>     RISC-V: KGDB: Refactor instructions
->>>>>     RISC-V: module: Refactor instructions
->>>>>     RISC-V: Refactor patch instructions
->>>>>     RISC-V: nommu: Refactor instructions
->>>>>     RISC-V: kvm: Refactor instructions
->>>>>     RISC-V: bpf: Refactor instructions
->>>>>     RISC-V: Refactor bug and traps instructions
->>>>>=20
->>>>> arch/riscv/include/asm/bug.h             |   18 +-
->>>>> arch/riscv/include/asm/insn.h            | 2744 =
-+++++++++++++++++++++++++++---
->>>>> arch/riscv/include/asm/reg.h             |   88 +
->>>>> arch/riscv/kernel/jump_label.c           |   13 +-
->>>>> arch/riscv/kernel/kgdb.c                 |   13 +-
->>>>> arch/riscv/kernel/module.c               |   80 +-
->>>>> arch/riscv/kernel/patch.c                |    3 +-
->>>>> arch/riscv/kernel/probes/kprobes.c       |   13 +-
->>>>> arch/riscv/kernel/probes/simulate-insn.c |  100 +-
->>>>> arch/riscv/kernel/probes/uprobes.c       |    5 +-
->>>>> arch/riscv/kernel/traps.c                |    9 +-
->>>>> arch/riscv/kernel/traps_misaligned.c     |  218 +--
->>>>> arch/riscv/kernel/vector.c               |    5 +-
->>>>> arch/riscv/kvm/vcpu_insn.c               |  281 +--
->>>>> arch/riscv/net/bpf_jit.h                 |  707 +-------
->>>>> 15 files changed, 2825 insertions(+), 1472 deletions(-)
->>>>> ---
->>>>> base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
->>>>> change-id: 20230801-master-refactor-instructions-v4-433aa040da03
->>>>> --=20
->>>>> - Charlie
->>>>>=20
->>>>>=20
->>>>> --=20
->>>>> kvm-riscv mailing list
->>>>> kvm-riscv@lists.infradead.org
->>>>> http://lists.infradead.org/mailman/listinfo/kvm-riscv
->>=20
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
+    net: warn about attempts to register negative ifindex
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17f68f03a80000
+start commit:   950fe35831af Merge branch 'ipv6-expired-routes'
+git tree:       net-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=140e8f03a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=100e8f03a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe63ad15dded26b6
+dashboard link: https://syzkaller.appspot.com/bug?extid=5ba06978f34abb058571
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11be0117a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14950727a80000
 
+Reported-by: syzbot+5ba06978f34abb058571@syzkaller.appspotmail.com
+Fixes: 956db0a13b47 ("net: warn about attempts to register negative ifindex")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
