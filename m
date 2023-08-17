@@ -1,232 +1,106 @@
-Return-Path: <bpf+bounces-7967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F74777F1FB
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 10:21:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AE2577F289
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 10:57:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AE3A281D9C
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 08:21:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 732961C212FB
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 08:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FBEE56C;
-	Thu, 17 Aug 2023 08:21:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E503100A4;
+	Thu, 17 Aug 2023 08:57:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11675D2F1
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 08:21:21 +0000 (UTC)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4AE273F;
-	Thu, 17 Aug 2023 01:21:20 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bfcf4c814so984926966b.0;
-        Thu, 17 Aug 2023 01:21:19 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6BCFC0D
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 08:57:26 +0000 (UTC)
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455A826A8
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 01:57:25 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bf0b24d925so6027975ad.3
+        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 01:57:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692260478; x=1692865278;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VBSUC9nLpujZz5zGGjUSv4NeViKHnBjmgypxXeOUcgE=;
-        b=MIgVVh8nKvI6iyrSAbEuu5zot6UxH3eWTH5khCh57BqGH4BWLtBoQnZbRc3KK9NWiR
-         CRJm1QQkh78SObWJYEROKZwR1oDjSl4NcUh+N2jbwAQg/tH5RWrrsLVG+BdCaBV4vv6b
-         FptR2/x6jQmW1oBSFaRVeCbP7kzH/eVxkNrJfuinlEALRZ8pTqE5GJ1InVW6Zr0XA0q8
-         ivyq7NFnioo0xNZW185tH474Hom38mTzoBPgqEiPyjokGBN5EgUe+IIM0Yx0TABq0aUA
-         M/fYKa4Ds/f5psEYvkvO6ihJyt+SOo6MKOJ3T5D3rK2K+XQH/sJXdmWsi1K0YFjayNYx
-         0Rsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692260478; x=1692865278;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1692262645; x=1692867445;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VBSUC9nLpujZz5zGGjUSv4NeViKHnBjmgypxXeOUcgE=;
-        b=P5ffrjxPmXx0g7zyzepchBoGBYP6HO6qy6XOXEcSApmST78FsRHCjJUk0rHz6mbIu+
-         EXdtLFxu6Q+FqOyLzhkYLkVz42atU1hwwIlP3g1p3c3Bv1LpgxW0rUyVpkfm0YXC/vG6
-         8xfKZXi4BaGTh/aDHrvkrPj2Cy9F1TATMDAL76K8RA6fLcN5DdmQ7q6209LzPjLoDmSN
-         plklhNnBWrn8V29/CjOaFR03sd+9VxXWzi1nT3zSWVB2S4MpJYjMCRu/fNKBlfdPngoQ
-         WdzpF95eHwgrLhFlCFuotF0fyDmH3qrf+f0N9uixaAT52UY4gTE+rXsNmYFSXrW8/lQL
-         QWTw==
-X-Gm-Message-State: AOJu0YzvXzl6m5TbXyojnOmpJGJB6Qcao6S8GZuiAh2CuGH9gpOxOH/h
-	ZNv4QXEJGFwH4MVJcbyqQUA=
-X-Google-Smtp-Source: AGHT+IG8F8vWRoMbRxe0XzNivqXEbX46cG0CiKv0fAc3Mk9H28wKWLwrT4liVmfGqnqnBCT9aryb1g==
-X-Received: by 2002:a17:906:4bd5:b0:99c:da24:bdb7 with SMTP id x21-20020a1709064bd500b0099cda24bdb7mr4578560ejv.71.1692260478226;
-        Thu, 17 Aug 2023 01:21:18 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a17-20020a17090682d100b009944e955e19sm9809102ejy.30.2023.08.17.01.21.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 01:21:17 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 17 Aug 2023 10:21:15 +0200
-To: Rong Tao <rtoax@foxmail.com>
-Cc: sdf@google.com, daniel@iogearbox.net, andrii@kernel.org,
-	rongtao@cestc.cn, Alexei Starovoitov <ast@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v5] selftests/bpf: trace_helpers.c: optimize
- kallsyms cache
-Message-ID: <ZN3YeyMkgEg1IoKP@krava>
-References: <tencent_0E9E1A1C0981678D5E7EA9E4BDBA8EE2200A@qq.com>
+        bh=pZ4avl/mz05CnmDkZ4XRfrhEisWAciUAJmphvwfEM2A=;
+        b=Vv30KtUNN9X3DCyhblLuDc+5QN4WH17sIufZ4s2NysSZxDPAObOK+RQyUycSz2de/P
+         +5sbf5cr3N9siROdEc+KFYHwsvRTeWt/wpORXfGzN3xt6SAxiaiMDS1az3ZVhLt3Ccii
+         eHYiAasnpVcYWg5gJFYzO1+AjlDV8bzyQ2Vu4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692262645; x=1692867445;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pZ4avl/mz05CnmDkZ4XRfrhEisWAciUAJmphvwfEM2A=;
+        b=kD17H6GYw0mjiVk/wJEBQ/rsdrU2xvUix1nEsoPPUSbPhxS3oB4q9wELo0AnVFovve
+         1ZzrGceLFKPIw3o0F61vm/xN0srdtRb32LQ7VmvJGafD8/4SZS13rE+6eA1gLzIdk6pI
+         foD3oKQKl72YUdMlkqHTgB4O1d3Ma6Jk3QmkBgoNAzNsjHg6NBp5CCTWbK7cZFh3TAwb
+         FBZkUrNxEm7JDQud233fw82rqpFgim1JNr11wLdzxyRGIgjCl4BkJzyZV1nqBhe4CHUu
+         l7Ku7bsVnmJ0Wu1B3VFCF+0bOVnia0Rttg5t9ss45zXAlPeY4C4JS0vKSooMAfReK9rO
+         EfVg==
+X-Gm-Message-State: AOJu0Yw8Kf6IQPE75zjIxL0QhsH7ZoNapIvjmteVhsqKqsZbQCL7fJYv
+	YiD4TJm9SqN/XRc994c1ef8sbePcHNBIQffrfdwIsQ==
+X-Google-Smtp-Source: AGHT+IH6xIW34cUhfbm6uS4lGucin/ng4/m/ryyfJico4mCTUTYGDYajeDn/M+ly4sI6E4iuomTaVqg6vaPiGhO2ztA=
+X-Received: by 2002:a17:90a:d34a:b0:269:3498:3bad with SMTP id
+ i10-20020a17090ad34a00b0026934983badmr3496202pjx.14.1692262644742; Thu, 17
+ Aug 2023 01:57:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_0E9E1A1C0981678D5E7EA9E4BDBA8EE2200A@qq.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+References: <169181859570.505132.10136520092011157898.stgit@devnote2>
+In-Reply-To: <169181859570.505132.10136520092011157898.stgit@devnote2>
+From: Florent Revest <revest@chromium.org>
+Date: Thu, 17 Aug 2023 10:57:13 +0200
+Message-ID: <CABRcYmJLbb0_fs2beiNA2QE468JkxB9nHnmQcQW4dt63pPBoFA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/8] bpf: fprobe: rethook: Use ftrace_regs instead of pt_regs
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, 
+	Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Aug 17, 2023 at 01:03:45PM +0800, Rong Tao wrote:
-> From: Rong Tao <rongtao@cestc.cn>
-> 
-> Static ksyms often have problems because the number of symbols exceeds the
-> MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
-> commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
-> the problem somewhat, but it's not the perfect way.
-> 
-> This commit uses dynamic memory allocation, which completely solves the
-> problem caused by the limitation of the number of kallsyms.
-> 
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
-> v5: Release the allocated memory once the load_kallsyms_refresh() upon error
->     given it's dynamically allocated.
-> v4: https://lore.kernel.org/lkml/tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com/
->     Make sure most cases we don't need the realloc() path to begin with,
->     and check strdup() return value.
-> v3: https://lore.kernel.org/lkml/tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com/
->     Do not use structs and judge ksyms__add_symbol function return value.
-> v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
->     Do the usual len/capacity scheme here to amortize the cost of realloc, and
->     don't free symbols.
-> v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
-> ---
->  tools/testing/selftests/bpf/trace_helpers.c | 62 +++++++++++++++++----
->  1 file changed, 52 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-> index f83d9f65c65b..0053ba22f0cb 100644
-> --- a/tools/testing/selftests/bpf/trace_helpers.c
-> +++ b/tools/testing/selftests/bpf/trace_helpers.c
-> @@ -18,10 +18,47 @@
->  #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
->  #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
->  
-> -#define MAX_SYMS 400000
-> -static struct ksym syms[MAX_SYMS];
-> +static struct ksym *syms;
-> +static int sym_cap;
->  static int sym_cnt;
->  
-> +static int ksyms__add_symbol(const char *name, unsigned long addr)
-> +{
-> +	void *tmp;
-> +	unsigned int new_cap;
-> +
-> +	if (sym_cnt + 1 > sym_cap) {
-> +		new_cap = sym_cap * 4 / 3;
-> +		tmp = realloc(syms, sizeof(struct ksym) * new_cap);
-> +		if (!tmp)
-> +			return -ENOMEM;
-> +		syms = tmp;
-> +		sym_cap = new_cap;
-> +	}
+On Sat, Aug 12, 2023 at 7:36=E2=80=AFAM Masami Hiramatsu (Google)
+<mhiramat@kernel.org> wrote:
+>
+> Hi,
+>
+> Here is the 3rd version of RFC series to use ftrace_regs instead of pt_re=
+gs.
+> The previous version is here;
+>
+> https://lore.kernel.org/all/169139090386.324433.6412259486776991296.stgit=
+@devnote2/
+>
+> This also includes the generic part and minimum modifications of arch
+> dependent code. (e.g. not including rethook for arm64.)
 
-sorry I did not notice earlier, but we have helper for realloc
+I think that one aspect that's missing from the discussion (and maybe
+the series) so far is plans to actually save partial registers in the
+existing rethook trampolines.
 
-  libbpf_ensure_mem
-
-check the usage for example in prog_tests/kprobe_multi_test.c
-
-> +
-> +	tmp = strdup(name);
-> +	if (!tmp)
-> +		return -ENOMEM;
-> +	syms[sym_cnt].addr = addr;
-> +	syms[sym_cnt].name = tmp;
-> +
-> +	sym_cnt++;
-> +
-> +	return 0;
-> +}
-> +
-> +static void ksyms__free(void)
-> +{
-> +	unsigned int i;
-> +
-> +	if (!syms)
-> +		return;
-> +
-> +	for (i = 0; i < sym_cnt; i++)
-> +		free(syms[i].name);
-> +	free(syms);
-> +}
-> +
->  static int ksym_cmp(const void *p1, const void *p2)
->  {
->  	return ((struct ksym *)p1)->addr - ((struct ksym *)p2)->addr;
-> @@ -33,9 +70,14 @@ int load_kallsyms_refresh(void)
->  	char func[256], buf[256];
->  	char symbol;
->  	void *addr;
-> -	int i = 0;
-> +	int ret;
->  
-> +	/* Make sure most cases we don't need the realloc() path to begin with */
-> +	sym_cap = 400000;
->  	sym_cnt = 0;
-> +	syms = malloc(sizeof(struct ksym) * sym_cap);
-> +	if (!syms)
-> +		return -ENOMEM;
-
-libbpf_ensure_mem will also take care of first allocation and the capacity increase
-
-jirka
-
->  
->  	f = fopen("/proc/kallsyms", "r");
->  	if (!f)
-> @@ -46,17 +88,17 @@ int load_kallsyms_refresh(void)
->  			break;
->  		if (!addr)
->  			continue;
-> -		if (i >= MAX_SYMS)
-> -			return -EFBIG;
-> -
-> -		syms[i].addr = (long) addr;
-> -		syms[i].name = strdup(func);
-> -		i++;
-> +		ret = ksyms__add_symbol(func, (unsigned long)addr);
-> +		if (ret)
-> +			goto error;
->  	}
->  	fclose(f);
-> -	sym_cnt = i;
->  	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
->  	return 0;
-> +
-> +error:
-> +	ksyms__free();
-> +	return ret;
->  }
->  
->  int load_kallsyms(void)
-> -- 
-> 2.39.3
-> 
-> 
+For now the series makes everything called by the rethook trampolines
+handle the possibility of having a sparse ftrace_regs but the rethook
+trampolines still save full ftrace_regs. I think that to rip the full
+benefits of this series, we should have the rethook trampolines save
+the equivalent ftrace_regs as the light "args" version of the ftrace
+trampoline.
 
