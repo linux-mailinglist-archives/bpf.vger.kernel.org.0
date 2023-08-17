@@ -1,128 +1,152 @@
-Return-Path: <bpf+bounces-8017-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8018-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C69777FEA8
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 21:43:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E88077FF2F
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 22:41:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A15E1C214BE
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 19:43:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42C24282102
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 20:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D800E1AA80;
-	Thu, 17 Aug 2023 19:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA59174D4;
+	Thu, 17 Aug 2023 20:41:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934D720F8
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 19:43:40 +0000 (UTC)
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 191902D61
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 12:43:39 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso2493651fa.1
-        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 12:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692301417; x=1692906217;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0LWdknMsspoz/+6fO32rwPbGQoieEdl+MC7RVNOtOZM=;
-        b=pelYKuHTvYovi21rCm9qrzuQ/tEfbEStKbkKRQ3VGGBt4v96rgJa4j2ooARfgjmECy
-         pIZuguZWK35sllm1gB07k5hXEV9sCulVfl7x8TUpI1il4jZTKr6vi70BZcKzWK6L/Scb
-         vdnig+y1h7FlZSTKyrJqP4DIY5XuRC7Qtcxe6UA8Bf3mHsJ5Vj6qQM36/4OxI8rNIzyi
-         e8dIgJQ/nSZxC4BUJJW3FYjvjTNywp6nf4yH9/myXH7dYJNU9g7djXUPzehp6/WRoZCk
-         s1jmUGhd9HXUBqKnZiYcsY7LQw76eYoLRvAFdF9hj/1LYGZMdX7OEqVsD2oPkEftuie+
-         XU2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692301417; x=1692906217;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0LWdknMsspoz/+6fO32rwPbGQoieEdl+MC7RVNOtOZM=;
-        b=M5cN/sg6b9WrooJZiShIUeKfjCWQQrAAZWjG7anE92fK/hZpOnrmNTMvFFRZYFlTgZ
-         ALMU73POf5lR6XPFp8hCs19nzU9QimeynBdOa226VQwImm41PR2rFAVoCNlzYU3pgrZa
-         JMNYdOfD5cqCrF2ID/B0jxCNwB4UCzMHhrxmUxO/n68b8xZ/CCPfbONOoLr9RzrT1Yq6
-         qRuIClfDNW0/XXlSsl9D1qrIH5HNUssoQHcoicYlgYxtbysoeq0RdQcawlSoVCB8WZls
-         2SwTS1ppVSwURjenM4ouPcpYI5rh33ZTAH9As1kO9kQnbuSgfHmFFEW3w0kqUtzE7Yy6
-         3jGg==
-X-Gm-Message-State: AOJu0YyY+oI+REKsmU29GeILOVyMZ3Nbs7jsh/35Iwf1UAhbHLS4R6af
-	BaVGLlbi28lUnVOlPUDhigFLfVv/BK8XpPeE+fc=
-X-Google-Smtp-Source: AGHT+IE8LYSln0qt6WSTyCRSg2FHsqEreQgPvpVaTp2mwbS1ysJQbgm95KehkUFiNS81Wp+ZDbpFDUg8uZi+UYXA3WQ=
-X-Received: by 2002:a2e:9c46:0:b0:2a7:adf7:1781 with SMTP id
- t6-20020a2e9c46000000b002a7adf71781mr276684ljj.2.1692301416889; Thu, 17 Aug
- 2023 12:43:36 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A9A2918
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 20:41:28 +0000 (UTC)
+Received: from out-61.mta0.migadu.com (out-61.mta0.migadu.com [IPv6:2001:41d0:1004:224b::3d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55A12698
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 13:41:24 -0700 (PDT)
+Message-ID: <f903808f-13c3-c440-c720-2051fe6ec4fe@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1692304882;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sLBwugzpxgI7foxYddIHYcjeWWT96pA8BCT6m5t5Iog=;
+	b=YTazQRfNuNxq/2wo18sFx7/8SoyVxjfczaa7tJYJ1e9brQvMULRrFXt0io5gL3tD1Q6DPF
+	D3tbUAV4T0fK5JLcQ35L8XHi80NUlWJSt7m4My1x38Nglrj4J4zHLGF2l6Wb/GtA462hme
+	UhtBd4XuD2P/kfqvqaEg1S9DTisVbdo=
+Date: Thu, 17 Aug 2023 13:41:16 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230815174712.660956-1-thinker.li@gmail.com> <20230815174712.660956-5-thinker.li@gmail.com>
- <20230817012518.erfkm4tgdm3isnks@MacBook-Pro-8.local> <5dd24d8c-17b8-53d3-3701-93693a11279b@gmail.com>
-In-Reply-To: <5dd24d8c-17b8-53d3-3701-93693a11279b@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 17 Aug 2023 12:43:25 -0700
-Message-ID: <CAADnVQLsqueyOQ4p0nJbGjhW7ULx+aB87Rr9ox3VJK55Xj=2Lg@mail.gmail.com>
-Subject: Re: [RFC bpf-next v3 4/5] bpf: Add a new dynptr type for CGRUP_SOCKOPT.
-To: Kui-Feng Lee <sinquersw@gmail.com>
-Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Kernel Team <kernel-team@meta.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Kui-Feng Lee <kuifeng@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC bpf-next v3 4/5] bpf: Add a new dynptr type for
+ CGRUP_SOCKOPT.
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, sdf@google.com,
+ yonghong.song@linux.dev, sinquersw@gmail.com, kuifeng@meta.com,
+ thinker.li@gmail.com
+References: <20230815174712.660956-1-thinker.li@gmail.com>
+ <20230815174712.660956-5-thinker.li@gmail.com>
+ <20230817012518.erfkm4tgdm3isnks@MacBook-Pro-8.local>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230817012518.erfkm4tgdm3isnks@MacBook-Pro-8.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Aug 17, 2023 at 12:00=E2=80=AFPM Kui-Feng Lee <sinquersw@gmail.com>=
- wrote:
->
->
->
-> On 8/16/23 18:25, Alexei Starovoitov wrote:
-> > On Tue, Aug 15, 2023 at 10:47:11AM -0700, thinker.li@gmail.com wrote:
-> >>
-> >> +BTF_SET8_START(cgroup_common_btf_ids)
-> >> +BTF_ID_FLAGS(func, bpf_sockopt_dynptr_copy_to, KF_SLEEPABLE)
-> >> +BTF_ID_FLAGS(func, bpf_sockopt_dynptr_alloc, KF_SLEEPABLE)
-> >> +BTF_ID_FLAGS(func, bpf_sockopt_dynptr_install, KF_SLEEPABLE)
-> >> +BTF_ID_FLAGS(func, bpf_sockopt_dynptr_release, KF_SLEEPABLE)
-> >> +BTF_ID_FLAGS(func, bpf_sockopt_dynptr_from, KF_SLEEPABLE)
-> >> +BTF_SET8_END(cgroup_common_btf_ids)
-> >
-> > These shouldn't be sockopt specific.
-> > If we want dynptr to represent a pointer to a user contiguous user memo=
-ry
-> > we should use generic kfunc that do so.
-> >
-> > I suspect a single new kfunc: bpf_dynptr_from_user_mem() would do.
-> > New dynptr type can be hidden in the kernel and all existing
-> > kfuncs dynptr_slice, dynptr_data, dynptr_write could be made to work
-> > with user memory.
-> >
-> > But I think we have to step back. Why do we need this whole thing in th=
-e first place?
-> > _why_ sockopt bpf progs needs to read and write user memory?
-> >
-> > Yes there is one page limit, but what is the use case to actually read =
-and write
-> > beyond that? iptables sockopt was mentioned, but I don't think bpf prog=
- can do
-> > anything useful with iptables binary blobs. They are hard enough for ke=
-rnel to parse.
->
-> The ideal behind the design is let the developers of filters to decide
-> when to replace the existing buffer.  And, access the content of
-> buffers just like accessing raw pointers. However, seems almost everyone
-> love to use *_read() & *_write(). I will move to that direction.
+On 8/16/23 6:25 PM, Alexei Starovoitov wrote:
+> But I think we have to step back. Why do we need this whole thing in the first place?
+> _why_  sockopt bpf progs needs to read and write user memory?
+> 
+> Yes there is one page limit, but what is the use case to actually read and write
+> beyond that? iptables sockopt was mentioned, but I don't think bpf prog can do
+> anything useful with iptables binary blobs. They are hard enough for kernel to parse.
 
-That doesn't answer my question about the use case.
-What kind of filters want to parse more than 4k of sockopt data?
+Usually the bpf prog is only interested in a very small number of optnames and 
+no need to read the optval at all for most cases. The max size for our use cases 
+is 16 bytes. The kernel currently is kind of doing it the opposite and always 
+assumes the bpf prog needing to use the optval, allocate kernel memory and 
+copy_from_user such that the non-sleepable bpf program can read/write it.
+
+The bpf prog usually checks the optname and then just returns for most cases:
+
+SEC("cgroup/getsockopt")
+int get_internal_sockopt(struct bpf_sockopt *ctx)
+{
+	if (ctx->optname != MY_INTERNAL_SOCKOPT)
+		return 1;
+
+	/* change the ctx->optval and return to user space ... */
+}
+
+When the optlen is > PAGE_SIZE, the kernel only allocates PAGE_SIZE memory and 
+copy the first PAGE_SIZE data from the user optval. We used to ask the bpf prog 
+to explicitly set the optlen to 0 for > PAGE_SIZE case even it has not looked at 
+the optval. Otherwise, the kernel used to conclude that the bpf prog had set an 
+invalid optlen because optlen is larger than the optval_end - optval and 
+returned -EFAULT incorrectly to the end-user.
+
+The bpf prog started doing this > PAGE_SIZE check and set optlen = 0 due to an 
+internal kernel PAGE_SIZE limitation:
+
+SEC("cgroup/getsockopt")
+int get_internal_sockopt(struct bpf_sockopt *ctx)
+{
+	if (ctx->optname != MY_INTERNAL_SOCKOPT) {
+		/* only do that for ctx->optlen > PAGE_SIZE.
+		 * otherwise, the following cgroup bpf prog will
+		 * not be able to use the optval that it may
+		 * be interested.
+		 */
+		if (ctx->optlen > PAGE_SIZE)
+			ctx->optlen = 0;
+		return 1;
+	}
+
+	/* change the ctx->optval and return to user space ... */
+}
+
+The above has been worked around in commit 29ebbba7d461 ("bpf: Don't EFAULT for 
+{g,s}setsockopt with wrong optlen").
+
+Later, it was reported that an optname (NETLINK_LIST_MEMBERSHIPS) that the 
+kernel allows a user passing NULL optval and using the optlen returned by 
+getsockopt to learn the buffer space required. The bpf prog then needs to remove 
+the optlen > PAGE_SIZE check and set optlen to 0 for _all_ optnames that it is 
+not interested while risking the following cgroup prog may not be able to use 
+some of the optval:
+
+SEC("cgroup/getsockopt")
+int get_internal_sockopt(struct bpf_sockopt *ctx)
+{
+	if (ctx->optname != MY_INTERNAL_SOCKOPT) {
+
+		/* Do that for all optname that you are not interested.
+		 * The latter cgroup bpf will not be able to use the optval.
+		 */
+	 	ctx->optlen = 0;
+		return 1;
+	}
+
+	/* chage the ctx->optval and return to user space ... */
+}
+
+The above case has been addressed in commit 00e74ae08638 ("bpf: Don't EFAULT for 
+getsockopt with optval=NULL").
+
+To avoid other potential optname cases that may run into similar situation and 
+requires the bpf prog work around it again like the above, it needs a way to 
+track whether a bpf prog has changed the optval in runtime. If it is not 
+changed, use the result from the kernel set/getsockopt. If reading/writing to 
+optval is done through a kfunc, this can be tracked. The kfunc can also directly 
+read/write the user memory in optval, avoid the pre-alloc kernel memory and the 
+PAGE_SIZE limit but this is a minor point.
 
