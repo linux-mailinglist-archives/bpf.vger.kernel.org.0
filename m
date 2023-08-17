@@ -1,67 +1,67 @@
-Return-Path: <bpf+bounces-7968-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-7969-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AE2577F289
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 10:57:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0546677F28B
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 10:57:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 732961C212FB
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 08:57:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8939281DEE
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 08:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E503100A4;
-	Thu, 17 Aug 2023 08:57:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66A56100AB;
+	Thu, 17 Aug 2023 08:57:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6BCFC0D
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 08:57:26 +0000 (UTC)
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455A826A8
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 01:57:25 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bf0b24d925so6027975ad.3
-        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 01:57:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45244FC0D
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 08:57:33 +0000 (UTC)
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3229F2D57
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 01:57:30 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-55b0e7efb1cso4456294a12.1
+        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 01:57:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692262645; x=1692867445;
+        d=chromium.org; s=google; t=1692262649; x=1692867449;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pZ4avl/mz05CnmDkZ4XRfrhEisWAciUAJmphvwfEM2A=;
-        b=Vv30KtUNN9X3DCyhblLuDc+5QN4WH17sIufZ4s2NysSZxDPAObOK+RQyUycSz2de/P
-         +5sbf5cr3N9siROdEc+KFYHwsvRTeWt/wpORXfGzN3xt6SAxiaiMDS1az3ZVhLt3Ccii
-         eHYiAasnpVcYWg5gJFYzO1+AjlDV8bzyQ2Vu4=
+        bh=zzJTGyBFfNHD26CtlWDf2OW3qCUaOPcLUEmxDdyzh1Y=;
+        b=AX4W4grsrDeNO020vqALXp3Khnl8rxn12/hWnVkm67FyUZYNK6smWA2tVd8XAqEEo5
+         FbFzjnUdn5GyY/imwd42Tip4Ey4NFPGonCAfEMdB44xSE9S0uD+/jMevNWO9J6uHj04P
+         xtYQpsw8LEaz2Y0c/YJMNJg1TpbPHVQ9Qo0Co=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692262645; x=1692867445;
+        d=1e100.net; s=20221208; t=1692262649; x=1692867449;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pZ4avl/mz05CnmDkZ4XRfrhEisWAciUAJmphvwfEM2A=;
-        b=kD17H6GYw0mjiVk/wJEBQ/rsdrU2xvUix1nEsoPPUSbPhxS3oB4q9wELo0AnVFovve
-         1ZzrGceLFKPIw3o0F61vm/xN0srdtRb32LQ7VmvJGafD8/4SZS13rE+6eA1gLzIdk6pI
-         foD3oKQKl72YUdMlkqHTgB4O1d3Ma6Jk3QmkBgoNAzNsjHg6NBp5CCTWbK7cZFh3TAwb
-         FBZkUrNxEm7JDQud233fw82rqpFgim1JNr11wLdzxyRGIgjCl4BkJzyZV1nqBhe4CHUu
-         l7Ku7bsVnmJ0Wu1B3VFCF+0bOVnia0Rttg5t9ss45zXAlPeY4C4JS0vKSooMAfReK9rO
-         EfVg==
-X-Gm-Message-State: AOJu0Yw8Kf6IQPE75zjIxL0QhsH7ZoNapIvjmteVhsqKqsZbQCL7fJYv
-	YiD4TJm9SqN/XRc994c1ef8sbePcHNBIQffrfdwIsQ==
-X-Google-Smtp-Source: AGHT+IH6xIW34cUhfbm6uS4lGucin/ng4/m/ryyfJico4mCTUTYGDYajeDn/M+ly4sI6E4iuomTaVqg6vaPiGhO2ztA=
-X-Received: by 2002:a17:90a:d34a:b0:269:3498:3bad with SMTP id
- i10-20020a17090ad34a00b0026934983badmr3496202pjx.14.1692262644742; Thu, 17
- Aug 2023 01:57:24 -0700 (PDT)
+        bh=zzJTGyBFfNHD26CtlWDf2OW3qCUaOPcLUEmxDdyzh1Y=;
+        b=KeUwMXKKiTFzMrA1b6MZXOVU8jlY4Woqqqn2c6AFD4cF+syvr3F3UttU+ZNslXRqnt
+         PWRC+6roEU8Lq37NwY5y8W+wsjeBJu8LTCJ4YpVYbVatMIyHHQm1oRNyGat/aQyYd5/H
+         mK3qJb/D6G7/4q3jfVungLZWTqCXyorOqXSTlHF1nMgl1Y5pQRJpBFZFY0PfBrTlcsVy
+         zu+f93BiPm1nZi0GpgobxUFZFGQr0lYmShSCpy+qJPrkzmjxr8Tdy25IVTmwq34kCP/d
+         ZWZ0JFKhTnxP6bc1cIkWVfh0FHY4sfUQPCjDEuM9T4w9QqCBxn1gTLJRt/1PZwZhfBcq
+         YYgw==
+X-Gm-Message-State: AOJu0YzryT+b5do8urrA5EnMBp6o8ZT3YaE1Pk3FIOk7VnsO/IUSf4eL
+	yTgPoGgFlKiKKb/a3RBshvs3qOrHqQh0S+C2sumSVA==
+X-Google-Smtp-Source: AGHT+IGoPbYFBVceIn1MirlXDItYRs71DR8HUnsO7PhevciD8S5nbWq09PLmtEx8gUECyHYDIG141YPHSni37ZMfp2E=
+X-Received: by 2002:a17:90b:3b49:b0:268:1be1:745a with SMTP id
+ ot9-20020a17090b3b4900b002681be1745amr3422216pjb.29.1692262649679; Thu, 17
+ Aug 2023 01:57:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <169181859570.505132.10136520092011157898.stgit@devnote2>
-In-Reply-To: <169181859570.505132.10136520092011157898.stgit@devnote2>
+References: <169181859570.505132.10136520092011157898.stgit@devnote2> <169181860742.505132.14215380532909911090.stgit@devnote2>
+In-Reply-To: <169181860742.505132.14215380532909911090.stgit@devnote2>
 From: Florent Revest <revest@chromium.org>
-Date: Thu, 17 Aug 2023 10:57:13 +0200
-Message-ID: <CABRcYmJLbb0_fs2beiNA2QE468JkxB9nHnmQcQW4dt63pPBoFA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/8] bpf: fprobe: rethook: Use ftrace_regs instead of pt_regs
+Date: Thu, 17 Aug 2023 10:57:18 +0200
+Message-ID: <CABRcYm+ZuuJJGGk1cQso=4ZN+jBp2g5NODFJYq-TDqzu8KL85A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/8] Documentation: probes: Add a new ret_ip callback parameter
 To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
 	linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
@@ -74,33 +74,68 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
 On Sat, Aug 12, 2023 at 7:36=E2=80=AFAM Masami Hiramatsu (Google)
 <mhiramat@kernel.org> wrote:
 >
-> Hi,
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 >
-> Here is the 3rd version of RFC series to use ftrace_regs instead of pt_re=
-gs.
-> The previous version is here;
+> Add a new ret_ip callback parameter description.
 >
-> https://lore.kernel.org/all/169139090386.324433.6412259486776991296.stgit=
-@devnote2/
+> Fixes: cb16330d1274 ("fprobe: Pass return address to the handlers")
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  Documentation/trace/fprobe.rst |    8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 >
-> This also includes the generic part and minimum modifications of arch
-> dependent code. (e.g. not including rethook for arm64.)
+> diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.=
+rst
+> index 40dd2fbce861..a6d682478147 100644
+> --- a/Documentation/trace/fprobe.rst
+> +++ b/Documentation/trace/fprobe.rst
+> @@ -91,9 +91,9 @@ The prototype of the entry/exit callback function are a=
+s follows:
+>
+>  .. code-block:: c
+>
+> - int entry_callback(struct fprobe *fp, unsigned long entry_ip, struct pt=
+_regs *regs, void *entry_data);
+> + int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned =
+long ret_ip, struct pt_regs *regs, void *entry_data);
+>
+> - void exit_callback(struct fprobe *fp, unsigned long entry_ip, struct pt=
+_regs *regs, void *entry_data);
+> + void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned =
+long ret_ip, struct pt_regs *regs, void *entry_data);
+>
+>  Note that the @entry_ip is saved at function entry and passed to exit ha=
+ndler.
+>  If the entry callback function returns !0, the corresponding exit callba=
+ck will be cancelled.
+> @@ -108,6 +108,10 @@ If the entry callback function returns !0, the corre=
+sponding exit callback will
+>          Note that this may not be the actual entry address of the functi=
+on but
+>          the address where the ftrace is instrumented.
+>
+> +@ret_ip
+> +        This is the return address of the traced function. This can be u=
+sed
+> +        at both entry and exit.
 
-I think that one aspect that's missing from the discussion (and maybe
-the series) so far is plans to actually save partial registers in the
-existing rethook trampolines.
+Maybe that's just the lack of coffee but I had to think twice to
+understand what this paragraph meant :) On my first pass I thought
+this meant "the address of the return instruction", which made little
+sense since there can of course be multiple "ret"s in a function. I
+like the name in the fprobe code "parent_ip" because I find it conveys
+better that this is an address in the caller of the traced function.
+I'm also fine with this "ret_ip" but I propose we modify the paragraph
+a little bit to something like:
 
-For now the series makes everything called by the rethook trampolines
-handle the possibility of having a sparse ftrace_regs but the rethook
-trampolines still save full ftrace_regs. I think that to rip the full
-benefits of this series, we should have the rethook trampolines save
-the equivalent ftrace_regs as the light "args" version of the ftrace
-trampoline.
+This is the address that the traced function will return to, somewhere
+in its caller. This can be used at both entry and exit.
 
