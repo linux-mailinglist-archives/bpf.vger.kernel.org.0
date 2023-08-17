@@ -1,157 +1,104 @@
-Return-Path: <bpf+bounces-8024-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8025-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D80537800DD
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 00:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E80780109
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 00:32:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 926DD28224C
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 22:12:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84317282258
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 22:32:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63CFE1BEFE;
-	Thu, 17 Aug 2023 22:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A981BF07;
+	Thu, 17 Aug 2023 22:31:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1751BEE6
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 22:11:42 +0000 (UTC)
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45F03A9A;
-	Thu, 17 Aug 2023 15:11:06 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bc6535027aso2427435ad.2;
-        Thu, 17 Aug 2023 15:11:06 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CAC1DA27;
+	Thu, 17 Aug 2023 22:31:50 +0000 (UTC)
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B823590;
+	Thu, 17 Aug 2023 15:31:49 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bdbf10333bso2656895ad.1;
+        Thu, 17 Aug 2023 15:31:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692310266; x=1692915066;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Pdn8ZDSU+rPV6ppPcgXHzQvQTsJ2JvZARdrVodBzFvI=;
-        b=Rp0zR69UQLoBt1v5mo2rSyxCYnSlBdPz/ZH8QiQAAsmDwbA2xg83lJQDc0a72waPZ7
-         k5DbDMcYA4vLUdrf1hNXNZEdBxfhDHqJSW6/9lDcEdJ/+nBMDjzWgxZ9eg90/hRt0nNV
-         ZzILV235Kj571f3X3GuvtjOmYE6qUR1h51NG2j+IE/eVn5o2DlzdZevjuhEuctjo2pMA
-         +qo2xDRnjrQJGXaiZgtHWPY0fcPCOtfJlEXwoZ6ayGngb1ooVkUNkb/8c2Grqltwbp2N
-         9zLGAVNGzaPcNEpQaLhQiDoKXrluMK5BEWhSktvT7aTT6P9EQHiPK4e+W5b9g/n2Qxzg
-         JZrg==
+        d=gmail.com; s=20221208; t=1692311509; x=1692916309;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FZEzx/BglPtyuNXga5z6ZOvALGdPR3nROuhrA48CEhQ=;
+        b=VgdQi0wb+QcqqKFEK32EQETLpGKr94hILCEzMs+ya4wgLVbMBxZLweILHxpTWUNT29
+         wnDZxPQJjysDQ8Pzpm9/L9thmavJvPhTroxZd4fuWSlP9NoAJDe/dSgAtu4jpw5piPiq
+         /TqauBKuM0QcOnovn0zauAsvmZqfGQJvoARPSKSNZ0INCbpVBuhiWjzthW2DZ3uHuoAZ
+         jrslOjG6Psob7Obghhzc47zrqRhaeLRRAm3EbeN226r0qerv9MT9YlaARsR+p0bRMhsR
+         gzAb2gC7d5EcO0wBi/6aOqUTzWhgUfyYFVqI4yOKFGdrTwThrlRvBIHdY6V7U7udtNKo
+         wPfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692310266; x=1692915066;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pdn8ZDSU+rPV6ppPcgXHzQvQTsJ2JvZARdrVodBzFvI=;
-        b=M+EPzZbKlt8pwadeB6+w5//Xslx/3BbtoiNeLOlR599Nxq9tyOUFRTltKpCLKW37//
-         qMsYicOiwZg1C4aePPneThvV/VVYXzoTKtlHaupxVBGfUzhw6h79dzU+z5m0NK123Cu+
-         OlWDuqizCtbTBUV/EkJOEBqRezCaS35rgt21GxNoR902Zs3O+jlj9nXdrzg9Mfro6FJn
-         9XtP/37h+QiSA4WfO9r485rOPnBOQeciTlXtAB1XNQ8k9u2gYYJgbnHpj1TwBmJqQ95D
-         caQUhSSnYdr9sXiDejpFzuD0Y4BbdHz2bu16OVphuAjoPu+kKOrQdhBdJqX3ncqyz/gc
-         KeJQ==
-X-Gm-Message-State: AOJu0Ywr6PuzQpRBas+qoT8OpWFbWFFB3BuhJZwR544DJ+WFIJCORuCl
-	3OWOovTmWTQlp5rpg7cM/z8=
-X-Google-Smtp-Source: AGHT+IH9CTQPxls/ckyoXnpryTKNCctuNR4NLN4qq2q5dsCI0N1/VKk6p46dpdmH3U1D7QCziG3l8Q==
-X-Received: by 2002:a17:902:bf47:b0:1be:f45c:bc38 with SMTP id u7-20020a170902bf4700b001bef45cbc38mr729196pls.2.1692310266001;
-        Thu, 17 Aug 2023 15:11:06 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692311509; x=1692916309;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FZEzx/BglPtyuNXga5z6ZOvALGdPR3nROuhrA48CEhQ=;
+        b=K63QjKxC2z4vurlAuFAMKaCkElm3kG0NGu0TGzcqF/MSw958hIppBXKTQy7BcG9Vj+
+         RVIAj2IdQf4FrjYT38Z5W8YtjVtb4/b8eU+ItHZ+k6GQFmdhg4O/ZxkRJduvBT+pXIbG
+         GntwG07ua4oyor8ZdaQ2B3pI8JV1F1Yv9yGrcOLcDlP6IlGRVHM8E+dRbPMjy5ftD9yB
+         hase1gxQP6NklLlNQptcvsHKtAYKpnShT1Whv+E+7uTcyYXKXsmKAvq8f4llMuBrjEPc
+         Ny2J3mPrONQ9RQfAnrFYjss62eCNGx90MJDCGLwfdQiYvrW8WeWLpEHBTifmwbcaQbv+
+         5xvQ==
+X-Gm-Message-State: AOJu0YwvnL4lRzC2x7VtGVBJgnQkR3YcOvBO96xYByeqVMQmbMfMKv2R
+	H8oiJOvNiNPhVEaXRMzE7Ug=
+X-Google-Smtp-Source: AGHT+IFpMhFHbdHJblnyyng0Ai8C8bEUNnlFfR7MeAyCIH06kdI3U/lM3NwBzp3uHHBzLf9bl0T1bQ==
+X-Received: by 2002:a17:903:2310:b0:1bc:6c8:cde3 with SMTP id d16-20020a170903231000b001bc06c8cde3mr963298plh.57.1692311508914;
+        Thu, 17 Aug 2023 15:31:48 -0700 (PDT)
 Received: from macbook-pro-8.dhcp.thefacebook.com ([2620:10d:c090:500::4:8d88])
-        by smtp.gmail.com with ESMTPSA id l6-20020a170902d34600b001b8b26fa6c1sm267290plk.115.2023.08.17.15.11.03
+        by smtp.gmail.com with ESMTPSA id iy20-20020a170903131400b001bc18e579aesm274111plb.101.2023.08.17.15.31.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 15:11:05 -0700 (PDT)
-Date: Thu, 17 Aug 2023 15:11:02 -0700
+        Thu, 17 Aug 2023 15:31:48 -0700 (PDT)
+Date: Thu, 17 Aug 2023 15:31:43 -0700
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>,
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Quentin Monnet <quentin@isovalent.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	gyroidos@aisec.fraunhofer.de
-Subject: Re: [PATCH RFC 1/4] bpf: add cgroup device guard to flag a cgroup
- device prog
-Message-ID: <20230817221102.6hexih3uki3jf6w3@macbook-pro-8.dhcp.thefacebook.com>
-References: <20230814-devcg_guard-v1-0-654971ab88b1@aisec.fraunhofer.de>
- <20230814-devcg_guard-v1-1-654971ab88b1@aisec.fraunhofer.de>
- <20230815-feigling-kopfsache-56c2d31275bd@brauner>
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, x86@kernel.org, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	hpa@zytor.com, mykolal@fb.com, shuah@kernel.org,
+	davem@davemloft.net, dsahern@kernel.org, tangyeechou@gmail.com,
+	kernel-patches-bot@fb.com, maciej.fijalkowski@intel.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 1/2] bpf, x64: Fix tailcall infinite loop bug
+Message-ID: <20230817223143.jyclrtf3a6kmtgh5@macbook-pro-8.dhcp.thefacebook.com>
+References: <20230814134147.70289-1-hffilwlqm@gmail.com>
+ <20230814134147.70289-2-hffilwlqm@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230815-feigling-kopfsache-56c2d31275bd@brauner>
+In-Reply-To: <20230814134147.70289-2-hffilwlqm@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Tue, Aug 15, 2023 at 10:59:22AM +0200, Christian Brauner wrote:
-> On Mon, Aug 14, 2023 at 04:26:09PM +0200, Michael Weiß wrote:
-> > Introduce the BPF_F_CGROUP_DEVICE_GUARD flag for BPF_PROG_LOAD
-> > which allows to set a cgroup device program to be a device guard.
-> 
-> Currently we block access to devices unconditionally in may_open_dev().
-> Anything that's mounted by an unprivileged containers will get
-> SB_I_NODEV set in s_i_flags.
-> 
-> Then we currently mediate device access in:
-> 
-> * inode_permission()
->   -> devcgroup_inode_permission()
-> * vfs_mknod()
->   -> devcgroup_inode_mknod()
-> * blkdev_get_by_dev() // sget()/sget_fc(), other ways to open block devices and friends
->   -> devcgroup_check_permission()
-> * drivers/gpu/drm/amd/amdkfd // weird restrictions on showing gpu info afaict
->   -> devcgroup_check_permission()
-> 
-> All your new flag does is to bypass that SB_I_NODEV check afaict and let
-> it proceed to the devcgroup_*() checks for the vfs layer.
-> 
-> But I don't get the semantics yet.
-> Is that a flag which is set on BPF_PROG_TYPE_CGROUP_DEVICE programs or
-> is that a flag on random bpf programs? It looks like it would be the
-> latter but design-wise I would expect this to be a property of the
-> device program itself.
+On Mon, Aug 14, 2023 at 09:41:46PM +0800, Leon Hwang wrote:
+> @@ -1147,6 +1152,7 @@ struct bpf_attach_target_info {
+>  	struct module *tgt_mod;
+>  	const char *tgt_name;
+>  	const struct btf_type *tgt_type;
+> +	bool tail_call_ctx;
 
-Looks like patch 4 attemps to bypass usual permission checks with:
-@@ -3976,9 +3979,19 @@ int vfs_mknod(struct mnt_idmap *idmap, struct inode *dir,
-        if (error)
-                return error;
-
--       if ((S_ISCHR(mode) || S_ISBLK(mode)) && !is_whiteout &&
--           !capable(CAP_MKNOD))
--               return -EPERM;
-+       /*
-+        * In case of a device cgroup restirction allow mknod in user
-+        * namespace. Otherwise just check global capability; thus,
-+        * mknod is also disabled for user namespace other than the
-+        * initial one.
-+        */
-+       if ((S_ISCHR(mode) || S_ISBLK(mode)) && !is_whiteout) {
-+               if (devcgroup_task_is_guarded(current)) {
-+                       if (!ns_capable(current_user_ns(), CAP_MKNOD))
-+                               return -EPERM;
-+               } else if (!capable(CAP_MKNOD))
-+                       return -EPERM;
-+       }
-
-which pretty much sounds like authoritative LSM that was brought up in the past
-and LSM folks didn't like it.
-
-If vfs folks are ok with this special bypass of permissions in vfs_mknod()
-we can talk about kernel->bpf api details.
-The way it's done with BPF_F_CGROUP_DEVICE_GUARD flag is definitely no go,
-but no point going into bpf details now until agreement on bypass is made.
+Instead of extra flag here can you check tgt_prog->aux->tail_call_reachable in check_attach_btf_id()
+and set tr->flags there?
+Other than this the fix makes sense.
+Please trim your cc list when you respin.
+Just maintainers, Maciej (author of fixes tag) and bpf@vger is enough.
 
