@@ -1,285 +1,163 @@
-Return-Path: <bpf+bounces-8001-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8002-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E84C077FC49
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 18:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A65F777FC8B
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 19:08:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16A6D1C214CE
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 16:43:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D75951C21496
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 17:08:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588711549D;
-	Thu, 17 Aug 2023 16:43:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4124E168D5;
+	Thu, 17 Aug 2023 17:08:25 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291A614289
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 16:43:26 +0000 (UTC)
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81B42724
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 09:43:23 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bd9b4f8e0eso51631415ad.1
-        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 09:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1692290603; x=1692895403;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=PB2Z3ZbGV4CX3loEYdldkKXA/GdXJ2Xk4SFBen/iuYc=;
-        b=UkPo1ev2iFCUnViPY9CAmyGbARWlLPdYjzEHciwuGnWv+TERXIi7p0QeiMQy/DyubO
-         /swhCSiHiMi8s1QoBNd0FmHYh6SxLxZcH+hR2rrkjzNmXLvuEPtrk42T1z9H/Zlf3RBp
-         8E3zZ3HyUDJhozM+itzEaWxM8ccPGucc78DlRvNKf32VlR0lWSX0C+PZVJCGvJMra+nw
-         019ad5Xd6cA4y5y47ViHm+4NEXkiFnbKaMQI3bB2EEnS6QMg/4Q9zqDXFaVf+R6vNQeO
-         5cazeXhgiGGniVDEzESnpxYCExIJahfNEIZp/bWcMm1P/01MSYVA83JSMdLj2/MCwaLh
-         CrRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692290603; x=1692895403;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PB2Z3ZbGV4CX3loEYdldkKXA/GdXJ2Xk4SFBen/iuYc=;
-        b=bbyLXgfrw3wRpiWnyVpioTcGG6MpTs6kqsP/UUVrk5sScD+unWT0fyPRHjqHA615O5
-         Qy7KuWPtiJmQxPd3ou9UTyvs7XIVQ+OmeySuSiYswYkWOO4LKXh8zPDIoINrWdCqaGlh
-         Ljz9ln0akH6/LIUTHIgu94twwkYe5gFlL/04m4AfBBHsBMZzrhe+z8PFRn8pO8dzmF9T
-         D25BPlWKX2UGVMxIHvZksIM7lZRv5PtWEqEshTV/ys4zz/bJhDYkLiHU7Cs4/aAo51Uf
-         4L9x9uOJ2wqS2O5X+qLV0+k73R3zSGuSYB5VMvhCYoGi5jyGi2ne0ZwXEf7Aoo8chpcv
-         l3rA==
-X-Gm-Message-State: AOJu0Yxne6n0NS96sKjc6rUnWkU//C5Kk9PLbo5GwoGrPm6eV5c/DBEJ
-	z/0v+9JtX6BKo1rlpTHJ4BVDHA==
-X-Google-Smtp-Source: AGHT+IEFcMgadb/7XKpYQOh6C/SwkWpgiE3QottPAATvfPQw1OPO0Y7EvudzdN/WWJ1s3h5LB3UqFA==
-X-Received: by 2002:a17:902:654e:b0:1bc:15ea:ced8 with SMTP id d14-20020a170902654e00b001bc15eaced8mr5488035pln.54.1692290602969;
-        Thu, 17 Aug 2023 09:43:22 -0700 (PDT)
-Received: from ghost ([2601:647:5700:6860:4c48:92d8:2b81:b1ae])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902c10c00b001b7cbc5871csm15411677pli.53.2023.08.17.09.43.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 09:43:22 -0700 (PDT)
-Date: Thu, 17 Aug 2023 09:43:16 -0700
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Jessica Clarke <jrtc27@jrtc27.com>
-Cc: Andrew Jones <ajones@ventanamicro.com>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-	kvm-riscv@lists.infradead.org, bpf@vger.kernel.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jason Baron <jbaron@akamai.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ard Biesheuvel <ardb@kernel.org>, Anup Patel <anup@brainfault.org>,
-	Atish Patra <atishp@atishpatra.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>,
-	Nam Cao <namcaov@gmail.com>
-Subject: Re: [PATCH 00/10] RISC-V: Refactor instructions
-Message-ID: <ZN5OJO/xOWUjLK2w@ghost>
-References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
- <20230804-2c57bddd6e87fdebc20ff9d5@orel>
- <ZM00UYDzEAz/JT3n@ghost>
- <ZN1qXlLp6qfpBeGF@ghost>
- <12FAB5A9-5723-4A5B-8729-75D8A38921B9@jrtc27.com>
- <46884D2C-F3AA-4A83-8295-AE5C0F58FE13@jrtc27.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2157614F65
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 17:08:24 +0000 (UTC)
+Received: from mx0b-00206402.pphosted.com (mx0b-00206402.pphosted.com [148.163.152.16])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6F830C6
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 10:08:22 -0700 (PDT)
+Received: from pps.filterd (m0354655.ppops.net [127.0.0.1])
+	by mx0b-00206402.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37HGBRk1008019;
+	Thu, 17 Aug 2023 17:08:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com;
+	 h=message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=default;
+	 bh=+cE+GOfbwdIL3M9cZD3TOcMCCoZDM+v+V81T0fOY1HI=; b=xLOQY21KF5n0
+	ebBvg9oee2aG7Wzw+Tr4YZXfdVR6EU+nasOqfw+S9VQUuTOk8ZzKIFCBrj1nYwy0
+	28grQFCwmEeBU5tHjmlJ8oE00hgsHXH4bL1kPRBezJj+4SQ/9anBaOGywFmFKN52
+	tpAYhyS7J3OGZSxOBXahS/zwOJacBm/3pXItpjxLlzSAYObHeCXiQ2EvUwrfWU2e
+	0nOQQ06XyjYKZfQ0AoZrotIsADkZdTes0wJghF9jbU3nzYgu9As3RyIkA8DlYrdJ
+	sY/NgMukNdthtgHU29cBk5jNYPwfUHOpEB9g3kXfr4M/CUeJ1lunbenPg1k9LcfD
+	jTR0CIa7lw==
+Received: from 04wpexch06.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
+	by mx0b-00206402.pphosted.com (PPS) with ESMTPS id 3shdfd9ctk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 17 Aug 2023 17:08:00 +0000 (GMT)
+Received: from [10.102.42.42] (10.100.11.122) by 04wpexch06.crowdstrike.sys
+ (10.100.11.99) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.16; Thu, 17 Aug
+ 2023 17:07:58 +0000
+Message-ID: <2e6c5f26-7ef9-f97f-44dc-03967b3326ea@crowdstrike.com>
+Date: Thu, 17 Aug 2023 10:07:58 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: Re: [PATCH bpf] libbpf: soften BTF map error
+To: Daniel Borkmann <daniel@iogearbox.net>, <bpf@vger.kernel.org>
+CC: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>
+References: <20230816173030.148536-1-martin.kelly@crowdstrike.com>
+ <5806e499-069f-18f4-2af0-5d9bd8bfa05e@iogearbox.net>
+Content-Language: en-US
+From: Martin Kelly <martin.kelly@crowdstrike.com>
+In-Reply-To: <5806e499-069f-18f4-2af0-5d9bd8bfa05e@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <46884D2C-F3AA-4A83-8295-AE5C0F58FE13@jrtc27.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Originating-IP: [10.100.11.122]
+X-ClientProxiedBy: 04WPEXCH09.crowdstrike.sys (10.100.11.113) To
+ 04wpexch06.crowdstrike.sys (10.100.11.99)
+X-Disclaimer: USA
+X-Proofpoint-ORIG-GUID: G50-gLB1As-qMF3Ptp1G9hfnK_YBOysD
+X-Proofpoint-GUID: G50-gLB1As-qMF3Ptp1G9hfnK_YBOysD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-17_12,2023-08-17_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 clxscore=1015 adultscore=0 malwarescore=0
+ suspectscore=0 phishscore=0 mlxscore=0 priorityscore=1501 spamscore=0
+ bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2306200000 definitions=main-2308170153
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
 	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Aug 17, 2023 at 05:05:45AM +0100, Jessica Clarke wrote:
-> On 17 Aug 2023, at 04:57, Jessica Clarke <jrtc27@jrtc27.com> wrote:
-> > 
-> > On 17 Aug 2023, at 01:31, Charlie Jenkins <charlie@rivosinc.com> wrote:
-> >> 
-> >> On Fri, Aug 04, 2023 at 10:24:33AM -0700, Charlie Jenkins wrote:
-> >>> On Fri, Aug 04, 2023 at 12:28:28PM +0300, Andrew Jones wrote:
-> >>>> On Thu, Aug 03, 2023 at 07:10:25PM -0700, Charlie Jenkins wrote:
-> >>>>> There are numerous systems in the kernel that rely on directly
-> >>>>> modifying, creating, and reading instructions. Many of these systems
-> >>>>> have rewritten code to do this. This patch will delegate all instruction
-> >>>>> handling into insn.h and reg.h. All of the compressed instructions, RVI,
-> >>>>> Zicsr, M, A instructions are included, as well as a subset of the F,D,Q
-> >>>>> extensions.
-> >>>>> 
-> >>>>> ---
-> >>>>> This is modifying code that https://lore.kernel.org/lkml/20230731183925.152145-1-namcaov@gmail.com/
-> >>>>> is also touching.
-> >>>>> 
-> >>>>> ---
-> >>>>> Testing:
-> >>>>> 
-> >>>>> There are a lot of subsystems touched and I have not tested every
-> >>>>> individual instruction. I did a lot of copy-pasting from the RISC-V spec
-> >>>>> so opcodes and such should be correct
-> >>>> 
-> >>>> How about we create macros which generate each of the functions an
-> >>>> instruction needs, e.g. riscv_insn_is_*(), etc. based on the output of
-> >>>> [1]. I know basically nothing about that project, but it looks like it
-> >>>> creates most the defines this series is creating from what we [hope] to
-> >>>> be an authoritative source. I also assume that if we don't like the
-> >>>> current output format, then we could probably post patches to the project
-> >>>> to get the format we want. For example, we could maybe propose an "lc"
-> >>>> format for "Linux C".
-> >>> That's a great idea, I didn't realize that existed!
-> >> I have discovered that the riscv-opcodes repository is not in a state
-> >> that makes it helpful. If it were workable, it would make it easy to
-> >> include a "Linux C" format. I have had a pull request open on the repo
-> >> for two weeks now and the person who maintains the repo has not
-> >> interacted.
-> > 
-> > Huh? Andrew has replied to you twice on your PR, and was the last one to
-> > comment. That’s hardly “has not interacted”.
-> > 
-I should have been more clear because Andrew was very responsive.
-However, Neel Gala appears to be the "maintainer" in the sense that
-Andrew defers what gets merged into the repo to him. Neel has not
-provided any feedback, and he needs to comment before Andrew will merge
-anything in.
-> >> At minimum, in order for it to be useful it would need an ability to
-> >> describe the bit order of immediates in an instruction and include script
-> >> arguments to select which instructions should be included. There is a
-> >> "C" format, but it is actually just a Spike format.
-> > 
-> > So extend it? Or do something with QEMU’s equivalent that expresses it.
-Yes, that is a possibility. To my knowledge GCC and the spec generator
-have moved away from using this repo. Is it still used by QEMU?
-> 
-> Note that every field already identifies the bit order (or, for the
-> case of compressed instructions, register restrictions) since that’s
-> needed to produce the old LaTeX instruction set listings; that’s why
-> there’s jimm20 vs imm20, for example. One could surely encode that in
-> Python and generate the LaTeX strings from the Python, making the
-> details of the encodings available elsewhere. Or just have your own
-> mapping from name to whatever you need. But, either way, the
-> information should all be there today in the input files, it’s just a
-> matter of extending the script to produce whatever you want from them.
-All of the LaTeX bit orders were hardcoded in strings. As such, the bit
-order is described for the LaTeX format but not in general. It would not
-make sense to hardcode them a second time for the output of the Linux
-generation. You can see the strings by searching for 'latex_mapping' in
-the constants.py file.
+On 8/17/23 07:17, Daniel Borkmann wrote:
+> On 8/16/23 7:30 PM, Martin Kelly wrote:
+>> For map-in-map types, the first time the map is loaded, we get a scary
+>> error looking like this:
+>>
+>> libbpf: bpf_create_map_xattr(map_name):ERROR: 
+>> strerror_r(-524)=22(-524). Retrying without BTF.
+>>
+>> On the second try without BTF, everything works fine. However, as this
+>> is logged at error level, it looks needlessly scary to users. Soften
+>> this to be at debug level; if the second attempt still fails, we'll
+>> still get an error as expected.
+>>
+>> Signed-off-by: Martin Kelly <martin.kelly@crowdstrike.com>
+>
+> nit: $subj should be for bpf-next instead of bpf
 
-It seems to me that it will be significantly more challenging to use
-riscv-opcodes than it would for people to just hand create the macros
-that they need.
+I had purposefully sent to "bpf" instead of "bpf-next" as it felt like a 
+fix, but I'm fine with "bpf-next" instead if that's better.
 
-- Charlie
-> 
-> > Jess
-> > 
-> >> Nonetheless, it
-> >> seems like it is prohibitive to use it.
-> >>>> 
-> >>>> I'd also recommend only importing the generated defines and generating
-> >>>> the functions that will actually have immediate consumers or are part of
-> >>>> a set of defines that have immediate consumers. Each consumer of new
-> >>>> instructions will be responsible for generating and importing the defines
-> >>>> and adding the respective macro invocations to generate the functions.
-> >>>> This series can also take that approach, i.e. convert one set of
-> >>>> instructions at a time, each in a separate patch.
-> >>> Since I was hand-writing everything and copying it wasn't too much
-> >>> effort to just copy all of the instructions from a group. However, from
-> >>> a testing standpoint it makes sense to exclude instructions not yet in
-> >>> use.
-> >>>> 
-> >>>> [1] https://github.com/riscv/riscv-opcodes
-> >>>> 
-> >>>> Thanks,
-> >>>> drew
-> >>>> 
-> >>>> 
-> >>>>> , but the construction of every
-> >>>>> instruction is not fully tested.
-> >>>>> 
-> >>>>> vector: Compiled and booted
-> >>>>> 
-> >>>>> jump_label: Ensured static keys function as expected.
-> >>>>> 
-> >>>>> kgdb: Attempted to run the provided tests but they failed even without
-> >>>>> my changes
-> >>>>> 
-> >>>>> module: Loaded and unloaded modules
-> >>>>> 
-> >>>>> patch.c: Ensured kernel booted
-> >>>>> 
-> >>>>> kprobes: Used a kprobing module to probe jalr, auipc, and branch
-> >>>>> instructions
-> >>>>> 
-> >>>>> nommu misaligned addresses: Kernel boots
-> >>>>> 
-> >>>>> kvm: Ran KVM selftests
-> >>>>> 
-> >>>>> bpf: Kernel boots. Most of the instructions are exclusively used by BPF
-> >>>>> but I am unsure of the best way of testing BPF.
-> >>>>> 
-> >>>>> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> >>>>> 
-> >>>>> ---
-> >>>>> Charlie Jenkins (10):
-> >>>>>     RISC-V: Expand instruction definitions
-> >>>>>     RISC-V: vector: Refactor instructions
-> >>>>>     RISC-V: Refactor jump label instructions
-> >>>>>     RISC-V: KGDB: Refactor instructions
-> >>>>>     RISC-V: module: Refactor instructions
-> >>>>>     RISC-V: Refactor patch instructions
-> >>>>>     RISC-V: nommu: Refactor instructions
-> >>>>>     RISC-V: kvm: Refactor instructions
-> >>>>>     RISC-V: bpf: Refactor instructions
-> >>>>>     RISC-V: Refactor bug and traps instructions
-> >>>>> 
-> >>>>> arch/riscv/include/asm/bug.h             |   18 +-
-> >>>>> arch/riscv/include/asm/insn.h            | 2744 +++++++++++++++++++++++++++---
-> >>>>> arch/riscv/include/asm/reg.h             |   88 +
-> >>>>> arch/riscv/kernel/jump_label.c           |   13 +-
-> >>>>> arch/riscv/kernel/kgdb.c                 |   13 +-
-> >>>>> arch/riscv/kernel/module.c               |   80 +-
-> >>>>> arch/riscv/kernel/patch.c                |    3 +-
-> >>>>> arch/riscv/kernel/probes/kprobes.c       |   13 +-
-> >>>>> arch/riscv/kernel/probes/simulate-insn.c |  100 +-
-> >>>>> arch/riscv/kernel/probes/uprobes.c       |    5 +-
-> >>>>> arch/riscv/kernel/traps.c                |    9 +-
-> >>>>> arch/riscv/kernel/traps_misaligned.c     |  218 +--
-> >>>>> arch/riscv/kernel/vector.c               |    5 +-
-> >>>>> arch/riscv/kvm/vcpu_insn.c               |  281 +--
-> >>>>> arch/riscv/net/bpf_jit.h                 |  707 +-------
-> >>>>> 15 files changed, 2825 insertions(+), 1472 deletions(-)
-> >>>>> ---
-> >>>>> base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-> >>>>> change-id: 20230801-master-refactor-instructions-v4-433aa040da03
-> >>>>> -- 
-> >>>>> - Charlie
-> >>>>> 
-> >>>>> 
-> >>>>> -- 
-> >>>>> kvm-riscv mailing list
-> >>>>> kvm-riscv@lists.infradead.org
-> >>>>> http://lists.infradead.org/mailman/listinfo/kvm-riscv
-> >> 
-> >> _______________________________________________
-> >> linux-riscv mailing list
-> >> linux-riscv@lists.infradead.org
-> >> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
-> 
+>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index b14a4376a86e..0ca0c8d01707 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -5123,7 +5123,7 @@ static int bpf_object__create_map(struct 
+>> bpf_object *obj, struct bpf_map *map, b
+>>             err = -errno;
+>>           cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
+>> -        pr_warn("Error in bpf_create_map_xattr(%s):%s(%d). Retrying 
+>> without BTF.\n",
+>> +        pr_debug("bpf_create_map_xattr(%s):%s(%d). Retrying without 
+>> BTF.\n",
+>>               map->name, cp, err);
+>
+> There are also several other places with pr_warns about BTF when 
+> loading an obj. Did
+> you audit them as well under !BTF kernel? nit: Why changing the fmt 
+> string itself,
+> looked ok as-is, no?
+
+This message is actually printed even for a BTF-supported kernel. 
+Basically, the first call to bpf_create_map_xattr using BTF *always* 
+fails for map-in-map types, printing this message, and then the second 
+always succeeds. So this isn't really about BTF support but simply about 
+an over-zealous message.
+
+I changed the format string because calling this an "Error" feels (to 
+me) unnecessarily alarming, given that this is totally normal behavior. 
+I'm OK keeping the "Error in" part if you think that's better. The most 
+important thing to me was that, when the program loads successfully, we 
+shouldn't be logging to stderr and scaring the user.
+
+Let me know if you'd like me to keep the "Error in" part for a v2 patch.
+
+>
+> There is also libbpf_needs_btf(obj), perhaps this could be left as 
+> pr_warn similar
+> as in bpf_object__init_btf() - or would this still trigger in your case?
+
+I think this one should stay as a warning, as it looks like the code 
+path is a fatal error, and if you try to load a BTF-requiring program 
+but don't have BTF, that seems like an error to me. This patch was more 
+about an error being logged 100% of the time in a totally normal, 
+non-fatal, BTF-supported case due to the quirks of map-in-map types and BTF.
+
+>
+>>           create_attr.btf_fd = 0;
+>>           create_attr.btf_key_type_id = 0;
+>>
+>
+> Thanks,
+> Daniel
 
