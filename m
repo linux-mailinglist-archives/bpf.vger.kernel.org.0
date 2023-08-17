@@ -1,186 +1,137 @@
-Return-Path: <bpf+bounces-8029-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8030-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73843780159
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 00:57:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A4D078016D
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 01:00:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C87C281279
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 22:57:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41DB828220E
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 23:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF4D1B7C7;
-	Thu, 17 Aug 2023 22:56:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B931B7CD;
+	Thu, 17 Aug 2023 23:00:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92774F9D5
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 22:56:55 +0000 (UTC)
-Received: from out-26.mta1.migadu.com (out-26.mta1.migadu.com [IPv6:2001:41d0:203:375::1a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018D73A95
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 15:56:45 -0700 (PDT)
-Message-ID: <fc66a75f-312e-8efd-2da9-d55e2391ea90@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692313004;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/a2bfr+Ome5DVxPp6kaI5B+TytOOHJD7dEJCbU4E2ao=;
-	b=iV3bx2Of85rhRy7102au3UOEDESzPwow/JwnQHdcfxS0zzRUDrulnJBh2mnQ2RAQEX7Kgf
-	67kpmWmb94J1c8/kovAFtw/WzCUUuqHnTiFtL42VAFbCqF7o6wxDBvFT/6DMopKPzbWrZr
-	Tog5p7o5q1RrFUEoc4aolv66639FmmM=
-Date: Thu, 17 Aug 2023 15:56:40 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71726F9D5
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 23:00:46 +0000 (UTC)
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EDA136
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 16:00:45 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9cf2b1309so4092901fa.0
+        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 16:00:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692313243; x=1692918043;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+MctEsfvFNLHg7WRHPIqFjEdh1DeDKph4Mhn9IIDCa0=;
+        b=L/V7ikxx+LSPr4jRNQyAlYzZU5C0WBAn40KN77Yig8VYtoAPswEiK1L/K+t7yhBBbX
+         PNGrZSIgBSLmNmDE6EfJSiq1dASfbqZmcPanxhb2tvN1M6g/Z+Vo1mQ0oV5kYMjZ+jSH
+         128eVR4aSrd/I852QA39OhFQZSJJ+IIW2yDxAWjy7bMtFs3VfpBPkXXha+vjt6YWodPv
+         fVoYTxCrTIwPqu35iKTKnN12zGI6YaXA/Ym5Gs6wkSYz1ODyIGL95QeEK/nq5DLt09Qd
+         aqda3Z/1Jk6GBVoAzun/HJA/GmTjf6Yq+GjAfi4sjOVuPqZULQ2bFQJFhpV1U7zljv3e
+         o3mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692313243; x=1692918043;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+MctEsfvFNLHg7WRHPIqFjEdh1DeDKph4Mhn9IIDCa0=;
+        b=JvCUGtRj5Xuf3Q/+1KgK56oT2UPvae5kdPJwJG9f55f3rq2rVWx3wAQvmEWH9qWEqz
+         C2akDSrdwW2LsNVr6caDJE7ErO98cxQvdTe1fEJiuBqmkimTnO65bxtvuFgaF0GZ5xNV
+         IdinUnQ4mN7YqkbprS7M8g5FTcFHsj7/uV8NvmuX4xaqfeTndbPkrCz4JkhKuTjVzhhn
+         P4WsFQS7aobRIJkzVNLPPqbB21EGwek1cl9+thjfmkteAXVPSHb+fF4dEgaUxssHzqFN
+         Jq6jkzSwbdnKsrxXg1QmMg8pco0xOjTZKuJdmRgtTCnjSpw8jWpTrpmEsHlg8wjUqivS
+         cKWA==
+X-Gm-Message-State: AOJu0YzDu6/TIQtJZtS1uxSiSmcNfWuuoGnQv4Lps7j0dI78LpR2fFXP
+	8vdnTLv5rVvX7dwuAYr2JxLXPCaTMJlX2ZHNJME=
+X-Google-Smtp-Source: AGHT+IEWehboN2nW4MIFt8/NFWmKmXjv8TwDdDZAs/xdcRbJ7kaKUbA2tsAtwsMV8GnYzNjvjGYkuZcaXZEzLy0P8Fo=
+X-Received: by 2002:a05:651c:106e:b0:2b9:b8ce:4219 with SMTP id
+ y14-20020a05651c106e00b002b9b8ce4219mr1512219ljm.6.1692313242920; Thu, 17 Aug
+ 2023 16:00:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC bpf-next v3 4/5] bpf: Add a new dynptr type for
- CGRUP_SOCKOPT.
-Content-Language: en-US
-To: yonghong.song@linux.dev
-Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, sdf@google.com,
- sinquersw@gmail.com, kuifeng@meta.com, thinker.li@gmail.com,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <20230815174712.660956-1-thinker.li@gmail.com>
- <20230815174712.660956-5-thinker.li@gmail.com>
- <20230817012518.erfkm4tgdm3isnks@MacBook-Pro-8.local>
- <f903808f-13c3-c440-c720-2051fe6ec4fe@linux.dev>
- <8e0fd701-0128-06a5-004e-c82a562691ee@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <8e0fd701-0128-06a5-004e-c82a562691ee@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <db144689-79c8-6cfb-6a11-983958b28955@huaweicloud.com>
+ <e51d4765-25ae-28d6-e141-e7272faa439e@huaweicloud.com> <63cb33d1-6930-0555-dd43-7dd73a786f75@huaweicloud.com>
+In-Reply-To: <63cb33d1-6930-0555-dd43-7dd73a786f75@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 17 Aug 2023 16:00:31 -0700
+Message-ID: <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
+Subject: Re: Question: Is it OK to assume the address of bpf_dynptr_kern will
+ be 8-bytes aligned and reuse the lowest bits to save extra info ?
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Joanne Koong <joannelkoong@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/17/23 2:37 PM, Yonghong Song wrote:
-> 
-> 
-> On 8/17/23 1:41 PM, Martin KaFai Lau wrote:
->> On 8/16/23 6:25 PM, Alexei Starovoitov wrote:
->>> But I think we have to step back. Why do we need this whole thing in the 
->>> first place?
->>> _why_  sockopt bpf progs needs to read and write user memory?
->>>
->>> Yes there is one page limit, but what is the use case to actually read and write
->>> beyond that? iptables sockopt was mentioned, but I don't think bpf prog can do
->>> anything useful with iptables binary blobs. They are hard enough for kernel 
->>> to parse.
->>
->> Usually the bpf prog is only interested in a very small number of optnames and 
->> no need to read the optval at all for most cases. The max size for our use 
->> cases is 16 bytes. The kernel currently is kind of doing it the opposite and 
->> always assumes the bpf prog needing to use the optval, allocate kernel memory 
->> and copy_from_user such that the non-sleepable bpf program can read/write it.
->>
->> The bpf prog usually checks the optname and then just returns for most cases:
->>
->> SEC("cgroup/getsockopt")
->> int get_internal_sockopt(struct bpf_sockopt *ctx)
->> {
->>      if (ctx->optname != MY_INTERNAL_SOCKOPT)
->>          return 1;
->>
->>      /* change the ctx->optval and return to user space ... */
->> }
->>
->> When the optlen is > PAGE_SIZE, the kernel only allocates PAGE_SIZE memory and 
->> copy the first PAGE_SIZE data from the user optval. We used to ask the bpf 
->> prog to explicitly set the optlen to 0 for > PAGE_SIZE case even it has not 
->> looked at the optval. Otherwise, the kernel used to conclude that the bpf prog 
->> had set an invalid optlen because optlen is larger than the optval_end - 
->> optval and returned -EFAULT incorrectly to the end-user.
->>
->> The bpf prog started doing this > PAGE_SIZE check and set optlen = 0 due to an 
->> internal kernel PAGE_SIZE limitation:
->>
->> SEC("cgroup/getsockopt")
->> int get_internal_sockopt(struct bpf_sockopt *ctx)
->> {
->>      if (ctx->optname != MY_INTERNAL_SOCKOPT) {
->>          /* only do that for ctx->optlen > PAGE_SIZE.
->>           * otherwise, the following cgroup bpf prog will
->>           * not be able to use the optval that it may
->>           * be interested.
->>           */
->>          if (ctx->optlen > PAGE_SIZE)
->>              ctx->optlen = 0;
->>          return 1;
->>      }
->>
->>      /* change the ctx->optval and return to user space ... */
->> }
->>
->> The above has been worked around in commit 29ebbba7d461 ("bpf: Don't EFAULT 
->> for {g,s}setsockopt with wrong optlen").
->>
->> Later, it was reported that an optname (NETLINK_LIST_MEMBERSHIPS) that the 
->> kernel allows a user passing NULL optval and using the optlen returned by 
->> getsockopt to learn the buffer space required. The bpf prog then needs to 
->> remove the optlen > PAGE_SIZE check and set optlen to 0 for _all_ optnames 
->> that it is not interested while risking the following cgroup prog may not be 
->> able to use some of the optval:
->>
->> SEC("cgroup/getsockopt")
->> int get_internal_sockopt(struct bpf_sockopt *ctx)
->> {
->>      if (ctx->optname != MY_INTERNAL_SOCKOPT) {
->>
->>          /* Do that for all optname that you are not interested.
->>           * The latter cgroup bpf will not be able to use the optval.
->>           */
->>           ctx->optlen = 0;
->>          return 1;
->>      }
->>
->>      /* chage the ctx->optval and return to user space ... */
->> }
->>
->> The above case has been addressed in commit 00e74ae08638 ("bpf: Don't EFAULT 
->> for getsockopt with optval=NULL").
->>
->> To avoid other potential optname cases that may run into similar situation and 
->> requires the bpf prog work around it again like the above, it needs a way to 
->> track whether a bpf prog has changed the optval in runtime. If it is not 
->> changed, use the result from the kernel 
-> 
-> Can we add a field in bpf_sockopt uapi struct so bpf_prog can set it
-> if optval is changed?
+On Wed, Aug 16, 2023 at 11:35=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> w=
+rote:
+>
+> ping ?
 
-This new interface should work. If there is an old-existing prog staying with 
-the old interface (didn't set this bool but changed the optval) in the cgroup 
-prog array, it probably end up not improving anything also?
+Sorry for the delay. I've been on PTO.
 
-or the verifier can enforce setting this bool in runtime when writing to optval? 
-do not know how demanding the verifier change is. I am not sure if this would be 
-an overkill for the verifier.
+> On 8/3/2023 9:28 PM, Hou Tao wrote:
+> >
+> > On 8/3/2023 9:19 PM, Hou Tao wrote:
+> >> Hi,
+> >>
+> >> I am preparing for qp-trie v4, but I need some help on how to support
+> >> variable-sized key in bpf syscall. The implementation of qp-trie needs
+> >> to distinguish between dynptr key from bpf program and variable-sized
+> >> key from bpf syscall. In v3, I added a new dynptr type:
+> >> BPF_DYNPTR_TYPE_USER for variable-sized key from bpf syscall [0], so
+> >> both bpf program and bpf syscall will use the same type to represent t=
+he
+> >> variable-sized key, but Andrii thought ptr+size tuple was simpler and
+> >> would be enough for user APIs, so in v4, the type of key for bpf progr=
+am
+> >> and syscall will be different. One way to handle that is to add a new
+> >> parameter in .map_lookup_elem()/.map_delete_elem()/.map_update_elem() =
+to
+> >> tell whether the key comes from bpf program or syscall or introduce ne=
+w
+> >> APIs in bpf_map_ops for variable-sized key related syscall, but I thin=
+k
+> >> it will introduce too much churn. Considering that the size of
+> >> bpf_dynptr_kern is 8-bytes aligned, so I think maybe I could reuse the
+> >> lowest 1-bit of key pointer to tell qp-trie whether or not it is a
+> >> bpf_dynptr_kern or a variable-sized key pointer from syscall. For
+> >> bpf_dynptr_kern, because it is 8B-aligned, so its lowest bit must be 0=
+,
+> >> and for variable-sized key from syscall, I could allocated a 4B-aligne=
+d
+> >> pointer and setting the lowest bit as 1, so qp-trie can distinguish
+> >> between these two types of pointer. The question is that I am not sure
+> >> whether the idea above is a good one or not. Does it sound fragile ? O=
+r
+> >> is there any better way to handle that ?
 
-> 
-> struct bpf_sockopt {
->          __bpf_md_ptr(struct bpf_sock *, sk);
->          __bpf_md_ptr(void *, optval);
->          __bpf_md_ptr(void *, optval_end);
-> 
->          __s32   level;
->          __s32   optname;
->          __s32   optlen;
->          __s32   retval;
-> };
-> 
->> set/getsockopt. If reading/writing to optval is done through a kfunc, this can 
->> be tracked. The kfunc can also directly read/write the user memory in optval, 
->> avoid the pre-alloc kernel memory and the PAGE_SIZE limit but this is a minor 
->> point.
+Let's avoid bit hacks. They're not extensible and should be used
+only in cases where performance matters a lot or memory constraints are ext=
+reme.
 
+ptr/sz tuple from syscall side sounds the simplest.
+I agree with Andrii exposing the dynptr concept to user space
+and especially as part of syscall is unnecessary.
+We already have LPM as a precedent. Maybe we can do the same here?
+No need to add new sys_bpf commands.
+
+If the existing bpf_map_lookup_elem() helper doesn't fit qp-tree we can
+use new kfuncs from bpf prog and LPM-like map accessors from syscall.
 
