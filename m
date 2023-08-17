@@ -1,85 +1,157 @@
-Return-Path: <bpf+bounces-8023-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8024-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68C087800A8
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 00:03:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D80537800DD
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 00:12:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 916581C21449
-	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 22:03:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 926DD28224C
+	for <lists+bpf@lfdr.de>; Thu, 17 Aug 2023 22:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F299D1BEE2;
-	Thu, 17 Aug 2023 22:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63CFE1BEFE;
+	Thu, 17 Aug 2023 22:11:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848841BEE0
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 22:02:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2E08C433C7;
-	Thu, 17 Aug 2023 22:02:43 +0000 (UTC)
-Date: Fri, 18 Aug 2023 00:02:40 +0200
-From: Helge Deller <deller@gmx.de>
-To: bpf@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf/tests: Enhance output on error and fix typos
-Message-ID: <ZN6ZAAVoWZpsD1Jf@p100>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1751BEE6
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 22:11:42 +0000 (UTC)
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45F03A9A;
+	Thu, 17 Aug 2023 15:11:06 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bc6535027aso2427435ad.2;
+        Thu, 17 Aug 2023 15:11:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692310266; x=1692915066;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Pdn8ZDSU+rPV6ppPcgXHzQvQTsJ2JvZARdrVodBzFvI=;
+        b=Rp0zR69UQLoBt1v5mo2rSyxCYnSlBdPz/ZH8QiQAAsmDwbA2xg83lJQDc0a72waPZ7
+         k5DbDMcYA4vLUdrf1hNXNZEdBxfhDHqJSW6/9lDcEdJ/+nBMDjzWgxZ9eg90/hRt0nNV
+         ZzILV235Kj571f3X3GuvtjOmYE6qUR1h51NG2j+IE/eVn5o2DlzdZevjuhEuctjo2pMA
+         +qo2xDRnjrQJGXaiZgtHWPY0fcPCOtfJlEXwoZ6ayGngb1ooVkUNkb/8c2Grqltwbp2N
+         9zLGAVNGzaPcNEpQaLhQiDoKXrluMK5BEWhSktvT7aTT6P9EQHiPK4e+W5b9g/n2Qxzg
+         JZrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692310266; x=1692915066;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pdn8ZDSU+rPV6ppPcgXHzQvQTsJ2JvZARdrVodBzFvI=;
+        b=M+EPzZbKlt8pwadeB6+w5//Xslx/3BbtoiNeLOlR599Nxq9tyOUFRTltKpCLKW37//
+         qMsYicOiwZg1C4aePPneThvV/VVYXzoTKtlHaupxVBGfUzhw6h79dzU+z5m0NK123Cu+
+         OlWDuqizCtbTBUV/EkJOEBqRezCaS35rgt21GxNoR902Zs3O+jlj9nXdrzg9Mfro6FJn
+         9XtP/37h+QiSA4WfO9r485rOPnBOQeciTlXtAB1XNQ8k9u2gYYJgbnHpj1TwBmJqQ95D
+         caQUhSSnYdr9sXiDejpFzuD0Y4BbdHz2bu16OVphuAjoPu+kKOrQdhBdJqX3ncqyz/gc
+         KeJQ==
+X-Gm-Message-State: AOJu0Ywr6PuzQpRBas+qoT8OpWFbWFFB3BuhJZwR544DJ+WFIJCORuCl
+	3OWOovTmWTQlp5rpg7cM/z8=
+X-Google-Smtp-Source: AGHT+IH9CTQPxls/ckyoXnpryTKNCctuNR4NLN4qq2q5dsCI0N1/VKk6p46dpdmH3U1D7QCziG3l8Q==
+X-Received: by 2002:a17:902:bf47:b0:1be:f45c:bc38 with SMTP id u7-20020a170902bf4700b001bef45cbc38mr729196pls.2.1692310266001;
+        Thu, 17 Aug 2023 15:11:06 -0700 (PDT)
+Received: from macbook-pro-8.dhcp.thefacebook.com ([2620:10d:c090:500::4:8d88])
+        by smtp.gmail.com with ESMTPSA id l6-20020a170902d34600b001b8b26fa6c1sm267290plk.115.2023.08.17.15.11.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 15:11:05 -0700 (PDT)
+Date: Thu, 17 Aug 2023 15:11:02 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Quentin Monnet <quentin@isovalent.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	gyroidos@aisec.fraunhofer.de
+Subject: Re: [PATCH RFC 1/4] bpf: add cgroup device guard to flag a cgroup
+ device prog
+Message-ID: <20230817221102.6hexih3uki3jf6w3@macbook-pro-8.dhcp.thefacebook.com>
+References: <20230814-devcg_guard-v1-0-654971ab88b1@aisec.fraunhofer.de>
+ <20230814-devcg_guard-v1-1-654971ab88b1@aisec.fraunhofer.de>
+ <20230815-feigling-kopfsache-56c2d31275bd@brauner>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230815-feigling-kopfsache-56c2d31275bd@brauner>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-If a testcase returns a wrong (unexpected) value, print the expected and
-returned value in hex notation in addition to the decimal notation. This is
-very useful in tests which bit-shift hex values left or right and helped me
-a lot while developing the JIT compiler for the hppa architecture.
+On Tue, Aug 15, 2023 at 10:59:22AM +0200, Christian Brauner wrote:
+> On Mon, Aug 14, 2023 at 04:26:09PM +0200, Michael Weiß wrote:
+> > Introduce the BPF_F_CGROUP_DEVICE_GUARD flag for BPF_PROG_LOAD
+> > which allows to set a cgroup device program to be a device guard.
+> 
+> Currently we block access to devices unconditionally in may_open_dev().
+> Anything that's mounted by an unprivileged containers will get
+> SB_I_NODEV set in s_i_flags.
+> 
+> Then we currently mediate device access in:
+> 
+> * inode_permission()
+>   -> devcgroup_inode_permission()
+> * vfs_mknod()
+>   -> devcgroup_inode_mknod()
+> * blkdev_get_by_dev() // sget()/sget_fc(), other ways to open block devices and friends
+>   -> devcgroup_check_permission()
+> * drivers/gpu/drm/amd/amdkfd // weird restrictions on showing gpu info afaict
+>   -> devcgroup_check_permission()
+> 
+> All your new flag does is to bypass that SB_I_NODEV check afaict and let
+> it proceed to the devcgroup_*() checks for the vfs layer.
+> 
+> But I don't get the semantics yet.
+> Is that a flag which is set on BPF_PROG_TYPE_CGROUP_DEVICE programs or
+> is that a flag on random bpf programs? It looks like it would be the
+> latter but design-wise I would expect this to be a property of the
+> device program itself.
 
-Additionally fix two typos: dowrd -> dword, tall calls -> tail calls.
+Looks like patch 4 attemps to bypass usual permission checks with:
+@@ -3976,9 +3979,19 @@ int vfs_mknod(struct mnt_idmap *idmap, struct inode *dir,
+        if (error)
+                return error;
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+-       if ((S_ISCHR(mode) || S_ISBLK(mode)) && !is_whiteout &&
+-           !capable(CAP_MKNOD))
+-               return -EPERM;
++       /*
++        * In case of a device cgroup restirction allow mknod in user
++        * namespace. Otherwise just check global capability; thus,
++        * mknod is also disabled for user namespace other than the
++        * initial one.
++        */
++       if ((S_ISCHR(mode) || S_ISBLK(mode)) && !is_whiteout) {
++               if (devcgroup_task_is_guarded(current)) {
++                       if (!ns_capable(current_user_ns(), CAP_MKNOD))
++                               return -EPERM;
++               } else if (!capable(CAP_MKNOD))
++                       return -EPERM;
++       }
 
----
+which pretty much sounds like authoritative LSM that was brought up in the past
+and LSM folks didn't like it.
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index fa0833410ac1..2c01932524b3 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -596,8 +596,8 @@ static int __bpf_fill_alu_shift(struct bpf_test *self, u8 op,
- {
- 	static const s64 regs[] = {
- 		0x0123456789abcdefLL, /* dword > 0, word < 0 */
--		0xfedcba9876543210LL, /* dowrd < 0, word > 0 */
--		0xfedcba0198765432LL, /* dowrd < 0, word < 0 */
-+		0xfedcba9876543210LL, /* dword < 0, word > 0 */
-+		0xfedcba0198765432LL, /* dword < 0, word < 0 */
- 		0x0123458967abcdefLL, /* dword > 0, word > 0 */
- 	};
- 	int bits = alu32 ? 32 : 64;
-@@ -14577,8 +14577,9 @@ static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
- 		if (ret == test->test[i].result) {
- 			pr_cont("%lld ", duration);
- 		} else {
--			pr_cont("ret %d != %d ", ret,
--				test->test[i].result);
-+			s32 res = test->test[i].result;
-+			pr_cont("ret %d != %d (%#x != %#x)",
-+				ret, res, ret, res);
- 			err_cnt++;
- 		}
- 	}
-@@ -15055,7 +15056,7 @@ static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
- 	struct bpf_array *progs;
- 	int which, err;
- 
--	/* Allocate the table of programs to be used for tall calls */
-+	/* Allocate the table of programs to be used for tail calls */
- 	progs = kzalloc(struct_size(progs, ptrs, ntests + 1), GFP_KERNEL);
- 	if (!progs)
- 		goto out_nomem;
+If vfs folks are ok with this special bypass of permissions in vfs_mknod()
+we can talk about kernel->bpf api details.
+The way it's done with BPF_F_CGROUP_DEVICE_GUARD flag is definitely no go,
+but no point going into bpf details now until agreement on bypass is made.
 
