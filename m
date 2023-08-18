@@ -1,181 +1,108 @@
-Return-Path: <bpf+bounces-8042-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8043-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B04F278051D
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 06:34:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B80A78065C
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 09:30:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 611042822D4
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 04:34:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C38E1C21563
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 07:30:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF1A52F4B;
-	Fri, 18 Aug 2023 04:34:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90D5E1549E;
+	Fri, 18 Aug 2023 07:30:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A878B624
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 04:34:48 +0000 (UTC)
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE5930F3;
-	Thu, 17 Aug 2023 21:34:46 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b9dc1bff38so7109911fa.1;
-        Thu, 17 Aug 2023 21:34:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6415614F70
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 07:30:38 +0000 (UTC)
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9612830E6
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 00:30:35 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a640c23a62f3a-99bfcf4c814so73793666b.0
+        for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 00:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692333285; x=1692938085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5z5Rvs4S3mkFHAgJim+KMXVdycv/Q7lggQvlYexbi0w=;
-        b=L8wArv91zGw4G5kuSF84/L1VmS0cHLQuCBEsFDRej93w1REiEFTolJMJffGQ67obov
-         aXDnVRSn8BQ0+xnZO+7bLtqVWrK7VbDJ3sf79elZXAytTBIRV4xjHiAkCknbdj/mvtId
-         zj6seOOv22dAjHUvCZYHSGZv3BbcOfIDiChK6BVWBnkkvhX0InZtq9hyZ3/5guzXnkHJ
-         2p0sGuNr990k1xu/SnryM7tEF/TAbc2EE7Lb1P2VzRlPpT2hee0t++YBKa042o1O59wX
-         vNN3NZuWQHHtNGU9sixjUkSLHnSBVSF+Asa4ZZQK6jz42xIDYQrHiiOmG3qBPeZcuySV
-         G/iw==
+        d=ventanamicro.com; s=google; t=1692343834; x=1692948634;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nu5vRU+Ls6TvII7Q0Vdpj5U5jSrG/Osoam5r9jWleL8=;
+        b=lXKHqegRZrlMfU5dvc9HqWRFicSIRCIvlo/PdAjhqUmjfqRK1rz0adpwnl0+BLHqfn
+         1K1AfFwDMb9CKR/arhqO7ELjP5UK17fL588gxsJVLPksFDvVvh5zbclm7dk+Y5dEVbqD
+         OkY6nD7yxVXJPg1lvEf/rGgFusJJ0pa7IK6GkAHHqlau2FGtZQnSx3Y9bhkVG5LHelTL
+         Vc8Qh/4+p7lwdGJZXi6opSR1jAXmg6TSJDUhy8sMGYBSLCb9TOK1r67D48WAIlh45SbU
+         m2IUgviDZ0aQUlFQ5+AzfUuw5VTOrI0aRqhGBMnmuneYZxLM0jDLyR8cIbcAUnitT7q5
+         176A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692333285; x=1692938085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5z5Rvs4S3mkFHAgJim+KMXVdycv/Q7lggQvlYexbi0w=;
-        b=SpRatUPBwOdTsXuXXlAvZR6Oyw1jYXrJwEHqkDqkoufkTrrEoQwHf/REuFgQHyLI82
-         ZjQxHCsTuHpqpwWoKyCG7n08FDdpH4h4FaSM8L0+ZiuuuSIgJd3ickCuqnFjcZVYEVYi
-         OnwxrZr3vGollNk2u2O2PgDWXFv09TswrPSFNek8wOoGmmEabUgXCVtFEWKYaeZ/G8qK
-         phwYXz6SRrB/ySPKPwBhU5lCAdGsPjLv9AiXO65AuOiwRNbAY9zAkPBIVEfqps6Vo166
-         QsRv+kyMU+qLEXM58/1PrESyZHRb6ELSb3trAfS8mlER0FLORM5o6bMcmoWiqnB1wQ/Z
-         Q+yA==
-X-Gm-Message-State: AOJu0Yzy8wS/mxANDR2pLbw1ScJI8H11CaxjwTtf+LEdj5nWsj4CjFkW
-	S/l/aOhUQPnQN4THJQYzlGHROH1e2GXoPG6IMUU=
-X-Google-Smtp-Source: AGHT+IGBJ/ClrasU4Y9FmOc75yCtUr+JftemvoKrDGa/zxjVs6kSfpechQInE5cMJu99Y9Zda8HMK/zWynByCjwkTQI=
-X-Received: by 2002:a05:651c:14d:b0:2b6:ecdd:16cf with SMTP id
- c13-20020a05651c014d00b002b6ecdd16cfmr774844ljd.40.1692333284930; Thu, 17 Aug
- 2023 21:34:44 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692343834; x=1692948634;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nu5vRU+Ls6TvII7Q0Vdpj5U5jSrG/Osoam5r9jWleL8=;
+        b=jzbqz/08HZKIyS3CkemhI7ybPRBxCHQS7gyj7E22GVRsbLGQtDuqr/ZZiO9Jqq/3Xk
+         ftrS64UqkD1TZyAqPa0VHUmDRqijvUdyB5RaEVCPQoFyFyXWQIsXXZb0jrzWp6+rttqm
+         zI+Ph7UYeDKRa9YHgSCNJXMEkJYpxPG23p6YuOxSOcj0+BfreCtgpsp7ekhwWhPYtgmm
+         F4cApQ0Zw5Xk+N/57mbgh9e+NWt+CSAIxrYexlAHuY5D3+1tlXsSzq8b5Nnc7AgKndly
+         RgUJlLEFklWRtdmherPFQ9fgjqGQ54Hs8rW9YpOAKuV13lelB6TbM7eYh6aJHDUJ5PWG
+         4N3w==
+X-Gm-Message-State: AOJu0YxRDs+q6SQEcAg41ho4nmrm4Jx5CdDmATeBCCmFj377h9b+4QOt
+	bbheO9p9t1JAnVJVMDYBfoVVecjDdETeDJQlu1U4BjMa
+X-Google-Smtp-Source: AGHT+IEsV5M/B1UbYyCeo0WYS5DT7wyD++pmpVV6vSVnEq/FsuPf4jkdM8SM0RY0TL9ZO5reeCNthA==
+X-Received: by 2002:a17:906:10a:b0:99c:441:ffa with SMTP id 10-20020a170906010a00b0099c04410ffamr1431712eje.29.1692343834051;
+        Fri, 18 Aug 2023 00:30:34 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id k20-20020a1709063e1400b00992b71d8f19sm838014eji.133.2023.08.18.00.30.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 00:30:33 -0700 (PDT)
+Date: Fri, 18 Aug 2023 09:30:32 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Charlie Jenkins <charlie@rivosinc.com>, jrtc27@jrtc27.com, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	kvm-riscv@lists.infradead.org, bpf@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>, 
+	aou@eecs.berkeley.edu, peterz@infradead.org, jpoimboe@kernel.org, jbaron@akamai.com, 
+	rostedt@goodmis.org, Ard Biesheuvel <ardb@kernel.org>, anup@brainfault.org, 
+	atishp@atishpatra.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	bjorn@kernel.org, luke.r.nels@gmail.com, xi.wang@gmail.com, namcaov@gmail.com
+Subject: Re: [PATCH 00/10] RISC-V: Refactor instructions
+Message-ID: <20230818-63347af7195b7385c146778d@orel>
+References: <ZN5OJO/xOWUjLK2w@ghost>
+ <mhng-7d609dde-ad47-42ed-a47b-6206e719020a@palmer-ri-x1c9a>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
- <20230810081319.65668-2-zhouchuyi@bytedance.com> <CAADnVQK=7NWbRtJyRJAqy5JwZHRB7s7hCNeGqixjLa4vB609XQ@mail.gmail.com>
- <93627e45-dc67-fd31-ef43-a93f580b0d6e@bytedance.com> <CAADnVQKThM=vL7qpR05Ky6ReDrtuUxz_0SEZ+Bsc+E4=_A_u+g@mail.gmail.com>
- <a24fc514-38dd-c4bb-322f-08a6f46767f4@bytedance.com>
-In-Reply-To: <a24fc514-38dd-c4bb-322f-08a6f46767f4@bytedance.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 17 Aug 2023 21:34:33 -0700
-Message-ID: <CAADnVQKHvR1LUD+ZDX545ZVFea3fuHyuPWQERcsNtY7HNHUFtg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/5] mm, oom: Introduce bpf_oom_evaluate_task
-To: Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Muchun Song <muchun.song@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, wuyun.abel@bytedance.com, 
-	robin.lu@bytedance.com, Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mhng-7d609dde-ad47-42ed-a47b-6206e719020a@palmer-ri-x1c9a>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.6
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Aug 17, 2023 at 8:30=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance.com=
-> wrote:
->
-> Hello,
-> =E5=9C=A8 2023/8/17 11:22, Alexei Starovoitov =E5=86=99=E9=81=93:
-> > On Wed, Aug 16, 2023 at 7:51=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance=
-.com> wrote:
-> >>
-> >> Hello,
-> >>
-> >> =E5=9C=A8 2023/8/17 10:07, Alexei Starovoitov =E5=86=99=E9=81=93:
-> >>> On Thu, Aug 10, 2023 at 1:13=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedan=
-ce.com> wrote:
-> >>>>    static int oom_evaluate_task(struct task_struct *task, void *arg)
-> >>>>    {
-> >>>>           struct oom_control *oc =3D arg;
-> >>>> @@ -317,6 +339,26 @@ static int oom_evaluate_task(struct task_struct=
- *task, void *arg)
-> >>>>           if (!is_memcg_oom(oc) && !oom_cpuset_eligible(task, oc))
-> >>>>                   goto next;
-> >>>>
-> >>>> +       /*
-> >>>> +        * If task is allocating a lot of memory and has been marked=
- to be
-> >>>> +        * killed first if it triggers an oom, then select it.
-> >>>> +        */
-> >>>> +       if (oom_task_origin(task)) {
-> >>>> +               points =3D LONG_MAX;
-> >>>> +               goto select;
-> >>>> +       }
-> >>>> +
-> >>>> +       switch (bpf_oom_evaluate_task(task, oc)) {
-> >>>> +       case BPF_EVAL_ABORT:
-> >>>> +               goto abort; /* abort search process */
-> >>>> +       case BPF_EVAL_NEXT:
-> >>>> +               goto next; /* ignore the task */
-> >>>> +       case BPF_EVAL_SELECT:
-> >>>> +               goto select; /* select the task */
-> >>>> +       default:
-> >>>> +               break; /* No BPF policy */
-> >>>> +       }
-> >>>> +
-> >>>
-> >>> I think forcing bpf prog to look at every task is going to be limitin=
-g
-> >>> long term.
-> >>> It's more flexible to invoke bpf prog from out_of_memory()
-> >>> and if it doesn't choose a task then fallback to select_bad_process()=
-.
-> >>> I believe that's what Roman was proposing.
-> >>> bpf can choose to iterate memcg or it might have some side knowledge
-> >>> that there are processes that can be set as oc->chosen right away,
-> >>> so it can skip the iteration.
-> >>
-> >> IIUC, We may need some new bpf features if we want to iterating
-> >> tasks/memcg in BPF, sush as:
-> >> bpf_for_each_task
-> >> bpf_for_each_memcg
-> >> bpf_for_each_task_in_memcg
-> >> ...
-> >>
-> >> It seems we have some work to do first in the BPF side.
-> >> Will these iterating features be useful in other BPF scenario except O=
-OM
-> >> Policy?
-> >
-> > Yes.
-> > Use open coded iterators though.
-> > Like example in
-> > https://lore.kernel.org/all/20230810183513.684836-4-davemarchevsky@fb.c=
-om/
-> >
-> > bpf_for_each(task_vma, vma, task, 0) { ... }
-> > will safely iterate vma-s of the task.
-> > Similarly struct css_task_iter can be hidden inside bpf open coded iter=
-ator.
-> OK. I think the following APIs whould be useful and I am willing to
-> start with these in another bpf-next RFC patchset:
->
-> 1. bpf_for_each(task). Just like for_each_process(p) in kernel to
-> itearing all tasks in the system with rcu_read_lock().
->
-> 2. bpf_for_each(css_task, task, css). It works like
-> css_task_iter_{start, next, end} and would be used to iterating
-> tasks/threads under a css.
->
-> 3. bpf_for_each(descendant_css, css, root_css, {PRE, POST}). It works
-> like css_next_descendant_{pre, post} to iterating all descendant.
->
-> If you have better ideas or any advice, please let me know.
+On Thu, Aug 17, 2023 at 10:52:22AM -0700, Palmer Dabbelt wrote:
+> On Thu, 17 Aug 2023 09:43:16 PDT (-0700), Charlie Jenkins wrote:
+...
+> > It seems to me that it will be significantly more challenging to use
+> > riscv-opcodes than it would for people to just hand create the macros
+> > that they need.
+> 
+> Ya, riscv-opcodes is pretty custy.  We stopped using it elsewhere ages ago.
 
-Sounds great. Such 3 new iterators are unrelated to oom discussion and
-can be developed/landed in parallel.
-They will be useful in other bpf programs.
+Ah, pity I didn't know the history of it or I wouldn't have suggested it,
+wasting Charlie's time (sorry, Charlie!). So everywhere that needs
+encodings are manually scraping them from the PDFs? Or maybe we can write
+our own parser which converts adoc/wavedrom files[1] to Linux C?
+
+[1] https://github.com/riscv/riscv-isa-manual/tree/main/src/images/wavedrom
+
+Thanks,
+drew
 
