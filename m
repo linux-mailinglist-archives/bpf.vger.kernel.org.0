@@ -1,126 +1,207 @@
-Return-Path: <bpf+bounces-8074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E3ED780EED
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 17:19:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2697780EF8
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 17:20:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 462181C21656
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 15:19:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B83341C21644
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 15:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B60318C30;
-	Fri, 18 Aug 2023 15:18:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0FDA18C33;
+	Fri, 18 Aug 2023 15:20:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6AE18AF0
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 15:18:50 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C726A3C1F;
-	Fri, 18 Aug 2023 08:18:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=Yi7tE55S8lvTzPNErtn97ZNAyJLBYyaB731OWaTvH5A=; b=bx/pnPPqUct68o2lLc0sIngH+z
-	EvWdMRdqbVhCHouofWuSwMI2PerQoauwZgRVn2/tN78LV9uAue1hbD37m0byjuN3q/YBuObK4fumg
-	f5SujJ4qbfWfvkSvR38NW3wZNJltnDCNb43SYcLEtehgEZ/kXv97TZI+TJ82cHrkDh7brKCZXFzpB
-	dxOrlRjq8n6JZQsbiVracOvPCMrmdtktJSBQ85C88xnsWDxdZSV//4/pkV7WJeZSTR2oFI0j7Q6Qq
-	T5utzeH0KcXGdXtYLUaVeUwB2PDmMeH2MMziJph5ieRZ7YQExzqbXKmjC0dnPQU1LaMuM0bCELuqO
-	INdVafCg==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qX1FP-000Jda-LG; Fri, 18 Aug 2023 17:18:47 +0200
-Received: from [85.1.206.226] (helo=pc-102.home)
-	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1qX1FP-000Dr5-0P; Fri, 18 Aug 2023 17:18:47 +0200
-Subject: Re: [PATCH] bpf/tests: Enhance output on error and fix typos
-To: Helge Deller <deller@gmx.de>, bpf@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ZN6ZAAVoWZpsD1Jf@p100>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a0fe9ee2-1c16-98a9-6038-249fc5d1c55b@iogearbox.net>
-Date: Fri, 18 Aug 2023 17:18:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A41D18C23
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 15:20:09 +0000 (UTC)
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62BE4206
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 08:19:59 -0700 (PDT)
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-64a5bc52b0aso5361156d6.3
+        for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 08:19:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692371999; x=1692976799;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0TuopDLunLViGSEZBKISfsVFStzMT8GaGi+OETWU1E0=;
+        b=Lufi0PXQJ6uDN0FojPZ/3yBaoDwe++j+SIERrVGEpuhr3TwDXWrB9u3LFdBWWf8q7z
+         Z3tyuLoL06jsx2LuXAS6jRGkQwe6JgxZh1yo/GqwVDApVADdE/EmZBwZha+QyqxnLU7i
+         F4ehsSISlycXuj7j7mbTtKKjWMtFYPfdSTzABT4kYldjnJoiNu3cmvuCeg/4dfgdqSzC
+         CC6kKDY7vrfaxOvbFHXpkVO7ectjGMVAdTYzqEHksZX3Gbv2n8uGSKc94+okmSnD1t+5
+         fGhcej9g/Cno2+9goYfHmDnba2t9JEyYmtsTbWzACLlCZ1q1ZnmvAXH/xMFe/fRXWVLV
+         7sqQ==
+X-Gm-Message-State: AOJu0YzaI24t69aZ68La8qF0IaKebQnh65V8CGGJ4HFJayO5Mn3vzIIt
+	lnMttBru7xsZs58pN5EMZHsFLBqEYmsu/g==
+X-Google-Smtp-Source: AGHT+IFVZ80V0TmWo9obQwsXUOUZuzFZP9isoQZw1kHEFQzCZJtihO/HLhj0HaoKSfhaNEb44Lg01w==
+X-Received: by 2002:a0c:b2d2:0:b0:636:60c6:2034 with SMTP id d18-20020a0cb2d2000000b0063660c62034mr3227950qvf.38.1692371998671;
+        Fri, 18 Aug 2023 08:19:58 -0700 (PDT)
+Received: from maniforge ([2620:10d:c091:400::5:766])
+        by smtp.gmail.com with ESMTPSA id i8-20020a0cf388000000b0063d5d173a51sm752577qvk.50.2023.08.18.08.19.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 08:19:58 -0700 (PDT)
+Date: Fri, 18 Aug 2023 10:19:55 -0500
+From: David Vernet <void@manifault.com>
+To: Dave Marchevsky <davemarchevsky@fb.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next 1/2] libbpf: Support triple-underscore
+ flavors for kfunc relocation
+Message-ID: <20230818151955.GA14411@maniforge>
+References: <20230817225353.2570845-1-davemarchevsky@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZN6ZAAVoWZpsD1Jf@p100>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27004/Fri Aug 18 09:41:49 2023)
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230817225353.2570845-1-davemarchevsky@fb.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+	RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 8/18/23 12:02 AM, Helge Deller wrote:
-> If a testcase returns a wrong (unexpected) value, print the expected and
-> returned value in hex notation in addition to the decimal notation. This is
-> very useful in tests which bit-shift hex values left or right and helped me
-> a lot while developing the JIT compiler for the hppa architecture.
+On Thu, Aug 17, 2023 at 03:53:52PM -0700, Dave Marchevsky wrote:
+> The function signature of kfuncs can change at any time due to their
+> intentional lack of stability guarantees. As kfuncs become more widely
+> used, BPF program writers will need facilities to support calling
+> different versions of a kfunc from a single BPF object. Consider this
+> simplified example based on a real scenario we ran into at Meta:
 > 
-> Additionally fix two typos: dowrd -> dword, tall calls -> tail calls.
+>   /* initial kfunc signature */
+>   int some_kfunc(void *ptr)
 > 
-> Signed-off-by: Helge Deller <deller@gmx.de>
+>   /* Oops, we need to add some flag to modify behavior. No problem,
+>     change the kfunc. flags = 0 retains original behavior */
+>   int some_kfunc(void *ptr, long flags)
 > 
+> If the initial version of the kfunc is deployed on some portion of the
+> fleet and the new version on the rest, a fleetwide service that uses
+> some_kfunc will currently need to load different BPF programs depending
+> on which some_kfunc is available.
+> 
+> Luckily CO-RE provides a facility to solve a very similar problem,
+> struct definition changes, by allowing program writers to declare
+> my_struct___old and my_struct___new, with ___suffix being considered a
+> 'flavor' of the non-suffixed name and being ignored by
+> bpf_core_type_exists and similar calls.
+> 
+> This patch extends the 'flavor' facility to the kfunc extern
+> relocation process. BPF program writers can now declare
+> 
+>   extern int some_kfunc___old(void *ptr)
+>   extern int some_kfunc___new(void *ptr, int flags)
+> 
+> then test which version of the kfunc exists with bpf_ksym_exists.
+> Relocation and verifier's dead code elimination will work in concert as
+> expected, allowing this pattern:
+> 
+>   if (bpf_ksym_exists(some_kfunc___old))
+>     some_kfunc___old(ptr);
+>   else
+>     some_kfunc___new(ptr, 0);
+> 
+> Changelog:
+> 
+> v1 -> v2: https://lore.kernel.org/bpf/20230811201346.3240403-1-davemarchevsky@fb.com/
+>   * No need to check obj->externs[i].essent_name before zfree (Jiri)
+>   * Use strndup instead of replicating same functionality (Jiri)
+>   * Properly handle memory allocation falure (Stanislav)
+> 
+> v2 -> v3: https://lore.kernel.org/bpf/20230816165813.3718580-1-davemarchevsky@fb.com/
+>   * Move if (ext->is_weak) test above pr_warn to match existing similar behavior
+>     (David Vernet)
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+
+LGTM, thanks for working on this.
+
+Acked-by: David Vernet <void@manifault.com>
+
 > ---
+>  tools/lib/bpf/libbpf.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
 > 
-> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> index fa0833410ac1..2c01932524b3 100644
-> --- a/lib/test_bpf.c
-> +++ b/lib/test_bpf.c
-> @@ -596,8 +596,8 @@ static int __bpf_fill_alu_shift(struct bpf_test *self, u8 op,
->   {
->   	static const s64 regs[] = {
->   		0x0123456789abcdefLL, /* dword > 0, word < 0 */
-> -		0xfedcba9876543210LL, /* dowrd < 0, word > 0 */
-> -		0xfedcba0198765432LL, /* dowrd < 0, word < 0 */
-> +		0xfedcba9876543210LL, /* dword < 0, word > 0 */
-> +		0xfedcba0198765432LL, /* dword < 0, word < 0 */
->   		0x0123458967abcdefLL, /* dword > 0, word > 0 */
->   	};
->   	int bits = alu32 ? 32 : 64;
-> @@ -14577,8 +14577,9 @@ static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
->   		if (ret == test->test[i].result) {
->   			pr_cont("%lld ", duration);
->   		} else {
-> -			pr_cont("ret %d != %d ", ret,
-> -				test->test[i].result);
-> +			s32 res = test->test[i].result;
-
-Added a newline in here while applying to bpf-next, thanks for the patch!
-
-> +			pr_cont("ret %d != %d (%#x != %#x)",
-> +				ret, res, ret, res);
->   			err_cnt++;
->   		}
->   	}
-> @@ -15055,7 +15056,7 @@ static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
->   	struct bpf_array *progs;
->   	int which, err;
->   
-> -	/* Allocate the table of programs to be used for tall calls */
-> +	/* Allocate the table of programs to be used for tail calls */
->   	progs = kzalloc(struct_size(progs, ptrs, ntests + 1), GFP_KERNEL);
->   	if (!progs)
->   		goto out_nomem;
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index b14a4376a86e..2178b28878e2 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -550,6 +550,7 @@ struct extern_desc {
+>  	int btf_id;
+>  	int sec_btf_id;
+>  	const char *name;
+> +	char *essent_name;
+>  	bool is_set;
+>  	bool is_weak;
+>  	union {
+> @@ -3770,6 +3771,7 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+>  	struct extern_desc *ext;
+>  	int i, n, off, dummy_var_btf_id;
+>  	const char *ext_name, *sec_name;
+> +	size_t ext_essent_len;
+>  	Elf_Scn *scn;
+>  	Elf64_Shdr *sh;
+>  
+> @@ -3819,6 +3821,14 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+>  		ext->sym_idx = i;
+>  		ext->is_weak = ELF64_ST_BIND(sym->st_info) == STB_WEAK;
+>  
+> +		ext_essent_len = bpf_core_essential_name_len(ext->name);
+> +		ext->essent_name = NULL;
+> +		if (ext_essent_len != strlen(ext->name)) {
+> +			ext->essent_name = strndup(ext->name, ext_essent_len);
+> +			if (!ext->essent_name)
+> +				return -ENOMEM;
+> +		}
+> +
+>  		ext->sec_btf_id = find_extern_sec_btf_id(obj->btf, ext->btf_id);
+>  		if (ext->sec_btf_id <= 0) {
+>  			pr_warn("failed to find BTF for extern '%s' [%d] section: %d\n",
+> @@ -7624,7 +7634,8 @@ static int bpf_object__resolve_ksym_func_btf_id(struct bpf_object *obj,
+>  
+>  	local_func_proto_id = ext->ksym.type_id;
+>  
+> -	kfunc_id = find_ksym_btf_id(obj, ext->name, BTF_KIND_FUNC, &kern_btf, &mod_btf);
+> +	kfunc_id = find_ksym_btf_id(obj, ext->essent_name ?: ext->name, BTF_KIND_FUNC, &kern_btf,
+> +				    &mod_btf);
+>  	if (kfunc_id < 0) {
+>  		if (kfunc_id == -ESRCH && ext->is_weak)
+>  			return 0;
+> @@ -7639,6 +7650,9 @@ static int bpf_object__resolve_ksym_func_btf_id(struct bpf_object *obj,
+>  	ret = bpf_core_types_are_compat(obj->btf, local_func_proto_id,
+>  					kern_btf, kfunc_proto_id);
+>  	if (ret <= 0) {
+> +		if (ext->is_weak)
+> +			return 0;
+> +
+>  		pr_warn("extern (func ksym) '%s': func_proto [%d] incompatible with %s [%d]\n",
+>  			ext->name, local_func_proto_id,
+>  			mod_btf ? mod_btf->name : "vmlinux", kfunc_proto_id);
+> @@ -8370,6 +8384,10 @@ void bpf_object__close(struct bpf_object *obj)
+>  
+>  	zfree(&obj->btf_custom_path);
+>  	zfree(&obj->kconfig);
+> +
+> +	for (i = 0; i < obj->nr_extern; i++)
+> +		zfree(&obj->externs[i].essent_name);
+> +
+>  	zfree(&obj->externs);
+>  	obj->nr_extern = 0;
+>  
+> -- 
+> 2.34.1
 > 
-
+> 
 
