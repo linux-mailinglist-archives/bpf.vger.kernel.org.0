@@ -1,435 +1,173 @@
-Return-Path: <bpf+bounces-8040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C6B78041B
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 05:01:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDA1F7804B5
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 05:32:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68F411C21520
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 03:01:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86788282302
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 03:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24F213FE1;
-	Fri, 18 Aug 2023 02:58:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F429100D0;
+	Fri, 18 Aug 2023 03:32:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C5013AD8
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 02:58:24 +0000 (UTC)
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E292D4A
-	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 19:58:21 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-76d7b5e374fso29408385a.2
-        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 19:58:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33FF68BE2
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 03:32:10 +0000 (UTC)
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013EE3C24
+	for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 20:31:32 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-68879c7f5easo414961b3a.1
+        for <bpf@vger.kernel.org>; Thu, 17 Aug 2023 20:31:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1692327500; x=1692932300;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vjV6aNUTuuSNDwStLeDVY3FrysRgluVjJM7kylN+jBw=;
-        b=sXJnlisFGWEESfGIPFNx+eHq1c5hVs/cGoCgH5xBTYzrpZsiO0vsuKvP2SMTbRppn7
-         EswOXQhXHAxVsYPB7xC3vWA42ON3GBBGEXlR5bs++L0yT4czuZNM+OFZcY8T/luV03RP
-         TwHd3RdYEE8E+kiK/gmZ/3DjxNj69idlvv+9U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692327500; x=1692932300;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1692329447; x=1692934247;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vjV6aNUTuuSNDwStLeDVY3FrysRgluVjJM7kylN+jBw=;
-        b=C+U1eLu6pbN26pGVVsFfSDR0jEsQjLoAhz4zM9QiDoXsSqQVhKXf0exvKNcW8rx8Ke
-         sgunC7UF4R96OGK/M3S2/pqwvljCiI/IQj2iecD2Olxr7RRvl+sHuk/oex6pIQ2y3jxq
-         mE9HRZiRj9qeocMuhEmANf1QJREaKdWbAl5oHk7wrv64fGhFKaPjJyTKmNq7Iz96LJ6S
-         NZwtDmlW9SjN/crpDC9R7XNpMFryALL0ZpnpwRcTDnrZzz38X/zpfau9aYeAqRiOuFoA
-         Epx7PzQJIcUg5YqYY+BZQ+u6kbflH0nYgbPfDhyUb9S3bRQMTsiGDODFpbeuRxc3SaH0
-         R/0w==
-X-Gm-Message-State: AOJu0YxZDPVfq9Yi8eERxRI0V8oFgk8jYk9QVlrw/8fDq1wZJ1XxkopG
-	HFAEzBJhpoScILT9kUbCYhUB5Yb3FMbC14CdGXw7hA==
-X-Google-Smtp-Source: AGHT+IGay1kP8z+wNAb7o3gQ/QH6D47COE6RTPCNK1BWQrV4YyWrBxEw/mIWWzc3g+qDltcs5yZrIg==
-X-Received: by 2002:a05:620a:471f:b0:767:2bbc:fcc7 with SMTP id bs31-20020a05620a471f00b007672bbcfcc7mr1724541qkb.14.1692327500437;
-        Thu, 17 Aug 2023 19:58:20 -0700 (PDT)
-Received: from debian.debian ([140.141.197.139])
-        by smtp.gmail.com with ESMTPSA id h7-20020a05620a13e700b0076cb3690ae7sm238671qkl.68.2023.08.17.19.58.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 19:58:19 -0700 (PDT)
-Date: Thu, 17 Aug 2023 19:58:18 -0700
-From: Yan Zhai <yan@cloudflare.com>
-To: bpf@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	David Ahern <dsahern@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Yan Zhai <yan@cloudflare.com>, Thomas Graf <tgraf@suug.ch>,
-	Jordan Griege <jgriege@cloudflare.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v6 bpf 4/4] selftests/bpf: add lwt_xmit tests for BPF_REROUTE
-Message-ID: <62c8ddc1e924269dcf80d2e8af1a1e632cee0b3a.1692326837.git.yan@cloudflare.com>
-References: <cover.1692326837.git.yan@cloudflare.com>
+        bh=SGmVVVsqzwRWxRE6503FAnRSrIWd/bwYCLw204IJRkI=;
+        b=d3KZf/LTftZ96BtzQJ7G5aMZvlBFyFZufZy8+97TTPZ51ULQXtMq7+opwQWnmmFtOB
+         CkBqM+KhcVBVcBiB23aUe4zidvc6AD/hvufabpiZdT90ibSHL60mQsIRImfqeQKvOjsR
+         492Q4crEEjhHyZpoSVCZFAsWNfMs8L21n1LMdPl4RV6WaextVP29f3SlrKVyXULJaUCm
+         aZ9p+6uoLkT8RCnNw5EKP+DA4R9o4wgPEuEvqGSKJIJyDBWW7jXsSwOV28s8tqeDpjMb
+         vhNEJpoRCceWDokCh+/7SllUK+aHLUZ5SsaJob7b5o1EkKjz6XGeDFuz1OsI9vEHOEUQ
+         IJEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692329447; x=1692934247;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=SGmVVVsqzwRWxRE6503FAnRSrIWd/bwYCLw204IJRkI=;
+        b=SBVaFrwlvwkGNq45DAHwV5H/MDmfRM0fJwXfLjw9CFWtijtGBAkLo15M2pa01fIFex
+         CEtiZqmrkkQudUGGuul92yROOciK4jDuQs+r3nHIc4GdGruh0M0Y77Fps5AqylrA0WhA
+         Uq2qFBry8SvOA7HLWnIT35qudLMb4rQNau7SLmoahVKk4yLqJB4L7KeDxzcbXsNSLKkV
+         suwI0ZB35iNBwSgJmnsY2s3oqh+sygKQzQpyfG/agbddSztm5Wh2cgpiJN2OgIvJHMnr
+         LJRyuUePcprokFWg/WpYpMnimp15vEKAJ/xxHY5e3GWMLgQp/I6FnVdEpB/gF1pEKqG1
+         JSyA==
+X-Gm-Message-State: AOJu0YyuLVpHNQ4PWL0vA0JgfTaTkyYadv4aeP5hVmYNPvqaYV7bsMpg
+	q2iPIepQke8FknU2HKfDS0f8yA==
+X-Google-Smtp-Source: AGHT+IFjvYdd1gHzy3Dm/9XxgsdE9J5GYxTWj/2+yaApFf7YiPL2XuxffQUZO/c7Y93aoEgllYbq4A==
+X-Received: by 2002:a05:6a00:812:b0:687:5415:7282 with SMTP id m18-20020a056a00081200b0068754157282mr1520138pfk.23.1692329447618;
+        Thu, 17 Aug 2023 20:30:47 -0700 (PDT)
+Received: from [10.255.89.48] ([139.177.225.233])
+        by smtp.gmail.com with ESMTPSA id a21-20020aa780d5000000b00689f10adef9sm495696pfn.67.2023.08.17.20.30.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Aug 2023 20:30:47 -0700 (PDT)
+Message-ID: <a24fc514-38dd-c4bb-322f-08a6f46767f4@bytedance.com>
+Date: Fri, 18 Aug 2023 11:30:39 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1692326837.git.yan@cloudflare.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [RFC PATCH v2 1/5] mm, oom: Introduce bpf_oom_evaluate_task
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Muchun Song <muchun.song@linux.dev>,
+ bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ wuyun.abel@bytedance.com, robin.lu@bytedance.com,
+ Michal Hocko <mhocko@suse.com>
+References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
+ <20230810081319.65668-2-zhouchuyi@bytedance.com>
+ <CAADnVQK=7NWbRtJyRJAqy5JwZHRB7s7hCNeGqixjLa4vB609XQ@mail.gmail.com>
+ <93627e45-dc67-fd31-ef43-a93f580b0d6e@bytedance.com>
+ <CAADnVQKThM=vL7qpR05Ky6ReDrtuUxz_0SEZ+Bsc+E4=_A_u+g@mail.gmail.com>
+From: Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <CAADnVQKThM=vL7qpR05Ky6ReDrtuUxz_0SEZ+Bsc+E4=_A_u+g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-There is no lwt test case for BPF_REROUTE yet. Add test cases for both
-normal and abnormal situations. The abnormal situation is set up with an
-fq qdisc on the reroute target device. Without proper fixes, overflow
-this qdisc queue limit (to trigger a drop) would panic the kernel.
+Hello,
+在 2023/8/17 11:22, Alexei Starovoitov 写道:
+> On Wed, Aug 16, 2023 at 7:51 PM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
+>>
+>> Hello,
+>>
+>> 在 2023/8/17 10:07, Alexei Starovoitov 写道:
+>>> On Thu, Aug 10, 2023 at 1:13 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
+>>>>    static int oom_evaluate_task(struct task_struct *task, void *arg)
+>>>>    {
+>>>>           struct oom_control *oc = arg;
+>>>> @@ -317,6 +339,26 @@ static int oom_evaluate_task(struct task_struct *task, void *arg)
+>>>>           if (!is_memcg_oom(oc) && !oom_cpuset_eligible(task, oc))
+>>>>                   goto next;
+>>>>
+>>>> +       /*
+>>>> +        * If task is allocating a lot of memory and has been marked to be
+>>>> +        * killed first if it triggers an oom, then select it.
+>>>> +        */
+>>>> +       if (oom_task_origin(task)) {
+>>>> +               points = LONG_MAX;
+>>>> +               goto select;
+>>>> +       }
+>>>> +
+>>>> +       switch (bpf_oom_evaluate_task(task, oc)) {
+>>>> +       case BPF_EVAL_ABORT:
+>>>> +               goto abort; /* abort search process */
+>>>> +       case BPF_EVAL_NEXT:
+>>>> +               goto next; /* ignore the task */
+>>>> +       case BPF_EVAL_SELECT:
+>>>> +               goto select; /* select the task */
+>>>> +       default:
+>>>> +               break; /* No BPF policy */
+>>>> +       }
+>>>> +
+>>>
+>>> I think forcing bpf prog to look at every task is going to be limiting
+>>> long term.
+>>> It's more flexible to invoke bpf prog from out_of_memory()
+>>> and if it doesn't choose a task then fallback to select_bad_process().
+>>> I believe that's what Roman was proposing.
+>>> bpf can choose to iterate memcg or it might have some side knowledge
+>>> that there are processes that can be set as oc->chosen right away,
+>>> so it can skip the iteration.
+>>
+>> IIUC, We may need some new bpf features if we want to iterating
+>> tasks/memcg in BPF, sush as:
+>> bpf_for_each_task
+>> bpf_for_each_memcg
+>> bpf_for_each_task_in_memcg
+>> ...
+>>
+>> It seems we have some work to do first in the BPF side.
+>> Will these iterating features be useful in other BPF scenario except OOM
+>> Policy?
+> 
+> Yes.
+> Use open coded iterators though.
+> Like example in
+> https://lore.kernel.org/all/20230810183513.684836-4-davemarchevsky@fb.com/
+> 
+> bpf_for_each(task_vma, vma, task, 0) { ... }
+> will safely iterate vma-s of the task.
+> Similarly struct css_task_iter can be hidden inside bpf open coded iterator.
+OK. I think the following APIs whould be useful and I am willing to 
+start with these in another bpf-next RFC patchset:
 
-Signed-off-by: Yan Zhai <yan@cloudflare.com>
----
- tools/testing/selftests/bpf/config            |   1 +
- .../selftests/bpf/prog_tests/lwt_reroute.c    | 262 ++++++++++++++++++
- .../selftests/bpf/progs/test_lwt_reroute.c    |  36 +++
- 3 files changed, 299 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/lwt_reroute.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_lwt_reroute.c
+1. bpf_for_each(task). Just like for_each_process(p) in kernel to 
+itearing all tasks in the system with rcu_read_lock().
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index fa083f1e5b34..1c7584e8dd9e 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -60,6 +60,7 @@ CONFIG_NET_IPGRE=y
- CONFIG_NET_IPGRE_DEMUX=y
- CONFIG_NET_IPIP=y
- CONFIG_NET_MPLS_GSO=y
-+CONFIG_NET_SCH_FQ=y
- CONFIG_NET_SCH_INGRESS=y
- CONFIG_NET_SCHED=y
- CONFIG_NETDEVSIM=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/lwt_reroute.c b/tools/testing/selftests/bpf/prog_tests/lwt_reroute.c
-new file mode 100644
-index 000000000000..f4bb2d5fcae0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/lwt_reroute.c
-@@ -0,0 +1,262 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-+
-+/*
-+ * Test suite of lwt BPF programs that reroutes packets
-+ *   The file tests focus not only if these programs work as expected normally,
-+ *   but also if they can handle abnormal situations gracefully. This test
-+ *   suite currently only covers lwt_xmit hook. lwt_in tests have not been
-+ *   implemented.
-+ *
-+ * WARNING
-+ * -------
-+ *  This test suite can crash the kernel, thus should be run in a VM.
-+ *
-+ * Setup:
-+ * ---------
-+ *  all tests are performed in a single netns. A lwt encap route is setup for
-+ *  each subtest:
-+ *
-+ *    ip route add 10.0.0.0/24 encap bpf xmit <obj> sec "<section_N>" dev link_err
-+ *
-+ *  Here <obj> is statically defined to test_lwt_reroute.bpf.o, and it contains
-+ *  a single test program entry. This program sets packet mark by last byte of
-+ *  the IPv4 daddr. For example, a packet going to 1.2.3.4 will receive a skb
-+ *  mark 4. A packet will only be marked once, and IP x.x.x.0 will be skipped
-+ *  to avoid route loop. We didn't use generated BPF skeleton since the
-+ *  attachment for lwt programs are not supported by libbpf yet.
-+ *
-+ *  The test program will bring up a tun device, and sets up the following
-+ *  routes:
-+ *
-+ *    ip rule add pref 100 from all fwmark <tun_index> lookup 100
-+ *    ip route add table 100 default dev tun0
-+ *
-+ *  For normal testing, a ping command is running in the test netns:
-+ *
-+ *    ping 10.0.0.<tun_index> -c 1 -w 1 -s 100
-+ *
-+ *  For abnormal testing, fq is used as the qdisc of the tun device. Then a UDP
-+ *  socket will try to overflow the fq queue and trigger qdisc drop error.
-+ *
-+ * Scenarios:
-+ * --------------------------------
-+ *  1. Reroute to a running tun device
-+ *  2. Reroute to a device where qdisc drop
-+ *
-+ *  For case 1, ping packets should be received by the tun device.
-+ *
-+ *  For case 2, force UDP packets to overflow fq limit. As long as kernel
-+ *  is not crashed, it is considered successful.
-+ */
-+#include "lwt_helpers.h"
-+#include "network_helpers.h"
-+#include <linux/net_tstamp.h>
-+
-+#define BPF_OBJECT            "test_lwt_reroute.bpf.o"
-+#define LOCAL_SRC             "10.0.0.1"
-+#define TEST_CIDR             "10.0.0.0/24"
-+#define XMIT_HOOK             "xmit"
-+#define XMIT_SECTION          "lwt_xmit"
-+#define NSEC_PER_SEC          1000000000ULL
-+
-+/* send a ping to be rerouted to the target device */
-+static void ping_once(const char *ip)
-+{
-+	/* We won't get a reply. Don't fail here */
-+	SYS_NOFAIL("ping %s -c1 -W1 -s %d >/dev/null 2>&1",
-+		   ip, ICMP_PAYLOAD_SIZE);
-+}
-+
-+/* Send snd_target UDP packets to overflow the fq queue and trigger qdisc drop
-+ * error. This is done via TX tstamp to force buffering delayed packets.
-+ */
-+static int overflow_fq(int snd_target, const char *target_ip)
-+{
-+	struct sockaddr_in addr = {
-+		.sin_family = AF_INET,
-+		.sin_port = htons(1234),
-+	};
-+
-+	char data_buf[8]; /* only #pkts matter, so use a random small buffer */
-+	char control_buf[CMSG_SPACE(sizeof(uint64_t))];
-+	struct iovec iov = {
-+		.iov_base = data_buf,
-+		.iov_len = sizeof(data_buf),
-+	};
-+	int err = -1;
-+	int s = -1;
-+	struct sock_txtime txtime_on = {
-+		.clockid = CLOCK_MONOTONIC,
-+		.flags = 0,
-+	};
-+	struct msghdr msg = {
-+		.msg_name = &addr,
-+		.msg_namelen = sizeof(addr),
-+		.msg_control = control_buf,
-+		.msg_controllen = sizeof(control_buf),
-+		.msg_iovlen = 1,
-+		.msg_iov = &iov,
-+	};
-+	struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
-+
-+	memset(data_buf, 0, sizeof(data_buf));
-+
-+	s = socket(AF_INET, SOCK_DGRAM, 0);
-+	if (!ASSERT_GE(s, 0, "socket"))
-+		goto out;
-+
-+	err = setsockopt(s, SOL_SOCKET, SO_TXTIME, &txtime_on, sizeof(txtime_on));
-+	if (!ASSERT_OK(err, "setsockopt(SO_TXTIME)"))
-+		goto out;
-+
-+	err = inet_pton(AF_INET, target_ip, &addr.sin_addr);
-+	if (!ASSERT_EQ(err, 1, "inet_pton"))
-+		goto out;
-+
-+	while (snd_target > 0) {
-+		struct timespec now;
-+
-+		memset(control_buf, 0, sizeof(control_buf));
-+		cmsg->cmsg_type = SCM_TXTIME;
-+		cmsg->cmsg_level = SOL_SOCKET;
-+		cmsg->cmsg_len = CMSG_LEN(sizeof(uint64_t));
-+
-+		err = clock_gettime(CLOCK_MONOTONIC, &now);
-+		if (!ASSERT_OK(err, "clock_gettime(CLOCK_MONOTONIC)")) {
-+			err = -1;
-+			goto out;
-+		}
-+
-+		*(uint64_t *)CMSG_DATA(cmsg) = (now.tv_nsec + 1) * NSEC_PER_SEC +
-+					       now.tv_nsec;
-+
-+		/* we will intentionally send more than fq limit, so ignore
-+		 * the error here.
-+		 */
-+		sendmsg(s, &msg, MSG_NOSIGNAL);
-+		snd_target--;
-+	}
-+
-+	/* no kernel crash so far is considered success */
-+	err = 0;
-+
-+out:
-+	if (s >= 0)
-+		close(s);
-+
-+	return err;
-+}
-+
-+static int setup(const char *tun_dev)
-+{
-+	int target_index = -1;
-+	int tap_fd = -1;
-+
-+	tap_fd = open_tuntap(tun_dev, false);
-+	if (!ASSERT_GE(tap_fd, 0, "open_tun"))
-+		return -1;
-+
-+	target_index = if_nametoindex(tun_dev);
-+	if (!ASSERT_GE(target_index, 0, "if_nametoindex"))
-+		return -1;
-+
-+	SYS(fail, "ip link add link_err type dummy");
-+	SYS(fail, "ip link set lo up");
-+	SYS(fail, "ip addr add dev lo " LOCAL_SRC "/32");
-+	SYS(fail, "ip link set link_err up");
-+	SYS(fail, "ip link set %s up", tun_dev);
-+
-+	SYS(fail, "ip route add %s dev link_err encap bpf xmit obj %s sec lwt_xmit",
-+	    TEST_CIDR, BPF_OBJECT);
-+
-+	SYS(fail, "ip rule add pref 100 from all fwmark %d lookup 100",
-+	    target_index);
-+	SYS(fail, "ip route add t 100 default dev %s", tun_dev);
-+
-+	return tap_fd;
-+
-+fail:
-+	if (tap_fd >= 0)
-+		close(tap_fd);
-+	return -1;
-+}
-+
-+static void test_lwt_reroute_normal_xmit(void)
-+{
-+	const char *tun_dev = "tun0";
-+	int tun_fd = -1;
-+	int ifindex = -1;
-+	char ip[256];
-+	struct timeval timeo = {
-+		.tv_sec = 0,
-+		.tv_usec = 250000,
-+	};
-+
-+	tun_fd = setup(tun_dev);
-+	if (!ASSERT_GE(tun_fd, 0, "setup_reroute"))
-+		return;
-+
-+	ifindex = if_nametoindex(tun_dev);
-+	if (!ASSERT_GE(ifindex, 0, "if_nametoindex"))
-+		return;
-+
-+	snprintf(ip, 256, "10.0.0.%d", ifindex);
-+
-+	/* ping packets should be received by the tun device */
-+	ping_once(ip);
-+
-+	if (!ASSERT_EQ(wait_for_packet(tun_fd, __expect_icmp_ipv4, &timeo), 1,
-+		       "wait_for_packet"))
-+		log_err("%s xmit", __func__);
-+}
-+
-+/*
-+ * Test the failure case when the skb is dropped at the qdisc. This is a
-+ * regression prevention at the xmit hook only.
-+ */
-+static void test_lwt_reroute_qdisc_dropped(void)
-+{
-+	const char *tun_dev = "tun0";
-+	int tun_fd = -1;
-+	int ifindex = -1;
-+	char ip[256];
-+
-+	tun_fd = setup(tun_dev);
-+	if (!ASSERT_GE(tun_fd, 0, "setup_reroute"))
-+		goto fail;
-+
-+	SYS(fail, "tc qdisc replace dev %s root fq limit 5 flow_limit 5", tun_dev);
-+
-+	ifindex = if_nametoindex(tun_dev);
-+	if (!ASSERT_GE(ifindex, 0, "if_nametoindex"))
-+		return;
-+
-+	snprintf(ip, 256, "10.0.0.%d", ifindex);
-+	ASSERT_EQ(overflow_fq(10, ip), 0, "overflow_fq");
-+
-+fail:
-+	if (tun_fd >= 0)
-+		close(tun_fd);
-+}
-+
-+static void *test_lwt_reroute_run(void *arg)
-+{
-+	netns_delete();
-+	RUN_TEST(lwt_reroute_normal_xmit);
-+	RUN_TEST(lwt_reroute_qdisc_dropped);
-+	return NULL;
-+}
-+
-+void test_lwt_reroute(void)
-+{
-+	pthread_t test_thread;
-+	int err;
-+
-+	/* Run the tests in their own thread to isolate the namespace changes
-+	 * so they do not affect the environment of other tests.
-+	 * (specifically needed because of unshare(CLONE_NEWNS) in open_netns())
-+	 */
-+	err = pthread_create(&test_thread, NULL, &test_lwt_reroute_run, NULL);
-+	if (ASSERT_OK(err, "pthread_create"))
-+		ASSERT_OK(pthread_join(test_thread, NULL), "pthread_join");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_lwt_reroute.c b/tools/testing/selftests/bpf/progs/test_lwt_reroute.c
-new file mode 100644
-index 000000000000..1dc64351929c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_lwt_reroute.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <inttypes.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+#include <linux/if_ether.h>
-+#include <linux/ip.h>
-+
-+/* This function extracts the last byte of the daddr, and uses it
-+ * as output dev index.
-+ */
-+SEC("lwt_xmit")
-+int test_lwt_reroute(struct __sk_buff *skb)
-+{
-+	struct iphdr *iph = NULL;
-+	void *start = (void *)(long)skb->data;
-+	void *end = (void *)(long)skb->data_end;
-+
-+	/* set mark at most once */
-+	if (skb->mark != 0)
-+		return BPF_OK;
-+
-+	if (start + sizeof(*iph) > end)
-+		return BPF_DROP;
-+
-+	iph = (struct iphdr *)start;
-+	skb->mark = bpf_ntohl(iph->daddr) & 0xff;
-+
-+	/* do not reroute x.x.x.0 packets */
-+	if (skb->mark == 0)
-+		return BPF_OK;
-+
-+	return BPF_LWT_REROUTE;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.30.2
+2. bpf_for_each(css_task, task, css). It works like 
+css_task_iter_{start, next, end} and would be used to iterating 
+tasks/threads under a css.
 
+3. bpf_for_each(descendant_css, css, root_css, {PRE, POST}). It works 
+like css_next_descendant_{pre, post} to iterating all descendant.
 
+If you have better ideas or any advice, please let me know.
+Thanks.
 
