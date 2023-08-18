@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-8075-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8076-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2697780EF8
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 17:20:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77CF4780EFB
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 17:20:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B83341C21644
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 15:20:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A1301C20E11
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 15:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0FDA18C33;
-	Fri, 18 Aug 2023 15:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2004918C34;
+	Fri, 18 Aug 2023 15:20:47 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A41D18C23
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 15:20:09 +0000 (UTC)
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62BE4206
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 08:19:59 -0700 (PDT)
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-64a5bc52b0aso5361156d6.3
-        for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 08:19:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6D8E18C1E
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 15:20:46 +0000 (UTC)
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C522026BB
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 08:20:45 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-76d83954c40so65294485a.1
+        for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 08:20:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692371999; x=1692976799;
+        d=1e100.net; s=20221208; t=1692372044; x=1692976844;
         h=user-agent:in-reply-to:content-disposition:mime-version:references
          :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0TuopDLunLViGSEZBKISfsVFStzMT8GaGi+OETWU1E0=;
-        b=Lufi0PXQJ6uDN0FojPZ/3yBaoDwe++j+SIERrVGEpuhr3TwDXWrB9u3LFdBWWf8q7z
-         Z3tyuLoL06jsx2LuXAS6jRGkQwe6JgxZh1yo/GqwVDApVADdE/EmZBwZha+QyqxnLU7i
-         F4ehsSISlycXuj7j7mbTtKKjWMtFYPfdSTzABT4kYldjnJoiNu3cmvuCeg/4dfgdqSzC
-         CC6kKDY7vrfaxOvbFHXpkVO7ectjGMVAdTYzqEHksZX3Gbv2n8uGSKc94+okmSnD1t+5
-         fGhcej9g/Cno2+9goYfHmDnba2t9JEyYmtsTbWzACLlCZ1q1ZnmvAXH/xMFe/fRXWVLV
-         7sqQ==
-X-Gm-Message-State: AOJu0YzaI24t69aZ68La8qF0IaKebQnh65V8CGGJ4HFJayO5Mn3vzIIt
-	lnMttBru7xsZs58pN5EMZHsFLBqEYmsu/g==
-X-Google-Smtp-Source: AGHT+IFVZ80V0TmWo9obQwsXUOUZuzFZP9isoQZw1kHEFQzCZJtihO/HLhj0HaoKSfhaNEb44Lg01w==
-X-Received: by 2002:a0c:b2d2:0:b0:636:60c6:2034 with SMTP id d18-20020a0cb2d2000000b0063660c62034mr3227950qvf.38.1692371998671;
-        Fri, 18 Aug 2023 08:19:58 -0700 (PDT)
+        bh=XQoXaszgXNHt2owMkc8SAwAa6PGA1R7cXDpG3YgUdis=;
+        b=i1eB1qOXKvx3pimfYhzWuPDYK2U4O8Cr3l7ltE4lzMKw5E5jlzdD/j6JfM5yd545eS
+         3CO9EjCJ5eFCLjiTxegq2oI9RRzEG65sedv+dJx3ZPoiHouYHyEGlPy03/jNUYw1e3y5
+         Xta4vs3TiGAMLoJW9HrJttCS91GEoSWf/SWr2Go7HDTBIggtWfDrOmV75d4U7maJbaYF
+         xnV1ATb8fHc7T+broOR4xXGnEs3C9jrWk55FQhgey54dAkeAaNBv2LvYsdlzUAIyDrZU
+         ssZvz4Yyd3I1szb+lRgD91UUK63Ha+QrQySiRJJMK6yCNY8hAQ/1uQw6ry2mNFi3f/tH
+         tLbQ==
+X-Gm-Message-State: AOJu0YxN+6Bb9cPUIyS+BlwMXsxHU/bfIlENNcKsgZq0QsDGWZcD5i2g
+	TctwkbZ0MvCMz95UfXOdSMY=
+X-Google-Smtp-Source: AGHT+IFIPnPBBG+mGseArgo/zti5URsZkps0wsdFoxu+N2i7ppuTQYN1v+kKSEFBRafZaXCpmZ017g==
+X-Received: by 2002:a05:622a:1aa9:b0:405:4eec:6341 with SMTP id s41-20020a05622a1aa900b004054eec6341mr3562557qtc.56.1692372043958;
+        Fri, 18 Aug 2023 08:20:43 -0700 (PDT)
 Received: from maniforge ([2620:10d:c091:400::5:766])
-        by smtp.gmail.com with ESMTPSA id i8-20020a0cf388000000b0063d5d173a51sm752577qvk.50.2023.08.18.08.19.57
+        by smtp.gmail.com with ESMTPSA id y10-20020ac8524a000000b0040ff2f2f172sm579550qtn.38.2023.08.18.08.20.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 08:19:58 -0700 (PDT)
-Date: Fri, 18 Aug 2023 10:19:55 -0500
+        Fri, 18 Aug 2023 08:20:43 -0700 (PDT)
+Date: Fri, 18 Aug 2023 10:20:41 -0500
 From: David Vernet <void@manifault.com>
 To: Dave Marchevsky <davemarchevsky@fb.com>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -52,10 +52,11 @@ Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@kernel.org>,
 	Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v3 bpf-next 1/2] libbpf: Support triple-underscore
- flavors for kfunc relocation
-Message-ID: <20230818151955.GA14411@maniforge>
+Subject: Re: [PATCH v3 bpf-next 2/2] selftests/bpf: Add CO-RE relocs kfunc
+ flavors tests
+Message-ID: <20230818152041.GB14411@maniforge>
 References: <20230817225353.2570845-1-davemarchevsky@fb.com>
+ <20230817225353.2570845-2-davemarchevsky@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,7 +65,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230817225353.2570845-1-davemarchevsky@fb.com>
+In-Reply-To: <20230817225353.2570845-2-davemarchevsky@fb.com>
 User-Agent: Mutt/2.2.10 (2023-03-25)
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
 	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -73,133 +74,128 @@ X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Thu, Aug 17, 2023 at 03:53:52PM -0700, Dave Marchevsky wrote:
-> The function signature of kfuncs can change at any time due to their
-> intentional lack of stability guarantees. As kfuncs become more widely
-> used, BPF program writers will need facilities to support calling
-> different versions of a kfunc from a single BPF object. Consider this
-> simplified example based on a real scenario we ran into at Meta:
+On Thu, Aug 17, 2023 at 03:53:53PM -0700, Dave Marchevsky wrote:
+> This patch adds selftests that exercise kfunc flavor relocation
+> functionality added in the previous patch. The actual kfunc defined in
+> kernel/bpf/helpers.c is
 > 
->   /* initial kfunc signature */
->   int some_kfunc(void *ptr)
+>   struct task_struct *bpf_task_acquire(struct task_struct *p)
 > 
->   /* Oops, we need to add some flag to modify behavior. No problem,
->     change the kfunc. flags = 0 retains original behavior */
->   int some_kfunc(void *ptr, long flags)
+> The following relocation behaviors are checked:
 > 
-> If the initial version of the kfunc is deployed on some portion of the
-> fleet and the new version on the rest, a fleetwide service that uses
-> some_kfunc will currently need to load different BPF programs depending
-> on which some_kfunc is available.
+>   struct task_struct *bpf_task_acquire___one(struct task_struct *name)
+>     * Should succeed despite differing param name
 > 
-> Luckily CO-RE provides a facility to solve a very similar problem,
-> struct definition changes, by allowing program writers to declare
-> my_struct___old and my_struct___new, with ___suffix being considered a
-> 'flavor' of the non-suffixed name and being ignored by
-> bpf_core_type_exists and similar calls.
+>   struct task_struct *bpf_task_acquire___two(struct task_struct *p, void *ctx)
+>     * Should fail because there is no two-param bpf_task_acquire
 > 
-> This patch extends the 'flavor' facility to the kfunc extern
-> relocation process. BPF program writers can now declare
-> 
->   extern int some_kfunc___old(void *ptr)
->   extern int some_kfunc___new(void *ptr, int flags)
-> 
-> then test which version of the kfunc exists with bpf_ksym_exists.
-> Relocation and verifier's dead code elimination will work in concert as
-> expected, allowing this pattern:
-> 
->   if (bpf_ksym_exists(some_kfunc___old))
->     some_kfunc___old(ptr);
->   else
->     some_kfunc___new(ptr, 0);
+>   struct task_struct *bpf_task_acquire___three(void *ctx)
+>     * Should fail because, despite vmlinux's bpf_task_acquire having one param,
+>       the types don't match
 > 
 > Changelog:
+> v1 -> v2: https://lore.kernel.org/bpf/20230811201346.3240403-2-davemarchevsky@fb.com/
+>   * Change comment on bpf_task_acquire___two to more accurately reflect
+>     that it fails in same codepath as bpf_task_acquire___three, and to
+>     not mention dead code elimination as thats an implementation detail
+>     (Yonghong)
 > 
-> v1 -> v2: https://lore.kernel.org/bpf/20230811201346.3240403-1-davemarchevsky@fb.com/
->   * No need to check obj->externs[i].essent_name before zfree (Jiri)
->   * Use strndup instead of replicating same functionality (Jiri)
->   * Properly handle memory allocation falure (Stanislav)
-> 
-> v2 -> v3: https://lore.kernel.org/bpf/20230816165813.3718580-1-davemarchevsky@fb.com/
->   * Move if (ext->is_weak) test above pr_warn to match existing similar behavior
->     (David Vernet)
+> v2 -> v3: https://lore.kernel.org/bpf/20230816165813.3718580-2-davemarchevsky@fb.com/
+>   * Add test demonstrating that resolution success / failure of
+>     one flavor variant is independent from success / failure of others,
+>     and that none need succeed (David Vernet)
 > 
 > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-
-LGTM, thanks for working on this.
 
 Acked-by: David Vernet <void@manifault.com>
 
 > ---
->  tools/lib/bpf/libbpf.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
+>  .../selftests/bpf/prog_tests/task_kfunc.c     |  2 +
+>  .../selftests/bpf/progs/task_kfunc_success.c  | 51 +++++++++++++++++++
+>  2 files changed, 53 insertions(+)
 > 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index b14a4376a86e..2178b28878e2 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -550,6 +550,7 @@ struct extern_desc {
->  	int btf_id;
->  	int sec_btf_id;
->  	const char *name;
-> +	char *essent_name;
->  	bool is_set;
->  	bool is_weak;
->  	union {
-> @@ -3770,6 +3771,7 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
->  	struct extern_desc *ext;
->  	int i, n, off, dummy_var_btf_id;
->  	const char *ext_name, *sec_name;
-> +	size_t ext_essent_len;
->  	Elf_Scn *scn;
->  	Elf64_Shdr *sh;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> index 740d5f644b40..d4579f735398 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> @@ -79,6 +79,8 @@ static const char * const success_tests[] = {
+>  	"test_task_from_pid_current",
+>  	"test_task_from_pid_invalid",
+>  	"task_kfunc_acquire_trusted_walked",
+> +	"test_task_kfunc_flavor_relo",
+> +	"test_task_kfunc_flavor_relo_not_found",
+>  };
 >  
-> @@ -3819,6 +3821,14 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
->  		ext->sym_idx = i;
->  		ext->is_weak = ELF64_ST_BIND(sym->st_info) == STB_WEAK;
+>  void test_task_kfunc(void)
+> diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_success.c b/tools/testing/selftests/bpf/progs/task_kfunc_success.c
+> index b09371bba204..70df695312dc 100644
+> --- a/tools/testing/selftests/bpf/progs/task_kfunc_success.c
+> +++ b/tools/testing/selftests/bpf/progs/task_kfunc_success.c
+> @@ -18,6 +18,13 @@ int err, pid;
+>   */
 >  
-> +		ext_essent_len = bpf_core_essential_name_len(ext->name);
-> +		ext->essent_name = NULL;
-> +		if (ext_essent_len != strlen(ext->name)) {
-> +			ext->essent_name = strndup(ext->name, ext_essent_len);
-> +			if (!ext->essent_name)
-> +				return -ENOMEM;
-> +		}
+>  struct task_struct *bpf_task_acquire(struct task_struct *p) __ksym __weak;
 > +
->  		ext->sec_btf_id = find_extern_sec_btf_id(obj->btf, ext->btf_id);
->  		if (ext->sec_btf_id <= 0) {
->  			pr_warn("failed to find BTF for extern '%s' [%d] section: %d\n",
-> @@ -7624,7 +7634,8 @@ static int bpf_object__resolve_ksym_func_btf_id(struct bpf_object *obj,
->  
->  	local_func_proto_id = ext->ksym.type_id;
->  
-> -	kfunc_id = find_ksym_btf_id(obj, ext->name, BTF_KIND_FUNC, &kern_btf, &mod_btf);
-> +	kfunc_id = find_ksym_btf_id(obj, ext->essent_name ?: ext->name, BTF_KIND_FUNC, &kern_btf,
-> +				    &mod_btf);
->  	if (kfunc_id < 0) {
->  		if (kfunc_id == -ESRCH && ext->is_weak)
->  			return 0;
-> @@ -7639,6 +7650,9 @@ static int bpf_object__resolve_ksym_func_btf_id(struct bpf_object *obj,
->  	ret = bpf_core_types_are_compat(obj->btf, local_func_proto_id,
->  					kern_btf, kfunc_proto_id);
->  	if (ret <= 0) {
-> +		if (ext->is_weak)
-> +			return 0;
+> +struct task_struct *bpf_task_acquire___one(struct task_struct *task) __ksym __weak;
+> +/* The two-param bpf_task_acquire doesn't exist */
+> +struct task_struct *bpf_task_acquire___two(struct task_struct *p, void *ctx) __ksym __weak;
+> +/* Incorrect type for first param */
+> +struct task_struct *bpf_task_acquire___three(void *ctx) __ksym __weak;
 > +
->  		pr_warn("extern (func ksym) '%s': func_proto [%d] incompatible with %s [%d]\n",
->  			ext->name, local_func_proto_id,
->  			mod_btf ? mod_btf->name : "vmlinux", kfunc_proto_id);
-> @@ -8370,6 +8384,10 @@ void bpf_object__close(struct bpf_object *obj)
+>  void invalid_kfunc(void) __ksym __weak;
+>  void bpf_testmod_test_mod_kfunc(int i) __ksym __weak;
 >  
->  	zfree(&obj->btf_custom_path);
->  	zfree(&obj->kconfig);
-> +
-> +	for (i = 0; i < obj->nr_extern; i++)
-> +		zfree(&obj->externs[i].essent_name);
-> +
->  	zfree(&obj->externs);
->  	obj->nr_extern = 0;
+> @@ -55,6 +62,50 @@ static int test_acquire_release(struct task_struct *task)
+>  	return 0;
+>  }
 >  
+> +SEC("tp_btf/task_newtask")
+> +int BPF_PROG(test_task_kfunc_flavor_relo, struct task_struct *task, u64 clone_flags)
+> +{
+> +	struct task_struct *acquired = NULL;
+> +	int fake_ctx = 42;
+> +
+> +	if (bpf_ksym_exists(bpf_task_acquire___one)) {
+> +		acquired = bpf_task_acquire___one(task);
+> +	} else if (bpf_ksym_exists(bpf_task_acquire___two)) {
+> +		/* Here, bpf_object__resolve_ksym_func_btf_id's find_ksym_btf_id
+> +		 * call will find vmlinux's bpf_task_acquire, but subsequent
+> +		 * bpf_core_types_are_compat will fail
+> +		 */
+> +		acquired = bpf_task_acquire___two(task, &fake_ctx);
+> +		err = 3;
+> +		return 0;
+> +	} else if (bpf_ksym_exists(bpf_task_acquire___three)) {
+> +		/* bpf_core_types_are_compat will fail similarly to above case */
+> +		acquired = bpf_task_acquire___three(&fake_ctx);
+> +		err = 4;
+> +		return 0;
+> +	}
+> +
+> +	if (acquired)
+> +		bpf_task_release(acquired);
+> +	else
+> +		err = 5;
+> +	return 0;
+> +}
+> +
+> +SEC("tp_btf/task_newtask")
+> +int BPF_PROG(test_task_kfunc_flavor_relo_not_found, struct task_struct *task, u64 clone_flags)
+> +{
+> +	/* Neither symbol should successfully resolve.
+> +	 * Success or failure of one ___flavor should not affect others
+> +	 */
+> +	if (bpf_ksym_exists(bpf_task_acquire___two))
+> +		err = 1;
+> +	else if (bpf_ksym_exists(bpf_task_acquire___three))
+> +		err = 2;
+> +
+> +	return 0;
+> +}
+> +
+>  SEC("tp_btf/task_newtask")
+>  int BPF_PROG(test_task_acquire_release_argument, struct task_struct *task, u64 clone_flags)
+>  {
 > -- 
 > 2.34.1
 > 
