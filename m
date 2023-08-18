@@ -1,86 +1,116 @@
-Return-Path: <bpf+bounces-8101-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8102-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC7278135B
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 21:30:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 722427813FC
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 21:59:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04FD82824B5
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 19:30:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BBFF281C37
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 19:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0ECA1BB31;
-	Fri, 18 Aug 2023 19:30:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09C2E1BB4D;
+	Fri, 18 Aug 2023 19:59:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7872B6112
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 19:30:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C39FCC433C8;
-	Fri, 18 Aug 2023 19:30:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692387021;
-	bh=30oYDtp4Jp4ozBpDO5T+nCDtpvHJBvyuH41aaYUSPhg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ExPMtm/bg6L5V959kmugBLbaU1XDgfvskA/2/iDqTXwfb0KMVVNn9NA6VPYKUfLxS
-	 jUG9mW5OBRmfcvsenYWNpkI4LlKohnbW6v68f1fmOio0da/+eV8v/Fx+0Xc7dcNP+6
-	 me7jAFIap2QXcTk55iN3/EKY/3wxkVQ374Rnqwu9Pgd4vbfx6TNkGM5LgM0Gaow0zc
-	 VZT32El2/lE1IU1fM4Ki55HmjsZQQNGzZ2XBvDkg4A+HSYoLrdCdL0QfjhEf3GnqIQ
-	 nJ4TGqyP14gGW8eo+M45nj5bEdubQCjp3BknJ1QxAIb3pKrQvrAy+EsWOwt/hNnUag
-	 eLpRnUvrdORMg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A9D8FE93B34;
-	Fri, 18 Aug 2023 19:30:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B66B46112;
+	Fri, 18 Aug 2023 19:59:38 +0000 (UTC)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0BF1706;
+	Fri, 18 Aug 2023 12:59:37 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso20178621fa.1;
+        Fri, 18 Aug 2023 12:59:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692388775; x=1692993575;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qZnDLKTm+Vz68wW+NpBJGQv7K7EuvgOHLUSeyXNlCjo=;
+        b=niC/NhGgJdLzQDWhJ35lBiET52DjSLPJEHDaV8oJKza+nvvCv0soQR4Au1Eh+snuz4
+         H7OJ4oUMO83aS4/U38gA8ZSdKe66xDnyJticxRTZzXvDJ3fEWB6tUNmJjCE040S8m33K
+         uAvRRes5EjWuooXZwmzV/12pm3BfRSc2HdrZ3ESOd8klSSPuaS6zxufdlRq2bciM1K2Q
+         SFbZenKSnjpT+bqp+n92OX7mXjDWoWsXI0G8xt0/CwmdQi3NCIXtNz/EcdWy26UMmLjS
+         xAOF5Ca2Wouf+rce5ghWNZpCgGUGqJc1HAM0PcZjBQhfofUciDanhqh1phmBImQgs0Kv
+         7aZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692388775; x=1692993575;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qZnDLKTm+Vz68wW+NpBJGQv7K7EuvgOHLUSeyXNlCjo=;
+        b=AlpbSGsw6rcddBgpsNb4EgqXtq+BrC2LA492SGARF3/uTiwLKx1pb0sz4jYgCZQwIw
+         Hivnow52eY0aC1vVSr9b512+5AVX4lwgXonlTPj8fbAmFjEMaqc3edo4ZnG/y+1IyThT
+         haA8TdYX42zFuKD+AviXkAaOASvPrqUKD/VglpDhetj9W5lj1TSjARhew8gRPMy2weeI
+         ZTJ/eXht1CujY6VyU0Cb8JQI79Iomb806Rv652mARgW7tjvuaEzzbS/jkJn1x38EX7Cr
+         YrkGk96i8Zlru1QjnJLKoXqE3BDszHp6UKm9OPgxp7e3dt3zfz750AoRnCFEd4XEdo+L
+         xPMA==
+X-Gm-Message-State: AOJu0YxKhMfFxtJ3jRB2zh5CTGTnMoY9wHgmkU00YPPJkWioT4nHaKKJ
+	9dnZ3NxxckKEmOqD/3EB9pQH8+VHire+k5P6LoVdiXEK
+X-Google-Smtp-Source: AGHT+IHRz6m/oi/P/iekiR7QjNjXfP8gYDO4z7yafhS2Tyrt9xR/S/WYMg/RvhUJls4YXcHCJe7016jERHdPLHqvb0Y=
+X-Received: by 2002:a2e:3505:0:b0:2a7:adf7:1781 with SMTP id
+ z5-20020a2e3505000000b002a7adf71781mr175907ljz.2.1692388775263; Fri, 18 Aug
+ 2023 12:59:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix a selftest compilation error
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169238702169.637.8272710318611270022.git-patchwork-notify@kernel.org>
-Date: Fri, 18 Aug 2023 19:30:21 +0000
-References: <20230818174312.1883381-1-yonghong.song@linux.dev>
-In-Reply-To: <20230818174312.1883381-1-yonghong.song@linux.dev>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org
+References: <20230814134147.70289-1-hffilwlqm@gmail.com> <20230814134147.70289-2-hffilwlqm@gmail.com>
+ <20230817223143.jyclrtf3a6kmtgh5@macbook-pro-8.dhcp.thefacebook.com> <fea59b79-3f28-c580-185b-8c64dc21a399@gmail.com>
+In-Reply-To: <fea59b79-3f28-c580-185b-8c64dc21a399@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 18 Aug 2023 12:59:24 -0700
+Message-ID: <CAADnVQKVKPpbMNV9XNc+yJCuaWRupsB5EBjghv++jGqYTnv6QQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/2] bpf, x64: Fix tailcall infinite loop bug
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Yizhou Tang <tangyeechou@gmail.com>, kernel-patches-bot@fb.com, 
+	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Network Development <netdev@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+	lindbergh.monkeyblade.net
 
-Hello:
+On Thu, Aug 17, 2023 at 7:10=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com> wr=
+ote:
+>
+>
+>
+> On 18/8/23 06:31, Alexei Starovoitov wrote:
+> > On Mon, Aug 14, 2023 at 09:41:46PM +0800, Leon Hwang wrote:
+> >> @@ -1147,6 +1152,7 @@ struct bpf_attach_target_info {
+> >>      struct module *tgt_mod;
+> >>      const char *tgt_name;
+> >>      const struct btf_type *tgt_type;
+> >> +    bool tail_call_ctx;
+> >
+> > Instead of extra flag here can you check tgt_prog->aux->tail_call_reach=
+able in check_attach_btf_id()
+> > and set tr->flags there?
+>
+> Should we check tgt_prog->aux->func[subprog]->is_func? Or, tgt_prog->aux-=
+>tail_call_reachable
+> is enough?
 
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Fri, 18 Aug 2023 10:43:12 -0700 you wrote:
-> When building the kernel and selftest with clang compiler (llvm17 or llvm18),
-> I hit the following compilation failure:
->   In file included from progs/test_lwt_redirect.c:3:
->   In file included from /usr/include/linux/ip.h:21:
->   In file included from /usr/include/asm/byteorder.h:5:
->   In file included from /usr/include/linux/byteorder/little_endian.h:13:
->   /usr/include/linux/swab.h:136:8: error: unknown type name '__always_inline'
->     136 | static __always_inline unsigned long __swab(const unsigned long y)
->         |        ^
->   /usr/include/linux/swab.h:171:8: error: unknown type name '__always_inline'
->     171 | static __always_inline __u16 __swab16p(const __u16 *p)
->   ...
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Fix a selftest compilation error
-    https://git.kernel.org/bpf/bpf-next/c/0a55264cf966
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Please let the thread continue to a logical conclusion before resending
+new version. Will reply there.
 
