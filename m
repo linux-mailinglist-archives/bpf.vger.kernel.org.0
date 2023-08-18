@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-8062-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8063-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7642F780ACD
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 13:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A663E780B8B
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 14:10:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28E5328237A
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 11:11:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69E60282372
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 12:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F2C0182B3;
-	Fri, 18 Aug 2023 11:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C28818AE2;
+	Fri, 18 Aug 2023 12:09:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4CCA52
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 11:11:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14D1FC433C7;
-	Fri, 18 Aug 2023 11:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C4E617FE9
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 12:09:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FD8EC433C8;
+	Fri, 18 Aug 2023 12:09:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692357083;
-	bh=3tFPg4VK+0BFiXk7MjOrkHGiHQEiG891l3KvS3yLs6w=;
+	s=k20201202; t=1692360595;
+	bh=qRm/5BQEOqveVuPVOYC8Yu7FNSY0Aw9Zjpws7V195Mg=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jTVkWXw7GU9TkKcCcyS/kkGyrXvXbPyehvK6A+5RDwMUAH6IhMYqVMxUeZMYG7TaJ
-	 6+QCZpq6M0SXqRQpr76RTuKeErFTbvyKgXKv4ErIYRQIMEmFdFeItI8fk9H/fMYa8Q
-	 gyRcpSof2hOkliW4sRneQEXGTi4JjDLeznvD8iUiKqC1vROsEiL4y9GbNeAutBA8ux
-	 ciTdiI/D7mVU8EAYhY3bLtoGuktpG7nJKtIeguZIhHesC+5TzIj3jG97zsyqI2A9wN
-	 ylcynKOjQBnUOYXyyRwTun1nba/k6ECb4xM3jTNUK6o7Kb+csI0PLn3TpPsPsOZf9j
-	 nBz1wXXDx5rJg==
-Date: Fri, 18 Aug 2023 20:11:15 +0900
+	b=lgUKE5nlef6jyUQgTCNYyOWUiV8gyqOA4tQE2v5wPl42nB7U8/maPPo/B3YvKxbdC
+	 n1nor5pfjj9ZIDn01Fr00qCBYurl/kNXSj9wtvtdUaeNg5q7McOnM/0IvzzxP+yIru
+	 iqcL0g+rqhp4IB4PPhVp1tf3mGN4xXNKRDxwfqsMsRQu7Ym3N3pij1aRx4YcDUVyYJ
+	 9oNFg2qLX29PaHT4Z23Xu8S2nUWhZS4vCvDgK11uNMWhHWIEgnPRl4oiiAdiAC8fgs
+	 y9XCGiBqh+MuE5EyhTA5nmHyVYBGy+DAxr62vXck8gl0sMn7XURbpM1dhC6TVn1pcv
+	 pQ8T9h23/ztZA==
+Date: Fri, 18 Aug 2023 21:09:49 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Florent Revest <revest@chromium.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, linux-trace-kernel@vger.kernel.org, LKML
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
  <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
  bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
  Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
@@ -44,11 +44,11 @@ Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
  Gleixner <tglx@linutronix.de>
 Subject: Re: [PATCH v3 5/8] tracing/fprobe: Enable fprobe events with
  CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-Message-Id: <20230818201115.8d191a891174b9657be2ff36@kernel.org>
-In-Reply-To: <CABRcYm+ayJwS+YMaKBF9pdnHYcJvioOoOrXHWOeRAg1hPacYiA@mail.gmail.com>
+Message-Id: <20230818210949.e7811cb660d979e1c94a7a20@kernel.org>
+In-Reply-To: <CAADnVQ+En1sxXFrDZBefDCBSS=mChDJ3Xg_Xz+WKXmPqziSxgw@mail.gmail.com>
 References: <169181859570.505132.10136520092011157898.stgit@devnote2>
 	<169181865486.505132.6447946094827872988.stgit@devnote2>
-	<CABRcYm+ayJwS+YMaKBF9pdnHYcJvioOoOrXHWOeRAg1hPacYiA@mail.gmail.com>
+	<CAADnVQ+En1sxXFrDZBefDCBSS=mChDJ3Xg_Xz+WKXmPqziSxgw@mail.gmail.com>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -59,75 +59,57 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On Thu, 17 Aug 2023 10:57:50 +0200
-Florent Revest <revest@chromium.org> wrote:
+On Thu, 17 Aug 2023 13:44:41 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-> On Sat, Aug 12, 2023 at 7:37 AM Masami Hiramatsu (Google)
+> On Fri, Aug 11, 2023 at 10:37 PM Masami Hiramatsu (Google)
 > <mhiramat@kernel.org> wrote:
 > >
-> > diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-> > index d56304276318..6fb4ecf8767d 100644
-> > --- a/kernel/trace/Kconfig
-> > +++ b/kernel/trace/Kconfig
-> > @@ -679,7 +679,6 @@ config FPROBE_EVENTS
-> >         select TRACING
-> >         select PROBE_EVENTS
-> >         select DYNAMIC_EVENTS
-> > -       depends on DYNAMIC_FTRACE_WITH_REGS
-> 
-> I believe that, in practice, fprobe events still rely on WITH_REGS:
-> 
-> > diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-> > index f440c97e050f..94c01dc061ec 100644
-> > --- a/kernel/trace/trace_fprobe.c
-> > +++ b/kernel/trace/trace_fprobe.c
-> > @@ -327,14 +328,15 @@ static int fentry_dispatcher(struct fprobe *fp, unsigned long entry_ip,
-> >         struct pt_regs *regs = ftrace_get_regs(fregs);
-> 
-> Because here you require the entry handler needs ftrace_regs that are
-> full pt_regs.
-
-Ah, that is for perf events. Yes, that is the problematic point.
-Since perf's interfaces are depending on the pt_regs (especially stacktrace)
-I can not remove this part. This is the next issue to be solved.
-Maybe we can use partial pt_regs for stack tracing, so we can swap the order
-of the patches to introduce ftrace_partial_regs() before this and use it for
-perf event.
-
-> 
-> >         int ret = 0;
-> >
-> > +       if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
-> > +               fentry_trace_func(tf, entry_ip, fregs);
+> > +#ifdef CONFIG_HAVE_REGS_AND_STACK_ACCESS_API
+> > +static __always_inline unsigned long
+> > +ftrace_regs_get_kernel_stack_nth(struct ftrace_regs *fregs, unsigned int nth)
+> > +{
+> > +       unsigned long *stackp;
 > > +
-> > +#ifdef CONFIG_PERF_EVENTS
-> >         if (!regs)
-> >                 return 0;
+> > +       stackp = (unsigned long *)ftrace_regs_get_stack_pointer(fregs);
+> > +       if (((unsigned long)(stackp + nth) & ~(THREAD_SIZE - 1)) ==
+> > +           ((unsigned long)stackp & ~(THREAD_SIZE - 1)))
+> > +               return *(stackp + nth);
+> > +
+> > +       return 0;
+> > +}
+> > +#endif /* CONFIG_HAVE_REGS_AND_STACK_ACCESS_API */
+> ...
 > >
-> > -       if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
-> > -               fentry_trace_func(tf, entry_ip, regs);
-> > -#ifdef CONFIG_PERF_EVENTS
-> >         if (trace_probe_test_flag(&tf->tp, TP_FLAG_PROFILE))
-> > -               ret = fentry_perf_func(tf, entry_ip, regs);
-> > +               ret = fentry_perf_func(tf, entry_ip, fregs, regs);
-> >  #endif
-> >         return ret;
-> >  }
-> > @@ -347,14 +349,15 @@ static void fexit_dispatcher(struct fprobe *fp, unsigned long entry_ip,
-> >         struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
-> >         struct pt_regs *regs = ftrace_get_regs(fregs);
+> > @@ -140,17 +140,17 @@ process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
+> >         /* 1st stage: get value from context */
+> >         switch (code->op) {
+> >         case FETCH_OP_STACK:
+> > -               val = regs_get_kernel_stack_nth(regs, code->param);
+> > +               val = ftrace_regs_get_kernel_stack_nth(fregs, code->param);
+> >                 break;
 > 
-> And same here with the return handler
-> 
-> I think fprobe events would need the same sort of refactoring as
-> kprobe_multi bpf: using ftrace_partial_regs so they work on build
-> !WITH_REGS.
+> Just noticed that bit.
+> You probably want to document that access to arguments and
+> especially arguments on stack is not precise. It's "best effort".
+> x86-64 calling convention is not as simple as it might appear.
+> For example if 6th argument is a 16-byte struct like sockptr_t it will be
+> passed on the stack and 7th actual argument (if it's <= 8 byte) will
+> be the register.
 
-Actually, kprobe_multi is using fprobe directly, so this is not related
-to bpf part.
+Yes, that's right. To access the precise arguments, the easiest way is
+using DWARF (e.g. perf probe), and another way is reconstruct the ABI
+from the type like BTF.
+
+> 
+> Things similar on 32-bit and there is a non-zero chance that
+> regs_get_kernel_argument() doesn't return the actual arg.
+
+Yeah, it is hard to get the actual argument...
+
+Let me update the document.
 
 Thank you,
-
 
 -- 
 Masami Hiramatsu (Google) <mhiramat@kernel.org>
