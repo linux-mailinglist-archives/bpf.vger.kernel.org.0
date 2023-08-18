@@ -1,33 +1,33 @@
-Return-Path: <bpf+bounces-8081-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8082-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB7EA780F51
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 17:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 469C7780F68
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 17:40:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 758AD2823E3
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 15:36:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F160F28243C
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 15:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A2681989B;
-	Fri, 18 Aug 2023 15:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1D3198A0;
+	Fri, 18 Aug 2023 15:40:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 101FF18C22
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 15:36:26 +0000 (UTC)
-Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59B22D67;
-	Fri, 18 Aug 2023 08:36:21 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749EEEACB
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 15:40:43 +0000 (UTC)
+Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701BA3C1F;
+	Fri, 18 Aug 2023 08:40:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1692372979;
+	s=s201512; t=1692373235;
 	bh=bvV/soH/dURAAoXFyESTSqw98tSL2GFyxRs8zFGxUJo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=DxD5J40CRdyLoMBfh0M+ubUiB3R8L8QvLnblpeA3l9qVKvKQQux/PeKKyKRDATqlW
-	 Y9DQJ7nKSUo8Oefede7NfBrQdWHSzj3421zVpz1TjNv81OUJiktCR0t2FBk7Z4HI0/
-	 cPc93ROgyWX8/hMzY17lJFaKxkXLWBV991Xwiww0=
+	b=BonxfaUfz1xUq5urQHPeWjuYAm9THSvWyMF5IFy/8wu2xW/9y5WhF5YASP74HmFRb
+	 ZHB+OG1PdmJwMUMiFyJ8kWca+j3THzc6dMOQIb1mcdJ0yOvz5e3vRzxv61Al8ceukh
+	 c/z+XnYpxLOJhDR1VbucP8aKsr4Sq9PXUD5SytEY=
 Received: from rtoax.. ([124.126.138.8])
 	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
 	id 90FACE53; Fri, 18 Aug 2023 23:36:15 +0800
@@ -84,8 +84,9 @@ Content-Type: text/plain; charset=y
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+	HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
