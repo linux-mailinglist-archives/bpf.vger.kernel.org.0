@@ -1,106 +1,116 @@
-Return-Path: <bpf+bounces-8065-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13EEE780BB3
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 14:23:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCF19780CA8
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 15:40:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D2691C2161B
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 12:23:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED9381C2162B
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 13:40:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 198F218AFA;
-	Fri, 18 Aug 2023 12:23:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F9A18B08;
+	Fri, 18 Aug 2023 13:40:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE83117FE9
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 12:23:01 +0000 (UTC)
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E1EE7C
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 05:23:00 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-565f58f4db5so657533a12.0
-        for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 05:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692361380; x=1692966180;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ric5bKa/MsOuxTFdG8D/2C2k7yPaH8irBlhbtjjHXXk=;
-        b=jIY2AHnEVq7QfzXKZLEbIheqIfVX/WOuXMLdyLtPhp52tONwjxbqyhXNTOKwvZmnip
-         yc+V1XnhgtL//VTTeqrLnRB2iHYTxKcd6n55OXJJ1gNNIn8YHotfQaisLxhT0i7hG3CF
-         M9X73MI585Ab5yregi2xZZ0OKOrRSU5kHL5ZY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692361380; x=1692966180;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ric5bKa/MsOuxTFdG8D/2C2k7yPaH8irBlhbtjjHXXk=;
-        b=TZCWRBgSd1L8sQLPs4JkSb2Mcv3k28U0xSdh3dvWhucTH2stkhoSNwROZ0ERYCTfjS
-         wtCn2fufmeIPzG2l+TAsst9RGspt0OvdGOMoIU/iBpBGmGuMA20f8rvBkPbeBUHa7/bG
-         tRXsajHUPPfpSdoJIznmn+DSdFYpvbVSjXJ7LjS5WfUMEwotzuw5+0HeQJKTQf0/BWaX
-         Z2iz9tgp0Rz9uhEg7FthZuN4o1FUNHzCXbMeiQWf4Hq/ZJfvAhBRf19mITMsTRyV6gSx
-         uMB2zy9QFnAt+46Rk2gogBmbNqQOCHtCScK6kSQDwhhpD5BfKfusD0R1PorhBTOcSckV
-         //Ag==
-X-Gm-Message-State: AOJu0YzILskoX6WddB4ILtetKP8CW1NRYXtKLM/BSA0Cc0dEbJS4+Ul1
-	jlwZwRv7YbVRT+OjxuB6GKrEMyI5qdh1u0Cl0IyFqIZPMiRG+d7F
-X-Google-Smtp-Source: AGHT+IHelV4VvuL7lM9KvjGmNypvQfMShSOCTZXYmL3ldagBIJZpatow/N9YhzBWcqnuvOPIwWQVuKCkw+EqwUgK50M=
-X-Received: by 2002:a17:90a:c204:b0:268:1be1:745a with SMTP id
- e4-20020a17090ac20400b002681be1745amr2090363pjt.29.1692361380223; Fri, 18 Aug
- 2023 05:23:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0205617AC1
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 13:40:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB60AC433C7;
+	Fri, 18 Aug 2023 13:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692366012;
+	bh=Jknt7yoyXj/GKmML3txJuQ91AeMyNNJJSxj3O7zVlfo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=uoCK37CZGANYJvk89oM0I6FX/XHktq9nBLsAXihU3DzSpQmVVCM8KfVjuVLsLpgug
+	 E8uZIvIFpFcYvdNLTv2rJCsDtraGvBNN9bAyXm9+Pc6yIi4KfOjCmSZ3qVRpF8YBD5
+	 Zg8Q/xam3sZugPtID75cbWQ5Om0unl5RKzI5eIy98HICIq90LcLVDaWuL7rHuDOsMI
+	 Uvxzoa8KcmGA+9+ZhcBd2wEm5lVYAR1Ju39jHdHuBAHDYJjGOEbzAjdVMTnVD4jVxo
+	 4uY5mhD9kWObBeEUW8ZzyiGHFNzK/wOCYBw6RfRNitzpJsUO+3bsDPc9Ym4Ud2C8cW
+	 tka2j3+ZmH5HQ==
+Date: Fri, 18 Aug 2023 22:40:06 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Florent Revest <revest@chromium.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v3 0/8] bpf: fprobe: rethook: Use ftrace_regs instead of
+ pt_regs
+Message-Id: <20230818224006.a611cd1a73e00ca1a48478bc@kernel.org>
+In-Reply-To: <CABRcYmJLbb0_fs2beiNA2QE468JkxB9nHnmQcQW4dt63pPBoFA@mail.gmail.com>
+References: <169181859570.505132.10136520092011157898.stgit@devnote2>
+	<CABRcYmJLbb0_fs2beiNA2QE468JkxB9nHnmQcQW4dt63pPBoFA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230815154158.717901-1-xukuohai@huaweicloud.com>
-In-Reply-To: <20230815154158.717901-1-xukuohai@huaweicloud.com>
-From: Florent Revest <revest@chromium.org>
-Date: Fri, 18 Aug 2023 14:22:49 +0200
-Message-ID: <CABRcYmK1ByvJmozEp5opq8B_0VxoOdRFrSxVfdcNwcsFCN7yKg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/7] Support cpu v4 instructions for arm64
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Will Deacon <will@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Yonghong Song <yhs@fb.com>, Zi Shen Lim <zlim.lnx@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-	RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-	lindbergh.monkeyblade.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 15, 2023 at 5:21=E2=80=AFPM Xu Kuohai <xukuohai@huaweicloud.com=
-> wrote:
->
-> From: Xu Kuohai <xukuohai@huawei.com>
->
-> This series adds arm64 support for cpu v4 instructions [1].
->
-> [1] https://lore.kernel.org/all/20230728011143.3710005-1-yonghong.song@li=
-nux.dev/
->
-> Xu Kuohai (7):
->   arm64: insn: Add encoders for LDRSB/LDRSH/LDRSW
->   bpf, arm64: Support sign-extension load instructions
->   bpf, arm64: Support sign-extension mov instructions
->   bpf, arm64: Support unconditional bswap
->   bpf, arm64: Support 32-bit offset jmp instruction
->   bpf, arm64: Support signed div/mod instructions
->   selftests/bpf: Enable cpu v4 tests for arm64
+On Thu, 17 Aug 2023 10:57:13 +0200
+Florent Revest <revest@chromium.org> wrote:
 
-Thank you Xu! The series looks good to me so:
+> On Sat, Aug 12, 2023 at 7:36 AM Masami Hiramatsu (Google)
+> <mhiramat@kernel.org> wrote:
+> >
+> > Hi,
+> >
+> > Here is the 3rd version of RFC series to use ftrace_regs instead of pt_regs.
+> > The previous version is here;
+> >
+> > https://lore.kernel.org/all/169139090386.324433.6412259486776991296.stgit@devnote2/
+> >
+> > This also includes the generic part and minimum modifications of arch
+> > dependent code. (e.g. not including rethook for arm64.)
+> 
+> I think that one aspect that's missing from the discussion (and maybe
+> the series) so far is plans to actually save partial registers in the
+> existing rethook trampolines.
 
-Acked-by: Florent Revest <revest@chromium.org>
+Yes, it is arch-dependent part. We have to recheck what registers are
+required for the rethook, and that is saved correctly on partial pt_regs
+on each architecture.
 
-And I could reproduce your successful test runs with a recent clang so:
+> For now the series makes everything called by the rethook trampolines
+> handle the possibility of having a sparse ftrace_regs but the rethook
+> trampolines still save full ftrace_regs. I think that to rip the full
+> benefits of this series, we should have the rethook trampolines save
+> the equivalent ftrace_regs as the light "args" version of the ftrace
+> trampoline.
 
-Tested-by: Florent Revest <revest@chromium.org>
+I think this part depends on the architecture implementation, but yes.
+Arm64 can *add* the rethook implementation but not enable KRETPROBE_ON_RETHOOK.
+(do not remove kretprobe trampoline)
+For this perpose, we need HAVE_RETHOOK_WITH_REGS;
+
+ config KRETPROBE_ON_RETHOOK
+         def_bool y
+-        depends on HAVE_RETHOOK
++        depends on HAVE_RETHOOK_WITH_REGS
+         depends on KRETPROBES
+         select RETHOOK
+
+So there will be pt_regs rethook and ftrace_regs (partial regs) rethook.
+
+I would like to replace rethook's pt_regs with ftrace_regs too. However the
+most problematic part is kretprobe. If CONFIG_KRETPROBE_ON_RETHOOK=y, the 
+rethook must use pt_regs instead of ftrace_regs for API compatibility.
+But it makes hard to integrate the rethook and function-graph trace return
+hook. (I will discuss this in LPC)
+
+Thank you,
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
