@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-8054-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8055-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A4C97807EB
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 11:05:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A677B7807ED
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 11:05:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2515D281D19
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 09:05:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B91751C20CD0
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 09:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EED182C5;
-	Fri, 18 Aug 2023 09:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A3E182D9;
+	Fri, 18 Aug 2023 09:02:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 409EA182BD;
-	Fri, 18 Aug 2023 09:02:13 +0000 (UTC)
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF243C0C;
-	Fri, 18 Aug 2023 02:01:50 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bc3d94d40fso5587725ad.3;
-        Fri, 18 Aug 2023 02:01:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DF0F15495;
+	Fri, 18 Aug 2023 09:02:16 +0000 (UTC)
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1174212;
+	Fri, 18 Aug 2023 02:01:54 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-26b67b38b61so516580a91.0;
+        Fri, 18 Aug 2023 02:01:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692349310; x=1692954110;
+        d=gmail.com; s=20221208; t=1692349314; x=1692954114;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vEdCdiPpMNFfDPKVrW4rvndg+m3lfoeDTBZC/Rf1A+E=;
-        b=g6I+KP+fbsBxcLLRNdgxN1Yg/swl1XiRKIlNajh8ZcVL8TAigeyYiHFglOoxpAJuGu
-         EdQ74cuS1CVjWpX/b3EY3wvHSbPX6lccnIo4Txp83ySSEyKHPj7FJfgS3gNCMJ3etn0k
-         i4QdPqd/nhsiZRY0q/JRt0QCuvO971Lfdp7WfjLhVp376D/q+h/sMUPQYObsgTeDhUE3
-         0cLdyxdbZgjycfZe1Jqudy1GNqzY7HCgkTAl2TFtP61Qmm1yvrQxD7AiBOXHL4NkAg9Z
-         uGV9VJ4DmU2SP3iUHY2wUrzEmD1Oegb5gQt24oZHkljnukFKrrlAMx51RLY3Qch7Rp8K
-         9V3g==
+        bh=4Xh8zEASjOId61d0T5CzTHeLfy4NYBbHm3OIzjsyLyM=;
+        b=garpmHfp1NZCFs/JGbYM/LzyY6xj24XU1oIHsUXC4RWhiqbioDh0610x+iB6nmPMqR
+         xRQdZ9yMIXi2Mf+LIFDH3DbnIYKl0VMpVUr0DNYVrkZoKhhyHCV0Yl4Ew6hN6MjS+UUb
+         4mW2oaQlb3EzDeJmznB3tcrVA4YQtI6wM0+iEI8ObbsL8Ke1FSK6iyK+EH8lZIGfVAwK
+         JRuOCbTHB0yw/oRkYCc/q9AEQopMh0aJwLBN2eC13dkt5octs92N9zczWc6DMiMXcrTT
+         PVDvCEwDR80mgQzpY4/g8MiB0FSGDJqlfuK15dpPMAt44qDP/z+Uy0NTUUSSJXArijlc
+         bNNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692349310; x=1692954110;
+        d=1e100.net; s=20221208; t=1692349314; x=1692954114;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vEdCdiPpMNFfDPKVrW4rvndg+m3lfoeDTBZC/Rf1A+E=;
-        b=LnCH/CotUJFJ3uesogwnyuizv2lAnyGB6sGL+6SVVQ3gaL0IlSXsD8tu74PiRILHDy
-         +ZuXfkNDVQMFq8K9nlup3HaA1VTcd/YlBzYF3TlQ4ga69KUBCwkVUK9ia2xs448fIIXC
-         yXma8y7cLrQTsGTIXJuCHm6XHUTcTUZYeFZjPmtX6o6NUnZ/Wnj2YvHjWAr4GyoVwPZM
-         e1N6fri+HGvgVwNVZKQ6jqbpHEIKDLX7VZ/SJIuotgrL2qSBQQrCPJWb8550CbnokRiw
-         D1ck6Fl/5ZImABlR3LYXefRU5JI/iNhuJrAL7wULiJkA9/tNf6dyLTxLC9wQ/SinTR3f
-         33eg==
-X-Gm-Message-State: AOJu0Yz1pWq7Q2ggUOpRoxrcOVflhKDI1igF28sgOgK/MBw1hAfUKam1
-	l5SqzI325V3obQsX8P/aoA==
-X-Google-Smtp-Source: AGHT+IFIQLB92lb8IM8DCXjuimWo3DdFYmTPBxeWk0u/kyYHhSrWL07SkLn5G+Sijm7Dhif2f7Dhdw==
-X-Received: by 2002:a17:902:f545:b0:1bb:7f71:df43 with SMTP id h5-20020a170902f54500b001bb7f71df43mr2325897plf.34.1692349309755;
-        Fri, 18 Aug 2023 02:01:49 -0700 (PDT)
+        bh=4Xh8zEASjOId61d0T5CzTHeLfy4NYBbHm3OIzjsyLyM=;
+        b=XsWZ6nBNtOgb4jVpJDkZpKBiAmfNWGx5FR9b/NH7rFqYbcqnJx9H0y/xqOdrcLurXo
+         LLZ9CVyIu6oXX3AsQVld5ptmj4ApiIbGDF/Eq51brV6oTnk94AdEYzFgpkWY8UKjZnpA
+         7SvR/N7w05RFh6+zUzGPMmVIzucBqpNQQwuV8nlyYVo/+LDcuj26HpMPjWtk4aw6foiO
+         /5hlzUM0K8c/ELavpTeSZhJrizrLr9mKGvb5rQnJGyW4eiN2lNda+WuyQAfspoYjH2v7
+         7Rh3XjTc4OCfAcjkZj2Ve2utyYfHVf3BwcTNLsf3FVO6i/JNy9FC1Ww5Tae8Gz8P8znj
+         xSZg==
+X-Gm-Message-State: AOJu0YyMw/JlVgSbegNKzHXgPrbycUGJY8vmXT5BAspsP4Q11p9QTfYM
+	NZ+/PO0jINTbB5p0K7FgYA==
+X-Google-Smtp-Source: AGHT+IGN+3ucFRLwemRnZTvByU1P9GwVZMCEuN32TdWOIqDNxPrK00ULfaAkPhH/RoFQSU/OVUg0ow==
+X-Received: by 2002:a17:90a:2e0b:b0:268:3f6d:9751 with SMTP id q11-20020a17090a2e0b00b002683f6d9751mr1804960pjd.23.1692349313682;
+        Fri, 18 Aug 2023 02:01:53 -0700 (PDT)
 Received: from dell-sscc.. ([114.71.48.94])
-        by smtp.gmail.com with ESMTPSA id q6-20020a170902a3c600b001b89045ff03sm1217130plb.233.2023.08.18.02.01.46
+        by smtp.gmail.com with ESMTPSA id q6-20020a170902a3c600b001b89045ff03sm1217130plb.233.2023.08.18.02.01.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 02:01:49 -0700 (PDT)
+        Fri, 18 Aug 2023 02:01:53 -0700 (PDT)
 From: "Daniel T. Lee" <danieltimlee@gmail.com>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -72,9 +72,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [bpf-next 6/9] samples/bpf: fix bio latency check with tracepoint
-Date: Fri, 18 Aug 2023 18:01:16 +0900
-Message-Id: <20230818090119.477441-7-danieltimlee@gmail.com>
+Subject: [bpf-next 7/9] samples/bpf: fix broken map lookup probe
+Date: Fri, 18 Aug 2023 18:01:17 +0900
+Message-Id: <20230818090119.477441-8-danieltimlee@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230818090119.477441-1-danieltimlee@gmail.com>
 References: <20230818090119.477441-1-danieltimlee@gmail.com>
@@ -92,102 +92,62 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Recently, a new tracepoint for the block layer, specifically the
-block_io_start/done tracepoints, was introduced in commit 5a80bd075f3b
-("block: introduce block_io_start/block_io_done tracepoints").
+In the commit 7c4cd051add3 ("bpf: Fix syscall's stackmap lookup
+potential deadlock"), a potential deadlock issue was addressed, which
+resulted in *_map_lookup_elem not triggering BPF programs.
+(prior to lookup, bpf_disable_instrumentation() is used)
 
-Previously, the kprobe entry used for this purpose was quite unstable
-and inherently broke relevant probes [1]. Now that a stable tracepoint
-is available, this commit replaces the bio latency check with it.
+To resolve the broken map lookup probe using "htab_map_lookup_elem",
+this commit introduces an alternative approach. Instead, it utilize
+"bpf_map_copy_value" and apply a filter specifically for the hash table
+with map_type.
 
-One of the changes made during this replacement is the key used for the
-hash table. Since 'struct request' cannot be used as a hash key, the
-approach taken follows that which was implemented in bcc/biolatency [2].
-(uses dev:sector for the key)
-
-[1]: https://github.com/iovisor/bcc/issues/4261
-[2]: https://github.com/iovisor/bcc/pull/4691
-
-Fixes: 450b7879e345 ("block: move blk_account_io_{start,done} to blk-mq.c")
 Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+Fixes: 7c4cd051add3 ("bpf: Fix syscall's stackmap lookup potential deadlock")
 ---
- samples/bpf/tracex3.bpf.c | 36 ++++++++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 12 deletions(-)
+ samples/bpf/tracex6.bpf.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/samples/bpf/tracex3.bpf.c b/samples/bpf/tracex3.bpf.c
-index 7cc60f10d2e5..41f37966f5f5 100644
---- a/samples/bpf/tracex3.bpf.c
-+++ b/samples/bpf/tracex3.bpf.c
-@@ -9,6 +9,12 @@
+diff --git a/samples/bpf/tracex6.bpf.c b/samples/bpf/tracex6.bpf.c
+index 6ad82e68f998..9b23b4737cfb 100644
+--- a/samples/bpf/tracex6.bpf.c
++++ b/samples/bpf/tracex6.bpf.c
+@@ -1,6 +1,8 @@
+ #include "vmlinux.h"
+ #include <linux/version.h>
  #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
  
-+struct start_key {
-+	dev_t dev;
-+	u32 _pad;
-+	sector_t sector;
-+};
-+
  struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
- 	__type(key, long);
-@@ -16,16 +22,17 @@ struct {
- 	__uint(max_entries, 4096);
- } my_map SEC(".maps");
- 
--/* kprobe is NOT a stable ABI. If kernel internals change this bpf+kprobe
-- * example will no longer be meaningful
-- */
--SEC("kprobe/blk_mq_start_request")
--int bpf_prog1(struct pt_regs *ctx)
-+/* from /sys/kernel/tracing/events/block/block_io_start/format */
-+SEC("tracepoint/block/block_io_start")
-+int bpf_prog1(struct trace_event_raw_block_rq *ctx)
- {
--	long rq = PT_REGS_PARM1(ctx);
- 	u64 val = bpf_ktime_get_ns();
-+	struct start_key key = {
-+		.dev = ctx->dev,
-+		.sector = ctx->sector
-+	};
- 
--	bpf_map_update_elem(&my_map, &rq, &val, BPF_ANY);
-+	bpf_map_update_elem(&my_map, &key, &val, BPF_ANY);
+ 	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+@@ -44,13 +46,24 @@ int bpf_prog1(struct pt_regs *ctx)
  	return 0;
  }
  
-@@ -47,21 +54,26 @@ struct {
- 	__uint(max_entries, SLOTS);
- } lat_map SEC(".maps");
- 
--SEC("kprobe/__blk_account_io_done")
+-SEC("kprobe/htab_map_lookup_elem")
 -int bpf_prog2(struct pt_regs *ctx)
-+/* from /sys/kernel/tracing/events/block/block_io_done/format */
-+SEC("tracepoint/block/block_io_done")
-+int bpf_prog2(struct trace_event_raw_block_rq *ctx)
++/*
++ * Since *_map_lookup_elem can't be expected to trigger bpf programs
++ * due to potential deadlocks (bpf_disable_instrumentation), this bpf
++ * program will be attached to bpf_map_copy_value (which is called
++ * from map_lookup_elem) and will only filter the hashtable type.
++ */
++SEC("kprobe/bpf_map_copy_value")
++int BPF_KPROBE(bpf_prog2, struct bpf_map *map)
  {
--	long rq = PT_REGS_PARM1(ctx);
-+	struct start_key key = {
-+		.dev = ctx->dev,
-+		.sector = ctx->sector
-+	};
+ 	u32 key = bpf_get_smp_processor_id();
+ 	struct bpf_perf_event_value *val, buf;
++	enum bpf_map_type type;
+ 	int error;
+ 
++	type = BPF_CORE_READ(map, map_type);
++	if (type != BPF_MAP_TYPE_HASH)
++		return 0;
 +
- 	u64 *value, l, base;
- 	u32 index;
- 
--	value = bpf_map_lookup_elem(&my_map, &rq);
-+	value = bpf_map_lookup_elem(&my_map, &key);
- 	if (!value)
+ 	error = bpf_perf_event_read_value(&counters, key, &buf, sizeof(buf));
+ 	if (error)
  		return 0;
- 
- 	u64 cur_time = bpf_ktime_get_ns();
- 	u64 delta = cur_time - *value;
- 
--	bpf_map_delete_elem(&my_map, &rq);
-+	bpf_map_delete_elem(&my_map, &key);
- 
- 	/* the lines below are computing index = log10(delta)*10
- 	 * using integer arithmetic
 -- 
 2.34.1
 
