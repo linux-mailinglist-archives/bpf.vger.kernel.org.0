@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-8046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8047-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41D01780750
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 10:39:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8060780751
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 10:40:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF93328063A
-	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 08:39:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E98C61C20A1D
+	for <lists+bpf@lfdr.de>; Fri, 18 Aug 2023 08:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F86217AAC;
-	Fri, 18 Aug 2023 08:39:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36BFE17ABC;
+	Fri, 18 Aug 2023 08:39:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 128493D7F
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 08:39:32 +0000 (UTC)
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D4A3A9A;
-	Fri, 18 Aug 2023 01:39:30 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bf1935f6c2so4770005ad.1;
-        Fri, 18 Aug 2023 01:39:30 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0289F3D7F
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 08:39:33 +0000 (UTC)
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD4B3AA1
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 01:39:32 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bddac1b7bfso4905825ad.0
+        for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 01:39:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692347970; x=1692952770;
+        d=gmail.com; s=20221208; t=1692347972; x=1692952772;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7NATVvEwRdPYa24RR+CE7PmZVk6EWVd7A6dmv5g7pFo=;
-        b=AmV7XXIxC2RYlnrsPxc7EuBoiE+QbIzdMbQ5Hl9ro+fvn9nTJe4dpDyB47XUBQ995Y
-         G46tiaU+tmCbLKAUfr2DEsEalUp6U9dIWBxAjNJjXH6gfNi/yPg+HpYu8wwNRbs7LSK0
-         F8hHqixL7huEOpn/H8nvjqCwpsXiTCENiM0NDrqk1ya3hyIne98bH/bkUZcdlsGHGkrV
-         ldtgpB1L3YpkeOJ91s4oieL+7sIFzJ0VPqlG/NB6twcNaAQqpbYXBvKCB/Yycy2OCFg5
-         97bPxa6fYN+NIhnM6eKOcVgies6/rX2b81e8yGq4lK20pkzV5kJcMB7QWUoi+ojuaiJb
-         tazw==
+        bh=fYH/QZZv/rTEBSUZcUWDHbrBq1YRNlLBUbR04U1vZX0=;
+        b=TZ7VD/uZVw5PYqrsABu3Bl7b6QnKRNlDqPWZWLi6VyzdQATiUj1gbdAZQW/A1sm0Xj
+         FKqk2YMttQy2Q9u5F73QXYo2NrmFf/mC5L7E6skkafZNQ6VyLY1KhLLA+yw/FRqSvffK
+         DoysFaTHqpnsd3r/UVnlpGlzHsahyOLxxG6Jpa7fy4kRKh2Zs+RNuelyzVtm7qO6DRz7
+         iDSwiPEw/3lhwqJCPb80YvzK2nmv+SPUyoDzARRFBmaatXgUJtsvq0k5WzcqciBYnuNF
+         vP/ISXIZlYZdXswvunY4xRnjtOeGND5BQLgj3MeJAhcBu2RgzmJMJ+Pl9slFXl6M8wPM
+         vZzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692347970; x=1692952770;
+        d=1e100.net; s=20221208; t=1692347972; x=1692952772;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7NATVvEwRdPYa24RR+CE7PmZVk6EWVd7A6dmv5g7pFo=;
-        b=kNblxNxD1WJ+sq09pvb5z4sLVzWWjYK7vXiSRKjDWqwn6r6ebpzqqrh2ZlxIxWCZo2
-         5ds9hIO9MSBTbJubCAoZitBb3R+sn+pEZRhbVwuzx6ZTqY4BYbt39Rszglqf+uSNExR8
-         JbBBqb7DgWL5KWwXfoGBZnsE6UCsjlapiZ/1hvUpr/ypPU1+JSYUoEZmrdCLeen3LWGD
-         ROrA3fwc6GqCeU8okiuGDEis3n1MGDPfWf6ZRA74WE+74BcRZQMQ2IJ0fGDxBj/SM3/T
-         drnq9LkYKO0Stq7htOiMhH2UZcLnrz5U2xVWhLmWgvdMUHK8oZVhQyckSY3Aq/yUQfJB
-         NUUA==
-X-Gm-Message-State: AOJu0YwNKQ5iukgeoDBfAXPJFRE9qtm0GYGXALAPHFpaIhbHYw6zx+IN
-	kJ4TYQCDpFgCo88fE5tBCDk=
-X-Google-Smtp-Source: AGHT+IHLPnihvPMjRmiTpca5REHhBCf64XMSzNveAr8JDX3R/nz2UEkLzgunQGrYDCuMgyKzrL4G0Q==
-X-Received: by 2002:a17:902:d484:b0:1af:e302:123 with SMTP id c4-20020a170902d48400b001afe3020123mr2604371plg.3.1692347970381;
-        Fri, 18 Aug 2023 01:39:30 -0700 (PDT)
+        bh=fYH/QZZv/rTEBSUZcUWDHbrBq1YRNlLBUbR04U1vZX0=;
+        b=ijQjmT4OCu4qCtBGDtgIqjO15tlrn1OLfPe4zWQrSEropjWMSdmdIST+I8Qi8X7AdZ
+         ZdSFjCbUrl+d2UBiuREGEfQVjxdTXeazlLhTb/A3u3vP3jq6tFftpWfcfLEhxlwIjoOr
+         j2iXoggf/8Tenu6UBputRXqSzHHSlgKuUjGiNwNxZ7x/kDF/qk/lHrJvHPY9CxMl5FcJ
+         ejpfhAXbtiKRUjRZHJOaEEVwmwN4IQ5nvun2/FDKIE5d133C9sI/4bIS99HmisxIzepP
+         zvAUxFTJq0eFhUIEjZrsFwVil3iJHz3HPIgy55WEtrokDICOjSWjGzelgkCG2swuA3iR
+         tmNw==
+X-Gm-Message-State: AOJu0YzzmGLFh36KIh0wLQp6+eg0kYHbuXeu/7t++xfmJIauKVyU28US
+	+ELHlqmLM49XSakoa14yYmA=
+X-Google-Smtp-Source: AGHT+IH8ZluvwizE9+8tJ89Y9DGh9cQCx0gaFoLmh+Vjz/tHds6R1If84ai02suhcs7BTdrhZstFtw==
+X-Received: by 2002:a17:902:ab54:b0:1b9:c61c:4c01 with SMTP id ij20-20020a170902ab5400b001b9c61c4c01mr5511706plb.9.1692347971966;
+        Fri, 18 Aug 2023 01:39:31 -0700 (PDT)
 Received: from vultr.guest ([149.28.193.116])
-        by smtp.gmail.com with ESMTPSA id ij27-20020a170902ab5b00b001b53c8659fesm1185209plb.30.2023.08.18.01.39.28
+        by smtp.gmail.com with ESMTPSA id ij27-20020a170902ab5b00b001b53c8659fesm1185209plb.30.2023.08.18.01.39.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 01:39:29 -0700 (PDT)
+        Fri, 18 Aug 2023 01:39:31 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -69,12 +69,10 @@ To: ast@kernel.org,
 	haoluo@google.com,
 	jolsa@kernel.org
 Cc: bpf@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH bpf-next 1/2] bpf: Fix issue in verifying allow_ptr_leaks
-Date: Fri, 18 Aug 2023 08:39:19 +0000
-Message-Id: <20230818083920.3771-2-laoar.shao@gmail.com>
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Add selftest for allow_ptr_leaks
+Date: Fri, 18 Aug 2023 08:39:20 +0000
+Message-Id: <20230818083920.3771-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230818083920.3771-1-laoar.shao@gmail.com>
 References: <20230818083920.3771-1-laoar.shao@gmail.com>
@@ -92,85 +90,126 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-After we converted the capabilities of our networking-bpf program from
-cap_sys_admin to cap_net_admin+cap_bpf, our networking-bpf program
-failed to start. Because it failed the bpf verifier, and the error log
-is "R3 pointer comparison prohibited".
+- Without prev commit
 
-A simple reproducer as follows,
+  $ tools/testing/selftests/bpf/test_progs --name=tc_bpf
+  #232/1   tc_bpf/tc_bpf_root:OK
+  test_tc_bpf_non_root:PASS:set_cap_bpf_cap_net_admin 0 nsec
+  test_tc_bpf_non_root:PASS:disable_cap_sys_admin 0 nsec
+  0: R1=ctx(off=0,imm=0) R10=fp0
+  ; if ((long)(iph + 1) > (long)skb->data_end)
+  0: (61) r2 = *(u32 *)(r1 +80)         ; R1=ctx(off=0,imm=0) R2_w=pkt_end(off=0,imm=0)
+  ; struct iphdr *iph = (void *)(long)skb->data + sizeof(struct ethhdr);
+  1: (61) r1 = *(u32 *)(r1 +76)         ; R1_w=pkt(off=0,r=0,imm=0)
+  ; if ((long)(iph + 1) > (long)skb->data_end)
+  2: (07) r1 += 34                      ; R1_w=pkt(off=34,r=0,imm=0)
+  3: (b4) w0 = 1                        ; R0_w=1
+  4: (2d) if r1 > r2 goto pc+1
+  R2 pointer comparison prohibited
+  processed 5 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+  test_tc_bpf_non_root:FAIL:test_tc_bpf__open_and_load unexpected error: -13
+  #233/2   tc_bpf_non_root:FAIL
 
-SEC("cls-ingress")
-int ingress(struct __sk_buff *skb)
-{
-	struct iphdr *iph = (void *)(long)skb->data + sizeof(struct ethhdr);
+- With prev commit
 
-	if ((long)(iph + 1) > (long)skb->data_end)
-		return TC_ACT_STOLEN;
-	return TC_ACT_OK;
-}
+  $ tools/testing/selftests/bpf/test_progs --name=tc_bpf
+  #232/1   tc_bpf/tc_bpf_root:OK
+  #232/2   tc_bpf/tc_bpf_non_root:OK
+  #232     tc_bpf:OK
+  Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
 
-Per discussion with Yonghong and Alexei [1], comparison of two packet
-pointers is not a pointer leak. This patch fixes it.
-
-Our local kernel is 6.1.y and we expect this fix to be backported to
-6.1.y, so stable is CCed.
-
-[1]. https://lore.kernel.org/bpf/CAADnVQ+Nmspr7Si+pxWn8zkE7hX-7s93ugwC+94aXSy4uQ9vBg@mail.gmail.com/
-
-Suggested-by: Yonghong Song <yonghong.song@linux.dev>
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: stable@vger.kernel.org
 ---
- kernel/bpf/verifier.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/tc_bpf.c | 36 ++++++++++++++++++++++++-
+ tools/testing/selftests/bpf/progs/test_tc_bpf.c | 14 ++++++++++
+ 2 files changed, 49 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 4ccca1f..b6b60cd 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14047,6 +14047,12 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 		return -EINVAL;
- 	}
+diff --git a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
+index e873766..48b5553 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
++++ b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
+@@ -3,6 +3,7 @@
+ #include <test_progs.h>
+ #include <linux/pkt_cls.h>
  
-+	/* check src2 operand */
-+	err = check_reg_arg(env, insn->dst_reg, SRC_OP);
-+	if (err)
-+		return err;
++#include "cap_helpers.h"
+ #include "test_tc_bpf.skel.h"
+ 
+ #define LO_IFINDEX 1
+@@ -327,7 +328,7 @@ static int test_tc_bpf_api(struct bpf_tc_hook *hook, int fd)
+ 	return 0;
+ }
+ 
+-void test_tc_bpf(void)
++void tc_bpf_root(void)
+ {
+ 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex = LO_IFINDEX,
+ 			    .attach_point = BPF_TC_INGRESS);
+@@ -393,3 +394,36 @@ void test_tc_bpf(void)
+ 	}
+ 	test_tc_bpf__destroy(skel);
+ }
 +
-+	dst_reg = &regs[insn->dst_reg];
- 	if (BPF_SRC(insn->code) == BPF_X) {
- 		if (insn->imm != 0) {
- 			verbose(env, "BPF_JMP/JMP32 uses reserved fields\n");
-@@ -14058,12 +14064,13 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 		if (err)
- 			return err;
++void tc_bpf_non_root(void)
++{
++	struct test_tc_bpf *skel = NULL;
++	__u64 caps = 0;
++	int ret;
++
++	/* In case CAP_BPF and CAP_PERFMON is not set */
++	ret = cap_enable_effective(1ULL << CAP_BPF | 1ULL << CAP_NET_ADMIN, &caps);
++	if (!ASSERT_OK(ret, "set_cap_bpf_cap_net_admin"))
++		return;
++	ret = cap_disable_effective(1ULL << CAP_SYS_ADMIN | 1ULL << CAP_PERFMON, NULL);
++	if (!ASSERT_OK(ret, "disable_cap_sys_admin"))
++		goto restore_cap;
++
++	skel = test_tc_bpf__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "test_tc_bpf__open_and_load"))
++		goto restore_cap;
++
++	test_tc_bpf__destroy(skel);
++
++restore_cap:
++	if (caps)
++		cap_enable_effective(caps, NULL);
++}
++
++void test_tc_bpf(void)
++{
++	if (test__start_subtest("tc_bpf_root"))
++		tc_bpf_root();
++	if (test__start_subtest("tc_bpf_non_root"))
++		tc_bpf_non_root();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_tc_bpf.c b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
+index d28ca8d..3e0f218 100644
+--- a/tools/testing/selftests/bpf/progs/test_tc_bpf.c
++++ b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
+@@ -1,5 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
  
--		if (is_pointer_value(env, insn->src_reg)) {
-+		src_reg = &regs[insn->src_reg];
-+		if (!(reg_is_pkt_pointer_any(dst_reg) && reg_is_pkt_pointer_any(src_reg)) &&
-+		    is_pointer_value(env, insn->src_reg)) {
- 			verbose(env, "R%d pointer comparison prohibited\n",
- 				insn->src_reg);
- 			return -EACCES;
- 		}
--		src_reg = &regs[insn->src_reg];
- 	} else {
- 		if (insn->src_reg != BPF_REG_0) {
- 			verbose(env, "BPF_JMP/JMP32 uses reserved fields\n");
-@@ -14071,12 +14078,6 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 		}
- 	}
++#include <linux/pkt_cls.h>
++#include <linux/ip.h>
++#include <linux/if_ether.h>
+ #include <linux/bpf.h>
+ #include <bpf/bpf_helpers.h>
  
--	/* check src2 operand */
--	err = check_reg_arg(env, insn->dst_reg, SRC_OP);
--	if (err)
--		return err;
--
--	dst_reg = &regs[insn->dst_reg];
- 	is_jmp32 = BPF_CLASS(insn->code) == BPF_JMP32;
- 
- 	if (BPF_SRC(insn->code) == BPF_K) {
+@@ -10,3 +13,14 @@ int cls(struct __sk_buff *skb)
+ {
+ 	return 0;
+ }
++
++/* Prog to verify tc-bpf without cap_sys_admin and cap_perfmon */
++SEC("tcx/ingress")
++int pkt_ptr(struct __sk_buff *skb)
++{
++	struct iphdr *iph = (void *)(long)skb->data + sizeof(struct ethhdr);
++
++	if ((long)(iph + 1) > (long)skb->data_end)
++		return TC_ACT_STOLEN;
++	return TC_ACT_OK;
++}
 -- 
 1.8.3.1
 
