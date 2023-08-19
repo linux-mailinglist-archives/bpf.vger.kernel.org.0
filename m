@@ -1,141 +1,153 @@
-Return-Path: <bpf+bounces-8122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 951327818CB
-	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 12:39:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AC307818E3
+	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 12:40:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42BD7281C3C
-	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 10:39:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C6311C209D0
+	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 10:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A2B6468E;
-	Sat, 19 Aug 2023 10:39:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213BC4C75;
+	Sat, 19 Aug 2023 10:39:59 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0C621C17
-	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 10:39:36 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C34E13B5D2
-	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 02:15:56 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RSY4h1xP6z4f3w0m
-	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 17:15:48 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgAXpqhCiOBkYl1KBA--.10063S2;
-	Sat, 19 Aug 2023 17:15:49 +0800 (CST)
-Subject: Re: Question: Is it OK to assume the address of bpf_dynptr_kern will
- be 8-bytes aligned and reuse the lowest bits to save extra info ?
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Joanne Koong <joannelkoong@gmail.com>,
- Kumar Kartikeya Dwivedi <memxor@gmail.com>
-References: <db144689-79c8-6cfb-6a11-983958b28955@huaweicloud.com>
- <e51d4765-25ae-28d6-e141-e7272faa439e@huaweicloud.com>
- <63cb33d1-6930-0555-dd43-7dd73a786f75@huaweicloud.com>
- <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <b3fab6ae-1425-48a5-1faa-bb88d44a08f1@huaweicloud.com>
-Date: Sat, 19 Aug 2023 17:15:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE1934A12;
+	Sat, 19 Aug 2023 10:39:58 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7A6260A2;
+	Sat, 19 Aug 2023 02:26:00 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RSYDx1wSrzFqjQ;
+	Sat, 19 Aug 2023 17:22:57 +0800 (CST)
+Received: from [10.174.176.93] (10.174.176.93) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Sat, 19 Aug 2023 17:25:57 +0800
+Message-ID: <9a37736d-960e-a3bb-4dd8-ac54045ca38f@huawei.com>
+Date: Sat, 19 Aug 2023 17:25:56 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgAXpqhCiOBkYl1KBA--.10063S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFy8Ar4fWryrKr45GF4Durg_yoW5uw4Dpa
-	yrWa4jgw4kJa42yry2gw48XFW0vrnaqr1UG348t3yrCr98ury3ury8Wayakan3Gr1xG3yj
-	qFWqv345Xw13ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-	k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+From: "liujian (CE)" <liujian56@huawei.com>
+Subject: Re: [PATCH bpf-next v2 1/7] bpf, sockmap: add BPF_F_PERMANENTLY flag
+ for skmsg redirect
+To: John Fastabend <john.fastabend@gmail.com>, <jakub@cloudflare.com>,
+	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<martin.lau@linux.dev>, <song@kernel.org>, <yonghong.song@linux.dev>,
+	<kpsingh@kernel.org>, <sdf@google.com>, <haoluo@google.com>,
+	<jolsa@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <dsahern@kernel.org>
+CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <20230811093237.3024459-1-liujian56@huawei.com>
+ <20230811093237.3024459-2-liujian56@huawei.com>
+ <64ddba9e1df57_32c0720898@john.notmuch>
+In-Reply-To: <64ddba9e1df57_32c0720898@john.notmuch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.93]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
-	version=3.4.6
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+	RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-Hi,
 
-On 8/18/2023 7:00 AM, Alexei Starovoitov wrote:
-> On Wed, Aug 16, 2023 at 11:35 PM Hou Tao <houtao@huaweicloud.com> wrote:
->> ping ?
-> Sorry for the delay. I've been on PTO.
->
->> On 8/3/2023 9:28 PM, Hou Tao wrote:
->>> On 8/3/2023 9:19 PM, Hou Tao wrote:
->>>> Hi,
->>>>
->>>> I am preparing for qp-trie v4, but I need some help on how to support
->>>> variable-sized key in bpf syscall. The implementation of qp-trie needs
->>>> to distinguish between dynptr key from bpf program and variable-sized
->>>> key from bpf syscall. In v3, I added a new dynptr type:
->>>> BPF_DYNPTR_TYPE_USER for variable-sized key from bpf syscall [0], so
->>>> both bpf program and bpf syscall will use the same type to represent the
->>>> variable-sized key, but Andrii thought ptr+size tuple was simpler and
->>>> would be enough for user APIs, so in v4, the type of key for bpf program
->>>> and syscall will be different. One way to handle that is to add a new
->>>> parameter in .map_lookup_elem()/.map_delete_elem()/.map_update_elem() to
->>>> tell whether the key comes from bpf program or syscall or introduce new
->>>> APIs in bpf_map_ops for variable-sized key related syscall, but I think
->>>> it will introduce too much churn. Considering that the size of
->>>> bpf_dynptr_kern is 8-bytes aligned, so I think maybe I could reuse the
->>>> lowest 1-bit of key pointer to tell qp-trie whether or not it is a
->>>> bpf_dynptr_kern or a variable-sized key pointer from syscall. For
->>>> bpf_dynptr_kern, because it is 8B-aligned, so its lowest bit must be 0,
->>>> and for variable-sized key from syscall, I could allocated a 4B-aligned
->>>> pointer and setting the lowest bit as 1, so qp-trie can distinguish
->>>> between these two types of pointer. The question is that I am not sure
->>>> whether the idea above is a good one or not. Does it sound fragile ? Or
->>>> is there any better way to handle that ?
-> Let's avoid bit hacks. They're not extensible and should be used
-> only in cases where performance matters a lot or memory constraints are extreme.
-I see. Neither the performance reason nor the memory limitation fit here.
->
-> ptr/sz tuple from syscall side sounds the simplest.
-> I agree with Andrii exposing the dynptr concept to user space
-> and especially as part of syscall is unnecessary.
-> We already have LPM as a precedent. Maybe we can do the same here?
-> No need to add new sys_bpf commands.
 
-There is no need to add new sys_bpf commands. We can extend bpf_attr to
-support variable-sized key in qp-trie for bpf syscall. The probem is the
-keys from bpf syscall and bpf program are different: bpf syscall uses
-ptr+size tuple and bpf program uses dynptr, but the APIs in bpf_map_ops
-only uses a pointer to represent the key, so qp-trie can not distinguish
-between the keys from bpf syscall and bpf program. In qp-trie v1, the
-key of qp-trie was similar with LPM-trie: both the syscall and program
-used the same key format. But the key format for bpf program changed to
-dynptr in qp-trie v2 according to the suggestion from Andrii. I think it
-is also a bad ideal to go back to v1 again.
-
->
-> If the existing bpf_map_lookup_elem() helper doesn't fit qp-tree we can
-> use new kfuncs from bpf prog and LPM-like map accessors from syscall.
-
-It is a feasible solution, but it will make qp-trie be different with
-other map types. I will try to extend the APIs in bpf_map_ops first to
-see how much churns it may introduce.
-
+On 2023/8/17 14:13, John Fastabend wrote:
+> Liu Jian wrote:
+>> If the sockmap msg redirection function is used only to forward packets
+>> and no other operation, the execution result of the BPF_SK_MSG_VERDICT
+>> program is the same each time. In this case, the BPF program only needs to
+>> be run once. Add BPF_F_PERMANENTLY flag to bpf_msg_redirect_map() and
+>> bpf_msg_redirect_hash() to implement this ability.
+>>
+> 
+> I like the use case. Did you consider using
+> 
+>   long bpf_msg_apply_bytes(struct sk_msg_buff *msg, u32 bytes)
+> 
+> This could be set to UINT32_MAX and then the BPF prog would only be run
+> every 0xfffffff bytes.
+> 
+I didn't realize that this feature could be used for this, and I thought 
+it should have the same effect. Thanks John.
+>> Then we can enable this function in the bpf program as follows:
+>> bpf_msg_redirect_hash(xx, xx, xx, BPF_F_INGRESS | BPF_F_PERMANENTLY);
+>>
+>> Test results using netperf  TCP_STREAM mode:
+>> for i in 1 64 128 512 1k 2k 32k 64k 100k 500k 1m;then
+>> netperf -T 1,2 -t TCP_STREAM -H 127.0.0.1 -l 20 -- -m $i -s 100m,100m -S 100m,100m
+>> done
+>>
+>> before:
+>> 3.84 246.52 496.89 1885.03 3415.29 6375.03 40749.09 48764.40 51611.34 55678.26 55992.78
+>> after:
+>> 4.43 279.20 555.82 2080.79 3870.70 7105.44 41836.41 49709.75 51861.56 55211.00 54566.85
+> 
+> I suspect comparing against
+> 
+>    bpf_msg_redirect_hash(...)
+>    bpf_msg_apply_bytes(msg, UINT32_MAX)
+> 
+> the diff will be rather small. I agree the API is nicer though to simply
+Yes, it should have the same effect and looks good to me.
+> set the flag. Its too bad we didn't think to add a forever to apply_bytes.
+> I would prefer this API for example,
+> 
+>    bpf_msg_redirect_hash(...)
+>    bpf_msg_apply_bytes(msg, 0, PERMANENT);
+> 
+What do you mean by this? Should I post another version for this?
+> Given we have apply_bytes is it still useful to have a PERMANENT flag
+> in your use case? Here we would just reset to UNINT32_MAX if we reached
+> max bytes.
+> 
+If apply_bytes is set to UNINT32_MAX, the number of times that the bpf 
+program runs should be small enough to meet my needs.
+>>
+>> Signed-off-by: Liu Jian <liujian56@huawei.com>
+>> ---
+>>   include/linux/skmsg.h          |  1 +
+>>   include/uapi/linux/bpf.h       |  7 +++++--
+>>   net/core/skmsg.c               |  1 +
+>>   net/core/sock_map.c            |  4 ++--
+>>   net/ipv4/tcp_bpf.c             | 21 +++++++++++++++------
+>>   tools/include/uapi/linux/bpf.h |  7 +++++--
+>>   6 files changed, 29 insertions(+), 12 deletions(-)
+> 
+> [...]
+> 
+>>   
+>> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+>> index 70da85200695..cf622ea4f018 100644
+>> --- a/tools/include/uapi/linux/bpf.h
+>> +++ b/tools/include/uapi/linux/bpf.h
+>> @@ -3004,7 +3004,8 @@ union bpf_attr {
+>>    * 		egress interfaces can be used for redirection. The
+>>    * 		**BPF_F_INGRESS** value in *flags* is used to make the
+>>    * 		distinction (ingress path is selected if the flag is present,
+>> - * 		egress path otherwise). This is the only flag supported for now.
+>> + * 		egress path otherwise). The **BPF_F_PERMANENTLY** value in
+>> + *		*flags* is used to indicates whether the eBPF result is permanent.
+> 
+> We at least need to document what happens if PERMANENTLY and apply_bytes are
+> used together.
+> 
+>>    * 	Return
+>>    * 		**SK_PASS** on success, or **SK_DROP** on error.
+>>    *
+> 
 
