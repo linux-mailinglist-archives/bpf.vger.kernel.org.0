@@ -1,126 +1,141 @@
-Return-Path: <bpf+bounces-8121-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8122-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9670781848
-	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 10:15:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 951327818CB
+	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 12:39:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A46FA281C2D
-	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 08:15:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42BD7281C3C
+	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 10:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2793820EA;
-	Sat, 19 Aug 2023 08:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A2B6468E;
+	Sat, 19 Aug 2023 10:39:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4ADBA57;
-	Sat, 19 Aug 2023 08:15:24 +0000 (UTC)
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97E82710;
-	Sat, 19 Aug 2023 01:15:22 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id DD4BA320010B;
-	Sat, 19 Aug 2023 04:15:17 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Sat, 19 Aug 2023 04:15:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-	1692432917; x=1692519317; bh=mVg7+z/59hMefv6EatBj5KT4jPl/Nf37DQy
-	lbZT0lF0=; b=l7+Idw7IXTlvGLWtkX4Yk9YD3/pIkjlXypJGt7S8HC/9liI1Cdj
-	AbiC77K/z0YBVQ/FVPplg+bytdlQ+dCc6NLsE/mqDY3v3d5deNXUK+iCoPqLoR4m
-	7KEnWqflPdY4rVYIZ2nrq0D4B9axmUmMzkaWbpOCHFtDQHYcLbg7HnL9XIIq2f0a
-	mK3zqk15aTNX0cHqWpDSzQHd7FW/4LyCfysFsUH2Dm9exVtC1p5Wo5QNbC+o51R2
-	rJg3xLibAhOvJd9AOLlO0dwSv/nxgjI2n7dRMLqBJ4h5gtIzWF7nWo66Nkl2HcVZ
-	5u2GV2DhRUor71Xr+SsbHXQYqCUb3sNoSfQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1692432917; x=1692519317; bh=mVg7+z/59hMefv6EatBj5KT4jPl/Nf37DQy
-	lbZT0lF0=; b=t6N2GC4hYniQXEfaTz2EuUH27T0sH45C1jfxLNXZxFos7HH40gT
-	KBtE6edJ+rySMY3zSRjIO+7Ks3Pdn6URlSpydJymaYRu4IqS7rdz+hTuOSX0GrPa
-	xKP3tHtONDVXgCKm/BZKpEKPFkPZcKDiOk48Ur3IL9ysISycJdFRi1weyZmQwy3h
-	V9P4P56zaIQKJwLkFbLN29w95tx/fWeStGG89LaHLpAMdP3z5TMObUbIHBo5o0RO
-	S5dA4M6DY7W7sInbbXOGEMqSICvCzeQLTOSQs4HdjoJvLGm7r4PlLJNiQkMnpam7
-	ZRRY6EBwhtMkX+9Z6+l1qC2Xusq2Rb7AvdQ==
-X-ME-Sender: <xms:FXrgZPjnB5QfQ4PRwkdTFgVeaN_4v5hYrLgtB-SJsuYC3ocaUzD-3Q>
-    <xme:FXrgZMCwXFK_V-4i3OOVNf8ITegB7tIIpKZs8YUj1S3Fv25-7Non3G_GcgMY_6Hi6
-    7GzKbd4pYIFh-cE32Q>
-X-ME-Received: <xmr:FXrgZPEZpMAo-2JYx9rLLvwfHLhNQpGBXAIgu6gVwQYTx5VBle0A3_1kfvalUHNvSA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudduhedgtddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeforghn
-    jhhushgrkhgruceomhgvsehmrghnjhhushgrkhgrrdhmvgeqnecuggftrfgrthhtvghrnh
-    epudevveejhfejvdegvedvuedtueekleejlefhfedtheekhfefiedvgfdukeeuieelnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgvsehmrg
-    hnjhhushgrkhgrrdhmvg
-X-ME-Proxy: <xmx:FXrgZMT9PKKTCwesqnzedCRN4dcTB3WJCdpowJ9jyEKcW-jGGDCsnQ>
-    <xmx:FXrgZMzo6QRDBv_SO0sjkjULJLR_oeGvE0uv8NMAs_s9b9nyiD7Y6w>
-    <xmx:FXrgZC4DtkP2j10vgUQw1TzrGZXDMQJlTsCl6A_-0FWiMZqWSUrKPA>
-    <xmx:FXrgZBpGDKAfRw10usHn5sM9lmFylMEI84bEKe7Ptud62Aq7v7D6dQ>
-Feedback-ID: i3ea9498d:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 19 Aug 2023 04:15:13 -0400 (EDT)
-Message-ID: <3b997205-bca6-4dba-94fe-65facb84015e@manjusaka.me>
-Date: Sat, 19 Aug 2023 16:15:10 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0C621C17
+	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 10:39:36 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C34E13B5D2
+	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 02:15:56 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RSY4h1xP6z4f3w0m
+	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 17:15:48 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgAXpqhCiOBkYl1KBA--.10063S2;
+	Sat, 19 Aug 2023 17:15:49 +0800 (CST)
+Subject: Re: Question: Is it OK to assume the address of bpf_dynptr_kern will
+ be 8-bytes aligned and reuse the lowest bits to save extra info ?
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Joanne Koong <joannelkoong@gmail.com>,
+ Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <db144689-79c8-6cfb-6a11-983958b28955@huaweicloud.com>
+ <e51d4765-25ae-28d6-e141-e7272faa439e@huaweicloud.com>
+ <63cb33d1-6930-0555-dd43-7dd73a786f75@huaweicloud.com>
+ <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <b3fab6ae-1425-48a5-1faa-bb88d44a08f1@huaweicloud.com>
+Date: Sat, 19 Aug 2023 17:15:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] tracepoint: add new `tcp:tcp_ca_event` trace event
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- mhiramat@kernel.org, ncardwell@google.com, netdev@vger.kernel.org,
- pabeni@redhat.com, rostedt@goodmis.org
-References: <CANn89iKQXhqgOTkSchH6Bz-xH--pAoSyEORBtawqBTvgG+dFig@mail.gmail.com>
- <20230812201249.62237-1-me@manjusaka.me> <20230818185156.5bb662db@kernel.org>
- <CANn89iLYsfD0tFryzCn2GbhrX4n+e0CPTXB6Vc=_m=U9Qi_CzA@mail.gmail.com>
-Content-Language: en-US
-From: Manjusaka <me@manjusaka.me>
-In-Reply-To: <CANn89iLYsfD0tFryzCn2GbhrX4n+e0CPTXB6Vc=_m=U9Qi_CzA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-	RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgAXpqhCiOBkYl1KBA--.10063S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFy8Ar4fWryrKr45GF4Durg_yoW5uw4Dpa
+	yrWa4jgw4kJa42yry2gw48XFW0vrnaqr1UG348t3yrCr98ury3ury8Wayakan3Gr1xG3yj
+	qFWqv345Xw13ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+	k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
+	version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On 2023/8/19 11:10, Eric Dumazet wrote:
-> On Sat, Aug 19, 2023 at 3:52 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Sat, 12 Aug 2023 20:12:50 +0000 Zheao Li wrote:
->>> In normal use case, the tcp_ca_event would be changed in high frequency.
->>>
->>> The developer can monitor the network quality more easier by tracing
->>> TCP stack with this TP event.
->>>
->>> So I propose to add a `tcp:tcp_ca_event` trace event
->>> like `tcp:tcp_cong_state_set` to help the people to
->>> trace the TCP connection status
->>
->> Ah, I completely missed v3 somehow and we got no ack from Eric so maybe
->> he missed it, too. Could you please resend not as part of this thread
->> but as a new thread?
-> 
-> I was waiting for a v4, because Steven asked for additional spaces in the macros
-> for readability ?
+Hi,
 
-I think the additional spaces should not be added in this patch. Because there will
-be two code style in one file.
+On 8/18/2023 7:00 AM, Alexei Starovoitov wrote:
+> On Wed, Aug 16, 2023 at 11:35 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>> ping ?
+> Sorry for the delay. I've been on PTO.
+>
+>> On 8/3/2023 9:28 PM, Hou Tao wrote:
+>>> On 8/3/2023 9:19 PM, Hou Tao wrote:
+>>>> Hi,
+>>>>
+>>>> I am preparing for qp-trie v4, but I need some help on how to support
+>>>> variable-sized key in bpf syscall. The implementation of qp-trie needs
+>>>> to distinguish between dynptr key from bpf program and variable-sized
+>>>> key from bpf syscall. In v3, I added a new dynptr type:
+>>>> BPF_DYNPTR_TYPE_USER for variable-sized key from bpf syscall [0], so
+>>>> both bpf program and bpf syscall will use the same type to represent the
+>>>> variable-sized key, but Andrii thought ptr+size tuple was simpler and
+>>>> would be enough for user APIs, so in v4, the type of key for bpf program
+>>>> and syscall will be different. One way to handle that is to add a new
+>>>> parameter in .map_lookup_elem()/.map_delete_elem()/.map_update_elem() to
+>>>> tell whether the key comes from bpf program or syscall or introduce new
+>>>> APIs in bpf_map_ops for variable-sized key related syscall, but I think
+>>>> it will introduce too much churn. Considering that the size of
+>>>> bpf_dynptr_kern is 8-bytes aligned, so I think maybe I could reuse the
+>>>> lowest 1-bit of key pointer to tell qp-trie whether or not it is a
+>>>> bpf_dynptr_kern or a variable-sized key pointer from syscall. For
+>>>> bpf_dynptr_kern, because it is 8B-aligned, so its lowest bit must be 0,
+>>>> and for variable-sized key from syscall, I could allocated a 4B-aligned
+>>>> pointer and setting the lowest bit as 1, so qp-trie can distinguish
+>>>> between these two types of pointer. The question is that I am not sure
+>>>> whether the idea above is a good one or not. Does it sound fragile ? Or
+>>>> is there any better way to handle that ?
+> Let's avoid bit hacks. They're not extensible and should be used
+> only in cases where performance matters a lot or memory constraints are extreme.
+I see. Neither the performance reason nor the memory limitation fit here.
+>
+> ptr/sz tuple from syscall side sounds the simplest.
+> I agree with Andrii exposing the dynptr concept to user space
+> and especially as part of syscall is unnecessary.
+> We already have LPM as a precedent. Maybe we can do the same here?
+> No need to add new sys_bpf commands.
 
-I think it would be a good idea for another patch to adjust the space in this file
+There is no need to add new sys_bpf commands. We can extend bpf_attr to
+support variable-sized key in qp-trie for bpf syscall. The probem is the
+keys from bpf syscall and bpf program are different: bpf syscall uses
+ptr+size tuple and bpf program uses dynptr, but the APIs in bpf_map_ops
+only uses a pointer to represent the key, so qp-trie can not distinguish
+between the keys from bpf syscall and bpf program. In qp-trie v1, the
+key of qp-trie was similar with LPM-trie: both the syscall and program
+used the same key format. But the key format for bpf program changed to
+dynptr in qp-trie v2 according to the suggestion from Andrii. I think it
+is also a bad ideal to go back to v1 again.
+
+>
+> If the existing bpf_map_lookup_elem() helper doesn't fit qp-tree we can
+> use new kfuncs from bpf prog and LPM-like map accessors from syscall.
+
+It is a feasible solution, but it will make qp-trie be different with
+other map types. I will try to extend the APIs in bpf_map_ops first to
+see how much churns it may introduce.
+
 
