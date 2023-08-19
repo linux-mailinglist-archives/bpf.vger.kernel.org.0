@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-8109-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-8110-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D06B0781668
-	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 03:25:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E660C781675
+	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 03:45:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2E181C20BDA
-	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 01:25:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AAB4281D7D
+	for <lists+bpf@lfdr.de>; Sat, 19 Aug 2023 01:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A72A655;
-	Sat, 19 Aug 2023 01:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C82A7EF;
+	Sat, 19 Aug 2023 01:45:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3B7634
-	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 01:25:01 +0000 (UTC)
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0014A4205
-	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 18:24:58 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id 4fb4d7f45d1cf-5255da974c4so1794182a12.3
-        for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 18:24:58 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FEDB634
+	for <bpf@vger.kernel.org>; Sat, 19 Aug 2023 01:45:30 +0000 (UTC)
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE5B30F5
+	for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 18:45:28 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so1829620a12.0
+        for <bpf@vger.kernel.org>; Fri, 18 Aug 2023 18:45:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692408297; x=1693013097;
+        d=gmail.com; s=20221208; t=1692409527; x=1693014327;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pgdY2VWTkeBxVSxNCsnP8jvaCaUsJnGRfWqr+2l7S6E=;
-        b=ilYi5b8HhkraujJfOYHljE4Qdi3BN4a/SSAy4Cd7QtBjWQ9rHTU5yIDY8997dlCrdY
-         mPhVdtI3ON7nOms7rqdb7Du3PX5/10nnzpl3nsEtAdKvZq0xT5NHXrYiEaHKzcHlPhfv
-         FkKBaDhTeUsmiL44wA43re+Ax38fejwrXqw13oAAraKc0isHVZKY77iSOCQJmP6rdet3
-         snEpqVMoanMQXwz5eAC69C1c+K9bi8cxb4bU1uQT3JR12GozXz1mqX2UaArm6X/APRtX
-         jkO25bs8B+vJTOx/t4LS6fimsqEVux246e+O9S0lRJfZLlvFt1n+PM2eZhKeG+YuSeXq
-         irPQ==
+        bh=bgvuX2eVa6E2JwnFIcbrEkymyN3NvERu2XX4ujhuOz8=;
+        b=VODTepePLIpo3hDB4EB6w8lCKaOV+pqNWeX7/9HDofRdR+95vxFpA+2XMSD9P3zUPf
+         XtX3UqxtHj5Jqo551iN4vgcyE+GPs+MbYZZXFCdswbAPC9M8ZDYBerZ5Wq/gC6F7/Ykz
+         7IFo7o+dOMNrbvascaWE8Vx9SdMwQsj1MtOx3+Pu3c3CJYez/o05Ag45hO16gjFxfhl8
+         D0h1rS7tCshdaREeaYxFAip0npTDo/WjH+XRY5UefjIwx5XoF3TY3dcMTj80gR+jMHBi
+         tq+ffzXkII2W/AsHsieBda7IePtlHJHRp+2AGkarW8QwrSZ/sglmPCSvF6hNLfk+k6h5
+         gqoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692408297; x=1693013097;
+        d=1e100.net; s=20221208; t=1692409527; x=1693014327;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pgdY2VWTkeBxVSxNCsnP8jvaCaUsJnGRfWqr+2l7S6E=;
-        b=g5gO5wQpRfPWa+2CY22TWnqSnViGcgYmDBGM+IpXZmzwrCUgDIBF6SMzZWwSH5zl0u
-         8cN2RA0Ojpr5tUg2O79TKBpSA6Ol0YQUVpiBEqMn9bmJS07a920CBeCdsueeo566MIvn
-         H6T8z/w4SHEvUm1fTwN8NVpB7DSzHRCs4+6N6vMm/GfzcsZa7ZjA+1FDbKJaRLgukTz7
-         j/c3OF0ut7uSemlMTTS0glpl6ns3Gaq+g0LZW0osN0DnsNkRCYAj5/L3z/4fo7bivvYa
-         eCPIQHUGC4yVtPZEQKeLlAhtjHIWr+xyo4yG8UzRYFU7C7a6aM11H7e7aUcqbZ5ndZ8D
-         nWsQ==
-X-Gm-Message-State: AOJu0Yzn9W1iHAvbXi7Bsvzbq30/Vh6nceH28Es81PxT1puRmSS5Bs/J
-	QGIQCaq+C2m2sqFCdK1sGCxJSxdO5li73khhcxoJBHfrHYimhA==
-X-Google-Smtp-Source: AGHT+IE7FP3hOsCZyYfbVGE2WTf9w1/pS+v+abfOrtqhu/8Eqoo22LlETYOuZ5R6XjU3zadVgm5kD3N+0RsxXqYIBgo=
-X-Received: by 2002:aa7:d502:0:b0:521:7ab6:b95d with SMTP id
- y2-20020aa7d502000000b005217ab6b95dmr655711edq.29.1692408297093; Fri, 18 Aug
- 2023 18:24:57 -0700 (PDT)
+        bh=bgvuX2eVa6E2JwnFIcbrEkymyN3NvERu2XX4ujhuOz8=;
+        b=huWr7/3gRXhf2GWC4wvPLHAk2ko/Jgv974pB+fv5SRj382EAM/r1bTxnb7juHOy59F
+         x51EGLnEx31wez3nWOX/W5uREVUZEmWv4QlYG3Wr2AW3BXTBDBbj/bkSCvUEYoEjtMF0
+         gfyY61QJkpbeholK5Mkn8DnM/BxiwHfci7K3FwA3H7/s67Weu2iD8RqfvjJ+BqU2MhHb
+         CXuS5k585YBiXN77axezbpAuqOTxialrtDVMUp3COtPHVF11r7bPtFkH/bxRRVLnrWYM
+         TXA3oPyRMKjSKiBwuJoDdPuW0Rhca7XfHNay9OsGg4E7Zzdba1le66tkPJW3lLNbB57f
+         a7jw==
+X-Gm-Message-State: AOJu0YyAPuRlJwDmoOq0/hLNR10MhhipL/yHZjn7rsLjZgUD7H6xcRhx
+	2GbHEXK598k2IV8xr1nELD4hFCnGinclcsSI71/vBg3EidolaQ==
+X-Google-Smtp-Source: AGHT+IF01bOGa9jfrlKDpG2+5o0Lt3M9LLsEHk+/WFkEsMI/hRnFfkHaxnVFOOX6UZE0n36jX0ps/h+pG2KznP3Ln+k=
+X-Received: by 2002:aa7:c3c3:0:b0:523:47b0:9077 with SMTP id
+ l3-20020aa7c3c3000000b0052347b09077mr567848edr.38.1692409527013; Fri, 18 Aug
+ 2023 18:45:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230814172809.1361446-1-yonghong.song@linux.dev> <20230814172825.1363378-1-yonghong.song@linux.dev>
-In-Reply-To: <20230814172825.1363378-1-yonghong.song@linux.dev>
+References: <20230814172809.1361446-1-yonghong.song@linux.dev> <20230814172857.1366162-1-yonghong.song@linux.dev>
+In-Reply-To: <20230814172857.1366162-1-yonghong.song@linux.dev>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Sat, 19 Aug 2023 06:54:20 +0530
-Message-ID: <CAP01T756RSWSveq_SqfhFWJguT+gpwYU7iRtMGCgSFNf-x+JLQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 03/15] bpf: Add alloc/xchg/direct_access support
- for local percpu kptr
+Date: Sat, 19 Aug 2023 07:14:50 +0530
+Message-ID: <CAP01T76BxK=OR8es4_GByNpZn_WVBDDQQELgSgkJwUh0=q_CYg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 09/15] bpf: Mark OBJ_RELEASE argument as MEM_RCU
+ when possible
 To: Yonghong Song <yonghong.song@linux.dev>
 Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
@@ -77,241 +77,79 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
 	lindbergh.monkeyblade.net
 
-On Mon, 14 Aug 2023 at 22:59, Yonghong Song <yonghong.song@linux.dev> wrote:
+On Mon, 14 Aug 2023 at 23:00, Yonghong Song <yonghong.song@linux.dev> wrote:
 >
-> Add two new kfunc's, bpf_percpu_obj_new_impl() and
-> bpf_percpu_obj_drop_impl(), to allocate a percpu obj.
-> Two functions are very similar to bpf_obj_new_impl()
-> and bpf_obj_drop_impl(). The major difference is related
-> to percpu handling.
+> In previous selftests/bpf patch, we have
+>   p = bpf_percpu_obj_new(struct val_t);
+>   if (!p)
+>           goto out;
 >
->     bpf_rcu_read_lock()
->     struct val_t __percpu *v = map_val->percpu_data;
->     ...
->     bpf_rcu_read_unlock()
+>   p1 = bpf_kptr_xchg(&e->pc, p);
+>   if (p1) {
+>           /* race condition */
+>           bpf_percpu_obj_drop(p1);
+>   }
 >
-> For a percpu data map_val like above 'v', the reg->type
-> is set as
->         PTR_TO_BTF_ID | MEM_PERCPU | MEM_RCU
-> if inside rcu critical section.
+>   p = e->pc;
+>   if (!p)
+>           goto out;
 >
-> MEM_RCU marking here is similar to NON_OWN_REF as 'v'
-> is not a owning referenace. But NON_OWN_REF is
-
-typo: reference
-
-> trusted and typically inside the spinlock while
-> MEM_RCU is under rcu read lock. RCU is preferred here
-> since percpu data structures mean potential concurrent
-> access into its contents.
+> After bpf_kptr_xchg(), we need to re-read e->pc into 'p'.
+> This is due to that the second argument of bpf_kptr_xchg() is marked
+> OBJ_RELEASE and it will be marked as invalid after the call.
+> So after bpf_kptr_xchg(), 'p' is an unknown scalar,
+> and the bpf program needs to reread from the map value.
 >
-> Also, bpf_percpu_obj_new_impl() is restricted to only accept
-> scalar struct which means nested kptr's are not allowed
-> but some other special field, e.g., bpf_list_head, bpf_spin_lock, etc.
-> could be nested (nested 'struct'). Later patch will improve verifier to
-> handle such nested special fields.
+> This patch checks if the 'p' has type MEM_ALLOC and MEM_PERCPU,
+> and if 'p' is RCU protected. If this is the case, 'p' can be marked
+> as MEM_RCU. MEM_ALLOC needs to be removed since 'p' is not
+> an owning reference any more. Such a change makes re-read
+> from the map value unnecessary.
+>
+> Note that re-reading 'e->pc' after bpf_kptr_xchg() might get
+> a different value from 'p' if immediately before 'p = e->pc',
+> another cpu may do another bpf_kptr_xchg() and swap in another value
+> into 'e->pc'. If this is the case, then 'p = e->pc' may
+> get either 'p' or another value, and race condition already exists.
+> So removing direct re-reading seems fine too.
 >
 > Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 > ---
->  include/linux/bpf.h   |  3 +-
->  kernel/bpf/helpers.c  | 49 +++++++++++++++++++++++
->  kernel/bpf/syscall.c  | 21 +++++++---
->  kernel/bpf/verifier.c | 90 ++++++++++++++++++++++++++++++++++---------
->  4 files changed, 137 insertions(+), 26 deletions(-)
+>  kernel/bpf/verifier.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index e6348fd0a785..a2cb380c43c7 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -197,7 +197,8 @@ struct btf_field_kptr {
->         struct btf *btf;
->         struct module *module;
->         /* dtor used if btf_is_kernel(btf), otherwise the type is
-> -        * program-allocated, dtor is NULL,  and __bpf_obj_drop_impl is used
-> +        * program-allocated, dtor is NULL,  and __bpf_obj_drop_impl
-> +        * or __bpf_percpu_drop_impl is used
->          */
->         btf_dtor_kfunc_t dtor;
->         u32 btf_id;
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index eb91cae0612a..dd14cb7da4af 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1900,6 +1900,29 @@ __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
->         return p;
->  }
->
-> +__bpf_kfunc void *bpf_percpu_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-> +{
-> +       struct btf_struct_meta *meta = meta__ign;
-> +       const struct btf_record *rec;
-> +       u64 size = local_type_id__k;
-> +       void __percpu *pptr;
-> +       void *p;
-> +       int cpu;
-> +
-> +       p = bpf_mem_alloc(&bpf_global_percpu_ma, size);
-> +       if (!p)
-> +               return NULL;
-> +       if (meta) {
-> +               pptr = *((void __percpu **)p);
-> +               rec = meta->record;
-> +               for_each_possible_cpu(cpu) {
-> +                       bpf_obj_init(rec, per_cpu_ptr(pptr, cpu));
-> +               }
-> +       }
-> +
-> +       return p;
-> +}
-> +
->  /* Must be called under migrate_disable(), as required by bpf_mem_free */
->  void __bpf_obj_drop_impl(void *p, const struct btf_record *rec)
->  {
-> @@ -1924,6 +1947,30 @@ __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
->         __bpf_obj_drop_impl(p, meta ? meta->record : NULL);
->  }
->
-> +/* Must be called under migrate_disable(), as required by bpf_mem_free_rcu */
-> +void __bpf_percpu_obj_drop_impl(void *p, const struct btf_record *rec)
-> +{
-> +       void __percpu *pptr;
-> +       int cpu;
-> +
-> +       if (rec) {
-> +               pptr = *((void __percpu **)p);
-> +               for_each_possible_cpu(cpu) {
-> +                       bpf_obj_free_fields(rec, per_cpu_ptr(pptr, cpu));
-
-Should this loop be done after we have waited for the RCU grace period?
-Otherwise any other CPU can reinitialize a field after this is done,
-move objects into lists/rbtree, and leak memory.
-Please correct me if I'm mistaken.
-
-> +               }
-> +       }
-> +
-> +       bpf_mem_free_rcu(&bpf_global_percpu_ma, p);
-> +}
-> +
-> +__bpf_kfunc void bpf_percpu_obj_drop_impl(void *p__alloc, void *meta__ign)
-> +{
-> +       struct btf_struct_meta *meta = meta__ign;
-> +       void *p = p__alloc;
-> +
-> +       __bpf_percpu_obj_drop_impl(p, meta ? meta->record : NULL);
-> +}
-> +
->  __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
->  {
->         struct btf_struct_meta *meta = meta__ign;
-> @@ -2436,7 +2483,9 @@ BTF_SET8_START(generic_btf_ids)
->  BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
->  #endif
->  BTF_ID_FLAGS(func, bpf_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
-> +BTF_ID_FLAGS(func, bpf_percpu_obj_new_impl, KF_ACQUIRE | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_obj_drop_impl, KF_RELEASE)
-> +BTF_ID_FLAGS(func, bpf_percpu_obj_drop_impl, KF_RELEASE)
->  BTF_ID_FLAGS(func, bpf_refcount_acquire_impl, KF_ACQUIRE | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_list_push_front_impl)
->  BTF_ID_FLAGS(func, bpf_list_push_back_impl)
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 1c30b6ee84d4..9ceb6fd9a0e2 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -627,6 +627,7 @@ void bpf_obj_free_timer(const struct btf_record *rec, void *obj)
->  }
->
->  extern void __bpf_obj_drop_impl(void *p, const struct btf_record *rec);
-> +extern void __bpf_percpu_obj_drop_impl(void *p, const struct btf_record *rec);
->
->  void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
->  {
-> @@ -660,13 +661,21 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
->                         if (!btf_is_kernel(field->kptr.btf)) {
->                                 pointee_struct_meta = btf_find_struct_meta(field->kptr.btf,
->                                                                            field->kptr.btf_id);
-> -                               if (field->type != BPF_KPTR_PERCPU_REF)
-> +
-> +                               if (field->type == BPF_KPTR_PERCPU_REF) {
-> +                                       migrate_disable();
-> +                                       __bpf_percpu_obj_drop_impl(xchgd_field, pointee_struct_meta ?
-> +                                                                               pointee_struct_meta->record :
-> +                                                                               NULL);
-> +                                       migrate_enable();
-> +                               } else {
->                                         WARN_ON_ONCE(!pointee_struct_meta);
-> -                               migrate_disable();
-> -                               __bpf_obj_drop_impl(xchgd_field, pointee_struct_meta ?
-> -                                                                pointee_struct_meta->record :
-> -                                                                NULL);
-> -                               migrate_enable();
-> +                                       migrate_disable();
-> +                                       __bpf_obj_drop_impl(xchgd_field, pointee_struct_meta ?
-> +                                                                        pointee_struct_meta->record :
-> +                                                                        NULL);
-> +                                       migrate_enable();
-> +                               }
->                         } else {
->                                 field->kptr.dtor(xchgd_field);
->                         }
 > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 4ccca1f6c998..a985fbf18a11 100644
+> index 6fc200cb68b6..6fa458e13bfc 100644
 > --- a/kernel/bpf/verifier.c
 > +++ b/kernel/bpf/verifier.c
-> @@ -304,7 +304,7 @@ struct bpf_kfunc_call_arg_meta {
->         /* arg_{btf,btf_id,owning_ref} are used by kfunc-specific handling,
->          * generally to pass info about user-defined local kptr types to later
->          * verification logic
-> -        *   bpf_obj_drop
-> +        *   bpf_obj_drop/bpf_percpu_obj_drop
->          *     Record the local kptr type to be drop'd
->          *   bpf_refcount_acquire (via KF_ARG_PTR_TO_REFCOUNTED_KPTR arg type)
->          *     Record the local kptr type to be refcount_incr'd and use
-> @@ -4997,13 +4997,20 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
->         if (kptr_field->type == BPF_KPTR_UNREF)
->                 perm_flags |= PTR_UNTRUSTED;
+> @@ -8854,8 +8854,15 @@ static int release_reference(struct bpf_verifier_env *env,
+>                 return err;
 >
-> +       if (kptr_field->type == BPF_KPTR_PERCPU_REF)
-> +               perm_flags |= MEM_PERCPU | MEM_ALLOC;
-> +
+>         bpf_for_each_reg_in_vstate(env->cur_state, state, reg, ({
+> -               if (reg->ref_obj_id == ref_obj_id)
+> -                       mark_reg_invalid(env, reg);
+> +               if (reg->ref_obj_id == ref_obj_id) {
+> +                       if (in_rcu_cs(env) && (reg->type & MEM_ALLOC) && (reg->type & MEM_PERCPU)) {
 
-I think just this would permit PTR_TO_BTF_ID | MEM_ALLOC for percpu kptr?
-It would probably be good to include negative selftests for kptr_xchg
-type matching with percpu_kptr to prevent things like these.
+Wouldn't this check also be true in case of bpf_percpu_obj_drop(p)
+inside RCU CS/non-sleepable prog?
+Do we want to permit access to p after drop in that case? I think it
+will be a bit unintuitive.
+I think we should preserve normal behavior for everything except for
+kptr_xchg of a percpu_kptr.
 
-Alexei already said map_kptr_match_type is not being invoked for
-MEM_ALLOC kptr_xchg, so that is also an existing bug.
-
->         if (base_type(reg->type) != PTR_TO_BTF_ID || (type_flag(reg->type) & ~perm_flags))
->                 goto bad_type;
+> +                               reg->ref_obj_id = 0;
+> +                               reg->type &= ~MEM_ALLOC;
+> +                               reg->type |= MEM_RCU;
+> +                       } else {
+> +                               mark_reg_invalid(env, reg);
+> +                       }
+> +               }
+>         }));
 >
-> [...]
->         /* We need to verify reg->type and reg->btf, before accessing reg->btf */
->         reg_name = btf_type_name(reg->btf, reg->btf_id);
+>         return 0;
+> --
+> 2.34.1
 >
-> @@ -5084,7 +5091,17 @@ static bool rcu_safe_kptr(const struct btf_field *field)
->  {
->         const struct btf_field_kptr *kptr = &field->kptr;
->
-> -       return field->type == BPF_KPTR_REF && rcu_protected_object(kptr->btf, kptr->btf_id);
-> +       return field->type == BPF_KPTR_PERCPU_REF ||
-> +              (field->type == BPF_KPTR_REF && rcu_protected_object(kptr->btf, kptr->btf_id));
-> +}
-> +
-> +static u32 btf_ld_kptr_type(struct bpf_verifier_env *env, struct btf_field *kptr_field)
-> +{
-> +       if (!rcu_safe_kptr(kptr_field) || !in_rcu_cs(env))
-> +               return PTR_MAYBE_NULL | PTR_UNTRUSTED;
-> +       if (kptr_field->type != BPF_KPTR_PERCPU_REF)
-> +               return PTR_MAYBE_NULL | MEM_RCU;
-> +       return PTR_MAYBE_NULL | MEM_RCU | MEM_PERCPU;
-
-The inverted conditions are a bit hard to follow. Maybe better to
-explicitly check for both RCU cases, and default to untrusted
-otherwise?
-
->  }
->
-> [...]
 >
 
